@@ -1,0 +1,146 @@
+//=================================================================================================
+/*
+    Copyright (C) 2015-2016 Sky kit authors united with omega. <http://omega.gg/about>
+
+    Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
+
+    This file is part of the SkGui module of Sky kit.
+
+    - GNU General Public License Usage:
+    This file may be used under the terms of the GNU General Public License version 3 as published
+    by the Free Software Foundation and appearing in the LICENSE.md file included in the packaging
+    of this file. Please review the following information to ensure the GNU General Public License
+    requirements will be met: https://www.gnu.org/licenses/gpl.html.
+*/
+//=================================================================================================
+
+#ifndef WIMAGECOLORFILTER_H
+#define WIMAGECOLORFILTER_H
+
+// Qt includes
+#include <QDeclarativeItem>
+
+// Sk includes
+#include <WImageFilter>
+
+#ifndef SK_NO_IMAGECOLORFILTER
+
+// Forward declarations
+class WImageColorFilterPrivate;
+
+//-------------------------------------------------------------------------------------------------
+// WDeclarativeGradientStop
+//-------------------------------------------------------------------------------------------------
+
+class SK_GUI_EXPORT WDeclarativeGradientStop : public QObject
+{
+    Q_OBJECT
+
+    Q_PROPERTY(qreal position READ position WRITE setPosition)
+
+    Q_PROPERTY(QColor color READ color WRITE setColor)
+
+public:
+    explicit WDeclarativeGradientStop(QObject * parent = NULL);
+
+private: // Functions
+    void updateGradient();
+
+public: // Properties
+    qreal position() const;
+    void  setPosition(qreal position);
+
+    QColor color() const;
+    void   setColor(const QColor & color);
+
+private: // Variables
+    qreal _position;
+
+    QColor _color;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WDeclarativeGradient
+//-------------------------------------------------------------------------------------------------
+
+class SK_GUI_EXPORT WDeclarativeGradient : public QObject
+{
+    Q_OBJECT
+
+    Q_ENUMS(GradientType)
+
+    Q_PROPERTY(GradientType type READ type WRITE setType NOTIFY typeChanged)
+
+    Q_PROPERTY(QDeclarativeListProperty<WDeclarativeGradientStop> stops READ stops)
+
+    Q_CLASSINFO("DefaultProperty", "stops")
+
+public: // Enums
+    enum GradientType { LinearVertical, LinearHorizontal };
+
+public:
+    explicit WDeclarativeGradient(QObject * parent = NULL);
+
+    /* virtual */ ~WDeclarativeGradient();
+
+signals:
+    void updated();
+
+    void typeChanged();
+
+private: // Functions
+    void update();
+
+public: // Properties
+    GradientType type();
+    void         setType(GradientType type);
+
+    QDeclarativeListProperty<WDeclarativeGradientStop> stops();
+
+    const QGradient * gradient() const;
+
+private: // Variables
+    GradientType _type;
+
+    QList<WDeclarativeGradientStop *> _stops;
+
+    mutable QGradient * _gradient;
+
+private:
+    friend class WDeclarativeGradientStop;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WImageColorFilter
+//-------------------------------------------------------------------------------------------------
+
+class SK_GUI_EXPORT WImageColorFilter : public WImageFilter
+{
+    Q_OBJECT
+
+    Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
+
+    Q_PROPERTY(WDeclarativeGradient * gradient READ gradient WRITE setGradient)
+
+public:
+    explicit WImageColorFilter(QObject * parent = NULL);
+
+signals:
+    void colorChanged(const QColor & color);
+
+protected: // WImageFilter implementation
+    /* virtual */ bool filter(QImage * image) const;
+
+public: // Properties
+    QColor color() const;
+    void   setColor(const QColor & color);
+
+    WDeclarativeGradient * gradient() const;
+    void                   setGradient(WDeclarativeGradient * gradient);
+
+private:
+    W_DECLARE_PRIVATE(WImageColorFilter)
+};
+
+#endif // SK_NO_IMAGECOLORFILTER
+#endif // WIMAGECOLORFILTER_H

@@ -1,0 +1,169 @@
+//=================================================================================================
+/*
+    Copyright (C) 2015-2016 Sky kit authors united with omega. <http://omega.gg/about>
+
+    Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
+
+    This file is part of the SkyComponents module of Sky kit.
+
+    - GNU General Public License Usage:
+    This file may be used under the terms of the GNU General Public License version 3 as published
+    by the Free Software Foundation and appearing in the LICENSE.md file included in the packaging
+    of this file. Please review the following information to ensure the GNU General Public License
+    requirements will be met: https://www.gnu.org/licenses/gpl.html.
+*/
+//=================================================================================================
+
+import QtQuick 1.1
+import Sky     1.0
+
+MouseArea
+{
+    id: baseTabs
+
+    //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+
+    /* read */ property int count: (model) ? model.count : 0
+
+    /* read */ property real tabsWidth: (borderRight.visible) ? width
+                                                              : getItemX(count) + borderSize
+
+    /* read */ property real tabWidth: calculateTabWidth(count)
+
+    property real tabMinimum: st.baseTabs_tabMinimum
+    property real tabMaximum: st.baseTabs_tabMaximum
+
+    /* read */ property variant itemHovered: null
+
+    /* read */ property int indexHover: (itemHovered) ? itemHovered.getIndex()
+                                                      : -1
+
+    /* read */ property real borderSize: st.baseTabs_borderSize
+
+    /* read */ property real spacing: st.baseTabs_spacing
+
+    property int asynchronous: Image.AsynchronousOff
+
+    //---------------------------------------------------------------------------------------------
+    // Aliases
+    //---------------------------------------------------------------------------------------------
+
+    property alias model   : repeater.model
+    property alias delegate: repeater.delegate
+
+    property alias repeater   : repeater
+    property alias borderRight: borderRight
+
+    //---------------------------------------------------------------------------------------------
+    // Settings
+    //---------------------------------------------------------------------------------------------
+
+    height: st.baseTabs_height
+
+    clip: (repeater.width > width)
+
+    acceptedButtons: Qt.NoButton
+
+    //---------------------------------------------------------------------------------------------
+    // Functions
+    //---------------------------------------------------------------------------------------------
+
+    function getItemX(index)
+    {
+        return Math.round(index * tabWidth);
+    }
+
+    function getItemWidth(index)
+    {
+        return tabWidth;
+    }
+
+    //---------------------------------------------------------------------------------------------
+
+    function calculateTabWidth(count)
+    {
+        var size = Math.min((width - borderSize) / count, tabMaximum);
+
+        return Math.max(tabMinimum, size);
+    }
+
+    //---------------------------------------------------------------------------------------------
+
+    function itemAt(index)
+    {
+        for (var i = 0; i < children.length; i++)
+        {
+            var child = children[i];
+
+            if (typeof child.getIndex == "function" && (child.getIndex()) == index)
+            {
+                return child;
+            }
+        }
+
+        return null;
+    }
+
+    function indexFromPos(x, y)
+    {
+        if (x < 0 || x > width
+            ||
+            y < 0 || y > height) return -1;
+
+        for (var i = 0; i < children.length; i++)
+        {
+            var child = children[i];
+
+            if (typeof child.getIndex == "function" && child.visible)
+            {
+                if (x >= child.x && x < (child.x + child.width))
+                {
+                    return child.getIndex();
+                }
+            }
+        }
+
+        return -1;
+    }
+
+    //---------------------------------------------------------------------------------------------
+
+    function setItemHovered(item)
+    {
+        itemHovered = item;
+    }
+
+    function clearItemHovered()
+    {
+        itemHovered = null;
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Childs
+    //---------------------------------------------------------------------------------------------
+
+    Repeater
+    {
+        id: repeater
+
+        anchors.top   : parent.top
+        anchors.bottom: parent.bottom
+
+        width: (tabWidth * baseTabs.count) + borderSize
+    }
+
+    BorderVertical
+    {
+        id: borderRight
+
+        anchors.right: parent.right
+
+        size: borderSize
+
+        z: 1
+
+        visible: parent.clip
+    }
+}

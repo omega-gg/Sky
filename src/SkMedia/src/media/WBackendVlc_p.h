@@ -1,0 +1,223 @@
+//=================================================================================================
+/*
+    Copyright (C) 2015-2016 Sky kit authors united with omega. <http://omega.gg/about>
+
+    Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
+
+    This file is part of the SkMedia module of Sky kit.
+
+    - GNU General Public License Usage:
+    This file may be used under the terms of the GNU General Public License version 3 as published
+    by the Free Software Foundation and appearing in the LICENSE.md file included in the packaging
+    of this file. Please review the following information to ensure the GNU General Public License
+    requirements will be met: https://www.gnu.org/licenses/gpl.html.
+*/
+//=================================================================================================
+
+#ifndef WBACKENDVLC_P_H
+#define WBACKENDVLC_P_H
+
+/*  W A R N I N G
+    -------------
+
+    This file is not part of the Sk API. It exists purely as an
+    implementation detail. This header file may change from version to
+    version without notice, or even be removed.
+
+    We mean it.
+*/
+
+// Qt includes
+#include <QEvent>
+#include <QMetaMethod>
+
+// Sk includes
+#include <WVlcPlayer>
+
+// Private includes
+#include <private/WAbstractBackend_p>
+
+#ifndef SK_NO_BACKENDVLC
+
+// Forward declarations
+class WRemoteData;
+class WMediaReply;
+
+//-------------------------------------------------------------------------------------------------
+// WBackendVlcTexture
+//-------------------------------------------------------------------------------------------------
+
+struct WBackendVlcTexture
+{
+    WBackendVlcTexture()
+    {
+        width  = 0;
+        height = 0;
+
+        pitch       = 0;
+        pitchMargin = 0;
+
+        bitsA = NULL;
+        bitsB = NULL;
+
+        bits = NULL;
+    }
+
+    int width;
+    int height;
+
+    int pitch;
+    int pitchMargin;
+
+    uchar * bitsA;
+    uchar * bitsB;
+
+    uchar * bits;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WBackendVlcPrivate
+//-------------------------------------------------------------------------------------------------
+
+class SK_MEDIA_EXPORT WBackendVlcPrivate : public WAbstractBackendPrivate
+{
+public: // Enums
+    enum EventType
+    {
+        EventSetup
+    };
+
+public:
+    WBackendVlcPrivate(WBackendVlc * p);
+
+    /* virtual */ ~WBackendVlcPrivate();
+
+    void init();
+
+public: // Functions
+    void populateTableRgb();
+
+    void initShader();
+
+    void convertFrameSoftware();
+    void convertFrameSse     ();
+
+    void loadSources (bool play);
+    void applySources(bool play);
+
+    void updateBuffering();
+
+    void clearPlayer();
+    void clearReply ();
+
+    void playMedia();
+
+    void updateTargetRect();
+
+    WAbstractBackend::Quality getClosestQuality(WAbstractBackend::Quality quality);
+
+    void setOpacity(GLfloat opacity);
+
+public: // Slots
+    void onLoaded();
+
+    void onFrameUpdated();
+
+public: // Static functions
+    static unsigned setup(void     ** data,     char     * chroma,
+                          unsigned *  vlcWidth, unsigned * vlcHeight,
+                          unsigned *  pitches,  unsigned * lines);
+
+    static void * lock(void * data, void ** buffer);
+
+    static void unlock(void * data, void * id, void * const * pixels);
+
+public: // Variables
+    QMutex mutex;
+
+    WVlcPlayer * player;
+
+    uint32_t tableRgb[1935];
+
+    int frameWidth;
+    int frameHeight;
+
+    QImage frameA;
+    QImage frameB;
+
+    QImage frameSoftware;
+
+    bool frameIndex;
+
+    QRect targetRect;
+
+    GLfloat targetX;
+    GLfloat targetY;
+    GLfloat targetWidth;
+    GLfloat targetHeight;
+
+    bool   shaderAvailable;
+    GLuint shader;
+
+    GLuint textureIds[3];
+
+    WBackendVlcTexture textures[3];
+
+    GLfloat values[16];
+
+    GLfloat opacity;
+
+    bool active;
+    bool playing;
+
+    bool frameReset;
+    bool frameUpdated;
+    bool frameFreeze;
+
+    QHash<WAbstractBackend::Quality, QUrl> medias;
+    QHash<WAbstractBackend::Quality, QUrl> audios;
+
+    QUrl currentMedia;
+    QUrl currentAudio;
+
+    WAbstractBackend::Quality closestQuality;
+
+    Qt::AspectRatioMode ratio;
+
+    WMediaReply * reply;
+
+    QMetaMethod method;
+
+protected:
+    W_DECLARE_PUBLIC(WBackendVlc)
+};
+
+//-------------------------------------------------------------------------------------------------
+// WBackendVlcEventSetup
+//-------------------------------------------------------------------------------------------------
+
+class WBackendVlcEventSetup : public QEvent
+{
+public:
+    WBackendVlcEventSetup(int width, int height, int pitchY, int pitchU, int pitchV)
+        : QEvent(static_cast<QEvent::Type> (WBackendVlcPrivate::EventSetup))
+    {
+        this->width  = width;
+        this->height = height;
+
+        this->pitchY = pitchY;
+        this->pitchU = pitchU;
+        this->pitchV = pitchV;
+    }
+
+public: // Variables
+    int width;
+    int height;
+
+    int pitchY;
+    int pitchU;
+    int pitchV;
+};
+
+#endif // SK_NO_BACKENDVLC
+#endif // WBACKENDVLC_P_H
