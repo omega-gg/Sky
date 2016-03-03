@@ -1,4 +1,4 @@
-<a href="http://omega.gg/MotionBox/source">![Sky kit](dist/pictures/Sk.png)</a>
+<a href="http://omega.gg/MotionBox/sources">![Sky kit](dist/pictures/Sk.png)</a>
 ---
 
 Sky kit is the complete application kit built for [MotionBox](http://omega.gg/MotionBox).<br>
