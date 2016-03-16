@@ -171,19 +171,17 @@ WBackendNetFolder WBackendDuckDuckGo::extractFolder(const QByteArray       & dat
 
     QString content = Sk::readUtf8(data);
 
-    QStringList list = Sk::slices(content,
-                                  "<div class=\"results_links results_links_deep web-result\"",
-                                  "<div class=\"url\">");
+    QStringList list
+        = Sk::slices(content,
+                     "<div class=\"result results_links results_links_deep web-result", "</a>");
 
     if (query.id == 1)
     {
         foreach (const QString & string, list)
         {
-            int index = string.indexOf("class=\"large");
+            int index = WControllerNetwork::indexAttribute(string, "href");
 
-            if (index == -1) continue;
-
-            QString source = WControllerNetwork::extractAttributeUtf8(string, "href", index);
+            QString source = WControllerNetwork::extractAttributeUtf8At(string, index);
 
             index = WControllerNetwork::indexValue(string, index);
 
@@ -208,11 +206,9 @@ WBackendNetFolder WBackendDuckDuckGo::extractFolder(const QByteArray       & dat
 
         foreach (const QString & string, list)
         {
-            int index = string.indexOf("class=\"large");
+            int index = WControllerNetwork::indexAttribute(string, "href");
 
-            if (index == -1) continue;
-
-            QString source = WControllerNetwork::extractAttributeUtf8(string, "href", index);
+            QString source = WControllerNetwork::extractAttributeUtf8At(string, index);
 
             source = WControllerNetwork::urlName(source);
 
