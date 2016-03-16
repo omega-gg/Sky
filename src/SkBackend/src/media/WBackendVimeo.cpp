@@ -398,8 +398,11 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
     }
     else if (method == "related" && label == "tracks")
     {
-        backendQuery.url = "https://vimeo.com/" + q + "/collections/channels/sort:relevant/format:thumbnail";
-        backendQuery.id  = 2;
+        backendQuery.url = "https://vimeo.com/" + q
+                           +
+                           "/collections/channels/sort:relevant/format:thumbnail";
+
+        backendQuery.id = 2;
     }
 
     return backendQuery;
