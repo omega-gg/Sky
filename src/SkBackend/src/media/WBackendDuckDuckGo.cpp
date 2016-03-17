@@ -181,6 +181,8 @@ WBackendNetFolder WBackendDuckDuckGo::extractFolder(const QByteArray       & dat
         {
             int index = WControllerNetwork::indexAttribute(string, "href");
 
+            if (index == -1) continue;
+
             QString source = WControllerNetwork::extractAttributeUtf8At(string, index);
 
             index = WControllerNetwork::indexValue(string, index);
@@ -207,6 +209,8 @@ WBackendNetFolder WBackendDuckDuckGo::extractFolder(const QByteArray       & dat
         foreach (const QString & string, list)
         {
             int index = WControllerNetwork::indexAttribute(string, "href");
+
+            if (index == -1) continue;
 
             QString source = WControllerNetwork::extractAttributeUtf8At(string, index);
 
