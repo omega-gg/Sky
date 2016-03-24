@@ -150,7 +150,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    qDebug("Sk include generator");
+    qDebug("Sky include generator");
 
     QDir().mkdir("private");
 

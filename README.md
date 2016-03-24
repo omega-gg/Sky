@@ -1,14 +1,14 @@
-<a href="http://omega.gg/MotionBox/sources"><img src="dist/pictures/Sk.png" alt="Sky kit" width="128px"></a>
+<a href="http://omega.gg/MotionBox/sources"><img src="dist/pictures/Sky.png" alt="Sky kit" width="128px"></a>
 ---
 
-Sky kit is the complete application kit built for [MotionBox](http://omega.gg/MotionBox).<br>
+Sky is the complete application kit built for [MotionBox](http://omega.gg/MotionBox).<br>
 Designed for efficiency, scalability and maintainability.<br>
 [omega](http://omega.gg/about) is building Sky kit for the society of sharing.<br>
 
 ## Technology
 <a href="http://omega.gg/MotionBox/what"><img src="dist/pictures/MotionBox.png" alt="MotionBox" width="512px"></a>
 
-Sky kit is built in C++ on the [Qt framework](http://github.com/qtproject).<br>
+Sky is built in C++ on the [Qt framework](http://github.com/qtproject).<br>
 The GUI is powered by [QML](http://github.com/qtproject/qtdeclarative) and rendered with OpenGL.<br>
 The video player is based on the [libVLC](http://github.com/videolan/vlc).<br>
 
@@ -32,7 +32,7 @@ Recommended:
 
 ## Configure
 
-You can configure Sky kit with:
+You can configure Sky with:
 
     sh configure.sh <qt4 | qt5 | clean> <win32>
 
@@ -40,8 +40,8 @@ You can configure Sky kit with:
 
 ## Build
 
-You can build Sky kit with Qt Creator:
-- Open [Sk.pro](Sk.pro).
+You can build Sky with Qt Creator:
+- Open [Sky.pro](Sky.pro).
 - Click on "Build > Build all".
 
 Or the console:
@@ -51,7 +51,7 @@ Or the console:
 
 ## Deploy
 
-You can deploy Sky kit with:
+You can deploy Sky with:
 
     sh deploy.sh <qt4 | qt5 | clean> <win32>
 

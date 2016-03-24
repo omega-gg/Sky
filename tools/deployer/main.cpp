@@ -164,7 +164,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    qDebug("Sk deployer");
+    qDebug("Sky deployer");
 
     qDebug("\nDEPLOYING");
 
