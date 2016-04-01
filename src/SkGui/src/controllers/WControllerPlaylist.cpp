@@ -696,6 +696,11 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylistNet * playlist, co
     {
         QFileInfo info(WControllerFile::filePath(source));
 
+        if (info.isSymLink())
+        {
+            source = WControllerFile::fileUrl(info.symLinkTarget());
+        }
+
         if (info.isDir())
         {
             WBackendNetQuery query(source);
@@ -792,6 +797,11 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
     if (WControllerNetwork::urlIsFile(source))
     {
         QFileInfo info(WControllerFile::filePath(source));
+
+        if (info.isSymLink())
+        {
+            source = WControllerFile::fileUrl(info.symLinkTarget());
+        }
 
         if (info.isDir())
         {
