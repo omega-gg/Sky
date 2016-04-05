@@ -56,6 +56,7 @@ void WDeclarativeImageBasePrivate::init()
     progress = 0.0;
 
     filter = NULL;
+    smooth = true;
 
     q->setFlag(QGraphicsItem::ItemHasNoContents, false);
 }
@@ -922,6 +923,26 @@ void WDeclarativeImageBase::setFilter(WImageFilter * filter)
     }
 
     emit filterChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WDeclarativeImageBase::smooth() const
+{
+    Q_D(const WDeclarativeImageBase); return d->smooth;
+}
+
+void WDeclarativeImageBase::setSmooth(bool smooth)
+{
+    Q_D(WDeclarativeImageBase);
+
+    if (d->smooth == smooth) return;
+
+    d->smooth = smooth;
+
+    update();
+
+    emit smoothChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

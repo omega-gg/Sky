@@ -131,7 +131,7 @@ WDeclarativeBorderImage::WDeclarativeBorderImage(WDeclarativeBorderImagePrivate 
 
     bool smooth = painter->testRenderHint(QPainter::SmoothPixmapTransform);
 
-    painter->setRenderHint(QPainter::SmoothPixmapTransform);
+    painter->setRenderHint(QPainter::SmoothPixmapTransform, d->smooth);
 
     QTileRules rules((Qt::TileRule) d->horizontalTileMode, (Qt::TileRule) d->verticalTileMode);
 
@@ -374,7 +374,7 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QDeclarativeItem * pa
 
     bool smooth = painter->testRenderHint(QPainter::SmoothPixmapTransform);
 
-    painter->setRenderHint(QPainter::SmoothPixmapTransform);
+    painter->setRenderHint(QPainter::SmoothPixmapTransform, d->smooth);
 
     QTileRules rules((Qt::TileRule) d->horizontalTileMode, (Qt::TileRule) d->verticalTileMode);
 

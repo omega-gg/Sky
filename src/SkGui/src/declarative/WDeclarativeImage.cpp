@@ -81,7 +81,7 @@ WDeclarativeImage::WDeclarativeImage(WDeclarativeImagePrivate * p, QDeclarativeI
 
     bool smooth = painter->testRenderHint(QPainter::SmoothPixmapTransform);
 
-    painter->setRenderHint(QPainter::SmoothPixmapTransform);
+    painter->setRenderHint(QPainter::SmoothPixmapTransform, d->smooth);
 
     if (pixmapWidth != width || pixmapHeight != height)
     {

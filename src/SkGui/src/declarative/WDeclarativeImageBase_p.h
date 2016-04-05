@@ -101,6 +101,8 @@ public: // Properties
 
     WImageFilter * filter;
 
+    bool smooth : 1;
+
 protected:
     W_DECLARE_PUBLIC(WDeclarativeImageBase)
 };

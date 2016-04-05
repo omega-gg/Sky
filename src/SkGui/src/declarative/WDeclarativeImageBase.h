@@ -65,6 +65,8 @@ class SK_GUI_EXPORT WDeclarativeImageBase : public WDeclarativeItem
 
     Q_PROPERTY(WImageFilter * filter READ filter WRITE setFilter NOTIFY filterChanged)
 
+    Q_PROPERTY(bool smooth READ smooth WRITE setSmooth NOTIFY smoothChanged)
+
     Q_PROPERTY(qreal ratioWidth  READ ratioWidth  NOTIFY sourceSizeChanged)
     Q_PROPERTY(qreal ratioHeight READ ratioHeight NOTIFY sourceSizeChanged)
 
@@ -114,6 +116,7 @@ signals:
     void progressChanged();
 
     void filterChanged();
+    void smoothChanged();
 
 public: // QDeclarativeItem reimplementation
     /* virtual */ void componentComplete();
@@ -178,6 +181,9 @@ public: // Properties
 
     WImageFilter * filter() const;
     void           setFilter(WImageFilter * filter);
+
+    bool smooth() const;
+    void setSmooth(bool smooth);
 
     qreal ratioWidth () const;
     qreal ratioHeight() const;
