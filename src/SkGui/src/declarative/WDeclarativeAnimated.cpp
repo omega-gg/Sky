@@ -181,7 +181,7 @@ void WDeclarativeAnimatedPrivate::onFinished()
     {
         emit q->stepChanged();
 
-        pause.start();
+        if (running) pause.start();
     }
 }
 
