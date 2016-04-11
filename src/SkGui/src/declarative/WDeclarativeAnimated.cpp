@@ -338,33 +338,32 @@ void WDeclarativeAnimated::setRunning(bool running)
     {
         if (running)
         {
-            if (d->stepCount && d->loopCount)
+            if (d->stepCount == 0 || d->loopCount == 0) return;
+
+            if (d->step == -1)
             {
-                if (d->step == -1)
+                d->running = true;
+
+                emit runningChanged();
+
+                if (d->running)
                 {
-                    d->running = true;
-
-                    emit runningChanged();
-
-                    if (d->running)
-                    {
-                        d->start();
-                    }
+                    d->start();
                 }
-                else if ((d->loopCount == -1 || d->loop != (d->loopCount - 1))
-                         ||
-                         (d->stepDirection == StepForward  && d->step != (d->stepCount - 1))
-                         ||
-                         (d->stepDirection == StepBackward && d->step))
+            }
+            else if ((d->loopCount == -1 || d->loop != (d->loopCount - 1))
+                     ||
+                     (d->stepDirection == StepForward  && d->step != (d->stepCount - 1))
+                     ||
+                     (d->stepDirection == StepBackward && d->step))
+            {
+                d->running = true;
+
+                emit runningChanged();
+
+                if (d->running)
                 {
-                    d->running = true;
-
-                    emit runningChanged();
-
-                    if (d->running)
-                    {
-                        d->onFinished();
-                    }
+                    d->onFinished();
                 }
             }
         }
