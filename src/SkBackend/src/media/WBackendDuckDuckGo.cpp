@@ -173,7 +173,7 @@ WBackendNetFolder WBackendDuckDuckGo::extractFolder(const QByteArray       & dat
 
     QStringList list
         = Sk::slices(content,
-                     "<div class=\"result results_links results_links_deep web-result", "</a>");
+                     "<div class=\"result results_links results_links_deep web-result \"", "</a>");
 
     if (query.id == 1)
     {
