@@ -237,7 +237,7 @@ Item
 
     property int window_durationAnimation: duration_fast
 
-    property real window_borderSize: border_size
+    property real window_borderSize: dp4
 
     property color window_color: "#323232"
 
