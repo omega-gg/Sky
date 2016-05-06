@@ -48,6 +48,8 @@ public: // Variables
     WResizer * top;
     WResizer * bottom;
 
+    int size;
+
 protected:
     W_DECLARE_PUBLIC(WMainViewResizer)
 };
@@ -70,6 +72,8 @@ void WMainViewResizerPrivate::init()
     top         = new WResizer(WResizer::Top,         q);
     bottom      = new WResizer(WResizer::Bottom,      q);
 
+    size = 4;
+
     refreshCoordinates();
 }
 
@@ -79,43 +83,47 @@ void WMainViewResizerPrivate::refreshCoordinates()
 {
     Q_Q(WMainViewResizer);
 
-    qreal width  = q->width();
-    qreal height = q->height();
+    int width  = q->width ();
+    int height = q->height();
 
     //---------------------------------------------------------------------------------------------
     // Position
 
-    qreal sizeX = width  - 8;
-    qreal sizeY = height - 8;
+    int size2x = size * 2;
 
-    topLeft    ->setPos(QPointF(0,     0));
-    topRight   ->setPos(QPointF(sizeX, 0));
-    bottomLeft ->setPos(QPointF(0,     sizeY));
-    bottomRight->setPos(QPointF(sizeX, sizeY));
+    int sizeX = width  - size2x;
+    int sizeY = height - size2x;
 
-    sizeX = width  - 4;
-    sizeY = height - 4;
+    topLeft    ->setPos(QPoint(0,     0));
+    topRight   ->setPos(QPoint(sizeX, 0));
+    bottomLeft ->setPos(QPoint(0,     sizeY));
+    bottomRight->setPos(QPoint(sizeX, sizeY));
 
-    left  ->setPos(QPointF(0,     8));
-    right ->setPos(QPointF(sizeX, 8));
-    top   ->setPos(QPointF(8,     0));
-    bottom->setPos(QPointF(8,     sizeY));
+    sizeX = width  - size;
+    sizeY = height - size;
+
+    left  ->setPos(QPoint(0,      size2x));
+    right ->setPos(QPoint(sizeX,  size2x));
+    top   ->setPos(QPoint(size2x, 0));
+    bottom->setPos(QPoint(size2x, sizeY));
 
     //---------------------------------------------------------------------------------------------
     // Size
 
-    topLeft    ->setSize(QSizeF(8, 8));
-    topRight   ->setSize(QSizeF(8, 8));
-    bottomLeft ->setSize(QSizeF(8, 8));
-    bottomRight->setSize(QSizeF(8, 8));
+    topLeft    ->setSize(QSize(size2x, size2x));
+    topRight   ->setSize(QSize(size2x, size2x));
+    bottomLeft ->setSize(QSize(size2x, size2x));
+    bottomRight->setSize(QSize(size2x, size2x));
 
-    sizeX = width  - 16;
-    sizeY = height - 16;
+    int size4x = size * 4;
 
-    left  ->setSize(QSizeF(4,     sizeY));
-    right ->setSize(QSizeF(4,     sizeY));
-    top   ->setSize(QSizeF(sizeX, 4));
-    bottom->setSize(QSizeF(sizeX, 4));
+    sizeX = width  - size4x;
+    sizeY = height - size4x;
+
+    left  ->setSize(QSize(size,  sizeY));
+    right ->setSize(QSize(size,  sizeY));
+    top   ->setSize(QSize(sizeX, size));
+    bottom->setSize(QSize(sizeX, size));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -140,6 +148,28 @@ void WMainViewResizerPrivate::refreshCoordinates()
     WDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
 
     d->refreshCoordinates();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Properties
+//-------------------------------------------------------------------------------------------------
+
+int WMainViewResizer::size() const
+{
+    Q_D(const WMainViewResizer); return d->size;
+}
+
+void WMainViewResizer::setSize(int size)
+{
+    Q_D(WMainViewResizer);
+
+    if (d->size == size) return;
+
+    d->size = size;
+
+    d->refreshCoordinates();
+
+    emit sizeChanged();
 }
 
 #endif // SK_NO_MAINVIEWRESIZER

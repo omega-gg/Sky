@@ -28,11 +28,20 @@ class SK_GUI_EXPORT WMainViewResizer : public WDeclarativeItem
 {
     Q_OBJECT
 
+    Q_PROPERTY(int size READ size WRITE setSize NOTIFY sizeChanged)
+
 public:
     explicit WMainViewResizer(QDeclarativeItem * parent = NULL);
 
+signals:
+    void sizeChanged();
+
 protected: // QDeclarativeItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
+
+public: // Properties
+    int  size() const;
+    void setSize(int size);
 
 private:
     W_DECLARE_PRIVATE(WMainViewResizer)

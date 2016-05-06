@@ -203,6 +203,8 @@ BaseWindow
     {
         anchors.fill: parent
 
+        size: borderSize
+
         visible: (resizable && maximized == false && fullScreen == false)
     }
 }
