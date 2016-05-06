@@ -142,7 +142,6 @@ WBackendNetQuery WBackendDuckDuckGo::createQuery(const QString & method,
 
             backendQuery.cookies = true;
             backendQuery.maxHost = 1;
-            backendQuery.delay   = 1000;
         }
         else if (label == "site")
         {
