@@ -50,6 +50,8 @@ BaseWindow
     property alias contentWidth : content.width
     property alias contentHeight: content.height
 
+    property alias resizerSize: resizer.size
+
     //---------------------------------------------------------------------------------------------
 
     property alias borderSize : borders.size
@@ -201,9 +203,11 @@ BaseWindow
 
     MainViewResizer
     {
+        id: resizer
+
         anchors.fill: parent
 
-        size: borderSize
+        size: st.window_resizerSize
 
         visible: (resizable && maximized == false && fullScreen == false)
     }
