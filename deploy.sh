@@ -14,7 +14,7 @@ MinGW5="$external/MinGW/4.9.2/bin"
 
 SSL="$external/OpenSSL"
 
-VLC="$external/VLC/2.2.2"
+VLC="$external/VLC/2.2.3"
 
 #--------------------------------------------------------------------------------------------------
 
