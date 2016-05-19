@@ -16,12 +16,16 @@ DESTDIR = $$SK/lib
 
 TEMPLATE = lib
 
+QT += network
+
 CONFIG       += plugin
 win32:CONFIG += dll
 
 DEFINES += SK_TORRENT_LIBRARY
 
 greaterThan(QT_MAJOR_VERSION, 4): DEFINES += QT_LATEST
+
+include(src/media/media.pri)
 
 INCLUDEPATH += \
             $$SK/include/SkCore \
