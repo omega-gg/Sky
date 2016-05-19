@@ -174,6 +174,7 @@ if [ $2 = "win32" ]; then
     cp "$bin"/SkGui.dll     deploy
     cp "$bin"/SkMedia.dll   deploy
     cp "$bin"/SkWeb.dll     deploy
+    cp "$bin"/SkTorrent.dll deploy
     cp "$bin"/SkBackend.dll deploy
 
     cp "$bin"/includeGenerator.exe deploy
