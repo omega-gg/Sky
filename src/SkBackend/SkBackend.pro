@@ -58,8 +58,8 @@ CONFIG(debug, debug|release) {
     QMAKE_POST_LINK  = install_name_tool -change libSkCore.dylib \
                        @loader_path/libSkCore.dylib $${DESTDIR}/lib$${TARGET}.dylib ;
 
-    QMAKE_POST_LINK += install_name_tool -change libSkGuiD.dylib \
-                       @loader_path/libSkGuiD.dylib $${DESTDIR}/lib$${TARGET}.dylib ;
+    QMAKE_POST_LINK += install_name_tool -change libSkGui.dylib \
+                       @loader_path/libSkGui.dylib $${DESTDIR}/lib$${TARGET}.dylib ;
 }
 }
 
