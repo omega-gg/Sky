@@ -4,6 +4,7 @@ SUBDIRS = src/SkCore \
           src/SkGui \
           src/SkMedia \
           src/SkWeb \
+          src/SkTorrent \
           src/SkBackend \
           tools \
 
