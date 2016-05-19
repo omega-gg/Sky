@@ -18,6 +18,9 @@
 
 #ifndef SK_NO_BACKENDBENCODE
 
+// Sk includes
+#include <WControllerNetwork>
+
 //-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
@@ -67,9 +70,42 @@ WBackendBencode::WBackendBencode() : WBackendNet(new WBackendBencodePrivate(this
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendBencode::checkValidUrl(const QUrl &) const
+/* Q_INVOKABLE virtual */ bool WBackendBencode::checkValidUrl(const QUrl & url) const
 {
-    return false;
+    QString extension = WControllerNetwork::extractUrlExtension(url);
+
+    if (extension == "torrent")
+    {
+         return true;
+    }
+    else return false;
+}
+
+//-------------------------------------------------------------------------------------------------
+// WBackendNet reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */
+WBackendNetPlaylistInfo WBackendBencode::getPlaylistInfo(const QUrl & url) const
+{
+    QString extension = WControllerNetwork::extractUrlExtension(url);
+
+    if (extension == "torrent")
+    {
+         return WBackendNetPlaylistInfo(WLibraryItem::PlaylistNet, url.toString());
+    }
+    else return WBackendNetPlaylistInfo();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */
+WBackendNetPlaylist WBackendBencode::extractPlaylist(const QByteArray       &,
+                                                     const WBackendNetQuery &) const
+{
+    WBackendNetPlaylist reply;
+
+    return reply;
 }
 
 #endif // SK_NO_BACKENDBENCODE

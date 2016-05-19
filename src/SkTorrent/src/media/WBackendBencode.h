@@ -38,6 +38,15 @@ public: // WBackendNet implementation
 
     /* Q_INVOKABLE virtual */ bool checkValidUrl(const QUrl & url) const;
 
+public: // WBackendNet reimplementation
+    /* Q_INVOKABLE virtual */ WBackendNetPlaylistInfo getPlaylistInfo(const QUrl & url) const;
+
+    //---------------------------------------------------------------------------------------------
+
+    /* Q_INVOKABLE virtual */
+    WBackendNetPlaylist extractPlaylist(const QByteArray       & data,
+                                        const WBackendNetQuery & query) const;
+
 private:
     W_DECLARE_PRIVATE(WBackendBencode)
 };
