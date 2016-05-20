@@ -40,8 +40,7 @@ protected:
 
 //-------------------------------------------------------------------------------------------------
 
-WBackendBencodePrivate::WBackendBencodePrivate(WBackendBencode * p)
-    : WBackendNetPrivate(p) {}
+WBackendBencodePrivate::WBackendBencodePrivate(WBackendBencode * p) : WBackendNetPrivate(p) {}
 
 void WBackendBencodePrivate::init() {}
 
