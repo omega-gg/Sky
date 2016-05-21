@@ -120,17 +120,26 @@ QString WBackendVimeoPrivate::getNextUrl(const WBackendNetQuery & query,
 {
     QString page = QString::number(id + 1);
 
-    int index = data.indexOf("data-page=\"" + page + "\"");
+    QString paging = WControllerNetwork::extractJson(data, "paging");
 
-    if (index != -1)
+    if (paging.isEmpty())
     {
-        QString url = query.url.toString();
+        int index = data.indexOf("<li class=\"pagination_next");
 
-        url.replace("/page:" + QString::number(id), "/page:" + page);
-
-        return url;
+        if (index == -1) return QString();
     }
-    else return QString();
+    else
+    {
+        QString next = WControllerNetwork::extractJson(paging, "next");
+
+        if (next == "null") return QString();
+    }
+
+    QString url = query.url.toString();
+
+    url.replace("/page:" + QString::number(id), "/page:" + page);
+
+    return url;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -306,7 +315,9 @@ WBackendNetQuery WBackendVimeo::getQueryPlaylist(const QUrl & url) const
     {
          backendQuery.url = "https://vimeo.com/" + id + "/page:1/sort:date/format:thumbnail";
     }
-    else backendQuery.url = "https://vimeo.com/" + id + "/videos";
+    else backendQuery.url = "https://vimeo.com/" + id
+                            +
+                            "/videos/page:1/sort:date/format:thumbnail";
 
     return backendQuery;
 }
@@ -553,7 +564,7 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
                 nextQuery->id   = 3;
                 nextQuery->data = urls;
             }
-            else nextQuery->id = 1;
+            else nextQuery->id = 4;
         }
 
         return reply;
@@ -590,7 +601,11 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
             {
                 QString title = WControllerNetwork::extractValue(content, "title");
 
-                title = Sk::sliceIn(title, "", "&rsquo;");
+                if (title.contains("&quot;"))
+                {
+                     title = Sk::sliceIn(title, "&quot;", "&quot;");
+                }
+                else title = Sk::sliceIn(title, "", "&rsquo;");
 
                 reply.title = WControllerNetwork::htmlToUtf8(title);
             }
@@ -603,68 +618,63 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
 
                 nextQuery->type = WBackendNetQuery::TypeWeb;
                 nextQuery->url  = url;
+                nextQuery->id   = query.id;
                 nextQuery->data = id;
             }
         }
-    }
 
-    int index = content.indexOf("<ol class=\"js-browse_list");
-
-    if (index == -1)
-    {
-         QString string = Sk::slice(content, "<ul class=\"small-block-grid", "</ul>");
-
-         QStringList list = Sk::slices(string, "<li ", "</li>");
-
-         foreach (const QString & string, list)
-         {
-             int index = string.indexOf("class=\"overlay overlay_vod");
-
-             if (index != -1) continue;
-
-             QString id = WControllerNetwork::extractAttribute(string, "href");
-
-             id = d->extractId(id);
-
-             index = string.indexOf("class=\"title");
-
-             QString title = WControllerNetwork::extractValueUtf8(string, index);
-             QString cover = WControllerNetwork::extractAttribute(string, "src");
-
-             cover = d->extractCover(cover);
-
-             WTrackNet track("https://vimeo.com/" + id, WAbstractTrack::Default);
-
-             track.setTitle(title);
-             track.setCover(cover);
-
-             reply.tracks.append(track);
-         }
-    }
-    else
-    {
-        QString string = Sk::slice(content, "<ol class=\"js-browse_list", "</ol>");
-
-        QStringList list = Sk::slices(string, "<li ", "</li>");
-
-        foreach (const QString & string, list)
+        if (query.id == 1)
         {
-            QString id = WControllerNetwork::extractAttribute(string, "href");
+            QString json = WControllerNetwork::extractJsonHtml(content, "data");
 
-            id = d->extractId(id);
+            QStringList list = WControllerNetwork::splitJson(json);
 
-            QString title = WControllerNetwork::extractAttributeUtf8(string, "title");
-            QString cover = WControllerNetwork::extractAttribute    (string, "src");
+            foreach (const QString & string, list)
+            {
+                QString vod = WControllerNetwork::extractJson(string, "is_vod");
 
-            cover = d->extractCover(cover);
+                if (vod == "true") continue;
 
-            WTrackNet track("https://vimeo.com/" + id, WAbstractTrack::Default);
+                QString id = WControllerNetwork::extractJson(string, "id");
 
-            track.setTitle(title);
-            track.setCover(cover);
+                QString title = WControllerNetwork::extractJsonUtf8(string, "title");
+                QString cover = WControllerNetwork::extractJson    (string, "thumbnail");
 
-            reply.tracks.append(track);
+                cover = d->extractCover(cover);
+
+                WTrackNet track("https://vimeo.com/" + id, WAbstractTrack::Default);
+
+                track.setTitle(title);
+                track.setCover(cover);
+
+                reply.tracks.append(track);
+            }
+
+            return reply;
         }
+    }
+
+    QString string = Sk::slice(content, "<ol class=\"js-browse_list", "</ol>");
+
+    QStringList list = Sk::slices(string, "<li ", "</li>");
+
+    foreach (const QString & string, list)
+    {
+        QString id = WControllerNetwork::extractAttribute(string, "href");
+
+        id = d->extractId(id);
+
+        QString title = WControllerNetwork::extractAttributeUtf8(string, "title");
+        QString cover = WControllerNetwork::extractAttribute    (string, "src");
+
+        cover = d->extractCover(cover);
+
+        WTrackNet track("https://vimeo.com/" + id, WAbstractTrack::Default);
+
+        track.setTitle(title);
+        track.setCover(cover);
+
+        reply.tracks.append(track);
     }
 
     return reply;
@@ -680,81 +690,41 @@ WBackendNetFolder WBackendVimeo::extractFolder(const QByteArray       & data,
 
     QString content = Sk::readUtf8(data);
 
-    int index = content.indexOf("<ol class=\"js-browse_list");
+    QString json = WControllerNetwork::extractJsonHtml(content, "data");
 
-    if (index == -1)
+    QStringList list = WControllerNetwork::splitJson(json);
+
+    if (query.id == 1)
     {
-        QString string = Sk::slice(content, "<ul class=\"small-block-grid", "</ul>");
-
-        QStringList list = Sk::slices(string, "<li ", "</li>");
-
-        if (query.id == 1)
+        foreach (const QString & string, list)
         {
-            foreach (const QString & string, list)
-            {
-                QString id = WControllerNetwork::extractAttribute(string, "href");
+            QString id = WControllerNetwork::extractJson(string, "profile");
 
-                int index = string.indexOf("class=\"user_name");
+            QString title = WControllerNetwork::extractJsonUtf8(string, "name");
+            QString cover = WControllerNetwork::extractJson    (string, "thumbnail");
 
-                QString title = WControllerNetwork::extractValueUtf8(string, index);
+            cover = WControllerNetwork::decodeUrl(cover);
 
-                title = title.simplified();
+            cover = d->extractCover(cover);
 
-                QString cover = WControllerNetwork::extractAttribute(string, "src");
+            WLibraryFolderItem playlist(WLibraryItem::PlaylistFeed, WLibraryItem::Default);
 
-                cover = WControllerNetwork::decodeUrl(cover);
+            playlist.source = "https://vimeo.com" + id;
 
-                cover = d->extractCover(cover);
+            playlist.title = title;
+            playlist.cover = cover;
 
-                WLibraryFolderItem playlist(WLibraryItem::PlaylistFeed, WLibraryItem::Default);
-
-                playlist.source = "https://vimeo.com" + id;
-
-                playlist.title = title;
-                playlist.cover = cover;
-
-                reply.items.append(playlist);
-            }
-        }
-        else
-        {
-            foreach (const QString & string, list)
-            {
-                QString id = WControllerNetwork::extractAttribute(string, "href");
-
-                int index = string.indexOf("class=\"banner");
-
-                QString title = WControllerNetwork::extractValueUtf8(string, index);
-
-                title = title.simplified();
-
-                QString cover = WControllerNetwork::extractAttribute(string, "src");
-
-                cover = d->extractCover(cover);
-
-                WLibraryFolderItem playlist(WLibraryItem::PlaylistFeed, WLibraryItem::Default);
-
-                playlist.source = "https://vimeo.com" + id;
-
-                playlist.title = title;
-                playlist.cover = cover;
-
-                reply.items.append(playlist);
-            }
+            reply.items.append(playlist);
         }
     }
     else
     {
-        QString string = Sk::slice(content, "<ol class=\"js-browse_list", "</ol>");
-
-        QStringList list = Sk::slices(string, "<li ", "</li>");
-
         foreach (const QString & string, list)
         {
-            QString id = WControllerNetwork::extractAttribute(string, "href");
+            QString id = WControllerNetwork::extractJson(string, "url");
 
-            QString title = WControllerNetwork::extractAttributeUtf8(string, "title");
-            QString cover = WControllerNetwork::extractAttribute    (string, "src");
+            QString title = WControllerNetwork::extractJsonUtf8(string, "name");
+            QString cover = WControllerNetwork::extractJson    (string, "thumbnail");
 
             cover = WControllerNetwork::decodeUrl(cover);
 
