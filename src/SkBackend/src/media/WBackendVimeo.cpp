@@ -698,10 +698,12 @@ WBackendNetFolder WBackendVimeo::extractFolder(const QByteArray       & data,
     {
         foreach (const QString & string, list)
         {
-            QString id = WControllerNetwork::extractJson(string, "profile");
+            QString result = WControllerNetwork::stripJson(string, "user");
 
-            QString title = WControllerNetwork::extractJsonUtf8(string, "name");
-            QString cover = WControllerNetwork::extractJson    (string, "thumbnail");
+            QString id = WControllerNetwork::extractJson(result, "profile");
+
+            QString title = WControllerNetwork::extractJsonUtf8(result, "name");
+            QString cover = WControllerNetwork::extractJson    (result, "thumbnail");
 
             cover = WControllerNetwork::decodeUrl(cover);
 
