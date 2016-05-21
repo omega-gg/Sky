@@ -1852,6 +1852,43 @@ QString WControllerNetwork::extractAttributeUtf8(const QString & text,
     return list;
 }
 
+/* Q_INVOKABLE static */ QString WControllerNetwork::stripJson(const QString & text,
+                                                               const QString & attribute, int from)
+{
+    QString match = Sk::quote(attribute);
+
+    from = text.indexOf(match, from);
+
+    if (from == -1)
+    {
+        return QString();
+    }
+
+    int start = text.indexOf(':', from + match.length());
+
+    if (start == -1)
+    {
+        return QString();
+    }
+
+    start++;
+
+    while (text.at(start) == ' ') start++;
+
+    int end = indexJsonEnd(text, start);
+
+    if (end == -1)
+    {
+        return QString();
+    }
+
+    end++;
+
+    while (text.at(end) == ',') end++;
+
+    return text.mid(0, from) + text.mid(end);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::extractScript(const QString & text,

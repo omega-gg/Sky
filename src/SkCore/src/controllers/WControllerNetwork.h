@@ -251,6 +251,9 @@ public: // Static interface
 
     Q_INVOKABLE static QStringList splitJson(const QString & text, int from = 0);
 
+    Q_INVOKABLE static QString stripJson(const QString & text,
+                                         const QString & attribute, int from = 0);
+
     //---------------------------------------------------------------------------------------------
 
     Q_INVOKABLE static QString extractScript(const QString & text,
