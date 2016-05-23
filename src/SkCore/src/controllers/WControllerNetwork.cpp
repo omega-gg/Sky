@@ -1884,7 +1884,7 @@ QString WControllerNetwork::extractAttributeUtf8(const QString & text,
 
     end++;
 
-    while (text.at(end) == ',') end++;
+    if (text.at(end) == ',') end++;
 
     return text.mid(0, from) + text.mid(end);
 }
