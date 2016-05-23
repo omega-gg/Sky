@@ -118,26 +118,24 @@ QString WBackendVimeoPrivate::extractCover(const QString & cover) const
 QString WBackendVimeoPrivate::getNextUrl(const WBackendNetQuery & query,
                                          const QString          & data, int id) const
 {
-    QString page = QString::number(id + 1);
-
     QString paging = WControllerNetwork::extractJson(data, "paging");
 
     if (paging.isEmpty())
     {
-        int index = data.indexOf("<li class=\"pagination_next");
-
-        if (index == -1) return QString();
+        if (data.indexOf("<li class=\"pagination_next") == -1)
+        {
+            return QString();
+        }
     }
-    else
+    else if (WControllerNetwork::extractJson(paging, "next") == "null")
     {
-        QString next = WControllerNetwork::extractJson(paging, "next");
-
-        if (next == "null") return QString();
+        return QString();
     }
 
     QString url = query.url.toString();
 
-    url.replace("/page:" + QString::number(id), "/page:" + page);
+    url.replace("/page:" + QString::number(id),
+                "/page:" + QString::number(id + 1));
 
     return url;
 }
