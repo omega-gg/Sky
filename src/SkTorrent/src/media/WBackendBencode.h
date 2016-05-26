@@ -41,6 +41,12 @@ public: // WBackendNet implementation
 public: // WBackendNet reimplementation
     /* Q_INVOKABLE virtual */ WBackendNetPlaylistInfo getPlaylistInfo(const QUrl & url) const;
 
+    /* Q_INVOKABLE virtual */ QUrl getUrlPlaylist(const WBackendNetPlaylistInfo & info) const;
+
+    //---------------------------------------------------------------------------------------------
+
+    /* Q_INVOKABLE virtual */ WBackendNetQuery getQueryPlaylist(const QUrl & url) const;
+
     //---------------------------------------------------------------------------------------------
 
     /* Q_INVOKABLE virtual */
