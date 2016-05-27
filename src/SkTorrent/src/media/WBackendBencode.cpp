@@ -21,14 +21,13 @@
 // Sk includes
 #include <WControllerApplication>
 #include <WControllerNetwork>
+#include <WControllerPlaylist>
 
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const QChar BACKENDBENCODE_INTEGER    = 'i';
-static const QChar BACKENDBENCODE_STRING     = ':';
-static const QChar BACKENDBENCODE_LIST       = 'l';
-static const QChar BACKENDBENCODE_DICTIONARY = 'd';
+static const QChar BACKENDBENCODE_INTEGER = 'i';
+static const QChar BACKENDBENCODE_STRING  = ':';
 
 static const QChar BACKENDBENCODE_END = 'e';
 
@@ -46,12 +45,11 @@ public:
     void init();
 
 public: // Functions
-    int extractValue(const QString & data, int from) const;
+    QString     extractName (const QString & data) const;
+    QStringList extractPaths(const QString & data) const;
 
-    int extractInteger   (const QString & data, int from) const;
-    int extractString    (const QString & data, int from) const;
-    int extractList      (const QString & data, int from) const;
-    int extractDictionary(const QString & data, int from) const;
+    QString extractString    (const QString & data, int from) const;
+    QString extractNextString(const QString & data, int from) const;
 
 protected:
     W_DECLARE_PUBLIC(WBackendBencode)
@@ -66,89 +64,69 @@ void WBackendBencodePrivate::init() {}
 //-------------------------------------------------------------------------------------------------
 // Private functions
 
-int WBackendBencodePrivate::extractValue(const QString & data, int from) const
+QString WBackendBencodePrivate::extractName(const QString & data) const
 {
-    QChar character = data.at(from);
+    int index = data.indexOf("4:name");
 
-    if (character == BACKENDBENCODE_INTEGER)
+    if (index == -1)
     {
-        return extractInteger(data, from + 1);
+         return QString();
     }
-    else if (character == BACKENDBENCODE_LIST)
+    else return extractString(data, index + 6);
+}
+
+QStringList WBackendBencodePrivate::extractPaths(const QString & data) const
+{
+    QStringList list;
+
+    int index = data.indexOf("4:path");
+
+    while (index != -1)
     {
-        return extractList(data, from + 1);
+        index += 6;
+
+        QString path = extractNextString(data, index);
+
+        list.append(path);
+
+        index = data.indexOf("4:path", index);
     }
-    else if (character == BACKENDBENCODE_DICTIONARY)
-    {
-        return extractDictionary(data, from + 1);
-    }
-    else if (character.isNumber())
-    {
-        return extractString(data, from);
-    }
-    else return data.length();
+
+    return list;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-int WBackendBencodePrivate::extractInteger(const QString & data, int from) const
-{
-    int index = data.indexOf(BACKENDBENCODE_END, from);
-
-    if (index == -1)
-    {
-        return from + 1;
-    }
-
-    int number = data.mid(from, index - from).toInt();
-
-    qDebug("Integer: %d", number);
-
-    return index + 1;
-}
-
-int WBackendBencodePrivate::extractString(const QString & data, int from) const
+QString WBackendBencodePrivate::extractString(const QString & data, int from) const
 {
     int index = data.indexOf(BACKENDBENCODE_STRING, from);
 
-    if (index == -1)
-    {
-        return from + 1;
-    }
+    if (index == -1) return QString();
 
     int number = data.mid(from, index - from).toInt();
 
-    index++;
-
-    QString string = data.mid(index, number);
-
-    qDebug("String: %s", string.C_STR);
-
-    return index + number;
+    return data.mid(index + 1, number);
 }
 
-int WBackendBencodePrivate::extractList(const QString & data, int from) const
+QString WBackendBencodePrivate::extractNextString(const QString & data, int from) const
 {
-    qDebug("List");
+    QChar character = data.at(from);
 
-    while (from < data.length() && data.at(from) != BACKENDBENCODE_END)
+    while (character.isNumber() == false)
     {
-        from = extractValue(data, from);
+        if (character == BACKENDBENCODE_INTEGER)
+        {
+            from = data.indexOf(BACKENDBENCODE_END, from);
+
+            if (from == -1) return QString();
+        }
+
+        from++;
+
+        character = data.at(from);
     }
 
-    return from + 1;
-}
-
-int WBackendBencodePrivate::extractDictionary(const QString & data, int from) const
-{
-    qDebug("Dictionnary");
-
-    while (from < data.length() && data.at(from) != BACKENDBENCODE_END)
-    {
-        from = extractValue(data, from);
-    }
-
-    return from + 1;
+    return extractString(data, from);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -231,11 +209,26 @@ WBackendNetPlaylist WBackendBencode::extractPlaylist(const QByteArray       & da
 
     QString content = Sk::readUtf8(data);
 
-    int index = 0;
+    QString name = d->extractName(content);
 
-    while (index < content.length())
+    QStringList paths = d->extractPaths(content);
+
+    if (paths.isEmpty())
     {
-        index = d->extractValue(data, index);
+        paths.append(name);
+    }
+
+    reply.title = name;
+
+    foreach (const QString & path, paths)
+    {
+        if (WControllerPlaylist::urlIsVideo(path) == false) continue;
+
+        WTrackNet track(path);
+
+        track.setTitle(path);
+
+        reply.tracks.append(track);
     }
 
     return reply;
