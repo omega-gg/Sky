@@ -135,9 +135,6 @@ public: // WAbstractPlaylist implementation
 
     /* virtual */ int indexFromId(int id) const;
 
-protected:
-    bool applyQueryTrack(WTrackNet * track, const WBackendNetQuery & query);
-
 protected: // WLocalObject reimplementation
     /* virtual */ WAbstractThreadAction * onSave(const QString & path);
     /* virtual */ WAbstractThreadAction * onLoad(const QString & path);

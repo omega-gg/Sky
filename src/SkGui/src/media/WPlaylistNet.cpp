@@ -1323,15 +1323,6 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 }
 
 //-------------------------------------------------------------------------------------------------
-// Protected functions
-//-------------------------------------------------------------------------------------------------
-
-bool WPlaylistNet::applyQueryTrack(WTrackNet * track, const WBackendNetQuery & query)
-{
-    return wControllerPlaylist->d_func()->applyQueryTrack(this, track, query);
-}
-
-//-------------------------------------------------------------------------------------------------
 // Protected WLocalObject reimplementation
 //-------------------------------------------------------------------------------------------------
 
