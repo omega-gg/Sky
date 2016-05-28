@@ -957,7 +957,7 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WPlaylistNet::loadCover(const QString & hub, int at)
+/* Q_INVOKABLE */ void WPlaylistNet::loadCover(const QString & backend, int at)
 {
     Q_D(WPlaylistNet);
 
@@ -967,12 +967,12 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
 
     if (track->isLoaded() == false) return;
 
-    QUrl url = WControllerPlaylist::createSource(hub, "cover", "track", track->title());
+    QUrl url = WControllerPlaylist::createSource(backend, "cover", "track", track->title());
 
     wControllerPlaylist->d_func()->applySourceTrack(this, track, url);
 }
 
-/* Q_INVOKABLE */ void WPlaylistNet::loadCovers(const QString & hub, int at, int count)
+/* Q_INVOKABLE */ void WPlaylistNet::loadCovers(const QString & backend, int at, int count)
 {
     Q_D(WPlaylistNet);
 
@@ -997,7 +997,8 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
 
         if (track->isLoaded())
         {
-            QUrl url = WControllerPlaylist::createSource(hub, "cover", "track", track->title());
+            QUrl url = WControllerPlaylist::createSource(backend,
+                                                         "cover", "track", track->title());
 
             wControllerPlaylist->d_func()->applySourceTrack(this, track, url);
         }

@@ -2237,12 +2237,12 @@ void WControllerPlaylist::init()
     if (url.host() == sk->applicationUrl().host())
     {
 #ifdef QT_LATEST
-        QString hub = QUrlQuery(url).queryItemValue("hub");
+        QString backend = QUrlQuery(url).queryItemValue("backend");
 #else
-        QString hub = url.queryItemValue("hub");
+        QString backend = url.queryItemValue("backend");
 #endif
 
-        return backendFromId(hub);
+        return backendFromId(backend);
     }
     else
     {
@@ -2497,7 +2497,7 @@ void WControllerPlaylist::init()
 // Static interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ QUrl WControllerPlaylist::createSource(const QString & hub,
+/* Q_INVOKABLE static */ QUrl WControllerPlaylist::createSource(const QString & backend,
                                                                 const QString & method,
                                                                 const QString & label,
                                                                 const QString & q)
@@ -2507,9 +2507,9 @@ void WControllerPlaylist::init()
 #ifdef QT_LATEST
     QUrlQuery query(source);
 
-    query.addQueryItem("hub",    hub);
-    query.addQueryItem("method", method);
-    query.addQueryItem("label",  label);
+    query.addQueryItem("backend", backend);
+    query.addQueryItem("method",  method);
+    query.addQueryItem("label",   label);
 
     if (q.isEmpty() == false)
     {
@@ -2518,9 +2518,9 @@ void WControllerPlaylist::init()
 
     source.setQuery(query);
 #else
-    source.addQueryItem("hub",    hub);
-    source.addQueryItem("method", method);
-    source.addQueryItem("label",  label);
+    source.addQueryItem("backend", backend);
+    source.addQueryItem("method",  method);
+    source.addQueryItem("label",   label);
 
     if (q.isEmpty() == false)
     {

@@ -71,8 +71,8 @@ public: // Interface
 
     //---------------------------------------------------------------------------------------------
 
-    Q_INVOKABLE void loadCover (const QString & hub, int at);
-    Q_INVOKABLE void loadCovers(const QString & hub, int at, int count);
+    Q_INVOKABLE void loadCover (const QString & backend, int at);
+    Q_INVOKABLE void loadCovers(const QString & backend, int at, int count);
 
     //---------------------------------------------------------------------------------------------
 

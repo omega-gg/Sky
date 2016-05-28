@@ -96,8 +96,8 @@ public: // Interface
     Q_INVOKABLE void unregisterLoaders();
 
 public: // Static interface
-    Q_INVOKABLE static QUrl createSource(const QString & hub,   const QString & method,
-                                         const QString & label, const QString & q = QString());
+    Q_INVOKABLE static QUrl createSource(const QString & backend, const QString & method,
+                                         const QString & label,   const QString & q = QString());
 
     Q_INVOKABLE static WRemoteData * getDataQuery(WAbstractLoader        * loader,
                                                   const WBackendNetQuery & query,
