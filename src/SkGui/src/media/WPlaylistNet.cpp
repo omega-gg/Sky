@@ -957,6 +957,59 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ void WPlaylistNet::loadCover(const QString & hub, int at)
+{
+    Q_D(WPlaylistNet);
+
+    if (at < 0 || at >= d->tracks.count()) return;
+
+    WTrackNet * track = &(d->tracks[at]);
+
+    if (track->isLoaded() == false) return;
+
+    QUrl url = WControllerPlaylist::createSource(hub, "cover", "track", track->title());
+
+    wControllerPlaylist->d_func()->applySourceTrack(this, track, url);
+}
+
+/* Q_INVOKABLE */ void WPlaylistNet::loadCovers(const QString & hub, int at, int count)
+{
+    Q_D(WPlaylistNet);
+
+    if (at < 0 || at >= d->tracks.count()) return;
+
+    int index = at - count / 2;
+
+    if (index < 0) index = 0;
+
+    while (index < at)
+    {
+        const WTrackNet & track = d->tracks[index];
+
+        if (track.isLoaded()) break;
+
+        index++;
+    }
+
+    while (index < d->tracks.count() && count)
+    {
+        WTrackNet * track = &(d->tracks[index]);
+
+        if (track->isLoaded())
+        {
+            QUrl url = WControllerPlaylist::createSource(hub, "cover", "track", track->title());
+
+            wControllerPlaylist->d_func()->applySourceTrack(this, track, url);
+        }
+
+        count--;
+
+        index++;
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
 bool WPlaylistNet::contains(const WTrackNet & track) const
 {
     Q_D(const WPlaylistNet); return d->tracks.contains(track);
