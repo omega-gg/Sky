@@ -628,7 +628,14 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylistNet * playlist,
 
     if (backend)
     {
-        WBackendNetQuery query = backend->getQueryTrack(source);
+        WBackendNetQuery query = backend->getQuery(source);
+
+        if (query.isValid())
+        {
+            return getDataTrack(playlist, track, query);
+        }
+
+        query = backend->getQueryTrack(source);
 
         if (query.isValid())
         {
