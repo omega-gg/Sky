@@ -14,23 +14,23 @@
 */
 //=================================================================================================
 
-#ifndef WBACKENDBENCODE_H
-#define WBACKENDBENCODE_H
+#ifndef WBACKENDTORRENT_H
+#define WBACKENDTORRENT_H
 
 // Sk includes
 #include <WBackendNet>
 
-#ifndef SK_NO_BACKENDBENCODE
+#ifndef SK_NO_BACKENDTORRENT
 
 // Forward declarations
-class WBackendBencodePrivate;
+class WBackendTorrentPrivate;
 
-class SK_TORRENT_EXPORT WBackendBencode : public WBackendNet
+class SK_TORRENT_EXPORT WBackendTorrent : public WBackendNet
 {
     Q_OBJECT
 
 public:
-    WBackendBencode();
+    WBackendTorrent();
 
 public: // WBackendNet implementation
     /* Q_INVOKABLE virtual */ QString getId   () const;
@@ -54,8 +54,8 @@ public: // WBackendNet reimplementation
                                         const WBackendNetQuery & query) const;
 
 private:
-    W_DECLARE_PRIVATE(WBackendBencode)
+    W_DECLARE_PRIVATE(WBackendTorrent)
 };
 
-#endif // SK_NO_BACKENDBENCODE
-#endif // WBACKENDBENCODE_H
+#endif // SK_NO_BACKENDTORRENT
+#endif // WBACKENDTORRENT_H

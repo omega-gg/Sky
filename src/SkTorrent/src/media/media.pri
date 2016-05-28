@@ -1,7 +1,7 @@
 # Media module
 
 HEADERS += \
-        src/media/WBackendBencode.h \
+        src/media/WBackendTorrent.h \
 
 SOURCES += \
-        src/media/WBackendBencode.cpp \
+        src/media/WBackendTorrent.cpp \

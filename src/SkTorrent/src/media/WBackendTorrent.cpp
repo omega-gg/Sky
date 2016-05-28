@@ -14,9 +14,9 @@
 */
 //=================================================================================================
 
-#include "WBackendBencode.h"
+#include "WBackendTorrent.h"
 
-#ifndef SK_NO_BACKENDBENCODE
+#ifndef SK_NO_BACKENDTORRENT
 
 // Sk includes
 #include <WControllerApplication>
@@ -26,10 +26,10 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const QChar BACKENDBENCODE_INTEGER = 'i';
-static const QChar BACKENDBENCODE_STRING  = ':';
+static const QChar BACKENDTORRENT_INTEGER = 'i';
+static const QChar BACKENDTORRENT_STRING  = ':';
 
-static const QChar BACKENDBENCODE_END = 'e';
+static const QChar BACKENDTORRENT_END = 'e';
 
 //-------------------------------------------------------------------------------------------------
 // Private
@@ -37,10 +37,10 @@ static const QChar BACKENDBENCODE_END = 'e';
 
 #include <private/WBackendNet_p>
 
-class SK_TORRENT_EXPORT WBackendBencodePrivate : public WBackendNetPrivate
+class SK_TORRENT_EXPORT WBackendTorrentPrivate : public WBackendNetPrivate
 {
 public:
-    WBackendBencodePrivate(WBackendBencode * p);
+    WBackendTorrentPrivate(WBackendTorrent * p);
 
     void init();
 
@@ -52,19 +52,19 @@ public: // Functions
     QString extractNextString(const QString & data, int from) const;
 
 protected:
-    W_DECLARE_PUBLIC(WBackendBencode)
+    W_DECLARE_PUBLIC(WBackendTorrent)
 };
 
 //-------------------------------------------------------------------------------------------------
 
-WBackendBencodePrivate::WBackendBencodePrivate(WBackendBencode * p) : WBackendNetPrivate(p) {}
+WBackendTorrentPrivate::WBackendTorrentPrivate(WBackendTorrent * p) : WBackendNetPrivate(p) {}
 
-void WBackendBencodePrivate::init() {}
+void WBackendTorrentPrivate::init() {}
 
 //-------------------------------------------------------------------------------------------------
 // Private functions
 
-QString WBackendBencodePrivate::extractName(const QString & data) const
+QString WBackendTorrentPrivate::extractName(const QString & data) const
 {
     int index = data.indexOf("4:name");
 
@@ -75,7 +75,7 @@ QString WBackendBencodePrivate::extractName(const QString & data) const
     else return extractString(data, index + 6);
 }
 
-QStringList WBackendBencodePrivate::extractPaths(const QString & data) const
+QStringList WBackendTorrentPrivate::extractPaths(const QString & data) const
 {
     QStringList list;
 
@@ -97,9 +97,9 @@ QStringList WBackendBencodePrivate::extractPaths(const QString & data) const
 
 //-------------------------------------------------------------------------------------------------
 
-QString WBackendBencodePrivate::extractString(const QString & data, int from) const
+QString WBackendTorrentPrivate::extractString(const QString & data, int from) const
 {
-    int index = data.indexOf(BACKENDBENCODE_STRING, from);
+    int index = data.indexOf(BACKENDTORRENT_STRING, from);
 
     if (index == -1) return QString();
 
@@ -108,15 +108,15 @@ QString WBackendBencodePrivate::extractString(const QString & data, int from) co
     return data.mid(index + 1, number);
 }
 
-QString WBackendBencodePrivate::extractNextString(const QString & data, int from) const
+QString WBackendTorrentPrivate::extractNextString(const QString & data, int from) const
 {
     QChar character = data.at(from);
 
     while (character.isNumber() == false)
     {
-        if (character == BACKENDBENCODE_INTEGER)
+        if (character == BACKENDTORRENT_INTEGER)
         {
-            from = data.indexOf(BACKENDBENCODE_END, from);
+            from = data.indexOf(BACKENDTORRENT_END, from);
 
             if (from == -1) return QString();
         }
@@ -133,28 +133,28 @@ QString WBackendBencodePrivate::extractNextString(const QString & data, int from
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
-WBackendBencode::WBackendBencode() : WBackendNet(new WBackendBencodePrivate(this))
+WBackendTorrent::WBackendTorrent() : WBackendNet(new WBackendTorrentPrivate(this))
 {
-    Q_D(WBackendBencode); d->init();
+    Q_D(WBackendTorrent); d->init();
 }
 
 //-------------------------------------------------------------------------------------------------
 // WBackendNet implementation
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ QString WBackendBencode::getId() const
+/* Q_INVOKABLE virtual */ QString WBackendTorrent::getId() const
 {
-    return "bencode";
+    return "torrent";
 }
 
-/* Q_INVOKABLE virtual */ QString WBackendBencode::getTitle() const
+/* Q_INVOKABLE virtual */ QString WBackendTorrent::getTitle() const
 {
-    return "Bencode";
+    return "Torrent";
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendBencode::checkValidUrl(const QUrl & url) const
+/* Q_INVOKABLE virtual */ bool WBackendTorrent::checkValidUrl(const QUrl & url) const
 {
     QString extension = WControllerNetwork::extractUrlExtension(url);
 
@@ -170,7 +170,7 @@ WBackendBencode::WBackendBencode() : WBackendNet(new WBackendBencodePrivate(this
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-QUrl WBackendBencode::getUrlPlaylist(const WBackendNetPlaylistInfo & info) const
+QUrl WBackendTorrent::getUrlPlaylist(const WBackendNetPlaylistInfo & info) const
 {
     return info.id;
 }
@@ -178,7 +178,7 @@ QUrl WBackendBencode::getUrlPlaylist(const WBackendNetPlaylistInfo & info) const
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-WBackendNetQuery WBackendBencode::getQueryPlaylist(const QUrl & url) const
+WBackendNetQuery WBackendTorrent::getQueryPlaylist(const QUrl & url) const
 {
     return WBackendNetQuery(url);
 }
@@ -186,7 +186,7 @@ WBackendNetQuery WBackendBencode::getQueryPlaylist(const QUrl & url) const
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-WBackendNetPlaylistInfo WBackendBencode::getPlaylistInfo(const QUrl & url) const
+WBackendNetPlaylistInfo WBackendTorrent::getPlaylistInfo(const QUrl & url) const
 {
     QString extension = WControllerNetwork::extractUrlExtension(url);
 
@@ -200,10 +200,10 @@ WBackendNetPlaylistInfo WBackendBencode::getPlaylistInfo(const QUrl & url) const
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-WBackendNetPlaylist WBackendBencode::extractPlaylist(const QByteArray       & data,
+WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & data,
                                                      const WBackendNetQuery &) const
 {
-    Q_D(const WBackendBencode);
+    Q_D(const WBackendTorrent);
 
     WBackendNetPlaylist reply;
 
@@ -234,4 +234,4 @@ WBackendNetPlaylist WBackendBencode::extractPlaylist(const QByteArray       & da
     return reply;
 }
 
-#endif // SK_NO_BACKENDBENCODE
+#endif // SK_NO_BACKENDTORRENT
