@@ -238,33 +238,37 @@ void WControllerPlaylistData::addFile(const QString & path)
         source.title = WControllerNetwork::extractUrlFileName(path);
 
         folders.append(source);
+
+        return;
+    }
+
+    QString extension = WControllerNetwork::extractUrlExtension(path);
+
+    if (WControllerPlaylist::extensionIsVideo(extension))
+    {
+        WControllerPlaylistMedia media;
+
+        media.url   = WControllerFile::fileUrl(path);
+        media.title = WControllerNetwork::extractUrlFileName(path);
+
+        media.local = true;
+
+        medias.append(media);
     }
     else
     {
-        QString extension = WControllerNetwork::extractUrlExtension(path);
+        WControllerPlaylistSource source;
 
-        if (WControllerPlaylist::extensionIsVideo(extension))
+        source.url   = WControllerFile::fileUrl(path);
+        source.title = WControllerNetwork::extractUrlFileName(path);
+
+        if (WControllerPlaylist::extensionIsMarkup(extension)
+            ||
+            WControllerPlaylist::extensionIsText(extension))
         {
-            WControllerPlaylistMedia media;
-
-            media.url   = WControllerFile::fileUrl(path);
-            media.title = WControllerNetwork::extractUrlFileName(path);
-
-            media.local = true;
-
-            medias.append(media);
-        }
-        else if (WControllerPlaylist::extensionIsMarkup(extension)
-                 ||
-                 WControllerPlaylist::extensionIsText(extension))
-        {
-            WControllerPlaylistSource source;
-
-            source.url   = WControllerFile::fileUrl(path);
-            source.title = WControllerNetwork::extractUrlFileName(path);
-
             files.append(source);
         }
+        else sources.append(source);
     }
 }
 
