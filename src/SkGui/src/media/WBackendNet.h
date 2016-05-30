@@ -312,7 +312,9 @@ public: // Interface
     Q_INVOKABLE QUrl getSourceTrack   (const QUrl & url) const;
     Q_INVOKABLE QUrl getSourcePlaylist(const QUrl & url) const;
 
-    Q_INVOKABLE WBackendNetQuery getQuery(const QUrl & source) const;
+    Q_INVOKABLE bool checkQuery(const QUrl & source) const;
+
+    Q_INVOKABLE WBackendNetQuery extractQuery(const QUrl & source) const;
 
     Q_INVOKABLE void loadSource(QIODevice              * device,
                                 const WBackendNetQuery & query,

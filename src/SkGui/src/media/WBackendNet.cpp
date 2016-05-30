@@ -362,25 +362,30 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : WPrivatable(p)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ WBackendNetQuery WBackendNet::getQuery(const QUrl & source) const
+/* Q_INVOKABLE */ bool WBackendNet::checkQuery(const QUrl & source) const
 {
     if (source.host() == sk->applicationUrl().host())
     {
-#ifdef QT_LATEST
-        QUrlQuery query(source);
+         return true;
+    }
+    else return false;
+}
 
-        QString method = query.queryItemValue("method");
-        QString label  = query.queryItemValue("label");
-        QString q      = query.queryItemValue("q");
+/* Q_INVOKABLE */ WBackendNetQuery WBackendNet::extractQuery(const QUrl & source) const
+{
+#ifdef QT_LATEST
+    QUrlQuery query(source);
+
+    QString method = query.queryItemValue("method");
+    QString label  = query.queryItemValue("label");
+    QString q      = query.queryItemValue("q");
 #else
-        QString method = source.queryItemValue("method");
-        QString label  = source.queryItemValue("label");
-        QString q      = source.queryItemValue("q");
+    QString method = source.queryItemValue("method");
+    QString label  = source.queryItemValue("label");
+    QString q      = source.queryItemValue("q");
 #endif
 
-        return createQuery(method, label, WControllerNetwork::decodeUrl(q));
-    }
-    else return WBackendNetQuery();
+    return createQuery(method, label, WControllerNetwork::decodeUrl(q));
 }
 
 //-------------------------------------------------------------------------------------------------
