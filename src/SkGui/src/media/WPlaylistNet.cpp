@@ -965,7 +965,7 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
 
     WTrackNet * track = &(d->tracks[at]);
 
-    if (track->isLoaded() == false) return;
+    if (track->isLoaded() == false || track->cover().isEmpty() == false) return;
 
     QUrl url = WControllerPlaylist::createSource(backend, "cover", "track", track->title());
 
@@ -986,7 +986,7 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
     {
         const WTrackNet & track = d->tracks[index];
 
-        if (track.isLoaded()) break;
+        if (track.isLoaded() && track.cover().isEmpty()) break;
 
         index++;
     }
@@ -995,7 +995,7 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
     {
         WTrackNet * track = &(d->tracks[index]);
 
-        if (track->isLoaded())
+        if (track->isLoaded() && track->cover().isEmpty())
         {
             QUrl url = WControllerPlaylist::createSource(backend,
                                                          "cover", "track", track->title());

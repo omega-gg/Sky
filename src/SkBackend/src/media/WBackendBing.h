@@ -38,6 +38,16 @@ public: // WBackendNet implementation
 
     /* Q_INVOKABLE virtual */ bool checkValidUrl(const QUrl & url) const;
 
+public: // WBackendNet reimplementation
+    /* Q_INVOKABLE virtual */
+    WBackendNetQuery createQuery(const QString & method,
+                                 const QString & label, const QString & q) const;
+
+    //---------------------------------------------------------------------------------------------
+
+    /* Q_INVOKABLE virtual */
+    WBackendNetTrack extractTrack(const QByteArray & data, const WBackendNetQuery & query) const;
+
 private:
     W_DECLARE_PRIVATE(WBackendBing)
 };

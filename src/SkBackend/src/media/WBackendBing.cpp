@@ -23,7 +23,14 @@
 #endif
 
 // Sk includes
+#include <WControllerApplication>
 #include <WControllerNetwork>
+
+//-------------------------------------------------------------------------------------------------
+// Static variables
+
+static const QString BACKENDBING_FILTERS
+    = "filterui:imagesize-custom_512_512+filterui:aspect-wide";
 
 //-------------------------------------------------------------------------------------------------
 // Private
@@ -38,6 +45,9 @@ public:
 
     void init();
 
+public: // Functions
+    QUrl getUrl(const QString & q) const;
+
 protected:
     W_DECLARE_PUBLIC(WBackendBing)
 };
@@ -47,6 +57,44 @@ protected:
 WBackendBingPrivate::WBackendBingPrivate(WBackendBing * p) : WBackendNetPrivate(p) {}
 
 void WBackendBingPrivate::init() {}
+
+//-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
+
+QUrl WBackendBingPrivate::getUrl(const QString & q) const
+{
+    QUrl url("http://www.bing.com/images/search");
+
+    QString search = q;
+
+    search.replace(QRegExp("[,.\\-_(){}\\[\\]]"), " ");
+
+    search = search.simplified();
+
+    search.replace(' ', "+");
+
+    if (search.length() < 10 || search.count('+') < 3)
+    {
+        return QUrl();
+    }
+
+#ifdef QT_LATEST
+    QUrlQuery query(url);
+
+    query.addQueryItem("q", search);
+
+    query.addQueryItem("qft", BACKENDBING_FILTERS);
+
+    url.setQuery(query);
+#else
+    url.addQueryItem("q", search);
+
+    url.addQueryItem("qft", BACKENDBING_FILTERS);
+#endif
+
+    return url;
+}
 
 //-------------------------------------------------------------------------------------------------
 // Ctor / dtor
@@ -78,6 +126,49 @@ WBackendBing::WBackendBing() : WBackendNet(new WBackendBingPrivate(this))
     QString source = WControllerNetwork::removeUrlPrefix(url);
 
     return source.startsWith("bing.com");
+}
+
+//-------------------------------------------------------------------------------------------------
+// WBackendNet reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */
+WBackendNetQuery WBackendBing::createQuery(const QString & method,
+                                           const QString & label, const QString & q) const
+{
+    WBackendNetQuery backendQuery;
+
+    if (method == "cover" && label == "track")
+    {
+        Q_D(const WBackendBing);
+
+        backendQuery.url = d->getUrl(q);
+
+        backendQuery.maxHost = 1;
+    }
+
+    return backendQuery;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */
+WBackendNetTrack WBackendBing::extractTrack(const QByteArray       & data,
+                                            const WBackendNetQuery &) const
+{
+    WBackendNetTrack reply;
+
+    QString content = Sk::readUtf8(data);
+
+    QString cover = Sk::sliceIn(content, "<div class=\"item\"><a href=\"", "\"");
+
+    if (cover.isEmpty()) return reply;
+
+    cover = WControllerNetwork::decodeUrl(cover);
+
+    reply.track.setCover(cover);
+
+    return reply;
 }
 
 #endif // SK_NO_BACKENDBING
