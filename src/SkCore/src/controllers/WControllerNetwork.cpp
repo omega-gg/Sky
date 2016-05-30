@@ -638,7 +638,11 @@ void WControllerNetwork::init()
 
         return result;
     }
-    else return resolveUrl(string, baseUrl);
+    else if (baseUrl.endsWith('/'))
+    {
+         return resolveUrl(string, baseUrl);
+    }
+    else return resolveUrl(string, baseUrl + '/');
 }
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::resolveUrl(const QString & string,
