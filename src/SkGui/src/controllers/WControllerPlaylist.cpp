@@ -830,7 +830,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
             if (q->extensionIsMarkup(extension) == false)
             {
-                if (q->extensionIsVideo(extension) == false
+                if (folderSearch->isEmpty() && q->extensionIsVideo(extension) == false
                     &&
                     info.size() < CONTROLLERPLAYLIST_MAX_SIZE)
                 {
