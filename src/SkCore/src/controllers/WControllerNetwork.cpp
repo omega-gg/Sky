@@ -624,19 +624,25 @@ void WControllerNetwork::init()
         return string;
     }
 
-    QString result = string;
-
     if (string.startsWith("www."))
     {
+        QString result = string;
+
         result.prepend("http://");
 
         return result;
     }
     else if (string.startsWith("//"))
     {
+        QString result = string;
+
         result.prepend("http:");
 
         return result;
+    }
+    else if (baseUrl.isEmpty())
+    {
+        return string;
     }
     else if (baseUrl.endsWith('/'))
     {
