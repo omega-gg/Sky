@@ -34,6 +34,7 @@ INCLUDEPATH += \
             $$SK/include/SkGui/private \
             $$SK/include/SkTorrent \
             $$SK/include/SkTorrent/private \
+            $$SK/include/ \
 
 CONFIG(debug, debug|release) {
     LIBS += \
@@ -46,6 +47,13 @@ CONFIG(debug, debug|release) {
          -L$$SK/lib -lSkGui \
 
 }
+
+LIBS += -static -L$$_PRO_FILE_PWD_ -ltorrent \
+        -static -L$$_PRO_FILE_PWD_ -lboost_system \
+        -static -L$$_PRO_FILE_PWD_ -lboost_random \
+        -static -L$$_PRO_FILE_PWD_ -lboost_chrono \
+
+win32:LIBS += -lmswsock -lws2_32
 
 macx {
 CONFIG(debug, debug|release) {
