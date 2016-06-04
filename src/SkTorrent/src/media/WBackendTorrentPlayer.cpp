@@ -16,9 +16,6 @@
 
 #include "WBackendTorrentPlayer.h"
 
-// libtorrent includes
-#include <libtorrent/add_torrent_params.hpp>
-
 // Sk includes
 #include <WControllerFile>
 

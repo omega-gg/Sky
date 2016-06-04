@@ -27,9 +27,6 @@
     We mean it.
 */
 
-// libtorrent includes
-#include <libtorrent/session.hpp>
-
 // Private includes
 #include <private/WAbstractBackend_p>
 
@@ -41,9 +38,6 @@ public:
     WBackendTorrentPlayerPrivate(WBackendTorrentPlayer * p);
 
     void init();
-
-public: // Variables
-    libtorrent::session session;
 
 protected:
     W_DECLARE_PUBLIC(WBackendTorrentPlayer)
