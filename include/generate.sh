@@ -1,3 +1,5 @@
+#!/bin/sh
+
 includeGenerator="../deploy/includeGenerator"
 
 "$includeGenerator" ../../src/SkCore/src                          SkCore
