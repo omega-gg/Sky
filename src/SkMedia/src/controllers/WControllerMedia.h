@@ -92,7 +92,7 @@ class SK_MEDIA_EXPORT WControllerMedia : public WController
 {
     Q_OBJECT
 
-    Q_PROPERTY(WVlcEngine * vlcEngine READ vlcEngine CONSTANT)
+    Q_PROPERTY(WVlcEngine * engine READ engine CONSTANT)
 
     Q_PROPERTY(WAbstractLoader * loader READ loader WRITE setLoader NOTIFY loaderChanged)
 
@@ -114,7 +114,7 @@ signals:
     void loaderChanged();
 
 public: // Properties
-    WVlcEngine * vlcEngine() const;
+    WVlcEngine * engine() const;
 
     WAbstractLoader * loader() const;
     void              setLoader(WAbstractLoader * loader);

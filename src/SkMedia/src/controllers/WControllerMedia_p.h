@@ -94,7 +94,7 @@ public: // Slots
 public: // Variables
     QThread * thread;
 
-    WVlcEngine * vlcEngine;
+    WVlcEngine * engine;
 
     WAbstractLoader * loader;
 

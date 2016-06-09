@@ -108,7 +108,7 @@ WControllerMediaPrivate::WControllerMediaPrivate(WControllerMedia * p) : WContro
 
 /* virtual */ WControllerMediaPrivate::~WControllerMediaPrivate()
 {
-    delete vlcEngine;
+    delete engine;
 
     QHashIterator<WRemoteData *, WPrivateMediaData *> i(jobs);
 
@@ -139,7 +139,7 @@ void WControllerMediaPrivate::init()
 
     thread->start();
 
-    vlcEngine = new WVlcEngine(thread);
+    engine = new WVlcEngine(thread);
 
     qmlRegisterType<WBackendVlc>("Sky", 1,0, "BackendVlc");
 }
@@ -416,7 +416,7 @@ void WControllerMedia::init()
 {
     Q_D(const WControllerMedia);
 
-    return new WVlcPlayer(d->vlcEngine, d->thread);
+    return new WVlcPlayer(d->engine, d->thread);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -511,9 +511,9 @@ void WControllerMedia::init()
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-WVlcEngine * WControllerMedia::vlcEngine() const
+WVlcEngine * WControllerMedia::engine() const
 {
-    Q_D(const WControllerMedia); return d->vlcEngine;
+    Q_D(const WControllerMedia); return d->engine;
 }
 
 //-------------------------------------------------------------------------------------------------
