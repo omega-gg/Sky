@@ -210,7 +210,7 @@ protected: // Virtual functions
 
     virtual void backendSetSize(const QSizeF & size); /* {} */
 
-    virtual void backendDrawFrame(QPainter * painter,
+    virtual void backendDrawFrame(QPainter                       * painter,
                                   const QStyleOptionGraphicsItem * option); /* {} */
 
     virtual void   backendUpdateFrame();       /* {} */
@@ -261,6 +261,9 @@ public: // Properties
 
 private:
     W_DECLARE_PRIVATE(WAbstractBackend)
+
+    friend class WAbstractHook;
+    friend class WAbstractHookPrivate;
 };
 
 #endif // SK_NO_ABSTRACTBACKEND

@@ -30,6 +30,7 @@
 #include "WApplication.h"
 #include "WInputCue.h"
 #include "WAbstractBackend.h"
+#include "WAbstractHook.h"
 #include "WAbstractPlaylist.h"
 #include "WAbstractTrack.h"
 #include "WBackendNet.h"

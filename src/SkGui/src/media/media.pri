@@ -19,6 +19,8 @@ HEADERS += \
         src/media/WLibraryFolder_p.h \
         src/media/WAbstractBackend.h \
         src/media/WAbstractBackend_p.h \
+        src/media/WAbstractHook.h \
+        src/media/WAbstractHook_p.h \
         src/media/WBookmarkTrack.h \
         src/media/WBookmarkTrack_p.h \
         src/media/WTabTrack.h \
@@ -36,6 +38,7 @@ SOURCES += \
         src/media/WLibraryFolder.cpp \
         src/media/WLibraryFolderRelated.cpp \
         src/media/WAbstractBackend.cpp \
+        src/media/WAbstractHook.cpp \
         src/media/WBookmarkTrack.cpp \
         src/media/WTabTrack.cpp \
         src/media/WTabsTrack.cpp \

@@ -4,7 +4,7 @@
 
     Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
 
-    This file is part of the SkTorrent module of Sky kit.
+    This file is part of the SkGui module of Sky kit.
 
     - GNU General Public License Usage:
     This file may be used under the terms of the GNU General Public License version 3 as published
@@ -14,8 +14,8 @@
 */
 //=================================================================================================
 
-#ifndef WBACKENDTORRENTPLAYER_P_H
-#define WBACKENDTORRENTPLAYER_P_H
+#ifndef WABSTRACTHOOK_P_H
+#define WABSTRACTHOOK_P_H
 
 /*  W A R N I N G
     -------------
@@ -30,18 +30,21 @@
 // Sk includes
 #include <private/WAbstractBackend_p>
 
-#ifndef SK_NO_BACKENDTORRENTPLAYER
+#ifndef SK_NO_ABSTRACTHOOK
 
-class SK_TORRENT_EXPORT WBackendTorrentPlayerPrivate : public WAbstractBackendPrivate
+class SK_GUI_EXPORT WAbstractHookPrivate : public WAbstractBackendPrivate
 {
 public:
-    WBackendTorrentPlayerPrivate(WBackendTorrentPlayer * p);
+    WAbstractHookPrivate(WAbstractHook * p);
 
-    void init();
+    void init(WAbstractBackend * backend);
+
+public: // Variables
+    WAbstractBackend * backend;
 
 protected:
-    W_DECLARE_PUBLIC(WBackendTorrentPlayer)
+    W_DECLARE_PUBLIC(WAbstractHook)
 };
 
-#endif // SK_NO_BACKENDTORRENTPLAYER
-#endif // WBACKENDTORRENTPLAYER_P_H
+#endif // SK_NO_ABSTRACTHOOK
+#endif // WABSTRACTHOOK_P_H
