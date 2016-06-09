@@ -18,6 +18,12 @@
 
 #ifndef SK_NO_CONTROLLERTORRENT
 
+// Qt includes
+#include <QThread>
+
+// Sk includes
+#include <WTorrentEngine>
+
 W_INIT_CONTROLLER(WControllerTorrent)
 
 //-------------------------------------------------------------------------------------------------
@@ -29,7 +35,26 @@ W_INIT_CONTROLLER(WControllerTorrent)
 WControllerTorrentPrivate::WControllerTorrentPrivate(WControllerTorrent * p)
     : WControllerPrivate(p) {}
 
-void WControllerTorrentPrivate::init() {}
+/* virtual */ WControllerTorrentPrivate::~WControllerTorrentPrivate()
+{
+    delete engine;
+
+    thread->quit();
+    thread->wait();
+
+    W_CLEAR_CONTROLLER(WControllerTorrent);
+}
+
+void WControllerTorrentPrivate::init()
+{
+    Q_Q(WControllerTorrent);
+
+    thread = new QThread(q);
+
+    thread->start();
+
+    engine = new WTorrentEngine(thread);
+}
 
 //-------------------------------------------------------------------------------------------------
 // Ctor / dtor

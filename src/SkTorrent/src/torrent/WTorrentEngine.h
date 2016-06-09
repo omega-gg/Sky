@@ -14,40 +14,32 @@
 */
 //=================================================================================================
 
-#ifndef WCONTROLLERTORRENT_P_H
-#define WCONTROLLERTORRENT_P_H
+#ifndef WTORRENTENGINE_H
+#define WTORRENTENGINE_H
 
-/*  W A R N I N G
-    -------------
+// Qt includes
+#include <QObject>
 
-    This file is not part of the Sk API. It exists purely as an
-    implementation detail. This header file may change from version to
-    version without notice, or even be removed.
+// Sk includes
+#include <Sk>
 
-    We mean it.
-*/
+#ifndef SK_NO_TORRENTENGINE
 
-#include <private/WController_p>
+class WTorrentEnginePrivate;
 
-#ifndef SK_NO_CONTROLLERTORRENT
-
-class SK_TORRENT_EXPORT WControllerTorrentPrivate : public WControllerPrivate
+class SK_TORRENT_EXPORT WTorrentEngine : public QObject, public WPrivatable
 {
+    Q_OBJECT
+
 public:
-    WControllerTorrentPrivate(WControllerTorrent * p);
+    WTorrentEngine(QThread * thread = NULL, QObject * parent = NULL);
 
-    /* virtual */ ~WControllerTorrentPrivate();
+protected: // Events
+    bool event(QEvent * event);
 
-    void init();
-
-public: // Variables
-    QThread * thread;
-
-    WTorrentEngine * engine;
-
-protected:
-    W_DECLARE_PUBLIC(WControllerTorrent)
+private:
+    W_DECLARE_PRIVATE(WTorrentEngine)
 };
 
-#endif // SK_NO_CONTROLLERTORRENT
-#endif // WCONTROLLERTORRENT_P_H
+#endif // SK_NO_TORRENTENGINE
+#endif // WTORRENTENGINE_H
