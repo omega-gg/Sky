@@ -14,41 +14,31 @@
 */
 //=================================================================================================
 
-#ifndef WBACKENDTORRENTPLAYER_H
-#define WBACKENDTORRENTPLAYER_H
+#include "WHookTorrent.h"
 
 // Sk includes
-#include <WAbstractBackend>
+#include <WControllerFile>
 
-#ifndef SK_NO_BACKENDTORRENTPLAYER
+#ifndef SK_NO_HOOKTORRENT
 
-class WBackendTorrentPlayerPrivate;
+//-------------------------------------------------------------------------------------------------
+// Private
+//-------------------------------------------------------------------------------------------------
 
-class SK_TORRENT_EXPORT WBackendTorrentPlayer : public WAbstractBackend
+#include "WHookTorrent_p.h"
+
+WHookTorrentPrivate::WHookTorrentPrivate(WHookTorrent * p) : WAbstractHookPrivate(p) {}
+
+void WHookTorrentPrivate::init() {}
+
+//-------------------------------------------------------------------------------------------------
+// Ctor / dtor
+//-------------------------------------------------------------------------------------------------
+
+WHookTorrent::WHookTorrent(WAbstractBackend * backend)
+    : WAbstractHook(new WHookTorrentPrivate(this), backend)
 {
-    Q_OBJECT
+    Q_D(WHookTorrent); d->init();
+}
 
-public:
-    WBackendTorrentPlayer();
-
-protected: // WAbstractBackend implementation
-    /* virtual */ bool backendSetSource(const QUrl & url);
-
-    /* virtual */ bool backendPlay  ();
-    /* virtual */ bool backendReplay();
-
-    /* virtual */ bool backendPause();
-    /* virtual */ bool backendStop ();
-
-    /* virtual */ void backendSetVolume(int percent);
-
-    /* virtual */ bool backendDelete();
-
-private:
-    W_DECLARE_PRIVATE(WBackendTorrentPlayer)
-};
-
-#include <private/WBackendTorrentPlayer_p>
-
-#endif // SK_NO_BACKENDTORRENTPLAYER
-#endif // WBACKENDTORRENTPLAYER_H
+#endif // SK_NO_HOOKTORRENT

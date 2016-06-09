@@ -44,6 +44,15 @@ WAbstractHook::WAbstractHook(WAbstractBackend * backend)
 }
 
 //-------------------------------------------------------------------------------------------------
+// Protected
+
+WAbstractHook::WAbstractHook(WAbstractHookPrivate * p, WAbstractBackend * backend)
+    : WAbstractBackend(p)
+{
+    Q_D(WAbstractHook); d->init(backend);
+}
+
+//-------------------------------------------------------------------------------------------------
 // Protected WAbstractBackend implementation
 //-------------------------------------------------------------------------------------------------
 

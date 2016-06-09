@@ -2,9 +2,9 @@
 
 HEADERS += \
         src/media/WBackendTorrent.h \
-        src/media/WBackendTorrentPlayer.h \
-        src/media/WBackendTorrentPlayer_p.h \
+        src/media/WHookTorrent.h \
+        src/media/WHookTorrent_p.h \
 
 SOURCES += \
         src/media/WBackendTorrent.cpp \
-        src/media/WBackendTorrentPlayer.cpp \
+        src/media/WHookTorrent.cpp \

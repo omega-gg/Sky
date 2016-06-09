@@ -17,10 +17,6 @@
 #ifndef WABSTRACTHOOK_H
 #define WABSTRACTHOOK_H
 
-// Qt includes
-#include <QGLWidget>
-#include <QMutex>
-
 // Sk includes
 #include <WAbstractBackend>
 
@@ -34,6 +30,8 @@ class SK_GUI_EXPORT WAbstractHook : public WAbstractBackend
 
 public:
     WAbstractHook(WAbstractBackend * backend);
+protected:
+    WAbstractHook(WAbstractHookPrivate * p, WAbstractBackend * backend);
 
 protected: // WAbstractBackend implementation
     /* virtual */ bool backendSetSource(const QUrl & url);

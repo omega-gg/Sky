@@ -14,8 +14,8 @@
 */
 //=================================================================================================
 
-#ifndef WBACKENDTORRENTPLAYER_P_H
-#define WBACKENDTORRENTPLAYER_P_H
+#ifndef WHOOKTORRENT_P_H
+#define WHOOKTORRENT_P_H
 
 /*  W A R N I N G
     -------------
@@ -28,20 +28,20 @@
 */
 
 // Sk includes
-#include <private/WAbstractBackend_p>
+#include <private/WAbstractHook_p>
 
-#ifndef SK_NO_BACKENDTORRENTPLAYER
+#ifndef SK_NO_HOOKTORRENT
 
-class SK_TORRENT_EXPORT WBackendTorrentPlayerPrivate : public WAbstractBackendPrivate
+class SK_TORRENT_EXPORT WHookTorrentPrivate : public WAbstractHookPrivate
 {
 public:
-    WBackendTorrentPlayerPrivate(WBackendTorrentPlayer * p);
+    WHookTorrentPrivate(WHookTorrent * p);
 
     void init();
 
 protected:
-    W_DECLARE_PUBLIC(WBackendTorrentPlayer)
+    W_DECLARE_PUBLIC(WHookTorrent)
 };
 
-#endif // SK_NO_BACKENDTORRENTPLAYER
-#endif // WBACKENDTORRENTPLAYER_P_H
+#endif // SK_NO_HOOKTORRENT
+#endif // WHOOKTORRENT_P_H
