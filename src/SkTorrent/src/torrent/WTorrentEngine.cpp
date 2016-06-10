@@ -109,6 +109,10 @@ bool WTorrentEngine::event(QEvent * event)
 
         return true;
     }
+    else if (d->session == NULL)
+    {
+        return QObject::event(event);
+    }
     else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventStop))
     {
         delete d->session;
