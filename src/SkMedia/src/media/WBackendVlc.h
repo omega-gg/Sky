@@ -32,12 +32,16 @@ class SK_MEDIA_EXPORT WBackendVlc : public WAbstractBackend
 {
     Q_OBJECT
 
+    Q_PROPERTY(QStringList options READ options WRITE setOptions NOTIFY optionsChanged)
+
     Q_PROPERTY(int networkCache READ networkCache WRITE setNetworkCache NOTIFY networkCacheChanged)
 
 public:
     WBackendVlc();
 
 signals:
+    void optionsChanged();
+
     void networkCacheChanged();
 
 public: // Interface
@@ -82,6 +86,9 @@ protected: // Events
     bool event(QEvent * event);
 
 public: // Properties
+    QStringList options();
+    void        setOptions(const QStringList & options);
+
     int  networkCache();
     void setNetworkCache(int msec);
 

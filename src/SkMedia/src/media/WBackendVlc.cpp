@@ -245,6 +245,7 @@ void WBackendVlcPrivate::init()
 
     player->setBackend(q, setup, NULL, lock, unlock, NULL);
 
+    QObject::connect(player, SIGNAL(optionsChanged     ()), q, SIGNAL(optionsChanged     ()));
     QObject::connect(player, SIGNAL(networkCacheChanged()), q, SIGNAL(networkCacheChanged()));
 }
 
@@ -1515,6 +1516,18 @@ bool WBackendVlc::event(QEvent * event)
 
 //-------------------------------------------------------------------------------------------------
 // Properties
+//-------------------------------------------------------------------------------------------------
+
+QStringList WBackendVlc::options()
+{
+    Q_D(WBackendVlc); return d->player->options();
+}
+
+void WBackendVlc::setOptions(const QStringList & options)
+{
+    Q_D(WBackendVlc); d->player->setOptions(options);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 int WBackendVlc::networkCache()

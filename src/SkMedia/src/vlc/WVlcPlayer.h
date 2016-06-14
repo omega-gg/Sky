@@ -21,6 +21,7 @@
 #include <QEvent>
 #include <QVariant>
 #include <QUrl>
+#include <QStringList>
 
 // Vlc includes
 #include <vlc/vlc.h>
@@ -39,6 +40,8 @@ class WVlcPlayerPrivate;
 class SK_MEDIA_EXPORT WVlcPlayer : public QObject, public WPrivatable
 {
     Q_OBJECT
+
+    Q_PROPERTY(QStringList options READ options WRITE setOptions NOTIFY optionsChanged)
 
     Q_PROPERTY(bool repeat READ repeat WRITE setRepeat NOTIFY repeatChanged)
 
@@ -90,6 +93,8 @@ public: // Interface
     Q_INVOKABLE void deletePlayer();
 
 signals:
+    void optionsChanged();
+
     void repeatChanged();
 
     void networkCacheChanged();
@@ -98,6 +103,9 @@ protected: // Events
     bool event(QEvent * event);
 
 public: // Properties
+    QStringList options();
+    void        setOptions(const QStringList & options);
+
     bool repeat();
     void setRepeat(bool repeat);
 

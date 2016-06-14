@@ -84,6 +84,8 @@ public: // Variables
 
     QObject * backend;
 
+    QStringList options;
+
     bool repeat;
 
     int networkCache;
@@ -542,6 +544,11 @@ bool WVlcPlayer::event(QEvent * event)
             libvlc_media_add_option(media, proxyPassword.C_STR);
         }
 
+        foreach (const QString & option, d->options)
+        {
+            libvlc_media_add_option(media, option.C_STR);
+        }
+
         libvlc_event_attach(libvlc_media_event_manager(media),
                             libvlc_MediaParsedChanged, d->eventMedia, d);
 
@@ -619,6 +626,32 @@ bool WVlcPlayer::event(QEvent * event)
 
 //-------------------------------------------------------------------------------------------------
 // Properties
+//-------------------------------------------------------------------------------------------------
+
+QStringList WVlcPlayer::options()
+{
+    Q_D(WVlcPlayer);
+
+    const QMutexLocker locker(&d->mutex);
+
+    return d->options;
+}
+
+void WVlcPlayer::setOptions(const QStringList & options)
+{
+    Q_D(WVlcPlayer);
+
+    QMutexLocker locker(&d->mutex);
+
+    if (d->options == options) return;
+
+    d->options = options;
+
+    locker.unlock();
+
+    emit optionsChanged();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 bool WVlcPlayer::repeat()
