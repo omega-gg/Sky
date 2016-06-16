@@ -37,7 +37,7 @@ class SK_GUI_EXPORT WAbstractHookPrivate : public WAbstractBackendPrivate
 public:
     WAbstractHookPrivate(WAbstractHook * p);
 
-    void init(WAbstractBackend * backend);
+    void init();
 
 public: // Variables
     WAbstractBackend * backend;

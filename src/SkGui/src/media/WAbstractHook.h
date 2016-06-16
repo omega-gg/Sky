@@ -28,10 +28,15 @@ class SK_GUI_EXPORT WAbstractHook : public WAbstractBackend
 {
     Q_OBJECT
 
+    Q_PROPERTY(WAbstractBackend * backend READ backend WRITE setBackend NOTIFY backendChanged)
+
 public:
-    WAbstractHook(WAbstractBackend * backend);
+    WAbstractHook();
 protected:
-    WAbstractHook(WAbstractHookPrivate * p, WAbstractBackend * backend);
+    WAbstractHook(WAbstractHookPrivate * p);
+
+signals:
+    void backendChanged();
 
 protected: // WAbstractBackend implementation
     /* virtual */ bool backendSetSource(const QUrl & url);
@@ -64,6 +69,10 @@ protected: // WAbstractBackend reimplementation
 
     /* virtual */ void   backendUpdateFrame();
     /* virtual */ QImage backendGetFrame   () const;
+
+public: // Properties
+    WAbstractBackend * backend() const;
+    void               setBackend(WAbstractBackend * backend);
 
 private:
     W_DECLARE_PRIVATE(WAbstractHook)

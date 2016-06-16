@@ -28,28 +28,28 @@ WAbstractHookPrivate::WAbstractHookPrivate(WAbstractHook * p) : WAbstractBackend
 
 //-------------------------------------------------------------------------------------------------
 
-void WAbstractHookPrivate::init(WAbstractBackend * backend)
+void WAbstractHookPrivate::init()
 {
-    this->backend = backend;
+    backend = NULL;
 }
 
 //-------------------------------------------------------------------------------------------------
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
-WAbstractHook::WAbstractHook(WAbstractBackend * backend)
+WAbstractHook::WAbstractHook()
     : WAbstractBackend(new WAbstractHookPrivate(this))
 {
-    Q_D(WAbstractHook); d->init(backend);
+    Q_D(WAbstractHook); d->init();
 }
 
 //-------------------------------------------------------------------------------------------------
 // Protected
 
-WAbstractHook::WAbstractHook(WAbstractHookPrivate * p, WAbstractBackend * backend)
+WAbstractHook::WAbstractHook(WAbstractHookPrivate * p)
     : WAbstractBackend(p)
 {
-    Q_D(WAbstractHook); d->init(backend);
+    Q_D(WAbstractHook); d->init();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -191,6 +191,26 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p, WAbstractBackend * backen
     Q_D(const WAbstractHook);
 
     return d->backend->backendGetFrame();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Properties
+//-------------------------------------------------------------------------------------------------
+
+WAbstractBackend * WAbstractHook::backend() const
+{
+    Q_D(const WAbstractHook); return d->backend;
+}
+
+void WAbstractHook::setBackend(WAbstractBackend * backend)
+{
+    Q_D(WAbstractHook);
+
+    if (d->backend == backend) return;
+
+    d->backend = backend;
+
+    emit backendChanged();
 }
 
 #endif // SK_NO_ABSTRACTHOOK
