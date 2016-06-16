@@ -29,7 +29,7 @@ class SK_TORRENT_EXPORT WHookTorrent : public WAbstractHook
     Q_OBJECT
 
 public:
-    WHookTorrent(WAbstractBackend * backend);
+    WHookTorrent();
 
 private:
     W_DECLARE_PRIVATE(WHookTorrent)
