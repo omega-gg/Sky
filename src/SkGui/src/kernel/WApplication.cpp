@@ -65,6 +65,7 @@
 
 // Media includes
 #include <WAbstractBackend>
+#include <WAbstractHook>
 #include <WLibraryItem>
 #include <WLibraryFolder>
 #include <WLibraryFolderRelated>
@@ -256,6 +257,9 @@ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
 
     qmlRegisterUncreatableType<WAbstractBackend>("Sky", 1,0, "AbstractBackend",
                                                  "AbstractBackend is abstract");
+
+    qmlRegisterUncreatableType<WAbstractHook>("Sky", 1,0, "AbstractHook",
+                                              "AbstractHook is abstract");
 
     qmlRegisterUncreatableType<WLocalObject>("Sky", 1,0, "LocalObject", "LocalObject is abstract");
 
