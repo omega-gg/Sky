@@ -420,6 +420,8 @@ WallBookmarkTrack
 
         backend: BackendVlc {}
 
+        hook: HookTorrent {}
+
         tabs: wall.tabs
 
         volume: 0
