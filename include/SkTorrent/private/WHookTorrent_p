@@ -1,1 +1,1 @@
-#include "../../../src/SkTorrent/src/media/WBackendTorrentPlayer_p.h"
+#include "../../../src/SkTorrent/src/media/WHookTorrent_p.h"

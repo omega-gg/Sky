@@ -16,7 +16,7 @@ DESTDIR = $$SK/lib
 
 TEMPLATE = lib
 
-QT += network
+QT += declarative network
 
 CONFIG       += plugin
 win32:CONFIG += dll
