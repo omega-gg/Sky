@@ -38,6 +38,7 @@
 
 // Forward declarations
 class WAbstractBackend;
+class WAbstractHook;
 class WLibraryFolder;
 class WTabTrack;
 
@@ -88,6 +89,7 @@ public: // Slots
 
 public: // Properties
     WAbstractBackend * backend;
+    WAbstractHook    * hook;
 
     WAbstractBackend::State state;
 

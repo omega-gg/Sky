@@ -26,6 +26,7 @@
 #include <WControllerView>
 #include <WControllerPlaylist>
 #include <WAbstractPlaylist>
+#include <WAbstractHook>
 #include <WPlaylistNet>
 #include <WTabsTrack>
 #include <WTabTrack>
@@ -897,6 +898,32 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
     }
 
     emit backendChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+WAbstractHook * WDeclarativePlayer::hook() const
+{
+    Q_D(const WDeclarativePlayer); return d->hook;
+}
+
+void WDeclarativePlayer::setHook(WAbstractHook * hook)
+{
+    Q_D(WDeclarativePlayer);
+
+    if (d->hook == hook) return;
+
+    if (d->hook) d->hook->deleteBackend();
+
+    d->hook = hook;
+
+    d->hook->setParent(this);
+
+    d->hook->setParentItem(this);
+
+    d->hook->setBackend(d->backend);
+
+    emit hookChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

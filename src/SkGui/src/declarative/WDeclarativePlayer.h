@@ -21,13 +21,13 @@
 #include <WDeclarativeItem>
 #include <WAbstractPlaylist>
 #include <WAbstractTrack>
-#include <WAbstractBackend>
 
 #ifndef SK_NO_DECLARATIVEPLAYER
 
 // Forward declarations
 class WDeclarativePlayerPrivate;
 class QGraphicsWebView;
+class WAbstractHook;
 class WPlaylistNet;
 class WTabsTrack;
 class WTabTrack;
@@ -39,6 +39,7 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WAbstra
     Q_ENUMS(Repeat)
 
     Q_PROPERTY(WAbstractBackend * backend READ backend WRITE setBackend NOTIFY backendChanged)
+    Q_PROPERTY(WAbstractHook    * hook    READ hook    WRITE setHook    NOTIFY hookChanged)
 
     Q_PROPERTY(WAbstractBackend::State currentState READ state NOTIFY stateChanged)
 
@@ -139,6 +140,7 @@ public: // QGraphicsItem reimplementation
 
 signals:
     void backendChanged();
+    void hookChanged   ();
 
     void stateChanged    ();
     void stateLoadChanged();
@@ -192,6 +194,9 @@ protected: // WAbstractPlaylistWatcher implementation
 public: // Properties
     WAbstractBackend * backend() const;
     void               setBackend(WAbstractBackend * backend);
+
+    WAbstractHook * hook() const;
+    void            setHook(WAbstractHook * hook);
 
     WAbstractBackend::State state() const;
 
