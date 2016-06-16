@@ -48,6 +48,9 @@ public:
 
     void init(QThread * thread);
 
+public: // Functions
+    boost::function<void()> const processAlert();
+
 public: // Variables
     libtorrent::session * session;
 
@@ -84,6 +87,28 @@ void WTorrentEnginePrivate::init(QThread * thread)
 }
 
 //-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
+
+boost::function<void()> const WTorrentEnginePrivate::processAlert()
+{
+    std::vector<libtorrent::alert *> alerts;
+
+    session->pop_alerts(&alerts);
+
+    std::vector<libtorrent::alert * >::iterator i = alerts.begin();
+
+    while (i != alerts.end())
+    {
+        qDebug("libtorrent: %s", (*i)->message().c_str());
+
+        i++;
+    }
+
+    return boost::function<void()>();
+}
+
+//-------------------------------------------------------------------------------------------------
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
@@ -106,6 +131,8 @@ bool WTorrentEngine::event(QEvent * event)
     if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventStart))
     {
         d->session = new libtorrent::session;
+
+        d->session->set_alert_notify(d->processAlert());
 
         return true;
     }
