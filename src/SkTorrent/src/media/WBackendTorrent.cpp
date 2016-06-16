@@ -178,6 +178,12 @@ QUrl WBackendTorrent::getUrlPlaylist(const WBackendNetPlaylistInfo & info) const
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
+WBackendNetQuery WBackendTorrent::getQuerySource(const QUrl &) const
+{
+    return WBackendNetQuery();
+}
+
+/* Q_INVOKABLE virtual */
 WBackendNetQuery WBackendTorrent::getQueryPlaylist(const QUrl & url) const
 {
     return WBackendNetQuery(url);
@@ -201,7 +207,7 @@ WBackendNetPlaylistInfo WBackendTorrent::getPlaylistInfo(const QUrl & url) const
 
 /* Q_INVOKABLE virtual */
 WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & data,
-                                                     const WBackendNetQuery &) const
+                                                     const WBackendNetQuery & query) const
 {
     Q_D(const WBackendTorrent);
 
@@ -224,7 +230,7 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
     {
         if (WControllerPlaylist::urlIsVideo(path) == false) continue;
 
-        WTrackNet track(path);
+        WTrackNet track(query.url.toString() + '#' + path);
 
         track.setTitle(path);
 
