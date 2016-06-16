@@ -187,6 +187,15 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
         WBackendNetQuery query = backend->getQuerySource(url);
 
+        if (query.isValid() == false)
+        {
+            reply->_medias.insert(WAbstractBackend::QualityMedium, url);
+
+            reply->_loaded = true;
+
+            return;
+        }
+
         query.priority = QNetworkRequest::HighPriority;
 
         data = WControllerPlaylist::getDataQuery(loader, query, q);
