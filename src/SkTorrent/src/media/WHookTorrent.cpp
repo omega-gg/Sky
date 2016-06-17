@@ -35,8 +35,7 @@ void WHookTorrentPrivate::init() {}
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
-WHookTorrent::WHookTorrent()
-    : WAbstractHook(new WHookTorrentPrivate(this))
+WHookTorrent::WHookTorrent() : WAbstractHook(new WHookTorrentPrivate(this))
 {
     Q_D(WHookTorrent); d->init();
 }
