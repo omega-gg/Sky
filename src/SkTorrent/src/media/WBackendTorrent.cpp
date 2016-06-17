@@ -226,15 +226,21 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
     reply.title = name;
 
+    QString source = query.url.toString();
+
+    int index = 1;
+
     foreach (const QString & path, paths)
     {
         if (WControllerPlaylist::urlIsVideo(path) == false) continue;
 
-        WTrackNet track(query.url.toString() + '#' + path);
+        WTrackNet track(source + '#' + QString::number(index));
 
         track.setTitle(path);
 
         reply.tracks.append(track);
+
+        index++;
     }
 
     return reply;
