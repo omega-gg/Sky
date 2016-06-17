@@ -238,7 +238,7 @@ public:
 
     void init();
 
-public: // Properties
+public: // Variables
     WModelLibraryFolder * model;
 
     WLibraryItem::Types filter;

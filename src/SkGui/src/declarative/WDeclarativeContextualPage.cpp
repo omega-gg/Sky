@@ -62,7 +62,7 @@ public: // Functions
 
     void currentIndexChanged(int index) const;
 
-public: // Properties
+public: // Variables
     QList<WContextualPageWatcher *> watchers;
 
     QVariantList values;

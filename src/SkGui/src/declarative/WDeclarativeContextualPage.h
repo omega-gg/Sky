@@ -194,7 +194,7 @@ public:
 public: // Interface
     bool isValid() const;
 
-public: // Properties
+public: // Variables
     WDeclarativeContextualPage::ItemType type;
 
     int id;

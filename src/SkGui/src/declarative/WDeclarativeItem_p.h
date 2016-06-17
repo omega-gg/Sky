@@ -39,7 +39,7 @@ protected:
 
     void init();
 
-public: // Properties
+public: // Variables
     WMainView * mainView;
 
     QDeclarativeItem * viewport;

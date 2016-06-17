@@ -38,7 +38,7 @@ public: // Functions
 public: // Slots
     void onLoaded(WRemoteData * data);
 
-public: // Properties    
+public: // Variables
     QUrl    url;
     QString query;
 

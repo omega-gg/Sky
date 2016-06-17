@@ -43,7 +43,7 @@ public:
 public: // Functions
     void clearDrag();
 
-public: // Properties
+public: // Variables
     bool dragEnabled;
     bool dragging;
 

@@ -77,7 +77,7 @@ public: // Slots
     void onTabsDestroyed();
     void onTabDestroyed ();
 
-public: // Properties
+public: // Variables
     WAbstractBackend * backend;
     WAbstractHook    * hook;
 

@@ -43,7 +43,7 @@ public:
 
     void init();
 
-public: // Properties
+public: // Variables
     QUrl icon;
 
     bool visible;

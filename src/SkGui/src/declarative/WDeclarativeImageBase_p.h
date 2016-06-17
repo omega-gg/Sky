@@ -70,7 +70,7 @@ public: // Slots
 
     void onFilterUpdated();
 
-public: // Properties
+public: // Variables
     WCacheFile * file;
 
     WPixmapCache pix;

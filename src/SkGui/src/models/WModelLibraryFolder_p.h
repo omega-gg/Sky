@@ -30,7 +30,7 @@ public:
 
     void init();
 
-public: // Properties
+public: // Variables
     WLibraryFolder * folder;
 
     const WLibraryFolderItem * oldItem;

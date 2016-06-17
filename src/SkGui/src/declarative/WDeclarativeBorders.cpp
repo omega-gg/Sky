@@ -35,7 +35,7 @@ public:
 
     void init();
 
-public: // Properties
+public: // Variables
     qreal left;
     qreal right;
     qreal top;

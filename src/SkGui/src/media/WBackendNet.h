@@ -67,7 +67,7 @@ public: // Interface
 private: // Functions
     void init(Type type, const QUrl & url);
 
-public: // Properties
+public: // Variables
     Type   type;
     Target target;
 
@@ -100,7 +100,7 @@ public: // Interface
 
     bool isFeed() const;
 
-public: // Properties
+public: // Variables
     WLibraryItem::Type type;
 
     QString id;
@@ -115,7 +115,7 @@ class SK_GUI_EXPORT WBackendNetSource
 public:
     WBackendNetSource();
 
-public: // Properties
+public: // Variables
     bool valid;
 
     QHash<WAbstractBackend::Quality, QUrl> medias;
@@ -137,7 +137,7 @@ class SK_GUI_EXPORT WBackendNetTrack
 public:
     WBackendNetTrack();
 
-public: // Properties
+public: // Variables
     bool valid;
 
     WTrackNet track;
@@ -154,7 +154,7 @@ class SK_GUI_EXPORT WBackendNetPlaylist
 public:
     WBackendNetPlaylist();
 
-public: // Properties
+public: // Variables
     bool valid;
 
     QString title;
@@ -176,7 +176,7 @@ class SK_GUI_EXPORT WBackendNetFolder
 public:
     WBackendNetFolder();
 
-public: // Properties
+public: // Variables
     bool valid;
 
     QString title;

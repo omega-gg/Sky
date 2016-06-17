@@ -33,7 +33,7 @@ public:
 
     void init();
 
-public: // Properties
+public: // Variables
     WModelContextualBase * model;
 
     WDeclarativeContextualPage * currentPage;

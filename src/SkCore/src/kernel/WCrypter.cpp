@@ -39,7 +39,7 @@ public:
 public: // Functions
     void splitKey();
 
-public: // Properties
+public: // Variables
     quint64 key;
 
     WCrypter::CompressionMode compression;
