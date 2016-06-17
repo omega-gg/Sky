@@ -852,12 +852,13 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 
     d->backend = backend;
 
-    d->backend->setParent(this);
-
-    d->backend->setParentItem(this);
-
     if (backend)
     {
+        backend->setParent    (this);
+        backend->setParentItem(this);
+
+        if (d->hook) d->hook->setBackend(backend);
+
         backend->setSize(QSizeF(width(), height()));
 
         d->updateRepeat();
@@ -917,11 +918,13 @@ void WDeclarativePlayer::setHook(WAbstractHook * hook)
 
     d->hook = hook;
 
-    d->hook->setParent(this);
+    if (hook)
+    {
+        hook->setParent    (this);
+        hook->setParentItem(this);
 
-    d->hook->setParentItem(this);
-
-    d->hook->setBackend(d->backend);
+        hook->setBackend(d->backend);
+    }
 
     emit hookChanged();
 }
