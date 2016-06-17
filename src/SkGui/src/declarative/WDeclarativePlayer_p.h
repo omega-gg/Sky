@@ -27,20 +27,10 @@
     We mean it.
 */
 
-// Qt includes
-#include <QUrl>
-
 // Sk includes
 #include <private/WDeclarativeItem_p>
-#include <WTrackNet>
 
 #ifndef SK_NO_DECLARATIVEPLAYER
-
-// Forward declarations
-class WAbstractBackend;
-class WAbstractHook;
-class WLibraryFolder;
-class WTabTrack;
 
 class SK_GUI_EXPORT WDeclarativePlayerPrivate : public WDeclarativeItemPrivate
 {

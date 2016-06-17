@@ -16,16 +16,7 @@
 
 #include "WDeclarativePlayer.h"
 
-// Qt includes
-#include <QPainter>
-#include <QStyleOptionGraphicsItem>
-#include <QGraphicsSceneMouseEvent>
-
 // Sk includes
-#include <WControllerApplication>
-#include <WControllerView>
-#include <WControllerPlaylist>
-#include <WAbstractPlaylist>
 #include <WAbstractHook>
 #include <WPlaylistNet>
 #include <WTabsTrack>

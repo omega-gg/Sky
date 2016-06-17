@@ -26,11 +26,8 @@
 
 // Forward declarations
 class WDeclarativePlayerPrivate;
-class QGraphicsWebView;
 class WAbstractHook;
-class WPlaylistNet;
 class WTabsTrack;
-class WTabTrack;
 
 class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WAbstractPlaylistWatcher
 {
