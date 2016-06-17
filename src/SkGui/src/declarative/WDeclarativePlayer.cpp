@@ -43,7 +43,9 @@ void WDeclarativePlayerPrivate::init()
 {
     Q_Q(WDeclarativePlayer);
 
-    backend  = NULL;
+    backend = NULL;
+    hook    = NULL;
+
     folder   = NULL;
     playlist = NULL;
 
