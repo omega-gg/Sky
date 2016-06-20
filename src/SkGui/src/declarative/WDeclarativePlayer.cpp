@@ -850,7 +850,10 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
         backend->setParent    (this);
         backend->setParentItem(this);
 
-        if (d->hook) d->hook->setBackend(backend);
+        if (d->hook)
+        {
+            d->hook->setBackend(backend);
+        }
 
         backend->setSize(QSizeF(width(), height()));
 
@@ -916,7 +919,10 @@ void WDeclarativePlayer::setHook(WAbstractHook * hook)
         hook->setParent    (this);
         hook->setParentItem(this);
 
-        hook->setBackend(d->backend);
+        if (d->backend)
+        {
+            hook->setBackend(d->backend);
+        }
     }
 
     emit hookChanged();
