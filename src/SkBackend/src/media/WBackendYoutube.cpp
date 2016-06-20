@@ -69,7 +69,7 @@ public: // Functions
 
     void applySignature(QString * source, QScriptValue * value) const;
 
-    QUrl getNextUrl(const QString & data, const QUrl & url) const;
+    QUrl getNextUrl(const QString & data) const;
 
 private:
     QStringList script;
@@ -302,25 +302,15 @@ void WBackendYoutubePrivate::applySignature(QString * source, QScriptValue * val
 
 //-------------------------------------------------------------------------------------------------
 
-QUrl WBackendYoutubePrivate::getNextUrl(const QString & data, const QUrl & url) const
+QUrl WBackendYoutubePrivate::getNextUrl(const QString & data) const
 {
-    int index = data.indexOf("class=\"yt-uix-pager search-pager");
+    int index = data.indexOf("class=\"branded-page-box search-pager");
 
     if (index == -1) return QUrl();
 
-    QUrl result = url;
+    QString source = WControllerNetwork::extractAttribute(data, "href", index);
 
-#ifdef QT_LATEST
-    QUrlQuery query(result);
-
-    query.addQueryItem("page", "2");
-
-    result.setQuery(query);
-#else
-    result.addQueryItem("page", "2");
-#endif
-
-    return result;
+    return "https://www.youtube.com" + source;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -932,7 +922,7 @@ WBackendNetPlaylist WBackendYoutube::extractPlaylist(const QByteArray       & da
 
         if (query.data.toInt() == 0)
         {
-            QUrl url = d->getNextUrl(content, query.url);
+            QUrl url = d->getNextUrl(content);
 
             if (url.isEmpty()) return reply;
 
@@ -1093,7 +1083,7 @@ WBackendNetFolder WBackendYoutube::extractFolder(const QByteArray       & data,
 
     if (query.data.toInt() == 0)
     {
-        QUrl url = d->getNextUrl(content, query.url);
+        QUrl url = d->getNextUrl(content);
 
         if (url.isEmpty()) return reply;
 
