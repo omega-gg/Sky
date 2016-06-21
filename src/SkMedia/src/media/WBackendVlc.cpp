@@ -967,7 +967,20 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
     d->clearPlayer();
 
-    backendPause();
+    d->player->pause();
+
+    setQualityActive(QualityInvalid);
+
+    return true;
+}
+
+/* virtual */ bool WBackendVlc::backendClear()
+{
+    Q_D(WBackendVlc);
+
+    d->clearPlayer();
+
+    d->player->stop();
 
     setQualityActive(QualityInvalid);
 

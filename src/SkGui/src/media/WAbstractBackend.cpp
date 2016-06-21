@@ -171,6 +171,15 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
     if (backendStop()) setState(StateStopped);
 }
 
+/* Q_INVOKABLE */ void WAbstractBackend::clear()
+{
+    Q_D(WAbstractBackend);
+
+    if (d->state == StateStopped) return;
+
+    if (backendClear()) setState(StateStopped);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WAbstractBackend::seekTo(int msec)

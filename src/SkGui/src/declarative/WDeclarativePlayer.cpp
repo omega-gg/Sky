@@ -542,6 +542,8 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
     d->backend->replay();
 }
 
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ void WDeclarativePlayer::pause()
 {
     Q_D(WDeclarativePlayer);
@@ -560,11 +562,26 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
     d->backend->stop();
 }
 
+/* Q_INVOKABLE */ void WDeclarativePlayer::clear()
+{
+    Q_D(WDeclarativePlayer);
+
+    if (d->backend == NULL) return;
+
+    if (d->tab) d->tab->setPlayer(NULL);
+
+    d->backend->clear();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ void WDeclarativePlayer::togglePlay()
 {
     if (isPlaying()) pause();
     else             play ();
 }
+
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WDeclarativePlayer::seekTo(int msec)
 {

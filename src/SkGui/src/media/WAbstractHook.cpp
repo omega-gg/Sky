@@ -95,6 +95,13 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p)
     return d->backend->backendStop();
 }
 
+/* virtual */ bool WAbstractHook::backendClear()
+{
+    Q_D(WAbstractHook);
+
+    return d->backend->backendClear();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WAbstractHook::backendSetVolume(int percent)

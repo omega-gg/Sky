@@ -119,8 +119,8 @@ public: // Interface
     Q_INVOKABLE void replay();
 
     Q_INVOKABLE void pause();
-
-    Q_INVOKABLE void stop();
+    Q_INVOKABLE void stop ();
+    Q_INVOKABLE void clear();
 
     Q_INVOKABLE void togglePlay();
 
