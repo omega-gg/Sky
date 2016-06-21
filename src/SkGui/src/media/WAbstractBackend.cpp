@@ -115,10 +115,7 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
         d->source = url;
 
-        if (url.isValid())
-        {
-            backendSetSource(url);
-        }
+        backendSetSource(url);
 
         emit sourceChanged();
     }
@@ -172,15 +169,6 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
     if (d->state == StateStopped) return;
 
     if (backendStop()) setState(StateStopped);
-}
-
-/* Q_INVOKABLE */ void WAbstractBackend::clear()
-{
-    Q_D(WAbstractBackend);
-
-    if (d->state == StateStopped) return;
-
-    if (backendClear()) setState(StateStopped);
 }
 
 //-------------------------------------------------------------------------------------------------

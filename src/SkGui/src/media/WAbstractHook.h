@@ -46,7 +46,6 @@ protected: // WAbstractBackend implementation
 
     /* virtual */ bool backendPause();
     /* virtual */ bool backendStop ();
-    /* virtual */ bool backendClear();
 
     /* virtual */ void backendSetVolume(int percent);
 

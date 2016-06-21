@@ -127,7 +127,6 @@ public: // Interface
 
     Q_INVOKABLE void pause();
     Q_INVOKABLE void stop ();
-    Q_INVOKABLE void clear();
 
     Q_INVOKABLE void seekTo(int msec);
 
@@ -193,7 +192,6 @@ protected: // Abstract functions
 
     virtual bool backendPause() = 0;
     virtual bool backendStop () = 0;
-    virtual bool backendClear() = 0;
 
     virtual void backendSetVolume(int percent) = 0;
 

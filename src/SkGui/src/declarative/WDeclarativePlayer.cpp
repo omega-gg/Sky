@@ -562,17 +562,6 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
     d->backend->stop();
 }
 
-/* Q_INVOKABLE */ void WDeclarativePlayer::clear()
-{
-    Q_D(WDeclarativePlayer);
-
-    if (d->backend == NULL) return;
-
-    if (d->tab) d->tab->setPlayer(NULL);
-
-    d->backend->clear();
-}
-
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WDeclarativePlayer::togglePlay()
