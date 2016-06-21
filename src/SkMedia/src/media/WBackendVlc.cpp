@@ -895,7 +895,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 // Protected WAbstractBackend implementation
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ bool WBackendVlc::backendSetSource(const QUrl &)
+/* virtual */ bool WBackendVlc::backendSetSource(const QUrl & url)
 {
     Q_D(WBackendVlc);
 
@@ -904,7 +904,15 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
     d->currentMedia = QUrl();
     d->currentAudio = QUrl();
 
-    if (isPlaying())
+    if (url.isEmpty())
+    {
+        d->clearPlayer();
+
+        d->player->stop();
+
+        setQualityActive(QualityInvalid);
+    }
+    else if (isPlaying())
     {
         d->updateBuffering();
 
@@ -968,19 +976,6 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
     d->clearPlayer();
 
     d->player->pause();
-
-    setQualityActive(QualityInvalid);
-
-    return true;
-}
-
-/* virtual */ bool WBackendVlc::backendClear()
-{
-    Q_D(WBackendVlc);
-
-    d->clearPlayer();
-
-    d->player->stop();
 
     setQualityActive(QualityInvalid);
 
