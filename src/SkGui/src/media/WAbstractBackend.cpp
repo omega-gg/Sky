@@ -115,7 +115,10 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
         d->source = url;
 
-        if (url.isValid() && backendSetSource(url) == false) return;
+        if (url.isValid())
+        {
+            backendSetSource(url);
+        }
 
         emit sourceChanged();
     }
