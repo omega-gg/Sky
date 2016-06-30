@@ -35,8 +35,14 @@ public:
 protected:
     WAbstractHook(WAbstractHookPrivate * p);
 
+public: // Interface
+    Q_INVOKABLE bool checkSource(const QUrl & url);
+
 signals:
     void backendChanged();
+
+protected: // Abstract functions
+    virtual bool hookCheckSource(const QUrl & url) = 0;
 
 protected: // WAbstractBackend implementation
     /* virtual */ bool backendSetSource(const QUrl & url);

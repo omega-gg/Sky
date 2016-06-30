@@ -18,6 +18,7 @@
 
 // Sk includes
 #include <WControllerFile>
+#include <WControllerNetwork>
 
 #ifndef SK_NO_HOOKTORRENT
 
@@ -38,6 +39,21 @@ void WHookTorrentPrivate::init() {}
 WHookTorrent::WHookTorrent() : WAbstractHook(new WHookTorrentPrivate(this))
 {
     Q_D(WHookTorrent); d->init();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Protected WAbstractHook implementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ bool WHookTorrent::hookCheckSource(const QUrl & url)
+{
+    QString extension = WControllerNetwork::extractUrlExtension(url);
+
+    if (extension == "torrent")
+    {
+         return true;
+    }
+    else return false;
 }
 
 #endif // SK_NO_HOOKTORRENT

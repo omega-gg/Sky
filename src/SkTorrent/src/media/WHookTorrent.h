@@ -31,6 +31,9 @@ class SK_TORRENT_EXPORT WHookTorrent : public WAbstractHook
 public:
     WHookTorrent();
 
+protected: // WAbstractHook implementation
+    /* virtual */ bool hookCheckSource(const QUrl & url);
+
 private:
     W_DECLARE_PRIVATE(WHookTorrent)
 };
