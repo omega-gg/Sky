@@ -37,8 +37,7 @@ void WAbstractHookPrivate::init()
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
-WAbstractHook::WAbstractHook()
-    : WAbstractBackend(new WAbstractHookPrivate(this))
+WAbstractHook::WAbstractHook() : WAbstractBackend(new WAbstractHookPrivate(this))
 {
     Q_D(WAbstractHook); d->init();
 }
@@ -46,8 +45,7 @@ WAbstractHook::WAbstractHook()
 //-------------------------------------------------------------------------------------------------
 // Protected
 
-WAbstractHook::WAbstractHook(WAbstractHookPrivate * p)
-    : WAbstractBackend(p)
+WAbstractHook::WAbstractHook(WAbstractHookPrivate * p) : WAbstractBackend(p)
 {
     Q_D(WAbstractHook); d->init();
 }
