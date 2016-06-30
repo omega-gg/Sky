@@ -186,14 +186,27 @@ void WDeclarativePlayerPrivate::loadSource(const QUrl & source, int duration, in
 
     if (hook && hook->checkSource(source))
     {
-         currentBackend = hook;
-    }
-    else currentBackend = backend;
+        if (backend && currentBackend == backend)
+        {
+            backend->loadSource(QUrl(), -1, -1);
+        }
 
-    if (currentBackend)
-    {
-        currentBackend->loadSource(source, duration, currentTime);
+        currentBackend = hook;
+
+        hook->loadSource(source, duration, currentTime);
     }
+    else if (backend)
+    {
+        if (hook && currentBackend == hook)
+        {
+            hook->loadSource(QUrl(), -1, -1);
+        }
+
+        currentBackend = backend;
+
+        backend->loadSource(source, duration, currentTime);
+    }
+    else currentBackend = NULL;
 
     if (shuffle && shuffleLock == false)
     {
