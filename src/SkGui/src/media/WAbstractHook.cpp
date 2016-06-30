@@ -56,7 +56,7 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p) : WAbstractBackend(p)
 
 /* Q_INVOKABLE */ bool WAbstractHook::checkSource(const QUrl & url)
 {
-    return backendSetSource(url);
+    return hookCheckSource(url);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -211,6 +211,8 @@ WAbstractBackend * WAbstractHook::backend() const
 
 void WAbstractHook::setBackend(WAbstractBackend * backend)
 {
+    Q_ASSERT(backend);
+
     Q_D(WAbstractHook);
 
     if (d->backend == backend) return;
