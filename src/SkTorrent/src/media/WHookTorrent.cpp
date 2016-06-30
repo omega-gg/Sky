@@ -56,4 +56,13 @@ WHookTorrent::WHookTorrent() : WAbstractHook(new WHookTorrentPrivate(this))
     else return false;
 }
 
+//-------------------------------------------------------------------------------------------------
+// Protected WAbstractHook reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ bool WHookTorrent::backendSetSource(const QUrl &)
+{
+    Q_D(WAbstractHook); return true;
+}
+
 #endif // SK_NO_HOOKTORRENT

@@ -34,6 +34,9 @@ public:
 protected: // WAbstractHook implementation
     /* virtual */ bool hookCheckSource(const QUrl & url);
 
+protected: // WAbstractHook reimplementation
+    /* virtual */ bool backendSetSource(const QUrl & url);
+
 private:
     W_DECLARE_PRIVATE(WHookTorrent)
 };
