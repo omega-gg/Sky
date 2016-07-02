@@ -455,7 +455,7 @@ QUrl WAbstractBackend::source() const
 
 void WAbstractBackend::setSource(const QUrl & url)
 {
-    loadSource(url, -1, -1);
+    loadSource(url);
 }
 
 //-------------------------------------------------------------------------------------------------

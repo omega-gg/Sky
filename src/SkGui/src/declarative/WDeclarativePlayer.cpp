@@ -188,7 +188,7 @@ void WDeclarativePlayerPrivate::loadSource(const QUrl & source, int duration, in
     {
         if (backend && currentBackend == backend)
         {
-            backend->loadSource(QUrl(), -1, -1);
+            backend->loadSource(QUrl());
         }
 
         currentBackend = hook;
@@ -199,7 +199,7 @@ void WDeclarativePlayerPrivate::loadSource(const QUrl & source, int duration, in
     {
         if (hook && currentBackend == hook)
         {
-            hook->loadSource(QUrl(), -1, -1);
+            hook->loadSource(QUrl());
         }
 
         currentBackend = backend;

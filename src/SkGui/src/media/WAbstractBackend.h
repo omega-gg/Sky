@@ -120,7 +120,7 @@ protected:
     /* virtual */ ~WAbstractBackend();
 
 public: // Interface
-    Q_INVOKABLE void loadSource(const QUrl & url, int duration, int currentTime = -1);
+    Q_INVOKABLE void loadSource(const QUrl & url, int duration = -1, int currentTime = -1);
 
     Q_INVOKABLE void play  ();
     Q_INVOKABLE void replay();
