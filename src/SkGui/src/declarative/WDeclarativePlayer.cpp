@@ -186,7 +186,7 @@ void WDeclarativePlayerPrivate::loadSource(const QUrl & source, int duration, in
 
     if (hook && hook->checkSource(source))
     {
-        if (backend && currentBackend == backend)
+        if (currentBackend && currentBackend == backend)
         {
             backend->loadSource(QUrl());
         }
@@ -197,7 +197,7 @@ void WDeclarativePlayerPrivate::loadSource(const QUrl & source, int duration, in
     }
     else if (backend)
     {
-        if (hook && currentBackend == hook)
+        if (currentBackend && currentBackend == hook)
         {
             hook->loadSource(QUrl());
         }
@@ -922,7 +922,6 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
         QObject::connect(backend, SIGNAL(stateChanged   ()), this, SLOT(onStateChanged   ()));
         QObject::connect(backend, SIGNAL(durationChanged()), this, SLOT(onDurationChanged()));
     }
-    else setHook(NULL);
 
     emit backendChanged();
 }
