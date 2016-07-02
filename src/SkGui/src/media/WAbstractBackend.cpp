@@ -171,6 +171,11 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
     if (backendStop()) setState(StateStopped);
 }
 
+/* Q_INVOKABLE */ void WAbstractBackend::clear()
+{
+    loadSource(QUrl());
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WAbstractBackend::seekTo(int msec)

@@ -188,7 +188,7 @@ void WDeclarativePlayerPrivate::loadSource(const QUrl & source, int duration, in
     {
         if (currentBackend && currentBackend == backend)
         {
-            backend->loadSource(QUrl());
+            backend->clear();
         }
 
         currentBackend = hook;
@@ -199,7 +199,7 @@ void WDeclarativePlayerPrivate::loadSource(const QUrl & source, int duration, in
     {
         if (currentBackend && currentBackend == hook)
         {
-            hook->loadSource(QUrl());
+            hook->clear();
         }
 
         currentBackend = backend;
@@ -581,6 +581,13 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
     if (d->tab) d->tab->setPlayer(NULL);
 
     d->currentBackend->stop();
+}
+
+/* Q_INVOKABLE */ void WDeclarativePlayer::clear()
+{
+    Q_D(WDeclarativePlayer);
+
+    if (d->backend) d->currentBackend->clear();
 }
 
 //-------------------------------------------------------------------------------------------------
