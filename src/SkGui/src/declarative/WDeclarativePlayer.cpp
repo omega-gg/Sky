@@ -960,7 +960,7 @@ void WDeclarativePlayer::setHook(WAbstractHook * hook)
         hook->setParent    (this);
         hook->setParentItem(this);
 
-        if (d->backend) hook->setBackend(d->backend);
+        hook->setBackend(d->backend);
     }
 
     emit hookChanged();
