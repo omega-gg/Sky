@@ -686,7 +686,7 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
 
         QString object = Sk::extract(function, ";([a-zA-Z0-9$]+)\\.", 1);
 
-        object = WControllerNetwork::extractScript(content, "var " + object);
+        object = WControllerNetwork::extractScript(content, "var " + object + '=');
 
         QString script = "(function(a){" + object + ';' + function + "return " + name + "(a);})";
 
