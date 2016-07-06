@@ -941,6 +941,15 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ QString WControllerApplication::currentDateString(const QString & format)
+{
+    QDateTime date = QDateTime::currentDateTime();
+
+    return date.toString(format);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE static */ QString WControllerApplication::dateToText(const QDateTime & date)
 {
     if (date.isValid() == false)
