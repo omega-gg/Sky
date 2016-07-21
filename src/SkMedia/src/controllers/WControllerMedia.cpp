@@ -405,8 +405,7 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
 //=================================================================================================
 // Private
 
-WControllerMedia::WControllerMedia()
-    : WController(new WControllerMediaPrivate(this), "WControllerMedia") {}
+WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(this)) {}
 
 //-------------------------------------------------------------------------------------------------
 // Initialize

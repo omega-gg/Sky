@@ -497,8 +497,7 @@ void WControllerNetworkPrivate::onRetryTimeout()
 // Private ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
-WControllerNetwork::WControllerNetwork()
-    : WController(new WControllerNetworkPrivate(this), "WControllerNetwork") {}
+WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPrivate(this)) {}
 
 //-------------------------------------------------------------------------------------------------
 // Initialize

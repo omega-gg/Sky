@@ -332,8 +332,7 @@ void WControllerDownloadPrivate::onProcess()
 //=================================================================================================
 // Private
 
-WControllerDownload::WControllerDownload()
-    : WController(new WControllerDownloadPrivate(this), "WControllerDownload") {}
+WControllerDownload::WControllerDownload() : WController(new WControllerDownloadPrivate(this)) {}
 
 //-------------------------------------------------------------------------------------------------
 // Initialize

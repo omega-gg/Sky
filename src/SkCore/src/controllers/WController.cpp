@@ -37,18 +37,13 @@ WControllerPrivate::WControllerPrivate(WController * p) : WPrivate(p) {}
 
 //-------------------------------------------------------------------------------------------------
 
-void WControllerPrivate::init(const QString & name)
+void WControllerPrivate::init()
 {
     Q_Q(WController);
 
-    if (name.isEmpty() == false)
-    {
-        q->setObjectName(name);
-
-        sk->d_func()->declareController(q);
-    }
-
     isCreated = false;
+
+    sk->d_func()->declareController(q);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -56,32 +51,19 @@ void WControllerPrivate::init(const QString & name)
 //-------------------------------------------------------------------------------------------------
 // Protected
 
-WController::WController(const QString & name)
-    : QObject(), WPrivatable(new WControllerPrivate(this))
+WController::WController() : QObject(), WPrivatable(new WControllerPrivate(this))
 {
-    Q_ASSERT(name.isEmpty() == false);
-
-    Q_D(WController); d->init(name);
+    Q_D(WController); d->init();
 }
-
-WController::WController(WControllerPrivate * p, const QString & name)
-   : QObject(), WPrivatable(p)
-{
-    Q_ASSERT(name.isEmpty() == false);
-
-    Q_D(WController); d->init(name);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* virtual */ WController::~WController() {}
-
-//-------------------------------------------------------------------------------------------------
-// Private
 
 WController::WController(WControllerPrivate * p) : QObject(), WPrivatable(p)
 {
-    Q_D(WController); d->init(QString());
+    Q_D(WController); d->init();
+}
+
+WController::WController(WControllerApplicationPrivate * p) : QObject(), WPrivatable(p)
+{
+    Q_D(WController); d->isCreated = false;
 }
 
 //-------------------------------------------------------------------------------------------------

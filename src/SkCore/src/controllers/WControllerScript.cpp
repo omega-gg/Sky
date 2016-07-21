@@ -69,8 +69,7 @@ void WControllerScriptPrivate::init()
 // Private ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
-WControllerScript::WControllerScript()
-    : WController(new WControllerScriptPrivate(this), "WControllerScript") {}
+WControllerScript::WControllerScript() : WController(new WControllerScriptPrivate(this)) {}
 
 //-------------------------------------------------------------------------------------------------
 // Initialize

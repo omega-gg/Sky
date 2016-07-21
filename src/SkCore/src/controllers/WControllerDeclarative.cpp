@@ -73,7 +73,7 @@ void WControllerDeclarativePrivate::init()
 //-------------------------------------------------------------------------------------------------
 
 WControllerDeclarative::WControllerDeclarative()
-    : WController(new WControllerDeclarativePrivate(this), "WControllerDeclarative") {}
+    : WController(new WControllerDeclarativePrivate(this)) {}
 
 //-------------------------------------------------------------------------------------------------
 // Initialize

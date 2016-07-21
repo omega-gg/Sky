@@ -2151,8 +2151,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 //=================================================================================================
 // Private
 
-WControllerPlaylist::WControllerPlaylist()
-    : WController(new WControllerPlaylistPrivate(this), "WControllerPlaylist") {}
+WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylistPrivate(this)) {}
 
 //-------------------------------------------------------------------------------------------------
 // Initialize

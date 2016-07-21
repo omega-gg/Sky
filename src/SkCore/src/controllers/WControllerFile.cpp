@@ -405,8 +405,7 @@ void WControllerFilePrivate::onCheckWatchers()
 //=================================================================================================
 // Private
 
-WControllerFile::WControllerFile()
-    : WController(new WControllerFilePrivate(this), "WControllerFile") {}
+WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this)) {}
 
 //-------------------------------------------------------------------------------------------------
 // Initialize

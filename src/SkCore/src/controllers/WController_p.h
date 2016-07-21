@@ -36,7 +36,7 @@ public:
 
     virtual ~WControllerPrivate();
 
-    void init(const QString & name);
+    void init();
 
 public: // Variables
     bool isCreated;

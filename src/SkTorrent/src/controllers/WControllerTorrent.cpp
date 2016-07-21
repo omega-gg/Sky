@@ -61,8 +61,7 @@ void WControllerTorrentPrivate::init()
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
-WControllerTorrent::WControllerTorrent()
-    : WController(new WControllerTorrentPrivate(this), "WControllerTorrent") {}
+WControllerTorrent::WControllerTorrent() : WController(new WControllerTorrentPrivate(this)) {}
 
 //-------------------------------------------------------------------------------------------------
 // Initialize

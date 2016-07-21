@@ -25,6 +25,7 @@
 
 // Forward declarations
 class WControllerPrivate;
+class WControllerApplicationPrivate;
 
 //-------------------------------------------------------------------------------------------------
 // Defines
@@ -34,7 +35,10 @@ class WControllerPrivate;
 public:                                                         \
 static Class * instance()                                       \
 {                                                               \
-    if (Class::mInstance == NULL) Class::mInstance = new Class; \
+    if (Class::mInstance == NULL)                               \
+    {                                                           \
+        Class::mInstance = new Class;                           \
+    }                                                           \
                                                                 \
     return Class::mInstance;                                    \
 }                                                               \
@@ -68,13 +72,6 @@ static Class * mInstance;                                       \
 
 //-------------------------------------------------------------------------------------------------
 
-#define W_SCRIPT_REGISTER_CONTROLLER(Class, Name)                                               \
-                                                                                                \
-    WControllerScript::instance()->engine()->globalObject()                                     \
-    .setProperty(Name, WControllerScript::instance()->engine()->newQObject(Class::instance())); \
-
-//-------------------------------------------------------------------------------------------------
-
 #define W_GET_CONTROLLER(Class, Name)        \
                                              \
     Class * Name = Class::instancePointer(); \
@@ -92,14 +89,9 @@ class SK_CORE_EXPORT WController : public QObject, public WPrivatable
     Q_OBJECT
 
 protected:
-    WController(WControllerPrivate * p, const QString & name);
-
-    WController(const QString & name);
-
-    /* virtual */ ~WController();
-
-private:
-    WController(WControllerPrivate * p);
+    WController();
+    WController(WControllerPrivate            * p);
+    WController(WControllerApplicationPrivate * p);
 
 public: // Interface
     void initController();
@@ -109,9 +101,6 @@ protected: // Functions
 
 private:
     W_DECLARE_PRIVATE(WController)
-
-    friend class WControllerApplication;
-    friend class WControllerApplicationPrivate;
 };
 
 #endif // WCONTROLLER_H

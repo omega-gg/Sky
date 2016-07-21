@@ -139,8 +139,7 @@ void WControllerViewPrivate::paintItem(QPainter * painter, QGraphicsObject * ite
 // Private ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
-WControllerView::WControllerView()
-    : WController(new WControllerViewPrivate(this), "WControllerView") {}
+WControllerView::WControllerView() : WController(new WControllerViewPrivate(this)) {}
 
 //-------------------------------------------------------------------------------------------------
 // Initialize

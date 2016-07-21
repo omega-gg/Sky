@@ -313,7 +313,7 @@ void WControllerApplicationPrivate::onAboutToQuit()
 
     for (int i = controllers.count() - 1; i > -1; i--)
     {
-        qDebug("Deleting %s", controllers[i]->objectName().C_STR);
+        qDebug("Deleting %s", controllers[i]->metaObject()->className());
 
         delete controllers[i];
     }

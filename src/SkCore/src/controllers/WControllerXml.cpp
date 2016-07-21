@@ -205,8 +205,7 @@ void WControllerXmlPrivate::init()
 //=================================================================================================
 // Private
 
-WControllerXml::WControllerXml()
-    : WController(new WControllerXmlPrivate(this), "WControllerXml") {}
+WControllerXml::WControllerXml() : WController(new WControllerXmlPrivate(this)) {}
 
 //-------------------------------------------------------------------------------------------------
 // Initialize

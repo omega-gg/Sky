@@ -143,8 +143,7 @@ void WControllerPluginPrivate::removePluginPath(const QString & path)
 // Private ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
-WControllerPlugin::WControllerPlugin()
-    : WController(new WControllerPluginPrivate(this), "WControllerPlugin") {}
+WControllerPlugin::WControllerPlugin() : WController(new WControllerPluginPrivate(this)) {}
 
 //-------------------------------------------------------------------------------------------------
 // Initialize
