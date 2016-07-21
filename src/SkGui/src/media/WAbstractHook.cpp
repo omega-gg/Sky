@@ -28,26 +28,34 @@ WAbstractHookPrivate::WAbstractHookPrivate(WAbstractHook * p) : WAbstractBackend
 
 //-------------------------------------------------------------------------------------------------
 
-void WAbstractHookPrivate::init()
+void WAbstractHookPrivate::init(WAbstractBackend * backend)
 {
-    backend = NULL;
+    Q_ASSERT(backend);
+
+    Q_Q(WAbstractHook);
+
+    this->backend = backend;
+
+    q->setParent(backend);
 }
 
 //-------------------------------------------------------------------------------------------------
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
-WAbstractHook::WAbstractHook() : WAbstractBackend(new WAbstractHookPrivate(this))
+WAbstractHook::WAbstractHook(WAbstractBackend * backend)
+    : WAbstractBackend(new WAbstractHookPrivate(this))
 {
-    Q_D(WAbstractHook); d->init();
+    Q_D(WAbstractHook); d->init(backend);
 }
 
 //-------------------------------------------------------------------------------------------------
 // Protected
 
-WAbstractHook::WAbstractHook(WAbstractHookPrivate * p) : WAbstractBackend(p)
+WAbstractHook::WAbstractHook(WAbstractHookPrivate * p, WAbstractBackend * backend)
+    : WAbstractBackend(p)
 {
-    Q_D(WAbstractHook); d->init();
+    Q_D(WAbstractHook); d->init(backend);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -67,11 +75,7 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p) : WAbstractBackend(p)
 {
     Q_D(WAbstractHook);
 
-    if (d->backend)
-    {
-         return d->backend->backendSetSource(url);
-    }
-    else return false;
+    return d->backend->backendSetSource(url);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -80,22 +84,14 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p) : WAbstractBackend(p)
 {
     Q_D(WAbstractHook);
 
-    if (d->backend)
-    {
-         return d->backend->backendPlay();
-    }
-    else return false;
+    return d->backend->backendPlay();
 }
 
 /* virtual */ bool WAbstractHook::backendReplay()
 {
     Q_D(WAbstractHook);
 
-    if (d->backend)
-    {
-         return d->backend->backendReplay();
-    }
-    else return false;
+    return d->backend->backendReplay();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -104,22 +100,14 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p) : WAbstractBackend(p)
 {
     Q_D(WAbstractHook);
 
-    if (d->backend)
-    {
-         return d->backend->backendPause();
-    }
-    else return false;
+    return d->backend->backendPause();
 }
 
 /* virtual */ bool WAbstractHook::backendStop()
 {
     Q_D(WAbstractHook);
 
-    if (d->backend)
-    {
-         return d->backend->backendStop();
-    }
-    else return false;
+    return d->backend->backendStop();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -127,8 +115,6 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p) : WAbstractBackend(p)
 /* virtual */ void WAbstractHook::backendSetVolume(int percent)
 {
     Q_D(WAbstractHook);
-
-    if (d->backend == NULL) return;
 
     d->backend->backendSetVolume(percent);
 }
@@ -139,11 +125,7 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p) : WAbstractBackend(p)
 {
     Q_D(WAbstractHook);
 
-    if (d->backend)
-    {
-         return d->backend->backendDelete();
-    }
-    else return false;
+    return d->backend->backendDelete();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -154,8 +136,6 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p) : WAbstractBackend(p)
 {
     Q_D(WAbstractHook);
 
-    if (d->backend == NULL) return;
-
     d->backend->backendSeekTo(msec);
 }
 
@@ -164,8 +144,6 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p) : WAbstractBackend(p)
 /* virtual */ void WAbstractHook::backendSetSpeed(qreal speed)
 {
     Q_D(WAbstractHook);
-
-    if (d->backend == NULL) return;
 
     d->backend->backendSetSpeed(speed);
 }
@@ -176,8 +154,6 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p) : WAbstractBackend(p)
 {
     Q_D(WAbstractHook);
 
-    if (d->backend == NULL) return;
-
     d->backend->backendSetRepeat(repeat);
 }
 
@@ -186,8 +162,6 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p) : WAbstractBackend(p)
 /* virtual */ void WAbstractHook::backendSetQuality(Quality quality)
 {
     Q_D(WAbstractHook);
-
-    if (d->backend == NULL) return;
 
     d->backend->backendSetQuality(quality);
 }
@@ -198,8 +172,6 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p) : WAbstractBackend(p)
 {
     Q_D(WAbstractHook);
 
-    if (d->backend == NULL) return;
-
     d->backend->backendSetFillMode(fillMode);
 }
 
@@ -209,8 +181,6 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p) : WAbstractBackend(p)
 {
     Q_D(WAbstractHook);
 
-    if (d->backend == NULL) return;
-
     d->backend->backendSetSize(size);
 }
 
@@ -218,8 +188,6 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p) : WAbstractBackend(p)
                                                    const QStyleOptionGraphicsItem * option)
 {
     Q_D(WAbstractHook);
-
-    if (d->backend == NULL) return;
 
     d->backend->backendDrawFrame(painter, option);
 }
@@ -230,8 +198,6 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p) : WAbstractBackend(p)
 {
     Q_D(WAbstractHook);
 
-    if (d->backend == NULL) return;
-
     d->backend->backendUpdateFrame();
 }
 
@@ -239,11 +205,7 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p) : WAbstractBackend(p)
 {
     Q_D(const WAbstractHook);
 
-    if (d->backend)
-    {
-         return d->backend->backendGetFrame();
-    }
-    else return QImage();
+    return d->backend->backendGetFrame();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -253,17 +215,6 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p) : WAbstractBackend(p)
 WAbstractBackend * WAbstractHook::backend() const
 {
     Q_D(const WAbstractHook); return d->backend;
-}
-
-void WAbstractHook::setBackend(WAbstractBackend * backend)
-{
-    Q_D(WAbstractHook);
-
-    if (d->backend == backend) return;
-
-    d->backend = backend;
-
-    emit backendChanged();
 }
 
 #endif // SK_NO_ABSTRACTHOOK

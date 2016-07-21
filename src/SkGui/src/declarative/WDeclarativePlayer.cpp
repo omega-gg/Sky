@@ -928,8 +928,6 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
         QObject::connect(backend, SIGNAL(durationChanged()), this, SLOT(onDurationChanged()));
     }
 
-    if (d->hook) d->hook->setBackend(backend);
-
     emit backendChanged();
 }
 
@@ -959,8 +957,6 @@ void WDeclarativePlayer::setHook(WAbstractHook * hook)
     {
         hook->setParent    (this);
         hook->setParentItem(this);
-
-        hook->setBackend(d->backend);
     }
 
     emit hookChanged();

@@ -24,7 +24,6 @@
 
 // Sk includes
 #include <WTorrentEngine>
-#include <WHookTorrent>
 
 W_INIT_CONTROLLER(WControllerTorrent)
 
@@ -56,8 +55,6 @@ void WControllerTorrentPrivate::init()
     thread->start();
 
     engine = new WTorrentEngine(thread);
-
-    qmlRegisterType<WHookTorrent>("Sky", 1,0, "HookTorrent");
 }
 
 //-------------------------------------------------------------------------------------------------
