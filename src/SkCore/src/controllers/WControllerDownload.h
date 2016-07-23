@@ -116,7 +116,7 @@ private:
     WControllerDownload();
 
 protected: // Initialize
-    void init();
+    /* virtual */ void init();
 
 public: // Interface
     Q_INVOKABLE

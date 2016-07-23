@@ -27,7 +27,7 @@
     We mean it.
 */
 
-#include <private/WController_p>
+#include <private/Sk_p>
 
 #ifndef SK_NO_CONTROLLERAPPLICATION
 
@@ -35,7 +35,7 @@
 class QCoreApplication;
 class WFileWatcher;
 
-class SK_CORE_EXPORT WControllerApplicationPrivate : public WControllerPrivate
+class SK_CORE_EXPORT WControllerApplicationPrivate : public WPrivate
 {
 public:
     WControllerApplicationPrivate(WControllerApplication * p);

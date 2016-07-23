@@ -149,7 +149,7 @@ WControllerPlugin::WControllerPlugin() : WController(new WControllerPluginPrivat
 // Initialize
 //-------------------------------------------------------------------------------------------------
 
-void WControllerPlugin::init()
+/* virtual */ void WControllerPlugin::init()
 {
     Q_D(WControllerPlugin); d->init();
 }

@@ -46,7 +46,7 @@ private:
     WControllerNetwork();
 
 protected: // Initialize
-    void init();
+    /* virtual */ void init();
 
 public: // Static interface
     Q_INVOKABLE static bool textIsUrl(const QString & text);

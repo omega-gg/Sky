@@ -77,7 +77,7 @@ private:
     WControllerFile();
 
 protected: // Initialize
-    void init();
+    /* virtual */ void init();
 
 public: // Interface
     Q_INVOKABLE WCacheFile * getFile(const QUrl & url, QObject * parent = NULL, int maxHost = -1);

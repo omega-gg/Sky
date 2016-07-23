@@ -211,7 +211,7 @@ WControllerXml::WControllerXml() : WController(new WControllerXmlPrivate(this)) 
 // Initialize
 //-------------------------------------------------------------------------------------------------
 
-void WControllerXml::init()
+/* virtual */ void WControllerXml::init()
 {
     Q_D(WControllerXml); d->init();
 }

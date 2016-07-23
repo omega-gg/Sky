@@ -75,7 +75,7 @@ WControllerScript::WControllerScript() : WController(new WControllerScriptPrivat
 // Initialize
 //-------------------------------------------------------------------------------------------------
 
-void WControllerScript::init()
+/* virtual */ void WControllerScript::init()
 {
     Q_D(WControllerScript); d->init();
 }

@@ -39,7 +39,7 @@ class WControllerApplicationPrivate;
 #define sk WControllerApplication::instance()
 #define Sk WControllerApplication
 
-class SK_CORE_EXPORT WControllerApplication : public WController
+class SK_CORE_EXPORT WControllerApplication : public QObject, public WPrivatable
 {
     Q_OBJECT
 
@@ -91,8 +91,7 @@ public: // Enums
 private:
     WControllerApplication();
 
-protected: // Initialize
-    void init();
+    void initController();
 
 public: // Interface
     void startScript();

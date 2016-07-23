@@ -36,7 +36,7 @@ private:
     WControllerTorrent();
 
 protected: // Initialize
-    void init();
+    /* virtual */ void init();
 
 private:
     W_DECLARE_PRIVATE   (WControllerTorrent)

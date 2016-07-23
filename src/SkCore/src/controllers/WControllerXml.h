@@ -42,7 +42,7 @@ private:
     WControllerXml();
 
 protected: // Initialize
-    void init();
+    /* virtual */ void init();
 
 public: // Interface
     void createQueryThread();

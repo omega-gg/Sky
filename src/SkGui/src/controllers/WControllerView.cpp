@@ -145,7 +145,7 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 // Initialize
 //-------------------------------------------------------------------------------------------------
 
-void WControllerView::init()
+/* virtual */ void WControllerView::init()
 {
     Q_D(WControllerView); d->init();
 }

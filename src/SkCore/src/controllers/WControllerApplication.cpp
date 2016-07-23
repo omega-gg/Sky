@@ -72,7 +72,7 @@ static const QString CONTROLLERAPPLICATION_CHARACTERS = "abcdefghijklmnopqrstuvw
 #include "WControllerApplication_p.h"
 
 WControllerApplicationPrivate::WControllerApplicationPrivate(WControllerApplication * p)
-    : WControllerPrivate(p) {}
+    : WPrivate(p) {}
 
 /* virtual */ WControllerApplicationPrivate::~WControllerApplicationPrivate()
 {
@@ -233,8 +233,6 @@ void WControllerApplicationPrivate::declareController(WController * controller)
 {
     Q_Q(WControllerApplication);
 
-    if (controllers.contains(controller) == true) return;
-
     controller->setParent(application);
 
     controllers.append(controller);
@@ -246,11 +244,9 @@ void WControllerApplicationPrivate::undeclareController(WController * controller
 {
     Q_Q(WControllerApplication);
 
-    if (controllers.contains(controller) == false) return;
+    controllers.removeOne(controller);
 
     emit q->controllerDestroyed(controller);
-
-    controllers.removeOne(controller);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -328,13 +324,9 @@ void WControllerApplicationPrivate::onAboutToQuit()
 //-------------------------------------------------------------------------------------------------
 
 WControllerApplication::WControllerApplication()
-    : WController(new WControllerApplicationPrivate(this)) {}
+    : QObject(), WPrivatable(new WControllerApplicationPrivate(this)) {}
 
-//-------------------------------------------------------------------------------------------------
-// Initialize
-//-------------------------------------------------------------------------------------------------
-
-void WControllerApplication::init()
+void WControllerApplication::initController()
 {
     Q_D(WControllerApplication); d->init();
 }

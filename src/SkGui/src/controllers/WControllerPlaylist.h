@@ -48,7 +48,7 @@ private:
     WControllerPlaylist();
 
 protected: // Initialize
-    void init();
+    /* virtual */ void init();
 
 public: // Interface
     Q_INVOKABLE WLibraryItem * getLibraryItem(const QList<int> & idFull);

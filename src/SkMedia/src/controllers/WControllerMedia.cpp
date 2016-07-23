@@ -411,7 +411,7 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 // Initialize
 //-------------------------------------------------------------------------------------------------
 
-void WControllerMedia::init()
+/* virtual */ void WControllerMedia::init()
 {
     Q_D(WControllerMedia); d->init();
 }

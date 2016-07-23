@@ -338,7 +338,7 @@ WControllerDownload::WControllerDownload() : WController(new WControllerDownload
 // Initialize
 //-------------------------------------------------------------------------------------------------
 
-void WControllerDownload::init()
+/* virtual */ void WControllerDownload::init()
 {
     Q_D(WControllerDownload); d->init();
 }

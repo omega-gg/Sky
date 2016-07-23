@@ -53,7 +53,7 @@ private:
     WControllerDeclarative();
 
 protected: // Initialize
-    void init();
+    /* virtual */ void init();
 
 public: // Interface
     void clearComponentCache();

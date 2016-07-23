@@ -411,7 +411,7 @@ WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this
 // Initialize
 //-------------------------------------------------------------------------------------------------
 
-void WControllerFile::init()
+/* virtual */ void WControllerFile::init()
 {
     Q_D(WControllerFile); d->init();
 }

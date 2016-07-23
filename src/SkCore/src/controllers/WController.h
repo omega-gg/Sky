@@ -25,7 +25,6 @@
 
 // Forward declarations
 class WControllerPrivate;
-class WControllerApplicationPrivate;
 
 //-------------------------------------------------------------------------------------------------
 // Defines
@@ -90,8 +89,7 @@ class SK_CORE_EXPORT WController : public QObject, public WPrivatable
 
 protected:
     WController();
-    WController(WControllerPrivate            * p);
-    WController(WControllerApplicationPrivate * p);
+    WController(WControllerPrivate * p);
 
 public: // Interface
     void initController();

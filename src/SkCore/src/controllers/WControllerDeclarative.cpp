@@ -79,7 +79,7 @@ WControllerDeclarative::WControllerDeclarative()
 // Initialize
 //-------------------------------------------------------------------------------------------------
 
-void WControllerDeclarative::init()
+/* virtual */ void WControllerDeclarative::init()
 {
     Q_D(WControllerDeclarative); d->init();
 }

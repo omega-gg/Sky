@@ -503,7 +503,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 // Initialize
 //-------------------------------------------------------------------------------------------------
 
-void WControllerNetwork::init()
+/* virtual */ void WControllerNetwork::init()
 {
     Q_D(WControllerNetwork); d->init();
 }

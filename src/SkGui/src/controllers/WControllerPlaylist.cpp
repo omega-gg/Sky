@@ -2157,7 +2157,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 // Initialize
 //-------------------------------------------------------------------------------------------------
 
-void WControllerPlaylist::init()
+/* virtual */ void WControllerPlaylist::init()
 {
     Q_D(WControllerPlaylist); d->init();
 }

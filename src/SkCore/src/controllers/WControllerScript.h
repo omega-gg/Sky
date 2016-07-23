@@ -42,7 +42,7 @@ private:
     WControllerScript();
 
 protected: // Initialize
-    void init();
+    /* virtual */ void init();
 
 public: // Interface
     Q_INVOKABLE bool loadPlugin(const QString & extension);

@@ -47,7 +47,7 @@ private:
     WControllerView();
 
 protected: // Initialize
-    void init();
+    /* virtual */ void init();
 
 public: // Interface
     Q_INVOKABLE int screenNumber(const QWidget * widget = NULL) const;

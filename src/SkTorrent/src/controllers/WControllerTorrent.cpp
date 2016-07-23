@@ -67,7 +67,7 @@ WControllerTorrent::WControllerTorrent() : WController(new WControllerTorrentPri
 // Initialize
 //-------------------------------------------------------------------------------------------------
 
-void WControllerTorrent::init()
+/* virtual */ void WControllerTorrent::init()
 {
     Q_D(WControllerTorrent); d->init();
 }
