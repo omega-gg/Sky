@@ -30,9 +30,9 @@ class SK_GUI_EXPORT WAbstractHook : public WAbstractBackend
 
     Q_PROPERTY(WAbstractBackend * backend READ backend CONSTANT)
 
-public:
-    WAbstractHook(WAbstractBackend * backend);
 protected:
+    WAbstractHook(WAbstractBackend * backend);
+
     WAbstractHook(WAbstractHookPrivate * p, WAbstractBackend * backend);
 
 public: // Interface
