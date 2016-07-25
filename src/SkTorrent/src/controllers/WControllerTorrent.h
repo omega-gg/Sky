@@ -17,6 +17,9 @@
 #ifndef WCONTROLLERTORRENT_H
 #define WCONTROLLERTORRENT_H
 
+// Qt includes
+#include <QUrl>
+
 // Sk includes
 #include <WController>
 
@@ -29,6 +32,42 @@ class WTorrentEngine;
 // Defines
 #define wControllerTorrent WControllerTorrent::instance()
 
+//-------------------------------------------------------------------------------------------------
+// WTorrentReply
+//-------------------------------------------------------------------------------------------------
+
+class SK_TORRENT_EXPORT WTorrentReply : public QObject
+{
+    Q_OBJECT
+
+private:
+    WTorrentReply(const QUrl & url, QObject * parent);
+
+private: // Functions
+    int extractIndex(const QUrl & url);
+
+signals:
+    void loaded(WTorrentReply * reply);
+
+public: // Properties
+    QUrl url() const;
+
+    int index() const;
+
+private: // Variables
+    QUrl _url;
+
+    int _index;
+
+private:
+    friend class WControllerTorrent;
+    friend class WControllerTorrentPrivate;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WControllerTorrent
+//-------------------------------------------------------------------------------------------------
+
 class SK_TORRENT_EXPORT WControllerTorrent : public WController
 {
     Q_OBJECT
@@ -39,6 +78,9 @@ class SK_TORRENT_EXPORT WControllerTorrent : public WController
 
 private:
     WControllerTorrent();
+
+public: // Interface
+    Q_INVOKABLE WTorrentReply * getTorrent(const QUrl & url, QObject * parent = NULL);
 
 protected: // Initialize
     /* virtual */ void init();

@@ -24,6 +24,7 @@
 
 // Sk includes
 #include <WControllerFile>
+#include <WControllerNetwork>
 #include <WTorrentEngine>
 
 W_INIT_CONTROLLER(WControllerTorrent)
@@ -33,9 +34,45 @@ W_INIT_CONTROLLER(WControllerTorrent)
 
 static const QString CONTROLLERTORRENT_PATH_TORRENTS = "/torrents";
 
-//-------------------------------------------------------------------------------------------------
+//=================================================================================================
+// WTorrentReply
+//=================================================================================================
 // Private
+
+WTorrentReply::WTorrentReply(const QUrl & url, QObject * parent) : QObject(parent)
+{
+    _url = WControllerNetwork::removeUrlFragment(url);
+
+    _index = extractIndex(url);
+}
+
 //-------------------------------------------------------------------------------------------------
+// Functions
+//-------------------------------------------------------------------------------------------------
+
+int WTorrentReply::extractIndex(const QUrl & url)
+{
+    QString fragment = url.fragment();
+
+    if (fragment.isEmpty())
+    {
+         return -1;
+    }
+    else return fragment.toInt();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Properties
+//-------------------------------------------------------------------------------------------------
+
+QUrl WTorrentReply::url() const
+{
+    return _url;
+}
+
+//=================================================================================================
+// WControllerTorrentPrivate
+//=================================================================================================
 
 #include <private/WControllerTorrent_p>
 
@@ -66,11 +103,28 @@ void WControllerTorrentPrivate::init()
                      q,               SIGNAL(pathStorageChanged()));
 }
 
-//-------------------------------------------------------------------------------------------------
-// Ctor / dtor
-//-------------------------------------------------------------------------------------------------
+//=================================================================================================
+// WControllerTorrent
+//=================================================================================================
 
 WControllerTorrent::WControllerTorrent() : WController(new WControllerTorrentPrivate(this)) {}
+
+//-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ WTorrentReply * WControllerTorrent::getTorrent(const QUrl & url,
+                                                                 QObject    * parent)
+{
+    if (url.isValid() == false) return NULL;
+
+    WTorrentReply * reply;
+
+    if (parent) reply = new WTorrentReply(url, parent);
+    else        reply = new WTorrentReply(url, this);
+
+    return reply;
+}
 
 //-------------------------------------------------------------------------------------------------
 // Initialize

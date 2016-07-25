@@ -32,7 +32,7 @@ WHookTorrentPrivate::WHookTorrentPrivate(WHookTorrent * p) : WAbstractHookPrivat
 
 void WHookTorrentPrivate::init()
 {
-    engine = wControllerTorrent->engine();
+    reply = NULL;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -64,9 +64,17 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 // Protected WAbstractHook reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ bool WHookTorrent::backendSetSource(const QUrl &)
+/* virtual */ bool WHookTorrent::backendSetSource(const QUrl & url)
 {
-    return true;
+    Q_D(WHookTorrent);
+
+    d->reply = wControllerTorrent->getTorrent(url, this);
+
+    if (d->reply)
+    {
+         return true;
+    }
+    else return false;
 }
 
 #endif // SK_NO_HOOKTORRENT
