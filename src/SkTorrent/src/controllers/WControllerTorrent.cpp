@@ -85,6 +85,13 @@ WControllerTorrent::WControllerTorrent() : WController(new WControllerTorrentPri
 // Properties
 //-------------------------------------------------------------------------------------------------
 
+WTorrentEngine * WControllerTorrent::engine() const
+{
+    Q_D(const WControllerTorrent); return d->engine;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 QString WControllerTorrent::pathStorage() const
 {
     return wControllerFile->pathStorage() + "/torrents";

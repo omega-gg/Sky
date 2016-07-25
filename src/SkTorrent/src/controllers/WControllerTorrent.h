@@ -24,6 +24,7 @@
 
 // Forward declarations
 class WControllerTorrentPrivate;
+class WTorrentEngine;
 
 // Defines
 #define wControllerTorrent WControllerTorrent::instance()
@@ -31,6 +32,8 @@ class WControllerTorrentPrivate;
 class SK_TORRENT_EXPORT WControllerTorrent : public WController
 {
     Q_OBJECT
+
+    Q_PROPERTY(WTorrentEngine * engine READ engine CONSTANT)
 
     Q_PROPERTY(QString pathStorage READ pathStorage NOTIFY pathStorageChanged)
 
@@ -44,6 +47,8 @@ signals:
     void pathStorageChanged();
 
 public: // Properties
+    WTorrentEngine * engine() const;
+
     QString pathStorage() const;
 
 private:
