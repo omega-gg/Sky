@@ -38,7 +38,7 @@ class WVlcPlayer;
 #define wControllerMedia WControllerMedia::instance()
 
 //-------------------------------------------------------------------------------------------------
-// WMediaSource
+// WMediaReply
 //-------------------------------------------------------------------------------------------------
 
 class SK_MEDIA_EXPORT WMediaReply : public QObject
