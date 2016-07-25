@@ -17,8 +17,8 @@
 #include "WHookTorrent.h"
 
 // Sk includes
-#include <WControllerFile>
 #include <WControllerNetwork>
+#include <WControllerTorrent>
 
 #ifndef SK_NO_HOOKTORRENT
 
@@ -30,7 +30,10 @@
 
 WHookTorrentPrivate::WHookTorrentPrivate(WHookTorrent * p) : WAbstractHookPrivate(p) {}
 
-void WHookTorrentPrivate::init() {}
+void WHookTorrentPrivate::init()
+{
+    engine = wControllerTorrent->engine();
+}
 
 //-------------------------------------------------------------------------------------------------
 // Ctor / dtor

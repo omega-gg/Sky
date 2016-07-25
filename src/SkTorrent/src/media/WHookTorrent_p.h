@@ -32,12 +32,18 @@
 
 #ifndef SK_NO_HOOKTORRENT
 
+// Forward declarations
+class WTorrentEngine;
+
 class SK_TORRENT_EXPORT WHookTorrentPrivate : public WAbstractHookPrivate
 {
 public:
     WHookTorrentPrivate(WHookTorrent * p);
 
     void init();
+
+public: // Variables
+    WTorrentEngine * engine;
 
 protected:
     W_DECLARE_PUBLIC(WHookTorrent)
