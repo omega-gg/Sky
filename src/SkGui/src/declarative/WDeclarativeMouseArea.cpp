@@ -587,7 +587,7 @@ bool WDeclarativeMouseArea::setPressed(bool pressed)
 
     bool isClick;
 
-    if (d->pressed == true && pressed == false && dragged == false && isUnderMouse())
+    if (d->pressed && pressed == false && dragged == false && isUnderMouse())
     {
          isClick = true;
     }
@@ -1074,7 +1074,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QGraphicsSceneMouseEvent * event)
 
         bool dragged = d->drag && d->drag->active();
 
-        if (d->pressed && dragged == false && d->hovered == true)
+        if (d->pressed && dragged == false && d->hovered)
         {
             d->longPress = true;
 

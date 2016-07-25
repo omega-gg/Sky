@@ -389,7 +389,7 @@ void WControllerFilePrivate::onCheckWatchers()
 
     foreach (WFileWatcher * watcher, watchers)
     {
-        if (watcher->d_func()->checked == true) continue;
+        if (watcher->d_func()->checked) continue;
 
         if (watcher->d_func()->checkChange(fileCount) == false) return;
     }
@@ -846,7 +846,7 @@ void WControllerFile::onCheckWatchers()
 
     foreach (WFileWatcher * watcher, d->watchers)
     {
-        if (watcher->d_func()->checked == true) continue;
+        if (watcher->d_func()->checked) continue;
 
         if (watcher->d_func()->checkChange(fileCount) == false) return;
     }

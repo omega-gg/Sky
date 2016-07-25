@@ -137,7 +137,7 @@ WallBookmarkTrack
 
     function expose()
     {
-        if (isExposed == true) return;
+        if (isExposed) return;
 
         pUpdatePlayerItems(true);
 

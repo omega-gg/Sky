@@ -514,7 +514,11 @@ WAbstractPlaylist::WAbstractPlaylist(WAbstractPlaylistPrivate * p, Type         
 
     const WAbstractTrack * track = itemAt(index);
 
-    return (d->selectedTracks.contains(track) == true);
+    if (d->selectedTracks.contains(track))
+    {
+         return true;
+    }
+    else return false;
 }
 
 //-------------------------------------------------------------------------------------------------
