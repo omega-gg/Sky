@@ -23,6 +23,8 @@
 #include <QList>
 #include <QTimer>
 
+#ifndef SK_NO_CONTROLLERFILE
+
 // Forward declarations
 class WFileWatcher;
 class WLocalObject;
@@ -72,4 +74,5 @@ protected:
     W_DECLARE_PUBLIC(WControllerFile)
 };
 
+#endif // SK_NO_CONTROLLERFILE
 #endif // WCONTROLLERFILE_P_H
