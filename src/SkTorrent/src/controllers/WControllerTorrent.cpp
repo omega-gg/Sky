@@ -23,9 +23,15 @@
 #include <QDeclarativeComponent>
 
 // Sk includes
+#include <WControllerFile>
 #include <WTorrentEngine>
 
 W_INIT_CONTROLLER(WControllerTorrent)
+
+//-------------------------------------------------------------------------------------------------
+// Static variables
+
+static const QString CONTROLLERTORRENT_PATH_TORRENTS = "/torrents";
 
 //-------------------------------------------------------------------------------------------------
 // Private
@@ -55,6 +61,9 @@ void WControllerTorrentPrivate::init()
     thread->start();
 
     engine = new WTorrentEngine(thread);
+
+    QObject::connect(wControllerFile, SIGNAL(pathStorageChanged()),
+                     q,               SIGNAL(pathStorageChanged()));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -70,6 +79,15 @@ WControllerTorrent::WControllerTorrent() : WController(new WControllerTorrentPri
 /* virtual */ void WControllerTorrent::init()
 {
     Q_D(WControllerTorrent); d->init();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Properties
+//-------------------------------------------------------------------------------------------------
+
+QString WControllerTorrent::pathStorage() const
+{
+    return wControllerFile->pathStorage() + "/torrents";
 }
 
 #endif // SK_NO_CONTROLLERTORRENT

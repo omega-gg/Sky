@@ -55,6 +55,13 @@ static const QString CONTROLLERPLAYLIST_FILTERS
                   "*.txt *.md);;"
     "All files (*)";
 
+//-------------------------------------------------------------------------------------------------
+
+static const QString CONTROLLERPLAYLIST_PATH_PLAYLISTS = "/playlists";
+static const QString CONTROLLERPLAYLIST_PATH_TABS      = "/tabs";
+
+//-------------------------------------------------------------------------------------------------
+
 static const int CONTROLLERPLAYLIST_MAX_SIZE = 1048576 * 10; // 10 Megabytes
 
 static const int CONTROLLERPLAYLIST_MAX_TRACKS    = 500;
@@ -2658,12 +2665,12 @@ QList<WBackendNet *> WControllerPlaylist::backends() const
 
 QString WControllerPlaylist::pathStorage() const
 {
-    return wControllerFile->pathStorage() + "/playlists";
+    return wControllerFile->pathStorage() + CONTROLLERPLAYLIST_PATH_PLAYLISTS;
 }
 
 QString WControllerPlaylist::pathStorageTabs() const
 {
-    return wControllerFile->pathStorage() + "/tabs";
+    return wControllerFile->pathStorage() + CONTROLLERPLAYLIST_PATH_TABS;
 }
 
 //-------------------------------------------------------------------------------------------------

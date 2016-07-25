@@ -32,11 +32,19 @@ class SK_TORRENT_EXPORT WControllerTorrent : public WController
 {
     Q_OBJECT
 
+    Q_PROPERTY(QString pathStorage READ pathStorage NOTIFY pathStorageChanged)
+
 private:
     WControllerTorrent();
 
 protected: // Initialize
     /* virtual */ void init();
+
+signals:
+    void pathStorageChanged();
+
+public: // Properties
+    QString pathStorage() const;
 
 private:
     W_DECLARE_PRIVATE   (WControllerTorrent)
