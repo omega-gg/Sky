@@ -68,6 +68,8 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 {
     Q_D(WHookTorrent);
 
+    if (d->reply) delete d->reply;
+
     d->reply = wControllerTorrent->getTorrent(url, this);
 
     if (d->reply)
