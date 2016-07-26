@@ -310,7 +310,6 @@ void WControllerMediaPrivate::onLoaded(WRemoteData * data)
         medias.removeOne(media);
 
         delete media;
-        delete data;
     }
     else
     {
@@ -324,9 +323,9 @@ void WControllerMediaPrivate::onLoaded(WRemoteData * data)
 
         media->backend->loadSource(reply, media->query,
                                    q, SLOT(onSourceLoaded(QIODevice *, WBackendNetSource)));
-
-        delete data;
     }
+
+    delete data;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -431,9 +430,9 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 
 /* Q_INVOKABLE */ WMediaReply * WControllerMedia::getMedia(const QUrl & url, QObject * parent)
 {
-    Q_D(WControllerMedia);
-
     if (url.isValid() == false) return NULL;
+
+    Q_D(WControllerMedia);
 
     WMediaReply * reply;
 
