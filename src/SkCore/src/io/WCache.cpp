@@ -95,6 +95,7 @@ public: // Enums
     {
         EventGet = QEvent::User,
         EventAdd,
+        EventWrite,
         EventAbort,
         EventPop,
         EventRemove,
@@ -128,6 +129,8 @@ private: // Functions
     int hostCount(const QString & host);
 
     bool writeFile(QNetworkReply * reply, WCacheJob * job);
+
+    void writeData(const QUrl & url, const QByteArray & array);
 
     void cleanFiles();
 
@@ -191,6 +194,27 @@ public: // Variables
     QUrl url;
 
     int maxHost;
+};
+
+//=================================================================================================
+// WCacheThreadEventWrite
+//=================================================================================================
+
+class WCacheThreadEventWrite : public QEvent
+{
+public:
+    WCacheThreadEventWrite(const QUrl & url, const QByteArray & array)
+        : QEvent(static_cast<QEvent::Type> (WCacheThread::EventWrite))
+    {
+        this->url = url;
+
+        this->array = array;
+    }
+
+public: // Variables
+    QUrl url;
+
+    QByteArray array;
 };
 
 //=================================================================================================
@@ -429,6 +453,14 @@ bool WCacheThread::event(QEvent * event)
 
             job->files.append(eventFile->file);
         }
+
+        return true;
+    }
+    else if (type == static_cast<QEvent::Type> (WCacheThread::EventWrite))
+    {
+        WCacheThreadEventWrite * eventWrite = static_cast<WCacheThreadEventWrite *> (event);
+
+        writeData(eventWrite->url, eventWrite->array);
 
         return true;
     }
@@ -834,6 +866,59 @@ bool WCacheThread::writeFile(QNetworkReply * reply, WCacheJob * job)
 
 //-------------------------------------------------------------------------------------------------
 
+void WCacheThread::writeData(const QUrl & url, const QByteArray & array)
+{
+    qint64 sizeFile = array.size() * sizeof(char);
+
+    if (sizeFile >= sizeMax)
+    {
+        qWarning("WCacheThread::writeData: Data is too large %s.", url.C_URL);
+
+        size = 0;
+
+        QCoreApplication::postEvent(cache, new WCacheEventFailed(url, "Data is too large"));
+
+        return;
+    }
+
+    size += sizeFile;
+
+    cleanFiles();
+
+    int id = ids.generateId();
+
+    QString extension = WControllerNetwork::extractUrlExtension(url);
+
+    QString urlCache = path + '/' + QString::number(id) + '.' + extension;
+
+    QFile file(urlCache);
+
+    if (file.open(QIODevice::WriteOnly) == false)
+    {
+        qWarning("WCacheThread::writeData: Cannot write file %s.", urlCache.C_STR);
+
+        ids.removeOne(id);
+
+        QCoreApplication::postEvent(cache, new WCacheEventFailed(url, "Cannot write file"));
+
+        return;
+    }
+
+    file.write(array);
+
+    file.close();
+
+    addData(id, url, urlCache, extension, sizeFile);
+
+    QCoreApplication::postEvent(cache, new WCacheEventAdded(url, urlCache));
+
+    save();
+
+    return;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void WCacheThread::cleanFiles()
 {
     QList<QUrl> urls;
@@ -1081,7 +1166,7 @@ void WCachePrivate::init(const QString & path, qint64 sizeMax)
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WCachePrivate::get(const QUrl & url, WCacheFile * file)
+void WCachePrivate::get(WCacheFile * file, const QUrl & url)
 {
     WCacheFiles * files = urlsPending.value(url);
 
@@ -1112,6 +1197,31 @@ void WCachePrivate::get(const QUrl & url, WCacheFile * file)
         }
     }
 }
+
+void WCachePrivate::write(WCacheFile * file, const QUrl & url, const QByteArray & array)
+{
+    WCacheFiles * files = urlsPending.value(url);
+
+    if (files)
+    {
+        files->list.append(file);
+
+        return;
+    }
+
+    files = new WCacheFiles;
+
+    files->list.append(file);
+
+    urlsPending.insert(url, files);
+
+    if (loaded)
+    {
+        QCoreApplication::postEvent(thread, new WCacheThreadEventWrite(url, array));
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
 
 void WCachePrivate::pop(const QUrl & url)
 {
@@ -1152,19 +1262,6 @@ void WCachePrivate::clearFile(WCacheFile * file)
 
         delete files;
     }
-}
-
-//-------------------------------------------------------------------------------------------------
-
-bool WCachePrivate::urlIsLocal(const QUrl & url) const
-{
-    QString scheme = url.scheme().toLower();
-
-    if (scheme == "http" || scheme == "https")
-    {
-         return false;
-    }
-    else return true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1233,12 +1330,12 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
 /* Q_INVOKABLE */ WCacheFile * WCache::getFile(const QUrl & url, QObject * parent, int maxHost)
 {
-    Q_D(WCache);
-
-    if (url.isValid() == false || d->urlIsLocal(url))
+    if (url.isValid() == false || WControllerNetwork::urlIsHttp(url) == false)
     {
         return NULL;
     }
+
+    Q_D(WCache);
 
     WCacheFile * file;
 
@@ -1263,7 +1360,46 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
     {
         file->_loaded = false;
 
-        d->get(url, file);
+        d->get(file, url);
+    }
+
+    return file;
+}
+
+/* Q_INVOKABLE */ WCacheFile * WCache::writeFile(const QUrl       & url,
+                                                 const QByteArray & array, QObject * parent)
+{
+    if (url.isValid() == false || WControllerNetwork::urlIsHttp(url) == false)
+    {
+        return NULL;
+    }
+
+    Q_D(WCache);
+
+    WCacheFile * file;
+
+    if (parent) file = new WCacheFile(this, parent);
+    else        file = new WCacheFile(this, this);
+
+    file->_url = url;
+
+    file->_maxHost = -1;
+
+    QUrl path = d->urls.value(url);
+
+    if (path.isValid())
+    {
+        file->_urlCache = path;
+
+        file->_loaded = true;
+
+        d->pop(url);
+    }
+    else
+    {
+        file->_loaded = false;
+
+        d->write(file, url, array);
     }
 
     return file;
@@ -1318,7 +1454,7 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
     foreach (const QUrl & url, urls)
     {
-        if (url.isValid() == false || d->urlIsLocal(url)) continue;
+        if (url.isValid() == false || WControllerNetwork::urlIsHttp(url) == false) continue;
 
         if (d->urls.contains(url) == false)
         {
@@ -1334,7 +1470,7 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
                 file->_loaded = false;
 
-                d->get(url, file);
+                d->get(file, url);
 
                 connect(file, SIGNAL(loaded(WCacheFile *)), this, SLOT(onLoaded(WCacheFile *)));
             }

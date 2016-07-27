@@ -101,6 +101,9 @@ public:
 public: // Interface
     Q_INVOKABLE WCacheFile * getFile(const QUrl & url, QObject * parent = NULL, int maxHost = -1);
 
+    Q_INVOKABLE WCacheFile * writeFile(const QUrl       & url,
+                                       const QByteArray & array, QObject * parent = NULL);
+
     Q_INVOKABLE void removeFiles(const QList<QUrl> & urls);
     Q_INVOKABLE void removeFile (const QUrl        & url);
 

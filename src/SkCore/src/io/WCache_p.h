@@ -61,12 +61,12 @@ public:
     void init(const QString & path, qint64 sizeMax);
 
 public: // Functions
-    void get(const QUrl & url, WCacheFile * file);
+    void get  (WCacheFile * file, const QUrl & url);
+    void write(WCacheFile * file, const QUrl & url, const QByteArray & array);
+
     void pop(const QUrl & url);
 
     void clearFile(WCacheFile * file);
-
-    bool urlIsLocal(const QUrl & url) const;
 
     void setEmpty(bool empty);
 
