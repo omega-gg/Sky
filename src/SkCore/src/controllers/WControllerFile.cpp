@@ -425,11 +425,13 @@ WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this
 {
     Q_D(WControllerFile);
 
-    if (d->cache)
+    if (d->cache == NULL)
     {
-         return d->cache->getFile(url, parent, maxHost);
+        qWarning("WControllerFile::getFile: Cannot get file %s. No cache.", url.C_URL);
+
+        return NULL;
     }
-    else return NULL;
+    else return d->cache->getFile(url, parent, maxHost);
 }
 
 //-------------------------------------------------------------------------------------------------
