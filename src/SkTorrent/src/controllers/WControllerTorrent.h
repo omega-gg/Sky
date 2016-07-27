@@ -54,10 +54,16 @@ public: // Properties
 
     int index() const;
 
+    bool hasError() const;
+
+    QString error() const;
+
 private: // Variables
     QUrl _url;
 
     int _index;
+
+    QString _error;
 
 private:
     friend class WControllerTorrent;
@@ -96,7 +102,11 @@ public: // Properties
 private:
     W_DECLARE_PRIVATE   (WControllerTorrent)
     W_DECLARE_CONTROLLER(WControllerTorrent)
+
+    Q_PRIVATE_SLOT(d_func(), void onLoaded(WRemoteData *))
 };
+
+#include <private/WControllerTorrent_p>
 
 #endif // SK_NO_CONTROLLERTORRENT
 #endif // WCONTROLLERTORRENT_H

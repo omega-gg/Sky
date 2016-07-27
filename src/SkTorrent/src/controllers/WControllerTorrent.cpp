@@ -25,6 +25,7 @@
 // Sk includes
 #include <WControllerFile>
 #include <WControllerNetwork>
+#include <WControllerDownload>
 #include <WTorrentEngine>
 
 W_INIT_CONTROLLER(WControllerTorrent)
@@ -75,6 +76,18 @@ int WTorrentReply::index() const
     return _index;
 }
 
+//-------------------------------------------------------------------------------------------------
+
+bool WTorrentReply::hasError() const
+{
+    return (_error.isEmpty() == false);
+}
+
+QString WTorrentReply::error() const
+{
+    return _error;
+}
+
 //=================================================================================================
 // WControllerTorrentPrivate
 //=================================================================================================
@@ -108,6 +121,89 @@ void WControllerTorrentPrivate::init()
                      q,               SIGNAL(pathStorageChanged()));
 }
 
+//-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
+
+void WControllerTorrentPrivate::loadTorrent(WTorrentReply * reply)
+{
+    Q_Q(WControllerTorrent);
+
+    const QUrl & url = reply->_url;
+
+    QHashIterator<WRemoteData *, WPrivateTorrentData *> i(jobs);
+
+    WRemoteData         * data    = NULL;
+    WPrivateTorrentData * torrent = NULL;
+
+    while (i.hasNext())
+    {
+         i.next();
+
+         if (i.value()->url == url)
+         {
+             data    = i.key  ();
+             torrent = i.value();
+
+             break;
+         }
+    }
+
+    if (data == NULL)
+    {
+        data = wControllerDownload->getData(url, q, QNetworkRequest::HighPriority);
+
+        if (data == NULL)
+        {
+            qWarning("WControllerTorrentPrivate::loadTorrent: Failed to load torrent %s.",
+                     url.C_URL);
+
+            return;
+        }
+
+        QObject::connect(data, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoaded(WRemoteData *)));
+
+        torrent = new WPrivateTorrentData;
+
+        torrent->url = url;
+
+        jobs.insert(data, torrent);
+    }
+
+    torrent->replies.append(reply);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private slots
+//-------------------------------------------------------------------------------------------------
+
+void WControllerTorrentPrivate::onLoaded(WRemoteData * data)
+{
+    WPrivateTorrentData * torrent = jobs.take(data);
+
+    if (data->hasError())
+    {
+        qWarning("WControllerTorrentPrivate::onLoaded: Failed to load torrent %s.",
+                 data->url().C_URL);
+
+        QString error = data->error();
+
+        foreach (WTorrentReply * reply, torrent->replies)
+        {
+            reply->_error = error;
+
+            emit reply->loaded(reply);
+        }
+
+        delete torrent;
+    }
+    else
+    {
+    }
+
+    delete data;
+}
+
 //=================================================================================================
 // WControllerTorrent
 //=================================================================================================
@@ -123,10 +219,14 @@ WControllerTorrent::WControllerTorrent() : WController(new WControllerTorrentPri
 {
     if (url.isValid() == false) return NULL;
 
+    Q_D(WControllerTorrent);
+
     WTorrentReply * reply;
 
     if (parent) reply = new WTorrentReply(url, parent);
     else        reply = new WTorrentReply(url, this);
+
+    d->loadTorrent(reply);
 
     return reply;
 }
