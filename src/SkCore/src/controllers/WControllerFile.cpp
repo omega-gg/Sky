@@ -434,6 +434,22 @@ WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this
     else return d->cache->getFile(url, parent, maxHost);
 }
 
+
+/* Q_INVOKABLE */ WCacheFile * WControllerFile::writeFile(const QUrl       & url,
+                                                          const QByteArray & array,
+                                                          QObject          * parent)
+{
+    Q_D(WControllerFile);
+
+    if (d->cache == NULL)
+    {
+        qWarning("WControllerFile::writeFile: Cannot write file %s. No cache.", url.C_URL);
+
+        return NULL;
+    }
+    else return d->cache->writeFile(url, array, parent);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WControllerFile::waitActions()
