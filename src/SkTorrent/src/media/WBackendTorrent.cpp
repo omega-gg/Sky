@@ -243,6 +243,8 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
         index++;
     }
 
+    reply.cache = data;
+
     return reply;
 }
 
