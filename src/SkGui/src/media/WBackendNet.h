@@ -129,40 +129,49 @@ public: // Variables
 };
 
 //-------------------------------------------------------------------------------------------------
+// WBackendNetItem
+//-------------------------------------------------------------------------------------------------
+
+class SK_GUI_EXPORT WBackendNetItem
+{
+public:
+    WBackendNetItem();
+
+public: // Variables
+    bool valid;
+
+    QByteArray cache;
+
+    WBackendNetQuery nextQuery;
+};
+
+//-------------------------------------------------------------------------------------------------
 // WBackendNetTrack
 //-------------------------------------------------------------------------------------------------
 
-class SK_GUI_EXPORT WBackendNetTrack
+class SK_GUI_EXPORT WBackendNetTrack : public WBackendNetItem
 {
 public:
     WBackendNetTrack();
 
 public: // Variables
-    bool valid;
-
     WTrackNet track;
-
-    WBackendNetQuery nextQuery;
 };
 
 //-------------------------------------------------------------------------------------------------
 // WBackendNetPlaylist
 //-------------------------------------------------------------------------------------------------
 
-class SK_GUI_EXPORT WBackendNetPlaylist
+class SK_GUI_EXPORT WBackendNetPlaylist : public WBackendNetItem
 {
 public:
     WBackendNetPlaylist();
 
 public: // Variables
-    bool valid;
-
     QString title;
     QUrl    cover;
 
     QList<WTrackNet> tracks;
-
-    WBackendNetQuery nextQuery;
 
     bool clearDuplicate;
 };
@@ -171,20 +180,16 @@ public: // Variables
 // WBackendNetFolder
 //-------------------------------------------------------------------------------------------------
 
-class SK_GUI_EXPORT WBackendNetFolder
+class SK_GUI_EXPORT WBackendNetFolder : public WBackendNetItem
 {
 public:
     WBackendNetFolder();
 
 public: // Variables
-    bool valid;
-
     QString title;
     QUrl    cover;
 
     QList<WLibraryFolderItem> items;
-
-    WBackendNetQuery nextQuery;
 
     bool scanItems;
 };

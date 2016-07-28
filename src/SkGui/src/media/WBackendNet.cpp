@@ -118,22 +118,26 @@ WBackendNetSource::WBackendNetSource()
 }
 
 //=================================================================================================
-// WBackendNetTrack
+// WBackendNetItem
 //=================================================================================================
 
-WBackendNetTrack::WBackendNetTrack()
+WBackendNetItem::WBackendNetItem()
 {
     valid = true;
 }
 
 //=================================================================================================
+// WBackendNetTrack
+//=================================================================================================
+
+WBackendNetTrack::WBackendNetTrack() : WBackendNetItem() {}
+
+//=================================================================================================
 // WBackendNetPlaylist
 //=================================================================================================
 
-WBackendNetPlaylist::WBackendNetPlaylist()
+WBackendNetPlaylist::WBackendNetPlaylist() : WBackendNetItem()
 {
-    valid = true;
-
     clearDuplicate = false;
 }
 
@@ -141,10 +145,8 @@ WBackendNetPlaylist::WBackendNetPlaylist()
 // WBackendNetFolder
 //=================================================================================================
 
-WBackendNetFolder::WBackendNetFolder()
+WBackendNetFolder::WBackendNetFolder() : WBackendNetItem()
 {
-    valid = true;
-
     scanItems = false;
 }
 
