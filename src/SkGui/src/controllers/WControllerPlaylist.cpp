@@ -33,6 +33,7 @@
 #include <WControllerDownload>
 #include <WPlaylistNet>
 #include <WTabTrack>
+#include <WCache>
 
 // Private includes
 #include <private/WPlaylistNet_p>
@@ -1315,6 +1316,17 @@ void WControllerPlaylistPrivate::scanItems(QList<WLibraryFolderItem> * items) co
 
 //-------------------------------------------------------------------------------------------------
 
+void WControllerPlaylistPrivate::addToCache(const QUrl & url, const QByteArray & array) const
+{
+    if (array.isEmpty()) return;
+
+    WCacheFile * file = wControllerFile->writeFile(url, array);
+
+    if (file) delete file;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 bool WControllerPlaylistPrivate::getDataTrack(WPlaylistNet           * playlist,
                                               WTrackNet              * track,
                                               const WBackendNetQuery & query)
@@ -1630,6 +1642,8 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice              * device,
 
         playlist->updateTrack(index);
 
+        addToCache(track->source(), reply.cache);
+
         WBackendNetQuery nextQuery = reply.nextQuery;
 
         if (nextQuery.isValid())
@@ -1714,6 +1728,8 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
 
         emit playlist->queryEnded();
 
+        addToCache(playlist->source(), reply.cache);
+
         WBackendNetQuery nextQuery = reply.nextQuery;
 
         if (nextQuery.isValid())
@@ -1770,6 +1786,8 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
         folder->addItems(reply.items);
 
         emit folder->queryEnded();
+
+        addToCache(folder->source(), reply.cache);
 
         WBackendNetQuery nextQuery = reply.nextQuery;
 

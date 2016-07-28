@@ -189,6 +189,8 @@ public: // Functions
 
     void scanItems(QList<WLibraryFolderItem> * items) const;
 
+    void addToCache(const QUrl & url, const QByteArray & array) const;
+
     //---------------------------------------------------------------------------------------------
 
     bool getDataTrack(WPlaylistNet * playlist, WTrackNet * track, const WBackendNetQuery & query);
