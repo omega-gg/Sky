@@ -820,8 +820,6 @@ bool WCacheThread::writeFile(QNetworkReply * reply, WCacheJob * job)
     {
         qWarning("WCacheThread::writeFile: File is too large %s.", url.C_URL);
 
-        size = 0;
-
         QCoreApplication::postEvent(cache, new WCacheEventFailed(url, "File is too large"));
 
         return false;
@@ -873,8 +871,6 @@ void WCacheThread::writeData(const QUrl & url, const QByteArray & array)
     if (sizeFile >= sizeMax)
     {
         qWarning("WCacheThread::writeData: Data is too large %s.", url.C_URL);
-
-        size = 0;
 
         QCoreApplication::postEvent(cache, new WCacheEventFailed(url, "Data is too large"));
 
