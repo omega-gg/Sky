@@ -85,6 +85,8 @@ public: // Interface
     Q_INVOKABLE WCacheFile * writeFile(const QUrl       & url,
                                        const QByteArray & array, QObject * parent = NULL);
 
+    Q_INVOKABLE void addFile(const QUrl & url, const QByteArray & array);
+
     Q_INVOKABLE void waitActions();
 
     //---------------------------------------------------------------------------------------------

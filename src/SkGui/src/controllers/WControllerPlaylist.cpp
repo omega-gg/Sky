@@ -1320,9 +1320,7 @@ void WControllerPlaylistPrivate::addToCache(const QUrl & url, const QByteArray &
 {
     if (array.isEmpty()) return;
 
-    WCacheFile * file = wControllerFile->writeFile(url, array);
-
-    if (file) delete file;
+    wControllerFile->addFile(url, array);
 }
 
 //-------------------------------------------------------------------------------------------------

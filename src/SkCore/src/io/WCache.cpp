@@ -1407,6 +1407,15 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ void WCache::addFile(const QUrl & url, const QByteArray & array)
+{
+    WCacheFile * file = writeFile(url, array, NULL);
+
+    if (file) delete file;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ void WCache::removeFiles(const QList<QUrl> & urls)
 {
     Q_D(WCache);
