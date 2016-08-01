@@ -132,6 +132,8 @@ private: // Functions
 
     void writeData(const QUrl & url, const QByteArray & array);
 
+    QString getUrlCache(int id, const QString & extension) const;
+
     void cleanFiles();
 
     void addData(int id, const QUrl & url,
@@ -829,14 +831,11 @@ bool WCacheThread::writeFile(QNetworkReply * reply, WCacheJob * job)
 
     cleanFiles();
 
-    QString extension = QImageReader::imageFormat(reply);
+    int id = job->id;
 
-    if (extension.isEmpty())
-    {
-        extension = WControllerNetwork::extractUrlExtension(url);
-    }
+    QString extension = WControllerNetwork::extractUrlExtension(url);
 
-    QString urlCache = path + '/' + QString::number(job->id) + '.' + extension;
+    QString urlCache = getUrlCache(id, extension);
 
     QFile file(urlCache);
 
@@ -853,7 +852,7 @@ bool WCacheThread::writeFile(QNetworkReply * reply, WCacheJob * job)
 
     file.close();
 
-    addData(job->id, url, urlCache, extension, sizeFile);
+    addData(id, url, urlCache, extension, sizeFile);
 
     QCoreApplication::postEvent(cache, new WCacheEventAdded(url, urlCache));
 
@@ -885,7 +884,7 @@ void WCacheThread::writeData(const QUrl & url, const QByteArray & array)
 
     QString extension = WControllerNetwork::extractUrlExtension(url);
 
-    QString urlCache = path + '/' + QString::number(id) + '.' + extension;
+    QString urlCache = getUrlCache(id, extension);
 
     QFile file(urlCache);
 
@@ -909,8 +908,15 @@ void WCacheThread::writeData(const QUrl & url, const QByteArray & array)
     QCoreApplication::postEvent(cache, new WCacheEventAdded(url, urlCache));
 
     save();
+}
 
-    return;
+QString WCacheThread::getUrlCache(int id, const QString & extension) const
+{
+    if (extension.isEmpty())
+    {
+         return path + '/' + QString::number(id);
+    }
+    else return path + '/' + QString::number(id) + '.' + extension;
 }
 
 //-------------------------------------------------------------------------------------------------
