@@ -432,6 +432,19 @@ WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this
     else return NULL;
 }
 
+/* Q_INVOKABLE */ WCacheFile * WControllerFile::getHttp(const QUrl & url, QObject * parent,
+                                                                          int       maxHost)
+{
+    Q_D(WControllerFile);
+
+    if (d->cache && WControllerNetwork::urlIsHttp(url))
+    {
+         return d->cache->getFile(url, parent, maxHost);
+    }
+    else return NULL;
+}
+
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ WCacheFile * WControllerFile::writeFile(const QUrl       & url,
                                                           const QByteArray & array,

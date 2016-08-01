@@ -130,7 +130,7 @@ void WDeclarativeImageSvgPrivate::loadUrl()
         file->deleteLater();
     }
 
-    file = wControllerFile->getFile(url, q);
+    file = wControllerFile->getHttp(url, q);
 
     if (file)
     {

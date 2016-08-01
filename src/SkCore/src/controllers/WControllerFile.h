@@ -81,6 +81,7 @@ protected: // Initialize
 
 public: // Interface
     Q_INVOKABLE WCacheFile * getFile(const QUrl & url, QObject * parent = NULL, int maxHost = -1);
+    Q_INVOKABLE WCacheFile * getHttp(const QUrl & url, QObject * parent = NULL, int maxHost = -1);
 
     Q_INVOKABLE WCacheFile * writeFile(const QUrl       & url,
                                        const QByteArray & array, QObject * parent = NULL);
