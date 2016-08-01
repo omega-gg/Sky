@@ -1326,7 +1326,7 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
 /* Q_INVOKABLE */ WCacheFile * WCache::getFile(const QUrl & url, QObject * parent, int maxHost)
 {
-    if (url.isValid() == false || WControllerNetwork::urlIsHttp(url) == false)
+    if (url.isValid() == false)
     {
         return NULL;
     }
@@ -1365,7 +1365,7 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 /* Q_INVOKABLE */ WCacheFile * WCache::writeFile(const QUrl       & url,
                                                  const QByteArray & array, QObject * parent)
 {
-    if (url.isValid() == false || WControllerNetwork::urlIsHttp(url) == false)
+    if (url.isValid() == false)
     {
         return NULL;
     }
@@ -1459,7 +1459,7 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
     foreach (const QUrl & url, urls)
     {
-        if (url.isValid() == false || WControllerNetwork::urlIsHttp(url) == false) continue;
+        if (url.isValid() == false) continue;
 
         if (d->urls.contains(url) == false)
         {
