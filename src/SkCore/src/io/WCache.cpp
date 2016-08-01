@@ -50,8 +50,6 @@ struct WCacheJob
 
     int redirectCount;
 
-    QList<WCacheFile *> files;
-
     int maxHost;
 
     QString error;
@@ -428,8 +426,6 @@ bool WCacheThread::event(QEvent * event)
 
         job->maxHost = eventFile->maxHost;
 
-        job->files.append(eventFile->file);
-
         jobsPending.append(job);
 
         processJobs();
@@ -452,8 +448,6 @@ bool WCacheThread::event(QEvent * event)
             {
                 job->maxHost = max;
             }
-
-            job->files.append(eventFile->file);
         }
 
         return true;
