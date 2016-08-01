@@ -425,13 +425,11 @@ WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this
 {
     Q_D(WControllerFile);
 
-    if (d->cache == NULL)
+    if (d->cache)
     {
-        qWarning("WControllerFile::getFile: Cannot get file %s. No cache.", url.C_URL);
-
-        return NULL;
+         return d->cache->getFile(url, parent, maxHost);
     }
-    else return d->cache->getFile(url, parent, maxHost);
+    else return NULL;
 }
 
 
@@ -441,24 +439,22 @@ WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this
 {
     Q_D(WControllerFile);
 
-    if (d->cache == NULL)
+    if (d->cache)
     {
-        qWarning("WControllerFile::writeFile: Cannot write file %s. No cache.", url.C_URL);
-
-        return NULL;
+         return d->cache->writeFile(url, array, parent);
     }
-    else return d->cache->writeFile(url, array, parent);
+    else return NULL;
 }
 
 /* Q_INVOKABLE */ void WControllerFile::addFile(const QUrl & url, const QByteArray & array)
 {
     Q_D(WControllerFile);
 
-    if (d->cache == NULL)
+    if (d->cache)
     {
-        qWarning("WControllerFile::addFile: Cannot add file %s. No cache.", url.C_URL);
+        d->cache->addFile(url, array);
     }
-    else d->cache->addFile(url, array);
+    else qWarning("WControllerFile::addFile: Cannot add file %s. No cache.", url.C_URL);;
 }
 
 //-------------------------------------------------------------------------------------------------
