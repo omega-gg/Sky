@@ -147,29 +147,26 @@ void WDeclarativeAnimatedPrivate::onFinished()
         }
         else step++;
     }
-    else
+    else if (step == 0)
     {
-        if (step == 0)
+        if (loopCount != -1)
         {
-            if (loopCount != -1)
+            loop++;
+
+            if (loop == loopCount)
             {
-                loop++;
+                q->setRunning(false);
 
-                if (loop == loopCount)
-                {
-                    q->setRunning(false);
+                emit q->loopChanged();
 
-                    emit q->loopChanged();
-
-                    return;
-                }
-                else emit q->loopChanged();
+                return;
             }
-
-            step = stepCount - 1;
+            else emit q->loopChanged();
         }
-        else step--;
+
+        step = stepCount - 1;
     }
+    else step--;
 
     if (stepMode == WDeclarativeAnimated::StepManual)
     {
