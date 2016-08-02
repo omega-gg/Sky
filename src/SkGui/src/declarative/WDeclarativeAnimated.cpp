@@ -213,8 +213,9 @@ WDeclarativeAnimated::WDeclarativeAnimated(WDeclarativeAnimatedPrivate * p,
 
 /* Q_INVOKABLE */ void WDeclarativeAnimated::restart()
 {
-    stop ();
-    start();
+    stop();
+
+    setRunning(true);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -228,7 +229,7 @@ WDeclarativeAnimated::WDeclarativeAnimated(WDeclarativeAnimatedPrivate * p,
 {
     Q_D(WDeclarativeAnimated);
 
-    pause();
+    setRunning(false);
 
     d->setStep(-1);
     d->setLoop(-1);
@@ -242,17 +243,13 @@ WDeclarativeAnimated::WDeclarativeAnimated(WDeclarativeAnimatedPrivate * p,
 
     if (d->stepDirection == StepForward)
     {
-        if (d->step != -1 && d->step != (d->stepCount - 1))
-        {
-            d->step++;
-        }
-
         d->stepDirection = StepBackward;
+
+        setRunning(false);
 
         emit stepDirectionChanged();
     }
-
-    start();
+    else setRunning(true);
 }
 
 /* Q_INVOKABLE */ void WDeclarativeAnimated::stepForward()
@@ -261,17 +258,13 @@ WDeclarativeAnimated::WDeclarativeAnimated(WDeclarativeAnimatedPrivate * p,
 
     if (d->stepDirection == StepBackward)
     {
-        if (d->step != -1 && d->step)
-        {
-            d->step--;
-        }
-
         d->stepDirection = StepForward;
+
+        setRunning(false);
 
         emit stepDirectionChanged();
     }
-
-    start();
+    else setRunning(true);
 }
 
 //-------------------------------------------------------------------------------------------------
