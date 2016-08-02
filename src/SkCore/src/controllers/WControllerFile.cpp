@@ -467,7 +467,7 @@ WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this
     {
         d->cache->addFile(url, array);
     }
-    else qWarning("WControllerFile::addFile: Cannot add file %s. No cache.", url.C_URL);;
+    else qWarning("WControllerFile::addFile: Cannot add file %s. No cache.", url.C_URL);
 }
 
 //-------------------------------------------------------------------------------------------------
