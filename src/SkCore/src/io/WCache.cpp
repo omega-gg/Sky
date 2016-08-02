@@ -904,6 +904,8 @@ void WCacheThread::writeData(const QUrl & url, const QByteArray & array)
     save();
 }
 
+//-------------------------------------------------------------------------------------------------
+
 QString WCacheThread::getUrlCache(int id, const QString & extension) const
 {
     if (extension.isEmpty())
