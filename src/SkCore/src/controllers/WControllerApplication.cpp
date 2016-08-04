@@ -538,7 +538,7 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 
     if (indexB == -1)
     {
-         return string.mid(indexA, string.length() - indexA);
+         return string.mid(indexA);
     }
     else return string.mid(indexA, indexB + end.length() - indexA);
 }
@@ -556,7 +556,7 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 
     if (indexB == -1)
     {
-         return string.mid(indexA, string.length() - indexA);
+         return string.mid(indexA);
     }
     else return string.mid(indexA, indexB + end.matchedLength() - indexA);
 }
@@ -578,7 +578,7 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 
     if (indexB == -1)
     {
-         return string.mid(indexA, string.length() - indexA);
+         return string.mid(indexA);
     }
     else return string.mid(indexA, indexB - indexA);
 }
@@ -598,7 +598,7 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 
     if (indexB == -1)
     {
-         return string.mid(indexA, string.length() - indexA);
+         return string.mid(indexA);
     }
     else return string.mid(indexA, indexB - indexA);
 }

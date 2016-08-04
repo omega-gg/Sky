@@ -757,13 +757,13 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
         {
             index++;
 
-            return string.mid(index, string.length() - index);
+            return string.mid(index);
         }
         else return QString();
     }
     else if (string.startsWith("/"))
     {
-         return string.mid(1, string.length() - 1);
+         return string.mid(1);
     }
     else return string;
 }
@@ -801,7 +801,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
     if (to == -1)
     {
-         return string.mid(from, string.length() - from);
+         return string.mid(from);
     }
     else return string.mid(from, to - from);
 }
@@ -918,13 +918,13 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     {
         indexHost += 4;
 
-        return string.mid(indexHost, string.length() - indexHost);
+        return string.mid(indexHost);
     }
     else if (index == -1)
     {
         return string;
     }
-    else return string.mid(index, string.length() - index);
+    else return string.mid(index);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -984,7 +984,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     {
         index++;
 
-        return string.mid(index, string.length() - index);
+        return string.mid(index);
     }
     else return QString();
 }
@@ -1078,7 +1078,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
     if (index > 0)
     {
-         return source.mid(index, source.length() - index);
+         return source.mid(index);
     }
     else return source;
 }
