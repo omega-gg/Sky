@@ -114,7 +114,7 @@ QString WBackendVimeoPrivate::extractCover(const QString & cover) const
     {
         int index = cover.lastIndexOf('/') + 1;
 
-        QString id = cover.mid(index, cover.length() - index);
+        QString id = cover.mid(index);
 
         return "https://i.vimeocdn.com/video/" + id +  + "_1280.jpg";
     }
@@ -643,7 +643,7 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
 
                 QString id = WControllerNetwork::extractJson(string, "uri");
 
-                id = id.mid(8, -1);
+                id = id.mid(8);
 
                 QString title = WControllerNetwork::extractJsonUtf8(string, "name");
 
@@ -705,53 +705,26 @@ WBackendNetFolder WBackendVimeo::extractFolder(const QByteArray       & data,
 
     QStringList list = WControllerNetwork::splitJson(json);
 
-    if (query.id == 1)
+    foreach (const QString & string, list)
     {
-        foreach (const QString & string, list)
-        {
-            QString result = WControllerNetwork::stripJson(string, "user");
+        QString source = WControllerNetwork::extractJson(string, "link");
 
-            QString id = WControllerNetwork::extractJson(result, "profile");
+        QString title = WControllerNetwork::extractJsonUtf8(string, "name");
 
-            QString title = WControllerNetwork::extractJsonUtf8(result, "name");
-            QString cover = WControllerNetwork::extractJson    (result, "thumbnail");
+        QString cover = WControllerNetwork::extractJson(string, "pictures");
 
-            cover = WControllerNetwork::decodeUrl(cover);
+        cover = WControllerNetwork::extractJson(cover, "link");
 
-            cover = d->extractCover(cover);
+        cover = d->extractCover(cover);
 
-            WLibraryFolderItem playlist(WLibraryItem::PlaylistFeed, WLibraryItem::Default);
+        WLibraryFolderItem playlist(WLibraryItem::PlaylistFeed, WLibraryItem::Default);
 
-            playlist.source = "https://vimeo.com" + id;
+        playlist.source = source;
 
-            playlist.title = title;
-            playlist.cover = cover;
+        playlist.title = title;
+        playlist.cover = cover;
 
-            reply.items.append(playlist);
-        }
-    }
-    else
-    {
-        foreach (const QString & string, list)
-        {
-            QString id = WControllerNetwork::extractJson(string, "url");
-
-            QString title = WControllerNetwork::extractJsonUtf8(string, "name");
-            QString cover = WControllerNetwork::extractJson    (string, "thumbnail");
-
-            cover = WControllerNetwork::decodeUrl(cover);
-
-            cover = d->extractCover(cover);
-
-            WLibraryFolderItem playlist(WLibraryItem::PlaylistFeed, WLibraryItem::Default);
-
-            playlist.source = "https://vimeo.com" + id;
-
-            playlist.title = title;
-            playlist.cover = cover;
-
-            reply.items.append(playlist);
-        }
+        reply.items.append(playlist);
     }
 
     int id = query.data.toInt() + 1;
