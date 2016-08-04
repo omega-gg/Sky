@@ -110,6 +110,14 @@ QString WBackendVimeoPrivate::extractCover(const QString & cover) const
     {
          return QString();
     }
+    else if (cover.startsWith("https://vimeo.com"))
+    {
+        int index = cover.lastIndexOf('/') + 1;
+
+        QString id = cover.mid(index, cover.length() - index);
+
+        return "https://i.vimeocdn.com/video/" + id +  + "_1280.jpg";
+    }
     else return Sk::slice(cover, "", "_") + "1280.jpg";
 }
 
@@ -629,14 +637,19 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
 
             foreach (const QString & string, list)
             {
-                QString vod = WControllerNetwork::extractJson(string, "is_vod");
+                QString privacy = WControllerNetwork::extractJson(string, "privacy");
 
-                if (vod == "true") continue;
+                if (privacy == "\"view\":\"ptv\"") continue;
 
-                QString id = WControllerNetwork::extractJson(string, "id");
+                QString id = WControllerNetwork::extractJson(string, "uri");
 
-                QString title = WControllerNetwork::extractJsonUtf8(string, "title");
-                QString cover = WControllerNetwork::extractJson    (string, "thumbnail");
+                id = id.mid(8, -1);
+
+                QString title = WControllerNetwork::extractJsonUtf8(string, "name");
+
+                QString cover = WControllerNetwork::extractJson(string, "pictures");
+
+                cover = WControllerNetwork::extractJson(cover, "link");
 
                 cover = d->extractCover(cover);
 
