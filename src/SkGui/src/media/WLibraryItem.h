@@ -108,6 +108,10 @@ public: // Interface
 
     Q_INVOKABLE bool loadSource(const QUrl & source, bool load = true);
 
+    Q_INVOKABLE void clearSource();
+
+    //---------------------------------------------------------------------------------------------
+
     Q_INVOKABLE bool loadQuery  ();
     Q_INVOKABLE bool reloadQuery();
 

@@ -212,6 +212,11 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
     return true;
 }
 
+/* Q_INVOKABLE */ void WLibraryItem::clearSource()
+{
+    loadSource(QUrl(), false);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ bool WLibraryItem::loadQuery()
