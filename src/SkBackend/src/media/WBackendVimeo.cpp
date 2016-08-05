@@ -112,11 +112,15 @@ QString WBackendVimeoPrivate::extractCover(const QString & cover) const
     }
     else if (cover.startsWith("https://vimeo.com"))
     {
-        int index = cover.lastIndexOf('/') + 1;
+        int index = cover.lastIndexOf('/');
 
-        QString id = cover.mid(index);
+        if (index != -1)
+        {
+            QString id = cover.mid(index + 1);
 
-        return "https://i.vimeocdn.com/video/" + id +  + "_1280.jpg";
+            return "https://i.vimeocdn.com/video/" + id +  + "_1280.jpg";
+        }
+        else return QString();
     }
     else return Sk::slice(cover, "", "_") + "1280.jpg";
 }
