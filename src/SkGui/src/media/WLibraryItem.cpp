@@ -566,7 +566,7 @@ QUrl WLibraryItem::source() const
 
 void WLibraryItem::setSource(const QUrl & source)
 {
-    loadSource(source, true);
+    loadSource(source);
 }
 
 //-------------------------------------------------------------------------------------------------
