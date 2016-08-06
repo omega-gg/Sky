@@ -16,6 +16,7 @@
 #include "WDeclarativeMouseWatcher.h"
 #include "WDeclarativePlayer.h"
 #include "WDeclarativeText.h"
+#include "WDeclarativeTextSvg.h"
 #include "WMainViewDrag.h"
 #include "WMainViewResizer.h"
 #include "WMainView.h"

@@ -53,6 +53,7 @@
 #include <WDeclarativeImageSvg>
 #include <WDeclarativeBorderImage>
 #include <WDeclarativeText>
+#include <WDeclarativeTextSvg>
 #include <WDeclarativePlayer>
 
 // Models includes
@@ -230,7 +231,8 @@ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
     qmlRegisterType<WDeclarativeBorderImage>     ("Sky", 1,0, "BorderImage");
     qmlRegisterType<WDeclarativeBorderImageScale>("Sky", 1,0, "BorderImageScale");
 
-    qmlRegisterType<WDeclarativeText>("Sky", 1,0, "Text");
+    qmlRegisterType<WDeclarativeText>   ("Sky", 1,0, "Text");
+    qmlRegisterType<WDeclarativeTextSvg>("Sky", 1,0, "TextSvg");
 
     qmlRegisterType<WDeclarativePlayer>("Sky", 1,0, "Player");
 
