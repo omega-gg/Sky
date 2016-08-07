@@ -18,7 +18,7 @@
 #define WDECLARATIVETEXTSVG_H
 
 // Sk includes
-#include <WDeclarativeItem>
+#include <WDeclarativeText>
 
 #ifndef SK_NO_DECLARATIVETEXTSVG
 
@@ -28,12 +28,77 @@ class SK_GUI_EXPORT WDeclarativeTextSvg : public WDeclarativeItem
 {
     Q_OBJECT
 
+    Q_ENUMS(TextStyle)
+    Q_ENUMS(TextOutline)
+
+    Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
+
+    Q_PROPERTY(QFont font READ font WRITE setFont NOTIFY fontChanged)
+
+    Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
+
+    Q_PROPERTY(TextStyle   style   READ style   WRITE setStyle   NOTIFY styleChanged)
+    Q_PROPERTY(TextOutline outline READ outline WRITE setOutline NOTIFY outlineChanged)
+
+    Q_PROPERTY(QColor styleColor READ styleColor WRITE setStyleColor NOTIFY styleColorChanged)
+    Q_PROPERTY(int    styleSize  READ styleSize  WRITE setStyleSize  NOTIFY styleSizeChanged)
+
+public: // Enums
+    enum TextStyle
+    {
+        Normal  = WDeclarativeText::Normal,
+        Outline = WDeclarativeText::Outline,
+        Raised  = WDeclarativeText::Raised,
+        Sunken  = WDeclarativeText::Sunken,
+        Glow
+    };
+
+    enum TextOutline { OutlineNormal, OutlineRound };
+
 public:
     explicit WDeclarativeTextSvg(QDeclarativeItem * parent = NULL);
+
+public: // QDeclarativeItem reimplementation
+    /* virtual */ void componentComplete();
 
 public: // QGraphicsItem reimplementation
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
+
+signals:
+    void textChanged();
+
+    void fontChanged();
+
+    void colorChanged();
+
+    void styleChanged  ();
+    void outlineChanged();
+
+    void styleColorChanged();
+    void styleSizeChanged ();
+
+public: // Properties
+    QString text() const;
+    void    setText(const QString & text);
+
+    QFont font() const;
+    void  setFont(const QFont & font);
+
+    QColor color() const;
+    void   setColor(const QColor & color);
+
+    TextStyle style() const;
+    void      setStyle(TextStyle style);
+
+    TextOutline outline() const;
+    void        setOutline(TextOutline outline);
+
+    QColor styleColor() const;
+    void   setStyleColor(const QColor & color);
+
+    int  styleSize() const;
+    void setStyleSize(int size);
 
 private:
     W_DECLARE_PRIVATE(WDeclarativeTextSvg)

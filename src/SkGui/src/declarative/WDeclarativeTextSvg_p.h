@@ -42,11 +42,41 @@ protected:
 
     void init();
 
+public: // Functions
+    void load();
+
+    QString getText(const QString & x,
+                    const QString & y,
+                    const QString & family,
+                    const QString & weight,
+                    const QString & size,
+                    const QString & color, const QString & extra = QString()) const;
+
+    QString getOutline(const QString & color, int size) const;
+
+    QString getWeight() const;
+
 public: // Slots
     void onRepaintNeeded();
 
 public: // Variables
     QSvgRenderer * renderer;
+
+    int width;
+    int height;
+
+    QString text;
+
+    QFont font;
+
+    QColor color;
+
+    WDeclarativeTextSvg::TextStyle style;
+
+    QColor styleColor;
+    int    styleSize;
+
+    WDeclarativeTextSvg::TextOutline outline;
 
 protected:
     W_DECLARE_PUBLIC(WDeclarativeTextSvg)
