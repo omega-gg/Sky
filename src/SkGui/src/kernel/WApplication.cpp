@@ -231,8 +231,9 @@ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
     qmlRegisterType<WDeclarativeBorderImage>     ("Sky", 1,0, "BorderImage");
     qmlRegisterType<WDeclarativeBorderImageScale>("Sky", 1,0, "BorderImageScale");
 
-    qmlRegisterType<WDeclarativeText>   ("Sky", 1,0, "Text");
-    qmlRegisterType<WDeclarativeTextSvg>("Sky", 1,0, "TextSvg");
+    qmlRegisterType<WDeclarativeText>        ("Sky", 1,0, "Text");
+    qmlRegisterType<WDeclarativeTextSvg>     ("Sky", 1,0, "TextSvg");
+    qmlRegisterType<WDeclarativeTextSvgScale>("Sky", 1,0, "TextSvgScale");
 
     qmlRegisterType<WDeclarativePlayer>("Sky", 1,0, "Player");
 

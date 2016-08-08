@@ -605,8 +605,7 @@ void WDeclarativeImageSvgScalePrivate::onScale()
 {
     Q_D(WDeclarativeImageSvgScale);
 
-    setImplicitWidth (d->size.width ());
-    setImplicitHeight(d->size.height());
+    WDeclarativeImageSvg::svgChange();
 
     if (d->scaling) d->restore();
 

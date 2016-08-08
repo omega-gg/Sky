@@ -23,6 +23,11 @@
 #ifndef SK_NO_DECLARATIVETEXTSVG
 
 class WDeclarativeTextSvgPrivate;
+class WDeclarativeTextSvgScalePrivate;
+
+//-------------------------------------------------------------------------------------------------
+// WDeclarativeTextSvg
+//-------------------------------------------------------------------------------------------------
 
 class SK_GUI_EXPORT WDeclarativeTextSvg : public WDeclarativeItem
 {
@@ -32,6 +37,8 @@ class SK_GUI_EXPORT WDeclarativeTextSvg : public WDeclarativeItem
     Q_ENUMS(TextOutline)
 
     Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
+
+    Q_PROPERTY(LoadMode loadMode READ loadMode WRITE setLoadMode NOTIFY loadModeChanged)
 
     Q_PROPERTY(QFont font READ font WRITE setFont NOTIFY fontChanged)
 
@@ -50,6 +57,8 @@ class SK_GUI_EXPORT WDeclarativeTextSvg : public WDeclarativeItem
                NOTIFY verticalAlignmentChanged)
 
 public: // Enums
+    enum LoadMode { LoadAlways, LoadVisible };
+
     enum TextStyle
     {
         Normal  = WDeclarativeText::Normal,
@@ -63,6 +72,8 @@ public: // Enums
 
 public:
     explicit WDeclarativeTextSvg(QDeclarativeItem * parent = NULL);
+protected:
+    WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p, QDeclarativeItem * parent = NULL);
 
 public: // QDeclarativeItem reimplementation
     /* virtual */ void componentComplete();
@@ -71,8 +82,13 @@ public: // QGraphicsItem reimplementation
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
 
+protected: // Functions
+    virtual void svgChange(); /* {} */
+
 signals:
     void textChanged();
+
+    void loadModeChanged();
 
     void fontChanged();
 
@@ -90,6 +106,9 @@ signals:
 public: // Properties
     QString text() const;
     void    setText(const QString & text);
+
+    LoadMode loadMode() const;
+    void     setLoadMode(LoadMode mode);
 
     QFont font() const;
     void  setFont(const QFont & font);
@@ -122,6 +141,58 @@ private:
 };
 
 QML_DECLARE_TYPE(WDeclarativeTextSvg)
+
+//-------------------------------------------------------------------------------------------------
+// WDeclarativeTextSvgScale
+//-------------------------------------------------------------------------------------------------
+
+class SK_GUI_EXPORT WDeclarativeTextSvgScale : public WDeclarativeTextSvg
+{
+    Q_OBJECT
+
+    Q_PROPERTY(bool scaling READ isScaling WRITE setScaling NOTIFY scalingChanged)
+
+    Q_PROPERTY(bool scaleDelayed READ scaleDelayed WRITE setScaleDelayed
+               NOTIFY scaleDelayedChanged)
+
+    Q_PROPERTY(int scaleDelay READ scaleDelay WRITE setScaleDelay NOTIFY scaleDelayChanged)
+
+public:
+    explicit WDeclarativeTextSvgScale(QDeclarativeItem * parent = NULL);
+
+public: // QGraphicsItem reimplementation
+    /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
+                                                 QWidget                        * widget);
+
+signals:
+    void scalingChanged();
+
+    void scaleDelayedChanged();
+    void scaleDelayChanged  ();
+
+protected: // QGraphicsItem reimplementation
+    /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
+
+protected: // WDeclarativeTextSvg reimplementation
+    virtual void svgChange();
+
+public: // Properties
+    bool isScaling() const;
+    void setScaling(bool scaling);
+
+    bool scaleDelayed() const;
+    void setScaleDelayed(bool delayed);
+
+    int  scaleDelay() const;
+    void setScaleDelay(int delay);
+
+private:
+    W_DECLARE_PRIVATE(WDeclarativeTextSvgScale)
+
+    Q_PRIVATE_SLOT(d_func(), void onScale())
+};
+
+QML_DECLARE_TYPE(WDeclarativeTextSvgScale)
 
 #include <private/WDeclarativeTextSvg_p>
 

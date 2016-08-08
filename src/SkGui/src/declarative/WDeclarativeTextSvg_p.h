@@ -27,6 +27,9 @@
     We mean it.
 */
 
+// Qt includes
+#include <QTimer>
+
 // Sk includes
 #include <private/WDeclarativeItem_p>
 
@@ -34,6 +37,10 @@
 
 // Forward declarations
 class QSvgRenderer;
+
+//-------------------------------------------------------------------------------------------------
+// WDeclarativeTextSvgPrivate
+//-------------------------------------------------------------------------------------------------
 
 class SK_GUI_EXPORT WDeclarativeTextSvgPrivate : public WDeclarativeItemPrivate
 {
@@ -45,7 +52,10 @@ protected:
 public: // Functions
     QRectF getRect(qreal width, qreal height) const;
 
-    void load();
+    void load       ();
+    void loadVisible();
+
+    void loadSvg();
 
     QString getText(const QString & x,
                     const QString & y,
@@ -63,6 +73,10 @@ public: // Slots
 
 public: // Variables
     QSvgRenderer * renderer;
+
+    WDeclarativeTextSvg::LoadMode loadMode;
+
+    bool loadLater : 1;
 
     int width;
     int height;
@@ -85,6 +99,40 @@ public: // Variables
 
 protected:
     W_DECLARE_PUBLIC(WDeclarativeTextSvg)
+};
+
+//-------------------------------------------------------------------------------------------------
+// WDeclarativeTextSvgScalePrivate
+//-------------------------------------------------------------------------------------------------
+
+class SK_GUI_EXPORT WDeclarativeTextSvgScalePrivate : public WDeclarativeTextSvgPrivate
+{
+protected:
+    WDeclarativeTextSvgScalePrivate(WDeclarativeTextSvgScale * p);
+
+    void init();
+
+public: // Functions
+    void restore();
+
+public: // Slots
+    void onScale();
+
+public: // Variables
+    QPixmap scalePixmap;
+    QSize   scaleSize;
+
+    bool scaling;
+    bool scalable;
+    bool scaled;
+
+    bool scaleDelayed;
+    int  scaleDelay;
+
+    QTimer timer;
+
+protected:
+    W_DECLARE_PUBLIC(WDeclarativeTextSvgScale)
 };
 
 #endif // SK_NO_DECLARATIVETEXTSVG

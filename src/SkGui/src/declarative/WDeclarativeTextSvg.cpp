@@ -22,9 +22,12 @@
 #include <QSvgRenderer>
 #include <QPainter>
 
-//-------------------------------------------------------------------------------------------------
-// Private
-//-------------------------------------------------------------------------------------------------
+// Sk includes
+#include <WControllerView>
+
+//=================================================================================================
+// WDeclarativeTextSvgPrivate
+//=================================================================================================
 
 WDeclarativeTextSvgPrivate::WDeclarativeTextSvgPrivate(WDeclarativeTextSvg * p)
     : WDeclarativeItemPrivate(p) {}
@@ -34,6 +37,10 @@ void WDeclarativeTextSvgPrivate::init()
     Q_Q(WDeclarativeTextSvg);
 
     renderer = new QSvgRenderer(q);
+
+    loadMode = static_cast<WDeclarativeTextSvg::LoadMode> (wControllerView->loadMode());
+
+    loadLater = false;
 
     style   = WDeclarativeTextSvg::Normal;
     outline = WDeclarativeTextSvg::OutlineNormal;
@@ -86,6 +93,26 @@ QRectF WDeclarativeTextSvgPrivate::getRect(qreal width, qreal height) const
 //-------------------------------------------------------------------------------------------------
 
 void WDeclarativeTextSvgPrivate::load()
+{
+    if (loadMode == WDeclarativeTextSvg::LoadVisible && q_func()->isVisible() == false)
+    {
+        loadLater = true;
+    }
+    else loadSvg();
+}
+
+void WDeclarativeTextSvgPrivate::loadVisible()
+{
+    if (loadLater == false) return;
+
+    loadLater = false;
+
+    loadSvg();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WDeclarativeTextSvgPrivate::loadSvg()
 {
     Q_Q(WDeclarativeTextSvg);
 
@@ -184,8 +211,7 @@ void WDeclarativeTextSvgPrivate::load()
         renderer->load(content);
     }
 
-    q->setImplicitWidth (width);
-    q->setImplicitHeight(height);
+    q->svgChange();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -236,12 +262,22 @@ void WDeclarativeTextSvgPrivate::onRepaintNeeded()
     Q_Q(WDeclarativeTextSvg); q->update();
 }
 
-//-------------------------------------------------------------------------------------------------
-// Ctor / dtor
-//-------------------------------------------------------------------------------------------------
+//=================================================================================================
+// WDeclarativeTextSvg
+//=================================================================================================
 
 /* explicit */ WDeclarativeTextSvg::WDeclarativeTextSvg(QDeclarativeItem * parent)
     : WDeclarativeItem(new WDeclarativeTextSvgPrivate(this), parent)
+{
+    Q_D(WDeclarativeTextSvg); d->init();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Protected
+
+WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p,
+                                         QDeclarativeItem           * parent)
+    : WDeclarativeItem(p, parent)
 {
     Q_D(WDeclarativeTextSvg); d->init();
 }
@@ -287,6 +323,18 @@ void WDeclarativeTextSvgPrivate::onRepaintNeeded()
 }
 
 //-------------------------------------------------------------------------------------------------
+// Protected functions
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WDeclarativeTextSvg::svgChange()
+{
+    Q_D(WDeclarativeTextSvg);
+
+    setImplicitWidth (d->width);
+    setImplicitHeight(d->height);
+}
+
+//-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
 
@@ -306,6 +354,29 @@ void WDeclarativeTextSvg::setText(const QString & text)
     if (isComponentComplete()) d->load();
 
     emit textChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+WDeclarativeTextSvg::LoadMode WDeclarativeTextSvg::loadMode() const
+{
+    Q_D(const WDeclarativeTextSvg); return d->loadMode;
+}
+
+void WDeclarativeTextSvg::setLoadMode(LoadMode mode)
+{
+    Q_D(WDeclarativeTextSvg);
+
+    if (d->loadMode == mode) return;
+
+    d->loadMode = mode;
+
+    if (mode != LoadVisible)
+    {
+        d->loadVisible();
+    }
+
+    emit loadModeChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -466,6 +537,247 @@ void WDeclarativeTextSvg::setVAlign(WDeclarativeText::VAlignment align)
     update();
 
     emit verticalAlignmentChanged();
+}
+
+//=================================================================================================
+// WDeclarativeTextSvgScalePrivate
+//=================================================================================================
+
+WDeclarativeTextSvgScalePrivate::WDeclarativeTextSvgScalePrivate(WDeclarativeTextSvgScale * p)
+    : WDeclarativeTextSvgPrivate(p) {}
+
+void WDeclarativeTextSvgScalePrivate::init()
+{
+    Q_Q(WDeclarativeTextSvgScale);
+
+    scaling  = true;
+    scalable = false;
+    scaled   = false;
+
+    scaleDelayed = true;
+    scaleDelay   = 220;
+
+    timer.setInterval(scaleDelay);
+
+    timer.setSingleShot(true);
+
+    QObject::connect(&timer, SIGNAL(timeout()), q, SLOT(onScale()));
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
+
+void WDeclarativeTextSvgScalePrivate::restore()
+{
+    timer.stop();
+
+    scalePixmap = QPixmap();
+    scaleSize   = QSize  ();
+
+    scaled = false;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private slots
+//-------------------------------------------------------------------------------------------------
+
+void WDeclarativeTextSvgScalePrivate::onScale()
+{
+    Q_Q(WDeclarativeTextSvgScale);
+
+    qreal width  = q->width ();
+    qreal height = q->height();
+
+    scalePixmap = QPixmap(width, height);
+
+    scalePixmap.fill(Qt::transparent);
+
+    QPainter painter(&scalePixmap);
+
+    QRectF rect = getRect(width, height);
+
+    renderer->render(&painter, rect);
+
+    scaled = true;
+
+    q->update();
+}
+
+//=================================================================================================
+// WDeclarativeTextSvgScale
+//=================================================================================================
+
+/* explicit */ WDeclarativeTextSvgScale::WDeclarativeTextSvgScale(QDeclarativeItem * parent)
+    : WDeclarativeTextSvg(new WDeclarativeTextSvgScalePrivate(this), parent)
+{
+    Q_D(WDeclarativeTextSvgScale); d->init();
+}
+
+//-------------------------------------------------------------------------------------------------
+// QGraphicsItem reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WDeclarativeTextSvgScale::paint(QPainter                       * painter,
+                                                   const QStyleOptionGraphicsItem * option,
+                                                   QWidget                        * widget)
+{
+    Q_D(WDeclarativeTextSvgScale);
+
+    if (d->scaling && d->scalable)
+    {
+        if (d->scaled)
+        {
+            bool smooth = painter->testRenderHint(QPainter::SmoothPixmapTransform);
+
+            painter->setRenderHint(QPainter::SmoothPixmapTransform);
+
+            if (clip())
+            {
+                painter->save();
+
+                painter->setClipRect(QRectF(0, 0, width(), height()), Qt::IntersectClip);
+
+                painter->drawPixmap(0, 0, d->scalePixmap);
+
+                painter->restore();
+            }
+            else painter->drawPixmap(0, 0, d->scalePixmap);
+
+            painter->setRenderHint(QPainter::SmoothPixmapTransform, smooth);
+
+            return;
+        }
+
+        QSize size = QSize(width(), height());
+
+        if (d->scaleSize != size)
+        {
+            if (d->scaleDelayed)
+            {
+                if (d->viewport->scale() == 1.0)
+                {
+                    d->scaleSize = size;
+
+                    d->timer.start();
+                }
+            }
+            else
+            {
+                d->scaleSize = size;
+
+                d->onScale();
+            }
+        }
+    }
+
+    WDeclarativeTextSvg::paint(painter, option, widget);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Protected QGraphicsItem reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WDeclarativeTextSvgScale::geometryChanged(const QRectF & newGeometry,
+                                                             const QRectF & oldGeometry)
+{
+    Q_D(WDeclarativeTextSvgScale);
+
+    WDeclarativeTextSvg::geometryChanged(newGeometry, oldGeometry);
+
+    if (d->scaling && d->scalable && oldGeometry.size() != newGeometry.size())
+    {
+        d->restore();
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+// Protected WDeclarativeImageSvg reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WDeclarativeTextSvgScale::svgChange()
+{
+    Q_D(WDeclarativeTextSvgScale);
+
+    WDeclarativeTextSvg::svgChange();
+
+    if (d->scaling) d->restore();
+
+    if (d->width > 0)
+    {
+         d->scalable = true;
+    }
+    else d->scalable = false;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Properties
+//-------------------------------------------------------------------------------------------------
+
+bool WDeclarativeTextSvgScale::isScaling() const
+{
+    Q_D(const WDeclarativeTextSvgScale); return d->scaling;
+}
+
+void WDeclarativeTextSvgScale::setScaling(bool scaling)
+{
+    Q_D(WDeclarativeTextSvgScale);
+
+    if (d->scaling == scaling) return;
+
+    d->scaling = scaling;
+
+    if (scaling == false)
+    {
+        d->restore();
+    }
+
+    emit scalingChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WDeclarativeTextSvgScale::scaleDelayed() const
+{
+    Q_D(const WDeclarativeTextSvgScale); return d->scaleDelayed;
+}
+
+void WDeclarativeTextSvgScale::setScaleDelayed(bool delayed)
+{
+    Q_D(WDeclarativeTextSvgScale);
+
+    if (d->scaleDelayed == delayed) return;
+
+    d->scaleDelayed = delayed;
+
+    if (delayed == false && d->timer.isActive())
+    {
+        d->timer.stop();
+
+        d->onScale();
+    }
+
+    emit scaleDelayedChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+int WDeclarativeTextSvgScale::scaleDelay() const
+{
+    Q_D(const WDeclarativeTextSvgScale); return d->scaleDelay;
+}
+
+void WDeclarativeTextSvgScale::setScaleDelay(int delay)
+{
+    Q_D(WDeclarativeTextSvgScale);
+
+    if (d->scaleDelay == delay) return;
+
+    d->scaleDelay = delay;
+
+    d->timer.setInterval(delay);
+
+    emit scaleDelayChanged();
 }
 
 #endif // SK_NO_DECLARATIVETEXTSVG
