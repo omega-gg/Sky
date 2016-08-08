@@ -43,6 +43,8 @@ protected:
     void init();
 
 public: // Functions
+    QRectF getRect(qreal width, qreal height) const;
+
     void load();
 
     QString getText(const QString & x,
@@ -77,6 +79,9 @@ public: // Variables
     int    styleSize;
 
     WDeclarativeTextSvg::TextOutline outline;
+
+    WDeclarativeText::HAlignment hAlign;
+    WDeclarativeText::VAlignment vAlign;
 
 protected:
     W_DECLARE_PUBLIC(WDeclarativeTextSvg)

@@ -40,6 +40,9 @@ void WDeclarativeTextSvgPrivate::init()
 
     styleSize = 1;
 
+    hAlign = WDeclarativeText::AlignLeft;
+    vAlign = WDeclarativeText::AlignTop;
+
     QObject::connect(renderer, SIGNAL(repaintNeeded()), q, SLOT(onRepaintNeeded()));
 
     q->setFlag(QGraphicsItem::ItemHasNoContents, false);
@@ -47,6 +50,39 @@ void WDeclarativeTextSvgPrivate::init()
 
 //-------------------------------------------------------------------------------------------------
 // Private functions
+//-------------------------------------------------------------------------------------------------
+
+QRectF WDeclarativeTextSvgPrivate::getRect(qreal width, qreal height) const
+{
+    qreal x;
+    qreal y;
+
+    int textWidth  = this->width;
+    int textHeight = this->height;
+
+    if (hAlign == WDeclarativeText::AlignRight)
+    {
+        x = width - textWidth;
+    }
+    else if (hAlign == WDeclarativeText::AlignHCenter)
+    {
+        x = (width - textWidth) / 2;
+    }
+    else x = 0;
+
+    if (vAlign == WDeclarativeText::AlignBottom)
+    {
+        y = height - textHeight;
+    }
+    else if (vAlign == WDeclarativeText::AlignVCenter)
+    {
+        y = (height - textHeight) / 2;
+    }
+    else y = 0;
+
+    return QRectF(x, y, textWidth, textHeight);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 void WDeclarativeTextSvgPrivate::load()
@@ -165,7 +201,7 @@ QString WDeclarativeTextSvgPrivate::getText(const QString & x,
             +
             weight + "\" font-size=\"" + size + "\" fill=\"" + color + "\"" + extra + ">"
             +
-            text + "</text>";
+            text.toUtf8() + "</text>";
 }
 
 QString WDeclarativeTextSvgPrivate::getOutline(const QString & color, int size) const
@@ -235,7 +271,7 @@ void WDeclarativeTextSvgPrivate::onRepaintNeeded()
     qreal width  = this->width ();
     qreal height = this->height();
 
-    QRectF rect = QRectF(0, 0, d->width, d->height);
+    QRectF rect = d->getRect(width, height);
 
     if (clip())
     {
@@ -390,6 +426,46 @@ void WDeclarativeTextSvg::setStyleSize(int size)
     if (isComponentComplete()) d->load();
 
     emit styleSizeChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+WDeclarativeText::HAlignment WDeclarativeTextSvg::hAlign() const
+{
+    Q_D(const WDeclarativeTextSvg); return d->hAlign;
+}
+
+void WDeclarativeTextSvg::setHAlign(WDeclarativeText::HAlignment align)
+{
+    Q_D(WDeclarativeTextSvg);
+
+    if (d->hAlign == align) return;
+
+    d->hAlign = align;
+
+    update();
+
+    emit verticalAlignmentChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+WDeclarativeText::VAlignment WDeclarativeTextSvg::vAlign() const
+{
+    Q_D(const WDeclarativeTextSvg); return d->vAlign;
+}
+
+void WDeclarativeTextSvg::setVAlign(WDeclarativeText::VAlignment align)
+{
+    Q_D(WDeclarativeTextSvg);
+
+    if (d->vAlign == align) return;
+
+    d->vAlign = align;
+
+    update();
+
+    emit verticalAlignmentChanged();
 }
 
 #endif // SK_NO_DECLARATIVETEXTSVG

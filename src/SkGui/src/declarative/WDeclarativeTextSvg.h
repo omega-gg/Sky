@@ -43,6 +43,12 @@ class SK_GUI_EXPORT WDeclarativeTextSvg : public WDeclarativeItem
     Q_PROPERTY(QColor styleColor READ styleColor WRITE setStyleColor NOTIFY styleColorChanged)
     Q_PROPERTY(int    styleSize  READ styleSize  WRITE setStyleSize  NOTIFY styleSizeChanged)
 
+    Q_PROPERTY(WDeclarativeText::HAlignment horizontalAlignment READ hAlign WRITE setHAlign
+               NOTIFY horizontalAlignmentChanged)
+
+    Q_PROPERTY(WDeclarativeText::VAlignment verticalAlignment READ vAlign WRITE setVAlign
+               NOTIFY verticalAlignmentChanged)
+
 public: // Enums
     enum TextStyle
     {
@@ -78,6 +84,9 @@ signals:
     void styleColorChanged();
     void styleSizeChanged ();
 
+    void horizontalAlignmentChanged();
+    void verticalAlignmentChanged  ();
+
 public: // Properties
     QString text() const;
     void    setText(const QString & text);
@@ -99,6 +108,12 @@ public: // Properties
 
     int  styleSize() const;
     void setStyleSize(int size);
+
+    WDeclarativeText::HAlignment hAlign() const;
+    void                         setHAlign(WDeclarativeText::HAlignment align);
+
+    WDeclarativeText::VAlignment vAlign() const;
+    void                         setVAlign(WDeclarativeText::VAlignment align);
 
 private:
     W_DECLARE_PRIVATE(WDeclarativeTextSvg)
