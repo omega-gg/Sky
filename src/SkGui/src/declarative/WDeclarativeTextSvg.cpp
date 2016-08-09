@@ -335,6 +335,23 @@ WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p,
 }
 
 //-------------------------------------------------------------------------------------------------
+// Protected QGraphicsItem reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ QVariant WDeclarativeTextSvg::itemChange(GraphicsItemChange change,
+                                                       const QVariant &   value)
+{
+    if (change == ItemVisibleHasChanged)
+    {
+        Q_D(WDeclarativeTextSvg);
+
+        d->loadVisible();
+    }
+
+    return WDeclarativeItem::itemChange(change, value);
+}
+
+//-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
 

@@ -85,6 +85,9 @@ public: // QGraphicsItem reimplementation
 protected: // Functions
     virtual void svgChange(); /* {} */
 
+protected: // QGraphicsItem reimplementation
+    /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
+
 signals:
     void textChanged();
 
