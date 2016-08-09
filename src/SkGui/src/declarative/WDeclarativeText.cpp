@@ -149,7 +149,7 @@ public: // Variables
 
     bool imageCacheDirty : 1;
 
-    bool updateOnComponentComplete: 1;
+    bool updateOnComponentComplete : 1;
 
     bool richText : 1;
 

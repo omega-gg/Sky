@@ -79,27 +79,27 @@ public: // Variables
 
     WDeclarativeImageBase::Status status;
 
-    bool sourceDefault : 1;
-
     QUrl url;
     QUrl urlDefault;
 
     QSize sourceSize;
     QSize sourceArea;
 
-    bool explicitSize : 1;
-
     WDeclarativeImageBase::LoadMode loadMode;
 
-    bool loadLater : 1;
-
     WDeclarativeImageBase::Asynchronous asynchronous;
-
-    bool cache : 1;
 
     qreal progress;
 
     WImageFilter * filter;
+
+    bool sourceDefault: 1;
+
+    bool explicitSize: 1;
+
+    bool loadLater: 1;
+
+    bool cache : 1;
 
     bool smooth : 1;
 

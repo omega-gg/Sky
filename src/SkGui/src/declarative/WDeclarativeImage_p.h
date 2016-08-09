@@ -83,11 +83,11 @@ public: // Variables
     QPixmap scalePixmap;
     QSize   scaleSize;
 
-    bool scaling;
-    bool scalable;
-    bool scaled;
+    bool scaling  : 1;
+    bool scalable : 1;
+    bool scaled   : 1;
 
-    bool scaleDelayed;
+    bool scaleDelayed : 1;
     int  scaleDelay;
 
     QTimer timer;
