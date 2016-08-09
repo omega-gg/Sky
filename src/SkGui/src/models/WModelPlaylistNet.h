@@ -58,9 +58,6 @@ public: // QAbstractItemModel reimplementation
 
     /* virtual */ QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
 
-signals:
-    void playlistChanged();
-
 protected: // WAbstractPlaylistWatcher implementation
     /* virtual */ void beginTracksInsert(int first, int last);
     /* virtual */ void endTracksInsert  ();
@@ -81,6 +78,9 @@ protected: // WAbstractPlaylistWatcher implementation
     /* virtual */ void currentIndexChanged(int index);
 
     /* virtual */ void playlistDestroyed();
+
+signals:
+    void playlistChanged();
 
 public: // Properties
     WPlaylistNet * playlist() const;

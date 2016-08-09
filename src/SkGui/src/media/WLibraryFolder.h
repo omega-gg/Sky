@@ -244,29 +244,6 @@ public: // Static interface
     Q_INVOKABLE static bool move(WLibraryFolder * folderA, int from,
                                  WLibraryFolder * folderB, int to, bool remove = true);
 
-signals:
-    void itemsInserted(int index, int count);
-
-    void itemMoved(int from, int to);
-
-    void itemRemoved(int index);
-
-    void itemsCleared();
-
-    void currentIdChanged();
-    void currentIdUpdated();
-
-    void currentIndexChanged();
-    void activeIndexChanged ();
-
-    void activeIdChanged();
-
-    void scrollValueChanged();
-
-    void countChanged();
-
-    void maxCountChanged();
-
 protected: // Functions
     void updateIndex();
 
@@ -292,6 +269,29 @@ protected: // WLibraryItem reimplementation
     /* virtual */ bool stopQuery();
 
     /* virtual */ void onApplyCurrentIds(const QList<int> & ids);
+
+signals:
+    void itemsInserted(int index, int count);
+
+    void itemMoved(int from, int to);
+
+    void itemRemoved(int index);
+
+    void itemsCleared();
+
+    void currentIdChanged();
+    void currentIdUpdated();
+
+    void currentIndexChanged();
+    void activeIndexChanged ();
+
+    void activeIdChanged();
+
+    void scrollValueChanged();
+
+    void countChanged();
+
+    void maxCountChanged();
 
 public: // Properties
     int  currentId() const;

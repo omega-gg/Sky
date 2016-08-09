@@ -83,13 +83,13 @@ public:
 
     /* virtual */ ~WDeclarativeGradient();
 
+private: // Functions
+    void update();
+
 signals:
     void updated();
 
     void typeChanged();
-
-private: // Functions
-    void update();
 
 public: // Properties
     GradientType type();
@@ -125,11 +125,11 @@ class SK_GUI_EXPORT WImageColorFilter : public WImageFilter
 public:
     explicit WImageColorFilter(QObject * parent = NULL);
 
-signals:
-    void colorChanged(const QColor & color);
-
 protected: // WImageFilter implementation
     /* virtual */ bool filter(QImage * image) const;
+
+signals:
+    void colorChanged(const QColor & color);
 
 public: // Properties
     QColor color() const;

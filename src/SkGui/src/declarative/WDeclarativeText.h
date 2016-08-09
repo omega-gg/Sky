@@ -137,6 +137,22 @@ public: // Interface
 
     Q_INVOKABLE bool setBlockForeground(const QPoint & pos, const QColor & color);
 
+public: // QDeclarativeItem reimplementation
+    /* virtual */ void componentComplete();
+
+public: // QGraphicsItem reimplementation
+    /* virtual */ QRectF boundingRect() const;
+
+    /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
+                                                 QWidget                        * widget);
+
+protected: // QGraphicsItem reimplementation
+    /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
+
+protected: // Events
+    /* virtual */ void mousePressEvent  (QGraphicsSceneMouseEvent * event);
+    /* virtual */ void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
+
 signals:
     void linkActivated(const QString & link);
 
@@ -174,22 +190,6 @@ signals:
     /* Q_REVISION(1) */ void lineHeightChanged();
 
     /* Q_REVISION(1) */ void lineHeightModeChanged();
-
-public: // QDeclarativeItem reimplementation
-    /* virtual */ void componentComplete();
-
-public: // QGraphicsItem reimplementation
-    /* virtual */ QRectF boundingRect() const;
-
-    /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
-                                                 QWidget                        * widget);
-
-protected: // QGraphicsItem reimplementation
-    /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
-
-protected: // Events
-    /* virtual */ void mousePressEvent  (QGraphicsSceneMouseEvent * event);
-    /* virtual */ void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
 
 public: // Properties
     qreal implicitWidth () const;

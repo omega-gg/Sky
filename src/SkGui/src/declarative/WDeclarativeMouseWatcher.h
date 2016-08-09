@@ -34,14 +34,14 @@ class SK_GUI_EXPORT WDeclarativeMouseWatcher : public WDeclarativeItem
 public:
     explicit WDeclarativeMouseWatcher(QDeclarativeItem * parent = NULL);
 
+protected: // Events
+    /* virtual */ void mousePressEvent(QGraphicsSceneMouseEvent * event);
+
 signals:
     void pressed ();
     void released();
 
     void acceptedButtonsChanged();
-
-protected: // Events
-    /* virtual */ void mousePressEvent(QGraphicsSceneMouseEvent * event);
 
 public: // Properties
     Qt::MouseButtons acceptedButtons() const;

@@ -92,15 +92,15 @@ public: // Interface
 
     Q_INVOKABLE void deletePlayer();
 
+protected: // Events
+    bool event(QEvent * event);
+
 signals:
     void optionsChanged();
 
     void repeatChanged();
 
     void networkCacheChanged();
-
-protected: // Events
-    bool event(QEvent * event);
 
 public: // Properties
     QStringList options();

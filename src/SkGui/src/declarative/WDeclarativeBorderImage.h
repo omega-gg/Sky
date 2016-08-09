@@ -62,12 +62,12 @@ public: // QGraphicsItem reimplementation
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
 
+protected: // Virtual functions
+    virtual const QPixmap & getPixmap();
+
 signals:
     void horizontalTileModeChanged();
     void verticalTileModeChanged  ();
-
-protected: // Virtual functions
-    virtual const QPixmap & getPixmap();
 
 public: // Properties
     QDeclarativeScaleGrid * border();
@@ -108,12 +108,6 @@ public: // QGraphicsItem reimplementation
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
 
-signals:
-    void scalingChanged();
-
-    void scaleDelayedChanged();
-    void scaleDelayChanged  ();
-
 protected: // QGraphicsItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
 
@@ -123,6 +117,12 @@ protected: // WDeclarativeImageBase reimplementation
 
 protected: // WDeclarativeImage reimplementation
     /* virtual */ const QPixmap & getPixmap();
+
+signals:
+    void scalingChanged();
+
+    void scaleDelayedChanged();
+    void scaleDelayChanged  ();
 
 public: // Properties
     bool isScaling() const;

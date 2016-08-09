@@ -60,10 +60,6 @@ public: // Interface
     // Available plugins
     QStringList availablePlugins() const;
 
-signals:
-    void pluginDetected  (const QString & name);
-    void pluginUndetected(const QString & name);
-
 private: // WPlugin interface
     void declarePlugin  (WPlugin * plugin);
     void undeclarePlugin(WPlugin * plugin);
@@ -71,6 +67,10 @@ private: // WPlugin interface
 private slots:
     void onFilesCreated(const QString & parentPath, const QStringList & fileNames);
     void onFilesDeleted(const QString & parentPath, const QStringList & fileNames);
+
+signals:
+    void pluginDetected  (const QString & name);
+    void pluginUndetected(const QString & name);
 
 public: // Properties
     QList<WPlugin *> plugins() const;

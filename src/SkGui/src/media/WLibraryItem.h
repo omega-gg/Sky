@@ -130,6 +130,24 @@ public: // Static interface
 public: // WLocalObject reimplementation
     /* Q_INVOKABLE virtual */ QString getParentPath() const;
 
+protected: // Virtual functions
+    virtual bool applySource(const QUrl             & source);
+    virtual bool applyQuery (const WBackendNetQuery & query);
+
+    virtual bool stopQuery();
+
+    virtual void onApplyCurrentIds(const QList<int> & ids);
+
+protected: // WLocalObject reimplementation
+    /* virtual */ void applyId(int id);
+
+    /* virtual */ void setLoaded(bool ok);
+
+    /* virtual */ void onStateChanged(WLocalObject::State state);
+    /* virtual */ void onLockChanged (bool                locked);
+
+    /* virtual */ void onFileDeleted();
+
 signals:
     void idFullChanged();
 
@@ -148,24 +166,6 @@ signals:
     void queryEnded  ();
 
     void queryCompleted();
-
-protected: // Virtual functions
-    virtual bool applySource(const QUrl             & source);
-    virtual bool applyQuery (const WBackendNetQuery & query);
-
-    virtual bool stopQuery();
-
-    virtual void onApplyCurrentIds(const QList<int> & ids);
-
-protected: // WLocalObject reimplementation
-    /* virtual */ void applyId(int id);
-
-    /* virtual */ void setLoaded(bool ok);
-
-    /* virtual */ void onStateChanged(WLocalObject::State state);
-    /* virtual */ void onLockChanged (bool                locked);
-
-    /* virtual */ void onFileDeleted();
 
 public: // Properties
     QList<int> idFull() const;

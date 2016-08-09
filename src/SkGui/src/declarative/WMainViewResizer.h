@@ -33,11 +33,11 @@ class SK_GUI_EXPORT WMainViewResizer : public WDeclarativeItem
 public:
     explicit WMainViewResizer(QDeclarativeItem * parent = NULL);
 
-signals:
-    void sizeChanged();
-
 protected: // QDeclarativeItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
+
+signals:
+    void sizeChanged();
 
 public: // Properties
     int  size() const;

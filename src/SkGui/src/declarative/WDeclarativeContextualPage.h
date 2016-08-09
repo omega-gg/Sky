@@ -149,11 +149,6 @@ public: // Interface
 
     Q_INVOKABLE void clearPages();
 
-signals:
-    void valuesChanged(const QVariantList & values);
-
-    void currentIdChanged();
-
 private: // Declarative
     static void childrenAppend(QDeclarativeListProperty<WDeclarativeContextualPage> * property,
                                WDeclarativeContextualPage * item);
@@ -165,6 +160,11 @@ private: // Declarative
     static WDeclarativeContextualPage * childrenAt(QDeclarativeListProperty
                                                    <WDeclarativeContextualPage> * property,
                                                    int index);
+
+signals:
+    void valuesChanged(const QVariantList & values);
+
+    void currentIdChanged();
 
 public: // Properties
     QVariantList values() const;

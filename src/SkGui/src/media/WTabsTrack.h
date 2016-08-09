@@ -53,11 +53,6 @@ public: // Interface
 public: // WLocalObject reimplementation
     /* Q_INVOKABLE virtual */ QString getParentPath() const;
 
-signals:
-    void tabsBookmarkUpdated();
-
-    void highlightedTabChanged();
-
 protected: // WAbstractTabs implementation
     /* virtual */ WAbstractTab * createTab(WAbstractTabs * parent = NULL) const;
 
@@ -66,6 +61,11 @@ protected: // WLocalObject reimplementation
     /* virtual */ WAbstractThreadAction * onLoad(const QString & path);
 
     /* virtual */ bool hasFolder() const;
+
+signals:
+    void tabsBookmarkUpdated();
+
+    void highlightedTabChanged();
 
 public: // Properties
     WTabTrack * highlightedTab() const;

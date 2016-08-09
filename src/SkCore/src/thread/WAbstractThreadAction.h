@@ -45,14 +45,14 @@ public: // Interface
 
     void abortAndDelete();
 
-signals:
-    void replyChanged();
-
 protected: // Pure virtual functions
     virtual bool run() = 0;
 
 protected: // Virtual functions
     virtual WAbstractThreadReply * createReply() const;
+
+signals:
+    void replyChanged();
 
 protected: // Properties
     WAbstractThreadReply * reply() const;

@@ -60,11 +60,6 @@ public: // QGraphicsItem reimplementation
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
 
-signals:
-    void fillModeChanged();
-
-    void paintedGeometryChanged();
-
 protected: // Functions
     void updatePaintedGeometry();
 
@@ -78,6 +73,11 @@ protected: // QGraphicsItem reimplementation
 
 protected: // WDeclarativeImageBase reimplementation
     /* virtual */ void pixmapChange();
+
+signals:
+    void fillModeChanged();
+
+    void paintedGeometryChanged();
 
 public: // Properties
     FillMode fillMode() const;
@@ -110,12 +110,6 @@ class SK_GUI_EXPORT WDeclarativeImageScale : public WDeclarativeImage
 public:
     explicit WDeclarativeImageScale(QDeclarativeItem * parent = NULL);
 
-signals:
-    void scalingChanged();
-
-    void scaleDelayedChanged();
-    void scaleDelayChanged  ();
-
 protected: // QGraphicsItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
 
@@ -126,6 +120,12 @@ protected: // WDeclarativeImage reimplementation
     /* virtual */ const QPixmap & getPixmap();
 
     /* virtual */ void updatePixmap();
+
+signals:
+    void scalingChanged();
+
+    void scaleDelayedChanged();
+    void scaleDelayChanged  ();
 
 public: // Properties
     bool isScaling() const;

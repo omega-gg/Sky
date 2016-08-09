@@ -100,23 +100,6 @@ public: // Virtual Interface
     Q_INVOKABLE virtual QString getFilePath  () const;
     Q_INVOKABLE virtual QString getFolderPath() const;
 
-signals:
-    void saved ();
-    void loaded();
-
-    void idChanged();
-
-    void processingChanged();
-
-    void stateChanged();
-
-    void savingChanged();
-
-    void saveEnabledChanged();
-
-    void lockedChanged   ();
-    void lockCountChanged();
-
 protected: // Functions
     void setBlocked(bool block);
 
@@ -139,6 +122,23 @@ protected: // Virtual functions
     virtual void onFolderDeleted(); /* {} */
 
     virtual bool hasFolder() const; /* {} */
+
+signals:
+    void saved ();
+    void loaded();
+
+    void idChanged();
+
+    void processingChanged();
+
+    void stateChanged();
+
+    void savingChanged();
+
+    void saveEnabledChanged();
+
+    void lockedChanged   ();
+    void lockCountChanged();
 
 public: // Properties
     int  id() const;

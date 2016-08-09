@@ -351,6 +351,38 @@ public: // Size hints
     /* virtual */ QSize minimumSizeHint() const;
     /* virtual */ QSize sizeHint       () const;
 
+protected: // Functions
+    /* virtual */ void drawBackground(QPainter * painter, const QRectF & rect); /* {} */
+    /* virtual */ void drawForeground(QPainter * painter, const QRectF & rect); /* {} */
+
+protected: // Events
+    /* virtual */ void showEvent(QShowEvent * event);
+
+    /* virtual */ void moveEvent  (QMoveEvent   * event);
+    /* virtual */ void resizeEvent(QResizeEvent * event);
+
+    /* virtual */ void enterEvent(QEvent * event);
+    /* virtual */ void leaveEvent(QEvent * event);
+
+    /* virtual */ void mousePressEvent  (QMouseEvent * event);
+    /* virtual */ void mouseReleaseEvent(QMouseEvent * event);
+
+    /* virtual */ void mouseDoubleClickEvent(QMouseEvent * event);
+
+    /* virtual */ void mouseMoveEvent(QMouseEvent * event);
+
+    /* virtual */ void dragEnterEvent(QDragEnterEvent * event);
+
+    /* virtual */ void keyPressEvent  (QKeyEvent * event);
+    /* virtual */ void keyReleaseEvent(QKeyEvent * event);
+
+    /* virtual */ void focusInEvent (QFocusEvent * event);
+    /* virtual */ void focusOutEvent(QFocusEvent * event);
+
+    /* virtual */ void timerEvent(QTimerEvent * event);
+
+    /* virtual */ void closeEvent(QCloseEvent * event);
+
 signals:
     void messageReceived(const QString & message);
 
@@ -435,38 +467,6 @@ signals:
 
     void backwardClicked();
     void forwardClicked ();
-
-protected: // Functions
-    /* virtual */ void drawBackground(QPainter * painter, const QRectF & rect); /* {} */
-    /* virtual */ void drawForeground(QPainter * painter, const QRectF & rect); /* {} */
-
-protected: // Events
-    /* virtual */ void showEvent(QShowEvent * event);
-
-    /* virtual */ void moveEvent  (QMoveEvent   * event);
-    /* virtual */ void resizeEvent(QResizeEvent * event);
-
-    /* virtual */ void enterEvent(QEvent * event);
-    /* virtual */ void leaveEvent(QEvent * event);
-
-    /* virtual */ void mousePressEvent  (QMouseEvent * event);
-    /* virtual */ void mouseReleaseEvent(QMouseEvent * event);
-
-    /* virtual */ void mouseDoubleClickEvent(QMouseEvent * event);
-
-    /* virtual */ void mouseMoveEvent(QMouseEvent * event);
-
-    /* virtual */ void dragEnterEvent(QDragEnterEvent * event);
-
-    /* virtual */ void keyPressEvent  (QKeyEvent * event);
-    /* virtual */ void keyReleaseEvent(QKeyEvent * event);
-
-    /* virtual */ void focusInEvent (QFocusEvent * event);
-    /* virtual */ void focusOutEvent(QFocusEvent * event);
-
-    /* virtual */ void timerEvent(QTimerEvent * event);
-
-    /* virtual */ void closeEvent(QCloseEvent * event);
 
 public: // Properties
     QDeclarativeItem * item() const;

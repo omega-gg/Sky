@@ -71,11 +71,11 @@ public: // QNetworkCookieJar reimplementation
     /* virtual */ bool setCookiesFromUrl(const QList<QNetworkCookie> & cookies,
                                          const QUrl                  & url);
 
-signals:
-    void cookiesChanged();
-
 protected: // Events
     /* virtual */ void timerEvent(QTimerEvent * event);
+
+signals:
+    void cookiesChanged();
 
 public: // Properties
     PolicyAccept policyAccept() const;

@@ -117,6 +117,12 @@ public: // Interface
 public: // WLocalObject reimplementation
     /* Q_INVOKABLE virtual */ QString getParentPath() const;
 
+protected: // WLocalObject reimplementation
+    /* virtual */ WAbstractThreadAction * onSave(const QString & path);
+    /* virtual */ WAbstractThreadAction * onLoad(const QString & path);
+
+    /* virtual */ bool hasFolder() const;
+
 signals:
     void currentBookmarkChanged();
     void currentBookmarkUpdated();
@@ -131,12 +137,6 @@ signals:
     void stackEnabledChanged();
 
     void videoShotUpdated();
-
-protected: // WLocalObject reimplementation
-    /* virtual */ WAbstractThreadAction * onSave(const QString & path);
-    /* virtual */ WAbstractThreadAction * onLoad(const QString & path);
-
-    /* virtual */ bool hasFolder() const;
 
 public: // Properties
     QList<WBookmarkTrack> bookmarks() const;

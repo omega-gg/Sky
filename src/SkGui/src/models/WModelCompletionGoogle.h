@@ -57,6 +57,13 @@ public: // Interface
 
     Q_INVOKABLE QString getCompletionAt(int index) const;
 
+public: // QAbstractItemModel reimplementation
+    /* virtual */ QHash<int, QByteArray> roleNames() const;
+
+    /* virtual */ int rowCount(const QModelIndex & parent = QModelIndex()) const;
+
+    /* virtual */ QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
+
 signals:
     void urlChanged();
 
@@ -65,13 +72,6 @@ signals:
     void loadingChanged();
 
     void queryCompleted();
-
-public: // QAbstractItemModel reimplementation
-    /* virtual */ QHash<int, QByteArray> roleNames() const;
-
-    /* virtual */ int rowCount(const QModelIndex & parent = QModelIndex()) const;
-
-    /* virtual */ QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
 
 public: // Properties
     QUrl url() const;

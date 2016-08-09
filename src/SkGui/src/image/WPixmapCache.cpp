@@ -124,11 +124,11 @@ class WPixmapCacheImageReply : public WAbstractThreadReply
 {
     Q_OBJECT
 
-signals:
-    void loaded(const QImage & image);
-
 protected: // WAbstractThreadReply reimplementation
     /* virtual */ void onCompleted(bool ok);
+
+signals:
+    void loaded(const QImage & image);
 
 public: // Variables
     QImage image;
@@ -215,11 +215,11 @@ public:
         this->data   = data;
     }
 
-signals:
-    void loaded();
-
 protected: // WAbstractThreadReply reimplementation
     /* virtual */ void onCompleted(bool ok);
+
+signals:
+    void loaded();
 
 public: // Variables
     WPixmapCachePrivate * pixmap;

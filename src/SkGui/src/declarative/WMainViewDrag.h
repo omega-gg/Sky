@@ -34,9 +34,6 @@ class SK_GUI_EXPORT WMainViewDrag : public WDeclarativeMouseArea
 public:
     explicit WMainViewDrag(QDeclarativeItem * parent = NULL);
 
-signals:
-    void dragEnabledChanged(bool enabled);
-
 protected: // Events
     /* virtual */ void mousePressEvent  (QGraphicsSceneMouseEvent * event);
     /* virtual */ void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
@@ -44,6 +41,9 @@ protected: // Events
     /* virtual */ void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
 
     /* virtual */ bool sceneEvent(QEvent * event);
+
+signals:
+    void dragEnabledChanged(bool enabled);
 
 public: // Properties
     bool dragEnabled() const;

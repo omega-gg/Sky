@@ -94,6 +94,29 @@ public: // Interface
 
     Q_INVOKABLE void setItemShot(QGraphicsObject * object);
 
+public: // QDeclarativeItem reimplementation
+    /* virtual */ void componentComplete();
+
+protected: // Functions
+    const QPixmap & currentPixmap() const;
+
+protected: // Virtual functions
+    virtual void load();
+
+    virtual void applyUrl(const QUrl & url, bool asynchronous);
+
+    virtual void clearUrl(WDeclarativeImageBase::Status status);
+
+    virtual void pixmapChange();
+    virtual void pixmapClear (); /* {} */
+
+protected slots:
+    virtual void requestFinished();
+    virtual void requestProgress(qint64 received, qint64 total);
+
+protected: // QGraphicsItem reimplementation
+    /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
+
 signals:
     void loaded();
 
@@ -117,29 +140,6 @@ signals:
 
     void filterChanged();
     void smoothChanged();
-
-public: // QDeclarativeItem reimplementation
-    /* virtual */ void componentComplete();
-
-protected: // Functions
-    const QPixmap & currentPixmap() const;
-
-protected: // Virtual functions
-    virtual void load();
-
-    virtual void applyUrl(const QUrl & url, bool asynchronous);
-
-    virtual void clearUrl(WDeclarativeImageBase::Status status);
-
-    virtual void pixmapChange();
-    virtual void pixmapClear (); /* {} */
-
-protected slots:
-    virtual void requestFinished();
-    virtual void requestProgress(qint64 received, qint64 total);
-
-protected: // QGraphicsItem reimplementation
-    /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 
 public: // Properties
     QPixmap pixmap() const;

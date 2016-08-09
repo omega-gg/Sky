@@ -207,7 +207,6 @@ public: // Static interface
 
     Q_INVOKABLE static QString dateToText(const QDateTime & date);
 
-
 signals:
     void controllerCreated  (WController * controller);
     void controllerDestroyed(WController * controller);

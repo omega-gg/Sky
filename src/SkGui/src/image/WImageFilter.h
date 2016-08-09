@@ -46,16 +46,16 @@ public: // Interface
 
     Q_INVOKABLE void updateFilter();
 
-signals:
-    void filterUpdated();
-
-    void autoUpdateChanged();
-
 protected: // Functions
     virtual bool filter(QImage * image) const = 0;
 
 protected slots:
     void refreshFilter();
+
+signals:
+    void filterUpdated();
+
+    void autoUpdateChanged();
 
 public: // Properties
     bool autoUpdate() const;

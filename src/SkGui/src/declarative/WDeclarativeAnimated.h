@@ -69,6 +69,12 @@ public: // Interface
     Q_INVOKABLE void stepBackward();
     Q_INVOKABLE void stepForward ();
 
+public: // QDeclarativeItem reimplementation
+    /* virtual */ void componentComplete();
+
+protected: // QGraphicsItem reimplementation
+    /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
+
 signals:
     void runningChanged();
 
@@ -82,12 +88,6 @@ signals:
 
     void loopCountChanged();
     void loopChanged     ();
-
-public: // QDeclarativeItem reimplementation
-    /* virtual */ void componentComplete();
-
-protected: // QGraphicsItem reimplementation
-    /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 
 public: // Properties
     bool running() const;

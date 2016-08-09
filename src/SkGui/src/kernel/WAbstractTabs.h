@@ -111,6 +111,13 @@ public: // Interface
     Q_INVOKABLE void registerWatcher  (WAbstractTabsWatcher * watcher);
     Q_INVOKABLE void unregisterWatcher(WAbstractTabsWatcher * watcher);
 
+protected: // Functions
+    void addTab   (WAbstractTab * tab);
+    void insertTab(int index, WAbstractTab * tab);
+
+protected: // Abstract functions
+    virtual WAbstractTab * createTab(WAbstractTabs * parent = NULL) const = 0;
+
 signals:
     void currentTabChanged();
 
@@ -123,13 +130,6 @@ signals:
     void maxCountChanged();
 
     void saveEnabledChanged();
-
-protected: // Functions
-    void addTab   (WAbstractTab * tab);
-    void insertTab(int index, WAbstractTab * tab);
-
-protected: // Abstract functions
-    virtual WAbstractTab * createTab(WAbstractTabs * parent = NULL) const = 0;
 
 public: // Properties
     WAbstractTab * currentTab() const;

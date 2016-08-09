@@ -124,14 +124,14 @@ public: // Interface
 
     virtual void setContent(const QString & content);
 
-signals:
-    void scriptUpdated();
-
 protected: // Interface
     QScriptValue construct(const QString          & ctorName,
                            const QScriptValueList & parameters = QScriptValueList());
 
     QScriptValue construct(const QString & ctorName, QObject * param);
+
+signals:
+    void scriptUpdated();
 
 public: // Properties
     QString fileName() const;

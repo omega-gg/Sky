@@ -135,6 +135,17 @@ public: // QGraphicsItem reimplementation
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
 
+protected: // QDeclarativeItem reimplementation
+    /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
+
+protected: // WAbstractPlaylistWatcher implementation
+    /* virtual */ void beginTracksInsert(int first, int last);
+    /* virtual */ void endTracksInsert  ();
+
+    /* virtual */ void beginTracksRemove(int first, int last);
+
+    /* virtual */ void beginTracksClear();
+
 signals:
     void backendChanged();
     void hookChanged   ();
@@ -176,17 +187,6 @@ signals:
     void tabsUpdated();
 
     void keepStateChanged();
-
-protected: // QDeclarativeItem reimplementation
-    /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
-
-protected: // WAbstractPlaylistWatcher implementation
-    /* virtual */ void beginTracksInsert(int first, int last);
-    /* virtual */ void endTracksInsert  ();
-
-    /* virtual */ void beginTracksRemove(int first, int last);
-
-    /* virtual */ void beginTracksClear();
 
 public: // Properties
     WAbstractBackend * backend() const;

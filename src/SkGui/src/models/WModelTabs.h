@@ -55,11 +55,6 @@ public: // QAbstractItemModel reimplementation
 
     /* virtual */ QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
 
-signals:
-    void tabsChanged();
-
-    void countChanged();
-
 protected: // WAbstractTabsWatcher reimplementation
     /* virtual */ void beginTabsInsert(int first, int last);
     /* virtual */ void endTabsInsert  ();
@@ -74,6 +69,11 @@ protected: // WAbstractTabsWatcher reimplementation
     /* virtual */ void endTabsClear  ();
 
     /* virtual */ void tabsDestroyed();
+
+signals:
+    void tabsChanged();
+
+    void countChanged();
 
 public: // Properties
     WAbstractTabs * tabs() const;

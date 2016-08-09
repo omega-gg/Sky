@@ -45,9 +45,6 @@ protected:
 public: // Interface
     Q_INVOKABLE void get(WRemoteData * data);
 
-signals:
-    void maxRedirectChanged();
-
 protected: // Abstract functions
     virtual QIODevice * load(WRemoteData * data) = 0;
 
@@ -61,6 +58,9 @@ protected: // Functions
     void complete(QIODevice * reply);
 
     void setError(WRemoteData * data, const QString & error);
+
+signals:
+    void maxRedirectChanged();
 
 public: // Properties
     int  maxRedirect() const;

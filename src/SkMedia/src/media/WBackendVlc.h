@@ -39,11 +39,6 @@ class SK_MEDIA_EXPORT WBackendVlc : public WAbstractBackend
 public:
     WBackendVlc();
 
-signals:
-    void optionsChanged();
-
-    void networkCacheChanged();
-
 public: // Interface
     Q_INVOKABLE void setProxy(const QString & host,
                               int             port, const QString & password = QString());
@@ -84,6 +79,11 @@ protected: // WAbstractBackend reimplementation
 
 protected: // Events
     bool event(QEvent * event);
+
+signals:
+    void optionsChanged();
+
+    void networkCacheChanged();
 
 public: // Properties
     QStringList options();

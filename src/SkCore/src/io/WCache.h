@@ -121,6 +121,9 @@ public: // Interface
     Q_INVOKABLE void clearFiles();
     Q_INVOKABLE void clearAll  ();
 
+protected: // Events
+    bool event(QEvent * event);
+
 signals:
     void filesRemoved(const QList<QUrl> & urls, const QList<QUrl> & urlsCache);
     void filesCleared();
@@ -130,9 +133,6 @@ signals:
     void sizeMaxChanged();
 
     void maxJobsChanged();
-
-protected: // Events
-    bool event(QEvent * event);
 
 public: // Properties
     bool isEmpty() const;

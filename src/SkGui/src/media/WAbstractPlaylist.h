@@ -165,33 +165,6 @@ public: // Abstract interface
 
     virtual int indexFromId(int id) const = 0;
 
-signals:
-    void tracksInserted(int index, int count);
-
-    void tracksMoved(const QList<int> & indexes, int to);
-
-    void tracksRemoved(const QList<int> & indexes);
-
-    void trackUpdated(int index);
-
-    void tracksCleared();
-
-    void countChanged();
-
-    void maxCountChanged();
-
-    void playlistUpdated();
-
-    void currentTrackChanged();
-    void currentTrackUpdated();
-
-    void currentIndexChanged();
-    void currentTimeChanged ();
-
-    void selectedTracksChanged();
-
-    void scrollValueChanged();
-
 protected: // Functions
     void updateIndex();
 
@@ -219,6 +192,33 @@ protected: // Abstract functions
 
 protected: // WLibraryItem reimplementation
     /* virtual */ void onApplyCurrentIds(const QList<int> & ids);
+
+signals:
+    void tracksInserted(int index, int count);
+
+    void tracksMoved(const QList<int> & indexes, int to);
+
+    void tracksRemoved(const QList<int> & indexes);
+
+    void trackUpdated(int index);
+
+    void tracksCleared();
+
+    void countChanged();
+
+    void maxCountChanged();
+
+    void playlistUpdated();
+
+    void currentTrackChanged();
+    void currentTrackUpdated();
+
+    void currentIndexChanged();
+    void currentTimeChanged ();
+
+    void selectedTracksChanged();
+
+    void scrollValueChanged();
 
 public: // Properties
     bool isPlaylistNet() const;

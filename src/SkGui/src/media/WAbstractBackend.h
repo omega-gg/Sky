@@ -141,37 +141,6 @@ public: // Interface
 
     Q_INVOKABLE bool deleteBackend();
 
-signals:
-    void ended();
-
-    void parentItemChanged();
-
-    void sourceChanged();
-
-    void stateChanged    ();
-    void stateLoadChanged();
-
-    void startedChanged();
-
-    void endedChanged();
-
-    void playingChanged();
-    void pausedChanged ();
-
-    void currentTimeChanged();
-    void durationChanged   ();
-
-    void speedChanged();
-
-    void volumeChanged();
-
-    void repeatChanged();
-
-    void qualityChanged      ();
-    void qualityActiveChanged();
-
-    void fillModeChanged();
-
 protected: // Functions
     void setState    (State     state);
     void setStateLoad(StateLoad stateLoad);
@@ -216,6 +185,37 @@ protected: // Virtual functions
 
     virtual void   backendUpdateFrame();       /* {} */
     virtual QImage backendGetFrame   () const; /* {} */
+
+signals:
+    void ended();
+
+    void parentItemChanged();
+
+    void sourceChanged();
+
+    void stateChanged    ();
+    void stateLoadChanged();
+
+    void startedChanged();
+
+    void endedChanged();
+
+    void playingChanged();
+    void pausedChanged ();
+
+    void currentTimeChanged();
+    void durationChanged   ();
+
+    void speedChanged();
+
+    void volumeChanged();
+
+    void repeatChanged();
+
+    void qualityChanged      ();
+    void qualityActiveChanged();
+
+    void fillModeChanged();
 
 public: // Properties
     QGraphicsItem * parentItem() const;

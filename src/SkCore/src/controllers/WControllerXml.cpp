@@ -55,16 +55,16 @@ public: // Functions
 
     void abort(int id);
 
-signals:
-    void queryCompleted(int id, const QString & result);
-
 private slots:
     void processQuery(int id);
 
 private: // Functions
     QString doQueryJob(XmlQueryJob * currentJob);
 
-private:
+signals:
+    void queryCompleted(int id, const QString & result);
+
+private: // Variables
     QMutex mutex;
 
     QThread * thread;

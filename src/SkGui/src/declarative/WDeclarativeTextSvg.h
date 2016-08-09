@@ -164,17 +164,17 @@ public: // QGraphicsItem reimplementation
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
 
-signals:
-    void scalingChanged();
-
-    void scaleDelayedChanged();
-    void scaleDelayChanged  ();
-
 protected: // QGraphicsItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
 
 protected: // WDeclarativeTextSvg reimplementation
     virtual void svgChange();
+
+signals:
+    void scalingChanged();
+
+    void scaleDelayedChanged();
+    void scaleDelayChanged  ();
 
 public: // Properties
     bool isScaling() const;

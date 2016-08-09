@@ -50,9 +50,6 @@ public: // Enums
 public:
     explicit WModelContextual(QObject * parent = NULL);
 
-signals:
-    void currentPageChanged();
-
 protected: // QSortFilterProxyModel reimplementation
     /* virtual */ QHash<int, QByteArray> roleNames() const;
 
@@ -70,6 +67,9 @@ protected: // WContextualPageWatcher implementation
     /* virtual */ void currentIndexChanged(int index);
 
     /* virtual */ void contextualPageDestroyed();
+
+signals:
+    void currentPageChanged();
 
 public: // Properties
     WDeclarativeContextualPage * currentPage() const;

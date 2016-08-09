@@ -49,11 +49,11 @@ class WControllerFileReply : public WAbstractThreadReply
 protected:
     WControllerFileReply() {}
 
-signals:
-    void actionComplete(bool ok);
-
 protected: // WAbstractThreadReply reimplementation
     /* virtual */ void onCompleted(bool ok);
+
+signals:
+    void actionComplete(bool ok);
 
 private:
     Q_DISABLE_COPY(WControllerFileReply)
@@ -165,13 +165,13 @@ public: // Static functions
 
     static QFileInfoList recursiveEntryInfoList(const QString & path);
 
+private slots:
+    void onCheckWatchers();
+
 signals:
     void pathStorageChanged();
 
     void cacheChanged();
-
-private slots:
-    void onCheckWatchers();
 
 public: // Properties
     QString pathStorage() const;

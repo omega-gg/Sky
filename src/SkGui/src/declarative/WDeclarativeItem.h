@@ -42,11 +42,11 @@ public:
 protected:
     WDeclarativeItem(WDeclarativeItemPrivate * p, QDeclarativeItem * parent = NULL);
 
-signals:
-    void mainViewChanged();
-
 protected: // QGraphicsItem reimplementation
     /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
+
+signals:
+    void mainViewChanged();
 
 public: // Properties
     WMainView * mainView() const;

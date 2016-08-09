@@ -309,6 +309,41 @@ public: // Interface
 
     Q_INVOKABLE void click(int button);
 
+protected: // Functions
+    void setHovered(bool hovered);
+    bool setPressed(bool pressed);
+
+    bool sendMouseEvent(QGraphicsSceneMouseEvent * event);
+
+protected: // QGraphicsItem reimplementation
+    /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
+
+    /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
+
+protected: // Events
+    /* virtual */ void mousePressEvent  (QGraphicsSceneMouseEvent * event);
+    /* virtual */ void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
+
+    /* virtual */ void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
+
+    /* virtual */ void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
+
+    /* virtual */ void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
+    /* virtual */ void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
+    /* virtual */ void hoverMoveEvent (QGraphicsSceneHoverEvent * event);
+
+#ifndef QT_NO_CONTEXTMENU
+    /* virtual */ void contextMenuEvent(QGraphicsSceneContextMenuEvent * event);
+#endif // QT_NO_CONTEXTMENU
+
+    /* virtual */ bool sceneEvent(QEvent * event);
+
+    /* virtual */ bool sceneEventFilter(QGraphicsItem * item, QEvent * event);
+
+    /* virtual */ void timerEvent(QTimerEvent * event);
+
+    /* virtual */ void wheelEvent(QGraphicsSceneWheelEvent * event);
+
 signals:
     void hoveredChanged();
     void pressedChanged();
@@ -356,41 +391,6 @@ signals:
     void canceled();
 
     void wheeled(int steps);
-
-protected: // Functions
-    void setHovered(bool hovered);
-    bool setPressed(bool pressed);
-
-    bool sendMouseEvent(QGraphicsSceneMouseEvent * event);
-
-protected: // QGraphicsItem reimplementation
-    /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
-
-    /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
-
-protected: // Events
-    /* virtual */ void mousePressEvent  (QGraphicsSceneMouseEvent * event);
-    /* virtual */ void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
-
-    /* virtual */ void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
-
-    /* virtual */ void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
-
-    /* virtual */ void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
-    /* virtual */ void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
-    /* virtual */ void hoverMoveEvent (QGraphicsSceneHoverEvent * event);
-
-#ifndef QT_NO_CONTEXTMENU
-    /* virtual */ void contextMenuEvent(QGraphicsSceneContextMenuEvent * event);
-#endif // QT_NO_CONTEXTMENU
-
-    /* virtual */ bool sceneEvent(QEvent * event);
-
-    /* virtual */ bool sceneEventFilter(QGraphicsItem * item, QEvent * event);
-
-    /* virtual */ void timerEvent(QTimerEvent * event);
-
-    /* virtual */ void wheelEvent(QGraphicsSceneWheelEvent * event);
 
 public: // Properties
     qreal mouseX() const;

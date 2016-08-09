@@ -59,9 +59,6 @@ public: // Enums
 public:
     explicit WModelLibraryFolder(QObject * parent = NULL);
 
-signals:
-    void folderChanged();
-
 public: // QAbstractItemModel reimplementation
     /* virtual */ QHash<int, QByteArray> roleNames() const;
 
@@ -87,6 +84,9 @@ protected: // WLibraryFolderWatcher implementation
     /* virtual */ void currentIndexChanged(int index);
 
     /* virtual */ void folderDestroyed();
+
+signals:
+    void folderChanged();
 
 public: // Properties
     WLibraryFolder * folder() const;

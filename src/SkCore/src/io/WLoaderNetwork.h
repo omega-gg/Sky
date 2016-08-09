@@ -45,16 +45,16 @@ public: // Interface
 
     Q_INVOKABLE void clearProxy();
 
-signals:
-    void cacheChanged();
-
-    void cookieJarChanged();
-
 protected: // WAbstractLoader implementation
     /* virtual */ QIODevice * load(WRemoteData * data);
 
 protected: // WAbstractLoader reimplementation
     /* virtual */ void abort(QIODevice * reply);
+
+signals:
+    void cacheChanged();
+
+    void cookieJarChanged();
 
 public: // Properties
     QAbstractNetworkCache * cache() const;
