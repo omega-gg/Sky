@@ -134,11 +134,9 @@ void WDeclarativeTextSvgPrivate::loadSvg()
 
         QString weight = getWeight();
 
-        int pixelSize = font.pixelSize();
+        int pixelY = metrics.ascent();
 
-        int pixelY = pixelSize - (height - pixelSize) / 2;
-
-        QString fontSize = QString::number(pixelSize);
+        QString pixelSize = QString::number(font.pixelSize());
 
         QString colorItem = color.name();
 
@@ -154,7 +152,9 @@ void WDeclarativeTextSvgPrivate::loadSvg()
 
             QString extra = getOutline(colorStyle, styleSize);
 
-            item = getText(x, y, family, weight, fontSize, colorItem, extra);
+            item = getText(x, y, family, weight, pixelSize, colorItem, extra);
+
+            width += styleSize * 2;
         }
         else
         {
@@ -164,21 +164,21 @@ void WDeclarativeTextSvgPrivate::loadSvg()
             {
                 QString colorStyle = styleColor.name();
 
-                item = getText("0", y, family, weight, fontSize, colorItem);
+                item = getText("0", y, family, weight, pixelSize, colorItem);
 
                 y = QString::number(pixelY + styleSize);
 
-                itemStyle = getText("0", y, family, weight, fontSize, colorStyle);
+                itemStyle = getText("0", y, family, weight, pixelSize, colorStyle);
             }
             else if (style == WDeclarativeTextSvg::Sunken)
             {
                 QString colorStyle = styleColor.name();
 
-                item = getText("0", y, family, weight, fontSize, colorItem);
+                item = getText("0", y, family, weight, pixelSize, colorItem);
 
                 y = QString::number(pixelY - styleSize);
 
-                itemStyle = getText("0", y, family, weight, fontSize, colorStyle);
+                itemStyle = getText("0", y, family, weight, pixelSize, colorStyle);
             }
             else if (style == WDeclarativeTextSvg::Glow)
             {
@@ -186,17 +186,17 @@ void WDeclarativeTextSvgPrivate::loadSvg()
 
                 QString colorStyle = styleColor.name();
 
-                item = getText(x, y, family, weight, fontSize, colorItem);
+                item = getText(x, y, family, weight, pixelSize, colorItem);
 
                 int sizeGlow = styleSize * 2;
 
                 QString extra = getOutline(colorStyle, sizeGlow);
 
-                itemStyle = getText(x, y, family, weight, fontSize, colorItem, extra);
+                itemStyle = getText(x, y, family, weight, pixelSize, colorItem, extra);
 
                 width += sizeGlow;
             }
-            else item = getText("0", y, family, weight, fontSize, colorItem);
+            else item = getText("0", y, family, weight, pixelSize, colorItem);
         }
 
         QString stringWidth  = QString::number(width);
@@ -224,15 +224,17 @@ QString WDeclarativeTextSvgPrivate::getText(const QString & x,
                                             const QString & color, const QString & extra) const
 {
     return "<text x=\"" + x + "\" y=\"" + y + "\" font-family=\"" + family + "\" font-weight=\""
-            +
-            weight + "\" font-size=\"" + size + "\" fill=\"" + color + "\"" + extra + ">"
-            +
-            text.toUtf8() + "</text>";
+           +
+           weight + "\" font-size=\"" + size + "\" fill=\"" + color + "\"" + extra + ">"
+           +
+           text.toUtf8() + "</text>";
 }
 
 QString WDeclarativeTextSvgPrivate::getOutline(const QString & color, int size) const
 {
-    QString string = " stroke=\"" + color + "\" stroke-width=\"" + QString::number(size) + "\"";
+    QString string = " stroke=\"" + color + "\" stroke-width=\"" + QString::number(size)
+                     +
+                     "\" vector-effect=\"non-scaling-stroke\"";
 
     if (outline == WDeclarativeTextSvg::OutlineRound)
     {
