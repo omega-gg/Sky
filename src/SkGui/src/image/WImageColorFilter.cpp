@@ -83,6 +83,15 @@ void WDeclarativeGradientStop::setColor(const QColor & color)
 }
 
 //-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ QList<WDeclarativeGradientStop *> WDeclarativeGradient::getStops() const
+{
+    return _stops;
+}
+
+//-------------------------------------------------------------------------------------------------
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
@@ -131,7 +140,7 @@ const QGradient * WDeclarativeGradient::gradient() const
 
         for (int i = 0; i < _stops.count(); i++)
         {
-            const WDeclarativeGradientStop *stop = _stops.at(i);
+            const WDeclarativeGradientStop * stop = _stops.at(i);
 
             _gradient->setCoordinateMode(QGradient::ObjectBoundingMode);
 
@@ -457,9 +466,9 @@ void WImageColorFilter::setColor(const QColor & color)
 
     d->color = color;
 
-    emit colorChanged(d->color);
-
     refreshFilter();
+
+    emit colorChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -488,6 +497,8 @@ void WImageColorFilter::setGradient(WDeclarativeGradient * gradient)
     }
 
     refreshFilter();
+
+    emit gradientChanged();
 }
 
 #endif // SK_NO_IMAGECOLORFILTER

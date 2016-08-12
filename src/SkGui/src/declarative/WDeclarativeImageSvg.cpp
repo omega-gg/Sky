@@ -42,7 +42,7 @@ void WDeclarativeImageSvgPrivate::init()
 
     renderer = new QSvgRenderer(q);
 
-    QObject::connect(renderer, SIGNAL(repaintNeeded()), q, SLOT(onRepaintNeeded()));
+    QObject::connect(renderer, SIGNAL(repaintNeeded()), q, SLOT(onUpdate()));
 
     status = WDeclarativeImageSvg::Null;
 
@@ -250,7 +250,7 @@ void WDeclarativeImageSvgPrivate::onLoaded(WCacheFile * file)
 
 //-------------------------------------------------------------------------------------------------
 
-void WDeclarativeImageSvgPrivate::onRepaintNeeded()
+void WDeclarativeImageSvgPrivate::onUpdate()
 {
     Q_Q(WDeclarativeImageSvg); q->update();
 }

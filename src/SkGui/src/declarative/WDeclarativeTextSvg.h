@@ -24,6 +24,7 @@
 
 class WDeclarativeTextSvgPrivate;
 class WDeclarativeTextSvgScalePrivate;
+class WDeclarativeGradient;
 
 //-------------------------------------------------------------------------------------------------
 // WDeclarativeTextSvg
@@ -43,6 +44,9 @@ class SK_GUI_EXPORT WDeclarativeTextSvg : public WDeclarativeItem
     Q_PROPERTY(QFont font READ font WRITE setFont NOTIFY fontChanged)
 
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
+
+    Q_PROPERTY(WDeclarativeGradient * gradient READ gradient WRITE setGradient
+               NOTIFY gradientChanged)
 
     Q_PROPERTY(TextStyle   style   READ style   WRITE setStyle   NOTIFY styleChanged)
     Q_PROPERTY(TextOutline outline READ outline WRITE setOutline NOTIFY outlineChanged)
@@ -95,7 +99,8 @@ signals:
 
     void fontChanged();
 
-    void colorChanged();
+    void colorChanged   ();
+    void gradientChanged();
 
     void styleChanged  ();
     void outlineChanged();
@@ -119,6 +124,9 @@ public: // Properties
     QColor color() const;
     void   setColor(const QColor & color);
 
+    WDeclarativeGradient * gradient() const;
+    void                   setGradient(WDeclarativeGradient * gradient);
+
     TextStyle style() const;
     void      setStyle(TextStyle style);
 
@@ -140,7 +148,8 @@ public: // Properties
 private:
     W_DECLARE_PRIVATE(WDeclarativeTextSvg)
 
-    Q_PRIVATE_SLOT(d_func(), void onRepaintNeeded())
+    Q_PRIVATE_SLOT(d_func(), void onLoad  ())
+    Q_PRIVATE_SLOT(d_func(), void onUpdate())
 };
 
 QML_DECLARE_TYPE(WDeclarativeTextSvg)

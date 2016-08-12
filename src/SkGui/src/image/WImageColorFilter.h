@@ -83,6 +83,9 @@ public:
 
     /* virtual */ ~WDeclarativeGradient();
 
+public: // Interface
+    Q_INVOKABLE QList<WDeclarativeGradientStop *> getStops() const;
+
 private: // Functions
     void update();
 
@@ -120,7 +123,8 @@ class SK_GUI_EXPORT WImageColorFilter : public WImageFilter
 
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
 
-    Q_PROPERTY(WDeclarativeGradient * gradient READ gradient WRITE setGradient)
+    Q_PROPERTY(WDeclarativeGradient * gradient READ gradient WRITE setGradient
+               NOTIFY gradientChanged)
 
 public:
     explicit WImageColorFilter(QObject * parent = NULL);
@@ -129,7 +133,8 @@ protected: // WImageFilter implementation
     /* virtual */ bool filter(QImage * image) const;
 
 signals:
-    void colorChanged(const QColor & color);
+    void colorChanged   ();
+    void gradientChanged();
 
 public: // Properties
     QColor color() const;

@@ -69,7 +69,7 @@ public: // Slots
 
     void onLoaded(WCacheFile * file);
 
-    void onRepaintNeeded();
+    void onUpdate();
 
 public: // Variables
     WCacheFile * file;

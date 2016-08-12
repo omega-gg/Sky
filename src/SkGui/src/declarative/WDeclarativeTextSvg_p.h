@@ -69,7 +69,8 @@ public: // Functions
     QString getWeight() const;
 
 public: // Slots
-    void onRepaintNeeded();
+    void onLoad  ();
+    void onUpdate();
 
 public: // Variables
     QSvgRenderer * renderer;
@@ -86,6 +87,8 @@ public: // Variables
     QFont font;
 
     QColor color;
+
+    WDeclarativeGradient * gradient;
 
     WDeclarativeTextSvg::TextStyle style;
 

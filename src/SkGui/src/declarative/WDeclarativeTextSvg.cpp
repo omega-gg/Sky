@@ -24,6 +24,7 @@
 
 // Sk includes
 #include <WControllerView>
+#include <WImageColorFilter>
 
 //=================================================================================================
 // WDeclarativeTextSvgPrivate
@@ -42,6 +43,8 @@ void WDeclarativeTextSvgPrivate::init()
 
     loadLater = false;
 
+    gradient = NULL;
+
     style   = WDeclarativeTextSvg::Normal;
     outline = WDeclarativeTextSvg::OutlineNormal;
 
@@ -50,7 +53,7 @@ void WDeclarativeTextSvgPrivate::init()
     hAlign = WDeclarativeText::AlignLeft;
     vAlign = WDeclarativeText::AlignTop;
 
-    QObject::connect(renderer, SIGNAL(repaintNeeded()), q, SLOT(onRepaintNeeded()));
+    QObject::connect(renderer, SIGNAL(repaintNeeded()), q, SLOT(onUpdate()));
 
     q->setFlag(QGraphicsItem::ItemHasNoContents, false);
 }
@@ -125,23 +128,50 @@ void WDeclarativeTextSvgPrivate::loadSvg()
     }
     else
     {
+        QString item;
+
+        QString colorItem;
+
+        if (gradient)
+        {
+            if (gradient->type() == WDeclarativeGradient::LinearVertical)
+            {
+                 item.append("<defs><linearGradient id=\"gradient\" "
+                             "x1=\"0%\" y1=\"0%\" x2=\"0%\" y2=\"100%\">");
+            }
+            else item.append("<defs><linearGradient id=\"gradient\" "
+                             "x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">");
+
+            QList<WDeclarativeGradientStop *> stops = gradient->getStops();
+
+            for (int i = 0; i < stops.count(); i++)
+            {
+                const WDeclarativeGradientStop * stop = stops.at(i);
+
+                QString position = QString::number(stop->position() * 100);
+
+                item.append("<stop offset=\"" + position + "%\" stop-color=\""
+                            +
+                            stop->color().name() + "\"/>");
+            }
+
+            item.append("</linearGradient></defs>");
+
+            colorItem = "url(#gradient)";
+        }
+        else colorItem = color.name();
+
         QFontMetrics metrics(font);
 
-        width  = metrics.width (text);
-        height = metrics.height();
+        int pixelY = metrics.ascent();
 
         QString family = font.family();
 
         QString weight = getWeight();
 
-        int pixelY = metrics.ascent();
-
         QString pixelSize = QString::number(font.pixelSize());
 
-        QString colorItem = color.name();
-
-        QString item;
-        QString itemStyle;
+        int padding;
 
         if (style == WDeclarativeTextSvg::Outline)
         {
@@ -154,34 +184,35 @@ void WDeclarativeTextSvgPrivate::loadSvg()
 
             QString extra = getOutline(colorStyle, styleSize);
 
-            item = getText(x, y, family, weight, pixelSize, colorItem, extra);
+            item.append(getText(x, y, family, weight, pixelSize, colorItem, extra));
 
-            width  += styleSize;
-            height += styleSize;
+            padding = styleSize;
         }
         else if (style == WDeclarativeTextSvg::Raised)
         {
-            QString y = QString::number(pixelY);
+            QString y      = QString::number(pixelY);
+            QString yStyle = QString::number(pixelY + styleSize);
 
             QString colorStyle = styleColor.name();
 
-            item = getText("0", y, family, weight, pixelSize, colorItem);
+            item.append(getText("0", yStyle, family, weight, pixelSize, colorStyle)
+                        +
+                        getText("0", y, family, weight, pixelSize, colorItem));
 
-            y = QString::number(pixelY + styleSize);
-
-            itemStyle = getText("0", y, family, weight, pixelSize, colorStyle);
+            padding = 0;
         }
         else if (style == WDeclarativeTextSvg::Sunken)
         {
-            QString y = QString::number(pixelY);
+            QString y      = QString::number(pixelY);
+            QString yStyle = QString::number(pixelY - styleSize);
 
             QString colorStyle = styleColor.name();
 
-            item = getText("0", y, family, weight, pixelSize, colorItem);
+            item.append(getText("0", yStyle, family, weight, pixelSize, colorStyle)
+                        +
+                        getText("0", y, family, weight, pixelSize, colorItem));
 
-            y = QString::number(pixelY - styleSize);
-
-            itemStyle = getText("0", y, family, weight, pixelSize, colorStyle);
+            padding = 0;
         }
         else if (style == WDeclarativeTextSvg::Glow)
         {
@@ -190,32 +221,36 @@ void WDeclarativeTextSvgPrivate::loadSvg()
 
             QString colorStyle = styleColor.name();
 
-            item = getText(x, y, family, weight, pixelSize, colorItem);
-
             int sizeGlow = styleSize * 2;
 
             QString extra = getOutline(colorStyle, sizeGlow);
 
-            itemStyle = getText(x, y, family, weight, pixelSize, colorItem, extra);
+            item.append(getText(x, y, family, weight, pixelSize, colorStyle, extra)
+                        +
+                        getText(x, y, family, weight, pixelSize, colorItem));
 
-            width  += sizeGlow;
-            height += sizeGlow;
+            padding = sizeGlow;
         }
         else
         {
             QString y = QString::number(pixelY);
 
-            item = getText("0", y, family, weight, pixelSize, colorItem);
+            item.append(getText("0", y, family, weight, pixelSize, colorItem));
+
+            padding = 0;
         }
+
+        width  = metrics.width (text) + padding;
+        height = metrics.height()     + padding;
 
         QString stringWidth  = QString::number(width);
         QString stringHeight = QString::number(height);
 
         QByteArray content;
 
-        content.append("<svg x=\"0\" y=\"0\" width=\"" + stringWidth + "\" height=\""
+        content.append("<svg width=\"" + stringWidth + "\" height=\"" + stringHeight + "\">"
                        +
-                       stringHeight + "\">" + itemStyle + item + "</svg>");
+                       item + "</svg>");
 
         renderer->load(content);
     }
@@ -268,7 +303,14 @@ QString WDeclarativeTextSvgPrivate::getWeight() const
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
-void WDeclarativeTextSvgPrivate::onRepaintNeeded()
+void WDeclarativeTextSvgPrivate::onLoad()
+{
+    Q_Q(WDeclarativeTextSvg);
+
+    if (q->isComponentComplete()) load();
+}
+
+void WDeclarativeTextSvgPrivate::onUpdate()
 {
     Q_Q(WDeclarativeTextSvg); q->update();
 }
@@ -445,6 +487,36 @@ void WDeclarativeTextSvg::setColor(const QColor & color)
     if (isComponentComplete()) d->load();
 
     emit colorChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+WDeclarativeGradient * WDeclarativeTextSvg::gradient() const
+{
+    Q_D(const WDeclarativeTextSvg); return d->gradient;
+}
+
+void WDeclarativeTextSvg::setGradient(WDeclarativeGradient * gradient)
+{
+    Q_D(WDeclarativeTextSvg);
+
+    if (d->gradient == gradient) return;
+
+    if (d->gradient)
+    {
+        disconnect(d->gradient, 0, this, 0);
+    }
+
+    d->gradient = gradient;
+
+    if (d->gradient)
+    {
+        connect(d->gradient, SIGNAL(updated()), this, SLOT(onLoad()));
+    }
+
+    if (isComponentComplete()) d->load();
+
+    emit gradientChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

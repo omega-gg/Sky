@@ -114,7 +114,7 @@ public: // Properties
 private:
     W_DECLARE_PRIVATE(WDeclarativeImageSvg)
 
-    Q_PRIVATE_SLOT(d_func(), void onRepaintNeeded())
+    Q_PRIVATE_SLOT(d_func(), void onUpdate())
 };
 
 QML_DECLARE_TYPE(WDeclarativeImageSvg)
