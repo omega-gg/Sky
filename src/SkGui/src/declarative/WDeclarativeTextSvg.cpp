@@ -128,39 +128,6 @@ void WDeclarativeTextSvgPrivate::loadSvg()
     }
     else
     {
-        QString item;
-
-        QString colorItem;
-
-        if (gradient)
-        {
-            if (gradient->type() == WDeclarativeGradient::LinearVertical)
-            {
-                 item.append("<defs><linearGradient id=\"gradient\" "
-                             "x1=\"0%\" y1=\"0%\" x2=\"0%\" y2=\"100%\">");
-            }
-            else item.append("<defs><linearGradient id=\"gradient\" "
-                             "x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">");
-
-            QList<WDeclarativeGradientStop *> stops = gradient->getStops();
-
-            for (int i = 0; i < stops.count(); i++)
-            {
-                const WDeclarativeGradientStop * stop = stops.at(i);
-
-                QString position = QString::number(stop->position() * 100);
-
-                item.append("<stop offset=\"" + position + "%\" stop-color=\""
-                            +
-                            stop->color().name() + "\"/>");
-            }
-
-            item.append("</linearGradient></defs>");
-
-            colorItem = "url(#gradient)";
-        }
-        else colorItem = color.name();
-
         QFontMetrics metrics(font);
 
         int pixelY = metrics.ascent();
@@ -171,7 +138,9 @@ void WDeclarativeTextSvgPrivate::loadSvg()
 
         QString pixelSize = QString::number(font.pixelSize());
 
-        int padding;
+        QString item;
+
+        QString colorItem = addGradient(&item);
 
         if (style == WDeclarativeTextSvg::Outline)
         {
@@ -184,9 +153,10 @@ void WDeclarativeTextSvgPrivate::loadSvg()
 
             QString extra = getOutline(colorStyle, styleSize);
 
-            item.append(getText(x, y, family, weight, pixelSize, colorItem, extra));
+            addText(&item, x, y, family, weight, pixelSize, colorItem, extra);
 
-            padding = styleSize;
+            width  = metrics.width (text) + styleSize;
+            height = metrics.height()     + styleSize;
         }
         else if (style == WDeclarativeTextSvg::Raised)
         {
@@ -195,11 +165,11 @@ void WDeclarativeTextSvgPrivate::loadSvg()
 
             QString colorStyle = styleColor.name();
 
-            item.append(getText("0", yStyle, family, weight, pixelSize, colorStyle)
-                        +
-                        getText("0", y, family, weight, pixelSize, colorItem));
+            addText(&item, "0", yStyle, family, weight, pixelSize, colorStyle);
+            addText(&item, "0", y,      family, weight, pixelSize, colorItem);
 
-            padding = 0;
+            width  = metrics.width (text);
+            height = metrics.height();
         }
         else if (style == WDeclarativeTextSvg::Sunken)
         {
@@ -208,11 +178,11 @@ void WDeclarativeTextSvgPrivate::loadSvg()
 
             QString colorStyle = styleColor.name();
 
-            item.append(getText("0", yStyle, family, weight, pixelSize, colorStyle)
-                        +
-                        getText("0", y, family, weight, pixelSize, colorItem));
+            addText(&item, "0", yStyle, family, weight, pixelSize, colorStyle);
+            addText(&item, "0", y,      family, weight, pixelSize, colorItem);
 
-            padding = 0;
+            width  = metrics.width (text);
+            height = metrics.height();
         }
         else if (style == WDeclarativeTextSvg::Glow)
         {
@@ -225,23 +195,21 @@ void WDeclarativeTextSvgPrivate::loadSvg()
 
             QString extra = getOutline(colorStyle, sizeGlow);
 
-            item.append(getText(x, y, family, weight, pixelSize, colorStyle, extra)
-                        +
-                        getText(x, y, family, weight, pixelSize, colorItem));
+            addText(&item, x, y, family, weight, pixelSize, colorStyle, extra);
+            addText(&item, x, y, family, weight, pixelSize, colorItem);
 
-            padding = sizeGlow;
+            width  = metrics.width (text) + sizeGlow;
+            height = metrics.height()     + sizeGlow;
         }
         else
         {
             QString y = QString::number(pixelY);
 
-            item.append(getText("0", y, family, weight, pixelSize, colorItem));
+            addText(&item, "0", y, family, weight, pixelSize, colorItem);
 
-            padding = 0;
+            width  = metrics.width (text);
+            height = metrics.height();
         }
-
-        width  = metrics.width (text) + padding;
-        height = metrics.height()     + padding;
 
         QString stringWidth  = QString::number(width);
         QString stringHeight = QString::number(height);
@@ -260,19 +228,57 @@ void WDeclarativeTextSvgPrivate::loadSvg()
 
 //-------------------------------------------------------------------------------------------------
 
-QString WDeclarativeTextSvgPrivate::getText(const QString & x,
-                                            const QString & y,
-                                            const QString & family,
-                                            const QString & weight,
-                                            const QString & size,
-                                            const QString & color, const QString & extra) const
+QString WDeclarativeTextSvgPrivate::addGradient(QString * item) const
 {
-    return "<text x=\"" + x + "\" y=\"" + y + "\" font-family=\"" + family + "\" font-weight=\""
-           +
-           weight + "\" font-size=\"" + size + "\" fill=\"" + color + "\"" + extra + ">"
-           +
-           text.toUtf8() + "</text>";
+    if (gradient == NULL)
+    {
+        return color.name();
+    }
+
+    if (gradient->type() == WDeclarativeGradient::LinearVertical)
+    {
+         item->append("<defs><linearGradient id=\"gradient\" "
+                      "x1=\"0%\" y1=\"0%\" x2=\"0%\" y2=\"100%\">");
+    }
+    else item->append("<defs><linearGradient id=\"gradient\" "
+                      "x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">");
+
+    QList<WDeclarativeGradientStop *> stops = gradient->getStops();
+
+    for (int i = 0; i < stops.count(); i++)
+    {
+        const WDeclarativeGradientStop * stop = stops.at(i);
+
+        QString position = QString::number(stop->position() * 100);
+
+        item->append("<stop offset=\"" + position + "%\" stop-color=\"" + stop->color().name()
+                     +
+                     "\"/>");
+    }
+
+    item->append("</linearGradient></defs>");
+
+    return "url(#gradient)";
 }
+
+//-------------------------------------------------------------------------------------------------
+
+void WDeclarativeTextSvgPrivate::addText(QString * item, const QString & x,
+                                                         const QString & y,
+                                                         const QString & family,
+                                                         const QString & weight,
+                                                         const QString & size,
+                                                         const QString & color,
+                                                         const QString & extra) const
+{
+    item->append("<text x=\"" + x + "\" y=\"" + y + "\" font-family=\"" + family
+                 +
+                 "\" font-weight=\"" + weight + "\" font-size=\"" + size + "\" fill=\"" + color
+                 +
+                 "\"" + extra + ">" + text.toUtf8() + "</text>");
+}
+
+//-------------------------------------------------------------------------------------------------
 
 QString WDeclarativeTextSvgPrivate::getOutline(const QString & color, int size) const
 {

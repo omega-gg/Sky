@@ -34,6 +34,7 @@ class SK_GUI_EXPORT WDeclarativeTextSvg : public WDeclarativeItem
 {
     Q_OBJECT
 
+    Q_ENUMS(LoadMode)
     Q_ENUMS(TextStyle)
     Q_ENUMS(TextOutline)
 

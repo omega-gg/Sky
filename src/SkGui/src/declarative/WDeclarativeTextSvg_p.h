@@ -57,12 +57,14 @@ public: // Functions
 
     void loadSvg();
 
-    QString getText(const QString & x,
-                    const QString & y,
-                    const QString & family,
-                    const QString & weight,
-                    const QString & size,
-                    const QString & color, const QString & extra = QString()) const;
+    QString addGradient(QString * item) const;
+
+    void addText(QString * item, const QString & x,
+                                 const QString & y,
+                                 const QString & family,
+                                 const QString & weight,
+                                 const QString & size,
+                                 const QString & color, const QString & extra = QString()) const;
 
     QString getOutline(const QString & color, int size) const;
 
