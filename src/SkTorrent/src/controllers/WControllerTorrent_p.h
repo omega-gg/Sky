@@ -27,6 +27,10 @@
     We mean it.
 */
 
+// Qt includes
+#include <QHash>
+
+// Sk includes
 #include <private/WController_p>
 
 #ifndef SK_NO_CONTROLLERTORRENT
