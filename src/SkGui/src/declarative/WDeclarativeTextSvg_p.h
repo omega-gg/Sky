@@ -57,6 +57,8 @@ public: // Functions
 
     void loadSvg();
 
+    int getWidth(const QFontMetrics & metrics, const QString & text) const;
+
     QString addGradient(QString * item) const;
 
     void addText(QString * item, const QString & x,

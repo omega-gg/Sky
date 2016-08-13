@@ -155,8 +155,9 @@ void WDeclarativeTextSvgPrivate::loadSvg()
 
             addText(&item, x, y, family, weight, pixelSize, colorItem, extra);
 
-            width  = metrics.width (text) + styleSize;
-            height = metrics.height()     + styleSize;
+            width = getWidth(metrics, text) + styleSize;
+
+            height = metrics.height() + styleSize;
         }
         else if (style == WDeclarativeTextSvg::Raised)
         {
@@ -168,7 +169,8 @@ void WDeclarativeTextSvgPrivate::loadSvg()
             addText(&item, "0", yStyle, family, weight, pixelSize, colorStyle);
             addText(&item, "0", y,      family, weight, pixelSize, colorItem);
 
-            width  = metrics.width (text);
+            width = getWidth(metrics, text);
+
             height = metrics.height();
         }
         else if (style == WDeclarativeTextSvg::Sunken)
@@ -181,7 +183,8 @@ void WDeclarativeTextSvgPrivate::loadSvg()
             addText(&item, "0", yStyle, family, weight, pixelSize, colorStyle);
             addText(&item, "0", y,      family, weight, pixelSize, colorItem);
 
-            width  = metrics.width (text);
+            width = getWidth(metrics, text);
+
             height = metrics.height();
         }
         else if (style == WDeclarativeTextSvg::Glow)
@@ -198,8 +201,9 @@ void WDeclarativeTextSvgPrivate::loadSvg()
             addText(&item, x, y, family, weight, pixelSize, colorStyle, extra);
             addText(&item, x, y, family, weight, pixelSize, colorItem);
 
-            width  = metrics.width (text) + sizeGlow;
-            height = metrics.height()     + sizeGlow;
+            width = getWidth(metrics, text) + sizeGlow;
+
+            height = metrics.height() + sizeGlow;
         }
         else
         {
@@ -207,7 +211,8 @@ void WDeclarativeTextSvgPrivate::loadSvg()
 
             addText(&item, "0", y, family, weight, pixelSize, colorItem);
 
-            width  = metrics.width (text);
+            width = getWidth(metrics, text);
+
             height = metrics.height();
         }
 
@@ -224,6 +229,18 @@ void WDeclarativeTextSvgPrivate::loadSvg()
     }
 
     q->svgChange();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+int WDeclarativeTextSvgPrivate::getWidth(const QFontMetrics & metrics, const QString & text) const
+{
+    // FIXME: Workaround to fix the width of the arial font.
+    if (font.family().toLower() == "arial")
+    {
+         return metrics.width(text) * 1.01;
+    }
+    else return metrics.width(text);
 }
 
 //-------------------------------------------------------------------------------------------------
