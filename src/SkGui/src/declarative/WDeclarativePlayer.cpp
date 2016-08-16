@@ -320,8 +320,6 @@ void WDeclarativePlayerPrivate::onEnded()
 
     if (repeat != WDeclarativePlayer::RepeatOne)
     {
-        if (tab) tab->setCurrentTime(-1);
-
         if (q->hasNextTrack() == false)
         {
             if (playlist && repeat == WDeclarativePlayer::RepeatAll)
