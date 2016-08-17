@@ -61,6 +61,8 @@ class SK_GUI_EXPORT WDeclarativeTextSvg : public WDeclarativeItem
     Q_PROPERTY(WDeclarativeText::VAlignment verticalAlignment READ vAlign WRITE setVAlign
                NOTIFY verticalAlignmentChanged)
 
+    Q_PROPERTY(qreal zoom READ zoom WRITE setZoom NOTIFY zoomChanged)
+
 public: // Enums
     enum LoadMode { LoadAlways, LoadVisible };
 
@@ -112,6 +114,8 @@ signals:
     void horizontalAlignmentChanged();
     void verticalAlignmentChanged  ();
 
+    void zoomChanged();
+
 public: // Properties
     QString text() const;
     void    setText(const QString & text);
@@ -145,6 +149,9 @@ public: // Properties
 
     WDeclarativeText::VAlignment vAlign() const;
     void                         setVAlign(WDeclarativeText::VAlignment align);
+
+    qreal zoom() const;
+    void  setZoom(qreal zoom);
 
 private:
     W_DECLARE_PRIVATE(WDeclarativeTextSvg)

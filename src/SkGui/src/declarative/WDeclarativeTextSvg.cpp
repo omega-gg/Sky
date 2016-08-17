@@ -53,6 +53,8 @@ void WDeclarativeTextSvgPrivate::init()
     hAlign = WDeclarativeText::AlignLeft;
     vAlign = WDeclarativeText::AlignTop;
 
+    zoom = 1.0;
+
     QObject::connect(renderer, SIGNAL(repaintNeeded()), q, SLOT(onUpdate()));
 
     q->setFlag(QGraphicsItem::ItemHasNoContents, false);
@@ -62,13 +64,15 @@ void WDeclarativeTextSvgPrivate::init()
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-QRectF WDeclarativeTextSvgPrivate::getRect(qreal width, qreal height) const
+QRectF WDeclarativeTextSvgPrivate::getRect(qreal width, qreal height)
 {
+    Q_Q(WDeclarativeTextSvg);
+
     qreal x;
     qreal y;
 
-    int textWidth  = this->width;
-    int textHeight = this->height;
+    int textWidth  = q->implicitWidth ();
+    int textHeight = q->implicitHeight();
 
     if (hAlign == WDeclarativeText::AlignRight)
     {
@@ -299,9 +303,7 @@ void WDeclarativeTextSvgPrivate::addText(QString * item, const QString & x,
 
 QString WDeclarativeTextSvgPrivate::getOutline(const QString & color, int size) const
 {
-    QString string = " stroke=\"" + color + "\" stroke-width=\"" + QString::number(size)
-                     +
-                     "\" vector-effect=\"non-scaling-stroke\"";
+    QString string = " stroke=\"" + color + "\" stroke-width=\"" + QString::number(size) + "\"";
 
     if (outline == WDeclarativeTextSvg::OutlineRound)
     {
@@ -406,8 +408,8 @@ WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p,
 {
     Q_D(WDeclarativeTextSvg);
 
-    setImplicitWidth (d->width);
-    setImplicitHeight(d->height);
+    setImplicitWidth (d->width  * d->zoom);
+    setImplicitHeight(d->height * d->zoom);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -660,6 +662,28 @@ void WDeclarativeTextSvg::setVAlign(WDeclarativeText::VAlignment align)
     update();
 
     emit verticalAlignmentChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+qreal WDeclarativeTextSvg::zoom() const
+{
+    Q_D(const WDeclarativeTextSvg); return d->zoom;
+}
+
+void WDeclarativeTextSvg::setZoom(qreal zoom)
+{
+    Q_D(WDeclarativeTextSvg);
+
+    if (d->zoom == zoom) return;
+
+    d->zoom = zoom;
+
+    svgChange();
+
+    update();
+
+    emit zoomChanged();
 }
 
 //=================================================================================================

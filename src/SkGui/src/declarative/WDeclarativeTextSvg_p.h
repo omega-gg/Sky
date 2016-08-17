@@ -50,7 +50,7 @@ protected:
     void init();
 
 public: // Functions
-    QRectF getRect(qreal width, qreal height) const;
+    QRectF getRect(qreal width, qreal height);
 
     void load       ();
     void loadVisible();
@@ -103,6 +103,8 @@ public: // Variables
 
     WDeclarativeText::HAlignment hAlign;
     WDeclarativeText::VAlignment vAlign;
+
+    qreal zoom;
 
 protected:
     W_DECLARE_PUBLIC(WDeclarativeTextSvg)
