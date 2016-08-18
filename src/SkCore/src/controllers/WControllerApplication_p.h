@@ -47,7 +47,7 @@ public:
 public: // Functions
     void processArguments(int & argc, char ** argv);
 
-    QMap<QString, QString> extractArguments(int & argc, char ** argv);
+    QHash<QString, QString> extractArguments(int & argc, char ** argv);
 
     void restartScript();
 

@@ -133,7 +133,7 @@ void WControllerApplicationPrivate::processArguments(int & argc, char ** argv)
 {
     if (argc == 1) return;
 
-    QMap<QString, QString> arguments = extractArguments(argc, argv);
+    QHash<QString, QString> arguments = extractArguments(argc, argv);
 
     if (arguments.contains("qrc"))
     {
@@ -159,9 +159,9 @@ void WControllerApplicationPrivate::processArguments(int & argc, char ** argv)
     }
 }
 
-QMap<QString, QString> WControllerApplicationPrivate::extractArguments(int & argc, char ** argv)
+QHash<QString, QString> WControllerApplicationPrivate::extractArguments(int & argc, char ** argv)
 {
-    QMap<QString, QString> args;
+    QHash<QString, QString> arguments;
 
     int count = 0;
 
@@ -181,23 +181,23 @@ QMap<QString, QString> WControllerApplicationPrivate::extractArguments(int & arg
 
                 QString value = arg.mid(split + 1).trimmed();
 
-                args.insert(key, value);
+                arguments.insert(key, value);
             }
-            else args.insert(arg.mid(2), QString());
+            else arguments.insert(arg.mid(2), QString());
         }
         else if (arg.startsWith('-'))
         {
-            args.insert(arg.mid(1), QString());
+            arguments.insert(arg.mid(1), QString());
         }
         else
         {
             count++;
 
-            args.insert(QString::number(count), arg);
+            arguments.insert(QString::number(count), arg);
         }
     }
 
-    return args;
+    return arguments;
 }
 
 //-------------------------------------------------------------------------------------------------
