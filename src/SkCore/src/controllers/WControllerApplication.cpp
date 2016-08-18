@@ -141,7 +141,7 @@ void WControllerApplicationPrivate::processArguments(int & argc, char ** argv)
     }
     else if (type == Sk::Script)
     {
-        QString path = arguments.value("arg-1");
+        QString path = arguments.value("1");
 
         if (path.isNull())
         {
@@ -193,7 +193,7 @@ QMap<QString, QString> WControllerApplicationPrivate::extractArguments(int & arg
         {
             count++;
 
-            args.insert(QString("arg-%1").arg(count), arg);
+            args.insert(QString::number(count), arg);
         }
     }
 
