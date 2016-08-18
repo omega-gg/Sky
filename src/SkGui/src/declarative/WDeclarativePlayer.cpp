@@ -328,7 +328,12 @@ void WDeclarativePlayerPrivate::onEnded()
 
                 currentBackend->replay();
             }
-            else q->stop();
+            else
+            {
+                q->stop();
+
+                emit q->ended();
+            }
         }
         else q->setNextTrack();
     }

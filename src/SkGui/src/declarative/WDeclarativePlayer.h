@@ -147,6 +147,8 @@ protected: // WAbstractPlaylistWatcher implementation
     /* virtual */ void beginTracksClear();
 
 signals:
+    void ended();
+
     void backendChanged();
     void hookChanged   ();
 
