@@ -185,6 +185,11 @@ static const int PLAYER_MAX_WIDTH  = 5760;
 static const int PLAYER_MAX_HEIGHT = 3240;
 
 //-------------------------------------------------------------------------------------------------
+
+static GLuint shaderId    = 0;
+static int    shaderCount = 0;
+
+//-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
 
@@ -194,7 +199,7 @@ WBackendVlcPrivate::WBackendVlcPrivate(WBackendVlc * p) : WAbstractBackendPrivat
 {
     delete player;
 
-    if (shader) glDeleteProgramsARB(1, &shader);
+    deleteShader();
 
     if (textureIds[0]) glDeleteTextures(3, textureIds);
 }
@@ -217,8 +222,7 @@ void WBackendVlcPrivate::init()
     targetWidth  = 0.f;
     targetHeight = 0.f;
 
-    shaderAvailable = false;
-    shader          = 0;
+    shader = 0;
 
     textureIds[0] = 0;
 
@@ -294,6 +298,15 @@ void WBackendVlcPrivate::initShader()
 {
     if (shader) return;
 
+    if (shaderCount)
+    {
+        shader = true;
+
+        shaderCount++;
+
+        return;
+    }
+
 #ifdef Q_OS_WIN
     glGenProgramsARB   = (PFNGLGENPROGRAMSARBPROC)   wglGetProcAddress("glGenProgramsARB");
     glBindProgramARB   = (PFNGLBINDPROGRAMARBPROC)   wglGetProcAddress("glBindProgramARB");
@@ -310,40 +323,57 @@ void WBackendVlcPrivate::initShader()
     if (glGenProgramsARB              && glBindProgramARB   && glProgramStringARB &&
         glProgramLocalParameter4fvARB && glActiveTextureARB && glMultiTexCoord2fARB)
     {
-         shaderAvailable = true;
-    }
-    else shaderAvailable = false;
-#else
-    shaderAvailable = false;
-#endif
+        createShader();
 
-    if (shaderAvailable)
-    {
-        const char * code =
-            "!!ARBfp1.0"
-            "OPTION ARB_precision_hint_fastest;"
+        shader = true;
 
-            "TEMP src;"
-            "TEX  src.x, fragment.texcoord[0], texture[0], 2D;"
-            "TEX  src.y, fragment.texcoord[1], texture[1], 2D;"
-            "TEX  src.z, fragment.texcoord[2], texture[2], 2D;"
-
-            "PARAM coefficient[4] = { program.local[0..3] };"
-
-            "TEMP tmp;"
-            "MAD  tmp,          src.xxxx, coefficient[0], coefficient[3];"
-            "MAD  tmp,          src.yyyy, coefficient[1], tmp;"
-            "MAD  result.color, src.zzzz, coefficient[2], tmp;"
-            "END";
-
-        glGenProgramsARB(1, &shader);
-
-        glBindProgramARB(GL_FRAGMENT_PROGRAM_ARB, shader);
-
-        glProgramStringARB(GL_FRAGMENT_PROGRAM_ARB,
-                           GL_PROGRAM_FORMAT_ASCII_ARB, strlen(code), (const GLbyte *) code);
+        shaderCount++;
     }
     else qWarning("WBackendVlcPrivate::initShader: Fragment shaders are not supported.");
+#else
+    qWarning("WBackendVlcPrivate::initShader: Fragment shaders are not supported.");
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WBackendVlcPrivate::createShader()
+{
+    const char * code =
+        "!!ARBfp1.0"
+        "OPTION ARB_precision_hint_fastest;"
+
+        "TEMP src;"
+        "TEX  src.x, fragment.texcoord[0], texture[0], 2D;"
+        "TEX  src.y, fragment.texcoord[1], texture[1], 2D;"
+        "TEX  src.z, fragment.texcoord[2], texture[2], 2D;"
+
+        "PARAM coefficient[4] = { program.local[0..3] };"
+
+        "TEMP tmp;"
+        "MAD  tmp,          src.xxxx, coefficient[0], coefficient[3];"
+        "MAD  tmp,          src.yyyy, coefficient[1], tmp;"
+        "MAD  result.color, src.zzzz, coefficient[2], tmp;"
+        "END";
+
+    glGenProgramsARB(1, &shaderId);
+
+    glBindProgramARB(GL_FRAGMENT_PROGRAM_ARB, shaderId);
+
+    glProgramStringARB(GL_FRAGMENT_PROGRAM_ARB,
+                       GL_PROGRAM_FORMAT_ASCII_ARB, strlen(code), (const GLbyte *) code);
+}
+
+void WBackendVlcPrivate::deleteShader()
+{
+    if (shader == false) return;
+
+    shaderCount--;
+
+    if (shaderCount == 0)
+    {
+        glDeleteProgramsARB(1, &shaderId);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------

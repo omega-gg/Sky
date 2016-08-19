@@ -99,6 +99,9 @@ public: // Functions
 
     void initShader();
 
+    void createShader();
+    void deleteShader();
+
     void convertFrameSoftware();
     void convertFrameSse     ();
 
@@ -156,8 +159,7 @@ public: // Variables
     GLfloat targetWidth;
     GLfloat targetHeight;
 
-    bool   shaderAvailable;
-    GLuint shader;
+    bool shader;
 
     GLuint textureIds[3];
 
