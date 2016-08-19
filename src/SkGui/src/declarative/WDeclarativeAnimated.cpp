@@ -37,8 +37,8 @@ void WDeclarativeAnimatedPrivate::init()
     stepCount =  0;
     step      = -1;
 
-    loopCount =  1;
-    loop      = -1;
+    loopCount = 1;
+    loop      = 0;
 
     q->setFlag(QGraphicsItem::ItemHasNoContents, false);
 
@@ -57,8 +57,6 @@ void WDeclarativeAnimatedPrivate::start()
     }
     else setStep(stepCount - 1);
 
-    setLoop(0);
-
     if (stepMode == WDeclarativeAnimated::StepManual)
     {
         Q_Q(WDeclarativeAnimated);
@@ -73,7 +71,7 @@ void WDeclarativeAnimatedPrivate::stop()
     pause.stop();
 
     setStep(-1);
-    setLoop(-1);
+    setLoop( 0);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -232,7 +230,7 @@ WDeclarativeAnimated::WDeclarativeAnimated(WDeclarativeAnimatedPrivate * p,
     setRunning(false);
 
     d->setStep(-1);
-    d->setLoop(-1);
+    d->setLoop( 0);
 }
 
 //-------------------------------------------------------------------------------------------------
