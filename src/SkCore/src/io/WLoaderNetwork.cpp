@@ -40,7 +40,7 @@ void WLoaderNetworkPrivate::init()
 
     manager = new QNetworkAccessManager(q);
 
-    // FIXME: Fake request to avoid first request freeze.
+    // FIXME: Fake request to avoid the first request freeze.
     if (q->parent() == wControllerDownload)
     {
         delete manager->get(QNetworkRequest());

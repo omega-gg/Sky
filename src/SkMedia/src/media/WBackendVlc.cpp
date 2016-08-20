@@ -655,7 +655,7 @@ void WBackendVlcPrivate::updateTargetRect()
 {
     if (frameWidth == -1) return;
 
-    // FIXME: Sometimes frame size is not valid.
+    // FIXME: Sometimes the frame size is not valid.
     if (frameWidth == 0)
     {
         frameWidth  = textures[0].width;
@@ -1504,7 +1504,7 @@ bool WBackendVlc::event(QEvent * event)
 
         qDebug("WBackendVlc::event: Vlc player ended.");
 
-        // FIXME: Sometimes playback ends when seeking.
+        // FIXME: Sometimes the playback ends when seeking.
         if ((d->currentTime + 1000) < d->duration)
         {
             if (d->frameFreeze == false)
