@@ -444,6 +444,9 @@ bool WVlcPlayer::event(QEvent * event)
     {
         d->player = libvlc_media_player_new(d->engine->instance());
 
+        // FIXME: Applying the player default volume.
+        libvlc_audio_set_volume(d->player, 100);
+
         libvlc_event_attach(libvlc_media_player_event_manager(d->player),
                             libvlc_MediaPlayerPlaying, d->eventPlaying, d);
 
