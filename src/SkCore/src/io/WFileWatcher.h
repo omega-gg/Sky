@@ -36,12 +36,14 @@ public:
     explicit WFileWatcher(QObject * parent = NULL);
 
 public: // Interface
-    void addFile  (const QString & path);
-    void addFolder(const QString & path, bool recursive = false);
+    Q_INVOKABLE void addFile  (const QString & path);
+    Q_INVOKABLE void addFolder(const QString & path, bool recursive = false);
 
-    void removePath(const QString & path);
+    Q_INVOKABLE void removePath(const QString & path);
 
-    bool contains(const QString & path) const;
+    Q_INVOKABLE void clearPaths();
+
+    Q_INVOKABLE bool contains(const QString & path) const;
 
 signals:
     void filesModified(const QString & path, const QStringList & fileNames);

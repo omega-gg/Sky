@@ -539,18 +539,18 @@ void WFileWatcherPrivate::addFolder(const QString & path, bool recursive)
 
 void WFileWatcherPrivate::removePath(const QString & path)
 {
-    int index = getFolderIndex(path);
-
-    if (index != -1)
-    {
-        folderWatchs.removeAt(index);
-    }
-
-    index = getFileIndex(path);
+    int index = getFileIndex(path);
 
     if (index != -1)
     {
         fileWatchs.removeAt(index);
+    }
+
+    index = getFolderIndex(path);
+
+    if (index != -1)
+    {
+        folderWatchs.removeAt(index);
     }
 }
 
@@ -681,7 +681,7 @@ void WFileWatcherPrivate::resetCheck()
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-void WFileWatcher::addFile(const QString & path)
+/* Q_INVOKABLE */ void WFileWatcher::addFile(const QString & path)
 {
     Q_D(WFileWatcher);
 
@@ -692,7 +692,7 @@ void WFileWatcher::addFile(const QString & path)
     d->addFile(absolutePath);
 }
 
-void WFileWatcher::addFolder(const QString & path, bool recursive)
+/* Q_INVOKABLE */ void WFileWatcher::addFolder(const QString & path, bool recursive)
 {
     Q_D(WFileWatcher);
 
@@ -705,7 +705,7 @@ void WFileWatcher::addFolder(const QString & path, bool recursive)
 
 //-------------------------------------------------------------------------------------------------
 
-void WFileWatcher::removePath(const QString & path)
+/* Q_INVOKABLE */ void WFileWatcher::removePath(const QString & path)
 {
     Q_D(WFileWatcher);
 
@@ -716,9 +716,17 @@ void WFileWatcher::removePath(const QString & path)
     d->removePath(absolutePath);
 }
 
+/* Q_INVOKABLE */ void WFileWatcher::clearPaths()
+{
+    Q_D(WFileWatcher);
+
+    d->fileWatchs  .clear();
+    d->folderWatchs.clear();
+}
+
 //-------------------------------------------------------------------------------------------------
 
-bool WFileWatcher::contains(const QString & path) const
+/* Q_INVOKABLE */ bool WFileWatcher::contains(const QString & path) const
 {
     Q_D(const WFileWatcher);
 
