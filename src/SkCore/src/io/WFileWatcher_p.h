@@ -23,13 +23,14 @@
 // Sk includes
 #include <private/Sk_p>
 
-// Forward declarations
-class QStringList;
+//-------------------------------------------------------------------------------------------------
+// WFileWatch
+//-------------------------------------------------------------------------------------------------
 
 class SK_CORE_EXPORT WFileWatch
 {
 public: // Enums
-    enum FileType { Invalid = 0, File, Dir };
+    enum FileType { Invalid = 0, File, Folder };
 
 public:
     WFileWatch(WFileWatcher * watcher);
@@ -42,16 +43,16 @@ public:
 
 public: // Virtual interface
     virtual bool checkChange(int & fileCount);
-    virtual void resetCheck();
+    virtual void resetCheck ();
 
 protected: // Functions
-    void request_filesModified(const QString & parentPath, const QStringList & dirNames);
-    void request_filesCreated (const QString & parentPath, const QStringList & fileNames);
-    void request_filesDeleted (const QString & parentPath, const QStringList & fileNames);
+    void sendFilesModified(const QString & path, const QStringList & fileNames);
+    void sendFilesCreated (const QString & path, const QStringList & fileNames);
+    void sendFilesDeleted (const QString & path, const QStringList & fileNames);
 
-    void request_directoriesModified(const QString & parentPath, const QStringList & dirNames);
-    void request_directoriesCreated (const QString & parentPath, const QStringList & dirNames);
-    void request_directoriesDeleted (const QString & parentPath, const QStringList & dirNames);
+    void sendFoldersModified(const QString & path, const QStringList & fileNames);
+    void sendFoldersCreated (const QString & path, const QStringList & fileNames);
+    void sendFoldersDeleted (const QString & path, const QStringList & fileNames);
 
 public: // Properties
     QString path()         const;
@@ -88,31 +89,39 @@ protected: // Variables
     bool _modified;
 };
 
-class SK_CORE_EXPORT WDirWatch : public WFileWatch
+//-------------------------------------------------------------------------------------------------
+// WFolderWatch
+//-------------------------------------------------------------------------------------------------
+
+class SK_CORE_EXPORT WFolderWatch : public WFileWatch
 {
 public:
-    WDirWatch(const QString & path, WFileWatcher * watcher, bool recursive);
+    WFolderWatch(const QString & path, WFileWatcher * watcher, bool recursive);
 
 public: // Interface
-    bool contains(const QString & path);
+    bool contains(const QString & path) const;
 
 public: // WFileWatch reimplementation
     bool checkChange(int & fileCount);
-    void resetCheck();
+    void resetCheck ();
 
 private: // Functions
-    void recurseDirectories();
+    void scanFolders ();
     void checkDeleted();
 
-    int getDirIndex_from_path (const QString & path);
-    int getFileIndex_from_path(const QString & path);
+    int getFileIndex  (const QString & path) const;
+    int getFolderIndex(const QString & path) const;
 
 private: // Variables
-    QList<WFileWatch> _fileWatchs;
-    QList<WDirWatch>  _dirWatchs;
+    QList<WFileWatch>   _fileWatchs;
+    QList<WFolderWatch> _folderWatchs;
 
     bool _recursive;
 };
+
+//-------------------------------------------------------------------------------------------------
+// WFileWatcherPrivate
+//-------------------------------------------------------------------------------------------------
 
 class SK_CORE_EXPORT WFileWatcherPrivate : public WPrivate
 {
@@ -124,13 +133,13 @@ public:
     void init();
 
 public: // Functions
-    void addFilePath(const QString & path);
-    void addDirPath (const QString & path, bool recursive);
+    void addFile  (const QString & path);
+    void addFolder(const QString & path, bool recursive);
 
     void removePath(const QString & path);
 
-    int getDirIndex_from_path (const QString & path);
-    int getFileIndex_from_path(const QString & path);
+    int getFileIndex  (const QString & path) const;
+    int getFolderIndex(const QString & path) const;
 
     QString getAbsoluteFilePath(const QString & path) const;
 
@@ -140,8 +149,8 @@ public: // WControllerFile interface
     void resetCheck();
 
 public: // Variables
-    QList<WFileWatch> fileWatchs;
-    QList<WDirWatch>  dirWatchs;
+    QList<WFileWatch>   fileWatchs;
+    QList<WFolderWatch> folderWatchs;
 
     bool checked;
 

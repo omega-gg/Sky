@@ -224,7 +224,7 @@ bool WControllerPlugin::addPath(const QString dirPath)
     }
 
     // Adding watcher
-    d->fileWatcher.addDirPath(dirPath);
+    d->fileWatcher.addFolder(dirPath);
 
     QFileInfoList infoList = dir.entryInfoList(QDir::Files);
 

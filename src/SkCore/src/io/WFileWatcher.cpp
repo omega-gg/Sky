@@ -17,14 +17,10 @@
 #include "WFileWatcher.h"
 
 // Qt includes
-#include <QTimer>
 #include <QDir>
 
 // Sk includes
 #include <WControllerFile>
-
-// Private includes
-#include <private/WControllerFile_p>
 
 //=================================================================================================
 // WFileWatch
@@ -112,34 +108,31 @@ WFileWatch::WFileWatch(WFileWatcher * watcher)
 
         fileCount--;
 
-        if (fileCount) return true;
-        else           return false;
+        if (fileCount)
+        {
+             return true;
+        }
+        else return false;
     }
 
     _size = info.size();
 
     _lastModified = info.lastModified();
 
-    // We check both modified date and size for greater precision
     if (oldModified < _lastModified || oldSize != _size)
     {
         _modified = true;
-//        if (mType == WFileWatch::Dir)
-//        {
-//            request_directoryModified(mAbsolutePath, mName);
-//        }
-//        else if (mType == WFileWatch::File)
-//        {
-//            request_fileModified(mAbsolutePath, mName);
-//        }
     }
 
     if (_type == File) _checked = true;
 
     fileCount--;
 
-    if (fileCount) return true;
-    else           return false;
+    if (fileCount)
+    {
+         return true;
+    }
+    else return false;
 }
 
 /* virtual */ void WFileWatch::resetCheck()
@@ -152,36 +145,36 @@ WFileWatch::WFileWatch(WFileWatcher * watcher)
 // Protected functions
 //-------------------------------------------------------------------------------------------------
 
-void WFileWatch::request_filesModified(const QString & parentPath, const QStringList & fileNames)
+void WFileWatch::sendFilesModified(const QString & path, const QStringList & fileNames)
 {
-    emit _watcher->filesModified(parentPath, fileNames);
+    emit _watcher->filesModified(path, fileNames);
 }
 
-void WFileWatch::request_filesCreated(const QString & parentPath, const QStringList & fileNames)
+void WFileWatch::sendFilesCreated(const QString & path, const QStringList & fileNames)
 {
-    emit _watcher->filesCreated(parentPath, fileNames);
+    emit _watcher->filesCreated(path, fileNames);
 }
 
-void WFileWatch::request_filesDeleted(const QString & parentPath, const QStringList & fileNames)
+void WFileWatch::sendFilesDeleted(const QString & path, const QStringList & fileNames)
 {
-    emit _watcher->filesDeleted(parentPath, fileNames);
+    emit _watcher->filesDeleted(path, fileNames);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void WFileWatch::request_directoriesModified(const QString & parentPath, const QStringList & dirNames)
+void WFileWatch::sendFoldersModified(const QString & path, const QStringList & fileNames)
 {
-    emit _watcher->directoriesModified(parentPath, dirNames);
+    emit _watcher->foldersModified(path, fileNames);
 }
 
-void WFileWatch::request_directoriesCreated(const QString & parentPath, const QStringList & dirNames)
+void WFileWatch::sendFoldersCreated(const QString & path, const QStringList & fileNames)
 {
-    emit _watcher->directoriesCreated(parentPath, dirNames);
+    emit _watcher->foldersCreated(path, fileNames);
 }
 
-void WFileWatch::request_directoriesDeleted(const QString & parentPath, const QStringList & dirNames)
+void WFileWatch::sendFoldersDeleted(const QString & path, const QStringList & fileNames)
 {
-    emit _watcher->directoriesDeleted(parentPath, dirNames);
+    emit _watcher->foldersDeleted(path, fileNames);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -216,28 +209,40 @@ WFileWatch::FileType WFileWatch::type() const
 
 bool WFileWatch::isValid() const
 {
-    if (_type == Invalid) return false;
-    else                  return true;
+    if (_type == Invalid)
+    {
+         return false;
+    }
+    else return true;
 }
 
 bool WFileWatch::isFile() const
 {
-    if (_type == File) return true;
-    else               return false;
+    if (_type == File)
+    {
+         return true;
+    }
+    else return false;
 }
 
 bool WFileWatch::isDirectory() const
 {
-    if (_type == Dir) return true;
-    else              return false;
+    if (_type == Folder)
+    {
+         return true;
+    }
+    else return false;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 bool WFileWatch::exists() const
 {
-    if (_size == -1) return false;
-    else             return true;
+    if (_size == -1)
+    {
+         return false;
+    }
+    else return true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -253,31 +258,37 @@ bool WFileWatch::isModified() const
 }
 
 //=================================================================================================
-// WDirWatch
+// WFolderWatch
 //=================================================================================================
 
-WDirWatch::WDirWatch(const QString & path, WFileWatcher * watcher, bool recursive)
-    : WFileWatch(Dir, path, watcher)
+WFolderWatch::WFolderWatch(const QString & path, WFileWatcher * watcher, bool recursive)
+    : WFileWatch(Folder, path, watcher)
 {
     _recursive = recursive;
 
-    if (recursive) recurseDirectories();
+    if (recursive) scanFolders();
 }
 
 //-------------------------------------------------------------------------------------------------
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-bool WDirWatch::contains(const QString & path)
+bool WFolderWatch::contains(const QString & path) const
 {
-    for (int i = 0; i < _dirWatchs.count(); i++)
-    {
-        if (_dirWatchs.at(i).path() == path) return true;
-    }
-
     for (int i = 0; i < _fileWatchs.count(); i++)
     {
-        if (_fileWatchs.at(i).path() == path) return true;
+        if (_fileWatchs.at(i).path() == path)
+        {
+            return true;
+        }
+    }
+
+    for (int i = 0; i < _folderWatchs.count(); i++)
+    {
+        if (_folderWatchs.at(i).path() == path)
+        {
+            return true;
+        }
     }
 
     return false;
@@ -287,7 +298,7 @@ bool WDirWatch::contains(const QString & path)
 // WFileWatch reimplementation
 //-------------------------------------------------------------------------------------------------
 
-bool WDirWatch::checkChange(int & fileCount)
+bool WFolderWatch::checkChange(int & fileCount)
 {
     QDateTime oldModified = _lastModified;
 
@@ -298,40 +309,31 @@ bool WDirWatch::checkChange(int & fileCount)
 
     if (_recursive)
     {
-        // Checking all sub-directories
-        for (int i = 0; i < _dirWatchs.count(); i++)
-        {
-            if (_dirWatchs.at(i).isChecked())
-            {
-                continue;
-            }
-            else if (_dirWatchs[i].checkChange(fileCount) == false)
-            {
-                return false;
-            }
-        }
-
-        // Note: on windows we have to check files even if the directory has not changed
         for (int i = 0; i < _fileWatchs.count(); i++)
         {
-            if (_fileWatchs.at(i).isChecked())
-            {
-                continue;
-            }
-            else if (_fileWatchs[i].checkChange(fileCount) == false)
+            if (_fileWatchs.at(i).isChecked()) continue;
+
+            if (_fileWatchs[i].checkChange(fileCount) == false)
             {
                 return false;
             }
         }
 
-        // Checking files only if the directory has been modified
+        for (int i = 0; i < _folderWatchs.count(); i++)
+        {
+            if (_folderWatchs.at(i).isChecked()) continue;
+
+            if (_folderWatchs[i].checkChange(fileCount) == false)
+            {
+                return false;
+            }
+        }
+
         if (oldModified != _lastModified)
         {
-            // Checking for deleted files
             checkDeleted();
 
-            // Recurse for new files
-            recurseDirectories();
+            scanFolders();
         }
     }
 
@@ -340,17 +342,17 @@ bool WDirWatch::checkChange(int & fileCount)
     return true;
 }
 
-void WDirWatch::resetCheck()
+void WFolderWatch::resetCheck()
 {
-   for (int i = 0; i < _dirWatchs.count(); i++)
-   {
-       _dirWatchs[i].resetCheck();
-   }
+    for (int i = 0; i < _fileWatchs.count(); i++)
+    {
+        _fileWatchs[i].resetCheck();
+    }
 
-   for (int i = 0; i < _fileWatchs.count(); i++)
-   {
-       _fileWatchs[i].resetCheck();
-   }
+    for (int i = 0; i < _folderWatchs.count(); i++)
+    {
+        _folderWatchs[i].resetCheck();
+    }
 
    WFileWatch::resetCheck();
 }
@@ -359,7 +361,7 @@ void WDirWatch::resetCheck()
 // Functions
 //-------------------------------------------------------------------------------------------------
 
-void WDirWatch::recurseDirectories()
+void WFolderWatch::scanFolders()
 {
     QDir dir(_path);
 
@@ -370,19 +372,9 @@ void WDirWatch::recurseDirectories()
 
     foreach (QFileInfo info, list)
     {
-        if (contains(info.filePath()) || info.isHidden())
-        {
-            continue;
-        }
-        else if (info.isDir())
-        {
-            WDirWatch dir(info.filePath(), _watcher, true);
+        if (contains(info.filePath()) || info.isHidden()) continue;
 
-            _dirWatchs.append(dir);
-
-            newDirs.append(info.fileName());
-        }
-        else if (info.isFile())
+        if (info.isFile())
         {
             WFileWatch file(info.filePath(), _watcher);
 
@@ -390,48 +382,38 @@ void WDirWatch::recurseDirectories()
 
             newFiles.append(info.fileName());
         }
-    }
+        else if (info.isDir())
+        {
+            WFolderWatch dir(info.filePath(), _watcher, true);
 
-    if (newDirs.count())
-    {
-        request_directoriesCreated(_path, newDirs);
+            _folderWatchs.append(dir);
+
+            newDirs.append(info.fileName());
+        }
     }
 
     if (newFiles.count())
     {
-        request_filesCreated(_path, newFiles);
+        sendFilesCreated(_path, newFiles);
+    }
+
+    if (newDirs.count())
+    {
+        sendFoldersCreated(_path, newDirs);
     }
 }
 
-void WDirWatch::checkDeleted()
+void WFolderWatch::checkDeleted()
 {
-    QStringList deletedDirs;
     QStringList deletedFiles;
+    QStringList deletedDirs;
 
-    QStringList modifiedDirs;
     QStringList modifiedFiles;
-
-    for (int i = 0; i < _dirWatchs.count(); i++)
-    {
-        const WDirWatch & watch = _dirWatchs.at(i);
-
-        if (watch.exists() == false)
-        {
-            deletedDirs.append(watch.name());
-
-            _dirWatchs.removeAt(i);
-
-            i--;
-        }
-        else if (watch.isModified())
-        {
-            modifiedDirs.append(watch.name());
-        }
-    }
+    QStringList modifiedDirs;
 
     for (int i = 0; i < _fileWatchs.count(); i++)
     {
-        const WDirWatch & watch = _dirWatchs.at(i);
+        const WFolderWatch & watch = _folderWatchs.at(i);
 
         if (watch.exists() == false)
         {
@@ -447,30 +429,56 @@ void WDirWatch::checkDeleted()
         }
     }
 
-    if (deletedDirs .count()) request_directoriesDeleted(_path, deletedDirs);
-    if (deletedFiles.count()) request_filesDeleted      (_path, deletedFiles);
+    for (int i = 0; i < _folderWatchs.count(); i++)
+    {
+        const WFolderWatch & watch = _folderWatchs.at(i);
 
-    if (modifiedDirs .count()) request_directoriesModified(_path, modifiedDirs);
-    if (modifiedFiles.count()) request_filesModified      (_path, modifiedFiles);
+        if (watch.exists() == false)
+        {
+            deletedDirs.append(watch.name());
+
+            _folderWatchs.removeAt(i);
+
+            i--;
+        }
+        else if (watch.isModified())
+        {
+            modifiedDirs.append(watch.name());
+        }
+    }
+
+    if (deletedFiles.count()) sendFilesDeleted  (_path, deletedFiles);
+    if (deletedDirs .count()) sendFoldersDeleted(_path, deletedDirs);
+
+    if (modifiedFiles.count()) sendFilesModified  (_path, modifiedFiles);
+    if (modifiedDirs .count()) sendFoldersModified(_path, modifiedDirs);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-int WDirWatch::getDirIndex_from_path(const QString & path)
-{
-    for (int i = 0; i < _dirWatchs.count(); i++)
-    {
-        if (_dirWatchs.at(i).path() == path) return i;
-    }
-    return -1;
-}
-
-int WDirWatch::getFileIndex_from_path(const QString & path)
+int WFolderWatch::getFileIndex(const QString & path) const
 {
     for (int i = 0; i < _fileWatchs.count(); i++)
     {
-        if (_fileWatchs.at(i).path() == path) return i;
+        if (_fileWatchs.at(i).path() == path)
+        {
+            return i;
+        }
     }
+
+    return -1;
+}
+
+int WFolderWatch::getFolderIndex(const QString & path) const
+{
+    for (int i = 0; i < _folderWatchs.count(); i++)
+    {
+        if (_folderWatchs.at(i).path() == path)
+        {
+            return i;
+        }
+    }
+
     return -1;
 }
 
@@ -485,7 +493,9 @@ WFileWatcherPrivate::WFileWatcherPrivate(WFileWatcher * p) : WPrivate(p)
 
 WFileWatcherPrivate::~WFileWatcherPrivate()
 {
-    Q_Q(WFileWatcher); wControllerFile->d_func()->unregisterFileWatcher(q);
+    Q_Q(WFileWatcher);
+
+    wControllerFile->d_func()->unregisterFileWatcher(q);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -499,7 +509,7 @@ WFileWatcherPrivate::~WFileWatcherPrivate()
 // Functions
 //-------------------------------------------------------------------------------------------------
 
-void WFileWatcherPrivate::addFilePath(const QString & path)
+void WFileWatcherPrivate::addFile(const QString & path)
 {
     Q_Q(WFileWatcher);
 
@@ -512,7 +522,7 @@ void WFileWatcherPrivate::addFilePath(const QString & path)
     fileWatchs.append(file);
 }
 
-void WFileWatcherPrivate::addDirPath(const QString & path, bool recursive)
+void WFileWatcherPrivate::addFolder(const QString & path, bool recursive)
 {
     Q_Q(WFileWatcher);
 
@@ -520,41 +530,55 @@ void WFileWatcherPrivate::addDirPath(const QString & path, bool recursive)
 
     if (info.isDir() == false) return;
 
-    WDirWatch dir(path, q, recursive);
+    WFolderWatch dir(path, q, recursive);
 
-    dirWatchs.append(dir);
+    folderWatchs.append(dir);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void WFileWatcherPrivate::removePath(const QString & path)
 {
-    int index = getDirIndex_from_path(path);
+    int index = getFolderIndex(path);
 
-    if (index != -1) dirWatchs.removeAt(index);
+    if (index != -1)
+    {
+        folderWatchs.removeAt(index);
+    }
 
-    index = getFileIndex_from_path(path);
+    index = getFileIndex(path);
 
-    if (index != -1) fileWatchs.removeAt(index);
+    if (index != -1)
+    {
+        fileWatchs.removeAt(index);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
-int WFileWatcherPrivate::getDirIndex_from_path(const QString & path)
-{
-    for (int i = 0; i < dirWatchs.count(); i++)
-    {
-        if (dirWatchs.at(i).path() == path) return i;
-    }
-    return -1;
-}
-
-int WFileWatcherPrivate::getFileIndex_from_path(const QString & path)
+int WFileWatcherPrivate::getFileIndex(const QString & path) const
 {
     for (int i = 0; i < fileWatchs.count(); i++)
     {
-        if (fileWatchs.at(i).path() == path) return i;
+        if (fileWatchs.at(i).path() == path)
+        {
+            return i;
+        }
     }
+
+    return -1;
+}
+
+int WFileWatcherPrivate::getFolderIndex(const QString & path) const
+{
+    for (int i = 0; i < folderWatchs.count(); i++)
+    {
+        if (folderWatchs.at(i).path() == path)
+        {
+            return i;
+        }
+    }
+
     return -1;
 }
 
@@ -564,9 +588,11 @@ QString WFileWatcherPrivate::getAbsoluteFilePath(const QString & path) const
 {
     QFileInfo info(path);
 
-    if (info.exists() == false) return QString();
-
-    return info.absoluteFilePath();
+    if (info.exists())
+    {
+         return info.absoluteFilePath();
+    }
+    else return QString();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -599,23 +625,23 @@ bool WFileWatcherPrivate::checkChange(int & fileCount)
         else return false;
     }
 
-    for (int i = 0; i < dirWatchs.count(); i++)
+    for (int i = 0; i < folderWatchs.count(); i++)
     {
-        if (dirWatchs[i].checkChange(fileCount))
+        if (folderWatchs[i].checkChange(fileCount))
         {
-            const WDirWatch & watch = dirWatchs.at(i);
+            const WFolderWatch & watch = folderWatchs.at(i);
 
             if (watch.exists() == false)
             {
-                emit q->directoriesDeleted(watch.absolutePath(), QStringList(watch.name()));
+                emit q->foldersDeleted(watch.absolutePath(), QStringList(watch.name()));
 
-                dirWatchs.removeAt(i);
+                folderWatchs.removeAt(i);
 
                 i--;
             }
             else if (watch.isModified())
             {
-               emit q->directoriesModified(watch.absolutePath(), QStringList(watch.name()));
+               emit q->foldersModified(watch.absolutePath(), QStringList(watch.name()));
             }
         }
         else return false;
@@ -628,14 +654,14 @@ bool WFileWatcherPrivate::checkChange(int & fileCount)
 
 void WFileWatcherPrivate::resetCheck()
 {
-    for (int i = 0; i < dirWatchs.count(); i++)
-    {
-        dirWatchs[i].resetCheck();
-    }
-
     for (int i = 0; i < fileWatchs.count(); i++)
     {
         fileWatchs[i].resetCheck();
+    }
+
+    for (int i = 0; i < folderWatchs.count(); i++)
+    {
+        folderWatchs[i].resetCheck();
     }
 
     checked = false;
@@ -655,7 +681,7 @@ void WFileWatcherPrivate::resetCheck()
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-void WFileWatcher::addFilePath(const QString & path)
+void WFileWatcher::addFile(const QString & path)
 {
     Q_D(WFileWatcher);
 
@@ -663,10 +689,10 @@ void WFileWatcher::addFilePath(const QString & path)
 
     if (absolutePath.isNull() || contains(absolutePath)) return;
 
-    d->addFilePath(absolutePath);
+    d->addFile(absolutePath);
 }
 
-void WFileWatcher::addDirPath(const QString & path, bool recursive)
+void WFileWatcher::addFolder(const QString & path, bool recursive)
 {
     Q_D(WFileWatcher);
 
@@ -674,8 +700,10 @@ void WFileWatcher::addDirPath(const QString & path, bool recursive)
 
     if (absolutePath.isNull() || contains(absolutePath)) return;
 
-    d->addDirPath(absolutePath, recursive);
+    d->addFolder(absolutePath, recursive);
 }
+
+//-------------------------------------------------------------------------------------------------
 
 void WFileWatcher::removePath(const QString & path)
 {
@@ -688,22 +716,33 @@ void WFileWatcher::removePath(const QString & path)
     d->removePath(absolutePath);
 }
 
-bool WFileWatcher::contains(const QString & path)
+//-------------------------------------------------------------------------------------------------
+
+bool WFileWatcher::contains(const QString & path) const
 {
-    Q_D(WFileWatcher);
+    Q_D(const WFileWatcher);
 
     QString absolutePath = d->getAbsoluteFilePath(path);
 
-    if (absolutePath.isNull()) return false;
-
-    for (int i = 0; i < d->dirWatchs.count(); i++)
+    if (absolutePath.isNull())
     {
-        if (d->dirWatchs.at(i).path() == absolutePath) return true;
+        return false;
     }
 
     for (int i = 0; i < d->fileWatchs.count(); i++)
     {
-        if (d->fileWatchs.at(i).path() == absolutePath) return true;
+        if (d->fileWatchs.at(i).path() == absolutePath)
+        {
+            return true;
+        }
+    }
+
+    for (int i = 0; i < d->folderWatchs.count(); i++)
+    {
+        if (d->folderWatchs.at(i).path() == absolutePath)
+        {
+            return true;
+        }
     }
 
     return false;

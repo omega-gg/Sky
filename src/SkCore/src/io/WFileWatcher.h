@@ -24,6 +24,7 @@
 // Sk includes
 #include <Sk>
 
+// Forward declarations
 class WFileWatcherPrivate;
 class QStringList;
 
@@ -35,31 +36,28 @@ public:
     explicit WFileWatcher(QObject * parent = NULL);
 
 public: // Interface
-    void addFilePath(const QString & path);
-    void addDirPath (const QString & path, bool recursive = false);
+    void addFile  (const QString & path);
+    void addFolder(const QString & path, bool recursive = false);
 
     void removePath(const QString & path);
 
-    bool contains(const QString & path);
+    bool contains(const QString & path) const;
 
 signals:
-    // Dir
-    void directoriesModified (const QString & parentPath, const QStringList & dirNames);
-    void directoriesCreated  (const QString & parentPath, const QStringList & dirNames);
-    void directoriesDeleted  (const QString & parentPath, const QStringList & dirNames);
+    void filesModified(const QString & path, const QStringList & fileNames);
+    void filesCreated (const QString & path, const QStringList & fileNames);
+    void filesDeleted (const QString & path, const QStringList & fileNames);
 
-    // File
-    void filesModified(const QString & parentPath, const QStringList & fileNames);
-    void filesCreated (const QString & parentPath, const QStringList & fileNames);
-    void filesDeleted (const QString & parentPath, const QStringList & fileNames);
+    void foldersModified(const QString & path, const QStringList & fileNames);
+    void foldersCreated (const QString & path, const QStringList & fileNames);
+    void foldersDeleted (const QString & path, const QStringList & fileNames);
 
 private:
     W_DECLARE_PRIVATE(WFileWatcher)
 
-    friend class WFileWatch;
-    friend class WDirWatch;
     friend class WControllerFile;
     friend class WControllerFilePrivate;
+    friend class WFileWatch;
 };
 
 #endif // WFILEWATCHER_H

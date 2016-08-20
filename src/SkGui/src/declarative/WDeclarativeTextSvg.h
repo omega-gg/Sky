@@ -22,6 +22,7 @@
 
 #ifndef SK_NO_DECLARATIVETEXTSVG
 
+// Forward declarations
 class WDeclarativeTextSvgPrivate;
 class WDeclarativeTextSvgScalePrivate;
 class WDeclarativeGradient;
