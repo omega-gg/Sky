@@ -222,7 +222,7 @@ void WBackendVlcPrivate::init()
     targetWidth  = 0.f;
     targetHeight = 0.f;
 
-    shader = 0;
+    shader = false;
 
     textureIds[0] = 0;
 
