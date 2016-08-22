@@ -34,10 +34,8 @@ public: // Enums
 
 public:
     WFileWatch(WFileWatcher * watcher);
-
-    WFileWatch(const QString & path, WFileWatcher * watcher);
-
-    WFileWatch(FileType type, const QString & path, WFileWatcher * watcher);
+    WFileWatch(WFileWatcher * watcher, const QString & path);
+    WFileWatch(WFileWatcher * watcher, const QString & path, FileType type);
 
     virtual ~WFileWatch();
 
@@ -72,6 +70,8 @@ public: // Properties
     bool isModified() const;
 
 protected: // Variables
+    WFileWatcher * _watcher;
+
     QString _path;
     QString _absolutePath;
 
@@ -82,8 +82,6 @@ protected: // Variables
     QDateTime _lastModified;
 
     qint64 _size;
-
-    WFileWatcher * _watcher;
 
     bool _checked;
     bool _modified;
@@ -96,7 +94,7 @@ protected: // Variables
 class SK_CORE_EXPORT WFolderWatch : public WFileWatch
 {
 public:
-    WFolderWatch(const QString & path, WFileWatcher * watcher, bool recursive);
+    WFolderWatch(WFileWatcher * watcher, const QString & path, bool recursive);
 
 public: // Interface
     bool contains(const QString & path) const;
@@ -106,8 +104,9 @@ public: // WFileWatch reimplementation
     void resetCheck ();
 
 private: // Functions
-    void scanFolders ();
-    void checkDeleted();
+    void scanFolders();
+
+    void checkFolder();
 
     int getFileIndex  (const QString & path) const;
     int getFolderIndex(const QString & path) const;
