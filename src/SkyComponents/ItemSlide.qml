@@ -157,7 +157,7 @@ Item
                 {
                     script:
                     {
-                        if (isAnimated == false) return;
+                        if (pDirection != -1) return;
 
                         itemImage.visible = false;
 
