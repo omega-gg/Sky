@@ -23,6 +23,7 @@
 #include <QStyleOptionGraphicsItem>
 
 // Sk includes
+#include <WControllerView>
 #include <WImageFilter>
 #include <WAbstractThreadAction>
 
@@ -374,7 +375,7 @@ void WDeclarativeImageScalePrivate::init()
     scaled   = false;
 
     scaleDelayed = true;
-    scaleDelay   = 220;
+    scaleDelay   = wControllerView->scaleDelay();
 
     timer.setInterval(scaleDelay);
 

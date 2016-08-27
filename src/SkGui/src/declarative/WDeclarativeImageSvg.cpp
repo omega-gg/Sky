@@ -461,7 +461,7 @@ void WDeclarativeImageSvgScalePrivate::init()
     scaled   = false;
 
     scaleDelayed = true;
-    scaleDelay   = 220;
+    scaleDelay   = wControllerView->scaleDelay();
 
     timer.setInterval(scaleDelay);
 

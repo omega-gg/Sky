@@ -24,6 +24,7 @@
 #include <QTileRules>
 
 // Sk includes
+#include <WControllerView>
 #include <WImageFilter>
 #include <WAbstractThreadAction>
 
@@ -221,7 +222,7 @@ void WDeclarativeBorderImageScalePrivate::init()
     scaled   = false;
 
     scaleDelayed = true;
-    scaleDelay   = 220;
+    scaleDelay   = wControllerView->scaleDelay();
 
     timer.setInterval(scaleDelay);
 

@@ -45,6 +45,8 @@ WControllerViewPrivate::WControllerViewPrivate(WControllerView * p) : WControlle
 void WControllerViewPrivate::init()
 {
     loadMode = WControllerView::LoadAlways;
+
+    scaleDelay = 220;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -288,6 +290,24 @@ void WControllerView::setLoadMode(LoadMode mode)
     d->loadMode = mode;
 
     emit loadModeChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+int WControllerView::scaleDelay() const
+{
+    Q_D(const WControllerView); return d->scaleDelay;
+}
+
+void WControllerView::setScaleDelay(int delay)
+{
+    Q_D(WControllerView);
+
+    if (d->scaleDelay == delay) return;
+
+    d->scaleDelay = delay;
+
+    emit scaleDelayChanged();
 }
 
 #endif // SK_NO_CONTROLLERVIEW

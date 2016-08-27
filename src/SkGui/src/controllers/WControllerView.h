@@ -40,6 +40,8 @@ class SK_GUI_EXPORT WControllerView : public WController
 
     Q_PROPERTY(LoadMode loadMode READ loadMode WRITE setLoadMode NOTIFY loadModeChanged)
 
+    Q_PROPERTY(int scaleDelay READ scaleDelay WRITE setScaleDelay NOTIFY scaleDelayChanged)
+
 public: // Enums
     enum LoadMode { LoadAlways, LoadVisible };
 
@@ -78,9 +80,14 @@ public: // Static interface
 signals:
     void loadModeChanged();
 
+    void scaleDelayChanged();
+
 public: // Properties
     LoadMode loadMode() const;
     void     setLoadMode(LoadMode mode);
+
+    int  scaleDelay() const;
+    void setScaleDelay(int delay);
 
 private:
     W_DECLARE_PRIVATE   (WControllerView)
