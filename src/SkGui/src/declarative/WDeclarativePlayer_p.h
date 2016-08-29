@@ -90,7 +90,7 @@ public: // Variables
 
     qreal speed;
 
-    int volume;
+    qreal volume;
 
     bool shuffle;
 

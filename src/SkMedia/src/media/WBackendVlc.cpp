@@ -1014,13 +1014,13 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WBackendVlc::backendSetVolume(int percent)
+/* virtual */ void WBackendVlc::backendSetVolume(qreal volume)
 {
     Q_D(WBackendVlc);
 
-    if (percent)
+    if (volume)
     {
-         d->player->setVolume((percent * 80 / 100) + 20);
+         d->player->setVolume(volume * 80 + 20);
     }
     else d->player->setVolume(0);
 }

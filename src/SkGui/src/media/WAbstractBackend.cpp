@@ -46,7 +46,7 @@ void WAbstractBackendPrivate::init()
 
     speed = 1.0;
 
-    volume = 100;
+    volume = 1.0;
 
     repeat = false;
 
@@ -562,22 +562,22 @@ void WAbstractBackend::setSpeed(qreal speed)
 
 //-------------------------------------------------------------------------------------------------
 
-int WAbstractBackend::volume() const
+qreal WAbstractBackend::volume() const
 {
     Q_D(const WAbstractBackend); return d->volume;
 }
 
-void WAbstractBackend::setVolume(int percent)
+void WAbstractBackend::setVolume(qreal volume)
 {
     Q_D(WAbstractBackend);
 
-    percent = qBound(0, percent, 100);
+    volume = qBound(0.0, volume, 1.0);
 
-    if (d->volume == percent) return;
+    if (d->volume == volume) return;
 
-    d->volume = percent;
+    d->volume = volume;
 
-    backendSetVolume(percent);
+    backendSetVolume(volume);
 
     emit volumeChanged();
 }

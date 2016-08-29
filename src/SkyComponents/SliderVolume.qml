@@ -45,12 +45,12 @@ Item
 
     function volumeUp()
     {
-        value = Math.min(value + 10, 100);
+        value = Math.min(value + 0.1, 1.0);
     }
 
     function volumeDown()
     {
-        value = Math.max(0, value - 10);
+        value = Math.max(0, value - 0.1);
     }
 
     //---------------------------------------------------------------------------------------------
@@ -77,7 +77,7 @@ Item
 
         anchors.verticalCenter: parent.verticalCenter
 
-        value: 100
+        value: 1.0
     }
 
     ButtonMask
@@ -90,6 +90,6 @@ Item
 
         icon: st.icon16x16_audioMax
 
-        onPressed: slider.value = 100
+        onPressed: slider.value = 1.0
     }
 }

@@ -50,7 +50,7 @@ protected: // WAbstractBackend implementation
     /* virtual */ bool backendPause();
     /* virtual */ bool backendStop ();
 
-    /* virtual */ void backendSetVolume(int percent);
+    /* virtual */ void backendSetVolume(qreal volume);
 
     /* virtual */ bool backendDelete();
 

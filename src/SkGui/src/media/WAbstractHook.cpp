@@ -110,11 +110,11 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p, WAbstractBackend * backen
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WAbstractHook::backendSetVolume(int percent)
+/* virtual */ void WAbstractHook::backendSetVolume(qreal volume)
 {
     Q_D(WAbstractHook);
 
-    d->backend->backendSetVolume(percent);
+    d->backend->backendSetVolume(volume);
 }
 
 //-------------------------------------------------------------------------------------------------

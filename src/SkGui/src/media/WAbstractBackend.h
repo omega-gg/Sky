@@ -68,7 +68,7 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WPrivatable
 
     Q_PROPERTY(qreal speed READ speed WRITE setSpeed NOTIFY speedChanged)
 
-    Q_PROPERTY(int volume READ volume WRITE setVolume NOTIFY volumeChanged)
+    Q_PROPERTY(qreal volume READ volume WRITE setVolume NOTIFY volumeChanged)
 
     Q_PROPERTY(bool repeat READ repeat WRITE setRepeat NOTIFY repeatChanged)
 
@@ -163,7 +163,7 @@ protected: // Abstract functions
     virtual bool backendPause() = 0;
     virtual bool backendStop () = 0;
 
-    virtual void backendSetVolume(int percent) = 0;
+    virtual void backendSetVolume(qreal volume) = 0;
 
     virtual bool backendDelete() = 0;
 
@@ -246,8 +246,8 @@ public: // Properties
     qreal speed() const;
     void  setSpeed(qreal speed);
 
-    int  volume() const;
-    void setVolume(int percent);
+    qreal volume() const;
+    void  setVolume(qreal volume);
 
     bool repeat() const;
     void setRepeat(bool repeat);

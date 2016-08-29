@@ -57,7 +57,7 @@ public: // Variable
 
     qreal speed;
 
-    int volume;
+    qreal volume;
 
     bool repeat;
 

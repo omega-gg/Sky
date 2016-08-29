@@ -61,7 +61,7 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WAbstra
 
     Q_PROPERTY(qreal speed READ speed WRITE setSpeed NOTIFY speedChanged)
 
-    Q_PROPERTY(int volume READ volume WRITE setVolume NOTIFY volumeChanged)
+    Q_PROPERTY(qreal volume READ volume WRITE setVolume NOTIFY volumeChanged)
 
     Q_PROPERTY(bool shuffle READ shuffle WRITE setShuffle NOTIFY shuffleChanged)
 
@@ -223,8 +223,8 @@ public: // Properties
     qreal speed() const;
     void  setSpeed(qreal speed);
 
-    int  volume() const;
-    void setVolume(int percent);
+    qreal volume() const;
+    void  setVolume(qreal volume);
 
     bool shuffle() const;
     void setShuffle(bool shuffle);

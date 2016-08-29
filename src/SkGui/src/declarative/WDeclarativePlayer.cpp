@@ -58,7 +58,7 @@ void WDeclarativePlayerPrivate::init()
 
     speed = 1.0;
 
-    volume = 100;
+    volume = 1.0;
 
     shuffle = false;
 
@@ -1138,20 +1138,20 @@ void WDeclarativePlayer::setSpeed(qreal speed)
 
 //-------------------------------------------------------------------------------------------------
 
-int WDeclarativePlayer::volume() const
+qreal WDeclarativePlayer::volume() const
 {
     Q_D(const WDeclarativePlayer); return d->volume;
 }
 
-void WDeclarativePlayer::setVolume(int percent)
+void WDeclarativePlayer::setVolume(qreal volume)
 {
     Q_D(WDeclarativePlayer);
 
-    if (d->volume == percent) return;
+    if (d->volume == volume) return;
 
-    d->volume = percent;
+    d->volume = volume;
 
-    if (d->backend) d->currentBackend->setVolume(percent);
+    if (d->backend) d->currentBackend->setVolume(volume);
 
     emit volumeChanged();
 }
