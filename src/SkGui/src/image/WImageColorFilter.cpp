@@ -138,10 +138,8 @@ const QGradient * WDeclarativeGradient::gradient() const
         if (_type == LinearVertical) _gradient = new QLinearGradient(0, 0,   0,   1.0);
         else                         _gradient = new QLinearGradient(0, 1.0, 1.0, 1.0);
 
-        for (int i = 0; i < _stops.count(); i++)
+        foreach (const WDeclarativeGradientStop * stop, _stops)
         {
-            const WDeclarativeGradientStop * stop = _stops.at(i);
-
             _gradient->setCoordinateMode(QGradient::ObjectBoundingMode);
 
             _gradient->setColorAt(stop->position(), stop->color());
