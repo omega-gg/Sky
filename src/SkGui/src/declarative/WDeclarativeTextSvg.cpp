@@ -43,6 +43,9 @@ void WDeclarativeTextSvgPrivate::init()
 
     loadLater = false;
 
+    width  = 0;
+    height = 0;
+
     gradient = NULL;
 
     style   = WDeclarativeTextSvg::Normal;
@@ -146,7 +149,7 @@ void WDeclarativeTextSvgPrivate::loadSvg()
 
         QString item;
 
-        QString colorItem = addGradient(&item);
+        QString color = addGradient(&item);
 
         if (style == WDeclarativeTextSvg::Outline)
         {
@@ -159,7 +162,7 @@ void WDeclarativeTextSvgPrivate::loadSvg()
 
             QString extra = getOutline(colorStyle, styleSize);
 
-            addText(&item, x, y, family, weight, size, colorItem, extra);
+            addText(&item, x, y, family, weight, size, color, extra);
 
             sizeOutline *= 2;
 
@@ -175,7 +178,7 @@ void WDeclarativeTextSvgPrivate::loadSvg()
             QString colorStyle = styleColor.name();
 
             addText(&item, "0", yStyle, family, weight, size, colorStyle);
-            addText(&item, "0", y,      family, weight, size, colorItem);
+            addText(&item, "0", y,      family, weight, size, color);
 
             width = getWidth(metrics, text);
 
@@ -189,7 +192,7 @@ void WDeclarativeTextSvgPrivate::loadSvg()
             QString colorStyle = styleColor.name();
 
             addText(&item, "0", yStyle, family, weight, size, colorStyle);
-            addText(&item, "0", y,      family, weight, size, colorItem);
+            addText(&item, "0", y,      family, weight, size, color);
 
             width = getWidth(metrics, text);
 
@@ -207,7 +210,7 @@ void WDeclarativeTextSvgPrivate::loadSvg()
             QString extra = getOutline(colorStyle, styleSize * 2);
 
             addText(&item, x, y, family, weight, size, colorStyle, extra);
-            addText(&item, x, y, family, weight, size, colorItem);
+            addText(&item, x, y, family, weight, size, color);
 
             sizeOutline *= 2;
 
@@ -219,7 +222,7 @@ void WDeclarativeTextSvgPrivate::loadSvg()
         {
             QString y = QString::number(pixelY);
 
-            addText(&item, "0", y, family, weight, size, colorItem);
+            addText(&item, "0", y, family, weight, size, color);
 
             width = getWidth(metrics, text);
 
@@ -243,18 +246,6 @@ void WDeclarativeTextSvgPrivate::loadSvg()
 
 //-------------------------------------------------------------------------------------------------
 
-int WDeclarativeTextSvgPrivate::getWidth(const QFontMetrics & metrics, const QString & text) const
-{
-    // FIXME: Workaround to fix the width of the arial font.
-    if (font.family().toLower() == "arial")
-    {
-         return metrics.width(text) * 1.01;
-    }
-    else return metrics.width(text);
-}
-
-//-------------------------------------------------------------------------------------------------
-
 QString WDeclarativeTextSvgPrivate::addGradient(QString * item) const
 {
     if (gradient == NULL)
@@ -272,10 +263,8 @@ QString WDeclarativeTextSvgPrivate::addGradient(QString * item) const
 
     QList<WDeclarativeGradientStop *> stops = gradient->getStops();
 
-    for (int i = 0; i < stops.count(); i++)
+    foreach (const WDeclarativeGradientStop * stop, stops)
     {
-        const WDeclarativeGradientStop * stop = stops.at(i);
-
         QString position = QString::number(stop->position() * 100);
 
         item->append("<stop offset=\"" + position + "%\" stop-color=\"" + stop->color().name()
@@ -307,15 +296,14 @@ void WDeclarativeTextSvgPrivate::addText(QString * item, const QString & x,
 
 //-------------------------------------------------------------------------------------------------
 
-QString WDeclarativeTextSvgPrivate::getOutline(const QString & color, int size) const
+int WDeclarativeTextSvgPrivate::getWidth(const QFontMetrics & metrics, const QString & text) const
 {
-    QString string = " stroke=\"" + color + "\" stroke-width=\"" + QString::number(size) + "\"";
-
-    if (outline == WDeclarativeTextSvg::OutlineRound)
+    // FIXME: Workaround to fix the width of the arial font.
+    if (font.family().toLower() == "arial")
     {
-         return string + " stroke-linejoin=\"round\"";
+         return metrics.width(text) * 1.01;
     }
-    else return string;
+    else return metrics.width(text);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -328,6 +316,19 @@ QString WDeclarativeTextSvgPrivate::getWeight() const
     else if (weight == QFont::Bold)  return "bold";
     else if (weight == QFont::Black) return "bolder";
     else                             return "normal";
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QString WDeclarativeTextSvgPrivate::getOutline(const QString & color, int size) const
+{
+    QString string = " stroke=\"" + color + "\" stroke-width=\"" + QString::number(size) + "\"";
+
+    if (outline == WDeclarativeTextSvg::OutlineRound)
+    {
+         return string + " stroke-linejoin=\"round\"";
+    }
+    else return string;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -647,7 +648,7 @@ void WDeclarativeTextSvg::setHAlign(WDeclarativeText::HAlignment align)
 
     update();
 
-    emit verticalAlignmentChanged();
+    emit horizontalAlignmentChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

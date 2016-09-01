@@ -57,8 +57,6 @@ public: // Functions
 
     void loadSvg();
 
-    int getWidth(const QFontMetrics & metrics, const QString & text) const;
-
     QString addGradient(QString * item) const;
 
     void addText(QString * item, const QString & x,
@@ -68,9 +66,11 @@ public: // Functions
                                  const QString & size,
                                  const QString & color, const QString & extra = QString()) const;
 
-    QString getOutline(const QString & color, int size) const;
+    int getWidth(const QFontMetrics & metrics, const QString & text) const;
 
     QString getWeight() const;
+
+    QString getOutline(const QString & color, int size) const;
 
 public: // Slots
     void onLoad  ();
@@ -94,12 +94,11 @@ public: // Variables
 
     WDeclarativeGradient * gradient;
 
-    WDeclarativeTextSvg::TextStyle style;
+    WDeclarativeTextSvg::TextStyle   style;
+    WDeclarativeTextSvg::TextOutline outline;
 
     QColor styleColor;
     int    styleSize;
-
-    WDeclarativeTextSvg::TextOutline outline;
 
     WDeclarativeText::HAlignment hAlign;
     WDeclarativeText::VAlignment vAlign;

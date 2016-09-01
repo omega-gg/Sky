@@ -75,7 +75,7 @@ public: // QGraphicsItem reimplementation
                                                  QWidget                        * widget);
 
 protected: // Functions
-    virtual void svgChange(); /* {} */
+    virtual void svgChange();
     virtual void svgClear (); /* {} */
 
 protected: // QGraphicsItem reimplementation
@@ -145,8 +145,8 @@ protected: // QGraphicsItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
 
 protected: // WDeclarativeImageSvg reimplementation
-    virtual void svgChange();
-    virtual void svgClear ();
+    /* virtual */ void svgChange();
+    /* virtual */ void svgClear ();
 
 signals:
     void scalingChanged();
