@@ -140,7 +140,7 @@ BaseButtonPush
 
         sourceSize.height: (scaling) ? -1 : parent.height
 
-        opacity: (buttonPushFull.enabled) ? 1 : st.icon_opacityDisable
+        opacity: (buttonPushFull.enabled) ? 1.0 : st.icon_opacityDisable
 
         iconStyle: (checked) ? Sk.IconRaised
                              : Sk.IconSunken
@@ -175,7 +175,7 @@ BaseButtonPush
 
         verticalAlignment: Text.AlignVCenter
 
-        opacity: (buttonPushFull.enabled) ? 1 : st.text_opacityDisable
+        opacity: (buttonPushFull.enabled) ? 1.0 : st.text_opacityDisable
 
         style: (checked) ? Text.Raised
                          : Text.Sunken

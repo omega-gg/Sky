@@ -86,7 +86,7 @@ BaseButtonPush
 
         sourceArea: (scaling) ? Qt.size(-1, -1) : Qt.size(parent.width, parent.height)
 
-        opacity: (buttonPushIcon.enabled) ? 1 : st.icon_opacityDisable
+        opacity: (buttonPushIcon.enabled) ? 1.0 : st.icon_opacityDisable
 
         iconStyle: (checked) ? Sk.IconRaised
                              : Sk.IconSunken

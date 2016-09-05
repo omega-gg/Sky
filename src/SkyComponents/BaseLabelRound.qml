@@ -73,7 +73,7 @@ Item
 
         anchors.fill: parent
 
-        opacity: (baseLabelRound.enabled) ? 1 : st.border_opacityDisable
+        opacity: (baseLabelRound.enabled) ? 1.0 : st.border_opacityDisable
 
         source: st.labelRound_sourceBorder
 

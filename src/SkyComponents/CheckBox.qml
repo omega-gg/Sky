@@ -111,7 +111,7 @@ BaseButton
 
         visible: checked
 
-        opacity: (checkBox.enabled) ? 1 : st.icon_opacityDisable
+        opacity: (checkBox.enabled) ? 1.0 : st.icon_opacityDisable
 
         source: st.checkBox_sourceCheck
 
@@ -143,7 +143,7 @@ BaseButton
 
         sourceSize: pSourceSize
 
-        opacity: (checkBox.enabled) ? 1 : st.icon_opacityDisable
+        opacity: (checkBox.enabled) ? 1.0 : st.icon_opacityDisable
 
         source: (isHovered) ? st.checkBox_sourceHover
                             : st.checkBox_sourceBorder

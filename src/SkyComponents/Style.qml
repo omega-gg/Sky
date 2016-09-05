@@ -810,7 +810,7 @@ Item
     // ButtonRoundOverlay
 
     property real buttonRoundOverlay_opacityDefault: 0.8
-    property real buttonRoundOverlay_opacityHover  : 1
+    property real buttonRoundOverlay_opacityHover  : 1.0
 
     property color buttonRoundOverlay_colorA: "#323232"
     property color buttonRoundOverlay_colorB: "black"

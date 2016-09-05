@@ -135,7 +135,7 @@ BaseLabelRound
 
         sourceSize.height: (scaling) ? -1 : parent.height
 
-        opacity: (labelRoundFull.enabled) ? 1 : st.icon_opacityDisable
+        opacity: (labelRoundFull.enabled) ? 1.0 : st.icon_opacityDisable
 
         iconStyle: (labelRoundFull.enabled) ? Sk.IconRaised
                                             : Sk.IconSunken

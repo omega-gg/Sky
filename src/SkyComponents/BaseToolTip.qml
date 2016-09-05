@@ -54,7 +54,7 @@ Panel
     //---------------------------------------------------------------------------------------------
 
     visible: false
-    opacity: 0
+    opacity: 0.0
 
     acceptedButtons: Qt.NoButton
 
@@ -125,7 +125,7 @@ Panel
         isActive = false;
 
         visible = false;
-        opacity = 0;
+        opacity = 0.0;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -156,7 +156,7 @@ Panel
                                   window.mouseY < 0 || window.mouseY > window.height))
         {
             visible = false;
-            opacity = 0;
+            opacity = 0.0;
 
             return;
         }
@@ -198,7 +198,7 @@ Panel
 
         if (toolTip.x == oldX || toolTip.y == oldY)
         {
-             opacity = 1;
+             opacity = 1.0;
         }
         else opacity = st.baseToolTip_opacityHover;
     }

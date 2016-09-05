@@ -335,7 +335,7 @@ MouseArea
 
         anchors.rightMargin: Math.round(areaBackward.width / 3)
 
-        opacity: (areaBackward.containsMouse || pBackward) ? st.playerBrowser_opacityShadow : 0
+        opacity: (areaBackward.containsMouse || pBackward) ? st.playerBrowser_opacityShadow : 0.0
 
         direction: Sk.Right
 
@@ -356,7 +356,7 @@ MouseArea
 
         anchors.leftMargin: Math.round(areaForward.width / 3)
 
-        opacity: (areaForward.containsMouse || pForward) ? st.playerBrowser_opacityShadow : 0
+        opacity: (areaForward.containsMouse || pForward) ? st.playerBrowser_opacityShadow : 0.0
 
         filter: st.playerBrowser_filterShadow
 

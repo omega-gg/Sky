@@ -91,7 +91,7 @@ BaseButtonPiano
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment  : Text.AlignVCenter
 
-        opacity: (buttonPiano.enabled) ? 1 : window.st.text_opacityDisable
+        opacity: (buttonPiano.enabled) ? 1.0 : window.st.text_opacityDisable
 
         style: (checked) ? Text.Raised
                          : Text.Sunken

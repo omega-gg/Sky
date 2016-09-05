@@ -52,10 +52,10 @@ ComponentWall
 
     z:
     {
-        if      (index == indexTop)      return 3;
-        else if (isHighlighted)          return 2;
-        else if (isCurrent || isHovered) return 1;
-        else if (opacity == 1)           return 0;
+        if      (index == indexTop)      return  3;
+        else if (isHighlighted)          return  2;
+        else if (isCurrent || isHovered) return  1;
+        else if (opacity == 1.0)         return  0;
         else                             return -1;
     }
 

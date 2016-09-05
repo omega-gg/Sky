@@ -242,7 +242,7 @@ MouseArea
 
             verticalAlignment: Text.AlignVCenter
 
-            opacity: (isEnabled) ? 1 : st.text_opacityDisable
+            opacity: (isEnabled) ? 1.0 : st.text_opacityDisable
 
             color:
             {

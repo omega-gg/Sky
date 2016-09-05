@@ -89,7 +89,7 @@ BaseButtonPush
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment  : Text.AlignVCenter
 
-        opacity: (buttonPush.enabled) ? 1 : st.text_opacityDisable
+        opacity: (buttonPush.enabled) ? 1.0 : st.text_opacityDisable
 
         style: (checked) ? Text.Raised
                          : Text.Sunken

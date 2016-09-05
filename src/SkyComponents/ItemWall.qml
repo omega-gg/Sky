@@ -235,7 +235,7 @@ Panel
 
             sourceSize.height: iconHeight
 
-            opacity: (itemWall.enabled) ? 1 : st.icon_opacityDisable
+            opacity: (itemWall.enabled) ? 1.0 : st.icon_opacityDisable
 
             clip: (fillMode == Image.PreserveAspectCrop)
 
@@ -260,7 +260,7 @@ Panel
 
             verticalAlignment: Text.AlignVCenter
 
-            opacity: (itemWall.enabled) ? 1 : st.text_opacityDisable
+            opacity: (itemWall.enabled) ? 1.0 : st.text_opacityDisable
 
             style: (isCurrent) ? Text.Raised
                                : Text.Sunken

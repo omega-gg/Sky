@@ -99,7 +99,7 @@ MouseArea
 
         verticalAlignment: Text.AlignVCenter
 
-        opacity: (checkBoxText.enabled) ? 1 : st.text_opacityDisable
+        opacity: (checkBoxText.enabled) ? 1.0 : st.text_opacityDisable
 
         style: Text.Raised
 

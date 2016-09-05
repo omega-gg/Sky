@@ -89,7 +89,7 @@ BaseLabelRound
 
         sourceArea: (scaling) ? Qt.size(-1, -1) : Qt.size(parent.width, parent.height)
 
-        opacity: (labelRoundIcon.enabled) ? 1 : st.icon_opacityDisable
+        opacity: (labelRoundIcon.enabled) ? 1.0 : st.icon_opacityDisable
 
         iconStyle: (labelRoundIcon.enabled) ? Sk.IconRaised
                                             : Sk.IconSunken

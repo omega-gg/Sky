@@ -144,7 +144,7 @@ BaseButton
 
         anchors.fill: parent
 
-        opacity: (buttonRound.enabled) ? 1 : st.icon_opacityDisable
+        opacity: (buttonRound.enabled) ? 1.0 : st.icon_opacityDisable
 
         source: st.buttonRound_sourceBorder
 
@@ -166,7 +166,7 @@ BaseButton
 
         sourceArea: (scaling) ? Qt.size(-1, -1) : Qt.size(parent.width, parent.height)
 
-        opacity: (buttonRound.enabled) ? 1 : st.icon_opacityDisable
+        opacity: (buttonRound.enabled) ? 1.0 : st.icon_opacityDisable
 
         iconStyle: (checked) ? Sk.IconRaised
                              : Sk.IconSunken

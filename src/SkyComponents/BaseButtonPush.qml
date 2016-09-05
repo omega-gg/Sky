@@ -133,7 +133,7 @@ BaseButton
 
         anchors.fill: parent
 
-        opacity: (baseButtonPush.enabled) ? 1 : st.border_opacityDisable
+        opacity: (baseButtonPush.enabled) ? 1.0 : st.border_opacityDisable
 
         source: st.buttonPush_sourceBorder
 

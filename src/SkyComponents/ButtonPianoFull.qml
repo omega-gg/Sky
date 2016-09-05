@@ -147,7 +147,7 @@ BaseButtonPiano
 
         sourceSize.height: (scaling) ? -1 : parent.height
 
-        opacity: (buttonPianoFull.enabled) ? 1 : st.icon_opacityDisable
+        opacity: (buttonPianoFull.enabled) ? 1.0 : st.icon_opacityDisable
 
         iconStyle: (checked) ? Sk.IconRaised
                              : Sk.IconSunken
@@ -180,7 +180,7 @@ BaseButtonPiano
 
         verticalAlignment: Text.AlignVCenter
 
-        opacity: (buttonPianoFull.enabled) ? 1 : st.text_opacityDisable
+        opacity: (buttonPianoFull.enabled) ? 1.0 : st.text_opacityDisable
 
         style: (checked) ? Text.Raised
                          : Text.Sunken

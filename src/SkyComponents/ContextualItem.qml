@@ -139,7 +139,7 @@ MouseArea
 
         anchors.verticalCenter: background.verticalCenter
 
-        opacity: (isEnabled) ? 1 : st.icon_opacityDisable
+        opacity: (isEnabled) ? 1.0 : st.icon_opacityDisable
 
         source    : icon
         sourceSize: iconSize
@@ -165,7 +165,7 @@ MouseArea
 
         verticalAlignment: Text.AlignVCenter
 
-        opacity: (isEnabled) ? 1 : st.text_opacityDisable
+        opacity: (isEnabled) ? 1.0 : st.text_opacityDisable
 
         text: title
 

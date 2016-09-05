@@ -67,7 +67,7 @@ Panel
     //---------------------------------------------------------------------------------------------
 
     visible: false
-    opacity: 0
+    opacity: 0.0
 
     enableFocus: false
 
@@ -287,14 +287,14 @@ Panel
         if (active)
         {
             visible = true;
-            opacity = 1;
+            opacity = 1.0;
 
             isActive = true;
         }
         else
         {
             visible = false;
-            opacity = 0;
+            opacity = 0.0;
 
             isActive = false;
         }

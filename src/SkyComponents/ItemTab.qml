@@ -158,7 +158,7 @@ MouseArea
 
             sourceSize.height: iconHeight
 
-            opacity: (itemTab.enabled) ? 1 : st.icon_opacityDisable
+            opacity: (itemTab.enabled) ? 1.0 : st.icon_opacityDisable
 
             clip: (fillMode == Image.PreserveAspectCrop)
 
@@ -182,7 +182,7 @@ MouseArea
 
             verticalAlignment: Text.AlignVCenter
 
-            opacity: (itemTab.enabled) ? 1 : st.text_opacityDisable
+            opacity: (itemTab.enabled) ? 1.0 : st.text_opacityDisable
 
             style: (isCurrent) ? Text.Raised
                                : Text.Sunken
