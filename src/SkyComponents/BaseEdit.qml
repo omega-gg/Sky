@@ -19,6 +19,8 @@ import Sky     1.0
 
 MouseArea
 {
+    id: baseEdit
+
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
@@ -62,12 +64,12 @@ MouseArea
     //---------------------------------------------------------------------------------------------
     // Style
 
-    property alias durationAnimation: textInput.cursorDuration
+    property alias cursorDuration: textInput.cursorDuration
 
     property alias cursorWidth : textInput.cursorWidth
     property alias cursorHeight: textInput.cursorHeight
 
-    property alias colorCursor: textInput.cursorColor
+    property alias cursorColor: textInput.cursorColor
 
     property alias colorSelection    : textInput.selectionColor
     property alias colorSelectionText: textInput.selectedTextColor

@@ -1231,16 +1231,14 @@ Item
 
     property real editBox_shadowHeight: dp6
 
-    property real editBox_focusSize: dp4
+    property real editBox_focusSize: dp2
+
+    property real editBox_cursorWidth: dp2
 
     property color editBox_colorA: "#c8c8c8"
     property color editBox_colorB: "white"
 
-    property color editBox_colorFocusA: buttonPiano_colorHighlightA
-    property color editBox_colorFocusB: buttonPiano_colorHighlightB
-
-    property color editBox_colorFocusHoverA: buttonPiano_colorHighlightHoverA
-    property color editBox_colorFocusHoverB: buttonPiano_colorHighlightHoverB
+    property color editBox_colorFocus: baseEdit_colorSelection
 
     property color editBox_colorDefault: "#484848"
 

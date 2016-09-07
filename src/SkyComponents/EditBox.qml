@@ -35,11 +35,7 @@ BaseEdit
     property color colorA: st.editBox_colorA
     property color colorB: st.editBox_colorB
 
-    property color colorFocusA: st.editBox_colorFocusA
-    property color colorFocusB: st.editBox_colorFocusB
-
-    property color colorFocusHoverA: st.editBox_colorFocusHoverA
-    property color colorFocusHoverB: st.editBox_colorFocusHoverB
+    property color colorFocus: st.editBox_colorFocus
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -58,26 +54,9 @@ BaseEdit
     //---------------------------------------------------------------------------------------------
     // Style
 
+    cursorWidth: st.editBox_cursorWidth
+
     colorDefault: st.editBox_colorDefault
-
-    //---------------------------------------------------------------------------------------------
-    // Functions events
-    //---------------------------------------------------------------------------------------------
-
-    function onClear()
-    {
-        if (enableClearFocus)
-        {
-            text = "";
-
-            window.clearFocus();
-        }
-        else if (text)
-        {
-            text = "";
-        }
-        else window.clearFocus();
-    }
 
     //---------------------------------------------------------------------------------------------
     // Childs
@@ -85,57 +64,16 @@ BaseEdit
 
     Rectangle
     {
-        id: itemFocus
+        id: background
 
         anchors.fill: parent
 
         z: -1
-
-        visible: (window.isActive && isFocused)
 
         gradient: Gradient
         {
-            GradientStop
-            {
-                position: 0.0
-
-                color: (isHovered) ? colorFocusHoverA
-                                   : colorFocusA
-            }
-
-            GradientStop
-            {
-                position: 1.0
-
-                color: (isHovered) ? colorFocusHoverB
-                                   : colorFocusB
-            }
-        }
-    }
-
-    Item
-    {
-        anchors.fill: parent
-
-        anchors.margins: focusSize
-
-        z: -1
-
-        clip: itemFocus.visible
-
-        Rectangle
-        {
-            id: background
-
-            anchors.fill: parent
-
-            anchors.margins: -focusSize
-
-            gradient: Gradient
-            {
-                GradientStop { position: 0.0; color: colorA }
-                GradientStop { position: 1.0; color: colorB }
-            }
+            GradientStop { position: 0.0; color: colorA }
+            GradientStop { position: 1.0; color: colorB }
         }
     }
 
@@ -158,37 +96,26 @@ BaseEdit
 
     RectangleBorders
     {
+        id: itemFocus
+
         anchors.fill: parent
 
-        anchors.margins: focusSize
+        size: focusSize
 
-        visible: itemFocus.visible
+        opacity: (window.isActive && isFocused)
 
-        color: colorDefault
-    }
+        color: st.editBox_colorFocus
 
-    ButtonPianoIcon
-    {
-        id: button
+        Behavior on opacity
+        {
+            PropertyAnimation { duration: st.duration_fast }
+        }
 
-        anchors.right: parent.right
-        anchors.top  : parent.top
+        RectangleBorders
+        {
+            anchors.fill: parent
 
-        anchors.rightMargin: focusSize
-        anchors.topMargin  : focusSize
-
-        width : st.lineEditClear_buttonSize + borderSizeWidth
-        height: st.lineEditClear_buttonSize + borderSizeHeight
-
-        borderLeft  : borderSize
-        borderTop   : borderSize
-        borderBottom: borderSize
-
-        visible: editBox.isFocused
-
-        icon          : st.icon16x16_close
-        iconSourceSize: st.size16x16
-
-        onClicked: onClear()
+            anchors.margins: focusSize
+        }
     }
 }
