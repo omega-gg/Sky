@@ -46,15 +46,8 @@ BaseEdit
     property alias itemFocus : itemFocus
 
     //---------------------------------------------------------------------------------------------
-    // Settings
+    // Settings style
     //---------------------------------------------------------------------------------------------
-
-    textInput.font.bold: true
-
-    //---------------------------------------------------------------------------------------------
-    // Style
-
-    cursorWidth: st.editBox_cursorWidth
 
     colorDefault: st.editBox_colorDefault
 
@@ -85,8 +78,6 @@ BaseEdit
         anchors.right: parent.right
 
         height: st.editBox_shadowHeight
-
-        visible: (itemFocus.visible == false)
 
         opacity: (isHovered) ? st.baseEdit_shadowOpacityB
                              : st.baseEdit_shadowOpacityA

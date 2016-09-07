@@ -190,8 +190,9 @@ MouseArea
         anchors.fill: parent
 
         anchors.leftMargin : paddingLeft
-        anchors.rightMargin: paddingRight
-        anchors.topMargin  : st.baseEdit_padding
+        anchors.rightMargin: paddingRight + cursorWidth
+
+        anchors.topMargin: st.baseEdit_padding
 
         selectByMouse: true
 
@@ -202,6 +203,7 @@ MouseArea
 
         font.family   : st.text_fontFamily
         font.pixelSize: st.text_pixelSize
+        font.bold     : true
 
         cursorDelegate: Component
         {

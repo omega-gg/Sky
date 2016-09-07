@@ -1165,7 +1165,7 @@ Item
 
     property real baseEdit_height: dp32
 
-    property real baseEdit_cursorWidth: dp1
+    property real baseEdit_cursorWidth: dp2
 
     property real baseEdit_padding: dp9
 
@@ -1232,8 +1232,6 @@ Item
     property real editBox_shadowHeight: dp6
 
     property real editBox_focusSize: dp2
-
-    property real editBox_cursorWidth: dp2
 
     property color editBox_colorA: "#c8c8c8"
     property color editBox_colorB: "white"
