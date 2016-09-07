@@ -1265,13 +1265,10 @@ Item
     property color scrollBar_colorHandlePressA: "#323232"
     property color scrollBar_colorHandlePressB: "#787878"
 
-    property color scrollBar_colorIcon: "#f0f0f0"
-
     property alias scrollBar_filterHorizontalDefault    : scrollBar_filterHorizontalDefault
     property alias scrollBar_filterHorizontalHandle     : scrollBar_filterHorizontalHandle
     property alias scrollBar_filterHorizontalHandleHover: scrollBar_filterHorizontalHandleHover
     property alias scrollBar_filterHorizontalHandlePress: scrollBar_filterHorizontalHandlePress
-    property alias scrollBar_filterIcon                 : scrollBar_filterIcon
 
     ImageColorFilter
     {
@@ -1323,13 +1320,6 @@ Item
             ScaleGradientStop { position: 0.0; color: scrollBar_colorHandlePressA }
             ScaleGradientStop { position: 1.0; color: scrollBar_colorHandlePressB }
         }
-    }
-
-    ImageColorFilter
-    {
-        id: scrollBar_filterIcon
-
-        color: scrollBar_colorIcon
     }
 
     //---------------------------------------------------------------------------------------------

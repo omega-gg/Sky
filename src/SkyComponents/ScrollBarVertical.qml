@@ -82,7 +82,6 @@ Item
     // Style
 
     property alias filterDefault: background.filter
-    property alias filterIcon   : itemIcon  .filter
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -299,20 +298,6 @@ Item
                 anchors.bottom: parent.bottom
 
                 color: colorBorder
-            }
-
-            Icon
-            {
-                id: itemIcon
-
-                anchors.centerIn: parent
-
-                source    : st.icon16x16_handleVertical
-                sourceSize: st.size16x16
-
-                iconStyle: Sk.IconRaised
-
-                filter: st.scrollBar_filterIcon
             }
         }
     }
