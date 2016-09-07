@@ -1159,21 +1159,32 @@ Item
     property real checkBoxText_spacing: dp4
 
     //---------------------------------------------------------------------------------------------
+    // BaseEdit
+
+    property int baseEdit_durationAnimation: ms500
+
+    property real baseEdit_height: dp32
+
+    property real baseEdit_cursorWidth: dp1
+
+    property real baseEdit_padding: dp9
+
+    property int baseEdit_maximumLength: 1000
+
+    property real baseEdit_shadowOpacityA: 0.6
+    property real baseEdit_shadowOpacityB: 0.8
+
+    property color baseEdit_colorCursor: "#161616"
+
+    property color baseEdit_colorSelection    : "#008cdc"
+    property color baseEdit_colorSelectionText: "white"
+
+    property color baseEdit_colorDefault: st.text4_color
+
+    //---------------------------------------------------------------------------------------------
     // LineEdit
 
-    property int lineEdit_durationAnimation: ms500
-
-    property real lineEdit_width : dp200
-    property real lineEdit_height: dp32
-
-    property real lineEdit_cursorWidth: dp1
-
-    property real lineEdit_padding: dp9
-
-    property int lineEdit_maximumLength: 1000
-
-    property real lineEdit_shadowOpacityA: 0.6
-    property real lineEdit_shadowOpacityB: 0.8
+    property real lineEdit_width: dp200
 
     property url lineEdit_sourceDefault: "pictures/lineEditMask.svg"
     property url lineEdit_sourceBorder : "pictures/lineEditBorder.svg"
@@ -1183,11 +1194,7 @@ Item
 
     property variant lineEdit_borderBackground: Qt.rect(54, 42, 54, 42)
 
-    property color lineEdit_color      : "white"
-    property color lineEdit_colorCursor: "#161616"
-
-    property color lineEdit_colorSelection    : "#008cdc"
-    property color lineEdit_colorSelectionText: "white"
+    property color lineEdit_color: "white"
 
     property ImageColorFilter lineEdit_filterBorder: border_filter
     property ImageColorFilter lineEdit_filterShadow: rectangleShadow_filter
@@ -1212,12 +1219,30 @@ Item
     // LineEditLabel
 
     property real lineEditLabel_width : dp200
-    property real lineEditLabel_height: lineEdit_height
+    property real lineEditLabel_height: baseEdit_height
 
     property real lineEditLabel_lineEditLeftMargin: -dp20
 
     property real lineEditLabel_labelPaddingLeft : dp16
     property real lineEditLabel_labelPaddingRight: dp24
+
+    //---------------------------------------------------------------------------------------------
+    // EditBox
+
+    property real editBox_shadowHeight: dp6
+
+    property real editBox_focusSize: dp4
+
+    property color editBox_colorA: "#c8c8c8"
+    property color editBox_colorB: "white"
+
+    property color editBox_colorFocusA: buttonPiano_colorHighlightA
+    property color editBox_colorFocusB: buttonPiano_colorHighlightB
+
+    property color editBox_colorFocusHoverA: buttonPiano_colorHighlightHoverA
+    property color editBox_colorFocusHoverB: buttonPiano_colorHighlightHoverB
+
+    property color editBox_colorDefault: "#484848"
 
     //---------------------------------------------------------------------------------------------
     // List

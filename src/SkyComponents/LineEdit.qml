@@ -17,56 +17,17 @@
 import QtQuick 1.1
 import Sky     1.0
 
-MouseArea
+BaseEdit
 {
-    id: lineEdit
-
     //---------------------------------------------------------------------------------------------
-    // Properties
+    // Properties style
     //---------------------------------------------------------------------------------------------
-
-    property bool isFocused: textInput.activeFocus
-    property bool isHovered: containsMouse
-
-    property real paddingLeft : st.lineEdit_padding
-    property real paddingRight: st.lineEdit_padding
-
-    property bool autoSelect: true
-
-    //---------------------------------------------------------------------------------------------
-    // Style
 
     property variant borderBackground: st.lineEdit_borderBackground
 
     //---------------------------------------------------------------------------------------------
-    // Private
-
-    property bool pTextEvent: true
-
-    //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
-
-    default property alias content: background.data
-
-    property alias text       : textInput      .text
-    property alias textDefault: itemTextDefault.text
-
-    property alias selectedText: textInput.selectedText
-
-    property alias cursorPosition: textInput.cursorPosition
-
-    property alias selectionStart: textInput.selectionStart
-    property alias selectionEnd  : textInput.selectionEnd
-
-    property alias maximumLength: textInput.maximumLength
-
-    property alias echoMode: textInput.echoMode
-
-    //---------------------------------------------------------------------------------------------
-
-    property alias textInput      : textInput
-    property alias itemTextDefault: itemTextDefault
 
     property alias background : background
     property alias imageBorder: imageBorder
@@ -75,13 +36,6 @@ MouseArea
 
     //---------------------------------------------------------------------------------------------
     // Style
-
-    property alias durationAnimation: textInput.cursorDuration
-
-    property alias cursorWidth : textInput.cursorWidth
-    property alias cursorHeight: textInput.cursorHeight
-
-    property alias colorCursor: textInput.cursorColor
 
     property alias sourceBackground: background .source
     property alias sourceBorder    : imageBorder.source
@@ -97,107 +51,21 @@ MouseArea
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width : st.lineEdit_width
-    height: st.lineEdit_height
+    width: st.lineEdit_width
 
-    acceptedButtons: Qt.LeftButton | Qt.RightButton
-
-    hoverEnabled: true
-
-    cursor: MouseArea.IBeamCursor
-
-    //---------------------------------------------------------------------------------------------
-    // Events
-    //---------------------------------------------------------------------------------------------
-
-    onPressed:
-    {
-        if (mouse.button & Qt.LeftButton)
-        {
-            textInput.forceActiveFocus();
-        }
-    }
-
-    //---------------------------------------------------------------------------------------------
-    // Functions
-    //---------------------------------------------------------------------------------------------
-
-    function focus()
-    {
-        textInput.forceActiveFocus();
-    }
-
-    //---------------------------------------------------------------------------------------------
-
-    function moveCursorAt(position)
-    {
-        textInput.cursorPosition = position;
-    }
-
-    function moveCursorAtStart()
-    {
-        textInput.cursorPosition = 0;
-    }
-
-    function moveCursorAtEnd()
-    {
-        textInput.cursorPosition = text.length;
-    }
-
-    //---------------------------------------------------------------------------------------------
-
-    function select(start, end)
-    {
-        timer.stop();
-
-        textInput.select(start, end);
-    }
-
-    function selectAll()
-    {
-        timer.stop();
-
-        textInput.selectAll();
-    }
-
-    function deselect()
-    {
-        timer.stop();
-
-        textInput.deselect();
-    }
-
-    //---------------------------------------------------------------------------------------------
-
-    function clear()
-    {
-        text = "";
-    }
-
-    //---------------------------------------------------------------------------------------------
-    // Events
-
-    function onKeyPressed (event) {}
-    function onKeyReleased(event) {}
+    itemTextDefault.font.bold: false
 
     //---------------------------------------------------------------------------------------------
     // Childs
     //---------------------------------------------------------------------------------------------
-
-    Timer
-    {
-        id: timer
-
-        interval: 10
-
-        onTriggered: textInput.selectAll()
-    }
 
     BorderImageScale
     {
         id: itemFocus
 
         anchors.fill: parent
+
+        z: -1
 
         opacity: (window.isActive && isFocused)
 
@@ -221,6 +89,8 @@ MouseArea
 
         anchors.fill: parent
 
+        z: -1
+
         source: st.lineEdit_sourceDefault
 
         border
@@ -230,97 +100,6 @@ MouseArea
         }
 
         filter: st.lineEdit_filterDefault
-    }
-
-    TextInput
-    {
-        id: textInput
-
-        property int cursorDuration: st.lineEdit_durationAnimation
-
-        property real cursorWidth: st.lineEdit_cursorWidth
-
-        property real cursorHeight: sk.textHeight(font)
-
-        property color cursorColor: st.lineEdit_colorCursor
-
-        anchors.fill: parent
-
-        anchors.leftMargin : paddingLeft
-        anchors.rightMargin: paddingRight
-        anchors.topMargin  : st.lineEdit_padding
-
-        selectByMouse: true
-
-        maximumLength: st.lineEdit_maximumLength
-
-        selectionColor   : st.lineEdit_colorSelection
-        selectedTextColor: st.lineEdit_colorSelectionText
-
-        font.family   : st.text_fontFamily
-        font.pixelSize: st.text_pixelSize
-
-        cursorDelegate: Component
-        {
-            Rectangle
-            {
-                id: cursor
-
-                width : parent.cursorWidth
-                height: parent.cursorHeight
-
-                visible: parent.cursorVisible
-
-                color: parent.cursorColor
-
-                SequentialAnimation
-                {
-                    running: cursor.visible
-
-                    loops: Animation.Infinite
-
-                    PropertyAction { target: cursor; property: "opacity"; value: 1.0 }
-
-                    PauseAnimation { duration: parent.cursorDuration }
-
-                    PropertyAction { target: cursor; property: "opacity"; value: 0.0 }
-
-                    PauseAnimation { duration: parent.cursorDuration }
-                }
-            }
-        }
-
-        onActiveFocusChanged:
-        {
-            if (activeFocus)
-            {
-                if (autoSelect)
-                {
-                    timer.start();
-                }
-            }
-            else deselect();
-        }
-
-        Keys.onPressed:
-        {
-            if (event.key == Qt.Key_Left
-                &&
-                cursorPosition == 0 && selectionStart == selectionEnd)
-            {
-                event.accepted = true;
-            }
-            else if (event.key == Qt.Key_Right
-                     &&
-                     cursorPosition == text.length && selectionStart == selectionEnd)
-            {
-                event.accepted = true;
-            }
-
-            onKeyPressed(event);
-        }
-
-        Keys.onReleased: onKeyReleased(event)
     }
 
     TextBase
@@ -347,8 +126,8 @@ MouseArea
 
         anchors.fill: parent
 
-        opacity: (isHovered) ? st.lineEdit_shadowOpacityB
-                             : st.lineEdit_shadowOpacityA
+        opacity: (isHovered) ? st.baseEdit_shadowOpacityB
+                             : st.baseEdit_shadowOpacityA
 
         source: st.lineEdit_sourceShadow
 

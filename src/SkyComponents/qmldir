@@ -100,10 +100,12 @@ LabelStream        1.0 LabelStream.qml
 CheckBox     1.0 CheckBox.qml
 CheckBoxText 1.0 CheckBoxText.qml
 
+BaseEdit      1.0 BaseEdit.qml
 LineEdit      1.0 LineEdit.qml
 LineEditClear 1.0 LineEditClear.qml
 LineEditCopy  1.0 LineEditCopy.qml
 LineEditLabel 1.0 LineEditLabel.qml
+EditBox       1.0 EditBox.qml
 
 List           1.0 List.qml
 ListCompletion 1.0 ListCompletion.qml
