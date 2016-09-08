@@ -174,7 +174,7 @@ Item
     property color text3_colorShadow: "#161616"
     property color text3_colorSunken: "#323232"
 
-    property color text4_color      : "#646464"
+    property color text4_color      : "#484848"
     property color text4_colorShadow: "#dcdcdc"
     property color text4_colorSunken: "#f0f0f0"
 
@@ -1184,7 +1184,10 @@ Item
     //---------------------------------------------------------------------------------------------
     // LineEdit
 
-    property real lineEdit_width: dp200
+    property real lineEdit_width : dp200
+    property real lineEdit_height: dp38
+
+    property real lineEdit_padding: dp12
 
     property url lineEdit_sourceDefault: "pictures/lineEditMask.svg"
     property url lineEdit_sourceBorder : "pictures/lineEditBorder.svg"
@@ -1192,7 +1195,7 @@ Item
     property url lineEdit_sourceShadow : "pictures/lineEditShadow.png"
     property url lineEdit_sourceFocus  : "pictures/lineEditFocus.png"
 
-    property variant lineEdit_borderBackground: Qt.rect(54, 42, 54, 42)
+    property variant lineEdit_borderBackground: Qt.rect(32, 32, 32, 32)
 
     property color lineEdit_color: "white"
 
@@ -1218,13 +1221,10 @@ Item
     //---------------------------------------------------------------------------------------------
     // LineEditLabel
 
-    property real lineEditLabel_width : dp200
-    property real lineEditLabel_height: baseLineEdit_height
-
-    property real lineEditLabel_lineEditLeftMargin: -dp20
+    property real lineEditLabel_lineEditLeftMargin: -dp24
 
     property real lineEditLabel_labelPaddingLeft : dp16
-    property real lineEditLabel_labelPaddingRight: dp24
+    property real lineEditLabel_labelPaddingRight: dp28
 
     //---------------------------------------------------------------------------------------------
     // LineEditBox
@@ -1237,8 +1237,6 @@ Item
     property color lineEditBox_colorB: "white"
 
     property color lineEditBox_colorFocus: baseLineEdit_colorSelection
-
-    property color lineEditBox_colorDefault: "#484848"
 
     //---------------------------------------------------------------------------------------------
     // List

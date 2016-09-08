@@ -51,9 +51,10 @@ BaseLineEdit
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: st.lineEdit_width
+    width : st.lineEdit_width
+    height: st.lineEdit_height
 
-    itemTextDefault.font.bold: false
+    padding: st.lineEdit_padding
 
     //---------------------------------------------------------------------------------------------
     // Childs
@@ -115,7 +116,7 @@ BaseLineEdit
 
         visible: (isFocused == false && textInput.text == "")
 
-        color: st.text4_color
+        color: st.baseLineEdit_colorDefault
 
         font.bold: false
     }

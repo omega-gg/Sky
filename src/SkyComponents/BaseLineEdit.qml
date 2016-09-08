@@ -28,8 +28,10 @@ MouseArea
     property bool isFocused: textInput.activeFocus
     property bool isHovered: containsMouse
 
-    property real paddingLeft : st.baseLineEdit_padding
-    property real paddingRight: st.baseLineEdit_padding
+    property real padding: st.baseLineEdit_padding
+
+    property real paddingLeft : padding
+    property real paddingRight: padding
 
     property bool autoSelect: true
 
@@ -190,9 +192,9 @@ MouseArea
         anchors.fill: parent
 
         anchors.leftMargin : paddingLeft
-        anchors.rightMargin: paddingRight + cursorWidth
+        anchors.rightMargin: paddingRight
 
-        anchors.topMargin: st.baseLineEdit_padding
+        anchors.topMargin: padding
 
         selectByMouse: true
 

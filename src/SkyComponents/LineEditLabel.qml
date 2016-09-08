@@ -52,8 +52,8 @@ Item
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width : st.lineEditLabel_width
-    height: st.lineEditLabel_height
+    width : st.lineEdit_width
+    height: st.lineEdit_height
 
     //---------------------------------------------------------------------------------------------
     // Events
