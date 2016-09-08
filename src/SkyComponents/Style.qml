@@ -294,7 +294,7 @@ Item
     property color icon_colorSunken : icon1_colorSunken
 
     property color icon1_colorA     : "white"
-    property color icon1_colorB     : "#bebebe"
+    property color icon1_colorB     : "#c8c8c8"
     property color icon1_colorShadow: "#161616"
     property color icon1_colorSunken: "#323232"
 
