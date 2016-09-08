@@ -1227,18 +1227,18 @@ Item
     property real lineEditLabel_labelPaddingRight: dp24
 
     //---------------------------------------------------------------------------------------------
-    // EditBox
+    // LineEditBox
 
-    property real editBox_shadowHeight: dp6
+    property real lineEditBox_shadowHeight: dp6
 
-    property real editBox_focusSize: dp2
+    property real lineEditBox_focusSize: dp2
 
-    property color editBox_colorA: "#c8c8c8"
-    property color editBox_colorB: "white"
+    property color lineEditBox_colorA: "#c8c8c8"
+    property color lineEditBox_colorB: "white"
 
-    property color editBox_colorFocus: baseLineEdit_colorSelection
+    property color lineEditBox_colorFocus: baseLineEdit_colorSelection
 
-    property color editBox_colorDefault: "#484848"
+    property color lineEditBox_colorDefault: "#484848"
 
     //---------------------------------------------------------------------------------------------
     // List

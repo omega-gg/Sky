@@ -19,7 +19,7 @@ import Sky     1.0
 
 BaseLineEdit
 {
-    id: editBox
+    id: lineEditBox
 
     //---------------------------------------------------------------------------------------------
     // Properties
@@ -30,12 +30,12 @@ BaseLineEdit
     //---------------------------------------------------------------------------------------------
     // Style
 
-    property real focusSize: st.editBox_focusSize
+    property real focusSize: st.lineEditBox_focusSize
 
-    property color colorA: st.editBox_colorA
-    property color colorB: st.editBox_colorB
+    property color colorA: st.lineEditBox_colorA
+    property color colorB: st.lineEditBox_colorB
 
-    property color colorFocus: st.editBox_colorFocus
+    property color colorFocus: st.lineEditBox_colorFocus
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -49,7 +49,7 @@ BaseLineEdit
     // Settings style
     //---------------------------------------------------------------------------------------------
 
-    colorDefault: st.editBox_colorDefault
+    colorDefault: st.lineEditBox_colorDefault
 
     //---------------------------------------------------------------------------------------------
     // Childs
@@ -77,7 +77,7 @@ BaseLineEdit
         anchors.left : parent.left
         anchors.right: parent.right
 
-        height: st.editBox_shadowHeight
+        height: st.lineEditBox_shadowHeight
 
         opacity: (isHovered) ? st.baseLineEdit_shadowOpacityB
                              : st.baseLineEdit_shadowOpacityA
@@ -95,7 +95,7 @@ BaseLineEdit
 
         opacity: (window.isActive && isFocused)
 
-        color: st.editBox_colorFocus
+        color: st.lineEditBox_colorFocus
 
         Behavior on opacity
         {
