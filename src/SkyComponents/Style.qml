@@ -71,7 +71,8 @@ Item
     property int dp64: 64 * ratio
 
     property int dp70: 70 * ratio
-    property int dp76: 76 * ratio
+
+    property int dp84: 84 * ratio
 
     property int dp96: 96 * ratio
 
@@ -720,6 +721,93 @@ Item
     }
 
     //---------------------------------------------------------------------------------------------
+    // ButtonOverlay
+
+    property real buttonOverlay_opacityDefault: 0.8
+    property real buttonOverlay_opacityHover  : 1.0
+
+    property color buttonOverlay_colorA: "#323232"
+    property color buttonOverlay_colorB: "black"
+
+    property color buttonOverlay_colorHoverA: buttonPush_colorHighlightHoverA
+    property color buttonOverlay_colorHoverB: buttonPush_colorHighlightHoverB
+
+    property color buttonOverlay_colorPressA: buttonPush_colorCheckA
+    property color buttonOverlay_colorPressB: buttonPush_colorCheckB
+
+    property color buttonOverlay_colorBorderA: icon_colorA
+    property color buttonOverlay_colorBorderB: icon_colorB
+
+    property color buttonOverlay_colorIconShadow: "#161616"
+    property color buttonOverlay_colorIconSunken: "#161616"
+
+    property alias buttonOverlay_filterDefault   : buttonOverlay_filterDefault
+    property alias buttonOverlay_filterHover     : buttonOverlay_filterHover
+    property alias buttonOverlay_filterPress     : buttonOverlay_filterPress
+    property alias buttonOverlay_filterBorder    : buttonOverlay_filterBorder
+    property alias buttonOverlay_filterIconShadow: buttonOverlay_filterIconShadow
+    property alias buttonOverlay_filterIconSunken: buttonOverlay_filterIconSunken
+
+
+    ImageColorFilter
+    {
+        id: buttonOverlay_filterDefault
+
+        gradient: ScaleGradient
+        {
+            ScaleGradientStop { position: 0.0; color: buttonOverlay_colorA }
+            ScaleGradientStop { position: 1.0; color: buttonOverlay_colorB }
+        }
+    }
+
+    ImageColorFilter
+    {
+        id: buttonOverlay_filterHover
+
+        gradient: ScaleGradient
+        {
+            ScaleGradientStop { position: 0.0; color: buttonOverlay_colorHoverA }
+            ScaleGradientStop { position: 1.0; color: buttonOverlay_colorHoverB }
+        }
+    }
+
+    ImageColorFilter
+    {
+        id: buttonOverlay_filterPress
+
+        gradient: ScaleGradient
+        {
+            ScaleGradientStop { position: 0.0; color: buttonOverlay_colorPressA }
+            ScaleGradientStop { position: 1.0; color: buttonOverlay_colorPressB }
+        }
+    }
+
+    ImageColorFilter
+    {
+        id: buttonOverlay_filterBorder
+
+        gradient: ScaleGradient
+        {
+            ScaleGradientStop { position: 0.0; color: buttonOverlay_colorBorderA }
+            ScaleGradientStop { position: 1.0; color: buttonOverlay_colorBorderB }
+        }
+    }
+
+    ImageColorFilter
+    {
+        id: buttonOverlay_filterIconShadow
+
+        color: buttonOverlay_colorIconShadow
+    }
+
+    ImageColorFilter
+    {
+        id: buttonOverlay_filterIconSunken
+
+        color: buttonOverlay_colorIconSunken
+    }
+
+    //---------------------------------------------------------------------------------------------
     // ButtonPiano
 
     property real buttonPiano_height: dp32
@@ -805,93 +893,6 @@ Item
     property alias buttonRound_filterHighlightHover: buttonPush_filterHighlightHover
     property alias buttonRound_filterCheck         : buttonPush_filterCheck
     property alias buttonRound_filterCheckHover    : buttonPush_filterCheckHover
-
-    //---------------------------------------------------------------------------------------------
-    // ButtonRoundOverlay
-
-    property real buttonRoundOverlay_opacityDefault: 0.8
-    property real buttonRoundOverlay_opacityHover  : 1.0
-
-    property color buttonRoundOverlay_colorA: "#323232"
-    property color buttonRoundOverlay_colorB: "black"
-
-    property color buttonRoundOverlay_colorHoverA: buttonPush_colorHighlightHoverA
-    property color buttonRoundOverlay_colorHoverB: buttonPush_colorHighlightHoverB
-
-    property color buttonRoundOverlay_colorPressA: buttonPush_colorCheckA
-    property color buttonRoundOverlay_colorPressB: buttonPush_colorCheckB
-
-    property color buttonRoundOverlay_colorBorderA: icon_colorA
-    property color buttonRoundOverlay_colorBorderB: icon_colorB
-
-    property color buttonRoundOverlay_colorIconShadow: "#161616"
-    property color buttonRoundOverlay_colorIconSunken: "#161616"
-
-    property alias buttonRoundOverlay_filterDefault   : buttonRoundOverlay_filterDefault
-    property alias buttonRoundOverlay_filterHover     : buttonRoundOverlay_filterHover
-    property alias buttonRoundOverlay_filterPress     : buttonRoundOverlay_filterPress
-    property alias buttonRoundOverlay_filterBorder    : buttonRoundOverlay_filterBorder
-    property alias buttonRoundOverlay_filterIconShadow: buttonRoundOverlay_filterIconShadow
-    property alias buttonRoundOverlay_filterIconSunken: buttonRoundOverlay_filterIconSunken
-
-
-    ImageColorFilter
-    {
-        id: buttonRoundOverlay_filterDefault
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: buttonRoundOverlay_colorA }
-            ScaleGradientStop { position: 1.0; color: buttonRoundOverlay_colorB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: buttonRoundOverlay_filterHover
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: buttonRoundOverlay_colorHoverA }
-            ScaleGradientStop { position: 1.0; color: buttonRoundOverlay_colorHoverB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: buttonRoundOverlay_filterPress
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: buttonRoundOverlay_colorPressA }
-            ScaleGradientStop { position: 1.0; color: buttonRoundOverlay_colorPressB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: buttonRoundOverlay_filterBorder
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: buttonRoundOverlay_colorBorderA }
-            ScaleGradientStop { position: 1.0; color: buttonRoundOverlay_colorBorderB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: buttonRoundOverlay_filterIconShadow
-
-        color: buttonRoundOverlay_colorIconShadow
-    }
-
-    ImageColorFilter
-    {
-        id: buttonRoundOverlay_filterIconSunken
-
-        color: buttonRoundOverlay_colorIconSunken
-    }
 
     //---------------------------------------------------------------------------------------------
     // ButtonCheck

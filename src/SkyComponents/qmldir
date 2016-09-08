@@ -70,6 +70,7 @@ ButtonPushCenterFull 1.0 ButtonPushCenterFull.qml
 ButtonPushRight      1.0 ButtonPushRight.qml
 ButtonPushRightIcon  1.0 ButtonPushRightIcon.qml
 ButtonPushRightFull  1.0 ButtonPushRightFull.qml
+ButtonPushOverlay    1.0 ButtonPushOverlay.qml
 ButtonPiano          1.0 ButtonPiano.qml
 ButtonPianoIcon      1.0 ButtonPianoIcon.qml
 ButtonPianoFull      1.0 ButtonPianoFull.qml

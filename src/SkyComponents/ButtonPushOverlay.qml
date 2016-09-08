@@ -17,7 +17,7 @@
 import QtQuick 1.1
 import Sky     1.0
 
-ButtonRound
+ButtonPushIcon
 {
     //---------------------------------------------------------------------------------------------
     // Settings

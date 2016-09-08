@@ -219,9 +219,9 @@ MouseArea
     {
         var width = Math.round(playerBrowser.width / 6);
 
-        width = Math.max(st.dp38, width);
+        width = Math.max(st.dp48, width);
 
-        return Math.min(width, st.dp76);
+        return Math.min(width, st.dp84);
     }
 
     function pGetWidthPlay()
@@ -230,7 +230,7 @@ MouseArea
 
         width = Math.max(st.dp48, width);
 
-        return Math.min(width, st.dp128);
+        return Math.min(width, st.dp120);
     }
 
     //---------------------------------------------------------------------------------------------
@@ -366,7 +366,7 @@ MouseArea
         }
     }
 
-    ButtonRoundOverlay
+    ButtonPushOverlay
     {
         id: buttonPrevious
 
@@ -398,7 +398,7 @@ MouseArea
         onReleased: scrollClear   ()
     }
 
-    ButtonRoundOverlay
+    ButtonPushOverlay
     {
         id: buttonNext
 
@@ -430,7 +430,7 @@ MouseArea
         onReleased: scrollClear()
     }
 
-    ButtonRoundOverlay
+    ButtonPushOverlay
     {
         id: buttonPlay
 
