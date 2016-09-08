@@ -864,12 +864,6 @@ Item
     property color buttonPianoConfirm_colorFocus: "#ff0000"
 
     //---------------------------------------------------------------------------------------------
-    // ButtonPianoEdit
-
-    property color buttonPianoEdit_colorPressA: buttonPiano_colorHighlightHoverA
-    property color buttonPianoEdit_colorPressB: buttonPiano_colorHighlightHoverB
-
-    //---------------------------------------------------------------------------------------------
     // ButtonRound
 
     property real buttonRound_width : dp48
