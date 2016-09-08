@@ -1159,27 +1159,27 @@ Item
     property real checkBoxText_spacing: dp4
 
     //---------------------------------------------------------------------------------------------
-    // BaseEdit
+    // BaseLineEdit
 
-    property int baseEdit_durationAnimation: ms500
+    property int baseLineEdit_durationAnimation: ms500
 
-    property real baseEdit_height: dp32
+    property real baseLineEdit_height: dp32
 
-    property real baseEdit_cursorWidth: dp2
+    property real baseLineEdit_cursorWidth: dp2
 
-    property real baseEdit_padding: dp9
+    property real baseLineEdit_padding: dp9
 
-    property int baseEdit_maximumLength: 1000
+    property int baseLineEdit_maximumLength: 1000
 
-    property real baseEdit_shadowOpacityA: 0.6
-    property real baseEdit_shadowOpacityB: 0.8
+    property real baseLineEdit_shadowOpacityA: 0.6
+    property real baseLineEdit_shadowOpacityB: 0.8
 
-    property color baseEdit_colorCursor: "#161616"
+    property color baseLineEdit_colorCursor: "#161616"
 
-    property color baseEdit_colorSelection    : "#008cdc"
-    property color baseEdit_colorSelectionText: "white"
+    property color baseLineEdit_colorSelection    : "#008cdc"
+    property color baseLineEdit_colorSelectionText: "white"
 
-    property color baseEdit_colorDefault: st.text4_color
+    property color baseLineEdit_colorDefault: st.text4_color
 
     //---------------------------------------------------------------------------------------------
     // LineEdit
@@ -1219,7 +1219,7 @@ Item
     // LineEditLabel
 
     property real lineEditLabel_width : dp200
-    property real lineEditLabel_height: baseEdit_height
+    property real lineEditLabel_height: baseLineEdit_height
 
     property real lineEditLabel_lineEditLeftMargin: -dp20
 
@@ -1236,7 +1236,7 @@ Item
     property color editBox_colorA: "#c8c8c8"
     property color editBox_colorB: "white"
 
-    property color editBox_colorFocus: baseEdit_colorSelection
+    property color editBox_colorFocus: baseLineEdit_colorSelection
 
     property color editBox_colorDefault: "#484848"
 

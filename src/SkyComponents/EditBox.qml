@@ -17,7 +17,7 @@
 import QtQuick 1.1
 import Sky     1.0
 
-BaseEdit
+BaseLineEdit
 {
     id: editBox
 
@@ -79,8 +79,8 @@ BaseEdit
 
         height: st.editBox_shadowHeight
 
-        opacity: (isHovered) ? st.baseEdit_shadowOpacityB
-                             : st.baseEdit_shadowOpacityA
+        opacity: (isHovered) ? st.baseLineEdit_shadowOpacityB
+                             : st.baseLineEdit_shadowOpacityA
 
         direction: Sk.Down
     }

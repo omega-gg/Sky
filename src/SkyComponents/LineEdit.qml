@@ -17,7 +17,7 @@
 import QtQuick 1.1
 import Sky     1.0
 
-BaseEdit
+BaseLineEdit
 {
     //---------------------------------------------------------------------------------------------
     // Properties style
@@ -126,8 +126,8 @@ BaseEdit
 
         anchors.fill: parent
 
-        opacity: (isHovered) ? st.baseEdit_shadowOpacityB
-                             : st.baseEdit_shadowOpacityA
+        opacity: (isHovered) ? st.baseLineEdit_shadowOpacityB
+                             : st.baseLineEdit_shadowOpacityA
 
         source: st.lineEdit_sourceShadow
 

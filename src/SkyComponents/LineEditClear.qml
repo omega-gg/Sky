@@ -34,7 +34,7 @@ LineEdit
     isHovered: (containsMouse || button.containsMouse)
 
     paddingRight: (button.visible) ? st.lineEditClear_paddingRight
-                                   : st.baseEdit_padding
+                                   : st.baseLineEdit_padding
 
     shadow.anchors.rightMargin: (button.visible) ? button.width : 0
 

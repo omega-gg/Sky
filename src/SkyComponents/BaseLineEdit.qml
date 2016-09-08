@@ -19,7 +19,7 @@ import Sky     1.0
 
 MouseArea
 {
-    id: baseEdit
+    id: baseLineEdit
 
     //---------------------------------------------------------------------------------------------
     // Properties
@@ -28,8 +28,8 @@ MouseArea
     property bool isFocused: textInput.activeFocus
     property bool isHovered: containsMouse
 
-    property real paddingLeft : st.baseEdit_padding
-    property real paddingRight: st.baseEdit_padding
+    property real paddingLeft : st.baseLineEdit_padding
+    property real paddingRight: st.baseLineEdit_padding
 
     property bool autoSelect: true
 
@@ -80,7 +80,7 @@ MouseArea
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    height: st.baseEdit_height
+    height: st.baseLineEdit_height
 
     acceptedButtons: Qt.LeftButton | Qt.RightButton
 
@@ -179,27 +179,27 @@ MouseArea
     {
         id: textInput
 
-        property int cursorDuration: st.baseEdit_durationAnimation
+        property int cursorDuration: st.baseLineEdit_durationAnimation
 
-        property real cursorWidth: st.baseEdit_cursorWidth
+        property real cursorWidth: st.baseLineEdit_cursorWidth
 
         property real cursorHeight: sk.textHeight(font)
 
-        property color cursorColor: st.baseEdit_colorCursor
+        property color cursorColor: st.baseLineEdit_colorCursor
 
         anchors.fill: parent
 
         anchors.leftMargin : paddingLeft
         anchors.rightMargin: paddingRight + cursorWidth
 
-        anchors.topMargin: st.baseEdit_padding
+        anchors.topMargin: st.baseLineEdit_padding
 
         selectByMouse: true
 
-        maximumLength: st.baseEdit_maximumLength
+        maximumLength: st.baseLineEdit_maximumLength
 
-        selectionColor   : st.baseEdit_colorSelection
-        selectedTextColor: st.baseEdit_colorSelectionText
+        selectionColor   : st.baseLineEdit_colorSelection
+        selectedTextColor: st.baseLineEdit_colorSelectionText
 
         font.family   : st.text_fontFamily
         font.pixelSize: st.text_pixelSize
@@ -281,6 +281,6 @@ MouseArea
 
         visible: (isFocused == false && textInput.text == "")
 
-        color: st.baseEdit_colorDefault
+        color: st.baseLineEdit_colorDefault
     }
 }
