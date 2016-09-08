@@ -205,7 +205,7 @@ QString WVlcPlayerPrivate::encodeUrl(const QUrl & url) const
     libvlc_time_t length = event->u.media_player_length_changed.new_length;
 
     QCoreApplication::postEvent(d->backend,
-                                new WVlcPlayerEvent(WVlcPlayer::EventLengthChanged, length));
+                                new WVlcPlayerEvent(WVlcPlayer::EventLengthChanged, QVariant((qlonglong)length)));
 }
 
 /* static */ void WVlcPlayerPrivate::eventTimeChanged(const struct libvlc_event_t * event,

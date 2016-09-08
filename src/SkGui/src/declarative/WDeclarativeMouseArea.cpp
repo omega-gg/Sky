@@ -32,7 +32,7 @@
 #include <WMainView>
 
 // Private includes
-#include <private/qobject_p.h>
+#include "private/qobject_p.h"
 
 // Private include
 #include "WDeclarativeMouseArea_p.h"

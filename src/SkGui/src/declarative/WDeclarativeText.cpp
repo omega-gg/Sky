@@ -31,9 +31,9 @@
 #include <QTextBlock>
 
 // Private includes
-#include <private/qdeclarativeglobal_p.h>
-#include <private/qdeclarativestyledtext_p.h>
-#include <private/qdeclarativepixmapcache_p.h>
+#include "private/qdeclarativeglobal_p.h"
+#include "private/qdeclarativestyledtext_p.h"
+#include "private/qdeclarativepixmapcache_p.h"
 
 //=================================================================================================
 // WTextDocumentWithImageResources
