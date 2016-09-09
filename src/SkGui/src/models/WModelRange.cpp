@@ -68,8 +68,8 @@ void WModelRangePrivate::init()
 
     scale = 0.0;
 
-    singleStep =  8.0;
-    pageStep   = 16.0;
+    singleStep = 0.1;
+    pageStep   = 0.1;
 
     minimum = 0.0;
     maximum = 1.0;

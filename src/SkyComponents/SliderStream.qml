@@ -168,6 +168,8 @@ Item
 
         hoverRetain: true
 
+        wheelEnabled: false
+
         filterBar: (active) ? sliderStream.filterBar
                             : filterBarDisable
 
