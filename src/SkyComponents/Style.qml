@@ -1208,13 +1208,6 @@ Item
     }
 
     //---------------------------------------------------------------------------------------------
-    // LineEditClear
-
-    property real lineEditClear_paddingRight: dp32
-
-    property real lineEditClear_buttonSize: dp20
-
-    //---------------------------------------------------------------------------------------------
     // LineEditLabel
 
     property real lineEditLabel_lineEditLeftMargin: -dp24

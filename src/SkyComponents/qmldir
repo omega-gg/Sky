@@ -102,7 +102,6 @@ CheckBoxText 1.0 CheckBoxText.qml
 
 BaseLineEdit  1.0 BaseLineEdit.qml
 LineEdit      1.0 LineEdit.qml
-LineEditClear 1.0 LineEditClear.qml
 LineEditCopy  1.0 LineEditCopy.qml
 LineEditLabel 1.0 LineEditLabel.qml
 LineEditBox   1.0 LineEditBox.qml
