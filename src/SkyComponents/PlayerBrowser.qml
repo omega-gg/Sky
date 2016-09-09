@@ -221,7 +221,7 @@ MouseArea
 
         width = Math.max(st.dp48, width);
 
-        return Math.min(width, st.dp84);
+        return Math.min(width, st.dp80);
     }
 
     function pGetWidthPlay()
@@ -230,7 +230,7 @@ MouseArea
 
         width = Math.max(st.dp48, width);
 
-        return Math.min(width, st.dp120);
+        return Math.min(width, st.dp112);
     }
 
     //---------------------------------------------------------------------------------------------

@@ -72,10 +72,11 @@ Item
 
     property int dp70: 70 * ratio
 
-    property int dp84: 84 * ratio
+    property int dp80: 80 * ratio
 
     property int dp96: 96 * ratio
 
+    property int dp112: 112 * ratio
     property int dp128: 128 * ratio
     property int dp150: 150 * ratio
     property int dp180: 180 * ratio
