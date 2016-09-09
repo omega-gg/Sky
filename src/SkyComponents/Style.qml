@@ -1811,9 +1811,6 @@ Item
     property url icon_scrollUp   : "pictures/icons/scale/scrollUp.svg"
     property url icon_scrollDown : "pictures/icons/scale/scrollDown.svg"
 
-    property url icon_handleHorizontal: "pictures/icons/scale/handleHorizontal.svg"
-    property url icon_handleVertical  : "pictures/icons/scale/handleVertical.svg"
-
     //---------------------------------------------------------------------------------------------
 
     property url icon_play : "pictures/icons/scale/play.svg"
@@ -1860,12 +1857,6 @@ Item
 
     property url icon16x16_scrollDown: vector("pictures/icons/16x16/scrollDown.png",
                                               icon_scrollDown)
-
-    property url icon16x16_handleHorizontal: vector("pictures/icons/16x16/handleHorizontal.png",
-                                                    icon_handleHorizontal)
-
-    property url icon16x16_handleVertical: vector("pictures/icons/16x16/handleVertical.png",
-                                                  icon_handleVertical)
 
     //---------------------------------------------------------------------------------------------
 
