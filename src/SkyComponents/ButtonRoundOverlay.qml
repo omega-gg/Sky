@@ -33,8 +33,8 @@ ButtonRound
     filterHover     : st.buttonOverlay_filterHover
     filterPress     : st.buttonOverlay_filterPress
     filterBorder    : st.buttonOverlay_filterBorder
-    filterIconShadow: st.buttonOverlay_filterIconShadow
-    filterIconSunken: st.buttonOverlay_filterIconSunken
+    filterIconShadow: st.buttonOverlay_filterStyle
+    filterIconSunken: st.buttonOverlay_filterStyle
 
     //---------------------------------------------------------------------------------------------
     // Animations

@@ -739,16 +739,13 @@ Item
     property color buttonOverlay_colorBorderA: icon_colorA
     property color buttonOverlay_colorBorderB: icon_colorB
 
-    property color buttonOverlay_colorIconShadow: "#161616"
-    property color buttonOverlay_colorIconSunken: "#161616"
+    property color buttonOverlay_colorStyle: "#161616"
 
-    property alias buttonOverlay_filterDefault   : buttonOverlay_filterDefault
-    property alias buttonOverlay_filterHover     : buttonOverlay_filterHover
-    property alias buttonOverlay_filterPress     : buttonOverlay_filterPress
-    property alias buttonOverlay_filterBorder    : buttonOverlay_filterBorder
-    property alias buttonOverlay_filterIconShadow: buttonOverlay_filterIconShadow
-    property alias buttonOverlay_filterIconSunken: buttonOverlay_filterIconSunken
-
+    property alias buttonOverlay_filterDefault: buttonOverlay_filterDefault
+    property alias buttonOverlay_filterHover  : buttonOverlay_filterHover
+    property alias buttonOverlay_filterPress  : buttonOverlay_filterPress
+    property alias buttonOverlay_filterBorder : buttonOverlay_filterBorder
+    property alias buttonOverlay_filterStyle  : buttonOverlay_filterStyle
 
     ImageColorFilter
     {
@@ -796,16 +793,9 @@ Item
 
     ImageColorFilter
     {
-        id: buttonOverlay_filterIconShadow
+        id: buttonOverlay_filterStyle
 
-        color: buttonOverlay_colorIconShadow
-    }
-
-    ImageColorFilter
-    {
-        id: buttonOverlay_filterIconSunken
-
-        color: buttonOverlay_colorIconSunken
+        color: buttonOverlay_colorStyle
     }
 
     //---------------------------------------------------------------------------------------------
