@@ -19,8 +19,6 @@ import Sky     1.0
 
 MouseArea
 {
-    id: baseLineEdit
-
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
@@ -34,11 +32,6 @@ MouseArea
     property real paddingRight: padding
 
     property bool autoSelect: true
-
-    //---------------------------------------------------------------------------------------------
-    // Private
-
-    property bool pTextEvent: true
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -66,12 +59,12 @@ MouseArea
     //---------------------------------------------------------------------------------------------
     // Style
 
-    property alias cursorDuration: textInput.cursorDuration
+    property alias durationCursor: textInput.durationCursor
 
     property alias cursorWidth : textInput.cursorWidth
     property alias cursorHeight: textInput.cursorHeight
 
-    property alias cursorColor: textInput.cursorColor
+    property alias colorCursor: textInput.colorCursor
 
     property alias colorSelection    : textInput.selectionColor
     property alias colorSelectionText: textInput.selectedTextColor
@@ -181,20 +174,19 @@ MouseArea
     {
         id: textInput
 
-        property int cursorDuration: st.baseLineEdit_durationAnimation
+        property int durationCursor: st.baseLineEdit_durationCursor
 
         property real cursorWidth: st.baseLineEdit_cursorWidth
 
         property real cursorHeight: sk.textHeight(font)
 
-        property color cursorColor: st.baseLineEdit_colorCursor
+        property color colorCursor: st.baseLineEdit_colorCursor
 
         anchors.fill: parent
 
         anchors.leftMargin : paddingLeft
         anchors.rightMargin: paddingRight
-
-        anchors.topMargin: padding
+        anchors.topMargin  : padding
 
         selectByMouse: true
 
@@ -218,7 +210,7 @@ MouseArea
 
                 visible: parent.cursorVisible
 
-                color: parent.cursorColor
+                color: parent.colorCursor
 
                 SequentialAnimation
                 {
@@ -228,11 +220,11 @@ MouseArea
 
                     PropertyAction { target: cursor; property: "opacity"; value: 1.0 }
 
-                    PauseAnimation { duration: parent.cursorDuration }
+                    PauseAnimation { duration: parent.durationCursor }
 
                     PropertyAction { target: cursor; property: "opacity"; value: 0.0 }
 
-                    PauseAnimation { duration: parent.cursorDuration }
+                    PauseAnimation { duration: parent.durationCursor }
                 }
             }
         }

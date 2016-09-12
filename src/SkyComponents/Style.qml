@@ -273,7 +273,7 @@ Item
 
     property real borderImageShadow_ratio: 4.0
 
-    property real borderImageShadow_adjust: st.dp2
+    property real borderImageShadow_adjust: dp2
 
     property real borderImageShadow_shadowOpacity: 1.0
 
@@ -1147,7 +1147,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // BaseLineEdit
 
-    property int baseLineEdit_durationAnimation: ms500
+    property int baseLineEdit_durationCursor: ms500
 
     property real baseLineEdit_height: dp32
 
@@ -1165,7 +1165,7 @@ Item
     property color baseLineEdit_colorSelection    : "#008cdc"
     property color baseLineEdit_colorSelectionText: "white"
 
-    property color baseLineEdit_colorDefault: st.text4_color
+    property color baseLineEdit_colorDefault: text4_color
 
     //---------------------------------------------------------------------------------------------
     // LineEdit

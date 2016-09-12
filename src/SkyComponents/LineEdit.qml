@@ -103,24 +103,6 @@ BaseLineEdit
         filter: st.lineEdit_filterDefault
     }
 
-    TextBase
-    {
-        id: itemTextDefault
-
-        anchors.left  : textInput.left
-        anchors.right : textInput.right
-        anchors.top   : parent.top
-        anchors.bottom: parent.bottom
-
-        verticalAlignment: Text.AlignVCenter
-
-        visible: (isFocused == false && textInput.text == "")
-
-        color: st.baseLineEdit_colorDefault
-
-        font.bold: false
-    }
-
     BorderImageScale
     {
         id: shadow

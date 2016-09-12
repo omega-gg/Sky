@@ -19,23 +19,12 @@ import Sky     1.0
 
 BaseLineEdit
 {
-    id: lineEditBox
-
     //---------------------------------------------------------------------------------------------
-    // Properties
+    // Properties style
     //---------------------------------------------------------------------------------------------
-
-    property bool enableClearFocus: true
-
-    //---------------------------------------------------------------------------------------------
-    // Style
-
-    property real focusSize: st.lineEditBox_focusSize
 
     property color colorA: st.lineEditBox_colorA
     property color colorB: st.lineEditBox_colorB
-
-    property color colorFocus: st.lineEditBox_colorFocus
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -43,7 +32,16 @@ BaseLineEdit
 
     property alias background: background
     property alias shadow    : shadow
-    property alias itemFocus : itemFocus
+
+    property alias itemFocus: itemFocus
+    property alias borders  : borders
+
+    //---------------------------------------------------------------------------------------------
+    // Style
+
+    property alias focusSize: itemFocus.size
+
+    property alias colorFocus: itemFocus.color
 
     //---------------------------------------------------------------------------------------------
     // Childs
@@ -73,8 +71,8 @@ BaseLineEdit
 
         height: st.lineEditBox_shadowHeight
 
-        opacity: (isHovered) ? st.baseLineEdit_shadowOpacityB
-                             : st.baseLineEdit_shadowOpacityA
+        opacity: (isFocused || isHovered) ? st.baseLineEdit_shadowOpacityB
+                                          : st.baseLineEdit_shadowOpacityA
 
         direction: Sk.Down
     }
@@ -85,7 +83,7 @@ BaseLineEdit
 
         anchors.fill: parent
 
-        size: focusSize
+        size: st.lineEditBox_focusSize
 
         opacity: (window.isActive && isFocused)
 
@@ -98,6 +96,8 @@ BaseLineEdit
 
         RectangleBorders
         {
+            id: borders
+
             anchors.fill: parent
 
             anchors.margins: focusSize
