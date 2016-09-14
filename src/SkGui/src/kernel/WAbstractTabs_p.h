@@ -71,6 +71,8 @@ public: // Variables
 
     WAbstractTab * currentTab;
 
+    int currentIndex;
+
     QList<WAbstractTabsWatcher *> watchers;
 
     int maxCount;

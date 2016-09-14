@@ -355,13 +355,9 @@ WTabsTrackPrivate::WTabsTrackPrivate(WTabsTrack * p) : WAbstractTabsPrivate(p) {
 
 void WTabsTrackPrivate::init()
 {
-    Q_Q(WTabsTrack);
-
     highlightedTab = NULL;
 
-    QObject::connect(q, SIGNAL(tabsUpdated()), q, SIGNAL(tabsBookmarkUpdated()));
-
-    QObject::connect(q, SIGNAL(highlightedTabChanged()), q, SIGNAL(tabsUpdated()));
+    highlightedIndex = -1;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -442,8 +438,11 @@ void WTabsTrackPrivate::onHighlightedTabDestroyed()
 {
     WAbstractTab * tab = tabAt(index);
 
-    if (tab) return tab->toTabTrack();
-    else     return NULL;
+    if (tab)
+    {
+         return tab->toTabTrack();
+    }
+    else return NULL;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -484,6 +483,26 @@ void WTabsTrackPrivate::onHighlightedTabDestroyed()
 }
 
 //-------------------------------------------------------------------------------------------------
+// Protected WAbstractTabs reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WTabsTrack::updateIndex()
+{
+    Q_D(WTabsTrack);
+
+    WAbstractTabs::updateIndex();
+
+    int index = indexOf(d->highlightedTab);
+
+    if (d->highlightedIndex != index)
+    {
+        d->highlightedIndex = index;
+
+        emit highlightedIndexChanged();
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
 // Protected WLocalObject reimplementation
 //-------------------------------------------------------------------------------------------------
 
@@ -495,8 +514,11 @@ void WTabsTrackPrivate::onHighlightedTabDestroyed()
 
     action->path = path;
 
-    if (d->highlightedTab) action->currentId = d->highlightedTab->id();
-    else                   action->currentId = currentId();
+    if (d->highlightedTab)
+    {
+         action->currentId = d->highlightedTab->id();
+    }
+    else action->currentId = currentId();
 
     foreach (WAbstractTab * tab, d->tabs)
     {
@@ -550,14 +572,16 @@ void WTabsTrack::setHighlightedTab(WTabTrack * tab)
         disconnect(d->highlightedTab, 0, this, 0);
     }
 
-    d->highlightedTab = tab;
+    d->highlightedTab   = tab;
+    d->highlightedIndex = indexOf(d->highlightedTab);
 
     if (d->highlightedTab)
     {
         connect(d->highlightedTab, SIGNAL(destroyed()), this, SLOT(onHighlightedTabDestroyed()));
     }
 
-    emit highlightedTabChanged();
+    emit highlightedTabChanged  ();
+    emit highlightedIndexChanged();
 
     save();
 }
@@ -566,14 +590,17 @@ void WTabsTrack::setHighlightedTab(WTabTrack * tab)
 
 int WTabsTrack::highlightedIndex() const
 {
-    Q_D(const WTabsTrack); return d->tabs.indexOf(d->highlightedTab);
+    Q_D(const WTabsTrack); return d->highlightedIndex;
 }
 
 void WTabsTrack::setHighlightedIndex(int index)
 {
     WTabTrack * tabBookmark = tabBookmarkAt(index);
 
-    if (tabBookmark || index == -1) setHighlightedTab(tabBookmark);
+    if (tabBookmark || index == -1)
+    {
+        setHighlightedTab(tabBookmark);
+    }
 }
 
 #endif // SK_NO_TABSTRACK

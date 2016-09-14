@@ -99,7 +99,7 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WAbstra
 
     Q_PROPERTY(WTabTrack * tab READ tab NOTIFY tabChanged)
 
-    Q_PROPERTY(int tabIndex READ tabIndex NOTIFY tabsUpdated)
+    Q_PROPERTY(int tabIndex READ tabIndex NOTIFY tabIndexChanged)
 
     Q_PROPERTY(bool keepState READ keepState WRITE setKeepState NOTIFY keepStateChanged)
 
@@ -184,9 +184,8 @@ signals:
 
     void tabsChanged();
 
-    void tabChanged();
-
-    void tabsUpdated();
+    void tabChanged     ();
+    void tabIndexChanged();
 
     void keepStateChanged();
 

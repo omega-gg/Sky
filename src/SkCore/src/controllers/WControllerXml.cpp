@@ -297,7 +297,7 @@ int WControllerXml::doQuery(const QUrl & query)
 
     if (attributes.contains(attribute) == false)
     {
-        return QString();
+         return QString();
     }
     else return attributes.namedItem(attribute).nodeValue();
 }
@@ -345,7 +345,7 @@ int WControllerXml::doQuery(const QUrl & query)
 
     if (attributes.contains(attribute) == false)
     {
-        return QString();
+         return QString();
     }
     else return attributes.namedItem(attribute).nodeValue();
 }

@@ -214,7 +214,8 @@ signals:
     void currentTrackUpdated();
 
     void currentIndexChanged();
-    void currentTimeChanged ();
+
+    void currentTimeChanged();
 
     void selectedTracksChanged();
 

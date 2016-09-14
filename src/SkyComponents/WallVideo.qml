@@ -633,13 +633,13 @@ WallBookmarkTrack
             {
                 if (item == null || item.visible == false)
                 {
-                    return false;
+                     return false;
                 }
                 else return (player.isPlaying == false || item != player.item);
             }
             else if (split >= 0)
             {
-                return true;
+                 return true;
             }
             else return (player.isPlaying == false);
         }

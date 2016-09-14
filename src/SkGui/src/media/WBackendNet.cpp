@@ -95,8 +95,11 @@ void WBackendNetQuery::init(Type type, const QUrl & url)
 
 bool WBackendNetPlaylistInfo::isValid() const
 {
-    if (id.isEmpty()) return false;
-    else              return true;
+    if (id.isEmpty())
+    {
+         return false;
+    }
+    else return true;
 }
 
 //-------------------------------------------------------------------------------------------------

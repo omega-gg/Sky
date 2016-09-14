@@ -978,8 +978,11 @@ QUrl WDeclarativePlayer::source() const
 {
     Q_D(const WDeclarativePlayer);
 
-    if (d->backend) return d->currentBackend->source();
-    else            return QUrl();
+    if (d->backend)
+    {
+         return d->currentBackend->source();
+    }
+    else return QUrl();
 }
 
 void WDeclarativePlayer::setSource(const QUrl & url)
@@ -1041,8 +1044,11 @@ bool WDeclarativePlayer::hasStarted() const
 {
     Q_D(const WDeclarativePlayer);
 
-    if (d->backend) return d->backend->hasStarted();
-    else            return false;
+    if (d->backend)
+    {
+         return d->backend->hasStarted();
+    }
+    else return false;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1051,8 +1057,11 @@ bool WDeclarativePlayer::isLoading() const
 {
     Q_D(const WDeclarativePlayer);
 
-    if (d->backend) return d->backend->isLoading();
-    else            return false;
+    if (d->backend)
+    {
+         return d->backend->isLoading();
+    }
+    else return false;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1061,24 +1070,33 @@ bool WDeclarativePlayer::isStarting() const
 {
     Q_D(const WDeclarativePlayer);
 
-    if (d->backend) return d->backend->isStarting();
-    else            return false;
+    if (d->backend)
+    {
+         return d->backend->isStarting();
+    }
+    else return false;
 }
 
 bool WDeclarativePlayer::isResuming() const
 {
     Q_D(const WDeclarativePlayer);
 
-    if (d->backend) return d->backend->isResuming();
-    else            return false;
+    if (d->backend)
+    {
+         return d->backend->isResuming();
+    }
+    else return false;
 }
 
 bool WDeclarativePlayer::isBuffering() const
 {
     Q_D(const WDeclarativePlayer);
 
-    if (d->backend) return d->backend->isBuffering();
-    else            return false;
+    if (d->backend)
+    {
+         return d->backend->isBuffering();
+    }
+    else return false;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1104,16 +1122,22 @@ int WDeclarativePlayer::currentTime() const
 {
     Q_D(const WDeclarativePlayer);
 
-    if (d->backend) return d->backend->currentTime();
-    else            return -1;
+    if (d->backend)
+    {
+         return d->backend->currentTime();
+    }
+    else return -1;
 }
 
 int WDeclarativePlayer::duration() const
 {
     Q_D(const WDeclarativePlayer);
 
-    if (d->backend) return d->backend->duration();
-    else            return -1;
+    if (d->backend)
+    {
+         return d->backend->duration();
+    }
+    else return -1;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1265,8 +1289,11 @@ int WDeclarativePlayer::count() const
 {
     Q_D(const WDeclarativePlayer);
 
-    if (d->playlist) return d->playlist->count();
-    else             return -1;
+    if (d->playlist)
+    {
+         return d->playlist->count();
+    }
+    else return -1;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1400,8 +1427,11 @@ int WDeclarativePlayer::trackCurrentTime() const
 {
     Q_D(const WDeclarativePlayer);
 
-    if (d->tab) return d->tab->currentTime();
-    else        return -1;
+    if (d->tab)
+    {
+         return d->tab->currentTime();
+    }
+    else return -1;
 }
 
 int WDeclarativePlayer::trackDuration() const
@@ -1455,7 +1485,7 @@ void WDeclarativePlayer::setTabs(WTabsTrack * tabs)
 
     if (d->tabs)
     {
-        QObject::connect(d->tabs, SIGNAL(tabsUpdated()), this, SIGNAL(tabsUpdated()));
+        QObject::connect(d->tabs, SIGNAL(currentIndexChanged()), this, SIGNAL(tabIndexChanged()));
 
         QObject::connect(d->tabs, SIGNAL(currentTabChanged()),
                          this,    SLOT(onCurrentTabChanged()));

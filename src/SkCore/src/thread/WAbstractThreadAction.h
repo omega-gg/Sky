@@ -45,7 +45,7 @@ public: // Interface
 
     void abortAndDelete();
 
-protected: // Pure virtual functions
+protected: // Abstract functions
     virtual bool run() = 0;
 
 protected: // Virtual functions

@@ -753,8 +753,11 @@ bool WTabTrackPrivate::setPlaylist(WAbstractPlaylist * playlist)
 
     emit q->playlistChanged();
 
-    if (playlist) return true;
-    else          return false;
+    if (playlist)
+    {
+         return true;
+    }
+    else return false;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1453,8 +1456,11 @@ const WBookmarkTrack * WTabTrack::currentBookmark() const
 {
     Q_D(const WTabTrack);
 
-    if (d->currentBookmark) return d->currentBookmark;
-    else                    return NULL;
+    if (d->currentBookmark)
+    {
+         return d->currentBookmark;
+    }
+    else return NULL;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1605,8 +1611,11 @@ bool WTabTrack::hasPreviousBookmark() const
 
     if (index == -1) return false;
 
-    if (index > 0) return true;
-    else           return false;
+    if (index > 0)
+    {
+         return true;
+    }
+    else return false;
 }
 
 bool WTabTrack::hasNextBookmark() const
@@ -1617,8 +1626,11 @@ bool WTabTrack::hasNextBookmark() const
 
     if (index == -1) return false;
 
-    if (index < (d->bookmarks.count() - 1)) return true;
-    else                                    return false;
+    if (index < (d->bookmarks.count() - 1))
+    {
+         return true;
+    }
+    else return false;
 }
 
 //-------------------------------------------------------------------------------------------------

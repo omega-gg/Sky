@@ -228,7 +228,7 @@ void WModelCompletionGooglePrivate::onLoaded(WRemoteData * data)
 
     if (index < 0 || index > d->listCompletion.count())
     {
-        return QString();
+         return QString();
     }
     else return d->listCompletion.at(index);
 }

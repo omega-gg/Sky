@@ -337,8 +337,11 @@ BaseWall
         {
             var pageIndex = pageFromIndex(index);
 
-            if (pageIndex == currentPage) return true;
-            else                          return false;
+            if (pageIndex == currentPage)
+            {
+                 return true;
+            }
+            else return false;
         }
     }
 

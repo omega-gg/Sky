@@ -1928,8 +1928,11 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
 {
     const WLibraryFolderItem * item = itemAt(index);
 
-    if (item) return item->source;
-    else      return QUrl();
+    if (item)
+    {
+         return item->source;
+    }
+    else return QUrl();
 }
 
 /* Q_INVOKABLE */ void WLibraryFolder::setItemSource(int index, const QUrl & source)
@@ -1956,8 +1959,11 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
 {
     const WLibraryFolderItem * item = itemAt(index);
 
-    if (item) return item->title;
-    else      return QString();
+    if (item)
+    {
+         return item->title;
+    }
+    else return QString();
 }
 
 /* Q_INVOKABLE */ void WLibraryFolder::setItemTitle(int index, const QString & title)
@@ -1977,8 +1983,11 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
 {
     const WLibraryFolderItem * item = itemAt(index);
 
-    if (item) return item->cover;
-    else      return QUrl();
+    if (item)
+    {
+         return item->cover;
+    }
+    else return QUrl();
 }
 
 /* Q_INVOKABLE */ void WLibraryFolder::setItemCover(int index, const QUrl & cover)
@@ -1998,8 +2007,11 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
 {
     const WLibraryFolderItem * item = itemAt(index);
 
-    if (item) return item->label;
-    else      return QString();
+    if (item)
+    {
+         return item->label;
+    }
+    else return QString();
 }
 
 /* Q_INVOKABLE */ void WLibraryFolder::setItemLabel(int index, const QString & label)

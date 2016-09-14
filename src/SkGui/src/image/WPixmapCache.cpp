@@ -1329,16 +1329,22 @@ bool WPixmapCache::isNull() const
 {
     Q_D(const WPixmapCache);
 
-    if (d->data) return d->data->pixmap.isNull();
-    else         return true;
+    if (d->data)
+    {
+         return d->data->pixmap.isNull();
+    }
+    else return true;
 }
 
 bool WPixmapCache::isLoading() const
 {
     Q_D(const WPixmapCache);
 
-    if (d->data) return (d->data->action);
-    else         return false;
+    if (d->data)
+    {
+         return (d->data->action);
+    }
+    else return false;
 }
 
 bool WPixmapCache::isLoaded() const
@@ -1407,16 +1413,22 @@ int WPixmapCache::width() const
 {
     Q_D(const WPixmapCache);
 
-    if (d->data) return d->data->pixmap.width();
-    else         return -1;
+    if (d->data)
+    {
+         return d->data->pixmap.width();
+    }
+    else return -1;
 }
 
 int WPixmapCache::height() const
 {
     Q_D(const WPixmapCache);
 
-    if (d->data) return d->data->pixmap.height();
-    else         return -1;
+    if (d->data)
+    {
+         return d->data->pixmap.height();
+    }
+    else return -1;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1425,8 +1437,11 @@ QRect WPixmapCache::rect() const
 {
     Q_D(const WPixmapCache);
 
-    if (d->data) return d->data->pixmap.rect();
-    else         return QRect();
+    if (d->data)
+    {
+         return d->data->pixmap.rect();
+    }
+    else return QRect();
 }
 
 //-------------------------------------------------------------------------------------------------

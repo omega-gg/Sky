@@ -69,13 +69,11 @@ WAbstractTabsPrivate::WAbstractTabsPrivate(WAbstractTabs * p) : WLocalObjectPriv
 
 void WAbstractTabsPrivate::init()
 {
-    Q_Q(WAbstractTabs);
-
     currentTab = NULL;
 
-    maxCount = ABSTRACTTABS_MAX;
+    currentIndex = -1;
 
-    QObject::connect(q, SIGNAL(currentTabChanged()), q, SIGNAL(tabsUpdated()));
+    maxCount = ABSTRACTTABS_MAX;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -246,9 +244,10 @@ WAbstractTabs::WAbstractTabs(WAbstractTabsPrivate * p, QObject * parent)
 {
     Q_D(WAbstractTabs);
 
-    if (index < 0 || index > d->tabs.count()) return NULL;
-
-    if (d->tabs.count() >= d->maxCount) return NULL;
+    if (index < 0 || index > d->tabs.count() || d->tabs.count() >= d->maxCount)
+    {
+        return NULL;
+    }
 
     WAbstractTab * tab = createTab(this);
 
@@ -269,16 +268,19 @@ WAbstractTabs::WAbstractTabs(WAbstractTabsPrivate * p, QObject * parent)
         ||
         to   < 0 || to   >= d->tabs.count()) return;
 
-    if (to > from) d->beginTabsMove(from, from, to + 1);
-    else           d->beginTabsMove(from, from, to);
+    if (to > from)
+    {
+         d->beginTabsMove(from, from, to + 1);
+    }
+    else d->beginTabsMove(from, from, to);
 
     d->tabs.move(from, to);
 
     d->endTabsMove();
 
-    emit tabsMoved();
+    updateIndex();
 
-    emit tabsUpdated();
+    emit tabsMoved();
 
     save();
 }
@@ -293,7 +295,10 @@ WAbstractTabs::WAbstractTabs(WAbstractTabsPrivate * p, QObject * parent)
 
     if (d->tabs.contains(tab) == false) return;
 
-    if (d->currentTab == tab) setCurrentTab(NULL);
+    if (d->currentTab == tab)
+    {
+        setCurrentTab(NULL);
+    }
 
     int id = tab->id();
 
@@ -421,14 +426,18 @@ WAbstractTabs::WAbstractTabs(WAbstractTabsPrivate * p, QObject * parent)
 
 /* Q_INVOKABLE */ int WAbstractTabs::indexOf(WAbstractTab * tab) const
 {
-    Q_D(const WAbstractTabs); return d->tabs.indexOf(tab);
+    Q_D(const WAbstractTabs);
+
+    return d->tabs.indexOf(tab);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ bool WAbstractTabs::contains(WAbstractTab * tab) const
 {
-    Q_D(const WAbstractTabs); return d->tabs.contains(tab);
+    Q_D(const WAbstractTabs);
+
+    return d->tabs.contains(tab);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -514,6 +523,24 @@ void WAbstractTabs::insertTab(int index, WAbstractTab * tab)
 }
 
 //-------------------------------------------------------------------------------------------------
+// Protected virtual functions
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WAbstractTabs::updateIndex()
+{
+    Q_D(WAbstractTabs);
+
+    int index = indexOf(d->currentTab);
+
+    if (d->currentIndex != index)
+    {
+        d->currentIndex = index;
+
+        emit currentIndexChanged();
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
 
@@ -533,14 +560,16 @@ void WAbstractTabs::setCurrentTab(WAbstractTab * tab)
         d->currentTab->d_func()->setFocus(false);
     }
 
-    d->currentTab = tab;
+    d->currentTab   = tab;
+    d->currentIndex = indexOf(tab);
 
     if (tab)
     {
         tab->d_func()->setFocus(true);
     }
 
-    emit currentTabChanged();
+    emit currentTabChanged  ();
+    emit currentIndexChanged();
 
     save();
 }
@@ -549,7 +578,7 @@ void WAbstractTabs::setCurrentTab(WAbstractTab * tab)
 
 int WAbstractTabs::currentIndex() const
 {
-    Q_D(const WAbstractTabs); return d->tabs.indexOf(d->currentTab);
+    Q_D(const WAbstractTabs); return d->currentIndex;
 }
 
 void WAbstractTabs::setCurrentIndex(int index)
@@ -565,8 +594,11 @@ int WAbstractTabs::currentId() const
 {
     Q_D(const WAbstractTabs);
 
-    if (d->currentTab) return d->currentTab->id();
-    else               return -1;
+    if (d->currentTab)
+    {
+         return d->currentTab->id();
+    }
+    else return -1;
 }
 
 void WAbstractTabs::setCurrentId(int id)

@@ -148,8 +148,11 @@ void WAbstractPlaylistPrivate::setNext(bool cycle)
 
 bool WAbstractPlaylistPrivate::hasPrevious(int index) const
 {
-    if (index > 0) return true;
-    else           return false;
+    if (index > 0)
+    {
+         return true;
+    }
+    else return false;
 }
 
 bool WAbstractPlaylistPrivate::hasNext(int index) const
@@ -774,8 +777,11 @@ int WAbstractPlaylist::currentId() const
 {
     Q_D(const WAbstractPlaylist);
 
-    if (d->currentTrack) return d->currentTrack->id();
-    else                 return -1;
+    if (d->currentTrack)
+    {
+         return d->currentTrack->id();
+    }
+    else return -1;
 }
 
 void WAbstractPlaylist::setCurrentId(int id)
@@ -1029,24 +1035,33 @@ QString WAbstractPlaylist::currentTitle() const
 {
     const WAbstractTrack * track = currentTrackPointer();
 
-    if (track) return track->title();
-    else       return QString();
+    if (track)
+    {
+        return track->title();
+    }
+    else return QString();
 }
 
 QUrl WAbstractPlaylist::currentCover() const
 {
     const WAbstractTrack * track = currentTrackPointer();
 
-    if (track) return track->cover();
-    else       return QUrl();
+    if (track)
+    {
+         return track->cover();
+    }
+    else return QUrl();
 }
 
 int WAbstractPlaylist::currentDuration() const
 {
     const WAbstractTrack * track = currentTrackPointer();
 
-    if (track) return track->duration();
-    else       return -1;
+    if (track)
+    {
+         return track->duration();
+    }
+    else return -1;
 }
 
 #endif // SK_NO_ABSTRACTPLAYLIST

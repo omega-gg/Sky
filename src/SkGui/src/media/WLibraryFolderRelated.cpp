@@ -181,8 +181,11 @@ void WLibraryFolderRelatedPrivate::init()
 
 bool WLibraryFolderRelated::hasPreviousPlaylist() const
 {
-    if (currentIndex() > 0) return true;
-    else                    return false;
+    if (currentIndex() > 0)
+    {
+         return true;
+    }
+    else return false;
 }
 
 bool WLibraryFolderRelated::hasNextPlaylist() const

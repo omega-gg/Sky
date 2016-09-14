@@ -64,7 +64,7 @@ class SK_GUI_EXPORT WAbstractTabs : public WLocalObject
     Q_PROPERTY(WAbstractTab * currentTab READ currentTab WRITE setCurrentTab
                NOTIFY currentTabChanged)
 
-    Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY tabsUpdated)
+    Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
 
     Q_PROPERTY(int currentId READ currentId WRITE setCurrentId NOTIFY currentTabChanged)
 
@@ -118,12 +118,14 @@ protected: // Functions
 protected: // Abstract functions
     virtual WAbstractTab * createTab(WAbstractTabs * parent = NULL) const = 0;
 
+protected: // Virtual functions
+    virtual void updateIndex();
+
 signals:
-    void currentTabChanged();
+    void currentTabChanged  ();
+    void currentIndexChanged();
 
     void tabsMoved();
-
-    void tabsUpdated();
 
     void countChanged();
 

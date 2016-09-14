@@ -34,7 +34,7 @@ class SK_GUI_EXPORT WTabsTrack : public WAbstractTabs
                NOTIFY highlightedTabChanged)
 
     Q_PROPERTY(int highlightedIndex READ highlightedIndex WRITE setHighlightedIndex
-               NOTIFY tabsBookmarkUpdated)
+               NOTIFY highlightedIndexChanged)
 
 public:
     explicit WTabsTrack(QObject * parent = NULL);
@@ -56,6 +56,9 @@ public: // WLocalObject reimplementation
 protected: // WAbstractTabs implementation
     /* virtual */ WAbstractTab * createTab(WAbstractTabs * parent = NULL) const;
 
+protected: // WAbstractTabs reimplementation
+    /* virtual */ void updateIndex();
+
 protected: // WLocalObject reimplementation
     /* virtual */ WAbstractThreadAction * onSave(const QString & path);
     /* virtual */ WAbstractThreadAction * onLoad(const QString & path);
@@ -63,9 +66,8 @@ protected: // WLocalObject reimplementation
     /* virtual */ bool hasFolder() const;
 
 signals:
-    void tabsBookmarkUpdated();
-
-    void highlightedTabChanged();
+    void highlightedTabChanged  ();
+    void highlightedIndexChanged();
 
 public: // Properties
     WTabTrack * highlightedTab() const;

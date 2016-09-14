@@ -728,8 +728,11 @@ WDeclarativeContextualItem::WDeclarativeContextualItem()
 
 bool WDeclarativeContextualItem::isValid() const
 {
-    if (title.isNull() && icon.isEmpty()) return false;
-    else                                  return true;
+    if (title.isNull() && icon.isEmpty())
+    {
+         return false;
+    }
+    else return true;
 }
 
 #endif // SK_NO_DECLARATIVECONTEXTUALPAGE

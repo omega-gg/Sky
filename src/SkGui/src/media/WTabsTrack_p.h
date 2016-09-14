@@ -35,6 +35,8 @@ public: // Slots
 public: // Variables
     WTabTrack * highlightedTab;
 
+    int highlightedIndex;
+
 protected:
     W_DECLARE_PUBLIC(WTabsTrack)
 

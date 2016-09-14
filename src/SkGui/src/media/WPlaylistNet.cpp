@@ -1134,8 +1134,11 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 {
     const WAbstractTrack * track = trackPointerAt(index);
 
-    if (track) return track->isValid();
-    else       return false;
+    if (track)
+    {
+         return track->isValid();
+    }
+    else return false;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1144,8 +1147,11 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 {
     const WAbstractTrack * track = trackPointerAt(index);
 
-    if (track) return track->toMap();
-    else       return QVariantMap();
+    if (track)
+    {
+         return track->toMap();
+    }
+    else return QVariantMap();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1154,8 +1160,11 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 {
     const WAbstractTrack * track = trackPointerAt(index);
 
-    if (track) return track->state();
-    else       return WAbstractTrack::Default;
+    if (track)
+    {
+         return track->state();
+    }
+    else return WAbstractTrack::Default;
 }
 
 /* Q_INVOKABLE */ void WPlaylistNet::setTrackState(int index, WAbstractTrack::State state)
@@ -1177,24 +1186,33 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 {
     const WAbstractTrack * track = trackPointerAt(index);
 
-    if (track) return track->isDefault();
-    else       return false;
+    if (track)
+    {
+         return track->isDefault();
+    }
+    else return false;
 }
 
 /* Q_INVOKABLE */ bool WPlaylistNet::trackIsLoading(int index) const
 {
     const WAbstractTrack * track = trackPointerAt(index);
 
-    if (track) return track->isLoading();
-    else       return false;
+    if (track)
+    {
+         return track->isLoading();
+    }
+    else return false;
 }
 
 /* Q_INVOKABLE */ bool WPlaylistNet::trackIsLoaded(int index) const
 {
     const WAbstractTrack * track = trackPointerAt(index);
 
-    if (track) return track->isLoaded();
-    else       return false;
+    if (track)
+    {
+         return track->isLoaded();
+    }
+    else return false;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1203,8 +1221,11 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 {
     const WAbstractTrack * track = trackPointerAt(index);
 
-    if (track) return track->source();
-    else       return QUrl();
+    if (track)
+    {
+         return track->source();
+    }
+    else return QUrl();
 }
 
 /* Q_INVOKABLE */ void WPlaylistNet::setTrackSource(int index, const QUrl & source)
@@ -1226,8 +1247,11 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 {
     const WAbstractTrack * track = trackPointerAt(index);
 
-    if (track) return track->title();
-    else       return QString();
+    if (track)
+    {
+         return track->title();
+    }
+    else return QString();
 }
 
 /* Q_INVOKABLE */ void WPlaylistNet::setTrackTitle(int index, const QString & title)
@@ -1249,8 +1273,11 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 {
     const WAbstractTrack * track = trackPointerAt(index);
 
-    if (track) return track->cover();
-    else       return QUrl();
+    if (track)
+    {
+         return track->cover();
+    }
+    else return QUrl();
 }
 
 /* Q_INVOKABLE */ void WPlaylistNet::setTrackCover(int index, const QUrl & cover)
@@ -1272,8 +1299,11 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 {
     const WAbstractTrack * track = trackPointerAt(index);
 
-    if (track) return track->author();
-    else       return QString();
+    if (track)
+    {
+         return track->author();
+    }
+    else return QString();
 }
 
 /* Q_INVOKABLE */ void WPlaylistNet::setTrackAuthor(int index, const QString & author)
@@ -1295,8 +1325,11 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 {
     const WAbstractTrack * track = trackPointerAt(index);
 
-    if (track) return track->feed();
-    else       return QString();
+    if (track)
+    {
+         return track->feed();
+    }
+    else return QString();
 }
 
 /* Q_INVOKABLE */ void WPlaylistNet::setTrackFeed(int index, const QString & feed)

@@ -119,8 +119,11 @@ List
 
     function getCurrentId()
     {
-        if (currentPage) return currentPage.currentId;
-        else             return -1;
+        if (currentPage)
+        {
+             return currentPage.currentId;
+        }
+        else return -1;
     }
 
     function setCurrentId(id)
