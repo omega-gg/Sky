@@ -262,8 +262,11 @@ void WModelCompletionGooglePrivate::onLoaded(WRemoteData * data)
         return QVariant();
     }
 
-    if (role == RoleTitle) return d->listCompletion[index.row()];
-    else                   return QVariant();
+    if (role == RoleTitle)
+    {
+         return d->listCompletion[index.row()];
+    }
+    else return QVariant();
 }
 
 //-------------------------------------------------------------------------------------------------

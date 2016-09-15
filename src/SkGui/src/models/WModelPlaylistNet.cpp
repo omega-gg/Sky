@@ -86,8 +86,11 @@ void WModelPlaylistNetPrivate::init()
 {
     Q_D(const WModelPlaylistNet);
 
-    if (d->playlist) return d->playlist->count();
-    else             return 0;
+    if (d->playlist)
+    {
+         return d->playlist->count();
+    }
+    else return 0;
 }
 
 /* virtual */ QVariant WModelPlaylistNet::data(const QModelIndex & index, int role) const

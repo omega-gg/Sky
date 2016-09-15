@@ -63,8 +63,11 @@ private:
 {
     WDeclarativeContextualPage * page = _model->d_func()->currentPage;
 
-    if (page) return page->count();
-    else      return 0;
+    if (page)
+    {
+         return page->count();
+    }
+    else return 0;
 }
 
 /* virtual */ QVariant WModelContextualBase::data(const QModelIndex & index, int role) const

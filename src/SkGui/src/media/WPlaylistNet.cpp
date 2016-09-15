@@ -599,6 +599,7 @@ bool WPlaylistNetPrivate::containsTrackPointer(WTrackNet * track) const
     {
         if (&(tracks.at(i)) == track) return true;
     }
+
     return false;
 }
 

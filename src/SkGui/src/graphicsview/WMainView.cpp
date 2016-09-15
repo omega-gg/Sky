@@ -2271,16 +2271,22 @@ qreal WMainView::itemWidth() const
 {
     Q_D(const WMainView);
 
-    if (d->item) return d->item->width();
-    else         return 0;
+    if (d->item)
+    {
+         return d->item->width();
+    }
+    else return 0;
 }
 
 qreal WMainView::itemHeight() const
 {
     Q_D(const WMainView);
 
-    if (d->item) return d->item->height();
-    else         return 0;
+    if (d->item)
+    {
+         return d->item->height();
+    }
+    else return 0;
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -114,8 +114,11 @@ void WModelTabsPrivate::updateTab(int index)
 {
     Q_D(const WModelTabs);
 
-    if (d->tabs) return d->tabs->count();
-    else         return 0;
+    if (d->tabs)
+    {
+         return d->tabs->count();
+    }
+    else return 0;
 }
 
 /* virtual */ QVariant WModelTabs::data(const QModelIndex & index, int role) const
@@ -130,8 +133,11 @@ void WModelTabsPrivate::updateTab(int index)
     {
         WAbstractTab * tab = d->tabs->tabAt(index.row());
 
-        if (tab) return QVariant::fromValue(qobject_cast<QObject *> (tab));
-        else     return QVariant();
+        if (tab)
+        {
+             return QVariant::fromValue(qobject_cast<QObject *> (tab));
+        }
+        else return QVariant();
     }
     else return QVariant();
 }
@@ -239,8 +245,11 @@ int WModelTabs::count() const
 {
     Q_D(const WModelTabs);
 
-    if (d->tabs) return d->tabs->count();
-    else         return 0;
+    if (d->tabs)
+    {
+         return d->tabs->count();
+    }
+    else return 0;
 }
 
 #endif // SK_NO_MODELTABS

@@ -1360,7 +1360,7 @@ const QPixmap & WPixmapCache::pixmap() const
 
     if (d->data)
     {
-        return d->data->pixmap;
+         return d->data->pixmap;
     }
     else return dataNull()->pixmap;
 }
@@ -1391,7 +1391,7 @@ const QString & WPixmapCache::path() const
 
     if (d->data)
     {
-        return d->data->path;
+         return d->data->path;
     }
     else return dataNull()->path;
 }
@@ -1402,7 +1402,7 @@ const QSize & WPixmapCache::size() const
 
     if (d->data)
     {
-        return d->data->size;
+         return d->data->size;
     }
     else return dataNull()->size;
 }

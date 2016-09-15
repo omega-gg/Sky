@@ -83,8 +83,11 @@ void WModelLibraryFolderPrivate::init()
 {
     Q_D(const WModelLibraryFolder);
 
-    if (d->folder) return d->folder->count();
-    else           return 0;
+    if (d->folder)
+    {
+         return d->folder->count();
+    }
+    else return 0;
 }
 
 /* virtual */ QVariant WModelLibraryFolder::data(const QModelIndex & index, int role) const
