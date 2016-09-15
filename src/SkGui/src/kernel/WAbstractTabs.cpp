@@ -326,6 +326,8 @@ WAbstractTabs::WAbstractTabs(WAbstractTabsPrivate * p, QObject * parent)
         deleteFolder();
     }
 
+    updateIndex();
+
     emit countChanged();
 
     save();
