@@ -379,8 +379,11 @@ WLibraryFolder * WModelLibraryFolderFiltered::folder() const
 {
     Q_D(const WModelLibraryFolderFiltered);
 
-    if (d->model) return d->model->folder();
-    else          return NULL;
+    if (d->model)
+    {
+         return d->model->folder();
+    }
+    else return NULL;
 }
 
 void WModelLibraryFolderFiltered::setFolder(WLibraryFolder * folder)

@@ -209,8 +209,7 @@ void WBookmarkTrackPrivate::emitUpdated()
     d->setTrack(track);
 }
 
-WBookmarkTrack::WBookmarkTrack()
-    : WPrivatable(new WBookmarkTrackPrivate(this))
+WBookmarkTrack::WBookmarkTrack() : WPrivatable(new WBookmarkTrackPrivate(this))
 {
     Q_D(WBookmarkTrack); d->init();
 }

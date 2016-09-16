@@ -263,17 +263,17 @@ int WControllerXml::doQuery(const QUrl & query)
 {
     QDomNodeList nodes = document.elementsByTagName(name);
 
-    if (nodes.isEmpty()) return QDomElement();
-
-    return nodes.at(0).toElement();
+    if (nodes.isEmpty())
+    {
+         return QDomElement();
+    }
+    else return nodes.at(0).toElement();
 }
 
 /* static */ QString WControllerXml::firstElementValue(const QDomDocument & document,
                                                        const QString      & name)
 {
     QDomElement node = firstElementFromName(document, name);
-
-    if (node.isNull()) return QString();
 
     return node.text();
 }
@@ -283,11 +283,7 @@ int WControllerXml::doQuery(const QUrl & query)
 {
     QDomNode node = firstElementFromName(document, name);
 
-    if (node.isNull() || node.hasAttributes() == false)
-    {
-         return QDomNamedNodeMap();
-    }
-    else return node.attributes();
+    return node.attributes();
 }
 
 /* static */ QString WControllerXml::firstElementAttribute(const QDomDocument & document,
@@ -296,11 +292,11 @@ int WControllerXml::doQuery(const QUrl & query)
 {
     QDomNamedNodeMap attributes = firstElementAttributes(document, name);
 
-    if (attributes.contains(attribute) == false)
+    if (attributes.contains(attribute))
     {
-         return QString();
+         return attributes.namedItem(attribute).nodeValue();
     }
-    else return attributes.namedItem(attribute).nodeValue();
+    else return QString();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -310,9 +306,11 @@ int WControllerXml::doQuery(const QUrl & query)
 {
     QDomNodeList nodes = element.elementsByTagName(name);
 
-    if (nodes.isEmpty()) return QDomElement();
-
-    return nodes.at(0).toElement();
+    if (nodes.isEmpty())
+    {
+         return QDomElement();
+    }
+    else return nodes.at(0).toElement();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -322,8 +320,6 @@ int WControllerXml::doQuery(const QUrl & query)
 {
     QDomElement node = firstElementFromName(element, name);
 
-    if (node.isNull()) return QString();
-
     return node.text();
 }
 
@@ -332,11 +328,7 @@ int WControllerXml::doQuery(const QUrl & query)
 {
     QDomNode node = firstElementFromName(element, name);
 
-    if (node.isNull() || node.hasAttributes() == false)
-    {
-         return QDomNamedNodeMap();
-    }
-    else return node.attributes();
+    return node.attributes();
 }
 
 /* static */ QString WControllerXml::firstElementAttribute(const QDomElement & element,
@@ -345,11 +337,11 @@ int WControllerXml::doQuery(const QUrl & query)
 {
     QDomNamedNodeMap attributes = firstElementAttributes(element, name);
 
-    if (attributes.contains(attribute) == false)
+    if (attributes.contains(attribute))
     {
-         return QString();
+         return attributes.namedItem(attribute).nodeValue();
     }
-    else return attributes.namedItem(attribute).nodeValue();
+    else return QString();
 }
 
 //---------------------------------------------------------------------------------------------

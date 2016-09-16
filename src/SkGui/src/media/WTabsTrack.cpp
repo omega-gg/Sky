@@ -355,8 +355,7 @@ WTabsTrackPrivate::WTabsTrackPrivate(WTabsTrack * p) : WAbstractTabsPrivate(p) {
 
 void WTabsTrackPrivate::init()
 {
-    highlightedTab = NULL;
-
+    highlightedTab   = NULL;
     highlightedIndex = -1;
 }
 
@@ -483,26 +482,6 @@ void WTabsTrackPrivate::onHighlightedTabDestroyed()
 }
 
 //-------------------------------------------------------------------------------------------------
-// Protected WAbstractTabs reimplementation
-//-------------------------------------------------------------------------------------------------
-
-/* virtual */ void WTabsTrack::updateIndex()
-{
-    Q_D(WTabsTrack);
-
-    WAbstractTabs::updateIndex();
-
-    int index = indexOf(d->highlightedTab);
-
-    if (d->highlightedIndex != index)
-    {
-        d->highlightedIndex = index;
-
-        emit highlightedIndexChanged();
-    }
-}
-
-//-------------------------------------------------------------------------------------------------
 // Protected WLocalObject reimplementation
 //-------------------------------------------------------------------------------------------------
 
@@ -551,6 +530,26 @@ void WTabsTrackPrivate::onHighlightedTabDestroyed()
 }
 
 //-------------------------------------------------------------------------------------------------
+// Protected WAbstractTabs reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WTabsTrack::updateIndex()
+{
+    Q_D(WTabsTrack);
+
+    WAbstractTabs::updateIndex();
+
+    int index = d->tabs.indexOf(d->highlightedTab);
+
+    if (d->highlightedIndex != index)
+    {
+        d->highlightedIndex = index;
+
+        emit highlightedIndexChanged();
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
 
@@ -563,9 +562,7 @@ void WTabsTrack::setHighlightedTab(WTabTrack * tab)
 {
     Q_D(WTabsTrack);
 
-    if (d->highlightedTab == tab
-        ||
-        (tab && contains(tab) == false)) return;
+    if (d->highlightedTab == tab || (tab && d->tabs.contains(tab) == false)) return;
 
     if (d->highlightedTab)
     {
@@ -573,7 +570,7 @@ void WTabsTrack::setHighlightedTab(WTabTrack * tab)
     }
 
     d->highlightedTab   = tab;
-    d->highlightedIndex = indexOf(d->highlightedTab);
+    d->highlightedIndex = d->tabs.indexOf(tab);
 
     if (d->highlightedTab)
     {

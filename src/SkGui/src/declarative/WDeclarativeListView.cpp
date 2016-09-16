@@ -761,8 +761,11 @@ WDeclarativeListView::WDeclarativeListView(Qt::Orientation orientation, QDeclara
 
     WDeclarativeListItem * item = d->items.value(index);
 
-    if (item) return item->object;
-    else      return NULL;
+    if (item)
+    {
+         return item->object;
+    }
+    else return NULL;
 }
 
 //-------------------------------------------------------------------------------------------------

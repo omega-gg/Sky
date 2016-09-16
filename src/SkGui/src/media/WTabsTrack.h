@@ -56,14 +56,14 @@ public: // WLocalObject reimplementation
 protected: // WAbstractTabs implementation
     /* virtual */ WAbstractTab * createTab(WAbstractTabs * parent = NULL) const;
 
-protected: // WAbstractTabs reimplementation
-    /* virtual */ void updateIndex();
-
 protected: // WLocalObject reimplementation
     /* virtual */ WAbstractThreadAction * onSave(const QString & path);
     /* virtual */ WAbstractThreadAction * onLoad(const QString & path);
 
     /* virtual */ bool hasFolder() const;
+
+protected: // WAbstractTabs reimplementation
+    /* virtual */ void updateIndex();
 
 signals:
     void highlightedTabChanged  ();

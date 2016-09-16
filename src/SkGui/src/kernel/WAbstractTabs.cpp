@@ -69,8 +69,7 @@ WAbstractTabsPrivate::WAbstractTabsPrivate(WAbstractTabs * p) : WLocalObjectPriv
 
 void WAbstractTabsPrivate::init()
 {
-    currentTab = NULL;
-
+    currentTab   = NULL;
     currentIndex = -1;
 
     maxCount = ABSTRACTTABS_MAX;
@@ -428,18 +427,14 @@ WAbstractTabs::WAbstractTabs(WAbstractTabsPrivate * p, QObject * parent)
 
 /* Q_INVOKABLE */ int WAbstractTabs::indexOf(WAbstractTab * tab) const
 {
-    Q_D(const WAbstractTabs);
-
-    return d->tabs.indexOf(tab);
+    Q_D(const WAbstractTabs); return d->tabs.indexOf(tab);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ bool WAbstractTabs::contains(WAbstractTab * tab) const
 {
-    Q_D(const WAbstractTabs);
-
-    return d->tabs.contains(tab);
+    Q_D(const WAbstractTabs); return d->tabs.contains(tab);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -532,7 +527,7 @@ void WAbstractTabs::insertTab(int index, WAbstractTab * tab)
 {
     Q_D(WAbstractTabs);
 
-    int index = indexOf(d->currentTab);
+    int index = d->tabs.indexOf(d->currentTab);
 
     if (d->currentIndex != index)
     {
@@ -563,7 +558,7 @@ void WAbstractTabs::setCurrentTab(WAbstractTab * tab)
     }
 
     d->currentTab   = tab;
-    d->currentIndex = indexOf(tab);
+    d->currentIndex = d->tabs.indexOf(tab);
 
     if (tab)
     {

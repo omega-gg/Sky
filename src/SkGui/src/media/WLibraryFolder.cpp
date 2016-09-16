@@ -2104,16 +2104,22 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
 {
     const WLibraryFolderItem * item = itemFromId(id);
 
-    if (item) return createLibraryItem(*item, instant);
-    else      return NULL;
+    if (item)
+    {
+         return createLibraryItem(*item, instant);
+    }
+    else return NULL;
 }
 
 /* Q_INVOKABLE */ WLibraryItem * WLibraryFolder::createLibraryItemAt(int index, bool instant)
 {
     const WLibraryFolderItem * item = itemAt(index);
 
-    if (item) return createLibraryItem(*item, instant);
-    else      return NULL;
+    if (item)
+    {
+         return createLibraryItem(*item, instant);
+    }
+    else return NULL;
 }
 
 //-------------------------------------------------------------------------------------------------

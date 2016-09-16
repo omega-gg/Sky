@@ -185,8 +185,11 @@ WallBookmarkTrack
 
     function getItemBarMargin(index)
     {
-        if (pButtonsVisible && indexActive == index) return st.dp40;
-        else                                         return st.dp8;
+        if (pButtonsVisible && indexActive == index)
+        {
+             return st.dp40;
+        }
+        else return st.dp8;
     }
 
     //---------------------------------------------------------------------------------------------

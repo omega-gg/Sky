@@ -70,8 +70,7 @@ public: // Variables
     QHash<int, WAbstractTab *> idHash;
 
     WAbstractTab * currentTab;
-
-    int currentIndex;
+    int            currentIndex;
 
     QList<WAbstractTabsWatcher *> watchers;
 

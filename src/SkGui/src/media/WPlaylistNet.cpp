@@ -1376,8 +1376,11 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 
 /* Q_INVOKABLE static */ WPlaylistNet * WPlaylistNet::fromPlaylist(WAbstractPlaylist * playlist)
 {
-    if (playlist) return playlist->toPlaylistNet();
-    else          return NULL;
+    if (playlist)
+    {
+         return playlist->toPlaylistNet();
+    }
+    else return NULL;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1513,7 +1516,10 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
     {
         const WAbstractTrack & track = d->tracks.at(i);
 
-        if (track.id() == id) return &(track);
+        if (track.id() == id)
+        {
+            return &(track);
+        }
     }
 
     return NULL;

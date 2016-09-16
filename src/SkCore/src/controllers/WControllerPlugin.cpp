@@ -69,7 +69,10 @@ WControllerPluginPrivate::WControllerPluginPrivate(WControllerPlugin * p)
 
 /* virtual */ WControllerPluginPrivate::~WControllerPluginPrivate()
 {
-    foreach (WPlugin * plugin, plugins) delete plugin;
+    foreach (WPlugin * plugin, plugins)
+    {
+        delete plugin;
+    }
 
     W_CLEAR_CONTROLLER(WControllerScript);
 }
@@ -167,14 +170,21 @@ WPlugin * WControllerPlugin::plugin(const QString & name)
 
     foreach (WPlugin * plugin, d->plugins)
     {
-        if (plugin->name() == debugName) return plugin;
+        if (plugin->name() == debugName)
+        {
+            return plugin;
+        }
     }
 #endif
 
     foreach (WPlugin * plugin, d->plugins)
     {
-        if (plugin->name() == name) return plugin;
+        if (plugin->name() == name)
+        {
+            return plugin;
+        }
     }
+
     return NULL;
 }
 
@@ -189,13 +199,16 @@ QString WControllerPlugin::pluginFileName(const QString & name)
 #endif
 
 #ifdef QT_DEBUG
-    QString fileName2 = fileName;
+    QString fileDebug = fileName;
 
-    fileName2.append('D');
+    fileDebug.append('D');
 
-    fileName2 = d->paths.value(fileName2);
+    fileDebug = d->paths.value(fileDebug);
 
-    if (fileName2.isNull() == false) return fileName2;
+    if (fileDebug.isNull() == false)
+    {
+        return fileDebug;
+    }
 #endif
 
     return d->paths.value(fileName);

@@ -1052,19 +1052,13 @@ WLibraryFolder * WControllerPlaylistPrivate::getFolder(WLibraryFolder * folder,
 {
     idFull->removeFirst();
 
-    if (idFull->isEmpty())
-    {
-        return NULL;
-    }
+    if (idFull->isEmpty()) return NULL;
 
     int id = idFull->first();
 
     WLibraryItem * item = folder->getLibraryItemFromId(id);
 
-    if (item == NULL)
-    {
-        return folder;
-    }
+    if (item == NULL) return folder;
 
     folder = item->toFolder();
 

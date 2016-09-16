@@ -660,9 +660,7 @@ void WTabTrackPrivate::removeBookmark(int index)
 
     QString videoShot = bookmark->videoShot().toString();
 
-    if (videoShot.isEmpty() == false
-        &&
-        videoShot.startsWith("image:///") == false)
+    if (videoShot.isEmpty() == false && videoShot.startsWith("image:///") == false)
     {
         videoShot.remove("file:///");
 
@@ -691,7 +689,10 @@ WBookmarkTrack * WTabTrackPrivate::bookmarkFromId(int id)
 {
     for (int i = 0; i < bookmarks.count(); i++)
     {
-        if (bookmarks.at(i).id() == id) return &(bookmarks[i]);
+        if (bookmarks.at(i).id() == id)
+        {
+            return &(bookmarks[i]);
+        }
     }
 
     return NULL;
@@ -1156,14 +1157,20 @@ void WTabTrackPrivate::onPlaylistDestroyed()
 {
     int index = currentIndex();
 
-    if (index != -1) setCurrentIndex(index - 1);
+    if (index != -1)
+    {
+        setCurrentIndex(index - 1);
+    }
 }
 
 /* Q_INVOKABLE */ void WTabTrack::setNextBookmark()
 {
     int index = currentIndex();
 
-    if (index != -1) setCurrentIndex(index + 1);
+    if (index != -1)
+    {
+        setCurrentIndex(index + 1);
+    }
 }
 
 //---------------------------------------------------------------------------------------------
@@ -1272,8 +1279,11 @@ void WTabTrackPrivate::onPlaylistDestroyed()
 {
     Q_D(const WTabTrack);
 
-    if (d->currentBookmark) return d->currentBookmark->track();
-    else                    return NULL;
+    if (d->currentBookmark)
+    {
+         return d->currentBookmark->track();
+    }
+    else return NULL;
 }
 
 /* Q_INVOKABLE */ void WTabTrack::setCurrentTrackPointer(const WAbstractTrack * track)
@@ -1427,7 +1437,10 @@ int WTabTrack::currentIndex() const
 
     for (int i = 0; i < d->bookmarks.count(); i++)
     {
-        if (d->currentBookmark == &(d->bookmarks.at(i))) return i;
+        if (d->currentBookmark == &(d->bookmarks.at(i)))
+        {
+            return i;
+        }
     }
 
     return -1;
@@ -1454,13 +1467,7 @@ void WTabTrack::setCurrentIndex(int index)
 
 const WBookmarkTrack * WTabTrack::currentBookmark() const
 {
-    Q_D(const WTabTrack);
-
-    if (d->currentBookmark)
-    {
-         return d->currentBookmark;
-    }
-    else return NULL;
+    Q_D(const WTabTrack); return d->currentBookmark;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1609,8 +1616,6 @@ bool WTabTrack::hasPreviousBookmark() const
 {
     int index = currentIndex();
 
-    if (index == -1) return false;
-
     if (index > 0)
     {
          return true;
@@ -1623,8 +1628,6 @@ bool WTabTrack::hasNextBookmark() const
     Q_D(const WTabTrack);
 
     int index = currentIndex();
-
-    if (index == -1) return false;
 
     if (index < (d->bookmarks.count() - 1))
     {

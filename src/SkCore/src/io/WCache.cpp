@@ -1328,10 +1328,7 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
 /* Q_INVOKABLE */ WCacheFile * WCache::getFile(const QUrl & url, QObject * parent, int maxHost)
 {
-    if (url.isValid() == false)
-    {
-        return NULL;
-    }
+    if (url.isValid() == false) return NULL;
 
     Q_D(WCache);
 
@@ -1367,10 +1364,7 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 /* Q_INVOKABLE */ WCacheFile * WCache::writeFile(const QUrl       & url,
                                                  const QByteArray & array, QObject * parent)
 {
-    if (url.isValid() == false)
-    {
-        return NULL;
-    }
+    if (url.isValid() == false) return NULL;
 
     Q_D(WCache);
 
