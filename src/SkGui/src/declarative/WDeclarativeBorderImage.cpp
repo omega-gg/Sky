@@ -29,7 +29,7 @@
 #include <WAbstractThreadAction>
 
 // Private includes
-#include <private/qdeclarativescalegrid_p_p.h>
+#include "private/qdeclarativescalegrid_p_p.h"
 
 //=================================================================================================
 // WDeclarativeBorderImagePrivate
