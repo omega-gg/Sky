@@ -1629,7 +1629,7 @@ bool WTabTrack::hasNextBookmark() const
 
     int index = currentIndex();
 
-    if (index < (d->bookmarks.count() - 1))
+    if (index != -1 && index < (d->bookmarks.count() - 1))
     {
          return true;
     }
