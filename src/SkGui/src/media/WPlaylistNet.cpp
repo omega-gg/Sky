@@ -1393,7 +1393,10 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 
     for (int i = 0; i < d->tracks.count(); i++)
     {
-        if (&(d->tracks.at(i)) == track) return i;
+        if (&(d->tracks.at(i)) == track)
+        {
+            return i;
+        }
     }
 
     return -1;
@@ -1407,7 +1410,10 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 
     for (int i = 0; i < d->tracks.count(); i++)
     {
-        if (d->tracks.at(i).d_func()->id == id) return i;
+        if (d->tracks.at(i).d_func()->id == id)
+        {
+            return i;
+        }
     }
 
     return -1;

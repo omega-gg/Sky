@@ -1692,7 +1692,10 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
 
     for (int i = 0; i < d->items.count(); i++)
     {
-        if (&(d->items.at(i)) == item) return i;
+        if (&(d->items.at(i)) == item)
+        {
+            return i;
+        }
     }
 
     return -1;
@@ -1706,7 +1709,10 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
 
     for (int i = 0; i < d->items.count(); i++)
     {
-        if (d->items.at(i).id == id) return i;
+        if (d->items.at(i).id == id)
+        {
+            return i;
+        }
     }
 
     return -1;
@@ -1883,8 +1889,11 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
 {
     const WLibraryFolderItem * item = itemAt(index);
 
-    if (item) return item->type;
-    else      return Invalid;
+    if (item)
+    {
+         return item->type;
+    }
+    else return Invalid;
 }
 
 /* Q_INVOKABLE */ bool WLibraryFolder::itemIsPlaylist(int index) const

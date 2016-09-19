@@ -243,10 +243,7 @@ WAbstractTabs::WAbstractTabs(WAbstractTabsPrivate * p, QObject * parent)
 {
     Q_D(WAbstractTabs);
 
-    if (index < 0 || index > d->tabs.count() || d->tabs.count() >= d->maxCount)
-    {
-        return NULL;
-    }
+    if (index < 0 || index > d->tabs.count() || d->tabs.count() >= d->maxCount) return NULL;
 
     WAbstractTab * tab = createTab(this);
 
@@ -634,9 +631,7 @@ void WAbstractTabs::setMaxCount(int max)
 
 bool WAbstractTabs::isEmpty() const
 {
-    Q_D(const WAbstractTabs);
-
-    return d->tabs.isEmpty();
+    Q_D(const WAbstractTabs); return d->tabs.isEmpty();
 }
 
 bool WAbstractTabs::isFull() const

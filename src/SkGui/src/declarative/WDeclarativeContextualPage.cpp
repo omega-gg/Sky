@@ -462,7 +462,10 @@ int WDeclarativeContextualPage::indexOf(const WDeclarativeContextualItem * item)
 
     for (int i = 0; i < d->items.count(); i++)
     {
-        if (&(d->items.at(i)) == item) return i;
+        if (&(d->items.at(i)) == item)
+        {
+            return i;
+        }
     }
 
     return -1;
@@ -476,7 +479,10 @@ int WDeclarativeContextualPage::indexOf(const WDeclarativeContextualItem * item)
 
     for (int i = 0; i < d->items.count(); i++)
     {
-        if (d->items.at(i).id == id) return i;
+        if (d->items.at(i).id == id)
+        {
+            return i;
+        }
     }
 
     return -1;

@@ -468,11 +468,8 @@ BaseTabs
     {
         if (pButtonsVisible && indexActive == index)
         {
-            if (currentTabWidth > st.dp128)
-            {
-                 return st.dp60;
-            }
-            else return st.dp28;
+            if (currentTabWidth > st.dp128) return st.dp60;
+            else                            return st.dp28;
         }
         else return st.dp8;
     }

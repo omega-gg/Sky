@@ -1058,7 +1058,10 @@ WLibraryFolder * WControllerPlaylistPrivate::getFolder(WLibraryFolder * folder,
 
     WLibraryItem * item = folder->getLibraryItemFromId(id);
 
-    if (item == NULL) return folder;
+    if (item == NULL)
+    {
+        return folder;
+    }
 
     folder = item->toFolder();
 

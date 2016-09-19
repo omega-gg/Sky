@@ -34,14 +34,20 @@ Item {
 
     function getMinimumWidth()
     {
-        if (maximumWidth != -1) return Math.min(minimumWidth, maximumWidth);
-        else                    return minimumWidth;
+        if (maximumWidth != -1)
+        {
+             return Math.min(minimumWidth, maximumWidth);
+        }
+        else return minimumWidth;
     }
 
     function getMinimumHeight()
     {
-        if (maximumHeight != -1) return Math.min(minimumHeight, maximumHeight);
-        else                     return minimumHeight;
+        if (maximumHeight != -1)
+        {
+             return Math.min(minimumHeight, maximumHeight);
+        }
+        else return minimumHeight;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -70,13 +76,19 @@ Item {
 
     function getMaximumWidth()
     {
-        if (minimumWidth != -1) return Math.max(minimumWidth, maximumWidth);
-        else                    return maximumWidth;
+        if (minimumWidth != -1)
+        {
+             return Math.max(minimumWidth, maximumWidth);
+        }
+        else return maximumWidth;
     }
 
     function getMaximumHeight()
     {
-        if (minimumHeight != -1) return Math.max(minimumHeight, maximumHeight);
-        else                     return maximumHeight;
+        if (minimumHeight != -1)
+        {
+             return Math.max(minimumHeight, maximumHeight);
+        }
+        else return maximumHeight;
     }
 }
