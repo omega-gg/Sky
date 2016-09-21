@@ -1633,7 +1633,10 @@ bool WCache::event(QEvent * event)
                 i++;
             }
 
-            d->setEmpty(false);
+            if (d->empty)
+            {
+                d->setEmpty(false);
+            }
         }
 
         d->loaded = true;
@@ -1685,7 +1688,10 @@ bool WCache::event(QEvent * event)
 
         d->urls.insert(url, urlCache);
 
-        d->setEmpty(false);
+        if (d->empty)
+        {
+            d->setEmpty(false);
+        }
 
         WCacheFiles * files = d->urlsPending.take(url);
 
