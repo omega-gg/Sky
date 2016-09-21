@@ -957,7 +957,9 @@ WBackendNetPlaylist WBackendYoutube::extractPlaylist(const QByteArray       & da
         }
         else
         {
-            content = WControllerNetwork::extractJsonHtml(content, "watch-more-related");
+            int index = content.indexOf("\"body\"");
+
+            content = WControllerNetwork::extractJsonHtml(content, "watch-more-related", index);
 
             content = WControllerNetwork::htmlToUtf8(content);
         }
