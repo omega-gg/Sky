@@ -17,3 +17,4 @@ OTHER_FILES += configure.sh \
                dist/changes/1.1.0.md \
                dist/changes/1.1.1.md \
                dist/changes/1.1.2.md \
+               dist/changes/1.1.3.md \
