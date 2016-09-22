@@ -6,6 +6,8 @@
 
 external="../3rdparty"
 
+Qt4="$external/Qt"
+
 Qt5="$external/Qt/5.5.1"
 
 Qt5_version="5.5.1"
@@ -25,9 +27,9 @@ bin5="latest"
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# != 2 ] || [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] || [ $2 != "win32" ]; then
+if [ $# != 2 ] || [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] || [ $2 != "win32" -a $2 != "linux" ]; then
 
-    echo "Usage: configure <qt4 | qt5 | clean> <win32>"
+    echo "Usage: configure <qt4 | qt5 | clean> <win32 | linux>"
 
     exit 1
 fi
@@ -81,7 +83,24 @@ fi
 
 echo "COPYING Qt"
 
-if [ $1 = "qt5" ]; then
+if [ $1 = "qt4" ]; then
+
+    mkdir -p include/Qt/QtCore/private
+
+    cp "$Qt4"/src/corelib/kernel/qobject_p.h include/Qt/QtCore/private
+
+    mkdir -p include/Qt/QtDeclarative/private
+
+    cp "$Qt4"/src/declarative/graphicsitems/qdeclarativeborderimage_p.h \
+       "$Qt4"/src/declarative/graphicsitems/qdeclarativeimagebase_p.h \
+       "$Qt4"/src/declarative/graphicsitems/qdeclarativeimplicitsizeitem_p.h \
+       "$Qt4"/src/declarative/graphicsitems/qdeclarativepainteditem_p.h \
+       "$Qt4"/src/declarative/graphicsitems/qdeclarativescalegrid_p_p.h \
+       "$Qt4"/src/declarative/qml/qdeclarativeglobal_p.h \
+       "$Qt4"/src/declarative/util/qdeclarativepixmapcache_p.h \
+       "$Qt4"/src/declarative/util/qdeclarativestyledtext_p.h \
+       include/Qt/QtDeclarative/private
+elif [ $1 = "qt5" ]; then
 
     mkdir include/Qt
 
@@ -104,12 +123,9 @@ fi
 # VLC
 #--------------------------------------------------------------------------------------------------
 
-echo "COPYING VLC"
-
-cp -r "$VLC"/sdk/include/vlc include
-
 if [ $2 = "win32" ]; then
-
+    echo "COPYING VLC"
+    cp -r "$VLC"/sdk/include/vlc include
     cp "$VLC"/sdk/lib/libvlc*.* lib
 fi
 
@@ -117,12 +133,9 @@ fi
 # libtorrent
 #--------------------------------------------------------------------------------------------------
 
-echo "COPYING libtorrent"
-
-cp -r "$libtorrent"/libtorrent include
-
 if [ $2 = "win32" ]; then
-
+    echo "COPYING libtorrent"
+    cp -r "$libtorrent"/libtorrent include
     cp "$libtorrent"/libtorrent.* lib
 fi
 
@@ -130,11 +143,8 @@ fi
 # Boost
 #--------------------------------------------------------------------------------------------------
 
-echo "COPYING Boost"
-
-cp -r "$Boost"/Boost include
-
 if [ $2 = "win32" ]; then
-
+    echo "COPYING Boost"
+    cp -r "$Boost"/Boost include
     cp "$Boost"/libboost*.* lib
 fi

@@ -50,12 +50,16 @@ CONFIG(debug, debug|release) {
 
 }
 
-LIBS += -static -L$$_PRO_FILE_PWD_ -ltorrent \
-        -static -L$$_PRO_FILE_PWD_ -lboost_system \
-        -static -L$$_PRO_FILE_PWD_ -lboost_random \
-        -static -L$$_PRO_FILE_PWD_ -lboost_chrono \
+linux:LIBS += -ltorrent-rasterbar \
+              -lboost_system \
+              -lboost_random \
+              -lboost_chrono \
 
-win32:LIBS += -lmswsock -lws2_32
+win32:LIBS += -static -L$$_PRO_FILE_PWD_ -ltorrent \
+              -static -L$$_PRO_FILE_PWD_ -lboost_system \
+              -static -L$$_PRO_FILE_PWD_ -lboost_random \
+              -static -L$$_PRO_FILE_PWD_ -lboost_chrono \
+              -lmswsock -lws2_32 \
 
 macx {
 CONFIG(debug, debug|release) {
