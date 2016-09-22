@@ -46,14 +46,16 @@ CONFIG(debug, debug|release) {
     LIBS += \
          -L$$SK/lib -lSkCoreD \
          -L$$SK/lib -lSkGuiD \
+
 } else {
     LIBS += \
          -L$$SK/lib -lSkCore \
          -L$$SK/lib -lSkGui \
+
 }
 
-linux:LIBS += -L$$SK/lib -lvlc
 win32:LIBS += -L$$SK/lib -llibvlc
+linux:LIBS += -L$$SK/lib -lvlc
 
 macx {
 CONFIG(debug, debug|release) {

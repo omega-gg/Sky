@@ -6,8 +6,7 @@
 
 external="../3rdparty"
 
-Qt4="$external/Qt"
-
+Qt4="$external/Qt/4.8.7"
 Qt5="$external/Qt/5.5.1"
 
 Qt5_version="5.5.1"
@@ -27,7 +26,8 @@ bin5="latest"
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# != 2 ] || [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] || [ $2 != "win32" -a $2 != "linux" ]; then
+if [ $# != 2 ] || [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] || [ $2 != "win32" -a \
+                                                                       $2 != "linux" ]; then
 
     echo "Usage: configure <qt4 | qt5 | clean> <win32 | linux>"
 
@@ -83,7 +83,7 @@ fi
 
 echo "COPYING Qt"
 
-if [ $1 = "qt4" ]; then
+if [ $1 = "qt4" -a $2 != "linux" ]; then
 
     mkdir -p include/Qt/QtCore/private
 
@@ -91,32 +91,26 @@ if [ $1 = "qt4" ]; then
 
     mkdir -p include/Qt/QtDeclarative/private
 
-    cp "$Qt4"/src/declarative/graphicsitems/qdeclarativeborderimage_p.h \
-       "$Qt4"/src/declarative/graphicsitems/qdeclarativeimagebase_p.h \
-       "$Qt4"/src/declarative/graphicsitems/qdeclarativeimplicitsizeitem_p.h \
-       "$Qt4"/src/declarative/graphicsitems/qdeclarativepainteditem_p.h \
-       "$Qt4"/src/declarative/graphicsitems/qdeclarativescalegrid_p_p.h \
-       "$Qt4"/src/declarative/qml/qdeclarativeglobal_p.h \
-       "$Qt4"/src/declarative/util/qdeclarativepixmapcache_p.h \
-       "$Qt4"/src/declarative/util/qdeclarativestyledtext_p.h \
-       include/Qt/QtDeclarative/private
+    cp "$Qt4"/src/declarative/qml/*_p.h include/Qt/QtDeclarative/private
+
+    cp "$Qt4"/src/declarative/graphicsitems/*_p.h include/Qt/QtDeclarative/private
+
+    cp "$Qt4"/src/declarative/util/*_p.h include/Qt/QtDeclarative/private
+
 elif [ $1 = "qt5" ]; then
 
-    mkdir include/Qt
-
-    mkdir include/Qt/QtCore
-    mkdir include/Qt/QtCore/private
+    mkdir -p include/Qt/QtCore/private
 
     cp "$Qt5"/include/QtCore/* include/Qt/QtCore
 
     cp "$Qt5"/include/QtCore/"$Qt5_version"/QtCore/private/* include/Qt/QtCore/private
 
-    mkdir include/Qt/QtDeclarative
-    mkdir include/Qt/QtDeclarative/private
+    mkdir -p include/Qt/QtDeclarative/private
 
     cp "$Qt5"/include/QtDeclarative/* include/Qt/QtDeclarative
 
-    cp "$Qt5"/include/QtDeclarative/"$Qt5_version"/QtDeclarative/private/* include/Qt/QtDeclarative/private
+    cp "$Qt5"/include/QtDeclarative/"$Qt5_version"/QtDeclarative/private/* \
+        include/Qt/QtDeclarative/private
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -124,8 +118,11 @@ fi
 #--------------------------------------------------------------------------------------------------
 
 if [ $2 = "win32" ]; then
+
     echo "COPYING VLC"
+
     cp -r "$VLC"/sdk/include/vlc include
+
     cp "$VLC"/sdk/lib/libvlc*.* lib
 fi
 
@@ -134,8 +131,11 @@ fi
 #--------------------------------------------------------------------------------------------------
 
 if [ $2 = "win32" ]; then
+
     echo "COPYING libtorrent"
+
     cp -r "$libtorrent"/libtorrent include
+
     cp "$libtorrent"/libtorrent.* lib
 fi
 
@@ -144,7 +144,10 @@ fi
 #--------------------------------------------------------------------------------------------------
 
 if [ $2 = "win32" ]; then
+
     echo "COPYING Boost"
+
     cp -r "$Boost"/Boost include
+
     cp "$Boost"/libboost*.* lib
 fi
