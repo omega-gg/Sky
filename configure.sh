@@ -83,7 +83,7 @@ fi
 
 echo "COPYING Qt"
 
-if [ $1 = "qt4" -a $2 != "linux" ]; then
+if [ $1 = "qt4" -a $2 = "linux" ]; then
 
     mkdir -p include/Qt/QtCore/private
 
