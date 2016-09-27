@@ -6,15 +6,26 @@
 
 external="../3rdparty"
 
-Qt4="$external/Qt/4.8.7"
-Qt5="$external/Qt/5.5.1"
+#--------------------------------------------------------------------------------------------------
 
-MinGW4="$external/MinGW/4.9.2/bin"
-MinGW5="$external/MinGW/4.9.2/bin"
+Qt4_version="4.8.7"
+Qt5_version="5.5.1"
+
+MinGW_version="4.9.2"
+
+VLC_version="2.2.4"
+
+#--------------------------------------------------------------------------------------------------
+
+Qt4="$external/Qt/$Qt4_version"
+Qt5="$external/Qt/$Qt5_version"
+
+MinGW4="$external/MinGW/$MinGW_version/bin"
+MinGW5="$external/MinGW/$MinGW_version/bin"
 
 SSL="$external/OpenSSL"
 
-VLC="$external/VLC/2.2.4"
+VLC="$external/VLC/$VLC_version"
 
 #--------------------------------------------------------------------------------------------------
 

@@ -6,16 +6,27 @@
 
 external="../3rdparty"
 
-Qt4="$external/Qt/4.8.7"
-Qt5="$external/Qt/5.5.1"
+#--------------------------------------------------------------------------------------------------
 
+Qt4_version="4.8.7"
 Qt5_version="5.5.1"
 
-VLC="$external/VLC/2.2.4"
+VLC_version="2.2.4"
 
-libtorrent="$external/libtorrent/1.1.0"
+libtorrent_version="1.1.0"
 
-Boost="$external/boost/1.55.0"
+Boost_version="1.55.0"
+
+#--------------------------------------------------------------------------------------------------
+
+Qt4="$external/Qt/$Qt4_version"
+Qt5="$external/Qt/$Qt5_version"
+
+VLC="$external/VLC/$VLC_version"
+
+libtorrent="$external/libtorrent/$libtorrent_version"
+
+Boost="$external/boost/$Boost_version"
 
 #--------------------------------------------------------------------------------------------------
 
@@ -87,15 +98,13 @@ if [ $1 = "qt4" -a $2 = "linux" ]; then
 
     mkdir -p include/Qt/QtCore/private
 
-    cp "$Qt4"/src/corelib/kernel/qobject_p.h include/Qt/QtCore/private
+    cp "$Qt4"/src/corelib/kernel/*_p.h include/Qt/QtCore/private
 
     mkdir -p include/Qt/QtDeclarative/private
 
-    cp "$Qt4"/src/declarative/qml/*_p.h include/Qt/QtDeclarative/private
-
+    cp "$Qt4"/src/declarative/qml/*_p.h           include/Qt/QtDeclarative/private
     cp "$Qt4"/src/declarative/graphicsitems/*_p.h include/Qt/QtDeclarative/private
-
-    cp "$Qt4"/src/declarative/util/*_p.h include/Qt/QtDeclarative/private
+    cp "$Qt4"/src/declarative/util/*_p.h          include/Qt/QtDeclarative/private
 
 elif [ $1 = "qt5" ]; then
 
