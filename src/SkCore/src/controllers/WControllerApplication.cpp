@@ -777,6 +777,11 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 {
     QTextCodec * textCodec = QTextCodec::codecForName(codec.C_STR);
 
+    if (textCodec == NULL)
+    {
+        return array;
+    }
+
     QTextCodec::ConverterState state;
 
     QString content = textCodec->toUnicode(array.constData(), array.size(), &state);
