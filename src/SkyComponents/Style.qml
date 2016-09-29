@@ -1721,14 +1721,14 @@ Item
     //---------------------------------------------------------------------------------------------
     // ContextualCategory
 
-    property real contextualCategory_height: dp24 + border_size
+    property real contextualCategory_height: dp26 + border_size
 
     property real contextualCategory_padding: dp8
 
-    property color contextualCategory_colorA: barTitleTiny_colorA
-    property color contextualCategory_colorB: barTitleTiny_colorB
+    property color contextualCategory_colorA: barTitleSmall_colorA
+    property color contextualCategory_colorB: barTitleSmall_colorB
 
-    property color contextualCategory_colorBorderLine: barTitleTiny_colorBorderLine
+    property color contextualCategory_colorBorderLine: barTitleSmall_colorBorderLine
 
     //---------------------------------------------------------------------------------------------
     // ContextualItem
