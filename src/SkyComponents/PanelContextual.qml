@@ -73,12 +73,6 @@ Panel
 
     backgroundOpacity: st.panelContextual_backgroundOpacity
 
-    gradient: Gradient
-    {
-        GradientStop { position: 0.0; color: st.itemList_colorA }
-        GradientStop { position: 1.0; color: st.itemList_colorB }
-    }
-
     //---------------------------------------------------------------------------------------------
     // Events
     //---------------------------------------------------------------------------------------------
