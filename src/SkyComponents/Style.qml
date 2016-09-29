@@ -405,7 +405,7 @@ Item
 
     property variant panel_shadowBorderSize: dp18
 
-    property color panel_color: "#323232"
+    property color panel_color: "#404040"
 
     //---------------------------------------------------------------------------------------------
     // PanelContextual
