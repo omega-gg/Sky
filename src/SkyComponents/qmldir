@@ -50,7 +50,6 @@ ToolTip         1.0 ToolTip.qml
 BarWindow       1.0 BarWindow.qml
 BarTitle        1.0 BarTitle.qml
 BarTitleSmall   1.0 BarTitleSmall.qml
-BarTitleTiny    1.0 BarTitleTiny.qml
 BarTitleText    1.0 BarTitleText.qml
 BarSetting      1.0 BarSetting.qml
 BarSettingReset 1.0 BarSettingReset.qml

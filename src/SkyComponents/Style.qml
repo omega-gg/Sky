@@ -477,16 +477,6 @@ Item
     property color barTitleSmall_colorBorderLine: "#787878"
 
     //---------------------------------------------------------------------------------------------
-    // BarTitleTiny
-
-    property real barTitleTiny_height: dp24
-
-    property color barTitleTiny_colorA: "#505050"
-    property color barTitleTiny_colorB: "#323232"
-
-    property color barTitleTiny_colorBorderLine: "#646464"
-
-    //---------------------------------------------------------------------------------------------
     // BarTitleText
 
     property int barTitleText_leftMargin : dp8
