@@ -1361,8 +1361,9 @@ Item
     property color slider_colorBarHoverA: buttonPush_colorHoverA
     property color slider_colorBarHoverB: buttonPush_colorHoverB
 
+    property ImageColorFilter slider_filterBorder: border_filter
+
     property alias slider_filterBackground : slider_filterBackground
-    property alias slider_filterBorder     : border_filter
     property alias slider_filterHandle     : slider_filterHandle
     property alias slider_filterHandleHover: slider_filterHandleHover
     property alias slider_filterHandlePress: slider_filterHandlePress
