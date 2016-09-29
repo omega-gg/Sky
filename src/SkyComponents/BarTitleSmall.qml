@@ -25,9 +25,6 @@ BarTitle
 
     height: st.barTitleSmall_height + borderSizeHeight
 
-    borderTop   : borderSize
-    borderBottom: borderSize
-
     //---------------------------------------------------------------------------------------------
     // Style
 
