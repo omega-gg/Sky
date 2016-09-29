@@ -20,8 +20,7 @@ VLC_version="2.2.4"
 Qt4="$external/Qt/$Qt4_version"
 Qt5="$external/Qt/$Qt5_version"
 
-MinGW4="$external/MinGW/$MinGW_version/bin"
-MinGW5="$external/MinGW/$MinGW_version/bin"
+MinGW="$external/MinGW/$MinGW_version/bin"
 
 SSL="$external/OpenSSL"
 
@@ -72,9 +71,9 @@ if [ $1 = "qt4" ]; then
 
     if [ $2 = "win32" ]; then
 
-        cp "$MinGW4"/libgcc_s_dw2-1.dll  deploy
-        cp "$MinGW4"/libstdc++-6.dll     deploy
-        cp "$MinGW4"/libwinpthread-1.dll deploy
+        cp "$MinGW"/libgcc_s_dw2-1.dll  deploy
+        cp "$MinGW"/libstdc++-6.dll     deploy
+        cp "$MinGW"/libwinpthread-1.dll deploy
 
         cp "$Qt4"/bin/QtCore4.dll        deploy
         cp "$Qt4"/bin/QtDeclarative4.dll deploy
@@ -103,9 +102,9 @@ else
 
     if [ $2 = "win32" ]; then
 
-        cp "$MinGW5"/libgcc_s_dw2-1.dll  deploy
-        cp "$MinGW5"/libstdc++-6.dll     deploy
-        cp "$MinGW5"/libwinpthread-1.dll deploy
+        cp "$MinGW"/libgcc_s_dw2-1.dll  deploy
+        cp "$MinGW"/libstdc++-6.dll     deploy
+        cp "$MinGW"/libwinpthread-1.dll deploy
 
         cp "$Qt5"/bin/icudt54.dll deploy
         cp "$Qt5"/bin/icuin54.dll deploy
