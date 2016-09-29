@@ -1046,21 +1046,15 @@ Item
     //---------------------------------------------------------------------------------------------
     // LabelRoundInfo
 
+    property ImageColorFilter labelRoundInfo_filterBorder: border_filter
+
     property alias labelRoundInfo_filterDefault: labelRoundInfo_filterDefault
-    property alias labelRoundInfo_filterBorder : labelRoundInfo_filterBorder
 
     ImageColorFilter
     {
         id: labelRoundInfo_filterDefault
 
         color: "#323232"
-    }
-
-    ImageColorFilter
-    {
-        id: labelRoundInfo_filterBorder
-
-        color: "#242424"
     }
 
     //---------------------------------------------------------------------------------------------
