@@ -1712,7 +1712,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // ContextualCategory
 
-    property real contextualCategory_height: dp26 + border_size
+    property real contextualCategory_height: barTitleSmall_height + border_size
 
     property real contextualCategory_padding: dp8
 
