@@ -469,6 +469,8 @@ Item
     //---------------------------------------------------------------------------------------------
     // BarTitleSmall
 
+    property real barTitleSmall_height: dp26
+
     property color barTitleSmall_colorA: "#646464"
     property color barTitleSmall_colorB: "#484848"
 
