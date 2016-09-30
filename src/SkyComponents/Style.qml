@@ -469,8 +469,6 @@ Item
     //---------------------------------------------------------------------------------------------
     // BarTitleSmall
 
-    property real barTitleSmall_height: dp26
-
     property color barTitleSmall_colorA: "#646464"
     property color barTitleSmall_colorB: "#484848"
 
@@ -1712,7 +1710,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // ContextualCategory
 
-    property real contextualCategory_height: barTitleSmall_height + border_size
+    property real contextualCategory_height: barTitle_height + border_size
 
     property real contextualCategory_padding: dp8
 
