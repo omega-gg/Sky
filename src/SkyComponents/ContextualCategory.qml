@@ -72,6 +72,8 @@ Item
             text: title
 
             style: Text.Sunken
+
+            font.pixelSize: st.contextualCategory_pixelSize
         }
     }
 

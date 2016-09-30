@@ -1714,10 +1714,12 @@ Item
 
     property real contextualCategory_padding: dp8
 
-    property color contextualCategory_colorA: barTitleSmall_colorA
-    property color contextualCategory_colorB: barTitleSmall_colorB
+    property int contextualCategory_pixelSize: barTitleText_pixelSize
 
-    property color contextualCategory_colorBorderLine: barTitleSmall_colorBorderLine
+    property color contextualCategory_colorA: barTitle_colorA
+    property color contextualCategory_colorB: barTitle_colorB
+
+    property color contextualCategory_colorBorderLine: barTitle_colorBorderLine
 
     //---------------------------------------------------------------------------------------------
     // ContextualItem
