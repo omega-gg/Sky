@@ -1030,10 +1030,12 @@ WBackendNetFolder WBackendYoutube::extractFolder(const QByteArray       & data,
 
     QString content = Sk::readUtf8(data);
 
-    QStringList list = Sk::slices(content, "<div class=\"yt-lockup yt-lockup-tile", "</div></li>");
-
     if (query.id == 1) // search channels
     {
+        QStringList list = Sk::slices(content,
+                                      "<div class=\"yt-lockup yt-lockup-tile yt-lockup-channel",
+                                      "</div></li>");
+
         foreach (const QString & string, list)
         {
             int index = string.indexOf("class=\"yt-thumb video-thumb");
@@ -1058,6 +1060,10 @@ WBackendNetFolder WBackendYoutube::extractFolder(const QByteArray       & data,
     }
     else // search playlists
     {
+        QStringList list = Sk::slices(content,
+                                      "<div class=\"yt-lockup yt-lockup-tile yt-lockup-playlist",
+                                      "</div></li>");
+
         foreach (const QString & string, list)
         {
             int index = string.indexOf("class=\"yt-thumb video-thumb");
