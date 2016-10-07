@@ -37,6 +37,9 @@
 #include <3rdparty/vlc/mmxRgb.h>
 #include <3rdparty/opengl/glext.h>
 
+// Private includes
+#include <private/WVlcPlayer_p>
+
 //=================================================================================================
 // Defines
 
@@ -655,13 +658,6 @@ void WBackendVlcPrivate::updateTargetRect()
 {
     if (frameWidth == -1) return;
 
-    // FIXME: Sometimes the frame size is not valid.
-    if (frameWidth == 0)
-    {
-        frameWidth  = textures[0].width;
-        frameHeight = textures[0].height;
-    }
-
     QSizeF frameSize = QSizeF(frameWidth, frameHeight);
 
     frameSize.scale(size, ratio);
@@ -771,6 +767,8 @@ void WBackendVlcPrivate::onFrameUpdated()
                                                                              unsigned * lines)
 {
     WBackendVlcPrivate * d = static_cast<WBackendVlc *> (*data)->d_func();
+
+    libvlc_video_get_size(d->player->d_func()->player, 0, vlcWidth, vlcHeight);
 
     int width  = qMin((int) (*vlcWidth),  PLAYER_MAX_WIDTH);
     int height = qMin((int) (*vlcHeight), PLAYER_MAX_HEIGHT);
@@ -1374,26 +1372,7 @@ bool WBackendVlc::event(QEvent * event)
 {
     QEvent::Type type = event->type();
 
-    /*if (type == static_cast<QEvent::Type> (WBackendVlcPrivate::EventFrameUpdated))
-    {
-        d->frameUpdated = true;
-
-        if (d->parentItem) d->parentItem->update();
-
-        return true;
-    }
-    else */if (type == static_cast<QEvent::Type> (WVlcPlayer::EventMedia))
-    {
-        Q_D(WBackendVlc);
-
-        WVlcMediaEvent * eventMedia = static_cast<WVlcMediaEvent *> (event);
-
-        d->frameWidth  = eventMedia->width;
-        d->frameHeight = eventMedia->height;
-
-        return true;
-    }
-    else if (type == static_cast<QEvent::Type> (WBackendVlcPrivate::EventSetup))
+    if (type == static_cast<QEvent::Type> (WBackendVlcPrivate::EventSetup))
     {
         Q_D(WBackendVlc);
 
@@ -1405,6 +1384,9 @@ bool WBackendVlc::event(QEvent * event)
         int pitchY = setup->pitchY;
         int pitchU = setup->pitchU;
         int pitchV = setup->pitchV;
+
+        d->frameWidth  = width;
+        d->frameHeight = height;
 
         d->frameSoftware = QImage(width, height, QImage::Format_RGB32);
 

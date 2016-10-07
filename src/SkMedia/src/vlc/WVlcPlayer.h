@@ -50,8 +50,7 @@ class SK_MEDIA_EXPORT WVlcPlayer : public QObject, public WPrivatable
 public: // Enums
     enum EventType
     {
-        EventMedia = QEvent::User,
-        EventPlaying,
+        EventPlaying = QEvent::User,
         EventPaused,
         EventStopped,
         EventBuffering,
@@ -114,6 +113,9 @@ public: // Properties
 
 private:
     W_DECLARE_PRIVATE(WVlcPlayer)
+
+    friend class WBackendVlc;
+    friend class WBackendVlcPrivate;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -131,25 +133,6 @@ public:
 
 public: // Variables
     QVariant value;
-};
-
-//-------------------------------------------------------------------------------------------------
-// WVlcMediaEvent
-//-------------------------------------------------------------------------------------------------
-
-class WVlcMediaEvent : public QEvent
-{
-public:
-    WVlcMediaEvent(unsigned int width, unsigned int height)
-        : QEvent(static_cast<QEvent::Type> (WVlcPlayer::EventMedia))
-    {
-        this->width  = width;
-        this->height = height;
-    }
-
-public: // Variables
-    unsigned int width;
-    unsigned int height;
 };
 
 #endif // SK_NO_VLCPLAYER

@@ -74,20 +74,6 @@ QString WVlcPlayerPrivate::encodeUrl(const QUrl & url) const
 // Private static functions
 //-------------------------------------------------------------------------------------------------
 
-/* static */ void WVlcPlayerPrivate::eventMedia(const struct libvlc_event_t *, void * data)
-{
-    WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
-
-    if (d->backend == NULL) return;
-
-    unsigned int width  = 0;
-    unsigned int height = 0;
-
-    libvlc_video_get_size(d->player, 0, &width, &height);
-
-    QCoreApplication::postEvent(d->backend, new WVlcMediaEvent(width, height));
-}
-
 /* static */ void WVlcPlayerPrivate::eventPlaying(const struct libvlc_event_t *, void * data)
 {
     WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
@@ -420,9 +406,6 @@ bool WVlcPlayer::event(QEvent * event)
         {
             libvlc_media_add_option(media, option.C_STR);
         }
-
-        libvlc_event_attach(libvlc_media_event_manager(media),
-                            libvlc_MediaParsedChanged, d->eventMedia, d);
 
         libvlc_media_player_set_media(d->player, media);
 
