@@ -85,11 +85,11 @@ bool WVlcEngine::event(QEvent * event)
             "--ignore-config", /* Don't use VLC's config  */
             "--no-spu",        /* Don't use sub-pictures */
             "--no-osd",        /* No video overlay */
-            "--http-reconnect",
-            "--input-fast-seek",
-            "--avcodec-dr",
-            "--avcodec-fast",
-            "--avcodec-hurry-up",
+            "--input-fast-seek"
+            //"--http-reconnect",
+            //"--avcodec-dr",
+            //"--avcodec-fast",
+            //"--avcodec-hurry-up",
             //"--avcodec-hw",
             //"--avcodec-error-resilience=1",
             //"--avcodec-workaround-bugs=1",
