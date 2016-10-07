@@ -20,42 +20,15 @@
 
 // Qt includes
 #include <QCoreApplication>
-#include <QEvent>
 
 // Vlc includes
 #include <vlc/vlc.h>
-
-// Private includes
-#include <private/Sk_p>
 
 //-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
 
-class SK_MEDIA_EXPORT WVlcEnginePrivate : public WPrivate
-{
-public: // Enums
-    enum EventType
-    {
-        EventStart = QEvent::User,
-        EventStop
-    };
-
-public:
-    WVlcEnginePrivate(WVlcEngine * p);
-
-    /* virtual */ ~WVlcEnginePrivate();
-
-    void init(QThread * thread);
-
-public: // Variables
-    libvlc_instance_t * instance;
-
-protected:
-    W_DECLARE_PUBLIC(WVlcEngine)
-};
-
-//-------------------------------------------------------------------------------------------------
+#include "WVlcEngine_p.h"
 
 WVlcEnginePrivate::WVlcEnginePrivate(WVlcEngine * p) : WPrivate(p) {}
 
@@ -153,15 +126,6 @@ bool WVlcEngine::event(QEvent * event)
         return true;
     }
     else return QObject::event(event);
-}
-
-//-------------------------------------------------------------------------------------------------
-// Properties
-//-------------------------------------------------------------------------------------------------
-
-libvlc_instance_t * WVlcEngine::instance() const
-{
-    Q_D(const WVlcEngine); return d->instance;
 }
 
 #endif // SK_NO_VLCENGINE

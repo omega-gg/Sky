@@ -22,82 +22,19 @@
 #include <QCoreApplication>
 #include <QMutex>
 
-// Sk includes
-#include <private/Sk_p>
+// Private includes
+#include <private/WVlcEngine_p>
 
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
 static const int VLCPLAYER_NETWORK_CACHE = 200;
 
-//=================================================================================================
-// WVlcPlayerPrivate
-//=================================================================================================
-
-class SK_MEDIA_EXPORT WVlcPlayerPrivate : public WPrivate
-{
-public: // Enums
-    enum EventType
-    {
-        EventCreate = QEvent::User,
-        EventBackend,   // WVlcPlayerEventBackend
-        EventSetSource, // WVlcPlayerEvent QUrl
-        EventPlay,
-        EventPause,
-        EventStop,
-        EventSeekTo,    // WVlcPlayerEvent int
-        EventSetSpeed,  // WVlcPlayerEvent qreal
-        EventSetVolume, // WVlcPlayerEvent int
-        EventDelete
-    };
-
-public:
-    WVlcPlayerPrivate(WVlcPlayer * p);
-
-    void init(WVlcEngine * engine, QThread * thread);
-
-public: // Functions
-    QString encodeUrl(const QUrl & url) const;
-
-public: // Static functions
-    static void eventMedia(const struct libvlc_event_t * event, void * data);
-
-    static void eventPlaying(const struct libvlc_event_t * event, void * data);
-    static void eventPaused (const struct libvlc_event_t * event, void * data);
-    static void eventStopped(const struct libvlc_event_t * event, void * data);
-
-    static void eventBuffering(const struct libvlc_event_t * event, void * data);
-
-    static void eventLengthChanged(const struct libvlc_event_t * event, void * data);
-    static void eventTimeChanged  (const struct libvlc_event_t * event, void * data);
-
-    static void eventEndReached(const struct libvlc_event_t * event, void * data);
-
-    static void eventEncounteredError(const struct libvlc_event_t * event, void * data);
-
-public: // Variables
-    QMutex mutex;
-
-    WVlcEngine * engine;
-
-    libvlc_media_player_t * player;
-
-    QObject * backend;
-
-    QStringList options;
-
-    bool repeat;
-
-    int networkCache;
-
-    QString proxyHost;
-    QString proxyPassword;
-
-protected:
-    W_DECLARE_PUBLIC(WVlcPlayer)
-};
-
 //-------------------------------------------------------------------------------------------------
+// Private
+//-------------------------------------------------------------------------------------------------
+
+#include "WVlcPlayer_p.h"
 
 WVlcPlayerPrivate::WVlcPlayerPrivate(WVlcPlayer * p) : WPrivate(p) {}
 
@@ -251,81 +188,9 @@ QString WVlcPlayerPrivate::encodeUrl(const QUrl & url) const
                                 new QEvent(static_cast<QEvent::Type> (WVlcPlayer::EventError)));
 }
 
-//=================================================================================================
-// WVlcPlayerEventBackend
-//=================================================================================================
-
-class WVlcPlayerEventBackend : public QEvent
-{
-public:
-    WVlcPlayerEventBackend(QObject * backend,
-                           libvlc_video_format_cb  setup,
-                           libvlc_video_cleanup_cb cleanup,
-                           libvlc_video_lock_cb    lock,
-                           libvlc_video_unlock_cb  unlock,
-                           libvlc_video_display_cb display)
-        : QEvent(static_cast<QEvent::Type> (WVlcPlayerPrivate::EventBackend))
-    {
-        this->backend = backend;
-
-        this->setup   = setup;
-        this->cleanup = cleanup;
-
-        this->lock    = lock;
-        this->unlock  = unlock;
-        this->display = display;
-    }
-
-public: // Variables
-    QObject * backend;
-
-    libvlc_video_format_cb  setup;
-    libvlc_video_cleanup_cb cleanup;
-
-    libvlc_video_lock_cb    lock;
-    libvlc_video_unlock_cb  unlock;
-    libvlc_video_display_cb display;
-};
-
-//=================================================================================================
-// WVlcPlayerEventSource
-//=================================================================================================
-
-class WVlcPlayerEventSource : public QEvent
-{
-public:
-    WVlcPlayerEventSource(const QUrl & media, const QUrl & audio)
-        : QEvent(static_cast<QEvent::Type> (WVlcPlayerPrivate::EventSetSource))
-    {
-        this->media = media;
-        this->audio = audio;
-    }
-
-public: // Variables
-    QUrl media;
-    QUrl audio;
-};
-
-//=================================================================================================
-// WVlcPlayerPrivateEvent
-//=================================================================================================
-
-class WVlcPlayerPrivateEvent : public QEvent
-{
-public:
-    WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventType type, const QVariant & value)
-        : QEvent(static_cast<QEvent::Type> (type))
-    {
-        this->value = value;
-    }
-
-public: // Variables
-    QVariant value;
-};
-
-//=================================================================================================
-// WVlcPlayer
-//=================================================================================================
+//-------------------------------------------------------------------------------------------------
+// Ctor / dtor
+//-------------------------------------------------------------------------------------------------
 
 WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
     : QObject(parent), WPrivatable(new WVlcPlayerPrivate(this))
@@ -446,7 +311,7 @@ bool WVlcPlayer::event(QEvent * event)
 
     if (type == static_cast<QEvent::Type> (WVlcPlayerPrivate::EventCreate))
     {
-        d->player = libvlc_media_player_new(d->engine->instance());
+        d->player = libvlc_media_player_new(d->engine->d_func()->instance);
 
         // FIXME: Applying the player default volume.
         libvlc_audio_set_volume(d->player, 100);
@@ -507,7 +372,7 @@ bool WVlcPlayer::event(QEvent * event)
     {
         WVlcPlayerEventSource * eventSource = static_cast<WVlcPlayerEventSource *> (event);
 
-        libvlc_media_t * media = libvlc_media_new_location(d->engine->instance(),
+        libvlc_media_t * media = libvlc_media_new_location(d->engine->d_func()->instance,
                                                            d->encodeUrl(eventSource->media).C_STR);
 
         bool repeat;

@@ -117,6 +117,23 @@ private:
 };
 
 //-------------------------------------------------------------------------------------------------
+// WVlcPlayerEvent
+//-------------------------------------------------------------------------------------------------
+
+class WVlcPlayerEvent : public QEvent
+{
+public:
+    WVlcPlayerEvent(WVlcPlayer::EventType type, const QVariant & value)
+        : QEvent(static_cast<QEvent::Type> (type))
+    {
+        this->value = value;
+    }
+
+public: // Variables
+    QVariant value;
+};
+
+//-------------------------------------------------------------------------------------------------
 // WVlcMediaEvent
 //-------------------------------------------------------------------------------------------------
 
@@ -133,23 +150,6 @@ public:
 public: // Variables
     unsigned int width;
     unsigned int height;
-};
-
-//-------------------------------------------------------------------------------------------------
-// WVlcPlayerEvent
-//-------------------------------------------------------------------------------------------------
-
-class WVlcPlayerEvent : public QEvent
-{
-public:
-    WVlcPlayerEvent(WVlcPlayer::EventType type, const QVariant & value)
-        : QEvent(static_cast<QEvent::Type> (type))
-    {
-        this->value = value;
-    }
-
-public: // Variables
-    QVariant value;
 };
 
 #endif // SK_NO_VLCPLAYER

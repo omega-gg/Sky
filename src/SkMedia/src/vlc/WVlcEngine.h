@@ -25,14 +25,11 @@
 
 #ifndef SK_NO_VLCENGINE
 
-class  WVlcEnginePrivate;
-struct libvlc_instance_t;
+class WVlcEnginePrivate;
 
 class SK_MEDIA_EXPORT WVlcEngine : public QObject, public WPrivatable
 {
     Q_OBJECT
-
-    Q_PROPERTY(libvlc_instance_t * instance READ instance CONSTANT)
 
 public:
     WVlcEngine(QThread * thread = NULL, QObject * parent = NULL);
@@ -40,11 +37,11 @@ public:
 protected: // Events
     bool event(QEvent * event);
 
-public: // Properties
-    libvlc_instance_t * instance() const;
-
 private:
     W_DECLARE_PRIVATE(WVlcEngine)
+
+    friend class WVlcPlayer;
+    friend class WVlcPlayerPrivate;
 };
 
 #endif // SK_NO_VLCENGINE
