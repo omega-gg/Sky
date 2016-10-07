@@ -1,0 +1,32 @@
+StylePresentation 1.0 StylePresentation.qml
+
+TimerTempo 1.0 TimerTempo.qml
+
+AnimatedTime 1.0 AnimatedTime.qml
+
+BaseLogo 1.0 BaseLogo.qml
+
+ButtonBox 1.0 ButtonBox.qml
+
+Slides 1.0 Slides.qml
+
+SlideLayer 1.0 SlideLayer.qml
+
+SlideGradientVertical   1.0 SlideGradientVertical.qml
+SlideGradientHorizontal 1.0 SlideGradientHorizontal.qml
+
+SlideBackground 1.0 SlideBackground.qml
+SlideFrame      1.0 SlideFrame.qml
+
+SlideImage 1.0 SlideImage.qml
+SlideCover 1.0 SlideCover.qml
+
+SlideText      1.0 SlideText.qml
+SlideParagraph 1.0 SlideParagraph.qml
+
+SlidePlayer 1.0 SlidePlayer.qml
+
+Pulse         1.0 Pulse.qml
+PulseColor    1.0 PulseColor.qml
+PulseGradient 1.0 PulseGradient.qml
+PulseSvg      1.0 PulseSvg.qml
