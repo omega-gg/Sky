@@ -119,10 +119,10 @@ PFNGLMULTITEXCOORD2FARBPROC          pglMultiTexCoord2fARB          = 0;
                                     \
     glBegin(GL_POLYGON);            \
                                     \
-    glVertex2d(0,          0);      \
-    glVertex2d(0,     height);      \
-    glVertex2d(width, height);      \
-    glVertex2d(width,      0);      \
+    glVertex2i(0,          0);      \
+    glVertex2i(0,     height);      \
+    glVertex2i(width, height);      \
+    glVertex2i(width,      0);      \
                                     \
     glEnd();                        \
                                     \
@@ -135,41 +135,41 @@ PFNGLMULTITEXCOORD2FARBPROC          pglMultiTexCoord2fARB          = 0;
                                                          \
     glBegin(GL_POLYGON);                                 \
                                                          \
-    glTexCoord2f(0, 0);                                  \
+    glTexCoord2i(0, 0);                                  \
                                                          \
     for (int i = 0; i < 3; i++)                          \
     {                                                    \
         glMultiTexCoord2fARB(GL_TEXTURE0_ARB + i, 0, 0); \
     }                                                    \
                                                          \
-    glVertex2f(d->targetX, d->targetY);                  \
+    glVertex2i(d->targetX, d->targetY);                  \
                                                          \
-    glTexCoord2f(0, 1);                                  \
+    glTexCoord2i(0, 1);                                  \
                                                          \
     for (int i = 0; i < 3; i++)                          \
     {                                                    \
         glMultiTexCoord2fARB(GL_TEXTURE0_ARB + i, 0, 1); \
     }                                                    \
                                                          \
-    glVertex2f(d->targetX, d->targetHeight);             \
+    glVertex2i(d->targetX, d->targetHeight);             \
                                                          \
-    glTexCoord2f(1, 1);                                  \
+    glTexCoord2i(1, 1);                                  \
                                                          \
     for (int i = 0; i < 3; i++)                          \
     {                                                    \
         glMultiTexCoord2fARB(GL_TEXTURE0_ARB + i, 1, 1); \
     }                                                    \
                                                          \
-    glVertex2f(d->targetWidth, d->targetHeight);         \
+    glVertex2i(d->targetWidth, d->targetHeight);         \
                                                          \
-    glTexCoord2f(1, 0);                                  \
+    glTexCoord2i(1, 0);                                  \
                                                          \
     for (int i = 0; i < 3; i++)                          \
     {                                                    \
         glMultiTexCoord2fARB(GL_TEXTURE0_ARB + i, 1, 0); \
     }                                                    \
                                                          \
-    glVertex2f(d->targetWidth, d->targetY);              \
+    glVertex2i(d->targetWidth, d->targetY);              \
                                                          \
     glEnd();                                             \
                                                          \
@@ -220,10 +220,10 @@ void WBackendVlcPrivate::init()
 
     frameIndex = false;
 
-    targetX      = 0.f;
-    targetY      = 0.f;
-    targetWidth  = 0.f;
-    targetHeight = 0.f;
+    targetX      = 0;
+    targetY      = 0;
+    targetWidth  = 0;
+    targetHeight = 0;
 
     shader = false;
 
@@ -670,11 +670,11 @@ void WBackendVlcPrivate::updateTargetRect()
 
     targetRect = QRect(x, y, width, height);
 
-    targetX = (int) x;
-    targetY = (int) y;
+    targetX = x;
+    targetY = y;
 
-    targetWidth  = (int) x + width;
-    targetHeight = (int) y + height;
+    targetWidth  = x + width;
+    targetHeight = y + height;
 }
 
 //-------------------------------------------------------------------------------------------------

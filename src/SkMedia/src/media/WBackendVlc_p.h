@@ -154,10 +154,10 @@ public: // Variables
 
     QRect targetRect;
 
-    GLfloat targetX;
-    GLfloat targetY;
-    GLfloat targetWidth;
-    GLfloat targetHeight;
+    int targetX;
+    int targetY;
+    int targetWidth;
+    int targetHeight;
 
     bool shader;
 
