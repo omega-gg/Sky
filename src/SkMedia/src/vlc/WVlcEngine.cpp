@@ -88,9 +88,9 @@ bool WVlcEngine::event(QEvent * event)
             "--no-stats",
             "--no-media-library",
             "--input-fast-seek",
-            "--avcodec-dr",
-            "--avcodec-fast",
-            "--avcodec-hurry-up"
+            "--avcodec-fast"
+            //"--avcodec-dr",
+            //"--avcodec-hurry-up",
             //"--avcodec-hw=any",
             //"--avcodec-error-resilience=1",
             //"--avcodec-workaround-bugs=1",
