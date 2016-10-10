@@ -665,16 +665,13 @@ void WBackendVlcPrivate::updateTargetRect()
     qreal width  = frameSize.width ();
     qreal height = frameSize.height();
 
-    qreal x = (size.width () - width)  / 2;
-    qreal y = (size.height() - height) / 2;
+    targetX = (size.width () - width)  / 2;
+    targetY = (size.height() - height) / 2;
 
-    targetRect = QRect(x, y, width, height);
+    targetRect = QRect(targetX, targetY, width, height);
 
-    targetX = x;
-    targetY = y;
-
-    targetWidth  = x + width;
-    targetHeight = y + height;
+    targetWidth  = targetX + width;
+    targetHeight = targetY + height;
 }
 
 //-------------------------------------------------------------------------------------------------
