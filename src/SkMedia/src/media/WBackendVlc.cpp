@@ -976,11 +976,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
 /* virtual */ bool WBackendVlc::backendReplay()
 {
-    backendPlay();
-
-    backendSeekTo(0);
-
-    return true;
+    return backendPlay();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1506,7 +1502,7 @@ bool WBackendVlc::event(QEvent * event)
 
             setEnded(true);
         }
-        else backendReplay();
+        else backendPlay();
 
         return true;
     }
