@@ -142,7 +142,7 @@ PFNGLMULTITEXCOORD2FARBPROC          pglMultiTexCoord2fARB          = 0;
         glMultiTexCoord2fARB(GL_TEXTURE0_ARB + i, 0, 0); \
     }                                                    \
                                                          \
-    glVertex2i(d->targetX, d->targetY);                  \
+    glVertex2f(d->targetX, d->targetY);                  \
                                                          \
     glTexCoord2i(0, 1);                                  \
                                                          \
@@ -151,7 +151,7 @@ PFNGLMULTITEXCOORD2FARBPROC          pglMultiTexCoord2fARB          = 0;
         glMultiTexCoord2fARB(GL_TEXTURE0_ARB + i, 0, 1); \
     }                                                    \
                                                          \
-    glVertex2i(d->targetX, d->targetHeight);             \
+    glVertex2f(d->targetX, d->targetHeight);             \
                                                          \
     glTexCoord2i(1, 1);                                  \
                                                          \
@@ -160,7 +160,7 @@ PFNGLMULTITEXCOORD2FARBPROC          pglMultiTexCoord2fARB          = 0;
         glMultiTexCoord2fARB(GL_TEXTURE0_ARB + i, 1, 1); \
     }                                                    \
                                                          \
-    glVertex2i(d->targetWidth, d->targetHeight);         \
+    glVertex2f(d->targetWidth, d->targetHeight);         \
                                                          \
     glTexCoord2i(1, 0);                                  \
                                                          \
@@ -169,7 +169,7 @@ PFNGLMULTITEXCOORD2FARBPROC          pglMultiTexCoord2fARB          = 0;
         glMultiTexCoord2fARB(GL_TEXTURE0_ARB + i, 1, 0); \
     }                                                    \
                                                          \
-    glVertex2i(d->targetWidth, d->targetY);              \
+    glVertex2f(d->targetWidth, d->targetY);              \
                                                          \
     glEnd();                                             \
                                                          \
@@ -220,10 +220,10 @@ void WBackendVlcPrivate::init()
 
     frameIndex = false;
 
-    targetX      = 0;
-    targetY      = 0;
-    targetWidth  = 0;
-    targetHeight = 0;
+    targetX      = 0.f;
+    targetY      = 0.f;
+    targetWidth  = 0.f;
+    targetHeight = 0.f;
 
     shader = false;
 
@@ -665,13 +665,16 @@ void WBackendVlcPrivate::updateTargetRect()
     qreal width  = frameSize.width ();
     qreal height = frameSize.height();
 
-    targetX = (size.width () - width)  / 2;
-    targetY = (size.height() - height) / 2;
+    int x = (size.width () - width)  / 2;
+    int y = (size.height() - height) / 2;
 
-    targetRect = QRect(targetX, targetY, width, height);
+    targetRect = QRect(x, y, width, height);
 
-    targetWidth  = targetX + width;
-    targetHeight = targetY + height;
+    targetX = x;
+    targetY = y;
+
+    targetWidth  = x + width;
+    targetHeight = y + height;
 }
 
 //-------------------------------------------------------------------------------------------------
