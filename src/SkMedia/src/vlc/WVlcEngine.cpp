@@ -80,15 +80,15 @@ bool WVlcEngine::event(QEvent * event)
     {
         const char * const args[] =
         {
-            "--intf=dummy",    /* Don't use any interface */
-            "--dummy-quiet",   /* Don't open command prompt */
-            "--ignore-config", /* Don't use VLC's config  */
-            "--no-spu",        /* Don't use sub-pictures */
-            "--no-osd",        /* No video overlay */
-            "--no-stats",
-            "--no-media-library",
-            "--input-fast-seek",
-            "--avcodec-fast"
+            "--intf=dummy",       /* No interface     */
+            "--dummy-quiet",      /* No command-line  */
+            "--ignore-config",    /* No configuration */
+            "--no-spu",           /* No sub-pictures  */
+            "--no-osd",           /* No video overlay */
+            "--no-stats",         /* No statistics    */
+            "--no-media-library", /* No Media Library */
+            "--input-fast-seek",  /* Fast seek        */
+            "--avcodec-fast"      /* Speed tricks     */
             //"--avcodec-dr",
             //"--avcodec-hurry-up",
             //"--avcodec-hw=any",
