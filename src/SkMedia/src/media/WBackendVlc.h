@@ -17,10 +17,6 @@
 #ifndef WBACKENDVLC_H
 #define WBACKENDVLC_H
 
-// Qt includes
-#include <QGLWidget>
-#include <QMutex>
-
 // Sk includes
 #include <WAbstractBackend>
 

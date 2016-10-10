@@ -28,7 +28,8 @@
 */
 
 // Qt includes
-#include <QEvent>
+#include <QGLWidget>
+#include <QMutex>
 #include <QMetaMethod>
 
 // Sk includes
@@ -40,7 +41,6 @@
 #ifndef SK_NO_BACKENDVLC
 
 // Forward declarations
-class WRemoteData;
 class WMediaReply;
 
 //-------------------------------------------------------------------------------------------------
