@@ -118,11 +118,11 @@ QString WBackendVimeoPrivate::extractCover(const QString & cover) const
         {
             index = cover.lastIndexOf('_');
 
-            if (index != -1)
+            if (index == -1)
             {
-                 return cover.mid(0, index + 1) + "1280.jpg";
+                 return cover;
             }
-            else return cover;
+            else return cover.mid(0, index + 1) + "1280.jpg";
         }
         else
         {
