@@ -31,7 +31,6 @@ Animated
     /* read */ property real ratio: width / slide_width
 
     property bool animate: true
-    property bool fade   : false
 
     property real volume: 1.0
 
@@ -162,15 +161,7 @@ Animated
 
             if (stepDirection == Animated.StepForward)
             {
-                if (fade)
-                {
-                     pFade(0, 4, 0, 1);
-                }
-                else pSlide(loaderB, 0, 2, 0, 1);
-            }
-            else if (fade)
-            {
-                 pFade(3, 0, 1, 0);
+                 pSlide(loaderB, 0, 2, 0, 1);
             }
             else pSlide(loaderA, 1, 0, 1, 0);
         }
@@ -190,15 +181,7 @@ Animated
 
             if (stepDirection == Animated.StepForward)
             {
-                if (fade)
-                {
-                     pFade(0, 3, 1, 0);
-                }
-                else pSlide(loaderA, 0, 1, 1, 0);
-            }
-            else if (fade)
-            {
-                 pFade(4, 0, 0, 1);
+                 pSlide(loaderA, 0, 1, 1, 0);
             }
             else pSlide(loaderB, 2, 0, 0, 1);
         }
@@ -236,26 +219,6 @@ Animated
         border.anchors.left = item.right;
 
         border.visible = true;
-    }
-
-    //---------------------------------------------------------------------------------------------
-
-    function pFade(stateA, stateB, zA, zB)
-    {
-        isAnimated = false;
-
-        pState = stateA;
-
-        loaderA.z = zA;
-        loaderB.z = zB;
-
-        slide();
-
-        isAnimated = animate;
-
-        pTransition = true;
-
-        pState = stateB;
     }
 
     //---------------------------------------------------------------------------------------------
