@@ -141,6 +141,7 @@ public: // Static functions
 
     Q_INVOKABLE static QByteArray readAll(const QString & fileName);
 
+    Q_INVOKABLE static bool exists   (const QString & fileName);
     Q_INVOKABLE static bool tryAppend(const QString & fileName);
 
     //---------------------------------------------------------------------------------------------

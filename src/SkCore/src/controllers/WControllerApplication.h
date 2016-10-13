@@ -102,7 +102,7 @@ public: // Interface
     Q_INVOKABLE void    setClipboardText(const QString & text);
 
 public: // Static interface
-    Q_INVOKABLE static QString quote(const QString & string);
+    Q_INVOKABLE static bool fileExists(const QString & fileName);
 
     Q_INVOKABLE static bool fuzzyCompare(qreal valueA, qreal valueB);
 
@@ -130,6 +130,7 @@ public: // Static interface
     Q_INVOKABLE static QString simplify  (const QString & string);
     Q_INVOKABLE static QString reverse   (const QString & string);
     Q_INVOKABLE static QString capitalize(const QString & string);
+    Q_INVOKABLE static QString quote     (const QString & string);
 
     Q_INVOKABLE static QString slice(const QString & string, int start, int end);
 

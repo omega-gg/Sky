@@ -384,12 +384,10 @@ void WControllerApplication::startScript()
 // Static interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ QString WControllerApplication::quote(const QString & string)
+/* Q_INVOKABLE static */ bool WControllerApplication::fileExists(const QString & fileName)
 {
-    return '"' + string + '"';
+    return WControllerFile::exists(fileName);
 }
-
-//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ bool WControllerApplication::fuzzyCompare(qreal valueA, qreal valueB)
 {
@@ -509,6 +507,13 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
         return result;
     }
     else return QString();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QString WControllerApplication::quote(const QString & string)
+{
+    return '"' + string + '"';
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -731,6 +731,13 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ bool WControllerFile::exists(const QString & fileName)
+{
+    QFile file(toLocalFile(fileName));
+
+    return file.exists();
+}
+
 /* Q_INVOKABLE static */ bool WControllerFile::tryAppend(const QString & fileName)
 {
     QFile file(toLocalFile(fileName));
