@@ -351,6 +351,8 @@ Animated
     {
         id: border
 
+        size: sp.slides_borderSize
+
         visible: false
     }
 }
