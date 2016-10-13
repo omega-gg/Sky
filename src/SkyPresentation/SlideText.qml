@@ -45,7 +45,7 @@ TextSvgScale
 
     styleSize: sp.slideText_styleSize
 
-    zoom: slides.ratio
+    zoom: (slides) ? slides.ratio : 1.0
 
     scaleDelay: sp.slideText_scaleDelay
 

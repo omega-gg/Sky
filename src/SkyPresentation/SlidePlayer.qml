@@ -61,7 +61,7 @@ Player
 
     backend: BackendVlc {}
 
-    volume: (pVolume) ? slides.volume : 0.0
+    volume: (slides && pVolume) ? slides.volume : 0.0
 
     //---------------------------------------------------------------------------------------------
     // Events
