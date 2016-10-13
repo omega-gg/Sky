@@ -12,6 +12,8 @@ Slides 1.0 Slides.qml
 
 SlideLayer 1.0 SlideLayer.qml
 
+SlideRectangle 1.0 SlideRectangle.qml
+
 SlideGradientVertical   1.0 SlideGradientVertical.qml
 SlideGradientHorizontal 1.0 SlideGradientHorizontal.qml
 
