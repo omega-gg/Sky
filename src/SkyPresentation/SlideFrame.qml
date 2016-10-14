@@ -24,7 +24,7 @@ Rectangle
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property real size: sp.slideFrame_size
+    property real size: ds(8)
 
     property real padding: 0
 
