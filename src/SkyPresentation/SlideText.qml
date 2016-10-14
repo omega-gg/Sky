@@ -33,7 +33,8 @@ TextSvgScale
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    margin: ds(8)
+    marginWidth : ds(16)
+    marginHeight: ds(8)
 
     zoom: (slides) ? slides.ratio : 1.0
 

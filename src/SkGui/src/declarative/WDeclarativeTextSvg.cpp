@@ -46,7 +46,8 @@ void WDeclarativeTextSvgPrivate::init()
     width  = 0;
     height = 0;
 
-    margin = 0;
+    marginWidth  = 0;
+    marginHeight = 0;
 
     zoom = 1.0;
 
@@ -79,23 +80,23 @@ QRectF WDeclarativeTextSvgPrivate::getRect(qreal width, qreal height)
 
     if (hAlign == WDeclarativeText::AlignRight)
     {
-        x = width - textWidth + margin;
+        x = width - textWidth + marginWidth;
     }
     else if (hAlign == WDeclarativeText::AlignHCenter)
     {
-        x = (width - textWidth) / 2 + margin;
+        x = (width - textWidth) / 2 + marginWidth;
     }
-    else x = margin;
+    else x = marginWidth;
 
     if (vAlign == WDeclarativeText::AlignBottom)
     {
-        y = height - textHeight + margin;
+        y = height - textHeight + marginHeight;
     }
     else if (vAlign == WDeclarativeText::AlignVCenter)
     {
-        y = (height - textHeight) / 2 + margin;
+        y = (height - textHeight) / 2 + marginHeight;
     }
-    else y = margin;
+    else y = marginHeight;
 
     return QRectF(x, y, textWidth, textHeight);
 }
@@ -415,10 +416,8 @@ WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p,
 {
     Q_D(WDeclarativeTextSvg);
 
-    qreal margins = d->margin * 2;
-
-    setImplicitWidth (d->width  * d->zoom + margins);
-    setImplicitHeight(d->height * d->zoom + margins);
+    setImplicitWidth (d->width  * d->zoom + d->marginWidth  * 2);
+    setImplicitHeight(d->height * d->zoom + d->marginHeight * 2);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -442,24 +441,44 @@ WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p,
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-qreal WDeclarativeTextSvg::margin() const
+int WDeclarativeTextSvg::marginWidth() const
 {
-    Q_D(const WDeclarativeTextSvg); return d->margin;
+    Q_D(const WDeclarativeTextSvg); return d->marginWidth;
 }
 
-void WDeclarativeTextSvg::setMargin(qreal margin)
+void WDeclarativeTextSvg::setMarginWidth(int width)
 {
     Q_D(WDeclarativeTextSvg);
 
-    if (d->margin == margin) return;
+    if (d->marginWidth == width) return;
 
-    d->margin = margin;
+    d->marginWidth = width;
 
     svgChange();
 
     update();
 
-    emit marginChanged();
+    emit marginWidthChanged();
+}
+
+int WDeclarativeTextSvg::marginHeight() const
+{
+    Q_D(const WDeclarativeTextSvg); return d->marginHeight;
+}
+
+void WDeclarativeTextSvg::setMarginHeight(int height)
+{
+    Q_D(WDeclarativeTextSvg);
+
+    if (d->marginHeight == height) return;
+
+    d->marginHeight = height;
+
+    svgChange();
+
+    update();
+
+    emit marginHeightChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -482,6 +501,46 @@ void WDeclarativeTextSvg::setZoom(qreal zoom)
     update();
 
     emit zoomChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+WDeclarativeText::HAlignment WDeclarativeTextSvg::hAlign() const
+{
+    Q_D(const WDeclarativeTextSvg); return d->hAlign;
+}
+
+void WDeclarativeTextSvg::setHAlign(WDeclarativeText::HAlignment align)
+{
+    Q_D(WDeclarativeTextSvg);
+
+    if (d->hAlign == align) return;
+
+    d->hAlign = align;
+
+    update();
+
+    emit horizontalAlignmentChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+WDeclarativeText::VAlignment WDeclarativeTextSvg::vAlign() const
+{
+    Q_D(const WDeclarativeTextSvg); return d->vAlign;
+}
+
+void WDeclarativeTextSvg::setVAlign(WDeclarativeText::VAlignment align)
+{
+    Q_D(WDeclarativeTextSvg);
+
+    if (d->vAlign == align) return;
+
+    d->vAlign = align;
+
+    update();
+
+    emit verticalAlignmentChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -675,46 +734,6 @@ void WDeclarativeTextSvg::setStyleSize(int size)
     if (isComponentComplete()) d->load();
 
     emit styleSizeChanged();
-}
-
-//-------------------------------------------------------------------------------------------------
-
-WDeclarativeText::HAlignment WDeclarativeTextSvg::hAlign() const
-{
-    Q_D(const WDeclarativeTextSvg); return d->hAlign;
-}
-
-void WDeclarativeTextSvg::setHAlign(WDeclarativeText::HAlignment align)
-{
-    Q_D(WDeclarativeTextSvg);
-
-    if (d->hAlign == align) return;
-
-    d->hAlign = align;
-
-    update();
-
-    emit horizontalAlignmentChanged();
-}
-
-//-------------------------------------------------------------------------------------------------
-
-WDeclarativeText::VAlignment WDeclarativeTextSvg::vAlign() const
-{
-    Q_D(const WDeclarativeTextSvg); return d->vAlign;
-}
-
-void WDeclarativeTextSvg::setVAlign(WDeclarativeText::VAlignment align)
-{
-    Q_D(WDeclarativeTextSvg);
-
-    if (d->vAlign == align) return;
-
-    d->vAlign = align;
-
-    update();
-
-    emit verticalAlignmentChanged();
 }
 
 //=================================================================================================

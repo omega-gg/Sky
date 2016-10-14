@@ -39,9 +39,16 @@ class SK_GUI_EXPORT WDeclarativeTextSvg : public WDeclarativeItem
     Q_ENUMS(TextStyle)
     Q_ENUMS(TextOutline)
 
-    Q_PROPERTY(qreal margin READ margin WRITE setMargin NOTIFY marginChanged)
+    Q_PROPERTY(int marginWidth  READ marginWidth  WRITE setMarginWidth  NOTIFY marginWidthChanged)
+    Q_PROPERTY(int marginHeight READ marginHeight WRITE setMarginHeight NOTIFY marginHeightChanged)
 
     Q_PROPERTY(qreal zoom READ zoom WRITE setZoom NOTIFY zoomChanged)
+
+    Q_PROPERTY(WDeclarativeText::HAlignment horizontalAlignment READ hAlign WRITE setHAlign
+               NOTIFY horizontalAlignmentChanged)
+
+    Q_PROPERTY(WDeclarativeText::VAlignment verticalAlignment READ vAlign WRITE setVAlign
+               NOTIFY verticalAlignmentChanged)
 
     Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
 
@@ -59,12 +66,6 @@ class SK_GUI_EXPORT WDeclarativeTextSvg : public WDeclarativeItem
 
     Q_PROPERTY(QColor styleColor READ styleColor WRITE setStyleColor NOTIFY styleColorChanged)
     Q_PROPERTY(int    styleSize  READ styleSize  WRITE setStyleSize  NOTIFY styleSizeChanged)
-
-    Q_PROPERTY(WDeclarativeText::HAlignment horizontalAlignment READ hAlign WRITE setHAlign
-               NOTIFY horizontalAlignmentChanged)
-
-    Q_PROPERTY(WDeclarativeText::VAlignment verticalAlignment READ vAlign WRITE setVAlign
-               NOTIFY verticalAlignmentChanged)
 
 public: // Enums
     enum LoadMode { LoadAlways, LoadVisible };
@@ -99,9 +100,13 @@ protected: // QGraphicsItem reimplementation
     /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 
 signals:
-    void marginChanged();
+    void marginWidthChanged ();
+    void marginHeightChanged();
 
     void zoomChanged();
+
+    void horizontalAlignmentChanged();
+    void verticalAlignmentChanged  ();
 
     void textChanged();
 
@@ -118,15 +123,21 @@ signals:
     void styleColorChanged();
     void styleSizeChanged ();
 
-    void horizontalAlignmentChanged();
-    void verticalAlignmentChanged  ();
-
 public: // Properties
-    qreal margin() const;
-    void  setMargin(qreal margin);
+    int  marginWidth() const;
+    void setMarginWidth(int width);
+
+    int  marginHeight() const;
+    void setMarginHeight(int height);
 
     qreal zoom() const;
     void  setZoom(qreal zoom);
+
+    WDeclarativeText::HAlignment hAlign() const;
+    void                         setHAlign(WDeclarativeText::HAlignment align);
+
+    WDeclarativeText::VAlignment vAlign() const;
+    void                         setVAlign(WDeclarativeText::VAlignment align);
 
     QString text() const;
     void    setText(const QString & text);
@@ -154,12 +165,6 @@ public: // Properties
 
     int  styleSize() const;
     void setStyleSize(int size);
-
-    WDeclarativeText::HAlignment hAlign() const;
-    void                         setHAlign(WDeclarativeText::HAlignment align);
-
-    WDeclarativeText::VAlignment vAlign() const;
-    void                         setVAlign(WDeclarativeText::VAlignment align);
 
 private:
     W_DECLARE_PRIVATE(WDeclarativeTextSvg)

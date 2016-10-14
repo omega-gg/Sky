@@ -86,7 +86,8 @@ public: // Variables
     int width;
     int height;
 
-    qreal margin;
+    int marginWidth;
+    int marginHeight;
 
     QString text;
 

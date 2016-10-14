@@ -29,7 +29,11 @@ Item
 
     //---------------------------------------------------------------------------------------------
 
-    property real margin: ds(8)
+    property int marginWidth : ds(16)
+    property int marginHeight: ds(8)
+
+    property int horizontalAlignment: Text.AlignHCenter
+    property int verticalAlignment  : Text.AlignVCenter
 
     property string text
 
@@ -43,9 +47,6 @@ Item
                                                       : st.text_colorShadow
 
     property int styleSize: sp.slideText_styleSize
-
-    property int horizontalAlignment: Text.AlignHCenter
-    property int verticalAlignment  : Text.AlignVCenter
 
     property string family   : st.text_fontFamily
     property int    pixelSize: sp.slideText_pixelSize
@@ -130,7 +131,7 @@ Item
 
     function pGetWidth()
     {
-        var width = margin * 2;
+        var width = marginWidth;
 
         for (var i = 0; i < count; i++)
         {
@@ -147,7 +148,7 @@ Item
 
     function pGetHeight()
     {
-        var height = margin * 2;
+        var height = marginHeight;
 
         for (var i = 0; i < count; i++)
         {
@@ -163,7 +164,7 @@ Item
     {
         if (index < 1)
         {
-            return margin;
+            return marginHeight;
         }
 
         var item = pItemAt(index - 1);
@@ -187,7 +188,8 @@ Item
         {
             width: repeater.width
 
-            margin: 0
+            marginWidth : 0
+            marginHeight: 0
 
             horizontalAlignment: slideParagraph.horizontalAlignment
             verticalAlignment  : slideParagraph.verticalAlignment
