@@ -39,6 +39,10 @@ class SK_GUI_EXPORT WDeclarativeTextSvg : public WDeclarativeItem
     Q_ENUMS(TextStyle)
     Q_ENUMS(TextOutline)
 
+    Q_PROPERTY(qreal margin READ margin WRITE setMargin NOTIFY marginChanged)
+
+    Q_PROPERTY(qreal zoom READ zoom WRITE setZoom NOTIFY zoomChanged)
+
     Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
 
     Q_PROPERTY(LoadMode loadMode READ loadMode WRITE setLoadMode NOTIFY loadModeChanged)
@@ -61,8 +65,6 @@ class SK_GUI_EXPORT WDeclarativeTextSvg : public WDeclarativeItem
 
     Q_PROPERTY(WDeclarativeText::VAlignment verticalAlignment READ vAlign WRITE setVAlign
                NOTIFY verticalAlignmentChanged)
-
-    Q_PROPERTY(qreal zoom READ zoom WRITE setZoom NOTIFY zoomChanged)
 
 public: // Enums
     enum LoadMode { LoadAlways, LoadVisible };
@@ -97,6 +99,10 @@ protected: // QGraphicsItem reimplementation
     /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 
 signals:
+    void marginChanged();
+
+    void zoomChanged();
+
     void textChanged();
 
     void loadModeChanged();
@@ -115,9 +121,13 @@ signals:
     void horizontalAlignmentChanged();
     void verticalAlignmentChanged  ();
 
-    void zoomChanged();
-
 public: // Properties
+    qreal margin() const;
+    void  setMargin(qreal margin);
+
+    qreal zoom() const;
+    void  setZoom(qreal zoom);
+
     QString text() const;
     void    setText(const QString & text);
 
@@ -150,9 +160,6 @@ public: // Properties
 
     WDeclarativeText::VAlignment vAlign() const;
     void                         setVAlign(WDeclarativeText::VAlignment align);
-
-    qreal zoom() const;
-    void  setZoom(qreal zoom);
 
 private:
     W_DECLARE_PRIVATE(WDeclarativeTextSvg)

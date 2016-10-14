@@ -33,6 +33,10 @@ TextSvgScale
     // Settings
     //---------------------------------------------------------------------------------------------
 
+    margin: ds(8)
+
+    zoom: (slides) ? slides.ratio : 1.0
+
     loadMode: TextSvg.LoadAlways
 
     color: st.text_color
@@ -44,8 +48,6 @@ TextSvgScale
                                        : st.text_colorShadow
 
     styleSize: sp.slideText_styleSize
-
-    zoom: (slides) ? slides.ratio : 1.0
 
     scaleDelay: sp.slideText_scaleDelay
 

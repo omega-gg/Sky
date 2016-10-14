@@ -27,6 +27,10 @@ Item
 
     /* read */ property int count: model.count
 
+    //---------------------------------------------------------------------------------------------
+
+    property real margin: ds(8)
+
     property string text
 
     property color   color   : st.text_color
@@ -126,7 +130,7 @@ Item
 
     function pGetWidth()
     {
-        var width = 0;
+        var width = margin * 2;
 
         for (var i = 0; i < count; i++)
         {
@@ -143,7 +147,7 @@ Item
 
     function pGetHeight()
     {
-        var height = 0;
+        var height = margin * 2;
 
         for (var i = 0; i < count; i++)
         {
@@ -157,7 +161,10 @@ Item
 
     function pGetY(index)
     {
-        if (index < 1) return 0;
+        if (index < 1)
+        {
+            return margin;
+        }
 
         var item = pItemAt(index - 1);
 
@@ -179,6 +186,8 @@ Item
         delegate: SlideText
         {
             width: repeater.width
+
+            margin: 0
 
             horizontalAlignment: slideParagraph.horizontalAlignment
             verticalAlignment  : slideParagraph.verticalAlignment

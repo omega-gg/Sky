@@ -46,6 +46,10 @@ void WDeclarativeTextSvgPrivate::init()
     width  = 0;
     height = 0;
 
+    margin = 0;
+
+    zoom = 1.0;
+
     gradient = NULL;
 
     style   = WDeclarativeTextSvg::Normal;
@@ -55,8 +59,6 @@ void WDeclarativeTextSvgPrivate::init()
 
     hAlign = WDeclarativeText::AlignLeft;
     vAlign = WDeclarativeText::AlignTop;
-
-    zoom = 1.0;
 
     QObject::connect(renderer, SIGNAL(repaintNeeded()), q, SLOT(onUpdate()));
 
@@ -69,33 +71,31 @@ void WDeclarativeTextSvgPrivate::init()
 
 QRectF WDeclarativeTextSvgPrivate::getRect(qreal width, qreal height)
 {
-    Q_Q(WDeclarativeTextSvg);
-
     qreal x;
     qreal y;
 
-    int textWidth  = q->implicitWidth ();
-    int textHeight = q->implicitHeight();
+    int textWidth  = this->width  * zoom;
+    int textHeight = this->height * zoom;
 
     if (hAlign == WDeclarativeText::AlignRight)
     {
-        x = width - textWidth;
+        x = width - textWidth + margin;
     }
     else if (hAlign == WDeclarativeText::AlignHCenter)
     {
-        x = (width - textWidth) / 2;
+        x = (width - textWidth) / 2 + margin;
     }
-    else x = 0;
+    else x = margin;
 
     if (vAlign == WDeclarativeText::AlignBottom)
     {
-        y = height - textHeight;
+        y = height - textHeight + margin;
     }
     else if (vAlign == WDeclarativeText::AlignVCenter)
     {
-        y = (height - textHeight) / 2;
+        y = (height - textHeight) / 2 + margin;
     }
-    else y = 0;
+    else y = margin;
 
     return QRectF(x, y, textWidth, textHeight);
 }
@@ -415,8 +415,10 @@ WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p,
 {
     Q_D(WDeclarativeTextSvg);
 
-    setImplicitWidth (d->width  * d->zoom);
-    setImplicitHeight(d->height * d->zoom);
+    qreal margins = d->margin * 2;
+
+    setImplicitWidth (d->width  * d->zoom + margins);
+    setImplicitHeight(d->height * d->zoom + margins);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -438,6 +440,50 @@ WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p,
 
 //-------------------------------------------------------------------------------------------------
 // Properties
+//-------------------------------------------------------------------------------------------------
+
+qreal WDeclarativeTextSvg::margin() const
+{
+    Q_D(const WDeclarativeTextSvg); return d->margin;
+}
+
+void WDeclarativeTextSvg::setMargin(qreal margin)
+{
+    Q_D(WDeclarativeTextSvg);
+
+    if (d->margin == margin) return;
+
+    d->margin = margin;
+
+    svgChange();
+
+    update();
+
+    emit marginChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+qreal WDeclarativeTextSvg::zoom() const
+{
+    Q_D(const WDeclarativeTextSvg); return d->zoom;
+}
+
+void WDeclarativeTextSvg::setZoom(qreal zoom)
+{
+    Q_D(WDeclarativeTextSvg);
+
+    if (d->zoom == zoom) return;
+
+    d->zoom = zoom;
+
+    svgChange();
+
+    update();
+
+    emit zoomChanged();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 QString WDeclarativeTextSvg::text() const
@@ -669,28 +715,6 @@ void WDeclarativeTextSvg::setVAlign(WDeclarativeText::VAlignment align)
     update();
 
     emit verticalAlignmentChanged();
-}
-
-//-------------------------------------------------------------------------------------------------
-
-qreal WDeclarativeTextSvg::zoom() const
-{
-    Q_D(const WDeclarativeTextSvg); return d->zoom;
-}
-
-void WDeclarativeTextSvg::setZoom(qreal zoom)
-{
-    Q_D(WDeclarativeTextSvg);
-
-    if (d->zoom == zoom) return;
-
-    d->zoom = zoom;
-
-    svgChange();
-
-    update();
-
-    emit zoomChanged();
 }
 
 //=================================================================================================
