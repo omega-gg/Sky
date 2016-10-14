@@ -193,11 +193,7 @@ Animated
     {
         isAnimated = false;
 
-        if (pState == stateA)
-        {
-            pState = -1;
-        }
-
+        pState = -1;
         pState = stateA;
 
         loaderA.z = zA;
