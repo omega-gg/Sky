@@ -31,8 +31,8 @@ Item
 
     /* read */ property int textHeight: pGetTextHeight()
 
-    property int marginWidth : textHeight / 4
-    property int marginHeight: textHeight / 8
+    property int marginWidth : ds(textHeight / 4)
+    property int marginHeight: ds(textHeight / 8)
 
     property int horizontalAlignment: Text.AlignHCenter
     property int verticalAlignment  : Text.AlignVCenter
