@@ -24,7 +24,12 @@ SlideImage 1.0 SlideImage.qml
 SlideCover 1.0 SlideCover.qml
 
 SlideText      1.0 SlideText.qml
-SlideParagraph 1.0 SlideParagraph.qml
+SlideTextLeft  1.0 SlideTextLeft.qml
+SlideTextRight 1.0 SlideTextRight.qml
+
+SlideParagraph      1.0 SlideParagraph.qml
+SlideParagraphLeft  1.0 SlideParagraphLeft.qml
+SlideParagraphRight 1.0 SlideParagraphRight.qml
 
 SlidePlayer 1.0 SlidePlayer.qml
 
