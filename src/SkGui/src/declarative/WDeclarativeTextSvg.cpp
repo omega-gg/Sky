@@ -101,21 +101,21 @@ QRectF WDeclarativeTextSvgPrivate::getRect(qreal width, qreal height)
 
     if (hAlign == WDeclarativeText::AlignRight)
     {
-        x = width - textWidth + marginWidth;
+        x = width - textWidth - marginWidth;
     }
     else if (hAlign == WDeclarativeText::AlignHCenter)
     {
-        x = (width - textWidth) / 2 + marginWidth;
+        x = (width - textWidth) / 2;
     }
     else x = marginWidth;
 
     if (vAlign == WDeclarativeText::AlignBottom)
     {
-        y = height - textHeight + marginHeight;
+        y = height - textHeight - marginWidth;
     }
     else if (vAlign == WDeclarativeText::AlignVCenter)
     {
-        y = (height - textHeight) / 2 + marginHeight;
+        y = (height - textHeight) / 2;
     }
     else y = marginHeight;
 

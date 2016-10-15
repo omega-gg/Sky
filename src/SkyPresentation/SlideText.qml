@@ -38,6 +38,9 @@ TextSvgScale
 
     zoom: (slides) ? slides.ratio : 1.0
 
+    horizontalAlignment: Text.AlignHCenter
+    verticalAlignment  : Text.AlignVCenter
+
     loadMode: TextSvg.LoadAlways
 
     color: st.text_color
