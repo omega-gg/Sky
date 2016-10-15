@@ -50,6 +50,8 @@ protected:
     void init();
 
 public: // Functions
+    void setTextSize(int width, int height);
+
     QRectF getRect(qreal width, qreal height);
 
     void load       ();
@@ -83,8 +85,8 @@ public: // Variables
 
     bool loadLater : 1;
 
-    int width;
-    int height;
+    int textWidth;
+    int textHeight;
 
     int marginWidth;
     int marginHeight;

@@ -29,8 +29,10 @@ Item
 
     //---------------------------------------------------------------------------------------------
 
-    property int marginWidth : ds(16)
-    property int marginHeight: ds(8)
+    /* read */ property int textHeight: pGetTextHeight()
+
+    property int marginWidth : textHeight / 4
+    property int marginHeight: textHeight / 8
 
     property int horizontalAlignment: Text.AlignHCenter
     property int verticalAlignment  : Text.AlignVCenter
@@ -129,9 +131,20 @@ Item
 
     //---------------------------------------------------------------------------------------------
 
+    function pGetTextHeight()
+    {
+        if (count)
+        {
+             return pItemAt(0).textHeight;
+        }
+        else return 0;
+    }
+
+    //---------------------------------------------------------------------------------------------
+
     function pGetWidth()
     {
-        var width = marginWidth;
+        var width = 0;
 
         for (var i = 0; i < count; i++)
         {
@@ -148,7 +161,7 @@ Item
 
     function pGetHeight()
     {
-        var height = marginHeight;
+        var height = marginHeight * 2;
 
         for (var i = 0; i < count; i++)
         {
@@ -188,7 +201,7 @@ Item
         {
             width: repeater.width
 
-            marginWidth : 0
+            marginWidth : slideParagraph.marginWidth
             marginHeight: 0
 
             horizontalAlignment: slideParagraph.horizontalAlignment

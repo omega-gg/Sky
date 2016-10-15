@@ -43,8 +43,8 @@ void WDeclarativeTextSvgPrivate::init()
 
     loadLater = false;
 
-    width  = 0;
-    height = 0;
+    textWidth  = 0;
+    textHeight = 0;
 
     marginWidth  = 0;
     marginHeight = 0;
@@ -70,13 +70,34 @@ void WDeclarativeTextSvgPrivate::init()
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
+void WDeclarativeTextSvgPrivate::setTextSize(int width, int height)
+{
+    Q_Q(WDeclarativeTextSvg);
+
+    if (textWidth != width)
+    {
+        textWidth = width;
+
+        emit q->textWidthChanged();
+    }
+
+    if (textHeight != height)
+    {
+        textHeight = height;
+
+        emit q->textHeightChanged();
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
 QRectF WDeclarativeTextSvgPrivate::getRect(qreal width, qreal height)
 {
     qreal x;
     qreal y;
 
-    int textWidth  = this->width  * zoom;
-    int textHeight = this->height * zoom;
+    int textWidth  = this->textWidth  * zoom;
+    int textHeight = this->textHeight * zoom;
 
     if (hAlign == WDeclarativeText::AlignRight)
     {
@@ -129,8 +150,7 @@ void WDeclarativeTextSvgPrivate::loadSvg()
 
     if (text.isEmpty())
     {
-        width  = 0;
-        height = 0;
+        setTextSize(0, 0);
 
         renderer->load(QByteArray());
     }
@@ -167,9 +187,7 @@ void WDeclarativeTextSvgPrivate::loadSvg()
 
             sizeOutline *= 2;
 
-            width = getWidth(metrics, text) + sizeOutline;
-
-            height = metrics.height() + sizeOutline;
+            setTextSize(getWidth(metrics, text) + sizeOutline, metrics.height() + sizeOutline);
         }
         else if (style == WDeclarativeTextSvg::Raised)
         {
@@ -181,9 +199,7 @@ void WDeclarativeTextSvgPrivate::loadSvg()
             addText(&item, "0", yStyle, family, weight, size, colorStyle);
             addText(&item, "0", y,      family, weight, size, color);
 
-            width = getWidth(metrics, text);
-
-            height = metrics.height();
+            setTextSize(getWidth(metrics, text), metrics.height());
         }
         else if (style == WDeclarativeTextSvg::Sunken)
         {
@@ -195,9 +211,7 @@ void WDeclarativeTextSvgPrivate::loadSvg()
             addText(&item, "0", yStyle, family, weight, size, colorStyle);
             addText(&item, "0", y,      family, weight, size, color);
 
-            width = getWidth(metrics, text);
-
-            height = metrics.height();
+            setTextSize(getWidth(metrics, text), metrics.height());
         }
         else if (style == WDeclarativeTextSvg::Glow)
         {
@@ -215,9 +229,7 @@ void WDeclarativeTextSvgPrivate::loadSvg()
 
             sizeOutline *= 2;
 
-            width = getWidth(metrics, text) + sizeOutline;
-
-            height = metrics.height() + sizeOutline;
+            setTextSize(getWidth(metrics, text) + sizeOutline, metrics.height() + sizeOutline);
         }
         else
         {
@@ -225,13 +237,11 @@ void WDeclarativeTextSvgPrivate::loadSvg()
 
             addText(&item, "0", y, family, weight, size, color);
 
-            width = getWidth(metrics, text);
-
-            height = metrics.height();
+            setTextSize(getWidth(metrics, text), metrics.height());
         }
 
-        QString stringWidth  = QString::number(width);
-        QString stringHeight = QString::number(height);
+        QString stringWidth  = QString::number(textWidth);
+        QString stringHeight = QString::number(textHeight);
 
         QByteArray content;
 
@@ -416,8 +426,8 @@ WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p,
 {
     Q_D(WDeclarativeTextSvg);
 
-    setImplicitWidth (d->width  * d->zoom + d->marginWidth  * 2);
-    setImplicitHeight(d->height * d->zoom + d->marginHeight * 2);
+    setImplicitWidth (d->textWidth  * d->zoom + d->marginWidth  * 2);
+    setImplicitHeight(d->textHeight * d->zoom + d->marginHeight * 2);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -439,6 +449,18 @@ WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p,
 
 //-------------------------------------------------------------------------------------------------
 // Properties
+//-------------------------------------------------------------------------------------------------
+
+int WDeclarativeTextSvg::textWidth() const
+{
+    Q_D(const WDeclarativeTextSvg); return d->textWidth;
+}
+
+int WDeclarativeTextSvg::textHeight() const
+{
+    Q_D(const WDeclarativeTextSvg); return d->textHeight;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 int WDeclarativeTextSvg::marginWidth() const
@@ -900,7 +922,7 @@ void WDeclarativeTextSvgScalePrivate::onScale()
 
     if (d->scaling) d->restore();
 
-    if (d->width > 0)
+    if (d->textWidth > 0)
     {
          d->scalable = true;
     }

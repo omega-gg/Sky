@@ -39,6 +39,9 @@ class SK_GUI_EXPORT WDeclarativeTextSvg : public WDeclarativeItem
     Q_ENUMS(TextStyle)
     Q_ENUMS(TextOutline)
 
+    Q_PROPERTY(int textWidth  READ textWidth  NOTIFY textWidthChanged)
+    Q_PROPERTY(int textHeight READ textHeight NOTIFY textHeightChanged)
+
     Q_PROPERTY(int marginWidth  READ marginWidth  WRITE setMarginWidth  NOTIFY marginWidthChanged)
     Q_PROPERTY(int marginHeight READ marginHeight WRITE setMarginHeight NOTIFY marginHeightChanged)
 
@@ -100,6 +103,9 @@ protected: // QGraphicsItem reimplementation
     /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 
 signals:
+    void textWidthChanged ();
+    void textHeightChanged();
+
     void marginWidthChanged ();
     void marginHeightChanged();
 
@@ -124,6 +130,9 @@ signals:
     void styleSizeChanged ();
 
 public: // Properties
+    int textWidth () const;
+    int textHeight() const;
+
     int  marginWidth() const;
     void setMarginWidth(int width);
 
