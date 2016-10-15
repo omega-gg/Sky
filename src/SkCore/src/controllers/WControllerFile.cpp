@@ -266,16 +266,10 @@ WControllerFilePrivate::WControllerFilePrivate(WControllerFile * p) : WControlle
 
 void WControllerFilePrivate::init()
 {
-    Q_Q(WControllerFile);
-
     threadWrite = NULL;
     threadRead  = NULL;
 
     cache = NULL;
-
-    QObject::connect(&timer, SIGNAL(timeout()), q, SLOT(onCheckWatchers()));
-
-    timer.start(1000);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -317,11 +311,29 @@ void WControllerFilePrivate::unregisterLocalObject(WLocalObject * object)
 void WControllerFilePrivate::registerFileWatcher(WFileWatcher * watcher)
 {
     watchers.append(watcher);
+
+    if (watchers.count() == 1)
+    {
+        Q_Q(WControllerFile);
+
+        QObject::connect(&timer, SIGNAL(timeout()), q, SLOT(onCheckWatchers()));
+
+        timer.start(1000);
+    }
 }
 
 void WControllerFilePrivate::unregisterFileWatcher(WFileWatcher * watcher)
 {
     watchers.removeOne(watcher);
+
+    if (watchers.isEmpty())
+    {
+        Q_Q(WControllerFile);
+
+        QObject::disconnect(&timer, 0, q, 0);
+
+        timer.stop();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
