@@ -1179,7 +1179,7 @@ void WPixmapCache::clear(QObject * receiver)
 
     if (file.open(QIODevice::ReadOnly) == false)
     {
-        qWarning("WPixmapCache readImage: Failed to open file %s.", path.C_STR);
+        qWarning("WPixmapCache::readImage: Failed to open file %s.", path.C_STR);
 
         return false;
     }
@@ -1243,7 +1243,7 @@ void WPixmapCache::clear(QObject * receiver)
 
     if (file.open(QIODevice::ReadOnly) == false)
     {
-        qWarning("WPixmapCache readPixmap: Failed to open file %s.", path.C_STR);
+        qWarning("WPixmapCache::readPixmap: Failed to open file %s.", path.C_STR);
 
         return false;
     }

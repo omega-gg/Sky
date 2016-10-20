@@ -75,7 +75,7 @@ void WController::initController()
 
         init();
     }
-    else qWarning("WController: Controller is already initialized.");
+    else qWarning("WController::initController: Controller is already initialized.");
 }
 
 //-------------------------------------------------------------------------------------------------

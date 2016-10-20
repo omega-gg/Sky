@@ -1577,7 +1577,7 @@ WMainView::WMainView(WMainViewPrivate * p,
 
             if (image.save(path, "png", quality) == false)
             {
-                qWarning("compressShots: Failed to save image.");
+                qWarning("WMainView::compressShots: Failed to save image.");
             }
         }
     }
