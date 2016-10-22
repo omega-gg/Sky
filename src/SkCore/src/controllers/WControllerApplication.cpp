@@ -509,8 +509,6 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
     else return QString();
 }
 
-//-------------------------------------------------------------------------------------------------
-
 /* Q_INVOKABLE static */ QString WControllerApplication::quote(const QString & string)
 {
     return '"' + string + '"';
