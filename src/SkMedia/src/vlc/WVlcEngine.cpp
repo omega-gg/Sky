@@ -81,7 +81,9 @@ bool WVlcEngine::event(QEvent * event)
         const char * const args[] =
         {
             "--intf=dummy",       /* No interface     */
+#ifdef Q_OS_WIN
             "--dummy-quiet",      /* No command-line  */
+#endif
             "--ignore-config",    /* No configuration */
             "--no-spu",           /* No sub-pictures  */
             "--no-osd",           /* No video overlay */
