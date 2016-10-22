@@ -111,7 +111,7 @@ QRectF WDeclarativeTextSvgPrivate::getRect(qreal width, qreal height)
 
     if (vAlign == WDeclarativeText::AlignBottom)
     {
-        y = height - textHeight - marginWidth;
+        y = height - textHeight - marginHeight;
     }
     else if (vAlign == WDeclarativeText::AlignVCenter)
     {
