@@ -31,7 +31,7 @@
 #if defined(Q_OS_X11)
     #include <private/qt_x11_p.h>
     #include <QX11Info>
-#elif defined (Q_OS_WIN)
+#elif defined(Q_OS_WIN)
     #include <qt_windows.h>
 #endif
 
