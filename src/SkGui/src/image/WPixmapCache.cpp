@@ -37,19 +37,6 @@ class WPixmapCacheReply;
 static const int PIXMAPCACHE_MAX = 1048576 * 10; // 10 Megabytes
 
 //-------------------------------------------------------------------------------------------------
-// Inline functions
-
-inline QString getSourceFile(QString path)
-{
-    if (path.startsWith("file:///"))
-    {
-        path.remove(0, 8);
-    }
-
-    return path;
-}
-
-//-------------------------------------------------------------------------------------------------
 
 inline qint64 getImageSize(const QImage & image)
 {
@@ -1175,7 +1162,7 @@ void WPixmapCache::clear(QObject * receiver)
                                                           const QSize   & size,
                                                           const QSize   & area)
 {
-    QFile file(getSourceFile(path));
+    QFile file(WControllerFile::filePath(path));
 
     if (file.open(QIODevice::ReadOnly) == false)
     {
@@ -1239,7 +1226,7 @@ void WPixmapCache::clear(QObject * receiver)
                                                              const QSize   & size,
                                                              const QSize   & area)
 {
-    QFile file(getSourceFile(path));
+    QFile file(WControllerFile::filePath(path));
 
     if (file.open(QIODevice::ReadOnly) == false)
     {
