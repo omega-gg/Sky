@@ -893,7 +893,7 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 {
     QFontMetrics metrics(font);
 
-#if defined(QT_LATEST) || defined(Q_OS_MAC) || defined(Q_OS_LINUX)
+#if defined(QT_LATEST) || defined(Q_OS_MAC) || defined(Q_OS_X11)
     return metrics.width(text) + 1;
 #else
     return metrics.width(text);
