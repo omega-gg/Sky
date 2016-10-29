@@ -2597,7 +2597,7 @@ void WMainView::setMaximized(bool maximized)
             showMaximized();
             showNormal   ();
 
-            setGeometry(height - height / 8);
+            setHeight(height - height / 8);
 
             return;
         }
