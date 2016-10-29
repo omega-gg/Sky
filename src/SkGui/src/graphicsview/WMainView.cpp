@@ -2588,7 +2588,7 @@ void WMainView::setMinimized(bool minimized)
 
 bool WMainView::isMaximized() const
 {
-    Q_D(const WMainView); return (d->maximized);
+    Q_D(const WMainView); return d->maximized;
 }
 
 void WMainView::setMaximized(bool maximized)

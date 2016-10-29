@@ -1552,7 +1552,7 @@ bool WTabTrack::isDefault() const
 
     if (d->currentBookmark)
     {
-         return (d->currentBookmark->isDefault());
+         return d->currentBookmark->isDefault();
     }
     else return false;
 }
@@ -1563,7 +1563,7 @@ bool WTabTrack::isLoading() const
 
     if (d->currentBookmark)
     {
-         return (d->currentBookmark->isLoading());
+         return d->currentBookmark->isLoading();
     }
     else return false;
 }
@@ -1574,7 +1574,7 @@ bool WTabTrack::isLoaded() const
 
     if (d->currentBookmark)
     {
-         return (d->currentBookmark->isLoaded());
+         return d->currentBookmark->isLoaded();
     }
     else return false;
 }
