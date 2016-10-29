@@ -2590,10 +2590,16 @@ void WMainView::setMaximized(bool maximized)
     {
 #ifdef Q_OS_UNIX
         // FIXME: Workaround to undock the window.
-        if (height() == availableGeometry().height())
+        int height = this->height();
+
+        if (height == availableGeometry().height())
         {
             showMaximized();
             showNormal   ();
+
+            setGeometry(height - height / 8);
+
+            return;
         }
 #endif
         if (d->autoSize)
