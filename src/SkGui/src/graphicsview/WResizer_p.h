@@ -41,11 +41,19 @@ public:
 
     void init(WResizer::ResizeType type);
 
+public: // Functions
+    void startResize(QGraphicsSceneMouseEvent * event);
+    void resize     (QGraphicsSceneMouseEvent * event);
+
 public: // Variables
     WResizer::ResizeType type;
 
-    QRect  resizeArea;
+    QRect resizeArea;
+
     QPoint cursorPos;
+    QPoint lastPos;
+
+    bool resizing;
 
 protected:
     W_DECLARE_PUBLIC(WResizer)

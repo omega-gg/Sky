@@ -37,6 +37,7 @@ include(src/media/media.pri)
 
 INCLUDEPATH += \
             $$SK/include/Qt/QtCore \
+            $$SK/include/Qt/QtGui \
             $$SK/include/Qt/QtDeclarative \
             $$SK/include/SkCore \
             $$SK/include/SkCore/private \

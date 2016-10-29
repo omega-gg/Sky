@@ -83,6 +83,8 @@ void WResizerPrivate::init(WResizer::ResizeType type)
     hoverEnabled = true;
     hoverRetain  = true;
 
+    resizing = false;
+
     q->setAcceptHoverEvents(true);
 
     WDeclarativeMouseArea::CursorShape shape;
@@ -99,209 +101,209 @@ void WResizerPrivate::init(WResizer::ResizeType type)
     q->setCursor(shape);
 }
 
-////-------------------------------------------------------------------------------------------------
-//// Private functions
-////-------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
 
-//void WResizerPrivate::startResize(QGraphicsSceneMouseEvent * event)
-//{
-//    QRect availableGeometry = mainView->availableGeometry();
+void WResizerPrivate::startResize(QGraphicsSceneMouseEvent * event)
+{
+    QRect availableGeometry = mainView->availableGeometry();
 
-//    cursorPos = event->pos().toPoint();
+    cursorPos = event->pos().toPoint();
 
-//    if (type == WResizer::TopLeft)
-//    {
-//        resizeArea = QRect(availableGeometry.x(), availableGeometry.y(),
-//                           mainView->x() + mainView->width()  - mainView->minimumWidth(),
-//                           mainView->y() + mainView->height() - mainView->minimumHeight());
-//    }
-//    else if (type == WResizer::TopRight)
-//    {
-//        resizeArea = QRect(availableGeometry.x(), availableGeometry.y(),
-//                           availableGeometry.x() + availableGeometry.width(),
-//                           mainView->y() + mainView->height() - mainView->minimumHeight());
-//    }
-//    else if (type == WResizer::BottomLeft)
-//    {
-//        resizeArea = QRect(availableGeometry.x(), availableGeometry.y(),
-//                           mainView->x() + mainView->width() - mainView->minimumWidth(),
-//                           availableGeometry.y() + availableGeometry.height());
-//    }
-//    else if (type == WResizer::BottomRight)
-//    {
-//        resizeArea = QRect(availableGeometry.x(), availableGeometry.y(),
-//                           availableGeometry.x() + availableGeometry.width(),
-//                           availableGeometry.y() + availableGeometry.height());
-//    }
-//    else if (type == WResizer::Left)
-//    {
-//        resizeArea = QRect(availableGeometry.x(), availableGeometry.y(),
-//                           mainView->x() + mainView->width() - mainView->minimumWidth(),
-//                           availableGeometry.y() + availableGeometry.height());
-//    }
-//    else if (type == WResizer::Right)
-//    {
-//        resizeArea = QRect(availableGeometry.x(), availableGeometry.y(),
-//                           availableGeometry.x() + availableGeometry.width(),
-//                           availableGeometry.y() + availableGeometry.height());
-//    }
-//    else if (type == WResizer::Top)
-//    {
-//        resizeArea = QRect(availableGeometry.x(), availableGeometry.y(),
-//                           availableGeometry.x() + availableGeometry.width(),
-//                           mainView->y() + mainView->height() - mainView->minimumHeight());
-//    }
-//    else if (type == WResizer::Bottom)
-//    {
-//        resizeArea = QRect(availableGeometry.x(), availableGeometry.y(),
-//                           availableGeometry.x() + availableGeometry.width(),
-//                           availableGeometry.y() + availableGeometry.height());
-//    }
+    if (type == WResizer::TopLeft)
+    {
+        resizeArea = QRect(availableGeometry.x(), availableGeometry.y(),
+                           mainView->x() + mainView->width()  - mainView->minimumWidth(),
+                           mainView->y() + mainView->height() - mainView->minimumHeight());
+    }
+    else if (type == WResizer::TopRight)
+    {
+        resizeArea = QRect(availableGeometry.x(), availableGeometry.y(),
+                           availableGeometry.x() + availableGeometry.width(),
+                           mainView->y() + mainView->height() - mainView->minimumHeight());
+    }
+    else if (type == WResizer::BottomLeft)
+    {
+        resizeArea = QRect(availableGeometry.x(), availableGeometry.y(),
+                           mainView->x() + mainView->width() - mainView->minimumWidth(),
+                           availableGeometry.y() + availableGeometry.height());
+    }
+    else if (type == WResizer::BottomRight)
+    {
+        resizeArea = QRect(availableGeometry.x(), availableGeometry.y(),
+                           availableGeometry.x() + availableGeometry.width(),
+                           availableGeometry.y() + availableGeometry.height());
+    }
+    else if (type == WResizer::Left)
+    {
+        resizeArea = QRect(availableGeometry.x(), availableGeometry.y(),
+                           mainView->x() + mainView->width() - mainView->minimumWidth(),
+                           availableGeometry.y() + availableGeometry.height());
+    }
+    else if (type == WResizer::Right)
+    {
+        resizeArea = QRect(availableGeometry.x(), availableGeometry.y(),
+                           availableGeometry.x() + availableGeometry.width(),
+                           availableGeometry.y() + availableGeometry.height());
+    }
+    else if (type == WResizer::Top)
+    {
+        resizeArea = QRect(availableGeometry.x(), availableGeometry.y(),
+                           availableGeometry.x() + availableGeometry.width(),
+                           mainView->y() + mainView->height() - mainView->minimumHeight());
+    }
+    else if (type == WResizer::Bottom)
+    {
+        resizeArea = QRect(availableGeometry.x(), availableGeometry.y(),
+                           availableGeometry.x() + availableGeometry.width(),
+                           availableGeometry.y() + availableGeometry.height());
+    }
 
-//    resizing = true;
+    resizing = true;
 
-//    lastPos = QCursor::pos();
-//}
+    lastPos = QCursor::pos();
+}
 
-//void WResizerPrivate::resize(QGraphicsSceneMouseEvent *)
-//{
-//    Q_Q(WResizer);
+void WResizerPrivate::resize(QGraphicsSceneMouseEvent *)
+{
+    Q_Q(WResizer);
 
-//    QPoint currentPos = QCursor::pos();
+    QPoint currentPos = QCursor::pos();
 
-//    int diffX = currentPos.x() - lastPos.x();
-//    int diffY = currentPos.y() - lastPos.y();
-//    if (diffX == 0 && diffY == 0) return;
+    int diffX = currentPos.x() - lastPos.x();
+    int diffY = currentPos.y() - lastPos.y();
 
-//    QRect geometry = mainView->geometry();
+    if (diffX == 0 && diffY == 0) return;
 
-//    int x, y, width, height;
-//    x      = geometry.x();
-//    y      = geometry.y();
-//    width  = geometry.width();
-//    height = geometry.height();
+    QRect geometry = mainView->geometry();
 
-//    QPoint pos;
+    int x = geometry.x();
+    int y = geometry.y();
 
-//    pos = mainView->mapFromGlobal(currentPos);
+    int width  = geometry.width();
+    int height = geometry.height();
 
-//    int posX = pos.x() - diffX;
-//    int posY = pos.y() - diffY;
+    QPoint pos;
 
-//    if (   type == WResizer::Left
-//        || type == WResizer::TopLeft
-//        || type == WResizer::BottomLeft)
-//    {
-//        if (posX > cursorPos.x()
-//            ||
-//            (geometry.x() + posX - cursorPos.x()) < resizeArea.x())
-//        {
-//            currentPos.setX(geometry.x() + cursorPos.x());
-//        }
-//        else
-//        {
-//            x += diffX;
-//            width -= diffX;
+    pos = mainView->mapFromGlobal(currentPos);
 
-//            if (x < resizeArea.x())
-//            {
-//                x = resizeArea.x();
-//                width = geometry.width() + geometry.x() - resizeArea.x();
-//            }
+    int posX = pos.x() - diffX;
+    int posY = pos.y() - diffY;
 
-//            if (x > resizeArea.width())
-//            {
-//                x = resizeArea.width();
-//                width = mainView->minimumWidth();
-//            }
-//        }
-//    }
-//    if (   type == WResizer::Right
-//        || type == WResizer::TopRight
-//        || type == WResizer::BottomRight)
-//    {
-//        if (posX < (geometry.width() - (q->width() - cursorPos.x()))
-//            ||
-//            (geometry.x() + posX + (q->width() - cursorPos.x())) > resizeArea.width())
-//        {
-//            currentPos.setX(geometry.x() + geometry.width() - (q->width() - cursorPos.x()));
-//        }
-//        else
-//        {
-//            width += diffX;
+    if (type == WResizer::Left || type == WResizer::TopLeft || type == WResizer::BottomLeft)
+    {
+        if (posX > cursorPos.x()
+            ||
+            (geometry.x() + posX - cursorPos.x()) < resizeArea.x())
+        {
+            currentPos.setX(geometry.x() + cursorPos.x());
+        }
+        else
+        {
+            x += diffX;
 
-//            if (width < mainView->minimumWidth())
-//            {
-//                width = mainView->minimumWidth();
-//            }
+            width -= diffX;
 
-//            if ((x + width) > resizeArea.width())
-//            {
-//                x = geometry.x();
-//                width = resizeArea.width() - geometry.x();
-//            }
-//        }
-//    }
-//    if (   type == WResizer::Top
-//        || type == WResizer::TopLeft
-//        || type == WResizer::TopRight)
-//    {
-//        if (posY > cursorPos.y()
-//            ||
-//            (geometry.y() + posY - cursorPos.y()) < resizeArea.y())
-//        {
-//            currentPos.setY(geometry.y() + cursorPos.y());
-//        }
-//        else
-//        {
-//            y += diffY;
-//            height -= diffY;
+            if (x < resizeArea.x())
+            {
+                x = resizeArea.x();
 
-//            if (y < resizeArea.y())
-//            {
-//                y = resizeArea.y();
-//                height = geometry.height() + geometry.y() - resizeArea.y();
-//            }
+                width = geometry.width() + geometry.x() - resizeArea.x();
+            }
 
-//            if (y > resizeArea.height())
-//            {
-//                y = resizeArea.height();
-//                height = mainView->minimumHeight();
-//            }
-//        }
-//    }
-//    if (   type == WResizer::Bottom
-//        || type == WResizer::BottomLeft
-//        || type == WResizer::BottomRight)
-//    {
-//        if (posY < (geometry.height() - (q->height() - cursorPos.y()))
-//            ||
-//            (geometry.y() + posY + (q->height() - cursorPos.y())) > resizeArea.height())
-//        {
-//            currentPos.setY(geometry.y() + geometry.height() - (q->height() - cursorPos.y()));
-//        }
-//        else
-//        {
-//            height += diffY;
+            if (x > resizeArea.width())
+            {
+                x = resizeArea.width();
 
-//            if (height < mainView->minimumHeight())
-//            {
-//                height = mainView->minimumHeight();
-//            }
+                width = mainView->minimumWidth();
+            }
+        }
+    }
+    if (type == WResizer::Right || type == WResizer::TopRight || type == WResizer::BottomRight)
+    {
+        if (posX < (geometry.width() - (q->width() - cursorPos.x()))
+            ||
+            (geometry.x() + posX + (q->width() - cursorPos.x())) > resizeArea.width())
+        {
+            currentPos.setX(geometry.x() + geometry.width() - (q->width() - cursorPos.x()));
+        }
+        else
+        {
+            width += diffX;
 
-//            if ((y + height) > resizeArea.height())
-//            {
-//                y = geometry.y();
+            if (width < mainView->minimumWidth())
+            {
+                width = mainView->minimumWidth();
+            }
 
-//                height = resizeArea.height() - geometry.y();
-//            }
-//        }
-//    }
+            if ((x + width) > resizeArea.width())
+            {
+                x = geometry.x();
 
-//    mainView->setGeometry(x, y, width, height);
+                width = resizeArea.width() - geometry.x();
+            }
+        }
+    }
+    if (type == WResizer::Top || type == WResizer::TopLeft || type == WResizer::TopRight)
+    {
+        if (posY > cursorPos.y()
+            ||
+            (geometry.y() + posY - cursorPos.y()) < resizeArea.y())
+        {
+            currentPos.setY(geometry.y() + cursorPos.y());
+        }
+        else
+        {
+            y += diffY;
 
-//    lastPos = currentPos;
-//}
+            height -= diffY;
+
+            if (y < resizeArea.y())
+            {
+                y = resizeArea.y();
+
+                height = geometry.height() + geometry.y() - resizeArea.y();
+            }
+
+            if (y > resizeArea.height())
+            {
+                y = resizeArea.height();
+
+                height = mainView->minimumHeight();
+            }
+        }
+    }
+    if (type == WResizer::Bottom || type == WResizer::BottomLeft || type == WResizer::BottomRight)
+    {
+        if (posY < (geometry.height() - (q->height() - cursorPos.y()))
+            ||
+            (geometry.y() + posY + (q->height() - cursorPos.y())) > resizeArea.height())
+        {
+            currentPos.setY(geometry.y() + geometry.height() - (q->height() - cursorPos.y()));
+        }
+        else
+        {
+            height += diffY;
+
+            if (height < mainView->minimumHeight())
+            {
+                height = mainView->minimumHeight();
+            }
+
+            if ((y + height) > resizeArea.height())
+            {
+                y = geometry.y();
+
+                height = resizeArea.height() - geometry.y();
+            }
+        }
+    }
+
+    mainView->setGeometry(x, y, width, height);
+
+    lastPos = currentPos;
+}
 
 //-------------------------------------------------------------------------------------------------
 // Ctor / dtor
@@ -337,27 +339,26 @@ WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
         xev.xclient.display = X11->display;
         xev.xclient.window = d->mainView->winId();
         xev.xclient.format = 32;
-        xev.xclient.data.l[0] = event->globalPos().x();
-        xev.xclient.data.l[1] = event->globalPos().y();
-//        if (d->atBottom())
-//            xev.xclient.data.l[2] = d->atLeft() ? 6 : 4; // bottomleft/bottomright
-//        else
-//            xev.xclient.data.l[2] = d->atLeft() ? 0 : 2; // topleft/topright
+        xev.xclient.data.l[0] = d->mainView->x();
+        xev.xclient.data.l[1] = d->mainView->y();
 
         if      (d->type == TopLeft)     xev.xclient.data.l[2] = 0;
-        else if (d->type == TopRight)    xev.xclient.data.l[2] = 2;
-        else if (d->type == BottomLeft)  xev.xclient.data.l[2] = 6;
-        else if (d->type == BottomRight) xev.xclient.data.l[2] = 4;
-        else if (d->type == Left)        xev.xclient.data.l[2] = 7;
-        else if (d->type == Right)       xev.xclient.data.l[2] = 3;
         else if (d->type == Top)         xev.xclient.data.l[2] = 1;
+        else if (d->type == TopRight)    xev.xclient.data.l[2] = 2;
+        else if (d->type == Right)       xev.xclient.data.l[2] = 3;
+        else if (d->type == BottomRight) xev.xclient.data.l[2] = 4;
         else if (d->type == Bottom)      xev.xclient.data.l[2] = 5;
+        else if (d->type == BottomLeft)  xev.xclient.data.l[2] = 6;
+        else if (d->type == Left)        xev.xclient.data.l[2] = 7;
 
         xev.xclient.data.l[3] = Button1;
         xev.xclient.data.l[4] = 0;
+
         XUngrabPointer(X11->display, X11->time);
-        XSendEvent(X11->display, QX11Info::appRootWindow(x11Info().screen()), False,
+
+        XSendEvent(X11->display, QX11Info::appRootWindow(d->mainView->x11Info().screen()), False,
                    SubstructureRedirectMask | SubstructureNotifyMask, &xev);
+
         return;
     }
 #endif // Q_OS_UNIX
@@ -382,9 +383,9 @@ WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
     return;
 #endif // Q_OS_WIN
 
-//    d->pressed = true;
+    d->pressed = true;
 
-//    d->startResize(event);
+    d->startResize(event);
 }
 
 /* virtual */ void WResizer::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
@@ -394,12 +395,7 @@ WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
 #ifdef Q_OS_UNIX
     if (d->mainView->isWindow() && isSupportedByWM(ATOM(_NET_WM_MOVERESIZE))
         && d->mainView->isTopLevel()
-        && d->mainView->testAttribute(Qt::WA_DontShowOnScreen) == false)
-    {
-        //d->refreshCursor(event);
-
-        return;
-    }
+        && d->mainView->testAttribute(Qt::WA_DontShowOnScreen) == false) return;
 #endif
 
 #ifdef Q_OS_WIN
@@ -416,19 +412,7 @@ WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
     }
 #endif // Q_OS_WIN
 
-//    if (d->resizing) d->resize(event);
-//#ifndef Q_OS_UNIX
-//    /*else             d->refreshCursor();*/
-//#endif
+    if (d->resizing) d->resize(event);
 }
-
-//-------------------------------------------------------------------------------------------------
-
-/*#ifdef Q_OS_WIN
-bool WResizer::winEvent(MSG * message, long * result)
-{
-    return QWidget::winEvent(message, result);
-}
-#endif*/
 
 #endif // SK_NO_RESIZER
