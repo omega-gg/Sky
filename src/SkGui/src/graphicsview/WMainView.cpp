@@ -372,11 +372,11 @@ void WMainViewPrivate::init(QDeclarativeItem * item, Qt::WindowFlags flags)
     q->viewport()->setAttribute(Qt::WA_NoSystemBackground);
 
     //---------------------------------------------------------------------------------------------
-    // Default window size
+    // Default size
 
     updateMinimumSize();
 
-    q->setDefaultGeometry();
+    q->setGeometry(q->getDefaultGeometry());
 
     //---------------------------------------------------------------------------------------------
     // Timers
@@ -463,16 +463,13 @@ void WMainViewPrivate::showNormal()
     {
         fullScreen = false;
 
-        QRect rect = q->availableGeometry();
-
-        if (autoSize)
+        if (maximized == false)
         {
-            if (maximized == false)
-            {
-                 q->setGeometry(geometryNormal);
-            }
-            else q->setGeometry(rect);
+            q->showNormal();
+
+            q->setGeometry(geometryNormal);
         }
+        else q->showMaximized();
 
         emit q->fullScreenChanged();
     }
@@ -480,10 +477,9 @@ void WMainViewPrivate::showNormal()
     {
         maximized = false;
 
-        if (autoSize)
-        {
-            q->setGeometry(geometryNormal);
-        }
+        q->showNormal();
+
+        q->setGeometry(geometryNormal);
 
         emit q->maximizedChanged();
     }
@@ -1049,17 +1045,9 @@ void WMainViewPrivate::onGeometryChanged()
 {
     Q_Q(WMainView);
 
-    if (fullScreen)
+    if (maximized || fullScreen)
     {
         setGeometryNormal(q->getDefaultGeometry());
-
-        q->setGeometry(q->screenGeometry());
-    }
-    else if (maximized)
-    {
-        setGeometryNormal(q->getDefaultGeometry());
-
-        q->setGeometry(q->availableGeometry());
     }
     else q->checkPosition();
 
@@ -1283,21 +1271,9 @@ WMainView::WMainView(WMainViewPrivate * p,
 {
     Q_D(WMainView);
 
-    if (d->fullScreen)
+    if (d->maximized || d->fullScreen)
     {
         d->geometryNormal = getDefaultGeometry();
-
-        QRect rect = wControllerView->screenGeometry(sk->defaultScreen());
-
-        setGeometry(rect);
-    }
-    else if (d->maximized)
-    {
-        QRect rect = wControllerView->availableGeometry(sk->defaultScreen());
-
-        d->geometryNormal = d->getGeometry(rect);
-
-        setGeometry(rect);
     }
     else setGeometry(getDefaultGeometry());
 }
@@ -1306,7 +1282,7 @@ WMainView::WMainView(WMainViewPrivate * p,
 {
     Q_D(WMainView);
 
-    d->setGeometryNormal(QRect(x(), y(), width(), height()));
+    d->setGeometryNormal(geometry());
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1825,6 +1801,19 @@ QSize WMainView::sizeHint() const
     }
 
     QDeclarativeView::showEvent(event);
+
+    if (d->maximized)
+    {
+        d->setGeometryNormal(geometry());
+
+        showMaximized();
+    }
+    else if (d->fullScreen)
+    {
+        d->setGeometryNormal(geometry());
+
+        showFullScreen();
+    }
 
 #if defined(QT_LATEST) == false && defined(Q_OS_WIN)
     activateWindow();
@@ -2601,12 +2590,12 @@ void WMainView::setMaximized(bool maximized)
     {
         if (d->autoSize)
         {
-            d->setGeometryNormal(QRect(x(), y(), width(), height()));
+            d->setGeometryNormal(geometry());
         }
 
         d->maximized = true;
 
-        setGeometry(availableGeometry());
+        showMaximized();
 
         emit maximizedChanged();
     }
@@ -2630,14 +2619,12 @@ void WMainView::setFullScreen(bool fullScreen)
     {
         if (d->autoSize && d->maximized == false)
         {
-            d->setGeometryNormal(QRect(x(), y(), width(), height()));
+            d->setGeometryNormal(geometry());
         }
 
         d->fullScreen = true;
 
-        QRect rect = screenGeometry();
-
-        setGeometry(rect);
+        showFullScreen();
 
         emit fullScreenChanged();
     }
