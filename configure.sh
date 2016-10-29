@@ -100,6 +100,10 @@ if [ $1 = "qt4" -a $2 = "linux" ]; then
 
     cp "$Qt4"/src/corelib/kernel/*_p.h include/Qt/QtCore/private
 
+    mkdir -p include/Qt/QtGui/private
+
+    cp "$Qt4"/src/gui/kernel/*_p.h include/Qt/QtGui/private
+
     mkdir -p include/Qt/QtDeclarative/private
 
     cp "$Qt4"/src/declarative/qml/*_p.h           include/Qt/QtDeclarative/private
