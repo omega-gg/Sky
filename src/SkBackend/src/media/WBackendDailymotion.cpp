@@ -107,11 +107,13 @@ QString WBackendDailymotionPrivate::extractSource(const QString & json,
 {
     QString source = WControllerNetwork::extractJson(json, quality);
 
-    if (source.isEmpty())
+    if (source.isEmpty() == false)
     {
-         return QString();
+        int index = source.indexOf("video/mp4");
+
+        return WControllerNetwork::extractJson(source, "url", index);
     }
-    else return WControllerNetwork::extractJson(source, "url");
+    else return QString();
 }
 
 //-------------------------------------------------------------------------------------------------
