@@ -56,8 +56,8 @@ win32:LIBS += -static -L$$_PRO_FILE_PWD_ -ltorrent \
               -static -L$$_PRO_FILE_PWD_ -lboost_chrono \
               -lmswsock -lws2_32 \
 
-linux:LIBS += -ltorrent-rasterbar \
-              -lboost_system -lboost_random -lboost_chrono \
+unix:LIBS += -ltorrent-rasterbar \
+             -lboost_system -lboost_random -lboost_chrono \
 
 macx {
 CONFIG(debug, debug|release) {
@@ -88,5 +88,5 @@ win32:equals(QMAKE_COPY, "cp") {
     QMAKE_POST_LINK += $${QMAKE_COPY} $$SK/lib/$${TARGET}.dll $$SK/$$SK_BIN
 }
 
-macx:  QMAKE_POST_LINK += $${QMAKE_COPY} $$SK/lib/lib$${TARGET}.dylib $$SK/$$SK_BIN
-linux: QMAKE_POST_LINK += $${QMAKE_COPY} $$SK/lib/lib$${TARGET}.so    $$SK/$$SK_BIN
+macx: QMAKE_POST_LINK += $${QMAKE_COPY} $$SK/lib/lib$${TARGET}.dylib $$SK/$$SK_BIN
+unix: QMAKE_POST_LINK += $${QMAKE_COPY} $$SK/lib/lib$${TARGET}.so    $$SK/$$SK_BIN
