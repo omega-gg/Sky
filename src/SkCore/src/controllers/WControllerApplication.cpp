@@ -443,6 +443,8 @@ QMimeData * WControllerApplication::duplicateMime(const QMimeData * source)
 
     return (result > 32);
 #else
+    Q_UNUSED(fileName);
+
     return false;
 #endif
 }
