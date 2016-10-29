@@ -28,7 +28,7 @@
 // Private includes
 #include <private/WMainView_p>
 
-#if defined(Q_OS_X11)
+#if defined(Q_OS_UNIX)
     #include <private/qt_x11_p.h>
     #include <QX11Info>
 #elif defined(Q_OS_WIN)
@@ -47,7 +47,7 @@
 #define SZ_SIZETOP          0xf003
 #define SZ_SIZEBOTTOM       0xf006
 
-#if defined(Q_OS_X11)
+#if defined(Q_OS_UNIX)
 bool isSupportedByWM(Atom atom)
 {
     if (!X11->net_supported_list)
@@ -325,7 +325,7 @@ WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
 
     d->mainView->d_func()->setResizing(true);
 
-#ifdef Q_OS_X11
+#ifdef Q_OS_UNIX
     // Use a native X11 sizegrip for "real" top-level windows if supported.
     if (d->mainView->isWindow()
         && isSupportedByWM(ATOM(_NET_WM_MOVERESIZE))
@@ -360,7 +360,7 @@ WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
                    SubstructureRedirectMask | SubstructureNotifyMask, &xev);
         return;
     }
-#endif // Q_OS_X11
+#endif // Q_OS_UNIX
 #ifdef Q_OS_WIN
     Q_UNUSED(event);
 
@@ -391,7 +391,7 @@ WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
 {
     Q_D(WResizer);
 
-#ifdef Q_OS_X11
+#ifdef Q_OS_UNIX
     if (d->mainView->isWindow() && isSupportedByWM(ATOM(_NET_WM_MOVERESIZE))
         && d->mainView->isTopLevel()
         && d->mainView->testAttribute(Qt::WA_DontShowOnScreen) == false)
@@ -417,7 +417,7 @@ WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
 #endif // Q_OS_WIN
 
 //    if (d->resizing) d->resize(event);
-//#ifndef Q_OS_X11
+//#ifndef Q_OS_UNIX
 //    /*else             d->refreshCursor();*/
 //#endif
 }

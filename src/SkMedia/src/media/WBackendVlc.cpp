@@ -40,7 +40,7 @@
 // Private includes
 #include <private/WVlcPlayer_p>
 
-#if defined(Q_OS_X11)
+#if defined(Q_OS_UNIX)
     #include <GL/glx.h>
 #endif
 
@@ -326,7 +326,7 @@ void WBackendVlcPrivate::initShader()
 
     glActiveTextureARB   = (PFNGLACTIVETEXTUREARBPROC)   wglGetProcAddress("glActiveTextureARB");
     glMultiTexCoord2fARB = (PFNGLMULTITEXCOORD2FARBPROC) wglGetProcAddress("glMultiTexCoord2fARB");
-#elif defined(Q_OS_X11)
+#elif defined(Q_OS_UNIX)
     glGenProgramsARB = (PFNGLGENPROGRAMSARBPROC) glXGetProcAddress((GLubyte *) "glGenProgramsARB");
     glBindProgramARB = (PFNGLBINDPROGRAMARBPROC) glXGetProcAddress((GLubyte *) "glBindProgramARB");
 
