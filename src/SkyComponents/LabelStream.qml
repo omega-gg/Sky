@@ -170,8 +170,6 @@ Item
             style: Text.Raised
 
             font.pixelSize: st.dp11
-
-            font.bold: false
         }
     }
 
