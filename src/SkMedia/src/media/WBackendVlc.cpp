@@ -40,6 +40,10 @@
 // Private includes
 #include <private/WVlcPlayer_p>
 
+#if defined(Q_OS_LINUX)
+    #include <GL/glx.h>
+#endif
+
 //=================================================================================================
 // Defines
 
@@ -322,6 +326,27 @@ void WBackendVlcPrivate::initShader()
 
     glActiveTextureARB   = (PFNGLACTIVETEXTUREARBPROC)   wglGetProcAddress("glActiveTextureARB");
     glMultiTexCoord2fARB = (PFNGLMULTITEXCOORD2FARBPROC) wglGetProcAddress("glMultiTexCoord2fARB");
+#elif Q_OS_LINUX
+    glGenProgramsARB = (PFNGLGENPROGRAMSARBPROC) glXGetProcAddress((GLubyte *) "glGenProgramsARB");
+    glBindProgramARB = (PFNGLBINDPROGRAMARBPROC) glXGetProcAddress((GLubyte *) "glBindProgramARB");
+
+    glProgramStringARB = (PFNGLPROGRAMSTRINGARBPROC)
+                         glXGetProcAddress((GLubyte *) "glProgramStringARB");
+
+    glDeleteProgramsARB = (PFNGLDELETEPROGRAMSARBPROC)
+                          glXGetProcAddress((GLubyte *) "glDeleteProgramsARB");
+
+    glProgramLocalParameter4fvARB = (PFNGLPROGRAMLOCALPARAMETER4FVARBPROC)
+                                    glXGetProcAddress((GLubyte *) "glProgramLocalParameter4fvARB");
+
+    glActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC)
+                         glXGetProcAddress((GLubyte *) "glActiveTextureARB");
+
+    glMultiTexCoord2fARB = (PFNGLMULTITEXCOORD2FARBPROC)
+                           glXGetProcAddress((GLubyte *) "glMultiTexCoord2fARB");
+#else
+    qWarning("WBackendVlcPrivate::initShader: Fragment shaders are not supported.");
+#endif
 
     if (glGenProgramsARB              && glBindProgramARB   && glProgramStringARB &&
         glProgramLocalParameter4fvARB && glActiveTextureARB && glMultiTexCoord2fARB)
@@ -333,9 +358,6 @@ void WBackendVlcPrivate::initShader()
         shaderCount++;
     }
     else qWarning("WBackendVlcPrivate::initShader: Fragment shaders are not supported.");
-#else
-    qWarning("WBackendVlcPrivate::initShader: Fragment shaders are not supported.");
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
