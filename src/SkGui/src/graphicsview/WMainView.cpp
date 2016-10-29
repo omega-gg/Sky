@@ -1826,7 +1826,7 @@ QSize WMainView::sizeHint() const
 
     QDeclarativeView::showEvent(event);
 
-#ifndef QT_LATEST
+#if defined(QT_LATEST) == false && defined(Q_OS_WIN)
     activateWindow();
 
     raise();
