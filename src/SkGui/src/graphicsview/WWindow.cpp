@@ -554,6 +554,10 @@ void WWindow::setIcon(const QUrl & url)
 
     d->icon = url;
 
+    QIcon icon(WControllerFile::filePath(url));
+
+    d->mainView->setWindowIcon(icon);
+
     emit iconChanged(d->icon);
 }
 
