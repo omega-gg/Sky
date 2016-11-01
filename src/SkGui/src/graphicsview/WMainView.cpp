@@ -581,7 +581,11 @@ void WMainViewPrivate::updateMouse()
 
     QPoint pos = QCursor::pos();
 
+#ifdef Q_OS_UNIX
     setMousePos(q->mapFromGlobal(pos));
+#else
+    setMousePos(QPoint(pos.x() - q->x(), pos.y() - q->y()));
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -594,7 +598,11 @@ void WMainViewPrivate::updateDrag()
 
     QPoint pos = QCursor::pos();
 
+#ifdef Q_OS_UNIX
     setMousePos(q->mapFromGlobal(pos));
+#else
+    setMousePos(QPoint(pos.x() - q->x(), pos.y() - q->y()));
+#endif
 
     if (isUnderMouse())
     {
