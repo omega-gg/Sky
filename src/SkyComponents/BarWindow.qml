@@ -169,7 +169,7 @@ Item
 
             checkable: true
 
-            icon: window.icon
+            icon: st.icon
 
             iconSourceSize: Qt.size(height, height)
 
