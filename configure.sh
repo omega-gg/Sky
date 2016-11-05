@@ -135,9 +135,9 @@ echo "COPYING VLC"
 if [ $2 = "win32" ]; then
 
     cp -r "$VLC"/sdk/include/vlc include
-fi
 
-cp "$VLC"/sdk/lib/libvlc* lib
+    cp "$VLC"/sdk/lib/libvlc* lib
+fi
 
 #--------------------------------------------------------------------------------------------------
 # libtorrent
