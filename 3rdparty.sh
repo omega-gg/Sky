@@ -28,7 +28,9 @@ Boost="$external/Boost/$Boost_version"
 
 #--------------------------------------------------------------------------------------------------
 
-libtorrent_archive="libtorrent-rasterbar-$libtorrent_version.tar.gz"
+libtorrent_name="libtorrent-rasterbar-$libtorrent_version"
+
+libtorrent_archive="$libtorrent_name.tar.gz"
 
 #--------------------------------------------------------------------------------------------------
 
@@ -44,6 +46,22 @@ libtorrent_sources="https://github.com/arvidn/libtorrent/releases/download/libto
 lib="/usr/lib"
 
 lib64="/usr/lib/x86_64-linux-gnu"
+
+#--------------------------------------------------------------------------------------------------
+
+QtWebkit_versio="4.10.2"
+
+libvlc_version="5.5.0"
+
+libvlccore_version="8.0.0"
+
+libtorrent_version_linux="9.0.0"
+
+Boost_version_linux="1.61.0"
+
+#--------------------------------------------------------------------------------------------------
+
+Boost_linux="$external/Boost/$Boost_version_linux"
 
 #--------------------------------------------------------------------------------------------------
 
@@ -154,31 +172,31 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
         git clone "$Qt4_sources" "$Qt4"
 
-        sudo cp "$lib64"/libQtCore.so.4.8.7        "$Qt"/lib/libQtCore.so.4
-        sudo cp "$lib64"/libQtDeclarative.so.4.8.7 "$Qt"/lib/libQtDeclarative.so.4
-        sudo cp "$lib64"/libQtGui.so.4.8.7         "$Qt"/lib/libQtGui.so.4
-        sudo cp "$lib64"/libQtNetwork.so.4.8.7     "$Qt"/lib/libQtNetwork.so.4
-        sudo cp "$lib64"/libQtOpenGL.so.4.8.7      "$Qt"/lib/libQtOpenGL.so.4
-        sudo cp "$lib64"/libQtScript.so.4.8.7      "$Qt"/lib/libQtScript.so.4
-        sudo cp "$lib64"/libQtSql.so.4.8.7         "$Qt"/lib/libQtSql.so.4
-        sudo cp "$lib64"/libQtSvg.so.4.8.7         "$Qt"/lib/libQtSvg.so.4
-        sudo cp "$lib64"/libQtXml.so.4.8.7         "$Qt"/lib/libQtXml.so.4
-        sudo cp "$lib64"/libQtXmlPatterns.so.4.8.7 "$Qt"/lib/libQtXmlPatterns.so.4
+        sudo cp "$lib64"/libQtCore.so.$Qt4_version        "$Qt4"/lib/libQtCore.so.4
+        sudo cp "$lib64"/libQtDeclarative.$Qt4_version    "$Qt4"/lib/libQtDeclarative.so.4
+        sudo cp "$lib64"/libQtGui.so.$Qt4_version         "$Qt4"/lib/libQtGui.so.4
+        sudo cp "$lib64"/libQtNetwork.so.$Qt4_version     "$Qt4"/lib/libQtNetwork.so.4
+        sudo cp "$lib64"/libQtOpenGL.so.$Qt4_version      "$Qt4"/lib/libQtOpenGL.so.4
+        sudo cp "$lib64"/libQtScript.so.$Qt4_version      "$Qt4"/lib/libQtScript.so.4
+        sudo cp "$lib64"/libQtSql.so.$Qt4_version         "$Qt4"/lib/libQtSql.so.4
+        sudo cp "$lib64"/libQtSvg.so.$Qt4_version         "$Qt4"/lib/libQtSvg.so.4
+        sudo cp "$lib64"/libQtXml.so.$Qt4_version         "$Qt4"/lib/libQtXml.so.4
+        sudo cp "$lib64"/libQtXmlPatterns.so.$Qt4_version "$Qt4"/lib/libQtXmlPatterns.so.4
 
-        sudo cp "$lib64"/libQtWebKit.so.4.10.2 "$Qt"/lib/libQtWebKit.so.4
+        sudo cp "$lib64"/libQtWebKit.so.$QtWebkit_version "$Qt4"/lib/libQtWebKit.so.4
 
-        mkdir -p "$Qt"/plugins/imageformats
+        mkdir -p "$Qt4"/plugins/imageformats
 
-        sudo cp "$lib64"/qt4/plugins/imageformats/libqsvg.so  "$Qt"/plugins/imageformats
-        sudo cp "$lib64"/qt4/plugins/imageformats/libqjpeg.so "$Qt"/plugins/imageformats
+        sudo cp "$lib64"/qt4/plugins/imageformats/libqsvg.so  "$Qt4"/plugins/imageformats
+        sudo cp "$lib64"/qt4/plugins/imageformats/libqjpeg.so "$Qt4"/plugins/imageformats
 
         echo ""
         echo "DEPLOYING VLC"
 
-        git clone "$VLC_sources" "$VLC"
+        mkdir -p "$VLC"
 
-        sudo cp "$lib"/libvlc.so.5.5.0     "$VLC"/libvlc.so.5
-        sudo cp "$lib"/libvlccore.so.8.0.0 "$VLC"/libvlccore.so.8
+        sudo cp "$lib"/libvlc.so.$libvlc_version         "$VLC"/libvlc.so.5
+        sudo cp "$lib"/libvlccore.so.$libvlccore_version "$VLC"/libvlccore.so.8
 
         sudo cp -r "$lib"/vlc/plugins "$VLC"
 
@@ -193,23 +211,25 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
         tar -xvzf "$libtorrent_archive"
 
+        cd "$libtorrent_name"
+
         ./configure
 
         make
 
         sudo make install
 
-        cd -
+        cd ../"$external"
 
-        sudo cp "$lib"/libtorrent-rasterbar.so.9.0.0 "$VLC"/libtorrent-rasterbar.so.9
+        sudo cp "$lib"/libtorrent-rasterbar.so.$libtorrent_version_linux "$VLC"/libtorrent-rasterbar.so.9
 
         echo ""
         echo "DEPLOYING Boost"
 
-        mkdir -p "$Boost"
+        mkdir -p "$Boost_linux"
 
-        sudo cp "$lib64"/libboost_system.so.1.61.0 "$Boost"
-        sudo cp "$lib64"/libboost_random.so.1.61.0 "$Boost"
-        sudo cp "$lib64"/libboost_chrono.so.1.61.0 "$Boost"
+        sudo cp "$lib64"/libboost_system.so.$Boost_version_linux "$Boost_linux"
+        sudo cp "$lib64"/libboost_random.so.$Boost_version_linux "$Boost_linux"
+        sudo cp "$lib64"/libboost_chrono.so.$Boost_version_linux "$Boost_linux"
     fi
 fi
