@@ -15,6 +15,8 @@ MinGW_version="4.9.2"
 
 VLC_version="2.2.4"
 
+libtorrent_version="1.1.0"
+
 #--------------------------------------------------------------------------------------------------
 
 Qt4="$external/Qt/$Qt4_version"
@@ -26,10 +28,21 @@ SSL="$external/OpenSSL"
 
 VLC="$external/VLC/$VLC_version"
 
+libtorrent="$external/libtorrent/$libtorrent_version"
+
 #--------------------------------------------------------------------------------------------------
 
 bin4="bin"
 bin5="latest"
+
+#--------------------------------------------------------------------------------------------------
+# Linux
+
+Boost_version_linux="1.61.0"
+
+#--------------------------------------------------------------------------------------------------
+
+Boost_linux="$external/Boost/$Boost_version_linux"
 
 #--------------------------------------------------------------------------------------------------
 # Syntax
@@ -90,6 +103,23 @@ if [ $1 = "qt4" ]; then
 
         cp "$Qt4"/plugins/imageformats/qsvg4.dll  deploy/imageformats
         cp "$Qt4"/plugins/imageformats/qjpeg4.dll deploy/imageformats
+
+    elif [ $2 = "linux" ]; then
+
+        cp "$Qt4"/bin/libQtCore.so.4        deploy
+        cp "$Qt4"/bin/libQtDeclarative.so.4 deploy
+        cp "$Qt4"/bin/libQtGui.so.4         deploy
+        cp "$Qt4"/bin/libQtNetwork.so.4     deploy
+        cp "$Qt4"/bin/libQtOpenGL.so.4      deploy
+        cp "$Qt4"/bin/libQtScript.so.4      deploy
+        cp "$Qt4"/bin/libQtSql.so.4         deploy
+        cp "$Qt4"/bin/libQtSvg.so.4         deploy
+        cp "$Qt4"/bin/libQtWebKit.so.4      deploy
+        cp "$Qt4"/bin/libQtXml.so.4         deploy
+        cp "$Qt4"/bin/libQtXmlPatterns.so.4 deploy
+
+        cp "$Qt4"/plugins/imageformats/libqsvg.so  deploy/imageformats
+        cp "$Qt4"/plugins/imageformats/libqjpeg.so deploy/imageformats
     fi
 
     bin="$bin4"
@@ -154,23 +184,58 @@ fi
 
 echo "COPYING VLC"
 
-mkdir deploy/plugins
+if [ $2 = "win32" ]; then
 
-cp -r "$VLC"/plugins/access       deploy/plugins
-cp -r "$VLC"/plugins/audio_filter deploy/plugins
-cp -r "$VLC"/plugins/audio_mixer  deploy/plugins
-cp -r "$VLC"/plugins/audio_output deploy/plugins
-cp -r "$VLC"/plugins/codec        deploy/plugins
-cp -r "$VLC"/plugins/control      deploy/plugins
-cp -r "$VLC"/plugins/demux        deploy/plugins
-cp -r "$VLC"/plugins/misc         deploy/plugins
-cp -r "$VLC"/plugins/video_chroma deploy/plugins
-cp -r "$VLC"/plugins/video_filter deploy/plugins
-cp -r "$VLC"/plugins/video_output deploy/plugins
+    deploy="deploy/plugins"
+
+elif [ $2 = "linux" ]; then
+
+    deploy="deploy/vlc/plugins"
+fi
+
+mkdir -p $deploy
+
+cp -r "$VLC"/plugins/access       $deploy
+cp -r "$VLC"/plugins/audio_filter $deploy
+cp -r "$VLC"/plugins/audio_mixer  $deploy
+cp -r "$VLC"/plugins/audio_output $deploy
+cp -r "$VLC"/plugins/codec        $deploy
+cp -r "$VLC"/plugins/control      $deploy
+cp -r "$VLC"/plugins/demux        $deploy
+cp -r "$VLC"/plugins/misc         $deploy
+cp -r "$VLC"/plugins/video_chroma $deploy
+cp -r "$VLC"/plugins/video_filter $deploy
+cp -r "$VLC"/plugins/video_output $deploy
 
 if [ $2 = "win32" ]; then
 
     cp "$VLC"/libvlc*.dll deploy
+
+elif [ $2 = "linux" ]; then
+
+    cp "$VLC"/libvlc* deploy
+fi
+
+#--------------------------------------------------------------------------------------------------
+# libtorrent
+#--------------------------------------------------------------------------------------------------
+
+if [ $2 = "linux" ]; then
+
+    echo "COPYING libtorrent"
+
+    cp "$libtorrent"/libtorrent* deploy
+fi
+
+#--------------------------------------------------------------------------------------------------
+# Boost
+#--------------------------------------------------------------------------------------------------
+
+if [ $2 = "linux" ]; then
+
+    echo "COPYING Boost"
+
+    cp "$Boost_linux"/libboost* deploy
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -187,6 +252,15 @@ if [ $2 = "win32" ]; then
     cp "$bin"/SkWeb.dll     deploy
     cp "$bin"/SkTorrent.dll deploy
     cp "$bin"/SkBackend.dll deploy
+
+elif [ $2 = "linux" ]; then
+
+    cp "$bin"/libSkCore.so    deploy
+    cp "$bin"/libSkGui.so     deploy
+    cp "$bin"/libSkMedia.so   deploy
+    cp "$bin"/libSkWeb.so     deploy
+    cp "$bin"/libSkTorrent.so deploy
+    cp "$bin"/libSkBackend.so deploy
 fi
 
 cp "$bin"/includeGenerator* deploy
