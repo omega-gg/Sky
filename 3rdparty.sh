@@ -74,7 +74,7 @@ if [ $# != 2 ] || [ $1 != "all"       -a \
     exit 1
 fi
 
-if [ $2 = "linux32" ]
+if [ $2 = "linux32" ]; then
 
     lib64="$lib"
 fi
@@ -89,23 +89,27 @@ if [ $1 = "all" ] || [ $1 = "install" ]; then
 
         echo "INSTALLING X11"
 
-        sudo apt-get install "$X11_dependecy"
+        sudo apt-get install $X11_dependecy
 
+        echo ""
         echo "INSTALLING Qt"
 
-        sudo apt-get install "$Qt_dependecy"
+        sudo apt-get install $Qt_dependecy
 
+        echo ""
         echo "INSTALLING libtorrent"
 
-        sudo apt-get install "$libtorrent_dependecy"
+        sudo apt-get install $libtorrent_dependecy
 
+        echo ""
         echo "INSTALLING Boost"
 
-        sudo apt-get install "$Boost_dependecy"
+        sudo apt-get install $Boost_dependecy
 
+        echo ""
         echo "INSTALLING TOOLS"
 
-        sudo apt-get install "$tools_dependecy"
+        sudo apt-get install $tools_dependecy
     fi
 fi
 
@@ -115,23 +119,27 @@ if [ $1 = "uninstall" ]; then
 
         echo "UNINSTALLING X11"
 
-        sudo apt-get remove "$X11_dependecy"
+        sudo apt-get remove $X11_dependecy
 
+        echo ""
         echo "UNINSTALLING Qt"
 
-        sudo apt-get remove "$Qt_dependecy"
+        sudo apt-get remove $Qt_dependecy
 
+        echo ""
         echo "UNINSTALLING libtorrent"
 
-        sudo apt-get remove "$libtorrent_dependecy"
+        sudo apt-get remove $libtorrent_dependecy
 
+        echo ""
         echo "UNINSTALLING Boost"
 
-        sudo apt-get remove "$Boost_dependecy"
+        sudo apt-get remove $Boost_dependecy
 
+        echo ""
         echo "UNINSTALLING TOOLS"
 
-        sudo apt-get remove "$tools_dependecy"
+        sudo apt-get remove $tools_dependecy
     fi
 fi
 
