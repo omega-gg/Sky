@@ -55,7 +55,7 @@ CONFIG(debug, debug|release) {
 }
 
 win32:LIBS += -L$$SK/lib -llibvlc
-unix: LIBS += -L$$SK/lib -lvlc
+unix: LIBS += -lvlc
 
 macx {
 CONFIG(debug, debug|release) {

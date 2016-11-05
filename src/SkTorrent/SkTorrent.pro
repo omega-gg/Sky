@@ -56,8 +56,8 @@ win32:LIBS += -static -L$$_PRO_FILE_PWD_ -ltorrent \
               -static -L$$_PRO_FILE_PWD_ -lboost_chrono \
               -lmswsock -lws2_32 \
 
-unix:LIBS += -L$$SK/lib -ltorrent-rasterbar \
-             -L$$SK/lib -lboost_system -lboost_random -lboost_chrono \
+unix:LIBS += -ltorrent-rasterbar \
+             -lboost_system -lboost_random -lboost_chrono \
 
 macx {
 CONFIG(debug, debug|release) {
