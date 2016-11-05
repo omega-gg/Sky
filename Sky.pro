@@ -8,7 +8,8 @@ SUBDIRS = src/SkCore \
           src/SkBackend \
           tools \
 
-OTHER_FILES += configure.sh \
+OTHER_FILES += 3rdparty.sh \
+               configure.sh \
                deploy.sh \
                README.md \
                LICENSE.md \
