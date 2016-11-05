@@ -194,6 +194,8 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
         echo "DEPLOYING Boost"
 
+        mkdir -p "$Boost"
+
         cp "$lib64"/libboost_system.so.1.61.0 "$Boost"
         cp "$lib64"/libboost_random.so.1.61.0 "$Boost"
         cp "$lib64"/libboost_chrono.so.1.61.0 "$Boost"
