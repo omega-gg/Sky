@@ -54,9 +54,9 @@ class SK_CORE_EXPORT WControllerApplication : public QObject, public WPrivatable
 
     Q_PROPERTY(bool qrc READ isQrc WRITE setQrc NOTIFY qrcChanged)
 
-    Q_PROPERTY(bool osWin  READ osWin   CONSTANT)
-    Q_PROPERTY(bool osMac  READ osMac   CONSTANT)
-    Q_PROPERTY(bool osUnix READ osUnix CONSTANT)
+    Q_PROPERTY(bool osWin   READ osWin   CONSTANT)
+    Q_PROPERTY(bool osMac   READ osMac   CONSTANT)
+    Q_PROPERTY(bool osLinux READ osLinux CONSTANT)
 
     Q_PROPERTY(QString name    READ name    WRITE setName    NOTIFY nameChanged)
     Q_PROPERTY(QString version READ version WRITE setVersion NOTIFY versionChanged)
@@ -246,9 +246,9 @@ public: // Properties
     bool isQrc() const;
     void setQrc(bool qrc);
 
-    bool osWin () const;
-    bool osMac () const;
-    bool osUnix() const;
+    bool osWin  () const;
+    bool osMac  () const;
+    bool osLinux() const;
 
     QString name() const;
     void    setName(const QString & name);

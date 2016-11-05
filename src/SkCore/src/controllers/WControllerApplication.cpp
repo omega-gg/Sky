@@ -893,7 +893,7 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 {
     QFontMetrics metrics(font);
 
-#if defined(QT_LATEST) || defined(Q_OS_MAC) || defined(Q_OS_UNIX)
+#if defined(QT_LATEST) || defined(Q_OS_MAC) || defined(Q_OS_LINUX)
     return metrics.width(text) + 1;
 #else
     return metrics.width(text);
@@ -1126,9 +1126,9 @@ bool WControllerApplication::osMac() const
 #endif
 }
 
-bool WControllerApplication::osUnix() const
+bool WControllerApplication::osLinux() const
 {
-#ifdef Q_OS_UNIX
+#ifdef Q_OS_LINUX
     return true;
 #else
     return false;

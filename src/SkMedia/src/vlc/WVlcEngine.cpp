@@ -109,7 +109,7 @@ bool WVlcEngine::event(QEvent * event)
 
         d->instance = libvlc_new(sizeof(args) / sizeof(*args), args);
 
-#ifdef Q_OS_UNIX
+#ifdef Q_OS_LINUX
         if (d->instance == NULL)
         {
             qFatal("WVlcEngine::event: Cannot create VLC instance. Is VLC installed ?");

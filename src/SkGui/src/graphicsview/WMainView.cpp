@@ -581,7 +581,7 @@ void WMainViewPrivate::updateMouse()
 
     QPoint pos = QCursor::pos();
 
-#ifdef Q_OS_UNIX
+#ifdef Q_OS_LINUX
     setMousePos(q->mapFromGlobal(pos));
 #else
     setMousePos(QPoint(pos.x() - q->x(), pos.y() - q->y()));
@@ -598,7 +598,7 @@ void WMainViewPrivate::updateDrag()
 
     QPoint pos = QCursor::pos();
 
-#ifdef Q_OS_UNIX
+#ifdef Q_OS_LINUX
     setMousePos(q->mapFromGlobal(pos));
 #else
     setMousePos(QPoint(pos.x() - q->x(), pos.y() - q->y()));
@@ -2604,7 +2604,7 @@ void WMainView::setMaximized(bool maximized)
 
     if (maximized)
     {
-#ifdef Q_OS_UNIX
+#ifdef Q_OS_LINUX
         // FIXME: Workaround to undock the window.
         int geometryHeight = availableGeometry().height();
 

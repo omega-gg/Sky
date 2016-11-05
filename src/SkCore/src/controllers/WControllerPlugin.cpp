@@ -100,7 +100,7 @@ bool WControllerPluginPrivate::isPlugin(const QString & path) const
     if (info.suffix() == "dll") return true;
 #elif defined(Q_OS_MAC)
     if (info.suffix() == "dylib") return true;
-#elif defined(Q_OS_UNIX)
+#elif defined(Q_OS_LINUX)
     if (info.suffix() == "so") return true;
 #endif
     else return false;
@@ -194,7 +194,7 @@ QString WControllerPlugin::pluginFileName(const QString & name)
 
     QString fileName = name;
 
-#if defined(Q_OS_MAC) || defined(Q_OS_UNIX)
+#if defined(Q_OS_MAC) || defined(Q_OS_LINUX)
     fileName.prepend("lib");
 #endif
 

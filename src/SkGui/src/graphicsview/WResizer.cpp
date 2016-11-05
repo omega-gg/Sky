@@ -28,7 +28,7 @@
 // Private includes
 #include <private/WMainView_p>
 
-#if defined(Q_OS_UNIX)
+#if defined(Q_OS_LINUX)
     #include <private/qt_x11_p.h>
     #include <QX11Info>
 #elif defined(Q_OS_WIN)
@@ -47,7 +47,7 @@
 #define SZ_SIZETOP          0xf003
 #define SZ_SIZEBOTTOM       0xf006
 
-#if defined(Q_OS_UNIX)
+#if defined(Q_OS_LINUX)
 bool isSupportedByWM(Atom atom)
 {
     if (!X11->net_supported_list)
@@ -327,20 +327,20 @@ WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
 
     d->mainView->d_func()->setResizing(true);
 
-#ifdef Q_OS_UNIX
-    // Use a native X11 sizegrip for "real" top-level windows if supported.
-    if (d->mainView->isWindow()
-        && isSupportedByWM(ATOM(_NET_WM_MOVERESIZE))
-        && !d->mainView->testAttribute(Qt::WA_DontShowOnScreen))
+#ifdef Q_OS_LINUX
+    if (d->mainView->isWindow() && isSupportedByWM(ATOM(_NET_WM_MOVERESIZE))
+        &&
+        d->mainView->testAttribute(Qt::WA_DontShowOnScreen) == false)
     {
         XEvent xev;
-        xev.xclient.type = ClientMessage;
+
+        xev.xclient.type         = ClientMessage;
         xev.xclient.message_type = ATOM(_NET_WM_MOVERESIZE);
-        xev.xclient.display = X11->display;
-        xev.xclient.window = d->mainView->winId();
-        xev.xclient.format = 32;
-        xev.xclient.data.l[0] = d->mainView->x();
-        xev.xclient.data.l[1] = d->mainView->y();
+        xev.xclient.display      = X11->display;
+        xev.xclient.window       = d->mainView->winId();
+        xev.xclient.format       = 32;
+        xev.xclient.data.l[0]    = d->mainView->x();
+        xev.xclient.data.l[1]    = d->mainView->y();
 
         if      (d->type == TopLeft)     xev.xclient.data.l[2] = 0;
         else if (d->type == Top)         xev.xclient.data.l[2] = 1;
@@ -361,7 +361,7 @@ WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
 
         return;
     }
-#endif // Q_OS_UNIX
+#endif // Q_OS_LINUX
 #ifdef Q_OS_WIN
     Q_UNUSED(event);
 
@@ -392,10 +392,12 @@ WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
 {
     Q_D(WResizer);
 
-#ifdef Q_OS_UNIX
+#ifdef Q_OS_LINUX
     if (d->mainView->isWindow() && isSupportedByWM(ATOM(_NET_WM_MOVERESIZE))
-        && d->mainView->isTopLevel()
-        && d->mainView->testAttribute(Qt::WA_DontShowOnScreen) == false) return;
+        &&
+        d->mainView->isTopLevel()
+        &&
+        d->mainView->testAttribute(Qt::WA_DontShowOnScreen) == false) return;
 #endif
 
 #ifdef Q_OS_WIN

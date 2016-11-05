@@ -125,7 +125,7 @@ QString WVlcPlayerPrivate::encodeUrl(const QUrl & url) const
 
     if (d->backend == NULL) return;
 
-#ifdef Q_OS_UNIX
+#ifdef Q_OS_LINUX
     qint64 length = event->u.media_player_length_changed.new_length;
 #else
     libvlc_time_t length = event->u.media_player_length_changed.new_length;
