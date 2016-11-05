@@ -227,7 +227,8 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
         cd -
 
-        sudo cp "$lib"/libtorrent-rasterbar.so.$libtorrent_version_linux "$VLC"/libtorrent-rasterbar.so.9
+        sudo cp "$lib"/libtorrent-rasterbar.so.$libtorrent_version_linux \
+                "$libtorrent"/libtorrent-rasterbar.so.9
 
         echo ""
         echo "DEPLOYING Boost"
