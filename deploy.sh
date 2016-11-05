@@ -106,17 +106,17 @@ if [ $1 = "qt4" ]; then
 
     elif [ $2 = "linux" ]; then
 
-        cp "$Qt4"/bin/libQtCore.so.4        deploy
-        cp "$Qt4"/bin/libQtDeclarative.so.4 deploy
-        cp "$Qt4"/bin/libQtGui.so.4         deploy
-        cp "$Qt4"/bin/libQtNetwork.so.4     deploy
-        cp "$Qt4"/bin/libQtOpenGL.so.4      deploy
-        cp "$Qt4"/bin/libQtScript.so.4      deploy
-        cp "$Qt4"/bin/libQtSql.so.4         deploy
-        cp "$Qt4"/bin/libQtSvg.so.4         deploy
-        cp "$Qt4"/bin/libQtWebKit.so.4      deploy
-        cp "$Qt4"/bin/libQtXml.so.4         deploy
-        cp "$Qt4"/bin/libQtXmlPatterns.so.4 deploy
+        cp "$Qt4"/lib/libQtCore.so.4        deploy
+        cp "$Qt4"/lib/libQtDeclarative.so.4 deploy
+        cp "$Qt4"/lib/libQtGui.so.4         deploy
+        cp "$Qt4"/lib/libQtNetwork.so.4     deploy
+        cp "$Qt4"/lib/libQtOpenGL.so.4      deploy
+        cp "$Qt4"/lib/libQtScript.so.4      deploy
+        cp "$Qt4"/lib/libQtSql.so.4         deploy
+        cp "$Qt4"/lib/libQtSvg.so.4         deploy
+        cp "$Qt4"/lib/libQtWebKit.so.4      deploy
+        cp "$Qt4"/lib/libQtXml.so.4         deploy
+        cp "$Qt4"/lib/libQtXmlPatterns.so.4 deploy
 
         cp "$Qt4"/plugins/imageformats/libqsvg.so  deploy/imageformats
         cp "$Qt4"/plugins/imageformats/libqjpeg.so deploy/imageformats
