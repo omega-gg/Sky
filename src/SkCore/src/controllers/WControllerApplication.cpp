@@ -1126,6 +1126,15 @@ bool WControllerApplication::osMac() const
 #endif
 }
 
+bool WControllerApplication::osUnix() const
+{
+#ifdef Q_OS_UNIX
+    return true;
+#else
+    return false;
+#endif
+}
+
 //-------------------------------------------------------------------------------------------------
 
 bool WControllerApplication::isQrc() const
