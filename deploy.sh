@@ -213,7 +213,7 @@ if [ $2 = "win32" ]; then
 
 elif [ $2 = "linux" ]; then
 
-    cp "$VLC"/libvlc* deploy
+    cp "$VLC"/libvlc*.so* deploy
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -224,7 +224,7 @@ if [ $2 = "linux" ]; then
 
     echo "COPYING libtorrent"
 
-    cp "$libtorrent"/libtorrent* deploy
+    cp "$libtorrent"/libtorrent*.so* deploy
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -235,7 +235,7 @@ if [ $2 = "linux" ]; then
 
     echo "COPYING Boost"
 
-    cp "$Boost_linux"/libboost* deploy
+    cp "$Boost_linux"/libboost*.so* deploy
 fi
 
 #--------------------------------------------------------------------------------------------------
