@@ -36,8 +36,8 @@ Qt4_sources="https://github.com/qt/qt.git"
 
 VLC_sources="https://github.com/videolan/vlc.git"
 
-libtorrent_sources="https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_1/"\
-                   "$libtorrent_archive"
+libtorrent_sources="https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_1/\
+                   $libtorrent_archive"
 
 #--------------------------------------------------------------------------------------------------
 # Linux
@@ -67,9 +67,9 @@ tools_dependecy="git"
 if [ $# != 2 ] || [ $1 != "all"       -a \
                     $1 != "install"   -a \
                     $1 != "uninstall" -a \
-                    $1 != "deploy" ] || [ $2 != "linux32" || $2 != "linux64" ]; then
+                    $1 != "deploy" ] || [ $2 != "linux32" -a $2 != "linux64" ]; then
 
-    echo "Usage: 3rdparty <all | install | uninstall | deploy> <linux>"
+    echo "Usage: 3rdparty <all | install | uninstall | deploy> <linux32 | linux64>"
 
     exit 1
 fi
