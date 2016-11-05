@@ -101,8 +101,6 @@ WallBookmarkTrack
     {
         isActive = isExposed;
 
-        pUpdatePlayerItems(isExposed);
-
         if (isActive) pExpanded = false;
     }
 
