@@ -49,7 +49,7 @@ lib64="/usr/lib/x86_64-linux-gnu"
 
 #--------------------------------------------------------------------------------------------------
 
-QtWebkit_versio="4.10.2"
+QtWebkit_version="4.10.2"
 
 libvlc_version="5.5.0"
 
@@ -160,6 +160,11 @@ if [ $1 = "uninstall" ]; then
     fi
 fi
 
+if [ $1 = "all" ]; then
+
+    echo ""
+fi
+
 #--------------------------------------------------------------------------------------------------
 # Deploy
 #--------------------------------------------------------------------------------------------------
@@ -173,7 +178,7 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
         git clone "$Qt4_sources" "$Qt4"
 
         sudo cp "$lib64"/libQtCore.so.$Qt4_version        "$Qt4"/lib/libQtCore.so.4
-        sudo cp "$lib64"/libQtDeclarative.$Qt4_version    "$Qt4"/lib/libQtDeclarative.so.4
+        sudo cp "$lib64"/libQtDeclarative.so.$Qt4_version "$Qt4"/lib/libQtDeclarative.so.4
         sudo cp "$lib64"/libQtGui.so.$Qt4_version         "$Qt4"/lib/libQtGui.so.4
         sudo cp "$lib64"/libQtNetwork.so.$Qt4_version     "$Qt4"/lib/libQtNetwork.so.4
         sudo cp "$lib64"/libQtOpenGL.so.$Qt4_version      "$Qt4"/lib/libQtOpenGL.so.4
@@ -211,7 +216,8 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
         tar -xvzf "$libtorrent_archive"
 
-        cd "$libtorrent_name"
+        mv "$libtorrent_name"/* .
+        rm "$libtorrent_name"
 
         ./configure
 
@@ -219,7 +225,7 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
         sudo make install
 
-        cd ../"$external"
+        cd -
 
         sudo cp "$lib"/libtorrent-rasterbar.so.$libtorrent_version_linux "$VLC"/libtorrent-rasterbar.so.9
 
