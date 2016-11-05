@@ -36,8 +36,7 @@ Qt4_sources="https://github.com/qt/qt.git"
 
 VLC_sources="https://github.com/videolan/vlc.git"
 
-libtorrent_sources="https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_1/\
-                   $libtorrent_archive"
+libtorrent_sources="https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_1/$libtorrent_archive"
 
 #--------------------------------------------------------------------------------------------------
 # Linux
@@ -155,36 +154,40 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
         git clone "$Qt4_sources" "$Qt4"
 
-        cp "$lib64"/libQtCore.so.4.8.7        "$Qt"/lib/libQtCore.so.4
-        cp "$lib64"/libQtDeclarative.so.4.8.7 "$Qt"/lib/libQtDeclarative.so.4
-        cp "$lib64"/libQtGui.so.4.8.7         "$Qt"/lib/libQtGui.so.4
-        cp "$lib64"/libQtNetwork.so.4.8.7     "$Qt"/lib/libQtNetwork.so.4
-        cp "$lib64"/libQtOpenGL.so.4.8.7      "$Qt"/lib/libQtOpenGL.so.4
-        cp "$lib64"/libQtScript.so.4.8.7      "$Qt"/lib/libQtScript.so.4
-        cp "$lib64"/libQtSql.so.4.8.7         "$Qt"/lib/libQtSql.so.4
-        cp "$lib64"/libQtSvg.so.4.8.7         "$Qt"/lib/libQtSvg.so.4
-        cp "$lib64"/libQtXml.so.4.8.7         "$Qt"/lib/libQtXml.so.4
-        cp "$lib64"/libQtXmlPatterns.so.4.8.7 "$Qt"/lib/libQtXmlPatterns.so.4
+        sudo cp "$lib64"/libQtCore.so.4.8.7        "$Qt"/lib/libQtCore.so.4
+        sudo cp "$lib64"/libQtDeclarative.so.4.8.7 "$Qt"/lib/libQtDeclarative.so.4
+        sudo cp "$lib64"/libQtGui.so.4.8.7         "$Qt"/lib/libQtGui.so.4
+        sudo cp "$lib64"/libQtNetwork.so.4.8.7     "$Qt"/lib/libQtNetwork.so.4
+        sudo cp "$lib64"/libQtOpenGL.so.4.8.7      "$Qt"/lib/libQtOpenGL.so.4
+        sudo cp "$lib64"/libQtScript.so.4.8.7      "$Qt"/lib/libQtScript.so.4
+        sudo cp "$lib64"/libQtSql.so.4.8.7         "$Qt"/lib/libQtSql.so.4
+        sudo cp "$lib64"/libQtSvg.so.4.8.7         "$Qt"/lib/libQtSvg.so.4
+        sudo cp "$lib64"/libQtXml.so.4.8.7         "$Qt"/lib/libQtXml.so.4
+        sudo cp "$lib64"/libQtXmlPatterns.so.4.8.7 "$Qt"/lib/libQtXmlPatterns.so.4
 
-        cp "$lib64"/libQtWebKit.so.4.10.2 "$Qt"/lib/libQtWebKit.so.4
+        sudo cp "$lib64"/libQtWebKit.so.4.10.2 "$Qt"/lib/libQtWebKit.so.4
 
         mkdir -p "$Qt"/plugins/imageformats
 
-        cp "$lib64"/qt4/plugins/imageformats/libqsvg.so  "$Qt"/plugins/imageformats
-        cp "$lib64"/qt4/plugins/imageformats/libqjpeg.so "$Qt"/plugins/imageformats
+        sudo cp "$lib64"/qt4/plugins/imageformats/libqsvg.so  "$Qt"/plugins/imageformats
+        sudo cp "$lib64"/qt4/plugins/imageformats/libqjpeg.so "$Qt"/plugins/imageformats
 
+        echo ""
         echo "DEPLOYING VLC"
 
         git clone "$VLC_sources" "$VLC"
 
-        cp "$lib"/libvlc.so.5.5.0     "$VLC"/libvlc.so.5
-        cp "$lib"/libvlccore.so.8.0.0 "$VLC"/libvlccore.so.8
+        sudo cp "$lib"/libvlc.so.5.5.0     "$VLC"/libvlc.so.5
+        sudo cp "$lib"/libvlccore.so.8.0.0 "$VLC"/libvlccore.so.8
 
-        cp -r "$lib"/vlc/plugins "$VLC"
+        sudo cp -r "$lib"/vlc/plugins "$VLC"
 
+        echo ""
         echo "DEPLOYING libtorrent"
 
         mkdir -p "$libtorrent"
+
+        cd "$libtorrent"
 
         wget "$libtorrent_sources"
 
@@ -198,14 +201,15 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
         cd -
 
-        cp "$lib"/libtorrent-rasterbar.so.9.0.0 "$VLC"/libtorrent-rasterbar.so.9
+        sudo cp "$lib"/libtorrent-rasterbar.so.9.0.0 "$VLC"/libtorrent-rasterbar.so.9
 
+        echo ""
         echo "DEPLOYING Boost"
 
         mkdir -p "$Boost"
 
-        cp "$lib64"/libboost_system.so.1.61.0 "$Boost"
-        cp "$lib64"/libboost_random.so.1.61.0 "$Boost"
-        cp "$lib64"/libboost_chrono.so.1.61.0 "$Boost"
+        sudo cp "$lib64"/libboost_system.so.1.61.0 "$Boost"
+        sudo cp "$lib64"/libboost_random.so.1.61.0 "$Boost"
+        sudo cp "$lib64"/libboost_chrono.so.1.61.0 "$Boost"
     fi
 fi
