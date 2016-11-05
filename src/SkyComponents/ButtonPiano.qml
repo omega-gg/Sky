@@ -60,7 +60,7 @@ BaseButtonPiano
     {
         var size;
 
-        size = sk.textWidth(text, font) + paddingLeft + paddingRight + borderSizeWidth;
+        size = sk.textWidth(font, text) + paddingLeft + paddingRight + borderSizeWidth;
 
         if (minimumWidth != -1)
         {

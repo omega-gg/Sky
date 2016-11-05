@@ -191,8 +191,7 @@ public: // Static interface
                                           int                 width,
                                           Qt::TextElideMode   mode = Qt::ElideRight);
 
-    Q_INVOKABLE static int textWidth(const QString & text, const QFont & font);
-
+    Q_INVOKABLE static int textWidth (const QFont & font, const QString & text);
     Q_INVOKABLE static int textHeight(const QFont & font);
 
     //---------------------------------------------------------------------------------------------

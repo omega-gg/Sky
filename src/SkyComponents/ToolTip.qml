@@ -93,7 +93,7 @@ BaseToolTip
         {
             if (text)
             {
-                size = Math.max(iconWidth, height) + sk.textWidth(text, font) + borderSizeWidth
+                size = Math.max(iconWidth, height) + sk.textWidth(font, text) + borderSizeWidth
                        +
                        paddingRight + spacing;
             }
@@ -101,7 +101,7 @@ BaseToolTip
         }
         else if (text)
         {
-            size = sk.textWidth(text, font) + borderSizeWidth + paddingLeft + paddingRight;
+            size = sk.textWidth(font, text) + borderSizeWidth + paddingLeft + paddingRight;
         }
 
         if (minimumWidth != -1)

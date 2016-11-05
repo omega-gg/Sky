@@ -65,7 +65,7 @@ TextBase
                                  ==
                                  Text.AlignVCenter) ? parent.verticalCenter : undefined
 
-        width: Math.min(sk.textWidth(text, font), parent.width)
+        width: Math.min(sk.textWidth(font, text), parent.width)
 
         height: Math.min(sk.textHeight(font), parent.height)
 

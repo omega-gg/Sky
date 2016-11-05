@@ -888,8 +888,8 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
     return metrics.elidedText(text, mode, width);
 }
 
-/* Q_INVOKABLE static */ int WControllerApplication::textWidth(const QString & text,
-                                                               const QFont   & font)
+/* Q_INVOKABLE static */ int WControllerApplication::textWidth(const QFont   & font,
+                                                               const QString & text)
 {
     QFontMetrics metrics(font);
 

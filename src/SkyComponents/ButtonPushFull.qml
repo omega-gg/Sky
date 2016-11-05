@@ -102,13 +102,13 @@ BaseButtonPush
         {
             if (text)
             {
-                size = iconWidth + sk.textWidth(text, font) + paddingLeft + paddingRight + spacing;
+                size = iconWidth + sk.textWidth(font, text) + paddingLeft + paddingRight + spacing;
             }
             else size = itemIcon.width + paddingLeft + paddingRight;
         }
         else if (text)
         {
-            size = sk.textWidth(text, font) + paddingLeft + paddingRight;
+            size = sk.textWidth(font, text) + paddingLeft + paddingRight;
         }
 
         if (minimumWidth != -1)

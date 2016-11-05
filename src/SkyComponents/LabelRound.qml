@@ -58,7 +58,7 @@ BaseLabelRound
 
     function getPreferredWidth()
     {
-        var size = sk.textWidth(text, font) + paddingLeft + paddingRight;
+        var size = sk.textWidth(font, text) + paddingLeft + paddingRight;
 
         if (minimumWidth != -1)
         {

@@ -73,7 +73,7 @@ Item
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: paddingLeft + paddingRight + borderSizeWidth + sk.textWidth(text, font)
+    width: paddingLeft + paddingRight + borderSizeWidth + sk.textWidth(font, text)
 
     height: st.labelStream_height + borderSizeHeight
 
