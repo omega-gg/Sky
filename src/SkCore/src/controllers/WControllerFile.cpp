@@ -717,7 +717,7 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 {
     if (url.scheme().toLower() == "qrc")
     {
-         return ':' + url.path();
+         return url.toString().mid(3);
     }
     else return url.toLocalFile();
 }
@@ -726,7 +726,7 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 {
     if (url.scheme().toLower() == "qrc")
     {
-         return ':' + url.path();
+         return url.toString().mid(3);
     }
     else return url.toString();
 }
