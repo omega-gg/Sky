@@ -172,5 +172,5 @@ int main(int argc, char *argv[])
 
     generateQrc(argv[2]);
 
-    qDebug("DONE\n");
+    qDebug("DONE");
 }
