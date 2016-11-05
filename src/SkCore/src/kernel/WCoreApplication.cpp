@@ -82,13 +82,13 @@ WCoreApplication::WCoreApplication(int & argc, char ** argv)
 
 /* static */ QCoreApplication * WCoreApplication::create(int & argc, char ** argv, Sk::Type type)
 {
-    QCoreApplication * app = new QCoreApplication(argc, argv);
+    QCoreApplication * application = new QCoreApplication(argc, argv);
 
     W_CREATE_CONTROLLER(WControllerApplication);
 
-    sk->d_func()->createApplication(app, argc, argv, type, true);
+    sk->d_func()->createApplication(application, argc, argv, type, true);
 
-    return app;
+    return application;
 }
 
 #endif // SK_NO_COREAPPLICATION

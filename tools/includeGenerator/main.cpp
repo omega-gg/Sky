@@ -137,7 +137,7 @@ void writeGlobalInclude(const QString & name)
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication app(argc, argv);
+    QCoreApplication application(argc, argv);
 
     if (argc == 3)
     {

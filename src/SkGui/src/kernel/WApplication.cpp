@@ -144,13 +144,16 @@ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
     //qInstallMsgHandler(messageHandler);
 #endif
 
-    QtSingleApplication * app = new QtSingleApplication(argc, argv, true);
+    QtSingleApplication * application = new QtSingleApplication(argc, argv, true);
 
-    if (app->sendMessage("")) return NULL;
+    if (application->sendMessage(""))
+    {
+        return NULL;
+    }
 
     W_CREATE_CONTROLLER(WControllerApplication);
 
-    sk->d_func()->createApplication(app, argc, argv, type, false);
+    sk->d_func()->createApplication(application, argc, argv, type, false);
 
     //---------------------------------------------------------------------------------------------
     // Controllers
@@ -308,7 +311,7 @@ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
     wControllerDeclarative->setContextProperty("controllerNetwork",  wControllerNetwork);
     wControllerDeclarative->setContextProperty("controllerPlaylist", wControllerPlaylist);
 
-    return app;
+    return application;
 }
 
 #endif // SK_NO_APPLICATION

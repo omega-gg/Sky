@@ -155,7 +155,7 @@ void scanFolder(const QString & path)
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication app(argc, argv);
+    QCoreApplication application(argc, argv);
 
     if (argc < 2)
     {
