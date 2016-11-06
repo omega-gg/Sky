@@ -2615,7 +2615,7 @@ void WMainView::setMaximized(bool maximized)
             showMaximized();
             showNormal   ();
 
-            setDefaultGeometry();
+            setGeometry(getDefaultGeometry());
 
             return;
         }
