@@ -1173,18 +1173,18 @@ void WControllerApplication::setName(const QString & name)
     emit nameChanged();
 }
 
-QUrl WControllerApplication::icon() const
+QString WControllerApplication::icon() const
 {
     Q_D(const WControllerApplication); return d->icon;
 }
 
-void WControllerApplication::setIcon(const QUrl & url)
+void WControllerApplication::setIcon(const QString & icon)
 {
     Q_D(WControllerApplication);
 
-    if (d->icon == url) return;
+    if (d->icon == icon) return;
 
-    d->icon = url;
+    d->icon = icon;
 
     emit nameChanged();
 }

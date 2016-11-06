@@ -59,7 +59,7 @@ void WWindowPrivate::init()
 
     mainView->setWindowTitle(sk->name());
 
-    if (icon.isValid())
+    if (icon.isEmpty() == false)
     {
         QIcon windowIcon(WControllerFile::toLocalFile(icon));
 
@@ -550,24 +550,24 @@ WMainView * WWindow::mainView() const
 
 //-------------------------------------------------------------------------------------------------
 
-QUrl WWindow::icon() const
+QString WWindow::icon() const
 {
     Q_D(const WWindow); return d->icon;
 }
 
-void WWindow::setIcon(const QUrl & url)
+void WWindow::setIcon(const QString & icon)
 {
     Q_D(WWindow);
 
-    if (d->icon == url) return;
+    if (d->icon == icon) return;
 
-    d->icon = url;
+    d->icon = icon;
 
-    QIcon icon(WControllerFile::toLocalFile(url));
+    QIcon windowIcon(WControllerFile::toLocalFile(icon));
 
-    d->mainView->setWindowIcon(icon);
+    d->mainView->setWindowIcon(windowIcon);
 
-    emit iconChanged(d->icon);
+    emit iconChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -38,7 +38,7 @@ class SK_GUI_EXPORT WWindow : public WDeclarativeMouseArea
     Q_PROPERTY(WWindow   * window   READ window   CONSTANT)
     Q_PROPERTY(WMainView * mainView READ mainView CONSTANT)
 
-    Q_PROPERTY(QUrl icon READ icon WRITE setIcon NOTIFY iconChanged)
+    Q_PROPERTY(QString icon READ icon WRITE setIcon NOTIFY iconChanged)
 
     Q_PROPERTY(bool visible READ isVisible WRITE setVisible NOTIFY visibleChanged)
 
@@ -263,9 +263,7 @@ public: // Interface
     Q_INVOKABLE void unregisterCursor(int shape);
 
 signals:
-    void iconChanged(const QUrl & url);
-
-    void resizeEnabledChanged(bool enabled);
+    void iconChanged();
 
     void visibleChanged();
 
@@ -354,8 +352,8 @@ public: // Properties
     WWindow   * window  ();
     WMainView * mainView() const;
 
-    QUrl icon() const;
-    void setIcon(const QUrl & url);
+    QString icon() const;
+    void    setIcon(const QString & icon);
 
     bool isVisible() const;
     void setVisible(bool visible);

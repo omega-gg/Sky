@@ -59,7 +59,7 @@ class SK_CORE_EXPORT WControllerApplication : public QObject, public WPrivatable
     Q_PROPERTY(bool osLinux READ osLinux CONSTANT)
 
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
-    Q_PROPERTY(QUrl    icon READ icon WRITE setIcon NOTIFY iconChanged)
+    Q_PROPERTY(QString icon READ icon WRITE setIcon NOTIFY iconChanged)
 
     Q_PROPERTY(QString version READ version WRITE setVersion NOTIFY versionChanged)
 
@@ -256,8 +256,8 @@ public: // Properties
     QString name() const;
     void    setName(const QString & name);
 
-    QUrl icon() const;
-    void setIcon(const QUrl & url);
+    QString icon() const;
+    void    setIcon(const QString & icon);
 
     QString version() const;
     void    setVersion(const QString & version);

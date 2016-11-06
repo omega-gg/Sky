@@ -44,7 +44,7 @@ public:
     void init();
 
 public: // Variables
-    QUrl icon;
+    QString icon;
 
     bool visible;
 

@@ -71,7 +71,7 @@ public: // Variables
     bool coreApplication;
 
     QString name;
-    QUrl    icon;
+    QString icon;
 
     QString version;
 
