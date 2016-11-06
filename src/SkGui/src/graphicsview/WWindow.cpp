@@ -61,9 +61,7 @@ void WWindowPrivate::init()
 
     if (icon.isEmpty() == false)
     {
-        QIcon windowIcon(WControllerFile::toLocalFile(icon));
-
-        mainView->setWindowIcon(windowIcon);
+        mainView->setWindowIcon(QIcon(icon));
     }
 
     mainView->setVisible(true);
@@ -563,9 +561,7 @@ void WWindow::setIcon(const QString & icon)
 
     d->icon = icon;
 
-    QIcon windowIcon(WControllerFile::toLocalFile(icon));
-
-    d->mainView->setWindowIcon(windowIcon);
+    d->mainView->setWindowIcon(QIcon(icon));
 
     emit iconChanged();
 }
