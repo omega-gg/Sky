@@ -43,8 +43,7 @@ libtorrent_sources="https://github.com/arvidn/libtorrent/releases/download/libto
 #--------------------------------------------------------------------------------------------------
 # Linux
 
-lib="/usr/lib"
-
+lib32="/usr/lib"
 lib64="/usr/lib/x86_64-linux-gnu"
 
 #--------------------------------------------------------------------------------------------------
@@ -91,9 +90,14 @@ if [ $# != 2 ] || [ $1 != "all"       -a \
     exit 1
 fi
 
-if [ $2 = "linux32" ]; then
+if [ $2 = "linux" ]; then
 
-    lib64="$lib"
+    if [ -d "$lib64" ]; then
+
+        lib="$lib64"
+    else
+        lib="$lib32"
+    fi
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -177,23 +181,23 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
         git clone "$Qt4_sources" "$Qt4"
 
-        sudo cp "$lib64"/libQtCore.so.$Qt4_version        "$Qt4"/lib/libQtCore.so.4
-        sudo cp "$lib64"/libQtDeclarative.so.$Qt4_version "$Qt4"/lib/libQtDeclarative.so.4
-        sudo cp "$lib64"/libQtGui.so.$Qt4_version         "$Qt4"/lib/libQtGui.so.4
-        sudo cp "$lib64"/libQtNetwork.so.$Qt4_version     "$Qt4"/lib/libQtNetwork.so.4
-        sudo cp "$lib64"/libQtOpenGL.so.$Qt4_version      "$Qt4"/lib/libQtOpenGL.so.4
-        sudo cp "$lib64"/libQtScript.so.$Qt4_version      "$Qt4"/lib/libQtScript.so.4
-        sudo cp "$lib64"/libQtSql.so.$Qt4_version         "$Qt4"/lib/libQtSql.so.4
-        sudo cp "$lib64"/libQtSvg.so.$Qt4_version         "$Qt4"/lib/libQtSvg.so.4
-        sudo cp "$lib64"/libQtXml.so.$Qt4_version         "$Qt4"/lib/libQtXml.so.4
-        sudo cp "$lib64"/libQtXmlPatterns.so.$Qt4_version "$Qt4"/lib/libQtXmlPatterns.so.4
+        sudo cp "$lib"/libQtCore.so.$Qt4_version        "$Qt4"/lib/libQtCore.so.4
+        sudo cp "$lib"/libQtDeclarative.so.$Qt4_version "$Qt4"/lib/libQtDeclarative.so.4
+        sudo cp "$lib"/libQtGui.so.$Qt4_version         "$Qt4"/lib/libQtGui.so.4
+        sudo cp "$lib"/libQtNetwork.so.$Qt4_version     "$Qt4"/lib/libQtNetwork.so.4
+        sudo cp "$lib"/libQtOpenGL.so.$Qt4_version      "$Qt4"/lib/libQtOpenGL.so.4
+        sudo cp "$lib"/libQtScript.so.$Qt4_version      "$Qt4"/lib/libQtScript.so.4
+        sudo cp "$lib"/libQtSql.so.$Qt4_version         "$Qt4"/lib/libQtSql.so.4
+        sudo cp "$lib"/libQtSvg.so.$Qt4_version         "$Qt4"/lib/libQtSvg.so.4
+        sudo cp "$lib"/libQtXml.so.$Qt4_version         "$Qt4"/lib/libQtXml.so.4
+        sudo cp "$lib"/libQtXmlPatterns.so.$Qt4_version "$Qt4"/lib/libQtXmlPatterns.so.4
 
-        sudo cp "$lib64"/libQtWebKit.so.$QtWebkit_version "$Qt4"/lib/libQtWebKit.so.4
+        sudo cp "$lib"/libQtWebKit.so.$QtWebkit_version "$Qt4"/lib/libQtWebKit.so.4
 
         mkdir -p "$Qt4"/plugins/imageformats
 
-        sudo cp "$lib64"/qt4/plugins/imageformats/libqsvg.so  "$Qt4"/plugins/imageformats
-        sudo cp "$lib64"/qt4/plugins/imageformats/libqjpeg.so "$Qt4"/plugins/imageformats
+        sudo cp "$lib"/qt4/plugins/imageformats/libqsvg.so  "$Qt4"/plugins/imageformats
+        sudo cp "$lib"/qt4/plugins/imageformats/libqjpeg.so "$Qt4"/plugins/imageformats
 
         echo ""
         echo "DEPLOYING VLC"
@@ -235,8 +239,8 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
         mkdir -p "$Boost_linux"
 
-        sudo cp "$lib64"/libboost_system.so.$Boost_version_linux "$Boost_linux"
-        sudo cp "$lib64"/libboost_random.so.$Boost_version_linux "$Boost_linux"
-        sudo cp "$lib64"/libboost_chrono.so.$Boost_version_linux "$Boost_linux"
+        sudo cp "$lib"/libboost_system.so.$Boost_version_linux "$Boost_linux"
+        sudo cp "$lib"/libboost_random.so.$Boost_version_linux "$Boost_linux"
+        sudo cp "$lib"/libboost_chrono.so.$Boost_version_linux "$Boost_linux"
     fi
 fi

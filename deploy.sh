@@ -38,6 +38,11 @@ bin5="latest"
 #--------------------------------------------------------------------------------------------------
 # Linux
 
+lib32="/usr/lib"
+lib64="/usr/lib/x86_64-linux-gnu"
+
+#--------------------------------------------------------------------------------------------------
+
 Boost_version_linux="1.61.0"
 
 #--------------------------------------------------------------------------------------------------
@@ -54,6 +59,16 @@ if [ $# != 2 ] || [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] || [ $2 != "wi
     echo "Usage: deploy <qt4 | qt5 | clean> <win32 | linux>"
 
     exit 1
+fi
+
+if [ $2 = "linux" ]; then
+
+    if [ -d "$lib64" ]; then
+
+        lib="$lib64"
+    else
+        lib="$lib32"
+    fi
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -105,6 +120,8 @@ if [ $1 = "qt4" ]; then
         cp "$Qt4"/plugins/imageformats/qjpeg4.dll deploy/imageformats
 
     elif [ $2 = "linux" ]; then
+
+        sudo cp "$lib"/libpng16.so.16 deploy
 
         cp "$Qt4"/lib/libQtCore.so.4        deploy
         cp "$Qt4"/lib/libQtDeclarative.so.4 deploy
@@ -186,34 +203,21 @@ echo "COPYING VLC"
 
 if [ $2 = "win32" ]; then
 
-    deploy="deploy/plugins"
+    mkdir deploy/plugins
 
-elif [ $2 = "linux" ]; then
-
-    deploy="deploy/vlc/plugins"
-fi
-
-mkdir -p $deploy
-
-cp -r "$VLC"/plugins/access       $deploy
-cp -r "$VLC"/plugins/audio_filter $deploy
-cp -r "$VLC"/plugins/audio_mixer  $deploy
-cp -r "$VLC"/plugins/audio_output $deploy
-cp -r "$VLC"/plugins/codec        $deploy
-cp -r "$VLC"/plugins/control      $deploy
-cp -r "$VLC"/plugins/demux        $deploy
-cp -r "$VLC"/plugins/misc         $deploy
-cp -r "$VLC"/plugins/video_chroma $deploy
-cp -r "$VLC"/plugins/video_filter $deploy
-cp -r "$VLC"/plugins/video_output $deploy
-
-if [ $2 = "win32" ]; then
+    cp -r "$VLC"/plugins/access       deploy/plugins
+    cp -r "$VLC"/plugins/audio_filter deploy/plugins
+    cp -r "$VLC"/plugins/audio_mixer  deploy/plugins
+    cp -r "$VLC"/plugins/audio_output deploy/plugins
+    cp -r "$VLC"/plugins/codec        deploy/plugins
+    cp -r "$VLC"/plugins/control      deploy/plugins
+    cp -r "$VLC"/plugins/demux        deploy/plugins
+    cp -r "$VLC"/plugins/misc         deploy/plugins
+    cp -r "$VLC"/plugins/video_chroma deploy/plugins
+    cp -r "$VLC"/plugins/video_filter deploy/plugins
+    cp -r "$VLC"/plugins/video_output deploy/plugins
 
     cp "$VLC"/libvlc*.dll deploy
-
-elif [ $2 = "linux" ]; then
-
-    cp "$VLC"/libvlc*.so* deploy
 fi
 
 #--------------------------------------------------------------------------------------------------
