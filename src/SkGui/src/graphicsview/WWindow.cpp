@@ -46,6 +46,8 @@ void WWindowPrivate::init()
 {
     Q_Q(WWindow);
 
+    icon = sk->icon();
+
     visible = true;
 
     hoverItem = NULL;
@@ -56,6 +58,13 @@ void WWindowPrivate::init()
     mainView = new WMainView(q, NULL, Qt::FramelessWindowHint);
 
     mainView->setWindowTitle(sk->name());
+
+    if (icon.isValid())
+    {
+        QIcon windowIcon(WControllerFile::toLocalFile(icon));
+
+        mainView->setWindowIcon(windowIcon);
+    }
 
     mainView->setVisible(true);
 

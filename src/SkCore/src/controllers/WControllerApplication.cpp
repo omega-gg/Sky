@@ -1168,10 +1168,28 @@ void WControllerApplication::setName(const QString & name)
 
     d->name = name;
 
-    qApp->setApplicationName(d->name);
+    QCoreApplication::setApplicationName(d->name);
 
     emit nameChanged();
 }
+
+QUrl WControllerApplication::icon() const
+{
+    Q_D(const WControllerApplication); return d->icon;
+}
+
+void WControllerApplication::setIcon(const QUrl & url)
+{
+    Q_D(WControllerApplication);
+
+    if (d->icon == url) return;
+
+    d->icon = url;
+
+    emit nameChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
 
 QString WControllerApplication::version() const
 {

@@ -72,6 +72,7 @@ public: // Variables
 
     QString name;
     QUrl    icon;
+
     QString version;
 
     QUrl applicationUrl;
