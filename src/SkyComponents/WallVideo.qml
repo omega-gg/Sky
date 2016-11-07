@@ -540,9 +540,7 @@ WallBookmarkTrack
 
         z: playerBrowser.z
 
-        visible: (playerBrowser.visible && pExpanded
-                  &&
-                  (player.visible == false || split != -1 || rectangleShot.visible))
+        visible: (pExpanded && (player.visible == false || split != -1))
 
         gradient: Gradient
         {
@@ -638,7 +636,7 @@ WallBookmarkTrack
                 }
                 else return (player.isPlaying == false || item != player.item);
             }
-            else if (split >= 0)
+            else if (split != -1)
             {
                  return true;
             }
