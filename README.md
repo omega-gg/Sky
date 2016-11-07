@@ -16,7 +16,9 @@ The video player is based on the [libVLC](http://github.com/videolan/vlc).<br>
 
 - Windows XP and later.
 
-Linux and OS-X are coming soon.
+- Linux 32 bit and 64 bit.
+
+OS-X is coming soon.
 
 ## Requirements
 
@@ -36,7 +38,7 @@ Recommended:
 
 You can configure Sky with:
 
-    sh configure.sh <qt4 | qt5 | clean> <win32>
+    sh configure.sh <qt4 | qt5 | clean> <win32 | linux>
 
 - Edit [configure.sh](configure.sh) to check your dependencies.
 
@@ -55,7 +57,7 @@ Or the console:
 
 You can deploy Sky with:
 
-    sh deploy.sh <qt4 | qt5 | clean> <win32>
+    sh deploy.sh <qt4 | qt5 | clean> <win32 | linux>
 
 - Edit [deploy.sh](deploy.sh) to check your dependencies.
 
