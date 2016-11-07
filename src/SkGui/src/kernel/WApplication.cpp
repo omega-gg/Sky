@@ -136,7 +136,7 @@ WApplication::WApplication(int & argc, char ** argv)
 /* static */
 QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
 {
-#if defined(Q_OS_MAC) || defined(Q_OS_LINUX)
+#if defined(Q_OS_MAC)
     QApplication::setGraphicsSystem("raster");
 #endif
 
