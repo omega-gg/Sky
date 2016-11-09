@@ -193,6 +193,11 @@ if [ $2 = "win32" ]; then
 
     cp "$SSL"/libeay32.dll deploy
     cp "$SSL"/ssleay32.dll deploy
+
+elif [ $2 = "linux" ]; then
+
+    sudo cp "$lib"/libssl.so.1.0.0    deploy
+    sudo cp "$lib"/libcrypto.so.1.0.0 deploy
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -218,6 +223,10 @@ if [ $2 = "win32" ]; then
     cp -r "$VLC"/plugins/video_output deploy/plugins
 
     cp "$VLC"/libvlc*.dll deploy
+
+elif [ $2 = "linux" ]; then
+
+    sudo cp "$lib"/libaudio.so.2.4 deploy/libaudio.so.2
 fi
 
 #--------------------------------------------------------------------------------------------------
