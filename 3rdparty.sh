@@ -181,40 +181,40 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
         git clone "$Qt4_sources" "$Qt4"
 
-        sudo cp "$lib"/libQtCore.so.$Qt4_version        "$Qt4"/lib/libQtCore.so.4
-        sudo cp "$lib"/libQtDeclarative.so.$Qt4_version "$Qt4"/lib/libQtDeclarative.so.4
-        sudo cp "$lib"/libQtGui.so.$Qt4_version         "$Qt4"/lib/libQtGui.so.4
-        sudo cp "$lib"/libQtNetwork.so.$Qt4_version     "$Qt4"/lib/libQtNetwork.so.4
-        sudo cp "$lib"/libQtOpenGL.so.$Qt4_version      "$Qt4"/lib/libQtOpenGL.so.4
-        sudo cp "$lib"/libQtScript.so.$Qt4_version      "$Qt4"/lib/libQtScript.so.4
-        sudo cp "$lib"/libQtSql.so.$Qt4_version         "$Qt4"/lib/libQtSql.so.4
-        sudo cp "$lib"/libQtSvg.so.$Qt4_version         "$Qt4"/lib/libQtSvg.so.4
-        sudo cp "$lib"/libQtXml.so.$Qt4_version         "$Qt4"/lib/libQtXml.so.4
-        sudo cp "$lib"/libQtXmlPatterns.so.$Qt4_version "$Qt4"/lib/libQtXmlPatterns.so.4
+        sudo cp "$lib32"/libQtCore.so.$Qt4_version        "$Qt4"/lib/libQtCore.so.4
+        sudo cp "$lib32"/libQtDeclarative.so.$Qt4_version "$Qt4"/lib/libQtDeclarative.so.4
+        sudo cp "$lib32"/libQtGui.so.$Qt4_version         "$Qt4"/lib/libQtGui.so.4
+        sudo cp "$lib32"/libQtNetwork.so.$Qt4_version     "$Qt4"/lib/libQtNetwork.so.4
+        sudo cp "$lib32"/libQtOpenGL.so.$Qt4_version      "$Qt4"/lib/libQtOpenGL.so.4
+        sudo cp "$lib32"/libQtScript.so.$Qt4_version      "$Qt4"/lib/libQtScript.so.4
+        sudo cp "$lib32"/libQtSql.so.$Qt4_version         "$Qt4"/lib/libQtSql.so.4
+        sudo cp "$lib32"/libQtSvg.so.$Qt4_version         "$Qt4"/lib/libQtSvg.so.4
+        sudo cp "$lib32"/libQtXml.so.$Qt4_version         "$Qt4"/lib/libQtXml.so.4
+        sudo cp "$lib32"/libQtXmlPatterns.so.$Qt4_version "$Qt4"/lib/libQtXmlPatterns.so.4
 
-        sudo cp "$lib"/libQtWebKit.so.$QtWebkit_version "$Qt4"/lib/libQtWebKit.so.4
+        sudo cp "$lib32"/libQtWebKit.so.$QtWebkit_version "$Qt4"/lib/libQtWebKit.so.4
 
         mkdir -p "$Qt4"/plugins/imageformats
 
-        sudo cp "$lib"/qt4/plugins/imageformats/libqsvg.so  "$Qt4"/plugins/imageformats
-        sudo cp "$lib"/qt4/plugins/imageformats/libqjpeg.so "$Qt4"/plugins/imageformats
+        sudo cp "$lib32"/qt4/plugins/imageformats/libqsvg.so  "$Qt4"/plugins/imageformats
+        sudo cp "$lib32"/qt4/plugins/imageformats/libqjpeg.so "$Qt4"/plugins/imageformats
 
         echo ""
         echo "DEPLOYING VLC"
 
         mkdir -p "$VLC"
 
-        sudo cp "$lib"/libvlc.so.$libvlc_version         "$VLC"/libvlc.so.5
-        sudo cp "$lib"/libvlccore.so.$libvlccore_version "$VLC"/libvlccore.so.8
+        sudo cp "$lib32"/libvlc.so.$libvlc_version         "$VLC"/libvlc.so.5
+        sudo cp "$lib32"/libvlccore.so.$libvlccore_version "$VLC"/libvlccore.so.8
 
-        sudo cp -r "$lib"/vlc/plugins "$VLC"
+        sudo cp -r "$lib32"/vlc/plugins "$VLC"
 
         echo ""
         echo "DEPLOYING libtorrent"
 
         mkdir -p "$libtorrent"
 
-        sudo cp "$lib"/libtorrent-rasterbar.so.$libtorrent_version_linux \
+        sudo cp "$lib32"/libtorrent-rasterbar.so.$libtorrent_version_linux \
                 "$libtorrent"/libtorrent-rasterbar.so.9
 
         echo ""
