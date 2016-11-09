@@ -70,7 +70,7 @@ Qt_dependecy="qt4-default libqtwebkit-dev openssl"
 
 VLC_dependecy="libvlc-dev vlc"
 
-libtorrent_dependecy="libtorrent-rasterbar9 libtorrent-rasterbar-dev"
+libtorrent_dependecy="libtorrent-rasterbar-dev"
 
 Boost_dependecy="libboost-all-dev"
 
