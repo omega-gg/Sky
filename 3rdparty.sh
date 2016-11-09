@@ -70,7 +70,7 @@ Qt_dependecy="qt4-default libqtwebkit-dev openssl"
 
 VLC_dependecy="libvlc-dev vlc"
 
-libtorrent_dependecy="libtorrent-rasterbar-dev"
+libtorrent_dependecy="libtorrent-rasterbar9 libtorrent-rasterbar-dev"
 
 Boost_dependecy="libboost-all-dev"
 
@@ -213,23 +213,6 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
         echo "DEPLOYING libtorrent"
 
         mkdir -p "$libtorrent"
-
-        cd "$libtorrent"
-
-        wget "$libtorrent_sources"
-
-        tar -xvzf "$libtorrent_archive"
-
-        mv "$libtorrent_name"/* .
-        rm "$libtorrent_name"
-
-        ./configure
-
-        make
-
-        sudo make install
-
-        cd -
 
         sudo cp "$lib"/libtorrent-rasterbar.so.$libtorrent_version_linux \
                 "$libtorrent"/libtorrent-rasterbar.so.9
