@@ -36,6 +36,31 @@ public:
 protected:
     WAbstractView(WAbstractViewPrivate * p, QWidget * parent = NULL, Qt::WindowFlags flags = 0);
 
+#ifdef Q_OS_WIN
+public: // Interface
+    Q_INVOKABLE void setGeometry(int x, int y, int width, int height);
+    Q_INVOKABLE void setGeometry(const QRect & rect);
+
+    Q_INVOKABLE void resize(int width, int height);
+    Q_INVOKABLE void resize(const QSize & size);
+
+    Q_INVOKABLE void move(int x, int y);
+    Q_INVOKABLE void move(const QPoint & position);
+
+protected: // Events
+    /* virtual */ void showEvent(QShowEvent * event);
+    /* virtual */ void hideEvent(QHideEvent * event);
+
+public: // Properties
+    WId winId() const;
+
+    int width () const;
+    int height() const;
+
+    int x() const;
+    int y() const;
+#endif
+
 private:
     W_DECLARE_PRIVATE(WAbstractView)
 };

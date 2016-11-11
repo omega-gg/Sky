@@ -30,6 +30,10 @@
 // Sk includes
 #include <private/Sk_p>
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
+
 #ifndef SK_NO_ABSTRACTVIEW
 
 class SK_GUI_EXPORT WAbstractViewPrivate : public WPrivate
@@ -37,10 +41,30 @@ class SK_GUI_EXPORT WAbstractViewPrivate : public WPrivate
 public:
     WAbstractViewPrivate(WAbstractView * p);
 
+#ifdef Q_OS_WIN
+    /* virtual */ ~WAbstractViewPrivate();
+#endif
+
     void init(Qt::WindowFlags flags);
+
+#ifdef Q_OS_WIN
+public: // Events
+    static LRESULT CALLBACK events(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
+#endif
 
 public: // Variables
     Qt::WindowFlags flags;
+
+#ifdef Q_OS_WIN
+    HWND      handle;
+    HINSTANCE instance;
+
+    int width;
+    int height;
+
+    int x;
+    int y;
+#endif
 
 protected:
     W_DECLARE_PUBLIC(WAbstractView)

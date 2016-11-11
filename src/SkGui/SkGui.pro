@@ -54,6 +54,8 @@ CONFIG(debug, debug|release) {
 
 }
 
+win32:LIBS += -lgdi32 -ldwmapi
+
 macx {
 CONFIG(debug, debug|release) {
     QMAKE_POST_LINK = install_name_tool -change libSkCoreD.dylib \

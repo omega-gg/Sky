@@ -353,8 +353,6 @@ void WMainViewPrivate::init(QDeclarativeItem * item)
         QObject::connect(item, SIGNAL(yChanged()), q, SIGNAL(originYChanged()));
     }
 
-    q->setWindowFlags(flags);
-
     q->setRenderHint(QPainter::Antialiasing, true);
 
     QGLFormat format = QGLFormat::defaultFormat();
@@ -461,7 +459,7 @@ void WMainViewPrivate::fadeOut()
 
     emit q->fadeOut();
 
-    q->QDeclarativeView::close();
+    q->WAbstractView::close();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -554,7 +552,7 @@ void WMainViewPrivate::updateMinimumSize()
 //        size = size.expandedTo(QSize(72, 24));
 //#endif
 
-    q->QDeclarativeView::setMinimumSize(size);
+    q->WAbstractView::setMinimumSize(size);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1176,7 +1174,7 @@ WMainView::WMainView(WMainViewPrivate * p,
     SetWindowPos(id, HWND_TOPMOST,   0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
     SetWindowPos(id, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
 #else
-    QDeclarativeView::raise();
+    WAbstractView::raise();
 #endif
 }
 
@@ -1199,7 +1197,7 @@ WMainView::WMainView(WMainViewPrivate * p,
             d->startFade(false);
         }
     }
-    else QDeclarativeView::close();
+    else WAbstractView::close();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1249,17 +1247,17 @@ WMainView::WMainView(WMainViewPrivate * p,
     {
         if (height == -1)
         {
-             QDeclarativeView::setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+             WAbstractView::setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
         }
-        else QDeclarativeView::setMaximumSize(QWIDGETSIZE_MAX, height);
+        else WAbstractView::setMaximumSize(QWIDGETSIZE_MAX, height);
     }
     else if (height == -1)
     {
         if (width == -1)
         {
-             QDeclarativeView::setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+             WAbstractView::setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
         }
-        else QDeclarativeView::setMaximumSize(width, QWIDGETSIZE_MAX);
+        else WAbstractView::setMaximumSize(width, QWIDGETSIZE_MAX);
     }
 
     if (d->maximumWidth != maximumWidth)
@@ -1819,7 +1817,7 @@ QSize WMainView::sizeHint() const
         d->startFade(true);
     }
 
-    QDeclarativeView::showEvent(event);
+    WAbstractView::showEvent(event);
 
     if (d->maximized)
     {
@@ -1845,7 +1843,7 @@ QSize WMainView::sizeHint() const
 
     d->updateMouse();
 
-    QDeclarativeView::moveEvent(event);
+    WAbstractView::moveEvent(event);
 }
 
 /* virtual */ void WMainView::resizeEvent(QResizeEvent * event)
@@ -1854,7 +1852,7 @@ QSize WMainView::sizeHint() const
 
     d->updateMouse();
 
-    QDeclarativeView::resizeEvent(event);
+    WAbstractView::resizeEvent(event);
 
     int width  = this->width ();
     int height = this->height();
@@ -1873,7 +1871,7 @@ QSize WMainView::sizeHint() const
 
     d->setEntered(true);
 
-    QDeclarativeView::enterEvent(event);
+    WAbstractView::enterEvent(event);
 }
 
 /* virtual */ void WMainView::leaveEvent(QEvent * event)
@@ -1890,7 +1888,7 @@ QSize WMainView::sizeHint() const
     }
     else d->setEntered(false);
 
-    QDeclarativeView::leaveEvent(event);
+    WAbstractView::leaveEvent(event);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1932,7 +1930,7 @@ QSize WMainView::sizeHint() const
 
     if (d->mouseAccepted == false)
     {
-        QDeclarativeView::mousePressEvent(event);
+        WAbstractView::mousePressEvent(event);
     }
 }
 
@@ -1977,7 +1975,7 @@ QSize WMainView::sizeHint() const
         emit mouseReleased(&mouse);
     }
 
-    QDeclarativeView::mouseReleaseEvent(event);
+    WAbstractView::mouseReleaseEvent(event);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2000,7 +1998,7 @@ QSize WMainView::sizeHint() const
 
     if (mouse.isAccepted() == false)
     {
-        QDeclarativeView::mouseDoubleClickEvent(event);
+        WAbstractView::mouseDoubleClickEvent(event);
     }
 }
 
@@ -2037,7 +2035,7 @@ QSize WMainView::sizeHint() const
         d->idleTimer.start();
     }
 
-    QDeclarativeView::mouseMoveEvent(event);
+    WAbstractView::mouseMoveEvent(event);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2125,7 +2123,7 @@ QSize WMainView::sizeHint() const
 
     if (d->keyAccepted == false)
     {
-        QDeclarativeView::keyPressEvent(event);
+        WAbstractView::keyPressEvent(event);
     }
 }
 
@@ -2159,7 +2157,7 @@ QSize WMainView::sizeHint() const
         emit keyReleased(&keyEvent);
     }
 
-    QDeclarativeView::keyReleaseEvent(event);
+    WAbstractView::keyReleaseEvent(event);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2170,14 +2168,14 @@ QSize WMainView::sizeHint() const
 
     d->setActive(true);
 
-    if (d->minimized != QDeclarativeView::isMinimized())
+    if (d->minimized != WAbstractView::isMinimized())
     {
         d->minimized = !(d->minimized);
 
         emit minimizedChanged();
     }
 
-    QDeclarativeView::focusInEvent(event);
+    WAbstractView::focusInEvent(event);
 }
 
 /* virtual */ void WMainView::focusOutEvent(QFocusEvent * event)
@@ -2202,7 +2200,7 @@ QSize WMainView::sizeHint() const
         emit keyReleased(&keyEvent);
     }
 
-    QDeclarativeView::focusOutEvent(event);
+    WAbstractView::focusOutEvent(event);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2531,9 +2529,9 @@ void WMainView::setMaximumWidth(int width)
 
     if (width == -1)
     {
-         QDeclarativeView::setMaximumSize(QWIDGETSIZE_MAX, QDeclarativeView::maximumHeight());
+         WAbstractView::setMaximumSize(QWIDGETSIZE_MAX, WAbstractView::maximumHeight());
     }
-    else QDeclarativeView::setMaximumSize(width, QDeclarativeView::maximumHeight());
+    else WAbstractView::setMaximumSize(width, WAbstractView::maximumHeight());
 
     maximumWidthChanged();
 }
@@ -2553,9 +2551,9 @@ void WMainView::setMaximumHeight(int height)
 
     if (height == -1)
     {
-         QDeclarativeView::setMaximumSize(QDeclarativeView::maximumWidth(), QWIDGETSIZE_MAX);
+         WAbstractView::setMaximumSize(WAbstractView::maximumWidth(), QWIDGETSIZE_MAX);
     }
-    else QDeclarativeView::setMaximumSize(QDeclarativeView::maximumWidth(), height);
+    else WAbstractView::setMaximumSize(WAbstractView::maximumWidth(), height);
 
     maximumHeightChanged();
 }
