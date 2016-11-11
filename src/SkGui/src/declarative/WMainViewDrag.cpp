@@ -123,6 +123,11 @@ void WMainViewDragPrivate::clearDrag()
 
     if (d->dragging == false) return;
 
+#ifdef Q_OS_WIN
+    ReleaseCapture();
+
+    PostMessage((HWND) d->mainView->winId(), WM_NCLBUTTONDOWN, HTCAPTION, 0);
+#else
     QRect geometry = d->mainView->availableGeometry();
 
     QPoint pos = QCursor::pos();
@@ -161,6 +166,7 @@ void WMainViewDragPrivate::clearDrag()
     }
 
     d->dragLastPos = pos;
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------

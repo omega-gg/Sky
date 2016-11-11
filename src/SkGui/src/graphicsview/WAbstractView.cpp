@@ -122,10 +122,10 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     {
         return 0;
     }
-    /*else if (message == WM_NCHITTEST)
+    else if (message == WM_NCHITTEST)
     {
         return HTCAPTION;
-    }*/
+    }
     /*else if (message == WM_MOVE)
     {
         RECT rect;
