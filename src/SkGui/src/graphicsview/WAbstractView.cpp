@@ -56,11 +56,11 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     q->setWindowFlags(flags);
 
 #ifdef Q_OS_WIN
-    width  = 0;
-    height = 0;
-
     x = 0;
     y = 0;
+
+    width  = 0;
+    height = 0;
 
     WNDCLASSEX wcx = { 0 };
 
@@ -107,7 +107,10 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 {
     if (message == WM_SETFOCUS)
     {
-        SetFocus(handle);
+        WAbstractView * view
+            = reinterpret_cast<WAbstractView *> (GetWindowLongPtr(handle, GWLP_USERDATA));
+
+        SetFocus((HWND) view->winId());
 
         return 0;
     }
@@ -119,10 +122,32 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     {
         return 0;
     }
-    else if (message == WM_NCHITTEST)
+    /*else if (message == WM_NCHITTEST)
     {
         return HTCAPTION;
-    }
+    }*/
+    /*else if (message == WM_MOVE)
+    {
+        RECT rect;
+
+        GetClientRect(handle, &rect);
+
+        WINDOWPLACEMENT placement;
+
+        placement.length = sizeof(WINDOWPLACEMENT);
+
+        GetWindowPlacement(handle, &placement);
+
+        WAbstractView * view
+            = reinterpret_cast<WAbstractView *> (GetWindowLongPtr(handle, GWLP_USERDATA));
+
+        if (view == NULL) return 0;
+
+        view->d_func()->x = rect.left;
+        view->d_func()->y = rect.top;
+
+        return 0;
+    }*/
     else if (message == WM_SIZE)
     {
         RECT rect;
@@ -140,11 +165,29 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 
         if (view == NULL) return 0;
 
+        int width;
+        int height;
+
         if (placement.showCmd == SW_MAXIMIZE)
         {
-             view->QDeclarativeView::setGeometry(8, 8, rect.right - 16, rect.bottom - 16);
+            width  = rect.right  - 16;
+            height = rect.bottom - 16;
+
+            view->d_func()->width  = width;
+            view->d_func()->height = height;
+
+            view->QDeclarativeView::setGeometry(8, 8, width, height);
         }
-        else view->QDeclarativeView::setGeometry(0, 0, rect.right, rect.bottom);
+        else
+        {
+            width  = rect.right;
+            height = rect.bottom;
+
+            view->d_func()->width  = width;
+            view->d_func()->height = height;
+
+            view->QDeclarativeView::setGeometry(0, 0, width, height);
+        }
 
         return 0;
     }
@@ -183,15 +226,57 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WAbstractView::setGeometry(int x, int y, int width, int height)
+/* Q_INVOKABLE */ void WAbstractView::showNormal()
 {
     Q_D(WAbstractView);
 
-    d->width  = width;
-    d->height = height;
+    ShowWindow(d->handle, SW_SHOWNORMAL);
+}
 
-    d->x = x;
-    d->y = y;
+/* Q_INVOKABLE */ void WAbstractView::showMaximized()
+{
+    Q_D(WAbstractView);
+
+    ShowWindow(d->handle, SW_SHOWMAXIMIZED);
+}
+
+/* Q_INVOKABLE */ void WAbstractView::showFullScreen()
+{
+    Q_D(WAbstractView);
+
+    ShowWindow(d->handle, SHOW_FULLSCREEN);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WAbstractView::showMinimized()
+{
+    Q_D(WAbstractView);
+
+    ShowWindow(d->handle, SW_SHOWMINIMIZED);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WAbstractView::raise()
+{
+    Q_D(WAbstractView);
+
+    SetWindowPos(d->handle, HWND_TOP, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE);
+}
+
+/* Q_INVOKABLE */ void WAbstractView::lower()
+{
+    Q_D(WAbstractView);
+
+    SetWindowPos(d->handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WAbstractView::setGeometry(int x, int y, int width, int height)
+{
+    Q_D(WAbstractView);
 
     SetWindowPos(d->handle, HWND_TOP, x, y, width, height, 0);
 }
@@ -203,29 +288,9 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WAbstractView::resize(int width, int height)
-{
-    Q_D(WAbstractView);
-
-    d->width  = width;
-    d->height = height;
-
-    SetWindowPos(d->handle, HWND_TOP, 0, 0, width, height, SWP_NOMOVE);
-}
-
-/* Q_INVOKABLE */ void WAbstractView::resize(const QSize & size)
-{
-    resize(size.width(), size.height());
-}
-
-//-------------------------------------------------------------------------------------------------
-
 /* Q_INVOKABLE */ void WAbstractView::move(int x, int y)
 {
     Q_D(WAbstractView);
-
-    d->x = x;
-    d->y = y;
 
     SetWindowPos(d->handle, HWND_TOP, x, y, 0, 0, SWP_NOSIZE);
 }
@@ -233,6 +298,20 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 /* Q_INVOKABLE */ void WAbstractView::move(const QPoint & position)
 {
     move(position.x(), position.y());
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WAbstractView::resize(int width, int height)
+{
+    Q_D(WAbstractView);
+
+    SetWindowPos(d->handle, HWND_TOP, 0, 0, width, height, SWP_NOMOVE);
+}
+
+/* Q_INVOKABLE */ void WAbstractView::resize(const QSize & size)
+{
+    resize(size.width(), size.height());
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -244,6 +323,8 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
     Q_D(WAbstractView);
 
     QDeclarativeView::showEvent(event);
+
+    qDebug("HEY %d %d", d->x, d->y);
 
     SetWindowPos(d->handle, HWND_TOP, d->x, d->y, d->width, d->height, SWP_SHOWWINDOW);
 }
@@ -258,24 +339,47 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WAbstractView::resizeEvent(QResizeEvent * event)
+{
+    Q_D(WAbstractView);
+
+    QDeclarativeView::resizeEvent(event);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WAbstractView::focusInEvent(QFocusEvent * event)
+{
+    Q_D(WAbstractView);
+
+    QDeclarativeView::focusInEvent(event);
+
+    SetFocus(d->handle);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ bool WAbstractView::winEvent(MSG * message, long * result)
+{
+    if (message->message == WM_SETFOCUS)
+    {
+        Q_D(WAbstractView);
+
+        //SetFocus(d->handle);
+
+        return true;
+    }
+    else return QWidget::winEvent(message, result);
+}
+
+//-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
 
 WId WAbstractView::winId() const
 {
     Q_D(const WAbstractView); return (WId) d->handle;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-int WAbstractView::width() const
-{
-    Q_D(const WAbstractView); return d->width;
-}
-
-int WAbstractView::height() const
-{
-    Q_D(const WAbstractView); return d->height;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -288,6 +392,18 @@ int WAbstractView::x() const
 int WAbstractView::y() const
 {
     Q_D(const WAbstractView); return d->y;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+int WAbstractView::width() const
+{
+    Q_D(const WAbstractView); return d->width;
+}
+
+int WAbstractView::height() const
+{
+    Q_D(const WAbstractView); return d->height;
 }
 
 #endif // Q_OS_WIN

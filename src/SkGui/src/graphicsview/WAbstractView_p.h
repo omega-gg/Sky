@@ -59,11 +59,11 @@ public: // Variables
     HWND      handle;
     HINSTANCE instance;
 
-    int width;
-    int height;
-
     int x;
     int y;
+
+    int width;
+    int height;
 #endif
 
 protected:

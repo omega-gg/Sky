@@ -38,27 +38,46 @@ protected:
 
 #ifdef Q_OS_WIN
 public: // Interface
+    Q_INVOKABLE void showNormal    ();
+    Q_INVOKABLE void showMaximized ();
+    Q_INVOKABLE void showFullScreen();
+
+    Q_INVOKABLE void showMinimized();
+
+    Q_INVOKABLE void raise();
+    Q_INVOKABLE void lower();
+
     Q_INVOKABLE void setGeometry(int x, int y, int width, int height);
     Q_INVOKABLE void setGeometry(const QRect & rect);
 
-    Q_INVOKABLE void resize(int width, int height);
-    Q_INVOKABLE void resize(const QSize & size);
-
     Q_INVOKABLE void move(int x, int y);
     Q_INVOKABLE void move(const QPoint & position);
+
+    Q_INVOKABLE void resize(int width, int height);
+    Q_INVOKABLE void resize(const QSize & size);
 
 protected: // Events
     /* virtual */ void showEvent(QShowEvent * event);
     /* virtual */ void hideEvent(QHideEvent * event);
 
+    /* virtual */ void resizeEvent(QResizeEvent * event);
+
+    /* virtual */ void focusInEvent(QFocusEvent * event);
+
+#ifdef QT_LATEST
+    /* virtual */ bool nativeEvent(const QByteArray & type, void * message, long * result);
+#else
+    /* virtual */ bool winEvent(MSG * message, long * result);
+#endif
+
 public: // Properties
     WId winId() const;
 
-    int width () const;
-    int height() const;
-
     int x() const;
     int y() const;
+
+    int width () const;
+    int height() const;
 #endif
 
 private:
