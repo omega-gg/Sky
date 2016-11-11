@@ -31,7 +31,7 @@
 #include <QTimer>
 
 // Sk includes
-#include <private/Sk_p>
+#include <private/WAbstractView_p>
 #include <WDeclarativeMouseArea>
 
 #ifndef SK_NO_MAINVIEW
@@ -57,14 +57,14 @@ struct WMainViewDragData
 // WMainViewPrivate
 //-------------------------------------------------------------------------------------------------
 
-class SK_GUI_EXPORT WMainViewPrivate : public WPrivate
+class SK_GUI_EXPORT WMainViewPrivate : public WAbstractViewPrivate
 {
 public:
     WMainViewPrivate(WMainView * p);
 
     /* virtual */ ~WMainViewPrivate();
 
-    void init(QDeclarativeItem * item, Qt::WindowFlags flags);
+    void init(QDeclarativeItem * item);
 
 public: // Functions
     void startFade(bool visible);
@@ -130,8 +130,6 @@ public: // Variables
     QDeclarativeItem * item;
 
     WResizer * currentResizer;
-
-    Qt::WindowFlags flags;
 
     qreal zoom;
 

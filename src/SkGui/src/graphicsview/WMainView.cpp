@@ -194,7 +194,7 @@ WMainViewScene::WMainViewScene(WMainView * parent) : QGraphicsScene(parent)
 // WMainViewPrivate
 //=================================================================================================
 
-WMainViewPrivate::WMainViewPrivate(WMainView * p) : WPrivate(p) {}
+WMainViewPrivate::WMainViewPrivate(WMainView * p) : WAbstractViewPrivate(p) {}
 
 /* virtual */ WMainViewPrivate::~WMainViewPrivate()
 {
@@ -209,12 +209,11 @@ WMainViewPrivate::WMainViewPrivate(WMainView * p) : WPrivate(p) {}
 
 //-------------------------------------------------------------------------------------------------
 
-void WMainViewPrivate::init(QDeclarativeItem * item, Qt::WindowFlags flags)
+void WMainViewPrivate::init(QDeclarativeItem * item)
 {
     Q_Q(WMainView);
 
-    this->item  = item;
-    this->flags = flags;
+    this->item = item;
 
     currentResizer = NULL;
 
@@ -1129,15 +1128,15 @@ void WMainViewPrivate::onCursorVisibleChanged()
 //=================================================================================================
 
 WMainView::WMainView(QDeclarativeItem * item, QWidget * parent, Qt::WindowFlags flags)
-    : QDeclarativeView(parent), WPrivatable(new WMainViewPrivate(this))
+    : WAbstractView(new WMainViewPrivate(this), parent, flags)
 {
-    Q_D(WMainView); d->init(item, flags);
+    Q_D(WMainView); d->init(item);
 }
 
 WMainView::WMainView(QWidget * parent, Qt::WindowFlags flags)
-    : QDeclarativeView(parent), WPrivatable(new WMainViewPrivate(this))
+    : WAbstractView(new WMainViewPrivate(this), parent, flags)
 {
-    Q_D(WMainView); d->init(NULL, flags);
+    Q_D(WMainView); d->init(NULL);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1145,9 +1144,9 @@ WMainView::WMainView(QWidget * parent, Qt::WindowFlags flags)
 
 WMainView::WMainView(WMainViewPrivate * p,
                      QDeclarativeItem * item, QWidget * parent, Qt::WindowFlags flags)
-    : QDeclarativeView(parent), WPrivatable(p)
+    : WAbstractView(p, parent, flags)
 {
-    Q_D(WMainView); d->init(item, flags);
+    Q_D(WMainView); d->init(item);
 }
 
 //-------------------------------------------------------------------------------------------------

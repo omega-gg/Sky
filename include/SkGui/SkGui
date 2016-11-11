@@ -19,6 +19,7 @@
 #include "WDeclarativeTextSvg.h"
 #include "WMainViewDrag.h"
 #include "WMainViewResizer.h"
+#include "WAbstractView.h"
 #include "WMainView.h"
 #include "WResizer.h"
 #include "WWindow.h"

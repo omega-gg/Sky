@@ -19,10 +19,10 @@
 
 // Qt includes
 #include <QGraphicsScene>
-#include <QDeclarativeView>
 #include <QKeyEvent>
 
 // Sk includes
+#include <WAbstractView>
 #include <WDeclarativeMouseArea>
 
 #ifndef SK_NO_MAINVIEW
@@ -133,7 +133,7 @@ private: // Variables
 // WMainView
 //-------------------------------------------------------------------------------------------------
 
-class SK_GUI_EXPORT WMainView : public QDeclarativeView, public WPrivatable
+class SK_GUI_EXPORT WMainView : public WAbstractView
 {
     Q_OBJECT
 
