@@ -536,11 +536,6 @@ void WWindowPrivate::init()
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-WWindow * WWindow::window()
-{
-    return this;
-}
-
 WMainView * WWindow::mainView() const
 {
     Q_D(const WWindow); return d->mainView;

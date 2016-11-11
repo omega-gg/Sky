@@ -324,9 +324,7 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 
     QDeclarativeView::showEvent(event);
 
-    qDebug("HEY %d %d", d->x, d->y);
-
-    SetWindowPos(d->handle, HWND_TOP, d->x, d->y, d->width, d->height, SWP_SHOWWINDOW);
+    ShowWindow(d->handle, SW_SHOW);
 }
 
 /* virtual */ void WAbstractView::hideEvent(QHideEvent * event)
