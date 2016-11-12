@@ -62,6 +62,8 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     width  = 0;
     height = 0;
 
+    opacity = 0.0;
+
     WNDCLASSEX wcx = { 0 };
 
     wcx.cbSize = sizeof( WNDCLASSEX );
@@ -85,6 +87,8 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 
     handle = CreateWindow(L"WindowClass", L"WindowTitle", windowFlags, 0, 0, 0, 0, 0, 0, instance,
                           NULL);
+
+    SetWindowLong(handle, GWL_EXSTYLE, GetWindowLong(handle, GWL_EXSTYLE) | WS_EX_LAYERED);
 
     SetWindowLongPtr(handle, GWLP_USERDATA, reinterpret_cast<LONG_PTR> (q));
 
@@ -110,7 +114,7 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
         WAbstractView * view
             = reinterpret_cast<WAbstractView *> (GetWindowLongPtr(handle, GWLP_USERDATA));
 
-        SetFocus((HWND) view->winId());
+        SetFocus((HWND) view->QDeclarativeView::winId());
 
         return 0;
     }
@@ -120,36 +124,48 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     }
     else if (message == WM_GETMINMAXINFO)
     {
+        WAbstractView * view
+            = reinterpret_cast<WAbstractView *> (GetWindowLongPtr(handle, GWLP_USERDATA));
+
+        if (view == NULL) return 0;
+
+        MINMAXINFO * info = (MINMAXINFO *) lParam;
+
+        info->ptMinTrackSize.x = view->minimumWidth ();
+        info->ptMinTrackSize.y = view->minimumHeight();
+
+        info->ptMaxTrackSize.x = view->maximumWidth ();
+        info->ptMaxTrackSize.y = view->maximumHeight();
+
         return 0;
     }
     else if (message == WM_NCHITTEST)
     {
         return HTCAPTION;
     }
-    /*else if (message == WM_MOVE)
+    else if (message == WM_MOVE)
     {
-        RECT rect;
-
-        GetClientRect(handle, &rect);
-
-        WINDOWPLACEMENT placement;
-
-        placement.length = sizeof(WINDOWPLACEMENT);
-
-        GetWindowPlacement(handle, &placement);
-
         WAbstractView * view
             = reinterpret_cast<WAbstractView *> (GetWindowLongPtr(handle, GWLP_USERDATA));
 
         if (view == NULL) return 0;
+
+        RECT rect;
+
+        GetWindowRect(handle, &rect);
 
         view->d_func()->x = rect.left;
         view->d_func()->y = rect.top;
 
         return 0;
-    }*/
+    }
     else if (message == WM_SIZE)
     {
+        WAbstractView * view
+            = reinterpret_cast<WAbstractView *> (GetWindowLongPtr(handle, GWLP_USERDATA));
+
+        if (view == NULL) return 0;
+
         RECT rect;
 
         GetClientRect(handle, &rect);
@@ -159,11 +175,6 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
         placement.length = sizeof(WINDOWPLACEMENT);
 
         GetWindowPlacement(handle, &placement);
-
-        WAbstractView * view
-            = reinterpret_cast<WAbstractView *> (GetWindowLongPtr(handle, GWLP_USERDATA));
-
-        if (view == NULL) return 0;
 
         int width;
         int height;
@@ -338,15 +349,6 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WAbstractView::resizeEvent(QResizeEvent * event)
-{
-    Q_D(WAbstractView);
-
-    QDeclarativeView::resizeEvent(event);
-}
-
-//-------------------------------------------------------------------------------------------------
-
 /* virtual */ void WAbstractView::focusInEvent(QFocusEvent * event)
 {
     Q_D(WAbstractView);
@@ -358,18 +360,18 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ bool WAbstractView::winEvent(MSG * message, long * result)
-{
-    if (message->message == WM_SETFOCUS)
-    {
-        Q_D(WAbstractView);
+///* virtual */ bool WAbstractView::winEvent(MSG * message, long * result)
+//{
+//    if (message->message == WM_SETFOCUS)
+//    {
+//        Q_D(WAbstractView);
 
-        //SetFocus(d->handle);
+//        SetFocus(d->handle);
 
-        return true;
-    }
-    else return QWidget::winEvent(message, result);
-}
+//        return true;
+//    }
+//    else return QWidget::winEvent(message, result);
+//}
 
 //-------------------------------------------------------------------------------------------------
 // Properties
@@ -402,6 +404,24 @@ int WAbstractView::width() const
 int WAbstractView::height() const
 {
     Q_D(const WAbstractView); return d->height;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+qreal WAbstractView::windowOpacity() const
+{
+    Q_D(const WAbstractView);
+
+    return d->opacity;
+}
+
+void WAbstractView::setWindowOpacity(qreal level)
+{
+    Q_D(WAbstractView);
+
+    d->opacity = level;
+
+    SetLayeredWindowAttributes(d->handle, 0, level * 255, LWA_ALPHA);
 }
 
 #endif // Q_OS_WIN

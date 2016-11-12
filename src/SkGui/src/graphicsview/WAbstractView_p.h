@@ -64,6 +64,8 @@ public: // Variables
 
     int width;
     int height;
+
+    qreal opacity;
 #endif
 
 protected:

@@ -60,15 +60,9 @@ protected: // Events
     /* virtual */ void showEvent(QShowEvent * event);
     /* virtual */ void hideEvent(QHideEvent * event);
 
-    /* virtual */ void resizeEvent(QResizeEvent * event);
-
     /* virtual */ void focusInEvent(QFocusEvent * event);
 
-#ifdef QT_LATEST
-    /* virtual */ bool nativeEvent(const QByteArray & type, void * message, long * result);
-#else
-    /* virtual */ bool winEvent(MSG * message, long * result);
-#endif
+    ///* virtual */ bool winEvent(MSG * message, long * result);
 
 public: // Properties
     WId winId() const;
@@ -78,6 +72,9 @@ public: // Properties
 
     int width () const;
     int height() const;
+
+    qreal windowOpacity() const;
+    void  setWindowOpacity(qreal level);
 #endif
 
 private:
