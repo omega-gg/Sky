@@ -18,6 +18,11 @@
 
 #ifndef SK_NO_ABSTRACTVIEW
 
+// Qt includes
+#ifdef Q_OS_WIN
+#include <QIcon>
+#endif
+
 #ifdef Q_OS_WIN
 #include <dwmapi.h>
 #endif
@@ -52,8 +57,6 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 
     this->flags = flags;
 
-    q->setWindowFlags(flags);
-
 #ifdef Q_OS_WIN
     id = q->QDeclarativeView::winId();
 
@@ -84,20 +87,16 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 
     //wcx.hCursor = LoadCursor(instance, IDC_ARROW);
 
-    wcx.hIcon = (HICON) LoadImage(instance, L"IDI_ICON1", IMAGE_ICON, 0, 0, LR_DEFAULTSIZE);
+    HINSTANCE application = qWinAppInst();
+
+    wcx.hIcon = (HICON) LoadImage(application, L"IDI_ICON1", IMAGE_ICON, 0, 0, LR_DEFAULTSIZE);
 
     if (wcx.hIcon)
     {
         int width  = GetSystemMetrics(SM_CXSMICON);
         int height = GetSystemMetrics(SM_CYSMICON);
 
-        wcx.hIconSm = (HICON) LoadImage(instance, L"IDI_ICON1", IMAGE_ICON, width, height, 0);
-    }
-    else
-    {
-        wcx.hIcon = (HICON) LoadImage(0, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE | LR_SHARED);
-
-        wcx.hIconSm = 0;
+        wcx.hIconSm = (HICON) LoadImage(application, L"IDI_ICON1", IMAGE_ICON, width, height, 0);
     }
 
     RegisterClassEx(&wcx);
@@ -115,10 +114,30 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     SetWindowLong(id, GWL_STYLE, WS_CHILD | WS_CLIPCHILDREN);
 
     SetParent(id, handle);
-#endif // Q_OS_WIN
+#else
+    q->setWindowFlags(flags);
+#endif
 }
 
 #ifdef Q_OS_WIN
+
+//-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
+
+HICON WAbstractViewPrivate::getIcon(const QIcon & icon, int width, int height)
+{
+    QSize size = icon.actualSize(QSize(width, height));
+
+    QPixmap pixmap = icon.pixmap(size);
+
+    if (pixmap.isNull())
+    {
+         return NULL;
+    }
+    else return pixmap.toWinHICON();
+}
+
 //-------------------------------------------------------------------------------------------------
 // Private events
 //-------------------------------------------------------------------------------------------------
@@ -344,6 +363,28 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WAbstractView::setWindowIcon(const QIcon & icon)
+{
+    Q_D(WAbstractView);
+
+    HICON iconSmall = d->getIcon(icon, GetSystemMetrics(SM_CXSMICON),
+                                       GetSystemMetrics(SM_CYSMICON));
+
+    HICON iconBig = d->getIcon(icon, GetSystemMetrics(SM_CXICON),
+                                     GetSystemMetrics(SM_CYICON));
+
+    if (iconBig)
+    {
+        SendMessage(d->handle, WM_SETICON, ICON_SMALL, (LPARAM) iconSmall);
+        SendMessage(d->handle, WM_SETICON, ICON_BIG,   (LPARAM) iconBig);
+    }
+    else
+    {
+        SendMessage(d->handle, WM_SETICON, ICON_SMALL, (LPARAM) iconSmall);
+        SendMessage(d->handle, WM_SETICON, ICON_BIG,   (LPARAM) iconSmall);
+    }
+}
 
 /* Q_INVOKABLE */ void WAbstractView::setWindowTitle(const QString & title)
 {

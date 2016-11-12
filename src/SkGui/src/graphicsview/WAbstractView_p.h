@@ -48,6 +48,9 @@ public:
     void init(Qt::WindowFlags flags);
 
 #ifdef Q_OS_WIN
+public: // Functions
+    HICON getIcon(const QIcon & icon, int width, int height);
+
 public: // Events
     static LRESULT CALLBACK events(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
 #endif
