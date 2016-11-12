@@ -176,10 +176,6 @@ HICON WAbstractViewPrivate::getIcon(const QIcon & icon, int width, int height)
 
         return 0;
     }
-    else if (message == WM_NCHITTEST)
-    {
-        return HTCAPTION;
-    }
     else if (message == WM_MOVE)
     {
         WAbstractView * view
@@ -239,7 +235,7 @@ HICON WAbstractViewPrivate::getIcon(const QIcon & icon, int width, int height)
 
         return 0;
     }
-    else if (message == WM_DESTROY)
+    else if (message == WM_CLOSE)
     {
         PostQuitMessage(0);
 
