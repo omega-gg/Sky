@@ -56,6 +56,8 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     q->setWindowFlags(flags);
 
 #ifdef Q_OS_WIN
+    id = q->QDeclarativeView::winId();
+
     x = 0;
     y = 0;
 
@@ -96,7 +98,9 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     setProperty("_q_embedded_native_parent_handle", (WId) handle);
 #endif
 
-    SetParent((HWND) q->QDeclarativeView::winId(), handle);
+    SetWindowLong(id, GWL_STYLE, WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS);
+
+    SetParent(id, handle);
 #endif // Q_OS_WIN
 }
 
@@ -114,7 +118,7 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
         WAbstractView * view
             = reinterpret_cast<WAbstractView *> (GetWindowLongPtr(handle, GWLP_USERDATA));
 
-        SetFocus((HWND) view->QDeclarativeView::winId());
+        SetFocus((HWND) view->d_func()->id);
 
         return 0;
     }

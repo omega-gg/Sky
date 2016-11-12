@@ -56,6 +56,8 @@ public: // Variables
     Qt::WindowFlags flags;
 
 #ifdef Q_OS_WIN
+    HWND id;
+
     HWND      handle;
     HINSTANCE instance;
 
