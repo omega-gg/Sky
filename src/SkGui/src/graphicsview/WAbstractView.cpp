@@ -26,8 +26,7 @@
 // Static variables
 
 #ifdef Q_OS_WIN
-static const DWORD windowFlags = WS_OVERLAPPED | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX |
-                                 WS_CLIPCHILDREN;
+static const DWORD windowFlags = WS_OVERLAPPED | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
 #endif
 
 //-------------------------------------------------------------------------------------------------
@@ -79,16 +78,31 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     wcx.cbClsExtra	= 0;
     wcx.cbWndExtra	= 0;
 
-    wcx.lpszClassName = L"WindowClass";
+    wcx.lpszClassName = L"Window";
 
-    wcx.hbrBackground = CreateSolidBrush(RGB(0, 0, 0));
+    //wcx.hbrBackground = CreateSolidBrush(RGB(0, 0, 0));
 
-    wcx.hCursor = LoadCursor(instance, IDC_ARROW);
+    //wcx.hCursor = LoadCursor(instance, IDC_ARROW);
+
+    wcx.hIcon = (HICON) LoadImage(instance, L"IDI_ICON1", IMAGE_ICON, 0, 0, LR_DEFAULTSIZE);
+
+    if (wcx.hIcon)
+    {
+        int width  = GetSystemMetrics(SM_CXSMICON);
+        int height = GetSystemMetrics(SM_CYSMICON);
+
+        wcx.hIconSm = (HICON) LoadImage(instance, L"IDI_ICON1", IMAGE_ICON, width, height, 0);
+    }
+    else
+    {
+        wcx.hIcon = (HICON) LoadImage(0, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE | LR_SHARED);
+
+        wcx.hIconSm = 0;
+    }
 
     RegisterClassEx(&wcx);
 
-    handle = CreateWindow(L"WindowClass", L"WindowTitle", windowFlags, 0, 0, 0, 0, 0, 0, instance,
-                          NULL);
+    handle = CreateWindow(L"Window", L"", windowFlags, 0, 0, 0, 0, 0, 0, instance, NULL);
 
     SetWindowLong(handle, GWL_EXSTYLE, GetWindowLong(handle, GWL_EXSTYLE) | WS_EX_LAYERED);
 
@@ -98,7 +112,7 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     setProperty("_q_embedded_native_parent_handle", (WId) handle);
 #endif
 
-    SetWindowLong(id, GWL_STYLE, WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS);
+    SetWindowLong(id, GWL_STYLE, WS_CHILD | WS_CLIPCHILDREN);
 
     SetParent(id, handle);
 #endif // Q_OS_WIN
@@ -327,6 +341,15 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 /* Q_INVOKABLE */ void WAbstractView::resize(const QSize & size)
 {
     resize(size.width(), size.height());
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WAbstractView::setWindowTitle(const QString & title)
+{
+    Q_D(WAbstractView);
+
+    SetWindowText(d->handle, (wchar_t *) title.utf16());
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -56,6 +56,8 @@ public: // Interface
     Q_INVOKABLE void resize(int width, int height);
     Q_INVOKABLE void resize(const QSize & size);
 
+    Q_INVOKABLE void setWindowTitle(const QString & title);
+
 protected: // Events
     /* virtual */ void showEvent(QShowEvent * event);
     /* virtual */ void hideEvent(QHideEvent * event);
