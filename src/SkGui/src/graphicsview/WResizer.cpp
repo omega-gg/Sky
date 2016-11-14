@@ -29,10 +29,10 @@
 #include <private/WMainView_p>
 
 #if defined(Q_OS_LINUX)
-    #include <private/qt_x11_p.h>
-    #include <QX11Info>
+#include <private/qt_x11_p.h>
+#include <QX11Info>
 #elif defined(Q_OS_WIN)
-    #include <qt_windows.h>
+#include <qt_windows.h>
 #endif
 
 //-------------------------------------------------------------------------------------------------

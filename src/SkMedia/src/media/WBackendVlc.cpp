@@ -41,7 +41,7 @@
 #include <private/WVlcPlayer_p>
 
 #if defined(Q_OS_LINUX)
-    #include <GL/glx.h>
+#include <GL/glx.h>
 #endif
 
 //=================================================================================================
