@@ -1056,10 +1056,9 @@ bool WDeclarativeMouseArea::sendMouseEvent(QGraphicsSceneMouseEvent * event)
         ||
         type == QEvent::GraphicsSceneMouseRelease)
     {
-        return sendMouseEvent(static_cast<QGraphicsSceneMouseEvent *> (event));
+         return sendMouseEvent(static_cast<QGraphicsSceneMouseEvent *> (event));
     }
-
-    return WDeclarativeItem::sceneEventFilter(item, event);
+    else return WDeclarativeItem::sceneEventFilter(item, event);
 }
 
 //-------------------------------------------------------------------------------------------------

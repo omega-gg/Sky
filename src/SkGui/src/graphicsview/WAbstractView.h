@@ -63,10 +63,6 @@ protected: // Events
     /* virtual */ void showEvent(QShowEvent * event);
     /* virtual */ void hideEvent(QHideEvent * event);
 
-    /* virtual */ void focusInEvent(QFocusEvent * event);
-
-    ///* virtual */ bool winEvent(MSG * message, long * result);
-
 public: // Properties
     WId winId() const;
 

@@ -108,13 +108,11 @@ void scanFile(const QString & path)
 
             int end = content.indexOf('\n', pos);
 
-            if (end != -1)
-            {
-                pos -= line.length();
+            if (end == -1) return;
 
-                content.remove(pos, end - pos + 1);
-            }
-            else content.clear();
+            pos -= line.length();
+
+            content.remove(pos, end - pos + 1);
 
             replaceFile(path, content);
 

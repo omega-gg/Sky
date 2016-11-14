@@ -20,6 +20,8 @@
 
 // Qt includes
 #ifdef Q_OS_WIN
+#include <QCoreApplication>
+#include <QFocusEvent>
 #include <QIcon>
 #endif
 
@@ -57,7 +59,9 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 
     this->flags = flags;
 
-#ifdef Q_OS_WIN
+#ifndef Q_OS_WIN
+    q->setWindowFlags(flags);
+#else
     id = q->QDeclarativeView::winId();
 
     x = 0;
@@ -68,24 +72,25 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 
     opacity = 0.0;
 
-    WNDCLASSEX wcx = { 0 };
+    WNDCLASSEX wcx;
 
-    wcx.cbSize = sizeof( WNDCLASSEX );
+    wcx.cbSize = sizeof(WNDCLASSEX);
 
     wcx.style = CS_HREDRAW | CS_VREDRAW;
-
-    wcx.hInstance = instance;
 
     wcx.lpfnWndProc = events;
 
     wcx.cbClsExtra	= 0;
     wcx.cbWndExtra	= 0;
 
+    wcx.hInstance = instance;
+
+    wcx.hCursor = 0;
+
+    wcx.hbrBackground = 0;
+
+    wcx.lpszMenuName  = 0;
     wcx.lpszClassName = L"Window";
-
-    //wcx.hbrBackground = CreateSolidBrush(RGB(0, 0, 0));
-
-    //wcx.hCursor = LoadCursor(instance, IDC_ARROW);
 
     HINSTANCE application = qWinAppInst();
 
@@ -98,10 +103,11 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 
         wcx.hIconSm = (HICON) LoadImage(application, L"IDI_ICON1", IMAGE_ICON, width, height, 0);
     }
+    else wcx.hIconSm = 0;
 
     RegisterClassEx(&wcx);
 
-    handle = CreateWindow(L"Window", L"", windowFlags, 0, 0, 0, 0, 0, 0, instance, NULL);
+    handle = CreateWindow(L"Window", 0, windowFlags, 0, 0, 0, 0, 0, 0, instance, NULL);
 
     SetWindowLong(handle, GWL_EXSTYLE, GetWindowLong(handle, GWL_EXSTYLE) | WS_EX_LAYERED);
 
@@ -114,18 +120,16 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     SetWindowLong(id, GWL_STYLE, WS_CHILD | WS_CLIPCHILDREN);
 
     SetParent(id, handle);
-#else
-    q->setWindowFlags(flags);
-#endif
+#endif // Q_OS_WIN
 }
 
 #ifdef Q_OS_WIN
 
 //-------------------------------------------------------------------------------------------------
-// Private functions
+// Private static functions
 //-------------------------------------------------------------------------------------------------
 
-HICON WAbstractViewPrivate::getIcon(const QIcon & icon, int width, int height)
+/* static */ HICON WAbstractViewPrivate::getIcon(const QIcon & icon, int width, int height)
 {
     QSize size = icon.actualSize(QSize(width, height));
 
@@ -151,7 +155,20 @@ HICON WAbstractViewPrivate::getIcon(const QIcon & icon, int width, int height)
         WAbstractView * view
             = reinterpret_cast<WAbstractView *> (GetWindowLongPtr(handle, GWLP_USERDATA));
 
-        SetFocus((HWND) view->d_func()->id);
+        QFocusEvent event(QEvent::FocusIn);
+
+        QCoreApplication::sendEvent(view, &event);
+
+        return 0;
+    }
+    else if (message == WM_KILLFOCUS)
+    {
+        WAbstractView * view
+            = reinterpret_cast<WAbstractView *> (GetWindowLongPtr(handle, GWLP_USERDATA));
+
+        QFocusEvent event(QEvent::FocusOut);
+
+        QCoreApplication::sendEvent(view, &event);
 
         return 0;
     }
@@ -364,11 +381,11 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 {
     Q_D(WAbstractView);
 
-    HICON iconSmall = d->getIcon(icon, GetSystemMetrics(SM_CXSMICON),
-                                       GetSystemMetrics(SM_CYSMICON));
+    HICON iconSmall = WAbstractViewPrivate::getIcon(icon, GetSystemMetrics(SM_CXSMICON),
+                                                          GetSystemMetrics(SM_CYSMICON));
 
-    HICON iconBig = d->getIcon(icon, GetSystemMetrics(SM_CXICON),
-                                     GetSystemMetrics(SM_CYICON));
+    HICON iconBig = WAbstractViewPrivate::getIcon(icon, GetSystemMetrics(SM_CXICON),
+                                                        GetSystemMetrics(SM_CYICON));
 
     if (iconBig)
     {
@@ -410,32 +427,6 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 
     ShowWindow(d->handle, SW_HIDE);
 }
-
-//-------------------------------------------------------------------------------------------------
-
-/* virtual */ void WAbstractView::focusInEvent(QFocusEvent * event)
-{
-    Q_D(WAbstractView);
-
-    QDeclarativeView::focusInEvent(event);
-
-    SetFocus(d->handle);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-///* virtual */ bool WAbstractView::winEvent(MSG * message, long * result)
-//{
-//    if (message->message == WM_SETFOCUS)
-//    {
-//        Q_D(WAbstractView);
-
-//        SetFocus(d->handle);
-
-//        return true;
-//    }
-//    else return QWidget::winEvent(message, result);
-//}
 
 //-------------------------------------------------------------------------------------------------
 // Properties
