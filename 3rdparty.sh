@@ -173,11 +173,13 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
         echo "DEPLOYING Qt"
 
+        mkdir -p "$Qt4"
+
         cd "$Qt4"
 
         wget "$Qt4_sources"
 
-        tar -xvzf "$Qt4_archive"
+        tar -xzf "$Qt4_archive"
 
         mv "$Qt4_name"/* .
         rm "$Qt4_name"
