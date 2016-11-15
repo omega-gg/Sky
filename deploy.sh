@@ -233,9 +233,11 @@ if [ $2 = "win32" ]; then
 
 elif [ $2 = "linux" ]; then
 
-    cp -r "$VLC"/plugins deploy
+    mkdir deploy/vlc
 
-    rm deploy/plugins/*.dat
+    cp -r "$VLC"/plugins deploy/vlc
+
+    rm deploy/vlc/plugins/*.dat
 
     cp "$VLC"/libvlc*.so* deploy
 
