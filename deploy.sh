@@ -68,11 +68,11 @@ if [ $2 = "linux" ]; then
 
     if [ -d "$lib64" ]; then
 
-        base="$lib64"
+        base="$base64"
 
         lib="$lib64"
     else
-        base="$lib32"
+        base="$base32"
 
         lib="$lib32"
     fi
