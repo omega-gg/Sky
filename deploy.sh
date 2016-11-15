@@ -235,6 +235,8 @@ elif [ $2 = "linux" ]; then
 
     cp -r "$VLC"/plugins deploy
 
+    rm deploy/plugins/plugins.dat
+
     cp "$VLC"/libvlc*.so* deploy
 
     sudo cp "$lib"/libaudio.so.2.4 deploy/libaudio.so.2
