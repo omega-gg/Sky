@@ -233,6 +233,10 @@ if [ $2 = "win32" ]; then
 
 elif [ $2 = "linux" ]; then
 
+    cp -r "$VLC"/plugins deploy
+
+    cp "$VLC"/libvlc*.so* deploy
+
     sudo cp "$lib"/libaudio.so.2.4 deploy/libaudio.so.2
 fi
 
