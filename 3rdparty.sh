@@ -28,17 +28,11 @@ Boost="$external/Boost/$Boost_version"
 
 #--------------------------------------------------------------------------------------------------
 
-libtorrent_name="libtorrent-rasterbar-$libtorrent_version"
+Qt4_name="qt-everywhere-opensource-src-4.8.7"
 
-libtorrent_archive="$libtorrent_name.tar.gz"
+Qt4_archive="$Qt4_name.tar.gz"
 
-#--------------------------------------------------------------------------------------------------
-
-Qt4_sources="https://github.com/qt/qt.git"
-
-VLC_sources="https://github.com/videolan/vlc.git"
-
-libtorrent_sources="https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_1/$libtorrent_archive"
+Qt4_sources="http://download.qt.io/official_releases/qt/4.8/4.8.7/$Qt4_archive"
 
 #--------------------------------------------------------------------------------------------------
 # Linux
@@ -179,7 +173,16 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
         echo "DEPLOYING Qt"
 
-        git clone "$Qt4_sources" "$Qt4"
+        cd "$Qt4"
+
+        wget "$Qt4_sources"
+
+        tar -xvzf "$Qt4_archive"
+
+        mv "$Qt4_name"/* .
+        rm "$Qt4_name"
+
+        cd -
 
         sudo cp "$lib"/libQtCore.so.$Qt4_version        "$Qt4"/lib/libQtCore.so.4
         sudo cp "$lib"/libQtDeclarative.so.$Qt4_version "$Qt4"/lib/libQtDeclarative.so.4
