@@ -182,7 +182,9 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
         tar -xzf "$Qt4_archive"
 
         mv "$Qt4_name"/* .
-        rm "$Qt4_name"
+
+        rm -r "$Qt4_name"
+        rm "$Qt4_archive"
 
         cd -
 
