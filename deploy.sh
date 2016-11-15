@@ -233,14 +233,6 @@ if [ $2 = "win32" ]; then
 
 elif [ $2 = "linux" ]; then
 
-    mkdir deploy/vlc
-
-    cp -r "$VLC"/plugins deploy/vlc
-
-    rm deploy/vlc/plugins/*.dat
-
-    cp "$VLC"/libvlc*.so* deploy
-
     sudo cp "$lib"/libaudio.so.2.4 deploy/libaudio.so.2
 fi
 
