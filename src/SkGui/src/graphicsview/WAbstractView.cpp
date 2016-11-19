@@ -23,6 +23,7 @@
 #include <QCoreApplication>
 #include <QFocusEvent>
 #include <QIcon>
+#include <QtWinExtras>
 #endif
 
 #ifdef Q_OS_WIN
@@ -62,7 +63,12 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 #ifndef Q_OS_WIN
     q->setWindowFlags(flags);
 #else
+
+#ifdef QT_LATEST
+    id = (HWND) q->QDeclarativeView::winId();
+#else
     id = q->QDeclarativeView::winId();
+#endif
 
     x = 0;
     y = 0;
@@ -83,7 +89,7 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     wcx.cbClsExtra	= 0;
     wcx.cbWndExtra	= 0;
 
-    wcx.hInstance = instance;
+    wcx.hInstance = 0;
 
     wcx.hCursor = 0;
 
@@ -107,17 +113,19 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 
     RegisterClassEx(&wcx);
 
-    handle = CreateWindow(L"Window", 0, windowFlags, 0, 0, 0, 0, 0, 0, instance, NULL);
+    handle = CreateWindow(L"Window", 0, windowFlags, 0, 0, 0, 0, 0, 0, 0, NULL);
 
     SetWindowLong(handle, GWL_EXSTYLE, GetWindowLong(handle, GWL_EXSTYLE) | WS_EX_LAYERED);
 
     SetWindowLongPtr(handle, GWLP_USERDATA, reinterpret_cast<LONG_PTR> (q));
 
 #ifdef QT_LATEST
-    setProperty("_q_embedded_native_parent_handle", (WId) handle);
-#endif
+    q->setProperty("_q_embedded_native_parent_handle", (WId) handle);
 
+    q->setWindowFlags(Qt::FramelessWindowHint);
+#else
     SetWindowLong(id, GWL_STYLE, WS_CHILD | WS_CLIPCHILDREN);
+#endif
 
     SetParent(id, handle);
 #endif // Q_OS_WIN
@@ -139,7 +147,11 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     {
          return NULL;
     }
+#ifdef QT_LATEST
+    else return QtWin::toHICON(pixmap);
+#else
     else return pixmap.toWinHICON();
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -206,6 +218,8 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 
         view->d_func()->x = rect.left;
         view->d_func()->y = rect.top;
+
+        view->QDeclarativeView::move(0, 0);
 
         return 0;
     }

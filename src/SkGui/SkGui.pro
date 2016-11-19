@@ -18,6 +18,8 @@ TEMPLATE = lib
 
 QT += opengl declarative network script xml svg
 
+greaterThan(QT_MAJOR_VERSION, 4): win32:QT += winextras
+
 CONFIG       += plugin
 win32:CONFIG += dll
 
