@@ -113,8 +113,6 @@ Item
         anchors.top   : parent.top
         anchors.bottom: border.top
 
-        dragEnabled: (window.maximized == false && window.fullScreen == false)
-
         onPressed: window.clearFocus()
 
         onDoubleClicked:

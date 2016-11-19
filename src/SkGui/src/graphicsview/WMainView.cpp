@@ -2226,6 +2226,36 @@ QSize WMainView::sizeHint() const
 }
 
 //-------------------------------------------------------------------------------------------------
+// WAbstractView reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WMainView::onStateChanged(Qt::WindowState state)
+{
+    if (state == Qt::WindowMaximized)
+    {
+        Q_D(WMainView);
+
+        if (d->maximized == false)
+        {
+            d->maximized = true;
+
+            emit maximizedChanged();
+        }
+    }
+    else // if (state == Qt::WindowNoState)
+    {
+        Q_D(WMainView);
+
+        if (d->maximized)
+        {
+            d->maximized = false;
+
+            emit maximizedChanged();
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
 

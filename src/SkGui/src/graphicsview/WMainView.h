@@ -383,6 +383,9 @@ protected: // Events
 
     /* virtual */ void closeEvent(QCloseEvent * event);
 
+protected: // WAbstractView reimplementation
+    /* virtual */ void onStateChanged(Qt::WindowState state);
+
 signals:
     void messageReceived(const QString & message);
 

@@ -48,6 +48,9 @@ public:
     void init(Qt::WindowFlags flags);
 
 #ifdef Q_OS_WIN
+public: // Functions
+    void applyFullScreen();
+
 public: // Static functions
     static HICON getIcon(const QIcon & icon, int width, int height);
 
@@ -70,7 +73,12 @@ public: // Variables
     int width;
     int height;
 
+    QRect rect;
+
     qreal opacity;
+
+    bool maximized;
+    bool fullScreen;
 #endif
 
 protected:

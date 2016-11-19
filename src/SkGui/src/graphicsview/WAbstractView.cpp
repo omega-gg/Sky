@@ -23,7 +23,9 @@
 #include <QCoreApplication>
 #include <QFocusEvent>
 #include <QIcon>
+#ifdef QT_LATEST
 #include <QtWinExtras>
+#endif
 #endif
 
 #ifdef Q_OS_WIN
@@ -77,6 +79,9 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     height = 0;
 
     opacity = 0.0;
+
+    maximized  = false;
+    fullScreen = false;
 
     WNDCLASSEX wcx;
 
@@ -134,6 +139,23 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 #ifdef Q_OS_WIN
 
 //-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
+
+void WAbstractViewPrivate::applyFullScreen()
+{
+    MONITORINFO info;
+
+    info.cbSize = sizeof(info);
+
+    GetMonitorInfo(MonitorFromWindow(handle, MONITOR_DEFAULTTONEAREST), &info);
+
+    RECT rect = info.rcMonitor;
+
+    SetWindowPos(handle, HWND_TOP, rect.left, rect.top, rect.right, rect.bottom, 0);
+}
+
+//-------------------------------------------------------------------------------------------------
 // Private static functions
 //-------------------------------------------------------------------------------------------------
 
@@ -162,25 +184,24 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
                                                                         WPARAM wParam,
                                                                         LPARAM lParam)
 {
-    if (message == WM_SETFOCUS)
+    if (message == WM_ACTIVATE)
     {
         WAbstractView * view
             = reinterpret_cast<WAbstractView *> (GetWindowLongPtr(handle, GWLP_USERDATA));
 
-        QFocusEvent event(QEvent::FocusIn);
-
-        QCoreApplication::sendEvent(view, &event);
+        if (view->d_func()->fullScreen)
+        {
+            view->d_func()->applyFullScreen();
+        }
 
         return 0;
     }
-    else if (message == WM_KILLFOCUS)
+    else if (message == WM_SETFOCUS)
     {
         WAbstractView * view
             = reinterpret_cast<WAbstractView *> (GetWindowLongPtr(handle, GWLP_USERDATA));
 
-        QFocusEvent event(QEvent::FocusOut);
-
-        QCoreApplication::sendEvent(view, &event);
+        SetFocus(view->d_func()->id);
 
         return 0;
     }
@@ -252,6 +273,13 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
             view->d_func()->height = height;
 
             view->QDeclarativeView::setGeometry(8, 8, width, height);
+
+            if (view->d_func()->maximized == false)
+            {
+                view->d_func()->maximized = true;
+
+                view->onStateChanged(Qt::WindowMaximized);
+            }
         }
         else
         {
@@ -262,6 +290,13 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
             view->d_func()->height = height;
 
             view->QDeclarativeView::setGeometry(0, 0, width, height);
+
+            if (view->d_func()->maximized)
+            {
+                view->d_func()->maximized = false;
+
+                view->onStateChanged(Qt::WindowNoState);
+            }
         }
 
         return 0;
@@ -305,12 +340,35 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 {
     Q_D(WAbstractView);
 
-    ShowWindow(d->handle, SW_SHOWNORMAL);
+    if (d->maximized)
+    {
+        d->maximized = false;
+
+        ShowWindow(d->handle, SW_RESTORE);
+    }
+    else if (d->fullScreen)
+    {
+        d->fullScreen = false;
+
+        setGeometry(d->rect);
+    }
+    else ShowWindow(d->handle, SW_SHOWNORMAL);
 }
 
 /* Q_INVOKABLE */ void WAbstractView::showMaximized()
 {
     Q_D(WAbstractView);
+
+    if (d->maximized) return;
+
+    if (d->fullScreen)
+    {
+        d->fullScreen = false;
+
+        setGeometry(d->rect);
+    }
+
+    d->maximized = true;
 
     ShowWindow(d->handle, SW_SHOWMAXIMIZED);
 }
@@ -319,7 +377,20 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 {
     Q_D(WAbstractView);
 
-    ShowWindow(d->handle, SHOW_FULLSCREEN);
+    if (d->fullScreen) return;
+
+    if (d->maximized)
+    {
+        d->maximized = false;
+
+        ShowWindow(d->handle, SW_RESTORE);
+    }
+
+    d->fullScreen = true;
+
+    d->rect = QRect(x(), y(), width(), height());
+
+    d->applyFullScreen();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -441,6 +512,46 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 
     ShowWindow(d->handle, SW_HIDE);
 }
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_LATEST
+/* virtual */ bool WAbstractView::nativeEvent(const QByteArray & event, void * msg, long * result)
+#else
+/* virtual */ bool WAbstractView::winEvent(MSG * msg, long * result)
+#endif
+{
+#ifdef QT_LATEST
+    UINT message = static_cast<MSG *> (msg)->message;
+#else
+    UINT message = msg->message;
+#endif
+
+    if (message == WM_SETFOCUS)
+    {
+        QFocusEvent event(QEvent::FocusIn);
+
+        QCoreApplication::sendEvent(this, &event);
+    }
+    else if (message == WM_KILLFOCUS)
+    {
+        QFocusEvent event(QEvent::FocusOut);
+
+        QCoreApplication::sendEvent(this, &event);
+    }
+
+#ifdef QT_LATEST
+    return QDeclarativeView::nativeEvent(event, msg, result);
+#else
+    return QDeclarativeView::winEvent(msg, result);
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------
+// Protected virtual functions
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WAbstractView::onStateChanged(Qt::WindowState) {}
 
 //-------------------------------------------------------------------------------------------------
 // Properties
