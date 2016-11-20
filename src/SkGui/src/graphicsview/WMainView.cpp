@@ -811,7 +811,7 @@ void WMainViewPrivate::setResizing(bool resizing)
 
 //-------------------------------------------------------------------------------------------------
 
-QRect WMainViewPrivate::getGeometry(const QRect & rect) const
+QRect WMainViewPrivate::getGeometryDefault(const QRect & rect) const
 {
     int width  = sk->defaultWidth ();
     int height = sk->defaultHeight();
@@ -865,6 +865,14 @@ QRect WMainViewPrivate::getGeometry(const QRect & rect) const
     }
 
     return rect.adjusted(left, top, -right, -bottom);
+}
+
+QRect WMainViewPrivate::getGeometry(const QRect & rect) const
+{
+    int width  = rect.width()  / 8;
+    int height = rect.height() / 8;
+
+    return rect.adjusted(width, height, -width, -height);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1267,7 +1275,7 @@ WMainView::WMainView(WMainViewPrivate * p,
 
     QRect rect = wControllerView->availableGeometry(sk->defaultScreen());
 
-    return d->getGeometry(rect);
+    return d->getGeometryDefault(rect);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2229,6 +2237,10 @@ QSize WMainView::sizeHint() const
 
         if (d->maximized == false)
         {
+            QRect rect = availableGeometry();
+
+            d->setGeometryNormal(d->getGeometry(rect));
+
             d->maximized = true;
 
             emit maximizedChanged();
@@ -2623,26 +2635,42 @@ void WMainView::setMaximized(bool maximized)
 
     if (maximized)
     {
-#ifdef Q_OS_LINUX
-        // FIXME: Workaround to undock the window.
-        int geometryHeight = availableGeometry().height();
-
-        if (height() == geometryHeight)
+#if defined(Q_OS_WIN)
+        if (d->autoSize)
         {
-            sk->setDefaultHeight(geometryHeight - geometryHeight / 8);
+            QRect rect = availableGeometry();
 
+            if (height() == rect.height())
+            {
+                 d->setGeometryNormal(d->getGeometry(rect));
+            }
+            else d->setGeometryNormal(geometry());
+        }
+
+#elif defined(Q_OS_LINUX)
+        // FIXME: Workaround to undock the window.
+        QRect rect = availableGeometry();
+
+        if (height() == rect.height())
+        {
             showMaximized();
             showNormal   ();
 
-            setGeometry(getDefaultGeometry());
+            setGeometry(rect);
 
             return;
         }
-#endif
+
         if (d->autoSize)
         {
             d->setGeometryNormal(geometry());
         }
+#else
+        if (d->autoSize)
+        {
+            d->setGeometryNormal(geometry());
+        }
+#endif
 
         d->maximized = true;
 

@@ -98,7 +98,8 @@ public: // Functions
     void setDragged (bool dragged);
     void setResizing(bool resizing);
 
-    QRect getGeometry(const QRect & rect) const;
+    QRect getGeometryDefault(const QRect & rect) const;
+    QRect getGeometry       (const QRect & rect) const;
 
     void setGeometryNormal(const QRect & rect);
 
