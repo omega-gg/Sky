@@ -235,35 +235,21 @@ void WMainViewPrivate::init(QDeclarativeItem * item)
     {
         maximized  = false;
         fullScreen = false;
-
-        q->setGeometry(q->getDefaultGeometry());
     }
     else if (mode == Sk::Maximized)
     {
         maximized  = true;
         fullScreen = false;
-
-        setGeometryNormal(q->getDefaultGeometry());
-
-        q->setGeometry(q->availableGeometry());
     }
     else if (mode == Sk::FullScreen)
     {
         maximized  = false;
         fullScreen = true;
-
-        setGeometryNormal(q->getDefaultGeometry());
-
-        q->setGeometry(q->screenGeometry());
     }
     else // if (mode == Sk::FullScreenMaximized)
     {
         maximized  = true;
         fullScreen = true;
-
-        setGeometryNormal(q->getDefaultGeometry());
-
-        q->setGeometry(q->screenGeometry());
     }
 
     locked = false;
@@ -383,9 +369,11 @@ void WMainViewPrivate::init(QDeclarativeItem * item)
     q->viewport()->setAttribute(Qt::WA_NoSystemBackground);
 
     //---------------------------------------------------------------------------------------------
-    // Minimum size
+    // Default size
 
     updateMinimumSize();
+
+    q->setGeometry(q->getDefaultGeometry());
 
     //---------------------------------------------------------------------------------------------
     // Timers
@@ -1821,10 +1809,14 @@ QSize WMainView::sizeHint() const
 
     if (d->maximized)
     {
+        d->setGeometryNormal(geometry());
+
         showMaximized();
     }
     else if (d->fullScreen)
     {
+        d->setGeometryNormal(geometry());
+
         showFullScreen();
     }
 
