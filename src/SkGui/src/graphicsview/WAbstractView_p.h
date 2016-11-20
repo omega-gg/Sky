@@ -27,12 +27,16 @@
     We mean it.
 */
 
-// Sk includes
-#include <private/Sk_p>
+// Qt includes
+#ifdef Q_OS_WIN
+#include <QMetaMethod>
+#endif
 
 #ifdef Q_OS_WIN
 #include <windows.h>
 #endif
+
+#include <private/Sk_p>
 
 #ifndef SK_NO_ABSTRACTVIEW
 
@@ -56,6 +60,9 @@ public: // Static functions
 
 public: // Events
     static LRESULT CALLBACK events(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
+
+public: // Slots
+    void onFocus();
 #endif
 
 public: // Variables
@@ -79,6 +86,8 @@ public: // Variables
 
     bool maximized;
     bool fullScreen;
+
+    QMetaMethod method;
 #endif
 
 protected:

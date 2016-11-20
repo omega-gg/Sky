@@ -20,7 +20,8 @@
 
 // Qt includes
 #ifdef Q_OS_WIN
-#include <QCoreApplication>
+#include <QApplication>
+#include <QDesktopWidget>
 #include <QFocusEvent>
 #include <QIcon>
 #ifdef QT_LATEST
@@ -42,8 +43,6 @@ static const DWORD windowFlags = WS_OVERLAPPED | WS_THICKFRAME | WS_MINIMIZEBOX 
 //-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
-
-#include "WAbstractView_p.h"
 
 WAbstractViewPrivate::WAbstractViewPrivate(WAbstractView * p) : WPrivate(p) {}
 
@@ -82,6 +81,12 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 
     maximized  = false;
     fullScreen = false;
+
+    const QMetaObject * meta = q->metaObject();
+
+    method = meta->method(meta->indexOfMethod("onFocus()"));
+
+    //---------------------------------------------------------------------------------------------
 
     WNDCLASSEX wcx;
 
@@ -144,15 +149,11 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 
 void WAbstractViewPrivate::applyFullScreen()
 {
-    MONITORINFO info;
+    Q_Q(WAbstractView);
 
-    info.cbSize = sizeof(info);
+    QRect geometry = qApp->desktop()->screenGeometry(q);
 
-    GetMonitorInfo(MonitorFromWindow(handle, MONITOR_DEFAULTTONEAREST), &info);
-
-    RECT rect = info.rcMonitor;
-
-    SetWindowPos(handle, HWND_TOP, rect.left, rect.top, rect.right, rect.bottom, 0);
+    q->setGeometry(geometry);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -201,7 +202,7 @@ void WAbstractViewPrivate::applyFullScreen()
         WAbstractView * view
             = reinterpret_cast<WAbstractView *> (GetWindowLongPtr(handle, GWLP_USERDATA));
 
-        SetFocus(view->d_func()->id);
+        view->d_func()->method.invoke(view, Qt::QueuedConnection);
 
         return 0;
     }
@@ -308,6 +309,15 @@ void WAbstractViewPrivate::applyFullScreen()
         return 0;
     }
     else return DefWindowProc(handle, message, wParam, lParam);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private slots
+//-------------------------------------------------------------------------------------------------
+
+void WAbstractViewPrivate::onFocus()
+{
+    SetFocus(id);
 }
 
 #endif // Q_OS_WIN
@@ -458,6 +468,15 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 /* Q_INVOKABLE */ void WAbstractView::resize(const QSize & size)
 {
     resize(size.width(), size.height());
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WAbstractView::setFocus()
+{
+    Q_D(WAbstractView);
+
+    SetFocus(d->id);
 }
 
 //-------------------------------------------------------------------------------------------------
