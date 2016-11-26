@@ -4,8 +4,6 @@ HEADERS += \
         src/declarative/WDeclarativeApplication.h \
         src/declarative/WDeclarativeItem.h \
         src/declarative/WDeclarativeItem_p.h \
-        src/declarative/WViewResizer.h \
-        src/declarative/WViewDrag.h \
         src/declarative/WDeclarativeMouseArea.h \
         src/declarative/WDeclarativeMouseArea_p.h \
         src/declarative/WDeclarativeMouseWatcher.h \
@@ -33,8 +31,6 @@ HEADERS += \
 SOURCES += \
         src/declarative/WDeclarativeApplication.cpp \
         src/declarative/WDeclarativeItem.cpp \
-        src/declarative/WViewResizer.cpp \
-        src/declarative/WViewDrag.cpp \
         src/declarative/WDeclarativeMouseArea.cpp \
         src/declarative/WDeclarativeMouseWatcher.cpp \
         src/declarative/WDeclarativeBorders.cpp \

@@ -1,1 +1,1 @@
-#include "../../src/SkGui/src/declarative/WViewResizer.h"
+#include "../../src/SkGui/src/graphicsview/WViewResizer.h"

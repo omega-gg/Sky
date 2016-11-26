@@ -36,13 +36,13 @@
 
 // Views includes
 #include <WView>
+#include <WViewResizer>
+#include <WViewDrag>
 #include <WWindow>
 
 // Declarative includes
 #include <WDeclarativeCoreApplication>
 #include <WDeclarativeApplication>
-#include <WViewResizer>
-#include <WViewDrag>
 #include <WDeclarativeMouseArea>
 #include <WDeclarativeMouseWatcher>
 #include <WDeclarativeListView>
@@ -205,13 +205,13 @@ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
 
     qmlRegisterUncreatableType<WView>("Sky", 1,0, "View", "View is abstract");
 
+    qmlRegisterType<WViewResizer>("Sky", 1,0, "ViewResizer");
+    qmlRegisterType<WViewDrag>   ("Sky", 1,0, "ViewDrag");
+
     qmlRegisterType<WWindow>("Sky", 1,0, "BaseWindow");
 
     //---------------------------------------------------------------------------------------------
     // Declarative
-
-    qmlRegisterType<WViewResizer>("Sky", 1,0, "ViewResizer");
-    qmlRegisterType<WViewDrag>   ("Sky", 1,0, "ViewDrag");
 
     qmlRegisterType<WDeclarativeMouseArea>   ("Sky", 1,0, "MouseArea");
     qmlRegisterType<WDeclarativeMouseWatcher>("Sky", 1,0, "MouseWatcher");
