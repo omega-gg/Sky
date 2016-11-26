@@ -1476,7 +1476,9 @@ WMainView::WMainView(WMainViewPrivate * p,
         QGLWidget * viewport = qobject_cast<QGLWidget *> (this->viewport());
 
         // FIXME Windows: Making sure we grab the front buffer.
+#ifdef Q_OS_WIN
         glReadBuffer(GL_FRONT);
+#endif
 
         QImage image = viewport->grabFrameBuffer().copy(x, y, width, height);
 
