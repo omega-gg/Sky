@@ -107,26 +107,26 @@ void WResizerPrivate::init(WResizer::ResizeType type)
 
 void WResizerPrivate::startResize(QGraphicsSceneMouseEvent * event)
 {
-    QRect availableGeometry = mainView->availableGeometry();
+    QRect availableGeometry = view->availableGeometry();
 
     cursorPos = event->pos().toPoint();
 
     if (type == WResizer::TopLeft)
     {
         resizeArea = QRect(availableGeometry.x(), availableGeometry.y(),
-                           mainView->x() + mainView->width()  - mainView->minimumWidth(),
-                           mainView->y() + mainView->height() - mainView->minimumHeight());
+                           view->x() + view->width()  - view->minimumWidth(),
+                           view->y() + view->height() - view->minimumHeight());
     }
     else if (type == WResizer::TopRight)
     {
         resizeArea = QRect(availableGeometry.x(), availableGeometry.y(),
                            availableGeometry.x() + availableGeometry.width(),
-                           mainView->y() + mainView->height() - mainView->minimumHeight());
+                           view->y() + view->height() - view->minimumHeight());
     }
     else if (type == WResizer::BottomLeft)
     {
         resizeArea = QRect(availableGeometry.x(), availableGeometry.y(),
-                           mainView->x() + mainView->width() - mainView->minimumWidth(),
+                           view->x() + view->width() - view->minimumWidth(),
                            availableGeometry.y() + availableGeometry.height());
     }
     else if (type == WResizer::BottomRight)
@@ -138,7 +138,7 @@ void WResizerPrivate::startResize(QGraphicsSceneMouseEvent * event)
     else if (type == WResizer::Left)
     {
         resizeArea = QRect(availableGeometry.x(), availableGeometry.y(),
-                           mainView->x() + mainView->width() - mainView->minimumWidth(),
+                           view->x() + view->width() - view->minimumWidth(),
                            availableGeometry.y() + availableGeometry.height());
     }
     else if (type == WResizer::Right)
@@ -151,7 +151,7 @@ void WResizerPrivate::startResize(QGraphicsSceneMouseEvent * event)
     {
         resizeArea = QRect(availableGeometry.x(), availableGeometry.y(),
                            availableGeometry.x() + availableGeometry.width(),
-                           mainView->y() + mainView->height() - mainView->minimumHeight());
+                           view->y() + view->height() - view->minimumHeight());
     }
     else if (type == WResizer::Bottom)
     {
@@ -176,7 +176,7 @@ void WResizerPrivate::resize(QGraphicsSceneMouseEvent *)
 
     if (diffX == 0 && diffY == 0) return;
 
-    QRect geometry = mainView->geometry();
+    QRect geometry = view->geometry();
 
     int x = geometry.x();
     int y = geometry.y();
@@ -186,7 +186,7 @@ void WResizerPrivate::resize(QGraphicsSceneMouseEvent *)
 
     QPoint pos;
 
-    pos = mainView->mapFromGlobal(currentPos);
+    pos = view->mapFromGlobal(currentPos);
 
     int posX = pos.x() - diffX;
     int posY = pos.y() - diffY;
@@ -216,7 +216,7 @@ void WResizerPrivate::resize(QGraphicsSceneMouseEvent *)
             {
                 x = resizeArea.width();
 
-                width = mainView->minimumWidth();
+                width = view->minimumWidth();
             }
         }
     }
@@ -232,9 +232,9 @@ void WResizerPrivate::resize(QGraphicsSceneMouseEvent *)
         {
             width += diffX;
 
-            if (width < mainView->minimumWidth())
+            if (width < view->minimumWidth())
             {
-                width = mainView->minimumWidth();
+                width = view->minimumWidth();
             }
 
             if ((x + width) > resizeArea.width())
@@ -270,7 +270,7 @@ void WResizerPrivate::resize(QGraphicsSceneMouseEvent *)
             {
                 y = resizeArea.height();
 
-                height = mainView->minimumHeight();
+                height = view->minimumHeight();
             }
         }
     }
@@ -286,9 +286,9 @@ void WResizerPrivate::resize(QGraphicsSceneMouseEvent *)
         {
             height += diffY;
 
-            if (height < mainView->minimumHeight())
+            if (height < view->minimumHeight())
             {
-                height = mainView->minimumHeight();
+                height = view->minimumHeight();
             }
 
             if ((y + height) > resizeArea.height())
@@ -300,7 +300,7 @@ void WResizerPrivate::resize(QGraphicsSceneMouseEvent *)
         }
     }
 
-    mainView->setGeometry(x, y, width, height);
+    view->setGeometry(x, y, width, height);
 
     lastPos = currentPos;
 }
@@ -323,9 +323,9 @@ WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
 {
     Q_D(WResizer);
 
-    d->mainView->d_func()->currentResizer = this;
+    d->view->d_func()->currentResizer = this;
 
-    d->mainView->d_func()->setResizing(true);
+    d->view->d_func()->setResizing(true);
 
 #if defined(Q_OS_WIN)
     Q_UNUSED(event);
@@ -343,23 +343,23 @@ WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
 
     ReleaseCapture();
 
-    PostMessage((HWND) d->mainView->winId(), WM_SYSCOMMAND, orientation, 0);
+    PostMessage((HWND) d->view->winId(), WM_SYSCOMMAND, orientation, 0);
 
     return;
 #elif defined(Q_OS_LINUX)
-    if (d->mainView->isWindow() && isSupportedByWM(ATOM(_NET_WM_MOVERESIZE))
+    if (d->view->isWindow() && isSupportedByWM(ATOM(_NET_WM_MOVERESIZE))
         &&
-        d->mainView->testAttribute(Qt::WA_DontShowOnScreen) == false)
+        d->view->testAttribute(Qt::WA_DontShowOnScreen) == false)
     {
         XEvent xev;
 
         xev.xclient.type         = ClientMessage;
         xev.xclient.message_type = ATOM(_NET_WM_MOVERESIZE);
         xev.xclient.display      = X11->display;
-        xev.xclient.window       = d->mainView->winId();
+        xev.xclient.window       = d->view->winId();
         xev.xclient.format       = 32;
-        xev.xclient.data.l[0]    = d->mainView->x();
-        xev.xclient.data.l[1]    = d->mainView->y();
+        xev.xclient.data.l[0]    = d->view->x();
+        xev.xclient.data.l[1]    = d->view->y();
 
         if      (d->type == TopLeft)     xev.xclient.data.l[2] = 0;
         else if (d->type == Top)         xev.xclient.data.l[2] = 1;
@@ -375,7 +375,7 @@ WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
 
         XUngrabPointer(X11->display, X11->time);
 
-        XSendEvent(X11->display, QX11Info::appRootWindow(d->mainView->x11Info().screen()), False,
+        XSendEvent(X11->display, QX11Info::appRootWindow(d->view->x11Info().screen()), False,
                    SubstructureRedirectMask | SubstructureNotifyMask, &xev);
 
         return;
@@ -394,21 +394,21 @@ WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
 #if defined(Q_OS_WIN)
     Q_UNUSED(event);
 
-    if (GetSystemMenu((HWND) d->mainView->winId(), FALSE) != 0)
+    if (GetSystemMenu((HWND) d->view->winId(), FALSE) != 0)
     {
         MSG msg;
 
-        while (PeekMessage(&msg, (HWND) d->mainView->winId(),
+        while (PeekMessage(&msg, (HWND) d->view->winId(),
                            WM_MOUSEMOVE, WM_MOUSEMOVE, PM_REMOVE));
 
         return;
     }
 #elif defined(Q_OS_LINUX)
-    if (d->mainView->isWindow() && isSupportedByWM(ATOM(_NET_WM_MOVERESIZE))
+    if (d->view->isWindow() && isSupportedByWM(ATOM(_NET_WM_MOVERESIZE))
         &&
-        d->mainView->isTopLevel()
+        d->view->isTopLevel()
         &&
-        d->mainView->testAttribute(Qt::WA_DontShowOnScreen) == false) return;
+        d->view->testAttribute(Qt::WA_DontShowOnScreen) == false) return;
 #endif
 
     if (d->resizing) d->resize(event);

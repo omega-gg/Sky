@@ -42,7 +42,7 @@ void WDeclarativeMouseWatcherPrivate::onPressedChanged()
 {
     Q_Q(WDeclarativeMouseWatcher);
 
-    QObject::disconnect(mainView, SIGNAL(pressedChanged()), q, SLOT(onPressedChanged()));
+    QObject::disconnect(view, SIGNAL(pressedChanged()), q, SLOT(onPressedChanged()));
 
     emit q->released();
 }
@@ -67,7 +67,7 @@ void WDeclarativeMouseWatcherPrivate::onPressedChanged()
 
     event->ignore();
 
-    connect(d->mainView, SIGNAL(pressedChanged()), this, SLOT(onPressedChanged()));
+    connect(d->view, SIGNAL(pressedChanged()), this, SLOT(onPressedChanged()));
 
     emit pressed();
 }

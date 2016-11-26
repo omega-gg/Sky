@@ -31,8 +31,7 @@ WDeclarativeItemPrivate::WDeclarativeItemPrivate(WDeclarativeItem * p) : WPrivat
 
 void WDeclarativeItemPrivate::init()
 {
-    mainView = NULL;
-
+    view     = NULL;
     viewport = NULL;
 }
 
@@ -72,18 +71,17 @@ WDeclarativeItem::WDeclarativeItem(WDeclarativeItemPrivate * p, QDeclarativeItem
 
         if (mainScene)
         {
-            d->mainView = mainScene->mainView;
+            d->view = mainScene->view;
 
-            d->viewport = d->mainView->item();
+            d->viewport = d->view->item();
         }
         else
         {
-            d->mainView = NULL;
-
+            d->view     = NULL;
             d->viewport = NULL;
         }
 
-        emit mainViewChanged();
+        emit viewChanged();
     }
 
     return QDeclarativeItem::itemChange(change, value);
@@ -93,9 +91,9 @@ WDeclarativeItem::WDeclarativeItem(WDeclarativeItemPrivate * p, QDeclarativeItem
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-WMainView * WDeclarativeItem::mainView() const
+WMainView * WDeclarativeItem::view() const
 {
-    Q_D(const WDeclarativeItem); return d->mainView;
+    Q_D(const WDeclarativeItem); return d->view;
 }
 
 QDeclarativeItem * WDeclarativeItem::viewport() const

@@ -50,15 +50,15 @@ public:
     void init();
 
 public: // Functions
-    void registerMainView  (WMainView * mainView);
-    void unregisterMainView(WMainView * mainView);
+    void registerMainView  (WMainView * view);
+    void unregisterMainView(WMainView * view);
 
     void paintRecursive(QPainter * painter, QGraphicsObject * item, bool forceVisible) const;
     void paintChild    (QPainter * painter, QGraphicsObject * item, bool forceVisible) const;
     void paintItem     (QPainter * painter, QGraphicsObject * item)                    const;
 
 public: // Variables
-    QList<WMainView *> mainViews;
+    QList<WMainView *> views;
 
     WControllerView::LoadMode loadMode;
 

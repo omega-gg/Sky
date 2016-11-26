@@ -72,11 +72,11 @@ class SK_GUI_EXPORT WInputCueMouseMove : public WInputCueAction
 public: // WInputCueAction implementation
     /* virtual */ void run()
     {
-        mainView->mouseMove(x, y, button);
+        view->mouseMove(x, y, button);
     }
 
 public: // Variables
-    WMainView * mainView;
+    WMainView * view;
 
     int x;
     int y;
@@ -93,11 +93,11 @@ class SK_GUI_EXPORT WInputCueMousePress : public WInputCueAction
 public: // WInputCueAction implementation
     /* virtual */ void run()
     {
-        mainView->mousePress(button);
+        view->mousePress(button);
     }
 
 public: // Variables
-    WMainView * mainView;
+    WMainView * view;
 
     Qt::MouseButton button;
 };
@@ -111,11 +111,11 @@ class SK_GUI_EXPORT WInputCueMouseRelease : public WInputCueAction
 public: // WInputCueAction implementation
     /* virtual */ void run()
     {
-        mainView->mouseRelease(button);
+        view->mouseRelease(button);
     }
 
 public: // Variables
-    WMainView * mainView;
+    WMainView * view;
 
     Qt::MouseButton button;
 };
@@ -129,11 +129,11 @@ class SK_GUI_EXPORT WInputCueWheel : public WInputCueAction
 public: // WInputCueAction implementation
     /* virtual */ void run()
     {
-        mainView->wheel(orientation, delta);
+        view->wheel(orientation, delta);
     }
 
 public: // Variables
-    WMainView * mainView;
+    WMainView * view;
 
     Qt::Orientation orientation;
     int             delta;
@@ -148,11 +148,11 @@ class SK_GUI_EXPORT WInputCueKeyPress : public WInputCueAction
 public: // WInputCueAction implementation
     /* virtual */ void run()
     {
-        mainView->keyPress(key, modifiers);
+        view->keyPress(key, modifiers);
     }
 
 public: // Variables
-    WMainView * mainView;
+    WMainView * view;
 
     int                   key;
     Qt::KeyboardModifiers modifiers;
@@ -167,11 +167,11 @@ class SK_GUI_EXPORT WInputCueKeyRelease : public WInputCueAction
 public: // WInputCueAction implementation
     /* virtual */ void run()
     {
-        mainView->keyRelease(key, modifiers);
+        view->keyRelease(key, modifiers);
     }
 
 public: // Variables
-    WMainView * mainView;
+    WMainView * view;
 
     int                   key;
     Qt::KeyboardModifiers modifiers;
@@ -199,7 +199,7 @@ void WInputCuePrivate::init()
 {
     Q_Q(WInputCue);
 
-    mainView = NULL;
+    view = NULL;
 
     QObject::connect(&pause, SIGNAL(finished()), q, SLOT(onFinished()));
 }
@@ -328,13 +328,13 @@ void WInputCuePrivate::onFinished()
 {
     Q_D(WInputCue);
 
-    if (d->mainView == NULL) return;
+    if (d->view == NULL) return;
 
     WInputCueMouseMove * action = new WInputCueMouseMove;
 
     action->delay = delay;
 
-    action->mainView = d->mainView;
+    action->view = d->view;
 
     action->x = x;
     action->y = y;
@@ -350,13 +350,13 @@ void WInputCuePrivate::onFinished()
 {
     Q_D(WInputCue);
 
-    if (d->mainView == NULL) return;
+    if (d->view == NULL) return;
 
     WInputCueMousePress * action = new WInputCueMousePress;
 
     action->delay = delay;
 
-    action->mainView = d->mainView;
+    action->view = d->view;
 
     action->button = button;
 
@@ -367,13 +367,13 @@ void WInputCuePrivate::onFinished()
 {
     Q_D(WInputCue);
 
-    if (d->mainView == NULL) return;
+    if (d->view == NULL) return;
 
     WInputCueMouseRelease * action = new WInputCueMouseRelease;
 
     action->delay = delay;
 
-    action->mainView = d->mainView;
+    action->view = d->view;
 
     action->button = button;
 
@@ -392,13 +392,13 @@ void WInputCuePrivate::onFinished()
 {
     Q_D(WInputCue);
 
-    if (d->mainView == NULL) return;
+    if (d->view == NULL) return;
 
     WInputCueWheel * action = new WInputCueWheel;
 
     action->delay = delay;
 
-    action->mainView = d->mainView;
+    action->view = d->view;
 
     action->orientation = orientation;
     action->delta       = delta;
@@ -422,13 +422,13 @@ void WInputCuePrivate::onFinished()
 {
     Q_D(WInputCue);
 
-    if (d->mainView == NULL) return;
+    if (d->view == NULL) return;
 
     WInputCueKeyPress * action = new WInputCueKeyPress;
 
     action->delay = delay;
 
-    action->mainView = d->mainView;
+    action->view = d->view;
 
     action->key       = key;
     action->modifiers = modifiers;
@@ -440,13 +440,13 @@ void WInputCuePrivate::onFinished()
 {
     Q_D(WInputCue);
 
-    if (d->mainView == NULL) return;
+    if (d->view == NULL) return;
 
     WInputCueKeyRelease * action = new WInputCueKeyRelease;
 
     action->delay = delay;
 
-    action->mainView = d->mainView;
+    action->view = d->view;
 
     action->key       = key;
     action->modifiers = modifiers;
@@ -516,20 +516,20 @@ void WInputCuePrivate::onFinished()
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-WMainView * WInputCue::mainView() const
+WMainView * WInputCue::view() const
 {
-    Q_D(const WInputCue); return d->mainView;
+    Q_D(const WInputCue); return d->view;
 }
 
-void WInputCue::setMainView(WMainView * mainView)
+void WInputCue::setMainView(WMainView * view)
 {
     Q_D(WInputCue);
 
-    if (d->mainView == mainView) return;
+    if (d->view == view) return;
 
-    d->mainView = mainView;
+    d->view = view;
 
-    emit mainViewChanged();
+    emit viewChanged();
 }
 
 #endif // SK_NO_INPUTCUE

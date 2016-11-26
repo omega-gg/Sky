@@ -35,7 +35,7 @@ class SK_GUI_EXPORT WWindow : public WDeclarativeMouseArea
 {
     Q_OBJECT
 
-    Q_PROPERTY(WMainView * mainView READ mainView CONSTANT)
+    Q_PROPERTY(WMainView * view READ view CONSTANT)
 
     Q_PROPERTY(QString icon READ icon WRITE setIcon NOTIFY iconChanged)
 
@@ -354,7 +354,7 @@ signals:
     void availableGeometryChanged();
 
 public: // Properties
-    WMainView * mainView() const;
+    WMainView * view() const;
 
     QString icon() const;
     void    setIcon(const QString & icon);

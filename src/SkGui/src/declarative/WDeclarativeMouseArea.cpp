@@ -413,11 +413,11 @@ void WDeclarativeMouseAreaPrivate::setDragAccepted(bool accepted)
 
 void WDeclarativeMouseAreaPrivate::clearHover()
 {
-    if (mainView == NULL) return;
+    if (view == NULL) return;
 
     Q_Q(WDeclarativeMouseArea);
 
-    QList<QGraphicsItem *> * items = &(mainView->d_func()->itemsCursor);
+    QList<QGraphicsItem *> * items = &(view->d_func()->itemsCursor);
 
     if (items->contains(q))
     {
@@ -427,11 +427,11 @@ void WDeclarativeMouseAreaPrivate::clearHover()
 
 void WDeclarativeMouseAreaPrivate::clearDrop()
 {
-    if (mainView == NULL) return;
+    if (view == NULL) return;
 
     Q_Q(WDeclarativeMouseArea);
 
-    QList<QGraphicsItem *> * items = &(mainView->d_func()->itemsDrop);
+    QList<QGraphicsItem *> * items = &(view->d_func()->itemsDrop);
 
     if (items->contains(q))
     {
@@ -443,7 +443,7 @@ void WDeclarativeMouseAreaPrivate::clearDrop()
 
 void WDeclarativeMouseAreaPrivate::clearView()
 {
-    if (mainView == NULL) return;
+    if (view == NULL) return;
 
     Q_Q(WDeclarativeMouseArea);
 
@@ -451,20 +451,20 @@ void WDeclarativeMouseAreaPrivate::clearView()
     {
         hovered = false;
 
-        mainView->d_func()->itemsHovered.removeOne(q);
+        view->d_func()->itemsHovered.removeOne(q);
 
         emit q->hoveredChanged();
 
         emit q->exited();
     }
 
-    if (mainView->d_func()->areaDrop == q)
+    if (view->d_func()->areaDrop == q)
     {
         WDeclarativeDropEvent event(-1, -1, QString());
 
         emit q->dragExited(&event);
 
-        mainView->d_func()->areaDrop = NULL;
+        view->d_func()->areaDrop = NULL;
     }
 }
 
@@ -562,9 +562,9 @@ void WDeclarativeMouseArea::setHovered(bool hovered)
     {
         setFlag(QGraphicsItem::ItemSendsScenePositionChanges, true);
 
-        if (d->mainView)
+        if (d->view)
         {
-            d->lastPos = mapFromScene(d->mainView->d_func()->mousePos);
+            d->lastPos = mapFromScene(d->view->d_func()->mousePos);
         }
 
         emit entered();
@@ -885,7 +885,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QGraphicsSceneMouseEvent * event)
 
         if (d->drag->active() == false)
         {
-            if (d->mainView->testDrag(posStart, posCurrent, d->drag->threshold()))
+            if (d->view->testDrag(posStart, posCurrent, d->drag->threshold()))
             {
                 d->drag->setActive(true);
 

@@ -59,7 +59,7 @@ class SK_GUI_EXPORT WInputCue : public QObject, public WPrivatable
 {
     Q_OBJECT
 
-    Q_PROPERTY(WMainView * mainView READ mainView WRITE setMainView NOTIFY mainViewChanged)
+    Q_PROPERTY(WMainView * view READ view WRITE setMainView NOTIFY viewChanged)
 
 public:
     explicit WInputCue(QObject * parent = NULL);
@@ -121,11 +121,11 @@ public: // Interface
 signals:
     void run(int id);
 
-    void mainViewChanged();
+    void viewChanged();
 
 public: // Properties
-    WMainView * mainView() const;
-    void        setMainView(WMainView * mainView);
+    WMainView * view() const;
+    void        setMainView(WMainView * view);
 
 private:
     W_DECLARE_PRIVATE(WInputCue)

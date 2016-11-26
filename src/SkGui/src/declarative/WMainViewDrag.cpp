@@ -73,7 +73,7 @@ void WMainViewDragPrivate::clearDrag()
 {
     dragging = false;
 
-    mainView->d_func()->setDragged(false);
+    view->d_func()->setDragged(false);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -102,7 +102,7 @@ void WMainViewDragPrivate::clearDrag()
 
         d->dragLastPos = QPoint(-1, -1);
 
-        d->mainView->d_func()->setDragged(true);
+        d->view->d_func()->setDragged(true);
     }
 }
 
@@ -126,9 +126,9 @@ void WMainViewDragPrivate::clearDrag()
 #ifdef Q_OS_WIN
     ReleaseCapture();
 
-    PostMessage((HWND) d->mainView->winId(), WM_NCLBUTTONDOWN, HTCAPTION, 0);
+    PostMessage((HWND) d->view->winId(), WM_NCLBUTTONDOWN, HTCAPTION, 0);
 #else
-    QRect geometry = d->mainView->availableGeometry();
+    QRect geometry = d->view->availableGeometry();
 
     QPoint pos = QCursor::pos();
 
@@ -137,19 +137,19 @@ void WMainViewDragPrivate::clearDrag()
         int moveX = pos.x() - d->dragLastPos.x();
         int moveY = pos.y() - d->dragLastPos.y();
 
-        int finalX = d->mainView->x() + moveX;
-        int finalY = d->mainView->y() + moveY;
+        int finalX = d->view->x() + moveX;
+        int finalY = d->view->y() + moveY;
 
         int geometryHeight = geometry.height() + geometry.y();
 
         if (pos.y() < geometry.y() || pos.y() > geometryHeight)
         {
-            finalY = d->mainView->y();
+            finalY = d->view->y();
 
-            pos.setY(d->mainView->y());
+            pos.setY(d->view->y());
         }
 
-        int boxY = d->mainView->pos().y() + moveY;
+        int boxY = d->view->pos().y() + moveY;
 
         int maxHeight = geometryHeight - 25 - 2;
 
@@ -162,7 +162,7 @@ void WMainViewDragPrivate::clearDrag()
             finalY = maxHeight;
         }
 
-        d->mainView->move(finalX, finalY);
+        d->view->move(finalX, finalY);
     }
 
     d->dragLastPos = pos;

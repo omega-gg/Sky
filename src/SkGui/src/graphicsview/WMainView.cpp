@@ -187,7 +187,7 @@ void WDeclarativeDropEvent::setText(const QString & text)
 
 WMainViewScene::WMainViewScene(WMainView * parent) : QGraphicsScene(parent)
 {
-    mainView = parent;
+    view = parent;
 }
 
 //=================================================================================================

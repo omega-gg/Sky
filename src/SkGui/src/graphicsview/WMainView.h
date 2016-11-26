@@ -619,7 +619,7 @@ public:
     WMainViewScene(WMainView * parent);
 
 private: // Variables
-    WMainView * mainView;
+    WMainView * view;
 
 private:
     Q_DISABLE_COPY(WMainViewScene)

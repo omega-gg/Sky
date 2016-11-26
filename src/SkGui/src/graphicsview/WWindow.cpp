@@ -37,7 +37,7 @@ WWindowPrivate::WWindowPrivate(WWindow * p) : WDeclarativeMouseAreaPrivate(p) {}
 
 /* virtual */ WWindowPrivate::~WWindowPrivate()
 {
-    mainView->deleteLater();
+    view->deleteLater();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -56,119 +56,118 @@ void WWindowPrivate::init()
     // MainView
 
 #if defined(SK_WIN_NATIVE)
-    mainView = new WMainView(q, NULL);
+    view = new WMainView(q, NULL);
 #elif defined(Q_OS_WIN)
-    mainView = new WMainView(q, NULL, Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
+    view = new WMainView(q, NULL, Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
 #else
-    mainView = new WMainView(q, NULL, Qt::FramelessWindowHint);
+    view = new WMainView(q, NULL, Qt::FramelessWindowHint);
 #endif
 
-    mainView->setWindowTitle(sk->name());
+    view->setWindowTitle(sk->name());
 
     if (icon.isEmpty() == false)
     {
-        mainView->setWindowIcon(QIcon(icon));
+        view->setWindowIcon(QIcon(icon));
     }
 
-    mainView->setVisible(true);
+    view->setVisible(true);
 
     //---------------------------------------------------------------------------------------------
     // Signals
 
-    QObject::connect(mainView, SIGNAL(messageReceived(const QString &)),
-                     q,        SIGNAL(messageReceived(const QString &)));
+    QObject::connect(view, SIGNAL(messageReceived(const QString &)),
+                     q,    SIGNAL(messageReceived(const QString &)));
 
-    QObject::connect(mainView, SIGNAL(stateChanged(Qt::WindowState)),
-                     q,        SIGNAL(stateChanged(Qt::WindowState)));
+    QObject::connect(view, SIGNAL(stateChanged(Qt::WindowState)),
+                     q,    SIGNAL(stateChanged(Qt::WindowState)));
 
-    QObject::connect(mainView, SIGNAL(fadeIn ()), q, SIGNAL(fadeIn ()));
-    QObject::connect(mainView, SIGNAL(fadeOut()), q, SIGNAL(fadeOut()));
+    QObject::connect(view, SIGNAL(fadeIn ()), q, SIGNAL(fadeIn ()));
+    QObject::connect(view, SIGNAL(fadeOut()), q, SIGNAL(fadeOut()));
 
-    QObject::connect(mainView, SIGNAL(dragEnded()), q, SIGNAL(dragEnded()));
+    QObject::connect(view, SIGNAL(dragEnded()), q, SIGNAL(dragEnded()));
 
-    QObject::connect(mainView, SIGNAL(beforeClose()), q, SIGNAL(beforeClose()));
+    QObject::connect(view, SIGNAL(beforeClose()), q, SIGNAL(beforeClose()));
 
-    QObject::connect(mainView, SIGNAL(itemWidthChanged ()), q, SIGNAL(itemWidthChanged ()));
-    QObject::connect(mainView, SIGNAL(itemHeightChanged()), q, SIGNAL(itemHeightChanged()));
+    QObject::connect(view, SIGNAL(itemWidthChanged ()), q, SIGNAL(itemWidthChanged ()));
+    QObject::connect(view, SIGNAL(itemHeightChanged()), q, SIGNAL(itemHeightChanged()));
 
-    QObject::connect(mainView, SIGNAL(xChanged()), q, SIGNAL(viewXChanged()));
-    QObject::connect(mainView, SIGNAL(yChanged()), q, SIGNAL(viewYChanged()));
+    QObject::connect(view, SIGNAL(xChanged()), q, SIGNAL(viewXChanged()));
+    QObject::connect(view, SIGNAL(yChanged()), q, SIGNAL(viewYChanged()));
 
-    QObject::connect(mainView, SIGNAL(widthChanged ()), q, SIGNAL(viewWidthChanged ()));
-    QObject::connect(mainView, SIGNAL(heightChanged()), q, SIGNAL(viewHeightChanged()));
+    QObject::connect(view, SIGNAL(widthChanged ()), q, SIGNAL(viewWidthChanged ()));
+    QObject::connect(view, SIGNAL(heightChanged()), q, SIGNAL(viewHeightChanged()));
 
-    QObject::connect(mainView, SIGNAL(centerXChanged()), q, SIGNAL(centerXChanged()));
-    QObject::connect(mainView, SIGNAL(centerYChanged()), q, SIGNAL(centerYChanged()));
+    QObject::connect(view, SIGNAL(centerXChanged()), q, SIGNAL(centerXChanged()));
+    QObject::connect(view, SIGNAL(centerYChanged()), q, SIGNAL(centerYChanged()));
 
-    QObject::connect(mainView, SIGNAL(originXChanged()), q, SIGNAL(originXChanged()));
-    QObject::connect(mainView, SIGNAL(originYChanged()), q, SIGNAL(originYChanged()));
+    QObject::connect(view, SIGNAL(originXChanged()), q, SIGNAL(originXChanged()));
+    QObject::connect(view, SIGNAL(originYChanged()), q, SIGNAL(originYChanged()));
 
-    QObject::connect(mainView, SIGNAL(zoomChanged()), q, SIGNAL(zoomChanged()));
+    QObject::connect(view, SIGNAL(zoomChanged()), q, SIGNAL(zoomChanged()));
 
-    QObject::connect(mainView, SIGNAL(minimumWidthChanged ()), q, SIGNAL(minimumWidthChanged ()));
-    QObject::connect(mainView, SIGNAL(minimumHeightChanged()), q, SIGNAL(minimumHeightChanged()));
+    QObject::connect(view, SIGNAL(minimumWidthChanged ()), q, SIGNAL(minimumWidthChanged ()));
+    QObject::connect(view, SIGNAL(minimumHeightChanged()), q, SIGNAL(minimumHeightChanged()));
 
-    QObject::connect(mainView, SIGNAL(maximumWidthChanged ()), q, SIGNAL(maximumWidthChanged ()));
-    QObject::connect(mainView, SIGNAL(maximumHeightChanged()), q, SIGNAL(maximumHeightChanged()));
+    QObject::connect(view, SIGNAL(maximumWidthChanged ()), q, SIGNAL(maximumWidthChanged ()));
+    QObject::connect(view, SIGNAL(maximumHeightChanged()), q, SIGNAL(maximumHeightChanged()));
 
-    QObject::connect(mainView, SIGNAL(geometryNormalChanged()),
-                     q,        SIGNAL(geometryNormalChanged()));
+    QObject::connect(view, SIGNAL(geometryNormalChanged()), q, SIGNAL(geometryNormalChanged()));
 
-    QObject::connect(mainView, SIGNAL(minimizedChanged ()), q, SIGNAL(minimizedChanged ()));
-    QObject::connect(mainView, SIGNAL(maximizedChanged ()), q, SIGNAL(maximizedChanged ()));
-    QObject::connect(mainView, SIGNAL(fullScreenChanged()), q, SIGNAL(fullScreenChanged()));
-    QObject::connect(mainView, SIGNAL(lockedChanged    ()), q, SIGNAL(lockedChanged    ()));
+    QObject::connect(view, SIGNAL(minimizedChanged ()), q, SIGNAL(minimizedChanged ()));
+    QObject::connect(view, SIGNAL(maximizedChanged ()), q, SIGNAL(maximizedChanged ()));
+    QObject::connect(view, SIGNAL(fullScreenChanged()), q, SIGNAL(fullScreenChanged()));
+    QObject::connect(view, SIGNAL(lockedChanged    ()), q, SIGNAL(lockedChanged    ()));
 
-    QObject::connect(mainView, SIGNAL(activeChanged  ()), q, SIGNAL(activeChanged  ()));
-    QObject::connect(mainView, SIGNAL(enteredChanged ()), q, SIGNAL(enteredChanged ()));
-    QObject::connect(mainView, SIGNAL(draggingChanged()), q, SIGNAL(draggingChanged()));
-    QObject::connect(mainView, SIGNAL(draggedChanged ()), q, SIGNAL(draggedChanged ()));
-    QObject::connect(mainView, SIGNAL(resizingChanged()), q, SIGNAL(resizingChanged()));
+    QObject::connect(view, SIGNAL(activeChanged  ()), q, SIGNAL(activeChanged  ()));
+    QObject::connect(view, SIGNAL(enteredChanged ()), q, SIGNAL(enteredChanged ()));
+    QObject::connect(view, SIGNAL(draggingChanged()), q, SIGNAL(draggingChanged()));
+    QObject::connect(view, SIGNAL(draggedChanged ()), q, SIGNAL(draggedChanged ()));
+    QObject::connect(view, SIGNAL(resizingChanged()), q, SIGNAL(resizingChanged()));
 
-    QObject::connect(mainView, SIGNAL(mousePosChanged   ()), q, SIGNAL(mousePosChanged   ()));
-    QObject::connect(mainView, SIGNAL(mouseCursorChanged()), q, SIGNAL(mouseCursorChanged()));
+    QObject::connect(view, SIGNAL(mousePosChanged   ()), q, SIGNAL(mousePosChanged   ()));
+    QObject::connect(view, SIGNAL(mouseCursorChanged()), q, SIGNAL(mouseCursorChanged()));
 
-    QObject::connect(mainView, SIGNAL(autoSizeChanged()), q, SIGNAL(autoSizeChanged()));
+    QObject::connect(view, SIGNAL(autoSizeChanged()), q, SIGNAL(autoSizeChanged()));
 
-    QObject::connect(mainView, SIGNAL(openglChanged   ()), q, SIGNAL(openglChanged   ()));
-    QObject::connect(mainView, SIGNAL(antialiasChanged()), q, SIGNAL(antialiasChanged()));
-    QObject::connect(mainView, SIGNAL(vsyncChanged    ()), q, SIGNAL(vsyncChanged    ()));
+    QObject::connect(view, SIGNAL(openglChanged   ()), q, SIGNAL(openglChanged   ()));
+    QObject::connect(view, SIGNAL(antialiasChanged()), q, SIGNAL(antialiasChanged()));
+    QObject::connect(view, SIGNAL(vsyncChanged    ()), q, SIGNAL(vsyncChanged    ()));
 
-    QObject::connect(mainView, SIGNAL(hoverEnabledChanged()), q, SIGNAL(hoverEnabledChanged()));
+    QObject::connect(view, SIGNAL(hoverEnabledChanged()), q, SIGNAL(hoverEnabledChanged()));
 
-    QObject::connect(mainView, SIGNAL(fadeEnabledChanged ()), q, SIGNAL(fadeEnabledChanged ()));
-    QObject::connect(mainView, SIGNAL(fadeDurationChanged()), q, SIGNAL(fadeDurationChanged()));
+    QObject::connect(view, SIGNAL(fadeEnabledChanged ()), q, SIGNAL(fadeEnabledChanged ()));
+    QObject::connect(view, SIGNAL(fadeDurationChanged()), q, SIGNAL(fadeDurationChanged()));
 
-    QObject::connect(mainView, SIGNAL(idleCheckChanged()), q, SIGNAL(idleCheckChanged()));
-    QObject::connect(mainView, SIGNAL(idleChanged     ()), q, SIGNAL(idleChanged     ()));
-    QObject::connect(mainView, SIGNAL(idleDelayChanged()), q, SIGNAL(idleDelayChanged()));
+    QObject::connect(view, SIGNAL(idleCheckChanged()), q, SIGNAL(idleCheckChanged()));
+    QObject::connect(view, SIGNAL(idleChanged     ()), q, SIGNAL(idleChanged     ()));
+    QObject::connect(view, SIGNAL(idleDelayChanged()), q, SIGNAL(idleDelayChanged()));
 
-    QObject::connect(mainView, SIGNAL(mousePressed(WDeclarativeMouseEvent *)),
-                     q,        SIGNAL(mousePressed(WDeclarativeMouseEvent *)));
+    QObject::connect(view, SIGNAL(mousePressed(WDeclarativeMouseEvent *)),
+                     q,    SIGNAL(mousePressed(WDeclarativeMouseEvent *)));
 
-    QObject::connect(mainView, SIGNAL(mouseReleased(WDeclarativeMouseEvent *)),
-                     q,        SIGNAL(mouseReleased(WDeclarativeMouseEvent *)));
+    QObject::connect(view, SIGNAL(mouseReleased(WDeclarativeMouseEvent *)),
+                     q,    SIGNAL(mouseReleased(WDeclarativeMouseEvent *)));
 
-    QObject::connect(mainView, SIGNAL(mouseDoubleClicked(WDeclarativeMouseEvent *)),
-                     q,        SIGNAL(mouseDoubleClicked(WDeclarativeMouseEvent *)));
+    QObject::connect(view, SIGNAL(mouseDoubleClicked(WDeclarativeMouseEvent *)),
+                     q,    SIGNAL(mouseDoubleClicked(WDeclarativeMouseEvent *)));
 
-    QObject::connect(mainView, SIGNAL(keyPressed(WDeclarativeKeyEvent *)),
-                     q,        SIGNAL(keyPressed(WDeclarativeKeyEvent *)));
+    QObject::connect(view, SIGNAL(keyPressed(WDeclarativeKeyEvent *)),
+                     q,    SIGNAL(keyPressed(WDeclarativeKeyEvent *)));
 
-    QObject::connect(mainView, SIGNAL(keyReleased(WDeclarativeKeyEvent *)),
-                     q,        SIGNAL(keyReleased(WDeclarativeKeyEvent *)));
+    QObject::connect(view, SIGNAL(keyReleased(WDeclarativeKeyEvent *)),
+                     q,    SIGNAL(keyReleased(WDeclarativeKeyEvent *)));
 
-    QObject::connect(mainView, SIGNAL(keyShiftPressedChanged()),
-                     q,        SIGNAL(keyShiftPressedChanged()));
+    QObject::connect(view, SIGNAL(keyShiftPressedChanged()),
+                     q,    SIGNAL(keyShiftPressedChanged()));
 
-    QObject::connect(mainView, SIGNAL(keyControlPressedChanged()),
-                     q,        SIGNAL(keyControlPressedChanged()));
+    QObject::connect(view, SIGNAL(keyControlPressedChanged()),
+                     q,    SIGNAL(keyControlPressedChanged()));
 
-    QObject::connect(mainView, SIGNAL(keyAltPressedChanged()),
-                     q,        SIGNAL(keyAltPressedChanged()));
+    QObject::connect(view, SIGNAL(keyAltPressedChanged()),
+                     q,    SIGNAL(keyAltPressedChanged()));
 
-    QObject::connect(mainView, SIGNAL(availableGeometryChanged()),
-                     q,        SIGNAL(availableGeometryChanged()));
+    QObject::connect(view, SIGNAL(availableGeometryChanged()),
+                     q,    SIGNAL(availableGeometryChanged()));
 }
 
 //=================================================================================================
@@ -187,41 +186,41 @@ void WWindowPrivate::init()
 
 /* Q_INVOKABLE */ void WWindow::showMinimized()
 {
-    Q_D(WWindow); d->mainView->setMinimized(true);
+    Q_D(WWindow); d->view->setMinimized(true);
 }
 
 /* Q_INVOKABLE */ void WWindow::showMaximized()
 {
-    Q_D(WWindow); d->mainView->setMaximized(true);
+    Q_D(WWindow); d->view->setMaximized(true);
 }
 
 /* Q_INVOKABLE */ void WWindow::showNormal()
 {
-    Q_D(WWindow); d->mainView->setMaximized(false);
+    Q_D(WWindow); d->view->setMaximized(false);
 }
 
 /* Q_INVOKABLE */ void WWindow::showFullScreen()
 {
-    Q_D(WWindow); d->mainView->setFullScreen(true);
+    Q_D(WWindow); d->view->setFullScreen(true);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WWindow::activate()
 {
-    Q_D(WWindow); d->mainView->activate();
+    Q_D(WWindow); d->view->activate();
 }
 
 /* Q_INVOKABLE */ void WWindow::raise()
 {
-    Q_D(WWindow); d->mainView->raise();
+    Q_D(WWindow); d->view->raise();
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WWindow::close()
 {
-    Q_D(WWindow); d->mainView->close();
+    Q_D(WWindow); d->view->close();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -231,7 +230,7 @@ void WWindowPrivate::init()
 {
     Q_D(const WWindow);
 
-    return (d->mainView->d_func()->scene->focusItem() != NULL);
+    return (d->view->d_func()->scene->focusItem() != NULL);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -256,52 +255,52 @@ void WWindowPrivate::init()
 
 /* Q_INVOKABLE */ int WWindow::getScreenNumber() const
 {
-    Q_D(const WWindow); return d->mainView->getScreenNumber();
+    Q_D(const WWindow); return d->view->getScreenNumber();
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WWindow::setMinimumSize(int width, int height)
 {
-    Q_D(WWindow); d->mainView->setMinimumSize(width, height);
+    Q_D(WWindow); d->view->setMinimumSize(width, height);
 }
 
 /* Q_INVOKABLE */ void WWindow::setMaximumSize(int width, int height)
 {
-    Q_D(WWindow); d->mainView->setMaximumSize(width, height);
+    Q_D(WWindow); d->view->setMaximumSize(width, height);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ QRect WWindow::getDefaultGeometry() const
 {
-    Q_D(const WWindow); return d->mainView->getDefaultGeometry();
+    Q_D(const WWindow); return d->view->getDefaultGeometry();
 }
 
 /* Q_INVOKABLE */ void WWindow::setDefaultGeometry()
 {
-    Q_D(WWindow); d->mainView->setDefaultGeometry();
+    Q_D(WWindow); d->view->setDefaultGeometry();
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WWindow::saveGeometry()
 {
-    Q_D(WWindow); d->mainView->saveGeometry();
+    Q_D(WWindow); d->view->saveGeometry();
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WWindow::checkPosition()
 {
-    Q_D(WWindow); return d->mainView->checkPosition();
+    Q_D(WWindow); return d->view->checkPosition();
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WWindow::originTo(qreal x, qreal y)
 {
-    Q_D(WWindow); return d->mainView->originTo(x, y);
+    Q_D(WWindow); return d->view->originTo(x, y);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -310,12 +309,12 @@ void WWindowPrivate::init()
 /* Q_INVOKABLE */ bool WWindow::testDrag(const QPointF & posA,
                                          const QPointF & posB, qreal distance)
 {
-    Q_D(WWindow); return d->mainView->testDrag(posA, posB, distance);
+    Q_D(WWindow); return d->view->testDrag(posA, posB, distance);
 }
 
 /* Q_INVOKABLE */ void WWindow::startDrag(const QString & text, int actions)
 {
-    Q_D(WWindow); d->mainView->startDrag(text, actions);
+    Q_D(WWindow); d->view->startDrag(text, actions);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -323,26 +322,26 @@ void WWindowPrivate::init()
 
 /* Q_INVOKABLE */ int WWindow::hoverCount() const
 {
-    Q_D(const WWindow); return d->mainView->hoverCount();
+    Q_D(const WWindow); return d->view->hoverCount();
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WWindow::updateHover()
 {
-    Q_D(WWindow); d->mainView->updateHover();
+    Q_D(WWindow); d->view->updateHover();
 }
 
 /* Q_INVOKABLE */ void WWindow::clearHover()
 {
-    Q_D(WWindow); d->mainView->clearHover();
+    Q_D(WWindow); d->view->clearHover();
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WWindow::checkLeave(int msec)
 {
-    Q_D(WWindow); d->mainView->checkLeave(msec);
+    Q_D(WWindow); d->view->checkLeave(msec);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -350,13 +349,13 @@ void WWindowPrivate::init()
 
 /* Q_INVOKABLE */ QPixmap WWindow::takeShot(int x, int y, int width, int height) const
 {
-    Q_D(const WWindow); return d->mainView->takeShot(x, y, width, height);
+    Q_D(const WWindow); return d->view->takeShot(x, y, width, height);
 }
 
 /* Q_INVOKABLE */ bool WWindow::saveShot(const QString & fileName, int x,     int y,
                                                                    int width, int height) const
 {
-    Q_D(const WWindow); return d->mainView->saveShot(fileName, x, y, width, height);
+    Q_D(const WWindow); return d->view->saveShot(fileName, x, y, width, height);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -368,7 +367,7 @@ void WWindowPrivate::init()
 {
     Q_D(const WWindow);
 
-    return d->mainView->takeItemShot(item, recursive, background, forceVisible);
+    return d->view->takeItemShot(item, recursive, background, forceVisible);
 }
 
 /* Q_INVOKABLE */ bool WWindow::saveItemShot(const QString   & fileName,
@@ -379,7 +378,7 @@ void WWindowPrivate::init()
 {
     Q_D(const WWindow);
 
-    return d->mainView->saveItemShot(fileName, item, recursive, background, forceVisible);
+    return d->view->saveItemShot(fileName, item, recursive, background, forceVisible);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -388,7 +387,7 @@ void WWindowPrivate::init()
 {
     Q_D(const WWindow);
 
-    return d->mainView->compressShots(path, quality);
+    return d->view->compressShots(path, quality);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -397,17 +396,17 @@ void WWindowPrivate::init()
 /* Q_INVOKABLE */ void WWindow::registerCursor(WDeclarativeMouseArea::CursorShape shape,
                                                const QCursor                    & cursor)
 {
-    Q_D(WWindow); d->mainView->registerCursor(shape, cursor);
+    Q_D(WWindow); d->view->registerCursor(shape, cursor);
 }
 
 /* Q_INVOKABLE */ void WWindow::unregisterCursor(WDeclarativeMouseArea::CursorShape shape)
 {
-    Q_D(WWindow); d->mainView->unregisterCursor(shape);
+    Q_D(WWindow); d->view->unregisterCursor(shape);
 }
 
 /* Q_INVOKABLE */ void WWindow::unregisterCursors()
 {
-    Q_D(WWindow); d->mainView->unregisterCursors();
+    Q_D(WWindow); d->view->unregisterCursors();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -415,58 +414,58 @@ void WWindowPrivate::init()
 
 /* Q_INVOKABLE */ void WWindow::mouseMove(int x, int y, Qt::MouseButton button) const
 {
-    Q_D(const WWindow); d->mainView->mouseMove(x, y, button);
+    Q_D(const WWindow); d->view->mouseMove(x, y, button);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WWindow::mousePress(Qt::MouseButton button) const
 {
-    Q_D(const WWindow); d->mainView->mousePress(button);
+    Q_D(const WWindow); d->view->mousePress(button);
 }
 
 /* Q_INVOKABLE */ void WWindow::mouseRelease(Qt::MouseButton button) const
 {
-    Q_D(const WWindow); d->mainView->mouseRelease(button);
+    Q_D(const WWindow); d->view->mouseRelease(button);
 }
 
 /* Q_INVOKABLE */ void WWindow::mouseClick(Qt::MouseButton button, int msec) const
 {
-    Q_D(const WWindow); d->mainView->mouseClick(button, msec);
+    Q_D(const WWindow); d->view->mouseClick(button, msec);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WWindow::wheel(Qt::Orientation orientation, int delta) const
 {
-    Q_D(const WWindow); d->mainView->wheel(orientation, delta);
+    Q_D(const WWindow); d->view->wheel(orientation, delta);
 }
 
 /* Q_INVOKABLE */ void WWindow::wheelUp(int delta) const
 {
-    Q_D(const WWindow); d->mainView->wheelUp(delta);
+    Q_D(const WWindow); d->view->wheelUp(delta);
 }
 
 /* Q_INVOKABLE */ void WWindow::wheelDown(int delta) const
 {
-    Q_D(const WWindow); d->mainView->wheelDown(delta);
+    Q_D(const WWindow); d->view->wheelDown(delta);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WWindow::keyPress(int key, Qt::KeyboardModifiers modifiers) const
 {
-    Q_D(const WWindow); d->mainView->keyPress(key, modifiers);
+    Q_D(const WWindow); d->view->keyPress(key, modifiers);
 }
 
 /* Q_INVOKABLE */ void WWindow::keyRelease(int key, Qt::KeyboardModifiers modifiers) const
 {
-    Q_D(const WWindow); d->mainView->keyRelease(key, modifiers);
+    Q_D(const WWindow); d->view->keyRelease(key, modifiers);
 }
 
 /* Q_INVOKABLE */ void WWindow::keyClick(int key, Qt::KeyboardModifiers modifiers, int msec) const
 {
-    Q_D(const WWindow); d->mainView->keyClick(key, modifiers, msec);
+    Q_D(const WWindow); d->view->keyClick(key, modifiers, msec);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -474,48 +473,48 @@ void WWindowPrivate::init()
 
 /* Q_INVOKABLE */ void WWindow::mouseMove(int x, int y, int button) const
 {
-    Q_D(const WWindow); d->mainView->mouseMove(x, y, button);
+    Q_D(const WWindow); d->view->mouseMove(x, y, button);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WWindow::mousePress(int button) const
 {
-    Q_D(const WWindow); d->mainView->mousePress(button);
+    Q_D(const WWindow); d->view->mousePress(button);
 }
 
 /* Q_INVOKABLE */ void WWindow::mouseRelease(int button) const
 {
-    Q_D(const WWindow); d->mainView->mouseRelease(button);
+    Q_D(const WWindow); d->view->mouseRelease(button);
 }
 
 /* Q_INVOKABLE */ void WWindow::mouseClick(int button, int msec) const
 {
-    Q_D(const WWindow); d->mainView->mouseClick(button, msec);
+    Q_D(const WWindow); d->view->mouseClick(button, msec);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WWindow::wheel(int orientation, int delta) const
 {
-    Q_D(const WWindow); d->mainView->wheel(orientation, delta);
+    Q_D(const WWindow); d->view->wheel(orientation, delta);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WWindow::keyPress(int key, int modifiers) const
 {
-    Q_D(const WWindow); d->mainView->keyPress(key, modifiers);
+    Q_D(const WWindow); d->view->keyPress(key, modifiers);
 }
 
 /* Q_INVOKABLE */ void WWindow::keyRelease(int key, int modifiers) const
 {
-    Q_D(const WWindow); d->mainView->keyRelease(key, modifiers);
+    Q_D(const WWindow); d->view->keyRelease(key, modifiers);
 }
 
 /* Q_INVOKABLE */ void WWindow::keyClick(int key, int modifiers, int msec) const
 {
-    Q_D(const WWindow); d->mainView->keyClick(key, modifiers, msec);
+    Q_D(const WWindow); d->view->keyClick(key, modifiers, msec);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -533,12 +532,12 @@ void WWindowPrivate::init()
 
 /* Q_INVOKABLE */ void WWindow::registerCursorUrl(int shape, const QUrl & url, const QSize & size)
 {
-    Q_D(WWindow); d->mainView->registerCursorUrl(shape, url, size);
+    Q_D(WWindow); d->view->registerCursorUrl(shape, url, size);
 }
 
 /* Q_INVOKABLE */ void WWindow::unregisterCursor(int shape)
 {
-    Q_D(WWindow); d->mainView->unregisterCursor(shape);
+    Q_D(WWindow); d->view->unregisterCursor(shape);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -547,7 +546,7 @@ void WWindowPrivate::init()
 
 /* Q_INVOKABLE */ void WWindow::setWindowSnap(bool enabled)
 {
-    Q_D(WWindow); d->mainView->setWindowSnap(enabled);
+    Q_D(WWindow); d->view->setWindowSnap(enabled);
 }
 
 #endif // Q_OS_WIN
@@ -556,9 +555,9 @@ void WWindowPrivate::init()
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-WMainView * WWindow::mainView() const
+WMainView * WWindow::view() const
 {
-    Q_D(const WWindow); return d->mainView;
+    Q_D(const WWindow); return d->view;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -576,7 +575,7 @@ void WWindow::setIcon(const QString & icon)
 
     d->icon = icon;
 
-    d->mainView->setWindowIcon(QIcon(icon));
+    d->view->setWindowIcon(QIcon(icon));
 
     emit iconChanged();
 }
@@ -596,7 +595,7 @@ void WWindow::setVisible(bool visible)
 
     d->visible = visible;
 
-    d->mainView->setVisible(visible);
+    d->view->setVisible(visible);
 
     emit visibleChanged();
 }
@@ -605,16 +604,16 @@ void WWindow::setVisible(bool visible)
 
 qreal WWindow::opacity() const
 {
-    Q_D(const WWindow); return d->mainView->windowOpacity();
+    Q_D(const WWindow); return d->view->windowOpacity();
 }
 
 void WWindow::setOpacity(qreal opacity)
 {
     Q_D(WWindow);
 
-    if (d->mainView->windowOpacity() == opacity) return;
+    if (d->view->windowOpacity() == opacity) return;
 
-    d->mainView->setWindowOpacity(opacity);
+    d->view->setWindowOpacity(opacity);
 
     emit opacityChanged();
 }
@@ -625,205 +624,205 @@ void WWindow::setOpacity(qreal opacity)
 
 qreal WWindow::itemWidth() const
 {
-    Q_D(const WWindow); return d->mainView->itemWidth();
+    Q_D(const WWindow); return d->view->itemWidth();
 }
 
 qreal WWindow::itemHeight() const
 {
-    Q_D(const WWindow); return d->mainView->itemHeight();
+    Q_D(const WWindow); return d->view->itemHeight();
 }
 
 //-------------------------------------------------------------------------------------------------
 
 int WWindow::x() const
 {
-    Q_D(const WWindow); return d->mainView->x();
+    Q_D(const WWindow); return d->view->x();
 }
 
 void WWindow::setX(int x)
 {
-    Q_D(WWindow); d->mainView->setX(x);
+    Q_D(WWindow); d->view->setX(x);
 }
 
 int WWindow::y() const
 {
-    Q_D(const WWindow); return d->mainView->y();
+    Q_D(const WWindow); return d->view->y();
 }
 
 void WWindow::setY(int y)
 {
-    Q_D(WWindow); d->mainView->setY(y);
+    Q_D(WWindow); d->view->setY(y);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 int WWindow::width() const
 {
-    Q_D(const WWindow); return d->mainView->width();
+    Q_D(const WWindow); return d->view->width();
 }
 
 void WWindow::setWidth(int width)
 {
-    Q_D(WWindow); d->mainView->setWidth(width);
+    Q_D(WWindow); d->view->setWidth(width);
 }
 
 int WWindow::height() const
 {
-    Q_D(const WWindow); return d->mainView->height();
+    Q_D(const WWindow); return d->view->height();
 }
 
 void WWindow::setHeight(int height)
 {
-    Q_D(WWindow); d->mainView->setHeight(height);
+    Q_D(WWindow); d->view->setHeight(height);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 int WWindow::centerX() const
 {
-    Q_D(const WWindow); return d->mainView->centerX();
+    Q_D(const WWindow); return d->view->centerX();
 }
 
 int WWindow::centerY() const
 {
-    Q_D(const WWindow); return d->mainView->centerY();
+    Q_D(const WWindow); return d->view->centerY();
 }
 
 //-------------------------------------------------------------------------------------------------
 
 qreal WWindow::originX() const
 {
-    Q_D(const WWindow); return d->mainView->originX();
+    Q_D(const WWindow); return d->view->originX();
 }
 
 void WWindow::setOriginX(qreal x)
 {
-    Q_D(WWindow); d->mainView->setOriginX(x);
+    Q_D(WWindow); d->view->setOriginX(x);
 }
 
 qreal WWindow::originY() const
 {
-    Q_D(const WWindow); return d->mainView->originY();
+    Q_D(const WWindow); return d->view->originY();
 }
 
 void WWindow::setOriginY(qreal y)
 {
-    Q_D(WWindow); d->mainView->setOriginY(y);
+    Q_D(WWindow); d->view->setOriginY(y);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 qreal WWindow::zoom() const
 {
-    Q_D(const WWindow); return d->mainView->zoom();
+    Q_D(const WWindow); return d->view->zoom();
 }
 
 void WWindow::setZoom(qreal zoom)
 {
-    Q_D(WWindow); d->mainView->setZoom(zoom);
+    Q_D(WWindow); d->view->setZoom(zoom);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 int WWindow::minimumWidth() const
 {
-    Q_D(const WWindow); return d->mainView->minimumWidth();
+    Q_D(const WWindow); return d->view->minimumWidth();
 }
 
 void WWindow::setMinimumWidth(int width)
 {
-    Q_D(WWindow); d->mainView->setMinimumWidth(width);
+    Q_D(WWindow); d->view->setMinimumWidth(width);
 }
 
 int WWindow::minimumHeight() const
 {
-    Q_D(const WWindow); return d->mainView->minimumHeight();
+    Q_D(const WWindow); return d->view->minimumHeight();
 }
 
 void WWindow::setMinimumHeight(int height)
 {
-    Q_D(WWindow); d->mainView->setMinimumHeight(height);
+    Q_D(WWindow); d->view->setMinimumHeight(height);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 int WWindow::maximumWidth() const
 {
-    Q_D(const WWindow); return d->mainView->maximumWidth();
+    Q_D(const WWindow); return d->view->maximumWidth();
 }
 
 void WWindow::setMaximumWidth(int width)
 {
-    Q_D(WWindow); d->mainView->setMaximumWidth(width);
+    Q_D(WWindow); d->view->setMaximumWidth(width);
 }
 
 int WWindow::maximumHeight() const
 {
-    Q_D(const WWindow); return d->mainView->maximumHeight();
+    Q_D(const WWindow); return d->view->maximumHeight();
 }
 
 void WWindow::setMaximumHeight(int height)
 {
-    Q_D(WWindow); d->mainView->setMaximumHeight(height);
+    Q_D(WWindow); d->view->setMaximumHeight(height);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 QRect WWindow::geometryNormal() const
 {
-    Q_D(const WWindow); return d->mainView->geometryNormal();
+    Q_D(const WWindow); return d->view->geometryNormal();
 }
 
 //-------------------------------------------------------------------------------------------------
 
 bool WWindow::isMinimized() const
 {
-    Q_D(const WWindow); return d->mainView->isMinimized();
+    Q_D(const WWindow); return d->view->isMinimized();
 }
 
 void WWindow::setMinimized(bool minimized)
 {
-    Q_D(WWindow); d->mainView->setMinimized(minimized);
+    Q_D(WWindow); d->view->setMinimized(minimized);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 bool WWindow::isMaximized() const
 {
-    Q_D(const WWindow); return d->mainView->isMaximized();
+    Q_D(const WWindow); return d->view->isMaximized();
 }
 
 void WWindow::setMaximized(bool maximized)
 {
-    Q_D(WWindow); d->mainView->setMaximized(maximized);
+    Q_D(WWindow); d->view->setMaximized(maximized);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 bool WWindow::isFullScreen() const
 {
-    Q_D(const WWindow); return d->mainView->isFullScreen();
+    Q_D(const WWindow); return d->view->isFullScreen();
 }
 
 void WWindow::setFullScreen(bool fullScreen)
 {
-    Q_D(WWindow); d->mainView->setFullScreen(fullScreen);
+    Q_D(WWindow); d->view->setFullScreen(fullScreen);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 bool WWindow::isLocked() const
 {
-    Q_D(const WWindow); return d->mainView->isLocked();
+    Q_D(const WWindow); return d->view->isLocked();
 }
 
 void WWindow::setLocked(bool locked)
 {
     Q_D(WWindow);
 
-    d->mainView->setLocked(locked);
+    d->view->setLocked(locked);
 
-    bool visible = d->mainView->isVisible();
+    bool visible = d->view->isVisible();
 
     if (d->visible != visible)
     {
@@ -837,135 +836,135 @@ void WWindow::setLocked(bool locked)
 
 bool WWindow::isActive() const
 {
-    Q_D(const WWindow); return d->mainView->isActiveWindow();
+    Q_D(const WWindow); return d->view->isActiveWindow();
 }
 
 bool WWindow::isEntered() const
 {
-    Q_D(const WWindow); return d->mainView->isEntered();
+    Q_D(const WWindow); return d->view->isEntered();
 }
 
 bool WWindow::isDragging() const
 {
-    Q_D(const WWindow); return d->mainView->isDragging();
+    Q_D(const WWindow); return d->view->isDragging();
 }
 
 bool WWindow::isDragged() const
 {
-    Q_D(const WWindow); return d->mainView->isDragged();
+    Q_D(const WWindow); return d->view->isDragged();
 }
 
 bool WWindow::isResizing() const
 {
-    Q_D(const WWindow); return d->mainView->isResizing();
+    Q_D(const WWindow); return d->view->isResizing();
 }
 
 //-------------------------------------------------------------------------------------------------
 
 QPoint WWindow::mousePos() const
 {
-    Q_D(const WWindow); return d->mainView->mousePos();
+    Q_D(const WWindow); return d->view->mousePos();
 }
 
 //-------------------------------------------------------------------------------------------------
 
 int WWindow::mouseX() const
 {
-    Q_D(const WWindow); return d->mainView->mouseX();
+    Q_D(const WWindow); return d->view->mouseX();
 }
 
 int WWindow::mouseY() const
 {
-    Q_D(const WWindow); return d->mainView->mouseY();
+    Q_D(const WWindow); return d->view->mouseY();
 }
 
 //-------------------------------------------------------------------------------------------------
 
 WDeclarativeMouseArea::CursorShape WWindow::mouseCursor() const
 {
-    Q_D(const WWindow); return d->mainView->mouseCursor();
+    Q_D(const WWindow); return d->view->mouseCursor();
 }
 
 //-------------------------------------------------------------------------------------------------
 
 bool WWindow::autoSize() const
 {
-    Q_D(const WWindow); return d->mainView->autoSize();
+    Q_D(const WWindow); return d->view->autoSize();
 }
 
 void WWindow::setAutoSize(bool autoSize)
 {
-    Q_D(WWindow); d->mainView->setAutoSize(autoSize);
+    Q_D(WWindow); d->view->setAutoSize(autoSize);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 bool WWindow::opengl() const
 {
-    Q_D(const WWindow); return d->mainView->opengl();
+    Q_D(const WWindow); return d->view->opengl();
 }
 
 void WWindow::setOpengl(bool enabled)
 {
-    Q_D(WWindow); d->mainView->setOpengl(enabled);
+    Q_D(WWindow); d->view->setOpengl(enabled);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 bool WWindow::antialias() const
 {
-    Q_D(const WWindow); return d->mainView->antialias();
+    Q_D(const WWindow); return d->view->antialias();
 }
 
 void WWindow::setAntialias(bool enabled)
 {
-    Q_D(WWindow); d->mainView->setAntialias(enabled);
+    Q_D(WWindow); d->view->setAntialias(enabled);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 bool WWindow::vsync() const
 {
-    Q_D(const WWindow); return d->mainView->vsync();
+    Q_D(const WWindow); return d->view->vsync();
 }
 
 void WWindow::setVsync(bool enabled)
 {
-    Q_D(WWindow); d->mainView->setVsync(enabled);
+    Q_D(WWindow); d->view->setVsync(enabled);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 bool WWindow::hoverEnabled() const
 {
-    Q_D(const WWindow); return d->mainView->hoverEnabled();
+    Q_D(const WWindow); return d->view->hoverEnabled();
 }
 
 void WWindow::setHoverEnabled(bool enabled)
 {
-    Q_D(WWindow); d->mainView->setHoverEnabled(enabled);
+    Q_D(WWindow); d->view->setHoverEnabled(enabled);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 bool WWindow::fadeEnabled() const
 {
-    Q_D(const WWindow); return d->mainView->fadeEnabled();
+    Q_D(const WWindow); return d->view->fadeEnabled();
 }
 
 void WWindow::setFadeEnabled(bool enabled)
 {
-    Q_D(WWindow); d->mainView->setFadeEnabled(enabled);
+    Q_D(WWindow); d->view->setFadeEnabled(enabled);
 }
 
 int WWindow::fadeDuration() const
 {
-    Q_D(const WWindow); return d->mainView->fadeDuration();
+    Q_D(const WWindow); return d->view->fadeDuration();
 }
 
 void WWindow::setFadeDuration(int msec)
 {
-    Q_D(WWindow); d->mainView->setFadeDuration(msec);
+    Q_D(WWindow); d->view->setFadeDuration(msec);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -973,36 +972,36 @@ void WWindow::setFadeDuration(int msec)
 
 bool WWindow::idleCheck() const
 {
-    Q_D(const WWindow); return d->mainView->idleCheck();
+    Q_D(const WWindow); return d->view->idleCheck();
 }
 
 void WWindow::setIdleCheck(bool check)
 {
-    Q_D(WWindow); d->mainView->setIdleCheck(check);
+    Q_D(WWindow); d->view->setIdleCheck(check);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 bool WWindow::idle() const
 {
-    Q_D(const WWindow); return d->mainView->idle();
+    Q_D(const WWindow); return d->view->idle();
 }
 
 void WWindow::setIdle(bool idle)
 {
-    Q_D(WWindow); d->mainView->setIdle(idle);
+    Q_D(WWindow); d->view->setIdle(idle);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 int WWindow::idleDelay() const
 {
-    Q_D(const WWindow); return d->mainView->idleDelay();
+    Q_D(const WWindow); return d->view->idleDelay();
 }
 
 void WWindow::setIdleDelay(int msec)
 {
-    Q_D(WWindow); d->mainView->setIdleDelay(msec);
+    Q_D(WWindow); d->view->setIdleDelay(msec);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1010,17 +1009,17 @@ void WWindow::setIdleDelay(int msec)
 
 bool WWindow::keyShiftPressed() const
 {
-    Q_D(const WWindow); return d->mainView->keyShiftPressed();
+    Q_D(const WWindow); return d->view->keyShiftPressed();
 }
 
 bool WWindow::keyControlPressed() const
 {
-    Q_D(const WWindow); return d->mainView->keyControlPressed();
+    Q_D(const WWindow); return d->view->keyControlPressed();
 }
 
 bool WWindow::keyAltPressed() const
 {
-    Q_D(const WWindow); return d->mainView->keyAltPressed();
+    Q_D(const WWindow); return d->view->keyAltPressed();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1028,12 +1027,12 @@ bool WWindow::keyAltPressed() const
 
 QRect WWindow::availableGeometry() const
 {
-    Q_D(const WWindow); return d->mainView->availableGeometry();
+    Q_D(const WWindow); return d->view->availableGeometry();
 }
 
 QRect WWindow::screenGeometry() const
 {
-    Q_D(const WWindow); return d->mainView->screenGeometry();
+    Q_D(const WWindow); return d->view->screenGeometry();
 }
 
 #endif // SK_NO_WINDOW

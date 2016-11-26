@@ -33,9 +33,9 @@ class SK_GUI_EXPORT WDeclarativeItem : public QDeclarativeItem, public WPrivatab
 {
     Q_OBJECT
 
-    Q_PROPERTY(WMainView * mainView READ mainView NOTIFY mainViewChanged)
+    Q_PROPERTY(WMainView * view READ view NOTIFY viewChanged)
 
-    Q_PROPERTY(QDeclarativeItem * viewport READ viewport NOTIFY mainViewChanged)
+    Q_PROPERTY(QDeclarativeItem * viewport READ viewport NOTIFY viewChanged)
 
 public:
     explicit WDeclarativeItem(QDeclarativeItem * parent = NULL);
@@ -46,10 +46,10 @@ protected: // QGraphicsItem reimplementation
     /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 
 signals:
-    void mainViewChanged();
+    void viewChanged();
 
 public: // Properties
-    WMainView * mainView() const;
+    WMainView * view() const;
 
     QDeclarativeItem * viewport() const;
 

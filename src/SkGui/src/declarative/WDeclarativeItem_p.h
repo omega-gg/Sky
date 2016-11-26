@@ -40,7 +40,7 @@ protected:
     void init();
 
 public: // Variables
-    WMainView * mainView;
+    WMainView * view;
 
     QDeclarativeItem * viewport;
 
