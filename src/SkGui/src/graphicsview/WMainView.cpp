@@ -2591,18 +2591,7 @@ void WMainView::setMaximized(bool maximized)
 
     if (maximized)
     {
-#if defined(Q_OS_WIN)
-        if (d->autoSize)
-        {
-            QRect rect = availableGeometry();
-
-            if (height() == rect.height())
-            {
-                 d->setGeometryNormal(d->getGeometry(rect));
-            }
-            else d->setGeometryNormal(geometry());
-        }
-#elif defined(Q_OS_LINUX)
+#ifdef Q_OS_LINUX
         // FIXME: Workaround to undock the window.
         QRect rect = availableGeometry();
 
@@ -2614,16 +2603,6 @@ void WMainView::setMaximized(bool maximized)
             setGeometry(rect);
 
             return;
-        }
-
-        if (d->autoSize)
-        {
-            d->setGeometryNormal(geometry());
-        }
-#else
-        if (d->autoSize)
-        {
-            d->setGeometryNormal(geometry());
         }
 #endif
 
@@ -2659,11 +2638,6 @@ void WMainView::setFullScreen(bool fullScreen)
 
     if (fullScreen)
     {
-        if (d->autoSize && d->maximized == false)
-        {
-            d->setGeometryNormal(geometry());
-        }
-
         d->fullScreen = true;
 
         showFullScreen();

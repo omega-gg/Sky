@@ -399,7 +399,7 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 
         d->maximized = true;
 
-        // FIXME Windows: Hide window to avoid animation.
+        // FIXME Windows: Hide the window to avoid animation.
         ShowWindow(d->handle, SW_HIDE);
     }
     else d->maximized = true;
@@ -417,7 +417,7 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
     {
         d->maximized = false;
 
-        // FIXME Windows: Hide window to avoid animation.
+        // FIXME Windows: Hide the window to avoid animation.
         ShowWindow(d->handle, SW_HIDE);
         ShowWindow(d->handle, SW_RESTORE);
     }
