@@ -452,38 +452,6 @@ void WMainViewPrivate::fadeOut()
 
 //-------------------------------------------------------------------------------------------------
 
-void WMainViewPrivate::showNormal()
-{
-    Q_Q(WMainView);
-
-    if (fullScreen)
-    {
-        fullScreen = false;
-
-        if (maximized == false)
-        {
-            q->showNormal();
-
-            q->setGeometry(geometryNormal);
-        }
-        else q->showMaximized();
-
-        emit q->fullScreenChanged();
-    }
-    else
-    {
-        maximized = false;
-
-        q->showNormal();
-
-        q->setGeometry(geometryNormal);
-
-        emit q->maximizedChanged();
-    }
-}
-
-//-------------------------------------------------------------------------------------------------
-
 void WMainViewPrivate::applySize(int width, int height)
 {
     item->setSize(QSizeF(width * zoom, height * zoom));
@@ -1497,17 +1465,13 @@ WMainView::WMainView(WMainViewPrivate * p,
 
     if (d->opengl)
     {
+        if (width  == -1) { width  = this->width (); }
+        if (height == -1) { height = this->height(); }
+
         QGLWidget * viewport = qobject_cast<QGLWidget *> (this->viewport());
 
-        if (width == -1)
-        {
-            width = this->width();
-        }
-
-        if (height == -1)
-        {
-            height = this->height();
-        }
+        // FIXME Windows: Making sure we grab the front buffer.
+        glReadBuffer(GL_FRONT);
 
         QImage image = viewport->grabFrameBuffer().copy(x, y, width, height);
 
@@ -2231,10 +2195,6 @@ QSize WMainView::sizeHint() const
 
         if (d->maximized == false)
         {
-            QRect rect = availableGeometry();
-
-            d->setGeometryNormal(d->getGeometry(rect));
-
             d->maximized = true;
 
             emit maximizedChanged();
@@ -2251,6 +2211,8 @@ QSize WMainView::sizeHint() const
             emit maximizedChanged();
         }
     }
+
+    emit stateChanged(state);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2668,10 +2630,18 @@ void WMainView::setMaximized(bool maximized)
         d->maximized = true;
 
         showMaximized();
-
-        emit maximizedChanged();
     }
-    else d->showNormal();
+    else
+    {
+        d->maximized = false;
+
+        if (d->fullScreen == false)
+        {
+            showNormal();
+        }
+    }
+
+    emit maximizedChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2697,10 +2667,19 @@ void WMainView::setFullScreen(bool fullScreen)
         d->fullScreen = true;
 
         showFullScreen();
-
-        emit fullScreenChanged();
     }
-    else d->showNormal();
+    else
+    {
+        d->fullScreen = false;
+
+        if (d->maximized)
+        {
+             showMaximized();
+        }
+        else showNormal();
+    }
+
+    emit fullScreenChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

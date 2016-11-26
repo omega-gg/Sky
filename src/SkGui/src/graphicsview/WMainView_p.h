@@ -72,8 +72,6 @@ public: // Functions
     void fadeIn ();
     void fadeOut();
 
-    void showNormal();
-
     void applySize(int width, int height);
 
     void updateFlags();

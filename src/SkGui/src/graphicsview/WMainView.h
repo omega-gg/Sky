@@ -389,6 +389,8 @@ protected: // WAbstractView reimplementation
 signals:
     void messageReceived(const QString & message);
 
+    void stateChanged(Qt::WindowState state);
+
     void fadeIn ();
     void fadeOut();
 

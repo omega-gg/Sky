@@ -78,6 +78,9 @@ void WWindowPrivate::init()
     QObject::connect(mainView, SIGNAL(messageReceived(const QString &)),
                      q,        SIGNAL(messageReceived(const QString &)));
 
+    QObject::connect(mainView, SIGNAL(stateChanged(Qt::WindowState)),
+                     q,        SIGNAL(stateChanged(Qt::WindowState)));
+
     QObject::connect(mainView, SIGNAL(fadeIn ()), q, SIGNAL(fadeIn ()));
     QObject::connect(mainView, SIGNAL(fadeOut()), q, SIGNAL(fadeOut()));
 
