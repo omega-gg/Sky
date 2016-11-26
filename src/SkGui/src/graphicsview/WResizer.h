@@ -51,10 +51,6 @@ protected: // Events
     /* virtual */ void mousePressEvent(QGraphicsSceneMouseEvent * event);
     /* virtual */ void mouseMoveEvent (QGraphicsSceneMouseEvent * event);
 
-/*#ifdef Q_OS_WIN
-    bool winEvent(MSG * message, long * result);
-#endif*/
-
 private:
     W_DECLARE_PRIVATE(WResizer)
 };

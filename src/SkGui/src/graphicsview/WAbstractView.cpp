@@ -19,7 +19,7 @@
 #ifndef SK_NO_ABSTRACTVIEW
 
 // Qt includes
-#ifdef Q_OS_WIN
+#ifdef SK_WIN_NATIVE
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QFocusEvent>
@@ -29,14 +29,14 @@
 #endif
 #endif
 
-#ifdef Q_OS_WIN
+#ifdef SK_WIN_NATIVE
 #include <dwmapi.h>
 #endif
 
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-#ifdef Q_OS_WIN
+#ifdef SK_WIN_NATIVE
 static const DWORD windowFlags = WS_OVERLAPPED | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
 #endif
 
@@ -46,7 +46,7 @@ static const DWORD windowFlags = WS_OVERLAPPED | WS_THICKFRAME | WS_MINIMIZEBOX 
 
 WAbstractViewPrivate::WAbstractViewPrivate(WAbstractView * p) : WPrivate(p) {}
 
-#ifdef Q_OS_WIN
+#ifdef SK_WIN_NATIVE
 /* virtual */ WAbstractViewPrivate::~WAbstractViewPrivate()
 {
     DestroyWindow(handle);
@@ -61,7 +61,7 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 
     this->flags = flags;
 
-#ifndef Q_OS_WIN
+#ifndef SK_WIN_NATIVE
     q->setWindowFlags(flags);
 #else
 
@@ -81,6 +81,8 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 
     maximized  = false;
     fullScreen = false;
+
+    windowSnap = true;
 
     const QMetaObject * meta = q->metaObject();
 
@@ -138,10 +140,10 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 #endif
 
     SetParent(id, handle);
-#endif // Q_OS_WIN
+#endif // SK_WIN_NATIVE
 }
 
-#ifdef Q_OS_WIN
+#ifdef SK_WIN_NATIVE
 
 //-------------------------------------------------------------------------------------------------
 // Private functions
@@ -190,9 +192,11 @@ void WAbstractViewPrivate::applyFullScreen()
         WAbstractView * view
             = reinterpret_cast<WAbstractView *> (GetWindowLongPtr(handle, GWLP_USERDATA));
 
-        if (view->d_func()->fullScreen)
+        WAbstractViewPrivate * d = view->d_func();
+
+        if (d->fullScreen)
         {
-            view->d_func()->applyFullScreen();
+            d->applyFullScreen();
         }
 
         return 0;
@@ -234,12 +238,14 @@ void WAbstractViewPrivate::applyFullScreen()
 
         if (view == NULL) return 0;
 
+        WAbstractViewPrivate * d = view->d_func();
+
         RECT rect;
 
         GetWindowRect(handle, &rect);
 
-        view->d_func()->x = rect.left;
-        view->d_func()->y = rect.top;
+        d->x = rect.left;
+        d->y = rect.top;
 
         view->QDeclarativeView::move(0, 0);
 
@@ -252,6 +258,8 @@ void WAbstractViewPrivate::applyFullScreen()
 
         if (view == NULL) return 0;
 
+        WAbstractViewPrivate * d = view->d_func();
+
         RECT rect;
 
         GetClientRect(handle, &rect);
@@ -262,39 +270,50 @@ void WAbstractViewPrivate::applyFullScreen()
 
         GetWindowPlacement(handle, &placement);
 
-        int width;
-        int height;
-
         if (placement.showCmd == SW_MAXIMIZE)
         {
-            width  = rect.right  - 16;
-            height = rect.bottom - 16;
+            int border;
+            int border2x;
 
-            view->d_func()->width  = width;
-            view->d_func()->height = height;
-
-            view->QDeclarativeView::setGeometry(8, 8, width, height);
-
-            if (view->d_func()->maximized == false)
+            if (d->windowSnap)
             {
-                view->d_func()->maximized = true;
+                border   = 8;
+                border2x = 16;
+            }
+            else
+            {
+                border   = 3;
+                border2x = 6;
+            }
+
+            int width  = rect.right  - border2x;
+            int height = rect.bottom - border2x;
+
+            d->width  = width;
+            d->height = height;
+
+            view->QDeclarativeView::setGeometry(border, border, width, height);
+
+            if (d->maximized == false)
+            {
+                d->maximized = true;
 
                 view->onStateChanged(Qt::WindowMaximized);
             }
         }
         else
         {
-            width  = rect.right;
-            height = rect.bottom;
+            int width  = rect.right;
+            int height = rect.bottom;
 
-            view->d_func()->width  = width;
-            view->d_func()->height = height;
+            d->width  = width;
+            d->height = height;
 
             view->QDeclarativeView::setGeometry(0, 0, width, height);
 
-            if (view->d_func()->maximized)
+            if (d->maximized)
             {
-                view->d_func()->maximized = false;
+                d->maximized = false;
 
                 view->onStateChanged(Qt::WindowNoState);
             }
@@ -320,7 +339,7 @@ void WAbstractViewPrivate::onFocus()
     SetFocus(id);
 }
 
-#endif // Q_OS_WIN
+#endif // SK_WIN_NATIVE
 
 //-------------------------------------------------------------------------------------------------
 // Ctor / dtor
@@ -341,7 +360,8 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
     Q_D(WAbstractView); d->init(flags);
 }
 
-#ifdef Q_OS_WIN
+#ifdef SK_WIN_NATIVE
+
 //-------------------------------------------------------------------------------------------------
 // Interface
 //-------------------------------------------------------------------------------------------------
@@ -376,9 +396,13 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
         d->fullScreen = false;
 
         setGeometry(d->rect);
-    }
 
-    d->maximized = true;
+        d->maximized = true;
+
+        // FIXME Windows: Hide window to avoid animation
+        ShowWindow(d->handle, SW_HIDE);
+    }
+    else d->maximized = true;
 
     ShowWindow(d->handle, SW_SHOWMAXIMIZED);
 }
@@ -393,6 +417,8 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
     {
         d->maximized = false;
 
+        // FIXME Windows: Hide window to avoid animation
+        ShowWindow(d->handle, SW_HIDE);
         ShowWindow(d->handle, SW_RESTORE);
     }
 
@@ -510,6 +536,35 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
     SetWindowText(d->handle, (wchar_t *) title.utf16());
 }
 
+#endif // SK_WIN_NATIVE
+#ifdef Q_OS_WIN
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef SK_WIN_NATIVE
+/* Q_INVOKABLE */ void WAbstractView::setWindowSnap(bool enabled)
+{
+    Q_D(WAbstractView);
+
+    if (d->windowSnap == enabled) return;
+
+    d->windowSnap = enabled;
+
+    if (enabled)
+    {
+        SetWindowLong(d->handle, GWL_STYLE,
+                      GetWindowLong(d->handle, GWL_STYLE) | WS_THICKFRAME | WS_MAXIMIZEBOX);
+    }
+    else SetWindowLong(d->handle, GWL_STYLE,
+                       GetWindowLong(d->handle, GWL_STYLE) & ~(WS_THICKFRAME | WS_MAXIMIZEBOX));
+}
+#else
+/* Q_INVOKABLE */ void WAbstractView::setWindowSnap(bool) {}
+#endif
+
+#endif // Q_OS_WIN
+#ifdef SK_WIN_NATIVE
+
 //-------------------------------------------------------------------------------------------------
 // Events
 //-------------------------------------------------------------------------------------------------
@@ -623,6 +678,6 @@ void WAbstractView::setWindowOpacity(qreal level)
     SetLayeredWindowAttributes(d->handle, 0, level * 255, LWA_ALPHA);
 }
 
-#endif // Q_OS_WIN
+#endif // SK_WIN_NATIVE
 
 #endif // SK_NO_ABSTRACTVIEW

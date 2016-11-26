@@ -26,10 +26,6 @@
 
 #ifndef SK_NO_CONTROLLERAPPLICATION
 
-#ifndef Q_OS_MAC
-#include <stdlib.h>
-#endif
-
 // Qt includes
 #include <QDeclarativeEngine>
 #include <QDeclarativeComponent>
@@ -52,6 +48,7 @@
 //#include <WControllerZip>
 #include <WFileWatcher>
 
+// Windows includes
 #ifdef Q_OS_WIN
 #include <qt_windows.h>
 #endif

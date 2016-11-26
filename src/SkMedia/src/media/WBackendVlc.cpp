@@ -37,12 +37,13 @@
 #include <3rdparty/vlc/mmxRgb.h>
 #include <3rdparty/opengl/glext.h>
 
-// Private includes
-#include <private/WVlcPlayer_p>
-
-#if defined(Q_OS_LINUX)
+// Linux includes
+#ifdef Q_OS_LINUX
 #include <GL/glx.h>
 #endif
+
+// Private includes
+#include <private/WVlcPlayer_p>
 
 //=================================================================================================
 // Defines

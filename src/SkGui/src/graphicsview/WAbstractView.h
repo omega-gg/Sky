@@ -36,7 +36,7 @@ public:
 protected:
     WAbstractView(WAbstractViewPrivate * p, QWidget * parent = NULL, Qt::WindowFlags flags = 0);
 
-#ifdef Q_OS_WIN
+#ifdef SK_WIN_NATIVE
 public: // Interface
     Q_INVOKABLE void showNormal    ();
     Q_INVOKABLE void showMaximized ();
@@ -60,7 +60,13 @@ public: // Interface
 
     Q_INVOKABLE void setWindowIcon (const QIcon   & icon);
     Q_INVOKABLE void setWindowTitle(const QString & title);
+#endif
 
+#ifdef Q_OS_WIN
+    Q_INVOKABLE void setWindowSnap(bool enabled);
+#endif
+
+#ifdef SK_WIN_NATIVE
 protected: // Events
     /* virtual */ void showEvent(QShowEvent * event);
     /* virtual */ void hideEvent(QHideEvent * event);
@@ -90,7 +96,9 @@ public: // Properties
 private:
     W_DECLARE_PRIVATE(WAbstractView)
 
+#ifdef SK_WIN_NATIVE
     Q_PRIVATE_SLOT(d_func(), void onFocus())
+#endif
 };
 
 #include <private/WAbstractView_p>

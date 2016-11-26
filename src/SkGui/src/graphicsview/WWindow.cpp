@@ -55,7 +55,13 @@ void WWindowPrivate::init()
     //---------------------------------------------------------------------------------------------
     // MainView
 
+#if defined(SK_WIN_NATIVE)
+    mainView = new WMainView(q, NULL);
+#elif defined(Q_OS_WIN)
+    mainView = new WMainView(q, NULL, Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
+#else
     mainView = new WMainView(q, NULL, Qt::FramelessWindowHint);
+#endif
 
     mainView->setWindowTitle(sk->name());
 

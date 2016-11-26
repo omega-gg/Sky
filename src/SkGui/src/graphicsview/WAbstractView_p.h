@@ -28,11 +28,12 @@
 */
 
 // Qt includes
-#ifdef Q_OS_WIN
+#ifdef SK_WIN_NATIVE
 #include <QMetaMethod>
 #endif
 
-#ifdef Q_OS_WIN
+// Windows includes
+#ifdef SK_WIN_NATIVE
 #include <windows.h>
 #endif
 
@@ -45,13 +46,13 @@ class SK_GUI_EXPORT WAbstractViewPrivate : public WPrivate
 public:
     WAbstractViewPrivate(WAbstractView * p);
 
-#ifdef Q_OS_WIN
+#ifdef SK_WIN_NATIVE
     /* virtual */ ~WAbstractViewPrivate();
 #endif
 
     void init(Qt::WindowFlags flags);
 
-#ifdef Q_OS_WIN
+#ifdef SK_WIN_NATIVE
 public: // Functions
     void applyFullScreen();
 
@@ -68,7 +69,7 @@ public: // Slots
 public: // Variables
     Qt::WindowFlags flags;
 
-#ifdef Q_OS_WIN
+#ifdef SK_WIN_NATIVE
     HWND id;
 
     HWND      handle;
@@ -86,6 +87,8 @@ public: // Variables
 
     bool maximized;
     bool fullScreen;
+
+    bool windowSnap;
 
     QMetaMethod method;
 #endif

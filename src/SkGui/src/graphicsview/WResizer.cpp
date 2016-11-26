@@ -28,11 +28,11 @@
 // Private includes
 #include <private/WMainView_p>
 
-#if defined(Q_OS_LINUX)
+#if defined(Q_OS_WIN)
+#include <qt_windows.h>
+#elif defined(Q_OS_LINUX)
 #include <private/qt_x11_p.h>
 #include <QX11Info>
-#elif defined(Q_OS_WIN)
-#include <qt_windows.h>
 #endif
 
 //-------------------------------------------------------------------------------------------------
@@ -47,7 +47,7 @@
 #define SZ_SIZETOP          0xf003
 #define SZ_SIZEBOTTOM       0xf006
 
-#if defined(Q_OS_LINUX)
+#ifdef Q_OS_LINUX
 bool isSupportedByWM(Atom atom)
 {
     if (!X11->net_supported_list)
@@ -327,7 +327,26 @@ WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
 
     d->mainView->d_func()->setResizing(true);
 
-#ifdef Q_OS_LINUX
+#if defined(Q_OS_WIN)
+    Q_UNUSED(event);
+
+    uint orientation = 0;
+
+    if      (d->type == TopLeft)     orientation = SZ_SIZETOPLEFT;
+    else if (d->type == TopRight)    orientation = SZ_SIZETOPRIGHT;
+    else if (d->type == BottomLeft)  orientation = SZ_SIZEBOTTOMLEFT;
+    else if (d->type == BottomRight) orientation = SZ_SIZEBOTTOMRIGHT;
+    else if (d->type == Left)        orientation = SZ_SIZELEFT;
+    else if (d->type == Right)       orientation = SZ_SIZERIGHT;
+    else if (d->type == Top)         orientation = SZ_SIZETOP;
+    else if (d->type == Bottom)      orientation = SZ_SIZEBOTTOM;
+
+    ReleaseCapture();
+
+    PostMessage((HWND) d->mainView->winId(), WM_SYSCOMMAND, orientation, 0);
+
+    return;
+#elif defined(Q_OS_LINUX)
     if (d->mainView->isWindow() && isSupportedByWM(ATOM(_NET_WM_MOVERESIZE))
         &&
         d->mainView->testAttribute(Qt::WA_DontShowOnScreen) == false)
@@ -361,27 +380,7 @@ WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
 
         return;
     }
-#endif // Q_OS_LINUX
-#ifdef Q_OS_WIN
-    Q_UNUSED(event);
-
-    uint orientation = 0;
-
-    if      (d->type == TopLeft)     orientation = SZ_SIZETOPLEFT;
-    else if (d->type == TopRight)    orientation = SZ_SIZETOPRIGHT;
-    else if (d->type == BottomLeft)  orientation = SZ_SIZEBOTTOMLEFT;
-    else if (d->type == BottomRight) orientation = SZ_SIZEBOTTOMRIGHT;
-    else if (d->type == Left)        orientation = SZ_SIZELEFT;
-    else if (d->type == Right)       orientation = SZ_SIZERIGHT;
-    else if (d->type == Top)         orientation = SZ_SIZETOP;
-    else if (d->type == Bottom)      orientation = SZ_SIZEBOTTOM;
-
-    ReleaseCapture();
-
-    PostMessage((HWND) d->mainView->winId(), WM_SYSCOMMAND, orientation, 0);
-
-    return;
-#endif // Q_OS_WIN
+#endif
 
     d->pressed = true;
 
@@ -392,15 +391,7 @@ WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
 {
     Q_D(WResizer);
 
-#ifdef Q_OS_LINUX
-    if (d->mainView->isWindow() && isSupportedByWM(ATOM(_NET_WM_MOVERESIZE))
-        &&
-        d->mainView->isTopLevel()
-        &&
-        d->mainView->testAttribute(Qt::WA_DontShowOnScreen) == false) return;
-#endif
-
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN)
     Q_UNUSED(event);
 
     if (GetSystemMenu((HWND) d->mainView->winId(), FALSE) != 0)
@@ -412,7 +403,13 @@ WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
 
         return;
     }
-#endif // Q_OS_WIN
+#elif defined(Q_OS_LINUX)
+    if (d->mainView->isWindow() && isSupportedByWM(ATOM(_NET_WM_MOVERESIZE))
+        &&
+        d->mainView->isTopLevel()
+        &&
+        d->mainView->testAttribute(Qt::WA_DontShowOnScreen) == false) return;
+#endif
 
     if (d->resizing) d->resize(event);
 }

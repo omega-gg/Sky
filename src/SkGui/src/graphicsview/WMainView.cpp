@@ -1827,12 +1827,6 @@ QSize WMainView::sizeHint() const
 
         showFullScreen();
     }
-
-#if defined(QT_LATEST) == false && defined(Q_OS_WIN)
-    activateWindow();
-
-    raise();
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2646,7 +2640,6 @@ void WMainView::setMaximized(bool maximized)
             }
             else d->setGeometryNormal(geometry());
         }
-
 #elif defined(Q_OS_LINUX)
         // FIXME: Workaround to undock the window.
         QRect rect = availableGeometry();
