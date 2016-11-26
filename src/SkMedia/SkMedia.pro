@@ -1,9 +1,9 @@
 SK = $$_PRO_FILE_PWD_/../..
 
-greaterThan(QT_MAJOR_VERSION, 4) {
-    SK_BIN = latest
-} else {
+contains(QT_MAJOR_VERSION, 4) {
     SK_BIN = bin
+} else {
+    SK_BIN = latest
 }
 
 CONFIG(debug, debug|release) {
@@ -23,7 +23,7 @@ win32:CONFIG += dll
 
 DEFINES += SK_MEDIA_LIBRARY CAN_COMPILE_SSE2
 
-greaterThan(QT_MAJOR_VERSION, 4): DEFINES += QT_LATEST
+contains(QT_MAJOR_VERSION, 5): DEFINES += QT_LATEST
 
 QMAKE_CXXFLAGS += -msse
 
@@ -40,7 +40,7 @@ INCLUDEPATH += \
             $$SK/include/SkMedia/private \
             $$SK/include/ \
 
-greaterThan(QT_MAJOR_VERSION, 4): LIBS += -lopengl32
+contains(QT_MAJOR_VERSION, 5): LIBS += -lopengl32
 
 CONFIG(debug, debug|release) {
     LIBS += \

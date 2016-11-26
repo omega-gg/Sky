@@ -1,9 +1,9 @@
 SK = $$_PRO_FILE_PWD_/../..
 
-greaterThan(QT_MAJOR_VERSION, 4) {
-    SK_BIN = latest
-} else {
+contains(QT_MAJOR_VERSION, 4) {
     SK_BIN = bin
+} else {
+    SK_BIN = latest
 }
 
 CONFIG(debug, debug|release) {
@@ -18,16 +18,17 @@ TEMPLATE = lib
 
 QT += opengl declarative network script xml svg
 
-greaterThan(QT_MAJOR_VERSION, 4): win32:QT += winextras
+contains(QT_MAJOR_VERSION, 5): win32:QT += winextras
 
 CONFIG       += plugin
 win32:CONFIG += dll
 
-DEFINES += SK_GUI_LIBRARY
-
 DEFINES += QT_QTLOCKEDFILE_IMPORT
 
-greaterThan(QT_MAJOR_VERSION, 4): DEFINES += QT_LATEST
+DEFINES       += SK_GUI_LIBRARY
+win32:DEFINES += SK_WIN_NATIVE
+
+contains(QT_MAJOR_VERSION, 5): DEFINES += QT_LATEST
 
 include(src/controllers/controllers.pri)
 include(src/kernel/kernel.pri)
