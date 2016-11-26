@@ -14,13 +14,13 @@
 */
 //=================================================================================================
 
-#include "WMainViewResizer.h"
+#include "WViewResizer.h"
 
 // Sk includes
 #include <WControllerView>
 #include <WResizer>
 
-#ifndef SK_NO_MAINVIEWRESIZER
+#ifndef SK_NO_VIEWRESIZER
 
 //-------------------------------------------------------------------------------------------------
 // Private
@@ -28,10 +28,10 @@
 
 #include <private/WDeclarativeItem_p>
 
-class SK_GUI_EXPORT WMainViewResizerPrivate : public WDeclarativeItemPrivate
+class SK_GUI_EXPORT WViewResizerPrivate : public WDeclarativeItemPrivate
 {
 protected:
-    WMainViewResizerPrivate(WMainViewResizer * p);
+    WViewResizerPrivate(WViewResizer * p);
 
     void init();
 
@@ -51,17 +51,16 @@ public: // Variables
     int size;
 
 protected:
-    W_DECLARE_PUBLIC(WMainViewResizer)
+    W_DECLARE_PUBLIC(WViewResizer)
 };
 
 //-------------------------------------------------------------------------------------------------
 
-WMainViewResizerPrivate::WMainViewResizerPrivate(WMainViewResizer * p)
-    : WDeclarativeItemPrivate(p) {}
+WViewResizerPrivate::WViewResizerPrivate(WViewResizer * p) : WDeclarativeItemPrivate(p) {}
 
-void WMainViewResizerPrivate::init()
+void WViewResizerPrivate::init()
 {
-    Q_Q(WMainViewResizer);
+    Q_Q(WViewResizer);
 
     topLeft     = new WResizer(WResizer::TopLeft,     q);
     topRight    = new WResizer(WResizer::TopRight,    q);
@@ -79,9 +78,9 @@ void WMainViewResizerPrivate::init()
 
 //-------------------------------------------------------------------------------------------------
 
-void WMainViewResizerPrivate::refreshCoordinates()
+void WViewResizerPrivate::refreshCoordinates()
 {
-    Q_Q(WMainViewResizer);
+    Q_Q(WViewResizer);
 
     int width  = q->width ();
     int height = q->height();
@@ -130,20 +129,20 @@ void WMainViewResizerPrivate::refreshCoordinates()
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
-/* explicit */ WMainViewResizer::WMainViewResizer(QDeclarativeItem * parent)
-    : WDeclarativeItem(new WMainViewResizerPrivate(this), parent)
+/* explicit */ WViewResizer::WViewResizer(QDeclarativeItem * parent)
+    : WDeclarativeItem(new WViewResizerPrivate(this), parent)
 {
-    Q_D(WMainViewResizer); d->init();
+    Q_D(WViewResizer); d->init();
 }
 
 //-------------------------------------------------------------------------------------------------
 // Protected QDeclarativeItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WMainViewResizer::geometryChanged(const QRectF & newGeometry,
+/* virtual */ void WViewResizer::geometryChanged(const QRectF & newGeometry,
                                                      const QRectF & oldGeometry)
 {
-    Q_D(WMainViewResizer);
+    Q_D(WViewResizer);
 
     WDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
 
@@ -154,14 +153,14 @@ void WMainViewResizerPrivate::refreshCoordinates()
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-int WMainViewResizer::size() const
+int WViewResizer::size() const
 {
-    Q_D(const WMainViewResizer); return d->size;
+    Q_D(const WViewResizer); return d->size;
 }
 
-void WMainViewResizer::setSize(int size)
+void WViewResizer::setSize(int size)
 {
-    Q_D(WMainViewResizer);
+    Q_D(WViewResizer);
 
     if (d->size == size) return;
 
@@ -172,4 +171,4 @@ void WMainViewResizer::setSize(int size)
     emit sizeChanged();
 }
 
-#endif // SK_NO_MAINVIEWRESIZER
+#endif // SK_NO_VIEWRESIZER

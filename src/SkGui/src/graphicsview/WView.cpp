@@ -14,9 +14,9 @@
 */
 //=================================================================================================
 
-#include "WMainView.h"
+#include "WView.h"
 
-#ifndef SK_NO_MAINVIEW
+#ifndef SK_NO_VIEW
 
 // Qt includes
 #include <QApplication>
@@ -182,36 +182,36 @@ void WDeclarativeDropEvent::setText(const QString & text)
 }
 
 //=================================================================================================
-// WMainViewScene
+// WViewScene
 //=================================================================================================
 
-WMainViewScene::WMainViewScene(WMainView * parent) : QGraphicsScene(parent)
+WViewScene::WViewScene(WView * parent) : QGraphicsScene(parent)
 {
     view = parent;
 }
 
 //=================================================================================================
-// WMainViewPrivate
+// WViewPrivate
 //=================================================================================================
 
-WMainViewPrivate::WMainViewPrivate(WMainView * p) : WAbstractViewPrivate(p) {}
+WViewPrivate::WViewPrivate(WView * p) : WAbstractViewPrivate(p) {}
 
-/* virtual */ WMainViewPrivate::~WMainViewPrivate()
+/* virtual */ WViewPrivate::~WViewPrivate()
 {
-    Q_Q(WMainView);
+    Q_Q(WView);
 
     if (mime) delete mime;
 
     W_GET_CONTROLLER(WControllerView, controller);
 
-    if (controller) controller->d_func()->unregisterMainView(q);
+    if (controller) controller->d_func()->unregisterView(q);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void WMainViewPrivate::init(QDeclarativeItem * item)
+void WViewPrivate::init(QDeclarativeItem * item)
 {
-    Q_Q(WMainView);
+    Q_Q(WView);
 
     this->item = item;
 
@@ -326,7 +326,7 @@ void WMainViewPrivate::init(QDeclarativeItem * item)
     //---------------------------------------------------------------------------------------------
     // Scene
 
-    scene = new WMainViewScene(q);
+    scene = new WViewScene(q);
 
     if (item)
     {
@@ -387,9 +387,9 @@ void WMainViewPrivate::init(QDeclarativeItem * item)
     q->startTimer(16);
 
     //---------------------------------------------------------------------------------------------
-    // Registering main view
+    // Registering view
 
-    wControllerView->d_func()->registerMainView(q);
+    wControllerView->d_func()->registerView(q);
 
     //---------------------------------------------------------------------------------------------
     // Signals
@@ -415,9 +415,9 @@ void WMainViewPrivate::init(QDeclarativeItem * item)
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WMainViewPrivate::startFade(bool visible)
+void WViewPrivate::startFade(bool visible)
 {
-    Q_Q(WMainView);
+    Q_Q(WView);
 
     fadeVisible = visible;
 
@@ -432,9 +432,9 @@ void WMainViewPrivate::startFade(bool visible)
 
 //-------------------------------------------------------------------------------------------------
 
-void WMainViewPrivate::fadeIn()
+void WViewPrivate::fadeIn()
 {
-    Q_Q(WMainView);
+    Q_Q(WView);
 
     fadeTimer.stop();
 
@@ -443,9 +443,9 @@ void WMainViewPrivate::fadeIn()
     emit q->fadeIn();
 }
 
-void WMainViewPrivate::fadeOut()
+void WViewPrivate::fadeOut()
 {
-    Q_Q(WMainView);
+    Q_Q(WView);
 
     fadeTimer.stop();
 
@@ -458,16 +458,16 @@ void WMainViewPrivate::fadeOut()
 
 //-------------------------------------------------------------------------------------------------
 
-void WMainViewPrivate::applySize(int width, int height)
+void WViewPrivate::applySize(int width, int height)
 {
     item->setSize(QSizeF(width * zoom, height * zoom));
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void WMainViewPrivate::updateFlags()
+void WViewPrivate::updateFlags()
 {
-    Q_Q(WMainView);
+    Q_Q(WView);
 
 #ifdef Q_OS_WIN
     if (locked)
@@ -486,9 +486,9 @@ void WMainViewPrivate::updateFlags()
 
 //-------------------------------------------------------------------------------------------------
 
-void WMainViewPrivate::updateViewport()
+void WViewPrivate::updateViewport()
 {
-    Q_Q(WMainView);
+    Q_Q(WView);
 
     QGLFormat format = QGLFormat::defaultFormat();
 
@@ -504,9 +504,9 @@ void WMainViewPrivate::updateViewport()
 
 //-------------------------------------------------------------------------------------------------
 
-void WMainViewPrivate::updateMinimumSize()
+void WViewPrivate::updateMinimumSize()
 {
-    Q_Q(WMainView);
+    Q_Q(WView);
 
     QSize size = q->minimumSizeHint();
 
@@ -519,7 +519,7 @@ void WMainViewPrivate::updateMinimumSize()
 
 //-------------------------------------------------------------------------------------------------
 
-void WMainViewPrivate::updateHoverable()
+void WViewPrivate::updateHoverable()
 {
     if (hover && entered && pressed == false && dragging == false && dragged == false
         &&
@@ -532,11 +532,11 @@ void WMainViewPrivate::updateHoverable()
 
 //-------------------------------------------------------------------------------------------------
 
-void WMainViewPrivate::updateMouse()
+void WViewPrivate::updateMouse()
 {
     if (dragged || resizing) return;
 
-    Q_Q(WMainView);
+    Q_Q(WView);
 
     QPoint pos = QCursor::pos();
 
@@ -549,11 +549,11 @@ void WMainViewPrivate::updateMouse()
 
 //-------------------------------------------------------------------------------------------------
 
-void WMainViewPrivate::updateDrag()
+void WViewPrivate::updateDrag()
 {
     if (dragging == false || drag) return;
 
-    Q_Q(WMainView);
+    Q_Q(WView);
 
     QPoint pos = QCursor::pos();
 
@@ -655,7 +655,7 @@ void WMainViewPrivate::updateDrag()
     }
 }
 
-void WMainViewPrivate::clearDrag()
+void WViewPrivate::clearDrag()
 {
     itemsDrop.clear();
 
@@ -669,11 +669,11 @@ void WMainViewPrivate::clearDrag()
 
 //-------------------------------------------------------------------------------------------------
 
-void WMainViewPrivate::setActive(bool active)
+void WViewPrivate::setActive(bool active)
 {
     if (this->active == active) return;
 
-    Q_Q(WMainView);
+    Q_Q(WView);
 
     this->active = active;
 
@@ -682,11 +682,11 @@ void WMainViewPrivate::setActive(bool active)
 
 //-------------------------------------------------------------------------------------------------
 
-void WMainViewPrivate::setEntered(bool entered)
+void WViewPrivate::setEntered(bool entered)
 {
     if (this->entered == entered) return;
 
-    Q_Q(WMainView);
+    Q_Q(WView);
 
     this->entered = entered;
 
@@ -703,11 +703,11 @@ void WMainViewPrivate::setEntered(bool entered)
     emit q->enteredChanged();
 }
 
-void WMainViewPrivate::setPressed(bool pressed)
+void WViewPrivate::setPressed(bool pressed)
 {
     if (this->pressed == pressed) return;
 
-    Q_Q(WMainView);
+    Q_Q(WView);
 
     this->pressed = pressed;
 
@@ -721,11 +721,11 @@ void WMainViewPrivate::setPressed(bool pressed)
     emit q->pressedChanged();
 }
 
-void WMainViewPrivate::setDragging(bool dragging)
+void WViewPrivate::setDragging(bool dragging)
 {
     if (this->dragging == dragging) return;
 
-    Q_Q(WMainView);
+    Q_Q(WView);
 
     this->dragging = dragging;
 
@@ -753,11 +753,11 @@ void WMainViewPrivate::setDragging(bool dragging)
 
 //-------------------------------------------------------------------------------------------------
 
-void WMainViewPrivate::setDragged(bool dragged)
+void WViewPrivate::setDragged(bool dragged)
 {
     if (this->dragged == dragged) return;
 
-    Q_Q(WMainView);
+    Q_Q(WView);
 
     this->dragged = dragged;
 
@@ -768,11 +768,11 @@ void WMainViewPrivate::setDragged(bool dragged)
     emit q->draggedChanged();
 }
 
-void WMainViewPrivate::setResizing(bool resizing)
+void WViewPrivate::setResizing(bool resizing)
 {
     if (this->resizing == resizing) return;
 
-    Q_Q(WMainView);
+    Q_Q(WView);
 
     this->resizing = resizing;
 
@@ -785,7 +785,7 @@ void WMainViewPrivate::setResizing(bool resizing)
 
 //-------------------------------------------------------------------------------------------------
 
-QRect WMainViewPrivate::getGeometryDefault(const QRect & rect) const
+QRect WViewPrivate::getGeometryDefault(const QRect & rect) const
 {
     int width  = sk->defaultWidth ();
     int height = sk->defaultHeight();
@@ -841,7 +841,7 @@ QRect WMainViewPrivate::getGeometryDefault(const QRect & rect) const
     return rect.adjusted(left, top, -right, -bottom);
 }
 
-QRect WMainViewPrivate::getGeometry(const QRect & rect) const
+QRect WViewPrivate::getGeometry(const QRect & rect) const
 {
     int width  = rect.width()  / 8;
     int height = rect.height() / 8;
@@ -851,11 +851,11 @@ QRect WMainViewPrivate::getGeometry(const QRect & rect) const
 
 //-------------------------------------------------------------------------------------------------
 
-void WMainViewPrivate::setGeometryNormal(const QRect & rect)
+void WViewPrivate::setGeometryNormal(const QRect & rect)
 {
     if (geometryNormal == rect) return;
 
-    Q_Q(WMainView);
+    Q_Q(WView);
 
     geometryNormal = rect;
 
@@ -864,11 +864,11 @@ void WMainViewPrivate::setGeometryNormal(const QRect & rect)
 
 //-------------------------------------------------------------------------------------------------
 
-void WMainViewPrivate::setMousePos(const QPoint & pos)
+void WViewPrivate::setMousePos(const QPoint & pos)
 {
     if (mousePos == pos) return;
 
-    Q_Q(WMainView);
+    Q_Q(WView);
 
     mousePos = pos;
 
@@ -877,9 +877,9 @@ void WMainViewPrivate::setMousePos(const QPoint & pos)
 
 //-------------------------------------------------------------------------------------------------
 
-bool WMainViewPrivate::isUnderMouse() const
+bool WViewPrivate::isUnderMouse() const
 {
-    Q_Q(const WMainView);
+    Q_Q(const WView);
 
     int x = mousePos.x();
     int y = mousePos.y();
@@ -893,7 +893,7 @@ bool WMainViewPrivate::isUnderMouse() const
 
 //-------------------------------------------------------------------------------------------------
 
-void WMainViewPrivate::setCursor(WDeclarativeMouseArea::CursorShape shape)
+void WViewPrivate::setCursor(WDeclarativeMouseArea::CursorShape shape)
 {
     if (cursor != shape)
     {
@@ -901,9 +901,9 @@ void WMainViewPrivate::setCursor(WDeclarativeMouseArea::CursorShape shape)
     }
 }
 
-void WMainViewPrivate::applyCursor(WDeclarativeMouseArea::CursorShape shape)
+void WViewPrivate::applyCursor(WDeclarativeMouseArea::CursorShape shape)
 {
-    Q_Q(WMainView);
+    Q_Q(WView);
 
     cursor = shape;
 
@@ -937,33 +937,33 @@ void WMainViewPrivate::applyCursor(WDeclarativeMouseArea::CursorShape shape)
 
 //-------------------------------------------------------------------------------------------------
 
-void WMainViewPrivate::setKeyShiftPressed(bool pressed)
+void WViewPrivate::setKeyShiftPressed(bool pressed)
 {
     if (keyShiftPressed == pressed) return;
 
-    Q_Q(WMainView);
+    Q_Q(WView);
 
     keyShiftPressed = pressed;
 
     emit q->keyShiftPressedChanged();
 }
 
-void WMainViewPrivate::setKeyControlPressed(bool pressed)
+void WViewPrivate::setKeyControlPressed(bool pressed)
 {
     if (keyControlPressed == pressed) return;
 
-    Q_Q(WMainView);
+    Q_Q(WView);
 
     keyControlPressed = pressed;
 
     emit q->keyControlPressedChanged();
 }
 
-void WMainViewPrivate::setKeyAltPressed(bool pressed)
+void WViewPrivate::setKeyAltPressed(bool pressed)
 {
     if (keyAltPressed == pressed) return;
 
-    Q_Q(WMainView);
+    Q_Q(WView);
 
     keyAltPressed = pressed;
 
@@ -973,7 +973,7 @@ void WMainViewPrivate::setKeyAltPressed(bool pressed)
 //-------------------------------------------------------------------------------------------------
 
 QList<WDeclarativeMouseArea *>
-WMainViewPrivate::getMouseAreas(const QList<QGraphicsItem *> & items) const
+WViewPrivate::getMouseAreas(const QList<QGraphicsItem *> & items) const
 {
     QList<WDeclarativeMouseArea *> mouseAreas;
 
@@ -1003,7 +1003,7 @@ WMainViewPrivate::getMouseAreas(const QList<QGraphicsItem *> & items) const
 }
 
 QList<WDeclarativeMouseArea *>
-WMainViewPrivate::getDropAreas(const QList<QGraphicsItem *> & items) const
+WViewPrivate::getDropAreas(const QList<QGraphicsItem *> & items) const
 {
     QList<WDeclarativeMouseArea *> dropAreas;
 
@@ -1028,9 +1028,9 @@ WMainViewPrivate::getDropAreas(const QList<QGraphicsItem *> & items) const
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
-void WMainViewPrivate::onGeometryChanged()
+void WViewPrivate::onGeometryChanged()
 {
-    Q_Q(WMainView);
+    Q_Q(WView);
 
     if (maximized == false && fullScreen == false)
     {
@@ -1042,9 +1042,9 @@ void WMainViewPrivate::onGeometryChanged()
 
 //-------------------------------------------------------------------------------------------------
 
-void WMainViewPrivate::onFadeTimeout()
+void WViewPrivate::onFadeTimeout()
 {
-    Q_Q(WMainView);
+    Q_Q(WView);
 
     if (fadeVisible)
     {
@@ -1068,16 +1068,16 @@ void WMainViewPrivate::onFadeTimeout()
     }
 }
 
-void WMainViewPrivate::onIdleTimeout()
+void WViewPrivate::onIdleTimeout()
 {
-    Q_Q(WMainView); q->setIdle(true);
+    Q_Q(WView); q->setIdle(true);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void WMainViewPrivate::onCursorVisibleChanged()
+void WViewPrivate::onCursorVisibleChanged()
 {
-    Q_Q(WMainView);
+    Q_Q(WView);
 
     updateHoverable();
 
@@ -1091,36 +1091,35 @@ void WMainViewPrivate::onCursorVisibleChanged()
 }
 
 //=================================================================================================
-// WMainView
+// WView
 //=================================================================================================
 
-WMainView::WMainView(QDeclarativeItem * item, QWidget * parent, Qt::WindowFlags flags)
-    : WAbstractView(new WMainViewPrivate(this), parent, flags)
+WView::WView(QDeclarativeItem * item, QWidget * parent, Qt::WindowFlags flags)
+    : WAbstractView(new WViewPrivate(this), parent, flags)
 {
-    Q_D(WMainView); d->init(item);
+    Q_D(WView); d->init(item);
 }
 
-WMainView::WMainView(QWidget * parent, Qt::WindowFlags flags)
-    : WAbstractView(new WMainViewPrivate(this), parent, flags)
+WView::WView(QWidget * parent, Qt::WindowFlags flags)
+    : WAbstractView(new WViewPrivate(this), parent, flags)
 {
-    Q_D(WMainView); d->init(NULL);
+    Q_D(WView); d->init(NULL);
 }
 
 //-------------------------------------------------------------------------------------------------
 // Protected
 
-WMainView::WMainView(WMainViewPrivate * p,
-                     QDeclarativeItem * item, QWidget * parent, Qt::WindowFlags flags)
+WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::WindowFlags flags)
     : WAbstractView(p, parent, flags)
 {
-    Q_D(WMainView); d->init(item);
+    Q_D(WView); d->init(item);
 }
 
 //-------------------------------------------------------------------------------------------------
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WMainView::activate()
+/* Q_INVOKABLE */ void WView::activate()
 {
     setMinimized(false);
 
@@ -1131,9 +1130,9 @@ WMainView::WMainView(WMainViewPrivate * p,
     setFocus();
 }
 
-/* Q_INVOKABLE */ void WMainView::raise()
+/* Q_INVOKABLE */ void WView::raise()
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->locked) return;
 
@@ -1149,9 +1148,9 @@ WMainView::WMainView(WMainViewPrivate * p,
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WMainView::close()
+/* Q_INVOKABLE */ void WView::close()
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->closed) return;
 
@@ -1172,16 +1171,16 @@ WMainView::WMainView(WMainViewPrivate * p,
 //-------------------------------------------------------------------------------------------------
 // Geometry
 
-/* Q_INVOKABLE */ int WMainView::getScreenNumber() const
+/* Q_INVOKABLE */ int WView::getScreenNumber() const
 {
     return wControllerView->screenNumber(this);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WMainView::setMinimumSize(int width, int height)
+/* Q_INVOKABLE */ void WView::setMinimumSize(int width, int height)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     int minimumWidth  = d->minimumWidth;
     int minimumHeight = d->minimumHeight;
@@ -1202,9 +1201,9 @@ WMainView::WMainView(WMainViewPrivate * p,
     }
 }
 
-/* Q_INVOKABLE */ void WMainView::setMaximumSize(int width, int height)
+/* Q_INVOKABLE */ void WView::setMaximumSize(int width, int height)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     int maximumWidth  = d->maximumWidth;
     int maximumHeight = d->maximumHeight;
@@ -1242,9 +1241,9 @@ WMainView::WMainView(WMainViewPrivate * p,
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ QRect WMainView::getDefaultGeometry() const
+/* Q_INVOKABLE */ QRect WView::getDefaultGeometry() const
 {
-    Q_D(const WMainView);
+    Q_D(const WView);
 
     QRect rect = wControllerView->availableGeometry(sk->defaultScreen());
 
@@ -1253,9 +1252,9 @@ WMainView::WMainView(WMainViewPrivate * p,
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WMainView::setDefaultGeometry()
+/* Q_INVOKABLE */ void WView::setDefaultGeometry()
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->maximized || d->fullScreen)
     {
@@ -1264,16 +1263,16 @@ WMainView::WMainView(WMainViewPrivate * p,
     else setGeometry(getDefaultGeometry());
 }
 
-/* Q_INVOKABLE */ void WMainView::saveGeometry()
+/* Q_INVOKABLE */ void WView::saveGeometry()
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     d->setGeometryNormal(geometry());
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WMainView::checkPosition()
+/* Q_INVOKABLE */ void WView::checkPosition()
 {
     QRect geometry = availableGeometry();
 
@@ -1319,15 +1318,15 @@ WMainView::WMainView(WMainViewPrivate * p,
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WMainView::originTo(qreal x, qreal y)
+/* Q_INVOKABLE */ void WView::originTo(qreal x, qreal y)
 {
-    Q_D(WMainView); d->item->setPos(-x, -y);
+    Q_D(WView); d->item->setPos(-x, -y);
 }
 
 //-------------------------------------------------------------------------------------------------
 // Drag
 
-/* Q_INVOKABLE */ bool WMainView::testDrag(const QPointF & posA,
+/* Q_INVOKABLE */ bool WView::testDrag(const QPointF & posA,
                                            const QPointF & posB, qreal distance)
 {
     if (distance == -1) distance = QApplication::startDragDistance();
@@ -1339,9 +1338,9 @@ WMainView::WMainView(WMainViewPrivate * p,
     else return false;
 }
 
-/* Q_INVOKABLE */ void WMainView::startDrag(const QString & text, int actions)
+/* Q_INVOKABLE */ void WView::startDrag(const QString & text, int actions)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->dragging) return;
 
@@ -1375,16 +1374,16 @@ WMainView::WMainView(WMainViewPrivate * p,
 //-------------------------------------------------------------------------------------------------
 // Hover
 
-/* Q_INVOKABLE */ int WMainView::hoverCount() const
+/* Q_INVOKABLE */ int WView::hoverCount() const
 {
-    Q_D(const WMainView); return d->itemsHovered.count();
+    Q_D(const WView); return d->itemsHovered.count();
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WMainView::updateHover()
+/* Q_INVOKABLE */ void WView::updateHover()
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->hoverable)
     {
@@ -1422,9 +1421,9 @@ WMainView::WMainView(WMainViewPrivate * p,
     else d->updateDrag();
 }
 
-/* Q_INVOKABLE */ void WMainView::clearHover()
+/* Q_INVOKABLE */ void WView::clearHover()
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->resizing) return;
 
@@ -1445,15 +1444,15 @@ WMainView::WMainView(WMainViewPrivate * p,
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WMainView::checkLeave(int msec)
+/* Q_INVOKABLE */ void WView::checkLeave(int msec)
 {
-    Q_D(WMainView); d->timerLeave.start(msec);
+    Q_D(WView); d->timerLeave.start(msec);
 }
 
 //-------------------------------------------------------------------------------------------------
 // Shot
 
-/* Q_INVOKABLE */ QPixmap WMainView::takeShot(int x, int y, int width, int height) const
+/* Q_INVOKABLE */ QPixmap WView::takeShot(int x, int y, int width, int height) const
 {
 #ifdef QT_LATEST
     //---------------------------------------------------------------------------------------------
@@ -1466,7 +1465,7 @@ WMainView::WMainView(WMainViewPrivate * p,
 
     return viewport()->grab(QRect(x, y, width, height));
 #else
-    Q_D(const WMainView);
+    Q_D(const WView);
 
     if (d->opengl)
     {
@@ -1488,7 +1487,7 @@ WMainView::WMainView(WMainViewPrivate * p,
 #endif
 }
 
-/* Q_INVOKABLE */ bool WMainView::saveShot(const QString & fileName, int x,     int y,
+/* Q_INVOKABLE */ bool WView::saveShot(const QString & fileName, int x,     int y,
                                                                      int width, int height) const
 {
     QImage image = takeShot(x, y, width, height).toImage();
@@ -1498,7 +1497,7 @@ WMainView::WMainView(WMainViewPrivate * p,
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ QPixmap WMainView::takeItemShot(QGraphicsObject * item,
+/* Q_INVOKABLE */ QPixmap WView::takeItemShot(QGraphicsObject * item,
                                                   bool              recursive,
                                                   const QColor    & background,
                                                   bool              forceVisible) const
@@ -1506,7 +1505,7 @@ WMainView::WMainView(WMainViewPrivate * p,
     return wControllerView->takeItemShot(item, recursive, background, forceVisible);
 }
 
-/* Q_INVOKABLE */ bool WMainView::saveItemShot(const QString   & fileName,
+/* Q_INVOKABLE */ bool WView::saveItemShot(const QString   & fileName,
                                                QGraphicsObject * item,
                                                bool              recursive,
                                                const QColor    & background,
@@ -1517,7 +1516,7 @@ WMainView::WMainView(WMainViewPrivate * p,
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ bool WMainView::compressShots(const QString & path, int quality)
+/* Q_INVOKABLE */ bool WView::compressShots(const QString & path, int quality)
 {
     QDir dir(path);
 
@@ -1537,7 +1536,7 @@ WMainView::WMainView(WMainViewPrivate * p,
 
             if (image.save(path, "png", quality) == false)
             {
-                qWarning("WMainView::compressShots: Failed to save image.");
+                qWarning("WView::compressShots: Failed to save image.");
             }
         }
     }
@@ -1548,10 +1547,10 @@ WMainView::WMainView(WMainViewPrivate * p,
 //-------------------------------------------------------------------------------------------------
 // Cursor
 
-/* Q_INVOKABLE */ void WMainView::registerCursor(WDeclarativeMouseArea::CursorShape shape,
-                                                 const QCursor                    & cursor)
+/* Q_INVOKABLE */ void WView::registerCursor(WDeclarativeMouseArea::CursorShape shape,
+                                             const QCursor                    & cursor)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     d->cursors.insert(shape, cursor);
 
@@ -1561,9 +1560,9 @@ WMainView::WMainView(WMainViewPrivate * p,
     }
 }
 
-/* Q_INVOKABLE */ void WMainView::unregisterCursor(WDeclarativeMouseArea::CursorShape shape)
+/* Q_INVOKABLE */ void WView::unregisterCursor(WDeclarativeMouseArea::CursorShape shape)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     d->cursors.remove(shape);
 
@@ -1573,9 +1572,9 @@ WMainView::WMainView(WMainViewPrivate * p,
     }
 }
 
-/* Q_INVOKABLE */ void WMainView::unregisterCursors()
+/* Q_INVOKABLE */ void WView::unregisterCursors()
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     d->cursors.clear();
 
@@ -1585,7 +1584,7 @@ WMainView::WMainView(WMainViewPrivate * p,
 //-------------------------------------------------------------------------------------------------
 // Input
 
-/* Q_INVOKABLE */ void WMainView::mouseMove(int x, int y, Qt::MouseButton button) const
+/* Q_INVOKABLE */ void WView::mouseMove(int x, int y, Qt::MouseButton button) const
 {
     QPoint point(x, y);
 
@@ -1597,9 +1596,9 @@ WMainView::WMainView(WMainViewPrivate * p,
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WMainView::mousePress(Qt::MouseButton button) const
+/* Q_INVOKABLE */ void WView::mousePress(Qt::MouseButton button) const
 {
-    Q_D(const WMainView);
+    Q_D(const WView);
 
     QMouseEvent event(QEvent::MouseButtonPress,
                       d->mousePos, mapToGlobal(d->mousePos), button, Qt::NoButton, Qt::NoModifier);
@@ -1607,9 +1606,9 @@ WMainView::WMainView(WMainViewPrivate * p,
     QApplication::sendEvent(viewport(), &event);
 }
 
-/* Q_INVOKABLE */ void WMainView::mouseRelease(Qt::MouseButton button) const
+/* Q_INVOKABLE */ void WView::mouseRelease(Qt::MouseButton button) const
 {
-    Q_D(const WMainView);
+    Q_D(const WView);
 
     QMouseEvent event(QEvent::MouseButtonRelease,
                       d->mousePos, mapToGlobal(d->mousePos), button, Qt::NoButton, Qt::NoModifier);
@@ -1617,7 +1616,7 @@ WMainView::WMainView(WMainViewPrivate * p,
     QApplication::sendEvent(viewport(), &event);
 }
 
-/* Q_INVOKABLE */ void WMainView::mouseClick(Qt::MouseButton button, int msec) const
+/* Q_INVOKABLE */ void WView::mouseClick(Qt::MouseButton button, int msec) const
 {
     mousePress(button);
 
@@ -1628,9 +1627,9 @@ WMainView::WMainView(WMainViewPrivate * p,
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WMainView::wheel(Qt::Orientation orientation, int delta) const
+/* Q_INVOKABLE */ void WView::wheel(Qt::Orientation orientation, int delta) const
 {
-    Q_D(const WMainView);
+    Q_D(const WView);
 
     QWheelEvent event(d->mousePos, mapToGlobal(d->mousePos), delta, Qt::NoButton,
                                                                     Qt::NoModifier, orientation);
@@ -1638,34 +1637,33 @@ WMainView::WMainView(WMainViewPrivate * p,
     QApplication::sendEvent(viewport(), &event);
 }
 
-/* Q_INVOKABLE */ void WMainView::wheelUp(int delta) const
+/* Q_INVOKABLE */ void WView::wheelUp(int delta) const
 {
     wheel(Qt::Vertical, delta);
 }
 
-/* Q_INVOKABLE */ void WMainView::wheelDown(int delta) const
+/* Q_INVOKABLE */ void WView::wheelDown(int delta) const
 {
     wheel(Qt::Vertical, delta);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WMainView::keyPress(int key, Qt::KeyboardModifiers modifiers) const
+/* Q_INVOKABLE */ void WView::keyPress(int key, Qt::KeyboardModifiers modifiers) const
 {
     QKeyEvent event(QEvent::KeyPress, key, modifiers);
 
     QApplication::sendEvent(viewport(), &event);
 }
 
-/* Q_INVOKABLE */ void WMainView::keyRelease(int key, Qt::KeyboardModifiers modifiers) const
+/* Q_INVOKABLE */ void WView::keyRelease(int key, Qt::KeyboardModifiers modifiers) const
 {
     QKeyEvent event(QEvent::KeyRelease, key, modifiers);
 
     QApplication::sendEvent(viewport(), &event);
 }
 
-/* Q_INVOKABLE */ void WMainView::keyClick(int key, Qt::KeyboardModifiers modifiers,
-                                                    int                   msec) const
+/* Q_INVOKABLE */ void WView::keyClick(int key, Qt::KeyboardModifiers modifiers, int msec) const
 {
     keyPress(key, modifiers);
 
@@ -1677,56 +1675,55 @@ WMainView::WMainView(WMainViewPrivate * p,
 //-------------------------------------------------------------------------------------------------
 // QML
 
-/* Q_INVOKABLE */ void WMainView::mouseMove(int x, int y, int button) const
+/* Q_INVOKABLE */ void WView::mouseMove(int x, int y, int button) const
 {
     mouseMove(x, y, static_cast<Qt::MouseButton> (button));
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WMainView::mousePress(int button) const
+/* Q_INVOKABLE */ void WView::mousePress(int button) const
 {
     mousePress(static_cast<Qt::MouseButton> (button));
 }
 
-/* Q_INVOKABLE */ void WMainView::mouseRelease(int button) const
+/* Q_INVOKABLE */ void WView::mouseRelease(int button) const
 {
     mouseRelease(static_cast<Qt::MouseButton> (button));
 }
 
-/* Q_INVOKABLE */ void WMainView::mouseClick(int button, int msec) const
+/* Q_INVOKABLE */ void WView::mouseClick(int button, int msec) const
 {
     mouseClick(static_cast<Qt::MouseButton> (button), msec);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WMainView::wheel(int orientation, int delta) const
+/* Q_INVOKABLE */ void WView::wheel(int orientation, int delta) const
 {
     wheel(static_cast<Qt::Orientation> (orientation), delta);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WMainView::keyPress(int key, int modifiers) const
+/* Q_INVOKABLE */ void WView::keyPress(int key, int modifiers) const
 {
     keyPress(key, static_cast<Qt::KeyboardModifiers> (modifiers));
 }
 
-/* Q_INVOKABLE */ void WMainView::keyRelease(int key, int modifiers) const
+/* Q_INVOKABLE */ void WView::keyRelease(int key, int modifiers) const
 {
     keyRelease(key, static_cast<Qt::KeyboardModifiers> (modifiers));
 }
 
-/* Q_INVOKABLE */ void WMainView::keyClick(int key, int modifiers, int msec) const
+/* Q_INVOKABLE */ void WView::keyClick(int key, int modifiers, int msec) const
 {
     keyClick(key, static_cast<Qt::KeyboardModifiers> (modifiers), msec);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WMainView::registerCursorUrl(int shape, const QUrl  & url,
-                                                               const QSize & size)
+/* Q_INVOKABLE */ void WView::registerCursorUrl(int shape, const QUrl  & url, const QSize & size)
 {
     QPixmap pixmap;
 
@@ -1745,7 +1742,7 @@ WMainView::WMainView(WMainViewPrivate * p,
     registerCursor(static_cast<WDeclarativeMouseArea::CursorShape> (shape), cursor);
 }
 
-/* Q_INVOKABLE */ void WMainView::unregisterCursor(int shape)
+/* Q_INVOKABLE */ void WView::unregisterCursor(int shape)
 {
     unregisterCursor(static_cast<WDeclarativeMouseArea::CursorShape> (shape));
 }
@@ -1754,12 +1751,12 @@ WMainView::WMainView(WMainViewPrivate * p,
 // Size hints
 //-------------------------------------------------------------------------------------------------
 
-QSize WMainView::minimumSizeHint() const
+QSize WView::minimumSizeHint() const
 {
-    Q_D(const WMainView); return QSize(d->minimumWidth, d->minimumHeight);
+    Q_D(const WView); return QSize(d->minimumWidth, d->minimumHeight);
 }
 
-QSize WMainView::sizeHint() const
+QSize WView::sizeHint() const
 {
     return minimumSizeHint();
 }
@@ -1768,16 +1765,16 @@ QSize WMainView::sizeHint() const
 // Protected functions
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WMainView::drawBackground(QPainter *, const QRectF &) {}
-/* virtual */ void WMainView::drawForeground(QPainter *, const QRectF &) {}
+/* virtual */ void WView::drawBackground(QPainter *, const QRectF &) {}
+/* virtual */ void WView::drawForeground(QPainter *, const QRectF &) {}
 
 //-------------------------------------------------------------------------------------------------
 // Events
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WMainView::showEvent(QShowEvent * event)
+/* virtual */ void WView::showEvent(QShowEvent * event)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->fade && d->fadeVisible == false)
     {
@@ -1798,18 +1795,18 @@ QSize WMainView::sizeHint() const
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WMainView::moveEvent(QMoveEvent * event)
+/* virtual */ void WView::moveEvent(QMoveEvent * event)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     d->updateMouse();
 
     WAbstractView::moveEvent(event);
 }
 
-/* virtual */ void WMainView::resizeEvent(QResizeEvent * event)
+/* virtual */ void WView::resizeEvent(QResizeEvent * event)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     d->updateMouse();
 
@@ -1826,18 +1823,18 @@ QSize WMainView::sizeHint() const
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WMainView::enterEvent(QEvent * event)
+/* virtual */ void WView::enterEvent(QEvent * event)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     d->setEntered(true);
 
     WAbstractView::enterEvent(event);
 }
 
-/* virtual */ void WMainView::leaveEvent(QEvent * event)
+/* virtual */ void WView::leaveEvent(QEvent * event)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     // FIXME: Sometimes we get a leaveEvent for no reason.
     if (d->timerLeave.isActive())
@@ -1854,9 +1851,9 @@ QSize WMainView::sizeHint() const
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WMainView::mousePressEvent(QMouseEvent * event)
+/* virtual */ void WView::mousePressEvent(QMouseEvent * event)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->dragging)
     {
@@ -1895,9 +1892,9 @@ QSize WMainView::sizeHint() const
     }
 }
 
-/* virtual */ void WMainView::mouseReleaseEvent(QMouseEvent * event)
+/* virtual */ void WView::mouseReleaseEvent(QMouseEvent * event)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->dragging && event->button() == Qt::LeftButton)
     {
@@ -1941,9 +1938,9 @@ QSize WMainView::sizeHint() const
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WMainView::mouseDoubleClickEvent(QMouseEvent * event)
+/* virtual */ void WView::mouseDoubleClickEvent(QMouseEvent * event)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->dragging) return;
 
@@ -1965,9 +1962,9 @@ QSize WMainView::sizeHint() const
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WMainView::mouseMoveEvent(QMouseEvent * event)
+/* virtual */ void WView::mouseMoveEvent(QMouseEvent * event)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     d->setEntered(true);
 
@@ -2001,9 +1998,9 @@ QSize WMainView::sizeHint() const
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WMainView::dragEnterEvent(QDragEnterEvent * event)
+/* virtual */ void WView::dragEnterEvent(QDragEnterEvent * event)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     activate();
 
@@ -2046,9 +2043,9 @@ QSize WMainView::sizeHint() const
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WMainView::keyPressEvent(QKeyEvent * event)
+/* virtual */ void WView::keyPressEvent(QKeyEvent * event)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
 #ifdef Q_OS_WIN
     d->keyVirtual = event->nativeVirtualKey();
@@ -2088,9 +2085,9 @@ QSize WMainView::sizeHint() const
     }
 }
 
-/* virtual */ void WMainView::keyReleaseEvent(QKeyEvent * event)
+/* virtual */ void WView::keyReleaseEvent(QKeyEvent * event)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
 #ifdef Q_OS_WIN
     d->keyVirtual = 0;
@@ -2123,9 +2120,9 @@ QSize WMainView::sizeHint() const
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WMainView::focusInEvent(QFocusEvent * event)
+/* virtual */ void WView::focusInEvent(QFocusEvent * event)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     d->setActive(true);
 
@@ -2139,9 +2136,9 @@ QSize WMainView::sizeHint() const
     WAbstractView::focusInEvent(event);
 }
 
-/* virtual */ void WMainView::focusOutEvent(QFocusEvent * event)
+/* virtual */ void WView::focusOutEvent(QFocusEvent * event)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     d->setActive  (false);
     d->setDragging(false);
@@ -2166,16 +2163,16 @@ QSize WMainView::sizeHint() const
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WMainView::timerEvent(QTimerEvent *)
+/* virtual */ void WView::timerEvent(QTimerEvent *)
 {
     updateHover();
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WMainView::closeEvent(QCloseEvent * event)
+/* virtual */ void WView::closeEvent(QCloseEvent * event)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->closed) return;
 
@@ -2190,11 +2187,11 @@ QSize WMainView::sizeHint() const
 // WAbstractView reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WMainView::onStateChanged(Qt::WindowState state)
+/* virtual */ void WView::onStateChanged(Qt::WindowState state)
 {
     if (state == Qt::WindowMaximized)
     {
-        Q_D(WMainView);
+        Q_D(WView);
 
         if (d->maximized == false)
         {
@@ -2205,7 +2202,7 @@ QSize WMainView::sizeHint() const
     }
     else // if (state == Qt::WindowNoState)
     {
-        Q_D(WMainView);
+        Q_D(WView);
 
         if (d->maximized)
         {
@@ -2222,14 +2219,14 @@ QSize WMainView::sizeHint() const
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-QDeclarativeItem * WMainView::item() const
+QDeclarativeItem * WView::item() const
 {
-    Q_D(const WMainView); return d->item;
+    Q_D(const WView); return d->item;
 }
 
-void WMainView::setItem(QDeclarativeItem * item)
+void WView::setItem(QDeclarativeItem * item)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->item)
     {
@@ -2262,9 +2259,9 @@ void WMainView::setItem(QDeclarativeItem * item)
 
 //-------------------------------------------------------------------------------------------------
 
-qreal WMainView::itemWidth() const
+qreal WView::itemWidth() const
 {
-    Q_D(const WMainView);
+    Q_D(const WView);
 
     if (d->item)
     {
@@ -2273,9 +2270,9 @@ qreal WMainView::itemWidth() const
     else return 0;
 }
 
-qreal WMainView::itemHeight() const
+qreal WView::itemHeight() const
 {
-    Q_D(const WMainView);
+    Q_D(const WView);
 
     if (d->item)
     {
@@ -2286,14 +2283,14 @@ qreal WMainView::itemHeight() const
 
 //-------------------------------------------------------------------------------------------------
 
-Qt::WindowFlags WMainView::flags() const
+Qt::WindowFlags WView::flags() const
 {
-    Q_D(const WMainView); return d->flags;
+    Q_D(const WView); return d->flags;
 }
 
-void WMainView::setFlags(Qt::WindowFlags flags)
+void WView::setFlags(Qt::WindowFlags flags)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->flags == flags) return;
 
@@ -2306,11 +2303,11 @@ void WMainView::setFlags(Qt::WindowFlags flags)
 
 //-------------------------------------------------------------------------------------------------
 
-void WMainView::setX(int x)
+void WView::setX(int x)
 {
     if (this->x() == x) return;
 
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->maximized || d->fullScreen)
     {
@@ -2326,11 +2323,11 @@ void WMainView::setX(int x)
     emit xChanged();
 }
 
-void WMainView::setY(int y)
+void WView::setY(int y)
 {
     if (this->y() == y) return;
 
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->maximized || d->fullScreen)
     {
@@ -2348,11 +2345,11 @@ void WMainView::setY(int y)
 
 //-------------------------------------------------------------------------------------------------
 
-void WMainView::setWidth(int width)
+void WView::setWidth(int width)
 {
     if (this->width() == width || width < 0) return;
 
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->maximized || d->fullScreen)
     {
@@ -2368,11 +2365,11 @@ void WMainView::setWidth(int width)
     emit widthChanged();
 }
 
-void WMainView::setHeight(int height)
+void WView::setHeight(int height)
 {
     if (this->height() == height || height < 0) return;
 
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->maximized || d->fullScreen)
     {
@@ -2390,21 +2387,21 @@ void WMainView::setHeight(int height)
 
 //-------------------------------------------------------------------------------------------------
 
-int WMainView::centerX() const
+int WView::centerX() const
 {
     return (availableGeometry().width() - width()) / 2;
 }
 
-int WMainView::centerY() const
+int WView::centerY() const
 {
     return (availableGeometry().height() - height()) / 2;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-qreal WMainView::originX() const
+qreal WView::originX() const
 {
-    Q_D(const WMainView);
+    Q_D(const WView);
 
     if (d->item)
     {
@@ -2413,9 +2410,9 @@ qreal WMainView::originX() const
     else return 0;
 }
 
-void WMainView::setOriginX(qreal x)
+void WView::setOriginX(qreal x)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->item == NULL || d->item->x() == -x) return;
 
@@ -2424,9 +2421,9 @@ void WMainView::setOriginX(qreal x)
     emit originXChanged();
 }
 
-qreal WMainView::originY() const
+qreal WView::originY() const
 {
-    Q_D(const WMainView);
+    Q_D(const WView);
 
     if (d->item)
     {
@@ -2435,9 +2432,9 @@ qreal WMainView::originY() const
     else return 0;
 }
 
-void WMainView::setOriginY(qreal y)
+void WView::setOriginY(qreal y)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->item == NULL || d->item->y() == -y) return;
 
@@ -2448,14 +2445,14 @@ void WMainView::setOriginY(qreal y)
 
 //-------------------------------------------------------------------------------------------------
 
-qreal WMainView::zoom() const
+qreal WView::zoom() const
 {
-    Q_D(const WMainView); return d->zoom;
+    Q_D(const WView); return d->zoom;
 }
 
-void WMainView::setZoom(qreal zoom)
+void WView::setZoom(qreal zoom)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     d->zoom = zoom;
 
@@ -2469,14 +2466,14 @@ void WMainView::setZoom(qreal zoom)
 
 //-------------------------------------------------------------------------------------------------
 
-int WMainView::minimumWidth() const
+int WView::minimumWidth() const
 {
-    Q_D(const WMainView); return d->minimumWidth;
+    Q_D(const WView); return d->minimumWidth;
 }
 
-void WMainView::setMinimumWidth(int width)
+void WView::setMinimumWidth(int width)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->minimumWidth == width) return;
 
@@ -2487,14 +2484,14 @@ void WMainView::setMinimumWidth(int width)
     minimumWidthChanged();
 }
 
-int WMainView::minimumHeight() const
+int WView::minimumHeight() const
 {
-    Q_D(const WMainView); return d->minimumHeight;
+    Q_D(const WView); return d->minimumHeight;
 }
 
-void WMainView::setMinimumHeight(int height)
+void WView::setMinimumHeight(int height)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->minimumHeight == height) return;
 
@@ -2507,14 +2504,14 @@ void WMainView::setMinimumHeight(int height)
 
 //-------------------------------------------------------------------------------------------------
 
-int WMainView::maximumWidth() const
+int WView::maximumWidth() const
 {
-    Q_D(const WMainView); return d->maximumWidth;
+    Q_D(const WView); return d->maximumWidth;
 }
 
-void WMainView::setMaximumWidth(int width)
+void WView::setMaximumWidth(int width)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->maximumWidth == width) return;
 
@@ -2529,14 +2526,14 @@ void WMainView::setMaximumWidth(int width)
     maximumWidthChanged();
 }
 
-int WMainView::maximumHeight() const
+int WView::maximumHeight() const
 {
-    Q_D(const WMainView); return d->maximumHeight;
+    Q_D(const WView); return d->maximumHeight;
 }
 
-void WMainView::setMaximumHeight(int height)
+void WView::setMaximumHeight(int height)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->maximumHeight == height) return;
 
@@ -2553,21 +2550,21 @@ void WMainView::setMaximumHeight(int height)
 
 //-------------------------------------------------------------------------------------------------
 
-QRect WMainView::geometryNormal() const
+QRect WView::geometryNormal() const
 {
-    Q_D(const WMainView); return d->geometryNormal;
+    Q_D(const WView); return d->geometryNormal;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-bool WMainView::isMinimized() const
+bool WView::isMinimized() const
 {
-    Q_D(const WMainView); return d->minimized;
+    Q_D(const WView); return d->minimized;
 }
 
-void WMainView::setMinimized(bool minimized)
+void WView::setMinimized(bool minimized)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->minimized == minimized) return;
 
@@ -2581,14 +2578,14 @@ void WMainView::setMinimized(bool minimized)
 
 //-------------------------------------------------------------------------------------------------
 
-bool WMainView::isMaximized() const
+bool WView::isMaximized() const
 {
-    Q_D(const WMainView); return d->maximized;
+    Q_D(const WView); return d->maximized;
 }
 
-void WMainView::setMaximized(bool maximized)
+void WView::setMaximized(bool maximized)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->maximized == maximized) return;
 
@@ -2628,14 +2625,14 @@ void WMainView::setMaximized(bool maximized)
 
 //-------------------------------------------------------------------------------------------------
 
-bool WMainView::isFullScreen() const
+bool WView::isFullScreen() const
 {
-    Q_D(const WMainView); return d->fullScreen;
+    Q_D(const WView); return d->fullScreen;
 }
 
-void WMainView::setFullScreen(bool fullScreen)
+void WView::setFullScreen(bool fullScreen)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->fullScreen == fullScreen) return;
 
@@ -2661,14 +2658,14 @@ void WMainView::setFullScreen(bool fullScreen)
 
 //-------------------------------------------------------------------------------------------------
 
-bool WMainView::isLocked() const
+bool WView::isLocked() const
 {
-    Q_D(const WMainView); return d->locked;
+    Q_D(const WView); return d->locked;
 }
 
-void WMainView::setLocked(bool locked)
+void WView::setLocked(bool locked)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->locked == locked) return;
 
@@ -2691,72 +2688,72 @@ void WMainView::setLocked(bool locked)
 
 //-------------------------------------------------------------------------------------------------
 
-bool WMainView::isActive() const
+bool WView::isActive() const
 {
-    Q_D(const WMainView); return d->active;
+    Q_D(const WView); return d->active;
 }
 
-bool WMainView::isEntered() const
+bool WView::isEntered() const
 {
-    Q_D(const WMainView); return d->entered;
+    Q_D(const WView); return d->entered;
 }
 
-bool WMainView::isPressed() const
+bool WView::isPressed() const
 {
-    Q_D(const WMainView); return d->pressed;
+    Q_D(const WView); return d->pressed;
 }
 
-bool WMainView::isDragging() const
+bool WView::isDragging() const
 {
-    Q_D(const WMainView); return d->dragging;
+    Q_D(const WView); return d->dragging;
 }
 
-bool WMainView::isDragged() const
+bool WView::isDragged() const
 {
-    Q_D(const WMainView); return d->dragged;
+    Q_D(const WView); return d->dragged;
 }
 
-bool WMainView::isResizing() const
+bool WView::isResizing() const
 {
-    Q_D(const WMainView); return d->resizing;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-QPoint WMainView::mousePos() const
-{
-    Q_D(const WMainView); return d->mousePos;
+    Q_D(const WView); return d->resizing;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-int WMainView::mouseX() const
+QPoint WView::mousePos() const
 {
-    Q_D(const WMainView); return d->mousePos.x();
-}
-
-int WMainView::mouseY() const
-{
-    Q_D(const WMainView); return d->mousePos.y();
+    Q_D(const WView); return d->mousePos;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-WDeclarativeMouseArea::CursorShape WMainView::mouseCursor() const
+int WView::mouseX() const
 {
-    Q_D(const WMainView); return d->cursor;
+    Q_D(const WView); return d->mousePos.x();
+}
+
+int WView::mouseY() const
+{
+    Q_D(const WView); return d->mousePos.y();
 }
 
 //-------------------------------------------------------------------------------------------------
 
-bool WMainView::autoSize() const
+WDeclarativeMouseArea::CursorShape WView::mouseCursor() const
 {
-    Q_D(const WMainView); return d->autoSize;
+    Q_D(const WView); return d->cursor;
 }
 
-void WMainView::setAutoSize(bool autoSize)
+//-------------------------------------------------------------------------------------------------
+
+bool WView::autoSize() const
 {
-    Q_D(WMainView);
+    Q_D(const WView); return d->autoSize;
+}
+
+void WView::setAutoSize(bool autoSize)
+{
+    Q_D(WView);
 
     if (d->autoSize == autoSize) return;
 
@@ -2767,14 +2764,14 @@ void WMainView::setAutoSize(bool autoSize)
 
 //-------------------------------------------------------------------------------------------------
 
-bool WMainView::opengl() const
+bool WView::opengl() const
 {
-    Q_D(const WMainView); return d->opengl;
+    Q_D(const WView); return d->opengl;
 }
 
-void WMainView::setOpengl(bool enabled)
+void WView::setOpengl(bool enabled)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->opengl == enabled) return;
 
@@ -2798,14 +2795,14 @@ void WMainView::setOpengl(bool enabled)
 
 //-------------------------------------------------------------------------------------------------
 
-bool WMainView::antialias() const
+bool WView::antialias() const
 {
-    Q_D(const WMainView); return d->antialias;
+    Q_D(const WView); return d->antialias;
 }
 
-void WMainView::setAntialias(bool enabled)
+void WView::setAntialias(bool enabled)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->antialias == enabled) return;
 
@@ -2818,14 +2815,14 @@ void WMainView::setAntialias(bool enabled)
 
 //-------------------------------------------------------------------------------------------------
 
-bool WMainView::vsync() const
+bool WView::vsync() const
 {
-    Q_D(const WMainView); return d->vsync;
+    Q_D(const WView); return d->vsync;
 }
 
-void WMainView::setVsync(bool enabled)
+void WView::setVsync(bool enabled)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->vsync == enabled) return;
 
@@ -2838,14 +2835,14 @@ void WMainView::setVsync(bool enabled)
 
 //-------------------------------------------------------------------------------------------------
 
-bool WMainView::hoverEnabled() const
+bool WView::hoverEnabled() const
 {
-    Q_D(const WMainView); return d->hover;
+    Q_D(const WView); return d->hover;
 }
 
-void WMainView::setHoverEnabled(bool enabled)
+void WView::setHoverEnabled(bool enabled)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->hover == enabled) return;
 
@@ -2858,14 +2855,14 @@ void WMainView::setHoverEnabled(bool enabled)
 
 //-------------------------------------------------------------------------------------------------
 
-bool WMainView::fadeEnabled() const
+bool WView::fadeEnabled() const
 {
-    Q_D(const WMainView); return d->fade;
+    Q_D(const WView); return d->fade;
 }
 
-void WMainView::setFadeEnabled(bool enabled)
+void WView::setFadeEnabled(bool enabled)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->fade == enabled) return;
 
@@ -2883,14 +2880,14 @@ void WMainView::setFadeEnabled(bool enabled)
     emit fadeEnabledChanged();
 }
 
-int WMainView::fadeDuration() const
+int WView::fadeDuration() const
 {
-    Q_D(const WMainView); return d->fadeDuration;
+    Q_D(const WView); return d->fadeDuration;
 }
 
-void WMainView::setFadeDuration(int msec)
+void WView::setFadeDuration(int msec)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->fadeDuration == msec) return;
 
@@ -2904,14 +2901,14 @@ void WMainView::setFadeDuration(int msec)
 //-------------------------------------------------------------------------------------------------
 // Mouse idle
 
-bool WMainView::idleCheck() const
+bool WView::idleCheck() const
 {
-    Q_D(const WMainView); return d->idleCheck;
+    Q_D(const WView); return d->idleCheck;
 }
 
-void WMainView::setIdleCheck(bool check)
+void WView::setIdleCheck(bool check)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->idleCheck == check) return;
 
@@ -2930,14 +2927,14 @@ void WMainView::setIdleCheck(bool check)
 
 //-------------------------------------------------------------------------------------------------
 
-bool WMainView::idle() const
+bool WView::idle() const
 {
-    Q_D(const WMainView); return d->idle;
+    Q_D(const WView); return d->idle;
 }
 
-void WMainView::setIdle(bool idle)
+void WView::setIdle(bool idle)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->idle == idle) return;
 
@@ -2950,14 +2947,14 @@ void WMainView::setIdle(bool idle)
 
 //-------------------------------------------------------------------------------------------------
 
-int WMainView::idleDelay() const
+int WView::idleDelay() const
 {
-    Q_D(const WMainView); return d->idleDelay;
+    Q_D(const WView); return d->idleDelay;
 }
 
-void WMainView::setIdleDelay(int msec)
+void WView::setIdleDelay(int msec)
 {
-    Q_D(WMainView);
+    Q_D(WView);
 
     if (d->idleDelay == msec) return;
 
@@ -2976,32 +2973,32 @@ void WMainView::setIdleDelay(int msec)
 //-------------------------------------------------------------------------------------------------
 // Keys
 
-bool WMainView::keyShiftPressed() const
+bool WView::keyShiftPressed() const
 {
-    Q_D(const WMainView); return d->keyShiftPressed;
+    Q_D(const WView); return d->keyShiftPressed;
 }
 
-bool WMainView::keyControlPressed() const
+bool WView::keyControlPressed() const
 {
-    Q_D(const WMainView); return d->keyControlPressed;
+    Q_D(const WView); return d->keyControlPressed;
 }
 
-bool WMainView::keyAltPressed() const
+bool WView::keyAltPressed() const
 {
-    Q_D(const WMainView); return d->keyAltPressed;
+    Q_D(const WView); return d->keyAltPressed;
 }
 
 //-------------------------------------------------------------------------------------------------
 // Screen
 
-QRect WMainView::availableGeometry() const
+QRect WView::availableGeometry() const
 {
     return wControllerView->availableGeometry(this);
 }
 
-QRect WMainView::screenGeometry() const
+QRect WView::screenGeometry() const
 {
     return wControllerView->screenGeometry(this);
 }
 
-#endif // SK_NO_MAINVIEW
+#endif // SK_NO_VIEW

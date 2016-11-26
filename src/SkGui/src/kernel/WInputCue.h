@@ -27,7 +27,7 @@
 
 // Forward declarations
 class WInputCuePrivate;
-class WMainView;
+class WView;
 
 //-------------------------------------------------------------------------------------------------
 // WInputCueAction
@@ -59,7 +59,7 @@ class SK_GUI_EXPORT WInputCue : public QObject, public WPrivatable
 {
     Q_OBJECT
 
-    Q_PROPERTY(WMainView * view READ view WRITE setMainView NOTIFY viewChanged)
+    Q_PROPERTY(WView * view READ view WRITE setView NOTIFY viewChanged)
 
 public:
     explicit WInputCue(QObject * parent = NULL);
@@ -75,7 +75,7 @@ public: // Interface
     Q_INVOKABLE void clear();
 
     //---------------------------------------------------------------------------------------------
-    // MainView
+    // View
 
     Q_INVOKABLE void mouseMove(int delay, int x, int y, Qt::MouseButton button = Qt::NoButton);
 
@@ -124,8 +124,8 @@ signals:
     void viewChanged();
 
 public: // Properties
-    WMainView * view() const;
-    void        setMainView(WMainView * view);
+    WView * view() const;
+    void    setView(WView * view);
 
 private:
     W_DECLARE_PRIVATE(WInputCue)

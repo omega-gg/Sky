@@ -19,7 +19,7 @@
 #ifndef SK_NO_DECLARATIVEITEM
 
 // Sk includes
-#include <WMainView>
+#include <WView>
 
 //-------------------------------------------------------------------------------------------------
 // Private
@@ -67,7 +67,7 @@ WDeclarativeItem::WDeclarativeItem(WDeclarativeItemPrivate * p, QDeclarativeItem
 
         QGraphicsScene * scene = qvariant_cast<QGraphicsScene *> (value);
 
-        WMainViewScene * mainScene = static_cast<WMainViewScene *> (scene);
+        WViewScene * mainScene = static_cast<WViewScene *> (scene);
 
         if (mainScene)
         {
@@ -91,7 +91,7 @@ WDeclarativeItem::WDeclarativeItem(WDeclarativeItemPrivate * p, QDeclarativeItem
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-WMainView * WDeclarativeItem::view() const
+WView * WDeclarativeItem::view() const
 {
     Q_D(const WDeclarativeItem); return d->view;
 }

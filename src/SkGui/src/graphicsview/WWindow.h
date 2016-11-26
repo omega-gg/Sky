@@ -20,11 +20,11 @@
 // Sk includes
 #include <WDeclarativeMouseArea>
 
-#ifndef SK_NO_MAINVIEW
+#ifndef SK_NO_WINDOW
 
 // Forward declarations
 class WWindowPrivate;
-class WMainView;
+class WView;
 class WDeclarativeKeyEvent;
 
 //-------------------------------------------------------------------------------------------------
@@ -35,7 +35,7 @@ class SK_GUI_EXPORT WWindow : public WDeclarativeMouseArea
 {
     Q_OBJECT
 
-    Q_PROPERTY(WMainView * view READ view CONSTANT)
+    Q_PROPERTY(WView * view READ view CONSTANT)
 
     Q_PROPERTY(QString icon READ icon WRITE setIcon NOTIFY iconChanged)
 
@@ -44,7 +44,7 @@ class SK_GUI_EXPORT WWindow : public WDeclarativeMouseArea
     Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity NOTIFY opacityChanged)
 
     //---------------------------------------------------------------------------------------------
-    // WMainView
+    // WView
     //---------------------------------------------------------------------------------------------
 
     Q_PROPERTY(qreal itemWidth  READ itemWidth  NOTIFY itemWidthChanged)
@@ -273,7 +273,7 @@ signals:
     void opacityChanged();
 
     //---------------------------------------------------------------------------------------------
-    // WMainView
+    // WView
 
     void messageReceived(const QString & message);
 
@@ -354,7 +354,7 @@ signals:
     void availableGeometryChanged();
 
 public: // Properties
-    WMainView * view() const;
+    WView * view() const;
 
     QString icon() const;
     void    setIcon(const QString & icon);
@@ -366,7 +366,7 @@ public: // Properties
     void  setOpacity(qreal opacity);
 
     //---------------------------------------------------------------------------------------------
-    // WMainView
+    // WView
 
     qreal itemWidth () const;
     qreal itemHeight() const;
@@ -488,5 +488,5 @@ private:
     friend class WWindowHoverItem;
 };
 
-#endif // SK_NO_MAINVIEW
-#endif // WMAINVIEW_H
+#endif // SK_NO_WINDOW
+#endif // WWINDOW_H

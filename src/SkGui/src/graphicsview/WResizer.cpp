@@ -23,10 +23,10 @@
 #include <QCursor>
 
 // Sk includes
-#include <WMainView>
+#include <WView>
 
 // Private includes
-#include <private/WMainView_p>
+#include <private/WView_p>
 
 #if defined(Q_OS_WIN)
 #include <qt_windows.h>

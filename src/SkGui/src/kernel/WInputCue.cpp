@@ -19,7 +19,7 @@
 #ifndef SK_NO_INPUTCUE
 
 // Sk includes
-#include <WMainView>
+#include <WView>
 
 //=================================================================================================
 // WInputCueAction
@@ -76,7 +76,7 @@ public: // WInputCueAction implementation
     }
 
 public: // Variables
-    WMainView * view;
+    WView * view;
 
     int x;
     int y;
@@ -97,7 +97,7 @@ public: // WInputCueAction implementation
     }
 
 public: // Variables
-    WMainView * view;
+    WView * view;
 
     Qt::MouseButton button;
 };
@@ -115,7 +115,7 @@ public: // WInputCueAction implementation
     }
 
 public: // Variables
-    WMainView * view;
+    WView * view;
 
     Qt::MouseButton button;
 };
@@ -133,7 +133,7 @@ public: // WInputCueAction implementation
     }
 
 public: // Variables
-    WMainView * view;
+    WView * view;
 
     Qt::Orientation orientation;
     int             delta;
@@ -152,7 +152,7 @@ public: // WInputCueAction implementation
     }
 
 public: // Variables
-    WMainView * view;
+    WView * view;
 
     int                   key;
     Qt::KeyboardModifiers modifiers;
@@ -171,7 +171,7 @@ public: // WInputCueAction implementation
     }
 
 public: // Variables
-    WMainView * view;
+    WView * view;
 
     int                   key;
     Qt::KeyboardModifiers modifiers;
@@ -322,7 +322,7 @@ void WInputCuePrivate::onFinished()
 }
 
 //-------------------------------------------------------------------------------------------------
-// MainView
+// View
 
 /* Q_INVOKABLE */ void WInputCue::mouseMove(int delay, int x, int y, Qt::MouseButton button)
 {
@@ -516,12 +516,12 @@ void WInputCuePrivate::onFinished()
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-WMainView * WInputCue::view() const
+WView * WInputCue::view() const
 {
     Q_D(const WInputCue); return d->view;
 }
 
-void WInputCue::setMainView(WMainView * view)
+void WInputCue::setView(WView * view)
 {
     Q_D(WInputCue);
 

@@ -195,7 +195,7 @@ BaseWindow
         size: (maximized == false && fullScreen == false) ? st.window_borderSize : 0
     }
 
-    MainViewResizer
+    ViewResizer
     {
         id: resizer
 

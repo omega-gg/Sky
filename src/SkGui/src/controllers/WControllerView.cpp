@@ -53,12 +53,12 @@ void WControllerViewPrivate::init()
 // Functions
 //-------------------------------------------------------------------------------------------------
 
-void WControllerViewPrivate::registerMainView(WMainView * view)
+void WControllerViewPrivate::registerView(WView * view)
 {
     views.append(view);
 }
 
-void WControllerViewPrivate::unregisterMainView(WMainView * view)
+void WControllerViewPrivate::unregisterView(WView * view)
 {
     views.removeOne(view);
 }

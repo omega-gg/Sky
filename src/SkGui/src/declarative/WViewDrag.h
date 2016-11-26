@@ -14,25 +14,25 @@
 */
 //=================================================================================================
 
-#ifndef WMAINVIEWDRAG_H
-#define WMAINVIEWDRAG_H
+#ifndef WVIEWDRAG_H
+#define WVIEWDRAG_H
 
 // Sk includes
 #include <WDeclarativeMouseArea>
 
-#ifndef SK_NO_MAINVIEWDRAG
+#ifndef SK_NO_VIEWDRAG
 
 // Forward declarations
-class WMainViewDragPrivate;
+class WViewDragPrivate;
 
-class SK_GUI_EXPORT WMainViewDrag : public WDeclarativeMouseArea
+class SK_GUI_EXPORT WViewDrag : public WDeclarativeMouseArea
 {
     Q_OBJECT
 
     Q_PROPERTY(bool dragEnabled READ dragEnabled WRITE setDragEnabled NOTIFY dragEnabledChanged)
 
 public:
-    explicit WMainViewDrag(QDeclarativeItem * parent = NULL);
+    explicit WViewDrag(QDeclarativeItem * parent = NULL);
 
 protected: // Events
     /* virtual */ void mousePressEvent  (QGraphicsSceneMouseEvent * event);
@@ -50,8 +50,8 @@ public: // Properties
     void setDragEnabled(bool enabled);
 
 private:
-    W_DECLARE_PRIVATE(WMainViewDrag)
+    W_DECLARE_PRIVATE(WViewDrag)
 };
 
-#endif // SK_NO_MAINVIEWDRAG
-#endif // WMAINVIEWDRAG_H
+#endif // SK_NO_VIEWDRAG
+#endif // WVIEWDRAG_H

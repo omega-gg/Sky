@@ -14,24 +14,24 @@
 */
 //=================================================================================================
 
-#ifndef WMAINVIEWRESIZER_H
-#define WMAINVIEWRESIZER_H
+#ifndef WVIEWRESIZER_H
+#define WVIEWRESIZER_H
 
 // Sk includes
 #include <WDeclarativeItem>
 
-#ifndef SK_NO_MAINVIEWRESIZER
+#ifndef SK_NO_VIEWRESIZER
 
-class WMainViewResizerPrivate;
+class WViewResizerPrivate;
 
-class SK_GUI_EXPORT WMainViewResizer : public WDeclarativeItem
+class SK_GUI_EXPORT WViewResizer : public WDeclarativeItem
 {
     Q_OBJECT
 
     Q_PROPERTY(int size READ size WRITE setSize NOTIFY sizeChanged)
 
 public:
-    explicit WMainViewResizer(QDeclarativeItem * parent = NULL);
+    explicit WViewResizer(QDeclarativeItem * parent = NULL);
 
 protected: // QDeclarativeItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
@@ -44,8 +44,8 @@ public: // Properties
     void setSize(int size);
 
 private:
-    W_DECLARE_PRIVATE(WMainViewResizer)
+    W_DECLARE_PRIVATE(WViewResizer)
 };
 
-#endif // SK_NO_MAINVIEWRESIZER
-#endif // WMAINVIEWRESIZER_H
+#endif // SK_NO_VIEWRESIZER
+#endif // WVIEWRESIZER_H

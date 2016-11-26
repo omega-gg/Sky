@@ -93,8 +93,8 @@ private:
     W_DECLARE_PRIVATE   (WControllerView)
     W_DECLARE_CONTROLLER(WControllerView)
 
-    friend class WMainView;
-    friend class WMainViewPrivate;
+    friend class WView;
+    friend class WViewPrivate;
 };
 
 #include <private/WControllerView_p>

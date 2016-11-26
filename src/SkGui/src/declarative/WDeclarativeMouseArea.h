@@ -439,8 +439,8 @@ private: // Functions
 private:
     W_DECLARE_PRIVATE(WDeclarativeMouseArea)
 
-    friend class WMainView;
-    friend class WMainViewPrivate;
+    friend class WView;
+    friend class WViewPrivate;
 };
 
 #endif // SK_NO_DECLARATIVEMOUSEAREA

@@ -51,7 +51,7 @@ public: // Slots
     void onFinished();
 
 public: // Variables
-    WMainView * view;
+    WView * view;
 
     QList<WInputCueAction *> actions;
 

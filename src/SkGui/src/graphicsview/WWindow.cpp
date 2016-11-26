@@ -25,7 +25,7 @@
 // Sk includes
 #include <WControllerApplication>
 #include <WControllerFile>
-#include <WMainView>
+#include <WView>
 
 //-------------------------------------------------------------------------------------------------
 // Private
@@ -53,14 +53,14 @@ void WWindowPrivate::init()
     hoverItem = NULL;
 
     //---------------------------------------------------------------------------------------------
-    // MainView
+    // View
 
 #if defined(SK_WIN_NATIVE)
-    view = new WMainView(q, NULL);
+    view = new WView(q, NULL);
 #elif defined(Q_OS_WIN)
-    view = new WMainView(q, NULL, Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
+    view = new WView(q, NULL, Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
 #else
-    view = new WMainView(q, NULL, Qt::FramelessWindowHint);
+    view = new WView(q, NULL, Qt::FramelessWindowHint);
 #endif
 
     view->setWindowTitle(sk->name());
@@ -555,7 +555,7 @@ void WWindowPrivate::init()
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-WMainView * WWindow::view() const
+WView * WWindow::view() const
 {
     Q_D(const WWindow); return d->view;
 }
@@ -619,7 +619,7 @@ void WWindow::setOpacity(qreal opacity)
 }
 
 //-------------------------------------------------------------------------------------------------
-// WMainView
+// WView
 //-------------------------------------------------------------------------------------------------
 
 qreal WWindow::itemWidth() const

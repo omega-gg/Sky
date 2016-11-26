@@ -35,12 +35,12 @@ public:
     void init();
 
 public: // Functions
-    bool dragEnterEvent(const QPointF & pos, WMainViewDragData * data);
+    bool dragEnterEvent(const QPointF & pos, WViewDragData * data);
     void dragLeaveEvent();
 
-    void dragMoveEvent(const QPointF & pos, const WMainViewDragData & data);
+    void dragMoveEvent(const QPointF & pos, const WViewDragData & data);
 
-    void dropEvent(const QPointF & pos, const WMainViewDragData & data);
+    void dropEvent(const QPointF & pos, const WViewDragData & data);
 
     void saveEvent(QGraphicsSceneMouseEvent * event);
 

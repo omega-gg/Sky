@@ -36,7 +36,7 @@
 #ifndef SK_NO_CONTROLLERVIEW
 
 // Forward declarations
-class WMainView;
+class WView;
 class QPainter;
 class QGraphicsObject;
 
@@ -50,15 +50,15 @@ public:
     void init();
 
 public: // Functions
-    void registerMainView  (WMainView * view);
-    void unregisterMainView(WMainView * view);
+    void registerView  (WView * view);
+    void unregisterView(WView * view);
 
     void paintRecursive(QPainter * painter, QGraphicsObject * item, bool forceVisible) const;
     void paintChild    (QPainter * painter, QGraphicsObject * item, bool forceVisible) const;
     void paintItem     (QPainter * painter, QGraphicsObject * item)                    const;
 
 public: // Variables
-    QList<WMainView *> views;
+    QList<WView *> views;
 
     WControllerView::LoadMode loadMode;
 

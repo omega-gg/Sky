@@ -14,8 +14,8 @@
 */
 //=================================================================================================
 
-#ifndef WMAINVIEW_H
-#define WMAINVIEW_H
+#ifndef WVIEW_H
+#define WVIEW_H
 
 // Qt includes
 #include <QGraphicsScene>
@@ -25,10 +25,10 @@
 #include <WAbstractView>
 #include <WDeclarativeMouseArea>
 
-#ifndef SK_NO_MAINVIEW
+#ifndef SK_NO_VIEW
 
 class QDeclarativeItem;
-class WMainViewPrivate;
+class WViewPrivate;
 class WDeclarativeMouseEvent;
 
 //-------------------------------------------------------------------------------------------------
@@ -130,10 +130,10 @@ private: // Variables
 };
 
 //-------------------------------------------------------------------------------------------------
-// WMainView
+// WView
 //-------------------------------------------------------------------------------------------------
 
-class SK_GUI_EXPORT WMainView : public WAbstractView
+class SK_GUI_EXPORT WView : public WAbstractView
 {
     Q_OBJECT
 
@@ -226,12 +226,12 @@ class SK_GUI_EXPORT WMainView : public WAbstractView
     Q_PROPERTY(QRect screenGeometry    READ screenGeometry    NOTIFY availableGeometryChanged)
 
 public:
-    WMainView(QDeclarativeItem * item, QWidget * parent = NULL, Qt::WindowFlags flags = 0);
+    WView(QDeclarativeItem * item, QWidget * parent = NULL, Qt::WindowFlags flags = 0);
 
-    WMainView(QWidget * parent = NULL, Qt::WindowFlags flags = 0);
+    WView(QWidget * parent = NULL, Qt::WindowFlags flags = 0);
 protected:
-    WMainView(WMainViewPrivate * p,
-              QDeclarativeItem * item, QWidget * parent = NULL, Qt::WindowFlags flags = 0);
+    WView(WViewPrivate     * p,
+          QDeclarativeItem * item, QWidget * parent = NULL, Qt::WindowFlags flags = 0);
 
 public: // Interface
     Q_INVOKABLE void activate();
@@ -588,7 +588,7 @@ public: // Properties
     QRect screenGeometry   () const;
 
 private:
-    W_DECLARE_PRIVATE(WMainView)
+    W_DECLARE_PRIVATE(WView)
 
     Q_PRIVATE_SLOT(d_func(), void onGeometryChanged     ())
     Q_PRIVATE_SLOT(d_func(), void onFadeTimeout         ())
@@ -597,8 +597,8 @@ private:
 
     friend class WControllerView;
     friend class WControllerViewPrivate;
-    friend class WMainViewDrag;
-    friend class WMainViewDragPrivate;
+    friend class WViewDrag;
+    friend class WViewDragPrivate;
     friend class WDeclarativeMouseArea;
     friend class WDeclarativeMouseAreaPrivate;
     friend class WResizer;
@@ -608,27 +608,27 @@ private:
 };
 
 //-------------------------------------------------------------------------------------------------
-// WMainViewScene
+// WViewScene
 //-------------------------------------------------------------------------------------------------
 
-class SK_GUI_EXPORT WMainViewScene : public QGraphicsScene
+class SK_GUI_EXPORT WViewScene : public QGraphicsScene
 {
     Q_OBJECT
 
 public:
-    WMainViewScene(WMainView * parent);
+    WViewScene(WView * parent);
 
 private: // Variables
-    WMainView * view;
+    WView * view;
 
 private:
-    Q_DISABLE_COPY(WMainViewScene)
+    Q_DISABLE_COPY(WViewScene)
 
     friend class WDeclarativeItem;
     friend class WDeclarativeItemPrivate;
 };
 
-#include <private/WMainView_p>
+#include <private/WView_p>
 
-#endif // SK_NO_MAINVIEW
-#endif // WMAINVIEW_H
+#endif // SK_NO_VIEW
+#endif // WVIEW_H

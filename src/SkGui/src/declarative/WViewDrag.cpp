@@ -14,9 +14,9 @@
 */
 //=================================================================================================
 
-#include "WMainViewDrag.h"
+#include "WViewDrag.h"
 
-#ifndef SK_NO_MAINVIEWDRAG
+#ifndef SK_NO_VIEWDRAG
 
 // Qt includes
 #include <QApplication>
@@ -24,7 +24,7 @@
 #include <QCursor>
 
 // Sk includes
-#include <WMainView>
+#include <WView>
 
 // Private includes
 #include <private/WDeclarativeMouseArea_p>
@@ -33,10 +33,10 @@
 // Private
 //-------------------------------------------------------------------------------------------------
 
-class SK_GUI_EXPORT WMainViewDragPrivate : public WDeclarativeMouseAreaPrivate
+class SK_GUI_EXPORT WViewDragPrivate : public WDeclarativeMouseAreaPrivate
 {
 public:
-    WMainViewDragPrivate(WMainViewDrag * p);
+    WViewDragPrivate(WViewDrag * p);
 
     void init();
 
@@ -50,14 +50,14 @@ public: // Variables
     QPoint dragLastPos;
 
 protected:
-    W_DECLARE_PUBLIC(WMainViewDrag)
+    W_DECLARE_PUBLIC(WViewDrag)
 };
 
 //-------------------------------------------------------------------------------------------------
 
-WMainViewDragPrivate::WMainViewDragPrivate(WMainViewDrag * p) : WDeclarativeMouseAreaPrivate(p) {}
+WViewDragPrivate::WViewDragPrivate(WViewDrag * p) : WDeclarativeMouseAreaPrivate(p) {}
 
-void WMainViewDragPrivate::init()
+void WViewDragPrivate::init()
 {
     hoverRetain = true;
 
@@ -69,7 +69,7 @@ void WMainViewDragPrivate::init()
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WMainViewDragPrivate::clearDrag()
+void WViewDragPrivate::clearDrag()
 {
     dragging = false;
 
@@ -80,19 +80,19 @@ void WMainViewDragPrivate::clearDrag()
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
-/* explicit */ WMainViewDrag::WMainViewDrag(QDeclarativeItem * parent)
-    : WDeclarativeMouseArea(new WMainViewDragPrivate(this), parent)
+/* explicit */ WViewDrag::WViewDrag(QDeclarativeItem * parent)
+    : WDeclarativeMouseArea(new WViewDragPrivate(this), parent)
 {
-    Q_D(WMainViewDrag); d->init();
+    Q_D(WViewDrag); d->init();
 }
 
 //-------------------------------------------------------------------------------------------------
 // Events
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WMainViewDrag::mousePressEvent(QGraphicsSceneMouseEvent * event)
+/* virtual */ void WViewDrag::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
-    Q_D(WMainViewDrag);
+    Q_D(WViewDrag);
 
     WDeclarativeMouseArea::mousePressEvent(event);
 
@@ -106,9 +106,9 @@ void WMainViewDragPrivate::clearDrag()
     }
 }
 
-/* virtual */ void WMainViewDrag::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
+/* virtual */ void WViewDrag::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 {
-    Q_D(WMainViewDrag);
+    Q_D(WViewDrag);
 
     WDeclarativeMouseArea::mouseReleaseEvent(event);
 
@@ -117,9 +117,9 @@ void WMainViewDragPrivate::clearDrag()
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WMainViewDrag::mouseMoveEvent(QGraphicsSceneMouseEvent *)
+/* virtual */ void WViewDrag::mouseMoveEvent(QGraphicsSceneMouseEvent *)
 {
-    Q_D(WMainViewDrag);
+    Q_D(WViewDrag);
 
     if (d->dragging == false) return;
 
@@ -171,13 +171,13 @@ void WMainViewDragPrivate::clearDrag()
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ bool WMainViewDrag::sceneEvent(QEvent * event)
+/* virtual */ bool WViewDrag::sceneEvent(QEvent * event)
 {
     bool result = WDeclarativeMouseArea::sceneEvent(event);
 
     if (event->type() == QEvent::UngrabMouse)
     {
-        Q_D(WMainViewDrag);
+        Q_D(WViewDrag);
 
         d->clearDrag();
     }
@@ -189,14 +189,14 @@ void WMainViewDragPrivate::clearDrag()
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-bool WMainViewDrag::dragEnabled() const
+bool WViewDrag::dragEnabled() const
 {
-    Q_D(const WMainViewDrag); return d->dragEnabled;
+    Q_D(const WViewDrag); return d->dragEnabled;
 }
 
-void WMainViewDrag::setDragEnabled(bool enabled)
+void WViewDrag::setDragEnabled(bool enabled)
 {
-    Q_D(WMainViewDrag);
+    Q_D(WViewDrag);
 
     if (d->dragEnabled == enabled) return;
 
@@ -210,4 +210,4 @@ void WMainViewDrag::setDragEnabled(bool enabled)
     emit dragEnabledChanged(d->dragEnabled);
 }
 
-#endif // SK_NO_MAINVIEWDRAG
+#endif // SK_NO_VIEWDRAG

@@ -14,8 +14,8 @@
 */
 //=================================================================================================
 
-#ifndef WMAINVIEW_P_H
-#define WMAINVIEW_P_H
+#ifndef WVIEW_P_H
+#define WVIEW_P_H
 
 /*  W A R N I N G
     -------------
@@ -34,7 +34,7 @@
 #include <private/WAbstractView_p>
 #include <WDeclarativeMouseArea>
 
-#ifndef SK_NO_MAINVIEW
+#ifndef SK_NO_VIEW
 
 // Forward declarations
 class QDrag;
@@ -42,10 +42,10 @@ class WDeclarativeMouseArea;
 class WResizer;
 
 //-------------------------------------------------------------------------------------------------
-// WMainViewDrag
+// WViewDrag
 //-------------------------------------------------------------------------------------------------
 
-struct WMainViewDragData
+struct WViewDragData
 {
     QString text;
 
@@ -54,15 +54,15 @@ struct WMainViewDragData
 };
 
 //-------------------------------------------------------------------------------------------------
-// WMainViewPrivate
+// WViewPrivate
 //-------------------------------------------------------------------------------------------------
 
-class SK_GUI_EXPORT WMainViewPrivate : public WAbstractViewPrivate
+class SK_GUI_EXPORT WViewPrivate : public WAbstractViewPrivate
 {
 public:
-    WMainViewPrivate(WMainView * p);
+    WViewPrivate(WView * p);
 
-    /* virtual */ ~WMainViewPrivate();
+    /* virtual */ ~WViewPrivate();
 
     void init(QDeclarativeItem * item);
 
@@ -124,7 +124,7 @@ public: // Slots
     void onCursorVisibleChanged();
 
 public: // Variables
-    WMainViewScene * scene;
+    WViewScene * scene;
 
     QDeclarativeItem * item;
 
@@ -207,7 +207,7 @@ public: // Variables
 
     QMimeData * mime;
 
-    WMainViewDragData dragData;
+    WViewDragData dragData;
 
     QList<QGraphicsItem *> itemsDrop;
 
@@ -228,8 +228,8 @@ public: // Variables
     bool keyAccepted;
 
 protected:
-    W_DECLARE_PUBLIC(WMainView)
+    W_DECLARE_PUBLIC(WView)
 };
 
-#endif // SK_NO_MAINVIEW
-#endif // WMAINVIEW_P_H
+#endif // SK_NO_VIEW
+#endif // WVIEW_P_H

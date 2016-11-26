@@ -29,7 +29,7 @@
 
 // Sk includes
 #include <WControllerView>
-#include <WMainView>
+#include <WView>
 
 // Private includes
 #include <private/qobject_p.h>
@@ -301,7 +301,7 @@ void WDeclarativeMouseAreaPrivate::init()
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-bool WDeclarativeMouseAreaPrivate::dragEnterEvent(const QPointF & pos, WMainViewDragData * data)
+bool WDeclarativeMouseAreaPrivate::dragEnterEvent(const QPointF & pos, WViewDragData * data)
 {
     Q_Q(WDeclarativeMouseArea);
 
@@ -335,8 +335,8 @@ void WDeclarativeMouseAreaPrivate::dragLeaveEvent()
 
 //-------------------------------------------------------------------------------------------------
 
-void WDeclarativeMouseAreaPrivate::dragMoveEvent(const QPointF           & pos,
-                                                 const WMainViewDragData & data)
+void WDeclarativeMouseAreaPrivate::dragMoveEvent(const QPointF       & pos,
+                                                 const WViewDragData & data)
 {
     Q_Q(WDeclarativeMouseArea);
 
@@ -351,8 +351,8 @@ void WDeclarativeMouseAreaPrivate::dragMoveEvent(const QPointF           & pos,
 
 //-------------------------------------------------------------------------------------------------
 
-void WDeclarativeMouseAreaPrivate::dropEvent(const QPointF           & pos,
-                                             const WMainViewDragData & data)
+void WDeclarativeMouseAreaPrivate::dropEvent(const QPointF       & pos,
+                                             const WViewDragData & data)
 {
     Q_Q(WDeclarativeMouseArea);
 

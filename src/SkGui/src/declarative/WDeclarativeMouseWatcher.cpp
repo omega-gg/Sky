@@ -23,7 +23,7 @@
 
 // Sk includes
 #include <WControllerView>
-#include <WMainView>
+#include <WView>
 
 //-------------------------------------------------------------------------------------------------
 // Private

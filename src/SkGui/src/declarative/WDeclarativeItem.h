@@ -27,13 +27,13 @@
 
 // Forward declarations
 class WDeclarativeItemPrivate;
-class WMainView;
+class WView;
 
 class SK_GUI_EXPORT WDeclarativeItem : public QDeclarativeItem, public WPrivatable
 {
     Q_OBJECT
 
-    Q_PROPERTY(WMainView * view READ view NOTIFY viewChanged)
+    Q_PROPERTY(WView * view READ view NOTIFY viewChanged)
 
     Q_PROPERTY(QDeclarativeItem * viewport READ viewport NOTIFY viewChanged)
 
@@ -49,7 +49,7 @@ signals:
     void viewChanged();
 
 public: // Properties
-    WMainView * view() const;
+    WView * view() const;
 
     QDeclarativeItem * viewport() const;
 
