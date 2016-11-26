@@ -2603,7 +2603,7 @@ void WMainView::setMaximized(bool maximized)
             showMaximized();
             showNormal   ();
 
-            setGeometry(rect);
+            setGeometry(getGeometry(rect));
 
             return;
         }
