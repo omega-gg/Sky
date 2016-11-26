@@ -365,15 +365,21 @@ void WMainViewPrivate::init(QDeclarativeItem * item)
     q->setAttribute(Qt::WA_OpaquePaintEvent);
     q->setAttribute(Qt::WA_NoSystemBackground);
 
-    q->viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
-    q->viewport()->setAttribute(Qt::WA_NoSystemBackground);
+    QWidget * viewport = q->viewport();
+
+    viewport->setAttribute(Qt::WA_OpaquePaintEvent);
+    viewport->setAttribute(Qt::WA_NoSystemBackground);
 
     //---------------------------------------------------------------------------------------------
     // Default size
 
     updateMinimumSize();
 
-    q->setGeometry(q->getDefaultGeometry());
+    QRect rect = wControllerView->availableGeometry(sk->defaultScreen());
+
+    geometryNormal = getGeometryDefault(rect);
+
+    q->setGeometry(geometryNormal);
 
     //---------------------------------------------------------------------------------------------
     // Timers
@@ -1026,11 +1032,10 @@ void WMainViewPrivate::onGeometryChanged()
 {
     Q_Q(WMainView);
 
-    if (maximized || fullScreen)
+    if (maximized == false && fullScreen == false)
     {
-        setGeometryNormal(q->getDefaultGeometry());
+        q->checkPosition();
     }
-    else q->checkPosition();
 
     emit q->availableGeometryChanged();
 }
@@ -1781,14 +1786,10 @@ QSize WMainView::sizeHint() const
 
     if (d->maximized)
     {
-        d->setGeometryNormal(geometry());
-
         showMaximized();
     }
     else if (d->fullScreen)
     {
-        d->setGeometryNormal(geometry());
-
         showFullScreen();
     }
 }
