@@ -609,10 +609,10 @@ bool WDeclarativeTextPrivate::determineHorizontalAlignment()
 
     if (text.isEmpty())
     {
-#ifdef QT_LATEST
-        if (QApplication::inputMethod()->inputDirection() == Qt::RightToLeft)
-#else
+#ifdef QT_4
         if (QApplication::keyboardInputDirection() == Qt::RightToLeft)
+#else
+        if (QApplication::inputMethod()->inputDirection() == Qt::RightToLeft)
 #endif
         {
             alignToRight = true;

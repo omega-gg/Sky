@@ -23,7 +23,11 @@ win32:CONFIG += dll
 
 DEFINES += SK_CORE_LIBRARY
 
-contains(QT_MAJOR_VERSION, 5): DEFINES += QT_LATEST
+contains(QT_MAJOR_VERSION, 4) {
+    DEFINES += QT_4
+} else {
+    DEFINES += QT_LATEST
+}
 
 include(src/global/global.pri)
 include(src/controllers/controllers.pri)

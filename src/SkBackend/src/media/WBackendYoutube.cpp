@@ -561,7 +561,11 @@ WBackendNetQuery WBackendYoutube::createQuery(const QString & method,
         {
             QUrl url("https://www.youtube.com/results");
 
-#ifdef QT_LATEST
+#ifdef QT_4
+            url.addQueryItem("search_query", q);
+
+            url.addQueryItem("filters", "video");
+#else
             QUrlQuery query(url);
 
             query.addQueryItem("search_query", q);
@@ -569,10 +573,6 @@ WBackendNetQuery WBackendYoutube::createQuery(const QString & method,
             query.addQueryItem("filters", "video");
 
             url.setQuery(query);
-#else
-            url.addQueryItem("search_query", q);
-
-            url.addQueryItem("filters", "video");
 #endif
 
             backendQuery.url = url;
@@ -582,7 +582,11 @@ WBackendNetQuery WBackendYoutube::createQuery(const QString & method,
         {
             QUrl url("https://www.youtube.com/results");
 
-#ifdef QT_LATEST
+#ifdef QT_4
+            url.addQueryItem("search_query", q);
+
+            url.addQueryItem("filters", "channel");
+#else
             QUrlQuery query(url);
 
             query.addQueryItem("search_query", q);
@@ -590,10 +594,6 @@ WBackendNetQuery WBackendYoutube::createQuery(const QString & method,
             query.addQueryItem("filters", "channel");
 
             url.setQuery(query);
-#else
-            url.addQueryItem("search_query", q);
-
-            url.addQueryItem("filters", "channel");
 #endif
 
             backendQuery.url = url;
@@ -603,7 +603,11 @@ WBackendNetQuery WBackendYoutube::createQuery(const QString & method,
         {
             QUrl url("https://www.youtube.com/results");
 
-#ifdef QT_LATEST
+#ifdef QT_4
+            url.addQueryItem("search_query", q);
+
+            url.addQueryItem("filters", "playlist");
+#else
             QUrlQuery query(url);
 
             query.addQueryItem("search_query", q);
@@ -611,10 +615,6 @@ WBackendNetQuery WBackendYoutube::createQuery(const QString & method,
             query.addQueryItem("filters", "playlist");
 
             url.setQuery(query);
-#else
-            url.addQueryItem("search_query", q);
-
-            url.addQueryItem("filters", "playlist");
 #endif
 
             backendQuery.url = url;

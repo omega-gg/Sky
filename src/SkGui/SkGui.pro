@@ -28,7 +28,11 @@ DEFINES += QT_QTLOCKEDFILE_IMPORT
 DEFINES       += SK_GUI_LIBRARY
 win32:DEFINES += SK_WIN_NATIVE
 
-contains(QT_MAJOR_VERSION, 5): DEFINES += QT_LATEST
+contains(QT_MAJOR_VERSION, 4) {
+    DEFINES += QT_4
+} else {
+    DEFINES += QT_LATEST
+}
 
 include(src/controllers/controllers.pri)
 include(src/kernel/kernel.pri)

@@ -41,7 +41,7 @@ void WModelLibraryFolderPrivate::init()
 
     oldItem = NULL;
 
-#ifndef QT_LATEST
+#ifdef QT_4
     Q_Q(WModelLibraryFolder);
 
     q->setRoleNames(q->roleNames());

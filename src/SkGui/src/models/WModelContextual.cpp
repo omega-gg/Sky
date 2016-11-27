@@ -119,7 +119,7 @@ void WModelContextualPrivate::init()
 
     q->setDynamicSortFilter(true);
 
-#ifndef QT_LATEST
+#ifdef QT_4
     q->setRoleNames(q->roleNames());
 #endif
 }

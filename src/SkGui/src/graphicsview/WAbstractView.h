@@ -71,10 +71,10 @@ protected: // Events
     /* virtual */ void showEvent(QShowEvent * event);
     /* virtual */ void hideEvent(QHideEvent * event);
 
-#ifdef QT_LATEST
-    /* virtual */ bool nativeEvent(const QByteArray & event, void * msg, long * result);
-#else
+#ifdef QT_4
     /* virtual */ bool winEvent(MSG * msg, long * result);
+#else
+    /* virtual */ bool nativeEvent(const QByteArray & event, void * msg, long * result);
 #endif
 
 protected: // Virtual functions

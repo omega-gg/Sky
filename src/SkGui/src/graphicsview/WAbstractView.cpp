@@ -65,10 +65,10 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     q->setWindowFlags(flags);
 #else
 
-#ifdef QT_LATEST
-    id = (HWND) q->QDeclarativeView::winId();
-#else
+#ifdef QT_4
     id = q->QDeclarativeView::winId();
+#else
+    id = (HWND) q->QDeclarativeView::winId();
 #endif
 
     x = 0;
@@ -131,12 +131,12 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 
     SetWindowLongPtr(handle, GWLP_USERDATA, reinterpret_cast<LONG_PTR> (q));
 
-#ifdef QT_LATEST
+#ifdef QT_4
+    SetWindowLong(id, GWL_STYLE, WS_CHILD | WS_CLIPCHILDREN);
+#else
     q->setProperty("_q_embedded_native_parent_handle", (WId) handle);
 
     q->setWindowFlags(Qt::FramelessWindowHint);
-#else
-    SetWindowLong(id, GWL_STYLE, WS_CHILD | WS_CLIPCHILDREN);
 #endif
 
     SetParent(id, handle);
@@ -172,10 +172,10 @@ void WAbstractViewPrivate::applyFullScreen()
     {
          return NULL;
     }
-#ifdef QT_LATEST
-    else return QtWin::toHICON(pixmap);
-#else
+#ifdef QT_4
     else return pixmap.toWinHICON();
+#else
+    else return QtWin::toHICON(pixmap);
 #endif
 }
 
@@ -589,16 +589,16 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
-/* virtual */ bool WAbstractView::nativeEvent(const QByteArray & event, void * msg, long * result)
-#else
+#ifdef QT_4
 /* virtual */ bool WAbstractView::winEvent(MSG * msg, long * result)
+#else
+/* virtual */ bool WAbstractView::nativeEvent(const QByteArray & event, void * msg, long * result)
 #endif
 {
-#ifdef QT_LATEST
-    UINT message = static_cast<MSG *> (msg)->message;
-#else
+#ifdef QT_4
     UINT message = msg->message;
+#else
+    UINT message = static_cast<MSG *> (msg)->message;
 #endif
 
     if (message == WM_SETFOCUS)
@@ -614,10 +614,10 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
         QCoreApplication::sendEvent(this, &event);
     }
 
-#ifdef QT_LATEST
-    return QDeclarativeView::nativeEvent(event, msg, result);
-#else
+#ifdef QT_4
     return QDeclarativeView::winEvent(msg, result);
+#else
+    return QDeclarativeView::nativeEvent(event, msg, result);
 #endif
 }
 

@@ -42,7 +42,7 @@ void WModelCompletionGooglePrivate::init()
     ready   = false;
     loading = false;
 
-#ifndef QT_LATEST
+#ifdef QT_4
     Q_Q(WModelCompletionGoogle);
 
     q->setRoleNames(q->roleNames());
@@ -177,7 +177,13 @@ void WModelCompletionGooglePrivate::onLoaded(WRemoteData * data)
     {
         d->url = QUrl("http://google.com/complete/search");
 
-#ifdef QT_LATEST
+#ifdef QT_4
+        d->url.addQueryItem("output", "toolbar");
+
+        d->url.addQueryItem("hl", "en");
+
+        d->url.addQueryItem("q", d->query);
+#else
         QUrlQuery query(d->url);
 
         query.addQueryItem("output", "toolbar");
@@ -187,12 +193,6 @@ void WModelCompletionGooglePrivate::onLoaded(WRemoteData * data)
         query.addQueryItem("q", d->query);
 
         d->url.setQuery(query);
-#else
-        d->url.addQueryItem("output", "toolbar");
-
-        d->url.addQueryItem("hl", "en");
-
-        d->url.addQueryItem("q", d->query);
 #endif
     }
     else d->url = QUrl();
@@ -207,14 +207,14 @@ void WModelCompletionGooglePrivate::onLoaded(WRemoteData * data)
 {
     Q_D(WModelCompletionGoogle);
 
-#ifdef QT_LATEST
+#ifdef QT_4
+    d->url.addQueryItem(key, value);
+#else
     QUrlQuery query(d->url);
 
     query.addQueryItem(key, value);
 
     d->url.setQuery(query);
-#else
-    d->url.addQueryItem(key, value);
 #endif
 
     emit urlChanged();

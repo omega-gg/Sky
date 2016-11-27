@@ -67,7 +67,7 @@ void WModelTabsPrivate::init()
 
     oldTab = NULL;
 
-#ifndef QT_LATEST
+#ifdef QT_4
     Q_Q(WModelTabs);
 
     q->setRoleNames(q->roleNames());

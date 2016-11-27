@@ -140,7 +140,11 @@ QUrl WBackendDailymotionPrivate::getUrlVideos(const QString & id) const
 {
     QUrl url("https://api.dailymotion.com/" + id + "/videos");
 
-#ifdef QT_LATEST
+#ifdef QT_4
+    url.addQueryItem("fields", BACKENDDAILYMOTION_FIELDS);
+
+    url.addQueryItem("limit", "50");
+#else
     QUrlQuery query(url);
 
     query.addQueryItem("fields", BACKENDDAILYMOTION_FIELDS);
@@ -148,10 +152,6 @@ QUrl WBackendDailymotionPrivate::getUrlVideos(const QString & id) const
     query.addQueryItem("limit", "50");
 
     url.setQuery(query);
-#else
-    url.addQueryItem("fields", BACKENDDAILYMOTION_FIELDS);
-
-    url.addQueryItem("limit", "50");
 #endif
 
     return url;
@@ -341,14 +341,14 @@ WBackendNetQuery WBackendDailymotion::getQueryTrack(const QUrl & url) const
 
     QUrl source("https://api.dailymotion.com/video/" + id);
 
-#ifdef QT_LATEST
+#ifdef QT_4
+    source.addQueryItem("fields", BACKENDDAILYMOTION_FIELDS);
+#else
     QUrlQuery query(source);
 
     query.addQueryItem("fields", BACKENDDAILYMOTION_FIELDS);
 
     source.setQuery(query);
-#else
-    source.addQueryItem("fields", BACKENDDAILYMOTION_FIELDS);
 #endif
 
     backendQuery.url = source;
@@ -373,14 +373,14 @@ WBackendNetQuery WBackendDailymotion::getQueryPlaylist(const QUrl & url) const
     {
         QUrl url("https://api.dailymotion.com/playlist/" + id);
 
-#ifdef QT_LATEST
+#ifdef QT_4
+        url.addQueryItem("fields", "name,thumbnail_url");
+#else
         QUrlQuery query(url);
 
         query.addQueryItem("fields", "name,thumbnail_url");
 
         url.setQuery(query);
-#else
-        url.addQueryItem("fields", "name,thumbnail_url");
 #endif
 
         backendQuery.url  = url;
@@ -391,14 +391,14 @@ WBackendNetQuery WBackendDailymotion::getQueryPlaylist(const QUrl & url) const
     {
         QUrl url("https://api.dailymotion.com/group/" + id);
 
-#ifdef QT_LATEST
+#ifdef QT_4
+        url.addQueryItem("fields", "name,avatar_160_url");
+#else
         QUrlQuery query(url);
 
         query.addQueryItem("fields", "name,avatar_160_url");
 
         url.setQuery(query);
-#else
-        url.addQueryItem("fields", "name,avatar_160_url");
 #endif
 
         backendQuery.url  = url;
@@ -409,14 +409,14 @@ WBackendNetQuery WBackendDailymotion::getQueryPlaylist(const QUrl & url) const
     {
         QUrl url("https://api.dailymotion.com/user/" + id);
 
-#ifdef QT_LATEST
+#ifdef QT_4
+        url.addQueryItem("fields", "screenname,avatar_720_url");
+#else
         QUrlQuery query(url);
 
         query.addQueryItem("fields", "screenname,avatar_720_url");
 
         url.setQuery(query);
-#else
-        url.addQueryItem("fields", "screenname,avatar_720_url");
 #endif
 
         backendQuery.url  = url;
@@ -441,7 +441,14 @@ WBackendNetQuery WBackendDailymotion::createQuery(const QString & method,
         {
             QUrl url("https://api.dailymotion.com/videos");
 
-#ifdef QT_LATEST
+#ifdef QT_4
+            url.addQueryItem("search", q);
+
+            url.addQueryItem("fields", BACKENDDAILYMOTION_FIELDS);
+            url.addQueryItem("sort",   "relevance");
+
+            url.addQueryItem("limit", "50");
+#else
             QUrlQuery query(url);
 
             query.addQueryItem("search", q);
@@ -452,13 +459,6 @@ WBackendNetQuery WBackendDailymotion::createQuery(const QString & method,
             query.addQueryItem("limit", "50");
 
             url.setQuery(query);
-#else
-            url.addQueryItem("search", q);
-
-            url.addQueryItem("fields", BACKENDDAILYMOTION_FIELDS);
-            url.addQueryItem("sort",   "relevance");
-
-            url.addQueryItem("limit", "50");
 #endif
 
             backendQuery.url = url;
@@ -467,7 +467,14 @@ WBackendNetQuery WBackendDailymotion::createQuery(const QString & method,
         {
             QUrl url("https://api.dailymotion.com/playlists");
 
-#ifdef QT_LATEST
+#ifdef QT_4
+            url.addQueryItem("search", q);
+
+            url.addQueryItem("fields", "id,name,thumbnail_url");
+            url.addQueryItem("sort",   "relevance");
+
+            url.addQueryItem("limit", "20");
+#else
             QUrlQuery query(url);
 
             query.addQueryItem("search", q);
@@ -478,13 +485,6 @@ WBackendNetQuery WBackendDailymotion::createQuery(const QString & method,
             query.addQueryItem("limit", "20");
 
             url.setQuery(query);
-#else
-            url.addQueryItem("search", q);
-
-            url.addQueryItem("fields", "id,name,thumbnail_url");
-            url.addQueryItem("sort",   "relevance");
-
-            url.addQueryItem("limit", "20");
 #endif
 
             backendQuery.url = url;
@@ -493,7 +493,14 @@ WBackendNetQuery WBackendDailymotion::createQuery(const QString & method,
         {
             QUrl url("https://api.dailymotion.com/users");
 
-#ifdef QT_LATEST
+#ifdef QT_4
+            url.addQueryItem("search", q);
+
+            url.addQueryItem("fields", "id,screenname,avatar_720_url");
+            url.addQueryItem("sort",   "relevance");
+
+            url.addQueryItem("limit", "20");
+#else
             QUrlQuery query(url);
 
             query.addQueryItem("search", q);
@@ -504,13 +511,6 @@ WBackendNetQuery WBackendDailymotion::createQuery(const QString & method,
             query.addQueryItem("limit", "20");
 
             url.setQuery(query);
-#else
-            url.addQueryItem("search", q);
-
-            url.addQueryItem("fields", "id,screenname,avatar_720_url");
-            url.addQueryItem("sort",   "relevance");
-
-            url.addQueryItem("limit", "20");
 #endif
 
             backendQuery.url = url;
@@ -520,7 +520,14 @@ WBackendNetQuery WBackendDailymotion::createQuery(const QString & method,
         {
             QUrl url("https://api.dailymotion.com/groups");
 
-#ifdef QT_LATEST
+#ifdef QT_4
+            url.addQueryItem("search", q);
+
+            url.addQueryItem("fields", "url_name,name,avatar_160_url");
+            url.addQueryItem("sort",   "relevance");
+
+            url.addQueryItem("limit", "20");
+#else
             QUrlQuery query(url);
 
             query.addQueryItem("search", q);
@@ -531,13 +538,6 @@ WBackendNetQuery WBackendDailymotion::createQuery(const QString & method,
             query.addQueryItem("limit", "20");
 
             url.setQuery(query);
-#else
-            url.addQueryItem("search", q);
-
-            url.addQueryItem("fields", "url_name,name,avatar_160_url");
-            url.addQueryItem("sort",   "relevance");
-
-            url.addQueryItem("limit", "20");
 #endif
 
             backendQuery.url = url;
@@ -548,7 +548,11 @@ WBackendNetQuery WBackendDailymotion::createQuery(const QString & method,
     {
         QUrl url("https://api.dailymotion.com/video/" + q + "/related");
 
-#ifdef QT_LATEST
+#ifdef QT_4
+        url.addQueryItem("fields", BACKENDDAILYMOTION_FIELDS);
+
+        url.addQueryItem("limit", "50");
+#else
         QUrlQuery query(url);
 
         query.addQueryItem("fields", BACKENDDAILYMOTION_FIELDS);
@@ -556,10 +560,6 @@ WBackendNetQuery WBackendDailymotion::createQuery(const QString & method,
         query.addQueryItem("limit", "50");
 
         url.setQuery(query);
-#else
-        url.addQueryItem("fields", BACKENDDAILYMOTION_FIELDS);
-
-        url.addQueryItem("limit", "50");
 #endif
 
         backendQuery.url = url;

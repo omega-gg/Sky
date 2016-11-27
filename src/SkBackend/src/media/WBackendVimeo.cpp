@@ -375,7 +375,11 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
         {
             QUrl url("https://vimeo.com/search/page:1/sort:relevant/format:thumbnail");
 
-#ifdef QT_LATEST
+#ifdef QT_4
+            url.addQueryItem("type", "video");
+
+            url.addQueryItem("q", q);
+#else
             QUrlQuery query(url);
 
             query.addQueryItem("type", "video");
@@ -383,10 +387,6 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
             query.addQueryItem("q", q);
 
             url.setQuery(query);
-#else
-            url.addQueryItem("type", "video");
-
-            url.addQueryItem("q", q);
 #endif
 
             backendQuery.type = WBackendNetQuery::TypeWeb;
@@ -397,14 +397,14 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
         {
             QUrl url("https://vimeo.com/search/people/page:1/sort:relevant/format:thumbnail");
 
-#ifdef QT_LATEST
+#ifdef QT_4
+            url.addQueryItem("q", q);
+#else
             QUrlQuery query(url);
 
             query.addQueryItem("q", q);
 
             url.setQuery(query);
-#else
-            url.addQueryItem("q", q);
 #endif
 
             backendQuery.type = WBackendNetQuery::TypeWeb;
@@ -415,14 +415,14 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
         {
             QUrl url("https://vimeo.com/search/channels/page:1/sort:relevant/format:thumbnail");
 
-#ifdef QT_LATEST
+#ifdef QT_4
+            url.addQueryItem("q", q);
+#else
             QUrlQuery query(url);
 
             query.addQueryItem("q", q);
 
             url.setQuery(query);
-#else
-            url.addQueryItem("q", q);
 #endif
 
             backendQuery.type = WBackendNetQuery::TypeWeb;
@@ -432,14 +432,14 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
         {
             QUrl url("https://vimeo.com/search/groups/page:1/sort:relevant/format:thumbnail");
 
-#ifdef QT_LATEST
+#ifdef QT_4
+            url.addQueryItem("q", q);
+#else
             QUrlQuery query(url);
 
             query.addQueryItem("q", q);
 
             url.setQuery(query);
-#else
-            url.addQueryItem("q", q);
 #endif
 
             backendQuery.type = WBackendNetQuery::TypeWeb;

@@ -378,16 +378,16 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : WPrivatable(p)
 
 /* Q_INVOKABLE */ WBackendNetQuery WBackendNet::extractQuery(const QUrl & source) const
 {
-#ifdef QT_LATEST
+#ifdef QT_4
+    QString method = source.queryItemValue("method");
+    QString label  = source.queryItemValue("label");
+    QString q      = source.queryItemValue("q");
+#else
     QUrlQuery query(source);
 
     QString method = query.queryItemValue("method");
     QString label  = query.queryItemValue("label");
     QString q      = query.queryItemValue("q");
-#else
-    QString method = source.queryItemValue("method");
-    QString label  = source.queryItemValue("label");
-    QString q      = source.queryItemValue("q");
 #endif
 
     return createQuery(method, label, WControllerNetwork::decodeUrl(q));

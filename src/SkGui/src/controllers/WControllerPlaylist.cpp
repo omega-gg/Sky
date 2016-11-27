@@ -2266,10 +2266,10 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
     if (url.host() == sk->applicationUrl().host())
     {
-#ifdef QT_LATEST
-        QString backend = QUrlQuery(url).queryItemValue("backend");
-#else
+#ifdef QT_4
         QString backend = url.queryItemValue("backend");
+#else
+        QString backend = QUrlQuery(url).queryItemValue("backend");
 #endif
 
         return backendFromId(backend);
@@ -2534,7 +2534,16 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 {
     QUrl source = sk->applicationUrl();
 
-#ifdef QT_LATEST
+#ifdef QT_4
+    source.addQueryItem("backend", backend);
+    source.addQueryItem("method",  method);
+    source.addQueryItem("label",   label);
+
+    if (q.isEmpty() == false)
+    {
+        source.addQueryItem("q", WControllerNetwork::encodeUrl(q));
+    }
+#else
     QUrlQuery query(source);
 
     query.addQueryItem("backend", backend);
@@ -2547,15 +2556,6 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
     }
 
     source.setQuery(query);
-#else
-    source.addQueryItem("backend", backend);
-    source.addQueryItem("method",  method);
-    source.addQueryItem("label",   label);
-
-    if (q.isEmpty() == false)
-    {
-        source.addQueryItem("q", WControllerNetwork::encodeUrl(q));
-    }
 #endif
 
     // FIXME: String conversion to avoid comparison issues.
@@ -2578,12 +2578,12 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 {
     if (msec < 1) return "0:00";
 
-#ifdef QT_LATEST
-    QTime time = QTime::fromMSecsSinceStartOfDay(msec);
-#else
+#ifdef QT_4
     QTime time;
 
     time = time.addMSecs(msec);
+#else
+    QTime time = QTime::fromMSecsSinceStartOfDay(msec);
 #endif
 
     QString string;

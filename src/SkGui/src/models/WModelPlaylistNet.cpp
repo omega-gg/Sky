@@ -47,7 +47,7 @@ void WModelPlaylistNetPrivate::init()
 
     oldTrack = NULL;
 
-#ifndef QT_LATEST
+#ifdef QT_4
     Q_Q(WModelPlaylistNet);
 
     q->setRoleNames(q->roleNames());

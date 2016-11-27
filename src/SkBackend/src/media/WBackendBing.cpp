@@ -79,7 +79,11 @@ QUrl WBackendBingPrivate::getUrl(const QString & q) const
         return QUrl();
     }
 
-#ifdef QT_LATEST
+#ifdef QT_4
+    url.addQueryItem("q", search);
+
+    url.addQueryItem("qft", BACKENDBING_FILTERS);
+#else
     QUrlQuery query(url);
 
     query.addQueryItem("q", search);
@@ -87,10 +91,6 @@ QUrl WBackendBingPrivate::getUrl(const QString & q) const
     query.addQueryItem("qft", BACKENDBING_FILTERS);
 
     url.setQuery(query);
-#else
-    url.addQueryItem("q", search);
-
-    url.addQueryItem("qft", BACKENDBING_FILTERS);
 #endif
 
     return url;

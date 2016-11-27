@@ -1454,17 +1454,7 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 
 /* Q_INVOKABLE */ QPixmap WView::takeShot(int x, int y, int width, int height) const
 {
-#ifdef QT_LATEST
-    //---------------------------------------------------------------------------------------------
-    // FIXME Windows: Workaround for opengl full screen flicker.
-
-    if (width  == -1) { width  = this->width (); }
-    if (height == -1) { height = this->height(); }
-
-    //---------------------------------------------------------------------------------------------
-
-    return viewport()->grab(QRect(x, y, width, height));
-#else
+#ifdef QT_4
     Q_D(const WView);
 
     if (d->opengl)
@@ -1484,6 +1474,16 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
         return QPixmap::fromImage(image);
     }
     else return QPixmap::grabWidget(viewport(), x, y, width, height);
+#else
+    //---------------------------------------------------------------------------------------------
+    // FIXME Windows: Workaround for opengl full screen flicker.
+
+    if (width  == -1) { width  = this->width (); }
+    if (height == -1) { height = this->height(); }
+
+    //---------------------------------------------------------------------------------------------
+
+    return viewport()->grab(QRect(x, y, width, height));
 #endif
 }
 
@@ -1977,7 +1977,7 @@ QSize WView::sizeHint() const
 
     d->setMousePos(event->pos());
 
-#ifndef QT_LATEST
+#ifdef QT_4
     if (d->currentResizer)
     {
         d->currentResizer = NULL;

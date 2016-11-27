@@ -773,10 +773,10 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 /* Q_INVOKABLE static */ QString WControllerNetwork::extractUrlValue(const QUrl    & url,
                                                                      const QString & key)
 {
-#ifdef QT_LATEST
-    return QUrlQuery(url).queryItemValue(key);
-#else
+#ifdef QT_4
     return url.queryItemValue(key);
+#else
+    return QUrlQuery(url).queryItemValue(key);
 #endif
 }
 
@@ -1097,7 +1097,18 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
     QUrl source = url;
 
-#ifdef QT_LATEST
+#ifdef QT_4
+    source.addQueryItem("oauth_consumer_key", key);
+    source.addQueryItem("oauth_nonce",        nonce);
+    source.addQueryItem("oauth_timestamp",    QByteArray::number(time));
+
+    if (token.isEmpty() == false)
+    {
+        source.addQueryItem("oauth_token", token);
+    }
+
+    source.addQueryItem("oauth_signature_method", "HMAC-SHA1");
+#else
     QUrlQuery query(source);
 
     query.addQueryItem("oauth_consumer_key", key);
@@ -1110,37 +1121,26 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     }
 
     query.addQueryItem("oauth_signature_method", "HMAC-SHA1");
-#else
-    source.addQueryItem("oauth_consumer_key", key);
-    source.addQueryItem("oauth_nonce",        nonce);
-    source.addQueryItem("oauth_timestamp",    QByteArray::number(time));
-
-    if (token.isEmpty() == false)
-    {
-        source.addQueryItem("oauth_token", token);
-    }
-
-    source.addQueryItem("oauth_signature_method", "HMAC-SHA1");
 #endif
 
     //---------------------------------------------------------------------------------------------
 
     QByteArray signature;
 
-#ifdef QT_LATEST
-    QList<QPair<QString, QString> > list = query.queryItems(QUrl::FullyEncoded);
-#else
+#ifdef QT_4
     QList<QPair<QByteArray, QByteArray> > list = source.encodedQueryItems();
+#else
+    QList<QPair<QString, QString> > list = query.queryItems(QUrl::FullyEncoded);
 #endif
 
     qSort(list.begin(), list.end());
 
     for (int i = 0; i < list.count(); i++)
     {
-#ifdef QT_LATEST
-        QPair<QString, QString> pair = list.at(i);
-#else
+#ifdef QT_4
         QPair<QByteArray, QByteArray> pair = list.at(i);
+#else
+        QPair<QString, QString> pair = list.at(i);
 #endif
 
         signature.append(pair.first);
@@ -1165,12 +1165,12 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
     //---------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+#ifdef QT_4
+    source.addEncodedQueryItem("oauth_signature", signature.toPercentEncoding());
+#else
     query.addQueryItem("oauth_signature", signature.toPercentEncoding());
 
     source.setQuery(query);
-#else
-    source.addEncodedQueryItem("oauth_signature", signature.toPercentEncoding());
 #endif
 
     return source;

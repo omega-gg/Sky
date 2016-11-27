@@ -65,7 +65,11 @@ QUrl WBackendDuckDuckGoPrivate::getUrl(const QString & q) const
 
     search.replace(' ', '+');
 
-#ifdef QT_LATEST
+#ifdef QT_4
+    url.addQueryItem("q", search);
+
+    url.addQueryItem("kp", "-1");
+#else
     QUrlQuery query(url);
 
     query.addQueryItem("q", search);
@@ -73,10 +77,6 @@ QUrl WBackendDuckDuckGoPrivate::getUrl(const QString & q) const
     query.addQueryItem("kp", "-1");
 
     url.setQuery(query);
-#else
-    url.addQueryItem("q", search);
-
-    url.addQueryItem("kp", "-1");
 #endif
 
     return url;

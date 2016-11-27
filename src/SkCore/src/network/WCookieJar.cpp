@@ -26,10 +26,10 @@
 #include <QMetaEnum>
 #include <QDir>
 
-#ifdef QT_LATEST
-#include <QStandardPaths>
-#else
+#ifdef QT_4
 #include <QDesktopServices>
+#else
+#include <QStandardPaths>
 #endif
 
 //-------------------------------------------------------------------------------------------------
@@ -319,10 +319,10 @@ QString WCookieJarPrivate::getPath()
 {
     if (path.isEmpty())
     {
-#ifdef QT_LATEST
-        return QStandardPaths::writableLocation(QStandardPaths::DataLocation);
-#else
+#ifdef QT_4
         return QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+#else
+        return QStandardPaths::writableLocation(QStandardPaths::DataLocation);
 #endif
     }
     else return path;
