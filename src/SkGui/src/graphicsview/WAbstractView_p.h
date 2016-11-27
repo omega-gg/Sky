@@ -34,7 +34,7 @@
 
 // Windows includes
 #ifdef SK_WIN_NATIVE
-#include <windows.h>
+#include <qt_windows.h>
 #endif
 
 #include <private/Sk_p>
