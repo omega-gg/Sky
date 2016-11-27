@@ -552,8 +552,8 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 
     if (enabled)
     {
-        SetWindowLong(d->handle, GWL_STYLE,
-                      GetWindowLong(d->handle, GWL_STYLE) | WS_THICKFRAME | WS_MAXIMIZEBOX);
+         SetWindowLong(d->handle, GWL_STYLE,
+                       GetWindowLong(d->handle, GWL_STYLE) | WS_THICKFRAME | WS_MAXIMIZEBOX);
     }
     else SetWindowLong(d->handle, GWL_STYLE,
                        GetWindowLong(d->handle, GWL_STYLE) & ~(WS_THICKFRAME | WS_MAXIMIZEBOX));
