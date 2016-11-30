@@ -82,7 +82,8 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     maximized  = false;
     fullScreen = false;
 
-    windowSnap = true;
+    windowSnap     = true;
+    windowMaximize = true;
 
     const QMetaObject * meta = q->metaObject();
 
@@ -553,13 +554,34 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
     if (enabled)
     {
          SetWindowLong(d->handle, GWL_STYLE,
-                       GetWindowLong(d->handle, GWL_STYLE) | WS_THICKFRAME | WS_MAXIMIZEBOX);
+                       GetWindowLong(d->handle, GWL_STYLE) | WS_THICKFRAME);
     }
     else SetWindowLong(d->handle, GWL_STYLE,
-                       GetWindowLong(d->handle, GWL_STYLE) & ~(WS_THICKFRAME | WS_MAXIMIZEBOX));
+                       GetWindowLong(d->handle, GWL_STYLE) & ~WS_THICKFRAME);
 }
 #else
 /* Q_INVOKABLE */ void WAbstractView::setWindowSnap(bool) {}
+#endif
+
+#ifdef SK_WIN_NATIVE
+/* Q_INVOKABLE */ void WAbstractView::setWindowMaximize(bool enabled)
+{
+    Q_D(WAbstractView);
+
+    if (d->windowMaximize == enabled) return;
+
+    d->windowMaximize = enabled;
+
+    if (enabled)
+    {
+         SetWindowLong(d->handle, GWL_STYLE,
+                       GetWindowLong(d->handle, GWL_STYLE) | WS_MAXIMIZEBOX);
+    }
+    else SetWindowLong(d->handle, GWL_STYLE,
+                       GetWindowLong(d->handle, GWL_STYLE) & ~WS_MAXIMIZEBOX);
+}
+#else
+/* Q_INVOKABLE */ void WAbstractView::setWindowMaximize(bool) {}
 #endif
 
 #endif // Q_OS_WIN

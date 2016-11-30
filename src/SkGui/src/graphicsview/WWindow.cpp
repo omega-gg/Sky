@@ -549,6 +549,11 @@ void WWindowPrivate::init()
     Q_D(WWindow); d->view->setWindowSnap(enabled);
 }
 
+/* Q_INVOKABLE */ void WWindow::setWindowMaximize(bool enabled)
+{
+    Q_D(WWindow); d->view->setWindowMaximize(enabled);
+}
+
 #endif // Q_OS_WIN
 
 //-------------------------------------------------------------------------------------------------

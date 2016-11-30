@@ -63,7 +63,8 @@ public: // Interface
 #endif
 
 #ifdef Q_OS_WIN
-    Q_INVOKABLE void setWindowSnap(bool enabled);
+    Q_INVOKABLE void setWindowSnap    (bool enabled);
+    Q_INVOKABLE void setWindowMaximize(bool enabled);
 #endif
 
 #ifdef SK_WIN_NATIVE

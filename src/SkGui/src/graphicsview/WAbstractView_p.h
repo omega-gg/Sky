@@ -89,6 +89,7 @@ public: // Variables
     bool fullScreen;
 
     bool windowSnap;
+    bool windowMaximize;
 
     QMetaMethod method;
 #endif
