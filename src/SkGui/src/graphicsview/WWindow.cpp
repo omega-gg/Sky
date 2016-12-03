@@ -184,28 +184,6 @@ void WWindowPrivate::init()
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WWindow::showMinimized()
-{
-    Q_D(WWindow); d->view->setMinimized(true);
-}
-
-/* Q_INVOKABLE */ void WWindow::showMaximized()
-{
-    Q_D(WWindow); d->view->setMaximized(true);
-}
-
-/* Q_INVOKABLE */ void WWindow::showNormal()
-{
-    Q_D(WWindow); d->view->setMaximized(false);
-}
-
-/* Q_INVOKABLE */ void WWindow::showFullScreen()
-{
-    Q_D(WWindow); d->view->setFullScreen(true);
-}
-
-//-------------------------------------------------------------------------------------------------
-
 /* Q_INVOKABLE */ void WWindow::activate()
 {
     Q_D(WWindow); d->view->activate();

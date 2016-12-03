@@ -133,10 +133,6 @@ public:
     explicit WWindow(QDeclarativeItem * parent = NULL);
 
 public: // Interface
-    Q_INVOKABLE void showMinimized ();
-    Q_INVOKABLE void showMaximized ();
-    Q_INVOKABLE void showNormal    ();
-    Q_INVOKABLE void showFullScreen();
 
     Q_INVOKABLE void activate();
     Q_INVOKABLE void raise   ();

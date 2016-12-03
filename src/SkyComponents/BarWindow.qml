@@ -80,7 +80,7 @@ Item
 
     function onIconify()
     {
-        window.showMinimized();
+        window.minimized = true;
     }
 
     function onMaximize()
