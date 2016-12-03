@@ -374,16 +374,17 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
     if (d->maximized)
     {
         d->maximized = false;
-
-        ShowWindow(d->handle, SW_RESTORE);
     }
     else if (d->fullScreen)
     {
         d->fullScreen = false;
 
         setGeometry(d->rect);
+
+        return;
     }
-    else ShowWindow(d->handle, SW_SHOWNORMAL);
+
+    ShowWindow(d->handle, SW_RESTORE);
 }
 
 /* Q_INVOKABLE */ void WAbstractView::showMaximized()
