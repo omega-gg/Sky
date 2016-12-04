@@ -61,6 +61,7 @@ protected: // WAbstractBackend reimplementation
 
     /* virtual */ void backendSetRepeat(bool repeat);
 
+    /* virtual */ void backendSetOutput (Output  output);
     /* virtual */ void backendSetQuality(Quality quality);
 
     /* virtual */ void backendSetFillMode(FillMode fillMode);

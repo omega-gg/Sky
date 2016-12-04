@@ -112,11 +112,13 @@ public: // Functions
 
     void clearPlayer();
     void clearReply ();
+    void clearActive();
 
     void playMedia();
 
     void updateTargetRect();
 
+    WAbstractBackend::Output  getClosestOutput (WAbstractBackend::Output  output);
     WAbstractBackend::Quality getClosestQuality(WAbstractBackend::Quality quality);
 
     void setOpacity(GLfloat opacity);
@@ -182,6 +184,7 @@ public: // Variables
     QUrl currentMedia;
     QUrl currentAudio;
 
+    WAbstractBackend::Output  closestOutput;
     WAbstractBackend::Quality closestQuality;
 
     Qt::AspectRatioMode ratio;

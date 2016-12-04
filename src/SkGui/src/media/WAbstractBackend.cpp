@@ -352,6 +352,17 @@ void WAbstractBackend::setDuration(int msec)
 
 //-------------------------------------------------------------------------------------------------
 
+void WAbstractBackend::setOutputActive(Output output)
+{
+    Q_D(WAbstractBackend);
+
+    if (d->outputActive == output) return;
+
+    d->outputActive = output;
+
+    emit outputActiveChanged();
+}
+
 void WAbstractBackend::setQualityActive(Quality quality)
 {
     Q_D(WAbstractBackend);

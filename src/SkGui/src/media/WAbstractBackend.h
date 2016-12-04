@@ -164,6 +164,7 @@ protected: // Functions
     void setCurrentTime(int msec);
     void setDuration   (int msec);
 
+    void setOutputActive (Output  output);
     void setQualityActive(Quality quality);
 
     void deleteNow();

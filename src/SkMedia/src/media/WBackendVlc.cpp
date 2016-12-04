@@ -243,6 +243,7 @@ void WBackendVlcPrivate::init()
     frameUpdated = false;
     frameFreeze  = false;
 
+    closestOutput  = WAbstractBackend::OutputInvalid;
     closestQuality = WAbstractBackend::QualityInvalid;
 
     ratio = Qt::KeepAspectRatio;
@@ -602,14 +603,21 @@ void WBackendVlcPrivate::applySources(bool play)
 
     closestQuality = getClosestQuality(quality);
 
-    if (closestQuality != WAbstractBackend::QualityInvalid)
+    if (closestQuality == WAbstractBackend::QualityInvalid)
     {
-         currentMedia = medias.value(closestQuality);
-         currentAudio = audios.value(closestQuality);
+        closestOutput = WAbstractBackend::OutputInvalid;
 
-         if (play) playMedia();
+        q->stop();
     }
-    else q->stop();
+    else
+    {
+        currentMedia = medias.value(closestQuality);
+        currentAudio = audios.value(closestQuality);
+
+        closestOutput = getClosestOutput(output);
+
+        if (play) playMedia();
+    }
 
     qDebug("Current source [%s] %d %s", currentMedia.C_URL,
                                         reply->medias().count(), reply->error().C_STR);
@@ -651,6 +659,14 @@ void WBackendVlcPrivate::clearReply()
     reply = NULL;
 }
 
+void WBackendVlcPrivate::clearActive()
+{
+    Q_Q(WBackendVlc);
+
+    q->setOutputActive (WAbstractBackend::OutputInvalid);
+    q->setQualityActive(WAbstractBackend::QualityInvalid);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 void WBackendVlcPrivate::playMedia()
@@ -659,6 +675,7 @@ void WBackendVlcPrivate::playMedia()
 
     player->setSource(currentMedia, currentAudio);
 
+    q->setOutputActive (closestOutput);
     q->setQualityActive(closestQuality);
 
     if (currentTime == -1)
@@ -702,11 +719,27 @@ void WBackendVlcPrivate::updateTargetRect()
 
 //-------------------------------------------------------------------------------------------------
 
+WAbstractBackend::Output WBackendVlcPrivate::getClosestOutput(WAbstractBackend::Output output)
+{
+    if (output == WAbstractBackend::OutputInvalid)
+    {
+        return WAbstractBackend::OutputInvalid;
+    }
+
+    if (output != WAbstractBackend::OutputAudio
+        &&
+        currentAudio.isEmpty() && WControllerPlaylist::urlIsAudio(currentMedia))
+    {
+         return WAbstractBackend::OutputAudio;
+    }
+    else return output;
+}
+
 WAbstractBackend::Quality WBackendVlcPrivate::getClosestQuality(WAbstractBackend::Quality quality)
 {
     if (quality == WAbstractBackend::QualityInvalid || medias.value(quality).isValid())
     {
-        return quality;
+        return WAbstractBackend::QualityInvalid;
     }
 
     for (int i = quality - 1; i > WAbstractBackend::QualityInvalid; i--)
@@ -961,7 +994,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
         d->player->stop();
 
-        setQualityActive(QualityInvalid);
+        d->clearActive();
     }
     else if (isPlaying())
     {
@@ -1024,7 +1057,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
     d->player->pause();
 
-    setQualityActive(QualityInvalid);
+    d->clearActive();
 
     return true;
 }
@@ -1049,8 +1082,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
     Q_D(WBackendVlc);
 
     d->clearPlayer();
-
-    setQualityActive(QualityInvalid);
+    d->clearActive();
 
     d->player->deletePlayer();
 
@@ -1087,6 +1119,27 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WBackendVlc::backendSetOutput(Output output)
+{
+    Q_D(WBackendVlc);
+
+    d->closestOutput = d->getClosestOutput(output);
+
+    d->player->setOutput(output);
+
+    if (hasStarted())
+    {
+        d->player->setSource(d->currentMedia, d->currentAudio);
+
+        setOutputActive(d->closestOutput);
+
+        if (isPlaying())
+        {
+            d->player->play(d->currentTime);
+        }
+    }
+}
 
 /* virtual */ void WBackendVlc::backendSetQuality(Quality quality)
 {
