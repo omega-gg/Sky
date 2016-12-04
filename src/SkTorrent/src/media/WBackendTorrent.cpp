@@ -232,7 +232,7 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
     foreach (const QString & path, paths)
     {
-        if (WControllerPlaylist::urlIsVideo(path) == false) continue;
+        if (WControllerPlaylist::urlIsMedia(path) == false) continue;
 
         WTrackNet track(source + '#' + QString::number(index));
 

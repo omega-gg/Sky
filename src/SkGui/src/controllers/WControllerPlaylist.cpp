@@ -44,6 +44,7 @@ W_INIT_CONTROLLER(WControllerPlaylist)
 // Static variables
 
 static const QString CONTROLLERPLAYLIST_VIDEO = "^(mp4|webm|ogv|mkv|avi|wmv|mov|flv|3gp)$";
+static const QString CONTROLLERPLAYLIST_AUDIO = "^(mp3|ogg|mka|wav|wma|flac)$";
 
 static const QString CONTROLLERPLAYLIST_MARKUP = "^(html|xml|json)$";
 
@@ -52,6 +53,7 @@ static const QString CONTROLLERPLAYLIST_TEXT = "^(txt|md)$";
 static const QString CONTROLLERPLAYLIST_FILTERS
     =
     "Media files (*.mp4 *.webm *.ogv *.mkv *.avi *.wmv *.mov *.flv *.3gp "
+                  "*.mp3 *.ogg *.mka *.wav *.wma *.flac "
                   "*.html *.xml *.json "
                   "*.txt *.md);;"
     "All files (*)";
@@ -204,7 +206,7 @@ WControllerPlaylistQuery::WControllerPlaylistQuery(const WBackendNetQuery & back
 
 void WControllerPlaylistData::addSource(const QString & url, const QString & title)
 {
-    if (WControllerPlaylist::urlIsVideo(url))
+    if (WControllerPlaylist::urlIsMedia(url))
     {
         WControllerPlaylistMedia media;
 
@@ -252,7 +254,7 @@ void WControllerPlaylistData::addFile(const QString & path)
 
     QString extension = WControllerNetwork::extractUrlExtension(path);
 
-    if (WControllerPlaylist::extensionIsVideo(extension))
+    if (WControllerPlaylist::extensionIsMedia(extension))
     {
         WControllerPlaylistMedia media;
 
@@ -655,7 +657,7 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylistNet * playlist,
         }
     }
 
-    if (q->urlIsVideo(source))
+    if (q->urlIsMedia(source))
     {
         QString title = WControllerNetwork::extractUrlFileName(source);
 
@@ -734,7 +736,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylistNet * playlist, co
 
             if (q->extensionIsMarkup(extension) == false)
             {
-                if (q->extensionIsVideo(extension))
+                if (q->extensionIsMedia(extension))
                 {
                     source = WControllerNetwork::extractBaseUrl(source);
 
@@ -756,7 +758,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylistNet * playlist, co
             }
         }
     }
-    else if (q->urlIsVideo(source))
+    else if (q->urlIsMedia(source))
     {
         QString title = WControllerNetwork::extractBaseUrl(source);
 
@@ -842,7 +844,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
             if (q->extensionIsMarkup(extension) == false)
             {
-                if (folderSearch->isEmpty() && q->extensionIsVideo(extension) == false
+                if (folderSearch->isEmpty() && q->extensionIsMedia(extension) == false
                     &&
                     info.size() < CONTROLLERPLAYLIST_MAX_SIZE)
                 {
@@ -866,7 +868,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
     {
         addFolderSearch(folder, folderSearch, WControllerNetwork::urlName(source));
 
-        if (q->urlIsVideo(source))
+        if (q->urlIsMedia(source))
         {
             WLibraryFolderItem item(WLibraryItem::PlaylistNet, WLocalObject::Default);
 
@@ -2393,7 +2395,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
     {
          return true;
     }
-    else return urlIsVideo(url);
+    else return urlIsMedia(url);
 }
 
 /* Q_INVOKABLE */ bool WControllerPlaylist::urlIsPlaylist(const QUrl & url) const
@@ -2608,12 +2610,28 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ bool WControllerPlaylist::urlIsMedia(const QUrl & url)
+{
+    QString extension = WControllerNetwork::extractUrlExtension(url);
+
+    return extensionIsMedia(extension);
+}
+
 /* Q_INVOKABLE static */ bool WControllerPlaylist::urlIsVideo(const QUrl & url)
 {
     QString extension = WControllerNetwork::extractUrlExtension(url);
 
     return extensionIsVideo(extension);
 }
+
+/* Q_INVOKABLE static */ bool WControllerPlaylist::urlIsAudio(const QUrl & url)
+{
+    QString extension = WControllerNetwork::extractUrlExtension(url);
+
+    return extensionIsAudio(extension);
+}
+
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::urlIsMarkup(const QUrl & url)
 {
@@ -2631,6 +2649,15 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsMedia(const QString & extension)
+{
+    if (extensionIsVideo(extension) || extensionIsAudio(extension))
+    {
+         return true;
+    }
+    else return false;
+}
+
 /* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsVideo(const QString & extension)
 {
     if (extension.indexOf(QRegExp(CONTROLLERPLAYLIST_VIDEO)) == -1)
@@ -2639,6 +2666,17 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
     }
     else return true;
 }
+
+/* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsAudio(const QString & extension)
+{
+    if (extension.indexOf(QRegExp(CONTROLLERPLAYLIST_AUDIO)) == -1)
+    {
+         return false;
+    }
+    else return true;
+}
+
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsMarkup(const QString & extension)
 {

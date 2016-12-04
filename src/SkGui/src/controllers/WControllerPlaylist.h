@@ -109,11 +109,19 @@ public: // Static interface
 
     //---------------------------------------------------------------------------------------------
 
-    Q_INVOKABLE static bool urlIsVideo (const QUrl & url);
+    Q_INVOKABLE static bool urlIsMedia(const QUrl & url);
+    Q_INVOKABLE static bool urlIsVideo(const QUrl & url);
+    Q_INVOKABLE static bool urlIsAudio(const QUrl & url);
+
     Q_INVOKABLE static bool urlIsMarkup(const QUrl & url);
     Q_INVOKABLE static bool urlIsText  (const QUrl & url);
 
-    Q_INVOKABLE static bool extensionIsVideo (const QString & extension);
+    //---------------------------------------------------------------------------------------------
+
+    Q_INVOKABLE static bool extensionIsMedia(const QString & extension);
+    Q_INVOKABLE static bool extensionIsVideo(const QString & extension);
+    Q_INVOKABLE static bool extensionIsAudio(const QString & extension);
+
     Q_INVOKABLE static bool extensionIsMarkup(const QString & extension);
     Q_INVOKABLE static bool extensionIsText  (const QString & extension);
 
