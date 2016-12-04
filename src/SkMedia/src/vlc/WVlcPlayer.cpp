@@ -50,6 +50,8 @@ void WVlcPlayerPrivate::init(WVlcEngine * engine, QThread * thread)
 
     repeat = false;
 
+    output = WAbstractBackend::OutputMedia;
+
     networkCache = VLCPLAYER_NETWORK_CACHE;
 
     if (thread) q->moveToThread(thread);
@@ -358,10 +360,9 @@ bool WVlcPlayer::event(QEvent * event)
     {
         WVlcPlayerEventSource * eventSource = static_cast<WVlcPlayerEventSource *> (event);
 
-        libvlc_media_t * media = libvlc_media_new_location(d->engine->d_func()->instance,
-                                                           d->encodeUrl(eventSource->media).C_STR);
-
         bool repeat;
+
+        WAbstractBackend::Output output;
 
         QString proxy;
         QString proxyPassword;
@@ -369,6 +370,8 @@ bool WVlcPlayer::event(QEvent * event)
         d->mutex.lock();
 
         repeat = d->repeat;
+
+        output = d->output;
 
         QString cache("network-caching=" + QString::number(d->networkCache));
 
@@ -380,13 +383,39 @@ bool WVlcPlayer::event(QEvent * event)
 
         d->mutex.unlock();
 
-        const QUrl & audio = eventSource->audio;
+        libvlc_media_t * media;
 
-        if (audio.isEmpty() == false)
+        if (output == WAbstractBackend::OutputAudio)
         {
-            QString input = "input-slave=" + d->encodeUrl(audio);
+            const QUrl & audio = eventSource->audio;
 
-            libvlc_media_add_option(media, input.C_STR);
+            if (audio.isEmpty())
+            {
+                media = libvlc_media_new_location(d->engine->d_func()->instance,
+                                                  d->encodeUrl(eventSource->media).C_STR);
+
+                libvlc_media_add_option(media, "no-video");
+            }
+            else media = libvlc_media_new_location(d->engine->d_func()->instance,
+                                                   d->encodeUrl(eventSource->audio).C_STR);
+        }
+        else
+        {
+            media = libvlc_media_new_location(d->engine->d_func()->instance,
+                                              d->encodeUrl(eventSource->media).C_STR);
+
+            if (output != WAbstractBackend::OutputVideo)
+            {
+                const QUrl & audio = eventSource->audio;
+
+                if (audio.isEmpty() == false)
+                {
+                    QString input = "input-slave=" + d->encodeUrl(audio);
+
+                    libvlc_media_add_option(media, input.C_STR);
+                }
+            }
+            else libvlc_media_add_option(media, "no-audio");
         }
 
         if (repeat)
@@ -531,6 +560,32 @@ void WVlcPlayer::setRepeat(bool repeat)
     locker.unlock();
 
     emit repeatChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+WAbstractBackend::Output WVlcPlayer::output()
+{
+    Q_D(WVlcPlayer);
+
+    const QMutexLocker locker(&d->mutex);
+
+    return d->output;
+}
+
+void WVlcPlayer::setOutput(WAbstractBackend::Output output)
+{
+    Q_D(WVlcPlayer);
+
+    QMutexLocker locker(&d->mutex);
+
+    if (d->output == output) return;
+
+    d->output = output;
+
+    locker.unlock();
+
+    emit outputChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

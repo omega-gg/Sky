@@ -28,6 +28,7 @@
 
 // Sk includes
 #include <WVlcEngine>
+#include <WAbstractBackend>
 
 #ifndef SK_NO_VLCPLAYER
 
@@ -44,6 +45,8 @@ class SK_MEDIA_EXPORT WVlcPlayer : public QObject, public WPrivatable
     Q_PROPERTY(QStringList options READ options WRITE setOptions NOTIFY optionsChanged)
 
     Q_PROPERTY(bool repeat READ repeat WRITE setRepeat NOTIFY repeatChanged)
+
+    Q_PROPERTY(WAbstractBackend::Output output READ output WRITE setOutput NOTIFY outputChanged)
 
     Q_PROPERTY(int networkCache READ networkCache WRITE setNetworkCache NOTIFY networkCacheChanged)
 
@@ -99,6 +102,8 @@ signals:
 
     void repeatChanged();
 
+    void outputChanged();
+
     void networkCacheChanged();
 
 public: // Properties
@@ -107,6 +112,9 @@ public: // Properties
 
     bool repeat();
     void setRepeat(bool repeat);
+
+    WAbstractBackend::Output output();
+    void                     setOutput(WAbstractBackend::Output output);
 
     int  networkCache();
     void setNetworkCache(int msec);

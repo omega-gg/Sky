@@ -87,6 +87,8 @@ public: // Variables
 
     bool repeat;
 
+    WAbstractBackend::Output output;
+
     int networkCache;
 
     QString proxyHost;
