@@ -398,8 +398,7 @@ WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
     {
         MSG msg;
 
-        while (PeekMessage(&msg, (HWND) d->view->winId(),
-                           WM_MOUSEMOVE, WM_MOUSEMOVE, PM_REMOVE));
+        while (PeekMessage(&msg, (HWND) d->view->winId(), WM_MOUSEMOVE, WM_MOUSEMOVE, PM_REMOVE));
 
         return;
     }
