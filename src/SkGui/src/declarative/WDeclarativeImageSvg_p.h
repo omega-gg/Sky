@@ -65,7 +65,7 @@ public: // Functions
     void clearFile();
 
 public: // Slots
-    void onProgess(qint64 received, qint64 total);
+    void onProgress(qint64 received, qint64 total);
 
     void onLoaded(WCacheFile * file);
 

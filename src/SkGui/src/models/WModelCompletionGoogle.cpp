@@ -160,8 +160,7 @@ void WModelCompletionGooglePrivate::onLoaded(WRemoteData * data)
 
         d->setLoading(true);
 
-        QObject::connect(d->data, SIGNAL(loaded(WRemoteData *)),
-                         this,    SLOT(onLoaded(WRemoteData *)));
+        connect(d->data, SIGNAL(loaded(WRemoteData *)), this, SLOT(onLoaded(WRemoteData *)));
     }
 
     return true;

@@ -480,10 +480,8 @@ void WControllerNetworkPrivate::onRetryTimeout()
 
         checkConnection();
 
-        QObject::connect(&socket,
-                         SIGNAL(stateChanged(QAbstractSocket::SocketState)),
-                         q,
-                         SLOT(onStateChanged(QAbstractSocket::SocketState)));
+        QObject::connect(&socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
+                         q,       SLOT(onStateChanged(QAbstractSocket::SocketState)));
     }
     else
     {

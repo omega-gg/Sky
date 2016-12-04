@@ -44,8 +44,6 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WAbstra
 
     Q_PROPERTY(WPlaylistNet * playlist READ playlist WRITE setPlaylist NOTIFY playlistChanged)
 
-    Q_PROPERTY(bool hasStarted READ hasStarted NOTIFY startedChanged)
-
     Q_PROPERTY(bool isLoading READ isLoading NOTIFY stateLoadChanged)
 
     Q_PROPERTY(bool isStarting  READ isStarting  NOTIFY stateLoadChanged)
@@ -55,6 +53,9 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WAbstra
     Q_PROPERTY(bool isPlaying READ isPlaying NOTIFY stateChanged)
     Q_PROPERTY(bool isPaused  READ isPaused  NOTIFY stateChanged)
     Q_PROPERTY(bool isStopped READ isStopped NOTIFY stateChanged)
+
+    Q_PROPERTY(bool hasStarted READ hasStarted NOTIFY startedChanged)
+    Q_PROPERTY(bool hasEnded   READ hasEnded   NOTIFY endedChanged)
 
     Q_PROPERTY(int currentTime READ currentTime NOTIFY currentTimeChanged)
     Q_PROPERTY(int duration    READ duration    NOTIFY durationChanged)
@@ -163,6 +164,7 @@ signals:
     void countChanged();
 
     void startedChanged();
+    void endedChanged  ();
 
     void currentTimeChanged();
     void durationChanged   ();
@@ -204,8 +206,6 @@ public: // Properties
     WPlaylistNet * playlist() const;
     void           setPlaylist(WPlaylistNet * playlist);
 
-    bool hasStarted() const;
-
     bool isLoading() const;
 
     bool isStarting () const;
@@ -215,6 +215,9 @@ public: // Properties
     bool isPlaying() const;
     bool isPaused () const;
     bool isStopped() const;
+
+    bool hasStarted() const;
+    bool hasEnded  () const;
 
     int currentTime() const;
     int duration   () const;

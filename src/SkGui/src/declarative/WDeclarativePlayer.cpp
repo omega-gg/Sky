@@ -880,7 +880,7 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 
     if (d->backend)
     {
-        QObject::disconnect(d->backend, 0, this, 0);
+        disconnect(d->backend, 0, this, 0);
 
         d->backend->deleteBackend();
     }
@@ -904,31 +904,24 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 
         backend->setFillMode(d->fillMode);
 
-        QObject::connect(backend, SIGNAL(sourceChanged()),
-                         this,    SIGNAL(sourceChanged()));
+        connect(backend, SIGNAL(sourceChanged()), this, SIGNAL(sourceChanged()));
 
-        QObject::connect(backend, SIGNAL(stateChanged()),
-                         this,    SIGNAL(stateChanged()));
+        connect(backend, SIGNAL(stateChanged    ()), this, SIGNAL(stateChanged    ()));
+        connect(backend, SIGNAL(stateLoadChanged()), this, SIGNAL(stateLoadChanged()));
 
-        QObject::connect(backend, SIGNAL(stateLoadChanged()),
-                         this,    SIGNAL(stateLoadChanged()));
+        connect(backend, SIGNAL(startedChanged()), this, SIGNAL(startedChanged()));
+        connect(backend, SIGNAL(endedChanged  ()), this, SIGNAL(endedChanged  ()));
 
-        QObject::connect(backend, SIGNAL(startedChanged()),
-                         this,    SIGNAL(startedChanged()));
+        connect(backend, SIGNAL(currentTimeChanged()), this, SIGNAL(currentTimeChanged()));
 
-        QObject::connect(backend, SIGNAL(currentTimeChanged()),
-                         this,    SIGNAL(currentTimeChanged()));
+        connect(backend, SIGNAL(durationChanged()), this, SIGNAL(durationChanged()));
 
-        QObject::connect(backend, SIGNAL(durationChanged()),
-                         this,    SIGNAL(durationChanged()));
+        connect(backend, SIGNAL(qualityActiveChanged()), this, SIGNAL(qualityActiveChanged()));
 
-        QObject::connect(backend, SIGNAL(qualityActiveChanged()),
-                         this,    SIGNAL(qualityActiveChanged()));
+        connect(backend, SIGNAL(ended()), this, SLOT(onEnded()));
 
-        QObject::connect(backend, SIGNAL(ended()), this, SLOT(onEnded()));
-
-        QObject::connect(backend, SIGNAL(stateChanged   ()), this, SLOT(onStateChanged   ()));
-        QObject::connect(backend, SIGNAL(durationChanged()), this, SLOT(onDurationChanged()));
+        connect(backend, SIGNAL(stateChanged   ()), this, SLOT(onStateChanged   ()));
+        connect(backend, SIGNAL(durationChanged()), this, SLOT(onDurationChanged()));
     }
 
     emit backendChanged();
@@ -1040,19 +1033,6 @@ void WDeclarativePlayer::setPlaylist(WPlaylistNet * playlist)
 
 //-------------------------------------------------------------------------------------------------
 
-bool WDeclarativePlayer::hasStarted() const
-{
-    Q_D(const WDeclarativePlayer);
-
-    if (d->backend)
-    {
-         return d->backend->hasStarted();
-    }
-    else return false;
-}
-
-//-------------------------------------------------------------------------------------------------
-
 bool WDeclarativePlayer::isLoading() const
 {
     Q_D(const WDeclarativePlayer);
@@ -1114,6 +1094,30 @@ bool WDeclarativePlayer::isPaused() const
 bool WDeclarativePlayer::isStopped() const
 {
     Q_D(const WDeclarativePlayer); return (d->state == WAbstractBackend::StateStopped);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WDeclarativePlayer::hasStarted() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+         return d->backend->hasStarted();
+    }
+    else return false;
+}
+
+bool WDeclarativePlayer::hasEnded() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+         return d->backend->hasEnded();
+    }
+    else return false;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1485,16 +1489,13 @@ void WDeclarativePlayer::setTabs(WTabsTrack * tabs)
 
     if (d->tabs)
     {
-        QObject::connect(d->tabs, SIGNAL(currentIndexChanged()), this, SIGNAL(tabIndexChanged()));
+        connect(d->tabs, SIGNAL(currentIndexChanged()), this, SIGNAL(tabIndexChanged()));
 
-        QObject::connect(d->tabs, SIGNAL(currentTabChanged()),
-                         this,    SLOT(onCurrentTabChanged()));
+        connect(d->tabs, SIGNAL(currentTabChanged()), this, SLOT(onCurrentTabChanged()));
 
-        QObject::connect(d->tabs, SIGNAL(highlightedTabChanged()),
-                         this,    SLOT(onHighlightedTabChanged()));
+        connect(d->tabs, SIGNAL(highlightedTabChanged()), this, SLOT(onHighlightedTabChanged()));
 
-        QObject::connect(d->tabs, SIGNAL(destroyed    ()),
-                         this,    SLOT(onTabsDestroyed()));
+        connect(d->tabs, SIGNAL(destroyed()), this, SLOT(onTabsDestroyed()));
     }
 
     emit tabsChanged();
@@ -1543,11 +1544,14 @@ void WDeclarativePlayer::setKeepState(bool keepState)
     {
         if (keepState)
         {
-             QObject::disconnect(d->backend, SIGNAL(startedChanged()),
-                                 this,       SIGNAL(startedChanged()));
+             disconnect(d->backend, SIGNAL(startedChanged()), this, SIGNAL(startedChanged()));
+             disconnect(d->backend, SIGNAL(endedChanged  ()), this, SIGNAL(endedChanged  ()));
         }
-        else QObject::connect(d->backend, SIGNAL(startedChanged()),
-                              this,       SIGNAL(startedChanged()));
+        else
+        {
+            connect(d->backend, SIGNAL(startedChanged()), this, SIGNAL(startedChanged()));
+            connect(d->backend, SIGNAL(endedChanged  ()), this, SIGNAL(endedChanged  ()));
+        }
     }
 
     emit keepStateChanged();

@@ -39,6 +39,7 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WPrivatable
 
     Q_ENUMS(State)
     Q_ENUMS(StateLoad)
+    Q_ENUMS(Output)
     Q_ENUMS(Quality)
     Q_ENUMS(FillMode)
 
@@ -50,8 +51,8 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WPrivatable
     Q_PROPERTY(State     state     READ state     NOTIFY stateChanged)
     Q_PROPERTY(StateLoad stateLoad READ stateLoad NOTIFY stateLoadChanged)
 
-    Q_PROPERTY(bool hasStarted READ hasStarted NOTIFY startedChanged)
-    Q_PROPERTY(bool hasEnded   READ hasEnded   NOTIFY endedChanged)
+    Q_PROPERTY(bool isVideo READ isVideo NOTIFY sourceChanged)
+    Q_PROPERTY(bool isAudio READ isAudio NOTIFY sourceChanged)
 
     Q_PROPERTY(bool isLoading READ isLoading NOTIFY stateLoadChanged)
 
@@ -63,6 +64,12 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WPrivatable
     Q_PROPERTY(bool isPaused  READ isPaused  NOTIFY stateChanged)
     Q_PROPERTY(bool isStopped READ isStopped NOTIFY stateChanged)
 
+    Q_PROPERTY(bool hasStarted READ hasStarted NOTIFY startedChanged)
+    Q_PROPERTY(bool hasEnded   READ hasEnded   NOTIFY endedChanged)
+
+    Q_PROPERTY(bool hasVideo READ hasVideo NOTIFY outputActiveChanged)
+    Q_PROPERTY(bool hasAudio READ hasAudio NOTIFY outputActiveChanged)
+
     Q_PROPERTY(int currentTime READ currentTime NOTIFY currentTimeChanged)
     Q_PROPERTY(int duration    READ duration    NOTIFY durationChanged)
 
@@ -72,8 +79,10 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WPrivatable
 
     Q_PROPERTY(bool repeat READ repeat WRITE setRepeat NOTIFY repeatChanged)
 
+    Q_PROPERTY(Output  output  READ output  WRITE setOutput  NOTIFY outputChanged)
     Q_PROPERTY(Quality quality READ quality WRITE setQuality NOTIFY qualityChanged)
 
+    Q_PROPERTY(Output  outputActive  READ outputActive  NOTIFY outputActiveChanged)
     Q_PROPERTY(Quality qualityActive READ qualityActive NOTIFY qualityActiveChanged)
 
     Q_PROPERTY(FillMode fillMode READ fillMode WRITE setFillMode NOTIFY fillModeChanged)
@@ -92,6 +101,14 @@ public:
         StateLoadStarting,
         StateLoadResuming,
         StateLoadBuffering
+    };
+
+    enum Output
+    {
+        OutputInvalid,
+        OutputMedia,
+        OutputVideo,
+        OutputAudio,
     };
 
     enum Quality
@@ -174,6 +191,7 @@ protected: // Virtual functions
 
     virtual void backendSetRepeat(bool repeat); /* {} */
 
+    virtual void backendSetOutput (Output  output);  /* {} */
     virtual void backendSetQuality(Quality quality); /* {} */
 
     virtual void backendSetFillMode(FillMode fillMode); /* {} */
@@ -197,8 +215,7 @@ signals:
     void stateLoadChanged();
 
     void startedChanged();
-
-    void endedChanged();
+    void endedChanged  ();
 
     void playingChanged();
     void pausedChanged ();
@@ -212,7 +229,10 @@ signals:
 
     void repeatChanged();
 
-    void qualityChanged      ();
+    void outputChanged ();
+    void qualityChanged();
+
+    void outputActiveChanged ();
     void qualityActiveChanged();
 
     void fillModeChanged();
@@ -227,8 +247,8 @@ public: // Properties
     State     state    () const;
     StateLoad stateLoad() const;
 
-    bool hasStarted() const;
-    bool hasEnded  () const;
+    bool isVideo() const;
+    bool isAudio() const;
 
     bool isLoading() const;
 
@@ -239,6 +259,12 @@ public: // Properties
     bool isPlaying() const;
     bool isPaused () const;
     bool isStopped() const;
+
+    bool hasStarted() const;
+    bool hasEnded  () const;
+
+    bool hasVideo() const;
+    bool hasAudio() const;
 
     int currentTime() const;
     int duration   () const;
@@ -252,9 +278,13 @@ public: // Properties
     bool repeat() const;
     void setRepeat(bool repeat);
 
+    Output output() const;
+    void   setOutput(Output output);
+
     Quality quality() const;
     void    setQuality(Quality quality);
 
+    Output  outputActive () const;
     Quality qualityActive() const;
 
     FillMode fillMode() const;

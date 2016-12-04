@@ -372,7 +372,7 @@ WDeclarativeListItem * WDeclarativeListViewPrivate::createItem(int index)
         {
              QObject::connect(object, SIGNAL(heightChanged()), q, SLOT(onSizeChanged()));
         }
-        else QObject::connect(object, SIGNAL(widthChanged()), q, SLOT(onSizeChanged()));
+        else QObject::connect(object, SIGNAL(widthChanged ()), q, SLOT(onSizeChanged()));
 
         return item;
     }
@@ -798,32 +798,30 @@ void WDeclarativeListView::setModel(QAbstractItemModel * model)
     {
         d->clearItems();
 
-        QObject::disconnect(d->model, 0, this, 0);
+        disconnect(d->model, 0, this, 0);
     }
 
     d->model = model;
 
     if (model)
     {
-        QObject::connect(model, SIGNAL(modelReset()), this, SLOT(onReset()));
+        connect(model, SIGNAL(modelReset()), this, SLOT(onReset()));
 
-        QObject::connect(model, SIGNAL(rowsInserted(const QModelIndex &, int, int)),
-                         this,  SLOT(onInsert      (const QModelIndex &, int, int)));
+        connect(model, SIGNAL(rowsInserted(const QModelIndex &, int, int)),
+                this,  SLOT(onInsert      (const QModelIndex &, int, int)));
 
-        QObject::connect(model, SIGNAL(rowsRemoved(const QModelIndex &, int, int)),
-                         this,  SLOT(onRemove     (const QModelIndex &, int, int)));
+        connect(model, SIGNAL(rowsRemoved(const QModelIndex &, int, int)),
+                this,  SLOT(onRemove     (const QModelIndex &, int, int)));
 
-        QObject::connect(model, SIGNAL(rowsMoved(const QModelIndex &, int, int,
-                                                    const QModelIndex &, int)),
-                         this, SLOT(onMove(const QModelIndex &, int, int,
-                                           const QModelIndex &, int)));
+        connect(model, SIGNAL(rowsMoved(const QModelIndex &, int, int, const QModelIndex &, int)),
+                this,  SLOT(onMove     (const QModelIndex &, int, int, const QModelIndex &, int)));
 
-        QObject::connect(model, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
-                         this,  SLOT(onDataChanged(const QModelIndex &, const QModelIndex &)));
+        connect(model, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+                this,  SLOT(onDataChanged(const QModelIndex &, const QModelIndex &)));
 
         if (qobject_cast<QAbstractProxyModel *> (model))
         {
-            QObject::connect(model, SIGNAL(layoutChanged()), this, SLOT(onLayoutChanged()));
+            connect(model, SIGNAL(layoutChanged()), this, SLOT(onLayoutChanged()));
         }
 
         d->reset();

@@ -119,8 +119,8 @@ void WDeclarativeImageBasePrivate::loadUrl()
 
             QObject::connect(file, SIGNAL(loaded(WCacheFile *)), q, SLOT(onLoaded(WCacheFile *)));
 
-            QObject::connect(file, SIGNAL(progress     (qint64, qint64)),
-                             q,    SLOT(requestProgress(qint64, qint64)));
+            QObject::connect(file, SIGNAL(progress       (qint64, qint64)),
+                             q,    SLOT  (requestProgress(qint64, qint64)));
 
             emit q->progressChanged();
             emit q->statusChanged  ();

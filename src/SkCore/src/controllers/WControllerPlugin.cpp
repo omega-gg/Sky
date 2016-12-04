@@ -84,10 +84,10 @@ void WControllerPluginPrivate::init()
     Q_Q(WControllerPlugin);
 
     QObject::connect(&fileWatcher, SIGNAL(filesCreated(QString, QStringList)),
-                     q, SLOT(onFilesCreated(QString, QStringList)));
+                     q,            SLOT(onFilesCreated(QString, QStringList)));
 
     QObject::connect(&fileWatcher, SIGNAL(filesDeleted(QString, QStringList)),
-                     q, SLOT(onFilesDeleted(QString, QStringList)));
+                     q,            SLOT(onFilesDeleted(QString, QStringList)));
 }
 
 //-------------------------------------------------------------------------------------------------

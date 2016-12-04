@@ -228,8 +228,8 @@ void WControllerXml::createQueryThread()
 
     d->xmlQuery = new WControllerXmlQuery(this);
 
-    QObject::connect(d->xmlQuery, SIGNAL(queryCompleted(int, QString)),
-                     this,        SIGNAL(queryCompleted(int, QString)));
+    connect(d->xmlQuery, SIGNAL(queryCompleted(int, QString)),
+            this,        SIGNAL(queryCompleted(int, QString)));
 }
 
 int WControllerXml::doQuery(const QUrl & query)

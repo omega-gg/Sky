@@ -1266,8 +1266,7 @@ void WControllerPlaylistPrivate::loadUrls(QIODevice * device, const WBackendNetQ
 
     WControllerPlaylistReply * reply = new WControllerPlaylistReply;
 
-    QObject::connect(reply,
-                     SIGNAL(loaded(QIODevice *, const WControllerPlaylistData &)), q, slot);
+    QObject::connect(reply, SIGNAL(loaded(QIODevice *, const WControllerPlaylistData &)), q, slot);
 
     reply ->moveToThread(thread);
     device->moveToThread(thread);

@@ -16,6 +16,9 @@
 
 #include "WAbstractBackend.h"
 
+// Sk includes
+#include <WControllerPlaylist>
+
 #ifndef SK_NO_ABSTRACTBACKEND
 
 //-------------------------------------------------------------------------------------------------
@@ -50,7 +53,10 @@ void WAbstractBackendPrivate::init()
 
     repeat = false;
 
-    quality       = WAbstractBackend::QualityMedium;
+    output  = WAbstractBackend::OutputMedia;
+    quality = WAbstractBackend::QualityMedium;
+
+    outputActive  = WAbstractBackend::OutputInvalid;
     qualityActive = WAbstractBackend::QualityInvalid;
 
     fillMode = WAbstractBackend::PreserveAspectFit;
@@ -391,6 +397,11 @@ void WAbstractBackend::deleteNow()
 
 //-------------------------------------------------------------------------------------------------
 
+/* virtual */ void WAbstractBackend::backendSetOutput(Output)
+{
+    qWarning("WAbstractBackend::backendSetOutput: SetOutput is not supported.");
+}
+
 /* virtual */ void WAbstractBackend::backendSetQuality(Quality)
 {
     qWarning("WAbstractBackend::backendSetQuality: SetQuality is not supported.");
@@ -477,14 +488,18 @@ WAbstractBackend::StateLoad WAbstractBackend::stateLoad() const
 
 //-------------------------------------------------------------------------------------------------
 
-bool WAbstractBackend::hasStarted() const
+bool WAbstractBackend::isVideo() const
 {
-    Q_D(const WAbstractBackend); return d->started;
+    Q_D(const WAbstractBackend);
+
+    return WControllerPlaylist::urlIsVideo(d->source);
 }
 
-bool WAbstractBackend::hasEnded() const
+bool WAbstractBackend::isAudio() const
 {
-    Q_D(const WAbstractBackend); return d->ended;
+    Q_D(const WAbstractBackend);
+
+    return WControllerPlaylist::urlIsAudio(d->source);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -526,6 +541,30 @@ bool WAbstractBackend::isPaused() const
 bool WAbstractBackend::isStopped() const
 {
     Q_D(const WAbstractBackend); return (d->state == StateStopped);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WAbstractBackend::hasStarted() const
+{
+    Q_D(const WAbstractBackend); return d->started;
+}
+
+bool WAbstractBackend::hasEnded() const
+{
+    Q_D(const WAbstractBackend); return d->ended;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WAbstractBackend::hasVideo() const
+{
+    Q_D(const WAbstractBackend); return (d->outputActive != OutputAudio);
+}
+
+bool WAbstractBackend::hasAudio() const
+{
+    Q_D(const WAbstractBackend); return (d->outputActive != OutputVideo);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -604,6 +643,26 @@ void WAbstractBackend::setRepeat(bool repeat)
 
 //-------------------------------------------------------------------------------------------------
 
+WAbstractBackend::Output WAbstractBackend::output() const
+{
+    Q_D(const WAbstractBackend); return d->output;
+}
+
+void WAbstractBackend::setOutput(Output output)
+{
+    Q_D(WAbstractBackend);
+
+    if (d->output == output) return;
+
+    d->output = output;
+
+    backendSetOutput(output);
+
+    emit outputChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 WAbstractBackend::Quality WAbstractBackend::quality() const
 {
     Q_D(const WAbstractBackend); return d->quality;
@@ -623,6 +682,11 @@ void WAbstractBackend::setQuality(Quality quality)
 }
 
 //-------------------------------------------------------------------------------------------------
+
+WAbstractBackend::Output WAbstractBackend::outputActive() const
+{
+    Q_D(const WAbstractBackend); return d->outputActive;
+}
 
 WAbstractBackend::Quality WAbstractBackend::qualityActive() const
 {

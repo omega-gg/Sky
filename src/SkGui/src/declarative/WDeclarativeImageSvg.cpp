@@ -142,7 +142,7 @@ void WDeclarativeImageSvgPrivate::loadUrl()
             QObject::connect(file, SIGNAL(loaded(WCacheFile *)), q, SLOT(onLoaded(WCacheFile *)));
 
             QObject::connect(file, SIGNAL(progress(qint64, qint64)),
-                             q,    SLOT(onProgess (qint64, qint64)));
+                             q,    SLOT(onProgress(qint64, qint64)));
 
             emit q->progressChanged();
             emit q->statusChanged  ();
@@ -223,7 +223,7 @@ void WDeclarativeImageSvgPrivate::clearFile()
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
-void WDeclarativeImageSvgPrivate::onProgess(qint64 received, qint64 total)
+void WDeclarativeImageSvgPrivate::onProgress(qint64 received, qint64 total)
 {
     if (status == WDeclarativeImageSvg::Loading && total)
     {
