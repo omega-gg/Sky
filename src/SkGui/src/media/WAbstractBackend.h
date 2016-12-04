@@ -51,9 +51,6 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WPrivatable
     Q_PROPERTY(State     state     READ state     NOTIFY stateChanged)
     Q_PROPERTY(StateLoad stateLoad READ stateLoad NOTIFY stateLoadChanged)
 
-    Q_PROPERTY(bool isVideo READ isVideo NOTIFY sourceChanged)
-    Q_PROPERTY(bool isAudio READ isAudio NOTIFY sourceChanged)
-
     Q_PROPERTY(bool isLoading READ isLoading NOTIFY stateLoadChanged)
 
     Q_PROPERTY(bool isStarting  READ isStarting  NOTIFY stateLoadChanged)
@@ -246,9 +243,6 @@ public: // Properties
 
     State     state    () const;
     StateLoad stateLoad() const;
-
-    bool isVideo() const;
-    bool isAudio() const;
 
     bool isLoading() const;
 

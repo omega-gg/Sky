@@ -488,22 +488,6 @@ WAbstractBackend::StateLoad WAbstractBackend::stateLoad() const
 
 //-------------------------------------------------------------------------------------------------
 
-bool WAbstractBackend::isVideo() const
-{
-    Q_D(const WAbstractBackend);
-
-    return WControllerPlaylist::urlIsVideo(d->source);
-}
-
-bool WAbstractBackend::isAudio() const
-{
-    Q_D(const WAbstractBackend);
-
-    return WControllerPlaylist::urlIsAudio(d->source);
-}
-
-//-------------------------------------------------------------------------------------------------
-
 bool WAbstractBackend::isLoading() const
 {
     Q_D(const WAbstractBackend); return (d->stateLoad != StateLoadDefault);

@@ -101,6 +101,7 @@ public: // Variables
 
     WDeclarativePlayer::Repeat repeat;
 
+    WAbstractBackend::Output  output;
     WAbstractBackend::Quality quality;
 
     WAbstractBackend::FillMode fillMode;

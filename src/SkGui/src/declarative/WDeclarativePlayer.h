@@ -57,6 +57,9 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WAbstra
     Q_PROPERTY(bool hasStarted READ hasStarted NOTIFY startedChanged)
     Q_PROPERTY(bool hasEnded   READ hasEnded   NOTIFY endedChanged)
 
+    Q_PROPERTY(bool hasVideo READ hasVideo NOTIFY outputActiveChanged)
+    Q_PROPERTY(bool hasAudio READ hasAudio NOTIFY outputActiveChanged)
+
     Q_PROPERTY(int currentTime READ currentTime NOTIFY currentTimeChanged)
     Q_PROPERTY(int duration    READ duration    NOTIFY durationChanged)
 
@@ -68,8 +71,12 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WAbstra
 
     Q_PROPERTY(Repeat repeat READ repeat WRITE setRepeat NOTIFY repeatChanged)
 
+    Q_PROPERTY(WAbstractBackend::Output output READ output WRITE setOutput NOTIFY outputChanged)
+
     Q_PROPERTY(WAbstractBackend::Quality quality READ quality WRITE setQuality
                NOTIFY qualityChanged)
+
+    Q_PROPERTY(WAbstractBackend::Output outputActive READ outputActive NOTIFY outputActiveChanged)
 
     Q_PROPERTY(WAbstractBackend::Quality qualityActive READ qualityActive
                NOTIFY qualityActiveChanged)
@@ -177,7 +184,10 @@ signals:
 
     void repeatChanged();
 
-    void qualityChanged      ();
+    void outputChanged ();
+    void qualityChanged();
+
+    void outputActiveChanged ();
     void qualityActiveChanged();
 
     void fillModeChanged();
@@ -219,6 +229,9 @@ public: // Properties
     bool hasStarted() const;
     bool hasEnded  () const;
 
+    bool hasVideo() const;
+    bool hasAudio() const;
+
     int currentTime() const;
     int duration   () const;
 
@@ -234,9 +247,13 @@ public: // Properties
     Repeat repeat() const;
     void   setRepeat(Repeat repeat);
 
+    WAbstractBackend::Output output() const;
+    void                     setOutput(WAbstractBackend::Output output);
+
     WAbstractBackend::Quality quality() const;
     void                      setQuality(WAbstractBackend::Quality quality);
 
+    WAbstractBackend::Output  outputActive () const;
     WAbstractBackend::Quality qualityActive() const;
 
     WAbstractBackend::FillMode fillMode() const;

@@ -67,6 +67,7 @@ void WDeclarativePlayerPrivate::init()
 
     repeat = WDeclarativePlayer::RepeatNone;
 
+    output  = WAbstractBackend::OutputMedia;
     quality = WAbstractBackend::QualityMedium;
 
     fillMode = WAbstractBackend::PreserveAspectFit;
@@ -900,6 +901,7 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 
         backend->setVolume(d->volume);
 
+        backend->setOutput (d->output);
         backend->setQuality(d->quality);
 
         backend->setFillMode(d->fillMode);
@@ -916,6 +918,7 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 
         connect(backend, SIGNAL(durationChanged()), this, SIGNAL(durationChanged()));
 
+        connect(backend, SIGNAL(outputActiveChanged ()), this, SIGNAL(outputActiveChanged ()));
         connect(backend, SIGNAL(qualityActiveChanged()), this, SIGNAL(qualityActiveChanged()));
 
         connect(backend, SIGNAL(ended()), this, SLOT(onEnded()));
@@ -1122,6 +1125,30 @@ bool WDeclarativePlayer::hasEnded() const
 
 //-------------------------------------------------------------------------------------------------
 
+bool WDeclarativePlayer::hasVideo() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+         return d->backend->hasVideo();
+    }
+    else return false;
+}
+
+bool WDeclarativePlayer::hasAudio() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+         return d->backend->hasAudio();
+    }
+    else return false;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 int WDeclarativePlayer::currentTime() const
 {
     Q_D(const WDeclarativePlayer);
@@ -1231,6 +1258,26 @@ void WDeclarativePlayer::setRepeat(Repeat repeat)
 
 //-------------------------------------------------------------------------------------------------
 
+WAbstractBackend::Output WDeclarativePlayer::output() const
+{
+    Q_D(const WDeclarativePlayer); return d->output;
+}
+
+void WDeclarativePlayer::setOutput(WAbstractBackend::Output output)
+{
+    Q_D(WDeclarativePlayer);
+
+    if (d->output == output) return;
+
+    d->output = output;
+
+    if (d->backend) d->currentBackend->setOutput(output);
+
+    emit outputChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 WAbstractBackend::Quality WDeclarativePlayer::quality() const
 {
     Q_D(const WDeclarativePlayer); return d->quality;
@@ -1250,6 +1297,17 @@ void WDeclarativePlayer::setQuality(WAbstractBackend::Quality quality)
 }
 
 //-------------------------------------------------------------------------------------------------
+
+WAbstractBackend::Output WDeclarativePlayer::outputActive() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+         return d->backend->outputActive();
+    }
+    else return WAbstractBackend::OutputInvalid;
+}
 
 WAbstractBackend::Quality WDeclarativePlayer::qualityActive() const
 {
