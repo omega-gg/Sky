@@ -80,6 +80,8 @@ Item
         paddingLeft : st.buttonCheck_buttonPaddingLeft
         paddingRight: st.buttonCheck_buttonPaddingRight
 
+        enabled: buttonCheck.enabled
+
         checkable: true
         checked  : buttonCheck.checked
 
@@ -101,6 +103,8 @@ Item
         iconSourceSize: st.size16x16
 
         hoverRetain: true
+
+        enabled: buttonCheck.enabled
 
         checked   : (buttonCheck.checked == false)
         checkHover: false
