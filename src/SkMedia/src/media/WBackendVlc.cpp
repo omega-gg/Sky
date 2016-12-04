@@ -737,9 +737,13 @@ WAbstractBackend::Output WBackendVlcPrivate::getClosestOutput(WAbstractBackend::
 
 WAbstractBackend::Quality WBackendVlcPrivate::getClosestQuality(WAbstractBackend::Quality quality)
 {
-    if (quality == WAbstractBackend::QualityInvalid || medias.value(quality).isValid())
+    if (quality == WAbstractBackend::QualityInvalid)
     {
         return WAbstractBackend::QualityInvalid;
+    }
+    else if (medias.value(quality).isValid())
+    {
+        return quality;
     }
 
     for (int i = quality - 1; i > WAbstractBackend::QualityInvalid; i--)
