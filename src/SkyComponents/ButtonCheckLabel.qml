@@ -25,7 +25,8 @@ Item
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    property alias checked: button.checked
+    property alias checkable: button.checkable
+    property alias checked  : button.checked
 
     property alias text: label.text
 

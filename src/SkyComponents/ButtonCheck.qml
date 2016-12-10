@@ -22,14 +22,11 @@ Item
     id: buttonCheck
 
     //---------------------------------------------------------------------------------------------
-    // Properties
-    //---------------------------------------------------------------------------------------------
-
-    property bool checked: false
-
-    //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
+
+    property alias checkable: buttonOn.checkable
+    property alias checked  : buttonOn.checked
 
     property alias text: buttonOn.text
 
@@ -83,7 +80,7 @@ Item
         enabled: buttonCheck.enabled
 
         checkable: true
-        checked  : buttonCheck.checked
+        checked  : false
 
         text: qsTr("ON")
 
