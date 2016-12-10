@@ -269,11 +269,11 @@ WallBookmarkTrack
 
                     player.posB = true;
                 }
-                else if (itemImage.isSourceDefault)
+                else if (itemCover.isSourceDefault)
                 {
                      itemShot.setItemShot(background);
                 }
-                else itemShot.setItemShot(itemImage);
+                else itemShot.setItemShot(itemCover);
 
                 if (player.x == 0)
                 {
@@ -447,8 +447,8 @@ WallBookmarkTrack
                                      + item.itemImage.anchors.topMargin
                                      + item.itemImage.anchors.bottomMargin : parent.height
 
-                    x: (item) ? item.x + st.dp2 : 0
-                    y: (item) ? item.y + st.dp2 : 0
+                    x: (item) ? item.x + item.borderLeft : 0
+                    y: (item) ? item.y + item.borderTop  : 0
 
                     z: (item) ? item.z : 0
                 }
@@ -507,19 +507,59 @@ WallBookmarkTrack
 
         z: player.z
 
-        visible: player.isResuming
+        visible: (player.isResuming || player.hasVideo == false || player.isAudio)
 
-        color: st.wallVideo_colorPlayer
-
-        Image
+        gradient: Gradient
         {
+            GradientStop
+            {
+                position: 0.0
+
+                color: (itemImage.isSourceDefault) ? defaultColorA
+                                                   : st.wallVideo_colorPlayer
+            }
+
+            GradientStop
+            {
+                position: 1.0
+
+                color: (itemImage.isSourceDefault) ? defaultColorB
+                                                   : st.wallVideo_colorPlayer
+            }
+        }
+
+        ImageScale
+        {
+            id: itemImage
+
             anchors.fill: parent
 
-            source: (visible) ? playerTab.videoShot : ""
+            anchors.leftMargin: (isSourceDefault) ? logoMargin : 0
+
+            anchors.rightMargin: anchors.leftMargin
+
+            source:
+            {
+                if (visible)
+                {
+                    if (player.hasVideo)
+                    {
+                         return playerTab.videoShot;
+                    }
+                    else return playerTab.cover;
+                }
+                else return "";
+            }
+
+            sourceDefault: logo
 
             fillMode: Image.PreserveAspectFit
 
             cache: false
+
+            scaling: isSourceDefault
+
+            onVisibleChanged: if (visible) applyScale()
         }
     }
 
@@ -548,7 +588,7 @@ WallBookmarkTrack
             {
                 position: 0.0
 
-                color: (itemImage.isSourceDefault) ? defaultColorA
+                color: (itemCover.isSourceDefault) ? defaultColorA
                                                    : st.wallVideo_colorPlayer
             }
 
@@ -556,14 +596,14 @@ WallBookmarkTrack
             {
                 position: 1.0
 
-                color: (itemImage.isSourceDefault) ? defaultColorB
+                color: (itemCover.isSourceDefault) ? defaultColorB
                                                    : st.wallVideo_colorPlayer
             }
         }
 
         ImageScale
         {
-            id: itemImage
+            id: itemCover
 
             anchors.fill: parent
 
@@ -683,8 +723,8 @@ WallBookmarkTrack
                                      + item.itemImage.anchors.topMargin
                                      + item.itemImage.anchors.bottomMargin : 0
 
-                    x: (item) ? item.x + st.dp2 : 0
-                    y: (item) ? item.y + st.dp2 : 0
+                    x: (item) ? item.x + item.borderLeft : 0
+                    y: (item) ? item.y + item.borderTop  : 0
 
                     z: (item) ? item.z : 0
                 }
