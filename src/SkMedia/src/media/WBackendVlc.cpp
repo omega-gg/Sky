@@ -695,9 +695,10 @@ void WBackendVlcPrivate::updateBuffering()
 
 void WBackendVlcPrivate::clearPlayer()
 {
-    if (active)
+    if (started)
     {
-        active = false;
+        started = false;
+        active  = false;
 
         if (parentItem) parentItem->update();
     }
