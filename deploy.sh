@@ -112,8 +112,8 @@ if [ $1 = "qt4" ]; then
         cp "$MinGW"/libwinpthread-1.dll deploy
 
         cp "$Qt4"/bin/QtCore4.dll        deploy
-        cp "$Qt4"/bin/QtDeclarative4.dll deploy
         cp "$Qt4"/bin/QtGui4.dll         deploy
+        cp "$Qt4"/bin/QtDeclarative4.dll deploy
         cp "$Qt4"/bin/QtNetwork4.dll     deploy
         cp "$Qt4"/bin/QtOpenGL4.dll      deploy
         cp "$Qt4"/bin/QtScript4.dll      deploy
@@ -131,8 +131,8 @@ if [ $1 = "qt4" ]; then
         sudo cp "$lib"/libpng16.so.16 deploy
 
         cp "$Qt4"/lib/libQtCore.so.4        deploy
-        cp "$Qt4"/lib/libQtDeclarative.so.4 deploy
         cp "$Qt4"/lib/libQtGui.so.4         deploy
+        cp "$Qt4"/lib/libQtDeclarative.so.4 deploy
         cp "$Qt4"/lib/libQtNetwork.so.4     deploy
         cp "$Qt4"/lib/libQtOpenGL.so.4      deploy
         cp "$Qt4"/lib/libQtScript.so.4      deploy
@@ -166,8 +166,8 @@ else
         cp "$Qt5"/bin/icuuc54.dll deploy
 
         cp "$Qt5"/bin/Qt5Core.dll              deploy
-        cp "$Qt5"/bin/Qt5Declarative.dll       deploy
         cp "$Qt5"/bin/Qt5Gui.dll               deploy
+        cp "$Qt5"/bin/Qt5Declarative.dll       deploy
         cp "$Qt5"/bin/Qt5Multimedia.dll        deploy
         cp "$Qt5"/bin/Qt5MultimediaWidgets.dll deploy
         cp "$Qt5"/bin/Qt5Network.dll           deploy

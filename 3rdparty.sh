@@ -37,7 +37,9 @@ Qt4_sources="http://download.qt.io/official_releases/qt/4.8/4.8.7/$Qt4_archive"
 #--------------------------------------------------------------------------------------------------
 # Linux
 
-lib32="/usr/lib"
+usr="/usr/lib"
+
+lib32="/usr/lib/i386-linux-gnu"
 lib64="/usr/lib/x86_64-linux-gnu"
 
 #--------------------------------------------------------------------------------------------------
@@ -77,14 +79,15 @@ tools_dependecy="git"
 if [ $# != 2 ] || [ $1 != "all"       -a \
                     $1 != "install"   -a \
                     $1 != "uninstall" -a \
-                    $1 != "deploy" ] || [ $2 != "linux32" -a $2 != "linux64" ]; then
+                    $1 != "deploy"    -a \
+                    $1 != "clean" ] || [ $2 != "linux" ]; then
 
-    echo "Usage: 3rdparty <all | install | uninstall | deploy> <linux32 | linux64>"
+    echo "Usage: 3rdparty <all | install | uninstall | clean> <linux>"
 
     exit 1
 fi
 
-if [ $2 = "linux32" ] || [ $2 = "linux64" ]; then
+if [ $2 = "linux" ]; then
 
     if [ -d "$lib64" ]; then
 
@@ -100,61 +103,71 @@ fi
 
 if [ $1 = "all" ] || [ $1 = "install" ]; then
 
-    if [ $2 = "linux32" ] || [ $2 = "linux64" ]; then
+    if [ $2 = "linux" ]; then
 
         echo "INSTALLING X11"
 
-        sudo apt-get install $X11_dependecy
+        sudo apt-get install -y $X11_dependecy
 
         echo ""
         echo "INSTALLING Qt"
 
-        sudo apt-get install $Qt_dependecy
+        sudo apt-get install -y $Qt_dependecy
+
+        echo ""
+        echo "INSTALLING VLC"
+
+        sudo apt-get install -y $VLC_dependecy
 
         echo ""
         echo "INSTALLING libtorrent"
 
-        sudo apt-get install $libtorrent_dependecy
+        sudo apt-get install -y $libtorrent_dependecy
 
         echo ""
         echo "INSTALLING Boost"
 
-        sudo apt-get install $Boost_dependecy
+        sudo apt-get install -y $Boost_dependecy
 
         echo ""
         echo "INSTALLING TOOLS"
 
-        sudo apt-get install $tools_dependecy
+        sudo apt-get install -y $tools_dependecy
     fi
 fi
 
 if [ $1 = "uninstall" ]; then
 
-    if [ $2 = "linux32" ] || [ $2 = "linux64" ]; then
+    if [ $2 = "linux" ]; then
 
         echo "UNINSTALLING X11"
 
-        sudo apt-get remove $X11_dependecy
+        sudo apt-get remove -y $X11_dependecy
 
         echo ""
         echo "UNINSTALLING Qt"
 
-        sudo apt-get remove $Qt_dependecy
+        sudo apt-get remove -y $Qt_dependecy
+
+        echo ""
+        echo "UNINSTALLING VLC"
+
+        sudo apt-get remove -y $VLC_dependecy
 
         echo ""
         echo "UNINSTALLING libtorrent"
 
-        sudo apt-get remove $libtorrent_dependecy
+        sudo apt-get remove -y $libtorrent_dependecy
 
         echo ""
         echo "UNINSTALLING Boost"
 
-        sudo apt-get remove $Boost_dependecy
+        sudo apt-get remove -y $Boost_dependecy
 
         echo ""
         echo "UNINSTALLING TOOLS"
 
-        sudo apt-get remove $tools_dependecy
+        sudo apt-get remove -y $tools_dependecy
     fi
 fi
 
@@ -164,12 +177,26 @@ if [ $1 = "all" ]; then
 fi
 
 #--------------------------------------------------------------------------------------------------
+# Clean
+#--------------------------------------------------------------------------------------------------
+
+if [ $1 = "clean" ]; then
+
+    echo "CLEANING"
+
+    rm -rf "$Qt4"
+    rm -rf "$VLC"
+    rm -rf "$libtorrent"
+    rm -rf "$Boost_linux"
+fi
+
+#--------------------------------------------------------------------------------------------------
 # Deploy
 #--------------------------------------------------------------------------------------------------
 
 if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
-    if [ $2 = "linux32" ] || [ $2 = "linux64" ]; then
+    if [ $2 = "linux" ]; then
 
         echo "DEPLOYING Qt"
 
@@ -189,8 +216,8 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
         cd -
 
         sudo cp "$lib"/libQtCore.so.$Qt4_version        "$Qt4"/lib/libQtCore.so.4
-        sudo cp "$lib"/libQtDeclarative.so.$Qt4_version "$Qt4"/lib/libQtDeclarative.so.4
         sudo cp "$lib"/libQtGui.so.$Qt4_version         "$Qt4"/lib/libQtGui.so.4
+        sudo cp "$lib"/libQtDeclarative.so.$Qt4_version "$Qt4"/lib/libQtDeclarative.so.4
         sudo cp "$lib"/libQtNetwork.so.$Qt4_version     "$Qt4"/lib/libQtNetwork.so.4
         sudo cp "$lib"/libQtOpenGL.so.$Qt4_version      "$Qt4"/lib/libQtOpenGL.so.4
         sudo cp "$lib"/libQtScript.so.$Qt4_version      "$Qt4"/lib/libQtScript.so.4
@@ -211,17 +238,17 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
         mkdir -p "$VLC"
 
-        sudo cp "$lib32"/libvlc.so.$libvlc_version         "$VLC"/libvlc.so.5
-        sudo cp "$lib32"/libvlccore.so.$libvlccore_version "$VLC"/libvlccore.so.8
+        sudo cp "$usr"/libvlc.so.$libvlc_version         "$VLC"/libvlc.so.5
+        sudo cp "$usr"/libvlccore.so.$libvlccore_version "$VLC"/libvlccore.so.8
 
-        sudo cp -r "$lib32"/vlc/plugins "$VLC"
+        sudo cp -r "$usr"/vlc/plugins "$VLC"
 
         echo ""
         echo "DEPLOYING libtorrent"
 
         mkdir -p "$libtorrent"
 
-        sudo cp "$lib32"/libtorrent-rasterbar.so.$libtorrent_version_linux \
+        sudo cp "$usr"/libtorrent-rasterbar.so.$libtorrent_version_linux \
                 "$libtorrent"/libtorrent-rasterbar.so.9
 
         echo ""
