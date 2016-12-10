@@ -32,6 +32,7 @@ On Windows:
 - [MinGW](http://sourceforge.net/projects/mingw) or [Git for Windows](http://git-for-windows.github.io) with g++ 4.9.2 or later.
 
 On Linux:
+
 You can install third party libraries with:
 
     3rdparty <all | install | uninstall | clean> <linux>
