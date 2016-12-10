@@ -56,10 +56,16 @@ You can build Sky with Qt Creator:
 - Open [Sky.pro](Sky.pro).
 - Click on "Build > Build all".
 
+Or the build script:
+
+    build <qt4 | qt5 | clean> <win32 | linux> [deploy]
+
 Or the console:
 
     qmake -r
     make (mingw32-make on Windows)
+
+- Edit [build.sh](build.sh) to check your dependencies.
 
 ## Deploy
 

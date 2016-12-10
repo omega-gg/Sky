@@ -10,6 +10,7 @@ SUBDIRS = src/SkCore \
 
 OTHER_FILES += 3rdparty.sh \
                configure.sh \
+               build.sh \
                deploy.sh \
                README.md \
                LICENSE.md \
