@@ -507,7 +507,9 @@ WallBookmarkTrack
 
         z: player.z
 
-        visible: (player.isResuming || player.hasVideo == false || player.isAudio)
+        visible: (player.isResuming || player.hasVideo == false
+                  ||
+                  (player.visible && player.isAudio))
 
         gradient: Gradient
         {
