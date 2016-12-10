@@ -1329,6 +1329,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // Slider
 
+    property real slider_width : dp120
     property real slider_height: dp26
 
     property real slider_handleWidth : dp26

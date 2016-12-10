@@ -83,6 +83,7 @@ MouseArea
     // Settings
     //---------------------------------------------------------------------------------------------
 
+    width : st.slider_width
     height: st.slider_height
 
     hoverEnabled: true
