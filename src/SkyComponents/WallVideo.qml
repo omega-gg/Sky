@@ -27,7 +27,7 @@ WallBookmarkTrack
 
     /* read */ property bool isExposed: false
 
-    property int logoMargin: background.width / logoRatio
+    property int logoMargin: browserBack.width / logoRatio
 
     property bool enablePress: false
 
@@ -265,17 +265,17 @@ WallBookmarkTrack
 
                     if (videoShot == "")
                     {
-                        itemShot.setItemShot(playerCover);
+                        itemShot.setItemShot(playerBack);
                     }
                     else itemShot.loadSource(videoShot, true);
 
                     player.posB = true;
                 }
-                else if (itemCover.isSourceDefault)
+                else if (browserCover.isSourceDefault)
                 {
-                     itemShot.setItemShot(background);
+                     itemShot.setItemShot(browserBack);
                 }
-                else itemShot.setItemShot(itemCover);
+                else itemShot.setItemShot(browserCover);
 
                 if (player.x == 0)
                 {
@@ -505,7 +505,7 @@ WallBookmarkTrack
 
     Rectangle
     {
-        id: playerCover
+        id: playerBack
 
         anchors.fill: player
 
@@ -521,22 +521,22 @@ WallBookmarkTrack
             {
                 position: 0.0
 
-                color: (itemImage.isSourceDefault) ? defaultColorA
-                                                   : st.wallVideo_colorPlayer
+                color: (playerCover.isSourceDefault) ? defaultColorA
+                                                     : st.wallVideo_colorPlayer
             }
 
             GradientStop
             {
                 position: 1.0
 
-                color: (itemImage.isSourceDefault) ? defaultColorB
-                                                   : st.wallVideo_colorPlayer
+                color: (playerCover.isSourceDefault) ? defaultColorB
+                                                     : st.wallVideo_colorPlayer
             }
         }
 
         ImageScale
         {
-            id: itemImage
+            id: playerCover
 
             anchors.fill: parent
 
@@ -580,7 +580,7 @@ WallBookmarkTrack
 
     Rectangle
     {
-        id: background
+        id: browserBack
 
         anchors.fill: playerBrowser
 
@@ -594,22 +594,22 @@ WallBookmarkTrack
             {
                 position: 0.0
 
-                color: (itemCover.isSourceDefault) ? defaultColorA
-                                                   : st.wallVideo_colorPlayer
+                color: (browserCover.isSourceDefault) ? defaultColorA
+                                                      : st.wallVideo_colorPlayer
             }
 
             GradientStop
             {
                 position: 1.0
 
-                color: (itemCover.isSourceDefault) ? defaultColorB
-                                                   : st.wallVideo_colorPlayer
+                color: (browserCover.isSourceDefault) ? defaultColorB
+                                                      : st.wallVideo_colorPlayer
             }
         }
 
         ImageScale
         {
-            id: itemCover
+            id: browserCover
 
             anchors.fill: parent
 
