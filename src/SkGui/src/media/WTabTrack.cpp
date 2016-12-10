@@ -896,7 +896,11 @@ void WTabTrackPrivate::saveState()
 
     if (playlist) playlist->setCurrentTime(time);
 
-    if (time != -1)
+    if (player->hasVideo() == false)
+    {
+        setVideoShot(currentBookmark, p->cover);
+    }
+    else if (time != -1)
     {
         int id = p->id;
 
