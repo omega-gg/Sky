@@ -27,7 +27,7 @@ ComponentWall
 
     property bool isHighlighted: (item == highlightedTab)
 
-    property int logoMargin: width / logoRatio
+    property int logoMargin: itemContent.width / logoRatio
 
     //---------------------------------------------------------------------------------------------
     // Style
