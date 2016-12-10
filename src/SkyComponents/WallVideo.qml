@@ -261,11 +261,13 @@ WallBookmarkTrack
             {
                 if (pHighlightedTab != tabs.currentTab)
                 {
-                    if (pHighlightedTab)
+                    var videoShot = pHighlightedTab.videoShot;
+
+                    if (videoShot == "")
                     {
-                         itemShot.loadSource(pHighlightedTab.videoShot, true);
+                        itemShot.setItemShot(playerCover);
                     }
-                    else itemShot.setItemShot(player);
+                    else itemShot.loadSource(videoShot, true);
 
                     player.posB = true;
                 }
@@ -503,6 +505,8 @@ WallBookmarkTrack
 
     Rectangle
     {
+        id: playerCover
+
         anchors.fill: player
 
         z: player.z
