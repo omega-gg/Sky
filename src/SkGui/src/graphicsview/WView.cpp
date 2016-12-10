@@ -255,8 +255,6 @@ void WViewPrivate::init(QDeclarativeItem * item)
     locked = false;
     closed = false;
 
-    autoSize = true;
-
     opengl    = true;
     antialias = true;
     vsync     = false;
@@ -2742,24 +2740,6 @@ int WView::mouseY() const
 WDeclarativeMouseArea::CursorShape WView::mouseCursor() const
 {
     Q_D(const WView); return d->cursor;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-bool WView::autoSize() const
-{
-    Q_D(const WView); return d->autoSize;
-}
-
-void WView::setAutoSize(bool autoSize)
-{
-    Q_D(WView);
-
-    if (d->autoSize == autoSize) return;
-
-    d->autoSize = autoSize;
-
-    emit autoSizeChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

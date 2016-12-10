@@ -127,8 +127,6 @@ void WWindowPrivate::init()
     QObject::connect(view, SIGNAL(mousePosChanged   ()), q, SIGNAL(mousePosChanged   ()));
     QObject::connect(view, SIGNAL(mouseCursorChanged()), q, SIGNAL(mouseCursorChanged()));
 
-    QObject::connect(view, SIGNAL(autoSizeChanged()), q, SIGNAL(autoSizeChanged()));
-
     QObject::connect(view, SIGNAL(openglChanged   ()), q, SIGNAL(openglChanged   ()));
     QObject::connect(view, SIGNAL(antialiasChanged()), q, SIGNAL(antialiasChanged()));
     QObject::connect(view, SIGNAL(vsyncChanged    ()), q, SIGNAL(vsyncChanged    ()));
@@ -866,18 +864,6 @@ int WWindow::mouseY() const
 WDeclarativeMouseArea::CursorShape WWindow::mouseCursor() const
 {
     Q_D(const WWindow); return d->view->mouseCursor();
-}
-
-//-------------------------------------------------------------------------------------------------
-
-bool WWindow::autoSize() const
-{
-    Q_D(const WWindow); return d->view->autoSize();
-}
-
-void WWindow::setAutoSize(bool autoSize)
-{
-    Q_D(WWindow); d->view->setAutoSize(autoSize);
 }
 
 //-------------------------------------------------------------------------------------------------

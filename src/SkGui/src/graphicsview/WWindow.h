@@ -96,8 +96,6 @@ class SK_GUI_EXPORT WWindow : public WDeclarativeMouseArea
 
     Q_PROPERTY(CursorShape mouseCursor READ mouseCursor NOTIFY mouseCursorChanged)
 
-    Q_PROPERTY(bool autoSize READ autoSize WRITE setAutoSize NOTIFY autoSizeChanged)
-
     Q_PROPERTY(bool opengl    READ opengl    WRITE setOpengl    NOTIFY openglChanged)
     Q_PROPERTY(bool antialias READ antialias WRITE setAntialias NOTIFY antialiasChanged)
     Q_PROPERTY(bool vsync     READ vsync     WRITE setVsync     NOTIFY vsyncChanged)
@@ -322,8 +320,6 @@ signals:
     void mousePosChanged   ();
     void mouseCursorChanged();
 
-    void autoSizeChanged();
-
     void openglChanged   ();
     void antialiasChanged();
     void vsyncChanged    ();
@@ -430,9 +426,6 @@ public: // Properties
     int mouseY() const;
 
     CursorShape mouseCursor() const;
-
-    bool autoSize() const;
-    void setAutoSize(bool autoSize);
 
     bool opengl() const;
     void setOpengl(bool enabled);

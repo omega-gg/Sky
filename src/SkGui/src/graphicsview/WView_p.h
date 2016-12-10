@@ -148,8 +148,6 @@ public: // Variables
     bool locked;
     bool closed;
 
-    bool autoSize;
-
     bool opengl;
     bool antialias;
     bool vsync;
