@@ -1577,7 +1577,7 @@ bool WBackendVlc::event(QEvent * event)
     {
         Q_D(WBackendVlc);
 
-        if (d->playing == false) return true;
+        if (d->started) return true;
 
         WVlcPlayerEvent * eventPlayer = static_cast<WVlcPlayerEvent *> (event);
 
