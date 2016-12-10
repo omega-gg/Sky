@@ -38,11 +38,11 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WAbstra
     Q_PROPERTY(WAbstractBackend * backend READ backend WRITE setBackend NOTIFY backendChanged)
     Q_PROPERTY(WAbstractHook    * hook    READ hook    WRITE setHook    NOTIFY hookChanged)
 
-    Q_PROPERTY(WAbstractBackend::State currentState READ state NOTIFY stateChanged)
-
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
 
     Q_PROPERTY(WPlaylistNet * playlist READ playlist WRITE setPlaylist NOTIFY playlistChanged)
+
+    Q_PROPERTY(WAbstractBackend::State currentState READ state NOTIFY stateChanged)
 
     Q_PROPERTY(bool isLoading READ isLoading NOTIFY stateLoadChanged)
 
@@ -53,6 +53,9 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WAbstra
     Q_PROPERTY(bool isPlaying READ isPlaying NOTIFY stateChanged)
     Q_PROPERTY(bool isPaused  READ isPaused  NOTIFY stateChanged)
     Q_PROPERTY(bool isStopped READ isStopped NOTIFY stateChanged)
+
+    Q_PROPERTY(bool isVideo READ isVideo NOTIFY sourceChanged)
+    Q_PROPERTY(bool isAudio READ isAudio NOTIFY sourceChanged)
 
     Q_PROPERTY(bool hasStarted READ hasStarted NOTIFY startedChanged)
     Q_PROPERTY(bool hasEnded   READ hasEnded   NOTIFY endedChanged)
@@ -160,13 +163,13 @@ signals:
     void backendChanged();
     void hookChanged   ();
 
-    void stateChanged    ();
-    void stateLoadChanged();
-
     void sourceChanged();
 
     void playlistChanged();
     void playlistUpdated();
+
+    void stateChanged    ();
+    void stateLoadChanged();
 
     void countChanged();
 
@@ -208,13 +211,13 @@ public: // Properties
     WAbstractHook * hook() const;
     void            setHook(WAbstractHook * hook);
 
-    WAbstractBackend::State state() const;
-
     QUrl source() const;
     void setSource(const QUrl & url);
 
     WPlaylistNet * playlist() const;
     void           setPlaylist(WPlaylistNet * playlist);
+
+    WAbstractBackend::State state() const;
 
     bool isLoading() const;
 
@@ -225,6 +228,9 @@ public: // Properties
     bool isPlaying() const;
     bool isPaused () const;
     bool isStopped() const;
+
+    bool isVideo() const;
+    bool isAudio() const;
 
     bool hasStarted() const;
     bool hasEnded  () const;

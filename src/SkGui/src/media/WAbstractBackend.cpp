@@ -99,16 +99,11 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 }
 
 //-------------------------------------------------------------------------------------------------
-
-/* virtual */ WAbstractBackend::~WAbstractBackend() {}
-
-//-------------------------------------------------------------------------------------------------
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WAbstractBackend::loadSource(const QUrl & url,
-                                                    int          duration,
-                                                    int          currentTime)
+/* Q_INVOKABLE */ void WAbstractBackend::loadSource(const QUrl & url, int duration,
+                                                                      int currentTime)
 {
     Q_D(WAbstractBackend);
 
@@ -536,6 +531,22 @@ bool WAbstractBackend::isPaused() const
 bool WAbstractBackend::isStopped() const
 {
     Q_D(const WAbstractBackend); return (d->state == StateStopped);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WAbstractBackend::isVideo() const
+{
+    Q_D(const WAbstractBackend);
+
+    return WControllerPlaylist::urlIsVideo(d->source);
+}
+
+bool WAbstractBackend::isAudio() const
+{
+    Q_D(const WAbstractBackend);
+
+    return WControllerPlaylist::urlIsAudio(d->source);
 }
 
 //-------------------------------------------------------------------------------------------------

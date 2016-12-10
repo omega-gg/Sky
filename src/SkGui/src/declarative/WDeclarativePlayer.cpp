@@ -963,13 +963,6 @@ void WDeclarativePlayer::setHook(WAbstractHook * hook)
 
 //-------------------------------------------------------------------------------------------------
 
-WAbstractBackend::State WDeclarativePlayer::state() const
-{
-    Q_D(const WDeclarativePlayer); return d->state;
-}
-
-//-------------------------------------------------------------------------------------------------
-
 QUrl WDeclarativePlayer::source() const
 {
     Q_D(const WDeclarativePlayer);
@@ -1036,6 +1029,13 @@ void WDeclarativePlayer::setPlaylist(WPlaylistNet * playlist)
 
 //-------------------------------------------------------------------------------------------------
 
+WAbstractBackend::State WDeclarativePlayer::state() const
+{
+    Q_D(const WDeclarativePlayer); return d->state;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 bool WDeclarativePlayer::isLoading() const
 {
     Q_D(const WDeclarativePlayer);
@@ -1097,6 +1097,30 @@ bool WDeclarativePlayer::isPaused() const
 bool WDeclarativePlayer::isStopped() const
 {
     Q_D(const WDeclarativePlayer); return (d->state == WAbstractBackend::StateStopped);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WDeclarativePlayer::isVideo() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+         return d->backend->isVideo();
+    }
+    else return false;
+}
+
+bool WDeclarativePlayer::isAudio() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+         return d->backend->isAudio();
+    }
+    else return false;
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -61,6 +61,9 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WPrivatable
     Q_PROPERTY(bool isPaused  READ isPaused  NOTIFY stateChanged)
     Q_PROPERTY(bool isStopped READ isStopped NOTIFY stateChanged)
 
+    Q_PROPERTY(bool isVideo READ isVideo NOTIFY sourceChanged)
+    Q_PROPERTY(bool isAudio READ isAudio NOTIFY sourceChanged)
+
     Q_PROPERTY(bool hasStarted READ hasStarted NOTIFY startedChanged)
     Q_PROPERTY(bool hasEnded   READ hasEnded   NOTIFY endedChanged)
 
@@ -130,8 +133,6 @@ public:
     WAbstractBackend();
 protected:
     WAbstractBackend(WAbstractBackendPrivate * p);
-
-    /* virtual */ ~WAbstractBackend();
 
 public: // Interface
     Q_INVOKABLE void loadSource(const QUrl & url, int duration = -1, int currentTime = -1);
@@ -254,6 +255,9 @@ public: // Properties
     bool isPlaying() const;
     bool isPaused () const;
     bool isStopped() const;
+
+    bool isVideo() const;
+    bool isAudio() const;
 
     bool hasStarted() const;
     bool hasEnded  () const;
