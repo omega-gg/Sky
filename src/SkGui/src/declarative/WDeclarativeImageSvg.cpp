@@ -521,6 +521,23 @@ void WDeclarativeImageSvgScalePrivate::onScale()
 }
 
 //-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WDeclarativeImageSvgScale::applyScale()
+{
+    Q_D(WDeclarativeImageSvgScale);
+
+    if (d->scaled) return;
+
+    d->timer.stop();
+
+    d->scaleSize = QSize(width(), height());
+
+    d->onScale();
+}
+
+//-------------------------------------------------------------------------------------------------
 // QGraphicsItem reimplementation
 //-------------------------------------------------------------------------------------------------
 

@@ -137,6 +137,9 @@ class SK_GUI_EXPORT WDeclarativeImageSvgScale : public WDeclarativeImageSvg
 public:
     explicit WDeclarativeImageSvgScale(QDeclarativeItem * parent = NULL);
 
+public: // Interface
+    Q_INVOKABLE void applyScale();
+
 public: // QGraphicsItem reimplementation
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);

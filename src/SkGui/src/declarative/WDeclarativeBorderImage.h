@@ -104,6 +104,9 @@ class SK_GUI_EXPORT WDeclarativeBorderImageScale : public WDeclarativeBorderImag
 public:
     explicit WDeclarativeBorderImageScale(QDeclarativeItem * parent = NULL);
 
+public: // Interface
+    Q_INVOKABLE void applyScale();
+
 public: // QGraphicsItem reimplementation
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);

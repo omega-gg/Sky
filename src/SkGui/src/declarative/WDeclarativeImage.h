@@ -110,6 +110,9 @@ class SK_GUI_EXPORT WDeclarativeImageScale : public WDeclarativeImage
 public:
     explicit WDeclarativeImageScale(QDeclarativeItem * parent = NULL);
 
+public: // Interface
+    Q_INVOKABLE void applyScale();
+
 protected: // QGraphicsItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
 

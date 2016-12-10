@@ -356,6 +356,25 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QDeclarativeItem * pa
 }
 
 //-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WDeclarativeBorderImageScale::applyScale()
+{
+    Q_D(WDeclarativeBorderImageScale);
+
+    if (d->scaled) return;
+
+    d->timer.stop();
+
+    d->abortAction();
+
+    d->scaleSize = QSize(width(), height());
+
+    d->onScale();
+}
+
+//-------------------------------------------------------------------------------------------------
 // QGraphicsItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
@@ -460,18 +479,18 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QDeclarativeItem * pa
             {
                 if (d->viewport->scale() == 1.0)
                 {
-                    d->scaleSize = size;
-
                     d->abortAction();
+
+                    d->scaleSize = size;
 
                     d->timer.start();
                 }
             }
             else
             {
-                d->scaleSize = size;
-
                 d->abortAction();
+
+                d->scaleSize = size;
 
                 d->onScale();
             }

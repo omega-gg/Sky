@@ -491,6 +491,25 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
 }
 
 //-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WDeclarativeImageScale::applyScale()
+{
+    Q_D(WDeclarativeImageScale);
+
+    if (d->scaled) return;
+
+    d->timer.stop();
+
+    d->abortAction();
+
+    d->scaleSize = QSize(width(), height());
+
+    d->onScale();
+}
+
+//-------------------------------------------------------------------------------------------------
 // Protected QGraphicsItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
@@ -542,18 +561,18 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
             {
                 if (d->viewport->scale() == 1.0)
                 {
-                    d->scaleSize = size;
-
                     d->abortAction();
+
+                    d->scaleSize = size;
 
                     d->timer.start();
                 }
             }
             else
             {
-                d->scaleSize = size;
-
                 d->abortAction();
+
+                d->scaleSize = size;
 
                 d->onScale();
             }

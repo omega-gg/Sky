@@ -834,6 +834,23 @@ void WDeclarativeTextSvgScalePrivate::onScale()
 }
 
 //-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WDeclarativeTextSvgScale::applyScale()
+{
+    Q_D(WDeclarativeTextSvgScale);
+
+    if (d->scaled) return;
+
+    d->timer.stop();
+
+    d->scaleSize = QSize(width(), height());
+
+    d->onScale();
+}
+
+//-------------------------------------------------------------------------------------------------
 // QGraphicsItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
