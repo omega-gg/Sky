@@ -108,20 +108,22 @@ public: // Functions
     void loadSources (bool play);
     void applySources(bool play);
 
+    void playMedia();
+
+    void updateTargetRect();
+
     void updateBuffering();
 
     void clearPlayer();
     void clearReply ();
     void clearActive();
 
-    void playMedia();
+    void setOpacity(GLfloat opacity);
 
-    void updateTargetRect();
+    void setMute(bool enabled);
 
     WAbstractBackend::Output  getClosestOutput (WAbstractBackend::Output  output);
     WAbstractBackend::Quality getClosestQuality(WAbstractBackend::Quality quality);
-
-    void setOpacity(GLfloat opacity);
 
 public: // Slots
     void onLoaded();
@@ -171,12 +173,17 @@ public: // Variables
 
     GLfloat opacity;
 
+    bool started;
     bool active;
     bool playing;
 
     bool frameReset;
     bool frameUpdated;
     bool frameFreeze;
+
+    bool mute;
+
+    int volume;
 
     QHash<WAbstractBackend::Quality, QUrl> medias;
     QHash<WAbstractBackend::Quality, QUrl> audios;

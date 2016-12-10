@@ -236,12 +236,17 @@ void WBackendVlcPrivate::init()
 
     opacity = 1.f;
 
+    started = false;
     active  = false;
     playing = false;
 
     frameReset   = false;
     frameUpdated = false;
     frameFreeze  = false;
+
+    mute = false;
+
+    volume = 100;
 
     closestOutput  = WAbstractBackend::OutputInvalid;
     closestQuality = WAbstractBackend::QualityInvalid;
@@ -275,25 +280,25 @@ void WBackendVlcPrivate::populateTableRgb()
         gamma[i] = i;
     }
 
-    for(int i = 0; i < RED_MARGIN; i++)
+    for (int i = 0; i < RED_MARGIN; i++)
     {
         tableRgb[RED_OFFSET - RED_MARGIN + i] = qRgb(gamma[0],   0, 0);
         tableRgb[RED_OFFSET + 256        + i] = qRgb(gamma[255], 0, 0);
     }
 
-    for(int i = 0; i < GREEN_MARGIN; i++)
+    for (int i = 0; i < GREEN_MARGIN; i++)
     {
         tableRgb[GREEN_OFFSET - GREEN_MARGIN + i] = qRgb(0, gamma[0],   0);
         tableRgb[GREEN_OFFSET + 256          + i] = qRgb(0, gamma[255], 0);
     }
 
-    for(int i = 0; i < BLUE_MARGIN; i++)
+    for (int i = 0; i < BLUE_MARGIN; i++)
     {
         tableRgb[BLUE_OFFSET - BLUE_MARGIN + i] = qRgb(0, 0, gamma[0]);
         tableRgb[BLUE_OFFSET + BLUE_MARGIN + i] = qRgb(0, 0, gamma[255]);
     }
 
-    for(int i = 0; i < 256; i++)
+    for (int i = 0; i < 256; i++)
     {
         tableRgb[RED_OFFSET   + i] = qRgb(gamma[i], 0, 0);
         tableRgb[GREEN_OFFSET + i] = qRgb(0, gamma[i], 0);
@@ -625,50 +630,6 @@ void WBackendVlcPrivate::applySources(bool play)
 
 //-------------------------------------------------------------------------------------------------
 
-void WBackendVlcPrivate::updateBuffering()
-{
-    Q_Q(WBackendVlc);
-
-    if (currentTime == -1)
-    {
-         q->setStateLoad(WAbstractBackend::StateLoadStarting);
-    }
-    else q->setStateLoad(WAbstractBackend::StateLoadResuming);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void WBackendVlcPrivate::clearPlayer()
-{
-    if (active)
-    {
-        active = false;
-
-        if (parentItem) parentItem->update();
-    }
-
-    playing = false;
-}
-
-void WBackendVlcPrivate::clearReply()
-{
-    if (reply == NULL) return;
-
-    delete reply;
-
-    reply = NULL;
-}
-
-void WBackendVlcPrivate::clearActive()
-{
-    Q_Q(WBackendVlc);
-
-    q->setOutputActive (WAbstractBackend::OutputInvalid);
-    q->setQualityActive(WAbstractBackend::QualityInvalid);
-}
-
-//-------------------------------------------------------------------------------------------------
-
 void WBackendVlcPrivate::playMedia()
 {
     Q_Q(WBackendVlc);
@@ -715,6 +676,85 @@ void WBackendVlcPrivate::updateTargetRect()
 
     targetWidth  = x + width;
     targetHeight = y + height;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WBackendVlcPrivate::updateBuffering()
+{
+    Q_Q(WBackendVlc);
+
+    if (currentTime == -1)
+    {
+         q->setStateLoad(WAbstractBackend::StateLoadStarting);
+    }
+    else q->setStateLoad(WAbstractBackend::StateLoadResuming);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WBackendVlcPrivate::clearPlayer()
+{
+    if (active)
+    {
+        active = false;
+
+        if (parentItem) parentItem->update();
+    }
+
+    playing = false;
+}
+
+void WBackendVlcPrivate::clearReply()
+{
+    if (reply == NULL) return;
+
+    delete reply;
+
+    reply = NULL;
+}
+
+void WBackendVlcPrivate::clearActive()
+{
+    Q_Q(WBackendVlc);
+
+    q->setOutputActive (WAbstractBackend::OutputInvalid);
+    q->setQualityActive(WAbstractBackend::QualityInvalid);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WBackendVlcPrivate::setOpacity(GLfloat opacity)
+{
+    if (this->opacity == opacity) return;
+
+    this->opacity = opacity;
+
+    GLfloat * values = this->values;
+
+    for (int i = 0; i < 4; i++)
+    {
+        values[3] = opacity;
+
+        glProgramLocalParameter4fvARB(GL_FRAGMENT_PROGRAM_ARB, i, values);
+
+        values += 4;
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WBackendVlcPrivate::setMute(bool enabled)
+{
+    if (mute == enabled) return;
+
+    mute = enabled;
+
+    if (enabled)
+    {
+         player->setVolume(0);
+    }
+    else player->setVolume(volume);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -767,26 +807,6 @@ WAbstractBackend::Quality WBackendVlcPrivate::getClosestQuality(WAbstractBackend
     }
 
     return WAbstractBackend::QualityInvalid;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void WBackendVlcPrivate::setOpacity(GLfloat opacity)
-{
-    if (this->opacity == opacity) return;
-
-    this->opacity = opacity;
-
-    GLfloat * values = this->values;
-
-    for (int i = 0; i < 4; i++)
-    {
-        values[3] = opacity;
-
-        glProgramLocalParameter4fvARB(GL_FRAGMENT_PROGRAM_ARB, i, values);
-
-        values += 4;
-    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1074,9 +1094,11 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
     if (volume)
     {
-         d->player->setVolume(volume * 80 + 20);
+         d->volume = volume * 80 + 20;
     }
-    else d->player->setVolume(0);
+    else d->volume = 0;
+
+    d->player->setVolume(d->volume);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1134,12 +1156,23 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
     if (hasStarted())
     {
+        d->started = false;
+        d->active  = false;
+
+        d->frameFreeze = true;
+
         d->player->setSource(d->currentMedia, d->currentAudio);
 
         setOutputActive(d->closestOutput);
 
-        if (isPlaying())
+        if (d->state == StatePlaying)
         {
+            d->player->play(d->currentTime);
+        }
+        else if (d->state == StatePaused)
+        {
+            d->setMute(true);
+
             d->player->play(d->currentTime);
         }
     }
@@ -1165,14 +1198,22 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
     if (hasStarted())
     {
+        d->started = false;
+
         d->frameFreeze = true;
 
         d->player->setSource(d->currentMedia, d->currentAudio);
 
         setQualityActive(closestQuality);
 
-        if (isPlaying())
+        if (d->state == StatePlaying)
         {
+            d->player->play(d->currentTime);
+        }
+        else if (d->state == StatePaused)
+        {
+            d->setMute(true);
+
             d->player->play(d->currentTime);
         }
     }
@@ -1429,6 +1470,8 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 {
     Q_D(const WBackendVlc);
 
+    if (d->frameWidth == -1) return QImage();
+
     QImage image(d->frameWidth, d->frameHeight, QImage::Format_RGB32);
 
     QPainter painter(&image);
@@ -1496,13 +1539,13 @@ bool WBackendVlc::event(QEvent * event)
     }
     else if (type == static_cast<QEvent::Type> (WVlcPlayer::EventPlaying))
     {
-        if (isStopped() == false)
-        {
-            Q_D(WBackendVlc);
+        Q_D(WBackendVlc);
 
-            d->playing = true;
+        if (d->state == StateStopped)
+        {
+            d->player->pause();
         }
-        else backendPause();
+        else d->playing = true;
 
         return true;
     }
@@ -1531,6 +1574,10 @@ bool WBackendVlc::event(QEvent * event)
     }
     else if (type == static_cast<QEvent::Type> (WVlcPlayer::EventLengthChanged))
     {
+        Q_D(WBackendVlc);
+
+        if (d->playing == false) return true;
+
         WVlcPlayerEvent * eventPlayer = static_cast<WVlcPlayerEvent *> (event);
 
         setDuration(eventPlayer->value.toInt());
@@ -1545,10 +1592,28 @@ bool WBackendVlc::event(QEvent * event)
 
         WVlcPlayerEvent * eventPlayer = static_cast<WVlcPlayerEvent *> (event);
 
-        int time = eventPlayer->value.toInt();
+        if (d->started == false)
+        {
+            d->started = true;
 
-        d->active      = true;
-        d->frameFreeze = false;
+            if (d->outputActive != OutputAudio)
+            {
+                d->active = true;
+            }
+
+            d->frameFreeze = false;
+
+            d->setMute(false);
+
+            if (d->state == StatePaused)
+            {
+                d->player->pause();
+
+                return true;
+            }
+        }
+
+        int time = eventPlayer->value.toInt();
 
         setCurrentTime(time);
 
@@ -1567,6 +1632,7 @@ bool WBackendVlc::event(QEvent * event)
         {
             if (d->frameFreeze == false)
             {
+                d->started     = false;
                 d->frameFreeze = true;
 
                 d->player->setSource(d->currentMedia, d->currentAudio);
@@ -1575,7 +1641,7 @@ bool WBackendVlc::event(QEvent * event)
             }
             else stop();
         }
-        else if (d->active == false)
+        else if (d->started == false)
         {
             stop();
         }
