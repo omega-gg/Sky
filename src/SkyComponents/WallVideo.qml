@@ -511,9 +511,11 @@ WallBookmarkTrack
 
         z: player.z
 
-        visible: (player.isResuming || player.hasVideo == false
+        visible: (player.isResuming
                   ||
-                  (player.visible && player.isAudio))
+                  (player.visible && (player.output == AbstractBackend.OutputAudio
+                                      ||
+                                      player.isAudio)))
 
         gradient: Gradient
         {
@@ -548,7 +550,7 @@ WallBookmarkTrack
             {
                 if (visible)
                 {
-                    if (player.hasVideo)
+                    if (player.isResuming)
                     {
                          return playerTab.videoShot;
                     }
