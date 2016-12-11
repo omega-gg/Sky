@@ -92,7 +92,7 @@ public: // Interface
 
     Q_INVOKABLE void loadNow(const QUrl & url = QUrl());
 
-    Q_INVOKABLE void setItemShot(QGraphicsObject * object);
+    Q_INVOKABLE void setItemShot(QGraphicsObject * object, bool forceVisible = false);
 
 public: // QDeclarativeItem reimplementation
     /* virtual */ void componentComplete();

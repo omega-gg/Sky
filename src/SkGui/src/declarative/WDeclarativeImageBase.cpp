@@ -412,11 +412,12 @@ WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p,
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WDeclarativeImageBase::setItemShot(QGraphicsObject * object)
+/* Q_INVOKABLE */ void WDeclarativeImageBase::setItemShot(QGraphicsObject * object,
+                                                          bool              forceVisible)
 {
     Q_ASSERT(object);
 
-    QPixmap pixmap = wControllerView->takeItemShot(object);
+    QPixmap pixmap = wControllerView->takeItemShot(object, true, Qt::transparent, forceVisible);
 
     setPixmap(pixmap);
 }
