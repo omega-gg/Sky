@@ -1149,30 +1149,6 @@ bool WDeclarativePlayer::hasEnded() const
 
 //-------------------------------------------------------------------------------------------------
 
-bool WDeclarativePlayer::hasVideo() const
-{
-    Q_D(const WDeclarativePlayer);
-
-    if (d->backend)
-    {
-         return d->backend->hasVideo();
-    }
-    else return false;
-}
-
-bool WDeclarativePlayer::hasAudio() const
-{
-    Q_D(const WDeclarativePlayer);
-
-    if (d->backend)
-    {
-         return d->backend->hasAudio();
-    }
-    else return false;
-}
-
-//-------------------------------------------------------------------------------------------------
-
 int WDeclarativePlayer::currentTime() const
 {
     Q_D(const WDeclarativePlayer);

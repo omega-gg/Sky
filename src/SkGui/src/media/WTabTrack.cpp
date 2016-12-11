@@ -896,7 +896,7 @@ void WTabTrackPrivate::saveState()
 
     if (playlist) playlist->setCurrentTime(time);
 
-    if (player->hasVideo() == false)
+    if (player->outputActive() == WAbstractBackend::OutputAudio)
     {
         setVideoShot(currentBookmark, p->cover);
     }

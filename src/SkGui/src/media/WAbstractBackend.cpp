@@ -563,18 +563,6 @@ bool WAbstractBackend::hasEnded() const
 
 //-------------------------------------------------------------------------------------------------
 
-bool WAbstractBackend::hasVideo() const
-{
-    Q_D(const WAbstractBackend); return (d->outputActive != OutputAudio);
-}
-
-bool WAbstractBackend::hasAudio() const
-{
-    Q_D(const WAbstractBackend); return (d->outputActive != OutputVideo);
-}
-
-//-------------------------------------------------------------------------------------------------
-
 int WAbstractBackend::currentTime() const
 {
     Q_D(const WAbstractBackend); return d->currentTime;

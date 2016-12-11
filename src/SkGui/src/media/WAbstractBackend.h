@@ -67,9 +67,6 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WPrivatable
     Q_PROPERTY(bool hasStarted READ hasStarted NOTIFY startedChanged)
     Q_PROPERTY(bool hasEnded   READ hasEnded   NOTIFY endedChanged)
 
-    Q_PROPERTY(bool hasVideo READ hasVideo NOTIFY outputActiveChanged)
-    Q_PROPERTY(bool hasAudio READ hasAudio NOTIFY outputActiveChanged)
-
     Q_PROPERTY(int currentTime READ currentTime NOTIFY currentTimeChanged)
     Q_PROPERTY(int duration    READ duration    NOTIFY durationChanged)
 
@@ -261,9 +258,6 @@ public: // Properties
 
     bool hasStarted() const;
     bool hasEnded  () const;
-
-    bool hasVideo() const;
-    bool hasAudio() const;
 
     int currentTime() const;
     int duration   () const;
