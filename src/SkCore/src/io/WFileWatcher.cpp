@@ -300,8 +300,6 @@ bool WFolderWatch::contains(const QString & path) const
 
 bool WFolderWatch::checkChange(int & fileCount)
 {
-    QDateTime oldModified = _lastModified;
-
     if (WFileWatch::checkChange(fileCount) == false)
     {
         return false;
@@ -329,7 +327,7 @@ bool WFolderWatch::checkChange(int & fileCount)
             }
         }
 
-        if (oldModified != _lastModified)
+        if (_modified)
         {
             checkFolder();
 
@@ -657,7 +655,7 @@ bool WFileWatcherPrivate::checkChange(int & fileCount)
             }
             else if (watch.isModified())
             {
-               emit q->foldersModified(watch.absolutePath(), QStringList(watch.name()));
+                emit q->foldersModified(watch.absolutePath(), QStringList(watch.name()));
             }
         }
         else return false;
