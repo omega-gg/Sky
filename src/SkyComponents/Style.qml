@@ -77,6 +77,7 @@ Item
     property int dp96: 96 * ratio
 
     property int dp112: 112 * ratio
+    property int dp120: 120 * ratio
     property int dp128: 128 * ratio
     property int dp150: 150 * ratio
     property int dp180: 180 * ratio
