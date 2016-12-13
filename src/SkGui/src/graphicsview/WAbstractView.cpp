@@ -95,7 +95,7 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 
     wcx.cbSize = sizeof(WNDCLASSEX);
 
-    wcx.style = 0;
+    wcx.style = CS_HREDRAW | CS_VREDRAW;
 
     wcx.lpfnWndProc = events;
 
