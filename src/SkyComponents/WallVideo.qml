@@ -58,6 +58,8 @@ WallBookmarkTrack
 
     property bool pButtonsVisible: (isExposed && indexRemove == -1 && indexDrag < 0)
 
+    property bool pAudio: (player.output == AbstractBackend.OutputAudio || player.isAudio)
+
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
@@ -511,11 +513,7 @@ WallBookmarkTrack
 
         z: player.z
 
-        visible: (player.isResuming
-                  ||
-                  (player.visible && (player.output == AbstractBackend.OutputAudio
-                                      ||
-                                      player.isAudio)))
+        visible: (player.isResuming || (player.visible && pAudio))
 
         gradient: Gradient
         {
@@ -550,11 +548,11 @@ WallBookmarkTrack
             {
                 if (visible)
                 {
-                    if (player.isResuming)
+                    if (pAudio)
                     {
-                         return playerTab.videoShot;
+                         return playerTab.cover;
                     }
-                    else return playerTab.cover;
+                    else return playerTab.videoShot;
                 }
                 else return "";
             }
