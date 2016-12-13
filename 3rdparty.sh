@@ -200,20 +200,23 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
         echo "DEPLOYING Qt"
 
-        mkdir -p "$Qt4"
+        if [ ! -d "$Qt4" ]; then
 
-        cd "$Qt4"
+            mkdir -p "$Qt4"
 
-        wget "$Qt4_sources"
+            cd "$Qt4"
 
-        tar -xzf "$Qt4_archive"
+            wget "$Qt4_sources"
 
-        mv "$Qt4_name"/* .
+            tar -xzf "$Qt4_archive"
 
-        rm -r "$Qt4_name"
-        rm "$Qt4_archive"
+            mv "$Qt4_name"/* .
 
-        cd -
+            rm -r "$Qt4_name"
+            rm "$Qt4_archive"
+
+            cd -
+        fi
 
         sudo cp "$lib"/libQtCore.so.$Qt4_version        "$Qt4"/lib/libQtCore.so.4
         sudo cp "$lib"/libQtGui.so.$Qt4_version         "$Qt4"/lib/libQtGui.so.4
