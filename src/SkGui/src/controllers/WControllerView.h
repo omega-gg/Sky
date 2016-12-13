@@ -77,6 +77,8 @@ public: // Interface
 public: // Static interface
     Q_INVOKABLE static QImage desaturate(const QImage & image);
 
+    Q_INVOKABLE static bool compressShots(const QString & path, int quality = 0);
+
 signals:
     void loadModeChanged();
 

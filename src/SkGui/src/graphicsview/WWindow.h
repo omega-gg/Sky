@@ -131,7 +131,6 @@ public:
     explicit WWindow(QDeclarativeItem * parent = NULL);
 
 public: // Interface
-
     Q_INVOKABLE void activate();
     Q_INVOKABLE void raise   ();
 
@@ -198,8 +197,6 @@ public: // Interface
                                   const QColor     & background   = Qt::transparent,
                                   bool               forceVisible = false) const;
 
-    Q_INVOKABLE bool compressShots(const QString & path, int quality = 0);
-
     //---------------------------------------------------------------------------------------------
     // Cursor
 
@@ -259,6 +256,9 @@ public: // Interface
     Q_INVOKABLE void setWindowSnap    (bool enabled);
     Q_INVOKABLE void setWindowMaximize(bool enabled);
 #endif
+
+public: // Static interface
+    Q_INVOKABLE static bool compressShots(const QString & path, int quality = 0);
 
 signals:
     void iconChanged();

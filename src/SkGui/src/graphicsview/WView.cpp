@@ -1496,50 +1496,20 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ QPixmap WView::takeItemShot(QGraphicsObject * item,
-                                                  bool              recursive,
-                                                  const QColor    & background,
-                                                  bool              forceVisible) const
+                                              bool              recursive,
+                                              const QColor    & background,
+                                              bool              forceVisible) const
 {
     return wControllerView->takeItemShot(item, recursive, background, forceVisible);
 }
 
 /* Q_INVOKABLE */ bool WView::saveItemShot(const QString   & fileName,
-                                               QGraphicsObject * item,
-                                               bool              recursive,
-                                               const QColor    & background,
-                                               bool              forceVisible) const
+                                           QGraphicsObject * item,
+                                           bool              recursive,
+                                           const QColor    & background,
+                                           bool              forceVisible) const
 {
     return wControllerView->saveItemShot(fileName, item, recursive, background, forceVisible);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE */ bool WView::compressShots(const QString & path, int quality)
-{
-    QDir dir(path);
-
-    if (dir.exists() == false) return false;
-
-    QFileInfoList list = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files);
-
-    foreach (QFileInfo info, list)
-    {
-        if (info.suffix().toLower() == "png")
-        {
-            const QString & path = info.filePath();
-
-            qDebug("Compressing: %s", path.C_STR);
-
-            QImage image(path);
-
-            if (image.save(path, "png", quality) == false)
-            {
-                qWarning("WView::compressShots: Failed to save image.");
-            }
-        }
-    }
-
-    return true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1743,6 +1713,15 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 /* Q_INVOKABLE */ void WView::unregisterCursor(int shape)
 {
     unregisterCursor(static_cast<WDeclarativeMouseArea::CursorShape> (shape));
+}
+
+//-------------------------------------------------------------------------------------------------
+// Static interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ bool WView::compressShots(const QString & path, int quality)
+{
+    return WControllerView::compressShots(path, quality);
 }
 
 //-------------------------------------------------------------------------------------------------

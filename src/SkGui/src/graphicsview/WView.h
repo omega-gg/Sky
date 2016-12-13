@@ -290,8 +290,6 @@ public: // Interface
                                   const QColor     & background   = Qt::transparent,
                                   bool               forceVisible = false) const;
 
-    Q_INVOKABLE bool compressShots(const QString & path, int quality = 0);
-
     //---------------------------------------------------------------------------------------------
     // Cursor
 
@@ -344,6 +342,9 @@ public: // Interface
     Q_INVOKABLE void registerCursorUrl(int shape, const QUrl & url, const QSize & size = QSize());
 
     Q_INVOKABLE void unregisterCursor(int shape);
+
+public: // Static interface
+    Q_INVOKABLE static bool compressShots(const QString & path, int quality = 0);
 
 public: // Size hints
     /* virtual */ QSize minimumSizeHint() const;

@@ -24,6 +24,7 @@
 #include <QGraphicsObject>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
+#include <QDir>
 
 W_INIT_CONTROLLER(WControllerView)
 
@@ -270,6 +271,36 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
     }
 
     return result;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ bool WControllerView::compressShots(const QString & path, int quality)
+{
+    QDir dir(path);
+
+    if (dir.exists() == false) return false;
+
+    QFileInfoList list = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files);
+
+    foreach (QFileInfo info, list)
+    {
+        if (info.suffix().toLower() == "png")
+        {
+            const QString & path = info.filePath();
+
+            qDebug("Compressing: %s", path.C_STR);
+
+            QImage image(path);
+
+            if (image.save(path, "png", quality) == false)
+            {
+                qWarning("WControllerView::compressShots: Failed to save image.");
+            }
+        }
+    }
+
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------

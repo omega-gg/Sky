@@ -358,15 +358,6 @@ void WWindowPrivate::init()
 }
 
 //-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE */ bool WWindow::compressShots(const QString & path, int quality)
-{
-    Q_D(const WWindow);
-
-    return d->view->compressShots(path, quality);
-}
-
-//-------------------------------------------------------------------------------------------------
 // Cursor
 
 /* Q_INVOKABLE */ void WWindow::registerCursor(WDeclarativeMouseArea::CursorShape shape,
@@ -531,6 +522,15 @@ void WWindowPrivate::init()
 }
 
 #endif // Q_OS_WIN
+
+//-------------------------------------------------------------------------------------------------
+// Static interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ bool WWindow::compressShots(const QString & path, int quality)
+{
+    return WView::compressShots(path, quality);
+}
 
 //-------------------------------------------------------------------------------------------------
 // Properties
