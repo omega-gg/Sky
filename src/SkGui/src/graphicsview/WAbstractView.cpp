@@ -596,18 +596,18 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 {
     Q_D(WAbstractView);
 
-    QDeclarativeView::showEvent(event);
-
     ShowWindow(d->handle, SW_SHOW);
+
+    QDeclarativeView::showEvent(event);
 }
 
 /* virtual */ void WAbstractView::hideEvent(QHideEvent * event)
 {
     Q_D(WAbstractView);
 
-    QDeclarativeView::hideEvent(event);
-
     ShowWindow(d->handle, SW_HIDE);
+
+    QDeclarativeView::hideEvent(event);
 }
 
 //-------------------------------------------------------------------------------------------------
