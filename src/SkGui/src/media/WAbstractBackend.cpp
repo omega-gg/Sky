@@ -655,8 +655,6 @@ void WAbstractBackend::setOutput(Output output)
     emit outputChanged();
 }
 
-//-------------------------------------------------------------------------------------------------
-
 WAbstractBackend::Quality WAbstractBackend::quality() const
 {
     Q_D(const WAbstractBackend); return d->quality;
