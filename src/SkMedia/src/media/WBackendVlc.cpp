@@ -1151,7 +1151,11 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 {
     Q_D(WBackendVlc);
 
-    d->closestOutput = d->getClosestOutput(output);
+    Output closestOutput = d->getClosestOutput(output);
+
+    if (closestOutput == OutputInvalid || d->closestOutput == closestOutput) return;
+
+    d->closestOutput = closestOutput;
 
     d->player->setOutput(output);
 
@@ -1164,7 +1168,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
         d->player->setSource(d->currentMedia, d->currentAudio);
 
-        setOutputActive(d->closestOutput);
+        setOutputActive(closestOutput);
 
         if (d->state == StatePlaying)
         {
@@ -1185,7 +1189,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
     Quality closestQuality = d->getClosestQuality(quality);
 
-    if (closestQuality == QualityInvalid) return;
+    if (closestQuality == QualityInvalid || d->closestQuality == closestQuality) return;
 
     QUrl media = d->medias.value(closestQuality);
 
