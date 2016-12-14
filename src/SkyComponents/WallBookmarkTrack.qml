@@ -274,8 +274,8 @@ BaseWall
         {
             var newIndex = index + 1;
 
-            if (newIndex < (count)) tabs.currentIndex = newIndex;
-            else                    tabs.currentIndex = newIndex - 2;
+            if (newIndex < count) tabs.currentIndex = newIndex;
+            else                  tabs.currentIndex = newIndex - 2;
         }
 
         return true;

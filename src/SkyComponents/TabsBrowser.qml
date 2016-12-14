@@ -250,7 +250,7 @@ BaseTabs
             return true;
         }
 
-        if (itemHovered && pFixedTabWidth == -1 && index != (count -1))
+        if (itemHovered && pFixedTabWidth == -1 && index != (count - 1))
         {
             pFixedTabWidth = tabWidth;
         }
@@ -265,8 +265,8 @@ BaseTabs
         {
             var newIndex = index + 1;
 
-            if (newIndex < (count)) tabs.currentIndex = newIndex;
-            else                    tabs.currentIndex = newIndex - 2;
+            if (newIndex < count) tabs.currentIndex = newIndex;
+            else                  tabs.currentIndex = newIndex - 2;
         }
 
         pClipItem = itemAt(indexRemove);
