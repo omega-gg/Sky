@@ -371,7 +371,7 @@ void WViewPrivate::init(QDeclarativeItem * item)
     //---------------------------------------------------------------------------------------------
     // Default size
 
-    updateMinimumSize();
+    q->WAbstractView::setMinimumSize(minimumWidth, minimumHeight);
 
     QRect rect = wControllerView->availableGeometry(sk->defaultScreen());
 
@@ -498,21 +498,6 @@ void WViewPrivate::updateViewport()
     }
 
     q->setViewport(new QGLWidget(format));
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void WViewPrivate::updateMinimumSize()
-{
-    Q_Q(WView);
-
-    QSize size = q->minimumSizeHint();
-
-//#ifdef Q_OS_MAC
-//        size = size.expandedTo(QSize(72, 24));
-//#endif
-
-    q->WAbstractView::setMinimumSize(size.width(), size.height());
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1186,7 +1171,7 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
     d->minimumWidth  = width;
     d->minimumHeight = height;
 
-    d->updateMinimumSize();
+    WAbstractView::setMinimumSize(width, height);
 
     if (d->minimumWidth != minimumWidth)
     {
@@ -1722,20 +1707,6 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 /* Q_INVOKABLE static */ bool WView::compressShots(const QString & path, int quality)
 {
     return WControllerView::compressShots(path, quality);
-}
-
-//-------------------------------------------------------------------------------------------------
-// Size hints
-//-------------------------------------------------------------------------------------------------
-
-QSize WView::minimumSizeHint() const
-{
-    Q_D(const WView); return QSize(d->minimumWidth, d->minimumHeight);
-}
-
-QSize WView::sizeHint() const
-{
-    return minimumSizeHint();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2456,7 +2427,7 @@ void WView::setMinimumWidth(int width)
 
     d->minimumWidth = width;
 
-    d->updateMinimumSize();
+    WAbstractView::setMinimumSize(width, d->minimumHeight);
 
     minimumWidthChanged();
 }
@@ -2474,7 +2445,7 @@ void WView::setMinimumHeight(int height)
 
     d->minimumHeight = height;
 
-    d->updateMinimumSize();
+    WAbstractView::setMinimumSize(d->minimumWidth, height);
 
     minimumHeightChanged();
 }

@@ -346,10 +346,6 @@ public: // Interface
 public: // Static interface
     Q_INVOKABLE static bool compressShots(const QString & path, int quality = 0);
 
-public: // Size hints
-    /* virtual */ QSize minimumSizeHint() const;
-    /* virtual */ QSize sizeHint       () const;
-
 protected: // Functions
     /* virtual */ void drawBackground(QPainter * painter, const QRectF & rect); /* {} */
     /* virtual */ void drawForeground(QPainter * painter, const QRectF & rect); /* {} */

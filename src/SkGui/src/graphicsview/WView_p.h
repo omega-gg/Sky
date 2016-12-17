@@ -78,8 +78,6 @@ public: // Functions
 
     void updateViewport();
 
-    void updateMinimumSize();
-
     void updateHoverable();
 
     void updateMouse();
