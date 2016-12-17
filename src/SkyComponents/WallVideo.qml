@@ -557,6 +557,8 @@ WallBookmarkTrack
 
             fillMode: Image.PreserveAspectFit
 
+            asynchronous: (pExpanded) ? Image.AsynchronousOn : Image.AsynchronousOff
+
             cache: false
 
             scaling: isSourceDefault
