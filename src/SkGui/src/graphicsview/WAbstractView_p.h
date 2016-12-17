@@ -81,6 +81,12 @@ public: // Variables
     int width;
     int height;
 
+    int minimumWidth;
+    int minimumHeight;
+
+    int maximumWidth;
+    int maximumHeight;
+
     QRect rect;
 
     qreal opacity;

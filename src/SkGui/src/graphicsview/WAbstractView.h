@@ -47,14 +47,17 @@ public: // Interface
     Q_INVOKABLE void raise();
     Q_INVOKABLE void lower();
 
-    Q_INVOKABLE void setGeometry(int x, int y, int width, int height);
-    Q_INVOKABLE void setGeometry(const QRect & rect);
-
     Q_INVOKABLE void move(int x, int y);
     Q_INVOKABLE void move(const QPoint & position);
 
     Q_INVOKABLE void resize(int width, int height);
     Q_INVOKABLE void resize(const QSize & size);
+
+    Q_INVOKABLE void setGeometry(int x, int y, int width, int height);
+    Q_INVOKABLE void setGeometry(const QRect & rect);
+
+    Q_INVOKABLE void setMinimumSize(int width, int height);
+    Q_INVOKABLE void setMaximumSize(int width, int height);
 
     Q_INVOKABLE void setFocus();
 

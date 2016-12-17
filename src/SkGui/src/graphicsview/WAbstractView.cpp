@@ -77,6 +77,12 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     width  = 0;
     height = 0;
 
+    minimumWidth  = 0;
+    minimumHeight = 0;
+
+    maximumWidth  = QWIDGETSIZE_MAX;
+    maximumHeight = QWIDGETSIZE_MAX;
+
     opacity = 0.0;
 
     maximized  = false;
@@ -222,13 +228,15 @@ void WAbstractViewPrivate::applyFullScreen()
 
         if (view == NULL) return 0;
 
+        WAbstractViewPrivate * d = view->d_func();
+
         MINMAXINFO * info = (MINMAXINFO *) lParam;
 
-        info->ptMinTrackSize.x = view->minimumWidth ();
-        info->ptMinTrackSize.y = view->minimumHeight();
+        info->ptMinTrackSize.x = d->minimumWidth;
+        info->ptMinTrackSize.y = d->minimumHeight;
 
-        info->ptMaxTrackSize.x = view->maximumWidth ();
-        info->ptMaxTrackSize.y = view->maximumHeight();
+        info->ptMaxTrackSize.x = d->maximumWidth;
+        info->ptMaxTrackSize.y = d->maximumHeight;
 
         return 0;
     }
@@ -254,6 +262,14 @@ void WAbstractViewPrivate::applyFullScreen()
     }
     else if (message == WM_SIZE)
     {
+        WINDOWPLACEMENT placement;
+
+        placement.length = sizeof(WINDOWPLACEMENT);
+
+        GetWindowPlacement(handle, &placement);
+
+        if (placement.showCmd == SW_SHOWMINIMIZED) return 0;
+
         WAbstractView * view
             = reinterpret_cast<WAbstractView *> (GetWindowLongPtr(handle, GWLP_USERDATA));
 
@@ -264,12 +280,6 @@ void WAbstractViewPrivate::applyFullScreen()
         RECT rect;
 
         GetClientRect(handle, &rect);
-
-        WINDOWPLACEMENT placement;
-
-        placement.length = sizeof(WINDOWPLACEMENT);
-
-        GetWindowPlacement(handle, &placement);
 
         if (placement.showCmd == SW_MAXIMIZE)
         {
@@ -324,7 +334,10 @@ void WAbstractViewPrivate::applyFullScreen()
     }
     else if (message == WM_CLOSE)
     {
-        PostQuitMessage(0);
+        WAbstractView * view
+            = reinterpret_cast<WAbstractView *> (GetWindowLongPtr(handle, GWLP_USERDATA));
+
+        view->close();
 
         return 0;
     }
@@ -458,20 +471,6 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WAbstractView::setGeometry(int x, int y, int width, int height)
-{
-    Q_D(WAbstractView);
-
-    SetWindowPos(d->handle, HWND_TOP, x, y, width, height, 0);
-}
-
-/* Q_INVOKABLE */ void WAbstractView::setGeometry(const QRect & rect)
-{
-    setGeometry(rect.x(), rect.y(), rect.width(), rect.height());
-}
-
-//-------------------------------------------------------------------------------------------------
-
 /* Q_INVOKABLE */ void WAbstractView::move(int x, int y)
 {
     Q_D(WAbstractView);
@@ -496,6 +495,64 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 /* Q_INVOKABLE */ void WAbstractView::resize(const QSize & size)
 {
     resize(size.width(), size.height());
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WAbstractView::setGeometry(int x, int y, int width, int height)
+{
+    Q_D(WAbstractView);
+
+    SetWindowPos(d->handle, HWND_TOP, x, y, width, height, 0);
+}
+
+/* Q_INVOKABLE */ void WAbstractView::setGeometry(const QRect & rect)
+{
+    setGeometry(rect.x(), rect.y(), rect.width(), rect.height());
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WAbstractView::setMinimumSize(int width, int height)
+{
+    Q_D(WAbstractView);
+
+    d->minimumWidth  = width;
+    d->minimumHeight = height;
+
+    if (d->width < width)
+    {
+        if (d->height < height)
+        {
+             SetWindowPos(d->handle, HWND_TOP, 0, 0, width, height, SWP_NOMOVE);
+        }
+        else SetWindowPos(d->handle, HWND_TOP, 0, 0, width, d->height, SWP_NOMOVE);
+    }
+    else if (d->height < height)
+    {
+        SetWindowPos(d->handle, HWND_TOP, 0, 0, d->width, height, SWP_NOMOVE);
+    }
+}
+
+/* Q_INVOKABLE */ void WAbstractView::setMaximumSize(int width, int height)
+{
+    Q_D(WAbstractView);
+
+    d->maximumWidth  = width;
+    d->maximumHeight = height;
+
+    if (d->width > width)
+    {
+        if (d->height > height)
+        {
+             SetWindowPos(d->handle, HWND_TOP, 0, 0, width, height, SWP_NOMOVE);
+        }
+        else SetWindowPos(d->handle, HWND_TOP, 0, 0, width, d->height, SWP_NOMOVE);
+    }
+    else if (d->height > height)
+    {
+        SetWindowPos(d->handle, HWND_TOP, 0, 0, d->width, height, SWP_NOMOVE);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------

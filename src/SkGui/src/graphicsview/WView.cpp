@@ -512,7 +512,7 @@ void WViewPrivate::updateMinimumSize()
 //        size = size.expandedTo(QSize(72, 24));
 //#endif
 
-    q->WAbstractView::setMinimumSize(size);
+    q->WAbstractView::setMinimumSize(size.width(), size.height());
 }
 
 //-------------------------------------------------------------------------------------------------
