@@ -1138,8 +1138,6 @@ Item
 
     property real baseLineEdit_cursorWidth: dp2
 
-    property real baseLineEdit_padding: dp9
-
     property int baseLineEdit_maximumLength: 1000
 
     property real baseLineEdit_shadowOpacityA: 0.6

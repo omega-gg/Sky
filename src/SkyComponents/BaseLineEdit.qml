@@ -26,7 +26,7 @@ MouseArea
     property bool isFocused: textInput.activeFocus
     property bool isHovered: containsMouse
 
-    property real padding: st.baseLineEdit_padding
+    property real padding: Math.round((height - cursorHeight) / 2)
 
     property real paddingLeft : padding
     property real paddingRight: padding
