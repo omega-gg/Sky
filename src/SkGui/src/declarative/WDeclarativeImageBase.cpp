@@ -50,7 +50,7 @@ void WDeclarativeImageBasePrivate::init()
 
     loadLater = false;
 
-    asynchronous = WDeclarativeImageBase::AsynchronousOff;
+    asynchronous = false;
     cache        = true;
 
     progress = 0.0;
@@ -106,7 +106,7 @@ void WDeclarativeImageBasePrivate::loadUrl()
     {
         if (file->isLoading())
         {
-            if (asynchronous != WDeclarativeImageBase::AsynchronousOn || pix.pixmap().isNull())
+            if (asynchronous == false || pix.pixmap().isNull())
             {
                 pix.clear(q);
 
@@ -131,18 +131,10 @@ void WDeclarativeImageBasePrivate::loadUrl()
 
             clearFile();
 
-            if (asynchronous == WDeclarativeImageBase::AsynchronousOff)
-            {
-                 q->applyUrl(url, false);
-            }
-            else q->applyUrl(url, true);
+            q->applyUrl(url, asynchronous);
         }
     }
-    else if (asynchronous == WDeclarativeImageBase::AsynchronousOff)
-    {
-         q->applyUrl(url, false);
-    }
-    else q->applyUrl(url, true);
+    else q->applyUrl(url, asynchronous);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -388,11 +380,11 @@ WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p,
     }
     else source = d->url;
 
-    LoadMode     loadMode     = d->loadMode;
-    Asynchronous asynchronous = d->asynchronous;
+    LoadMode loadMode     = d->loadMode;
+    bool     asynchronous = d->asynchronous;
 
     d->loadMode     = LoadAlways;
-    d->asynchronous = AsynchronousOff;
+    d->asynchronous = false;
 
     if (d->status == Loading)
     {
@@ -484,10 +476,10 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
 
         if (d->explicitSize)
         {
-             d->pix.load(WControllerFile::toString(url), d->sourceSize, d->sourceArea, asynchronous,
+             d->pix.load(WControllerFile::toString(url), d->sourceSize, d->sourceArea, true,
                          d->cache, this, SLOT(requestFinished()));
         }
-        else d->pix.load(WControllerFile::toString(url), QSize(), QSize(), asynchronous,
+        else d->pix.load(WControllerFile::toString(url), QSize(), QSize(), true,
                          d->cache, this, SLOT(requestFinished()));
 
         if (d->pix.isLoading())
@@ -518,10 +510,10 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
     {
         if (d->explicitSize)
         {
-             d->pix.load(WControllerFile::toString(url), d->sourceSize, d->sourceArea, asynchronous,
+             d->pix.load(WControllerFile::toString(url), d->sourceSize, d->sourceArea, false,
                          d->cache, this, SLOT(requestFinished()));
         }
-        else d->pix.load(WControllerFile::toString(url), QSize(), QSize(), asynchronous,
+        else d->pix.load(WControllerFile::toString(url), QSize(), QSize(), false,
                          d->cache, this, SLOT(requestFinished()));
 
         if (d->pix.isLoading())
@@ -849,18 +841,23 @@ void WDeclarativeImageBase::setLoadMode(LoadMode mode)
 
 //-------------------------------------------------------------------------------------------------
 
-WDeclarativeImageBase::Asynchronous WDeclarativeImageBase::asynchronous() const
+bool WDeclarativeImageBase::asynchronous() const
 {
     Q_D(const WDeclarativeImageBase); return d->asynchronous;
 }
 
-void WDeclarativeImageBase::setAsynchronous(Asynchronous asynchronous)
+void WDeclarativeImageBase::setAsynchronous(bool enabled)
 {
     Q_D(WDeclarativeImageBase);
 
-    if (d->asynchronous == asynchronous) return;
+    if (d->asynchronous == enabled) return;
 
-    d->asynchronous = asynchronous;
+    d->asynchronous = enabled;
+
+    if (enabled && d->status == Loading)
+    {
+        load();
+    }
 
     emit asynchronousChanged();
 }

@@ -37,7 +37,7 @@ MouseArea
 
     property bool enableAnimation: true
 
-    property int asynchronous: Image.AsynchronousOff
+    property bool asynchronous: false
 
     //---------------------------------------------------------------------------------------------
     // Item size

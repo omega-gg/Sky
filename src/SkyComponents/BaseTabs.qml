@@ -44,7 +44,7 @@ MouseArea
 
     /* read */ property real spacing: st.baseTabs_spacing
 
-    property int asynchronous: Image.AsynchronousOff
+    property bool asynchronous: false
 
     //---------------------------------------------------------------------------------------------
     // Aliases

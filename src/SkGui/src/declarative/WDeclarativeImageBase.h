@@ -32,7 +32,6 @@ class SK_GUI_EXPORT WDeclarativeImageBase : public WDeclarativeItem
 
     Q_ENUMS(Status)
     Q_ENUMS(LoadMode)
-    Q_ENUMS(Asynchronous)
 
     Q_PROPERTY(Status status READ status NOTIFY statusChanged)
 
@@ -56,7 +55,7 @@ class SK_GUI_EXPORT WDeclarativeImageBase : public WDeclarativeItem
 
     Q_PROPERTY(LoadMode loadMode READ loadMode WRITE setLoadMode NOTIFY loadModeChanged)
 
-    Q_PROPERTY(Asynchronous asynchronous READ asynchronous WRITE setAsynchronous
+    Q_PROPERTY(bool asynchronous READ asynchronous WRITE setAsynchronous
                NOTIFY asynchronousChanged)
 
     Q_PROPERTY(bool cache READ cache WRITE setCache NOTIFY cacheChanged)
@@ -74,13 +73,6 @@ public: // Enums
     enum Status { Null, Loading, Ready, Error };
 
     enum LoadMode { LoadAlways, LoadVisible };
-
-    enum Asynchronous
-    {
-        AsynchronousOff,
-        AsynchronousOn,
-        AsynchronousDefault
-    };
 
 public:
     explicit WDeclarativeImageBase(QDeclarativeItem * parent = NULL);
@@ -171,8 +163,8 @@ public: // Properties
     LoadMode loadMode() const;
     void     setLoadMode(LoadMode mode);
 
-    Asynchronous asynchronous() const;
-    void         setAsynchronous(Asynchronous asynchronous);
+    bool asynchronous() const;
+    void setAsynchronous(bool enabled);
 
     bool cache() const;
     void setCache(bool enabled);

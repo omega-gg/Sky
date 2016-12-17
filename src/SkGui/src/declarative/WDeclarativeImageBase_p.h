@@ -87,7 +87,7 @@ public: // Variables
 
     WDeclarativeImageBase::LoadMode loadMode;
 
-    WDeclarativeImageBase::Asynchronous asynchronous;
+    bool asynchronous;
 
     qreal progress;
 
