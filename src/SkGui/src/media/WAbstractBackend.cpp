@@ -68,6 +68,19 @@ void WAbstractBackendPrivate::init()
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
+void WAbstractBackendPrivate::clearCurrentTime()
+{
+    if (currentTime == -1) return;
+
+    Q_Q(WAbstractBackend);
+
+    currentTime = -1;
+
+    emit q->currentTimeChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void WAbstractBackendPrivate::setStarted(bool started)
 {
     if (this->started == started) return;
@@ -140,7 +153,7 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
     if (d->source.isValid() == false) return;
 
-    setCurrentTime(-1);
+    d->clearCurrentTime();
 
     if (backendReplay()) setState(StatePlaying);
 }
@@ -276,7 +289,7 @@ void WAbstractBackend::setState(State state)
 
         d->setStarted(false);
 
-        setCurrentTime(-1);
+        d->clearCurrentTime();
     }
     else if (state == StatePlaying)
     {
@@ -310,7 +323,7 @@ void WAbstractBackend::setEnded(bool ended)
 
     if (ended)
     {
-        setCurrentTime(-1);
+        d->clearCurrentTime();
 
         emit endedChanged();
 

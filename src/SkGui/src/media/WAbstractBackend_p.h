@@ -39,6 +39,8 @@ protected:
     void init();
 
 public: // Functions
+    void clearCurrentTime();
+
     void setStarted(bool started);
 
 public: // Variable
