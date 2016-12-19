@@ -99,7 +99,7 @@ Item
     property url icon
 
     property url  logo
-    property real logoRatio: 8
+    property real logoRatio: 8.0
 
     property color logo_colorA: "#242424"
     property color logo_colorB: "#646464"
