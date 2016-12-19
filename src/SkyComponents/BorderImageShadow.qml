@@ -23,8 +23,9 @@ BorderImageScaleBack
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property real ratio : st.borderImageShadow_ratio
-    property real adjust: st.borderImageShadow_adjust
+    property real ratio: st.borderImageShadow_ratio
+
+    property int adjust: st.borderImageShadow_adjust
 
     //---------------------------------------------------------------------------------------------
     // Settings

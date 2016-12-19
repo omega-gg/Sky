@@ -33,34 +33,34 @@ Panel
 
     /* read */ property int position: -1
 
-    /* read */ property real posX: -1
-    /* read */ property real posY: -1
+    /* read */ property int posX: -1
+    /* read */ property int posY: -1
 
-    /* read */ property real marginX: 0
-    /* read */ property real marginY: 0
-
-    //---------------------------------------------------------------------------------------------
-
-    property real minimumWidth : st.dp32
-    property real minimumHeight: st.dp32
-
-    property real maximumWidth : -1
-    property real maximumHeight: -1
-
-    property real preferredWidth : -1
-    property real preferredHeight: -1
+    /* read */ property int marginX: 0
+    /* read */ property int marginY: 0
 
     //---------------------------------------------------------------------------------------------
 
-    property real topMargin   : -(st.window_borderSize)
-    property real bottomMargin: -(st.window_borderSize)
-    property real leftMargin  : -(st.window_borderSize)
-    property real rightMargin : -(st.window_borderSize)
+    property int minimumWidth : st.dp32
+    property int minimumHeight: st.dp32
+
+    property int maximumWidth : -1
+    property int maximumHeight: -1
+
+    property int preferredWidth : -1
+    property int preferredHeight: -1
 
     //---------------------------------------------------------------------------------------------
 
-    property real panelWidth : -1
-    property real panelHeight: -1
+    property int topMargin   : -(st.window_borderSize)
+    property int bottomMargin: -(st.window_borderSize)
+    property int leftMargin  : -(st.window_borderSize)
+    property int rightMargin : -(st.window_borderSize)
+
+    //---------------------------------------------------------------------------------------------
+
+    property int panelWidth : -1
+    property int panelHeight: -1
 
     //---------------------------------------------------------------------------------------------
     // Settings

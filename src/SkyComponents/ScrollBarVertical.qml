@@ -30,7 +30,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // Style
 
-    property real handleMinimumSize: st.scrollBar_handleMinimumSize
+    property int handleMinimumSize: st.scrollBar_handleMinimumSize
 
     property color colorA: st.scrollBar_colorA
     property color colorB: st.scrollBar_colorB

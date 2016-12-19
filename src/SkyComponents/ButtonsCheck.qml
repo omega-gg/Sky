@@ -29,15 +29,15 @@ Item
 
     /* read */ property int buttonWidth: (width - extraLeft - extraRight) / count
 
-    property real padding: st.buttonPush_padding
+    property int padding: st.buttonPush_padding
 
-    property real paddingLeft : padding
-    property real paddingRight: padding
+    property int paddingLeft : padding
+    property int paddingRight: padding
 
-    property real extra: st.buttonsCheck_extra
+    property int extra: st.buttonsCheck_extra
 
-    property real extraLeft : extra
-    property real extraRight: extra
+    property int extraLeft : extra
+    property int extraRight: extra
 
     property int currentIndex: -1
 

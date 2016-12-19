@@ -23,10 +23,10 @@ Item
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property real paddingLeft : st.labelLoadingText_padding
-    property real paddingRight: st.labelLoadingText_padding
+    property int paddingLeft : st.labelLoadingText_padding
+    property int paddingRight: st.labelLoadingText_padding
 
-    property real spacing: st.labelLoadingText_spacing
+    property int spacing: st.labelLoadingText_spacing
 
     //---------------------------------------------------------------------------------------------
     // Style

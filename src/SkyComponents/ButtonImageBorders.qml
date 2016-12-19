@@ -23,11 +23,11 @@ ButtonImage
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property real imageDefaultWidth : 0
-    property real imageDefaultHeight: 0
+    property int imageDefaultWidth : 0
+    property int imageDefaultHeight: 0
 
-    property real imageMaximumWidth : -1
-    property real imageMaximumHeight: -1
+    property int imageMaximumWidth : -1
+    property int imageMaximumHeight: -1
 
     //---------------------------------------------------------------------------------------------
     // Style

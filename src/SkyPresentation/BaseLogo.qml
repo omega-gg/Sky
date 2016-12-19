@@ -24,7 +24,7 @@ Rectangle
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property real margin: height / sp.baseLogo_marginRatio
+    property int margin: height / sp.baseLogo_marginRatio
 
     property color colorA: sp.baseLogo_colorA
     property color colorB: sp.baseLogo_colorB

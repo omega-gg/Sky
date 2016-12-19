@@ -23,7 +23,7 @@ ButtonPushIcon
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property real padding: st.buttonPushRightIcon_padding
+    property int padding: st.buttonPushRightIcon_padding
 
     //---------------------------------------------------------------------------------------------
     // Settings

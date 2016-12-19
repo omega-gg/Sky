@@ -24,9 +24,9 @@ Rectangle
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property real size: ds(8)
+    property int size: ds(8)
 
-    property real padding: 0
+    property int padding: 0
 
     //---------------------------------------------------------------------------------------------
     // Aliases

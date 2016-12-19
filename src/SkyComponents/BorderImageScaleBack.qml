@@ -23,7 +23,7 @@ BorderImageScale
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property real padding: 0
+    property int padding: 0
 
     property int borderSize: 0
 

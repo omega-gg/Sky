@@ -25,10 +25,10 @@ BaseButton
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property real padding: 0
+    property int padding: 0
 
-    property real paddingLeft : padding
-    property real paddingRight: padding
+    property int paddingLeft : padding
+    property int paddingRight: padding
 
     //---------------------------------------------------------------------------------------------
     // Style

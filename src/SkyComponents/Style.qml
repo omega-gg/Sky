@@ -201,17 +201,17 @@ Item
     //---------------------------------------------------------------------------------------------
     // Line
 
-    property real line_size: dp1
+    property int line_size: dp1
 
     //---------------------------------------------------------------------------------------------
     // LineHorizontalDrop
 
-    property real lineHorizontalDrop_size: border_size
+    property int lineHorizontalDrop_size: border_size
 
     //---------------------------------------------------------------------------------------------
     // Border
 
-    property real border_size: dp2
+    property int border_size: dp2
 
     property real border_opacityDisable: 0.8
 
@@ -240,15 +240,15 @@ Item
 
     property int window_durationAnimation: duration_fast
 
-    property real window_resizerSize: dp4
-    property real window_borderSize : dp3
+    property int window_resizerSize: dp4
+    property int window_borderSize : dp3
 
     property color window_color: "#323232"
 
     //---------------------------------------------------------------------------------------------
     // RectangleBorders
 
-    property real rectangleBorders_size: border_size
+    property int rectangleBorders_size: border_size
 
     //---------------------------------------------------------------------------------------------
     // RectangleShadow
@@ -274,18 +274,18 @@ Item
 
     property real borderImageShadow_ratio: 4.0
 
-    property real borderImageShadow_adjust: dp2
+    property int borderImageShadow_adjust: dp2
 
     property real borderImageShadow_shadowOpacity: 1.0
 
     property url borderImageShadow_source: "pictures/shadow.png"
 
-    property real borderImageShadow_borderSize: 128
+    property int borderImageShadow_borderSize: 128
 
     //---------------------------------------------------------------------------------------------
     // Icon
 
-    property real icon_shadowSize: dp1
+    property int icon_shadowSize: dp1
 
     property real icon_opacityDisable: 0.5
 
@@ -421,11 +421,11 @@ Item
     //---------------------------------------------------------------------------------------------
     // BaseToolTip
 
-    property real baseToolTip_minimumWidth : dp32
-    property real baseToolTip_minimumHeight: dp32
+    property int baseToolTip_minimumWidth : dp32
+    property int baseToolTip_minimumHeight: dp32
 
-    property real baseToolTip_marginWidth : cursor_width
-    property real baseToolTip_marginHeight: cursor_height - dp8
+    property int baseToolTip_marginWidth : cursor_width
+    property int baseToolTip_marginHeight: cursor_height - dp8
 
     property real baseToolTip_opacityHover: 0.8
 
@@ -437,15 +437,15 @@ Item
     //---------------------------------------------------------------------------------------------
     // ToolTip
 
-    property real toolTip_maximumWidth: dp300
+    property int toolTip_maximumWidth: dp300
 
-    property real toolTip_padding: dp8
-    property real toolTip_spacing: dp8
+    property int toolTip_padding: dp8
+    property int toolTip_spacing: dp8
 
     //---------------------------------------------------------------------------------------------
     // BarWindow
 
-    property real barWindow_height: dp24
+    property int barWindow_height: dp24
 
     property color barWindow_colorA: "#787878"
     property color barWindow_colorB: "#484848"
@@ -458,9 +458,9 @@ Item
     //---------------------------------------------------------------------------------------------
     // BarTitle
 
-    property real barTitle_height: dp28
+    property int barTitle_height: dp28
 
-    property real barTitle_borderSize: border_size
+    property int barTitle_borderSize: border_size
 
     property color barTitle_colorA: "#787878"
     property color barTitle_colorB: "#484848"
@@ -470,7 +470,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // BarTitleSmall
 
-    property real barTitleSmall_height: dp26
+    property int barTitleSmall_height: dp26
 
     property color barTitleSmall_colorA: "#646464"
     property color barTitleSmall_colorB: "#484848"
@@ -499,10 +499,10 @@ Item
     //---------------------------------------------------------------------------------------------
     // ButtonPush
 
-    property real buttonPush_height: dp40
+    property int buttonPush_height: dp40
 
-    property real buttonPush_padding: dp14
-    property real buttonPush_spacing: dp6
+    property int buttonPush_padding: dp14
+    property int buttonPush_spacing: dp6
 
     property url buttonPush_sourceBackground: "pictures/buttonPushMask.svg"
     property url buttonPush_sourceBorder    : "pictures/buttonPushBorder.svg"
@@ -640,13 +640,13 @@ Item
     //---------------------------------------------------------------------------------------------
     // ButtonPushIcon
 
-    property real buttonPushIcon_width : buttonPush_height
-    property real buttonPushIcon_height: buttonPush_height
+    property int buttonPushIcon_width : buttonPush_height
+    property int buttonPushIcon_height: buttonPush_height
 
     //---------------------------------------------------------------------------------------------
     // ButtonPushLeft
 
-    property real buttonPushLeft_extra: dp6
+    property int buttonPushLeft_extra: dp6
 
     property url buttonPushLeft_sourceBackground: "pictures/buttonPushLeftMask.svg"
     property url buttonPushLeft_sourceBorder    : "pictures/buttonPushLeftBorder.svg"
@@ -662,7 +662,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // ButtonPushRight
 
-    property real buttonPushRight_extra: dp6
+    property int buttonPushRight_extra: dp6
 
     property url buttonPushRight_sourceBackground: "pictures/buttonPushRightMask.svg"
     property url buttonPushRight_sourceBorder    : "pictures/buttonPushRightBorder.svg"
@@ -671,12 +671,12 @@ Item
     //---------------------------------------------------------------------------------------------
     // ButtonPushLeftIcon
 
-    property real buttonPushLeftIcon_padding: dp4
+    property int buttonPushLeftIcon_padding: dp4
 
     //---------------------------------------------------------------------------------------------
     // ButtonPushRightIcon
 
-    property real buttonPushRightIcon_padding: dp4
+    property int buttonPushRightIcon_padding: dp4
 
     //---------------------------------------------------------------------------------------------
     // ButtonPushConfirm
@@ -792,10 +792,10 @@ Item
     //---------------------------------------------------------------------------------------------
     // ButtonPiano
 
-    property real buttonPiano_height: dp32
+    property int buttonPiano_height: dp32
 
-    property real buttonPiano_padding: dp8
-    property real buttonPiano_spacing: dp4
+    property int buttonPiano_padding: dp8
+    property int buttonPiano_spacing: dp4
 
     property color buttonPiano_colorA: buttonPush_colorA
     property color buttonPiano_colorB: buttonPush_colorB
@@ -831,8 +831,8 @@ Item
     //---------------------------------------------------------------------------------------------
     // ButtonPianoIcon
 
-    property real buttonPianoIcon_width : buttonPiano_height
-    property real buttonPianoIcon_height: buttonPiano_height
+    property int buttonPianoIcon_width : buttonPiano_height
+    property int buttonPianoIcon_height: buttonPiano_height
 
     //---------------------------------------------------------------------------------------------
     // ButtonPianoConfirm
@@ -848,8 +848,8 @@ Item
     //---------------------------------------------------------------------------------------------
     // ButtonRound
 
-    property real buttonRound_width : dp48
-    property real buttonRound_height: dp48
+    property int buttonRound_width : dp48
+    property int buttonRound_height: dp48
 
     property url buttonRound_sourceBackground: "pictures/buttonRoundMask.svg"
     property url buttonRound_sourceBorder    : "pictures/buttonRoundBorder.svg"
@@ -873,22 +873,22 @@ Item
     //---------------------------------------------------------------------------------------------
     // ButtonCheck
 
-    property real buttonCheck_height: buttonPush_height
+    property int buttonCheck_height: buttonPush_height
 
-    property real buttonCheck_buttonLeftMargin: -dp28
+    property int buttonCheck_buttonLeftMargin: -dp28
 
-    property real buttonCheck_buttonPaddingLeft : dp30
-    property real buttonCheck_buttonPaddingRight: dp18
+    property int buttonCheck_buttonPaddingLeft : dp30
+    property int buttonCheck_buttonPaddingRight: dp18
 
     //---------------------------------------------------------------------------------------------
     // ButtonCheckLabel
 
-    property real buttonCheckLabel_height: buttonCheck_height
+    property int buttonCheckLabel_height: buttonCheck_height
 
-    property real buttonCheckLabel_buttonLeftMargin: -dp32
+    property int buttonCheckLabel_buttonLeftMargin: -dp32
 
-    property real buttonCheckLabel_labelPaddingLeft : dp16
-    property real buttonCheckLabel_labelPaddingRight: dp34
+    property int buttonCheckLabel_labelPaddingLeft : dp16
+    property int buttonCheckLabel_labelPaddingRight: dp34
 
     //---------------------------------------------------------------------------------------------
     // ButtonImageBorders
@@ -901,8 +901,8 @@ Item
     //---------------------------------------------------------------------------------------------
     // ButtonMask
 
-    property real buttonMask_width : dp16
-    property real buttonMask_height: dp16
+    property int buttonMask_width : dp16
+    property int buttonMask_height: dp16
 
     property color buttonMask_colorHoverA: "white"
     property color buttonMask_colorHoverB: "white"
@@ -942,8 +942,8 @@ Item
     //---------------------------------------------------------------------------------------------
     // ButtonStream
 
-    property real buttonStream_width : dp70
-    property real buttonStream_height: slider_height
+    property int buttonStream_width : dp70
+    property int buttonStream_height: slider_height
 
     property url buttonStream_sourceBackground: "pictures/sliderMask.svg"
     property url buttonStream_sourceBorder    : "pictures/sliderBorder.svg"
@@ -969,21 +969,21 @@ Item
     //---------------------------------------------------------------------------------------------
     // ButtonsCheck
 
-    property real buttonsCheck_extra: dp6
+    property int buttonsCheck_extra: dp6
 
     //---------------------------------------------------------------------------------------------
     // ButtonsItem
 
-    property real buttonsItem_buttonWidth : dp28
-    property real buttonsItem_buttonHeight: dp30
+    property int buttonsItem_buttonWidth : dp28
+    property int buttonsItem_buttonHeight: dp30
 
     //---------------------------------------------------------------------------------------------
     // LabelRound
 
-    property real labelRound_height: dp40
+    property int labelRound_height: dp40
 
-    property real labelRound_padding: dp14
-    property real labelRound_spacing: dp6
+    property int labelRound_padding: dp14
+    property int labelRound_spacing: dp6
 
     property url labelRound_sourceBackground: "pictures/labelRoundMask.svg"
     property url labelRound_sourceBorder    : "pictures/labelRoundBorder.svg"
@@ -1031,8 +1031,8 @@ Item
     //---------------------------------------------------------------------------------------------
     // LabelRoundIcon
 
-    property real labelRoundIcon_width : labelRound_height
-    property real labelRoundIcon_height: labelRound_height
+    property int labelRoundIcon_width : labelRound_height
+    property int labelRoundIcon_height: labelRound_height
 
     //---------------------------------------------------------------------------------------------
     // LabelRoundInfo
@@ -1051,8 +1051,8 @@ Item
     //---------------------------------------------------------------------------------------------
     // LabelLoading
 
-    property real labelLoading_width : dp48
-    property real labelLoading_height: dp48
+    property int labelLoading_width : dp48
+    property int labelLoading_height: dp48
 
     property real labelLoading_opacity: 0.8
 
@@ -1061,10 +1061,10 @@ Item
     //---------------------------------------------------------------------------------------------
     // LabelLoadingText
 
-    property real labelLoadingText_height: dp44
+    property int labelLoadingText_height: dp44
 
-    property real labelLoadingText_padding: dp6
-    property real labelLoadingText_spacing: dp2
+    property int labelLoadingText_padding: dp6
+    property int labelLoadingText_spacing: dp2
 
     property real labelLoadingText_opacity: 0.6
 
@@ -1075,18 +1075,18 @@ Item
     //---------------------------------------------------------------------------------------------
     // LabelLoadingButton
 
-    property real labelLoadingButton_buttonWidth : dp38
-    property real labelLoadingButton_buttonHeight: dp38
+    property int labelLoadingButton_buttonWidth : dp38
+    property int labelLoadingButton_buttonHeight: dp38
 
     //---------------------------------------------------------------------------------------------
     // LabelStream
 
-    property real labelStream_height: dp16
+    property int labelStream_height: dp16
 
-    property real labelStream_padding: dp4
+    property int labelStream_padding: dp4
 
-    property real labelStream_gapX: dp5
-    property real labelStream_gapY: dp7
+    property int labelStream_gapX: dp5
+    property int labelStream_gapY: dp7
 
     property color labelStream_colorA: scrollBar_colorA
     property color labelStream_colorB: scrollBar_colorB
@@ -1094,8 +1094,8 @@ Item
     //---------------------------------------------------------------------------------------------
     // CheckBox
 
-    property real checkBox_width : dp22
-    property real checkBox_height: dp22
+    property int checkBox_width : dp22
+    property int checkBox_height: dp22
 
     property real checkBox_shadowOpacityA: 0.6
     property real checkBox_shadowOpacityB: 0.8
@@ -1124,19 +1124,19 @@ Item
     //---------------------------------------------------------------------------------------------
     // CheckBoxText
 
-    property real checkBoxText_height: dp28
+    property int checkBoxText_height: dp28
 
-    property real checkBoxText_padding: dp6
-    property real checkBoxText_spacing: dp4
+    property int checkBoxText_padding: dp6
+    property int checkBoxText_spacing: dp4
 
     //---------------------------------------------------------------------------------------------
     // BaseLineEdit
 
     property int baseLineEdit_durationCursor: ms500
 
-    property real baseLineEdit_height: dp32
+    property int baseLineEdit_height: dp32
 
-    property real baseLineEdit_cursorWidth: dp2
+    property int baseLineEdit_cursorWidth: dp2
 
     property int baseLineEdit_maximumLength: 1000
 
@@ -1153,10 +1153,10 @@ Item
     //---------------------------------------------------------------------------------------------
     // LineEdit
 
-    property real lineEdit_width : dp200
-    property real lineEdit_height: dp38
+    property int lineEdit_width : dp200
+    property int lineEdit_height: dp38
 
-    property real lineEdit_padding: dp12
+    property int lineEdit_padding: dp12
 
     property url lineEdit_sourceDefault: "pictures/lineEditMask.svg"
     property url lineEdit_sourceBorder : "pictures/lineEditBorder.svg"
@@ -1183,17 +1183,17 @@ Item
     //---------------------------------------------------------------------------------------------
     // LineEditLabel
 
-    property real lineEditLabel_lineEditLeftMargin: -dp24
+    property int lineEditLabel_lineEditLeftMargin: -dp24
 
-    property real lineEditLabel_labelPaddingLeft : dp16
-    property real lineEditLabel_labelPaddingRight: dp28
+    property int lineEditLabel_labelPaddingLeft : dp16
+    property int lineEditLabel_labelPaddingRight: dp28
 
     //---------------------------------------------------------------------------------------------
     // LineEditBox
 
-    property real lineEditBox_shadowHeight: dp6
+    property int lineEditBox_shadowHeight: dp6
 
-    property real lineEditBox_focusSize: dp2
+    property int lineEditBox_focusSize: dp2
 
     property color lineEditBox_colorA: "#c8c8c8"
     property color lineEditBox_colorB: "white"
@@ -1203,12 +1203,12 @@ Item
     //---------------------------------------------------------------------------------------------
     // List
 
-    property real list_itemSize: dp32 + border_size
+    property int list_itemSize: dp32 + border_size
 
     //---------------------------------------------------------------------------------------------
     // ListContextual
 
-    property real listContextual_spacing: dp2
+    property int listContextual_spacing: dp2
 
     property ImageColorFilter listContextual_filterIcon: icon_filter
 
@@ -1223,14 +1223,14 @@ Item
     property int scrollBar_intervalPress : ms300
     property int scrollBar_intervalRepeat: ms50
 
-    property real scrollBar_singleStep: dp8
-    property real scrollBar_pageStep  : dp16
+    property int scrollBar_singleStep: dp8
+    property int scrollBar_pageStep  : dp16
 
-    property real scrollBar_width: dp16
+    property int scrollBar_width: dp16
 
-    property real scrollBar_buttonSize: dp19
+    property int scrollBar_buttonSize: dp19
 
-    property real scrollBar_handleMinimumSize: dp32
+    property int scrollBar_handleMinimumSize: dp32
 
     property color scrollBar_colorA: buttonPush_colorPressA
     property color scrollBar_colorB: buttonPush_colorPressB
@@ -1306,14 +1306,14 @@ Item
     //---------------------------------------------------------------------------------------------
     // Scroller
 
-    property real scroller_scroll: 1
+    property real scroller_scroll: 1.0
 
     property int scroller_durationOpacity: duration_faster
 
     property int scroller_intervalA: ms300
     property int scroller_intervalB: ms20
 
-    property real scroller_size: dp38
+    property int scroller_size: dp38
 
     property real scroller_opacityA: 0.6
     property real scroller_opacityB: 0.8
@@ -1328,11 +1328,11 @@ Item
     //---------------------------------------------------------------------------------------------
     // Slider
 
-    property real slider_width : dp120
-    property real slider_height: dp26
+    property int slider_width : dp120
+    property int slider_height: dp26
 
-    property real slider_handleWidth : dp26
-    property real slider_handleHeight: dp26
+    property int slider_handleWidth : dp26
+    property int slider_handleHeight: dp26
 
     property url slider_sourceBackground  : "pictures/sliderMask.svg"
     property url slider_sourceForeground  : "pictures/sliderHandleMask.svg"
@@ -1439,15 +1439,15 @@ Item
     //---------------------------------------------------------------------------------------------
     // SliderVolume
 
-    property real sliderVolume_width : dp150
-    property real sliderVolume_height: dp32
+    property int sliderVolume_width : dp150
+    property int sliderVolume_height: dp32
 
     //---------------------------------------------------------------------------------------------
     // SliderStream
 
-    property real sliderStream_height: dp32
+    property int sliderStream_height: dp32
 
-    property real sliderStream_textWidth: dp46
+    property int sliderStream_textWidth: dp46
 
     property color sliderStream_colorBarA: "#00a0f0"
     property color sliderStream_colorBarB: "#0050b4"
@@ -1513,34 +1513,34 @@ Item
     //---------------------------------------------------------------------------------------------
     // BaseTabs
 
-    property real baseTabs_height: dp32
+    property int baseTabs_height: dp32
 
-    property real baseTabs_tabMinimum: dp64
-    property real baseTabs_tabMaximum: dp200
+    property int baseTabs_tabMinimum: dp64
+    property int baseTabs_tabMaximum: dp200
 
-    property real baseTabs_borderSize: border_size
+    property int baseTabs_borderSize: border_size
 
-    property real baseTabs_spacing: dp4
+    property int baseTabs_spacing: dp4
 
     //---------------------------------------------------------------------------------------------
     // TabsBrowser
 
     property int tabsBrowser_intervalResize: ms300
 
-    property real tabsBrowser_tabMaximum: dp300
+    property int tabsBrowser_tabMaximum: dp300
 
-    property real tabsBrowser_spacing: dp8
+    property int tabsBrowser_spacing: dp8
 
     //---------------------------------------------------------------------------------------------
     // TabsPlayer
 
-    property real tabsPlayer_overlayWidth : componentTabBrowser_iconWidth
-    property real tabsPlayer_overlayHeight: itemTab_iconHeight
+    property int tabsPlayer_overlayWidth : componentTabBrowser_iconWidth
+    property int tabsPlayer_overlayHeight: itemTab_iconHeight
 
     //---------------------------------------------------------------------------------------------
     // TabBarProgress
 
-    property real tabBarProgress_height: dp3
+    property int tabBarProgress_height: dp3
 
     property color tabBarProgress_colorA: sliderStream_colorBarB
     property color tabBarProgress_colorB: sliderStream_colorBarA
@@ -1562,7 +1562,7 @@ Item
     property int baseWall_itemExtraWidth : dp4
     property int baseWall_itemExtraHeight: dp38
 
-    property real baseWall_marginsMinSize: dp32
+    property int baseWall_marginsMinSize: dp32
 
     //---------------------------------------------------------------------------------------------
     // WallBookmarkTrack
@@ -1573,8 +1573,8 @@ Item
     //---------------------------------------------------------------------------------------------
     // WallVideo
 
-    property real wallVideo_overlayWidth : componentWallBookmarkTrack_iconWidth
-    property real wallVideo_overlayHeight: itemWall_iconHeight
+    property int wallVideo_overlayWidth : componentWallBookmarkTrack_iconWidth
+    property int wallVideo_overlayHeight: itemWall_iconHeight
 
     property color wallVideo_colorPlayer: "black"
 
@@ -1606,10 +1606,10 @@ Item
     //---------------------------------------------------------------------------------------------
     // ItemList
 
-    property real itemList_height: list_itemSize
+    property int itemList_height: list_itemSize
 
-    property real itemList_iconWidth : dp32
-    property real itemList_iconHeight: dp32
+    property int itemList_iconWidth : dp32
+    property int itemList_iconHeight: dp32
 
     property color itemList_colorA: "#383838"
     property color itemList_colorB: "#303030"
@@ -1652,12 +1652,12 @@ Item
     //---------------------------------------------------------------------------------------------
     // ItemTab
 
-    property real itemTab_height: dp32
+    property int itemTab_height: dp32
 
-    property real itemTab_borderSize: border_size
+    property int itemTab_borderSize: border_size
 
-    property real itemTab_iconWidth : dp32
-    property real itemTab_iconHeight: dp32
+    property int itemTab_iconWidth : dp32
+    property int itemTab_iconHeight: dp32
 
     property color itemTab_colorA: buttonPiano_colorA
     property color itemTab_colorB: buttonPiano_colorB
@@ -1683,28 +1683,28 @@ Item
     //---------------------------------------------------------------------------------------------
     // ItemWall
 
-    property real itemWall_width : baseWall_itemPreferredWidth
-    property real itemWall_height: baseWall_itemPreferredHeight
+    property int itemWall_width : baseWall_itemPreferredWidth
+    property int itemWall_height: baseWall_itemPreferredHeight
 
-    property real itemWall_barHeight: dp32
+    property int itemWall_barHeight: dp32
 
-    property real itemWall_iconWidth : itemTab_iconWidth
-    property real itemWall_iconHeight: itemTab_iconHeight
+    property int itemWall_iconWidth : itemTab_iconWidth
+    property int itemWall_iconHeight: itemTab_iconHeight
 
     //---------------------------------------------------------------------------------------------
     // ComponentCompletion
 
-    property real componentCompletion_height: itemList_height
+    property int componentCompletion_height: itemList_height
 
     //---------------------------------------------------------------------------------------------
     // ComponentTabBrowser
 
-    property real componentTabBrowser_iconWidth: dp42
+    property int componentTabBrowser_iconWidth: dp42
 
     //---------------------------------------------------------------------------------------------
     // ComponentWallBookmarkTrack
 
-    property real componentWallBookmarkTrack_iconWidth: dp42
+    property int componentWallBookmarkTrack_iconWidth: dp42
 
     property color componentWallBookmarkTrack_colorA: "black"
     property color componentWallBookmarkTrack_colorB: "black"
@@ -1712,9 +1712,9 @@ Item
     //---------------------------------------------------------------------------------------------
     // ContextualCategory
 
-    property real contextualCategory_height: barTitle_height + border_size
+    property int contextualCategory_height: barTitle_height + border_size
 
-    property real contextualCategory_padding: dp8
+    property int contextualCategory_padding: dp8
 
     property int contextualCategory_pixelSize: barTitleText_pixelSize
 
@@ -1726,21 +1726,21 @@ Item
     //---------------------------------------------------------------------------------------------
     // ContextualItem
 
-    property real contextualItem_height: itemList_height
+    property int contextualItem_height: itemList_height
 
-    property real contextualItem_padding: dp8
+    property int contextualItem_padding: dp8
 
     //---------------------------------------------------------------------------------------------
     // ContextualItemCover
 
-    property real contextualItemCover_spacing: dp8
+    property int contextualItemCover_spacing: dp8
 
     //---------------------------------------------------------------------------------------------
     // ContextualItemConfirm
 
-    property real contextualItemConfirm_height: itemList_height
+    property int contextualItemConfirm_height: itemList_height
 
-    property real contextualItemConfirm_paddingRight: dp2
+    property int contextualItemConfirm_paddingRight: dp2
 
     //---------------------------------------------------------------------------------------------
     // Images

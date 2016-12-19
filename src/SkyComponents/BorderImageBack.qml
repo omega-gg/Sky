@@ -23,7 +23,7 @@ BorderImage
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property real padding: borderSize
+    property int padding: borderSize
 
     property int borderSize: 0
 

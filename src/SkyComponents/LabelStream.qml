@@ -25,13 +25,13 @@ Item
 
     /* mandatory */ property variant slider
 
-    property real padding: st.labelStream_padding
+    property int padding: st.labelStream_padding
 
-    property real paddingLeft : padding
-    property real paddingRight: padding
+    property int paddingLeft : padding
+    property int paddingRight: padding
 
-    property real gapX: st.labelStream_gapX
-    property real gapY: st.labelStream_gapY
+    property int gapX: st.labelStream_gapX
+    property int gapY: st.labelStream_gapY
 
     /* read */ property int position: pGetPosition()
 

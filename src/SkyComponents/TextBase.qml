@@ -23,10 +23,10 @@ Text
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property real leftMargin  : 0
-    property real rightMargin : 0
-    property real topMargin   : 0
-    property real bottomMargin: 0
+    property int leftMargin  : 0
+    property int rightMargin : 0
+    property int topMargin   : 0
+    property int bottomMargin: 0
 
     //---------------------------------------------------------------------------------------------
     // Settings

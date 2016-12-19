@@ -50,8 +50,8 @@ BaseTabs
 
     /* read */ property real currentTabWidth: pGetCurrentWidth()
 
-    /* read */ property real dragX     : 0
-    /* read */ property real dragMargin: 0
+    /* read */ property int dragX     : 0
+    /* read */ property int dragMargin: 0
 
     //---------------------------------------------------------------------------------------------
     // Style
@@ -65,7 +65,7 @@ BaseTabs
 
     property real pFixedTabWidth: -1
 
-    property real pMaxX: 0
+    property int pMaxX: 0
 
     property bool pButtonsVisible: (pClipItem == null && indexDrag < 0)
 

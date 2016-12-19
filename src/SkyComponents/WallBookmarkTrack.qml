@@ -32,8 +32,8 @@ BaseWall
 
     property url iconDefault: itemTabs.iconDefault
 
-    property url  logo     : st.logo
-    property real logoRatio: st.logoRatio
+    property url logo     : st.logo
+    property int logoRatio: st.logoRatio
 
     /* read */ property variant itemHovered   : null
     /* read */ property variant itemContextual: null
@@ -50,19 +50,19 @@ BaseWall
     /* read */ property int indexActive: (indexContextual != -1) ? indexContextual
                                                                  : indexHover
 
-    /* read */ property real dragX: 0
-    /* read */ property real dragY: 0
+    /* read */ property int dragX: 0
+    /* read */ property int dragY: 0
 
-    /* read */ property real dragXMargin: 0
-    /* read */ property real dragYMargin: 0
+    /* read */ property int dragXMargin: 0
+    /* read */ property int dragYMargin: 0
 
     //---------------------------------------------------------------------------------------------
     // Private
 
     property bool pSilentAnimation: false
 
-    property real pMaxX: 0
-    property real pMaxY: 0
+    property int pMaxX: 0
+    property int pMaxY: 0
 
     //---------------------------------------------------------------------------------------------
     // Signals

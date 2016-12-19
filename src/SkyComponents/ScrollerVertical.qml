@@ -51,7 +51,7 @@ Item
     property int intervalA: st.scroller_intervalA
     property int intervalB: st.scroller_intervalB
 
-    property real size: st.scroller_size
+    property int size: st.scroller_size
 
     property real opacityA: st.scroller_opacityA
     property real opacityB: st.scroller_opacityB

@@ -25,10 +25,10 @@ BaseLabelRound
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property real padding: st.labelRound_padding
+    property int padding: st.labelRound_padding
 
-    property real paddingLeft : padding
-    property real paddingRight: padding
+    property int paddingLeft : padding
+    property int paddingRight: padding
 
     //---------------------------------------------------------------------------------------------
     // Aliases

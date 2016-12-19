@@ -29,7 +29,7 @@ List
 
     property int currentId: -1
 
-    property real spacing: st.listContextual_spacing
+    property int spacing: st.listContextual_spacing
 
     //---------------------------------------------------------------------------------------------
     // Style

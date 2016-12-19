@@ -20,14 +20,14 @@ Item {
     //---------------------------------------------------------------------------------------------
     // Properties
 
-    property real minimumWidth : -1
-    property real minimumHeight: -1
+    property int minimumWidth : -1
+    property int minimumHeight: -1
 
-    property real preferredWidth : -1
-    property real preferredHeight: -1
+    property int preferredWidth : -1
+    property int preferredHeight: -1
 
-    property real maximumWidth : -1
-    property real maximumHeight: -1
+    property int maximumWidth : -1
+    property int maximumHeight: -1
 
     //---------------------------------------------------------------------------------------------
     // Functions

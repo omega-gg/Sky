@@ -25,12 +25,12 @@ BaseToolTip
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property real padding: st.toolTip_padding
+    property int padding: st.toolTip_padding
 
-    property real paddingLeft : padding
-    property real paddingRight: padding
+    property int paddingLeft : padding
+    property int paddingRight: padding
 
-    property real spacing: st.toolTip_spacing
+    property int spacing: st.toolTip_spacing
 
     //---------------------------------------------------------------------------------------------
     // Private

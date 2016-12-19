@@ -29,25 +29,25 @@ Panel
 
     //---------------------------------------------------------------------------------------------
 
-    property real minimumWidth : st.baseToolTip_minimumWidth  + borderSizeWidth
-    property real minimumHeight: st.baseToolTip_minimumHeight + borderSizeHeight
+    property int minimumWidth : st.baseToolTip_minimumWidth  + borderSizeWidth
+    property int minimumHeight: st.baseToolTip_minimumHeight + borderSizeHeight
 
-    property real maximumWidth : -1
-    property real maximumHeight: -1
+    property int maximumWidth : -1
+    property int maximumHeight: -1
 
-    property real preferredWidth : -1
-    property real preferredHeight: -1
+    property int preferredWidth : -1
+    property int preferredHeight: -1
 
-    property real marginWidth : st.baseToolTip_marginWidth
-    property real marginHeight: st.baseToolTip_marginHeight
+    property int marginWidth : st.baseToolTip_marginWidth
+    property int marginHeight: st.baseToolTip_marginHeight
 
     property int position: 1
 
     //---------------------------------------------------------------------------------------------
     // Private
 
-    property real pMarginWidthHalf : marginWidth  / 2
-    property real pMarginHeightHalf: marginHeight / 2
+    property int pMarginWidthHalf : marginWidth  / 2
+    property int pMarginHeightHalf: marginHeight / 2
 
     //---------------------------------------------------------------------------------------------
     // Settings

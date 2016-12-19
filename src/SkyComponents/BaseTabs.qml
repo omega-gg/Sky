@@ -27,22 +27,22 @@ MouseArea
 
     /* read */ property int count: (model) ? model.count : 0
 
-    /* read */ property real tabsWidth: (borderRight.visible) ? width
-                                                              : getItemX(count) + borderSize
+    /* read */ property int tabsWidth: (borderRight.visible) ? width
+                                                             : getItemX(count) + borderSize
 
     /* read */ property real tabWidth: calculateTabWidth(count)
 
-    property real tabMinimum: st.baseTabs_tabMinimum
-    property real tabMaximum: st.baseTabs_tabMaximum
+    property int tabMinimum: st.baseTabs_tabMinimum
+    property int tabMaximum: st.baseTabs_tabMaximum
 
     /* read */ property variant itemHovered: null
 
     /* read */ property int indexHover: (itemHovered) ? itemHovered.getIndex()
                                                       : -1
 
-    /* read */ property real borderSize: st.baseTabs_borderSize
+    /* read */ property int borderSize: st.baseTabs_borderSize
 
-    /* read */ property real spacing: st.baseTabs_spacing
+    /* read */ property int spacing: st.baseTabs_spacing
 
     property bool asynchronous: false
 

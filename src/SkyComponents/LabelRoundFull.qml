@@ -25,15 +25,15 @@ BaseLabelRound
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property real padding: st.labelRound_padding
+    property int padding: st.labelRound_padding
 
-    property real paddingLeft : padding
-    property real paddingRight: padding
+    property int paddingLeft : padding
+    property int paddingRight: padding
 
-    property real spacing: st.labelRound_spacing
+    property int spacing: st.labelRound_spacing
 
-    property real minimumWidth: -1
-    property real maximumWidth: -1
+    property int minimumWidth: -1
+    property int maximumWidth: -1
 
     //---------------------------------------------------------------------------------------------
     // Aliases

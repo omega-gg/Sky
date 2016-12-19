@@ -25,8 +25,8 @@ MouseArea
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property real padding: st.checkBoxText_padding
-    property real spacing: st.checkBoxText_spacing
+    property int padding: st.checkBoxText_padding
+    property int spacing: st.checkBoxText_spacing
 
     //---------------------------------------------------------------------------------------------
     // Aliases

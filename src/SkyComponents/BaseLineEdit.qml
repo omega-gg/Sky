@@ -26,10 +26,10 @@ MouseArea
     property bool isFocused: textInput.activeFocus
     property bool isHovered: containsMouse
 
-    property real padding: Math.round((height - cursorHeight) / 2)
+    property int padding: (height - cursorHeight) / 2
 
-    property real paddingLeft : padding
-    property real paddingRight: padding
+    property int paddingLeft : padding
+    property int paddingRight: padding
 
     property bool autoSelect: true
 
@@ -176,9 +176,9 @@ MouseArea
 
         property int durationCursor: st.baseLineEdit_durationCursor
 
-        property real cursorWidth: st.baseLineEdit_cursorWidth
+        property int cursorWidth: st.baseLineEdit_cursorWidth
 
-        property real cursorHeight: sk.textHeight(font)
+        property int cursorHeight: sk.textHeight(font)
 
         property color colorCursor: st.baseLineEdit_colorCursor
 

@@ -47,7 +47,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // BaseLogo
 
-    property real baseLogo_marginRatio: 32
+    property real baseLogo_marginRatio: 32.0
 
     property url baseLogo_sourceHighlight: "pictures/highlight.svg"
 
@@ -59,9 +59,9 @@ Item
     //---------------------------------------------------------------------------------------------
     // ButtonBox
 
-    property real buttonBox_size: dp256
+    property int buttonBox_size: dp256
 
-    property real buttonBox_pixelSize: st.dp32
+    property int buttonBox_pixelSize: st.dp32
 
     property real buttonBox_opacity: 0.6
 
@@ -71,7 +71,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // Slides
 
-    property real slides_borderSize: st.dp8
+    property int slides_borderSize: st.dp8
 
     property int slides_duration: bpm(1)
 
@@ -80,8 +80,8 @@ Item
 
     property int slide_durationAnimation: bpm(2)
 
-    property real slide_width : dp1920
-    property real slide_height: dp1080
+    property int slide_width : dp1920
+    property int slide_height: dp1080
 
     //---------------------------------------------------------------------------------------------
     // SlideGradient
@@ -110,8 +110,8 @@ Item
 
     property int slideText_scaleDelay: bpm(4)
 
-    property real slideText_pixelSize: st.dp128
-    property real slideText_styleSize: st.dp8
+    property int slideText_pixelSize: st.dp128
+    property int slideText_styleSize: st.dp8
 
     //---------------------------------------------------------------------------------------------
     // Pulse

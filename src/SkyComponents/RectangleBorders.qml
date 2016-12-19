@@ -23,10 +23,10 @@ Borders
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property real size: st.rectangleBorders_size
+    property int size: st.rectangleBorders_size
 
-    property real sizeWidth : borderLeft + borderRight
-    property real sizeHeight: borderTop  + borderBottom
+    property int sizeWidth : borderLeft + borderRight
+    property int sizeHeight: borderTop  + borderBottom
 
     //---------------------------------------------------------------------------------------------
     // Settings
