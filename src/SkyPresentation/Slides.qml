@@ -28,7 +28,7 @@ Animated
 
     /* read */ property bool isAnimated: false
 
-    /* read */ property int ratio: width / slide_width
+    /* read */ property real ratio: width / slide_width
 
     property bool animate: true
 
