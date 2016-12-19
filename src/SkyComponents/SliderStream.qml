@@ -30,6 +30,7 @@ Item
     property bool active: true
 
     property int currentTime: -1
+    property int duration   : -1
 
     //---------------------------------------------------------------------------------------------
     // Style
@@ -44,8 +45,6 @@ Item
     //---------------------------------------------------------------------------------------------
 
     property alias enabled: slider.enabled
-
-    property alias duration: slider.maximum
 
     property alias model: slider.model
 
@@ -88,6 +87,13 @@ Item
     height: st.sliderStream_height
 
     //---------------------------------------------------------------------------------------------
+    // Events
+    //---------------------------------------------------------------------------------------------
+
+    onCurrentTimeChanged: pUpdate()
+    onDurationChanged   : pUpdate()
+
+    //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
 
@@ -97,11 +103,12 @@ Item
     }
 
     //---------------------------------------------------------------------------------------------
-    // Events
-    //---------------------------------------------------------------------------------------------
+    // Private
 
-    onCurrentTimeChanged:
+    function pUpdate()
     {
+        maximum = duration;
+
         if (slider.pressed == false && slider.drag.active == false)
         {
             value = currentTime;
