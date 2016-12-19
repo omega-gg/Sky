@@ -90,6 +90,8 @@ MouseArea
     hoverEnabled: true
     hoverRetain : hoverEnabled
 
+    wheelEnabled: hoverEnabled
+
     cursor: MouseArea.ArrowCursor
 
     //---------------------------------------------------------------------------------------------
