@@ -1699,6 +1699,8 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice              * device,
 
         playlist->updateTrack(index);
     }
+
+    emit playlist->trackQueryEnded();
 }
 
 void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * device,

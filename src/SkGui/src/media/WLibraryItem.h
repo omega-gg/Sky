@@ -149,6 +149,11 @@ protected: // WLocalObject reimplementation
     /* virtual */ void onFileDeleted();
 
 signals:
+    void queryStarted();
+    void queryEnded  ();
+
+    void queryCompleted();
+
     void idFullChanged();
 
     void parentFolderChanged();
@@ -161,11 +166,6 @@ signals:
     void coverChanged();
 
     void labelChanged();
-
-    void queryStarted();
-    void queryEnded  ();
-
-    void queryCompleted();
 
 public: // Properties
     QList<int> idFull() const;

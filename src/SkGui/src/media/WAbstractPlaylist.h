@@ -204,6 +204,8 @@ signals:
 
     void tracksCleared();
 
+    void trackQueryEnded();
+
     void countChanged();
 
     void maxCountChanged();
