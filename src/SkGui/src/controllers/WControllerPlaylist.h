@@ -78,6 +78,8 @@ public: // Interface
     Q_INVOKABLE bool urlIsTrack   (const QUrl & url) const;
     Q_INVOKABLE bool urlIsPlaylist(const QUrl & url) const;
 
+    Q_INVOKABLE bool sourceIsAudio(const QUrl & url) const;
+
     //---------------------------------------------------------------------------------------------
 
     Q_INVOKABLE void createBackendItems (WLibraryFolder * folder) const;

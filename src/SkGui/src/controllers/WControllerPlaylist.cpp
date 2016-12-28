@@ -2435,6 +2435,23 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ bool WControllerPlaylist::sourceIsAudio(const QUrl & url) const
+{
+    if (urlIsAudio(url) == false)
+    {
+        WBackendNet * backend = backendFromUrl(url);
+
+        if (backend)
+        {
+             return backend->isAudio();
+        }
+        else return false;
+    }
+    else return true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ void WControllerPlaylist::createBackendItems(WLibraryFolder * folder) const
 {
     Q_ASSERT(folder);
