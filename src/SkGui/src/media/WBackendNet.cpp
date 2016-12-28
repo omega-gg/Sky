@@ -468,6 +468,13 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : WPrivatable(p)
     return false;
 }
 
+/* Q_INVOKABLE virtual */ bool WBackendNet::isAudio() const
+{
+    return false;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE virtual */ QString WBackendNet::getHost() const
 {
     return QString();

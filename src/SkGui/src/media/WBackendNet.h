@@ -349,6 +349,7 @@ public: // Abstract interface
 
 public: // Virtual interface
     Q_INVOKABLE virtual bool isSearchEngine() const; /* {} */
+    Q_INVOKABLE virtual bool isAudio       () const; /* {} */
 
     Q_INVOKABLE virtual QString getHost() const; /* {} */
 
