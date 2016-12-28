@@ -269,30 +269,27 @@ WBackendNetPlaylistInfo WBackendDailymotion::getPlaylistInfo(const QUrl & url) c
         return WBackendNetPlaylistInfo(WLibraryItem::PlaylistNet,
                                        WControllerNetwork::extractUrlElement(source, 25));
     }
+    else if (source.startsWith("dailymotion.com/group/"))
+    {
+        return WBackendNetPlaylistInfo(WLibraryItem::PlaylistFeed,
+                                       WControllerNetwork::extractUrlElement(source, 22));
+    }
+    else if (source.startsWith("dailymotion.com/user/"))
+    {
+        return WBackendNetPlaylistInfo(WLibraryItem::PlaylistFeed,
+                                       WControllerNetwork::extractUrlElement(source, 21));
+    }
     else
     {
-        if (source.startsWith("dailymotion.com/group/"))
-        {
-            return WBackendNetPlaylistInfo(WLibraryItem::PlaylistFeed,
-                                           WControllerNetwork::extractUrlElement(source, 22));
-        }
-        else if (source.startsWith("dailymotion.com/user/"))
-        {
-            return WBackendNetPlaylistInfo(WLibraryItem::PlaylistFeed,
-                                           WControllerNetwork::extractUrlElement(source, 21));
-        }
-        else
-        {
-            QString id = WControllerNetwork::extractUrlElement(source, 16);
+        QString id = WControllerNetwork::extractUrlElement(source, 16);
 
-            if (id.isEmpty() || id.length() < 3
-                ||
-                source.indexOf(QRegExp("[/\\?#.]"), 16) != -1)
-            {
-                 return WBackendNetPlaylistInfo();
-            }
-            else return WBackendNetPlaylistInfo(WLibraryItem::PlaylistFeed, id);
+        if (id.isEmpty() || id.length() < 3
+            ||
+            source.indexOf(QRegExp("[/\\?#.]"), 16) != -1)
+        {
+             return WBackendNetPlaylistInfo();
         }
+        else return WBackendNetPlaylistInfo(WLibraryItem::PlaylistFeed, id);
     }
 }
 
@@ -463,32 +460,6 @@ WBackendNetQuery WBackendDailymotion::createQuery(const QString & method,
 
             backendQuery.url = url;
         }
-        else if (label == "playlists")
-        {
-            QUrl url("https://api.dailymotion.com/playlists");
-
-#ifdef QT_4
-            url.addQueryItem("search", q);
-
-            url.addQueryItem("fields", "id,name,thumbnail_url");
-            url.addQueryItem("sort",   "relevance");
-
-            url.addQueryItem("limit", "20");
-#else
-            QUrlQuery query(url);
-
-            query.addQueryItem("search", q);
-
-            query.addQueryItem("fields", "id,name,thumbnail_url");
-            query.addQueryItem("sort",   "relevance");
-
-            query.addQueryItem("limit", "20");
-
-            url.setQuery(query);
-#endif
-
-            backendQuery.url = url;
-        }
         else if (label == "channels")
         {
             QUrl url("https://api.dailymotion.com/users");
@@ -515,6 +486,32 @@ WBackendNetQuery WBackendDailymotion::createQuery(const QString & method,
 
             backendQuery.url = url;
             backendQuery.id  = 1;
+        }
+        else if (label == "playlists")
+        {
+            QUrl url("https://api.dailymotion.com/playlists");
+
+#ifdef QT_4
+            url.addQueryItem("search", q);
+
+            url.addQueryItem("fields", "id,name,thumbnail_url");
+            url.addQueryItem("sort",   "relevance");
+
+            url.addQueryItem("limit", "20");
+#else
+            QUrlQuery query(url);
+
+            query.addQueryItem("search", q);
+
+            query.addQueryItem("fields", "id,name,thumbnail_url");
+            query.addQueryItem("sort",   "relevance");
+
+            query.addQueryItem("limit", "20");
+
+            url.setQuery(query);
+#endif
+
+            backendQuery.url = url;
         }
         else if (label == "groups")
         {
@@ -576,7 +573,7 @@ WBackendNetSource WBackendDailymotion::extractSource(const QByteArray       & da
 {
     Q_D(const WBackendDailymotion);
 
-    WBackendNetSource source;
+    WBackendNetSource reply;
 
     QString content = Sk::readUtf8(data);
 
@@ -590,7 +587,7 @@ WBackendNetSource WBackendDailymotion::extractSource(const QByteArray       & da
     urls.append(d->extractSource(json,  "720"));
     urls.append(d->extractSource(json, "1080"));
 
-    QHash<WAbstractBackend::Quality, QUrl> * medias = &(source.medias);
+    QHash<WAbstractBackend::Quality, QUrl> * medias = &(reply.medias);
 
     for (int i = WAbstractBackend::QualityMinimum; i < WAbstractBackend::QualityMaximum; i++)
     {
@@ -602,7 +599,7 @@ WBackendNetSource WBackendDailymotion::extractSource(const QByteArray       & da
         }
     }
 
-    return source;
+    return reply;
 }
 
 /* Q_INVOKABLE virtual */

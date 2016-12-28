@@ -637,7 +637,7 @@ WBackendNetQuery WBackendYoutube::createQuery(const QString & method,
 WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
                                                  const WBackendNetQuery & query) const
 {
-    WBackendNetSource source;
+    WBackendNetSource reply;
 
     QString content = Sk::readUtf8(data);
 
@@ -645,7 +645,7 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
     {
         QString javascript = WControllerNetwork::extractJsonHtml(content, "js");
 
-        if (javascript.isEmpty()) return source;
+        if (javascript.isEmpty()) return reply;
 
         javascript = WControllerNetwork::generateUrl(javascript);
 
@@ -657,11 +657,11 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
         {
             Q_D(const WBackendYoutube);
 
-            d->applySignatures(&source, variants, script.at(1));
+            d->applySignatures(&reply, variants, script.at(1));
         }
         else
         {
-            WBackendNetQuery * nextQuery = &(source.nextQuery);
+            WBackendNetQuery * nextQuery = &(reply.nextQuery);
 
             nextQuery->url  = javascript;
             nextQuery->id   = 3;
@@ -695,16 +695,16 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
         list.append(query.url.toString());
         list.append(script);
 
-        source.data = list;
+        reply.data = list;
 
-        d->applySignatures(&source, query.data.toList(), script);
+        d->applySignatures(&reply, query.data.toList(), script);
     }
     else // if (query.id == 0 || query.id == 1)
     {
         Q_D(const WBackendYoutube);
 
-        QHash<WAbstractBackend::Quality, QUrl> * medias = &(source.medias);
-        QHash<WAbstractBackend::Quality, QUrl> * audios = &(source.audios);
+        QHash<WAbstractBackend::Quality, QUrl> * medias = &(reply.medias);
+        QHash<WAbstractBackend::Quality, QUrl> * audios = &(reply.audios);
 
         QString sources = Sk::sliceIn(content, "url_encoded_fmt_stream_map=", "&");
 
@@ -746,19 +746,22 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
 
         if (medias->isEmpty())
         {
-            if (query.id == 1) return source;
+            if (query.id == 1) return reply;
 
             QVariantList variants = query.data.toList();
 
             QString id = variants.first().toString();
 
-            WBackendNetQuery * nextQuery = &(source.nextQuery);
+            WBackendNetQuery * nextQuery = &(reply.nextQuery);
 
-            nextQuery->url  = "http://www.youtube.com/get_video_info?video_id=" + id + "&el=embedded";
+            nextQuery->url  = "http://www.youtube.com/get_video_info?video_id=" + id
+                              +
+                              "&el=embedded";
+
             nextQuery->id   = 1;
             nextQuery->data = variants;
 
-            return source;
+            return reply;
         }
 
         for (int i = 0; i <= WAbstractBackend::QualityMaximum; i++)
@@ -788,7 +791,7 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
             variants.append(listMedias);
             variants.append(listAudios);
 
-            WBackendNetQuery * nextQuery = &(source.nextQuery);
+            WBackendNetQuery * nextQuery = &(reply.nextQuery);
 
             nextQuery->url  = "https://www.youtube.com/embed/" + id;
             nextQuery->id   = 2;
@@ -798,7 +801,7 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
         }
     }
 
-    return source;
+    return reply;
 }
 
 /* Q_INVOKABLE virtual */
@@ -810,8 +813,6 @@ WBackendNetTrack WBackendYoutube::extractTrack(const QByteArray       & data,
     QString content = Sk::readUtf8(data);
 
     QString json = WControllerNetwork::extractJsonHtml(content, "args");
-
-    WTrackNet * track = &(reply.track);
 
     QString title = WControllerNetwork::extractJsonUtf8(json, "title");
     QString cover = WControllerNetwork::extractJson    (json, "iurlmaxres");
@@ -841,6 +842,8 @@ WBackendNetTrack WBackendYoutube::extractTrack(const QByteArray       & data,
     QString feed = WControllerNetwork::extractAttribute(content, "href", index);
 
     feed = WControllerNetwork::extractUrlPath(feed);
+
+    WTrackNet * track = &(reply.track);
 
     track->setTitle(title);
     track->setCover(cover);

@@ -70,7 +70,7 @@ QString WBackendVimeoPrivate::extractId(const QString & source) const
 
     QString id = WControllerNetwork::extractUrlElement(source, index + 1);
 
-    if (id.toInt() == 0 || source.contains("/groups/" + id) || source.contains("/channels/" + id))
+    if (id.toInt() == 0 || source.contains("/channels/" + id) || source.contains("/groups/" + id))
     {
          return QString();
     }
@@ -466,11 +466,11 @@ WBackendNetSource WBackendVimeo::extractSource(const QByteArray       & data,
 {
     Q_D(const WBackendVimeo);
 
-    WBackendNetSource source;
+    WBackendNetSource reply;
 
     QString content = Sk::readUtf8(data);
 
-    QHash<WAbstractBackend::Quality, QUrl> * medias = &(source.medias);
+    QHash<WAbstractBackend::Quality, QUrl> * medias = &(reply.medias);
 
     QString json = WControllerNetwork::extractJsonHtml(content, "files");
 
@@ -490,7 +490,7 @@ WBackendNetSource WBackendVimeo::extractSource(const QByteArray       & data,
         }
     }
 
-    return source;
+    return reply;
 }
 
 /* Q_INVOKABLE virtual */
