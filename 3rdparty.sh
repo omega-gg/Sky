@@ -82,7 +82,7 @@ if [ $# != 2 ] || [ $1 != "all"       -a \
                     $1 != "deploy"    -a \
                     $1 != "clean" ] || [ $2 != "linux" ]; then
 
-    echo "Usage: 3rdparty <all | install | uninstall | clean> <linux>"
+    echo "Usage: 3rdparty <all | install | uninstall | deploy | clean> <linux>"
 
     exit 1
 fi
