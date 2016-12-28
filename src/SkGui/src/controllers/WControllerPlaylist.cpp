@@ -188,6 +188,8 @@ void WControllerPlaylistLoader::onDestroyed()
 WControllerPlaylistQuery::WControllerPlaylistQuery(const WBackendNetQuery & backendQuery,
                                                    Type                     type)
 {
+    backend = NULL;
+
     this->backendQuery = backendQuery;
     this->type         = type;
 
@@ -646,6 +648,8 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylistNet * playlist,
         {
             WBackendNetQuery query = backend->extractQuery(source);
 
+            if (query.isValid() == false) return false;
+
             return getDataTrack(playlist, track, query);
         }
 
@@ -689,6 +693,8 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylistNet * playlist, co
         {
             WBackendNetQuery query = backend->extractQuery(source);
 
+            if (query.isValid() == false) return false;
+
             return getDataPlaylist(playlist, query);
         }
 
@@ -709,7 +715,15 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylistNet * playlist, co
 
             playlist->loadTrack(0);
 
-            return getDataRelated(backend, playlist, id);
+            if (getDataRelated(backend, playlist, id) == false)
+            {
+                WBackendNetQuery query(source);
+
+                query.target     = WBackendNetQuery::TargetHtml;
+                query.clearItems = false;
+
+                return getDataPlaylist(playlist, query);
+            }
         }
     }
 
@@ -801,6 +815,8 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
         if (backend->checkQuery(source))
         {
             WBackendNetQuery query = backend->extractQuery(source);
+
+            if (query.isValid() == false) return false;
 
             return getDataFolder(folder, query);
         }
@@ -1418,9 +1434,13 @@ bool WControllerPlaylistPrivate::getDataRelated(WBackendNet  * backend,
 {
     WBackendNetQuery query = backend->createQuery("related", "tracks", id);
 
-    query.clearItems = false;
+    if (query.isValid())
+    {
+        query.clearItems = false;
 
-    return getDataPlaylist(playlist, query);
+        return getDataPlaylist(playlist, query);
+    }
+    else return false;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1499,6 +1519,8 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 
     WBackendNetQuery * backendQuery = &(query->backendQuery);
 
+    WBackendNet * backend = wControllerPlaylist->backendFromUrl(backendQuery->url);
+
     if (data->hasError())
     {
         if (query->type == WControllerPlaylistQuery::TypeTrack)
@@ -1553,10 +1575,7 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 
         return;
     }
-
-    WBackendNet * backend = wControllerPlaylist->backendFromUrl(backendQuery->url);
-
-    if (backend == NULL && backendQuery->target == WBackendNetQuery::TargetDefault)
+    else if (backend == NULL && backendQuery->target == WBackendNetQuery::TargetDefault)
     {
         queries.remove(data);
 
@@ -1583,6 +1602,8 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 
     if (query->type == WControllerPlaylistQuery::TypeTrack)
     {
+        query->backend = backend;
+
         backend->loadTrack(networkReply, *backendQuery,
                            q, SLOT(onTrackLoaded(QIODevice *, WBackendNetTrack)));
     }
@@ -1590,6 +1611,8 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
     {
         if (backendQuery->target == WBackendNetQuery::TargetDefault)
         {
+            query->backend = backend;
+
             backend->loadPlaylist(networkReply, *backendQuery,
                                   q, SLOT(onPlaylistLoaded(QIODevice *, WBackendNetPlaylist)));
         }
@@ -1600,6 +1623,8 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
     {
         if (backendQuery->target == WBackendNetQuery::TargetDefault)
         {
+            query->backend = backend;
+
             backend->loadFolder(networkReply, *backendQuery,
                                 q, SLOT(onFolderLoaded(QIODevice *, WBackendNetFolder)));
         }

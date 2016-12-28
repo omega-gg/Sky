@@ -50,6 +50,8 @@ public:
     WControllerPlaylistQuery(const WBackendNetQuery & backendQuery, Type type);
 
 public: // Variables
+    WBackendNet * backend;
+
     WBackendNetQuery backendQuery;
     Type             type;
 
