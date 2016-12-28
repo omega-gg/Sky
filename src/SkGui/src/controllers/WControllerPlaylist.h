@@ -78,6 +78,7 @@ public: // Interface
     Q_INVOKABLE bool urlIsTrack   (const QUrl & url) const;
     Q_INVOKABLE bool urlIsPlaylist(const QUrl & url) const;
 
+    Q_INVOKABLE bool sourceIsVideo(const QUrl & url) const;
     Q_INVOKABLE bool sourceIsAudio(const QUrl & url) const;
 
     //---------------------------------------------------------------------------------------------

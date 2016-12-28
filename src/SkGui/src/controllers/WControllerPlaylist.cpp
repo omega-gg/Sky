@@ -2435,6 +2435,15 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ bool WControllerPlaylist::sourceIsVideo(const QUrl & url) const
+{
+    if (sourceIsAudio(url))
+    {
+         return false;
+    }
+    else return true;
+}
+
 /* Q_INVOKABLE */ bool WControllerPlaylist::sourceIsAudio(const QUrl & url) const
 {
     if (urlIsAudio(url) == false)

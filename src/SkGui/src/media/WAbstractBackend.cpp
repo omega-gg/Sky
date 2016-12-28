@@ -552,14 +552,14 @@ bool WAbstractBackend::isVideo() const
 {
     Q_D(const WAbstractBackend);
 
-    return WControllerPlaylist::urlIsVideo(d->source);
+    return wControllerPlaylist->sourceIsVideo(d->source);
 }
 
 bool WAbstractBackend::isAudio() const
 {
     Q_D(const WAbstractBackend);
 
-    return WControllerPlaylist::urlIsAudio(d->source);
+    return wControllerPlaylist->sourceIsAudio(d->source);
 }
 
 //-------------------------------------------------------------------------------------------------
