@@ -1100,25 +1100,29 @@ void WPixmapCache::clear(QObject * receiver)
 
     if (width > 0)
     {
+        QSize sizeReader = reader->size();
+
         if (height <= 0)
         {
-            QSize sizeReader = reader->size();
-
             height = qRound(sizeReader.height() * ((qreal) width / (qreal) sizeReader.width()));
         }
 
-        reader->setScaledSize(QSize(width, height));
+        sizeReader.scale(width, height, Qt::KeepAspectRatioByExpanding);
+
+        reader->setScaledSize(sizeReader);
     }
     else if (height > 0)
     {
+        QSize sizeReader = reader->size();
+
         if (width <= 0)
         {
-            QSize sizeReader = reader->size();
-
             width = qRound(sizeReader.width() * ((qreal) height / (qreal) sizeReader.height()));
         }
 
-        reader->setScaledSize(QSize(width, height));
+        sizeReader.scale(width, height, Qt::KeepAspectRatioByExpanding);
+
+        reader->setScaledSize(sizeReader);
     }
 }
 
@@ -1138,7 +1142,7 @@ void WPixmapCache::clear(QObject * receiver)
             height = qRound(sizePixmap.height() * ((qreal) width / (qreal) sizePixmap.width()));
         }
 
-        return pixmap.scaled(QSize(width, height), Qt::IgnoreAspectRatio,
+        return pixmap.scaled(QSize(width, height), Qt::KeepAspectRatioByExpanding,
                                                    Qt::SmoothTransformation);
     }
     else if (height > 0)
@@ -1150,7 +1154,7 @@ void WPixmapCache::clear(QObject * receiver)
             width = qRound(sizePixmap.width() * ((qreal) height / (qreal) sizePixmap.height()));
         }
 
-        return pixmap.scaled(QSize(width, height), Qt::IgnoreAspectRatio,
+        return pixmap.scaled(QSize(width, height), Qt::KeepAspectRatioByExpanding,
                                                    Qt::SmoothTransformation);
     }
     else return pixmap;
