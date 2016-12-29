@@ -528,7 +528,7 @@ void WDeclarativeImageSvgScalePrivate::onScale()
 {
     Q_D(WDeclarativeImageSvgScale);
 
-    if (d->scaled) return;
+    if (d->scalable == false || d->scaled) return;
 
     d->timer.stop();
 
@@ -634,6 +634,8 @@ void WDeclarativeImageSvgScalePrivate::onScale()
     Q_D(WDeclarativeImageSvgScale);
 
     d->timer.stop();
+
+    d->scalable = false;
 }
 
 //-------------------------------------------------------------------------------------------------

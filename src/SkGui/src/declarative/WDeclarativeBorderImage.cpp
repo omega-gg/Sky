@@ -427,7 +427,7 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QDeclarativeItem * pa
 {
     Q_D(WDeclarativeBorderImageScale);
 
-    if (d->scaled) return;
+    if (d->scalable == false || d->scaled) return;
 
     d->timer.stop();
 
@@ -519,6 +519,8 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QDeclarativeItem * pa
     d->timer.stop();
 
     d->abortAction();
+
+    d->scalable = false;
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -841,7 +841,7 @@ void WDeclarativeTextSvgScalePrivate::onScale()
 {
     Q_D(WDeclarativeTextSvgScale);
 
-    if (d->scaled) return;
+    if (d->scalable == false || d->scaled) return;
 
     d->timer.stop();
 

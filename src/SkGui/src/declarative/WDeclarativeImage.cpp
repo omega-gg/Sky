@@ -498,7 +498,7 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
 {
     Q_D(WDeclarativeImageScale);
 
-    if (d->scaled) return;
+    if (d->scalable == false || d->scaled) return;
 
     d->timer.stop();
 
@@ -537,6 +537,8 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
     d->timer.stop();
 
     d->abortAction();
+
+    d->scalable = false;
 }
 
 //-------------------------------------------------------------------------------------------------
