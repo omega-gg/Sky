@@ -546,7 +546,11 @@ WallBookmarkTrack
                 {
                     if (pAudio)
                     {
-                         return playerTab.cover;
+                        if (pHighlightedTab)
+                        {
+                             return pHighlightedTab.cover;
+                        }
+                        else return playerTab.cover;
                     }
                     else return playerTab.videoShot;
                 }
@@ -556,8 +560,6 @@ WallBookmarkTrack
             sourceDefault: logo
 
             fillMode: Image.PreserveAspectFit
-
-            asynchronous: (split != -1)
 
             cache: false
 
