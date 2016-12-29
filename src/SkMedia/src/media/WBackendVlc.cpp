@@ -1099,7 +1099,10 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
     }
     else d->volume = 0;
 
-    d->player->setVolume(d->volume);
+    if (d->mute == false)
+    {
+        d->player->setVolume(d->volume);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1546,7 +1549,13 @@ bool WBackendVlc::event(QEvent * event)
     {
         Q_D(WBackendVlc);
 
-        if (d->state == StateStopped)
+        if (d->state == StatePlaying)
+        {
+            d->playing = true;
+
+            d->setMute(false);
+        }
+        else if (d->state == StateStopped)
         {
             d->player->pause();
         }
@@ -1607,8 +1616,6 @@ bool WBackendVlc::event(QEvent * event)
             }
 
             d->frameFreeze = false;
-
-            d->setMute(false);
 
             if (d->state == StatePaused)
             {
