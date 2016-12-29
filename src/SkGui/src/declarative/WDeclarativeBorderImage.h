@@ -23,9 +23,47 @@
 #ifndef SK_NO_DECLARATIVEBORDERIMAGE
 
 // Forward declarations
-class QDeclarativeScaleGrid;
 class WDeclarativeBorderImagePrivate;
 class WDeclarativeBorderImageScalePrivate;
+
+//-------------------------------------------------------------------------------------------------
+// WDeclarativeBorderGrid
+//-------------------------------------------------------------------------------------------------
+
+class SK_GUI_EXPORT WDeclarativeBorderGrid : public QObject
+{
+    Q_OBJECT
+
+    Q_PROPERTY(int left   READ left   WRITE setLeft   NOTIFY borderChanged)
+    Q_PROPERTY(int right  READ right  WRITE setRight  NOTIFY borderChanged)
+    Q_PROPERTY(int top    READ top    WRITE setTop    NOTIFY borderChanged)
+    Q_PROPERTY(int bottom READ bottom WRITE setBottom NOTIFY borderChanged)
+
+public:
+    explicit WDeclarativeBorderGrid(QObject * parent = NULL);
+
+signals:
+    void borderChanged();
+
+public: // Properties
+    int  left() const;
+    void setLeft(int size);
+
+    int  right() const;
+    void setRight(int size);
+
+    int  top() const;
+    void setTop(int size);
+
+    int  bottom() const;
+    void setBottom(int size);
+
+private: // Variables
+    int _left;
+    int _right;
+    int _top;
+    int _bottom;
+};
 
 //-------------------------------------------------------------------------------------------------
 // WDeclarativeBorderImage
@@ -37,7 +75,7 @@ class SK_GUI_EXPORT WDeclarativeBorderImage : public WDeclarativeImageBase
 
     Q_ENUMS(TileMode)
 
-    Q_PROPERTY(QDeclarativeScaleGrid * border READ border CONSTANT)
+    Q_PROPERTY(WDeclarativeBorderGrid * border READ border CONSTANT)
 
     Q_PROPERTY(TileMode horizontalTileMode READ horizontalTileMode WRITE setHorizontalTileMode
                NOTIFY horizontalTileModeChanged)
@@ -70,7 +108,7 @@ signals:
     void verticalTileModeChanged  ();
 
 public: // Properties
-    QDeclarativeScaleGrid * border();
+    WDeclarativeBorderGrid * border();
 
     TileMode horizontalTileMode() const;
     void     setHorizontalTileMode(TileMode mode);

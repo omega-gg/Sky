@@ -47,13 +47,13 @@ protected:
     void init();
 
 public: // Functions
-    QDeclarativeScaleGrid * getScaleGrid();
+    WDeclarativeBorderGrid * getBorder();
 
 public: // Slots
     virtual void onUpdate();
 
 public: // Variables
-    QDeclarativeScaleGrid * border;
+    WDeclarativeBorderGrid * border;
 
     WDeclarativeBorderImage::TileMode horizontalTileMode;
     WDeclarativeBorderImage::TileMode verticalTileMode;

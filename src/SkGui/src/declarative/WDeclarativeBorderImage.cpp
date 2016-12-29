@@ -50,29 +50,15 @@ void WDeclarativeBorderImagePrivate::init()
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-QDeclarativeScaleGrid * WDeclarativeBorderImagePrivate::getScaleGrid()
+WDeclarativeBorderGrid * WDeclarativeBorderImagePrivate::getBorder()
 {
     if (border) return border;
 
     Q_Q(WDeclarativeBorderImage);
 
-    border = new QDeclarativeScaleGrid(q);
+    border = new WDeclarativeBorderGrid(q);
 
-    static int borderChanged = -1;
-
-    if (borderChanged == -1)
-    {
-        borderChanged = QDeclarativeScaleGrid::staticMetaObject.indexOfSignal("borderChanged()");
-    }
-
-    static int onUpdate = -1;
-
-    if (onUpdate == -1)
-    {
-        onUpdate = WDeclarativeBorderImage::staticMetaObject.indexOfSlot("onUpdate()");
-    }
-
-    QMetaObject::connect(border, borderChanged, q, onUpdate);
+    QObject::connect(border, SIGNAL(borderChanged()), q, SLOT(onUpdate()));
 
     return border;
 }
@@ -85,11 +71,89 @@ QDeclarativeScaleGrid * WDeclarativeBorderImagePrivate::getScaleGrid()
 {
     Q_Q(WDeclarativeBorderImage);
 
-    const QDeclarativeScaleGrid * border = getScaleGrid();
+    const WDeclarativeBorderGrid * border = getBorder();
 
     margins = QMargins(border->left(), border->top(), border->right(), border->bottom());
 
     q->update();
+}
+
+//=================================================================================================
+// WDeclarativeBorderGrid
+//=================================================================================================
+
+/* explicit */ WDeclarativeBorderGrid::WDeclarativeBorderGrid(QObject * parent) : QObject(parent)
+{
+    _left   = 0;
+    _right  = 0;
+    _top    = 0;
+    _bottom = 0;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Properties
+//-------------------------------------------------------------------------------------------------
+
+int WDeclarativeBorderGrid::left() const
+{
+    return _left;
+}
+
+void WDeclarativeBorderGrid::setLeft(int size)
+{
+    if (_left == size) return;
+
+    _left = size;
+
+    emit borderChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+int WDeclarativeBorderGrid::right() const
+{
+    return _right;
+}
+
+void WDeclarativeBorderGrid::setRight(int size)
+{
+    if (_right == size) return;
+
+    _right = size;
+
+    emit borderChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+int WDeclarativeBorderGrid::top() const
+{
+    return _top;
+}
+
+void WDeclarativeBorderGrid::setTop(int size)
+{
+    if (_top == size) return;
+
+    _top = size;
+
+    emit borderChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+int WDeclarativeBorderGrid::bottom() const
+{
+    return _bottom;
+}
+
+void WDeclarativeBorderGrid::setBottom(int size)
+{
+    if (_bottom == size) return;
+
+    _bottom = size;
+
+    emit borderChanged();
 }
 
 //=================================================================================================
@@ -155,9 +219,9 @@ WDeclarativeBorderImage::WDeclarativeBorderImage(WDeclarativeBorderImagePrivate 
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-QDeclarativeScaleGrid * WDeclarativeBorderImage::border()
+WDeclarativeBorderGrid * WDeclarativeBorderImage::border()
 {
-    Q_D(WDeclarativeBorderImage); return d->getScaleGrid();
+    Q_D(WDeclarativeBorderImage); return d->getBorder();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -241,7 +305,7 @@ void WDeclarativeBorderImageScalePrivate::resize(const QPixmap & pixmap)
 
     restore();
 
-    const QDeclarativeScaleGrid * border = getScaleGrid();
+    const WDeclarativeBorderGrid * border = getBorder();
 
     margins = QMargins(border->left(), border->top(), border->right(), border->bottom());
 
