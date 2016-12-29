@@ -93,6 +93,12 @@ public: // Properties
     int width () const;
     int height() const;
 
+    int minimumWidth () const;
+    int minimumHeight() const;
+
+    int maximumWidth () const;
+    int maximumHeight() const;
+
     qreal windowOpacity() const;
     void  setWindowOpacity(qreal level);
 #endif

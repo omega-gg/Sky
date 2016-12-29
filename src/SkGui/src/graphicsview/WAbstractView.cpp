@@ -742,6 +742,30 @@ int WAbstractView::height() const
 
 //-------------------------------------------------------------------------------------------------
 
+int WAbstractView::minimumWidth() const
+{
+    Q_D(const WAbstractView); return d->minimumWidth;
+}
+
+int WAbstractView::minimumHeight() const
+{
+    Q_D(const WAbstractView); return d->minimumHeight;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+int WAbstractView::maximumWidth() const
+{
+    Q_D(const WAbstractView); return d->maximumWidth;
+}
+
+int WAbstractView::maximumHeight() const
+{
+    Q_D(const WAbstractView); return d->maximumHeight;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 qreal WAbstractView::windowOpacity() const
 {
     Q_D(const WAbstractView);
