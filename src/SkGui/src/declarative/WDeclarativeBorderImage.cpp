@@ -28,9 +28,6 @@
 #include <WImageFilter>
 #include <WAbstractThreadAction>
 
-// Private includes
-#include <private/qdeclarativescalegrid_p_p.h>
-
 //=================================================================================================
 // WDeclarativeBorderImagePrivate
 //=================================================================================================

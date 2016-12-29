@@ -188,10 +188,10 @@ void WControllerPlaylistLoader::onDestroyed()
 WControllerPlaylistQuery::WControllerPlaylistQuery(const WBackendNetQuery & backendQuery,
                                                    Type                     type)
 {
-    backend = NULL;
-
     this->backendQuery = backendQuery;
     this->type         = type;
+
+    backend = NULL;
 
     data  = NULL;
     reply = NULL;
@@ -2711,11 +2711,7 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsMedia(const QString & extension)
 {
-    if (extensionIsVideo(extension) || extensionIsAudio(extension))
-    {
-         return true;
-    }
-    else return false;
+    return (extensionIsVideo(extension) || extensionIsAudio(extension));
 }
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsVideo(const QString & extension)
