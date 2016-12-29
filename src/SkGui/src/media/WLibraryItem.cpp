@@ -229,6 +229,8 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
         {
             qWarning("WLibraryItem::loadQuery: Failed to load source %s.", d->source.C_URL);
 
+            d->setStateQuery(WLocalObject::Loaded);
+
             return false;
         }
         else return true;
@@ -245,6 +247,8 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
     if (applySource(d->source) == false)
     {
         qWarning("WLibraryItem::reloadQuery: Failed to reload source %s.", d->source.C_URL);
+
+        d->setStateQuery(WLocalObject::Loaded);
 
         return false;
     }
