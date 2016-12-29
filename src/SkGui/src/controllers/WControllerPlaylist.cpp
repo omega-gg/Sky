@@ -1523,6 +1523,8 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 
     if (data->hasError())
     {
+        if (backend) backend->queryFailed(*backendQuery);
+
         if (query->type == WControllerPlaylistQuery::TypeTrack)
         {
             WPlaylistNet * playlist = item->toPlaylistNet();

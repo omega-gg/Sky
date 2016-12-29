@@ -298,6 +298,8 @@ void WControllerMediaPrivate::onLoaded(WRemoteData * data)
     {
         qWarning("WControllerMediaPrivate::onLoaded: Failed to load media %s.", data->url().C_URL);
 
+        media->backend->queryFailed(media->query);
+
         QString error = data->error();
 
         foreach (WMediaReply * reply, media->replies)

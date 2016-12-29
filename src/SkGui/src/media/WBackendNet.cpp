@@ -547,6 +547,10 @@ WBackendNetQuery WBackendNet::createQuery(const QString &, const QString &, cons
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE virtual */ void WBackendNet::queryFailed(const WBackendNetQuery &) {}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE virtual */
 WBackendNetSource WBackendNet::extractSource(const QByteArray       &,
                                              const WBackendNetQuery &) const

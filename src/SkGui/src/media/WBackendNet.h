@@ -377,6 +377,10 @@ public: // Virtual interface
 
     //---------------------------------------------------------------------------------------------
 
+    Q_INVOKABLE virtual void queryFailed(const WBackendNetQuery & query); /* {} */
+
+    //---------------------------------------------------------------------------------------------
+
     Q_INVOKABLE virtual
     WBackendNetSource extractSource(const QByteArray       & data,
                                     const WBackendNetQuery & query) const; /* {} */
