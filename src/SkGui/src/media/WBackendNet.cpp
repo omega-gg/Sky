@@ -588,6 +588,15 @@ WBackendNetFolder WBackendNet::extractFolder(const QByteArray       &,
 /* Q_INVOKABLE virtual */ void WBackendNet::applySource(const WBackendNetQuery  &,
                                                         const WBackendNetSource &) {}
 
+/* Q_INVOKABLE virtual */ void WBackendNet::applyTrack(const WBackendNetQuery &,
+                                                       const WBackendNetTrack &) {}
+
+/* Q_INVOKABLE virtual */ void WBackendNet::applyPlaylist(const WBackendNetQuery    &,
+                                                          const WBackendNetPlaylist &) {}
+
+/* Q_INVOKABLE virtual */ void WBackendNet::applyFolder(const WBackendNetQuery  &,
+                                                        const WBackendNetFolder &) {}
+
 //-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------

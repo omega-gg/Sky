@@ -398,6 +398,15 @@ public: // Virtual interface
     Q_INVOKABLE virtual void applySource(const WBackendNetQuery  & query,
                                          const WBackendNetSource & source); /* {} */
 
+    Q_INVOKABLE virtual void applyTrack(const WBackendNetQuery & query,
+                                        const WBackendNetTrack & track); /* {} */
+
+    Q_INVOKABLE virtual void applyPlaylist(const WBackendNetQuery    & query,
+                                           const WBackendNetPlaylist & playlist); /* {} */
+
+    Q_INVOKABLE virtual void applyFolder(const WBackendNetQuery  & query,
+                                         const WBackendNetFolder & folder); /* {} */
+
 public: // Properties
     QString id   () const;
     QString title() const;

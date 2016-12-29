@@ -1646,6 +1646,8 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice              * device,
 
     if (query == NULL) return;
 
+    query->backend->applyTrack(query->backendQuery, reply);
+
     WPlaylistNet * playlist = query->item->toPlaylistNet();
     WTrackNet    * track    = query->track;
 
@@ -1711,6 +1713,8 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
     device->deleteLater();
 
     if (query == NULL) return;
+
+    query->backend->applyPlaylist(query->backendQuery, reply);
 
     WPlaylistNet * playlist = query->item->toPlaylistNet();
 
@@ -1778,6 +1782,8 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
     device->deleteLater();
 
     if (query == NULL) return;
+
+    query->backend->applyFolder(query->backendQuery, reply);
 
     WLibraryFolder * folder = query->item->toFolder();
 
