@@ -65,80 +65,6 @@ void WControllerViewPrivate::unregisterView(WView * view)
 }
 
 //-------------------------------------------------------------------------------------------------
-
-void WControllerViewPrivate::paintRecursive(QPainter        * painter,
-                                            QGraphicsObject * item, bool forceVisible) const
-{
-    if (item->isVisible() == false && forceVisible == false) return;
-
-    QList<QGraphicsObject *> childs;
-
-    foreach (QGraphicsItem * item, item->childItems())
-    {
-        QGraphicsObject * child = item->toGraphicsObject();
-
-        if (child)
-        {
-            if (child->zValue() < 0)
-            {
-                paintChild(painter, child, forceVisible);
-            }
-            else childs.append(child);
-        }
-    }
-
-    paintItem(painter, item);
-
-    foreach (QGraphicsObject * child, childs)
-    {
-        paintChild(painter, child, forceVisible);
-    }
-}
-
-void WControllerViewPrivate::paintChild(QPainter        * painter,
-                                        QGraphicsObject * item, bool forceVisible) const
-{
-    painter->save();
-
-    painter->translate(item->x(), item->y());
-
-    qreal rotation = item->rotation();
-
-    if (rotation)
-    {
-        QPointF origin = item->transformOriginPoint();
-
-        painter->translate(origin);
-
-        painter->rotate(rotation);
-
-        painter->translate(-origin);
-    }
-
-    if (item->flags() & QGraphicsItem::ItemClipsChildrenToShape)
-    {
-        painter->setClipRect(item->boundingRect(), Qt::IntersectClip);
-    }
-
-    painter->setOpacity(item->effectiveOpacity());
-
-    paintRecursive(painter, item, forceVisible);
-
-    painter->restore();
-}
-
-void WControllerViewPrivate::paintItem(QPainter * painter, QGraphicsObject * item) const
-{
-    QStyleOptionGraphicsItem style;
-
-    style.rect = item->boundingRect().toRect();
-
-    style.exposedRect = style.rect;
-
-    item->paint(painter, &style);
-}
-
-//-------------------------------------------------------------------------------------------------
 // Private ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
@@ -154,97 +80,91 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 }
 
 //-------------------------------------------------------------------------------------------------
-// Interface
+// Static interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ int WControllerView::screenNumber(const QWidget * widget) const
+/* Q_INVOKABLE static */ int WControllerView::screenNumber(const QWidget * widget)
 {
     return qApp->desktop()->screenNumber(widget);
 }
 
-/* Q_INVOKABLE */ int WControllerView::screenNumber(const QPoint & pos) const
+/* Q_INVOKABLE static */ int WControllerView::screenNumber(const QPoint & pos)
 {
     return qApp->desktop()->screenNumber(pos);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ const QRect WControllerView::availableGeometry(int screen) const
+/* Q_INVOKABLE static */ const QRect WControllerView::availableGeometry(int screen)
 {
     return qApp->desktop()->availableGeometry(screen);
 }
 
-/* Q_INVOKABLE */ const QRect WControllerView::availableGeometry(const QWidget * widget) const
+/* Q_INVOKABLE static */ const QRect WControllerView::availableGeometry(const QWidget * widget)
 {
     return qApp->desktop()->availableGeometry(widget);
 }
 
-/* Q_INVOKABLE */ const QRect WControllerView::availableGeometry(const QPoint & pos) const
+/* Q_INVOKABLE static */ const QRect WControllerView::availableGeometry(const QPoint & pos)
 {
     return qApp->desktop()->availableGeometry(pos);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ const QRect WControllerView::screenGeometry(int screen) const
+/* Q_INVOKABLE static */ const QRect WControllerView::screenGeometry(int screen)
 {
     return qApp->desktop()->screenGeometry(screen);
 }
 
-/* Q_INVOKABLE */ const QRect WControllerView::screenGeometry(const QWidget * widget) const
+/* Q_INVOKABLE static */ const QRect WControllerView::screenGeometry(const QWidget * widget)
 {
     return qApp->desktop()->screenGeometry(widget);
 }
 
-/* Q_INVOKABLE */ const QRect WControllerView::screenGeometry(const QPoint & pos) const
+/* Q_INVOKABLE static */ const QRect WControllerView::screenGeometry(const QPoint & pos)
 {
     return qApp->desktop()->screenGeometry(pos);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ QPixmap WControllerView::takeItemShot(QGraphicsObject * item,
-                                                        bool              recursive,
-                                                        const QColor    & background,
-                                                        bool              forceVisible) const
+/* Q_INVOKABLE static */ QPixmap WControllerView::takeItemShot(QGraphicsObject * item,
+                                                               const QColor    & background,
+                                                               bool              forceVisible)
 {
     Q_ASSERT(item);
 
-    Q_D(const WControllerView);
+    QSize size = item->boundingRect().size().toSize();
 
-    QPixmap pixmap(item->boundingRect().size().toSize());
+    if (size.isValid() == false)
+    {
+        return QPixmap();
+    }
+
+    QPixmap pixmap(size);
 
     pixmap.fill(background);
 
     QPainter painter(&pixmap);
 
-    if (recursive)
-    {
-        d->paintRecursive(&painter, item, forceVisible);
-    }
-    else if (item->isVisible() || forceVisible)
-    {
-        d->paintItem(&painter, item);
-    }
+    paintRecursive(&painter, item, forceVisible);
 
     painter.end();
 
     return pixmap;
 }
 
-/* Q_INVOKABLE */ bool WControllerView::saveItemShot(const QString   & fileName,
-                                                     QGraphicsObject * item,
-                                                     bool              recursive,
-                                                     const QColor    & background,
-                                                     bool              forceVisible) const
+/* Q_INVOKABLE static */ bool WControllerView::saveItemShot(const QString   & fileName,
+                                                            QGraphicsObject * item,
+                                                            const QColor    & background,
+                                                            bool              forceVisible)
 {
-    QImage image = takeItemShot(item, recursive, background, forceVisible).toImage();
+    QImage image = takeItemShot(item, background, forceVisible).toImage();
 
     return image.save(fileName, "png");
 }
 
-//-------------------------------------------------------------------------------------------------
-// Static interface
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QImage WControllerView::desaturate(const QImage & image)
@@ -301,6 +221,77 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
     }
 
     return true;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private static functions
+//-------------------------------------------------------------------------------------------------
+
+/* static */ void WControllerView::paintRecursive(QPainter        * painter,
+                                                  QGraphicsObject * item, bool forceVisible)
+{
+    if (item->isVisible() == false && forceVisible == false) return;
+
+    QList<QGraphicsObject *> childs;
+
+    foreach (QGraphicsItem * item, item->childItems())
+    {
+        QGraphicsObject * child = item->toGraphicsObject();
+
+        if (child)
+        {
+            if (child->zValue() < 0)
+            {
+                paintChild(painter, child, forceVisible);
+            }
+            else childs.append(child);
+        }
+    }
+
+    QStyleOptionGraphicsItem style;
+
+    style.rect = item->boundingRect().toRect();
+
+    style.exposedRect = style.rect;
+
+    item->paint(painter, &style);
+
+    foreach (QGraphicsObject * child, childs)
+    {
+        paintChild(painter, child, forceVisible);
+    }
+}
+
+/* static */ void WControllerView::paintChild(QPainter        * painter,
+                                              QGraphicsObject * item, bool forceVisible)
+{
+    painter->save();
+
+    painter->translate(item->x(), item->y());
+
+    qreal rotation = item->rotation();
+
+    if (rotation)
+    {
+        QPointF origin = item->transformOriginPoint();
+
+        painter->translate(origin);
+
+        painter->rotate(rotation);
+
+        painter->translate(-origin);
+    }
+
+    if (item->flags() & QGraphicsItem::ItemClipsChildrenToShape)
+    {
+        painter->setClipRect(item->boundingRect(), Qt::IntersectClip);
+    }
+
+    painter->setOpacity(item->effectiveOpacity());
+
+    paintRecursive(painter, item, forceVisible);
+
+    painter->restore();
 }
 
 //-------------------------------------------------------------------------------------------------

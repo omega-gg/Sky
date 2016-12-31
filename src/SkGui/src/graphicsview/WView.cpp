@@ -1479,25 +1479,6 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 }
 
 //-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE */ QPixmap WView::takeItemShot(QGraphicsObject * item,
-                                              bool              recursive,
-                                              const QColor    & background,
-                                              bool              forceVisible) const
-{
-    return wControllerView->takeItemShot(item, recursive, background, forceVisible);
-}
-
-/* Q_INVOKABLE */ bool WView::saveItemShot(const QString   & fileName,
-                                           QGraphicsObject * item,
-                                           bool              recursive,
-                                           const QColor    & background,
-                                           bool              forceVisible) const
-{
-    return wControllerView->saveItemShot(fileName, item, recursive, background, forceVisible);
-}
-
-//-------------------------------------------------------------------------------------------------
 // Cursor
 
 /* Q_INVOKABLE */ void WView::registerCursor(WDeclarativeMouseArea::CursorShape shape,
@@ -1702,6 +1683,23 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 
 //-------------------------------------------------------------------------------------------------
 // Static interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QPixmap WView::takeItemShot(QGraphicsObject * item,
+                                                     const QColor    & background,
+                                                     bool              forceVisible)
+{
+    return WControllerView::takeItemShot(item, background, forceVisible);
+}
+
+/* Q_INVOKABLE static */ bool WView::saveItemShot(const QString   & fileName,
+                                                  QGraphicsObject * item,
+                                                  const QColor    & background,
+                                                  bool              forceVisible)
+{
+    return WControllerView::saveItemShot(fileName, item, background, forceVisible);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ bool WView::compressShots(const QString & path, int quality)

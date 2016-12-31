@@ -279,17 +279,6 @@ public: // Interface
     Q_INVOKABLE bool saveShot(const QString & fileName,
                               int x = 0, int y = 0, int width = -1, int height = -1) const;
 
-    Q_INVOKABLE QPixmap takeItemShot(QGraphicsObject  * item,
-                                     bool               recursive    = true,
-                                     const QColor     & background   = Qt::transparent,
-                                     bool               forceVisible = false) const;
-
-    Q_INVOKABLE bool saveItemShot(const QString    & fileName,
-                                  QGraphicsObject  * item,
-                                  bool               recursive    = true,
-                                  const QColor     & background   = Qt::transparent,
-                                  bool               forceVisible = false) const;
-
     //---------------------------------------------------------------------------------------------
     // Cursor
 
@@ -344,6 +333,15 @@ public: // Interface
     Q_INVOKABLE void unregisterCursor(int shape);
 
 public: // Static interface
+    Q_INVOKABLE static QPixmap takeItemShot(QGraphicsObject  * item,
+                                            const QColor     & background   = Qt::transparent,
+                                            bool               forceVisible = false);
+
+    Q_INVOKABLE static bool saveItemShot(const QString    & fileName,
+                                         QGraphicsObject  * item,
+                                         const QColor     & background   = Qt::transparent,
+                                         bool               forceVisible = false);
+
     Q_INVOKABLE static bool compressShots(const QString & path, int quality = 0);
 
 protected: // Functions

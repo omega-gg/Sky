@@ -51,33 +51,34 @@ private:
 protected: // Initialize
     /* virtual */ void init();
 
-public: // Interface
-    Q_INVOKABLE int screenNumber(const QWidget * widget = NULL) const;
-    Q_INVOKABLE int screenNumber(const QPoint  & pos)           const;
-
-    Q_INVOKABLE const QRect availableGeometry(int             screen = -1) const;
-    Q_INVOKABLE const QRect availableGeometry(const QWidget * widget)      const;
-    Q_INVOKABLE const QRect availableGeometry(const QPoint  & pos)         const;
-
-    Q_INVOKABLE const QRect screenGeometry(int             screen = -1) const;
-    Q_INVOKABLE const QRect screenGeometry(const QWidget * widget)      const;
-    Q_INVOKABLE const QRect screenGeometry(const QPoint  & pos)         const;
-
-    Q_INVOKABLE QPixmap takeItemShot(QGraphicsObject  * item,
-                                     bool               recursive    = true,
-                                     const QColor     & background   = Qt::transparent,
-                                     bool               forceVisible = false) const;
-
-    Q_INVOKABLE bool saveItemShot(const QString    & fileName,
-                                  QGraphicsObject  * item,
-                                  bool               recursive    = true,
-                                  const QColor     & background   = Qt::transparent,
-                                  bool               forceVisible = false) const;
-
 public: // Static interface
+    Q_INVOKABLE static int screenNumber(const QWidget * widget = NULL);
+    Q_INVOKABLE static int screenNumber(const QPoint  & pos);
+
+    Q_INVOKABLE static const QRect availableGeometry(int             screen = -1);
+    Q_INVOKABLE static const QRect availableGeometry(const QWidget * widget);
+    Q_INVOKABLE static const QRect availableGeometry(const QPoint  & pos);
+
+    Q_INVOKABLE static const QRect screenGeometry(int             screen = -1);
+    Q_INVOKABLE static const QRect screenGeometry(const QWidget * widget);
+    Q_INVOKABLE static const QRect screenGeometry(const QPoint  & pos);
+
+    Q_INVOKABLE static QPixmap takeItemShot(QGraphicsObject  * item,
+                                            const QColor     & background   = Qt::transparent,
+                                            bool               forceVisible = false);
+
+    Q_INVOKABLE static bool saveItemShot(const QString    & fileName,
+                                         QGraphicsObject  * item,
+                                         const QColor     & background   = Qt::transparent,
+                                         bool               forceVisible = false);
+
     Q_INVOKABLE static QImage desaturate(const QImage & image);
 
     Q_INVOKABLE static bool compressShots(const QString & path, int quality = 0);
+
+private: // Static functions
+    static void paintRecursive(QPainter * painter, QGraphicsObject * item, bool forceVisible);
+    static void paintChild    (QPainter * painter, QGraphicsObject * item, bool forceVisible);
 
 signals:
     void loadModeChanged();

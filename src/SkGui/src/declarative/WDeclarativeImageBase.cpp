@@ -409,7 +409,7 @@ WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p,
 {
     Q_ASSERT(object);
 
-    QPixmap pixmap = wControllerView->takeItemShot(object, true, Qt::transparent, forceVisible);
+    QPixmap pixmap = WControllerView::takeItemShot(object, Qt::transparent, forceVisible);
 
     setPixmap(pixmap);
 }
