@@ -233,7 +233,7 @@ Panel
             iconWidth : st.itemWall_iconWidth
             iconHeight: st.itemWall_iconHeight
 
-            sourceSize.height: iconHeight
+            sourceSize: Qt.size(iconWidth, iconHeight)
 
             opacity: (itemWall.enabled) ? 1.0 : st.icon_opacityDisable
 

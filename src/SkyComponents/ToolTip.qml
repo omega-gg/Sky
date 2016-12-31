@@ -126,6 +126,8 @@ BaseToolTip
         itemIcon.iconWidth  = iconWidth;
         itemIcon.iconHeight = iconHeight;
 
+        itemIcon.sourceSize = Qt.size(iconWidth, iconHeight);
+
         iconFillMode = Image.Stretch;
 
         toolTip.text = text;
@@ -140,6 +142,8 @@ BaseToolTip
     {
         itemIcon.iconWidth  = iconWidth;
         itemIcon.iconHeight = iconHeight;
+
+        itemIcon.sourceSize = Qt.size(iconWidth, iconHeight);
 
         iconFillMode = Image.PreserveAspectCrop;
 
@@ -164,8 +168,6 @@ BaseToolTip
         anchors.leftMargin: Math.round((pIconWidth - width) / 2)
 
         anchors.verticalCenter: parent.verticalCenter
-
-        sourceSize.height: iconHeight
 
         clip: (fillMode == Image.PreserveAspectCrop)
 

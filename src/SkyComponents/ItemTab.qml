@@ -156,7 +156,7 @@ MouseArea
             iconWidth : st.itemTab_iconWidth
             iconHeight: st.itemTab_iconHeight
 
-            sourceSize.height: iconHeight
+            sourceSize: Qt.size(iconWidth, iconHeight)
 
             opacity: (itemTab.enabled) ? 1.0 : st.icon_opacityDisable
 

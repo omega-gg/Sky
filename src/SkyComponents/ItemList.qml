@@ -211,7 +211,7 @@ MouseArea
             iconWidth : st.itemList_iconWidth
             iconHeight: st.itemList_iconHeight
 
-            sourceSize.height: iconHeight
+            sourceSize: Qt.size(iconWidth, iconHeight)
 
             clip: (fillMode == Image.PreserveAspectCrop)
 
