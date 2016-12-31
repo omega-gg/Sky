@@ -213,7 +213,7 @@ Item
                 {
                     target: itemImage
 
-                    anchors.bottom: parent.top
+                    anchors.bottom: content.top
                 }
             },
             State
@@ -224,7 +224,7 @@ Item
                 {
                     target: itemImage
 
-                    anchors.top: parent.bottom
+                    anchors.top: content.bottom
                 }
             }
         ]
