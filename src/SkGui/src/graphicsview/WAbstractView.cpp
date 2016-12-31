@@ -105,8 +105,8 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 
     wcx.lpfnWndProc = events;
 
-    wcx.cbClsExtra	= 0;
-    wcx.cbWndExtra	= 0;
+    wcx.cbClsExtra = 0;
+    wcx.cbWndExtra = 0;
 
     wcx.hInstance = 0;
 
