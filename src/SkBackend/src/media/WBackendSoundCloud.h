@@ -14,23 +14,23 @@
 */
 //=================================================================================================
 
-#ifndef WBACKENDYOUTUBE_H
-#define WBACKENDYOUTUBE_H
+#ifndef WBACKENDSOUNDCLOUD_H
+#define WBACKENDSOUNDCLOUD_H
 
 // Sk includes
 #include <WBackendNet>
 
-#ifndef SK_NO_BACKENDYOUTUBE
+#ifndef SK_NO_BACKENDSOUNDCLOUD
 
 // Forward declarations
-class WBackendYoutubePrivate;
+class WBackendSoundCloudPrivate;
 
-class SK_BACKEND_EXPORT WBackendYoutube : public WBackendNet
+class SK_BACKEND_EXPORT WBackendSoundCloud : public WBackendNet
 {
     Q_OBJECT
 
 public:
-    WBackendYoutube();
+    WBackendSoundCloud();
 
 public: // WBackendNet implementation
     /* Q_INVOKABLE virtual */ QString getId   () const;
@@ -39,6 +39,8 @@ public: // WBackendNet implementation
     /* Q_INVOKABLE virtual */ bool checkValidUrl(const QUrl & url) const;
 
 public: // WBackendNet reimplementation
+    /* Q_INVOKABLE virtual */ bool isAudio() const;
+
     /* Q_INVOKABLE virtual */ QString getHost() const;
 
     /* Q_INVOKABLE virtual */ QList<WLibraryFolderItem> getLibraryItems() const;
@@ -83,12 +85,22 @@ public: // WBackendNet reimplementation
 
     //---------------------------------------------------------------------------------------------
 
+    /* Q_INVOKABLE virtual */ void queryFailed(const WBackendNetQuery & query);
+
+    //---------------------------------------------------------------------------------------------
+
     /* Q_INVOKABLE virtual */ void applySource(const WBackendNetQuery  & query,
                                                const WBackendNetSource & source);
 
+    /* Q_INVOKABLE virtual */ void applyPlaylist(const WBackendNetQuery    & query,
+                                                 const WBackendNetPlaylist & playlist);
+
+    /* Q_INVOKABLE virtual */ void applyFolder(const WBackendNetQuery  & query,
+                                               const WBackendNetFolder & folder);
+
 private:
-    W_DECLARE_PRIVATE(WBackendYoutube)
+    W_DECLARE_PRIVATE(WBackendSoundCloud)
 };
 
-#endif // SK_NO_BACKENDYOUTUBE
-#endif // WBACKENDYOUTUBE_H
+#endif // SK_NO_BACKENDSOUNDCLOUD
+#endif // WBACKENDSOUNDCLOUD_H

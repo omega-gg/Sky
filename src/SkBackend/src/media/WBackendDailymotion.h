@@ -33,8 +33,6 @@ public:
     WBackendDailymotion();
 
 public: // WBackendNet implementation
-    /* Q_INVOKABLE virtual */ QList<WLibraryFolderItem> getLibraryItems() const;
-
     /* Q_INVOKABLE virtual */ QString getId   () const;
     /* Q_INVOKABLE virtual */ QString getTitle() const;
 
@@ -42,6 +40,8 @@ public: // WBackendNet implementation
 
 public: // WBackendNet reimplementation
     /* Q_INVOKABLE virtual */ QString getHost() const;
+
+    /* Q_INVOKABLE virtual */ QList<WLibraryFolderItem> getLibraryItems() const;
 
     /* Q_INVOKABLE virtual */ QString getTrackId(const QUrl & url) const;
 

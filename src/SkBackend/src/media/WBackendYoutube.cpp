@@ -18,6 +18,7 @@
 
 #ifndef SK_NO_BACKENDYOUTUBE
 
+// Qt includes
 #ifdef QT_LATEST
 #include <QUrlQuery>
 #endif
@@ -326,34 +327,6 @@ WBackendYoutube::WBackendYoutube() : WBackendNet(new WBackendYoutubePrivate(this
 // WBackendNet implementation
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ QList<WLibraryFolderItem> WBackendYoutube::getLibraryItems() const
-{
-    WLibraryFolderItem tracks(WLibraryItem::PlaylistSearch);
-
-    tracks.title = tr("Tracks");
-    tracks.label = "tracks";
-
-    WLibraryFolderItem channels(WLibraryItem::FolderSearch);
-
-    channels.title = tr("Channels");
-    channels.label = "channels";
-
-    WLibraryFolderItem playlists(WLibraryItem::FolderSearch);
-
-    playlists.title = tr("Playlists");
-    playlists.label = "playlists";
-
-    QList<WLibraryFolderItem> items;
-
-    items.append(tracks);
-    items.append(channels);
-    items.append(playlists);
-
-    return items;
-}
-
-//-------------------------------------------------------------------------------------------------
-
 /* Q_INVOKABLE virtual */ QString WBackendYoutube::getId() const
 {
     return "youtube";
@@ -384,6 +357,34 @@ WBackendYoutube::WBackendYoutube() : WBackendNet(new WBackendYoutubePrivate(this
 /* Q_INVOKABLE virtual */ QString WBackendYoutube::getHost() const
 {
     return "youtube.com";
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ QList<WLibraryFolderItem> WBackendYoutube::getLibraryItems() const
+{
+    WLibraryFolderItem tracks(WLibraryItem::PlaylistSearch);
+
+    tracks.title = tr("Tracks");
+    tracks.label = "tracks";
+
+    WLibraryFolderItem channels(WLibraryItem::FolderSearch);
+
+    channels.title = tr("Channels");
+    channels.label = "channels";
+
+    WLibraryFolderItem playlists(WLibraryItem::FolderSearch);
+
+    playlists.title = tr("Playlists");
+    playlists.label = "playlists";
+
+    QList<WLibraryFolderItem> items;
+
+    items.append(tracks);
+    items.append(channels);
+    items.append(playlists);
+
+    return items;
 }
 
 //-------------------------------------------------------------------------------------------------

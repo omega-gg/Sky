@@ -6,6 +6,7 @@ HEADERS += \
         src/media/WBackendYoutube.h \
         src/media/WBackendDailymotion.h \
         src/media/WBackendVimeo.h \
+        src/media/WBackendSoundCloud.h \
 
 SOURCES += \
         src/media/WBackendDuckDuckGo.cpp \
@@ -13,3 +14,4 @@ SOURCES += \
         src/media/WBackendYoutube.cpp \
         src/media/WBackendDailymotion.cpp \
         src/media/WBackendVimeo.cpp \
+        src/media/WBackendSoundCloud.cpp \

@@ -18,6 +18,7 @@
 
 #ifndef SK_NO_BACKENDVIMEO
 
+// Qt includes
 #ifdef QT_LATEST
 #include <QUrlQuery>
 #endif
@@ -194,40 +195,6 @@ WBackendVimeo::WBackendVimeo() : WBackendNet(new WBackendVimeoPrivate(this))
 // WBackendNet implementation
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ QList<WLibraryFolderItem> WBackendVimeo::getLibraryItems() const
-{
-    WLibraryFolderItem tracks(WLibraryItem::PlaylistSearch);
-
-    tracks.title = tr("Tracks");
-    tracks.label = "tracks";
-
-    WLibraryFolderItem people(WLibraryItem::FolderSearch);
-
-    people.title = tr("People");
-    people.label = "people";
-
-    WLibraryFolderItem channels(WLibraryItem::FolderSearch);
-
-    channels.title = tr("Channels");
-    channels.label = "channels";
-
-    WLibraryFolderItem groups(WLibraryItem::FolderSearch);
-
-    groups.title = tr("Groups");
-    groups.label = "groups";
-
-    QList<WLibraryFolderItem> items;
-
-    items.append(tracks);
-    items.append(people);
-    items.append(channels);
-    items.append(groups);
-
-    return items;
-}
-
-//-------------------------------------------------------------------------------------------------
-
 /* Q_INVOKABLE virtual */ QString WBackendVimeo::getId() const
 {
     return "vimeo";
@@ -258,6 +225,40 @@ WBackendVimeo::WBackendVimeo() : WBackendNet(new WBackendVimeoPrivate(this))
 /* Q_INVOKABLE virtual */ QString WBackendVimeo::getHost() const
 {
     return "vimeo.com";
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ QList<WLibraryFolderItem> WBackendVimeo::getLibraryItems() const
+{
+    WLibraryFolderItem tracks(WLibraryItem::PlaylistSearch);
+
+    tracks.title = tr("Tracks");
+    tracks.label = "tracks";
+
+    WLibraryFolderItem people(WLibraryItem::FolderSearch);
+
+    people.title = tr("People");
+    people.label = "people";
+
+    WLibraryFolderItem channels(WLibraryItem::FolderSearch);
+
+    channels.title = tr("Channels");
+    channels.label = "channels";
+
+    WLibraryFolderItem groups(WLibraryItem::FolderSearch);
+
+    groups.title = tr("Groups");
+    groups.label = "groups";
+
+    QList<WLibraryFolderItem> items;
+
+    items.append(tracks);
+    items.append(people);
+    items.append(channels);
+    items.append(groups);
+
+    return items;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -313,8 +314,7 @@ QUrl WBackendVimeo::getUrlPlaylist(const WBackendNetPlaylistInfo & info) const
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */
-WBackendNetQuery WBackendVimeo::getQuerySource(const QUrl & url) const
+/* Q_INVOKABLE virtual */ WBackendNetQuery WBackendVimeo::getQuerySource(const QUrl & url) const
 {
     WBackendNetQuery backendQuery;
 
@@ -327,8 +327,7 @@ WBackendNetQuery WBackendVimeo::getQuerySource(const QUrl & url) const
     return backendQuery;
 }
 
-/* Q_INVOKABLE virtual */
-WBackendNetQuery WBackendVimeo::getQueryTrack(const QUrl & url) const
+/* Q_INVOKABLE virtual */ WBackendNetQuery WBackendVimeo::getQueryTrack(const QUrl & url) const
 {
     WBackendNetQuery backendQuery;
 
@@ -341,8 +340,7 @@ WBackendNetQuery WBackendVimeo::getQueryTrack(const QUrl & url) const
     return backendQuery;
 }
 
-/* Q_INVOKABLE virtual */
-WBackendNetQuery WBackendVimeo::getQueryPlaylist(const QUrl & url) const
+/* Q_INVOKABLE virtual */ WBackendNetQuery WBackendVimeo::getQueryPlaylist(const QUrl & url) const
 {
     WBackendNetQuery backendQuery;
 
