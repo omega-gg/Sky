@@ -486,7 +486,7 @@ Item
     property int barTitleText_pixelSize: dp14
 
     //---------------------------------------------------------------------------------------------
-    // Button generic
+    // Button
 
     property color button_colorBorder: "#161616"
 
