@@ -181,6 +181,7 @@ void WBackendSoundCloudPrivate::applyQuery(WBackendNetQuery * backendQuery,
         variants.append(url);
         variants.append(queryId);
 
+        backendQuery->url  = "https://soundcloud.com";
         backendQuery->id   = -1;
         backendQuery->data = variants;
     }
