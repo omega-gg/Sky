@@ -1053,19 +1053,11 @@ void WPixmapCache::clear(QObject * receiver)
     int width  = size.width ();
     int height = size.height();
 
-    if (width > 0)
+    if (width > 0 || height > 0)
     {
         QSize sizeReader = reader.size();
 
-        sizeReader.scale(width, qMax(0, height), Qt::KeepAspectRatioByExpanding);
-
-        return sizeReader;
-    }
-    else if (height > 0)
-    {
-        QSize sizeReader = reader.size();
-
-        sizeReader.scale(qMax(0, width), height, Qt::KeepAspectRatioByExpanding);
+        sizeReader.scale(width, height, Qt::KeepAspectRatioByExpanding);
 
         return sizeReader;
     }
@@ -1092,19 +1084,11 @@ void WPixmapCache::clear(QObject * receiver)
     int width  = size.width ();
     int height = size.height();
 
-    if (width > 0)
+    if (width > 0 || height > 0)
     {
         QSize sizeReader = reader->size();
 
-        sizeReader.scale(width, qMax(0, height), Qt::KeepAspectRatioByExpanding);
-
-        reader->setScaledSize(sizeReader);
-    }
-    else if (height > 0)
-    {
-        QSize sizeReader = reader->size();
-
-        sizeReader.scale(qMax(0, width), height, Qt::KeepAspectRatioByExpanding);
+        sizeReader.scale(width, height, Qt::KeepAspectRatioByExpanding);
 
         reader->setScaledSize(sizeReader);
     }
@@ -1117,15 +1101,10 @@ void WPixmapCache::clear(QObject * receiver)
     int width  = size.width ();
     int height = size.height();
 
-    if (width > 0)
+    if (width > 0 || height > 0)
     {
-        return pixmap.scaled(QSize(width, qMax(0, height)), Qt::KeepAspectRatioByExpanding,
-                                                            Qt::SmoothTransformation);
-    }
-    else if (height > 0)
-    {
-        return pixmap.scaled(QSize(qMax(0, width), height), Qt::KeepAspectRatioByExpanding,
-                                                            Qt::SmoothTransformation);
+         return pixmap.scaled(QSize(width, height), Qt::KeepAspectRatioByExpanding,
+                                                    Qt::SmoothTransformation);
     }
     else return pixmap;
 }
