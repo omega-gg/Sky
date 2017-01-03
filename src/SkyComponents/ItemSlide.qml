@@ -37,7 +37,8 @@ Item
 
     property bool pReady: false
 
-    property int pDirection: -1
+    property int pDirectionA: -1
+    property int pDirectionB: -1
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -78,11 +79,12 @@ Item
 
         itemImage.visible = true;
 
-        pDirection = direction;
+        pDirectionA = direction;
+        pDirectionB = direction;
 
         isAnimated = st.animate;
 
-        pDirection = -1;
+        pDirectionA = -1;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -100,7 +102,7 @@ Item
         [
             State
             {
-                name: "left"; when: (pDirection == Sk.Left)
+                name: "left"; when: (pDirectionA == Sk.Left)
 
                 AnchorChanges
                 {
@@ -111,7 +113,7 @@ Item
             },
             State
             {
-                name: "right"; when: (pDirection == Sk.Right)
+                name: "right"; when: (pDirectionA == Sk.Right)
 
                 AnchorChanges
                 {
@@ -122,7 +124,7 @@ Item
             },
             State
             {
-                name: "up"; when: (pDirection == Sk.Up)
+                name: "up"; when: (pDirectionA == Sk.Up)
 
                 AnchorChanges
                 {
@@ -133,7 +135,7 @@ Item
             },
             State
             {
-                name: "down"; when: (pDirection == Sk.Down)
+                name: "down"; when: (pDirectionA == Sk.Down)
 
                 AnchorChanges
                 {
@@ -157,13 +159,15 @@ Item
                 {
                     script:
                     {
-                        if (pDirection != -1) return;
+                        if (pDirectionA != -1) return;
 
                         itemImage.visible = false;
 
                         itemSlide.clip = false;
 
                         pReady = false;
+
+                        pDirectionB = -1;
 
                         isAnimated = false;
                     }
@@ -185,7 +189,7 @@ Item
         [
             State
             {
-                name: "left"; when: (pDirection == Sk.Left)
+                name: "left"; when: (pDirectionB == Sk.Left)
 
                 AnchorChanges
                 {
@@ -196,7 +200,7 @@ Item
             },
             State
             {
-                name: "right"; when: (pDirection == Sk.Right)
+                name: "right"; when: (pDirectionB == Sk.Right)
 
                 AnchorChanges
                 {
@@ -207,7 +211,7 @@ Item
             },
             State
             {
-                name: "up"; when: (pDirection == Sk.Up)
+                name: "up"; when: (pDirectionB == Sk.Up)
 
                 AnchorChanges
                 {
@@ -218,7 +222,7 @@ Item
             },
             State
             {
-                name: "down"; when: (pDirection == Sk.Down)
+                name: "down"; when: (pDirectionB == Sk.Down)
 
                 AnchorChanges
                 {
@@ -228,13 +232,5 @@ Item
                 }
             }
         ]
-
-        transitions: Transition
-        {
-            AnchorAnimation
-            {
-                duration: (isAnimated) ? durationAnimation : 0
-            }
-        }
     }
 }
