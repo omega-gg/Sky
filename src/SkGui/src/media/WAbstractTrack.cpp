@@ -224,7 +224,7 @@ void WAbstractTrack::applyDataTo(WAbstractTrack * other) const
 
     d->playlist = op->playlist;
 
-    return (*this);
+    return *this;
 }
 
 //-------------------------------------------------------------------------------------------------

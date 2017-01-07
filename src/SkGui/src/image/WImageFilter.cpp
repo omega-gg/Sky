@@ -77,7 +77,7 @@ bool WImageFilter::applyFilter(QPixmap * pixmap) const
 
     bool result = filter(&image);
 
-    (*pixmap) = QPixmap::fromImage(image);
+    *pixmap = QPixmap::fromImage(image);
 
     return result;
 }

@@ -58,7 +58,7 @@ WTrackNet::WTrackNet(const WTrackNet & other)
 
     d->init();
 
-    (*this) = other;
+    *this = other;
 }
 
 //-------------------------------------------------------------------------------------------------
