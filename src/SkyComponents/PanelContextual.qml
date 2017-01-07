@@ -52,10 +52,10 @@ Panel
 
     //---------------------------------------------------------------------------------------------
 
-    property int topMargin   : -(st.window_borderSize)
-    property int bottomMargin: -(st.window_borderSize)
     property int leftMargin  : -(st.window_borderSize)
     property int rightMargin : -(st.window_borderSize)
+    property int topMargin   : -(st.window_borderSize)
+    property int bottomMargin: -(st.window_borderSize)
 
     //---------------------------------------------------------------------------------------------
 
