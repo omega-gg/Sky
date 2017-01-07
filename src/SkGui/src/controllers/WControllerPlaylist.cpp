@@ -648,9 +648,11 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylistNet * playlist,
         {
             WBackendNetQuery query = backend->extractQuery(source);
 
-            if (query.isValid() == false) return false;
-
-            return getDataTrack(playlist, track, query);
+            if (query.isValid())
+            {
+                 return getDataTrack(playlist, track, query);
+            }
+            else return false;
         }
 
         WBackendNetQuery query = backend->getQueryTrack(source);
@@ -693,9 +695,11 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylistNet * playlist, co
         {
             WBackendNetQuery query = backend->extractQuery(source);
 
-            if (query.isValid() == false) return false;
-
-            return getDataPlaylist(playlist, query);
+            if (query.isValid())
+            {
+                 return getDataPlaylist(playlist, query);
+            }
+            else return false;
         }
 
         WBackendNetQuery query = backend->getQueryPlaylist(source);
@@ -816,9 +820,11 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
         {
             WBackendNetQuery query = backend->extractQuery(source);
 
-            if (query.isValid() == false) return false;
-
-            return getDataFolder(folder, query);
+            if (query.isValid())
+            {
+                 return getDataFolder(folder, query);
+            }
+            else return false;
         }
 
         folderSearch = new WLibraryFolderSearch;
