@@ -270,11 +270,6 @@ WBackendNetPlaylistInfo WBackendDailymotion::getPlaylistInfo(const QUrl & url) c
         return WBackendNetPlaylistInfo(WLibraryItem::PlaylistNet,
                                        WControllerNetwork::extractUrlElement(source, 25));
     }
-    else if (source.startsWith("dailymotion.com/group/"))
-    {
-        return WBackendNetPlaylistInfo(WLibraryItem::PlaylistFeed,
-                                       WControllerNetwork::extractUrlElement(source, 22));
-    }
     else if (source.startsWith("dailymotion.com/user/"))
     {
         return WBackendNetPlaylistInfo(WLibraryItem::PlaylistFeed,
@@ -384,24 +379,6 @@ WBackendNetQuery WBackendDailymotion::getQueryPlaylist(const QUrl & url) const
         backendQuery.url  = url;
         backendQuery.id   = 1;
         backendQuery.data = "playlist/" + id;
-    }
-    else if (source.startsWith("dailymotion.com/group/"))
-    {
-        QUrl url("https://api.dailymotion.com/group/" + id);
-
-#ifdef QT_4
-        url.addQueryItem("fields", "name,avatar_160_url");
-#else
-        QUrlQuery query(url);
-
-        query.addQueryItem("fields", "name,avatar_160_url");
-
-        url.setQuery(query);
-#endif
-
-        backendQuery.url  = url;
-        backendQuery.id   = 3;
-        backendQuery.data = "group/" + id;
     }
     else
     {
@@ -514,33 +491,6 @@ WBackendNetQuery WBackendDailymotion::createQuery(const QString & method,
 
             backendQuery.url = url;
         }
-        else if (label == "groups")
-        {
-            QUrl url("https://api.dailymotion.com/groups");
-
-#ifdef QT_4
-            url.addQueryItem("search", q);
-
-            url.addQueryItem("fields", "url_name,name,avatar_160_url");
-            url.addQueryItem("sort",   "relevance");
-
-            url.addQueryItem("limit", "20");
-#else
-            QUrlQuery query(url);
-
-            query.addQueryItem("search", q);
-
-            query.addQueryItem("fields", "url_name,name,avatar_160_url");
-            query.addQueryItem("sort",   "relevance");
-
-            query.addQueryItem("limit", "20");
-
-            url.setQuery(query);
-#endif
-
-            backendQuery.url = url;
-            backendQuery.id  = 2;
-        }
     }
     else if (method == "related" && label == "tracks")
     {
@@ -648,15 +598,6 @@ WBackendNetPlaylist WBackendDailymotion::extractPlaylist(const QByteArray       
 
         reply.nextQuery.url = d->getUrlVideos(query.data.toString());
     }
-    else if (query.id == 3) // group
-    {
-        QString json = WControllerNetwork::extractJsonHtml(content);
-
-        reply.title = WControllerNetwork::extractJsonUtf8(json, "name");
-        reply.cover = WControllerNetwork::extractJson    (json, "avatar_160_url");
-
-        reply.nextQuery.url = d->getUrlVideos(query.data.toString());
-    }
     else // search tracks
     {
         QString json = WControllerNetwork::extractJsonHtml(content, "list");
@@ -702,25 +643,6 @@ WBackendNetFolder WBackendDailymotion::extractFolder(const QByteArray       & da
             WLibraryFolderItem playlist(WLibraryItem::PlaylistFeed, WLibraryItem::Default);
 
             playlist.source = "http://www.dailymotion.com/user/" + id;
-
-            playlist.title = title;
-            playlist.cover = cover;
-
-            reply.items.append(playlist);
-        }
-    }
-    else if (query.id == 2) // groups
-    {
-        foreach (const QString & string, list)
-        {
-            QString id = WControllerNetwork::extractJson(string, "url_name");
-
-            QString title = WControllerNetwork::extractJsonUtf8(string, "name");
-            QString cover = WControllerNetwork::extractJson    (string, "avatar_160_url");
-
-            WLibraryFolderItem playlist(WLibraryItem::PlaylistFeed, WLibraryItem::Default);
-
-            playlist.source = "http://www.dailymotion.com/group/" + id;
 
             playlist.title = title;
             playlist.cover = cover;
