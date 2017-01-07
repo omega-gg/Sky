@@ -571,6 +571,58 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ void WAbstractView::setMinimumWidth(int width)
+{
+    Q_D(WAbstractView);
+
+    d->minimumWidth = width;
+
+    if (d->width < width)
+    {
+        SetWindowPos(d->handle, HWND_TOP, 0, 0, width, d->height, SWP_NOMOVE);
+    }
+}
+
+/* Q_INVOKABLE */ void WAbstractView::setMinimumHeight(int height)
+{
+    Q_D(WAbstractView);
+
+    d->minimumHeight = height;
+
+    if (d->height < height)
+    {
+        SetWindowPos(d->handle, HWND_TOP, 0, 0, d->width, height, SWP_NOMOVE);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WAbstractView::setMaximumWidth(int width)
+{
+    Q_D(WAbstractView);
+
+    d->maximumWidth = width;
+
+    if (d->width > width)
+    {
+        SetWindowPos(d->handle, HWND_TOP, 0, 0, width, d->height, SWP_NOMOVE);
+    }
+}
+
+/* Q_INVOKABLE */ void WAbstractView::setMaximumHeight(int height)
+{
+    Q_D(WAbstractView);
+
+    d->maximumHeight = height;
+
+    if (d->height > height)
+    {
+        SetWindowPos(d->handle, HWND_TOP, 0, 0, d->width, height, SWP_NOMOVE);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ void WAbstractView::setVisible(bool visible)
 {
     Q_D(WAbstractView);

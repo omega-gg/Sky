@@ -2425,7 +2425,7 @@ void WView::setMinimumWidth(int width)
 
     d->minimumWidth = width;
 
-    WAbstractView::setMinimumSize(width, d->minimumHeight);
+    WAbstractView::setMinimumWidth(width);
 
     minimumWidthChanged();
 }
@@ -2443,7 +2443,7 @@ void WView::setMinimumHeight(int height)
 
     d->minimumHeight = height;
 
-    WAbstractView::setMinimumSize(d->minimumWidth, height);
+    WAbstractView::setMinimumHeight(height);
 
     minimumHeightChanged();
 }
@@ -2465,9 +2465,9 @@ void WView::setMaximumWidth(int width)
 
     if (width == -1)
     {
-         WAbstractView::setMaximumSize(QWIDGETSIZE_MAX, WAbstractView::maximumHeight());
+         WAbstractView::setMaximumWidth(QWIDGETSIZE_MAX);
     }
-    else WAbstractView::setMaximumSize(width, WAbstractView::maximumHeight());
+    else WAbstractView::setMaximumWidth(width);
 
     maximumWidthChanged();
 }
@@ -2487,9 +2487,9 @@ void WView::setMaximumHeight(int height)
 
     if (height == -1)
     {
-         WAbstractView::setMaximumSize(WAbstractView::maximumWidth(), QWIDGETSIZE_MAX);
+         WAbstractView::setMaximumHeight(QWIDGETSIZE_MAX);
     }
-    else WAbstractView::setMaximumSize(WAbstractView::maximumWidth(), height);
+    else WAbstractView::setMaximumHeight(height);
 
     maximumHeightChanged();
 }

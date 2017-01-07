@@ -62,6 +62,12 @@ public: // Interface
     Q_INVOKABLE void setMinimumSize(int width, int height);
     Q_INVOKABLE void setMaximumSize(int width, int height);
 
+    Q_INVOKABLE void setMinimumWidth (int width);
+    Q_INVOKABLE void setMinimumHeight(int height);
+
+    Q_INVOKABLE void setMaximumWidth (int width);
+    Q_INVOKABLE void setMaximumHeight(int height);
+
     Q_INVOKABLE void setVisible(bool visible);
 
     Q_INVOKABLE void setFocus();
