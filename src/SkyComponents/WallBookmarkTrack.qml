@@ -61,8 +61,8 @@ BaseWall
 
     property bool pSilentAnimation: false
 
-    property int pMaxX: 0
-    property int pMaxY: 0
+    property int pMaximumX: 0
+    property int pMaximumY: 0
 
     //---------------------------------------------------------------------------------------------
     // Signals
@@ -138,8 +138,13 @@ BaseWall
             dragX = pGetDragX();
             dragY = pGetDragY();
 
-            pMaxX = (countHorizontal - 1) * (itemWidth  + marginsHorizontal) + marginsHorizontal;
-            pMaxY = (countVertical   - 1) * (itemHeight + marginsVertical)   + marginsVertical;
+            pMaximumX = (countHorizontal - 1) * (itemWidth  + marginsHorizontal)
+                        +
+                        marginsHorizontal;
+
+            pMaximumY = (countVertical - 1) * (itemHeight + marginsVertical)
+                        +
+                        marginsVertical;
 
             indexDrag   = indexHover;
             indexTop    = indexDrag;
@@ -538,13 +543,13 @@ BaseWall
     {
         var x = Math.max(marginsHorizontal, mouseX - dragXMargin);
 
-        return Math.min(x, pMaxX);
+        return Math.min(x, pMaximumX);
     }
 
     function pGetDragY()
     {
         var y = Math.max(marginsVertical, mouseY - dragYMargin);
 
-        return Math.min(y, pMaxY);
+        return Math.min(y, pMaximumY);
     }
 }

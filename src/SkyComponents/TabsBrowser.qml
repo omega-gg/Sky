@@ -65,7 +65,7 @@ BaseTabs
 
     property real pFixedTabWidth: -1
 
-    property int pMaxX: 0
+    property int pMaximumX: 0
 
     property bool pButtonsVisible: (pClipItem == null && indexDrag < 0)
 
@@ -144,7 +144,7 @@ BaseTabs
 
             dragX = pGetDragX();
 
-            pMaxX = (count - 1) * currentTabWidth;
+            pMaximumX = (count - 1) * currentTabWidth;
 
             indexDrag   = indexHover;
             indexTop    = indexDrag;
@@ -499,7 +499,7 @@ BaseTabs
     {
         var x = Math.max(0, mouseX - dragMargin);
 
-        return Math.min(x, pMaxX);
+        return Math.min(x, pMaximumX);
     }
 
     //---------------------------------------------------------------------------------------------
