@@ -677,7 +677,7 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
 
         QString variable = name + "=function";
 
-        QString function = WControllerNetwork::extractScript(content, variable);
+        QString function = WControllerNetwork::extractScript(content, variable + "(a)");
 
         if (function.isEmpty())
         {
