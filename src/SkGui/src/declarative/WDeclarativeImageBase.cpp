@@ -470,72 +470,43 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
 {
     Q_D(WDeclarativeImageBase);
 
-    if (asynchronous)
+    QPixmap pixmap = d->pix.pixmap();
+
+    if (d->explicitSize)
     {
-        QPixmap pixmap = d->pix.pixmap();
+         d->pix.load(WControllerFile::toString(url), d->sourceSize, d->sourceArea, asynchronous,
+                     d->cache, this, SLOT(requestFinished()));
+    }
+    else d->pix.load(WControllerFile::toString(url), QSize(), QSize(), asynchronous,
+                     d->cache, this, SLOT(requestFinished()));
 
-        if (d->explicitSize)
-        {
-             d->pix.load(WControllerFile::toString(url), d->sourceSize, d->sourceArea, true,
-                         d->cache, this, SLOT(requestFinished()));
-        }
-        else d->pix.load(WControllerFile::toString(url), QSize(), QSize(), true,
-                         d->cache, this, SLOT(requestFinished()));
-
-        if (d->pix.isLoading())
+    if (d->pix.isLoading())
+    {
+        if (asynchronous)
         {
             if (pixmap.isNull())
             {
                 d->applySourceDefault();
             }
             else d->pix.changePixmap(pixmap);
-
-            if (d->progress)
-            {
-                d->progress = 0.0;
-
-                emit progressChanged();
-            }
-
-            if (d->status != Loading)
-            {
-                d->status = Loading;
-
-                emit statusChanged();
-            }
         }
-        else requestFinished();
-    }
-    else
-    {
-        if (d->explicitSize)
+        else d->applySourceDefault();
+
+        if (d->progress)
         {
-             d->pix.load(WControllerFile::toString(url), d->sourceSize, d->sourceArea, false,
-                         d->cache, this, SLOT(requestFinished()));
-        }
-        else d->pix.load(WControllerFile::toString(url), QSize(), QSize(), false,
-                         d->cache, this, SLOT(requestFinished()));
+            d->progress = 0.0;
 
-        if (d->pix.isLoading())
+            emit progressChanged();
+        }
+
+        if (d->status != Loading)
         {
-            d->applySourceDefault();
+            d->status = Loading;
 
-            if (d->progress)
-            {
-                d->progress = 0.0;
-
-                emit progressChanged();
-            }
-
-            if (d->status != Loading)
-            {
-                d->status = Loading;
-
-                emit statusChanged();
-            }
+            emit statusChanged();
         }
-        else requestFinished();
     }
+    else requestFinished();
 }
 
 /* virtual */ void WDeclarativeImageBase::clearUrl(WDeclarativeImageBase::Status status)
