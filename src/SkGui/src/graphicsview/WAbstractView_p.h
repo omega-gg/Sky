@@ -89,6 +89,8 @@ public: // Variables
 
     QRect rect;
 
+    bool visible;
+
     qreal opacity;
 
     bool maximized;

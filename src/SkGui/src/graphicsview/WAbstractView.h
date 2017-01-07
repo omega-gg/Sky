@@ -38,6 +38,9 @@ protected:
 
 #ifdef SK_WIN_NATIVE
 public: // Interface
+    Q_INVOKABLE void show();
+    Q_INVOKABLE void hide();
+
     Q_INVOKABLE void showNormal    ();
     Q_INVOKABLE void showMaximized ();
     Q_INVOKABLE void showFullScreen();
@@ -59,6 +62,8 @@ public: // Interface
     Q_INVOKABLE void setMinimumSize(int width, int height);
     Q_INVOKABLE void setMaximumSize(int width, int height);
 
+    Q_INVOKABLE void setVisible(bool visible);
+
     Q_INVOKABLE void setFocus();
 
     Q_INVOKABLE void setWindowIcon (const QIcon   & icon);
@@ -72,9 +77,6 @@ public: // Interface
 
 #ifdef SK_WIN_NATIVE
 protected: // Events
-    /* virtual */ void showEvent(QShowEvent * event);
-    /* virtual */ void hideEvent(QHideEvent * event);
-
 #ifdef QT_4
     /* virtual */ bool winEvent(MSG * msg, long * result);
 #else

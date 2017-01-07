@@ -83,6 +83,8 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     maximumWidth  = QWIDGETSIZE_MAX;
     maximumHeight = QWIDGETSIZE_MAX;
 
+    visible = false;
+
     opacity = 0.0;
 
     maximized  = false;
@@ -380,6 +382,18 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 // Interface
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ void WAbstractView::show()
+{
+    setVisible(true);
+}
+
+/* Q_INVOKABLE */ void WAbstractView::hide()
+{
+    setVisible(false);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ void WAbstractView::showNormal()
 {
     Q_D(WAbstractView);
@@ -557,6 +571,25 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ void WAbstractView::setVisible(bool visible)
+{
+    Q_D(WAbstractView);
+
+    if (d->visible == visible) return;
+
+    d->visible = visible;
+
+    QDeclarativeView::setVisible(visible);
+
+    if (visible)
+    {
+         ShowWindow(d->handle, SW_SHOW);
+    }
+    else ShowWindow(d->handle, SW_HIDE);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ void WAbstractView::setFocus()
 {
     Q_D(WAbstractView);
@@ -647,26 +680,6 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 
 //-------------------------------------------------------------------------------------------------
 // Events
-//-------------------------------------------------------------------------------------------------
-
-/* virtual */ void WAbstractView::showEvent(QShowEvent * event)
-{
-    Q_D(WAbstractView);
-
-    ShowWindow(d->handle, SW_SHOW);
-
-    QDeclarativeView::showEvent(event);
-}
-
-/* virtual */ void WAbstractView::hideEvent(QHideEvent * event)
-{
-    Q_D(WAbstractView);
-
-    ShowWindow(d->handle, SW_HIDE);
-
-    QDeclarativeView::hideEvent(event);
-}
-
 //-------------------------------------------------------------------------------------------------
 
 #ifdef QT_4
