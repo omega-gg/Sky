@@ -285,7 +285,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // Icon
 
-    property int icon_shadowSize: dp1
+    property int icon_styleSize: dp1
 
     property real icon_opacityDisable: 0.5
 
@@ -903,6 +903,8 @@ Item
 
     property int buttonMask_width : dp16
     property int buttonMask_height: dp16
+
+    property int buttonMask_styleSize: dp2
 
     property color buttonMask_colorHoverA: "white"
     property color buttonMask_colorHoverB: "white"

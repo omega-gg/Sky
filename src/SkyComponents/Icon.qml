@@ -25,7 +25,7 @@ Item
 
     property int style: Sk.IconSunken
 
-    property int shadowSize: st.icon_shadowSize
+    property int styleSize: st.icon_styleSize
 
     //---------------------------------------------------------------------------------------------
     // Style
@@ -103,8 +103,8 @@ Item
 
         anchors.fill: parent
 
-        anchors.topMargin   : (style == Sk.IconRaised) ?  shadowSize : -shadowSize
-        anchors.bottomMargin: (style == Sk.IconRaised) ? -shadowSize :  shadowSize
+        anchors.topMargin   : (style == Sk.IconRaised) ?  styleSize : -styleSize
+        anchors.bottomMargin: (style == Sk.IconRaised) ? -styleSize :  styleSize
 
         sourceSize: (itemIcon.isExplicitSize) ? itemIcon.sourceSize : undefined
 
