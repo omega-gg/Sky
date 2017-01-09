@@ -29,10 +29,6 @@
 #endif
 #endif
 
-#ifdef SK_WIN_NATIVE
-#include <dwmapi.h>
-#endif
-
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
@@ -84,7 +80,6 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     maximumHeight = QWIDGETSIZE_MAX;
 
     visible = false;
-
     opacity = 0.0;
 
     maximized  = false;
@@ -92,6 +87,7 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 
     windowSnap     = true;
     windowMaximize = true;
+    windowClip     = false;
 
     const QMetaObject * meta = q->metaObject();
 
@@ -165,6 +161,17 @@ void WAbstractViewPrivate::applyFullScreen()
     QRect geometry = qApp->desktop()->screenGeometry(q);
 
     q->setGeometry(geometry);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WAbstractViewPrivate::setFlag(LONG flag, bool enabled) const
+{
+    if (enabled)
+    {
+         SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) | flag);
+    }
+    else SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) & ~flag);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -694,13 +701,7 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 
     d->windowSnap = enabled;
 
-    if (enabled)
-    {
-         SetWindowLong(d->handle, GWL_STYLE,
-                       GetWindowLong(d->handle, GWL_STYLE) | WS_THICKFRAME);
-    }
-    else SetWindowLong(d->handle, GWL_STYLE,
-                       GetWindowLong(d->handle, GWL_STYLE) & ~WS_THICKFRAME);
+    d->setFlag(WS_THICKFRAME, enabled);
 }
 #else
 /* Q_INVOKABLE */ void WAbstractView::setWindowSnap(bool) {}
@@ -715,13 +716,22 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 
     d->windowMaximize = enabled;
 
-    if (enabled)
-    {
-         SetWindowLong(d->handle, GWL_STYLE,
-                       GetWindowLong(d->handle, GWL_STYLE) | WS_MAXIMIZEBOX);
-    }
-    else SetWindowLong(d->handle, GWL_STYLE,
-                       GetWindowLong(d->handle, GWL_STYLE) & ~WS_MAXIMIZEBOX);
+    d->setFlag(WS_MAXIMIZEBOX, enabled);
+}
+#else
+/* Q_INVOKABLE */ void WAbstractView::setWindowMaximize(bool) {}
+#endif
+
+#ifdef SK_WIN_NATIVE
+/* Q_INVOKABLE */ void WAbstractView::setWindowClip(bool enabled)
+{
+    Q_D(WAbstractView);
+
+    if (d->windowClip == enabled) return;
+
+    d->windowClip = enabled;
+
+    d->setFlag(WS_CLIPCHILDREN, enabled);
 }
 #else
 /* Q_INVOKABLE */ void WAbstractView::setWindowMaximize(bool) {}

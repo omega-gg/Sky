@@ -56,6 +56,8 @@ public:
 public: // Functions
     void applyFullScreen();
 
+    void setFlag(LONG flag, bool enabled) const;
+
 public: // Static functions
     static HICON getIcon(const QIcon & icon, int width, int height);
 
@@ -89,8 +91,7 @@ public: // Variables
 
     QRect rect;
 
-    bool visible;
-
+    bool  visible;
     qreal opacity;
 
     bool maximized;
@@ -98,6 +99,7 @@ public: // Variables
 
     bool windowSnap;
     bool windowMaximize;
+    bool windowClip;
 
     QMetaMethod method;
 #endif

@@ -2710,12 +2710,20 @@ void WView::setOpengl(bool enabled)
         d->updateViewport();
 
         setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+
+#ifdef Q_OS_WIN
+        setWindowClip(false);
+#endif
     }
     else
     {
         setViewport(NULL);
 
         setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+
+#ifdef Q_OS_WIN
+        setWindowClip(true);
+#endif
     }
 
     emit openglChanged();
