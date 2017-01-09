@@ -18,6 +18,11 @@
 
 #ifndef SK_NO_BACKENDSOUNDCLOUD
 
+// Qt includes
+#ifdef QT_LATEST
+#include <QUrlQuery>
+#endif
+
 // Sk includes
 #include <WControllerApplication>
 #include <WControllerNetwork>
