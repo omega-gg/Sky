@@ -76,7 +76,7 @@ You can deploy Sky with:
 
 ## License
 
-Copyright (C) 2015 - 2016 Sky kit authors united with [omega](http://omega.gg/about).
+Copyright (C) 2015 - 2017 Sky kit authors united with [omega](http://omega.gg/about).
 
 ### Authors
 
