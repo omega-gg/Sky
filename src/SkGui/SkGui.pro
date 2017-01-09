@@ -30,7 +30,9 @@ DEFINES += SK_GUI_LIBRARY
 contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_4
 
-    win32:DEFINES += SK_WIN_NATIVE
+    CONFIG(release, debug|release) {
+        win32:DEFINES += SK_WIN_NATIVE
+    }
 } else {
     DEFINES += QT_LATEST
 }
