@@ -144,7 +144,7 @@ MouseArea
         source    : icon
         sourceSize: iconSize
 
-        iconStyle: Sk.IconSunken
+        style: Sk.IconSunken
 
         filter: listContextual.filterIcon
     }

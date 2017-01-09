@@ -23,7 +23,7 @@ Item
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int iconStyle: Sk.IconSunken
+    property int style: Sk.IconSunken
 
     property int shadowSize: st.icon_shadowSize
 
@@ -39,7 +39,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // Private
 
-    property bool pShadowVisible: (enableFilter && iconStyle != Sk.IconNormal)
+    property bool pShadowVisible: (enableFilter && style != Sk.IconNormal)
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -103,8 +103,8 @@ Item
 
         anchors.fill: parent
 
-        anchors.topMargin   : (iconStyle == Sk.IconRaised) ?  shadowSize : -shadowSize
-        anchors.bottomMargin: (iconStyle == Sk.IconRaised) ? -shadowSize :  shadowSize
+        anchors.topMargin   : (style == Sk.IconRaised) ?  shadowSize : -shadowSize
+        anchors.bottomMargin: (style == Sk.IconRaised) ? -shadowSize :  shadowSize
 
         sourceSize: (itemIcon.isExplicitSize) ? itemIcon.sourceSize : undefined
 
@@ -123,8 +123,8 @@ Item
 
         scaling: itemIcon.scaling
 
-        filter: (iconStyle == Sk.IconSunken) ? filterSunken
-                                             : filterShadow
+        filter: (style == Sk.IconSunken) ? filterSunken
+                                         : filterShadow
     }
 
     ImageScale

@@ -63,7 +63,7 @@ BaseButtonPush
 
     property alias iconScaling: itemIcon.scaling
 
-    property alias iconStyle: itemIcon.iconStyle
+    property alias iconStyle: itemIcon.style
 
     property alias text: itemText.text
     property alias font: itemText.font
@@ -142,8 +142,8 @@ BaseButtonPush
 
         opacity: (buttonPushFull.enabled) ? 1.0 : st.icon_opacityDisable
 
-        iconStyle: (checked) ? Sk.IconRaised
-                             : Sk.IconSunken
+        style: (checked) ? Sk.IconRaised
+                         : Sk.IconSunken
 
         filter:
         {

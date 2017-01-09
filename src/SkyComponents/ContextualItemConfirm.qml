@@ -230,7 +230,7 @@ Item
             source    : icon
             sourceSize: iconSize
 
-            iconStyle: Sk.IconSunken
+            style: Sk.IconSunken
 
             filter: listContextual.filterIcon
         }
@@ -268,7 +268,7 @@ Item
             source    : st.icon24x24_slideRight
             sourceSize: st.size24x24
 
-            iconStyle: Sk.IconSunken
+            style: Sk.IconSunken
 
             filter: st.icon_filter
         }

@@ -52,7 +52,7 @@ BaseButton
 
     property alias iconScaling: itemIcon.scaling
 
-    property alias iconStyle: itemIcon.iconStyle
+    property alias iconStyle: itemIcon.style
 
     //---------------------------------------------------------------------------------------------
 
@@ -85,7 +85,7 @@ BaseButton
 
         sourceSize.height: (scaling) ? -1 : parent.height
 
-        iconStyle: Sk.IconRaised
+        style: Sk.IconRaised
 
         shadowSize: st.dp2
 

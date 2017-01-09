@@ -53,7 +53,7 @@ BaseLabelRound
 
     property alias iconScaling: itemIcon.scaling
 
-    property alias iconStyle: itemIcon.iconStyle
+    property alias iconStyle: itemIcon.style
 
     //---------------------------------------------------------------------------------------------
 
@@ -91,8 +91,8 @@ BaseLabelRound
 
         opacity: (labelRoundIcon.enabled) ? 1.0 : st.icon_opacityDisable
 
-        iconStyle: (labelRoundIcon.enabled) ? Sk.IconRaised
-                                            : Sk.IconSunken
+        style: (labelRoundIcon.enabled) ? Sk.IconRaised
+                                        : Sk.IconSunken
 
         filter: (enableFilter) ? filterIcon : null
 

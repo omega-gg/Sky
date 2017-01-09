@@ -46,7 +46,7 @@ Item
 
     property alias scaling: itemIcon.scaling
 
-    property alias style: itemIcon.iconStyle
+    property alias style: itemIcon.style
 
     property alias backgroundOpacity: background.opacity
 
@@ -87,7 +87,7 @@ Item
 
         sourceSize.height: (scaling) ? -1 : parent.height
 
-        iconStyle: Sk.IconRaised
+        style: Sk.IconRaised
 
         filter: st.icon_filter
     }

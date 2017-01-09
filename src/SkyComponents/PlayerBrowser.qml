@@ -572,7 +572,7 @@ MouseArea
             source    : st.icon28x28_hd
             sourceSize: st.size28x28
 
-            iconStyle: Sk.IconRaised
+            style: Sk.IconRaised
         }
 
         TextBase

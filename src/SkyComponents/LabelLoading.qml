@@ -44,7 +44,7 @@ Item
 
     property alias iconScaling: itemIcon.scaling
 
-    property alias iconStyle: itemIcon.iconStyle
+    property alias iconStyle: itemIcon.style
 
     //---------------------------------------------------------------------------------------------
 
