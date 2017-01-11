@@ -244,9 +244,8 @@ void WBackendVlcPrivate::init()
     frameUpdated = false;
     frameFreeze  = false;
 
-    mute = false;
-
     volume = 100;
+    mute   = false;
 
     closestOutput  = WAbstractBackend::OutputInvalid;
     closestQuality = WAbstractBackend::QualityInvalid;
@@ -767,9 +766,9 @@ WAbstractBackend::Output WBackendVlcPrivate::getClosestOutput(WAbstractBackend::
         return WAbstractBackend::OutputInvalid;
     }
 
-    if (output != WAbstractBackend::OutputAudio
-        &&
-        currentAudio.isEmpty() && WControllerPlaylist::urlIsAudio(currentMedia))
+    if (output == WAbstractBackend::OutputAudio
+        ||
+        (currentAudio.isEmpty() && WControllerPlaylist::urlIsAudio(currentMedia)))
     {
          return WAbstractBackend::OutputAudio;
     }

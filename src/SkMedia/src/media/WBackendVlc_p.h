@@ -181,9 +181,8 @@ public: // Variables
     bool frameUpdated;
     bool frameFreeze;
 
+    int  volume;
     bool mute;
-
-    int volume;
 
     QHash<WAbstractBackend::Quality, QUrl> medias;
     QHash<WAbstractBackend::Quality, QUrl> audios;
