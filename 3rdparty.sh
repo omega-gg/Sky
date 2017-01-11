@@ -188,6 +188,8 @@ if [ $1 = "clean" ]; then
     rm -rf "$VLC"
     rm -rf "$libtorrent"
     rm -rf "$Boost_linux"
+
+    exit 0
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -212,7 +214,7 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
             mv "$Qt4_name"/* .
 
-            rm -r "$Qt4_name"
+            rm -rf "$Qt4_name"
             rm "$Qt4_archive"
 
             cd -
