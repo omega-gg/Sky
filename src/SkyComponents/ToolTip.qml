@@ -46,8 +46,8 @@ BaseToolTip
     property alias icon       : itemIcon.source
     property alias iconDefault: itemIcon.sourceDefault
 
-    property alias iconWidth : itemIcon.iconWidth
-    property alias iconHeight: itemIcon.iconHeight
+    property alias iconWidth : itemIcon.width
+    property alias iconHeight: itemIcon.height
 
     property alias iconSourceSize: itemIcon.sourceSize
     property alias iconSourceArea: itemIcon.sourceArea
@@ -121,12 +121,12 @@ BaseToolTip
     // Functions
     //---------------------------------------------------------------------------------------------
 
-    function show(text, iconDefault, iconWidth, iconHeight)
+    function show(text, iconDefault, width, height)
     {
-        itemIcon.iconWidth  = iconWidth;
-        itemIcon.iconHeight = iconHeight;
+        itemIcon.width  = width;
+        itemIcon.height = height;
 
-        itemIcon.sourceSize = Qt.size(iconWidth, iconHeight);
+        itemIcon.sourceSize = Qt.size(width, height);
 
         iconFillMode = Image.Stretch;
 
@@ -138,12 +138,12 @@ BaseToolTip
         pActivate();
     }
 
-    function showIcon(text, iconDefault, icon, iconWidth, iconHeight)
+    function showIcon(text, iconDefault, icon, width, height)
     {
-        itemIcon.iconWidth  = iconWidth;
-        itemIcon.iconHeight = iconHeight;
+        itemIcon.width  = width;
+        itemIcon.height = height;
 
-        itemIcon.sourceSize = Qt.size(iconWidth, iconHeight);
+        itemIcon.sourceSize = Qt.size(width, height);
 
         iconFillMode = Image.PreserveAspectCrop;
 

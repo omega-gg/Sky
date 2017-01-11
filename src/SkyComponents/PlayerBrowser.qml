@@ -461,8 +461,8 @@ MouseArea
 
             anchors.centerIn: parent
 
-            iconWidth : buttonPlay.iconWidth
-            iconHeight: buttonPlay.iconHeight
+            width : buttonPlay.iconWidth
+            height: buttonPlay.iconHeight
 
             visible: loading
 

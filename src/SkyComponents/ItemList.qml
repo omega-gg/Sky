@@ -46,8 +46,8 @@ MouseArea
     property alias icon       : itemIcon.source
     property alias iconDefault: itemIcon.sourceDefault
 
-    property alias iconWidth : itemIcon.iconWidth
-    property alias iconHeight: itemIcon.iconHeight
+    property alias iconWidth : itemIcon.width
+    property alias iconHeight: itemIcon.height
 
     property alias iconSourceSize: itemIcon.sourceSize
     property alias iconSourceArea: itemIcon.sourceArea
@@ -208,10 +208,10 @@ MouseArea
 
             anchors.verticalCenter: parent.verticalCenter
 
-            iconWidth : st.itemList_iconWidth
-            iconHeight: st.itemList_iconHeight
+            width : st.itemList_iconWidth
+            height: st.itemList_iconHeight
 
-            sourceSize: Qt.size(iconWidth, iconHeight)
+            sourceSize: Qt.size(width, height)
 
             clip: (fillMode == Image.PreserveAspectCrop)
 

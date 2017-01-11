@@ -51,8 +51,8 @@ Panel
     property alias icon       : itemIcon.source
     property alias iconDefault: itemIcon.sourceDefault
 
-    property alias iconWidth : itemIcon.iconWidth
-    property alias iconHeight: itemIcon.iconHeight
+    property alias iconWidth : itemIcon.width
+    property alias iconHeight: itemIcon.height
 
     property alias iconSourceSize: itemIcon.sourceSize
     property alias iconSourceArea: itemIcon.sourceArea
@@ -230,10 +230,10 @@ Panel
         {
             id: itemIcon
 
-            iconWidth : st.itemWall_iconWidth
-            iconHeight: st.itemWall_iconHeight
+            width : st.itemWall_iconWidth
+            height: st.itemWall_iconHeight
 
-            sourceSize: Qt.size(iconWidth, iconHeight)
+            sourceSize: Qt.size(width, height)
 
             opacity: (itemWall.enabled) ? 1.0 : st.icon_opacityDisable
 

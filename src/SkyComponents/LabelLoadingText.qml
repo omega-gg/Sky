@@ -42,8 +42,8 @@ Item
     property alias icon       : itemIcon.source
     property alias iconDefault: itemIcon.sourceDefault
 
-    property alias iconWidth : itemIcon.iconWidth
-    property alias iconHeight: itemIcon.iconHeight
+    property alias iconWidth : itemIcon.width
+    property alias iconHeight: itemIcon.height
 
     property alias iconSourceSize: itemIcon.sourceSize
     property alias iconSourceArea: itemIcon.sourceArea

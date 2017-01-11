@@ -54,8 +54,8 @@ MouseArea
     property alias icon       : itemIcon.source
     property alias iconDefault: itemIcon.sourceDefault
 
-    property alias iconWidth : itemIcon.iconWidth
-    property alias iconHeight: itemIcon.iconHeight
+    property alias iconWidth : itemIcon.width
+    property alias iconHeight: itemIcon.height
 
     property alias iconSourceSize: itemIcon.sourceSize
     property alias iconSourceArea: itemIcon.sourceArea
@@ -153,10 +153,10 @@ MouseArea
 
             anchors.verticalCenter: parent.verticalCenter
 
-            iconWidth : st.itemTab_iconWidth
-            iconHeight: st.itemTab_iconHeight
+            width : st.itemTab_iconWidth
+            height: st.itemTab_iconHeight
 
-            sourceSize: Qt.size(iconWidth, iconHeight)
+            sourceSize: Qt.size(width, height)
 
             opacity: (itemTab.enabled) ? 1.0 : st.icon_opacityDisable
 
