@@ -915,8 +915,7 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
         connect(backend, SIGNAL(endedChanged  ()), this, SIGNAL(endedChanged  ()));
 
         connect(backend, SIGNAL(currentTimeChanged()), this, SIGNAL(currentTimeChanged()));
-
-        connect(backend, SIGNAL(durationChanged()), this, SIGNAL(durationChanged()));
+        connect(backend, SIGNAL(durationChanged   ()), this, SIGNAL(durationChanged   ()));
 
         connect(backend, SIGNAL(outputActiveChanged ()), this, SIGNAL(outputActiveChanged ()));
         connect(backend, SIGNAL(qualityActiveChanged()), this, SIGNAL(qualityActiveChanged()));
@@ -1549,8 +1548,7 @@ void WDeclarativePlayer::setTabs(WTabsTrack * tabs)
     {
         connect(d->tabs, SIGNAL(currentIndexChanged()), this, SIGNAL(tabIndexChanged()));
 
-        connect(d->tabs, SIGNAL(currentTabChanged()), this, SLOT(onCurrentTabChanged()));
-
+        connect(d->tabs, SIGNAL(currentTabChanged    ()), this, SLOT(onCurrentTabChanged    ()));
         connect(d->tabs, SIGNAL(highlightedTabChanged()), this, SLOT(onHighlightedTabChanged()));
 
         connect(d->tabs, SIGNAL(destroyed()), this, SLOT(onTabsDestroyed()));

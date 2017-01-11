@@ -168,8 +168,6 @@ signals:
     void stateChanged    ();
     void stateLoadChanged();
 
-    void countChanged();
-
     void startedChanged();
     void endedChanged  ();
 
@@ -191,6 +189,8 @@ signals:
     void qualityActiveChanged();
 
     void fillModeChanged();
+
+    void countChanged();
 
     void currentTrackUpdated();
 
