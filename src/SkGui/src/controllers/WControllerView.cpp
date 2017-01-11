@@ -45,6 +45,8 @@ WControllerViewPrivate::WControllerViewPrivate(WControllerView * p) : WControlle
 
 void WControllerViewPrivate::init()
 {
+    opengl = true;
+
     loadMode = WControllerView::LoadAlways;
 
     scaleDelay = 220;
@@ -296,6 +298,24 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 
 //-------------------------------------------------------------------------------------------------
 // Properties
+//-------------------------------------------------------------------------------------------------
+
+bool WControllerView::opengl() const
+{
+    Q_D(const WControllerView); return d->loadMode;
+}
+
+void WControllerView::setOpengl(bool enabled)
+{
+    Q_D(WControllerView);
+
+    if (d->opengl == enabled) return;
+
+    d->opengl = enabled;
+
+    emit openglChanged();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 WControllerView::LoadMode WControllerView::loadMode() const

@@ -60,6 +60,8 @@ public: // Functions
 public: // Variables
     QList<WView *> views;
 
+    bool opengl;
+
     WControllerView::LoadMode loadMode;
 
     int scaleDelay;

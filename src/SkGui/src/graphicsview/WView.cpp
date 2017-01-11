@@ -25,7 +25,6 @@
 #include <QImageReader>
 #include <QDrag>
 #include <QMimeData>
-#include <QDir>
 
 // Sk includes
 #include <WControllerApplication>
@@ -255,7 +254,7 @@ void WViewPrivate::init(QDeclarativeItem * item)
     locked = false;
     closed = false;
 
-    opengl    = true;
+    opengl    = wControllerView->opengl();
     antialias = true;
     vsync     = false;
 
@@ -339,13 +338,24 @@ void WViewPrivate::init(QDeclarativeItem * item)
 
     q->setRenderHint(QPainter::Antialiasing, true);
 
-    QGLFormat format = QGLFormat::defaultFormat();
+    if (opengl)
+    {
+        QGLFormat format = QGLFormat::defaultFormat();
 
-    format.setSampleBuffers(true);
+        format.setSampleBuffers(true);
 
-    q->setViewport(new QGLWidget(format));
+        q->setViewport(new QGLWidget(format));
 
-    q->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+        q->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+    }
+    else
+    {
+        q->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+
+#ifdef Q_OS_WIN
+        q->setWindowClip(true);
+#endif
+    }
 
     q->setScene(scene);
 

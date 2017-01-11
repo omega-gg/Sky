@@ -38,6 +38,8 @@ class SK_GUI_EXPORT WControllerView : public WController
 
     Q_ENUMS(LoadMode)
 
+    Q_PROPERTY(bool opengl READ opengl WRITE setOpengl NOTIFY openglChanged)
+
     Q_PROPERTY(LoadMode loadMode READ loadMode WRITE setLoadMode NOTIFY loadModeChanged)
 
     Q_PROPERTY(int scaleDelay READ scaleDelay WRITE setScaleDelay NOTIFY scaleDelayChanged)
@@ -81,11 +83,16 @@ private: // Static functions
     static void paintChild    (QPainter * painter, QGraphicsObject * item, bool forceVisible);
 
 signals:
+    void openglChanged();
+
     void loadModeChanged();
 
     void scaleDelayChanged();
 
 public: // Properties
+    bool opengl() const;
+    void setOpengl(bool enabled);
+
     LoadMode loadMode() const;
     void     setLoadMode(LoadMode mode);
 
