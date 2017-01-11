@@ -734,7 +734,7 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
     d->setFlag(WS_CLIPCHILDREN, enabled);
 }
 #else
-/* Q_INVOKABLE */ void WAbstractView::setWindowMaximize(bool) {}
+/* Q_INVOKABLE */ void WAbstractView::setWindowClip(bool) {}
 #endif
 
 #endif // Q_OS_WIN
