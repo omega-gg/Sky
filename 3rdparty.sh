@@ -60,17 +60,17 @@ Boost_linux="$external/Boost/$Boost_version_linux"
 
 #--------------------------------------------------------------------------------------------------
 
-X11_dependecy="libx11-dev libxi-dev libxinerama-dev libxrandr-dev libxcursor-dev libfontconfig-dev"
+X11_ubuntu="libx11-dev libxi-dev libxinerama-dev libxrandr-dev libxcursor-dev libfontconfig-dev"
 
-Qt_dependecy="qt4-default libqtwebkit-dev openssl"
+Qt_ubuntu="qt4-default libqtwebkit-dev openssl"
 
-VLC_dependecy="libvlc-dev vlc"
+VLC_ubuntu="libvlc-dev vlc"
 
-libtorrent_dependecy="libtorrent-rasterbar-dev"
+libtorrent_ubuntu="libtorrent-rasterbar-dev"
 
-Boost_dependecy="libboost-all-dev"
+Boost_ubuntu="libboost-all-dev"
 
-tools_dependecy="git"
+tools_ubuntu="git"
 
 #--------------------------------------------------------------------------------------------------
 # Syntax
@@ -80,14 +80,37 @@ if [ $# != 2 ] || [ $1 != "all"       -a \
                     $1 != "install"   -a \
                     $1 != "uninstall" -a \
                     $1 != "deploy"    -a \
-                    $1 != "clean" ] || [ $2 != "linux" ]; then
+                    $1 != "clean" ] || [ $2 != "ubuntu" ]; then
 
-    echo "Usage: 3rdparty <all | install | uninstall | deploy | clean> <linux>"
+    echo "Usage: 3rdparty <all | install | uninstall | deploy | clean> <ubuntu>"
 
     exit 1
 fi
 
-if [ $2 = "linux" ]; then
+#--------------------------------------------------------------------------------------------------
+# Configuration
+#--------------------------------------------------------------------------------------------------
+
+if [ $2 = "ubuntu" ]; then
+
+    linux = true
+
+    X11_dependecy="$X11_ubuntu"
+
+    Qt_dependecy="$Qt_ubuntu"
+
+    VLC_dependecy="$VLC_ubuntu"
+
+    libtorrent_dependecy="$libtorrent_ubuntu"
+
+    Boost_dependecy="$Boost_ubuntu"
+
+    tools_dependecy="$tools_ubuntu"
+else
+    linux = false
+fi
+
+if [ $linux = true ]; then
 
     if [ -d "$lib64" ]; then
 
@@ -103,7 +126,7 @@ fi
 
 if [ $1 = "all" ] || [ $1 = "install" ]; then
 
-    if [ $2 = "linux" ]; then
+    if [ $linux = true ]; then
 
         echo "INSTALLING X11"
 
@@ -138,7 +161,7 @@ fi
 
 if [ $1 = "uninstall" ]; then
 
-    if [ $2 = "linux" ]; then
+    if [ $linux = true ]; then
 
         echo "UNINSTALLING X11"
 
@@ -198,7 +221,7 @@ fi
 
 if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
-    if [ $2 = "linux" ]; then
+    if [ $linux = true ]; then
 
         echo "DEPLOYING Qt"
 

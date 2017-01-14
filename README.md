@@ -30,16 +30,16 @@ OS-X is coming soon.
 On Windows:
 - [MinGW](http://sourceforge.net/projects/mingw) or [Git for Windows](http://git-for-windows.github.io) with g++ 4.9.2 or later.
 
-On Linux:
+Recommended:
+- [Qt Creator](http://download.qt.io/official_releases/qtcreator) 3.6.0 or later.
+
+## Install
 
 You can install third party libraries with:
 
-    3rdparty <all | install | uninstall | clean> <linux>
+    sh 3rdparty.sh <all | install | uninstall | clean> <ubuntu>
 
 - Edit [3rdparty.sh](3rdparty.sh) to check your dependencies.
-
-Recommended:
-- [Qt Creator](http://download.qt.io/official_releases/qtcreator) 3.6.0 or later.
 
 ## Configure
 
