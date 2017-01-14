@@ -192,7 +192,6 @@ void WImageColorFilterPrivate::init()
 QRect WImageColorFilterPrivate::getMargins(const QImage & image) const
 {
     const QRgb * constBits = (const QRgb *) image.constBits();
-
     const QRgb * bits;
 
     int left = -1;
