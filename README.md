@@ -37,7 +37,7 @@ Recommended:
 
 You can install third party libraries with:
 
-    sh 3rdparty.sh <all | install | uninstall | clean> <ubuntu>
+    sh 3rdparty.sh <all | install | uninstall | clean> <win32 | ubuntu>
 
 - Edit [3rdparty.sh](3rdparty.sh) to check your dependencies.
 
