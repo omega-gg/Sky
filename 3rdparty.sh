@@ -229,7 +229,7 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
     if [ $2 = "win32" ]; then
 
-        echo "Get 3rdparty archive here: $win32_3rdparty"
+        echo "3rdparty archive -> $win32_3rdparty"
 
     elif [ $linux = true ]; then
 
