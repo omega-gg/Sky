@@ -41,6 +41,8 @@ public:
     void init();
 
 public: // Functions
+    QString extractSource(const QString & source) const;
+
     QUrl getUrl(const QString & q) const;
 
 protected:
@@ -56,6 +58,25 @@ void WBackendDuckDuckGoPrivate::init() {}
 
 //-------------------------------------------------------------------------------------------------
 // Private functions
+//-------------------------------------------------------------------------------------------------
+
+QString WBackendDuckDuckGoPrivate::extractSource(const QString & source) const
+{
+    if (source.startsWith("http") == false)
+    {
+        int index = source.indexOf("uddg=");
+
+        if (index != -1)
+        {
+            QString url = source.mid(index + 5);
+
+            return WControllerNetwork::decodeUrl(url);
+        }
+        else return QString();
+    }
+    else return source;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 QUrl WBackendDuckDuckGoPrivate::getUrl(const QString & q) const
@@ -167,6 +188,8 @@ WBackendNetQuery WBackendDuckDuckGo::createQuery(const QString & method,
 WBackendNetFolder WBackendDuckDuckGo::extractFolder(const QByteArray       & data,
                                                     const WBackendNetQuery & query) const
 {
+    Q_D(const WBackendDuckDuckGo);
+
     WBackendNetFolder reply;
 
     QString content = Sk::readUtf8(data);
@@ -184,6 +207,8 @@ WBackendNetFolder WBackendDuckDuckGo::extractFolder(const QByteArray       & dat
             if (index == -1) continue;
 
             QString source = WControllerNetwork::extractAttributeUtf8At(string, index);
+
+            source = d->extractSource(source);
 
             index = WControllerNetwork::indexValue(string, index);
 
@@ -213,6 +238,8 @@ WBackendNetFolder WBackendDuckDuckGo::extractFolder(const QByteArray       & dat
             if (index == -1) continue;
 
             QString source = WControllerNetwork::extractAttributeUtf8At(string, index);
+
+            source = d->extractSource(source);
 
             source = WControllerNetwork::urlName(source);
 
