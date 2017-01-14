@@ -93,7 +93,7 @@ fi
 
 if [ $2 = "ubuntu" ]; then
 
-    linux = true
+    linux=true
 
     X11_dependecy="$X11_ubuntu"
 
@@ -107,7 +107,7 @@ if [ $2 = "ubuntu" ]; then
 
     tools_dependecy="$tools_ubuntu"
 else
-    linux = false
+    linux=false
 fi
 
 if [ $linux = true ]; then
