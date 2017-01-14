@@ -39,10 +39,10 @@ You can install third party libraries with:
 
     sh 3rdparty.sh <all | install | uninstall | clean> <win32 | ubuntu>
 
+- Edit [3rdparty.sh](3rdparty.sh) to check your dependencies.
+
 On Windows:
 - Get the [3rdparty.zip](http://omega.gg/get/Sky/3rdparty/win32) archive.
-
-- Edit [3rdparty.sh](3rdparty.sh) to check your dependencies.
 
 ## Configure
 
