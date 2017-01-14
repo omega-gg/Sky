@@ -59,6 +59,7 @@ Boost_version_linux="1.61.0"
 Boost_linux="$external/Boost/$Boost_version_linux"
 
 #--------------------------------------------------------------------------------------------------
+# Ubuntu
 
 X11_ubuntu="libx11-dev libxi-dev libxinerama-dev libxrandr-dev libxcursor-dev libfontconfig-dev"
 
