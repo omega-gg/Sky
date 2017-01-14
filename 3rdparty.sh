@@ -37,9 +37,7 @@ Qt4_sources="http://download.qt.io/official_releases/qt/4.8/4.8.7/$Qt4_archive"
 #--------------------------------------------------------------------------------------------------
 # Windows
 
-win32_archive="3rdparty.tar.gz"
-
-win32_sources="http://omega.gg/get/Sky/3rdparty/win32"
+win32_3rdparty="http://omega.gg/get/Sky/3rdparty/win32"
 
 #--------------------------------------------------------------------------------------------------
 # Linux
@@ -202,7 +200,7 @@ if [ $1 = "uninstall" ]; then
     fi
 fi
 
-if [ $1 = "all" ]; then
+if [ $1 = "all" -a $linux = true ]; then
 
     echo ""
 fi
@@ -211,17 +209,14 @@ fi
 # Clean
 #--------------------------------------------------------------------------------------------------
 
-if [ $1 = "clean" ]; then
+if [ $1 = "clean" -a $linux = true ]; then
 
-    if [ $linux = true ]; then
+    echo "CLEANING"
 
-        echo "CLEANING"
-
-        rm -rf "$Qt4"
-        rm -rf "$VLC"
-        rm -rf "$libtorrent"
-        rm -rf "$Boost_linux"
-    fi
+    rm -rf "$Qt4"
+    rm -rf "$VLC"
+    rm -rf "$libtorrent"
+    rm -rf "$Boost_linux"
 
     exit 0
 fi
@@ -234,15 +229,7 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
     if [ $2 = "win32" ]; then
 
-        echo "DEPLOYING 3rdparty"
-
-        cd ..
-
-        curl -o "$win32_archive" "$win32_source"
-
-        tar -xvzf "$win32_archive"
-
-        rm "$win32_archive"
+        echo "Get 3rdparty archive here: $win32_3rdparty"
 
     elif [ $linux = true ]; then
 
