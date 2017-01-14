@@ -37,7 +37,7 @@ Qt4_sources="http://download.qt.io/official_releases/qt/4.8/4.8.7/$Qt4_archive"
 #--------------------------------------------------------------------------------------------------
 # Windows
 
-win32_3rdparty="http://omega.gg/get/Sky/3rdparty/win32"
+archive_win32="http://omega.gg/get/Sky/3rdparty/win32"
 
 #--------------------------------------------------------------------------------------------------
 # Linux
@@ -229,7 +229,7 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
     if [ $2 = "win32" ]; then
 
-        echo "3rdparty archive -> $win32_3rdparty"
+        echo "3rdparty archive -> $archive_win32"
 
     elif [ $linux = true ]; then
 
