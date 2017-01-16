@@ -492,7 +492,6 @@ Item
 
     property ImageColorFilter button_filterBorder    : border_filter
     property ImageColorFilter button_filterIcon      : icon_filter
-    property ImageColorFilter button_filterIconCheck : icon_filterActive
     property ImageColorFilter button_filterIconShadow: icon_filterShadow
     property ImageColorFilter button_filterIconSunken: icon_filterSunken
 
@@ -538,7 +537,6 @@ Item
     property ImageColorFilter buttonPush_filterIcon      : icon_filter
     property ImageColorFilter buttonPush_filterIconShadow: icon_filterShadow
     property ImageColorFilter buttonPush_filterIconSunken: icon_filterSunken
-    property ImageColorFilter buttonPush_filterIconCheck : button_filterIconCheck
 
     property alias buttonPush_filterDefault       : buttonPush_filterDefault
     property alias buttonPush_filterHover         : buttonPush_filterHover
@@ -826,7 +824,6 @@ Item
     property ImageColorFilter buttonPiano_filterIcon      : icon_filter
     property ImageColorFilter buttonPiano_filterIconShadow: icon_filterShadow
     property ImageColorFilter buttonPiano_filterIconSunken: icon_filterSunken
-    property ImageColorFilter buttonPiano_filterIconCheck : button_filterIconCheck
 
     //---------------------------------------------------------------------------------------------
     // ButtonPianoIcon
@@ -859,7 +856,6 @@ Item
     property ImageColorFilter buttonRound_filterIcon      : buttonPush_filterIcon
     property ImageColorFilter buttonRound_filterIconShadow: buttonPush_filterIconShadow
     property ImageColorFilter buttonRound_filterIconSunken: buttonPush_filterIconSunken
-    property ImageColorFilter buttonRound_filterIconCheck : buttonPush_filterIconCheck
 
     property alias buttonRound_filterDefault       : buttonPush_filterDefault
     property alias buttonRound_filterHover         : buttonPush_filterHover

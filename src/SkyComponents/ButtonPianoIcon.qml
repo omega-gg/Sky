@@ -22,12 +22,6 @@ BaseButtonPiano
     id: buttonPianoIcon
 
     //---------------------------------------------------------------------------------------------
-    // Properties style
-    //---------------------------------------------------------------------------------------------
-
-    property ImageColorFilter filterIconCheck: st.buttonPiano_filterIconCheck
-
-    //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
@@ -90,16 +84,6 @@ BaseButtonPiano
 
         style: (checked) ? Sk.IconRaised
                          : Sk.IconSunken
-
-        filter:
-        {
-            if (enableFilter)
-            {
-                if (checked && checkIcon) return filterIconCheck;
-                else                      return filterIcon;
-            }
-            else return null;
-        }
 
         filterDefault: st.buttonPiano_filterIcon
         filterShadow : st.buttonPiano_filterIconShadow

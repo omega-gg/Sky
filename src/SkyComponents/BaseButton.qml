@@ -39,7 +39,6 @@ MouseArea
     property bool checked  : false
 
     property bool checkHover: true
-    property bool checkIcon : false
 
     //---------------------------------------------------------------------------------------------
     // Settings

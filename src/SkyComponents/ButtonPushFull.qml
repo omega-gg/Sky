@@ -36,11 +36,6 @@ BaseButtonPush
     property int maximumWidth: -1
 
     //---------------------------------------------------------------------------------------------
-    // Style
-
-    property ImageColorFilter filterIconCheck : st.buttonPush_filterIconCheck
-
-    //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
@@ -144,16 +139,6 @@ BaseButtonPush
 
         style: (checked) ? Sk.IconRaised
                          : Sk.IconSunken
-
-        filter:
-        {
-            if (enableFilter)
-            {
-                if (checked && checkIcon) return filterIconCheck;
-                else                      return filterIcon;
-            }
-            else return null;
-        }
 
         filterDefault: st.buttonPush_filterIcon
         filterShadow : st.buttonPush_filterIconShadow

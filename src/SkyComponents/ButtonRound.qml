@@ -39,8 +39,6 @@ BaseButton
                                                  checkable) ? st.buttonRound_filterCheckHover
                                                             : st.buttonRound_filterPressHover
 
-    property ImageColorFilter filterIconCheck: st.buttonRound_filterIconCheck
-
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
@@ -170,16 +168,6 @@ BaseButton
 
         style: (checked) ? Sk.IconRaised
                          : Sk.IconSunken
-
-        filter:
-        {
-            if (enableFilter)
-            {
-                if (checked && checkIcon) return filterIconCheck;
-                else                      return filterIcon;
-            }
-            else return null;
-        }
 
         filterDefault: st.buttonRound_filterIcon
         filterShadow : st.buttonRound_filterIconShadow
