@@ -302,7 +302,7 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 
 bool WControllerView::opengl() const
 {
-    Q_D(const WControllerView); return d->loadMode;
+    Q_D(const WControllerView); return d->opengl;
 }
 
 void WControllerView::setOpengl(bool enabled)
