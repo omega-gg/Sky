@@ -1452,8 +1452,8 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 
     if (d->opengl)
     {
-        if (width  == -1) { width  = this->width (); }
-        if (height == -1) { height = this->height(); }
+        if (width  == -1) width  = this->width ();
+        if (height == -1) height = this->height();
 
         QGLWidget * viewport = qobject_cast<QGLWidget *> (this->viewport());
 
@@ -1471,8 +1471,8 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
     //---------------------------------------------------------------------------------------------
     // FIXME Windows: Workaround for opengl full screen flicker.
 
-    if (width  == -1) { width  = this->width (); }
-    if (height == -1) { height = this->height(); }
+    if (width  == -1) width  = this->width ();
+    if (height == -1) height = this->height();
 
     //---------------------------------------------------------------------------------------------
 
@@ -1481,7 +1481,7 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 }
 
 /* Q_INVOKABLE */ bool WView::saveShot(const QString & fileName, int x,     int y,
-                                                                     int width, int height) const
+                                                                 int width, int height) const
 {
     QImage image = takeShot(x, y, width, height).toImage();
 
