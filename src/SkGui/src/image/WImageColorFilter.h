@@ -95,7 +95,7 @@ signals:
     void typeChanged();
 
 public: // Properties
-    GradientType type();
+    GradientType type() const;
     void         setType(GradientType type);
 
     QDeclarativeListProperty<WDeclarativeGradientStop> stops();

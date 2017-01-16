@@ -108,7 +108,7 @@ void WDeclarativeGradient::update()
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-WDeclarativeGradient::GradientType WDeclarativeGradient::type()
+WDeclarativeGradient::GradientType WDeclarativeGradient::type() const
 {
     return _type;
 }
