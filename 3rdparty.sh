@@ -135,7 +135,7 @@ if [ $linux = true ]; then
         lib="$lib32"
     fi
 
-    Boost_linux="$external/Boost/$Boost_version_linux"
+    Boost="$external/Boost/$Boost_version_linux"
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -304,10 +304,10 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
         echo ""
         echo "DEPLOYING Boost"
 
-        mkdir -p "$Boost_linux"
+        mkdir -p "$Boost"
 
-        sudo cp "$lib"/libboost_system.so.$Boost_version_linux "$Boost_linux"
-        sudo cp "$lib"/libboost_random.so.$Boost_version_linux "$Boost_linux"
-        sudo cp "$lib"/libboost_chrono.so.$Boost_version_linux "$Boost_linux"
+        sudo cp "$lib"/libboost_system.so.$Boost_version_linux "$Boost"
+        sudo cp "$lib"/libboost_random.so.$Boost_version_linux "$Boost"
+        sudo cp "$lib"/libboost_chrono.so.$Boost_version_linux "$Boost"
     fi
 fi
