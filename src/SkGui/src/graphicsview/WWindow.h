@@ -244,6 +244,7 @@ public: // Interface
 #ifdef Q_OS_WIN
     Q_INVOKABLE void setWindowSnap    (bool enabled);
     Q_INVOKABLE void setWindowMaximize(bool enabled);
+    Q_INVOKABLE void setWindowClip    (bool enabled);
 #endif
 
 public: // Static interface
@@ -358,6 +359,7 @@ public: // Properties
 
     //---------------------------------------------------------------------------------------------
     // WView
+    //---------------------------------------------------------------------------------------------
 
     qreal itemWidth () const;
     qreal itemHeight() const;

@@ -350,8 +350,6 @@ void WBackendVlcPrivate::initShader()
 
     glMultiTexCoord2fARB = (PFNGLMULTITEXCOORD2FARBPROC)
                            glXGetProcAddress((GLubyte *) "glMultiTexCoord2fARB");
-#else
-    qWarning("WBackendVlcPrivate::initShader: Fragment shaders are not supported.");
 #endif
 
     if (glGenProgramsARB              && glBindProgramARB   && glProgramStringARB &&

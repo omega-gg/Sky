@@ -27,7 +27,6 @@
     We mean it.
 */
 
-// Sk includes
 #include <private/Sk_p>
 
 #ifndef SK_NO_DECLARATIVEITEM

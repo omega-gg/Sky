@@ -359,8 +359,10 @@ void WViewPrivate::init(QDeclarativeItem * item)
 
     q->setScene(scene);
 
+#ifdef Q_OS_WIN
     // FIXME Windows: Workaround for opengl full screen flicker.
     q->setViewportMargins(0, 0, -1, 0);
+#endif
 
     //---------------------------------------------------------------------------------------------
     // For performance
@@ -390,7 +392,7 @@ void WViewPrivate::init(QDeclarativeItem * item)
     q->setGeometry(geometryNormal);
 
     //---------------------------------------------------------------------------------------------
-    // Timers
+    // Timer
 
     q->startTimer(16);
 
@@ -836,7 +838,7 @@ QRect WViewPrivate::getGeometryDefault(const QRect & rect) const
 
 QRect WViewPrivate::getGeometry(const QRect & rect) const
 {
-    int width  = rect.width()  / 8;
+    int width  = rect.width () / 8;
     int height = rect.height() / 8;
 
     return rect.adjusted(width, height, -width, -height);
@@ -1319,8 +1321,7 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 //-------------------------------------------------------------------------------------------------
 // Drag
 
-/* Q_INVOKABLE */ bool WView::testDrag(const QPointF & posA,
-                                           const QPointF & posB, qreal distance)
+/* Q_INVOKABLE */ bool WView::testDrag(const QPointF & posA, const QPointF & posB, qreal distance)
 {
     if (distance == -1) distance = QApplication::startDragDistance();
 
@@ -1457,8 +1458,8 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 
         QGLWidget * viewport = qobject_cast<QGLWidget *> (this->viewport());
 
-        // FIXME Windows: Making sure we grab the front buffer.
 #ifdef Q_OS_WIN
+        // FIXME Windows: Making sure we grab the front buffer.
         glReadBuffer(GL_FRONT);
 #endif
 
@@ -1468,6 +1469,7 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
     }
     else return QPixmap::grabWidget(viewport(), x, y, width, height);
 #else
+#ifdef Q_OS_WIN
     //---------------------------------------------------------------------------------------------
     // FIXME Windows: Workaround for opengl full screen flicker.
 
@@ -1475,6 +1477,7 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
     if (height == -1) height = this->height();
 
     //---------------------------------------------------------------------------------------------
+#endif
 
     return viewport()->grab(QRect(x, y, width, height));
 #endif
@@ -2156,7 +2159,7 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
             emit maximizedChanged();
         }
     }
-    else // if (state == Qt::WindowNoState)
+    else if (state == Qt::WindowNoState)
     {
         Q_D(WView);
 
@@ -2548,7 +2551,9 @@ void WView::setMaximized(bool maximized)
     if (maximized)
     {
 #ifdef Q_OS_LINUX
-        // FIXME: Workaround to undock the window.
+        //-----------------------------------------------------------------------------------------
+        // FIXME Linux: Workaround to undock the window.
+
         QRect rect = availableGeometry();
 
         if (height() == rect.height())
@@ -2560,11 +2565,16 @@ void WView::setMaximized(bool maximized)
 
             return;
         }
+
+        //-----------------------------------------------------------------------------------------
 #endif
 
         d->maximized = true;
 
-        showMaximized();
+        if (d->fullScreen == false)
+        {
+            showMaximized();
+        }
     }
     else
     {
@@ -2630,7 +2640,7 @@ void WView::setLocked(bool locked)
     d->setPressed(false);
 
 #ifdef Q_OS_WIN
-    // FIXME: Locking during keyPress skips keyRelease.
+    // FIXME Windows: Locking during keyPress skips keyRelease.
     if (d->keyVirtual)
     {
         keybd_event(d->keyVirtual, d->keyScan, KEYEVENTF_KEYUP, 0);

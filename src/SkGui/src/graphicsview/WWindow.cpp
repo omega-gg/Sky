@@ -498,6 +498,11 @@ void WWindowPrivate::init()
     Q_D(WWindow); d->view->setWindowMaximize(enabled);
 }
 
+/* Q_INVOKABLE */ void WWindow::setWindowClip(bool enabled)
+{
+    Q_D(WWindow); d->view->setWindowClip(enabled);
+}
+
 #endif // Q_OS_WIN
 
 //-------------------------------------------------------------------------------------------------

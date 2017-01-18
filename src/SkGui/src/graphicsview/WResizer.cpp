@@ -25,15 +25,19 @@
 // Sk includes
 #include <WView>
 
-// Private includes
-#include <private/WView_p>
-
-#if defined(Q_OS_WIN)
+// Windows includes
+#ifdef Q_OS_WIN
 #include <qt_windows.h>
-#elif defined(Q_OS_LINUX)
+#endif
+
+// Linux includes
+#ifdef Q_OS_LINUX
 #include <private/qt_x11_p.h>
 #include <QX11Info>
 #endif
+
+// Private includes
+#include <private/WView_p>
 
 //-------------------------------------------------------------------------------------------------
 // Defines
@@ -362,13 +366,13 @@ WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
         xev.xclient.data.l[1]    = d->view->y();
 
         if      (d->type == TopLeft)     xev.xclient.data.l[2] = 0;
-        else if (d->type == Top)         xev.xclient.data.l[2] = 1;
         else if (d->type == TopRight)    xev.xclient.data.l[2] = 2;
-        else if (d->type == Right)       xev.xclient.data.l[2] = 3;
-        else if (d->type == BottomRight) xev.xclient.data.l[2] = 4;
-        else if (d->type == Bottom)      xev.xclient.data.l[2] = 5;
         else if (d->type == BottomLeft)  xev.xclient.data.l[2] = 6;
+        else if (d->type == BottomRight) xev.xclient.data.l[2] = 4;
         else if (d->type == Left)        xev.xclient.data.l[2] = 7;
+        else if (d->type == Right)       xev.xclient.data.l[2] = 3;
+        else if (d->type == Top)         xev.xclient.data.l[2] = 1;
+        else if (d->type == Bottom)      xev.xclient.data.l[2] = 5;
 
         xev.xclient.data.l[3] = Button1;
         xev.xclient.data.l[4] = 0;

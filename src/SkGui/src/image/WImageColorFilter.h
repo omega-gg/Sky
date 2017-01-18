@@ -36,9 +36,8 @@ class SK_GUI_EXPORT WDeclarativeGradientStop : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(qreal position READ position WRITE setPosition)
-
-    Q_PROPERTY(QColor color READ color WRITE setColor)
+    Q_PROPERTY(qreal  position READ position WRITE setPosition)
+    Q_PROPERTY(QColor color    READ color    WRITE setColor)
 
 public:
     explicit WDeclarativeGradientStop(QObject * parent = NULL);
@@ -54,8 +53,7 @@ public: // Properties
     void   setColor(const QColor & color);
 
 private: // Variables
-    qreal _position;
-
+    qreal  _position;
     QColor _color;
 };
 

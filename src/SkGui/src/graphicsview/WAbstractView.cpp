@@ -196,7 +196,7 @@ void WAbstractViewPrivate::setFlag(LONG flag, bool enabled) const
 }
 
 //-------------------------------------------------------------------------------------------------
-// Private events
+// Private static events
 //-------------------------------------------------------------------------------------------------
 
 /* static */ LRESULT CALLBACK WAbstractViewPrivate::events(HWND handle, UINT   message,

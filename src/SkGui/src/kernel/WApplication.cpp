@@ -34,7 +34,7 @@
 #include <WActionCue>
 #include <WInputCue>
 
-// Views includes
+// View includes
 #include <WView>
 #include <WViewResizer>
 #include <WViewDrag>
@@ -146,10 +146,7 @@ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
 
     QtSingleApplication * application = new QtSingleApplication(argc, argv, true);
 
-    if (application->sendMessage(""))
-    {
-        return NULL;
-    }
+    if (application->sendMessage("")) return NULL;
 
     W_CREATE_CONTROLLER(WControllerApplication);
 
@@ -201,7 +198,7 @@ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
     qmlRegisterType<WInputCue> ("Sky", 1,0, "InputCue");
 
     //---------------------------------------------------------------------------------------------
-    // Views
+    // View
 
     qmlRegisterUncreatableType<WView>("Sky", 1,0, "View", "View is abstract");
 

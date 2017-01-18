@@ -37,6 +37,7 @@
 #include <qt_windows.h>
 #endif
 
+// Sk includes
 #include <private/Sk_p>
 
 #ifndef SK_NO_ABSTRACTVIEW
@@ -61,7 +62,7 @@ public: // Functions
 public: // Static functions
     static HICON getIcon(const QIcon & icon, int width, int height);
 
-public: // Events
+public: // Static events
     static LRESULT CALLBACK events(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
 
 public: // Slots

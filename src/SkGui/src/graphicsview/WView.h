@@ -18,7 +18,6 @@
 #define WVIEW_H
 
 // Qt includes
-#include <QGraphicsScene>
 #include <QKeyEvent>
 
 // Sk includes
@@ -27,6 +26,7 @@
 
 #ifndef SK_NO_VIEW
 
+// Forward declarations
 class QDeclarativeItem;
 class WViewPrivate;
 class WDeclarativeMouseEvent;
