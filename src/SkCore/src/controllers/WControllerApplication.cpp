@@ -1183,7 +1183,7 @@ void WControllerApplication::setIcon(const QString & icon)
 
     d->icon = icon;
 
-    emit nameChanged();
+    emit iconChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
