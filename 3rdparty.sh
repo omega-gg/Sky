@@ -48,23 +48,19 @@ lib32="/usr/lib/i386-linux-gnu"
 lib64="/usr/lib/x86_64-linux-gnu"
 
 #--------------------------------------------------------------------------------------------------
-
-QtWebkit_version="4.10.2"
-
-libvlc_version="5.5.0"
-
-libvlccore_version="8.0.0"
-
-libtorrent_version_linux="9.0.0"
-
-Boost_version_linux="1.61.0"
-
-#--------------------------------------------------------------------------------------------------
-
-Boost_linux="$external/Boost/$Boost_version_linux"
-
-#--------------------------------------------------------------------------------------------------
 # Ubuntu
+
+QtWebkit_version_ubuntu="4.10.2"
+
+libvlc_version_ubuntu="5.5.0"
+
+libvlccore_version_ubuntu="8.0.0"
+
+libtorrent_version_ubuntu="9.0.0"
+
+Boost_version_ubuntu="1.61.0"
+
+#--------------------------------------------------------------------------------------------------
 
 X11_ubuntu="libx11-dev libxi-dev libxinerama-dev libxrandr-dev libxcursor-dev libfontconfig-dev"
 
@@ -101,17 +97,31 @@ if [ $2 = "ubuntu" ]; then
 
     linux=true
 
-    X11_dependecy="$X11_ubuntu"
+    #----------------------------------------------------------------------------------------------
 
-    Qt_dependecy="$Qt_ubuntu"
+    QtWebkit_version_linux="$QtWebkit_version_ubuntu"
 
-    VLC_dependecy="$VLC_ubuntu"
+    libvlc_version_linux="$libvlc_version_ubuntu"
 
-    libtorrent_dependecy="$libtorrent_ubuntu"
+    libvlccore_version_linux="$libvlccore_version_ubuntu"
 
-    Boost_dependecy="$Boost_ubuntu"
+    libtorrent_version_linux="$libtorrent_version_ubuntu"
 
-    tools_dependecy="$tools_ubuntu"
+    Boost_version_linux="$Boost_version_ubuntu"
+
+    #----------------------------------------------------------------------------------------------
+
+    X11_linux="$X11_ubuntu"
+
+    Qt_linux="$Qt_ubuntu"
+
+    VLC_linux="$VLC_ubuntu"
+
+    libtorrent_linux="$libtorrent_ubuntu"
+
+    Boost_linux="$Boost_ubuntu"
+
+    tools_linux="$tools_ubuntu"
 else
     linux=false
 fi
@@ -124,6 +134,8 @@ if [ $linux = true ]; then
     else
         lib="$lib32"
     fi
+
+    Boost_linux="$external/Boost/$Boost_version_linux"
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -136,32 +148,32 @@ if [ $1 = "all" ] || [ $1 = "install" ]; then
 
         echo "INSTALLING X11"
 
-        sudo apt-get install -y $X11_dependecy
+        sudo apt-get install -y $X11_linux
 
         echo ""
         echo "INSTALLING Qt"
 
-        sudo apt-get install -y $Qt_dependecy
+        sudo apt-get install -y $Qt_linux
 
         echo ""
         echo "INSTALLING VLC"
 
-        sudo apt-get install -y $VLC_dependecy
+        sudo apt-get install -y $VLC_linux
 
         echo ""
         echo "INSTALLING libtorrent"
 
-        sudo apt-get install -y $libtorrent_dependecy
+        sudo apt-get install -y $libtorrent_linux
 
         echo ""
         echo "INSTALLING Boost"
 
-        sudo apt-get install -y $Boost_dependecy
+        sudo apt-get install -y $Boost_linux
 
         echo ""
         echo "INSTALLING TOOLS"
 
-        sudo apt-get install -y $tools_dependecy
+        sudo apt-get install -y $tools_linux
     fi
 fi
 
@@ -171,32 +183,32 @@ if [ $1 = "uninstall" ]; then
 
         echo "UNINSTALLING X11"
 
-        sudo apt-get remove -y $X11_dependecy
+        sudo apt-get remove -y $X11_linux
 
         echo ""
         echo "UNINSTALLING Qt"
 
-        sudo apt-get remove -y $Qt_dependecy
+        sudo apt-get remove -y $Qt_linux
 
         echo ""
         echo "UNINSTALLING VLC"
 
-        sudo apt-get remove -y $VLC_dependecy
+        sudo apt-get remove -y $VLC_linux
 
         echo ""
         echo "UNINSTALLING libtorrent"
 
-        sudo apt-get remove -y $libtorrent_dependecy
+        sudo apt-get remove -y $libtorrent_linux
 
         echo ""
         echo "UNINSTALLING Boost"
 
-        sudo apt-get remove -y $Boost_dependecy
+        sudo apt-get remove -y $Boost_linux
 
         echo ""
         echo "UNINSTALLING TOOLS"
 
-        sudo apt-get remove -y $tools_dependecy
+        sudo apt-get remove -y $tools_linux
     fi
 fi
 
@@ -264,7 +276,7 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
         sudo cp "$lib"/libQtXml.so.$Qt4_version         "$Qt4"/lib/libQtXml.so.4
         sudo cp "$lib"/libQtXmlPatterns.so.$Qt4_version "$Qt4"/lib/libQtXmlPatterns.so.4
 
-        sudo cp "$lib"/libQtWebKit.so.$QtWebkit_version "$Qt4"/lib/libQtWebKit.so.4
+        sudo cp "$lib"/libQtWebKit.so.$QtWebkit_version_linux "$Qt4"/lib/libQtWebKit.so.4
 
         mkdir -p "$Qt4"/plugins/imageformats
 
@@ -276,8 +288,8 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
         mkdir -p "$VLC"
 
-        sudo cp "$usr"/libvlc.so.$libvlc_version         "$VLC"/libvlc.so.5
-        sudo cp "$usr"/libvlccore.so.$libvlccore_version "$VLC"/libvlccore.so.8
+        sudo cp "$usr"/libvlc.so.$libvlc_version_linux         "$VLC"/libvlc.so.5
+        sudo cp "$usr"/libvlccore.so.$libvlccore_version_linux "$VLC"/libvlccore.so.8
 
         sudo cp -r "$usr"/vlc/plugins "$VLC"
 
