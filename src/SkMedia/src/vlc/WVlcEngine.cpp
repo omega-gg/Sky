@@ -89,6 +89,7 @@ bool WVlcEngine::event(QEvent * event)
             "--no-osd",           /* No video overlay */
             "--no-stats",         /* No statistics    */
             "--no-media-library", /* No Media Library */
+            "--http-reconnect",   /* Auto reconnect   */
             "--input-fast-seek",  /* Fast seek        */
             "--avcodec-fast"      /* Speed tricks     */
             //"--avcodec-dr",
