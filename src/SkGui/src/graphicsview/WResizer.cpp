@@ -32,12 +32,14 @@
 
 // Linux includes
 #ifdef Q_OS_LINUX
-#include <private/qt_x11_p.h>
 #include <QX11Info>
 #endif
 
 // Private includes
 #include <private/WView_p>
+#ifdef Q_OS_LINUX
+#include <private/qt_x11_p.h>
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Defines
