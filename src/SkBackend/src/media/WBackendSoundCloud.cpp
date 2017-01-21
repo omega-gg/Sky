@@ -361,7 +361,7 @@ WBackendSoundCloud::WBackendSoundCloud() : WBackendNet(new WBackendSoundCloudPri
 
     if (source.startsWith("soundcloud.com/") == false
         ||
-        source.contains(QRegExp("/tracks/|/sets/|/albums/|/reposts/")))
+        source.contains(QRegExp("/tracks/|/sets/|/albums/|/reposts/|/tags/|/popular/")))
     {
         return QString();
     }
