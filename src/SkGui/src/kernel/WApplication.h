@@ -35,7 +35,11 @@ private:
     WApplication(int & argc, char ** argv);
 
 public: // Static functions
-    static QApplication * create(int & argc, char ** argv, Sk::Type type = Sk::Cpp);
+    static QApplication * create(int & argc, char ** argv, Sk::Type     type     = Sk::Cpp,
+                                                           Sk::Instance instance = Sk::Single);
+
+protected: // Static functions
+    static QApplication * createApplication(int & argc, char ** argv, Sk::Instance instance);
 
 private:
     W_DECLARE_PRIVATE(WApplication)

@@ -250,9 +250,9 @@ void WControllerApplicationPrivate::undeclareController(WController * controller
 // Private WControllerApplication and WApplication interface
 //-------------------------------------------------------------------------------------------------
 
-void WControllerApplicationPrivate::createApplication(QCoreApplication * application,
-                                                      int & argc, char ** argv, Sk::Type type,
-                                                      bool coreApplication)
+void WControllerApplicationPrivate::initApplication(QCoreApplication * application,
+                                                    int & argc, char ** argv, Sk::Type type,
+                                                    bool coreApplication)
 {
     Q_Q(WControllerApplication);
 

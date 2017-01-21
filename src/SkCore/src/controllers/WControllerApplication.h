@@ -89,6 +89,8 @@ class SK_CORE_EXPORT WControllerApplication : public QObject, public WPrivatable
 public: // Enums
     enum Type { Cpp = 0, Script };
 
+    enum Instance { Single = 0, Multiple };
+
     enum Mode { Normal = 0, Maximized, FullScreen, FullScreenMaximized };
 
 private:

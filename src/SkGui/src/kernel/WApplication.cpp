@@ -134,7 +134,7 @@ WApplication::WApplication(int & argc, char ** argv)
 //-------------------------------------------------------------------------------------------------
 
 /* static */
-QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
+QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type, Sk::Instance instance)
 {
 #if defined(Q_OS_MAC)
     QApplication::setGraphicsSystem("raster");
@@ -144,19 +144,18 @@ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
     //qInstallMsgHandler(messageHandler);
 #endif
 
-    QtSingleApplication * application = new QtSingleApplication(argc, argv, true);
+    QApplication * application = createApplication(argc, argv, instance);
 
-    if (application->sendMessage("")) return NULL;
+    if (application == NULL) return NULL;
 
     W_CREATE_CONTROLLER(WControllerApplication);
 
-    sk->d_func()->createApplication(application, argc, argv, type, false);
+    sk->d_func()->initApplication(application, argc, argv, type, false);
 
     //---------------------------------------------------------------------------------------------
     // Controllers
 
     W_CREATE_CONTROLLER(WControllerView);
-    W_CREATE_CONTROLLER(WControllerPlaylist);
 
     //---------------------------------------------------------------------------------------------
     // MetaType registering
@@ -307,9 +306,28 @@ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
 
     wControllerDeclarative->setContextProperty("sk",                 sk);
     wControllerDeclarative->setContextProperty("controllerNetwork",  wControllerNetwork);
-    wControllerDeclarative->setContextProperty("controllerPlaylist", wControllerPlaylist);
 
     return application;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Protected static functions
+//-------------------------------------------------------------------------------------------------
+
+/* static */ QApplication * WApplication::createApplication(int  &  argc,
+                                                            char ** argv, Sk::Instance instance)
+{
+    if (instance == Sk::Single)
+    {
+        QtSingleApplication * application = new QtSingleApplication(argc, argv, true);
+
+        if (application->sendMessage(""))
+        {
+             return NULL;
+        }
+        else return application;
+    }
+    else return new QApplication(argc, argv);
 }
 
 #endif // SK_NO_APPLICATION

@@ -55,8 +55,8 @@ public: // Functions
     void undeclareController(WController * controller);
 
 public: // WCoreApplication and WApplication interface
-    void createApplication(QCoreApplication * application, int & argc, char ** argv, Sk::Type type,
-                           bool coreApplication);
+    void initApplication(QCoreApplication * application, int & argc, char ** argv, Sk::Type type,
+                         bool coreApplication);
 
 public: // Slots
     void onAboutToQuit();

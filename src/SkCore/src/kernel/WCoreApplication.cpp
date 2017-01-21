@@ -86,7 +86,7 @@ WCoreApplication::WCoreApplication(int & argc, char ** argv)
 
     W_CREATE_CONTROLLER(WControllerApplication);
 
-    sk->d_func()->createApplication(application, argc, argv, type, true);
+    sk->d_func()->initApplication(application, argc, argv, type, true);
 
     return application;
 }
