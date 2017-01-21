@@ -139,10 +139,7 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 
     QSize size = item->boundingRect().size().toSize();
 
-    if (size.isValid() == false)
-    {
-        return QPixmap();
-    }
+    if (size.isValid() == false) return QPixmap();
 
     QPixmap pixmap(size);
 

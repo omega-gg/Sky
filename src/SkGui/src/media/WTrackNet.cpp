@@ -51,8 +51,7 @@ void WTrackNetPrivate::init() {}
 // Operators
 //-------------------------------------------------------------------------------------------------
 
-WTrackNet::WTrackNet(const WTrackNet & other)
-    : WAbstractTrack(new WTrackNetPrivate(this))
+WTrackNet::WTrackNet(const WTrackNet & other) : WAbstractTrack(new WTrackNetPrivate(this))
 {
     Q_D(WTrackNet);
 

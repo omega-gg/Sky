@@ -811,7 +811,15 @@ void WPixmapCachePrivate::removeData(QObject * receiver)
 
     QList<WPixmapCache *> & pixmaps = data->pixmaps;
 
-    if (pixmaps.isEmpty() == false)
+    if (pixmaps.isEmpty())
+    {
+        WPixmapCacheStore * store = pixmapStore();
+
+        store->datas.removeOne(data);
+
+        store->deleteData(data);
+    }
+    else
     {
         Q_Q(WPixmapCache);
 
@@ -827,14 +835,6 @@ void WPixmapCachePrivate::removeData(QObject * receiver)
 
             if (reply) QObject::disconnect(reply, 0, receiver, 0);
         }
-    }
-    else
-    {
-        WPixmapCacheStore * store = pixmapStore();
-
-        store->datas.removeOne(data);
-
-        store->deleteData(data);
     }
 }
 
