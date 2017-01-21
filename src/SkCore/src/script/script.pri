@@ -1,8 +1,6 @@
 # Script module
 
-HEADERS += \
-        src/script/WScript_p.h \
-        src/script/WScript.h \
+HEADERS += src/script/WScript_p.h \
+           src/script/WScript.h \
 
-SOURCES += \
-        src/script/WScript.cpp \
+SOURCES += src/script/WScript.cpp \

@@ -31,6 +31,7 @@ contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_4
 
     CONFIG(release, debug|release) {
+
         win32:DEFINES += SK_WIN_NATIVE
     }
 } else {
@@ -45,23 +46,19 @@ include(src/declarative/declarative.pri)
 include(src/models/models.pri)
 include(src/media/media.pri)
 
-INCLUDEPATH += \
-            $$SK/include/Qt/QtCore \
-            $$SK/include/Qt/QtGui \
-            $$SK/include/Qt/QtDeclarative \
-            $$SK/include/SkCore \
-            $$SK/include/SkCore/private \
-            $$SK/include/SkGui \
-            $$SK/include/SkGui/private \
+INCLUDEPATH += $$SK/include/Qt/QtCore \
+               $$SK/include/Qt/QtGui \
+               $$SK/include/Qt/QtDeclarative \
+               $$SK/include/SkCore \
+               $$SK/include/SkCore/private \
+               $$SK/include/SkGui \
+               $$SK/include/SkGui/private \
 
 CONFIG(debug, debug|release) {
-    LIBS += \
-         -L$$SK/lib -lSkCoreD \
 
+    LIBS += -L$$SK/lib -lSkCoreD
 } else {
-    LIBS += \
-         -L$$SK/lib -lSkCore \
-
+    LIBS += -L$$SK/lib -lSkCore
 }
 
 macx {

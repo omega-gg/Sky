@@ -41,10 +41,9 @@ include(src/plugin/plugin.pri)
 
 include(3rdparty/qtsingleapplication/qtsingleapplication.pri)
 
-INCLUDEPATH += \
-            $$SK/include/SkCore \
-            $$SK/include/SkCore/private \
-            3rdparty/qtsingleapplication \
+INCLUDEPATH += $$SK/include/SkCore \
+               $$SK/include/SkCore/private \
+               3rdparty/qtsingleapplication \
 
 #--------------------------------------------------------------------------------------------------
 # Copy library to the bin directory

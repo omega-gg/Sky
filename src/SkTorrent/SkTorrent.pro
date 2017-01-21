@@ -33,25 +33,21 @@ include(src/controllers/controllers.pri)
 include(src/media/media.pri)
 include(src/torrent/torrent.pri)
 
-INCLUDEPATH += \
-            $$SK/include/SkCore \
-            $$SK/include/SkCore/private \
-            $$SK/include/SkGui \
-            $$SK/include/SkGui/private \
-            $$SK/include/SkTorrent \
-            $$SK/include/SkTorrent/private \
-            $$SK/include/ \
+INCLUDEPATH += $$SK/include/SkCore \
+               $$SK/include/SkCore/private \
+               $$SK/include/SkGui \
+               $$SK/include/SkGui/private \
+               $$SK/include/SkTorrent \
+               $$SK/include/SkTorrent/private \
+               $$SK/include/ \
 
 CONFIG(debug, debug|release) {
-    LIBS += \
-         -L$$SK/lib -lSkCoreD \
-         -L$$SK/lib -lSkGuiD \
 
+    LIBS += -L$$SK/lib -lSkCoreD \
+            -L$$SK/lib -lSkGuiD
 } else {
-    LIBS += \
-         -L$$SK/lib -lSkCore \
-         -L$$SK/lib -lSkGui \
-
+    LIBS += -L$$SK/lib -lSkCore \
+            -L$$SK/lib -lSkGui
 }
 
 win32:LIBS += -static -L$$_PRO_FILE_PWD_ -ltorrent \

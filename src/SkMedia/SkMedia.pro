@@ -35,27 +35,23 @@ include(src/controllers/controllers.pri)
 include(src/media/media.pri)
 include(src/vlc/vlc.pri)
 
-INCLUDEPATH += \
-            $$SK/include/SkCore \
-            $$SK/include/SkCore/private \
-            $$SK/include/SkGui \
-            $$SK/include/SkGui/private \
-            $$SK/include/SkMedia \
-            $$SK/include/SkMedia/private \
-            $$SK/include/ \
+INCLUDEPATH += $$SK/include/SkCore \
+               $$SK/include/SkCore/private \
+               $$SK/include/SkGui \
+               $$SK/include/SkGui/private \
+               $$SK/include/SkMedia \
+               $$SK/include/SkMedia/private \
+               $$SK/include/ \
 
 contains(QT_MAJOR_VERSION, 5): LIBS += -lopengl32
 
 CONFIG(debug, debug|release) {
-    LIBS += \
-         -L$$SK/lib -lSkCoreD \
-         -L$$SK/lib -lSkGuiD \
 
+    LIBS += -L$$SK/lib -lSkCoreD \
+            -L$$SK/lib -lSkGuiD
 } else {
-    LIBS += \
-         -L$$SK/lib -lSkCore \
-         -L$$SK/lib -lSkGui \
-
+    LIBS += -L$$SK/lib -lSkCore \
+            -L$$SK/lib -lSkGui
 }
 
 win32:LIBS += -L$$SK/lib -llibvlc

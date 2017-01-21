@@ -1,7 +1,5 @@
 # Torrent module
 
-HEADERS += \
-        src/torrent/WTorrentEngine.h \
+HEADERS += src/torrent/WTorrentEngine.h \
 
-SOURCES += \
-        src/torrent/WTorrentEngine.cpp \
+SOURCES += src/torrent/WTorrentEngine.cpp \

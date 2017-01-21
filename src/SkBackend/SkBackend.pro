@@ -31,24 +31,20 @@ contains(QT_MAJOR_VERSION, 4) {
 
 include(src/media/media.pri)
 
-INCLUDEPATH += \
-            $$SK/include/SkCore \
-            $$SK/include/SkCore/private \
-            $$SK/include/SkGui \
-            $$SK/include/SkGui/private \
-            $$SK/include/SkBackend \
-            $$SK/include/SkBackend/private \
+INCLUDEPATH += $$SK/include/SkCore \
+               $$SK/include/SkCore/private \
+               $$SK/include/SkGui \
+               $$SK/include/SkGui/private \
+               $$SK/include/SkBackend \
+               $$SK/include/SkBackend/private \
 
 CONFIG(debug, debug|release) {
-    LIBS += \
-         -L$$SK/lib -lSkCoreD \
-         -L$$SK/lib -lSkGuiD \
 
+    LIBS += -L$$SK/lib -lSkCoreD \
+            -L$$SK/lib -lSkGuiD
 } else {
-    LIBS += \
-         -L$$SK/lib -lSkCore \
-         -L$$SK/lib -lSkGui \
-
+    LIBS += -L$$SK/lib -lSkCore \
+            -L$$SK/lib -lSkGui
 }
 
 macx {
