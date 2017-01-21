@@ -225,10 +225,10 @@ if [ $1 = "clean" -a $linux = true ]; then
 
     echo "CLEANING"
 
-    rm -rf "$Qt4"
-    rm -rf "$VLC"
-    rm -rf "$libtorrent"
-    rm -rf "$Boost_linux"
+    sudo rm -rf "$Qt4"
+    sudo rm -rf "$VLC"
+    sudo rm -rf "$libtorrent"
+    sudo rm -rf "$Boost_linux"
 
     exit 0
 fi
