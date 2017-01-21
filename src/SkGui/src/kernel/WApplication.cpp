@@ -319,7 +319,7 @@ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type, Sk:
 {
     if (instance == Sk::Single)
     {
-        QtSingleApplication * application = new QtSingleApplication(argc, argv, true);
+        QtSingleApplication * application = new QtSingleApplication(argc, argv);
 
         if (application->sendMessage(""))
         {
