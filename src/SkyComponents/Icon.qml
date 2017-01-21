@@ -47,7 +47,7 @@ ImageScale
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    property alias itemStyle: itemStyle
+    property alias imageStyle: imageStyle
 
     //---------------------------------------------------------------------------------------------
     // Style
@@ -77,7 +77,7 @@ ImageScale
 
     ImageScale
     {
-        id: itemStyle
+        id: imageStyle
 
         anchors.fill: parent
 
