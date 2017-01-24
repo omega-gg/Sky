@@ -599,6 +599,19 @@ WBackendNetPlaylist WBackendSoundCloud::extractPlaylist(const QByteArray       &
 
         QString idPlaylist = WControllerNetwork::extractJsonUtf8(json, "id");
 
+        QString title = WControllerNetwork::extractJsonUtf8(json, "title");
+        QString cover = WControllerNetwork::extractJson    (json, "artwork_url");
+
+        if (cover == "null")
+        {
+            cover = WControllerNetwork::extractJson(json, "avatar_url");
+        }
+
+        d->applyCover(&cover);
+
+        reply.title = title;
+        reply.cover = cover;
+
         WBackendNetQuery * nextQuery = &(reply.nextQuery);
 
         nextQuery->url = "https://api.soundcloud.com/playlists/" + idPlaylist
@@ -610,6 +623,14 @@ WBackendNetPlaylist WBackendSoundCloud::extractPlaylist(const QByteArray       &
         QString json = d->extractJson(content, "61");
 
         QString source = WControllerNetwork::extractJsonUtf8(json, "uri");
+
+        QString title = WControllerNetwork::extractJsonUtf8(json, "username");
+        QString cover = WControllerNetwork::extractJson    (json, "avatar_url");
+
+        d->applyCover(&cover);
+
+        reply.title = title;
+        reply.cover = cover;
 
         WBackendNetQuery * nextQuery = &(reply.nextQuery);
 
@@ -647,12 +668,12 @@ WBackendNetFolder WBackendSoundCloud::extractFolder(const QByteArray       & dat
 
     if (query.id == 0) // people
     {
-        foreach (const QString & string, list)
+        foreach (const QString & json, list)
         {
-            QString id = WControllerNetwork::extractJson(string, "permalink");
+            QString id = WControllerNetwork::extractJson(json, "permalink");
 
-            QString title = WControllerNetwork::extractJsonUtf8(string, "username");
-            QString cover = WControllerNetwork::extractJson    (string, "avatar_url");
+            QString title = WControllerNetwork::extractJsonUtf8(json, "username");
+            QString cover = WControllerNetwork::extractJson    (json, "avatar_url");
 
             d->applyCover(&cover);
 
@@ -668,16 +689,16 @@ WBackendNetFolder WBackendSoundCloud::extractFolder(const QByteArray       & dat
     }
     else // playlists
     {
-        foreach (const QString & string, list)
+        foreach (const QString & json, list)
         {
-            QString source = WControllerNetwork::extractJson(string, "permalink_url");
+            QString source = WControllerNetwork::extractJson(json, "permalink_url");
 
-            QString title = WControllerNetwork::extractJsonUtf8(string, "title");
-            QString cover = WControllerNetwork::extractJson    (string, "artwork_url");
+            QString title = WControllerNetwork::extractJsonUtf8(json, "title");
+            QString cover = WControllerNetwork::extractJson    (json, "artwork_url");
 
             if (cover == "null")
             {
-                cover = WControllerNetwork::extractJson(string, "avatar_url");
+                cover = WControllerNetwork::extractJson(json, "avatar_url");
             }
 
             d->applyCover(&cover);
