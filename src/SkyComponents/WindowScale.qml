@@ -38,7 +38,7 @@ Window
     property int pX: -1
     property int pY: -1
 
-    property int pDuration: -1
+    property int pDuration: durationAnimation
 
     property int pDurationAnimation: (st.animate) ? pDuration : 0
 
@@ -119,7 +119,7 @@ Window
         {
              pDuration = st.duration_fast;
         }
-        else pDuration = duration;
+        else pDuration = durationAnimation;
 
         if (easing == undefined)
         {
@@ -179,6 +179,30 @@ Window
 
             timer.restart();
         }
+    }
+
+    //---------------------------------------------------------------------------------------------
+
+    function moveOriginX(x, animate)
+    {
+        pDuration = durationAnimation;
+
+        pAnimate = animate;
+
+        window.originX = x;
+
+        pAnimate = false;
+    }
+
+    function moveOriginY(y, animate)
+    {
+        pDuration = durationAnimation;
+
+        pAnimate = animate;
+
+        window.originY = y;
+
+        pAnimate = false;
     }
 
     //---------------------------------------------------------------------------------------------
