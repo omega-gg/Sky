@@ -22,3 +22,4 @@ OTHER_FILES += 3rdparty.sh \
                dist/changes/1.1.1.md \
                dist/changes/1.1.2.md \
                dist/changes/1.2.0.md \
+               dist/changes/1.2.1.md \
