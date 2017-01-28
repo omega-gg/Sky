@@ -106,7 +106,7 @@ WControllerScript::WControllerScript() : WController(new WControllerScriptPrivat
     }
     else
     {
-        qDebug("Plugin loaded %s.", extension.C_STR);
+        qDebug("Plugin loaded %s", extension.C_STR);
 
         return true;
     }

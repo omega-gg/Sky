@@ -122,7 +122,7 @@ QScriptValue WScript::construct(const QString & ctorName, const QScriptValueList
 
     ctor = ctor.construct(args);
 
-    qDebug("Ctor script Output [%s]", ctor.toString().C_STR);
+    qDebug("Ctor script output [%s]", ctor.toString().C_STR);
 
     return ctor;
 }

@@ -1634,11 +1634,11 @@ bool WBackendVlc::event(QEvent * event)
     {
         Q_D(WBackendVlc);
 
-        qDebug("WBackendVlc::event: Vlc player ended.");
-
         // FIXME: Sometimes the playback ends when seeking.
         if ((d->currentTime + 1000) < d->duration)
         {
+            qWarning("WBackendVlc::event: Vlc player ended.");
+
             if (d->frameFreeze == false)
             {
                 d->started     = false;

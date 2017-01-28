@@ -96,11 +96,6 @@ void WAbstractLoaderPrivate::abort(QIODevice * reply)
 
     WRemoteData * data = replies.take(reply);
 
-    if (data == NULL)
-    {
-        qDebug("TEMP: data should not be NULL");
-    }
-
     data->_loader = NULL;
 
     q->abort(reply);

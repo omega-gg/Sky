@@ -452,7 +452,7 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 
         reply->_loaded = true;
 
-        qDebug("CACHED !");
+        qDebug("CACHED");
     }
     else d->loadSources(reply);
 

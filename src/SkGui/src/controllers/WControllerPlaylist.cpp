@@ -1601,11 +1601,6 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
     query->data  = data;
     query->reply = networkReply;
 
-    if (networkReply == NULL)
-    {
-        qDebug("TEMP: reply should not be NULL");
-    }
-
     replies.insert(networkReply, query);
 
     if (query->type == WControllerPlaylistQuery::TypeTrack)

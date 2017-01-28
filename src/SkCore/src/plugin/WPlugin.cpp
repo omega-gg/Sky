@@ -148,7 +148,7 @@ bool WPlugin::load(const QString & fileName)
 
     loadEvent();
 
-    qDebug("plugin %s loaded.", fileName.C_STR);
+    qDebug("plugin loaded %s", fileName.C_STR);
 
     return true;
 }
@@ -161,7 +161,7 @@ bool WPlugin::unload()
 
     bool result = d->loader->unload();
 
-    qDebug("plugin %d %s U.N.L.O.A.D.E.D", result, d->fileName.C_STR);
+    qDebug("plugin unloaded %s %d", d->fileName.C_STR, result);
 
     return result;
 }
