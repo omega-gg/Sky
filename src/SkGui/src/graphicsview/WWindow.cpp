@@ -88,6 +88,8 @@ void WWindowPrivate::init()
 
     QObject::connect(view, SIGNAL(beforeClose()), q, SIGNAL(beforeClose()));
 
+    //---------------------------------------------------------------------------------------------
+
     QObject::connect(view, SIGNAL(itemWidthChanged ()), q, SIGNAL(itemWidthChanged ()));
     QObject::connect(view, SIGNAL(itemHeightChanged()), q, SIGNAL(itemHeightChanged()));
 
@@ -136,9 +138,13 @@ void WWindowPrivate::init()
     QObject::connect(view, SIGNAL(fadeEnabledChanged ()), q, SIGNAL(fadeEnabledChanged ()));
     QObject::connect(view, SIGNAL(fadeDurationChanged()), q, SIGNAL(fadeDurationChanged()));
 
+    //---------------------------------------------------------------------------------------------
+
     QObject::connect(view, SIGNAL(idleCheckChanged()), q, SIGNAL(idleCheckChanged()));
     QObject::connect(view, SIGNAL(idleChanged     ()), q, SIGNAL(idleChanged     ()));
     QObject::connect(view, SIGNAL(idleDelayChanged()), q, SIGNAL(idleDelayChanged()));
+
+    //---------------------------------------------------------------------------------------------
 
     QObject::connect(view, SIGNAL(mousePressed(WDeclarativeMouseEvent *)),
                      q,    SIGNAL(mousePressed(WDeclarativeMouseEvent *)));
@@ -155,6 +161,8 @@ void WWindowPrivate::init()
     QObject::connect(view, SIGNAL(keyReleased(WDeclarativeKeyEvent *)),
                      q,    SIGNAL(keyReleased(WDeclarativeKeyEvent *)));
 
+    //---------------------------------------------------------------------------------------------
+
     QObject::connect(view, SIGNAL(keyShiftPressedChanged()),
                      q,    SIGNAL(keyShiftPressedChanged()));
 
@@ -163,6 +171,8 @@ void WWindowPrivate::init()
 
     QObject::connect(view, SIGNAL(keyAltPressedChanged()),
                      q,    SIGNAL(keyAltPressedChanged()));
+
+    //---------------------------------------------------------------------------------------------
 
     QObject::connect(view, SIGNAL(availableGeometryChanged()),
                      q,    SIGNAL(availableGeometryChanged()));

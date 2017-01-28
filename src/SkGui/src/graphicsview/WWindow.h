@@ -280,6 +280,8 @@ signals:
 
     void beforeClose();
 
+    //---------------------------------------------------------------------------------------------
+
     void itemWidthChanged ();
     void itemHeightChanged();
 
@@ -328,9 +330,13 @@ signals:
     void fadeEnabledChanged ();
     void fadeDurationChanged();
 
+    //---------------------------------------------------------------------------------------------
+
     void idleCheckChanged();
     void idleChanged     ();
     void idleDelayChanged();
+
+    //---------------------------------------------------------------------------------------------
 
     void mousePressed      (WDeclarativeMouseEvent * event);
     void mouseReleased     (WDeclarativeMouseEvent * event);
@@ -339,9 +345,13 @@ signals:
     void keyPressed (WDeclarativeKeyEvent * event);
     void keyReleased(WDeclarativeKeyEvent * event);
 
+    //---------------------------------------------------------------------------------------------
+
     void keyShiftPressedChanged  ();
     void keyControlPressedChanged();
     void keyAltPressedChanged    ();
+
+    //---------------------------------------------------------------------------------------------
 
     void availableGeometryChanged();
 
