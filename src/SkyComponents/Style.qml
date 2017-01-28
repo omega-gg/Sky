@@ -1878,6 +1878,13 @@ Item
         return Math.round(value * ratio);
     }
 
+    function ab(value)
+    {
+        return Math.round(value / ratio);
+    }
+
+    //---------------------------------------------------------------------------------------------
+
     function size(valueA, valueB)
     {
         return Qt.size(dp(valueA), dp(valueB));
