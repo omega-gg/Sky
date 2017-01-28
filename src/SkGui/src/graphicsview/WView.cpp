@@ -2265,16 +2265,9 @@ void WView::setX(int x)
 
     Q_D(WView);
 
-    if (d->maximized || d->fullScreen)
-    {
-        if (d->geometryNormal.left() != x)
-        {
-            d->geometryNormal.setLeft(x);
+    if (d->maximized || d->fullScreen) return;
 
-            emit geometryNormalChanged();
-        }
-    }
-    else move(x, y());
+    move(x, y());
 
     emit xChanged();
 }
@@ -2285,16 +2278,9 @@ void WView::setY(int y)
 
     Q_D(WView);
 
-    if (d->maximized || d->fullScreen)
-    {
-        if (d->geometryNormal.top() != y)
-        {
-            d->geometryNormal.setTop(y);
+    if (d->maximized || d->fullScreen) return;
 
-            emit geometryNormalChanged();
-        }
-    }
-    else move(x(), y);
+    move(x(), y);
 
     emit yChanged();
 }
@@ -2307,16 +2293,9 @@ void WView::setWidth(int width)
 
     Q_D(WView);
 
-    if (d->maximized || d->fullScreen)
-    {
-        if (d->geometryNormal.right() != width)
-        {
-            d->geometryNormal.setRight(width);
+    if (d->maximized || d->fullScreen) return;
 
-            emit geometryNormalChanged();
-        }
-    }
-    else resize(width, height());
+    resize(width, height());
 
     emit widthChanged();
 }
@@ -2327,16 +2306,9 @@ void WView::setHeight(int height)
 
     Q_D(WView);
 
-    if (d->maximized || d->fullScreen)
-    {
-        if (d->geometryNormal.bottom() != height)
-        {
-            d->geometryNormal.setBottom(height);
+    if (d->maximized || d->fullScreen) return;
 
-            emit geometryNormalChanged();
-        }
-    }
-    else resize(width(), height);
+    resize(width(), height);
 
     emit heightChanged();
 }
