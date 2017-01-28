@@ -2067,12 +2067,9 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
         d->setKeyAltPressed(false);
     }
 
-    if (d->keyAccepted)
-    {
-        WDeclarativeKeyEvent keyEvent(*event);
+    WDeclarativeKeyEvent keyEvent(*event);
 
-        emit keyReleased(&keyEvent);
-    }
+    emit keyReleased(&keyEvent);
 
     WAbstractView::keyReleaseEvent(event);
 }
