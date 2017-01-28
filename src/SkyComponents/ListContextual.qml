@@ -68,7 +68,13 @@ List
 
     Keys.onPressed:
     {
-        if (event.key == Qt.Key_Up && event.modifiers == Qt.NoModifier)
+        if ((event.key == Qt.Key_Left || event.key == Qt.Key_Right)
+            &&
+            event.modifiers == Qt.NoModifier)
+        {
+            event.accepted = true;
+        }
+        else if (event.key == Qt.Key_Up && event.modifiers == Qt.NoModifier)
         {
             event.accepted = true;
 
@@ -79,12 +85,6 @@ List
             event.accepted = true;
 
             selectNext();
-        }
-        else if ((event.key == Qt.Key_Left || event.key == Qt.Key_Right)
-                 &&
-                 event.modifiers == Qt.NoModifier)
-        {
-            event.accepted = true;
         }
         else if (event.key == Qt.Key_Return || event.key == Qt.Key_Enter)
         {

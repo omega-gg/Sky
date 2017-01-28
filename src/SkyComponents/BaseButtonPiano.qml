@@ -91,19 +91,7 @@ BaseButton
 
     Keys.onPressed:
     {
-        if (event.key == Qt.Key_Up)
-        {
-            event.accepted = true;
-
-            if (itemTop) itemTop.focus();
-        }
-        else if (event.key == Qt.Key_Down)
-        {
-            event.accepted = true;
-
-            if (itemBottom) itemBottom.focus();
-        }
-        else if (event.key == Qt.Key_Left)
+        if (event.key == Qt.Key_Left)
         {
             event.accepted = true;
 
@@ -114,6 +102,18 @@ BaseButton
             event.accepted = true;
 
             if (itemRight) itemRight.focus();
+        }
+        else if (event.key == Qt.Key_Up)
+        {
+            event.accepted = true;
+
+            if (itemTop) itemTop.focus();
+        }
+        else if (event.key == Qt.Key_Down)
+        {
+            event.accepted = true;
+
+            if (itemBottom) itemBottom.focus();
         }
     }
 
