@@ -40,6 +40,9 @@ Player
 
     property int durationAnimation: sp.slide_durationAnimation
 
+    property int durationFadeIn : sp.slidePlayer_durationFadeIn
+    property int durationFadeOut: sp.slidePlayer_durationFadeOut
+
     property int easing: Easing.Linear
 
     //---------------------------------------------------------------------------------------------
@@ -92,7 +95,7 @@ Player
             {
                 if (pVolume == false) return;
 
-                time -= durationAnimation;
+                time -= durationFadeOut;
 
                 if (time >= timeB)
                 {
@@ -201,7 +204,18 @@ Player
         {
             PropertyAnimation
             {
-                duration: (st.animate && fade) ? durationAnimation : 0
+                duration:
+                {
+                    if (st.animate && fade)
+                    {
+                        if (pVolume)
+                        {
+                             return durationFadeIn;
+                        }
+                        else return durationFadeOut;
+                    }
+                    else return 0;
+                }
 
                 easing.type: slidePlayer.easing
             }

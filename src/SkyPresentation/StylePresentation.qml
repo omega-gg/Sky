@@ -114,6 +114,12 @@ Item
     property int slideText_styleSize: st.dp8
 
     //---------------------------------------------------------------------------------------------
+    // SlidePlayer
+
+    property int slidePlayer_durationFadeIn : st.slide_durationAnimation
+    property int slidePlayer_durationFadeOut: bpm(4)
+
+    //---------------------------------------------------------------------------------------------
     // Pulse
 
     property int pulse_durationA: bpm(0.5)
