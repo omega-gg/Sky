@@ -133,33 +133,30 @@ Player
     // Functions
     //---------------------------------------------------------------------------------------------
 
-    function playSource(source, timeA /* 0 */, timeB /* -1 */)
+    function playSource(source, at /* 0 */, duration /* -1 */)
     {
-        if (fade && volume)
-        {
-            pVolume = false;
-
-            while (volume)
-            {
-                sk.processEvents();
-            }
-        }
+        pFadeOut();
 
         slidePlayer.source = source;
 
-        if (timeA == undefined)
-        {
-             slidePlayer.timeA = 0;
-        }
-        else slidePlayer.timeA = timeA;
+        if (at == undefined) at = 0;
 
-        if (timeB == undefined)
+        timeA = at;
+
+        if (duration == undefined || duration == -1)
         {
-             slidePlayer.timeB = -1;
+             timeB = -1;
         }
-        else slidePlayer.timeB = timeB;
+        else timeB = at + duration;
 
         pPlay();
+    }
+
+    function stopSource()
+    {
+        pFadeOut();
+
+        stop();
     }
 
     //---------------------------------------------------------------------------------------------
@@ -182,6 +179,21 @@ Player
         }
 
         if (fade) pVolume = true;
+    }
+
+    //---------------------------------------------------------------------------------------------
+
+    function pFadeOut()
+    {
+        if (fade && volume)
+        {
+            pVolume = false;
+
+            while (volume)
+            {
+                sk.processEvents();
+            }
+        }
     }
 
     //---------------------------------------------------------------------------------------------
