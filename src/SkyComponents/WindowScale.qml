@@ -42,7 +42,7 @@ Window
 
     property int pDurationAnimation: (st.animate) ? pDuration : 0
 
-    property int pEasing: -1
+    property int pEasing: Easing.Linear
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -117,9 +117,9 @@ Window
 
         if (duration == undefined)
         {
-             pDuration = st.duration_fast;
+             pDuration = durationAnimation;
         }
-        else pDuration = durationAnimation;
+        else pDuration = duration;
 
         if (easing == undefined)
         {
@@ -186,6 +186,7 @@ Window
     function moveOriginX(x, animate)
     {
         pDuration = durationAnimation;
+        pEasing   = Easing.Linear;
 
         pAnimate = animate;
 
@@ -197,6 +198,7 @@ Window
     function moveOriginY(y, animate)
     {
         pDuration = durationAnimation;
+        pEasing   = Easing.Linear;
 
         pAnimate = animate;
 
