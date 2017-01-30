@@ -116,7 +116,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // SlidePlayer
 
-    property int slidePlayer_durationFadeIn : st.slide_durationAnimation
+    property int slidePlayer_durationFadeIn : slide_durationAnimation
     property int slidePlayer_durationFadeOut: bpm(4)
 
     //---------------------------------------------------------------------------------------------
