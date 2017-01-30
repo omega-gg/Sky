@@ -137,7 +137,7 @@ Animated
 
     function between(stepA, stepB)
     {
-        return (step > stepA && step < stepB);
+        return (step > stepA && step <= stepB);
     }
 
     //---------------------------------------------------------------------------------------------
