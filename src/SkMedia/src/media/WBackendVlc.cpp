@@ -1092,7 +1092,11 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
     if (volume)
     {
-         d->volume = volume * 80 + 20;
+        if (volume < 1.0)
+        {
+             d->volume = qRound(volume * 80) + 20;
+        }
+        else d->volume = qRound(volume * 100);
     }
     else d->volume = 0;
 

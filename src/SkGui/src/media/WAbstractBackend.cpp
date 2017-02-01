@@ -617,8 +617,6 @@ void WAbstractBackend::setVolume(qreal volume)
 {
     Q_D(WAbstractBackend);
 
-    volume = qBound(0.0, volume, 1.0);
-
     if (d->volume == volume) return;
 
     d->volume = volume;
