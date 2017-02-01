@@ -648,7 +648,7 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
 
         if (javascript.isEmpty()) return reply;
 
-        javascript = WControllerNetwork::generateUrl(javascript);
+        javascript = WControllerNetwork::generateUrl(javascript, "https://www.youtube.com");
 
         QVariantList variants = query.data.toList();
 
@@ -673,7 +673,7 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
     {
         Q_D(const WBackendYoutube);
 
-        QString name = Sk::extract(content, ".sig\\|\\|([a-zA-Z0-9$]+)\\(", 1);
+        QString name = Sk::extract(content, "\"signature\",([a-zA-Z0-9$]+)\\(", 1);
 
         QString variable = name + "=function";
 
