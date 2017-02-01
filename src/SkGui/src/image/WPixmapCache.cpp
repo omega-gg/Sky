@@ -1155,7 +1155,7 @@ void WPixmapCache::clear(QObject * receiver)
 
             reader.read(&front);
 
-            QImage content(sizeArea, QImage::Format_ARGB32);
+            QImage content(sizeArea, QImage::Format_ARGB32_Premultiplied);
 
             content.fill(Qt::transparent);
 
