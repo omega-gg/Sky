@@ -524,7 +524,7 @@ MouseArea
     {
         id: animationTimer
 
-        interval: (st.animate) ? durationAnimation : 0
+        interval: durationAnimation
 
         onTriggered:
         {
