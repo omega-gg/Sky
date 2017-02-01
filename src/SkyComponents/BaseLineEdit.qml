@@ -165,7 +165,7 @@ MouseArea
     {
         id: timer
 
-        interval: 10
+        interval: st.ms1
 
         onTriggered: textInput.selectAll()
     }
