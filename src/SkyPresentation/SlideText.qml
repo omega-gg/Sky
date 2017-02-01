@@ -22,8 +22,15 @@ TextSvgScale
     id: slideText
 
     //---------------------------------------------------------------------------------------------
-    // Properties style
+    // Properties
     //---------------------------------------------------------------------------------------------
+
+    property string family   : st.text_fontFamily
+    property int    pixelSize: sp.slideText_pixelSize
+    property bool   bold     : true
+
+    //---------------------------------------------------------------------------------------------
+    // Style
 
     property int durationAnimation: sp.slideText_durationAnimation
 
@@ -55,9 +62,9 @@ TextSvgScale
 
     scaleDelay: sp.slideText_scaleDelay
 
-    font.family   : st.text_fontFamily
-    font.pixelSize: sp.slideText_pixelSize
-    font.bold     : true
+    font.family   : family
+    font.pixelSize: pixelSize
+    font.bold     : bold
 
     //---------------------------------------------------------------------------------------------
     // Animations
