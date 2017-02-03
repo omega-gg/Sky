@@ -47,10 +47,11 @@ class SK_CORE_EXPORT WControllerApplication : public QObject, public WPrivatable
 
     Q_PROPERTY(Type type READ type CONSTANT)
 
-    Q_PROPERTY(bool scriptApplication READ isScriptApplication CONSTANT)
-    Q_PROPERTY(bool cppApplication    READ isCppApplication    CONSTANT)
-    Q_PROPERTY(bool guiApplication    READ isGuiApplication    CONSTANT)
-    Q_PROPERTY(bool coreApplication   READ isCoreApplication   CONSTANT)
+    Q_PROPERTY(bool isSingle   READ isSingle   CONSTANT)
+    Q_PROPERTY(bool isMultiple READ isMultiple CONSTANT)
+
+    Q_PROPERTY(bool isCore READ isCore CONSTANT)
+    Q_PROPERTY(bool isGui  READ isGui  CONSTANT)
 
     Q_PROPERTY(bool qrc READ isQrc WRITE setQrc NOTIFY qrcChanged)
 
@@ -87,9 +88,7 @@ class SK_CORE_EXPORT WControllerApplication : public QObject, public WPrivatable
                NOTIFY cursorVisibleChanged)
 
 public: // Enums
-    enum Type { Cpp = 0, Script };
-
-    enum Instance { Single = 0, Multiple };
+    enum Type { Single = 0, Multiple };
 
     enum Mode { Normal = 0, Maximized, FullScreen, FullScreenMaximized };
 
@@ -107,8 +106,6 @@ public: // Interface
     Q_INVOKABLE void    setClipboardText(const QString & text);
 
 public: // Static interface
-    Q_INVOKABLE static bool fileExists(const QString & fileName);
-
     Q_INVOKABLE static bool fuzzyCompare(qreal valueA, qreal valueB);
 
     Q_INVOKABLE static QList<int> variantsToInts(const QVariantList & list);
@@ -116,6 +113,12 @@ public: // Static interface
     Q_INVOKABLE static QMimeData * duplicateMime(const QMimeData * source);
 
     Q_INVOKABLE static QString getVersionLite(const QString & version);
+
+    //---------------------------------------------------------------------------------------------
+
+    Q_INVOKABLE static void setCurrent(const QString & path);
+
+    Q_INVOKABLE static bool fileExists(const QString & fileName);
 
     //---------------------------------------------------------------------------------------------
 
@@ -242,11 +245,11 @@ signals:
 public: // Properties
     Type type() const;
 
-    bool isScriptApplication() const;
-    bool isCppApplication   () const;
+    bool isSingle  () const;
+    bool isMultiple() const;
 
-    bool isGuiApplication () const;
-    bool isCoreApplication() const;
+    bool isCore() const;
+    bool isGui () const;
 
     bool isQrc() const;
     void setQrc(bool qrc);

@@ -134,7 +134,7 @@ WApplication::WApplication(int & argc, char ** argv)
 //-------------------------------------------------------------------------------------------------
 
 /* static */
-QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type, Sk::Instance instance)
+QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
 {
 #if defined(Q_OS_MAC)
     QApplication::setGraphicsSystem("raster");
@@ -144,13 +144,13 @@ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type, Sk:
     //qInstallMsgHandler(messageHandler);
 #endif
 
-    QApplication * application = createApplication(argc, argv, instance);
+    QApplication * application = createApplication(argc, argv, type);
 
     if (application == NULL) return NULL;
 
     W_CREATE_CONTROLLER(WControllerApplication);
 
-    sk->d_func()->initApplication(application, argc, argv, type, false);
+    sk->d_func()->initApplication(application, type, true);
 
     //---------------------------------------------------------------------------------------------
     // Controllers
@@ -315,9 +315,9 @@ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type, Sk:
 //-------------------------------------------------------------------------------------------------
 
 /* static */ QApplication * WApplication::createApplication(int  &  argc,
-                                                            char ** argv, Sk::Instance instance)
+                                                            char ** argv, Sk::Type type)
 {
-    if (instance == Sk::Single)
+    if (type == Sk::Single)
     {
         QtSingleApplication * application = new QtSingleApplication(argc, argv);
 

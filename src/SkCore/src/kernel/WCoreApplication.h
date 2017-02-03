@@ -32,7 +32,7 @@ private:
     WCoreApplication(int & argc, char ** argv);
 
 public: // Static functions
-    static QCoreApplication * create(int & argc, char ** argv, Sk::Type type = Sk::Cpp);
+    static QCoreApplication * create(int & argc, char ** argv);
 
 private:
     W_DECLARE_PRIVATE(WCoreApplication)

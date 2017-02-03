@@ -80,13 +80,13 @@ WCoreApplication::WCoreApplication(int & argc, char ** argv)
 // Static functions
 //-------------------------------------------------------------------------------------------------
 
-/* static */ QCoreApplication * WCoreApplication::create(int & argc, char ** argv, Sk::Type type)
+/* static */ QCoreApplication * WCoreApplication::create(int & argc, char ** argv)
 {
     QCoreApplication * application = new QCoreApplication(argc, argv);
 
     W_CREATE_CONTROLLER(WControllerApplication);
 
-    sk->d_func()->initApplication(application, argc, argv, type, true);
+    sk->d_func()->initApplication(application, Sk::Multiple, false);
 
     return application;
 }

@@ -45,8 +45,6 @@ public:
     void init();
 
 public: // Functions
-    void processArguments(int & argc, char ** argv);
-
     QHash<QString, QString> extractArguments(int & argc, char ** argv);
 
     void restartScript();
@@ -55,8 +53,7 @@ public: // Functions
     void undeclareController(WController * controller);
 
 public: // WCoreApplication and WApplication interface
-    void initApplication(QCoreApplication * application, int & argc, char ** argv, Sk::Type type,
-                         bool coreApplication);
+    void initApplication(QCoreApplication * application, Sk::Type type, bool gui);
 
 public: // Slots
     void onAboutToQuit();
@@ -67,8 +64,7 @@ public: // Variables
     QCoreApplication * application;
 
     Sk::Type type;
-
-    bool coreApplication;
+    bool     gui;
 
     QString name;
     QString icon;

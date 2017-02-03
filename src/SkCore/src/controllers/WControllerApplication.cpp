@@ -89,9 +89,8 @@ void WControllerApplicationPrivate::init()
 
     application = NULL;
 
-    type = Sk::Cpp;
-
-    coreApplication = true;
+    type = Sk::Single;
+    gui  = true;
 
     version = "1.0";
 
@@ -125,36 +124,6 @@ void WControllerApplicationPrivate::init()
 }
 
 //-------------------------------------------------------------------------------------------------
-
-void WControllerApplicationPrivate::processArguments(int & argc, char ** argv)
-{
-    if (argc == 1) return;
-
-    QHash<QString, QString> arguments = extractArguments(argc, argv);
-
-    if (arguments.contains("qrc"))
-    {
-        qrc = true;
-    }
-    else if (type == Sk::Script)
-    {
-        QString path = arguments.value("1");
-
-        if (path.isNull())
-        {
-            if (QFile::exists("content/Main.qml"))
-            {
-                QDir::setCurrent("content");
-            }
-            else qFatal("content/Main.qml not found.");
-        }
-        else if (QFile::exists(path))
-        {
-            QDir::setCurrent(path);
-        }
-        else qFatal("Script path %s does not exist.", path.C_STR);
-    }
-}
 
 QHash<QString, QString> WControllerApplicationPrivate::extractArguments(int & argc, char ** argv)
 {
@@ -250,19 +219,15 @@ void WControllerApplicationPrivate::undeclareController(WController * controller
 // Private WControllerApplication and WApplication interface
 //-------------------------------------------------------------------------------------------------
 
-void WControllerApplicationPrivate::initApplication(QCoreApplication * application,
-                                                    int & argc, char ** argv, Sk::Type type,
-                                                    bool coreApplication)
+void WControllerApplicationPrivate::initApplication(QCoreApplication * application, Sk::Type type,
+                                                                                    bool     gui)
 {
     Q_Q(WControllerApplication);
 
     this->application = application;
 
     this->type = type;
-
-    this->coreApplication = coreApplication;
-
-    processArguments(argc, argv);
+    this->gui  = gui;
 
     //---------------------------------------------------------------------------------------------
     // Controllers - declaration order matters
@@ -381,11 +346,6 @@ void WControllerApplication::startScript()
 // Static interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ bool WControllerApplication::fileExists(const QString & fileName)
-{
-    return WControllerFile::exists(fileName);
-}
-
 /* Q_INVOKABLE static */ bool WControllerApplication::fuzzyCompare(qreal valueA, qreal valueB)
 {
     return qFuzzyCompare(valueA, valueB);
@@ -428,6 +388,18 @@ QMimeData * WControllerApplication::duplicateMime(const QMimeData * source)
 /* Q_INVOKABLE static */ QString WControllerApplication::getVersionLite(const QString & version)
 {
     return sliceIn(version, "", "-");
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ void WControllerApplication::setCurrent(const QString & path)
+{
+    QDir::setCurrent(path);
+}
+
+/* Q_INVOKABLE static */ bool WControllerApplication::fileExists(const QString & fileName)
+{
+    return WControllerFile::exists(fileName);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1058,49 +1030,49 @@ WControllerApplication::Type WControllerApplication::type() const
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    \property WControllerApplication::scriptApplication
-    \brief whether the application is a script based or not
+    \property WControllerApplication::isSingle
+    \brief whether the application is a single instance or not
 
-    \sa cppApplication
+    \sa isMultiple
 */
-bool WControllerApplication::isScriptApplication() const
+bool WControllerApplication::isSingle() const
 {
-    Q_D(const WControllerApplication); return (d->type == Script);
+    Q_D(const WControllerApplication); return (d->type == Single);
 }
 
 /*!
-    \property WControllerApplication::cppApplication
-    \brief whether the application is C++ based or not
+    \property WControllerApplication::isMultiple
+    \brief whether the application is a multiple instance or not
 
-    \sa scriptApplication
+    \sa isSingle
 */
-bool WControllerApplication::isCppApplication() const
+bool WControllerApplication::isMultiple() const
 {
-    Q_D(const WControllerApplication); return (d->type == Cpp);
+    Q_D(const WControllerApplication); return (d->type == Multiple);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    \property WControllerApplication::guiApplication
-    \brief whether the application is a GUI application or not
+    \property WControllerApplication::isCore
+    \brief whether the application is a Core application or not
 
-    \sa scriptApplication coreApplication
+    \sa isGui
 */
-bool WControllerApplication::isGuiApplication() const
+bool WControllerApplication::isCore() const
 {
-    Q_D(const WControllerApplication); return (d->coreApplication == false);
+    Q_D(const WControllerApplication); return (d->gui == false);
 }
 
 /*!
-    \property WControllerApplication::guiApplication
-    \brief whether the application is a Core application or not
+    \property WControllerApplication::isGui
+    \brief whether the application is a GUI application or not
 
-    \sa scriptApplication guiApplication
+    \sa isCore
 */
-bool WControllerApplication::isCoreApplication() const
+bool WControllerApplication::isGui() const
 {
-    Q_D(const WControllerApplication); return d->coreApplication;
+    Q_D(const WControllerApplication); return d->gui;
 }
 
 //-------------------------------------------------------------------------------------------------
