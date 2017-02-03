@@ -29,35 +29,35 @@ class WControllerPrivate;
 //-------------------------------------------------------------------------------------------------
 // Defines
 
-#define W_DECLARE_CONTROLLER(Class)                             \
-                                                                \
-public:                                                         \
-static Class * instance()                                       \
-{                                                               \
-    if (Class::mInstance == NULL)                               \
-    {                                                           \
-        Class::mInstance = new Class;                           \
-    }                                                           \
-                                                                \
-    return Class::mInstance;                                    \
-}                                                               \
-                                                                \
-static Class * instancePointer()                                \
-{                                                               \
-    return Class::mInstance;                                    \
-}                                                               \
-                                                                \
-static void clearInstance()                                     \
-{                                                               \
-    Class::mInstance = NULL;                                    \
-}                                                               \
-                                                                \
-private:                                                        \
-static Class * mInstance;                                       \
+#define W_DECLARE_CONTROLLER(Class)   \
+                                      \
+public:                               \
+static Class * instance()             \
+{                                     \
+    if (Class::_instance == NULL)     \
+    {                                 \
+        Class::_instance = new Class; \
+    }                                 \
+                                      \
+    return Class::_instance;          \
+}                                     \
+                                      \
+static Class * instancePointer()      \
+{                                     \
+    return Class::_instance;          \
+}                                     \
+                                      \
+static void clearInstance()           \
+{                                     \
+    Class::_instance = NULL;          \
+}                                     \
+                                      \
+private:                              \
+static Class * _instance;             \
 
 #define W_INIT_CONTROLLER(Class)     \
                                      \
-    Class * Class::mInstance = NULL; \
+    Class * Class::_instance = NULL; \
 
 //-------------------------------------------------------------------------------------------------
 
