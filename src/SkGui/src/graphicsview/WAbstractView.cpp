@@ -292,19 +292,14 @@ void WAbstractViewPrivate::setFlag(LONG flag, bool enabled) const
 
         if (placement.showCmd == SW_MAXIMIZE)
         {
-            int border;
-            int border2x;
+            UINT style = GetWindowLong(handle, GWL_STYLE);
 
-            if (d->windowSnap)
-            {
-                border   = 8;
-                border2x = 16;
-            }
-            else
-            {
-                border   = 3;
-                border2x = 6;
-            }
+            RECT adjust = { 0, 0, 0, 0 };
+
+            AdjustWindowRectEx(&adjust, style, FALSE, 0);
+
+            int border   = adjust.right;
+            int border2x = border * 2;
 
             int width  = rect.right  - border2x;
             int height = rect.bottom - border2x;
