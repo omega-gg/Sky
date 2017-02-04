@@ -1218,8 +1218,8 @@ Item
     //---------------------------------------------------------------------------------------------
     // ScrollBar
 
-    property int scrollBar_intervalPress : ms300
-    property int scrollBar_intervalRepeat: ms50
+    property int scrollBar_intervalPress : 300
+    property int scrollBar_intervalRepeat: 50
 
     property int scrollBar_singleStep: dp8
     property int scrollBar_pageStep  : dp16
@@ -1578,6 +1578,8 @@ Item
 
     //---------------------------------------------------------------------------------------------
     // PlayerBrowser
+
+    property int playerBrowser_interval: 200
 
     property real playerBrowser_opacityBar   : 0.6
     property real playerBrowser_opacityShadow: 0.6

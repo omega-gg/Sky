@@ -241,7 +241,7 @@ MouseArea
     {
         id: timerScroll
 
-        interval: st.duration_normal
+        interval: st.playerBrowser_interval
 
         repeat: true
 
@@ -259,7 +259,7 @@ MouseArea
     {
         id: timerBackward
 
-        interval: st.duration_normal
+        interval: st.playerBrowser_interval
 
         onTriggered: pBackward = false
     }
@@ -268,7 +268,7 @@ MouseArea
     {
         id: timerForward
 
-        interval: st.duration_normal
+        interval: st.playerBrowser_interval
 
         onTriggered: pForward = false
     }
