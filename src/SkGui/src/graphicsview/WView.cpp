@@ -404,8 +404,11 @@ void WViewPrivate::init(QDeclarativeItem * item)
     //---------------------------------------------------------------------------------------------
     // Signals
 
-    QObject::connect(qApp, SIGNAL(messageReceived(const QString &)),
-                     q,    SIGNAL(messageReceived(const QString &)));
+    if (sk->isSingle())
+    {
+        QObject::connect(qApp, SIGNAL(messageReceived(const QString &)),
+                         q,    SIGNAL(messageReceived(const QString &)));
+    }
 
     QObject::connect(qApp->desktop(), SIGNAL(workAreaResized(int)), q, SLOT(onGeometryChanged()));
 
