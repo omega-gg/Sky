@@ -30,7 +30,7 @@ Player
     property int timeA:  0
     property int timeB: -1
 
-    property bool autoPlay  : true
+    property bool autoPlay  : st.animate
     property bool autoRepeat: true
 
     property bool fade: false
@@ -127,6 +127,12 @@ Player
         }
 
         onClear: if (fade) pVolume = false
+
+        onPlay: togglePlay()
+
+        onBackward: seekTo(Math.max(0, currentTime - sp.slidePlayer_interval))
+
+        onForward: seekTo(Math.min(currentTime + sp.slidePlayer_interval), duration)
     }
 
     //---------------------------------------------------------------------------------------------

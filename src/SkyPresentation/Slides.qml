@@ -68,6 +68,10 @@ Animated
     signal slide
     signal clear
 
+    signal play
+    signal backward
+    signal forward
+
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
@@ -96,18 +100,33 @@ Animated
         {
             event.accepted = true;
 
-            if (pLoad == false)
+            if (pLoad) return;
+
+            if (event.modifiers == Qt.ControlModifier)
             {
-                stepBackward();
+                backward();
             }
+            else stepBackward();
         }
         else if (event.key == Qt.Key_Right)
         {
             event.accepted = true;
 
+            if (pLoad) return;
+
+            if (event.modifiers == Qt.ControlModifier)
+            {
+                forward();
+            }
+            else stepForward();
+        }
+        else if (event.key == Qt.Key_Space)
+        {
+            event.accepted = true;
+
             if (pLoad == false)
             {
-                stepForward();
+                play();
             }
         }
     }
