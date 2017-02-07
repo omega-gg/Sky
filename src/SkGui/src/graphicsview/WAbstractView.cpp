@@ -29,6 +29,9 @@
 #endif
 #endif
 
+// Private include
+#include "WAbstractView_p.h"
+
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
@@ -88,10 +91,6 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     windowSnap     = true;
     windowMaximize = true;
     windowClip     = false;
-
-    const QMetaObject * meta = q->metaObject();
-
-    method = meta->method(meta->indexOfMethod("onFocus()"));
 
     //---------------------------------------------------------------------------------------------
 
@@ -222,7 +221,7 @@ void WAbstractViewPrivate::setFlag(LONG flag, bool enabled) const
         WAbstractView * view
             = reinterpret_cast<WAbstractView *> (GetWindowLongPtr(handle, GWLP_USERDATA));
 
-        view->d_func()->method.invoke(view, Qt::QueuedConnection);
+        SetFocus(view->d_func()->id);
 
         return 0;
     }
@@ -292,9 +291,9 @@ void WAbstractViewPrivate::setFlag(LONG flag, bool enabled) const
 
         if (placement.showCmd == SW_MAXIMIZE)
         {
-            UINT style = GetWindowLong(handle, GWL_STYLE);
-
             RECT adjust = { 0, 0, 0, 0 };
+
+            UINT style = GetWindowLong(handle, GWL_STYLE);
 
             AdjustWindowRectEx(&adjust, style, FALSE, 0);
 
@@ -346,15 +345,6 @@ void WAbstractViewPrivate::setFlag(LONG flag, bool enabled) const
         return 0;
     }
     else return DefWindowProc(handle, message, wParam, lParam);
-}
-
-//-------------------------------------------------------------------------------------------------
-// Private slots
-//-------------------------------------------------------------------------------------------------
-
-void WAbstractViewPrivate::onFocus()
-{
-    SetFocus(id);
 }
 
 #endif // SK_WIN_NATIVE

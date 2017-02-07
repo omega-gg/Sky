@@ -114,13 +114,7 @@ public: // Properties
 
 private:
     W_DECLARE_PRIVATE(WAbstractView)
-
-#ifdef SK_WIN_NATIVE
-    Q_PRIVATE_SLOT(d_func(), void onFocus())
-#endif
 };
-
-#include <private/WAbstractView_p>
 
 #endif // SK_NO_ABSTRACTVIEW
 #endif // WABSTRACTVIEW_H
