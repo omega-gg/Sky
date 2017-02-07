@@ -190,7 +190,7 @@ Window
 
         pAnimate = animate;
 
-        window.originX = x;
+        originX = x;
 
         pAnimate = false;
     }
@@ -202,7 +202,7 @@ Window
 
         pAnimate = animate;
 
-        window.originY = y;
+        originY = y;
 
         pAnimate = false;
     }
