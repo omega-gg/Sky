@@ -1308,8 +1308,8 @@ Item
 
     property int scroller_durationOpacity: duration_faster
 
-    property int scroller_intervalA: ms300
-    property int scroller_intervalB: ms20
+    property int scroller_intervalA: 300
+    property int scroller_intervalB: 20
 
     property int scroller_size: dp38
 
