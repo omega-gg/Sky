@@ -518,7 +518,7 @@ WBackendNetSource WBackendSoundCloud::extractSource(const QByteArray       & dat
 
     if (query.id == 0)
     {
-        QString json = d->extractJson(content, "65");
+        QString json = d->extractJson(content, "66");
 
         QString idTrack = WControllerNetwork::extractJsonUtf8(json, "id");
 
