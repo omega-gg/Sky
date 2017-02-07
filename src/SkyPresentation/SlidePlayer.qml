@@ -132,7 +132,7 @@ Player
 
         onBackward: seekTo(Math.max(0, currentTime - sp.slidePlayer_interval))
 
-        onForward: seekTo(Math.min(currentTime + sp.slidePlayer_interval), duration)
+        onForward: seekTo(Math.min(currentTime + sp.slidePlayer_interval, duration))
     }
 
     //---------------------------------------------------------------------------------------------
