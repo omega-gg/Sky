@@ -90,7 +90,7 @@ void WControllerApplicationPrivate::init()
     application = NULL;
 
     type = Sk::Single;
-    gui  = true;
+    gui  = false;
 
     version = "1.0";
 
@@ -1042,7 +1042,7 @@ bool WControllerApplication::isSingle() const
 
 /*!
     \property WControllerApplication::isMultiple
-    \brief whether the application is a multiple instance or not
+    \brief whether the application supports multiple instances or not
 
     \sa isSingle
 */
@@ -1055,7 +1055,7 @@ bool WControllerApplication::isMultiple() const
 
 /*!
     \property WControllerApplication::isCore
-    \brief whether the application is a Core application or not
+    \brief whether the application is a core application or not
 
     \sa isGui
 */
