@@ -22,6 +22,11 @@
 
 #ifndef SK_NO_ABSTRACTPLAYLIST
 
+// Forward declarations
+class WAbstractPlaylistPrivate;
+class WPlaylistNet;
+class WAbstractTrack;
+
 //-------------------------------------------------------------------------------------------------
 // WAbstractPlaylistWatcher
 //-------------------------------------------------------------------------------------------------
@@ -59,11 +64,6 @@ private:
 //-------------------------------------------------------------------------------------------------
 // WAbstractPlaylist
 //-------------------------------------------------------------------------------------------------
-
-// Forward declarations
-class WAbstractPlaylistPrivate;
-class WPlaylistNet;
-class WAbstractTrack;
 
 class SK_GUI_EXPORT WAbstractPlaylist : public WLibraryItem
 {
