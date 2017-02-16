@@ -74,6 +74,8 @@ public: // Functions
 
     void applySize(int width, int height);
 
+    void applyDrop();
+
     void updateFlags();
 
     void updateViewport();
@@ -178,6 +180,7 @@ public: // Variables
     bool resizing;
 
     bool mouseAccepted;
+    bool dragAccepted;
 
     QPoint mousePos;
 

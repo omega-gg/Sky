@@ -283,6 +283,7 @@ void WViewPrivate::init(QDeclarativeItem * item)
     resizing = false;
 
     mouseAccepted = false;
+    dragAccepted  = false;
 
     button  = Qt::NoButton;
     buttons = Qt::NoButton;
@@ -478,6 +479,17 @@ void WViewPrivate::applySize(int width, int height)
 
 //-------------------------------------------------------------------------------------------------
 
+void WViewPrivate::applyDrop()
+{
+    QPointF pos = areaDrop->mapFromScene(mousePos);
+
+    areaDrop->d_func()->dropEvent(pos, dragData);
+
+    areaDrop = NULL;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void WViewPrivate::updateFlags()
 {
     Q_Q(WView);
@@ -549,7 +561,7 @@ void WViewPrivate::updateMouse()
 
 void WViewPrivate::updateDrag()
 {
-    if (dragging == false || drag) return;
+    if (dragging == false) return;
 
     Q_Q(WView);
 
@@ -621,35 +633,29 @@ void WViewPrivate::updateDrag()
             areaDrop = NULL;
         }
     }
-    else
+    else if (drag == NULL && dragAccepted == false)
     {
         clearDrag();
 
         drag = new QDrag(q);
 
-        if (mime)
-        {
-            drag->setMimeData(mime);
+        QMimeData * mime = new QMimeData;
 
-            mime = NULL;
-        }
-        else
-        {
-            QMimeData * mime = new QMimeData;
+        mime->setText(dragData.text);
 
-            mime->setText(dragData.text);
-
-            drag->setMimeData(mime);
-        }
+        drag->setMimeData(mime);
 
         drag->exec(dragData.actions);
 
-        if (drag)
-        {
-            drag = NULL;
+#ifdef Q_OS_WIN
+        if (drag == NULL) return;
+#endif
 
-            setDragging(false);
-        }
+        drag->deleteLater();
+
+        drag = NULL;
+
+        setDragging(false);
     }
 }
 
@@ -1862,11 +1868,7 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
     {
         if (d->areaDrop)
         {
-            QPointF pos = d->areaDrop->mapFromScene(d->mousePos);
-
-            d->areaDrop->d_func()->dropEvent(pos, d->dragData);
-
-            d->areaDrop = NULL;
+            d->applyDrop();
         }
 
         d->setDragging(false);
@@ -1964,43 +1966,83 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 {
     Q_D(WView);
 
-    activate();
-
-    if (d->mime) delete d->mime;
-
-    const QMimeData * mime = event->mimeData();
-
-    d->mime = Sk::duplicateMime(mime);
-
-    if (mime->hasUrls())
-    {
-         d->dragData.text = mime->urls().first().toString();
-    }
-    else d->dragData.text = mime->text();
-
-    d->dragData.actions = event->possibleActions();
-    d->dragData.action  = event->proposedAction ();
-
     if (d->drag)
     {
+#ifdef Q_OS_WIN
+        d->drag->deleteLater();
+
         d->drag = NULL;
 
-#ifdef Q_OS_WIN
         keybd_event(VK_ESCAPE, 0x81,               0, 0);
         keybd_event(VK_ESCAPE, 0x81, KEYEVENTF_KEYUP, 0);
+#else
+        event->accept();
 #endif
     }
     else
     {
-        d->setDragging(true);
+        d->dragAccepted = true;
 
-#ifdef Q_OS_WIN
-        mouse_event(MOUSEEVENTF_LEFTUP,   0, 0, 0, 0);
-        mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
-#endif
+        const QMimeData * mime = event->mimeData();
+
+        if (mime->hasUrls())
+        {
+             d->dragData.text = mime->urls().first().toString();
+        }
+        else d->dragData.text = mime->text();
+
+        d->dragData.actions = event->possibleActions();
+        d->dragData.action  = event->proposedAction ();
+
+        event->accept();
+
+        d->setDragging(true);
     }
 
     d->setEntered(true);
+}
+
+/* virtual */ void WView::dragLeaveEvent(QDragLeaveEvent *)
+{
+    Q_D(WView);
+
+    if (d->dragAccepted)
+    {
+        d->dragAccepted = false;
+
+        d->setDragging(false);
+    }
+    else d->clearDrag();
+
+    d->setEntered(false);
+}
+
+/* virtual */ void WView::dragMoveEvent(QDragMoveEvent *)
+{
+    Q_D(WView); d->updateDrag();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WView::dropEvent(QDropEvent *)
+{
+    Q_D(WView);
+
+    if (d->areaDrop)
+    {
+        activateWindow();
+
+        setFocus();
+
+        d->applyDrop();
+    }
+
+    if (d->dragAccepted)
+    {
+        d->dragAccepted = false;
+
+        d->setDragging(false);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
