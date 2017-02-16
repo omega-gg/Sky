@@ -63,6 +63,7 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 #ifndef SK_WIN_NATIVE
     q->setWindowFlags(flags);
 #else
+    q->setWindowFlags(Qt::FramelessWindowHint);
 
 #ifdef QT_4
     id = q->QDeclarativeView::winId();
