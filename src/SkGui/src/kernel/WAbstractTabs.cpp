@@ -535,6 +535,20 @@ void WAbstractTabs::insertTab(int index, WAbstractTab * tab)
 }
 
 //-------------------------------------------------------------------------------------------------
+// Protected WLocalObject reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WAbstractTabs::onSaveEnabledChanged(bool enabled)
+{
+    Q_D(WAbstractTabs);
+
+    foreach (WAbstractTab * tab, d->tabs)
+    {
+        tab->setSaveEnabled(enabled);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
 

@@ -121,6 +121,9 @@ protected: // Abstract functions
 protected: // Virtual functions
     virtual void updateIndex();
 
+protected: // WLocalObject reimplementation
+    /* virtual */ void onSaveEnabledChanged(bool enabled);
+
 signals:
     void currentTabChanged  ();
     void currentIndexChanged();
