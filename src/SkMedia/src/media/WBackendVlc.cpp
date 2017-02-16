@@ -677,7 +677,7 @@ void WBackendVlcPrivate::updateTargetRect()
 
 //-------------------------------------------------------------------------------------------------
 
-void WBackendVlcPrivate::updateBuffering()
+void WBackendVlcPrivate::updateLoading()
 {
     Q_Q(WBackendVlc);
 
@@ -1020,7 +1020,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
     }
     else if (isPlaying())
     {
-        d->updateBuffering();
+        d->updateLoading();
 
         backendStop();
 
@@ -1042,7 +1042,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
         {
             d->loadSources(true);
 
-            d->updateBuffering();
+            d->updateLoading();
         }
         else d->playMedia();
     }

@@ -112,7 +112,7 @@ public: // Functions
 
     void updateTargetRect();
 
-    void updateBuffering();
+    void updateLoading();
 
     void clearPlayer();
     void clearReply ();
