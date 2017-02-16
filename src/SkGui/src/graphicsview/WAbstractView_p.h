@@ -64,6 +64,9 @@ public: // Static functions
 
 public: // Static events
     static LRESULT CALLBACK events(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
+
+public: // Slots
+    void onFocus();
 #endif
 
 public: // Variables
@@ -98,6 +101,8 @@ public: // Variables
     bool windowSnap;
     bool windowMaximize;
     bool windowClip;
+
+    QMetaMethod method;
 #endif
 
 protected:

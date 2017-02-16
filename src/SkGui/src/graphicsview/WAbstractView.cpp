@@ -29,9 +29,6 @@
 #endif
 #endif
 
-// Private include
-#include "WAbstractView_p.h"
-
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
@@ -92,6 +89,10 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     windowSnap     = true;
     windowMaximize = true;
     windowClip     = false;
+
+    const QMetaObject * meta = q->metaObject();
+
+    method = meta->method(meta->indexOfMethod("onFocus()"));
 
     //---------------------------------------------------------------------------------------------
 
@@ -222,7 +223,13 @@ void WAbstractViewPrivate::setFlag(LONG flag, bool enabled) const
         WAbstractView * view
             = reinterpret_cast<WAbstractView *> (GetWindowLongPtr(handle, GWLP_USERDATA));
 
-        SetFocus(view->d_func()->id);
+        WAbstractViewPrivate * d = view->d_func();
+
+        // FIXME Windows: Sometimes the focus fails.
+        if (SetFocus(d->id) == NULL)
+        {
+            d->method.invoke(view, Qt::QueuedConnection);
+        }
 
         return 0;
     }
@@ -346,6 +353,15 @@ void WAbstractViewPrivate::setFlag(LONG flag, bool enabled) const
         return 0;
     }
     else return DefWindowProc(handle, message, wParam, lParam);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private slots
+//-------------------------------------------------------------------------------------------------
+
+void WAbstractViewPrivate::onFocus()
+{
+    SetFocus(id);
 }
 
 #endif // SK_WIN_NATIVE
