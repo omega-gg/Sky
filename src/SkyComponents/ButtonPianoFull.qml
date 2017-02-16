@@ -102,11 +102,11 @@ BaseButtonPiano
         {
             if (text)
             {
-                size = Math.max(iconWidth, height) + sk.textWidth(font, text) + borderSizeWidth
+                size = Math.max(iconWidth, background.height) + sk.textWidth(font, text)
                        +
-                       paddingRight + spacing;
+                       borderSizeWidth + paddingRight + spacing;
             }
-            else size = Math.max(iconWidth, height) + borderSizeWidth;
+            else size = Math.max(iconWidth, background.height) + borderSizeWidth;
         }
         else if (text)
         {
