@@ -1,5 +1,7 @@
 TEMPLATE = subdirs
 
+CONFIG += ordered
+
 SUBDIRS = src/SkCore \
           src/SkGui \
           src/SkMedia \
