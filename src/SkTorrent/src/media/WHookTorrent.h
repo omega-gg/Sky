@@ -31,11 +31,21 @@ class SK_TORRENT_EXPORT WHookTorrent : public WAbstractHook
 public:
     WHookTorrent(WAbstractBackend * backend);
 
+public: // WAbstractHook reimplementation
+    /* Q_INVOKABLE virtual */ void loadSource(const QUrl & url, int duration    = -1,
+                                                                int currentTime = -1);
+
+    /* Q_INVOKABLE virtual */ void play  ();
+    /* Q_INVOKABLE virtual */ void replay();
+
+    /* Q_INVOKABLE virtual */ void pause();
+    /* Q_INVOKABLE virtual */ void stop ();
+    /* Q_INVOKABLE virtual */ void clear();
+
+    /* Q_INVOKABLE virtual */ void seekTo(int msec);
+
 protected: // WAbstractHook implementation
     /* virtual */ bool hookCheckSource(const QUrl & url);
-
-protected: // WAbstractHook reimplementation
-    /* virtual */ bool backendSetSource(const QUrl & url);
 
 private:
     W_DECLARE_PRIVATE(WHookTorrent)

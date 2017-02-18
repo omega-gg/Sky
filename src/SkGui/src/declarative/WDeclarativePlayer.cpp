@@ -43,10 +43,10 @@ void WDeclarativePlayerPrivate::init()
 {
     Q_Q(WDeclarativePlayer);
 
-    currentBackend = NULL;
-
     backend = NULL;
     hook    = NULL;
+
+    backendInterface = NULL;
 
     folder   = NULL;
     playlist = NULL;
@@ -187,27 +187,27 @@ void WDeclarativePlayerPrivate::loadSource(const QUrl & source, int duration, in
 
     if (hook && hook->checkSource(source))
     {
-        if (currentBackend && currentBackend == backend)
+        if (backendInterface && backendInterface == backend)
         {
             backend->clear();
         }
 
-        currentBackend = hook;
+        backendInterface = hook;
 
         hook->loadSource(source, duration, currentTime);
     }
     else if (backend)
     {
-        if (currentBackend && currentBackend == hook)
+        if (backendInterface && backendInterface == hook)
         {
             hook->clear();
         }
 
-        currentBackend = backend;
+        backendInterface = backend;
 
         backend->loadSource(source, duration, currentTime);
     }
-    else currentBackend = NULL;
+    else backendInterface = NULL;
 
     if (shuffle && shuffleLock == false)
     {
@@ -227,9 +227,9 @@ void WDeclarativePlayerPrivate::updateRepeat()
         ||
         (repeat == WDeclarativePlayer::RepeatAll && playlist == NULL))
     {
-         currentBackend->setRepeat(true);
+         backend->setRepeat(true);
     }
-    else currentBackend->setRepeat(false);
+    else backend->setRepeat(false);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -327,7 +327,7 @@ void WDeclarativePlayerPrivate::onEnded()
             {
                 playlist->setCurrentIndex(0);
 
-                currentBackend->replay();
+                backendInterface->replay();
             }
             else
             {
@@ -338,7 +338,7 @@ void WDeclarativePlayerPrivate::onEnded()
         }
         else q->setNextTrack();
     }
-    else currentBackend->replay();
+    else backendInterface->replay();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -363,7 +363,7 @@ void WDeclarativePlayerPrivate::onStateChanged()
             {
                 tab->setPlayer(NULL);
 
-                currentBackend->stop();
+                backendInterface->stop();
 
                 return;
             }
@@ -467,7 +467,7 @@ void WDeclarativePlayerPrivate::onCurrentBookmarkChanged()
     }
     else if (backend)
     {
-        currentBackend->setSource(QUrl());
+        backendInterface->loadSource(QUrl());
     }
 }
 
@@ -509,7 +509,7 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 
         tab = tabTrack;
 
-        if (backend) currentBackend->stop();
+        if (backend) backendInterface->stop();
 
         tab = NULL;
 
@@ -519,7 +519,7 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
     {
         tab = NULL;
 
-        if (backend) currentBackend->stop();
+        if (backend) backendInterface->stop();
     }
 }
 
@@ -549,11 +549,11 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 
         if (d->backend->isStopped())
         {
-            d->currentBackend->seekTo(d->tab->currentTime());
+            d->backendInterface->seekTo(d->tab->currentTime());
         }
     }
 
-    d->currentBackend->play();
+    d->backendInterface->play();
 }
 
 /* Q_INVOKABLE */ void WDeclarativePlayer::replay()
@@ -564,7 +564,7 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 
     if (d->tab) d->tab->setPlayer(this);
 
-    d->currentBackend->replay();
+    d->backendInterface->replay();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -573,7 +573,7 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 {
     Q_D(WDeclarativePlayer);
 
-    if (d->backend) d->currentBackend->pause();
+    if (d->backend) d->backendInterface->pause();
 }
 
 /* Q_INVOKABLE */ void WDeclarativePlayer::stop()
@@ -584,14 +584,14 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 
     if (d->tab) d->tab->setPlayer(NULL);
 
-    d->currentBackend->stop();
+    d->backendInterface->stop();
 }
 
 /* Q_INVOKABLE */ void WDeclarativePlayer::clear()
 {
     Q_D(WDeclarativePlayer);
 
-    if (d->backend) d->currentBackend->clear();
+    if (d->backend) d->backendInterface->clear();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -608,7 +608,7 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 {
     Q_D(WDeclarativePlayer);
 
-    if (d->backend) d->currentBackend->seekTo(msec);
+    if (d->backend) d->backendInterface->seekTo(msec);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -749,9 +749,9 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 
     if (d->backend)
     {
-        d->currentBackend->updateFrame();
+        d->backend->updateFrame();
 
-        return d->currentBackend->getFrame();
+        return d->backend->getFrame();
     }
     else return QImage();
 }
@@ -767,7 +767,7 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 
     if (d->backend)
     {
-        d->currentBackend->drawFrame(painter, option);
+        d->backend->drawFrame(painter, option);
     }
 }
 
@@ -784,7 +784,7 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 
     if (d->backend)
     {
-        d->currentBackend->setSize(newGeometry.size());
+        d->backend->setSize(newGeometry.size());
     }
 }
 
@@ -874,9 +874,9 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 
     if (d->backend == backend) return;
 
-    if (d->currentBackend == d->backend)
+    if (d->backendInterface == d->backend)
     {
-        d->currentBackend = backend;
+        d->backendInterface = backend;
     }
 
     if (d->backend)
@@ -942,20 +942,16 @@ void WDeclarativePlayer::setHook(WAbstractHook * hook)
 
     if (d->hook == hook) return;
 
-    if (d->currentBackend == d->hook)
+    if (d->backendInterface == d->hook)
     {
-        d->currentBackend = hook;
+        d->backendInterface = hook;
     }
 
-    if (d->hook) d->hook->deleteBackend();
+    if (d->hook) delete d->hook;
 
     d->hook = hook;
 
-    if (hook)
-    {
-        hook->setParent    (this);
-        hook->setParentItem(this);
-    }
+    if (hook) hook->setParent(this);
 
     emit hookChanged();
 }
@@ -968,7 +964,7 @@ QUrl WDeclarativePlayer::source() const
 
     if (d->backend)
     {
-         return d->currentBackend->source();
+         return d->backend->source();
     }
     else return QUrl();
 }
@@ -977,7 +973,7 @@ void WDeclarativePlayer::setSource(const QUrl & url)
 {
     Q_D(WDeclarativePlayer);
 
-    if (d->backend && d->currentBackend->source() == url) return;
+    if (d->backend && d->backend->source() == url) return;
 
     d->clearPlaylistAndTabs();
 
@@ -1185,7 +1181,7 @@ void WDeclarativePlayer::setSpeed(qreal speed)
 
     d->speed = speed;
 
-    if (d->backend) d->currentBackend->setSpeed(speed);
+    if (d->backend) d->backend->setSpeed(speed);
 
     emit speedChanged();
 }
@@ -1205,7 +1201,7 @@ void WDeclarativePlayer::setVolume(qreal volume)
 
     d->volume = volume;
 
-    if (d->backend) d->currentBackend->setVolume(volume);
+    if (d->backend) d->backend->setVolume(volume);
 
     emit volumeChanged();
 }
@@ -1270,7 +1266,7 @@ void WDeclarativePlayer::setOutput(WAbstractBackend::Output output)
 
     d->output = output;
 
-    if (d->backend) d->currentBackend->setOutput(output);
+    if (d->backend) d->backend->setOutput(output);
 
     emit outputChanged();
 }
@@ -1290,7 +1286,7 @@ void WDeclarativePlayer::setQuality(WAbstractBackend::Quality quality)
 
     d->quality = quality;
 
-    if (d->backend) d->currentBackend->setQuality(quality);
+    if (d->backend) d->backend->setQuality(quality);
 
     emit qualityChanged();
 }
@@ -1336,7 +1332,7 @@ void WDeclarativePlayer::setFillMode(WAbstractBackend::FillMode fillMode)
 
     if (d->backend)
     {
-        d->currentBackend->setFillMode(fillMode);
+        d->backend->setFillMode(fillMode);
     }
 
     update();

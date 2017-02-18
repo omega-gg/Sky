@@ -39,6 +39,9 @@ public:
 
     void init();
 
+public: // Functions
+    void clearReply();
+
 public: // Variables
     WTorrentReply * reply;
 

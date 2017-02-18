@@ -24,7 +24,7 @@
 
 class WAbstractHookPrivate;
 
-class SK_GUI_EXPORT WAbstractHook : public WAbstractBackend
+class SK_GUI_EXPORT WAbstractHook : public QObject, public WBackendInterface, public WPrivatable
 {
     Q_OBJECT
 
@@ -38,40 +38,35 @@ protected:
 public: // Interface
     Q_INVOKABLE bool checkSource(const QUrl & url);
 
+public: // WBackendInterface implementation
+    Q_INVOKABLE /* virtual */ QUrl source() const;
+
+    Q_INVOKABLE /* virtual */ void loadSource(const QUrl & url, int duration    = -1,
+                                                                int currentTime = -1);
+
+    Q_INVOKABLE /* virtual */ void play  ();
+    Q_INVOKABLE /* virtual */ void replay();
+
+    Q_INVOKABLE /* virtual */ void pause();
+    Q_INVOKABLE /* virtual */ void stop ();
+    Q_INVOKABLE /* virtual */ void clear();
+
+    Q_INVOKABLE /* virtual */ void seekTo(int msec);
+
+protected: // Functions
+    void setState    (WAbstractBackend::State     state);
+    void setStateLoad(WAbstractBackend::StateLoad stateLoad);
+
+    void setEnded(bool ended);
+
+    void setCurrentTime(int msec);
+    void setDuration   (int msec);
+
+    void setOutputActive (WAbstractBackend::Output  output);
+    void setQualityActive(WAbstractBackend::Quality quality);
+
 protected: // Abstract functions
     virtual bool hookCheckSource(const QUrl & url) = 0;
-
-protected: // WAbstractBackend implementation
-    /* virtual */ bool backendSetSource(const QUrl & url);
-
-    /* virtual */ bool backendPlay  ();
-    /* virtual */ bool backendReplay();
-
-    /* virtual */ bool backendPause();
-    /* virtual */ bool backendStop ();
-
-    /* virtual */ void backendSetVolume(qreal volume);
-
-    /* virtual */ bool backendDelete();
-
-protected: // WAbstractBackend reimplementation
-    /* virtual */ void backendSeekTo(int msec);
-
-    /* virtual */ void backendSetSpeed(qreal speed);
-
-    /* virtual */ void backendSetRepeat(bool repeat);
-
-    /* virtual */ void backendSetQuality(Quality quality);
-
-    /* virtual */ void backendSetFillMode(FillMode fillMode);
-
-    /* virtual */ void backendSetSize(const QSizeF & size);
-
-    /* virtual */ void backendDrawFrame(QPainter                       * painter,
-                                        const QStyleOptionGraphicsItem * option);
-
-    /* virtual */ void   backendUpdateFrame();
-    /* virtual */ QImage backendGetFrame   () const;
 
 public: // Properties
     WAbstractBackend * backend() const;

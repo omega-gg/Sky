@@ -24,7 +24,7 @@
 
 #include "WAbstractHook_p.h"
 
-WAbstractHookPrivate::WAbstractHookPrivate(WAbstractHook * p) : WAbstractBackendPrivate(p) {}
+WAbstractHookPrivate::WAbstractHookPrivate(WAbstractHook * p) : WPrivate(p) {}
 
 //-------------------------------------------------------------------------------------------------
 
@@ -45,13 +45,13 @@ void WAbstractHookPrivate::init(WAbstractBackend * backend)
 // Protected
 
 WAbstractHook::WAbstractHook(WAbstractBackend * backend)
-    : WAbstractBackend(new WAbstractHookPrivate(this))
+    : QObject(), WPrivatable(new WAbstractHookPrivate(this))
 {
     Q_D(WAbstractHook); d->init(backend);
 }
 
 WAbstractHook::WAbstractHook(WAbstractHookPrivate * p, WAbstractBackend * backend)
-    : WAbstractBackend(p)
+    : QObject(), WPrivatable(p)
 {
     Q_D(WAbstractHook); d->init(backend);
 }
@@ -66,144 +66,99 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p, WAbstractBackend * backen
 }
 
 //-------------------------------------------------------------------------------------------------
-// Protected WAbstractBackend implementation
+// WBackendInterface implementation
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ bool WAbstractHook::backendSetSource(const QUrl & url)
+/* Q_INVOKABLE virtual */ QUrl WAbstractHook::source() const
 {
-    Q_D(WAbstractHook);
-
-    return d->backend->backendSetSource(url);
+    Q_D(const WAbstractHook); return d->source;
 }
 
-//-------------------------------------------------------------------------------------------------
-
-/* virtual */ bool WAbstractHook::backendPlay()
+/* Q_INVOKABLE virtual */ void WAbstractHook::loadSource(const QUrl & url, int duration,
+                                                                           int currentTime)
 {
-    Q_D(WAbstractHook);
-
-    return d->backend->backendPlay();
-}
-
-/* virtual */ bool WAbstractHook::backendReplay()
-{
-    Q_D(WAbstractHook);
-
-    return d->backend->backendReplay();
+    Q_D(WAbstractHook); d->backend->loadSource(url, duration, currentTime);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ bool WAbstractHook::backendPause()
+/* Q_INVOKABLE virtual */ void WAbstractHook::play()
 {
-    Q_D(WAbstractHook);
-
-    return d->backend->backendPause();
+    Q_D(WAbstractHook); d->backend->play();
 }
 
-/* virtual */ bool WAbstractHook::backendStop()
+/* Q_INVOKABLE virtual */ void WAbstractHook::replay()
 {
-    Q_D(WAbstractHook);
-
-    return d->backend->backendStop();
+    Q_D(WAbstractHook); d->backend->replay();
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WAbstractHook::backendSetVolume(qreal volume)
+/* Q_INVOKABLE virtual */ void WAbstractHook::pause()
 {
-    Q_D(WAbstractHook);
+    Q_D(WAbstractHook); d->backend->pause();
+}
 
-    d->backend->backendSetVolume(volume);
+/* Q_INVOKABLE virtual */ void WAbstractHook::stop()
+{
+    Q_D(WAbstractHook); d->backend->stop();
+}
+
+/* Q_INVOKABLE virtual */ void WAbstractHook::clear()
+{
+    Q_D(WAbstractHook); d->backend->clear();
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ bool WAbstractHook::backendDelete()
+/* Q_INVOKABLE virtual */ void WAbstractHook::seekTo(int msec)
 {
-    Q_D(WAbstractHook);
-
-    return d->backend->backendDelete();
+    Q_D(WAbstractHook); d->backend->seekTo(msec);
 }
 
 //-------------------------------------------------------------------------------------------------
-// Protected WAbstractBackend reimplementation
+// Protected functions
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WAbstractHook::backendSeekTo(int msec)
+void WAbstractHook::setState(WAbstractBackend::State state)
 {
-    Q_D(WAbstractHook);
-
-    d->backend->backendSeekTo(msec);
+    Q_D(WAbstractHook); d->backend->setState(state);
 }
 
-//-------------------------------------------------------------------------------------------------
-
-/* virtual */ void WAbstractHook::backendSetSpeed(qreal speed)
+void WAbstractHook::setStateLoad(WAbstractBackend::StateLoad stateLoad)
 {
-    Q_D(WAbstractHook);
-
-    d->backend->backendSetSpeed(speed);
+    Q_D(WAbstractHook); d->backend->setStateLoad(stateLoad);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WAbstractHook::backendSetRepeat(bool repeat)
+void WAbstractHook::setEnded(bool ended)
 {
-    Q_D(WAbstractHook);
-
-    d->backend->backendSetRepeat(repeat);
+    Q_D(WAbstractHook); d->backend->setEnded(ended);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WAbstractHook::backendSetQuality(Quality quality)
+void WAbstractHook::setCurrentTime(int msec)
 {
-    Q_D(WAbstractHook);
+    Q_D(WAbstractHook); d->backend->setCurrentTime(msec);
+}
 
-    d->backend->backendSetQuality(quality);
+void WAbstractHook::setDuration(int msec)
+{
+    Q_D(WAbstractHook); d->backend->setDuration(msec);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WAbstractHook::backendSetFillMode(FillMode fillMode)
+void WAbstractHook::setOutputActive(WAbstractBackend::Output output)
 {
-    Q_D(WAbstractHook);
-
-    d->backend->backendSetFillMode(fillMode);
+    Q_D(WAbstractHook); d->backend->setOutputActive(output);
 }
 
-//-------------------------------------------------------------------------------------------------
-
-/* virtual */ void WAbstractHook::backendSetSize(const QSizeF & size)
+void WAbstractHook::setQualityActive(WAbstractBackend::Quality quality)
 {
-    Q_D(WAbstractHook);
-
-    d->backend->backendSetSize(size);
-}
-
-/* virtual */ void WAbstractHook::backendDrawFrame(QPainter                       * painter,
-                                                   const QStyleOptionGraphicsItem * option)
-{
-    Q_D(WAbstractHook);
-
-    d->backend->backendDrawFrame(painter, option);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* virtual */ void WAbstractHook::backendUpdateFrame()
-{
-    Q_D(WAbstractHook);
-
-    d->backend->backendUpdateFrame();
-}
-
-/* virtual */ QImage WAbstractHook::backendGetFrame() const
-{
-    Q_D(const WAbstractHook);
-
-    return d->backend->backendGetFrame();
+    Q_D(WAbstractHook); d->backend->setQualityActive(quality);
 }
 
 //-------------------------------------------------------------------------------------------------

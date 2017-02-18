@@ -115,98 +115,6 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WAbstractBackend::loadSource(const QUrl & url, int duration,
-                                                                      int currentTime)
-{
-    Q_D(WAbstractBackend);
-
-    if (d->source != url)
-    {
-        if (d->state == StatePaused) stop();
-
-        setDuration   (duration);
-        setCurrentTime(currentTime);
-
-        d->source = url;
-
-        backendSetSource(url);
-
-        emit sourceChanged();
-    }
-    else seekTo(currentTime);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE */ void WAbstractBackend::play()
-{
-    Q_D(WAbstractBackend);
-
-    if (d->state == StatePlaying || d->source.isValid() == false) return;
-
-    if (backendPlay()) setState(StatePlaying);
-}
-
-/* Q_INVOKABLE */ void WAbstractBackend::replay()
-{
-    Q_D(WAbstractBackend);
-
-    if (d->source.isValid() == false) return;
-
-    d->clearCurrentTime();
-
-    if (backendReplay()) setState(StatePlaying);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE */ void WAbstractBackend::pause()
-{
-    Q_D(WAbstractBackend);
-
-    if (d->state == StatePaused) return;
-
-    if (backendPause())
-    {
-        if (d->stateLoad == StateLoadStarting || d->stateLoad == StateLoadResuming)
-        {
-            stop();
-        }
-        else setState(StatePaused);
-    }
-}
-
-/* Q_INVOKABLE */ void WAbstractBackend::stop()
-{
-    Q_D(WAbstractBackend);
-
-    if (d->state == StateStopped) return;
-
-    if (backendStop()) setState(StateStopped);
-}
-
-/* Q_INVOKABLE */ void WAbstractBackend::clear()
-{
-    loadSource(QUrl());
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE */ void WAbstractBackend::seekTo(int msec)
-{
-    Q_D(WAbstractBackend);
-
-    if (d->currentTime == msec) return;
-
-    d->currentTime = msec;
-
-    if (d->started) backendSeekTo(msec);
-
-    emit currentTimeChanged();
-}
-
-//-------------------------------------------------------------------------------------------------
-
 /* Q_INVOKABLE */ const QSizeF & WAbstractBackend::getSize() const
 {
     Q_D(const WAbstractBackend); return d->size;
@@ -269,6 +177,105 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
         return false;
     }
+}
+
+//-------------------------------------------------------------------------------------------------
+// WBackendInterface implementation
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ QUrl WAbstractBackend::source() const
+{
+    Q_D(const WAbstractBackend); return d->source;
+}
+
+/* Q_INVOKABLE virtual */ void WAbstractBackend::loadSource(const QUrl & url, int duration,
+                                                                              int currentTime)
+{
+    Q_D(WAbstractBackend);
+
+    if (d->source != url)
+    {
+        if (d->state == StatePaused) stop();
+
+        setDuration   (duration);
+        setCurrentTime(currentTime);
+
+        d->source = url;
+
+        backendSetSource(url);
+
+        emit sourceChanged();
+    }
+    else seekTo(currentTime);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ void WAbstractBackend::play()
+{
+    Q_D(WAbstractBackend);
+
+    if (d->state == StatePlaying || d->source.isValid() == false) return;
+
+    if (backendPlay()) setState(StatePlaying);
+}
+
+/* Q_INVOKABLE virtual */ void WAbstractBackend::replay()
+{
+    Q_D(WAbstractBackend);
+
+    if (d->source.isValid() == false) return;
+
+    d->clearCurrentTime();
+
+    if (backendReplay()) setState(StatePlaying);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ void WAbstractBackend::pause()
+{
+    Q_D(WAbstractBackend);
+
+    if (d->state == StatePaused) return;
+
+    if (backendPause())
+    {
+        if (d->stateLoad == StateLoadStarting || d->stateLoad == StateLoadResuming)
+        {
+            stop();
+        }
+        else setState(StatePaused);
+    }
+}
+
+/* Q_INVOKABLE virtual */ void WAbstractBackend::stop()
+{
+    Q_D(WAbstractBackend);
+
+    if (d->state == StateStopped) return;
+
+    if (backendStop()) setState(StateStopped);
+}
+
+/* Q_INVOKABLE virtual */ void WAbstractBackend::clear()
+{
+    loadSource(QUrl());
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ void WAbstractBackend::seekTo(int msec)
+{
+    Q_D(WAbstractBackend);
+
+    if (d->currentTime == msec) return;
+
+    d->currentTime = msec;
+
+    if (d->started) backendSeekTo(msec);
+
+    emit currentTimeChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -479,13 +486,6 @@ void WAbstractBackend::setParentItem(QGraphicsItem * parent)
     d->parentItem = parent;
 
     emit parentItemChanged();
-}
-
-//-------------------------------------------------------------------------------------------------
-
-QUrl WAbstractBackend::source() const
-{
-    Q_D(const WAbstractBackend); return d->source;
 }
 
 void WAbstractBackend::setSource(const QUrl & url)

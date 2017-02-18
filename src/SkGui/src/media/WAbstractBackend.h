@@ -33,7 +33,32 @@ class QGraphicsItem;
 class QPainter;
 class QStyleOptionGraphicsItem;
 
-class SK_GUI_EXPORT WAbstractBackend : public QObject, public WPrivatable
+//-------------------------------------------------------------------------------------------------
+// WBackendInterface
+//-------------------------------------------------------------------------------------------------
+
+class SK_GUI_EXPORT WBackendInterface
+{
+public:
+    virtual QUrl source() const = 0;
+
+    virtual void loadSource(const QUrl & url, int duration = -1, int currentTime = -1) = 0;
+
+    virtual void play  () = 0;
+    virtual void replay() = 0;
+
+    virtual void pause() = 0;
+    virtual void stop () = 0;
+    virtual void clear() = 0;
+
+    virtual void seekTo(int msec) = 0;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WAbstractBackend
+//-------------------------------------------------------------------------------------------------
+
+class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface, public WPrivatable
 {
     Q_OBJECT
 
@@ -132,17 +157,6 @@ protected:
     WAbstractBackend(WAbstractBackendPrivate * p);
 
 public: // Interface
-    Q_INVOKABLE void loadSource(const QUrl & url, int duration = -1, int currentTime = -1);
-
-    Q_INVOKABLE void play  ();
-    Q_INVOKABLE void replay();
-
-    Q_INVOKABLE void pause();
-    Q_INVOKABLE void stop ();
-    Q_INVOKABLE void clear();
-
-    Q_INVOKABLE void seekTo(int msec);
-
     Q_INVOKABLE const QSizeF & getSize() const;
     Q_INVOKABLE void           setSize(const QSizeF & size);
 
@@ -152,6 +166,21 @@ public: // Interface
     Q_INVOKABLE QImage getFrame   () const;
 
     Q_INVOKABLE bool deleteBackend();
+
+public: // WBackendInterface implementation
+    Q_INVOKABLE /* virtual */ QUrl source() const;
+
+    Q_INVOKABLE /* virtual */ void loadSource(const QUrl & url, int duration    = -1,
+                                                                int currentTime = -1);
+
+    Q_INVOKABLE /* virtual */ void play  ();
+    Q_INVOKABLE /* virtual */ void replay();
+
+    Q_INVOKABLE /* virtual */ void pause();
+    Q_INVOKABLE /* virtual */ void stop ();
+    Q_INVOKABLE /* virtual */ void clear();
+
+    Q_INVOKABLE /* virtual */ void seekTo(int msec);
 
 protected: // Functions
     void setState    (State     state);
@@ -237,7 +266,6 @@ public: // Properties
     QGraphicsItem * parentItem() const;
     void            setParentItem(QGraphicsItem * parent);
 
-    QUrl source() const;
     void setSource(const QUrl & url);
 
     State     state    () const;

@@ -36,6 +36,22 @@ void WHookTorrentPrivate::init()
 }
 
 //-------------------------------------------------------------------------------------------------
+// Private function
+//-------------------------------------------------------------------------------------------------
+
+void WHookTorrentPrivate::clearReply()
+{
+    Q_Q(WHookTorrent);
+
+    delete reply;
+
+    reply = NULL;
+
+    q->setStateLoad(WAbstractBackend::StateLoadDefault);
+    q->setState    (WAbstractBackend::StateStopped);
+}
+
+//-------------------------------------------------------------------------------------------------
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
@@ -46,6 +62,95 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 }
 
 //-------------------------------------------------------------------------------------------------
+// WAbstractHook reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ void WHookTorrent::loadSource(const QUrl & url, int duration,
+                                                                          int currentTime)
+{
+    Q_D(WHookTorrent);
+
+    if (d->source != url)
+    {
+        stop();
+
+        setDuration   (duration);
+        setCurrentTime(currentTime);
+
+        d->source = url;
+    }
+    else seekTo(currentTime);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ void WHookTorrent::play()
+{
+    Q_D(WHookTorrent);
+
+    if (d->backend->isPlaying()) return;
+
+    if (d->reply) delete d->reply;
+
+    d->reply = wControllerTorrent->getTorrent(d->source, this);
+
+    if (d->backend->currentTime() == -1)
+    {
+         setStateLoad(WAbstractBackend::StateLoadStarting);
+    }
+    else setStateLoad(WAbstractBackend::StateLoadResuming);
+
+    setState(WAbstractBackend::StatePlaying);
+}
+
+/* Q_INVOKABLE virtual */ void WHookTorrent::replay()
+{
+    Q_D(WHookTorrent);
+
+    if (d->reply) return;
+
+    d->backend->stop();
+
+    d->reply = wControllerTorrent->getTorrent(d->source, this);
+
+    setStateLoad(WAbstractBackend::StateLoadStarting);
+    setState    (WAbstractBackend::StatePlaying);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ void WHookTorrent::pause()
+{
+    Q_D(WHookTorrent);
+
+    if (d->reply)
+    {
+        d->clearReply();
+    }
+    else d->backend->pause();
+}
+
+/* Q_INVOKABLE virtual */ void WHookTorrent::stop()
+{
+    Q_D(WHookTorrent);
+
+    if (d->reply)
+    {
+        d->clearReply();
+    }
+    else d->backend->stop();
+}
+
+/* Q_INVOKABLE virtual */ void WHookTorrent::clear()
+{
+    loadSource(QUrl());
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ void WHookTorrent::seekTo(int) {}
+
+//-------------------------------------------------------------------------------------------------
 // Protected WAbstractHook implementation
 //-------------------------------------------------------------------------------------------------
 
@@ -54,25 +159,6 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
     QString extension = WControllerNetwork::extractUrlExtension(url);
 
     if (extension == "torrent")
-    {
-         return true;
-    }
-    else return false;
-}
-
-//-------------------------------------------------------------------------------------------------
-// Protected WAbstractHook reimplementation
-//-------------------------------------------------------------------------------------------------
-
-/* virtual */ bool WHookTorrent::backendSetSource(const QUrl & url)
-{
-    Q_D(WHookTorrent);
-
-    if (d->reply) delete d->reply;
-
-    d->reply = wControllerTorrent->getTorrent(url, this);
-
-    if (d->reply)
     {
          return true;
     }

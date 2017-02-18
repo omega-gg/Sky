@@ -78,10 +78,10 @@ public: // Slots
     void onTabDestroyed ();
 
 public: // Variables
-    WAbstractBackend * currentBackend;
-
     WAbstractBackend * backend;
     WAbstractHook    * hook;
+
+    WBackendInterface * backendInterface;
 
     WAbstractBackend::State state;
 

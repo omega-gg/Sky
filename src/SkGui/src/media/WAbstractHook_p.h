@@ -27,12 +27,11 @@
     We mean it.
 */
 
-// Sk includes
-#include <private/WAbstractBackend_p>
+#include <private/Sk_p>
 
 #ifndef SK_NO_ABSTRACTHOOK
 
-class SK_GUI_EXPORT WAbstractHookPrivate : public WAbstractBackendPrivate
+class SK_GUI_EXPORT WAbstractHookPrivate : public WPrivate
 {
 public:
     WAbstractHookPrivate(WAbstractHook * p);
@@ -41,6 +40,8 @@ public:
 
 public: // Variables
     WAbstractBackend * backend;
+
+    QUrl source;
 
 protected:
     W_DECLARE_PUBLIC(WAbstractHook)
