@@ -651,8 +651,6 @@ void WViewPrivate::updateDrag()
         if (drag == NULL) return;
 #endif
 
-        drag->deleteLater();
-
         drag = NULL;
 
         setDragging(false);
@@ -1969,8 +1967,6 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
     if (d->drag)
     {
 #ifdef Q_OS_WIN
-        d->drag->deleteLater();
-
         d->drag = NULL;
 
         keybd_event(VK_ESCAPE, 0x81,               0, 0);
