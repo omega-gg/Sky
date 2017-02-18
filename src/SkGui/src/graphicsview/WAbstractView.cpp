@@ -672,13 +672,13 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 
     if (iconBig)
     {
-        SendMessage(d->handle, WM_SETICON, ICON_SMALL, (LPARAM) iconSmall);
-        SendMessage(d->handle, WM_SETICON, ICON_BIG,   (LPARAM) iconBig);
+        PostMessage(d->handle, WM_SETICON, ICON_SMALL, (LPARAM) iconSmall);
+        PostMessage(d->handle, WM_SETICON, ICON_BIG,   (LPARAM) iconBig);
     }
     else
     {
-        SendMessage(d->handle, WM_SETICON, ICON_SMALL, (LPARAM) iconSmall);
-        SendMessage(d->handle, WM_SETICON, ICON_BIG,   (LPARAM) iconSmall);
+        PostMessage(d->handle, WM_SETICON, ICON_SMALL, (LPARAM) iconSmall);
+        PostMessage(d->handle, WM_SETICON, ICON_BIG,   (LPARAM) iconSmall);
     }
 }
 
