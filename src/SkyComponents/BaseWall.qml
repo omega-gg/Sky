@@ -470,10 +470,10 @@ MouseArea
             }
             else
             {
-                itemHeight = height;
-
                 itemWidth = Math.round((height - itemExtraHeight) * itemRatioWidth
                                        + itemExtraWidth);
+
+                itemHeight = height;
             }
         }
         else
