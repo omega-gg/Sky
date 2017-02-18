@@ -82,7 +82,7 @@ MouseArea
     //---------------------------------------------------------------------------------------------
     // Private
 
-    property bool pActive: true
+    property bool pActive: isActive
 
     property bool pScale: ((itemPreferredHeight + pExtra) > height)
 
@@ -493,17 +493,17 @@ MouseArea
 
     function pUpdateActive()
     {
-        var isActive;
+        var active;
 
-        if (baseWall.isActive && visible)
+        if (isActive && visible)
         {
-             isActive = true;
+             active = true;
         }
-        else isActive = false;
+        else active = false;
 
-        if (baseWall.pActive == isActive) return;
+        if (pActive == active) return;
 
-        if (isActive == false)
+        if (active == false)
         {
             isChangingPage = false;
 
@@ -513,7 +513,7 @@ MouseArea
         }
         else updateView();
 
-        baseWall.pActive = isActive;
+        pActive = active;
     }
 
     //---------------------------------------------------------------------------------------------
