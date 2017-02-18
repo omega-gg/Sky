@@ -336,7 +336,7 @@ WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
 #if defined(Q_OS_WIN)
     Q_UNUSED(event);
 
-    uint orientation = 0;
+    uint orientation;
 
     if      (d->type == TopLeft)     orientation = SZ_SIZETOPLEFT;
     else if (d->type == TopRight)    orientation = SZ_SIZETOPRIGHT;
@@ -346,6 +346,7 @@ WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
     else if (d->type == Right)       orientation = SZ_SIZERIGHT;
     else if (d->type == Top)         orientation = SZ_SIZETOP;
     else if (d->type == Bottom)      orientation = SZ_SIZEBOTTOM;
+    else                             orientation = 0;
 
     ReleaseCapture();
 
