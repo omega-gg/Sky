@@ -27,7 +27,6 @@
     We mean it.
 */
 
-// Sk includes
 #include <private/WDeclarativeItem_p>
 
 #ifndef SK_NO_DECLARATIVEPLAYER

@@ -17,7 +17,6 @@
 #ifndef WTRACKNET_P_H
 #define WTRACKNET_P_H
 
-// Sk includes
 #include <private/WAbstractTrack_p>
 
 #ifndef SK_NO_TRACKNET

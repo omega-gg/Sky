@@ -27,10 +27,11 @@
     We mean it.
 */
 
-#include <private/WDeclarativeMouseArea_p>
-
 // Qt includes
 #include <QRect>
+
+// Sk includes
+#include <private/WDeclarativeMouseArea_p>
 
 #ifndef SK_NO_RESIZER
 

@@ -17,7 +17,6 @@
 #ifndef WTABSTRACK_P_H
 #define WTABSTRACK_P_H
 
-// Sk includes
 #include <private/WAbstractTabs_p>
 
 #ifndef SK_NO_TABSTRACK

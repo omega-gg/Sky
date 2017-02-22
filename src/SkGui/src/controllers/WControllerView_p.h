@@ -27,11 +27,12 @@
     We mean it.
 */
 
-#include <private/WController_p>
-
 // Qt includes
 #include <QSize>
 #include <QList>
+
+// Sk includes
+#include <private/WController_p>
 
 #ifndef SK_NO_CONTROLLERVIEW
 

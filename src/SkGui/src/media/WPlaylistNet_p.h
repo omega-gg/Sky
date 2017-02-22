@@ -27,7 +27,6 @@
     We mean it.
 */
 
-// Sk includes
 #include <private/WAbstractPlaylist_p>
 
 #ifndef SK_NO_PLAYLISTNET

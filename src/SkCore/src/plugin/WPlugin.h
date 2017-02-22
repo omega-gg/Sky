@@ -23,6 +23,8 @@
 // Sk includes
 #include <WPluginInterface.h>
 
+#ifndef SK_NO_PLUGIN
+
 // Forward declarations
 class QDomDocument;
 class WPluginPrivate;
@@ -89,4 +91,5 @@ template <class T> T WPlugin::interface() const
     return qobject_cast<T> (instance());
 }
 
+#endif // SK_NO_PLUGIN
 #endif // WPLUGIN_H

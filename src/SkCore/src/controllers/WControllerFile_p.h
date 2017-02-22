@@ -17,11 +17,12 @@
 #ifndef WCONTROLLERFILE_P_H
 #define WCONTROLLERFILE_P_H
 
-#include <private/WController_p>
-
 // Qt includes
 #include <QList>
 #include <QTimer>
+
+// Sk includes
+#include <private/WController_p>
 
 #ifndef SK_NO_CONTROLLERFILE
 

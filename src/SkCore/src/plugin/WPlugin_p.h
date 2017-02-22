@@ -29,6 +29,8 @@
 
 #include <private/Sk_p>
 
+#ifndef SK_NO_PLUGIN
+
 // Forward declarations
 class QPluginLoader;
 
@@ -67,4 +69,5 @@ protected:
     W_DECLARE_PUBLIC(WPlugin)
 };
 
+#endif // SK_NO_PLUGIN
 #endif // WPLUGIN_P_H
