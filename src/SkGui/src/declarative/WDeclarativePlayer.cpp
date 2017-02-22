@@ -964,7 +964,7 @@ QUrl WDeclarativePlayer::source() const
 
     if (d->backend)
     {
-         return d->backend->source();
+         return d->backendInterface->source();
     }
     else return QUrl();
 }
@@ -973,7 +973,7 @@ void WDeclarativePlayer::setSource(const QUrl & url)
 {
     Q_D(WDeclarativePlayer);
 
-    if (d->backend && d->backend->source() == url) return;
+    if (d->backend && d->backendInterface->source() == url) return;
 
     d->clearPlaylistAndTabs();
 
