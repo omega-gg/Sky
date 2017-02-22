@@ -41,7 +41,7 @@ INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkGui/private \
                $$SK/include/SkMedia \
                $$SK/include/SkMedia/private \
-               $$SK/include/ \
+               $$SK/include \
 
 contains(QT_MAJOR_VERSION, 5): LIBS += -lopengl32
 
