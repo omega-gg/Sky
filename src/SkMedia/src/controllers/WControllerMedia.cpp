@@ -156,70 +156,81 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
     QHashIterator<WRemoteData *, WPrivateMediaData *> i(jobs);
 
-    WRemoteData       * data  = NULL;
-    WPrivateMediaData * media = NULL;
-
     while (i.hasNext())
     {
-         i.next();
+        i.next();
 
-         if (i.value()->url == url)
-         {
-             data  = i.key  ();
-             media = i.value();
+        WPrivateMediaData * media = i.value();
 
-             break;
-         }
+        if (media->url == url)
+        {
+            media->replies.append(reply);
+
+            return;
+        }
     }
+
+    QHashIterator<QIODevice *, WPrivateMediaData *> j(queries);
+
+    while (j.hasNext())
+    {
+        j.next();
+
+        WPrivateMediaData * media = j.value();
+
+        if (media->url == url)
+        {
+            media->replies.append(reply);
+
+            return;
+        }
+    }
+
+    WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
+
+    if (backend == NULL)
+    {
+        reply->_medias.insert(WAbstractBackend::QualityMedium, url);
+
+        reply->_loaded = true;
+
+        return;
+    }
+
+    WBackendNetQuery query = backend->getQuerySource(url);
+
+    if (query.isValid() == false)
+    {
+        reply->_medias.insert(WAbstractBackend::QualityMedium, url);
+
+        reply->_loaded = true;
+
+        return;
+    }
+
+    query.priority = QNetworkRequest::HighPriority;
+
+    WRemoteData * data = WControllerPlaylist::getDataQuery(loader, query, q);
 
     if (data == NULL)
     {
-        WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
+        qWarning("WControllerMediaPrivate::loadSources: Failed to load media %s.", url.C_URL);
 
-        if (backend == NULL)
-        {
-            reply->_medias.insert(WAbstractBackend::QualityMedium, url);
-
-            reply->_loaded = true;
-
-            return;
-        }
-
-        WBackendNetQuery query = backend->getQuerySource(url);
-
-        if (query.isValid() == false)
-        {
-            reply->_medias.insert(WAbstractBackend::QualityMedium, url);
-
-            reply->_loaded = true;
-
-            return;
-        }
-
-        query.priority = QNetworkRequest::HighPriority;
-
-        data = WControllerPlaylist::getDataQuery(loader, query, q);
-
-        if (data == NULL)
-        {
-            qWarning("WControllerMediaPrivate::loadSources: Failed to load media %s.", url.C_URL);
-
-            return;
-        }
-
-        QObject::connect(data, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoaded(WRemoteData *)));
-
-        media = new WPrivateMediaData;
-
-        media->url     = url;
-        media->backend = backend;
-        media->query   = query;
-        media->reply   = NULL;
-
-        medias.append(media);
-
-        jobs.insert(data, media);
+        return;
     }
+
+    QObject::connect(data, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoaded(WRemoteData *)));
+
+    WPrivateMediaData * media = new WPrivateMediaData;
+
+    media->url     = url;
+    media->backend = backend;
+    media->query   = query;
+    media->reply   = NULL;
+
+    medias.append(media);
+
+    jobs.insert(data, media);
 
     media->replies.append(reply);
 }
