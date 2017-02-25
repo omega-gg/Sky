@@ -1066,7 +1066,11 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 {
     Q_D(WBackendVlc);
 
-    d->player->pause();
+    if (d->started)
+    {
+        d->player->pause();
+    }
+    else d->setMute(true);
 
     return true;
 }

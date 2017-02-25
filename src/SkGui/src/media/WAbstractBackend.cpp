@@ -239,14 +239,7 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
     if (d->state == StatePaused) return;
 
-    if (backendPause())
-    {
-        if (d->stateLoad == StateLoadStarting || d->stateLoad == StateLoadResuming)
-        {
-            stop();
-        }
-        else setState(StatePaused);
-    }
+    if (backendPause()) setState(StatePaused);
 }
 
 /* Q_INVOKABLE virtual */ void WAbstractBackend::stop()
