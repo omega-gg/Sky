@@ -370,7 +370,7 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
 
         QObject::connect(data, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoaded(WRemoteData *)));
 
-        jobs.insertMulti(data, media);
+        jobs.insert(data, media);
     }
     else
     {
@@ -476,7 +476,7 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 {
     Q_D(WControllerMedia);
 
-    QList<WMediaReply *> media;
+    QList<WMediaReply *> replies;
 
     QHashIterator<WRemoteData *, WPrivateMediaData *> i(d->jobs);
 
@@ -488,12 +488,12 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
         {
             if (reply->_url == url)
             {
-                media.append(reply);
+                replies.append(reply);
             }
         }
     }
 
-    foreach (WMediaReply * reply, media)
+    foreach (WMediaReply * reply, replies)
     {
         delete reply;
     }
@@ -505,7 +505,7 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 {
     Q_D(WControllerMedia);
 
-    QList<WMediaReply *> media;
+    QList<WMediaReply *> replies;
 
     QHashIterator<WRemoteData *, WPrivateMediaData *> i(d->jobs);
 
@@ -515,11 +515,11 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 
         foreach (WMediaReply * reply, i.value()->replies)
         {
-            media.append(reply);
+            replies.append(reply);
         }
     }
 
-    foreach (WMediaReply * reply, media)
+    foreach (WMediaReply * reply, replies)
     {
         delete reply;
     }
