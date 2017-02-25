@@ -119,7 +119,7 @@ Item
     property int slidePlayer_durationFadeIn : slide_durationAnimation
     property int slidePlayer_durationFadeOut: bpm(4)
 
-    property int slidePlayer_interval: 5000
+    property int slidePlayer_interval: 10000
 
     //---------------------------------------------------------------------------------------------
     // Pulse
