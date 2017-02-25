@@ -465,9 +465,13 @@ void WDeclarativePlayerPrivate::onCurrentBookmarkChanged()
     {
         loadSource(bookmark->source(), bookmark->duration(), bookmark->currentTime());
     }
-    else if (backend)
+    else if (backend && backendInterface->source().isValid())
     {
+        Q_Q(WDeclarativePlayer);
+
         backendInterface->loadSource(QUrl());
+
+        emit q->sourceChanged();
     }
 }
 
