@@ -20,7 +20,7 @@
 // Qt includes
 #include <QUrl>
 
-// Sk includes
+// Private includes
 #include <private/Sk_p>
 
 #ifndef SK_NO_MODELCOMPLETIONGOOGLE

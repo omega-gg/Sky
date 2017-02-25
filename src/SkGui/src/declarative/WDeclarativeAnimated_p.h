@@ -30,7 +30,7 @@
 // Qt includes
 #include <QPauseAnimation>
 
-// Sk includes
+// Private includes
 #include <private/WDeclarativeItem_p>
 
 #ifndef SK_NO_DECLARATIVEANIMATED

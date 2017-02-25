@@ -31,8 +31,10 @@
 #include <QTimer>
 
 // Sk includes
-#include <private/WAbstractView_p>
 #include <WDeclarativeMouseArea>
+
+// Private includes
+#include <private/WAbstractView_p>
 
 #ifndef SK_NO_VIEW
 

@@ -31,8 +31,10 @@
 #include <QHash>
 
 // Sk includes
-#include <private/WLocalObject_p>
 #include <WListId>
+
+// Private includes
+#include <private/WLocalObject_p>
 
 #ifndef SK_NO_ABSTRACTTABS
 

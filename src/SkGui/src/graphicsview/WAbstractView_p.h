@@ -37,7 +37,7 @@
 #include <qt_windows.h>
 #endif
 
-// Sk includes
+// Private includes
 #include <private/Sk_p>
 
 #ifndef SK_NO_ABSTRACTVIEW

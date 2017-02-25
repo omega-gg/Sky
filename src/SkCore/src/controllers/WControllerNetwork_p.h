@@ -31,7 +31,7 @@
 #include <QTcpSocket>
 #include <QTimer>
 
-// Sk includes
+// Private includes
 #include <private/WController_p>
 
 #ifndef SK_NO_CONTROLLERNETWORK

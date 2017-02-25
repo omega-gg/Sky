@@ -28,8 +28,10 @@
 */
 
 // Sk includes
-#include <private/WDeclarativeItem_p>
 #include <WPixmapCache>
+
+// Private includes
+#include <private/WDeclarativeItem_p>
 
 #ifndef SK_NO_DECLARATIVEIMAGEBASE
 

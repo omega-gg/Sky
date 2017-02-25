@@ -31,8 +31,10 @@
 #include <QHash>
 
 // Sk includes
-#include <private/WLibraryItem_p>
 #include <WListId>
+
+// Private includes
+#include <private/WLibraryItem_p>
 
 #ifndef SK_NO_LIBRARYFOLDER
 

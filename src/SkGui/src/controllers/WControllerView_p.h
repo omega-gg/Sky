@@ -31,7 +31,7 @@
 #include <QSize>
 #include <QList>
 
-// Sk includes
+// Private includes
 #include <private/WController_p>
 
 #ifndef SK_NO_CONTROLLERVIEW

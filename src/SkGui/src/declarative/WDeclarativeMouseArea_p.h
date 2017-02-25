@@ -20,7 +20,7 @@
 // Qt includes
 #include <QBasicTimer>
 
-// Sk includes
+// Private includes
 #include <private/WDeclarativeItem_p>
 
 #ifndef SK_NO_DECLARATIVEMOUSEAREA

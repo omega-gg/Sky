@@ -31,7 +31,7 @@
 #include <QBasicTimer>
 #include <QTime>
 
-// Sk includes
+// Private includes
 #include <private/Sk_p>
 
 #ifndef SK_NO_COOKIEJAR

@@ -30,7 +30,7 @@
 // Qt includes
 #include <QRect>
 
-// Sk includes
+// Private includes
 #include <private/WDeclarativeMouseArea_p>
 
 #ifndef SK_NO_RESIZER

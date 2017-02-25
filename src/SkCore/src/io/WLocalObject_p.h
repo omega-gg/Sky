@@ -30,7 +30,7 @@
 // Qt includes
 #include <QTimer>
 
-// Sk includes
+// Private includes
 #include <private/Sk_p>
 
 #ifndef SK_NO_LOCALOBJECT

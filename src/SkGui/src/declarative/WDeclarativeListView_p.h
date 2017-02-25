@@ -31,7 +31,7 @@
 #include <QTimer>
 #include <QAbstractItemModel>
 
-// Sk includes
+// Private includes
 #include <private/WDeclarativeItem_p>
 
 #ifndef SK_NO_DECLARATIVELISTVIEW

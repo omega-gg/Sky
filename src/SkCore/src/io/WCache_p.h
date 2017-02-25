@@ -32,7 +32,7 @@
 #include <QTimer>
 #include <QHash>
 
-// Sk includes
+// Private includes
 #include <private/Sk_p>
 
 #ifndef SK_NO_CACHE

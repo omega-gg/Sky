@@ -20,7 +20,7 @@
 // Qt includes
 #include <QList>
 
-// Sk includes
+// Private includes
 #include <private/Sk_p>
 
 //-------------------------------------------------------------------------------------------------

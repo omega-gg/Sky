@@ -32,8 +32,10 @@
 #include <QPixmap>
 
 // Sk includes
-#include <private/WAbstractTab_p>
 #include <WListId>
+
+// Private includes
+#include <private/WAbstractTab_p>
 
 #ifndef SK_NO_TABTRACK
 
