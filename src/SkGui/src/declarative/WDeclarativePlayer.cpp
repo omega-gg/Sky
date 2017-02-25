@@ -906,8 +906,6 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 
         backend->setFillMode(d->fillMode);
 
-        connect(backend, SIGNAL(sourceChanged()), this, SIGNAL(sourceChanged()));
-
         connect(backend, SIGNAL(stateChanged    ()), this, SIGNAL(stateChanged    ()));
         connect(backend, SIGNAL(stateLoadChanged()), this, SIGNAL(stateLoadChanged()));
 
