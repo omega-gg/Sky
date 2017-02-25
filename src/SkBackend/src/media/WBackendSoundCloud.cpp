@@ -550,7 +550,7 @@ WBackendNetTrack WBackendSoundCloud::extractTrack(const QByteArray       & data,
 
     QString content = Sk::readUtf8(data);
 
-    QString json = d->extractJson(content, "65");
+    QString json = d->extractJson(content, "66");
 
     d->loadTrack(&(reply.track), json);
 
@@ -638,7 +638,7 @@ WBackendNetPlaylist WBackendSoundCloud::extractPlaylist(const QByteArray       &
     }
     else if (query.id == 3) // related
     {
-        QString json = d->extractJson(content, "65");
+        QString json = d->extractJson(content, "66");
 
         QString idTrack = WControllerNetwork::extractJsonUtf8(json, "id");
 
