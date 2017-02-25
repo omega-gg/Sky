@@ -546,19 +546,15 @@ WallBookmarkTrack
 
             source:
             {
-                if (visible)
+                if (pAudio)
                 {
-                    if (pAudio)
+                    if (pHighlightedTab)
                     {
-                        if (pHighlightedTab)
-                        {
-                             return pHighlightedTab.cover;
-                        }
-                        else return playerTab.cover;
+                         return pHighlightedTab.cover;
                     }
-                    else return playerTab.videoShot;
+                    else return playerTab.cover;
                 }
-                else return "";
+                else return playerTab.videoShot;
             }
 
             sourceDefault: logo
