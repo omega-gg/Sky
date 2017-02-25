@@ -27,9 +27,6 @@
     We mean it.
 */
 
-// Qt includes
-#include <QHash>
-
 // Private includes
 #include <private/WController_p>
 
