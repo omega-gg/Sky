@@ -186,6 +186,8 @@ Animated
 
             pLoader = loaderB;
 
+            slide();
+
             pLoad = false;
         }
         else if (pLoader == loaderA)
