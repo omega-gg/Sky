@@ -1070,6 +1070,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
     {
         d->player->pause();
     }
+    // FIXME VLC: Muting the sound to avoid the audio glitch.
     else d->setMute(true);
 
     return true;
