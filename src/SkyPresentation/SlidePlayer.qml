@@ -70,14 +70,18 @@ Player
     // Events
     //---------------------------------------------------------------------------------------------
 
-    onEnded:
+    onEnded: if (autoRepeat) pPlay()
+
+    onSourceChanged:
     {
-        if (autoRepeat == false) return;
+        if (pReady == false) return;
 
-        seekTo(timeA);
+        stopSource();
 
-        play();
+        pPlay();
     }
+
+    onTimeAChanged: if (pReady) seekTo(timeA)
 
     onCurrentTimeChanged:
     {
@@ -174,14 +178,14 @@ Player
 
         play();
 
-        while (isLoading)
-        {
-            sk.processEvents();
-        }
-
         if (autoPlay == false)
         {
             pause();
+        }
+
+        while (isLoading)
+        {
+            sk.processEvents();
         }
 
         if (fade) pVolume = true;
