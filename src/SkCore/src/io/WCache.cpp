@@ -1361,6 +1361,22 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
     return file;
 }
 
+/* Q_INVOKABLE */ QUrl WCache::getFileUrl(const QUrl & url)
+{
+    Q_D(WCache);
+
+    QUrl path = d->urls.value(url);
+
+    if (path.isValid())
+    {
+        d->pop(url);
+    }
+
+    return path;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ WCacheFile * WCache::writeFile(const QUrl       & url,
                                                  const QByteArray & array, QObject * parent)
 {

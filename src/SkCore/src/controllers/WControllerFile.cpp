@@ -458,6 +458,19 @@ WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ QUrl WControllerFile::getFileUrl(const QUrl & url)
+{
+    Q_D(WControllerFile);
+
+    if (d->cache)
+    {
+         return d->cache->getFileUrl(url);
+    }
+    else return QUrl();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ WCacheFile * WControllerFile::writeFile(const QUrl       & url,
                                                           const QByteArray & array,
                                                           QObject          * parent)
