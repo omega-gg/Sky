@@ -522,16 +522,16 @@ Item
     property color buttonPush_colorPressHoverB: "#646464"
 
     property color buttonPush_colorHighlightA: "#008cdc"
-    property color buttonPush_colorHighlightB: "#0050b4"
+    property color buttonPush_colorHighlightB: "#003ca0"
 
     property color buttonPush_colorHighlightHoverA: "#00b4ff"
-    property color buttonPush_colorHighlightHoverB: "#0064c8"
+    property color buttonPush_colorHighlightHoverB: "#0050b4"
 
-    property color buttonPush_colorCheckA: buttonPush_colorHighlightB
-    property color buttonPush_colorCheckB: buttonPush_colorHighlightA
+    property color buttonPush_colorCheckA: "#0050b4"
+    property color buttonPush_colorCheckB: "#008cdc"
 
-    property color buttonPush_colorCheckHoverA: buttonPush_colorHighlightHoverB
-    property color buttonPush_colorCheckHoverB: buttonPush_colorHighlightHoverA
+    property color buttonPush_colorCheckHoverA: "#0050b4"
+    property color buttonPush_colorCheckHoverB: "#00b4ff"
 
     property ImageColorFilter buttonPush_filterBorder    : button_filterBorder
     property ImageColorFilter buttonPush_filterIcon      : icon_filter
