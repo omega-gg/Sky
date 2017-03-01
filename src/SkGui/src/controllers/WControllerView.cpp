@@ -194,6 +194,26 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ bool WControllerView::compressShot(const QString & fileName, int quality)
+{
+    QFileInfo info(fileName);
+
+    if (info.exists() && info.suffix().toLower() == "png")
+    {
+        qDebug("Compressing: %s", fileName.C_STR);
+
+        QImage image(fileName);
+
+        if (image.save(fileName, "png", quality) == false)
+        {
+            qWarning("WControllerView::compressShot: Failed to save image.");
+        }
+
+        return true;
+    }
+    else return false;
+}
+
 /* Q_INVOKABLE static */ bool WControllerView::compressShots(const QString & path, int quality)
 {
     QDir dir(path);

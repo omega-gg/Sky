@@ -257,7 +257,8 @@ public: // Static interface
                                          const QColor     & background   = Qt::transparent,
                                          bool               forceVisible = false);
 
-    Q_INVOKABLE static bool compressShots(const QString & path, int quality = 0);
+    Q_INVOKABLE static bool compressShot (const QString & fileName, int quality = 0);
+    Q_INVOKABLE static bool compressShots(const QString & path,     int quality = 0);
 
 signals:
     void iconChanged();

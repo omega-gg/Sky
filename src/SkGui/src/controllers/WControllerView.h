@@ -76,7 +76,8 @@ public: // Static interface
 
     Q_INVOKABLE static QImage desaturate(const QImage & image);
 
-    Q_INVOKABLE static bool compressShots(const QString & path, int quality = 0);
+    Q_INVOKABLE static bool compressShot (const QString & fileName, int quality = 0);
+    Q_INVOKABLE static bool compressShots(const QString & path,     int quality = 0);
 
 private: // Static functions
     static void paintRecursive(QPainter * painter, QGraphicsObject * item, bool forceVisible);

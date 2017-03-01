@@ -1722,6 +1722,11 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ bool WView::compressShot(const QString & fileName, int quality)
+{
+    return WControllerView::compressShot(fileName, quality);
+}
+
 /* Q_INVOKABLE static */ bool WView::compressShots(const QString & path, int quality)
 {
     return WControllerView::compressShots(path, quality);

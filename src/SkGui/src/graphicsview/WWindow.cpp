@@ -536,6 +536,11 @@ void WWindowPrivate::init()
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ bool WWindow::compressShot(const QString & fileName, int quality)
+{
+    return WView::compressShot(fileName, quality);
+}
+
 /* Q_INVOKABLE static */ bool WWindow::compressShots(const QString & path, int quality)
 {
     return WView::compressShots(path, quality);
