@@ -524,7 +524,7 @@ Item
     property color buttonPush_colorHighlightA: "#008cdc"
     property color buttonPush_colorHighlightB: "#003ca0"
 
-    property color buttonPush_colorHighlightHoverA: "#00b4ff"
+    property color buttonPush_colorHighlightHoverA: "#00a0f0"
     property color buttonPush_colorHighlightHoverB: "#0050b4"
 
     property color buttonPush_colorCheckA: "#0050b4"
