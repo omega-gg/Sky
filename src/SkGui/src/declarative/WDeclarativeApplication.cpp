@@ -22,7 +22,7 @@
 // Private
 //-------------------------------------------------------------------------------------------------
 
-#include "WDeclarativeCoreApplication_p.h"
+#include <private/WDeclarativeCoreApplication_p>
 
 class SK_GUI_EXPORT WDeclarativeApplicationPrivate : public WDeclarativeCoreApplicationPrivate
 {
