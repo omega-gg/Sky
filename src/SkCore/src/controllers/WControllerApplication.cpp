@@ -392,7 +392,7 @@ QMimeData * WControllerApplication::duplicateMime(const QMimeData * source)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ void WControllerApplication::setCurrent(const QString & path)
+/* Q_INVOKABLE static */ void WControllerApplication::setCurrentPath(const QString & path)
 {
     QDir::setCurrent(path);
 }

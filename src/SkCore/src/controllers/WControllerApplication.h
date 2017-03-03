@@ -116,7 +116,7 @@ public: // Static interface
 
     //---------------------------------------------------------------------------------------------
 
-    Q_INVOKABLE static void setCurrent(const QString & path);
+    Q_INVOKABLE static void setCurrentPath(const QString & path);
 
     Q_INVOKABLE static bool fileExists(const QString & fileName);
 
