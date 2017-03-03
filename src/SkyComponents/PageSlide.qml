@@ -47,7 +47,7 @@ LoaderSlide
     // Functions
     //---------------------------------------------------------------------------------------------
 
-    function load(source)
+    function loadPage(source)
     {
         loadLeft(source);
     }
