@@ -76,7 +76,7 @@ Player
     {
         if (pReady == false) return;
 
-        stopSource();
+        stop();
 
         pPlay();
     }
