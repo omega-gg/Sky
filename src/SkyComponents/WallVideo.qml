@@ -500,7 +500,7 @@ WallBookmarkTrack
             {
                 properties: "x, y, width, height"
 
-                duration: st.duration_normal
+                duration: (enableAnimation) ? st.duration_normal : 0
             }
         }
     }
@@ -560,8 +560,6 @@ WallBookmarkTrack
             sourceDefault: logo
 
             fillMode: Image.PreserveAspectFit
-
-            asynchronous: (isSourceDefault == false)
 
             cache: false
 
@@ -775,7 +773,7 @@ WallBookmarkTrack
             {
                 properties: "x, y, width, height"
 
-                duration: st.duration_normal
+                duration: (enableAnimation) ? st.duration_normal : 0
             }
         }
 
