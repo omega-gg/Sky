@@ -108,6 +108,8 @@ public: // Functions
     void loadSources (bool play);
     void applySources(bool play);
 
+    bool applyOutput(WAbstractBackend::Output output);
+
     void playMedia();
 
     void updateTargetRect();

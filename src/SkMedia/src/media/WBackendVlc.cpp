@@ -616,13 +616,29 @@ void WBackendVlcPrivate::applySources(bool play)
         currentMedia = medias.value(closestQuality);
         currentAudio = audios.value(closestQuality);
 
-        closestOutput = getClosestOutput(output);
+        applyOutput(getClosestOutput(output));
 
         if (play) playMedia();
     }
 
     qDebug("Current source [%s] %d %s", currentMedia.C_URL,
                                         reply->medias().count(), reply->error().C_STR);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WBackendVlcPrivate::applyOutput(WAbstractBackend::Output output)
+{
+    if (output == WAbstractBackend::OutputInvalid || closestOutput == output)
+    {
+        return false;
+    }
+
+    closestOutput = output;
+
+    player->setOutput(output);
+
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1162,13 +1178,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
     Output closestOutput = d->getClosestOutput(output);
 
-    if (closestOutput == OutputInvalid || d->closestOutput == closestOutput) return;
-
-    d->closestOutput = closestOutput;
-
-    d->player->setOutput(output);
-
-    if (hasStarted())
+    if (d->applyOutput(closestOutput) && hasStarted())
     {
         d->started = false;
         d->active  = false;
