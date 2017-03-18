@@ -228,7 +228,7 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
     d->clearCurrentTime();
 
-    if (backendReplay()) setState(StatePlaying);
+    if (backendPlay()) setState(StatePlaying);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -319,17 +319,31 @@ void WAbstractBackend::setEnded(bool ended)
 
     if (d->ended == ended) return;
 
-    d->ended = ended;
-
     if (ended)
     {
+        if (d->repeat)
+        {
+            d->clearCurrentTime();
+
+            backendPlay();
+
+            return;
+        }
+
+        d->ended = true;
+
         d->clearCurrentTime();
 
         emit endedChanged();
 
         emit this->ended();
     }
-    else emit endedChanged();
+    else
+    {
+        d->ended = true;
+
+        emit endedChanged();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -405,13 +419,6 @@ void WAbstractBackend::deleteNow()
 /* virtual */ void WAbstractBackend::backendSetSpeed(qreal)
 {
     qWarning("WAbstractBackend::backendSetSpeed: SetSpeed is not supported.");
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* virtual */ void WAbstractBackend::backendSetRepeat(bool)
-{
-    qWarning("WAbstractBackend::backendSetRepeat: SetRepeat is not supported.");
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -633,8 +640,6 @@ void WAbstractBackend::setRepeat(bool repeat)
     if (d->repeat == repeat) return;
 
     d->repeat = repeat;
-
-    backendSetRepeat(repeat);
 
     emit repeatChanged();
 }

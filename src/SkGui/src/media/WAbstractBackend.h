@@ -199,9 +199,7 @@ protected: // Functions
 protected: // Abstract functions
     virtual bool backendSetSource(const QUrl & url) = 0;
 
-    virtual bool backendPlay  () = 0;
-    virtual bool backendReplay() = 0;
-
+    virtual bool backendPlay () = 0;
     virtual bool backendPause() = 0;
     virtual bool backendStop () = 0;
 
@@ -213,8 +211,6 @@ protected: // Virtual functions
     virtual void backendSeekTo(int msec); /* {} */
 
     virtual void backendSetSpeed(qreal speed); /* {} */
-
-    virtual void backendSetRepeat(bool repeat); /* {} */
 
     virtual void backendSetOutput (Output  output);  /* {} */
     virtual void backendSetQuality(Quality quality); /* {} */

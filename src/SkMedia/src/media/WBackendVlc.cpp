@@ -1071,13 +1071,6 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
     return true;
 }
 
-/* virtual */ bool WBackendVlc::backendReplay()
-{
-    return backendPlay();
-}
-
-//-------------------------------------------------------------------------------------------------
-
 /* virtual */ bool WBackendVlc::backendPause()
 {
     Q_D(WBackendVlc);
@@ -1159,15 +1152,6 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
     Q_D(WBackendVlc);
 
     d->player->setSpeed(speed);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* virtual */ void WBackendVlc::backendSetRepeat(bool repeat)
-{
-    Q_D(WBackendVlc);
-
-    d->player->setRepeat(repeat);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1669,17 +1653,16 @@ bool WBackendVlc::event(QEvent * event)
             }
             else stop();
         }
-        else if (d->started == false)
+        else if (d->started)
         {
-            stop();
-        }
-        else if (d->repeat == false)
-        {
-            d->clearPlayer();
+            if (d->repeat == false)
+            {
+                d->clearPlayer();
+            }
 
             setEnded(true);
         }
-        else backendPlay();
+        else stop();
 
         return true;
     }

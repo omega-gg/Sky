@@ -44,9 +44,7 @@ public: // Interface
 protected: // WAbstractBackend implementation
     /* virtual */ bool backendSetSource(const QUrl & url);
 
-    /* virtual */ bool backendPlay  ();
-    /* virtual */ bool backendReplay();
-
+    /* virtual */ bool backendPlay ();
     /* virtual */ bool backendPause();
     /* virtual */ bool backendStop ();
 
@@ -58,8 +56,6 @@ protected: // WAbstractBackend reimplementation
     /* virtual */ void backendSeekTo(int msec);
 
     /* virtual */ void backendSetSpeed(qreal speed);
-
-    /* virtual */ void backendSetRepeat(bool repeat);
 
     /* virtual */ void backendSetOutput (Output  output);
     /* virtual */ void backendSetQuality(Quality quality);
