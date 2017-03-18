@@ -44,8 +44,6 @@ class SK_MEDIA_EXPORT WVlcPlayer : public QObject, public WPrivatable
 
     Q_PROPERTY(QStringList options READ options WRITE setOptions NOTIFY optionsChanged)
 
-    Q_PROPERTY(bool repeat READ repeat WRITE setRepeat NOTIFY repeatChanged)
-
     Q_PROPERTY(WAbstractBackend::Output output READ output WRITE setOutput NOTIFY outputChanged)
 
     Q_PROPERTY(int networkCache READ networkCache WRITE setNetworkCache NOTIFY networkCacheChanged)
@@ -100,8 +98,6 @@ protected: // Events
 signals:
     void optionsChanged();
 
-    void repeatChanged();
-
     void outputChanged();
 
     void networkCacheChanged();
@@ -109,9 +105,6 @@ signals:
 public: // Properties
     QStringList options();
     void        setOptions(const QStringList & options);
-
-    bool repeat();
-    void setRepeat(bool repeat);
 
     WAbstractBackend::Output output();
     void                     setOutput(WAbstractBackend::Output output);

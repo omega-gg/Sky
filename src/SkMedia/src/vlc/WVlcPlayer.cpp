@@ -48,8 +48,6 @@ void WVlcPlayerPrivate::init(WVlcEngine * engine, QThread * thread)
 
     backend = NULL;
 
-    repeat = false;
-
     output = WAbstractBackend::OutputMedia;
 
     networkCache = VLCPLAYER_NETWORK_CACHE;
@@ -360,16 +358,12 @@ bool WVlcPlayer::event(QEvent * event)
     {
         WVlcPlayerEventSource * eventSource = static_cast<WVlcPlayerEventSource *> (event);
 
-        bool repeat;
-
         WAbstractBackend::Output output;
 
         QString proxy;
         QString proxyPassword;
 
         d->mutex.lock();
-
-        repeat = d->repeat;
 
         output = d->output;
 
@@ -416,11 +410,6 @@ bool WVlcPlayer::event(QEvent * event)
                 }
             }
             else libvlc_media_add_option(media, "no-audio");
-        }
-
-        if (repeat)
-        {
-            libvlc_media_add_option(media, "input-repeat=-1");
         }
 
         libvlc_media_add_option(media, cache.C_STR);
@@ -534,32 +523,6 @@ void WVlcPlayer::setOptions(const QStringList & options)
     locker.unlock();
 
     emit optionsChanged();
-}
-
-//-------------------------------------------------------------------------------------------------
-
-bool WVlcPlayer::repeat()
-{
-    Q_D(WVlcPlayer);
-
-    const QMutexLocker locker(&d->mutex);
-
-    return d->repeat;
-}
-
-void WVlcPlayer::setRepeat(bool repeat)
-{
-    Q_D(WVlcPlayer);
-
-    QMutexLocker locker(&d->mutex);
-
-    if (d->repeat == repeat) return;
-
-    d->repeat = repeat;
-
-    locker.unlock();
-
-    emit repeatChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

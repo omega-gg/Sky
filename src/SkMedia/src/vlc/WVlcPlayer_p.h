@@ -85,8 +85,6 @@ public: // Variables
 
     QStringList options;
 
-    bool repeat;
-
     WAbstractBackend::Output output;
 
     int networkCache;
