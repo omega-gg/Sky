@@ -340,7 +340,7 @@ void WAbstractBackend::setEnded(bool ended)
     }
     else
     {
-        d->ended = true;
+        d->ended = false;
 
         emit endedChanged();
     }
