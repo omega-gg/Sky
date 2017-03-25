@@ -525,24 +525,13 @@ void WDeclarativePlayerPrivate::onTabsDestroyed()
 
 void WDeclarativePlayerPrivate::onTabDestroyed()
 {
+    Q_Q(WDeclarativePlayer);
+
     if (backend) backendInterface->stop();
 
-    WAbstractTab * currentTab = tabs->currentTab();
+    tab = NULL;
 
-    if (currentTab)
-    {
-        WTabTrack * tabTrack = currentTab->toTabTrack();
-
-        setTab(tabTrack);
-    }
-    else
-    {
-        Q_Q(WDeclarativePlayer);
-
-        tab = NULL;
-
-        emit q->tabChanged();
-    }
+    emit q->tabChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
