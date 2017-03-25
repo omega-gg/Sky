@@ -34,6 +34,9 @@ class SK_TORRENT_EXPORT WTorrentEngine : public QObject, public WPrivatable
 public:
     WTorrentEngine(QThread * thread = NULL, QObject * parent = NULL);
 
+public: // Interface
+    Q_INVOKABLE void deleteInstance();
+
 protected: // Events
     /* virtual */ bool event(QEvent * event);
 

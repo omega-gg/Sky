@@ -37,14 +37,12 @@ class SK_TORRENT_EXPORT WTorrentEnginePrivate : public WPrivate
 public: // Enums
     enum EventType
     {
-        EventStart = QEvent::User,
-        EventStop
+        EventCreate = QEvent::User,
+        EventClear
     };
 
 public:
     WTorrentEnginePrivate(WTorrentEngine * p);
-
-    /* virtual */ ~WTorrentEnginePrivate();
 
     void init(QThread * thread);
 
@@ -62,15 +60,6 @@ protected:
 
 WTorrentEnginePrivate::WTorrentEnginePrivate(WTorrentEngine * p) : WPrivate(p) {}
 
-/* virtual */ WTorrentEnginePrivate::~WTorrentEnginePrivate()
-{
-    Q_Q(WTorrentEngine);
-
-    QCoreApplication::postEvent(q, new QEvent(static_cast<QEvent::Type>
-                                              (WTorrentEnginePrivate::EventStop)),
-                                Qt::HighEventPriority * 100);
-}
-
 //-------------------------------------------------------------------------------------------------
 
 void WTorrentEnginePrivate::init(QThread * thread)
@@ -82,7 +71,7 @@ void WTorrentEnginePrivate::init(QThread * thread)
     if (thread) q->moveToThread(thread);
 
     QCoreApplication::postEvent(q, new QEvent(static_cast<QEvent::Type>
-                                              (WTorrentEnginePrivate::EventStart)),
+                                              (WTorrentEnginePrivate::EventCreate)),
                                 Qt::HighEventPriority * 100);
 }
 
@@ -119,6 +108,17 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 }
 
 //-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WTorrentEngine::deleteInstance()
+{
+    QCoreApplication::postEvent(this, new QEvent(static_cast<QEvent::Type>
+                                                 (WTorrentEnginePrivate::EventClear)),
+                                Qt::HighEventPriority * 100);
+}
+
+//-------------------------------------------------------------------------------------------------
 // Events
 //-------------------------------------------------------------------------------------------------
 
@@ -128,7 +128,7 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
     QEvent::Type type = event->type();
 
-    if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventStart))
+    if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventCreate))
     {
         d->session = new libtorrent::session;
 
@@ -140,7 +140,7 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
     {
         return QObject::event(event);
     }
-    else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventStop))
+    else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventClear))
     {
         delete d->session;
 

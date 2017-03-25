@@ -23,6 +23,7 @@
 #include <QDeclarativeComponent>
 
 // Sk includes
+#include <WControllerApplication>
 #include <WControllerFile>
 #include <WControllerNetwork>
 #include <WControllerDownload>
@@ -99,10 +100,14 @@ WControllerTorrentPrivate::WControllerTorrentPrivate(WControllerTorrent * p)
 
 /* virtual */ WControllerTorrentPrivate::~WControllerTorrentPrivate()
 {
-    delete engine;
+    engine->deleteInstance();
+
+    sk->processEvents();
 
     thread->quit();
     thread->wait();
+
+    delete engine;
 
     W_CLEAR_CONTROLLER(WControllerTorrent);
 }
