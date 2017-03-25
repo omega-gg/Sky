@@ -73,6 +73,7 @@ public: // Slots
     void onCurrentBookmarkChanged();
     void onCurrentBookmarkUpdated();
 
+    void onHookDestroyed();
     void onTabsDestroyed();
     void onTabDestroyed ();
 

@@ -24,7 +24,9 @@
 
 class WAbstractHookPrivate;
 
-class SK_GUI_EXPORT WAbstractHook : public QObject, public WBackendInterface, public WPrivatable
+class SK_GUI_EXPORT WAbstractHook : public QObject,
+                                    public WBackendInterface, public WBackendFilter,
+                                    public WPrivatable
 {
     Q_OBJECT
 
@@ -54,6 +56,11 @@ public: // WBackendInterface implementation
     Q_INVOKABLE /* virtual */ void seekTo(int msec);
 
 protected: // Functions
+    void setFilterActive(bool active);
+
+    //---------------------------------------------------------------------------------------------
+    // Backend functions
+
     void setState    (WAbstractBackend::State     state);
     void setStateLoad(WAbstractBackend::StateLoad stateLoad);
 
@@ -65,6 +72,38 @@ protected: // Functions
     void setOutputActive (WAbstractBackend::Output  output);
     void setQualityActive(WAbstractBackend::Quality quality);
 
+    //---------------------------------------------------------------------------------------------
+    // Backend abstract functions
+
+    bool backendSetSource(const QUrl & url);
+
+    bool backendPlay ();
+    bool backendPause();
+    bool backendStop ();
+
+    void backendSetVolume(qreal volume);
+
+    bool backendDelete();
+
+    //---------------------------------------------------------------------------------------------
+    // Backend virtual functions
+
+    void backendSeekTo(int msec);
+
+    void backendSetSpeed(qreal speed);
+
+    void backendSetOutput (WAbstractBackend::Output  output);
+    void backendSetQuality(WAbstractBackend::Quality quality);
+
+    void backendSetFillMode(WAbstractBackend::FillMode fillMode);
+
+    void backendSetSize(const QSizeF & size);
+
+    void backendDrawFrame(QPainter * painter, const QStyleOptionGraphicsItem * option);
+
+    void   backendUpdateFrame();
+    QImage backendGetFrame   () const;
+
 protected: // Abstract functions
     virtual bool hookCheckSource(const QUrl & url) = 0;
 
@@ -73,7 +112,11 @@ public: // Properties
 
 private:
     W_DECLARE_PRIVATE(WAbstractHook)
+
+    Q_PRIVATE_SLOT(d_func(), void onBackendDestroyed())
 };
+
+#include <private/WAbstractHook_p>
 
 #endif // SK_NO_ABSTRACTHOOK
 #endif // WABSTRACTHOOK_H

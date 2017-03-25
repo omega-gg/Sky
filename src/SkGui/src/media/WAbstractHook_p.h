@@ -36,12 +36,19 @@ class SK_GUI_EXPORT WAbstractHookPrivate : public WPrivate
 public:
     WAbstractHookPrivate(WAbstractHook * p);
 
+    /* virtual */ ~WAbstractHookPrivate();
+
     void init(WAbstractBackend * backend);
+
+public: // Slots
+    void onBackendDestroyed();
 
 public: // Variables
     WAbstractBackend * backend;
 
     QUrl source;
+
+    bool filterActive;
 
 protected:
     W_DECLARE_PUBLIC(WAbstractHook)

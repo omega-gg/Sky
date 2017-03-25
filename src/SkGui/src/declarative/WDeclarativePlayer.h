@@ -307,6 +307,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onCurrentBookmarkChanged())
     Q_PRIVATE_SLOT(d_func(), void onCurrentBookmarkUpdated())
 
+    Q_PRIVATE_SLOT(d_func(), void onHookDestroyed())
     Q_PRIVATE_SLOT(d_func(), void onTabsDestroyed())
     Q_PRIVATE_SLOT(d_func(), void onTabDestroyed ())
 };

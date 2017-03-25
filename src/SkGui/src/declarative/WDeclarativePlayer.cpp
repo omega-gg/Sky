@@ -498,32 +498,50 @@ void WDeclarativePlayerPrivate::onCurrentBookmarkUpdated()
 
 //-------------------------------------------------------------------------------------------------
 
+void WDeclarativePlayerPrivate::onHookDestroyed()
+{
+    Q_Q(WDeclarativePlayer);
+
+    if (backendInterface == hook)
+    {
+        backendInterface = backend;
+    }
+
+    hook = NULL;
+
+    emit q->hookChanged();
+}
+
 void WDeclarativePlayerPrivate::onTabsDestroyed()
 {
-    Q_Q(WDeclarativePlayer); q->setTabs(NULL);
+    Q_Q(WDeclarativePlayer);
+
+    clearPlaylistAndTabs();
+
+    tabs = NULL;
+
+    emit q->tabsChanged();
 }
 
 void WDeclarativePlayerPrivate::onTabDestroyed()
 {
+    if (backend) backendInterface->stop();
+
     WAbstractTab * currentTab = tabs->currentTab();
 
     if (currentTab)
     {
         WTabTrack * tabTrack = currentTab->toTabTrack();
 
-        tab = tabTrack;
-
-        if (backend) backendInterface->stop();
-
-        tab = NULL;
-
         setTab(tabTrack);
     }
     else
     {
+        Q_Q(WDeclarativePlayer);
+
         tab = NULL;
 
-        if (backend) backendInterface->stop();
+        emit q->tabChanged();
     }
 }
 
@@ -946,14 +964,24 @@ void WDeclarativePlayer::setHook(WAbstractHook * hook)
 
     if (d->backendInterface == d->hook)
     {
-        d->backendInterface = hook;
+        d->backendInterface = d->backend;
     }
 
-    if (d->hook) delete d->hook;
+    if (d->hook)
+    {
+        disconnect(d->backend, 0, this, 0);
+
+        delete d->hook;
+    }
 
     d->hook = hook;
 
-    if (hook) hook->setParent(this);
+    if (hook)
+    {
+        hook->setParent(this);
+
+        connect(hook, SIGNAL(destroyed()), this, SLOT(onHookDestroyed()));
+    }
 
     emit hookChanged();
 }
