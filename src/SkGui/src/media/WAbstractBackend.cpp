@@ -26,9 +26,9 @@
 
 static const int ABSTRACTBACKEND_TIMER_INTERVAL = 2000;
 
-//-------------------------------------------------------------------------------------------------
-// Private
-//-------------------------------------------------------------------------------------------------
+//=================================================================================================
+// WAbstractBackendPrivate
+//=================================================================================================
 
 #include "WAbstractBackend_p.h"
 
@@ -37,6 +37,8 @@ WAbstractBackendPrivate::WAbstractBackendPrivate(WAbstractBackend * p) : WPrivat
 void WAbstractBackendPrivate::init()
 {
     parentItem = NULL;
+
+    filter = NULL;
 
     state     = WAbstractBackend::StateStopped;
     stateLoad = WAbstractBackend::StateLoadDefault;
@@ -92,9 +94,9 @@ void WAbstractBackendPrivate::setStarted(bool started)
     emit q->startedChanged();
 }
 
-//-------------------------------------------------------------------------------------------------
-// Ctor / dtor
-//-------------------------------------------------------------------------------------------------
+//=================================================================================================
+// WAbstractBackend
+//=================================================================================================
 
 WAbstractBackend::WAbstractBackend()
     : QObject(), WPrivatable(new WAbstractBackendPrivate(this))
@@ -279,6 +281,8 @@ void WAbstractBackend::setState(State state)
 {
     Q_D(WAbstractBackend);
 
+    if (d->filter) d->filter->filterState(&state);
+
     if (d->state == state) return;
 
     d->state = state;
@@ -304,6 +308,8 @@ void WAbstractBackend::setStateLoad(StateLoad stateLoad)
 {
     Q_D(WAbstractBackend);
 
+    if (d->filter) d->filter->filterStateLoad(&stateLoad);
+
     if (d->stateLoad == stateLoad) return;
 
     d->stateLoad = stateLoad;
@@ -316,6 +322,8 @@ void WAbstractBackend::setStateLoad(StateLoad stateLoad)
 void WAbstractBackend::setEnded(bool ended)
 {
     Q_D(WAbstractBackend);
+
+    if (d->filter) d->filter->filterEnded(&ended);
 
     if (d->ended == ended) return;
 
@@ -356,6 +364,8 @@ void WAbstractBackend::setCurrentTime(int msec)
 {
     Q_D(WAbstractBackend);
 
+    if (d->filter) d->filter->filterCurrentTime(&msec);
+
     if (d->currentTime == msec) return;
 
     d->currentTime = msec;
@@ -368,6 +378,8 @@ void WAbstractBackend::setCurrentTime(int msec)
 void WAbstractBackend::setDuration(int msec)
 {
     Q_D(WAbstractBackend);
+
+    if (d->filter) d->filter->filterDuration(&msec);
 
     if (d->duration == msec) return;
 
@@ -382,6 +394,8 @@ void WAbstractBackend::setOutputActive(Output output)
 {
     Q_D(WAbstractBackend);
 
+    if (d->filter) d->filter->filterOutputActive(&output);
+
     if (d->outputActive == output) return;
 
     d->outputActive = output;
@@ -392,6 +406,8 @@ void WAbstractBackend::setOutputActive(Output output)
 void WAbstractBackend::setQualityActive(Quality quality)
 {
     Q_D(WAbstractBackend);
+
+    if (d->filter) d->filter->filterQualityActive(&quality);
 
     if (d->qualityActive == quality) return;
 
@@ -451,9 +467,7 @@ void WAbstractBackend::deleteNow()
     qWarning("WAbstractBackend::backendSetSize: SetSize is not supported.");
 }
 
-/* virtual */
-void WAbstractBackend::backendDrawFrame(QPainter *,
-                                        const QStyleOptionGraphicsItem *)
+/* virtual */ void WAbstractBackend::backendDrawFrame(QPainter *, const QStyleOptionGraphicsItem *)
 {
     qWarning("WAbstractBackend::backendDrawFrame: DrawFrame is not supported.");
 }
@@ -491,6 +505,26 @@ void WAbstractBackend::setParentItem(QGraphicsItem * parent)
 
     emit parentItemChanged();
 }
+
+//-------------------------------------------------------------------------------------------------
+
+WBackendFilter * WAbstractBackend::filter() const
+{
+    Q_D(const WAbstractBackend); return d->filter;
+}
+
+void WAbstractBackend::setFilter(WBackendFilter * filter)
+{
+    Q_D(WAbstractBackend);
+
+    if (d->filter == filter) return;
+
+    d->filter = filter;
+
+    emit filterChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
 
 void WAbstractBackend::setSource(const QUrl & url)
 {
@@ -717,5 +751,20 @@ void WAbstractBackend::setFillMode(FillMode fillMode)
 
     emit fillModeChanged();
 }
+
+//=================================================================================================
+// WBackendFilter
+//=================================================================================================
+
+/* virtual */ void WBackendFilter::filterState    (WAbstractBackend::State     *) const {}
+/* virtual */ void WBackendFilter::filterStateLoad(WAbstractBackend::StateLoad *) const {}
+
+/* virtual */ void WBackendFilter::filterEnded(bool *) const {}
+
+/* virtual */ void WBackendFilter::filterCurrentTime(int *) const {}
+/* virtual */ void WBackendFilter::filterDuration   (int *) const {}
+
+/* virtual */ void WBackendFilter::filterOutputActive (WAbstractBackend::Output  *) const {}
+/* virtual */ void WBackendFilter::filterQualityActive(WAbstractBackend::Quality *) const {}
 
 #endif // SK_NO_ABSTRACTBACKEND

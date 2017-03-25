@@ -46,6 +46,8 @@ public: // Functions
 public: // Variable
     QGraphicsItem * parentItem;
 
+    WBackendFilter * filter;
+
     QUrl source;
 
     WAbstractBackend::State     state;

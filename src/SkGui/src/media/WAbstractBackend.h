@@ -32,6 +32,7 @@ class WAbstractBackendPrivate;
 class QGraphicsItem;
 class QPainter;
 class QStyleOptionGraphicsItem;
+class WBackendFilter;
 
 //-------------------------------------------------------------------------------------------------
 // WBackendInterface
@@ -70,6 +71,8 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
 
     Q_PROPERTY(QGraphicsItem * parentItem READ parentItem WRITE setParentItem
                NOTIFY parentItemChanged)
+
+    Q_PROPERTY(WBackendFilter * filter READ filter WRITE setFilter NOTIFY filterChanged)
 
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
 
@@ -230,6 +233,8 @@ signals:
 
     void parentItemChanged();
 
+    void filterChanged();
+
     void sourceChanged();
 
     void stateChanged    ();
@@ -261,6 +266,9 @@ signals:
 public: // Properties
     QGraphicsItem * parentItem() const;
     void            setParentItem(QGraphicsItem * parent);
+
+    WBackendFilter * filter() const;
+    void             setFilter(WBackendFilter * filter);
 
     void setSource(const QUrl & url);
 
@@ -312,6 +320,25 @@ private:
 
     friend class WAbstractHook;
     friend class WAbstractHookPrivate;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WBackendFilter
+//-------------------------------------------------------------------------------------------------
+
+class SK_GUI_EXPORT WBackendFilter
+{
+public:
+    virtual void filterState    (WAbstractBackend::State     * state)     const; /* {} */
+    virtual void filterStateLoad(WAbstractBackend::StateLoad * stateLoad) const; /* {} */
+
+    virtual void filterEnded(bool * ended) const; /* {} */
+
+    virtual void filterCurrentTime(int * msec) const; /* {} */
+    virtual void filterDuration   (int * msec) const; /* {} */
+
+    virtual void filterOutputActive (WAbstractBackend::Output  * output)  const; /* {} */
+    virtual void filterQualityActive(WAbstractBackend::Quality * quality) const; /* {} */
 };
 
 #endif // SK_NO_ABSTRACTBACKEND
