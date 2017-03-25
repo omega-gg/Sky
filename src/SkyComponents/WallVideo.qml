@@ -418,7 +418,11 @@ WallBookmarkTrack
         {
             if (isExposed && (item == null || item.visible == false))
             {
-                 return false;
+                if (split == -1)
+                {
+                     return false;
+                }
+                else return true;
             }
             else return hasStarted;
         }
@@ -470,8 +474,6 @@ WallBookmarkTrack
                     x: (posB) ? playerBrowser.x : 0
 
                     z: 4
-
-                    visible: true
                 }
             },
             State
@@ -488,8 +490,6 @@ WallBookmarkTrack
                               : pWidthHalf + 2
 
                     z: 4
-
-                    visible: true
                 }
             }
         ]
