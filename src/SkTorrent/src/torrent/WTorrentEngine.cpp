@@ -122,7 +122,7 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 // Events
 //-------------------------------------------------------------------------------------------------
 
-bool WTorrentEngine::event(QEvent * event)
+/* virtual */ bool WTorrentEngine::event(QEvent * event)
 {
     Q_D(WTorrentEngine);
 

@@ -46,7 +46,7 @@ protected: // Virtual functions
     virtual void onCompleted(bool ok);
 
 protected: // Events
-    bool event(QEvent * event);
+    /* virtual */ bool event(QEvent * event);
 
 private:
     W_DECLARE_PRIVATE(WAbstractThreadReply)

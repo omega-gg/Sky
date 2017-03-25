@@ -18,63 +18,8 @@
 
 #ifndef SK_NO_COREAPPLICATION
 
-/*!
-    \class WCoreApplication
-
-    \brief The WCoreApplication class provides an event loop for console Sk applications.
-
-    \ingroup application
-    \mainclass
-
-    This class is used by non-GUI applications to provide their event
-    loop. For non-GUI application that uses Sk, there should be exactly
-    one WCoreApplication object. For GUI applications, see
-    wApplication.
-
-    \sa QCoreApplication, WApplication
-*/
-
-//-------------------------------------------------------------------------------------------------
-// Private
-//-------------------------------------------------------------------------------------------------
-
-#include <private/Sk_p>
-
-class SK_CORE_EXPORT WCoreApplicationPrivate : public WPrivate
-{
-public:
-    WCoreApplicationPrivate(WCoreApplication * p);
-
-    void init();
-
-protected:
-    W_DECLARE_PUBLIC(WCoreApplication)
-};
-
-//-------------------------------------------------------------------------------------------------
-
-WCoreApplicationPrivate::WCoreApplicationPrivate(WCoreApplication * p) : WPrivate(p) {}
-
-void WCoreApplicationPrivate::init() {}
-
-//-------------------------------------------------------------------------------------------------
-// Private ctor / dtor
-//-------------------------------------------------------------------------------------------------
-
-/*!
-    Constructs a Sk kernel application. Kernel applications are
-    applications without a graphical user interface. These type of
-    applications are used at the console or as server processes.
-
-    \warning The data pointed to by \a argc and \a argv must stay
-    valid for the entire lifetime of the WCoreApplication object.
-*/
-
-WCoreApplication::WCoreApplication(int & argc, char ** argv)
-    : QCoreApplication(argc, argv), WPrivatable(new WCoreApplicationPrivate(this))
-{
-    Q_D(WCoreApplication); d->init();
-}
+// Sk includes
+#include <WControllerApplication>
 
 //-------------------------------------------------------------------------------------------------
 // Static functions

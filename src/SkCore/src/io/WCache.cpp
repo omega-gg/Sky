@@ -114,7 +114,7 @@ protected: // QThread reimplementation
     /* virtual */ void run();
 
 protected: // Events
-    bool event(QEvent * event);
+    /* virtual */ bool event(QEvent * event);
 
 private: // Functions
     void load();
@@ -405,7 +405,7 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 // Events
 //-------------------------------------------------------------------------------------------------
 
-bool WCacheThread::event(QEvent * event)
+/* virtual */ bool WCacheThread::event(QEvent * event)
 {
     QEvent::Type type = event->type();
 
@@ -1606,7 +1606,7 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 // Events
 //-------------------------------------------------------------------------------------------------
 
-bool WCache::event(QEvent * event)
+/* virtual */ bool WCache::event(QEvent * event)
 {
     QEvent::Type type = event->type();
 

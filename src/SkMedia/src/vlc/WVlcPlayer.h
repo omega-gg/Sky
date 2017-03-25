@@ -93,7 +93,7 @@ public: // Interface
     Q_INVOKABLE void deletePlayer();
 
 protected: // Events
-    bool event(QEvent * event);
+    /* virtual */ bool event(QEvent * event);
 
 signals:
     void optionsChanged();

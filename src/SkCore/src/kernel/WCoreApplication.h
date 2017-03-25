@@ -17,25 +17,18 @@
 #ifndef WCOREAPPLICATION_H
 #define WCOREAPPLICATION_H
 
+// Qt includes
+#include <QCoreApplication>
+
 // Sk includes
-#include <WControllerApplication>
+#include <Sk>
 
 #ifndef SK_NO_COREAPPLICATION
 
-class WCoreApplicationPrivate;
-
-class SK_CORE_EXPORT WCoreApplication : public QCoreApplication, public WPrivatable
+class SK_CORE_EXPORT WCoreApplication : public QCoreApplication
 {
-    Q_OBJECT
-
-private:
-    WCoreApplication(int & argc, char ** argv);
-
 public: // Static functions
     static QCoreApplication * create(int & argc, char ** argv);
-
-private:
-    W_DECLARE_PRIVATE(WCoreApplication)
 };
 
 #endif // SK_NO_COREAPPLICATION

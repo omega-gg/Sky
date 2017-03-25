@@ -17,31 +17,18 @@
 #ifndef WAPPLICATION_H
 #define WAPPLICATION_H
 
-// Qt includes
-#include <QApplication>
-
 // Sk includes
 #include <WControllerApplication>
 
 #ifndef SK_NO_APPLICATION
 
-class WApplicationPrivate;
-
-class SK_GUI_EXPORT WApplication : public QApplication, public WPrivatable
+class SK_GUI_EXPORT WApplication : public QApplication
 {
-    Q_OBJECT
-
-private:
-    WApplication(int & argc, char ** argv);
-
 public: // Static functions
     static QApplication * create(int & argc, char ** argv, Sk::Type type = Sk::Single);
 
 protected: // Static functions
     static QApplication * createApplication(int & argc, char ** argv, Sk::Type type);
-
-private:
-    W_DECLARE_PRIVATE(WApplication)
 };
 
 #endif // SK_NO_APPLICATION

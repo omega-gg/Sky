@@ -71,7 +71,7 @@ protected: // WAbstractBackend reimplementation
     /* virtual */ QImage backendGetFrame   () const;
 
 protected: // Events
-    bool event(QEvent * event);
+    /* virtual */ bool event(QEvent * event);
 
 signals:
     void optionsChanged();

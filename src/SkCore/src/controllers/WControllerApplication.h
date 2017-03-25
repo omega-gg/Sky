@@ -300,9 +300,7 @@ private:
     friend class WController;
     friend class WControllerPrivate;
     friend class WCoreApplication;
-    friend class WCoreApplicationPrivate;
     friend class WApplication;
-    friend class WApplicationPrivate;
 };
 
 #include <private/WControllerApplication_p>

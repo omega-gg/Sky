@@ -88,7 +88,7 @@ WAbstractThreadReply::WAbstractThreadReply() : WPrivatable(new WAbstractThreadRe
 // Events
 //-------------------------------------------------------------------------------------------------
 
-bool WAbstractThreadReply::event(QEvent * event)
+/* virtual */ bool WAbstractThreadReply::event(QEvent * event)
 {
     if (event->type() == QEvent::User)
     {

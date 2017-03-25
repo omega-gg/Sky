@@ -124,7 +124,7 @@ public: // Interface
     Q_INVOKABLE void clearAll  ();
 
 protected: // Events
-    bool event(QEvent * event);
+    /* virtual */ bool event(QEvent * event);
 
 signals:
     void filesRemoved(const QList<QUrl> & urls, const QList<QUrl> & urlsCache);

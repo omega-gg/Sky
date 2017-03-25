@@ -70,7 +70,7 @@ WVlcEngine::WVlcEngine(QThread * thread, QObject * parent)
 // Events
 //-------------------------------------------------------------------------------------------------
 
-bool WVlcEngine::event(QEvent * event)
+/* virtual */ bool WVlcEngine::event(QEvent * event)
 {
     Q_D(WVlcEngine);
 

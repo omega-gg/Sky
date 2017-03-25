@@ -81,55 +81,6 @@
 #include <qtsingleapplication>
 
 //-------------------------------------------------------------------------------------------------
-// Private
-//-------------------------------------------------------------------------------------------------
-
-#include <private/WControllerApplication_p>
-
-class SK_GUI_EXPORT WApplicationPrivate : public WPrivate
-{
-public:
-    WApplicationPrivate(WApplication * p);
-
-    void init();
-
-protected:
-    W_DECLARE_PUBLIC(WApplication)
-};
-
-//-------------------------------------------------------------------------------------------------
-// Private ctor / Dtor
-
-WApplicationPrivate::WApplicationPrivate(WApplication * p) : WPrivate(p) {}
-
-void WApplicationPrivate::init() {}
-
-//-------------------------------------------------------------------------------------------------
-// Message handler
-//-------------------------------------------------------------------------------------------------
-
-void messageHandler(QtMsgType, const char *) {}
-
-//-------------------------------------------------------------------------------------------------
-// Private ctor / dtor
-//-------------------------------------------------------------------------------------------------
-
-/*!
-    Constructs a Sk kernel application. Kernel applications are
-    applications without a graphical user interface. These type of
-    applications are used at the console or as server processes.
-
-    \warning The data pointed to by \a argc and \a argv must stay
-    valid for the entire lifetime of the WApplication object.
-*/
-
-WApplication::WApplication(int & argc, char ** argv)
-    : QApplication(argc, argv), WPrivatable(new WApplicationPrivate(this))
-{
-    Q_D(WApplication); d->init();
-}
-
-//-------------------------------------------------------------------------------------------------
 // Static functions
 //-------------------------------------------------------------------------------------------------
 

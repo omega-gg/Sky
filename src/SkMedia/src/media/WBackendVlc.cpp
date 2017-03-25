@@ -1495,7 +1495,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 // Events
 //-------------------------------------------------------------------------------------------------
 
-bool WBackendVlc::event(QEvent * event)
+/* virtual */ bool WBackendVlc::event(QEvent * event)
 {
     QEvent::Type type = event->type();
 

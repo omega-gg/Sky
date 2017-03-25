@@ -289,7 +289,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 // Events
 //-------------------------------------------------------------------------------------------------
 
-bool WVlcPlayer::event(QEvent * event)
+/* virtual */ bool WVlcPlayer::event(QEvent * event)
 {
     Q_D(WVlcPlayer);
 
