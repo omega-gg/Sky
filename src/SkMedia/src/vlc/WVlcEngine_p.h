@@ -36,14 +36,12 @@ class SK_MEDIA_EXPORT WVlcEnginePrivate : public WPrivate
 public: // Enums
     enum EventType
     {
-        EventStart = QEvent::User,
-        EventStop
+        EventCreate = QEvent::User,
+        EventClear
     };
 
 public:
     WVlcEnginePrivate(WVlcEngine * p);
-
-    /* virtual */ ~WVlcEnginePrivate();
 
     void init(QThread * thread);
 

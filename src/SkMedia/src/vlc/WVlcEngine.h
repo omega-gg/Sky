@@ -34,6 +34,9 @@ class SK_MEDIA_EXPORT WVlcEngine : public QObject, public WPrivatable
 public:
     WVlcEngine(QThread * thread = NULL, QObject * parent = NULL);
 
+public: // Interface
+    Q_INVOKABLE void deleteInstance();
+
 protected: // Events
     /* virtual */ bool event(QEvent * event);
 

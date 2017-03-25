@@ -23,6 +23,7 @@
 #include <QDeclarativeComponent>
 
 // Sk includes
+#include <WControllerApplication>
 #include <WControllerDownload>
 #include <WControllerPlaylist>
 #include <WBackendVlc>
@@ -108,7 +109,7 @@ WControllerMediaPrivate::WControllerMediaPrivate(WControllerMedia * p) : WContro
 
 /* virtual */ WControllerMediaPrivate::~WControllerMediaPrivate()
 {
-    delete engine;
+    engine->deleteInstance();
 
     QHashIterator<WRemoteData *, WPrivateMediaData *> i(jobs);
 
@@ -131,8 +132,12 @@ WControllerMediaPrivate::WControllerMediaPrivate(WControllerMedia * p) : WContro
     jobs   .clear();
     queries.clear();
 
+    sk->processEvents();
+
     thread->quit();
     thread->wait();
+
+    delete engine;
 
     W_CLEAR_CONTROLLER(WControllerMedia);
 }

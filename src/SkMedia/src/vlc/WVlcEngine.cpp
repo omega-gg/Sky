@@ -32,15 +32,6 @@
 
 WVlcEnginePrivate::WVlcEnginePrivate(WVlcEngine * p) : WPrivate(p) {}
 
-/* virtual */ WVlcEnginePrivate::~WVlcEnginePrivate()
-{
-    Q_Q(WVlcEngine);
-
-    QCoreApplication::postEvent(q, new QEvent(static_cast<QEvent::Type>
-                                              (WVlcEnginePrivate::EventStop)),
-                                Qt::HighEventPriority * 100);
-}
-
 //-------------------------------------------------------------------------------------------------
 
 void WVlcEnginePrivate::init(QThread * thread)
@@ -52,7 +43,7 @@ void WVlcEnginePrivate::init(QThread * thread)
     if (thread) q->moveToThread(thread);
 
     QCoreApplication::postEvent(q, new QEvent(static_cast<QEvent::Type>
-                                              (WVlcEnginePrivate::EventStart)),
+                                              (WVlcEnginePrivate::EventCreate)),
                                 Qt::HighEventPriority * 100);
 }
 
@@ -67,6 +58,17 @@ WVlcEngine::WVlcEngine(QThread * thread, QObject * parent)
 }
 
 //-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WVlcEngine::deleteInstance()
+{
+    QCoreApplication::postEvent(this, new QEvent(static_cast<QEvent::Type>
+                                                 (WVlcEnginePrivate::EventClear)),
+                                Qt::HighEventPriority * 100);
+}
+
+//-------------------------------------------------------------------------------------------------
 // Events
 //-------------------------------------------------------------------------------------------------
 
@@ -76,7 +78,7 @@ WVlcEngine::WVlcEngine(QThread * thread, QObject * parent)
 
     QEvent::Type type = event->type();
 
-    if (type == static_cast<QEvent::Type> (WVlcEnginePrivate::EventStart))
+    if (type == static_cast<QEvent::Type> (WVlcEnginePrivate::EventCreate))
     {
         const char * const args[] =
         {
@@ -128,7 +130,7 @@ WVlcEngine::WVlcEngine(QThread * thread, QObject * parent)
     {
         return QObject::event(event);
     }
-    else if (type == static_cast<QEvent::Type> (WVlcEnginePrivate::EventStop))
+    else if (type == static_cast<QEvent::Type> (WVlcEnginePrivate::EventClear))
     {
         libvlc_release(d->instance);
 
