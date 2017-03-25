@@ -331,7 +331,7 @@ void WDeclarativePlayerPrivate::onEnded()
             }
             else
             {
-                q->stop();
+                if (tab) tab->setCurrentTime(-1);
 
                 emit q->ended();
             }

@@ -326,17 +326,21 @@ void WAbstractBackend::setEnded(bool ended)
             d->clearCurrentTime();
 
             backendPlay();
-
-            return;
         }
+        else
+        {
+            d->ended = true;
 
-        d->ended = true;
+            d->clearCurrentTime();
 
-        d->clearCurrentTime();
+            backendStop();
 
-        emit endedChanged();
+            setState(StateStopped);
 
-        emit this->ended();
+            emit endedChanged();
+
+            emit this->ended();
+        }
     }
     else
     {
