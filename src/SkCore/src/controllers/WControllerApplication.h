@@ -108,7 +108,7 @@ public: // Interface
 public: // Static interface
     Q_INVOKABLE static bool fuzzyCompare(qreal valueA, qreal valueB);
 
-    Q_INVOKABLE static QList<int> variantsToInts(const QVariantList & list);
+    Q_INVOKABLE static QList<int> variantsToInts(const QVariantList & variants);
 
     Q_INVOKABLE static QMimeData * duplicateMime(const QMimeData * source);
 

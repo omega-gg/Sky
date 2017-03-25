@@ -95,7 +95,7 @@ public: // Interface
     void initController();
 
 protected: // Functions
-    virtual void init();
+    virtual void init(); /* {} */
 
 private:
     W_DECLARE_PRIVATE(WController)

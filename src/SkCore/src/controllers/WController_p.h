@@ -39,7 +39,7 @@ public:
     void init();
 
 public: // Variables
-    bool isCreated;
+    bool created;
 
 protected:
     W_DECLARE_PUBLIC(WController)

@@ -17,7 +17,8 @@
 /*!
     \class WControllerApplication
 
-    \brief The WCoreApplication class provides a controller for WCoreApplication and WApplication.
+    \brief The WControllerApplication class provides a controller for WCoreApplication and
+           WApplication.
 
     \sa WCoreApplication, WApplication
 */

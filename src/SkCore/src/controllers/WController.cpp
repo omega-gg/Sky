@@ -41,7 +41,7 @@ void WControllerPrivate::init()
 {
     Q_Q(WController);
 
-    isCreated = false;
+    created = false;
 
     sk->d_func()->declareController(q);
 }
@@ -69,9 +69,9 @@ void WController::initController()
 {
     Q_D(WController);
 
-    if (d->isCreated == false)
+    if (d->created == false)
     {
-        d->isCreated = true;
+        d->created = true;
 
         init();
     }
