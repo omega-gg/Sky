@@ -119,7 +119,17 @@ WControllerMediaPrivate::WControllerMediaPrivate(WControllerMedia * p) : WContro
         delete i.value();
     }
 
-    jobs.clear();
+    QHashIterator<QIODevice *, WPrivateMediaData *> j(queries);
+
+    while (j.hasNext())
+    {
+        j.next();
+
+        delete j.value();
+    }
+
+    jobs   .clear();
+    queries.clear();
 
     thread->quit();
     thread->wait();
@@ -493,6 +503,21 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
         }
     }
 
+    QHashIterator<QIODevice *, WPrivateMediaData *> j(d->queries);
+
+    while (j.hasNext())
+    {
+        j.next();
+
+        foreach (WMediaReply * reply, j.value()->replies)
+        {
+            if (reply->_url == url)
+            {
+                replies.append(reply);
+            }
+        }
+    }
+
     foreach (WMediaReply * reply, replies)
     {
         delete reply;
@@ -514,6 +539,18 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
         i.next();
 
         foreach (WMediaReply * reply, i.value()->replies)
+        {
+            replies.append(reply);
+        }
+    }
+
+    QHashIterator<QIODevice *, WPrivateMediaData *> j(d->queries);
+
+    while (j.hasNext())
+    {
+        j.next();
+
+        foreach (WMediaReply * reply, j.value()->replies)
         {
             replies.append(reply);
         }
