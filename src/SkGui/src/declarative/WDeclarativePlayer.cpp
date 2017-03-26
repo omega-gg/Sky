@@ -958,7 +958,7 @@ void WDeclarativePlayer::setHook(WAbstractHook * hook)
 
     if (d->hook)
     {
-        disconnect(d->backend, 0, this, 0);
+        disconnect(d->hook, 0, this, 0);
 
         delete d->hook;
     }
