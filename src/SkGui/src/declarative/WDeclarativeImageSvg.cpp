@@ -42,8 +42,6 @@ void WDeclarativeImageSvgPrivate::init()
 
     renderer = new QSvgRenderer(q);
 
-    QObject::connect(renderer, SIGNAL(repaintNeeded()), q, SLOT(onUpdate()));
-
     status = WDeclarativeImageSvg::Null;
 
     loadMode = static_cast<WDeclarativeImageSvg::LoadMode> (wControllerView->loadMode());
@@ -53,6 +51,8 @@ void WDeclarativeImageSvgPrivate::init()
     loadLater = false;
 
     progress = 0.0;
+
+    QObject::connect(renderer, SIGNAL(repaintNeeded()), q, SLOT(onUpdate()));
 
     q->setFlag(QGraphicsItem::ItemHasNoContents, false);
 }
