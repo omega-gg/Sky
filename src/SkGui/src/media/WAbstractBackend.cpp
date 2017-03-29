@@ -341,10 +341,6 @@ void WAbstractBackend::setEnded(bool ended)
 
             d->clearCurrentTime();
 
-            backendStop();
-
-            setState(StateStopped);
-
             emit endedChanged();
 
             emit this->ended();

@@ -333,6 +333,8 @@ void WDeclarativePlayerPrivate::onEnded()
             {
                 if (tab) tab->setCurrentTime(-1);
 
+                backendInterface->stop();
+
                 emit q->ended();
             }
         }
