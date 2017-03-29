@@ -52,9 +52,9 @@ void WDeclarativeImageSvgPrivate::init()
 
     progress = 0.0;
 
-    QObject::connect(renderer, SIGNAL(repaintNeeded()), q, SLOT(onUpdate()));
-
     q->setFlag(QGraphicsItem::ItemHasNoContents, false);
+
+    QObject::connect(renderer, SIGNAL(repaintNeeded()), q, SLOT(onUpdate()));
 }
 
 //-------------------------------------------------------------------------------------------------

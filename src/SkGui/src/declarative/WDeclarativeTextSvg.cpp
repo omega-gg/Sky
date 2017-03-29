@@ -61,9 +61,9 @@ void WDeclarativeTextSvgPrivate::init()
     hAlign = WDeclarativeText::AlignLeft;
     vAlign = WDeclarativeText::AlignTop;
 
-    QObject::connect(renderer, SIGNAL(repaintNeeded()), q, SLOT(onUpdate()));
-
     q->setFlag(QGraphicsItem::ItemHasNoContents, false);
+
+    QObject::connect(renderer, SIGNAL(repaintNeeded()), q, SLOT(onUpdate()));
 }
 
 //-------------------------------------------------------------------------------------------------
