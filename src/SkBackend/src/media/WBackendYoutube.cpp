@@ -127,7 +127,7 @@ bool WBackendYoutubePrivate::loadTrack(WTrackNet * track, const QString & data, 
 
     track->setTitle(title);
 
-    track->setCover("http://img.youtube.com/vi/" + id + "/hqdefault.jpg");
+    track->setCover("http://i.ytimg.com/vi/" + id + "/hqdefault.jpg");
 
     return true;
 }
@@ -813,22 +813,21 @@ WBackendNetTrack WBackendYoutube::extractTrack(const QByteArray       & data,
 
     QString content = Sk::readUtf8(data);
 
-    QString json = WControllerNetwork::extractJsonHtml(content, "args");
+    QString cover = WControllerNetwork::extractNodeAttribute(content, "=\"og:image", "content");
 
-    QString title = WControllerNetwork::extractJsonUtf8(json, "title");
-    QString cover = WControllerNetwork::extractJson    (json, "iurlmaxres");
+    cover.replace("https://", "http://");
 
     WAbstractBackend::Quality quality;
 
-    if (cover.isEmpty())
+    if (cover.contains("/maxresdefault"))
     {
-        cover = WControllerNetwork::extractJson(json, "iurlhq");
-
-        quality = WAbstractBackend::QualityMedium;
+         quality = WAbstractBackend::QualityHigh;
     }
-    else quality = WAbstractBackend::QualityHigh;
+    else quality = WAbstractBackend::QualityMedium;
 
-    cover.replace("https://i.ytimg.com/", "http://img.youtube.com/");
+    QString json = WControllerNetwork::extractJsonHtml(content, "args");
+
+    QString title = WControllerNetwork::extractJsonUtf8(json, "title");
 
     QString author = WControllerNetwork::extractJsonUtf8(json, "author");
 
@@ -1015,7 +1014,7 @@ WBackendNetPlaylist WBackendYoutube::extractPlaylist(const QByteArray       & da
 
             track.setTitle(title);
 
-            track.setCover("http://img.youtube.com/vi/" + id + "/hqdefault.jpg");
+            track.setCover("http://i.ytimg.com/vi/" + id + "/hqdefault.jpg");
 
             reply.tracks.append(track);
         }
