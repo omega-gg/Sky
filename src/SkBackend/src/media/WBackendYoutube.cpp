@@ -817,14 +817,6 @@ WBackendNetTrack WBackendYoutube::extractTrack(const QByteArray       & data,
 
     cover.replace("https://", "http://");
 
-    WAbstractBackend::Quality quality;
-
-    if (cover.contains("/maxresdefault"))
-    {
-         quality = WAbstractBackend::QualityHigh;
-    }
-    else quality = WAbstractBackend::QualityMedium;
-
     QString json = WControllerNetwork::extractJsonHtml(content, "args");
 
     QString title = WControllerNetwork::extractJsonUtf8(json, "title");
@@ -832,6 +824,8 @@ WBackendNetTrack WBackendYoutube::extractTrack(const QByteArray       & data,
     QString author = WControllerNetwork::extractJsonUtf8(json, "author");
 
     QString duration = WControllerNetwork::extractJson(json, "length_seconds");
+
+    QString quality = WControllerNetwork::extractJson(json, "fmt_list");
 
     int index = content.indexOf("itemprop=\"datePublished");
 
@@ -855,7 +849,11 @@ WBackendNetTrack WBackendYoutube::extractTrack(const QByteArray       & data,
 
     track->setDate(QDateTime::fromString(date, "yyyy-MM-dd"));
 
-    track->setQuality(quality);
+    if (quality.contains("1280"))
+    {
+         track->setQuality(WAbstractBackend::QualityHigh);
+    }
+    else track->setQuality(WAbstractBackend::QualityMedium);
 
     return reply;
 }
