@@ -772,7 +772,7 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
     {
         WTrackNet track(source, WAbstractTrack::Default);
 
-        tracks.push_back(track);
+        tracks.append(track);
     }
 
     int count = tracks.count();

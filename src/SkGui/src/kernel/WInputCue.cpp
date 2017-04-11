@@ -260,7 +260,7 @@ void WInputCuePrivate::onFinished()
 
     if (d->actions.contains(action)) return;
 
-    d->actions.push_back(action);
+    d->actions.append(action);
 
     d->processActions();
 }
