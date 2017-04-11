@@ -97,6 +97,7 @@ public: // Enums
         EventAbort,
         EventPop,
         EventRemove,
+        EventRemoveFile,
         EventSetProxy,
         EventClearProxy,
         EventSetSizeMax,
@@ -536,8 +537,6 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 
             if (data == NULL) continue;
 
-            QFile::remove(data->urlCache.toString());
-
             datas.removeOne(data);
 
             const QUrl & dataUrl = data->url;
@@ -556,6 +555,20 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
                                                                urls, urlsCache));
 
         save();
+
+        return true;
+    }
+    else if (type == static_cast<QEvent::Type> (WCacheThread::EventRemoveFile))
+    {
+        WCacheThreadEventUrls * eventUrls = static_cast<WCacheThreadEventUrls *> (event);
+
+        foreach (const QUrl & url, eventUrls->urls)
+        {
+            if (hash.contains(url) == false)
+            {
+                QFile::remove(url.toString());
+            }
+        }
 
         return true;
     }
@@ -1766,8 +1779,6 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
         {
             const QUrl & urlCache = eventUrls->urlsCache.at(i);
 
-            QFile::remove(urlCache.toString());
-
             d->urls.remove(url);
 
             d->urlsPop.removeOne(url);
@@ -1781,6 +1792,10 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
         }
 
         emit filesRemoved(urls, urlsCache);
+
+        QCoreApplication::postEvent(d->thread,
+                                    new WCacheThreadEventUrls(WCacheThread::EventRemoveFile,
+                                                              urlsCache));
 
         return true;
     }
