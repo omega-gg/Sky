@@ -243,8 +243,6 @@ public: // Variables
 
     WPixmapCacheRead  * action;
     WPixmapCacheReply * reply;
-
-    bool toDelete;
 };
 
 //=================================================================================================
@@ -277,7 +275,6 @@ public:
 public: // Interface
     bool addSize(qint64 sizeFile, const QString & path);
 
-    void removeData(WPixmapCacheData * data);
     void deleteData(WPixmapCacheData * data);
 
     void cleanPixmaps();
@@ -390,31 +387,25 @@ protected:
 
         WPixmapCacheStore * store = pixmapStore();
 
-        if (store->datas.contains(data)
-            &&
-            store->addSize(size, data->path) == false)
+        if (data->pixmaps.isEmpty() == false && store->addSize(size, data->path))
         {
-            data->toDelete = true;
+            store->datas.append(data);
         }
     }
-    else if (data->pixmaps.count())
+    else if (data->pixmaps.isEmpty())
+    {
+        pixmap->data = NULL;
+
+        delete data;
+    }
+    else
     {
         foreach (WPixmapCache * pixmap, data->pixmaps)
         {
             pixmap->d_func()->data = NULL;
         }
 
-        WPixmapCacheStore * store = pixmapStore();
-
-        store->datas.removeOne(data);
-
-        store->deleteData(data);
-    }
-    else
-    {
-        pixmap->data = NULL;
-
-        delete data;
+        pixmapStore()->deleteData(data);
     }
 
     emit loaded();
@@ -466,15 +457,6 @@ bool WPixmapCacheStore::addSize(qint64 sizeFile, const QString & path)
 
 //-------------------------------------------------------------------------------------------------
 
-void WPixmapCacheStore::removeData(WPixmapCacheData * data)
-{
-    if (data->pixmaps.isEmpty())
-    {
-        delete data;
-    }
-    else data->toDelete = true;
-}
-
 void WPixmapCacheStore::deleteData(WPixmapCacheData * data)
 {
     WPixmapCacheKey key = { &(data->path), &(data->size), &(data->area) };
@@ -498,7 +480,6 @@ void WPixmapCacheStore::cleanPixmaps()
         {
             deleteData(data);
         }
-        else data->toDelete = true;
     }
 }
 
@@ -506,7 +487,10 @@ void WPixmapCacheStore::clearPixmaps()
 {
     foreach (WPixmapCacheData * data, datas)
     {
-        removeData(data);
+        if (data->pixmaps.isEmpty())
+        {
+            delete data;
+        }
     }
 
     pixmaps.clear();
@@ -554,7 +538,10 @@ void WPixmapCacheStore::onFilesRemoved(const QList<QUrl> &, const QList<QUrl> & 
 
             i.remove();
 
-            removeData(data);
+            if (data->pixmaps.isEmpty())
+            {
+                delete data;
+            }
         }
     }
 }
@@ -577,7 +564,10 @@ void WPixmapCacheStore::onFilesCleared()
 
             i.remove();
 
-            removeData(data);
+            if (data->pixmaps.isEmpty())
+            {
+                delete data;
+            }
         }
     }
 }
@@ -625,11 +615,10 @@ void WPixmapCachePrivate::readCache(const QString & path, const QSize & size,
 {
     if (path.startsWith("image:///"))
     {
-        if (loadImage(path, size, area))
+        if (loadImage(path, size, area) == false)
         {
-            tryToCache();
+            data = NULL;
         }
-        else data = NULL;
     }
     else if (asynchronous)
     {
@@ -657,28 +646,24 @@ void WPixmapCachePrivate::readFile(const QString & path, const QSize & size,
 {
     if (path.startsWith("image:///"))
     {
-        if (loadImage(path, size, area))
+        if (loadImage(path, size, area) == false)
         {
-             data->toDelete = true;
+            data = NULL;
         }
-        else data = NULL;
     }
     else if (asynchronous)
     {
         loadFile(path, size, area);
-
-        data->toDelete = true;
 
         if (receiver)
         {
             QObject::connect(data->reply, SIGNAL(loaded()), receiver, method);
         }
     }
-    else if (readData(path, size, area))
+    else if (readData(path, size, area) == false)
     {
-         data->toDelete = true;
+        data = NULL;
     }
-    else data = NULL;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -775,15 +760,12 @@ void WPixmapCachePrivate::tryToCache()
 
         data->pixmaps.append(q);
 
-        data->toDelete = false;
-
         WPixmapCacheKey key = { &(data->path), &(data->size), &(data->area) };
 
         store->pixmaps.insert(key, data);
 
         store->datas.append(data);
     }
-    else data->toDelete = true;
 }
 
 void WPixmapCachePrivate::addToCache()
@@ -794,13 +776,9 @@ void WPixmapCachePrivate::addToCache()
 
     data->pixmaps.append(q);
 
-    data->toDelete = false;
-
     WPixmapCacheKey key = { &(data->path), &(data->size), &(data->area) };
 
     store->pixmaps.insert(key, data);
-
-    store->datas.append(data);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -811,21 +789,13 @@ void WPixmapCachePrivate::removeData(QObject * receiver)
 
     QList<WPixmapCache *> & pixmaps = data->pixmaps;
 
-    if (pixmaps.isEmpty())
-    {
-        WPixmapCacheStore * store = pixmapStore();
-
-        store->datas.removeOne(data);
-
-        store->deleteData(data);
-    }
-    else
+    if (pixmaps.isEmpty() == false)
     {
         Q_Q(WPixmapCache);
 
         pixmaps.removeOne(q);
 
-        if (data->toDelete && pixmaps.isEmpty())
+        if (pixmaps.isEmpty() && (data->action || pixmapStore()->datas.contains(data) == false))
         {
             pixmapStore()->deleteData(data);
         }
@@ -835,6 +805,10 @@ void WPixmapCachePrivate::removeData(QObject * receiver)
 
             if (reply) QObject::disconnect(reply, 0, receiver, 0);
         }
+    }
+    else if (pixmapStore()->datas.contains(data) == false)
+    {
+        delete data;
     }
 }
 
@@ -886,7 +860,16 @@ void WPixmapCache::load(const QString & path, const QSize & size, const QSize & 
 
         if (action)
         {
-            if (asynchronous == false)
+            if (asynchronous)
+            {
+                data->pixmaps.append(this);
+
+                if (receiver)
+                {
+                    QObject::connect(data->reply, SIGNAL(loaded()), receiver, method);
+                }
+            }
+            else
             {
                 WPixmapCacheReply * reply = data->reply;
 
@@ -896,7 +879,22 @@ void WPixmapCache::load(const QString & path, const QSize & size, const QSize & 
 
                 QPixmap * pixmap = &(data->pixmap);
 
-                if (readPixmap(pixmap, path, size, area) == false)
+                if (readPixmap(pixmap, path, size, area))
+                {
+                    qint64 size = getPixmapSize(*pixmap);
+
+                    data->pixmapSize = size;
+
+                    data->pixmaps.append(this);
+
+                    data->reply = NULL;
+
+                    if (store->addSize(size, path))
+                    {
+                        store->datas.append(data);
+                    }
+                }
+                else
                 {
                     qWarning("WPixmapCache::load: Failed to read file %s.", path.C_STR);
 
@@ -907,53 +905,21 @@ void WPixmapCache::load(const QString & path, const QSize & size, const QSize & 
                         pixmap->d_func()->data = NULL;
                     }
 
-                    store->datas.removeOne(data);
-
                     store->deleteData(data);
-
-                    emit reply->loaded();
-
-                    return;
-                }
-
-                qint64 size = getPixmapSize(*pixmap);
-
-                data->pixmapSize = size;
-
-                data->reply = NULL;
-
-                if (store->addSize(size, path) == false)
-                {
-                    data->toDelete = true;
                 }
 
                 emit reply->loaded();
-
-                return;
             }
-            else if (receiver)
+        }
+        else
+        {
+            data->pixmaps.append(this);
+
+            if (store->datas.removeOne(data) || store->addSize(data->pixmapSize, data->path))
             {
-                QObject::connect(data->reply, SIGNAL(loaded()), receiver, method);
+                store->datas.append(data);
             }
         }
-
-        if (store->datas.removeOne(data))
-        {
-            data->pixmaps.append(this);
-
-            store->datas.append(data);
-        }
-        else if (store->addSize(data->pixmapSize, data->path))
-        {
-            data->pixmaps.append(this);
-
-            data->toDelete = false;
-
-            store->pixmaps.insert(key, data);
-
-            store->datas.append(data);
-        }
-        else data->toDelete = true;
     }
     else
     {
@@ -1326,8 +1292,6 @@ void WPixmapCache::setPixmap(const QPixmap & pixmap, QObject * receiver)
 
     d->data->action = NULL;
     d->data->reply  = NULL;
-
-    d->data->toDelete = false;
 }
 
 //-------------------------------------------------------------------------------------------------
