@@ -1555,19 +1555,21 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
         {
             WBackendNetQuery nextQuery = *backendQuery;
 
-            queries.remove(data);
-
             nextQuery.type = WBackendNetQuery::TypeWeb;
 
             if (query->type == WControllerPlaylistQuery::TypePlaylist)
             {
                 WPlaylistNet * playlist = item->toPlaylistNet();
 
+                queries.remove(data);
+
                 getDataPlaylist(playlist, nextQuery);
             }
             else // if (query->type == WControllerPlaylistQuery::TypeFolder)
             {
                 WLibraryFolder * folder = item->toFolder();
+
+                queries.remove(data);
 
                 getDataFolder(folder, nextQuery);
             }
