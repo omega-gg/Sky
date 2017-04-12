@@ -166,6 +166,8 @@ private: // Variables
 
     QHash<QUrl, WCacheData *> hash;
 
+    QList<QUrl> toRemove;
+
     QTimer * timer;
 
     int maxJobs;
@@ -539,14 +541,17 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 
             datas.removeOne(data);
 
-            const QUrl & dataUrl = data->url;
+            const QUrl & dataUrl      = data->url;
+            const QUrl & dataUrlCache = data->urlCache;
 
             hash.remove(dataUrl);
 
             ids.removeOne(data->id);
 
+            toRemove.append(dataUrlCache);
+
             urls     .append(dataUrl);
-            urlsCache.append(data->urlCache);
+            urlsCache.append(dataUrlCache);
 
             delete data;
         }
@@ -564,7 +569,7 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 
         foreach (const QUrl & url, eventUrls->urls)
         {
-            if (hash.contains(url) == false)
+            if (toRemove.removeOne(url))
             {
                 QFile::remove(url.toString());
             }
@@ -861,6 +866,8 @@ bool WCacheThread::writeFile(QNetworkReply * reply, WCacheJob * job)
 
     addData(id, url, urlCache, extension, sizeFile);
 
+    toRemove.removeOne(urlCache);
+
     QCoreApplication::postEvent(cache, new WCacheEventAdded(url, urlCache));
 
     save();
@@ -912,6 +919,8 @@ void WCacheThread::writeData(const QUrl & url, const QByteArray & array)
 
     addData(id, url, urlCache, extension, sizeFile);
 
+    toRemove.removeOne(urlCache);
+
     QCoreApplication::postEvent(cache, new WCacheEventAdded(url, urlCache));
 
     save();
@@ -939,14 +948,17 @@ void WCacheThread::cleanFiles()
     {
         WCacheData * data = datas.takeFirst();
 
-        const QUrl & url = data->url;
+        const QUrl & url      = data->url;
+        const QUrl & urlCache = data->urlCache;
 
         hash.remove(url);
 
         ids.removeOne(data->id);
 
+        toRemove.append(urlCache);
+
         urls     .append(url);
-        urlsCache.append(data->urlCache);
+        urlsCache.append(urlCache);
 
         size -= data->size;
 
