@@ -19,19 +19,18 @@
 
 // Qt includes
 #include <QFileInfo>
-#include <QEvent>
 #include <QUrl>
 
 // Sk includes
 #include <WController>
+#include <WAbstractThreadAction>
 #include <WAbstractThreadReply>
 
 #ifndef SK_NO_CONTROLLERFILE
 
 // Forward declarations
 class WControllerFilePrivate;
-class WAbstractThreadAction;
-class WAbstractThreadReply;
+class WControllerFileReply;
 class WCache;
 class WCacheFile;
 
@@ -39,10 +38,25 @@ class WCacheFile;
 #define wControllerFile WControllerFile::instance()
 
 //=================================================================================================
+// WControllerFileAction
+//=================================================================================================
+
+class SK_CORE_EXPORT WControllerFileAction : public WAbstractThreadAction
+{
+    Q_OBJECT
+
+protected: // WAbstractThreadAction reimplementation
+    /* virtual */ WAbstractThreadReply * createReply() const;
+
+public: // Properties
+    WControllerFileReply * controllerReply();
+};
+
+//=================================================================================================
 // WControllerFileReply
 //=================================================================================================
 
-class WControllerFileReply : public WAbstractThreadReply
+class SK_CORE_EXPORT WControllerFileReply : public WAbstractThreadReply
 {
     Q_OBJECT
 
@@ -58,7 +72,7 @@ signals:
 private:
     Q_DISABLE_COPY(WControllerFileReply)
 
-    friend class WControllerFileThreadAction;
+    friend class WControllerFileAction;
 };
 
 //=================================================================================================

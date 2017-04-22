@@ -19,17 +19,14 @@
 #ifndef SK_NO_CONTROLLERFILE
 
 // Qt includes
-#include <QImageReader>
 #include <QDir>
 
 // Sk includes
 #include <WControllerApplication>
 #include <WControllerNetwork>
-#include <WControllerScript>
 #include <WLocalObject>
 #include <WFileWatcher>
 #include <WCache>
-#include <WAbstractThreadAction>
 #include <WThreadActions>
 
 // 3rd party includes
@@ -44,30 +41,17 @@ using namespace QtLP_Private;
 W_INIT_CONTROLLER(WControllerFile)
 
 //=================================================================================================
-// WControllerFileThreadAction
+// WControllerFileAction
 //=================================================================================================
 
-class WControllerFileThreadAction : public WAbstractThreadAction
-{
-    Q_OBJECT
-
-protected: // WAbstractThreadAction reimplementation
-    /* virtual */ WAbstractThreadReply * createReply() const;
-
-public: // Properties
-    WControllerFileReply * controllerReply();
-};
-
-/* virtual */ WAbstractThreadReply * WControllerFileThreadAction::createReply() const
+/* virtual */ WAbstractThreadReply * WControllerFileAction::createReply() const
 {
     return new WControllerFileReply;
 }
 
 //-------------------------------------------------------------------------------------------------
-// Properties
-//-------------------------------------------------------------------------------------------------
 
-WControllerFileReply * WControllerFileThreadAction::controllerReply()
+WControllerFileReply * WControllerFileAction::controllerReply()
 {
     return qobject_cast<WControllerFileReply *> (reply());
 }
@@ -76,7 +60,7 @@ WControllerFileReply * WControllerFileThreadAction::controllerReply()
 // WControllerFileRename
 //=================================================================================================
 
-class WControllerFileRename : public WControllerFileThreadAction
+class WControllerFileRename : public WControllerFileAction
 {
     Q_OBJECT
 
@@ -102,7 +86,7 @@ public: // Variables
 // WControllerFileRename
 //=================================================================================================
 
-class WControllerFileDelete : public WControllerFileThreadAction
+class WControllerFileDelete : public WControllerFileAction
 {
     Q_OBJECT
 
@@ -127,7 +111,7 @@ public: // Variables
 // WControllerFileCreateFolders
 //=================================================================================================
 
-class WControllerFileCreateFolders : public WControllerFileThreadAction
+class WControllerFileCreateFolders : public WControllerFileAction
 {
     Q_OBJECT
 
@@ -155,7 +139,7 @@ public: // Variables
 // WControllerFileDeleteFolders
 //=================================================================================================
 
-class WControllerFileDeleteFolders : public WControllerFileThreadAction
+class WControllerFileDeleteFolders : public WControllerFileAction
 {
     Q_OBJECT
 
@@ -185,7 +169,7 @@ public: // Variables
 // WControllerFileDeleteFolders
 //=================================================================================================
 
-class WControllerFileDeleteFoldersContent : public WControllerFileThreadAction
+class WControllerFileDeleteFoldersContent : public WControllerFileAction
 {
     Q_OBJECT
 
@@ -216,7 +200,7 @@ public: // Variables
 // WControllerFileCreatePaths
 //=================================================================================================
 
-class WControllerFileCreatePaths : public WControllerFileThreadAction
+class WControllerFileCreatePaths : public WControllerFileAction
 {
     Q_OBJECT
 
