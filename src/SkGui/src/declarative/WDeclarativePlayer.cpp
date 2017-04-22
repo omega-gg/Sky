@@ -75,16 +75,17 @@ void WDeclarativePlayerPrivate::init()
     keepState = false;
 
     q->setFlag(QGraphicsItem::ItemHasNoContents, false);
+
+    QObject::connect(q, SIGNAL(playlistChanged()), q, SIGNAL(playlistUpdated()));
+    QObject::connect(q, SIGNAL(playlistChanged()), q, SIGNAL(countChanged   ()));
 }
 
 //-------------------------------------------------------------------------------------------------
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WDeclarativePlayerPrivate::setPlaylist(WPlaylistNet * playlist)
+void WDeclarativePlayerPrivate::applyPlaylist(WPlaylistNet * playlist)
 {
-    if (this->playlist == playlist) return;
-
     Q_Q(WDeclarativePlayer);
 
     if (folder)
@@ -92,11 +93,6 @@ void WDeclarativePlayerPrivate::setPlaylist(WPlaylistNet * playlist)
         folder->setActiveId(-1);
 
         QObject::disconnect(folder, SIGNAL(destroyed()), q, SLOT(onFolderDestroyed()));
-    }
-
-    if (shuffle && this->playlist)
-    {
-        this->playlist->unregisterWatcher(q);
     }
 
     this->playlist = playlist;
@@ -110,15 +106,37 @@ void WDeclarativePlayerPrivate::setPlaylist(WPlaylistNet * playlist)
             folder->setActiveId(playlist->id());
         }
 
-        if (shuffle) playlist->registerWatcher(q);
+        if (shuffle)
+        {
+            playlist->registerWatcher(q);
+
+            resetShuffle();
+        }
 
         QObject::connect(folder, SIGNAL(destroyed()), q, SLOT(onFolderDestroyed()));
     }
-    else folder = NULL;
+    else
+    {
+        folder = NULL;
 
-    if (shuffle) resetShuffle();
+        if (shuffle) resetShuffle();
+    }
 
     emit q->playlistChanged();
+}
+
+void WDeclarativePlayerPrivate::setPlaylist(WPlaylistNet * playlist)
+{
+    if (this->playlist == playlist) return;
+
+    if (shuffle && this->playlist)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        this->playlist->unregisterWatcher(q);
+    }
+
+    applyPlaylist(playlist);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -128,8 +146,6 @@ void WDeclarativePlayerPrivate::setTab(WTabTrack * tab)
     if (this->tab == tab) return;
 
     Q_Q(WDeclarativePlayer);
-
-    int count = q->count();
 
     if (this->tab)
     {
@@ -168,13 +184,7 @@ void WDeclarativePlayerPrivate::setTab(WTabTrack * tab)
         onCurrentBookmarkChanged();
         onCurrentBookmarkUpdated();
     }
-
-    if (q->count() != count)
-    {
-        emit q->countChanged();
-    }
-
-    emit q->playlistUpdated();
+    else emit q->playlistChanged();
 
     emit q->tabChanged();
 }
@@ -312,6 +322,8 @@ void WDeclarativePlayerPrivate::clearPlaylistAndTabs()
 
     if (playlist)
     {
+        if (shuffle) playlist->unregisterWatcher(q);
+
         QObject::disconnect(playlist, 0, q, 0);
 
         playlist = NULL;
@@ -1030,8 +1042,6 @@ void WDeclarativePlayer::setPlaylist(WPlaylistNet * playlist)
 
     if (d->playlist == playlist) return;
 
-    int count = this->count();
-
     d->clearPlaylistAndTabs();
 
     if (playlist)
@@ -1049,14 +1059,7 @@ void WDeclarativePlayer::setPlaylist(WPlaylistNet * playlist)
         connect(playlist, SIGNAL(destroyed()), this, SLOT(onPlaylistDestroyed()));
     }
 
-    d->setPlaylist(playlist);
-
-    if (this->count() != count)
-    {
-        emit countChanged();
-    }
-
-    emit playlistUpdated();
+    d->applyPlaylist(playlist);
 }
 
 //-------------------------------------------------------------------------------------------------

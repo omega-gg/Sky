@@ -41,6 +41,8 @@ protected:
     void init();
 
 public: // Functions
+    void applyPlaylist(WPlaylistNet * playlist);
+
     void setPlaylist(WPlaylistNet * playlist);
 
     void setTab(WTabTrack * tab);
