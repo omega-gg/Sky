@@ -116,7 +116,8 @@ public: // Enums
     {
         RepeatNone,
         RepeatAll,
-        RepeatOne
+        RepeatOne,
+        RepeatStop
     };
 
 public:

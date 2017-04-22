@@ -47,6 +47,8 @@ public: // Functions
 
     void loadSource(const QUrl & source, int duration, int currentTime);
 
+    void stop();
+
     void updateRepeat();
 
     void resetShuffle();

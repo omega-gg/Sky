@@ -219,6 +219,13 @@ void WDeclarativePlayerPrivate::loadSource(const QUrl & source, int duration, in
     emit q->sourceChanged();
 }
 
+void WDeclarativePlayerPrivate::stop()
+{
+    if (tab) tab->setCurrentTime(-1);
+
+    backendInterface->stop();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 void WDeclarativePlayerPrivate::updateRepeat()
@@ -317,10 +324,22 @@ void WDeclarativePlayerPrivate::clearPlaylistAndTabs()
 
 void WDeclarativePlayerPrivate::onEnded()
 {
-    Q_Q(WDeclarativePlayer);
-
-    if (repeat != WDeclarativePlayer::RepeatOne)
+    if (repeat == WDeclarativePlayer::RepeatOne)
     {
+        backendInterface->replay();
+    }
+    else if (repeat == WDeclarativePlayer::RepeatStop)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        stop();
+
+        emit q->ended();
+    }
+    else
+    {
+        Q_Q(WDeclarativePlayer);
+
         if (q->hasNextTrack() == false)
         {
             if (playlist && repeat == WDeclarativePlayer::RepeatAll)
@@ -331,16 +350,13 @@ void WDeclarativePlayerPrivate::onEnded()
             }
             else
             {
-                if (tab) tab->setCurrentTime(-1);
-
-                backendInterface->stop();
+                stop();
 
                 emit q->ended();
             }
         }
         else q->setNextTrack();
     }
-    else backendInterface->replay();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1380,9 +1396,13 @@ bool WDeclarativePlayer::hasPreviousTrack() const
 {
     Q_D(const WDeclarativePlayer);
 
-    if (d->repeat == WDeclarativePlayer::RepeatAll && count() > 1)
+    if (d->repeat == WDeclarativePlayer::RepeatAll)
     {
-        return true;
+        if (count() > 1)
+        {
+             return true;
+        }
+        else return false;
     }
     else if (d->shuffle)
     {
@@ -1407,9 +1427,13 @@ bool WDeclarativePlayer::hasNextTrack() const
 {
     Q_D(const WDeclarativePlayer);
 
-    if (d->repeat == WDeclarativePlayer::RepeatAll && count() > 1)
+    if (d->repeat == WDeclarativePlayer::RepeatAll)
     {
-        return true;
+        if (count() > 1)
+        {
+             return true;
+        }
+        else return false;
     }
     else if (d->shuffle)
     {
