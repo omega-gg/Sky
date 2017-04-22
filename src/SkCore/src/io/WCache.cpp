@@ -166,7 +166,7 @@ private: // Variables
 
     QHash<QUrl, WCacheData *> hash;
 
-    QList<QUrl> toRemove;
+    QHash<QUrl, int> toRemove;
 
     QTimer * timer;
 
@@ -334,6 +334,31 @@ public: // Variables
     QUrl    url;
     QString error;
 };
+
+//=================================================================================================
+// WCacheFileDelete
+//=================================================================================================
+
+class WCacheFileDelete : public WControllerFileAction
+{
+    Q_OBJECT
+
+protected: // WAbstractThreadAction implementation
+    /* virtual */ bool run();
+
+public: // Variables
+    QList<QUrl> urls;
+};
+
+/* virtual */ bool WCacheFileDelete::run()
+{
+    foreach (const QUrl & url, urls)
+    {
+        WControllerFile::deleteFile(url.toString());
+    }
+
+    return true;
+}
 
 //=================================================================================================
 // WCacheThread
@@ -546,9 +571,7 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 
             hash.remove(dataUrl);
 
-            ids.removeOne(data->id);
-
-            toRemove.append(dataUrlCache);
+            toRemove.insert(dataUrlCache, data->id);
 
             urls     .append(dataUrl);
             urlsCache.append(dataUrlCache);
@@ -569,10 +592,9 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 
         foreach (const QUrl & url, eventUrls->urls)
         {
-            if (toRemove.removeOne(url))
-            {
-                QFile::remove(url.toString());
-            }
+            int id = toRemove.take(url);
+
+            if (id) ids.removeOne(id);
         }
 
         return true;
@@ -866,7 +888,7 @@ bool WCacheThread::writeFile(QNetworkReply * reply, WCacheJob * job)
 
     addData(id, url, urlCache, extension, sizeFile);
 
-    toRemove.removeOne(urlCache);
+    toRemove.remove(urlCache);
 
     QCoreApplication::postEvent(cache, new WCacheEventAdded(url, urlCache));
 
@@ -919,7 +941,7 @@ void WCacheThread::writeData(const QUrl & url, const QByteArray & array)
 
     addData(id, url, urlCache, extension, sizeFile);
 
-    toRemove.removeOne(urlCache);
+    toRemove.remove(urlCache);
 
     QCoreApplication::postEvent(cache, new WCacheEventAdded(url, urlCache));
 
@@ -953,9 +975,7 @@ void WCacheThread::cleanFiles()
 
         hash.remove(url);
 
-        ids.removeOne(data->id);
-
-        toRemove.append(urlCache);
+        toRemove.insert(urlCache, data->id);
 
         urls     .append(url);
         urlsCache.append(urlCache);
@@ -1789,8 +1809,6 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
         foreach (const QUrl & url, urls)
         {
-            const QUrl & urlCache = eventUrls->urlsCache.at(i);
-
             d->urls.remove(url);
 
             d->urlsPop.removeOne(url);
@@ -1808,6 +1826,12 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
         QCoreApplication::postEvent(d->thread,
                                     new WCacheThreadEventUrls(WCacheThread::EventRemoveFile,
                                                               urlsCache));
+
+        WCacheFileDelete * action = new WCacheFileDelete;
+
+        action->urls = urlsCache;
+
+        wControllerFile->startReadAction(action);
 
         return true;
     }

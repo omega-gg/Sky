@@ -83,7 +83,7 @@ public: // Variables
 }
 
 //=================================================================================================
-// WControllerFileRename
+// WControllerFileDelete
 //=================================================================================================
 
 class WControllerFileDelete : public WControllerFileAction
@@ -166,7 +166,7 @@ public: // Variables
 }
 
 //=================================================================================================
-// WControllerFileDeleteFolders
+// WControllerFileDeleteFoldersContent
 //=================================================================================================
 
 class WControllerFileDeleteFoldersContent : public WControllerFileAction
