@@ -1401,19 +1401,11 @@ bool WDeclarativePlayer::hasPreviousTrack() const
 
     if (d->repeat == WDeclarativePlayer::RepeatAll)
     {
-        if (count() > 1)
-        {
-             return true;
-        }
-        else return false;
+        return (count() > 1);
     }
     else if (d->shuffle)
     {
-        if (d->shuffleIndex > 0)
-        {
-             return true;
-        }
-        else return false;
+        return (d->shuffleIndex > 0);
     }
     else if (d->tab)
     {
@@ -1432,11 +1424,7 @@ bool WDeclarativePlayer::hasNextTrack() const
 
     if (d->repeat == WDeclarativePlayer::RepeatAll)
     {
-        if (count() > 1)
-        {
-             return true;
-        }
-        else return false;
+        return (count() > 1);
     }
     else if (d->shuffle)
     {
