@@ -82,7 +82,7 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 }
 
 //-------------------------------------------------------------------------------------------------
-// Static interface
+// Static functions
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ int WControllerView::screenNumber(const QWidget * widget)

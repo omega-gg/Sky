@@ -516,7 +516,7 @@ void WWindowPrivate::init()
 #endif // Q_OS_WIN
 
 //-------------------------------------------------------------------------------------------------
-// Static interface
+// Static functions
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QPixmap WWindow::takeItemShot(QGraphicsObject * item,

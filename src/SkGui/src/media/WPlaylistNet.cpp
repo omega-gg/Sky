@@ -1356,7 +1356,7 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 }
 
 //-------------------------------------------------------------------------------------------------
-// Static interface
+// Static functions
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ WPlaylistNet * WPlaylistNet::create(Type type)

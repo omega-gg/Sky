@@ -53,7 +53,7 @@ private:
 protected: // Initialize
     /* virtual */ void init();
 
-public: // Static interface
+public: // Static functions
     Q_INVOKABLE static int screenNumber(const QWidget * widget = NULL);
     Q_INVOKABLE static int screenNumber(const QPoint  & pos);
 

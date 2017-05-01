@@ -287,7 +287,7 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
 }
 
 //-------------------------------------------------------------------------------------------------
-// Static interface
+// Static functions
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ bool WLibraryItem::typeIsFolder(Type type)

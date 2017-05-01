@@ -344,7 +344,7 @@ void WControllerApplication::startScript()
 }
 
 //-------------------------------------------------------------------------------------------------
-// Static interface
+// Static functions
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ bool WControllerApplication::fuzzyCompare(qreal valueA, qreal valueB)

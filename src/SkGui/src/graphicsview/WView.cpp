@@ -1702,7 +1702,7 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 }
 
 //-------------------------------------------------------------------------------------------------
-// Static interface
+// Static functions
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QPixmap WView::takeItemShot(QGraphicsObject * item,

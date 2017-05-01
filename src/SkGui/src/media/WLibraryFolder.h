@@ -238,7 +238,7 @@ public: // Interface
     Q_INVOKABLE void registerWatcher  (WLibraryFolderWatcher * watcher);
     Q_INVOKABLE void unregisterWatcher(WLibraryFolderWatcher * watcher);
 
-public: // Static interface
+public: // Static functions
     Q_INVOKABLE static WLibraryFolder * create(Type type = Folder);
 
     Q_INVOKABLE static bool move(WLibraryFolder * folderA, int from,

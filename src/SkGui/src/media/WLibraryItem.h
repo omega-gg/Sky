@@ -123,7 +123,7 @@ public: // Interface
 
     Q_INVOKABLE void setCurrentTabIds(WTabTrack * tab);
 
-public: // Static interface
+public: // Static functions
     Q_INVOKABLE static bool typeIsFolder  (Type type);
     Q_INVOKABLE static bool typeIsPlaylist(Type type);
 

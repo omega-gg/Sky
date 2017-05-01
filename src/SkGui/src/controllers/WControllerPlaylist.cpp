@@ -2590,7 +2590,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 }
 
 //-------------------------------------------------------------------------------------------------
-// Static interface
+// Static functions
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QUrl WControllerPlaylist::createSource(const QString & backend,

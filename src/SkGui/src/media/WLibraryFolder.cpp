@@ -2171,7 +2171,7 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
 }
 
 //-------------------------------------------------------------------------------------------------
-// Static interface
+// Static functions
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ WLibraryFolder * WLibraryFolder::create(Type type)

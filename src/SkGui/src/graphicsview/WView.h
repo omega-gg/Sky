@@ -332,7 +332,7 @@ public: // Interface
 
     Q_INVOKABLE void unregisterCursor(int shape);
 
-public: // Static interface
+public: // Static functions
     Q_INVOKABLE static QPixmap takeItemShot(QGraphicsObject  * item,
                                             const QColor     & background   = Qt::transparent,
                                             bool               forceVisible = false);

@@ -242,7 +242,7 @@ int WControllerXml::doQuery(const QUrl & query)
 }
 
 //-------------------------------------------------------------------------------------------------
-// Static interface
+// Static functions
 //-------------------------------------------------------------------------------------------------
 
 /* static */ bool WControllerXml::loadFromFile(QDomDocument * document,

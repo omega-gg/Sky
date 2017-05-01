@@ -130,7 +130,7 @@ public: // Interface
     Q_INVOKABLE void copyTracksTo(const QVariantList & tracks,
                                   WPlaylistNet       * destination, int to = -1) const;
 
-public: // Static interface
+public: // Static functions
     Q_INVOKABLE static WPlaylistNet * create(Type type = PlaylistNet);
 
     Q_INVOKABLE static WPlaylistNet * fromPlaylist(WAbstractPlaylist * playlist);

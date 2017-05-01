@@ -48,7 +48,7 @@ private:
 protected: // Initialize
     /* virtual */ void init();
 
-public: // Static interface
+public: // Static functions
     Q_INVOKABLE static bool textIsUrl(const QString & text);
     Q_INVOKABLE static bool textIsIp (const QString & text);
 

@@ -105,7 +105,7 @@ public: // Interface
     Q_INVOKABLE QString clipboardText() const;
     Q_INVOKABLE void    setClipboardText(const QString & text);
 
-public: // Static interface
+public: // Static functions
     Q_INVOKABLE static bool fuzzyCompare(qreal valueA, qreal valueB);
 
     Q_INVOKABLE static QList<int> variantsToInts(const QVariantList & variants);
