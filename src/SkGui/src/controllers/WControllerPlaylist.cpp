@@ -728,6 +728,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylistNet * playlist, co
 
                 return getDataPlaylist(playlist, query);
             }
+            else return true;
         }
     }
 
