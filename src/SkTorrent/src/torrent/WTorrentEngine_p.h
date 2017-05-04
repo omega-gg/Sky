@@ -18,7 +18,9 @@
 #define WTORRENTENGINE_P_H
 
 // Qt includes
-#include <QObject>
+#include <QEvent>
+#include <QVariant>
+#include <QTimer>
 
 // libtorrent includes
 #include <libtorrent/session.hpp>
@@ -31,12 +33,39 @@
 // Namespaces
 using namespace libtorrent;
 
+//-------------------------------------------------------------------------------------------------
+// WTorrentData
+//-------------------------------------------------------------------------------------------------
+
+struct WTorrentData
+{
+    WTorrent * torrent;
+
+    torrent_handle handle;
+
+    qint64 size;
+
+    int first;
+    int last;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WTorrentEnginePrivate
+//-------------------------------------------------------------------------------------------------
+
 class SK_TORRENT_EXPORT WTorrentEnginePrivate : public WPrivate
 {
 public: // Enums
     enum EventType
     {
         EventCreate = QEvent::User,
+        EventAdd,
+        EventRemove,
+        EventState,
+        EventProgress,
+        EventPiece,
+        EventFinished,
+        EventError,
         EventClear
     };
 
@@ -46,13 +75,97 @@ public:
     void init(QThread * thread);
 
 public: // Functions
-    boost::function<void()> const processAlert();
+    WTorrentData * getTorrentData(WTorrent * torrent) const;
+
+public: // Slots
+    void onAlert ();
+    void onUpdate();
 
 public: // Variables
-    libtorrent::session * session;
+    session * session;
+
+    QHash<unsigned int, WTorrentData *> torrents;
+
+    QTimer timer;
 
 protected:
     W_DECLARE_PUBLIC(WTorrentEngine)
+};
+
+//-------------------------------------------------------------------------------------------------
+// WTorrentEngineValue
+//-------------------------------------------------------------------------------------------------
+
+class WTorrentEngineValue : public QEvent
+{
+public:
+    WTorrentEngineValue(WTorrentEnginePrivate::EventType type, WTorrent       * torrent,
+                                                               const QVariant & value)
+        : QEvent(static_cast<QEvent::Type> (type))
+    {
+        this->torrent = torrent;
+        this->value   = value;
+    }
+
+public: // Variables
+    WTorrent * torrent;
+
+    QVariant value;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WTorrentEngineHandle
+//-------------------------------------------------------------------------------------------------
+
+class WTorrentEngineHandle : public QEvent
+{
+public:
+    WTorrentEngineHandle(WTorrentEnginePrivate::EventType type, unsigned int     hash,
+                                                                const QVariant & value)
+        : QEvent(static_cast<QEvent::Type> (type))
+    {
+        this->hash  = hash;
+        this->value = value;
+    }
+
+public: // Variables
+    unsigned int hash;
+
+    QVariant value;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WTorrentProgress
+//-------------------------------------------------------------------------------------------------
+
+struct WTorrentProgress
+{
+    unsigned int hash;
+
+    qint64 progress;
+
+    int download;
+    int upload;
+
+    int seeds;
+    int peers;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WTorrentEngineProgress
+//-------------------------------------------------------------------------------------------------
+
+class WTorrentEngineProgress : public QEvent
+{
+public:
+    WTorrentEngineProgress(const QList<WTorrentProgress> & list)
+        : QEvent(static_cast<QEvent::Type> (WTorrentEnginePrivate::EventProgress))
+    {
+        this->list = list;
+    }
+
+public: // Variables
+    QList<WTorrentProgress> list;
 };
 
 #endif // SK_NO_TORRENTENGINE

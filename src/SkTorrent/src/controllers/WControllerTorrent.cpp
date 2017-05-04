@@ -450,7 +450,8 @@ void WControllerTorrentPrivate::onLoaded(WRemoteData * data)
     {
         downloads.push_back(torrent);
 
-        engine->load(torrent, data->readAll());
+        engine->load(torrent, data->readAll(),
+                     wControllerFile->pathStorage() + CONTROLLERTORRENT_PATH_TORRENTS);
     }
 
     delete data;
@@ -535,7 +536,7 @@ WTorrentEngine * WControllerTorrent::engine() const
 
 QString WControllerTorrent::pathStorage() const
 {
-    return wControllerFile->pathStorage() + "/torrents";
+    return wControllerFile->pathStorage() + CONTROLLERTORRENT_PATH_TORRENTS;
 }
 
 #endif // SK_NO_CONTROLLERTORRENT

@@ -37,7 +37,7 @@ public:
     WTorrentEngine(QThread * thread = NULL, QObject * parent = NULL);
 
 public: // Interface
-    Q_INVOKABLE void load(WTorrent * torrent, const QByteArray & data);
+    Q_INVOKABLE void load(WTorrent * torrent, const QByteArray & data, const QString & path);
 
     Q_INVOKABLE void remove(WTorrent * torrent, bool deleteFiles = false);
 
@@ -49,6 +49,8 @@ protected: // Events
 private:
     W_DECLARE_PRIVATE(WTorrentEngine)
 };
+
+#include <private/WTorrentEngine_p>
 
 #endif // SK_NO_TORRENTENGINE
 #endif // WTORRENTENGINE_H
