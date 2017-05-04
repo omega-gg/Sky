@@ -14,41 +14,46 @@
 */
 //=================================================================================================
 
-#ifndef WTORRENTENGINE_H
-#define WTORRENTENGINE_H
+#ifndef WTORRENTENGINE_P_H
+#define WTORRENTENGINE_P_H
 
 // Qt includes
 #include <QObject>
 
-// Sk includes
-#include <Sk>
+// libtorrent includes
+#include <libtorrent/session.hpp>
+
+// Private includes
+#include <private/Sk_p>
 
 #ifndef SK_NO_TORRENTENGINE
 
-// Forward declarations
-class WTorrentEnginePrivate;
-class WTorrent;
+// Namespaces
+using namespace libtorrent;
 
-class SK_TORRENT_EXPORT WTorrentEngine : public QObject, public WPrivatable
+class SK_TORRENT_EXPORT WTorrentEnginePrivate : public WPrivate
 {
-    Q_OBJECT
+public: // Enums
+    enum EventType
+    {
+        EventCreate = QEvent::User,
+        EventClear
+    };
 
 public:
-    WTorrentEngine(QThread * thread = NULL, QObject * parent = NULL);
+    WTorrentEnginePrivate(WTorrentEngine * p);
 
-public: // Interface
-    Q_INVOKABLE void load(WTorrent * torrent, const QByteArray & data);
+    void init(QThread * thread);
 
-    Q_INVOKABLE void remove(WTorrent * torrent, bool deleteFiles = false);
+public: // Functions
+    boost::function<void()> const processAlert();
 
-    Q_INVOKABLE void deleteInstance();
+public: // Variables
+    libtorrent::session * session;
 
-protected: // Events
-    /* virtual */ bool event(QEvent * event);
-
-private:
-    W_DECLARE_PRIVATE(WTorrentEngine)
+protected:
+    W_DECLARE_PUBLIC(WTorrentEngine)
 };
 
 #endif // SK_NO_TORRENTENGINE
-#endif // WTORRENTENGINE_H
+#endif // WTORRENTENGINE_P_H

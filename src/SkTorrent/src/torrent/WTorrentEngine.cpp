@@ -32,31 +32,7 @@
 // Private
 //-------------------------------------------------------------------------------------------------
 
-class SK_TORRENT_EXPORT WTorrentEnginePrivate : public WPrivate
-{
-public: // Enums
-    enum EventType
-    {
-        EventCreate = QEvent::User,
-        EventClear
-    };
-
-public:
-    WTorrentEnginePrivate(WTorrentEngine * p);
-
-    void init(QThread * thread);
-
-public: // Functions
-    boost::function<void()> const processAlert();
-
-public: // Variables
-    libtorrent::session * session;
-
-protected:
-    W_DECLARE_PUBLIC(WTorrentEngine)
-};
-
-//-------------------------------------------------------------------------------------------------
+#include "WTorrentEngine_p.h"
 
 WTorrentEnginePrivate::WTorrentEnginePrivate(WTorrentEngine * p) : WPrivate(p) {}
 
@@ -109,6 +85,18 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 // Interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WTorrentEngine::load(WTorrent * torrent, const QByteArray & data)
+{
+
+}
+
+/* Q_INVOKABLE */ void WTorrentEngine::remove(WTorrent * torrent, bool deleteFiles)
+{
+
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WTorrentEngine::deleteInstance()

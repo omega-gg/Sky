@@ -35,21 +35,6 @@
 // Forward declarations
 class WRemoteData;
 
-//-------------------------------------------------------------------------------------------------
-// WPrivateTorrentData
-//-------------------------------------------------------------------------------------------------
-
-struct WPrivateTorrentData
-{
-    QUrl url;
-
-    QList<WTorrentReply *> replies;
-};
-
-//-------------------------------------------------------------------------------------------------
-// WControllerTorrentPrivate
-//-------------------------------------------------------------------------------------------------
-
 class SK_TORRENT_EXPORT WControllerTorrentPrivate : public WControllerPrivate
 {
 public:
@@ -60,7 +45,9 @@ public:
     void init();
 
 public: // Functions
-    void loadTorrent(WTorrentReply * reply);
+    void loadTorrent(WTorrentReply * reply, const QUrl & url, WTorrent::Mode mode);
+
+    void removeTorrent(WTorrent * torrent, WTorrentReply * reply);
 
 public: // Slots
     void onLoaded(WRemoteData * data);
@@ -70,7 +57,9 @@ public: // Variables
 
     WTorrentEngine * engine;
 
-    QHash<WRemoteData *, WPrivateTorrentData *> jobs;
+    QHash<WRemoteData *, WTorrent *> jobs;
+
+    QList<WTorrent *> downloads;
 
 protected:
     W_DECLARE_PUBLIC(WControllerTorrent)

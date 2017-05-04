@@ -18,7 +18,11 @@
 #define WCONTROLLERTORRENT_H
 
 // Qt includes
+#include <QEvent>
+#include <QVariant>
 #include <QUrl>
+#include <QStringList>
+#include <QBitArray>
 
 // Sk includes
 #include <WController>
@@ -28,9 +32,98 @@
 // Forward declarations
 class WControllerTorrentPrivate;
 class WTorrentEngine;
+class WTorrentReply;
 
 // Defines
 #define wControllerTorrent WControllerTorrent::instance()
+
+//-------------------------------------------------------------------------------------------------
+// WTorrent
+//-------------------------------------------------------------------------------------------------
+
+class SK_TORRENT_EXPORT WTorrent : public QObject
+{
+    Q_OBJECT
+
+    Q_ENUMS(Mode)
+    Q_ENUMS(EventType)
+
+public: // Enums
+    enum Mode { Default, Sequential, Stream };
+
+    enum EventType
+    {
+        EventAdd = QEvent::User,
+        EventProgress,
+        EventPiece,
+        EventFinished,
+        EventError
+    };
+
+private:
+    WTorrent(const QUrl & url, Mode mode, QObject * parent);
+
+protected: // Events
+    /* virtual */ bool event(QEvent * event);
+
+public: // Properties
+    QUrl url  () const;
+    int  index() const;
+
+    Mode mode() const;
+
+    bool isDefault   () const;
+    bool isSequential() const;
+    bool isStream    () const;
+
+    bool isLoaded() const;
+
+    QStringList paths() const;
+
+    qint64 size    () const;
+    qint64 progress() const;
+
+    QBitArray pieces() const;
+
+    int download() const;
+    int upload  () const;
+
+    int seeds() const;
+    int peers() const;
+
+    bool hasError() const;
+
+    QString error() const;
+
+private: // Variables
+    QList<WTorrentReply *> _replies;
+
+    QUrl _url;
+    int  _index;
+
+    Mode _mode;
+
+    bool _loaded;
+
+    QStringList _paths;
+
+    qint64 _size;
+    qint64 _progress;
+
+    QBitArray _pieces;
+
+    int _download;
+    int _upload;
+
+    int _seeds;
+    int _peers;
+
+    QString _error;
+
+private:
+    friend class WControllerTorrent;
+    friend class WControllerTorrentPrivate;
+};
 
 //-------------------------------------------------------------------------------------------------
 // WTorrentReply
@@ -41,33 +134,106 @@ class SK_TORRENT_EXPORT WTorrentReply : public QObject
     Q_OBJECT
 
 private:
-    WTorrentReply(const QUrl & url, QObject * parent);
-
-private: // Functions
-    int extractIndex(const QUrl & url);
+    WTorrentReply(QObject * parent);
+public:
+    /* virtual */ ~WTorrentReply();
 
 signals:
+    void added (WTorrentReply * reply);
     void loaded(WTorrentReply * reply);
 
+    void progress(qint64 bytesReceived, qint64 bytesTotal);
+
+    void pieceReady(int index);
+
 public: // Properties
-    QUrl url() const;
-
-    int index() const;
-
-    bool hasError() const;
-
-    QString error() const;
+    WTorrent * torrent() const;
 
 private: // Variables
-    QUrl _url;
-
-    int _index;
-
-    QString _error;
+    WTorrent * _torrent;
 
 private:
     friend class WControllerTorrent;
     friend class WControllerTorrentPrivate;
+    friend class WTorrent;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WTorrentEvent
+//-------------------------------------------------------------------------------------------------
+
+class WTorrentEvent : public QEvent
+{
+public:
+    WTorrentEvent(WTorrent::EventType type) : QEvent(static_cast<QEvent::Type> (type)) {}
+};
+
+//-------------------------------------------------------------------------------------------------
+// WTorrentEventValue
+//-------------------------------------------------------------------------------------------------
+
+class WTorrentEventValue : public WTorrentEvent
+{
+public:
+    WTorrentEventValue(WTorrent::EventType type, const QVariant & value) : WTorrentEvent(type)
+    {
+        this->value = value;
+    }
+
+public: // Variables
+    QVariant value;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WTorrentEventAdd
+//-------------------------------------------------------------------------------------------------
+
+class WTorrentEventAdd : public WTorrentEvent
+{
+public:
+    WTorrentEventAdd(const QStringList & paths, qint64 size, int pieces)
+        : WTorrentEvent(WTorrent::EventAdd)
+    {
+        this->paths = paths;
+
+        this->size   = size;
+        this->pieces = pieces;
+    }
+
+public: // Variables
+    QStringList paths;
+
+    qint64 size;
+    int    pieces;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WTorrentEventProgress
+//-------------------------------------------------------------------------------------------------
+
+class WTorrentEventProgress : public WTorrentEvent
+{
+public:
+    WTorrentEventProgress(qint64 progress, int download, int upload, int seeds, int peers)
+        : WTorrentEvent(WTorrent::EventProgress)
+    {
+        this->progress = progress;
+
+        this->download = download;
+        this->upload   = upload;
+
+        this->seeds = seeds;
+        this->peers = peers;
+    }
+
+public: // Variables
+    qint64 progress;
+
+    int download;
+    int upload;
+
+    int seeds;
+    int peers;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -86,7 +252,11 @@ private:
     WControllerTorrent();
 
 public: // Interface
-    Q_INVOKABLE WTorrentReply * getTorrent(const QUrl & url, QObject * parent = NULL);
+    Q_INVOKABLE WTorrentReply * getTorrent(const QUrl     & url,
+                                           QObject        * parent = NULL,
+                                           WTorrent::Mode   mode   = WTorrent::Default);
+
+    Q_INVOKABLE void clearTorrents();
 
 protected: // Initialize
     /* virtual */ void init();
@@ -104,6 +274,8 @@ private:
     W_DECLARE_CONTROLLER(WControllerTorrent)
 
     Q_PRIVATE_SLOT(d_func(), void onLoaded(WRemoteData *))
+
+    friend class WTorrentReply;
 };
 
 #include <private/WControllerTorrent_p>
