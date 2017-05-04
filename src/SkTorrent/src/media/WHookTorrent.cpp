@@ -32,23 +32,77 @@ WHookTorrentPrivate::WHookTorrentPrivate(WHookTorrent * p) : WAbstractHookPrivat
 
 void WHookTorrentPrivate::init()
 {
-    reply = NULL;
+    torrent = NULL;
+    reply   = NULL;
 }
 
 //-------------------------------------------------------------------------------------------------
 // Private function
 //-------------------------------------------------------------------------------------------------
 
+void WHookTorrentPrivate::loadTorrent()
+{
+    Q_Q(WHookTorrent);
+
+    reply = wControllerTorrent->getTorrent(source, q, WTorrent::Stream);
+
+    QObject::connect(reply, SIGNAL(added (WTorrentReply *)), q, SLOT(onAdded ()));
+    QObject::connect(reply, SIGNAL(loaded(WTorrentReply *)), q, SLOT(onLoaded()));
+
+    QObject::connect(reply, SIGNAL(pieceReady(int)), q, SLOT(onPieceReady()));
+}
+
 void WHookTorrentPrivate::clearReply()
 {
+    if (reply == NULL) return;
+
     Q_Q(WHookTorrent);
 
     delete reply;
 
-    reply = NULL;
+    torrent = NULL;
+    reply   = NULL;
 
     q->setStateLoad(WAbstractBackend::StateLoadDefault);
     q->setState    (WAbstractBackend::StateStopped);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private slots
+//-------------------------------------------------------------------------------------------------
+
+void WHookTorrentPrivate::onAdded()
+{
+    torrent = reply->torrent();
+
+    QString source = torrent->paths().first();
+
+    if (source.isEmpty())
+    {
+        Q_Q(WHookTorrent);
+
+        q->stop();
+    }
+}
+
+void WHookTorrentPrivate::onLoaded()
+{
+    if (torrent->hasError())
+    {
+        backend->stop();
+    }
+
+    reply->deleteLater();
+
+    torrent = NULL;
+    reply   = NULL;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WHookTorrentPrivate::onPieceReady()
+{
+
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -92,7 +146,7 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 
     if (d->reply) delete d->reply;
 
-    d->reply = wControllerTorrent->getTorrent(d->source, this);
+    d->loadTorrent();
 
     if (d->backend->currentTime() == -1)
     {
@@ -111,7 +165,7 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 
     d->backend->stop();
 
-    d->reply = wControllerTorrent->getTorrent(d->source, this);
+    d->loadTorrent();
 
     setStateLoad(WAbstractBackend::StateLoadStarting);
     setState    (WAbstractBackend::StatePlaying);
@@ -123,22 +177,16 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 {
     Q_D(WHookTorrent);
 
-    if (d->reply)
-    {
-        d->clearReply();
-    }
-    else d->backend->pause();
+    d->backend->pause();
 }
 
 /* Q_INVOKABLE virtual */ void WHookTorrent::stop()
 {
     Q_D(WHookTorrent);
 
-    if (d->reply)
-    {
-        d->clearReply();
-    }
-    else d->backend->stop();
+    d->backend->stop();
+
+    d->clearReply();
 }
 
 /* Q_INVOKABLE virtual */ void WHookTorrent::clear()

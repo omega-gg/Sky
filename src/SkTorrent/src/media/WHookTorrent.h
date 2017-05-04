@@ -49,7 +49,14 @@ protected: // WAbstractHook implementation
 
 private:
     W_DECLARE_PRIVATE(WHookTorrent)
+
+    Q_PRIVATE_SLOT(d_func(), void onAdded ())
+    Q_PRIVATE_SLOT(d_func(), void onLoaded())
+
+    Q_PRIVATE_SLOT(d_func(), void onPieceReady())
 };
+
+#include <private/WHookTorrent_p>
 
 #endif // SK_NO_HOOKTORRENT
 #endif // WHOOKTORRENT_H

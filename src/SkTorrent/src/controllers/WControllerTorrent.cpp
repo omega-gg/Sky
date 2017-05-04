@@ -47,11 +47,17 @@ WTorrent::WTorrent(const QUrl & url, Mode mode, QObject * parent) : QObject(pare
 
     QString fragment = url.fragment();
 
-    if (fragment.isEmpty())
+    if (fragment.isEmpty() == false)
     {
-         _index = -1;
+        int index = fragment.toInt();
+
+        if (index < 1)
+        {
+             _index = -1;
+        }
+        else _index = index - 1;
     }
-    else _index = fragment.toInt();
+    else _index = -1;
 
     _mode = mode;
 

@@ -48,6 +48,8 @@ protected: // Events
 
 private:
     W_DECLARE_PRIVATE(WTorrentEngine)
+
+    Q_PRIVATE_SLOT(d_func(), void onUpdate())
 };
 
 #include <private/WTorrentEngine_p>

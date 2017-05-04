@@ -31,6 +31,10 @@
 
 #ifndef SK_NO_HOOKTORRENT
 
+// Forward declarations
+class WTorrent;
+class WTorrentReply;
+
 class SK_TORRENT_EXPORT WHookTorrentPrivate : public WAbstractHookPrivate
 {
 public:
@@ -39,9 +43,18 @@ public:
     void init();
 
 public: // Functions
+    void loadTorrent();
+
     void clearReply();
 
+public: // Slots
+    void onAdded ();
+    void onLoaded();
+
+    void onPieceReady();
+
 public: // Variables
+    WTorrent      * torrent;
     WTorrentReply * reply;
 
 protected:
