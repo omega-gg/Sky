@@ -28,6 +28,7 @@
 
 static const QChar BACKENDTORRENT_INTEGER = 'i';
 static const QChar BACKENDTORRENT_STRING  = ':';
+static const QChar BACKENDTORRENT_LIST    = 'l';
 
 static const QChar BACKENDTORRENT_END = 'e';
 
@@ -49,7 +50,7 @@ public: // Functions
     QStringList extractPaths(const QString & data) const;
 
     QString extractString    (const QString & data, int from) const;
-    QString extractNextString(const QString & data, int from) const;
+    QString extractLastString(const QString & data, int from) const;
 
 protected:
     W_DECLARE_PUBLIC(WBackendTorrent)
@@ -85,9 +86,28 @@ QStringList WBackendTorrentPrivate::extractPaths(const QString & data) const
     {
         index += 6;
 
-        QString path = extractNextString(data, index);
+        QChar character = data.at(index);
 
-        list.append(path);
+        if (character == BACKENDTORRENT_LIST)
+        {
+            index++;
+
+            QString path = extractLastString(data, index);
+
+            if (path.isEmpty() == false)
+            {
+                list.append(path);
+            }
+        }
+        else
+        {
+            QString path = extractString(data, index);
+
+            if (path.isEmpty() == false)
+            {
+                list.append(path);
+            }
+        }
 
         index = data.indexOf("4:path", index);
     }
@@ -103,30 +123,36 @@ QString WBackendTorrentPrivate::extractString(const QString & data, int from) co
 
     if (index == -1) return QString();
 
-    int number = data.mid(from, index - from).toInt();
+    int length = data.mid(from, index - from).toInt();
 
-    return data.mid(index + 1, number);
+    if (length == 0) return QString();
+
+    return data.mid(index + 1, length);
 }
 
-QString WBackendTorrentPrivate::extractNextString(const QString & data, int from) const
+QString WBackendTorrentPrivate::extractLastString(const QString & data, int from) const
 {
-    QChar character = data.at(from);
+    int index = data.indexOf(BACKENDTORRENT_STRING, from);
 
-    while (character.isNumber() == false)
+    if (index == -1) return QString();
+
+    int length = data.mid(from, index - from).toInt();
+
+    if (length == 0) return QString();
+
+    index++;
+
+    from = index + length;
+
+    if (from < data.length())
     {
-        if (character == BACKENDTORRENT_INTEGER)
+        if (data.at(from) == 'e')
         {
-            from = data.indexOf(BACKENDTORRENT_END, from);
-
-            if (from == -1) return QString();
+             return data.mid(index, length);
         }
-
-        from++;
-
-        character = data.at(from);
+        else return extractLastString(data, from);
     }
-
-    return extractString(data, from);
+    else return QString();
 }
 
 //-------------------------------------------------------------------------------------------------
