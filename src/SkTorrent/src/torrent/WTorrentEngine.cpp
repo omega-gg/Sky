@@ -35,6 +35,8 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
+static const int TORRENTENGINE_PRIORITY_HIGH = 7;
+
 static const int TORRENTENGINE_TIMEOUT = 1000;
 
 //-------------------------------------------------------------------------------------------------
@@ -357,8 +359,8 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
                 pieces.push_back(0);
             }
 
-            pieces[first]    = 7;
-            pieces[last - 1] = 7;
+            pieces[first]    = TORRENTENGINE_PRIORITY_HIGH;
+            pieces[last - 1] = TORRENTENGINE_PRIORITY_HIGH;
 
             handle.set_sequential_download(true);
 
