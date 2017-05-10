@@ -87,10 +87,9 @@ void WHookTorrentPrivate::onAdded()
 
 void WHookTorrentPrivate::onLoaded()
 {
-    if (torrent->hasError())
-    {
-        backend->stop();
-    }
+    if (torrent->hasError() == false) return;
+
+    backend->stop();
 
     reply->deleteLater();
 

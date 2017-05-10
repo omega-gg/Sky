@@ -135,6 +135,8 @@ WTorrent::WTorrent(const QUrl & url, Mode mode, QObject * parent) : QObject(pare
     }
     else if (type == static_cast<QEvent::Type> (EventFinished))
     {
+        _loaded = true;
+
         foreach (WTorrentReply * reply, _replies)
         {
             emit reply->loaded(reply);
@@ -420,10 +422,10 @@ void WControllerTorrentPrivate::removeTorrent(WTorrent * torrent, WTorrentReply 
 
         delete data;
     }
-    else if (downloads.removeOne(torrent))
-    {
-        engine->remove(torrent, true);
-    }
+
+    downloads.removeOne(torrent);
+
+    engine->remove(torrent, true);
 
     delete torrent;
 }
