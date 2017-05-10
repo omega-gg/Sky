@@ -25,6 +25,7 @@
 // libtorrent includes
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/alert_types.hpp>
+#include <libtorrent/extensions/ut_pex.hpp>
 
 // Boost includes
 #include <boost/bind.hpp>
@@ -252,11 +253,22 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
                                                 alert::status_notification  |
                                                 alert::progress_notification);
 
+        pack.set_bool(settings_pack::enable_dht, true);
+        pack.set_bool(settings_pack::enable_lsd, true);
+
         d->session = new session(pack);
 
         boost::function<void()> alert(boost::bind(&WTorrentEnginePrivate::onAlert, d));
 
         d->session->set_alert_notify(alert);
+
+        d->session->add_dht_router(std::make_pair(std::string("dht.libtorrent.org"),     25401));
+        d->session->add_dht_router(std::make_pair(std::string("router.bittorrent.com"),   6881));
+        d->session->add_dht_router(std::make_pair(std::string("router.utorrent.com"),     6881));
+        d->session->add_dht_router(std::make_pair(std::string("dht.transmissionbt.com"),  6881));
+        d->session->add_dht_router(std::make_pair(std::string("dht.aelitis.com"),         6881));
+
+        d->session->add_extension(&create_ut_pex_plugin);
 
         return true;
     }
