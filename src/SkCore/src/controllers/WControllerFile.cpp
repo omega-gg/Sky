@@ -860,9 +860,7 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 
      WControllerFilePrivate::deleteDir(dir, recursive);
 
-     dir.rmdir(dir.absolutePath());
-
-     return true;
+     return dir.rmdir(dir.absolutePath());
 }
 
 /* static */ bool WControllerFile::deleteFolderContent(const QString & path, bool recursive)
