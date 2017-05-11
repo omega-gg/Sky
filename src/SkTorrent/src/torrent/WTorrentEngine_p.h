@@ -25,6 +25,9 @@
 // libtorrent includes
 #include <libtorrent/session.hpp>
 
+// Sk includes
+#include <WListId>
+
 // Private includes
 #include <private/Sk_p>
 
@@ -39,6 +42,10 @@ using namespace libtorrent;
 
 struct WTorrentData
 {
+    int id;
+
+    QString path;
+
     WTorrent * torrent;
 
     torrent_handle handle;
@@ -86,6 +93,8 @@ public: // Variables
     session * session;
 
     QHash<unsigned int, WTorrentData *> torrents;
+
+    WListId ids;
 
     QTimer timer;
 

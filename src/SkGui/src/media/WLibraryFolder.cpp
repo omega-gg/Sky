@@ -31,7 +31,7 @@
 #include <WPlaylistNet>
 #include <WTabTrack>
 
-// 3rd party includes
+// 3rdparty includes
 #include <qtlockedfile>
 
 // Private includes

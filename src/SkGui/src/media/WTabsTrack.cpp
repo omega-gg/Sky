@@ -28,10 +28,10 @@
 #include <WTabTrack>
 #include <WAbstractThreadAction>
 
-// 3rd party includes
+// 3rdparty includes
 #include <qtlockedfile>
 
-// 3rd party namespaces
+// 3rdparty namespaces
 using namespace QtLP_Private;
 
 //=================================================================================================

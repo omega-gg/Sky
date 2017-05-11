@@ -33,13 +33,13 @@
 #include <WDeclarativePlayer>
 #include <WPixmapCache>
 
-// 3rd party includes
+// 3rdparty includes
 #include <qtlockedfile>
 
 // Private includes
 #include <private/WBookmarkTrack_p>
 
-// 3rd party namespaces
+// 3rdparty namespaces
 using namespace QtLP_Private;
 
 //-------------------------------------------------------------------------------------------------

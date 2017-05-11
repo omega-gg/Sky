@@ -77,7 +77,7 @@
 // Image includes
 #include <WImageColorFilter>
 
-// 3rd party includes
+// 3rdparty includes
 #include <qtsingleapplication>
 
 //-------------------------------------------------------------------------------------------------

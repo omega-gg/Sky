@@ -31,6 +31,7 @@
 #include <boost/bind.hpp>
 
 // Sk includes
+#include <WControllerFile>
 #include <WControllerTorrent>
 
 //-------------------------------------------------------------------------------------------------
@@ -302,7 +303,9 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         add_torrent_params params;
 
-        QString path = variants.at(1).toString();
+        int id = d->ids.generateId();
+
+        QString path = variants.at(1).toString() + '/' + QString::number(id);
 
         params.ti        = info;
         params.save_path = path.toStdString();
@@ -314,26 +317,26 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         QStringList paths;
 
-        path.append('/');
-
         int index = variants.at(2).toInt();
 
         if (index == -1)
         {
+            QString filePath = path + '/';
+
             const file_storage & storage = info->files();
 
             for (int i = 0; i < info->num_files(); i++)
             {
                 QString fileName = QString::fromStdString(storage.file_path(i));
 
-                paths.push_back(path + QDir::fromNativeSeparators(fileName));
+                paths.push_back(filePath + QDir::fromNativeSeparators(fileName));
             }
         }
         else
         {
             QString fileName = QString::fromStdString(info->files().file_path(index));
 
-            paths.push_back(path + QDir::fromNativeSeparators(fileName));
+            paths.push_back(path + '/' + QDir::fromNativeSeparators(fileName));
 
             std::vector<int> files;
 
@@ -405,6 +408,10 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         qint64 size = info->total_size();
 
+        data->id = id;
+
+        data->path = path;
+
         data->torrent = torrent;
 
         data->handle = handle;
@@ -446,6 +453,10 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         {
             d->timer.stop();
         }
+
+        d->ids.removeOne(data->id);
+
+        WControllerFile::deleteFolder(data->path);
 
         delete data;
 
