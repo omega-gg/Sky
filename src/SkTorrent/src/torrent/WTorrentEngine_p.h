@@ -85,8 +85,10 @@ public:
 public: // Functions
     WTorrentData * getTorrentData(WTorrent * torrent) const;
 
+public: // Events
+    void events();
+
 public: // Slots
-    void onAlert ();
     void onUpdate();
 
 public: // Variables

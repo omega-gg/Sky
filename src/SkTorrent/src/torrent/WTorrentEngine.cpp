@@ -31,7 +31,6 @@
 #include <boost/bind.hpp>
 
 // Sk includes
-#include <WControllerFile>
 #include <WControllerTorrent>
 
 //-------------------------------------------------------------------------------------------------
@@ -93,10 +92,10 @@ WTorrentData * WTorrentEnginePrivate::getTorrentData(WTorrent * torrent) const
 }
 
 //-------------------------------------------------------------------------------------------------
-// Private slots
+// Private events
 //-------------------------------------------------------------------------------------------------
 
-void WTorrentEnginePrivate::onAlert()
+void WTorrentEnginePrivate::events()
 {
     std::vector<alert *> alerts;
 
@@ -194,6 +193,8 @@ void WTorrentEnginePrivate::onAlert()
 }
 
 //-------------------------------------------------------------------------------------------------
+// Private slots
+//-------------------------------------------------------------------------------------------------
 
 void WTorrentEnginePrivate::onUpdate()
 {
@@ -268,7 +269,7 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         d->session = new session(pack);
 
-        boost::function<void()> alert(boost::bind(&WTorrentEnginePrivate::onAlert, d));
+        boost::function<void()> alert(boost::bind(&WTorrentEnginePrivate::events, d));
 
         d->session->set_alert_notify(alert);
 
@@ -455,8 +456,6 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         }
 
         d->ids.removeOne(data->id);
-
-        WControllerFile::deleteFolder(data->path);
 
         delete data;
 
