@@ -115,9 +115,9 @@ void WTorrentEnginePrivate::onAlert()
 
             state_changed_alert * event = alert_cast<state_changed_alert>(alert);
 
-            QCoreApplication::postEvent(q, new WTorrentEngineHandle(EventState,
-                                                                    hash_value(event->handle),
-                                                                    event->state));
+            QCoreApplication::postEvent(q, new WTorrentEngineValue(EventState,
+                                                                   hash_value(event->handle),
+                                                                   event->state));
         }
         else if (type == state_update_alert::alert_type)
         {
@@ -162,9 +162,18 @@ void WTorrentEnginePrivate::onAlert()
 
             piece_finished_alert * event = alert_cast<piece_finished_alert>(alert);
 
-            QCoreApplication::postEvent(q, new WTorrentEngineHandle(EventPiece,
-                                                                    hash_value(event->handle),
-                                                                    event->piece_index));
+            QCoreApplication::postEvent(q, new WTorrentEngineValue(EventPiece,
+                                                                   hash_value(event->handle),
+                                                                   event->piece_index));
+        }
+        else if (type == torrent_removed_alert::alert_type)
+        {
+            Q_Q(WTorrentEngine);
+
+            torrent_removed_alert * event = alert_cast<torrent_removed_alert>(alert);
+
+            QCoreApplication::postEvent(q, new WTorrentEngineHandle(EventRemoved,
+                                                                    hash_value(event->handle)));
         }
         else if (type == torrent_error_alert::alert_type)
         {
@@ -174,9 +183,9 @@ void WTorrentEnginePrivate::onAlert()
 
             QString message = QString::fromStdString(event->message());
 
-            QCoreApplication::postEvent(q, new WTorrentEngineHandle(EventError,
-                                                                    hash_value(event->handle),
-                                                                    message));
+            QCoreApplication::postEvent(q, new WTorrentEngineValue(EventError,
+                                                                   hash_value(event->handle),
+                                                                   message));
         }
 
         i++;
@@ -215,14 +224,14 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
     variants.append(torrent->index());
     variants.append(torrent->mode ());
 
-    QCoreApplication::postEvent(this, new WTorrentEngineValue(WTorrentEnginePrivate::EventAdd,
-                                                              torrent, variants));
+    QCoreApplication::postEvent(this, new WTorrentEngineAction(WTorrentEnginePrivate::EventAdd,
+                                                               torrent, variants));
 }
 
 /* Q_INVOKABLE */ void WTorrentEngine::remove(WTorrent * torrent, bool deleteFiles)
 {
-    QCoreApplication::postEvent(this, new WTorrentEngineValue(WTorrentEnginePrivate::EventRemove,
-                                                              torrent, deleteFiles));
+    QCoreApplication::postEvent(this, new WTorrentEngineAction(WTorrentEnginePrivate::EventRemove,
+                                                               torrent, deleteFiles));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -278,7 +287,7 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
     }
     else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventAdd))
     {
-        WTorrentEngineValue * eventTorrent = static_cast<WTorrentEngineValue *> (event);
+        WTorrentEngineAction * eventTorrent = static_cast<WTorrentEngineAction *> (event);
 
         WTorrent * torrent = eventTorrent->torrent;
 
@@ -415,26 +424,28 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
     }
     else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventRemove))
     {
-        WTorrentEngineValue * eventTorrent = static_cast<WTorrentEngineValue *> (event);
+        WTorrentEngineAction * eventTorrent = static_cast<WTorrentEngineAction *> (event);
 
         WTorrentData * data = d->getTorrentData(eventTorrent->torrent);
 
-        if (data == NULL) return true;
-
         const torrent_handle & handle = data->handle;
 
-        d->torrents.remove(hash_value(handle));
+        d->session->remove_torrent(handle);
+
+        return true;
+    }
+    else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventRemoved))
+    {
+        WTorrentEngineHandle * eventTorrent = static_cast<WTorrentEngineHandle *> (event);
+
+        WTorrentData * data = d->torrents.value(eventTorrent->hash);
+
+        d->torrents.remove(eventTorrent->hash);
 
         if (d->torrents.isEmpty())
         {
             d->timer.stop();
         }
-
-        if (eventTorrent->value.toBool())
-        {
-             d->session->remove_torrent(handle, session_handle::delete_files);
-        }
-        else d->session->remove_torrent(handle);
 
         delete data;
 
@@ -442,7 +453,7 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
     }
     else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventState))
     {
-        WTorrentEngineHandle * eventTorrent = static_cast<WTorrentEngineHandle *> (event);
+        WTorrentEngineValue * eventTorrent = static_cast<WTorrentEngineValue *> (event);
 
         torrent_status::state_t state
             = static_cast<torrent_status::state_t> (eventTorrent->value.toInt());
@@ -450,8 +461,6 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         if (state == torrent_status::finished)
         {
             WTorrentData * data = d->torrents.value(eventTorrent->hash);
-
-            if (data == NULL) return true;
 
             QCoreApplication::postEvent(data->torrent, new WTorrentEvent(WTorrent::EventFinished));
         }
@@ -468,8 +477,6 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         {
             WTorrentData * data = d->torrents.value(item.hash);
 
-            if (data == NULL) continue;
-
             QCoreApplication::postEvent(data->torrent,
                                         new WTorrentEventProgress(item.progress,
                                                                   item.download, item.upload,
@@ -480,11 +487,9 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
     }
     else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventPiece))
     {
-        WTorrentEngineHandle * eventTorrent = static_cast<WTorrentEngineHandle *> (event);
+        WTorrentEngineValue * eventTorrent = static_cast<WTorrentEngineValue *> (event);
 
         WTorrentData * data = d->torrents.value(eventTorrent->hash);
-
-        if (data == NULL) return true;
 
         int piece = eventTorrent->value.toInt() - data->first;
 
@@ -495,11 +500,9 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
     }
     else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventError))
     {
-        WTorrentEngineHandle * eventTorrent = static_cast<WTorrentEngineHandle *> (event);
+        WTorrentEngineValue * eventTorrent = static_cast<WTorrentEngineValue *> (event);
 
         WTorrentData * data = d->torrents.value(eventTorrent->hash);
-
-        if (data == NULL) return true;
 
         QCoreApplication::postEvent(data->torrent, new WTorrentEventValue(WTorrent::EventError,
                                                                           eventTorrent->value));

@@ -61,6 +61,7 @@ public: // Enums
         EventCreate = QEvent::User,
         EventAdd,
         EventRemove,
+        EventRemoved,
         EventState,
         EventProgress,
         EventPiece,
@@ -93,14 +94,14 @@ protected:
 };
 
 //-------------------------------------------------------------------------------------------------
-// WTorrentEngineValue
+// WTorrentEngineAction
 //-------------------------------------------------------------------------------------------------
 
-class WTorrentEngineValue : public QEvent
+class WTorrentEngineAction : public QEvent
 {
 public:
-    WTorrentEngineValue(WTorrentEnginePrivate::EventType type, WTorrent       * torrent,
-                                                               const QVariant & value)
+    WTorrentEngineAction(WTorrentEnginePrivate::EventType type, WTorrent       * torrent,
+                                                                const QVariant & value)
         : QEvent(static_cast<QEvent::Type> (type))
     {
         this->torrent = torrent;
@@ -120,17 +121,31 @@ public: // Variables
 class WTorrentEngineHandle : public QEvent
 {
 public:
-    WTorrentEngineHandle(WTorrentEnginePrivate::EventType type, unsigned int     hash,
-                                                                const QVariant & value)
+    WTorrentEngineHandle(WTorrentEnginePrivate::EventType type, unsigned int hash)
         : QEvent(static_cast<QEvent::Type> (type))
     {
-        this->hash  = hash;
-        this->value = value;
+        this->hash = hash;
     }
 
 public: // Variables
     unsigned int hash;
+};
 
+//-------------------------------------------------------------------------------------------------
+// WTorrentEngineValue
+//-------------------------------------------------------------------------------------------------
+
+class WTorrentEngineValue : public WTorrentEngineHandle
+{
+public:
+    WTorrentEngineValue(WTorrentEnginePrivate::EventType type, unsigned int     hash,
+                                                               const QVariant & value)
+        : WTorrentEngineHandle(type, hash)
+    {
+        this->value = value;
+    }
+
+public: // Variables
     QVariant value;
 };
 
