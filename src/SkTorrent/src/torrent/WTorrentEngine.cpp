@@ -483,6 +483,7 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         delete data;
 
+        // FIXME libtorrent: Waiting before removing the torrent folder.
         QTimer::singleShot(1000, this, SLOT(onDeleteFolder()));
 
         return true;
