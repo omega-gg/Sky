@@ -52,8 +52,8 @@ struct WTorrentData
 
     qint64 size;
 
-    int first;
-    int last;
+    int begin;
+    int end;
 };
 
 //-------------------------------------------------------------------------------------------------

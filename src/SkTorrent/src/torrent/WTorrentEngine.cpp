@@ -377,36 +377,36 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         WTorrent::Mode mode = static_cast<WTorrent::Mode> (variants.at(3).toInt());
 
-        int first;
-        int last;
+        int begin;
+        int end;
 
         if (mode == WTorrent::Stream)
         {
             peer_request request = info->map_file(index, 0, info->files().file_size(index));
 
-            first = request.piece;
+            begin = request.piece;
 
-            last = first + qMax(1, request.length / info->piece_length());
+            end = begin + qMax(0, (request.start + request.length) / info->piece_length()) + 1;
 
             std::vector<int> pieces;
 
-            for (int i = 0; i < first; i++)
+            for (int i = 0; i < begin; i++)
             {
                 pieces.push_back(0);
             }
 
-            for (int i = first; i < last; i++)
+            for (int i = begin; i < end; i++)
             {
                 pieces.push_back(1);
             }
 
-            for (int i = last; i < info->num_pieces(); i++)
+            for (int i = end; i < info->num_pieces(); i++)
             {
                 pieces.push_back(0);
             }
 
-            pieces[first]    = TORRENTENGINE_PRIORITY_HIGH;
-            pieces[last - 1] = TORRENTENGINE_PRIORITY_HIGH;
+            pieces[begin]   = TORRENTENGINE_PRIORITY_HIGH;
+            pieces[end - 1] = TORRENTENGINE_PRIORITY_HIGH;
 
             handle.set_sequential_download(true);
 
@@ -414,8 +414,8 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         }
         else
         {
-            first = 0;
-            last  = info->num_pieces();
+            begin = 0;
+            end   = info->num_pieces();
 
             if (mode == WTorrent::Sequential)
             {
@@ -440,14 +440,14 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         data->size = size;
 
-        data->first = first;
-        data->last  = last;
+        data->begin = begin;
+        data->end   = end;
 
         d->torrents.insert(hash_value(handle), data);
 
         d->timer.start(TORRENTENGINE_TIMEOUT);
 
-        QCoreApplication::postEvent(torrent, new WTorrentEventAdd(paths, size, last - first));
+        QCoreApplication::postEvent(torrent, new WTorrentEventAdd(paths, size, end - begin));
 
         return true;
     }
@@ -528,7 +528,7 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         WTorrentData * data = d->torrents.value(eventTorrent->hash);
 
-        int piece = eventTorrent->value.toInt() - data->first;
+        int piece = eventTorrent->value.toInt() - data->begin;
 
         QCoreApplication::postEvent(data->torrent,
                                     new WTorrentEventValue(WTorrent::EventPiece, piece));
