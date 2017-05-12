@@ -91,12 +91,18 @@ public: // Events
 public: // Slots
     void onUpdate();
 
+    void onDeleteFolder();
+    void onDeleteId    ();
+
 public: // Variables
     session * session;
 
     QHash<unsigned int, WTorrentData *> torrents;
 
     WListId ids;
+
+    QList<QString> deletePaths;
+    QList<int>     deleteIds;
 
     QTimer timer;
 

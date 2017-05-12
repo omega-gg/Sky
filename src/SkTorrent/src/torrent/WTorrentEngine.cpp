@@ -31,6 +31,7 @@
 #include <boost/bind.hpp>
 
 // Sk includes
+#include <WControllerFile>
 #include <WControllerTorrent>
 
 //-------------------------------------------------------------------------------------------------
@@ -199,6 +200,26 @@ void WTorrentEnginePrivate::events()
 void WTorrentEnginePrivate::onUpdate()
 {
     session->post_torrent_updates();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WTorrentEnginePrivate::onDeleteFolder()
+{
+    Q_Q(WTorrentEngine);
+
+    QString path = deletePaths.takeFirst();
+
+    WControllerFileReply * reply = wControllerFile->startDeleteFolder(path);
+
+    QObject::connect(reply, SIGNAL(actionComplete(bool)), q, SLOT(onDeleteId()));
+}
+
+void WTorrentEnginePrivate::onDeleteId()
+{
+    int id = deleteIds.takeFirst();
+
+    ids.removeOne(id);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -436,6 +457,8 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         WTorrentData * data = d->getTorrentData(eventTorrent->torrent);
 
+        if (data == NULL) return true;
+
         const torrent_handle & handle = data->handle;
 
         d->session->remove_torrent(handle);
@@ -455,9 +478,12 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
             d->timer.stop();
         }
 
-        d->ids.removeOne(data->id);
+        d->deletePaths.append(data->path);
+        d->deleteIds  .append(data->id);
 
         delete data;
+
+        QTimer::singleShot(1000, this, SLOT(onDeleteFolder()));
 
         return true;
     }
@@ -521,6 +547,8 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
     }
     else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventClear))
     {
+        d->timer.stop();
+
         delete d->session;
 
         d->session = NULL;

@@ -50,6 +50,9 @@ private:
     W_DECLARE_PRIVATE(WTorrentEngine)
 
     Q_PRIVATE_SLOT(d_func(), void onUpdate())
+
+    Q_PRIVATE_SLOT(d_func(), void onDeleteFolder())
+    Q_PRIVATE_SLOT(d_func(), void onDeleteId    ())
 };
 
 #include <private/WTorrentEngine_p>
