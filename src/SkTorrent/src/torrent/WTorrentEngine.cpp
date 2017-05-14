@@ -382,11 +382,15 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         if (mode == WTorrent::Stream)
         {
-            peer_request request = info->map_file(index, 0, info->files().file_size(index));
+            qint64 size = info->files().file_size(index);
+
+            peer_request request = info->map_file(index, 0, 0);
 
             begin = request.piece;
 
-            end = begin + qMax(0, (request.start + request.length) / info->piece_length()) + 1;
+            int count = (request.start + size) / info->piece_length();
+
+            end = begin + qMax(0, count) + 1;
 
             std::vector<int> pieces;
 
