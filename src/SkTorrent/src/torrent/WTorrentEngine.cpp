@@ -37,6 +37,8 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
+static const int TORRENTENGINE_PRIORITY_COUNT = 10;
+
 static const int TORRENTENGINE_TIMEOUT = 1000;
 
 //-------------------------------------------------------------------------------------------------
@@ -412,6 +414,34 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
             handle.set_sequential_download(true);
 
             handle.prioritize_pieces(pieces);
+
+            //-------------------------------------------------------------------------------------
+
+            int index = begin;
+
+            int deadline = 1;
+
+            handle.set_piece_deadline(index, deadline++);
+
+            int last = end - 1;
+
+            if (begin != last)
+            {
+                handle.set_piece_deadline(last, deadline++);
+
+                index = begin + 1;
+
+                int count = TORRENTENGINE_PRIORITY_COUNT;
+
+                while (count && index < last)
+                {
+                    handle.set_piece_deadline(index, deadline++);
+
+                    index++;
+
+                    count--;
+                }
+            }
         }
         else
         {
