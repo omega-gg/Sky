@@ -18,19 +18,15 @@
 #define WTORRENTENGINE_P_H
 
 // Qt includes
-#include <QEvent>
-#include <QVariant>
-#include <QTimer>
 #include <QBitArray>
+#include <QTimer>
 
 // libtorrent includes
 #include <libtorrent/session.hpp>
 
 // Sk includes
+#include <WControllerTorrent>
 #include <WListId>
-
-// Private includes
-#include <private/Sk_p>
 
 #ifndef SK_NO_TORRENTENGINE
 
@@ -44,6 +40,8 @@ using namespace libtorrent;
 struct WTorrentData
 {
     int id;
+
+    WTorrent::Mode mode;
 
     QString path;
 

@@ -32,7 +32,6 @@
 
 // Sk includes
 #include <WControllerFile>
-#include <WControllerTorrent>
 
 //-------------------------------------------------------------------------------------------------
 // Static variables
@@ -316,8 +315,6 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         QVariantList variants = eventTorrent->value.toList();
 
-        WTorrentData * data = new WTorrentData;
-
         //-----------------------------------------------------------------------------------------
         // Torrent info
 
@@ -457,11 +454,15 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         //-----------------------------------------------------------------------------------------
         // Torrent add
 
+        WTorrentData * data = new WTorrentData;
+
         qint64 size = info->total_size();
 
         int count = end - begin;
 
         data->id = id;
+
+        data->mode = mode;
 
         data->path = path;
 
