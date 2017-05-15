@@ -21,6 +21,7 @@
 #include <QEvent>
 #include <QVariant>
 #include <QTimer>
+#include <QBitArray>
 
 // libtorrent includes
 #include <libtorrent/session.hpp>
@@ -51,6 +52,8 @@ struct WTorrentData
     torrent_handle handle;
 
     qint64 size;
+
+    QBitArray pieces;
 
     int begin;
     int end;
