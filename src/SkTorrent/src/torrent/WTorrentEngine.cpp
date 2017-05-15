@@ -36,7 +36,7 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int TORRENTENGINE_PRIORITY_COUNT = 10;
+static const int TORRENTENGINE_PRIORITY_COUNT = 20;
 
 static const int TORRENTENGINE_TIMEOUT = 1000;
 
@@ -426,9 +426,11 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
             {
                 handle.set_piece_deadline(last, deadline++);
 
+                int count = TORRENTENGINE_PRIORITY_COUNT;
+
                 index = begin + 1;
 
-                int count = TORRENTENGINE_PRIORITY_COUNT;
+                last--;
 
                 while (count && index < last)
                 {
@@ -476,6 +478,8 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         data->begin = begin;
         data->end   = end;
+
+        data->index = 0;
 
         d->torrents.insert(hash_value(handle), data);
 
@@ -564,7 +568,64 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         int piece = eventTorrent->value.toInt() - data->begin;
 
-        data->pieces.setBit(piece);
+        QBitArray * pieces = &(data->pieces);
+
+        pieces->setBit(piece);
+
+        if (data->mode == WTorrent::Stream)
+        {
+            const torrent_handle & handle = data->handle;
+
+            handle.reset_piece_deadline(piece);
+
+            int index = data->index;
+            int last  = data->end - 1;
+
+            if (index != last)
+            {
+                if (index == piece)
+                {
+                    index++;
+
+                    while (index < last && pieces->at(index))
+                    {
+                        index++;
+                    }
+
+                    data->index = index;
+                }
+
+                int deadline = 1;
+
+                int begin = data->begin;
+
+                if (pieces->at(begin) == 0)
+                {
+                    handle.set_piece_deadline(begin, deadline++);
+                }
+
+                if (pieces->at(last) == 0)
+                {
+                    handle.set_piece_deadline(last, deadline++);
+                }
+
+                int count = TORRENTENGINE_PRIORITY_COUNT;
+
+                last--;
+
+                while (count && index < last)
+                {
+                    if (pieces->at(index) == 0)
+                    {
+                        handle.set_piece_deadline(index, deadline++);
+
+                        count--;
+                    }
+
+                    index++;
+                }
+            }
+        }
 
         QCoreApplication::postEvent(data->torrent,
                                     new WTorrentEventValue(WTorrent::EventPiece, piece));
