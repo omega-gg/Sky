@@ -36,7 +36,7 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int TORRENTENGINE_PRIORITY_COUNT = 20;
+static const int TORRENTENGINE_PRIORITY_COUNT = 10;
 
 static const int TORRENTENGINE_TIMEOUT = 1000;
 
@@ -574,20 +574,19 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         if (data->mode == WTorrent::Stream)
         {
-            const torrent_handle & handle = data->handle;
-
-            handle.reset_piece_deadline(piece);
-
-            int index = data->index;
+            int begin = data->begin;
             int last  = data->end - 1;
 
-            if (index != last)
+            int index   = data->index;
+            int current = begin + index;
+
+            if (current != last)
             {
                 if (index == piece)
                 {
                     index++;
 
-                    while (index < last && pieces->at(index))
+                    while (index < pieces->count() && pieces->at(index))
                     {
                         index++;
                     }
@@ -595,9 +594,9 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
                     data->index = index;
                 }
 
-                int deadline = 1;
+                const torrent_handle & handle = data->handle;
 
-                int begin = data->begin;
+                int deadline = 1;
 
                 if (pieces->at(begin) == 0)
                 {
@@ -613,16 +612,18 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
                 last--;
 
-                while (count && index < last)
+                while (count && current < last)
                 {
                     if (pieces->at(index) == 0)
                     {
-                        handle.set_piece_deadline(index, deadline++);
+                        handle.set_piece_deadline(current, deadline++);
 
                         count--;
                     }
 
                     index++;
+
+                    current++;
                 }
             }
         }
