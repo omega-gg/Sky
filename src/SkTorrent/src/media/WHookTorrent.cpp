@@ -75,9 +75,7 @@ void WHookTorrentPrivate::onAdded()
 {
     torrent = reply->torrent();
 
-    QString source = torrent->paths().first();
-
-    if (source.isEmpty())
+    if (torrent->paths().isEmpty())
     {
         Q_Q(WHookTorrent);
 
