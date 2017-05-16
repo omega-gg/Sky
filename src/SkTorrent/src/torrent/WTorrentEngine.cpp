@@ -355,18 +355,24 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         }
         else
         {
-            QString fileName = QString::fromStdString(info->files().file_path(index));
-
-            paths.push_back(path + '/' + QDir::fromNativeSeparators(fileName));
-
             std::vector<int> files;
 
-            for (int i = 0; i < info->num_files(); i++)
+            int count = info->num_files();
+
+            for (int i = 0; i < count; i++)
             {
                 files.push_back(0);
             }
 
-            files[index] = 1;
+            if (index < count)
+            {
+                QString fileName = QString::fromStdString(info->files().file_path(index));
+
+                paths.push_back(path + '/' + QDir::fromNativeSeparators(fileName));
+
+                files[index] = 1;
+            }
+            else index = -2;
 
             handle.prioritize_files(files);
         }
@@ -379,64 +385,77 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         int begin;
         int end;
 
-        if (mode == WTorrent::Stream)
+        if (index == -2)
         {
-            qint64 size = info->files().file_size(index);
-
-            peer_request request = info->map_file(index, 0, 0);
-
-            begin = request.piece;
-
-            int length = (request.start + size) / info->piece_length();
-
-            end = begin + qMax(0, length) + 1;
-
-            std::vector<int> pieces;
-
-            for (int i = 0; i < begin; i++)
+            begin = 0;
+            end   = 0;
+        }
+        else if (mode == WTorrent::Stream)
+        {
+            if (index == -1)
             {
-                pieces.push_back(0);
+                begin = 0;
+                end   = 0;
             }
-
-            for (int i = begin; i < end; i++)
+            else
             {
-                pieces.push_back(1);
-            }
+                qint64 size = info->files().file_size(index);
 
-            for (int i = end; i < info->num_pieces(); i++)
-            {
-                pieces.push_back(0);
-            }
+                peer_request request = info->map_file(index, 0, 0);
 
-            handle.set_sequential_download(true);
+                begin = request.piece;
 
-            handle.prioritize_pieces(pieces);
+                int length = (request.start + size) / info->piece_length();
 
-            //-------------------------------------------------------------------------------------
+                end = begin + qMax(0, length) + 1;
 
-            int deadline = 1;
+                std::vector<int> pieces;
 
-            handle.set_piece_deadline(begin, deadline++);
-
-            int last = end - 1;
-
-            if (begin != last)
-            {
-                handle.set_piece_deadline(last, deadline++);
-
-                int count = TORRENTENGINE_PRIORITY_COUNT;
-
-                int current = begin + 1;
-
-                last--;
-
-                while (count && current < last)
+                for (int i = 0; i < begin; i++)
                 {
-                    handle.set_piece_deadline(current, deadline++);
+                    pieces.push_back(0);
+                }
 
-                    current++;
+                for (int i = begin; i < end; i++)
+                {
+                    pieces.push_back(1);
+                }
 
-                    count--;
+                for (int i = end; i < info->num_pieces(); i++)
+                {
+                    pieces.push_back(0);
+                }
+
+                handle.set_sequential_download(true);
+
+                handle.prioritize_pieces(pieces);
+
+                //---------------------------------------------------------------------------------
+
+                int deadline = 1;
+
+                handle.set_piece_deadline(begin, deadline++);
+
+                int last = end - 1;
+
+                if (begin != last)
+                {
+                    handle.set_piece_deadline(last, deadline++);
+
+                    int count = TORRENTENGINE_PRIORITY_COUNT;
+
+                    int current = begin + 1;
+
+                    last--;
+
+                    while (count && current < last)
+                    {
+                        handle.set_piece_deadline(current, deadline++);
+
+                        current++;
+
+                        count--;
+                    }
                 }
             }
         }
