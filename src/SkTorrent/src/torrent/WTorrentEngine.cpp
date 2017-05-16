@@ -414,11 +414,9 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
             //-------------------------------------------------------------------------------------
 
-            int index = begin;
-
             int deadline = 1;
 
-            handle.set_piece_deadline(index, deadline++);
+            handle.set_piece_deadline(begin, deadline++);
 
             int last = end - 1;
 
@@ -428,15 +426,15 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
                 int count = TORRENTENGINE_PRIORITY_COUNT;
 
-                index = begin + 1;
+                int current = begin + 1;
 
                 last--;
 
-                while (count && index < last)
+                while (count && current < last)
                 {
-                    handle.set_piece_deadline(index, deadline++);
+                    handle.set_piece_deadline(current, deadline++);
 
-                    index++;
+                    current++;
 
                     count--;
                 }
