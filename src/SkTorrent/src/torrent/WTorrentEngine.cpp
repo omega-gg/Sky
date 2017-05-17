@@ -287,6 +287,9 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         pack.set_bool(settings_pack::enable_dht, true);
         pack.set_bool(settings_pack::enable_lsd, true);
 
+        pack.set_bool(settings_pack::enable_upnp,   true);
+        pack.set_bool(settings_pack::enable_natpmp, true);
+
         d->session = new session(pack);
 
         boost::function<void()> alert(boost::bind(&WTorrentEnginePrivate::events, d));

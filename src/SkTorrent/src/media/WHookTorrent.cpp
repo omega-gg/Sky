@@ -73,6 +73,8 @@ void WHookTorrentPrivate::clearReply()
 
 void WHookTorrentPrivate::onAdded()
 {
+    torrent = reply->torrent();
+
     QStringList paths = torrent->paths();
 
     if (paths.isEmpty())
