@@ -73,14 +73,15 @@ void WHookTorrentPrivate::clearReply()
 
 void WHookTorrentPrivate::onAdded()
 {
-    torrent = reply->torrent();
+    QStringList paths = torrent->paths();
 
-    if (torrent->paths().isEmpty())
+    if (paths.isEmpty())
     {
         Q_Q(WHookTorrent);
 
         q->stop();
     }
+    else path = paths.first();
 }
 
 void WHookTorrentPrivate::onLoaded()
@@ -180,6 +181,8 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 /* Q_INVOKABLE virtual */ void WHookTorrent::stop()
 {
     Q_D(WHookTorrent);
+
+    backendSetSource(QUrl());
 
     d->backend->stop();
 

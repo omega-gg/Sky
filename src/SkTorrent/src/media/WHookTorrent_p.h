@@ -57,6 +57,8 @@ public: // Variables
     WTorrent      * torrent;
     WTorrentReply * reply;
 
+    QString path;
+
 protected:
     W_DECLARE_PUBLIC(WHookTorrent)
 };
