@@ -425,7 +425,7 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
                 end = begin + qMax(0, length) + 1;
 
-                std::vector<int> pieces;
+                /*std::vector<int> pieces;
 
                 for (int i = 0; i < begin; i++)
                 {
@@ -444,7 +444,7 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
                 handle.set_sequential_download(true);
 
-                handle.prioritize_pieces(pieces);
+                handle.prioritize_pieces(pieces);*/
 
                 //---------------------------------------------------------------------------------
 
