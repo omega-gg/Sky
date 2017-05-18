@@ -290,6 +290,19 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         pack.set_bool(settings_pack::enable_upnp,   true);
         pack.set_bool(settings_pack::enable_natpmp, true);
 
+        pack.set_bool(settings_pack::smooth_connects, false);
+
+        pack.set_int(settings_pack::connection_speed, 400);
+
+        pack.set_int(settings_pack::max_failcount,      1);
+        pack.set_int(settings_pack::min_reconnect_time, 1);
+
+        pack.set_int(settings_pack::peer_timeout,         1);
+        pack.set_int(settings_pack::peer_connect_timeout, 1);
+
+        pack.set_bool(settings_pack::announce_to_all_tiers,    true);
+        pack.set_bool(settings_pack::announce_to_all_trackers, true);
+
         d->session = new session(pack);
 
         boost::function<void()> alert(boost::bind(&WTorrentEnginePrivate::events, d));
