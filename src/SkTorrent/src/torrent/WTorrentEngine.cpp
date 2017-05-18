@@ -290,9 +290,9 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         pack.set_bool(settings_pack::enable_upnp,   true);
         pack.set_bool(settings_pack::enable_natpmp, true);
 
-        pack.set_bool(settings_pack::smooth_connects, false);
+        //pack.set_bool(settings_pack::smooth_connects, false);
 
-        pack.set_int(settings_pack::connection_speed, 400);
+        pack.set_int(settings_pack::connection_speed, 500);
 
         pack.set_int(settings_pack::max_failcount,      1);
         pack.set_int(settings_pack::min_reconnect_time, 1);
@@ -425,6 +425,8 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
                 end = begin + qMax(0, length) + 1;
 
+                handle.set_sequential_download(true);
+
                 /*std::vector<int> pieces;
 
                 for (int i = 0; i < begin; i++)
@@ -441,8 +443,6 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
                 {
                     pieces.push_back(0);
                 }
-
-                handle.set_sequential_download(true);
 
                 handle.prioritize_pieces(pieces);*/
 
