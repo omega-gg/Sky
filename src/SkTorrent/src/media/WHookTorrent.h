@@ -53,7 +53,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onAdded ())
     Q_PRIVATE_SLOT(d_func(), void onLoaded())
 
-    Q_PRIVATE_SLOT(d_func(), void onPieceReady())
+    Q_PRIVATE_SLOT(d_func(), void onProgress(qint64))
 };
 
 #include <private/WHookTorrent_p>

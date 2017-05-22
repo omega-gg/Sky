@@ -49,7 +49,7 @@ void WHookTorrentPrivate::loadTorrent()
     QObject::connect(reply, SIGNAL(added (WTorrentReply *)), q, SLOT(onAdded ()));
     QObject::connect(reply, SIGNAL(loaded(WTorrentReply *)), q, SLOT(onLoaded()));
 
-    QObject::connect(reply, SIGNAL(pieceReady(int)), q, SLOT(onPieceReady()));
+    QObject::connect(reply, SIGNAL(progress(qint64, qint64)), q, SLOT(onProgress(qint64)));
 }
 
 void WHookTorrentPrivate::clearReply()
@@ -100,9 +100,18 @@ void WHookTorrentPrivate::onLoaded()
 
 //-------------------------------------------------------------------------------------------------
 
-void WHookTorrentPrivate::onPieceReady()
+void WHookTorrentPrivate::onProgress(qint64 bytesReceived)
 {
+    QString fileName = "file:///" + path;
 
+    qint64 buffer = (bytesReceived * 10000) / torrent->size();
+
+    if (buffer > 28 && backend->source() != fileName)
+    {
+        backend->setSource(fileName);
+
+        backend->play();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------

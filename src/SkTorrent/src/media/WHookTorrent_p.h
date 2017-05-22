@@ -51,7 +51,7 @@ public: // Slots
     void onAdded ();
     void onLoaded();
 
-    void onPieceReady();
+    void onProgress(qint64 bytesReceived);
 
 public: // Variables
     WTorrent      * torrent;

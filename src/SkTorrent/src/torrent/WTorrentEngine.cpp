@@ -636,9 +636,7 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         WTorrentData * data = d->torrents.value(eventTorrent->hash);
 
-        if (data && data->mode == WTorrent::Stream
-            &&
-            data->index == eventTorrent->piece)
+        if (data && data->mode == WTorrent::Stream && data->index == eventTorrent->piece)
         {
             int block = eventTorrent->block;
 
@@ -646,9 +644,13 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
             {
                 data->block = block;
 
-                data->progress = data->index * data->sizePiece
-                                 +
-                                 data->block * TORRENTENGINE_BLOCK;
+                qint64 progress = data->index * data->sizePiece + block * TORRENTENGINE_BLOCK;
+
+                data->progress = progress;
+
+                QCoreApplication::postEvent(data->torrent,
+                                            new WTorrentEventProgress(progress,
+                                                                      -1, -1, -1, -1));
             }
         }
 
@@ -688,9 +690,13 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
                     data->index = index;
                     data->block = 0;
 
-                    data->progress = data->index * data->sizePiece
-                                     +
-                                     data->block * TORRENTENGINE_BLOCK;
+                    qint64 progress = index * data->sizePiece;
+
+                    data->progress = progress;
+
+                    QCoreApplication::postEvent(data->torrent,
+                                                new WTorrentEventProgress(progress,
+                                                                          -1, -1, -1, -1));
                 }
 
                 const torrent_handle & handle = data->handle;

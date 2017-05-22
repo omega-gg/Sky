@@ -103,17 +103,22 @@ WTorrent::WTorrent(const QUrl & url, Mode mode, QObject * parent) : QObject(pare
     {
         WTorrentEventProgress * eventTorrent = static_cast<WTorrentEventProgress *> (event);
 
+        if (_paths.isEmpty()) return true;
+
         _progress = eventTorrent->progress;
 
-        _download = eventTorrent->download;
-        _upload   = eventTorrent->upload;
+        if (_download != -1)
+        {
+            _download = eventTorrent->download;
+            _upload   = eventTorrent->upload;
 
-        _seeds = eventTorrent->seeds;
-        _peers = eventTorrent->peers;
+            _seeds = eventTorrent->seeds;
+            _peers = eventTorrent->peers;
+        }
 
         foreach (WTorrentReply * reply, _replies)
         {
-            emit reply->progress(_download, _size);
+            emit reply->progress(_progress, _size);
         }
 
         return true;
