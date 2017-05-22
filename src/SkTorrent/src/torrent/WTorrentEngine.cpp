@@ -678,11 +678,13 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
             if (current != last)
             {
+                int length = pieces->count();
+
                 if (index == piece)
                 {
                     index++;
 
-                    while (index < pieces->count() && pieces->at(index))
+                    while (index < length && pieces->at(index))
                     {
                         index++;
                     }
@@ -703,12 +705,14 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
                 int deadline = 1;
 
-                if (pieces->at(begin) == 0)
+                if (pieces->at(0) == 0)
                 {
                     handle.set_piece_deadline(begin, deadline++);
                 }
 
-                if (pieces->at(last) == 0)
+                length--;
+
+                if (pieces->at(length) == 0)
                 {
                     handle.set_piece_deadline(last, deadline++);
                 }
@@ -717,7 +721,7 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
                 last--;
 
-                while (count && current < last)
+                while (count && index < length)
                 {
                     if (pieces->at(index) == 0)
                     {
