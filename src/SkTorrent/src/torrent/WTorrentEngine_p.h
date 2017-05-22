@@ -50,6 +50,7 @@ struct WTorrentData
     torrent_handle handle;
 
     qint64 size;
+    int    sizePiece;
 
     QBitArray pieces;
 
@@ -57,6 +58,9 @@ struct WTorrentData
     int end;
 
     int index;
+    int block;
+
+    qint64 progress;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -74,6 +78,7 @@ public: // Enums
         EventRemoved,
         EventState,
         EventProgress,
+        EventBlock,
         EventPiece,
         EventFinished,
         EventError,
@@ -167,6 +172,25 @@ public:
 
 public: // Variables
     QVariant value;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WTorrentEngineBlock
+//-------------------------------------------------------------------------------------------------
+
+class WTorrentEngineBlock : public WTorrentEngineHandle
+{
+public:
+    WTorrentEngineBlock(unsigned int hash, int piece, int block)
+        : WTorrentEngineHandle(WTorrentEnginePrivate::EventBlock, hash)
+    {
+        this->piece = piece;
+        this->block = block;
+    }
+
+public: // Variables
+    int piece;
+    int block;
 };
 
 //-------------------------------------------------------------------------------------------------
