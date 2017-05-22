@@ -143,8 +143,8 @@ void WTorrentEnginePrivate::events()
 
                 progress.progress = status.total_done;
 
-                progress.download = status.download_payload_rate;
-                progress.upload   = status.upload_payload_rate;
+                progress.download = status.download_rate;
+                progress.upload   = status.upload_rate;
 
                 progress.seeds = status.num_seeds;
                 progress.peers = status.num_peers;
@@ -198,7 +198,7 @@ void WTorrentEnginePrivate::events()
 
 void WTorrentEnginePrivate::onUpdate()
 {
-    session->post_torrent_updates();
+    session->post_torrent_updates(torrent_handle::query_accurate_download_counters);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -290,11 +290,11 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         pack.set_bool(settings_pack::enable_upnp,   true);
         pack.set_bool(settings_pack::enable_natpmp, true);
 
-        //pack.set_bool(settings_pack::smooth_connects, false);
+        pack.set_bool(settings_pack::smooth_connects, false);
 
-        pack.set_int(settings_pack::connection_speed, 500);
+        pack.set_int(settings_pack::connection_speed, 400);
 
-        pack.set_int(settings_pack::max_failcount,      1);
+        //pack.set_int(settings_pack::max_failcount,      1);
         pack.set_int(settings_pack::min_reconnect_time, 1);
 
         pack.set_int(settings_pack::peer_timeout,         1);
@@ -302,6 +302,8 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         pack.set_bool(settings_pack::announce_to_all_tiers,    true);
         pack.set_bool(settings_pack::announce_to_all_trackers, true);
+
+        //pack.set_bool(settings_pack::prioritize_partial_pieces, true);
 
         d->session = new session(pack);
 
@@ -398,11 +400,15 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         WTorrent::Mode mode = static_cast<WTorrent::Mode> (variants.at(3).toInt());
 
+        qint64 size;
+
         int begin;
         int end;
 
         if (index == -2)
         {
+            size = 0;
+
             begin = 0;
             end   = 0;
         }
@@ -410,12 +416,14 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         {
             if (index == -1)
             {
+                size = 0;
+
                 begin = 0;
                 end   = 0;
             }
             else
             {
-                qint64 size = info->files().file_size(index);
+                size = info->files().file_size(index);
 
                 peer_request request = info->map_file(index, 0, 0);
 
@@ -425,9 +433,9 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
                 end = begin + qMax(0, length) + 1;
 
-                handle.set_sequential_download(true);
+                /*handle.set_sequential_download(true);
 
-                /*std::vector<int> pieces;
+                std::vector<int> pieces;
 
                 for (int i = 0; i < begin; i++)
                 {
@@ -477,6 +485,8 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         }
         else
         {
+            size = info->total_size();
+
             begin = 0;
             end   = info->num_pieces();
 
@@ -490,8 +500,6 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         // Torrent add
 
         WTorrentData * data = new WTorrentData;
-
-        qint64 size = info->total_size();
 
         int count = end - begin;
 
