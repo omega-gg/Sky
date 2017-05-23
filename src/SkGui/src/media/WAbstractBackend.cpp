@@ -752,15 +752,15 @@ void WAbstractBackend::setFillMode(FillMode fillMode)
 // WBackendFilter
 //=================================================================================================
 
-/* virtual */ void WBackendFilter::filterState    (WAbstractBackend::State     *) const {}
-/* virtual */ void WBackendFilter::filterStateLoad(WAbstractBackend::StateLoad *) const {}
+/* virtual */ void WBackendFilter::filterState    (WAbstractBackend::State     *) {}
+/* virtual */ void WBackendFilter::filterStateLoad(WAbstractBackend::StateLoad *) {}
 
-/* virtual */ void WBackendFilter::filterEnded(bool *) const {}
+/* virtual */ void WBackendFilter::filterEnded(bool *) {}
 
-/* virtual */ void WBackendFilter::filterCurrentTime(int *) const {}
-/* virtual */ void WBackendFilter::filterDuration   (int *) const {}
+/* virtual */ void WBackendFilter::filterCurrentTime(int *) {}
+/* virtual */ void WBackendFilter::filterDuration   (int *) {}
 
-/* virtual */ void WBackendFilter::filterOutputActive (WAbstractBackend::Output  *) const {}
-/* virtual */ void WBackendFilter::filterQualityActive(WAbstractBackend::Quality *) const {}
+/* virtual */ void WBackendFilter::filterOutputActive (WAbstractBackend::Output  *) {}
+/* virtual */ void WBackendFilter::filterQualityActive(WAbstractBackend::Quality *) {}
 
 #endif // SK_NO_ABSTRACTBACKEND

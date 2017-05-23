@@ -37,6 +37,14 @@ class WTorrentReply;
 
 class SK_TORRENT_EXPORT WHookTorrentPrivate : public WAbstractHookPrivate
 {
+public: // Enums
+    enum State
+    {
+        StateDefault,
+        StateLoading,
+        StateStarting
+    };
+
 public:
     WHookTorrentPrivate(WHookTorrent * p);
 
@@ -58,6 +66,10 @@ public: // Variables
     WTorrentReply * reply;
 
     QString fileName;
+
+    qint64 byteRate;
+
+    State state;
 
 protected:
     W_DECLARE_PUBLIC(WHookTorrent)

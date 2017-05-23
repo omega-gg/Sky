@@ -329,16 +329,16 @@ private:
 class SK_GUI_EXPORT WBackendFilter
 {
 public:
-    virtual void filterState    (WAbstractBackend::State     * state)     const; /* {} */
-    virtual void filterStateLoad(WAbstractBackend::StateLoad * stateLoad) const; /* {} */
+    virtual void filterState    (WAbstractBackend::State     * state);     /* {} */
+    virtual void filterStateLoad(WAbstractBackend::StateLoad * stateLoad); /* {} */
 
-    virtual void filterEnded(bool * ended) const; /* {} */
+    virtual void filterEnded(bool * ended); /* {} */
 
-    virtual void filterCurrentTime(int * msec) const; /* {} */
-    virtual void filterDuration   (int * msec) const; /* {} */
+    virtual void filterCurrentTime(int * msec); /* {} */
+    virtual void filterDuration   (int * msec); /* {} */
 
-    virtual void filterOutputActive (WAbstractBackend::Output  * output)  const; /* {} */
-    virtual void filterQualityActive(WAbstractBackend::Quality * quality) const; /* {} */
+    virtual void filterOutputActive (WAbstractBackend::Output  * output);  /* {} */
+    virtual void filterQualityActive(WAbstractBackend::Quality * quality); /* {} */
 };
 
 #endif // SK_NO_ABSTRACTBACKEND

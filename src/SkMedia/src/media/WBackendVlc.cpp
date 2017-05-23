@@ -1561,6 +1561,8 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
         }
         else d->playing = true;
 
+        setStateLoad(StateLoadDefault);
+
         return true;
     }
     else if (type == static_cast<QEvent::Type> (WVlcPlayer::EventPaused))

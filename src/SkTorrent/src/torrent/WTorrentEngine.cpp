@@ -719,6 +719,8 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
                 int count = TORRENTENGINE_PRIORITY_COUNT;
 
+                length--;
+
                 last--;
 
                 while (count && index < length)
