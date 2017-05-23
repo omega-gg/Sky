@@ -140,7 +140,7 @@ void WHookTorrentPrivate::onProgress(qint64 bytesReceived)
 
         int duration = backend->duration();
 
-        if (duration != -1)
+        if (duration > 0)
         {
             byteRate = size / duration;
         }
@@ -265,7 +265,12 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 {
     Q_D(WHookTorrent);
 
-    d->byteRate = d->torrent->size() / *msec;
+    int duration = *msec;
+
+    if (duration > 0)
+    {
+        d->byteRate = d->torrent->size() / duration;
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
