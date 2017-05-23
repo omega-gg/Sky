@@ -17,6 +17,7 @@
 #include "WHookTorrent.h"
 
 // Sk includes
+#include <WControllerFile>
 #include <WControllerNetwork>
 #include <WControllerTorrent>
 
@@ -83,7 +84,7 @@ void WHookTorrentPrivate::onAdded()
 
         q->stop();
     }
-    else path = paths.first();
+    else fileName = WControllerFile::fileUrl(paths.first());
 }
 
 void WHookTorrentPrivate::onLoaded()
@@ -102,8 +103,6 @@ void WHookTorrentPrivate::onLoaded()
 
 void WHookTorrentPrivate::onProgress(qint64 bytesReceived)
 {
-    QString fileName = "file:///" + path;
-
     qint64 buffer = (bytesReceived * 10000) / torrent->size();
 
     if (buffer > 28 && backend->source() != fileName)
