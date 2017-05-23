@@ -33,6 +33,14 @@ static const QChar BACKENDTORRENT_LIST    = 'l';
 static const QChar BACKENDTORRENT_END = 'e';
 
 //-------------------------------------------------------------------------------------------------
+// Inline functions
+
+inline bool sort(const WTrackNet & trackA, const WTrackNet & trackB)
+{
+    return trackA.title() < trackB.title();
+}
+
+//-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
 
@@ -250,7 +258,7 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
         paths.append(name);
     }
 
-    reply.title = name;
+    QList<WTrackNet> tracks;
 
     QString source = query.url.toString();
 
@@ -264,11 +272,17 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
             track.setTitle(path);
 
-            reply.tracks.append(track);
+            tracks.append(track);
         }
 
         index++;
     }
+
+    qSort(tracks.begin(), tracks.end(), sort);
+
+    reply.title = name;
+
+    reply.tracks = tracks;
 
     reply.cache = data;
 
