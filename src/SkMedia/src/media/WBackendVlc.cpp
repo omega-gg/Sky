@@ -1588,8 +1588,6 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
     }
     else if (type == static_cast<QEvent::Type> (WVlcPlayer::EventLengthChanged))
     {
-        Q_D(WBackendVlc);
-
         WVlcPlayerEvent * eventPlayer = static_cast<WVlcPlayerEvent *> (event);
 
         setDuration(eventPlayer->value.toInt());
