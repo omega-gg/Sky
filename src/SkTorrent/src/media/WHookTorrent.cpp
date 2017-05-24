@@ -16,12 +16,17 @@
 
 #include "WHookTorrent.h"
 
+#ifndef SK_NO_HOOKTORRENT
+
 // Sk includes
 #include <WControllerFile>
 #include <WControllerNetwork>
 #include <WControllerTorrent>
 
-#ifndef SK_NO_HOOKTORRENT
+//-------------------------------------------------------------------------------------------------
+// Static variables
+
+static const int HOOKTORRENT_DEFAULT_RATE = 3600000; // 1 hour
 
 //-------------------------------------------------------------------------------------------------
 // Private
@@ -254,7 +259,26 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 
 /* virtual */ void WHookTorrent::filterStateLoad(WAbstractBackend::StateLoad * stateLoad)
 {
-    if (*stateLoad == WAbstractBackend::StateLoadDefault) {}
+    if (*stateLoad == WAbstractBackend::StateLoadDefault)
+    {
+        Q_D(WHookTorrent);
+
+        if (d->state == WHookTorrentPrivate::StateStarting)
+        {
+            qDebug("STARTING");
+
+            d->state = WHookTorrentPrivate::StateDefault;
+
+            if (d->backend->duration() == 0)
+            {
+                d->byteRate = d->torrent->size() / HOOKTORRENT_DEFAULT_RATE;
+            }
+        }
+    }
+    else if (*stateLoad == WAbstractBackend::StateLoadBuffering)
+    {
+        qDebug("BUFFERING");
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -269,8 +293,9 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 
     if (duration > 0)
     {
-        d->byteRate = d->torrent->size() / duration;
+         d->byteRate = d->torrent->size() / duration;
     }
+    else d->byteRate = d->torrent->size() / HOOKTORRENT_DEFAULT_RATE;
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -304,7 +304,7 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         pack.set_bool(settings_pack::smooth_connects, false);
 
-        pack.set_int(settings_pack::connection_speed, 400);
+        pack.set_int(settings_pack::connection_speed, 500);
 
         //pack.set_int(settings_pack::max_failcount,      1);
         pack.set_int(settings_pack::min_reconnect_time, 1);
@@ -661,6 +661,11 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         WTorrentEngineValue * eventTorrent = static_cast<WTorrentEngineValue *> (event);
 
         WTorrentData * data = d->torrents.value(eventTorrent->hash);
+
+        if (data == NULL)
+        {
+            qDebug("DATA SHOULD NOT BE NULL");
+        }
 
         int piece = eventTorrent->value.toInt() - data->begin;
 
