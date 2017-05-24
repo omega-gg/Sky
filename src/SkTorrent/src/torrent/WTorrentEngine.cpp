@@ -32,9 +32,12 @@
 
 // Sk includes
 #include <WControllerFile>
+#include <WControllerNetwork>
 
 //-------------------------------------------------------------------------------------------------
 // Static variables
+
+static const QString TORRENTENGINE_NAME = "1";
 
 static const int TORRENTENGINE_BLOCK = 16000;
 
@@ -364,53 +367,13 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         torrent_handle handle = d->session->add_torrent(params);
 
         //-----------------------------------------------------------------------------------------
-        // Torrent paths
+        // Torrent mode
 
         QStringList paths;
 
-        int index = variants.at(2).toInt();
-
-        if (index == -1)
-        {
-            QString filePath = path + '/';
-
-            const file_storage & storage = info->files();
-
-            for (int i = 0; i < info->num_files(); i++)
-            {
-                QString fileName = QString::fromStdString(storage.file_path(i));
-
-                paths.push_back(filePath + QDir::fromNativeSeparators(fileName));
-            }
-        }
-        else
-        {
-            std::vector<int> files;
-
-            int count = info->num_files();
-
-            for (int i = 0; i < count; i++)
-            {
-                files.push_back(0);
-            }
-
-            if (index < count)
-            {
-                QString fileName = QString::fromStdString(info->files().file_path(index));
-
-                paths.push_back(path + '/' + QDir::fromNativeSeparators(fileName));
-
-                files[index] = 1;
-            }
-            else index = -2;
-
-            handle.prioritize_files(files);
-        }
-
-        //-----------------------------------------------------------------------------------------
-        // Torrent mode
-
         WTorrent::Mode mode = static_cast<WTorrent::Mode> (variants.at(3).toInt());
+
+        int index = variants.at(2).toInt();
 
         qint64 size;
         qint64 sizePiece;
@@ -418,15 +381,7 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         int begin;
         int end;
 
-        if (index == -2)
-        {
-            size      = 0;
-            sizePiece = 0;
-
-            begin = 0;
-            end   = 0;
-        }
-        else if (mode == WTorrent::Stream)
+        if (mode == WTorrent::Stream)
         {
             if (index == -1)
             {
@@ -438,70 +393,149 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
             }
             else
             {
-                size = info->files().file_size(index);
+                int count = info->num_files();
 
-                sizePiece = info->piece_length();
+                std::vector<int> files;
 
-                peer_request request = info->map_file(index, 0, 0);
-
-                begin = request.piece;
-
-                int length = (request.start + size) / sizePiece;
-
-                end = begin + qMax(0, length) + 1;
-
-                /*handle.set_sequential_download(true);
-
-                std::vector<int> pieces;
-
-                for (int i = 0; i < begin; i++)
+                for (int i = 0; i < count; i++)
                 {
-                    pieces.push_back(0);
+                    files.push_back(0);
                 }
 
-                for (int i = begin; i < end; i++)
+                if (index < count)
                 {
-                    pieces.push_back(1);
-                }
+                    QString fileName = QString::fromStdString(info->files().file_path(index));
 
-                for (int i = end; i < info->num_pieces(); i++)
-                {
-                    pieces.push_back(0);
-                }
+                    QString extension = WControllerNetwork::extractUrlExtension(fileName);
 
-                handle.prioritize_pieces(pieces);*/
+                    fileName = TORRENTENGINE_NAME;
 
-                //---------------------------------------------------------------------------------
-
-                int deadline = 1;
-
-                handle.set_piece_deadline(begin, deadline++);
-
-                int last = end - 1;
-
-                if (begin != last)
-                {
-                    handle.set_piece_deadline(last, deadline++);
-
-                    int count = TORRENTENGINE_PRIORITY_COUNT;
-
-                    int current = begin + 1;
-
-                    last--;
-
-                    while (count && current < last)
+                    if (extension.isEmpty() == false)
                     {
-                        handle.set_piece_deadline(current, deadline++);
-
-                        current++;
-
-                        count--;
+                        fileName.append("." + extension);
                     }
+
+                    paths.push_back(path + '/' + fileName);
+
+                    files[index] = 1;
+
+                    handle.rename_file(index, fileName.toStdString());
+
+                    handle.prioritize_files(files);
+
+                    //-----------------------------------------------------------------------------
+
+                    size = info->files().file_size(index);
+
+                    sizePiece = info->piece_length();
+
+                    peer_request request = info->map_file(index, 0, 0);
+
+                    begin = request.piece;
+
+                    int length = (request.start + size) / sizePiece;
+
+                    end = begin + qMax(0, length) + 1;
+
+                    /*handle.set_sequential_download(true);
+
+                    std::vector<int> pieces;
+
+                    for (int i = 0; i < begin; i++)
+                    {
+                        pieces.push_back(0);
+                    }
+
+                    for (int i = begin; i < end; i++)
+                    {
+                        pieces.push_back(1);
+                    }
+
+                    for (int i = end; i < info->num_pieces(); i++)
+                    {
+                        pieces.push_back(0);
+                    }
+
+                    handle.prioritize_pieces(pieces);*/
+
+                    //-----------------------------------------------------------------------------
+
+                    int deadline = 1;
+
+                    handle.set_piece_deadline(begin, deadline++);
+
+                    int last = end - 1;
+
+                    if (begin != last)
+                    {
+                        handle.set_piece_deadline(last, deadline++);
+
+                        int count = TORRENTENGINE_PRIORITY_COUNT;
+
+                        int current = begin + 1;
+
+                        last--;
+
+                        while (count && current < last)
+                        {
+                            handle.set_piece_deadline(current, deadline++);
+
+                            current++;
+
+                            count--;
+                        }
+                    }
+                }
+                else
+                {
+                    handle.prioritize_files(files);
+
+                    size      = 0;
+                    sizePiece = 0;
+
+                    begin = 0;
+                    end   = 0;
                 }
             }
         }
         else
         {
+            if (index == -1)
+            {
+                QString filePath = path + '/';
+
+                const file_storage & storage = info->files();
+
+                for (int i = 0; i < info->num_files(); i++)
+                {
+                    QString fileName = QString::fromStdString(storage.file_path(i));
+
+                    paths.push_back(filePath + QDir::fromNativeSeparators(fileName));
+                }
+            }
+            else
+            {
+                std::vector<int> files;
+
+                int count = info->num_files();
+
+                for (int i = 0; i < count; i++)
+                {
+                    files.push_back(0);
+                }
+
+                if (index < count)
+                {
+                    QString fileName = QString::fromStdString(info->files().file_path(index));
+
+                    paths.push_back(path + '/' + QDir::fromNativeSeparators(fileName));
+
+                    files[index] = 1;
+                }
+
+                handle.prioritize_files(files);
+            }
+
             size      = info->total_size();
             sizePiece = 0;
 

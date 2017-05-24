@@ -283,7 +283,7 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WHookTorrent::filterCurrentTime(int * msec) {}
+/* virtual */ void WHookTorrent::filterCurrentTime(int *) {}
 
 /* virtual */ void WHookTorrent::filterDuration(int * msec)
 {
