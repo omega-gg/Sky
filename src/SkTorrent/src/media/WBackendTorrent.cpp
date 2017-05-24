@@ -32,17 +32,28 @@ static const QChar BACKENDTORRENT_LIST    = 'l';
 
 static const QChar BACKENDTORRENT_END = 'e';
 
-//-------------------------------------------------------------------------------------------------
-// Inline functions
+//=================================================================================================
+// WBackendTorrentItem
+//=================================================================================================
 
-inline bool sort(const WTrackNet & trackA, const WTrackNet & trackB)
+struct WBackendTorrentItem
 {
-    return trackA.title() < trackB.title();
+    int id;
+
+    QString path;
+    QString name;
+};
+
+//-------------------------------------------------------------------------------------------------
+
+inline bool sort(const WBackendTorrentItem & itemA, const WBackendTorrentItem & itemB)
+{
+    return itemA.name < itemB.name;
 }
 
-//-------------------------------------------------------------------------------------------------
-// Private
-//-------------------------------------------------------------------------------------------------
+//=================================================================================================
+// WBackendTorrentPrivate
+//=================================================================================================
 
 #include <private/WBackendNet_p>
 
@@ -54,11 +65,14 @@ public:
     void init();
 
 public: // Functions
-    QString     extractName (const QString & data) const;
-    QStringList extractPaths(const QString & data) const;
+    QString                    extractName (const QString & data) const;
+    QList<WBackendTorrentItem> extractItems(const QString & data) const;
 
-    QString extractString    (const QString & data, int from) const;
-    QString extractLastString(const QString & data, int from) const;
+    QString extractString(const QString & data, int from) const;
+
+    void extractItem(WBackendTorrentItem * item, const QString & data, int from) const;
+
+    QList<WBackendTorrentItem> getFolder(QList<WBackendTorrentItem> * items) const;
 
 protected:
     W_DECLARE_PUBLIC(WBackendTorrent)
@@ -84,15 +98,21 @@ QString WBackendTorrentPrivate::extractName(const QString & data) const
     else return extractString(data, index + 6);
 }
 
-QStringList WBackendTorrentPrivate::extractPaths(const QString & data) const
+QList<WBackendTorrentItem> WBackendTorrentPrivate::extractItems(const QString & data) const
 {
-    QStringList list;
+    QList<WBackendTorrentItem> list;
 
     int index = data.indexOf("4:path");
+
+    int id = 1;
 
     while (index != -1)
     {
         index += 6;
+
+        WBackendTorrentItem item;
+
+        item.id = id;
 
         QChar character = data.at(index);
 
@@ -100,24 +120,28 @@ QStringList WBackendTorrentPrivate::extractPaths(const QString & data) const
         {
             index++;
 
-            QString path = extractLastString(data, index);
+            extractItem(&item, data, index);
 
-            if (path.isEmpty() == false)
+            if (item.name.isEmpty() == false)
             {
-                list.append(path);
+                list.append(item);
             }
         }
         else
         {
-            QString path = extractString(data, index);
+            QString name = extractString(data, index);
 
-            if (path.isEmpty() == false)
+            if (name.isEmpty() == false)
             {
-                list.append(path);
+                item.name = name;
+
+                list.append(item);
             }
         }
 
         index = data.indexOf("4:path", index);
+
+        id++;
     }
 
     return list;
@@ -138,34 +162,69 @@ QString WBackendTorrentPrivate::extractString(const QString & data, int from) co
     return data.mid(index + 1, length);
 }
 
-QString WBackendTorrentPrivate::extractLastString(const QString & data, int from) const
+//-------------------------------------------------------------------------------------------------
+
+void WBackendTorrentPrivate::extractItem(WBackendTorrentItem * item, const QString & data,
+                                                                     int             from) const
 {
     int index = data.indexOf(BACKENDTORRENT_STRING, from);
 
-    if (index == -1) return QString();
+    if (index == -1) return;
 
     int length = data.mid(from, index - from).toInt();
 
-    if (length == 0) return QString();
+    if (length == 0) return;
 
     index++;
+
+    QString string = data.mid(index, length);
 
     from = index + length;
 
     if (from < data.length())
     {
-        if (data.at(from) == 'e')
+        if (data.at(from) != 'e')
         {
-             return data.mid(index, length);
+            item->path.append(string);
+
+            extractItem(item, data, from);
         }
-        else return extractLastString(data, from);
+        else item->name = string;
     }
-    else return QString();
 }
 
 //-------------------------------------------------------------------------------------------------
-// Ctor / dtor
-//-------------------------------------------------------------------------------------------------
+
+QList<WBackendTorrentItem>
+WBackendTorrentPrivate::getFolder(QList<WBackendTorrentItem> * items) const
+{
+    QList<WBackendTorrentItem> list;
+
+    WBackendTorrentItem item = items->takeAt(0);
+
+    QString path = item.path;
+
+    list.append(item);
+
+    int index = 0;
+
+    while (index < items->length())
+    {
+        if (items->at(index).path == path)
+        {
+            item = items->takeAt(index);
+
+            list.append(item);
+        }
+        else index++;
+    }
+
+    return list;
+}
+
+//=================================================================================================
+// WBackendTorrent
+//=================================================================================================
 
 WBackendTorrent::WBackendTorrent() : WBackendNet(new WBackendTorrentPrivate(this))
 {
@@ -251,34 +310,42 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
     QString name = d->extractName(content);
 
-    QStringList paths = d->extractPaths(content);
+    QList<WBackendTorrentItem> items = d->extractItems(content);
 
-    if (paths.isEmpty())
+    if (items.isEmpty())
     {
-        paths.append(name);
+        WBackendTorrentItem item;
+
+        item.id   = 1;
+        item.name = name;
+
+        items.append(item);
     }
 
     QList<WTrackNet> tracks;
 
     QString source = query.url.toString();
 
-    int index = 1;
-
-    foreach (const QString & path, paths)
+    while (items.isEmpty() == false)
     {
-        if (WControllerPlaylist::urlIsMedia(path))
+        QList<WBackendTorrentItem> list = d->getFolder(&items);
+
+        qSort(list.begin(), list.end(), sort);
+
+        foreach (const WBackendTorrentItem & item, list)
         {
-            WTrackNet track(source + '#' + QString::number(index));
+            QString name = item.name;
 
-            track.setTitle(path);
+            if (WControllerPlaylist::urlIsMedia(name))
+            {
+                WTrackNet track(source + '#' + QString::number(item.id));
 
-            tracks.append(track);
+                track.setTitle(name);
+
+                tracks.append(track);
+            }
         }
-
-        index++;
     }
-
-    qSort(tracks.begin(), tracks.end(), sort);
 
     reply.title = name;
 
