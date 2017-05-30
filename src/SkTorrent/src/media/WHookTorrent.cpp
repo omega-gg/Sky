@@ -135,9 +135,9 @@ void WHookTorrentPrivate::onProgress(qint64 bytesReceived)
 
     qint64 size = torrent->size();
 
-    qint64 buffer = (bytesReceived * 10000) / size;
+    qint64 buffer = (bytesReceived * 1000) / size;
 
-    if (buffer > 28)
+    if (buffer > 2)
     {
         Q_Q(WHookTorrent);
 
