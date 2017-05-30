@@ -53,6 +53,7 @@ struct WTorrentData
     int    sizePiece;
 
     QBitArray pieces;
+    QBitArray blocks;
 
     int begin;
     int end;
