@@ -555,6 +555,8 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         int count = end - begin;
 
+        int blockCount = (sizePiece / TORRENTENGINE_BLOCK);
+
         data->id = id;
 
         data->mode = mode;
@@ -569,7 +571,7 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         data->sizePiece = sizePiece;
 
         data->pieces = QBitArray(count);
-        data->blocks = QBitArray(sizePiece / TORRENTENGINE_BLOCK);
+        data->blocks = QBitArray(count * blockCount);
 
         data->begin = begin;
         data->end   = end;
@@ -577,7 +579,8 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         data->index   = 0;
         data->current = begin;
 
-        data->block = 0;
+        data->block      = 0;
+        data->blockCount = blockCount;
 
         data->progress = 0;
 
@@ -673,26 +676,35 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         WTorrentData * data = d->torrents.value(eventTorrent->hash);
 
-        if (data && data->mode == WTorrent::Stream && data->current == eventTorrent->piece)
+        if (data && data->mode == WTorrent::Stream)
         {
-            int block = eventTorrent->block;
+            int index = (eventTorrent->piece - data->begin) * data->blockCount;
 
             QBitArray * blocks = &(data->blocks);
 
-            blocks->setBit(block);
+            int block = eventTorrent->block;
 
-            int current = block;
+            int current = index + block;
 
-            if (data->block == current - 1)
+            if (current >= blocks->count())
+            {
+                qDebug("CURRENT SHOULD NOT BE SO HIGH");
+            }
+
+            blocks->setBit(current);
+
+            if (data->current == eventTorrent->piece && data->block == block - 1)
             {
                 while (current < blocks->count() && blocks->at(current))
                 {
+                    block++;
+
                     current++;
                 }
 
-                data->block = current;
+                data->block = block;
 
-                qint64 progress = data->index * data->sizePiece + current * TORRENTENGINE_BLOCK;
+                qint64 progress = data->index * data->sizePiece + block * TORRENTENGINE_BLOCK;
 
                 data->progress = progress;
 
@@ -745,9 +757,22 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
                     data->index   = index;
                     data->current = begin + index;
 
-                    data->block = 0;
+                    QBitArray * blocks = &(data->blocks);
 
-                    qint64 progress = index * data->sizePiece;
+                    int block = 0;
+
+                    int current = index * (data->blockCount);
+
+                    while (current < blocks->count() && blocks->at(current))
+                    {
+                        block++;
+
+                        current++;
+                    }
+
+                    data->block = block;
+
+                    qint64 progress = index * data->sizePiece + block * TORRENTENGINE_BLOCK;
 
                     data->progress = progress;
 

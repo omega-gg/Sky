@@ -62,6 +62,7 @@ struct WTorrentData
     int current;
 
     int block;
+    int blockCount;
 
     qint64 progress;
 };
