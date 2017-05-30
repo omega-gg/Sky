@@ -573,7 +573,9 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         data->begin = begin;
         data->end   = end;
 
-        data->index = 0;
+        data->index   = 0;
+        data->current = begin;
+
         data->block = 0;
 
         data->progress = 0;
@@ -670,7 +672,7 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         WTorrentData * data = d->torrents.value(eventTorrent->hash);
 
-        if (data && data->mode == WTorrent::Stream && data->index == eventTorrent->piece)
+        if (data && data->mode == WTorrent::Stream && data->current == eventTorrent->piece)
         {
             int block = eventTorrent->block;
 
@@ -713,7 +715,7 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
             int last  = data->end - 1;
 
             int index   = data->index;
-            int current = begin + index;
+            int current = data->current;
 
             if (current != last)
             {
@@ -728,7 +730,9 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
                         index++;
                     }
 
-                    data->index = index;
+                    data->index   = index;
+                    data->current = begin + index;
+
                     data->block = 0;
 
                     qint64 progress = index * data->sizePiece;
