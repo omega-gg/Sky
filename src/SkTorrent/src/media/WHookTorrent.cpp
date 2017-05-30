@@ -237,9 +237,7 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 {
     Q_D(WHookTorrent);
 
-    backendSetSource(QUrl());
-
-    d->backend->stop();
+    d->backend->clear();
 
     d->clearReply();
 }
