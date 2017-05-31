@@ -305,7 +305,7 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         pack.set_bool(settings_pack::enable_upnp,   true);
         pack.set_bool(settings_pack::enable_natpmp, true);
 
-        //pack.set_bool(settings_pack::smooth_connects, false);
+        pack.set_bool(settings_pack::smooth_connects, false);
 
         pack.set_int(settings_pack::connection_speed, 500);
 
