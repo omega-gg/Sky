@@ -705,7 +705,7 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
             blocks->setBit(current);
 
-            if (data->current == piece && data->block == block - 1)
+            if (data->current == piece && data->block == block)
             {
                 while (current < blocks->count() && blocks->at(current))
                 {
