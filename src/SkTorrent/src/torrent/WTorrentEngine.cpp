@@ -369,6 +369,8 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         //-----------------------------------------------------------------------------------------
         // Torrent mode
 
+        WTorrentData * data = new WTorrentData;
+
         QStringList paths;
 
         WTorrent::Mode mode = static_cast<WTorrent::Mode> (variants.at(3).toInt());
@@ -376,10 +378,12 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         int index = variants.at(2).toInt();
 
         qint64 size;
-        qint64 sizePiece;
+        int    sizePiece;
 
         int begin;
         int end;
+
+        int blockCount;
 
         if (mode == WTorrent::Stream)
         {
@@ -390,6 +394,8 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
                 begin = 0;
                 end   = 0;
+
+                blockCount = 0;
             }
             else
             {
@@ -428,6 +434,10 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
                     size = info->files().file_size(index);
 
                     sizePiece = info->piece_length();
+
+                    blockCount = (sizePiece / TORRENTENGINE_BLOCK);
+
+                    //-----------------------------------------------------------------------------
 
                     peer_request request = info->map_file(index, 0, 0);
 
@@ -495,6 +505,8 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
                     begin = 0;
                     end   = 0;
+
+                    blockCount = 0;
                 }
             }
         }
@@ -536,26 +548,24 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
                 handle.prioritize_files(files);
             }
 
+            if (mode == WTorrent::Sequential)
+            {
+                handle.set_sequential_download(true);
+            }
+
             size      = info->total_size();
             sizePiece = 0;
 
             begin = 0;
             end   = info->num_pieces();
 
-            if (mode == WTorrent::Sequential)
-            {
-                handle.set_sequential_download(true);
-            }
+            blockCount = 0;
         }
 
         //-----------------------------------------------------------------------------------------
         // Torrent add
 
-        WTorrentData * data = new WTorrentData;
-
         int count = end - begin;
-
-        int blockCount = (sizePiece / TORRENTENGINE_BLOCK);
 
         data->id = id;
 
@@ -678,7 +688,9 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         if (data && data->mode == WTorrent::Stream)
         {
-            int index = (eventTorrent->piece - data->begin) * data->blockCount;
+            int piece = eventTorrent->piece;
+
+            int index = (piece - data->begin) * data->blockCount;
 
             QBitArray * blocks = &(data->blocks);
 
@@ -693,7 +705,7 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
             blocks->setBit(current);
 
-            if (data->current == eventTorrent->piece && data->block == block - 1)
+            if (data->current == piece && data->block == block - 1)
             {
                 while (current < blocks->count() && blocks->at(current))
                 {
