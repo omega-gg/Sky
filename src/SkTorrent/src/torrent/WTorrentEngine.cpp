@@ -622,6 +622,11 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         WTorrentData * data = d->torrents.value(eventTorrent->hash);
 
+        if (data == NULL)
+        {
+            qDebug("EventRemoved: DATA SHOULD NOT BE NULL");
+        }
+
         d->torrents.remove(eventTorrent->hash);
 
         if (d->torrents.isEmpty())
@@ -650,6 +655,11 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         {
             WTorrentData * data = d->torrents.value(eventTorrent->hash);
 
+            if (data == NULL)
+            {
+                qDebug("EventState: DATA SHOULD NOT BE NULL");
+            }
+
             QCoreApplication::postEvent(data->torrent, new WTorrentEvent(WTorrent::EventFinished));
         }
 
@@ -664,6 +674,11 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         foreach (const WTorrentProgress & item, list)
         {
             WTorrentData * data = d->torrents.value(item.hash);
+
+            if (data == NULL)
+            {
+                qDebug("EventProgress: DATA SHOULD NOT BE NULL");
+            }
 
             if (data->mode == WTorrent::Stream)
             {
@@ -736,7 +751,7 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         if (data == NULL)
         {
-            qDebug("DATA SHOULD NOT BE NULL");
+            qDebug("EventPiece: DATA SHOULD NOT BE NULL");
         }
 
         int piece = eventTorrent->value.toInt() - data->begin;
@@ -841,6 +856,11 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         WTorrentEngineValue * eventTorrent = static_cast<WTorrentEngineValue *> (event);
 
         WTorrentData * data = d->torrents.value(eventTorrent->hash);
+
+        if (data == NULL)
+        {
+            qDebug("EventError: DATA SHOULD NOT BE NULL");
+        }
 
         QCoreApplication::postEvent(data->torrent, new WTorrentEventValue(WTorrent::EventError,
                                                                           eventTorrent->value));
