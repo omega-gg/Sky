@@ -353,9 +353,11 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
         {
             QString title = item.name;
 
-            if (WControllerPlaylist::urlIsMedia(title))
+            QString extension = WControllerNetwork::extractUrlExtension(title);
+
+            if (WControllerPlaylist::extensionIsMedia(extension))
             {
-                WTrackNet track(source + '#' + QString::number(item.id));
+                WTrackNet track(source + '#' + QString::number(item.id) + '.' + extension);
 
                 track.setTitle(title);
 
