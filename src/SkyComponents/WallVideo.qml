@@ -58,7 +58,11 @@ WallBookmarkTrack
 
     property bool pButtonsVisible: (isExposed && indexRemove == -1 && indexDrag < 0)
 
-    property bool pAudio: (player.output == AbstractBackend.OutputAudio || player.isAudio)
+    property bool pAudio: (player.output == AbstractBackend.OutputAudio
+                           ||
+                           player.outputActive == AbstractBackend.OutputAudio
+                           ||
+                           player.isAudio)
 
     //---------------------------------------------------------------------------------------------
     // Aliases
