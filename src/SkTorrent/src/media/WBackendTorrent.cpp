@@ -263,6 +263,20 @@ WBackendTorrent::WBackendTorrent() : WBackendNet(new WBackendTorrentPrivate(this
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
+WBackendNetPlaylistInfo WBackendTorrent::getPlaylistInfo(const QUrl & url) const
+{
+    QString extension = WControllerNetwork::extractUrlExtension(url);
+
+    if (extension == "torrent")
+    {
+         return WBackendNetPlaylistInfo(WLibraryItem::PlaylistNet, url.toString());
+    }
+    else return WBackendNetPlaylistInfo();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */
 QUrl WBackendTorrent::getUrlPlaylist(const WBackendNetPlaylistInfo & info) const
 {
     return info.id;
@@ -285,15 +299,18 @@ WBackendNetQuery WBackendTorrent::getQueryPlaylist(const QUrl & url) const
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-WBackendNetPlaylistInfo WBackendTorrent::getPlaylistInfo(const QUrl & url) const
+WBackendNetQuery WBackendTorrent::createQuery(const QString & method,
+                                              const QString & label, const QString & q) const
 {
-    QString extension = WControllerNetwork::extractUrlExtension(url);
+    WBackendNetQuery backendQuery;
 
-    if (extension == "torrent")
+    if (method == "related" && label == "tracks")
     {
-         return WBackendNetPlaylistInfo(WLibraryItem::PlaylistNet, url.toString());
+        backendQuery.url = q;
+        backendQuery.id  = 1;
     }
-    else return WBackendNetPlaylistInfo();
+
+    return backendQuery;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -334,13 +351,16 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
         foreach (const WBackendTorrentItem & item, list)
         {
-            QString name = item.name;
+            QString title = item.name;
 
-            if (WControllerPlaylist::urlIsMedia(name))
+            if (WControllerPlaylist::urlIsMedia(title))
             {
                 WTrackNet track(source + '#' + QString::number(item.id));
 
-                track.setTitle(name);
+                track.setTitle(title);
+
+                track.setAuthor(name);
+                track.setFeed  (source);
 
                 tracks.append(track);
             }
@@ -352,6 +372,11 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
     reply.tracks = tracks;
 
     reply.cache = data;
+
+    if (query.id == 1)
+    {
+        reply.clearDuplicate = true;
+    }
 
     return reply;
 }

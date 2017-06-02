@@ -90,6 +90,11 @@ void WLibraryFolderRelatedPrivate::init()
     {
         QString id = backend->getTrackId(trackSource);
 
+        if (id.isEmpty())
+        {
+            id = trackSource.toString();
+        }
+
         source = WControllerPlaylist::createSource(backend->id(), "related", "tracks", id);
     }
     else source = track.feed();

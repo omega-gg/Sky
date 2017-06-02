@@ -51,6 +51,12 @@ public: // WBackendNet reimplementation
     //---------------------------------------------------------------------------------------------
 
     /* Q_INVOKABLE virtual */
+    WBackendNetQuery createQuery(const QString & method,
+                                 const QString & label, const QString & q) const;
+
+    //---------------------------------------------------------------------------------------------
+
+    /* Q_INVOKABLE virtual */
     WBackendNetPlaylist extractPlaylist(const QByteArray       & data,
                                         const WBackendNetQuery & query) const;
 
