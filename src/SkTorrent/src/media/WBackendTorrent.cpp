@@ -341,7 +341,7 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
     QList<WTrackNet> tracks;
 
-    QString source = query.url.toString();
+    QString source = WControllerNetwork::removeUrlFragment(query.url);
 
     while (items.isEmpty() == false)
     {
