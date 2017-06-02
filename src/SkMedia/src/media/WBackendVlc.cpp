@@ -583,9 +583,13 @@ void WBackendVlcPrivate::loadSources(bool play)
 
     reply = wControllerMedia->getMedia(source, q);
 
-    if (reply == NULL) return;
+    if (reply == NULL)
+    {
+        applyOutput(getClosestOutput(output));
 
-    if (reply->isLoaded())
+        if (play) playMedia();
+    }
+    else if (reply->isLoaded())
     {
         applySources(play);
 
