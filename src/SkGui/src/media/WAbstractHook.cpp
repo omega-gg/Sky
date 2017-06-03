@@ -18,6 +18,9 @@
 
 #ifndef SK_NO_ABSTRACTHOOK
 
+// Sk includes
+#include <WControllerPlaylist>
+
 //-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
@@ -90,6 +93,24 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p, WAbstractBackend * backen
 {
     Q_D(const WAbstractHook); return d->source;
 }
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ bool WAbstractHook::sourceIsVideo() const
+{
+    Q_D(const WAbstractHook);
+
+    return wControllerPlaylist->sourceIsVideo(d->source);
+}
+
+/* Q_INVOKABLE virtual */ bool WAbstractHook::sourceIsAudio() const
+{
+    Q_D(const WAbstractHook);
+
+    return wControllerPlaylist->sourceIsAudio(d->source);
+}
+
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ void WAbstractHook::loadSource(const QUrl & url, int duration,
                                                                            int currentTime)

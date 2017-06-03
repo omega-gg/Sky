@@ -16,10 +16,10 @@
 
 #include "WAbstractBackend.h"
 
+#ifndef SK_NO_ABSTRACTBACKEND
+
 // Sk includes
 #include <WControllerPlaylist>
-
-#ifndef SK_NO_ABSTRACTBACKEND
 
 //-------------------------------------------------------------------------------------------------
 // Static variables
@@ -189,6 +189,24 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 {
     Q_D(const WAbstractBackend); return d->source;
 }
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ bool WAbstractBackend::sourceIsVideo() const
+{
+    Q_D(const WAbstractBackend);
+
+    return wControllerPlaylist->sourceIsVideo(d->source);
+}
+
+/* Q_INVOKABLE virtual */ bool WAbstractBackend::sourceIsAudio() const
+{
+    Q_D(const WAbstractBackend);
+
+    return wControllerPlaylist->sourceIsAudio(d->source);
+}
+
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ void WAbstractBackend::loadSource(const QUrl & url, int duration,
                                                                               int currentTime)
@@ -578,22 +596,6 @@ bool WAbstractBackend::isPaused() const
 bool WAbstractBackend::isStopped() const
 {
     Q_D(const WAbstractBackend); return (d->state == StateStopped);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-bool WAbstractBackend::isVideo() const
-{
-    Q_D(const WAbstractBackend);
-
-    return wControllerPlaylist->sourceIsVideo(d->source);
-}
-
-bool WAbstractBackend::isAudio() const
-{
-    Q_D(const WAbstractBackend);
-
-    return wControllerPlaylist->sourceIsAudio(d->source);
 }
 
 //-------------------------------------------------------------------------------------------------

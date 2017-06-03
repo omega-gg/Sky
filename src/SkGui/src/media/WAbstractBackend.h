@@ -43,6 +43,9 @@ class SK_GUI_EXPORT WBackendInterface
 public:
     virtual QUrl source() const = 0;
 
+    virtual bool sourceIsVideo() const = 0;
+    virtual bool sourceIsAudio() const = 0;
+
     virtual void loadSource(const QUrl & url, int duration = -1, int currentTime = -1) = 0;
 
     virtual void play  () = 0;
@@ -76,6 +79,9 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
 
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
 
+    Q_PROPERTY(bool sourceIsVideo READ sourceIsVideo NOTIFY sourceChanged)
+    Q_PROPERTY(bool sourceIsAudio READ sourceIsAudio NOTIFY sourceChanged)
+
     Q_PROPERTY(State     state     READ state     NOTIFY stateChanged)
     Q_PROPERTY(StateLoad stateLoad READ stateLoad NOTIFY stateLoadChanged)
 
@@ -88,9 +94,6 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
     Q_PROPERTY(bool isPlaying READ isPlaying NOTIFY stateChanged)
     Q_PROPERTY(bool isPaused  READ isPaused  NOTIFY stateChanged)
     Q_PROPERTY(bool isStopped READ isStopped NOTIFY stateChanged)
-
-    Q_PROPERTY(bool isVideo READ isVideo NOTIFY sourceChanged)
-    Q_PROPERTY(bool isAudio READ isAudio NOTIFY sourceChanged)
 
     Q_PROPERTY(bool hasStarted READ hasStarted NOTIFY startedChanged)
     Q_PROPERTY(bool hasEnded   READ hasEnded   NOTIFY endedChanged)
@@ -172,6 +175,9 @@ public: // Interface
 
 public: // WBackendInterface implementation
     Q_INVOKABLE /* virtual */ QUrl source() const;
+
+    Q_INVOKABLE /* virtual */ bool sourceIsVideo() const;
+    Q_INVOKABLE /* virtual */ bool sourceIsAudio() const;
 
     Q_INVOKABLE /* virtual */ void loadSource(const QUrl & url, int duration    = -1,
                                                                 int currentTime = -1);
@@ -284,9 +290,6 @@ public: // Properties
     bool isPlaying() const;
     bool isPaused () const;
     bool isStopped() const;
-
-    bool isVideo() const;
-    bool isAudio() const;
 
     bool hasStarted() const;
     bool hasEnded  () const;

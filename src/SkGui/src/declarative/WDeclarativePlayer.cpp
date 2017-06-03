@@ -1142,7 +1142,7 @@ bool WDeclarativePlayer::isVideo() const
 
     if (d->backend)
     {
-         return d->backend->isVideo();
+         return d->backendInterface->sourceIsVideo();
     }
     else return false;
 }
@@ -1153,7 +1153,7 @@ bool WDeclarativePlayer::isAudio() const
 
     if (d->backend)
     {
-         return d->backend->isAudio();
+         return d->backendInterface->sourceIsAudio();
     }
     else return false;
 }

@@ -263,6 +263,28 @@ WBackendTorrent::WBackendTorrent() : WBackendNet(new WBackendTorrentPrivate(this
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
+WAbstractBackend::Output WBackendTorrent::getTrackOutput(const QUrl & url) const
+{
+    QString fragment = url.fragment();
+
+    int index = fragment.indexOf('.');
+
+    if (index != -1)
+    {
+        fragment = fragment.mid(index + 1);
+
+        if (WControllerPlaylist::extensionIsAudio(fragment))
+        {
+            return WAbstractBackend::OutputAudio;
+        }
+    }
+
+    return WAbstractBackend::OutputMedia;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */
 WBackendNetPlaylistInfo WBackendTorrent::getPlaylistInfo(const QUrl & url) const
 {
     QString extension = WControllerNetwork::extractUrlExtension(url);

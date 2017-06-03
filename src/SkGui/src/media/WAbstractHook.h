@@ -43,6 +43,9 @@ public: // Interface
 public: // WBackendInterface implementation
     Q_INVOKABLE /* virtual */ QUrl source() const;
 
+    Q_INVOKABLE /* virtual */ bool sourceIsVideo() const;
+    Q_INVOKABLE /* virtual */ bool sourceIsAudio() const;
+
     Q_INVOKABLE /* virtual */ void loadSource(const QUrl & url, int duration    = -1,
                                                                 int currentTime = -1);
 
