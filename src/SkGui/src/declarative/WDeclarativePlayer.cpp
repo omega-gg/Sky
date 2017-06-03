@@ -16,14 +16,14 @@
 
 #include "WDeclarativePlayer.h"
 
+#ifndef SK_NO_DECLARATIVEPLAYER
+
 // Sk includes
 #include <WAbstractHook>
 #include <WPlaylistNet>
 #include <WTabsTrack>
 #include <WTabTrack>
 #include <WLibraryFolder>
-
-#ifndef SK_NO_DECLARATIVEPLAYER
 
 //-------------------------------------------------------------------------------------------------
 // Private

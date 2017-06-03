@@ -16,7 +16,7 @@
 
 #include "WPlaylistNet.h"
 
-#ifndef SK_NO_MUSICPLAYLIST
+#ifndef SK_NO_PLAYLISTNET
 
 // Qt includes
 #include <QXmlStreamWriter>
@@ -1579,6 +1579,6 @@ QList<WTrackNet> WPlaylistNet::tracks() const
 /* explicit */ WPlaylistSearch::WPlaylistSearch(WLibraryFolder * parent)
     : WPlaylistNet(new WPlaylistNetPrivate(this), PlaylistSearch, parent) {}
 
-#endif // SK_NO_MUSICPLAYLIST
+#endif // SK_NO_PLAYLISTNET
 
 #include "WPlaylistNet.moc"

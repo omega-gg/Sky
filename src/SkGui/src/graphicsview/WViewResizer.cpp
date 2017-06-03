@@ -16,11 +16,11 @@
 
 #include "WViewResizer.h"
 
+#ifndef SK_NO_VIEWRESIZER
+
 // Sk includes
 #include <WControllerView>
 #include <WResizer>
-
-#ifndef SK_NO_VIEWRESIZER
 
 //-------------------------------------------------------------------------------------------------
 // Private

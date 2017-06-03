@@ -16,10 +16,10 @@
 
 #include "WImageFilter.h"
 
+#ifndef SK_NO_IMAGEFILTER
+
 // Qt includes
 #include <QPixmap>
-
-#ifndef SK_NO_IMAGEFILTER
 
 //-------------------------------------------------------------------------------------------------
 // Private
