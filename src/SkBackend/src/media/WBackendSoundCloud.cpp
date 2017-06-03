@@ -622,7 +622,7 @@ WBackendNetPlaylist WBackendSoundCloud::extractPlaylist(const QByteArray       &
     }
     else if (query.id == 2) // feed
     {
-        QString json = d->extractJson(content, "61");
+        QString json = d->extractJson(content, "64");
 
         QString source = WControllerNetwork::extractJsonUtf8(json, "uri");
 
