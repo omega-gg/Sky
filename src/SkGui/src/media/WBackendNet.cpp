@@ -468,11 +468,6 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : WPrivatable(p)
     return false;
 }
 
-/* Q_INVOKABLE virtual */ bool WBackendNet::isAudio() const
-{
-    return false;
-}
-
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ QString WBackendNet::getHost() const
@@ -493,6 +488,13 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : WPrivatable(p)
 {
     return QString();
 }
+
+/* Q_INVOKABLE virtual */ WAbstractBackend::Output WBackendNet::getTrackOutput(const QUrl &) const
+{
+    return WAbstractBackend::OutputMedia;
+}
+
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ WBackendNetPlaylistInfo WBackendNet::getPlaylistInfo(const QUrl &) const
 {

@@ -313,13 +313,6 @@ WBackendSoundCloud::WBackendSoundCloud() : WBackendNet(new WBackendSoundCloudPri
 // WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendSoundCloud::isAudio() const
-{
-    return true;
-}
-
-//-------------------------------------------------------------------------------------------------
-
 /* Q_INVOKABLE virtual */ QString WBackendSoundCloud::getHost() const
 {
     return "soundcloud.com";
@@ -355,7 +348,8 @@ WBackendSoundCloud::WBackendSoundCloud() : WBackendNet(new WBackendSoundCloudPri
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ QString WBackendSoundCloud::getTrackId(const QUrl & url) const
+/* Q_INVOKABLE virtual */
+QString WBackendSoundCloud::getTrackId(const QUrl & url) const
 {
     QString source = WControllerNetwork::removeUrlPrefix(url);
 
@@ -374,6 +368,14 @@ WBackendSoundCloud::WBackendSoundCloud() : WBackendNet(new WBackendSoundCloudPri
     }
     else return QString();
 }
+
+/* Q_INVOKABLE virtual */
+WAbstractBackend::Output WBackendSoundCloud::getTrackOutput(const QUrl &) const
+{
+    return WAbstractBackend::OutputAudio;
+}
+
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
 WBackendNetPlaylistInfo WBackendSoundCloud::getPlaylistInfo(const QUrl & url) const

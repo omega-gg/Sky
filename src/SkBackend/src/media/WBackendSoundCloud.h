@@ -39,13 +39,13 @@ public: // WBackendNet implementation
     /* Q_INVOKABLE virtual */ bool checkValidUrl(const QUrl & url) const;
 
 public: // WBackendNet reimplementation
-    /* Q_INVOKABLE virtual */ bool isAudio() const;
-
     /* Q_INVOKABLE virtual */ QString getHost() const;
 
     /* Q_INVOKABLE virtual */ QList<WLibraryFolderItem> getLibraryItems() const;
 
     /* Q_INVOKABLE virtual */ QString getTrackId(const QUrl & url) const;
+
+    /* Q_INVOKABLE virtual */ WAbstractBackend::Output getTrackOutput(const QUrl & url) const;
 
     /* Q_INVOKABLE virtual */ WBackendNetPlaylistInfo getPlaylistInfo(const QUrl & url) const;
 

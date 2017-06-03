@@ -270,6 +270,8 @@ WBackendVimeo::WBackendVimeo() : WBackendNet(new WBackendVimeoPrivate(this))
     return d->extractId(url.toString());
 }
 
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE virtual */
 WBackendNetPlaylistInfo WBackendVimeo::getPlaylistInfo(const QUrl & url) const
 {

@@ -256,6 +256,8 @@ WBackendDailymotion::WBackendDailymotion() : WBackendNet(new WBackendDailymotion
     else return QString();
 }
 
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE virtual */
 WBackendNetPlaylistInfo WBackendDailymotion::getPlaylistInfo(const QUrl & url) const
 {

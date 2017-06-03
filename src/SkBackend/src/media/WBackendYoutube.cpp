@@ -415,6 +415,8 @@ WBackendYoutube::WBackendYoutube() : WBackendNet(new WBackendYoutubePrivate(this
     else return QString();
 }
 
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE virtual */
 WBackendNetPlaylistInfo WBackendYoutube::getPlaylistInfo(const QUrl & url) const
 {

@@ -2464,7 +2464,13 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
         if (backend)
         {
-             return backend->isAudio();
+            WAbstractBackend::Output output = backend->getTrackOutput(url);
+
+            if (output == WAbstractBackend::OutputAudio)
+            {
+                 return true;
+            }
+            else return false;
         }
         else return false;
     }
