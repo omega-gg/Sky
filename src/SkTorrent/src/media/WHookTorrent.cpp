@@ -137,7 +137,7 @@ void WHookTorrentPrivate::onProgress(qint64 bytesReceived)
 
     int buffer = (bytesReceived * 10000) / size;
 
-    if (buffer > 29)
+    if (buffer > 29 && WControllerFile::exists(fileName))
     {
         Q_Q(WHookTorrent);
 

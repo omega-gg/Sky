@@ -43,7 +43,7 @@ static const int TORRENTENGINE_BLOCK = 16000;
 
 static const int TORRENTENGINE_PRIORITY_COUNT = 10;
 
-static const int TORRENTENGINE_TIMEOUT = 1000;
+static const int TORRENTENGINE_TIMEOUT = 100;
 
 //-------------------------------------------------------------------------------------------------
 // Private
