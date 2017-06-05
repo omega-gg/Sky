@@ -50,7 +50,7 @@ void WHookTorrentPrivate::init()
 // Private function
 //-------------------------------------------------------------------------------------------------
 
-void WHookTorrentPrivate::loadTorrent()
+void WHookTorrentPrivate::load()
 {
     Q_Q(WHookTorrent);
 
@@ -63,6 +63,23 @@ void WHookTorrentPrivate::loadTorrent()
 
     QObject::connect(reply, SIGNAL(progress(qint64, qint64)), q, SLOT(onProgress(qint64)));
 }
+
+void WHookTorrentPrivate::play()
+{
+    Q_Q(WHookTorrent);
+
+    load();
+
+    if (backend->currentTime() == -1)
+    {
+         q->setStateLoad(WAbstractBackend::StateLoadStarting);
+    }
+    else q->setStateLoad(WAbstractBackend::StateLoadResuming);
+
+    q->setState(WAbstractBackend::StatePlaying);
+}
+
+//-------------------------------------------------------------------------------------------------
 
 void WHookTorrentPrivate::clearReply()
 {
@@ -179,7 +196,24 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 
     if (d->source != url)
     {
-        stop();
+        if (d->backend->isPlaying() || d->state != WHookTorrentPrivate::StateDefault)
+        {
+            stop();
+
+            setDuration   (duration);
+            setCurrentTime(currentTime);
+
+            d->source = url;
+
+            d->play();
+
+            return;
+        }
+
+        if (d->backend->isPaused())
+        {
+            stop();
+        }
 
         setDuration   (duration);
         setCurrentTime(currentTime);
@@ -195,19 +229,9 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 {
     Q_D(WHookTorrent);
 
-    if (d->backend->isPlaying()) return;
+    if (d->backend->isPlaying() || d->reply) return;
 
-    if (d->reply) delete d->reply;
-
-    d->loadTorrent();
-
-    if (d->backend->currentTime() == -1)
-    {
-         setStateLoad(WAbstractBackend::StateLoadStarting);
-    }
-    else setStateLoad(WAbstractBackend::StateLoadResuming);
-
-    setState(WAbstractBackend::StatePlaying);
+    d->play();
 }
 
 /* Q_INVOKABLE virtual */ void WHookTorrent::replay()
@@ -216,9 +240,9 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 
     if (d->reply) return;
 
-    d->backend->stop();
+    stop();
 
-    d->loadTorrent();
+    d->load();
 
     setStateLoad(WAbstractBackend::StateLoadStarting);
     setState    (WAbstractBackend::StatePlaying);

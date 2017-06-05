@@ -51,7 +51,8 @@ public:
     void init();
 
 public: // Functions
-    void loadTorrent();
+    void load();
+    void play();
 
     void clearReply();
 
