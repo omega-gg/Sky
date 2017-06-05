@@ -1638,7 +1638,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
         Q_D(WBackendVlc);
 
         // FIXME: Sometimes the playback ends when seeking.
-        if ((d->currentTime + 1000) < d->duration)
+        if (d->currentTime && (d->currentTime + 1000) < d->duration)
         {
             qWarning("WBackendVlc::event: Vlc player ended.");
 

@@ -26,7 +26,7 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int HOOKTORRENT_MINIMUM_SIZE = 262144; // 256 kilobytes
+//static const int HOOKTORRENT_MINIMUM_SIZE = 524288; // 512 kilobytes
 
 static const int HOOKTORRENT_DEFAULT_RATE = 3600000; // 1 hour
 
@@ -183,7 +183,7 @@ void WHookTorrentPrivate::onLoaded()
 
 void WHookTorrentPrivate::onProgress(qint64 bytesReceived)
 {
-    if (state != StateLoading || bytesReceived < HOOKTORRENT_MINIMUM_SIZE) return;
+    if (state != StateLoading /*|| bytesReceived < HOOKTORRENT_MINIMUM_SIZE*/) return;
 
     qint64 size = torrent->size();
 
