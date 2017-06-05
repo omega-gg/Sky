@@ -336,10 +336,13 @@ signals:
 
     QString urlName = WControllerNetwork::urlName(baseUrl);
 
+    QString host;
     QString title;
 
     if (WControllerNetwork::urlIsFile(baseUrl) == false)
     {
+        host = WControllerNetwork::extractUrlHost(baseUrl);
+
         title = WControllerNetwork::extractTitle(head);
 
         if (title.isEmpty())
@@ -347,13 +350,18 @@ signals:
             title = WControllerNetwork::removeUrlPrefix(baseUrl);
         }
     }
-    else title = WControllerNetwork::extractUrlFileName(url);
+    else
+    {
+        host = baseUrl;
+
+        title = WControllerNetwork::extractUrlFileName(url);
+    }
 
     QString cover = WControllerNetwork::extractImage(head);
 
     if (cover.isEmpty() == false)
     {
-        cover = generateUrl(cover, baseUrl);
+        cover = generateUrl(cover, host);
     }
 
     QList<QUrl> urls;
@@ -370,7 +378,7 @@ signals:
 
         if (url.isEmpty() || url.contains('/') == false) continue;
 
-        url = generateUrl(url, baseUrl);
+        url = generateUrl(url, host);
 
         if (addUrl(&urls, url))
         {
@@ -392,7 +400,7 @@ signals:
         {
             if (source.contains('/') == false) continue;
 
-            QString url = generateUrl(source, baseUrl);
+            QString url = generateUrl(source, host);
 
             if (addUrl(&urls, url))
             {
@@ -413,7 +421,7 @@ signals:
     {
         if (string.contains('/') == false) continue;
 
-        QString url = generateUrl("http" + string, baseUrl);
+        QString url = generateUrl("http" + string, host);
 
         if (addUrl(&urls, url))
         {
