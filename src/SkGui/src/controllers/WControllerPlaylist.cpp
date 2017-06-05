@@ -65,7 +65,7 @@ static const QString CONTROLLERPLAYLIST_PATH_TABS      = "/tabs";
 
 //-------------------------------------------------------------------------------------------------
 
-static const int CONTROLLERPLAYLIST_MAX_SIZE = 1048576 * 10; // 10 Megabytes
+static const int CONTROLLERPLAYLIST_MAX_SIZE = 1048576 * 10; // 10 megabytes
 
 static const int CONTROLLERPLAYLIST_MAX_TRACKS    = 500;
 static const int CONTROLLERPLAYLIST_MAX_PLAYLISTS = 500;

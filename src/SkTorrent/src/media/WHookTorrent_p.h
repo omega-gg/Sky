@@ -51,8 +51,11 @@ public:
     void init();
 
 public: // Functions
-    void load();
+    void load ();
+    void start();
+
     void play();
+    void stop();
 
     void clearReply();
 

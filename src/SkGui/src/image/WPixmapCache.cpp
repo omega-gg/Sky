@@ -34,7 +34,7 @@ class WPixmapCacheReply;
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int PIXMAPCACHE_MAX = 1048576 * 10; // 10 Megabytes
+static const int PIXMAPCACHE_MAX = 1048576 * 10; // 10 megabytes
 
 //-------------------------------------------------------------------------------------------------
 

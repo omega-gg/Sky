@@ -95,7 +95,7 @@ class SK_CORE_EXPORT WCache : public QObject, public WPrivatable
     Q_PROPERTY(int maxJobs READ maxJobs WRITE setMaxJobs NOTIFY maxJobsChanged)
 
 public:
-    WCache(const QString & path, qint64    sizeMax = 1048576 * 10, // 10 Megabytes
+    WCache(const QString & path, qint64    sizeMax = 1048576 * 10, // 10 megabytes
                                  QObject * parent  = NULL);
 
 public: // Interface
