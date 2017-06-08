@@ -121,9 +121,9 @@ bool WBackendSoundCloudPrivate::extractId(const QString          & data,
 {
     if (query.id == -1)
     {
-        int index = data.lastIndexOf("<script src=");
+        int index = data.lastIndexOf("<script crossorigin src=");
 
-        QString source = WControllerNetwork::extractAttributeAt(data, index + 13);
+        QString source = WControllerNetwork::extractAttributeAt(data, index + 25);
 
         nextQuery->url  = source;
         nextQuery->id   = -2;
@@ -622,7 +622,7 @@ WBackendNetPlaylist WBackendSoundCloud::extractPlaylist(const QByteArray       &
     }
     else if (query.id == 2) // feed
     {
-        QString json = d->extractJson(content, "64");
+        QString json = d->extractJson(content, "63");
 
         QString source = WControllerNetwork::extractJsonUtf8(json, "uri");
 
