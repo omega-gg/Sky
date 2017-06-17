@@ -26,7 +26,7 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-//static const int HOOKTORRENT_MINIMUM_SIZE = 524288; // 512 kilobytes
+static const int HOOKTORRENT_MINIMUM_SIZE = 1048576; // 1 megabyte
 
 static const int HOOKTORRENT_START = 300; // 0.3 percent
 
@@ -262,7 +262,7 @@ void WHookTorrentPrivate::onProgress(qint64 bytesReceived)
 
         int buffer = (bytesReceived * 100000) / size;
 
-        if (buffer >= HOOKTORRENT_START)
+        if (buffer >= HOOKTORRENT_START && bytesReceived >= HOOKTORRENT_MINIMUM_SIZE)
         {
             if (WControllerFile::exists(fileName))
             {
