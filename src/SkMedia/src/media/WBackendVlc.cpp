@@ -1079,7 +1079,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 {
     Q_D(WBackendVlc);
 
-    if (d->started)
+    if (d->playing)
     {
         d->player->pause();
     }
@@ -1558,6 +1558,8 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
             d->playing = true;
 
             d->setMute(false);
+
+            setStateLoad(StateLoadDefault);
         }
         else if (d->state == StateStopped)
         {
