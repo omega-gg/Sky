@@ -956,6 +956,8 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
         connect(backend, SIGNAL(currentTimeChanged()), this, SIGNAL(currentTimeChanged()));
         connect(backend, SIGNAL(durationChanged   ()), this, SIGNAL(durationChanged   ()));
 
+        connect(backend, SIGNAL(progressChanged()), this, SIGNAL(progressChanged()));
+
         connect(backend, SIGNAL(outputActiveChanged ()), this, SIGNAL(outputActiveChanged ()));
         connect(backend, SIGNAL(qualityActiveChanged()), this, SIGNAL(qualityActiveChanged()));
 
@@ -1204,6 +1206,19 @@ int WDeclarativePlayer::duration() const
          return d->backend->duration();
     }
     else return -1;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+qreal WDeclarativePlayer::progress() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+         return d->backend->progress();
+    }
+    else return 0.0;
 }
 
 //-------------------------------------------------------------------------------------------------

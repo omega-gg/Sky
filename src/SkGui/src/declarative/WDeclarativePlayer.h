@@ -63,6 +63,8 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WAbstra
     Q_PROPERTY(int currentTime READ currentTime NOTIFY currentTimeChanged)
     Q_PROPERTY(int duration    READ duration    NOTIFY durationChanged)
 
+    Q_PROPERTY(qreal progress READ progress NOTIFY progressChanged)
+
     Q_PROPERTY(qreal speed READ speed WRITE setSpeed NOTIFY speedChanged)
 
     Q_PROPERTY(qreal volume READ volume WRITE setVolume NOTIFY volumeChanged)
@@ -175,6 +177,8 @@ signals:
     void currentTimeChanged();
     void durationChanged   ();
 
+    void progressChanged();
+
     void speedChanged();
 
     void volumeChanged();
@@ -235,6 +239,8 @@ public: // Properties
 
     int currentTime() const;
     int duration   () const;
+
+    qreal progress() const;
 
     qreal speed() const;
     void  setSpeed(qreal speed);

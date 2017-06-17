@@ -207,6 +207,13 @@ void WAbstractHook::setDuration(int msec)
 
 //-------------------------------------------------------------------------------------------------
 
+void WAbstractHook::setProgress(qreal progress)
+{
+    Q_D(WAbstractHook); d->backend->setProgress(progress);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void WAbstractHook::setOutputActive(WAbstractBackend::Output output)
 {
     Q_D(WAbstractHook); d->backend->setOutputActive(output);

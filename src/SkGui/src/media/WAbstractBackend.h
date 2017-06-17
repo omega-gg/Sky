@@ -101,6 +101,8 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
     Q_PROPERTY(int currentTime READ currentTime NOTIFY currentTimeChanged)
     Q_PROPERTY(int duration    READ duration    NOTIFY durationChanged)
 
+    Q_PROPERTY(qreal progress READ progress NOTIFY progressChanged)
+
     Q_PROPERTY(qreal speed READ speed WRITE setSpeed NOTIFY speedChanged)
 
     Q_PROPERTY(qreal volume READ volume WRITE setVolume NOTIFY volumeChanged)
@@ -200,6 +202,8 @@ protected: // Functions
     void setCurrentTime(int msec);
     void setDuration   (int msec);
 
+    void setProgress(qreal progress);
+
     void setOutputActive (Output  output);
     void setQualityActive(Quality quality);
 
@@ -249,11 +253,10 @@ signals:
     void startedChanged();
     void endedChanged  ();
 
-    void playingChanged();
-    void pausedChanged ();
-
     void currentTimeChanged();
     void durationChanged   ();
+
+    void progressChanged();
 
     void speedChanged();
 
@@ -297,6 +300,8 @@ public: // Properties
     int currentTime() const;
     int duration   () const;
 
+    qreal progress() const;
+
     qreal speed() const;
     void  setSpeed(qreal speed);
 
@@ -339,6 +344,8 @@ public:
 
     virtual void filterCurrentTime(int * msec); /* {} */
     virtual void filterDuration   (int * msec); /* {} */
+
+    virtual void filterProgress(qreal * progress); /* {} */
 
     virtual void filterOutputActive (WAbstractBackend::Output  * output);  /* {} */
     virtual void filterQualityActive(WAbstractBackend::Quality * quality); /* {} */

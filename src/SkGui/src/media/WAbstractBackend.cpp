@@ -49,6 +49,8 @@ void WAbstractBackendPrivate::init()
     currentTime = -1;
     duration    = -1;
 
+    progress = 0.0;
+
     speed = 1.0;
 
     volume = 1.0;
@@ -404,6 +406,21 @@ void WAbstractBackend::setDuration(int msec)
 
 //-------------------------------------------------------------------------------------------------
 
+void WAbstractBackend::setProgress(qreal progress)
+{
+    Q_D(WAbstractBackend);
+
+    if (d->filter) d->filter->filterProgress(&progress);
+
+    if (d->progress == progress) return;
+
+    d->progress = progress;
+
+    emit progressChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void WAbstractBackend::setOutputActive(Output output)
 {
     Q_D(WAbstractBackend);
@@ -624,6 +641,13 @@ int WAbstractBackend::duration() const
 
 //-------------------------------------------------------------------------------------------------
 
+qreal WAbstractBackend::progress() const
+{
+    Q_D(const WAbstractBackend); return d->progress;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 qreal WAbstractBackend::speed() const
 {
     Q_D(const WAbstractBackend); return d->speed;
@@ -761,6 +785,8 @@ void WAbstractBackend::setFillMode(FillMode fillMode)
 
 /* virtual */ void WBackendFilter::filterCurrentTime(int *) {}
 /* virtual */ void WBackendFilter::filterDuration   (int *) {}
+
+/* virtual */ void WBackendFilter::filterProgress(qreal *) {}
 
 /* virtual */ void WBackendFilter::filterOutputActive (WAbstractBackend::Output  *) {}
 /* virtual */ void WBackendFilter::filterQualityActive(WAbstractBackend::Quality *) {}

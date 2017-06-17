@@ -59,6 +59,8 @@ public: // Variable
     int currentTime;
     int duration;
 
+    qreal progress;
+
     qreal speed;
 
     qreal volume;

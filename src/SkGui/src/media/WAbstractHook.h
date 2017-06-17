@@ -72,6 +72,8 @@ protected: // Functions
     void setCurrentTime(int msec);
     void setDuration   (int msec);
 
+    void setProgress(qreal progress);
+
     void setOutputActive (WAbstractBackend::Output  output);
     void setQualityActive(WAbstractBackend::Quality quality);
 
