@@ -28,6 +28,11 @@
 
 //static const int HOOKTORRENT_MINIMUM_SIZE = 524288; // 512 kilobytes
 
+static const int HOOKTORRENT_START = 300; // 0.3 percent
+
+static const int HOOKTORRENT_BUFFER =  100; // 100 milliseconds
+static const int HOOKTORRENT_RESUME = 1000; //   1 second
+
 static const int HOOKTORRENT_DEFAULT_RATE = 3600000; // 1 hour
 
 //-------------------------------------------------------------------------------------------------
@@ -43,9 +48,10 @@ void WHookTorrentPrivate::init()
     torrent = NULL;
     reply   = NULL;
 
-    byteRate = -1;
-
     state = StateDefault;
+
+    byteRate = 0;
+    buffer   = 0;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -60,6 +66,8 @@ void WHookTorrentPrivate::load()
 
     state = StateLoading;
 
+    q->setProgress(-1.0);
+
     QObject::connect(reply, SIGNAL(added (WTorrentReply *)), q, SLOT(onAdded ()));
     QObject::connect(reply, SIGNAL(loaded(WTorrentReply *)), q, SLOT(onLoaded()));
 
@@ -72,9 +80,9 @@ void WHookTorrentPrivate::start()
 
     state = StateStarting;
 
-    backend->setSource(fileName);
+    backend->loadSource(fileName);
 
-    backend->play();
+    q->backendPlay();
 
     q->setFilterActive(true);
 }
@@ -98,8 +106,48 @@ void WHookTorrentPrivate::play()
 
 void WHookTorrentPrivate::stop()
 {
+    Q_Q(WHookTorrent);
+
+    q->setFilterActive(false);
+
+    q->setProgress(0.0);
+
     backend->stop ();
     backend->clear();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WHookTorrentPrivate::checkBuffer(int currentTime)
+{
+    int msec = buffer - currentTime;
+
+    if (msec < HOOKTORRENT_BUFFER)
+    {
+        Q_Q(WHookTorrent);
+
+        state = WHookTorrentPrivate::StateBuffering;
+
+        q->backendPause();
+
+        q->setStateLoad(WAbstractBackend::StateLoadBuffering);
+    }
+}
+
+void WHookTorrentPrivate::checkResume(int currentTime)
+{
+    int msec = buffer - currentTime;
+
+    if (msec >= HOOKTORRENT_RESUME)
+    {
+        Q_Q(WHookTorrent);
+
+        state = WHookTorrentPrivate::StatePlaying;
+
+        q->backendPlay();
+
+        q->setStateLoad(WAbstractBackend::StateLoadDefault);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -108,16 +156,15 @@ void WHookTorrentPrivate::clearReply()
 {
     Q_Q(WHookTorrent);
 
-    q->setFilterActive(false);
-
     delete reply;
 
     torrent = NULL;
     reply   = NULL;
 
-    byteRate = -1;
-
     state = StateDefault;
+
+    byteRate = 0;
+    buffer   = 0;
 
     q->setStateLoad(WAbstractBackend::StateLoadDefault);
     q->setState    (WAbstractBackend::StateStopped);
@@ -135,8 +182,6 @@ void WHookTorrentPrivate::onAdded()
 
     if (paths.isEmpty())
     {
-        stop();
-
         clearReply();
     }
     else fileName = WControllerFile::fileUrl(paths.first());
@@ -157,9 +202,10 @@ void WHookTorrentPrivate::onLoaded()
         torrent = NULL;
         reply   = NULL;
 
-        byteRate = -1;
-
         state = StateDefault;
+
+        byteRate = 0;
+        buffer   = 0;
 
         q->setStateLoad(WAbstractBackend::StateLoadDefault);
         q->setState    (WAbstractBackend::StateStopped);
@@ -177,28 +223,66 @@ void WHookTorrentPrivate::onLoaded()
 
         start();
     }
+    else if (state == StateBuffering)
+    {
+        Q_Q(WHookTorrent);
+
+        state = WHookTorrentPrivate::StatePlaying;
+
+        q->backendPlay();
+
+        q->setStateLoad(WAbstractBackend::StateLoadDefault);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void WHookTorrentPrivate::onProgress(qint64 bytesReceived)
 {
-    if (state != StateLoading /*|| bytesReceived < HOOKTORRENT_MINIMUM_SIZE*/) return;
+    if (state == StateStarting) return;
 
-    qint64 size = torrent->size();
-
-    int buffer = (bytesReceived * 10000) / size;
-
-    if (buffer > 29 && WControllerFile::exists(fileName))
+    if (state == StatePlaying)
     {
-        int duration = backend->duration();
+        buffer = bytesReceived / byteRate;
 
-        if (duration > 0)
+        checkBuffer(backend->currentTime());
+    }
+    else if (state == StateBuffering)
+    {
+        buffer = bytesReceived / byteRate;
+
+        checkResume(backend->currentTime());
+    }
+    else if (state == StateLoading)
+    {
+        qint64 size = torrent->size();
+
+        int buffer = (bytesReceived * 100000) / size;
+
+        if (buffer >= HOOKTORRENT_START)
         {
-            byteRate = size / duration;
-        }
+            if (WControllerFile::exists(fileName))
+            {
+                Q_Q(WHookTorrent);
 
-        start();
+                q->setProgress(1.0);
+
+                int duration = backend->duration();
+
+                if (duration > 0)
+                {
+                    byteRate = size / duration;
+                }
+
+                start();
+            }
+        }
+        else if (buffer)
+        {
+            Q_Q(WHookTorrent);
+
+            q->setProgress((qreal) buffer / HOOKTORRENT_START);
+        }
     }
 }
 
@@ -223,7 +307,27 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 
     if (d->source != url)
     {
-        if (d->backend->isPlaying() || d->state != WHookTorrentPrivate::StateDefault)
+        if (d->state == WHookTorrentPrivate::StateDefault)
+        {
+            if (d->reply) d->clearReply();
+
+            setDuration   (duration);
+            setCurrentTime(currentTime);
+
+            d->source = url;
+        }
+        else if (d->state == WHookTorrentPrivate::StatePaused)
+        {
+            d->stop();
+
+            d->clearReply();
+
+            setDuration   (duration);
+            setCurrentTime(currentTime);
+
+            d->source = url;
+        }
+        else
         {
             d->stop();
 
@@ -235,25 +339,7 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
             d->source = url;
 
             d->play();
-
-            return;
         }
-
-        if (d->backend->isPaused())
-        {
-            d->stop();
-
-            d->clearReply();
-        }
-        else if (d->reply)
-        {
-            d->clearReply();
-        }
-
-        setDuration   (duration);
-        setCurrentTime(currentTime);
-
-        d->source = url;
     }
     else seekTo(currentTime);
 }
@@ -264,15 +350,37 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 {
     Q_D(WHookTorrent);
 
-    WAbstractBackend::State state = d->backend->state();
-
-    if (state == WAbstractBackend::StatePaused)
-    {
-        d->backend->play();
-    }
-    else if (state != WAbstractBackend::StatePlaying && d->reply == NULL)
+    if (d->state == WHookTorrentPrivate::StateDefault)
     {
         d->play();
+    }
+    else if (d->state == WHookTorrentPrivate::StatePaused)
+    {
+        if (d->torrent->isLoaded())
+        {
+            d->state = WHookTorrentPrivate::StatePlaying;
+
+            backendPlay();
+        }
+        else
+        {
+            int msec = d->buffer - d->backend->currentTime();
+
+            if (msec < HOOKTORRENT_BUFFER)
+            {
+                d->state = WHookTorrentPrivate::StateBuffering;
+
+                setStateLoad(WAbstractBackend::StateLoadBuffering);
+            }
+            else
+            {
+                d->state = WHookTorrentPrivate::StatePlaying;
+
+                backendPlay();
+            }
+        }
+
+        setState(WAbstractBackend::StatePlaying);
     }
 }
 
@@ -306,9 +414,11 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 {
     Q_D(WHookTorrent);
 
+    if (d->state == WHookTorrentPrivate::StateDefault) return;
+
     d->stop();
 
-    if (d->reply) d->clearReply();
+    d->clearReply();
 }
 
 /* Q_INVOKABLE virtual */ void WHookTorrent::clear()
@@ -324,33 +434,71 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 // WBackendFilter reimplementation
 //-------------------------------------------------------------------------------------------------
 
+/* virtual */ void WHookTorrent::filterState(WAbstractBackend::State * state)
+{
+    Q_D(WHookTorrent);
+
+    if (d->state == WHookTorrentPrivate::StateBuffering)
+    {
+        *state = WAbstractBackend::StatePlaying;
+    }
+    else if (*state == WAbstractBackend::StateStopped)
+    {
+        stop();
+    }
+}
+
 /* virtual */ void WHookTorrent::filterStateLoad(WAbstractBackend::StateLoad * stateLoad)
 {
-    if (*stateLoad == WAbstractBackend::StateLoadDefault)
+    Q_D(WHookTorrent);
+
+    if (d->state == WHookTorrentPrivate::StateBuffering)
     {
-        Q_D(WHookTorrent);
-
-        if (d->state == WHookTorrentPrivate::StateStarting)
+        *stateLoad = WAbstractBackend::StateLoadBuffering;
+    }
+    else if (d->state == WHookTorrentPrivate::StateStarting)
+    {
+        if (*stateLoad == WAbstractBackend::StateLoadDefault)
         {
-            qDebug("STARTING");
-
-            d->state = WHookTorrentPrivate::StateDefault;
-
-            if (d->backend->duration() == 0)
+            if (d->backend->duration() < 1)
             {
                 d->byteRate = d->torrent->size() / HOOKTORRENT_DEFAULT_RATE;
             }
+
+            int msec = d->buffer - d->backend->currentTime();
+
+            if (msec < HOOKTORRENT_BUFFER)
+            {
+                d->state = WHookTorrentPrivate::StateBuffering;
+
+                backendPause();
+
+                *stateLoad = WAbstractBackend::StateLoadBuffering;
+            }
+            else d->state = WHookTorrentPrivate::StatePlaying;
+
+            setState(WAbstractBackend::StatePlaying);
         }
-    }
-    else if (*stateLoad == WAbstractBackend::StateLoadBuffering)
-    {
-        qDebug("BUFFERING");
     }
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WHookTorrent::filterCurrentTime(int *) {}
+/* virtual */ void WHookTorrent::filterCurrentTime(int * msec)
+{
+    Q_D(WHookTorrent);
+
+    if (d->state == WHookTorrentPrivate::StateStarting) return;
+
+    if (d->state == WHookTorrentPrivate::StatePlaying)
+    {
+        d->checkBuffer(*msec);
+    }
+    else if (d->state == WHookTorrentPrivate::StateBuffering)
+    {
+        d->checkResume(*msec);
+    }
+}
 
 /* virtual */ void WHookTorrent::filterDuration(int * msec)
 {

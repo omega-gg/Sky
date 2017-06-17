@@ -45,6 +45,7 @@ public: // WAbstractHook reimplementation
     /* Q_INVOKABLE virtual */ void seekTo(int msec);
 
 public: // WBackendFilter reimplementation
+    /* virtual */ void filterState    (WAbstractBackend::State     * state);
     /* virtual */ void filterStateLoad(WAbstractBackend::StateLoad * stateLoad);
 
     /* virtual */ void filterCurrentTime(int * msec);

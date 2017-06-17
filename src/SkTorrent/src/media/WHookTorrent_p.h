@@ -42,7 +42,10 @@ public: // Enums
     {
         StateDefault,
         StateLoading,
-        StateStarting
+        StateStarting,
+        StatePlaying,
+        StatePaused,
+        StateBuffering
     };
 
 public:
@@ -56,6 +59,9 @@ public: // Functions
 
     void play();
     void stop();
+
+    void checkBuffer(int currentTime);
+    void checkResume(int currentTime);
 
     void clearReply();
 
@@ -71,9 +77,10 @@ public: // Variables
 
     QString fileName;
 
-    qint64 byteRate;
-
     State state;
+
+    qint64 byteRate;
+    int    buffer;
 
 protected:
     W_DECLARE_PUBLIC(WHookTorrent)
