@@ -483,9 +483,9 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
                 d->byteRate = d->torrent->size() / HOOKTORRENT_DEFAULT_RATE;
             }
 
-            int msec = d->buffer - d->backend->currentTime();
+            d->buffer = d->torrent->progress() / d->byteRate;
 
-            if (msec < HOOKTORRENT_BUFFER)
+            if (d->buffer < HOOKTORRENT_BUFFER)
             {
                 d->state = WHookTorrentPrivate::StateBuffering;
 
