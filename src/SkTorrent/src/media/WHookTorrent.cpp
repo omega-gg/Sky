@@ -403,9 +403,21 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 {
     Q_D(WHookTorrent);
 
-    if (d->backend->isPlaying())
+    if (d->state == WHookTorrentPrivate::StatePaused) return;
+
+    if (d->state == WHookTorrentPrivate::StatePlaying)
     {
+        d->state = WHookTorrentPrivate::StatePaused;
+
         d->backend->pause();
+    }
+    else if (d->state == WHookTorrentPrivate::StateBuffering)
+    {
+        d->state = WHookTorrentPrivate::StatePaused;
+
+        d->backend->pause();
+
+        setStateLoad(WAbstractBackend::StateLoadDefault);
     }
     else stop();
 }
