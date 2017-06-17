@@ -144,9 +144,12 @@ void WHookTorrentPrivate::checkResume(int currentTime)
 
         state = WHookTorrentPrivate::StatePlaying;
 
+        q->setState(WAbstractBackend::StatePaused);
+
         q->backendPlay();
 
         q->setStateLoad(WAbstractBackend::StateLoadDefault);
+        q->setState    (WAbstractBackend::StatePlaying);
     }
 }
 
