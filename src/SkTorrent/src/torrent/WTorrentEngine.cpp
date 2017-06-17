@@ -313,7 +313,7 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         pack.set_int(settings_pack::min_reconnect_time, 1);
 
         //pack.set_int(settings_pack::peer_timeout,         1);
-        pack.set_int(settings_pack::peer_connect_timeout, 3);
+        pack.set_int(settings_pack::peer_connect_timeout, 1);
 
         pack.set_bool(settings_pack::announce_to_all_tiers,    true);
         pack.set_bool(settings_pack::announce_to_all_trackers, true);
