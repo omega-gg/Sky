@@ -470,30 +470,20 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
                     //-----------------------------------------------------------------------------
 
+                    int count = TORRENTENGINE_PRIORITY_COUNT;
+
                     int deadline = 1;
 
-                    handle.set_piece_deadline(begin, deadline++);
+                    int current = begin;
+                    int last    = end - 1;
 
-                    int last = end - 1;
-
-                    if (begin != last)
+                    while (count && current < last)
                     {
-                        handle.set_piece_deadline(last, deadline++);
+                        handle.set_piece_deadline(current, deadline++);
 
-                        int count = TORRENTENGINE_PRIORITY_COUNT;
+                        current++;
 
-                        int current = begin + 1;
-
-                        last--;
-
-                        while (count && current < last)
-                        {
-                            handle.set_piece_deadline(current, deadline++);
-
-                            current++;
-
-                            count--;
-                        }
+                        count--;
                     }
                 }
                 else
@@ -810,25 +800,9 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
                 const torrent_handle & handle = data->handle;
 
-                int deadline = 1;
-
-                if (pieces->at(0) == 0)
-                {
-                    handle.set_piece_deadline(begin, deadline++);
-                }
-
-                length--;
-
-                if (pieces->at(length) == 0)
-                {
-                    handle.set_piece_deadline(last, deadline++);
-                }
-
                 int count = TORRENTENGINE_PRIORITY_COUNT;
 
-                length--;
-
-                last--;
+                int deadline = 1;
 
                 while (count && index < length)
                 {
