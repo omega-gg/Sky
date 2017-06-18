@@ -318,8 +318,6 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
     {
         if (d->state == WHookTorrentPrivate::StateDefault)
         {
-            if (d->reply) d->clearReply();
-
             setDuration   (duration);
             setCurrentTime(currentTime);
 
@@ -447,7 +445,19 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 
 /* Q_INVOKABLE virtual */ void WHookTorrent::clear()
 {
-    loadSource(QUrl());
+    Q_D(WHookTorrent);
+
+    if (d->state != WHookTorrentPrivate::StateDefault)
+    {
+        d->stop();
+
+        d->clearReply();
+    }
+
+    setDuration   (-1);
+    setCurrentTime(-1);
+
+    d->source = QUrl();
 }
 
 //-------------------------------------------------------------------------------------------------
