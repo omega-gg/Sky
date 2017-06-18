@@ -262,9 +262,15 @@ void WHookTorrentPrivate::onProgress(qint64 bytesReceived)
 
         int buffer = (bytesReceived * 100000) / size;
 
-        if (buffer >= HOOKTORRENT_START && bytesReceived >= HOOKTORRENT_MINIMUM_SIZE)
+        if (buffer >= HOOKTORRENT_START)
         {
-            if (WControllerFile::exists(fileName))
+            if (bytesReceived < HOOKTORRENT_MINIMUM_SIZE)
+            {
+                Q_Q(WHookTorrent);
+
+                q->setProgress(0.9);
+            }
+            else if (WControllerFile::exists(fileName))
             {
                 Q_Q(WHookTorrent);
 

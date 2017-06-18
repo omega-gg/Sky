@@ -1443,9 +1443,16 @@ Item
     //---------------------------------------------------------------------------------------------
     // SliderStream
 
+    property int sliderStream_durationAnimation: duration_slower
+
+    property int sliderStream_intervalProgress: ms1000
+
     property int sliderStream_height: dp32
 
     property int sliderStream_textWidth: dp46
+
+    property real sliderStream_opacityProgressA: 0.5
+    property real sliderStream_opacityProgressB: 1.0
 
     property color sliderStream_colorBarA: "#00a0f0"
     property color sliderStream_colorBarB: "#0050b4"
@@ -1459,10 +1466,14 @@ Item
     property color sliderStream_colorBarDisableHoverA: "#f0f0f0"
     property color sliderStream_colorBarDisableHoverB: "#787878"
 
+    property color sliderStream_colorBarProgressA: "#646464"
+    property color sliderStream_colorBarProgressB: "#dcdcdc"
+
     property alias sliderStream_filterBar            : sliderStream_filterBar
     property alias sliderStream_filterBarHover       : sliderStream_filterBarHover
     property alias sliderStream_filterBarDisable     : sliderStream_filterBarDisable
     property alias sliderStream_filterBarDisableHover: sliderStream_filterBarDisableHover
+    property alias sliderStream_filterBarProgress    : sliderStream_filterBarProgress
 
     ImageColorFilter
     {
@@ -1505,6 +1516,17 @@ Item
         {
             ScaleGradientStop { position: 0.0; color: sliderStream_colorBarDisableHoverA }
             ScaleGradientStop { position: 1.0; color: sliderStream_colorBarDisableHoverB }
+        }
+    }
+
+    ImageColorFilter
+    {
+        id: sliderStream_filterBarProgress
+
+        gradient: ScaleGradient
+        {
+            ScaleGradientStop { position: 0.0; color: sliderStream_colorBarProgressA }
+            ScaleGradientStop { position: 1.0; color: sliderStream_colorBarProgressB }
         }
     }
 
