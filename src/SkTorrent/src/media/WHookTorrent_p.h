@@ -82,6 +82,9 @@ public: // Variables
     qint64 byteRate;
     int    buffer;
 
+    int bufferStart;
+    int bufferCheck;
+
 protected:
     W_DECLARE_PUBLIC(WHookTorrent)
 };
