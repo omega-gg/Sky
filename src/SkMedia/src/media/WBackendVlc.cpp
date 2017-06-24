@@ -1079,7 +1079,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 {
     Q_D(WBackendVlc);
 
-    if (d->playing)
+    if (d->started)
     {
         d->player->pause();
     }
@@ -1545,8 +1545,6 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
         d->frameReset = true;
 
-        d->frameUpdated = false;
-
         return true;
     }
     else if (type == static_cast<QEvent::Type> (WVlcPlayer::EventPlaying))
@@ -1557,9 +1555,12 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
         {
             d->playing = true;
 
-            d->setMute(false);
+            if (d->started == false)
+            {
+                d->frameUpdated = false;
+            }
 
-            setStateLoad(StateLoadDefault);
+            d->setMute(false);
         }
         else if (d->state == StateStopped)
         {
@@ -1610,12 +1611,19 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
         if (d->started == false)
         {
-            d->started = true;
-
             if (d->outputActive != OutputAudio)
             {
+                if (d->frameUpdated == false)
+                {
+                    stop();
+
+                    return true;
+                }
+
                 d->active = true;
             }
+
+            d->started = true;
 
             d->frameFreeze = false;
 
@@ -1639,30 +1647,33 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
     {
         Q_D(WBackendVlc);
 
-        // FIXME: Sometimes the playback ends when seeking.
-        if (d->currentTime && (d->currentTime + 1000) < d->duration)
+        if (d->started)
         {
-            qWarning("WBackendVlc::event: Vlc player ended.");
-
-            if (d->frameFreeze == false)
+            // FIXME: Sometimes the playback ends when seeking.
+            if ((d->currentTime + 1000) < d->duration)
             {
-                d->started     = false;
-                d->frameFreeze = true;
+                qWarning("WBackendVlc::event: Vlc player ended.");
 
-                d->player->setSource(d->currentMedia, d->currentAudio);
+                if (d->frameFreeze == false)
+                {
+                    d->started     = false;
+                    d->frameFreeze = true;
 
-                d->player->play(d->currentTime);
+                    d->player->setSource(d->currentMedia, d->currentAudio);
+
+                    d->player->play(d->currentTime);
+                }
+                else stop();
             }
-            else stop();
-        }
-        else if (d->started)
-        {
-            if (d->repeat == false)
+            else
             {
-                d->clearPlayer();
-            }
+                if (d->repeat == false)
+                {
+                    d->clearPlayer();
+                }
 
-            setEnded(true);
+                setEnded(true);
+            }
         }
         else stop();
 
