@@ -157,7 +157,10 @@ Item
         {
             pState = 0;
 
-            pProgress = progress;
+            if (pProgress != 1.0)
+            {
+                pProgress = progress;
+            }
 
             return;
         }
@@ -323,10 +326,6 @@ Item
                     imageProgress.opacity = opacityProgressB;
 
                     behaviorOpacity.enabled = false;
-                }
-                else if (pProgress == 0.0)
-                {
-                    imageProgress.opacity = 0.0;
                 }
             }
 
