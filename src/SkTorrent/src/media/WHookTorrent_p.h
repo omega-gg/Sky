@@ -27,11 +27,16 @@
     We mean it.
 */
 
+// Qt includes
+#include <QMetaMethod>
+
+// Private includes
 #include <private/WAbstractHook_p>
 
 #ifndef SK_NO_HOOKTORRENT
 
 // Forward declarations
+class WTorrentThread;
 class WTorrent;
 class WTorrentReply;
 
@@ -44,12 +49,13 @@ public: // Enums
         StateLoading,
         StateStarting,
         StatePlaying,
-        StatePaused,
-        StateBuffering
+        StatePaused
     };
 
 public:
     WHookTorrentPrivate(WHookTorrent * p);
+
+    /* virtual */ ~WHookTorrentPrivate();
 
     void init();
 
@@ -60,30 +66,29 @@ public: // Functions
     void play();
     void stop();
 
-    void checkBuffer(int currentTime);
-    void checkResume(int currentTime);
-
     void clearReply();
 
 public: // Slots
     void onAdded ();
     void onLoaded();
 
-    void onProgress(qint64 bytesReceived);
+    void onBuffer(qint64 bytesReceived);
 
 public: // Variables
+    WTorrentThread * thread;
+
     WTorrent      * torrent;
     WTorrentReply * reply;
 
-    QString fileName;
-
     State state;
 
-    qint64 byteRate;
-    int    buffer;
+    int port;
 
-    int bufferStart;
-    int bufferCheck;
+    QUrl url;
+
+    QMetaMethod methodFile;
+    QMetaMethod methodBuffer;
+    QMetaMethod methodClear;
 
 protected:
     W_DECLARE_PUBLIC(WHookTorrent)

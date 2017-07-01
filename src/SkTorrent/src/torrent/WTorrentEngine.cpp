@@ -173,12 +173,13 @@ void WTorrentEnginePrivate::applyBuffer(WTorrentData * data, int piece, int bloc
 
     if (data->index == piece && data->block == block)
     {
-        block   += length;
-        current += length;
+        block += length;
 
         while (length)
         {
             blocks->setBit(current);
+
+            current++;
 
             length--;
         }
@@ -206,14 +207,17 @@ void WTorrentEnginePrivate::applyBuffer(WTorrentData * data, int piece, int bloc
     }
     else
     {
+        block = 0;
+
         while (length)
         {
             blocks->setBit(current);
 
+            current++;
+
             length--;
         }
 
-        block   = 0;
         current = piece * blockCount;
 
         while (block < blockCount)
@@ -578,6 +582,8 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         torrent_handle handle;
 
+        unsigned int hash;
+
         WTorrentData * data = new WTorrentData;
 
         QStringList paths;
@@ -600,6 +606,8 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
             {
                 handle = d->session->add_torrent(params);
 
+                hash = hash_value(handle);
+
                 size      = 0;
                 sizePiece = 0;
 
@@ -613,6 +621,13 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
                 params.storage = WTorrentStorage::create;
 
                 handle = d->session->add_torrent(params);
+
+                hash = hash_value(handle);
+
+                WTorrentStorage * storage = torrentStore()->items.takeAt(0);
+
+                storage->engine = this;
+                storage->hash   = hash;
 
                 int count = info->num_files();
 
@@ -719,6 +734,8 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
         {
             handle = d->session->add_torrent(params);
 
+            hash = hash_value(handle);
+
             if (index == -1)
             {
                 QString filePath = path + '/';
@@ -801,7 +818,7 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         data->progress = 0;
 
-        d->torrents.insert(hash_value(handle), data);
+        d->torrents.insert(hash, data);
 
         d->timer.start(TORRENTENGINE_TIMEOUT);
 
