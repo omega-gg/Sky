@@ -82,8 +82,7 @@ public: // Enums
         EventRemoved,
         EventState,
         EventProgress,
-        EventBlock,
-        EventPiece,
+        EventBuffer,
         EventFinished,
         EventError,
         EventClear
@@ -95,6 +94,9 @@ public:
     void init(QThread * thread);
 
 public: // Functions
+    void applyBuffer(WTorrentData * data, int piece, int block, int length);
+    void applyPiece (WTorrentData * data, int piece);
+
     WTorrentData * getTorrentData(WTorrent * torrent) const;
 
 public: // Events
@@ -179,22 +181,24 @@ public: // Variables
 };
 
 //-------------------------------------------------------------------------------------------------
-// WTorrentEngineBlock
+// WTorrentEngineBuffer
 //-------------------------------------------------------------------------------------------------
 
-class WTorrentEngineBlock : public WTorrentEngineHandle
+class WTorrentEngineBuffer : public WTorrentEngineHandle
 {
 public:
-    WTorrentEngineBlock(unsigned int hash, int piece, int block)
-        : WTorrentEngineHandle(WTorrentEnginePrivate::EventBlock, hash)
+    WTorrentEngineBuffer(unsigned int hash, int piece, int offset, int length)
+        : WTorrentEngineHandle(WTorrentEnginePrivate::EventBuffer, hash)
     {
-        this->piece = piece;
-        this->block = block;
+        this->piece  = piece;
+        this->offset = offset;
+        this->length = length;
     }
 
 public: // Variables
     int piece;
-    int block;
+    int offset;
+    int length;
 };
 
 //-------------------------------------------------------------------------------------------------
