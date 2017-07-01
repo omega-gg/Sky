@@ -165,13 +165,17 @@ void WTorrentEnginePrivate::init(QThread * thread)
 
 void WTorrentEnginePrivate::applyBuffer(WTorrentData * data, int piece, int block, int length)
 {
+    int index = data->index;
+
+    if (index == data->pieces.count()) return;
+
     QBitArray * blocks = &(data->blocks);
 
     int blockCount = data->blockCount;
 
     int current = piece * blockCount + block;
 
-    if (data->index == piece && data->block == block)
+    if (index == piece && data->block == block)
     {
         block += length;
 
