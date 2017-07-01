@@ -55,11 +55,11 @@ public: // Functions
 
     void abort(int id);
 
-private slots:
-    void processQuery(int id);
-
 private: // Functions
     QString doQueryJob(XmlQueryJob * currentJob);
+
+private slots:
+    void processQuery(int id);
 
 signals:
     void queryCompleted(int id, const QString & result);
@@ -125,25 +125,6 @@ void WControllerXmlQuery::abort(int id)
 }
 
 //-------------------------------------------------------------------------------------------------
-// Private slots
-//-------------------------------------------------------------------------------------------------
-
-void WControllerXmlQuery::processQuery(int id)
-{
-    XmlQueryJob job;
-
-    QMutexLocker locker(&mutex);
-
-    if (jobs.contains(id) == false) return;
-
-    job = jobs.take(id);
-
-    QString result = doQueryJob(&job);
-
-    emit queryCompleted(job.id, result);
-}
-
-//-------------------------------------------------------------------------------------------------
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
@@ -160,6 +141,25 @@ QString WControllerXmlQuery::doQueryJob(XmlQueryJob * currentJob)
     query.evaluateTo(&result);
 
     return result;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private slots
+//-------------------------------------------------------------------------------------------------
+
+void WControllerXmlQuery::processQuery(int id)
+{
+    XmlQueryJob job;
+
+    QMutexLocker locker(&mutex);
+
+    if (jobs.contains(id) == false) return;
+
+    job = jobs.take(id);
+
+    QString result = doQueryJob(&job);
+
+    emit queryCompleted(job.id, result);
 }
 
 //=================================================================================================
