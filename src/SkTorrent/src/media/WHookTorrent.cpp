@@ -187,6 +187,8 @@ void WTorrentSocket::onRead()
         return;
     }
 
+    qDebug("REPLY %s", header.C_STR);
+
     socket->write(header.toLatin1());
 
     QFile * file = thread->file;
