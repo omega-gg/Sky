@@ -36,6 +36,8 @@ W_INIT_CONTROLLER(WControllerTorrent)
 
 static const QString CONTROLLERTORRENT_PATH_TORRENTS = "/torrents";
 
+static const int CONTROLLERTORRENT_PORT = 8000;
+
 //=================================================================================================
 // WTorrent
 //=================================================================================================
@@ -334,6 +336,8 @@ void WControllerTorrentPrivate::init()
 
     thread = new QThread(q);
 
+    port = CONTROLLERTORRENT_PORT;
+
     thread->start();
 
     engine = new WTorrentEngine(thread);
@@ -530,6 +534,22 @@ WControllerTorrent::WControllerTorrent() : WController(new WControllerTorrentPri
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ int WControllerTorrent::registerPort()
+{
+    Q_D(WControllerTorrent);
+
+    return d->ports.generateId(d->port);
+}
+
+/* Q_INVOKABLE */ void WControllerTorrent::unregisterPort(int port)
+{
+    Q_D(WControllerTorrent);
+
+    d->ports.removeOne(port);
+}
+
+//-------------------------------------------------------------------------------------------------
 // Initialize
 //-------------------------------------------------------------------------------------------------
 
@@ -552,6 +572,24 @@ WTorrentEngine * WControllerTorrent::engine() const
 QString WControllerTorrent::pathStorage() const
 {
     return wControllerFile->pathStorage() + CONTROLLERTORRENT_PATH_TORRENTS;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+int WControllerTorrent::port() const
+{
+    Q_D(const WControllerTorrent); return d->port;
+}
+
+void WControllerTorrent::setPort(int port)
+{
+    Q_D(WControllerTorrent);
+
+    if (d->port == port) return;
+
+    port = port;
+
+    emit portChanged();
 }
 
 #endif // SK_NO_CONTROLLERTORRENT

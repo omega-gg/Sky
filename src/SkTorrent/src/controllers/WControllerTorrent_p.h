@@ -27,6 +27,9 @@
     We mean it.
 */
 
+// Sk includes
+#include <WListId>
+
 // Private includes
 #include <private/WController_p>
 
@@ -60,6 +63,10 @@ public: // Variables
     QHash<WRemoteData *, WTorrent *> jobs;
 
     QList<WTorrent *> downloads;
+
+    WListId ports;
+
+    int port;
 
 protected:
     W_DECLARE_PUBLIC(WControllerTorrent)
