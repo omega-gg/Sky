@@ -21,6 +21,9 @@
 // Sk includes
 #include <WControllerPlaylist>
 
+// Private includes
+#include <private/WAbstractBackend_p>
+
 //-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
@@ -171,6 +174,22 @@ void WAbstractHook::setFilterActive(bool active)
          d->backend->setFilter(this);
     }
     else d->backend->setFilter(NULL);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WAbstractHook::applySource(const QUrl & url)
+{
+    Q_D(WAbstractHook);
+
+    d->backend->d_func()->source = url;
+}
+
+void WAbstractHook::applyCurrentTime(int msec)
+{
+    Q_D(WAbstractHook);
+
+    d->backend->d_func()->currentTime = msec;
 }
 
 //-------------------------------------------------------------------------------------------------

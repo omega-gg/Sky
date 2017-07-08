@@ -61,6 +61,10 @@ public: // WBackendInterface implementation
 protected: // Functions
     void setFilterActive(bool active);
 
+    void applySource(const QUrl & url);
+
+    void applyCurrentTime(int msec);
+
     //---------------------------------------------------------------------------------------------
     // Backend functions
 
