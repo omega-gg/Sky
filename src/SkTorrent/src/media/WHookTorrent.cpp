@@ -903,6 +903,8 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
         }
         else
         {
+            *stateLoad = d->backend->stateLoad();
+
             d->methodStart.invoke(d->thread);
 
             backendSeekTo(d->currentTime);
