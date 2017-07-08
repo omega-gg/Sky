@@ -400,6 +400,8 @@ void WTorrentThread::onFile(WTorrent * torrent, const QString & fileName, qint64
 
     progress = 0;
 
+    position = 0;
+
     started = false;
 }
 
