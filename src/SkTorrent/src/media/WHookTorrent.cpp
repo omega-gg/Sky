@@ -243,7 +243,7 @@ void WTorrentSocket::onRead()
         }
     }
 
-    if (thread->file->seek(position))
+    if (thread->file->seek(position) == false)
     {
         qDebug("SEEK FAILED");
     }

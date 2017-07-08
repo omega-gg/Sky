@@ -143,6 +143,8 @@ void WTorrentEnginePrivate::prioritize(WTorrentData * data, qint64 position)
 
     int deadline = 1;
 
+    current = data->current;
+
     while (priority && piece < count)
     {
         if (pieces->at(piece) == false)
