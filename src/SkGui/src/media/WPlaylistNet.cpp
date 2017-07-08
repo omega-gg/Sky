@@ -577,13 +577,6 @@ void WPlaylistNetPrivate::init() {}
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-const WTrackNet * WPlaylistNetPrivate::getTrackConst(int index) const
-{
-    if (index < 0 || index >= tracks.count()) return NULL;
-
-    return &(tracks[index]);
-}
-
 WTrackNet * WPlaylistNetPrivate::getTrack(int index)
 {
     if (index < 0 || index >= tracks.count()) return NULL;
