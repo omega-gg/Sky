@@ -39,6 +39,8 @@ public:
 public: // Interface
     Q_INVOKABLE void load(WTorrent * torrent, const QByteArray & data, const QString & path);
 
+    Q_INVOKABLE void seek(WTorrent * torrent, qint64 position);
+
     Q_INVOKABLE void remove(WTorrent * torrent, bool deleteFiles = false);
 
     Q_INVOKABLE void deleteInstance();

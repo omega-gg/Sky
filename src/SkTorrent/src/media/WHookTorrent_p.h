@@ -80,14 +80,19 @@ public: // Variables
     WTorrent      * torrent;
     WTorrentReply * reply;
 
+    QString fileName;
+
     State state;
 
     int port;
 
     QUrl url;
 
+    int currentTime;
+
     QMetaMethod methodFile;
     QMetaMethod methodBuffer;
+    QMetaMethod methodStart;
     QMetaMethod methodClear;
 
 protected:

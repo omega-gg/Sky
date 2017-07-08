@@ -78,6 +78,7 @@ public: // Enums
     {
         EventCreate = QEvent::User,
         EventAdd,
+        EventSeek,
         EventRemove,
         EventRemoved,
         EventState,

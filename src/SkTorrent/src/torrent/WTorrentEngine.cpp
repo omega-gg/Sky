@@ -482,6 +482,12 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
                                                                torrent, variants));
 }
 
+/* Q_INVOKABLE */ void WTorrentEngine::seek(WTorrent * torrent, qint64 position)
+{
+    QCoreApplication::postEvent(this, new WTorrentEngineAction(WTorrentEnginePrivate::EventSeek,
+                                                               torrent, position));
+}
+
 /* Q_INVOKABLE */ void WTorrentEngine::remove(WTorrent * torrent, bool deleteFiles)
 {
     QCoreApplication::postEvent(this, new WTorrentEngineAction(WTorrentEnginePrivate::EventRemove,

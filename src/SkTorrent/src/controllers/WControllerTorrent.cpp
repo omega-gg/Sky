@@ -323,6 +323,8 @@ void WControllerTorrentPrivate::init()
 {
     Q_Q(WControllerTorrent);
 
+    qRegisterMetaType<WTorrent *>("WTorrent *");
+
     thread = new QThread(q);
 
     port = CONTROLLERTORRENT_PORT;
