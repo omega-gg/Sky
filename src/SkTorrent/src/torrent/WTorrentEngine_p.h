@@ -64,7 +64,7 @@ struct WTorrentData
     int block;
     int blockCount;
 
-    qint64 progress;
+    qint64 buffer;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -83,7 +83,8 @@ public: // Enums
         EventRemoved,
         EventState,
         EventProgress,
-        EventBuffer,
+        EventPiece,
+        EventBlock,
         EventFinished,
         EventError,
         EventClear
@@ -95,8 +96,12 @@ public:
     void init(QThread * thread);
 
 public: // Functions
-    void applyBuffer(WTorrentData * data, int piece, int block, int length);
-    void applyPiece (WTorrentData * data, int piece);
+    void applyBlock(WTorrentData * data, int piece, int block);
+    void applyPiece(WTorrentData * data, int piece);
+
+    void applyBuffer(WTorrentData * data, qint64 buffer);
+
+    void prioritize(WTorrentData * data, qint64 position);
 
     WTorrentData * getTorrentData(WTorrent * torrent) const;
 
@@ -182,24 +187,22 @@ public: // Variables
 };
 
 //-------------------------------------------------------------------------------------------------
-// WTorrentEngineBuffer
+// WTorrentEngineBlock
 //-------------------------------------------------------------------------------------------------
 
-class WTorrentEngineBuffer : public WTorrentEngineHandle
+class WTorrentEngineBlock : public WTorrentEngineHandle
 {
 public:
-    WTorrentEngineBuffer(unsigned int hash, int piece, int offset, int length)
-        : WTorrentEngineHandle(WTorrentEnginePrivate::EventBuffer, hash)
+    WTorrentEngineBlock(unsigned int hash, int piece, int block)
+        : WTorrentEngineHandle(WTorrentEnginePrivate::EventBlock, hash)
     {
-        this->piece  = piece;
-        this->offset = offset;
-        this->length = length;
+        this->piece = piece;
+        this->block = block;
     }
 
 public: // Variables
     int piece;
-    int offset;
-    int length;
+    int block;
 };
 
 //-------------------------------------------------------------------------------------------------
