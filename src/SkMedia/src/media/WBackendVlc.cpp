@@ -1611,19 +1611,8 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
         if (d->started == false)
         {
-            if (d->outputActive != OutputAudio)
-            {
-                if (d->frameUpdated == false)
-                {
-                    stop();
-
-                    return true;
-                }
-
-                d->active = true;
-            }
-
             d->started = true;
+            d->active  = true;
 
             d->frameFreeze = false;
 
