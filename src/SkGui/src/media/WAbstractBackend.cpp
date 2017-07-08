@@ -217,7 +217,7 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
     if (d->source != url)
     {
-        if (d->state == StatePaused) stop();
+        if (d->state == StatePaused || url.isEmpty()) stop();
 
         setDuration   (duration);
         setCurrentTime(currentTime);
