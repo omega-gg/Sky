@@ -1340,6 +1340,32 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ int WPlaylistNet::trackDuration(int index) const
+{
+    const WAbstractTrack * track = trackPointerAt(index);
+
+    if (track)
+    {
+         return track->duration();
+    }
+    else return -1;
+}
+
+/* Q_INVOKABLE */ void WPlaylistNet::setTrackDuration(int index, int msec)
+{
+    Q_D(WPlaylistNet);
+
+    WTrackNet * track = d->getTrack(index);
+
+    if (track == NULL || track->duration() == msec) return;
+
+    track->setDuration(msec);
+
+    updateTrack(index);
+}
+
+//-------------------------------------------------------------------------------------------------
 // QML
 
 /* Q_INVOKABLE */ void WPlaylistNet::copyTracksTo(const QVariantList & tracks,
