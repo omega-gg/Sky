@@ -96,12 +96,12 @@ public:
     void init(QThread * thread);
 
 public: // Functions
+    void prioritize(WTorrentData * data, qint64 position);
+
     void applyBlock(WTorrentData * data, int piece, int block);
     void applyPiece(WTorrentData * data, int piece);
 
     void applyBuffer(WTorrentData * data, qint64 buffer);
-
-    void prioritize(WTorrentData * data, qint64 position);
 
     WTorrentData * getTorrentData(WTorrent * torrent) const;
 

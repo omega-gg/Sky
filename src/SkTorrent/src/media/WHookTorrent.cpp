@@ -338,6 +338,7 @@ void WTorrentSocket::onWrite()
 
             timer.start(HOOKTORRENT_SOCKET_INTERVAL);
         }
+        else timer.stop();
     }
 }
 

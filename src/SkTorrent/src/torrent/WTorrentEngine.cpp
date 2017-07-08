@@ -77,6 +77,89 @@ void WTorrentEnginePrivate::init(QThread * thread)
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
+void WTorrentEnginePrivate::prioritize(WTorrentData * data, qint64 position)
+{
+    int piece = position / data->sizePiece;
+
+    if (piece < 0) return;
+
+    QBitArray * pieces = &(data->pieces);
+
+    int count = pieces->count();
+
+    if (piece >= count) return;
+
+    int index = data->index;
+
+    if (index != piece)
+    {
+        while (piece < count && pieces->at(piece))
+        {
+            piece++;
+        }
+
+        data->index   = piece;
+        data->current = data->begin + piece;
+    }
+
+    qint64 sizePiece = (qint64) (piece * data->sizePiece);
+
+    int block;
+
+    if (position > sizePiece)
+    {
+         block = (position - sizePiece) / TORRENTENGINE_BLOCK;
+    }
+    else block = 0;
+
+    QBitArray * blocks = &(data->blocks);
+
+    int current = piece * data->blockCount + block;
+
+    while (block < data->blockCount && blocks->at(current))
+    {
+        block++;
+
+        current++;
+    }
+
+    data->block = block;
+
+    qint64 buffer = (qint64) (sizePiece + block * TORRENTENGINE_BLOCK);
+
+    if (data->buffer != buffer)
+    {
+        data->buffer = buffer;
+
+        QCoreApplication::postEvent(data->torrent,
+                                    new WTorrentEventValue(WTorrent::EventBuffer, buffer));
+    }
+
+    const torrent_handle & handle = data->handle;
+
+    handle.clear_piece_deadlines();
+
+    int priority = TORRENTENGINE_PRIORITY_COUNT;
+
+    int deadline = 1;
+
+    while (priority && piece < count)
+    {
+        if (pieces->at(piece) == false)
+        {
+            handle.set_piece_deadline(current, deadline++);
+
+            priority--;
+        }
+
+        piece++;
+
+        current++;
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void WTorrentEnginePrivate::applyBlock(WTorrentData * data, int piece, int block)
 {
     QBitArray * blocks = &(data->blocks);
@@ -214,89 +297,6 @@ void WTorrentEnginePrivate::applyBuffer(WTorrentData * data, qint64 buffer)
 
     QCoreApplication::postEvent(data->torrent,
                                 new WTorrentEventValue(WTorrent::EventBuffer, buffer));
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void WTorrentEnginePrivate::prioritize(WTorrentData * data, qint64 position)
-{
-    int piece = position / data->sizePiece;
-
-    if (piece < 0) return;
-
-    QBitArray * pieces = &(data->pieces);
-
-    int count = pieces->count();
-
-    if (piece >= count) return;
-
-    int index = data->index;
-
-    if (index != piece)
-    {
-        while (piece < count && pieces->at(piece))
-        {
-            piece++;
-        }
-
-        data->index   = piece;
-        data->current = data->begin + piece;
-    }
-
-    qint64 sizePiece = (qint64) (piece * data->sizePiece);
-
-    int block;
-
-    if (position > sizePiece)
-    {
-         block = (position - sizePiece) / TORRENTENGINE_BLOCK;
-    }
-    else block = 0;
-
-    QBitArray * blocks = &(data->blocks);
-
-    int current = piece * data->blockCount + block;
-
-    while (block < data->blockCount && blocks->at(current))
-    {
-        block++;
-
-        current++;
-    }
-
-    data->block = block;
-
-    qint64 buffer = (qint64) (sizePiece + block * TORRENTENGINE_BLOCK);
-
-    if (data->buffer != buffer)
-    {
-        data->buffer = buffer;
-
-        QCoreApplication::postEvent(data->torrent,
-                                    new WTorrentEventValue(WTorrent::EventBuffer, buffer));
-    }
-
-    const torrent_handle & handle = data->handle;
-
-    handle.clear_piece_deadlines();
-
-    int priority = TORRENTENGINE_PRIORITY_COUNT;
-
-    int deadline = 1;
-
-    while (priority && piece < count)
-    {
-        if (pieces->at(piece) == false)
-        {
-            handle.set_piece_deadline(current, deadline++);
-
-            priority--;
-        }
-
-        piece++;
-
-        current++;
-    }
 }
 
 //-------------------------------------------------------------------------------------------------
