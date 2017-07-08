@@ -327,6 +327,10 @@ Item
 
                     behaviorOpacity.enabled = false;
                 }
+                else if (pProgress == 0)
+                {
+                    imageProgress.opacity = 0;
+                }
             }
 
             Behavior on opacity
