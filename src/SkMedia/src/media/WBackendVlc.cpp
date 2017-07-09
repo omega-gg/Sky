@@ -35,7 +35,21 @@
 
 // 3rdparty includes
 #include <3rdparty/vlc/mmxRgb.h>
+
+#ifndef Q_OS_MAC
 #include <3rdparty/opengl/glext.h>
+#endif
+
+#ifdef Q_OS_MAC
+#include <openGL/glext.h>
+# define PFNGLGENPROGRAMSARBPROC              __typeof__(glGenProgramsARB)*
+# define PFNGLBINDPROGRAMARBPROC              __typeof__(glBindProgramARB)*
+# define PFNGLPROGRAMSTRINGARBPROC            __typeof__(glProgramStringARB)*
+# define PFNGLDELETEPROGRAMSARBPROC           __typeof__(glDeleteProgramsARB)*
+# define PFNGLPROGRAMLOCALPARAMETER4FVARBPROC __typeof__(glProgramLocalParameter4fvARB)*
+# define PFNGLACTIVETEXTUREARBPROC            __typeof__(glActiveTextureARB)*
+# define PFNGLMULTITEXCOORD2FARBPROC          __typeof__(glMultiTexCoord2fARB)*
+#endif
 
 // Linux includes
 #ifdef Q_OS_LINUX

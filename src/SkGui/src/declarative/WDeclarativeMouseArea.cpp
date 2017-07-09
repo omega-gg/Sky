@@ -1043,7 +1043,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QGraphicsSceneMouseEvent * event)
 
     if (d->absorb == false || isVisible() == false
         ||
-        d->drag == false || d->drag->filterChildren() == false)
+        d->drag == nullptr || d->drag->filterChildren() == false)
     {
         return WDeclarativeItem::sceneEventFilter(item, event);
     }

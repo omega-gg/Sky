@@ -29,6 +29,7 @@
 
 // Boost includes
 #include <boost/bind.hpp>
+#include <boost/function.hpp>
 
 // Sk includes
 #include <WControllerFile>
@@ -179,7 +180,8 @@ void WTorrentEnginePrivate::events()
 
             QCoreApplication::postEvent(q, new WTorrentEngineValue(EventPiece,
                                                                    hash_value(event->handle),
-                                                                   event->piece_index));
+                                                                   // Clang can't figure out how to convert a libtorrent piece_index_t into a QVariant, so we help it out, with an explicit cast.
+                                                                   (std::int32_t)event->piece_index));
         }
         else if (type == torrent_removed_alert::alert_type)
         {
@@ -353,7 +355,7 @@ WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
 
         QByteArray array = variants.at(0).toByteArray();
 
-        boost::shared_ptr<torrent_info> info(new torrent_info(array, array.size()));
+        std::shared_ptr<torrent_info> info(new torrent_info(array, array.size()));
 
         add_torrent_params params;
 
