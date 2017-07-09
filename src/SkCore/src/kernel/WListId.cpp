@@ -22,10 +22,8 @@
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-int WListId::generateId()
+int WListId::generateId(int id)
 {
-    int id = 1;
-
     for (int i = 0; i < count(); i++)
     {
         if (at(i) > id)

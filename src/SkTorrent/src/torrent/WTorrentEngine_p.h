@@ -64,7 +64,7 @@ struct WTorrentData
     int block;
     int blockCount;
 
-    qint64 progress;
+    qint64 buffer;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -78,12 +78,13 @@ public: // Enums
     {
         EventCreate = QEvent::User,
         EventAdd,
+        EventSeek,
         EventRemove,
         EventRemoved,
         EventState,
         EventProgress,
-        EventBlock,
         EventPiece,
+        EventBlock,
         EventFinished,
         EventError,
         EventClear
@@ -95,6 +96,13 @@ public:
     void init(QThread * thread);
 
 public: // Functions
+    void prioritize(WTorrentData * data, qint64 position);
+
+    void applyBlock(WTorrentData * data, int piece, int block);
+    void applyPiece(WTorrentData * data, int piece);
+
+    void applyBuffer(WTorrentData * data, qint64 buffer);
+
     WTorrentData * getTorrentData(WTorrent * torrent) const;
 
 public: // Events

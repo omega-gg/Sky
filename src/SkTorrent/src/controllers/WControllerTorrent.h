@@ -55,7 +55,7 @@ public: // Enums
     {
         EventAdd = QEvent::User,
         EventProgress,
-        EventPiece,
+        EventBuffer,
         EventFinished,
         EventError
     };
@@ -80,10 +80,10 @@ public: // Properties
 
     QStringList paths() const;
 
-    qint64 size    () const;
-    qint64 progress() const;
+    qint64 size() const;
 
-    QBitArray pieces() const;
+    qint64 progress() const;
+    qint64 buffer  () const;
 
     int download() const;
     int upload  () const;
@@ -108,9 +108,9 @@ private: // Variables
     QStringList _paths;
 
     qint64 _size;
-    qint64 _progress;
 
-    QBitArray _pieces;
+    qint64 _progress;
+    qint64 _buffer;
 
     int _download;
     int _upload;
@@ -143,8 +143,7 @@ signals:
     void loaded(WTorrentReply * reply);
 
     void progress(qint64 bytesReceived, qint64 bytesTotal);
-
-    void pieceReady(int index);
+    void buffer  (qint64 bytesReceived);
 
 public: // Properties
     WTorrent * torrent() const;
@@ -248,6 +247,8 @@ class SK_TORRENT_EXPORT WControllerTorrent : public WController
 
     Q_PROPERTY(QString pathStorage READ pathStorage NOTIFY pathStorageChanged)
 
+    Q_PROPERTY(int port READ port WRITE setPort NOTIFY portChanged)
+
 private:
     WControllerTorrent();
 
@@ -258,16 +259,24 @@ public: // Interface
 
     Q_INVOKABLE void clearTorrents();
 
+    Q_INVOKABLE int  registerPort  ();
+    Q_INVOKABLE void unregisterPort(int port);
+
 protected: // Initialize
     /* virtual */ void init();
 
 signals:
     void pathStorageChanged();
 
+    void portChanged();
+
 public: // Properties
     WTorrentEngine * engine() const;
 
     QString pathStorage() const;
+
+    int  port() const;
+    void setPort(int port);
 
 private:
     W_DECLARE_PRIVATE   (WControllerTorrent)

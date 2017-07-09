@@ -44,8 +44,7 @@ public:
     void init();
 
 public: // Functions
-    const WTrackNet * getTrackConst(int index) const;
-    WTrackNet       * getTrack     (int index);
+    WTrackNet * getTrack(int index);
 
     bool containsTrackPointer(WTrackNet * track) const;
 

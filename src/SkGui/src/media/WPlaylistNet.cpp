@@ -577,13 +577,6 @@ void WPlaylistNetPrivate::init() {}
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-const WTrackNet * WPlaylistNetPrivate::getTrackConst(int index) const
-{
-    if (index < 0 || index >= tracks.count()) return NULL;
-
-    return &(tracks[index]);
-}
-
 WTrackNet * WPlaylistNetPrivate::getTrack(int index)
 {
     if (index < 0 || index >= tracks.count()) return NULL;
@@ -1342,6 +1335,32 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
     if (track == NULL || track->feed() == feed) return;
 
     track->setFeed(feed);
+
+    updateTrack(index);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ int WPlaylistNet::trackDuration(int index) const
+{
+    const WAbstractTrack * track = trackPointerAt(index);
+
+    if (track)
+    {
+         return track->duration();
+    }
+    else return -1;
+}
+
+/* Q_INVOKABLE */ void WPlaylistNet::setTrackDuration(int index, int msec)
+{
+    Q_D(WPlaylistNet);
+
+    WTrackNet * track = d->getTrack(index);
+
+    if (track == NULL || track->duration() == msec) return;
+
+    track->setDuration(msec);
 
     updateTrack(index);
 }

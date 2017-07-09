@@ -199,23 +199,43 @@ void WDeclarativePlayerPrivate::loadSource(const QUrl & source, int duration, in
     {
         if (backendInterface && backendInterface == backend)
         {
+            bool playing = backend->isPlaying();
+
             backend->clear();
+
+            backendInterface = hook;
+
+            hook->loadSource(source, duration, currentTime);
+
+            if (playing) hook->play();
         }
+        else
+        {
+            backendInterface = hook;
 
-        backendInterface = hook;
-
-        hook->loadSource(source, duration, currentTime);
+            hook->loadSource(source, duration, currentTime);
+        }
     }
     else if (backend)
     {
         if (backendInterface && backendInterface == hook)
         {
+            bool playing = hook->backend()->isPlaying();
+
             hook->clear();
+
+            backendInterface = backend;
+
+            backend->loadSource(source, duration, currentTime);
+
+            if (playing) backend->play();
         }
+        else
+        {
+            backendInterface = backend;
 
-        backendInterface = backend;
-
-        backend->loadSource(source, duration, currentTime);
+            backend->loadSource(source, duration, currentTime);
+        }
     }
     else backendInterface = NULL;
 

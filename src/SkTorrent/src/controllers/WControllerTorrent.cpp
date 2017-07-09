@@ -36,6 +36,8 @@ W_INIT_CONTROLLER(WControllerTorrent)
 
 static const QString CONTROLLERTORRENT_PATH_TORRENTS = "/torrents";
 
+static const int CONTROLLERTORRENT_PORT = 8000;
+
 //=================================================================================================
 // WTorrent
 //=================================================================================================
@@ -65,8 +67,10 @@ WTorrent::WTorrent(const QUrl & url, Mode mode, QObject * parent) : QObject(pare
 
     _loaded = false;
 
-    _size     = 0;
+    _size = 0;
+
     _progress = 0;
+    _buffer   = 0;
 
     _download = 0;
     _upload   = 0;
@@ -89,10 +93,6 @@ WTorrent::WTorrent(const QUrl & url, Mode mode, QObject * parent) : QObject(pare
 
         _paths = eventTorrent->paths;
         _size  = eventTorrent->size;
-
-        _pieces = QBitArray(eventTorrent->pieces);
-
-        _pieces.fill(false);
 
         foreach (WTorrentReply * reply, _replies)
         {
@@ -125,17 +125,15 @@ WTorrent::WTorrent(const QUrl & url, Mode mode, QObject * parent) : QObject(pare
 
         return true;
     }
-    else if (type == static_cast<QEvent::Type> (EventPiece))
+    else if (type == static_cast<QEvent::Type> (EventBuffer))
     {
         WTorrentEventValue * eventTorrent = static_cast<WTorrentEventValue *> (event);
 
-        int index = eventTorrent->value.toInt();
-
-        _pieces.setBit(index);
+        _buffer = eventTorrent->value.toLongLong();
 
         foreach (WTorrentReply * reply, _replies)
         {
-            emit reply->pieceReady(index);
+            emit reply->buffer(_buffer);
         }
 
         return true;
@@ -235,13 +233,6 @@ qint64 WTorrent::progress() const
 
 //-------------------------------------------------------------------------------------------------
 
-QBitArray WTorrent::pieces() const
-{
-    return _pieces;
-}
-
-//-------------------------------------------------------------------------------------------------
-
 int WTorrent::download() const
 {
     return _download;
@@ -332,7 +323,11 @@ void WControllerTorrentPrivate::init()
 {
     Q_Q(WControllerTorrent);
 
+    qRegisterMetaType<WTorrent *>("WTorrent *");
+
     thread = new QThread(q);
+
+    port = CONTROLLERTORRENT_PORT;
 
     thread->start();
 
@@ -530,6 +525,22 @@ WControllerTorrent::WControllerTorrent() : WController(new WControllerTorrentPri
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ int WControllerTorrent::registerPort()
+{
+    Q_D(WControllerTorrent);
+
+    return d->ports.generateId(d->port);
+}
+
+/* Q_INVOKABLE */ void WControllerTorrent::unregisterPort(int port)
+{
+    Q_D(WControllerTorrent);
+
+    d->ports.removeOne(port);
+}
+
+//-------------------------------------------------------------------------------------------------
 // Initialize
 //-------------------------------------------------------------------------------------------------
 
@@ -552,6 +563,24 @@ WTorrentEngine * WControllerTorrent::engine() const
 QString WControllerTorrent::pathStorage() const
 {
     return wControllerFile->pathStorage() + CONTROLLERTORRENT_PATH_TORRENTS;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+int WControllerTorrent::port() const
+{
+    Q_D(const WControllerTorrent); return d->port;
+}
+
+void WControllerTorrent::setPort(int port)
+{
+    Q_D(WControllerTorrent);
+
+    if (d->port == port) return;
+
+    port = port;
+
+    emit portChanged();
 }
 
 #endif // SK_NO_CONTROLLERTORRENT

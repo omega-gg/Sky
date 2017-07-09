@@ -124,6 +124,9 @@ public: // Interface
     Q_INVOKABLE QString trackFeed   (int index) const;
     Q_INVOKABLE void    setTrackFeed(int index, const QString & feed);
 
+    Q_INVOKABLE int  trackDuration   (int index) const;
+    Q_INVOKABLE void setTrackDuration(int index, int msec);
+
     //---------------------------------------------------------------------------------------------
     // QML
 

@@ -26,7 +26,7 @@
 class SK_CORE_EXPORT WListId : public QList<int>
 {
 public: // Interface
-    int generateId();
+    int generateId(int id = 1);
 
     bool insertId(int id);
 };

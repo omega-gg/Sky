@@ -48,9 +48,6 @@ public: // WBackendFilter reimplementation
     /* virtual */ void filterState    (WAbstractBackend::State     * state);
     /* virtual */ void filterStateLoad(WAbstractBackend::StateLoad * stateLoad);
 
-    /* virtual */ void filterCurrentTime(int * msec);
-    /* virtual */ void filterDuration   (int * msec);
-
 protected: // WAbstractHook implementation
     /* virtual */ bool hookCheckSource(const QUrl & url);
 
@@ -60,7 +57,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onAdded ())
     Q_PRIVATE_SLOT(d_func(), void onLoaded())
 
-    Q_PRIVATE_SLOT(d_func(), void onProgress(qint64))
+    Q_PRIVATE_SLOT(d_func(), void onBuffer(qint64))
 };
 
 #include <private/WHookTorrent_p>
