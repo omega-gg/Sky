@@ -97,7 +97,7 @@ protected: // Functions
     //---------------------------------------------------------------------------------------------
     // Backend virtual functions
 
-    void backendSeekTo(int msec);
+    void backendSeek(int msec);
 
     void backendSetSpeed(qreal speed);
 

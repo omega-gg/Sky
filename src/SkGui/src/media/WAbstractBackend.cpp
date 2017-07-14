@@ -288,7 +288,7 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
     d->currentTime = msec;
 
-    if (d->started) backendSeekTo(msec);
+    if (d->started) backendSeek(msec);
 
     emit currentTimeChanged();
 }
@@ -460,9 +460,9 @@ void WAbstractBackend::deleteNow()
 // Protected virtual functions
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WAbstractBackend::backendSeekTo(int)
+/* virtual */ void WAbstractBackend::backendSeek(int)
 {
-    qWarning("WAbstractBackend::backendSeekTo: SeekTo is not supported.");
+    qWarning("WAbstractBackend::backendSeek: Seek is not supported.");
 }
 
 //-------------------------------------------------------------------------------------------------

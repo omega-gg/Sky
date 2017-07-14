@@ -907,7 +907,7 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 
             d->methodStart.invoke(d->thread);
 
-            backendSeekTo(d->currentTime);
+            backendSeek(d->currentTime);
 
             setProgress(1.0);
         }

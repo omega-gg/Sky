@@ -41,12 +41,12 @@ public: // Enums
     enum EventType
     {
         EventCreate = QEvent::User,
-        EventBackend,   // WVlcPlayerEventBackend
-        EventSource, // WVlcPlayerEvent QUrl
+        EventBackend, // WVlcPlayerEventBackend
+        EventSource,  // WVlcPlayerEvent QUrl
         EventPlay,
         EventPause,
         EventStop,
-        EventSeekTo,    // WVlcPlayerEvent int
+        EventSeek,   // WVlcPlayerEvent int
         EventSpeed,  // WVlcPlayerEvent qreal
         EventVolume, // WVlcPlayerEvent int
         EventDelete

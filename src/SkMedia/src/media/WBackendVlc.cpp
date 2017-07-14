@@ -1142,7 +1142,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 // Protected WAbstractBackend reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WBackendVlc::backendSeekTo(int msec)
+/* virtual */ void WBackendVlc::backendSeek(int msec)
 {
     Q_D(WBackendVlc);
 

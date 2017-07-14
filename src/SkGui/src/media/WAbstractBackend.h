@@ -221,7 +221,7 @@ protected: // Abstract functions
     virtual bool backendDelete() = 0;
 
 protected: // Virtual functions
-    virtual void backendSeekTo(int msec); /* {} */
+    virtual void backendSeek(int msec); /* {} */
 
     virtual void backendSetSpeed(qreal speed); /* {} */
 

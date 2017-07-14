@@ -53,7 +53,7 @@ protected: // WAbstractBackend implementation
     /* virtual */ bool backendDelete();
 
 protected: // WAbstractBackend reimplementation
-    /* virtual */ void backendSeekTo(int msec);
+    /* virtual */ void backendSeek(int msec);
 
     /* virtual */ void backendSetSpeed(qreal speed);
 
