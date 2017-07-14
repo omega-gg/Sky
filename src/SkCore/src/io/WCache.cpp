@@ -37,6 +37,8 @@
 static const int CACHE_MAX_JOBS     = 20;
 static const int CACHE_MAX_REDIRECT = 16;
 
+static const int CACHE_INTERVAL = 1000;
+
 //=================================================================================================
 // WCacheJob
 //=================================================================================================
@@ -98,10 +100,10 @@ public: // Enums
         EventPop,
         EventRemove,
         EventRemoveFile,
-        EventSetProxy,
+        EventProxy,
         EventClearProxy,
-        EventSetSizeMax,
-        EventSetMaxJobs,
+        EventSizeMax,
+        EventMaxJobs,
         EventClearDatas,
         EventClearAll
     };
@@ -245,7 +247,7 @@ class WCacheThreadEventProxy : public QEvent
 {
 public:
     WCacheThreadEventProxy(const QString & host, int port, const QString & password)
-        : QEvent(static_cast<QEvent::Type> (WCacheThread::EventSetProxy))
+        : QEvent(static_cast<QEvent::Type> (WCacheThread::EventProxy))
     {
         this->host = host;
         this->port = port;
@@ -416,7 +418,7 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 
     timer = new QTimer(this);
 
-    timer->setInterval(1000);
+    timer->setInterval(CACHE_INTERVAL);
 
     timer->setSingleShot(true);
 
@@ -599,7 +601,7 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 
         return true;
     }
-    else if (type == static_cast<QEvent::Type> (WCacheThread::EventSetProxy))
+    else if (type == static_cast<QEvent::Type> (WCacheThread::EventProxy))
     {
         WCacheThreadEventProxy * eventProxy = static_cast<WCacheThreadEventProxy *> (event);
 
@@ -616,7 +618,7 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 
         return true;
     }
-    else if (type == static_cast<QEvent::Type> (WCacheThread::EventSetSizeMax))
+    else if (type == static_cast<QEvent::Type> (WCacheThread::EventSizeMax))
     {
         WCacheThreadEvent * eventCache = static_cast<WCacheThreadEvent *> (event);
 
@@ -626,7 +628,7 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 
         return true;
     }
-    else if (type == static_cast<QEvent::Type> (WCacheThread::EventSetMaxJobs))
+    else if (type == static_cast<QEvent::Type> (WCacheThread::EventMaxJobs))
     {
         WCacheThreadEvent * eventCache = static_cast<WCacheThreadEvent *> (event);
 
@@ -737,20 +739,20 @@ void WCacheThread::load()
 
         QString extension;
 
-        qint64 sizeFile;
+        qint64 size;
 
-        stream >> id >> url >> extension >> sizeFile;
+        stream >> id >> url >> extension >> size;
 
         QUrl urlCache = pathFile + QString::number(id) + '.' + extension;
 
-        addData(id, url, urlCache, extension, sizeFile);
+        addData(id, url, urlCache, extension, size);
 
         ids.insertId(id);
 
         urls     .append(url);
         urlsCache.append(urlCache);
 
-        size += sizeFile;
+        this->size += size;
 
         count--;
     }
@@ -759,14 +761,15 @@ void WCacheThread::load()
 
     QCoreApplication::postEvent(cache,
                                 new WCacheEventUrls(WCachePrivate::EventLoaded, urls, urlsCache));
+
+    cleanFiles();
 }
 
 void WCacheThread::save()
 {
-    if (timer->isActive() == false)
-    {
-        timer->start();
-    }
+    if (timer->isActive()) return;
+
+    timer->start();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -850,9 +853,9 @@ bool WCacheThread::writeFile(QNetworkReply * reply, WCacheJob * job)
         return false;
     }
 
-    qint64 sizeFile = reply->size();
+    qint64 size = reply->size();
 
-    if (sizeFile >= sizeMax)
+    if (size >= sizeMax)
     {
         qWarning("WCacheThread::writeFile: File is too large %s.", url.C_URL);
 
@@ -861,7 +864,7 @@ bool WCacheThread::writeFile(QNetworkReply * reply, WCacheJob * job)
         return false;
     }
 
-    size += sizeFile;
+    this->size += size;
 
     cleanFiles();
 
@@ -886,7 +889,7 @@ bool WCacheThread::writeFile(QNetworkReply * reply, WCacheJob * job)
 
     file.close();
 
-    addData(id, url, urlCache, extension, sizeFile);
+    addData(id, url, urlCache, extension, size);
 
     toRemove.remove(urlCache);
 
@@ -901,9 +904,9 @@ bool WCacheThread::writeFile(QNetworkReply * reply, WCacheJob * job)
 
 void WCacheThread::writeData(const QUrl & url, const QByteArray & array)
 {
-    qint64 sizeFile = array.size() * sizeof(char);
+    qint64 size = array.size() * sizeof(char);
 
-    if (sizeFile >= sizeMax)
+    if (size >= sizeMax)
     {
         qWarning("WCacheThread::writeData: Data is too large %s.", url.C_URL);
 
@@ -912,7 +915,7 @@ void WCacheThread::writeData(const QUrl & url, const QByteArray & array)
         return;
     }
 
-    size += sizeFile;
+    this->size += size;
 
     cleanFiles();
 
@@ -939,7 +942,7 @@ void WCacheThread::writeData(const QUrl & url, const QByteArray & array)
 
     file.close();
 
-    addData(id, url, urlCache, extension, sizeFile);
+    addData(id, url, urlCache, extension, size);
 
     toRemove.remove(urlCache);
 
@@ -1875,8 +1878,7 @@ void WCache::setSizeMax(qint64 max)
 
     d->sizeMax = max;
 
-    QCoreApplication::postEvent(d->thread,
-                                new WCacheThreadEvent(WCacheThread::EventSetSizeMax, max));
+    QCoreApplication::postEvent(d->thread, new WCacheThreadEvent(WCacheThread::EventSizeMax, max));
 
     emit sizeMaxChanged();
 }
@@ -1896,8 +1898,7 @@ void WCache::setMaxJobs(int max)
 
     d->maxJobs = max;
 
-    QCoreApplication::postEvent(d->thread,
-                                new WCacheThreadEvent(WCacheThread::EventSetMaxJobs, max));
+    QCoreApplication::postEvent(d->thread, new WCacheThreadEvent(WCacheThread::EventMaxJobs, max));
 
     emit maxJobsChanged();
 }

@@ -41,9 +41,13 @@ struct WTorrentData
 {
     int id;
 
+    QUrl url;
+
     WTorrent::Mode mode;
 
     QString path;
+
+    QString fileName;
 
     WTorrent * torrent;
 
@@ -68,6 +72,19 @@ struct WTorrentData
 };
 
 //-------------------------------------------------------------------------------------------------
+// WTorrentSource
+//-------------------------------------------------------------------------------------------------
+
+struct WTorrentSource
+{
+    int id;
+
+    QUrl url;
+
+    qint64 size;
+};
+
+//-------------------------------------------------------------------------------------------------
 // WTorrentEnginePrivate
 //-------------------------------------------------------------------------------------------------
 
@@ -80,6 +97,7 @@ public: // Enums
         EventAdd,
         EventSeek,
         EventRemove,
+        EventSaved,
         EventRemoved,
         EventState,
         EventProgress,
@@ -87,15 +105,25 @@ public: // Enums
         EventBlock,
         EventFinished,
         EventError,
+        EventSizeMax,
         EventClear
     };
 
 public:
     WTorrentEnginePrivate(WTorrentEngine * p);
 
-    void init(QThread * thread);
+    void init(const QString & path, qint64 sizeMax, QThread * thread);
 
 public: // Functions
+    void load();
+    void save();
+
+    int generateId(const QUrl & url);
+
+    bool addToCache(WTorrentData * data);
+
+    bool cleanCache();
+
     void prioritize(WTorrentData * data, qint64 position);
 
     void applyBlock(WTorrentData * data, int piece, int block);
@@ -114,20 +142,50 @@ public: // Slots
     void onDeleteFolder();
     void onDeleteId    ();
 
+    void onSave();
+
 public: // Variables
     session * session;
+
+    QString path;
+    QString pathIndex;
+
+    qint64 size;
+    qint64 sizeMax;
+
+    qint64 maximum;
 
     QHash<unsigned int, WTorrentData *> torrents;
 
     WListId ids;
 
+    QList<WTorrentSource *> sources;
+
     QList<QString> deletePaths;
     QList<int>     deleteIds;
 
-    QTimer timer;
+    QTimer * timerUpdate;
+    QTimer * timerSave;
 
 protected:
     W_DECLARE_PUBLIC(WTorrentEngine)
+};
+
+//-------------------------------------------------------------------------------------------------
+// WTorrentEngineEvent
+//-------------------------------------------------------------------------------------------------
+
+class WTorrentEngineEvent : public QEvent
+{
+public:
+    WTorrentEngineEvent(WTorrentEnginePrivate::EventType type, const QVariant & value)
+        : QEvent(static_cast<QEvent::Type> (type))
+    {
+        this->value = value;
+    }
+
+public: // Variables
+    QVariant value;
 };
 
 //-------------------------------------------------------------------------------------------------

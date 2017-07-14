@@ -1156,11 +1156,11 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 // Protected WAbstractBackend reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WBackendVlc::backendSeekTo(int msec)
+/* virtual */ void WBackendVlc::backendSeek(int msec)
 {
     Q_D(WBackendVlc);
 
-    d->player->seekTo(msec);
+    d->player->seek(msec);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1641,6 +1641,11 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
         int time = eventPlayer->value.toInt();
 
         setCurrentTime(time);
+
+        if (time > d->duration)
+        {
+            setDuration(time);
+        }
 
         setStateLoad(StateLoadDefault);
 

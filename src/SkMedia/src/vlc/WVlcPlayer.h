@@ -80,7 +80,7 @@ public: // Interface
     Q_INVOKABLE void pause();
     Q_INVOKABLE void stop ();
 
-    Q_INVOKABLE void seekTo(int msec);
+    Q_INVOKABLE void seek(int msec);
 
     Q_INVOKABLE void setSpeed(qreal speed);
 

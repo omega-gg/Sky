@@ -45,7 +45,7 @@ public:
 
     /* virtual */ ~WControllerTorrentPrivate();
 
-    void init();
+    void init(const QString & path, qint64 sizeMax);
 
 public: // Functions
     void loadTorrent(WTorrentReply * reply, const QUrl & url, WTorrent::Mode mode);

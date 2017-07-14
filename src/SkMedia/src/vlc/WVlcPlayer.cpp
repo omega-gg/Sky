@@ -227,9 +227,9 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WVlcPlayer::seekTo(int msec)
+/* Q_INVOKABLE */ void WVlcPlayer::seek(int msec)
 {
-    QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventSeekTo,
+    QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventSeek,
                                                                  msec));
 }
 
@@ -237,7 +237,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
 /* Q_INVOKABLE */ void WVlcPlayer::setSpeed(qreal speed)
 {
-    QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventSetSpeed,
+    QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventSpeed,
                                                                  speed));
 }
 
@@ -245,7 +245,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
 /* Q_INVOKABLE */ void WVlcPlayer::setVolume(int percent)
 {
-    QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventSetVolume,
+    QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventVolume,
                                                                  percent));
 }
 
@@ -354,7 +354,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
         return true;
     }
-    else if (type == static_cast<QEvent::Type> (WVlcPlayerPrivate::EventSetSource))
+    else if (type == static_cast<QEvent::Type> (WVlcPlayerPrivate::EventSource))
     {
         WVlcPlayerEventSource * eventSource = static_cast<WVlcPlayerEventSource *> (event);
 
@@ -453,7 +453,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
         return true;
     }
-    else if (type == static_cast<QEvent::Type> (WVlcPlayerPrivate::EventSeekTo))
+    else if (type == static_cast<QEvent::Type> (WVlcPlayerPrivate::EventSeek))
     {
         WVlcPlayerPrivateEvent * eventPlayer = static_cast<WVlcPlayerPrivateEvent *> (event);
 
@@ -461,7 +461,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
         return true;
     }
-    else if (type == static_cast<QEvent::Type> (WVlcPlayerPrivate::EventSetSpeed))
+    else if (type == static_cast<QEvent::Type> (WVlcPlayerPrivate::EventSpeed))
     {
         WVlcPlayerPrivateEvent * eventPlayer = static_cast<WVlcPlayerPrivateEvent *> (event);
 
@@ -469,7 +469,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
         return true;
     }
-    else if (type == static_cast<QEvent::Type> (WVlcPlayerPrivate::EventSetVolume))
+    else if (type == static_cast<QEvent::Type> (WVlcPlayerPrivate::EventVolume))
     {
         WVlcPlayerPrivateEvent * eventPlayer = static_cast<WVlcPlayerPrivateEvent *> (event);
 

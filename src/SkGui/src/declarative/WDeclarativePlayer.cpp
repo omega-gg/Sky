@@ -610,7 +610,7 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 
         if (d->backend->isStopped())
         {
-            d->backendInterface->seekTo(d->tab->currentTime());
+            d->backendInterface->seek(d->tab->currentTime());
         }
     }
 
@@ -665,11 +665,11 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WDeclarativePlayer::seekTo(int msec)
+/* Q_INVOKABLE */ void WDeclarativePlayer::seek(int msec)
 {
     Q_D(WDeclarativePlayer);
 
-    if (d->backend) d->backendInterface->seekTo(msec);
+    if (d->backend) d->backendInterface->seek(msec);
 }
 
 //-------------------------------------------------------------------------------------------------

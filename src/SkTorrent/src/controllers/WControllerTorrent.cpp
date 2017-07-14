@@ -34,8 +34,6 @@ W_INIT_CONTROLLER(WControllerTorrent)
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const QString CONTROLLERTORRENT_PATH_TORRENTS = "/torrents";
-
 static const int CONTROLLERTORRENT_PORT = 8000;
 
 //=================================================================================================
@@ -319,7 +317,7 @@ WControllerTorrentPrivate::WControllerTorrentPrivate(WControllerTorrent * p)
     W_CLEAR_CONTROLLER(WControllerTorrent);
 }
 
-void WControllerTorrentPrivate::init()
+void WControllerTorrentPrivate::init(const QString & path, qint64 sizeMax)
 {
     Q_Q(WControllerTorrent);
 
@@ -331,10 +329,7 @@ void WControllerTorrentPrivate::init()
 
     thread->start();
 
-    engine = new WTorrentEngine(thread);
-
-    QObject::connect(wControllerFile, SIGNAL(pathStorageChanged()),
-                     q,               SIGNAL(pathStorageChanged()));
+    engine = new WTorrentEngine(path, sizeMax, thread);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -460,8 +455,7 @@ void WControllerTorrentPrivate::onLoaded(WRemoteData * data)
     {
         downloads.push_back(torrent);
 
-        engine->load(torrent, data->readAll(),
-                     wControllerFile->pathStorage() + CONTROLLERTORRENT_PATH_TORRENTS);
+        engine->load(torrent, data->readAll());
     }
 
     delete data;
@@ -544,9 +538,17 @@ WControllerTorrent::WControllerTorrent() : WController(new WControllerTorrentPri
 // Initialize
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WControllerTorrent::init()
+/* virtual */ void WControllerTorrent::initController(const QString & path, qint64 sizeMax)
 {
-    Q_D(WControllerTorrent); d->init();
+    Q_D(WControllerTorrent);
+
+    if (d->created == false)
+    {
+        d->created = true;
+
+        d->init(path, sizeMax);
+    }
+    else qWarning("WControllerTorrent::initController: Controller is already initialized.");
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -556,13 +558,6 @@ WControllerTorrent::WControllerTorrent() : WController(new WControllerTorrentPri
 WTorrentEngine * WControllerTorrent::engine() const
 {
     Q_D(const WControllerTorrent); return d->engine;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-QString WControllerTorrent::pathStorage() const
-{
-    return wControllerFile->pathStorage() + CONTROLLERTORRENT_PATH_TORRENTS;
 }
 
 //-------------------------------------------------------------------------------------------------

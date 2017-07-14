@@ -228,7 +228,7 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
         emit sourceChanged();
     }
-    else seekTo(currentTime);
+    else seek(currentTime);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -280,7 +280,7 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ void WAbstractBackend::seekTo(int msec)
+/* Q_INVOKABLE virtual */ void WAbstractBackend::seek(int msec)
 {
     Q_D(WAbstractBackend);
 
@@ -288,7 +288,7 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
     d->currentTime = msec;
 
-    if (d->started) backendSeekTo(msec);
+    if (d->started) backendSeek(msec);
 
     emit currentTimeChanged();
 }
@@ -460,9 +460,9 @@ void WAbstractBackend::deleteNow()
 // Protected virtual functions
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WAbstractBackend::backendSeekTo(int)
+/* virtual */ void WAbstractBackend::backendSeek(int)
 {
-    qWarning("WAbstractBackend::backendSeekTo: SeekTo is not supported.");
+    qWarning("WAbstractBackend::backendSeek: Seek is not supported.");
 }
 
 //-------------------------------------------------------------------------------------------------

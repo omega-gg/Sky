@@ -152,9 +152,9 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p, WAbstractBackend * backen
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ void WAbstractHook::seekTo(int msec)
+/* Q_INVOKABLE virtual */ void WAbstractHook::seek(int msec)
 {
-    Q_D(WAbstractHook); d->backend->seekTo(msec);
+    Q_D(WAbstractHook); d->backend->seek(msec);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -295,9 +295,9 @@ bool WAbstractHook::backendDelete()
 //-------------------------------------------------------------------------------------------------
 // Backend virtual functions
 
-void WAbstractHook::backendSeekTo(int msec)
+void WAbstractHook::backendSeek(int msec)
 {
-    Q_D(WAbstractHook); d->backend->backendSeekTo(msec);
+    Q_D(WAbstractHook); d->backend->backendSeek(msec);
 }
 
 void WAbstractHook::backendSetSpeed(qreal speed)

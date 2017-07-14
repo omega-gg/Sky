@@ -65,7 +65,7 @@ WController::WController(WControllerPrivate * p) : QObject(), WPrivatable(p)
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-void WController::initController()
+/* virtual */ void WController::initController()
 {
     Q_D(WController);
 
@@ -76,6 +76,13 @@ void WController::initController()
         init();
     }
     else qWarning("WController::initController: Controller is already initialized.");
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WController::isCreated()
+{
+    Q_D(WController); return d->created;
 }
 
 //-------------------------------------------------------------------------------------------------
