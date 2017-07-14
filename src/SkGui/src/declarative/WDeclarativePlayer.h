@@ -135,7 +135,7 @@ public: // Interface
 
     Q_INVOKABLE void togglePlay();
 
-    Q_INVOKABLE void seekTo(int msec);
+    Q_INVOKABLE void seek(int msec);
 
     Q_INVOKABLE void setPreviousTrack();
     Q_INVOKABLE void setNextTrack    ();

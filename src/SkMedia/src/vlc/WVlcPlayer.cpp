@@ -227,7 +227,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WVlcPlayer::seekTo(int msec)
+/* Q_INVOKABLE */ void WVlcPlayer::seek(int msec)
 {
     QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventSeekTo,
                                                                  msec));

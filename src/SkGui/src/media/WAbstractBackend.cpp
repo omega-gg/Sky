@@ -228,7 +228,7 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
         emit sourceChanged();
     }
-    else seekTo(currentTime);
+    else seek(currentTime);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -280,7 +280,7 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ void WAbstractBackend::seekTo(int msec)
+/* Q_INVOKABLE virtual */ void WAbstractBackend::seek(int msec)
 {
     Q_D(WAbstractBackend);
 

@@ -81,7 +81,7 @@ Player
         pPlay();
     }
 
-    onTimeAChanged: if (pReady) seekTo(timeA)
+    onTimeAChanged: if (pReady) seek(timeA)
 
     onCurrentTimeChanged:
     {
@@ -89,7 +89,7 @@ Player
         {
             if (timeB == -1 || currentTime < timeB) return;
 
-            seekTo(timeA);
+            seek(timeA);
         }
         else if (timeB != -1)
         {
@@ -134,9 +134,9 @@ Player
 
         onPlay: togglePlay()
 
-        onBackward: seekTo(Math.max(0, currentTime - sp.slidePlayer_interval))
+        onBackward: seek(Math.max(0, currentTime - sp.slidePlayer_interval))
 
-        onForward: seekTo(Math.min(currentTime + sp.slidePlayer_interval, duration))
+        onForward: seek(Math.min(currentTime + sp.slidePlayer_interval, duration))
     }
 
     //---------------------------------------------------------------------------------------------
@@ -174,7 +174,7 @@ Player
 
     function pPlay()
     {
-        seekTo(timeA);
+        seek(timeA);
 
         play();
 

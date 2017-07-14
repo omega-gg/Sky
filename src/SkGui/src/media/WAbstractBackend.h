@@ -55,7 +55,7 @@ public:
     virtual void stop () = 0;
     virtual void clear() = 0;
 
-    virtual void seekTo(int msec) = 0;
+    virtual void seek(int msec) = 0;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -191,7 +191,7 @@ public: // WBackendInterface implementation
     Q_INVOKABLE /* virtual */ void stop ();
     Q_INVOKABLE /* virtual */ void clear();
 
-    Q_INVOKABLE /* virtual */ void seekTo(int msec);
+    Q_INVOKABLE /* virtual */ void seek(int msec);
 
 protected: // Functions
     void setState    (State     state);

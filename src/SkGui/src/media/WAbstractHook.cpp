@@ -152,9 +152,9 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p, WAbstractBackend * backen
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ void WAbstractHook::seekTo(int msec)
+/* Q_INVOKABLE virtual */ void WAbstractHook::seek(int msec)
 {
-    Q_D(WAbstractHook); d->backend->seekTo(msec);
+    Q_D(WAbstractHook); d->backend->seek(msec);
 }
 
 //-------------------------------------------------------------------------------------------------

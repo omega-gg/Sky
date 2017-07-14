@@ -56,7 +56,7 @@ public: // WBackendInterface implementation
     Q_INVOKABLE /* virtual */ void stop ();
     Q_INVOKABLE /* virtual */ void clear();
 
-    Q_INVOKABLE /* virtual */ void seekTo(int msec);
+    Q_INVOKABLE /* virtual */ void seek(int msec);
 
 protected: // Functions
     void setFilterActive(bool active);

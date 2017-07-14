@@ -1146,7 +1146,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 {
     Q_D(WBackendVlc);
 
-    d->player->seekTo(msec);
+    d->player->seek(msec);
 }
 
 //-------------------------------------------------------------------------------------------------

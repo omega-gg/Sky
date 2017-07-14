@@ -753,7 +753,7 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
             d->play();
         }
     }
-    else seekTo(currentTime);
+    else seek(currentTime);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -839,7 +839,7 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ void WHookTorrent::seekTo(int msec)
+/* Q_INVOKABLE virtual */ void WHookTorrent::seek(int msec)
 {
     Q_D(WHookTorrent);
 
@@ -847,7 +847,7 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
     {
         setCurrentTime(msec);
     }
-    else d->backend->seekTo(msec);
+    else d->backend->seek(msec);
 }
 
 //-------------------------------------------------------------------------------------------------
