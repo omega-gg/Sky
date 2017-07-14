@@ -25,6 +25,7 @@
 // Sk includes
 #include <WControllerFile>
 #include <WControllerNetwork>
+#include <WControllerPlaylist>
 #include <WControllerTorrent>
 #include <WTorrentEngine>
 
@@ -36,17 +37,15 @@ class WTorrentSocket;
 
 static const int HOOKTORRENT_MINIMUM_SIZE = 1048576; // 1 megabyte
 
-static const int HOOKTORRENT_START =  100; // 0.1 percent
-
-static const int HOOKTORRENT_BUFFER = 1000; // 1 second
-
-static const int HOOKTORRENT_DEFAULT_RATE = 3600000; // 1 hour
+static const int HOOKTORRENT_START = 100; // 0.1 percent
 
 //-------------------------------------------------------------------------------------------------
 
 static const int HOOKTORRENT_SOCKET_SIZE = 1048576; // 1 megabyte
 
 static const int HOOKTORRENT_SOCKET_BUFFER = HOOKTORRENT_SOCKET_SIZE / 4;
+
+static const int HOOKTORRENT_SOCKET_SKIP = 1024; // 1 kilobyte
 
 static const int HOOKTORRENT_SOCKET_INTERVAL = 20;
 
@@ -91,6 +90,7 @@ private:
     qint64 position;
 
     bool started;
+    bool seeking;
 
     int port;
 
@@ -110,8 +110,6 @@ public:
     WTorrentSocket(WTorrentThread * thread, QTcpSocket * socket);
 
 private: // Functions
-    void applyPosition();
-
     void writeBuffer(int length);
 
 private slots:
@@ -125,6 +123,8 @@ private:
     QString buffer;
 
     qint64 position;
+
+    bool skip;
 
     QTimer timer;
 
@@ -143,6 +143,10 @@ WTorrentSocket::WTorrentSocket(WTorrentThread * thread, QTcpSocket * socket) : Q
 
     position = 0;
 
+    skip = false;
+
+    timer.setInterval(HOOKTORRENT_SOCKET_INTERVAL);
+
     connect(socket, SIGNAL(readyRead()), this, SLOT(onRead()));
 
     connect(&timer, SIGNAL(timeout()), this, SLOT(onWrite()));
@@ -152,36 +156,15 @@ WTorrentSocket::WTorrentSocket(WTorrentThread * thread, QTcpSocket * socket) : Q
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WTorrentSocket::applyPosition()
-{
-    int indexA = buffer.indexOf("Range: bytes=");
-
-    if (indexA != -1)
-    {
-        indexA += 13;
-
-        int indexB = buffer.indexOf('-', indexA);
-
-        if (indexB == -1)
-        {
-             position = 0;
-        }
-        else position = buffer.mid(indexA, indexB - indexA).toLongLong();
-    }
-    else position = 0;
-}
-
-//-------------------------------------------------------------------------------------------------
-
 void WTorrentSocket::writeBuffer(int length)
 {
-    timer.stop();
-
     QString buffer;
 
-    for (int i = 0; i < length; i++)
+    while (length)
     {
         buffer.append('0');
+
+        length--;
     }
 
     socket->write(buffer.toLatin1());
@@ -204,9 +187,21 @@ void WTorrentSocket::onRead()
     header.append("HTTP/1.1 206 Partial Content\r\n"
                   "Accept-Ranges: bytes\r\n");
 
-    applyPosition();
-
     qint64 size = thread->size;
+
+    int indexA = buffer.indexOf("Range: bytes=");
+
+    if (indexA != -1)
+    {
+        indexA += 13;
+
+        int indexB = buffer.indexOf('-', indexA);
+
+        if (indexB != -1)
+        {
+            position = buffer.mid(indexA, indexB - indexA).toLongLong();
+        }
+    }
 
     qint64 length = size - position;
 
@@ -225,27 +220,27 @@ void WTorrentSocket::onRead()
 
     if (thread->started == false)
     {
-        if (length < 64)
-        {
-            qDebug("SKIP METADATA");
-
-            writeBuffer(length);
-
-            return;
-        }
-        else if (progress < position)
+        if (progress + HOOKTORRENT_SOCKET_SIZE < position)
         {
             qDebug("SKIP DATA");
 
-            writeBuffer(1024);
+            writeBuffer(length);
+
+            if (length > HOOKTORRENT_SOCKET_SKIP)
+            {
+                skip = true;
+
+                timer.start();
+            }
+            else
+            {
+                skip = false;
+
+                timer.stop();
+            }
 
             return;
         }
-    }
-
-    if (thread->file->seek(position) == false)
-    {
-        qDebug("SEEK FAILED");
     }
 
     if (position < thread->position || progress < position)
@@ -255,14 +250,33 @@ void WTorrentSocket::onRead()
         timer.stop();
 
         thread->position = position;
+        thread->seeking  = true;
 
         thread->engine->seek(thread->torrent, position);
+
+        return;
     }
-    else onWrite();
+
+    if (position != thread->position)
+    {
+        thread->position = position;
+        thread->seeking  = true;
+    }
+
+    onWrite();
 }
 
 void WTorrentSocket::onWrite()
 {
+    if (skip)
+    {
+        writeBuffer(HOOKTORRENT_SOCKET_SIZE);
+
+        timer.start();
+
+        return;
+    }
+
     qint64 progress = thread->progress;
 
     qint64 buffer = progress - position;
@@ -272,6 +286,16 @@ void WTorrentSocket::onWrite()
         if (timer.isActive() == false)
         {
             qDebug("WRITE");
+        }
+
+        if (thread->seeking)
+        {
+            thread->seeking = false;
+
+            if (thread->file->seek(position) == false || thread->file->pos() != position)
+            {
+                qDebug("SEEK FAILED");
+            }
         }
 
         buffer -= HOOKTORRENT_SOCKET_BUFFER;
@@ -291,9 +315,10 @@ void WTorrentSocket::onWrite()
             socket->write(bytes);
 
             position += count;
-        }
 
-        timer.start(HOOKTORRENT_SOCKET_INTERVAL);
+            timer.start();
+        }
+        else timer.stop();
     }
     else
     {
@@ -307,6 +332,16 @@ void WTorrentSocket::onWrite()
         if (progress == size)
         {
             qDebug("END");
+
+            if (thread->seeking)
+            {
+                thread->seeking = false;
+
+                if (thread->file->seek(position) == false || thread->file->pos() != position)
+                {
+                    qDebug("SEEK FAILED");
+                }
+            }
 
             qint64 length = size - position;
 
@@ -323,20 +358,13 @@ void WTorrentSocket::onWrite()
                 position = size;
 
                 qDebug("END ! %d", thread->file->atEnd());
-
-                return;
             }
-
-            if (count)
+            else if (count)
             {
                 qDebug("END INCOMPLETE");
-
-                socket->write(bytes);
-
-                position += count;
             }
 
-            timer.start(HOOKTORRENT_SOCKET_INTERVAL);
+            timer.stop();
         }
         else timer.stop();
     }
@@ -403,6 +431,7 @@ void WTorrentThread::onFile(WTorrent * torrent, const QString & fileName, qint64
     position = 0;
 
     started = false;
+    seeking = false;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -565,6 +594,11 @@ void WHookTorrentPrivate::start()
     q->backendPlay();
 
     q->applyCurrentTime(currentTime);
+
+    if (WControllerPlaylist::urlIsAudio(fileName))
+    {
+        q->setOutputActive(WAbstractBackend::OutputAudio);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
