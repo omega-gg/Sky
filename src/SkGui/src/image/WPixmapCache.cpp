@@ -273,7 +273,7 @@ public:
     /* virtual */ ~WPixmapCacheStore();
 
 public: // Interface
-    bool addSize(qint64 sizeFile, const QString & path);
+    bool addSize(qint64 size, const QString & path);
 
     void deleteData(WPixmapCacheData * data);
 
@@ -437,11 +437,11 @@ WPixmapCacheStore::WPixmapCacheStore() : QObject()
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-bool WPixmapCacheStore::addSize(qint64 sizeFile, const QString & path)
+bool WPixmapCacheStore::addSize(qint64 size, const QString & path)
 {
-    if (sizeFile < sizeMax)
+    if (size < sizeMax)
     {
-        size += sizeFile;
+        this->size += size;
 
         cleanPixmaps();
 

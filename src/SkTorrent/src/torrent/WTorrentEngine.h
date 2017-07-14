@@ -33,6 +33,8 @@ class SK_TORRENT_EXPORT WTorrentEngine : public QObject, public WPrivatable
 {
     Q_OBJECT
 
+    Q_PROPERTY(qint64 sizeMax READ sizeMax WRITE setSizeMax NOTIFY sizeMaxChanged)
+
 public:
     WTorrentEngine(const QString & path, qint64    sizeMax = 1048576 * 1000, // 1 gigabyte
                                          QThread * thread  = NULL,
@@ -50,6 +52,13 @@ public: // Interface
 protected: // Events
     /* virtual */ bool event(QEvent * event);
 
+signals:
+    void sizeMaxChanged();
+
+public: // Properties
+    qint64 sizeMax() const;
+    void   setSizeMax(qint64 max);
+
 private:
     W_DECLARE_PRIVATE(WTorrentEngine)
 
@@ -57,6 +66,8 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void onDeleteFolder())
     Q_PRIVATE_SLOT(d_func(), void onDeleteId    ())
+
+    Q_PRIVATE_SLOT(d_func(), void onSave())
 };
 
 #include <private/WTorrentEngine_p>
