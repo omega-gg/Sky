@@ -98,10 +98,10 @@ public: // Enums
         EventPop,
         EventRemove,
         EventRemoveFile,
-        EventSetProxy,
+        EventProxy,
         EventClearProxy,
-        EventSetSizeMax,
-        EventSetMaxJobs,
+        EventSizeMax,
+        EventMaxJobs,
         EventClearDatas,
         EventClearAll
     };
@@ -245,7 +245,7 @@ class WCacheThreadEventProxy : public QEvent
 {
 public:
     WCacheThreadEventProxy(const QString & host, int port, const QString & password)
-        : QEvent(static_cast<QEvent::Type> (WCacheThread::EventSetProxy))
+        : QEvent(static_cast<QEvent::Type> (WCacheThread::EventProxy))
     {
         this->host = host;
         this->port = port;
@@ -599,7 +599,7 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 
         return true;
     }
-    else if (type == static_cast<QEvent::Type> (WCacheThread::EventSetProxy))
+    else if (type == static_cast<QEvent::Type> (WCacheThread::EventProxy))
     {
         WCacheThreadEventProxy * eventProxy = static_cast<WCacheThreadEventProxy *> (event);
 
@@ -616,7 +616,7 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 
         return true;
     }
-    else if (type == static_cast<QEvent::Type> (WCacheThread::EventSetSizeMax))
+    else if (type == static_cast<QEvent::Type> (WCacheThread::EventSizeMax))
     {
         WCacheThreadEvent * eventCache = static_cast<WCacheThreadEvent *> (event);
 
@@ -626,7 +626,7 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 
         return true;
     }
-    else if (type == static_cast<QEvent::Type> (WCacheThread::EventSetMaxJobs))
+    else if (type == static_cast<QEvent::Type> (WCacheThread::EventMaxJobs))
     {
         WCacheThreadEvent * eventCache = static_cast<WCacheThreadEvent *> (event);
 
@@ -1875,8 +1875,7 @@ void WCache::setSizeMax(qint64 max)
 
     d->sizeMax = max;
 
-    QCoreApplication::postEvent(d->thread,
-                                new WCacheThreadEvent(WCacheThread::EventSetSizeMax, max));
+    QCoreApplication::postEvent(d->thread, new WCacheThreadEvent(WCacheThread::EventSizeMax, max));
 
     emit sizeMaxChanged();
 }
@@ -1896,8 +1895,7 @@ void WCache::setMaxJobs(int max)
 
     d->maxJobs = max;
 
-    QCoreApplication::postEvent(d->thread,
-                                new WCacheThreadEvent(WCacheThread::EventSetMaxJobs, max));
+    QCoreApplication::postEvent(d->thread, new WCacheThreadEvent(WCacheThread::EventMaxJobs, max));
 
     emit maxJobsChanged();
 }

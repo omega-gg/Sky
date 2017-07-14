@@ -42,13 +42,13 @@ public: // Enums
     {
         EventCreate = QEvent::User,
         EventBackend,   // WVlcPlayerEventBackend
-        EventSetSource, // WVlcPlayerEvent QUrl
+        EventSource, // WVlcPlayerEvent QUrl
         EventPlay,
         EventPause,
         EventStop,
         EventSeekTo,    // WVlcPlayerEvent int
-        EventSetSpeed,  // WVlcPlayerEvent qreal
-        EventSetVolume, // WVlcPlayerEvent int
+        EventSpeed,  // WVlcPlayerEvent qreal
+        EventVolume, // WVlcPlayerEvent int
         EventDelete
     };
 
@@ -157,7 +157,7 @@ class WVlcPlayerEventSource : public QEvent
 {
 public:
     WVlcPlayerEventSource(const QUrl & media, const QUrl & audio)
-        : QEvent(static_cast<QEvent::Type> (WVlcPlayerPrivate::EventSetSource))
+        : QEvent(static_cast<QEvent::Type> (WVlcPlayerPrivate::EventSource))
     {
         this->media = media;
         this->audio = audio;
