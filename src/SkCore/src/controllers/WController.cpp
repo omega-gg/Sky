@@ -65,7 +65,7 @@ WController::WController(WControllerPrivate * p) : QObject(), WPrivatable(p)
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-void WController::initController()
+/* virtual */ void WController::initController()
 {
     Q_D(WController);
 

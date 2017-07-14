@@ -65,6 +65,16 @@ static Class * _instance;             \
                                          \
     Class::instance()->initController(); \
 
+#define W_CREATE_CONTROLLER_1(Class, Param)   \
+                                              \
+    Class::instance()->initController(Param); \
+
+#define W_CREATE_CONTROLLER_2(Class, Param1, Param2)   \
+                                                       \
+    Class::instance()->initController(Param1, Param2); \
+
+//-------------------------------------------------------------------------------------------------
+
 #define W_CLEAR_CONTROLLER(Class) \
                                   \
     Class::clearInstance();       \
@@ -92,7 +102,7 @@ protected:
     WController(WControllerPrivate * p);
 
 public: // Interface
-    void initController();
+    virtual void initController();
 
 protected: // Functions
     virtual void init(); /* {} */
