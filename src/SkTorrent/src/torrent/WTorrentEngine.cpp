@@ -1128,15 +1128,15 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         if (data == NULL) return true;
 
+        data->torrent = NULL;
+
         const torrent_handle & handle = data->handle;
 
-        if (data->mode != WTorrent::Stream)
+        if (data->mode == WTorrent::Stream)
         {
-            data->torrent = NULL;
-
-            d->session->remove_torrent(handle);
+            handle.save_resume_data();
         }
-        else handle.save_resume_data();
+        else d->session->remove_torrent(handle);
 
         return true;
     }
@@ -1150,8 +1150,6 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         {
             qDebug("EventSaved: DATA SHOULD NOT BE NULL");
         }
-
-        data->torrent = NULL;
 
         d->session->remove_torrent(data->handle);
 
