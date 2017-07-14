@@ -179,7 +179,7 @@ bool WLocalObjectPrivate::startSave(bool instant)
 
     if (instant == false)
     {
-        if (wControllerFile->startWriteAction(actionSave) == false)
+        if (wControllerFile->startWriteAction(actionSave) == NULL)
         {
             qWarning("WLocalObjectPrivate::startSave: Failed to start save.");
 
@@ -568,7 +568,7 @@ WLocalObject::WLocalObject(WLocalObjectPrivate * p, QObject * parent)
 
         d->instant = false;
     }
-    else if (wControllerFile->startReadAction(d->actionLoad) == false)
+    else if (wControllerFile->startReadAction(d->actionLoad) == NULL)
     {
         qWarning("WLocalObject::load: Failed to start load.");
 
