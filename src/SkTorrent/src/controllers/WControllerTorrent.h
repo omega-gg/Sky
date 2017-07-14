@@ -245,8 +245,6 @@ class SK_TORRENT_EXPORT WControllerTorrent : public WController
 
     Q_PROPERTY(WTorrentEngine * engine READ engine CONSTANT)
 
-    Q_PROPERTY(QString pathStorage READ pathStorage NOTIFY pathStorageChanged)
-
     Q_PROPERTY(int port READ port WRITE setPort NOTIFY portChanged)
 
 private:
@@ -262,18 +260,15 @@ public: // Interface
     Q_INVOKABLE int  registerPort  ();
     Q_INVOKABLE void unregisterPort(int port);
 
-protected: // Initialize
-    /* virtual */ void init();
+public: // Initialize
+    /* virtual */ void initController(const QString & path,
+                                      qint64          sizeMax = 1048576 * 1000); // 1 gigabyte
 
 signals:
-    void pathStorageChanged();
-
     void portChanged();
 
 public: // Properties
     WTorrentEngine * engine() const;
-
-    QString pathStorage() const;
 
     int  port() const;
     void setPort(int port);

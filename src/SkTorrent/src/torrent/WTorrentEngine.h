@@ -34,10 +34,12 @@ class SK_TORRENT_EXPORT WTorrentEngine : public QObject, public WPrivatable
     Q_OBJECT
 
 public:
-    WTorrentEngine(QThread * thread = NULL, QObject * parent = NULL);
+    WTorrentEngine(const QString & path, qint64    sizeMax = 1048576 * 1000, // 1 gigabyte
+                                         QThread * thread  = NULL,
+                                         QObject * parent  = NULL);
 
 public: // Interface
-    Q_INVOKABLE void load(WTorrent * torrent, const QByteArray & data, const QString & path);
+    Q_INVOKABLE void load(WTorrent * torrent, const QByteArray & data);
 
     Q_INVOKABLE void seek(WTorrent * torrent, qint64 position);
 

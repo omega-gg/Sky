@@ -53,11 +53,15 @@ WTorrentEnginePrivate::WTorrentEnginePrivate(WTorrentEngine * p) : WPrivate(p) {
 
 //-------------------------------------------------------------------------------------------------
 
-void WTorrentEnginePrivate::init(QThread * thread)
+void WTorrentEnginePrivate::init(const QString & path, qint64 sizeMax, QThread * thread)
 {
     Q_Q(WTorrentEngine);
 
     session = NULL;
+
+    this->path = path + '/';
+
+    this->sizeMax = sizeMax;
 
     if (thread)
     {
@@ -467,23 +471,22 @@ void WTorrentEnginePrivate::onDeleteId()
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
-WTorrentEngine::WTorrentEngine(QThread * thread, QObject * parent)
+WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * thread,
+                                                                     QObject * parent)
     : QObject(parent), WPrivatable(new WTorrentEnginePrivate(this))
 {
-    Q_D(WTorrentEngine); d->init(thread);
+    Q_D(WTorrentEngine); d->init(path, sizeMax, thread);
 }
 
 //-------------------------------------------------------------------------------------------------
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WTorrentEngine::load(WTorrent * torrent, const QByteArray & data,
-                                                                const QString    & path)
+/* Q_INVOKABLE */ void WTorrentEngine::load(WTorrent * torrent, const QByteArray & data)
 {
     QVariantList variants;
 
     variants.append(data);
-    variants.append(path);
 
     variants.append(torrent->index());
     variants.append(torrent->mode ());

@@ -104,6 +104,8 @@ protected:
 public: // Interface
     virtual void initController();
 
+    bool isCreated();
+
 protected: // Functions
     virtual void init(); /* {} */
 

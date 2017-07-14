@@ -93,7 +93,7 @@ public: // Enums
 public:
     WTorrentEnginePrivate(WTorrentEngine * p);
 
-    void init(QThread * thread);
+    void init(const QString & path, qint64 sizeMax, QThread * thread);
 
 public: // Functions
     void prioritize(WTorrentData * data, qint64 position);
@@ -116,6 +116,10 @@ public: // Slots
 
 public: // Variables
     session * session;
+
+    QString path;
+
+    qint64 sizeMax;
 
     QHash<unsigned int, WTorrentData *> torrents;
 
