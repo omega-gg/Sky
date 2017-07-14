@@ -80,6 +80,8 @@ void WTorrentEnginePrivate::load()
 {
     QFile file(pathIndex);
 
+    if (file.exists() == false) return;
+
     if (file.open(QIODevice::ReadOnly) == false)
     {
         qWarning("WTorrentEnginePrivate::load: Failed to open index %s.", pathIndex.C_STR);
@@ -103,6 +105,8 @@ void WTorrentEnginePrivate::load()
 
         stream >> id >> url >> size;
 
+        ids.insertId(id);
+
         WTorrentSource * source = new WTorrentSource;
 
         source->id   = id;
@@ -110,8 +114,6 @@ void WTorrentEnginePrivate::load()
         source->size = size;
 
         sources.append(source);
-
-        ids.insertId(id);
 
         this->size += size;
 
@@ -167,6 +169,11 @@ bool WTorrentEnginePrivate::addToCache(WTorrentData * data)
             qint64 sourceSize = source->size;
 
             if (sourceSize == size) return true;
+
+            source->size = size;
+
+            sources.removeOne(source);
+            sources.   append(source);
 
             this->size -= sourceSize;
             this->size += size;
@@ -663,7 +670,7 @@ void WTorrentEnginePrivate::onSave()
 
     if (file.open(QIODevice::WriteOnly) == false)
     {
-        qWarning("WTorrentEnginePrivate::onSave: Failed to open index %s.", path.C_STR);
+        qWarning("WTorrentEnginePrivate::onSave: Failed to open index %s.", pathIndex.C_STR);
 
         return;
     }
@@ -810,15 +817,14 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         d->timerUpdate->setInterval(TORRENTENGINE_INTERVAL);
 
-        QObject::connect(d->timerUpdate, SIGNAL(timeout()), this, SLOT(onUpdate()));
-
         d->timerSave = new QTimer(this);
 
         d->timerSave->setInterval(TORRENTENGINE_INTERVAL);
 
         d->timerSave->setSingleShot(true);
 
-        connect(d->timerSave, SIGNAL(timeout()), this, SLOT(onSave()));
+        connect(d->timerUpdate, SIGNAL(timeout()), this, SLOT(onUpdate()));
+        connect(d->timerSave,   SIGNAL(timeout()), this, SLOT(onSave  ()));
 
         d->load();
 
@@ -1174,11 +1180,11 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
             d->deletePaths.append(data->path);
             d->deleteIds  .append(data->id);
 
-            delete data;
-
             // FIXME libtorrent: Waiting before removing the torrent folder.
             QTimer::singleShot(1000, this, SLOT(onDeleteFolder()));
         }
+
+        delete data;
 
         return true;
     }

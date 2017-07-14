@@ -157,9 +157,9 @@ public: // Variables
 
     QHash<unsigned int, WTorrentData *> torrents;
 
-    QList<WTorrentSource *> sources;
-
     WListId ids;
+
+    QList<WTorrentSource *> sources;
 
     QList<QString> deletePaths;
     QList<int>     deleteIds;

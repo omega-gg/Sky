@@ -224,16 +224,18 @@ void WTorrentSocket::onRead()
         {
             qDebug("SKIP DATA");
 
-            writeBuffer(length);
-
             if (length > HOOKTORRENT_SOCKET_SKIP)
             {
+                writeBuffer(HOOKTORRENT_SOCKET_SKIP);
+
                 skip = true;
 
                 timer.start();
             }
             else
             {
+                writeBuffer(length);
+
                 skip = false;
 
                 timer.stop();
@@ -257,8 +259,10 @@ void WTorrentSocket::onRead()
         return;
     }
 
-    if (position != thread->position)
+    if (thread->position != position)
     {
+        qDebug("SEEKING LIGHT");
+
         thread->position = position;
         thread->seeking  = true;
     }
@@ -317,8 +321,9 @@ void WTorrentSocket::onWrite()
             position += count;
 
             timer.start();
+
+            return;
         }
-        else timer.stop();
     }
     else
     {
@@ -363,11 +368,10 @@ void WTorrentSocket::onWrite()
             {
                 qDebug("END INCOMPLETE");
             }
-
-            timer.stop();
         }
-        else timer.stop();
     }
+
+    timer.stop();
 }
 
 //=================================================================================================
