@@ -588,6 +588,8 @@ void WHookTorrentPrivate::start()
 
     q->applySource(url);
 
+    q->applyState(WAbstractBackend::StateStopped);
+
     q->backendSetSource(url);
 
     currentTime = backend->currentTime();
@@ -597,6 +599,8 @@ void WHookTorrentPrivate::start()
     q->setFilterActive(true);
 
     q->backendPlay();
+
+    q->applyState(WAbstractBackend::StatePlaying);
 
     q->applyCurrentTime(currentTime);
 

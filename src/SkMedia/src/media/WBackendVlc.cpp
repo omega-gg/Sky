@@ -1628,11 +1628,6 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
         setCurrentTime(time);
 
-        if (time > d->duration)
-        {
-            setDuration(time);
-        }
-
         setStateLoad(StateLoadDefault);
 
         return true;
