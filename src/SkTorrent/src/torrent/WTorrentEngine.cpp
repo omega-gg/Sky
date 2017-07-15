@@ -154,9 +154,11 @@ int WTorrentEnginePrivate::generateId(const QUrl & url)
 
 bool WTorrentEnginePrivate::addToCache(WTorrentData * data)
 {
-    QString fileName = data->fileName;
+    const torrent_handle & handle = data->handle;
 
-    qint64 size = QFileInfo(fileName).size();
+    torrent_status status = handle.status(torrent_handle::query_accurate_download_counters);
+
+    qint64 size = status.total_done;
 
     if (size == 0) return false;
 
@@ -207,7 +209,7 @@ bool WTorrentEnginePrivate::addToCache(WTorrentData * data)
     else
     {
         qWarning("WTorrentEnginePrivate::addToCache: File is too large for cache %s.",
-                 fileName.C_STR);
+                 data->fileName.C_STR);
 
         return false;
     }
@@ -1303,9 +1305,6 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
             delete i.value();
         }
-
-        delete d->timerUpdate;
-        delete d->timerSave;
 
         return true;
     }
