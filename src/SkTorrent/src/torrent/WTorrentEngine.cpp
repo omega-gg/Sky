@@ -761,7 +761,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         pack.set_bool(settings_pack::enable_upnp,   true);
         pack.set_bool(settings_pack::enable_natpmp, true);
 
-        //pack.set_bool(settings_pack::smooth_connects, false);
+        pack.set_bool(settings_pack::smooth_connects, false);
 
         pack.set_int(settings_pack::connection_speed, 400);
 
@@ -862,8 +862,6 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         int id;
 
-        QUrl url = variants.at(1).toUrl();
-
         int index = variants.at(2).toInt();
 
         QString     path;
@@ -881,6 +879,10 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         if (mode == WTorrent::Stream)
         {
+            QUrl url = variants.at(1).toString() + '#' + QString::number(index + 1);
+
+            data->url = url;
+
             id = d->generateId(url);
 
             path = d->path + QString::number(id);
@@ -1070,8 +1072,6 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         int count = end - begin;
 
         data->id = id;
-
-        data->url = url;
 
         data->mode = mode;
 
