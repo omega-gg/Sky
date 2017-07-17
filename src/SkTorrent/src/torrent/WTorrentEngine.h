@@ -47,6 +47,8 @@ public: // Interface
 
     Q_INVOKABLE void remove(WTorrent * torrent, bool deleteFiles = false);
 
+    Q_INVOKABLE void clearCache();
+
     Q_INVOKABLE void deleteInstance();
 
 protected: // Events

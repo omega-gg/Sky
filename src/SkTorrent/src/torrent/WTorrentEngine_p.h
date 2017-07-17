@@ -53,6 +53,8 @@ struct WTorrentData
 
     torrent_handle handle;
 
+    unsigned int hash;
+
     qint64 size;
     int    sizePiece;
 
@@ -69,6 +71,8 @@ struct WTorrentData
     int blockCount;
 
     qint64 buffer;
+
+    bool finished;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -82,6 +86,8 @@ struct WTorrentSource
     QUrl url;
 
     qint64 size;
+
+    bool finished;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -106,6 +112,7 @@ public: // Enums
         EventFinished,
         EventError,
         EventSizeMax,
+        EventClearCache,
         EventClear
     };
 
@@ -118,8 +125,6 @@ public: // Functions
     void load();
     void save();
 
-    int generateId(const QUrl & url);
-
     bool addToCache(WTorrentData * data);
 
     bool cleanCache();
@@ -131,7 +136,9 @@ public: // Functions
 
     void applyBuffer(WTorrentData * data, qint64 buffer);
 
-    WTorrentData * getTorrentData(WTorrent * torrent) const;
+    WTorrentData * getData(WTorrent * torrent) const;
+
+    WTorrentSource * getSource(const QUrl & url);
 
 public: // Events
     void events();
@@ -160,6 +167,8 @@ public: // Variables
     WListId ids;
 
     QList<WTorrentSource *> sources;
+
+    QHash<unsigned int, WTorrentData *> deleteTorrents;
 
     QList<QString> deletePaths;
     QList<int>     deleteIds;

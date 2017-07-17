@@ -602,7 +602,12 @@ void WHookTorrentPrivate::start()
 
     q->applyState(WAbstractBackend::StatePlaying);
 
-    q->applyCurrentTime(currentTime);
+    if (currentTime != -1)
+    {
+        q->applyCurrentTime(currentTime);
+
+        q->backendSetVolume(0.0);
+    }
 
     if (WControllerPlaylist::urlIsAudio(fileName))
     {
@@ -936,6 +941,8 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
         {
             if (d->backend->currentTime() > d->currentTime)
             {
+                backendSetVolume(d->backend->volume());
+
                 d->currentTime = -1;
 
                 d->state = WHookTorrentPrivate::StatePlaying;
@@ -949,6 +956,8 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
             *stateLoad = d->backend->stateLoad();
 
             d->methodStart.invoke(d->thread);
+
+            setCurrentTime(d->currentTime);
 
             backendSeek(d->currentTime);
 

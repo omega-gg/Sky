@@ -516,6 +516,8 @@ WControllerTorrent::WControllerTorrent() : WController(new WControllerTorrentPri
     {
         delete reply;
     }
+
+    d->engine->clearCache();
 }
 
 //-------------------------------------------------------------------------------------------------
