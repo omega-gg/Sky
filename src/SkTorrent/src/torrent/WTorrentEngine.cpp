@@ -21,7 +21,10 @@
 // Qt includes
 #include <QCoreApplication>
 #include <QDir>
-#include <QDataStream>
+
+#ifdef Q_OS_DARWIN
+  #include <QDataStream>
+#endif
 
 // libtorrent includes
 #include <libtorrent/torrent_info.hpp>
