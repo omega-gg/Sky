@@ -43,9 +43,13 @@ static const int HOOKTORRENT_START = 100; // 0.1 percent
 
 static const int HOOKTORRENT_SOCKET_SIZE = 1048576; // 1 megabyte
 
-static const int HOOKTORRENT_SOCKET_BUFFER = HOOKTORRENT_SOCKET_SIZE / 4;
+static const int HOOKTORRENT_SOCKET_BUFFER  = HOOKTORRENT_SOCKET_SIZE / 2;
+static const int HOOKTORRENT_SOCKET_MINIMUM = HOOKTORRENT_SOCKET_SIZE / 4;
 
-static const int HOOKTORRENT_SOCKET_SKIP = 1024; // 1 kilobyte
+static const int HOOKTORRENT_SOCKET_METADATA = 64;
+
+static const int HOOKTORRENT_SOCKET_SKIP      = 10;
+static const int HOOKTORRENT_SOCKET_SKIP_SIZE = 1024; // 1 kilobyte
 
 static const int HOOKTORRENT_SOCKET_INTERVAL = 20;
 
@@ -67,7 +71,9 @@ private slots:
     void onFile(WTorrent * torrent, const QString & fileName, qint64 size);
 
     void onBuffer(qint64 progress);
-    void onStart ();
+
+    void onStart();
+    void onSeek ();
 
     void onClear();
 
@@ -124,7 +130,7 @@ private:
 
     qint64 position;
 
-    bool skip;
+    int skip;
 
     QTimer timer;
 
@@ -143,9 +149,11 @@ WTorrentSocket::WTorrentSocket(WTorrentThread * thread, QTcpSocket * socket) : Q
 
     position = 0;
 
-    skip = false;
+    skip = 0;
 
     timer.setInterval(HOOKTORRENT_SOCKET_INTERVAL);
+
+    timer.setSingleShot(true);
 
     connect(socket, SIGNAL(readyRead()), this, SLOT(onRead()));
 
@@ -158,16 +166,11 @@ WTorrentSocket::WTorrentSocket(WTorrentThread * thread, QTcpSocket * socket) : Q
 
 void WTorrentSocket::writeBuffer(int length)
 {
-    QString buffer;
+    char buffer[length];
 
-    while (length)
-    {
-        buffer.append('0');
+    memset(buffer, '0', length);
 
-        length--;
-    }
-
-    socket->write(buffer.toLatin1());
+    socket->write(buffer);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -224,19 +227,19 @@ void WTorrentSocket::onRead()
         {
             qDebug("SKIP DATA");
 
-            if (length > HOOKTORRENT_SOCKET_SKIP)
+            if (length > HOOKTORRENT_SOCKET_SKIP_SIZE)
             {
-                writeBuffer(HOOKTORRENT_SOCKET_SKIP);
+                skip = HOOKTORRENT_SOCKET_SKIP;
 
-                skip = true;
+                writeBuffer(HOOKTORRENT_SOCKET_SKIP_SIZE);
 
                 timer.start();
             }
             else
             {
-                writeBuffer(length);
+                skip = 0;
 
-                skip = false;
+                writeBuffer(length);
 
                 timer.stop();
             }
@@ -244,7 +247,21 @@ void WTorrentSocket::onRead()
             return;
         }
     }
-    else skip = false;
+    else
+    {
+        skip = 0;
+
+        if (length <= HOOKTORRENT_SOCKET_METADATA)
+        {
+            qDebug("SKIP METADATA");
+
+            writeBuffer(length);
+
+            timer.stop();
+
+            return;
+        }
+    }
 
     if (position < thread->position || progress < position)
     {
@@ -275,9 +292,11 @@ void WTorrentSocket::onWrite()
 {
     if (skip)
     {
+        skip--;
+
         writeBuffer(HOOKTORRENT_SOCKET_SIZE);
 
-        timer.start();
+        if (skip) timer.start();
 
         return;
     }
@@ -303,7 +322,7 @@ void WTorrentSocket::onWrite()
             }
         }
 
-        buffer -= HOOKTORRENT_SOCKET_BUFFER;
+        buffer -= HOOKTORRENT_SOCKET_MINIMUM;
 
         QByteArray bytes;
 
@@ -357,8 +376,6 @@ void WTorrentSocket::onWrite()
 
             if (count == length)
             {
-                timer.stop();
-
                 socket->write(bytes);
 
                 position = size;
@@ -371,8 +388,6 @@ void WTorrentSocket::onWrite()
             }
         }
     }
-
-    timer.stop();
 }
 
 //=================================================================================================
@@ -448,9 +463,24 @@ void WTorrentThread::onBuffer(qint64 progress)
     if (data) data->onWrite();
 }
 
+//-------------------------------------------------------------------------------------------------
+
 void WTorrentThread::onStart()
 {
     started = true;
+}
+
+void WTorrentThread::onSeek()
+{
+    if (seeking == false) return;
+
+    qDebug("SKIP SEEK");
+
+    seeking = false;
+
+    data->skip = HOOKTORRENT_SOCKET_SKIP;
+
+    data->onWrite();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -557,6 +587,7 @@ void WHookTorrentPrivate::init()
     methodFile   = meta->method(meta->indexOfMethod("onFile(WTorrent*,QString,qint64)"));
     methodBuffer = meta->method(meta->indexOfMethod("onBuffer(qint64)"));
     methodStart  = meta->method(meta->indexOfMethod("onStart()"));
+    methodSeek   = meta->method(meta->indexOfMethod("onSeek()"));
     methodClear  = meta->method(meta->indexOfMethod("onClear()"));
 }
 
@@ -584,35 +615,55 @@ void WHookTorrentPrivate::start()
 {
     Q_Q(WHookTorrent);
 
-    state = StateStarting;
-
-    q->applySource(url);
-
-    q->applyState(WAbstractBackend::StateStopped);
-
-    q->backendSetSource(url);
-
-    currentTime = backend->currentTime();
-
-    q->applyCurrentTime(-1);
-
-    q->setFilterActive(true);
-
-    q->backendPlay();
-
-    q->applyState(WAbstractBackend::StatePlaying);
-
-    if (currentTime != -1)
+    if (torrent->buffer() == torrent->size())
     {
-        q->applyCurrentTime(currentTime);
+        qDebug("START QUICK");
 
-        q->backendSetVolume(0.0);
+        state = StatePlaying;
+
+        q->applySource(url);
+
+        q->backendSetSource(url);
+
+        q->setFilterActive(true);
+
+        q->backendPlay();
+
+        q->setProgress(1.0);
+    }
+    else
+    {
+        state = StateStarting;
+
+        q->applySource(url);
+
+        q->applyState(WAbstractBackend::StateStopped);
+
+        q->backendSetSource(url);
+
+        currentTime = backend->currentTime();
+
+        q->applyCurrentTime(-1);
+
+         q->setFilterActive(true);
+
+         q->backendPlay();
+
+         q->applyState(WAbstractBackend::StatePlaying);
+
+         if (currentTime != -1)
+         {
+            q->applyCurrentTime(currentTime);
+
+            q->backendSetVolume(0.0);
+         }
     }
 
     if (WControllerPlaylist::urlIsAudio(fileName))
     {
-        q->setOutputActive(WAbstractBackend::OutputAudio);
+         q->setOutputActive(WAbstractBackend::OutputAudio);
     }
+    else q->setOutputActive(WAbstractBackend::OutputMedia);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -767,7 +818,7 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 {
     Q_D(WHookTorrent);
 
-    if (d->source != url)
+    if (d->source != url || d->state < WHookTorrentPrivate::StateStarting)
     {
         if (d->state == WHookTorrentPrivate::StateDefault)
         {
@@ -801,7 +852,25 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
             d->play();
         }
     }
-    else seek(currentTime);
+    else
+    {
+        d->currentTime = currentTime;
+
+        if (currentTime == -1)
+        {
+             setStateLoad(WAbstractBackend::StateLoadStarting);
+        }
+        else setStateLoad(WAbstractBackend::StateLoadResuming);
+
+        if (d->state == WHookTorrentPrivate::StatePlaying)
+        {
+            d->state = WHookTorrentPrivate::StateStarting;
+        }
+
+        d->methodSeek.invoke(d->thread);
+
+        d->backend->seek(currentTime);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -891,11 +960,13 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 {
     Q_D(WHookTorrent);
 
-    if (d->state < WHookTorrentPrivate::StatePlaying)
+    if (d->state >= WHookTorrentPrivate::StatePlaying)
     {
-        setCurrentTime(msec);
+        d->methodSeek.invoke(d->thread);
+
+        d->backend->seek(msec);
     }
-    else d->backend->seek(msec);
+    else setCurrentTime(msec);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -935,34 +1006,31 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 
         setProgress(1.0);
     }
+    else if (d->backend->progress() == 1.0)
+    {
+        if (d->backend->currentTime() > d->currentTime)
+        {
+            backendSetVolume(d->backend->volume());
+
+            d->currentTime = -1;
+
+            d->state = WHookTorrentPrivate::StatePlaying;
+
+            setState(WAbstractBackend::StatePlaying);
+        }
+        else *stateLoad = d->backend->stateLoad();
+    }
     else
     {
-        if (d->backend->progress() == 1.0)
-        {
-            if (d->backend->currentTime() > d->currentTime)
-            {
-                backendSetVolume(d->backend->volume());
+        *stateLoad = d->backend->stateLoad();
 
-                d->currentTime = -1;
+        d->methodStart.invoke(d->thread);
 
-                d->state = WHookTorrentPrivate::StatePlaying;
+        setCurrentTime(d->currentTime);
 
-                setState(WAbstractBackend::StatePlaying);
-            }
-            else *stateLoad = d->backend->stateLoad();
-        }
-        else
-        {
-            *stateLoad = d->backend->stateLoad();
+        backendSeek(d->currentTime);
 
-            d->methodStart.invoke(d->thread);
-
-            setCurrentTime(d->currentTime);
-
-            backendSeek(d->currentTime);
-
-            setProgress(1.0);
-        }
+        setProgress(1.0);
     }
 }
 
