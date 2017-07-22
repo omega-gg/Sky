@@ -18,6 +18,7 @@
 #define WTORRENTENGINE_P_H
 
 // Qt includes
+#include <QMutex>
 #include <QBitArray>
 #include <QTimer>
 
@@ -146,12 +147,14 @@ public: // Events
 public: // Slots
     void onUpdate();
 
-    void onDeleteFolder();
-    void onDeleteId    ();
+    void onFolderDelete();
+    void onFolderClear ();
 
     void onSave();
 
 public: // Variables
+    QMutex mutex;
+
     session * session;
 
     QString path;
@@ -167,6 +170,8 @@ public: // Variables
     WListId ids;
 
     QList<WTorrentSource *> sources;
+
+    QHash<unsigned int, QString> paths;
 
     QHash<unsigned int, WTorrentData *> deleteTorrents;
 
