@@ -996,8 +996,6 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
                 path = d->path + QString::number(id);
             }
 
-            path = d->path + QString::number(id);
-
             params.save_path = path.toStdString();
 
             handle = d->session->add_torrent(params);
