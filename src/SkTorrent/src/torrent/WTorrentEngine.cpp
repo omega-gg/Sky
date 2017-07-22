@@ -30,6 +30,9 @@
 // Boost includes
 #include <boost/bind.hpp>
 
+// C++ includes
+#include <fstream>
+
 // Sk includes
 #include <WControllerFile>
 #include <WControllerNetwork>
@@ -37,7 +40,8 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const QString TORRENTENGINE_NAME = "1";
+static const QString TORRENTENGINE_NAME   = "1";
+static const QString TORRENTENGINE_RESUME = "/." + TORRENTENGINE_NAME;
 
 static const int TORRENTENGINE_BLOCK = 16000;
 
@@ -181,16 +185,6 @@ bool WTorrentEnginePrivate::addToCache(WTorrentData * data)
 
                 return false;
             }
-
-            source->size = size;
-
-            sources.removeOne(source);
-            sources.   append(source);
-
-            this->size -= sourceSize;
-            this->size += size;
-
-            cleanCache();
 
             return true;
         }
