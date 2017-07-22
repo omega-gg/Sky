@@ -243,9 +243,21 @@ class SK_TORRENT_EXPORT WControllerTorrent : public WController
 {
     Q_OBJECT
 
+    Q_ENUMS(Type)
+
     Q_PROPERTY(WTorrentEngine * engine READ engine CONSTANT)
 
     Q_PROPERTY(int port READ port WRITE setPort NOTIFY portChanged)
+
+public: // Enums
+    enum Type
+    {
+        Null,
+        String,
+        Integer,
+        List,
+        Dictionary
+    };
 
 private:
     WControllerTorrent();
@@ -263,6 +275,30 @@ public: // Interface
 public: // Initialize
     /* virtual */ void initController(const QString & path,
                                       qint64          sizeMax = 1048576 * 1000); // 1 gigabyte
+
+public: // Static functions
+    //---------------------------------------------------------------------------------------------
+    // Bencode
+
+    Q_INVOKABLE static Type extractType(const QString & text, int at = 0);
+
+    Q_INVOKABLE static QString extractString(const QString & text, int at = 0);
+    Q_INVOKABLE static QString extractList  (const QString & text, int at = 0);
+
+    Q_INVOKABLE static int indexAfter(const QString & text,
+                                      const QString & string, int at = 0);
+
+    Q_INVOKABLE static QString stringAfter(const QString & text,
+                                           const QString & string, int at = 0);
+
+    Q_INVOKABLE static QString listAfter(const QString & text,
+                                         const QString & string, int at = 0);
+
+    Q_INVOKABLE static int skipString (const QString & text, int at = 0);
+    Q_INVOKABLE static int skipInteger(const QString & text, int at = 0);
+    Q_INVOKABLE static int skipList   (const QString & text, int at = 0);
+
+    Q_INVOKABLE static Type getType(const QChar & character);
 
 signals:
     void portChanged();

@@ -224,9 +224,16 @@ qint64 WTorrent::size() const
     return _size;
 }
 
+//-------------------------------------------------------------------------------------------------
+
 qint64 WTorrent::progress() const
 {
     return _progress;
+}
+
+qint64 WTorrent::buffer() const
+{
+    return _buffer;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -428,6 +435,85 @@ void WControllerTorrentPrivate::removeTorrent(WTorrent * torrent, WTorrentReply 
 }
 
 //-------------------------------------------------------------------------------------------------
+// Private static functions
+//-------------------------------------------------------------------------------------------------
+
+/* static */ int WControllerTorrentPrivate::listAfter(const QString & text,
+                                                      const QString & string, int * at)
+{
+    int from = *at;
+
+    from++;
+
+    while (from < text.length())
+    {
+        QChar character = text.at(from);
+
+        if (character == 'e')
+        {
+            *at = from + 1;
+
+            return -1;
+        }
+
+        WControllerTorrent::Type type = WControllerTorrent::getType(character);
+
+        if (type == WControllerTorrent::Null)
+        {
+            *at = -1;
+
+            return -1;
+        }
+
+        if (type == WControllerTorrent::String)
+        {
+            int index = text.indexOf(':', from);
+
+            if (index == -1)
+            {
+                *at = -1;
+
+                return -1;
+            }
+
+            int length = text.mid(from, index - from).toInt();
+
+            index++;
+
+            from = index + length;
+
+            if (string.length() == length && string == text.mid(index, length))
+            {
+                return from;
+            }
+        }
+        else if (type == WControllerTorrent::Integer)
+        {
+            from = WControllerTorrent::skipInteger(text, from);
+        }
+        else // if (type == WControllerTorrent::List || type == WControllerTorrent::Dictionary)
+        {
+            int index = listAfter(text, string, &from);
+
+            if (index != -1)
+            {
+                return index;
+            }
+            else if (from == -1)
+            {
+                *at = from;
+
+                return -1;
+            }
+        }
+    }
+
+    *at = from;
+
+    return -1;
+}
+
+//-------------------------------------------------------------------------------------------------
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
@@ -551,6 +637,205 @@ WControllerTorrent::WControllerTorrent() : WController(new WControllerTorrentPri
         d->init(path, sizeMax);
     }
     else qWarning("WControllerTorrent::initController: Controller is already initialized.");
+}
+
+//-------------------------------------------------------------------------------------------------
+// Static functions
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */
+WControllerTorrent::Type WControllerTorrent::extractType(const QString & text, int at)
+{
+    if (text.isEmpty())
+    {
+         return Null;
+    }
+    else return getType(text.at(at));
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QString WControllerTorrent::extractString(const QString & text, int at)
+{
+    int index = text.indexOf(':', at);
+
+    if (index == -1) return QString();
+
+    int length = text.mid(at, index - at).toInt();
+
+    if (length)
+    {
+         return text.mid(index + 1, length);
+    }
+    else return QString();
+}
+
+/* Q_INVOKABLE static */ QString WControllerTorrent::extractList(const QString & text, int at)
+{
+    int index = skipList(text, at);
+
+    if (index != -1)
+    {
+        at++;
+
+        return text.mid(at, index - at);
+    }
+    else return QString();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ int WControllerTorrent::indexAfter(const QString & text,
+                                                            const QString & string, int at)
+{
+    while (at < text.length())
+    {
+        QChar character = text.at(at);
+
+        if (character == 'e')
+        {
+            at++;
+
+            continue;
+        }
+
+        Type type = getType(character);
+
+        if (type == Null) return -1;
+
+        if (type == String)
+        {
+            int index = text.indexOf(':', at);
+
+            if (index == -1) return -1;
+
+            int length = text.mid(at, index - at).toInt();
+
+            index++;
+
+            at = index + length;
+
+            if (string.length() == length && string == text.mid(index, length))
+            {
+                return at;
+            }
+        }
+        else if (type == Integer)
+        {
+            at = skipInteger(text, at);
+        }
+        else // if (type == List || type == Dictionary)
+        {
+            int index = WControllerTorrentPrivate::listAfter(text, string, &at);
+
+            if (index != -1)
+            {
+                return index;
+            }
+            else if (at == -1)
+            {
+                return -1;
+            }
+        }
+    }
+
+    return -1;
+}
+
+/* Q_INVOKABLE static */ QString WControllerTorrent::stringAfter(const QString & text,
+                                                                 const QString & string, int at)
+{
+    int index = indexAfter(text, string, at);
+
+    if (index == -1)
+    {
+         return QString();
+    }
+    else return extractString(text, index);
+}
+
+/* Q_INVOKABLE static */ QString WControllerTorrent::listAfter(const QString & text,
+                                                               const QString & string, int at)
+{
+    int index = indexAfter(text, string, at);
+
+    if (index == -1)
+    {
+         return QString();
+    }
+    else return extractList(text, index);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ int WControllerTorrent::skipString(const QString & text, int at)
+{
+    int index = text.indexOf(':', at);
+
+    if (index == -1) return at;
+
+    QString length = text.mid(at, index - at);
+
+    return index + 1 + length.toInt();
+}
+
+/* Q_INVOKABLE static */ int WControllerTorrent::skipInteger(const QString & text, int at)
+{
+    at++;
+
+    int index = text.indexOf('e', at);
+
+    if (index == -1)
+    {
+         return at;
+    }
+    else return index + 1;
+}
+
+/* Q_INVOKABLE static */ int WControllerTorrent::skipList(const QString & text, int at)
+{
+    at++;
+
+    while (at < text.length())
+    {
+        QChar character = text.at(at);
+
+        if (character == 'e')
+        {
+            return at + 1;
+        }
+
+        Type type = getType(character);
+
+        if (type == Null) return at;
+
+        if (type == String)
+        {
+            at = skipString(text, at);
+        }
+        else if (type == Integer)
+        {
+            at = skipInteger(text, at);
+        }
+        else // if (type == List || type == Dictionary)
+        {
+            at = skipList(text, at);
+        }
+    }
+
+    return at;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */
+WControllerTorrent::Type WControllerTorrent::getType(const QChar & character)
+{
+    if      (character == 'i')    return WControllerTorrent::Integer;
+    else if (character == 'l')    return WControllerTorrent::List;
+    else if (character == 'd')    return WControllerTorrent::Dictionary;
+    else if (character.isDigit()) return WControllerTorrent::String;
+    else                          return WControllerTorrent::Null;
 }
 
 //-------------------------------------------------------------------------------------------------

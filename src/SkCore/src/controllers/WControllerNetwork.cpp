@@ -523,7 +523,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 {
     foreach (const QChar & character, text)
     {
-        if (character.isNumber() == false && character != '.' && character != ':')
+        if (character.isDigit() == false && character != '.' && character != ':')
         {
             return false;
         }
@@ -1747,7 +1747,7 @@ QString WControllerNetwork::extractAttributeUtf8(const QString & text,
 
     if (index == -1) return QString();
 
-    const QChar & character = text.at(at);
+    QChar character = text.at(at);
 
     if (character == '"')
     {

@@ -52,6 +52,9 @@ public: // Functions
 
     void removeTorrent(WTorrent * torrent, WTorrentReply * reply);
 
+public: // Static functions
+    static int listAfter(const QString & text, const QString & string, int * at);
+
 public: // Slots
     void onLoaded(WRemoteData * data);
 
