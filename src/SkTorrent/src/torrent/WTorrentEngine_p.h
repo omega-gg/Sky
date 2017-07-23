@@ -104,7 +104,6 @@ public: // Enums
         EventAdd,
         EventSeek,
         EventRemove,
-        EventSaved,
         EventRemoved,
         EventState,
         EventProgress,

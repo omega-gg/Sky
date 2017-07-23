@@ -644,8 +644,6 @@ void WTorrentEnginePrivate::events()
         }
         else if (type == save_resume_data_alert::alert_type)
         {
-            Q_Q(WTorrentEngine);
-
             save_resume_data_alert * event = alert_cast<save_resume_data_alert>(alert);
 
             unsigned int hash = hash_value(event->handle);
@@ -663,18 +661,6 @@ void WTorrentEnginePrivate::events()
             stream.unsetf(std::ios_base::skipws);
 
             bencode(std::ostream_iterator<char>(stream), *(event->resume_data));
-
-            QCoreApplication::postEvent(q, new WTorrentEngineHandle(EventSaved, hash));
-        }
-        else if (type == save_resume_data_failed_alert::alert_type)
-        {
-            Q_Q(WTorrentEngine);
-
-            save_resume_data_failed_alert * event
-                = alert_cast<save_resume_data_failed_alert>(alert);
-
-            QCoreApplication::postEvent(q, new WTorrentEngineHandle(EventSaved,
-                                                                    hash_value(event->handle)));
         }
         else if (type == torrent_removed_alert::alert_type)
         {
@@ -1263,22 +1249,8 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
             handle.save_resume_data();
         }
-        else d->session->remove_torrent(handle);
 
-        return true;
-    }
-    else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventSaved))
-    {
-        WTorrentEngineHandle * eventTorrent = static_cast<WTorrentEngineHandle *> (event);
-
-        WTorrentData * data = d->deleteTorrents.value(eventTorrent->hash);
-
-        if (data == NULL)
-        {
-            qDebug("EventSaved: DATA SHOULD NOT BE NULL");
-        }
-
-        d->session->remove_torrent(data->handle);
+        d->session->remove_torrent(handle);
 
         return true;
     }
