@@ -34,46 +34,56 @@
 // Namespaces
 using namespace libtorrent;
 
+// Typedefs
+typedef boost::shared_ptr<const torrent_info> TorrentInfo;
+typedef boost::shared_ptr<torrent_info>       TorrentInfoPointer;
+
+// Forward declarations
+struct WTorrentData;
+
 //-------------------------------------------------------------------------------------------------
-// WTorrentData
+// WTorrentItem
 //-------------------------------------------------------------------------------------------------
 
-struct WTorrentData
+struct WTorrentItem
 {
-    int id;
-
-    QUrl url;
-
-    WTorrent::Mode mode;
-
-    QString path;
-
-    QString fileName;
+    WTorrentData * data;
 
     WTorrent * torrent;
 
-    torrent_handle handle;
+    int index;
 
-    unsigned int hash;
+    WTorrent::Mode mode;
+
+    QStringList paths;
 
     qint64 size;
-    int    sizePiece;
-
-    QBitArray pieces;
-    QBitArray blocks;
 
     int begin;
     int end;
 
-    int index;
     int current;
 
+    bool finished;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WTorrentStream
+//-------------------------------------------------------------------------------------------------
+
+struct WTorrentStream : public WTorrentItem
+{
+    QString fileName;
+
+    int sizePiece;
+
+    int piece;
+    int count;
+
     int block;
-    int blockCount;
 
     qint64 buffer;
-
-    bool finished;
+    qint64 position;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -88,7 +98,28 @@ struct WTorrentSource
 
     qint64 size;
 
-    bool finished;
+    QList<int> finished;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WTorrentData
+//-------------------------------------------------------------------------------------------------
+
+struct WTorrentData : public WTorrentSource
+{
+    QString path;
+
+    int count;
+
+    torrent_handle handle;
+    unsigned int   hash;
+
+    int blockCount;
+
+    QBitArray pieces;
+    QBitArray blocks;
+
+    QList<WTorrentItem *> items;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -102,10 +133,11 @@ public: // Enums
     {
         EventCreate = QEvent::User,
         EventAdd,
+        EventAdded,
         EventSeek,
         EventRemove,
+        EventSaved,
         EventRemoved,
-        EventState,
         EventProgress,
         EventPiece,
         EventBlock,
@@ -125,20 +157,40 @@ public: // Functions
     void load();
     void save();
 
+    WTorrentData * createData(TorrentInfoPointer info, const QUrl & url);
+
+    WTorrentItem * createItem(TorrentInfo info, WTorrentData * data,
+                                                WTorrent     * torrent,
+                                                int            index,
+                                                WTorrent::Mode mode);
+
+    WTorrentStream * createStream(TorrentInfo info, WTorrentData * data,
+                                                    WTorrent     * torrent,
+                                                    int            index,
+                                                    WTorrent::Mode mode);
+
+    void addItem  (const torrent_handle & handle, WTorrentItem   * item);
+    void addStream(const torrent_handle & handle, WTorrentStream * stream);
+
+    void updateFiles(WTorrentData * data);
+
     bool addToCache(WTorrentData * data);
 
     bool cleanCache();
 
-    void prioritize(WTorrentData * data, qint64 position);
+    void prioritize(const torrent_handle & handle, WTorrentStream * stream, qint64 position);
 
-    void applyBlock(WTorrentData * data, int piece, int block);
-    void applyPiece(WTorrentData * data, int piece);
+    void applyBlock(const torrent_handle & handle, WTorrentStream * stream, int piece, int block);
+    void applyPiece(const torrent_handle & handle, WTorrentStream * stream, int piece);
 
-    void applyBuffer(WTorrentData * data, qint64 buffer);
+    void applyBuffer(WTorrentStream * item, qint64 buffer);
 
-    WTorrentData * getData(WTorrent * torrent) const;
+    WTorrentData * getData(const QUrl & url) const;
 
     WTorrentSource * getSource(const QUrl & url);
+
+    WTorrentItem   * getItem  (WTorrent * torrent) const;
+    WTorrentStream * getStream(WTorrent * torrent) const;
 
 public: // Events
     void events();
@@ -164,15 +216,15 @@ public: // Variables
 
     qint64 maximum;
 
+    QList<WTorrentData *> datas;
+
     QHash<unsigned int, WTorrentData *> torrents;
 
     WListId ids;
 
     QList<WTorrentSource *> sources;
 
-    QHash<unsigned int, QString> paths;
-
-    QHash<unsigned int, WTorrentData *> deleteTorrents;
+    QHash<unsigned int, QString> fileNames;
 
     QList<QString> deletePaths;
     QList<int>     deleteIds;
@@ -220,6 +272,38 @@ public: // Variables
     WTorrent * torrent;
 
     QVariant value;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WTorrentEngineAdd
+//-------------------------------------------------------------------------------------------------
+
+class WTorrentEngineAdd : public QEvent
+{
+public:
+    WTorrentEngineAdd(WTorrent  * torrent,
+                      QIODevice * device, const QUrl & url, int index, WTorrent::Mode mode)
+        : QEvent(static_cast<QEvent::Type> (WTorrentEnginePrivate::EventAdd))
+    {
+        this->torrent = torrent;
+
+        this->device = device;
+
+        this->url   = url;
+        this->index = index;
+
+        this->mode = mode;
+    }
+
+public: // Variables
+    WTorrent * torrent;
+
+    QIODevice * device;
+
+    QUrl url;
+    int  index;
+
+    WTorrent::Mode mode;
 };
 
 //-------------------------------------------------------------------------------------------------

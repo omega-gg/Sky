@@ -38,11 +38,11 @@
 #include <WControllerFile>
 #include <WControllerNetwork>
 
+// Metatypes
+Q_DECLARE_METATYPE(torrent_handle)
+
 //-------------------------------------------------------------------------------------------------
 // Static variables
-
-static const QString TORRENTENGINE_NAME   = "1";
-static const QString TORRENTENGINE_RESUME = "/." + TORRENTENGINE_NAME;
 
 static const int TORRENTENGINE_BLOCK = 16000;
 
@@ -108,7 +108,7 @@ void WTorrentEnginePrivate::load()
 
         qint64 size;
 
-        bool finished;
+        int finished;
 
         stream >> id >> url >> size >> finished;
 
@@ -116,10 +116,16 @@ void WTorrentEnginePrivate::load()
 
         WTorrentSource * source = new WTorrentSource;
 
-        source->id       = id;
-        source->url      = url;
-        source->size     = size;
-        source->finished = finished;
+        source->id   = id;
+        source->url  = url;
+        source->size = size;
+
+        while (finished)
+        {
+            stream >> source->finished;
+
+            finished--;
+        }
 
         sources.append(source);
 

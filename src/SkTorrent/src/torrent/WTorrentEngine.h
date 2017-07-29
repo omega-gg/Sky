@@ -41,7 +41,7 @@ public:
                                          QObject * parent  = NULL);
 
 public: // Interface
-    Q_INVOKABLE void load(WTorrent * torrent, const QByteArray & data);
+    Q_INVOKABLE void load(WTorrent * torrent, QIODevice * device);
 
     Q_INVOKABLE void seek(WTorrent * torrent, qint64 position);
 
