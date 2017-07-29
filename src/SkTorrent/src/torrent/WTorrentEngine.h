@@ -26,6 +26,7 @@
 #ifndef SK_NO_TORRENTENGINE
 
 // Forward declarations
+class QIODevice;
 class WTorrentEnginePrivate;
 class WTorrent;
 

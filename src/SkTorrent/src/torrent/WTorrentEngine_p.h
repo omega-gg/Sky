@@ -226,6 +226,8 @@ public: // Variables
 
     QHash<unsigned int, QString> fileNames;
 
+    QHash<unsigned int, WTorrentData *> deleteTorrents;
+
     QList<QString> deletePaths;
     QList<int>     deleteIds;
 
