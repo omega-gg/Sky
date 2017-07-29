@@ -1690,12 +1690,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         WTorrentData * data = d->torrents.value(eventTorrent->hash);
 
-        if (data == NULL)
-        {
-            qDebug("EventBlock: DATA SHOULD NOT BE NULL");
-
-            return true;
-        }
+        if (data == NULL) return true;
 
         int piece = eventTorrent->piece;
         int block = eventTorrent->block;
@@ -1723,12 +1718,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         WTorrentData * data = d->torrents.value(eventTorrent->hash);
 
-        if (data == NULL)
-        {
-            qDebug("EventPiece: DATA SHOULD NOT BE NULL");
-
-            return true;
-        }
+        if (data == NULL) return true;
 
         int piece = eventTorrent->value.toInt();
 
