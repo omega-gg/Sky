@@ -1282,8 +1282,12 @@ void WTorrentEnginePrivate::onSave()
     {
         const QList<int> & finished = source->finished;
 
-        stream << source->id << source->url << (qint64) source->size << finished.count()
-               << finished;
+        stream << source->id << source->url << (qint64) source->size << finished.count();
+
+        foreach (int index, finished)
+        {
+            stream << index;
+        }
     }
 }
 
