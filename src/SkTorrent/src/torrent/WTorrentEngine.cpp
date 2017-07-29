@@ -352,7 +352,7 @@ WTorrentStream * WTorrentEnginePrivate::createStream(TorrentInfo info, WTorrentD
 
         QString extension = WControllerNetwork::extractUrlExtension(fileName);
 
-        fileName = data->path + '/' + QString::number(index);
+        fileName = data->path + '/' + QString::number(index + 1);
 
         if (extension.isEmpty() == false)
         {
