@@ -645,25 +645,24 @@ void WHookTorrentPrivate::start()
 
         q->applyCurrentTime(-1);
 
-         q->setFilterActive(true);
+        q->setFilterActive(true);
 
-         q->backendPlay();
+        q->backendPlay();
 
-         q->applyState(WAbstractBackend::StatePlaying);
+        q->applyState(WAbstractBackend::StatePlaying);
 
-         if (currentTime != -1)
-         {
+        if (currentTime != -1)
+        {
             q->applyCurrentTime(currentTime);
 
             q->backendSetVolume(0.0);
-         }
+        }
     }
 
     if (WControllerPlaylist::urlIsAudio(fileName))
     {
-         q->setOutputActive(WAbstractBackend::OutputAudio);
+        q->setOutputActive(WAbstractBackend::OutputAudio);
     }
-    else q->setOutputActive(WAbstractBackend::OutputMedia);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -746,6 +745,8 @@ void WHookTorrentPrivate::onLoaded()
         Q_Q(WHookTorrent);
 
         stop();
+
+        QObject::disconnect(reply, 0, q, 0);
 
         reply->deleteLater();
 

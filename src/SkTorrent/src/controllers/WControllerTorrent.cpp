@@ -103,8 +103,6 @@ WTorrent::WTorrent(const QUrl & url, Mode mode, QObject * parent) : QObject(pare
     {
         WTorrentEventProgress * eventTorrent = static_cast<WTorrentEventProgress *> (event);
 
-        if (_paths.isEmpty()) return true;
-
         _progress = eventTorrent->progress;
 
         if (_download != -1)
@@ -541,7 +539,7 @@ void WControllerTorrentPrivate::onLoaded(WRemoteData * data)
     {
         downloads.push_back(torrent);
 
-        engine->load(torrent, data->readAll());
+        engine->load(torrent, data->takeReply());
     }
 
     delete data;

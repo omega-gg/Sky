@@ -190,20 +190,15 @@ public: // Variables
 class WTorrentEventAdd : public WTorrentEvent
 {
 public:
-    WTorrentEventAdd(const QStringList & paths, qint64 size, int pieces)
-        : WTorrentEvent(WTorrent::EventAdd)
+    WTorrentEventAdd(const QStringList & paths, qint64 size) : WTorrentEvent(WTorrent::EventAdd)
     {
         this->paths = paths;
-
-        this->size   = size;
-        this->pieces = pieces;
+        this->size  = size;
     }
 
 public: // Variables
     QStringList paths;
-
-    qint64 size;
-    int    pieces;
+    qint64      size;
 };
 
 //-------------------------------------------------------------------------------------------------
