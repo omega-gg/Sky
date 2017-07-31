@@ -137,7 +137,6 @@ public: // Enums
         EventSeek,
         EventRemove,
         EventSaved,
-        EventRemoved,
         EventProgress,
         EventPiece,
         EventBlock,
