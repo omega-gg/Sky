@@ -1468,6 +1468,8 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
                 if (data->hash)
                 {
+                    d->updateFiles(data);
+
                     d->addStream(data->handle, stream);
                 }
             }
@@ -1489,6 +1491,8 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
             if (data->hash)
             {
+                d->updateFiles(data);
+
                 d->addItem(data->handle, item);
             }
         }
@@ -1524,6 +1528,8 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         d->torrents.insert(hash, data);
 
+        d->updateFiles(data);
+
         foreach (WTorrentItem * item, data->items)
         {
             if (item->mode == WTorrent::Stream)
@@ -1534,8 +1540,6 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
             }
             else d->addItem(handle, item);
         }
-
-        d->updateFiles(data);
 
         d->timerUpdate->start();
 
@@ -1602,17 +1606,6 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         {
             qDebug("REMOVE TORRENT");
 
-            unsigned int hash = data->hash;
-
-            d->torrents.remove(hash);
-
-            if (d->torrents.isEmpty())
-            {
-                d->timerUpdate->stop();
-            }
-
-            d->deleteTorrents.insert(hash, data);
-
             QString fileName = data->path + "/." + QString::number(data->id);
 
             d->mutex.lock();
@@ -1637,10 +1630,20 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
             qDebug("EventSaved: DATA SHOULD NOT BE NULL");
         }
 
-        if (data->items.isEmpty())
+        if (data->items.isEmpty() == false) return true;
+
+        unsigned int hash = data->hash;
+
+        d->torrents.remove(hash);
+
+        if (d->torrents.isEmpty())
         {
-            d->session->remove_torrent(data->handle);
+            d->timerUpdate->stop();
         }
+
+        d->deleteTorrents.insert(hash, data);
+
+        d->session->remove_torrent(data->handle);
 
         return true;
     }
@@ -1651,6 +1654,8 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         WTorrentData * data = d->deleteTorrents.take(eventTorrent->hash);
 
         if (data == NULL) return true;
+
+        qDebug("TORRENT REMOVED");
 
         if (d->addToCache(data) == false)
         {
