@@ -329,8 +329,6 @@ WTorrentStream * WTorrentEnginePrivate::createStream(TorrentInfo info, WTorrentD
                                                                        int            index,
                                                                        WTorrent::Mode mode)
 {
-    QString fileName;
-
     QStringList paths;
 
     qint64 size;
@@ -338,9 +336,11 @@ WTorrentStream * WTorrentEnginePrivate::createStream(TorrentInfo info, WTorrentD
     int begin;
     int end;
 
-    int sizePiece;
-
     bool finished;
+
+    QString fileName;
+
+    int sizePiece;
 
     if (index == -1) index = 0;
 
@@ -700,6 +700,8 @@ bool WTorrentEnginePrivate::cleanCache()
         if (toDelete)
         {
             Q_Q(WTorrentEngine);
+
+            qDebug("REMOVING TORRENT %d", id);
 
             deletePaths.append(path + QString::number(id));
             deleteIds  .append(id);
