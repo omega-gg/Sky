@@ -93,6 +93,7 @@ public: // Variables
     QMetaMethod methodFile;
     QMetaMethod methodBuffer;
     QMetaMethod methodStart;
+    QMetaMethod methodSeek;
     QMetaMethod methodClear;
 
 protected:

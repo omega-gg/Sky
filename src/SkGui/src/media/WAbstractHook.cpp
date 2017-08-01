@@ -185,6 +185,24 @@ void WAbstractHook::applySource(const QUrl & url)
     d->backend->d_func()->source = url;
 }
 
+//-------------------------------------------------------------------------------------------------
+
+void WAbstractHook::applyState(WAbstractBackend::State state)
+{
+    Q_D(WAbstractHook);
+
+    d->backend->d_func()->state = state;
+}
+
+void WAbstractHook::applyStateLoad(WAbstractBackend::StateLoad stateLoad)
+{
+    Q_D(WAbstractHook);
+
+    d->backend->d_func()->stateLoad = stateLoad;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void WAbstractHook::applyCurrentTime(int msec)
 {
     Q_D(WAbstractHook);

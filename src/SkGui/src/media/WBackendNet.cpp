@@ -406,7 +406,7 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : WPrivatable(p)
 
     connect(reply, SIGNAL(loaded(QIODevice *, WBackendNetSource)), receiver, method);
 
-    device->moveToThread(this->thread());
+    device->moveToThread(thread());
 
     d->methodSource.invoke(this, Q_ARG(WNetReplySource *, reply));
 }
@@ -422,7 +422,7 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : WPrivatable(p)
 
     connect(reply, SIGNAL(loaded(QIODevice *, WBackendNetTrack)), receiver, method);
 
-    device->moveToThread(this->thread());
+    device->moveToThread(thread());
 
     d->methodTrack.invoke(this, Q_ARG(WNetReplyTrack *, reply));
 }
@@ -438,7 +438,7 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : WPrivatable(p)
 
     connect(reply, SIGNAL(loaded(QIODevice *, WBackendNetPlaylist)), receiver, method);
 
-    device->moveToThread(this->thread());
+    device->moveToThread(thread());
 
     d->methodPlaylist.invoke(this, Q_ARG(WNetReplyPlaylist *, reply));
 }
@@ -454,7 +454,7 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : WPrivatable(p)
 
     connect(reply, SIGNAL(loaded(QIODevice *, WBackendNetFolder)), receiver, method);
 
-    device->moveToThread(this->thread());
+    device->moveToThread(thread());
 
     d->methodFolder.invoke(this, Q_ARG(WNetReplyFolder *, reply));
 }

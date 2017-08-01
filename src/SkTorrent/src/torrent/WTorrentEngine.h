@@ -26,6 +26,7 @@
 #ifndef SK_NO_TORRENTENGINE
 
 // Forward declarations
+class QIODevice;
 class WTorrentEnginePrivate;
 class WTorrent;
 
@@ -41,11 +42,13 @@ public:
                                          QObject * parent  = NULL);
 
 public: // Interface
-    Q_INVOKABLE void load(WTorrent * torrent, const QByteArray & data);
+    Q_INVOKABLE void load(WTorrent * torrent, QIODevice * device);
 
     Q_INVOKABLE void seek(WTorrent * torrent, qint64 position);
 
     Q_INVOKABLE void remove(WTorrent * torrent, bool deleteFiles = false);
+
+    Q_INVOKABLE void clearCache();
 
     Q_INVOKABLE void deleteInstance();
 
@@ -64,8 +67,8 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void onUpdate())
 
-    Q_PRIVATE_SLOT(d_func(), void onDeleteFolder())
-    Q_PRIVATE_SLOT(d_func(), void onDeleteId    ())
+    Q_PRIVATE_SLOT(d_func(), void onFolderDelete())
+    Q_PRIVATE_SLOT(d_func(), void onFolderClear ())
 
     Q_PRIVATE_SLOT(d_func(), void onSave())
 };

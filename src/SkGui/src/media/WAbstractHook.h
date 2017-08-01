@@ -63,6 +63,9 @@ protected: // Functions
 
     void applySource(const QUrl & url);
 
+    void applyState    (WAbstractBackend::State     state);
+    void applyStateLoad(WAbstractBackend::StateLoad stateLoad);
+
     void applyCurrentTime(int msec);
 
     //---------------------------------------------------------------------------------------------
