@@ -22,6 +22,10 @@
 #include <QCoreApplication>
 #include <QDir>
 
+#ifdef Q_OS_DARWIN
+  #include <QDataStream>
+#endif
+
 // libtorrent includes
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/alert_types.hpp>
@@ -30,6 +34,7 @@
 
 // Boost includes
 #include <boost/bind.hpp>
+#include <boost/function.hpp>
 
 // C++ includes
 #include <fstream>
@@ -1156,7 +1161,8 @@ void WTorrentEnginePrivate::events()
 
             QCoreApplication::postEvent(q, new WTorrentEngineValue(EventPiece,
                                                                    hash_value(event->handle),
-                                                                   event->piece_index));
+                                                                   // Clang can't figure out how to convert a libtorrent piece_index_t into a QVariant, so we help it out, with an explicit cast.
+                                                                   (std::int32_t)event->piece_index));
         }
         else if (type == save_resume_data_alert::alert_type)
         {
