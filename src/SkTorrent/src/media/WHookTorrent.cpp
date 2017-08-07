@@ -272,6 +272,11 @@ void WTorrentSocket::onRead()
         thread->position = position;
         thread->seeking  = true;
 
+        if (thread->file->seek(position) == false || thread->file->pos() != position)
+        {
+            qDebug("SEEK FAILED");
+        }
+
         thread->engine->seek(thread->torrent, position);
 
         return;
@@ -283,6 +288,11 @@ void WTorrentSocket::onRead()
 
         thread->position = position;
         thread->seeking  = true;
+
+        if (thread->file->seek(position) == false || thread->file->pos() != position)
+        {
+            qDebug("SEEK FAILED");
+        }
     }
 
     onWrite();
@@ -315,11 +325,6 @@ void WTorrentSocket::onWrite()
         if (thread->seeking)
         {
             thread->seeking = false;
-
-            if (thread->file->seek(position) == false || thread->file->pos() != position)
-            {
-                qDebug("SEEK FAILED");
-            }
         }
 
         buffer -= HOOKTORRENT_SOCKET_MINIMUM;
@@ -361,11 +366,6 @@ void WTorrentSocket::onWrite()
             if (thread->seeking)
             {
                 thread->seeking = false;
-
-                if (thread->file->seek(position) == false || thread->file->pos() != position)
-                {
-                    qDebug("SEEK FAILED");
-                }
             }
 
             qint64 length = size - position;
