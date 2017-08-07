@@ -1481,9 +1481,10 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
             }
             else
             {
+                QByteArray array = device->readAll();
+
                 boost::shared_ptr<torrent_info> info
-                    = boost::shared_ptr<torrent_info> (new torrent_info(device->readAll(),
-                                                                        device->size   ()));
+                    = boost::shared_ptr<torrent_info> (new torrent_info(array, array.size()));
 
                 WTorrentData * data = d->createData(info, url);
 
@@ -1504,9 +1505,10 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         }
         else
         {
+            QByteArray array = device->readAll();
+
             boost::shared_ptr<torrent_info> info
-                = boost::shared_ptr<torrent_info> (new torrent_info(device->readAll(),
-                                                                    device->size   ()));
+                = boost::shared_ptr<torrent_info> (new torrent_info(array, array.size()));
 
             WTorrentData * data = d->createData(info, url);
 
