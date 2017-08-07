@@ -173,7 +173,8 @@ public: // Functions
 
     void updateFiles(WTorrentData * data);
 
-    bool addToCache(WTorrentData * data);
+    void addToCache (WTorrentData * data);
+    bool updateCache(WTorrentData * data);
 
     bool cleanCache();
 

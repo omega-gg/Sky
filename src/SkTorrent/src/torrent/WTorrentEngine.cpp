@@ -215,6 +215,11 @@ WTorrentData * WTorrentEnginePrivate::createData(TorrentInfoPointer info, const 
 
     datas.append(data);
 
+    // FIXME
+    if (source == NULL) addToCache(data);
+
+    //---------------------------------------------------------------------------------------------
+
     params.ti        = info;
     params.save_path = path.toStdString();
 
@@ -579,63 +584,19 @@ void WTorrentEnginePrivate::updateFiles(WTorrentData * data)
         else files[index] = 1;
     }
 
+    foreach (int index, data->finished)
+    {
+        files[index] = 0;
+    }
+
     data->handle.prioritize_files(files);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-bool WTorrentEnginePrivate::addToCache(WTorrentData * data)
+void WTorrentEnginePrivate::addToCache(WTorrentData * data)
 {
-    const torrent_handle & handle = data->handle;
-
-    torrent_status status = handle.status(torrent_handle::query_accurate_download_counters);
-
-    qint64 size = status.total_done;
-
-    int id = data->id;
-
-    foreach (WTorrentSource * source, sources)
-    {
-        if (source->id == id)
-        {
-            if (size == 0) return true;
-
-            qint64 sourceSize = source->size;
-
-            if (sourceSize == size) return true;
-
-            sources.removeOne(source);
-
-            if (size < maximum)
-            {
-                qDebug("TORRENT RECACHING SOURCE");
-
-                sources.append(source);
-
-                source->size = size;
-
-                this->size -= sourceSize;
-                this->size += size;
-
-                cleanCache();
-
-                save();
-
-                return true;
-            }
-            else
-            {
-                qWarning("WTorrentEnginePrivate::addToCache: File is too large for cache %s.",
-                         data->url.C_URL);
-
-                save();
-
-                return false;
-            }
-
-            return true;
-        }
-    }
+    qint64 size = data->size;
 
     if (size < maximum)
     {
@@ -647,24 +608,74 @@ bool WTorrentEnginePrivate::addToCache(WTorrentData * data)
 
         WTorrentSource * source = new WTorrentSource;
 
-        source->id       = id;
+        source->id       = data->id;
         source->url      = data->url;
-        source->size     = size;
+        source->size     = data->size;
         source->finished = data->finished;
 
         sources.append(source);
 
         save();
-
-        return true;
     }
-    else
+    else qWarning("WTorrentEnginePrivate::addToCache: File is too large for cache %s.",
+                  data->url.C_URL);
+}
+
+bool WTorrentEnginePrivate::updateCache(WTorrentData * data)
+{
+    const torrent_handle & handle = data->handle;
+
+    torrent_status status = handle.status(torrent_handle::query_accurate_download_counters);
+
+    qint64 size = status.total_done;
+
+    foreach (WTorrentSource * source, sources)
     {
-        qWarning("WTorrentEnginePrivate::addToCache: File is too large for cache %s.",
-                 data->url.C_URL);
+        if (source->id == data->id)
+        {
+            if (size == 0) return true;
 
-        return false;
+            qint64 sourceSize = source->size;
+
+            if (sourceSize == size) return true;
+
+            this->size -= sourceSize;
+
+            sources.removeOne(source);
+
+            if (size < maximum)
+            {
+                qDebug("TORRENT RECACHING SOURCE");
+
+                sources.append(source);
+
+                source->size = size;
+
+                this->size += size;
+
+                cleanCache();
+
+                save();
+
+                return true;
+            }
+            else
+            {
+                qWarning("WTorrentEnginePrivate::updateCache: File is too large for cache %s.",
+                         data->url.C_URL);
+
+                save();
+
+                return false;
+            }
+
+            return true;
+        }
     }
+
+    qDebug("CACHE THIS SHOULD NOT HAPPEN");
+
+    return false;
 }
 
 bool WTorrentEnginePrivate::cleanCache()
@@ -908,6 +919,8 @@ void WTorrentEnginePrivate::applyPiece(const torrent_handle & handle,
         data->finished.append(stream->index);
 
         QCoreApplication::postEvent(torrent, new WTorrentEvent(WTorrent::EventFinished));
+
+        save();
 
         return;
     }
@@ -1609,7 +1622,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
             handle.save_resume_data();
 
-            if (d->addToCache(data) == false)
+            if (d->updateCache(data) == false)
             {
                 d->deletePaths.append(data->path);
                 d->deleteIds  .append(data->id);
@@ -1752,6 +1765,8 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
                         QCoreApplication::postEvent(item->torrent,
                                                     new WTorrentEvent(WTorrent::EventFinished));
+
+                        d->save();
                     }
                     else item->current = current;
                 }
