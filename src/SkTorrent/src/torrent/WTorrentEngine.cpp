@@ -1379,13 +1379,16 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         pack.set_bool(settings_pack::smooth_connects, false);
 
-        pack.set_int(settings_pack::connection_speed, 400);
+        pack.set_int(settings_pack::connection_speed, 500);
 
         //pack.set_int(settings_pack::max_failcount,      1);
         pack.set_int(settings_pack::min_reconnect_time, 1);
 
         //pack.set_int(settings_pack::peer_timeout,         1);
         pack.set_int(settings_pack::peer_connect_timeout, 1);
+
+        // FIXME: Workaround to disable write cache.
+        pack.set_int(settings_pack::cache_size, 0);
 
         pack.set_bool(settings_pack::announce_to_all_tiers,    true);
         pack.set_bool(settings_pack::announce_to_all_trackers, true);
@@ -1404,7 +1407,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         dht_settings dht;
 
-        //dht.search_branching = 1;
+        dht.search_branching = 1;
 
         dht.max_fail_count = 3;
 
