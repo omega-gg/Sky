@@ -46,7 +46,7 @@ static const int HOOKTORRENT_SOCKET_SIZE = 1048576; // 1 megabyte
 static const int HOOKTORRENT_SOCKET_BUFFER  = HOOKTORRENT_SOCKET_SIZE /  2;
 static const int HOOKTORRENT_SOCKET_MINIMUM = HOOKTORRENT_SOCKET_SIZE / 10;
 
-static const int HOOKTORRENT_SOCKET_METADATA = 64;
+static const int HOOKTORRENT_SOCKET_METADATA = 1048576 * 10; // 10 megabytes
 
 static const int HOOKTORRENT_SOCKET_SKIP      = 10;
 static const int HOOKTORRENT_SOCKET_SKIP_SIZE = 1024; // 1 kilobyte
@@ -221,47 +221,22 @@ void WTorrentSocket::onRead()
 
     qint64 progress = thread->progress;
 
-    if (thread->started == false || thread->seeking)
+    if ((thread->started == false || thread->seeking)
+        &&
+        length > HOOKTORRENT_SOCKET_METADATA && progress + HOOKTORRENT_SOCKET_SIZE < position)
     {
-        if (progress + HOOKTORRENT_SOCKET_SIZE < position)
-        {
-            qDebug("SKIP DATA");
+        qDebug("SKIP DATA");
 
-            if (length > HOOKTORRENT_SOCKET_SKIP_SIZE)
-            {
-                skip = HOOKTORRENT_SOCKET_SKIP;
+        skip = HOOKTORRENT_SOCKET_SKIP;
 
-                writeBuffer(HOOKTORRENT_SOCKET_SKIP_SIZE);
+        writeBuffer(HOOKTORRENT_SOCKET_SKIP_SIZE);
 
-                timer.start();
-            }
-            else
-            {
-                skip = 0;
+        timer.start();
 
-                writeBuffer(length);
-
-                timer.stop();
-            }
-
-            return;
-        }
+        return;
     }
-    else
-    {
-        skip = 0;
 
-        if (length <= HOOKTORRENT_SOCKET_METADATA)
-        {
-            qDebug("SKIP METADATA");
-
-            writeBuffer(length);
-
-            timer.stop();
-
-            return;
-        }
-    }
+    skip = 0;
 
     if (position < thread->position || progress < position)
     {

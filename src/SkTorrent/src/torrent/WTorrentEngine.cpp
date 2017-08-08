@@ -769,32 +769,43 @@ void WTorrentEnginePrivate::prioritize(const torrent_handle & handle,
 
     qint64 sizePiece = (qint64) (piece * stream->sizePiece);
 
-    int block;
+    qint64 buffer;
 
-    if (position > sizePiece)
+    if (piece == count)
     {
-         block = (position - sizePiece) / TORRENTENGINE_BLOCK;
+        stream->block = 0;
+
+        buffer = sizePiece;
     }
-    else block = 0;
-
-    QBitArray * blocks = &(data->blocks);
-
-    int blockCount = data->blockCount;
-
-    int blockCurrent = current * blockCount + block;
-
-    while (block < blockCount && blocks->at(blockCurrent))
+    else
     {
-        block       ++;
-        blockCurrent++;
-    }
+        int block;
 
-    stream->block = block;
+        if (position > sizePiece)
+        {
+             block = (position - sizePiece) / TORRENTENGINE_BLOCK;
+        }
+        else block = 0;
+
+        QBitArray * blocks = &(data->blocks);
+
+        int blockCount = data->blockCount;
+
+        int blockCurrent = current * blockCount + block;
+
+        while (block < blockCount && blocks->at(blockCurrent))
+        {
+            block       ++;
+            blockCurrent++;
+        }
+
+        stream->block = block;
+
+        buffer = (qint64) (sizePiece + block * TORRENTENGINE_BLOCK);
+    }
 
     //---------------------------------------------------------------------------------------------
     // Buffer
-
-    qint64 buffer = (qint64) (sizePiece + block * TORRENTENGINE_BLOCK);
 
     qint64 size = stream->size;
 
