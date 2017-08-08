@@ -35,23 +35,17 @@ class WTorrentSocket;
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int HOOKTORRENT_MINIMUM_SIZE = 1048576; // 1 megabyte
+static const int HOOKTORRENT_SIZE = 1048576; // 1 megabyte
 
-static const int HOOKTORRENT_START = 100; // 0.1 percent
+static const int HOOKTORRENT_BUFFER  = HOOKTORRENT_SIZE /  2;
+static const int HOOKTORRENT_MINIMUM = HOOKTORRENT_SIZE / 10;
 
-//-------------------------------------------------------------------------------------------------
+static const int HOOKTORRENT_METADATA = 1048576 * 10; // 10 megabytes
 
-static const int HOOKTORRENT_SOCKET_SIZE = 1048576; // 1 megabyte
+static const int HOOKTORRENT_SKIP      = 10;
+static const int HOOKTORRENT_SKIP_SIZE = 1024; // 1 kilobyte
 
-static const int HOOKTORRENT_SOCKET_BUFFER  = HOOKTORRENT_SOCKET_SIZE /  2;
-static const int HOOKTORRENT_SOCKET_MINIMUM = HOOKTORRENT_SOCKET_SIZE / 10;
-
-static const int HOOKTORRENT_SOCKET_METADATA = 1048576 * 10; // 10 megabytes
-
-static const int HOOKTORRENT_SOCKET_SKIP      = 10;
-static const int HOOKTORRENT_SOCKET_SKIP_SIZE = 1024; // 1 kilobyte
-
-static const int HOOKTORRENT_SOCKET_INTERVAL = 20;
+static const int HOOKTORRENT_INTERVAL = 20;
 
 //=================================================================================================
 // WTorrentThread
@@ -151,7 +145,7 @@ WTorrentSocket::WTorrentSocket(WTorrentThread * thread, QTcpSocket * socket) : Q
 
     skip = 0;
 
-    timer.setInterval(HOOKTORRENT_SOCKET_INTERVAL);
+    timer.setInterval(HOOKTORRENT_INTERVAL);
 
     timer.setSingleShot(true);
 
@@ -223,13 +217,13 @@ void WTorrentSocket::onRead()
 
     if ((thread->started == false || thread->seeking)
         &&
-        length > HOOKTORRENT_SOCKET_METADATA && progress + HOOKTORRENT_SOCKET_SIZE < position)
+        length > HOOKTORRENT_METADATA && progress + HOOKTORRENT_SIZE < position)
     {
         qDebug("SKIP DATA");
 
-        skip = HOOKTORRENT_SOCKET_SKIP;
+        skip = HOOKTORRENT_SKIP;
 
-        writeBuffer(HOOKTORRENT_SOCKET_SKIP_SIZE);
+        writeBuffer(HOOKTORRENT_SKIP_SIZE);
 
         timer.start();
 
@@ -279,7 +273,7 @@ void WTorrentSocket::onWrite()
     {
         skip--;
 
-        writeBuffer(HOOKTORRENT_SOCKET_SIZE);
+        writeBuffer(HOOKTORRENT_SIZE);
 
         if (skip) timer.start();
 
@@ -290,7 +284,7 @@ void WTorrentSocket::onWrite()
 
     qint64 buffer = progress - position;
 
-    if (buffer > HOOKTORRENT_SOCKET_BUFFER)
+    if (buffer > HOOKTORRENT_BUFFER)
     {
         if (timer.isActive() == false)
         {
@@ -302,15 +296,15 @@ void WTorrentSocket::onWrite()
             thread->seeking = false;
         }
 
-        buffer -= HOOKTORRENT_SOCKET_MINIMUM;
+        buffer -= HOOKTORRENT_MINIMUM;
 
         QByteArray bytes;
 
-        if (buffer < HOOKTORRENT_SOCKET_SIZE)
+        if (buffer < HOOKTORRENT_SIZE)
         {
              bytes = thread->file->read(buffer);
         }
-        else bytes = thread->file->read(HOOKTORRENT_SOCKET_SIZE);
+        else bytes = thread->file->read(HOOKTORRENT_SIZE);
 
         int count = bytes.count();
 
@@ -453,7 +447,7 @@ void WTorrentThread::onSeek()
 
     seeking = false;
 
-    data->skip = HOOKTORRENT_SOCKET_SKIP;
+    data->skip = HOOKTORRENT_SKIP;
 
     data->onWrite();
 }
@@ -749,30 +743,11 @@ void WHookTorrentPrivate::onBuffer(qint64 bytesReceived)
 
     if (state != StateLoading) return;
 
-    qint64 size = torrent->size();
+    Q_Q(WHookTorrent);
 
-    int buffer = (bytesReceived * 100000) / size;
+    q->setProgress(0.5);
 
-    if (buffer >= HOOKTORRENT_START)
-    {
-        Q_Q(WHookTorrent);
-
-        if (q->backend()->progress() < 0.9)
-        {
-            q->setProgress(0.9);
-        }
-
-        if (bytesReceived >= HOOKTORRENT_MINIMUM_SIZE && WControllerFile::exists(fileName))
-        {
-            start();
-        }
-    }
-    else if (buffer)
-    {
-        Q_Q(WHookTorrent);
-
-        q->setProgress((qreal) buffer / HOOKTORRENT_START);
-    }
+    start();
 }
 
 //=================================================================================================

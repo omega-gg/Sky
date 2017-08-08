@@ -584,9 +584,10 @@ void WTorrentEnginePrivate::updateFiles(WTorrentData * data)
         else files[index] = 1;
     }
 
+    // FIXME
     foreach (int index, data->finished)
     {
-        files[index] = 0;
+        files[index] = 1;
     }
 
     data->handle.prioritize_files(files);
