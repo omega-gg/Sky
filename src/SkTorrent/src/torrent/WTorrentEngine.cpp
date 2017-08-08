@@ -768,19 +768,17 @@ void WTorrentEnginePrivate::prioritize(const torrent_handle & handle,
     //---------------------------------------------------------------------------------------------
     // Blocks
 
-    qint64 sizePiece = (qint64) (piece * stream->sizePiece);
-
-    qint64 buffer;
-
     if (piece == count)
     {
         stream->block = 0;
 
-        buffer = sizePiece;
+        stream->buffer = stream->size;
     }
     else
     {
         int block;
+
+        qint64 sizePiece = (qint64) (piece * stream->sizePiece);
 
         if (position > sizePiece)
         {
@@ -802,19 +800,19 @@ void WTorrentEnginePrivate::prioritize(const torrent_handle & handle,
 
         stream->block = block;
 
-        buffer = (qint64) (sizePiece + block * TORRENTENGINE_BLOCK);
+        qint64 buffer = (qint64) (sizePiece + block * TORRENTENGINE_BLOCK);
+
+        qint64 size = stream->size;
+
+        if (buffer < size)
+        {
+             stream->buffer = buffer;
+        }
+        else stream->buffer = size;
     }
 
     //---------------------------------------------------------------------------------------------
     // Buffer
-
-    qint64 size = stream->size;
-
-    if (buffer < size)
-    {
-         stream->buffer = buffer;
-    }
-    else stream->buffer = size;
 
     QCoreApplication::postEvent(stream->torrent,
                                 new WTorrentEventValue(WTorrent::EventBuffer, stream->buffer));

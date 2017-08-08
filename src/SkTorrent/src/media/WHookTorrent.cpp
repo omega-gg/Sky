@@ -757,9 +757,13 @@ void WHookTorrentPrivate::onBuffer(qint64 bytesReceived)
 
     if (progress > 1.0)
     {
-         q->setProgress(0.9);
+        progress = 0.9;
     }
-    else q->setProgress(progress);
+
+    if (backend->progress() < progress)
+    {
+        q->setProgress(progress);
+    }
 }
 
 //=================================================================================================
