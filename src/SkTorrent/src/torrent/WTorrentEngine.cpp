@@ -1407,7 +1407,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         dht_settings dht;
 
-        dht.search_branching = 1;
+        //dht.search_branching = 1;
 
         dht.max_fail_count = 3;
 

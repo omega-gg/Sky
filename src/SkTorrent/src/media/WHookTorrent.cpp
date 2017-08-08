@@ -221,7 +221,7 @@ void WTorrentSocket::onRead()
 
     qint64 progress = thread->progress;
 
-    if (thread->started == false)
+    if (thread->started == false || thread->seeking)
     {
         if (progress + HOOKTORRENT_SOCKET_SIZE < position)
         {
