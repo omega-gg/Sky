@@ -37,6 +37,8 @@ class WTorrentSocket;
 
 static const int HOOKTORRENT_SIZE = 1048576; // 1 megabyte
 
+static const int HOOKTORRENT_PROGRESS = 100; // 0.1 percent
+
 static const int HOOKTORRENT_BUFFER  = HOOKTORRENT_SIZE /  2;
 static const int HOOKTORRENT_MINIMUM = HOOKTORRENT_SIZE / 10;
 
@@ -741,13 +743,23 @@ void WHookTorrentPrivate::onBuffer(qint64 bytesReceived)
 {
     methodBuffer.invoke(thread, Q_ARG(qint64, bytesReceived));
 
-    if (state != StateLoading) return;
+    if (state == StateLoading)
+    {
+        start();
+    }
+    else if (state != StateStarting) return;
 
     Q_Q(WHookTorrent);
 
-    q->setProgress(0.5);
+    int buffer = (bytesReceived * 100000) / torrent->size();
 
-    start();
+    qreal progress = (qreal) buffer / HOOKTORRENT_PROGRESS;
+
+    if (progress > 1.0)
+    {
+         q->setProgress(0.9);
+    }
+    else q->setProgress(progress);
 }
 
 //=================================================================================================
