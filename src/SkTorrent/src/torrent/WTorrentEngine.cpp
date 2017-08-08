@@ -1271,6 +1271,11 @@ void WTorrentEnginePrivate::onSave()
 {
     qDebug("TORRENT INDEX SAVED");
 
+    if (QFile::exists(path) == false)
+    {
+        WControllerFile::createFolder(path);
+    }
+
     QFile file(pathIndex);
 
     if (file.open(QIODevice::WriteOnly) == false)
