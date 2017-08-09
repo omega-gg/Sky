@@ -105,8 +105,10 @@ struct WTorrentSource
 // WTorrentData
 //-------------------------------------------------------------------------------------------------
 
-struct WTorrentData : public WTorrentSource
+struct WTorrentData
 {
+    WTorrentSource * source;
+
     QString path;
 
     int count;
@@ -173,7 +175,6 @@ public: // Functions
 
     void updateFiles(WTorrentData * data);
 
-    void addToCache (WTorrentData * data);
     bool updateCache(WTorrentData * data);
 
     bool cleanCache();
@@ -228,8 +229,8 @@ public: // Variables
 
     QHash<unsigned int, WTorrentData *> deleteTorrents;
 
-    QList<QString> deletePaths;
     QList<int>     deleteIds;
+    QList<QString> deletePaths;
 
     QTimer * timerUpdate;
     QTimer * timerSave;
