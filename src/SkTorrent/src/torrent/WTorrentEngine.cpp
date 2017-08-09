@@ -1619,14 +1619,11 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         items->removeOne(item);
 
+        d->unselectFile(item);
+
         delete item;
 
-        if (items->isEmpty() == false)
-        {
-            d->unselectFile(item);
-
-            return true;
-        }
+        if (items->isEmpty() == false) return true;
 
         const torrent_handle & handle = data->handle;
 
