@@ -577,12 +577,6 @@ void WTorrentEnginePrivate::updateFiles(WTorrentData * data)
         else files[index] = 1;
     }
 
-    // FIXME
-    foreach (int index, data->source->finished)
-    {
-        files[index] = 0;
-    }
-
     data->handle.prioritize_files(files);
 }
 
@@ -1573,12 +1567,9 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         delete item;
 
-        if (items->isEmpty() == false)
-        {
-            d->updateFiles(data);
+        d->updateFiles(data);
 
-            return true;
-        }
+        if (items->isEmpty() == false) return true;
 
         const torrent_handle & handle = data->handle;
 
