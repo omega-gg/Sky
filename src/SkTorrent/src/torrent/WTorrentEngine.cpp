@@ -1567,9 +1567,12 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         delete item;
 
-        d->updateFiles(data);
+        if (items->isEmpty() == false)
+        {
+            d->updateFiles(data);
 
-        if (items->isEmpty() == false) return true;
+            return true;
+        }
 
         const torrent_handle & handle = data->handle;
 
