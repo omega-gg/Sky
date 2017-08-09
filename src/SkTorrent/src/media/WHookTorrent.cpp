@@ -745,7 +745,10 @@ void WHookTorrentPrivate::onBuffer(qint64 bytesReceived)
 
     if (state == StateLoading)
     {
-        start();
+        if (WControllerFile::exists(fileName))
+        {
+            start();
+        }
     }
     else if (state != StateStarting) return;
 
