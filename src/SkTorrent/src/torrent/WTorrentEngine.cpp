@@ -190,6 +190,8 @@ WTorrentData * WTorrentEnginePrivate::createData(TorrentInfoPointer info, const 
         save();
     }
 
+    int fileCount = info->num_files();
+
     int count = info->num_pieces();
 
     int blockCount = info->piece_length() / TORRENTENGINE_BLOCK;
@@ -200,7 +202,7 @@ WTorrentData * WTorrentEnginePrivate::createData(TorrentInfoPointer info, const 
 
     data->path = path;
 
-    data->count = info->num_files();
+    data->fileCount = fileCount;
 
     data->hash = 0;
 
@@ -208,6 +210,8 @@ WTorrentData * WTorrentEnginePrivate::createData(TorrentInfoPointer info, const 
 
     data->pieces = QBitArray(count);
     data->blocks = QBitArray(count * blockCount);
+
+    data->files = std::vector<int>(fileCount, 0);
 
     datas.append(data);
 
@@ -243,7 +247,7 @@ WTorrentItem * WTorrentEnginePrivate::createItem(TorrentInfo info, WTorrentData 
 
         QString filePath = data->path + '/';
 
-        for (int i = 0; i < data->count; i++)
+        for (int i = 0; i < data->fileCount; i++)
         {
             QString fileName = QString::fromStdString(storage.file_path(i));
 
@@ -257,7 +261,7 @@ WTorrentItem * WTorrentEnginePrivate::createItem(TorrentInfo info, WTorrentData 
 
         finished = false;
     }
-    else if (index < data->count)
+    else if (index < data->fileCount)
     {
         const file_storage & storage = info->files();
 
@@ -342,7 +346,7 @@ WTorrentStream * WTorrentEnginePrivate::createStream(TorrentInfo info, WTorrentD
 
     if (index == -1) index = 0;
 
-    if (index < data->count)
+    if (index < data->fileCount)
     {
         const file_storage & storage = info->files();
 
@@ -558,11 +562,54 @@ void WTorrentEnginePrivate::addStream(const torrent_handle & handle, WTorrentStr
 
 //-------------------------------------------------------------------------------------------------
 
+void WTorrentEnginePrivate::selectFile(WTorrentItem * item)
+{
+    WTorrentData * data = item->data;
+
+    std::vector<int> & files = data->files;
+
+    int index = item->index;
+
+    if (index == -1)
+    {
+        std::fill(files.begin(), files.end(), 1);
+    }
+    else files[index] = 1;
+
+    data->handle.prioritize_files(files);
+}
+
+void WTorrentEnginePrivate::unselectFile(WTorrentItem * item)
+{
+    int index = item->index;
+
+    if (index != -1)
+    {
+        WTorrentData * data = item->data;
+
+        if (data->source->finished.contains(index)) return;
+
+        foreach (WTorrentItem * item, data->items)
+        {
+            if (item->index == index) return;
+        }
+
+        std::vector<int> & files = data->files;
+
+        files[index] = 0;
+
+        data->handle.prioritize_files(files);
+    }
+    else updateFiles(item->data);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void WTorrentEnginePrivate::updateFiles(WTorrentData * data)
 {
     qDebug("TORRENT UPDATE FILES");
 
-    std::vector<int> files(data->count, 0);
+    std::vector<int> & files = data->files;
 
     foreach (WTorrentItem * item, data->items)
     {
@@ -572,15 +619,16 @@ void WTorrentEnginePrivate::updateFiles(WTorrentData * data)
         {
             std::fill(files.begin(), files.end(), 1);
 
-            break;
+            data->handle.prioritize_files(files);
+
+            return;
         }
         else files[index] = 1;
     }
 
-    // FIXME
     foreach (int index, data->source->finished)
     {
-        files[index] = 0;
+        files[index] = 1;
     }
 
     data->handle.prioritize_files(files);
@@ -1458,7 +1506,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
                 {
                     d->addStream(data->handle, stream);
 
-                    d->updateFiles(data);
+                    d->selectFile(stream);
                 }
             }
             else
@@ -1482,7 +1530,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
             {
                 d->addItem(data->handle, item);
 
-                d->updateFiles(data);
+                d->selectFile(item);
             }
         }
         else
@@ -1575,7 +1623,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         if (items->isEmpty() == false)
         {
-            d->updateFiles(data);
+            d->unselectFile(item);
 
             return true;
         }

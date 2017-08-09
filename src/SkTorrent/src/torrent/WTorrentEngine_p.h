@@ -111,7 +111,7 @@ struct WTorrentData
 
     QString path;
 
-    int count;
+    int fileCount;
 
     torrent_handle handle;
     unsigned int   hash;
@@ -122,6 +122,8 @@ struct WTorrentData
     QBitArray blocks;
 
     QList<WTorrentItem *> items;
+
+    std::vector<int> files;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -172,6 +174,9 @@ public: // Functions
 
     void addItem  (const torrent_handle & handle, WTorrentItem   * item);
     void addStream(const torrent_handle & handle, WTorrentStream * stream);
+
+    void selectFile  (WTorrentItem * item);
+    void unselectFile(WTorrentItem * item);
 
     void updateFiles(WTorrentData * data);
 
