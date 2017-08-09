@@ -570,11 +570,16 @@ void WTorrentEnginePrivate::selectFile(WTorrentItem * item)
 
     int index = item->index;
 
-    if (index == -1)
+    if (index != -1)
     {
-        std::fill(files.begin(), files.end(), 1);
+        if (data->items.count() == 1)
+        {
+            std::fill(files.begin(), files.end(), 0);
+        }
+
+        files[index] = 1;
     }
-    else files[index] = 1;
+    else std::fill(files.begin(), files.end(), 1);
 
     data->handle.prioritize_files(files);
 }
@@ -1619,11 +1624,16 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         items->removeOne(item);
 
-        d->unselectFile(item);
+        if (items->isEmpty() == false)
+        {
+            d->unselectFile(item);
+
+            delete item;
+
+            return true;
+        }
 
         delete item;
-
-        if (items->isEmpty() == false) return true;
 
         const torrent_handle & handle = data->handle;
 
