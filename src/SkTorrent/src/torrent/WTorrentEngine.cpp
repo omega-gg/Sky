@@ -122,7 +122,11 @@ void WTorrentEnginePrivate::load()
 
         while (finished)
         {
-            stream >> source->finished;
+            int index;
+
+            stream >> index;
+
+            source->finished.append(index);
 
             finished--;
         }
