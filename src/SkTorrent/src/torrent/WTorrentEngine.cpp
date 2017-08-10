@@ -162,14 +162,17 @@ void WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & file
         return;
     }
 
-    QString content = file.readAll();
+    QByteArray array = file.readAll();
+
+    QString content = QString::fromAscii(array.data(), array.size());
 
     int blockCount = WControllerTorrent::integerAfter(content, "blocks per piece");
 
+    QString pieces = WControllerTorrent::stringAfter(content, "pieces");
+
     QString unfinished = WControllerTorrent::listAfter(content, "unfinished");
 
-    qDebug("BLOCK COUNT %d %d [%s]", blockCount,
-           WControllerTorrent::indexAfter(content, "unfinished"), unfinished.C_STR);
+    qDebug("BLOCK COUNT %d [%s] [%s]", blockCount, pieces.C_STR, unfinished.C_STR);
 }
 
 //-------------------------------------------------------------------------------------------------
