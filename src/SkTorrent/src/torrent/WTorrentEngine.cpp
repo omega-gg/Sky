@@ -592,11 +592,12 @@ void WTorrentEnginePrivate::unselectFile(WTorrentItem * item)
     {
         WTorrentData * data = item->data;
 
-        if (data->source->finished.contains(index)) return;
-
-        foreach (WTorrentItem * item, data->items)
+        if (item->finished == false)
         {
-            if (item->index == index) return;
+            foreach (WTorrentItem * item, data->items)
+            {
+                if (item->index == index) return;
+            }
         }
 
         std::vector<int> & files = data->files;
@@ -633,7 +634,7 @@ void WTorrentEnginePrivate::updateFiles(WTorrentData * data)
 
     foreach (int index, data->source->finished)
     {
-        files[index] = 1;
+        files[index] = 0;
     }
 
     data->handle.prioritize_files(files);
