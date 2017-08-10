@@ -277,14 +277,18 @@ public: // Static functions
 
     Q_INVOKABLE static Type extractType(const QString & text, int at = 0);
 
-    Q_INVOKABLE static QString extractString(const QString & text, int at = 0);
-    Q_INVOKABLE static QString extractList  (const QString & text, int at = 0);
+    Q_INVOKABLE static QString extractString (const QString & text, int at = 0);
+    Q_INVOKABLE static int     extractInteger(const QString & text, int at = 0);
+    Q_INVOKABLE static QString extractList   (const QString & text, int at = 0);
 
     Q_INVOKABLE static int indexAfter(const QString & text,
                                       const QString & string, int at = 0);
 
     Q_INVOKABLE static QString stringAfter(const QString & text,
                                            const QString & string, int at = 0);
+
+    Q_INVOKABLE static int integerAfter(const QString & text,
+                                        const QString & string, int at = 0);
 
     Q_INVOKABLE static QString listAfter(const QString & text,
                                          const QString & string, int at = 0);

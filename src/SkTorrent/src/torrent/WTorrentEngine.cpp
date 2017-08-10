@@ -35,6 +35,7 @@
 #include <fstream>
 
 // Sk includes
+#include <WControllerApplication>
 #include <WControllerFile>
 #include <WControllerNetwork>
 
@@ -150,8 +151,33 @@ void WTorrentEnginePrivate::save()
 
 //-------------------------------------------------------------------------------------------------
 
+void WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & fileName)
+{
+    QFile file(fileName);
+
+    if (file.open(QIODevice::ReadOnly) == false)
+    {
+        qWarning("WTorrentEnginePrivate::loadResume: Failed to open file %s.", fileName.C_STR);
+
+        return;
+    }
+
+    QString content = file.readAll();
+
+    int blockCount = WControllerTorrent::integerAfter(content, "blocks per piece");
+
+    QString unfinished = WControllerTorrent::listAfter(content, "unfinished");
+
+    qDebug("BLOCK COUNT %d %d [%s]", blockCount,
+           WControllerTorrent::indexAfter(content, "unfinished"), unfinished.C_STR);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 WTorrentData * WTorrentEnginePrivate::createData(TorrentInfoPointer info, const QUrl & url)
 {
+    WTorrentData * data = new WTorrentData;
+
     add_torrent_params params;
 
     WTorrentSource * source = getSource(url);
@@ -165,6 +191,8 @@ WTorrentData * WTorrentEnginePrivate::createData(TorrentInfoPointer info, const 
         path = this->path + number;
 
         QString fileName = path + "/." + number;
+
+        loadResume(data, fileName);
 
         std::ifstream stream(fileName.C_STR, std::ios_base::binary);
 
@@ -195,8 +223,6 @@ WTorrentData * WTorrentEnginePrivate::createData(TorrentInfoPointer info, const 
     int count = info->num_pieces();
 
     int blockCount = info->piece_length() / TORRENTENGINE_BLOCK;
-
-    WTorrentData * data = new WTorrentData;
 
     data->source = source;
 

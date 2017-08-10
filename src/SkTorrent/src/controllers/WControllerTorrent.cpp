@@ -668,6 +668,19 @@ WControllerTorrent::Type WControllerTorrent::extractType(const QString & text, i
     else return QString();
 }
 
+/* Q_INVOKABLE static */ int WControllerTorrent::extractInteger(const QString & text, int at)
+{
+    at++;
+
+    int index = text.indexOf('e', at);
+
+    if (index == -1)
+    {
+         return -1;
+    }
+    else return text.mid(at, index - at).toInt();
+}
+
 /* Q_INVOKABLE static */ QString WControllerTorrent::extractList(const QString & text, int at)
 {
     int index = skipList(text, at);
@@ -750,6 +763,18 @@ WControllerTorrent::Type WControllerTorrent::extractType(const QString & text, i
          return QString();
     }
     else return extractString(text, index);
+}
+
+/* Q_INVOKABLE static */ int WControllerTorrent::integerAfter(const QString & text,
+                                                              const QString & string, int at)
+{
+    int index = indexAfter(text, string, at);
+
+    if (index == -1)
+    {
+         return -1;
+    }
+    else return extractInteger(text, index);
 }
 
 /* Q_INVOKABLE static */ QString WControllerTorrent::listAfter(const QString & text,

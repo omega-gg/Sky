@@ -160,6 +160,8 @@ public: // Functions
     void load();
     void save();
 
+    void loadResume(WTorrentData * data, const QString & fileName);
+
     WTorrentData * createData(TorrentInfoPointer info, const QUrl & url);
 
     WTorrentItem * createItem(TorrentInfo info, WTorrentData * data,
