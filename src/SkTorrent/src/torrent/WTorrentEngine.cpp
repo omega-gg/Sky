@@ -336,19 +336,51 @@ WTorrentItem * WTorrentEnginePrivate::createItem(TorrentInfo info, WTorrentData 
     item->begin = begin;
     item->end   = end;
 
-    item->current = begin;
-
-    item->finished = finished;
-
     data->items.append(item);
 
     if (finished)
     {
-        qDebug("TORRENT ALREADY FINISHED");
+        qDebug("TORRENT ALREADY FINISHED A");
+
+        item->current = end;
+
+        item->finished = true;
 
         QCoreApplication::postEvent(torrent, new WTorrentEventAdd(paths, size));
 
         QCoreApplication::postEvent(torrent, new WTorrentEvent(WTorrent::EventFinished));
+    }
+    else
+    {
+        QBitArray * pieces = &(data->pieces);
+
+        int current = begin;
+
+        while (current < end && pieces->at(current))
+        {
+            current++;
+        }
+
+        item->current = current;
+
+        if (current == end)
+        {
+            qDebug("TORRENT ALREADY FINISHED B");
+
+            item->finished = true;
+
+            QCoreApplication::postEvent(torrent, new WTorrentEventAdd(paths, size));
+
+            QCoreApplication::postEvent(torrent, new WTorrentEvent(WTorrent::EventFinished));
+        }
+        else
+        {
+            qDebug("TORRENT START AT %d", current);
+
+            item->finished = false;
+
+            QCoreApplication::postEvent(torrent, new WTorrentEventAdd(paths, size));
+        }
     }
 
     return item;
@@ -419,6 +451,8 @@ WTorrentStream * WTorrentEnginePrivate::createStream(TorrentInfo info, WTorrentD
         finished = false;
     }
 
+    int count = end - begin;
+
     WTorrentStream * stream = new WTorrentStream;
 
     stream->data = data;
@@ -436,35 +470,101 @@ WTorrentStream * WTorrentEnginePrivate::createStream(TorrentInfo info, WTorrentD
     stream->begin = begin;
     stream->end   = end;
 
-    stream->current = begin;
-
-    stream->finished = finished;
-
     //---------------------------------------------------------------------------------------------
 
     stream->fileName = fileName;
 
     stream->sizePiece = sizePiece;
 
-    stream->piece = 0;
-    stream->count = end - begin;
+    stream->count = count;
 
-    stream->block = 0;
-
-    stream->buffer   = 0;
     stream->position = 0;
 
     data->items.append(stream);
 
     if (finished)
     {
-        qDebug("TORRENT ALREADY FINISHED");
+        qDebug("TORRENT ALREADY FINISHED A");
+
+        stream->piece   = count;
+        stream->current = end;
+
+        stream->block = 0;
+
+        stream->buffer = size;
+
+        stream->finished = true;
 
         QCoreApplication::postEvent(torrent, new WTorrentEventAdd(paths, size));
 
         QCoreApplication::postEvent(torrent, new WTorrentEventValue(WTorrent::EventBuffer, size));
 
         QCoreApplication::postEvent(torrent, new WTorrentEvent(WTorrent::EventFinished));
+    }
+    else
+    {
+        QBitArray * pieces = &(data->pieces);
+
+        int piece = 0;
+
+        int current = begin;
+
+        while (piece < count && pieces->at(current))
+        {
+            piece  ++;
+            current++;
+        }
+
+        stream->piece   = piece;
+        stream->current = current;
+
+        if (piece == count)
+        {
+            qDebug("TORRENT ALREADY FINISHED B");
+
+            stream->block = 0;
+
+            stream->buffer = size;
+
+            stream->finished = true;
+
+            QCoreApplication::postEvent(torrent, new WTorrentEventAdd(paths, size));
+
+            QCoreApplication::postEvent(torrent, new WTorrentEventValue(WTorrent::EventBuffer,
+                                                                        size));
+
+            QCoreApplication::postEvent(torrent, new WTorrentEvent(WTorrent::EventFinished));
+        }
+        else
+        {
+            QBitArray * blocks = &(data->blocks);
+
+            int block      = 0;
+            int blockCount = data->blockCount;
+
+            int blockCurrent = current * blockCount;
+
+            while (block < blockCount && blocks->at(blockCurrent))
+            {
+                block       ++;
+                blockCurrent++;
+            }
+
+            stream->block = block;
+
+            qint64 buffer = (qint64) (piece * stream->sizePiece + block * TORRENTENGINE_BLOCK);
+
+            stream->buffer = buffer;
+
+            stream->finished = false;
+
+            qDebug("TORRENT START AT %d %d", piece, block);
+
+            QCoreApplication::postEvent(torrent, new WTorrentEventAdd(paths, size));
+
+            QCoreApplication::postEvent(torrent, new WTorrentEventValue(WTorrent::EventBuffer,
+                                                                        buffer));
+        }
     }
 
     return stream;
@@ -476,27 +576,10 @@ void WTorrentEnginePrivate::addItem(const torrent_handle & handle, WTorrentItem 
 {
     if (item->finished) return;
 
-    WTorrentData * data = item->data;
-
-    QBitArray * pieces = &(data->pieces);
-
-    int current = item->begin;
-
-    while (current < item->end && pieces->at(current))
-    {
-        current++;
-    }
-
-    item->current = current;
-
-    qDebug("TORRENT START AT %d", current);
-
     if (item->mode == WTorrent::Sequential)
     {
         handle.set_sequential_download(true);
     }
-
-    QCoreApplication::postEvent(item->torrent, new WTorrentEventAdd(item->paths, item->size));
 }
 
 void WTorrentEnginePrivate::addStream(const torrent_handle & handle, WTorrentStream * stream)
@@ -504,81 +587,6 @@ void WTorrentEnginePrivate::addStream(const torrent_handle & handle, WTorrentStr
     if (stream->finished) return;
 
     handle.rename_file(stream->index, stream->fileName.toStdString());
-
-    //---------------------------------------------------------------------------------------------
-    // Pieces
-
-    WTorrentData * data = stream->data;
-
-    QBitArray * pieces = &(data->pieces);
-
-    int piece = 0;
-
-    int current = stream->begin;
-    int last    = stream->end;
-
-    while (current < last && pieces->at(current))
-    {
-        piece  ++;
-        current++;
-    }
-
-    stream->piece   = piece;
-    stream->current = current;
-
-    //---------------------------------------------------------------------------------------------
-    // Blocks
-
-    QBitArray * blocks = &(data->blocks);
-
-    int block      = 0;
-    int blockCount = data->blockCount;
-
-    int blockCurrent = current * blockCount;
-
-    while (block < blockCount && blocks->at(blockCurrent))
-    {
-        block       ++;
-        blockCurrent++;
-    }
-
-    stream->block = block;
-
-    qDebug("TORRENT START AT %d %d", piece, block);
-
-    //---------------------------------------------------------------------------------------------
-    // Deadline
-
-    int count = TORRENTENGINE_PRIORITY_COUNT;
-
-    int deadline = 1;
-
-    while (count && current < last)
-    {
-        handle.set_piece_deadline(current, deadline);
-
-        deadline++;
-
-        current++;
-
-        count--;
-    }
-
-    //---------------------------------------------------------------------------------------------
-
-    WTorrent * torrent = stream->torrent;
-
-    QCoreApplication::postEvent(torrent, new WTorrentEventAdd(stream->paths, stream->size));
-
-    if (piece || block)
-    {
-        qint64 buffer = (qint64) (piece * stream->sizePiece + block * TORRENTENGINE_BLOCK);
-
-        stream->buffer = buffer;
-
-        QCoreApplication::postEvent(torrent,
-                                    new WTorrentEventValue(WTorrent::EventBuffer, buffer));
-    }
 
     qint64 position = stream->position;
 
