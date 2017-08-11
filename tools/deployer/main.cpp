@@ -20,7 +20,7 @@
 #include <QTextStream>
 
 // Defines
-#define C_STR toLocal8Bit().constData()
+#define C_STR toLatin1().constData()
 
 //-------------------------------------------------------------------------------------------------
 // Global variables
