@@ -189,7 +189,7 @@ void WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & file
 
         QString bitmask = WControllerTorrent::stringAfter(list, "bitmask");
 
-        const char * bits = bitmask.toLatin1().constData();
+        const char * bits = bitmask.C_STR;
 
         for (int i = 0; i < bitmask.length(); i++)
         {
