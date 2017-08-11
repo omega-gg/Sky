@@ -189,7 +189,7 @@ void WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & file
 
         QString bitmask = WControllerTorrent::stringAfter(list, "bitmask");
 
-        const char * bits = bitmask.C_STR;
+        const char * bits = bitmask.toLatin1().constData();
 
         for (int i = 0; i < bitmask.length(); i++)
         {
@@ -197,12 +197,14 @@ void WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & file
 
             for (int j = 0; j < 8; j++)
             {
-                if ((character >> j) & 1)
+                if (character & 1)
                 {
                     qDebug("HEY BLOCK %d %d", j, block);
 
                     blocks->setBit(block);
                 }
+
+                character >>= 1;
 
                 block++;
             }
@@ -1895,7 +1897,11 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
     {
         d->timerUpdate->stop();
 
+        qDebug("TORRENT SESSION BEFORE");
+
         delete d->session;
+
+        qDebug("TORRENT SESSION AFTER");
 
         d->session = NULL;
 
