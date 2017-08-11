@@ -162,9 +162,7 @@ void WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & file
         return;
     }
 
-    QByteArray array = file.readAll();
-
-    QString content = QString::fromAscii(array.data(), array.size());
+    QString content = Sk::readAscii(file.readAll());
 
     int blockCount = WControllerTorrent::integerAfter(content, "blocks per piece");
 

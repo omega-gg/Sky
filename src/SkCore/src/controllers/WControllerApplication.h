@@ -179,6 +179,8 @@ public: // Static functions
 
     //---------------------------------------------------------------------------------------------
 
+    Q_INVOKABLE static QString readAscii(const QByteArray & array);
+
     Q_INVOKABLE static QString readCodec(const QByteArray & array, const QString & codec);
     Q_INVOKABLE static QString readUtf8 (const QByteArray & array);
 
