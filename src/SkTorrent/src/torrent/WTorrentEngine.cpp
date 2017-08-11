@@ -109,9 +109,7 @@ void WTorrentEnginePrivate::load()
 
         qint64 size;
 
-        int finished;
-
-        stream >> id >> url >> size >> finished;
+        stream >> id >> url >> size;
 
         ids.insertId(id);
 
@@ -120,17 +118,6 @@ void WTorrentEnginePrivate::load()
         source->id   = id;
         source->url  = url;
         source->size = size;
-
-        while (finished)
-        {
-            int index;
-
-            stream >> index;
-
-            source->finished.append(index);
-
-            finished--;
-        }
 
         sources.append(source);
 
@@ -267,8 +254,6 @@ WTorrentItem * WTorrentEnginePrivate::createItem(TorrentInfo info, WTorrentData 
     int begin;
     int end;
 
-    bool finished;
-
     if (index == -1)
     {
         const file_storage & storage = info->files();
@@ -286,8 +271,6 @@ WTorrentItem * WTorrentEnginePrivate::createItem(TorrentInfo info, WTorrentData 
 
         begin = 0;
         end   = info->num_pieces();
-
-        finished = false;
     }
     else if (index < data->fileCount)
     {
@@ -306,8 +289,6 @@ WTorrentItem * WTorrentEnginePrivate::createItem(TorrentInfo info, WTorrentData 
         int length = (request.start + size) / info->piece_length();
 
         end = begin + qMax(0, length) + 1;
-
-        finished = data->source->finished.contains(index);
     }
     else
     {
@@ -315,8 +296,6 @@ WTorrentItem * WTorrentEnginePrivate::createItem(TorrentInfo info, WTorrentData 
 
         begin = 0;
         end   = 0;
-
-        finished = false;
     }
 
     WTorrentItem * item = new WTorrentItem;
@@ -338,11 +317,22 @@ WTorrentItem * WTorrentEnginePrivate::createItem(TorrentInfo info, WTorrentData 
 
     data->items.append(item);
 
-    if (finished)
-    {
-        qDebug("TORRENT ALREADY FINISHED A");
+    //---------------------------------------------------------------------------------------------
 
-        item->current = end;
+    QBitArray * pieces = &(data->pieces);
+
+    int current = begin;
+
+    while (current < end && pieces->at(current))
+    {
+        current++;
+    }
+
+    item->current = current;
+
+    if (current == end)
+    {
+        qDebug("TORRENT ALREADY FINISHED");
 
         item->finished = true;
 
@@ -352,35 +342,11 @@ WTorrentItem * WTorrentEnginePrivate::createItem(TorrentInfo info, WTorrentData 
     }
     else
     {
-        QBitArray * pieces = &(data->pieces);
+        qDebug("TORRENT START AT %d", current);
 
-        int current = begin;
+        item->finished = false;
 
-        while (current < end && pieces->at(current))
-        {
-            current++;
-        }
-
-        item->current = current;
-
-        if (current == end)
-        {
-            qDebug("TORRENT ALREADY FINISHED B");
-
-            item->finished = true;
-
-            QCoreApplication::postEvent(torrent, new WTorrentEventAdd(paths, size));
-
-            QCoreApplication::postEvent(torrent, new WTorrentEvent(WTorrent::EventFinished));
-        }
-        else
-        {
-            qDebug("TORRENT START AT %d", current);
-
-            item->finished = false;
-
-            QCoreApplication::postEvent(torrent, new WTorrentEventAdd(paths, size));
-        }
+        QCoreApplication::postEvent(torrent, new WTorrentEventAdd(paths, size));
     }
 
     return item;
@@ -397,8 +363,6 @@ WTorrentStream * WTorrentEnginePrivate::createStream(TorrentInfo info, WTorrentD
 
     int begin;
     int end;
-
-    bool finished;
 
     QString fileName;
 
@@ -436,8 +400,6 @@ WTorrentStream * WTorrentEnginePrivate::createStream(TorrentInfo info, WTorrentD
         int length = (request.start + size) / sizePiece;
 
         end = begin + qMax(0, length) + 1;
-
-        finished = data->source->finished.contains(index);
     }
     else
     {
@@ -447,8 +409,6 @@ WTorrentStream * WTorrentEnginePrivate::createStream(TorrentInfo info, WTorrentD
         end   = 0;
 
         sizePiece = 0;
-
-        finished = false;
     }
 
     int count = end - begin;
@@ -482,12 +442,26 @@ WTorrentStream * WTorrentEnginePrivate::createStream(TorrentInfo info, WTorrentD
 
     data->items.append(stream);
 
-    if (finished)
-    {
-        qDebug("TORRENT ALREADY FINISHED A");
+    //---------------------------------------------------------------------------------------------
 
-        stream->piece   = count;
-        stream->current = end;
+    QBitArray * pieces = &(data->pieces);
+
+    int piece = 0;
+
+    int current = begin;
+
+    while (piece < count && pieces->at(current))
+    {
+        piece  ++;
+        current++;
+    }
+
+    stream->piece   = piece;
+    stream->current = current;
+
+    if (piece == count)
+    {
+        qDebug("TORRENT ALREADY FINISHED");
 
         stream->block = 0;
 
@@ -497,71 +471,40 @@ WTorrentStream * WTorrentEnginePrivate::createStream(TorrentInfo info, WTorrentD
 
         QCoreApplication::postEvent(torrent, new WTorrentEventAdd(paths, size));
 
-        QCoreApplication::postEvent(torrent, new WTorrentEventValue(WTorrent::EventBuffer, size));
+        QCoreApplication::postEvent(torrent, new WTorrentEventValue(WTorrent::EventBuffer,
+                                                                    size));
 
         QCoreApplication::postEvent(torrent, new WTorrentEvent(WTorrent::EventFinished));
     }
     else
     {
-        QBitArray * pieces = &(data->pieces);
+        QBitArray * blocks = &(data->blocks);
 
-        int piece = 0;
+        int block      = 0;
+        int blockCount = data->blockCount;
 
-        int current = begin;
+        int blockCurrent = current * blockCount;
 
-        while (piece < count && pieces->at(current))
+        while (block < blockCount && blocks->at(blockCurrent))
         {
-            piece  ++;
-            current++;
+            block       ++;
+            blockCurrent++;
         }
 
-        stream->piece   = piece;
-        stream->current = current;
+        stream->block = block;
 
-        if (piece == count)
+        qint64 buffer = (qint64) (piece * stream->sizePiece + block * TORRENTENGINE_BLOCK);
+
+        stream->buffer = buffer;
+
+        stream->finished = false;
+
+        qDebug("TORRENT START AT %d %d", piece, block);
+
+        QCoreApplication::postEvent(torrent, new WTorrentEventAdd(paths, size));
+
+        if (buffer)
         {
-            qDebug("TORRENT ALREADY FINISHED B");
-
-            stream->block = 0;
-
-            stream->buffer = size;
-
-            stream->finished = true;
-
-            QCoreApplication::postEvent(torrent, new WTorrentEventAdd(paths, size));
-
-            QCoreApplication::postEvent(torrent, new WTorrentEventValue(WTorrent::EventBuffer,
-                                                                        size));
-
-            QCoreApplication::postEvent(torrent, new WTorrentEvent(WTorrent::EventFinished));
-        }
-        else
-        {
-            QBitArray * blocks = &(data->blocks);
-
-            int block      = 0;
-            int blockCount = data->blockCount;
-
-            int blockCurrent = current * blockCount;
-
-            while (block < blockCount && blocks->at(blockCurrent))
-            {
-                block       ++;
-                blockCurrent++;
-            }
-
-            stream->block = block;
-
-            qint64 buffer = (qint64) (piece * stream->sizePiece + block * TORRENTENGINE_BLOCK);
-
-            stream->buffer = buffer;
-
-            stream->finished = false;
-
-            qDebug("TORRENT START AT %d %d", piece, block);
-
-            QCoreApplication::postEvent(torrent, new WTorrentEventAdd(paths, size));
-
             QCoreApplication::postEvent(torrent, new WTorrentEventValue(WTorrent::EventBuffer,
                                                                         buffer));
         }
@@ -628,12 +571,9 @@ void WTorrentEnginePrivate::unselectFile(WTorrentItem * item)
     {
         WTorrentData * data = item->data;
 
-        if (item->finished == false)
+        foreach (WTorrentItem * item, data->items)
         {
-            foreach (WTorrentItem * item, data->items)
-            {
-                if (item->index == index) return;
-            }
+            if (item->index == index) return;
         }
 
         std::vector<int> & files = data->files;
@@ -666,11 +606,6 @@ void WTorrentEnginePrivate::updateFiles(WTorrentData * data)
             return;
         }
         else files[index] = 1;
-    }
-
-    foreach (int index, data->source->finished)
-    {
-        files[index] = 0;
     }
 
     data->handle.prioritize_files(files);
@@ -980,11 +915,7 @@ void WTorrentEnginePrivate::applyPiece(const torrent_handle & handle,
 
         stream->finished = true;
 
-        data->source->finished.append(stream->index);
-
         QCoreApplication::postEvent(torrent, new WTorrentEvent(WTorrent::EventFinished));
-
-        save();
 
         return;
     }
@@ -1355,14 +1286,7 @@ void WTorrentEnginePrivate::onSave()
 
     foreach (WTorrentSource * source, sources)
     {
-        const QList<int> & finished = source->finished;
-
-        stream << source->id << source->url << (qint64) source->size << finished.count();
-
-        foreach (int index, finished)
-        {
-            stream << index;
-        }
+        stream << source->id << source->url << (qint64) source->size;
     }
 }
 
@@ -1838,8 +1762,6 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
                     if (current == item->end)
                     {
                         item->finished = true;
-
-                        data->source->finished.append(item->index);
 
                         QCoreApplication::postEvent(item->torrent,
                                                     new WTorrentEvent(WTorrent::EventFinished));
