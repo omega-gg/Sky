@@ -175,6 +175,8 @@ void WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & file
         }
     }
 
+    QBitArray * blocks = &(data->blocks);
+
     index = 0;
 
     while (index < unfinished.length() - 1)
@@ -183,11 +185,32 @@ void WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & file
 
         QString list = unfinished.mid(index, length - index);
 
-        int piece = WControllerTorrent::integerAfter(list, "piece");
+        int block = WControllerTorrent::integerAfter(list, "piece") * data->blockCount;
 
         QString bitmask = WControllerTorrent::stringAfter(list, "bitmask");
 
-        qDebug("ENTRY %d %d %s", piece, bitmask.length(), bitmask.C_STR);
+        const char * bits = bitmask.C_STR;
+
+        for (int i = 0; i < bitmask.length(); i++)
+        {
+            char character = *bits;
+
+            for (int j = 0; j < 8; j++)
+            {
+                if ((character >> j) & 1)
+                {
+                    qDebug("HEY BLOCK %d %d", j, block);
+
+                    blocks->setBit(block);
+                }
+
+                block++;
+            }
+
+            bits++;
+        }
+
+        qDebug("ENTRY %d %s", block, bitmask.C_STR);
 
         index = length;
     }
