@@ -45,7 +45,7 @@ Q_DECLARE_METATYPE(torrent_handle)
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int TORRENTENGINE_BLOCK = 16000;
+static const int TORRENTENGINE_BLOCK = 16 * 1024; // 16 bytes
 
 static const int TORRENTENGINE_PRIORITY_COUNT = 10;
 
@@ -164,13 +164,14 @@ void WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & file
 
     QString content = Sk::readAscii(file.readAll());
 
-    int blockCount = WControllerTorrent::integerAfter(content, "blocks per piece");
+    int index = WControllerTorrent::indexAfter(content, "pieces");
 
-    QString pieces = WControllerTorrent::stringAfter(content, "pieces");
+    QString pieces = WControllerTorrent::extractString(content, index);
 
-    QString unfinished = WControllerTorrent::listAfter(content, "unfinished");
+    QString unfinished = WControllerTorrent::listAfter(content, "unfinished", index);
 
-    qDebug("BLOCK COUNT %d [%s] [%s]", blockCount, pieces.C_STR, unfinished.C_STR);
+    qDebug("BLOCK COUNT %d %d [%s] [%s]",
+           pieces.length(), unfinished.length(), pieces.C_STR, unfinished.C_STR);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -179,11 +180,20 @@ WTorrentData * WTorrentEnginePrivate::createData(TorrentInfoPointer info, const 
 {
     WTorrentData * data = new WTorrentData;
 
-    add_torrent_params params;
+    int count = info->num_pieces();
+
+    int blockCount = info->piece_length() / TORRENTENGINE_BLOCK;
+
+    data->blockCount = blockCount;
+
+    data->pieces = QBitArray(count);
+    data->blocks = QBitArray(count * blockCount);
 
     WTorrentSource * source = getSource(url);
 
     QString path;
+
+    add_torrent_params params;
 
     if (source)
     {
@@ -221,10 +231,6 @@ WTorrentData * WTorrentEnginePrivate::createData(TorrentInfoPointer info, const 
 
     int fileCount = info->num_files();
 
-    int count = info->num_pieces();
-
-    int blockCount = info->piece_length() / TORRENTENGINE_BLOCK;
-
     data->source = source;
 
     data->path = path;
@@ -232,11 +238,6 @@ WTorrentData * WTorrentEnginePrivate::createData(TorrentInfoPointer info, const 
     data->fileCount = fileCount;
 
     data->hash = 0;
-
-    data->blockCount = blockCount;
-
-    data->pieces = QBitArray(count);
-    data->blocks = QBitArray(count * blockCount);
 
     data->files = std::vector<int>(fileCount, 0);
 
