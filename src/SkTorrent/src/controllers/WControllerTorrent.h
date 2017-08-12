@@ -297,6 +297,8 @@ public: // Static functions
     Q_INVOKABLE static int skipInteger(const QString & text, int at = 0);
     Q_INVOKABLE static int skipList   (const QString & text, int at = 0);
 
+    Q_INVOKABLE static QStringList splitList(const QString & text);
+
     Q_INVOKABLE static Type getType(const QChar & character);
 
 signals:

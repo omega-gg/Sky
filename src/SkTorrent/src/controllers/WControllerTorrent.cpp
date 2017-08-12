@@ -851,6 +851,29 @@ WControllerTorrent::Type WControllerTorrent::extractType(const QString & text, i
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ QStringList WControllerTorrent::splitList(const QString & text)
+{
+    QStringList list;
+
+    int index  = 0;
+    int length = skipList(text);
+
+    while (length != text.length())
+    {
+        QString string = text.mid(index, length - index);
+
+        list.append(string);
+
+        index = length;
+
+        length = skipList(text, index);
+    }
+
+    return list;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE static */
 WControllerTorrent::Type WControllerTorrent::getType(const QChar & character)
 {

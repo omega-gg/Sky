@@ -164,30 +164,28 @@ void WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & file
 
     QBitArray * pieces = &(data->pieces);
 
-    if (finished.length() == pieces->count())
+    if (finished.length() != pieces->count())
     {
-        for (int i = 0; i < finished.length(); i++)
+        qDebug("RESUME THIS SHOULD NOT HAPPEN %d %d", finished.length(), pieces->count());
+    }
+
+    for (int i = 0; i < finished.length(); i++)
+    {
+        if (finished.at(i) > 0)
         {
-            if (finished.at(i) > 0)
-            {
-                pieces->setBit(i);
-            }
+            pieces->setBit(i);
         }
     }
 
     QBitArray * blocks = &(data->blocks);
 
-    index = 0;
+    QStringList list = WControllerTorrent::splitList(unfinished);
 
-    while (index < unfinished.length() - 1)
+    foreach (const QString & string, list)
     {
-        int length = WControllerTorrent::skipList(unfinished, index);
+        int block = WControllerTorrent::integerAfter(string, "piece") * data->blockCount;
 
-        QString list = unfinished.mid(index, length - index);
-
-        int block = WControllerTorrent::integerAfter(list, "piece") * data->blockCount;
-
-        QString bitmask = WControllerTorrent::stringAfter(list, "bitmask");
+        QString bitmask = WControllerTorrent::stringAfter(string, "bitmask");
 
         const char * bits = bitmask.C_STR;
 
@@ -213,8 +211,6 @@ void WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & file
         }
 
         qDebug("ENTRY %d %s", block, bitmask.C_STR);
-
-        index = length;
     }
 }
 
