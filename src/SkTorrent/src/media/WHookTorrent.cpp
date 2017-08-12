@@ -663,7 +663,7 @@ void WHookTorrentPrivate::stop()
 
     q->setProgress(0.0);
 
-    backend->stop();
+    q->backendStop();
 
     q->backendSetSource(QUrl());
 }
