@@ -177,6 +177,8 @@ void WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & file
         }
     }
 
+    if (unfinished.length() == 1) return;
+
     QBitArray * blocks = &(data->blocks);
 
     QStringList list = WControllerTorrent::splitList(unfinished);
