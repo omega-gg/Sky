@@ -661,11 +661,9 @@ void WHookTorrentPrivate::stop()
 
     q->setFilterActive(false);
 
-    q->setProgress(0.0);
-
-    q->backendStop();
-
     q->backendSetSource(QUrl());
+
+    q->setProgress(0.0);
 }
 
 //-------------------------------------------------------------------------------------------------
