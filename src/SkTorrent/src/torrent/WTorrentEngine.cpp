@@ -164,16 +164,20 @@ void WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & file
 
     QBitArray * pieces = &(data->pieces);
 
-    if (finished.length() != pieces->count())
+    if (finished.length() == pieces->count())
     {
-        qDebug("RESUME THIS SHOULD NOT HAPPEN %d %d", finished.length(), pieces->count());
-    }
+        const char * bits = finished.C_STR;
 
-    for (int i = 0; i < finished.length(); i++)
-    {
-        if (finished.at(i) > 0)
+        for (int i = 0; i < finished.length(); i++)
         {
-            pieces->setBit(i);
+            if (*bits & 1)
+            {
+                qDebug("PIECE %d", i);
+
+                pieces->setBit(i);
+            }
+
+            bits++;
         }
     }
 
@@ -199,7 +203,7 @@ void WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & file
             {
                 if (character & 1)
                 {
-                    qDebug("HEY BLOCK %d %d", j, block);
+                    qDebug("BLOCK %d", block);
 
                     blocks->setBit(block);
                 }
@@ -1503,6 +1507,8 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
     }
     else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventAdd))
     {
+        qDebug("TORRENT ADD");
+
         WTorrentEngineAdd * eventTorrent = static_cast<WTorrentEngineAdd *> (event);
 
         WTorrent * torrent = eventTorrent->torrent;
@@ -1702,7 +1708,11 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
             qDebug("EventSaved: DATA SHOULD NOT BE NULL");
         }
 
+        qDebug("TORRENT SAVED");
+
         if (data->items.isEmpty() == false) return true;
+
+        qDebug("TORRENT REMOVE");
 
         unsigned int hash = data->hash;
 
