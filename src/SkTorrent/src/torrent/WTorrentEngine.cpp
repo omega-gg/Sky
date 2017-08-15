@@ -615,11 +615,15 @@ void WTorrentEnginePrivate::selectFile(WTorrentItem * item)
             std::fill(files.begin(), files.end(), 0);
         }
 
+        qDebug("TORRENT INDEX %d", index);
+
         files[index] = 1;
     }
     else std::fill(files.begin(), files.end(), 1);
 
     data->handle.prioritize_files(files);
+
+    data->handle.resume();
 }
 
 void WTorrentEnginePrivate::unselectFile(WTorrentItem * item)
@@ -1297,6 +1301,54 @@ void WTorrentEnginePrivate::onUpdate()
 
 //-------------------------------------------------------------------------------------------------
 
+void WTorrentEnginePrivate::onRemove()
+{
+    if (deleteTorrents.isEmpty()) return;
+
+    WTorrentData * data = deleteTorrents.takeFirst();
+
+    if (data->items.isEmpty() == false) return;
+
+    const torrent_handle & handle = data->handle;
+
+    if (data->hash == 0)
+    {
+        qDebug("REMOVE TORRENT ADD");
+
+        datas.removeOne(data);
+
+        session->remove_torrent(handle);
+    }
+    else
+    {
+        qDebug("REMOVE TORRENT");
+
+        torrents.remove(data->hash);
+
+        if (torrents.isEmpty())
+        {
+            timerUpdate->stop();
+        }
+
+        session->remove_torrent(data->handle);
+
+        if (updateCache(data) == false)
+        {
+            Q_Q(WTorrentEngine);
+
+            deleteIds  .append(data->source->id);
+            deletePaths.append(data->path);
+
+            // FIXME libtorrent: Waiting before removing the torrent folder.
+            QTimer::singleShot(1000, q, SLOT(onFolderDelete()));
+        }
+    }
+
+    delete data;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void WTorrentEnginePrivate::onFolderDelete()
 {
     if (deleteIds.isEmpty()) return;
@@ -1661,18 +1713,13 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         if (data->hash == 0)
         {
-            qDebug("REMOVE TORRENT ADD");
+            d->deleteTorrents.append(data);
 
-            d->datas.removeOne(data);
-
-            d->session->remove_torrent(handle);
-
-            delete data;
+            // FIXME libtorrent: Waiting before removing the torrent.
+            QTimer::singleShot(100, this, SLOT(onRemove()));
         }
         else
         {
-            qDebug("REMOVE TORRENT");
-
             int id = data->source->id;
 
             QString fileName = data->path + "/." + QString::number(id);
@@ -1684,15 +1731,6 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
             d->mutex.unlock();
 
             handle.save_resume_data();
-
-            if (d->updateCache(data) == false)
-            {
-                d->deleteIds  .append(id);
-                d->deletePaths.append(data->path);
-
-                // FIXME libtorrent: Waiting before removing the torrent folder.
-                QTimer::singleShot(1000, this, SLOT(onFolderDelete()));
-            }
         }
 
         return true;
@@ -1712,20 +1750,10 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         if (data->items.isEmpty() == false) return true;
 
-        qDebug("TORRENT REMOVE");
+        d->deleteTorrents.append(data);
 
-        unsigned int hash = data->hash;
-
-        d->torrents.remove(hash);
-
-        if (d->torrents.isEmpty())
-        {
-            d->timerUpdate->stop();
-        }
-
-        d->session->remove_torrent(data->handle);
-
-        delete data;
+        // FIXME libtorrent: Waiting before removing the torrent.
+        QTimer::singleShot(100, this, SLOT(onRemove()));
 
         return true;
     }
@@ -1912,6 +1940,26 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         qDebug("TORRENT SESSION AFTER");
 
         d->session = NULL;
+
+        foreach (WTorrentData * data, d->deleteTorrents)
+        {
+            const torrent_handle & handle = data->handle;
+
+            if (data->hash == 0)
+            {
+                d->datas.removeOne(data);
+
+                d->session->remove_torrent(handle);
+            }
+            else
+            {
+                d->torrents.remove(data->hash);
+
+                d->session->remove_torrent(data->handle);
+            }
+
+            delete data;
+        }
 
         foreach (WTorrentData * data, d->datas)
         {

@@ -204,6 +204,8 @@ public: // Events
 public: // Slots
     void onUpdate();
 
+    void onRemove();
+
     void onFolderDelete();
     void onFolderClear ();
 
@@ -232,7 +234,7 @@ public: // Variables
 
     QHash<unsigned int, QString> fileNames;
 
-    QHash<unsigned int, WTorrentData *> deleteTorrents;
+    QList<WTorrentData *> deleteTorrents;
 
     QList<int>     deleteIds;
     QList<QString> deletePaths;

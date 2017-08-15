@@ -67,6 +67,8 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void onUpdate())
 
+    Q_PRIVATE_SLOT(d_func(), void onRemove())
+
     Q_PRIVATE_SLOT(d_func(), void onFolderDelete())
     Q_PRIVATE_SLOT(d_func(), void onFolderClear ())
 
