@@ -1501,11 +1501,11 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         pack.set_int(settings_pack::stop_tracker_timeout, 1);
 
-        /*pack.set_str(settings_pack::dht_bootstrap_nodes, "dht.libtorrent.org:25401,"
+        pack.set_str(settings_pack::dht_bootstrap_nodes, "dht.libtorrent.org:25401,"
                                                          "router.bittorrent.com:6881,"
                                                          "router.utorrent.com:6881,"
                                                          "dht.transmissionbt.com:6881,"
-                                                         "dht.aelitis.com:6881");*/
+                                                         "dht.aelitis.com:6881");
 
         d->session = new session(pack);
 
@@ -1520,11 +1520,11 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         d->session->set_dht_settings(dht);
 
-        d->session->add_dht_router(std::make_pair(std::string("dht.libtorrent.org"),     25401));
-        d->session->add_dht_router(std::make_pair(std::string("router.bittorrent.com"),   6881));
-        d->session->add_dht_router(std::make_pair(std::string("router.utorrent.com"),     6881));
-        d->session->add_dht_router(std::make_pair(std::string("dht.transmissionbt.com"),  6881));
-        d->session->add_dht_router(std::make_pair(std::string("dht.aelitis.com"),         6881));
+        //d->session->add_dht_router(std::make_pair(std::string("dht.libtorrent.org"),     25401));
+        //d->session->add_dht_router(std::make_pair(std::string("router.bittorrent.com"),   6881));
+        //d->session->add_dht_router(std::make_pair(std::string("router.utorrent.com"),     6881));
+        //d->session->add_dht_router(std::make_pair(std::string("dht.transmissionbt.com"),  6881));
+        //d->session->add_dht_router(std::make_pair(std::string("dht.aelitis.com"),         6881));
 
         boost::function<void()> alert(boost::bind(&WTorrentEnginePrivate::events, d));
 

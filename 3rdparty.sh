@@ -12,7 +12,7 @@ Qt4_version="4.8.7"
 
 VLC_version="2.2.6"
 
-libtorrent_version="1.1.0"
+libtorrent_version="1.1.4"
 
 Boost_version="1.55.0"
 
