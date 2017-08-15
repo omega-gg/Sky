@@ -1851,10 +1851,7 @@ void WTabTrack::setDuration(int msec)
 
         int index = playlist->indexOf(p->track);
 
-        if (playlist->trackDuration(index) == -1)
-        {
-            playlist->setTrackDuration(index, msec);
-        }
+        playlist->setTrackDuration(index, msec);
     }
 
     emit currentBookmarkUpdated();
