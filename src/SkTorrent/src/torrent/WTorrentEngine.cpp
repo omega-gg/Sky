@@ -602,6 +602,8 @@ void WTorrentEnginePrivate::addStream(const torrent_handle & handle, WTorrentStr
 
 void WTorrentEnginePrivate::selectFile(WTorrentItem * item)
 {
+    if (item->finished) return;
+
     WTorrentData * data = item->data;
 
     std::vector<int> & files = data->files;
