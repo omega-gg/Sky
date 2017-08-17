@@ -262,6 +262,8 @@ public: // Interface
                                            QObject        * parent = NULL,
                                            WTorrent::Mode   mode   = WTorrent::Default);
 
+    Q_INVOKABLE void clearSource(const QUrl & url);
+
     Q_INVOKABLE void clearTorrents();
 
     Q_INVOKABLE int  registerPort  ();

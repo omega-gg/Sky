@@ -1845,7 +1845,7 @@ void WTabTrack::setDuration(int msec)
 
     p->duration = msec;
 
-    if (msec != -1 && p->playlist)
+    if (msec > 0 && p->playlist)
     {
         WPlaylistNet * playlist = p->playlist->toPlaylistNet();
 

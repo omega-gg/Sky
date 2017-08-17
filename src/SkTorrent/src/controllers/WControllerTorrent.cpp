@@ -427,7 +427,7 @@ void WControllerTorrentPrivate::removeTorrent(WTorrent * torrent, WTorrentReply 
 
     downloads.removeOne(torrent);
 
-    engine->remove(torrent, true);
+    engine->remove(torrent);
 
     delete torrent;
 }
@@ -571,6 +571,15 @@ WControllerTorrent::WControllerTorrent() : WController(new WControllerTorrentPri
     d->loadTorrent(reply, url, mode);
 
     return reply;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WControllerTorrent::clearSource(const QUrl & url)
+{
+    Q_D(WControllerTorrent);
+
+    d->engine->clearSource(url);
 }
 
 /* Q_INVOKABLE */ void WControllerTorrent::clearTorrents()

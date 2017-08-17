@@ -10,7 +10,7 @@ Designed for efficiency, scalability and maintainability.<br>
 
 Sky is built in C++ on the [Qt framework](http://github.com/qtproject).<br>
 The GUI is powered by [QML](http://github.com/qtproject/qtdeclarative) and rendered with OpenGL.<br>
-The video player is based on the [libVLC](http://github.com/videolan/vlc).<br>
+The video player is based on [libVLC](http://github.com/videolan/vlc) and [libtorrent](http://en.wikipedia.org/wiki/libtorrent).<br>
 
 ## Platforms
 
