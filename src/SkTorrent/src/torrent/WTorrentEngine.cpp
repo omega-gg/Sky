@@ -49,7 +49,8 @@ static const int TORRENTENGINE_BLOCK = 16 * 1024; // 16 bytes
 
 static const int TORRENTENGINE_PRIORITY_COUNT = 10;
 
-static const int TORRENTENGINE_INTERVAL = 1000;
+static const int TORRENTENGINE_INTERVAL        = 1000;
+static const int TORRENTENGINE_INTERVAL_REMOVE =  100;
 
 //-------------------------------------------------------------------------------------------------
 // Private
@@ -69,7 +70,7 @@ void WTorrentEnginePrivate::init(const QString & path, qint64 sizeMax, QThread *
 
     this->sizeMax = sizeMax;
 
-    maximum = sizeMax;
+    _sizeMax = sizeMax;
 
     if (thread) q->moveToThread(thread);
 
@@ -125,8 +126,6 @@ void WTorrentEnginePrivate::load()
 
         count--;
     }
-
-    cleanCache();
 }
 
 void WTorrentEnginePrivate::save()
@@ -297,6 +296,53 @@ WTorrentData * WTorrentEnginePrivate::createData(TorrentInfoPointer info, const 
     session->async_add_torrent(params);
 
     return data;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WTorrentEnginePrivate::updateData(WTorrentData * data)
+{
+    WTorrentSource * source = data->source;
+
+    sources.removeOne(source);
+    sources.   append(source);
+
+    QHashIterator<QTimer *, WTorrentData *> i(deleteTorrents);
+
+    while (i.hasNext())
+    {
+        i.next();
+
+        if (i.value() == data)
+        {
+            qDebug("TORRENT REMOVE TIMER");
+
+            QTimer * timer = i.key();
+
+            deleteTorrents.remove(timer);
+
+            delete timer;
+
+            return;
+        }
+    }
+}
+
+void WTorrentEnginePrivate::removeData(WTorrentData * data)
+{
+    Q_Q(WTorrentEngine);
+
+    QTimer * timer = new QTimer;
+
+    timer->setInterval(TORRENTENGINE_INTERVAL_REMOVE);
+
+    timer->setSingleShot(true);
+
+    deleteTorrents.insert(timer, data);
+
+    QObject::connect(timer, SIGNAL(timeout()), q, SLOT(onRemove()));
+
+    timer->start();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -505,20 +551,17 @@ WTorrentStream * WTorrentEnginePrivate::createStream(TorrentInfo info, WTorrentD
 
     QBitArray * pieces = &(data->pieces);
 
-    int piece = 0;
-
     int current = begin;
 
-    while (piece < count && pieces->at(current))
+    while (current < end && pieces->at(current))
     {
-        piece  ++;
         current++;
     }
 
-    stream->piece   = piece;
+    stream->piece   = current - begin;
     stream->current = current;
 
-    if (piece == count)
+    if (current == end)
     {
         qDebug("TORRENT ALREADY FINISHED");
 
@@ -552,13 +595,13 @@ WTorrentStream * WTorrentEnginePrivate::createStream(TorrentInfo info, WTorrentD
 
         stream->block = block;
 
-        qint64 buffer = (qint64) (piece * stream->sizePiece + block * TORRENTENGINE_BLOCK);
+        qint64 buffer = (qint64) (stream->piece * stream->sizePiece + block * TORRENTENGINE_BLOCK);
 
         stream->buffer = buffer;
 
         stream->finished = false;
 
-        qDebug("TORRENT START AT %d %d", piece, block);
+        qDebug("TORRENT START AT %d %d", stream->piece, block);
 
         QCoreApplication::postEvent(torrent, new WTorrentEventAdd(paths, size));
 
@@ -588,7 +631,33 @@ void WTorrentEnginePrivate::addStream(const torrent_handle & handle, WTorrentStr
 {
     if (stream->finished) return;
 
+    //---------------------------------------------------------------------------------------------
+    // Rename
+
     handle.rename_file(stream->index, stream->fileName.toStdString());
+
+    //---------------------------------------------------------------------------------------------
+    // Deadline
+
+    int current = stream->begin;
+
+    int priority = TORRENTENGINE_PRIORITY_COUNT;
+
+    int deadline = 1;
+
+    while (priority && current < stream->end)
+    {
+        handle.set_piece_deadline(current, deadline);
+
+        deadline++;
+
+        current++;
+
+        priority--;
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Position
 
     qint64 position = stream->position;
 
@@ -630,6 +699,8 @@ void WTorrentEnginePrivate::selectFile(WTorrentItem * item)
 
 void WTorrentEnginePrivate::unselectFile(WTorrentItem * item)
 {
+    if (item->finished) return;
+
     int index = item->index;
 
     if (index != -1)
@@ -670,7 +741,10 @@ void WTorrentEnginePrivate::updateFiles(WTorrentData * data)
 
             return;
         }
-        else files[index] = 1;
+        else if (item->finished == false)
+        {
+            files[index] = 1;
+        }
     }
 
     data->handle.prioritize_files(files);
@@ -678,110 +752,104 @@ void WTorrentEnginePrivate::updateFiles(WTorrentData * data)
 
 //-------------------------------------------------------------------------------------------------
 
-bool WTorrentEnginePrivate::updateCache(WTorrentData * data)
+void WTorrentEnginePrivate::updateCache(WTorrentData * data)
 {
-    const torrent_handle & handle = data->handle;
+    WTorrentSource * source = data->source;
 
-    torrent_status status = handle.status(torrent_handle::query_accurate_download_counters);
+    qint64 sourceSize = source->size;
+
+    torrent_status status = data->handle.status(torrent_handle::query_accurate_download_counters);
 
     qint64 size = status.total_done;
 
-    foreach (WTorrentSource * source, sources)
+    if (sourceSize == size) return;
+
+    this->size -= sourceSize;
+
+    if (size < _sizeMax)
     {
-        if (source->id == data->source->id)
-        {
-            if (size == 0) return true;
+        qDebug("TORRENT RECACHING SOURCE");
 
-            qint64 sourceSize = source->size;
+        source->size = size;
 
-            if (sourceSize == size) return true;
+        this->size += size;
 
-            this->size -= sourceSize;
-
-            sources.removeOne(source);
-
-            if (size < maximum)
-            {
-                qDebug("TORRENT RECACHING SOURCE");
-
-                sources.append(source);
-
-                source->size = size;
-
-                this->size += size;
-
-                cleanCache();
-
-                save();
-
-                return true;
-            }
-            else
-            {
-                qWarning("WTorrentEnginePrivate::updateCache: File is too large for cache %s.",
-                         data->source->url.C_URL);
-
-                save();
-
-                return false;
-            }
-        }
+        cleanCache();
     }
-
-    qDebug("CACHE THIS SHOULD NOT HAPPEN");
-
-    return false;
-}
-
-bool WTorrentEnginePrivate::cleanCache()
-{
-    bool changed = false;
-
-    while (sources.count() && size >= maximum)
+    else
     {
-        WTorrentSource * source = sources.takeFirst();
+        Q_Q(WTorrentEngine);
 
-        size -= source->size;
+        qWarning("WTorrentEnginePrivate::updateCache: File is too large for cache %s.",
+                 source->url.C_URL);
 
-        QHashIterator<unsigned int, WTorrentData *> i(torrents);
+        sources.removeOne(source);
 
-        int id = source->id;
-
-        bool toDelete = true;
-
-        while (i.hasNext())
-        {
-            i.next();
-
-            WTorrentData * data = i.value();
-
-            if (data->source->id == id)
-            {
-                toDelete = false;
-
-                break;
-            }
-        }
-
-        if (toDelete)
-        {
-            Q_Q(WTorrentEngine);
-
-            qDebug("REMOVING TORRENT %d", id);
-
-            deleteIds  .append(id);
-            deletePaths.append(path + QString::number(id));
-
-            // FIXME libtorrent: Waiting before removing the torrent folder.
-            QTimer::singleShot(1000, q, SLOT(onFolderDelete()));
-        }
+        deleteIds  .append(source->id);
+        deletePaths.append(data->path);
 
         delete source;
 
-        changed = true;
+        // FIXME libtorrent: Waiting before removing the torrent folder.
+        QTimer::singleShot(TORRENTENGINE_INTERVAL, q, SLOT(onFolderDelete()));
+
+        save();
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WTorrentEnginePrivate::cleanCache()
+{
+    int index = 0;
+
+    while (index < sources.count() && size >= _sizeMax)
+    {
+        if (removeSource(sources.at(index)) == false)
+        {
+            index++;
+        }
     }
 
-    return changed;
+    if (index != sources.count()) save();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WTorrentEnginePrivate::removeSource(WTorrentSource * source)
+{
+    qDebug("TORRENT REMOVE SOURCE");
+
+    int id = source->id;
+
+    QHashIterator<unsigned int, WTorrentData *> i(torrents);
+
+    while (i.hasNext())
+    {
+        i.next();
+
+        WTorrentData * data = i.value();
+
+        if (data->source->id == id) return false;
+    }
+
+    Q_Q(WTorrentEngine);
+
+    qDebug("TORRENT REMOVING SOURCE %d", id);
+
+    sources.removeOne(source);
+
+    size -= source->size;
+
+    deleteIds  .append(id);
+    deletePaths.append(path + QString::number(id));
+
+    delete source;
+
+    // FIXME libtorrent: Waiting before removing the torrent folder.
+    QTimer::singleShot(TORRENTENGINE_INTERVAL, q, SLOT(onFolderDelete()));
+
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -789,11 +857,12 @@ bool WTorrentEnginePrivate::cleanCache()
 void WTorrentEnginePrivate::prioritize(const torrent_handle & handle,
                                        WTorrentStream       * stream, qint64 position)
 {
-    int piece = position / stream->sizePiece;
+    int begin = stream->begin;
+    int end   = stream->end;
 
-    int count = stream->count;
+    int current = begin + position / stream->sizePiece;
 
-    if (piece >= count) return;
+    if (current >= end) return;
 
     //---------------------------------------------------------------------------------------------
     // Pieces
@@ -802,27 +871,21 @@ void WTorrentEnginePrivate::prioritize(const torrent_handle & handle,
 
     QBitArray * pieces = &(data->pieces);
 
-    int current;
-
-    if (stream->piece != piece)
+    if (stream->current != current)
     {
-        current = stream->begin + piece;
-
-        while (piece < count && pieces->at(current))
+        while (current < end && pieces->at(current))
         {
-            piece  ++;
             current++;
         }
 
-        stream->piece   = piece;
+        stream->piece   = current - begin;
         stream->current = current;
     }
-    else current = stream->current;
 
     //---------------------------------------------------------------------------------------------
     // Blocks
 
-    if (piece == count)
+    if (current == end)
     {
         stream->block = 0;
 
@@ -832,7 +895,7 @@ void WTorrentEnginePrivate::prioritize(const torrent_handle & handle,
     {
         int block;
 
-        qint64 sizePiece = (qint64) (piece * stream->sizePiece);
+        qint64 sizePiece = (qint64) (stream->piece * stream->sizePiece);
 
         if (position > sizePiece)
         {
@@ -874,14 +937,24 @@ void WTorrentEnginePrivate::prioritize(const torrent_handle & handle,
     //---------------------------------------------------------------------------------------------
     // Deadline
 
-    // FIXME
-    //handle.clear_piece_deadlines();
+    bool clear = true;
+
+    foreach (WTorrentItem * item, data->items)
+    {
+        if (stream != item && item->mode == WTorrent::Stream)
+        {
+            clear = false;
+        }
+    }
+
+    // FIXME: Workaround to clear piece deadlines.
+    if (clear) handle.clear_piece_deadlines();
 
     int priority = TORRENTENGINE_PRIORITY_COUNT;
 
     int deadline = 1;
 
-    while (priority && piece < count)
+    while (priority && current < end)
     {
         if (pieces->at(current) == false)
         {
@@ -892,16 +965,13 @@ void WTorrentEnginePrivate::prioritize(const torrent_handle & handle,
             priority--;
         }
 
-        piece++;
-
         current++;
     }
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void WTorrentEnginePrivate::applyBlock(const torrent_handle & handle,
-                                       WTorrentStream       * stream, int piece, int block)
+void WTorrentEnginePrivate::applyBlock(WTorrentStream * stream, int block)
 {
     WTorrentData * data = stream->data;
 
@@ -920,23 +990,22 @@ void WTorrentEnginePrivate::applyBlock(const torrent_handle & handle,
         blockCurrent++;
     }
 
-    qDebug("BLOCK COMPLETE %d", block);
+    qDebug("BLOCK COMPLETE %d %d", stream->piece, block);
 
     if (block < blockCount)
     {
         stream->block = block;
 
-        qint64 buffer = (qint64) (piece * stream->sizePiece + block * TORRENTENGINE_BLOCK);
+        qint64 buffer = (qint64) (stream->piece * stream->sizePiece + block * TORRENTENGINE_BLOCK);
 
         applyBuffer(stream, buffer);
     }
-    else applyPiece(handle, stream, piece);
 }
 
 void WTorrentEnginePrivate::applyPiece(const torrent_handle & handle,
-                                       WTorrentStream       * stream, int piece)
+                                       WTorrentStream       * stream, int current)
 {
-    qDebug("APPLY PIECE %d", piece);
+    qDebug("APPLY PIECE %d", current);
 
     WTorrentData * data = stream->data;
 
@@ -945,48 +1014,59 @@ void WTorrentEnginePrivate::applyPiece(const torrent_handle & handle,
 
     QBitArray * pieces = &(data->pieces);
 
-    int count = stream->count;
+    int begin = stream->begin;
+    int end   = stream->end;
 
-    int current = stream->current;
-
-    piece  ++;
-    current++;
-
-    while (piece < count && pieces->at(current))
+    if (current == end)
     {
-        piece  ++;
-        current++;
-    }
-
-    if (piece == count)
-    {
-        qDebug("FILE AT END");
-
-        stream->buffer = stream->size;
-
-        WTorrent * torrent = stream->torrent;
-
-        QCoreApplication::postEvent(torrent,
-                                    new WTorrentEventValue(WTorrent::EventBuffer, stream->buffer));
-
-        int end = stream->end - 1;
-
-        for (int i = stream->begin; i < end; i++)
+        for (int i = begin; i < end; i++)
         {
             if (pieces->at(i) == false) return;
         }
 
-        qDebug("TORRENT STREAM FINISHED");
+        qDebug("TORRENT STREAM FINISHED A");
 
-        stream->finished = true;
-
-        QCoreApplication::postEvent(torrent, new WTorrentEvent(WTorrent::EventFinished));
+        applyFinish(stream);
 
         return;
     }
 
-    stream->piece   = piece;
+    if (stream->current != current) return;
+
+    current++;
+
+    while (current < end && pieces->at(current))
+    {
+        current++;
+    }
+
+    stream->piece   = current - begin;
     stream->current = current;
+
+    if (current == end)
+    {
+        qDebug("FILE AT END");
+
+        qint64 size = stream->size;
+
+        stream->buffer = size;
+
+        QCoreApplication::postEvent(stream->torrent,
+                                    new WTorrentEventValue(WTorrent::EventBuffer, size));
+
+        end--;
+
+        for (int i = begin; i < end; i++)
+        {
+            if (pieces->at(i) == false) return;
+        }
+
+        qDebug("TORRENT STREAM FINISHED B");
+
+        applyFinish(stream);
+
+        return;
+    }
 
     //---------------------------------------------------------------------------------------------
     // Blocks
@@ -1004,21 +1084,12 @@ void WTorrentEnginePrivate::applyPiece(const torrent_handle & handle,
         blockCurrent++;
     }
 
-    if (block == blockCount)
-    {
-        qDebug("THIS SHOULD NOT BE CALLED");
-
-        applyPiece(handle, stream, piece);
-
-        return;
-    }
-
     stream->block = block;
 
     //---------------------------------------------------------------------------------------------
     // Buffer
 
-    qint64 buffer = (qint64) (piece * stream->sizePiece + block * TORRENTENGINE_BLOCK);
+    qint64 buffer = (qint64) (stream->piece * stream->sizePiece + block * TORRENTENGINE_BLOCK);
 
     applyBuffer(stream, buffer);
 
@@ -1029,7 +1100,7 @@ void WTorrentEnginePrivate::applyPiece(const torrent_handle & handle,
 
     int deadline = 1;
 
-    while (priority && piece < count)
+    while (priority && current < end)
     {
         if (pieces->at(current) == false)
         {
@@ -1039,8 +1110,6 @@ void WTorrentEnginePrivate::applyPiece(const torrent_handle & handle,
 
             priority--;
         }
-
-        piece++;
 
         current++;
     }
@@ -1052,14 +1121,24 @@ void WTorrentEnginePrivate::applyBuffer(WTorrentStream * stream, qint64 buffer)
 {
     qint64 size = stream->size;
 
-    if (buffer > size) buffer = size;
-
-    if (stream->buffer >= buffer) return;
-
-    stream->buffer = buffer;
+    if (buffer > size)
+    {
+        stream->buffer = size;
+    }
+    else if (stream->buffer < buffer)
+    {
+        stream->buffer = buffer;
+    }
 
     QCoreApplication::postEvent(stream->torrent,
-                                new WTorrentEventValue(WTorrent::EventBuffer, buffer));
+                                new WTorrentEventValue(WTorrent::EventBuffer, stream->buffer));
+}
+
+void WTorrentEnginePrivate::applyFinish(WTorrentItem * item)
+{
+    item->finished = true;
+
+    QCoreApplication::postEvent(item->torrent, new WTorrentEvent(WTorrent::EventFinished));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1305,11 +1384,13 @@ void WTorrentEnginePrivate::onUpdate()
 
 void WTorrentEnginePrivate::onRemove()
 {
-    if (deleteTorrents.isEmpty()) return;
+    Q_Q(WTorrentEngine);
 
-    WTorrentData * data = deleteTorrents.takeFirst();
+    qDebug("TORRENT ON REMOVE");
 
-    if (data->items.isEmpty() == false) return;
+    QTimer * timer = static_cast<QTimer *> (q->sender());
+
+    WTorrentData * data = deleteTorrents.take(timer);
 
     const torrent_handle & handle = data->handle;
 
@@ -1334,19 +1415,22 @@ void WTorrentEnginePrivate::onRemove()
 
         session->remove_torrent(data->handle);
 
-        if (updateCache(data) == false)
-        {
-            Q_Q(WTorrentEngine);
-
-            deleteIds  .append(data->source->id);
-            deletePaths.append(data->path);
-
-            // FIXME libtorrent: Waiting before removing the torrent folder.
-            QTimer::singleShot(1000, q, SLOT(onFolderDelete()));
-        }
+        updateCache(data);
     }
 
     delete data;
+
+    timer->deleteLater();
+}
+
+void WTorrentEnginePrivate::onRemoveSource()
+{
+    WTorrentSource * source = deleteSources.takeFirst();
+
+    if (sources.contains(source) && deleteIds.contains(source->id) == false)
+    {
+        if (removeSource(source)) save();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1435,13 +1519,20 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
                                                                torrent, position));
 }
 
-/* Q_INVOKABLE */ void WTorrentEngine::remove(WTorrent * torrent, bool deleteFiles)
+/* Q_INVOKABLE */ void WTorrentEngine::remove(WTorrent * torrent)
 {
-    QCoreApplication::postEvent(this, new WTorrentEngineAction(WTorrentEnginePrivate::EventRemove,
-                                                               torrent, deleteFiles));
+    QCoreApplication::postEvent(this, new WTorrentEngineItem(WTorrentEnginePrivate::EventRemove,
+                                                             torrent));
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WTorrentEngine::clearSource(const QUrl & url)
+{
+    QCoreApplication::postEvent(this,
+                                new WTorrentEngineEvent(WTorrentEnginePrivate::EventClearSource,
+                                                        url));
+}
 
 /* Q_INVOKABLE */ void WTorrentEngine::clearCache()
 {
@@ -1495,6 +1586,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         // FIXME: Workaround to disable write cache.
         pack.set_int(settings_pack::cache_size, 0);
+        //pack.set_int(settings_pack::cache_expiry, 1);
 
         pack.set_bool(settings_pack::announce_to_all_tiers,    true);
         pack.set_bool(settings_pack::announce_to_all_trackers, true);
@@ -1559,6 +1651,25 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
     {
         return QObject::event(event);
     }
+    else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventUpdate))
+    {
+        settings_pack pack = d->session->get_settings();
+
+        pack.set_int(settings_pack::connection_speed, 500);
+
+        pack.set_int(settings_pack::download_rate_limit, 0);
+        pack.set_int(settings_pack::upload_rate_limit,   0);
+
+        pack.set_str(settings_pack::proxy_hostname, "");
+        pack.set_int(settings_pack::proxy_port,     1);
+
+        pack.set_str(settings_pack::proxy_username, "");
+        pack.set_str(settings_pack::proxy_password, "");
+
+        d->session->apply_settings(pack);
+
+        return true;
+    }
     else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventAdd))
     {
         qDebug("TORRENT ADD");
@@ -1580,6 +1691,8 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         {
             if (data)
             {
+                d->updateData(data);
+
                 WTorrentStream * stream = d->createStream(data->handle.torrent_file(),
                                                           data, torrent, index, mode);
 
@@ -1604,6 +1717,8 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         }
         else if (data)
         {
+            d->updateData(data);
+
             WTorrentItem * item = d->createItem(data->handle.torrent_file(), data, torrent, index,
                                                 mode);
 
@@ -1688,7 +1803,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
     }
     else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventRemove))
     {
-        WTorrentEngineAction * eventTorrent = static_cast<WTorrentEngineAction *> (event);
+        WTorrentEngineItem * eventTorrent = static_cast<WTorrentEngineItem *> (event);
 
         WTorrentItem * item = d->getItem(eventTorrent->torrent);
 
@@ -1700,22 +1815,18 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         items->removeOne(item);
 
-        d->unselectFile(item);
+        if (items->isEmpty() == false)
+        {
+            d->unselectFile(item);
+
+            delete item;
+
+            return true;
+        }
 
         delete item;
 
-        if (items->isEmpty() == false) return true;
-
-        const torrent_handle & handle = data->handle;
-
-        if (data->hash == 0)
-        {
-            d->deleteTorrents.append(data);
-
-            // FIXME libtorrent: Waiting before removing the torrent.
-            QTimer::singleShot(100, this, SLOT(onRemove()));
-        }
-        else
+        if (data->hash)
         {
             int id = data->source->id;
 
@@ -1727,8 +1838,9 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
             d->mutex.unlock();
 
-            handle.save_resume_data();
+            data->handle.save_resume_data();
         }
+        else d->removeData(data);
 
         return true;
     }
@@ -1745,12 +1857,10 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         qDebug("TORRENT SAVED");
 
-        if (data->items.isEmpty() == false) return true;
-
-        d->deleteTorrents.append(data);
-
-        // FIXME libtorrent: Waiting before removing the torrent.
-        QTimer::singleShot(100, this, SLOT(onRemove()));
+        if (data->items.isEmpty())
+        {
+            d->removeData(data);
+        }
 
         return true;
     }
@@ -1798,7 +1908,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
                 if (stream->finished == false && stream->current == piece && stream->block == block)
                 {
-                    d->applyBlock(data->handle, stream, piece - stream->begin, block);
+                    d->applyBlock(stream, block);
                 }
             }
         }
@@ -1836,30 +1946,29 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
             {
                 WTorrentStream * stream = static_cast<WTorrentStream *> (item);
 
-                if (stream->finished == false && stream->current == piece)
+                if (stream->finished == false)
                 {
-                    d->applyPiece(data->handle, stream, piece - stream->begin);
+                    d->applyPiece(data->handle, stream, piece);
                 }
             }
             else if (item->finished == false)
             {
                 int current = item->current;
 
-                if (current == piece)
+                if (current == piece) current++;
+
+                if (current == item->end)
                 {
-                    current++;
+                    QBitArray * pieces = &(data->pieces);
 
-                    if (current == item->end)
+                    for (int i = item->begin; i < item->end; i++)
                     {
-                        item->finished = true;
-
-                        QCoreApplication::postEvent(item->torrent,
-                                                    new WTorrentEvent(WTorrent::EventFinished));
-
-                        d->save();
+                        if (pieces->at(i) == false) return true;
                     }
-                    else item->current = current;
+
+                    d->applyFinish(item);
                 }
+                else item->current = current;
             }
         }
 
@@ -1891,9 +2000,30 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
     {
         WTorrentEngineEvent * eventTorrent = static_cast<WTorrentEngineEvent *> (event);
 
-        d->maximum = eventTorrent->value.toLongLong();
+        d->_sizeMax = eventTorrent->value.toLongLong();
 
-        if (d->cleanCache()) d->save();
+        d->cleanCache();
+
+        return true;
+    }
+    else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventClearSource))
+    {
+        WTorrentEngineEvent * eventTorrent = static_cast<WTorrentEngineEvent *> (event);
+
+        QUrl url = eventTorrent->value.toUrl();
+
+        foreach (WTorrentSource * source, d->sources)
+        {
+            if (source->url == url)
+            {
+                qDebug("TORRENT CLEAR SOURCE");
+
+                d->deleteSources.append(source);
+
+                // FIXME libtorrent: Waiting before clearing the torrent source.
+                QTimer::singleShot(TORRENTENGINE_INTERVAL_REMOVE, this, SLOT(onRemoveSource()));
+            }
+        }
 
         return true;
     }
@@ -1912,17 +2042,12 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
             d->sources.clear();
 
-            foreach (int id, d->deleteIds)
-            {
-                d->ids.removeOne(id);
-            }
-
             d->deleteIds  .clear();
             d->deletePaths.clear();
         }
 
         // FIXME libtorrent: Waiting before clearing the torrent folder.
-        QTimer::singleShot(1000, this, SLOT(onFolderClear()));
+        QTimer::singleShot(TORRENTENGINE_INTERVAL, this, SLOT(onFolderClear()));
 
         return true;
     }
@@ -1938,24 +2063,13 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         d->session = NULL;
 
-        foreach (WTorrentData * data, d->deleteTorrents)
+        QHashIterator<QTimer *, WTorrentData *> i(d->deleteTorrents);
+
+        while (i.hasNext())
         {
-            const torrent_handle & handle = data->handle;
+            i.next();
 
-            if (data->hash == 0)
-            {
-                d->datas.removeOne(data);
-
-                d->session->remove_torrent(handle);
-            }
-            else
-            {
-                d->torrents.remove(data->hash);
-
-                d->session->remove_torrent(data->handle);
-            }
-
-            delete data;
+            delete i.key();
         }
 
         foreach (WTorrentData * data, d->datas)
@@ -1963,13 +2077,13 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
             delete data;
         }
 
-        QHashIterator<unsigned int, WTorrentData *> i(d->torrents);
+        QHashIterator<unsigned int, WTorrentData *> j(d->torrents);
 
-        while (i.hasNext())
+        while (j.hasNext())
         {
-            i.next();
+            j.next();
 
-            delete i.value();
+            delete j.value();
         }
 
         if (d->timerSave->isActive())

@@ -134,6 +134,7 @@ public: // Enums
     enum EventType
     {
         EventCreate = QEvent::User,
+        EventUpdate,
         EventAdd,
         EventAdded,
         EventSeek,
@@ -145,6 +146,7 @@ public: // Enums
         EventFinished,
         EventError,
         EventSizeMax,
+        EventClearSource,
         EventClearCache,
         EventClear
     };
@@ -161,6 +163,9 @@ public: // Functions
     void loadResume(WTorrentData * data, const QString & fileName);
 
     WTorrentData * createData(TorrentInfoPointer info, const QUrl & url);
+
+    void updateData(WTorrentData * data);
+    void removeData(WTorrentData * data);
 
     WTorrentItem * createItem(TorrentInfo info, WTorrentData * data,
                                                 WTorrent     * torrent,
@@ -180,16 +185,20 @@ public: // Functions
 
     void updateFiles(WTorrentData * data);
 
-    bool updateCache(WTorrentData * data);
+    void updateCache(WTorrentData * data);
 
-    bool cleanCache();
+    void cleanCache();
+
+    bool removeSource(WTorrentSource * source);
 
     void prioritize(const torrent_handle & handle, WTorrentStream * stream, qint64 position);
 
-    void applyBlock(const torrent_handle & handle, WTorrentStream * stream, int piece, int block);
-    void applyPiece(const torrent_handle & handle, WTorrentStream * stream, int piece);
+    void applyBlock(WTorrentStream * stream, int block);
+
+    void applyPiece(const torrent_handle & handle, WTorrentStream * stream, int current);
 
     void applyBuffer(WTorrentStream * item, qint64 buffer);
+    void applyFinish(WTorrentItem   * item);
 
     WTorrentData * getData(const QUrl & url) const;
 
@@ -204,7 +213,8 @@ public: // Events
 public: // Slots
     void onUpdate();
 
-    void onRemove();
+    void onRemove      ();
+    void onRemoveSource();
 
     void onFolderDelete();
     void onFolderClear ();
@@ -220,9 +230,9 @@ public: // Variables
     QString pathIndex;
 
     qint64 size;
-    qint64 sizeMax;
 
-    qint64 maximum;
+    qint64  sizeMax;
+    qint64 _sizeMax;
 
     QList<WTorrentData *> datas;
 
@@ -234,7 +244,9 @@ public: // Variables
 
     QHash<unsigned int, QString> fileNames;
 
-    QList<WTorrentData *> deleteTorrents;
+    QHash<QTimer *, WTorrentData *> deleteTorrents;
+
+    QList<WTorrentSource *> deleteSources;
 
     QList<int>     deleteIds;
     QList<QString> deletePaths;
@@ -264,23 +276,37 @@ public: // Variables
 };
 
 //-------------------------------------------------------------------------------------------------
+// WTorrentEngineItem
+//-------------------------------------------------------------------------------------------------
+
+class WTorrentEngineItem : public QEvent
+{
+public:
+    WTorrentEngineItem(WTorrentEnginePrivate::EventType type, WTorrent * torrent)
+        : QEvent(static_cast<QEvent::Type> (type))
+    {
+        this->torrent = torrent;
+    }
+
+public: // Variables
+     WTorrent * torrent;
+};
+
+//-------------------------------------------------------------------------------------------------
 // WTorrentEngineAction
 //-------------------------------------------------------------------------------------------------
 
-class WTorrentEngineAction : public QEvent
+class WTorrentEngineAction : public WTorrentEngineItem
 {
 public:
     WTorrentEngineAction(WTorrentEnginePrivate::EventType type, WTorrent       * torrent,
                                                                 const QVariant & value)
-        : QEvent(static_cast<QEvent::Type> (type))
+        : WTorrentEngineItem(type, torrent)
     {
-        this->torrent = torrent;
-        this->value   = value;
+        this->value = value;
     }
 
 public: // Variables
-    WTorrent * torrent;
-
     QVariant value;
 };
 
@@ -288,15 +314,13 @@ public: // Variables
 // WTorrentEngineAdd
 //-------------------------------------------------------------------------------------------------
 
-class WTorrentEngineAdd : public QEvent
+class WTorrentEngineAdd : public WTorrentEngineItem
 {
 public:
     WTorrentEngineAdd(WTorrent  * torrent,
                       QIODevice * device, const QUrl & url, int index, WTorrent::Mode mode)
-        : QEvent(static_cast<QEvent::Type> (WTorrentEnginePrivate::EventAdd))
+        : WTorrentEngineItem(WTorrentEnginePrivate::EventAdd, torrent)
     {
-        this->torrent = torrent;
-
         this->device = device;
 
         this->url   = url;
@@ -306,8 +330,6 @@ public:
     }
 
 public: // Variables
-    WTorrent * torrent;
-
     QIODevice * device;
 
     QUrl url;

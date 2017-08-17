@@ -27,6 +27,7 @@
 
 // Forward declarations
 class QIODevice;
+class QUrl;
 class WTorrentEnginePrivate;
 class WTorrent;
 
@@ -46,7 +47,9 @@ public: // Interface
 
     Q_INVOKABLE void seek(WTorrent * torrent, qint64 position);
 
-    Q_INVOKABLE void remove(WTorrent * torrent, bool deleteFiles = false);
+    Q_INVOKABLE void remove(WTorrent * torrent);
+
+    Q_INVOKABLE void clearSource(const QUrl & url);
 
     Q_INVOKABLE void clearCache();
 
@@ -67,7 +70,8 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void onUpdate())
 
-    Q_PRIVATE_SLOT(d_func(), void onRemove())
+    Q_PRIVATE_SLOT(d_func(), void onRemove      ())
+    Q_PRIVATE_SLOT(d_func(), void onRemoveSource())
 
     Q_PRIVATE_SLOT(d_func(), void onFolderDelete())
     Q_PRIVATE_SLOT(d_func(), void onFolderClear ())
