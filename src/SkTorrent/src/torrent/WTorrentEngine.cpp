@@ -1642,7 +1642,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         pack.set_bool(settings_pack::enable_upnp,   true);
         pack.set_bool(settings_pack::enable_natpmp, true);
 
-        //pack.set_bool(settings_pack::smooth_connects, false);
+        pack.set_bool(settings_pack::smooth_connects, false);
 
         pack.set_int(settings_pack::connection_speed, 500);
 
@@ -1650,7 +1650,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         pack.set_int(settings_pack::min_reconnect_time, 1);
 
         //pack.set_int(settings_pack::peer_timeout,         1);
-        pack.set_int(settings_pack::peer_connect_timeout, 1);
+        pack.set_int(settings_pack::peer_connect_timeout, 3);
 
         // FIXME: Workaround to disable write cache.
         pack.set_int(settings_pack::cache_size, 0);
