@@ -352,6 +352,16 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
     QList<WBackendTorrentItem> items = d->extractItems(content);
 
+    if (items.isEmpty())
+    {
+        WBackendTorrentItem item;
+
+        item.id   = 1;
+        item.name = name;
+
+        items.append(item);
+    }
+
     QList<WTrackNet> tracks;
 
     QString source = query.url.toString();
