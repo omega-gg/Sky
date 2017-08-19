@@ -1650,7 +1650,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         pack.set_int(settings_pack::min_reconnect_time, 1);
 
         //pack.set_int(settings_pack::peer_timeout,         1);
-        pack.set_int(settings_pack::peer_connect_timeout, 3);
+        pack.set_int(settings_pack::peer_connect_timeout, 1);
 
         // FIXME: Workaround to disable write cache.
         pack.set_int(settings_pack::cache_size, 0);
