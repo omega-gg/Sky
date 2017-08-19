@@ -1652,8 +1652,9 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         //pack.set_int(settings_pack::peer_timeout,         1);
         pack.set_int(settings_pack::peer_connect_timeout, 1);
 
-        // FIXME: Workaround to disable write cache.
-        pack.set_int(settings_pack::cache_size, 0);
+        // FIXME: Workaround to improve writing efficiency.
+        pack.set_int(settings_pack::cache_size,   16);
+        pack.set_int(settings_pack::cache_expiry,  0);
 
         pack.set_bool(settings_pack::announce_to_all_tiers,    true);
         pack.set_bool(settings_pack::announce_to_all_trackers, true);
@@ -2003,20 +2004,25 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
             {
                 int current = item->current;
 
-                if (current == piece) current++;
+                if (current != piece) return true;
 
-                if (current == item->end)
+                QBitArray * pieces = &(data->pieces);
+
+                int end = item->end;
+
+                current++;
+
+                while (current < end && pieces->at(current))
                 {
-                    QBitArray * pieces = &(data->pieces);
+                    current++;
+                }
 
-                    for (int i = item->begin; i < item->end; i++)
-                    {
-                        if (pieces->at(i) == false) return true;
-                    }
+                item->current = current;
 
+                if (current == end)
+                {
                     d->applyFinish(item);
                 }
-                else item->current = current;
             }
         }
 
@@ -2041,6 +2047,41 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
                                         new WTorrentEventValue(WTorrent::EventError,
                                                                eventTorrent->value));
         }
+
+        return true;
+    }
+    else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventOptions))
+    {
+        settings_pack pack = d->session->get_settings();
+
+        d->mutexB.lock();
+
+        pack.set_int(settings_pack::connection_speed, d->connections);
+
+        pack.set_int(settings_pack::upload_rate_limit,   d->upload);
+        pack.set_int(settings_pack::download_rate_limit, d->download);
+
+        d->mutexB.unlock();
+
+        d->session->apply_settings(pack);
+
+        return true;
+    }
+    else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventProxy))
+    {
+        settings_pack pack = d->session->get_settings();
+
+        d->mutexB.lock();
+
+        pack.set_str(settings_pack::proxy_hostname, d->proxyHost.C_STR);
+        pack.set_int(settings_pack::proxy_port,     d->proxyPort);
+
+        pack.set_str(settings_pack::proxy_username, d->proxyUser    .C_STR);
+        pack.set_str(settings_pack::proxy_password, d->proxyPassword.C_STR);
+
+        d->mutexB.unlock();
+
+        d->session->apply_settings(pack);
 
         return true;
     }
