@@ -784,6 +784,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylistNet * playlist, co
                 else return false;
             }
         }
+        else return false;
     }
     else if (q->urlIsMedia(source))
     {
@@ -893,6 +894,12 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
                 return getDataFolder(folderSearch, query);
             }
+        }
+        else
+        {
+            addFolderSearch(folder, folderSearch, info.absoluteFilePath());
+
+            return false;
         }
     }
     else
