@@ -134,7 +134,6 @@ public: // Enums
     enum EventType
     {
         EventCreate = QEvent::User,
-        EventUpdate,
         EventAdd,
         EventAdded,
         EventSeek,
@@ -145,6 +144,8 @@ public: // Enums
         EventBlock,
         EventFinished,
         EventError,
+        EventOptions,
+        EventProxy,
         EventSizeMax,
         EventClearSource,
         EventClearCache,
@@ -222,7 +223,8 @@ public: // Slots
     void onSave();
 
 public: // Variables
-    QMutex mutex;
+    QMutex mutexA;
+    QMutex mutexB;
 
     session * session;
 
@@ -233,6 +235,17 @@ public: // Variables
 
     qint64  sizeMax;
     qint64 _sizeMax;
+
+    int connections;
+
+    int upload;
+    int download;
+
+    QString proxyHost;
+    int     proxyPort;
+
+    QString proxyUser;
+    QString proxyPassword;
 
     QList<WTorrentData *> datas;
 
@@ -289,7 +302,7 @@ public:
     }
 
 public: // Variables
-     WTorrent * torrent;
+    WTorrent * torrent;
 };
 
 //-------------------------------------------------------------------------------------------------

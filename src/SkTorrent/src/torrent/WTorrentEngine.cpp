@@ -1318,11 +1318,11 @@ void WTorrentEnginePrivate::events()
 
             unsigned int hash = hash_value(event->handle);
 
-            mutex.lock();
+            mutexA.lock();
 
             QString fileName = fileNames.take(hash);
 
-            mutex.unlock();
+            mutexA.unlock();
 
             std::ofstream stream(fileName.C_STR, std::ios_base::binary);
 
@@ -1550,6 +1550,74 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WTorrentEngine::setOptions(int connections, int upload, int download)
+{
+    Q_D(WTorrentEngine);
+
+    d->mutexB.lock();
+
+    d->connections = connections;
+
+    d->upload   = upload;
+    d->download = download;
+
+    d->mutexB.unlock();
+
+    QCoreApplication::postEvent(this, new QEvent(static_cast<QEvent::Type>
+                                                 (WTorrentEnginePrivate::EventOptions)));
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WTorrentEngine::setProxy(const QString & host,
+                                                int             port, const QString & password)
+{
+    Q_D(WTorrentEngine);
+
+    d->mutexB.lock();
+
+    int index = host.indexOf('@');
+
+    if (index == -1)
+    {
+        d->proxyHost = host;
+        d->proxyUser = QString();
+    }
+    else
+    {
+        d->proxyHost = host.mid(index + 1);
+        d->proxyUser = host.mid(0, index);
+    }
+
+    d->proxyPort     = port;
+    d->proxyPassword = password;
+
+    d->mutexB.unlock();
+
+    QCoreApplication::postEvent(this, new QEvent(static_cast<QEvent::Type>
+                                                 (WTorrentEnginePrivate::EventProxy)));
+}
+
+/* Q_INVOKABLE */ void WTorrentEngine::clearProxy()
+{
+    Q_D(WTorrentEngine);
+
+    d->mutexB.lock();
+
+    d->proxyHost = QString();
+    d->proxyPort = 0;
+
+    d->proxyUser     = QString();
+    d->proxyPassword = QString();
+
+    d->mutexB.unlock();
+
+    QCoreApplication::postEvent(this, new QEvent(static_cast<QEvent::Type>
+                                                 (WTorrentEnginePrivate::EventProxy)));
+}
+
+//-------------------------------------------------------------------------------------------------
 // Events
 //-------------------------------------------------------------------------------------------------
 
@@ -1586,7 +1654,6 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         // FIXME: Workaround to disable write cache.
         pack.set_int(settings_pack::cache_size, 0);
-        //pack.set_int(settings_pack::cache_expiry, 1);
 
         pack.set_bool(settings_pack::announce_to_all_tiers,    true);
         pack.set_bool(settings_pack::announce_to_all_trackers, true);
@@ -1650,25 +1717,6 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
     else if (d->session == NULL)
     {
         return QObject::event(event);
-    }
-    else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventUpdate))
-    {
-        settings_pack pack = d->session->get_settings();
-
-        pack.set_int(settings_pack::connection_speed, 500);
-
-        pack.set_int(settings_pack::download_rate_limit, 0);
-        pack.set_int(settings_pack::upload_rate_limit,   0);
-
-        pack.set_str(settings_pack::proxy_hostname, "");
-        pack.set_int(settings_pack::proxy_port,     1);
-
-        pack.set_str(settings_pack::proxy_username, "");
-        pack.set_str(settings_pack::proxy_password, "");
-
-        d->session->apply_settings(pack);
-
-        return true;
     }
     else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventAdd))
     {
@@ -1832,11 +1880,11 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
             QString fileName = data->path + "/." + QString::number(id);
 
-            d->mutex.lock();
+            d->mutexA.lock();
 
             d->fileNames.insert(data->hash, fileName);
 
-            d->mutex.unlock();
+            d->mutexA.unlock();
 
             data->handle.save_resume_data();
         }

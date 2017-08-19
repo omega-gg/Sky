@@ -141,6 +141,8 @@ WBackendNetTrack::WBackendNetTrack() : WBackendNetItem() {}
 
 WBackendNetPlaylist::WBackendNetPlaylist() : WBackendNetItem()
 {
+    currentIndex = -1;
+
     clearDuplicate = false;
 }
 
@@ -150,6 +152,8 @@ WBackendNetPlaylist::WBackendNetPlaylist() : WBackendNetItem()
 
 WBackendNetFolder::WBackendNetFolder() : WBackendNetItem()
 {
+    currentIndex = -1;
+
     scanItems = false;
 }
 

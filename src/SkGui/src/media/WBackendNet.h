@@ -173,6 +173,8 @@ public: // Variables
 
     QList<WTrackNet> tracks;
 
+    int currentIndex;
+
     bool clearDuplicate;
 };
 
@@ -190,6 +192,8 @@ public: // Variables
     QUrl    cover;
 
     QList<WLibraryFolderItem> items;
+
+    int currentIndex;
 
     bool scanItems;
 };

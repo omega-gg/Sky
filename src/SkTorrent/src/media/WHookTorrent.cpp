@@ -217,9 +217,9 @@ void WTorrentSocket::onRead()
 
     qint64 progress = thread->progress;
 
-    if ((thread->started == false || thread->seeking)
+    if (thread->started == false
         &&
-        length > HOOKTORRENT_METADATA && progress + HOOKTORRENT_SIZE < position)
+        length > HOOKTORRENT_METADATA && (progress + HOOKTORRENT_SIZE) < position)
     {
         qDebug("SKIP DATA");
 
@@ -294,10 +294,7 @@ void WTorrentSocket::onWrite()
             qDebug("WRITE");
         }
 
-        if (thread->seeking)
-        {
-            thread->seeking = false;
-        }
+        thread->seeking = false;
 
         buffer -= HOOKTORRENT_MINIMUM;
 
@@ -333,10 +330,7 @@ void WTorrentSocket::onWrite()
         {
             qDebug("END");
 
-            if (thread->seeking)
-            {
-                thread->seeking = false;
-            }
+            thread->seeking = false;
 
             qint64 length = size - position;
 

@@ -55,6 +55,13 @@ public: // Interface
 
     Q_INVOKABLE void deleteInstance();
 
+    Q_INVOKABLE void setOptions(int connections, int upload, int download);
+
+    Q_INVOKABLE void setProxy(const QString & host,
+                              int             port, const QString & password = QString());
+
+    Q_INVOKABLE void clearProxy();
+
 protected: // Events
     /* virtual */ bool event(QEvent * event);
 

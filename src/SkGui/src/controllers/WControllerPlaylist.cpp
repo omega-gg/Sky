@@ -1768,6 +1768,13 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
 
         playlist->addTracks(reply.tracks);
 
+        int index = reply.currentIndex;
+
+        if (index != -1)
+        {
+            playlist->setCurrentIndex(index);
+        }
+
         emit playlist->queryEnded();
 
         addToCache(playlist->source(), reply.cache);
@@ -1828,6 +1835,13 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
         }
 
         folder->addItems(reply.items);
+
+        int index = reply.currentIndex;
+
+        if (index != -1)
+        {
+            folder->setCurrentIndex(index);
+        }
 
         emit folder->queryEnded();
 

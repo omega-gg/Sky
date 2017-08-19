@@ -269,6 +269,13 @@ public: // Interface
     Q_INVOKABLE int  registerPort  ();
     Q_INVOKABLE void unregisterPort(int port);
 
+    Q_INVOKABLE void setOptions(int connections, int upload, int download);
+
+    Q_INVOKABLE void setProxy(const QString & host,
+                              int             port, const QString & password = QString());
+
+    Q_INVOKABLE void clearProxy();
+
 public: // Initialize
     /* virtual */ void initController(const QString & path,
                                       qint64          sizeMax = 1048576 * 1000); // 1 gigabyte

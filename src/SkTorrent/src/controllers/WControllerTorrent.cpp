@@ -630,6 +630,32 @@ WControllerTorrent::WControllerTorrent() : WController(new WControllerTorrentPri
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WControllerTorrent::setOptions(int connections, int upload, int download)
+{
+    Q_D(WControllerTorrent);
+
+    d->engine->setOptions(connections, upload, download);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WControllerTorrent::setProxy(const QString & host,
+                                                    int             port, const QString & password)
+{
+    Q_D(WControllerTorrent);
+
+    d->engine->setProxy(host, port, password);
+}
+
+/* Q_INVOKABLE */ void WControllerTorrent::clearProxy()
+{
+    Q_D(WControllerTorrent);
+
+    d->engine->clearProxy();
+}
+
+//-------------------------------------------------------------------------------------------------
 // Initialize
 //-------------------------------------------------------------------------------------------------
 
