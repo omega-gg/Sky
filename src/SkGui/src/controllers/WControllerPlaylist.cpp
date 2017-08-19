@@ -1147,23 +1147,24 @@ void WControllerPlaylistPrivate::removeQuery(WRemoteData                    * da
 
 QString WControllerPlaylistPrivate::generateSource(const QUrl & url) const
 {
-    int length = url.scheme().length();
+    QString source = url.toString();
 
-    if (length == 0)
+    if (WControllerNetwork::urlIsFile(source) || WControllerNetwork::urlIsHttp(source))
     {
-        return "http://" + url.toString();
+        return source;
     }
-    else if (length == 1)
+    else if (source.startsWith("www."))
     {
-        QString result = url.toString();
+        return "http://" + source;
+    }
 
-        if (result.endsWith(':'))
-        {
-             return WControllerFile::fileUrl(result + '/');
-        }
-        else return WControllerFile::fileUrl(result);
+    source = QDir::fromNativeSeparators(source);
+
+    if (source.endsWith(':'))
+    {
+         return WControllerFile::fileUrl(source + '/');
     }
-    else return url.toString();
+    else return WControllerFile::fileUrl(source);
 }
 
 //-------------------------------------------------------------------------------------------------
