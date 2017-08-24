@@ -717,6 +717,8 @@ void WBackendVlcPrivate::clearPlayer()
         started = false;
         active  = false;
 
+        frameFreeze = false;
+
         if (parentItem) parentItem->update();
     }
 
@@ -1650,7 +1652,8 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
                 if (d->frameFreeze == false)
                 {
-                    d->started     = false;
+                    d->started = false;
+
                     d->frameFreeze = true;
 
                     d->player->setSource(d->currentMedia, d->currentAudio);

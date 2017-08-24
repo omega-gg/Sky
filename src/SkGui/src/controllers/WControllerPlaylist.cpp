@@ -1160,18 +1160,17 @@ QString WControllerPlaylistPrivate::generateSource(const QUrl & url) const
     {
         return source;
     }
-    else if (source.startsWith("www."))
+    else if (source.startsWith('/') || (source.length() > 1 && source.at(1) == ':'))
     {
-        return "http://" + source;
-    }
+        source = QDir::fromNativeSeparators(source);
 
-    source = QDir::fromNativeSeparators(source);
-
-    if (source.endsWith(':'))
-    {
-         return WControllerFile::fileUrl(source + '/');
+        if (source.endsWith(':'))
+        {
+             return WControllerFile::fileUrl(source + '/');
+        }
+        else return WControllerFile::fileUrl(source);
     }
-    else return WControllerFile::fileUrl(source);
+    else return "http://" + source;
 }
 
 //-------------------------------------------------------------------------------------------------
