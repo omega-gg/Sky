@@ -1157,9 +1157,9 @@ Item
     // LineEdit
 
     property int lineEdit_width : dp200
-    property int lineEdit_height: dp38
+    property int lineEdit_height: dp40
 
-    property int lineEdit_padding: dp12
+    property int lineEdit_padding: dp13
 
     property url lineEdit_sourceDefault: "pictures/lineEditMask.svg"
     property url lineEdit_sourceBorder : "pictures/lineEditBorder.svg"
@@ -1186,10 +1186,10 @@ Item
     //---------------------------------------------------------------------------------------------
     // LineEditLabel
 
-    property int lineEditLabel_lineEditLeftMargin: -dp24
+    property int lineEditLabel_lineEditLeftMargin: -dp26
 
     property int lineEditLabel_labelPaddingLeft : dp16
-    property int lineEditLabel_labelPaddingRight: dp28
+    property int lineEditLabel_labelPaddingRight: dp30
 
     //---------------------------------------------------------------------------------------------
     // LineEditBox
