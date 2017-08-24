@@ -832,6 +832,11 @@ Item
     property int buttonPianoIcon_height: buttonPiano_height
 
     //---------------------------------------------------------------------------------------------
+    // ButtonPianoReset
+
+    property int buttonPianoReset_durationOpacity: duration_normal
+
+    //---------------------------------------------------------------------------------------------
     // ButtonPianoConfirm
 
     property color buttonPianoConfirm_colorHoverA: "#c80000"

@@ -17,42 +17,32 @@
 import QtQuick 1.1
 import Sky     1.0
 
-BarSetting
+ButtonPiano
 {
-    id: barSetting
-
     //---------------------------------------------------------------------------------------------
-    // Aliases
+    // Properties style
     //---------------------------------------------------------------------------------------------
 
-    property alias buttonReset: buttonReset
-
-    //---------------------------------------------------------------------------------------------
-    // Signals
-    //---------------------------------------------------------------------------------------------
-
-    signal reset
+    property int durationOpacity: st.buttonPianoReset_durationOpacity
 
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    itemText.anchors.right: buttonReset.left
+    borderLeft : borderSize
+    borderRight: 0
+
+    visible: (opacity != 0.0)
+    opacity: enabled
+
+    text: qsTr("Reset")
 
     //---------------------------------------------------------------------------------------------
-    // Childs
+    // Animations
     //---------------------------------------------------------------------------------------------
 
-    ButtonPianoReset
+    Behavior on opacity
     {
-        id: buttonReset
-
-        anchors.right : parent.right
-        anchors.top   : parent.top
-        anchors.bottom: parent.bottom
-
-        enabled: barSetting.enabled
-
-        onClicked: reset()
+        NumberAnimation { duration: durationOpacity }
     }
 }
