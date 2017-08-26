@@ -43,6 +43,13 @@
 Q_DECLARE_METATYPE(torrent_handle)
 
 //-------------------------------------------------------------------------------------------------
+// Defines
+
+#if LIBTORRENT_VERSION_NUM >= 10100
+#define LIBTORRENT_LATEST
+#endif
+
+//-------------------------------------------------------------------------------------------------
 // Static variables
 
 static const int TORRENTENGINE_BLOCK = 16 * 1024; // 16 bytes
@@ -1272,7 +1279,7 @@ void WTorrentEnginePrivate::events()
 
                 WTorrentProgress progress;
 
-                progress.hash = hash_value(status.handle);
+                progress.hash = status.handle.id();
 
                 progress.progress = status.total_done;
 
@@ -1295,7 +1302,7 @@ void WTorrentEnginePrivate::events()
 
             block_finished_alert * event = alert_cast<block_finished_alert>(alert);
 
-            QCoreApplication::postEvent(q, new WTorrentEngineBlock(hash_value(event->handle),
+            QCoreApplication::postEvent(q, new WTorrentEngineBlock(event->handle.id(),
                                                                    event->piece_index,
                                                                    event->block_index));
 
@@ -1307,7 +1314,7 @@ void WTorrentEnginePrivate::events()
             piece_finished_alert * event = alert_cast<piece_finished_alert>(alert);
 
             QCoreApplication::postEvent(q, new WTorrentEngineValue(EventPiece,
-                                                                   hash_value(event->handle),
+                                                                   event->handle.id(),
                                                                    event->piece_index));
         }
         else if (type == save_resume_data_alert::alert_type)
@@ -1316,7 +1323,7 @@ void WTorrentEnginePrivate::events()
 
             save_resume_data_alert * event = alert_cast<save_resume_data_alert>(alert);
 
-            unsigned int hash = hash_value(event->handle);
+            unsigned int hash = event->handle.id();
 
             mutexA.lock();
 
@@ -1340,7 +1347,7 @@ void WTorrentEnginePrivate::events()
                 = alert_cast<save_resume_data_failed_alert>(alert);
 
             QCoreApplication::postEvent(q, new WTorrentEngineHandle(EventSaved,
-                                                                    hash_value(event->handle)));
+                                                                    event->handle.id()));
         }
         else if (type == torrent_added_alert::alert_type)
         {
@@ -1363,8 +1370,7 @@ void WTorrentEnginePrivate::events()
             QString message = QString::fromStdString(event->message());
 
             QCoreApplication::postEvent(q, new WTorrentEngineValue(EventError,
-                                                                   hash_value(event->handle),
-                                                                   message));
+                                                                   event->handle.id(), message));
         }
 
         i++;
@@ -1394,15 +1400,7 @@ void WTorrentEnginePrivate::onRemove()
 
     const torrent_handle & handle = data->handle;
 
-    if (data->hash == 0)
-    {
-        qDebug("REMOVE TORRENT ADD");
-
-        datas.removeOne(data);
-
-        session->remove_torrent(handle);
-    }
-    else
+    if (data->hash)
     {
         qDebug("REMOVE TORRENT");
 
@@ -1416,6 +1414,14 @@ void WTorrentEnginePrivate::onRemove()
         session->remove_torrent(data->handle);
 
         updateCache(data);
+    }
+    else
+    {
+        qDebug("REMOVE TORRENT ADD");
+
+        datas.removeOne(data);
+
+        session->remove_torrent(handle);
     }
 
     delete data;
@@ -1663,11 +1669,13 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         pack.set_int(settings_pack::stop_tracker_timeout, 1);
 
+#ifdef LIBTORRENT_LATEST
         pack.set_str(settings_pack::dht_bootstrap_nodes, "dht.libtorrent.org:25401,"
                                                          "router.bittorrent.com:6881,"
                                                          "router.utorrent.com:6881,"
                                                          "dht.transmissionbt.com:6881,"
                                                          "dht.aelitis.com:6881");
+#endif
 
         d->session = new session(pack);
 
@@ -1682,11 +1690,13 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         d->session->set_dht_settings(dht);
 
-        //d->session->add_dht_router(std::make_pair(std::string("dht.libtorrent.org"),     25401));
-        //d->session->add_dht_router(std::make_pair(std::string("router.bittorrent.com"),   6881));
-        //d->session->add_dht_router(std::make_pair(std::string("router.utorrent.com"),     6881));
-        //d->session->add_dht_router(std::make_pair(std::string("dht.transmissionbt.com"),  6881));
-        //d->session->add_dht_router(std::make_pair(std::string("dht.aelitis.com"),         6881));
+#ifndef LIBTORRENT_LATEST
+        d->session->add_dht_router(std::make_pair(std::string("dht.libtorrent.org"),     25401));
+        d->session->add_dht_router(std::make_pair(std::string("router.bittorrent.com"),   6881));
+        d->session->add_dht_router(std::make_pair(std::string("router.utorrent.com"),     6881));
+        d->session->add_dht_router(std::make_pair(std::string("dht.transmissionbt.com"),  6881));
+        d->session->add_dht_router(std::make_pair(std::string("dht.aelitis.com"),         6881));
+#endif
 
         boost::function<void()> alert(boost::bind(&WTorrentEnginePrivate::events, d));
 
@@ -1802,9 +1812,9 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         if (data == NULL) return true;
 
-        torrent_handle handle = eventTorrent->value.value<torrent_handle>();
+        const torrent_handle & handle = eventTorrent->value.value<torrent_handle>();
 
-        unsigned int hash = hash_value(handle);
+        unsigned int hash = handle.id();
 
         data->handle = handle;
         data->hash   = hash;
@@ -1838,11 +1848,11 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         {
             WTorrentData * data = stream->data;
 
-            if (data->hash == 0)
+            if (data->hash)
             {
-                stream->position = eventTorrent->value.toLongLong();
+                d->prioritize(data->handle, stream, eventTorrent->value.toLongLong());
             }
-            else d->prioritize(data->handle, stream, eventTorrent->value.toLongLong());
+            else stream->position = eventTorrent->value.toLongLong();
         }
         else QCoreApplication::postEvent(stream->torrent,
                                          new WTorrentEventValue(WTorrent::EventBuffer,

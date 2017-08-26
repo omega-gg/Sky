@@ -226,7 +226,7 @@ public: // Variables
     QMutex mutexA;
     QMutex mutexB;
 
-    session * session;
+    libtorrent::session * session;
 
     QString path;
     QString pathIndex;
