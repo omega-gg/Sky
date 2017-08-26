@@ -217,9 +217,9 @@ fi
 
 echo "COPYING VLC"
 
-if [ $2 = "win32" ]; then
+mkdir deploy/plugins
 
-    mkdir deploy/plugins
+if [ $2 = "win32" ]; then
 
     cp -r "$VLC"/plugins/access       deploy/plugins
     cp -r "$VLC"/plugins/audio_filter deploy/plugins
@@ -236,6 +236,20 @@ if [ $2 = "win32" ]; then
     cp "$VLC"/libvlc*.dll deploy
 
 elif [ $2 = "linux" ]; then
+
+    sudo cp -r "$VLC"/plugins/access       deploy/plugins
+    sudo cp -r "$VLC"/plugins/audio_filter deploy/plugins
+    sudo cp -r "$VLC"/plugins/audio_mixer  deploy/plugins
+    sudo cp -r "$VLC"/plugins/audio_output deploy/plugins
+    sudo cp -r "$VLC"/plugins/codec        deploy/plugins
+    sudo cp -r "$VLC"/plugins/control      deploy/plugins
+    sudo cp -r "$VLC"/plugins/demux        deploy/plugins
+    sudo cp -r "$VLC"/plugins/misc         deploy/plugins
+    sudo cp -r "$VLC"/plugins/video_chroma deploy/plugins
+    sudo cp -r "$VLC"/plugins/video_filter deploy/plugins
+    sudo cp -r "$VLC"/plugins/video_output deploy/plugins
+
+    sudo cp "$VLC"/libvlc*.so* deploy
 
     sudo cp "$lib"/libaudio.so.2.4 deploy/libaudio.so.2
 fi
