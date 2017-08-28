@@ -64,7 +64,7 @@ unix:!macx{
 }
 
 macx {
-  QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
+  QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.12
   QMAKE_CXXFLAGS += -std=c++11 -stdlib=libc++
   QMAKE_COPY = ditto
   QMAKE_POST_LINK += $${QMAKE_COPY} $$SK/lib/lib$${TARGET}.dylib $$SK/$$SK_BIN
