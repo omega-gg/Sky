@@ -784,6 +784,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylistNet * playlist, co
                 else return false;
             }
         }
+        else return false;
     }
     else if (q->urlIsMedia(source))
     {
@@ -893,6 +894,12 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
                 return getDataFolder(folderSearch, query);
             }
+        }
+        else
+        {
+            addFolderSearch(folder, folderSearch, info.absoluteFilePath());
+
+            return false;
         }
     }
     else
@@ -1147,23 +1154,23 @@ void WControllerPlaylistPrivate::removeQuery(WRemoteData                    * da
 
 QString WControllerPlaylistPrivate::generateSource(const QUrl & url) const
 {
-    int length = url.scheme().length();
+    QString source = url.toString();
 
-    if (length == 0)
+    if (WControllerNetwork::urlIsFile(source) || WControllerNetwork::urlIsHttp(source))
     {
-        return "http://" + url.toString();
+        return source;
     }
-    else if (length == 1)
+    else if (source.startsWith('/') || (source.length() > 1 && source.at(1) == ':'))
     {
-        QString result = url.toString();
+        source = QDir::fromNativeSeparators(source);
 
-        if (result.endsWith(':'))
+        if (source.endsWith(':'))
         {
-             return WControllerFile::fileUrl(result + '/');
+             return WControllerFile::fileUrl(source + '/');
         }
-        else return WControllerFile::fileUrl(result);
+        else return WControllerFile::fileUrl(source);
     }
-    else return url.toString();
+    else return "http://" + source;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1767,6 +1774,13 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
 
         playlist->addTracks(reply.tracks);
 
+        int index = reply.currentIndex;
+
+        if (index != -1)
+        {
+            playlist->setCurrentIndex(index);
+        }
+
         emit playlist->queryEnded();
 
         addToCache(playlist->source(), reply.cache);
@@ -1827,6 +1841,13 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
         }
 
         folder->addItems(reply.items);
+
+        int index = reply.currentIndex;
+
+        if (index != -1)
+        {
+            folder->setCurrentIndex(index);
+        }
 
         emit folder->queryEnded();
 

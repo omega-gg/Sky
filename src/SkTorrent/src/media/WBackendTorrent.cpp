@@ -248,9 +248,7 @@ WBackendTorrent::WBackendTorrent() : WBackendNet(new WBackendTorrentPrivate(this
 
 /* Q_INVOKABLE virtual */ bool WBackendTorrent::checkValidUrl(const QUrl & url) const
 {
-    QString extension = WControllerNetwork::extractUrlExtension(url);
-
-    if (extension == "torrent")
+    if (WControllerNetwork::extractUrlExtension(url) == "torrent")
     {
          return true;
     }
@@ -286,9 +284,7 @@ WAbstractBackend::Output WBackendTorrent::getTrackOutput(const QUrl & url) const
 /* Q_INVOKABLE virtual */
 WBackendNetPlaylistInfo WBackendTorrent::getPlaylistInfo(const QUrl & url) const
 {
-    QString extension = WControllerNetwork::extractUrlExtension(url);
-
-    if (extension == "torrent")
+    if (WControllerNetwork::extractUrlExtension(url) == "torrent")
     {
          return WBackendNetPlaylistInfo(WLibraryItem::PlaylistNet, url.toString());
     }
@@ -364,7 +360,22 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
     QList<WTrackNet> tracks;
 
-    QString source = WControllerNetwork::removeUrlFragment(query.url);
+    QString source = query.url.toString();
+
+    int index = source.indexOf('#');
+
+    if (index != -1)
+    {
+        int currentIndex = source.mid(index + 1).toInt();
+
+        if (currentIndex > 0)
+        {
+             reply.currentIndex = currentIndex - 1;
+        }
+        else reply.currentIndex = 0;
+
+        source = source.mid(0, index);
+    }
 
     while (items.isEmpty() == false)
     {

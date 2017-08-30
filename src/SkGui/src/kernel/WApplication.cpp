@@ -272,7 +272,18 @@ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
     {
         QtSingleApplication * application = new QtSingleApplication(argc, argv);
 
-        if (application->sendMessage(""))
+        QString message;
+
+        for (int i = 0; i < argc; i++)
+        {
+            if (i == argc - 1)
+            {
+                 message.append(QString(argv[i]));
+            }
+            else message.append(QString(argv[i]) + ' ');
+        }
+
+        if (application->sendMessage(message))
         {
              return NULL;
         }

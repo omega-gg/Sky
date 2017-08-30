@@ -97,6 +97,8 @@ void WLoaderWebPrivate::onLoadFinished(bool ok)
 
     q->complete(buffer);
 
+    QObject::disconnect(page, 0, q, 0);
+
     page->deleteLater();
 }
 

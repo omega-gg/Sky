@@ -37,6 +37,9 @@ public:
 public: // Interface
     Q_INVOKABLE void deleteInstance();
 
+public: // Static
+    Q_INVOKABLE static void setPluginPath(const QString & path);
+
 protected: // Events
     /* virtual */ bool event(QEvent * event);
 

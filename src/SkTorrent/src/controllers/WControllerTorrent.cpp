@@ -427,7 +427,7 @@ void WControllerTorrentPrivate::removeTorrent(WTorrent * torrent, WTorrentReply 
 
     downloads.removeOne(torrent);
 
-    engine->remove(torrent, true);
+    engine->remove(torrent);
 
     delete torrent;
 }
@@ -573,6 +573,15 @@ WControllerTorrent::WControllerTorrent() : WController(new WControllerTorrentPri
     return reply;
 }
 
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WControllerTorrent::clearSource(const QUrl & url)
+{
+    Q_D(WControllerTorrent);
+
+    d->engine->clearSource(url);
+}
+
 /* Q_INVOKABLE */ void WControllerTorrent::clearTorrents()
 {
     Q_D(WControllerTorrent);
@@ -621,6 +630,32 @@ WControllerTorrent::WControllerTorrent() : WController(new WControllerTorrentPri
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WControllerTorrent::setOptions(int connections, int upload, int download)
+{
+    Q_D(WControllerTorrent);
+
+    d->engine->setOptions(connections, upload, download);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WControllerTorrent::setProxy(const QString & host,
+                                                    int             port, const QString & password)
+{
+    Q_D(WControllerTorrent);
+
+    d->engine->setProxy(host, port, password);
+}
+
+/* Q_INVOKABLE */ void WControllerTorrent::clearProxy()
+{
+    Q_D(WControllerTorrent);
+
+    d->engine->clearProxy();
+}
+
+//-------------------------------------------------------------------------------------------------
 // Initialize
 //-------------------------------------------------------------------------------------------------
 
@@ -666,6 +701,19 @@ WControllerTorrent::Type WControllerTorrent::extractType(const QString & text, i
          return text.mid(index + 1, length);
     }
     else return QString();
+}
+
+/* Q_INVOKABLE static */ int WControllerTorrent::extractInteger(const QString & text, int at)
+{
+    at++;
+
+    int index = text.indexOf('e', at);
+
+    if (index == -1)
+    {
+         return -1;
+    }
+    else return text.mid(at, index - at).toInt();
 }
 
 /* Q_INVOKABLE static */ QString WControllerTorrent::extractList(const QString & text, int at)
@@ -752,6 +800,18 @@ WControllerTorrent::Type WControllerTorrent::extractType(const QString & text, i
     else return extractString(text, index);
 }
 
+/* Q_INVOKABLE static */ int WControllerTorrent::integerAfter(const QString & text,
+                                                              const QString & string, int at)
+{
+    int index = indexAfter(text, string, at);
+
+    if (index == -1)
+    {
+         return -1;
+    }
+    else return extractInteger(text, index);
+}
+
 /* Q_INVOKABLE static */ QString WControllerTorrent::listAfter(const QString & text,
                                                                const QString & string, int at)
 {
@@ -822,6 +882,29 @@ WControllerTorrent::Type WControllerTorrent::extractType(const QString & text, i
     }
 
     return at;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QStringList WControllerTorrent::splitList(const QString & text)
+{
+    QStringList list;
+
+    int index  = 0;
+    int length = skipList(text);
+
+    while (length != text.length())
+    {
+        QString string = text.mid(index, length - index);
+
+        list.append(string);
+
+        index = length;
+
+        length = skipList(text, index);
+    }
+
+    return list;
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -184,9 +184,10 @@ MouseArea
 
         anchors.fill: parent
 
-        anchors.leftMargin : paddingLeft
-        anchors.rightMargin: paddingRight
-        anchors.topMargin  : padding
+        anchors.leftMargin  : paddingLeft
+        anchors.rightMargin : paddingRight
+        anchors.topMargin   : padding
+        anchors.bottomMargin: padding
 
         selectByMouse: true
 

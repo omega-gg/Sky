@@ -35,23 +35,19 @@ class WTorrentSocket;
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int HOOKTORRENT_MINIMUM_SIZE = 1048576; // 1 megabyte
+static const int HOOKTORRENT_SIZE = 1048576; // 1 megabyte
 
-static const int HOOKTORRENT_START = 100; // 0.1 percent
+static const int HOOKTORRENT_PROGRESS = 100; // 0.1 percent
 
-//-------------------------------------------------------------------------------------------------
+static const int HOOKTORRENT_BUFFER  = HOOKTORRENT_SIZE / 4;
+static const int HOOKTORRENT_MINIMUM = HOOKTORRENT_SIZE / 8;
 
-static const int HOOKTORRENT_SOCKET_SIZE = 1048576; // 1 megabyte
+static const int HOOKTORRENT_METADATA = 1048576 * 10; // 10 megabytes
 
-static const int HOOKTORRENT_SOCKET_BUFFER  = HOOKTORRENT_SOCKET_SIZE / 2;
-static const int HOOKTORRENT_SOCKET_MINIMUM = HOOKTORRENT_SOCKET_SIZE / 4;
+static const int HOOKTORRENT_SKIP      =  100;
+static const int HOOKTORRENT_SKIP_SIZE = 1024; // 1 kilobyte
 
-static const int HOOKTORRENT_SOCKET_METADATA = 64;
-
-static const int HOOKTORRENT_SOCKET_SKIP      = 10;
-static const int HOOKTORRENT_SOCKET_SKIP_SIZE = 1024; // 1 kilobyte
-
-static const int HOOKTORRENT_SOCKET_INTERVAL = 20;
+static const int HOOKTORRENT_INTERVAL = 20;
 
 //=================================================================================================
 // WTorrentThread
@@ -128,8 +124,6 @@ private:
 
     QString buffer;
 
-    qint64 position;
-
     int skip;
 
     QTimer timer;
@@ -147,11 +141,9 @@ WTorrentSocket::WTorrentSocket(WTorrentThread * thread, QTcpSocket * socket) : Q
     this->thread = thread;
     this->socket = socket;
 
-    position = 0;
-
     skip = 0;
 
-    timer.setInterval(HOOKTORRENT_SOCKET_INTERVAL);
+    timer.setInterval(HOOKTORRENT_INTERVAL);
 
     timer.setSingleShot(true);
 
@@ -190,7 +182,7 @@ void WTorrentSocket::onRead()
     header.append("HTTP/1.1 206 Partial Content\r\n"
                   "Accept-Ranges: bytes\r\n");
 
-    qint64 size = thread->size;
+    qint64 position;
 
     int indexA = buffer.indexOf("Range: bytes=");
 
@@ -202,9 +194,13 @@ void WTorrentSocket::onRead()
 
         if (indexB != -1)
         {
-            position = buffer.mid(indexA, indexB - indexA).toLongLong();
+             position = buffer.mid(indexA, indexB - indexA).toLongLong();
         }
+        else position = 0;
     }
+    else position = 0;
+
+    qint64 size = thread->size;
 
     qint64 length = size - position;
 
@@ -221,47 +217,22 @@ void WTorrentSocket::onRead()
 
     qint64 progress = thread->progress;
 
-    if (thread->started == false)
+    if (thread->started == false
+        &&
+        length > HOOKTORRENT_METADATA && (progress + HOOKTORRENT_SIZE) < position)
     {
-        if (progress + HOOKTORRENT_SOCKET_SIZE < position)
-        {
-            qDebug("SKIP DATA");
+        qDebug("SKIP DATA");
 
-            if (length > HOOKTORRENT_SOCKET_SKIP_SIZE)
-            {
-                skip = HOOKTORRENT_SOCKET_SKIP;
+        skip = HOOKTORRENT_SKIP;
 
-                writeBuffer(HOOKTORRENT_SOCKET_SKIP_SIZE);
+        writeBuffer(HOOKTORRENT_SKIP_SIZE);
 
-                timer.start();
-            }
-            else
-            {
-                skip = 0;
+        timer.start();
 
-                writeBuffer(length);
-
-                timer.stop();
-            }
-
-            return;
-        }
+        return;
     }
-    else
-    {
-        skip = 0;
 
-        if (length <= HOOKTORRENT_SOCKET_METADATA)
-        {
-            qDebug("SKIP METADATA");
-
-            writeBuffer(length);
-
-            timer.stop();
-
-            return;
-        }
-    }
+    skip = 0;
 
     if (position < thread->position || progress < position)
     {
@@ -271,6 +242,11 @@ void WTorrentSocket::onRead()
 
         thread->position = position;
         thread->seeking  = true;
+
+        if (thread->file->seek(position) == false || thread->file->pos() != position)
+        {
+            qDebug("SEEK FAILED");
+        }
 
         thread->engine->seek(thread->torrent, position);
 
@@ -283,6 +259,11 @@ void WTorrentSocket::onRead()
 
         thread->position = position;
         thread->seeking  = true;
+
+        if (thread->file->seek(position) == false || thread->file->pos() != position)
+        {
+            qDebug("SEEK FAILED");
+        }
     }
 
     onWrite();
@@ -292,9 +273,11 @@ void WTorrentSocket::onWrite()
 {
     if (skip)
     {
+        qDebug("SKIP SEEK");
+
         skip--;
 
-        writeBuffer(HOOKTORRENT_SOCKET_SIZE);
+        writeBuffer(HOOKTORRENT_SIZE);
 
         if (skip) timer.start();
 
@@ -302,35 +285,28 @@ void WTorrentSocket::onWrite()
     }
 
     qint64 progress = thread->progress;
+    qint64 position = thread->position;
 
     qint64 buffer = progress - position;
 
-    if (buffer > HOOKTORRENT_SOCKET_BUFFER)
+    if (buffer > HOOKTORRENT_BUFFER)
     {
         if (timer.isActive() == false)
         {
             qDebug("WRITE");
         }
 
-        if (thread->seeking)
-        {
-            thread->seeking = false;
+        thread->seeking = false;
 
-            if (thread->file->seek(position) == false || thread->file->pos() != position)
-            {
-                qDebug("SEEK FAILED");
-            }
-        }
-
-        buffer -= HOOKTORRENT_SOCKET_MINIMUM;
+        buffer -= HOOKTORRENT_MINIMUM;
 
         QByteArray bytes;
 
-        if (buffer < HOOKTORRENT_SOCKET_SIZE)
+        if (buffer < HOOKTORRENT_SIZE)
         {
              bytes = thread->file->read(buffer);
         }
-        else bytes = thread->file->read(HOOKTORRENT_SOCKET_SIZE);
+        else bytes = thread->file->read(HOOKTORRENT_SIZE);
 
         int count = bytes.count();
 
@@ -338,11 +314,9 @@ void WTorrentSocket::onWrite()
         {
             socket->write(bytes);
 
-            position += count;
+            thread->position += count;
 
             timer.start();
-
-            return;
         }
     }
     else
@@ -358,15 +332,7 @@ void WTorrentSocket::onWrite()
         {
             qDebug("END");
 
-            if (thread->seeking)
-            {
-                thread->seeking = false;
-
-                if (thread->file->seek(position) == false || thread->file->pos() != position)
-                {
-                    qDebug("SEEK FAILED");
-                }
-            }
+            thread->seeking = false;
 
             qint64 length = size - position;
 
@@ -378,14 +344,11 @@ void WTorrentSocket::onWrite()
             {
                 socket->write(bytes);
 
-                position = size;
+                thread->position = size;
 
                 qDebug("END ! %d", thread->file->atEnd());
             }
-            else if (count)
-            {
-                qDebug("END INCOMPLETE");
-            }
+            else qDebug("END INCOMPLETE %d", thread->file->atEnd());
         }
     }
 }
@@ -478,7 +441,7 @@ void WTorrentThread::onSeek()
 
     seeking = false;
 
-    data->skip = HOOKTORRENT_SOCKET_SKIP;
+    data->skip = HOOKTORRENT_SKIP;
 
     data->onWrite();
 }
@@ -690,11 +653,9 @@ void WHookTorrentPrivate::stop()
 
     q->setFilterActive(false);
 
-    q->setProgress(0.0);
-
-    backend->stop();
-
     q->backendSetSource(QUrl());
+
+    q->setProgress(0.0);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -744,6 +705,8 @@ void WHookTorrentPrivate::onLoaded()
     {
         Q_Q(WHookTorrent);
 
+        wControllerTorrent->clearSource(torrent->url());
+
         stop();
 
         QObject::disconnect(reply, 0, q, 0);
@@ -772,31 +735,29 @@ void WHookTorrentPrivate::onBuffer(qint64 bytesReceived)
 {
     methodBuffer.invoke(thread, Q_ARG(qint64, bytesReceived));
 
-    if (state != StateLoading) return;
-
-    qint64 size = torrent->size();
-
-    int buffer = (bytesReceived * 100000) / size;
-
-    if (buffer >= HOOKTORRENT_START)
+    if (state == StateLoading)
     {
-        Q_Q(WHookTorrent);
-
-        if (q->backend()->progress() < 0.9)
-        {
-            q->setProgress(0.9);
-        }
-
-        if (bytesReceived >= HOOKTORRENT_MINIMUM_SIZE && WControllerFile::exists(fileName))
+        if (WControllerFile::exists(fileName))
         {
             start();
         }
     }
-    else if (buffer)
-    {
-        Q_Q(WHookTorrent);
+    else if (state != StateStarting) return;
 
-        q->setProgress((qreal) buffer / HOOKTORRENT_START);
+    Q_Q(WHookTorrent);
+
+    int buffer = (bytesReceived * 100000) / torrent->size();
+
+    qreal progress = (qreal) buffer / HOOKTORRENT_PROGRESS;
+
+    if (progress > 1.0)
+    {
+        progress = 0.9;
+    }
+
+    if (backend->progress() < progress)
+    {
+        q->setProgress(progress);
     }
 }
 
@@ -978,6 +939,10 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 {
     if (*state == WAbstractBackend::StateStopped)
     {
+        Q_D(WHookTorrent);
+
+        wControllerTorrent->clearSource(d->torrent->url());
+
         stop();
     }
 }
@@ -1026,6 +991,7 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
         *stateLoad = d->backend->stateLoad();
 
         d->methodStart.invoke(d->thread);
+        d->methodSeek .invoke(d->thread);
 
         setCurrentTime(d->currentTime);
 

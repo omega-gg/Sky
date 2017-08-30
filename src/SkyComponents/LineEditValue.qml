@@ -17,42 +17,43 @@
 import QtQuick 1.1
 import Sky     1.0
 
-BarSetting
-{
-    id: barSetting
-
+LineEditLabel
+{    
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    property alias buttonReset: buttonReset
+    property alias value: labelValue.text
+
+    property alias valueWidth: labelValue.width
 
     //---------------------------------------------------------------------------------------------
-    // Signals
-    //---------------------------------------------------------------------------------------------
 
-    signal reset
+    property alias labelValue: labelValue
 
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    itemText.anchors.right: buttonReset.left
+    lineEdit.anchors.right: labelValue.left
+
+    lineEdit.anchors.rightMargin: lineEdit.anchors.leftMargin
 
     //---------------------------------------------------------------------------------------------
     // Childs
     //---------------------------------------------------------------------------------------------
 
-    ButtonPianoReset
+    LabelRoundInfo
     {
-        id: buttonReset
+        id: labelValue
 
         anchors.right : parent.right
         anchors.top   : parent.top
         anchors.bottom: parent.bottom
 
-        enabled: barSetting.enabled
+        paddingLeft : label.paddingRight
+        paddingRight: label.paddingLeft
 
-        onClicked: reset()
+        z: -1
     }
 }

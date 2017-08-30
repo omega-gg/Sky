@@ -747,6 +747,13 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ QString WControllerApplication::readAscii(const QByteArray & array)
+{
+    return QString::fromAscii(array.data(), array.size());
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE static */ QString WControllerApplication::readCodec(const QByteArray & array,
                                                                    const QString    & codec)
 {

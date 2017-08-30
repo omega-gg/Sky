@@ -262,10 +262,19 @@ public: // Interface
                                            QObject        * parent = NULL,
                                            WTorrent::Mode   mode   = WTorrent::Default);
 
+    Q_INVOKABLE void clearSource(const QUrl & url);
+
     Q_INVOKABLE void clearTorrents();
 
     Q_INVOKABLE int  registerPort  ();
     Q_INVOKABLE void unregisterPort(int port);
+
+    Q_INVOKABLE void setOptions(int connections, int upload, int download);
+
+    Q_INVOKABLE void setProxy(const QString & host,
+                              int             port, const QString & password = QString());
+
+    Q_INVOKABLE void clearProxy();
 
 public: // Initialize
     /* virtual */ void initController(const QString & path,
@@ -277,8 +286,9 @@ public: // Static functions
 
     Q_INVOKABLE static Type extractType(const QString & text, int at = 0);
 
-    Q_INVOKABLE static QString extractString(const QString & text, int at = 0);
-    Q_INVOKABLE static QString extractList  (const QString & text, int at = 0);
+    Q_INVOKABLE static QString extractString (const QString & text, int at = 0);
+    Q_INVOKABLE static int     extractInteger(const QString & text, int at = 0);
+    Q_INVOKABLE static QString extractList   (const QString & text, int at = 0);
 
     Q_INVOKABLE static int indexAfter(const QString & text,
                                       const QString & string, int at = 0);
@@ -286,12 +296,17 @@ public: // Static functions
     Q_INVOKABLE static QString stringAfter(const QString & text,
                                            const QString & string, int at = 0);
 
+    Q_INVOKABLE static int integerAfter(const QString & text,
+                                        const QString & string, int at = 0);
+
     Q_INVOKABLE static QString listAfter(const QString & text,
                                          const QString & string, int at = 0);
 
     Q_INVOKABLE static int skipString (const QString & text, int at = 0);
     Q_INVOKABLE static int skipInteger(const QString & text, int at = 0);
     Q_INVOKABLE static int skipList   (const QString & text, int at = 0);
+
+    Q_INVOKABLE static QStringList splitList(const QString & text);
 
     Q_INVOKABLE static Type getType(const QChar & character);
 
