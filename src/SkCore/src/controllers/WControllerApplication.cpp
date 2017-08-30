@@ -749,7 +749,7 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 
 /* Q_INVOKABLE static */ QString WControllerApplication::readAscii(const QByteArray & array)
 {
-    return QString::fromAscii(array.data(), array.size());
+    return QString::fromLatin1(array.data(), array.size());
 }
 
 //-------------------------------------------------------------------------------------------------
