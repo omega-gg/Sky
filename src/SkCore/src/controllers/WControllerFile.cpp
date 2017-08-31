@@ -658,7 +658,11 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 
 /* Q_INVOKABLE static */ QString WControllerFile::fileUrl(const QString & string)
 {
-    return "file:///" + string;
+    if (string.startsWith('/'))
+    {
+         return "file://"  + string;
+    }
+    else return "file:///" + string;
 }
 
 //-------------------------------------------------------------------------------------------------
