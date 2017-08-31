@@ -1697,7 +1697,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         //dht.max_dht_items =  1000;
         //dht.max_peers     = 10000;
 
-        d->session->set_dht_settings(dht);
+        //d->session->set_dht_settings(dht);
 
 #ifndef LIBTORRENT_LATEST
         d->session->add_dht_router(std::make_pair(std::string("dht.libtorrent.org"),     25401));
