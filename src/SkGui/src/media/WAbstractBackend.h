@@ -347,8 +347,17 @@ public:
 
     virtual void filterProgress(qreal * progress); /* {} */
 
-    virtual void filterOutputActive (WAbstractBackend::Output  * output);  /* {} */
+    virtual void filterOutput      (WAbstractBackend::Output  * output);  /* {} */
+    virtual void filterOutputActive(WAbstractBackend::Output  * output);  /* {} */
+
+    virtual void filterQuality      (WAbstractBackend::Quality * quality); /* {} */
     virtual void filterQualityActive(WAbstractBackend::Quality * quality); /* {} */
+
+    virtual void filterSpeed(qreal * speed); /* {} */
+
+    virtual void filterVolume(qreal * volume); /* {} */
+
+    virtual void filterFillMode(WAbstractBackend::FillMode * fillMode); /* {} */
 };
 
 #endif // SK_NO_ABSTRACTBACKEND
