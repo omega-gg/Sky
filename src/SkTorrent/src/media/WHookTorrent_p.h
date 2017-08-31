@@ -74,6 +74,8 @@ public: // Slots
 
     void onBuffer(qint64 bytesReceived);
 
+    void onDestroyed();
+
 public: // Variables
     WTorrentThread * thread;
 

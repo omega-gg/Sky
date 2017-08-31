@@ -582,6 +582,8 @@ WControllerTorrent::WControllerTorrent() : WController(new WControllerTorrentPri
     d->engine->clearSource(url);
 }
 
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ void WControllerTorrent::clearTorrents()
 {
     Q_D(WControllerTorrent);
@@ -609,6 +611,15 @@ WControllerTorrent::WControllerTorrent() : WController(new WControllerTorrentPri
     {
         delete reply;
     }
+
+    d->engine->clearCache();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WControllerTorrent::clearCache()
+{
+    Q_D(WControllerTorrent);
 
     d->engine->clearCache();
 }
@@ -944,6 +955,18 @@ void WControllerTorrent::setPort(int port)
     port = port;
 
     emit portChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+qint64 WControllerTorrent::sizeMax() const
+{
+    Q_D(const WControllerTorrent); return d->engine->sizeMax();
+}
+
+void WControllerTorrent::setSizeMax(qint64 max)
+{
+    Q_D(WControllerTorrent); d->engine->setSizeMax(max);
 }
 
 #endif // SK_NO_CONTROLLERTORRENT

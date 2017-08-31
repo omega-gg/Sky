@@ -340,7 +340,7 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
     WBackendNetPlaylist reply;
 
-    QString content = Sk::readUtf8(data);
+    QString content = QString::fromLatin1(data.constData(), data.size());
 
     content = WControllerTorrent::listAfter(content, "info");
 

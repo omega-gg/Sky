@@ -45,7 +45,7 @@ Q_DECLARE_METATYPE(torrent_handle)
 //-------------------------------------------------------------------------------------------------
 // Defines
 
-#if LIBTORRENT_VERSION_NUM >= 10100
+#if LIBTORRENT_VERSION_NUM > 10100
 #define LIBTORRENT_LATEST
 #endif
 
@@ -797,7 +797,6 @@ void WTorrentEnginePrivate::updateCache(WTorrentData * data)
 
         delete source;
 
-        // FIXME libtorrent: Waiting before removing the torrent folder.
         QTimer::singleShot(TORRENTENGINE_INTERVAL, q, SLOT(onFolderDelete()));
 
         save();
@@ -853,7 +852,6 @@ bool WTorrentEnginePrivate::removeSource(WTorrentSource * source)
 
     delete source;
 
-    // FIXME libtorrent: Waiting before removing the torrent folder.
     QTimer::singleShot(TORRENTENGINE_INTERVAL, q, SLOT(onFolderDelete()));
 
     return true;
@@ -1435,7 +1433,16 @@ void WTorrentEnginePrivate::onRemoveSource()
 
     if (sources.contains(source) && deleteIds.contains(source->id) == false)
     {
-        if (removeSource(source)) save();
+        if (removeSource(source))
+        {
+            if (sources.isEmpty())
+            {
+                Q_Q(WTorrentEngine);
+
+                QTimer::singleShot(TORRENTENGINE_INTERVAL, q, SLOT(onFolderClear()));
+            }
+            else save();
+        }
     }
 }
 
@@ -1457,6 +1464,8 @@ void WTorrentEnginePrivate::onFolderDelete()
 void WTorrentEnginePrivate::onFolderClear()
 {
     qDebug("TORRENT CACHE CLEARED");
+
+    if (sources.isEmpty() == false) return;
 
     timerSave->stop();
 
@@ -1685,10 +1694,10 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         dht.max_fail_count = 3;
 
-        dht.max_dht_items =  1000;
-        dht.max_peers     = 10000;
+        //dht.max_dht_items =  1000;
+        //dht.max_peers     = 10000;
 
-        //d->session->set_dht_settings(dht);
+        d->session->set_dht_settings(dht);
 
 #ifndef LIBTORRENT_LATEST
         d->session->add_dht_router(std::make_pair(std::string("dht.libtorrent.org"),     25401));
@@ -2119,7 +2128,6 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
                 d->deleteSources.append(source);
 
-                // FIXME libtorrent: Waiting before clearing the torrent source.
                 QTimer::singleShot(TORRENTENGINE_INTERVAL_REMOVE, this, SLOT(onRemoveSource()));
             }
         }
@@ -2132,21 +2140,14 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         if (d->sources.isEmpty() == false)
         {
-            d->size = 0;
-
             foreach (WTorrentSource * source, d->sources)
             {
-                delete source;
+                d->deleteSources.append(source);
+
+                QTimer::singleShot(TORRENTENGINE_INTERVAL_REMOVE, this, SLOT(onRemoveSource()));
             }
-
-            d->sources.clear();
-
-            d->deleteIds  .clear();
-            d->deletePaths.clear();
         }
-
-        // FIXME libtorrent: Waiting before clearing the torrent folder.
-        QTimer::singleShot(TORRENTENGINE_INTERVAL, this, SLOT(onFolderClear()));
+        else QTimer::singleShot(TORRENTENGINE_INTERVAL, this, SLOT(onFolderClear()));
 
         return true;
     }

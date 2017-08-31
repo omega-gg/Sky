@@ -266,6 +266,8 @@ public: // Interface
 
     Q_INVOKABLE void clearTorrents();
 
+    Q_INVOKABLE void clearCache();
+
     Q_INVOKABLE int  registerPort  ();
     Q_INVOKABLE void unregisterPort(int port);
 
@@ -318,6 +320,9 @@ public: // Properties
 
     int  port() const;
     void setPort(int port);
+
+    qint64 sizeMax() const;
+    void   setSizeMax(qint64 max);
 
 private:
     W_DECLARE_PRIVATE   (WControllerTorrent)
