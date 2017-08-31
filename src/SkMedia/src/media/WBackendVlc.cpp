@@ -772,7 +772,7 @@ void WBackendVlcPrivate::setMute(bool enabled)
 
     if (enabled)
     {
-         player->setVolume(0.0);
+         player->setVolume(0);
     }
     else player->setVolume(volume);
 }
