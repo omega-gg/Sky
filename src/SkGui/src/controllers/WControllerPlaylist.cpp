@@ -818,8 +818,6 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
     folder->clearItems();
 
-    WLibraryFolderSearch * folderSearch;
-
     QString source = generateSource(url);
 
     WBackendNet * backend = q->backendFromUrl(source);
@@ -837,15 +835,13 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
             else return false;
         }
 
-        folderSearch = new WLibraryFolderSearch;
+        folder->setCover(q->backendCover(backend));
 
-        folderSearch->d_func()->cover = q->backendCover(backend);
-
-        applyUrl(folderSearch, backend, source);
+        if (applyUrl(folder, backend, source))
+        {
+            return true;
+        }
     }
-    else folderSearch = new WLibraryFolderSearch;
-
-    folderSearch->d_func()->source = source;
 
     if (WControllerNetwork::urlIsFile(source))
     {
@@ -858,25 +854,25 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
         if (info.isDir())
         {
-            addFolderSearch(folder, folderSearch, info.absoluteFilePath());
+            folder->setTitle(info.absoluteFilePath());
 
             WBackendNetQuery query(source);
 
             query.target = WBackendNetQuery::TargetDir;
 
-            return getDataFolder(folderSearch, query);
+            return getDataFolder(folder, query);
         }
         else if (info.isFile())
         {
             QString baseUrl = info.absolutePath();
 
-            addFolderSearch(folder, folderSearch, baseUrl);
+            folder->setTitle(baseUrl);
 
             QString extension = info.suffix().toLower();
 
             if (q->extensionIsMarkup(extension) == false)
             {
-                if (folderSearch->isEmpty() && q->extensionIsMedia(extension) == false
+                if (q->extensionIsMedia(extension) == false
                     &&
                     info.size() < CONTROLLERPLAYLIST_MAX_SIZE)
                 {
@@ -884,7 +880,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
                     item.source = source;
 
-                    folderSearch->addItem(item);
+                    folder->addItem(item);
                 }
 
                 WBackendNetQuery query(WControllerFile::fileUrl(baseUrl));
@@ -892,19 +888,14 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
                 query.target     = WBackendNetQuery::TargetDir;
                 query.clearItems = false;
 
-                return getDataFolder(folderSearch, query);
+                return getDataFolder(folder, query);
             }
         }
-        else
-        {
-            addFolderSearch(folder, folderSearch, info.absoluteFilePath());
-
-            return false;
-        }
+        else return false;
     }
     else
     {
-        addFolderSearch(folder, folderSearch, WControllerNetwork::urlName(source));
+        folder->setTitle(WControllerNetwork::urlName(source));
 
         if (q->urlIsMedia(source))
         {
@@ -912,9 +903,9 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
             item.source = source;
 
-            folderSearch->addItem(item);
+            folder->addItem(item);
 
-            folderSearch->d_func()->setQueryEnded();
+            folder->d_func()->setQueryEnded();
 
             return true;
         }
@@ -925,7 +916,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
     query.target     = WBackendNetQuery::TargetHtml;
     query.clearItems = false;
 
-    return getDataFolder(folderSearch, query);
+    return getDataFolder(folder, query);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1191,9 +1182,11 @@ void WControllerPlaylistPrivate::addFolderSearch(WLibraryFolder * folder,
 
 //-------------------------------------------------------------------------------------------------
 
-void WControllerPlaylistPrivate::applyUrl(WLibraryFolder * folder,
+bool WControllerPlaylistPrivate::applyUrl(WLibraryFolder * folder,
                                           WBackendNet    * backend, const QUrl & url) const
 {
+    bool result = false;
+
     QString id = backend->getTrackId(url);
 
     if (id.isEmpty() == false)
@@ -1203,6 +1196,8 @@ void WControllerPlaylistPrivate::applyUrl(WLibraryFolder * folder,
         item.source = backend->getUrlTrack(id);
 
         folder->addItem(item);
+
+        result = true;
     }
 
     WBackendNetPlaylistInfo info = backend->getPlaylistInfo(url);
@@ -1214,7 +1209,11 @@ void WControllerPlaylistPrivate::applyUrl(WLibraryFolder * folder,
         item.source = backend->getUrlPlaylist(info);
 
         folder->addItem(item);
+
+        result = true;
     }
+
+    return result;
 }
 
 //-------------------------------------------------------------------------------------------------

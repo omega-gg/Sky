@@ -175,7 +175,7 @@ public: // Functions
     void addFolderSearch(WLibraryFolder * folder,
                          WLibraryFolder * folderSearch, const QString & title) const;
 
-    void applyUrl(WLibraryFolder * folder, WBackendNet * backend, const QUrl & url) const;
+    bool applyUrl(WLibraryFolder * folder, WBackendNet * backend, const QUrl & url) const;
 
     void applyPlaylist(WLibraryFolder * folder, WBackendNet * backend, const QUrl  & url,
                                                                        QList<QUrl> * urls) const;
