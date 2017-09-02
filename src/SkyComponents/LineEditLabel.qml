@@ -25,6 +25,8 @@ Item
     // Aliases
     //---------------------------------------------------------------------------------------------
 
+    property alias labelWidth: label.width
+
     property alias text: label.text
 
     property alias editText       : lineEdit.text
