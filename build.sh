@@ -37,11 +37,11 @@ lib64="/lib/x86_64-linux-gnu"
 
 if [ $# != 2 -a $# != 3 ] \
    || \
-   [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] || [ $2 != "win32" -a $2 != "linux" ] \
+   [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] || [ $2 != "win32" -a $2 != "linux" -a $2 != "osx" ] \
    || \
    [ $# = 3 -a "$3" != "deploy" ]; then
 
-    echo "Usage: build <qt4 | qt5 | clean> <win32 | linux> [deploy]"
+    echo "Usage: build <qt4 | qt5 | clean> <win32 | linux | osx> [deploy]"
 
     exit 1
 fi
@@ -105,19 +105,28 @@ elif [ $2 = "linux" ]; then
     fi
 fi
 
+
+if [ $2 = "osx" ]; then
+    export PATH=/usr/local/opt/qt\@5.5/bin/:$PATH
+fi
+
 qmake --version
 echo ""
 
 cd $build
 
-qmake -r -spec $spec "CONFIG += release" $Sky
+if [ $2 = "osx" ]; then
+    qmake -r "CONFIG += release" $Sky
+else
+    qmake -r -spec $spec "CONFIG += release" $Sky
+fi
 echo ""
 
 if [ $2 = "win32" ]; then
 
     mingw32-make $make_arguments
 else
-    make $make_arguments
+    LIBRARY_PATH=/usr/local/lib:/usr/local/opt/openssl/lib make $make_arguments
 fi
 
 echo "------------"
