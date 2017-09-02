@@ -40,7 +40,7 @@ static const int HOOKTORRENT_SIZE = 1048576; // 1 megabyte
 static const int HOOKTORRENT_PROGRESS = 100; // 0.1 percent
 
 static const int HOOKTORRENT_BUFFER  = HOOKTORRENT_SIZE / 4;
-static const int HOOKTORRENT_MINIMUM = HOOKTORRENT_SIZE / 8;
+static const int HOOKTORRENT_MINIMUM = HOOKTORRENT_SIZE / 4;
 
 static const int HOOKTORRENT_METADATA = 1048576 * 10; // 10 megabytes
 
@@ -496,17 +496,18 @@ void WTorrentThread::onConnection()
             delete data;
         }
 
-        data = new WTorrentSocket(this, socket);
-
-        if (file->isOpen() == false)
+        if (file->isOpen() || file->open(QIODevice::ReadOnly))
         {
-            if (file->open(QIODevice::ReadOnly) == false)
-            {
-                qDebug("FAILED TO OPEN FILE");
-            }
-        }
+            data = new WTorrentSocket(this, socket);
 
-        connect(socket, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
+            connect(socket, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
+        }
+        else
+        {
+            qDebug("FAILED TO OPEN FILE");
+
+            delete socket;
+        }
     }
     else delete socket;
 }
@@ -635,6 +636,8 @@ void WHookTorrentPrivate::start()
             q->applyCurrentTime(currentTime);
         }
         else q->backendPlay();
+
+        q->applyState(WAbstractBackend::StatePlaying);
     }
 
     if (WControllerPlaylist::urlIsAudio(fileName))

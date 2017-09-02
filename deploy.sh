@@ -229,6 +229,7 @@ if [ $2 = "win32" ]; then
     cp -r "$VLC"/plugins/control      deploy/plugins
     cp -r "$VLC"/plugins/demux        deploy/plugins
     cp -r "$VLC"/plugins/misc         deploy/plugins
+    cp -r "$VLC"/plugins/packetizer   deploy/plugins
     cp -r "$VLC"/plugins/video_chroma deploy/plugins
     cp -r "$VLC"/plugins/video_filter deploy/plugins
     cp -r "$VLC"/plugins/video_output deploy/plugins
@@ -247,6 +248,7 @@ elif [ $2 = "linux" ]; then
     sudo cp -r "$VLC"/plugins/control      deploy/vlc/plugins
     sudo cp -r "$VLC"/plugins/demux        deploy/vlc/plugins
     sudo cp -r "$VLC"/plugins/misc         deploy/vlc/plugins
+    sudo cp -r "$VLC"/plugins/packetizer   deploy/vlc/plugins
     sudo cp -r "$VLC"/plugins/video_chroma deploy/vlc/plugins
     sudo cp -r "$VLC"/plugins/video_filter deploy/vlc/plugins
     sudo cp -r "$VLC"/plugins/video_output deploy/vlc/plugins
