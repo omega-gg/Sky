@@ -40,7 +40,7 @@ static const int HOOKTORRENT_SIZE = 1048576; // 1 megabyte
 static const int HOOKTORRENT_PROGRESS = 100; // 0.1 percent
 
 static const int HOOKTORRENT_BUFFER  = HOOKTORRENT_SIZE / 8;
-static const int HOOKTORRENT_MINIMUM = HOOKTORRENT_SIZE / 8;
+static const int HOOKTORRENT_MINIMUM = HOOKTORRENT_BUFFER;
 
 static const int HOOKTORRENT_METADATA = 1048576 * 10; // 10 megabytes
 
