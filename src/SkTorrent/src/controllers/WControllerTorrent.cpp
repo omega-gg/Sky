@@ -532,8 +532,6 @@ void WControllerTorrentPrivate::onLoaded(WRemoteData * data)
         {
             emit reply->loaded(reply);
         }
-
-        delete torrent;
     }
     else
     {

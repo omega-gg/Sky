@@ -150,7 +150,9 @@ public: // Static functions
 
     Q_INVOKABLE static QString extractHtml(const QString & text);
 
-    Q_INVOKABLE static QString extractCharset(const QByteArray & html);
+    Q_INVOKABLE static QString extractHead(const QString & html);
+
+    Q_INVOKABLE static QString extractCharset(const QString & html);
 
     Q_INVOKABLE static QString extractTitle(const QString & head);
     Q_INVOKABLE static QString extractImage(const QString & head);

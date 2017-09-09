@@ -218,13 +218,13 @@ WBackendNetFolder WBackendDuckDuckGo::extractFolder(const QByteArray       & dat
 
             title = WControllerNetwork::removeUrlPrefix(title);
 
-            WLibraryFolderItem playlist(WLibraryItem::PlaylistNet, WLocalObject::Default);
+            WLibraryFolderItem folder(WLibraryItem::FolderSearch, WLocalObject::Default);
 
-            playlist.source = QUrl::fromEncoded(source.toLatin1());
+            folder.source = QUrl::fromEncoded(source.toLatin1());
 
-            playlist.title = title;
+            folder.title = title;
 
-            reply.items.append(playlist);
+            reply.items.append(folder);
         }
     }
     else // if (query.id == 0)

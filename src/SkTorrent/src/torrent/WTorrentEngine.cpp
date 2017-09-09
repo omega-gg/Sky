@@ -54,7 +54,8 @@ Q_DECLARE_METATYPE(torrent_handle)
 
 static const int TORRENTENGINE_BLOCK = 16 * 1024; // 16 bytes
 
-static const int TORRENTENGINE_PRIORITY_COUNT = 10;
+static const int TORRENTENGINE_PRIORITY_COUNT    =   3;
+static const int TORRENTENGINE_PRIORITY_INTERVAL = 100;
 
 static const int TORRENTENGINE_INTERVAL        = 1000;
 static const int TORRENTENGINE_INTERVAL_REMOVE =  100;
@@ -649,14 +650,13 @@ void WTorrentEnginePrivate::addStream(const torrent_handle & handle, WTorrentStr
     int current = stream->begin;
 
     int priority = TORRENTENGINE_PRIORITY_COUNT;
-
-    int deadline = 1;
+    int deadline = TORRENTENGINE_PRIORITY_INTERVAL;
 
     while (priority && current < stream->end)
     {
         handle.set_piece_deadline(current, deadline);
 
-        deadline++;
+        deadline += TORRENTENGINE_PRIORITY_INTERVAL;
 
         current++;
 
@@ -956,8 +956,7 @@ void WTorrentEnginePrivate::prioritize(const torrent_handle & handle,
     if (clear) handle.clear_piece_deadlines();
 
     int priority = TORRENTENGINE_PRIORITY_COUNT;
-
-    int deadline = 1;
+    int deadline = TORRENTENGINE_PRIORITY_INTERVAL;
 
     while (priority && current < end)
     {
@@ -965,7 +964,7 @@ void WTorrentEnginePrivate::prioritize(const torrent_handle & handle,
         {
             handle.set_piece_deadline(current, deadline);
 
-            deadline++;
+            deadline += TORRENTENGINE_PRIORITY_INTERVAL;
 
             priority--;
         }
@@ -1102,8 +1101,7 @@ void WTorrentEnginePrivate::applyPiece(const torrent_handle & handle,
     // Deadline
 
     int priority = TORRENTENGINE_PRIORITY_COUNT;
-
-    int deadline = 1;
+    int deadline = TORRENTENGINE_PRIORITY_INTERVAL;
 
     while (priority && current < end)
     {
@@ -1111,7 +1109,7 @@ void WTorrentEnginePrivate::applyPiece(const torrent_handle & handle,
         {
             handle.set_piece_deadline(current, deadline);
 
-            deadline++;
+            deadline += TORRENTENGINE_PRIORITY_INTERVAL;
 
             priority--;
         }
@@ -1664,24 +1662,36 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         //pack.set_int(settings_pack::max_failcount,      1);
         pack.set_int(settings_pack::min_reconnect_time, 1);
 
-        //pack.set_int(settings_pack::peer_timeout,         1);
         pack.set_int(settings_pack::peer_connect_timeout, 1);
+        pack.set_int(settings_pack::peer_timeout,         3);
 
+        pack.set_int(settings_pack::piece_timeout,   3);
+        pack.set_int(settings_pack::request_timeout, 3);
+
+        //-----------------------------------------------------------------------------------------
         // FIXME: Workaround to improve writing efficiency.
-        pack.set_int(settings_pack::cache_size,   0);
-        pack.set_int(settings_pack::cache_expiry, 0);
 
-        //pack.set_bool(settings_pack::announce_to_all_tiers,    true);
-        //pack.set_bool(settings_pack::announce_to_all_trackers, true);
+        //pack.set_int(settings_pack::use_disk_cache_pool, false);
+
+        pack.set_int(settings_pack::cache_size,   64);
+        pack.set_int(settings_pack::cache_expiry,  0);
+
+        //pack.set_int(settings_pack::disk_io_write_mode, settings_pack::disable_os_cache);
+
+        //-----------------------------------------------------------------------------------------
+
+        pack.set_bool(settings_pack::announce_to_all_tiers,    true);
+        pack.set_bool(settings_pack::announce_to_all_trackers, true);
 
         //pack.set_bool(settings_pack::prioritize_partial_pieces, true);
 
         pack.set_int(settings_pack::stop_tracker_timeout, 1);
 
 #ifdef LIBTORRENT_LATEST
-        pack.set_str(settings_pack::dht_bootstrap_nodes, "dht.libtorrent.org:25401,"
-                                                         "router.bittorrent.com:6881,"
+        pack.set_str(settings_pack::dht_bootstrap_nodes, "router.bittorrent.com:6881,"
                                                          "router.utorrent.com:6881,"
+                                                         "router.bitcomet.com:6881,"
+                                                         "dht.libtorrent.org:25401,"
                                                          "dht.transmissionbt.com:6881,"
                                                          "dht.aelitis.com:6881");
 #endif
@@ -1694,17 +1704,18 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         dht.max_fail_count = 3;
 
-        dht.max_dht_items =  1000;
-        dht.max_peers     = 10000;
+        //dht.max_dht_items =  1000;
+        //dht.max_peers     = 10000;
 
         d->session->set_dht_settings(dht);
 
 #ifndef LIBTORRENT_LATEST
+        d->session->add_dht_router(std::make_pair(std::string("router.bittorrent.com"),  6881));
+        d->session->add_dht_router(std::make_pair(std::string("router.utorrent.com"),    6881));
+        d->session->add_dht_router(std::make_pair(std::string("router.bitcomet.com"),    6881));
         d->session->add_dht_router(std::make_pair(std::string("dht.libtorrent.org"),     25401));
-        d->session->add_dht_router(std::make_pair(std::string("router.bittorrent.com"),   6881));
-        d->session->add_dht_router(std::make_pair(std::string("router.utorrent.com"),     6881));
-        d->session->add_dht_router(std::make_pair(std::string("dht.transmissionbt.com"),  6881));
-        d->session->add_dht_router(std::make_pair(std::string("dht.aelitis.com"),         6881));
+        d->session->add_dht_router(std::make_pair(std::string("dht.transmissionbt.com"), 6881));
+        d->session->add_dht_router(std::make_pair(std::string("dht.aelitis.com"),        6881));
 #endif
 
         boost::function<void()> alert(boost::bind(&WTorrentEnginePrivate::events, d));
@@ -2071,6 +2082,8 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
     }
     else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventOptions))
     {
+        qDebug("TORRENT OPTIONS");
+
         settings_pack pack = d->session->get_settings();
 
         d->mutexB.lock();
@@ -2088,6 +2101,8 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
     }
     else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventProxy))
     {
+        qDebug("TORRENT PROXY");
+
         settings_pack pack = d->session->get_settings();
 
         d->mutexB.lock();

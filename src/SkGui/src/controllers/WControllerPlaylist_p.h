@@ -172,8 +172,8 @@ public: // Functions
 
     QString generateSource(const QUrl & url) const;
 
-    void addFolderSearch(WLibraryFolder * folder,
-                         WLibraryFolder * folderSearch, const QString & title) const;
+    void addFolderSearch(WLibraryFolder * folder, const QString & source,
+                                                  const QString & title) const;
 
     bool applyUrl(WLibraryFolder * folder, WBackendNet * backend, const QUrl & url) const;
 

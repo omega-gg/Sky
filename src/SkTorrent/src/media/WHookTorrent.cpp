@@ -213,7 +213,14 @@ void WTorrentSocket::onRead()
 
     qDebug("REPLY %s", header.C_STR);
 
-    socket->write(header.toLatin1());
+    if (socket->write(header.toLatin1()) != header.length())
+    {
+        qDebug("HEADER FAILED");
+
+        socket->disconnect();
+
+        return;
+    }
 
     qint64 progress = thread->progress;
 
@@ -309,11 +316,27 @@ void WTorrentSocket::onWrite()
 
         if (bytes.count() == buffer)
         {
-            socket->write(bytes);
+            qint64 result = socket->write(bytes);
 
-            thread->position += buffer;
+            if (result != -1)
+            {
+                thread->position += result;
 
-            timer.start();
+                if (result != buffer)
+                {
+                    qDebug("WRITE INCOMPLETE");
+
+                    thread->file->seek(thread->position);
+                }
+
+                timer.start();
+            }
+            else
+            {
+                qDebug("WRITE FAILED");
+
+                socket->disconnect();
+            }
         }
         else
         {
@@ -351,9 +374,27 @@ void WTorrentSocket::onWrite()
 
             if (bytes.count() == buffer)
             {
-                socket->write(bytes);
+                qint64 result = socket->write(bytes);
 
-                thread->position = size;
+                if (result != -1)
+                {
+                    thread->position += result;
+
+                    if (result != buffer)
+                    {
+                        qDebug("END WRITE INCOMPLETE");
+
+                        thread->file->seek(thread->position);
+
+                        timer.start();
+                    }
+                }
+                else
+                {
+                    qDebug("END WRITE FAILED");
+
+                    socket->disconnect();
+                }
 
                 qDebug("END ! %d", thread->file->atEnd());
             }
@@ -413,6 +454,8 @@ void WTorrentThread::onFile(WTorrent * torrent, const QString & fileName, qint64
     {
         delete data->socket;
         delete data;
+
+        data = NULL;
     }
 
     if (file) delete file;
@@ -505,6 +548,8 @@ void WTorrentThread::onConnection()
         else
         {
             qDebug("FAILED TO OPEN FILE");
+
+            data = NULL;
 
             delete socket;
         }
@@ -719,7 +764,22 @@ void WHookTorrentPrivate::onAdded()
 
 void WHookTorrentPrivate::onLoaded()
 {
-    if (torrent->hasError())
+    if (torrent == NULL)
+    {
+        Q_Q(WHookTorrent);
+
+        q->setProgress(0.0);
+
+        QObject::disconnect(reply, 0, q, 0);
+
+        reply->deleteLater();
+
+        reply = NULL;
+
+        q->setStateLoad(WAbstractBackend::StateLoadDefault);
+        q->setState    (WAbstractBackend::StateStopped);
+    }
+    else if (torrent->hasError())
     {
         Q_Q(WHookTorrent);
 

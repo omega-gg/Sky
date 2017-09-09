@@ -328,7 +328,7 @@ signals:
     }
     else content = Sk::readCodec(array, charset);
 
-    QString head = Sk::sliceIn(content, "<head", "</head");
+    QString head = WControllerNetwork::extractHead(content);
 
     head.replace("'", "\"");
 
@@ -339,7 +339,13 @@ signals:
     QString host;
     QString title;
 
-    if (WControllerNetwork::urlIsFile(baseUrl) == false)
+    if (WControllerNetwork::urlIsFile(baseUrl))
+    {
+        host = baseUrl;
+
+        title = WControllerNetwork::extractUrlFileName(url);
+    }
+    else
     {
         host = WControllerNetwork::extractUrlHost(baseUrl);
 
@@ -349,12 +355,6 @@ signals:
         {
             title = WControllerNetwork::removeUrlPrefix(baseUrl);
         }
-    }
-    else
-    {
-        host = baseUrl;
-
-        title = WControllerNetwork::extractUrlFileName(url);
     }
 
     QString cover = WControllerNetwork::extractImage(head);
@@ -727,7 +727,13 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylistNet * playlist, co
 
             playlist->loadTrack(0);
 
-            if (getDataRelated(backend, playlist, id) == false)
+            if (getDataRelated(backend, playlist, id))
+            {
+                playlist->d_func()->setQueryEnded();
+
+                return true;
+            }
+            else
             {
                 WBackendNetQuery query(source);
 
@@ -736,7 +742,6 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylistNet * playlist, co
 
                 return getDataPlaylist(playlist, query);
             }
-            else return true;
         }
     }
 
@@ -839,6 +844,8 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
         if (applyUrl(folder, backend, source))
         {
+            folder->d_func()->setQueryEnded();
+
             return true;
         }
     }
@@ -854,11 +861,12 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
         if (info.isDir())
         {
-            folder->setTitle(info.absoluteFilePath());
+            addFolderSearch(folder, source, info.absoluteFilePath());
 
             WBackendNetQuery query(source);
 
-            query.target = WBackendNetQuery::TargetDir;
+            query.target     = WBackendNetQuery::TargetDir;
+            query.clearItems = false;
 
             return getDataFolder(folder, query);
         }
@@ -866,23 +874,12 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
         {
             QString baseUrl = info.absolutePath();
 
-            folder->setTitle(baseUrl);
+            addFolderSearch(folder, source, baseUrl);
 
             QString extension = info.suffix().toLower();
 
             if (q->extensionIsMarkup(extension) == false)
             {
-                if (q->extensionIsMedia(extension) == false
-                    &&
-                    info.size() < CONTROLLERPLAYLIST_MAX_SIZE)
-                {
-                    WLibraryFolderItem item(WLibraryItem::PlaylistNet, WLocalObject::Default);
-
-                    item.source = source;
-
-                    folder->addItem(item);
-                }
-
                 WBackendNetQuery query(WControllerFile::fileUrl(baseUrl));
 
                 query.target     = WBackendNetQuery::TargetDir;
@@ -893,23 +890,21 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
         }
         else return false;
     }
-    else
+    else if (q->urlIsMedia(source))
     {
         folder->setTitle(WControllerNetwork::urlName(source));
 
-        if (q->urlIsMedia(source))
-        {
-            WLibraryFolderItem item(WLibraryItem::PlaylistNet, WLocalObject::Default);
+        WLibraryFolderItem item(WLibraryItem::PlaylistNet, WLocalObject::Default);
 
-            item.source = source;
+        item.source = source;
 
-            folder->addItem(item);
+        folder->addItem(item);
 
-            folder->d_func()->setQueryEnded();
+        folder->d_func()->setQueryEnded();
 
-            return true;
-        }
+        return true;
     }
+    else addFolderSearch(folder, source, WControllerNetwork::urlName(source));
 
     WBackendNetQuery query(source);
 
@@ -1167,17 +1162,17 @@ QString WControllerPlaylistPrivate::generateSource(const QUrl & url) const
 //-------------------------------------------------------------------------------------------------
 
 void WControllerPlaylistPrivate::addFolderSearch(WLibraryFolder * folder,
-                                                 WLibraryFolder * folderSearch,
+                                                 const QString  & source,
                                                  const QString  & title) const
 {
-    folderSearch->d_func()->title = title;
+    WLibraryFolderItem item(WLibraryItem::PlaylistNet, WLocalObject::Loading);
 
-    folder->addLibraryItem(folderSearch);
+    item.source = source;
+    item.title  = title;
 
-    folder      ->setCurrentIndex(0);
-    folderSearch->setCurrentIndex(0);
+    folder->setTitle(title);
 
-    folderSearch->tryDelete();
+    folder->addItem(item);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2074,67 +2069,19 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
     WLibraryFolder * folder = query->item->toFolder();
 
-    QList<QUrl> urlPlaylists;
-
-    if (folder->isEmpty() == false)
-    {
-        queries.remove(query->data);
-
-        for (int i = 0; i < folder->count(); i++)
-        {
-            const QUrl & url = folder->itemAt(i)->source;
-
-            WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
-
-            if (backend)
-            {
-                WBackendNetPlaylistInfo info = backend->getPlaylistInfo(url);
-
-                if (info.isValid())
-                {
-                     urlPlaylists.append(backend->getUrlPlaylist(info));
-                }
-                else urlPlaylists.append(url);
-            }
-            else urlPlaylists.append(url);
-        }
-
-        foreach (const WControllerPlaylistSource & source, data.sources)
-        {
-            const QUrl & url = source.url;
-
-            WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
-
-            if (backend && urlPlaylists.count() != CONTROLLERPLAYLIST_MAX_PLAYLISTS)
-            {
-                applyPlaylist(folder, backend, url, &urlPlaylists);
-            }
-        }
-
-        applySources(folder, data.folders, &urlPlaylists);
-        applySources(folder, data.files,   &urlPlaylists);
-
-        folder->d_func()->setQueryEnded();
-
-        return;
-    }
-
     QString source = folder->source().toString();
 
     QString feed = query->backendQuery.url.toString();
 
     queries.remove(query->data);
 
+    WPlaylistNet * playlist = folder->createLibraryItemAt(0, true)->toPlaylistNet();
+
+    playlist->setTitle(data.title);
+    playlist->setCover(data.cover);
+
+    QList<QUrl> urlPlaylists;
     QList<QUrl> urlTracks;
-
-    int indexPlaylist = folder->count();
-
-    WPlaylistNet * playlist = new WPlaylistNet;
-
-    playlist->d_func()->source = source;
-
-    playlist->d_func()->title = data.title;
-    playlist->d_func()->cover = data.cover;
 
     foreach (const WControllerPlaylistSource & source, data.sources)
     {
@@ -2211,8 +2158,6 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
     if (singleTrack)
     {
-        folder->insertLibraryItem(indexPlaylist, playlist);
-
         QUrl source = playlist->trackSource(0);
 
         WBackendNet * backend = wControllerPlaylist->backendFromUrl(source);
@@ -2223,11 +2168,16 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
             getDataRelated(backend, playlist, backend->getTrackId(source));
         }
+
+        playlist->d_func()->setQueryEnded();
     }
-    else if (folder->isEmpty() || playlist->isEmpty() == false)
+    else if (folder->count() > 1 && playlist->isEmpty())
     {
-        folder->insertLibraryItem(indexPlaylist, playlist);
+        folder->loadCurrentIndex(1, true);
+
+        folder->removeItem(playlist->id());
     }
+    else playlist->d_func()->setQueryEnded();
 
     playlist->tryDelete();
 

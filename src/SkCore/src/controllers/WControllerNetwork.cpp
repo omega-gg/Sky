@@ -904,7 +904,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     {
         index += 2;
 
-        while (string.at(index) == '/')
+        while (index < string.length() && string.at(index) == '/')
         {
             index++;
         }
@@ -1217,9 +1217,22 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ QString WControllerNetwork::extractCharset(const QByteArray & html)
+/* Q_INVOKABLE static */ QString WControllerNetwork::extractHead(const QString & html)
 {
-    QString head = Sk::sliceIn(html, "<head", "</head");
+    QString head = Sk::sliceIn(html, "<head>", "</head");
+
+    if (head.isEmpty())
+    {
+         return Sk::sliceIn(html, "<html", "</head");
+    }
+    else return head;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QString WControllerNetwork::extractCharset(const QString & html)
+{
+    QString head = extractHead(html);
 
     QStringList tags = Sk::slicesIn(head, "<meta", ">");
 
@@ -1540,12 +1553,12 @@ QString WControllerNetwork::extractNodeAttributeAt(const QString & text,
     {
         index++;
 
-        while (text.at(index).isSpace())
+        while (index < text.length() && text.at(index).isSpace())
         {
             index++;
         }
 
-        if (text.at(index) == '"')
+        if (index != text.length() && text.at(index) == '"')
         {
             index = text.indexOf('"', index + 1);
 
@@ -1640,7 +1653,10 @@ QString WControllerNetwork::extractAttributeUtf8(const QString & text,
 
     index++;
 
-    while (text.at(index) == ' ') index++;
+    while (index < text.length() && text.at(index) == ' ')
+    {
+        index++;
+    }
 
     return index;
 }
@@ -1880,7 +1896,10 @@ QString WControllerNetwork::extractAttributeUtf8(const QString & text,
 
     start++;
 
-    while (text.at(start) == ' ') start++;
+    while (start < text.length() && text.at(start) == ' ')
+    {
+        start++;
+    }
 
     int end = indexJsonEnd(text, start);
 
