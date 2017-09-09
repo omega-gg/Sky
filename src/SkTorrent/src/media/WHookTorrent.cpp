@@ -39,6 +39,8 @@ static const int HOOKTORRENT_SIZE = 1048576; // 1 megabyte
 
 static const int HOOKTORRENT_PROGRESS = 100; // 0.1 percent
 
+static const int HOOKTORRENT_START = HOOKTORRENT_SIZE / 4;
+
 static const int HOOKTORRENT_BUFFER  = HOOKTORRENT_SIZE / 8;
 static const int HOOKTORRENT_MINIMUM = HOOKTORRENT_BUFFER;
 
@@ -819,7 +821,7 @@ void WHookTorrentPrivate::onBuffer(qint64 bytesReceived)
 
     if (state == StateLoading)
     {
-        if (WControllerFile::exists(fileName))
+        if (bytesReceived >= HOOKTORRENT_START && WControllerFile::exists(fileName))
         {
             start();
         }
