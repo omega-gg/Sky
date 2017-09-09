@@ -1671,10 +1671,10 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         //-----------------------------------------------------------------------------------------
         // FIXME: Workaround to improve writing efficiency.
 
-        pack.set_int(settings_pack::use_disk_cache_pool, false);
+        //pack.set_int(settings_pack::use_disk_cache_pool, false);
 
-        pack.set_int(settings_pack::cache_size,   0);
-        pack.set_int(settings_pack::cache_expiry, 0);
+        pack.set_int(settings_pack::cache_size,   64);
+        pack.set_int(settings_pack::cache_expiry,  0);
 
         pack.set_int(settings_pack::disk_io_write_mode, settings_pack::disable_os_cache);
 
