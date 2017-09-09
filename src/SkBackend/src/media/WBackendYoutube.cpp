@@ -354,6 +354,13 @@ WBackendYoutube::WBackendYoutube() : WBackendNet(new WBackendYoutubePrivate(this
 // WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE virtual */ bool WBackendYoutube::isHub() const
+{
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE virtual */ QString WBackendYoutube::getHost() const
 {
     return "youtube.com";

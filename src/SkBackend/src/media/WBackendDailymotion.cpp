@@ -171,6 +171,13 @@ WBackendDailymotion::WBackendDailymotion() : WBackendNet(new WBackendDailymotion
 // WBackendNet implementation
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE virtual */ bool WBackendDailymotion::isHub() const
+{
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE virtual */ QString WBackendDailymotion::getId() const
 {
     return "dailymotion";

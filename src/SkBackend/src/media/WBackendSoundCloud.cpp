@@ -313,6 +313,13 @@ WBackendSoundCloud::WBackendSoundCloud() : WBackendNet(new WBackendSoundCloudPri
 // WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE virtual */ bool WBackendSoundCloud::isHub() const
+{
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE virtual */ QString WBackendSoundCloud::getHost() const
 {
     return "soundcloud.com";

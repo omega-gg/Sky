@@ -222,6 +222,13 @@ WBackendVimeo::WBackendVimeo() : WBackendNet(new WBackendVimeoPrivate(this))
 // WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE virtual */ bool WBackendVimeo::isHub() const
+{
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE virtual */ QString WBackendVimeo::getHost() const
 {
     return "vimeo.com";
