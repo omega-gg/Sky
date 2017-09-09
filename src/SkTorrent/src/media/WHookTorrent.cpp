@@ -326,7 +326,7 @@ void WTorrentSocket::onWrite()
                 {
                     qDebug("WRITE INCOMPLETE");
 
-                    thread->file->seek(thread->position);
+                    thread->seeking = true;
                 }
 
                 timer.start();
@@ -342,7 +342,7 @@ void WTorrentSocket::onWrite()
         {
             qDebug("READ INCOMPLETE");
 
-            thread->file->seek(position);
+            thread->seeking = true;
         }
     }
     else
@@ -384,7 +384,7 @@ void WTorrentSocket::onWrite()
                     {
                         qDebug("END WRITE INCOMPLETE");
 
-                        thread->file->seek(thread->position);
+                        thread->seeking = true;
 
                         timer.start();
                     }
@@ -402,7 +402,7 @@ void WTorrentSocket::onWrite()
             {
                 qDebug("END INCOMPLETE %d", thread->file->atEnd());
 
-                thread->file->seek(position);
+                thread->seeking = true;
             }
         }
     }
