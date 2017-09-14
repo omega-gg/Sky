@@ -83,7 +83,9 @@ public: // Properties
     qint64 size() const;
 
     qint64 progress() const;
-    qint64 buffer  () const;
+
+    qint64 bufferPieces() const;
+    qint64 bufferBlocks() const;
 
     int download() const;
     int upload  () const;
@@ -110,7 +112,9 @@ private: // Variables
     qint64 _size;
 
     qint64 _progress;
-    qint64 _buffer;
+
+    qint64 _bufferPieces;
+    qint64 _bufferBlocks;
 
     int _download;
     int _upload;
@@ -143,7 +147,8 @@ signals:
     void loaded(WTorrentReply * reply);
 
     void progress(qint64 bytesReceived, qint64 bytesTotal);
-    void buffer  (qint64 bytesReceived);
+
+    void buffer(qint64 bufferPieces, qint64 bufferBlocks);
 
 public: // Properties
     WTorrent * torrent() const;
@@ -228,6 +233,25 @@ public: // Variables
 
     int seeds;
     int peers;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WTorrentEventBuffer
+//-------------------------------------------------------------------------------------------------
+
+class WTorrentEventBuffer : public WTorrentEvent
+{
+public:
+    WTorrentEventBuffer(qint64 bufferPieces, qint64 bufferBlocks)
+        : WTorrentEvent(WTorrent::EventBuffer)
+    {
+        this->bufferPieces = bufferPieces;
+        this->bufferBlocks = bufferBlocks;
+    }
+
+public: // Variables
+    qint64 bufferPieces;
+    qint64 bufferBlocks;
 };
 
 //-------------------------------------------------------------------------------------------------

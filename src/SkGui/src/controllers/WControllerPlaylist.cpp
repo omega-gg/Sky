@@ -892,8 +892,6 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
     }
     else if (q->urlIsMedia(source))
     {
-        folder->setTitle(WControllerNetwork::urlName(source));
-
         WLibraryFolderItem item(WLibraryItem::PlaylistNet, WLocalObject::Default);
 
         item.source = source;
@@ -1169,8 +1167,6 @@ void WControllerPlaylistPrivate::addFolderSearch(WLibraryFolder * folder,
 
     item.source = source;
     item.title  = title;
-
-    folder->setTitle(title);
 
     folder->addItem(item);
 }

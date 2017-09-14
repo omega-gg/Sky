@@ -68,7 +68,9 @@ WTorrent::WTorrent(const QUrl & url, Mode mode, QObject * parent) : QObject(pare
     _size = 0;
 
     _progress = 0;
-    _buffer   = 0;
+
+    _bufferPieces = 0;
+    _bufferBlocks = 0;
 
     _download = 0;
     _upload   = 0;
@@ -123,13 +125,14 @@ WTorrent::WTorrent(const QUrl & url, Mode mode, QObject * parent) : QObject(pare
     }
     else if (type == static_cast<QEvent::Type> (EventBuffer))
     {
-        WTorrentEventValue * eventTorrent = static_cast<WTorrentEventValue *> (event);
+        WTorrentEventBuffer * eventTorrent = static_cast<WTorrentEventBuffer *> (event);
 
-        _buffer = eventTorrent->value.toLongLong();
+        _bufferPieces = eventTorrent->bufferPieces;
+        _bufferBlocks = eventTorrent->bufferBlocks;
 
         foreach (WTorrentReply * reply, _replies)
         {
-            emit reply->buffer(_buffer);
+            emit reply->buffer(_bufferPieces, _bufferBlocks);
         }
 
         return true;
@@ -229,9 +232,16 @@ qint64 WTorrent::progress() const
     return _progress;
 }
 
-qint64 WTorrent::buffer() const
+//-------------------------------------------------------------------------------------------------
+
+qint64 WTorrent::bufferPieces() const
 {
-    return _buffer;
+    return _bufferPieces;
+}
+
+qint64 WTorrent::bufferBlocks() const
+{
+    return _bufferBlocks;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -379,7 +389,9 @@ void WControllerTorrentPrivate::loadTorrent(WTorrentReply * reply, const QUrl   
         }
     }
 
-    QUrl fileUrl = wControllerFile->getFileUrl(url);
+    QString source = WControllerNetwork::removeUrlFragment(url);
+
+    QUrl fileUrl = wControllerFile->getFileUrl(source);
 
     WRemoteData * data;
 
@@ -388,11 +400,11 @@ void WControllerTorrentPrivate::loadTorrent(WTorrentReply * reply, const QUrl   
          data = wControllerDownload->getData(WControllerFile::fileUrl(fileUrl), q,
                                              QNetworkRequest::HighPriority);
     }
-    else data = wControllerDownload->getData(url, q, QNetworkRequest::HighPriority);
+    else data = wControllerDownload->getData(source, q, QNetworkRequest::HighPriority);
 
     if (data == NULL)
     {
-        qWarning("WControllerTorrentPrivate::loadTorrent: Failed to load torrent %s.", url.C_URL);
+        qWarning("WControllerTorrentPrivate::loadTorrent: Failed to load torrent %s.", source.C_STR);
 
         return;
     }

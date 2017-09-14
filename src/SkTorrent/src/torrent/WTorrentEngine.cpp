@@ -481,6 +481,8 @@ WTorrentStream * WTorrentEnginePrivate::createStream(TorrentInfo info, WTorrentD
 
     int sizePiece;
 
+    qint64 start;
+
     if (index == -1) index = 0;
 
     if (index < data->fileCount)
@@ -510,7 +512,9 @@ WTorrentStream * WTorrentEnginePrivate::createStream(TorrentInfo info, WTorrentD
 
         sizePiece = info->piece_length();
 
-        int length = (request.start + size) / sizePiece;
+        start = request.start;
+
+        int length = (start + size) / sizePiece;
 
         end = begin + qMax(0, length) + 1;
     }
@@ -522,6 +526,8 @@ WTorrentStream * WTorrentEnginePrivate::createStream(TorrentInfo info, WTorrentD
         end   = 0;
 
         sizePiece = 0;
+
+        start = 0;
     }
 
     int count = end - begin;
@@ -551,6 +557,8 @@ WTorrentStream * WTorrentEnginePrivate::createStream(TorrentInfo info, WTorrentD
 
     stream->count = count;
 
+    stream->start = start;
+
     stream->position = 0;
 
     data->items.append(stream);
@@ -573,21 +581,23 @@ WTorrentStream * WTorrentEnginePrivate::createStream(TorrentInfo info, WTorrentD
     {
         qDebug("TORRENT ALREADY FINISHED");
 
+        stream->finished = true;
+
         stream->block = 0;
 
-        stream->buffer = size;
-
-        stream->finished = true;
+        stream->bufferPieces = size;
+        stream->bufferBlocks = size;
 
         QCoreApplication::postEvent(torrent, new WTorrentEventAdd(paths, size));
 
-        QCoreApplication::postEvent(torrent, new WTorrentEventValue(WTorrent::EventBuffer,
-                                                                    size));
+        QCoreApplication::postEvent(torrent, new WTorrentEventBuffer(size, size));
 
         QCoreApplication::postEvent(torrent, new WTorrentEvent(WTorrent::EventFinished));
     }
     else
     {
+        stream->finished = false;
+
         QBitArray * blocks = &(data->blocks);
 
         int block      = 0;
@@ -603,20 +613,32 @@ WTorrentStream * WTorrentEnginePrivate::createStream(TorrentInfo info, WTorrentD
 
         stream->block = block;
 
-        qint64 buffer = (qint64) (stream->piece * stream->sizePiece + block * TORRENTENGINE_BLOCK);
-
-        stream->buffer = buffer;
-
-        stream->finished = false;
-
         qDebug("TORRENT START AT %d %d", stream->piece, block);
 
-        QCoreApplication::postEvent(torrent, new WTorrentEventAdd(paths, size));
+        qint64 bufferPieces = (qint64) (stream->piece * stream->sizePiece - stream->start);
 
-        if (buffer)
+        qint64 bufferBlocks = (qint64) (bufferPieces + block * TORRENTENGINE_BLOCK);
+
+        if (bufferPieces > 0)
         {
-            QCoreApplication::postEvent(torrent, new WTorrentEventValue(WTorrent::EventBuffer,
-                                                                        buffer));
+             stream->bufferPieces = bufferPieces;
+        }
+        else stream->bufferPieces = 0;
+
+        if (bufferBlocks > 0)
+        {
+             stream->bufferBlocks = bufferBlocks;
+
+             QCoreApplication::postEvent(torrent, new WTorrentEventAdd(paths, size));
+
+             QCoreApplication::postEvent(torrent, new WTorrentEventBuffer(stream->bufferPieces,
+                                                                          bufferBlocks));
+        }
+        else
+        {
+            stream->bufferBlocks = 0;
+
+            QCoreApplication::postEvent(torrent, new WTorrentEventAdd(paths, size));
         }
     }
 
@@ -894,7 +916,8 @@ void WTorrentEnginePrivate::prioritize(const torrent_handle & handle,
     {
         stream->block = 0;
 
-        stream->buffer = stream->size;
+        stream->bufferPieces = stream->size;
+        stream->bufferBlocks = stream->size;
     }
     else
     {
@@ -922,22 +945,38 @@ void WTorrentEnginePrivate::prioritize(const torrent_handle & handle,
 
         stream->block = block;
 
-        qint64 buffer = (qint64) (sizePiece + block * TORRENTENGINE_BLOCK);
-
         qint64 size = stream->size;
 
-        if (buffer < size)
+        qint64 bufferPieces = (qint64) (sizePiece - stream->start);
+
+        qint64 bufferBlocks = (qint64) (bufferPieces + block * TORRENTENGINE_BLOCK);
+
+        if (bufferPieces < size)
         {
-             stream->buffer = buffer;
+            if (bufferPieces > 0)
+            {
+                 stream->bufferPieces = bufferPieces;
+            }
+            else stream->bufferPieces = 0;
         }
-        else stream->buffer = size;
+        else stream->bufferPieces = size;
+
+        if (bufferBlocks < size)
+        {
+            if (bufferBlocks > 0)
+            {
+                 stream->bufferBlocks = bufferBlocks;
+            }
+            else stream->bufferBlocks = 0;
+        }
+        else stream->bufferBlocks = size;
     }
 
     //---------------------------------------------------------------------------------------------
     // Buffer
 
-    QCoreApplication::postEvent(stream->torrent,
-                                new WTorrentEventValue(WTorrent::EventBuffer, stream->buffer));
+    QCoreApplication::postEvent(stream->torrent, new WTorrentEventBuffer(stream->bufferPieces,
+                                                                         stream->bufferBlocks));
 
     //---------------------------------------------------------------------------------------------
     // Deadline
@@ -1000,9 +1039,7 @@ void WTorrentEnginePrivate::applyBlock(WTorrentStream * stream, int block)
     {
         stream->block = block;
 
-        qint64 buffer = (qint64) (stream->piece * stream->sizePiece + block * TORRENTENGINE_BLOCK);
-
-        applyBuffer(stream, buffer);
+        applyBuffer(stream);
     }
 }
 
@@ -1053,10 +1090,10 @@ void WTorrentEnginePrivate::applyPiece(const torrent_handle & handle,
 
         qint64 size = stream->size;
 
-        stream->buffer = size;
+        stream->bufferPieces = size;
+        stream->bufferBlocks = size;
 
-        QCoreApplication::postEvent(stream->torrent,
-                                    new WTorrentEventValue(WTorrent::EventBuffer, size));
+        QCoreApplication::postEvent(stream->torrent, new WTorrentEventBuffer(size, size));
 
         end--;
 
@@ -1093,9 +1130,7 @@ void WTorrentEnginePrivate::applyPiece(const torrent_handle & handle,
     //---------------------------------------------------------------------------------------------
     // Buffer
 
-    qint64 buffer = (qint64) (stream->piece * stream->sizePiece + block * TORRENTENGINE_BLOCK);
-
-    applyBuffer(stream, buffer);
+    applyBuffer(stream);
 
     //---------------------------------------------------------------------------------------------
     // Deadline
@@ -1120,21 +1155,40 @@ void WTorrentEnginePrivate::applyPiece(const torrent_handle & handle,
 
 //-------------------------------------------------------------------------------------------------
 
-void WTorrentEnginePrivate::applyBuffer(WTorrentStream * stream, qint64 buffer)
+void WTorrentEnginePrivate::applyBuffer(WTorrentStream * stream)
 {
     qint64 size = stream->size;
 
-    if (buffer > size)
+    qint64 bufferPieces = (qint64) (stream->piece * stream->sizePiece - stream->start);
+
+    qint64 bufferBlocks = (qint64) (bufferPieces + stream->block * TORRENTENGINE_BLOCK);
+
+    if (bufferPieces > size)
     {
-        stream->buffer = size;
+        bufferPieces = size;
+        bufferBlocks = size;
     }
-    else if (stream->buffer < buffer)
+    else if (bufferBlocks > size)
     {
-        stream->buffer = buffer;
+        bufferPieces = bufferPieces;
+        bufferBlocks = size;
     }
 
-    QCoreApplication::postEvent(stream->torrent,
-                                new WTorrentEventValue(WTorrent::EventBuffer, stream->buffer));
+    if (stream->bufferPieces < bufferPieces)
+    {
+        stream->bufferPieces = bufferPieces;
+        stream->bufferBlocks = bufferBlocks;
+
+        QCoreApplication::postEvent(stream->torrent, new WTorrentEventBuffer(bufferPieces,
+                                                                             bufferBlocks));
+    }
+    else if (stream->bufferBlocks < bufferBlocks)
+    {
+        stream->bufferBlocks = bufferBlocks;
+
+        QCoreApplication::postEvent(stream->torrent, new WTorrentEventBuffer(stream->bufferPieces,
+                                                                             bufferBlocks));
+    }
 }
 
 void WTorrentEnginePrivate::applyFinish(WTorrentItem * item)
@@ -1671,12 +1725,12 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         //-----------------------------------------------------------------------------------------
         // FIXME: Workaround to improve writing efficiency.
 
-        pack.set_int(settings_pack::use_disk_cache_pool, false);
+        /*pack.set_int(settings_pack::use_disk_cache_pool, false);
 
         pack.set_int(settings_pack::cache_size,   0);
         pack.set_int(settings_pack::cache_expiry, 0);
 
-        pack.set_int(settings_pack::disk_io_write_mode, settings_pack::disable_os_cache);
+        pack.set_int(settings_pack::disk_io_write_mode, settings_pack::disable_os_cache);*/
 
         //-----------------------------------------------------------------------------------------
 
@@ -1710,12 +1764,12 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         d->session->set_dht_settings(dht);
 
 #ifndef LIBTORRENT_LATEST
-        d->session->add_dht_router(std::make_pair(std::string("router.bittorrent.com"),  6881));
-        d->session->add_dht_router(std::make_pair(std::string("router.utorrent.com"),    6881));
-        d->session->add_dht_router(std::make_pair(std::string("router.bitcomet.com"),    6881));
+        d->session->add_dht_router(std::make_pair(std::string("router.bittorrent.com"),   6881));
+        d->session->add_dht_router(std::make_pair(std::string("router.utorrent.com"),     6881));
+        d->session->add_dht_router(std::make_pair(std::string("router.bitcomet.com"),     6881));
         d->session->add_dht_router(std::make_pair(std::string("dht.libtorrent.org"),     25401));
-        d->session->add_dht_router(std::make_pair(std::string("dht.transmissionbt.com"), 6881));
-        d->session->add_dht_router(std::make_pair(std::string("dht.aelitis.com"),        6881));
+        d->session->add_dht_router(std::make_pair(std::string("dht.transmissionbt.com"),  6881));
+        d->session->add_dht_router(std::make_pair(std::string("dht.aelitis.com"),         6881));
 #endif
 
         boost::function<void()> alert(boost::bind(&WTorrentEnginePrivate::events, d));
@@ -1864,7 +1918,13 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         WTorrentStream * stream = d->getStream(eventTorrent->torrent);
 
-        if (stream->finished == false)
+        if (stream->finished)
+        {
+            qint64 size = stream->size;
+
+            QCoreApplication::postEvent(stream->torrent, new WTorrentEventBuffer(size, size));
+        }
+        else
         {
             WTorrentData * data = stream->data;
 
@@ -1874,9 +1934,6 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
             }
             else stream->position = eventTorrent->value.toLongLong();
         }
-        else QCoreApplication::postEvent(stream->torrent,
-                                         new WTorrentEventValue(WTorrent::EventBuffer,
-                                                                stream->size));
 
         return true;
     }

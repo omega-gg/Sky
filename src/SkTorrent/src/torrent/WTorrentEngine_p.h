@@ -82,7 +82,11 @@ struct WTorrentStream : public WTorrentItem
 
     int block;
 
-    qint64 buffer;
+    qint64 start;
+
+    qint64 bufferPieces;
+    qint64 bufferBlocks;
+
     qint64 position;
 };
 
@@ -198,7 +202,7 @@ public: // Functions
 
     void applyPiece(const torrent_handle & handle, WTorrentStream * stream, int current);
 
-    void applyBuffer(WTorrentStream * item, qint64 buffer);
+    void applyBuffer(WTorrentStream * item);
     void applyFinish(WTorrentItem   * item);
 
     WTorrentData * getData(const QUrl & url) const;

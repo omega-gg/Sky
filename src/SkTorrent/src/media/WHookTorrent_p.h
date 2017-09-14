@@ -67,12 +67,13 @@ public: // Functions
     void stop();
 
     void clearReply();
+    void clearData ();
 
 public: // Slots
     void onAdded ();
     void onLoaded();
 
-    void onBuffer(qint64 bytesReceived);
+    void onBuffer(qint64 bufferPieces, qint64 bufferBlocks);
 
     void onDestroyed();
 

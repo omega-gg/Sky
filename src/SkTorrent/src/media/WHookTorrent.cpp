@@ -631,7 +631,7 @@ void WHookTorrentPrivate::load()
     QObject::connect(reply, SIGNAL(added (WTorrentReply *)), q, SLOT(onAdded ()));
     QObject::connect(reply, SIGNAL(loaded(WTorrentReply *)), q, SLOT(onLoaded()));
 
-    QObject::connect(reply, SIGNAL(buffer(qint64)), q, SLOT(onBuffer(qint64)));
+    QObject::connect(reply, SIGNAL(buffer(qint64, qint64)), q, SLOT(onBuffer(qint64, qint64)));
 
     QObject::connect(reply, SIGNAL(destroyed()), q, SLOT(onDestroyed()));
 }
@@ -640,7 +640,7 @@ void WHookTorrentPrivate::start()
 {
     Q_Q(WHookTorrent);
 
-    if (torrent->buffer() == torrent->size())
+    if (torrent->bufferPieces() == torrent->size())
     {
         qDebug("START QUICK");
 
@@ -727,17 +727,24 @@ void WHookTorrentPrivate::clearReply()
 {
     Q_Q(WHookTorrent);
 
+    QObject::disconnect(reply, 0, q, 0);
+
     delete reply;
 
+    clearData();
+
+    q->setStateLoad(WAbstractBackend::StateLoadDefault);
+    q->setState    (WAbstractBackend::StateStopped);
+}
+
+void WHookTorrentPrivate::clearData()
+{
     torrent = NULL;
     reply   = NULL;
 
     state = StateDefault;
 
     currentTime = -1;
-
-    q->setStateLoad(WAbstractBackend::StateLoadDefault);
-    q->setState    (WAbstractBackend::StateStopped);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -795,12 +802,7 @@ void WHookTorrentPrivate::onLoaded()
 
         reply->deleteLater();
 
-        torrent = NULL;
-        reply   = NULL;
-
-        state = StateDefault;
-
-        currentTime = -1;
+        clearData();
 
         q->setStateLoad(WAbstractBackend::StateLoadDefault);
         q->setState    (WAbstractBackend::StateStopped);
@@ -813,9 +815,9 @@ void WHookTorrentPrivate::onLoaded()
 
 //-------------------------------------------------------------------------------------------------
 
-void WHookTorrentPrivate::onBuffer(qint64 bytesReceived)
+void WHookTorrentPrivate::onBuffer(qint64 bufferPieces, qint64 bufferBlocks)
 {
-    methodBuffer.invoke(thread, Q_ARG(qint64, bytesReceived));
+    methodBuffer.invoke(thread, Q_ARG(qint64, bufferPieces));
 
     if (state == StateLoading)
     {
@@ -828,7 +830,7 @@ void WHookTorrentPrivate::onBuffer(qint64 bytesReceived)
 
     Q_Q(WHookTorrent);
 
-    int buffer = (bytesReceived * 100000) / torrent->size();
+    int buffer = (bufferBlocks * 100000) / torrent->size();
 
     qreal progress = (qreal) buffer / HOOKTORRENT_PROGRESS;
 
@@ -857,12 +859,7 @@ void WHookTorrentPrivate::onDestroyed()
     }
     else stop();
 
-    torrent = NULL;
-    reply   = NULL;
-
-    state = StateDefault;
-
-    currentTime = -1;
+    clearData();
 
     q->setStateLoad(WAbstractBackend::StateLoadDefault);
     q->setState    (WAbstractBackend::StateStopped);
@@ -911,7 +908,11 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
         {
             d->stop();
 
-            d->clearReply();
+            disconnect(d->reply, 0, this, 0);
+
+            delete d->reply;
+
+            d->clearData();
 
             setDuration   (duration);
             setCurrentTime(currentTime);
