@@ -325,47 +325,39 @@ QUrl WBackendVimeo::getUrlPlaylist(const WBackendNetPlaylistInfo & info) const
 
 /* Q_INVOKABLE virtual */ WBackendNetQuery WBackendVimeo::getQuerySource(const QUrl & url) const
 {
-    WBackendNetQuery backendQuery;
-
     QString id = getTrackId(url);
 
-    if (id.isEmpty()) return backendQuery;
-
-    backendQuery.url = "https://player.vimeo.com/video/" + id;
-
-    return backendQuery;
+    if (id.isEmpty())
+    {
+         return WBackendNetQuery();
+    }
+    else return WBackendNetQuery("https://player.vimeo.com/video/" + id);
 }
 
 /* Q_INVOKABLE virtual */ WBackendNetQuery WBackendVimeo::getQueryTrack(const QUrl & url) const
 {
-    WBackendNetQuery backendQuery;
-
     QString id = getTrackId(url);
 
-    if (id.isEmpty()) return backendQuery;
-
-    backendQuery.url = "https://vimeo.com/" + id;
-
-    return backendQuery;
+    if (id.isEmpty())
+    {
+         return WBackendNetQuery();
+    }
+    else return WBackendNetQuery("https://vimeo.com/" + id);
 }
 
 /* Q_INVOKABLE virtual */ WBackendNetQuery WBackendVimeo::getQueryPlaylist(const QUrl & url) const
 {
-    WBackendNetQuery backendQuery;
-
     QString id = getPlaylistInfo(url).id;
 
-    if (id.isEmpty()) return backendQuery;
+    if (id.isEmpty()) return WBackendNetQuery();
 
     if (id.startsWith("tag:"))
     {
-         backendQuery.url = "https://vimeo.com/" + id + "/page:1/sort:date/format:thumbnail";
+         return WBackendNetQuery("https://vimeo.com/" + id + "/page:1/sort:date/format:thumbnail");
     }
-    else backendQuery.url = "https://vimeo.com/" + id
-                            +
-                            "/videos/page:1/sort:date/format:thumbnail";
-
-    return backendQuery;
+    else return WBackendNetQuery("https://vimeo.com/" + id
+                                 +
+                                 "/videos/page:1/sort:date/format:thumbnail");
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -374,7 +366,7 @@ QUrl WBackendVimeo::getUrlPlaylist(const WBackendNetPlaylistInfo & info) const
 WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
                                             const QString & label, const QString & q) const
 {
-    WBackendNetQuery backendQuery;
+    WBackendNetQuery query;
 
     if (method == "search")
     {
@@ -396,9 +388,9 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
             url.setQuery(query);
 #endif
 
-            backendQuery.type = WBackendNetQuery::TypeWeb;
-            backendQuery.url  = url;
-            backendQuery.id   = 1;
+            query.type = WBackendNetQuery::TypeWeb;
+            query.url  = url;
+            query.id   = 1;
         }
         else if (label == "people")
         {
@@ -414,9 +406,9 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
             url.setQuery(query);
 #endif
 
-            backendQuery.type = WBackendNetQuery::TypeWeb;
-            backendQuery.url  = url;
-            backendQuery.id   = 1;
+            query.type = WBackendNetQuery::TypeWeb;
+            query.url  = url;
+            query.id   = 1;
         }
         else if (label == "channels")
         {
@@ -432,8 +424,8 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
             url.setQuery(query);
 #endif
 
-            backendQuery.type = WBackendNetQuery::TypeWeb;
-            backendQuery.url  = url;
+            query.type = WBackendNetQuery::TypeWeb;
+            query.url  = url;
         }
         else if (label == "groups")
         {
@@ -449,20 +441,20 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
             url.setQuery(query);
 #endif
 
-            backendQuery.type = WBackendNetQuery::TypeWeb;
-            backendQuery.url  = url;
+            query.type = WBackendNetQuery::TypeWeb;
+            query.url  = url;
         }
     }
     else if (method == "related" && label == "tracks")
     {
-        backendQuery.url = "https://vimeo.com/" + q
+        query.url = "https://vimeo.com/" + q
                            +
                            "/collections/channels/sort:relevant/format:thumbnail";
 
-        backendQuery.id = 2;
+        query.id = 2;
     }
 
-    return backendQuery;
+    return query;
 }
 
 //-------------------------------------------------------------------------------------------------

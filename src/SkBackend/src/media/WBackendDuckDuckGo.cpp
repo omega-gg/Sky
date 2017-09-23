@@ -151,7 +151,7 @@ WBackendDuckDuckGo::WBackendDuckDuckGo() : WBackendNet(new WBackendDuckDuckGoPri
 WBackendNetQuery WBackendDuckDuckGo::createQuery(const QString & method,
                                                  const QString & label, const QString & q) const
 {
-    WBackendNetQuery backendQuery;
+    WBackendNetQuery query;
 
     if (method == "search")
     {
@@ -159,27 +159,27 @@ WBackendNetQuery WBackendDuckDuckGo::createQuery(const QString & method,
         {
             Q_D(const WBackendDuckDuckGo);
 
-            backendQuery.url  = d->getUrl(q);
-            backendQuery.data = q;
+            query.url  = d->getUrl(q);
+            query.data = q;
 
-            backendQuery.cookies = true;
-            backendQuery.maxHost = 1;
+            query.cookies = true;
+            query.maxHost = 1;
         }
         else if (label == "site")
         {
             Q_D(const WBackendDuckDuckGo);
 
-            backendQuery.url  = d->getUrl(q);
-            backendQuery.id   = 1;
-            backendQuery.data = q;
+            query.url  = d->getUrl(q);
+            query.id   = 1;
+            query.data = q;
 
-            backendQuery.cookies = true;
-            backendQuery.maxHost = 1;
-            backendQuery.delay   = 3000;
+            query.cookies = true;
+            query.maxHost = 1;
+            query.delay   = 3000;
         }
     }
 
-    return backendQuery;
+    return query;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -209,6 +209,8 @@ WBackendNetFolder WBackendDuckDuckGo::extractFolder(const QByteArray       & dat
             QString source = WControllerNetwork::extractAttributeUtf8At(string, index);
 
             source = d->extractSource(source);
+
+            if (source.isEmpty()) continue;
 
             index = WControllerNetwork::indexValue(string, index);
 
@@ -240,6 +242,8 @@ WBackendNetFolder WBackendDuckDuckGo::extractFolder(const QByteArray       & dat
             QString source = WControllerNetwork::extractAttributeUtf8At(string, index);
 
             source = d->extractSource(source);
+
+            if (source.isEmpty()) continue;
 
             source = WControllerNetwork::urlName(source);
 

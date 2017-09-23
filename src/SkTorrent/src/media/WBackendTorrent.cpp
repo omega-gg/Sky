@@ -319,15 +319,15 @@ WBackendNetQuery WBackendTorrent::getQueryPlaylist(const QUrl & url) const
 WBackendNetQuery WBackendTorrent::createQuery(const QString & method,
                                               const QString & label, const QString & q) const
 {
-    WBackendNetQuery backendQuery;
+    WBackendNetQuery query;
 
     if (method == "related" && label == "tracks")
     {
-        backendQuery.url = q;
-        backendQuery.id  = 1;
+        query.url = q;
+        query.id  = 1;
     }
 
-    return backendQuery;
+    return query;
 }
 
 //-------------------------------------------------------------------------------------------------

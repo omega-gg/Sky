@@ -48,10 +48,10 @@ public: // Functions
 
     QString extractJson(const QString & data, const QString & id) const;
 
-    void applyQuery(WBackendNetQuery * backendQuery, const QUrl & url, int queryId) const;
+    void applyQuery(WBackendNetQuery * query, const QUrl & url, int queryId) const;
 
-    void applySearch (WBackendNetQuery * backendQuery, const QString & source, int queryId) const;
-    void applyRelated(WBackendNetQuery * backendQuery, const QString & source) const;
+    void applySearch (WBackendNetQuery * query, const QString & source, int queryId) const;
+    void applyRelated(WBackendNetQuery * query, const QString & source) const;
 
     void applyCover(QString * cover) const;
 
@@ -176,7 +176,7 @@ QString WBackendSoundCloudPrivate::extractJson(const QString & data, const QStri
 
 //-------------------------------------------------------------------------------------------------
 
-void WBackendSoundCloudPrivate::applyQuery(WBackendNetQuery * backendQuery,
+void WBackendSoundCloudPrivate::applyQuery(WBackendNetQuery * query,
                                            const QUrl       & url, int queryId) const
 {
     if (id.isEmpty())
@@ -186,20 +186,20 @@ void WBackendSoundCloudPrivate::applyQuery(WBackendNetQuery * backendQuery,
         variants.append(url);
         variants.append(queryId);
 
-        backendQuery->url  = "https://soundcloud.com";
-        backendQuery->id   = -1;
-        backendQuery->data = variants;
+        query->url  = "https://soundcloud.com";
+        query->id   = -1;
+        query->data = variants;
     }
     else
     {
-        backendQuery->url  = url;
-        backendQuery->id   = queryId;
-        backendQuery->data = id;
+        query->url  = url;
+        query->id   = queryId;
+        query->data = id;
     }
 }
 
-void WBackendSoundCloudPrivate::applySearch(WBackendNetQuery * backendQuery,
-                                            const QString    & source,  int queryId) const
+void WBackendSoundCloudPrivate::applySearch(WBackendNetQuery * query,
+                                            const QString    & source, int queryId) const
 {
     if (id.isEmpty())
     {
@@ -208,9 +208,9 @@ void WBackendSoundCloudPrivate::applySearch(WBackendNetQuery * backendQuery,
         variants.append(source);
         variants.append(queryId);
 
-        backendQuery->url  = "https://soundcloud.com";
-        backendQuery->id   = -1;
-        backendQuery->data = variants;
+        query->url  = "https://soundcloud.com";
+        query->id   = -1;
+        query->data = variants;
     }
     else
     {
@@ -226,13 +226,13 @@ void WBackendSoundCloudPrivate::applySearch(WBackendNetQuery * backendQuery,
         url.setQuery(query);
 #endif
 
-        backendQuery->url  = url;
-        backendQuery->id   = queryId;
-        backendQuery->data = id;
+        query->url  = url;
+        query->id   = queryId;
+        query->data = id;
     }
 }
 
-void WBackendSoundCloudPrivate::applyRelated(WBackendNetQuery * backendQuery,
+void WBackendSoundCloudPrivate::applyRelated(WBackendNetQuery * query,
                                              const QString    & source) const
 {
     if (id.isEmpty())
@@ -242,15 +242,15 @@ void WBackendSoundCloudPrivate::applyRelated(WBackendNetQuery * backendQuery,
         variants.append(source);
         variants.append(3);
 
-        backendQuery->url  = "https://soundcloud.com";
-        backendQuery->id   = -1;
-        backendQuery->data = variants;
+        query->url  = "https://soundcloud.com";
+        query->id   = -1;
+        query->data = variants;
     }
     else
     {
-        backendQuery->url  = source;
-        backendQuery->id   = 3;
-        backendQuery->data = id;
+        query->url  = source;
+        query->id   = 3;
+        query->data = id;
     }
 }
 
@@ -432,21 +432,17 @@ WBackendNetQuery WBackendSoundCloud::getQuerySource(const QUrl & url) const
 {
     Q_D(const WBackendSoundCloud);
 
-    WBackendNetQuery backendQuery;
+    WBackendNetQuery query;
 
-    d->applyQuery(&backendQuery, url, 0);
+    d->applyQuery(&query, url, 0);
 
-    return backendQuery;
+    return query;
 }
 
 /* Q_INVOKABLE virtual */
 WBackendNetQuery WBackendSoundCloud::getQueryTrack(const QUrl & url) const
 {
-    WBackendNetQuery backendQuery;
-
-    backendQuery.url = url;
-
-    return backendQuery;
+    return WBackendNetQuery(url);
 }
 
 /* Q_INVOKABLE virtual */
@@ -454,19 +450,19 @@ WBackendNetQuery WBackendSoundCloud::getQueryPlaylist(const QUrl & url) const
 {
     Q_D(const WBackendSoundCloud);
 
-    WBackendNetQuery backendQuery;
+    WBackendNetQuery query;
 
     WBackendNetPlaylistInfo info = getPlaylistInfo(url);
 
-    if (info.isValid() == false) return backendQuery;
+    if (info.isValid() == false) return query;
 
     if (info.isFeed())
     {
-         d->applyQuery(&backendQuery, url, 2);
+         d->applyQuery(&query, url, 2);
     }
-    else d->applyQuery(&backendQuery, url, 1);
+    else d->applyQuery(&query, url, 1);
 
-    return backendQuery;
+    return query;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -475,7 +471,7 @@ WBackendNetQuery WBackendSoundCloud::getQueryPlaylist(const QUrl & url) const
 WBackendNetQuery WBackendSoundCloud::createQuery(const QString & method,
                                                  const QString & label, const QString & q) const
 {
-    WBackendNetQuery backendQuery;
+    WBackendNetQuery query;
 
     if (method == "search")
     {
@@ -483,21 +479,21 @@ WBackendNetQuery WBackendSoundCloud::createQuery(const QString & method,
         {
             Q_D(const WBackendSoundCloud);
 
-            d->applySearch(&backendQuery,
+            d->applySearch(&query,
                            "https://api.soundcloud.com/tracks?q=" + q + "&limit=50", 0);
         }
         else if (label == "people")
         {
             Q_D(const WBackendSoundCloud);
 
-            d->applySearch(&backendQuery,
+            d->applySearch(&query,
                            "https://api.soundcloud.com/users?q=" + q + "&limit=50", 0);
         }
         else if (label == "playlists")
         {
             Q_D(const WBackendSoundCloud);
 
-            d->applySearch(&backendQuery,
+            d->applySearch(&query,
                            "https://api.soundcloud.com/playlists?q=" + q + "&limit=50", 1);
         }
     }
@@ -505,10 +501,10 @@ WBackendNetQuery WBackendSoundCloud::createQuery(const QString & method,
     {
         Q_D(const WBackendSoundCloud);
 
-        d->applyRelated(&backendQuery, "https://soundcloud.com/" + q);
+        d->applyRelated(&query, "https://soundcloud.com/" + q);
     }
 
-    return backendQuery;
+    return query;
 }
 
 //-------------------------------------------------------------------------------------------------

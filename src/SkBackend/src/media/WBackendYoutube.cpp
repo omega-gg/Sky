@@ -505,11 +505,9 @@ QUrl WBackendYoutube::getUrlPlaylist(const WBackendNetPlaylistInfo & info) const
 /* Q_INVOKABLE virtual */
 WBackendNetQuery WBackendYoutube::getQuerySource(const QUrl & url) const
 {
-    WBackendNetQuery backendQuery;
-
     QString id = getTrackId(url);
 
-    if (id.isEmpty()) return backendQuery;
+    if (id.isEmpty()) return WBackendNetQuery();
 
     Q_D(const WBackendYoutube);
 
@@ -518,43 +516,43 @@ WBackendNetQuery WBackendYoutube::getQuerySource(const QUrl & url) const
     variants.append(id);
     variants.append(d->script);
 
-    backendQuery.url  = "http://www.youtube.com/get_video_info?video_id=" + id + "&el=detailpage";
-    backendQuery.data = variants;
+    WBackendNetQuery query("http://www.youtube.com/get_video_info?video_id=" + id
+                           +
+                           "&el=detailpage");
 
-    return backendQuery;
+    query.data = variants;
+
+    return query;
 }
 
 /* Q_INVOKABLE virtual */
 WBackendNetQuery WBackendYoutube::getQueryTrack(const QUrl & url) const
 {
-    WBackendNetQuery backendQuery;
-
     QString id = getTrackId(url);
 
-    if (id.isEmpty()) return backendQuery;
-
-    backendQuery.url = "https://www.youtube.com/watch?v=" + id;
-
-    return backendQuery;
+    if (id.isEmpty())
+    {
+         return WBackendNetQuery();
+    }
+    else return WBackendNetQuery("https://www.youtube.com/watch?v=" + id);
 }
 
 /* Q_INVOKABLE virtual */
 WBackendNetQuery WBackendYoutube::getQueryPlaylist(const QUrl & url) const
 {
-    WBackendNetQuery backendQuery;
-
     WBackendNetPlaylistInfo info = getPlaylistInfo(url);
 
-    if (info.isValid() == false) return backendQuery;
+    if (info.isValid() == false) return WBackendNetQuery();
 
     if (info.type == WLibraryItem::PlaylistFeed)
     {
-         backendQuery.url = "https://www.youtube.com/" + info.id + "/videos";
-         backendQuery.id  = 1;
-    }
-    else backendQuery.url = "https://www.youtube.com/playlist?list=" + info.id;
+        WBackendNetQuery query("https://www.youtube.com/" + info.id + "/videos");
 
-    return backendQuery;
+        query.id  = 1;
+
+        return query;
+    }
+    else return WBackendNetQuery("https://www.youtube.com/playlist?list=" + info.id);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -563,7 +561,7 @@ WBackendNetQuery WBackendYoutube::getQueryPlaylist(const QUrl & url) const
 WBackendNetQuery WBackendYoutube::createQuery(const QString & method,
                                               const QString & label, const QString & q) const
 {
-    WBackendNetQuery backendQuery;
+    WBackendNetQuery query;
 
     if (method == "search")
     {
@@ -585,8 +583,8 @@ WBackendNetQuery WBackendYoutube::createQuery(const QString & method,
             url.setQuery(query);
 #endif
 
-            backendQuery.url = url;
-            backendQuery.id  = 2;
+            query.url = url;
+            query.id  = 2;
         }
         else if (label == "channels")
         {
@@ -606,8 +604,8 @@ WBackendNetQuery WBackendYoutube::createQuery(const QString & method,
             url.setQuery(query);
 #endif
 
-            backendQuery.url = url;
-            backendQuery.id  = 1;
+            query.url = url;
+            query.id  = 1;
         }
         else if (label == "playlists")
         {
@@ -627,18 +625,18 @@ WBackendNetQuery WBackendYoutube::createQuery(const QString & method,
             url.setQuery(query);
 #endif
 
-            backendQuery.url = url;
+            query.url = url;
         }
     }
     else if (method == "related" && label == "tracks")
     {
         QUrl url("https://www.youtube.com/watch?v=" + q);
 
-        backendQuery.url = url;
-        backendQuery.id  = 3;
+        query.url = url;
+        query.id  = 3;
     }
 
-    return backendQuery;
+    return query;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -844,7 +842,7 @@ WBackendNetTrack WBackendYoutube::extractTrack(const QByteArray       & data,
 
     QString feed = WControllerNetwork::extractAttribute(content, "href", index);
 
-    feed = WControllerNetwork::extractUrlPath(feed);
+    feed = "https://www.youtube.com/" + WControllerNetwork::extractUrlPath(feed);
 
     WTrackNet * track = &(reply.track);
 

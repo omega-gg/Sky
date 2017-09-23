@@ -321,25 +321,23 @@ QUrl WBackendDailymotion::getUrlPlaylist(const WBackendNetPlaylistInfo & info) c
 /* Q_INVOKABLE virtual */
 WBackendNetQuery WBackendDailymotion::getQuerySource(const QUrl & url) const
 {
-    WBackendNetQuery backendQuery;
-
     QString id = getTrackId(url);
 
-    if (id.isEmpty()) return backendQuery;
-
-    backendQuery.url = "http://www.dailymotion.com/embed/video/" + id;
-
-    return backendQuery;
+    if (id.isEmpty())
+    {
+         return WBackendNetQuery();
+    }
+    else return WBackendNetQuery("http://www.dailymotion.com/embed/video/" + id);
 }
 
 /* Q_INVOKABLE virtual */
 WBackendNetQuery WBackendDailymotion::getQueryTrack(const QUrl & url) const
 {
-    WBackendNetQuery backendQuery;
+    WBackendNetQuery query;
 
     QString id = getTrackId(url);
 
-    if (id.isEmpty()) return backendQuery;
+    if (id.isEmpty()) return query;
 
     QUrl source("https://api.dailymotion.com/video/" + id);
 
@@ -353,19 +351,19 @@ WBackendNetQuery WBackendDailymotion::getQueryTrack(const QUrl & url) const
     source.setQuery(query);
 #endif
 
-    backendQuery.url = source;
+    query.url = source;
 
-    return backendQuery;
+    return query;
 }
 
 /* Q_INVOKABLE virtual */
 WBackendNetQuery WBackendDailymotion::getQueryPlaylist(const QUrl & url) const
 {
-    WBackendNetQuery backendQuery;
+    WBackendNetQuery query;
 
     QString id = getPlaylistInfo(url).id;
 
-    if (id.isEmpty()) return backendQuery;
+    if (id.isEmpty()) return query;
 
     Q_D(const WBackendDailymotion);
 
@@ -385,9 +383,9 @@ WBackendNetQuery WBackendDailymotion::getQueryPlaylist(const QUrl & url) const
         url.setQuery(query);
 #endif
 
-        backendQuery.url  = url;
-        backendQuery.id   = 1;
-        backendQuery.data = "playlist/" + id;
+        query.url  = url;
+        query.id   = 1;
+        query.data = "playlist/" + id;
     }
     else
     {
@@ -403,12 +401,12 @@ WBackendNetQuery WBackendDailymotion::getQueryPlaylist(const QUrl & url) const
         url.setQuery(query);
 #endif
 
-        backendQuery.url  = url;
-        backendQuery.id   = 2;
-        backendQuery.data = "user/" + id;
+        query.url  = url;
+        query.id   = 2;
+        query.data = "user/" + id;
     }
 
-    return backendQuery;
+    return query;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -417,7 +415,7 @@ WBackendNetQuery WBackendDailymotion::getQueryPlaylist(const QUrl & url) const
 WBackendNetQuery WBackendDailymotion::createQuery(const QString & method,
                                                   const QString & label, const QString & q) const
 {
-    WBackendNetQuery backendQuery;
+    WBackendNetQuery query;
 
     if (method == "search")
     {
@@ -445,7 +443,7 @@ WBackendNetQuery WBackendDailymotion::createQuery(const QString & method,
             url.setQuery(query);
 #endif
 
-            backendQuery.url = url;
+            query.url = url;
         }
         else if (label == "channels")
         {
@@ -471,8 +469,8 @@ WBackendNetQuery WBackendDailymotion::createQuery(const QString & method,
             url.setQuery(query);
 #endif
 
-            backendQuery.url = url;
-            backendQuery.id  = 1;
+            query.url = url;
+            query.id  = 1;
         }
         else if (label == "playlists")
         {
@@ -498,7 +496,7 @@ WBackendNetQuery WBackendDailymotion::createQuery(const QString & method,
             url.setQuery(query);
 #endif
 
-            backendQuery.url = url;
+            query.url = url;
         }
     }
     else if (method == "related" && label == "tracks")
@@ -519,10 +517,10 @@ WBackendNetQuery WBackendDailymotion::createQuery(const QString & method,
         url.setQuery(query);
 #endif
 
-        backendQuery.url = url;
+        query.url = url;
     }
 
-    return backendQuery;
+    return query;
 }
 
 //-------------------------------------------------------------------------------------------------

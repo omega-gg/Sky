@@ -137,18 +137,18 @@ WBackendBing::WBackendBing() : WBackendNet(new WBackendBingPrivate(this))
 WBackendNetQuery WBackendBing::createQuery(const QString & method,
                                            const QString & label, const QString & q) const
 {
-    WBackendNetQuery backendQuery;
+    WBackendNetQuery query;
 
     if (method == "cover" && label == "track")
     {
         Q_D(const WBackendBing);
 
-        backendQuery.url = d->getUrl(q);
+        query.url = d->getUrl(q);
 
-        backendQuery.maxHost = 1;
+        query.maxHost = 1;
     }
 
-    return backendQuery;
+    return query;
 }
 
 //-------------------------------------------------------------------------------------------------
