@@ -219,11 +219,11 @@ void WBackendSoundCloudPrivate::applySearch(WBackendNetQuery * query,
 #ifdef QT_4
         url.addQueryItem("client_id", id);
 #else
-        QUrlQuery query(url);
+        QUrlQuery urlQuery(url);
 
-        query.addQueryItem("client_id", id);
+        urlQuery.addQueryItem("client_id", id);
 
-        url.setQuery(query);
+        url.setQuery(urlQuery);
 #endif
 
         query->url  = url;

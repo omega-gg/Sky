@@ -1416,8 +1416,29 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
         if (areas.isEmpty())
         {
              d->setCursor(WDeclarativeMouseArea::ArrowCursor);
+
+             return;
         }
-        else d->setCursor(areas.first()->d_func()->cursor);
+
+        WDeclarativeMouseArea * area = areas.takeFirst();
+
+        WDeclarativeMouseArea::CursorShape cursor = area->d_func()->cursor;
+
+        while (cursor == WDeclarativeMouseArea::BlankCursor)
+        {
+            if (areas.isEmpty())
+            {
+                d->setCursor(WDeclarativeMouseArea::ArrowCursor);
+
+                return;
+            }
+
+            area = areas.takeFirst();
+
+            cursor = area->d_func()->cursor;
+        }
+
+        d->setCursor(cursor);
     }
     else d->updateDrag();
 }

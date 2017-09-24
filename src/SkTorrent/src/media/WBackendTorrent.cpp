@@ -248,7 +248,11 @@ WBackendTorrent::WBackendTorrent() : WBackendNet(new WBackendTorrentPrivate(this
 
 /* Q_INVOKABLE virtual */ bool WBackendTorrent::checkValidUrl(const QUrl & url) const
 {
-    if (WControllerNetwork::extractUrlExtension(url) == "torrent")
+    QString source = url.toString();
+
+    if (WControllerNetwork::extractUrlExtension(source) == "torrent"
+        ||
+        source.startsWith("magnet:?"))
     {
          return true;
     }
@@ -284,7 +288,7 @@ WAbstractBackend::Output WBackendTorrent::getTrackOutput(const QUrl & url) const
 /* Q_INVOKABLE virtual */
 WBackendNetPlaylistInfo WBackendTorrent::getPlaylistInfo(const QUrl & url) const
 {
-    if (WControllerNetwork::extractUrlExtension(url) == "torrent")
+    if (checkValidUrl(url))
     {
          return WBackendNetPlaylistInfo(WLibraryItem::PlaylistNet, url.toString());
     }
@@ -310,7 +314,14 @@ WBackendNetQuery WBackendTorrent::getQuerySource(const QUrl &) const
 /* Q_INVOKABLE virtual */
 WBackendNetQuery WBackendTorrent::getQueryPlaylist(const QUrl & url) const
 {
-    return WBackendNetQuery(url);
+    WBackendNetQuery query(url);
+
+    if (url.toString().startsWith("magnet:?"))
+    {
+        query.type = WBackendNetQuery::TypeTorrent;
+    }
+
+    return query;
 }
 
 //-------------------------------------------------------------------------------------------------

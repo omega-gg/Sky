@@ -574,13 +574,13 @@ WBackendNetQuery WBackendYoutube::createQuery(const QString & method,
 
             url.addQueryItem("filters", "video");
 #else
-            QUrlQuery query(url);
+            QUrlQuery urlQuery(url);
 
-            query.addQueryItem("search_query", q);
+            urlQuery.addQueryItem("search_query", q);
 
-            query.addQueryItem("filters", "video");
+            urlQuery.addQueryItem("filters", "video");
 
-            url.setQuery(query);
+            url.setQuery(urlQuery);
 #endif
 
             query.url = url;
@@ -595,13 +595,13 @@ WBackendNetQuery WBackendYoutube::createQuery(const QString & method,
 
             url.addQueryItem("filters", "channel");
 #else
-            QUrlQuery query(url);
+            QUrlQuery urlQuery(url);
 
-            query.addQueryItem("search_query", q);
+            urlQuery.addQueryItem("search_query", q);
 
-            query.addQueryItem("filters", "channel");
+            urlQuery.addQueryItem("filters", "channel");
 
-            url.setQuery(query);
+            url.setQuery(urlQuery);
 #endif
 
             query.url = url;
@@ -616,13 +616,13 @@ WBackendNetQuery WBackendYoutube::createQuery(const QString & method,
 
             url.addQueryItem("filters", "playlist");
 #else
-            QUrlQuery query(url);
+            QUrlQuery urlQuery(url);
 
-            query.addQueryItem("search_query", q);
+            urlQuery.addQueryItem("search_query", q);
 
-            query.addQueryItem("filters", "playlist");
+            urlQuery.addQueryItem("filters", "playlist");
 
-            url.setQuery(query);
+            url.setQuery(urlQuery);
 #endif
 
             query.url = url;

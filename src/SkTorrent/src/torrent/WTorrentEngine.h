@@ -30,6 +30,7 @@ class QIODevice;
 class QUrl;
 class WTorrentEnginePrivate;
 class WTorrent;
+class WMagnet;
 
 class SK_TORRENT_EXPORT WTorrentEngine : public QObject, public WPrivatable
 {
@@ -48,6 +49,9 @@ public: // Interface
     Q_INVOKABLE void seek(WTorrent * torrent, qint64 position);
 
     Q_INVOKABLE void remove(WTorrent * torrent);
+
+    Q_INVOKABLE void loadMagnet  (WMagnet * magnet);
+    Q_INVOKABLE void removeMagnet(WMagnet * magnet);
 
     Q_INVOKABLE void clearSource(const QUrl & url);
 

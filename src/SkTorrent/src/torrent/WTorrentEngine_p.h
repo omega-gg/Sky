@@ -98,9 +98,11 @@ struct WTorrentSource
 {
     int id;
 
-    QUrl url;
+    sha1_hash hash;
 
     qint64 size;
+
+    QList<QUrl> urls;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -139,9 +141,12 @@ public: // Enums
     {
         EventCreate = QEvent::User,
         EventAdd,
+        EventAddMagnet,
         EventAdded,
+        EventMetaData,
         EventSeek,
         EventRemove,
+        EventRemoveMagnet,
         EventSaved,
         EventProgress,
         EventPiece,
@@ -167,7 +172,7 @@ public: // Functions
 
     void loadResume(WTorrentData * data, const QString & fileName);
 
-    WTorrentData * createData(TorrentInfoPointer info, const QUrl & url);
+    WTorrentData * createData(TorrentInfoPointer info, const sha1_hash & hash, const QUrl & url);
 
     void updateData(WTorrentData * data);
     void removeData(WTorrentData * data);
@@ -205,9 +210,12 @@ public: // Functions
     void applyBuffer(WTorrentStream * item);
     void applyFinish(WTorrentItem   * item);
 
-    WTorrentData * getData(const QUrl & url) const;
+    void applyMagnet(const torrent_handle & handle, WMagnet * magnet);
 
-    WTorrentSource * getSource(const QUrl & url);
+    WTorrentData * getData(const QUrl      & url)  const;
+    WTorrentData * getData(const sha1_hash & hash) const;
+
+    WTorrentSource * getSource(const sha1_hash & hash);
 
     WTorrentItem   * getItem  (WTorrent * torrent) const;
     WTorrentStream * getStream(WTorrent * torrent) const;
@@ -252,8 +260,10 @@ public: // Variables
     QString proxyPassword;
 
     QList<WTorrentData *> datas;
+    QList<WMagnet      *> datasMagnets;
 
     QHash<unsigned int, WTorrentData *> torrents;
+    QHash<unsigned int, WMagnet      *> magnets;
 
     WListId ids;
 
@@ -441,6 +451,23 @@ public:
 
 public: // Variables
     QList<WTorrentProgress> list;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WTorrentEngineMagnet
+//-------------------------------------------------------------------------------------------------
+
+class WTorrentEngineMagnet : public QEvent
+{
+public:
+    WTorrentEngineMagnet(WTorrentEnginePrivate::EventType type, WMagnet * magnet)
+        : QEvent(static_cast<QEvent::Type> (type))
+    {
+        this->magnet = magnet;
+    }
+
+public: // Variables
+    WMagnet * magnet;
 };
 
 #endif // SK_NO_TORRENTENGINE

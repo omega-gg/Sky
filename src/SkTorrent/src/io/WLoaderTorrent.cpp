@@ -42,7 +42,7 @@ void WLoaderTorrentPrivate::init()
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
-void WLoaderTorrentPrivate::onLoaded(WTorrentMagnetReply * reply)
+void WLoaderTorrentPrivate::onLoaded(WMagnetReply * reply)
 {
     Q_Q(WLoaderTorrent);
 
@@ -77,14 +77,13 @@ void WLoaderTorrentPrivate::onLoaded(WTorrentMagnetReply * reply)
 {
     Q_D(WLoaderTorrent);
 
-    WTorrentMagnetReply * reply = wControllerTorrent->getMagnet(data->url(), this);
+    WMagnetReply * reply = wControllerTorrent->getMagnet(data->url(), this);
 
     QBuffer * buffer = new QBuffer;
 
     d->replies.insert(buffer, reply);
 
-    connect(reply, SIGNAL(loaded(WTorrentMagnetReply *)),
-            this,  SLOT(onLoaded(WTorrentMagnetReply *)));
+    connect(reply, SIGNAL(loaded(WMagnetReply *)), this, SLOT(onLoaded(WMagnetReply *)));
 
     return buffer;
 }
@@ -97,7 +96,7 @@ void WLoaderTorrentPrivate::onLoaded(WTorrentMagnetReply * reply)
 {
     Q_D(WLoaderTorrent);
 
-    WTorrentMagnetReply * magnet = d->replies.take(reply);
+    WMagnetReply * magnet = d->replies.take(reply);
 
     delete magnet;
 }

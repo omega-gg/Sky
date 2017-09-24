@@ -32,7 +32,7 @@
 #ifndef SK_NO_LOADERTORRENT
 
 // Forward declarations
-class WTorrentMagnetReply;
+class WMagnetReply;
 
 class SK_TORRENT_EXPORT WLoaderTorrentPrivate : public WAbstractLoaderPrivate
 {
@@ -42,10 +42,10 @@ public:
     void init();
 
 public: // Slots
-    void onLoaded(WTorrentMagnetReply * reply);
+    void onLoaded(WMagnetReply * reply);
 
 public: // Variables
-    QHash<QIODevice *, WTorrentMagnetReply *> replies;
+    QHash<QIODevice *, WMagnetReply *> replies;
 
 protected:
     W_DECLARE_PUBLIC(WLoaderTorrent)

@@ -33,6 +33,7 @@
 class WControllerTorrentPrivate;
 class WTorrentEngine;
 class WTorrentReply;
+class WMagnetReply;
 
 // Defines
 #define wControllerTorrent WControllerTorrent::instance()
@@ -163,6 +164,74 @@ private:
 };
 
 //-------------------------------------------------------------------------------------------------
+// WMagnet
+//-------------------------------------------------------------------------------------------------
+
+class SK_TORRENT_EXPORT WMagnet : public QObject
+{
+    Q_OBJECT
+
+private:
+    WMagnet(const QUrl & url, QObject * parent);
+
+protected: // Events
+    /* virtual */ bool event(QEvent * event);
+
+signals:
+    void loaded(WMagnet * reply);
+
+public: // Properties
+    QUrl url() const;
+
+    QByteArray data() const;
+
+    bool hasError() const;
+
+    QString error() const;
+
+private: // Variables
+    QList<WMagnetReply *> _replies;
+
+    QUrl _url;
+
+    QByteArray _data;
+
+    QString _error;
+
+private:
+    friend class WControllerTorrent;
+    friend class WControllerTorrentPrivate;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WMagnetReply
+//-------------------------------------------------------------------------------------------------
+
+class SK_TORRENT_EXPORT WMagnetReply : public QObject
+{
+    Q_OBJECT
+
+private:
+    WMagnetReply(QObject * parent);
+public:
+    /* virtual */ ~WMagnetReply();
+
+signals:
+    void loaded(WMagnetReply * reply);
+
+public: // Properties
+    WMagnet * magnet() const;
+
+private: // Variables
+    WMagnet * _magnet;
+
+private:
+    friend class WControllerTorrent;
+    friend class WControllerTorrentPrivate;
+    friend class WMagnet;
+};
+
+//-------------------------------------------------------------------------------------------------
 // WTorrentEvent
 //-------------------------------------------------------------------------------------------------
 
@@ -255,6 +324,22 @@ public: // Variables
 };
 
 //-------------------------------------------------------------------------------------------------
+// WTorrentEventMagnet
+//-------------------------------------------------------------------------------------------------
+
+class WTorrentEventMagnet : public WTorrentEvent
+{
+public:
+    WTorrentEventMagnet(const QByteArray & data) : WTorrentEvent(WTorrent::EventFinished)
+    {
+        this->data = data;
+    }
+
+public: // Variables
+    QByteArray data;
+};
+
+//-------------------------------------------------------------------------------------------------
 // WControllerTorrent
 //-------------------------------------------------------------------------------------------------
 
@@ -285,6 +370,8 @@ public: // Interface
     Q_INVOKABLE WTorrentReply * getTorrent(const QUrl     & url,
                                            QObject        * parent = NULL,
                                            WTorrent::Mode   mode   = WTorrent::Default);
+
+    Q_INVOKABLE WMagnetReply * getMagnet(const QUrl & url, QObject * parent = NULL);
 
     Q_INVOKABLE void clearSource(const QUrl & url);
 
@@ -355,6 +442,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onLoaded(WRemoteData *))
 
     friend class WTorrentReply;
+    friend class WMagnetReply;
 };
 
 #include <private/WControllerTorrent_p>

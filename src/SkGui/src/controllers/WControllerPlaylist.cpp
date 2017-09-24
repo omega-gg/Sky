@@ -840,8 +840,6 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
             else return false;
         }
 
-        folder->setCover(q->backendCover(backend));
-
         if (applyUrl(folder, backend, source))
         {
             folder->d_func()->setQueryEnded();
@@ -1154,7 +1152,26 @@ QString WControllerPlaylistPrivate::generateSource(const QUrl & url) const
         }
         else return WControllerFile::fileUrl(source);
     }
-    else return "http://" + source;
+
+    int index = 0;
+
+    while (index < source.length())
+    {
+        QChar character = source.at(index);
+
+        if (character.isLetterOrNumber() == false)
+        {
+            if (character == ':')
+            {
+                 return source;
+            }
+            else return "http://" + source;
+        }
+
+        index++;
+    }
+
+    return "http://" + source;
 }
 
 //-------------------------------------------------------------------------------------------------

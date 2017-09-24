@@ -49,8 +49,10 @@ public:
 
 public: // Functions
     void loadTorrent(WTorrentReply * reply, const QUrl & url, WTorrent::Mode mode);
+    void loadMagnet (WMagnetReply  * reply, const QUrl & url);
 
     void removeTorrent(WTorrent * torrent, WTorrentReply * reply);
+    void removeMagnet (WMagnet  * magnet,  WMagnetReply  * reply);
 
 public: // Static functions
     static int listAfter(const QString & text, const QString & string, int * at);
@@ -66,6 +68,8 @@ public: // Variables
     QHash<WRemoteData *, WTorrent *> jobs;
 
     QList<WTorrent *> downloads;
+
+    QList<WMagnet *> magnets;
 
     WListId ports;
 

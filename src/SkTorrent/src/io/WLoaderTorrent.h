@@ -40,7 +40,7 @@ protected: // WAbstractLoader reimplementation
 private:
     W_DECLARE_PRIVATE(WLoaderTorrent)
 
-    Q_PRIVATE_SLOT(d_func(), void onLoaded(WTorrentMagnetReply *))
+    Q_PRIVATE_SLOT(d_func(), void onLoaded(WMagnetReply *))
 };
 
 #include <private/WLoaderTorrent_p>

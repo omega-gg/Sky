@@ -379,13 +379,13 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
 
             url.addQueryItem("q", q);
 #else
-            QUrlQuery query(url);
+            QUrlQuery urlQuery(url);
 
-            query.addQueryItem("type", "video");
+            urlQuery.addQueryItem("type", "video");
 
-            query.addQueryItem("q", q);
+            urlQuery.addQueryItem("q", q);
 
-            url.setQuery(query);
+            url.setQuery(urlQuery);
 #endif
 
             query.type = WBackendNetQuery::TypeWeb;
@@ -399,11 +399,11 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
 #ifdef QT_4
             url.addQueryItem("q", q);
 #else
-            QUrlQuery query(url);
+            QUrlQuery urlQuery(url);
 
-            query.addQueryItem("q", q);
+            urlQuery.addQueryItem("q", q);
 
-            url.setQuery(query);
+            url.setQuery(urlQuery);
 #endif
 
             query.type = WBackendNetQuery::TypeWeb;
@@ -417,11 +417,11 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
 #ifdef QT_4
             url.addQueryItem("q", q);
 #else
-            QUrlQuery query(url);
+            QUrlQuery urlQuery(url);
 
-            query.addQueryItem("q", q);
+            urlQuery.addQueryItem("q", q);
 
-            url.setQuery(query);
+            url.setQuery(urlQuery);
 #endif
 
             query.type = WBackendNetQuery::TypeWeb;
@@ -434,11 +434,11 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
 #ifdef QT_4
             url.addQueryItem("q", q);
 #else
-            QUrlQuery query(url);
+            QUrlQuery urlQuery(url);
 
-            query.addQueryItem("q", q);
+            urlQuery.addQueryItem("q", q);
 
-            url.setQuery(query);
+            url.setQuery(urlQuery);
 #endif
 
             query.type = WBackendNetQuery::TypeWeb;

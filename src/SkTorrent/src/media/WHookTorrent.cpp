@@ -744,7 +744,14 @@ void WHookTorrentPrivate::clearData()
 
     state = StateDefault;
 
-    currentTime = -1;
+    if (currentTime != -1)
+    {
+        Q_Q(WHookTorrent);
+
+        currentTime = -1;
+
+        q->backendSetVolume(backend->volume());
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -782,6 +789,8 @@ void WHookTorrentPrivate::onLoaded()
         reply->deleteLater();
 
         reply = NULL;
+
+        state = StateDefault;
 
         q->setStateLoad(WAbstractBackend::StateLoadDefault);
         q->setState    (WAbstractBackend::StateStopped);

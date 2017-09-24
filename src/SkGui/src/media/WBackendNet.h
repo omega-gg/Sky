@@ -45,7 +45,8 @@ public: // Enums
     enum Type
     {
         TypeDefault,
-        TypeWeb
+        TypeWeb,
+        TypeTorrent
     };
 
     enum Target

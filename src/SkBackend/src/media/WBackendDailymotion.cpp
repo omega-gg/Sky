@@ -333,11 +333,9 @@ WBackendNetQuery WBackendDailymotion::getQuerySource(const QUrl & url) const
 /* Q_INVOKABLE virtual */
 WBackendNetQuery WBackendDailymotion::getQueryTrack(const QUrl & url) const
 {
-    WBackendNetQuery query;
-
     QString id = getTrackId(url);
 
-    if (id.isEmpty()) return query;
+    if (id.isEmpty()) return WBackendNetQuery();
 
     QUrl source("https://api.dailymotion.com/video/" + id);
 
@@ -351,9 +349,7 @@ WBackendNetQuery WBackendDailymotion::getQueryTrack(const QUrl & url) const
     source.setQuery(query);
 #endif
 
-    query.url = source;
-
-    return query;
+    return WBackendNetQuery(source);
 }
 
 /* Q_INVOKABLE virtual */
@@ -376,11 +372,11 @@ WBackendNetQuery WBackendDailymotion::getQueryPlaylist(const QUrl & url) const
 #ifdef QT_4
         url.addQueryItem("fields", "name,thumbnail_url");
 #else
-        QUrlQuery query(url);
+        QUrlQuery urlQuery(url);
 
-        query.addQueryItem("fields", "name,thumbnail_url");
+        urlQuery.addQueryItem("fields", "name,thumbnail_url");
 
-        url.setQuery(query);
+        url.setQuery(urlQuery);
 #endif
 
         query.url  = url;
@@ -394,11 +390,11 @@ WBackendNetQuery WBackendDailymotion::getQueryPlaylist(const QUrl & url) const
 #ifdef QT_4
         url.addQueryItem("fields", "screenname,avatar_720_url");
 #else
-        QUrlQuery query(url);
+        QUrlQuery urlQuery(url);
 
-        query.addQueryItem("fields", "screenname,avatar_720_url");
+        urlQuery.addQueryItem("fields", "screenname,avatar_720_url");
 
-        url.setQuery(query);
+        url.setQuery(urlQuery);
 #endif
 
         query.url  = url;
@@ -431,16 +427,16 @@ WBackendNetQuery WBackendDailymotion::createQuery(const QString & method,
 
             url.addQueryItem("limit", "50");
 #else
-            QUrlQuery query(url);
+            QUrlQuery urlQuery(url);
 
-            query.addQueryItem("search", q);
+            urlQuery.addQueryItem("search", q);
 
-            query.addQueryItem("fields", BACKENDDAILYMOTION_FIELDS);
-            query.addQueryItem("sort",   "relevance");
+            urlQuery.addQueryItem("fields", BACKENDDAILYMOTION_FIELDS);
+            urlQuery.addQueryItem("sort",   "relevance");
 
-            query.addQueryItem("limit", "50");
+            urlQuery.addQueryItem("limit", "50");
 
-            url.setQuery(query);
+            url.setQuery(urlQuery);
 #endif
 
             query.url = url;
@@ -457,16 +453,16 @@ WBackendNetQuery WBackendDailymotion::createQuery(const QString & method,
 
             url.addQueryItem("limit", "20");
 #else
-            QUrlQuery query(url);
+            QUrlQuery urlQuery(url);
 
-            query.addQueryItem("search", q);
+            urlQuery.addQueryItem("search", q);
 
-            query.addQueryItem("fields", "id,screenname,avatar_720_url");
-            query.addQueryItem("sort",   "relevance");
+            urlQuery.addQueryItem("fields", "id,screenname,avatar_720_url");
+            urlQuery.addQueryItem("sort",   "relevance");
 
-            query.addQueryItem("limit", "20");
+            urlQuery.addQueryItem("limit", "20");
 
-            url.setQuery(query);
+            url.setQuery(urlQuery);
 #endif
 
             query.url = url;
@@ -484,16 +480,16 @@ WBackendNetQuery WBackendDailymotion::createQuery(const QString & method,
 
             url.addQueryItem("limit", "20");
 #else
-            QUrlQuery query(url);
+            QUrlQuery urlQuery(url);
 
-            query.addQueryItem("search", q);
+            urlQuery.addQueryItem("search", q);
 
-            query.addQueryItem("fields", "id,name,thumbnail_url");
-            query.addQueryItem("sort",   "relevance");
+            urlQuery.addQueryItem("fields", "id,name,thumbnail_url");
+            urlQuery.addQueryItem("sort",   "relevance");
 
-            query.addQueryItem("limit", "20");
+            urlQuery.addQueryItem("limit", "20");
 
-            url.setQuery(query);
+            url.setQuery(urlQuery);
 #endif
 
             query.url = url;
@@ -508,13 +504,13 @@ WBackendNetQuery WBackendDailymotion::createQuery(const QString & method,
 
         url.addQueryItem("limit", "50");
 #else
-        QUrlQuery query(url);
+        QUrlQuery urlQuery(url);
 
-        query.addQueryItem("fields", BACKENDDAILYMOTION_FIELDS);
+        urlQuery.addQueryItem("fields", BACKENDDAILYMOTION_FIELDS);
 
-        query.addQueryItem("limit", "50");
+        urlQuery.addQueryItem("limit", "50");
 
-        url.setQuery(query);
+        url.setQuery(urlQuery);
 #endif
 
         query.url = url;
