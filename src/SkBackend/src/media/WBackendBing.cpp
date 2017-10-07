@@ -121,6 +121,8 @@ WBackendBing::WBackendBing() : WBackendNet(new WBackendBingPrivate(this))
 }
 
 //-------------------------------------------------------------------------------------------------
+// WBackendNet reimplementation
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ bool WBackendBing::checkValidUrl(const QUrl & url) const
 {
@@ -129,8 +131,6 @@ WBackendBing::WBackendBing() : WBackendNet(new WBackendBingPrivate(this))
     return source.startsWith("bing.com");
 }
 
-//-------------------------------------------------------------------------------------------------
-// WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */

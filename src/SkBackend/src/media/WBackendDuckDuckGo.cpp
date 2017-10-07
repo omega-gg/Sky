@@ -128,6 +128,8 @@ WBackendDuckDuckGo::WBackendDuckDuckGo() : WBackendNet(new WBackendDuckDuckGoPri
 }
 
 //-------------------------------------------------------------------------------------------------
+// WBackendNet reimplementation
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ bool WBackendDuckDuckGo::checkValidUrl(const QUrl & url) const
 {
@@ -136,8 +138,6 @@ WBackendDuckDuckGo::WBackendDuckDuckGo() : WBackendNet(new WBackendDuckDuckGoPri
     return source.startsWith("duckduckgo.com");
 }
 
-//-------------------------------------------------------------------------------------------------
-// WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ bool WBackendDuckDuckGo::isSearchEngine() const
@@ -162,7 +162,6 @@ WBackendNetQuery WBackendDuckDuckGo::createQuery(const QString & method,
             query.url  = d->getUrl(q);
             query.data = q;
 
-            query.cookies = true;
             query.maxHost = 1;
         }
         else if (label == "site")
@@ -173,7 +172,6 @@ WBackendNetQuery WBackendDuckDuckGo::createQuery(const QString & method,
             query.id   = 1;
             query.data = q;
 
-            query.cookies = true;
             query.maxHost = 1;
             query.delay   = 3000;
         }

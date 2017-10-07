@@ -338,6 +338,8 @@ WBackendYoutube::WBackendYoutube() : WBackendNet(new WBackendYoutubePrivate(this
 }
 
 //-------------------------------------------------------------------------------------------------
+// WBackendNet reimplementation
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ bool WBackendYoutube::checkValidUrl(const QUrl & url) const
 {
@@ -350,8 +352,6 @@ WBackendYoutube::WBackendYoutube() : WBackendNet(new WBackendYoutubePrivate(this
     else return false;
 }
 
-//-------------------------------------------------------------------------------------------------
-// WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ bool WBackendYoutube::isHub() const
@@ -548,7 +548,7 @@ WBackendNetQuery WBackendYoutube::getQueryPlaylist(const QUrl & url) const
     {
         WBackendNetQuery query("https://www.youtube.com/" + info.id + "/videos");
 
-        query.id  = 1;
+        query.id = 1;
 
         return query;
     }
@@ -801,7 +801,7 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
 
             WBackendNetQuery * nextQuery = &(reply.nextQuery);
 
-            nextQuery->url  = "https://www.youtube.com/embed/" + id;
+            nextQuery->url  = "https://www.youtube.com/watch?v=" + id;
             nextQuery->id   = 2;
             nextQuery->data = variants;
 

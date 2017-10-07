@@ -206,6 +206,8 @@ WBackendVimeo::WBackendVimeo() : WBackendNet(new WBackendVimeoPrivate(this))
 }
 
 //-------------------------------------------------------------------------------------------------
+// WBackendNet reimplementation
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ bool WBackendVimeo::checkValidUrl(const QUrl & url) const
 {
@@ -218,8 +220,6 @@ WBackendVimeo::WBackendVimeo() : WBackendNet(new WBackendVimeoPrivate(this))
     else return false;
 }
 
-//-------------------------------------------------------------------------------------------------
-// WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ bool WBackendVimeo::isHub() const

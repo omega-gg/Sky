@@ -182,6 +182,8 @@ WBackendDailymotion::WBackendDailymotion() : WBackendNet(new WBackendDailymotion
 }
 
 //-------------------------------------------------------------------------------------------------
+// WBackendNet reimplementation
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ bool WBackendDailymotion::checkValidUrl(const QUrl & url) const
 {
@@ -196,8 +198,6 @@ WBackendDailymotion::WBackendDailymotion() : WBackendNet(new WBackendDailymotion
     else return false;
 }
 
-//-------------------------------------------------------------------------------------------------
-// WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ bool WBackendDailymotion::isHub() const
