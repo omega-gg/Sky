@@ -693,6 +693,18 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ QUrl WControllerNetwork::encodedUrl(const QUrl & url)
+{
+    return encodedUrl(url.toString());
+}
+
+/* Q_INVOKABLE static */ QUrl WControllerNetwork::encodedUrl(const QString & string)
+{
+    return QUrl::fromEncoded(string.toLatin1());
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE static */ QString WControllerNetwork::decodeUrl(const QUrl & url)
 {
     return decodeUrl(url.toString());

@@ -76,6 +76,9 @@ public: // Static functions
     Q_INVOKABLE static QString encodeUrl(const QUrl    & url);
     Q_INVOKABLE static QString encodeUrl(const QString & string);
 
+    Q_INVOKABLE static QUrl encodedUrl(const QUrl    & url);
+    Q_INVOKABLE static QUrl encodedUrl(const QString & string);
+
     Q_INVOKABLE static QString decodeUrl(const QUrl    & url);
     Q_INVOKABLE static QString decodeUrl(const QString & string);
 

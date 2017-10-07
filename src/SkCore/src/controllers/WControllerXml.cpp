@@ -405,7 +405,7 @@ bool WControllerXml::readNextStartElement(QXmlStreamReader * stream, const QStri
 
 //---------------------------------------------------------------------------------------------
 
-/* static */ QString WControllerXml::readNextUrl(QXmlStreamReader * stream)
+/* static */ QUrl WControllerXml::readNextUrl(QXmlStreamReader * stream)
 {
     stream->readNext();
 
