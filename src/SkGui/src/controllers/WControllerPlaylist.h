@@ -51,6 +51,15 @@ protected: // Initialize
     /* virtual */ void init();
 
 public: // Interface
+    Q_INVOKABLE WRemoteData * getData(WAbstractLoader        * loader,
+                                      const WBackendNetQuery & query,
+                                      QObject                * parent = NULL) const;
+
+    Q_INVOKABLE WRemoteData * getData(const WBackendNetQuery & query,
+                                      QObject                * parent = NULL) const;
+
+    //---------------------------------------------------------------------------------------------
+
     Q_INVOKABLE WLibraryItem * getLibraryItem(const QList<int> & idFull);
 
     Q_INVOKABLE void loadLibraryItem(const QList<int> & idFull);

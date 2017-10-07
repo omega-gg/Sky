@@ -648,7 +648,7 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylistNet * playlist,
 
     abortQueryTrack(track);
 
-    QString source = generateSource(url);
+    QUrl source = generateSource(url);
 
     WBackendNet * backend = q->backendFromUrl(source);
 
@@ -695,7 +695,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylistNet * playlist, co
 
     playlist->clearTracks();
 
-    QString source = generateSource(url);
+    QUrl source = generateSource(url);
 
     WBackendNet * backend = q->backendFromUrl(source);
 
@@ -801,7 +801,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylistNet * playlist, co
 
         WTrackNet track(source, WTrackNet::Default);
 
-        track.setFeed(source);
+        track.setFeed(source.toString());
 
         playlist->setTitle(title);
 
@@ -825,7 +825,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
     folder->clearItems();
 
-    QString source = generateSource(url);
+    QUrl source = generateSource(url);
 
     WBackendNet * backend = q->backendFromUrl(source);
 
@@ -1136,7 +1136,7 @@ void WControllerPlaylistPrivate::removeQuery(WRemoteData                    * da
 
 //-------------------------------------------------------------------------------------------------
 
-QString WControllerPlaylistPrivate::generateSource(const QUrl & url) const
+QUrl WControllerPlaylistPrivate::generateSource(const QUrl & url) const
 {
     QString source = url.toString();
 
@@ -1154,32 +1154,17 @@ QString WControllerPlaylistPrivate::generateSource(const QUrl & url) const
         }
         else return WControllerFile::fileUrl(source);
     }
-
-    int index = 0;
-
-    while (index < source.length())
+    else if (url.scheme().isEmpty())
     {
-        QChar character = source.at(index);
-
-        if (character.isLetterOrNumber() == false)
-        {
-            if (character == ':')
-            {
-                 return source;
-            }
-            else return "http://" + source;
-        }
-
-        index++;
+        return "http://" + source;
     }
-
-    return "http://" + source;
+    else return WControllerNetwork::encodedUrl(source);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void WControllerPlaylistPrivate::addFolderSearch(WLibraryFolder * folder,
-                                                 const QString  & source,
+                                                 const QUrl     & source,
                                                  const QString  & title) const
 {
     WLibraryFolderItem item(WLibraryItem::PlaylistNet, WLocalObject::Loading);
@@ -1380,8 +1365,6 @@ bool WControllerPlaylistPrivate::getDataTrack(WPlaylistNet           * playlist,
 
     WRemoteData * data = WControllerPlaylist::getDataQuery(loader, query, q);
 
-    if (data == NULL) return false;
-
     WControllerPlaylistQuery queryTrack(query, WControllerPlaylistQuery::TypeTrack);
 
     queryTrack.item  = playlist;
@@ -1412,8 +1395,6 @@ bool WControllerPlaylistPrivate::getDataPlaylist(WPlaylistNet           * playli
 
     WRemoteData * data = WControllerPlaylist::getDataQuery(loader, query, q);
 
-    if (data == NULL) return false;
-
     WControllerPlaylistQuery queryPlaylist(query, WControllerPlaylistQuery::TypePlaylist);
 
     queryPlaylist.item = playlist;
@@ -1442,8 +1423,6 @@ bool WControllerPlaylistPrivate::getDataFolder(WLibraryFolder         * folder,
     WAbstractLoader * loader = loaders.value(query.type);
 
     WRemoteData * data = WControllerPlaylist::getDataQuery(loader, query, q);
-
-    if (data == NULL) return false;
 
     WControllerPlaylistQuery queryFolder(query, WControllerPlaylistQuery::TypeFolder);
 
@@ -2217,6 +2196,34 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
 //-------------------------------------------------------------------------------------------------
 // Interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ WRemoteData * WControllerPlaylist::getData(WAbstractLoader        * loader,
+                                                             const WBackendNetQuery & query,
+                                                             QObject                * parent) const
+{
+    Q_D(const WControllerPlaylist);
+
+    if (loader == NULL)
+    {
+        loader = d->loaders.value(query.type);
+    }
+
+    return wControllerDownload->getData(loader, query.url, parent, query.priority, true,
+                                        query.cookies, query.maxHost, query.delay);
+}
+
+/* Q_INVOKABLE */ WRemoteData * WControllerPlaylist::getData(const WBackendNetQuery & query,
+                                                             QObject                * parent) const
+{
+    Q_D(const WControllerPlaylist);
+
+    WAbstractLoader * loader = d->loaders.value(query.type);
+
+    return wControllerDownload->getData(loader, query.url, parent, query.priority, true,
+                                        query.cookies, query.maxHost, query.delay);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ WLibraryItem * WControllerPlaylist::getLibraryItem(const QList<int> & idFull)
