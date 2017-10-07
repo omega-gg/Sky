@@ -63,7 +63,8 @@ public: // Static functions
     Q_INVOKABLE static QString urlName (const QUrl & url);
     Q_INVOKABLE static QString urlTitle(const QUrl & url);
 
-    Q_INVOKABLE static QString urlScheme(const QUrl & url);
+    Q_INVOKABLE static QString urlScheme(const QUrl    & url);
+    Q_INVOKABLE static QString urlScheme(const QString & string);
 
     //---------------------------------------------------------------------------------------------
 

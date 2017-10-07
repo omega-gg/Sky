@@ -611,17 +611,42 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     return url.scheme();
 }
 
+/* Q_INVOKABLE static */ QString WControllerNetwork::urlScheme(const QString & string)
+{
+    QString result;
+
+    int index = 0;
+
+    while (index < string.length())
+    {
+        QChar character = string.at(index);
+
+        if (character.isLetterOrNumber() == false)
+        {
+            if (character == ':')
+            {
+                 return result;
+            }
+            else return QString();
+        }
+        else result.append(character);
+
+        index++;
+    }
+
+    return QString();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::generateUrl(const QString & string,
                                                                  const QString & baseUrl)
 {
-    if (urlIsHttp(string))
+    if (urlScheme(string).isEmpty() == false)
     {
         return string;
     }
-
-    if (string.startsWith("www."))
+    else if (string.startsWith("www."))
     {
         QString result = string;
 
@@ -882,11 +907,21 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
     int index = fileName.lastIndexOf('.');
 
-    if (index == -1)
+    if (index != -1)
     {
-         return QString();
+        QString extension = fileName.mid(index + 1);
+
+        foreach (const QChar & character, extension)
+        {
+            if (character.isLetterOrNumber() == false)
+            {
+                return QString();
+            }
+        }
+
+        return extension;
     }
-    else return fileName.mid(index + 1);
+    else return QString();
 }
 
 //-------------------------------------------------------------------------------------------------
