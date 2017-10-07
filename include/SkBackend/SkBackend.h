@@ -4,6 +4,7 @@
 #include "WBackendDailymotion.h"
 #include "WBackendDuckDuckGo.h"
 #include "WBackendSoundCloud.h"
+#include "WBackendTmdb.h"
 #include "WBackendVimeo.h"
 #include "WBackendYoutube.h"
 #endif // SKBACKEND_H
