@@ -208,11 +208,13 @@ WControllerPlaylistQuery::WControllerPlaylistQuery(const WBackendNetQuery & back
 
 void WControllerPlaylistData::addSource(const QString & url, const QString & title)
 {
+    QUrl urlEncoded = WControllerNetwork::encodedUrl(url);
+
     if (WControllerPlaylist::urlIsMedia(url))
     {
         WControllerPlaylistMedia media;
 
-        media.url   = url;
+        media.url   = urlEncoded;
         media.title = WControllerNetwork::extractUrlFileName(url);
 
         media.local = false;
@@ -222,7 +224,7 @@ void WControllerPlaylistData::addSource(const QString & url, const QString & tit
 
     WControllerPlaylistSource source;
 
-    source.url   = url;
+    source.url   = urlEncoded;
     source.title = title;
 
     sources.append(source);
@@ -301,7 +303,7 @@ private: // Interface
     QString generateUrl  (const QString & url, const QString & baseUrl) const;
     QString generateTitle(const QString & url, const QString & urlName) const;
 
-    bool addUrl(QList<QUrl> * urls, const QString & url) const;
+    bool addUrl(QList<QString> * urls, const QString & url) const;
 
 signals:
     void loaded(QIODevice * device, const WControllerPlaylistData & data);
@@ -364,7 +366,7 @@ signals:
         cover = generateUrl(cover, host);
     }
 
-    QList<QUrl> urls;
+    QList<QString> urls;
 
     QStringList list = Sk::slices(content, "<a", "</a");
 
@@ -471,7 +473,7 @@ signals:
 
     QString urlName = WControllerNetwork::urlName(baseUrl);
 
-    QList<QUrl> urls;
+    QList<QString> urls;
 
     QStringList list = Sk::slices(content, QRegExp("file:///|http://|https://"), QRegExp("\\s"));
 
@@ -531,11 +533,11 @@ QString WControllerPlaylistReply::generateTitle(const QString & url, const QStri
 
 //-------------------------------------------------------------------------------------------------
 
-bool WControllerPlaylistReply::addUrl(QList<QUrl> * urls, const QString & url) const
+bool WControllerPlaylistReply::addUrl(QList<QString> * urls, const QString & url) const
 {
-    QUrl source = WControllerNetwork::removeUrlPrefix(url);
+    QString source = WControllerNetwork::removeUrlPrefix(url);
 
-    if (source.isValid() && urls->contains(source) == false)
+    if (urls->contains(source) == false)
     {
         urls->append(source);
 
