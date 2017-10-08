@@ -93,6 +93,8 @@ public: // Variables
 
     int currentTime;
 
+    bool retry;
+
     QMetaMethod methodFile;
     QMetaMethod methodBuffer;
     QMetaMethod methodStart;

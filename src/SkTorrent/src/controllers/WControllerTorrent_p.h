@@ -54,18 +54,24 @@ public: // Functions
     void removeTorrent(WTorrent * torrent, WTorrentReply * reply);
     void removeMagnet (WMagnet  * magnet,  WMagnetReply  * reply);
 
+    int extractIndex(const QUrl & url) const;
+
 public: // Static functions
     static int listAfter(const QString & text, const QString & string, int * at);
 
 public: // Slots
-    void onLoaded(WRemoteData * data);
+    void onLoaded      (WRemoteData * data);
+    void onMagnetLoaded(WRemoteData * data);
 
 public: // Variables
     QThread * thread;
 
     WTorrentEngine * engine;
 
+    QHash<WBackendNetQuery::Type, WAbstractLoader *> loaders;
+
     QHash<WRemoteData *, WTorrent *> jobs;
+    QHash<WRemoteData *, WMagnet  *> jobsMagnets;
 
     QList<WTorrent *> downloads;
 

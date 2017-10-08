@@ -245,6 +245,8 @@ WBackendTorrent::WBackendTorrent() : WBackendNet(new WBackendTorrentPrivate(this
 }
 
 //-------------------------------------------------------------------------------------------------
+// WBackendNet reimplementation
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ bool WBackendTorrent::checkValidUrl(const QUrl & url) const
 {
@@ -259,8 +261,6 @@ WBackendTorrent::WBackendTorrent() : WBackendNet(new WBackendTorrentPrivate(this
     else return false;
 }
 
-//-------------------------------------------------------------------------------------------------
-// WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
@@ -402,7 +402,9 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
             if (WControllerPlaylist::extensionIsMedia(extension))
             {
-                WTrackNet track(source + '#' + QString::number(item.id) + '.' + extension);
+                QString url = source + '#' + QString::number(item.id) + '.' + extension;
+
+                WTrackNet track(WControllerNetwork::encodedUrl(url));
 
                 track.setTitle(title);
 

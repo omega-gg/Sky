@@ -18,19 +18,17 @@
 #define WCONTROLLERTORRENT_H
 
 // Qt includes
-#include <QEvent>
-#include <QVariant>
-#include <QUrl>
 #include <QStringList>
-#include <QBitArray>
 
 // Sk includes
 #include <WController>
+#include <WBackendNet>
 
 #ifndef SK_NO_CONTROLLERTORRENT
 
 // Forward declarations
 class WControllerTorrentPrivate;
+class WAbstractLoader;
 class WTorrentEngine;
 class WTorrentReply;
 class WMagnetReply;
@@ -62,7 +60,7 @@ public: // Enums
     };
 
 private:
-    WTorrent(const QUrl & url, Mode mode, QObject * parent);
+    WTorrent(const QUrl & url, int index, Mode mode, QObject * parent);
 
 protected: // Events
     /* virtual */ bool event(QEvent * event);
@@ -389,6 +387,10 @@ public: // Interface
 
     Q_INVOKABLE void clearProxy();
 
+    Q_INVOKABLE void registerLoader   (WBackendNetQuery::Type type, WAbstractLoader * loader);
+    Q_INVOKABLE void unregisterLoader (WBackendNetQuery::Type type);
+    Q_INVOKABLE void unregisterLoaders();
+
 public: // Initialize
     /* virtual */ void initController(const QString & path,
                                       qint64          sizeMax = 1048576 * 1000); // 1 gigabyte
@@ -439,7 +441,8 @@ private:
     W_DECLARE_PRIVATE   (WControllerTorrent)
     W_DECLARE_CONTROLLER(WControllerTorrent)
 
-    Q_PRIVATE_SLOT(d_func(), void onLoaded(WRemoteData *))
+    Q_PRIVATE_SLOT(d_func(), void onLoaded      (WRemoteData *))
+    Q_PRIVATE_SLOT(d_func(), void onMagnetLoaded(WRemoteData *))
 
     friend class WTorrentReply;
     friend class WMagnetReply;

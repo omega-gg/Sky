@@ -50,7 +50,14 @@ void WLoaderTorrentPrivate::onLoaded(WMagnetReply * reply)
 
     replies.remove(buffer);
 
-    buffer->setData(reply->magnet()->data());
+    WMagnet * magnet = reply->magnet();
+
+    if (magnet->hasError())
+    {
+        q->setError(q->getData(buffer), magnet->error());
+    }
+
+    buffer->setData(magnet->data());
 
     buffer->open(QIODevice::ReadOnly);
 

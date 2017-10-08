@@ -156,7 +156,7 @@ void WTorrentEnginePrivate::load()
     }
 }
 
-void WTorrentEnginePrivate::save()
+void WTorrentEnginePrivate::save() const
 {
     if (timerSave->isActive()) return;
 
@@ -165,7 +165,7 @@ void WTorrentEnginePrivate::save()
 
 //-------------------------------------------------------------------------------------------------
 
-void WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & fileName)
+void WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & fileName) const
 {
     QFile file(fileName);
 
@@ -390,8 +390,10 @@ void WTorrentEnginePrivate::removeData(WTorrentData * data)
 WTorrentItem * WTorrentEnginePrivate::createItem(TorrentInfo info, WTorrentData * data,
                                                                    WTorrent     * torrent,
                                                                    int            index,
-                                                                   WTorrent::Mode mode)
+                                                                   WTorrent::Mode mode) const
 {
+    QString fileName;
+
     QStringList paths;
 
     qint64 size;
@@ -407,9 +409,9 @@ WTorrentItem * WTorrentEnginePrivate::createItem(TorrentInfo info, WTorrentData 
 
         for (int i = 0; i < data->fileCount; i++)
         {
-            QString fileName = QString::fromStdString(storage.file_path(i));
+            QString fileName = extractFileName(storage.file_path(i), i);
 
-            paths.push_back(filePath + QDir::fromNativeSeparators(fileName));
+            paths.push_back(filePath + fileName);
         }
 
         size = info->total_size();
@@ -421,9 +423,7 @@ WTorrentItem * WTorrentEnginePrivate::createItem(TorrentInfo info, WTorrentData 
     {
         const file_storage & storage = info->files();
 
-        QString fileName = QString::fromStdString(storage.file_path(index));
-
-        paths.push_back(data->path + '/' + QDir::fromNativeSeparators(fileName));
+        fileName = data->path + '/' + extractFileName(storage.file_path(index), index);
 
         size = storage.file_size(index);
 
@@ -452,6 +452,8 @@ WTorrentItem * WTorrentEnginePrivate::createItem(TorrentInfo info, WTorrentData 
     item->index = index;
 
     item->mode = mode;
+
+    item->fileName = fileName;
 
     item->paths = paths;
 
@@ -500,7 +502,7 @@ WTorrentItem * WTorrentEnginePrivate::createItem(TorrentInfo info, WTorrentData 
 WTorrentStream * WTorrentEnginePrivate::createStream(TorrentInfo info, WTorrentData * data,
                                                                        WTorrent     * torrent,
                                                                        int            index,
-                                                                       WTorrent::Mode mode)
+                                                                       WTorrent::Mode mode) const
 {
     QStringList paths;
 
@@ -521,16 +523,7 @@ WTorrentStream * WTorrentEnginePrivate::createStream(TorrentInfo info, WTorrentD
     {
         const file_storage & storage = info->files();
 
-        fileName = QString::fromStdString(storage.file_path(index));
-
-        QString extension = WControllerNetwork::extractUrlExtension(fileName);
-
-        fileName = data->path + '/' + QString::number(index + 1);
-
-        if (extension.isEmpty() == false)
-        {
-            fileName.append("." + extension);
-        }
+        fileName = data->path + '/' + extractFileName(storage.file_path(index), index);
 
         paths.append(fileName);
 
@@ -574,6 +567,8 @@ WTorrentStream * WTorrentEnginePrivate::createStream(TorrentInfo info, WTorrentD
 
     stream->mode = mode;
 
+    stream->fileName = fileName;
+
     stream->paths = paths;
 
     stream->size = size;
@@ -582,8 +577,6 @@ WTorrentStream * WTorrentEnginePrivate::createStream(TorrentInfo info, WTorrentD
     stream->end   = end;
 
     //---------------------------------------------------------------------------------------------
-
-    stream->fileName = fileName;
 
     stream->sizePiece = sizePiece;
 
@@ -647,9 +640,9 @@ WTorrentStream * WTorrentEnginePrivate::createStream(TorrentInfo info, WTorrentD
 
         qDebug("TORRENT START AT %d %d", stream->piece, block);
 
-        qint64 bufferPieces = (qint64) (stream->piece * stream->sizePiece - stream->start);
+        qint64 bufferPieces = (qint64) stream->piece * (qint64) stream->sizePiece - stream->start;
 
-        qint64 bufferBlocks = (qint64) (bufferPieces + block * TORRENTENGINE_BLOCK);
+        qint64 bufferBlocks = bufferPieces + (qint64) block * (qint64) TORRENTENGINE_BLOCK;
 
         if (bufferPieces > 0)
         {
@@ -679,7 +672,7 @@ WTorrentStream * WTorrentEnginePrivate::createStream(TorrentInfo info, WTorrentD
 
 //-------------------------------------------------------------------------------------------------
 
-void WTorrentEnginePrivate::addItem(const torrent_handle & handle, WTorrentItem * item)
+void WTorrentEnginePrivate::addItem(const torrent_handle & handle, WTorrentItem * item) const
 {
     if (item->finished) return;
 
@@ -692,11 +685,6 @@ void WTorrentEnginePrivate::addItem(const torrent_handle & handle, WTorrentItem 
 void WTorrentEnginePrivate::addStream(const torrent_handle & handle, WTorrentStream * stream)
 {
     if (stream->finished) return;
-
-    //---------------------------------------------------------------------------------------------
-    // Rename
-
-    handle.rename_file(stream->index, stream->fileName.toStdString());
 
     //---------------------------------------------------------------------------------------------
     // Deadline
@@ -729,8 +717,9 @@ void WTorrentEnginePrivate::addStream(const torrent_handle & handle, WTorrentStr
 }
 
 //-------------------------------------------------------------------------------------------------
+// Files
 
-void WTorrentEnginePrivate::selectFile(WTorrentItem * item)
+void WTorrentEnginePrivate::selectFile(WTorrentItem * item) const
 {
     if (item->finished) return;
 
@@ -758,7 +747,7 @@ void WTorrentEnginePrivate::selectFile(WTorrentItem * item)
     data->handle.resume();
 }
 
-void WTorrentEnginePrivate::unselectFile(WTorrentItem * item)
+void WTorrentEnginePrivate::unselectFile(WTorrentItem * item) const
 {
     if (item->finished) return;
 
@@ -784,7 +773,7 @@ void WTorrentEnginePrivate::unselectFile(WTorrentItem * item)
 
 //-------------------------------------------------------------------------------------------------
 
-void WTorrentEnginePrivate::updateFiles(WTorrentData * data)
+void WTorrentEnginePrivate::updateFiles(WTorrentData * data) const
 {
     qDebug("TORRENT UPDATE FILES");
 
@@ -812,6 +801,50 @@ void WTorrentEnginePrivate::updateFiles(WTorrentData * data)
 }
 
 //-------------------------------------------------------------------------------------------------
+
+void WTorrentEnginePrivate::renameFiles(WTorrentData * data, const torrent_handle & handle) const
+{
+    foreach (WTorrentItem * item, data->items)
+    {
+        QString fileName = item->fileName;
+
+        if (fileName.isEmpty())
+        {
+            const QStringList & paths = item->paths;
+
+            for (int i = 0; i < paths.count(); i++)
+            {
+                qDebug("TORRENT RENAME ALL %d %s", i, paths.at(i).C_STR);
+
+                handle.rename_file(i, paths.at(i).toStdString());
+            }
+
+            return;
+        }
+
+        qDebug("TORRENT RENAME FILE %d %s", item->index, fileName.C_STR);
+
+        handle.rename_file(item->index, fileName.toStdString());
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QString WTorrentEnginePrivate::extractFileName(const std::string & path, int index) const
+{
+    QString fileName = QString::fromStdString(path);
+
+    QString extension = WControllerNetwork::extractUrlExtension(fileName);
+
+    if (extension.isEmpty())
+    {
+         return QString::number(index + 1);
+    }
+    else return QString::number(index + 1) + "." + extension;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Cache
 
 void WTorrentEnginePrivate::updateCache(WTorrentData * data)
 {
@@ -914,12 +947,12 @@ bool WTorrentEnginePrivate::removeSource(WTorrentSource * source)
 //-------------------------------------------------------------------------------------------------
 
 void WTorrentEnginePrivate::prioritize(const torrent_handle & handle,
-                                       WTorrentStream       * stream, qint64 position)
+                                       WTorrentStream       * stream, qint64 position) const
 {
     int begin = stream->begin;
     int end   = stream->end;
 
-    int current = begin + position / stream->sizePiece;
+    int current = begin + position / (qint64) stream->sizePiece;
 
     if (current >= end) return;
 
@@ -955,7 +988,7 @@ void WTorrentEnginePrivate::prioritize(const torrent_handle & handle,
     {
         int block;
 
-        qint64 sizePiece = (qint64) (stream->piece * stream->sizePiece);
+        qint64 sizePiece = (qint64) stream->piece * (qint64) stream->sizePiece;
 
         if (position > sizePiece)
         {
@@ -979,9 +1012,9 @@ void WTorrentEnginePrivate::prioritize(const torrent_handle & handle,
 
         qint64 size = stream->size;
 
-        qint64 bufferPieces = (qint64) (sizePiece - stream->start);
+        qint64 bufferPieces = sizePiece - stream->start;
 
-        qint64 bufferBlocks = (qint64) (bufferPieces + block * TORRENTENGINE_BLOCK);
+        qint64 bufferBlocks = bufferPieces + (qint64) block * (qint64) TORRENTENGINE_BLOCK;
 
         if (bufferPieces < size)
         {
@@ -1187,13 +1220,13 @@ void WTorrentEnginePrivate::applyPiece(const torrent_handle & handle,
 
 //-------------------------------------------------------------------------------------------------
 
-void WTorrentEnginePrivate::applyBuffer(WTorrentStream * stream)
+void WTorrentEnginePrivate::applyBuffer(WTorrentStream * stream) const
 {
     qint64 size = stream->size;
 
-    qint64 bufferPieces = (qint64) (stream->piece * stream->sizePiece - stream->start);
+    qint64 bufferPieces = (qint64) stream->piece * (qint64) stream->sizePiece - stream->start;
 
-    qint64 bufferBlocks = (qint64) (bufferPieces + stream->block * TORRENTENGINE_BLOCK);
+    qint64 bufferBlocks = bufferPieces + (qint64) stream->block * (qint64) TORRENTENGINE_BLOCK;
 
     if (bufferPieces > size)
     {
@@ -1223,7 +1256,7 @@ void WTorrentEnginePrivate::applyBuffer(WTorrentStream * stream)
     }
 }
 
-void WTorrentEnginePrivate::applyFinish(WTorrentItem * item)
+void WTorrentEnginePrivate::applyFinish(WTorrentItem * item) const
 {
     item->finished = true;
 
@@ -1232,35 +1265,49 @@ void WTorrentEnginePrivate::applyFinish(WTorrentItem * item)
 
 //-------------------------------------------------------------------------------------------------
 
-void WTorrentEnginePrivate::applyMagnet(const torrent_handle & handle, WMagnet * magnet)
+void WTorrentEnginePrivate::applyMagnet(WMagnetData * data, const torrent_handle & handle)
 {
-    create_torrent torrent(*(handle.torrent_file().get()));
+    const torrent_info & info = *(handle.torrent_file().get());
 
-    std::vector<char> bytes;
+    create_torrent torrent(info);
 
-    bencode(back_inserter(bytes), torrent.generate());
+    std::vector<char> vector;
 
-    QByteArray data(bytes.data(), bytes.size());
+    bencode(back_inserter(vector), torrent.generate());
 
-    QCoreApplication::postEvent(magnet, new WTorrentEventMagnet(data));
+    QByteArray bytes(vector.data(), vector.size());
 
+    foreach (WMagnet * magnet, data->magnets)
+    {
+        QCoreApplication::postEvent(magnet, new WTorrentEventMagnet(bytes));
+    }
+
+    removeMagnet(data, handle);
+}
+
+void WTorrentEnginePrivate::removeMagnet(WMagnetData * data, const torrent_handle & handle) const
+{
     QHashIterator<unsigned int, WTorrentData *> i(torrents);
 
     while (i.hasNext())
     {
         i.next();
 
-        if (i.value()->handle == handle)
+        if (i.value()->hash == data->hash)
         {
-            WControllerFile::deleteFolder(path + "magnets"); // FIXME
+            delete data;
 
             return;
         }
     }
 
+    qDebug("MAGNET REMOVE HANDLE");
+
     session->remove_torrent(handle);
 
-    WControllerFile::deleteFolder(path + "magnets"); // FIXME
+    WControllerFile::deleteFolder(pathMagnets);
+
+    delete data;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1303,6 +1350,62 @@ WTorrentData * WTorrentEnginePrivate::getData(const sha1_hash & hash) const
     foreach (WTorrentData * data, datas)
     {
         if (data->source->hash == hash)
+        {
+            return data;
+        }
+    }
+
+    return NULL;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+WMagnetData * WTorrentEnginePrivate::getMagnetData(const QUrl & url) const
+{
+    foreach (WMagnetData * data, datasMagnets)
+    {
+        if (data->url == url)
+        {
+            return data;
+        }
+    }
+
+    QHashIterator<unsigned int, WMagnetData *> i(magnets);
+
+    while (i.hasNext())
+    {
+        i.next();
+
+        WMagnetData * data = i.value();
+
+        if (data->url == url)
+        {
+            return data;
+        }
+    }
+
+    return NULL;
+}
+
+WMagnetData * WTorrentEnginePrivate::getMagnetData(WMagnet * magnet) const
+{
+    foreach (WMagnetData * data, datasMagnets)
+    {
+        if (data->magnets.contains(magnet))
+        {
+            return data;
+        }
+    }
+
+    QHashIterator<unsigned int, WMagnetData *> i(magnets);
+
+    while (i.hasNext())
+    {
+        i.next();
+
+        WMagnetData * data = i.value();
+
+        if (data->magnets.contains(magnet))
         {
             return data;
         }
@@ -1448,11 +1551,8 @@ void WTorrentEnginePrivate::events()
 
             metadata_received_alert * event = alert_cast<metadata_received_alert>(alert);
 
-            QVariant variant;
-
-            variant.setValue(event->handle);
-
-            QCoreApplication::postEvent(q, new WTorrentEngineEvent(EventMetaData, variant));
+            QCoreApplication::postEvent(q, new WTorrentEngineHandle(EventMetaData,
+                                                                    event->handle.id()));
         }
         else if (type == block_finished_alert::alert_type)
         {
@@ -1550,14 +1650,20 @@ void WTorrentEnginePrivate::onRemove()
     {
         qDebug("REMOVE TORRENT");
 
-        torrents.remove(data->hash);
+        unsigned int hash = data->hash;
+
+        torrents.remove(hash);
 
         if (torrents.isEmpty())
         {
             timerUpdate->stop();
         }
 
-        session->remove_torrent(data->handle);
+        if (magnets.contains(hash))
+        {
+            handle.move_storage(pathMagnets.toStdString());
+        }
+        else session->remove_torrent(handle);
 
         updateCache(data);
     }
@@ -1567,7 +1673,11 @@ void WTorrentEnginePrivate::onRemove()
 
         datas.removeOne(data);
 
-        session->remove_torrent(handle);
+        if (magnets.contains(data->hash))
+        {
+            handle.move_storage(pathMagnets.toStdString());
+        }
+        else session->remove_torrent(handle);
     }
 
     delete data;
@@ -1901,7 +2011,8 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         d->session->add_extension(&create_ut_pex_plugin);
 
-        d->pathIndex = d->path + "index";
+        d->pathIndex   = d->path + "index";
+        d->pathMagnets = d->path + "magnets";
 
         d->size = 0;
 
@@ -2046,16 +2157,36 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         WMagnet * magnet = eventTorrent->magnet;
 
-        add_torrent_params params;
+        QUrl url = magnet->url();
 
-        params.url = magnet->url().toString().toStdString();
+        WMagnetData * data = d->getMagnetData(url);
 
-        params.save_path = d->path.toStdString() + "magnets"; // FIXME
+        if (data == NULL)
+        {
+            qDebug("MAGNET CREATE DATA");
 
-        d->datas       .append(NULL);
-        d->datasMagnets.append(magnet);
+            add_torrent_params params;
 
-        d->session->async_add_torrent(params);
+            params.url = magnet->url().toString().toStdString();
+
+            data = new WMagnetData;
+
+            data->url  = url;
+            data->hash = 0;
+
+            data->magnets.append(magnet);
+
+            d->datas       .append(NULL);
+            d->datasMagnets.append(data);
+
+            d->session->async_add_torrent(params);
+        }
+        else if (data->magnets.contains(magnet) == false)
+        {
+            qDebug("MAGNET ALREADY EXISTS");
+
+            data->magnets.append(magnet);
+        }
 
         return true;
     }
@@ -2065,20 +2196,38 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         WTorrentData * data = d->datas.takeFirst();
 
-        if (data == NULL) // FIXME
+        if (data == NULL)
         {
-            WMagnet * magnet = d->datasMagnets.takeFirst();
+            qDebug("MAGNET ADDED");
+
+            WMagnetData * data = d->datasMagnets.takeFirst();
 
             const torrent_handle & handle = eventTorrent->value.value<torrent_handle>();
 
-            if (handle.status().state < torrent_status::downloading)
+            if (data->magnets.isEmpty())
             {
-                d->magnets.insert(handle.id(), magnet);
+                d->removeMagnet(data, handle);
+
+                return true;
             }
-            else d->applyMagnet(handle, magnet);
+
+            unsigned int hash = handle.id();
+
+            data->handle = handle;
+            data->hash   = hash;
+
+            if (handle.status().has_metadata)
+            {
+                qDebug("METADATA ALREADY DONE");
+
+                d->applyMagnet(data, handle);
+            }
+            else d->magnets.insert(hash, data);
 
             return true;
         }
+
+        qDebug("TORRENT ADDED");
 
         if (data->items.isEmpty())
         {
@@ -2091,10 +2240,24 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         unsigned int hash = handle.id();
 
+        WMagnetData * dataMagnet = d->magnets.value(hash);
+
+        if (dataMagnet)
+        {
+            qDebug("TORRENT MOVE STORAGE");
+
+            handle.move_storage(data->path.toStdString());
+        }
+
         data->handle = handle;
         data->hash   = hash;
 
         d->torrents.insert(hash, data);
+
+        if (handle.status().has_metadata)
+        {
+            d->renameFiles(data, handle);
+        }
 
         foreach (WTorrentItem * item, data->items)
         {
@@ -2115,15 +2278,21 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
     }
     else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventMetaData))
     {
-        WTorrentEngineEvent * eventTorrent = static_cast<WTorrentEngineEvent *> (event);
+        qDebug("TORRENT METADATA");
 
-        const torrent_handle & handle = eventTorrent->value.value<torrent_handle>(); // FIXME
+        WTorrentEngineHandle * eventTorrent = static_cast<WTorrentEngineHandle *> (event);
 
-        WMagnet * magnet = d->magnets.value(handle.id());
+        WTorrentData * data = d->torrents.value(eventTorrent->hash);
 
-        if (magnet == NULL) return true;
+        if (data) d->renameFiles(data, data->handle);
 
-        d->applyMagnet(handle, magnet);
+        WMagnetData * dataMagnet = d->magnets.value(eventTorrent->hash);
+
+        if (dataMagnet == NULL) return true;
+
+        d->magnets.remove(dataMagnet->hash);
+
+        d->applyMagnet(dataMagnet, dataMagnet->handle);
 
         return true;
     }
@@ -2177,6 +2346,8 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         delete item;
 
+        if (data->hash == 0) return true;
+
         int id = data->source->id;
 
         QString fileName = data->path + "/." + QString::number(id);
@@ -2193,7 +2364,29 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
     }
     else if (type == static_cast<QEvent::Type> (WTorrentEnginePrivate::EventRemoveMagnet))
     {
-        // FIXME
+        qDebug("MAGNET REMOVE");
+
+        WTorrentEngineMagnet * eventTorrent = static_cast<WTorrentEngineMagnet *> (event);
+
+        WMagnet * magnet = eventTorrent->magnet;
+
+        WMagnetData * data = d->getMagnetData(magnet);
+
+        if (data == NULL) return true;
+
+        QList<WMagnet *> * magnets = &(data->magnets);
+
+        magnets->removeOne(magnet);
+
+        if (magnets->isEmpty() == false) return true;
+
+        unsigned int hash = data->hash;
+
+        if (hash == 0) return true;
+
+        d->magnets.remove(hash);
+
+        d->removeMagnet(data, data->handle);
 
         return true;
     }
@@ -2336,20 +2529,38 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
     {
         WTorrentEngineValue * eventTorrent = static_cast<WTorrentEngineValue *> (event);
 
-        WTorrentData * data = d->torrents.value(eventTorrent->hash);
+        unsigned int hash = eventTorrent->hash;
 
-        if (data == NULL)
+        QVariant value = eventTorrent->value;
+
+        WTorrentData * data = d->torrents.value(hash);
+
+        if (data)
         {
-            qDebug("EventError: DATA SHOULD NOT BE NULL");
+            qDebug("TORRENT ERROR");
+
+            foreach (WTorrentItem * item, data->items)
+            {
+                QCoreApplication::postEvent(item->torrent,
+                                            new WTorrentEventValue(WTorrent::EventError, value));
+            }
         }
 
-        qDebug("TORRENT ERROR");
+        WMagnetData * dataMagnet = d->magnets.value(eventTorrent->hash);
 
-        foreach (WTorrentItem * item, data->items)
+        if (dataMagnet)
         {
-            QCoreApplication::postEvent(item->torrent,
-                                        new WTorrentEventValue(WTorrent::EventError,
-                                                               eventTorrent->value));
+            qDebug("MAGNET ERROR");
+
+            foreach (WMagnet * magnet, dataMagnet->magnets)
+            {
+                QCoreApplication::postEvent(magnet,
+                                            new WTorrentEventValue(WTorrent::EventError, value));
+            }
+
+            d->magnets.remove(dataMagnet->hash);
+
+            d->removeMagnet(dataMagnet, dataMagnet->handle);
         }
 
         return true;
@@ -2470,6 +2681,11 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
             delete data;
         }
 
+        foreach (WMagnetData * data, d->datasMagnets)
+        {
+            delete data;
+        }
+
         QHashIterator<unsigned int, WTorrentData *> j(d->torrents);
 
         while (j.hasNext())
@@ -2477,6 +2693,15 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
             j.next();
 
             delete j.value();
+        }
+
+        QHashIterator<unsigned int, WMagnetData *> k(d->magnets);
+
+        while (k.hasNext())
+        {
+            k.next();
+
+            delete k.value();
         }
 
         if (d->timerSave->isActive())

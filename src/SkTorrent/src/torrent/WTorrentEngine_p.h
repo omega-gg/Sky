@@ -55,6 +55,8 @@ struct WTorrentItem
 
     WTorrent::Mode mode;
 
+    QString fileName;
+
     QStringList paths;
 
     qint64 size;
@@ -73,8 +75,6 @@ struct WTorrentItem
 
 struct WTorrentStream : public WTorrentItem
 {
-    QString fileName;
-
     int sizePiece;
 
     int piece;
@@ -131,6 +131,20 @@ struct WTorrentData
 };
 
 //-------------------------------------------------------------------------------------------------
+// WMagnetData
+//-------------------------------------------------------------------------------------------------
+
+struct WMagnetData
+{
+    QUrl url;
+
+    torrent_handle handle;
+    unsigned int   hash;
+
+    QList<WMagnet *> magnets;
+};
+
+//-------------------------------------------------------------------------------------------------
 // WTorrentEnginePrivate
 //-------------------------------------------------------------------------------------------------
 
@@ -168,9 +182,9 @@ public:
 
 public: // Functions
     void load();
-    void save();
+    void save() const;
 
-    void loadResume(WTorrentData * data, const QString & fileName);
+    void loadResume(WTorrentData * data, const QString & fileName) const;
 
     WTorrentData * createData(TorrentInfoPointer info, const sha1_hash & hash, const QUrl & url);
 
@@ -180,40 +194,56 @@ public: // Functions
     WTorrentItem * createItem(TorrentInfo info, WTorrentData * data,
                                                 WTorrent     * torrent,
                                                 int            index,
-                                                WTorrent::Mode mode);
+                                                WTorrent::Mode mode) const;
 
     WTorrentStream * createStream(TorrentInfo info, WTorrentData * data,
                                                     WTorrent     * torrent,
                                                     int            index,
-                                                    WTorrent::Mode mode);
+                                                    WTorrent::Mode mode) const;
 
-    void addItem  (const torrent_handle & handle, WTorrentItem   * item);
+    void addItem  (const torrent_handle & handle, WTorrentItem   * item) const;
     void addStream(const torrent_handle & handle, WTorrentStream * stream);
 
-    void selectFile  (WTorrentItem * item);
-    void unselectFile(WTorrentItem * item);
+    //---------------------------------------------------------------------------------------------
+    // Files
 
-    void updateFiles(WTorrentData * data);
+    void selectFile  (WTorrentItem * item) const;
+    void unselectFile(WTorrentItem * item) const;
+
+    void updateFiles(WTorrentData * data) const;
+
+    void renameFiles(WTorrentData * data, const torrent_handle & handle) const;
+
+    QString extractFileName(const std::string & path, int index) const;
+
+    //---------------------------------------------------------------------------------------------
+    // Cache
 
     void updateCache(WTorrentData * data);
 
     void cleanCache();
 
+    //---------------------------------------------------------------------------------------------
+
     bool removeSource(WTorrentSource * source);
 
-    void prioritize(const torrent_handle & handle, WTorrentStream * stream, qint64 position);
+    void prioritize(const torrent_handle & handle, WTorrentStream * stream, qint64 position) const;
 
     void applyBlock(WTorrentStream * stream, int block);
 
     void applyPiece(const torrent_handle & handle, WTorrentStream * stream, int current);
 
-    void applyBuffer(WTorrentStream * item);
-    void applyFinish(WTorrentItem   * item);
+    void applyBuffer(WTorrentStream * item) const;
+    void applyFinish(WTorrentItem   * item) const;
 
-    void applyMagnet(const torrent_handle & handle, WMagnet * magnet);
+    void applyMagnet (WMagnetData * data, const torrent_handle & handle);
+    void removeMagnet(WMagnetData * data, const torrent_handle & handle) const;
 
     WTorrentData * getData(const QUrl      & url)  const;
     WTorrentData * getData(const sha1_hash & hash) const;
+
+    WMagnetData * getMagnetData(const QUrl & url)    const;
+    WMagnetData * getMagnetData(WMagnet    * magnet) const;
 
     WTorrentSource * getSource(const sha1_hash & hash);
 
@@ -242,6 +272,7 @@ public: // Variables
 
     QString path;
     QString pathIndex;
+    QString pathMagnets;
 
     qint64 size;
 
@@ -260,10 +291,10 @@ public: // Variables
     QString proxyPassword;
 
     QList<WTorrentData *> datas;
-    QList<WMagnet      *> datasMagnets;
+    QList<WMagnetData  *> datasMagnets;
 
     QHash<unsigned int, WTorrentData *> torrents;
-    QHash<unsigned int, WMagnet      *> magnets;
+    QHash<unsigned int, WMagnetData  *> magnets;
 
     WListId ids;
 

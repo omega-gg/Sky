@@ -84,9 +84,7 @@ void WLoaderWebPrivate::onLoadFinished(bool ok)
 
     if (ok == false)
     {
-        WRemoteData * data = q->getData(buffer);
-
-        q->setError(data, "Error(s) occured while loading the Webpage");
+        q->setError(q->getData(buffer), "Error(s) occured while loading the Webpage");
     }
 
     QByteArray bytes = page->mainFrame()->toHtml().toUtf8();

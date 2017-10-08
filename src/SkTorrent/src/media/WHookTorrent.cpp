@@ -603,6 +603,8 @@ void WHookTorrentPrivate::init()
 
     currentTime = -1;
 
+    retry = false;
+
     thread = new WTorrentThread(wControllerTorrent->engine(), port);
 
     const QMetaObject * meta = thread->metaObject();
@@ -752,6 +754,8 @@ void WHookTorrentPrivate::clearData()
 
         q->backendSetVolume(backend->volume());
     }
+
+    retry = false;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1041,6 +1045,8 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 
     if (d->state >= WHookTorrentPrivate::StatePlaying)
     {
+        d->retry = false;
+
         d->methodSeek.invoke(d->thread);
 
         d->backend->seek(msec);
@@ -1058,9 +1064,24 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
     {
         Q_D(WHookTorrent);
 
-        wControllerTorrent->clearSource(d->torrent->url());
+        if (d->state < WHookTorrentPrivate::StatePlaying || d->retry)
+        {
+            wControllerTorrent->clearSource(d->torrent->url());
 
-        stop();
+            stop();
+        }
+        else
+        {
+            qDebug("TORRENT RETRY");
+
+            *state = WAbstractBackend::StatePlaying;
+
+            d->retry = true;
+
+            setProgress(0.0);
+
+            d->start();
+        }
     }
 }
 
@@ -1124,9 +1145,11 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 
 /* virtual */ bool WHookTorrent::hookCheckSource(const QUrl & url)
 {
-    QString extension = WControllerNetwork::extractUrlExtension(url);
+    QString source = url.toString();
 
-    if (extension == "torrent")
+    if (WControllerNetwork::extractUrlExtension(source) == "torrent"
+        ||
+        source.startsWith("magnet:?"))
     {
          return true;
     }
