@@ -583,9 +583,17 @@ WallBookmarkTrack
     {
         anchors.centerIn: player
 
+        width : st.dp64
+        height: st.dp64
+
         z: player.z
 
         visible: (player.isPlaying && player.isLoading)
+
+        background.opacity: st.wallVideo_opacityLoader
+
+        itemIcon.source    : st.icon_loading
+        itemIcon.sourceSize: st.size48x48
     }
 
     Rectangle
