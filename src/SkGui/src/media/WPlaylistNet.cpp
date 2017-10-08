@@ -365,7 +365,7 @@ bool WPlaylistNetRead::loadPlaylist(QXmlStreamReader * stream, WPlaylistNetReadR
 
     if (wControllerXml->readNextStartElement(stream, "source") == false) return false;
 
-    reply->source = wControllerXml->readNextString(stream);
+    reply->source = wControllerXml->readNextUrl(stream);
 
     //---------------------------------------------------------------------------------------------
     // title
@@ -439,7 +439,7 @@ bool WPlaylistNetRead::loadTracks(QXmlStreamReader * stream, WPlaylistNetReadRep
 
         if (wControllerXml->readNextStartElement(stream, "source") == false) return false;
 
-        p->source = wControllerXml->readNextString(stream);
+        p->source = wControllerXml->readNextUrl(stream);
 
         //-----------------------------------------------------------------------------------------
         // title
@@ -912,7 +912,7 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
 {
     Q_D(WPlaylistNet);
 
-    if (at < 0 || at >= d->tracks.count()) return;
+    if (at < 0 || at >= d->tracks.count() || count < 1) return;
 
     int index = at - count / 2;
 
@@ -922,7 +922,17 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
     {
         const WTrackNet & track = d->tracks[index];
 
-        if (track.isDefault()) break;
+        if (track.isDefault())
+        {
+            wControllerPlaylist->d_func()->applySourceTrack(this,
+                                                            &(d->tracks[index]), track.source());
+
+            count--;
+
+            index++;
+
+            break;
+        }
 
         index++;
     }
@@ -970,7 +980,7 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
 {
     Q_D(WPlaylistNet);
 
-    if (at < 0 || at >= d->tracks.count()) return;
+    if (at < 0 || at >= d->tracks.count() || count < 1) return;
 
     int index = at - count / 2;
 
@@ -980,7 +990,19 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
     {
         const WTrackNet & track = d->tracks[index];
 
-        if (track.isLoaded() && track.cover().isEmpty()) break;
+        if (track.isLoaded() && track.cover().isEmpty())
+        {
+            QUrl url = WControllerPlaylist::createSource(backend,
+                                                         "cover", "track", track.title());
+
+            wControllerPlaylist->d_func()->applySourceTrack(this, &(d->tracks[index]), url);
+
+            count--;
+
+            index++;
+
+            break;
+        }
 
         index++;
     }

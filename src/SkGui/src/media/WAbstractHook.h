@@ -32,6 +32,9 @@ class SK_GUI_EXPORT WAbstractHook : public QObject,
 
     Q_PROPERTY(WAbstractBackend * backend READ backend CONSTANT)
 
+    Q_PROPERTY(bool filterActive READ filterActive WRITE setFilterActive
+               NOTIFY filterActiveChanged)
+
 protected:
     WAbstractHook(WAbstractBackend * backend);
 
@@ -59,8 +62,6 @@ public: // WBackendInterface implementation
     Q_INVOKABLE /* virtual */ void seek(int msec);
 
 protected: // Functions
-    void setFilterActive(bool active);
-
     void applySource(const QUrl & url);
 
     void applyState    (WAbstractBackend::State     state);
@@ -119,8 +120,14 @@ protected: // Functions
 protected: // Abstract functions
     virtual bool hookCheckSource(const QUrl & url) = 0;
 
+signals:
+    void filterActiveChanged();
+
 public: // Properties
     WAbstractBackend * backend() const;
+
+    bool filterActive() const;
+    void setFilterActive(bool active);
 
 private:
     W_DECLARE_PRIVATE(WAbstractHook)

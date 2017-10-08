@@ -425,7 +425,7 @@ bool WTabTrackRead::load(QXmlStreamReader * stream, WTabTrackReadReply * reply)
 
         if (wControllerXml->readNextStartElement(stream, "source") == false) return false;
 
-        data.source = wControllerXml->readNextString(stream);
+        data.source = wControllerXml->readNextUrl(stream);
 
         //-----------------------------------------------------------------------------------------
         // title

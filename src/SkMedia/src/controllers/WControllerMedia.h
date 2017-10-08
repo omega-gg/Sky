@@ -17,20 +17,15 @@
 #ifndef WCONTROLLERMEDIA_H
 #define WCONTROLLERMEDIA_H
 
-// Qt includes
-#include <QUrl>
-
 // Sk includes
 #include <WController>
 #include <WBackendNet>
-#include <WAbstractBackend>
 
 #ifndef SK_NO_CONTROLLERMEDIA
 
 // Forward declarations
 class WControllerMediaPrivate;
 class WAbstractLoader;
-class WBackendNet;
 class WVlcEngine;
 class WVlcPlayer;
 

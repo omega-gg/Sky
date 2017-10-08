@@ -420,7 +420,7 @@ bool WLibraryFolderRead::loadFolder(QXmlStreamReader * stream, WLibraryFolderRea
 
     if (wControllerXml->readNextStartElement(stream, "source") == false) return false;
 
-    reply->source = wControllerXml->readNextString(stream);
+    reply->source = wControllerXml->readNextUrl(stream);
 
     //---------------------------------------------------------------------------------------------
     // title
@@ -507,7 +507,7 @@ bool WLibraryFolderRead::loadItems(QXmlStreamReader * stream, WLibraryFolderRead
 
         if (wControllerXml->readNextStartElement(stream, "source") == false) return false;
 
-        data.source = wControllerXml->readNextString(stream);
+        data.source = wControllerXml->readNextUrl(stream);
 
         //-----------------------------------------------------------------------------------------
         // title

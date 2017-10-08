@@ -1415,9 +1415,9 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 
         if (areas.isEmpty())
         {
-             d->setCursor(WDeclarativeMouseArea::ArrowCursor);
+            d->setCursor(WDeclarativeMouseArea::ArrowCursor);
 
-             return;
+            return;
         }
 
         WDeclarativeMouseArea * area = areas.takeFirst();
