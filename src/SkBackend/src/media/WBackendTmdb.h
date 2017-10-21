@@ -33,6 +33,14 @@ public:
     WBackendTmdb();
 
 public: // WBackendNet implementation
+    /* Q_INVOKABLE virtual */ bool isSearchCover() const;
+
+    /* Q_INVOKABLE virtual */ bool checkValidUrl(const QUrl & url) const;
+
+    /* Q_INVOKABLE virtual */ bool checkCover(const QString & label, const QString & q) const;
+
+    //---------------------------------------------------------------------------------------------
+
     /* Q_INVOKABLE virtual */ QString getId   () const;
     /* Q_INVOKABLE virtual */ QString getTitle() const;
 
@@ -45,6 +53,11 @@ public: // WBackendNet reimplementation
 
     /* Q_INVOKABLE virtual */
     WBackendNetTrack extractTrack(const QByteArray & data, const WBackendNetQuery & query) const;
+
+    //---------------------------------------------------------------------------------------------
+
+    /* Q_INVOKABLE virtual */ void applyTrack(const WBackendNetQuery & query,
+                                              const WBackendNetTrack & track);
 
 private:
     W_DECLARE_PRIVATE(WBackendTmdb)

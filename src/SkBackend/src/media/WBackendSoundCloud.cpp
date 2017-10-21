@@ -316,6 +316,13 @@ WBackendSoundCloud::WBackendSoundCloud() : WBackendNet(new WBackendSoundCloudPri
 // WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE virtual */ bool WBackendSoundCloud::isHub() const
+{
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE virtual */ bool WBackendSoundCloud::checkValidUrl(const QUrl & url) const
 {
     QString source = WControllerNetwork::removeUrlPrefix(url);
@@ -327,13 +334,6 @@ WBackendSoundCloud::WBackendSoundCloud() : WBackendNet(new WBackendSoundCloudPri
          return true;
     }
     else return false;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE virtual */ bool WBackendSoundCloud::isHub() const
-{
-    return true;
 }
 
 //-------------------------------------------------------------------------------------------------
