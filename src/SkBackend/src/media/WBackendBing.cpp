@@ -73,8 +73,6 @@ QUrl WBackendBingPrivate::getUrl(const QString & q) const
 
     search = search.simplified();
 
-    search.replace(' ', "+");
-
     if (search.length() < 10 || search.count('+') < 3)
     {
         return QUrl();

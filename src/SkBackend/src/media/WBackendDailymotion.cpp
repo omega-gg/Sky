@@ -185,6 +185,13 @@ WBackendDailymotion::WBackendDailymotion() : WBackendNet(new WBackendDailymotion
 // WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE virtual */ bool WBackendDailymotion::isHub() const
+{
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE virtual */ bool WBackendDailymotion::checkValidUrl(const QUrl & url) const
 {
     QString source = WControllerNetwork::removeUrlPrefix(url);
@@ -196,13 +203,6 @@ WBackendDailymotion::WBackendDailymotion() : WBackendNet(new WBackendDailymotion
          return true;
     }
     else return false;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE virtual */ bool WBackendDailymotion::isHub() const
-{
-    return true;
 }
 
 //-------------------------------------------------------------------------------------------------
