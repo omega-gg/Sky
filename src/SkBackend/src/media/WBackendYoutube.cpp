@@ -341,6 +341,13 @@ WBackendYoutube::WBackendYoutube() : WBackendNet(new WBackendYoutubePrivate(this
 // WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE virtual */ bool WBackendYoutube::isHub() const
+{
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE virtual */ bool WBackendYoutube::checkValidUrl(const QUrl & url) const
 {
     QString source = WControllerNetwork::removeUrlPrefix(url);
@@ -350,13 +357,6 @@ WBackendYoutube::WBackendYoutube() : WBackendNet(new WBackendYoutubePrivate(this
          return true;
     }
     else return false;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE virtual */ bool WBackendYoutube::isHub() const
-{
-    return true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -900,9 +900,11 @@ WBackendNetPlaylist WBackendYoutube::extractPlaylist(const QByteArray       & da
 
                 QUrl url("https://www.youtube.com" + WControllerNetwork::decodeUrl(data));
 
-                reply.nextQuery.url  = url;
-                reply.nextQuery.id   = 1;
-                reply.nextQuery.data = 1;
+                WBackendNetQuery * nextQuery = &(reply.nextQuery);
+
+                nextQuery->url  = url;
+                nextQuery->id   = 1;
+                nextQuery->data = 1;
             }
         }
         else
@@ -934,9 +936,11 @@ WBackendNetPlaylist WBackendYoutube::extractPlaylist(const QByteArray       & da
 
             if (url.isEmpty()) return reply;
 
-            reply.nextQuery.url  = url;
-            reply.nextQuery.id   = 2;
-            reply.nextQuery.data = 1;
+            WBackendNetQuery * nextQuery = &(reply.nextQuery);
+
+            nextQuery->url  = url;
+            nextQuery->id   = 2;
+            nextQuery->data = 1;
         }
     }
     else if (query.id == 3) // related tracks
@@ -958,9 +962,11 @@ WBackendNetPlaylist WBackendYoutube::extractPlaylist(const QByteArray       & da
                          +
                          WControllerNetwork::decodeUrl(data));
 
-                reply.nextQuery.url  = url;
-                reply.nextQuery.id   = 3;
-                reply.nextQuery.data = 1;
+                WBackendNetQuery * nextQuery = &(reply.nextQuery);
+
+                nextQuery->url  = url;
+                nextQuery->id   = 3;
+                nextQuery->data = 1;
             }
         }
         else
@@ -996,8 +1002,10 @@ WBackendNetPlaylist WBackendYoutube::extractPlaylist(const QByteArray       & da
 
                 QUrl url("https://www.youtube.com" + WControllerNetwork::decodeUrl(data));
 
-                reply.nextQuery.url  = url;
-                reply.nextQuery.data = 1;
+                WBackendNetQuery * nextQuery = &(reply.nextQuery);
+
+                nextQuery->url  = url;
+                nextQuery->data = 1;
             }
         }
         else
@@ -1103,9 +1111,11 @@ WBackendNetFolder WBackendYoutube::extractFolder(const QByteArray       & data,
 
         if (url.isEmpty()) return reply;
 
-        reply.nextQuery.url  = url;
-        reply.nextQuery.id   = query.id;
-        reply.nextQuery.data = 1;
+        WBackendNetQuery * nextQuery = &(reply.nextQuery);
+
+        nextQuery->url  = url;
+        nextQuery->id   = query.id;
+        nextQuery->data = 1;
     }
 
     return reply;

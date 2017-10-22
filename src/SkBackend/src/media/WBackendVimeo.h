@@ -38,9 +38,9 @@ public: // WBackendNet implementation
     /* Q_INVOKABLE virtual */ QString getTitle() const;
 
 public: // WBackendNet reimplementation
-    /* Q_INVOKABLE virtual */ bool checkValidUrl(const QUrl & url) const;
-
     /* Q_INVOKABLE virtual */ bool isHub() const;
+
+    /* Q_INVOKABLE virtual */ bool checkValidUrl(const QUrl & url) const;
 
     /* Q_INVOKABLE virtual */ QString getHost() const;
 

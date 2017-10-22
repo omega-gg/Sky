@@ -73,6 +73,8 @@ public: // Interface
     Q_INVOKABLE WBackendNet * backendFromTrack   (const QUrl & url) const;
     Q_INVOKABLE WBackendNet * backendFromPlaylist(const QUrl & url) const;
 
+    Q_INVOKABLE WBackendNet * backendForCover(const QString & label, const QString & q) const;
+
     //---------------------------------------------------------------------------------------------
 
     Q_INVOKABLE QUrl backendCover(WBackendNet * backend) const;

@@ -895,7 +895,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
     int index = fileName.lastIndexOf('/');
 
-    if (index == -1) return string;
+    if (index == -1) return fileName;
 
     int indexUrl = fileName.indexOf("//");
 

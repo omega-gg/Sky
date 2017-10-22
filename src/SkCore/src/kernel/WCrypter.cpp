@@ -165,7 +165,7 @@ QByteArray WCrypter::encryptToByteArray(const QByteArray & bytes) const
 
         QDataStream s(&protection, QIODevice::WriteOnly);
 
-        s << qChecksum(array.constData(), array.length());
+        s << qChecksum(array, array.size());
     }
     else if (d->protection == ProtectionHash)
     {
@@ -208,7 +208,7 @@ QString WCrypter::decryptToString(const QByteArray & bytes) const
 {
     QByteArray array = decryptToByteArray(bytes);
 
-    return QString::fromUtf8(array, array.length());
+    return QString::fromUtf8(array, array.size());
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -273,7 +273,7 @@ QByteArray WCrypter::decryptToByteArray(const QByteArray & bytes) const
 
         array = array.mid(2);
 
-        quint16 checksum = qChecksum(array.constData(), array.length());
+        quint16 checksum = qChecksum(array, array.size());
 
         integrity = (checksum == storedChecksum);
     }

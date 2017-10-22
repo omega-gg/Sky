@@ -54,7 +54,7 @@ static const QString CONTROLLERPLAYLIST_FILTERS
     =
     "Media files (*.mp4 *.webm *.ogv *.mkv *.avi *.wmv *.mov *.flv *.3gp "
                   "*.mp3 *.ogg *.mka *.wav *.wma *.flac "
-                  "*.html *.xml *.json "
+                  "*.html *.xml *.json *.torrent "
                   "*.txt *.md);;"
     "All files (*)";
 
@@ -378,7 +378,7 @@ signals:
 
         QString url = WControllerNetwork::extractAttributeUtf8(tag, "href");
 
-        if (url.isEmpty() || url.contains('/') == false) continue;
+        if (url.isEmpty()) continue;
 
         url = generateUrl(url, host);
 
@@ -400,8 +400,6 @@ signals:
 
         foreach (const QString & source, sources)
         {
-            if (source.contains('/') == false) continue;
-
             QString url = generateUrl(source, host);
 
             if (addUrl(&urls, url))
@@ -421,8 +419,6 @@ signals:
 
     foreach (const QString & string, list)
     {
-        if (string.contains('/') == false) continue;
-
         QString url = generateUrl("http" + string, host);
 
         if (addUrl(&urls, url))
@@ -845,12 +841,10 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
         if (applyUrl(folder, backend, source))
         {
             folder->d_func()->setQueryEnded();
-
-            return true;
         }
+        else addFolderSearch(folder, source, WControllerNetwork::urlName(source));
     }
-
-    if (WControllerNetwork::urlIsFile(source))
+    else if (WControllerNetwork::urlIsFile(source))
     {
         QFileInfo info(WControllerFile::filePath(source));
 
@@ -1230,7 +1224,7 @@ void WControllerPlaylistPrivate::applyPlaylist(WLibraryFolder * folder, WBackend
     WLibraryFolderItem item(info.type, WLocalObject::Default);
 
     item.source = url;
-    item.title  = backend->title() + " - " + info.id;
+    item.title  = backend->title() + " - " + info.id.simplified();
 
     folder->addItem(item);
 }
@@ -1252,7 +1246,7 @@ void WControllerPlaylistPrivate::applySources(WLibraryFolder                    
         WLibraryFolderItem item(WLibraryItem::PlaylistNet, WLocalObject::Default);
 
         item.source = url;
-        item.title  = source.title;
+        item.title  = source.title.simplified();
 
         folder->addItem(item);
     }
@@ -1533,10 +1527,10 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 
     if (data->hasError())
     {
-        if (backend) backend->queryFailed(*backendQuery);
-
         if (query->type == WControllerPlaylistQuery::TypeTrack)
         {
+            if (backend) backend->queryFailed(*backendQuery);
+
             WPlaylistNet * playlist = item->toPlaylistNet();
 
             int index = playlist->indexOf(query->track);
@@ -1557,29 +1551,42 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
         }
         else if (backendQuery->type == WBackendNetQuery::TypeDefault)
         {
-            WBackendNetQuery nextQuery = *backendQuery;
-
-            nextQuery.type = WBackendNetQuery::TypeWeb;
-
-            if (query->type == WControllerPlaylistQuery::TypePlaylist)
+            if (backend)
             {
-                WPlaylistNet * playlist = item->toPlaylistNet();
+                backend->queryFailed(*backendQuery);
 
                 queries.remove(data);
 
-                getDataPlaylist(playlist, nextQuery);
+                item->d_func()->setQueryDefault();
             }
-            else // if (query->type == WControllerPlaylistQuery::TypeFolder)
+            else
             {
-                WLibraryFolder * folder = item->toFolder();
+                WBackendNetQuery nextQuery = *backendQuery;
 
-                queries.remove(data);
+                nextQuery.type = WBackendNetQuery::TypeWeb;
 
-                getDataFolder(folder, nextQuery);
+                if (query->type == WControllerPlaylistQuery::TypePlaylist)
+                {
+                    WPlaylistNet * playlist = item->toPlaylistNet();
+
+                    queries.remove(data);
+
+                    getDataPlaylist(playlist, nextQuery);
+                }
+                else // if (query->type == WControllerPlaylistQuery::TypeFolder)
+                {
+                    WLibraryFolder * folder = item->toFolder();
+
+                    queries.remove(data);
+
+                    getDataFolder(folder, nextQuery);
+                }
             }
         }
         else
         {
+            if (backend) backend->queryFailed(*backendQuery);
+
             queries.remove(data);
 
             item->d_func()->setQueryDefault();
@@ -1670,39 +1677,44 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice              * device,
     {
         reply.track.applyDataTo(track);
 
-        track->setState(WAbstractTrack::Loaded);
-
-        playlist->updateTrack(index);
-
         addToCache(track->source(), reply.cache);
 
         WBackendNetQuery nextQuery = reply.nextQuery;
 
         if (nextQuery.isValid())
         {
+            playlist->updateTrack(index);
+
             nextQuery.priority
                 = static_cast<QNetworkRequest::Priority> (QNetworkRequest::NormalPriority - 1);
 
             if (getDataTrack(playlist, track, nextQuery)) return;
         }
-        else if (WControllerNetwork::removeUrlPrefix(playlist->source())
-                 ==
-                 WControllerNetwork::removeUrlPrefix(track->source()))
+        else
         {
-            QString title = track->title();
-            QUrl    cover = track->cover();
+            track->setState(WAbstractTrack::Loaded);
 
-            if (title.isEmpty() == false)
-            {
-                playlist->setTitle(title);
-            }
+            playlist->updateTrack(index);
 
-            if (cover.isValid())
+            if (WControllerNetwork::removeUrlPrefix(playlist->source())
+                ==
+                WControllerNetwork::removeUrlPrefix(track->source()))
             {
-                playlist->setCover(cover);
+                QString title = track->title();
+                QUrl    cover = track->cover();
+
+                if (title.isEmpty() == false)
+                {
+                    playlist->setTitle(title);
+                }
+
+                if (cover.isValid())
+                {
+                    playlist->setCover(cover);
+                }
             }
+            else playlist->updateCover();
         }
-        else playlist->updateCover();
     }
     else
     {
@@ -1994,8 +2006,6 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     }
     else indexTrack = -1;
 
-    QString title = data.title + " - ";
-
     foreach (const WControllerPlaylistMedia & media, data.medias)
     {
         if (urlTracks.count() == CONTROLLERPLAYLIST_MAX_TRACKS) break;
@@ -2006,13 +2016,9 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
         urlTracks.append(url);
 
-        WTrackNet track(url, WAbstractTrack::Loaded);
+        WTrackNet track(url, WAbstractTrack::Default);
 
-        if (media.local)
-        {
-             track.setTitle(media.title);
-        }
-        else track.setTitle(title + media.title);
+        track.setTitle(media.title);
 
         track.setCover(data.cover);
 
@@ -2063,6 +2069,51 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
     WLibraryFolder * folder = query->item->toFolder();
 
+    QList<QUrl> urlPlaylists;
+
+    if (folder->isEmpty() == false)
+    {
+        queries.remove(query->data);
+
+        for (int i = 0; i < folder->count(); i++)
+        {
+            const QUrl & url = folder->itemAt(i)->source;
+
+            WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
+
+            if (backend)
+            {
+                WBackendNetPlaylistInfo info = backend->getPlaylistInfo(url);
+
+                if (info.isValid())
+                {
+                     urlPlaylists.append(backend->getUrlPlaylist(info));
+                }
+                else urlPlaylists.append(url);
+            }
+            else urlPlaylists.append(url);
+        }
+
+        foreach (const WControllerPlaylistSource & source, data.sources)
+        {
+            const QUrl & url = source.url;
+
+            WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
+
+            if (backend && urlPlaylists.count() != CONTROLLERPLAYLIST_MAX_PLAYLISTS)
+            {
+                applyPlaylist(folder, backend, url, &urlPlaylists);
+            }
+        }
+
+        applySources(folder, data.folders, &urlPlaylists);
+        applySources(folder, data.files,   &urlPlaylists);
+
+        folder->d_func()->setQueryEnded();
+
+        return;
+    }
+
     QString source = folder->source().toString();
 
     QString feed = query->backendQuery.url.toString();
@@ -2074,7 +2125,6 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
     playlist->setTitle(data.title);
     playlist->setCover(data.cover);
 
-    QList<QUrl> urlPlaylists;
     QList<QUrl> urlTracks;
 
     foreach (const WControllerPlaylistSource & source, data.sources)
@@ -2118,8 +2168,6 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
     }
     else singleTrack = false;
 
-    QString title = data.title + " - ";
-
     foreach (const WControllerPlaylistMedia & media, data.medias)
     {
         if (urlTracks.count() == CONTROLLERPLAYLIST_MAX_TRACKS) break;
@@ -2130,13 +2178,9 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
         urlTracks.append(url);
 
-        WTrackNet track(url, WAbstractTrack::Loaded);
+        WTrackNet track(url, WAbstractTrack::Default);
 
-        if (media.local)
-        {
-             track.setTitle(media.title);
-        }
-        else track.setTitle(title + media.title);
+        track.setTitle(media.title);
 
         track.setCover(data.cover);
 
@@ -2302,8 +2346,6 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
 /* Q_INVOKABLE */ WBackendNet * WControllerPlaylist::backendFromUrl(const QUrl & url) const
 {
-    if (url.isValid() == false) return NULL;
-
     if (url.host() == sk->applicationUrl().host())
     {
 #ifdef QT_4
@@ -2334,8 +2376,6 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
 /* Q_INVOKABLE */ WBackendNet * WControllerPlaylist::backendFromTrack(const QUrl & url) const
 {
-    if (url.isValid() == false) return NULL;
-
     Q_D(const WControllerPlaylist);
 
     foreach (WBackendNet * backend, d->backends)
@@ -2351,13 +2391,29 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
 /* Q_INVOKABLE */ WBackendNet * WControllerPlaylist::backendFromPlaylist(const QUrl & url) const
 {
-    if (url.isValid() == false) return NULL;
-
     Q_D(const WControllerPlaylist);
 
     foreach (WBackendNet * backend, d->backends)
     {
         if (backend->getPlaylistInfo(url).isValid())
+        {
+            return backend;
+        }
+    }
+
+    return NULL;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ WBackendNet * WControllerPlaylist::backendForCover(const QString & label,
+                                                                     const QString & q) const
+{
+    Q_D(const WControllerPlaylist);
+
+    foreach (WBackendNet * backend, d->backends)
+    {
+        if (backend->checkCover(label, q))
         {
             return backend;
         }
@@ -2405,11 +2461,6 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
 /* Q_INVOKABLE */ WLibraryItem::Type WControllerPlaylist::urlType(const QUrl & url) const
 {
-    if (url.isValid() == false)
-    {
-        return WLibraryItem::Invalid;
-    }
-
     Q_D(const WControllerPlaylist);
 
     foreach (WBackendNet * backend, d->backends)

@@ -209,6 +209,13 @@ WBackendVimeo::WBackendVimeo() : WBackendNet(new WBackendVimeoPrivate(this))
 // WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE virtual */ bool WBackendVimeo::isHub() const
+{
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE virtual */ bool WBackendVimeo::checkValidUrl(const QUrl & url) const
 {
     QString source = WControllerNetwork::removeUrlPrefix(url);
@@ -218,13 +225,6 @@ WBackendVimeo::WBackendVimeo() : WBackendNet(new WBackendVimeoPrivate(this))
          return true;
     }
     else return false;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE virtual */ bool WBackendVimeo::isHub() const
-{
-    return true;
 }
 
 //-------------------------------------------------------------------------------------------------

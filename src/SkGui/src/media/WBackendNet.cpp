@@ -467,13 +467,6 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : WPrivatable(p)
 // Virtual interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendNet::checkValidUrl(const QUrl &) const
-{
-    return false;
-}
-
-//-------------------------------------------------------------------------------------------------
-
 /* Q_INVOKABLE virtual */ bool WBackendNet::isHub() const
 {
     return false;
@@ -487,6 +480,18 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : WPrivatable(p)
 }
 
 /* Q_INVOKABLE virtual */ bool WBackendNet::isSearchCover() const
+{
+    return false;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ bool WBackendNet::checkValidUrl(const QUrl &) const
+{
+    return false;
+}
+
+/* Q_INVOKABLE virtual */ bool WBackendNet::checkCover(const QString &, const QString &) const
 {
     return false;
 }

@@ -749,7 +749,7 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 
 /* Q_INVOKABLE static */ QString WControllerApplication::readAscii(const QByteArray & array)
 {
-    return QString::fromLatin1(array.data(), array.size());
+    return QString::fromLatin1(array, array.size());
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -785,6 +785,11 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QString WControllerApplication::latinToUtf8(const QString & string)
+{
+    return QString::fromUtf8(string.toLatin1());
+}
 
 /* Q_INVOKABLE static */ QString WControllerApplication::unicodeToUtf8(const QString & string)
 {
