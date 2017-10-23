@@ -1543,8 +1543,6 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 
                 track->setState(WAbstractTrack::Default);
 
-                track->setSource(QUrl());
-
                 playlist->updateTrack(index);
             }
             else queries.remove(data);
