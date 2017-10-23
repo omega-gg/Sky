@@ -215,22 +215,13 @@ MouseArea
 
     //---------------------------------------------------------------------------------------------
 
-    function pGetWidthPrevious()
+    function pGetWidth()
     {
         var width = Math.round(playerBrowser.width / 6);
 
         width = Math.max(st.dp48, width);
 
         return Math.min(width, st.dp80);
-    }
-
-    function pGetWidthPlay()
-    {
-        var width = Math.round(playerBrowser.width / 4);
-
-        width = Math.max(st.dp48, width);
-
-        return Math.min(width, st.dp112);
     }
 
     //---------------------------------------------------------------------------------------------
@@ -326,6 +317,24 @@ MouseArea
         }
     }
 
+    MouseArea
+    {
+        id: areaPlay
+
+        anchors.centerIn: parent
+
+        width : Math.round(buttonPlay.width * 1.4)
+        height: width
+
+        visible: buttonPlay.visible
+
+        hoverEnabled: buttonPlay.visible
+
+        cursor: MouseArea.PointingHandCursor
+
+        onClicked: play()
+    }
+
     RectangleShadow
     {
         anchors.left  : areaBackward.left
@@ -376,7 +385,7 @@ MouseArea
 
         anchors.verticalCenter: parent.verticalCenter
 
-        width : pGetWidthPrevious()
+        width : pGetWidth()
         height: width
 
         iconWidth : Math.round(width / 1.8)
@@ -436,15 +445,19 @@ MouseArea
 
         anchors.centerIn: parent
 
-        width : pGetWidthPlay()
-        height: width
+        width : buttonPrevious.width
+        height: buttonPrevious.height
 
-        iconWidth : Math.round(width / 2)
-        iconHeight: iconWidth
+        iconWidth : buttonPrevious.iconWidth
+        iconHeight: buttonPrevious.iconHeight
 
         visible: (loading || enabled)
 
         enabled: (tab != null && tab.isValid)
+
+        isHovered: (containsMouse || areaPlay.containsMouse)
+
+        isPressed: (pressed || isReturnPressed || areaPlay.pressed)
 
         icon       : st.icon_play
         iconScaling: true
