@@ -590,10 +590,10 @@ WallBookmarkTrack
 
         visible: (player.isPlaying && player.isLoading)
 
-        background.opacity: st.wallVideo_opacityLoader
+        icon          : st.icon_loading
+        iconSourceSize: st.size48x48
 
-        itemIcon.source    : st.icon_loading
-        itemIcon.sourceSize: st.size48x48
+        background.opacity: st.wallVideo_opacityLoader
     }
 
     Rectangle
