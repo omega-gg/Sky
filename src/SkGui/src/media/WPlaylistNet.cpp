@@ -636,6 +636,45 @@ void WPlaylistNetPrivate::loadTracks(const QList<WTrackNet> & tracks)
     }
 }
 
+//-------------------------------------------------------------------------------------------------
+
+void WPlaylistNetPrivate::loadTrack(WTrackNet * track, int index)
+{
+    Q_Q(WPlaylistNet);
+
+    wControllerPlaylist->d_func()->applySourceTrack(q, track, track->source());
+
+    if (track->isLoaded())
+    {
+        if (track->cover().isValid() == false)
+        {
+            loadCover(track);
+        }
+    }
+    else if (track->cover().isValid())
+    {
+        track->setState(WAbstractTrack::Loaded);
+
+        q->updateTrack(index);
+    }
+    else loadCover(track);
+}
+
+void WPlaylistNetPrivate::loadCover(WTrackNet * track)
+{
+    QString trackTitle = track->d_func()->title;
+
+    WBackendNet * backend = wControllerPlaylist->backendForCover(title, trackTitle);
+
+    if (backend == NULL) return;
+
+    Q_Q(WPlaylistNet);
+
+    WBackendNetQuery query = backend->createQuery("cover", title, trackTitle);
+
+    wControllerPlaylist->d_func()->applyQueryTrack(q, track, query);
+}
+
 //=================================================================================================
 // WPlaylistNet
 //=================================================================================================
@@ -903,9 +942,10 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
 
     WTrackNet * track = &(d->tracks[at]);
 
-    if (track->isDefault() == false) return;
-
-    wControllerPlaylist->d_func()->applySourceTrack(this, track, track->source());
+    if (track->isDefault())
+    {
+        d->loadTrack(track, at);
+    }
 }
 
 /* Q_INVOKABLE */ void WPlaylistNet::loadTracks(int at, int count)
@@ -920,12 +960,11 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
 
     while (index < at)
     {
-        const WTrackNet & track = d->tracks[index];
+        WTrackNet * track = &(d->tracks[index]);
 
-        if (track.isDefault())
+        if (track->isDefault())
         {
-            wControllerPlaylist->d_func()->applySourceTrack(this,
-                                                            &(d->tracks[index]), track.source());
+            d->loadTrack(track, index);
 
             count--;
 
@@ -943,7 +982,7 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
 
         if (track->isDefault())
         {
-            wControllerPlaylist->d_func()->applySourceTrack(this, track, track->source());
+            d->loadTrack(track, index);
         }
 
         count--;
@@ -957,72 +996,6 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
 /* Q_INVOKABLE */ void WPlaylistNet::abortTracks()
 {
     wControllerPlaylist->d_func()->abortQueriesTracks(this);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE */ void WPlaylistNet::loadCover(const QString & backend, int at)
-{
-    Q_D(WPlaylistNet);
-
-    if (at < 0 || at >= d->tracks.count()) return;
-
-    WTrackNet * track = &(d->tracks[at]);
-
-    if (track->isLoaded() == false || track->cover().isEmpty() == false) return;
-
-    QUrl url = WControllerPlaylist::createSource(backend, "cover", "track", track->title());
-
-    wControllerPlaylist->d_func()->applySourceTrack(this, track, url);
-}
-
-/* Q_INVOKABLE */ void WPlaylistNet::loadCovers(const QString & backend, int at, int count)
-{
-    Q_D(WPlaylistNet);
-
-    if (at < 0 || at >= d->tracks.count() || count < 1) return;
-
-    int index = at - count / 2;
-
-    if (index < 0) index = 0;
-
-    while (index < at)
-    {
-        const WTrackNet & track = d->tracks[index];
-
-        if (track.isLoaded() && track.cover().isEmpty())
-        {
-            QUrl url = WControllerPlaylist::createSource(backend,
-                                                         "cover", "track", track.title());
-
-            wControllerPlaylist->d_func()->applySourceTrack(this, &(d->tracks[index]), url);
-
-            count--;
-
-            index++;
-
-            break;
-        }
-
-        index++;
-    }
-
-    while (index < d->tracks.count() && count)
-    {
-        WTrackNet * track = &(d->tracks[index]);
-
-        if (track->isLoaded() && track->cover().isEmpty())
-        {
-            QUrl url = WControllerPlaylist::createSource(backend,
-                                                         "cover", "track", track->title());
-
-            wControllerPlaylist->d_func()->applySourceTrack(this, track, url);
-        }
-
-        count--;
-
-        index++;
-    }
 }
 
 //-------------------------------------------------------------------------------------------------

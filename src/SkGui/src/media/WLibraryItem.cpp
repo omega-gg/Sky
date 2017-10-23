@@ -244,6 +244,11 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
 
     if (d->source.isEmpty()) return false;
 
+    if (d->stateQuery == Loading)
+    {
+        stopQuery();
+    }
+
     if (applySource(d->source) == false)
     {
         qWarning("WLibraryItem::reloadQuery: Failed to reload source %s.", d->source.C_URL);

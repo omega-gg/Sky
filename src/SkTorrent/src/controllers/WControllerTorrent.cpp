@@ -505,7 +505,7 @@ void WControllerTorrentPrivate::loadTorrent(WTorrentReply * reply, const QUrl   
 
     QObject::connect(data, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoaded(WRemoteData *)));
 
-    WTorrent * torrent = new WTorrent(url, extractIndex(url), mode, q);
+    WTorrent * torrent = new WTorrent(baseUrl, extractIndex(url), mode, q);
 
     reply->_torrent = torrent;
 
@@ -566,7 +566,12 @@ void WControllerTorrentPrivate::loadMagnet(WMagnetReply * reply, const QUrl & ur
 
         jobsMagnets.insert(data, magnet);
     }
-    else engine->loadMagnet(magnet);
+    else
+    {
+        magnets.append(magnet);
+
+        engine->loadMagnet(magnet);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------

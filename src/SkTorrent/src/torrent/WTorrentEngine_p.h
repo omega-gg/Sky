@@ -184,6 +184,8 @@ public: // Functions
     void load();
     void save() const;
 
+    torrent_info * loadInfo(const QByteArray & array) const;
+
     void loadResume(WTorrentData * data, const QString & fileName) const;
 
     WTorrentData * createData(TorrentInfoPointer info, const sha1_hash & hash, const QUrl & url);
@@ -213,6 +215,8 @@ public: // Functions
     void updateFiles(WTorrentData * data) const;
 
     void renameFiles(WTorrentData * data, const torrent_handle & handle) const;
+
+    void renameFile(const torrent_handle & handle, WTorrentItem * item) const;
 
     QString extractFileName(const std::string & path, int index) const;
 

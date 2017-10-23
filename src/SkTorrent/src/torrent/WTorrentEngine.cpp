@@ -165,6 +165,21 @@ void WTorrentEnginePrivate::save() const
 
 //-------------------------------------------------------------------------------------------------
 
+torrent_info * WTorrentEnginePrivate::loadInfo(const QByteArray & array) const
+{
+    const char * data = array.data();
+
+    bdecode_node node;
+
+    error_code error;
+
+    if (bdecode(data, data + array.size(), node, error) == 0)
+    {
+         return new torrent_info(node);
+    }
+    else return NULL;
+}
+
 void WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & fileName) const
 {
     QFile file(fileName);
@@ -806,22 +821,27 @@ void WTorrentEnginePrivate::renameFiles(WTorrentData * data, const torrent_handl
 {
     foreach (WTorrentItem * item, data->items)
     {
-        QString fileName = item->fileName;
+        renameFile(handle, item);
+    }
+}
 
-        if (fileName.isEmpty())
+void WTorrentEnginePrivate::renameFile(const torrent_handle & handle, WTorrentItem * item) const
+{
+    QString fileName = item->fileName;
+
+    if (fileName.isEmpty())
+    {
+        const QStringList & paths = item->paths;
+
+        for (int i = 0; i < paths.count(); i++)
         {
-            const QStringList & paths = item->paths;
+            qDebug("TORRENT RENAME ALL %d %s", i, paths.at(i).C_STR);
 
-            for (int i = 0; i < paths.count(); i++)
-            {
-                qDebug("TORRENT RENAME ALL %d %s", i, paths.at(i).C_STR);
-
-                handle.rename_file(i, paths.at(i).toStdString());
-            }
-
-            return;
+            handle.rename_file(i, paths.at(i).toStdString());
         }
-
+    }
+    else
+    {
         qDebug("TORRENT RENAME FILE %d %s", item->index, fileName.C_STR);
 
         handle.rename_file(item->index, fileName.toStdString());
@@ -992,7 +1012,7 @@ void WTorrentEnginePrivate::prioritize(const torrent_handle & handle,
 
         if (position > sizePiece)
         {
-             block = (position - sizePiece) / TORRENTENGINE_BLOCK;
+             block = (position - sizePiece) / (qint64) TORRENTENGINE_BLOCK;
         }
         else block = 0;
 
@@ -1931,6 +1951,10 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
     {
         settings_pack pack;
 
+        QString name = sk->name() + "/" + sk->version();
+
+        pack.set_str(settings_pack::user_agent, name.toStdString());
+
         pack.set_int(settings_pack::alert_mask, alert::error_notification   |
                                                 alert::storage_notification |
                                                 alert::status_notification  |
@@ -1949,7 +1973,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         //pack.set_int(settings_pack::max_failcount,      1);
         pack.set_int(settings_pack::min_reconnect_time, 1);
 
-        pack.set_int(settings_pack::peer_connect_timeout, 1);
+        pack.set_int(settings_pack::peer_connect_timeout, 3);
         pack.set_int(settings_pack::peer_timeout,         3);
 
         pack.set_int(settings_pack::piece_timeout,   3);
@@ -1994,7 +2018,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         //dht.max_dht_items =  1000;
         //dht.max_peers     = 10000;
 
-        d->session->set_dht_settings(dht);
+        //d->session->set_dht_settings(dht);
 
 #ifndef LIBTORRENT_LATEST
         d->session->add_dht_router(std::make_pair(std::string("router.bittorrent.com"),   6881));
@@ -2058,10 +2082,20 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         {
             if (data == NULL)
             {
-                QByteArray array = device->readAll();
+                torrent_info * file = d->loadInfo(device->readAll());
 
-                boost::shared_ptr<torrent_info> info
-                    = boost::shared_ptr<torrent_info> (new torrent_info(array, array.size()));
+                if (file == NULL)
+                {
+                    QCoreApplication::postEvent(torrent,
+                                                new WTorrentEventValue(WTorrent::EventError,
+                                                                       "Failed to load torrent."));
+
+                    delete device;
+
+                    return true;
+                }
+
+                boost::shared_ptr<torrent_info> info = boost::shared_ptr<torrent_info> (file);
 
                 const sha1_hash & hash = info->info_hash();
 
@@ -2089,12 +2123,16 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
             d->updateData(data);
 
-            WTorrentStream * stream = d->createStream(data->handle.torrent_file(),
+            const torrent_handle & handle = data->handle;
+
+            WTorrentStream * stream = d->createStream(handle.torrent_file(),
                                                       data, torrent, index, mode);
 
             if (data->hash)
             {
-                d->addStream(data->handle, stream);
+                d->renameFile(handle, stream);
+
+                d->addStream(handle, stream);
 
                 d->selectFile(stream);
             }
@@ -2103,10 +2141,20 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         {
             if (data == NULL)
             {
-                QByteArray array = device->readAll();
+                torrent_info * file = d->loadInfo(device->readAll());
 
-                boost::shared_ptr<torrent_info> info
-                    = boost::shared_ptr<torrent_info> (new torrent_info(array, array.size()));
+                if (file == NULL)
+                {
+                    QCoreApplication::postEvent(torrent,
+                                                new WTorrentEventValue(WTorrent::EventError,
+                                                                       "Failed to load torrent."));
+
+                    delete device;
+
+                    return true;
+                }
+
+                boost::shared_ptr<torrent_info> info = boost::shared_ptr<torrent_info> (file);
 
                 const sha1_hash & hash = info->info_hash();
 
@@ -2134,12 +2182,15 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
             d->updateData(data);
 
-            WTorrentItem * item = d->createItem(data->handle.torrent_file(), data, torrent, index,
-                                                mode);
+            const torrent_handle & handle = data->handle;
+
+            WTorrentItem * item = d->createItem(handle.torrent_file(), data, torrent, index, mode);
 
             if (data->hash)
             {
-                d->addItem(data->handle, item);
+                d->renameFile(handle, item);
+
+                d->addItem(handle, item);
 
                 d->selectFile(item);
             }
@@ -2168,6 +2219,8 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
             add_torrent_params params;
 
             params.url = magnet->url().toString().toStdString();
+
+            params.save_path = d->pathMagnets.toStdString();
 
             data = new WMagnetData;
 
@@ -2222,7 +2275,12 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
                 d->applyMagnet(data, handle);
             }
-            else d->magnets.insert(hash, data);
+            else
+            {
+                qDebug("METADATA STARTED");
+
+                d->magnets.insert(hash, data);
+            }
 
             return true;
         }
@@ -2254,10 +2312,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         d->torrents.insert(hash, data);
 
-        if (handle.status().has_metadata)
-        {
-            d->renameFiles(data, handle);
-        }
+        d->renameFiles(data, handle);
 
         foreach (WTorrentItem * item, data->items)
         {

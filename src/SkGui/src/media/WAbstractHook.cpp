@@ -382,6 +382,8 @@ void WAbstractHook::setFilterActive(bool active)
          d->backend->setFilter(this);
     }
     else d->backend->setFilter(NULL);
+
+    emit filterActiveChanged();
 }
 
 #endif // SK_NO_ABSTRACTHOOK

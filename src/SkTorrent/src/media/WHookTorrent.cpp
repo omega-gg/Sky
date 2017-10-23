@@ -124,6 +124,8 @@ private:
 
     QString buffer;
 
+    bool ready;
+
     int skip;
 
     QTimer timer;
@@ -140,6 +142,8 @@ WTorrentSocket::WTorrentSocket(WTorrentThread * thread, QTcpSocket * socket) : Q
 {
     this->thread = thread;
     this->socket = socket;
+
+    ready = false;
 
     skip = 0;
 
@@ -221,6 +225,8 @@ void WTorrentSocket::onRead()
 
         return;
     }
+
+    ready = true;
 
     qint64 progress = thread->progress;
 
@@ -403,6 +409,8 @@ void WTorrentSocket::onWrite()
                 qDebug("END INCOMPLETE %d", thread->file->atEnd());
 
                 thread->seeking = true;
+
+                timer.start();
             }
         }
     }
@@ -480,7 +488,7 @@ void WTorrentThread::onBuffer(qint64 progress)
 {
     this->progress = progress;
 
-    if (data) data->onWrite();
+    if (data && data->ready) data->onWrite();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -492,7 +500,7 @@ void WTorrentThread::onStart()
 
 void WTorrentThread::onSeek()
 {
-    if (seeking == false) return;
+    if (seeking == false || data == NULL || data->ready == false) return;
 
     qDebug("SKIP SEEK");
 
@@ -847,10 +855,7 @@ void WHookTorrentPrivate::onBuffer(qint64 bufferPieces, qint64 bufferBlocks)
 
     qreal progress = (qreal) buffer / HOOKTORRENT_PROGRESS;
 
-    if (progress > 1.0)
-    {
-        progress = 0.9;
-    }
+    if (progress > 0.9) progress = 0.9;
 
     if (backend->progress() < progress)
     {

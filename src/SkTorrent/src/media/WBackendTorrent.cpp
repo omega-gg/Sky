@@ -300,7 +300,7 @@ WBackendNetPlaylistInfo WBackendTorrent::getPlaylistInfo(const QUrl & url) const
 /* Q_INVOKABLE virtual */
 QUrl WBackendTorrent::getUrlPlaylist(const WBackendNetPlaylistInfo & info) const
 {
-    return info.id;
+    return WControllerNetwork::encodedUrl(info.id);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -334,7 +334,12 @@ WBackendNetQuery WBackendTorrent::createQuery(const QString & method,
 
     if (method == "related" && label == "tracks")
     {
-        query.url = q;
+        if (q.startsWith("magnet:?"))
+        {
+            query.type = WBackendNetQuery::TypeTorrent;
+        }
+
+        query.url = WControllerNetwork::encodedUrl(q);
         query.id  = 1;
     }
 
@@ -351,11 +356,13 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
     WBackendNetPlaylist reply;
 
-    QString content = QString::fromLatin1(data.constData(), data.size());
+    QString content = Sk::readAscii(data);
 
     content = WControllerTorrent::listAfter(content, "info");
 
     QString name = WControllerTorrent::stringAfter(content, "name");
+
+    name = Sk::latinToUtf8(name);
 
     QList<WBackendTorrentItem> items = d->extractItems(content);
 
@@ -396,7 +403,7 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
         foreach (const WBackendTorrentItem & item, list)
         {
-            QString title = item.name;
+            QString title = Sk::latinToUtf8(item.name);
 
             QString extension = WControllerNetwork::extractUrlExtension(title);
 
@@ -404,7 +411,7 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
             {
                 QString url = source + '#' + QString::number(item.id) + '.' + extension;
 
-                WTrackNet track(WControllerNetwork::encodedUrl(url));
+                WTrackNet track(WControllerNetwork::encodedUrl(url), WAbstractTrack::Default);
 
                 track.setTitle(title);
 
