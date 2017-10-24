@@ -318,6 +318,11 @@ WMagnet::WMagnet(const QUrl & url, QObject * parent) : QObject(parent)
 
         _data = eventMagnet->data;
 
+        if (_data.isEmpty() == false)
+        {
+            wControllerFile->addFile(_url, _data);
+        }
+
         foreach (WMagnetReply * reply, _replies)
         {
             emit reply->loaded(reply);
