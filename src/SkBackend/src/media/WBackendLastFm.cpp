@@ -46,7 +46,8 @@ public: // Functions
 
     bool match(const QStringList & listA, const QStringList & listB) const;
 
-    QString getString(const QString & data) const;
+    QString     getString(const QString & data) const;
+    QStringList getList  (const QString & data) const;
 
 protected:
     W_DECLARE_PUBLIC(WBackendLastFm)
@@ -91,9 +92,14 @@ void WBackendLastFmPrivate::applyQuery(WBackendNetQuery * query, const QString &
 
     if (index == length) return;
 
-    QUrl url("https://www.last.fm/search/tracks");
+    title = title.mid(index, title.lastIndexOf(' ') - index);
 
-    title = title.mid(index, title.lastIndexOf(' ') - index).toLower();
+    QVariantList variants;
+
+    variants.append(title);
+    variants.append(getString(label));
+
+    QUrl url("https://www.last.fm/search/tracks");
 
 #ifdef QT_4
     url.addQueryItem("q", title);
@@ -107,7 +113,7 @@ void WBackendLastFmPrivate::applyQuery(WBackendNetQuery * query, const QString &
 
     query->url = url;
 
-    query->data = getString(label).toLower();
+    query->data = variants;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -146,7 +152,18 @@ QString WBackendLastFmPrivate::getString(const QString & data) const
 
     result = result.replace(QRegExp(BACKENDLASTFM_MATCH), " ");
 
-    return result.simplified();
+    return result.simplified().toLower();
+}
+
+QStringList WBackendLastFmPrivate::getList(const QString & data) const
+{
+    QString result = data;
+
+    result = result.replace(QRegExp(BACKENDLASTFM_MATCH), " ");
+
+    result = result.simplified().toLower();
+
+    return result.split(' ');
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -244,26 +261,38 @@ WBackendNetTrack WBackendLastFm::extractTrack(const QByteArray       & data,
     {
         QStringList list = Sk::slices(content, "<td class=\"chartlist-name\"", "</td>");
 
-        QStringList listAuthor = query.data.toString().split(' ');
+        QVariantList variants = query.data.toList();
+
+        QStringList listTitle  = variants.first().toString().split(' ');
+        QStringList listAuthor = variants.last ().toString().split(' ');
 
         foreach (const QString & string, list)
         {
-            QString author = WControllerNetwork::extractAttributeUtf8(string, "title").toLower();
+            QString author = WControllerNetwork::extractAttributeUtf8(string, "title");
 
-            QStringList list = author.split(' ');
+            QStringList list = d->getList(author);
 
             if (d->match(list, listAuthor))
             {
                 int index = string.indexOf("<span class=\"artist-name-spacer\"");
 
-                QString source = WControllerNetwork::extractAttribute(string, "href", index);
+                QString title = WControllerNetwork::extractAttributeUtf8(string, "title", index);
 
-                WBackendNetQuery * nextQuery = &(reply.nextQuery);
+                title = title.mid(author.length() + 3);
 
-                nextQuery->url = "https://www.last.fm" + source;
-                nextQuery->id  = 1;
+                list = d->getList(title);
 
-                return reply;
+                if (d->match(list, listTitle))
+                {
+                    QString source = WControllerNetwork::extractAttribute(string, "href", index);
+
+                    WBackendNetQuery * nextQuery = &(reply.nextQuery);
+
+                    nextQuery->url = "https://www.last.fm" + source;
+                    nextQuery->id  = 1;
+
+                    return reply;
+                }
             }
         }
     }
