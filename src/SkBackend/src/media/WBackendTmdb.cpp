@@ -199,10 +199,11 @@ void WBackendTmdbPrivate::applyQuery(WBackendNetQuery * query, const QString & l
                 variants.append(show);
                 variants.append(episode);
 
-                query->url = source + QString::number(season) + "?language=en";
+                query->url = source + QString::number(season)
+                             +
+                             "/episode/" + QString::number(episode) + "?language=en";
 
-                query->id   = 4;
-                query->data = variants;
+                query->id = 4;
             }
 
             return;
@@ -549,20 +550,15 @@ WBackendNetTrack WBackendTmdb::extractTrack(const QByteArray       & data,
 
         nextQuery->url = "https://www.themoviedb.org" + source
                          +
-                         "/season/" + variants.takeAt(1).toString() + "?language=en";
+                         "/season/" + variants.takeAt(1).toString()
+                         +
+                         "/episode/" + variants.takeLast().toString() + "?language=en";
 
-        nextQuery->id   = 4;
-        nextQuery->data = variants;
+        nextQuery->id = 4;
     }
     else if (id == 4) // Show
     {
-        int episode = query.data.toList().last().toInt();
-
-        QStringList list = Sk::slices(content, "<div class=\"card\">", "</a>");
-
-        if (episode > list.count()) return reply;
-
-        QString string = list.at(episode - 1);
+        QString string = Sk::slice(content, "class=\"episode opened\"", "</a>");
 
         QString source = WControllerNetwork::extractAttribute(string, "data-src");
 
