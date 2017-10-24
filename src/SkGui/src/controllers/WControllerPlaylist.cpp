@@ -843,6 +843,11 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
             folder->d_func()->setQueryEnded();
         }
         else addFolderSearch(folder, source, WControllerNetwork::urlName(source));
+
+        if (WControllerNetwork::urlIsHttp(source) == false)
+        {
+            return true;
+        }
     }
     else if (WControllerNetwork::urlIsFile(source))
     {

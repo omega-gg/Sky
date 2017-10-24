@@ -301,6 +301,8 @@ WAbstractPlaylist::WAbstractPlaylist(WAbstractPlaylistPrivate * p, Type         
 {
     abortAll();
 
+    wControllerPlaylist->d_func()->abortQueriesItem(this);
+
     if (count())
     {
         Q_D(WAbstractPlaylist);
