@@ -24,6 +24,7 @@
 
 // Sk includes
 #include <WControllerApplication>
+#include <WControllerFile>
 #include <WControllerXml>
 #include <WControllerPlaylist>
 #include <WControllerDownload>
@@ -662,16 +663,22 @@ void WPlaylistNetPrivate::loadTrack(WTrackNet * track, int index)
 
 void WPlaylistNetPrivate::loadCover(WTrackNet * track)
 {
-    QString author = track->author();
-    QString title  = track->title ();
+    QString label = track->author();
 
-    WBackendNet * backend = wControllerPlaylist->backendForCover(author, title);
+    if (label.isEmpty())
+    {
+        label = WControllerFile::folderName(track->feed());
+    }
+
+    QString title = track->title();
+
+    WBackendNet * backend = wControllerPlaylist->backendForCover(label, title);
 
     if (backend == NULL) return;
 
     Q_Q(WPlaylistNet);
 
-    WBackendNetQuery query = backend->createQuery("cover", author, title);
+    WBackendNetQuery query = backend->createQuery("cover", label, title);
 
     wControllerPlaylist->d_func()->applyQueryTrack(q, track, query);
 }

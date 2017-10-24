@@ -149,6 +149,7 @@ public: // Static functions
     Q_INVOKABLE static QString applicationFileUrl(const QString & fileName);
 
     Q_INVOKABLE static QString folderPath(const QString & fileName);
+    Q_INVOKABLE static QString folderName(const QString & fileName);
 
     Q_INVOKABLE static QString toLocalFile(const QUrl & url);
     Q_INVOKABLE static QString toString   (const QUrl & url);
