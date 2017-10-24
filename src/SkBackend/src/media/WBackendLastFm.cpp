@@ -71,13 +71,6 @@ void WBackendLastFmPrivate::applyQuery(WBackendNetQuery * query, const QString &
     int index  = 0;
     int length = title.length();
 
-    while (index < length && title.at(index).isDigit() == false)
-    {
-        index++;
-    }
-
-    if (index == length) return;
-
     while (index < length && title.at(index).isDigit())
     {
         index++;
