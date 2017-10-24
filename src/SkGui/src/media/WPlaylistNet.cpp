@@ -662,15 +662,16 @@ void WPlaylistNetPrivate::loadTrack(WTrackNet * track, int index)
 
 void WPlaylistNetPrivate::loadCover(WTrackNet * track)
 {
-    QString trackTitle = track->d_func()->title;
+    QString author = track->author();
+    QString title  = track->title ();
 
-    WBackendNet * backend = wControllerPlaylist->backendForCover(title, trackTitle);
+    WBackendNet * backend = wControllerPlaylist->backendForCover(author, title);
 
     if (backend == NULL) return;
 
     Q_Q(WPlaylistNet);
 
-    WBackendNetQuery query = backend->createQuery("cover", title, trackTitle);
+    WBackendNetQuery query = backend->createQuery("cover", author, title);
 
     wControllerPlaylist->d_func()->applyQueryTrack(q, track, query);
 }
