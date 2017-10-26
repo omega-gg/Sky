@@ -731,201 +731,6 @@ void WTorrentEnginePrivate::addStream(const torrent_handle & handle, WTorrentStr
     }
 }
 
-//-------------------------------------------------------------------------------------------------
-// Files
-
-void WTorrentEnginePrivate::selectFile(WTorrentItem * item) const
-{
-    if (item->finished) return;
-
-    WTorrentData * data = item->data;
-
-    std::vector<int> & files = data->files;
-
-    int index = item->index;
-
-    if (index != -1)
-    {
-        if (data->items.count() == 1)
-        {
-            std::fill(files.begin(), files.end(), 0);
-        }
-
-        qDebug("TORRENT INDEX %d", index);
-
-        files[index] = 1;
-    }
-    else std::fill(files.begin(), files.end(), 1);
-
-    data->handle.prioritize_files(files);
-
-    data->handle.resume();
-}
-
-void WTorrentEnginePrivate::unselectFile(WTorrentItem * item) const
-{
-    if (item->finished) return;
-
-    int index = item->index;
-
-    if (index != -1)
-    {
-        WTorrentData * data = item->data;
-
-        foreach (WTorrentItem * item, data->items)
-        {
-            if (item->index == index) return;
-        }
-
-        std::vector<int> & files = data->files;
-
-        files[index] = 0;
-
-        data->handle.prioritize_files(files);
-    }
-    else updateFiles(item->data);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void WTorrentEnginePrivate::updateFiles(WTorrentData * data) const
-{
-    qDebug("TORRENT UPDATE FILES");
-
-    std::vector<int> & files = data->files;
-
-    foreach (WTorrentItem * item, data->items)
-    {
-        int index = item->index;
-
-        if (index == -1)
-        {
-            std::fill(files.begin(), files.end(), 1);
-
-            data->handle.prioritize_files(files);
-
-            return;
-        }
-        else if (item->finished == false)
-        {
-            files[index] = 1;
-        }
-    }
-
-    data->handle.prioritize_files(files);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void WTorrentEnginePrivate::renameFiles(WTorrentData * data, const torrent_handle & handle) const
-{
-    foreach (WTorrentItem * item, data->items)
-    {
-        renameFile(handle, item);
-    }
-}
-
-void WTorrentEnginePrivate::renameFile(const torrent_handle & handle, WTorrentItem * item) const
-{
-    QString fileName = item->fileName;
-
-    if (fileName.isEmpty())
-    {
-        const QStringList & paths = item->paths;
-
-        for (int i = 0; i < paths.count(); i++)
-        {
-            qDebug("TORRENT RENAME ALL %d %s", i, paths.at(i).C_STR);
-
-            handle.rename_file(i, paths.at(i).toStdString());
-        }
-    }
-    else
-    {
-        qDebug("TORRENT RENAME FILE %d %s", item->index, fileName.C_STR);
-
-        handle.rename_file(item->index, fileName.toStdString());
-    }
-}
-
-//-------------------------------------------------------------------------------------------------
-
-QString WTorrentEnginePrivate::extractFileName(const std::string & path, int index) const
-{
-    QString fileName = QString::fromStdString(path);
-
-    QString extension = WControllerNetwork::extractUrlExtension(fileName);
-
-    if (extension.isEmpty())
-    {
-         return QString::number(index + 1);
-    }
-    else return QString::number(index + 1) + "." + extension;
-}
-
-//-------------------------------------------------------------------------------------------------
-// Cache
-
-void WTorrentEnginePrivate::updateCache(WTorrentData * data)
-{
-    WTorrentSource * source = data->source;
-
-    qint64 sourceSize = source->size;
-
-    torrent_status status = data->handle.status(torrent_handle::query_accurate_download_counters);
-
-    qint64 size = status.total_done;
-
-    if (sourceSize == size) return;
-
-    this->size -= sourceSize;
-
-    if (size < _sizeMax)
-    {
-        qDebug("TORRENT RECACHING SOURCE");
-
-        source->size = size;
-
-        this->size += size;
-
-        cleanCache();
-    }
-    else
-    {
-        Q_Q(WTorrentEngine);
-
-        qWarning("WTorrentEnginePrivate::updateCache: File is too large for cache %s.",
-                 source->urls.first().C_URL);
-
-        sources.removeOne(source);
-
-        deleteIds  .append(source->id);
-        deletePaths.append(data->path);
-
-        delete source;
-
-        QTimer::singleShot(TORRENTENGINE_INTERVAL, q, SLOT(onFolderDelete()));
-
-        save();
-    }
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void WTorrentEnginePrivate::cleanCache()
-{
-    int index = 0;
-
-    while (index < sources.count() && size >= _sizeMax)
-    {
-        if (removeSource(sources.at(index)) == false)
-        {
-            index++;
-        }
-    }
-
-    if (index != sources.count()) save();
-}
 
 //-------------------------------------------------------------------------------------------------
 
@@ -1496,6 +1301,202 @@ WTorrentStream * WTorrentEnginePrivate::getStream(WTorrent * torrent) const
          return static_cast<WTorrentStream *> (item);
     }
     else return NULL;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Files
+
+void WTorrentEnginePrivate::selectFile(WTorrentItem * item) const
+{
+    if (item->finished) return;
+
+    WTorrentData * data = item->data;
+
+    std::vector<int> & files = data->files;
+
+    int index = item->index;
+
+    if (index != -1)
+    {
+        if (data->items.count() == 1)
+        {
+            std::fill(files.begin(), files.end(), 0);
+        }
+
+        qDebug("TORRENT INDEX %d", index);
+
+        files[index] = 1;
+    }
+    else std::fill(files.begin(), files.end(), 1);
+
+    data->handle.prioritize_files(files);
+
+    data->handle.resume();
+}
+
+void WTorrentEnginePrivate::unselectFile(WTorrentItem * item) const
+{
+    if (item->finished) return;
+
+    int index = item->index;
+
+    if (index != -1)
+    {
+        WTorrentData * data = item->data;
+
+        foreach (WTorrentItem * item, data->items)
+        {
+            if (item->index == index) return;
+        }
+
+        std::vector<int> & files = data->files;
+
+        files[index] = 0;
+
+        data->handle.prioritize_files(files);
+    }
+    else updateFiles(item->data);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WTorrentEnginePrivate::updateFiles(WTorrentData * data) const
+{
+    qDebug("TORRENT UPDATE FILES");
+
+    std::vector<int> & files = data->files;
+
+    foreach (WTorrentItem * item, data->items)
+    {
+        int index = item->index;
+
+        if (index == -1)
+        {
+            std::fill(files.begin(), files.end(), 1);
+
+            data->handle.prioritize_files(files);
+
+            return;
+        }
+        else if (item->finished == false)
+        {
+            files[index] = 1;
+        }
+    }
+
+    data->handle.prioritize_files(files);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WTorrentEnginePrivate::renameFiles(WTorrentData * data, const torrent_handle & handle) const
+{
+    foreach (WTorrentItem * item, data->items)
+    {
+        renameFile(handle, item);
+    }
+}
+
+void WTorrentEnginePrivate::renameFile(const torrent_handle & handle, WTorrentItem * item) const
+{
+    QString fileName = item->fileName;
+
+    if (fileName.isEmpty())
+    {
+        const QStringList & paths = item->paths;
+
+        for (int i = 0; i < paths.count(); i++)
+        {
+            qDebug("TORRENT RENAME ALL %d %s", i, paths.at(i).C_STR);
+
+            handle.rename_file(i, paths.at(i).toStdString());
+        }
+    }
+    else
+    {
+        qDebug("TORRENT RENAME FILE %d %s", item->index, fileName.C_STR);
+
+        handle.rename_file(item->index, fileName.toStdString());
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QString WTorrentEnginePrivate::extractFileName(const std::string & path, int index) const
+{
+    QString fileName = QString::fromStdString(path);
+
+    QString extension = WControllerNetwork::extractUrlExtension(fileName);
+
+    if (extension.isEmpty())
+    {
+         return QString::number(index + 1);
+    }
+    else return QString::number(index + 1) + "." + extension;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Cache
+
+void WTorrentEnginePrivate::updateCache(WTorrentData * data)
+{
+    WTorrentSource * source = data->source;
+
+    qint64 sourceSize = source->size;
+
+    torrent_status status = data->handle.status(torrent_handle::query_accurate_download_counters);
+
+    qint64 size = status.total_done;
+
+    if (sourceSize == size) return;
+
+    this->size -= sourceSize;
+
+    if (size < _sizeMax)
+    {
+        qDebug("TORRENT RECACHING SOURCE");
+
+        source->size = size;
+
+        this->size += size;
+
+        cleanCache();
+    }
+    else
+    {
+        Q_Q(WTorrentEngine);
+
+        qWarning("WTorrentEnginePrivate::updateCache: File is too large for cache %s.",
+                 source->urls.first().C_URL);
+
+        sources.removeOne(source);
+
+        deleteIds  .append(source->id);
+        deletePaths.append(data->path);
+
+        delete source;
+
+        QTimer::singleShot(TORRENTENGINE_INTERVAL, q, SLOT(onFolderDelete()));
+
+        save();
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WTorrentEnginePrivate::cleanCache()
+{
+    int index = 0;
+
+    while (index < sources.count() && size >= _sizeMax)
+    {
+        if (removeSource(sources.at(index)) == false)
+        {
+            index++;
+        }
+    }
+
+    if (index != sources.count()) save();
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -207,27 +207,6 @@ public: // Functions
     void addStream(const torrent_handle & handle, WTorrentStream * stream);
 
     //---------------------------------------------------------------------------------------------
-    // Files
-
-    void selectFile  (WTorrentItem * item) const;
-    void unselectFile(WTorrentItem * item) const;
-
-    void updateFiles(WTorrentData * data) const;
-
-    void renameFiles(WTorrentData * data, const torrent_handle & handle) const;
-
-    void renameFile(const torrent_handle & handle, WTorrentItem * item) const;
-
-    QString extractFileName(const std::string & path, int index) const;
-
-    //---------------------------------------------------------------------------------------------
-    // Cache
-
-    void updateCache(WTorrentData * data);
-
-    void cleanCache();
-
-    //---------------------------------------------------------------------------------------------
 
     bool removeSource(WTorrentSource * source);
 
@@ -253,6 +232,27 @@ public: // Functions
 
     WTorrentItem   * getItem  (WTorrent * torrent) const;
     WTorrentStream * getStream(WTorrent * torrent) const;
+
+    //---------------------------------------------------------------------------------------------
+    // Files
+
+    void selectFile  (WTorrentItem * item) const;
+    void unselectFile(WTorrentItem * item) const;
+
+    void updateFiles(WTorrentData * data) const;
+
+    void renameFiles(WTorrentData * data, const torrent_handle & handle) const;
+
+    void renameFile(const torrent_handle & handle, WTorrentItem * item) const;
+
+    QString extractFileName(const std::string & path, int index) const;
+
+    //---------------------------------------------------------------------------------------------
+    // Cache
+
+    void updateCache(WTorrentData * data);
+
+    void cleanCache();
 
 public: // Events
     void events();
