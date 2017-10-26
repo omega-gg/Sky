@@ -329,7 +329,7 @@ WBackendNetQuery WBackendTorrent::getQueryPlaylist(const QUrl & url) const
     {
         QString number;
 
-        for (int i = index + 1; index < source.length(); i++)
+        for (int i = index + 1; i < source.length(); i++)
         {
             QChar character = source.at(i);
 
@@ -338,13 +338,9 @@ WBackendNetQuery WBackendTorrent::getQueryPlaylist(const QUrl & url) const
             number.append(character);
         }
 
-        int currentIndex = number.toInt();
-
-        if (currentIndex > 0) currentIndex--;
-
         query.url = WControllerNetwork::encodedUrl(source.mid(0, index));
 
-        query.data = currentIndex;
+        query.data = number.toInt();
     }
     else
     {
@@ -412,6 +408,7 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
     }
 
     QList<WTrackNet> tracks;
+    QList<int>       ids;
 
     QString url = query.url.toString();
 
@@ -429,7 +426,9 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
             if (WControllerPlaylist::extensionIsMedia(extension))
             {
-                QString source = url + '#' + QString::number(item.id) + '.' + extension;
+                int id = item.id;
+
+                QString source = url + '#' + QString::number(id) + '.' + extension;
 
                 WTrackNet track(WControllerNetwork::encodedUrl(source), WAbstractTrack::Default);
 
@@ -439,6 +438,8 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
                 track.setFeed  (url);
 
                 tracks.append(track);
+
+                ids.append(id);
             }
         }
     }
@@ -451,7 +452,19 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
     if (query.id == 0)
     {
-        reply.currentIndex = query.data.toInt();
+        int index = query.data.toInt();
+
+        if (index == -1) return reply;
+
+        for (int i = 0; i < ids.count(); i++)
+        {
+            if (ids.at(i) == index)
+            {
+                reply.currentIndex = i;
+
+                break;
+            }
+        }
     }
     else reply.clearDuplicate = true;
 
