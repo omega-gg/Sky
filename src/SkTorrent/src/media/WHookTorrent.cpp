@@ -1083,6 +1083,8 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 
             d->retry = true;
 
+            backendSetSource(QUrl());
+
             setProgress(0.0);
 
             d->start();
