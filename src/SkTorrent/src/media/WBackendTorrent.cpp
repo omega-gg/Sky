@@ -314,11 +314,43 @@ WBackendNetQuery WBackendTorrent::getQuerySource(const QUrl &) const
 /* Q_INVOKABLE virtual */
 WBackendNetQuery WBackendTorrent::getQueryPlaylist(const QUrl & url) const
 {
-    WBackendNetQuery query(url);
+    WBackendNetQuery query;
 
-    if (url.toString().startsWith("magnet:?"))
+    QString source = url.toString();
+
+    if (source.startsWith("magnet:?"))
     {
         query.type = WBackendNetQuery::TypeTorrent;
+    }
+
+    int index = source.indexOf('#');
+
+    if (index != -1)
+    {
+        QString number;
+
+        for (int i = index + 1; index < source.length(); i++)
+        {
+            QChar character = source.at(i);
+
+            if (character.isDigit() == false) break;
+
+            number.append(character);
+        }
+
+        int currentIndex = number.toInt();
+
+        if (currentIndex > 0) currentIndex--;
+
+        query.url = WControllerNetwork::encodedUrl(source.mid(0, index));
+
+        query.data = currentIndex;
+    }
+    else
+    {
+        query.url = WControllerNetwork::encodedUrl(source);
+
+        query.data = 0;
     }
 
     return query;
@@ -339,8 +371,11 @@ WBackendNetQuery WBackendTorrent::createQuery(const QString & method,
             query.type = WBackendNetQuery::TypeTorrent;
         }
 
-        query.url = WControllerNetwork::encodedUrl(q);
-        query.id  = 1;
+        int index = q.lastIndexOf('#');
+
+        query.url = WControllerNetwork::encodedUrl(q.mid(0, index));
+
+        query.id = 1;
     }
 
     return query;
@@ -378,22 +413,7 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
     QList<WTrackNet> tracks;
 
-    QString source = query.url.toString();
-
-    int index = source.indexOf('#');
-
-    if (index != -1)
-    {
-        int currentIndex = source.mid(index + 1).toInt();
-
-        if (currentIndex > 0)
-        {
-             reply.currentIndex = currentIndex - 1;
-        }
-        else reply.currentIndex = 0;
-
-        source = source.mid(0, index);
-    }
+    QString url = query.url.toString();
 
     while (items.isEmpty() == false)
     {
@@ -409,14 +429,14 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
             if (WControllerPlaylist::extensionIsMedia(extension))
             {
-                QString url = source + '#' + QString::number(item.id) + '.' + extension;
+                QString source = url + '#' + QString::number(item.id) + '.' + extension;
 
-                WTrackNet track(WControllerNetwork::encodedUrl(url), WAbstractTrack::Default);
+                WTrackNet track(WControllerNetwork::encodedUrl(source), WAbstractTrack::Default);
 
                 track.setTitle(title);
 
                 track.setAuthor(name);
-                track.setFeed  (source);
+                track.setFeed  (url);
 
                 tracks.append(track);
             }
@@ -429,10 +449,11 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
     reply.cache = data;
 
-    if (query.id == 1)
+    if (query.id == 0)
     {
-        reply.clearDuplicate = true;
+        reply.currentIndex = query.data.toInt();
     }
+    else reply.clearDuplicate = true;
 
     return reply;
 }
