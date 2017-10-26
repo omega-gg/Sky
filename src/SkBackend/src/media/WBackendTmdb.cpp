@@ -566,7 +566,7 @@ WBackendNetTrack WBackendTmdb::extractTrack(const QByteArray       & data,
 
         if (source.isEmpty()) return reply;
 
-        reply.track.setCover("https://image.tmdb.org/t/p/original/" + source);
+        reply.track.setCover("https://image.tmdb.org/t/p/original" + source);
     }
     else if (id == 1) // Movie
     {
