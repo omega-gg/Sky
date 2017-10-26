@@ -1319,7 +1319,7 @@ void WControllerPlaylistPrivate::scanItems(QList<WLibraryFolderItem> * items) co
         {
             WBackendNet * backend = q->backendFromUrl(item->title);
 
-            if (backend)
+            if (backend && backend->isHub())
             {
                 item->cover = q->backendCover(backend);
             }
