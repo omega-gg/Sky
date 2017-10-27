@@ -2684,8 +2684,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
     source.setQuery(query);
 #endif
 
-    // FIXME: String conversion to avoid comparison issues.
-    return source.toString();
+    return source;
 }
 
 //-------------------------------------------------------------------------------------------------
