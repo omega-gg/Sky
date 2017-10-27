@@ -604,7 +604,7 @@ void WControllerTorrentPrivate::removeTorrent(WTorrent * torrent, WTorrentReply 
         engine->remove(torrent);
     }
 
-    delete torrent;
+    torrent->deleteLater();
 }
 
 void WControllerTorrentPrivate::removeMagnet(WMagnet * magnet, WMagnetReply * reply)
@@ -630,7 +630,7 @@ void WControllerTorrentPrivate::removeMagnet(WMagnet * magnet, WMagnetReply * re
         engine->removeMagnet(magnet);
     }
 
-    delete magnet;
+    magnet->deleteLater();
 }
 
 //-------------------------------------------------------------------------------------------------
