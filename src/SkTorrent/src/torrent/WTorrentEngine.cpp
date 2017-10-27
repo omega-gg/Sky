@@ -64,6 +64,10 @@ static const int TORRENTENGINE_PRIORITY_INTERVAL = 100;
 static const int TORRENTENGINE_INTERVAL        = 1000;
 static const int TORRENTENGINE_INTERVAL_REMOVE =  100;
 
+static const int TORRENTENGINE_INTERVAL_CLEAR = TORRENTENGINE_INTERVAL
+                                                +
+                                                TORRENTENGINE_INTERVAL_REMOVE;
+
 //-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
@@ -2707,7 +2711,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
                 QTimer::singleShot(TORRENTENGINE_INTERVAL_REMOVE, this, SLOT(onRemoveSource()));
             }
         }
-        else QTimer::singleShot(TORRENTENGINE_INTERVAL, this, SLOT(onFolderClear()));
+        else QTimer::singleShot(TORRENTENGINE_INTERVAL_CLEAR, this, SLOT(onFolderClear()));
 
         return true;
     }
