@@ -1698,11 +1698,11 @@ void WTorrentEnginePrivate::onRemove()
 
         datas.removeOne(data);
 
-        if (magnets.contains(data->hash))
+        /*if (magnets.contains(data->hash))
         {
             handle.move_storage(pathMagnets.toStdString());
         }
-        else session->remove_torrent(handle);
+        else session->remove_torrent(handle);*/
     }
 
     delete data;
