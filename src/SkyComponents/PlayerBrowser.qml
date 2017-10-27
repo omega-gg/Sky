@@ -474,8 +474,8 @@ MouseArea
 
             anchors.centerIn: parent
 
-            width : buttonPlay.iconWidth
-            height: buttonPlay.iconHeight
+            width : Math.round(buttonPlay.width * 0.6)
+            height: width
 
             visible: loading
 
