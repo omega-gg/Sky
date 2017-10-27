@@ -2462,6 +2462,19 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ QUrl WControllerPlaylist::backendCoverFromHub(const QUrl & url) const
+{
+    WBackendNet * backend = backendFromUrl(url);
+
+    if (backend && backend->isHub())
+    {
+         return backendCover(backend);
+    }
+    else return QUrl();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ WLibraryItem::Type WControllerPlaylist::urlType(const QUrl & url) const
 {
     Q_D(const WControllerPlaylist);
