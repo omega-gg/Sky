@@ -18,6 +18,11 @@
 
 #ifndef SK_NO_BACKENDLASTFM
 
+// Qt includes
+#ifdef QT_LATEST
+#include <QUrlQuery>
+#endif
+
 // Sk includes
 #include <WControllerApplication>
 #include <WControllerNetwork>
@@ -97,11 +102,11 @@ void WBackendLastFmPrivate::applyQuery(WBackendNetQuery * query, const QString &
 #ifdef QT_4
     url.addQueryItem("q", title);
 #else
-    QUrlQuery query(url);
+    QUrlQuery urlQuery(url);
 
-    query.addQueryItem("q", title);
+    urlQuery.addQueryItem("q", title);
 
-    url.setQuery(query);
+    url.setQuery(urlQuery);
 #endif
 
     query->url = url;
