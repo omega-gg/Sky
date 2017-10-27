@@ -1697,12 +1697,6 @@ void WTorrentEnginePrivate::onRemove()
         qDebug("REMOVE TORRENT ADD");
 
         datas.removeOne(data);
-
-        /*if (magnets.contains(data->hash))
-        {
-            handle.move_storage(pathMagnets.toStdString());
-        }
-        else session->remove_torrent(handle);*/
     }
 
     delete data;
