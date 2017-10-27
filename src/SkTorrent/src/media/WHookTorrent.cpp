@@ -1069,13 +1069,13 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
     {
         Q_D(WHookTorrent);
 
-        if (d->state < WHookTorrentPrivate::StatePlaying || d->retry)
+        //if (d->state < WHookTorrentPrivate::StatePlaying || d->retry)
         {
             wControllerTorrent->clearSource(d->torrent->url());
 
             stop();
         }
-        else
+        /*else
         {
             qDebug("TORRENT RETRY");
 
@@ -1088,7 +1088,7 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
             setProgress(0.0);
 
             d->start();
-        }
+        }*/
     }
 }
 
