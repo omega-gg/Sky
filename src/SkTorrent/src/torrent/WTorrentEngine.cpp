@@ -262,7 +262,7 @@ void WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & file
             bits++;
         }
 
-        qDebug("ENTRY %d %s", block, bitmask.C_STR);
+        qDebug("ENTRY %d [%s]", block, bitmask.C_STR);
     }
 }
 
