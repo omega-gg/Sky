@@ -34,8 +34,8 @@ class WPixmapCacheReply;
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int PIXMAPCACHE_WIDTH  = 2560;
-static const int PIXMAPCACHE_HEIGHT = 1440;
+static const int PIXMAPCACHE_WIDTH  = 1920;
+static const int PIXMAPCACHE_HEIGHT = 1200;
 
 static const int PIXMAPCACHE_MAX = 1048576 * 10; // 10 megabytes
 
