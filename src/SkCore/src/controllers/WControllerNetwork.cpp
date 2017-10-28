@@ -1325,7 +1325,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::extractImage(const QString & head)
 {
-    QString cover = extractNodeAttribute(head, "=\"og:image", "content");
+    QString cover = extractNodeAttribute(head, "=\"og:image\"", "content");
 
     if (cover.isEmpty())
     {
