@@ -2356,6 +2356,8 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         WTorrentStream * stream = d->getStream(eventTorrent->torrent);
 
+        if (stream == NULL) return true;
+
         if (stream->finished)
         {
             qint64 size = stream->size;
