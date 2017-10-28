@@ -1911,94 +1911,58 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         else urlTracks.append(url);
     }
 
-    if (query->backendQuery.id == 1)
+    WBackendNet * playlistBackend = NULL;
+    QUrl          playlistUrl;
+
+    queries.remove(query->data);
+
+    playlist->setTitle(data.title);
+    playlist->setCover(data.cover);
+
+    foreach (const WControllerPlaylistSource & source, data.sources)
     {
-        queries.remove(query->data);
+        const QUrl & url = source.url;
 
-        foreach (const WControllerPlaylistSource & source, data.sources)
+        WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
+
+        if (backend == NULL) continue;
+
+        QString id = backend->getTrackId(url);
+
+        if (id.isEmpty() == false)
         {
-            const QUrl & url = source.url;
+            if (urlTracks.count() == CONTROLLERPLAYLIST_MAX_TRACKS) break;
 
-            WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
+            QUrl source = backend->getUrlTrack(id);
 
-            if (backend == NULL) continue;
+            if (urlTracks.contains(source)) continue;
 
-            QString id = backend->getTrackId(url);
+            urlTracks.append(source);
 
-            if (id.isEmpty() == false)
+            WTrackNet track(url, WAbstractTrack::Default);
+
+            playlist->addTrack(track);
+        }
+        else if (playlistBackend == NULL)
+        {
+            WBackendNetPlaylistInfo info = backend->getPlaylistInfo(url);
+
+            if (info.isValid())
             {
-                if (urlTracks.count() == CONTROLLERPLAYLIST_MAX_TRACKS) break;
-
-                QUrl source = backend->getUrlTrack(id);
-
-                if (urlTracks.contains(source)) continue;
-
-                urlTracks.append(source);
-
-                WTrackNet track(url, WAbstractTrack::Default);
-
-                playlist->addTrack(track);
+                playlistBackend = backend;
+                playlistUrl     = url;
             }
         }
     }
-    else
+
+    if (urlTracks.count() == 0 && playlistBackend)
     {
-        WBackendNet * playlistBackend = NULL;
-        QUrl          playlistUrl;
+        nextQuery = playlistBackend->getQueryPlaylist(playlistUrl);
 
-        queries.remove(query->data);
+        nextQuery.priority
+            = static_cast<QNetworkRequest::Priority> (QNetworkRequest::NormalPriority - 1);
 
-        playlist->setTitle(data.title);
-        playlist->setCover(data.cover);
-
-        foreach (const WControllerPlaylistSource & source, data.sources)
-        {
-            const QUrl & url = source.url;
-
-            WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
-
-            if (backend == NULL) continue;
-
-            QString id = backend->getTrackId(url);
-
-            if (id.isEmpty() == false)
-            {
-                if (urlTracks.count() == CONTROLLERPLAYLIST_MAX_TRACKS) break;
-
-                QUrl source = backend->getUrlTrack(id);
-
-                if (urlTracks.contains(source)) continue;
-
-                urlTracks.append(source);
-
-                WTrackNet track(url, WAbstractTrack::Default);
-
-                playlist->addTrack(track);
-            }
-            else if (playlistBackend == NULL)
-            {
-                WBackendNetPlaylistInfo info = backend->getPlaylistInfo(url);
-
-                if (info.isValid())
-                {
-                    playlistBackend = backend;
-                    playlistUrl     = url;
-                }
-            }
-        }
-
-        if (urlTracks.count() == 0 && playlistBackend)
-        {
-            nextQuery = playlistBackend->getQueryPlaylist(playlistUrl);
-
-            nextQuery.target = WBackendNetQuery::TargetHtml;
-            nextQuery.id     = 1;
-
-            nextQuery.priority
-                = static_cast<QNetworkRequest::Priority> (QNetworkRequest::NormalPriority - 1);
-
-            nextQuery.clearItems = false;
-        }
+        nextQuery.clearItems = false;
     }
 
     int indexTrack;
