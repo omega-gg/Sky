@@ -531,11 +531,21 @@ QString WControllerPlaylistReply::generateTitle(const QString & url, const QStri
 
 bool WControllerPlaylistReply::addUrl(QList<QString> * urls, const QString & url) const
 {
-    QString source = WControllerNetwork::removeUrlPrefix(url);
-
-    if (urls->contains(source) == false)
+    if (WControllerNetwork::urlIsHttp(url))
     {
-        urls->append(source);
+        QString source = WControllerNetwork::removeUrlPrefix(url);
+
+        if (urls->contains(source) == false)
+        {
+            urls->append(source);
+
+            return true;
+        }
+        else return false;
+    }
+    else if (urls->contains(url) == false)
+    {
+        urls->append(url);
 
         return true;
     }
