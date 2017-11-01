@@ -35,7 +35,7 @@ class WTorrentSocket;
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int HOOKTORRENT_SIZE = 1048576; // 1 megabyte
+static const int HOOKTORRENT_SIZE = 524288; // 512 kilobytes
 
 static const int HOOKTORRENT_PROGRESS = 100; // 0.1 percent
 
@@ -47,7 +47,7 @@ static const int HOOKTORRENT_METADATA = 1048576 * 10; // 10 megabytes
 static const int HOOKTORRENT_SKIP      =  100;
 static const int HOOKTORRENT_SKIP_SIZE = 1024; // 1 kilobyte
 
-static const int HOOKTORRENT_INTERVAL = 20;
+static const int HOOKTORRENT_INTERVAL = 16;
 
 //=================================================================================================
 // WTorrentThread
