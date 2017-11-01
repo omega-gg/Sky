@@ -155,13 +155,7 @@ QString WBackendLastFmPrivate::getString(const QString & data) const
 
 QStringList WBackendLastFmPrivate::getList(const QString & data) const
 {
-    QString result = data;
-
-    result = result.replace(QRegExp(BACKENDLASTFM_MATCH), " ");
-
-    result = result.simplified().toLower();
-
-    return result.split(' ');
+    return getString(data).split(' ');
 }
 
 //-------------------------------------------------------------------------------------------------

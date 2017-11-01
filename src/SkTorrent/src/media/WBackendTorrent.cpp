@@ -346,7 +346,7 @@ WBackendNetQuery WBackendTorrent::getQueryPlaylist(const QUrl & url) const
     {
         query.url = WControllerNetwork::encodedUrl(source);
 
-        query.data = 0;
+        query.data = -1;
     }
 
     return query;
@@ -367,11 +367,10 @@ WBackendNetQuery WBackendTorrent::createQuery(const QString & method,
             query.type = WBackendNetQuery::TypeTorrent;
         }
 
-        int index = q.lastIndexOf('#');
+        int index = q.indexOf('#');
 
         query.url = WControllerNetwork::encodedUrl(q.mid(0, index));
-
-        query.id = 1;
+        query.id  = 1;
     }
 
     return query;

@@ -583,7 +583,9 @@ WBackendNetPlaylist WBackendDailymotion::extractPlaylist(const QByteArray       
 
     QString content = Sk::readUtf8(data);
 
-    if (query.id == 1) // playlist
+    int id = query.id;
+
+    if (id == 1) // playlist
     {
         QString json = WControllerNetwork::extractJsonHtml(content);
 
@@ -592,7 +594,7 @@ WBackendNetPlaylist WBackendDailymotion::extractPlaylist(const QByteArray       
 
         reply.nextQuery.url = d->getUrlVideos(query.data.toString());
     }
-    else if (query.id == 2) // channel
+    else if (id == 2) // channel
     {
         QString json = WControllerNetwork::extractJsonHtml(content);
 

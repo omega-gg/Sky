@@ -363,9 +363,7 @@ void WBackendTmdbPrivate::applySource(WBackendNetTrack * reply, const QString & 
 
     WBackendNetQuery * nextQuery = &(reply->nextQuery);
 
-    nextQuery->url = "https://www.themoviedb.org" + source
-                     +
-                     "/images/backdrops?language=en";
+    nextQuery->url = "https://www.themoviedb.org" + source + "/images/backdrops?language=en";
 
     nextQuery->id = 2;
 }
@@ -399,6 +397,8 @@ QStringList WBackendTmdbPrivate::getListClear(const QString & data) const
 
 WBackendTmdbPrivate::Type WBackendTmdbPrivate::getType(const QString & data) const
 {
+    int length = data.length();
+
     if (data.length() == 4)
     {
         if (data.toInt() >= BACKENDTMDB_YEAR)
@@ -408,8 +408,7 @@ WBackendTmdbPrivate::Type WBackendTmdbPrivate::getType(const QString & data) con
     }
     else if (data.startsWith('s'))
     {
-        int index  = 1;
-        int length = data.length();
+        int index = 1;
 
         while (index < length && data.at(index).isDigit())
         {
@@ -538,11 +537,9 @@ WBackendNetTrack WBackendTmdb::extractTrack(const QByteArray       & data,
 
         QVariantList variants = query.data.toList();
 
-        QString show = variants.first().toString();
-
         QString title = WControllerNetwork::extractAttributeUtf8(string, "title").toLower();
 
-        QStringList listA = d->getList(show);
+        QStringList listA = d->getList(variants.first().toString());
         QStringList listB = d->getList(title);
 
         if (d->match(listA, listB) == false && list.length() != 1) return reply;
@@ -555,9 +552,9 @@ WBackendNetTrack WBackendTmdb::extractTrack(const QByteArray       & data,
 
         nextQuery->url = "https://www.themoviedb.org" + source
                          +
-                         "/season/" + variants.takeAt(1).toString()
+                         "/season/" + variants.at(1).toString()
                          +
-                         "/episode/" + variants.takeLast().toString() + "?language=en";
+                         "/episode/" + variants.last().toString() + "?language=en";
 
         nextQuery->id = 4;
     }
@@ -599,11 +596,12 @@ WBackendNetTrack WBackendTmdb::extractTrack(const QByteArray       & data,
 
             QStringList list = d->getList(title);
 
-            if (d->match(list, listTitle) == false && list.length() > 1) continue;
+            if (d->match(list, listTitle) || list.length() == 1)
+            {
+                d->applySource(&reply, string);
 
-            d->applySource(&reply, string);
-
-            return reply;
+                return reply;
+            }
         }
     }
 
@@ -615,7 +613,9 @@ WBackendNetTrack WBackendTmdb::extractTrack(const QByteArray       & data,
 /* Q_INVOKABLE virtual */ void WBackendTmdb::applyTrack(const WBackendNetQuery & query,
                                                         const WBackendNetTrack & track)
 {
-    if (query.id == 3) // Show
+    int id = query.id;
+
+    if (id == 3) // Show
     {
         Q_D(WBackendTmdb);
 
@@ -639,7 +639,7 @@ WBackendNetTrack WBackendTmdb::extractTrack(const QByteArray       & data,
 
         d->hash.insert(show, source);
     }
-    else if (query.id == 4 && track.track.cover().isEmpty()) // Show
+    else if (id == 4 && track.track.cover().isEmpty()) // Show
     {
         Q_D(WBackendTmdb);
 

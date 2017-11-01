@@ -121,7 +121,9 @@ bool WBackendSoundCloudPrivate::extractId(const QString          & data,
                                           const WBackendNetQuery & query,
                                           WBackendNetQuery       * nextQuery) const
 {
-    if (query.id == -1)
+    int id = query.id;
+
+    if (id == -1)
     {
         int index = data.lastIndexOf("<script crossorigin src=");
 
@@ -133,7 +135,7 @@ bool WBackendSoundCloudPrivate::extractId(const QString          & data,
 
         return true;
     }
-    else if (query.id == -2)
+    else if (id == -2)
     {
         int index = data.indexOf("client_id:");
 
@@ -592,7 +594,9 @@ WBackendNetPlaylist WBackendSoundCloud::extractPlaylist(const QByteArray       &
 
     if (d->extractId(content, query, &reply.nextQuery)) return reply;
 
-    if (query.id == 0)
+    int id = query.id;
+
+    if (id == 0)
     {
         if (content.startsWith('[') == false)
         {
@@ -616,7 +620,7 @@ WBackendNetPlaylist WBackendSoundCloud::extractPlaylist(const QByteArray       &
             reply.tracks.append(track);
         }
     }
-    else if (query.id == 1) // playlist
+    else if (id == 1) // playlist
     {
         QString json = d->extractJson(content, 80, 3);
 
@@ -641,7 +645,7 @@ WBackendNetPlaylist WBackendSoundCloud::extractPlaylist(const QByteArray       &
                          +
                          "?client_id=" + query.data.toString();
     }
-    else if (query.id == 2) // feed
+    else if (id == 2) // feed
     {
         QString json = d->extractJson(content, 61, 2);
 
@@ -659,7 +663,7 @@ WBackendNetPlaylist WBackendSoundCloud::extractPlaylist(const QByteArray       &
 
         nextQuery->url = source + "/tracks?client_id=" + query.data.toString();
     }
-    else if (query.id == 3) // related
+    else if (id == 3) // related
     {
         QString json = d->extractJson(content, 64, 2);
 

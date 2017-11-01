@@ -716,13 +716,11 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 {
     int index = fileName.lastIndexOf('/');
 
-    if (index != -1)
+    if (index == -1)
     {
-        index++;
-
-        return fileName.mid(index);
+         return fileName;
     }
-    else return fileName;
+    else return fileName.mid(index + 1);
 }
 
 //-------------------------------------------------------------------------------------------------

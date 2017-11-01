@@ -201,8 +201,6 @@ WBackendNetFolder WBackendDuckDuckGo::extractFolder(const QByteArray       & dat
 
             QString title = WControllerNetwork::extractJsonUtf8(string, "t");
 
-            title = WControllerNetwork::htmlToUtf8(title);
-
             WLibraryFolderItem folder(WLibraryItem::FolderSearch, WLocalObject::Default);
 
             folder.source = WControllerNetwork::encodedUrl(source);

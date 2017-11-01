@@ -649,7 +649,9 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
 
     QString content = Sk::readUtf8(data);
 
-    if (query.id == 2)
+    int id = query.id;
+
+    if (id == 2)
     {
         QString javascript = WControllerNetwork::extractJsonHtml(content, "js");
 
@@ -676,7 +678,7 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
             nextQuery->data = variants;
         }
     }
-    else if (query.id == 3)
+    else if (id == 3)
     {
         Q_D(const WBackendYoutube);
 
@@ -707,7 +709,7 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
 
         d->applySignatures(&reply, query.data.toList(), script);
     }
-    else // if (query.id == 0 || query.id == 1)
+    else // if (id == 0 || id == 1)
     {
         Q_D(const WBackendYoutube);
 
@@ -754,7 +756,7 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
 
         if (medias->isEmpty())
         {
-            if (query.id == 1) return reply;
+            if (id == 1) return reply;
 
             QVariantList variants = query.data.toList();
 
@@ -871,7 +873,9 @@ WBackendNetPlaylist WBackendYoutube::extractPlaylist(const QByteArray       & da
 {
     WBackendNetPlaylist reply;
 
-    if (query.id == 1) // PlaylistFeed
+    int id = query.id;
+
+    if (id == 1) // PlaylistFeed
     {
         Q_D(const WBackendYoutube);
 
@@ -919,7 +923,7 @@ WBackendNetPlaylist WBackendYoutube::extractPlaylist(const QByteArray       & da
 
         d->loadTracks(&(reply.tracks), list, "class=\"yt-lockup-title");
     }
-    else if (query.id == 2) // search tracks
+    else if (id == 2) // search tracks
     {
         Q_D(const WBackendYoutube);
 
@@ -943,7 +947,7 @@ WBackendNetPlaylist WBackendYoutube::extractPlaylist(const QByteArray       & da
             nextQuery->data = 1;
         }
     }
-    else if (query.id == 3) // related tracks
+    else if (id == 3) // related tracks
     {
         Q_D(const WBackendYoutube);
 
@@ -1046,7 +1050,9 @@ WBackendNetFolder WBackendYoutube::extractFolder(const QByteArray       & data,
 
     QString content = Sk::readUtf8(data);
 
-    if (query.id == 1) // search channels
+    int id = query.id;
+
+    if (id == 1) // search channels
     {
         QStringList list = Sk::slices(content,
                                       "<div class=\"yt-lockup yt-lockup-tile yt-lockup-channel",
@@ -1114,7 +1120,7 @@ WBackendNetFolder WBackendYoutube::extractFolder(const QByteArray       & data,
         WBackendNetQuery * nextQuery = &(reply.nextQuery);
 
         nextQuery->url  = url;
-        nextQuery->id   = query.id;
+        nextQuery->id   = id;
         nextQuery->data = 1;
     }
 

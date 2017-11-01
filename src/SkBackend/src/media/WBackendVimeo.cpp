@@ -565,7 +565,9 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
 
     QString content = Sk::readUtf8(data);
 
-    if (query.id == 2)
+    int id = query.id;
+
+    if (id == 2)
     {
         QStringList urls = query.data.toStringList();
 
@@ -607,7 +609,7 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
 
         return reply;
     }
-    else if (query.id == 3)
+    else if (id == 3)
     {
         QStringList urls = query.data.toStringList();
 
@@ -625,17 +627,17 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
 
         reply.clearDuplicate = true;
     }
-    else if (query.id == 4)
+    else if (id == 4)
     {
         reply.clearDuplicate = true;
     }
     else
     {
-        int id = query.data.toInt() + 1;
+        int queryId = query.data.toInt() + 1;
 
-        if (id < 3)
+        if (queryId < 3)
         {
-            if (query.id == 0 && id == 1)
+            if (id == 0 && queryId == 1)
             {
                 QString title = WControllerNetwork::extractValue(content, "title");
 
@@ -648,7 +650,7 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
                 reply.title = WControllerNetwork::htmlToUtf8(title);
             }
 
-            QString url = d->getNextUrl(query, content, id);
+            QString url = d->getNextUrl(query, content, queryId);
 
             if (url.isEmpty() == false)
             {
@@ -656,12 +658,12 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
 
                 nextQuery->type = WBackendNetQuery::TypeWeb;
                 nextQuery->url  = url;
-                nextQuery->id   = query.id;
-                nextQuery->data = id;
+                nextQuery->id   = id;
+                nextQuery->data = queryId;
             }
         }
 
-        if (query.id == 1)
+        if (id == 1)
         {
             QString json = WControllerNetwork::extractJsonHtml(content, "data");
 

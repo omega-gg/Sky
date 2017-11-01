@@ -645,20 +645,25 @@ void WPlaylistNetPrivate::loadTrack(WTrackNet * track, int index)
 
     wControllerPlaylist->d_func()->applySourceTrack(q, track, track->source());
 
-    if (track->isLoaded())
+    WAbstractTrack::State state = track->state();
+
+    if (state == WAbstractTrack::Loaded)
     {
         if (track->cover().isValid() == false)
         {
             loadCover(track);
         }
     }
-    else if (track->cover().isValid())
+    else if (state == WAbstractTrack::Default)
     {
-        track->setState(WAbstractTrack::Loaded);
+        if (track->cover().isValid())
+        {
+            track->setState(WAbstractTrack::Loaded);
 
-        q->updateTrack(index);
+            q->updateTrack(index);
+        }
+        else loadCover(track);
     }
-    else loadCover(track);
 }
 
 void WPlaylistNetPrivate::loadCover(WTrackNet * track)

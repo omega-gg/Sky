@@ -500,15 +500,16 @@ void WTorrentThread::onStart()
 
 void WTorrentThread::onSeek()
 {
-    if (seeking == false || data == NULL || data->ready == false) return;
-
     qDebug("SKIP SEEK");
 
     seeking = false;
 
-    data->skip = HOOKTORRENT_SKIP;
+    if (data && data->ready)
+    {
+        data->skip = HOOKTORRENT_SKIP;
 
-    data->onWrite();
+        data->onWrite();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
