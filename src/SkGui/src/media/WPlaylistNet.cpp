@@ -53,7 +53,7 @@ struct WThreadActionDataTrack
 
     WAbstractTrack::State state;
 
-    QString source;
+    QUrl source;
 
     QString title;
     QString cover;
@@ -198,7 +198,7 @@ public: // Variables
 
         stream.writeTextElement("state", QString::number(data.state));
 
-        stream.writeTextElement("source", data.source);
+        stream.writeTextElement("source", data.source.toString());
 
         stream.writeTextElement("title", data.title);
         stream.writeTextElement("cover", data.cover);
@@ -1480,7 +1480,7 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 
         data.state = p->state;
 
-        data.source = p->source.toString();
+        data.source = p->source;
 
         data.title = p->title;
         data.cover = p->cover.toString();

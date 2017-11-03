@@ -219,8 +219,12 @@ public: // Functions
     void applyBuffer(WTorrentStream * item) const;
     void applyFinish(WTorrentItem   * item) const;
 
-    void applyMagnet (WMagnetData * data, const torrent_handle & handle);
-    void removeMagnet(WMagnetData * data, const torrent_handle & handle) const;
+    QByteArray extractMagnet(const torrent_handle & handle);
+
+    void applyMagnet(WMagnetData * data, const torrent_handle & handle);
+
+    void updateMagnet(WMagnetData * data);
+    void removeMagnet(WMagnetData * data);
 
     WTorrentData * getData(const QUrl      & url)  const;
     WTorrentData * getData(const sha1_hash & hash) const;
@@ -261,6 +265,7 @@ public: // Slots
     void onUpdate();
 
     void onRemove      ();
+    void onRemoveMagnet();
     void onRemoveSource();
 
     void onFolderDelete();
@@ -307,6 +312,7 @@ public: // Variables
     QHash<unsigned int, QString> fileNames;
 
     QHash<QTimer *, WTorrentData *> deleteTorrents;
+    QHash<QTimer *, WMagnetData  *> deleteMagnets;
 
     QList<WTorrentSource *> deleteSources;
 

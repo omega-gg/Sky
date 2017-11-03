@@ -399,7 +399,7 @@ WBackendTmdbPrivate::Type WBackendTmdbPrivate::getType(const QString & data) con
 {
     int length = data.length();
 
-    if (data.length() == 4)
+    if (length == 4)
     {
         if (data.toInt() >= BACKENDTMDB_YEAR)
         {

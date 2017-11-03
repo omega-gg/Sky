@@ -1094,7 +1094,7 @@ void WTorrentEnginePrivate::applyFinish(WTorrentItem * item) const
 
 //-------------------------------------------------------------------------------------------------
 
-void WTorrentEnginePrivate::applyMagnet(WMagnetData * data, const torrent_handle & handle)
+QByteArray WTorrentEnginePrivate::extractMagnet(const torrent_handle & handle)
 {
     const torrent_info & info = *(handle.torrent_file().get());
 
@@ -1104,39 +1104,59 @@ void WTorrentEnginePrivate::applyMagnet(WMagnetData * data, const torrent_handle
 
     bencode(back_inserter(vector), torrent.generate());
 
-    QByteArray bytes(vector.data(), vector.size());
+    return QByteArray(vector.data(), vector.size());
+}
+
+void WTorrentEnginePrivate::applyMagnet(WMagnetData * data, const torrent_handle & handle)
+{
+    QByteArray bytes = extractMagnet(handle);
 
     foreach (WMagnet * magnet, data->magnets)
     {
         QCoreApplication::postEvent(magnet, new WTorrentEventMagnet(bytes));
     }
-
-    removeMagnet(data, handle);
 }
 
-void WTorrentEnginePrivate::removeMagnet(WMagnetData * data, const torrent_handle & handle) const
+//-------------------------------------------------------------------------------------------------
+
+void WTorrentEnginePrivate::updateMagnet(WMagnetData * data)
 {
-    QHashIterator<unsigned int, WTorrentData *> i(torrents);
+    QHashIterator<QTimer *, WMagnetData *> i(deleteMagnets);
 
     while (i.hasNext())
     {
         i.next();
 
-        if (i.value()->hash == data->hash)
+        if (i.value() == data)
         {
-            delete data;
+            qDebug("MAGNET REMOVE TIMER");
+
+            QTimer * timer = i.key();
+
+            deleteMagnets.remove(timer);
+
+            delete timer;
 
             return;
         }
     }
+}
 
-    qDebug("MAGNET REMOVE HANDLE");
+void WTorrentEnginePrivate::removeMagnet(WMagnetData * data)
+{
+    Q_Q(WTorrentEngine);
 
-    session->remove_torrent(handle);
+    QTimer * timer = new QTimer;
 
-    WControllerFile::deleteFolder(pathMagnets);
+    timer->setInterval(TORRENTENGINE_INTERVAL_REMOVE);
 
-    delete data;
+    timer->setSingleShot(true);
+
+    deleteMagnets.insert(timer, data);
+
+    QObject::connect(timer, SIGNAL(timeout()), q, SLOT(onRemoveMagnet()));
+
+    timer->start();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1671,11 +1691,11 @@ void WTorrentEnginePrivate::onRemove()
 
     const torrent_handle & handle = data->handle;
 
-    if (data->hash)
+    unsigned int hash = data->hash;
+
+    if (hash)
     {
         qDebug("REMOVE TORRENT");
-
-        unsigned int hash = data->hash;
 
         torrents.remove(hash);
 
@@ -1698,6 +1718,52 @@ void WTorrentEnginePrivate::onRemove()
 
         datas.removeOne(data);
     }
+
+    delete data;
+
+    timer->deleteLater();
+}
+
+void WTorrentEnginePrivate::onRemoveMagnet()
+{
+    Q_Q(WTorrentEngine);
+
+    qDebug("MAGNET ON REMOVE");
+
+    QTimer * timer = static_cast<QTimer *> (q->sender());
+
+    WMagnetData * data = deleteMagnets.take(timer);
+
+    unsigned int hash = data->hash;
+
+    if (hash)
+    {
+        magnets.remove(hash);
+
+        QHashIterator<unsigned int, WTorrentData *> i(torrents);
+
+        while (i.hasNext())
+        {
+            i.next();
+
+            if (i.value()->hash == data->hash)
+            {
+                WControllerFile::deleteFolder(pathMagnets);
+
+                delete data;
+
+                timer->deleteLater();
+
+                return;
+            }
+        }
+
+        qDebug("MAGNET REMOVE HANDLE");
+
+        session->remove_torrent(data->handle);
+    }
+
+    WControllerFile::deleteFolder(pathMagnets);
 
     delete data;
 
@@ -2237,7 +2303,23 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         {
             qDebug("MAGNET ALREADY EXISTS");
 
+            d->updateMagnet(data);
+
             data->magnets.append(magnet);
+
+            if (data->hash)
+            {
+                const torrent_handle & handle = data->handle;
+
+                if (handle.status().has_metadata)
+                {
+                    qDebug("METADATA ALREADY DONE");
+
+                    QByteArray bytes = d->extractMagnet(handle);
+
+                    QCoreApplication::postEvent(magnet, new WTorrentEventMagnet(bytes));
+                }
+            }
         }
 
         return true;
@@ -2256,42 +2338,28 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
             const torrent_handle & handle = eventTorrent->value.value<torrent_handle>();
 
-            if (data->magnets.isEmpty())
-            {
-                d->removeMagnet(data, handle);
-
-                return true;
-            }
-
             unsigned int hash = handle.id();
 
             data->handle = handle;
             data->hash   = hash;
 
-            if (handle.status().has_metadata)
+            d->magnets.insert(hash, data);
+
+            if (data->magnets.isEmpty())
+            {
+                d->removeMagnet(data);
+            }
+            else if (handle.status().has_metadata)
             {
                 qDebug("METADATA ALREADY DONE");
 
                 d->applyMagnet(data, handle);
-            }
-            else
-            {
-                qDebug("METADATA STARTED");
-
-                d->magnets.insert(hash, data);
             }
 
             return true;
         }
 
         qDebug("TORRENT ADDED");
-
-        if (data->items.isEmpty())
-        {
-            d->removeData(data);
-
-            return true;
-        }
 
         const torrent_handle & handle = eventTorrent->value.value<torrent_handle>();
 
@@ -2310,6 +2378,13 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         data->hash   = hash;
 
         d->torrents.insert(hash, data);
+
+        if (data->items.isEmpty())
+        {
+            d->removeData(data);
+
+            return true;
+        }
 
         d->renameFiles(data, handle);
 
@@ -2343,8 +2418,6 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         WMagnetData * dataMagnet = d->magnets.value(eventTorrent->hash);
 
         if (dataMagnet == NULL) return true;
-
-        d->magnets.remove(dataMagnet->hash);
 
         d->applyMagnet(dataMagnet, dataMagnet->handle);
 
@@ -2434,15 +2507,10 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         magnets->removeOne(magnet);
 
-        if (magnets->isEmpty() == false) return true;
-
-        unsigned int hash = data->hash;
-
-        if (hash == 0) return true;
-
-        d->magnets.remove(hash);
-
-        d->removeMagnet(data, data->handle);
+        if (magnets->isEmpty() && data->hash)
+        {
+            d->removeMagnet(data);
+        }
 
         return true;
     }
@@ -2613,10 +2681,6 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
                 QCoreApplication::postEvent(magnet,
                                             new WTorrentEventValue(WTorrent::EventError, value));
             }
-
-            d->magnets.remove(dataMagnet->hash);
-
-            d->removeMagnet(dataMagnet, dataMagnet->handle);
         }
 
         return true;
@@ -2732,6 +2796,15 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
             delete i.key();
         }
 
+        QHashIterator<QTimer *, WMagnetData *> j(d->deleteMagnets);
+
+        while (j.hasNext())
+        {
+            j.next();
+
+            delete j.key();
+        }
+
         foreach (WTorrentData * data, d->datas)
         {
             delete data;
@@ -2742,22 +2815,22 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
             delete data;
         }
 
-        QHashIterator<unsigned int, WTorrentData *> j(d->torrents);
-
-        while (j.hasNext())
-        {
-            j.next();
-
-            delete j.value();
-        }
-
-        QHashIterator<unsigned int, WMagnetData *> k(d->magnets);
+        QHashIterator<unsigned int, WTorrentData *> k(d->torrents);
 
         while (k.hasNext())
         {
             k.next();
 
             delete k.value();
+        }
+
+        QHashIterator<unsigned int, WMagnetData *> l(d->magnets);
+
+        while (l.hasNext())
+        {
+            l.next();
+
+            delete l.value();
         }
 
         if (d->timerSave->isActive())

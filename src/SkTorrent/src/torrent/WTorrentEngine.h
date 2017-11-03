@@ -82,6 +82,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onUpdate())
 
     Q_PRIVATE_SLOT(d_func(), void onRemove      ())
+    Q_PRIVATE_SLOT(d_func(), void onRemoveMagnet())
     Q_PRIVATE_SLOT(d_func(), void onRemoveSource())
 
     Q_PRIVATE_SLOT(d_func(), void onFolderDelete())

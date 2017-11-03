@@ -572,7 +572,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
     if (name.isEmpty())
     {
-        return removeUrlPrefix(url);
+        return url.toString();
     }
 
     if (name.startsWith("www."))
