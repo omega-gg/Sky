@@ -2090,11 +2090,12 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
             WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
 
-            if (backend == NULL) continue;
+            if (backend)
+            {
+                applyPlaylist(folder, backend, url, &urls);
 
-            applyPlaylist(folder, backend, url, &urls);
-
-            if (urls.count() == CONTROLLERPLAYLIST_MAX_ITEMS) break;
+                if (urls.count() == CONTROLLERPLAYLIST_MAX_ITEMS) break;
+            }
         }
 
         applySources(folder, data.folders, &urls);
