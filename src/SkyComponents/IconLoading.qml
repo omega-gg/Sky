@@ -41,7 +41,7 @@ Icon
 
     NumberAnimation on rotation
     {
-        running: visible
+        running: (st.animate && visible)
 
         from: 0
         to  : 360
