@@ -1094,7 +1094,7 @@ void WTorrentEnginePrivate::applyFinish(WTorrentItem * item) const
 
 //-------------------------------------------------------------------------------------------------
 
-QByteArray WTorrentEnginePrivate::extractMagnet(const torrent_handle & handle)
+QByteArray WTorrentEnginePrivate::extractMagnet(const torrent_handle & handle) const
 {
     const torrent_info & info = *(handle.torrent_file().get());
 
@@ -1107,7 +1107,7 @@ QByteArray WTorrentEnginePrivate::extractMagnet(const torrent_handle & handle)
     return QByteArray(vector.data(), vector.size());
 }
 
-void WTorrentEnginePrivate::applyMagnet(WMagnetData * data, const torrent_handle & handle)
+void WTorrentEnginePrivate::applyMagnet(WMagnetData * data, const torrent_handle & handle) const
 {
     QByteArray bytes = extractMagnet(handle);
 
@@ -1742,7 +1742,7 @@ void WTorrentEnginePrivate::onRemoveMagnet()
     {
         magnets.remove(hash);
 
-        QHashIterator<unsigned int, WTorrentData *> i(torrents);
+        QHashIterator<unsigned int, WMagnetData *> i(magnets);
 
         while (i.hasNext())
         {
@@ -2415,9 +2415,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         WMagnetData * dataMagnet = d->magnets.value(eventTorrent->hash);
 
-        if (dataMagnet == NULL) return true;
-
-        d->applyMagnet(dataMagnet, dataMagnet->handle);
+        if (dataMagnet) d->applyMagnet(dataMagnet, dataMagnet->handle);
 
         return true;
     }

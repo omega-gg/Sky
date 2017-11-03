@@ -219,9 +219,9 @@ public: // Functions
     void applyBuffer(WTorrentStream * item) const;
     void applyFinish(WTorrentItem   * item) const;
 
-    QByteArray extractMagnet(const torrent_handle & handle);
+    QByteArray extractMagnet(const torrent_handle & handle) const;
 
-    void applyMagnet(WMagnetData * data, const torrent_handle & handle);
+    void applyMagnet(WMagnetData * data, const torrent_handle & handle) const;
 
     void updateMagnet(WMagnetData * data);
     void removeMagnet(WMagnetData * data);
