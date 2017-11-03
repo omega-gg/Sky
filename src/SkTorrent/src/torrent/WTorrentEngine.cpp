@@ -1689,6 +1689,8 @@ void WTorrentEnginePrivate::onRemove()
 
     WTorrentData * data = deleteTorrents.take(timer);
 
+    timer->deleteLater();
+
     const torrent_handle & handle = data->handle;
 
     unsigned int hash = data->hash;
@@ -1720,8 +1722,6 @@ void WTorrentEnginePrivate::onRemove()
     }
 
     delete data;
-
-    timer->deleteLater();
 }
 
 void WTorrentEnginePrivate::onRemoveMagnet()
@@ -1733,6 +1733,8 @@ void WTorrentEnginePrivate::onRemoveMagnet()
     QTimer * timer = static_cast<QTimer *> (q->sender());
 
     WMagnetData * data = deleteMagnets.take(timer);
+
+    timer->deleteLater();
 
     unsigned int hash = data->hash;
 
@@ -1752,8 +1754,6 @@ void WTorrentEnginePrivate::onRemoveMagnet()
 
                 delete data;
 
-                timer->deleteLater();
-
                 return;
             }
         }
@@ -1766,8 +1766,6 @@ void WTorrentEnginePrivate::onRemoveMagnet()
     WControllerFile::deleteFolder(pathMagnets);
 
     delete data;
-
-    timer->deleteLater();
 }
 
 void WTorrentEnginePrivate::onRemoveSource()
