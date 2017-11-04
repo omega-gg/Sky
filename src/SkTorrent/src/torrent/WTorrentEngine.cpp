@@ -1742,7 +1742,7 @@ void WTorrentEnginePrivate::onRemoveMagnet()
     {
         magnets.remove(hash);
 
-        QHashIterator<unsigned int, WMagnetData *> i(magnets);
+        QHashIterator<unsigned int, WTorrentData *> i(torrents);
 
         while (i.hasNext())
         {

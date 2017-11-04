@@ -389,6 +389,11 @@ QString WBackendSoundCloud::getTrackId(const QUrl & url) const
 
     source = source.mid(15);
 
+    while (source.endsWith('/'))
+    {
+        source.chop(1);
+    }
+
     if (source.count('/') == 1)
     {
          return source;
@@ -415,6 +420,11 @@ WBackendNetPlaylistInfo WBackendSoundCloud::getPlaylistInfo(const QUrl & url) co
     }
 
     source = source.mid(15);
+
+    while (source.endsWith('/'))
+    {
+        source.chop(1);
+    }
 
     if (source.contains(QRegExp("[.\\?#]")))
     {

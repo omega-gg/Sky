@@ -276,9 +276,7 @@ void WControllerPlaylistData::addFile(const QString & path)
         source.url   = WControllerFile::fileUrl(path);
         source.title = WControllerNetwork::extractUrlFileName(path);
 
-        if (WControllerPlaylist::extensionIsMarkup(extension)
-            ||
-            WControllerPlaylist::extensionIsText(extension))
+        if (WControllerPlaylist::extensionIsAscii(extension))
         {
             files.append(source);
         }
@@ -774,7 +772,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylistNet * playlist, co
         {
             QString extension = info.suffix().toLower();
 
-            if (q->extensionIsMarkup(extension) == false)
+            if (q->extensionIsAscii(extension) == false)
             {
                 if (q->extensionIsMedia(extension))
                 {
@@ -900,7 +898,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
             QString extension = info.suffix().toLower();
 
-            if (q->extensionIsMarkup(extension) == false)
+            if (q->extensionIsAscii(extension) == false)
             {
                 WBackendNetQuery query(WControllerFile::fileUrl(baseUrl));
 
@@ -1281,9 +1279,7 @@ void WControllerPlaylistPrivate::applySources(WLibraryFolder                    
 
         QString extension = WControllerNetwork::extractUrlExtension(url);
 
-        if (WControllerPlaylist::extensionIsMarkup(extension)
-            ||
-            WControllerPlaylist::extensionIsText(extension))
+        if (WControllerPlaylist::extensionIsAscii(extension))
         {
              type = WLibraryItem::FolderSearch;
         }
@@ -2056,16 +2052,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
     {
         queries.remove(query->data);
 
-        int count = folder->count();
-
-        if (count >= CONTROLLERPLAYLIST_MAX_ITEMS)
-        {
-            folder->d_func()->setQueryEnded();
-
-            return;
-        }
-
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < folder->count(); i++)
         {
             const QUrl & url = folder->itemAt(i)->source;
 
@@ -2129,10 +2116,8 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
         QString id = backend->getTrackId(url);
 
-        if (id.isEmpty() == false)
+        if (id.isEmpty() == false && urlTracks.count() != CONTROLLERPLAYLIST_MAX_TRACKS)
         {
-            if (urlTracks.count() == CONTROLLERPLAYLIST_MAX_TRACKS) break;
-
             QUrl source = backend->getUrlTrack(id);
 
             if (urlTracks.contains(source)) continue;
@@ -2758,6 +2743,13 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ bool WControllerPlaylist::urlIsAscii(const QUrl & url)
+{
+    QString extension = WControllerNetwork::extractUrlExtension(url);
+
+    return extensionIsAscii(extension);
+}
+
 /* Q_INVOKABLE static */ bool WControllerPlaylist::urlIsMarkup(const QUrl & url)
 {
     QString extension = WControllerNetwork::extractUrlExtension(url);
@@ -2798,6 +2790,11 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsAscii(const QString & extension)
+{
+    return (extensionIsMarkup(extension) || extensionIsText(extension));
+}
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsMarkup(const QString & extension)
 {

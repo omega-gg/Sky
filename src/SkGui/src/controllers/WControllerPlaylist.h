@@ -129,6 +129,7 @@ public: // Static functions
     Q_INVOKABLE static bool urlIsVideo(const QUrl & url);
     Q_INVOKABLE static bool urlIsAudio(const QUrl & url);
 
+    Q_INVOKABLE static bool urlIsAscii (const QUrl & url);
     Q_INVOKABLE static bool urlIsMarkup(const QUrl & url);
     Q_INVOKABLE static bool urlIsText  (const QUrl & url);
 
@@ -138,6 +139,7 @@ public: // Static functions
     Q_INVOKABLE static bool extensionIsVideo(const QString & extension);
     Q_INVOKABLE static bool extensionIsAudio(const QString & extension);
 
+    Q_INVOKABLE static bool extensionIsAscii (const QString & extension);
     Q_INVOKABLE static bool extensionIsMarkup(const QString & extension);
     Q_INVOKABLE static bool extensionIsText  (const QString & extension);
 

@@ -856,7 +856,14 @@ void WHookTorrentPrivate::onBuffer(qint64 bufferPieces, qint64 bufferBlocks)
 
     qreal progress = (qreal) buffer / HOOKTORRENT_PROGRESS;
 
-    if (progress > 0.9) progress = 0.9;
+    if (progress < 0.01)
+    {
+        progress = 0.01;
+    }
+    else if (progress > 0.9)
+    {
+        progress = 0.9;
+    }
 
     if (backend->progress() < progress)
     {
