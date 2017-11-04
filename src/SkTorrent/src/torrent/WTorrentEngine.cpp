@@ -321,7 +321,7 @@ WTorrentData * WTorrentEnginePrivate::createData(TorrentInfoPointer info, const 
         int id = ids.generateId();
 
         source->id   = id;
-        source->hash = info->info_hash();
+        source->hash = hash;
         source->size = 0;
 
         source->urls.append(url);
@@ -1198,6 +1198,20 @@ WTorrentData * WTorrentEnginePrivate::getData(const sha1_hash & hash) const
 {
     foreach (WTorrentData * data, datas)
     {
+        if (data->source->hash == hash)
+        {
+            return data;
+        }
+    }
+
+    QHashIterator<unsigned int, WTorrentData *> i(torrents);
+
+    while (i.hasNext())
+    {
+        i.next();
+
+        WTorrentData * data = i.value();
+
         if (data->source->hash == hash)
         {
             return data;
