@@ -9,3 +9,4 @@
 ## Contributors
 
 - Mio Iwakura aka [miotatsu](http://miotatsu.github.io) | <mio.iwakura@gmail.com>
+- Ray Imber aka [rayman22201](https://github.com/rayman22201) | <rayimber@gmail.com>
