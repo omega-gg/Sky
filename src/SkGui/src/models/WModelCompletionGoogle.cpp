@@ -154,8 +154,6 @@ void WModelCompletionGooglePrivate::onLoaded(WRemoteData * data)
     {
         d->data = wControllerDownload->getData(d->url, this);
 
-        if (d->data == NULL) return false;
-
         d->ready = false;
 
         d->setLoading(true);

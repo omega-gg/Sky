@@ -405,6 +405,15 @@ bool WControllerXml::readNextStartElement(QXmlStreamReader * stream, const QStri
 
 //---------------------------------------------------------------------------------------------
 
+/* static */ QUrl WControllerXml::readNextUrl(QXmlStreamReader * stream)
+{
+    stream->readNext();
+
+    return QUrl::fromEncoded(stream->text().toLatin1());
+}
+
+//---------------------------------------------------------------------------------------------
+
 /* static */ QDateTime WControllerXml::readNextDate(QXmlStreamReader * stream)
 {
     uint time = readNextUInt(stream);

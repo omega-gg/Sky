@@ -85,7 +85,7 @@ public: // Functions
 
     void updateSources();
 
-    void clearMediaReply(WMediaReply * reply);
+    void clearReply(WMediaReply * reply);
 
 public: // Slots
     void onLoaded(WRemoteData * data);
@@ -105,6 +105,7 @@ public: // Variables
 
     QHash<QIODevice *, WPrivateMediaData *> queries;
 
+    QList<QUrl>                      urls;
     QHash<QUrl, WPrivateMediaSource> sources;
 
 protected:

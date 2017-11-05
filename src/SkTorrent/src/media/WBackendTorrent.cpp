@@ -245,18 +245,22 @@ WBackendTorrent::WBackendTorrent() : WBackendNet(new WBackendTorrentPrivate(this
 }
 
 //-------------------------------------------------------------------------------------------------
+// WBackendNet reimplementation
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ bool WBackendTorrent::checkValidUrl(const QUrl & url) const
 {
-    if (WControllerNetwork::extractUrlExtension(url) == "torrent")
+    QString source = url.toString();
+
+    if (WControllerNetwork::extractUrlExtension(source) == "torrent"
+        ||
+        source.startsWith("magnet:?"))
     {
          return true;
     }
     else return false;
 }
 
-//-------------------------------------------------------------------------------------------------
-// WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
@@ -284,7 +288,7 @@ WAbstractBackend::Output WBackendTorrent::getTrackOutput(const QUrl & url) const
 /* Q_INVOKABLE virtual */
 WBackendNetPlaylistInfo WBackendTorrent::getPlaylistInfo(const QUrl & url) const
 {
-    if (WControllerNetwork::extractUrlExtension(url) == "torrent")
+    if (checkValidUrl(url))
     {
          return WBackendNetPlaylistInfo(WLibraryItem::PlaylistNet, url.toString());
     }
@@ -296,7 +300,7 @@ WBackendNetPlaylistInfo WBackendTorrent::getPlaylistInfo(const QUrl & url) const
 /* Q_INVOKABLE virtual */
 QUrl WBackendTorrent::getUrlPlaylist(const WBackendNetPlaylistInfo & info) const
 {
-    return info.id;
+    return WControllerNetwork::encodedUrl(info.id);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -310,7 +314,42 @@ WBackendNetQuery WBackendTorrent::getQuerySource(const QUrl &) const
 /* Q_INVOKABLE virtual */
 WBackendNetQuery WBackendTorrent::getQueryPlaylist(const QUrl & url) const
 {
-    return WBackendNetQuery(url);
+    WBackendNetQuery query;
+
+    QString source = url.toString();
+
+    if (source.startsWith("magnet:?"))
+    {
+        query.type = WBackendNetQuery::TypeTorrent;
+    }
+
+    int index = source.indexOf('#');
+
+    if (index != -1)
+    {
+        QString number;
+
+        for (int i = index + 1; i < source.length(); i++)
+        {
+            QChar character = source.at(i);
+
+            if (character.isDigit() == false) break;
+
+            number.append(character);
+        }
+
+        query.url = WControllerNetwork::encodedUrl(source.mid(0, index));
+
+        query.data = number.toInt();
+    }
+    else
+    {
+        query.url = WControllerNetwork::encodedUrl(source);
+
+        query.data = -1;
+    }
+
+    return query;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -319,15 +358,22 @@ WBackendNetQuery WBackendTorrent::getQueryPlaylist(const QUrl & url) const
 WBackendNetQuery WBackendTorrent::createQuery(const QString & method,
                                               const QString & label, const QString & q) const
 {
-    WBackendNetQuery backendQuery;
+    WBackendNetQuery query;
 
     if (method == "related" && label == "tracks")
     {
-        backendQuery.url = q;
-        backendQuery.id  = 1;
+        if (q.startsWith("magnet:?"))
+        {
+            query.type = WBackendNetQuery::TypeTorrent;
+        }
+
+        int index = q.indexOf('#');
+
+        query.url = WControllerNetwork::encodedUrl(q.mid(0, index));
+        query.id  = 1;
     }
 
-    return backendQuery;
+    return query;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -340,11 +386,13 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
     WBackendNetPlaylist reply;
 
-    QString content = Sk::readUtf8(data);
+    QString content = Sk::readAscii(data);
 
     content = WControllerTorrent::listAfter(content, "info");
 
     QString name = WControllerTorrent::stringAfter(content, "name");
+
+    name = Sk::latinToUtf8(name);
 
     QList<WBackendTorrentItem> items = d->extractItems(content);
 
@@ -359,23 +407,9 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
     }
 
     QList<WTrackNet> tracks;
+    QList<int>       ids;
 
-    QString source = query.url.toString();
-
-    int index = source.indexOf('#');
-
-    if (index != -1)
-    {
-        int currentIndex = source.mid(index + 1).toInt();
-
-        if (currentIndex > 0)
-        {
-             reply.currentIndex = currentIndex - 1;
-        }
-        else reply.currentIndex = 0;
-
-        source = source.mid(0, index);
-    }
+    QString url = query.url.toString();
 
     while (items.isEmpty() == false)
     {
@@ -385,20 +419,26 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
         foreach (const WBackendTorrentItem & item, list)
         {
-            QString title = item.name;
+            QString title = Sk::latinToUtf8(item.name);
 
             QString extension = WControllerNetwork::extractUrlExtension(title);
 
             if (WControllerPlaylist::extensionIsMedia(extension))
             {
-                WTrackNet track(source + '#' + QString::number(item.id) + '.' + extension);
+                int id = item.id;
+
+                QString source = url + '#' + QString::number(id) + '.' + extension;
+
+                WTrackNet track(WControllerNetwork::encodedUrl(source), WAbstractTrack::Default);
 
                 track.setTitle(title);
 
                 track.setAuthor(name);
-                track.setFeed  (source);
+                track.setFeed  (url);
 
                 tracks.append(track);
+
+                ids.append(id);
             }
         }
     }
@@ -409,10 +449,23 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
     reply.cache = data;
 
-    if (query.id == 1)
+    if (query.id == 0)
     {
-        reply.clearDuplicate = true;
+        int index = query.data.toInt();
+
+        if (index == -1) return reply;
+
+        for (int i = 0; i < ids.count(); i++)
+        {
+            if (ids.at(i) == index)
+            {
+                reply.currentIndex = i;
+
+                break;
+            }
+        }
     }
+    else reply.clearDuplicate = true;
 
     return reply;
 }

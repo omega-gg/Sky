@@ -30,6 +30,7 @@ contains(QT_MAJOR_VERSION, 4) {
 }
 
 include(src/controllers/controllers.pri)
+include(src/io/io.pri)
 include(src/media/media.pri)
 include(src/torrent/torrent.pri)
 

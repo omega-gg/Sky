@@ -63,7 +63,8 @@ public: // Static functions
     Q_INVOKABLE static QString urlName (const QUrl & url);
     Q_INVOKABLE static QString urlTitle(const QUrl & url);
 
-    Q_INVOKABLE static QString urlScheme(const QUrl & url);
+    Q_INVOKABLE static QString urlScheme(const QUrl    & url);
+    Q_INVOKABLE static QString urlScheme(const QString & string);
 
     //---------------------------------------------------------------------------------------------
 
@@ -74,6 +75,9 @@ public: // Static functions
 
     Q_INVOKABLE static QString encodeUrl(const QUrl    & url);
     Q_INVOKABLE static QString encodeUrl(const QString & string);
+
+    Q_INVOKABLE static QUrl encodedUrl(const QUrl    & url);
+    Q_INVOKABLE static QUrl encodedUrl(const QString & string);
 
     Q_INVOKABLE static QString decodeUrl(const QUrl    & url);
     Q_INVOKABLE static QString decodeUrl(const QString & string);
@@ -150,7 +154,9 @@ public: // Static functions
 
     Q_INVOKABLE static QString extractHtml(const QString & text);
 
-    Q_INVOKABLE static QString extractCharset(const QByteArray & html);
+    Q_INVOKABLE static QString extractHead(const QString & html);
+
+    Q_INVOKABLE static QString extractCharset(const QString & html);
 
     Q_INVOKABLE static QString extractTitle(const QString & head);
     Q_INVOKABLE static QString extractImage(const QString & head);

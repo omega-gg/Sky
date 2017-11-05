@@ -734,6 +734,12 @@ void WBackendVlcPrivate::clearPlayer()
 
         if (parentItem) parentItem->update();
     }
+    else if (frameFreeze)
+    {
+        frameFreeze = false;
+
+        if (parentItem) parentItem->update();
+    }
 
     playing = false;
 }

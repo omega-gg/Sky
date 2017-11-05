@@ -104,6 +104,8 @@ public: // Static Interface
 
     static QString readNextString(QXmlStreamReader * stream);
 
+    static QUrl readNextUrl(QXmlStreamReader * stream);
+
     static QDateTime readNextDate(QXmlStreamReader * stream);
 
 signals:

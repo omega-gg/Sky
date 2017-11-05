@@ -51,6 +51,15 @@ protected: // Initialize
     /* virtual */ void init();
 
 public: // Interface
+    Q_INVOKABLE WRemoteData * getData(WAbstractLoader        * loader,
+                                      const WBackendNetQuery & query,
+                                      QObject                * parent = NULL) const;
+
+    Q_INVOKABLE WRemoteData * getData(const WBackendNetQuery & query,
+                                      QObject                * parent = NULL) const;
+
+    //---------------------------------------------------------------------------------------------
+
     Q_INVOKABLE WLibraryItem * getLibraryItem(const QList<int> & idFull);
 
     Q_INVOKABLE void loadLibraryItem(const QList<int> & idFull);
@@ -64,12 +73,16 @@ public: // Interface
     Q_INVOKABLE WBackendNet * backendFromTrack   (const QUrl & url) const;
     Q_INVOKABLE WBackendNet * backendFromPlaylist(const QUrl & url) const;
 
+    Q_INVOKABLE WBackendNet * backendForCover(const QString & label, const QString & q) const;
+
     //---------------------------------------------------------------------------------------------
 
     Q_INVOKABLE QUrl backendCover(WBackendNet * backend) const;
 
     Q_INVOKABLE QUrl backendCoverFromId (const QString & id)  const;
     Q_INVOKABLE QUrl backendCoverFromUrl(const QUrl    & url) const;
+
+    Q_INVOKABLE QUrl backendCoverFromHub(const QUrl & url) const;
 
     //---------------------------------------------------------------------------------------------
 
@@ -116,6 +129,7 @@ public: // Static functions
     Q_INVOKABLE static bool urlIsVideo(const QUrl & url);
     Q_INVOKABLE static bool urlIsAudio(const QUrl & url);
 
+    Q_INVOKABLE static bool urlIsAscii (const QUrl & url);
     Q_INVOKABLE static bool urlIsMarkup(const QUrl & url);
     Q_INVOKABLE static bool urlIsText  (const QUrl & url);
 
@@ -125,6 +139,7 @@ public: // Static functions
     Q_INVOKABLE static bool extensionIsVideo(const QString & extension);
     Q_INVOKABLE static bool extensionIsAudio(const QString & extension);
 
+    Q_INVOKABLE static bool extensionIsAscii (const QString & extension);
     Q_INVOKABLE static bool extensionIsMarkup(const QString & extension);
     Q_INVOKABLE static bool extensionIsText  (const QString & extension);
 
@@ -164,6 +179,8 @@ private:
     friend class WLibraryItemPrivate;
     friend class WLibraryFolder;
     friend class WLibraryFolderPrivate;
+    friend class WAbstractPlaylist;
+    friend class WAbstractPlaylistPrivate;
     friend class WPlaylistNet;
     friend class WPlaylistNetPrivate;
     friend class WBackendNet;

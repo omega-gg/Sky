@@ -161,23 +161,6 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p, WAbstractBackend * backen
 // Protected functions
 //-------------------------------------------------------------------------------------------------
 
-void WAbstractHook::setFilterActive(bool active)
-{
-    Q_D(WAbstractHook);
-
-    if (d->filterActive == active) return;
-
-    d->filterActive = active;
-
-    if (active)
-    {
-         d->backend->setFilter(this);
-    }
-    else d->backend->setFilter(NULL);
-}
-
-//-------------------------------------------------------------------------------------------------
-
 void WAbstractHook::applySource(const QUrl & url)
 {
     Q_D(WAbstractHook);
@@ -377,6 +360,30 @@ QImage WAbstractHook::backendGetFrame() const
 WAbstractBackend * WAbstractHook::backend() const
 {
     Q_D(const WAbstractHook); return d->backend;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WAbstractHook::filterActive() const
+{
+    Q_D(const WAbstractHook); return d->filterActive;
+}
+
+void WAbstractHook::setFilterActive(bool active)
+{
+    Q_D(WAbstractHook);
+
+    if (d->filterActive == active) return;
+
+    d->filterActive = active;
+
+    if (active)
+    {
+         d->backend->setFilter(this);
+    }
+    else d->backend->setFilter(NULL);
+
+    emit filterActiveChanged();
 }
 
 #endif // SK_NO_ABSTRACTHOOK

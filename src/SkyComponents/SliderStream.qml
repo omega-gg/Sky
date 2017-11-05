@@ -202,7 +202,7 @@ Item
 
         text: controllerPlaylist.getPlayerTime(value, 7)
 
-        itemText.visible: (duration != -1)
+        itemText.visible: buttonRight.itemText.visible
 
         onClicked: reset()
     }
@@ -221,7 +221,7 @@ Item
 
         text: controllerPlaylist.getPlayerTime(duration, 7)
 
-        itemText.visible: (duration != -1)
+        itemText.visible: (duration > 0)
     }
 
     Slider

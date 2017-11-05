@@ -572,7 +572,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
     if (name.isEmpty())
     {
-        return removeUrlPrefix(url);
+        return url.toString();
     }
 
     if (name.startsWith("www."))
@@ -611,17 +611,42 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     return url.scheme();
 }
 
+/* Q_INVOKABLE static */ QString WControllerNetwork::urlScheme(const QString & string)
+{
+    QString result;
+
+    int index = 0;
+
+    while (index < string.length())
+    {
+        QChar character = string.at(index);
+
+        if (character.isLetterOrNumber() == false)
+        {
+            if (character == ':')
+            {
+                 return result;
+            }
+            else return QString();
+        }
+        else result.append(character);
+
+        index++;
+    }
+
+    return QString();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::generateUrl(const QString & string,
                                                                  const QString & baseUrl)
 {
-    if (urlIsHttp(string))
+    if (urlScheme(string).isEmpty() == false)
     {
         return string;
     }
-
-    if (string.startsWith("www."))
+    else if (string.startsWith("www."))
     {
         QString result = string;
 
@@ -664,6 +689,18 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 /* Q_INVOKABLE static */ QString WControllerNetwork::encodeUrl(const QString & string)
 {
     return QUrl::toPercentEncoding(string);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QUrl WControllerNetwork::encodedUrl(const QUrl & url)
+{
+    return encodedUrl(url.toString());
+}
+
+/* Q_INVOKABLE static */ QUrl WControllerNetwork::encodedUrl(const QString & string)
+{
+    return QUrl::fromEncoded(string.toLatin1());
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -858,7 +895,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
     int index = fileName.lastIndexOf('/');
 
-    if (index == -1) return string;
+    if (index == -1) return fileName;
 
     int indexUrl = fileName.indexOf("//");
 
@@ -882,11 +919,21 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
     int index = fileName.lastIndexOf('.');
 
-    if (index == -1)
+    if (index != -1)
     {
-         return QString();
+        QString extension = fileName.mid(index + 1);
+
+        foreach (const QChar & character, extension)
+        {
+            if (character.isLetterOrNumber() == false)
+            {
+                return QString();
+            }
+        }
+
+        return extension;
     }
-    else return fileName.mid(index + 1);
+    else return QString();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -904,7 +951,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     {
         index += 2;
 
-        while (string.at(index) == '/')
+        while (index < string.length() && string.at(index) == '/')
         {
             index++;
         }
@@ -1217,9 +1264,22 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ QString WControllerNetwork::extractCharset(const QByteArray & html)
+/* Q_INVOKABLE static */ QString WControllerNetwork::extractHead(const QString & html)
 {
-    QString head = Sk::sliceIn(html, "<head", "</head");
+    QString head = Sk::sliceIn(html, "<head>", "</head");
+
+    if (head.isEmpty())
+    {
+         return Sk::sliceIn(html, "<html", "</head");
+    }
+    else return head;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QString WControllerNetwork::extractCharset(const QString & html)
+{
+    QString head = extractHead(html);
 
     QStringList tags = Sk::slicesIn(head, "<meta", ">");
 
@@ -1265,7 +1325,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::extractImage(const QString & head)
 {
-    QString cover = extractNodeAttribute(head, "=\"og:image", "content");
+    QString cover = extractNodeAttribute(head, "=\"og:image\"", "content");
 
     if (cover.isEmpty())
     {
@@ -1540,12 +1600,12 @@ QString WControllerNetwork::extractNodeAttributeAt(const QString & text,
     {
         index++;
 
-        while (text.at(index).isSpace())
+        while (index < text.length() && text.at(index).isSpace())
         {
             index++;
         }
 
-        if (text.at(index) == '"')
+        if (index != text.length() && text.at(index) == '"')
         {
             index = text.indexOf('"', index + 1);
 
@@ -1640,7 +1700,10 @@ QString WControllerNetwork::extractAttributeUtf8(const QString & text,
 
     index++;
 
-    while (text.at(index) == ' ') index++;
+    while (index < text.length() && text.at(index) == ' ')
+    {
+        index++;
+    }
 
     return index;
 }
@@ -1880,7 +1943,10 @@ QString WControllerNetwork::extractAttributeUtf8(const QString & text,
 
     start++;
 
-    while (text.at(start) == ' ') start++;
+    while (start < text.length() && text.at(start) == ' ')
+    {
+        start++;
+    }
 
     int end = indexJsonEnd(text, start);
 

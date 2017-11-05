@@ -30,6 +30,7 @@ class QIODevice;
 class QUrl;
 class WTorrentEnginePrivate;
 class WTorrent;
+class WMagnet;
 
 class SK_TORRENT_EXPORT WTorrentEngine : public QObject, public WPrivatable
 {
@@ -48,6 +49,9 @@ public: // Interface
     Q_INVOKABLE void seek(WTorrent * torrent, qint64 position);
 
     Q_INVOKABLE void remove(WTorrent * torrent);
+
+    Q_INVOKABLE void loadMagnet  (WMagnet * magnet);
+    Q_INVOKABLE void removeMagnet(WMagnet * magnet);
 
     Q_INVOKABLE void clearSource(const QUrl & url);
 
@@ -78,6 +82,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onUpdate())
 
     Q_PRIVATE_SLOT(d_func(), void onRemove      ())
+    Q_PRIVATE_SLOT(d_func(), void onRemoveMagnet())
     Q_PRIVATE_SLOT(d_func(), void onRemoveSource())
 
     Q_PRIVATE_SLOT(d_func(), void onFolderDelete())

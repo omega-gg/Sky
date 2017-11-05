@@ -67,12 +67,15 @@ public: // Functions
     void stop();
 
     void clearReply();
+    void clearData ();
 
 public: // Slots
     void onAdded ();
     void onLoaded();
 
-    void onBuffer(qint64 bytesReceived);
+    void onBuffer(qint64 bufferPieces, qint64 bufferBlocks);
+
+    void onDestroyed();
 
 public: // Variables
     WTorrentThread * thread;
@@ -89,6 +92,8 @@ public: // Variables
     QUrl url;
 
     int currentTime;
+
+    bool retry;
 
     QMetaMethod methodFile;
     QMetaMethod methodBuffer;

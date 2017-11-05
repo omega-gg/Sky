@@ -36,10 +36,10 @@ public: // WBackendNet implementation
     /* Q_INVOKABLE virtual */ QString getId   () const;
     /* Q_INVOKABLE virtual */ QString getTitle() const;
 
-    /* Q_INVOKABLE virtual */ bool checkValidUrl(const QUrl & url) const;
-
 public: // WBackendNet reimplementation
     /* Q_INVOKABLE virtual */ bool isSearchEngine() const;
+
+    /* Q_INVOKABLE virtual */ bool checkValidUrl(const QUrl & url) const;
 
     //---------------------------------------------------------------------------------------------
 

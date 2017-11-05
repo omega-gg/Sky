@@ -58,7 +58,7 @@ WMediaReply::WMediaReply(const QUrl & url, QObject * parent) : QObject(parent)
 {
     W_GET_CONTROLLER(WControllerMedia, controller);
 
-    if (controller) controller->d_func()->clearMediaReply(this);
+    if (controller) controller->d_func()->clearReply(this);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -72,13 +72,6 @@ QUrl WMediaReply::url() const
 
 //-------------------------------------------------------------------------------------------------
 
-bool WMediaReply::isLoaded() const
-{
-    return _loaded;
-}
-
-//-------------------------------------------------------------------------------------------------
-
 QHash<WAbstractBackend::Quality, QUrl> WMediaReply::medias() const
 {
     return _medias;
@@ -87,6 +80,13 @@ QHash<WAbstractBackend::Quality, QUrl> WMediaReply::medias() const
 QHash<WAbstractBackend::Quality, QUrl> WMediaReply::audios() const
 {
     return _audios;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WMediaReply::isLoaded() const
+{
+    return _loaded;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -225,14 +225,7 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
     query.priority = QNetworkRequest::HighPriority;
 
-    WRemoteData * data = WControllerPlaylist::getDataQuery(loader, query, q);
-
-    if (data == NULL)
-    {
-        qWarning("WControllerMediaPrivate::loadSources: Failed to load media %s.", url.C_URL);
-
-        return;
-    }
+    WRemoteData * data = wControllerPlaylist->getData(loader, query, q);
 
     QObject::connect(data, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoaded(WRemoteData *)));
 
@@ -243,11 +236,11 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
     media->query   = query;
     media->reply   = NULL;
 
+    media->replies.append(reply);
+
     medias.append(media);
 
     jobs.insert(data, media);
-
-    media->replies.append(reply);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -260,55 +253,58 @@ void WControllerMediaPrivate::updateSources()
 
     while (i.hasNext())
     {
-         i.next();
+        i.next();
 
-         QDateTime expiry = i.value().expiry;
+        QDateTime expiry = i.value().expiry;
 
-         if (expiry.isValid() && expiry < date)
-         {
-             i.remove();
-         }
+        if (expiry.isValid() && expiry < date)
+        {
+            urls.removeOne(i.key());
+
+            i.remove();
+        }
     }
 
-    while (sources.count() > CONTROLLERMEDIA_CACHE_MAX)
+    while (urls.count() > CONTROLLERMEDIA_CACHE_MAX)
     {
-        sources.erase(sources.begin());
+        QUrl url = urls.takeFirst();
+
+        sources.remove(url);
     }
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void WControllerMediaPrivate::clearMediaReply(WMediaReply * reply)
+void WControllerMediaPrivate::clearReply(WMediaReply * reply)
 {
     foreach (WPrivateMediaData * media, medias)
     {
         QList<WMediaReply *> * replies = &(media->replies);
 
-        if (replies->contains(reply))
+        if (replies->contains(reply) == false) continue;
+
+        replies->removeOne(reply);
+
+        if (replies->isEmpty())
         {
-            replies->removeOne(reply);
+            WRemoteData * data = jobs.key(media);
 
-            if (replies->isEmpty())
+            if (data) jobs.remove(data);
+
+            QIODevice * networkReply = media->reply;
+
+            if (networkReply)
             {
-                WRemoteData * data = jobs.key(media);
-
-                if (data) jobs.remove(data);
-
-                QIODevice * networkReply = media->reply;
-
-                if (networkReply)
-                {
-                    queries.remove(networkReply);
-                }
-
-                medias.removeOne(media);
-
-                delete media;
-                delete data;
+                queries.remove(networkReply);
             }
 
-            return;
+            medias.removeOne(media);
+
+            delete media;
+            delete data;
         }
+
+        return;
     }
 }
 
@@ -381,7 +377,7 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
         query.priority
             = static_cast<QNetworkRequest::Priority> (QNetworkRequest::HighPriority - 1);
 
-        WRemoteData * data = WControllerPlaylist::getDataQuery(loader, query, q);
+        WRemoteData * data = wControllerPlaylist->getData(loader, query, q);
 
         QObject::connect(data, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoaded(WRemoteData *)));
 
@@ -401,7 +397,11 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
 
             mediaSource.expiry = source.expiry;
 
-            sources.insert(media->url, mediaSource);
+            QUrl url = media->url;
+
+            urls.append(url);
+
+            sources.insert(url, mediaSource);
 
             foreach (WMediaReply * reply, media->replies)
             {
@@ -467,20 +467,28 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
     if (parent) reply = new WMediaReply(url, parent);
     else        reply = new WMediaReply(url, this);
 
-    d->updateSources();
-
     if (d->sources.contains(url))
     {
+        qDebug("CACHED");
+
+        d->urls.removeOne(url);
+        d->urls.append   (url);
+
+        d->updateSources();
+
         WPrivateMediaSource source = d->sources.value(url);
 
         reply->_medias = source.medias;
         reply->_audios = source.audios;
 
         reply->_loaded = true;
-
-        qDebug("CACHED");
     }
-    else d->loadSources(reply);
+    else
+    {
+        d->updateSources();
+
+        d->loadSources(reply);
+    }
 
     return reply;
 }

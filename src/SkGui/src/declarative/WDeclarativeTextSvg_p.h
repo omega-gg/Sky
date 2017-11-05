@@ -64,12 +64,14 @@ public: // Functions
     void addText(QString * item, const QString & x,
                                  const QString & y,
                                  const QString & family,
+                                 const QString & style,
                                  const QString & weight,
                                  const QString & size,
                                  const QString & color, const QString & extra = QString()) const;
 
     int getWidth(const QFontMetrics & metrics, const QString & text) const;
 
+    QString getStyle () const;
     QString getWeight() const;
 
     QString getOutline(const QString & color, int size) const;

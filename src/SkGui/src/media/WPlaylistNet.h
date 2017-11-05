@@ -71,11 +71,6 @@ public: // Interface
 
     //---------------------------------------------------------------------------------------------
 
-    Q_INVOKABLE void loadCover (const QString & backend, int at);
-    Q_INVOKABLE void loadCovers(const QString & backend, int at, int count);
-
-    //---------------------------------------------------------------------------------------------
-
     bool contains(const WTrackNet & track) const;
 
     Q_INVOKABLE bool containsSource(const QUrl & source) const;

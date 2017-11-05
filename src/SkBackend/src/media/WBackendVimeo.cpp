@@ -206,6 +206,15 @@ WBackendVimeo::WBackendVimeo() : WBackendNet(new WBackendVimeoPrivate(this))
 }
 
 //-------------------------------------------------------------------------------------------------
+// WBackendNet reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ bool WBackendVimeo::isHub() const
+{
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ bool WBackendVimeo::checkValidUrl(const QUrl & url) const
 {
@@ -218,8 +227,6 @@ WBackendVimeo::WBackendVimeo() : WBackendNet(new WBackendVimeoPrivate(this))
     else return false;
 }
 
-//-------------------------------------------------------------------------------------------------
-// WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ QString WBackendVimeo::getHost() const
@@ -318,47 +325,39 @@ QUrl WBackendVimeo::getUrlPlaylist(const WBackendNetPlaylistInfo & info) const
 
 /* Q_INVOKABLE virtual */ WBackendNetQuery WBackendVimeo::getQuerySource(const QUrl & url) const
 {
-    WBackendNetQuery backendQuery;
-
     QString id = getTrackId(url);
 
-    if (id.isEmpty()) return backendQuery;
-
-    backendQuery.url = "https://player.vimeo.com/video/" + id;
-
-    return backendQuery;
+    if (id.isEmpty())
+    {
+         return WBackendNetQuery();
+    }
+    else return WBackendNetQuery("https://player.vimeo.com/video/" + id);
 }
 
 /* Q_INVOKABLE virtual */ WBackendNetQuery WBackendVimeo::getQueryTrack(const QUrl & url) const
 {
-    WBackendNetQuery backendQuery;
-
     QString id = getTrackId(url);
 
-    if (id.isEmpty()) return backendQuery;
-
-    backendQuery.url = "https://vimeo.com/" + id;
-
-    return backendQuery;
+    if (id.isEmpty())
+    {
+         return WBackendNetQuery();
+    }
+    else return WBackendNetQuery("https://vimeo.com/" + id);
 }
 
 /* Q_INVOKABLE virtual */ WBackendNetQuery WBackendVimeo::getQueryPlaylist(const QUrl & url) const
 {
-    WBackendNetQuery backendQuery;
-
     QString id = getPlaylistInfo(url).id;
 
-    if (id.isEmpty()) return backendQuery;
+    if (id.isEmpty()) return WBackendNetQuery();
 
     if (id.startsWith("tag:"))
     {
-         backendQuery.url = "https://vimeo.com/" + id + "/page:1/sort:date/format:thumbnail";
+         return WBackendNetQuery("https://vimeo.com/" + id + "/page:1/sort:date/format:thumbnail");
     }
-    else backendQuery.url = "https://vimeo.com/" + id
-                            +
-                            "/videos/page:1/sort:date/format:thumbnail";
-
-    return backendQuery;
+    else return WBackendNetQuery("https://vimeo.com/" + id
+                                 +
+                                 "/videos/page:1/sort:date/format:thumbnail");
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -367,7 +366,7 @@ QUrl WBackendVimeo::getUrlPlaylist(const WBackendNetPlaylistInfo & info) const
 WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
                                             const QString & label, const QString & q) const
 {
-    WBackendNetQuery backendQuery;
+    WBackendNetQuery query;
 
     if (method == "search")
     {
@@ -380,18 +379,18 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
 
             url.addQueryItem("q", q);
 #else
-            QUrlQuery query(url);
+            QUrlQuery urlQuery(url);
 
-            query.addQueryItem("type", "video");
+            urlQuery.addQueryItem("type", "video");
 
-            query.addQueryItem("q", q);
+            urlQuery.addQueryItem("q", q);
 
-            url.setQuery(query);
+            url.setQuery(urlQuery);
 #endif
 
-            backendQuery.type = WBackendNetQuery::TypeWeb;
-            backendQuery.url  = url;
-            backendQuery.id   = 1;
+            query.type = WBackendNetQuery::TypeWeb;
+            query.url  = url;
+            query.id   = 1;
         }
         else if (label == "people")
         {
@@ -400,16 +399,16 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
 #ifdef QT_4
             url.addQueryItem("q", q);
 #else
-            QUrlQuery query(url);
+            QUrlQuery urlQuery(url);
 
-            query.addQueryItem("q", q);
+            urlQuery.addQueryItem("q", q);
 
-            url.setQuery(query);
+            url.setQuery(urlQuery);
 #endif
 
-            backendQuery.type = WBackendNetQuery::TypeWeb;
-            backendQuery.url  = url;
-            backendQuery.id   = 1;
+            query.type = WBackendNetQuery::TypeWeb;
+            query.url  = url;
+            query.id   = 1;
         }
         else if (label == "channels")
         {
@@ -418,15 +417,15 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
 #ifdef QT_4
             url.addQueryItem("q", q);
 #else
-            QUrlQuery query(url);
+            QUrlQuery urlQuery(url);
 
-            query.addQueryItem("q", q);
+            urlQuery.addQueryItem("q", q);
 
-            url.setQuery(query);
+            url.setQuery(urlQuery);
 #endif
 
-            backendQuery.type = WBackendNetQuery::TypeWeb;
-            backendQuery.url  = url;
+            query.type = WBackendNetQuery::TypeWeb;
+            query.url  = url;
         }
         else if (label == "groups")
         {
@@ -435,27 +434,27 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
 #ifdef QT_4
             url.addQueryItem("q", q);
 #else
-            QUrlQuery query(url);
+            QUrlQuery urlQuery(url);
 
-            query.addQueryItem("q", q);
+            urlQuery.addQueryItem("q", q);
 
-            url.setQuery(query);
+            url.setQuery(urlQuery);
 #endif
 
-            backendQuery.type = WBackendNetQuery::TypeWeb;
-            backendQuery.url  = url;
+            query.type = WBackendNetQuery::TypeWeb;
+            query.url  = url;
         }
     }
     else if (method == "related" && label == "tracks")
     {
-        backendQuery.url = "https://vimeo.com/" + q
+        query.url = "https://vimeo.com/" + q
                            +
                            "/collections/channels/sort:relevant/format:thumbnail";
 
-        backendQuery.id = 2;
+        query.id = 2;
     }
 
-    return backendQuery;
+    return query;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -566,7 +565,9 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
 
     QString content = Sk::readUtf8(data);
 
-    if (query.id == 2)
+    int id = query.id;
+
+    if (id == 2)
     {
         QStringList urls = query.data.toStringList();
 
@@ -608,7 +609,7 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
 
         return reply;
     }
-    else if (query.id == 3)
+    else if (id == 3)
     {
         QStringList urls = query.data.toStringList();
 
@@ -626,17 +627,17 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
 
         reply.clearDuplicate = true;
     }
-    else if (query.id == 4)
+    else if (id == 4)
     {
         reply.clearDuplicate = true;
     }
     else
     {
-        int id = query.data.toInt() + 1;
+        int queryId = query.data.toInt() + 1;
 
-        if (id < 3)
+        if (queryId < 3)
         {
-            if (query.id == 0 && id == 1)
+            if (id == 0 && queryId == 1)
             {
                 QString title = WControllerNetwork::extractValue(content, "title");
 
@@ -649,7 +650,7 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
                 reply.title = WControllerNetwork::htmlToUtf8(title);
             }
 
-            QString url = d->getNextUrl(query, content, id);
+            QString url = d->getNextUrl(query, content, queryId);
 
             if (url.isEmpty() == false)
             {
@@ -657,12 +658,12 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
 
                 nextQuery->type = WBackendNetQuery::TypeWeb;
                 nextQuery->url  = url;
-                nextQuery->id   = query.id;
-                nextQuery->data = id;
+                nextQuery->id   = id;
+                nextQuery->data = queryId;
             }
         }
 
-        if (query.id == 1)
+        if (id == 1)
         {
             QString json = WControllerNetwork::extractJsonHtml(content, "data");
 

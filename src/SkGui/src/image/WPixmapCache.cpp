@@ -34,6 +34,9 @@ class WPixmapCacheReply;
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
+static const int PIXMAPCACHE_WIDTH  = 1920;
+static const int PIXMAPCACHE_HEIGHT = 1200;
+
 static const int PIXMAPCACHE_MAX = 1048576 * 10; // 10 megabytes
 
 //-------------------------------------------------------------------------------------------------
@@ -1064,6 +1067,32 @@ void WPixmapCache::clear(QObject * receiver)
         sizeReader.scale(width, height, Qt::KeepAspectRatioByExpanding);
 
         reader->setScaledSize(sizeReader);
+    }
+    else
+    {
+        //-----------------------------------------------------------------------------------------
+        // FIXME Qt: The graphics view struggles with large images.
+
+        QSize sizeReader = reader->size();
+
+        if (sizeReader.width() >= PIXMAPCACHE_WIDTH)
+        {
+            if (sizeReader.height() >= PIXMAPCACHE_HEIGHT)
+            {
+                 sizeReader.scale(PIXMAPCACHE_WIDTH, PIXMAPCACHE_HEIGHT, Qt::KeepAspectRatio);
+            }
+            else sizeReader.scale(PIXMAPCACHE_WIDTH, sizeReader.height(), Qt::KeepAspectRatio);
+
+            reader->setScaledSize(sizeReader);
+        }
+        else if (sizeReader.height() >= PIXMAPCACHE_HEIGHT)
+        {
+            sizeReader.scale(sizeReader.width(), PIXMAPCACHE_HEIGHT, Qt::KeepAspectRatio);
+
+            reader->setScaledSize(sizeReader);
+        }
+
+        //-----------------------------------------------------------------------------------------
     }
 }
 

@@ -170,12 +170,12 @@ public: // Functions
 
     //---------------------------------------------------------------------------------------------
 
-    QString generateSource(const QUrl & url) const;
+    QUrl generateSource(const QUrl & url) const;
 
-    void addFolderSearch(WLibraryFolder * folder,
-                         WLibraryFolder * folderSearch, const QString & title) const;
+    void addFolderSearch(WLibraryFolder * folder, const QUrl    & source,
+                                                  const QString & title) const;
 
-    void applyUrl(WLibraryFolder * folder, WBackendNet * backend, const QUrl & url) const;
+    bool applyUrl(WLibraryFolder * folder, WBackendNet * backend, const QUrl & url) const;
 
     void applyPlaylist(WLibraryFolder * folder, WBackendNet * backend, const QUrl  & url,
                                                                        QList<QUrl> * urls) const;

@@ -49,7 +49,9 @@ ComponentTab
 
     isCurrent: (item == currentTab)
 
-    icon       : item.cover
+    icon: (item.cover == "") ? item.coverShot
+                             : item.cover
+
     iconDefault: tabsBrowser.iconDefault
 
     text:
@@ -66,6 +68,8 @@ ComponentTab
     }
 
     iconFillMode: Image.PreserveAspectCrop
+
+    iconCache: (item.cover != "" && item.coverShot != "")
 
     acceptedButtons: Qt.NoButton
 

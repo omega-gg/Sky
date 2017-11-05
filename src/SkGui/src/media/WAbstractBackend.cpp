@@ -657,6 +657,8 @@ void WAbstractBackend::setSpeed(qreal speed)
 {
     Q_D(WAbstractBackend);
 
+    if (d->filter) d->filter->filterSpeed(&speed);
+
     if (d->speed == speed) return;
 
     d->speed = speed;
@@ -676,6 +678,8 @@ qreal WAbstractBackend::volume() const
 void WAbstractBackend::setVolume(qreal volume)
 {
     Q_D(WAbstractBackend);
+
+    if (d->filter) d->filter->filterVolume(&volume);
 
     if (d->volume == volume) return;
 
@@ -715,6 +719,8 @@ void WAbstractBackend::setOutput(Output output)
 {
     Q_D(WAbstractBackend);
 
+    if (d->filter) d->filter->filterOutput(&output);
+
     if (d->output == output) return;
 
     d->output = output;
@@ -732,6 +738,8 @@ WAbstractBackend::Quality WAbstractBackend::quality() const
 void WAbstractBackend::setQuality(Quality quality)
 {
     Q_D(WAbstractBackend);
+
+    if (d->filter) d->filter->filterQuality(&quality);
 
     if (d->quality == quality) return;
 
@@ -765,6 +773,8 @@ void WAbstractBackend::setFillMode(FillMode fillMode)
 {
     Q_D(WAbstractBackend);
 
+    if (d->filter) d->filter->filterFillMode(&fillMode);
+
     if (d->fillMode == fillMode) return;
 
     d->fillMode = fillMode;
@@ -788,7 +798,16 @@ void WAbstractBackend::setFillMode(FillMode fillMode)
 
 /* virtual */ void WBackendFilter::filterProgress(qreal *) {}
 
-/* virtual */ void WBackendFilter::filterOutputActive (WAbstractBackend::Output  *) {}
+/* virtual */ void WBackendFilter::filterOutput      (WAbstractBackend::Output  *) {}
+/* virtual */ void WBackendFilter::filterOutputActive(WAbstractBackend::Output  *) {}
+
+/* virtual */ void WBackendFilter::filterQuality      (WAbstractBackend::Quality *) {}
 /* virtual */ void WBackendFilter::filterQualityActive(WAbstractBackend::Quality *) {}
+
+/* virtual */ void WBackendFilter::filterSpeed(qreal *) {}
+
+/* virtual */ void WBackendFilter::filterVolume(qreal *) {}
+
+/* virtual */ void WBackendFilter::filterFillMode(WAbstractBackend::FillMode *) {}
 
 #endif // SK_NO_ABSTRACTBACKEND

@@ -19,6 +19,7 @@
 #ifndef SK_NO_LIBRARYFOLDERRELATED
 
 // Sk includes
+#include <WControllerNetwork>
 #include <WControllerPlaylist>
 #include <WBackendNet>
 #include <WPlaylistNet>
@@ -137,7 +138,7 @@ void WLibraryFolderRelatedPrivate::init()
 
 /* Q_INVOKABLE */ void WLibraryFolderRelated::loadTracks(const QVariantMap & data)
 {
-    WTrackNet track(data.value("source").toString());
+    WTrackNet track(WControllerNetwork::encodedUrl(data.value("source").toString()));
 
     WAbstractTrack::State state = static_cast<WAbstractTrack::State> (data.value("state").toInt());
 

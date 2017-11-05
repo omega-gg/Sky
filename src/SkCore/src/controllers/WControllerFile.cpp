@@ -658,7 +658,11 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 
 /* Q_INVOKABLE static */ QString WControllerFile::fileUrl(const QString & string)
 {
-    return "file:///" + string;
+    if (string.startsWith('/'))
+    {
+         return "file://"  + string;
+    }
+    else return "file:///" + string;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -706,6 +710,17 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
          return info.absoluteFilePath();
     }
     else return info.absolutePath();
+}
+
+/* Q_INVOKABLE static */ QString WControllerFile::folderName(const QString & fileName)
+{
+    int index = fileName.lastIndexOf('/');
+
+    if (index == -1)
+    {
+         return fileName;
+    }
+    else return fileName.mid(index + 1);
 }
 
 //-------------------------------------------------------------------------------------------------

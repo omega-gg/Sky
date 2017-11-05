@@ -41,8 +41,6 @@ public:
     void init();
 
 public: // Functions
-    QString extractSource(const QString & source) const;
-
     QUrl getUrl(const QString & q) const;
 
 protected:
@@ -60,43 +58,18 @@ void WBackendDuckDuckGoPrivate::init() {}
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-QString WBackendDuckDuckGoPrivate::extractSource(const QString & source) const
-{
-    if (source.startsWith("http") == false)
-    {
-        int index = source.indexOf("uddg=");
-
-        if (index != -1)
-        {
-            QString url = source.mid(index + 5);
-
-            return WControllerNetwork::decodeUrl(url);
-        }
-        else return QString();
-    }
-    else return source;
-}
-
-//-------------------------------------------------------------------------------------------------
-
 QUrl WBackendDuckDuckGoPrivate::getUrl(const QString & q) const
 {
-    QUrl url("https://duckduckgo.com/html");
+    QUrl url("https://duckduckgo.com/");
 
     QString search = q.simplified();
 
-    search.replace(' ', '+');
-
 #ifdef QT_4
     url.addQueryItem("q", search);
-
-    url.addQueryItem("kp", "-1");
 #else
     QUrlQuery query(url);
 
     query.addQueryItem("q", search);
-
-    query.addQueryItem("kp", "-1");
 
     url.setQuery(query);
 #endif
@@ -128,15 +101,6 @@ WBackendDuckDuckGo::WBackendDuckDuckGo() : WBackendNet(new WBackendDuckDuckGoPri
 }
 
 //-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE virtual */ bool WBackendDuckDuckGo::checkValidUrl(const QUrl & url) const
-{
-    QString source = WControllerNetwork::removeUrlPrefix(url);
-
-    return source.startsWith("duckduckgo.com");
-}
-
-//-------------------------------------------------------------------------------------------------
 // WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
 
@@ -147,11 +111,20 @@ WBackendDuckDuckGo::WBackendDuckDuckGo() : WBackendNet(new WBackendDuckDuckGoPri
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE virtual */ bool WBackendDuckDuckGo::checkValidUrl(const QUrl & url) const
+{
+    QString source = WControllerNetwork::removeUrlPrefix(url);
+
+    return source.startsWith("duckduckgo.com");
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE virtual */
 WBackendNetQuery WBackendDuckDuckGo::createQuery(const QString & method,
                                                  const QString & label, const QString & q) const
 {
-    WBackendNetQuery backendQuery;
+    WBackendNetQuery query;
 
     if (method == "search")
     {
@@ -159,27 +132,20 @@ WBackendNetQuery WBackendDuckDuckGo::createQuery(const QString & method,
         {
             Q_D(const WBackendDuckDuckGo);
 
-            backendQuery.url  = d->getUrl(q);
-            backendQuery.data = q;
-
-            backendQuery.cookies = true;
-            backendQuery.maxHost = 1;
+            query.url  = d->getUrl(q);
+            query.data = q;
         }
         else if (label == "site")
         {
             Q_D(const WBackendDuckDuckGo);
 
-            backendQuery.url  = d->getUrl(q);
-            backendQuery.id   = 1;
-            backendQuery.data = q;
-
-            backendQuery.cookies = true;
-            backendQuery.maxHost = 1;
-            backendQuery.delay   = 3000;
+            query.url  = d->getUrl(q);
+            query.id   = 2;
+            query.data = q;
         }
     }
 
-    return backendQuery;
+    return query;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -188,58 +154,25 @@ WBackendNetQuery WBackendDuckDuckGo::createQuery(const QString & method,
 WBackendNetFolder WBackendDuckDuckGo::extractFolder(const QByteArray       & data,
                                                     const WBackendNetQuery & query) const
 {
-    Q_D(const WBackendDuckDuckGo);
-
     WBackendNetFolder reply;
 
     QString content = Sk::readUtf8(data);
 
-    QStringList list
-        = Sk::slices(content,
-                     "<div class=\"result results_links results_links_deep web-result \"", "</a>");
+    int id = query.id;
 
-    if (query.id == 1)
+    if (id == 1) // Search urls
     {
-        foreach (const QString & string, list)
-        {
-            int index = WControllerNetwork::indexAttribute(string, "href");
+        QStringList urls;
 
-            if (index == -1) continue;
+        QString string = Sk::sliceIn(data, "('d',[", "]);");
 
-            QString source = WControllerNetwork::extractAttributeUtf8At(string, index);
-
-            source = d->extractSource(source);
-
-            index = WControllerNetwork::indexValue(string, index);
-
-            QString title = WControllerNetwork::extractNodeAt(string, "</a>", index);
-
-            title = WControllerNetwork::htmlToUtf8(title);
-
-            title = WControllerNetwork::removeUrlPrefix(title);
-
-            WLibraryFolderItem playlist(WLibraryItem::PlaylistNet, WLocalObject::Default);
-
-            playlist.source = QUrl::fromEncoded(source.toLatin1());
-
-            playlist.title = title;
-
-            reply.items.append(playlist);
-        }
-    }
-    else // if (query.id == 0)
-    {
-        QList<QUrl> urls;
+        QStringList list = WControllerNetwork::splitJson(string);
 
         foreach (const QString & string, list)
         {
-            int index = WControllerNetwork::indexAttribute(string, "href");
+            QString source = WControllerNetwork::extractJsonUtf8(string, "c");
 
-            if (index == -1) continue;
-
-            QString source = WControllerNetwork::extractAttributeUtf8At(string, index);
-
-            source = d->extractSource(source);
+            if (source.isEmpty()) continue;
 
             source = WControllerNetwork::urlName(source);
 
@@ -253,6 +186,39 @@ WBackendNetFolder WBackendDuckDuckGo::extractFolder(const QByteArray       & dat
 
             reply.items.append(folder);
         }
+    }
+    else if (id == 3) // Search site
+    {
+        QString string = Sk::sliceIn(data, "('d',[", "]);");
+
+        QStringList list = WControllerNetwork::splitJson(string);
+
+        foreach (const QString & string, list)
+        {
+            QString source = WControllerNetwork::extractJsonUtf8(string, "c");
+
+            if (source.isEmpty()) continue;
+
+            QString title = WControllerNetwork::extractJsonUtf8(string, "t");
+
+            WLibraryFolderItem folder(WLibraryItem::FolderSearch, WLocalObject::Default);
+
+            folder.source = WControllerNetwork::encodedUrl(source);
+
+            folder.title = title;
+
+            reply.items.append(folder);
+        }
+    }
+    else
+    {
+        QString source = Sk::sliceIn(content, "nrje('", "'");
+
+        WBackendNetQuery * nextQuery = &(reply.nextQuery);
+
+        nextQuery->url = WControllerNetwork::encodedUrl("https://duckduckgo.com" + source);
+
+        nextQuery->id = id + 1;
     }
 
     reply.scanItems = true;

@@ -45,7 +45,8 @@ public: // Enums
     enum Type
     {
         TypeDefault,
-        TypeWeb
+        TypeWeb,
+        TypeTorrent
     };
 
     enum Target
@@ -349,10 +350,15 @@ public: // Abstract interface
     Q_INVOKABLE virtual QString getId   () const = 0;
     Q_INVOKABLE virtual QString getTitle() const = 0;
 
-    Q_INVOKABLE virtual bool checkValidUrl(const QUrl & url) const = 0;
-
 public: // Virtual interface
+    Q_INVOKABLE virtual bool isHub() const; /* {} */
+
     Q_INVOKABLE virtual bool isSearchEngine() const; /* {} */
+    Q_INVOKABLE virtual bool isSearchCover () const; /* {} */
+
+    Q_INVOKABLE virtual bool checkValidUrl(const QUrl & url) const; /* {} */
+
+    Q_INVOKABLE virtual bool checkCover(const QString & label, const QString & q) const; /* {} */
 
     Q_INVOKABLE virtual QString getHost() const; /* {} */
 

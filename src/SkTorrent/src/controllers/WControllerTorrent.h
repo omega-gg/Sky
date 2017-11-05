@@ -18,21 +18,20 @@
 #define WCONTROLLERTORRENT_H
 
 // Qt includes
-#include <QEvent>
-#include <QVariant>
-#include <QUrl>
 #include <QStringList>
-#include <QBitArray>
 
 // Sk includes
 #include <WController>
+#include <WBackendNet>
 
 #ifndef SK_NO_CONTROLLERTORRENT
 
 // Forward declarations
 class WControllerTorrentPrivate;
+class WAbstractLoader;
 class WTorrentEngine;
 class WTorrentReply;
+class WMagnetReply;
 
 // Defines
 #define wControllerTorrent WControllerTorrent::instance()
@@ -61,7 +60,7 @@ public: // Enums
     };
 
 private:
-    WTorrent(const QUrl & url, Mode mode, QObject * parent);
+    WTorrent(const QUrl & url, int index, Mode mode, QObject * parent);
 
 protected: // Events
     /* virtual */ bool event(QEvent * event);
@@ -83,7 +82,9 @@ public: // Properties
     qint64 size() const;
 
     qint64 progress() const;
-    qint64 buffer  () const;
+
+    qint64 bufferPieces() const;
+    qint64 bufferBlocks() const;
 
     int download() const;
     int upload  () const;
@@ -110,7 +111,9 @@ private: // Variables
     qint64 _size;
 
     qint64 _progress;
-    qint64 _buffer;
+
+    qint64 _bufferPieces;
+    qint64 _bufferBlocks;
 
     int _download;
     int _upload;
@@ -143,7 +146,8 @@ signals:
     void loaded(WTorrentReply * reply);
 
     void progress(qint64 bytesReceived, qint64 bytesTotal);
-    void buffer  (qint64 bytesReceived);
+
+    void buffer(qint64 bufferPieces, qint64 bufferBlocks);
 
 public: // Properties
     WTorrent * torrent() const;
@@ -155,6 +159,74 @@ private:
     friend class WControllerTorrent;
     friend class WControllerTorrentPrivate;
     friend class WTorrent;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WMagnet
+//-------------------------------------------------------------------------------------------------
+
+class SK_TORRENT_EXPORT WMagnet : public QObject
+{
+    Q_OBJECT
+
+private:
+    WMagnet(const QUrl & url, QObject * parent);
+
+protected: // Events
+    /* virtual */ bool event(QEvent * event);
+
+signals:
+    void loaded(WMagnet * reply);
+
+public: // Properties
+    QUrl url() const;
+
+    QByteArray data() const;
+
+    bool hasError() const;
+
+    QString error() const;
+
+private: // Variables
+    QList<WMagnetReply *> _replies;
+
+    QUrl _url;
+
+    QByteArray _data;
+
+    QString _error;
+
+private:
+    friend class WControllerTorrent;
+    friend class WControllerTorrentPrivate;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WMagnetReply
+//-------------------------------------------------------------------------------------------------
+
+class SK_TORRENT_EXPORT WMagnetReply : public QObject
+{
+    Q_OBJECT
+
+private:
+    WMagnetReply(QObject * parent);
+public:
+    /* virtual */ ~WMagnetReply();
+
+signals:
+    void loaded(WMagnetReply * reply);
+
+public: // Properties
+    WMagnet * magnet() const;
+
+private: // Variables
+    WMagnet * _magnet;
+
+private:
+    friend class WControllerTorrent;
+    friend class WControllerTorrentPrivate;
+    friend class WMagnet;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -231,6 +303,41 @@ public: // Variables
 };
 
 //-------------------------------------------------------------------------------------------------
+// WTorrentEventBuffer
+//-------------------------------------------------------------------------------------------------
+
+class WTorrentEventBuffer : public WTorrentEvent
+{
+public:
+    WTorrentEventBuffer(qint64 bufferPieces, qint64 bufferBlocks)
+        : WTorrentEvent(WTorrent::EventBuffer)
+    {
+        this->bufferPieces = bufferPieces;
+        this->bufferBlocks = bufferBlocks;
+    }
+
+public: // Variables
+    qint64 bufferPieces;
+    qint64 bufferBlocks;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WTorrentEventMagnet
+//-------------------------------------------------------------------------------------------------
+
+class WTorrentEventMagnet : public WTorrentEvent
+{
+public:
+    WTorrentEventMagnet(const QByteArray & data) : WTorrentEvent(WTorrent::EventFinished)
+    {
+        this->data = data;
+    }
+
+public: // Variables
+    QByteArray data;
+};
+
+//-------------------------------------------------------------------------------------------------
 // WControllerTorrent
 //-------------------------------------------------------------------------------------------------
 
@@ -262,9 +369,13 @@ public: // Interface
                                            QObject        * parent = NULL,
                                            WTorrent::Mode   mode   = WTorrent::Default);
 
+    Q_INVOKABLE WMagnetReply * getMagnet(const QUrl & url, QObject * parent = NULL);
+
     Q_INVOKABLE void clearSource(const QUrl & url);
 
     Q_INVOKABLE void clearTorrents();
+
+    Q_INVOKABLE void clearCache();
 
     Q_INVOKABLE int  registerPort  ();
     Q_INVOKABLE void unregisterPort(int port);
@@ -275,6 +386,10 @@ public: // Interface
                               int             port, const QString & password = QString());
 
     Q_INVOKABLE void clearProxy();
+
+    Q_INVOKABLE void registerLoader   (WBackendNetQuery::Type type, WAbstractLoader * loader);
+    Q_INVOKABLE void unregisterLoader (WBackendNetQuery::Type type);
+    Q_INVOKABLE void unregisterLoaders();
 
 public: // Initialize
     /* virtual */ void initController(const QString & path,
@@ -319,13 +434,18 @@ public: // Properties
     int  port() const;
     void setPort(int port);
 
+    qint64 sizeMax() const;
+    void   setSizeMax(qint64 max);
+
 private:
     W_DECLARE_PRIVATE   (WControllerTorrent)
     W_DECLARE_CONTROLLER(WControllerTorrent)
 
-    Q_PRIVATE_SLOT(d_func(), void onLoaded(WRemoteData *))
+    Q_PRIVATE_SLOT(d_func(), void onLoaded      (WRemoteData *))
+    Q_PRIVATE_SLOT(d_func(), void onMagnetLoaded(WRemoteData *))
 
     friend class WTorrentReply;
+    friend class WMagnetReply;
 };
 
 #include <private/WControllerTorrent_p>

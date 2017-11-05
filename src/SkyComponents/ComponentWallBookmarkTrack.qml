@@ -65,7 +65,9 @@ ComponentWall
 
     image: item.coverShot
 
-    icon       : item.cover
+    icon: (item.cover == "") ? item.coverShot
+                             : item.cover
+
     iconDefault: baseWall.iconDefault
 
     text:
@@ -82,6 +84,8 @@ ComponentWall
     }
 
     iconFillMode: Image.PreserveAspectCrop
+
+    iconCache: (item.cover != "" && item.coverShot != "")
 
     acceptedButtons: Qt.NoButton
 

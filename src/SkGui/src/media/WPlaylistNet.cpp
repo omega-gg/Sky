@@ -24,6 +24,7 @@
 
 // Sk includes
 #include <WControllerApplication>
+#include <WControllerFile>
 #include <WControllerXml>
 #include <WControllerPlaylist>
 #include <WControllerDownload>
@@ -52,7 +53,7 @@ struct WThreadActionDataTrack
 
     WAbstractTrack::State state;
 
-    QString source;
+    QUrl source;
 
     QString title;
     QString cover;
@@ -197,7 +198,7 @@ public: // Variables
 
         stream.writeTextElement("state", QString::number(data.state));
 
-        stream.writeTextElement("source", data.source);
+        stream.writeTextElement("source", data.source.toString());
 
         stream.writeTextElement("title", data.title);
         stream.writeTextElement("cover", data.cover);
@@ -365,7 +366,7 @@ bool WPlaylistNetRead::loadPlaylist(QXmlStreamReader * stream, WPlaylistNetReadR
 
     if (wControllerXml->readNextStartElement(stream, "source") == false) return false;
 
-    reply->source = wControllerXml->readNextString(stream);
+    reply->source = wControllerXml->readNextUrl(stream);
 
     //---------------------------------------------------------------------------------------------
     // title
@@ -439,7 +440,7 @@ bool WPlaylistNetRead::loadTracks(QXmlStreamReader * stream, WPlaylistNetReadRep
 
         if (wControllerXml->readNextStartElement(stream, "source") == false) return false;
 
-        p->source = wControllerXml->readNextString(stream);
+        p->source = wControllerXml->readNextUrl(stream);
 
         //-----------------------------------------------------------------------------------------
         // title
@@ -634,6 +635,57 @@ void WPlaylistNetPrivate::loadTracks(const QList<WTrackNet> & tracks)
     {
         q->addTracks(tracks);
     }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WPlaylistNetPrivate::loadTrack(WTrackNet * track, int index)
+{
+    Q_Q(WPlaylistNet);
+
+    wControllerPlaylist->d_func()->applySourceTrack(q, track, track->source());
+
+    WAbstractTrack::State state = track->state();
+
+    if (state == WAbstractTrack::Loaded)
+    {
+        if (track->cover().isValid() == false)
+        {
+            loadCover(track);
+        }
+    }
+    else if (state == WAbstractTrack::Default)
+    {
+        if (track->cover().isValid())
+        {
+            track->setState(WAbstractTrack::Loaded);
+
+            q->updateTrack(index);
+        }
+        else loadCover(track);
+    }
+}
+
+void WPlaylistNetPrivate::loadCover(WTrackNet * track)
+{
+    QString label = track->author();
+
+    if (label.isEmpty())
+    {
+        label = WControllerFile::folderName(track->feed());
+    }
+
+    QString title = track->title();
+
+    WBackendNet * backend = wControllerPlaylist->backendForCover(label, title);
+
+    if (backend == NULL) return;
+
+    Q_Q(WPlaylistNet);
+
+    WBackendNetQuery query = backend->createQuery("cover", label, title);
+
+    wControllerPlaylist->d_func()->applyQueryTrack(q, track, query);
 }
 
 //=================================================================================================
@@ -903,16 +955,17 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
 
     WTrackNet * track = &(d->tracks[at]);
 
-    if (track->isDefault() == false) return;
-
-    wControllerPlaylist->d_func()->applySourceTrack(this, track, track->source());
+    if (track->isDefault())
+    {
+        d->loadTrack(track, at);
+    }
 }
 
 /* Q_INVOKABLE */ void WPlaylistNet::loadTracks(int at, int count)
 {
     Q_D(WPlaylistNet);
 
-    if (at < 0 || at >= d->tracks.count()) return;
+    if (at < 0 || at >= d->tracks.count() || count < 1) return;
 
     int index = at - count / 2;
 
@@ -920,9 +973,18 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
 
     while (index < at)
     {
-        const WTrackNet & track = d->tracks[index];
+        WTrackNet * track = &(d->tracks[index]);
 
-        if (track.isDefault()) break;
+        if (track->isDefault())
+        {
+            d->loadTrack(track, index);
+
+            count--;
+
+            index++;
+
+            break;
+        }
 
         index++;
     }
@@ -933,7 +995,7 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
 
         if (track->isDefault())
         {
-            wControllerPlaylist->d_func()->applySourceTrack(this, track, track->source());
+            d->loadTrack(track, index);
         }
 
         count--;
@@ -947,60 +1009,6 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
 /* Q_INVOKABLE */ void WPlaylistNet::abortTracks()
 {
     wControllerPlaylist->d_func()->abortQueriesTracks(this);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE */ void WPlaylistNet::loadCover(const QString & backend, int at)
-{
-    Q_D(WPlaylistNet);
-
-    if (at < 0 || at >= d->tracks.count()) return;
-
-    WTrackNet * track = &(d->tracks[at]);
-
-    if (track->isLoaded() == false || track->cover().isEmpty() == false) return;
-
-    QUrl url = WControllerPlaylist::createSource(backend, "cover", "track", track->title());
-
-    wControllerPlaylist->d_func()->applySourceTrack(this, track, url);
-}
-
-/* Q_INVOKABLE */ void WPlaylistNet::loadCovers(const QString & backend, int at, int count)
-{
-    Q_D(WPlaylistNet);
-
-    if (at < 0 || at >= d->tracks.count()) return;
-
-    int index = at - count / 2;
-
-    if (index < 0) index = 0;
-
-    while (index < at)
-    {
-        const WTrackNet & track = d->tracks[index];
-
-        if (track.isLoaded() && track.cover().isEmpty()) break;
-
-        index++;
-    }
-
-    while (index < d->tracks.count() && count)
-    {
-        WTrackNet * track = &(d->tracks[index]);
-
-        if (track->isLoaded() && track->cover().isEmpty())
-        {
-            QUrl url = WControllerPlaylist::createSource(backend,
-                                                         "cover", "track", track->title());
-
-            wControllerPlaylist->d_func()->applySourceTrack(this, track, url);
-        }
-
-        count--;
-
-        index++;
-    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1472,7 +1480,7 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 
         data.state = p->state;
 
-        data.source = p->source.toString();
+        data.source = p->source;
 
         data.title = p->title;
         data.cover = p->cover.toString();

@@ -73,8 +73,6 @@ QUrl WBackendBingPrivate::getUrl(const QString & q) const
 
     search = search.simplified();
 
-    search.replace(' ', "+");
-
     if (search.length() < 10 || search.count('+') < 3)
     {
         return QUrl();
@@ -121,6 +119,8 @@ WBackendBing::WBackendBing() : WBackendNet(new WBackendBingPrivate(this))
 }
 
 //-------------------------------------------------------------------------------------------------
+// WBackendNet reimplementation
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ bool WBackendBing::checkValidUrl(const QUrl & url) const
 {
@@ -130,25 +130,23 @@ WBackendBing::WBackendBing() : WBackendNet(new WBackendBingPrivate(this))
 }
 
 //-------------------------------------------------------------------------------------------------
-// WBackendNet reimplementation
-//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
 WBackendNetQuery WBackendBing::createQuery(const QString & method,
                                            const QString & label, const QString & q) const
 {
-    WBackendNetQuery backendQuery;
+    WBackendNetQuery query;
 
     if (method == "cover" && label == "track")
     {
         Q_D(const WBackendBing);
 
-        backendQuery.url = d->getUrl(q);
+        query.url = d->getUrl(q);
 
-        backendQuery.maxHost = 1;
+        query.maxHost = 1;
     }
 
-    return backendQuery;
+    return query;
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -749,7 +749,7 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 
 /* Q_INVOKABLE static */ QString WControllerApplication::readAscii(const QByteArray & array)
 {
-    return QString::fromLatin1(array.data(), array.size());
+    return QString::fromLatin1(array, array.size());
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -764,13 +764,17 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
         return array;
     }
 
+    const char * data = array.constData();
+
+    int size = array.size();
+
     QTextCodec::ConverterState state;
 
-    QString content = textCodec->toUnicode(array.constData(), array.size(), &state);
+    QString content = textCodec->toUnicode(data, size, &state);
 
     if (state.invalidChars)
     {
-         return array;
+         return QString::fromLatin1(data, size);
     }
     else return content;
 }
@@ -781,6 +785,11 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QString WControllerApplication::latinToUtf8(const QString & string)
+{
+    return QString::fromUtf8(string.toLatin1());
+}
 
 /* Q_INVOKABLE static */ QString WControllerApplication::unicodeToUtf8(const QString & string)
 {

@@ -76,7 +76,6 @@ Item
 
     property int dp96: 96 * ratio
 
-    property int dp112: 112 * ratio
     property int dp120: 120 * ratio
     property int dp128: 128 * ratio
     property int dp150: 150 * ratio
@@ -91,6 +90,7 @@ Item
     property variant size24x24: size(24, 24)
     property variant size28x28: size(28, 28)
     property variant size32x32: size(32, 32)
+    property variant size48x48: size(48, 48)
 
     property variant size128x128: size(128, 128)
 
@@ -1600,6 +1600,8 @@ Item
 
     property int wallVideo_overlayWidth : componentWallBookmarkTrack_iconWidth
     property int wallVideo_overlayHeight: itemWall_iconHeight
+
+    property real wallVideo_opacityLoader: 0.6
 
     property color wallVideo_colorPlayer: "black"
 
