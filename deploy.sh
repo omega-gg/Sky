@@ -53,9 +53,10 @@ Boost_version_linux="1.61.0"
 #--------------------------------------------------------------------------------------------------
 
 if [ $# != 2 ] || [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] || [ $2 != "win32" -a \
-                                                                       $2 != "linux" ]; then
+                                                                        $2 != "linux" -a \
+                                                                        $2 != "osx" ]; then
 
-    echo "Usage: deploy <qt4 | qt5 | clean> <win32 | linux>"
+    echo "Usage: deploy <qt4 | qt5 | clean> <win32 | linux | osx>"
 
     exit 1
 fi
@@ -303,6 +304,15 @@ elif [ $2 = "linux" ]; then
     cp "$bin"/libSkWeb.so     deploy
     cp "$bin"/libSkTorrent.so deploy
     cp "$bin"/libSkBackend.so deploy
+
+elif [ $2 = "osx" ]; then
+
+    cp "$bin"/libSkCore.dylib      deploy
+    cp "$bin"/libSkGui.dylib       deploy
+    cp "$bin"/libSkMedia.dylib     deploy
+    cp "$bin"/libSkWeb.dylib       deploy
+    cp "$bin"/libSkTorrent.dylib   deploy
+    cp "$bin"/libSkBackend.dylib   deploy
 fi
 
 cp "$bin"/includeGenerator* deploy

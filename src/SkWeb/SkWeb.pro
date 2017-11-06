@@ -76,5 +76,13 @@ win32:equals(QMAKE_COPY, "cp") {
     QMAKE_POST_LINK += $${QMAKE_COPY} $$SK/lib/$${TARGET}.dll $$SK/$$SK_BIN
 }
 
-macx: QMAKE_POST_LINK += $${QMAKE_COPY} $$SK/lib/lib$${TARGET}.dylib $$SK/$$SK_BIN
-unix: QMAKE_POST_LINK += $${QMAKE_COPY} $$SK/lib/lib$${TARGET}.so    $$SK/$$SK_BIN
+unix:!macx{
+  QMAKE_POST_LINK += $${QMAKE_COPY} $$SK/lib/lib$${TARGET}.so    $$SK/$$SK_BIN
+}
+
+macx {
+  QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.12
+  QMAKE_CXXFLAGS += -std=c++11 -stdlib=libc++
+  QMAKE_COPY = ditto
+  QMAKE_POST_LINK += $${QMAKE_COPY} $$SK/lib/lib$${TARGET}.dylib $$SK/$$SK_BIN
+}
