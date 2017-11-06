@@ -87,8 +87,8 @@
 /* static */
 QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
 {
-#if defined(Q_OS_MAC)
-//    QApplication::setGraphicsSystem("raster");
+#ifdef Q_OS_MAC
+    //QApplication::setGraphicsSystem("raster");
 #endif
 
 #ifdef QT_NO_DEBUG

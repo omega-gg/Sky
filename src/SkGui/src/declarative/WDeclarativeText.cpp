@@ -747,15 +747,15 @@ QPixmap WDeclarativeTextPrivate::textDocumentImage(bool drawStyle)
     pixmap.fill(Qt::transparent);
 
 #ifdef Q_OS_MAC
-//    bool oldSmooth = qt_applefontsmoothing_enabled;
+    //bool oldSmooth = qt_applefontsmoothing_enabled;
 
-//    qt_applefontsmoothing_enabled = false;
+    //qt_applefontsmoothing_enabled = false;
 #endif
 
     QPainter painter(&pixmap);
 
 #ifdef Q_OS_MAC
-//    qt_applefontsmoothing_enabled = oldSmooth;
+    //qt_applefontsmoothing_enabled = oldSmooth;
 #endif
 
     QAbstractTextDocumentLayout::PaintContext context;
@@ -1000,15 +1000,15 @@ QPixmap WDeclarativeTextPrivate::textLayoutImage(bool drawStyle)
     pixmap.fill(Qt::transparent);
 
 #ifdef Q_OS_MAC
-//    bool oldSmooth = qt_applefontsmoothing_enabled;
+    //bool oldSmooth = qt_applefontsmoothing_enabled;
 
-//    qt_applefontsmoothing_enabled = false;
+    //qt_applefontsmoothing_enabled = false;
 #endif
 
     QPainter painter(&pixmap);
 
 #ifdef Q_OS_MAC
-//    qt_applefontsmoothing_enabled = oldSmooth;
+    //qt_applefontsmoothing_enabled = oldSmooth;
 #endif
 
     drawTextLayout(&painter, QPointF(-layedOutTextRect.x(), 0), drawStyle);

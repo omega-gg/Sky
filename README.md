@@ -15,9 +15,8 @@ The video player is based on [VLC](http://github.com/videolan/vlc) and [libtorre
 ## Platforms
 
 - Windows XP and later.
+- Mac OS-X 64 bit.
 - Linux 32 bit and 64 bit.
-
-OS-X is coming soon.
 
 ## Requirements
 

@@ -38,10 +38,10 @@ bin5="latest"
 #--------------------------------------------------------------------------------------------------
 
 if [ $# != 2 ] || [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] || [ $2 != "win32" -a \
-                                                                       $2 != "linux" -a \
-                                                                       $2 != "osx" ]; then
+                                                                       $2 != "osx"   -a \
+                                                                       $2 != "linux" ]; then
 
-    echo "Usage: configure <qt4 | qt5 | clean> <win32 | linux | osx>"
+    echo "Usage: configure <qt4 | qt5 | clean> <win32 | osx | linux>"
 
     exit 1
 fi
@@ -111,44 +111,40 @@ if [ $1 = "qt4" -a $2 = "linux" ]; then
     cp "$Qt4"/src/declarative/graphicsitems/*_p.h include/Qt/QtDeclarative/private
     cp "$Qt4"/src/declarative/util/*_p.h          include/Qt/QtDeclarative/private
 
-elif [ $1 = "qt5" -a $2 = "linux" -a $2 = "win32" ]; then
+elif [ $1 = "qt5" ]; then
 
-    mkdir -p include/Qt/QtCore/private
+    if [ $2 = "osx" ]; then
 
-    cp "$Qt5"/include/QtCore/* include/Qt/QtCore
+        Qt5=/usr/local/opt/qt\@5.5
 
-    cp "$Qt5"/include/QtCore/$Qt5_version/QtCore/private/* include/Qt/QtCore/private
+        mkdir -p include/Qt/QtCore/private
 
-    mkdir -p include/Qt/QtDeclarative/private
+        ditto "$Qt5"/include/QtCore include/Qt/QtCore
 
-    cp "$Qt5"/include/QtDeclarative/* include/Qt/QtDeclarative
+        ditto "$Qt5"/include/QtCore/$Qt5_version/QtCore/private include/Qt/QtCore/private
 
-    cp "$Qt5"/include/QtDeclarative/$Qt5_version/QtDeclarative/private/* \
-        include/Qt/QtDeclarative/private
+        mkdir -p include/Qt/QtDeclarative/private
 
-elif [ $1 = "qt5" -a $2 = "osx" ]; then
+        ditto "$Qt5"/include/QtDeclarative include/Qt/QtDeclarative
 
-    Qt5=/usr/local/opt/qt\@5.5
+        ditto "$Qt5"/include/QtDeclarative/$Qt5_version/QtDeclarative/private \
+              include/Qt/QtDeclarative/private
 
-    mkdir -p include/Qt/QtCore/private
+    elif [ $2 = "linux" ]; then
 
-    ditto "$Qt5"/include/QtCore include/Qt/QtCore
+        mkdir -p include/Qt/QtCore/private
 
-    ditto "$Qt5"/include/QtCore/$Qt5_version/QtCore/private include/Qt/QtCore/private
+        cp "$Qt5"/include/QtCore/* include/Qt/QtCore
 
-    mkdir -p include/Qt/QtDeclarative/private
+        cp "$Qt5"/include/QtCore/$Qt5_version/QtCore/private/* include/Qt/QtCore/private
 
-    ditto "$Qt5"/include/QtDeclarative include/Qt/QtDeclarative
+        mkdir -p include/Qt/QtDeclarative/private
 
-    ditto "$Qt5"/include/QtDeclarative/$Qt5_version/QtDeclarative/private \
-        include/Qt/QtDeclarative/private
+        cp "$Qt5"/include/QtDeclarative/* include/Qt/QtDeclarative
 
-elif [ $1 = "qt4" -a $2 = "osx" ]; then
-
-    echo "Qt4 is not currently supported on OSX"
-
-    exit 1
-
+        cp "$Qt5"/include/QtDeclarative/$Qt5_version/QtDeclarative/private/* \
+            include/Qt/QtDeclarative/private
+    fi
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -162,9 +158,8 @@ if [ $2 = "win32" ]; then
     cp -r "$VLC"/sdk/include/vlc include
 
     cp "$VLC"/sdk/lib/libvlc* lib
-fi
 
-if [ $2 = "osx" ]; then
+elif [ $2 = "osx" ]; then
 
     echo "COPYING VLC"
 
@@ -184,10 +179,8 @@ if [ $2 = "win32" ]; then
     cp -r "$libtorrent"/libtorrent include
 
     cp "$libtorrent"/libtorrent.* lib
-fi
 
-
-if [ $2 = "osx" ]; then
+elif [ $2 = "osx" ]; then
 
     echo "COPYING libtorrent"
 
@@ -207,9 +200,8 @@ if [ $2 = "win32" ]; then
     cp -r "$Boost"/Boost include
 
     cp "$Boost"/libboost*.* lib
-fi
 
-if [ $2 = "osx" ]; then
+elif [ $2 = "osx" ]; then
 
     echo "COPYING Boost"
 

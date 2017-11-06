@@ -86,7 +86,7 @@ WVlcEngine::WVlcEngine(QThread * thread, QObject * parent)
 #ifdef Q_OS_WIN
             "--dummy-quiet",      /* No command-line  */
 #endif
-#ifdef Q_OS_DARWIN
+#ifdef Q_OS_MAC
             "--vout=macosx",
 #endif
             "--ignore-config",    /* No configuration */
@@ -96,7 +96,7 @@ WVlcEngine::WVlcEngine(QThread * thread, QObject * parent)
             "--no-media-library", /* No Media Library */
             "--http-reconnect",   /* Auto reconnect   */
             "--input-fast-seek",  /* Fast seek        */
-            //"--avcodec-fast",      /* Speed tricks     */
+            "--avcodec-fast",     /* Speed tricks     */
             //"--avcodec-dr",
             //"--avcodec-hurry-up",
             //"--avcodec-hw=any",
@@ -113,11 +113,6 @@ WVlcEngine::WVlcEngine(QThread * thread, QObject * parent)
             //"--verbose=2"
         };
 
-#ifdef Q_OS_DARWIN
-        if (qgetenv("VLC_PLUGIN_PATH").isEmpty()) {
-          qputenv("VLC_PLUGIN_PATH", QString(QCoreApplication::applicationDirPath() + "/vlc/plugins").toLocal8Bit()); 
-        }
-#endif
         d->instance = libvlc_new(sizeof(args) / sizeof(*args), args);
 
 #ifdef Q_OS_LINUX

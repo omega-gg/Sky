@@ -17,6 +17,7 @@ macx:CONFIG -= app_bundle
 SOURCES += main.cpp
 
 macx {
-  QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
-  QMAKE_CXXFLAGS += -std=c++11 -stdlib=libc++
+    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.12
+
+    QMAKE_CXXFLAGS += -std=c++11 -stdlib=libc++
 }

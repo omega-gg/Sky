@@ -82,9 +82,9 @@ if [ $# != 2 ] || [ $1 != "all"       -a \
                     $1 != "install"   -a \
                     $1 != "uninstall" -a \
                     $1 != "deploy"    -a \
-                    $1 != "clean" ] || [ $2 != "win32" -a $2 != "ubuntu" -a $2 != "osx" ]; then
+                    $1 != "clean" ] || [ $2 != "win32" -a $2 != "osx" -a $2 != "ubuntu" ]; then
 
-    echo "Usage: 3rdparty <all | install | uninstall | deploy | clean> <win32 | ubuntu | osx>"
+    echo "Usage: 3rdparty <all | install | uninstall | deploy | clean> <win32 | osx | ubuntu>"
 
     exit 1
 fi
@@ -124,12 +124,6 @@ if [ $2 = "ubuntu" ]; then
     tools_linux="$tools_ubuntu"
 else
     linux=false
-    
-    if [ $2 = "osx" ]; then
-
-	osx=true
-
-    fi
 fi
 
 if [ $linux = true ]; then
@@ -150,7 +144,36 @@ fi
 
 if [ $1 = "all" ] || [ $1 = "install" ]; then
 
-    if [ $linux = true ]; then
+    if [ $2 = "osx" ]; then
+
+        sudo chown -R $(whoami) /usr/local
+
+        echo ""
+        echo "INSTALLING Qt"
+
+        brew install -y Qt@5.5
+
+        echo ""
+        echo "INSTALLING SSL"
+
+        brew install -y openssl
+
+        echo ""
+        echo "INSTALLING VLC"
+
+        brew cask install vlc
+
+        echo ""
+        echo "INSTALLING Boost"
+
+        brew install -y boost@1.55
+
+        echo ""
+        echo "INSTALLING libtorrent"
+
+        brew install -y libtorrent-rasterbar
+
+    elif [ $linux = true ]; then
 
         echo "INSTALLING X11"
 
@@ -181,53 +204,39 @@ if [ $1 = "all" ] || [ $1 = "install" ]; then
 
         sudo apt-get install -y $tools_linux
     fi
-
-    if [ $osx = true ]; then
-
-	sudo chown -R $(whoami) /usr/local
-	
-        echo ""
-        echo "INSTALLING Qt"
-
-        brew install -y Qt@5.5
-	#echo 'export PATH="/usr/local/opt/qt@5.5/bin:$PATH"' >> ~/.bash_profile
-	#source ~/.bash_profile
-
-        echo ""
-        echo "INSTALLING Boost"
-
-        brew install -y boost@1.55 
-
-	echo ""
-	echo "INSTALLING OpenSSL"
-	
-	brew install -y openssl
-	#echo 'export PATH="/usr/local/opt/openssl/bin:$PATH"' >> ~/.bash_profile
-	#source ~/.bash_profile
-
-        echo ""
-        echo "INSTALLING VLC"
-
-	brew cask install vlc
-
-        echo ""
-        echo "INSTALLING libtorrent"
-
-	brew install -y libtorrent-rasterbar	
-
-#	curl -Lo libtorrent-rasterbar-1.1.4.tar.gz https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_1_4/libtorrent-rasterbar-1.1.4.tar.gz
-#	tar -xf libtorrent-rasterbar-1.1.4.tar.gz
-#	pushd libtorrent-rasterbar-1.1.4
-#	./configure --enable-export-all --with-boost=/usr/local/opt/boost@1.55 --with-openssl=/usr/local/opt/openssl
-#	LIBRARY_PATH=/usr/local/opt/openssl/lib make
-#	sudo make install
-#	popd
-    fi
 fi
 
 if [ $1 = "uninstall" ]; then
 
-    if [ $linux = true ]; then
+    if [ $2 = "osx" ]; then
+
+        echo ""
+        echo "UNINSTALLING Qt"
+
+        brew remove -y Qt@5.5
+
+        echo ""
+        echo "UNINSTALLING VLC"
+
+        brew cask remove vlc
+
+        echo ""
+        echo "UNINSTALLING Boost"
+
+        brew remove -y boost@1.55
+
+        echo ""
+        echo "UNINSTALLING libtorrent"
+
+        brew remove -y libtorrent-rasterbar
+
+        # We have to remove OpenSSL after libtorrent
+        echo ""
+        echo "UNINSTALLING SSL"
+
+        brew remove -y openssl
+
+    elif [ $linux = true ]; then
 
         echo "UNINSTALLING X11"
 
@@ -257,43 +266,6 @@ if [ $1 = "uninstall" ]; then
         echo "UNINSTALLING TOOLS"
 
         sudo apt-get remove -y $tools_linux
-    fi
-
-    if [ $osx = true ]; then
-	
-        echo ""
-        echo "UNINSTALLING Qt"
-
-        brew remove -y Qt@5.5
-
-        echo ""
-        echo "UNINSTALLING Boost"
-
-        brew remove -y boost@1.55 
-
-        echo ""
-        echo "UNINSTALLING VLC"
-
-	brew cask remove vlc
-
-        echo ""
-        echo "UNINSTALLING libtorrent"
-
-	brew remove -y libtorrent-rasterbar
-
-#	pushd libtorrent-rasterbar-1.1.4
-#	sudo make uninstall
-#	make clean
-#	popd
-#	rm -rf libtorrent-rasterbar-1.1.4
-#	rm libtorrent-rasterbar-1.1.4.tar.gz
-
-# We have to remove OpenSSL after libtorrent because it's a dependency of libtorrent, and libtorrent will complain and not uninstall properly
-	echo ""
-	echo "UNINSTALLING OpenSSL"
-	
-	brew remove -y openssl
-
     fi
 fi
 
