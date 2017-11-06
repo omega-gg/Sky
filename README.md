@@ -47,7 +47,7 @@ On Windows:
 
 You can configure Sky with:
 
-    sh configure.sh <qt4 | qt5 | clean> <win32 | linux>
+    sh configure.sh <qt4 | qt5 | clean> <win32 | osx | linux>
 
 - Edit [configure.sh](configure.sh) to check your dependencies.
 
@@ -59,7 +59,7 @@ You can build Sky with Qt Creator:
 
 Or the build script:
 
-    sh build.sh <qt4 | qt5 | clean> <win32 | linux> [deploy]
+    sh build.sh <qt4 | qt5 | clean> <win32 | osx | linux> [deploy]
 
 Or the console:
 
@@ -72,7 +72,7 @@ Or the console:
 
 You can deploy Sky with:
 
-    sh deploy.sh <qt4 | qt5 | clean> <win32 | linux>
+    sh deploy.sh <qt4 | qt5 | clean> <win32 | osx | linux>
 
 - Edit [deploy.sh](deploy.sh) to check your dependencies.
 
