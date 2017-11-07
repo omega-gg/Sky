@@ -196,20 +196,22 @@ void WBackendTmdbPrivate::applyQuery(WBackendNetQuery * query, const QString & l
 
                 query->url = url;
 
-                query->id   = 3;
-                query->data = variants;
+                query->id = 3;
             }
             else
             {
                 variants.append(show);
-                variants.append(episode);
 
                 query->url = source + QString::number(season)
                              +
-                             "/episode/" + QString::number(episode) + "?language=en";
+                             "/episode/" + QString::number(episode)
+                             +
+                             "/images/backdrops?language=en";
 
                 query->id = 4;
             }
+
+            query->data = variants;
 
             return;
         }
@@ -514,7 +516,7 @@ WBackendNetTrack WBackendTmdb::extractTrack(const QByteArray       & data,
 
     int id = query.id;
 
-    if (id == 2) // Movie
+    if (id == 2 || id == 4)
     {
         int index = content.indexOf("<div class=\"image_content\">");
 
@@ -552,23 +554,13 @@ WBackendNetTrack WBackendTmdb::extractTrack(const QByteArray       & data,
 
         nextQuery->url = "https://www.themoviedb.org" + source
                          +
-                         "/season/" + variants.at(1).toString()
+                         "/season/" + variants.takeAt(1).toString()
                          +
-                         "/episode/" + variants.last().toString() + "?language=en";
+                         "/episode/" + variants.takeLast().toString()
+                         +
+                         "/images/backdrops?language=en";
 
         nextQuery->id = 4;
-    }
-    else if (id == 4) // Show
-    {
-        QString string = Sk::slice(content, "class=\"episode opened\"", "</a>");
-
-        QString source = WControllerNetwork::extractAttribute(string, "data-src");
-
-        source = source.mid(source.lastIndexOf('/'));
-
-        if (source.isEmpty()) return reply;
-
-        reply.track.setCover("https://image.tmdb.org/t/p/original" + source);
     }
     else if (id == 1) // Movie
     {
