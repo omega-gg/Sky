@@ -1727,18 +1727,16 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QPixmap WView::takeItemShot(QGraphicsObject * item,
-                                                     const QColor    & background,
-                                                     bool              forceVisible)
+                                                     const QColor    & background)
 {
-    return WControllerView::takeItemShot(item, background, forceVisible);
+    return WControllerView::takeItemShot(item, background);
 }
 
 /* Q_INVOKABLE static */ bool WView::saveItemShot(const QString   & fileName,
                                                   QGraphicsObject * item,
-                                                  const QColor    & background,
-                                                  bool              forceVisible)
+                                                  const QColor    & background)
 {
-    return WControllerView::saveItemShot(fileName, item, background, forceVisible);
+    return WControllerView::saveItemShot(fileName, item, background);
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -271,7 +271,7 @@ WallBookmarkTrack
 
                     if (videoShot == "")
                     {
-                        itemShot.setItemShot(playerBack, true);
+                        itemShot.setItemShot(playerBack);
                     }
                     else itemShot.loadSource(videoShot, true);
 

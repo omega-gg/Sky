@@ -65,23 +65,17 @@ public: // Static functions
     Q_INVOKABLE static const QRect screenGeometry(const QWidget * widget);
     Q_INVOKABLE static const QRect screenGeometry(const QPoint  & pos);
 
-    Q_INVOKABLE static QPixmap takeItemShot(QGraphicsObject  * item,
-                                            const QColor     & background   = Qt::transparent,
-                                            bool               forceVisible = false);
+    Q_INVOKABLE static QPixmap takeItemShot(QGraphicsObject * item,
+                                            const QColor    & background = Qt::transparent);
 
-    Q_INVOKABLE static bool saveItemShot(const QString    & fileName,
-                                         QGraphicsObject  * item,
-                                         const QColor     & background   = Qt::transparent,
-                                         bool               forceVisible = false);
+    Q_INVOKABLE static bool saveItemShot(const QString   & fileName,
+                                         QGraphicsObject * item,
+                                         const QColor    & background = Qt::transparent);
 
     Q_INVOKABLE static QImage desaturate(const QImage & image);
 
     Q_INVOKABLE static bool compressShot (const QString & fileName, int quality = 0);
     Q_INVOKABLE static bool compressShots(const QString & path,     int quality = 0);
-
-private: // Static functions
-    static void paintRecursive(QPainter * painter, QGraphicsObject * item, bool forceVisible);
-    static void paintChild    (QPainter * painter, QGraphicsObject * item, bool forceVisible);
 
 signals:
     void openglChanged();

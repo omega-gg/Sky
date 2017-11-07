@@ -520,18 +520,16 @@ void WWindowPrivate::init()
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QPixmap WWindow::takeItemShot(QGraphicsObject * item,
-                                                       const QColor    & background,
-                                                       bool              forceVisible)
+                                                       const QColor    & background)
 {
-    return WView::takeItemShot(item, background, forceVisible);
+    return WView::takeItemShot(item, background);
 }
 
 /* Q_INVOKABLE static */ bool WWindow::saveItemShot(const QString   & fileName,
                                                     QGraphicsObject * item,
-                                                    const QColor    & background,
-                                                    bool              forceVisible)
+                                                    const QColor    & background)
 {
-    return WView::saveItemShot(fileName, item, background, forceVisible);
+    return WView::saveItemShot(fileName, item, background);
 }
 
 //-------------------------------------------------------------------------------------------------

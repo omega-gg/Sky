@@ -248,14 +248,12 @@ public: // Interface
 #endif
 
 public: // Static functions
-    Q_INVOKABLE static QPixmap takeItemShot(QGraphicsObject  * item,
-                                            const QColor     & background   = Qt::transparent,
-                                            bool               forceVisible = false);
+    Q_INVOKABLE static QPixmap takeItemShot(QGraphicsObject * item,
+                                            const QColor    & background = Qt::transparent);
 
-    Q_INVOKABLE static bool saveItemShot(const QString    & fileName,
-                                         QGraphicsObject  * item,
-                                         const QColor     & background   = Qt::transparent,
-                                         bool               forceVisible = false);
+    Q_INVOKABLE static bool saveItemShot(const QString   & fileName,
+                                         QGraphicsObject * item,
+                                         const QColor    & background = Qt::transparent);
 
     Q_INVOKABLE static bool compressShot (const QString & fileName, int quality = 0);
     Q_INVOKABLE static bool compressShots(const QString & path,     int quality = 0);

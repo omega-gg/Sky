@@ -54,9 +54,9 @@ public: // Functions
     void registerView  (WView * view);
     void unregisterView(WView * view);
 
-    void paintRecursive(QPainter * painter, QGraphicsObject * item, bool forceVisible) const;
-    void paintChild    (QPainter * painter, QGraphicsObject * item, bool forceVisible) const;
-    void paintItem     (QPainter * painter, QGraphicsObject * item)                    const;
+public: // Static functions
+    static void paintRecursive(QPainter * painter, QGraphicsObject * item);
+    static void paintChild    (QPainter * painter, QGraphicsObject * item);
 
 public: // Variables
     QList<WView *> views;

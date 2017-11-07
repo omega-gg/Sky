@@ -53,7 +53,7 @@ void WControllerViewPrivate::init()
 }
 
 //-------------------------------------------------------------------------------------------------
-// Functions
+// Private functions
 //-------------------------------------------------------------------------------------------------
 
 void WControllerViewPrivate::registerView(WView * view)
@@ -64,6 +64,77 @@ void WControllerViewPrivate::registerView(WView * view)
 void WControllerViewPrivate::unregisterView(WView * view)
 {
     views.removeOne(view);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private static functions
+//-------------------------------------------------------------------------------------------------
+
+/* static */ void WControllerViewPrivate::paintRecursive(QPainter        * painter,
+                                                         QGraphicsObject * item)
+{
+    QList<QGraphicsObject *> childs;
+
+    foreach (QGraphicsItem * item, item->childItems())
+    {
+        QGraphicsObject * child = item->toGraphicsObject();
+
+        if (child)
+        {
+            if (child->zValue() < 0)
+            {
+                paintChild(painter, child);
+            }
+            else childs.append(child);
+        }
+    }
+
+    QStyleOptionGraphicsItem style;
+
+    style.rect = item->boundingRect().toRect();
+
+    style.exposedRect = style.rect;
+
+    item->paint(painter, &style);
+
+    foreach (QGraphicsObject * child, childs)
+    {
+        paintChild(painter, child);
+    }
+}
+
+/* static */ void WControllerViewPrivate::paintChild(QPainter        * painter,
+                                                     QGraphicsObject * item)
+{
+    if (item->isVisible() == false) return;
+
+    painter->save();
+
+    painter->translate(item->x(), item->y());
+
+    qreal rotation = item->rotation();
+
+    if (rotation)
+    {
+        QPointF origin = item->transformOriginPoint();
+
+        painter->translate(origin);
+
+        painter->rotate(rotation);
+
+        painter->translate(-origin);
+    }
+
+    if (item->flags() & QGraphicsItem::ItemClipsChildrenToShape)
+    {
+        painter->setClipRect(item->boundingRect(), Qt::IntersectClip);
+    }
+
+    painter->setOpacity(item->effectiveOpacity());
+
+    paintRecursive(painter, item);
+
+    painter->restore();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -132,8 +203,7 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QPixmap WControllerView::takeItemShot(QGraphicsObject * item,
-                                                               const QColor    & background,
-                                                               bool              forceVisible)
+                                                               const QColor    & background)
 {
     Q_ASSERT(item);
 
@@ -147,7 +217,7 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 
     QPainter painter(&pixmap);
 
-    paintRecursive(&painter, item, forceVisible);
+    WControllerViewPrivate::paintRecursive(&painter, item);
 
     painter.end();
 
@@ -156,10 +226,9 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 
 /* Q_INVOKABLE static */ bool WControllerView::saveItemShot(const QString   & fileName,
                                                             QGraphicsObject * item,
-                                                            const QColor    & background,
-                                                            bool              forceVisible)
+                                                            const QColor    & background)
 {
-    QImage image = takeItemShot(item, background, forceVisible).toImage();
+    QImage image = takeItemShot(item, background).toImage();
 
     return image.save(fileName, "png");
 }
@@ -240,77 +309,6 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
     }
 
     return true;
-}
-
-//-------------------------------------------------------------------------------------------------
-// Private static functions
-//-------------------------------------------------------------------------------------------------
-
-/* static */ void WControllerView::paintRecursive(QPainter        * painter,
-                                                  QGraphicsObject * item, bool forceVisible)
-{
-    if (item->isVisible() == false && forceVisible == false) return;
-
-    QList<QGraphicsObject *> childs;
-
-    foreach (QGraphicsItem * item, item->childItems())
-    {
-        QGraphicsObject * child = item->toGraphicsObject();
-
-        if (child)
-        {
-            if (child->zValue() < 0)
-            {
-                paintChild(painter, child, forceVisible);
-            }
-            else childs.append(child);
-        }
-    }
-
-    QStyleOptionGraphicsItem style;
-
-    style.rect = item->boundingRect().toRect();
-
-    style.exposedRect = style.rect;
-
-    item->paint(painter, &style);
-
-    foreach (QGraphicsObject * child, childs)
-    {
-        paintChild(painter, child, forceVisible);
-    }
-}
-
-/* static */ void WControllerView::paintChild(QPainter        * painter,
-                                              QGraphicsObject * item, bool forceVisible)
-{
-    painter->save();
-
-    painter->translate(item->x(), item->y());
-
-    qreal rotation = item->rotation();
-
-    if (rotation)
-    {
-        QPointF origin = item->transformOriginPoint();
-
-        painter->translate(origin);
-
-        painter->rotate(rotation);
-
-        painter->translate(-origin);
-    }
-
-    if (item->flags() & QGraphicsItem::ItemClipsChildrenToShape)
-    {
-        painter->setClipRect(item->boundingRect(), Qt::IntersectClip);
-    }
-
-    painter->setOpacity(item->effectiveOpacity());
-
-    paintRecursive(painter, item, forceVisible);
-
-    painter->restore();
 }
 
 //-------------------------------------------------------------------------------------------------
