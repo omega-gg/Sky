@@ -41,8 +41,8 @@
 
 // Mac includes
 #ifdef Q_OS_MAC
-#include <openGL/gl.h>
-#include <openGL/glext.h>
+#include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
 #endif
 
 // Linux includes
