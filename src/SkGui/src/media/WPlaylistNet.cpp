@@ -639,8 +639,12 @@ void WPlaylistNetPrivate::loadTracks(const QList<WTrackNet> & tracks)
 
 //-------------------------------------------------------------------------------------------------
 
-void WPlaylistNetPrivate::loadTrack(WTrackNet * track, int index)
+bool WPlaylistNetPrivate::loadTrack(int index)
 {
+    WTrackNet * track = &(tracks[index]);
+
+    if (track->isDefault() == false) return false;
+
     Q_Q(WPlaylistNet);
 
     wControllerPlaylist->d_func()->applySourceTrack(q, track, track->source());
@@ -654,19 +658,19 @@ void WPlaylistNetPrivate::loadTrack(WTrackNet * track, int index)
             loadCover(track);
         }
     }
-    else if (state == WAbstractTrack::Default)
+    else if (state == WAbstractTrack::Default
+             &&
+             (track->cover().isValid() || loadCover(track) == false))
     {
-        if (track->cover().isValid())
-        {
-            track->setState(WAbstractTrack::Loaded);
+        track->setState(WAbstractTrack::Loaded);
 
-            q->updateTrack(index);
-        }
-        else loadCover(track);
+        q->updateTrack(index);
     }
+
+    return true;
 }
 
-void WPlaylistNetPrivate::loadCover(WTrackNet * track)
+bool WPlaylistNetPrivate::loadCover(WTrackNet * track)
 {
     QString label = track->author();
 
@@ -679,13 +683,15 @@ void WPlaylistNetPrivate::loadCover(WTrackNet * track)
 
     WBackendNet * backend = wControllerPlaylist->backendForCover(label, title);
 
-    if (backend == NULL) return;
+    if (backend == NULL) return false;
 
     Q_Q(WPlaylistNet);
 
     WBackendNetQuery query = backend->createQuery("cover", label, title);
 
     wControllerPlaylist->d_func()->applyQueryTrack(q, track, query);
+
+    return true;
 }
 
 //=================================================================================================
@@ -953,12 +959,7 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
 
     if (at < 0 || at >= d->tracks.count()) return;
 
-    WTrackNet * track = &(d->tracks[at]);
-
-    if (track->isDefault())
-    {
-        d->loadTrack(track, at);
-    }
+    d->loadTrack(at);
 }
 
 /* Q_INVOKABLE */ void WPlaylistNet::loadTracks(int at, int count)
@@ -973,12 +974,8 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
 
     while (index < at)
     {
-        WTrackNet * track = &(d->tracks[index]);
-
-        if (track->isDefault())
+        if (d->loadTrack(index))
         {
-            d->loadTrack(track, index);
-
             count--;
 
             index++;
@@ -991,12 +988,7 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
 
     while (index < d->tracks.count() && count)
     {
-        WTrackNet * track = &(d->tracks[index]);
-
-        if (track->isDefault())
-        {
-            d->loadTrack(track, index);
-        }
+        d->loadTrack(index);
 
         count--;
 

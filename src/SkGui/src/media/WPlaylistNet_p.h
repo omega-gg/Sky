@@ -50,8 +50,9 @@ public: // Functions
 
     void loadTracks(const QList<WTrackNet> & tracks);
 
-    void loadTrack(WTrackNet * track, int index);
-    void loadCover(WTrackNet * track);
+    bool loadTrack(int index);
+
+    bool loadCover(WTrackNet * track);
 
 public: // Variables
     QList<WTrackNet> tracks;

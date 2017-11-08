@@ -121,6 +121,7 @@ echo ""
 cd $build
 
 qmake -r -spec $spec "CONFIG += release" $Sky
+echo ""
 
 if [ $2 = "win32" ]; then
 

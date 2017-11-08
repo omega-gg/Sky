@@ -43,10 +43,6 @@ INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkMedia/private \
                $$SK/include \
 
-contains(QT_MAJOR_VERSION, 5):!macx {
-    LIBS += -lopengl32
-}
-
 CONFIG(debug, debug|release) {
 
     LIBS += -L$$SK/lib -lSkCoreD \
@@ -54,6 +50,10 @@ CONFIG(debug, debug|release) {
 } else {
     LIBS += -L$$SK/lib -lSkCore \
             -L$$SK/lib -lSkGui
+}
+
+contains(QT_MAJOR_VERSION, 5):!macx {
+    LIBS += -lopengl32
 }
 
 win32:LIBS += -L$$SK/lib -llibvlc
@@ -94,11 +94,7 @@ win32:equals(QMAKE_COPY, "cp") {
     QMAKE_POST_LINK += $${QMAKE_COPY} $$SK/lib/$${TARGET}.dll $$SK/$$SK_BIN
 }
 
-macx {
-    QMAKE_COPY = ditto
-
-    QMAKE_POST_LINK += $${QMAKE_COPY} $$SK/lib/lib$${TARGET}.dylib $$SK/$$SK_BIN
-}
+macx: QMAKE_POST_LINK += $${QMAKE_COPY} $$SK/lib/lib$${TARGET}.dylib $$SK/$$SK_BIN
 
 unix:!macx {
     QMAKE_POST_LINK += $${QMAKE_COPY} $$SK/lib/lib$${TARGET}.so $$SK/$$SK_BIN
