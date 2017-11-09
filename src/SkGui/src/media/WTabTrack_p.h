@@ -50,7 +50,7 @@ struct WTabTrackDataBookmark
     QList<int> idPlaylist;
     int        idTrack;
 
-    WAbstractTrack::State state;
+    WTrack::State state;
 
     QUrl source;
 
@@ -101,7 +101,7 @@ public: // Functions
 
     void clearPlaylist();
 
-    void setTrack(const WAbstractTrack * track);
+    void setTrack(const WTrack * track);
 
     void setVideoShot(WBookmarkTrack * bookmark, const QUrl & url);
 

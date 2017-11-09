@@ -281,7 +281,7 @@ void WDeclarativePlayerPrivate::resetShuffle()
     {
         int index = q->trackIndex();
 
-        const WAbstractTrack * track = playlist->trackPointerAt(index);
+        const WTrack * track = playlist->trackPointerAt(index);
 
         if (track)
         {
@@ -312,7 +312,7 @@ void WDeclarativePlayerPrivate::clearShuffle()
 
 //-------------------------------------------------------------------------------------------------
 
-void WDeclarativePlayerPrivate::setShuffleTrack(const WAbstractTrack * track)
+void WDeclarativePlayerPrivate::setShuffleTrack(const WTrack * track)
 {
     shuffleLock = true;
 
@@ -445,7 +445,7 @@ void WDeclarativePlayerPrivate::onCurrentTrackChanged()
 {
     Q_Q(WDeclarativePlayer);
 
-    const WAbstractTrack * track = playlist->currentTrackPointer();
+    const WTrack * track = playlist->currentTrackPointer();
 
     loadSource(track->source(), track->duration(), -1);
 
@@ -682,7 +682,7 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
     {
         if (d->shuffleIndex == -1) return;
 
-        const WAbstractTrack * track;
+        const WTrack * track;
 
         if (d->shuffleTracks.isEmpty() && d->shuffleIndex == 0
             &&
@@ -744,7 +744,7 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
     {
         if (d->shuffleIndex == -1) return;
 
-        const WAbstractTrack * track;
+        const WTrack * track;
 
         int last = d->shuffleHistory.count() - 1;
 
@@ -861,7 +861,7 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 
     for (int i = first; i <= last; i++)
     {
-        const WAbstractTrack * track = d->playlist->trackPointerAt(i);
+        const WTrack * track = d->playlist->trackPointerAt(i);
 
         d->shuffleTracks.append(track);
     }
@@ -892,7 +892,7 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 
     for (int i = first; i <= last; i++)
     {
-        const WAbstractTrack * track = d->playlist->trackPointerAt(i);
+        const WTrack * track = d->playlist->trackPointerAt(i);
 
         if (d->shuffleIndex == i)
         {
@@ -1484,37 +1484,36 @@ bool WDeclarativePlayer::hasNextTrack() const
 
 //-------------------------------------------------------------------------------------------------
 
-WAbstractTrack::State WDeclarativePlayer::trackState() const
+WTrack::State WDeclarativePlayer::trackState() const
 {
     Q_D(const WDeclarativePlayer);
 
     if (d->playlist)
     {
-        const WTrackNet * track
-                        = static_cast<const WTrackNet *> (d->playlist->currentTrackPointer());
+        const WTrack * track = static_cast<const WTrack *> (d->playlist->currentTrackPointer());
 
         if (track)
         {
              return track->state();
         }
-        else return WAbstractTrack::Default;
+        else return WTrack::Default;
     }
-    else return WAbstractTrack::Default;
+    else return WTrack::Default;
 }
 
 bool WDeclarativePlayer::trackIsDefault() const
 {
-    return (trackState() == WAbstractTrack::Default);
+    return (trackState() == WTrack::Default);
 }
 
 bool WDeclarativePlayer::trackIsLoading() const
 {
-    return (trackState() == WAbstractTrack::Loading);
+    return (trackState() == WTrack::Loading);
 }
 
 bool WDeclarativePlayer::trackIsLoaded() const
 {
-    return (trackState() == WAbstractTrack::Loaded);
+    return (trackState() == WTrack::Loaded);
 }
 
 //-------------------------------------------------------------------------------------------------

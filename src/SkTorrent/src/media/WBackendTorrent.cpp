@@ -406,8 +406,8 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
         items.append(item);
     }
 
-    QList<WTrackNet> tracks;
-    QList<int>       ids;
+    QList<WTrack> tracks;
+    QList<int>    ids;
 
     QString url = query.url.toString();
 
@@ -429,7 +429,7 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
                 QString source = url + '#' + QString::number(id) + '.' + extension;
 
-                WTrackNet track(WControllerNetwork::encodedUrl(source), WAbstractTrack::Default);
+                WTrack track(WControllerNetwork::encodedUrl(source), WTrack::Default);
 
                 track.setTitle(title);
 

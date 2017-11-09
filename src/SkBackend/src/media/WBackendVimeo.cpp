@@ -532,7 +532,7 @@ WBackendNetTrack WBackendVimeo::extractTrack(const QByteArray       & data,
 
     QString quality = WControllerNetwork::extractJson(content, "videoQuality");
 
-    WTrackNet * track = &(reply.track);
+    WTrack * track = &(reply.track);
 
     track->setTitle(title);
     track->setCover(cover);
@@ -687,7 +687,7 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
 
                 cover = d->extractCover(cover);
 
-                WTrackNet track("https://vimeo.com/" + id, WAbstractTrack::Default);
+                WTrack track("https://vimeo.com/" + id, WTrack::Default);
 
                 track.setTitle(title);
                 track.setCover(cover);
@@ -714,7 +714,7 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
 
         cover = d->extractCover(cover);
 
-        WTrackNet track("https://vimeo.com/" + id, WAbstractTrack::Default);
+        WTrack track("https://vimeo.com/" + id, WTrack::Default);
 
         track.setTitle(title);
         track.setCover(cover);

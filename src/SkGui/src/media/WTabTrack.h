@@ -107,8 +107,8 @@ public: // Interface
     Q_INVOKABLE void setPreviousTrack(bool cycle = false);
     Q_INVOKABLE void setNextTrack    (bool cycle = false);
 
-    Q_INVOKABLE const WAbstractTrack * currentTrackPointer() const;
-    Q_INVOKABLE void                   setCurrentTrackPointer(const WAbstractTrack * track);
+    Q_INVOKABLE const WTrack * currentTrackPointer() const;
+    Q_INVOKABLE void           setCurrentTrackPointer(const WTrack * track);
 
     Q_INVOKABLE void copyTrackTo(WPlaylistNet * destination, int to = -1);
 
@@ -182,7 +182,7 @@ public: // Properties
 
     QVariantMap trackData() const;
 
-    WAbstractTrack::State state() const;
+    WTrack::State state() const;
 
     QUrl source() const;
 

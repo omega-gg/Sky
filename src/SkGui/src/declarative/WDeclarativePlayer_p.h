@@ -56,7 +56,7 @@ public: // Functions
     void resetShuffle();
     void clearShuffle();
 
-    void setShuffleTrack(const WAbstractTrack * track);
+    void setShuffleTrack(const WTrack * track);
 
     void clearPlaylistAndTabs();
 
@@ -98,10 +98,10 @@ public: // Variables
 
     bool shuffle;
 
-    QList<const WAbstractTrack *> shuffleTracks;
-    QList<const WAbstractTrack *> shuffleHistory;
-    int                           shuffleIndex;
-    bool                          shuffleLock;
+    QList<const WTrack *> shuffleTracks;
+    QList<const WTrack *> shuffleHistory;
+    int                   shuffleIndex;
+    bool                  shuffleLock;
 
     WDeclarativePlayer::Repeat repeat;
 

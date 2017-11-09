@@ -25,7 +25,7 @@
 // Forward declarations
 class WAbstractPlaylistPrivate;
 class WPlaylistNet;
-class WAbstractTrack;
+class WTrack;
 
 //-------------------------------------------------------------------------------------------------
 // WAbstractPlaylistWatcher
@@ -144,15 +144,15 @@ public: // Interface
     //---------------------------------------------------------------------------------------------
     // Pointers
 
-    Q_INVOKABLE const WAbstractTrack * trackPointerFromId(int id)    const;
-    Q_INVOKABLE const WAbstractTrack * trackPointerAt    (int index) const;
+    Q_INVOKABLE const WTrack * trackPointerFromId(int id)    const;
+    Q_INVOKABLE const WTrack * trackPointerAt    (int index) const;
 
-    Q_INVOKABLE QList<const WAbstractTrack *> trackPointers() const;
+    Q_INVOKABLE QList<const WTrack *> trackPointers() const;
 
-    Q_INVOKABLE const WAbstractTrack * currentTrackPointer() const;
-    Q_INVOKABLE void                   setCurrentTrackPointer(const WAbstractTrack * track);
+    Q_INVOKABLE const WTrack * currentTrackPointer() const;
+    Q_INVOKABLE void           setCurrentTrackPointer(const WTrack * track);
 
-    Q_INVOKABLE bool containsTrackPointer(const WAbstractTrack * track) const;
+    Q_INVOKABLE bool containsTrackPointer(const WTrack * track) const;
 
     //---------------------------------------------------------------------------------------------
     // Watchers
@@ -161,7 +161,7 @@ public: // Interface
     Q_INVOKABLE void unregisterWatcher(WAbstractPlaylistWatcher * watcher);
 
 public: // Abstract interface
-    virtual int indexOf(const WAbstractTrack * track) const = 0;
+    virtual int indexOf(const WTrack * track) const = 0;
 
     virtual int indexFromId(int id) const = 0;
 
@@ -170,7 +170,7 @@ protected: // Functions
 
     void updateTrack(int index);
 
-    void updateTrack(const WAbstractTrack * track);
+    void updateTrack(const WTrack * track);
 
     void beginTracksInsert(int first, int last)         const;
     void beginTracksMove  (int first, int last, int to) const;
@@ -183,8 +183,8 @@ protected: // Functions
 protected: // Abstract functions
     virtual int itemCount() const = 0;
 
-    virtual const WAbstractTrack * itemFromId(int id)    const = 0;
-    virtual const WAbstractTrack * itemAt    (int index) const = 0;
+    virtual const WTrack * itemFromId(int id)    const = 0;
+    virtual const WTrack * itemAt    (int index) const = 0;
 
     virtual void moveItemTo(int from, int to) = 0;
 

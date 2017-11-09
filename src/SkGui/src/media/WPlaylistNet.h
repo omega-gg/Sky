@@ -19,7 +19,7 @@
 
 // Sk includes
 #include <WAbstractPlaylist>
-#include <WTrackNet>
+#include <WTrack>
 
 #ifndef SK_NO_PLAYLISTNET
 
@@ -35,7 +35,7 @@ class SK_GUI_EXPORT WPlaylistNet : public WAbstractPlaylist
 {
     Q_OBJECT
 
-    Q_PROPERTY(QList<WTrackNet> tracks READ tracks)
+    Q_PROPERTY(QList<WTrack> tracks READ tracks)
 
 public:
     explicit WPlaylistNet(WLibraryFolder * parent = NULL);
@@ -43,11 +43,11 @@ protected:
     WPlaylistNet(WPlaylistNetPrivate * p, Type type, WLibraryFolder * parent = NULL);
 
 public: // Interface
-    void addTrack (const WTrackNet        & track);
-    void addTracks(const QList<WTrackNet> & tracks);
+    void addTrack (const WTrack        & track);
+    void addTracks(const QList<WTrack> & tracks);
 
-    void insertTrack (int index, const WTrackNet        & track);
-    void insertTracks(int index, const QList<WTrackNet> & tracks);
+    void insertTrack (int index, const WTrack        & track);
+    void insertTracks(int index, const QList<WTrack> & tracks);
 
     Q_INVOKABLE int addSource(const QUrl & url);
 
@@ -71,13 +71,13 @@ public: // Interface
 
     //---------------------------------------------------------------------------------------------
 
-    bool contains(const WTrackNet & track) const;
+    bool contains(const WTrack & track) const;
 
     Q_INVOKABLE bool containsSource(const QUrl & source) const;
 
     //---------------------------------------------------------------------------------------------
 
-    WTrackNet getTrackAt(int index) const;
+    WTrack getTrackAt(int index) const;
 
     Q_INVOKABLE WPlaylistNet * duplicate() const;
 
@@ -97,8 +97,8 @@ public: // Interface
 
     Q_INVOKABLE QVariantMap trackData(int index) const;
 
-    Q_INVOKABLE WAbstractTrack::State trackState   (int index) const;
-    Q_INVOKABLE void                  setTrackState(int index, WAbstractTrack::State state);
+    Q_INVOKABLE WTrack::State trackState   (int index) const;
+    Q_INVOKABLE void          setTrackState(int index, WTrack::State state);
 
     Q_INVOKABLE bool trackIsDefault(int index) const;
     Q_INVOKABLE bool trackIsLoading(int index) const;
@@ -134,7 +134,7 @@ public: // Static functions
     Q_INVOKABLE static WPlaylistNet * fromPlaylist(WAbstractPlaylist * playlist);
 
 public: // WAbstractPlaylist implementation
-    /* virtual */ int indexOf(const WAbstractTrack * track) const;
+    /* virtual */ int indexOf(const WTrack * track) const;
 
     /* virtual */ int indexFromId(int id) const;
 
@@ -151,15 +151,15 @@ protected: // WLibraryItem reimplementation
 protected: // WAbstractPlaylist implementation
     /* virtual */ int itemCount() const;
 
-    /* virtual */ const WAbstractTrack * itemFromId(int id)    const;
-    /* virtual */ const WAbstractTrack * itemAt    (int index) const;
+    /* virtual */ const WTrack * itemFromId(int id)    const;
+    /* virtual */ const WTrack * itemAt    (int index) const;
 
     /* virtual */ void moveItemTo(int from, int to);
 
     /* virtual */ void clearItems();
 
 public: // Properties
-    QList<WTrackNet> tracks() const;
+    QList<WTrack> tracks() const;
 
 private:
     W_DECLARE_PRIVATE(WPlaylistNet)

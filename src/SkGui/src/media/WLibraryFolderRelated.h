@@ -25,7 +25,7 @@
 
 // Forward declarations
 class WLibraryFolderRelatedPrivate;
-class WTrackNet;
+class WTrack;
 
 class SK_GUI_EXPORT WLibraryFolderRelated : public WLibraryFolder
 {
@@ -38,7 +38,7 @@ public:
     explicit WLibraryFolderRelated(WLibraryFolder * parent = NULL);
 
 public: // Interface
-    Q_INVOKABLE void loadTracks(const WTrackNet   & track);
+    Q_INVOKABLE void loadTracks(const WTrack      & track);
     Q_INVOKABLE void loadTracks(const QVariantMap & data);
 
     Q_INVOKABLE void setPreviousPlaylist();

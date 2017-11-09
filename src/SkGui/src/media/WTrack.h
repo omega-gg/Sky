@@ -14,8 +14,8 @@
 */
 //=================================================================================================
 
-#ifndef WABSTRACTTRACK_H
-#define WABSTRACTTRACK_H
+#ifndef WTRACK_H
+#define WTRACK_H
 
 // Qt includes
 #include <QVariant>
@@ -23,34 +23,35 @@
 // Sk includes
 #include <WAbstractBackend>
 
-#ifndef SK_NO_ABSTRACTTRACK
+#ifndef SK_NO_TRACK
 
 // Forward declarations
 class QDateTime;
-class WAbstractTrackPrivate;
+class WTrackPrivate;
 class WAbstractPlaylist;
+class WPlaylistNet;
 
-class SK_GUI_EXPORT WAbstractTrack : public WPrivatable
+class SK_GUI_EXPORT WTrack : public WPrivatable
 {
 public: // Enums
     enum State { Default, Loading, Loaded };
 
-protected:
-    WAbstractTrack(WAbstractTrackPrivate * p, State state = Loaded);
+public:
+    explicit WTrack(const QUrl & source = QUrl(), State state = Loaded);
 
 public: // Interface
     bool isValid() const;
 
-    void copyDataTo (WAbstractTrack * other) const;
-    void applyDataTo(WAbstractTrack * other) const;
+    void copyDataTo (WTrack * other) const;
+    void applyDataTo(WTrack * other) const;
 
 public: // Virtual interface
     virtual QVariantMap toMap() const;
 
 public: // Operators
-    bool operator==(const WAbstractTrack & other) const;
+    bool operator==(const WTrack & other) const;
 
-    WAbstractTrack & operator=(const WAbstractTrack & other);
+    WTrack & operator=(const WTrack & other);
 
 public: // Properties
     int id() const;
@@ -88,9 +89,15 @@ public: // Properties
 
     WAbstractPlaylist * playlist() const;
 
+    WPlaylistNet * playlistNet() const;
+
 private:
-    W_DECLARE_PRIVATE_COPY(WAbstractTrack)
+    W_DECLARE_PRIVATE_COPY(WTrack)
+
+    friend class WPlaylistNet;
+    friend class WPlaylistNetPrivate;
+    friend class WPlaylistNetRead;
 };
 
-#endif // SK_NO_ABSTRACTTRACK
-#endif // WABSTRACTTRACK_H
+#endif // SK_NO_TRACK
+#endif // WTRACK_H

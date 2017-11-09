@@ -25,13 +25,13 @@
 // Sk includes
 #include <WAbstractBackend>
 #include <WLibraryFolder>
-#include <WTrackNet>
+#include <WTrack>
 
 #ifndef SK_NO_BACKENDNET
 
 // Forward declarations
 class WBackendNetPrivate;
-class WTrackNet;
+class WTrack;
 class WPlaylistNet;
 class WLibraryFolder;
 
@@ -156,7 +156,7 @@ public:
     WBackendNetTrack();
 
 public: // Variables
-    WTrackNet track;
+    WTrack track;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -172,7 +172,7 @@ public: // Variables
     QString title;
     QUrl    cover;
 
-    QList<WTrackNet> tracks;
+    QList<WTrack> tracks;
 
     int currentIndex;
 

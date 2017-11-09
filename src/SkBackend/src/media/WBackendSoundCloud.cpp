@@ -41,7 +41,7 @@ public:
     void init();
 
 public: // Functions
-    void loadTrack(WTrackNet * track, const QString & json) const;
+    void loadTrack(WTrack * track, const QString & json) const;
 
     bool extractId(const QString & data, const WBackendNetQuery & query,
                                          WBackendNetQuery       * nextQuery) const;
@@ -77,7 +77,7 @@ void WBackendSoundCloudPrivate::init() {}
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WBackendSoundCloudPrivate::loadTrack(WTrackNet * track, const QString & json) const
+void WBackendSoundCloudPrivate::loadTrack(WTrack * track, const QString & json) const
 {
     QString title = WControllerNetwork::extractJsonUtf8(json, "title");
     QString cover = WControllerNetwork::extractJson    (json, "artwork_url");
@@ -623,7 +623,7 @@ WBackendNetPlaylist WBackendSoundCloud::extractPlaylist(const QByteArray       &
 
             feed = WControllerNetwork::extractJson(feed, "permalink");
 
-            WTrackNet track("https://soundcloud.com/" + feed + '/' + source);
+            WTrack track("https://soundcloud.com/" + feed + '/' + source);
 
             d->loadTrack(&track, string);
 

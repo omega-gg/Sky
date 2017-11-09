@@ -101,8 +101,7 @@ void WModelPlaylistNetPrivate::init()
 
     if (index.row() < 0 || index.row() >= d->playlist->count()) return QVariant();
 
-    const WTrackNet * track
-                    = static_cast<const WTrackNet *> (d->playlist->trackPointerAt(index.row()));
+    const WTrack * track = static_cast<const WTrack *> (d->playlist->trackPointerAt(index.row()));
 
     if      (role == RoleState)    return track->state();
     else if (role == RoleSource)   return track->source();

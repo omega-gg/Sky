@@ -14,23 +14,54 @@
 */
 //=================================================================================================
 
-#ifndef WTRACKNET_P_H
-#define WTRACKNET_P_H
+#ifndef WTRACK_P_H
+#define WTRACK_P_H
 
-#include <private/WAbstractTrack_p>
+/*  W A R N I N G
+    -------------
 
-#ifndef SK_NO_TRACKNET
+    This file is not part of the Sk API. It exists purely as an
+    implementation detail. This header file may change from version to
+    version without notice, or even be removed.
 
-class SK_GUI_EXPORT WTrackNetPrivate : public WAbstractTrackPrivate
+    We mean it.
+*/
+
+#include <private/Sk_p>
+
+#ifndef SK_NO_TRACK
+
+class SK_GUI_EXPORT WTrackPrivate : public WPrivate
 {
-public:
-    WTrackNetPrivate(WTrackNet * p);
+protected:
+    WTrackPrivate(WTrack * p);
 
-    void init();
+    void init(WTrack::State state, const QUrl & source);
+
+public: // Variables
+    int id;
+
+    WTrack::State state;
+
+    QUrl source;
+
+    QString title;
+    QUrl    cover;
+
+    QString author;
+    QString feed;
+
+    int duration;
+
+    QDateTime date;
+
+    WAbstractBackend::Quality quality;
+
+    WAbstractPlaylist * playlist;
 
 protected:
-    W_DECLARE_PUBLIC(WTrackNet)
+    W_DECLARE_PUBLIC(WTrack)
 };
 
-#endif // SK_NO_TRACKNET
-#endif // WTRACKNET_P_H
+#endif // SK_NO_TRACK
+#endif // WTRACK_P_H

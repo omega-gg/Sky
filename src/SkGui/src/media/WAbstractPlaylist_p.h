@@ -47,7 +47,7 @@ public: // Function
     bool hasPrevious(int index) const;
     bool hasNext    (int index) const;
 
-    bool insertSelected(const QList<int> & indexes, const WAbstractTrack * track, int index);
+    bool insertSelected(const QList<int> & indexes, const WTrack * track, int index);
 
     QList<int> getSelected() const;
 
@@ -56,7 +56,7 @@ public: // Function
     void emitSelectedTracksChanged(const QList<int> & indexes);
 
 public: // Variables
-    const WAbstractTrack * currentTrack;
+    const WTrack * currentTrack;
 
     int currentIndex;
     int currentTime;
@@ -65,7 +65,7 @@ public: // Variables
 
     int maxCount;
 
-    QList<const WAbstractTrack *> selectedTracks;
+    QList<const WTrack *> selectedTracks;
 
     QList<WAbstractPlaylistWatcher *> watchers;
 

@@ -168,9 +168,8 @@ bool WAbstractPlaylistPrivate::hasNext(int index) const
 
 //-------------------------------------------------------------------------------------------------
 
-bool WAbstractPlaylistPrivate::insertSelected(const QList<int>     & indexes,
-                                              const WAbstractTrack * track,
-                                              int                    index)
+bool WAbstractPlaylistPrivate::insertSelected(const QList<int> & indexes,
+                                              const WTrack     * track, int index)
 {
     if (selectedTracks.contains(track)) return false;
 
@@ -197,7 +196,7 @@ QList<int> WAbstractPlaylistPrivate::getSelected() const
 
     QList<int> selected;
 
-    foreach (const WAbstractTrack * track, selectedTracks)
+    foreach (const WTrack * track, selectedTracks)
     {
         int index = q->indexOf(track);
 
@@ -350,7 +349,7 @@ WAbstractPlaylist::WAbstractPlaylist(WAbstractPlaylistPrivate * p, Type         
 
     Q_D(WAbstractPlaylist);
 
-    const WAbstractTrack * track = itemAt(index);
+    const WTrack * track = itemAt(index);
 
     if (d->selectedTracks.contains(track)) return;
 
@@ -373,7 +372,7 @@ WAbstractPlaylist::WAbstractPlaylist(WAbstractPlaylistPrivate * p, Type         
     {
         for (int i = from; i <= to; i++)
         {
-            const WAbstractTrack * track = itemAt(i);
+            const WTrack * track = itemAt(i);
 
             if (d->insertSelected(selected, track, i))
             {
@@ -385,7 +384,7 @@ WAbstractPlaylist::WAbstractPlaylist(WAbstractPlaylistPrivate * p, Type         
     {
         for (int i = from; i >= to; i--)
         {
-            const WAbstractTrack * track = itemAt(i);
+            const WTrack * track = itemAt(i);
 
             if (d->insertSelected(selected, track, i))
             {
@@ -415,7 +414,7 @@ WAbstractPlaylist::WAbstractPlaylist(WAbstractPlaylistPrivate * p, Type         
 
     Q_D(WAbstractPlaylist);
 
-    const WAbstractTrack * track = itemAt(index);
+    const WTrack * track = itemAt(index);
 
     if (d->selectedTracks.contains(track))
     {
@@ -449,7 +448,7 @@ WAbstractPlaylist::WAbstractPlaylist(WAbstractPlaylistPrivate * p, Type         
 
     QList<int> indexes = selectedTracks();
 
-    foreach (const WAbstractTrack * track, d->selectedTracks)
+    foreach (const WTrack * track, d->selectedTracks)
     {
         int from = indexOf(track);
 
@@ -487,7 +486,7 @@ WAbstractPlaylist::WAbstractPlaylist(WAbstractPlaylistPrivate * p, Type         
 
     Q_D(WAbstractPlaylist);
 
-    const WAbstractTrack * track = itemAt(index);
+    const WTrack * track = itemAt(index);
 
     if (d->selectedTracks.contains(track) == false) return;
 
@@ -517,7 +516,7 @@ WAbstractPlaylist::WAbstractPlaylist(WAbstractPlaylistPrivate * p, Type         
 
     Q_D(const WAbstractPlaylist);
 
-    const WAbstractTrack * track = itemAt(index);
+    const WTrack * track = itemAt(index);
 
     if (d->selectedTracks.contains(track))
     {
@@ -552,12 +551,12 @@ WAbstractPlaylist::WAbstractPlaylist(WAbstractPlaylistPrivate * p, Type         
 //-------------------------------------------------------------------------------------------------
 // Pointers
 
-/* Q_INVOKABLE */ const WAbstractTrack * WAbstractPlaylist::trackPointerFromId(int id) const
+/* Q_INVOKABLE */ const WTrack * WAbstractPlaylist::trackPointerFromId(int id) const
 {
     return itemFromId(id);
 }
 
-/* Q_INVOKABLE */ const WAbstractTrack * WAbstractPlaylist::trackPointerAt(int index) const
+/* Q_INVOKABLE */ const WTrack * WAbstractPlaylist::trackPointerAt(int index) const
 {
     if (index < 0 || index >= count()) return NULL;
 
@@ -566,9 +565,9 @@ WAbstractPlaylist::WAbstractPlaylist(WAbstractPlaylistPrivate * p, Type         
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ QList<const WAbstractTrack *> WAbstractPlaylist::trackPointers() const
+/* Q_INVOKABLE */ QList<const WTrack *> WAbstractPlaylist::trackPointers() const
 {
-    QList<const WAbstractTrack *> tracks;
+    QList<const WTrack *> tracks;
 
     for (int i = 0; i < count(); i++)
     {
@@ -580,19 +579,19 @@ WAbstractPlaylist::WAbstractPlaylist(WAbstractPlaylistPrivate * p, Type         
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ const WAbstractTrack * WAbstractPlaylist::currentTrackPointer() const
+/* Q_INVOKABLE */ const WTrack * WAbstractPlaylist::currentTrackPointer() const
 {
     Q_D(const WAbstractPlaylist); return d->currentTrack;
 }
 
-/* Q_INVOKABLE */ void WAbstractPlaylist::setCurrentTrackPointer(const WAbstractTrack * track)
+/* Q_INVOKABLE */ void WAbstractPlaylist::setCurrentTrackPointer(const WTrack * track)
 {
     setCurrentIndex(indexOf(track));
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ bool WAbstractPlaylist::containsTrackPointer(const WAbstractTrack * track) const
+/* Q_INVOKABLE */ bool WAbstractPlaylist::containsTrackPointer(const WTrack * track) const
 {
     return (indexOf(track) != -1);
 }
@@ -663,7 +662,7 @@ void WAbstractPlaylist::updateTrack(int index)
     save();
 }
 
-void WAbstractPlaylist::updateTrack(const WAbstractTrack * track)
+void WAbstractPlaylist::updateTrack(const WTrack * track)
 {
     updateTrack(indexOf(track));
 }
@@ -792,7 +791,7 @@ void WAbstractPlaylist::setCurrentId(int id)
 
     Q_D(WAbstractPlaylist);
 
-    const WAbstractTrack * track = itemFromId(id);
+    const WTrack * track = itemFromId(id);
 
     if (d->currentTrack == track) return;
 
@@ -825,7 +824,7 @@ void WAbstractPlaylist::setCurrentIndex(int index)
 {
     if (index < 0 || index >= count()) return;
 
-    const WAbstractTrack * track = itemAt(index);
+    const WTrack * track = itemAt(index);
 
     setCurrentId(track->id());
 }
@@ -974,7 +973,7 @@ void WAbstractPlaylist::setSelectedTracks(const QList<int> & indexes)
 
     for (int i = 0; i < indexes.count(); i++)
     {
-        const WAbstractTrack * track = itemAt(i);
+        const WTrack * track = itemAt(i);
 
         if (d->insertSelected(selected, track, i))
         {
@@ -1003,7 +1002,7 @@ QString WAbstractPlaylist::selectedSources() const
 
     QString sources;
 
-    foreach (const WAbstractTrack * track, d->selectedTracks)
+    foreach (const WTrack * track, d->selectedTracks)
     {
         sources.append(track->source().toString() + '\n');
     }
@@ -1035,7 +1034,7 @@ void WAbstractPlaylist::setScrollValue(qreal value)
 
 QString WAbstractPlaylist::currentTitle() const
 {
-    const WAbstractTrack * track = currentTrackPointer();
+    const WTrack * track = currentTrackPointer();
 
     if (track)
     {
@@ -1046,7 +1045,7 @@ QString WAbstractPlaylist::currentTitle() const
 
 QUrl WAbstractPlaylist::currentCover() const
 {
-    const WAbstractTrack * track = currentTrackPointer();
+    const WTrack * track = currentTrackPointer();
 
     if (track)
     {
@@ -1057,7 +1056,7 @@ QUrl WAbstractPlaylist::currentCover() const
 
 int WAbstractPlaylist::currentDuration() const
 {
-    const WAbstractTrack * track = currentTrackPointer();
+    const WTrack * track = currentTrackPointer();
 
     if (track)
     {

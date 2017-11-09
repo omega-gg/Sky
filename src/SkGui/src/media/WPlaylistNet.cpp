@@ -35,7 +35,7 @@
 #include <qtlockedfile>
 
 // Private includes
-#include <private/WTrackNet_p>
+#include <private/WTrack_p>
 
 // Private include
 #include "WPlaylistNet_p.h"
@@ -51,7 +51,7 @@ struct WThreadActionDataTrack
 {
     int id;
 
-    WAbstractTrack::State state;
+    WTrack::State state;
 
     QUrl source;
 
@@ -299,7 +299,7 @@ public: // Variables
 
     qreal scrollValue;
 
-    QList<WTrackNet> dataTracks;
+    QList<WTrack> dataTracks;
 };
 
 //=================================================================================================
@@ -417,9 +417,9 @@ bool WPlaylistNetRead::loadTracks(QXmlStreamReader * stream, WPlaylistNetReadRep
 {
     while (wControllerXml->readNextStartElement(stream, "track"))
     {
-        WTrackNet track;
+        WTrack track;
 
-        WTrackNetPrivate * p = track.d_func();
+        WTrackPrivate * p = track.d_func();
 
         //-----------------------------------------------------------------------------------------
         // id
@@ -433,7 +433,7 @@ bool WPlaylistNetRead::loadTracks(QXmlStreamReader * stream, WPlaylistNetReadRep
 
         if (wControllerXml->readNextStartElement(stream, "state") == false) return false;
 
-        p->state = static_cast<WAbstractTrack::State> (wControllerXml->readNextInt(stream));
+        p->state = static_cast<WTrack::State> (wControllerXml->readNextInt(stream));
 
         //-----------------------------------------------------------------------------------------
         // source
@@ -578,7 +578,7 @@ void WPlaylistNetPrivate::init() {}
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-WTrackNet * WPlaylistNetPrivate::getTrack(int index)
+WTrack * WPlaylistNetPrivate::getTrack(int index)
 {
     if (index < 0 || index >= tracks.count()) return NULL;
 
@@ -587,7 +587,7 @@ WTrackNet * WPlaylistNetPrivate::getTrack(int index)
 
 //-------------------------------------------------------------------------------------------------
 
-bool WPlaylistNetPrivate::containsTrackPointer(WTrackNet * track) const
+bool WPlaylistNetPrivate::containsTrackPointer(WTrack * track) const
 {
     for (int i = 0; i < tracks.count(); i++)
     {
@@ -599,7 +599,7 @@ bool WPlaylistNetPrivate::containsTrackPointer(WTrackNet * track) const
 
 //-------------------------------------------------------------------------------------------------
 
-void WPlaylistNetPrivate::loadTracks(const QList<WTrackNet> & tracks)
+void WPlaylistNetPrivate::loadTracks(const QList<WTrack> & tracks)
 {
     Q_Q(WPlaylistNet);
 
@@ -641,7 +641,7 @@ void WPlaylistNetPrivate::loadTracks(const QList<WTrackNet> & tracks)
 
 bool WPlaylistNetPrivate::loadTrack(int index)
 {
-    WTrackNet * track = &(tracks[index]);
+    WTrack * track = &(tracks[index]);
 
     if (track->isDefault() == false) return false;
 
@@ -649,20 +649,20 @@ bool WPlaylistNetPrivate::loadTrack(int index)
 
     wControllerPlaylist->d_func()->applySourceTrack(q, track, track->source());
 
-    WAbstractTrack::State state = track->state();
+    WTrack::State state = track->state();
 
-    if (state == WAbstractTrack::Loaded)
+    if (state == WTrack::Loaded)
     {
         if (track->cover().isValid() == false)
         {
             loadCover(track);
         }
     }
-    else if (state == WAbstractTrack::Default
+    else if (state == WTrack::Default
              &&
              (track->cover().isValid() || loadCover(track) == false))
     {
-        track->setState(WAbstractTrack::Loaded);
+        track->setState(WTrack::Loaded);
 
         q->updateTrack(index);
     }
@@ -670,7 +670,7 @@ bool WPlaylistNetPrivate::loadTrack(int index)
     return true;
 }
 
-bool WPlaylistNetPrivate::loadCover(WTrackNet * track)
+bool WPlaylistNetPrivate::loadCover(WTrack * track)
 {
     QString label = track->author();
 
@@ -717,24 +717,24 @@ WPlaylistNet::WPlaylistNet(WPlaylistNetPrivate * p, Type type, WLibraryFolder * 
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-void WPlaylistNet::addTrack(const WTrackNet & track)
+void WPlaylistNet::addTrack(const WTrack & track)
 {
-    insertTracks(count(), QList<WTrackNet>() << track);
+    insertTracks(count(), QList<WTrack>() << track);
 }
 
-void WPlaylistNet::addTracks(const QList<WTrackNet> & tracks)
+void WPlaylistNet::addTracks(const QList<WTrack> & tracks)
 {
     insertTracks(count(), tracks);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void WPlaylistNet::insertTrack(int index, const WTrackNet & track)
+void WPlaylistNet::insertTrack(int index, const WTrack & track)
 {
-    insertTracks(index, QList<WTrackNet>() << track);
+    insertTracks(index, QList<WTrack>() << track);
 }
 
-void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
+void WPlaylistNet::insertTracks(int index, const QList<WTrack> & tracks)
 {
     Q_D(WPlaylistNet);
 
@@ -759,15 +759,15 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
 
     int oldIndex = index;
 
-    QList<WTrackNet *> tracksDefault;
+    QList<WTrack *> tracksDefault;
 
-    foreach (const WTrackNet & track, tracks)
+    foreach (const WTrack & track, tracks)
     {
         d->tracks.insert(index, track);
 
-        WTrackNet * newTrack = &(d->tracks[index]);
+        WTrack * newTrack = &(d->tracks[index]);
 
-        WTrackNetPrivate * p = newTrack->d_func();
+        WTrackPrivate * p = newTrack->d_func();
 
         p->playlist = this;
 
@@ -784,7 +784,7 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
             p->id = d->ids.generateId();
         }
 
-        if (p->state != WAbstractTrack::Loaded)
+        if (p->state != WTrack::Loaded)
         {
             tracksDefault.append(newTrack);
         }
@@ -815,13 +815,13 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
 {
     Q_D(WPlaylistNet);
 
-    QList<WTrackNet> tracks;
+    QList<WTrack> tracks;
 
     QStringList urls = url.toString().split('\n', QString::SkipEmptyParts);
 
     foreach (const QString & source, urls)
     {
-        WTrackNet track(source, WAbstractTrack::Default);
+        WTrack track(source, WTrack::Default);
 
         tracks.append(track);
     }
@@ -857,7 +857,7 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
 
     qSort(sortedIndexes.begin(), sortedIndexes.end());
 
-    QList<WTrackNet *> tracks;
+    QList<WTrack *> tracks;
 
     QList<int> changed;
 
@@ -865,7 +865,7 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
     {
         if (index < 0 || index >= d->tracks.count()) continue;
 
-        WTrackNet * track = &(d->tracks[index]);
+        WTrack * track = &(d->tracks[index]);
 
         if (d->selectedTracks.contains(track))
         {
@@ -882,7 +882,7 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
         d->emitSelectedTracksChanged(changed);
     }
 
-    foreach (WTrackNet * track, tracks)
+    foreach (WTrack * track, tracks)
     {
         wControllerPlaylist->d_func()->abortQueryTrack(track);
 
@@ -938,7 +938,7 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
         ||
         (d->type != PlaylistNet && d->type != PlaylistFeed)) return;
 
-    foreach (const WTrackNet & track, d->tracks)
+    foreach (const WTrack & track, d->tracks)
     {
         QUrl cover = track.d_func()->cover;
 
@@ -1005,7 +1005,7 @@ void WPlaylistNet::insertTracks(int index, const QList<WTrackNet> & tracks)
 
 //-------------------------------------------------------------------------------------------------
 
-bool WPlaylistNet::contains(const WTrackNet & track) const
+bool WPlaylistNet::contains(const WTrack & track) const
 {
     Q_D(const WPlaylistNet); return d->tracks.contains(track);
 }
@@ -1014,7 +1014,7 @@ bool WPlaylistNet::contains(const WTrackNet & track) const
 {
     Q_D(const WPlaylistNet);
 
-    foreach (const WTrackNet & track, d->tracks)
+    foreach (const WTrack & track, d->tracks)
     {
         if (track.d_func()->source == source) return true;
     }
@@ -1024,16 +1024,16 @@ bool WPlaylistNet::contains(const WTrackNet & track) const
 
 //-------------------------------------------------------------------------------------------------
 
-WTrackNet WPlaylistNet::getTrackAt(int index) const
+WTrack WPlaylistNet::getTrackAt(int index) const
 {
     Q_D(const WPlaylistNet);
 
     if (index < 0 || index >= d->tracks.count())
     {
-        return WTrackNet();
+        return WTrack();
     }
 
-    WTrackNet track = d->tracks.at(index);
+    WTrack track = d->tracks.at(index);
 
     track.d_func()->id = -1;
 
@@ -1076,7 +1076,7 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 {
     Q_ASSERT(destination);
 
-    QList<WTrackNet> tracks;
+    QList<WTrack> tracks;
 
     foreach (int index, indexes)
     {
@@ -1095,7 +1095,7 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 
     if (from < 0 || from >= d->tracks.count()) return;
 
-    WTrackNet track = getTrackAt(from);
+    WTrack track = getTrackAt(from);
 
     destination->insertTrack(to, track);
 }
@@ -1126,7 +1126,7 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 
 /* Q_INVOKABLE */ bool WPlaylistNet::trackIsValid(int index) const
 {
-    const WAbstractTrack * track = trackPointerAt(index);
+    const WTrack * track = trackPointerAt(index);
 
     if (track)
     {
@@ -1139,7 +1139,7 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 
 /* Q_INVOKABLE */ QVariantMap WPlaylistNet::trackData(int index) const
 {
-    const WAbstractTrack * track = trackPointerAt(index);
+    const WTrack * track = trackPointerAt(index);
 
     if (track)
     {
@@ -1150,22 +1150,22 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ WAbstractTrack::State WPlaylistNet::trackState(int index) const
+/* Q_INVOKABLE */ WTrack::State WPlaylistNet::trackState(int index) const
 {
-    const WAbstractTrack * track = trackPointerAt(index);
+    const WTrack * track = trackPointerAt(index);
 
     if (track)
     {
          return track->state();
     }
-    else return WAbstractTrack::Default;
+    else return WTrack::Default;
 }
 
-/* Q_INVOKABLE */ void WPlaylistNet::setTrackState(int index, WAbstractTrack::State state)
+/* Q_INVOKABLE */ void WPlaylistNet::setTrackState(int index, WTrack::State state)
 {
     Q_D(WPlaylistNet);
 
-    WTrackNet * track = d->getTrack(index);
+    WTrack * track = d->getTrack(index);
 
     if (track == NULL || track->state() == state) return;
 
@@ -1178,7 +1178,7 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 
 /* Q_INVOKABLE */ bool WPlaylistNet::trackIsDefault(int index) const
 {
-    const WAbstractTrack * track = trackPointerAt(index);
+    const WTrack * track = trackPointerAt(index);
 
     if (track)
     {
@@ -1189,7 +1189,7 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 
 /* Q_INVOKABLE */ bool WPlaylistNet::trackIsLoading(int index) const
 {
-    const WAbstractTrack * track = trackPointerAt(index);
+    const WTrack * track = trackPointerAt(index);
 
     if (track)
     {
@@ -1200,7 +1200,7 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 
 /* Q_INVOKABLE */ bool WPlaylistNet::trackIsLoaded(int index) const
 {
-    const WAbstractTrack * track = trackPointerAt(index);
+    const WTrack * track = trackPointerAt(index);
 
     if (track)
     {
@@ -1213,7 +1213,7 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 
 /* Q_INVOKABLE */ QUrl WPlaylistNet::trackSource(int index) const
 {
-    const WAbstractTrack * track = trackPointerAt(index);
+    const WTrack * track = trackPointerAt(index);
 
     if (track)
     {
@@ -1226,7 +1226,7 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 {
     Q_D(WPlaylistNet);
 
-    WTrackNet * track = d->getTrack(index);
+    WTrack * track = d->getTrack(index);
 
     if (track == NULL || track->source() == source) return;
 
@@ -1239,7 +1239,7 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 
 /* Q_INVOKABLE */ QString WPlaylistNet::trackTitle(int index) const
 {
-    const WAbstractTrack * track = trackPointerAt(index);
+    const WTrack * track = trackPointerAt(index);
 
     if (track)
     {
@@ -1252,7 +1252,7 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 {
     Q_D(WPlaylistNet);
 
-    WTrackNet * track = d->getTrack(index);
+    WTrack * track = d->getTrack(index);
 
     if (track == NULL || track->title() == title) return;
 
@@ -1265,7 +1265,7 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 
 /* Q_INVOKABLE */ QUrl WPlaylistNet::trackCover(int index) const
 {
-    const WAbstractTrack * track = trackPointerAt(index);
+    const WTrack * track = trackPointerAt(index);
 
     if (track)
     {
@@ -1278,7 +1278,7 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 {
     Q_D(WPlaylistNet);
 
-    WTrackNet * track = d->getTrack(index);
+    WTrack * track = d->getTrack(index);
 
     if (track == NULL || track->cover() == cover) return;
 
@@ -1291,7 +1291,7 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 
 /* Q_INVOKABLE */ QString WPlaylistNet::trackAuthor(int index) const
 {
-    const WAbstractTrack * track = trackPointerAt(index);
+    const WTrack * track = trackPointerAt(index);
 
     if (track)
     {
@@ -1304,7 +1304,7 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 {
     Q_D(WPlaylistNet);
 
-    WTrackNet * track = d->getTrack(index);
+    WTrack * track = d->getTrack(index);
 
     if (track == NULL || track->author() == author) return;
 
@@ -1317,7 +1317,7 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 
 /* Q_INVOKABLE */ QString WPlaylistNet::trackFeed(int index) const
 {
-    const WAbstractTrack * track = trackPointerAt(index);
+    const WTrack * track = trackPointerAt(index);
 
     if (track)
     {
@@ -1330,7 +1330,7 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 {
     Q_D(WPlaylistNet);
 
-    WTrackNet * track = d->getTrack(index);
+    WTrack * track = d->getTrack(index);
 
     if (track == NULL || track->feed() == feed) return;
 
@@ -1343,7 +1343,7 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 
 /* Q_INVOKABLE */ int WPlaylistNet::trackDuration(int index) const
 {
-    const WAbstractTrack * track = trackPointerAt(index);
+    const WTrack * track = trackPointerAt(index);
 
     if (track)
     {
@@ -1356,7 +1356,7 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 {
     Q_D(WPlaylistNet);
 
-    WTrackNet * track = d->getTrack(index);
+    WTrack * track = d->getTrack(index);
 
     if (track == NULL || track->duration() == msec) return;
 
@@ -1406,7 +1406,7 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 // Public WAbstractPlaylist implementation
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ int WPlaylistNet::indexOf(const WAbstractTrack * track) const
+/* virtual */ int WPlaylistNet::indexOf(const WTrack * track) const
 {
     Q_D(const WPlaylistNet);
 
@@ -1462,9 +1462,9 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 
     action->scrollValue = d->scrollValue;
 
-    foreach (const WTrackNet & track, d->tracks)
+    foreach (const WTrack & track, d->tracks)
     {
-        const WTrackNetPrivate * p = track.d_func();
+        const WTrackPrivate * p = track.d_func();
 
         WThreadActionDataTrack data;
 
@@ -1533,13 +1533,13 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ const WAbstractTrack * WPlaylistNet::itemFromId(int id) const
+/* virtual */ const WTrack * WPlaylistNet::itemFromId(int id) const
 {
     Q_D(const WPlaylistNet);
 
     for (int i = 0; i < d->tracks.count(); i++)
     {
-        const WAbstractTrack & track = d->tracks.at(i);
+        const WTrack & track = d->tracks.at(i);
 
         if (track.id() == id)
         {
@@ -1550,7 +1550,7 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
     return NULL;
 }
 
-/* virtual */ const WAbstractTrack * WPlaylistNet::itemAt(int index) const
+/* virtual */ const WTrack * WPlaylistNet::itemAt(int index) const
 {
     Q_D(const WPlaylistNet); return &(d->tracks[index]);
 }
@@ -1579,7 +1579,7 @@ WTrackNet WPlaylistNet::getTrackAt(int index) const
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-QList<WTrackNet> WPlaylistNet::tracks() const
+QList<WTrack> WPlaylistNet::tracks() const
 {
     Q_D(const WPlaylistNet); return d->tracks;
 }

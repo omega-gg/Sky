@@ -607,7 +607,7 @@ void WControllerPlaylistPrivate::init()
 //-------------------------------------------------------------------------------------------------
 
 bool WControllerPlaylistPrivate::applyQueryTrack(WPlaylistNet           * playlist,
-                                                 WTrackNet              * track,
+                                                 WTrack                 * track,
                                                  const WBackendNetQuery & query)
 {
     abortQueryTrack(track);
@@ -646,7 +646,7 @@ bool WControllerPlaylistPrivate::applyQueryFolder(WLibraryFolder         * folde
 //-------------------------------------------------------------------------------------------------
 
 bool WControllerPlaylistPrivate::applySourceTrack(WPlaylistNet * playlist,
-                                                  WTrackNet    * track, const QUrl & url)
+                                                  WTrack       * track, const QUrl & url)
 {
     Q_Q(WControllerPlaylist);
 
@@ -681,7 +681,7 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylistNet * playlist,
     {
         QString title = WControllerNetwork::extractUrlFileName(source);
 
-        track->setState(WAbstractTrack::Loaded);
+        track->setState(WTrack::Loaded);
 
         track->setSource(source);
         track->setTitle (title);
@@ -727,7 +727,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylistNet * playlist, co
 
         if (id.isEmpty() == false)
         {
-            WTrackNet track(backend->getUrlTrack(id), WAbstractTrack::Default);
+            WTrack track(backend->getUrlTrack(id), WTrack::Default);
 
             playlist->addTrack(track);
 
@@ -803,7 +803,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylistNet * playlist, co
 
         title = WControllerNetwork::removeUrlPrefix(title);
 
-        WTrackNet track(source, WTrackNet::Default);
+        WTrack track(source, WTrack::Default);
 
         track.setFeed(source.toString());
 
@@ -934,7 +934,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
 //-------------------------------------------------------------------------------------------------
 
-bool WControllerPlaylistPrivate::abortQueryTrack(WTrackNet * track)
+bool WControllerPlaylistPrivate::abortQueryTrack(WTrack * track)
 {
     int count = queries.count();
 
@@ -946,7 +946,7 @@ bool WControllerPlaylistPrivate::abortQueryTrack(WTrackNet * track)
     {
         int index = playlist->indexOf(track);
 
-        playlist->setTrackState(index, WAbstractTrack::Default);
+        playlist->setTrackState(index, WTrack::Default);
     }
 
     return (count != queries.count());
@@ -970,7 +970,7 @@ bool WControllerPlaylistPrivate::abortQueriesTracks(WPlaylistNet * playlist)
 
             removeQuery(i.key(), query);
 
-            playlist->setTrackState(index, WAbstractTrack::Default);
+            playlist->setTrackState(index, WTrack::Default);
         }
     }
 
@@ -1392,7 +1392,7 @@ void WControllerPlaylistPrivate::addToCache(const QUrl & url, const QByteArray &
 //-------------------------------------------------------------------------------------------------
 
 bool WControllerPlaylistPrivate::getDataTrack(WPlaylistNet           * playlist,
-                                              WTrackNet              * track,
+                                              WTrack                 * track,
                                               const WBackendNetQuery & query)
 {
     Q_Q(WControllerPlaylist);
@@ -1412,7 +1412,7 @@ bool WControllerPlaylistPrivate::getDataTrack(WPlaylistNet           * playlist,
 
     int index = playlist->indexOf(track);
 
-    playlist->setTrackState(index, WAbstractTrack::Loading);
+    playlist->setTrackState(index, WTrack::Loading);
 
     return true;
 }
@@ -1491,7 +1491,7 @@ bool WControllerPlaylistPrivate::getDataRelated(WBackendNet  * backend,
 
 //-------------------------------------------------------------------------------------------------
 
-void WControllerPlaylistPrivate::abortTrack(WTrackNet * track)
+void WControllerPlaylistPrivate::abortTrack(WTrack * track)
 {
     QHashIterator<WRemoteData *, WControllerPlaylistQuery> i(queries);
 
@@ -1579,11 +1579,11 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 
             if (index != -1)
             {
-                WTrackNet * track = query->track;
+                WTrack * track = query->track;
 
                 queries.remove(data);
 
-                track->setState(WAbstractTrack::Default);
+                track->setState(WTrack::Default);
 
                 playlist->updateTrack(index);
             }
@@ -1705,7 +1705,7 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice              * device,
     query->backend->applyTrack(query->backendQuery, reply);
 
     WPlaylistNet * playlist = query->item->toPlaylistNet();
-    WTrackNet    * track    = query->track;
+    WTrack       * track    = query->track;
 
     queries.remove(query->data);
 
@@ -1732,7 +1732,7 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice              * device,
         }
         else
         {
-            track->setState(WAbstractTrack::Loaded);
+            track->setState(WTrack::Loaded);
 
             playlist->updateTrack(index);
 
@@ -1758,7 +1758,7 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice              * device,
     }
     else
     {
-        track->setState(WAbstractTrack::Default);
+        track->setState(WTrack::Default);
 
         playlist->updateTrack(index);
     }
@@ -1798,11 +1798,11 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
 
         if (reply.clearDuplicate)
         {
-            QList<WTrackNet> * tracks = const_cast<QList<WTrackNet> *> (&(reply.tracks));
+            QList<WTrack> * tracks = const_cast<QList<WTrack> *> (&(reply.tracks));
 
             for (int i = 0; i < tracks->count();)
             {
-                const WTrackNet * track = &(tracks->at(i));
+                const WTrack * track = &(tracks->at(i));
 
                 if (playlist->containsSource(track->source()))
                 {
@@ -1975,7 +1975,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
             urlTracks.append(source);
 
-            WTrackNet track(url, WAbstractTrack::Default);
+            WTrack track(url, WTrack::Default);
 
             playlist->addTrack(track);
         }
@@ -1999,7 +1999,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
         urlTracks.append(url);
 
-        WTrackNet track(url, WAbstractTrack::Default);
+        WTrack track(url, WTrack::Default);
 
         track.setTitle(media.title);
 
@@ -2124,7 +2124,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
             urlTracks.append(source);
 
-            WTrackNet track(url, WAbstractTrack::Default);
+            WTrack track(url, WTrack::Default);
 
             playlist->addTrack(track);
         }
@@ -2155,7 +2155,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
         urlTracks.append(url);
 
-        WTrackNet track(url, WAbstractTrack::Default);
+        WTrack track(url, WTrack::Default);
 
         track.setTitle(media.title);
 

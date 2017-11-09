@@ -59,7 +59,7 @@ public: // Variables
 
     WLibraryItem * item;
 
-    WTrackNet * track;
+    WTrack * track;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -121,22 +121,21 @@ public:
     void init();
 
 public: // Interface
-    bool applyQueryTrack(WPlaylistNet * playlist,
-                         WTrackNet    * track, const WBackendNetQuery & query);
+    bool applyQueryTrack(WPlaylistNet * playlist, WTrack * track, const WBackendNetQuery & query);
 
     bool applyQueryPlaylist(WPlaylistNet   * playlist, const WBackendNetQuery & query);
     bool applyQueryFolder  (WLibraryFolder * folder,   const WBackendNetQuery & query);
 
     //---------------------------------------------------------------------------------------------
 
-    bool applySourceTrack(WPlaylistNet * playlist, WTrackNet * track, const QUrl & url);
+    bool applySourceTrack(WPlaylistNet * playlist, WTrack * track, const QUrl & url);
 
     bool applySourcePlaylist(WPlaylistNet   * playlist, const QUrl & url);
     bool applySourceFolder  (WLibraryFolder * folder,   const QUrl & url);
 
     //---------------------------------------------------------------------------------------------
 
-    bool abortQueryTrack   (WTrackNet    * track);
+    bool abortQueryTrack   (WTrack       * track);
     bool abortQueriesTracks(WPlaylistNet * playlist);
 
     bool abortQueriesPlaylist(WPlaylistNet   * playlist);
@@ -194,7 +193,7 @@ public: // Functions
 
     //---------------------------------------------------------------------------------------------
 
-    bool getDataTrack(WPlaylistNet * playlist, WTrackNet * track, const WBackendNetQuery & query);
+    bool getDataTrack(WPlaylistNet * playlist, WTrack * track, const WBackendNetQuery & query);
 
     bool getDataPlaylist(WPlaylistNet   * playlist, const WBackendNetQuery & query);
     bool getDataFolder  (WLibraryFolder * folder,   const WBackendNetQuery & query);
@@ -203,7 +202,7 @@ public: // Functions
 
     //---------------------------------------------------------------------------------------------
 
-    void abortTrack   (WTrackNet      * track);
+    void abortTrack   (WTrack         * track);
     void abortPlaylist(WPlaylistNet   * playlist);
     void abortFolder  (WLibraryFolder * folder);
 

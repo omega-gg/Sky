@@ -20,7 +20,7 @@
 // Sk includes
 #include <WDeclarativeItem>
 #include <WAbstractPlaylist>
-#include <WAbstractTrack>
+#include <WTrack>
 
 #ifndef SK_NO_DECLARATIVEPLAYER
 
@@ -271,7 +271,7 @@ public: // Properties
     bool hasPreviousTrack() const;
     bool hasNextTrack    () const;
 
-    WAbstractTrack::State trackState() const;
+    WTrack::State trackState() const;
 
     bool trackIsDefault() const;
     bool trackIsLoading() const;

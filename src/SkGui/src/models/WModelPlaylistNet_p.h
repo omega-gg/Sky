@@ -36,7 +36,7 @@ public:
 public: // Variables
     WPlaylistNet * playlist;
 
-    const WAbstractTrack * oldTrack;
+    const WTrack * oldTrack;
 
 protected:
     W_DECLARE_PUBLIC(WModelPlaylistNet)

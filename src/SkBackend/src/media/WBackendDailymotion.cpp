@@ -47,7 +47,7 @@ public:
     void init();
 
 public: // Functions
-    void loadTrack(WTrackNet * track, const QString & json) const;
+    void loadTrack(WTrack * track, const QString & json) const;
 
     QString extractSource(const QString & json, const QString & quality) const;
 
@@ -70,7 +70,7 @@ void WBackendDailymotionPrivate::init() {}
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WBackendDailymotionPrivate::loadTrack(WTrackNet * track, const QString & json) const
+void WBackendDailymotionPrivate::loadTrack(WTrack * track, const QString & json) const
 {
     QString title = WControllerNetwork::extractJsonUtf8(json, "title");
     QString cover = WControllerNetwork::extractJson    (json, "thumbnail_url");
@@ -613,7 +613,7 @@ WBackendNetPlaylist WBackendDailymotion::extractPlaylist(const QByteArray       
         {
             QString source = WControllerNetwork::extractJson(string, "url");
 
-            WTrackNet track(source);
+            WTrack track(source);
 
             d->loadTrack(&track, string);
 

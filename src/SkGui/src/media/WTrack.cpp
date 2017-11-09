@@ -14,27 +14,29 @@
 */
 //=================================================================================================
 
-#include "WAbstractTrack.h"
+#include "WTrack.h"
 
-#ifndef SK_NO_ABSTRACTTRACK
+#ifndef SK_NO_TRACK
 
 // Qt includes
 #include <QDateTime>
 
 // Sk includes
 #include <WControllerScript>
+#include <WPlaylistNet>
 
 //-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
 
-#include "WAbstractTrack_p.h"
+#include "WTrack_p.h"
 
-WAbstractTrackPrivate::WAbstractTrackPrivate(WAbstractTrack * p) : WPrivate(p) {}
+WTrackPrivate::WTrackPrivate(WTrack * p) : WPrivate(p) {}
 
-void WAbstractTrackPrivate::init(WAbstractTrack::State state)
+void WTrackPrivate::init(WTrack::State state, const QUrl & source)
 {
-    this->state = state;
+    this->state  = state;
+    this->source = source;
 
     id = -1;
 
@@ -46,30 +48,31 @@ void WAbstractTrackPrivate::init(WAbstractTrack::State state)
 }
 
 //-------------------------------------------------------------------------------------------------
-// Protected ctor / dtor
+// Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
-WAbstractTrack::WAbstractTrack(WAbstractTrackPrivate * p, State state) : WPrivatable(p)
+/* explicit */ WTrack::WTrack(const QUrl & source, State state)
+    : WPrivatable(new WTrackPrivate(this))
 {
-    Q_D(WAbstractTrack); d->init(state);
+    Q_D(WTrack); d->init(state, source);
 }
 
 //-------------------------------------------------------------------------------------------------
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-bool WAbstractTrack::isValid() const
+bool WTrack::isValid() const
 {
-    Q_D(const WAbstractTrack); return (d->source.isValid());
+    Q_D(const WTrack); return (d->source.isValid());
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void WAbstractTrack::copyDataTo(WAbstractTrack * other) const
+void WTrack::copyDataTo(WTrack * other) const
 {
-    Q_D(const WAbstractTrack);
+    Q_D(const WTrack);
 
-    WAbstractTrackPrivate * op = other->d_func();
+    WTrackPrivate * op = other->d_func();
 
     if (d->state == Loading)
     {
@@ -90,11 +93,11 @@ void WAbstractTrack::copyDataTo(WAbstractTrack * other) const
     op->quality = d->quality;
 }
 
-void WAbstractTrack::applyDataTo(WAbstractTrack * other) const
+void WTrack::applyDataTo(WTrack * other) const
 {
-    Q_D(const WAbstractTrack);
+    Q_D(const WTrack);
 
-    WAbstractTrackPrivate * op = other->d_func();
+    WTrackPrivate * op = other->d_func();
 
     if (d->title.isEmpty() == false)
     {
@@ -136,9 +139,9 @@ void WAbstractTrack::applyDataTo(WAbstractTrack * other) const
 // Virtual interface
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ QVariantMap WAbstractTrack::toMap() const
+/* virtual */ QVariantMap WTrack::toMap() const
 {
-    Q_D(const WAbstractTrack);
+    Q_D(const WTrack);
 
     QVariantMap map;
 
@@ -167,11 +170,11 @@ void WAbstractTrack::applyDataTo(WAbstractTrack * other) const
 // Operators
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ bool WAbstractTrack::operator==(const WAbstractTrack & other) const
+/* virtual */ bool WTrack::operator==(const WTrack & other) const
 {
-    Q_D(const WAbstractTrack);
+    Q_D(const WTrack);
 
-    const WAbstractTrackPrivate * op = other.d_func();
+    const WTrackPrivate * op = other.d_func();
 
     if (d->id == op->id &&
 
@@ -198,11 +201,11 @@ void WAbstractTrack::applyDataTo(WAbstractTrack * other) const
     else return false;
 }
 
-/* virtual */ WAbstractTrack & WAbstractTrack::operator=(const WAbstractTrack & other)
+/* virtual */ WTrack & WTrack::operator=(const WTrack & other)
 {
-    Q_D(WAbstractTrack);
+    Q_D(WTrack);
 
-    const WAbstractTrackPrivate * op = other.d_func();
+    const WTrackPrivate * op = other.d_func();
 
     d->id = op->id;
 
@@ -231,141 +234,152 @@ void WAbstractTrack::applyDataTo(WAbstractTrack * other) const
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-int WAbstractTrack::id() const
+int WTrack::id() const
 {
-    Q_D(const WAbstractTrack); return d->id;
+    Q_D(const WTrack); return d->id;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-WAbstractTrack::State WAbstractTrack::state() const
+WTrack::State WTrack::state() const
 {
-    Q_D(const WAbstractTrack); return d->state;
+    Q_D(const WTrack); return d->state;
 }
 
-void WAbstractTrack::setState(WAbstractTrack::State state)
+void WTrack::setState(WTrack::State state)
 {
-    Q_D(WAbstractTrack); d->state = state;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-bool WAbstractTrack::isDefault() const
-{
-    Q_D(const WAbstractTrack); return (d->state == Default);
-}
-
-bool WAbstractTrack::isLoading() const
-{
-    Q_D(const WAbstractTrack); return (d->state == Loading);
-}
-
-bool WAbstractTrack::isLoaded() const
-{
-    Q_D(const WAbstractTrack); return (d->state == Loaded);
+    Q_D(WTrack); d->state = state;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-QUrl WAbstractTrack::source() const
+bool WTrack::isDefault() const
 {
-    Q_D(const WAbstractTrack); return d->source;
+    Q_D(const WTrack); return (d->state == Default);
 }
 
-void WAbstractTrack::setSource(const QUrl & url)
+bool WTrack::isLoading() const
 {
-    Q_D(WAbstractTrack); d->source = url;
+    Q_D(const WTrack); return (d->state == Loading);
 }
 
-//-------------------------------------------------------------------------------------------------
-
-QString WAbstractTrack::title() const
+bool WTrack::isLoaded() const
 {
-    Q_D(const WAbstractTrack); return d->title;
-}
-
-void WAbstractTrack::setTitle(const QString & title)
-{
-    Q_D(WAbstractTrack); d->title = title.simplified();
+    Q_D(const WTrack); return (d->state == Loaded);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-QUrl WAbstractTrack::cover() const
+QUrl WTrack::source() const
 {
-    Q_D(const WAbstractTrack); return d->cover;
+    Q_D(const WTrack); return d->source;
 }
 
-void WAbstractTrack::setCover(const QUrl & cover)
+void WTrack::setSource(const QUrl & url)
 {
-    Q_D(WAbstractTrack); d->cover = cover;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-QString WAbstractTrack::author() const
-{
-    Q_D(const WAbstractTrack); return d->author;
-}
-
-void WAbstractTrack::setAuthor(const QString & author)
-{
-    Q_D(WAbstractTrack); d->author = author;
+    Q_D(WTrack); d->source = url;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-QString WAbstractTrack::feed() const
+QString WTrack::title() const
 {
-    Q_D(const WAbstractTrack); return d->feed;
+    Q_D(const WTrack); return d->title;
 }
 
-void WAbstractTrack::setFeed(const QString & feed)
+void WTrack::setTitle(const QString & title)
 {
-    Q_D(WAbstractTrack); d->feed = feed;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-int WAbstractTrack::duration() const
-{
-    Q_D(const WAbstractTrack); return d->duration;
-}
-
-void WAbstractTrack::setDuration(int msec)
-{
-    Q_D(WAbstractTrack); d->duration = msec;
+    Q_D(WTrack); d->title = title.simplified();
 }
 
 //-------------------------------------------------------------------------------------------------
 
-QDateTime WAbstractTrack::date() const
+QUrl WTrack::cover() const
 {
-    Q_D(const WAbstractTrack); return d->date;
+    Q_D(const WTrack); return d->cover;
 }
 
-void WAbstractTrack::setDate(const QDateTime & date)
+void WTrack::setCover(const QUrl & cover)
 {
-    Q_D(WAbstractTrack); d->date = date;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-WAbstractBackend::Quality WAbstractTrack::quality() const
-{
-    Q_D(const WAbstractTrack); return d->quality;
-}
-
-void WAbstractTrack::setQuality(WAbstractBackend::Quality quality)
-{
-    Q_D(WAbstractTrack); d->quality = quality;
+    Q_D(WTrack); d->cover = cover;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-WAbstractPlaylist * WAbstractTrack::playlist() const
+QString WTrack::author() const
 {
-    Q_D(const WAbstractTrack); return d->playlist;
+    Q_D(const WTrack); return d->author;
 }
 
-#endif // SK_NO_ABSTRACTTRACK
+void WTrack::setAuthor(const QString & author)
+{
+    Q_D(WTrack); d->author = author;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QString WTrack::feed() const
+{
+    Q_D(const WTrack); return d->feed;
+}
+
+void WTrack::setFeed(const QString & feed)
+{
+    Q_D(WTrack); d->feed = feed;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+int WTrack::duration() const
+{
+    Q_D(const WTrack); return d->duration;
+}
+
+void WTrack::setDuration(int msec)
+{
+    Q_D(WTrack); d->duration = msec;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QDateTime WTrack::date() const
+{
+    Q_D(const WTrack); return d->date;
+}
+
+void WTrack::setDate(const QDateTime & date)
+{
+    Q_D(WTrack); d->date = date;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+WAbstractBackend::Quality WTrack::quality() const
+{
+    Q_D(const WTrack); return d->quality;
+}
+
+void WTrack::setQuality(WAbstractBackend::Quality quality)
+{
+    Q_D(WTrack); d->quality = quality;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+WAbstractPlaylist * WTrack::playlist() const
+{
+    Q_D(const WTrack); return d->playlist;
+}
+
+WPlaylistNet * WTrack::playlistNet() const
+{
+    Q_D(const WTrack);
+
+    if (d->playlist)
+    {
+         return d->playlist->toPlaylistNet();
+    }
+    else return NULL;
+}
+
+#endif // SK_NO_TRACK

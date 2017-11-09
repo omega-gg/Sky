@@ -42,10 +42,9 @@ public:
     void init();
 
 public: // Functions
-    void loadTracks(QList<WTrackNet> * tracks, const QStringList & list,
-                                               const QString     & start) const;
+    void loadTracks(QList<WTrack> * tracks, const QStringList & list, const QString & start) const;
 
-    bool loadTrack(WTrackNet * track, const QString & data, int from) const;
+    bool loadTrack(WTrack * track, const QString & data, int from) const;
 
     void loadMedia(QHash<WAbstractBackend::Quality, QUrl> * sources,
                    const QString                          & data) const;
@@ -92,12 +91,12 @@ void WBackendYoutubePrivate::init()
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WBackendYoutubePrivate::loadTracks(QList<WTrackNet> * tracks, const QStringList & list,
-                                                                   const QString     & start) const
+void WBackendYoutubePrivate::loadTracks(QList<WTrack> * tracks, const QStringList & list,
+                                                                const QString     & start) const
 {
     foreach (const QString & string, list)
     {
-        WTrackNet track;
+        WTrack track;
 
         int index = string.indexOf(start);
 
@@ -108,7 +107,7 @@ void WBackendYoutubePrivate::loadTracks(QList<WTrackNet> * tracks, const QString
     }
 }
 
-bool WBackendYoutubePrivate::loadTrack(WTrackNet * track, const QString & data, int from) const
+bool WBackendYoutubePrivate::loadTrack(WTrack * track, const QString & data, int from) const
 {
     QString source = WControllerNetwork::extractAttribute(data, "href", from);
 
@@ -121,7 +120,7 @@ bool WBackendYoutubePrivate::loadTrack(WTrackNet * track, const QString & data, 
 
     QString title = WControllerNetwork::extractAttributeUtf8(data, "title", from);
 
-    track->setState(WAbstractTrack::Default);
+    track->setState(WTrack::Default);
 
     track->setSource("https://www.youtube.com" + source);
 
@@ -846,7 +845,7 @@ WBackendNetTrack WBackendYoutube::extractTrack(const QByteArray       & data,
 
     feed = "https://www.youtube.com/" + WControllerNetwork::extractUrlPath(feed);
 
-    WTrackNet * track = &(reply.track);
+    WTrack * track = &(reply.track);
 
     track->setTitle(title);
     track->setCover(cover);
@@ -1027,7 +1026,7 @@ WBackendNetPlaylist WBackendYoutube::extractPlaylist(const QByteArray       & da
 
             QString title = WControllerNetwork::extractAttributeUtf8(string, "data-title");
 
-            WTrackNet track("https://www.youtube.com/watch?v=" + id, WAbstractTrack::Default);
+            WTrack track("https://www.youtube.com/watch?v=" + id, WTrack::Default);
 
             track.setTitle(title);
 

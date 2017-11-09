@@ -32,7 +32,7 @@
 #ifndef SK_NO_PLAYLISTNET
 
 // Forward declarations
-class WTrackNet;
+class WTrack;
 class WThreadActionWritePlaylist;
 class WThreadActionReadPlaylist;
 
@@ -44,18 +44,18 @@ public:
     void init();
 
 public: // Functions
-    WTrackNet * getTrack(int index);
+    WTrack * getTrack(int index);
 
-    bool containsTrackPointer(WTrackNet * track) const;
+    bool containsTrackPointer(WTrack * track) const;
 
-    void loadTracks(const QList<WTrackNet> & tracks);
+    void loadTracks(const QList<WTrack> & tracks);
 
     bool loadTrack(int index);
 
-    bool loadCover(WTrackNet * track);
+    bool loadCover(WTrack * track);
 
 public: // Variables
-    QList<WTrackNet> tracks;
+    QList<WTrack> tracks;
 
     WListId ids;
 

@@ -22,26 +22,26 @@
 
 // Sk includes
 #include <WAbstractPlaylist>
-#include <WTrackNet>
+#include <WTrack>
 
 #ifndef SK_NO_BOOKMARKTRACK
 
 // Forward declarations
 class WBookmarkTrackPrivate;
-class WAbstractTrack;
+class WTrack;
 class WTabTrack;
 
 class SK_GUI_EXPORT WBookmarkTrack : public WPrivatable, public WAbstractPlaylistWatcher
 {
 public:
-    explicit WBookmarkTrack(const WAbstractTrack & track);
+    explicit WBookmarkTrack(const WTrack & track);
 
     WBookmarkTrack();
 
 public: // Interface
-    void setTrack(const WAbstractTrack & track);
+    void setTrack(const WTrack & track);
 
-    WTrackNet   toTrackNet () const;
+    WTrack      toTrack    () const;
     QVariantMap toTrackData() const;
 
     void save();
@@ -78,14 +78,14 @@ public: // Properties
 
     QList<int> folderIds() const;
 
-    WAbstractPlaylist    * playlist() const;
-    const WAbstractTrack * track   () const;
+    WAbstractPlaylist * playlist() const;
+    const WTrack      * track   () const;
 
     QList<int> idPlaylist  () const;
     int        idTrack     () const;
     int        idFolderRoot() const;
 
-    WAbstractTrack::State state() const;
+    WTrack::State state() const;
 
     QUrl source() const;
 

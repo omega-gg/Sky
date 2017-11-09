@@ -2,10 +2,8 @@
 
 HEADERS += src/media/WBackendNet.h \
            src/media/WBackendNet_p.h \
-           src/media/WAbstractTrack.h \
-           src/media/WAbstractTrack_p.h \
-           src/media/WTrackNet.h \
-           src/media/WTrackNet_p.h \
+           src/media/WTrack.h \
+           src/media/WTrack_p.h \
            src/media/WLibraryItem.h \
            src/media/WLibraryItem_p.h \
            src/media/WAbstractPlaylist.h \
@@ -28,8 +26,7 @@ HEADERS += src/media/WBackendNet.h \
            src/media/WTabsTrack_p.h \
 
 SOURCES += src/media/WBackendNet.cpp \
-           src/media/WAbstractTrack.cpp \
-           src/media/WTrackNet.cpp \
+           src/media/WTrack.cpp \
            src/media/WLibraryItem.cpp \
            src/media/WAbstractPlaylist.cpp \
            src/media/WPlaylistNet.cpp \
