@@ -97,7 +97,7 @@ if [ $2 = "win32" ]; then
         fi
     fi
 
-elif if [ $2 = "osx" ]; then
+elif [ $2 = "osx" ]; then
 
     spec=macx-g++
 
