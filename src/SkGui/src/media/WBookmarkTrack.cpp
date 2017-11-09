@@ -282,6 +282,8 @@ WBookmarkTrack::WBookmarkTrack(const WBookmarkTrack & other)
     *this = other;
 }
 
+//-------------------------------------------------------------------------------------------------
+
 bool WBookmarkTrack::operator==(const WBookmarkTrack & other) const
 {
     Q_D(const WBookmarkTrack);

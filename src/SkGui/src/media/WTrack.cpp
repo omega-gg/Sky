@@ -33,10 +33,9 @@
 
 WTrackPrivate::WTrackPrivate(WTrack * p) : WPrivate(p) {}
 
-void WTrackPrivate::init(WTrack::State state, const QUrl & source)
+void WTrackPrivate::init(WTrack::State state)
 {
-    this->state  = state;
-    this->source = source;
+    this->state = state;
 
     id = -1;
 
@@ -54,7 +53,11 @@ void WTrackPrivate::init(WTrack::State state, const QUrl & source)
 /* explicit */ WTrack::WTrack(const QUrl & source, State state)
     : WPrivatable(new WTrackPrivate(this))
 {
-    Q_D(WTrack); d->init(state, source);
+    Q_D(WTrack);
+
+    d->init(state);
+
+    d->source = source;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -168,6 +171,17 @@ void WTrack::applyDataTo(WTrack * other) const
 
 //-------------------------------------------------------------------------------------------------
 // Operators
+//-------------------------------------------------------------------------------------------------
+
+WTrack::WTrack(const WTrack & other) : WPrivatable(new WTrackPrivate(this))
+{
+    Q_D(WTrack);
+
+    d->init(Loaded);
+
+    *this = other;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ bool WTrack::operator==(const WTrack & other) const

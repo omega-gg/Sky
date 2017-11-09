@@ -49,6 +49,8 @@ public: // Virtual interface
     virtual QVariantMap toMap() const;
 
 public: // Operators
+    WTrack(const WTrack & other);
+
     bool operator==(const WTrack & other) const;
 
     WTrack & operator=(const WTrack & other);
