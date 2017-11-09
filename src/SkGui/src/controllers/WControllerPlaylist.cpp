@@ -1391,9 +1391,8 @@ void WControllerPlaylistPrivate::addToCache(const QUrl & url, const QByteArray &
 
 //-------------------------------------------------------------------------------------------------
 
-bool WControllerPlaylistPrivate::getDataTrack(WPlaylistNet           * playlist,
-                                              WTrack                 * track,
-                                              const WBackendNetQuery & query)
+bool WControllerPlaylistPrivate::getDataTrack(WPlaylistNet * playlist,
+                                              WTrack       * track, const WBackendNetQuery & query)
 {
     Q_Q(WControllerPlaylist);
 
