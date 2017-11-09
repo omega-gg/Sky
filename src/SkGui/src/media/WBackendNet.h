@@ -31,8 +31,8 @@
 
 // Forward declarations
 class WBackendNetPrivate;
-class WTrack;
 class WPlaylistNet;
+class WTrack;
 class WLibraryFolder;
 
 //-------------------------------------------------------------------------------------------------
