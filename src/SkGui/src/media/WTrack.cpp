@@ -33,10 +33,8 @@
 
 WTrackPrivate::WTrackPrivate(WTrack * p) : WPrivate(p) {}
 
-void WTrackPrivate::init(WTrack::State state)
+void WTrackPrivate::init()
 {
-    this->state = state;
-
     id = -1;
 
     duration = -1;
@@ -55,8 +53,9 @@ void WTrackPrivate::init(WTrack::State state)
 {
     Q_D(WTrack);
 
-    d->init(state);
+    d->init();
 
+    d->state  = state;
     d->source = source;
 }
 
@@ -177,7 +176,7 @@ WTrack::WTrack(const WTrack & other) : WPrivatable(new WTrackPrivate(this))
 {
     Q_D(WTrack);
 
-    d->init(Loaded);
+    d->init();
 
     *this = other;
 }

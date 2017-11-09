@@ -36,7 +36,7 @@ class SK_GUI_EXPORT WTrackPrivate : public WPrivate
 protected:
     WTrackPrivate(WTrack * p);
 
-    void init(WTrack::State state);
+    void init();
 
 public: // Variables
     int id;
