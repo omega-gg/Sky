@@ -1147,8 +1147,8 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
             watcher->beginTracksClear();
         }
 
-        tracks.clear();
-        ids   .clear();
+        d->tracks.clear();
+        d->ids   .clear();
 
         foreach (WPlaylistWatcher * watcher, d->watchers)
         {
