@@ -222,9 +222,6 @@ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
     qmlRegisterType<WLibraryFolder>       ("Sky", 1,0, "LibraryFolder");
     qmlRegisterType<WLibraryFolderRelated>("Sky", 1,0, "LibraryFolderRelated");
 
-    qmlRegisterUncreatableType<WPlaylist>("Sky", 1,0, "Playlist",
-                                                  "Playlist is abstract");
-
     qmlRegisterType<WPlaylist>("Sky", 1,0, "Playlist");
 
     qmlRegisterType<WTabTrack> ("Sky", 1,0, "TabTrack");

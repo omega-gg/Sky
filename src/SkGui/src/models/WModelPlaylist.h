@@ -29,7 +29,7 @@ class WModelPlaylistPrivate;
 class WPlaylist;
 
 class SK_GUI_EXPORT WModelPlaylist : public QAbstractListModel, public WPlaylistWatcher,
-                                        public WPrivatable
+                                     public WPrivatable
 {
     Q_OBJECT
 

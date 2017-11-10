@@ -940,7 +940,7 @@ bool WControllerPlaylistPrivate::abortQueryTrack(WTrack * track)
 
     abortTrack(track);
 
-    WPlaylist * playlist = track->playlistNet();
+    WPlaylist * playlist = track->playlist();
 
     if (playlist)
     {

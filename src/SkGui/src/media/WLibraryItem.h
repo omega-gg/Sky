@@ -57,7 +57,7 @@ class SK_GUI_EXPORT WLibraryItem : public WLocalObject
     Q_PROPERTY(bool isFolderSearchable READ isFolderSearchable CONSTANT)
     Q_PROPERTY(bool isFolderRelated    READ isFolderRelated    CONSTANT)
 
-    Q_PROPERTY(bool isPlaylist    READ isPlaylist    CONSTANT)
+    Q_PROPERTY(bool isPlaylistBase   READ isPlaylistBase   CONSTANT)
     Q_PROPERTY(bool isPlaylistFeed   READ isPlaylistFeed   CONSTANT)
     Q_PROPERTY(bool isPlaylistSearch READ isPlaylistSearch CONSTANT)
 
@@ -85,7 +85,7 @@ public: // Enums
         FolderSearch     = 0x02,
         FolderSearchable = 0x04,
         FolderRelated    = 0x08,
-        Playlist      = 0x10,
+        Playlist         = 0x10,
         PlaylistFeed     = 0x20,
         PlaylistSearch   = 0x40,
         UserType         = 0x10000

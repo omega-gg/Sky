@@ -39,8 +39,7 @@ class SK_GUI_EXPORT WTabTrack : public WAbstractTab
     Q_PROPERTY(const WBookmarkTrack * currentBookmark READ currentBookmark
                NOTIFY currentBookmarkChanged)
 
-    Q_PROPERTY(WPlaylist * playlist READ playlist WRITE setPlaylist
-               NOTIFY playlistChanged)
+    Q_PROPERTY(WPlaylist * playlist READ playlist WRITE setPlaylist NOTIFY playlistChanged)
 
     Q_PROPERTY(WDeclarativePlayer * player READ player WRITE setPlayer NOTIFY playerChanged)
 
@@ -147,7 +146,7 @@ public: // Properties
     const WBookmarkTrack * currentBookmark() const;
 
     WPlaylist * playlist() const;
-    void                setPlaylist(WPlaylist * playlist);
+    void        setPlaylist(WPlaylist * playlist);
 
     WDeclarativePlayer * player() const;
     void                 setPlayer(WDeclarativePlayer * player);

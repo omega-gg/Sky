@@ -46,8 +46,6 @@ public: // Function
 
     WTrack * getTrack(int index);
 
-    void clearItems();
-
     void loadTracks(const QList<WTrack> & tracks);
 
     bool loadTrack(int index);

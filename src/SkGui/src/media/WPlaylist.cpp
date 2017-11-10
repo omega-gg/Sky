@@ -657,19 +657,6 @@ void WPlaylistPrivate::init()
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WPlaylistPrivate::clearItems()
-{
-    Q_Q(WPlaylist);
-
-    wControllerPlaylist->d_func()->abortQueriesItem(q);
-
-    tracks.clear();
-
-    ids.clear();
-}
-
-//-------------------------------------------------------------------------------------------------
-
 void WPlaylistPrivate::loadTracks(const QList<WTrack> & tracks)
 {
     Q_Q(WPlaylist);
@@ -1160,7 +1147,8 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
             watcher->beginTracksClear();
         }
 
-        d->clearItems();
+        tracks.clear();
+        ids   .clear();
 
         foreach (WPlaylistWatcher * watcher, d->watchers)
         {

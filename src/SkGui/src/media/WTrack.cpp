@@ -384,15 +384,4 @@ WPlaylist * WTrack::playlist() const
     Q_D(const WTrack); return d->playlist;
 }
 
-WPlaylist * WTrack::playlistNet() const
-{
-    Q_D(const WTrack);
-
-    if (d->playlist)
-    {
-         return d->playlist->toPlaylist();
-    }
-    else return NULL;
-}
-
 #endif // SK_NO_TRACK

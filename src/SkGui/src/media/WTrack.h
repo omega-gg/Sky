@@ -91,8 +91,6 @@ public: // Properties
 
     WPlaylist * playlist() const;
 
-    WPlaylist * playlistNet() const;
-
 private:
     W_DECLARE_PRIVATE_COPY(WTrack)
 
