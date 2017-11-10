@@ -31,7 +31,7 @@
 
 // Forward declarations
 class WBackendNetPrivate;
-class WPlaylistNet;
+class WPlaylist;
 class WTrack;
 class WLibraryFolder;
 
@@ -94,7 +94,7 @@ public: // Variables
 class SK_GUI_EXPORT WBackendNetPlaylistInfo
 {
 public:
-    explicit WBackendNetPlaylistInfo(WLibraryItem::Type type = WLibraryItem::PlaylistNet,
+    explicit WBackendNetPlaylistInfo(WLibraryItem::Type type = WLibraryItem::Playlist,
                                      QString            id   = QString());
 public: // Interface
     bool isValid() const;

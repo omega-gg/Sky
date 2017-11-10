@@ -179,10 +179,8 @@ private:
     friend class WLibraryItemPrivate;
     friend class WLibraryFolder;
     friend class WLibraryFolderPrivate;
-    friend class WAbstractPlaylist;
-    friend class WAbstractPlaylistPrivate;
-    friend class WPlaylistNet;
-    friend class WPlaylistNetPrivate;
+    friend class WPlaylist;
+    friend class WPlaylistPrivate;
     friend class WBackendNet;
     friend class WBackendNetPrivate;
     friend class WTabTrack;

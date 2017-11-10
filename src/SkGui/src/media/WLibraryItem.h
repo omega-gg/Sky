@@ -31,8 +31,8 @@ class WLibraryFolder;
 class WLibraryFolderSearch;
 class WLibraryFolderSearchable;
 class WLibraryFolderRelated;
-class WAbstractPlaylist;
-class WPlaylistNet;
+class WPlaylist;
+class WPlaylist;
 class WTabTrack;
 class WBackendNetQuery;
 
@@ -57,7 +57,7 @@ class SK_GUI_EXPORT WLibraryItem : public WLocalObject
     Q_PROPERTY(bool isFolderSearchable READ isFolderSearchable CONSTANT)
     Q_PROPERTY(bool isFolderRelated    READ isFolderRelated    CONSTANT)
 
-    Q_PROPERTY(bool isPlaylistNet    READ isPlaylistNet    CONSTANT)
+    Q_PROPERTY(bool isPlaylist    READ isPlaylist    CONSTANT)
     Q_PROPERTY(bool isPlaylistFeed   READ isPlaylistFeed   CONSTANT)
     Q_PROPERTY(bool isPlaylistSearch READ isPlaylistSearch CONSTANT)
 
@@ -85,7 +85,7 @@ public: // Enums
         FolderSearch     = 0x02,
         FolderSearchable = 0x04,
         FolderRelated    = 0x08,
-        PlaylistNet      = 0x10,
+        Playlist      = 0x10,
         PlaylistFeed     = 0x20,
         PlaylistSearch   = 0x40,
         UserType         = 0x10000
@@ -96,13 +96,8 @@ protected:
     WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * parent = NULL);
 
 public: // Interface
-    Q_INVOKABLE WAbstractPlaylist * toPlaylist   ();
-    Q_INVOKABLE WPlaylistNet      * toPlaylistNet();
-
-    Q_INVOKABLE WLibraryFolder           * toFolder          ();
-    Q_INVOKABLE WLibraryFolderSearch     * toFolderSearch    ();
-    Q_INVOKABLE WLibraryFolderSearchable * toFolderSearchable();
-    Q_INVOKABLE WLibraryFolderRelated    * toFolderRelated   ();
+    Q_INVOKABLE WLibraryFolder * toFolder  ();
+    Q_INVOKABLE WPlaylist      * toPlaylist();
 
     //---------------------------------------------------------------------------------------------
 
@@ -183,7 +178,7 @@ public: // Properties
     bool isFolderSearchable() const;
     bool isFolderRelated   () const;
 
-    bool isPlaylistNet   () const;
+    bool isPlaylistBase  () const;
     bool isPlaylistFeed  () const;
     bool isPlaylistSearch() const;
 

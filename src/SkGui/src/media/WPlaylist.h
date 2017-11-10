@@ -14,24 +14,23 @@
 */
 //=================================================================================================
 
-#ifndef WABSTRACTPLAYLIST_H
-#define WABSTRACTPLAYLIST_H
+#ifndef WPLAYLIST_H
+#define WPLAYLIST_H
 
 // Sk includes
 #include <WLibraryItem>
+#include <WTrack>
 
-#ifndef SK_NO_ABSTRACTPLAYLIST
+#ifndef SK_NO_PLAYLIST
 
 // Forward declarations
-class WAbstractPlaylistPrivate;
-class WPlaylistNet;
-class WTrack;
+class WPlaylistPrivate;
 
 //-------------------------------------------------------------------------------------------------
-// WAbstractPlaylistWatcher
+// WPlaylistWatcher
 //-------------------------------------------------------------------------------------------------
 
-class SK_GUI_EXPORT WAbstractPlaylistWatcher
+class SK_GUI_EXPORT WPlaylistWatcher
 {
 protected:
     virtual void beginTracksInsert(int first, int last);
@@ -55,22 +54,19 @@ protected:
     virtual void playlistDestroyed();
 
 private:
-    friend class WAbstractPlaylist;
-    friend class WAbstractPlaylistPrivate;
-    friend class WPlaylistNet;
-    friend class WPlaylistNetPrivate;
+    friend class WPlaylist;
+    friend class WPlaylistPrivate;
 };
 
 //-------------------------------------------------------------------------------------------------
-// WAbstractPlaylist
+// WPlaylist
 //-------------------------------------------------------------------------------------------------
 
-class SK_GUI_EXPORT WAbstractPlaylist : public WLibraryItem
+class SK_GUI_EXPORT WPlaylist : public WLibraryItem
 {
     Q_OBJECT
 
-    Q_PROPERTY(bool isPlaylistNet READ isPlaylistNet CONSTANT)
-
+    Q_PROPERTY(bool isBase   READ isBase   CONSTANT)
     Q_PROPERTY(bool isFeed   READ isFeed   CONSTANT)
     Q_PROPERTY(bool isSearch READ isSearch CONSTANT)
 
@@ -109,19 +105,49 @@ class SK_GUI_EXPORT WAbstractPlaylist : public WLibraryItem
     Q_PROPERTY(QUrl    currentCover    READ currentCover    NOTIFY currentTrackChanged)
     Q_PROPERTY(int     currentDuration READ currentDuration NOTIFY currentTrackChanged)
 
+public:
+    explicit WPlaylist(WLibraryFolder * parent = NULL);
 protected:
-    WAbstractPlaylist(WAbstractPlaylistPrivate * p, Type type, WLibraryFolder * parent = NULL);
+    WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent = NULL);
 
 public: // Interface
-    Q_INVOKABLE void setPreviousTrack(bool cycle = false);
-    Q_INVOKABLE void setNextTrack    (bool cycle = false);
+    Q_INVOKABLE void addTrack (const WTrack        & track);
+    Q_INVOKABLE void addTracks(const QList<WTrack> & tracks);
+
+    Q_INVOKABLE void insertTrack (int index, const WTrack        & track);
+    Q_INVOKABLE void insertTracks(int index, const QList<WTrack> & tracks);
+
+    Q_INVOKABLE int addSource(const QUrl & url);
+
+    Q_INVOKABLE int insertSource(int index, const QUrl & url);
+
+    Q_INVOKABLE void removeTrack(int index);
+
+    Q_INVOKABLE void removeTracks(const QList<int>      & indexes);
+    Q_INVOKABLE void removeTracks(const QList<QVariant> & indexes);
+
+    Q_INVOKABLE void removeSelectedTracks();
+
+    Q_INVOKABLE void clearTracks();
+
+    Q_INVOKABLE void updateCover();
+
+    //---------------------------------------------------------------------------------------------
+
+    Q_INVOKABLE void loadTrack (int at);
+    Q_INVOKABLE void loadTracks(int at, int count);
+
+    Q_INVOKABLE void abortTracks();
+
+    //---------------------------------------------------------------------------------------------
+
+    Q_INVOKABLE bool checkFull(int count = 1) const;
 
     Q_INVOKABLE bool hasPreviousIndex(int index) const;
     Q_INVOKABLE bool hasNextIndex    (int index) const;
 
-    Q_INVOKABLE void clearTracks();
-
-    Q_INVOKABLE bool checkFull(int count = 1) const;
+    Q_INVOKABLE void setPreviousTrack(bool cycle = false);
+    Q_INVOKABLE void setNextTrack    (bool cycle = false);
 
     //---------------------------------------------------------------------------------------------
 
@@ -142,6 +168,63 @@ public: // Interface
     Q_INVOKABLE int closestSelected(int index) const;
 
     //---------------------------------------------------------------------------------------------
+
+    Q_INVOKABLE WTrack getTrackAt(int index) const;
+
+    Q_INVOKABLE int indexOf(const WTrack * track) const;
+
+    Q_INVOKABLE int indexFromId(int id) const;
+
+    Q_INVOKABLE bool contains(const WTrack & track) const;
+
+    Q_INVOKABLE bool containsSource(const QUrl & source) const;
+
+    //---------------------------------------------------------------------------------------------
+
+    Q_INVOKABLE WPlaylist * duplicate() const;
+
+    Q_INVOKABLE void copyTracksTo(const QList<int> & tracks,
+                                  WPlaylist     * destination, int to = -1) const;
+
+    Q_INVOKABLE void copyTrackTo(int            from,
+                                 WPlaylist * destination, int to = -1) const;
+
+    Q_INVOKABLE void copyAllTo     (WPlaylist * destination, int to = -1) const;
+    Q_INVOKABLE void copySelectedTo(WPlaylist * destination, int to = -1) const;
+
+    //---------------------------------------------------------------------------------------------
+    // Track interface
+
+    Q_INVOKABLE bool trackIsValid(int index) const;
+
+    Q_INVOKABLE QVariantMap trackData(int index) const;
+
+    Q_INVOKABLE WTrack::State trackState   (int index) const;
+    Q_INVOKABLE void          setTrackState(int index, WTrack::State state);
+
+    Q_INVOKABLE bool trackIsDefault(int index) const;
+    Q_INVOKABLE bool trackIsLoading(int index) const;
+    Q_INVOKABLE bool trackIsLoaded (int index) const;
+
+    Q_INVOKABLE QUrl trackSource   (int index) const;
+    Q_INVOKABLE void setTrackSource(int index, const QUrl & source);
+
+    Q_INVOKABLE QString trackTitle   (int index) const;
+    Q_INVOKABLE void    setTrackTitle(int index, const QString & title);
+
+    Q_INVOKABLE QUrl trackCover   (int index) const;
+    Q_INVOKABLE void setTrackCover(int index, const QUrl & cover);
+
+    Q_INVOKABLE QString trackAuthor   (int index) const;
+    Q_INVOKABLE void    setTrackAuthor(int index, const QString & author);
+
+    Q_INVOKABLE QString trackFeed   (int index) const;
+    Q_INVOKABLE void    setTrackFeed(int index, const QString & feed);
+
+    Q_INVOKABLE int  trackDuration   (int index) const;
+    Q_INVOKABLE void setTrackDuration(int index, int msec);
+
+    //---------------------------------------------------------------------------------------------
     // Pointers
 
     Q_INVOKABLE const WTrack * trackPointerFromId(int id)    const;
@@ -157,13 +240,17 @@ public: // Interface
     //---------------------------------------------------------------------------------------------
     // Watchers
 
-    Q_INVOKABLE void registerWatcher  (WAbstractPlaylistWatcher * watcher);
-    Q_INVOKABLE void unregisterWatcher(WAbstractPlaylistWatcher * watcher);
+    Q_INVOKABLE void registerWatcher  (WPlaylistWatcher * watcher);
+    Q_INVOKABLE void unregisterWatcher(WPlaylistWatcher * watcher);
 
-public: // Abstract interface
-    virtual int indexOf(const WTrack * track) const = 0;
+    //---------------------------------------------------------------------------------------------
+    // QML
 
-    virtual int indexFromId(int id) const = 0;
+    Q_INVOKABLE void copyTracksTo(const QVariantList & tracks,
+                                  WPlaylist          * destination, int to = -1) const;
+
+public: // Static functions
+    Q_INVOKABLE static WPlaylist * create(Type type = Playlist);
 
 protected: // Functions
     void updateIndex();
@@ -180,17 +267,16 @@ protected: // Functions
     void endTracksMove  () const;
     void endTracksRemove() const;
 
-protected: // Abstract functions
-    virtual int itemCount() const = 0;
-
-    virtual const WTrack * itemFromId(int id)    const = 0;
-    virtual const WTrack * itemAt    (int index) const = 0;
-
-    virtual void moveItemTo(int from, int to) = 0;
-
-    virtual void clearItems() = 0;
+protected: // WLocalObject reimplementation
+    /* virtual */ WAbstractThreadAction * onSave(const QString & path);
+    /* virtual */ WAbstractThreadAction * onLoad(const QString & path);
 
 protected: // WLibraryItem reimplementation
+    /* virtual */ bool applySource(const QUrl             & source);
+    /* virtual */ bool applyQuery (const WBackendNetQuery & query);
+
+    /* virtual */ bool stopQuery();
+
     /* virtual */ void onApplyCurrentIds(const QList<int> & ids);
 
 signals:
@@ -224,8 +310,7 @@ signals:
     void scrollValueChanged();
 
 public: // Properties
-    bool isPlaylistNet() const;
-
+    bool isBase  () const;
     bool isFeed  () const;
     bool isSearch() const;
 
@@ -268,11 +353,41 @@ public: // Properties
     int     currentDuration() const;
 
 private:
-    W_DECLARE_PRIVATE(WAbstractPlaylist)
+    W_DECLARE_PRIVATE(WPlaylist)
 
     friend class WControllerPlaylist;
     friend class WControllerPlaylistPrivate;
 };
 
-#endif // SK_NO_ABSTRACTPLAYLIST
-#endif // WABSTRACTPLAYLIST_H
+//-------------------------------------------------------------------------------------------------
+// WPlaylistFeed
+//-------------------------------------------------------------------------------------------------
+
+class SK_GUI_EXPORT WPlaylistFeed : public WPlaylist
+{
+    Q_OBJECT
+
+public:
+    explicit WPlaylistFeed(WLibraryFolder * parent = NULL);
+
+private:
+    Q_DISABLE_COPY(WPlaylistFeed)
+};
+
+//-------------------------------------------------------------------------------------------------
+// WPlaylistSearch
+//-------------------------------------------------------------------------------------------------
+
+class SK_GUI_EXPORT WPlaylistSearch : public WPlaylist
+{
+    Q_OBJECT
+
+public:
+    explicit WPlaylistSearch(WLibraryFolder * parent = NULL);
+
+private:
+    Q_DISABLE_COPY(WPlaylistSearch)
+};
+
+#endif // SK_NO_PLAYLIST
+#endif // WPLAYLIST_H

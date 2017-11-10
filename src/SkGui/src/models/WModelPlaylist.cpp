@@ -14,41 +14,41 @@
 */
 //=================================================================================================
 
-#include "WModelPlaylistNet.h"
+#include "WModelPlaylist.h"
 
-#ifndef SK_NO_MODELPLAYLISTNET
+#ifndef SK_NO_MODELPLAYLIST
 
 // Qt includes
 #include <QDateTime>
 
 // Sk includes
-#include <WPlaylistNet>
+#include <WPlaylist>
 
 //-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
 
-#include "WModelPlaylistNet_p.h"
+#include "WModelPlaylist_p.h"
 
-WModelPlaylistNetPrivate::WModelPlaylistNetPrivate(WModelPlaylistNet * p) : WPrivate(p) {}
+WModelPlaylistPrivate::WModelPlaylistPrivate(WModelPlaylist * p) : WPrivate(p) {}
 
-/* virtual */ WModelPlaylistNetPrivate::~WModelPlaylistNetPrivate()
+/* virtual */ WModelPlaylistPrivate::~WModelPlaylistPrivate()
 {
-    Q_Q(WModelPlaylistNet);
+    Q_Q(WModelPlaylist);
 
     if (playlist) playlist->unregisterWatcher(q);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void WModelPlaylistNetPrivate::init()
+void WModelPlaylistPrivate::init()
 {
     playlist = NULL;
 
     oldTrack = NULL;
 
 #ifdef QT_4
-    Q_Q(WModelPlaylistNet);
+    Q_Q(WModelPlaylist);
 
     q->setRoleNames(q->roleNames());
 #endif
@@ -58,33 +58,33 @@ void WModelPlaylistNetPrivate::init()
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
-/* explicit */ WModelPlaylistNet::WModelPlaylistNet(QObject * parent)
-    : QAbstractListModel(parent), WPrivatable(new WModelPlaylistNetPrivate(this))
+/* explicit */ WModelPlaylist::WModelPlaylist(QObject * parent)
+    : QAbstractListModel(parent), WPrivatable(new WModelPlaylistPrivate(this))
 {
-    Q_D(WModelPlaylistNet); d->init();
+    Q_D(WModelPlaylist); d->init();
 }
 
 //-------------------------------------------------------------------------------------------------
 // QAbstractItemModel reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ QHash<int, QByteArray> WModelPlaylistNet::roleNames() const
+/* virtual */ QHash<int, QByteArray> WModelPlaylist::roleNames() const
 {
     QHash<int, QByteArray> roles;
 
-    roles.insert(WModelPlaylistNet::RoleState,    "loadState");
-    roles.insert(WModelPlaylistNet::RoleSource,   "source");
-    roles.insert(WModelPlaylistNet::RoleTitle,    "title");
-    roles.insert(WModelPlaylistNet::RoleCover,    "cover");
-    roles.insert(WModelPlaylistNet::RoleSelected, "selected");
-    roles.insert(WModelPlaylistNet::RoleCurrent,  "current");
+    roles.insert(WModelPlaylist::RoleState,    "loadState");
+    roles.insert(WModelPlaylist::RoleSource,   "source");
+    roles.insert(WModelPlaylist::RoleTitle,    "title");
+    roles.insert(WModelPlaylist::RoleCover,    "cover");
+    roles.insert(WModelPlaylist::RoleSelected, "selected");
+    roles.insert(WModelPlaylist::RoleCurrent,  "current");
 
     return roles;
 }
 
-/* virtual */ int WModelPlaylistNet::rowCount(const QModelIndex &) const
+/* virtual */ int WModelPlaylist::rowCount(const QModelIndex &) const
 {
-    Q_D(const WModelPlaylistNet);
+    Q_D(const WModelPlaylist);
 
     if (d->playlist)
     {
@@ -93,9 +93,9 @@ void WModelPlaylistNetPrivate::init()
     else return 0;
 }
 
-/* virtual */ QVariant WModelPlaylistNet::data(const QModelIndex & index, int role) const
+/* virtual */ QVariant WModelPlaylist::data(const QModelIndex & index, int role) const
 {
-    Q_D(const WModelPlaylistNet);
+    Q_D(const WModelPlaylist);
 
     if (d->playlist == NULL) return QVariant();
 
@@ -113,46 +113,46 @@ void WModelPlaylistNetPrivate::init()
 }
 
 //-------------------------------------------------------------------------------------------------
-// WAbstractPlaylistWatcher implementation
+// WPlaylistWatcher implementation
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WModelPlaylistNet::beginTracksInsert(int first, int last)
+/* virtual */ void WModelPlaylist::beginTracksInsert(int first, int last)
 {
     beginInsertRows(QModelIndex(), first, last);
 }
 
-/* virtual */ void WModelPlaylistNet::endTracksInsert()
+/* virtual */ void WModelPlaylist::endTracksInsert()
 {
     endInsertRows();
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WModelPlaylistNet::beginTracksMove(int first, int last, int to)
+/* virtual */ void WModelPlaylist::beginTracksMove(int first, int last, int to)
 {
     beginMoveRows(QModelIndex(), first, last, QModelIndex(), to);
 }
 
-/* virtual */ void WModelPlaylistNet::endTracksMove()
+/* virtual */ void WModelPlaylist::endTracksMove()
 {
     endMoveRows();
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WModelPlaylistNet::beginTracksRemove(int first, int last)
+/* virtual */ void WModelPlaylist::beginTracksRemove(int first, int last)
 {
     beginRemoveRows(QModelIndex(), first, last);
 }
 
-/* virtual */ void WModelPlaylistNet::endTracksRemove()
+/* virtual */ void WModelPlaylist::endTracksRemove()
 {
     endRemoveRows();
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WModelPlaylistNet::trackUpdated(int index)
+/* virtual */ void WModelPlaylist::trackUpdated(int index)
 {
     QModelIndex modelIndex = this->index(index);
 
@@ -161,19 +161,19 @@ void WModelPlaylistNetPrivate::init()
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WModelPlaylistNet::beginTracksClear()
+/* virtual */ void WModelPlaylist::beginTracksClear()
 {
     beginResetModel();
 }
 
-/* virtual */ void WModelPlaylistNet::endTracksClear()
+/* virtual */ void WModelPlaylist::endTracksClear()
 {
     endResetModel();
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WModelPlaylistNet::selectedTracksChanged(const QList<int> & updatedIndexes)
+/* virtual */ void WModelPlaylist::selectedTracksChanged(const QList<int> & updatedIndexes)
 {
     Q_ASSERT(updatedIndexes.count());
 
@@ -186,9 +186,9 @@ void WModelPlaylistNetPrivate::init()
     }
 }
 
-/* virtual */ void WModelPlaylistNet::currentIndexChanged(int index)
+/* virtual */ void WModelPlaylist::currentIndexChanged(int index)
 {
-    Q_D(WModelPlaylistNet);
+    Q_D(WModelPlaylist);
 
     if (d->oldTrack)
     {
@@ -202,7 +202,7 @@ void WModelPlaylistNetPrivate::init()
     d->oldTrack = d->playlist->currentTrackPointer();
 }
 
-/* virtual */ void WModelPlaylistNet::playlistDestroyed()
+/* virtual */ void WModelPlaylist::playlistDestroyed()
 {
     setPlaylist(NULL);
 }
@@ -211,14 +211,14 @@ void WModelPlaylistNetPrivate::init()
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-WPlaylistNet * WModelPlaylistNet::playlist() const
+WPlaylist * WModelPlaylist::playlist() const
 {
-    Q_D(const WModelPlaylistNet); return d->playlist;
+    Q_D(const WModelPlaylist); return d->playlist;
 }
 
-void WModelPlaylistNet::setPlaylist(WPlaylistNet * playlist)
+void WModelPlaylist::setPlaylist(WPlaylist * playlist)
 {
-    Q_D(WModelPlaylistNet);
+    Q_D(WModelPlaylist);
 
     if (d->playlist == playlist) return;
 
@@ -241,4 +241,4 @@ void WModelPlaylistNet::setPlaylist(WPlaylistNet * playlist)
     emit playlistChanged();
 }
 
-#endif // SK_NO_MODELPLAYLISTNET
+#endif // SK_NO_MODELPLAYLIST

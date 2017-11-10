@@ -83,7 +83,7 @@ void WBookmarkTrackPrivate::setParentTab(WTabTrack * parent)
 
 //-------------------------------------------------------------------------------------------------
 
-void WBookmarkTrackPrivate::setPlaylist(WAbstractPlaylist * playlist)
+void WBookmarkTrackPrivate::setPlaylist(WPlaylist * playlist)
 {
     if (this->playlist == playlist) return;
 
@@ -370,7 +370,7 @@ WBookmarkTrack & WBookmarkTrack::operator=(const WBookmarkTrack & other)
 }
 
 //-------------------------------------------------------------------------------------------------
-// Protected WAbstractPlaylistWatcher reimplementation
+// Protected WPlaylistWatcher reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WBookmarkTrack::endTracksInsert()
@@ -521,7 +521,7 @@ QList<int> WBookmarkTrack::folderIds() const
 
 //-------------------------------------------------------------------------------------------------
 
-WAbstractPlaylist * WBookmarkTrack::playlist() const
+WPlaylist * WBookmarkTrack::playlist() const
 {
     Q_D(const WBookmarkTrack); return d->playlist;
 }

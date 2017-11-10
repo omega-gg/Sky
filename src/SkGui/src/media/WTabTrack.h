@@ -39,7 +39,7 @@ class SK_GUI_EXPORT WTabTrack : public WAbstractTab
     Q_PROPERTY(const WBookmarkTrack * currentBookmark READ currentBookmark
                NOTIFY currentBookmarkChanged)
 
-    Q_PROPERTY(WAbstractPlaylist * playlist READ playlist WRITE setPlaylist
+    Q_PROPERTY(WPlaylist * playlist READ playlist WRITE setPlaylist
                NOTIFY playlistChanged)
 
     Q_PROPERTY(WDeclarativePlayer * player READ player WRITE setPlayer NOTIFY playerChanged)
@@ -110,7 +110,7 @@ public: // Interface
     Q_INVOKABLE const WTrack * currentTrackPointer() const;
     Q_INVOKABLE void           setCurrentTrackPointer(const WTrack * track);
 
-    Q_INVOKABLE void copyTrackTo(WPlaylistNet * destination, int to = -1);
+    Q_INVOKABLE void copyTrackTo(WPlaylist * destination, int to = -1);
 
     Q_INVOKABLE void updateBookmark();
 
@@ -146,8 +146,8 @@ public: // Properties
 
     const WBookmarkTrack * currentBookmark() const;
 
-    WAbstractPlaylist * playlist() const;
-    void                setPlaylist(WAbstractPlaylist * playlist);
+    WPlaylist * playlist() const;
+    void                setPlaylist(WPlaylist * playlist);
 
     WDeclarativePlayer * player() const;
     void                 setPlayer(WDeclarativePlayer * player);

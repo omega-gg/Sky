@@ -23,8 +23,8 @@
 #include <WControllerPlaylist>
 #include <WLibraryFolder>
 #include <WLibraryFolderRelated>
-#include <WAbstractPlaylist>
-#include <WPlaylistNet>
+#include <WPlaylist>
+#include <WPlaylist>
 #include <WTabTrack>
 
 // Private includes
@@ -148,36 +148,14 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ WAbstractPlaylist * WLibraryItem::toPlaylist()
-{
-    return qobject_cast<WAbstractPlaylist *> (this);
-}
-
-/* Q_INVOKABLE */ WPlaylistNet * WLibraryItem::toPlaylistNet()
-{
-    return qobject_cast<WPlaylistNet *> (this);
-}
-
-//-------------------------------------------------------------------------------------------------
-
 /* Q_INVOKABLE */ WLibraryFolder * WLibraryItem::toFolder()
 {
     return qobject_cast<WLibraryFolder *> (this);
 }
 
-/* Q_INVOKABLE */ WLibraryFolderSearch * WLibraryItem::toFolderSearch()
+/* Q_INVOKABLE */ WPlaylist * WLibraryItem::toPlaylist()
 {
-    return qobject_cast<WLibraryFolderSearch *> (this);
-}
-
-/* Q_INVOKABLE */ WLibraryFolderSearchable * WLibraryItem::toFolderSearchable()
-{
-    return qobject_cast<WLibraryFolderSearchable *> (this);
-}
-
-/* Q_INVOKABLE */ WLibraryFolderRelated * WLibraryItem::toFolderRelated()
-{
-    return qobject_cast<WLibraryFolderRelated *> (this);
+    return qobject_cast<WPlaylist *> (this);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -297,7 +275,7 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
 
 /* Q_INVOKABLE static */ bool WLibraryItem::typeIsPlaylist(Type type)
 {
-    return (type >= PlaylistNet && type <= PlaylistSearch);
+    return (type >= Playlist && type <= PlaylistSearch);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -495,7 +473,7 @@ bool WLibraryItem::isPlaylist() const
 {
     Q_D(const WLibraryItem);
 
-    return (d->type >= PlaylistNet && d->type <= PlaylistSearch);
+    return (d->type >= Playlist && d->type <= PlaylistSearch);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -522,9 +500,9 @@ bool WLibraryItem::isFolderRelated() const
 
 //-------------------------------------------------------------------------------------------------
 
-bool WLibraryItem::isPlaylistNet() const
+bool WLibraryItem::isPlaylistBase() const
 {
-    Q_D(const WLibraryItem); return (d->type == PlaylistNet);
+    Q_D(const WLibraryItem); return (d->type == Playlist);
 }
 
 bool WLibraryItem::isPlaylistFeed() const

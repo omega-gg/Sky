@@ -23,7 +23,7 @@
 
 // Sk includes
 #include <WControllerScript>
-#include <WPlaylistNet>
+#include <WPlaylist>
 
 //-------------------------------------------------------------------------------------------------
 // Private
@@ -379,18 +379,18 @@ void WTrack::setQuality(WAbstractBackend::Quality quality)
 
 //-------------------------------------------------------------------------------------------------
 
-WAbstractPlaylist * WTrack::playlist() const
+WPlaylist * WTrack::playlist() const
 {
     Q_D(const WTrack); return d->playlist;
 }
 
-WPlaylistNet * WTrack::playlistNet() const
+WPlaylist * WTrack::playlistNet() const
 {
     Q_D(const WTrack);
 
     if (d->playlist)
     {
-         return d->playlist->toPlaylistNet();
+         return d->playlist->toPlaylist();
     }
     else return NULL;
 }

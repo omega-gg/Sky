@@ -19,7 +19,7 @@
 
 // Sk includes
 #include <WDeclarativeItem>
-#include <WAbstractPlaylist>
+#include <WPlaylist>
 #include <WTrack>
 
 #ifndef SK_NO_DECLARATIVEPLAYER
@@ -29,7 +29,7 @@ class WDeclarativePlayerPrivate;
 class WAbstractHook;
 class WTabsTrack;
 
-class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WAbstractPlaylistWatcher
+class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlaylistWatcher
 {
     Q_OBJECT
 
@@ -40,7 +40,7 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WAbstra
 
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
 
-    Q_PROPERTY(WPlaylistNet * playlist READ playlist WRITE setPlaylist NOTIFY playlistChanged)
+    Q_PROPERTY(WPlaylist * playlist READ playlist WRITE setPlaylist NOTIFY playlistChanged)
 
     Q_PROPERTY(WAbstractBackend::State currentState READ state NOTIFY stateChanged)
 
@@ -149,7 +149,7 @@ public: // QGraphicsItem reimplementation
 protected: // QDeclarativeItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
 
-protected: // WAbstractPlaylistWatcher implementation
+protected: // WPlaylistWatcher implementation
     /* virtual */ void beginTracksInsert(int first, int last);
     /* virtual */ void endTracksInsert  ();
 
@@ -216,8 +216,8 @@ public: // Properties
     QUrl source() const;
     void setSource(const QUrl & url);
 
-    WPlaylistNet * playlist() const;
-    void           setPlaylist(WPlaylistNet * playlist);
+    WPlaylist * playlist() const;
+    void           setPlaylist(WPlaylist * playlist);
 
     WAbstractBackend::State state() const;
 

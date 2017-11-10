@@ -20,7 +20,7 @@
 
 // Sk includes
 #include <WAbstractHook>
-#include <WPlaylistNet>
+#include <WPlaylist>
 #include <WTabsTrack>
 #include <WTabTrack>
 #include <WLibraryFolder>
@@ -84,7 +84,7 @@ void WDeclarativePlayerPrivate::init()
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WDeclarativePlayerPrivate::applyPlaylist(WPlaylistNet * playlist)
+void WDeclarativePlayerPrivate::applyPlaylist(WPlaylist * playlist)
 {
     Q_Q(WDeclarativePlayer);
 
@@ -125,7 +125,7 @@ void WDeclarativePlayerPrivate::applyPlaylist(WPlaylistNet * playlist)
     emit q->playlistChanged();
 }
 
-void WDeclarativePlayerPrivate::setPlaylist(WPlaylistNet * playlist)
+void WDeclarativePlayerPrivate::setPlaylist(WPlaylist * playlist)
 {
     if (this->playlist == playlist) return;
 
@@ -533,11 +533,11 @@ void WDeclarativePlayerPrivate::onCurrentBookmarkUpdated()
 
     if (bookmark)
     {
-        WAbstractPlaylist * playlist = bookmark->playlist();
+        WPlaylist * playlist = bookmark->playlist();
 
         if (playlist)
         {
-             setPlaylist(playlist->toPlaylistNet());
+             setPlaylist(playlist->toPlaylist());
         }
         else setPlaylist(NULL);
     }
@@ -850,7 +850,7 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 }
 
 //-------------------------------------------------------------------------------------------------
-// Protected WAbstractPlaylistWatcher implementation
+// Protected WPlaylistWatcher implementation
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WDeclarativePlayer::beginTracksInsert(int first, int last)
@@ -1053,12 +1053,12 @@ void WDeclarativePlayer::setSource(const QUrl & url)
 
 //-------------------------------------------------------------------------------------------------
 
-WPlaylistNet * WDeclarativePlayer::playlist() const
+WPlaylist * WDeclarativePlayer::playlist() const
 {
     Q_D(const WDeclarativePlayer); return d->playlist;
 }
 
-void WDeclarativePlayer::setPlaylist(WPlaylistNet * playlist)
+void WDeclarativePlayer::setPlaylist(WPlaylist * playlist)
 {
     Q_D(WDeclarativePlayer);
 

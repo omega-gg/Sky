@@ -57,7 +57,7 @@ public: // Variables
 
     WAbstractBackend::Quality quality;
 
-    WAbstractPlaylist * playlist;
+    WPlaylist * playlist;
 
 protected:
     W_DECLARE_PUBLIC(WTrack)

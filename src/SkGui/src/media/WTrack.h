@@ -28,8 +28,8 @@
 // Forward declarations
 class QDateTime;
 class WTrackPrivate;
-class WAbstractPlaylist;
-class WPlaylistNet;
+class WPlaylist;
+class WPlaylist;
 
 class SK_GUI_EXPORT WTrack : public WPrivatable
 {
@@ -89,16 +89,16 @@ public: // Properties
     WAbstractBackend::Quality quality() const;
     void                      setQuality(WAbstractBackend::Quality quality);
 
-    WAbstractPlaylist * playlist() const;
+    WPlaylist * playlist() const;
 
-    WPlaylistNet * playlistNet() const;
+    WPlaylist * playlistNet() const;
 
 private:
     W_DECLARE_PRIVATE_COPY(WTrack)
 
-    friend class WPlaylistNet;
-    friend class WPlaylistNetPrivate;
-    friend class WPlaylistNetRead;
+    friend class WPlaylist;
+    friend class WPlaylistPrivate;
+    friend class WPlaylistRead;
 };
 
 #endif // SK_NO_TRACK

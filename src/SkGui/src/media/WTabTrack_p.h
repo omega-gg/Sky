@@ -94,7 +94,7 @@ public: // Functions
 
     void setCurrentBookmark(WBookmarkTrack * bookmark);
 
-    bool setPlaylist(WAbstractPlaylist * playlist);
+    bool setPlaylist(WPlaylist * playlist);
 
     void applyPlaylist (WBookmarkTrack * bookmark);
     void updatePlaylist(WBookmarkTrack * bookmark);
@@ -126,7 +126,7 @@ public: // Variables
 
     QHash<int, QPair<QString, QPixmap> > videoShots;
 
-    WAbstractPlaylist  * playlist;
+    WPlaylist  * playlist;
     WDeclarativePlayer * player;
 
     WBookmarkTrack * currentBookmark;

@@ -21,7 +21,7 @@
 #include <QUrl>
 
 // Sk includes
-#include <WAbstractPlaylist>
+#include <WPlaylist>
 #include <WTrack>
 
 #ifndef SK_NO_BOOKMARKTRACK
@@ -31,7 +31,7 @@ class WBookmarkTrackPrivate;
 class WTrack;
 class WTabTrack;
 
-class SK_GUI_EXPORT WBookmarkTrack : public WPrivatable, public WAbstractPlaylistWatcher
+class SK_GUI_EXPORT WBookmarkTrack : public WPrivatable, public WPlaylistWatcher
 {
 public:
     explicit WBookmarkTrack(const WTrack & track);
@@ -53,7 +53,7 @@ public: // Operators
 
     WBookmarkTrack & operator=(const WBookmarkTrack & other);
 
-protected: // WAbstractPlaylistWatcher reimplementation
+protected: // WPlaylistWatcher reimplementation
     /* virtual */ void endTracksInsert();
 
     /* virtual */ void beginTracksRemove(int first, int last);
@@ -78,7 +78,7 @@ public: // Properties
 
     QList<int> folderIds() const;
 
-    WAbstractPlaylist * playlist() const;
+    WPlaylist * playlist() const;
     const WTrack      * track   () const;
 
     QList<int> idPlaylist  () const;

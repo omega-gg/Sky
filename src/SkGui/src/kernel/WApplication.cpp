@@ -57,7 +57,7 @@
 #include <WDeclarativePlayer>
 
 // Models includes
-#include <WModelPlaylistNet>
+#include <WModelPlaylist>
 #include <WModelLibraryFolder>
 #include <WModelRange>
 #include <WModelCompletionGoogle>
@@ -70,7 +70,7 @@
 #include <WLibraryItem>
 #include <WLibraryFolder>
 #include <WLibraryFolderRelated>
-#include <WPlaylistNet>
+#include <WPlaylist>
 #include <WTabTrack>
 #include <WTabsTrack>
 
@@ -191,7 +191,7 @@ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
     //---------------------------------------------------------------------------------------------
     // Models
 
-    qmlRegisterType<WModelPlaylistNet>("Sky", 1,0, "ModelPlaylistNet");
+    qmlRegisterType<WModelPlaylist>("Sky", 1,0, "ModelPlaylist");
 
     qmlRegisterType<WModelLibraryFolder>        ("Sky", 1,0, "ModelLibraryFolder");
     qmlRegisterType<WModelLibraryFolderFiltered>("Sky", 1,0, "ModelLibraryFolderFiltered");
@@ -222,10 +222,10 @@ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
     qmlRegisterType<WLibraryFolder>       ("Sky", 1,0, "LibraryFolder");
     qmlRegisterType<WLibraryFolderRelated>("Sky", 1,0, "LibraryFolderRelated");
 
-    qmlRegisterUncreatableType<WAbstractPlaylist>("Sky", 1,0, "AbstractPlaylist",
-                                                  "AbstractPlaylist is abstract");
+    qmlRegisterUncreatableType<WPlaylist>("Sky", 1,0, "Playlist",
+                                                  "Playlist is abstract");
 
-    qmlRegisterType<WPlaylistNet>("Sky", 1,0, "PlaylistNet");
+    qmlRegisterType<WPlaylist>("Sky", 1,0, "Playlist");
 
     qmlRegisterType<WTabTrack> ("Sky", 1,0, "TabTrack");
     qmlRegisterType<WTabsTrack>("Sky", 1,0, "BaseTabsTrack");

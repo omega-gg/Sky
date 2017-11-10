@@ -434,7 +434,7 @@ WBackendNetPlaylistInfo WBackendSoundCloud::getPlaylistInfo(const QUrl & url) co
     {
         if (source.contains("/sets/"))
         {
-             return WBackendNetPlaylistInfo(WLibraryItem::PlaylistNet, source);
+             return WBackendNetPlaylistInfo(WLibraryItem::Playlist, source);
         }
         else return WBackendNetPlaylistInfo();
     }
@@ -740,7 +740,7 @@ WBackendNetFolder WBackendSoundCloud::extractFolder(const QByteArray       & dat
 
             d->applyCover(&cover);
 
-            WLibraryFolderItem playlist(WLibraryItem::PlaylistNet, WLibraryItem::Default);
+            WLibraryFolderItem playlist(WLibraryItem::Playlist, WLibraryItem::Default);
 
             playlist.source = source;
 

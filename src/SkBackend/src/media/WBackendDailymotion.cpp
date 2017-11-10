@@ -276,7 +276,7 @@ WBackendNetPlaylistInfo WBackendDailymotion::getPlaylistInfo(const QUrl & url) c
 
     if (source.startsWith("dailymotion.com/playlist/"))
     {
-        return WBackendNetPlaylistInfo(WLibraryItem::PlaylistNet,
+        return WBackendNetPlaylistInfo(WLibraryItem::Playlist,
                                        WControllerNetwork::extractUrlElement(source, 25));
     }
     else if (source.startsWith("dailymotion.com/user/"))
@@ -664,7 +664,7 @@ WBackendNetFolder WBackendDailymotion::extractFolder(const QByteArray       & da
             QString title = WControllerNetwork::extractJsonUtf8(string, "name");
             QString cover = WControllerNetwork::extractJson    (string, "thumbnail_url");
 
-            WLibraryFolderItem playlist(WLibraryItem::PlaylistNet, WLibraryItem::Default);
+            WLibraryFolderItem playlist(WLibraryItem::Playlist, WLibraryItem::Default);
 
             playlist.source = "http://www.dailymotion.com/playlist/" + id;
 

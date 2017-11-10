@@ -471,7 +471,7 @@ WBackendNetPlaylistInfo WBackendYoutube::getPlaylistInfo(const QUrl & url) const
 
         QString id = WControllerNetwork::extractUrlElement(source, index);
 
-        return WBackendNetPlaylistInfo(WLibraryItem::PlaylistNet, id);
+        return WBackendNetPlaylistInfo(WLibraryItem::Playlist, id);
     }
     else
     {
@@ -985,7 +985,7 @@ WBackendNetPlaylist WBackendYoutube::extractPlaylist(const QByteArray       & da
 
         d->loadTracks(&(reply.tracks), list, "class=\"content-wrapper");
     }
-    else // PlaylistNet
+    else // Playlist
     {
         QString content = Sk::readUtf8(data);
 
@@ -1099,7 +1099,7 @@ WBackendNetFolder WBackendYoutube::extractFolder(const QByteArray       & data,
 
             QString title = WControllerNetwork::extractAttributeUtf8(string, "title", index);
 
-            WLibraryFolderItem playlist(WLibraryItem::PlaylistNet, WLocalObject::Default);
+            WLibraryFolderItem playlist(WLibraryItem::Playlist, WLocalObject::Default);
 
             playlist.source = "https://www.youtube.com/playlist?list=" + id;
 

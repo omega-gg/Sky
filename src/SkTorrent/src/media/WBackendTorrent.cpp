@@ -290,7 +290,7 @@ WBackendNetPlaylistInfo WBackendTorrent::getPlaylistInfo(const QUrl & url) const
 {
     if (checkValidUrl(url))
     {
-         return WBackendNetPlaylistInfo(WLibraryItem::PlaylistNet, url.toString());
+         return WBackendNetPlaylistInfo(WLibraryItem::Playlist, url.toString());
     }
     else return WBackendNetPlaylistInfo();
 }

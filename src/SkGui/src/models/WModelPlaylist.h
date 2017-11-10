@@ -14,28 +14,28 @@
 */
 //=================================================================================================
 
-#ifndef WMODELPLAYLISTNET_H
-#define WMODELPLAYLISTNET_H
+#ifndef WMODELPLAYLIST_H
+#define WMODELPLAYLIST_H
 
 // Qt includes
 #include <QAbstractListModel>
 
 // Sk includes
-#include <WAbstractPlaylist>
+#include <WPlaylist>
 
-#ifndef SK_NO_MODELPLAYLISTNET
+#ifndef SK_NO_MODELPLAYLIST
 
-class WModelPlaylistNetPrivate;
-class WPlaylistNet;
+class WModelPlaylistPrivate;
+class WPlaylist;
 
-class SK_GUI_EXPORT WModelPlaylistNet : public QAbstractListModel, public WAbstractPlaylistWatcher,
+class SK_GUI_EXPORT WModelPlaylist : public QAbstractListModel, public WPlaylistWatcher,
                                         public WPrivatable
 {
     Q_OBJECT
 
     Q_ENUMS(TrackRoles)
 
-    Q_PROPERTY(WPlaylistNet * playlist READ playlist WRITE setPlaylist NOTIFY playlistChanged)
+    Q_PROPERTY(WPlaylist * playlist READ playlist WRITE setPlaylist NOTIFY playlistChanged)
 
 public: // Enums
     enum TrackRoles
@@ -49,7 +49,7 @@ public: // Enums
     };
 
 public:
-    explicit WModelPlaylistNet(QObject * parent = NULL);
+    explicit WModelPlaylist(QObject * parent = NULL);
 
 public: // QAbstractItemModel reimplementation
     /* virtual */ QHash<int, QByteArray> roleNames() const;
@@ -58,7 +58,7 @@ public: // QAbstractItemModel reimplementation
 
     /* virtual */ QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
 
-protected: // WAbstractPlaylistWatcher implementation
+protected: // WPlaylistWatcher implementation
     /* virtual */ void beginTracksInsert(int first, int last);
     /* virtual */ void endTracksInsert  ();
 
@@ -83,17 +83,17 @@ signals:
     void playlistChanged();
 
 public: // Properties
-    WPlaylistNet * playlist() const;
-    void           setPlaylist(WPlaylistNet * playlist);
+    WPlaylist * playlist() const;
+    void           setPlaylist(WPlaylist * playlist);
 
 private:
-    W_DECLARE_PRIVATE(WModelPlaylistNet)
+    W_DECLARE_PRIVATE(WModelPlaylist)
 
-    friend class WAbstractPlaylist;
-    friend class WAbstractPlaylistPrivate;
+    friend class WPlaylist;
+    friend class WPlaylistPrivate;
 };
 
-#include <private/WModelPlaylistNet_p>
+#include <private/WModelPlaylist_p>
 
-#endif // SK_NO_MODELPLAYLISTNET
-#endif // WMODELPLAYLISTNET_H
+#endif // SK_NO_MODELPLAYLIST
+#endif // WMODELPLAYLIST_H

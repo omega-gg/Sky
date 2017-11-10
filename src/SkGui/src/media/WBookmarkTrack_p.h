@@ -43,7 +43,7 @@ public:
 public: // Functions
     void setParentTab(WTabTrack * parent);
 
-    void setPlaylist  (WAbstractPlaylist * playlist);
+    void setPlaylist  (WPlaylist * playlist);
     void clearPlaylist();
 
     void setTrack  (const WTrack & track);
@@ -58,7 +58,7 @@ public: // Variables
 
     WTabTrack * parentTab;
 
-    WAbstractPlaylist * playlist;
+    WPlaylist * playlist;
     const WTrack      * track;
 
     QList<int> idPlaylist;

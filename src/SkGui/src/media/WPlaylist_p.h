@@ -14,8 +14,8 @@
 */
 //=================================================================================================
 
-#ifndef WABSTRACTPLAYLIST_P_H
-#define WABSTRACTPLAYLIST_P_H
+#ifndef WPLAYLIST_P_H
+#define WPLAYLIST_P_H
 
 /*  W A R N I N G
     -------------
@@ -29,18 +29,31 @@
 
 #include <private/WLibraryItem_p>
 
-#ifndef SK_NO_ABSTRACTPLAYLIST
+#ifndef SK_NO_PLAYLIST
 
-class SK_GUI_EXPORT WAbstractPlaylistPrivate : public WLibraryItemPrivate
+class SK_GUI_EXPORT WPlaylistPrivate : public WLibraryItemPrivate
 {
 public:
-    WAbstractPlaylistPrivate(WAbstractPlaylist * p);
+    WPlaylistPrivate(WPlaylist * p);
 
-    /* virtual */ ~WAbstractPlaylistPrivate();
+    /* virtual */ ~WPlaylistPrivate();
 
     void init();
 
 public: // Function
+    const WTrack * itemFromId(int id)    const;
+    const WTrack * itemAt    (int index) const;
+
+    WTrack * getTrack(int index);
+
+    void clearItems();
+
+    void loadTracks(const QList<WTrack> & tracks);
+
+    bool loadTrack(int index);
+
+    bool loadCover(WTrack * track);
+
     void setPrevious(bool cycle);
     void setNext    (bool cycle);
 
@@ -56,6 +69,10 @@ public: // Function
     void emitSelectedTracksChanged(const QList<int> & indexes);
 
 public: // Variables
+    QList<WTrack> tracks;
+
+    WListId ids;
+
     const WTrack * currentTrack;
 
     int currentIndex;
@@ -67,11 +84,13 @@ public: // Variables
 
     QList<const WTrack *> selectedTracks;
 
-    QList<WAbstractPlaylistWatcher *> watchers;
+    QList<WPlaylistWatcher *> watchers;
 
 protected:
-    W_DECLARE_PUBLIC(WAbstractPlaylist)
+    W_DECLARE_PUBLIC(WPlaylist)
+
+    friend class WPlaylistReadReply;
 };
 
-#endif // SK_NO_ABSTRACTPLAYLIST
-#endif // WABSTRACTPLAYLIST_P_H
+#endif // SK_NO_PLAYLIST
+#endif // WPLAYLIST_P_H

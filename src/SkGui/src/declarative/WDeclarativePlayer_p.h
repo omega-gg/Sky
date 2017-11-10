@@ -41,9 +41,9 @@ protected:
     void init();
 
 public: // Functions
-    void applyPlaylist(WPlaylistNet * playlist);
+    void applyPlaylist(WPlaylist * playlist);
 
-    void setPlaylist(WPlaylistNet * playlist);
+    void setPlaylist(WPlaylist * playlist);
 
     void setTab(WTabTrack * tab);
 
@@ -90,7 +90,7 @@ public: // Variables
     WAbstractBackend::State state;
 
     WLibraryFolder * folder;
-    WPlaylistNet   * playlist;
+    WPlaylist   * playlist;
 
     qreal speed;
 

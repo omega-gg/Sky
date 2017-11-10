@@ -22,24 +22,24 @@
 #ifndef SK_NO_MODELPLAYLISTWEB
 
 // Forward declarations
-class WPlaylistNet;
+class WPlaylist;
 
-class SK_GUI_EXPORT WModelPlaylistNetPrivate : public WPrivate
+class SK_GUI_EXPORT WModelPlaylistPrivate : public WPrivate
 {
 public:
-    WModelPlaylistNetPrivate(WModelPlaylistNet * p);
+    WModelPlaylistPrivate(WModelPlaylist * p);
 
-    /* virtual */ ~WModelPlaylistNetPrivate();
+    /* virtual */ ~WModelPlaylistPrivate();
 
     void init();
 
 public: // Variables
-    WPlaylistNet * playlist;
+    WPlaylist * playlist;
 
     const WTrack * oldTrack;
 
 protected:
-    W_DECLARE_PUBLIC(WModelPlaylistNet)
+    W_DECLARE_PUBLIC(WModelPlaylist)
 };
 
 #endif // SK_NO_MODELPLAYLISTWEB

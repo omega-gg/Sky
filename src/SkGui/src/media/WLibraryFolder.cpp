@@ -28,7 +28,7 @@
 #include <WControllerPlaylist>
 #include <WAbstractThreadAction>
 #include <WLibraryFolderRelated>
-#include <WPlaylistNet>
+#include <WPlaylist>
 #include <WTabTrack>
 
 // 3rdparty includes
@@ -2064,9 +2064,9 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
         {
             libraryItem = new WLibraryFolderRelated(this);
         }
-        else if (item.type == PlaylistNet)
+        else if (item.type == Playlist)
         {
-            libraryItem = new WPlaylistNet(this);
+            libraryItem = new WPlaylist(this);
         }
         else if (item.type == PlaylistFeed)
         {
