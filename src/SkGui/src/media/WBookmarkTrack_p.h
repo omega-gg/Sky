@@ -58,8 +58,8 @@ public: // Variables
 
     WTabTrack * parentTab;
 
-    WPlaylist * playlist;
-    const WTrack      * track;
+    WPlaylist    * playlist;
+    const WTrack * track;
 
     QList<int> idPlaylist;
     int        idTrack;

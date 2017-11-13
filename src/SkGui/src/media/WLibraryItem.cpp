@@ -19,17 +19,8 @@
 #ifndef SK_NO_LIBRARYITEM
 
 // Sk includes
-#include <WControllerApplication>
 #include <WControllerPlaylist>
-#include <WLibraryFolder>
-#include <WLibraryFolderRelated>
-#include <WPlaylist>
-#include <WPlaylist>
 #include <WTabTrack>
-
-// Private includes
-#include <private/WControllerPlaylist_p>
-#include <private/WLibraryFolder_p>
 
 //-------------------------------------------------------------------------------------------------
 // Private

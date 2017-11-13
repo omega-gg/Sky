@@ -26,9 +26,7 @@
 #ifndef SK_NO_TRACK
 
 // Forward declarations
-class QDateTime;
 class WTrackPrivate;
-class WPlaylist;
 class WPlaylist;
 
 class SK_GUI_EXPORT WTrack : public WPrivatable

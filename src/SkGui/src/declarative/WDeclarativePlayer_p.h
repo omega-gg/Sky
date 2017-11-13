@@ -90,7 +90,7 @@ public: // Variables
     WAbstractBackend::State state;
 
     WLibraryFolder * folder;
-    WPlaylist   * playlist;
+    WPlaylist      * playlist;
 
     qreal speed;
 

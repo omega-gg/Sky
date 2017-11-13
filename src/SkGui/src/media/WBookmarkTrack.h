@@ -17,19 +17,13 @@
 #ifndef WBOOKMARKTRACK_H
 #define WBOOKMARKTRACK_H
 
-// Qt includes
-#include <QUrl>
-
 // Sk includes
 #include <WPlaylist>
-#include <WTrack>
 
 #ifndef SK_NO_BOOKMARKTRACK
 
 // Forward declarations
 class WBookmarkTrackPrivate;
-class WTrack;
-class WTabTrack;
 
 class SK_GUI_EXPORT WBookmarkTrack : public WPrivatable, public WPlaylistWatcher
 {
@@ -78,8 +72,8 @@ public: // Properties
 
     QList<int> folderIds() const;
 
-    WPlaylist * playlist() const;
-    const WTrack      * track   () const;
+    WPlaylist    * playlist() const;
+    const WTrack * track   () const;
 
     QList<int> idPlaylist  () const;
     int        idTrack     () const;

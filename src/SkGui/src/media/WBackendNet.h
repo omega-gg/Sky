@@ -20,10 +20,8 @@
 // Qt includes
 #include <QNetworkRequest>
 #include <QDateTime>
-#include <QUrl>
 
 // Sk includes
-#include <WAbstractBackend>
 #include <WLibraryFolder>
 #include <WTrack>
 
@@ -31,9 +29,6 @@
 
 // Forward declarations
 class WBackendNetPrivate;
-class WPlaylist;
-class WTrack;
-class WLibraryFolder;
 
 //-------------------------------------------------------------------------------------------------
 // WBackendNetQuery

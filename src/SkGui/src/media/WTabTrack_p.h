@@ -126,7 +126,7 @@ public: // Variables
 
     QHash<int, QPair<QString, QPixmap> > videoShots;
 
-    WPlaylist  * playlist;
+    WPlaylist          * playlist;
     WDeclarativePlayer * player;
 
     WBookmarkTrack * currentBookmark;

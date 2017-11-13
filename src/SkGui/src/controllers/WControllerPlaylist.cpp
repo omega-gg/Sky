@@ -606,9 +606,8 @@ void WControllerPlaylistPrivate::init()
 // Private interface
 //-------------------------------------------------------------------------------------------------
 
-bool WControllerPlaylistPrivate::applyQueryTrack(WPlaylist           * playlist,
-                                                 WTrack                 * track,
-                                                 const WBackendNetQuery & query)
+bool WControllerPlaylistPrivate::applyQueryTrack(WPlaylist * playlist,
+                                                 WTrack    * track, const WBackendNetQuery & query)
 {
     abortQueryTrack(track);
 
@@ -619,7 +618,7 @@ bool WControllerPlaylistPrivate::applyQueryTrack(WPlaylist           * playlist,
     else return false;
 }
 
-bool WControllerPlaylistPrivate::applyQueryPlaylist(WPlaylist           * playlist,
+bool WControllerPlaylistPrivate::applyQueryPlaylist(WPlaylist              * playlist,
                                                     const WBackendNetQuery & query)
 {
     playlist->abortQuery();
@@ -646,7 +645,7 @@ bool WControllerPlaylistPrivate::applyQueryFolder(WLibraryFolder         * folde
 //-------------------------------------------------------------------------------------------------
 
 bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
-                                                  WTrack       * track, const QUrl & url)
+                                                  WTrack    * track, const QUrl & url)
 {
     Q_Q(WControllerPlaylist);
 
@@ -1392,7 +1391,7 @@ void WControllerPlaylistPrivate::addToCache(const QUrl & url, const QByteArray &
 //-------------------------------------------------------------------------------------------------
 
 bool WControllerPlaylistPrivate::getDataTrack(WPlaylist * playlist,
-                                              WTrack       * track, const WBackendNetQuery & query)
+                                              WTrack    * track, const WBackendNetQuery & query)
 {
     Q_Q(WControllerPlaylist);
 
@@ -1416,7 +1415,7 @@ bool WControllerPlaylistPrivate::getDataTrack(WPlaylist * playlist,
     return true;
 }
 
-bool WControllerPlaylistPrivate::getDataPlaylist(WPlaylist           * playlist,
+bool WControllerPlaylistPrivate::getDataPlaylist(WPlaylist              * playlist,
                                                  const WBackendNetQuery & query)
 {
     Q_Q(WControllerPlaylist);
@@ -1474,8 +1473,8 @@ bool WControllerPlaylistPrivate::getDataFolder(WLibraryFolder         * folder,
     return true;
 }
 
-bool WControllerPlaylistPrivate::getDataRelated(WBackendNet  * backend,
-                                                WPlaylist * playlist, const QString & id)
+bool WControllerPlaylistPrivate::getDataRelated(WBackendNet * backend,
+                                                WPlaylist   * playlist, const QString & id)
 {
     WBackendNetQuery query = backend->createQuery("related", "tracks", id);
 

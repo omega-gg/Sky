@@ -217,7 +217,7 @@ public: // Properties
     void setSource(const QUrl & url);
 
     WPlaylist * playlist() const;
-    void           setPlaylist(WPlaylist * playlist);
+    void        setPlaylist(WPlaylist * playlist);
 
     WAbstractBackend::State state() const;
 

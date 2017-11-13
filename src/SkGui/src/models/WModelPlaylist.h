@@ -25,8 +25,8 @@
 
 #ifndef SK_NO_MODELPLAYLIST
 
+// Forward declarations
 class WModelPlaylistPrivate;
-class WPlaylist;
 
 class SK_GUI_EXPORT WModelPlaylist : public QAbstractListModel, public WPlaylistWatcher,
                                      public WPrivatable
@@ -84,7 +84,7 @@ signals:
 
 public: // Properties
     WPlaylist * playlist() const;
-    void           setPlaylist(WPlaylist * playlist);
+    void        setPlaylist(WPlaylist * playlist);
 
 private:
     W_DECLARE_PRIVATE(WModelPlaylist)

@@ -184,10 +184,9 @@ public: // Interface
     Q_INVOKABLE WPlaylist * duplicate() const;
 
     Q_INVOKABLE void copyTracksTo(const QList<int> & tracks,
-                                  WPlaylist     * destination, int to = -1) const;
+                                  WPlaylist        * destination, int to = -1) const;
 
-    Q_INVOKABLE void copyTrackTo(int            from,
-                                 WPlaylist * destination, int to = -1) const;
+    Q_INVOKABLE void copyTrackTo(int from, WPlaylist * destination, int to = -1) const;
 
     Q_INVOKABLE void copyAllTo     (WPlaylist * destination, int to = -1) const;
     Q_INVOKABLE void copySelectedTo(WPlaylist * destination, int to = -1) const;

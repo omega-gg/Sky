@@ -28,10 +28,6 @@
 // Forward declarations
 class WLibraryItemPrivate;
 class WLibraryFolder;
-class WLibraryFolderSearch;
-class WLibraryFolderSearchable;
-class WLibraryFolderRelated;
-class WPlaylist;
 class WPlaylist;
 class WTabTrack;
 class WBackendNetQuery;

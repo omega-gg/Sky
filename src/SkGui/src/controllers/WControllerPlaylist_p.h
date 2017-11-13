@@ -123,22 +123,22 @@ public:
 public: // Interface
     bool applyQueryTrack(WPlaylist * playlist, WTrack * track, const WBackendNetQuery & query);
 
-    bool applyQueryPlaylist(WPlaylist   * playlist, const WBackendNetQuery & query);
+    bool applyQueryPlaylist(WPlaylist      * playlist, const WBackendNetQuery & query);
     bool applyQueryFolder  (WLibraryFolder * folder,   const WBackendNetQuery & query);
 
     //---------------------------------------------------------------------------------------------
 
     bool applySourceTrack(WPlaylist * playlist, WTrack * track, const QUrl & url);
 
-    bool applySourcePlaylist(WPlaylist   * playlist, const QUrl & url);
+    bool applySourcePlaylist(WPlaylist      * playlist, const QUrl & url);
     bool applySourceFolder  (WLibraryFolder * folder,   const QUrl & url);
 
     //---------------------------------------------------------------------------------------------
 
-    bool abortQueryTrack   (WTrack       * track);
+    bool abortQueryTrack   (WTrack    * track);
     bool abortQueriesTracks(WPlaylist * playlist);
 
-    bool abortQueriesPlaylist(WPlaylist   * playlist);
+    bool abortQueriesPlaylist(WPlaylist      * playlist);
     bool abortQueriesFolder  (WLibraryFolder * folder);
 
     bool abortQueriesItem(WLibraryItem * item);
@@ -195,7 +195,7 @@ public: // Functions
 
     bool getDataTrack(WPlaylist * playlist, WTrack * track, const WBackendNetQuery & query);
 
-    bool getDataPlaylist(WPlaylist   * playlist, const WBackendNetQuery & query);
+    bool getDataPlaylist(WPlaylist      * playlist, const WBackendNetQuery & query);
     bool getDataFolder  (WLibraryFolder * folder,   const WBackendNetQuery & query);
 
     bool getDataRelated(WBackendNet * backend, WPlaylist * playlist, const QString & id);
@@ -203,7 +203,7 @@ public: // Functions
     //---------------------------------------------------------------------------------------------
 
     void abortTrack   (WTrack         * track);
-    void abortPlaylist(WPlaylist   * playlist);
+    void abortPlaylist(WPlaylist      * playlist);
     void abortFolder  (WLibraryFolder * folder);
 
 public: // Slots

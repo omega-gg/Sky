@@ -827,7 +827,7 @@ bool WPlaylistPrivate::hasNext(int index) const
 //-------------------------------------------------------------------------------------------------
 
 bool WPlaylistPrivate::insertSelected(const QList<int> & indexes,
-                                              const WTrack     * track, int index)
+                                      const WTrack     * track, int index)
 {
     if (selectedTracks.contains(track)) return false;
 
@@ -1600,7 +1600,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WPlaylist::copyTracksTo(const QList<int> & indexes,
-                                                  WPlaylist     * destination, int to) const
+                                               WPlaylist        * destination, int to) const
 {
     Q_ASSERT(destination);
 
@@ -1614,8 +1614,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     destination->insertTracks(to, tracks);
 }
 
-/* Q_INVOKABLE */ void WPlaylist::copyTrackTo(int            from,
-                                                 WPlaylist * destination, int to) const
+/* Q_INVOKABLE */ void WPlaylist::copyTrackTo(int from, WPlaylist * destination, int to) const
 {
     Q_ASSERT(destination);
 
@@ -1973,7 +1972,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 // QML
 
 /* Q_INVOKABLE */ void WPlaylist::copyTracksTo(const QVariantList & tracks,
-                                                       WPlaylist       * destination, int to) const
+                                               WPlaylist          * destination, int to) const
 {
     copyTracksTo(Sk::variantsToInts(tracks), destination, to);
 }
@@ -2193,12 +2192,12 @@ void WPlaylist::endTracksRemove() const
 
 /* virtual */ void WPlaylist::onApplyCurrentIds(const QList<int> & ids)
 {
+    Q_D(WPlaylist);
+
     if (ids.count() > 1)
     {
         qWarning("WPlaylist::onApplyCurrentIds: Item does not support multiple ids.");
     }
-
-    Q_D(WPlaylist);
 
     unselectTracks();
 
