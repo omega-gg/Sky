@@ -21,9 +21,6 @@
 
 #ifndef SK_NO_MODELPLAYLISTWEB
 
-// Forward declarations
-class WPlaylist;
-
 class SK_GUI_EXPORT WModelPlaylistPrivate : public WPrivate
 {
 public:
