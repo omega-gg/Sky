@@ -63,7 +63,24 @@ void WLoaderTorrentPrivate::onLoaded(WMagnetReply * reply)
 
     q->complete(buffer);
 
+    QObject::disconnect(reply, 0, q, 0);
+
     reply->deleteLater();
+}
+
+void WLoaderTorrentPrivate::onDestroyed()
+{
+    Q_Q(WLoaderTorrent);
+
+    WMagnetReply * reply = static_cast<WMagnetReply *> (q->sender());
+
+    QBuffer * buffer = static_cast<QBuffer *> (replies.key(reply));
+
+    replies.remove(buffer);
+
+    buffer->open(QIODevice::ReadOnly);
+
+    q->complete(buffer);
 }
 
 //=================================================================================================
@@ -92,6 +109,8 @@ void WLoaderTorrentPrivate::onLoaded(WMagnetReply * reply)
 
     connect(reply, SIGNAL(loaded(WMagnetReply *)), this, SLOT(onLoaded(WMagnetReply *)));
 
+    connect(reply, SIGNAL(destroyed()), this, SLOT(onDestroyed()));
+
     return buffer;
 }
 
@@ -104,6 +123,8 @@ void WLoaderTorrentPrivate::onLoaded(WMagnetReply * reply)
     Q_D(WLoaderTorrent);
 
     WMagnetReply * magnet = d->replies.take(reply);
+
+    disconnect(magnet, 0, this, 0);
 
     delete magnet;
 }

@@ -57,6 +57,8 @@ public: // Functions
     int extractIndex(const QUrl & url) const;
 
 public: // Static functions
+    static void applyMagnet(WMagnet * magnet, const QByteArray & data);
+
     static int listAfter(const QString & text, const QString & string, int * at);
 
 public: // Slots
@@ -73,9 +75,8 @@ public: // Variables
     QHash<WRemoteData *, WTorrent *> jobs;
     QHash<WRemoteData *, WMagnet  *> jobsMagnets;
 
-    QList<WTorrent *> downloads;
-
-    QList<WMagnet *> magnets;
+    QList<WTorrent *> torrents;
+    QList<WMagnet  *> magnets;
 
     WListId ports;
 

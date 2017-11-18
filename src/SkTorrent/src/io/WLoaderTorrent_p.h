@@ -44,6 +44,8 @@ public:
 public: // Slots
     void onLoaded(WMagnetReply * reply);
 
+    void onDestroyed();
+
 public: // Variables
     QHash<QIODevice *, WMagnetReply *> replies;
 

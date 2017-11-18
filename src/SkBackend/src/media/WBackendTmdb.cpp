@@ -31,8 +31,9 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const QString BACKENDTMDB_MATCH      = "[,.:\\-_(){}\\[\\]]";
-static const QString BACKENDTMDB_MATCH_SHOW = "[\\-_(){}\\[\\]]";
+static const QString BACKENDTMDB_MATCH       = "[,.:\\-_(){}\\[\\]]";
+static const QString BACKENDTMDB_MATCH_SHOW  = "[\\-_(){}\\[\\]]";
+static const QString BACKENDTMDB_MATCH_START = "^[({\\[]";
 
 static const int BACKENDTMDB_YEAR = 1800;
 
@@ -378,14 +379,23 @@ QStringList WBackendTmdbPrivate::getList(const QString & data) const
 
     result = result.replace(QRegExp(BACKENDTMDB_MATCH), " ");
 
-    result = result.simplified();
-
-    return result.split(' ');
+    return result.simplified().split(' ');
 }
 
 QStringList WBackendTmdbPrivate::getListClear(const QString & data) const
 {
-    QStringList list = getList(data);
+    QStringList list = data.simplified().split(' ');
+
+    while (list.count() && list.first().contains(QRegExp(BACKENDTMDB_MATCH_START)))
+    {
+        list.removeFirst();
+    }
+
+    QString result = list.join(" ");
+
+    result = result.replace(QRegExp(BACKENDTMDB_MATCH), " ");
+
+    list = result.simplified().split(' ');
 
     while (list.count() && list.first().toInt())
     {

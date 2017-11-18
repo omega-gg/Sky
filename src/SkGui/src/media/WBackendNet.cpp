@@ -552,7 +552,7 @@ QUrl WBackendNet::getUrlPlaylist(const WBackendNetPlaylistInfo &) const
 /* Q_INVOKABLE virtual */
 WBackendNetQuery WBackendNet::getQuerySource(const QUrl & url) const
 {
-    return WBackendNetQuery(url);
+    return WBackendNetQuery();
 }
 
 /* Q_INVOKABLE virtual */

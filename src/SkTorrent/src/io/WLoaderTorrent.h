@@ -41,6 +41,8 @@ private:
     W_DECLARE_PRIVATE(WLoaderTorrent)
 
     Q_PRIVATE_SLOT(d_func(), void onLoaded(WMagnetReply *))
+
+    Q_PRIVATE_SLOT(d_func(), void onDestroyed())
 };
 
 #include <private/WLoaderTorrent_p>
