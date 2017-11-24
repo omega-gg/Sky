@@ -974,29 +974,28 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
     }
     else if (d->state < WHookTorrentPrivate::StateStarting)
     {
-        setDuration(duration);
-
-        d->currentTime = currentTime;
-
-        if (currentTime == -1)
-        {
-             backendSetVolume(d->backend->volume());
-        }
-        else backendSetVolume(0.0);
-
-        applyCurrentTime(currentTime);
+        setDuration   (duration);
+        setCurrentTime(currentTime);
     }
     else if (d->state == WHookTorrentPrivate::StateStarting)
     {
+        setDuration   (duration);
+        setCurrentTime(currentTime);
+
         d->currentTime = currentTime;
 
         if (currentTime == -1)
         {
-             setStateLoad(WAbstractBackend::StateLoadStarting);
-        }
-        else setStateLoad(WAbstractBackend::StateLoadResuming);
+            backendSetVolume(d->backend->volume());
 
-        setCurrentTime(currentTime);
+            setStateLoad(WAbstractBackend::StateLoadStarting);
+        }
+        else
+        {
+            backendSetVolume(0.0);
+
+            setStateLoad(WAbstractBackend::StateLoadResuming);
+        }
     }
     else
     {

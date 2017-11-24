@@ -1812,7 +1812,7 @@ void WTorrentEnginePrivate::onRemoveSource()
         {
             Q_Q(WTorrentEngine);
 
-            QTimer::singleShot(TORRENTENGINE_INTERVAL, q, SLOT(onFolderClear()));
+            QTimer::singleShot(TORRENTENGINE_INTERVAL_CLEAR, q, SLOT(onFolderClear()));
         }
     }
 }
