@@ -118,6 +118,20 @@ WTorrent::WTorrent(const QUrl & url, int index, Mode mode, QObject * parent) : Q
 
         return true;
     }
+    else if (type == static_cast<QEvent::Type> (EventSeek))
+    {
+        WTorrentEventSeek * eventTorrent = static_cast<WTorrentEventSeek *> (event);
+
+        _bufferPieces = eventTorrent->bufferPieces;
+        _bufferBlocks = eventTorrent->bufferBlocks;
+
+        foreach (WTorrentReply * reply, _replies)
+        {
+            emit reply->seek(_bufferPieces, _bufferBlocks);
+        }
+
+        return true;
+    }
     else if (type == static_cast<QEvent::Type> (EventFinished))
     {
         _loaded = true;
@@ -647,6 +661,8 @@ int WControllerTorrentPrivate::extractIndex(const QUrl & url) const
         emit reply->loaded(reply);
     }
 }
+
+//-------------------------------------------------------------------------------------------------
 
 /* static */ int WControllerTorrentPrivate::listAfter(const QString & text,
                                                       const QString & string, int * at)

@@ -95,7 +95,7 @@ void WBackendTmdbPrivate::init() {}
 void WBackendTmdbPrivate::applyQuery(WBackendNetQuery * query, const QString & label,
                                                                const QString & q) const
 {
-    QStringList list = getListClear(q.toLower());
+    QStringList list = getListClear(q);
 
     QString title;
 
@@ -109,7 +109,13 @@ void WBackendTmdbPrivate::applyQuery(WBackendNetQuery * query, const QString & l
         {
             int index = i + 1;
 
-            if (index < list.count())
+            if (index == list.count())
+            {
+                if (title.isEmpty()) return;
+
+                title.chop(1);
+            }
+            else
             {
                 QString data = list.at(index);
 
@@ -125,12 +131,6 @@ void WBackendTmdbPrivate::applyQuery(WBackendNetQuery * query, const QString & l
 
                     title.chop(1);
                 }
-            }
-            else
-            {
-                if (title.isEmpty()) return;
-
-                title.chop(1);
             }
 
             QUrl url("https://www.themoviedb.org/search");
@@ -263,9 +263,9 @@ QString WBackendTmdbPrivate::extractShow(const QString & label) const
 
     if (index == -1)
     {
-         list = getListClear(label.toLower());
+         list = getListClear(label);
     }
-    else list = getListClear(label.mid(0, index).toLower());
+    else list = getListClear(label.mid(0, index));
 
     QString show;
 
@@ -297,13 +297,13 @@ QString WBackendTmdbPrivate::extractShow(const QString & label) const
                 while (index < length && string.at(index).isDigit())
                 {
                     index++;
+                }
 
-                    if (index == length && show.isEmpty() == false)
-                    {
-                        show.chop(1);
+                if (index == length && show.isEmpty() == false)
+                {
+                    show.chop(1);
 
-                        return show;
-                    }
+                    return show;
                 }
             }
 
@@ -379,7 +379,7 @@ QStringList WBackendTmdbPrivate::getList(const QString & data) const
 
     result = result.replace(QRegExp(BACKENDTMDB_MATCH), " ");
 
-    return result.simplified().split(' ');
+    return result.simplified().toLower().split(' ');
 }
 
 QStringList WBackendTmdbPrivate::getListClear(const QString & data) const
@@ -395,7 +395,7 @@ QStringList WBackendTmdbPrivate::getListClear(const QString & data) const
 
     result = result.replace(QRegExp(BACKENDTMDB_MATCH), " ");
 
-    list = result.simplified().split(' ');
+    list = result.simplified().toLower().split(' ');
 
     while (list.count() && list.first().toInt())
     {
@@ -549,7 +549,7 @@ WBackendNetTrack WBackendTmdb::extractTrack(const QByteArray       & data,
 
         QVariantList variants = query.data.toList();
 
-        QString title = WControllerNetwork::extractAttributeUtf8(string, "title").toLower();
+        QString title = WControllerNetwork::extractAttributeUtf8(string, "title");
 
         QStringList listA = d->getList(variants.first().toString());
         QStringList listB = d->getList(title);
@@ -592,13 +592,20 @@ WBackendNetTrack WBackendTmdb::extractTrack(const QByteArray       & data,
         QStringList list = Sk::slices(content, "<div class=\"image_content\">",
                                                "<p class=\"overview\">");
 
+        if (list.length() == 1)
+        {
+            d->applySource(&reply, list.first());
+
+            return reply;
+        }
+
         foreach (const QString & string, list)
         {
             QString title = WControllerNetwork::extractAttributeUtf8(string, "title").toLower();
 
             QStringList list = d->getList(title);
 
-            if (d->match(list, listTitle) || list.length() == 1)
+            if (d->match(list, listTitle))
             {
                 d->applySource(&reply, string);
 

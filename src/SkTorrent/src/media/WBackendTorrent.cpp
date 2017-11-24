@@ -184,13 +184,9 @@ int WBackendTorrentPrivate::extractString(QString * string, const QString & data
 
     index++;
 
-    if (length)
-    {
-        *string = data.mid(index, length);
+    *string = data.mid(index, length);
 
-        return index + length;
-    }
-    else return index;
+    return index + length;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -316,6 +312,10 @@ WBackendNetQuery WBackendTorrent::getQueryPlaylist(const QUrl & url) const
     if (source.startsWith("magnet:?"))
     {
         query.type = WBackendNetQuery::TypeTorrent;
+    }
+    else if (WControllerNetwork::extractUrlExtension(source) != "torrent")
+    {
+        return query;
     }
 
     int index = source.indexOf('#');

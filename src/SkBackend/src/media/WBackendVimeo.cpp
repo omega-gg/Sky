@@ -375,15 +375,15 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
             QUrl url("https://vimeo.com/search/page:1/sort:relevant/format:thumbnail");
 
 #ifdef QT_4
-            url.addQueryItem("type", "video");
-
             url.addQueryItem("q", q);
+
+            url.addQueryItem("type", "video");
 #else
             QUrlQuery urlQuery(url);
 
-            urlQuery.addQueryItem("type", "video");
-
             urlQuery.addQueryItem("q", q);
+
+            urlQuery.addQueryItem("type", "video");
 
             url.setQuery(urlQuery);
 #endif
@@ -448,8 +448,8 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
     else if (method == "related" && label == "tracks")
     {
         query.url = "https://vimeo.com/" + q
-                           +
-                           "/collections/channels/sort:relevant/format:thumbnail";
+                    +
+                    "/collections/channels/sort:relevant/format:thumbnail";
 
         query.id = 2;
     }

@@ -175,19 +175,19 @@ void WModelCompletionGooglePrivate::onLoaded(WRemoteData * data)
         d->url = QUrl("http://google.com/complete/search");
 
 #ifdef QT_4
+        d->url.addQueryItem("q", d->query);
+
         d->url.addQueryItem("output", "toolbar");
 
         d->url.addQueryItem("hl", "en");
-
-        d->url.addQueryItem("q", d->query);
 #else
         QUrlQuery query(d->url);
+
+        query.addQueryItem("q", d->query);
 
         query.addQueryItem("output", "toolbar");
 
         query.addQueryItem("hl", "en");
-
-        query.addQueryItem("q", d->query);
 
         d->url.setQuery(query);
 #endif

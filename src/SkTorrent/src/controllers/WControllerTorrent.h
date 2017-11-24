@@ -55,6 +55,7 @@ public: // Enums
         EventAdd = QEvent::User,
         EventProgress,
         EventBuffer,
+        EventSeek,
         EventFinished,
         EventError
     };
@@ -148,6 +149,7 @@ signals:
     void progress(qint64 bytesReceived, qint64 bytesTotal);
 
     void buffer(qint64 bufferPieces, qint64 bufferBlocks);
+    void seek  (qint64 bufferPieces, qint64 bufferBlocks);
 
 public: // Properties
     WTorrent * torrent() const;
@@ -316,9 +318,27 @@ public:
         this->bufferBlocks = bufferBlocks;
     }
 
+protected:
+    WTorrentEventBuffer(WTorrent::EventType type) : WTorrentEvent(type) {}
+
 public: // Variables
     qint64 bufferPieces;
     qint64 bufferBlocks;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WTorrentEventSeek
+//-------------------------------------------------------------------------------------------------
+
+class WTorrentEventSeek : public WTorrentEventBuffer
+{
+public:
+    WTorrentEventSeek(qint64 bufferPieces, qint64 bufferBlocks)
+        : WTorrentEventBuffer(WTorrent::EventSeek)
+    {
+        this->bufferPieces = bufferPieces;
+        this->bufferBlocks = bufferBlocks;
+    }
 };
 
 //-------------------------------------------------------------------------------------------------

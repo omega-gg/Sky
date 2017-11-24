@@ -232,7 +232,7 @@ public: // Functions
     WMagnetData * getMagnetData(const QUrl & url)    const;
     WMagnetData * getMagnetData(WMagnet    * magnet) const;
 
-    WTorrentSource * getSource(const sha1_hash & hash);
+    WTorrentSource * getSource(const sha1_hash & hash) const;
 
     WTorrentItem   * getItem  (WTorrent * torrent) const;
     WTorrentStream * getStream(WTorrent * torrent) const;
@@ -249,7 +249,7 @@ public: // Functions
 
     void renameFile(const torrent_handle & handle, WTorrentItem * item) const;
 
-    QString extractFileName(const std::string & path, int index) const;
+    QString extractFileName(const file_storage & storage, int index) const;
 
     //---------------------------------------------------------------------------------------------
     // Cache

@@ -219,10 +219,10 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
     {
         if (d->state == StatePaused || url.isEmpty()) stop();
 
+        d->source = url;
+
         setDuration   (duration);
         setCurrentTime(currentTime);
-
-        d->source = url;
 
         backendSetSource(url);
 
