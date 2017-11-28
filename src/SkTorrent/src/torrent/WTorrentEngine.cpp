@@ -2770,7 +2770,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
                 d->deleteSources.append(source);
 
-                QTimer::singleShot(TORRENTENGINE_INTERVAL_REMOVE, this, SLOT(onRemoveSource()));
+                QTimer::singleShot(TORRENTENGINE_INTERVAL_CLEAR, this, SLOT(onRemoveSource()));
             }
         }
 
@@ -2786,7 +2786,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
             {
                 d->deleteSources.append(source);
 
-                QTimer::singleShot(TORRENTENGINE_INTERVAL_REMOVE, this, SLOT(onRemoveSource()));
+                QTimer::singleShot(TORRENTENGINE_INTERVAL_CLEAR, this, SLOT(onRemoveSource()));
             }
         }
         else QTimer::singleShot(TORRENTENGINE_INTERVAL_CLEAR, this, SLOT(onFolderClear()));
