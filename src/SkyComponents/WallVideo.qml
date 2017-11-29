@@ -525,9 +525,7 @@ WallBookmarkTrack
             {
                 position: 0.0
 
-                color: (playerCover.visible
-                        &&
-                        playerCover.isSourceDefault) ? defaultColorA
+                color: (playerCover.isSourceDefault) ? defaultColorA
                                                      : st.wallVideo_colorPlayer
             }
 
@@ -535,9 +533,7 @@ WallBookmarkTrack
             {
                 position: 1.0
 
-                color: (playerCover.visible
-                        &&
-                        playerCover.isSourceDefault) ? defaultColorB
+                color: (playerCover.isSourceDefault) ? defaultColorB
                                                      : st.wallVideo_colorPlayer
             }
         }
