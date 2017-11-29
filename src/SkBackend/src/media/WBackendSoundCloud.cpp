@@ -632,7 +632,7 @@ WBackendNetPlaylist WBackendSoundCloud::extractPlaylist(const QByteArray       &
     }
     else if (id == 1) // playlist
     {
-        QString json = d->extractJson(content, 80, 3);
+        QString json = d->extractJson(content, 77, 2);
 
         QString idPlaylist = WControllerNetwork::extractJsonUtf8(json, "id");
 
