@@ -55,7 +55,8 @@ public:
 
 #ifdef SK_WIN_NATIVE
 public: // Functions
-    void applyFullScreen();
+    void applyFullScreen  ();
+    void restoreFullScreen();
 
     void setFlag(LONG flag, bool enabled) const;
 

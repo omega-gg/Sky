@@ -159,9 +159,22 @@ void WAbstractViewPrivate::applyFullScreen()
 {
     Q_Q(WAbstractView);
 
+    SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) & ~WS_CAPTION);
+
     QRect geometry = qApp->desktop()->screenGeometry(q);
 
     q->setGeometry(geometry);
+}
+
+void WAbstractViewPrivate::restoreFullScreen()
+{
+    Q_Q(WAbstractView);
+
+    fullScreen = false;
+
+    q->setGeometry(rect);
+
+    SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) | WS_CAPTION);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -413,9 +426,7 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
     }
     else if (d->fullScreen)
     {
-        d->fullScreen = false;
-
-        setGeometry(d->rect);
+        d->restoreFullScreen();
 
         return;
     }
@@ -431,9 +442,7 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 
     if (d->fullScreen)
     {
-        d->fullScreen = false;
-
-        setGeometry(d->rect);
+        d->restoreFullScreen();
 
         d->maximized = true;
 
