@@ -881,16 +881,16 @@ void WHookTorrentPrivate::onLoaded()
 
 //-------------------------------------------------------------------------------------------------
 
-void WHookTorrentPrivate::onBuffer(qint64 bufferPieces, qint64 bufferBlocks)
+void WHookTorrentPrivate::onBuffer(qint64, qint64 bufferBlocks)
 {
-    methodBuffer.invoke(thread, Q_ARG(qint64, bufferPieces));
+    methodBuffer.invoke(thread, Q_ARG(qint64, bufferBlocks));
 
     applyBuffer(bufferBlocks);
 }
 
-void WHookTorrentPrivate::onSeek(qint64 bufferPieces, qint64 bufferBlocks)
+void WHookTorrentPrivate::onSeek(qint64, qint64 bufferBlocks)
 {
-    methodSeek.invoke(thread, Q_ARG(qint64, bufferPieces));
+    methodSeek.invoke(thread, Q_ARG(qint64, bufferBlocks));
 
     applyBuffer(bufferBlocks);
 }
