@@ -31,9 +31,10 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const QString BACKENDTMDB_MATCH       = "[,.:\\-_(){}\\[\\]]";
-static const QString BACKENDTMDB_MATCH_SHOW  = "[\\-_(){}\\[\\]]";
+static const QString BACKENDTMDB_MATCH = "[,.:\\-_(){}\\[\\]]";
+
 static const QString BACKENDTMDB_MATCH_START = "^[({\\[]";
+static const QString BACKENDTMDB_MATCH_END   =  "[)}\\]]";
 
 static const int BACKENDTMDB_YEAR = 1800;
 
@@ -257,15 +258,7 @@ void WBackendTmdbPrivate::applyQuery(WBackendNetQuery * query, const QString & l
 
 QString WBackendTmdbPrivate::extractShow(const QString & label) const
 {
-    QStringList list;
-
-    int index = label.indexOf(QRegExp(BACKENDTMDB_MATCH_SHOW));
-
-    if (index == -1)
-    {
-         list = getListClear(label);
-    }
-    else list = getListClear(label.mid(0, index));
+    QStringList list = getListClear(label);
 
     QString show;
 
@@ -384,14 +377,26 @@ QStringList WBackendTmdbPrivate::getList(const QString & data) const
 
 QStringList WBackendTmdbPrivate::getListClear(const QString & data) const
 {
-    QStringList list = data.simplified().split(' ');
+    QString result = data;
+
+    if (result.contains(QRegExp(BACKENDTMDB_MATCH_START)))
+    {
+        int index = result.indexOf(QRegExp(BACKENDTMDB_MATCH_END));
+
+        if (index != -1)
+        {
+            result = result.mid(index + 1);
+        }
+    }
+
+    QStringList list = result.split(' ');
 
     while (list.count() && list.first().contains(QRegExp(BACKENDTMDB_MATCH_START)))
     {
         list.removeFirst();
     }
 
-    QString result = list.join(" ");
+    result = list.join(" ");
 
     result = result.replace(QRegExp(BACKENDTMDB_MATCH), " ");
 
