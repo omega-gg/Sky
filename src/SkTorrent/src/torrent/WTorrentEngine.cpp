@@ -355,6 +355,11 @@ WTorrentData * WTorrentEnginePrivate::createData(TorrentInfoPointer info, const 
     params.ti        = info;
     params.save_path = path.toStdString();
 
+    params.flags = add_torrent_params::flag_pinned           |
+                   add_torrent_params::flag_update_subscribe |
+                   add_torrent_params::flag_auto_managed     |
+                   add_torrent_params::flag_apply_ip_filter;
+
     session->async_add_torrent(params);
 
     return data;
@@ -2310,6 +2315,11 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
             params.url = url.toString().toStdString();
 
             params.save_path = d->pathMagnets.toStdString();
+
+            params.flags = add_torrent_params::flag_pinned           |
+                           add_torrent_params::flag_update_subscribe |
+                           add_torrent_params::flag_auto_managed     |
+                           add_torrent_params::flag_apply_ip_filter;
 
             data = new WMagnetData;
 
