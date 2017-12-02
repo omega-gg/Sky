@@ -239,7 +239,7 @@ if [ $2 = "win32" ]; then
 
 elif [ $2 = "linux" ]; then
 
-    mkdir deploy/vlc/plugins
+    mkdir -p deploy/vlc/plugins
 
     sudo cp -r "$VLC"/plugins/access       deploy/vlc/plugins
     sudo cp -r "$VLC"/plugins/audio_filter deploy/vlc/plugins
