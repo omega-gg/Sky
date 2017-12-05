@@ -171,7 +171,7 @@ void WResizerPrivate::startResize(QGraphicsSceneMouseEvent * event)
     lastPos = QCursor::pos();
 }
 
-void WResizerPrivate::resize(QGraphicsSceneMouseEvent *)
+void WResizerPrivate::resize()
 {
     Q_Q(WResizer);
 
@@ -417,7 +417,7 @@ WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
         d->view->testAttribute(Qt::WA_DontShowOnScreen) == false) return;
 #endif
 
-    if (d->resizing) d->resize(event);
+    if (d->resizing) d->resize();
 }
 
 #endif // SK_NO_RESIZER

@@ -44,7 +44,7 @@ public:
 
 public: // Functions
     void startResize(QGraphicsSceneMouseEvent * event);
-    void resize     (QGraphicsSceneMouseEvent * event);
+    void resize     ();
 
 public: // Variables
     WResizer::ResizeType type;
