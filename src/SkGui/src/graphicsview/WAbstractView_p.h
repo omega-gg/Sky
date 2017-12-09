@@ -75,9 +75,7 @@ public: // Variables
 
 #ifdef SK_WIN_NATIVE
     HWND id;
-
-    HWND      handle;
-    HINSTANCE instance;
+    HWND handle;
 
     int x;
     int y;

@@ -1325,9 +1325,9 @@ void WControllerApplication::setScreenSaverEnabled(bool enabled)
 #ifdef Q_OS_WIN
     if (enabled)
     {
-        SystemParametersInfo(SPI_GETLOWPOWERTIMEOUT,   0, &(d->timeoutLowPower),   0);
-        SystemParametersInfo(SPI_GETPOWEROFFTIMEOUT,   0, &(d->timeoutPowerOff),   0);
-        SystemParametersInfo(SPI_GETSCREENSAVETIMEOUT, 0, &(d->timeoutScreenSave), 0);
+        SystemParametersInfo(SPI_GETLOWPOWERTIMEOUT,   0, &d->timeoutLowPower,   0);
+        SystemParametersInfo(SPI_GETPOWEROFFTIMEOUT,   0, &d->timeoutPowerOff,   0);
+        SystemParametersInfo(SPI_GETSCREENSAVETIMEOUT, 0, &d->timeoutScreenSave, 0);
 
         SystemParametersInfo(SPI_SETLOWPOWERTIMEOUT,   0, NULL, 0);
         SystemParametersInfo(SPI_SETPOWEROFFTIMEOUT,   0, NULL, 0);
