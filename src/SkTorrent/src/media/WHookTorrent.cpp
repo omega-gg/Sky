@@ -999,9 +999,19 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
     }
     else
     {
+        d->currentTime = currentTime;
+
         d->methodSkip.invoke(d->thread);
 
         d->backend->seek(currentTime);
+
+        if (currentTime == -1)
+        {
+             setStateLoad(WAbstractBackend::StateLoadStarting);
+        }
+        else setStateLoad(WAbstractBackend::StateLoadResuming);
+
+        d->state = WHookTorrentPrivate::StateStarting;
     }
 }
 
