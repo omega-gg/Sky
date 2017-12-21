@@ -1783,7 +1783,7 @@ void WTorrentEnginePrivate::onRemoveMagnet()
         {
             i.next();
 
-            if (i.value()->hash == data->hash)
+            if (i.value()->hash == hash)
             {
                 WControllerFile::deleteFolder(pathMagnets);
 

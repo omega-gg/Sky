@@ -565,6 +565,8 @@ void WControllerTorrentPrivate::loadMagnet(WMagnetReply * reply, const QUrl & ur
 
     if (fileUrl.isValid())
     {
+        magnet->_cache = true;
+
         WRemoteData * data = wControllerDownload->getData(WControllerFile::fileUrl(fileUrl), q,
                                                           QNetworkRequest::HighPriority);
 
@@ -573,7 +575,12 @@ void WControllerTorrentPrivate::loadMagnet(WMagnetReply * reply, const QUrl & ur
 
         jobsMagnets.insert(data, magnet);
     }
-    else engine->loadMagnet(magnet);
+    else
+    {
+        magnet->_cache = false;
+
+        engine->loadMagnet(magnet);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -617,7 +624,10 @@ void WControllerTorrentPrivate::removeMagnet(WMagnet * magnet, WMagnetReply * re
 
         delete data;
     }
-    else engine->removeMagnet(magnet);
+    else if (magnet->_cache == false)
+    {
+        engine->removeMagnet(magnet);
+    }
 
     magnets.removeOne(magnet);
 

@@ -196,6 +196,8 @@ private: // Variables
 
     QByteArray _data;
 
+    bool _cache;
+
     QString _error;
 
 private:

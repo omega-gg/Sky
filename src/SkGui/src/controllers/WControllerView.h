@@ -102,7 +102,5 @@ private:
     friend class WViewPrivate;
 };
 
-#include <private/WControllerView_p>
-
 #endif // SK_NO_CONTROLLERVIEW
 #endif // WCONTROLLERVIEW_H
