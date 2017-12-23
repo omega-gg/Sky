@@ -61,7 +61,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // Model
 
-    property alias model : model
+    property alias model: model
 
     property alias value   : model.value
     property alias position: model.position
