@@ -362,7 +362,7 @@ void WModelRange::setSingleStep(qreal singleStep)
 
     if (d->singleStep == singleStep) return;
 
-    d->singleStep = qMax(1.0, singleStep);
+    d->singleStep = singleStep;
 
     emit singleStepChanged();
 }
@@ -378,7 +378,7 @@ void WModelRange::setPageStep(qreal pageStep)
 
     if (d->pageStep == pageStep) return;
 
-    d->pageStep = qMax(1.0, pageStep);
+    d->pageStep = pageStep;
 
     emit pageStepChanged();
 }
