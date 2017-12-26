@@ -53,6 +53,7 @@ public: // Enums
     enum EventType
     {
         EventAdd = QEvent::User,
+        EventRemove,
         EventProgress,
         EventBuffer,
         EventSeek,

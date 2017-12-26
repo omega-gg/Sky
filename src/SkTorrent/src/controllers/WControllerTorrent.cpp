@@ -85,6 +85,12 @@ WTorrent::WTorrent(const QUrl & url, int index, Mode mode, QObject * parent) : Q
 
         return true;
     }
+    else if (type == static_cast<QEvent::Type> (EventRemove))
+    {
+        deleteLater();
+
+        return true;
+    }
     else if (type == static_cast<QEvent::Type> (EventProgress))
     {
         WTorrentEventProgress * eventTorrent = static_cast<WTorrentEventProgress *> (event);
@@ -322,7 +328,13 @@ WMagnet::WMagnet(const QUrl & url, QObject * parent) : QObject(parent)
 {
     QEvent::Type type = event->type();
 
-    if (type == static_cast<QEvent::Type> (WTorrent::EventFinished))
+    if (type == static_cast<QEvent::Type> (WTorrent::EventRemove))
+    {
+        deleteLater();
+
+        return true;
+    }
+    else if (type == static_cast<QEvent::Type> (WTorrent::EventFinished))
     {
         WTorrentEventMagnet * eventMagnet = static_cast<WTorrentEventMagnet *> (event);
 
@@ -593,6 +605,8 @@ void WControllerTorrentPrivate::removeTorrent(WTorrent * torrent, WTorrentReply 
 
     if (replies.isEmpty() == false) return;
 
+    torrents.removeOne(torrent);
+
     WRemoteData * data = jobs.key(torrent);
 
     if (data)
@@ -600,12 +614,10 @@ void WControllerTorrentPrivate::removeTorrent(WTorrent * torrent, WTorrentReply 
         jobs.remove(data);
 
         delete data;
+
+        delete torrent;
     }
     else engine->remove(torrent);
-
-    torrents.removeOne(torrent);
-
-    torrent->deleteLater();
 }
 
 void WControllerTorrentPrivate::removeMagnet(WMagnet * magnet, WMagnetReply * reply)
@@ -616,6 +628,8 @@ void WControllerTorrentPrivate::removeMagnet(WMagnet * magnet, WMagnetReply * re
 
     if (replies.isEmpty() == false) return;
 
+    magnets.removeOne(magnet);
+
     WRemoteData * data = jobsMagnets.key(magnet);
 
     if (data)
@@ -623,15 +637,14 @@ void WControllerTorrentPrivate::removeMagnet(WMagnet * magnet, WMagnetReply * re
         jobsMagnets.remove(data);
 
         delete data;
+
+        delete magnet;
     }
-    else if (magnet->_cache == false)
+    else if (magnet->_cache)
     {
-        engine->removeMagnet(magnet);
+        delete magnet;
     }
-
-    magnets.removeOne(magnet);
-
-    magnet->deleteLater();
+    else engine->removeMagnet(magnet);
 }
 
 //-------------------------------------------------------------------------------------------------

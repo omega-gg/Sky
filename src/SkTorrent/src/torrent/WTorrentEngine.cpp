@@ -2482,15 +2482,24 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
     {
         WTorrentEngineItem * eventTorrent = static_cast<WTorrentEngineItem *> (event);
 
-        WTorrentItem * item = d->getItem(eventTorrent->torrent);
+        WTorrent * torrent = eventTorrent->torrent;
 
-        if (item == NULL) return true;
+        WTorrentItem * item = d->getItem(torrent);
+
+        if (item == NULL)
+        {
+            QCoreApplication::postEvent(torrent, new WTorrentEvent(WTorrent::EventRemove));
+
+            return true;
+        }
 
         WTorrentData * data = item->data;
 
         QList<WTorrentItem *> * items = &(data->items);
 
         items->removeOne(item);
+
+        QCoreApplication::postEvent(torrent, new WTorrentEvent(WTorrent::EventRemove));
 
         if (items->isEmpty() == false)
         {
@@ -2529,11 +2538,18 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         WMagnetData * data = d->getMagnetData(magnet);
 
-        if (data == NULL) return true;
+        if (data == NULL)
+        {
+            QCoreApplication::postEvent(magnet, new WTorrentEvent(WTorrent::EventRemove));
+
+            return true;
+        }
 
         QList<WMagnet *> * magnets = &(data->magnets);
 
         magnets->removeOne(magnet);
+
+        QCoreApplication::postEvent(magnet, new WTorrentEvent(WTorrent::EventRemove));
 
         if (magnets->isEmpty() && data->hash)
         {
