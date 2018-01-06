@@ -209,7 +209,7 @@ static int    shaderCount = 0;
 
 static GLfloat shaderValues[16];
 
-static GLfloat shaderOpacity = 0;
+static GLfloat shaderOpacity = 1.f;
 
 //-------------------------------------------------------------------------------------------------
 // Private
