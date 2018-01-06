@@ -128,21 +128,21 @@ PFNGLMULTITEXCOORD2FARBPROC          pglMultiTexCoord2fARB          = 0;
               rect.width(), rect.height());                                             \
 }                                                                                       \
 
-#define W_DRAW_BACK_AND_FRAME       \
-{                                   \
-    glColor4f(0, 0, 0, d->opacity); \
-                                    \
-    glBegin(GL_POLYGON);            \
-                                    \
-    glVertex2i(0,          0);      \
-    glVertex2i(0,     height);      \
-    glVertex2i(width, height);      \
-    glVertex2i(width,      0);      \
-                                    \
-    glEnd();                        \
-                                    \
-    W_DRAW_FRAME;                   \
-}                                   \
+#define W_DRAW_BACK_AND_FRAME          \
+{                                      \
+    glColor4f(0, 0, 0, shaderOpacity); \
+                                       \
+    glBegin(GL_POLYGON);               \
+                                       \
+    glVertex2i(0,          0);         \
+    glVertex2i(0,     height);         \
+    glVertex2i(width, height);         \
+    glVertex2i(width,      0);         \
+                                       \
+    glEnd();                           \
+                                       \
+    W_DRAW_FRAME;                      \
+}                                      \
 
 #define W_DRAW_FRAME                                     \
 {                                                        \
@@ -207,6 +207,10 @@ static const int PLAYER_MAX_HEIGHT = 3240;
 static GLuint shaderId    = 0;
 static int    shaderCount = 0;
 
+static GLfloat shaderValues[16];
+
+static GLfloat shaderOpacity = 0;
+
 //-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
@@ -243,8 +247,6 @@ void WBackendVlcPrivate::init()
     shader = false;
 
     textureIds[0] = 0;
-
-    opacity = 1.f;
 
     started = false;
     active  = false;
@@ -401,6 +403,31 @@ void WBackendVlcPrivate::createShader()
 
     glProgramStringARB(GL_FRAGMENT_PROGRAM_ARB,
                        GL_PROGRAM_FORMAT_ASCII_ARB, strlen(code), (const GLbyte *) code);
+
+    const qreal matrix[12] =
+    {
+        1.164383561643836,  0.000000000000000,  1.792741071428571, -0.972945075016308,
+        1.164383561643836, -0.213248614273730, -0.532909328559444,  0.301482665475862,
+        1.164383561643836,  2.112401785714286,  0.000000000000000, -1.133402217873451,
+    };
+
+    GLfloat * values = shaderValues;
+
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            if (j == 3)
+            {
+                 values[j] = shaderOpacity;
+            }
+            else values[j] = matrix[j * 4 + i];
+        }
+
+        glProgramLocalParameter4fvARB(GL_FRAGMENT_PROGRAM_ARB, i, values);
+
+        values += 4;
+    }
 }
 
 void WBackendVlcPrivate::deleteShader()
@@ -762,11 +789,11 @@ void WBackendVlcPrivate::clearActive()
 
 void WBackendVlcPrivate::setOpacity(GLfloat opacity)
 {
-    if (this->opacity == opacity) return;
+    if (shaderOpacity == opacity) return;
 
-    this->opacity = opacity;
+    shaderOpacity = opacity;
 
-    GLfloat * values = this->values;
+    GLfloat * values = shaderValues;
 
     for (int i = 0; i < 4; i++)
     {
@@ -1321,33 +1348,6 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
                                     PLAYER_FORMAT, PLAYER_DATA_TYPE, d->textures[i].bits);
                 }
 
-                d->opacity = painter->opacity();
-
-                const qreal matrix[12] =
-                {
-                    1.164383561643836,  0.0000,             1.792741071428571, -0.972945075016308,
-                    1.164383561643836, -0.21324861427373,  -0.532909328559444,  0.301482665475862,
-                    1.164383561643836,  2.112401785714286,  0.0000,            -1.133402217873451,
-                };
-
-                GLfloat * values = d->values;
-
-                for (int i = 0; i < 4; i++)
-                {
-                    for (int j = 0; j < 4; j++)
-                    {
-                        if (j == 3)
-                        {
-                             values[j] = d->opacity;
-                        }
-                        else values[j] = matrix[j * 4 + i];
-                    }
-
-                    glProgramLocalParameter4fvARB(GL_FRAGMENT_PROGRAM_ARB, i, values);
-
-                    values += 4;
-                }
-
                 if (glGetError() == GL_INVALID_OPERATION)
                 {
                     qWarning("WBackendVlc::backendDrawFrame: Opengl texture setup failed.");
@@ -1365,9 +1365,9 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
                                     d->textures[i].width, d->textures[i].height,
                                     PLAYER_FORMAT, PLAYER_DATA_TYPE, d->textures[i].bits);
                 }
-
-                d->setOpacity(painter->opacity());
             }
+
+            d->setOpacity(painter->opacity());
         }
         else if (d->textureIds[0])
         {

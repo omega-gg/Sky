@@ -173,8 +173,6 @@ public: // Variables
 
     GLfloat values[16];
 
-    GLfloat opacity;
-
     bool started;
     bool active;
     bool playing;
