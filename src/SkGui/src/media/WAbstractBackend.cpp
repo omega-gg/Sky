@@ -228,7 +228,23 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
         emit sourceChanged();
     }
-    else seek(currentTime);
+    else if (d->state == StatePlaying)
+    {
+        backendPause();
+
+        setCurrentTime(currentTime);
+
+        setStateLoad(StateLoadResuming);
+
+        backendPlay();
+    }
+    else if (d->state == StatePaused)
+    {
+        setStateLoad(StateLoadResuming);
+
+        seek(currentTime);
+    }
+    else setCurrentTime(currentTime);
 }
 
 //-------------------------------------------------------------------------------------------------
