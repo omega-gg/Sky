@@ -1503,7 +1503,7 @@ void WTorrentEnginePrivate::updateCache(WTorrentData * data)
 
         int index = 0;
 
-        while (index < sources.count() && size >= _sizeMax)
+        while (index < sources.count() && this->size >= _sizeMax)
         {
             if (removeSource(sources.at(index)) == false)
             {
