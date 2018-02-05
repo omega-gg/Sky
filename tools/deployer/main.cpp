@@ -16,14 +16,19 @@
 
 // Qt includes
 #include <QCoreApplication>
-#include <QDir>
 #include <QTextStream>
+#include <QDir>
 
 // Defines
 #define C_STR toLatin1().constData()
 
 //-------------------------------------------------------------------------------------------------
 // Global variables
+
+QString version;
+
+QString defineA;
+QString defineB;
 
 QList<QString> paths;
 
@@ -51,7 +56,7 @@ void extractPaths(const QString & path)
 
 void replaceFile(const QString & path, const QString & content)
 {
-    qDebug("Fixing file headers: %s", path.C_STR);
+    qDebug("Generating file: %s", path.C_STR);
 
     QFile file(path);
 
@@ -86,9 +91,27 @@ void generateQrc(const QString & path)
 
 //-------------------------------------------------------------------------------------------------
 
-void scanFile(const QString & path)
+bool skipLines(QTextStream * stream, const QString & string)
 {
-    QFile file(path);
+    QString line = stream->readLine();
+
+    if (line.isNull()) return false;
+
+    while (line.startsWith(string) == false)
+    {
+        line = stream->readLine();
+
+        if (line.isNull()) return false;
+    }
+
+    return true;
+}
+
+void scanFile(const QString & input, const QString & output)
+{
+    QString content;
+
+    QFile file(input);
 
     file.open(QIODevice::ReadOnly);
 
@@ -98,32 +121,60 @@ void scanFile(const QString & path)
 
     while (line.isNull() == false)
     {
-        if (line.startsWith("import SkyComponents"))
+        if (line.startsWith("import "))
         {
-            int pos = stream.pos() - 2;
+            line = line.simplified();
 
-            stream.seek(0);
+            if (line.startsWith("import QtQuick"))
+            {
+                content.append("import QtQuick " + version + '\n');
+            }
+            else if (line.startsWith("import SkyComponents") == false)
+            {
+                content.append(line + '\n');
+            }
+        }
+        else if (line.startsWith(defineA))
+        {
+            line = stream.readLine();
 
-            QString content = stream.readAll();
+            if (line.isNull()) break;
 
-            int end = content.indexOf('\n', pos);
+            while (line.startsWith("//#") == false)
+            {
+                content.append(line + '\n');
 
-            if (end == -1) return;
+                line = stream.readLine();
 
-            pos -= line.length();
+                if (line.isNull())
+                {
+                    replaceFile(output, content);
 
-            content.remove(pos, end - pos + 1);
+                    return;
+                }
+            }
 
-            replaceFile(path, content);
-
-            return;
+            if (line.startsWith("//#ELSE"))
+            {
+                if (skipLines(&stream, "//#") == false) break;
+            }
+        }
+        else if (line.startsWith(defineB))
+        {
+            if (skipLines(&stream, "//#") == false) break;
+        }
+        else if (line.startsWith("//#") == false)
+        {
+            content.append(line + '\n');
         }
 
         line = stream.readLine();
     }
+
+    replaceFile(output, content);
 }
 
-void scanFolder(const QString & path)
+void scanFolder(const QString & path, const QString & output)
 {
     QDir Dir(path);
 
@@ -139,9 +190,9 @@ void scanFolder(const QString & path)
         {
             QString filePath = info.filePath();
 
-            if (info.suffix() == "qml")
+            if (info.suffix().toLower() == "qml")
             {
-                scanFile(filePath);
+                scanFile(filePath, info.path() + '/' + output + '/' + info.fileName());
             }
 
             paths.append(filePath);
@@ -155,9 +206,9 @@ int main(int argc, char *argv[])
 {
     QCoreApplication application(argc, argv);
 
-    if (argc != 2)
+    if (argc != 4)
     {
-        qDebug("Usage: deployer <path> <qrc output>");
+        qDebug("Usage: deployer <path> <output> <version> <qrc output>");
 
         return -1;
     }
@@ -166,7 +217,20 @@ int main(int argc, char *argv[])
 
     qDebug("\nDEPLOYING");
 
-    scanFolder(argv[1]);
+    version = argv[3];
+
+    if (version.startsWith("1."))
+    {
+        defineA = "//#QT_4";
+        defineB = "//#QT_5";
+    }
+    else
+    {
+        defineA = "//#QT_5";
+        defineB = "//#QT_4";
+    }
+
+    scanFolder(argv[1], argv[2]);
 
     generateQrc(argv[2]);
 

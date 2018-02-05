@@ -93,15 +93,16 @@ void scanFile(const QString & input, const QString & output)
 
             while (line.startsWith("//#") == false)
             {
+                content.append(line + '\n');
+
+                line = stream.readLine();
+
                 if (line.isNull())
                 {
                     replaceFile(output, content);
 
                     return;
                 }
-                else content.append(line + '\n');
-
-                line = stream.readLine();
             }
 
             if (line.startsWith("//#ELSE"))
