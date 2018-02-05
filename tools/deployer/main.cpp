@@ -155,7 +155,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication application(argc, argv);
 
-    if (argc < 2)
+    if (argc != 2)
     {
         qDebug("Usage: deployer <path> <qrc output>");
 
