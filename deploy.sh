@@ -316,5 +316,4 @@ elif [ $2 = "linux" ]; then
 fi
 
 cp "$bin"/includeGenerator* deploy
-cp "$bin"/qmlGenerator*     deploy
 cp "$bin"/deployer*         deploy
