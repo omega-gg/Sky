@@ -174,7 +174,7 @@ void scanFile(const QString & input, const QString & output)
     replaceFile(output, content);
 }
 
-void scanFolder(const QString & path, const QString & output)
+void scanFolder(const QString & path)
 {
     QDir Dir(path);
 
@@ -192,7 +192,7 @@ void scanFolder(const QString & path, const QString & output)
 
             if (info.suffix().toLower() == "qml")
             {
-                scanFile(filePath, info.path() + '/' + output + '/' + info.fileName());
+                scanFile(filePath, info.path() + '/' + info.fileName());
             }
 
             paths.append(filePath);
@@ -206,9 +206,9 @@ int main(int argc, char *argv[])
 {
     QCoreApplication application(argc, argv);
 
-    if (argc != 4)
+    if (argc != 3)
     {
-        qDebug("Usage: deployer <path> <output> <version> <qrc output>");
+        qDebug("Usage: deployer <path> <version> <qrc output>");
 
         return -1;
     }
@@ -217,7 +217,7 @@ int main(int argc, char *argv[])
 
     qDebug("\nDEPLOYING");
 
-    version = argv[3];
+    version = argv[2];
 
     if (version.startsWith("1."))
     {
@@ -230,9 +230,9 @@ int main(int argc, char *argv[])
         defineB = "//#QT_4";
     }
 
-    scanFolder(argv[1], argv[2]);
+    scanFolder(argv[1]);
 
-    generateQrc(argv[2]);
+    generateQrc(argv[3]);
 
     qDebug("DONE");
 }
