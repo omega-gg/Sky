@@ -16,7 +16,11 @@ DESTDIR = $$SK/lib
 
 TEMPLATE = lib
 
-QT += declarative network script xml
+contains(QT_MAJOR_VERSION, 4) {
+    QT += declarative network script xml
+} else {
+    QT += network script xml
+}
 
 CONFIG       += plugin
 win32:CONFIG += dll

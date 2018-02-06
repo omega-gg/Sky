@@ -5,10 +5,11 @@ CONFIG += ordered
 SUBDIRS = src/SkCore \
           src/SkGui \
           src/SkMedia \
-          src/SkWeb \
           src/SkTorrent \
           src/SkBackend \
           tools \
+
+contains(QT_MAJOR_VERSION, 4): SUBDIRS += src/SkWeb
 
 OTHER_FILES += 3rdparty.sh \
                configure.sh \

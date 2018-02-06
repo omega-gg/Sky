@@ -28,8 +28,15 @@
 #ifndef SK_NO_CONTROLLERAPPLICATION
 
 // Qt includes
+#ifdef QT_4
 #include <QDeclarativeEngine>
 #include <QDeclarativeComponent>
+#else
+#include <QGuiApplication>
+#include <QQmlEngine>
+#include <QQmlComponent>
+#include <QCursor>
+#endif
 #include <QCryptographicHash>
 #include <QTextCodec>
 #include <QFontMetrics>
@@ -175,13 +182,17 @@ void WControllerApplicationPrivate::restartScript()
 
     wControllerDeclarative->engine()->clearComponentCache();
 
+#ifdef QT_4
     QDeclarativeComponent component(wControllerDeclarative->engine());
+#else
+    QQmlComponent component(wControllerDeclarative->engine());
+#endif
 
     if (qrc)
     {
          component.loadUrl(QUrl("qrc:/qrc/Main.qml"));
     }
-    else component.loadUrl(QUrl::fromLocalFile("Main.qml"));
+    else component.loadUrl(QUrl("Main.qml"));
 
     object = component.create();
 
@@ -304,13 +315,17 @@ void WControllerApplication::startScript()
 
     if (d->object) return;
 
+#ifdef QT_4
     QDeclarativeComponent component(wControllerDeclarative->engine());
+#else
+    QQmlComponent component(wControllerDeclarative->engine());
+#endif
 
     if (d->qrc)
     {
          component.loadUrl(QUrl("qrc:/qrc/Main.qml"));
     }
-    else component.loadUrl(QUrl::fromLocalFile("Main.qml"));
+    else component.loadUrl(QUrl("Main.qml"));
 
     d->object = component.create();
 
@@ -331,14 +346,22 @@ void WControllerApplication::startScript()
 
 /* Q_INVOKABLE */ QString WControllerApplication::clipboardText() const
 {
+#ifdef QT_4
     QClipboard * clipboard = QApplication::clipboard();
+#else
+    QClipboard * clipboard = QGuiApplication::clipboard();
+#endif
 
     return clipboard->text();
 }
 
 /* Q_INVOKABLE */ void WControllerApplication::setClipboardText(const QString & text)
 {
+#ifdef QT_4
     QClipboard * clipboard = QApplication::clipboard();
+#else
+    QClipboard * clipboard = QGuiApplication::clipboard();
+#endif
 
     clipboard->setText(text);
 }
@@ -879,7 +902,7 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 {
     QFontMetrics metrics(font);
 
-#if defined(QT_LATEST) || defined(Q_OS_MAC) || defined(Q_OS_LINUX)
+#if defined(Q_OS_MAC) || defined(Q_OS_LINUX)
     return metrics.width(text) + 1;
 #else
     return metrics.width(text);

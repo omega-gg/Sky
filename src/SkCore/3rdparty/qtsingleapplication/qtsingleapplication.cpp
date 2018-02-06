@@ -41,7 +41,10 @@
 
 #include "qtsingleapplication.h"
 #include "qtlocalpeer.h"
+
+#ifdef QT_4
 #include <QWidget>
+#endif
 
 
 /*!
@@ -135,7 +138,10 @@
 
 void QtSingleApplication::sysInit(const QString &appId)
 {
+#ifdef QT_4
     actWin = 0;
+#endif
+
     peer = new QtLocalPeer(this, appId);
     connect(peer, SIGNAL(messageReceived(const QString&)), SIGNAL(messageReceived(const QString&)));
 }
@@ -271,6 +277,7 @@ QString QtSingleApplication::id() const
     return peer->applicationId();
 }
 
+#ifdef QT_4
 
 /*!
   Sets the activation window of this application to \a aw. The
@@ -305,7 +312,6 @@ QWidget* QtSingleApplication::activationWindow() const
     return actWin;
 }
 
-
 /*!
   De-minimizes, raises, and activates this application's activation window.
   This function does nothing if no activation window has been set.
@@ -329,6 +335,7 @@ void QtSingleApplication::activateWindow()
     }
 }
 
+#endif
 
 /*!
     \fn void QtSingleApplication::messageReceived(const QString& message)

@@ -83,8 +83,10 @@ public:
     bool isRunning();
     QString id() const;
 
+#ifdef QT_4
     void setActivationWindow(QWidget* aw, bool activateOnMessage = true);
     QWidget* activationWindow() const;
+#endif
 
     // Obsolete:
     void initialize(bool dummy = true)
@@ -92,7 +94,10 @@ public:
 
 public Q_SLOTS:
     bool sendMessage(const QString &message, int timeout = 5000);
+
+#ifdef QT_4
     void activateWindow();
+#endif
 
 
 Q_SIGNALS:
@@ -102,7 +107,10 @@ Q_SIGNALS:
 private:
     void sysInit(const QString &appId = QString());
     QtLocalPeer *peer;
+
+#ifdef QT_4
     QWidget *actWin;
+#endif
 };
 
 #endif // QTSINGLEAPPLICATION_H
