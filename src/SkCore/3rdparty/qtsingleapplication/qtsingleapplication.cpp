@@ -312,6 +312,7 @@ QWidget* QtSingleApplication::activationWindow() const
     return actWin;
 }
 
+
 /*!
   De-minimizes, raises, and activates this application's activation window.
   This function does nothing if no activation window has been set.
