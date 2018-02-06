@@ -21,18 +21,60 @@
 // Qt includes
 #include <QApplication>
 #include <QDesktopWidget>
+#ifdef QT_4
 #include <QGraphicsObject>
+#else
+#include <QQuickItem>
+#include <QQuickItemGrabResult>
+#endif
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QDir>
 
+// Private includes
+#include "WControllerView_p.h"
+
 W_INIT_CONTROLLER(WControllerView)
 
+//=================================================================================================
+// WControllerViewLoader
+//=================================================================================================
+
+class SK_GUI_EXPORT WControllerViewLoader : public QObject
+{
+    Q_OBJECT
+
+public:
+    WControllerViewLoader();
+
+private slots:
+    void onReady();
+
+public: // Properties
+    bool ready;
+};
+
 //-------------------------------------------------------------------------------------------------
-// Private
+// Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
-#include "WControllerView_p.h"
+WControllerViewLoader::WControllerViewLoader() : QObject()
+{
+    ready = false;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private slots
+//-------------------------------------------------------------------------------------------------
+
+void WControllerViewLoader::onReady()
+{
+    ready = true;
+}
+
+//=================================================================================================
+// WControllerViewPrivate
+//=================================================================================================
 
 WControllerViewPrivate::WControllerViewPrivate(WControllerView * p) : WControllerPrivate(p) {}
 
@@ -65,6 +107,8 @@ void WControllerViewPrivate::unregisterView(WView * view)
 {
     views.removeOne(view);
 }
+
+#ifdef QT_4
 
 //-------------------------------------------------------------------------------------------------
 // Private static functions
@@ -103,8 +147,7 @@ void WControllerViewPrivate::unregisterView(WView * view)
     }
 }
 
-/* static */ void WControllerViewPrivate::paintChild(QPainter        * painter,
-                                                     QGraphicsObject * item)
+/* static */ void WControllerViewPrivate::paintChild(QPainter * painter, QGraphicsObject * item)
 {
     if (item->isVisible() == false) return;
 
@@ -137,9 +180,12 @@ void WControllerViewPrivate::unregisterView(WView * view)
     painter->restore();
 }
 
-//-------------------------------------------------------------------------------------------------
-// Private ctor / dtor
-//-------------------------------------------------------------------------------------------------
+#endif
+
+//=================================================================================================
+// WControllerView
+//=================================================================================================
+// Private
 
 WControllerView::WControllerView() : WController(new WControllerViewPrivate(this)) {}
 
@@ -156,15 +202,17 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 // Static functions
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ int WControllerView::screenNumber(const QWidget * widget)
-{
-    return qApp->desktop()->screenNumber(widget);
-}
-
 /* Q_INVOKABLE static */ int WControllerView::screenNumber(const QPoint & pos)
 {
     return qApp->desktop()->screenNumber(pos);
 }
+
+#ifdef QT_4
+/* Q_INVOKABLE static */ int WControllerView::screenNumber(const QWidget * widget)
+{
+    return qApp->desktop()->screenNumber(widget);
+}
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -173,15 +221,17 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
     return qApp->desktop()->availableGeometry(screen);
 }
 
-/* Q_INVOKABLE static */ const QRect WControllerView::availableGeometry(const QWidget * widget)
-{
-    return qApp->desktop()->availableGeometry(widget);
-}
-
 /* Q_INVOKABLE static */ const QRect WControllerView::availableGeometry(const QPoint & pos)
 {
     return qApp->desktop()->availableGeometry(pos);
 }
+
+#ifdef QT_4
+/* Q_INVOKABLE static */ const QRect WControllerView::availableGeometry(const QWidget * widget)
+{
+    return qApp->desktop()->availableGeometry(widget);
+}
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -190,20 +240,27 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
     return qApp->desktop()->screenGeometry(screen);
 }
 
-/* Q_INVOKABLE static */ const QRect WControllerView::screenGeometry(const QWidget * widget)
-{
-    return qApp->desktop()->screenGeometry(widget);
-}
-
 /* Q_INVOKABLE static */ const QRect WControllerView::screenGeometry(const QPoint & pos)
 {
     return qApp->desktop()->screenGeometry(pos);
 }
 
+#ifdef QT_4
+/* Q_INVOKABLE static */ const QRect WControllerView::screenGeometry(const QWidget * widget)
+{
+    return qApp->desktop()->screenGeometry(widget);
+}
+#endif
+
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* Q_INVOKABLE static */ QPixmap WControllerView::takeItemShot(QGraphicsObject * item,
                                                                const QColor    & background)
+#else
+/* Q_INVOKABLE static */ QPixmap WControllerView::takeItemShot(QQuickItem   * item,
+                                                               const QColor & background)
+#endif
 {
     Q_ASSERT(item);
 
@@ -215,18 +272,41 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 
     pixmap.fill(background);
 
+#ifdef QT_LATEST
+    QSharedPointer<QQuickItemGrabResult> grab = item->grabToImage();
+
+    WControllerViewLoader loader;
+
+    connect(grab.data(), SIGNAL(ready()), &loader, SLOT(onReady()));
+
+    while (loader.ready == false)
+    {
+        QCoreApplication::processEvents();
+    }
+#endif
+
     QPainter painter(&pixmap);
 
+#ifdef QT_4
     WControllerViewPrivate::paintRecursive(&painter, item);
+#else
+    painter.drawImage(item->boundingRect().toRect(), grab->image());
+#endif
 
     painter.end();
 
     return pixmap;
 }
 
+#ifdef QT_4
 /* Q_INVOKABLE static */ bool WControllerView::saveItemShot(const QString   & fileName,
                                                             QGraphicsObject * item,
                                                             const QColor    & background)
+#else
+/* Q_INVOKABLE static */ bool WControllerView::saveItemShot(const QString & fileName,
+                                                            QQuickItem    * item,
+                                                            const QColor  & background)
+#endif
 {
     QImage image = takeItemShot(item, background).toImage();
 
@@ -368,3 +448,7 @@ void WControllerView::setScaleDelay(int delay)
 }
 
 #endif // SK_NO_CONTROLLERVIEW
+
+#ifdef QT_LATEST
+#include "WControllerView.moc"
+#endif

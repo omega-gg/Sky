@@ -16,7 +16,11 @@ DESTDIR = $$SK/lib
 
 TEMPLATE = lib
 
-QT += opengl declarative network script xml svg
+contains(QT_MAJOR_VERSION, 4) {
+    QT += opengl declarative network script xml svg
+} else {
+    QT += opengl quick network script xml svg
+}
 
 contains(QT_MAJOR_VERSION, 5): win32:QT += winextras
 
@@ -36,6 +40,8 @@ contains(QT_MAJOR_VERSION, 4) {
     }
 } else {
     DEFINES += QT_LATEST
+
+    win32:DEFINES += SK_WIN_NATIVE
 }
 
 include(src/controllers/controllers.pri)
@@ -46,13 +52,17 @@ include(src/declarative/declarative.pri)
 include(src/models/models.pri)
 include(src/media/media.pri)
 
-INCLUDEPATH += $$SK/include/Qt/QtCore \
-               $$SK/include/Qt/QtGui \
-               $$SK/include/Qt/QtDeclarative \
-               $$SK/include/SkCore \
+INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkCore/private \
                $$SK/include/SkGui \
                $$SK/include/SkGui/private \
+
+contains(QT_MAJOR_VERSION, 4) {
+    INCLUDEPATH += $$SK/include/Qt/QtCore \
+                   $$SK/include/Qt/QtGui \
+                   $$SK/include/Qt/QtDeclarative \
+
+}
 
 CONFIG(debug, debug|release) {
 

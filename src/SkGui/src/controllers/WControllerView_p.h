@@ -54,9 +54,11 @@ public: // Functions
     void registerView  (WView * view);
     void unregisterView(WView * view);
 
+#ifdef QT_4
 public: // Static functions
     static void paintRecursive(QPainter * painter, QGraphicsObject * item);
     static void paintChild    (QPainter * painter, QGraphicsObject * item);
+#endif
 
 public: // Variables
     QList<WView *> views;

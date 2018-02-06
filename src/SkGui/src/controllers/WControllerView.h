@@ -26,7 +26,11 @@
 #ifndef SK_NO_CONTROLLERVIEW
 
 // Forward declarations
+#ifdef QT_4
 class QGraphicsObject;
+#else
+class QQuickItem;
+#endif
 class WControllerViewPrivate;
 
 // Defines
@@ -54,23 +58,40 @@ protected: // Initialize
     /* virtual */ void init();
 
 public: // Static functions
+    Q_INVOKABLE static int screenNumber(const QPoint & pos);
+#ifdef QT_4
     Q_INVOKABLE static int screenNumber(const QWidget * widget = NULL);
-    Q_INVOKABLE static int screenNumber(const QPoint  & pos);
+#endif
 
-    Q_INVOKABLE static const QRect availableGeometry(int             screen = -1);
+    Q_INVOKABLE static const QRect availableGeometry(int            screen = -1);
+    Q_INVOKABLE static const QRect availableGeometry(const QPoint & pos);
+#ifdef QT_4
     Q_INVOKABLE static const QRect availableGeometry(const QWidget * widget);
-    Q_INVOKABLE static const QRect availableGeometry(const QPoint  & pos);
+#endif
 
     Q_INVOKABLE static const QRect screenGeometry(int             screen = -1);
-    Q_INVOKABLE static const QRect screenGeometry(const QWidget * widget);
     Q_INVOKABLE static const QRect screenGeometry(const QPoint  & pos);
+#ifdef QT_4
+    Q_INVOKABLE static const QRect screenGeometry(const QWidget * widget);
+#endif
 
+#ifdef QT_4
     Q_INVOKABLE static QPixmap takeItemShot(QGraphicsObject * item,
                                             const QColor    & background = Qt::transparent);
+#else
+    Q_INVOKABLE static QPixmap takeItemShot(QQuickItem   * item,
+                                            const QColor & background = Qt::transparent);
+#endif
 
+#ifdef QT_4
     Q_INVOKABLE static bool saveItemShot(const QString   & fileName,
                                          QGraphicsObject * item,
                                          const QColor    & background = Qt::transparent);
+#else
+    Q_INVOKABLE static bool saveItemShot(const QString & fileName,
+                                         QQuickItem    * item,
+                                         const QColor  & background = Qt::transparent);
+#endif
 
     Q_INVOKABLE static QImage desaturate(const QImage & image);
 
