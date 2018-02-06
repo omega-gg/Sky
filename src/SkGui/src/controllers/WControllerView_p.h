@@ -38,8 +38,10 @@
 
 // Forward declarations
 class WView;
+#ifdef QT_4
 class QPainter;
 class QGraphicsObject;
+#endif
 
 class SK_GUI_EXPORT WControllerViewPrivate : public WControllerPrivate
 {

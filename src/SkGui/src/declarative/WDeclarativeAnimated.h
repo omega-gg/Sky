@@ -55,9 +55,18 @@ public: // Enums
     enum StepMode { StepAuto, StepManual };
 
 public:
+#ifdef QT_4
     explicit WDeclarativeAnimated(QDeclarativeItem * parent = NULL);
+#else
+    explicit WDeclarativeAnimated(QQuickItem * parent = NULL);
+#endif
+
 protected:
+#ifdef QT_4
     WDeclarativeAnimated(WDeclarativeAnimatedPrivate * p, QDeclarativeItem * parent = NULL);
+#else
+    WDeclarativeAnimated(WDeclarativeAnimatedPrivate * p, QQuickItem * parent = NULL);
+#endif
 
 public: // Interface
     Q_INVOKABLE void start  ();
@@ -69,11 +78,15 @@ public: // Interface
     Q_INVOKABLE void stepBackward();
     Q_INVOKABLE void stepForward ();
 
-public: // QDeclarativeItem reimplementation
+public: // QDeclarativeItem / QQuickItem reimplementation
     /* virtual */ void componentComplete();
 
-protected: // QGraphicsItem reimplementation
+protected: // QGraphicsItem / QQuickItem reimplementation
+#ifdef QT_4
     /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
+#else
+    /* virtual */ void itemChange(ItemChange change, const ItemChangeData & data);
+#endif
 
 signals:
     void runningChanged();

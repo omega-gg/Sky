@@ -40,7 +40,9 @@ void WDeclarativeAnimatedPrivate::init()
     loopCount = 1;
     loop      = 0;
 
+#ifdef QT_4
     q->setFlag(QGraphicsItem::ItemHasNoContents, false);
+#endif
 
     QObject::connect(&pause, SIGNAL(finished()), q, SLOT(onFinished()));
 }
@@ -184,7 +186,11 @@ void WDeclarativeAnimatedPrivate::onFinished()
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* explicit */ WDeclarativeAnimated::WDeclarativeAnimated(QDeclarativeItem * parent)
+#else
+/* explicit */ WDeclarativeAnimated::WDeclarativeAnimated(QQuickItem * parent)
+#endif
     : WDeclarativeItem(new WDeclarativeAnimatedPrivate(this), parent)
 {
     Q_D(WDeclarativeAnimated); d->init();
@@ -193,8 +199,12 @@ void WDeclarativeAnimatedPrivate::onFinished()
 //-------------------------------------------------------------------------------------------------
 // Protected
 
+#ifdef QT_4
 WDeclarativeAnimated::WDeclarativeAnimated(WDeclarativeAnimatedPrivate * p,
                                            QDeclarativeItem            * parent)
+#else
+WDeclarativeAnimated::WDeclarativeAnimated(WDeclarativeAnimatedPrivate * p, QQuickItem * parent)
+#endif
     : WDeclarativeItem(p, parent)
 {
     Q_D(WDeclarativeAnimated); d->init();
@@ -266,7 +276,7 @@ WDeclarativeAnimated::WDeclarativeAnimated(WDeclarativeAnimatedPrivate * p,
 }
 
 //-------------------------------------------------------------------------------------------------
-// QDeclarativeItem reimplementation
+// QDeclarativeItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WDeclarativeAnimated::componentComplete()
@@ -282,15 +292,29 @@ WDeclarativeAnimated::WDeclarativeAnimated(WDeclarativeAnimatedPrivate * p,
 }
 
 //-------------------------------------------------------------------------------------------------
-// Protected QGraphicsItem reimplementation
+// Protected QGraphicsItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* virtual */ QVariant WDeclarativeAnimated::itemChange(GraphicsItemChange change,
                                                         const QVariant &   value)
+#else
+/* virtual */ void WDeclarativeAnimated::itemChange(ItemChange change, const ItemChangeData & data)
+#endif
 {
+#ifdef QT_LATEST
+    Q_D(WDeclarativeAnimated);
+#endif
+
+#ifdef QT_4
     if (change == ItemVisibleHasChanged)
+#else
+    if (d->view && change == ItemVisibleHasChanged)
+#endif
     {
+#ifdef QT_4
         Q_D(WDeclarativeAnimated);
+#endif
 
         bool visible = value.toBool();
 
@@ -304,7 +328,11 @@ WDeclarativeAnimated::WDeclarativeAnimated(WDeclarativeAnimatedPrivate * p,
         else d->stop();
     }
 
+#ifdef QT_4
     return WDeclarativeItem::itemChange(change, value);
+#else
+    WDeclarativeItem::itemChange(change, value);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
