@@ -20,8 +20,13 @@
 
 // Qt includes
 #include <QCoreApplication>
+#ifdef QT_4
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
+#else
+#include <QQmlEngine>
+#include <QQmlContext>
+#endif
 #include <QDir>
 
 W_INIT_CONTROLLER(WControllerDeclarative)
@@ -42,7 +47,11 @@ public:
     void init();
 
 public: // Variables
+#ifdef QT_4
     QDeclarativeEngine * engine;
+#else
+    QQmlEngine * engine;
+#endif
 
 protected:
     W_DECLARE_PUBLIC(WControllerDeclarative)
@@ -62,7 +71,11 @@ WControllerDeclarativePrivate::WControllerDeclarativePrivate(WControllerDeclarat
 
 void WControllerDeclarativePrivate::init()
 {
+#ifdef QT_4
     engine = new QDeclarativeEngine(qApp);
+#else
+    engine = new QQmlEngine(qApp);
+#endif
 
     engine->addImportPath(QDir::currentPath());
     engine->addPluginPath(QDir::currentPath());
@@ -113,7 +126,11 @@ void WControllerDeclarative::setContextProperty(const QString & name, QObject * 
 // Properties
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 QDeclarativeEngine * WControllerDeclarative::engine() const
+#else
+QQmlEngine * WControllerDeclarative::engine() const
+#endif
 {
     Q_D(const WControllerDeclarative); return d->engine;
 }

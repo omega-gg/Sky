@@ -18,7 +18,11 @@
 #define WCONTROLLERAPPLICATION_H
 
 // Qt includes
+#ifdef QT_4
 #include <QApplication>
+#else
+#include <QGuiApplication>
+#endif
 #include <QVariant>
 #include <QTime>
 #include <QUrl>

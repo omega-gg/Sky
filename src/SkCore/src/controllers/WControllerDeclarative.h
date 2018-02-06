@@ -23,7 +23,11 @@
 #ifndef SK_NO_CONTROLLERDECLARATIVE
 
 // Forward declarations
+#ifdef QT_4
 class QDeclarativeEngine;
+#else
+class QQmlEngine;
+#endif
 class WControllerDeclarativePrivate;
 
 // Defines
@@ -62,7 +66,11 @@ public: // Interface
     void setContextProperty(const QString & name, QObject        * value);
 
 public: // Properties
+#ifdef QT_4
     QDeclarativeEngine * engine() const;
+#else
+    QQmlEngine * engine() const;
+#endif
 
 private:
     W_DECLARE_PRIVATE   (WControllerDeclarative)

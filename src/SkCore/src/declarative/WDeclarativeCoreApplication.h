@@ -18,21 +18,34 @@
 #define WDECLARATIVECOREAPPLICATION_H
 
 // Qt includes
+#ifdef QT_4
 #include <QDeclarativeListProperty>
+#else
+#include <QQmlListProperty>
+#endif
 
 // Sk includes
 #include <Sk>
 
 #ifndef SK_NO_COREAPPLICATION
 
+// Forward declarations
 class WDeclarativeCoreApplicationPrivate;
+#ifdef QT_4
 class QDeclarativeItem;
+#else
+class QQuickItem;
+#endif
 
 class SK_CORE_EXPORT WDeclarativeCoreApplication : public QObject, public WPrivatable
 {
     Q_OBJECT
 
+#ifdef QT_4
     Q_PROPERTY(QDeclarativeListProperty<QDeclarativeItem> children READ children)
+#else
+    Q_PROPERTY(QQmlListProperty<QQuickItem> children READ children)
+#endif
 
     Q_CLASSINFO("DefaultProperty", "children")
 
@@ -42,9 +55,14 @@ protected:
     WDeclarativeCoreApplication(WDeclarativeCoreApplicationPrivate * p, QObject * object = 0);
 
 public: // Properties
+#ifdef QT_4
     QDeclarativeListProperty<QDeclarativeItem> children();
+#else
+    QQmlListProperty<QQuickItem> children();
+#endif
 
 private: // Declarative
+#ifdef QT_4
     static void childrenAppend(QDeclarativeListProperty<QDeclarativeItem> * property,
                                QDeclarativeItem * item);
 
@@ -54,6 +72,14 @@ private: // Declarative
 
     static QDeclarativeItem * childrenAt(QDeclarativeListProperty<QDeclarativeItem> * property,
                                          int index);
+#else
+    static void childrenAppend(QQmlListProperty<QQuickItem> * property, QQuickItem * item);
+    static void childrenClear (QQmlListProperty<QQuickItem> * property);
+
+    static int childrenCount(QQmlListProperty<QQuickItem> * property);
+
+    static QQuickItem * childrenAt(QQmlListProperty<QQuickItem> * property, int index);
+#endif
 
 private:
     W_DECLARE_PRIVATE(WDeclarativeCoreApplication)

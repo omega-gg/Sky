@@ -44,7 +44,11 @@ public: // Functions
     void deleteItems();
 
 public: // Variables
+#ifdef QT_4
     QList<QDeclarativeItem *> items;
+#else
+    QList<QQuickItem *> items;
+#endif
 
     QString plugins;
 

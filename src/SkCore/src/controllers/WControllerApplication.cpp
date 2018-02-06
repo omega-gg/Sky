@@ -32,7 +32,6 @@
 #include <QDeclarativeEngine>
 #include <QDeclarativeComponent>
 #else
-#include <QGuiApplication>
 #include <QQmlEngine>
 #include <QQmlComponent>
 #include <QCursor>
@@ -1384,9 +1383,17 @@ void WControllerApplication::setCursorVisible(bool visible)
 
     if (visible == false)
     {
+#ifdef QT_4
          QApplication::setOverrideCursor(Qt::BlankCursor);
+#else
+         QGuiApplication::setOverrideCursor(Qt::BlankCursor);
+#endif
     }
+#ifdef QT_4
     else QApplication::restoreOverrideCursor();
+#else
+    else QGuiApplication::restoreOverrideCursor();
+#endif
 
     emit cursorVisibleChanged();
 }
