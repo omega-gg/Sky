@@ -1384,9 +1384,9 @@ void WControllerApplication::setCursorVisible(bool visible)
     if (visible == false)
     {
 #ifdef QT_4
-         QApplication::setOverrideCursor(Qt::BlankCursor);
+        QApplication::setOverrideCursor(Qt::BlankCursor);
 #else
-         QGuiApplication::setOverrideCursor(Qt::BlankCursor);
+        QGuiApplication::setOverrideCursor(Qt::BlankCursor);
 #endif
     }
 #ifdef QT_4
