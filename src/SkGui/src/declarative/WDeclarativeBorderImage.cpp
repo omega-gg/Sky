@@ -19,7 +19,11 @@
 #ifndef SK_NO_DECLARATIVEBORDERIMAGE
 
 // Qt includes
+#ifdef QT_4
 #include <QDeclarativeEngine>
+#else
+#include <QQmlEngine>
+#endif
 #include <QPainter>
 #include <QTileRules>
 
@@ -157,7 +161,11 @@ void WDeclarativeBorderGrid::setBottom(int size)
 // WDeclarativeBorderImage
 //=================================================================================================
 
+#ifdef QT_4
 /* explicit */ WDeclarativeBorderImage::WDeclarativeBorderImage(QDeclarativeItem * parent)
+#else
+/* explicit */ WDeclarativeBorderImage::WDeclarativeBorderImage(QQuickItem * parent)
+#endif
     : WDeclarativeImageBase(new WDeclarativeBorderImagePrivate(this), parent)
 {
     Q_D(WDeclarativeBorderImage); d->init();
@@ -166,19 +174,28 @@ void WDeclarativeBorderGrid::setBottom(int size)
 //-------------------------------------------------------------------------------------------------
 // Protected
 
+#ifdef QT_4
 WDeclarativeBorderImage::WDeclarativeBorderImage(WDeclarativeBorderImagePrivate * p,
                                                  QDeclarativeItem               * parent)
+#else
+WDeclarativeBorderImage::WDeclarativeBorderImage(WDeclarativeBorderImagePrivate * p,
+                                                 QQuickItem                     * parent)
+#endif
     : WDeclarativeImageBase(p, parent)
 {
     Q_D(WDeclarativeBorderImage); d->init();
 }
 
 //-------------------------------------------------------------------------------------------------
-// QGraphicsItem reimplementation
+// QGraphicsItem / QQuickPaintedItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* virtual */ void WDeclarativeBorderImage::paint(QPainter * painter,
                                                   const QStyleOptionGraphicsItem *, QWidget *)
+#else
+/* virtual */ void WDeclarativeBorderImage::paint(QPainter * painter)
+#endif
 {
     Q_D(WDeclarativeBorderImage);
 
@@ -409,8 +426,13 @@ void WDeclarativeBorderImageScalePrivate::onLoaded(const QImage & image)
 // WDeclarativeBorderImageScale
 //=================================================================================================
 
+#ifdef QT_4
 /* explicit */
 WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QDeclarativeItem * parent)
+#else
+/* explicit */
+WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QQuickItem * parent)
+#endif
     : WDeclarativeBorderImage(new WDeclarativeBorderImageScalePrivate(this), parent)
 {
     Q_D(WDeclarativeBorderImageScale); d->init();
@@ -436,12 +458,20 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QDeclarativeItem * pa
 }
 
 //-------------------------------------------------------------------------------------------------
-// QGraphicsItem reimplementation
+// QGraphicsItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* virtual */ void WDeclarativeBorderImageScale::paint(QPainter * painter,
                                                        const QStyleOptionGraphicsItem *, QWidget *)
+#else
+/* virtual */ void WDeclarativeBorderImageScale::paint(QPainter * painter)
+#endif
 {
+#ifdef QT_LATEST
+    if (isVisible() == false) return;
+#endif
+
     Q_D(WDeclarativeBorderImageScale);
 
     const QPixmap & pixmap = getPixmap();
@@ -540,13 +570,21 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QDeclarativeItem * pa
         {
             if (d->scaleDelayed)
             {
+#ifdef QT_4
                 if (d->viewport->scale() == 1.0)
+#else
+                if (d->view->item()->scale() == 1.0)
+#endif
                 {
                     d->abortAction();
 
                     d->scaleSize = size;
 
+#ifdef QT_4
                     d->timer.start();
+#else
+                    QTimer::singleShot(0, &d->timer, SLOT(start()));
+#endif
                 }
             }
             else
