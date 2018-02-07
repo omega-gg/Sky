@@ -31,7 +31,11 @@
 #include <QTimer>
 
 // Private includes
+#ifdef QT_4
 #include <private/WDeclarativeItem_p>
+#else
+#include <private/WDeclarativeItemPaint_p>
+#endif
 
 #ifndef SK_NO_DECLARATIVEIMAGESVG
 
@@ -43,7 +47,11 @@ class WCacheFile;
 // WDeclarativeImageSvgPrivate
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 class SK_GUI_EXPORT WDeclarativeImageSvgPrivate : public WDeclarativeItemPrivate
+#else
+class SK_GUI_EXPORT WDeclarativeImageSvgPrivate : public WDeclarativeItemPaintPrivate
+#endif
 {
 protected:
     WDeclarativeImageSvgPrivate(WDeclarativeImageSvg * p);

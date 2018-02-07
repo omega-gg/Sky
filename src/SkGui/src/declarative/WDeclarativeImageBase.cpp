@@ -32,11 +32,17 @@
 //-------------------------------------------------------------------------------------------------
 
 WDeclarativeImageBasePrivate::WDeclarativeImageBasePrivate(WDeclarativeImageBase * p)
+#ifdef QT_4
     : WDeclarativeItemPrivate(p) {}
+#else
+    : WDeclarativeItemPaintPrivate(p) {}
+#endif
 
 void WDeclarativeImageBasePrivate::init()
 {
+#ifdef QT_4
     Q_Q(WDeclarativeImageBase);
+#endif
 
     file = NULL;
 
@@ -58,7 +64,9 @@ void WDeclarativeImageBasePrivate::init()
     filter = NULL;
     smooth = true;
 
+#ifdef QT_4
     q->setFlag(QGraphicsItem::ItemHasNoContents, false);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -339,8 +347,13 @@ void WDeclarativeImageBasePrivate::onFilterUpdated()
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* explicit */ WDeclarativeImageBase::WDeclarativeImageBase(QDeclarativeItem * parent)
     : WDeclarativeItem(new WDeclarativeImageBasePrivate(this), parent)
+#else
+/* explicit */ WDeclarativeImageBase::WDeclarativeImageBase(QQuickItem * parent)
+    : WDeclarativeItemPaint(new WDeclarativeImageBasePrivate(this), parent)
+#endif
 {
     Q_D(WDeclarativeImageBase); d->init();
 }
@@ -348,9 +361,14 @@ void WDeclarativeImageBasePrivate::onFilterUpdated()
 //-------------------------------------------------------------------------------------------------
 // Protected
 
+#ifdef QT_4
 WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p,
                                              QDeclarativeItem             * parent)
     : WDeclarativeItem(p, parent)
+#else
+WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p, QQuickItem * parent)
+    : WDeclarativeItemPaint(p, parent)
+#endif
 {
     Q_D(WDeclarativeImageBase); d->init();
 }
@@ -404,11 +422,21 @@ WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p,
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* Q_INVOKABLE */ void WDeclarativeImageBase::setItemShot(QGraphicsObject * object)
+#else
+/* Q_INVOKABLE */ void WDeclarativeImageBase::setItemShot(QQuickItem * item)
+#endif
 {
+#ifdef QT_4
     Q_ASSERT(object);
 
     QPixmap pixmap = WControllerView::takeItemShot(object, Qt::transparent);
+#else
+    Q_ASSERT(item);
+
+    QPixmap pixmap = WControllerView::takeItemShot(item, Qt::transparent);
+#endif
 
     setPixmap(pixmap);
 }
@@ -421,7 +449,11 @@ WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p,
 {
     Q_D(WDeclarativeImageBase);
 
+#ifdef QT_4
     WDeclarativeItem::componentComplete();
+#else
+    WDeclarativeItemPaint::componentComplete();
+#endif
 
     if (d->url.isValid())
     {
@@ -566,17 +598,33 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
 // Protected QGraphicsItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* virtual */ QVariant WDeclarativeImageBase::itemChange(GraphicsItemChange change,
                                                          const QVariant &   value)
+#else
+/* virtual */ QVariant WDeclarativeImageBase::itemChange(ItemChange             change,
+                                                         const ItemChangeData & data)
+#endif
 {
+#ifdef QT_4
     if (change == ItemVisibleHasChanged)
     {
         Q_D(WDeclarativeImageBase);
 
+#else
+    Q_D(WDeclarativeImageBase);
+
+    if (d->view && change == ItemVisibleHasChanged && data.boolValue)
+    {
+#endif
         d->loadVisible();
     }
 
+#ifdef QT_4
     return WDeclarativeItem::itemChange(change, value);
+#else
+    WDeclarativeItemPaint::itemChange(change, data);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------

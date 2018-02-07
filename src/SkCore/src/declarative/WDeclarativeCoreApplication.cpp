@@ -79,25 +79,6 @@ WDeclarativeCoreApplication::WDeclarativeCoreApplication(WDeclarativeCoreApplica
 }
 
 //-------------------------------------------------------------------------------------------------
-// Properties
-//-------------------------------------------------------------------------------------------------
-
-#ifdef QT_4
-QDeclarativeListProperty<QDeclarativeItem> WDeclarativeCoreApplication::children()
-#else
-QQmlListProperty<QQuickItem> WDeclarativeCoreApplication::children()
-#endif
-{
-#ifdef QT_4
-    return QDeclarativeListProperty<QDeclarativeItem>(this, 0, childrenAppend, childrenCount,
-                                                               childrenAt,     childrenClear);
-#else
-    return QQmlListProperty<QQuickItem>(this, 0, childrenAppend, childrenCount,
-                                                 childrenAt,     childrenClear);
-#endif
-}
-
-//-------------------------------------------------------------------------------------------------
 // Declarative
 //-------------------------------------------------------------------------------------------------
 
@@ -149,6 +130,25 @@ QDeclarativeItem * WDeclarativeCoreApplication::childrenAt(QDeclarativeListPrope
 {
     return
     static_cast<WDeclarativeCoreApplication *> (property->object)->d_func()->items.at(index);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Properties
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_4
+QDeclarativeListProperty<QDeclarativeItem> WDeclarativeCoreApplication::children()
+#else
+QQmlListProperty<QQuickItem> WDeclarativeCoreApplication::children()
+#endif
+{
+#ifdef QT_4
+    return QDeclarativeListProperty<QDeclarativeItem>(this, 0, childrenAppend, childrenCount,
+                                                               childrenAt,     childrenClear);
+#else
+    return QQmlListProperty<QQuickItem>(this, 0, childrenAppend, childrenCount,
+                                                 childrenAt,     childrenClear);
+#endif
 }
 
 #endif // SK_NO_DECLARATIVEMAIN

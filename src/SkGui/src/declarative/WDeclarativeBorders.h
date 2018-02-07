@@ -37,11 +37,21 @@ class SK_GUI_EXPORT WDeclarativeBorders : public WDeclarativeItem
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
 
 public:
+#ifdef QT_4
     explicit WDeclarativeBorders(QDeclarativeItem * parent = NULL);
+#else
+    explicit WDeclarativeBorders(QQuickItem * parent = NULL);
+#endif
 
-public: // QGraphicsItem reimplementation
+public: // QGraphicsItem / QQuickItem reimplementation
+#ifdef QT_4
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
+#else
+    /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
+
+    /* virtual */ QSGNode * updatePaintNode(QSGNode * oldNode, UpdatePaintNodeData * data);
+#endif
 
 signals:
     void leftChanged  ();

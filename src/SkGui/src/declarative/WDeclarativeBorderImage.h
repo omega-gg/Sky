@@ -92,13 +92,25 @@ public: // Enums
     };
 
 public:
+#ifdef QT_4
     explicit WDeclarativeBorderImage(QDeclarativeItem * parent = NULL);
+#else
+    explicit WDeclarativeBorderImage(QQuickItem * parent = NULL);
+#endif
 protected:
+#ifdef QT_4
     WDeclarativeBorderImage(WDeclarativeBorderImagePrivate * p, QDeclarativeItem * parent = NULL);
+#else
+    WDeclarativeBorderImage(WDeclarativeBorderImagePrivate * p, QQuickItem * parent = NULL);
+#endif
 
-public: // QGraphicsItem reimplementation
+public: // QGraphicsItem / QQuickPaintedItem reimplementation
+#ifdef QT_4
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
+#else
+    /* virtual */ void paint(QPainter * painter);
+#endif
 
 protected: // Virtual functions
     virtual const QPixmap & getPixmap();
@@ -140,16 +152,24 @@ class SK_GUI_EXPORT WDeclarativeBorderImageScale : public WDeclarativeBorderImag
     Q_PROPERTY(int scaleDelay READ scaleDelay WRITE setScaleDelay NOTIFY scaleDelayChanged)
 
 public:
+#ifdef QT_4
     explicit WDeclarativeBorderImageScale(QDeclarativeItem * parent = NULL);
+#else
+    explicit WDeclarativeBorderImageScale(QQuickItem * parent = NULL);
+#endif
 
 public: // Interface
     Q_INVOKABLE void applyScale();
 
-public: // QGraphicsItem reimplementation
+public: // QGraphicsItem / QQuickPaintedItem reimplementation
+#ifdef QT_4
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
+#else
+    /* virtual */ void paint(QPainter * painter);
+#endif
 
-protected: // QGraphicsItem reimplementation
+protected: // QGraphicsItem / QQuickItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
 
 protected: // WDeclarativeImageBase reimplementation

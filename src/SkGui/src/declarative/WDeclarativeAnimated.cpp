@@ -302,20 +302,17 @@ WDeclarativeAnimated::WDeclarativeAnimated(WDeclarativeAnimatedPrivate * p, QQui
 /* virtual */ void WDeclarativeAnimated::itemChange(ItemChange change, const ItemChangeData & data)
 #endif
 {
-#ifdef QT_LATEST
-    Q_D(WDeclarativeAnimated);
-#endif
-
 #ifdef QT_4
     if (change == ItemVisibleHasChanged)
-#else
-    if (d->view && change == ItemVisibleHasChanged)
-#endif
     {
-#ifdef QT_4
         Q_D(WDeclarativeAnimated);
-#endif
 
+#else
+    Q_D(WDeclarativeAnimated);
+
+    if (d->view && change == ItemVisibleHasChanged)
+    {
+#endif
         bool visible = value.toBool();
 
         if (visible)

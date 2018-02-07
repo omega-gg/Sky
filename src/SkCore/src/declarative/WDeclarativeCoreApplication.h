@@ -54,13 +54,6 @@ public:
 protected:
     WDeclarativeCoreApplication(WDeclarativeCoreApplicationPrivate * p, QObject * object = 0);
 
-public: // Properties
-#ifdef QT_4
-    QDeclarativeListProperty<QDeclarativeItem> children();
-#else
-    QQmlListProperty<QQuickItem> children();
-#endif
-
 private: // Declarative
 #ifdef QT_4
     static void childrenAppend(QDeclarativeListProperty<QDeclarativeItem> * property,
@@ -79,6 +72,13 @@ private: // Declarative
     static int childrenCount(QQmlListProperty<QQuickItem> * property);
 
     static QQuickItem * childrenAt(QQmlListProperty<QQuickItem> * property, int index);
+#endif
+
+public: // Properties
+#ifdef QT_4
+    QDeclarativeListProperty<QDeclarativeItem> children();
+#else
+    QQmlListProperty<QQuickItem> children();
 #endif
 
 private:

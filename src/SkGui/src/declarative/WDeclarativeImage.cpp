@@ -20,7 +20,9 @@
 
 // Qt includes
 #include <QPainter>
+#ifdef QT_4
 #include <QStyleOptionGraphicsItem>
+#endif
 
 // Sk includes
 #include <WControllerView>
@@ -46,7 +48,11 @@ void WDeclarativeImagePrivate::init()
 // WDeclarativeImage
 //=================================================================================================
 
+#ifdef QT_4
 /* explicit */ WDeclarativeImage::WDeclarativeImage(QDeclarativeItem * parent)
+#else
+/* explicit */ WDeclarativeImage::WDeclarativeImage(QQuickItem * parent)
+#endif
     : WDeclarativeImageBase(new WDeclarativeImagePrivate(this), parent)
 {
     Q_D(WDeclarativeImage); d->init();
@@ -55,19 +61,31 @@ void WDeclarativeImagePrivate::init()
 //-------------------------------------------------------------------------------------------------
 // Protected
 
+#ifdef QT_4
 WDeclarativeImage::WDeclarativeImage(WDeclarativeImagePrivate * p, QDeclarativeItem * parent)
+#else
+WDeclarativeImage::WDeclarativeImage(WDeclarativeImagePrivate * p, QQuickItem * parent)
+#endif
     : WDeclarativeImageBase(p, parent)
 {
     Q_D(WDeclarativeImage); d->init();
 }
 
 //-------------------------------------------------------------------------------------------------
-// QGraphicsItem reimplementation
+// QGraphicsItem / QQuickPaintedItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* virtual */ void WDeclarativeImage::paint(QPainter * painter,
                                             const QStyleOptionGraphicsItem *, QWidget *)
+#else
+/* virtual */ void WDeclarativeImage::paint(QPainter * painter)
+#endif
 {
+#ifdef QT_4
+    if (isVisible() == false) return;
+#endif
+
     Q_D(WDeclarativeImage);
 
     const QPixmap & pixmap = getPixmap();
@@ -290,7 +308,7 @@ void WDeclarativeImage::updatePaintedGeometry()
 /* virtual */ void WDeclarativeImage::updatePixmap() {}
 
 //-------------------------------------------------------------------------------------------------
-// Protected QGraphicsItem reimplementation
+// Protected QGraphicsItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WDeclarativeImage::geometryChanged(const QRectF & newGeometry,
@@ -484,7 +502,11 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
 // WDeclarativeImageScale
 //=================================================================================================
 
+#ifdef QT_4
 /* explicit */ WDeclarativeImageScale::WDeclarativeImageScale(QDeclarativeItem * parent)
+#else
+/* explicit */ WDeclarativeImageScale::WDeclarativeImageScale(QQuickItem * parent)
+#endif
     : WDeclarativeImage(new WDeclarativeImageScalePrivate(this), parent)
 {
     Q_D(WDeclarativeImageScale); d->init();
@@ -561,13 +583,21 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
         {
             if (d->scaleDelayed)
             {
+#ifdef QT_4
                 if (d->viewport->scale() == 1.0)
+#else
+                if (d->view->item()->scale() == 1.0)
+#endif
                 {
                     d->abortAction();
 
                     d->scaleSize = size;
 
+#ifdef QT_4
                     d->timer.start();
+#else
+                    QTimer::singleShot(0, &d->timer, SLOT(start()));
+#endif
                 }
             }
             else

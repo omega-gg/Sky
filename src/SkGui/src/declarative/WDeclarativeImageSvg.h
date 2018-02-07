@@ -18,7 +18,11 @@
 #define WDECLARATIVEIMAGESVG_H
 
 // Sk includes
+#ifdef QT_4
 #include <WDeclarativeItem>
+#else
+#include <WDeclarativeItemPaint>
+#endif
 
 #ifndef SK_NO_DECLARATIVEIMAGESVG
 
@@ -29,7 +33,11 @@ class WDeclarativeImageSvgScalePrivate;
 // WDeclarativeImageSvg
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 class SK_GUI_EXPORT WDeclarativeImageSvg : public WDeclarativeItem
+#else
+class SK_GUI_EXPORT WDeclarativeImageSvg : public WDeclarativeItemPaint
+#endif
 {
     Q_OBJECT
 
@@ -63,23 +71,39 @@ public: // Enums
     };
 
 public:
+#ifdef QT_4
     explicit WDeclarativeImageSvg(QDeclarativeItem * parent = NULL);
+#else
+    explicit WDeclarativeImageSvg(QQuickItem * parent = NULL);
+#endif
 protected:
+#ifdef QT_4
     WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QDeclarativeItem * parent = NULL);
+#else
+    WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQuickItem * parent = NULL);
+#endif
 
 public: // QDeclarativeItem reimplementation
     /* virtual */ void componentComplete();
 
 public: // QGraphicsItem reimplementation
+#ifdef QT_4
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
+#else
+    /* virtual */ void paint(QPainter * painter);
+#endif
 
 protected: // Functions
     virtual void svgChange();
     virtual void svgClear (); /* {} */
 
-protected: // QGraphicsItem reimplementation
+protected: // QGraphicsItem / QQuickItem reimplementation
+#ifdef QT_4
     /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
+#else
+    /* virtual */ QVariant itemChange(ItemChange change, const ItemChangeData & data);
+#endif
 
 signals:
     void loaded();
@@ -135,16 +159,24 @@ class SK_GUI_EXPORT WDeclarativeImageSvgScale : public WDeclarativeImageSvg
     Q_PROPERTY(int scaleDelay READ scaleDelay WRITE setScaleDelay NOTIFY scaleDelayChanged)
 
 public:
+#ifdef QT_4
     explicit WDeclarativeImageSvgScale(QDeclarativeItem * parent = NULL);
+#else
+    explicit WDeclarativeImageSvgScale(QQuickItem * parent = NULL);
+#endif
 
 public: // Interface
     Q_INVOKABLE void applyScale();
 
-public: // QGraphicsItem reimplementation
+public: // QGraphicsItem / QQuickPaintedItem reimplementation
+#ifdef QT_4
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
+#else
+    /* virtual */ void paint(QPainter * painter);
+#endif
 
-protected: // QGraphicsItem reimplementation
+protected: // QGraphicsItem / QQuickItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
 
 protected: // WDeclarativeImageSvg reimplementation

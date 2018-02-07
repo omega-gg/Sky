@@ -19,7 +19,11 @@
 #ifndef SK_NO_APPLICATION
 
 // Qt includes
+#ifdef QT_4
 #include <QDeclarativeComponent>
+#else
+#include <QQmlComponent>
+#endif
 
 // Controllers includes
 #include <WControllerView>
@@ -172,6 +176,9 @@ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
     qmlRegisterType<WDeclarativeAnimated>("Sky", 1,0, "Animated");
 
     qmlRegisterType<WDeclarativeBorders>("Sky", 1,0, "Borders");
+
+    qmlRegisterUncreatableType<WDeclarativeImage>("Sky", 1,0, "ImageBase",
+                                                  "ImageBase is abstract");
 
     qmlRegisterType<WDeclarativeImage>        ("Sky", 1,0, "Image");
     qmlRegisterType<WDeclarativeImageScale>   ("Sky", 1,0, "ImageScale");

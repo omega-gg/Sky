@@ -31,7 +31,11 @@
 #include <WPixmapCache>
 
 // Private includes
+#ifdef QT_4
 #include <private/WDeclarativeItem_p>
+#else
+#include <private/WDeclarativeItemPaint_p>
+#endif
 
 #ifndef SK_NO_DECLARATIVEIMAGEBASE
 
@@ -39,7 +43,11 @@
 class WCacheFile;
 class WImageFilter;
 
+#ifdef QT_4
 class SK_GUI_EXPORT WDeclarativeImageBasePrivate : public WDeclarativeItemPrivate
+#else
+class SK_GUI_EXPORT WDeclarativeImageBasePrivate : public WDeclarativeItemPaintPrivate
+#endif
 {
 protected:
     WDeclarativeImageBasePrivate(WDeclarativeImageBase * p);

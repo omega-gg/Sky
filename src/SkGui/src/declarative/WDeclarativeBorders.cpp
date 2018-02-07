@@ -19,14 +19,93 @@
 #ifndef SK_NO_DECLARATIVEBORDERS
 
 // Qt includes
+#ifdef QT_4
 #include <QPainter>
+#else
+#include <QSGGeometryNode>
+#include <QSGFlatColorMaterial>
+#endif
 
 // Private includes
 #include <private/WDeclarativeItem_p>
 
+#ifdef QT_LATEST
+
+//=================================================================================================
+// WDeclarativeBordersLine
+//=================================================================================================
+
+class SK_GUI_EXPORT WDeclarativeBordersLine : public QSGGeometryNode
+{
+public:
+    WDeclarativeBordersLine(QSGFlatColorMaterial * material);
+
+public: // Interface
+    void setRect(const QRectF & rect);
+
+private: // Variables
+    QSGGeometry _geometry;
+};
+
 //-------------------------------------------------------------------------------------------------
-// Private
+// Ctor / dtor
 //-------------------------------------------------------------------------------------------------
+
+WDeclarativeBordersLine::WDeclarativeBordersLine(QSGFlatColorMaterial * material)
+    : _geometry(QSGGeometry::defaultAttributes_Point2D(), 4)
+{
+    setGeometry(&_geometry);
+
+    setMaterial(material);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+
+void WDeclarativeBordersLine::setRect(const QRectF & rect)
+{
+    QSGGeometry::updateRectGeometry(&_geometry, rect);
+
+    markDirty(QSGNode::DirtyGeometry);
+}
+
+//=================================================================================================
+// WDeclarativeBordersNode
+//=================================================================================================
+
+class SK_GUI_EXPORT WDeclarativeBordersNode : public QSGNode
+{
+public:
+    WDeclarativeBordersNode();
+
+public: // Properties
+    WDeclarativeBordersLine left;
+    WDeclarativeBordersLine right;
+    WDeclarativeBordersLine top;
+    WDeclarativeBordersLine bottom;
+
+    QSGFlatColorMaterial material;
+};
+
+//-------------------------------------------------------------------------------------------------
+// Ctor / dtor
+//-------------------------------------------------------------------------------------------------
+
+WDeclarativeBordersNode::WDeclarativeBordersNode() : left(&material), right (&material),
+                                                     top (&material), bottom(&material)
+{
+    appendChildNode(&left);
+    appendChildNode(&right);
+    appendChildNode(&top);
+    appendChildNode(&bottom);
+}
+
+#endif
+
+//=================================================================================================
+// WDeclarativeBordersPrivate
+//=================================================================================================
 
 class SK_GUI_EXPORT WDeclarativeBordersPrivate : public WDeclarativeItemPrivate
 {
@@ -42,6 +121,15 @@ public: // Variables
     qreal bottom;
 
     QColor color;
+
+#ifdef QT_LATEST
+    bool updateLeft;
+    bool updateRight;
+    bool updateTop;
+    bool updateBottom;
+
+    bool updateColor;
+#endif
 
 protected:
     W_DECLARE_PUBLIC(WDeclarativeBorders)
@@ -61,22 +149,37 @@ void WDeclarativeBordersPrivate::init()
     top    = 0.0;
     bottom = 0.0;
 
+#ifdef QT_LATEST
+    updateLeft   = true;
+    updateRight  = true;
+    updateTop    = true;
+    updateBottom = true;
+
+    updateColor = true;
+#endif
+
     q->setFlag(QGraphicsItem::ItemHasNoContents, false);
 }
 
-//-------------------------------------------------------------------------------------------------
-// Ctor / dtor
-//-------------------------------------------------------------------------------------------------
+//=================================================================================================
+// WDeclarativeBorders
+//=================================================================================================
 
+#ifdef QT_4
 /* explicit */ WDeclarativeBorders::WDeclarativeBorders(QDeclarativeItem * parent)
+#else
+/* explicit */ WDeclarativeBorders::WDeclarativeBorders(QQuickItem * parent)
+#endif
     : WDeclarativeItem(new WDeclarativeBordersPrivate(this), parent)
 {
     Q_D(WDeclarativeBorders); d->init();
 }
 
 //-------------------------------------------------------------------------------------------------
-// QGraphicsItem reimplementation
+// QGraphicsItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
+
+#ifdef QT_4
 
 /* virtual */ void WDeclarativeBorders::paint(QPainter * painter,
                                               const QStyleOptionGraphicsItem *, QWidget *)
@@ -94,6 +197,78 @@ void WDeclarativeBordersPrivate::init()
     painter->drawRect(QRectF(0, height() - d->bottom, width(), d->bottom));
 }
 
+#else
+
+/* virtual */ void WDeclarativeBorders::geometryChanged(const QRectF & newGeometry,
+                                                        const QRectF & oldGeometry)
+{
+    Q_D(WDeclarativeBorders);
+
+    WDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
+
+    if (d->left)   d->updateLeft   = true;
+    if (d->right)  d->updateRight  = true;
+    if (d->top)    d->updateTop    = true;
+    if (d->bottom) d->updateBottom = true;
+}
+
+/* virtual */ QSGNode * WDeclarativeBorders::updatePaintNode(QSGNode             * oldNode,
+                                                             UpdatePaintNodeData *)
+{
+    Q_D(WDeclarativeBorders);
+
+    WDeclarativeBordersNode * node = static_cast<WDeclarativeBordersNode *> (oldNode);
+
+    if (node == NULL) node = new WDeclarativeBordersNode;
+
+    qreal width  = this->width ();
+    qreal height = this->height();
+
+    if (d->updateLeft)
+    {
+        d->updateLeft = false;
+
+        node->left.setRect(QRectF(0, 0, d->left, height));
+    }
+
+    if (d->updateRight)
+    {
+        d->updateRight = false;
+
+        node->right.setRect(QRectF(width - d->right, 0, d->right, height));
+    }
+
+    if (d->updateTop)
+    {
+        d->updateTop = false;
+
+        node->top.setRect(QRectF(0, 0, width, d->top));
+    }
+
+    if (d->updateBottom)
+    {
+        d->updateBottom = false;
+
+        node->bottom.setRect(QRectF(0, height - d->bottom, width, d->bottom));
+    }
+
+    if (d->updateColor)
+    {
+        d->updateColor = false;
+
+        node->material.setColor(d->color);
+
+        node->left  .markDirty(QSGNode::DirtyMaterial);
+        node->right .markDirty(QSGNode::DirtyMaterial);
+        node->top   .markDirty(QSGNode::DirtyMaterial);
+        node->bottom.markDirty(QSGNode::DirtyMaterial);
+    }
+
+    return node;
+}
+
+#endif
+
 //-------------------------------------------------------------------------------------------------
 // properties
 //-------------------------------------------------------------------------------------------------
@@ -110,6 +285,10 @@ void WDeclarativeBorders::setLeft(qreal left)
     if (d->left == left) return;
 
     d->left = left;
+
+#ifdef QT_LATEST
+    d->updateLeft = true;
+#endif
 
     update();
 
@@ -131,6 +310,10 @@ void WDeclarativeBorders::setRight(qreal right)
 
     d->right = right;
 
+#ifdef QT_LATEST
+    d->updateRight = true;
+#endif
+
     update();
 
     emit rightChanged();
@@ -150,6 +333,10 @@ void WDeclarativeBorders::setTop(qreal top)
     if (d->top == top) return;
 
     d->top = top;
+
+#ifdef QT_LATEST
+    d->updateTop = true;
+#endif
 
     update();
 
@@ -171,6 +358,10 @@ void WDeclarativeBorders::setBottom(qreal bottom)
 
     d->bottom = bottom;
 
+#ifdef QT_LATEST
+    d->updateBottom = true;
+#endif
+
     update();
 
     emit bottomChanged();
@@ -190,6 +381,10 @@ void WDeclarativeBorders::setColor(const QColor & color)
     if (d->color == color) return;
 
     d->color = color;
+
+#ifdef QT_LATEST
+    d->updateColor = true;
+#endif
 
     update();
 

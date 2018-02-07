@@ -18,7 +18,11 @@
 #define WDECLARATIVEIMAGEBASE_H
 
 // Sk includes
+#ifdef QT_4
 #include <WDeclarativeItem>
+#else
+#include <WDeclarativeItemPaint>
+#endif
 
 #ifndef SK_NO_DECLARATIVEIMAGEBASE
 
@@ -26,7 +30,11 @@
 class WDeclarativeImageBasePrivate;
 class WImageFilter;
 
+#ifdef QT_4
 class SK_GUI_EXPORT WDeclarativeImageBase : public WDeclarativeItem
+#else
+class SK_GUI_EXPORT WDeclarativeImageBase : public WDeclarativeItemPaint
+#endif
 {
     Q_OBJECT
 
@@ -75,16 +83,28 @@ public: // Enums
     enum LoadMode { LoadAlways, LoadVisible };
 
 public:
+#ifdef QT_4
     explicit WDeclarativeImageBase(QDeclarativeItem * parent = NULL);
+#else
+    explicit WDeclarativeImageBase(QQuickItem * parent = NULL);
+#endif
 protected:
+#ifdef QT_4
     WDeclarativeImageBase(WDeclarativeImageBasePrivate * p, QDeclarativeItem * parent = NULL);
+#else
+    WDeclarativeImageBase(WDeclarativeImageBasePrivate * p, QQuickItem * parent = NULL);
+#endif
 
 public: // Interface
     Q_INVOKABLE void loadSource(const QUrl & url, bool force = false);
 
     Q_INVOKABLE void loadNow(const QUrl & url = QUrl());
 
+#ifdef QT_4
     Q_INVOKABLE void setItemShot(QGraphicsObject * object);
+#else
+    Q_INVOKABLE void setItemShot(QQuickItem * item);
+#endif
 
 public: // QDeclarativeItem reimplementation
     /* virtual */ void componentComplete();
@@ -106,8 +126,12 @@ protected slots:
     virtual void requestFinished();
     virtual void requestProgress(qint64 received, qint64 total);
 
-protected: // QGraphicsItem reimplementation
+protected: // QGraphicsItem / QQuickItem reimplementation
+#ifdef QT_4
     /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
+#else
+    /* virtual */ QVariant itemChange(ItemChange change, const ItemChangeData & value);
+#endif
 
 signals:
     void loaded();

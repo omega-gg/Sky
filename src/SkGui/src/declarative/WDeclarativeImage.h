@@ -52,13 +52,25 @@ public: // Enums
     };
 
 public:
+#ifdef QT_4
     explicit WDeclarativeImage(QDeclarativeItem * parent = NULL);
+#else
+    explicit WDeclarativeImage(QQuickItem * parent = NULL);
+#endif
 protected:
+#ifdef QT_4
     WDeclarativeImage(WDeclarativeImagePrivate * p, QDeclarativeItem * parent = NULL);
+#else
+    WDeclarativeImage(WDeclarativeImagePrivate * p, QQuickItem * parent = NULL);
+#endif
 
-public: // QGraphicsItem reimplementation
+public: // QGraphicsItem / QQuickPaintedItem reimplementation
+#ifdef QT_4
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
+#else
+    /* virtual */ void paint(QPainter * painter);
+#endif
 
 protected: // Functions
     void updatePaintedGeometry();
@@ -68,7 +80,7 @@ protected: // Virtual functions
 
     virtual void updatePixmap(); /* {} */
 
-protected: // QGraphicsItem reimplementation
+protected: // QGraphicsItem / QQuickItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
 
 protected: // WDeclarativeImageBase reimplementation
@@ -108,12 +120,16 @@ class SK_GUI_EXPORT WDeclarativeImageScale : public WDeclarativeImage
     Q_PROPERTY(int scaleDelay READ scaleDelay WRITE setScaleDelay NOTIFY scaleDelayChanged)
 
 public:
+#ifdef QT_4
     explicit WDeclarativeImageScale(QDeclarativeItem * parent = NULL);
+#else
+    explicit WDeclarativeImageScale(QQuickItem * parent = NULL);
+#endif
 
 public: // Interface
     Q_INVOKABLE void applyScale();
 
-protected: // QGraphicsItem reimplementation
+protected: // QGraphicsItem / QQuickItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
 
 protected: // WDeclarativeImageBase reimplementation

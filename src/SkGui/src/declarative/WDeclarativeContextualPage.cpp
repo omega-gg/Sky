@@ -579,38 +579,80 @@ const WDeclarativeContextualItem * WDeclarativeContextualPage::currentItemPointe
 // Declarative
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* static */
 void WDeclarativeContextualPage::childrenAppend(QDeclarativeListProperty
                                                 <WDeclarativeContextualPage> * property,
                                                 WDeclarativeContextualPage * item)
+#else
+/* static */
+void WDeclarativeContextualPage::childrenAppend(QQmlListProperty
+                                                <WDeclarativeContextualPage> * property,
+                                                WDeclarativeContextualPage * item)
+#endif
 {
     static_cast<WDeclarativeContextualPage *> (property->object)->addPage(item);
 }
 
+#ifdef QT_4
 /* static */
 void WDeclarativeContextualPage::childrenClear(QDeclarativeListProperty
                                                <WDeclarativeContextualPage> * property)
+#else
+/* static */
+void WDeclarativeContextualPage::childrenClear(QQmlListProperty
+                                               <WDeclarativeContextualPage> * property)
+#endif
 {
     static_cast<WDeclarativeContextualPage *> (property->object)->clearPages();
 }
 
+#ifdef QT_4
 /* static */
 int WDeclarativeContextualPage::childrenCount(QDeclarativeListProperty
                                               <WDeclarativeContextualPage> * property)
+#else
+/* static */
+int WDeclarativeContextualPage::childrenCount(QQmlListProperty
+                                              <WDeclarativeContextualPage> * property)
+#endif
 {
     return static_cast<WDeclarativeContextualPage *> (property->object)->pageCount();
 }
 
+#ifdef QT_4
 /* static */ WDeclarativeContextualPage *
-    WDeclarativeContextualPage::childrenAt(QDeclarativeListProperty
-                                           <WDeclarativeContextualPage> * property,
-                                           int index)
+WDeclarativeContextualPage::childrenAt(QDeclarativeListProperty
+                                       <WDeclarativeContextualPage> * property, int index)
+#else
+/* static */ WDeclarativeContextualPage *
+WDeclarativeContextualPage::childrenAt(QQmlListProperty
+                                       <WDeclarativeContextualPage> * property, int index)
+#endif
 {
     return static_cast<WDeclarativeContextualPage *> (property->object)->pageAt(index);
 }
 
 //-------------------------------------------------------------------------------------------------
 // Properties
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_4
+QDeclarativeListProperty<WDeclarativeContextualPage> WDeclarativeContextualPage::pages()
+#else
+QQmlListProperty<WDeclarativeContextualPage> WDeclarativeContextualPage::pages()
+#endif
+{
+#ifdef QT_4
+    return QDeclarativeListProperty<WDeclarativeContextualPage>(this, 0,
+                                                                childrenAppend, childrenCount,
+                                                                childrenAt, childrenClear);
+#else
+    return QQmlListProperty<WDeclarativeContextualPage>(this, 0, childrenAppend, childrenCount,
+                                                                 childrenAt, childrenClear);
+#endif
+}
+
 //-------------------------------------------------------------------------------------------------
 
 QVariantList WDeclarativeContextualPage::values() const
@@ -662,15 +704,6 @@ void WDeclarativeContextualPage::setValues(const QVariantList & values)
     }
 
     emit valuesChanged(d->values);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-QDeclarativeListProperty<WDeclarativeContextualPage> WDeclarativeContextualPage::pages()
-{
-    return QDeclarativeListProperty<WDeclarativeContextualPage>(this, 0,
-                                                                childrenAppend, childrenCount,
-                                                                childrenAt, childrenClear);
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -21,7 +21,11 @@
 #include <QObject>
 #include <QUrl>
 #include <QSizeF>
+#ifdef QT_4
 #include <QDeclarativeListProperty>
+#else
+#include <QQmlListProperty>
+#endif
 
 // Sk includes
 #include <Sk>
@@ -62,9 +66,13 @@ class SK_GUI_EXPORT WDeclarativeContextualPage : public QObject, public WPrivata
 
     Q_ENUMS(ItemType)
 
-    Q_PROPERTY(QVariantList values READ values WRITE setValues NOTIFY valuesChanged)
-
+#ifdef QT_4
     Q_PROPERTY(QDeclarativeListProperty<WDeclarativeContextualPage> pages READ pages)
+#else
+    Q_PROPERTY(QQmlListProperty<WDeclarativeContextualPage> pages READ pages)
+#endif
+
+    Q_PROPERTY(QVariantList values READ values WRITE setValues NOTIFY valuesChanged)
 
     Q_PROPERTY(int currentId READ currentId WRITE setCurrentId NOTIFY currentIdChanged)
 
@@ -150,16 +158,29 @@ public: // Interface
     Q_INVOKABLE void clearPages();
 
 private: // Declarative
+#ifdef QT_4
     static void childrenAppend(QDeclarativeListProperty<WDeclarativeContextualPage> * property,
                                WDeclarativeContextualPage * item);
 
     static void childrenClear(QDeclarativeListProperty<WDeclarativeContextualPage> * property);
 
-    static int  childrenCount(QDeclarativeListProperty<WDeclarativeContextualPage> * property);
+    static int childrenCount(QDeclarativeListProperty<WDeclarativeContextualPage> * property);
 
     static WDeclarativeContextualPage * childrenAt(QDeclarativeListProperty
                                                    <WDeclarativeContextualPage> * property,
                                                    int index);
+#else
+    static void childrenAppend(QQmlListProperty<WDeclarativeContextualPage> * property,
+                               WDeclarativeContextualPage * item);
+
+    static void childrenClear(QQmlListProperty<WDeclarativeContextualPage> * property);
+
+    static int childrenCount(QQmlListProperty<WDeclarativeContextualPage> * property);
+
+    static WDeclarativeContextualPage * childrenAt(QQmlListProperty
+                                                   <WDeclarativeContextualPage> * property,
+                                                   int index);
+#endif
 
 signals:
     void valuesChanged(const QVariantList & values);
@@ -167,10 +188,14 @@ signals:
     void currentIdChanged();
 
 public: // Properties
+#ifdef QT_4
+    QDeclarativeListProperty<WDeclarativeContextualPage> pages();
+#else
+    QQmlListProperty<WDeclarativeContextualPage> pages();
+#endif
+
     QVariantList values() const;
     void         setValues(const QVariantList & values);
-
-    QDeclarativeListProperty<WDeclarativeContextualPage> pages();
 
     int  currentId() const;
     void setCurrentId(int id);
