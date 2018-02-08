@@ -51,7 +51,11 @@ void WDeclarativeMouseWatcherPrivate::onPressedChanged()
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* explicit */ WDeclarativeMouseWatcher::WDeclarativeMouseWatcher(QDeclarativeItem * parent)
+#else
+/* explicit */ WDeclarativeMouseWatcher::WDeclarativeMouseWatcher(QQuickItem * parent)
+#endif
     : WDeclarativeItem(new WDeclarativeMouseWatcherPrivate(this), parent)
 {
     Q_D(WDeclarativeMouseWatcher); d->init();
@@ -61,7 +65,11 @@ void WDeclarativeMouseWatcherPrivate::onPressedChanged()
 // Events
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* virtual */ void WDeclarativeMouseWatcher::mousePressEvent(QGraphicsSceneMouseEvent * event)
+#else
+/* virtual */ void WDeclarativeMouseWatcher::mousePressEvent(QMouseEvent * event)
+#endif
 {
     Q_D(WDeclarativeMouseWatcher);
 

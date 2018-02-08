@@ -48,6 +48,10 @@ void WDeclarativePlayerPrivate::init()
 
     backendInterface = NULL;
 
+#ifdef QT_LATEST
+    frameUpdate = false;
+#endif
+
     folder   = NULL;
     playlist = NULL;
 
@@ -74,7 +78,11 @@ void WDeclarativePlayerPrivate::init()
 
     keepState = false;
 
+#ifdef QT_4
     q->setFlag(QGraphicsItem::ItemHasNoContents, false);
+#else
+    q->setFlag(QQuickItem::ItemHasContents);
+#endif
 
     QObject::connect(q, SIGNAL(playlistChanged()), q, SIGNAL(playlistUpdated()));
     QObject::connect(q, SIGNAL(playlistChanged()), q, SIGNAL(countChanged   ()));
@@ -82,6 +90,25 @@ void WDeclarativePlayerPrivate::init()
 
 //-------------------------------------------------------------------------------------------------
 // Private functions
+//-------------------------------------------------------------------------------------------------
+
+void WDeclarativePlayerPrivate::updateGeometry(WBackendNode * node)
+{
+    Q_Q(WDeclarativePlayer);
+
+    QSizeF frameSize = QSizeF(frame.width, frame.height);
+
+    QSizeF size(q->width(), q->height());
+
+    frameSize.scale(size, static_cast<Qt::AspectRatioMode> (frame.fillMode));
+
+    qreal width  = frameSize.width ();
+    qreal height = frameSize.height();
+
+    node->setRect(QRectF((size.width () - width)  / 2,
+                         (size.height() - height) / 2, width, height));
+}
+
 //-------------------------------------------------------------------------------------------------
 
 void WDeclarativePlayerPrivate::applyPlaylist(WPlaylist * playlist)
@@ -588,7 +615,11 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* explicit */ WDeclarativePlayer::WDeclarativePlayer(QDeclarativeItem * parent)
+#else
+/* explicit */ WDeclarativePlayer::WDeclarativePlayer(QQuickItem * parent)
+#endif
     : WDeclarativeItem(new WDeclarativePlayerPrivate(this), parent)
 {
     Q_D(WDeclarativePlayer); d->init();
@@ -818,6 +849,15 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WDeclarativePlayer::updateHighlightedTab()
+{
+    Q_D(WDeclarativePlayer); d->onHighlightedTabChanged();
+}
+
+#ifdef QT_4
+
+//-------------------------------------------------------------------------------------------------
 // QGraphicsItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
@@ -832,6 +872,8 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
     }
 }
 
+#endif
+
 //-------------------------------------------------------------------------------------------------
 // Protected QDeclarativeItem reimplementation
 //-------------------------------------------------------------------------------------------------
@@ -843,11 +885,92 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 
     WDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
 
+#ifdef QT_4
     if (d->backend)
     {
         d->backend->setSize(newGeometry.size());
     }
+#else
+    d->frameUpdate = true;
+#endif
 }
+
+#ifdef QT_LATEST
+
+/* virtual */ QSGNode * WDeclarativePlayer::updatePaintNode(QSGNode             * oldNode,
+                                                            UpdatePaintNodeData *)
+{
+    Q_D(WDeclarativePlayer);
+
+    WAbstractBackend::FrameState state = d->frame.state;
+
+    if (state == WAbstractBackend::FrameDefault)
+    {
+        if (oldNode)
+        {
+            WBackendNode * node = static_cast<WBackendNode *> (oldNode);
+
+            node->setTextures(NULL);
+
+            if (d->frameUpdate)
+            {
+                d->frameUpdate = false;
+
+                d->updateGeometry(node);
+            }
+
+            return node;
+        }
+        else return NULL;
+    }
+    else if (state == WAbstractBackend::FrameReset)
+    {
+        d->frame.state = WAbstractBackend::FrameDefault;
+
+        if (oldNode) delete oldNode;
+
+        WBackendNode * node = d->backend->createNode();
+
+        node->setTextures(d->frame.textures);
+
+        d->frameUpdate = false;
+
+        d->updateGeometry(node);
+
+        return node;
+    }
+    else if (state == WAbstractBackend::FrameUpdate)
+    {
+        d->frame.state = WAbstractBackend::FrameDefault;
+
+        WBackendNode * node;
+
+        if (oldNode)
+        {
+            node = static_cast<WBackendNode *> (oldNode);
+
+            node->setTextures(d->frame.textures);
+
+            if (d->frameUpdate)
+            {
+                d->frameUpdate = false;
+
+                d->updateGeometry(node);
+            }
+        }
+        else qDebug("THIS SHOULD NOT HAPPEN!");
+
+        return node;
+    }
+    else // if (state == WAbstractBackend::FrameClear)
+    {
+        if (oldNode) delete oldNode;
+
+        return NULL;
+    }
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Protected WPlaylistWatcher implementation
@@ -1409,6 +1532,8 @@ void WDeclarativePlayer::setFillMode(WAbstractBackend::FillMode fillMode)
     {
         d->backend->setFillMode(fillMode);
     }
+
+    d->frameUpdate = true;
 
     update();
 

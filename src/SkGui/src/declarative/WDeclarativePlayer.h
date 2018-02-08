@@ -123,7 +123,11 @@ public: // Enums
     };
 
 public:
+#ifdef QT_4
     explicit WDeclarativePlayer(QDeclarativeItem * parent = NULL);
+#else
+    explicit WDeclarativePlayer(QQuickItem * parent = NULL);
+#endif
 
 public: // Interface
     Q_INVOKABLE void play  ();
@@ -142,12 +146,20 @@ public: // Interface
 
     Q_INVOKABLE QImage getFrame() const;
 
+    Q_INVOKABLE void updateHighlightedTab();
+
+#ifdef QT_4
 public: // QGraphicsItem reimplementation
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
+#endif
 
-protected: // QDeclarativeItem reimplementation
+protected: // QDeclarativeItem / QQuickItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
+
+#ifdef QT_LATEST
+    /* virtual */ QSGNode * updatePaintNode(QSGNode * oldNode, UpdatePaintNodeData * data);
+#endif
 
 protected: // WPlaylistWatcher implementation
     /* virtual */ void beginTracksInsert(int first, int last);

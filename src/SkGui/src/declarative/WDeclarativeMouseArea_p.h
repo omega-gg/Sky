@@ -35,6 +35,8 @@ public:
     void init();
 
 public: // Functions
+    void mouseUngrab();
+
     bool dragEnterEvent(const QPointF & pos, WViewDragData * data);
     void dragLeaveEvent();
 

@@ -345,11 +345,15 @@ protected: // Events
     /* virtual */ void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
     /* virtual */ void hoverMoveEvent (QGraphicsSceneHoverEvent * event);
 
+    /* virtual */ void wheelEvent(QGraphicsSceneWheelEvent * event);
+
+#ifndef QT_NO_CONTEXTMENU
+    /* virtual */ void contextMenuEvent(QGraphicsSceneContextMenuEvent * event);
+#endif
+
     /* virtual */ bool sceneEvent(QEvent * event);
 
     /* virtual */ bool sceneEventFilter(QGraphicsItem * item, QEvent * event);
-
-    /* virtual */ void wheelEvent(QGraphicsSceneWheelEvent * event);
 #else
     /* virtual */ void mousePressEvent  (QMouseEvent * event);
     /* virtual */ void mouseReleaseEvent(QMouseEvent * event);
@@ -366,10 +370,6 @@ protected: // Events
 
     /* virtual */ void wheelEvent(QWheelEvent * event);
 #endif
-
-#ifndef QT_NO_CONTEXTMENU
-    /* virtual */ void contextMenuEvent(QGraphicsSceneContextMenuEvent * event);
-#endif // QT_NO_CONTEXTMENU
 
     /* virtual */ void timerEvent(QTimerEvent * event);
 

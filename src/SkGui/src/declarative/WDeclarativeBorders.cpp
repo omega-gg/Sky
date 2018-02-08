@@ -149,16 +149,19 @@ void WDeclarativeBordersPrivate::init()
     top    = 0.0;
     bottom = 0.0;
 
-#ifdef QT_LATEST
+#ifdef QT_4
+    q->setFlag(QGraphicsItem::ItemHasNoContents, false);
+#else
     updateLeft   = true;
     updateRight  = true;
     updateTop    = true;
     updateBottom = true;
 
     updateColor = true;
+
+    q->setFlag(QQuickItem::ItemHasContents);
 #endif
 
-    q->setFlag(QGraphicsItem::ItemHasNoContents, false);
 }
 
 //=================================================================================================

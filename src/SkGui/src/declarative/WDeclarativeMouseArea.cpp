@@ -321,6 +321,27 @@ void WDeclarativeMouseAreaPrivate::init()
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
+void WDeclarativeMouseAreaPrivate::mouseUngrab()
+{
+    Q_Q(WDeclarativeMouseArea);
+
+    if (pressed == false) return;
+
+    pressed = false;
+
+    stealMouse = false;
+
+    q->release();
+
+    q->setKeepMouseGrab(false);
+
+    emit q->canceled();
+
+    emit q->pressedChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 bool WDeclarativeMouseAreaPrivate::dragEnterEvent(const QPointF & pos, WViewDragData * data)
 {
     Q_Q(WDeclarativeMouseArea);
@@ -1044,7 +1065,22 @@ bool WDeclarativeMouseArea::sendMouseEvent(QGraphicsSceneMouseEvent * event)
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_LATEST
+
+/* virtual */ void WDeclarativeMouseArea::mouseUngrabEvent()
+{
+    Q_D(WDeclarativeMouseArea); d->mouseUngrab();
+}
+
+#endif
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_4
 /* virtual */ void WDeclarativeMouseArea::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
+#else
+/* virtual */ void WDeclarativeMouseArea::hoverEnterEvent(QHoverEvent * event)
+#endif
 {
     Q_D(WDeclarativeMouseArea);
 
@@ -1060,14 +1096,22 @@ bool WDeclarativeMouseArea::sendMouseEvent(QGraphicsSceneMouseEvent * event)
     emit mousePositionChanged();
 }
 
+#ifdef QT_4
 /* virtual */ void WDeclarativeMouseArea::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
+#else
+/* virtual */ void WDeclarativeMouseArea::hoverLeaveEvent(QHoverEvent * event)
+#endif
 {
     Q_D(WDeclarativeMouseArea);
 
     if (d->absorb == false) WDeclarativeItem::hoverLeaveEvent(event);
 }
 
+#ifdef QT_4
 /* virtual */ void WDeclarativeMouseArea::hoverMoveEvent(QGraphicsSceneHoverEvent * event)
+#else
+/* virtual */ void WDeclarativeMouseArea::hoverMoveEvent(QHoverEvent * event)
+#endif
 {
     Q_D(WDeclarativeMouseArea);
 
@@ -1090,7 +1134,31 @@ bool WDeclarativeMouseArea::sendMouseEvent(QGraphicsSceneMouseEvent * event)
 
 //-------------------------------------------------------------------------------------------------
 
-#ifndef QT_NO_CONTEXTMENU
+#ifdef QT_4
+/* virtual */ void WDeclarativeMouseArea::wheelEvent(QGraphicsSceneWheelEvent * event)
+#else
+/* virtual */ void WDeclarativeMouseArea::wheelEvent(QWheelEvent * event)
+#endif
+{
+    Q_D(WDeclarativeMouseArea);
+
+    if (d->wheelEnabled == false)
+    {
+        WDeclarativeItem::wheelEvent(event);
+
+        return;
+    }
+
+    int degrees = event->delta() / 8;
+
+    int steps = degrees / 15;
+
+    emit wheeled(steps);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+#if defined(QT_4) && defined(QT_NO_CONTEXTMENU)
 
 /* virtual */ void WDeclarativeMouseArea::contextMenuEvent(QGraphicsSceneContextMenuEvent * event)
 {
@@ -1114,9 +1182,11 @@ bool WDeclarativeMouseArea::sendMouseEvent(QGraphicsSceneMouseEvent * event)
     WDeclarativeItem::contextMenuEvent(event);
 }
 
-#endif // QT_NO_CONTEXTMENU
+#endif
 
 //-------------------------------------------------------------------------------------------------
+
+#ifdef QT_4
 
 /* virtual */ bool WDeclarativeMouseArea::sceneEvent(QEvent * event)
 {
@@ -1126,26 +1196,11 @@ bool WDeclarativeMouseArea::sendMouseEvent(QGraphicsSceneMouseEvent * event)
     {
         Q_D(WDeclarativeMouseArea);
 
-        if (d->pressed)
-        {
-            d->pressed = false;
-
-            d->stealMouse = false;
-
-            release();
-
-            setKeepMouseGrab(false);
-
-            emit canceled();
-
-            emit pressedChanged();
-        }
+        d->mouseUngrab();
     }
 
     return result;
 }
-
-//-------------------------------------------------------------------------------------------------
 
 /* virtual */ bool WDeclarativeMouseArea::sceneEventFilter(QGraphicsItem * item, QEvent * event)
 {
@@ -1171,6 +1226,8 @@ bool WDeclarativeMouseArea::sendMouseEvent(QGraphicsSceneMouseEvent * event)
     else return WDeclarativeItem::sceneEventFilter(item, event);
 }
 
+#endif
+
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WDeclarativeMouseArea::timerEvent(QTimerEvent * event)
@@ -1193,26 +1250,6 @@ bool WDeclarativeMouseArea::sendMouseEvent(QGraphicsSceneMouseEvent * event)
             emit pressAndHold(&mouse);
         }
     }
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* virtual */ void WDeclarativeMouseArea::wheelEvent(QGraphicsSceneWheelEvent * event)
-{
-    Q_D(WDeclarativeMouseArea);
-
-    if (d->wheelEnabled == false)
-    {
-        WDeclarativeItem::wheelEvent(event);
-
-        return;
-    }
-
-    int degrees = event->delta() / 8;
-
-    int steps = degrees / 15;
-
-    emit wheeled(steps);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1347,16 +1384,28 @@ void WDeclarativeMouseArea::setWheelEnabled(bool enabled)
 
 bool WDeclarativeMouseArea::dropEnabled() const
 {
+#ifdef QT_4
     return acceptDrops();
+#else
+    Q_D(const WDeclarativeMouseArea); return d->dropEnabled;
+#endif
 }
 
 void WDeclarativeMouseArea::setDropEnabled(bool enabled)
 {
+#ifdef QT_4
     if (acceptDrops() == enabled) return;
+#endif
 
     Q_D(WDeclarativeMouseArea);
 
+#ifdef QT_4
     setAcceptDrops(enabled);
+#else
+    if (d->dropEnabled == enabled) return;
+
+    d->dropEnabled = enabled;
+#endif
 
     d->clearDrop();
 

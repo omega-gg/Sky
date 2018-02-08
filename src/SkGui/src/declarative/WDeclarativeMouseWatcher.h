@@ -32,10 +32,18 @@ class SK_GUI_EXPORT WDeclarativeMouseWatcher : public WDeclarativeItem
                NOTIFY acceptedButtonsChanged)
 
 public:
+#ifdef QT_4
     explicit WDeclarativeMouseWatcher(QDeclarativeItem * parent = NULL);
+#else
+    explicit WDeclarativeMouseWatcher(QQuickItem * parent = NULL);
+#endif
 
 protected: // Events
+#ifdef QT_4
     /* virtual */ void mousePressEvent(QGraphicsSceneMouseEvent * event);
+#else
+    /* virtual */ void mousePressEvent(QMouseEvent * event);
+#endif
 
 signals:
     void pressed ();

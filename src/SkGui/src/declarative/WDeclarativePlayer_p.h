@@ -41,6 +41,10 @@ protected:
     void init();
 
 public: // Functions
+#ifdef QT_LATEST
+    void updateGeometry(WBackendNode * node);
+#endif
+
     void applyPlaylist(WPlaylist * playlist);
 
     void setPlaylist(WPlaylist * playlist);
@@ -86,6 +90,12 @@ public: // Variables
     WAbstractHook    * hook;
 
     WBackendInterface * backendInterface;
+
+#ifdef QT_LATEST
+    WBackendFrame frame;
+
+    bool frameUpdate;
+#endif
 
     WAbstractBackend::State state;
 
