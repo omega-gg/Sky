@@ -14,58 +14,34 @@
 */
 //=================================================================================================
 
-#ifndef WDECLARATIVEITEM_H
-#define WDECLARATIVEITEM_H
+#ifndef WDECLARATIVEITEMPAINT_H
+#define WDECLARATIVEITEMPAINT_H
 
 // Qt includes
-#ifdef QT_4
-#include <QDeclarativeItem>
-#else
-#include <QQuickItem>
-#endif
+#include <QQuickPaintedItem>
 
 // Sk includes
 #include <Sk>
 
-#ifndef SK_NO_DECLARATIVEITEM
+#ifndef SK_NO_DECLARATIVEITEMPAINT
 
 // Forward declarations
-class WDeclarativeItemPrivate;
+class WDeclarativeItemPaintPrivate;
 class WView;
 
-#ifdef QT_4
-class SK_GUI_EXPORT WDeclarativeItem : public QDeclarativeItem, public WPrivatable
-#else
-class SK_GUI_EXPORT WDeclarativeItem : public QQuickItem, public WPrivatable
-#endif
+class SK_GUI_EXPORT WDeclarativeItemPaint : public QQuickPaintedItem, public WPrivatable
 {
     Q_OBJECT
 
     Q_PROPERTY(WView * view READ view NOTIFY viewChanged)
 
-#ifdef QT_4
-    Q_PROPERTY(QDeclarativeItem * viewport READ viewport NOTIFY viewChanged)
-#endif
-
 public:
-#ifdef QT_4
-    explicit WDeclarativeItem(QDeclarativeItem * parent = NULL);
-#else
-    explicit WDeclarativeItem(QQuickItem * parent = NULL);
-#endif
+    explicit WDeclarativeItemPaint(QQuickItem * parent = NULL);
 protected:
-#ifdef QT_4
-    WDeclarativeItem(WDeclarativeItemPrivate * p, QDeclarativeItem * parent = NULL);
-#else
-    WDeclarativeItem(WDeclarativeItemPrivate * p, QQuickItem * parent = NULL);
-#endif
+    WDeclarativeItemPaint(WDeclarativeItemPaintPrivate * p, QQuickItem * parent = NULL);
 
-protected: // QGraphicsItem / QQuickItem reimplementation
-#ifdef QT_4
-    /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
-#else
+protected: // QQuickItem reimplementation
     /* virtual */ QVariant itemChange(ItemChange change, const ItemChangeData & data);
-#endif
 
 signals:
     void viewChanged();
@@ -73,13 +49,9 @@ signals:
 public: // Properties
     WView * view() const;
 
-#ifdef QT_4
-    QDeclarativeItem * viewport() const;
-#endif
-
 private:
-    W_DECLARE_PRIVATE(WDeclarativeItem)
+    W_DECLARE_PRIVATE(WDeclarativeItemPaint)
 };
 
-#endif // SK_NO_DECLARATIVEITEM
-#endif // WDECLARATIVEITEM_H
+#endif // SK_NO_DECLARATIVEITEMPAINT
+#endif // WDECLARATIVEITEMPAINT_H

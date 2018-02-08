@@ -11,6 +11,7 @@
 #include "WDeclarativeImageBase.h"
 #include "WDeclarativeImageSvg.h"
 #include "WDeclarativeItem.h"
+#include "WDeclarativeItemPaint.h"
 #include "WDeclarativeListView.h"
 #include "WDeclarativeMouseArea.h"
 #include "WDeclarativeMouseWatcher.h"

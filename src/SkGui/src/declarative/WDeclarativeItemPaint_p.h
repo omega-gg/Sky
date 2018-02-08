@@ -14,8 +14,8 @@
 */
 //=================================================================================================
 
-#ifndef WDECLARATIVEITEM_P_H
-#define WDECLARATIVEITEM_P_H
+#ifndef WDECLARATIVEITEMPAINT_P_H
+#define WDECLARATIVEITEMPAINT_P_H
 
 /*  W A R N I N G
     -------------
@@ -29,25 +29,21 @@
 
 #include <private/Sk_p>
 
-#ifndef SK_NO_DECLARATIVEITEM
+#ifndef SK_NO_DECLARATIVEITEMPAINT
 
-class SK_GUI_EXPORT WDeclarativeItemPrivate : public WPrivate
+class SK_GUI_EXPORT WDeclarativeItemPaintPrivate : public WPrivate
 {
 protected:
-    WDeclarativeItemPrivate(WDeclarativeItem * p);
+    WDeclarativeItemPaintPrivate(WDeclarativeItemPaint * p);
 
     void init();
 
 public: // Variables
     WView * view;
 
-#ifdef QT_4
-    QDeclarativeItem * viewport;
-#endif
-
 protected:
-    W_DECLARE_PUBLIC(WDeclarativeItem)
+    W_DECLARE_PUBLIC(WDeclarativeItemPaint)
 };
 
-#endif // SK_NO_DECLARATIVEITEM
-#endif // WDECLARATIVEITEM_P_H
+#endif // SK_NO_DECLARATIVEITEMPAINT
+#endif // WDECLARATIVEITEMPAINT_P_H

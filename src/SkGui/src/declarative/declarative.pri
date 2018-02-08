@@ -27,6 +27,9 @@ HEADERS += src/declarative/WDeclarativeApplication.h \
            src/declarative/WDeclarativeListView_p.h \
            src/declarative/WDeclarativeContextualPage.h \
 
+contains(QT_MAJOR_VERSION, 5): HEADERS += src/declarative/WDeclarativeItemPaint.h \
+                                          src/declarative/WDeclarativeItemPaint_p.h \
+
 SOURCES += src/declarative/WDeclarativeApplication.cpp \
            src/declarative/WDeclarativeItem.cpp \
            src/declarative/WDeclarativeMouseArea.cpp \
@@ -42,3 +45,5 @@ SOURCES += src/declarative/WDeclarativeApplication.cpp \
            src/declarative/WDeclarativePlayer.cpp \
            src/declarative/WDeclarativeListView.cpp \
            src/declarative/WDeclarativeContextualPage.cpp \
+
+contains(QT_MAJOR_VERSION, 5): HEADERS += src/declarative/WDeclarativeItemPaint.cpp \
