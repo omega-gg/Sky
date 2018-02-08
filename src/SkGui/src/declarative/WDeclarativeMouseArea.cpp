@@ -894,7 +894,9 @@ bool WDeclarativeMouseArea::sendMouseEvent(QGraphicsSceneMouseEvent * event)
         if (d->drag) d->drag->setActive(false);
 
 #ifdef QT_4
-        if (scene()->mouseGrabberItem() == this)
+        QGraphicsScene * scene = this->scene();
+
+        if (scene && scene->mouseGrabberItem() == this)
 #else
         if (d->view->mouseGrabberItem() == this)
 #endif
