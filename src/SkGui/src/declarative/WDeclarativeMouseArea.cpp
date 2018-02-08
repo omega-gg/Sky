@@ -1158,7 +1158,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QGraphicsSceneMouseEvent * event)
 
 //-------------------------------------------------------------------------------------------------
 
-#if defined(QT_4) && defined(QT_NO_CONTEXTMENU)
+#if defined(QT_4) && defined(QT_NO_CONTEXTMENU) == false
 
 /* virtual */ void WDeclarativeMouseArea::contextMenuEvent(QGraphicsSceneContextMenuEvent * event)
 {

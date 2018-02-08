@@ -21,9 +21,15 @@
 // Qt includes
 #include <qmath.h>
 #include <QApplication>
+#ifdef QT_4
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QDeclarativeInfo>
+#else
+#include <QQmlEngine>
+#include <QQmlContext>
+#include <QQmlInfo>
+#endif
 #include <QTextDocument>
 #include <QAbstractTextDocumentLayout>
 #include <QPainter>
@@ -31,9 +37,18 @@
 #include <QTextBlock>
 
 // Private includes
+#ifdef QT_4 // FIXME
 #include <private/qdeclarativeglobal_p.h>
 #include <private/qdeclarativestyledtext_p.h>
 #include <private/qdeclarativepixmapcache_p.h>
+#endif
+
+// Private include
+#ifdef QT_4
+#include <private/WDeclarativeItem_p>
+#else
+#include <private/WDeclarativeItemPaint_p>
+#endif
 
 //=================================================================================================
 // WTextDocumentWithImageResources
@@ -51,29 +66,37 @@ public:
 public: // Interface
     void setText(const QString & text);
 
+#ifdef QT_4
 protected:
     QVariant loadResource(int type, const QUrl &name);
+#endif
 
 private slots:
     void requestFinished();
 
 private:
-    QHash<QUrl, QDeclarativePixmap *> resources;
-
     int outstanding;
 
+#ifdef QT_4
+    QHash<QUrl, QDeclarativePixmap *> resources;
+
     static QSet<QUrl> errors;
+#endif
 };
 
+#ifdef QT_4
 QSet<QUrl> WTextDocumentWithImageResources::errors;
+#endif
 
 //=================================================================================================
 // WDeclarativeTextPrivate
 //=================================================================================================
 
-#include <private/WDeclarativeItem_p>
-
+#ifdef QT_4
 class SK_GUI_EXPORT WDeclarativeTextPrivate : public WDeclarativeItemPrivate
+#else
+class SK_GUI_EXPORT WDeclarativeTextPrivate : public WDeclarativeItemPaintPrivate
+#endif
 {
 public:
     WDeclarativeTextPrivate(WDeclarativeText * p);
@@ -83,6 +106,9 @@ public:
 public: // Functions
     void updateSize  ();
     void updateLayout();
+
+    void resetSize  ();
+    void resetLayout();
 
     bool determineHorizontalAlignment();
 
@@ -155,7 +181,7 @@ public: // Variables
 
     bool singleline : 1;
 
-    bool cacheAllTextAsImage : 1;
+    //bool cacheAllTextAsImage : 1;
 
     bool internalWidthUpdate : 1;
 
@@ -181,7 +207,7 @@ protected:
     W_DECLARE_PUBLIC(WDeclarativeText)
 };
 
-DEFINE_BOOL_CONFIG_OPTION(enableImageCache, QML_ENABLE_TEXT_IMAGE_CACHE);
+//DEFINE_BOOL_CONFIG_OPTION(enableImageCache, QML_ENABLE_TEXT_IMAGE_CACHE);
 
 QString WDeclarativeTextPrivate::elideChar = QString(0x2026);
 
@@ -197,10 +223,12 @@ WTextDocumentWithImageResources::WTextDocumentWithImageResources(WDeclarativeTex
 
 WTextDocumentWithImageResources::~WTextDocumentWithImageResources()
 {
+#ifdef QT_4
     if (resources.isEmpty() == false)
     {
         qDeleteAll(resources);
     }
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -209,6 +237,7 @@ WTextDocumentWithImageResources::~WTextDocumentWithImageResources()
 
 void WTextDocumentWithImageResources::setText(const QString &text)
 {
+#ifdef QT_4
     if (resources.isEmpty() == false)
     {
         qDeleteAll(resources);
@@ -217,6 +246,7 @@ void WTextDocumentWithImageResources::setText(const QString &text)
 
         outstanding = 0;
     }
+#endif
 
 #ifndef QT_NO_TEXTHTMLPARSER
     setHtml(text);
@@ -224,6 +254,8 @@ void WTextDocumentWithImageResources::setText(const QString &text)
     setPlainText(text);
 #endif
 }
+
+#ifdef QT_4
 
 //-------------------------------------------------------------------------------------------------
 // Protected functions
@@ -273,6 +305,8 @@ QVariant WTextDocumentWithImageResources::loadResource(int type, const QUrl & na
     return QTextDocument::loadResource(type,url);
 }
 
+#endif
+
 //-------------------------------------------------------------------------------------------------
 // Private slots
 //-------------------------------------------------------------------------------------------------
@@ -303,7 +337,11 @@ void WTextDocumentWithImageResources::requestFinished()
 //=================================================================================================
 
 WDeclarativeTextPrivate::WDeclarativeTextPrivate(WDeclarativeText * p)
+#ifdef QT_4
     : WDeclarativeItemPrivate(p) {}
+#else
+    : WDeclarativeItemPaintPrivate(p) {}
+#endif
 
 void WDeclarativeTextPrivate::init()
 {
@@ -340,7 +378,7 @@ void WDeclarativeTextPrivate::init()
 
     singleline = false;
 
-    cacheAllTextAsImage = true;
+    //cacheAllTextAsImage = true;
 
     internalWidthUpdate = false;
 
@@ -356,11 +394,13 @@ void WDeclarativeTextPrivate::init()
 
     doc = NULL;
 
-    cacheAllTextAsImage = enableImageCache();
+    //cacheAllTextAsImage = enableImageCache();
 
     q->setAcceptedMouseButtons(Qt::LeftButton);
 
+#ifdef QT_4
     q->setFlag(QGraphicsItem::ItemHasNoContents, false);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -385,7 +425,7 @@ void WDeclarativeTextPrivate::updateSize()
         if (requireImplicitWidth) return;
     }
 
-    invalidateImageCache();
+    //invalidateImageCache();
 
     QFontMetrics fm(font);
 
@@ -395,35 +435,27 @@ void WDeclarativeTextPrivate::updateSize()
 
         q->setImplicitHeight(fm.height());
 
-        paintedSize = QSize(0, fm.height());
+        QSize size(0, fm.height());
 
-        emit q->paintedSizeChanged();
+        if (paintedSize != size)
+        {
+            paintedSize = size;
 
-        q->update();
+            emit q->paintedSizeChanged();
+
+            invalidateImageCache();
+
+            q->update();
+        }
 
         return;
     }
 
+    QSize size;
+
     int dy = q->height();
 
-    QSize size(0, 0);
-
-    if (richText == false)
-    {
-        QRect textRect = setupTextLayout();
-
-        if (layedOutTextRect.size() != textRect.size())
-        {
-            q->prepareGeometryChange();
-        }
-
-        layedOutTextRect = textRect;
-
-        size = textRect.size();
-
-        dy -= size.height();
-    }
-    else
+    if (richText)
     {
         singleline = false;
 
@@ -472,12 +504,27 @@ void WDeclarativeTextPrivate::updateSize()
 
         if (dsize != layedOutTextRect.size())
         {
-            q->prepareGeometryChange();
-
             layedOutTextRect = QRect(QPoint(0, 0), dsize);
         }
 
         size = QSize(int(doc->idealWidth()), dsize.height());
+    }
+    else
+    {
+        QRect textRect = setupTextLayout();
+
+#ifdef QT_4
+        if (layedOutTextRect.size() != textRect.size())
+        {
+            q->prepareGeometryChange();
+        }
+#endif
+
+        layedOutTextRect = textRect;
+
+        size = textRect.size();
+
+        dy -= size.height();
     }
 
     int yoff = 0;
@@ -516,9 +563,11 @@ void WDeclarativeTextPrivate::updateSize()
         paintedSize = size;
 
         emit q->paintedSizeChanged();
-    }
 
-    q->update();
+        invalidateImageCache();
+
+        q->update();
+    }
 }
 
 void WDeclarativeTextPrivate::updateLayout()
@@ -592,6 +641,22 @@ void WDeclarativeTextPrivate::updateLayout()
     {
         emit q->truncatedChanged();
     }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WDeclarativeTextPrivate::resetSize()
+{
+    paintedSize = QSize();
+
+    updateSize();
+}
+
+void WDeclarativeTextPrivate::resetLayout()
+{
+    paintedSize = QSize();
+
+    updateLayout();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -680,47 +745,62 @@ void WDeclarativeTextPrivate::checkImageCache()
 {
     if (imageCacheDirty == false) return;
 
+    imageCacheDirty = false;
+
     if (text.isEmpty() == false)
     {
         QPixmap pixmap;
-        QPixmap pixmapStyle;
 
         if (richText)
         {
             pixmap = textDocumentImage(false);
 
-            if (style != WDeclarativeText::Normal)
+            if (style == WDeclarativeText::Outline)
             {
-                pixmapStyle = textDocumentImage(true);
+                QPixmap pixmapStyle = textDocumentImage(true);
+
+                imageCache = drawOutline(pixmap, pixmapStyle);
             }
+            else if (style == WDeclarativeText::Raised)
+            {
+                QPixmap pixmapStyle = textDocumentImage(true);
+
+                imageCache = drawStyle(pixmap, pixmapStyle, styleSize, styleSize);
+            }
+            else if (style == WDeclarativeText::Sunken)
+            {
+                QPixmap pixmapStyle = textDocumentImage(true);
+
+                imageCache = drawStyle(pixmap, pixmapStyle, styleSize, -styleSize);
+            }
+            else imageCache = pixmap;
         }
         else
         {
             pixmap = textLayoutImage(false);
 
-            if (style != WDeclarativeText::Normal)
+            if (style == WDeclarativeText::Outline)
             {
-                pixmapStyle = textLayoutImage(true);
-            }
-        }
+                QPixmap pixmapStyle = textLayoutImage(true);
 
-        if (style == WDeclarativeText::Outline)
-        {
-            imageCache = drawOutline(pixmap, pixmapStyle);
+                imageCache = drawOutline(pixmap, pixmapStyle);
+            }
+            else if (style == WDeclarativeText::Raised)
+            {
+                QPixmap pixmapStyle = textLayoutImage(true);
+
+                imageCache = drawStyle(pixmap, pixmapStyle, styleSize, styleSize);
+            }
+            else if (style == WDeclarativeText::Sunken)
+            {
+                QPixmap pixmapStyle = textLayoutImage(true);
+
+                imageCache = drawStyle(pixmap, pixmapStyle, styleSize, -styleSize);
+            }
+            else imageCache = pixmap;
         }
-        else if (style == WDeclarativeText::Sunken)
-        {
-            imageCache = drawStyle(pixmap, pixmapStyle, styleSize, -styleSize);
-        }
-        else if (style == WDeclarativeText::Raised)
-        {
-            imageCache = drawStyle(pixmap, pixmapStyle, styleSize, styleSize);
-        }
-        else imageCache = pixmap;
     }
     else imageCache = QPixmap();
-
-    imageCacheDirty = false;
 }
 
 //-------------------------------------------------------------------------------------------------

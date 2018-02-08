@@ -92,6 +92,8 @@ void WDeclarativePlayerPrivate::init()
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_LATEST
+
 void WDeclarativePlayerPrivate::updateGeometry(WBackendNode * node)
 {
     Q_Q(WDeclarativePlayer);
@@ -108,6 +110,8 @@ void WDeclarativePlayerPrivate::updateGeometry(WBackendNode * node)
     node->setRect(QRectF((size.width () - width)  / 2,
                          (size.height() - height) / 2, width, height));
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -1533,7 +1537,9 @@ void WDeclarativePlayer::setFillMode(WAbstractBackend::FillMode fillMode)
         d->backend->setFillMode(fillMode);
     }
 
+#ifdef QT_LATEST
     d->frameUpdate = true;
+#endif
 
     update();
 
