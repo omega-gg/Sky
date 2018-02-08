@@ -93,16 +93,16 @@ void WResizerPrivate::init(WResizer::ResizeType type)
 
     q->setAcceptHoverEvents(true);
 
-    WDeclarativeMouseArea::CursorShape shape;
+    Qt::CursorShape shape;
 
-    if      (type == WResizer::TopLeft)      shape = WDeclarativeMouseArea::SizeFDiagCursor;
-    else if (type == WResizer::TopRight)     shape = WDeclarativeMouseArea::SizeBDiagCursor;
-    else if (type == WResizer::BottomLeft)   shape = WDeclarativeMouseArea::SizeBDiagCursor;
-    else if (type == WResizer::BottomRight)  shape = WDeclarativeMouseArea::SizeFDiagCursor;
-    else if (type == WResizer::Left)         shape = WDeclarativeMouseArea::SizeHorCursor;
-    else if (type == WResizer::Right)        shape = WDeclarativeMouseArea::SizeHorCursor;
-    else if (type == WResizer::Top)          shape = WDeclarativeMouseArea::SizeVerCursor;
-    else /* if (type == WResizer::Bottom) */ shape = WDeclarativeMouseArea::SizeVerCursor;
+    if      (type == WResizer::TopLeft)      shape = Qt::SizeFDiagCursor;
+    else if (type == WResizer::TopRight)     shape = Qt::SizeBDiagCursor;
+    else if (type == WResizer::BottomLeft)   shape = Qt::SizeBDiagCursor;
+    else if (type == WResizer::BottomRight)  shape = Qt::SizeFDiagCursor;
+    else if (type == WResizer::Left)         shape = Qt::SizeHorCursor;
+    else if (type == WResizer::Right)        shape = Qt::SizeHorCursor;
+    else if (type == WResizer::Top)          shape = Qt::SizeVerCursor;
+    else /* if (type == WResizer::Bottom) */ shape = Qt::SizeVerCursor;
 
     q->setCursor(shape);
 }

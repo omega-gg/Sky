@@ -42,7 +42,11 @@ public: // Functions
 
     void dropEvent(const QPointF & pos, const WViewDragData & data);
 
+#ifdef QT_4
     void saveEvent(QGraphicsSceneMouseEvent * event);
+#else
+    void saveEvent(QMouseEvent * event);
+#endif
 
     bool isPressAndHoldConnected();
     bool isDoubleClickConnected ();
@@ -58,6 +62,10 @@ public: // Variables
     bool absorb : 1;
 
     bool wheelEnabled : 1;
+
+#ifdef QT_LATEST
+    bool dropEnabled : 1;
+#endif
 
     bool dragAccepted : 1;
 
@@ -97,8 +105,8 @@ public: // Variables
 
     QBasicTimer pressAndHoldTimer;
 
-    WDeclarativeMouseArea::CursorShape cursor;
-    WDeclarativeMouseArea::CursorShape cursorDrop;
+    Qt::CursorShape cursor;
+    Qt::CursorShape cursorDrop;
 
 protected:
     W_DECLARE_PUBLIC(WDeclarativeMouseArea)

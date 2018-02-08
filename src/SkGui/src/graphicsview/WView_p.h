@@ -107,8 +107,8 @@ public: // Functions
 
     bool isUnderMouse() const;
 
-    void setCursor  (WDeclarativeMouseArea::CursorShape shape);
-    void applyCursor(WDeclarativeMouseArea::CursorShape shape);
+    void setCursor  (Qt::CursorShape shape);
+    void applyCursor(Qt::CursorShape shape);
 
     void setKeyShiftPressed  (bool pressed);
     void setKeyControlPressed(bool pressed);
@@ -189,9 +189,9 @@ public: // Variables
     Qt::MouseButton  button;
     Qt::MouseButtons buttons;
 
-    WDeclarativeMouseArea::CursorShape cursor;
+    Qt::CursorShape cursor;
 
-    QHash<WDeclarativeMouseArea::CursorShape, QCursor> cursors;
+    QHash<Qt::CursorShape, QCursor> cursors;
 
     QList<QGraphicsItem         *> itemsCursor;
     QList<WDeclarativeMouseArea *> itemsHovered;

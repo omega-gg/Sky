@@ -288,7 +288,7 @@ void WViewPrivate::init(QDeclarativeItem * item)
     button  = Qt::NoButton;
     buttons = Qt::NoButton;
 
-    cursor = WDeclarativeMouseArea::ArrowCursor;
+    cursor = Qt::ArrowCursor;
 
     idleCheck = false;
     idle      = false;
@@ -895,7 +895,7 @@ bool WViewPrivate::isUnderMouse() const
 
 //-------------------------------------------------------------------------------------------------
 
-void WViewPrivate::setCursor(WDeclarativeMouseArea::CursorShape shape)
+void WViewPrivate::setCursor(Qt::CursorShape shape)
 {
     if (cursor != shape)
     {
@@ -903,7 +903,7 @@ void WViewPrivate::setCursor(WDeclarativeMouseArea::CursorShape shape)
     }
 }
 
-void WViewPrivate::applyCursor(WDeclarativeMouseArea::CursorShape shape)
+void WViewPrivate::applyCursor(Qt::CursorShape shape)
 {
     Q_Q(WView);
 
@@ -921,8 +921,6 @@ void WViewPrivate::applyCursor(WDeclarativeMouseArea::CursorShape shape)
     }
     else
     {
-        Qt::CursorShape shape = static_cast<Qt::CursorShape> (cursor);
-
         if (QApplication::overrideCursor())
         {
             if (shape)
@@ -1085,7 +1083,7 @@ void WViewPrivate::onCursorVisibleChanged()
 
     if (sk->cursorVisible() == false)
     {
-        cursor = WDeclarativeMouseArea::BlankCursor;
+        cursor = Qt::BlankCursor;
 
         q->clearHover();
     }
@@ -1415,20 +1413,20 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 
         if (areas.isEmpty())
         {
-            d->setCursor(WDeclarativeMouseArea::ArrowCursor);
+            d->setCursor(Qt::ArrowCursor);
 
             return;
         }
 
         WDeclarativeMouseArea * area = areas.takeFirst();
 
-        WDeclarativeMouseArea::CursorShape cursor = area->d_func()->cursor;
+        Qt::CursorShape cursor = area->d_func()->cursor;
 
-        while (cursor == WDeclarativeMouseArea::BlankCursor)
+        while (cursor == Qt::BlankCursor)
         {
             if (areas.isEmpty())
             {
-                d->setCursor(WDeclarativeMouseArea::ArrowCursor);
+                d->setCursor(Qt::ArrowCursor);
 
                 return;
             }
@@ -1460,7 +1458,7 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 
     if (sk->cursorVisible())
     {
-        d->setCursor(WDeclarativeMouseArea::ArrowCursor);
+        d->setCursor(Qt::ArrowCursor);
     }
 }
 
@@ -1522,8 +1520,7 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 //-------------------------------------------------------------------------------------------------
 // Cursor
 
-/* Q_INVOKABLE */ void WView::registerCursor(WDeclarativeMouseArea::CursorShape shape,
-                                             const QCursor                    & cursor)
+/* Q_INVOKABLE */ void WView::registerCursor(Qt::CursorShape shape, const QCursor & cursor)
 {
     Q_D(WView);
 
@@ -1535,7 +1532,7 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
     }
 }
 
-/* Q_INVOKABLE */ void WView::unregisterCursor(WDeclarativeMouseArea::CursorShape shape)
+/* Q_INVOKABLE */ void WView::unregisterCursor(Qt::CursorShape shape)
 {
     Q_D(WView);
 
@@ -1714,12 +1711,12 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 
     QCursor cursor(pixmap);
 
-    registerCursor(static_cast<WDeclarativeMouseArea::CursorShape> (shape), cursor);
+    registerCursor(static_cast<Qt::CursorShape> (shape), cursor);
 }
 
 /* Q_INVOKABLE */ void WView::unregisterCursor(int shape)
 {
-    unregisterCursor(static_cast<WDeclarativeMouseArea::CursorShape> (shape));
+    unregisterCursor(static_cast<Qt::CursorShape> (shape));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2739,7 +2736,7 @@ int WView::mouseY() const
 
 //-------------------------------------------------------------------------------------------------
 
-WDeclarativeMouseArea::CursorShape WView::mouseCursor() const
+Qt::CursorShape WView::mouseCursor() const
 {
     Q_D(const WView); return d->cursor;
 }

@@ -36,8 +36,12 @@ class SK_GUI_EXPORT WDeclarativeListView : public WDeclarativeItem
 
     Q_PROPERTY(QAbstractItemModel * model READ model WRITE setModel NOTIFY modelChanged)
 
+#ifdef QT_4
     Q_PROPERTY(QDeclarativeComponent * delegate READ delegate WRITE setDelegate
                NOTIFY delegateChanged)
+#else
+    Q_PROPERTY(QQmlComponent * delegate READ delegate WRITE setDelegate NOTIFY delegateChanged)
+#endif
 
     Q_PROPERTY(int count READ count NOTIFY countChanged)
 
@@ -52,12 +56,20 @@ class SK_GUI_EXPORT WDeclarativeListView : public WDeclarativeItem
     Q_PROPERTY(int clearDelay READ clearDelay WRITE setClearDelay NOTIFY clearDelayChanged)
 
 protected:
+#ifdef QT_4
     WDeclarativeListView(Qt::Orientation orientation, QDeclarativeItem * parent = NULL);
+#else
+    WDeclarativeListView(Qt::Orientation orientation, QQuickItem * parent = NULL);
+#endif
 
 public: // Interface
     Q_INVOKABLE void setRange(qreal start, qreal end);
 
+#ifdef QT_4
     Q_INVOKABLE QDeclarativeItem * itemAt(int index) const;
+#else
+    Q_INVOKABLE QQuickItem * itemAt(int index) const;
+#endif
 
     Q_INVOKABLE qreal itemY(int index) const;
 
@@ -82,8 +94,13 @@ public: // Properties
     QAbstractItemModel * model() const;
     void                 setModel(QAbstractItemModel * model);
 
+#ifdef QT_4
     QDeclarativeComponent * delegate() const;
     void                    setDelegate(QDeclarativeComponent * delegate);
+#else
+    QQmlComponent * delegate() const;
+    void            setDelegate(QQmlComponent * delegate);
+#endif
 
     int count() const;
 
@@ -132,7 +149,11 @@ class SK_GUI_EXPORT WDeclarativeListHorizontal : public WDeclarativeListView
     Q_OBJECT
 
 public:
+#ifdef QT_4
     explicit WDeclarativeListHorizontal(QDeclarativeItem * parent = NULL);
+#else
+    explicit WDeclarativeListHorizontal(QQuickItem * parent = NULL);
+#endif
 
 private:
     Q_DISABLE_COPY(WDeclarativeListHorizontal)
@@ -147,7 +168,11 @@ class SK_GUI_EXPORT WDeclarativeListVertical : public WDeclarativeListView
     Q_OBJECT
 
 public:
+#ifdef QT_4
     explicit WDeclarativeListVertical(QDeclarativeItem * parent = NULL);
+#else
+    explicit WDeclarativeListVertical(QQuickItem * parent = NULL);
+#endif
 
 private:
     Q_DISABLE_COPY(WDeclarativeListVertical)

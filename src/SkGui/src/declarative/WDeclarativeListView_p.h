@@ -37,7 +37,11 @@
 #ifndef SK_NO_DECLARATIVELISTVIEW
 
 // Forward declarations
+#ifdef QT_4
 class QDeclarativeItem;
+#else
+class QQuickItem;
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // WDeclarativeListItem
@@ -51,8 +55,13 @@ public:
     virtual ~WDeclarativeListItem();
 
 public: // Variables
+#ifdef QT_4
     QDeclarativeItem    * object;
     QDeclarativeContext * context;
+#else
+    QQuickItem  * object;
+    QQmlContext * context;
+#endif
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -104,7 +113,11 @@ public: // Slots
 public:
     QAbstractItemModel * model;
 
+#ifdef QT_4
     QDeclarativeComponent * delegate;
+#else
+    QQmlComponent * delegate;
+#endif
 
     QHash<int, WDeclarativeListItem *> items;
 

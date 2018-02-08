@@ -21,8 +21,13 @@
 // Qt includes
 #include <qmath.h>
 #include <QAbstractProxyModel>
+#ifdef QT_4
 #include <QDeclarativeContext>
 #include <QDeclarativeItem>
+#else
+#include <QQmlContext>
+#include <QQuickItem>
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Static variables
@@ -31,6 +36,8 @@ static const qreal DECLARATIVELISTVIEW_ITEM_SIZE = 33;
 
 //-------------------------------------------------------------------------------------------------
 // Defines
+
+#ifdef QT_4
 
 #define W_INSERT_VERTICAL                     \
 {                                             \
@@ -61,6 +68,40 @@ static const qreal DECLARATIVELISTVIEW_ITEM_SIZE = 33;
                                               \
     pos += width;                             \
 }                                             \
+
+#else
+
+#define W_INSERT_VERTICAL                 \
+{                                         \
+    items.insert(index, item);            \
+                                          \
+    QQuickItem * object = item->object;   \
+                                          \
+    object->setPosition(QPointF(0, pos)); \
+                                          \
+    qreal height = object->height();      \
+                                          \
+    extra += itemSize - height;           \
+                                          \
+    pos += height;                        \
+}                                         \
+
+#define W_INSERT_HORIZONTAL               \
+{                                         \
+    items.insert(index, item);            \
+                                          \
+    QQuickItem * object = item->object;   \
+                                          \
+    object->setPosition(QPointF(pos, 0)); \
+                                          \
+    qreal width = object->width();        \
+                                          \
+    extra += itemSize - width;            \
+                                          \
+    pos += width;                         \
+}                                         \
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -319,10 +360,18 @@ WDeclarativeListItem * WDeclarativeListViewPrivate::createItem(int index)
 
     if (itemsOld.isEmpty())
     {
+#ifdef QT_4
         QDeclarativeContext * context = new QDeclarativeContext(qmlContext(q));
+#else
+        QQmlContext * context = new QQmlContext(qmlContext(q));
+#endif
 
+#ifdef QT_4
         QDeclarativeItem * object
                          = static_cast<QDeclarativeItem *> (delegate->beginCreate(context));
+#else
+        QQuickItem * object = static_cast<QQuickItem *> (delegate->beginCreate(context));
+#endif
 
         context->setContextObject(q);
 
@@ -338,7 +387,11 @@ WDeclarativeListItem * WDeclarativeListViewPrivate::createItem(int index)
         object->setParent    (q);
         object->setParentItem(q);
 
+#ifdef QT_4
         object->setZValue(-1);
+#else
+        object->setZ(-1);
+#endif
 
         context->setParent(object);
 
@@ -380,7 +433,11 @@ WDeclarativeListItem * WDeclarativeListViewPrivate::createItem(int index)
     {
         WDeclarativeListItem * item = itemsOld.takeFirst();
 
+#ifdef QT_4
         QDeclarativeContext * context = item->context;
+#else
+        QQmlContext * context = item->context;
+#endif
 
         context->setContextProperty("index", index);
 
@@ -407,7 +464,11 @@ WDeclarativeListItem * WDeclarativeListViewPrivate::createItem(int index)
 
 void WDeclarativeListViewPrivate::updateItem(int index, WDeclarativeListItem * item)
 {
+#ifdef QT_4
     QDeclarativeContext * context = item->context;
+#else
+    QQmlContext * context = item->context;
+#endif
 
     QModelIndex modelIndex = model->index(index, 0);
 
@@ -716,7 +777,11 @@ void WDeclarativeListViewPrivate::onClearItemsOld()
 //=================================================================================================
 // Protected
 
+#ifdef QT_4
 WDeclarativeListView::WDeclarativeListView(Qt::Orientation orientation, QDeclarativeItem * parent)
+#else
+WDeclarativeListView::WDeclarativeListView(Qt::Orientation orientation, QQuickItem * parent)
+#endif
     : WDeclarativeItem(new WDeclarativeListViewPrivate(this), parent)
 {
     Q_D(WDeclarativeListView); d->init(orientation);
@@ -755,7 +820,11 @@ WDeclarativeListView::WDeclarativeListView(Qt::Orientation orientation, QDeclara
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* Q_INVOKABLE */ QDeclarativeItem * WDeclarativeListView::itemAt(int index) const
+#else
+/* Q_INVOKABLE */ QQuickItem * WDeclarativeListView::itemAt(int index) const
+#endif
 {
     Q_D(const WDeclarativeListView);
 
@@ -832,12 +901,20 @@ void WDeclarativeListView::setModel(QAbstractItemModel * model)
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 QDeclarativeComponent * WDeclarativeListView::delegate() const
+#else
+QQmlComponent * WDeclarativeListView::delegate() const
+#endif
 {
     Q_D(const WDeclarativeListView); return d->delegate;
 }
 
+#ifdef QT_4
 void WDeclarativeListView::setDelegate(QDeclarativeComponent * delegate)
+#else
+void WDeclarativeListView::setDelegate(QQmlComponent * delegate)
+#endif
 {
     Q_D(WDeclarativeListView);
 
@@ -998,14 +1075,22 @@ void WDeclarativeListView::setClearDelay(int delay)
 // WDeclarativeListHorizontal
 //=================================================================================================
 
+#ifdef QT_4
 /* explicit */ WDeclarativeListHorizontal::WDeclarativeListHorizontal(QDeclarativeItem * parent)
+#else
+/* explicit */ WDeclarativeListHorizontal::WDeclarativeListHorizontal(QQuickItem * parent)
+#endif
     : WDeclarativeListView(Qt::Horizontal, parent) {}
 
 //=================================================================================================
 // WDeclarativeListVertical
 //=================================================================================================
 
+#ifdef QT_4
 /* explicit */ WDeclarativeListVertical::WDeclarativeListVertical(QDeclarativeItem * parent)
+#else
+/* explicit */ WDeclarativeListVertical::WDeclarativeListVertical(QQuickItem * parent)
+#endif
     : WDeclarativeListView(Qt::Vertical, parent) {}
 
 #endif // SK_NO_DECLARATIVELISTVIEW

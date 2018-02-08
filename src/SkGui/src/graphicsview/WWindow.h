@@ -94,7 +94,7 @@ class SK_GUI_EXPORT WWindow : public WDeclarativeMouseArea
     Q_PROPERTY(int mouseX READ mouseX NOTIFY mousePosChanged)
     Q_PROPERTY(int mouseY READ mouseY NOTIFY mousePosChanged)
 
-    Q_PROPERTY(CursorShape mouseCursor READ mouseCursor NOTIFY mouseCursorChanged)
+    Q_PROPERTY(Qt::CursorShape mouseCursor READ mouseCursor NOTIFY mouseCursorChanged)
 
     Q_PROPERTY(bool opengl    READ opengl    WRITE setOpengl    NOTIFY openglChanged)
     Q_PROPERTY(bool antialias READ antialias WRITE setAntialias NOTIFY antialiasChanged)
@@ -189,10 +189,9 @@ public: // Interface
     //---------------------------------------------------------------------------------------------
     // Cursor
 
-    Q_INVOKABLE void registerCursor(WDeclarativeMouseArea::CursorShape shape,
-                                    const QCursor                    & cursor);
+    Q_INVOKABLE void registerCursor(Qt::CursorShape shape, const QCursor & cursor);
 
-    Q_INVOKABLE void unregisterCursor (WDeclarativeMouseArea::CursorShape shape);
+    Q_INVOKABLE void unregisterCursor (Qt::CursorShape shape);
     Q_INVOKABLE void unregisterCursors();
 
     //---------------------------------------------------------------------------------------------
@@ -234,8 +233,6 @@ public: // Interface
     Q_INVOKABLE void keyClick(int key, int modifiers, int msec = 100) const;
 
     //---------------------------------------------------------------------------------------------
-
-    Q_INVOKABLE bool itemUnderMouse(QDeclarativeItem * item);
 
     Q_INVOKABLE void registerCursorUrl(int shape, const QUrl & url, const QSize & size = QSize());
 
@@ -434,7 +431,7 @@ public: // Properties
     int mouseX() const;
     int mouseY() const;
 
-    CursorShape mouseCursor() const;
+    Qt::CursorShape mouseCursor() const;
 
     bool opengl() const;
     void setOpengl(bool enabled);

@@ -23,7 +23,9 @@
 
 // Qt includes
 #include <QMimeData>
+#ifdef QT_4
 #include <QApplication>
+#endif
 #include <QGraphicsScene>
 #include <QGraphicsSceneWheelEvent>
 
@@ -69,16 +71,30 @@ static const int MOUSEAREA_PRESS_HOLD_DELAY = 800;
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-QGraphicsObject *WDeclarativeDrag::target() const
+#ifdef QT_4
+QGraphicsObject * WDeclarativeDrag::target() const
+#else
+QQuickItem * WDeclarativeDrag::target() const
+#endif
 {
     return _target;
 }
 
+#ifdef QT_4
 void WDeclarativeDrag::setTarget(QGraphicsObject * object)
+#else
+void WDeclarativeDrag::setTarget(QQuickItem * item)
+#endif
 {
+#ifdef QT_4
     if (_target == object) return;
 
     _target = object;
+#else
+    if (_target == item) return;
+
+    _target = item;
+#endif
 
     emit targetChanged();
 }
@@ -265,6 +281,10 @@ void WDeclarativeMouseAreaPrivate::init()
 
     wheelEnabled = false;
 
+#ifdef QT_LATEST
+    dropEnabled = false;
+#endif
+
     dragAccepted = false;
 
     preventStealing = false;
@@ -291,8 +311,8 @@ void WDeclarativeMouseAreaPrivate::init()
     startX = 0;
     startY = 0;
 
-    cursor     = WDeclarativeMouseArea::ArrowCursor;
-    cursorDrop = WDeclarativeMouseArea::ArrowCursor;
+    cursor     = Qt::ArrowCursor;
+    cursorDrop = Qt::ArrowCursor;
 
     q->setAcceptedMouseButtons(Qt::LeftButton);
 }
@@ -365,10 +385,19 @@ void WDeclarativeMouseAreaPrivate::dropEvent(const QPointF       & pos,
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 void WDeclarativeMouseAreaPrivate::saveEvent(QGraphicsSceneMouseEvent * event)
+#else
+void WDeclarativeMouseAreaPrivate::saveEvent(QMouseEvent * event)
+#endif
 {
-    lastPos      = event->pos     ();
+    lastPos = event->pos();
+
+#ifdef QT_4
     lastScenePos = event->scenePos();
+#else
+    lastScenePos = event->screenPos();
+#endif
 
     lastButton  = event->button ();
     lastButtons = event->buttons();
@@ -417,7 +446,11 @@ void WDeclarativeMouseAreaPrivate::clearHover()
 
     Q_Q(WDeclarativeMouseArea);
 
+#ifdef QT_4
     QList<QGraphicsItem *> * items = &(view->d_func()->itemsCursor);
+#else
+    QList<QQuickItem *> * items = &(view->d_func()->itemsCursor);
+#endif
 
     if (items->contains(q))
     {
@@ -431,7 +464,11 @@ void WDeclarativeMouseAreaPrivate::clearDrop()
 
     Q_Q(WDeclarativeMouseArea);
 
+#ifdef QT_4
     QList<QGraphicsItem *> * items = &(view->d_func()->itemsDrop);
+#else
+    QList<QQuickItem *> * items = &(view->d_func()->itemsDrop);
+#endif
 
     if (items->contains(q))
     {
@@ -472,7 +509,11 @@ void WDeclarativeMouseAreaPrivate::clearView()
 // WDeclarativeMouseArea
 //=================================================================================================
 
+#ifdef QT_4
 /* explicit */ WDeclarativeMouseArea::WDeclarativeMouseArea(QDeclarativeItem * parent)
+#else
+/* explicit */ WDeclarativeMouseArea::WDeclarativeMouseArea(QQuickItem * parent)
+#endif
     : WDeclarativeItem(new WDeclarativeMouseAreaPrivate(this), parent)
 {
     Q_D(WDeclarativeMouseArea); d->init();
@@ -481,8 +522,12 @@ void WDeclarativeMouseAreaPrivate::clearView()
 //-------------------------------------------------------------------------------------------------
 // Protected
 
+#ifdef QT_4
 WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p,
                                              QDeclarativeItem             * parent)
+#else
+WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, QQuickItem * parent)
+#endif
     : WDeclarativeItem(p, parent)
 {
     Q_D(WDeclarativeMouseArea); d->init();
@@ -560,7 +605,9 @@ void WDeclarativeMouseArea::setHovered(bool hovered)
 
     if (hovered)
     {
+#ifdef QT_4
         setFlag(QGraphicsItem::ItemSendsScenePositionChanges, true);
+#endif
 
         if (d->view)
         {
@@ -571,7 +618,9 @@ void WDeclarativeMouseArea::setHovered(bool hovered)
     }
     else
     {
+#ifdef QT_4
         setFlag(QGraphicsItem::ItemSendsScenePositionChanges, false);
+#endif
 
         emit exited();
     }
@@ -587,7 +636,13 @@ bool WDeclarativeMouseArea::setPressed(bool pressed)
 
     bool isClick;
 
-    if (d->pressed && pressed == false && dragged == false && isUnderMouse())
+    if (d->pressed && pressed == false && dragged == false
+        &&
+#ifdef QT_4 // FIXME
+        isUnderMouse())
+#else
+        d->view->d_func()->itemUnderMouse(this))
+#endif
     {
          isClick = true;
     }
@@ -625,6 +680,8 @@ bool WDeclarativeMouseArea::setPressed(bool pressed)
 }
 
 //-------------------------------------------------------------------------------------------------
+
+#ifdef QT_4
 
 bool WDeclarativeMouseArea::sendMouseEvent(QGraphicsSceneMouseEvent * event)
 {
@@ -708,8 +765,10 @@ bool WDeclarativeMouseArea::sendMouseEvent(QGraphicsSceneMouseEvent * event)
     return false;
 }
 
+#endif
+
 //-------------------------------------------------------------------------------------------------
-// Protected QGraphicsItem reimplementation
+// Protected QGraphicsItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WDeclarativeMouseArea::geometryChanged(const QRectF & newGeometry,
@@ -731,26 +790,47 @@ bool WDeclarativeMouseArea::sendMouseEvent(QGraphicsSceneMouseEvent * event)
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* virtual */ QVariant WDeclarativeMouseArea::itemChange(GraphicsItemChange change,
                                                          const QVariant &   value)
+#else
+/* virtual */ void WDeclarativeMouseArea::itemChange(ItemChange             change,
+                                                     const ItemChangeData & data)
+#endif
 {
+#ifdef QT_4
     if (change == ItemSceneHasChanged)
+#else
+    if (change == ItemSceneChange)
+#endif
     {
         Q_D(WDeclarativeMouseArea);
 
+#ifdef QT_4
         QGraphicsScene * scene = qvariant_cast<QGraphicsScene *> (value);
 
         if (scene == NULL) d->clearView();
+#else
+        if (data.window == NULL) d->clearView();
+#endif
     }
 
+#ifdef QT_4
     return WDeclarativeItem::itemChange(change, value);
+#else
+    WDeclarativeItem::itemChange(change, data);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
 // Events
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* virtual */ void WDeclarativeMouseArea::mousePressEvent(QGraphicsSceneMouseEvent * event)
+#else
+/* virtual */ void WDeclarativeMouseArea::mousePressEvent(QMouseEvent * event)
+#endif
 {
     Q_D(WDeclarativeMouseArea);
 
@@ -779,7 +859,11 @@ bool WDeclarativeMouseArea::sendMouseEvent(QGraphicsSceneMouseEvent * event)
 
     if (d->drag) d->drag->setActive(false);
 
+#ifdef QT_4
     d->startScene = event->scenePos();
+#else
+    d->startScene = event->screenPos();
+#endif
 
     if (d->isPressAndHoldConnected())
     {
@@ -791,7 +875,11 @@ bool WDeclarativeMouseArea::sendMouseEvent(QGraphicsSceneMouseEvent * event)
     event->setAccepted(setPressed(true));
 }
 
+#ifdef QT_4
 /* virtual */ void WDeclarativeMouseArea::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
+#else
+/* virtual */ void WDeclarativeMouseArea::mouseReleaseEvent(QMouseEvent * event)
+#endif
 {
     Q_D(WDeclarativeMouseArea);
 
@@ -805,9 +893,11 @@ bool WDeclarativeMouseArea::sendMouseEvent(QGraphicsSceneMouseEvent * event)
 
         if (d->drag) d->drag->setActive(false);
 
-        QGraphicsScene * scene = this->scene();
-
-        if (scene && scene->mouseGrabberItem() == this)
+#ifdef QT_4
+        if (scene()->mouseGrabberItem() == this)
+#else
+        if (d->view->mouseGrabberItem() == this)
+#endif
         {
             ungrabMouse();
         }
@@ -821,7 +911,11 @@ bool WDeclarativeMouseArea::sendMouseEvent(QGraphicsSceneMouseEvent * event)
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* virtual */ void WDeclarativeMouseArea::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
+#else
+/* virtual */ void WDeclarativeMouseArea::mouseDoubleClickEvent(QMouseEvent * event)
+#endif
 {
     Q_D(WDeclarativeMouseArea);
 
@@ -848,7 +942,11 @@ bool WDeclarativeMouseArea::sendMouseEvent(QGraphicsSceneMouseEvent * event)
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* virtual */ void WDeclarativeMouseArea::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
+#else
+/* virtual */ void WDeclarativeMouseArea::mouseMoveEvent(QMouseEvent * event)
+#endif
 {
     Q_D(WDeclarativeMouseArea);
 
@@ -874,13 +972,23 @@ bool WDeclarativeMouseArea::sendMouseEvent(QGraphicsSceneMouseEvent * event)
 
         if (drag()->target()->parentItem())
         {
-            posStart   = drag()->target()->parentItem()->mapFromScene(d->startScene);
+            posStart = drag()->target()->parentItem()->mapFromScene(d->startScene);
+
+#ifdef QT_4
             posCurrent = drag()->target()->parentItem()->mapFromScene(event->scenePos());
+#else
+            posCurrent = drag()->target()->parentItem()->mapFromScene(event->screenPos());
+#endif
         }
         else
         {
-            posStart   = d->startScene;
+            posStart = d->startScene;
+
+#ifdef QT_4
             posCurrent = event->scenePos();
+#else
+            posCurrent = event->screenPos();
+#endif
         }
 
         if (d->drag->active() == false)
@@ -1293,12 +1401,12 @@ void WDeclarativeMouseArea::setPreventStealing(bool prevent)
 
 //-------------------------------------------------------------------------------------------------
 
-WDeclarativeMouseArea::CursorShape WDeclarativeMouseArea::cursor()
+Qt::CursorShape WDeclarativeMouseArea::cursor()
 {
     Q_D(const WDeclarativeMouseArea); return d->cursor;
 }
 
-void WDeclarativeMouseArea::setCursor(CursorShape shape)
+void WDeclarativeMouseArea::setCursor(Qt::CursorShape shape)
 {
     Q_D(WDeclarativeMouseArea);
 
@@ -1311,12 +1419,12 @@ void WDeclarativeMouseArea::setCursor(CursorShape shape)
     emit cursorChanged();
 }
 
-WDeclarativeMouseArea::CursorShape WDeclarativeMouseArea::cursorDrop()
+Qt::CursorShape WDeclarativeMouseArea::cursorDrop()
 {
     Q_D(const WDeclarativeMouseArea); return d->cursorDrop;
 }
 
-void WDeclarativeMouseArea::setCursorDrop(CursorShape shape)
+void WDeclarativeMouseArea::setCursorDrop(Qt::CursorShape shape)
 {
     Q_D(WDeclarativeMouseArea);
 

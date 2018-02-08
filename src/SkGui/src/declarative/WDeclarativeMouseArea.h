@@ -24,7 +24,6 @@
 
 // Forward declarations
 class WDeclarativeMouseAreaPrivate;
-class WDeclarativeMouseEvent;
 class WDeclarativeDropEvent;
 
 //-------------------------------------------------------------------------------------------------
@@ -101,8 +100,13 @@ class SK_GUI_EXPORT WDeclarativeDrag : public QObject
 
     Q_ENUMS(Axis)
 
+#ifdef QT_4
     Q_PROPERTY(QGraphicsObject * target READ target WRITE setTarget RESET resetTarget
                NOTIFY targetChanged)
+#else
+    Q_PROPERTY(QQuickItem * target READ target WRITE setTarget RESET resetTarget
+               NOTIFY targetChanged)
+#endif
 
     Q_PROPERTY(Axis axis READ axis WRITE setAxis NOTIFY axisChanged)
 
@@ -147,9 +151,15 @@ signals:
     void filterChildrenChanged();
 
 public: // Properties
+#ifdef QT_4
     QGraphicsObject * target() const;
     void              setTarget(QGraphicsObject * object);
-    void              resetTarget();
+#else
+    QQuickItem * target() const;
+    void         setTarget(QQuickItem * item);
+#endif
+
+    void resetTarget();
 
     Axis axis() const;
     void setAxis(Axis axis);
@@ -176,7 +186,11 @@ public: // Properties
     void setFilterChildren(bool filter);
 
 private: // Variables
+#ifdef QT_4
     QGraphicsObject * _target;
+#else
+    QQuickItem * _target;
+#endif
 
     Axis _axis;
 
@@ -204,7 +218,9 @@ class SK_GUI_EXPORT WDeclarativeMouseArea : public WDeclarativeItem
 {
     Q_OBJECT
 
+#ifdef QT_4
     Q_ENUMS(CursorShape)
+#endif
 
     Q_PROPERTY(qreal mouseX READ mouseX NOTIFY mousePositionChanged)
     Q_PROPERTY(qreal mouseY READ mouseY NOTIFY mousePositionChanged)
@@ -237,10 +253,11 @@ class SK_GUI_EXPORT WDeclarativeMouseArea : public WDeclarativeItem
     Q_PROPERTY(bool preventStealing READ preventStealing WRITE setPreventStealing
                NOTIFY preventStealingChanged /* REVISION 1 */)
 
-    Q_PROPERTY(CursorShape cursor     READ cursor     WRITE setCursor     NOTIFY cursorChanged)
-    Q_PROPERTY(CursorShape cursorDrop READ cursorDrop WRITE setCursorDrop NOTIFY cursorDropChanged)
+    Q_PROPERTY(Qt::CursorShape cursor     READ cursor     WRITE setCursor     NOTIFY cursorChanged)
+    Q_PROPERTY(Qt::CursorShape cursorDrop READ cursorDrop WRITE setCursorDrop NOTIFY cursorDropChanged)
 
 public: // Enums
+#ifdef QT_4
     enum CursorShape
     {
         ArrowCursor,
@@ -268,32 +285,21 @@ public: // Enums
         LastCursor = DragLinkCursor,
         BitmapCursor = 24,
         CustomCursor = 25
-
-#if defined(QT3_SUPPORT) && !defined(Q_MOC_RUN)
-        ,
-        arrowCursor = ArrowCursor,
-        upArrowCursor = UpArrowCursor,
-        crossCursor = CrossCursor,
-        waitCursor = WaitCursor,
-        ibeamCursor = IBeamCursor,
-        sizeVerCursor = SizeVerCursor,
-        sizeHorCursor = SizeHorCursor,
-        sizeBDiagCursor = SizeBDiagCursor,
-        sizeFDiagCursor = SizeFDiagCursor,
-        sizeAllCursor = SizeAllCursor,
-        blankCursor = BlankCursor,
-        splitVCursor = SplitVCursor,
-        splitHCursor = SplitHCursor,
-        pointingHandCursor = PointingHandCursor,
-        forbiddenCursor = ForbiddenCursor,
-        whatsThisCursor = WhatsThisCursor
-#endif
     };
+#endif
 
 public:
+#ifdef QT_4
     explicit WDeclarativeMouseArea(QDeclarativeItem * parent = NULL);
+#else
+    explicit WDeclarativeMouseArea(QQuickItem * parent = NULL);
+#endif
 protected:
+#ifdef QT_4
     WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, QDeclarativeItem * parent = NULL);
+#else
+    WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, QQuickItem * parent = NULL);
+#endif
 
 public: // Interface
     Q_INVOKABLE void press  (Qt::MouseButton button = Qt::LeftButton);
@@ -313,14 +319,21 @@ protected: // Functions
     void setHovered(bool hovered);
     bool setPressed(bool pressed);
 
+#ifdef QT_4
     bool sendMouseEvent(QGraphicsSceneMouseEvent * event);
+#endif
 
-protected: // QGraphicsItem reimplementation
+protected: // QGraphicsItem / QQuickItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
 
+#ifdef QT_4
     /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
+#else
+    /* virtual */ void itemChange(ItemChange change, const ItemChangeData & data);
+#endif
 
 protected: // Events
+#ifdef QT_4
     /* virtual */ void mousePressEvent  (QGraphicsSceneMouseEvent * event);
     /* virtual */ void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
 
@@ -332,17 +345,33 @@ protected: // Events
     /* virtual */ void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
     /* virtual */ void hoverMoveEvent (QGraphicsSceneHoverEvent * event);
 
-#ifndef QT_NO_CONTEXTMENU
-    /* virtual */ void contextMenuEvent(QGraphicsSceneContextMenuEvent * event);
-#endif // QT_NO_CONTEXTMENU
-
     /* virtual */ bool sceneEvent(QEvent * event);
 
     /* virtual */ bool sceneEventFilter(QGraphicsItem * item, QEvent * event);
 
-    /* virtual */ void timerEvent(QTimerEvent * event);
-
     /* virtual */ void wheelEvent(QGraphicsSceneWheelEvent * event);
+#else
+    /* virtual */ void mousePressEvent  (QMouseEvent * event);
+    /* virtual */ void mouseReleaseEvent(QMouseEvent * event);
+
+    /* virtual */ void mouseDoubleClickEvent(QMouseEvent * event);
+
+    /* virtual */ void mouseMoveEvent(QMouseEvent * event);
+
+    /* virtual */ void mouseUngrabEvent();
+
+    /* virtual */ void hoverEnterEvent(QHoverEvent * event);
+    /* virtual */ void hoverLeaveEvent(QHoverEvent * event);
+    /* virtual */ void hoverMoveEvent (QHoverEvent * event);
+
+    /* virtual */ void wheelEvent(QWheelEvent * event);
+#endif
+
+#ifndef QT_NO_CONTEXTMENU
+    /* virtual */ void contextMenuEvent(QGraphicsSceneContextMenuEvent * event);
+#endif // QT_NO_CONTEXTMENU
+
+    /* virtual */ void timerEvent(QTimerEvent * event);
 
 signals:
     void hoveredChanged();
@@ -426,11 +455,11 @@ public: // Properties
     bool preventStealing() const;
     void setPreventStealing(bool prevent);
 
-    CursorShape cursor();
-    void        setCursor(CursorShape shape);
+    Qt::CursorShape cursor();
+    void            setCursor(Qt::CursorShape shape);
 
-    CursorShape cursorDrop();
-    void        setCursorDrop(CursorShape shape);
+    Qt::CursorShape cursorDrop();
+    void            setCursorDrop(Qt::CursorShape shape);
 
 private: // Functions
     void handlePress  ();

@@ -347,13 +347,12 @@ void WWindowPrivate::init()
 //-------------------------------------------------------------------------------------------------
 // Cursor
 
-/* Q_INVOKABLE */ void WWindow::registerCursor(WDeclarativeMouseArea::CursorShape shape,
-                                               const QCursor                    & cursor)
+/* Q_INVOKABLE */ void WWindow::registerCursor(Qt::CursorShape shape, const QCursor & cursor)
 {
     Q_D(WWindow); d->view->registerCursor(shape, cursor);
 }
 
-/* Q_INVOKABLE */ void WWindow::unregisterCursor(WDeclarativeMouseArea::CursorShape shape)
+/* Q_INVOKABLE */ void WWindow::unregisterCursor(Qt::CursorShape shape)
 {
     Q_D(WWindow); d->view->unregisterCursor(shape);
 }
@@ -469,17 +468,6 @@ void WWindowPrivate::init()
 /* Q_INVOKABLE */ void WWindow::keyClick(int key, int modifiers, int msec) const
 {
     Q_D(const WWindow); d->view->keyClick(key, modifiers, msec);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE */ bool WWindow::itemUnderMouse(QDeclarativeItem * item)
-{
-    if (isEntered())
-    {
-         return item->isUnderMouse();
-    }
-    else return false;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -873,7 +861,7 @@ int WWindow::mouseY() const
 
 //-------------------------------------------------------------------------------------------------
 
-WDeclarativeMouseArea::CursorShape WWindow::mouseCursor() const
+Qt::CursorShape WWindow::mouseCursor() const
 {
     Q_D(const WWindow); return d->view->mouseCursor();
 }
