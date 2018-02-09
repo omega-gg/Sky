@@ -66,7 +66,11 @@ public:
 
     /* virtual */ ~WViewPrivate();
 
+#ifdef QT_4
     void init(QDeclarativeItem * item);
+#else
+    void init(QQuickItem * item);
+#endif
 
 public: // Functions
     void startFade(bool visible);
@@ -80,7 +84,9 @@ public: // Functions
 
     void updateFlags();
 
+#ifdef QT_4
     void updateViewport();
+#endif
 
     void updateHoverable();
 
@@ -88,6 +94,9 @@ public: // Functions
 
     void updateDrag();
     void clearDrag ();
+
+    void hoverEnterEvent();
+    void hoverLeaveEvent();
 
     void setActive(bool active);
 
@@ -107,6 +116,10 @@ public: // Functions
 
     bool isUnderMouse() const;
 
+#ifdef QT_LATEST
+    bool itemUnderMouse(QQuickItem * item) const;
+#endif
+
     void setCursor  (Qt::CursorShape shape);
     void applyCursor(Qt::CursorShape shape);
 
@@ -114,8 +127,15 @@ public: // Functions
     void setKeyControlPressed(bool pressed);
     void setKeyAltPressed    (bool pressed);
 
+#ifdef QT_4
     QList<WDeclarativeMouseArea *> getMouseAreas(const QList<QGraphicsItem *> & items) const;
     QList<WDeclarativeMouseArea *> getDropAreas (const QList<QGraphicsItem *> & items) const;
+#else
+    void getItems(QList<QQuickItem *> * items, QQuickItem * item, const QPoint & pos) const;
+
+    QList<WDeclarativeMouseArea *> getMouseAreas(const QList<QQuickItem *> & items) const;
+    QList<WDeclarativeMouseArea *> getDropAreas (const QList<QQuickItem *> & items) const;
+#endif
 
 public: // Slots
     void onGeometryChanged();
@@ -126,9 +146,13 @@ public: // Slots
     void onCursorVisibleChanged();
 
 public: // Variables
+#ifdef QT_4
     WViewScene * scene;
 
     QDeclarativeItem * item;
+#else
+    QQuickItem * item;
+#endif
 
     WResizer * currentResizer;
 
@@ -184,6 +208,8 @@ public: // Variables
     bool mouseAccepted;
     bool dragAccepted;
 
+    bool resetHover;
+
     QPoint mousePos;
 
     Qt::MouseButton  button;
@@ -193,7 +219,12 @@ public: // Variables
 
     QHash<Qt::CursorShape, QCursor> cursors;
 
-    QList<QGraphicsItem         *> itemsCursor;
+#ifdef QT_4
+    QList<QGraphicsItem *> itemsCursor;
+#else
+    QList<QQuickItem *> itemsCursor;
+#endif
+
     QList<WDeclarativeMouseArea *> itemsHovered;
 
     bool   idleCheck;
@@ -210,7 +241,11 @@ public: // Variables
 
     WViewDragData dragData;
 
+#ifdef QT_4
     QList<QGraphicsItem *> itemsDrop;
+#else
+    QList<QQuickItem *> itemsDrop;
+#endif
 
     WDeclarativeMouseArea * areaDrop;
 

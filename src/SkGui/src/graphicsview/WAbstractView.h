@@ -85,10 +85,8 @@ public: // Interface
     Q_INVOKABLE void setMinimumSize(int width, int height);
     Q_INVOKABLE void setMaximumSize(int width, int height);
 
-#ifdef QT_LATEST
     Q_INVOKABLE void setMinimumSize(const QSize & size);
     Q_INVOKABLE void setMaximumSize(const QSize & size);
-#endif
 
     Q_INVOKABLE void setMinimumWidth (int width);
     Q_INVOKABLE void setMinimumHeight(int height);

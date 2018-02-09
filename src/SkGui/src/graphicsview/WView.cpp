@@ -20,6 +20,9 @@
 
 // Qt includes
 #include <QApplication>
+#ifdef QT_LATEST
+#include <QScreen>
+#endif
 #include <QDesktopWidget>
 #include <QGLWidget>
 #include <QImageReader>
@@ -180,6 +183,8 @@ void WDeclarativeDropEvent::setText(const QString & text)
     _text = text;
 }
 
+#ifdef QT_4
+
 //=================================================================================================
 // WViewScene
 //=================================================================================================
@@ -188,6 +193,8 @@ WViewScene::WViewScene(WView * parent) : QGraphicsScene(parent)
 {
     view = parent;
 }
+
+#endif
 
 //=================================================================================================
 // WViewPrivate
@@ -208,7 +215,11 @@ WViewPrivate::WViewPrivate(WView * p) : WAbstractViewPrivate(p) {}
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 void WViewPrivate::init(QDeclarativeItem * item)
+#else
+void WViewPrivate::init(QQuickItem * item)
+#endif
 {
     Q_Q(WView);
 
@@ -255,7 +266,7 @@ void WViewPrivate::init(QDeclarativeItem * item)
     closed = false;
 
     opengl    = wControllerView->opengl();
-    antialias = true;
+    antialias = false;
     vsync     = false;
 
     //---------------------------------------------------------------------------------------------
@@ -284,6 +295,8 @@ void WViewPrivate::init(QDeclarativeItem * item)
 
     mouseAccepted = false;
     dragAccepted  = false;
+
+    resetHover = false;
 
     button  = Qt::NoButton;
     buttons = Qt::NoButton;
@@ -324,11 +337,17 @@ void WViewPrivate::init(QDeclarativeItem * item)
     //---------------------------------------------------------------------------------------------
     // Scene
 
+#ifdef QT_4
     scene = new WViewScene(q);
+#endif
 
     if (item)
     {
+#ifdef QT_4
         scene->addItem(item);
+#else
+        item->setParentItem(q->contentItem());
+#endif
 
         QObject::connect(item, SIGNAL(widthChanged ()), q, SIGNAL(itemWidthChanged ()));
         QObject::connect(item, SIGNAL(heightChanged()), q, SIGNAL(itemHeightChanged()));
@@ -337,10 +356,9 @@ void WViewPrivate::init(QDeclarativeItem * item)
         QObject::connect(item, SIGNAL(yChanged()), q, SIGNAL(originYChanged()));
     }
 
-    q->setRenderHint(QPainter::Antialiasing, true);
-
     if (opengl)
     {
+#ifdef QT_4
         QGLFormat format = QGLFormat::defaultFormat();
 
         format.setSampleBuffers(true);
@@ -348,23 +366,40 @@ void WViewPrivate::init(QDeclarativeItem * item)
         q->setViewport(new QGLWidget(format));
 
         q->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+#else
+        QSurfaceFormat format;
+
+        format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
+
+        format.setDepthBufferSize(24);
+
+        format.setSamples     (0);
+        format.setSwapInterval(0);
+
+        q->setFormat(format);
+#endif
     }
     else
     {
+#ifdef QT_4
         q->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 
 #ifdef Q_OS_WIN
         q->setWindowClip(true);
 #endif
+#endif
     }
 
+#ifdef QT_4
     q->setScene(scene);
+#endif
 
 #ifdef Q_OS_WIN
     // FIXME Windows: Workaround for opengl full screen flicker.
     q->setViewportMargins(0, 0, -1, 0);
 #endif
 
+#ifdef QT_4
     //---------------------------------------------------------------------------------------------
     // For performance
 
@@ -380,11 +415,16 @@ void WViewPrivate::init(QDeclarativeItem * item)
 
     viewport->setAttribute(Qt::WA_OpaquePaintEvent);
     viewport->setAttribute(Qt::WA_NoSystemBackground);
+#endif
 
     //---------------------------------------------------------------------------------------------
     // Default size
 
+#ifdef QT_4
     q->WAbstractView::setMinimumSize(minimumWidth, minimumHeight);
+#else
+    q->WAbstractView::setMinimumSize(QSize(minimumWidth, minimumHeight));
+#endif
 
     QRect rect = wControllerView->availableGeometry(sk->defaultScreen());
 
@@ -437,9 +477,17 @@ void WViewPrivate::startFade(bool visible)
 
     if (visible)
     {
-         q->setWindowOpacity(fadeValue);
+#ifdef QT_4
+        q->setWindowOpacity(fadeValue);
+#else
+        q->setOpacity(fadeValue);
+#endif
     }
+#ifdef QT_4
     else q->setWindowOpacity(1.0 - fadeValue);
+#else
+    else q->setOpacity(1.0 - fadeValue);
+#endif
 
     fadeTimer.start(16);
 }
@@ -452,7 +500,11 @@ void WViewPrivate::fadeIn()
 
     fadeTimer.stop();
 
+#ifdef QT_4
     q->setWindowOpacity(1.0);
+#else
+    q->setOpacity(1.0);
+#endif
 
     emit q->fadeIn();
 }
@@ -463,7 +515,11 @@ void WViewPrivate::fadeOut()
 
     fadeTimer.stop();
 
+#ifdef QT_4
     q->setWindowOpacity(0.0);
+#else
+    q->setOpacity(0.0);
+#endif
 
     emit q->fadeOut();
 
@@ -511,6 +567,8 @@ void WViewPrivate::updateFlags()
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
+
 void WViewPrivate::updateViewport()
 {
     Q_Q(WView);
@@ -526,6 +584,8 @@ void WViewPrivate::updateViewport()
 
     q->setViewport(new QGLWidget(format));
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -575,7 +635,13 @@ void WViewPrivate::updateDrag()
 
     if (isUnderMouse())
     {
+#ifdef QT_4
         QList<QGraphicsItem *> items = q->items(mousePos);
+#else
+        QList<QQuickItem *> items;
+
+        getItems(&items, q->contentItem(), mousePos);
+#endif
 
         if (itemsDrop == items)
         {
@@ -667,6 +733,53 @@ void WViewPrivate::clearDrag()
 
         areaDrop = NULL;
     }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WViewPrivate::hoverEnterEvent()
+{
+    setEntered(true);
+
+    if (resetHover == false) return;
+
+    Q_Q(WView);
+
+    resetHover = false;
+
+    if (currentResizer)
+    {
+        currentResizer = NULL;
+
+        setResizing(false);
+    }
+
+    q->clearHover ();
+    q->updateHover();
+}
+
+void WViewPrivate::hoverLeaveEvent()
+{
+    if (dragged) return;
+
+    if (resizing == false)
+    {
+        Q_Q(WView);
+
+        QPoint pos = QCursor::pos();
+
+#ifdef Q_OS_LINUX
+        setMousePos(q->mapFromGlobal(pos));
+#else
+        setMousePos(QPoint(pos.x() - q->x(), pos.y() - q->y()));
+#endif
+    }
+
+    if (isUnderMouse())
+    {
+        resetHover = true;
+    }
+    else setEntered(false);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -895,6 +1008,17 @@ bool WViewPrivate::isUnderMouse() const
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_LATEST
+
+bool WViewPrivate::itemUnderMouse(QQuickItem * item) const
+{
+    return item->contains(item->mapFromScene(mousePos));
+}
+
+#endif
+
+//-------------------------------------------------------------------------------------------------
+
 void WViewPrivate::setCursor(Qt::CursorShape shape)
 {
     if (cursor != shape)
@@ -919,18 +1043,11 @@ void WViewPrivate::applyCursor(Qt::CursorShape shape)
         }
         else QApplication::setOverrideCursor(cursor);
     }
-    else
+    else if (QApplication::overrideCursor())
     {
-        if (QApplication::overrideCursor())
-        {
-            if (shape)
-            {
-                 QApplication::changeOverrideCursor(shape);
-            }
-            else QApplication::restoreOverrideCursor();
-        }
-        else if (shape) QApplication::setOverrideCursor(shape);
+        QApplication::changeOverrideCursor(shape);
     }
+    else if (shape) QApplication::setOverrideCursor(shape);
 
     emit q->mouseCursorChanged();
 }
@@ -1148,11 +1265,11 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WView::close()
+/* Q_INVOKABLE */ bool WView::close()
 {
     Q_D(WView);
 
-    if (d->closed) return;
+    if (d->closed) return true;
 
     d->closed = true;
 
@@ -1164,8 +1281,10 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
         {
             d->startFade(false);
         }
+
+        return true;
     }
-    else WAbstractView::close();
+    else return WAbstractView::close();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1464,10 +1583,10 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WView::checkLeave(int msec)
-{
-    Q_D(WView); d->timerLeave.start(msec);
-}
+///* Q_INVOKABLE */ void WView::checkLeave(int msec)
+//{
+//    Q_D(WView); d->timerLeave.start(msec);
+//}
 
 //-------------------------------------------------------------------------------------------------
 // Shot
@@ -1810,31 +1929,31 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WView::enterEvent(QEvent * event)
-{
-    Q_D(WView);
+///* virtual */ void WView::enterEvent(QEvent * event)
+//{
+//    Q_D(WView);
 
-    d->setEntered(true);
+//    d->setEntered(true);
 
-    WAbstractView::enterEvent(event);
-}
+//    WAbstractView::enterEvent(event);
+//}
 
-/* virtual */ void WView::leaveEvent(QEvent * event)
-{
-    Q_D(WView);
+///* virtual */ void WView::leaveEvent(QEvent * event)
+//{
+//    Q_D(WView);
 
-    // FIXME: Sometimes we get a leaveEvent for no reason.
-    if (d->timerLeave.isActive())
-    {
-        if (d->item == NULL || d->item->isUnderMouse() == false)
-        {
-            d->setEntered(false);
-        }
-    }
-    else d->setEntered(false);
+//    // FIXME: Sometimes we get a leaveEvent for no reason.
+//    if (d->timerLeave.isActive())
+//    {
+//        if (d->item == NULL || d->item->isUnderMouse() == false)
+//        {
+//            d->setEntered(false);
+//        }
+//    }
+//    else d->setEntered(false);
 
-    WAbstractView::leaveEvent(event);
-}
+//    WAbstractView::leaveEvent(event);
+//}
 
 //-------------------------------------------------------------------------------------------------
 

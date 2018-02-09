@@ -33,7 +33,12 @@
 // Static variables
 
 #ifdef SK_WIN_NATIVE
+#ifdef QT_4
 static const DWORD windowFlags = WS_OVERLAPPED | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
+#else
+static const DWORD windowFlags = WS_OVERLAPPED | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX |
+                                 WS_CLIPCHILDREN;
+#endif
 #endif
 
 //-------------------------------------------------------------------------------------------------
@@ -58,14 +63,24 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     this->flags = flags;
 
 #ifndef SK_WIN_NATIVE
+#ifdef QT_4
     q->setWindowFlags(flags);
 #else
+    q->setFlags(Qt::Window | flags);
+#endif
+#else
+#ifdef QT_4
     q->setWindowFlags(Qt::FramelessWindowHint);
 
-#ifdef QT_4
     id = q->QDeclarativeView::winId();
 #else
-    id = (HWND) q->QDeclarativeView::winId();
+    q->setFlags(Qt::Window | Qt::FramelessWindowHint);
+
+    WId winId = q->QQuickWindow::winId();
+
+    id = (HWND) winId;
+
+    viewport = q->fromWinId(winId);
 #endif
 
     x = 0;
@@ -116,7 +131,7 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     wcx.lpszMenuName  = 0;
     wcx.lpszClassName = L"Window";
 
-    HINSTANCE application = qWinAppInst();
+    HINSTANCE application = GetModuleHandle(0);
 
     wcx.hIcon = (HICON) LoadImage(application, L"IDI_ICON1", IMAGE_ICON, 0, 0, LR_DEFAULTSIZE);
 
@@ -140,9 +155,7 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 #ifdef QT_4
     SetWindowLong(id, GWL_STYLE, WS_CHILD | WS_CLIPCHILDREN);
 #else
-    q->setProperty("_q_embedded_native_parent_handle", (WId) handle);
-
-    q->setWindowFlags(Qt::FramelessWindowHint);
+    SetWindowLong(id, GWL_STYLE, WS_CHILD);
 #endif
 
     SetParent(id, handle);
@@ -161,7 +174,11 @@ void WAbstractViewPrivate::applyFullScreen()
 
     SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) & ~WS_CAPTION);
 
+#ifdef QT_4
     QRect geometry = qApp->desktop()->screenGeometry(q);
+#else
+    QRect geometry = q->screen()->geometry();
+#endif
 
     q->setGeometry(geometry);
 }
@@ -285,7 +302,9 @@ void WAbstractViewPrivate::setFlag(LONG flag, bool enabled) const
         d->x = rect.left;
         d->y = rect.top;
 
+#ifdef QT_4
         view->QDeclarativeView::move(0, 0);
+#endif
 
         return 0;
     }
@@ -327,7 +346,11 @@ void WAbstractViewPrivate::setFlag(LONG flag, bool enabled) const
             d->width  = width;
             d->height = height;
 
+#ifdef QT_4
             view->QDeclarativeView::setGeometry(border, border, width, height);
+#else
+            d->viewport->setGeometry(border, border, width, height);
+#endif
 
             if (d->maximized == false)
             {
@@ -344,7 +367,11 @@ void WAbstractViewPrivate::setFlag(LONG flag, bool enabled) const
             d->width  = width;
             d->height = height;
 
+#ifdef QT_4
             view->QDeclarativeView::setGeometry(0, 0, width, height);
+#else
+            d->viewport->setGeometry(0, 0, width, height);
+#endif
 
             if (d->maximized)
             {
@@ -383,8 +410,13 @@ void WAbstractViewPrivate::onFocus()
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 WAbstractView::WAbstractView(QWidget * parent, Qt::WindowFlags flags)
     : QDeclarativeView(parent), WPrivatable(new WAbstractViewPrivate(this))
+#else
+WAbstractView::WAbstractView(QWindow * parent, Qt::WindowFlags flags)
+    : QQuickWindow(parent), WPrivatable(new WAbstractViewPrivate(this))
+#endif
 {
     Q_D(WAbstractView); d->init(flags);
 }
@@ -392,8 +424,13 @@ WAbstractView::WAbstractView(QWidget * parent, Qt::WindowFlags flags)
 //-------------------------------------------------------------------------------------------------
 // Protected
 
+#ifdef QT_4
 WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::WindowFlags flags)
     : QDeclarativeView(parent), WPrivatable(p)
+#else
+WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWindow * parent, Qt::WindowFlags flags)
+    : QQuickWindow(parent), WPrivatable(p)
+#endif
 {
     Q_D(WAbstractView); d->init(flags);
 }
@@ -503,14 +540,37 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ bool WAbstractView::close()
+{
+    Q_D(WAbstractView);
+
+    ShowWindow(d->handle, SW_HIDE);
+
+#ifdef QT_4
+    return QWidget::close();
+#else
+    return QQuickWindow::close();
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_4
 /* Q_INVOKABLE */ void WAbstractView::move(int x, int y)
+#else
+/* Q_INVOKABLE */ void WAbstractView::setPosition(int x, int y)
+#endif
 {
     Q_D(WAbstractView);
 
     SetWindowPos(d->handle, HWND_TOP, x, y, 0, 0, SWP_NOSIZE);
 }
 
+#ifdef QT_4
 /* Q_INVOKABLE */ void WAbstractView::move(const QPoint & position)
+#else
+/* Q_INVOKABLE */ void WAbstractView::setPosition(const QPoint & position)
+#endif
 {
     move(position.x(), position.y());
 }
@@ -589,6 +649,18 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ void WAbstractView::setMinimumSize(const QSize & size)
+{
+    setMinimumSize(size.width(), size.height());
+}
+
+/* Q_INVOKABLE */ void WAbstractView::setMaximumSize(const QSize & size)
+{
+    setMaximumSize(size.width(), size.height());
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ void WAbstractView::setMinimumWidth(int width)
 {
     Q_D(WAbstractView);
@@ -649,7 +721,11 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 
     d->visible = visible;
 
+#ifdef QT_4
     QDeclarativeView::setVisible(visible);
+#else
+    QQuickWindow::setVisible(visible);
+#endif
 
     if (visible)
     {
@@ -669,7 +745,11 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* Q_INVOKABLE */ void WAbstractView::setWindowIcon(const QIcon & icon)
+#else
+/* Q_INVOKABLE */ void WAbstractView::setIcon(const QIcon & icon)
+#endif
 {
     Q_D(WAbstractView);
 
@@ -691,7 +771,11 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
     }
 }
 
+#ifdef QT_4
 /* Q_INVOKABLE */ void WAbstractView::setWindowTitle(const QString & title)
+#else
+/* Q_INVOKABLE */ void WAbstractView::setTitle(const QString & title)
+#endif
 {
     Q_D(WAbstractView);
 
@@ -783,7 +867,7 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 #ifdef QT_4
     return QDeclarativeView::winEvent(msg, result);
 #else
-    return QDeclarativeView::nativeEvent(event, msg, result);
+    return QQuickWindow::nativeEvent(event, msg, result);
 #endif
 }
 
@@ -800,6 +884,28 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWidget * parent, Qt::Win
 WId WAbstractView::winId() const
 {
     Q_D(const WAbstractView); return (WId) d->handle;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_LATEST
+
+QScreen * WAbstractView::screen() const
+{
+    Q_D(const WAbstractView);
+
+    return fromWinId((WId) d->id)->screen();
+}
+
+#endif
+
+//-------------------------------------------------------------------------------------------------
+
+QRect WAbstractView::geometry() const
+{
+    Q_D(const WAbstractView);
+
+    return QRect(d->x, d->y, d->width, d->height);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -852,14 +958,22 @@ int WAbstractView::maximumHeight() const
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 qreal WAbstractView::windowOpacity() const
+#else
+qreal WAbstractView::opacity() const
+#endif
 {
     Q_D(const WAbstractView);
 
     return d->opacity;
 }
 
+#ifdef QT_4
 void WAbstractView::setWindowOpacity(qreal level)
+#else
+void WAbstractView::setOpacity(qreal level)
+#endif
 {
     Q_D(WAbstractView);
 

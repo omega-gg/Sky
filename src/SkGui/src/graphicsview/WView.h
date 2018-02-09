@@ -137,7 +137,11 @@ class SK_GUI_EXPORT WView : public WAbstractView
 {
     Q_OBJECT
 
+#ifdef QT_4
     Q_PROPERTY(QDeclarativeItem * item READ item NOTIFY itemChanged)
+#else
+    Q_PROPERTY(QQuickItem * item READ item NOTIFY itemChanged)
+#endif
 
     Q_PROPERTY(qreal itemWidth  READ itemWidth  NOTIFY itemWidthChanged)
     Q_PROPERTY(qreal itemHeight READ itemHeight NOTIFY itemHeightChanged)
@@ -191,7 +195,12 @@ class SK_GUI_EXPORT WView : public WAbstractView
 
     Q_PROPERTY(Qt::CursorShape mouseCursor READ mouseCursor NOTIFY mouseCursorChanged)
 
-    Q_PROPERTY(bool opengl    READ opengl    WRITE setOpengl    NOTIFY openglChanged)
+#ifdef QT_4
+    Q_PROPERTY(bool opengl READ opengl WRITE setOpengl NOTIFY openglChanged)
+#else
+    Q_PROPERTY(bool opengl READ opengl CONSTANT)
+#endif
+
     Q_PROPERTY(bool antialias READ antialias WRITE setAntialias NOTIFY antialiasChanged)
     Q_PROPERTY(bool vsync     READ vsync     WRITE setVsync     NOTIFY vsyncChanged)
 
@@ -223,18 +232,28 @@ class SK_GUI_EXPORT WView : public WAbstractView
     Q_PROPERTY(QRect screenGeometry    READ screenGeometry    NOTIFY availableGeometryChanged)
 
 public:
+#ifdef QT_4
     WView(QDeclarativeItem * item, QWidget * parent = NULL, Qt::WindowFlags flags = 0);
 
     WView(QWidget * parent = NULL, Qt::WindowFlags flags = 0);
+#else
+    WView(QQuickItem * item, QWindow * parent = NULL, Qt::WindowFlags flags = 0);
+
+    WView(QWindow * parent = NULL, Qt::WindowFlags flags = 0);
+#endif
 protected:
+#ifdef QT_4
     WView(WViewPrivate     * p,
           QDeclarativeItem * item, QWidget * parent = NULL, Qt::WindowFlags flags = 0);
+#else
+    WView(WViewPrivate * p, QQuickItem * item, QWindow * parent = NULL, Qt::WindowFlags flags = 0);
+#endif
 
 public: // Interface
     Q_INVOKABLE void activate();
     Q_INVOKABLE void raise   ();
 
-    Q_INVOKABLE void close();
+    Q_INVOKABLE bool close();
 
     //---------------------------------------------------------------------------------------------
     // Geometry
@@ -268,15 +287,22 @@ public: // Interface
     Q_INVOKABLE void updateHover();
     Q_INVOKABLE void clearHover ();
 
-    Q_INVOKABLE void checkLeave(int msec);
+    //Q_INVOKABLE void checkLeave(int msec);
 
     //---------------------------------------------------------------------------------------------
     // Shot
 
+#ifdef QT_4
     Q_INVOKABLE QPixmap takeShot(int x = 0, int y = 0, int width = -1, int height = -1) const;
 
     Q_INVOKABLE bool saveShot(const QString & fileName,
                               int x = 0, int y = 0, int width = -1, int height = -1) const;
+#else
+    Q_INVOKABLE QPixmap takeShot(int x = 0, int y = 0, int width = -1, int height = -1)
+
+    Q_INVOKABLE bool saveShot(const QString & fileName,
+                              int x = 0, int y = 0, int width = -1, int height = -1)
+#endif
 
     //---------------------------------------------------------------------------------------------
     // Cursor
@@ -331,12 +357,21 @@ public: // Interface
     Q_INVOKABLE void unregisterCursor(int shape);
 
 public: // Static functions
+#ifdef QT_4
     Q_INVOKABLE static QPixmap takeItemShot(QGraphicsObject * item,
                                             const QColor    & background = Qt::transparent);
 
     Q_INVOKABLE static bool saveItemShot(const QString   & fileName,
                                          QGraphicsObject * item,
                                          const QColor    & background = Qt::transparent);
+#else
+    Q_INVOKABLE static QPixmap takeItemShot(QQuickItem   * item,
+                                            const QColor & background = Qt::transparent);
+
+    Q_INVOKABLE static bool saveItemShot(const QString & fileName,
+                                         QQuickItem    * item,
+                                         const QColor  & background = Qt::transparent);
+#endif
 
     Q_INVOKABLE static bool compressShot (const QString & fileName, int quality = 0);
     Q_INVOKABLE static bool compressShots(const QString & path,     int quality = 0);
@@ -351,8 +386,8 @@ protected: // Events
     /* virtual */ void moveEvent  (QMoveEvent   * event);
     /* virtual */ void resizeEvent(QResizeEvent * event);
 
-    /* virtual */ void enterEvent(QEvent * event);
-    /* virtual */ void leaveEvent(QEvent * event);
+    ///* virtual */ void enterEvent(QEvent * event);
+    ///* virtual */ void leaveEvent(QEvent * event);
 
     /* virtual */ void mousePressEvent  (QMouseEvent * event);
     /* virtual */ void mouseReleaseEvent(QMouseEvent * event);
@@ -437,7 +472,10 @@ signals:
     void mousePosChanged   ();
     void mouseCursorChanged();
 
-    void openglChanged   ();
+#ifdef QT_4
+    void openglChanged();
+#endif
+
     void antialiasChanged();
     void vsyncChanged    ();
 
@@ -467,8 +505,13 @@ signals:
     void forwardClicked ();
 
 public: // Properties
+#ifdef QT_4
     QDeclarativeItem * item() const;
     void               setItem(QDeclarativeItem * item);
+#else
+    QQuickItem * item() const;
+    void         setItem(QQuickItem * item);
+#endif
 
     qreal itemWidth () const;
     qreal itemHeight() const;
@@ -535,7 +578,9 @@ public: // Properties
     Qt::CursorShape mouseCursor() const;
 
     bool opengl() const;
+#ifdef QT_4
     void setOpengl(bool enabled);
+#endif
 
     bool antialias() const;
     void setAntialias(bool enabled);
@@ -597,6 +642,8 @@ private:
     friend class WWindowPrivate;
 };
 
+#ifdef QT_4
+
 //-------------------------------------------------------------------------------------------------
 // WViewScene
 //-------------------------------------------------------------------------------------------------
@@ -617,6 +664,8 @@ private:
     friend class WDeclarativeItem;
     friend class WDeclarativeItemPrivate;
 };
+
+#endif
 
 #include <private/WView_p>
 

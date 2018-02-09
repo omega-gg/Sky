@@ -19,7 +19,6 @@
 #ifndef SK_NO_RESIZER
 
 // Qt includes
-#include <QApplication>
 #include <QCursor>
 
 // Sk includes
@@ -111,11 +110,19 @@ void WResizerPrivate::init(WResizer::ResizeType type)
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 void WResizerPrivate::startResize(QGraphicsSceneMouseEvent * event)
+#else
+void WResizerPrivate::startResize(QMouseEvent * event)
+#endif
 {
     QRect availableGeometry = view->availableGeometry();
 
+#ifdef QT_4
     cursorPos = event->pos().toPoint();
+#else
+    cursorPos = event->pos();
+#endif
 
     if (type == WResizer::TopLeft)
     {
@@ -325,7 +332,11 @@ WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
 // Events
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* virtual */ void WResizer::mousePressEvent(QGraphicsSceneMouseEvent * event)
+#else
+/* virtual */ void WResizer::mousePressEvent(QMouseEvent * event)
+#endif
 {
     Q_D(WResizer);
 
@@ -394,7 +405,11 @@ WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
     d->startResize(event);
 }
 
+#ifdef QT_4
 /* virtual */ void WResizer::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
+#else
+/* virtual */ void WResizer::mouseMoveEvent(QMouseEvent * event)
+#endif
 {
     Q_D(WResizer);
 

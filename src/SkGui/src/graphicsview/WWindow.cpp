@@ -325,10 +325,10 @@ void WWindowPrivate::init()
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WWindow::checkLeave(int msec)
-{
-    Q_D(WWindow); d->view->checkLeave(msec);
-}
+///* Q_INVOKABLE */ void WWindow::checkLeave(int msec)
+//{
+//    Q_D(WWindow); d->view->checkLeave(msec);
+//}
 
 //-------------------------------------------------------------------------------------------------
 // Shot

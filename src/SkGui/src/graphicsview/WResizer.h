@@ -45,11 +45,20 @@ public: // Enums
     };
 
 public:
+#ifdef QT_4
     WResizer(ResizeType type, QDeclarativeItem * parent = NULL);
+#else
+    WResizer(ResizeType type, QQuickItem * parent = NULL);
+#endif
 
 protected: // Events
+#ifdef QT_4
     /* virtual */ void mousePressEvent(QGraphicsSceneMouseEvent * event);
     /* virtual */ void mouseMoveEvent (QGraphicsSceneMouseEvent * event);
+#else
+    /* virtual */ void mousePressEvent(QMouseEvent * event);
+    /* virtual */ void mouseMoveEvent (QMouseEvent * event);
+#endif
 
 private:
     W_DECLARE_PRIVATE(WResizer)

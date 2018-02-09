@@ -43,8 +43,13 @@ public:
     void init(WResizer::ResizeType type);
 
 public: // Functions
+#ifdef QT_4
     void startResize(QGraphicsSceneMouseEvent * event);
-    void resize     ();
+#else
+    void startResize(QMouseEvent * event);
+#endif
+
+    void resize();
 
 public: // Variables
     WResizer::ResizeType type;

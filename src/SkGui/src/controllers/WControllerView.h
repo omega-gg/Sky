@@ -42,7 +42,11 @@ class SK_GUI_EXPORT WControllerView : public WController
 
     Q_ENUMS(LoadMode)
 
+#ifdef QT_4
     Q_PROPERTY(bool opengl READ opengl WRITE setOpengl NOTIFY openglChanged)
+#else
+    Q_PROPERTY(bool opengl READ opengl CONSTANT)
+#endif
 
     Q_PROPERTY(LoadMode loadMode READ loadMode WRITE setLoadMode NOTIFY loadModeChanged)
 
@@ -99,7 +103,9 @@ public: // Static functions
     Q_INVOKABLE static bool compressShots(const QString & path,     int quality = 0);
 
 signals:
+#ifdef QT_4
     void openglChanged();
+#endif
 
     void loadModeChanged();
 
@@ -107,7 +113,9 @@ signals:
 
 public: // Properties
     bool opengl() const;
+#ifdef QT_4
     void setOpengl(bool enabled);
+#endif
 
     LoadMode loadMode() const;
     void     setLoadMode(LoadMode mode);

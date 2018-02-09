@@ -176,7 +176,7 @@ public: // Interface
     Q_INVOKABLE void updateHover();
     Q_INVOKABLE void clearHover ();
 
-    Q_INVOKABLE void checkLeave(int msec);
+    //Q_INVOKABLE void checkLeave(int msec);
 
     //---------------------------------------------------------------------------------------------
     // Shot

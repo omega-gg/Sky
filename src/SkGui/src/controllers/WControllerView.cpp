@@ -404,6 +404,8 @@ bool WControllerView::opengl() const
     Q_D(const WControllerView); return d->opengl;
 }
 
+#ifdef QT_4
+
 void WControllerView::setOpengl(bool enabled)
 {
     Q_D(WControllerView);
@@ -414,6 +416,8 @@ void WControllerView::setOpengl(bool enabled)
 
     emit openglChanged();
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
