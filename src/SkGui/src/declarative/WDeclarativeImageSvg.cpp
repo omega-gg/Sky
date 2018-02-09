@@ -294,7 +294,7 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
 }
 
 //-------------------------------------------------------------------------------------------------
-// QDeclarativeItem reimplementation
+// QDeclarativeItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WDeclarativeImageSvg::componentComplete()
@@ -314,7 +314,7 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
 }
 
 //-------------------------------------------------------------------------------------------------
-// QGraphicsItem reimplementation
+// QGraphicsItem / QQuickPaintedItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
 #ifdef QT_4

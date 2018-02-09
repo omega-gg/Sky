@@ -329,7 +329,7 @@ void WTextDocumentWithImageResources::requestFinished()
 
     WDeclarativeTextPrivate * d = WDeclarativeTextPrivate::get(item);
 
-    d->updateLayout();
+    d->resetLayout();
 }
 
 //=================================================================================================
@@ -1188,7 +1188,11 @@ void WDeclarativeTextPrivate::drawTextLayout(QPainter      * painter,
 // WDeclarativeText
 //=================================================================================================
 
+#ifdef QT_4
 /* explicit */ WDeclarativeText::WDeclarativeText(QDeclarativeItem * parent)
+#else
+/* explicit */ WDeclarativeText::WDeclarativeText(QQuickItem * parent)
+#endif
     : WDeclarativeItem(new WDeclarativeTextPrivate(this), parent)
 {
     Q_D(WDeclarativeText); d->init();
@@ -1235,20 +1239,24 @@ void WDeclarativeTextPrivate::drawTextLayout(QPainter      * painter,
 
     cursor.mergeCharFormat(format);
 
-    d->updateSize();
+    d->resetSize();
 
     return true;
 }
 
 //-------------------------------------------------------------------------------------------------
-// QDeclarativeItem reimplementation
+// QDeclarativeItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WDeclarativeText::componentComplete()
 {
     Q_D(WDeclarativeText);
 
+#ifdef QT_4
     WDeclarativeItem::componentComplete();
+#else
+    WDeclarativeItemPaint::componentComplete();
+#endif
 
     if (d->updateOnComponentComplete == false) return;
 
@@ -1270,7 +1278,7 @@ void WDeclarativeTextPrivate::drawTextLayout(QPainter      * painter,
 }
 
 //-------------------------------------------------------------------------------------------------
-// QGraphicsItem reimplementation
+// QGraphicsItem / QQuickPaintedItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ QRectF WDeclarativeText::boundingRect() const
@@ -1279,10 +1287,10 @@ void WDeclarativeTextPrivate::drawTextLayout(QPainter      * painter,
 
     QRect rect = d->layedOutTextRect;
 
-    if (d->style != Normal)
+    /*if (d->style != Normal)
     {
         rect.adjust(-1, 0, 1, 2);
-    }
+    }*/
 
     if (d->vAlign == AlignBottom)
     {
@@ -1296,9 +1304,17 @@ void WDeclarativeTextPrivate::drawTextLayout(QPainter      * painter,
     return QRectF(rect);
 }
 
+#ifdef QT_4
 /* virtual */ void WDeclarativeText::paint(QPainter * painter,
                                            const QStyleOptionGraphicsItem *, QWidget *)
+#else
+/* virtual */ void WDeclarativeText::paint(QPainter * painter)
+#endif
 {
+#ifdef QT_5
+    if (isVisible() == false) return;
+#endif
+
     Q_D(WDeclarativeText);
 
     //if (d->cacheAllTextAsImage || d->style != Normal)
@@ -1307,18 +1323,14 @@ void WDeclarativeTextPrivate::drawTextLayout(QPainter      * painter,
 
         if (d->imageCache.isNull()) return;
 
-        QRect br = boundingRect().toRect();
+        QRect rect = boundingRect().toRect();
 
-        bool needClip = clip() && (d->imageCache.width() > width()
-                                   ||
-                                   d->imageCache.height() > height());
-
-        if (needClip)
+        if (clip() && (d->imageCache.width() > width() || d->imageCache.height() > height()))
         {
-             painter->drawPixmap(0, 0, width(), height(), d->imageCache, -br.x(), -br.y(),
+             painter->drawPixmap(0, 0, width(), height(), d->imageCache, -rect.x(), -rect.y(),
                                  width(), height());
         }
-        else painter->drawPixmap(br.x(), br.y(), d->imageCache);
+        else painter->drawPixmap(rect.x(), rect.y(), d->imageCache);
     }
     /*else
     {
@@ -1375,7 +1387,11 @@ void WDeclarativeTextPrivate::drawTextLayout(QPainter      * painter,
 
     if (d->internalWidthUpdate || newGeometry.width() == oldGeometry.width())
     {
+#ifdef QT_4
         WDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
+#else
+        WDeclarativeItemPaint::geometryChanged(newGeometry, oldGeometry);
+#endif
 
         return;
     }
@@ -1402,7 +1418,7 @@ void WDeclarativeTextPrivate::drawTextLayout(QPainter      * painter,
     {
         if ((d->singleline || d->maximumLineCountValid) && widthValid())
         {
-            d->updateLayout();
+             d->updateLayout();
         }
         else d->updateSize();
     }
@@ -1412,19 +1428,27 @@ void WDeclarativeTextPrivate::drawTextLayout(QPainter      * painter,
             &&
             elide != WDeclarativeText::ElideNone && widthValid())
         {
-            d->updateLayout();
+             d->updateLayout();
         }
         else d->updateSize();
     }
 
+#ifdef QT_4
     WDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
+#else
+    WDeclarativeItemPaint::geometryChanged(newGeometry, oldGeometry);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
 // Events
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* virtual */ void WDeclarativeText::mousePressEvent(QGraphicsSceneMouseEvent * event)
+#else
+/* virtual */ void WDeclarativeText::mousePressEvent(QMouseEvent * event)
+#endif
 {
     Q_D(WDeclarativeText);
 
@@ -1440,7 +1464,11 @@ void WDeclarativeTextPrivate::drawTextLayout(QPainter      * painter,
 
     if (event->isAccepted() == false)
     {
+#ifdef QT_4
         WDeclarativeItem::mousePressEvent(event);
+#else
+        WDeclarativeItemPaint::mousePressEvent(event);
+#endif
     }
 }
 
@@ -1458,7 +1486,11 @@ void WDeclarativeTextPrivate::drawTextLayout(QPainter      * painter,
 
     if (event->isAccepted() == false)
     {
+#ifdef QT_4
         WDeclarativeItem::mouseReleaseEvent(event);
+#else
+        WDeclarativeItemPaint::mouseReleaseEvent(event);
+#endif
     }
 }
 
@@ -1476,15 +1508,23 @@ qreal WDeclarativeText::implicitWidth() const
 
         p->requireImplicitWidth = true;
 
-        p->updateSize();
+        p->resetSize();
     }
 
+#ifdef QT_4
     return WDeclarativeItem::implicitWidth();
+#else
+    return WDeclarativeItemPaint::implicitWidth();
+#endif
 }
 
 qreal WDeclarativeText::implicitHeight() const
 {
+#ifdef QT_4
     return WDeclarativeItem::implicitHeight();
+#else
+    return WDeclarativeItemPaint::implicitHeight();
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1523,7 +1563,7 @@ void WDeclarativeText::setText(const QString & text)
         d->determineHorizontalAlignment();
     }
 
-    d->updateLayout();
+    d->resetLayout();
 
     emit textChanged();
 }
@@ -1556,7 +1596,7 @@ void WDeclarativeText::setFont(const QFont & font)
 
     if (oldFont != d->font)
     {
-        d->updateLayout();
+        d->resetLayout();
     }
 
     emit fontChanged();
@@ -1595,10 +1635,12 @@ void WDeclarativeText::setStyle(WDeclarativeText::TextStyle style)
 
     if (d->style == style) return;
 
+#ifdef QT_4
     if (isComponentComplete() && (d->style == Normal || style == Normal))
     {
         prepareGeometryChange();
     }
+#endif
 
     d->style = style;
 
@@ -1670,7 +1712,7 @@ void WDeclarativeText::setHAlign(HAlignment align)
 
     if (d->setHAlign(align, forceAlign) && isComponentComplete())
     {
-        d->updateLayout();
+        d->resetLayout();
     }
 }
 
@@ -1682,7 +1724,7 @@ void WDeclarativeText::resetHAlign()
 
     if (d->determineHorizontalAlignment() && isComponentComplete())
     {
-        d->updateLayout();
+        d->resetLayout();
     }
 }
 
@@ -1722,10 +1764,12 @@ void WDeclarativeText::setVAlign(VAlignment align)
 
     if (d->vAlign == align) return;
 
+#ifdef QT_4
     if (isComponentComplete())
     {
         prepareGeometryChange();
     }
+#endif
 
     d->vAlign = align;
 
@@ -1747,7 +1791,7 @@ void WDeclarativeText::setWrapMode(WrapMode mode)
 
     d->wrapMode = mode;
 
-    d->updateLayout();
+    d->resetLayout();
 
     emit wrapModeChanged();
 }
@@ -1784,7 +1828,7 @@ void WDeclarativeText::setMaximumLineCount(int lines)
     {
         d->maximumLineCount = lines;
 
-        d->updateLayout();
+        d->resetLayout();
 
         emit maximumLineCountChanged();
     }
@@ -1836,7 +1880,7 @@ void WDeclarativeText::setTextFormat(TextFormat format)
         d->doc->setText(d->text);
     }
 
-    d->updateLayout();
+    d->resetLayout();
 
     emit textFormatChanged();
 }
@@ -1856,7 +1900,7 @@ void WDeclarativeText::setElideMode(WDeclarativeText::TextElideMode mode)
 
     d->elideMode = mode;
 
-    d->updateLayout();
+    d->resetLayout();
 
     emit elideModeChanged();
 }
@@ -1888,7 +1932,7 @@ void WDeclarativeText::setLineHeight(qreal lineHeight)
 
     d->lineHeight = lineHeight;
 
-    d->updateLayout();
+    d->resetLayout();
 
     emit lineHeightChanged();
 }
@@ -1908,7 +1952,7 @@ void WDeclarativeText::setLineHeightMode(LineHeightMode mode)
 
     d->lineHeightMode = mode;
 
-    d->updateLayout();
+    d->resetLayout();
 
     emit lineHeightModeChanged();
 }

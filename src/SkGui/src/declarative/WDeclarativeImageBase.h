@@ -106,7 +106,7 @@ public: // Interface
     Q_INVOKABLE void setItemShot(QQuickItem * item);
 #endif
 
-public: // QDeclarativeItem reimplementation
+public: // QDeclarativeItem / QQuickItem reimplementation
     /* virtual */ void componentComplete();
 
 protected: // Functions

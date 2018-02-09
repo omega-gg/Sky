@@ -83,10 +83,10 @@ protected:
     WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQuickItem * parent = NULL);
 #endif
 
-public: // QDeclarativeItem reimplementation
+public: // QDeclarativeItem / QQuickItem reimplementation
     /* virtual */ void componentComplete();
 
-public: // QGraphicsItem reimplementation
+public: // QGraphicsItem / QQuickPaintedItem reimplementation
 #ifdef QT_4
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);

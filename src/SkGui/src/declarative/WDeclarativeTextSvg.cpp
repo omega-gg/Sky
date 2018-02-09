@@ -392,7 +392,7 @@ WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p,
 }
 
 //-------------------------------------------------------------------------------------------------
-// QDeclarativeItem reimplementation
+// QDeclarativeItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WDeclarativeTextSvg::componentComplete()
@@ -405,7 +405,7 @@ WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p,
 }
 
 //-------------------------------------------------------------------------------------------------
-// QGraphicsItem reimplementation
+// QGraphicsItem / QQuickPaintedItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WDeclarativeTextSvg::paint(QPainter * painter,

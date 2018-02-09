@@ -21,13 +21,21 @@
 #include <QTextOption>
 
 // Sk includes
+#ifdef QT_4
 #include <WDeclarativeItem>
+#else
+#include <WDeclarativeItemPaint>
+#endif
 
 #ifndef SK_NO_DECLARATIVETEXT
 
 class WDeclarativeTextPrivate;
 
+#ifdef QT_4
 class SK_GUI_EXPORT WDeclarativeText : public WDeclarativeItem
+#else
+class SK_GUI_EXPORT WDeclarativeText : public WDeclarativeItemPaint
+#endif
 {
     Q_OBJECT
 
@@ -130,17 +138,21 @@ public: // Enums
     enum LineHeightMode { ProportionalHeight, FixedHeight };
 
 public:
+#ifdef QT_4
     explicit WDeclarativeText(QDeclarativeItem * parent = NULL);
+#else
+    explicit WDeclarativeText(QQuickItem * parent = NULL);
+#endif
 
 public: // Interface
     Q_INVOKABLE QString linkAt(const QPoint & pos) const;
 
     Q_INVOKABLE bool setBlockForeground(const QPoint & pos, const QColor & color);
 
-public: // QDeclarativeItem reimplementation
+public: // QDeclarativeItem / QQuickItem reimplementation
     /* virtual */ void componentComplete();
 
-public: // QGraphicsItem reimplementation
+public: // QGraphicsItem / QQuickPaintedItem reimplementation
     /* virtual */ QRectF boundingRect() const;
 
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
@@ -150,8 +162,13 @@ protected: // QGraphicsItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
 
 protected: // Events
+#ifdef QT_4
     /* virtual */ void mousePressEvent  (QGraphicsSceneMouseEvent * event);
     /* virtual */ void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
+#else
+    /* virtual */ void mousePressEvent  (QMouseEvent * event);
+    /* virtual */ void mouseReleaseEvent(QMouseEvent * event);
+#endif
 
 signals:
     void linkActivated(const QString & link);

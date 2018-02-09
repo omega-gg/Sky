@@ -442,7 +442,7 @@ WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p, Q
 }
 
 //-------------------------------------------------------------------------------------------------
-// QDeclarativeItem reimplementation
+// QDeclarativeItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WDeclarativeImageBase::componentComplete()
