@@ -77,6 +77,10 @@ public: // Variables
     HWND id;
     HWND handle;
 
+#ifdef QT_LATEST
+    QWindow * viewport;
+#endif
+
     int x;
     int y;
 

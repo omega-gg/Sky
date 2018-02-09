@@ -155,8 +155,12 @@ public: // QDeclarativeItem / QQuickItem reimplementation
 public: // QGraphicsItem / QQuickPaintedItem reimplementation
     /* virtual */ QRectF boundingRect() const;
 
+#ifdef QT_4
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
+#else
+    /* virtual */ void paint(QPainter * painter);
+#endif
 
 protected: // QGraphicsItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);

@@ -31,7 +31,11 @@
 //=================================================================================================
 
 WDeclarativeTextSvgPrivate::WDeclarativeTextSvgPrivate(WDeclarativeTextSvg * p)
+#ifdef QT_4
     : WDeclarativeItemPrivate(p) {}
+#else
+    : WDeclarativeItemPaintPrivate(p) {}
+#endif
 
 void WDeclarativeTextSvgPrivate::init()
 {
@@ -61,7 +65,9 @@ void WDeclarativeTextSvgPrivate::init()
     hAlign = WDeclarativeText::AlignLeft;
     vAlign = WDeclarativeText::AlignTop;
 
+#ifdef QT_4
     q->setFlag(QGraphicsItem::ItemHasNoContents, false);
+#endif
 
     QObject::connect(renderer, SIGNAL(repaintNeeded()), q, SLOT(onUpdate()));
 }
@@ -375,8 +381,13 @@ void WDeclarativeTextSvgPrivate::onUpdate()
 // WDeclarativeTextSvg
 //=================================================================================================
 
+#ifdef QT_4
 /* explicit */ WDeclarativeTextSvg::WDeclarativeTextSvg(QDeclarativeItem * parent)
     : WDeclarativeItem(new WDeclarativeTextSvgPrivate(this), parent)
+#else
+/* explicit */ WDeclarativeTextSvg::WDeclarativeTextSvg(QQuickItem * parent)
+    : WDeclarativeItemPaint(new WDeclarativeTextSvgPrivate(this), parent)
+#endif
 {
     Q_D(WDeclarativeTextSvg); d->init();
 }
@@ -384,9 +395,14 @@ void WDeclarativeTextSvgPrivate::onUpdate()
 //-------------------------------------------------------------------------------------------------
 // Protected
 
+#ifdef QT_4
 WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p,
                                          QDeclarativeItem           * parent)
     : WDeclarativeItem(p, parent)
+#else
+WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p, QQuickItem * parent)
+    : WDeclarativeItemPaint(p, parent)
+#endif
 {
     Q_D(WDeclarativeTextSvg); d->init();
 }
@@ -399,7 +415,11 @@ WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p,
 {
     Q_D(WDeclarativeTextSvg);
 
+#ifdef QT_4
     WDeclarativeItem::componentComplete();
+#else
+    WDeclarativeItemPaint::componentComplete();
+#endif
 
     d->load();
 }
@@ -408,9 +428,17 @@ WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p,
 // QGraphicsItem / QQuickPaintedItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* virtual */ void WDeclarativeTextSvg::paint(QPainter * painter,
                                               const QStyleOptionGraphicsItem *, QWidget *)
+#else
+/* virtual */ void WDeclarativeTextSvg::paint(QPainter * painter)
+#endif
 {
+#ifdef QT_LATEST
+    if (isVisible() == false) return;
+#endif
+
     Q_D(WDeclarativeTextSvg);
 
     qreal width  = this->width ();
@@ -444,20 +472,35 @@ WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p,
 }
 
 //-------------------------------------------------------------------------------------------------
-// Protected QGraphicsItem reimplementation
+// Protected QGraphicsItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* virtual */ QVariant WDeclarativeTextSvg::itemChange(GraphicsItemChange change,
                                                        const QVariant &   value)
+#else
+/* virtual */ void WDeclarativeTextSvg::itemChange(ItemChange change, const ItemChangeData & data)
+#endif
 {
+#ifdef QT_4
     if (change == ItemVisibleHasChanged)
     {
         Q_D(WDeclarativeTextSvg);
 
+#else
+    Q_D(WDeclarativeTextSvg);
+
+    if (d->view && change == ItemVisibleHasChanged && data.boolValue)
+    {
+#endif
         d->loadVisible();
     }
 
+#ifdef QT_4
     return WDeclarativeItem::itemChange(change, value);
+#else
+    WDeclarativeItem::itemChange(change, data);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -840,7 +883,11 @@ void WDeclarativeTextSvgScalePrivate::onScale()
 // WDeclarativeTextSvgScale
 //=================================================================================================
 
+#ifdef QT_4
 /* explicit */ WDeclarativeTextSvgScale::WDeclarativeTextSvgScale(QDeclarativeItem * parent)
+#else
+/* explicit */ WDeclarativeTextSvgScale::WDeclarativeTextSvgScale(QQuickItem * parent)
+#endif
     : WDeclarativeTextSvg(new WDeclarativeTextSvgScalePrivate(this), parent)
 {
     Q_D(WDeclarativeTextSvgScale); d->init();
@@ -864,13 +911,21 @@ void WDeclarativeTextSvgScalePrivate::onScale()
 }
 
 //-------------------------------------------------------------------------------------------------
-// QGraphicsItem reimplementation
+// QGraphicsItem / QQuickPaintedItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* virtual */ void WDeclarativeTextSvgScale::paint(QPainter                       * painter,
                                                    const QStyleOptionGraphicsItem * option,
                                                    QWidget                        * widget)
+#else
+/* virtual */ void WDeclarativeTextSvgScale::paint(QPainter * painter)
+#endif
 {
+#ifdef QT_LATEST
+    if (isVisible() == false) return;
+#endif
+
     Q_D(WDeclarativeTextSvgScale);
 
     if (d->scaling && d->scalable)
@@ -904,11 +959,19 @@ void WDeclarativeTextSvgScalePrivate::onScale()
         {
             if (d->scaleDelayed)
             {
+#ifdef QT_4
                 if (d->viewport->scale() == 1.0)
+#else
+                if (d->view->item()->scale() == 1.0)
+#endif
                 {
                     d->scaleSize = size;
 
+#ifdef QT_4
                     d->timer.start();
+#else
+                    QTimer::singleShot(0, &d->timer, SLOT(start()));
+#endif
                 }
             }
             else
@@ -920,11 +983,15 @@ void WDeclarativeTextSvgScalePrivate::onScale()
         }
     }
 
+#ifdef QT_4
     WDeclarativeTextSvg::paint(painter, option, widget);
+#else
+    WDeclarativeTextSvg::paint(painter);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
-// Protected QGraphicsItem reimplementation
+// Protected QGraphicsItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WDeclarativeTextSvgScale::geometryChanged(const QRectF & newGeometry,

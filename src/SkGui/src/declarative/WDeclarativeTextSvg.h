@@ -31,7 +31,11 @@ class WDeclarativeGradient;
 // WDeclarativeTextSvg
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 class SK_GUI_EXPORT WDeclarativeTextSvg : public WDeclarativeItem
+#else
+class SK_GUI_EXPORT WDeclarativeTextSvg : public WDeclarativeItemPaint
+#endif
 {
     Q_OBJECT
 
@@ -85,22 +89,35 @@ public: // Enums
     enum TextOutline { OutlineNormal, OutlineRound };
 
 public:
+#ifdef QT_4
     explicit WDeclarativeTextSvg(QDeclarativeItem * parent = NULL);
+#else
+    explicit WDeclarativeTextSvg(QQuickItem * parent = NULL);
+#endif
+
 protected:
     WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p, QDeclarativeItem * parent = NULL);
 
 public: // QDeclarativeItem reimplementation
     /* virtual */ void componentComplete();
 
-public: // QGraphicsItem reimplementation
+public: // QGraphicsItem / QQuickPaintedItem reimplementation
+#ifdef QT_4
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
+#else
+    /* virtual */ void paint(QPainter * painter);
+#endif
 
 protected: // Functions
     virtual void svgChange();
 
-protected: // QGraphicsItem reimplementation
+protected: // QGraphicsItem / QQuickItem reimplementation
+#ifdef QT_4
     /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
+#else
+    /* virtual */ QVariant itemChange(ItemChange change, const ItemChangeData & data);
+#endif
 
 signals:
     void textWidthChanged ();
@@ -200,16 +217,24 @@ class SK_GUI_EXPORT WDeclarativeTextSvgScale : public WDeclarativeTextSvg
     Q_PROPERTY(int scaleDelay READ scaleDelay WRITE setScaleDelay NOTIFY scaleDelayChanged)
 
 public:
+#ifdef QT_4
     explicit WDeclarativeTextSvgScale(QDeclarativeItem * parent = NULL);
+#else
+    explicit WDeclarativeTextSvgScale(QQuickItem * parent = NULL);
+#endif
 
 public: // Interface
     Q_INVOKABLE void applyScale();
 
-public: // QGraphicsItem reimplementation
+public: // QGraphicsItem / QQuickPaintedItem reimplementation
+#ifdef QT_4
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
+#else
+    /* virtual */ void paint(QPainter * painter);
+#endif
 
-protected: // QGraphicsItem reimplementation
+protected: // QGraphicsItem / QQuickItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
 
 protected: // WDeclarativeTextSvg reimplementation

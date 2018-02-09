@@ -31,7 +31,11 @@
 #include <QTimer>
 
 // Private includes
+#ifdef QT_4
 #include <private/WDeclarativeItem_p>
+#else
+#include <private/WDeclarativeItemPaint_p>
+#endif
 
 #ifndef SK_NO_DECLARATIVETEXTSVG
 
@@ -42,7 +46,11 @@ class QSvgRenderer;
 // WDeclarativeTextSvgPrivate
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 class SK_GUI_EXPORT WDeclarativeTextSvgPrivate : public WDeclarativeItemPrivate
+#else
+class SK_GUI_EXPORT WDeclarativeTextSvgPrivate : public WDeclarativeItemPaintPrivate
+#endif
 {
 protected:
     WDeclarativeTextSvgPrivate(WDeclarativeTextSvg * p);

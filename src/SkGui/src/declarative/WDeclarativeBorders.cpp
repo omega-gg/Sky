@@ -202,19 +202,6 @@ void WDeclarativeBordersPrivate::init()
 
 #else
 
-/* virtual */ void WDeclarativeBorders::geometryChanged(const QRectF & newGeometry,
-                                                        const QRectF & oldGeometry)
-{
-    Q_D(WDeclarativeBorders);
-
-    WDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
-
-    if (d->left)   d->updateLeft   = true;
-    if (d->right)  d->updateRight  = true;
-    if (d->top)    d->updateTop    = true;
-    if (d->bottom) d->updateBottom = true;
-}
-
 /* virtual */ QSGNode * WDeclarativeBorders::updatePaintNode(QSGNode             * oldNode,
                                                              UpdatePaintNodeData *)
 {
@@ -268,6 +255,23 @@ void WDeclarativeBordersPrivate::init()
     }
 
     return node;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Protected QQuickItem reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WDeclarativeBorders::geometryChanged(const QRectF & newGeometry,
+                                                        const QRectF & oldGeometry)
+{
+    Q_D(WDeclarativeBorders);
+
+    WDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
+
+    if (d->left)   d->updateLeft   = true;
+    if (d->right)  d->updateRight  = true;
+    if (d->top)    d->updateTop    = true;
+    if (d->bottom) d->updateBottom = true;
 }
 
 #endif

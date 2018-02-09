@@ -18,7 +18,11 @@
 #define WABSTRACTVIEW_H
 
 // Qt includes
+#ifdef QT_4
 #include <QDeclarativeView>
+#else
+#include <QQuickWindow>
+#endif
 
 // Sk includes
 #include <Sk>
@@ -27,14 +31,26 @@
 
 class WAbstractViewPrivate;
 
+#ifdef QT_4
 class SK_GUI_EXPORT WAbstractView : public QDeclarativeView, public WPrivatable
+#else
+class SK_GUI_EXPORT WAbstractView : public QQuickWindow, public WPrivatable
+#endif
 {
     Q_OBJECT
 
 public:
+#ifdef QT_4
     WAbstractView(QWidget * parent = NULL, Qt::WindowFlags flags = 0);
+#else
+    WAbstractView(QWindow * parent = NULL, Qt::WindowFlags flags = 0);
+#endif
 protected:
+#ifdef QT_4
     WAbstractView(WAbstractViewPrivate * p, QWidget * parent = NULL, Qt::WindowFlags flags = 0);
+#else
+    WAbstractView(WAbstractViewPrivate * p, QWindow * parent = NULL, Qt::WindowFlags flags = 0);
+#endif
 
 #ifdef SK_WIN_NATIVE
 public: // Interface
@@ -50,8 +66,15 @@ public: // Interface
     Q_INVOKABLE void raise();
     Q_INVOKABLE void lower();
 
+    Q_INVOKABLE bool close();
+
+#ifdef QT_4
     Q_INVOKABLE void move(int x, int y);
     Q_INVOKABLE void move(const QPoint & position);
+#else
+    Q_INVOKABLE void setPosition(int x, int y);
+    Q_INVOKABLE void setPosition(const QPoint & position);
+#endif
 
     Q_INVOKABLE void resize(int width, int height);
     Q_INVOKABLE void resize(const QSize & size);
@@ -61,6 +84,11 @@ public: // Interface
 
     Q_INVOKABLE void setMinimumSize(int width, int height);
     Q_INVOKABLE void setMaximumSize(int width, int height);
+
+#ifdef QT_LATEST
+    Q_INVOKABLE void setMinimumSize(const QSize & size);
+    Q_INVOKABLE void setMaximumSize(const QSize & size);
+#endif
 
     Q_INVOKABLE void setMinimumWidth (int width);
     Q_INVOKABLE void setMinimumHeight(int height);
@@ -72,8 +100,13 @@ public: // Interface
 
     Q_INVOKABLE void setFocus();
 
+#ifdef QT_4
     Q_INVOKABLE void setWindowIcon (const QIcon   & icon);
     Q_INVOKABLE void setWindowTitle(const QString & title);
+#else
+    Q_INVOKABLE void setIcon (const QIcon   & icon);
+    Q_INVOKABLE void setTitle(const QString & title);
+#endif
 #endif
 
 #ifdef Q_OS_WIN
@@ -96,6 +129,12 @@ protected: // Virtual functions
 public: // Properties
     WId winId() const;
 
+#ifdef QT_LATEST
+    QScreen * screen() const;
+#endif
+
+    QRect geometry() const;
+
     int x() const;
     int y() const;
 
@@ -108,8 +147,13 @@ public: // Properties
     int maximumWidth () const;
     int maximumHeight() const;
 
+#ifdef QT_4
     qreal windowOpacity() const;
     void  setWindowOpacity(qreal level);
+#else
+    qreal opacity() const;
+    void  setOpacity(qreal level);
+#endif
 #endif
 
 private:

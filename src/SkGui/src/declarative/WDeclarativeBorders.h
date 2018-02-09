@@ -48,9 +48,12 @@ public: // QGraphicsItem / QQuickItem reimplementation
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
 #else
-    /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
-
     /* virtual */ QSGNode * updatePaintNode(QSGNode * oldNode, UpdatePaintNodeData * data);
+#endif
+
+#ifdef QT_LATEST
+protected: // QQuickItem reimplementation
+    /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
 #endif
 
 signals:
