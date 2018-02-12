@@ -735,53 +735,6 @@ void WViewPrivate::clearDrag()
 
 //-------------------------------------------------------------------------------------------------
 
-void WViewPrivate::hoverEnterEvent()
-{
-    setEntered(true);
-
-    if (resetHover == false) return;
-
-    Q_Q(WView);
-
-    resetHover = false;
-
-    if (currentResizer)
-    {
-        currentResizer = NULL;
-
-        setResizing(false);
-    }
-
-    q->clearHover ();
-    q->updateHover();
-}
-
-void WViewPrivate::hoverLeaveEvent()
-{
-    if (dragged) return;
-
-    if (resizing == false)
-    {
-        Q_Q(WView);
-
-        QPoint pos = QCursor::pos();
-
-#ifdef Q_OS_LINUX
-        setMousePos(q->mapFromGlobal(pos));
-#else
-        setMousePos(QPoint(pos.x() - q->x(), pos.y() - q->y()));
-#endif
-    }
-
-    if (isUnderMouse())
-    {
-        resetHover = true;
-    }
-    else setEntered(false);
-}
-
-//-------------------------------------------------------------------------------------------------
-
 void WViewPrivate::setActive(bool active)
 {
     if (this->active == active) return;
@@ -2057,11 +2010,56 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
     return WControllerView::compressShots(path, quality);
 }
 
-#ifdef QT_4
-
 //-------------------------------------------------------------------------------------------------
 // Protected functions
 //-------------------------------------------------------------------------------------------------
+
+void WView::hoverEnter()
+{
+    Q_D(WView);
+
+    d->setEntered(true);
+
+    if (d->resetHover == false) return;
+
+    d->resetHover = false;
+
+    if (d->currentResizer)
+    {
+        d->currentResizer = NULL;
+
+        d->setResizing(false);
+    }
+
+    clearHover ();
+    updateHover();
+}
+
+void WView::hoverLeave()
+{
+    Q_D(WView);
+
+    if (d->dragged) return;
+
+    if (d->resizing == false)
+    {
+        QPoint pos = QCursor::pos();
+
+#ifdef Q_OS_LINUX
+        d->setMousePos(mapFromGlobal(pos));
+#else
+        d->setMousePos(QPoint(pos.x() - x(), pos.y() - y()));
+#endif
+    }
+
+    if (d->active && d->isUnderMouse())
+    {
+        d->resetHover = true;
+    }
+    else d->setEntered(false);
+}
+
+#ifdef QT_4
 
 /* virtual */ void WView::drawBackground(QPainter *, const QRectF &) {}
 /* virtual */ void WView::drawForeground(QPainter *, const QRectF &) {}

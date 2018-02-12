@@ -96,7 +96,12 @@ class SK_GUI_EXPORT WWindow : public WDeclarativeMouseArea
 
     Q_PROPERTY(Qt::CursorShape mouseCursor READ mouseCursor NOTIFY mouseCursorChanged)
 
-    Q_PROPERTY(bool opengl    READ opengl    WRITE setOpengl    NOTIFY openglChanged)
+#ifdef QT_4
+    Q_PROPERTY(bool opengl READ opengl WRITE setOpengl NOTIFY openglChanged)
+#else
+    Q_PROPERTY(bool opengl READ opengl CONSTANT)
+#endif
+
     Q_PROPERTY(bool antialias READ antialias WRITE setAntialias NOTIFY antialiasChanged)
     Q_PROPERTY(bool vsync     READ vsync     WRITE setVsync     NOTIFY vsyncChanged)
 
@@ -128,21 +133,30 @@ class SK_GUI_EXPORT WWindow : public WDeclarativeMouseArea
     Q_PROPERTY(QRect screenGeometry    READ screenGeometry    NOTIFY availableGeometryChanged)
 
 public:
+#ifdef QT_4
     explicit WWindow(QDeclarativeItem * parent = NULL);
+#else
+    explicit WWindow(QQuickItem * parent = NULL);
+#endif
 
 public: // Interface
     Q_INVOKABLE void activate();
     Q_INVOKABLE void raise   ();
 
-    Q_INVOKABLE void close();
+    Q_INVOKABLE bool close();
 
     //---------------------------------------------------------------------------------------------
     // Focus
 
     Q_INVOKABLE bool getFocus() const;
 
-    Q_INVOKABLE void clearFocus    ();
+    Q_INVOKABLE void clearFocus();
+
+#ifdef QT_4
     Q_INVOKABLE void clearFocusItem(QDeclarativeItem * item);
+#else
+    Q_INVOKABLE void clearFocusItem(QQuickItem * item);
+#endif
 
     //---------------------------------------------------------------------------------------------
     // Geometry
@@ -181,10 +195,17 @@ public: // Interface
     //---------------------------------------------------------------------------------------------
     // Shot
 
+#ifdef QT_4
     Q_INVOKABLE QPixmap takeShot(int x = 0, int y = 0, int width = -1, int height = -1) const;
 
     Q_INVOKABLE bool saveShot(const QString & fileName,
                               int x = 0, int y = 0, int width = -1, int height = -1) const;
+#else
+    Q_INVOKABLE QPixmap takeShot(int x = 0, int y = 0, int width = -1, int height = -1);
+
+    Q_INVOKABLE bool saveShot(const QString & fileName,
+                              int x = 0, int y = 0, int width = -1, int height = -1);
+#endif
 
     //---------------------------------------------------------------------------------------------
     // Cursor
@@ -245,15 +266,40 @@ public: // Interface
 #endif
 
 public: // Static functions
+#ifdef QT_4
     Q_INVOKABLE static QPixmap takeItemShot(QGraphicsObject * item,
                                             const QColor    & background = Qt::transparent);
 
     Q_INVOKABLE static bool saveItemShot(const QString   & fileName,
                                          QGraphicsObject * item,
                                          const QColor    & background = Qt::transparent);
+#else
+    Q_INVOKABLE static QPixmap takeItemShot(QQuickItem   * item,
+                                            const QColor & background = Qt::transparent);
+
+    Q_INVOKABLE static bool saveItemShot(const QString & fileName,
+                                         QQuickItem    * item,
+                                         const QColor  & background = Qt::transparent);
+#endif
 
     Q_INVOKABLE static bool compressShot (const QString & fileName, int quality = 0);
     Q_INVOKABLE static bool compressShots(const QString & path,     int quality = 0);
+
+protected: // Events
+#ifdef QT_4
+    /* virtual */ void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
+    /* virtual */ void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
+#else
+    /* virtual */ void hoverEnterEvent(QHoverEvent * event);
+    /* virtual */ void hoverLeaveEvent(QHoverEvent * event);
+
+    /* virtual */ void dragEnterEvent(QDragEnterEvent * event);
+    /* virtual */ void dragLeaveEvent(QDragLeaveEvent * event);
+
+    /* virtual */ void dragMoveEvent(QDragMoveEvent * event);
+
+    /* virtual */ void dropEvent(QDropEvent * event);
+#endif
 
 signals:
     void iconChanged();
@@ -317,7 +363,10 @@ signals:
     void mousePosChanged   ();
     void mouseCursorChanged();
 
-    void openglChanged   ();
+#ifdef QT_4
+    void openglChanged();
+#endif
+
     void antialiasChanged();
     void vsyncChanged    ();
 
@@ -434,7 +483,10 @@ public: // Properties
     Qt::CursorShape mouseCursor() const;
 
     bool opengl() const;
+
+#ifdef QT_4
     void setOpengl(bool enabled);
+#endif
 
     bool antialias() const;
     void setAntialias(bool enabled);

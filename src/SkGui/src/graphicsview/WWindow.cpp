@@ -18,10 +18,6 @@
 
 #ifndef SK_NO_WINDOW
 
-// Qt includes
-#include <QApplication>
-#include <QKeyEvent>
-
 // Sk includes
 #include <WControllerApplication>
 #include <WControllerFile>
@@ -52,6 +48,12 @@ void WWindowPrivate::init()
 
     hoverItem = NULL;
 
+    q->setAcceptHoverEvents(true);
+
+#ifdef QT_LATEST
+    q->setFlag(QQuickItem::ItemAcceptsDrops);
+#endif
+
     //---------------------------------------------------------------------------------------------
     // View
 
@@ -63,11 +65,19 @@ void WWindowPrivate::init()
     view = new WView(q, NULL, Qt::FramelessWindowHint);
 #endif
 
+#ifdef QT_4
     view->setWindowTitle(sk->name());
+#else
+    view->setTitle(sk->name());
+#endif
 
     if (icon.isEmpty() == false)
     {
+#ifdef QT_4
         view->setWindowIcon(QIcon(icon));
+#else
+        view->setIcon(QIcon(icon));
+#endif
     }
 
     view->setVisible(true);
@@ -182,7 +192,11 @@ void WWindowPrivate::init()
 // WWindow
 //=================================================================================================
 
+#ifdef QT_4
 /* explicit */ WWindow::WWindow(QDeclarativeItem * parent)
+#else
+/* explicit */ WWindow::WWindow(QQuickItem * parent)
+#endif
     : WDeclarativeMouseArea(new WWindowPrivate(this), parent)
 {
     Q_D(WWindow); d->init();
@@ -204,9 +218,11 @@ void WWindowPrivate::init()
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WWindow::close()
+/* Q_INVOKABLE */ bool WWindow::close()
 {
-    Q_D(WWindow); d->view->close();
+    Q_D(WWindow);
+
+    return d->view->close();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -216,7 +232,11 @@ void WWindowPrivate::init()
 {
     Q_D(const WWindow);
 
+#ifdef QT_4
     return (d->view->d_func()->scene->focusItem() != NULL);
+#else
+    return (d->view->focusObject() != NULL);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -226,14 +246,36 @@ void WWindowPrivate::init()
     setFocus(true);
 }
 
+#ifdef QT_4
 /* Q_INVOKABLE */ void WWindow::clearFocusItem(QDeclarativeItem * item)
+#else
+/* Q_INVOKABLE */ void WWindow::clearFocusItem(QQuickItem * item)
+#endif
 {
     Q_ASSERT(item);
 
+#ifdef QT_4
     if (item->focusItem())
     {
         setFocus(true);
     }
+#else
+    Q_D(WWindow);
+
+    QQuickItem * parent = d->view->activeFocusItem();
+
+    while (parent)
+    {
+        parent = parent->parentItem();
+
+        if (parent == item)
+        {
+            setFocus(true);
+
+            return;
+        }
+    }
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -333,15 +375,36 @@ void WWindowPrivate::init()
 //-------------------------------------------------------------------------------------------------
 // Shot
 
+#ifdef QT_4
 /* Q_INVOKABLE */ QPixmap WWindow::takeShot(int x, int y, int width, int height) const
+#else
+/* Q_INVOKABLE */ QPixmap WWindow::takeShot(int x, int y, int width, int height)
+#endif
 {
-    Q_D(const WWindow); return d->view->takeShot(x, y, width, height);
+#ifdef QT_4
+    Q_D(const WWindow);
+#else
+    Q_D(WWindow);
+#endif
+
+    return d->view->takeShot(x, y, width, height);
 }
 
+#ifdef QT_4
 /* Q_INVOKABLE */ bool WWindow::saveShot(const QString & fileName, int x,     int y,
                                                                    int width, int height) const
+#else
+/* Q_INVOKABLE */ bool WWindow::saveShot(const QString & fileName, int x,     int y,
+                                                                   int width, int height)
+#endif
 {
-    Q_D(const WWindow); return d->view->saveShot(fileName, x, y, width, height);
+#ifdef QT_4
+    Q_D(const WWindow);
+#else
+    Q_D(WWindow);
+#endif
+
+    return d->view->saveShot(fileName, x, y, width, height);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -507,15 +570,26 @@ void WWindowPrivate::init()
 // Static functions
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* Q_INVOKABLE static */ QPixmap WWindow::takeItemShot(QGraphicsObject * item,
                                                        const QColor    & background)
+#else
+/* Q_INVOKABLE static */ QPixmap WWindow::takeItemShot(QQuickItem   * item,
+                                                       const QColor & background)
+#endif
 {
     return WView::takeItemShot(item, background);
 }
 
+#ifdef QT_4
 /* Q_INVOKABLE static */ bool WWindow::saveItemShot(const QString   & fileName,
                                                     QGraphicsObject * item,
                                                     const QColor    & background)
+#else
+/* Q_INVOKABLE static */ bool WWindow::saveItemShot(const QString & fileName,
+                                                    QQuickItem    * item,
+                                                    const QColor  & background)
+#endif
 {
     return WView::saveItemShot(fileName, item, background);
 }
@@ -531,6 +605,68 @@ void WWindowPrivate::init()
 {
     return WView::compressShots(path, quality);
 }
+
+//-------------------------------------------------------------------------------------------------
+// Protected events
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_4
+/* virtual */ void WWindow::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
+#else
+/* virtual */ void WWindow::hoverEnterEvent(QHoverEvent * event)
+#endif
+{
+    Q_D(WWindow);
+
+    qDebug("WINDOW ENTER");
+
+    d->view->hoverEnter();
+
+    WDeclarativeMouseArea::hoverEnterEvent(event);
+}
+
+#ifdef QT_4
+/* virtual */ void WWindow::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
+#else
+/* virtual */ void WWindow::hoverLeaveEvent(QHoverEvent * event)
+#endif
+{
+    Q_D(WWindow);
+
+    qDebug("WINDOW LEAVE");
+
+    d->view->hoverEnter();
+
+    WDeclarativeMouseArea::hoverLeaveEvent(event);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_LATEST
+
+/* virtual */ void WWindow::dragEnterEvent(QDragEnterEvent * event)
+{
+    Q_D(WWindow); d->view->dragEnterEvent(event);
+}
+
+/* virtual */ void WWindow::dragLeaveEvent(QDragLeaveEvent * event)
+{
+    Q_D(WWindow); d->view->dragLeaveEvent(event);
+}
+
+/* virtual */ void WWindow::dragMoveEvent(QDragMoveEvent * event)
+{
+    Q_D(WWindow); d->view->dragMoveEvent(event);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WWindow::dropEvent(QDropEvent * event)
+{
+    Q_D(WWindow); d->view->dropEvent(event);
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Properties
@@ -556,7 +692,11 @@ void WWindow::setIcon(const QString & icon)
 
     d->icon = icon;
 
+#ifdef QT_4
     d->view->setWindowIcon(QIcon(icon));
+#else
+    d->view->setIcon(QIcon(icon));
+#endif
 
     emit iconChanged();
 }
@@ -585,16 +725,28 @@ void WWindow::setVisible(bool visible)
 
 qreal WWindow::opacity() const
 {
-    Q_D(const WWindow); return d->view->windowOpacity();
+    Q_D(const WWindow);
+
+#ifdef QT_4
+    return d->view->windowOpacity();
+#else
+    return d->view->opacity();
+#endif
 }
 
 void WWindow::setOpacity(qreal opacity)
 {
     Q_D(WWindow);
 
+#ifdef QT_4
     if (d->view->windowOpacity() == opacity) return;
 
     d->view->setWindowOpacity(opacity);
+#else
+    if (d->view->opacity() == opacity) return;
+
+    d->view->setOpacity(opacity);
+#endif
 
     emit opacityChanged();
 }
@@ -817,7 +969,7 @@ void WWindow::setLocked(bool locked)
 
 bool WWindow::isActive() const
 {
-    Q_D(const WWindow); return d->view->isActiveWindow();
+    Q_D(const WWindow); return d->view->isActive();
 }
 
 bool WWindow::isEntered() const
@@ -873,10 +1025,14 @@ bool WWindow::opengl() const
     Q_D(const WWindow); return d->view->opengl();
 }
 
+#ifdef QT_4
+
 void WWindow::setOpengl(bool enabled)
 {
     Q_D(WWindow); d->view->setOpengl(enabled);
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 

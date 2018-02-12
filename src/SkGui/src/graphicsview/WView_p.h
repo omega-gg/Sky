@@ -95,9 +95,6 @@ public: // Functions
     void updateDrag();
     void clearDrag ();
 
-    void hoverEnterEvent();
-    void hoverLeaveEvent();
-
     void setActive(bool active);
 
     void setEntered (bool entered);
