@@ -2146,7 +2146,7 @@ void WView::hoverLeave()
 
 //-------------------------------------------------------------------------------------------------
 
-//#ifdef QT_4
+#ifdef QT_4
 
 ///* virtual */ void WView::enterEvent(QEvent * event)
 //{
@@ -2174,7 +2174,7 @@ void WView::hoverLeave()
 //    WAbstractView::leaveEvent(event);
 //}
 
-//#endif
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
