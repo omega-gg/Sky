@@ -367,10 +367,14 @@ void WWindowPrivate::init()
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
+
 ///* Q_INVOKABLE */ void WWindow::checkLeave(int msec)
 //{
 //    Q_D(WWindow); d->view->checkLeave(msec);
 //}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Shot
@@ -618,8 +622,6 @@ void WWindowPrivate::init()
 {
     Q_D(WWindow);
 
-    qDebug("WINDOW ENTER");
-
     d->view->hoverEnter();
 
     WDeclarativeMouseArea::hoverEnterEvent(event);
@@ -633,9 +635,7 @@ void WWindowPrivate::init()
 {
     Q_D(WWindow);
 
-    qDebug("WINDOW LEAVE");
-
-    d->view->hoverEnter();
+    d->view->hoverLeave();
 
     WDeclarativeMouseArea::hoverLeaveEvent(event);
 }

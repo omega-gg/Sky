@@ -31,7 +31,7 @@
 
 void WDeclarativeGradientStop::updateGradient()
 {
-    WDeclarativeGradient * gradient = qobject_cast<WDeclarativeGradient*>(parent());
+    WDeclarativeGradient * gradient = qobject_cast<WDeclarativeGradient *> (parent());
 
     if (gradient) gradient->update();
 }
@@ -126,7 +126,11 @@ void WDeclarativeGradient::setType(GradientType type)
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 QDeclarativeListProperty<WDeclarativeGradientStop> WDeclarativeGradient::stops()
+#else
+QQmlListProperty<WDeclarativeGradientStop> WDeclarativeGradient::stops()
+#endif
 {
     return QDeclarativeListProperty<WDeclarativeGradientStop>(this, _stops);
 }

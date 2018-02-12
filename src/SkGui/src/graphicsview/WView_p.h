@@ -137,6 +137,10 @@ public: // Functions
 public: // Slots
     void onGeometryChanged();
 
+#ifdef QT_4
+    //void onLeaveTimeout();
+#endif
+
     void onFadeTimeout();
     void onIdleTimeout();
 
@@ -175,7 +179,9 @@ public: // Variables
     bool antialias;
     bool vsync;
 
-    QTimer timerLeave;
+#ifdef QT_4
+    //QTimer timerLeave;
+#endif
 
     //---------------------------------------------------------------------------------------------
     // Fade

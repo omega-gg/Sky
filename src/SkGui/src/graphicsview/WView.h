@@ -287,7 +287,9 @@ public: // Interface
     Q_INVOKABLE void updateHover();
     Q_INVOKABLE void clearHover ();
 
+#ifdef QT_4
     //Q_INVOKABLE void checkLeave(int msec);
+#endif
 
     //---------------------------------------------------------------------------------------------
     // Shot
@@ -391,8 +393,10 @@ protected: // Events
     /* virtual */ void moveEvent  (QMoveEvent   * event);
     /* virtual */ void resizeEvent(QResizeEvent * event);
 
-    ///* virtual */ void enterEvent(QEvent * event);
-    ///* virtual */ void leaveEvent(QEvent * event);
+//#ifdef QT_4
+//    /* virtual */ void enterEvent(QEvent * event);
+//    /* virtual */ void leaveEvent(QEvent * event);
+//#endif
 
     /* virtual */ void mousePressEvent  (QMouseEvent * event);
     /* virtual */ void mouseReleaseEvent(QMouseEvent * event);
@@ -630,7 +634,10 @@ public: // Properties
 private:
     W_DECLARE_PRIVATE(WView)
 
-    Q_PRIVATE_SLOT(d_func(), void onGeometryChanged     ())
+    Q_PRIVATE_SLOT(d_func(), void onGeometryChanged())
+#ifdef QT_4
+    //Q_PRIVATE_SLOT(d_func(), void onLeaveTimeout())
+#endif
     Q_PRIVATE_SLOT(d_func(), void onFadeTimeout         ())
     Q_PRIVATE_SLOT(d_func(), void onIdleTimeout         ())
     Q_PRIVATE_SLOT(d_func(), void onCursorVisibleChanged())

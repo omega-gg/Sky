@@ -18,7 +18,11 @@
 #define WIMAGECOLORFILTER_H
 
 // Qt includes
+#ifdef QT_4
 #include <QDeclarativeItem>
+#else
+#include <QQuickItem>
+#endif
 
 // Sk includes
 #include <WImageFilter>
@@ -69,7 +73,11 @@ class SK_GUI_EXPORT WDeclarativeGradient : public QObject
 
     Q_PROPERTY(GradientType type READ type WRITE setType NOTIFY typeChanged)
 
+#ifdef QT_4
     Q_PROPERTY(QDeclarativeListProperty<WDeclarativeGradientStop> stops READ stops)
+#else
+    Q_PROPERTY(QQmlListProperty<WDeclarativeGradientStop> stops READ stops)
+#endif
 
     Q_CLASSINFO("DefaultProperty", "stops")
 
@@ -96,7 +104,11 @@ public: // Properties
     GradientType type() const;
     void         setType(GradientType type);
 
+#ifdef QT_4
     QDeclarativeListProperty<WDeclarativeGradientStop> stops();
+#else
+    QQmlListProperty<WDeclarativeGradientStop> stops();
+#endif
 
     const QGradient * gradient() const;
 

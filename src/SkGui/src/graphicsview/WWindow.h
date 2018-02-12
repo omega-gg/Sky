@@ -190,7 +190,9 @@ public: // Interface
     Q_INVOKABLE void updateHover();
     Q_INVOKABLE void clearHover ();
 
+#ifdef QT_4
     //Q_INVOKABLE void checkLeave(int msec);
+#endif
 
     //---------------------------------------------------------------------------------------------
     // Shot

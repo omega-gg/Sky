@@ -269,6 +269,10 @@ void WViewPrivate::init(QQuickItem * item)
     antialias = false;
     vsync     = false;
 
+#ifdef QT_4
+    //timerLeave.setSingleShot(true);
+#endif
+
     //---------------------------------------------------------------------------------------------
     // Fade
 
@@ -456,6 +460,10 @@ void WViewPrivate::init(QQuickItem * item)
 
     QObject::connect(q, SIGNAL(widthChanged ()), q, SIGNAL(centerXChanged()));
     QObject::connect(q, SIGNAL(heightChanged()), q, SIGNAL(centerYChanged()));
+
+#ifdef QT_4
+    //QObject::connect(&timerLeave, SIGNAL(timeout()), q, SLOT(onLeaveTimeout()));
+#endif
 
     QObject::connect(&fadeTimer, SIGNAL(timeout()), q, SLOT(onFadeTimeout()));
     QObject::connect(&idleTimer, SIGNAL(timeout()), q, SLOT(onIdleTimeout()));
@@ -972,10 +980,9 @@ bool WViewPrivate::itemUnderMouse(QQuickItem * item) const
 
 void WViewPrivate::setCursor(Qt::CursorShape shape)
 {
-    if (cursor != shape)
-    {
-        applyCursor(shape);
-    }
+    if (cursor == shape) return;
+
+    applyCursor(shape);
 }
 
 void WViewPrivate::applyCursor(Qt::CursorShape shape)
@@ -1182,6 +1189,20 @@ void WViewPrivate::onGeometryChanged()
 
     emit q->availableGeometryChanged();
 }
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_4
+
+/*void WViewPrivate::onLeaveTimeout()
+{
+    Q_Q(WView);
+
+    q->clearHover ();
+    q->updateHover();
+}*/
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -1681,10 +1702,14 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
+
 ///* Q_INVOKABLE */ void WView::checkLeave(int msec)
 //{
 //    Q_D(WView); d->timerLeave.start(msec);
 //}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Shot
@@ -2121,6 +2146,8 @@ void WView::hoverLeave()
 
 //-------------------------------------------------------------------------------------------------
 
+//#ifdef QT_4
+
 ///* virtual */ void WView::enterEvent(QEvent * event)
 //{
 //    Q_D(WView);
@@ -2146,6 +2173,8 @@ void WView::hoverLeave()
 
 //    WAbstractView::leaveEvent(event);
 //}
+
+//#endif
 
 //-------------------------------------------------------------------------------------------------
 
