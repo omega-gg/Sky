@@ -1377,7 +1377,7 @@ void WDeclarativeTextPrivate::drawTextLayout(QPainter      * painter,
 }
 
 //-------------------------------------------------------------------------------------------------
-// Protected QGraphicsItem reimplementation
+// Protected QGraphicsItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WDeclarativeText::geometryChanged(const QRectF & newGeometry,

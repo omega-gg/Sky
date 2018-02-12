@@ -93,18 +93,32 @@ void WViewResizerPrivate::refreshCoordinates()
     int sizeX = width  - size2x;
     int sizeY = height - size2x;
 
+#ifdef QT_4
     topLeft    ->setPos(QPoint(0,     0));
     topRight   ->setPos(QPoint(sizeX, 0));
     bottomLeft ->setPos(QPoint(0,     sizeY));
     bottomRight->setPos(QPoint(sizeX, sizeY));
+#else
+    topLeft    ->setPosition(QPoint(0,     0));
+    topRight   ->setPosition(QPoint(sizeX, 0));
+    bottomLeft ->setPosition(QPoint(0,     sizeY));
+    bottomRight->setPosition(QPoint(sizeX, sizeY));
+#endif
 
     sizeX = width  - size;
     sizeY = height - size;
 
+#ifdef QT_4
     left  ->setPos(QPoint(0,      size2x));
     right ->setPos(QPoint(sizeX,  size2x));
     top   ->setPos(QPoint(size2x, 0));
     bottom->setPos(QPoint(size2x, sizeY));
+#else
+    left  ->setPosition(QPoint(0,      size2x));
+    right ->setPosition(QPoint(sizeX,  size2x));
+    top   ->setPosition(QPoint(size2x, 0));
+    bottom->setPosition(QPoint(size2x, sizeY));
+#endif
 
     //---------------------------------------------------------------------------------------------
     // Size
@@ -129,14 +143,18 @@ void WViewResizerPrivate::refreshCoordinates()
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* explicit */ WViewResizer::WViewResizer(QDeclarativeItem * parent)
+#else
+/* explicit */ WViewResizer::WViewResizer(QQuickItem * parent)
+#endif
     : WDeclarativeItem(new WViewResizerPrivate(this), parent)
 {
     Q_D(WViewResizer); d->init();
 }
 
 //-------------------------------------------------------------------------------------------------
-// Protected QDeclarativeItem reimplementation
+// Protected QDeclarativeItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WViewResizer::geometryChanged(const QRectF & newGeometry,

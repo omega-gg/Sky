@@ -162,7 +162,7 @@ public: // QGraphicsItem / QQuickPaintedItem reimplementation
     /* virtual */ void paint(QPainter * painter);
 #endif
 
-protected: // QGraphicsItem reimplementation
+protected: // QGraphicsItem / QQuickItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
 
 protected: // Events

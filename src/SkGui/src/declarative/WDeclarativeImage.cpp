@@ -532,7 +532,7 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
 }
 
 //-------------------------------------------------------------------------------------------------
-// Protected QGraphicsItem reimplementation
+// Protected QGraphicsItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WDeclarativeImageScale::geometryChanged(const QRectF & newGeometry,

@@ -19,9 +19,9 @@
 #ifndef SK_NO_VIEWDRAG
 
 // Qt includes
-#include <QApplication>
-#include <QScreen>
+#ifndef Q_OS_WIN
 #include <QCursor>
+#endif
 
 // Sk includes
 #include <WView>
@@ -52,7 +52,9 @@ public: // Variables
     bool dragEnabled;
     bool dragging;
 
+#ifndef Q_OS_WIN
     QPoint dragLastPos;
+#endif
 
 protected:
     W_DECLARE_PUBLIC(WViewDrag)
@@ -85,7 +87,11 @@ void WViewDragPrivate::clearDrag()
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* explicit */ WViewDrag::WViewDrag(QDeclarativeItem * parent)
+#else
+/* explicit */ WViewDrag::WViewDrag(QQuickItem * parent)
+#endif
     : WDeclarativeMouseArea(new WViewDragPrivate(this), parent)
 {
     Q_D(WViewDrag); d->init();
@@ -95,7 +101,11 @@ void WViewDragPrivate::clearDrag()
 // Events
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* virtual */ void WViewDrag::mousePressEvent(QGraphicsSceneMouseEvent * event)
+#else
+/* virtual */ void WViewDrag::mousePressEvent(QMouseEvent * event)
+#endif
 {
     Q_D(WViewDrag);
 
@@ -105,13 +115,19 @@ void WViewDragPrivate::clearDrag()
     {
         d->dragging = true;
 
+#ifndef Q_OS_WIN
         d->dragLastPos = QPoint(-1, -1);
+#endif
 
         d->view->d_func()->setDragged(true);
     }
 }
 
+#ifdef QT_4
 /* virtual */ void WViewDrag::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
+#else
+/* virtual */ void WViewDrag::mouseReleaseEvent(QMouseEvent * event)
+#endif
 {
     Q_D(WViewDrag);
 
@@ -122,11 +138,20 @@ void WViewDragPrivate::clearDrag()
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* virtual */ void WViewDrag::mouseMoveEvent(QGraphicsSceneMouseEvent *)
+#else
+/* virtual */ void WViewDrag::mouseMoveEvent(QMouseEvent *)
+#endif
 {
     Q_D(WViewDrag);
 
-    if (d->dragging == false) return;
+    if (d->dragging == false)
+    {
+        WDeclarativeMouseArea::mouseMoveEvent(event);
+
+        return;
+    }
 
 #ifdef Q_OS_WIN
     ReleaseCapture();
@@ -154,9 +179,9 @@ void WViewDragPrivate::clearDrag()
             pos.setY(d->view->y());
         }
 
-        int boxY = d->view->pos().y() + moveY;
+        int boxY = d->view->position().y() + moveY;
 
-        int maxHeight = geometryHeight - 25 - 2;
+        int maxHeight = geometryHeight - 27;
 
         if (boxY < geometry.y())
         {
@@ -176,6 +201,8 @@ void WViewDragPrivate::clearDrag()
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
+
 /* virtual */ bool WViewDrag::sceneEvent(QEvent * event)
 {
     bool result = WDeclarativeMouseArea::sceneEvent(event);
@@ -189,6 +216,17 @@ void WViewDragPrivate::clearDrag()
 
     return result;
 }
+
+#else
+
+/* virtual */ void WViewDrag::mouseUngrabEvent()
+{
+    Q_D(WViewDrag);
+
+    d->clearDrag();
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Properties

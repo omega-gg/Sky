@@ -356,9 +356,9 @@ void WViewPrivate::init(QQuickItem * item)
         QObject::connect(item, SIGNAL(yChanged()), q, SIGNAL(originYChanged()));
     }
 
+#ifdef QT_4
     if (opengl)
     {
-#ifdef QT_4
         QGLFormat format = QGLFormat::defaultFormat();
 
         format.setSampleBuffers(true);
@@ -366,29 +366,27 @@ void WViewPrivate::init(QQuickItem * item)
         q->setViewport(new QGLWidget(format));
 
         q->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-#else
-        QSurfaceFormat format;
-
-        format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
-
-        format.setDepthBufferSize(24);
-
-        format.setSamples     (0);
-        format.setSwapInterval(0);
-
-        q->setFormat(format);
-#endif
     }
     else
     {
-#ifdef QT_4
         q->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 
 #ifdef Q_OS_WIN
         q->setWindowClip(true);
 #endif
-#endif
     }
+#else
+    QSurfaceFormat format;
+
+    format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
+
+    format.setDepthBufferSize(24);
+
+    format.setSamples     (0);
+    format.setSwapInterval(0);
+
+    q->setFormat(format);
+#endif
 
 #ifdef QT_4
     q->setScene(scene);
@@ -1037,6 +1035,7 @@ void WViewPrivate::applyCursor(Qt::CursorShape shape)
     {
         const QCursor & cursor = cursors.value(shape);
 
+#ifdef QT_4
         if (QApplication::overrideCursor())
         {
              QApplication::changeOverrideCursor(cursor);
@@ -1048,6 +1047,19 @@ void WViewPrivate::applyCursor(Qt::CursorShape shape)
         QApplication::changeOverrideCursor(shape);
     }
     else if (shape) QApplication::setOverrideCursor(shape);
+#else
+        if (QGuiApplication::overrideCursor())
+        {
+             QGuiApplication::changeOverrideCursor(cursor);
+        }
+        else QGuiApplication::setOverrideCursor(cursor);
+    }
+    else if (QGuiApplication::overrideCursor())
+    {
+        QGuiApplication::changeOverrideCursor(shape);
+    }
+    else if (shape) QGuiApplication::setOverrideCursor(shape);
+#endif
 
     emit q->mouseCursorChanged();
 }
@@ -1089,11 +1101,54 @@ void WViewPrivate::setKeyAltPressed(bool pressed)
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_LATEST
+
+void WViewPrivate::getItems(QList<QQuickItem *> * items,
+                            QQuickItem          * item, const QPoint & pos) const
+{
+    if (item->isVisible() == false) return;
+
+    QPointF position = item->mapFromScene(pos);
+
+    if (item->boundingRect().contains(position) == false) return;
+
+    QList<QQuickItem *> childsA = item->childItems();
+    QList<QQuickItem *> childsB;
+
+    foreach (QQuickItem * child, childsA)
+    {
+        int index = 0;
+
+        while (index < childsB.count() && childsB.at(index)->z() <= child->z())
+        {
+            index++;
+        }
+
+        childsB.insert(index, child);
+    }
+
+    for (int i = childsB.count() - 1; i > -1; i--)
+    {
+        getItems(items, childsB.at(i), pos);
+    }
+
+    items->append(item);
+}
+
+#endif
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_4
 QList<WDeclarativeMouseArea *>
 WViewPrivate::getMouseAreas(const QList<QGraphicsItem *> & items) const
+#else
+QList<WDeclarativeMouseArea *> WViewPrivate::getMouseAreas(const QList<QQuickItem *> & items) const
+#endif
 {
     QList<WDeclarativeMouseArea *> mouseAreas;
 
+#ifdef QT_4
     foreach (QGraphicsItem * item, items)
     {
         QGraphicsObject * graphicsObject = item->toGraphicsObject();
@@ -1101,29 +1156,38 @@ WViewPrivate::getMouseAreas(const QList<QGraphicsItem *> & items) const
         if (graphicsObject == NULL) continue;
 
         WDeclarativeMouseArea * area = qobject_cast<WDeclarativeMouseArea *> (graphicsObject);
+#else
+    foreach (QQuickItem * item, items)
+    {
+        WDeclarativeMouseArea * area = qobject_cast<WDeclarativeMouseArea *> (item);
+#endif
 
-        if (area)
+        if (area == NULL) continue;
+
+        if (area->d_func()->hoverEnabled)
         {
-            if (area->d_func()->hoverEnabled)
-            {
-                mouseAreas.append(area);
-            }
+            mouseAreas.append(area);
+        }
 
-            if (area->d_func()->hoverRetain)
-            {
-                return mouseAreas;
-            }
+        if (area->d_func()->hoverRetain)
+        {
+            return mouseAreas;
         }
     }
 
     return mouseAreas;
 }
 
+#ifdef QT_4
 QList<WDeclarativeMouseArea *>
 WViewPrivate::getDropAreas(const QList<QGraphicsItem *> & items) const
+#else
+QList<WDeclarativeMouseArea *> WViewPrivate::getDropAreas(const QList<QQuickItem *> & items) const
+#endif
 {
     QList<WDeclarativeMouseArea *> dropAreas;
 
+#ifdef QT_4
     foreach (QGraphicsItem * item, items)
     {
         QGraphicsObject * graphicsObject = item->toGraphicsObject();
@@ -1131,8 +1195,17 @@ WViewPrivate::getDropAreas(const QList<QGraphicsItem *> & items) const
         if (graphicsObject == NULL) continue;
 
         WDeclarativeMouseArea * area = qobject_cast<WDeclarativeMouseArea *> (graphicsObject);
+#else
+    foreach (QQuickItem * item, items)
+    {
+        WDeclarativeMouseArea * area = qobject_cast<WDeclarativeMouseArea *> (item);
+#endif
 
+#ifdef QT_4
         if (area && area->acceptDrops())
+#else
+        if (area && area->d_func()->dropEnabled)
+#endif
         {
             dropAreas.append(area);
         }
@@ -1165,23 +1238,39 @@ void WViewPrivate::onFadeTimeout()
 
     if (fadeVisible)
     {
+#ifdef QT_4
         qreal opacity = q->windowOpacity() + fadeValue;
+#else
+        qreal opacity = q->opacity() + fadeValue;
+#endif
 
         if (opacity >= 1.0)
         {
             fadeIn();
         }
+#ifdef QT_4
         else q->setWindowOpacity(opacity);
+#else
+        else q->setOpacity(opacity);
+#endif
     }
     else
     {
+#ifdef QT_4
         qreal opacity = q->windowOpacity() - fadeValue;
+#else
+        qreal opacity = q->opacity() - fadeValue;
+#endif
 
         if (opacity <= 0.0)
         {
             fadeOut();
         }
+#ifdef QT_4
         else q->setWindowOpacity(opacity);
+#else
+        else q->setOpacity(opacity);
+#endif
     }
 }
 
@@ -1211,13 +1300,21 @@ void WViewPrivate::onCursorVisibleChanged()
 // WView
 //=================================================================================================
 
+#ifdef QT_4
 WView::WView(QDeclarativeItem * item, QWidget * parent, Qt::WindowFlags flags)
+#else
+WView::WView(QQuickItem * item, QWindow * parent, Qt::WindowFlags flags)
+#endif
     : WAbstractView(new WViewPrivate(this), parent, flags)
 {
     Q_D(WView); d->init(item);
 }
 
+#ifdef QT_4
 WView::WView(QWidget * parent, Qt::WindowFlags flags)
+#else
+WView::WView(QWindow * parent, Qt::WindowFlags flags)
+#endif
     : WAbstractView(new WViewPrivate(this), parent, flags)
 {
     Q_D(WView); d->init(NULL);
@@ -1226,7 +1323,11 @@ WView::WView(QWidget * parent, Qt::WindowFlags flags)
 //-------------------------------------------------------------------------------------------------
 // Protected
 
+#ifdef QT_4
 WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::WindowFlags flags)
+#else
+WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFlags flags)
+#endif
     : WAbstractView(p, parent, flags)
 {
     Q_D(WView); d->init(item);
@@ -1240,11 +1341,17 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 {
     setMinimized(false);
 
+#ifdef QT_4
     activateWindow();
+#else
+    requestActivate();
+#endif
 
     raise();
 
+#ifdef QT_4
     setFocus();
+#endif
 }
 
 /* Q_INVOKABLE */ void WView::raise()
@@ -1292,7 +1399,11 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 
 /* Q_INVOKABLE */ int WView::getScreenNumber() const
 {
+#ifdef QT_4
     return wControllerView->screenNumber(this);
+#else
+    return wControllerView->screenNumber(QPoint(x() + width() / 2, y() + height() / 2));
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1307,7 +1418,11 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
     d->minimumWidth  = width;
     d->minimumHeight = height;
 
+#ifdef QT_4
     WAbstractView::setMinimumSize(width, height);
+#else
+    WAbstractView::setMinimumSize(QSize(width, height));
+#endif
 
     if (d->minimumWidth != minimumWidth)
     {
@@ -1334,17 +1449,29 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
     {
         if (height == -1)
         {
+#ifdef QT_4
              WAbstractView::setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
         }
         else WAbstractView::setMaximumSize(QWIDGETSIZE_MAX, height);
+#else
+            WAbstractView::setMaximumSize(QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
+       }
+       else WAbstractView::setMaximumSize(QSize(QWIDGETSIZE_MAX, height));
+#endif
     }
     else if (height == -1)
     {
         if (width == -1)
         {
+#ifdef QT_4
              WAbstractView::setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
         }
         else WAbstractView::setMaximumSize(width, QWIDGETSIZE_MAX);
+#else
+            WAbstractView::setMaximumSize(QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
+       }
+       else WAbstractView::setMaximumSize(QSize(width, QWIDGETSIZE_MAX);
+#endif
     }
 
     if (d->maximumWidth != maximumWidth)
@@ -1432,14 +1559,22 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
         update = true;
     }
 
+#ifdef QT_4
     if (update) move(x, y);
+#else
+    if (update) setPosition(x, y);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WView::originTo(qreal x, qreal y)
 {
+#ifdef QT_4
     Q_D(WView); d->item->setPos(-x, -y);
+#else
+    Q_D(WView); d->item->setPosition(QPointF(-x, -y));
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1462,7 +1597,11 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 
     if (d->dragging) return;
 
+#ifdef QT_4
     d->scene->mouseGrabberItem()->ungrabMouse();
+#else
+    mouseGrabberItem()->ungrabMouse();
+#endif
 
     clearHover();
 
@@ -1505,7 +1644,13 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 
     if (d->hoverable)
     {
+#ifdef QT_4
         QList<QGraphicsItem *> itemsCursor = items(d->mousePos);
+#else
+        QList<QQuickItem *> itemsCursor;
+
+        d->getItems(&itemsCursor, contentItem(), d->mousePos);
+#endif
 
         if (d->itemsCursor == itemsCursor) return;
 
@@ -1591,7 +1736,11 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 //-------------------------------------------------------------------------------------------------
 // Shot
 
+#ifdef QT_4
 /* Q_INVOKABLE */ QPixmap WView::takeShot(int x, int y, int width, int height) const
+#else
+/* Q_INVOKABLE */ QPixmap WView::takeShot(int x, int y, int width, int height)
+#endif
 {
 #ifdef QT_4
     Q_D(const WView);
@@ -1624,12 +1773,19 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
     //---------------------------------------------------------------------------------------------
 #endif
 
-    return viewport()->grab(QRect(x, y, width, height));
+    QImage image = grabWindow().copy(x, y, width, height);
+
+    return QPixmap::fromImage(image);
 #endif
 }
 
+#ifdef QT_4
 /* Q_INVOKABLE */ bool WView::saveShot(const QString & fileName, int x,     int y,
                                                                  int width, int height) const
+#else
+/* Q_INVOKABLE */ bool WView::saveShot(const QString & fileName, int x,     int y,
+                                                                 int width, int height)
+#endif
 {
     QImage image = takeShot(x, y, width, height).toImage();
 
@@ -1682,7 +1838,11 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
     QMouseEvent event(QEvent::MouseMove, point, mapToGlobal(point), button, Qt::NoButton,
                                                                             Qt::NoModifier);
 
+#ifdef QT_4
     QCoreApplication::sendEvent(viewport(), &event);
+#else
+    QCoreApplication::sendEvent(contentItem(), &event);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1694,7 +1854,11 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
     QMouseEvent event(QEvent::MouseButtonPress,
                       d->mousePos, mapToGlobal(d->mousePos), button, Qt::NoButton, Qt::NoModifier);
 
+#ifdef QT_4
     QCoreApplication::sendEvent(viewport(), &event);
+#else
+    QCoreApplication::sendEvent(contentItem(), &event);
+#endif
 }
 
 /* Q_INVOKABLE */ void WView::mouseRelease(Qt::MouseButton button) const
@@ -1704,7 +1868,11 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
     QMouseEvent event(QEvent::MouseButtonRelease,
                       d->mousePos, mapToGlobal(d->mousePos), button, Qt::NoButton, Qt::NoModifier);
 
+#ifdef QT_4
     QCoreApplication::sendEvent(viewport(), &event);
+#else
+    QCoreApplication::sendEvent(contentItem(), &event);
+#endif
 }
 
 /* Q_INVOKABLE */ void WView::mouseClick(Qt::MouseButton button, int msec) const
@@ -1725,7 +1893,11 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
     QWheelEvent event(d->mousePos, mapToGlobal(d->mousePos), delta, Qt::NoButton,
                                                                     Qt::NoModifier, orientation);
 
+#ifdef QT_4
     QCoreApplication::sendEvent(viewport(), &event);
+#else
+    QCoreApplication::sendEvent(contentItem(), &event);
+#endif
 }
 
 /* Q_INVOKABLE */ void WView::wheelUp(int delta) const
@@ -1744,14 +1916,22 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 {
     QKeyEvent event(QEvent::KeyPress, key, modifiers);
 
+#ifdef QT_4
     QCoreApplication::sendEvent(viewport(), &event);
+#else
+    QCoreApplication::sendEvent(contentItem(), &event);
+#endif
 }
 
 /* Q_INVOKABLE */ void WView::keyRelease(int key, Qt::KeyboardModifiers modifiers) const
 {
     QKeyEvent event(QEvent::KeyRelease, key, modifiers);
 
+#ifdef QT_4
     QCoreApplication::sendEvent(viewport(), &event);
+#else
+    QCoreApplication::sendEvent(contentItem(), &event);
+#endif
 }
 
 /* Q_INVOKABLE */ void WView::keyClick(int key, Qt::KeyboardModifiers modifiers, int msec) const
@@ -1814,7 +1994,7 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WView::registerCursorUrl(int shape, const QUrl  & url, const QSize & size)
+/* Q_INVOKABLE */ void WView::registerCursorUrl(int shape, const QUrl & url, const QSize & size)
 {
     QPixmap pixmap;
 
@@ -1842,15 +2022,25 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 // Static functions
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* Q_INVOKABLE static */ QPixmap WView::takeItemShot(QGraphicsObject * item,
                                                      const QColor    & background)
+#else
+/* Q_INVOKABLE static */ QPixmap WView::takeItemShot(QQuickItem * item, const QColor & background)
+#endif
 {
     return WControllerView::takeItemShot(item, background);
 }
 
+#ifdef QT_4
 /* Q_INVOKABLE static */ bool WView::saveItemShot(const QString   & fileName,
                                                   QGraphicsObject * item,
                                                   const QColor    & background)
+#else
+/* Q_INVOKABLE static */ bool WView::saveItemShot(const QString & fileName,
+                                                  QQuickItem    * item,
+                                                  const QColor  & background)
+#endif
 {
     return WControllerView::saveItemShot(fileName, item, background);
 }
@@ -1867,12 +2057,16 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
     return WControllerView::compressShots(path, quality);
 }
 
+#ifdef QT_4
+
 //-------------------------------------------------------------------------------------------------
 // Protected functions
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WView::drawBackground(QPainter *, const QRectF &) {}
 /* virtual */ void WView::drawForeground(QPainter *, const QRectF &) {}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Events
@@ -2166,9 +2360,13 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 
     if (d->areaDrop)
     {
+#ifdef QT_4
         activateWindow();
 
         setFocus();
+#else
+        requestActivate();
+#endif
 
         d->applyDrop();
     }
@@ -2263,7 +2461,11 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 
     d->setActive(true);
 
+#ifdef QT_4
     if (d->minimized != WAbstractView::isMinimized())
+#else
+    if (d->minimized != (windowState() & Qt::WindowMinimized))
+#endif
     {
         d->minimized = !(d->minimized);
 
@@ -2356,18 +2558,28 @@ WView::WView(WViewPrivate * p, QDeclarativeItem * item, QWidget * parent, Qt::Wi
 // Properties
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 QDeclarativeItem * WView::item() const
+#else
+QQuickItem * WView::item() const
+#endif
 {
     Q_D(const WView); return d->item;
 }
 
+#ifdef QT_4
 void WView::setItem(QDeclarativeItem * item)
+#else
+void WView::setItem(QQuickItem * item)
+#endif
 {
     Q_D(WView);
 
     if (d->item)
     {
+#ifdef QT_4
         d->scene->removeItem(d->item);
+#endif
 
         disconnect(d->item, 0, this, 0);
 
@@ -2380,7 +2592,11 @@ void WView::setItem(QDeclarativeItem * item)
 
     if (item)
     {
+#ifdef QT_4
         d->scene->addItem(item);
+#else
+        d->item->setParentItem(contentItem());
+#endif
 
         d->applySize(width(), height());
 
@@ -2448,7 +2664,11 @@ void WView::setX(int x)
 
     if (d->maximized || d->fullScreen) return;
 
+#ifdef QT_4
     move(x, y());
+#else
+    setPosition(x, y());
+#endif
 
     emit xChanged();
 }
@@ -2461,7 +2681,11 @@ void WView::setY(int y)
 
     if (d->maximized || d->fullScreen) return;
 
+#ifdef QT_4
     move(x(), y);
+#else
+    setPosition(x(), y);
+#endif
 
     emit yChanged();
 }
@@ -2867,6 +3091,8 @@ bool WView::opengl() const
     Q_D(const WView); return d->opengl;
 }
 
+#ifdef QT_4
+
 void WView::setOpengl(bool enabled)
 {
     Q_D(WView);
@@ -2899,6 +3125,8 @@ void WView::setOpengl(bool enabled)
     emit openglChanged();
 }
 
+#endif
+
 //-------------------------------------------------------------------------------------------------
 
 bool WView::antialias() const
@@ -2914,7 +3142,19 @@ void WView::setAntialias(bool enabled)
 
     d->antialias = enabled;
 
+#ifdef QT_4
     setRenderHint(QPainter::Antialiasing, enabled);
+#else
+    QSurfaceFormat format = this->format();
+
+    if (enabled)
+    {
+         format.setSamples(1);
+    }
+    else format.setSamples(0);
+
+    setFormat(format);
+#endif
 
     emit antialiasChanged();
 }
@@ -2934,7 +3174,19 @@ void WView::setVsync(bool enabled)
 
     d->vsync = enabled;
 
+#ifdef QT_4
     if (d->opengl) d->updateViewport();
+#else
+    QSurfaceFormat format = this->format();
+
+    if (enabled)
+    {
+         format.setSwapInterval(1);
+    }
+    else format.setSwapInterval(0);
+
+    setFormat(format);
+#endif
 
     emit vsyncChanged();
 }
@@ -3099,12 +3351,20 @@ bool WView::keyAltPressed() const
 
 QRect WView::availableGeometry() const
 {
+#ifdef QT_4
     return wControllerView->availableGeometry(this);
+#else
+    return screen()->availableGeometry();
+#endif
 }
 
 QRect WView::screenGeometry() const
 {
+#ifdef QT_4
     return wControllerView->screenGeometry(this);
+#else
+    return screen()->geometry();
+#endif
 }
 
 #endif // SK_NO_VIEW

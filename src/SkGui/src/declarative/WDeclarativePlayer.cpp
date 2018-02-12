@@ -879,7 +879,7 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 #endif
 
 //-------------------------------------------------------------------------------------------------
-// Protected QDeclarativeItem reimplementation
+// Protected QDeclarativeItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WDeclarativePlayer::geometryChanged(const QRectF & newGeometry,

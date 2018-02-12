@@ -32,15 +32,28 @@ class SK_GUI_EXPORT WViewDrag : public WDeclarativeMouseArea
     Q_PROPERTY(bool dragEnabled READ dragEnabled WRITE setDragEnabled NOTIFY dragEnabledChanged)
 
 public:
+#ifdef QT_4
     explicit WViewDrag(QDeclarativeItem * parent = NULL);
+#else
+    explicit WViewDrag(QQuickItem * parent = NULL);
+#endif
 
 protected: // Events
+#ifdef QT_4
     /* virtual */ void mousePressEvent  (QGraphicsSceneMouseEvent * event);
     /* virtual */ void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
 
     /* virtual */ void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
 
     /* virtual */ bool sceneEvent(QEvent * event);
+#else
+    /* virtual */ void mousePressEvent  (QMouseEvent * event);
+    /* virtual */ void mouseReleaseEvent(QMouseEvent * event);
+
+    /* virtual */ void mouseMoveEvent(QMouseEvent * event);
+
+    /* virtual */ void mouseUngrabEvent();
+#endif
 
 signals:
     void dragEnabledChanged(bool enabled);

@@ -31,9 +31,13 @@ class SK_GUI_EXPORT WViewResizer : public WDeclarativeItem
     Q_PROPERTY(int size READ size WRITE setSize NOTIFY sizeChanged)
 
 public:
+#ifdef QT_4
     explicit WViewResizer(QDeclarativeItem * parent = NULL);
+#else
+    explicit WViewResizer(QQuickItem * parent = NULL);
+#endif
 
-protected: // QDeclarativeItem reimplementation
+protected: // QDeclarativeItem / QQuickItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
 
 signals:
