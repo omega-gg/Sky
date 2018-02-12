@@ -139,9 +139,9 @@ void WViewDragPrivate::clearDrag()
 //-------------------------------------------------------------------------------------------------
 
 #ifdef QT_4
-/* virtual */ void WViewDrag::mouseMoveEvent(QGraphicsSceneMouseEvent *)
+/* virtual */ void WViewDrag::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 #else
-/* virtual */ void WViewDrag::mouseMoveEvent(QMouseEvent *)
+/* virtual */ void WViewDrag::mouseMoveEvent(QMouseEvent * event)
 #endif
 {
     Q_D(WViewDrag);
