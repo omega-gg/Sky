@@ -76,11 +76,18 @@ public: // Static functions
                                                                    QObject     * receiver,
                                                                    const char  * method);
 
-    static QSize getSize(const QImageReader & reader, const QSize & size);
+    //static QSize getSize(const QImageReader & reader, const QSize & size);
+
+    static QSize getSize(const QSize & sizeA, const QSize & sizeB);
+
+#ifdef QT_4
+    static QSize getSizeScaled(const QSize & size, int width,
+                                                   int height, Qt::AspectRatioMode mode);
+#endif
 
     static QSize getArea(const QSize & size, const QSize & area);
 
-    static void applySize(QImageReader * reader, const QSize & size);
+    //static void applySize(QImageReader * reader, const QSize & size);
 
     static QPixmap getPixmapScaled(const QPixmap & pixmap, const QSize & size);
 
@@ -89,6 +96,9 @@ public: // Static functions
 
     static bool readPixmap(QPixmap * pixmap, const QString & path, const QSize & size,
                                                                    const QSize & area);
+
+    static bool scaleImage (QImage  * image,  const QString & path, const QSize & size);
+    static bool scalePixmap(QPixmap * pixmap, const QString & path, const QSize & size);
 
     static void registerPixmap   (const QString & id, const QPixmap & pixmap);
     static void unregisterPixmap (const QString & id);

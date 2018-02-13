@@ -1024,21 +1024,82 @@ void WPixmapCache::clear(QObject * receiver)
 
 //-------------------------------------------------------------------------------------------------
 
-/* static */ QSize WPixmapCache::getSize(const QImageReader & reader, const QSize & size)
+///* static */ QSize WPixmapCache::getSize(const QImageReader & reader, const QSize & size)
+//{
+//    int width  = size.width ();
+//    int height = size.height();
+
+//    if (width > 0 || height > 0)
+//    {
+//        QSize sizeReader = reader.size();
+
+//        sizeReader.scale(width, height, Qt::KeepAspectRatioByExpanding);
+
+//        return sizeReader;
+//    }
+//    else return reader.size();
+//}
+
+/* static */ QSize WPixmapCache::getSize(const QSize & sizeA, const QSize & sizeB)
 {
-    int width  = size.width ();
-    int height = size.height();
+    int width  = sizeB.width ();
+    int height = sizeB.height();
 
     if (width > 0 || height > 0)
     {
-        QSize sizeReader = reader.size();
-
-        sizeReader.scale(width, height, Qt::KeepAspectRatioByExpanding);
-
-        return sizeReader;
+#ifdef QT_4
+        return getSizeScaled(sizeA, width, height, Qt::KeepAspectRatioByExpanding);
+#else
+        return sizeA.scaled(width, height, Qt::KeepAspectRatioByExpanding);
+#endif
     }
-    else return reader.size();
+    //---------------------------------------------------------------------------------------------
+    // FIXME Qt: The graphics view struggles with large images.
+    //---------------------------------------------------------------------------------------------
+    else if (sizeA.width() > PIXMAPCACHE_WIDTH)
+    {
+        height = sizeA.height();
+
+        if (height > PIXMAPCACHE_HEIGHT)
+        {
+#ifdef QT_4
+             return getSizeScaled(sizeA, PIXMAPCACHE_WIDTH, PIXMAPCACHE_HEIGHT, Qt::KeepAspectRatio);
+        }
+        else return getSizeScaled(sizeA, PIXMAPCACHE_WIDTH, height, Qt::KeepAspectRatio);
+#else
+             return sizeA.scaled(PIXMAPCACHE_WIDTH, PIXMAPCACHE_HEIGHT, Qt::KeepAspectRatio);
+        }
+        else return sizeA.scaled(PIXMAPCACHE_WIDTH, height, Qt::KeepAspectRatio);
+#endif
+    }
+    else if (sizeA.height() > PIXMAPCACHE_HEIGHT)
+    {
+#ifdef QT_4
+        return getSizeScaled(sizeA, sizeA.width(), PIXMAPCACHE_HEIGHT, Qt::KeepAspectRatio);
+#else
+        return sizeA.scaled(sizeA.width(), PIXMAPCACHE_HEIGHT, Qt::KeepAspectRatio);
+#endif
+    }
+    //---------------------------------------------------------------------------------------------
+    else return QSize();
 }
+
+#ifdef QT_4
+
+/* static */ QSize WPixmapCache::getSizeScaled(const QSize & size,
+                                               int           width,
+                                               int           height, Qt::AspectRatioMode mode)
+{
+    QSize result = size;
+
+    result.scale(width, height, mode);
+
+    return result;
+}
+
+#endif
+
+//-------------------------------------------------------------------------------------------------
 
 /* static */ QSize WPixmapCache::getArea(const QSize & size, const QSize & area)
 {
@@ -1055,60 +1116,58 @@ void WPixmapCache::clear(QObject * receiver)
 
 //-------------------------------------------------------------------------------------------------
 
-/* static */ void WPixmapCache::applySize(QImageReader * reader, const QSize & size)
-{
-    int width  = size.width ();
-    int height = size.height();
+///* static */ void WPixmapCache::applySize(QImageReader * reader, const QSize & size)
+//{
+//    int width  = size.width ();
+//    int height = size.height();
 
-    if (width > 0 || height > 0)
-    {
-        QSize sizeReader = reader->size();
+//    if (width > 0 || height > 0)
+//    {
+//        QSize sizeReader = reader->size();
 
-        sizeReader.scale(width, height, Qt::KeepAspectRatioByExpanding);
+//        sizeReader.scale(width, height, Qt::KeepAspectRatioByExpanding);
 
-        reader->setScaledSize(sizeReader);
-    }
-    else
-    {
-        //-----------------------------------------------------------------------------------------
-        // FIXME Qt: The graphics view struggles with large images.
+//        reader->setScaledSize(sizeReader);
+//    }
+//    else
+//    {
+//        //-----------------------------------------------------------------------------------------
+//        // FIXME Qt: The graphics view struggles with large images.
 
-        QSize sizeReader = reader->size();
+//        QSize sizeReader = reader->size();
 
-        if (sizeReader.width() >= PIXMAPCACHE_WIDTH)
-        {
-            if (sizeReader.height() >= PIXMAPCACHE_HEIGHT)
-            {
-                 sizeReader.scale(PIXMAPCACHE_WIDTH, PIXMAPCACHE_HEIGHT, Qt::KeepAspectRatio);
-            }
-            else sizeReader.scale(PIXMAPCACHE_WIDTH, sizeReader.height(), Qt::KeepAspectRatio);
+//        if (sizeReader.width() >= PIXMAPCACHE_WIDTH)
+//        {
+//            if (sizeReader.height() >= PIXMAPCACHE_HEIGHT)
+//            {
+//                 sizeReader.scale(PIXMAPCACHE_WIDTH, PIXMAPCACHE_HEIGHT, Qt::KeepAspectRatio);
+//            }
+//            else sizeReader.scale(PIXMAPCACHE_WIDTH, sizeReader.height(), Qt::KeepAspectRatio);
 
-            reader->setScaledSize(sizeReader);
-        }
-        else if (sizeReader.height() >= PIXMAPCACHE_HEIGHT)
-        {
-            sizeReader.scale(sizeReader.width(), PIXMAPCACHE_HEIGHT, Qt::KeepAspectRatio);
+//            reader->setScaledSize(sizeReader);
+//        }
+//        else if (sizeReader.height() >= PIXMAPCACHE_HEIGHT)
+//        {
+//            sizeReader.scale(sizeReader.width(), PIXMAPCACHE_HEIGHT, Qt::KeepAspectRatio);
 
-            reader->setScaledSize(sizeReader);
-        }
+//            reader->setScaledSize(sizeReader);
+//        }
 
-        //-----------------------------------------------------------------------------------------
-    }
-}
+//        //-----------------------------------------------------------------------------------------
+//    }
+//}
 
 //-------------------------------------------------------------------------------------------------
 
 /* static */ QPixmap WPixmapCache::getPixmapScaled(const QPixmap & pixmap, const QSize & size)
 {
-    int width  = size.width ();
-    int height = size.height();
+    QSize sizeScaled = getSize(pixmap.size(), size);
 
-    if (width > 0 || height > 0)
+    if (sizeScaled.isEmpty())
     {
-         return pixmap.scaled(QSize(width, height), Qt::KeepAspectRatioByExpanding,
-                                                    Qt::SmoothTransformation);
+         return pixmap;
     }
-    else return pixmap;
+    else return pixmap.scaled(sizeScaled, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1117,124 +1176,162 @@ void WPixmapCache::clear(QObject * receiver)
                                                           const QSize   & size,
                                                           const QSize   & area)
 {
-    QFile file(WControllerFile::filePath(path));
-
-    if (file.open(QIODevice::ReadOnly) == false)
-    {
-        qWarning("WPixmapCache::readImage: Failed to open file %s.", path.C_STR);
-
-        return false;
-    }
-
-    QImageReader reader(&file);
-
     if (area.width() > 0 || area.height() > 0)
     {
-        QSize sizeFront = getSize(reader, size);
-
-        QSize sizeArea = getArea(sizeFront, area);
+        QSize sizeArea = getArea(size, area);
 
         int width  = sizeArea.width ();
         int height = sizeArea.height();
 
-        int marginX = (width  - sizeFront.width ()) / 2;
-        int marginY = (height - sizeFront.height()) / 2;
+        int marginX = (width  - size.width ()) / 2;
+        int marginY = (height - size.height()) / 2;
 
         if (marginX > 0 && marginY > 0)
         {
-            sizeFront = QSize(width - marginX * 2, height - marginY * 2);
-
-            reader.setScaledSize(sizeFront);
-
             QImage front;
 
-            reader.read(&front);
+            if (scaleImage(&front, path, QSize(width  - marginX * 2, height - marginY * 2)))
+            {
+                QImage content(sizeArea, QImage::Format_ARGB32_Premultiplied);
 
-            QImage content(sizeArea, QImage::Format_ARGB32_Premultiplied);
+                content.fill(Qt::transparent);
 
-            content.fill(Qt::transparent);
+                QPainter painter(&content);
 
-            QPainter painter(&content);
+                painter.drawImage(marginX, marginY, front);
 
-            painter.drawImage(marginX, marginY, front);
+                *image = content;
 
-            *image = content;
-        }
-        else
-        {
-            reader.setScaledSize(sizeFront);
-
-            reader.read(image);
+                return true;
+            }
+            else return false;
         }
     }
-    else
-    {
-        applySize(&reader, size);
 
-        reader.read(image);
-    }
-
-    return true;
+    return scaleImage(image, path, size);
 }
 
 /* static */ bool WPixmapCache::readPixmap(QPixmap * pixmap, const QString & path,
                                                              const QSize   & size,
                                                              const QSize   & area)
 {
+    if (area.width() > 0 || area.height() > 0)
+    {
+        QSize sizeArea = getArea(size, area);
+
+        int width  = sizeArea.width ();
+        int height = sizeArea.height();
+
+        int marginX = (width  - size.width ()) / 2;
+        int marginY = (height - size.height()) / 2;
+
+        if (marginX > 0 && marginY > 0)
+        {
+            QPixmap front;
+
+            if (scalePixmap(&front, path, QSize(width  - marginX * 2, height - marginY * 2)))
+            {
+                QPixmap content(sizeArea);
+
+                content.fill(Qt::transparent);
+
+                QPainter painter(&content);
+
+                painter.drawPixmap(marginX, marginY, front);
+
+                *pixmap = content;
+
+                return true;
+            }
+            else return false;
+        }
+    }
+
+    return scalePixmap(pixmap, path, size);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* static */ bool WPixmapCache::scaleImage(QImage * image, const QString & path,
+                                                           const QSize   & size)
+{
     QFile file(WControllerFile::filePath(path));
 
     if (file.open(QIODevice::ReadOnly) == false)
     {
-        qWarning("WPixmapCache::readPixmap: Failed to open file %s.", path.C_STR);
+        qWarning("WPixmapCache::scaleImage: Failed to open file %s.", path.C_STR);
 
         return false;
     }
 
     QImageReader reader(&file);
 
-    if (area.width() > 0 || area.height() > 0)
+    QSize sizeScaled = getSize(reader.size(), size);
+
+#ifdef QT_LATEST // FIXME Qt5: QImageReader scaling is not smooth
+    if (path.endsWith(".svg", Qt::CaseInsensitive))
     {
-        QSize sizeFront = getSize(reader, size);
-
-        QSize sizeArea = getArea(sizeFront, area);
-
-        int width  = sizeArea.width ();
-        int height = sizeArea.height();
-
-        int marginX = (width  - sizeFront.width ()) / 2;
-        int marginY = (height - sizeFront.height()) / 2;
-
-        if (marginX > 0 && marginY > 0)
+#endif
+        if (sizeScaled.isEmpty() == false)
         {
-            sizeFront = QSize(width - marginX * 2, height - marginY * 2);
-
-            reader.setScaledSize(sizeFront);
-
-            QPixmap front = QPixmap::fromImageReader(&reader);
-
-            QPixmap content(sizeArea);
-
-            content.fill(Qt::transparent);
-
-            QPainter painter(&content);
-
-            painter.drawPixmap(marginX, marginY, front);
-
-            *pixmap = content;
+            reader.setScaledSize(sizeScaled);
         }
-        else
-        {
-            reader.setScaledSize(sizeFront);
 
-            *pixmap = QPixmap::fromImageReader(&reader);
-        }
+        reader.read(image);
+#ifdef QT_LATEST
     }
     else
     {
-        applySize(&reader, size);
+        reader.read(image);
+
+        if (sizeScaled.isEmpty() == false)
+        {
+            *image = image->scaled(sizeScaled, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        }
+    }
+#endif
+
+    return true;
+}
+
+/* static */ bool WPixmapCache::scalePixmap(QPixmap * pixmap, const QString & path,
+                                                              const QSize   & size)
+{
+    QFile file(WControllerFile::filePath(path));
+
+    if (file.open(QIODevice::ReadOnly) == false)
+    {
+        qWarning("WPixmapCache::scalePixmap: Failed to open file %s.", path.C_STR);
+
+        return false;
+    }
+
+    QImageReader reader(&file);
+
+    QSize sizeScaled = getSize(reader.size(), size);
+
+#ifdef QT_LATEST // FIXME Qt5: QImageReader scaling is not smooth
+    if (path.endsWith(".svg", Qt::CaseInsensitive))
+    {
+#endif
+        if (sizeScaled.isEmpty() == false)
+        {
+            reader.setScaledSize(sizeScaled);
+        }
 
         *pixmap = QPixmap::fromImageReader(&reader);
+#ifdef QT_LATEST
     }
+    else
+    {
+        *pixmap = QPixmap::fromImageReader(&reader);
+
+        if (sizeScaled.isEmpty() == false)
+        {
+            *pixmap = pixmap->scaled(sizeScaled, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        }
+    }
+#endif
 
     return true;
 }
