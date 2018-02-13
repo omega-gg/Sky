@@ -30,11 +30,6 @@
 #endif
 
 //-------------------------------------------------------------------------------------------------
-// Static variables
-
-static const qreal DECLARATIVELISTVIEW_ITEM_SIZE = 33;
-
-//-------------------------------------------------------------------------------------------------
 // Defines
 
 #ifdef QT_4
@@ -150,6 +145,11 @@ static const qreal DECLARATIVELISTVIEW_ITEM_SIZE = 33;
     else W_INSERT_HORIZONTAL;                              \
                                                            \
     index++;                                               \
+
+//-------------------------------------------------------------------------------------------------
+// Static variables
+
+static const qreal DECLARATIVELISTVIEW_ITEM_SIZE = 33;
 
 //=================================================================================================
 // WDeclarativeListItem

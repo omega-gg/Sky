@@ -32,6 +32,13 @@
 class WPixmapCacheReply;
 
 //-------------------------------------------------------------------------------------------------
+// Defines
+
+#ifdef QT_LATEST // FIXME Qt5: QImageReader scaling is not smooth
+#define W_SMOOTH
+#endif
+
+//-------------------------------------------------------------------------------------------------
 // Static variables
 
 static const int PIXMAPCACHE_WIDTH  = 1920;
@@ -1270,7 +1277,7 @@ void WPixmapCache::clear(QObject * receiver)
 
     QSize sizeScaled = getSize(reader.size(), size);
 
-#ifdef QT_LATEST // FIXME Qt5: QImageReader scaling is not smooth
+#ifdef W_SMOOTH
     if (path.endsWith(".svg", Qt::CaseInsensitive))
     {
 #endif
@@ -1280,7 +1287,7 @@ void WPixmapCache::clear(QObject * receiver)
         }
 
         reader.read(image);
-#ifdef QT_LATEST
+#ifdef W_SMOOTH
     }
     else
     {
@@ -1312,7 +1319,7 @@ void WPixmapCache::clear(QObject * receiver)
 
     QSize sizeScaled = getSize(reader.size(), size);
 
-#ifdef QT_LATEST // FIXME Qt5: QImageReader scaling is not smooth
+#ifdef W_SMOOTH
     if (path.endsWith(".svg", Qt::CaseInsensitive))
     {
 #endif
@@ -1322,7 +1329,7 @@ void WPixmapCache::clear(QObject * receiver)
         }
 
         *pixmap = QPixmap::fromImageReader(&reader);
-#ifdef QT_LATEST
+#ifdef W_SMOOTH
     }
     else
     {
