@@ -64,8 +64,7 @@ protected: // WAbstractBackend reimplementation
 
     /* virtual */ void backendSetSize(const QSizeF & size);
 
-    /* virtual */ void backendDrawFrame(QPainter                       * painter,
-                                        const QStyleOptionGraphicsItem * option);
+    /* virtual */ void backendDrawFrame(QPainter * painter, const QRect & rect);
 
     /* virtual */ void   backendUpdateFrame();
     /* virtual */ QImage backendGetFrame   () const;

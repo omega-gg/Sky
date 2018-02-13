@@ -112,7 +112,7 @@ protected: // Functions
 
     void backendSetSize(const QSizeF & size);
 
-    void backendDrawFrame(QPainter * painter, const QStyleOptionGraphicsItem * option);
+    void backendDrawFrame(QPainter * painter, const QRect & rect);
 
     void   backendUpdateFrame();
     QImage backendGetFrame   () const;

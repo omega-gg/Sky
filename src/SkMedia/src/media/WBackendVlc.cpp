@@ -23,7 +23,6 @@
 #include <QGraphicsItem>
 #include <QImage>
 #include <QPainter>
-#include <QStyleOptionGraphicsItem>
 
 // Vlc includes
 #include <vlc/vlc.h>
@@ -1297,8 +1296,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
     d->updateTargetRect();
 }
 
-/* virtual */ void WBackendVlc::backendDrawFrame(QPainter                       * painter,
-                                                 const QStyleOptionGraphicsItem * option)
+/* virtual */ void WBackendVlc::backendDrawFrame(QPainter * painter, const QRect & rect)
 {
     Q_D(WBackendVlc);
 
@@ -1307,7 +1305,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
         painter->setPen  (Qt::NoPen);
         painter->setBrush(Qt::black);
 
-        painter->drawRect(option->rect);
+        painter->drawRect(rect);
     }
     else if (painter->paintEngine()->type() == QPaintEngine::OpenGL2)
     {
@@ -1386,13 +1384,13 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
             painter->setPen  (Qt::NoPen);
             painter->setBrush(Qt::black);
 
-            painter->drawRect(option->rect);
+            painter->drawRect(rect);
 
             return;
         }
 
-        qreal width  = option->rect.width ();
-        qreal height = option->rect.height();
+        qreal width  = rect.width ();
+        qreal height = rect.height();
 
         painter->beginNativePainting();
 
@@ -1476,7 +1474,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
         painter->setPen  (Qt::NoPen);
         painter->setBrush(Qt::black);
 
-        painter->drawRect(option->rect);
+        painter->drawRect(rect);
 
         if (d->frameFreeze == false) d->convertFrameSse();
 

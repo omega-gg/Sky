@@ -18,6 +18,11 @@
 
 #ifndef SK_NO_DECLARATIVEPLAYER
 
+// Qt includes
+#ifdef QT_4
+#include <QStyleOptionGraphicsItem>
+#endif
+
 // Sk includes
 #include <WAbstractHook>
 #include <WPlaylist>
@@ -872,7 +877,7 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 
     if (d->backend)
     {
-        d->backend->drawFrame(painter, option);
+        d->backend->drawFrame(painter, option->rect);
     }
 }
 

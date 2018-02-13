@@ -44,7 +44,11 @@ public: // Functions
     void setStarted(bool started);
 
 public: // Variable
+#ifdef QT_4
     QGraphicsItem * parentItem;
+#else
+    QQuickItem * parentItem;
+#endif
 
     WBackendFilter * filter;
 

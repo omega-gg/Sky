@@ -334,9 +334,9 @@ void WAbstractHook::backendSetSize(const QSizeF & size)
 
 //-------------------------------------------------------------------------------------------------
 
-void WAbstractHook::backendDrawFrame(QPainter * painter, const QStyleOptionGraphicsItem * option)
+void WAbstractHook::backendDrawFrame(QPainter * painter, const QRect & rect)
 {
-    Q_D(WAbstractHook); d->backend->backendDrawFrame(painter, option);
+    Q_D(WAbstractHook); d->backend->backendDrawFrame(painter, rect);
 }
 
 //-------------------------------------------------------------------------------------------------

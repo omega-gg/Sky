@@ -21,6 +21,9 @@
 #include <QObject>
 #include <QUrl>
 #include <QImage>
+#ifdef QT_LATEST
+#include <QSGGeometryNode>
+#endif
 
 // Sk includes
 #include <Sk>
@@ -33,6 +36,31 @@ class QGraphicsItem;
 class QPainter;
 class QStyleOptionGraphicsItem;
 class WBackendFilter;
+
+#ifdef QT_LATEST
+
+//-------------------------------------------------------------------------------------------------
+// WBackendNode
+//-------------------------------------------------------------------------------------------------
+
+class SK_GUI_EXPORT WBackendNode : public QSGGeometryNode
+{
+public:
+    WBackendNode();
+
+public: // Interface
+    void setRect(const QRectF & rect);
+
+public: // Abstract interface
+    virtual void setTextures(WBackendTexture * textures) = 0;
+
+private: // Variables
+    QSGGeometry _geometry;
+
+    QRectF _source;
+};
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // WBackendInterface
@@ -71,9 +99,17 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
     Q_ENUMS(Output)
     Q_ENUMS(Quality)
     Q_ENUMS(FillMode)
+#ifdef QT_LATEST
+    Q_ENUMS(FrameState)
+#endif
 
+#ifdef QT_4
     Q_PROPERTY(QGraphicsItem * parentItem READ parentItem WRITE setParentItem
                NOTIFY parentItemChanged)
+#else
+    Q_PROPERTY(QQuickItem * parentItem READ parentItem WRITE setParentItem
+               NOTIFY parentItemChanged)
+#endif
 
     Q_PROPERTY(WBackendFilter * filter READ filter WRITE setFilter NOTIFY filterChanged)
 
@@ -159,16 +195,30 @@ public:
         PreserveAspectCrop
     };
 
+#ifdef QT_LATEST
+    enum FrameState
+    {
+        FrameDefault,
+        FrameReset,
+        FrameUpdate,
+        FrameClear
+    };
+#endif
+
 public:
     WAbstractBackend();
 protected:
     WAbstractBackend(WAbstractBackendPrivate * p);
 
 public: // Interface
+#ifdef QT_LATEST
+    Q_INVOKABLE WBackendNode * createNode() const;
+#endif
+
     Q_INVOKABLE const QSizeF & getSize() const;
     Q_INVOKABLE void           setSize(const QSizeF & size);
 
-    Q_INVOKABLE void drawFrame(QPainter * painter, const QStyleOptionGraphicsItem * option);
+    Q_INVOKABLE void drawFrame(QPainter * painter, const QRect & rect);
 
     Q_INVOKABLE void   updateFrame();
     Q_INVOKABLE QImage getFrame   () const;
@@ -210,6 +260,10 @@ protected: // Functions
     void deleteNow();
 
 protected: // Abstract functions
+#ifdef QT_LATEST
+    virtual WBackendNode * backendCreateNode() const = 0;
+#endif
+
     virtual bool backendSetSource(const QUrl & url) = 0;
 
     virtual bool backendPlay () = 0;
@@ -232,8 +286,7 @@ protected: // Virtual functions
 
     virtual void backendSetSize(const QSizeF & size); /* {} */
 
-    virtual void backendDrawFrame(QPainter                       * painter,
-                                  const QStyleOptionGraphicsItem * option); /* {} */
+    virtual void backendDrawFrame(QPainter * painter, const QRect & rect); /* {} */
 
     virtual void   backendUpdateFrame();       /* {} */
     virtual QImage backendGetFrame   () const; /* {} */
@@ -273,8 +326,13 @@ signals:
     void fillModeChanged();
 
 public: // Properties
+#ifdef QT_4
     QGraphicsItem * parentItem() const;
     void            setParentItem(QGraphicsItem * parent);
+#else
+    QQuickItem * parentItem() const;
+    void         setParentItem(QQuickItem * parent);
+#endif
 
     WBackendFilter * filter() const;
     void             setFilter(WBackendFilter * filter);
@@ -359,6 +417,56 @@ public:
 
     virtual void filterFillMode(WAbstractBackend::FillMode * fillMode); /* {} */
 };
+
+#ifdef QT_LATEST
+
+//-------------------------------------------------------------------------------------------------
+// WBackendTexture
+//-------------------------------------------------------------------------------------------------
+
+struct WBackendTexture
+{
+    WBackendTexture()
+    {
+        width  = 0;
+        height = 0;
+
+        bits = NULL;
+    }
+
+    int width;
+    int height;
+
+    uchar * bits;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WBackendFrame
+//-------------------------------------------------------------------------------------------------
+
+struct WBackendFrame
+{
+    WBackendFrame()
+    {
+        width  = 0;
+        height = 0;
+
+        fillMode = WAbstractBackend::PreserveAspectFit;
+
+        state = WAbstractBackend::FrameDefault;
+    }
+
+    int width;
+    int height;
+
+    WBackendTexture textures[3];
+
+    WAbstractBackend::FillMode fillMode;
+
+    WAbstractBackend::FrameState state;
+};
+
+#endif
 
 #endif // SK_NO_ABSTRACTBACKEND
 #endif // WABSTRACTBACKEND_H

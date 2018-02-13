@@ -23,12 +23,12 @@
 #include <QDesktopWidget>
 #ifdef QT_4
 #include <QGraphicsObject>
+#include <QStyleOptionGraphicsItem>
 #else
 #include <QQuickItem>
 #include <QQuickItemGrabResult>
 #endif
 #include <QPainter>
-#include <QStyleOptionGraphicsItem>
 #include <QDir>
 
 // Private includes

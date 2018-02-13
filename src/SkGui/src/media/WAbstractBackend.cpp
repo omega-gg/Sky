@@ -26,6 +26,32 @@
 
 static const int ABSTRACTBACKEND_TIMER_INTERVAL = 2000;
 
+#ifdef QT_LATEST
+
+//=================================================================================================
+// WBackendNode
+//=================================================================================================
+
+WBackendNode::WBackendNode() : _geometry(QSGGeometry::defaultAttributes_TexturedPoint2D(), 4)
+{
+    _source = QRectF(0.0, 0.0, 1.0, 1.0);
+
+    setGeometry(&_geometry);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+
+void WBackendNode::setRect(const QRectF & rect)
+{
+    QSGGeometry::updateTexturedRectGeometry(&_geometry, rect, _source);
+
+    markDirty(QSGNode::DirtyGeometry);
+}
+
+#endif
+
 //=================================================================================================
 // WAbstractBackendPrivate
 //=================================================================================================
@@ -119,6 +145,15 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 // Interface
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_LATEST
+
+/* Q_INVOKABLE */ WBackendNode * WAbstractBackend::createNode() const
+{
+    return backendCreateNode();
+}
+
+#endif
+
 /* Q_INVOKABLE */ const QSizeF & WAbstractBackend::getSize() const
 {
     Q_D(const WAbstractBackend); return d->size;
@@ -137,10 +172,9 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WAbstractBackend::drawFrame(QPainter                       * painter,
-                                                   const QStyleOptionGraphicsItem * option)
+/* Q_INVOKABLE */ void WAbstractBackend::drawFrame(QPainter * painter, const QRect & rect)
 {
-    backendDrawFrame(painter, option);
+    backendDrawFrame(painter, rect);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -515,7 +549,7 @@ void WAbstractBackend::deleteNow()
     qWarning("WAbstractBackend::backendSetSize: SetSize is not supported.");
 }
 
-/* virtual */ void WAbstractBackend::backendDrawFrame(QPainter *, const QStyleOptionGraphicsItem *)
+/* virtual */ void WAbstractBackend::backendDrawFrame(QPainter *, const QRect &)
 {
     qWarning("WAbstractBackend::backendDrawFrame: DrawFrame is not supported.");
 }
@@ -538,12 +572,20 @@ void WAbstractBackend::deleteNow()
 // Properties
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 QGraphicsItem * WAbstractBackend::parentItem() const
+#else
+QQuickItem * WAbstractBackend::parentItem() const
+#endif
 {
     Q_D(const WAbstractBackend); return d->parentItem;
 }
 
+#ifdef QT_4
 void WAbstractBackend::setParentItem(QGraphicsItem * parent)
+#else
+void WAbstractBackend::setParentItem(QQuickItem * parent)
+#endif
 {
     Q_D(WAbstractBackend);
 
