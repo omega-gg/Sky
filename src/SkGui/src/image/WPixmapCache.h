@@ -80,12 +80,11 @@ public: // Static functions
 
     static QSize getSize(const QSize & sizeA, const QSize & sizeB);
 
-#ifdef QT_4
-    static QSize getSizeScaled(const QSize & size, int width,
-                                                   int height, Qt::AspectRatioMode mode);
-#endif
-
     static QSize getArea(const QSize & size, const QSize & area);
+
+#ifdef QT_4
+    static QSize scaleSize(const QSize & size, int width, int height, Qt::AspectRatioMode mode);
+#endif
 
     //static void applySize(QImageReader * reader, const QSize & size);
 

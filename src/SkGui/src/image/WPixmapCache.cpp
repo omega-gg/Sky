@@ -1048,7 +1048,7 @@ void WPixmapCache::clear(QObject * receiver)
     if (width > 0 || height > 0)
     {
 #ifdef QT_4
-        return getSizeScaled(sizeA, width, height, Qt::KeepAspectRatioByExpanding);
+        return scaleSize(sizeA, width, height, Qt::KeepAspectRatioByExpanding);
 #else
         return sizeA.scaled(width, height, Qt::KeepAspectRatioByExpanding);
 #endif
@@ -1063,9 +1063,9 @@ void WPixmapCache::clear(QObject * receiver)
         if (height > PIXMAPCACHE_HEIGHT)
         {
 #ifdef QT_4
-             return getSizeScaled(sizeA, PIXMAPCACHE_WIDTH, PIXMAPCACHE_HEIGHT, Qt::KeepAspectRatio);
+             return scaleSize(sizeA, PIXMAPCACHE_WIDTH, PIXMAPCACHE_HEIGHT, Qt::KeepAspectRatio);
         }
-        else return getSizeScaled(sizeA, PIXMAPCACHE_WIDTH, height, Qt::KeepAspectRatio);
+        else return scaleSize(sizeA, PIXMAPCACHE_WIDTH, height, Qt::KeepAspectRatio);
 #else
              return sizeA.scaled(PIXMAPCACHE_WIDTH, PIXMAPCACHE_HEIGHT, Qt::KeepAspectRatio);
         }
@@ -1075,7 +1075,7 @@ void WPixmapCache::clear(QObject * receiver)
     else if (sizeA.height() > PIXMAPCACHE_HEIGHT)
     {
 #ifdef QT_4
-        return getSizeScaled(sizeA, sizeA.width(), PIXMAPCACHE_HEIGHT, Qt::KeepAspectRatio);
+        return scaleSize(sizeA, sizeA.width(), PIXMAPCACHE_HEIGHT, Qt::KeepAspectRatio);
 #else
         return sizeA.scaled(sizeA.width(), PIXMAPCACHE_HEIGHT, Qt::KeepAspectRatio);
 #endif
@@ -1083,21 +1083,6 @@ void WPixmapCache::clear(QObject * receiver)
     //---------------------------------------------------------------------------------------------
     else return QSize();
 }
-
-#ifdef QT_4
-
-/* static */ QSize WPixmapCache::getSizeScaled(const QSize & size,
-                                               int           width,
-                                               int           height, Qt::AspectRatioMode mode)
-{
-    QSize result = size;
-
-    result.scale(width, height, mode);
-
-    return result;
-}
-
-#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -1113,6 +1098,23 @@ void WPixmapCache::clear(QObject * receiver)
     }
     else return area;
 }
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_4
+
+/* static */ QSize WPixmapCache::scaleSize(const QSize & size,
+                                           int           width,
+                                           int           height, Qt::AspectRatioMode mode)
+{
+    QSize result = size;
+
+    result.scale(width, height, mode);
+
+    return result;
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
