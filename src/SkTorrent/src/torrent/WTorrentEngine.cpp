@@ -19,7 +19,9 @@
 #ifndef SK_NO_TORRENTENGINE
 
 // Qt includes
-#ifdef QT_LATEST
+#ifdef QT_4
+#include <QCoreApplication>
+#else
 #include <QDataStream>
 #endif
 

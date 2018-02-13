@@ -29,9 +29,11 @@
 
 // Qt includes
 #ifdef QT_4
+#include <QApplication>
 #include <QDeclarativeEngine>
 #include <QDeclarativeComponent>
 #else
+#include <QGuiApplication>
 #include <QQmlEngine>
 #include <QQmlComponent>
 #include <QCursor>

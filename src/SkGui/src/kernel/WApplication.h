@@ -18,9 +18,7 @@
 #define WAPPLICATION_H
 
 // Qt includes
-#ifdef QT_LATEST
 #include <QApplication>
-#endif
 
 // Sk includes
 #include <WControllerApplication>

@@ -19,6 +19,7 @@
 #ifndef SK_NO_CONTROLLERFILE
 
 // Qt includes
+#include <QCoreApplication>
 #include <QDir>
 
 // Sk includes
