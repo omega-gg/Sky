@@ -32,13 +32,15 @@
 
 // Forward declarations
 class WAbstractBackendPrivate;
-class QPainter;
-class QStyleOptionGraphicsItem;
-class WBackendFilter;
 #ifdef QT_4
 class QGraphicsItem;
 #else
 class QQuickItem;
+#endif
+class QPainter;
+class QStyleOptionGraphicsItem;
+class WBackendFilter;
+#ifdef QT_LATEST
 class WBackendTexture;
 #endif
 
