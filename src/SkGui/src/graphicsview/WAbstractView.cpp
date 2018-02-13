@@ -572,7 +572,11 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWindow * parent, Qt::Win
 /* Q_INVOKABLE */ void WAbstractView::setPosition(const QPoint & position)
 #endif
 {
+#ifdef QT_4
     move(position.x(), position.y());
+#else
+    setPosition(position.x(), position.y());
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------

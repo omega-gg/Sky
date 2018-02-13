@@ -9,7 +9,7 @@ external="../3rdparty"
 #--------------------------------------------------------------------------------------------------
 
 Qt4_version="4.8.7"
-Qt5_version="5.5.1"
+Qt5_version="5.10.0"
 
 VLC_version="2.2.6"
 
@@ -119,12 +119,12 @@ elif [ $1 = "qt5" ]; then
 
     cp "$Qt5"/include/QtCore/$Qt5_version/QtCore/private/* include/Qt/QtCore/private
 
-    mkdir -p include/Qt/QtDeclarative/private
+    #mkdir -p include/Qt/QtDeclarative/private
 
-    cp "$Qt5"/include/QtDeclarative/* include/Qt/QtDeclarative
+    #cp "$Qt5"/include/QtDeclarative/* include/Qt/QtDeclarative
 
-    cp "$Qt5"/include/QtDeclarative/$Qt5_version/QtDeclarative/private/* \
-        include/Qt/QtDeclarative/private
+    #cp "$Qt5"/include/QtDeclarative/$Qt5_version/QtDeclarative/private/* \
+    #    include/Qt/QtDeclarative/private
 
     if [ $2 = "osx" ]; then
 

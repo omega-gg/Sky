@@ -322,7 +322,11 @@ void WResizerPrivate::resize()
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 WResizer::WResizer(ResizeType type, QDeclarativeItem * parent)
+#else
+WResizer::WResizer(ResizeType type, QQuickItem * parent)
+#endif
     : WDeclarativeMouseArea(new WResizerPrivate(this), parent)
 {
     Q_D(WResizer); d->init(type);

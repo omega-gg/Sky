@@ -602,8 +602,8 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
 /* virtual */ QVariant WDeclarativeImageBase::itemChange(GraphicsItemChange change,
                                                          const QVariant &   value)
 #else
-/* virtual */ QVariant WDeclarativeImageBase::itemChange(ItemChange             change,
-                                                         const ItemChangeData & data)
+/* virtual */ void WDeclarativeImageBase::itemChange(ItemChange             change,
+                                                     const ItemChangeData & data)
 #endif
 {
 #ifdef QT_4

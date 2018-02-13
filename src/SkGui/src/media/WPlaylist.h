@@ -123,8 +123,7 @@ public: // Interface
 
     Q_INVOKABLE void removeTrack(int index);
 
-    Q_INVOKABLE void removeTracks(const QList<int>      & indexes);
-    Q_INVOKABLE void removeTracks(const QList<QVariant> & indexes);
+    Q_INVOKABLE void removeTracks(const QList<int> & indexes);
 
     Q_INVOKABLE void removeSelectedTracks();
 
@@ -242,11 +241,15 @@ public: // Interface
     Q_INVOKABLE void registerWatcher  (WPlaylistWatcher * watcher);
     Q_INVOKABLE void unregisterWatcher(WPlaylistWatcher * watcher);
 
+#ifdef QT_4
     //---------------------------------------------------------------------------------------------
     // QML
 
+    Q_INVOKABLE void removeTracks(const QList<QVariant> & indexes);
+
     Q_INVOKABLE void copyTracksTo(const QVariantList & tracks,
                                   WPlaylist          * destination, int to = -1) const;
+#endif
 
 public: // Static functions
     Q_INVOKABLE static WPlaylist * create(Type type = Playlist);

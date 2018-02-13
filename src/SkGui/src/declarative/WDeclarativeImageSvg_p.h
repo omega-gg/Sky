@@ -28,6 +28,9 @@
 */
 
 // Qt includes
+#ifdef QT_LATEST
+#include <QPixmap>
+#endif
 #include <QTimer>
 
 // Private includes

@@ -31,6 +31,9 @@
 
 // Forward declarations
 class WImageColorFilterPrivate;
+#ifdef QT_LATEST
+class QGradient;
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // WDeclarativeGradientStop

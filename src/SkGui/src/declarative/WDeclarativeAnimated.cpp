@@ -307,13 +307,14 @@ WDeclarativeAnimated::WDeclarativeAnimated(WDeclarativeAnimatedPrivate * p, QQui
     {
         Q_D(WDeclarativeAnimated);
 
+        bool visible = value.toBool();
 #else
     Q_D(WDeclarativeAnimated);
 
     if (d->view && change == ItemVisibleHasChanged)
     {
+        bool visible = data.boolValue;
 #endif
-        bool visible = value.toBool();
 
         if (visible)
         {
@@ -328,7 +329,7 @@ WDeclarativeAnimated::WDeclarativeAnimated(WDeclarativeAnimatedPrivate * p, QQui
 #ifdef QT_4
     return WDeclarativeItem::itemChange(change, value);
 #else
-    WDeclarativeItem::itemChange(change, value);
+    WDeclarativeItem::itemChange(change, data);
 #endif
 }
 

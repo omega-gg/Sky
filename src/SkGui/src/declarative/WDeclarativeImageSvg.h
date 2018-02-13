@@ -102,7 +102,7 @@ protected: // QGraphicsItem / QQuickItem reimplementation
 #ifdef QT_4
     /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 #else
-    /* virtual */ QVariant itemChange(ItemChange change, const ItemChangeData & data);
+    /* virtual */ void itemChange(ItemChange change, const ItemChangeData & data);
 #endif
 
 signals:

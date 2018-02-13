@@ -22,11 +22,15 @@
 #include <QFile>
 
 #ifdef QT_LATEST
+#include <QQmlEngine>
 #include <QUrlQuery>
 #endif
 
 // Sk includes
 #include <WControllerApplication>
+#ifdef QT_LATEST
+#include <WControllerDeclarative>
+#endif
 #include <WControllerNetwork>
 #include <WControllerPlaylist>
 
@@ -240,9 +244,13 @@ void WBackendNetPrivate::init()
     methodPlaylist = meta->method(meta->indexOfMethod("onLoadPlaylist(WNetReplyPlaylist*)"));
     methodFolder   = meta->method(meta->indexOfMethod("onLoadFolder(WNetReplyFolder*)"));
 
-    q->moveToThread(wControllerPlaylist->d_func()->thread);
+#ifdef QT_LATEST
+    wControllerDeclarative->engine()->setObjectOwnership(q, QQmlEngine::CppOwnership);
+#endif
 
     wControllerPlaylist->d_func()->registerBackend(q);
+
+    q->moveToThread(wControllerPlaylist->d_func()->thread);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -326,7 +334,7 @@ void WBackendNetPrivate::onLoadFolder(WNetReplyFolder * reply) const
 //=================================================================================================
 // Protected
 
-WBackendNet::WBackendNet(WBackendNetPrivate * p) : WPrivatable(p)
+WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 {
     Q_D(WBackendNet); d->init();
 }

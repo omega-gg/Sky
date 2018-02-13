@@ -24,6 +24,9 @@
 
 // Sk includes
 #include <WControllerView>
+#ifdef QT_LATEST
+#include <WView>
+#endif
 #include <WImageColorFilter>
 
 //=================================================================================================
@@ -499,7 +502,7 @@ WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p, QQuickI
 #ifdef QT_4
     return WDeclarativeItem::itemChange(change, value);
 #else
-    WDeclarativeItem::itemChange(change, data);
+    WDeclarativeItemPaint::itemChange(change, data);
 #endif
 }
 

@@ -96,7 +96,11 @@ public:
 #endif
 
 protected:
+#ifdef QT_4
     WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p, QDeclarativeItem * parent = NULL);
+#else
+    WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p, QQuickItem * parent = NULL);
+#endif
 
 public: // QDeclarativeItem reimplementation
     /* virtual */ void componentComplete();
@@ -116,7 +120,7 @@ protected: // QGraphicsItem / QQuickItem reimplementation
 #ifdef QT_4
     /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 #else
-    /* virtual */ QVariant itemChange(ItemChange change, const ItemChangeData & data);
+    /* virtual */ void itemChange(ItemChange change, const ItemChangeData & data);
 #endif
 
 signals:

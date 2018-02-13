@@ -1190,10 +1190,11 @@ void WDeclarativeTextPrivate::drawTextLayout(QPainter      * painter,
 
 #ifdef QT_4
 /* explicit */ WDeclarativeText::WDeclarativeText(QDeclarativeItem * parent)
+    : WDeclarativeItem(new WDeclarativeTextPrivate(this), parent)
 #else
 /* explicit */ WDeclarativeText::WDeclarativeText(QQuickItem * parent)
+    : WDeclarativeItemPaint(new WDeclarativeTextPrivate(this), parent)
 #endif
-    : WDeclarativeItem(new WDeclarativeTextPrivate(this), parent)
 {
     Q_D(WDeclarativeText); d->init();
 }
@@ -1472,7 +1473,11 @@ void WDeclarativeTextPrivate::drawTextLayout(QPainter      * painter,
     }
 }
 
+#ifdef QT_4
 /* virtual */ void WDeclarativeText::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
+#else
+/* virtual */ void WDeclarativeText::mouseReleaseEvent(QMouseEvent * event)
+#endif
 {
     Q_D(WDeclarativeText);
 

@@ -9,7 +9,7 @@ external="../3rdparty"
 #--------------------------------------------------------------------------------------------------
 
 Qt4_version="4.8.7"
-Qt5_version="5.5.1"
+Qt5_version="5.10.0"
 
 MinGW_version="4.9.2"
 
@@ -166,7 +166,7 @@ else
 
         cp "$Qt5"/bin/Qt5Core.dll              deploy
         cp "$Qt5"/bin/Qt5Gui.dll               deploy
-        cp "$Qt5"/bin/Qt5Declarative.dll       deploy
+        #cp "$Qt5"/bin/Qt5Declarative.dll       deploy
         cp "$Qt5"/bin/Qt5Multimedia.dll        deploy
         cp "$Qt5"/bin/Qt5MultimediaWidgets.dll deploy
         cp "$Qt5"/bin/Qt5Network.dll           deploy

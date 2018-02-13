@@ -394,11 +394,11 @@ void WViewPrivate::init(QQuickItem * item)
 
 #ifdef QT_4
     q->setScene(scene);
-#endif
 
 #ifdef Q_OS_WIN
     // FIXME Windows: Workaround for opengl full screen flicker.
     q->setViewportMargins(0, 0, -1, 0);
+#endif
 #endif
 
 #ifdef QT_4
@@ -1444,7 +1444,7 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 #else
             WAbstractView::setMaximumSize(QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
        }
-       else WAbstractView::setMaximumSize(QSize(width, QWIDGETSIZE_MAX);
+       else WAbstractView::setMaximumSize(QSize(width, QWIDGETSIZE_MAX));
 #endif
     }
 

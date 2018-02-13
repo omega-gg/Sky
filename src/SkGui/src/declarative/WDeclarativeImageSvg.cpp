@@ -25,6 +25,9 @@
 // Sk includes
 #include <WControllerFile>
 #include <WControllerView>
+#ifdef QT_LATEST
+#include <WView>
+#endif
 #include <WCache>
 
 //=================================================================================================
@@ -40,9 +43,7 @@ WDeclarativeImageSvgPrivate::WDeclarativeImageSvgPrivate(WDeclarativeImageSvg * 
 
 void WDeclarativeImageSvgPrivate::init()
 {
-#ifdef QT_4
     Q_Q(WDeclarativeImageSvg);
-#endif
 
     file = NULL;
 
@@ -370,8 +371,8 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
 /* virtual */ QVariant WDeclarativeImageSvg::itemChange(GraphicsItemChange change,
                                                         const QVariant &   value)
 #else
-/* virtual */ QVariant WDeclarativeImageSvg::itemChange(ItemChange             change,
-                                                        const ItemChangeData & data)
+/* virtual */ void WDeclarativeImageSvg::itemChange(ItemChange             change,
+                                                    const ItemChangeData & data)
 #endif
 {
 #ifdef QT_4
@@ -391,7 +392,7 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
 #ifdef QT_4
     return WDeclarativeItem::itemChange(change, value);
 #else
-    WDeclarativeItem::itemChange(change, data);
+    WDeclarativeItemPaint::itemChange(change, data);
 #endif
 }
 

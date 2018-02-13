@@ -46,4 +46,4 @@ SOURCES += src/declarative/WDeclarativeApplication.cpp \
            src/declarative/WDeclarativeListView.cpp \
            src/declarative/WDeclarativeContextualPage.cpp \
 
-contains(QT_MAJOR_VERSION, 5): HEADERS += src/declarative/WDeclarativeItemPaint.cpp \
+contains(QT_MAJOR_VERSION, 5): SOURCES += src/declarative/WDeclarativeItemPaint.cpp \

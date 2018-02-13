@@ -17,6 +17,11 @@
 #ifndef WWINDOW_H
 #define WWINDOW_H
 
+// Qt includes
+#ifdef QT_LATEST
+#include <QPixmap>
+#endif
+
 // Sk includes
 #include <WDeclarativeMouseArea>
 

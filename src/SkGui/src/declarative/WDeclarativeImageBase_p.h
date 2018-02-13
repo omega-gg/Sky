@@ -27,6 +27,11 @@
     We mean it.
 */
 
+// Qt includes
+#ifdef QT_LATEST
+#include <QPixmap>
+#endif
+
 // Sk includes
 #include <WPixmapCache>
 

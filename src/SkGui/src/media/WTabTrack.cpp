@@ -1670,23 +1670,6 @@ bool WTabTrack::hasNextTrack() const
 
 //-------------------------------------------------------------------------------------------------
 
-QUrl WTabTrack::coverShot() const
-{
-    Q_D(const WTabTrack);
-
-    if (d->currentBookmark == NULL)
-    {
-        return QUrl();
-    }
-    else if (d->currentBookmark->currentTime() != -1)
-    {
-         return d->currentBookmark->videoShot();
-    }
-    else return d->currentBookmark->cover();
-}
-
-//-------------------------------------------------------------------------------------------------
-
 QList<int> WTabTrack::folderIds() const
 {
     Q_D(const WTabTrack);
@@ -1896,6 +1879,21 @@ QUrl WTabTrack::videoShot() const
          return d->currentBookmark->videoShot();
     }
     else return QUrl();
+}
+
+QUrl WTabTrack::coverShot() const
+{
+    Q_D(const WTabTrack);
+
+    if (d->currentBookmark == NULL)
+    {
+        return QUrl();
+    }
+    else if (d->currentBookmark->currentTime() != -1)
+    {
+         return d->currentBookmark->videoShot();
+    }
+    else return d->currentBookmark->cover();
 }
 
 //-------------------------------------------------------------------------------------------------

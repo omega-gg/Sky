@@ -49,7 +49,7 @@ void WDeclarativeItemPaintPrivate::init()
 //-------------------------------------------------------------------------------------------------
 
 /* explicit */ WDeclarativeItemPaint::WDeclarativeItemPaint(QQuickItem * parent)
-    : QQuickItem(parent), WPrivatable(new WDeclarativeItemPaintPrivate(this))
+    : QQuickPaintedItem(parent), WPrivatable(new WDeclarativeItemPaintPrivate(this))
 {
     Q_D(WDeclarativeItemPaint); d->init();
 }
@@ -58,7 +58,7 @@ void WDeclarativeItemPaintPrivate::init()
 // Protected
 
 WDeclarativeItemPaint::WDeclarativeItemPaint(WDeclarativeItemPaintPrivate * p, QQuickItem * parent)
-    : QQuickItem(parent), WPrivatable(p)
+    : QQuickPaintedItem(parent), WPrivatable(p)
 {
     Q_D(WDeclarativeItemPaint); d->init();
 }

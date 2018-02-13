@@ -62,8 +62,6 @@ class SK_GUI_EXPORT WTabTrack : public WAbstractTab
     Q_PROPERTY(bool hasPreviousTrack READ hasPreviousTrack NOTIFY playlistUpdated)
     Q_PROPERTY(bool hasNextTrack     READ hasNextTrack     NOTIFY playlistUpdated)
 
-    Q_PROPERTY(QUrl coverShot READ coverShot NOTIFY currentBookmarkUpdated)
-
     Q_PROPERTY(QList<int> folderIds READ folderIds NOTIFY currentBookmarkUpdated)
 
     Q_PROPERTY(QList<int> idPlaylist   READ idPlaylist   NOTIFY currentBookmarkUpdated)
@@ -88,7 +86,8 @@ class SK_GUI_EXPORT WTabTrack : public WAbstractTab
 
     Q_PROPERTY(WAbstractBackend::Quality quality READ quality NOTIFY currentBookmarkUpdated)
 
-    Q_PROPERTY(QUrl videoShot READ videoShot NOTIFY currentBookmarkUpdated)
+    Q_PROPERTY(QUrl videoShot READ videoShot NOTIFY currentBookmarkUpdated)    
+    Q_PROPERTY(QUrl coverShot READ coverShot NOTIFY currentBookmarkUpdated)
 
     Q_PROPERTY(int currentTime READ currentTime WRITE setCurrentTime NOTIFY currentBookmarkUpdated)
 
@@ -171,8 +170,6 @@ public: // Properties
     bool hasPreviousTrack() const;
     bool hasNextTrack    () const;
 
-    QUrl coverShot() const;
-
     QList<int> folderIds() const;
 
     QList<int> idPlaylist  () const;
@@ -199,6 +196,7 @@ public: // Properties
     WAbstractBackend::Quality quality() const;
 
     QUrl videoShot() const;
+    QUrl coverShot() const;
 
     int  currentTime() const;
     void setCurrentTime(int msec);

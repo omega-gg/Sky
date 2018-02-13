@@ -300,10 +300,10 @@ public: // Interface
     Q_INVOKABLE bool saveShot(const QString & fileName,
                               int x = 0, int y = 0, int width = -1, int height = -1) const;
 #else
-    Q_INVOKABLE QPixmap takeShot(int x = 0, int y = 0, int width = -1, int height = -1)
+    Q_INVOKABLE QPixmap takeShot(int x = 0, int y = 0, int width = -1, int height = -1);
 
     Q_INVOKABLE bool saveShot(const QString & fileName,
-                              int x = 0, int y = 0, int width = -1, int height = -1)
+                              int x = 0, int y = 0, int width = -1, int height = -1);
 #endif
 
     //---------------------------------------------------------------------------------------------

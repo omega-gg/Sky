@@ -18,6 +18,11 @@
 
 #ifndef SK_NO_IMAGECOLORFILTER
 
+// Qt includes
+#ifdef QT_LATEST
+#include <QGradient>
+#endif
+
 //=================================================================================================
 // WDeclarativeGradientStop
 //=================================================================================================
@@ -132,7 +137,11 @@ QDeclarativeListProperty<WDeclarativeGradientStop> WDeclarativeGradient::stops()
 QQmlListProperty<WDeclarativeGradientStop> WDeclarativeGradient::stops()
 #endif
 {
+#ifdef QT_4
     return QDeclarativeListProperty<WDeclarativeGradientStop>(this, _stops);
+#else
+    return QQmlListProperty<WDeclarativeGradientStop>(this, _stops);
+#endif
 }
 
 const QGradient * WDeclarativeGradient::gradient() const

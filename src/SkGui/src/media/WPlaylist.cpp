@@ -1107,18 +1107,6 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     save();
 }
 
-/* Q_INVOKABLE */ void WPlaylist::removeTracks(const QList<QVariant> & indexes)
-{
-    QList<int> list;
-
-    foreach (QVariant variant, indexes)
-    {
-        list.append(variant.toInt());
-    }
-
-    removeTracks(list);
-}
-
 /* Q_INVOKABLE */ void WPlaylist::removeSelectedTracks()
 {
     removeTracks(selectedTracks());
@@ -1968,14 +1956,31 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     d->watchers.removeOne(watcher);
 }
 
+#ifdef QT_4
+
 //-------------------------------------------------------------------------------------------------
 // QML
+
+/* Q_INVOKABLE */ void WPlaylist::removeTracks(const QList<QVariant> & indexes)
+{
+    QList<int> list;
+
+    foreach (QVariant variant, indexes)
+    {
+        list.append(variant.toInt());
+    }
+
+    removeTracks(list);
+}
+
 
 /* Q_INVOKABLE */ void WPlaylist::copyTracksTo(const QVariantList & tracks,
                                                WPlaylist          * destination, int to) const
 {
     copyTracksTo(Sk::variantsToInts(tracks), destination, to);
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Static functions
