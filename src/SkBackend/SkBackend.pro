@@ -19,7 +19,7 @@ TEMPLATE = lib
 contains(QT_MAJOR_VERSION, 4) {
     QT += declarative network script xml
 } else {
-    QT += network script xml
+    QT += quick network script xml
 }
 
 CONFIG       += plugin
