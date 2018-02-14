@@ -20,7 +20,11 @@
 
 // Qt includes
 #include <QCoreApplication>
+#ifdef QT_4
 #include <QGraphicsItem>
+#else
+#include <QQuickItem>
+#endif
 #include <QImage>
 #include <QPainter>
 
@@ -192,6 +196,44 @@ PFNGLMULTITEXCOORD2FARBPROC          pglMultiTexCoord2fARB          = 0;
 }                                                        \
 
 //-------------------------------------------------------------------------------------------------
+
+#define W_CREATE_TEXTURE(Unit, Id, Width, Height, Bits)                                         \
+{                                                                                               \
+    _gl->glActiveTexture(Unit);                                                                 \
+                                                                                                \
+    _gl->glBindTexture(GL_TEXTURE_2D, Id);                                                      \
+                                                                                                \
+    _gl->glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, Width, Height, 0, GL_LUMINANCE,           \
+                      GL_UNSIGNED_BYTE, 0);                                                     \
+                                                                                                \
+    _gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);                      \
+    _gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);                      \
+                                                                                                \
+    _gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);                   \
+    _gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);                   \
+                                                                                                \
+    _gl->glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, Width, Height, GL_LUMINANCE, GL_UNSIGNED_BYTE, \
+                         Bits);                                                                 \
+}                                                                                               \
+
+#define W_UPDATE_TEXTURE(Unit, Id, Width, Height, Bits)                                         \
+{                                                                                               \
+    _gl->glActiveTexture(Unit);                                                                 \
+                                                                                                \
+    _gl->glBindTexture(GL_TEXTURE_2D, Id);                                                      \
+                                                                                                \
+    _gl->glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, Width, Height, GL_LUMINANCE, GL_UNSIGNED_BYTE, \
+                         Bits);                                                                 \
+}                                                                                               \
+
+#define W_BIND_TEXTURE(Unit, Id)           \
+{                                          \
+    _gl->glActiveTexture(Unit);            \
+                                           \
+    _gl->glBindTexture(GL_TEXTURE_2D, Id); \
+}                                          \
+
+//-------------------------------------------------------------------------------------------------
 // Static variables
 
 static const int PLAYER_FORMAT          = GL_LUMINANCE;
@@ -204,12 +246,145 @@ static const int PLAYER_MAX_HEIGHT = 3240;
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
+
 static GLuint shaderId    = 0;
 static int    shaderCount = 0;
+
+const qreal shaderMatrix[12] =
+{
+    1.164383561643836,  0.000000000000000,  1.792741071428571, -0.972945075016308,
+    1.164383561643836, -0.213248614273730, -0.532909328559444,  0.301482665475862,
+    1.164383561643836,  2.112401785714286,  0.000000000000000, -1.133402217873451,
+};
 
 static GLfloat shaderValues[16];
 
 static GLfloat shaderOpacity = 1.f;
+
+#else
+
+static const QMatrix4x4 colorMatrix
+{
+    1.164383561643836,  0.000000000000000,  1.792741071428571, -0.972945075016308,
+    1.164383561643836, -0.213248614273730, -0.532909328559444,  0.301482665475862,
+    1.164383561643836,  2.112401785714286,  0.000000000000000, -1.133402217873451,
+    0.000000000000000,  0.000000000000000,  0.000000000000000,  1.000000000000000
+};
+
+#endif
+
+//=================================================================================================
+// Static functions
+//=================================================================================================
+
+void createShader()
+{
+    const char * code =
+        "!!ARBfp1.0"
+        "OPTION ARB_precision_hint_fastest;"
+
+        "TEMP src;"
+        "TEX  src.x, fragment.texcoord[0], texture[0], 2D;"
+        "TEX  src.y, fragment.texcoord[1], texture[1], 2D;"
+        "TEX  src.z, fragment.texcoord[2], texture[2], 2D;"
+
+        "PARAM coefficient[4] = { program.local[0..3] };"
+
+        "TEMP tmp;"
+        "MAD  tmp,          src.xxxx, coefficient[0], coefficient[3];"
+        "MAD  tmp,          src.yyyy, coefficient[1], tmp;"
+        "MAD  result.color, src.zzzz, coefficient[2], tmp;"
+        "END";
+
+    glGenProgramsARB(1, &shaderId);
+
+    glBindProgramARB(GL_FRAGMENT_PROGRAM_ARB, shaderId);
+
+    glProgramStringARB(GL_FRAGMENT_PROGRAM_ARB,
+                       GL_PROGRAM_FORMAT_ASCII_ARB, strlen(code), (const GLbyte *) code);
+
+    GLfloat * values = shaderValues;
+
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            if (j == 3)
+            {
+                 values[j] = shaderOpacity;
+            }
+            else values[j] = shaderMatrix[j * 4 + i];
+        }
+
+        glProgramLocalParameter4fvARB(GL_FRAGMENT_PROGRAM_ARB, i, values);
+
+        values += 4;
+    }
+}
+
+void deleteShader()
+{
+    shaderCount--;
+
+    if (shaderCount == 0)
+    {
+        glDeleteProgramsARB(1, &shaderId);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void initShader()
+{
+    if (shaderCount)
+    {
+        shaderCount++;
+
+        return;
+    }
+
+#if defined(Q_OS_WIN)
+    glGenProgramsARB   = (PFNGLGENPROGRAMSARBPROC)   wglGetProcAddress("glGenProgramsARB");
+    glBindProgramARB   = (PFNGLBINDPROGRAMARBPROC)   wglGetProcAddress("glBindProgramARB");
+    glProgramStringARB = (PFNGLPROGRAMSTRINGARBPROC) wglGetProcAddress("glProgramStringARB");
+
+    glDeleteProgramsARB = (PFNGLDELETEPROGRAMSARBPROC) wglGetProcAddress("glDeleteProgramsARB");
+
+    glProgramLocalParameter4fvARB = (PFNGLPROGRAMLOCALPARAMETER4FVARBPROC)
+                                    wglGetProcAddress("glProgramLocalParameter4fvARB");
+
+    glActiveTextureARB   = (PFNGLACTIVETEXTUREARBPROC)   wglGetProcAddress("glActiveTextureARB");
+    glMultiTexCoord2fARB = (PFNGLMULTITEXCOORD2FARBPROC) wglGetProcAddress("glMultiTexCoord2fARB");
+#elif defined(Q_OS_LINUX)
+    glGenProgramsARB = (PFNGLGENPROGRAMSARBPROC) glXGetProcAddress((GLubyte *) "glGenProgramsARB");
+    glBindProgramARB = (PFNGLBINDPROGRAMARBPROC) glXGetProcAddress((GLubyte *) "glBindProgramARB");
+
+    glProgramStringARB = (PFNGLPROGRAMSTRINGARBPROC)
+                         glXGetProcAddress((GLubyte *) "glProgramStringARB");
+
+    glDeleteProgramsARB = (PFNGLDELETEPROGRAMSARBPROC)
+                          glXGetProcAddress((GLubyte *) "glDeleteProgramsARB");
+
+    glProgramLocalParameter4fvARB = (PFNGLPROGRAMLOCALPARAMETER4FVARBPROC)
+                                    glXGetProcAddress((GLubyte *) "glProgramLocalParameter4fvARB");
+
+    glActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC)
+                         glXGetProcAddress((GLubyte *) "glActiveTextureARB");
+
+    glMultiTexCoord2fARB = (PFNGLMULTITEXCOORD2FARBPROC)
+                           glXGetProcAddress((GLubyte *) "glMultiTexCoord2fARB");
+#endif
+
+    if (glGenProgramsARB              && glBindProgramARB   && glProgramStringARB &&
+        glProgramLocalParameter4fvARB && glActiveTextureARB && glMultiTexCoord2fARB)
+    {
+        createShader();
+
+        shaderCount++;
+    }
+    else qWarning("WBackendVlc initShader: Fragment shaders are not supported.");
+}
 
 //-------------------------------------------------------------------------------------------------
 // Private
@@ -243,8 +418,6 @@ void WBackendVlcPrivate::init()
     targetY      = 0.f;
     targetWidth  = 0.f;
     targetHeight = 0.f;
-
-    shader = false;
 
     textureIds[0] = 0;
 
@@ -314,131 +487,6 @@ void WBackendVlcPrivate::populateTableRgb()
         tableRgb[RED_OFFSET   + i] = qRgb(gamma[i], 0, 0);
         tableRgb[GREEN_OFFSET + i] = qRgb(0, gamma[i], 0);
         tableRgb[BLUE_OFFSET  + i] = qRgb(0, 0, gamma[i]);
-    }
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void WBackendVlcPrivate::initShader()
-{
-    if (shader) return;
-
-    if (shaderCount)
-    {
-        shader = true;
-
-        shaderCount++;
-
-        return;
-    }
-
-#if defined(Q_OS_WIN)
-    glGenProgramsARB   = (PFNGLGENPROGRAMSARBPROC)   wglGetProcAddress("glGenProgramsARB");
-    glBindProgramARB   = (PFNGLBINDPROGRAMARBPROC)   wglGetProcAddress("glBindProgramARB");
-    glProgramStringARB = (PFNGLPROGRAMSTRINGARBPROC) wglGetProcAddress("glProgramStringARB");
-
-    glDeleteProgramsARB = (PFNGLDELETEPROGRAMSARBPROC) wglGetProcAddress("glDeleteProgramsARB");
-
-    glProgramLocalParameter4fvARB = (PFNGLPROGRAMLOCALPARAMETER4FVARBPROC)
-                                    wglGetProcAddress("glProgramLocalParameter4fvARB");
-
-    glActiveTextureARB   = (PFNGLACTIVETEXTUREARBPROC)   wglGetProcAddress("glActiveTextureARB");
-    glMultiTexCoord2fARB = (PFNGLMULTITEXCOORD2FARBPROC) wglGetProcAddress("glMultiTexCoord2fARB");
-#elif defined(Q_OS_LINUX)
-    glGenProgramsARB = (PFNGLGENPROGRAMSARBPROC) glXGetProcAddress((GLubyte *) "glGenProgramsARB");
-    glBindProgramARB = (PFNGLBINDPROGRAMARBPROC) glXGetProcAddress((GLubyte *) "glBindProgramARB");
-
-    glProgramStringARB = (PFNGLPROGRAMSTRINGARBPROC)
-                         glXGetProcAddress((GLubyte *) "glProgramStringARB");
-
-    glDeleteProgramsARB = (PFNGLDELETEPROGRAMSARBPROC)
-                          glXGetProcAddress((GLubyte *) "glDeleteProgramsARB");
-
-    glProgramLocalParameter4fvARB = (PFNGLPROGRAMLOCALPARAMETER4FVARBPROC)
-                                    glXGetProcAddress((GLubyte *) "glProgramLocalParameter4fvARB");
-
-    glActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC)
-                         glXGetProcAddress((GLubyte *) "glActiveTextureARB");
-
-    glMultiTexCoord2fARB = (PFNGLMULTITEXCOORD2FARBPROC)
-                           glXGetProcAddress((GLubyte *) "glMultiTexCoord2fARB");
-#endif
-
-    if (glGenProgramsARB              && glBindProgramARB   && glProgramStringARB &&
-        glProgramLocalParameter4fvARB && glActiveTextureARB && glMultiTexCoord2fARB)
-    {
-        createShader();
-
-        shader = true;
-
-        shaderCount++;
-    }
-    else qWarning("WBackendVlcPrivate::initShader: Fragment shaders are not supported.");
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void WBackendVlcPrivate::createShader()
-{
-    const char * code =
-        "!!ARBfp1.0"
-        "OPTION ARB_precision_hint_fastest;"
-
-        "TEMP src;"
-        "TEX  src.x, fragment.texcoord[0], texture[0], 2D;"
-        "TEX  src.y, fragment.texcoord[1], texture[1], 2D;"
-        "TEX  src.z, fragment.texcoord[2], texture[2], 2D;"
-
-        "PARAM coefficient[4] = { program.local[0..3] };"
-
-        "TEMP tmp;"
-        "MAD  tmp,          src.xxxx, coefficient[0], coefficient[3];"
-        "MAD  tmp,          src.yyyy, coefficient[1], tmp;"
-        "MAD  result.color, src.zzzz, coefficient[2], tmp;"
-        "END";
-
-    glGenProgramsARB(1, &shaderId);
-
-    glBindProgramARB(GL_FRAGMENT_PROGRAM_ARB, shaderId);
-
-    glProgramStringARB(GL_FRAGMENT_PROGRAM_ARB,
-                       GL_PROGRAM_FORMAT_ASCII_ARB, strlen(code), (const GLbyte *) code);
-
-    const qreal matrix[12] =
-    {
-        1.164383561643836,  0.000000000000000,  1.792741071428571, -0.972945075016308,
-        1.164383561643836, -0.213248614273730, -0.532909328559444,  0.301482665475862,
-        1.164383561643836,  2.112401785714286,  0.000000000000000, -1.133402217873451,
-    };
-
-    GLfloat * values = shaderValues;
-
-    for (int i = 0; i < 4; i++)
-    {
-        for (int j = 0; j < 4; j++)
-        {
-            if (j == 3)
-            {
-                 values[j] = shaderOpacity;
-            }
-            else values[j] = matrix[j * 4 + i];
-        }
-
-        glProgramLocalParameter4fvARB(GL_FRAGMENT_PROGRAM_ARB, i, values);
-
-        values += 4;
-    }
-}
-
-void WBackendVlcPrivate::deleteShader()
-{
-    if (shader == false) return;
-
-    shaderCount--;
-
-    if (shaderCount == 0)
-    {
-        glDeleteProgramsARB(1, &shaderId);
     }
 }
 
@@ -1317,7 +1365,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
             {
                 d->frameReset = false;
 
-                d->initShader();
+                initShader();
 
                 if (d->textureIds[0] != 0)
                 {

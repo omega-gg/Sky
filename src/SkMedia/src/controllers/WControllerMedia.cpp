@@ -20,7 +20,11 @@
 
 // Qt includes
 #include <QThread>
+#ifdef QT_4
 #include <QDeclarativeComponent>
+#else
+#include <QQmlComponent>
+#endif
 
 // Sk includes
 #include <WControllerApplication>

@@ -75,6 +75,84 @@ struct WBackendVlcTexture
     uchar * bits;
 };
 
+#ifdef QT_LATEST
+
+//-------------------------------------------------------------------------------------------------
+// WBackendVlcShader
+//-------------------------------------------------------------------------------------------------
+
+class SK_MEDIA_EXPORT WBackendVlcShader : public QSGMaterialShader
+{
+public: // QSGMaterialShader implementation
+    /* virtual */ char const * const * attributeNames() const;
+
+public: // QSGMaterialShader reimplementation
+    /* virtual */ void updateState(const RenderState & state, QSGMaterial * newMaterial,
+                                                              QSGMaterial * oldMaterial);
+
+protected: // QSGMaterialShader reimplementation
+    /* virtual */ void initialize();
+
+    /* virtual */ const char * vertexShader  () const;
+    /* virtual */ const char * fragmentShader() const;
+
+public: // Properties
+    int idPosition;
+    int idOpacity;
+    int idColor;
+
+    int idY;
+    int idU;
+    int idV;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WBackendVlcMaterial
+//-------------------------------------------------------------------------------------------------
+
+class SK_MEDIA_EXPORT WBackendVlcMaterial : public QSGMaterial
+{
+public:
+    WBackendVlcMaterial();
+
+    /* virtual */ ~WBackendVlcMaterial();
+
+public: // Functions
+    void updateTextures();
+
+public: // QSGMaterial implementation
+    /* virtual */ QSGMaterialType * type() const;
+
+    /* virtual */ QSGMaterialShader * createShader() const;
+
+public: // Properties
+    QOpenGLFunctions * gl;
+
+    WBackendTexture * textures;
+
+    GLuint ids[3];
+
+    bool update;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WBackendVlcNode
+//-------------------------------------------------------------------------------------------------
+
+class SK_MEDIA_EXPORT WBackendVlcNode : public WBackendNode
+{
+public:
+    WBackendVlcNode();
+
+public: // WBackendNode reimplementation
+    /* virtual */ void setTextures(WBackendTexture * textures);
+
+public: // Properties
+    WBackendVlcMaterial material;
+};
+
+#endif
+
 //-------------------------------------------------------------------------------------------------
 // WBackendVlcPrivate
 //-------------------------------------------------------------------------------------------------
@@ -96,11 +174,6 @@ public:
 
 public: // Functions
     void populateTableRgb();
-
-    void initShader();
-
-    void createShader();
-    void deleteShader();
 
     void convertFrameSoftware();
     void convertFrameSse     ();
@@ -164,8 +237,6 @@ public: // Variables
     GLfloat targetY;
     GLfloat targetWidth;
     GLfloat targetHeight;
-
-    bool shader;
 
     GLuint textureIds[3];
 

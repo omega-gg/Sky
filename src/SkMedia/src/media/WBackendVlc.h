@@ -42,6 +42,10 @@ public: // Interface
     Q_INVOKABLE void clearProxy();
 
 protected: // WAbstractBackend implementation
+#ifdef QT_LATEST
+    /* virtual */ WBackendNode * backendCreateNode() const;
+#endif
+
     /* virtual */ bool backendSetSource(const QUrl & url);
 
     /* virtual */ bool backendPlay ();

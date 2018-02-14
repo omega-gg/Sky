@@ -16,7 +16,11 @@ DESTDIR = $$SK/lib
 
 TEMPLATE = lib
 
-QT += opengl declarative network
+contains(QT_MAJOR_VERSION, 4) {
+    QT += opengl declarative network
+} else {
+    QT += opengl quick network
+}
 
 CONFIG       += plugin
 win32:CONFIG += dll
