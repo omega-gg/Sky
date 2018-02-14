@@ -19,9 +19,8 @@
 #ifndef SK_NO_TORRENTENGINE
 
 // Qt includes
-#ifdef QT_4
 #include <QCoreApplication>
-#else
+#ifdef QT_LATEST
 #include <QDataStream>
 #endif
 
@@ -124,7 +123,7 @@ void WTorrentEnginePrivate::load()
 
         int id;
 
-        QString hash;
+        QByteArray hash;
 
         qint64 size;
 
@@ -146,7 +145,7 @@ void WTorrentEnginePrivate::load()
         ids.insertId(id);
 
         source->id   = id;
-        source->hash = sha1_hash(hash.toStdString());
+        source->hash = sha1_hash(hash);
         source->size = size;
 
         sources.append(source);
@@ -1878,11 +1877,11 @@ void WTorrentEnginePrivate::onSave()
     {
         const sha1_hash & hash = source->hash;
 
-        QString string = QString::fromLatin1(hash.data(), hash.size);
+        QByteArray array = QByteArray(hash.data(), hash.size);
 
         const QList<QUrl> & urls = source->urls;
 
-        stream << source->id << string << (qint64) source->size << urls.count();
+        stream << source->id << array << (qint64) source->size << urls.count();
 
         foreach (const QUrl & url, urls)
         {

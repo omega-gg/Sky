@@ -999,6 +999,8 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
     }
     else
     {
+        setDuration(duration);
+
         d->currentTime = currentTime;
 
         d->methodSkip.invoke(d->thread);
