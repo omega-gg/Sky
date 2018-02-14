@@ -251,13 +251,6 @@ static const int PLAYER_MAX_HEIGHT = 3240;
 static GLuint shaderId    = 0;
 static int    shaderCount = 0;
 
-const qreal shaderMatrix[12] =
-{
-    1.164383561643836,  0.000000000000000,  1.792741071428571, -0.972945075016308,
-    1.164383561643836, -0.213248614273730, -0.532909328559444,  0.301482665475862,
-    1.164383561643836,  2.112401785714286,  0.000000000000000, -1.133402217873451,
-};
-
 static GLfloat shaderValues[16];
 
 static GLfloat shaderOpacity = 1.f;
@@ -304,6 +297,13 @@ void createShader()
     glProgramStringARB(GL_FRAGMENT_PROGRAM_ARB,
                        GL_PROGRAM_FORMAT_ASCII_ARB, strlen(code), (const GLbyte *) code);
 
+    const qreal matrix[12] =
+    {
+        1.164383561643836,  0.000000000000000,  1.792741071428571, -0.972945075016308,
+        1.164383561643836, -0.213248614273730, -0.532909328559444,  0.301482665475862,
+        1.164383561643836,  2.112401785714286,  0.000000000000000, -1.133402217873451,
+    };
+
     GLfloat * values = shaderValues;
 
     for (int i = 0; i < 4; i++)
@@ -314,7 +314,7 @@ void createShader()
             {
                  values[j] = shaderOpacity;
             }
-            else values[j] = shaderMatrix[j * 4 + i];
+            else values[j] = matrix[j * 4 + i];
         }
 
         glProgramLocalParameter4fvARB(GL_FRAGMENT_PROGRAM_ARB, i, values);
