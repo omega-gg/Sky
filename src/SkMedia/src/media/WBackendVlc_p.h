@@ -31,6 +31,9 @@
 #include <QGLWidget>
 #include <QMutex>
 #include <QMetaMethod>
+#ifdef QT_LATEST
+#include <QSGMaterial>
+#endif
 
 // Sk includes
 #include <WVlcPlayer>
@@ -42,6 +45,9 @@
 
 // Forward declarations
 class WMediaReply;
+#ifdef QT_LATEST
+class QOpenGLFunctions;
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // WBackendVlcTexture
@@ -193,7 +199,9 @@ public: // Functions
     void clearReply ();
     void clearActive();
 
+#ifdef QT_4
     void setOpacity(GLfloat opacity);
+#endif
 
     void setMute(bool enabled);
 

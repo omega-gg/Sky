@@ -68,6 +68,10 @@ protected: // WAbstractBackend reimplementation
 
     /* virtual */ void backendSetSize(const QSizeF & size);
 
+#ifdef QT_LATEST
+    /* virtual */ void backendSynchronize(WBackendFrame * frame);
+#endif
+
     /* virtual */ void backendDrawFrame(QPainter * painter, const QRect & rect);
 
     /* virtual */ void   backendUpdateFrame();

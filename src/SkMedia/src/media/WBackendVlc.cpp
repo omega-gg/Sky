@@ -19,21 +19,16 @@
 #ifndef SK_NO_BACKENDVLC
 
 // Qt includes
-#include <QCoreApplication>
 #ifdef QT_4
+#include <QCoreApplication>
 #include <QGraphicsItem>
 #else
 #include <QQuickItem>
+#include <QOpenGLFunctions>
 #endif
-#include <QImage>
-#include <QPainter>
-
-// Vlc includes
-#include <vlc/vlc.h>
 
 // Sk includes
 #include <WControllerMedia>
-#include <WControllerDownload>
 #include <WControllerPlaylist>
 
 // 3rdparty includes
@@ -197,41 +192,41 @@ PFNGLMULTITEXCOORD2FARBPROC          pglMultiTexCoord2fARB          = 0;
 
 //-------------------------------------------------------------------------------------------------
 
-#define W_CREATE_TEXTURE(Unit, Id, Width, Height, Bits)                                         \
-{                                                                                               \
-    _gl->glActiveTexture(Unit);                                                                 \
-                                                                                                \
-    _gl->glBindTexture(GL_TEXTURE_2D, Id);                                                      \
-                                                                                                \
-    _gl->glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, Width, Height, 0, GL_LUMINANCE,           \
-                      GL_UNSIGNED_BYTE, 0);                                                     \
-                                                                                                \
-    _gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);                      \
-    _gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);                      \
-                                                                                                \
-    _gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);                   \
-    _gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);                   \
-                                                                                                \
-    _gl->glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, Width, Height, GL_LUMINANCE, GL_UNSIGNED_BYTE, \
-                         Bits);                                                                 \
-}                                                                                               \
+#define W_CREATE_TEXTURE(Unit, Id, Width, Height, Bits)                                        \
+{                                                                                              \
+    gl->glActiveTexture(Unit);                                                                 \
+                                                                                               \
+    gl->glBindTexture(GL_TEXTURE_2D, Id);                                                      \
+                                                                                               \
+    gl->glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, Width, Height, 0, GL_LUMINANCE,           \
+                      GL_UNSIGNED_BYTE, 0);                                                    \
+                                                                                               \
+    gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);                      \
+    gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);                      \
+                                                                                               \
+    gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);                   \
+    gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);                   \
+                                                                                               \
+    gl->glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, Width, Height, GL_LUMINANCE, GL_UNSIGNED_BYTE, \
+                         Bits);                                                                \
+}                                                                                              \
 
-#define W_UPDATE_TEXTURE(Unit, Id, Width, Height, Bits)                                         \
-{                                                                                               \
-    _gl->glActiveTexture(Unit);                                                                 \
-                                                                                                \
-    _gl->glBindTexture(GL_TEXTURE_2D, Id);                                                      \
-                                                                                                \
-    _gl->glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, Width, Height, GL_LUMINANCE, GL_UNSIGNED_BYTE, \
-                         Bits);                                                                 \
-}                                                                                               \
+#define W_UPDATE_TEXTURE(Unit, Id, Width, Height, Bits)                                        \
+{                                                                                              \
+    gl->glActiveTexture(Unit);                                                                 \
+                                                                                               \
+    gl->glBindTexture(GL_TEXTURE_2D, Id);                                                      \
+                                                                                               \
+    gl->glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, Width, Height, GL_LUMINANCE, GL_UNSIGNED_BYTE, \
+                         Bits);                                                                \
+}                                                                                              \
 
-#define W_BIND_TEXTURE(Unit, Id)           \
-{                                          \
-    _gl->glActiveTexture(Unit);            \
-                                           \
-    _gl->glBindTexture(GL_TEXTURE_2D, Id); \
-}                                          \
+#define W_BIND_TEXTURE(Unit, Id)          \
+{                                         \
+    gl->glActiveTexture(Unit);            \
+                                          \
+    gl->glBindTexture(GL_TEXTURE_2D, Id); \
+}                                         \
 
 //-------------------------------------------------------------------------------------------------
 // Static variables
@@ -257,7 +252,11 @@ static GLfloat shaderOpacity = 1.f;
 
 #else
 
-static const QMatrix4x4 colorMatrix
+static QSGMaterialType materialType;
+
+static const char * shaderNames[] = { "vertex", "fragment", 0 };
+
+static const QMatrix4x4 matrix
 {
     1.164383561643836,  0.000000000000000,  1.792741071428571, -0.972945075016308,
     1.164383561643836, -0.213248614273730, -0.532909328559444,  0.301482665475862,
@@ -266,6 +265,8 @@ static const QMatrix4x4 colorMatrix
 };
 
 #endif
+
+#ifdef QT_4
 
 //=================================================================================================
 // Static functions
@@ -290,19 +291,19 @@ void createShader()
         "MAD  result.color, src.zzzz, coefficient[2], tmp;"
         "END";
 
-    glGenProgramsARB(1, &shaderId);
-
-    glBindProgramARB(GL_FRAGMENT_PROGRAM_ARB, shaderId);
-
-    glProgramStringARB(GL_FRAGMENT_PROGRAM_ARB,
-                       GL_PROGRAM_FORMAT_ASCII_ARB, strlen(code), (const GLbyte *) code);
-
     const qreal matrix[12] =
     {
         1.164383561643836,  0.000000000000000,  1.792741071428571, -0.972945075016308,
         1.164383561643836, -0.213248614273730, -0.532909328559444,  0.301482665475862,
         1.164383561643836,  2.112401785714286,  0.000000000000000, -1.133402217873451,
     };
+
+    glGenProgramsARB(1, &shaderId);
+
+    glBindProgramARB(GL_FRAGMENT_PROGRAM_ARB, shaderId);
+
+    glProgramStringARB(GL_FRAGMENT_PROGRAM_ARB,
+                       GL_PROGRAM_FORMAT_ASCII_ARB, strlen(code), (const GLbyte *) code);
 
     GLfloat * values = shaderValues;
 
@@ -386,9 +387,210 @@ void initShader()
     else qWarning("WBackendVlc initShader: Fragment shaders are not supported.");
 }
 
+#else
+
+//=================================================================================================
+// WBackendVlcShader
+//=================================================================================================
+// QSGMaterialShader implementation
+
+/* virtual */ char const * const * WBackendVlcShader::attributeNames() const
+{
+    return shaderNames;
+}
+
 //-------------------------------------------------------------------------------------------------
-// Private
+// QSGMaterialShader reimplementation
 //-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WBackendVlcShader::updateState(const RenderState & state,
+                                                  QSGMaterial       * newMaterial, QSGMaterial *)
+{
+    QOpenGLShaderProgram * program = this->program();
+
+    if (state.isMatrixDirty())
+    {
+        program->setUniformValue(idPosition, state.combinedMatrix());
+    }
+
+    if (state.isOpacityDirty())
+    {
+        program->setUniformValue(idOpacity, state.opacity());
+    }
+
+    WBackendVlcMaterial * material = static_cast<WBackendVlcMaterial *> (newMaterial);
+
+    material->updateTextures();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Protected QSGMaterialShader reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WBackendVlcShader::initialize()
+{
+    QOpenGLShaderProgram * program = this->program();
+
+    idPosition = program->uniformLocation("position");
+    idOpacity  = program->uniformLocation("opacity");
+    idColor    = program->uniformLocation("matrix");
+
+    idY = program->uniformLocation("y");
+    idU = program->uniformLocation("u");
+    idV = program->uniformLocation("v");
+
+    program->setUniformValue(idColor, matrix);
+
+    program->setUniformValue(idY, 0);
+    program->setUniformValue(idU, 1);
+    program->setUniformValue(idV, 2);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ const char * WBackendVlcShader::vertexShader() const
+{
+    return "attribute highp vec4 vertex;"
+           "attribute highp vec2 fragment;"
+
+           "uniform highp mat4 position;"
+
+           "varying highp vec2 vector;"
+
+           "void main(void)"
+           "{"
+           "    gl_Position = position * vertex;"
+
+           "    vector = fragment;"
+           "}";
+}
+
+/* virtual */ const char * WBackendVlcShader::fragmentShader() const
+{
+    return "uniform sampler2D y;"
+           "uniform sampler2D u;"
+           "uniform sampler2D v;"
+
+           "uniform mediump mat4 matrix;"
+
+           "varying highp vec2 vector;"
+
+           "uniform lowp float opacity;"
+
+           "void main(void)"
+           "{"
+           "    highp vec4 color = vec4(texture2D(y, vector.st).r,"
+           "                            texture2D(u, vector.st).r,"
+           "                            texture2D(v, vector.st).r, 1.0);"
+
+           "    gl_FragColor = matrix * color * opacity;"
+           "}";
+}
+
+//=================================================================================================
+// WBackendVlcMaterial
+//=================================================================================================
+
+WBackendVlcMaterial::WBackendVlcMaterial()
+{
+    gl = QOpenGLContext::currentContext()->functions();
+
+    textures = NULL;
+
+    ids[0] = 0;
+
+    update = false;
+
+    setFlag(Blending, false);
+}
+
+/* virtual */ WBackendVlcMaterial::~WBackendVlcMaterial()
+{
+    if (ids[0] == 0) return;
+
+    gl->glDeleteTextures(3, ids);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Functions
+//-------------------------------------------------------------------------------------------------
+
+void WBackendVlcMaterial::updateTextures()
+{
+    if (update)
+    {
+        WBackendTexture * dataA = &(textures[0]);
+        WBackendTexture * dataB = &(textures[1]);
+        WBackendTexture * dataC = &(textures[2]);
+
+        if (ids[0])
+        {
+            W_UPDATE_TEXTURE(GL_TEXTURE1, ids[1], dataB->width, dataB->height, dataB->bits);
+            W_UPDATE_TEXTURE(GL_TEXTURE2, ids[2], dataC->width, dataC->height, dataC->bits);
+            W_UPDATE_TEXTURE(GL_TEXTURE0, ids[0], dataA->width, dataA->height, dataA->bits);
+        }
+        else
+        {
+            gl->glGenTextures(3, ids);
+
+            W_CREATE_TEXTURE(GL_TEXTURE1, ids[1], dataB->width, dataB->height, dataB->bits);
+            W_CREATE_TEXTURE(GL_TEXTURE2, ids[2], dataC->width, dataC->height, dataC->bits);
+            W_CREATE_TEXTURE(GL_TEXTURE0, ids[0], dataA->width, dataA->height, dataA->bits);
+        }
+    }
+    else if (ids[0])
+    {
+        W_BIND_TEXTURE(GL_TEXTURE1, ids[1]);
+        W_BIND_TEXTURE(GL_TEXTURE2, ids[2]);
+        W_BIND_TEXTURE(GL_TEXTURE0, ids[0]);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+// QSGMaterial implementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ QSGMaterialType * WBackendVlcMaterial::type() const
+{
+    return &materialType;
+}
+
+/* virtual */ QSGMaterialShader * WBackendVlcMaterial::createShader() const
+{
+    return new WBackendVlcShader;
+}
+
+//=================================================================================================
+// WBackendVlcNode
+//=================================================================================================
+
+WBackendVlcNode::WBackendVlcNode() : WBackendNode()
+{
+    setMaterial(&material);
+}
+
+//-------------------------------------------------------------------------------------------------
+// WBackendNode reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WBackendVlcNode::setTextures(WBackendTexture * textures)
+{
+    if (textures)
+    {
+        material.textures = textures;
+
+        material.update = true;
+
+        markDirty(QSGNode::DirtyMaterial);
+    }
+    else material.update = false;
+}
+
+#endif
+
+//=================================================================================================
+// WBackendVlcPrivate
+//=================================================================================================
 
 WBackendVlcPrivate::WBackendVlcPrivate(WBackendVlc * p) : WAbstractBackendPrivate(p) {}
 
@@ -396,7 +598,9 @@ WBackendVlcPrivate::WBackendVlcPrivate(WBackendVlc * p) : WAbstractBackendPrivat
 {
     delete player;
 
+#ifdef QT_4
     deleteShader();
+#endif
 
     if (textureIds[0]) glDeleteTextures(3, textureIds);
 }
@@ -804,13 +1008,13 @@ void WBackendVlcPrivate::clearPlayer()
 
         frameFreeze = false;
 
-        if (parentItem) onFrameUpdated();
+        onFrameUpdated();
     }
     else if (frameFreeze)
     {
         frameFreeze = false;
 
-        if (parentItem) onFrameUpdated();
+        onFrameUpdated();
     }
 
     playing = false;
@@ -835,6 +1039,8 @@ void WBackendVlcPrivate::clearActive()
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
+
 void WBackendVlcPrivate::setOpacity(GLfloat opacity)
 {
     if (shaderOpacity == opacity) return;
@@ -852,6 +1058,8 @@ void WBackendVlcPrivate::setOpacity(GLfloat opacity)
         values += 4;
     }
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -1066,9 +1274,9 @@ void WBackendVlcPrivate::onFrameUpdated()
     d->method.invoke(backend);
 }
 
-//-------------------------------------------------------------------------------------------------
-// Ctor / dtor
-//-------------------------------------------------------------------------------------------------
+//=================================================================================================
+// WBackendVlc
+//=================================================================================================
 
 WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 {
@@ -1113,6 +1321,15 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 //-------------------------------------------------------------------------------------------------
 // Protected WAbstractBackend implementation
 //-------------------------------------------------------------------------------------------------
+
+#ifdef QT_LATEST
+
+/* virtual */ WBackendNode * WBackendVlc::backendCreateNode() const
+{
+    return new WBackendVlcNode;
+}
+
+#endif
 
 /* virtual */ bool WBackendVlc::backendSetSource(const QUrl & url)
 {
@@ -1344,6 +1561,62 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
     d->updateTargetRect();
 }
 
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_LATEST
+
+/* virtual */ void WBackendVlc::backendSynchronize(WBackendFrame * frame)
+{
+    Q_D(WBackendVlc);
+
+    if (d->active == false)
+    {
+        frame->state = WAbstractBackend::FrameClear;
+    }
+    else if (d->frameUpdated && d->frameFreeze == false)
+    {
+        d->frameUpdated = false;
+
+        frame->fillMode = d->fillMode;
+
+        WBackendTexture * textures = frame->textures;
+
+        if (d->frameReset)
+        {
+            d->frameReset = false;
+
+            frame->width  = d->frameWidth;
+            frame->height = d->frameHeight;
+
+            for (int i = 0; i < 3; i++)
+            {
+                WBackendTexture    * textureA = &(textures[i]);
+                WBackendVlcTexture * textureB = &(d->textures[i]);
+
+                textureA->width  = textureB->width;
+                textureA->height = textureB->height;
+
+                textureA->bits = textureB->bits;
+            }
+
+            frame->state = WAbstractBackend::FrameReset;
+        }
+        else
+        {
+            textures[0].bits = d->textures[0].bits;
+            textures[1].bits = d->textures[1].bits;
+            textures[2].bits = d->textures[2].bits;
+
+            frame->state = WAbstractBackend::FrameUpdate;
+        }
+    }
+    else frame->state = WAbstractBackend::FrameDefault;
+}
+
+#endif
+
+//-------------------------------------------------------------------------------------------------
+
 /* virtual */ void WBackendVlc::backendDrawFrame(QPainter * painter, const QRect & rect)
 {
     Q_D(WBackendVlc);
@@ -1355,6 +1628,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
         painter->drawRect(rect);
     }
+#ifdef QT_4
     else if (painter->paintEngine()->type() == QPaintEngine::OpenGL2)
     {
         if (d->frameUpdated && d->frameFreeze == false)
@@ -1517,6 +1791,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
         painter->endNativePainting();
     }
+#endif
     else
     {
         painter->setPen  (Qt::NoPen);

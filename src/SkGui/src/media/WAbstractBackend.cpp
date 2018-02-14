@@ -154,6 +154,8 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
 #endif
 
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ const QSizeF & WAbstractBackend::getSize() const
 {
     Q_D(const WAbstractBackend); return d->size;
@@ -169,6 +171,17 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
     backendSetSize(size);
 }
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_LATEST
+
+/* Q_INVOKABLE */ void WAbstractBackend::synchronize(WBackendFrame * frame)
+{
+    backendSynchronize(frame);
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -548,6 +561,19 @@ void WAbstractBackend::deleteNow()
 {
     qWarning("WAbstractBackend::backendSetSize: SetSize is not supported.");
 }
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_LATEST
+
+/* virtual */ void WAbstractBackend::backendSynchronize(WBackendFrame *)
+{
+    qWarning("WAbstractBackend::backendSynchronize: Synchronize is not supported.");
+}
+
+#endif
+
+//-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WAbstractBackend::backendDrawFrame(QPainter *, const QRect &)
 {

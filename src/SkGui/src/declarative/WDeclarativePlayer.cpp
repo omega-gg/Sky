@@ -967,7 +967,16 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
                 d->updateGeometry(node);
             }
         }
-        else qDebug("THIS SHOULD NOT HAPPEN!");
+        else
+        {
+            node = d->backend->createNode();
+
+            node->setTextures(d->frame.textures);
+
+            d->frameUpdate = false;
+
+            d->updateGeometry(node);
+        }
 
         return node;
     }

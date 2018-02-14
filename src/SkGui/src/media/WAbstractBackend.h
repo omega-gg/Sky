@@ -41,6 +41,7 @@ class QPainter;
 class QStyleOptionGraphicsItem;
 class WBackendFilter;
 #ifdef QT_LATEST
+class WBackendFrame;
 class WBackendTexture;
 #endif
 
@@ -226,6 +227,10 @@ public: // Interface
     Q_INVOKABLE const QSizeF & getSize() const;
     Q_INVOKABLE void           setSize(const QSizeF & size);
 
+#ifdef QT_LATEST
+    Q_INVOKABLE void synchronize(WBackendFrame * frame);
+#endif
+
     Q_INVOKABLE void drawFrame(QPainter * painter, const QRect & rect);
 
     Q_INVOKABLE void   updateFrame();
@@ -293,6 +298,10 @@ protected: // Virtual functions
     virtual void backendSetFillMode(FillMode fillMode); /* {} */
 
     virtual void backendSetSize(const QSizeF & size); /* {} */
+
+#ifdef QT_LATEST
+    virtual void backendSynchronize(WBackendFrame * frame); /* {} */
+#endif
 
     virtual void backendDrawFrame(QPainter * painter, const QRect & rect); /* {} */
 
