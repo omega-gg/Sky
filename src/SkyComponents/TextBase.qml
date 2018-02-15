@@ -32,11 +32,11 @@ Text
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    anchors.leftMargin : leftMargin  + st.text_fontMarginWidth
-    anchors.rightMargin: rightMargin - st.text_fontMarginWidth
+    anchors.leftMargin : leftMargin
+    anchors.rightMargin: rightMargin
 
-    anchors.topMargin   : topMargin    + st.text_fontMarginHeight
-    anchors.bottomMargin: bottomMargin - st.text_fontMarginHeight
+    anchors.topMargin   : topMargin
+    anchors.bottomMargin: bottomMargin
 
     color: st.text_color
 

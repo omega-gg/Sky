@@ -39,7 +39,8 @@ BaseTabs
 
     function addTab(icon, title, defaultIcon)
     {
-        model.append({ "source": icon, "title": title, "sourceDefault": defaultIcon });
+        model.append({ "source": icon,
+                       "title" : title, "sourceDefault": Qt.resolvedUrl(defaultIcon) });
     }
 
     function removeTab(index)

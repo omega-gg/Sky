@@ -25,24 +25,44 @@ ItemWall
     // Settings
     //---------------------------------------------------------------------------------------------
 
+//#QT_4
     width : getItemWidth (index)
     height: getItemHeight(index)
 
     x: getItemX(index)
     y: getItemY(index)
+//#ELSE
+    width : parent.getItemWidth (index)
+    height: parent.getItemHeight(index)
+
+    x: parent.getItemX(index)
+    y: parent.getItemY(index)
+//#END
 
     z:
     {
-        if      (index == indexTop) return  1;
-        else if (opacity == 1.0)    return  0;
-        else                        return -1;
+//#QT_4
+        if (index == indexTop) return 1;
+//#ELSE
+        if (index == parent.indexTop) return 1;
+//#END
+        else if (opacity == 1.0) return  0;
+        else                     return -1;
     }
 
+//#QT_4
     visible: getItemVisible(index)
 
     opacity: (index != indexRemove)
 
     isHovered: (index == indexHover)
+//#ELSE
+    visible: parent.getItemVisible(index)
+
+    opacity: (index != parent.indexRemove)
+
+    isHovered: (index == parent.indexHover)
+//#END
 
     isCurrent: (componentWall == currentItem)
 
@@ -51,18 +71,28 @@ ItemWall
     icon       : sourceIcon
     iconDefault: sourceIconDefault
 
+//#QT_4
     iconAsynchronous: asynchronous
+//#ELSE
+    iconAsynchronous: parent.asynchronous
+//#END
 
     text: title
 
+//#QT_4
     textMargin: getItemBarMargin(index)
 
     itemImage.asynchronous: asynchronous
+//#ELSE
+    textMargin: parent.getItemBarMargin(index)
+
+    itemImage.asynchronous: parent.asynchronous
+//#END
 
     //---------------------------------------------------------------------------------------------
     // Events
     //---------------------------------------------------------------------------------------------
 
-    onEntered: setItemHovered  (componentWall)
-    onExited : clearItemHovered()
+    onEntered: parent.setItemHovered  (componentWall)
+    onExited : parent.clearItemHovered()
 }

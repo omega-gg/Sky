@@ -598,7 +598,7 @@ MouseArea
             icon          : st.icon16x16_previous
             iconSourceSize: st.size16x16
 
-            cursor: MouseArea.PointingHandCursor
+            cursor: Qt.PointingHandCursor
 
             onClicked: setPage(currentPage - 1)
         }
@@ -620,7 +620,7 @@ MouseArea
             icon          : st.icon16x16_next
             iconSourceSize: st.size16x16
 
-            cursor: MouseArea.PointingHandCursor
+            cursor: Qt.PointingHandCursor
 
             onClicked: setPage(currentPage + 1)
         }

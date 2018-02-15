@@ -60,7 +60,7 @@ MouseArea
 
     hoverEnabled: true
 
-    cursor: MouseArea.PointingHandCursor
+    cursor: Qt.PointingHandCursor
 
     //---------------------------------------------------------------------------------------------
     // Events
@@ -82,7 +82,7 @@ MouseArea
 
         isHovered: (checkBoxText.containsMouse || containsMouse)
 
-        cursor: MouseArea.PointingHandCursor
+        cursor: Qt.PointingHandCursor
 
         onCheckClicked: checkBoxText.checkClicked()
     }

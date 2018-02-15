@@ -50,7 +50,7 @@ MouseArea
     enabled     : isEnabled
     hoverEnabled: isEnabled
 
-    cursor: MouseArea.PointingHandCursor
+    cursor: Qt.PointingHandCursor
 
     //---------------------------------------------------------------------------------------------
     // Events

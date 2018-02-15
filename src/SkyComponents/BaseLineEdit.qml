@@ -19,6 +19,10 @@ import Sky     1.0
 
 MouseArea
 {
+//#QT_5
+    id: baseLineEdit
+//#END
+
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
@@ -189,6 +193,14 @@ MouseArea
         anchors.topMargin   : padding
         anchors.bottomMargin: padding
 
+//#QT_5
+        enabled: baseLineEdit.enabled
+
+        clip: true
+
+        renderType: Text.NativeRendering
+//#END
+
         selectByMouse: true
 
         maximumLength: st.baseLineEdit_maximumLength
@@ -267,12 +279,9 @@ MouseArea
     {
         id: itemTextDefault
 
-        anchors.left  : textInput.left
-        anchors.right : textInput.right
-        anchors.top   : parent.top
-        anchors.bottom: parent.bottom
-
-        verticalAlignment: Text.AlignVCenter
+        anchors.left : textInput.left
+        anchors.right: textInput.right
+        anchors.top  : textInput.top
 
         visible: (isFocused == false && textInput.text == "")
 

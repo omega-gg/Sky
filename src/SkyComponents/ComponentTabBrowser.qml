@@ -25,7 +25,13 @@ ComponentTab
     // Properties
     //---------------------------------------------------------------------------------------------
 
+//#QT_4
     property bool isContextualHovered: (index == indexHover && index == indexContextual)
+//#ELSE
+    property bool isContextualHovered: (index == parent.indexHover
+                                        &&
+                                        index == parent.indexContextual)
+//#END
 
     //---------------------------------------------------------------------------------------------
     // Style
@@ -39,6 +45,7 @@ ComponentTab
 
     iconWidth: st.componentTabBrowser_iconWidth
 
+//#QT_4
     x: getItemX(index)
 
     z: (index == indexTop)
@@ -48,11 +55,26 @@ ComponentTab
     isHovered: (index == indexHover || index == indexContextual)
 
     isCurrent: (item == currentTab)
+//#ELSE
+    x: parent.getItemX(index)
+
+    z: (index == parent.indexTop)
+
+    clip: (componentTabBrowser == parent.pClipItem)
+
+    isHovered: (index == parent.indexHover || index == parent.indexContextual)
+
+    isCurrent: (item == parent.currentTab)
+//#END
 
     icon: (item.cover == "") ? item.coverShot
                              : item.cover
 
+//#QT_4
     iconDefault: tabsBrowser.iconDefault
+//#ELSE
+    iconDefault: parent.iconDefault
+//#END
 
     text:
     {
@@ -73,7 +95,11 @@ ComponentTab
 
     acceptedButtons: Qt.NoButton
 
+//#QT_4
     textMargin: getItemMargin(index)
+//#ELSE
+    textMargin: parent.getItemMargin(index)
+//#END
 
     background.gradient: Gradient
     {
@@ -110,15 +136,27 @@ ComponentTab
 
     Behavior on x
     {
+//#QT_4
         enabled: (isAnimated && index != indexStatic)
 
         PropertyAnimation { duration: durationAnimation }
+//#ELSE
+        enabled: (parent.isAnimated && index != parent.indexStatic)
+
+        PropertyAnimation { duration: parent.durationAnimation }
+//#END
     }
 
     Behavior on width
     {
+//#QT_4
         enabled: (isAnimated && index != indexStatic)
 
         PropertyAnimation { duration: durationAnimation }
+//#ELSE
+        enabled: (parent.isAnimated && index != parent.indexStatic)
+
+        PropertyAnimation { duration: parent.durationAnimation }
+//#END
     }
 }

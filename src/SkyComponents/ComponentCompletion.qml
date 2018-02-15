@@ -29,7 +29,7 @@ MouseArea
 
     hoverEnabled: true
 
-    cursor: MouseArea.PointingHandCursor
+    cursor: Qt.PointingHandCursor
 
     //---------------------------------------------------------------------------------------------
     // Event

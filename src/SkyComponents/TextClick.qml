@@ -71,7 +71,7 @@ TextBase
 
         hoverEnabled: textClick.enabled
 
-        cursor: MouseArea.PointingHandCursor
+        cursor: Qt.PointingHandCursor
 
         onEntered: textClick.entered()
         onExited : textClick.exited ()

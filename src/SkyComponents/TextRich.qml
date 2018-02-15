@@ -78,7 +78,7 @@ TextBase
 
         pPos = null;
 
-        mouseArea.cursor = MouseArea.ArrowCursor;
+        mouseArea.cursor = Qt.ArrowCursor;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -107,7 +107,7 @@ TextBase
                     textRich.setBlockForeground(pos, colorLinkHover);
                 }
 
-                cursor = MouseArea.PointingHandCursor;
+                cursor = Qt.PointingHandCursor;
             }
             else pClearPos();
         }

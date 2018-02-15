@@ -317,7 +317,7 @@ Item
         icon          : st.icon16x16_scrollUp
         iconSourceSize: st.size16x16
 
-        cursor: MouseArea.ArrowCursor
+        cursor: Qt.ArrowCursor
 
         onPressed: model.scroll(-1)
     }
@@ -338,7 +338,7 @@ Item
         icon          : st.icon16x16_scrollDown
         iconSourceSize: st.size16x16
 
-        cursor: MouseArea.ArrowCursor
+        cursor: Qt.ArrowCursor
 
         onPressed: model.scroll(1)
     }

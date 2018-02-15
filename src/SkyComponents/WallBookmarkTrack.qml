@@ -85,7 +85,7 @@ BaseWall
 
     acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
 
-    cursor: MouseArea.PointingHandCursor
+    cursor: Qt.PointingHandCursor
 
     //---------------------------------------------------------------------------------------------
 
@@ -307,11 +307,7 @@ BaseWall
 
     function startFixedSize()
     {
-        if (count > 2)
-        {
-             enableFixedSize(st.wallBookmarkTrack_fixedDurationA);
-        }
-        else enableFixedSize(st.wallBookmarkTrack_fixedDurationB);
+        enableFixedSize(st.wallBookmarkTrack_fixedDuration);
     }
 
     //---------------------------------------------------------------------------------------------
@@ -508,7 +504,7 @@ BaseWall
             else return dragX;
         }
 
-        if (indexRemove != -1 && index > indexRemove && count > 2)
+        if (indexRemove != -1 && index > indexRemove)
         {
             index--;
         }
@@ -528,7 +524,7 @@ BaseWall
             else return dragY;
         }
 
-        if (indexRemove != -1 && index > indexRemove && count > 2)
+        if (indexRemove != -1 && index > indexRemove)
         {
             index--;
         }

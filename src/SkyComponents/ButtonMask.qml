@@ -71,7 +71,7 @@ BaseButton
     width : st.buttonMask_width
     height: st.buttonMask_height
 
-    cursor: MouseArea.PointingHandCursor
+    cursor: Qt.PointingHandCursor
 
     //---------------------------------------------------------------------------------------------
     // Childs

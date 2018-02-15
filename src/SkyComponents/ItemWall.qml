@@ -102,7 +102,7 @@ Panel
     width : st.itemWall_width
     height: st.itemWall_height
 
-    cursor: MouseArea.PointingHandCursor
+    cursor: Qt.PointingHandCursor
 
     color: st.border_color
 
@@ -119,41 +119,71 @@ Panel
 
     Behavior on x
     {
+//#QT_4
         enabled: (isAnimated && index != indexStatic)
 
         PropertyAnimation { duration: durationAnimation }
+//#ELSE
+        enabled: (parent.isAnimated && index != parent.indexStatic)
+
+        PropertyAnimation { duration: parent.durationAnimation }
+//#END
     }
 
     Behavior on y
     {
+//#QT_4
         enabled: (isAnimated && index != indexStatic)
 
         PropertyAnimation { duration: durationAnimation }
+//#ELSE
+        enabled: (parent.isAnimated && index != parent.indexStatic)
+
+        PropertyAnimation { duration: parent.durationAnimation }
+//#END
     }
 
     //---------------------------------------------------------------------------------------------
 
     Behavior on width
     {
+//#QT_4
         enabled: (isAnimated && index != indexStatic)
 
         PropertyAnimation { duration: durationAnimation }
+//#ELSE
+        enabled: (parent.isAnimated && index != parent.indexStatic)
+
+        PropertyAnimation { duration: parent.durationAnimation }
+//#END
     }
 
     Behavior on height
     {
+//#QT_4
         enabled: (isAnimated && index != indexStatic)
 
         PropertyAnimation { duration: durationAnimation }
+//#ELSE
+        enabled: (parent.isAnimated && index != parent.indexStatic)
+
+        PropertyAnimation { duration: parent.durationAnimation }
+//#END
     }
 
     //---------------------------------------------------------------------------------------------
 
     Behavior on opacity
     {
+//#QT_4
         enabled: (isAnimated && index != indexStatic)
 
         PropertyAnimation { duration: durationAnimation }
+//#ELSE
+        enabled: (parent.isAnimated && index != parent.indexStatic)
+
+        PropertyAnimation { duration: parent.durationAnimation }
+//#END
     }
 
     //---------------------------------------------------------------------------------------------

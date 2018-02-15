@@ -47,6 +47,7 @@ WallBookmarkTrack
     property int pWidthHalf : (width - st.dp2) / 2
     property int pWidthRight: width - pWidthHalf - st.dp2
 
+    property variant pCurrentTab    : null
     property variant pHighlightedTab: null
 
     property variant pItemA: null
@@ -75,9 +76,10 @@ WallBookmarkTrack
 
     //---------------------------------------------------------------------------------------------
 
-    property alias player         : player
-    property alias playerBrowser  : playerBrowser
-    property alias playerMouseArea: playerMouseArea
+    property alias player          : player
+    property alias playerMouseArea : playerMouseArea
+    property alias playerBackground: playerBackground
+    property alias playerBrowser   : playerBrowser
 
     property alias buttonsItem: buttonsItem
 
@@ -145,7 +147,7 @@ WallBookmarkTrack
 
         pUpdatePlayerItems(true);
 
-        pItemA = player.item;
+        pItemA = player       .item;
         pItemB = playerBrowser.item;
 
         isActive  = true;
@@ -165,7 +167,7 @@ WallBookmarkTrack
 
         isExposed = false;
 
-        pItemA = player.item;
+        pItemA = player       .item;
         pItemB = playerBrowser.item;
 
         pUpdatePlayerItems(false);
@@ -214,18 +216,18 @@ WallBookmarkTrack
         {
             if (tabs.highlightedTab)
             {
-                player.item        = getHighlightedItem();
+                player       .item = getHighlightedItem();
                 playerBrowser.item = getCurrentItem    ();
             }
             else
             {
-                player.item        = getCurrentItem();
+                player       .item = getCurrentItem();
                 playerBrowser.item = player.item;
             }
         }
         else
         {
-            player.item        = null;
+            player       .item = null;
             playerBrowser.item = null;
         }
     }
@@ -251,6 +253,7 @@ WallBookmarkTrack
 
             pResetShot();
 
+            pCurrentTab     = tabs.currentTab;
             pHighlightedTab = tabs.highlightedTab;
 
             playerBrowser.posB = true;
@@ -267,21 +270,19 @@ WallBookmarkTrack
             {
                 if (pHighlightedTab != tabs.currentTab)
                 {
+                    player.updateHighlightedTab();
+
                     var videoShot = pHighlightedTab.videoShot;
 
                     if (videoShot == "")
                     {
-                        itemShot.setItemShot(playerBack);
+                         itemShot.source = pHighlightedTab.cover;
                     }
                     else itemShot.loadSource(videoShot, true);
 
                     player.posB = true;
                 }
-                else if (browserCover.isSourceDefault)
-                {
-                     itemShot.setItemShot(browserBack);
-                }
-                else itemShot.setItemShot(browserCover);
+                else itemShot.source = pCurrentTab.cover;
 
                 if (player.x == 0)
                 {
@@ -307,6 +308,7 @@ WallBookmarkTrack
 
             player.posB = false;
 
+            pCurrentTab     = null;
             pHighlightedTab = null;
         }
     }
@@ -365,17 +367,42 @@ WallBookmarkTrack
 
         visible: false
 
-        color: st.wallVideo_colorPlayer
+        gradient: Gradient
+        {
+            GradientStop
+            {
+                position: 0.0
 
-        Image
+                color: (itemShot.isSourceDefault) ? defaultColorA
+                                                  : st.wallVideo_colorPlayer
+            }
+
+            GradientStop
+            {
+                position: 1.0
+
+                color: (itemShot.isSourceDefault) ? defaultColorB
+                                                  : st.wallVideo_colorPlayer
+            }
+        }
+
+        ImageScale
         {
             id: itemShot
 
             anchors.fill: parent
 
+            anchors.leftMargin: (isSourceDefault) ? logoMargin : 0
+
+            anchors.rightMargin: anchors.leftMargin
+
+            sourceDefault: logo
+
             fillMode: Image.PreserveAspectFit
 
             cache: false
+
+            scaling: isSourceDefault
         }
     }
 
@@ -392,9 +419,22 @@ WallBookmarkTrack
         hoverEnabled: true
         hoverRetain : true
 
-        cursor: MouseArea.PointingHandCursor
+        cursor: Qt.PointingHandCursor
 
         onPressed: playerPressed(mouse)
+    }
+
+    Rectangle
+    {
+        id: playerBackground
+
+        anchors.fill: player
+
+        z: player.z
+
+        visible: player.visible
+
+        color: st.wallVideo_colorPlayer
     }
 
     Player
@@ -635,8 +675,8 @@ WallBookmarkTrack
 
             sourceDefault: logo
 
-            loadMode: (pExpanded) ? Image.LoadVisible
-                                  : Image.LoadAlways
+            loadMode: (pExpanded) ? ImageBase.LoadVisible
+                                  : ImageBase.LoadAlways
 
             fillMode: Image.PreserveAspectFit
 
@@ -690,17 +730,19 @@ WallBookmarkTrack
         {
             if (isExposed)
             {
-                if (item == null || item.visible == false)
+                if (item && item.visible
+                    &&
+                    (player.isPlaying == false || player.item != item))
                 {
-                     return false;
+                     return true;
                 }
-                else return (player.isPlaying == false || item != player.item);
+                else return false;
             }
-            else if (split != -1)
+            else if (split != -1 || player.isPlaying == false)
             {
                  return true;
             }
-            else return (player.isPlaying == false);
+            else return false;
         }
 
         opacity: (visible)

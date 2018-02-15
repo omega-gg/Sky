@@ -60,7 +60,7 @@ Item
         icon          : st.icon16x16_contextualDown
         iconSourceSize: st.size16x16
 
-        cursor: MouseArea.PointingHandCursor
+        cursor: Qt.PointingHandCursor
 
         onPressed: contextual()
     }
@@ -77,7 +77,7 @@ Item
         icon          : st.icon16x16_close
         iconSourceSize: st.size16x16
 
-        cursor: MouseArea.PointingHandCursor
+        cursor: Qt.PointingHandCursor
 
         filterHover: st.buttonPushConfirm_filterHover
         filterPress: st.buttonPushConfirm_filterPress

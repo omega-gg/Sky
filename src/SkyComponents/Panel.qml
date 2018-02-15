@@ -92,7 +92,7 @@ MouseArea
 
     wheelEnabled: hoverEnabled
 
-    cursor: MouseArea.ArrowCursor
+    cursor: Qt.ArrowCursor
 
     //---------------------------------------------------------------------------------------------
     // Events
@@ -105,6 +105,8 @@ MouseArea
             forceActiveFocus();
         }
     }
+
+    onVisibleChanged: window.clearFocusItem(panel)
 
     //---------------------------------------------------------------------------------------------
     // Functions

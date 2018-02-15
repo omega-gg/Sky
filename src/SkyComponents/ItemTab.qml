@@ -105,7 +105,7 @@ MouseArea
     hoverEnabled: true
     hoverRetain : hoverEnabled
 
-    cursor: MouseArea.PointingHandCursor
+    cursor: Qt.PointingHandCursor
 
     //---------------------------------------------------------------------------------------------
     // Childs

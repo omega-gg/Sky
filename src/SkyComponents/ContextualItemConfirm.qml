@@ -85,7 +85,7 @@ Item
 
         hoverEnabled: isEnabled
 
-        cursor: MouseArea.PointingHandCursor
+        cursor: Qt.PointingHandCursor
 
         onClicked:
         {

@@ -94,7 +94,7 @@ BaseTabs
 
     acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
 
-    cursor: MouseArea.PointingHandCursor
+    cursor: Qt.PointingHandCursor
 
     //---------------------------------------------------------------------------------------------
 

@@ -64,7 +64,7 @@ BaseButton
     width : itemImage.width
     height: itemImage.height
 
-    cursor: MouseArea.PointingHandCursor
+    cursor: Qt.PointingHandCursor
 
     //---------------------------------------------------------------------------------------------
     // Childs

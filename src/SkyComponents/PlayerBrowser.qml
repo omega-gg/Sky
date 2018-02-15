@@ -277,7 +277,7 @@ MouseArea
 
         hoverEnabled: buttonPrevious.visible
 
-        cursor: MouseArea.PointingHandCursor
+        cursor: Qt.PointingHandCursor
 
         onPressed : scrollPrevious()
         onReleased: scrollClear   ()
@@ -304,7 +304,7 @@ MouseArea
 
         hoverEnabled: buttonNext.visible
 
-        cursor: MouseArea.PointingHandCursor
+        cursor: Qt.PointingHandCursor
 
         onPressed : scrollNext ()
         onReleased: scrollClear()
@@ -330,7 +330,7 @@ MouseArea
 
         hoverEnabled: buttonPlay.visible
 
-        cursor: MouseArea.PointingHandCursor
+        cursor: Qt.PointingHandCursor
 
         onClicked: play()
     }
@@ -401,7 +401,7 @@ MouseArea
         icon       : st.icon_backward
         iconScaling: true
 
-        cursor: MouseArea.PointingHandCursor
+        cursor: Qt.PointingHandCursor
 
         onPressed : scrollPrevious()
         onReleased: scrollClear   ()
@@ -433,7 +433,7 @@ MouseArea
         icon       : st.icon_forward
         iconScaling: true
 
-        cursor: MouseArea.PointingHandCursor
+        cursor: Qt.PointingHandCursor
 
         onPressed : scrollNext ()
         onReleased: scrollClear()
@@ -462,7 +462,7 @@ MouseArea
         icon       : st.icon_play
         iconScaling: true
 
-        cursor: MouseArea.PointingHandCursor
+        cursor: Qt.PointingHandCursor
 
         itemIcon.visible: (loading == false)
 

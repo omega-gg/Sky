@@ -150,7 +150,7 @@ Item
 
         hoverEnabled: true
 
-        cursor: MouseArea.PointingHandCursor
+        cursor: Qt.PointingHandCursor
 
         Behavior on opacity
         {
@@ -192,7 +192,7 @@ Item
 
         hoverEnabled: true
 
-        cursor: MouseArea.PointingHandCursor
+        cursor: Qt.PointingHandCursor
 
         Behavior on opacity
         {

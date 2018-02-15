@@ -155,9 +155,6 @@ Item
 
     property string text_fontFamily: (sk.osMac) ? "" : "Arial"
 
-    property int text_fontMarginWidth : 1
-    property int text_fontMarginHeight: 1
-
     property real text_opacityDisable: 0.6
 
     property color text_color       : text1_color
@@ -1592,8 +1589,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // WallBookmarkTrack
 
-    property int wallBookmarkTrack_fixedDurationA: ms1000
-    property int wallBookmarkTrack_fixedDurationB: ms300
+    property int wallBookmarkTrack_fixedDuration: ms1000
 
     //---------------------------------------------------------------------------------------------
     // WallVideo

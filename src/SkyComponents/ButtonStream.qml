@@ -63,7 +63,7 @@ BaseButton
     width : st.buttonStream_width
     height: st.buttonStream_height
 
-    cursor: MouseArea.ArrowCursor
+    cursor: Qt.ArrowCursor
 
     //---------------------------------------------------------------------------------------------
     // Childs

@@ -25,7 +25,8 @@ ItemTab
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: getItemWidth(index) + baseTabs.borderSize
+//#QT_4
+    width: getItemWidth(index) + borderSize
 
     height: baseTabs.height
 
@@ -33,6 +34,16 @@ ItemTab
 
     borderLeft : borderSize
     borderRight: borderSize
+//#ELSE
+    width: parent.getItemWidth(index) + parent.borderSize
+
+    height: parent.height
+
+    x: parent.getItemX(index)
+
+    borderLeft : parent.borderSize
+    borderRight: parent.borderSize
+//#END
 
     isHovered: (index == indexHover)
     isCurrent: (index == indexCurrent)
@@ -40,20 +51,28 @@ ItemTab
     icon       : source
     iconDefault: sourceDefault
 
+//#QT_4
     iconAsynchronous: asynchronous
+//#ELSE
+    iconAsynchronous: parent.asynchronous
+//#END
 
     text: title
 
+//#QT_4
     textSpacing: spacing
+//#ELSE
+    textSpacing: parent.spacing
+//#END
 
     //---------------------------------------------------------------------------------------------
     // Events
     //---------------------------------------------------------------------------------------------
 
-    onEntered: setItemHovered  (componentTab)
-    onExited : clearItemHovered()
+    onEntered: parent.setItemHovered  (componentTab)
+    onExited : parent.clearItemHovered()
 
-    onPressed: selectTab(index)
+    onPressed: parent.selectTab(index)
 
     //---------------------------------------------------------------------------------------------
     // Functions

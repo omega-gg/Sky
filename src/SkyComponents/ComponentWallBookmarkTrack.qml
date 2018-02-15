@@ -19,15 +19,29 @@ import Sky     1.0
 
 ComponentWall
 {
+//#QT_5
+    id: componentWall
+//#END
+
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
 
+//#QT_4
     property bool isContextualHovered: (index == indexHover && index == indexContextual)
 
     property bool isHighlighted: (item == highlightedTab)
 
     property int logoMargin: itemContent.width / logoRatio
+//#ELSE
+    property bool isContextualHovered: (index == parent.indexHover
+                                        &&
+                                        index == parent.indexContextual)
+
+    property bool isHighlighted: (item == parent.highlightedTab)
+
+    property int logoMargin: itemContent.width / parent.logoRatio
+//#END
 
     //---------------------------------------------------------------------------------------------
     // Style
@@ -52,14 +66,22 @@ ComponentWall
 
     z:
     {
-        if      (index == indexTop)      return  3;
+//#QT_4
+        if (index == indexTop) return 3;
+//#ELSE
+        if (index == parent.indexTop) return 3;
+//#END
         else if (isHighlighted)          return  2;
         else if (isCurrent || isHovered) return  1;
         else if (opacity == 1.0)         return  0;
         else                             return -1;
     }
 
+//#QT_4
     isHovered: (index == indexHover || index == indexContextual)
+//#ELSE
+    isHovered: (index == parent.indexHover || index == parent.indexContextual)
+//#END
 
     isCurrent: (item == currentTab)
 
@@ -68,7 +90,11 @@ ComponentWall
     icon: (item.cover == "") ? item.coverShot
                              : item.cover
 
+//#QT_4
     iconDefault: baseWall.iconDefault
+//#ELSE
+    iconDefault: parent.iconDefault
+//#END
 
     text:
     {
@@ -93,10 +119,14 @@ ComponentWall
 
     itemImage.anchors.rightMargin: itemImage.anchors.leftMargin
 
+//#QT_4
     itemImage.sourceDefault: logo
+//#ELSE
+    itemImage.sourceDefault: parent.logo
+//#END
 
-    itemImage.loadMode: (isCurrent) ? Image.LoadVisible
-                                    : Image.LoadAlways
+    itemImage.loadMode: (isCurrent) ? ImageBase.LoadVisible
+                                    : ImageBase.LoadAlways
 
     itemImage.cache: false
 
@@ -152,7 +182,11 @@ ComponentWall
         {
             position: 0.0
 
+//#QT_4
             color: (itemImage.isSourceDefault) ? defaultColorA
+//#ELSE
+            color: (itemImage.isSourceDefault) ? parent.defaultColorA
+//#END
                                                : st.componentWallBookmarkTrack_colorA
         }
 
@@ -160,7 +194,11 @@ ComponentWall
         {
             position: 1.0
 
+//#QT_4
             color: (itemImage.isSourceDefault) ? defaultColorB
+//#ELSE
+            color: (itemImage.isSourceDefault) ? parent.defaultColorB
+//#END
                                                : st.componentWallBookmarkTrack_colorB
         }
     }
