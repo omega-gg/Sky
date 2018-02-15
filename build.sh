@@ -13,7 +13,7 @@ external="/c/dev/workspace/3rdparty"
 Qt4_version="4.8.7"
 Qt5_version="5.10.0"
 
-MinGW_version="4.9.2"
+MinGW_version="5.3.0"
 
 #--------------------------------------------------------------------------------------------------
 
@@ -87,14 +87,11 @@ if [ $2 = "win32" ]; then
 
     spec=win32-g++
 
-    if [ $2 = "win32" ]; then
+    if [ $1 = "qt4" ]; then
 
-        if [ $1 = "qt4" ]; then
-
-            PATH="$Qt4:$MinGW:$PATH"
-        else
-            PATH="$Qt5:$MinGW:$PATH"
-        fi
+        PATH="$Qt4:$MinGW:$PATH"
+    else
+        PATH="$Qt5:$MinGW:$PATH"
     fi
 
 elif [ $2 = "osx" ]; then

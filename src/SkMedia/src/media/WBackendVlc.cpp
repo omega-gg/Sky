@@ -127,22 +127,6 @@ PFNGLMULTITEXCOORD2FARBPROC          pglMultiTexCoord2fARB          = 0;
               rect.width(), rect.height());                                             \
 }                                                                                       \
 
-#define W_DRAW_BACK_AND_FRAME          \
-{                                      \
-    glColor4f(0, 0, 0, shaderOpacity); \
-                                       \
-    glBegin(GL_POLYGON);               \
-                                       \
-    glVertex2i(0,          0);         \
-    glVertex2i(0,     height);         \
-    glVertex2i(width, height);         \
-    glVertex2i(width,      0);         \
-                                       \
-    glEnd();                           \
-                                       \
-    W_DRAW_FRAME;                      \
-}                                      \
-
 #define W_DRAW_FRAME                                     \
 {                                                        \
     glEnable(GL_FRAGMENT_PROGRAM_ARB);                   \
@@ -1621,15 +1605,10 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 {
     Q_D(WBackendVlc);
 
-    if (d->active == false)
-    {
-        painter->setPen  (Qt::NoPen);
-        painter->setBrush(Qt::black);
+    if (d->active == false) return;
 
-        painter->drawRect(rect);
-    }
 #ifdef QT_4
-    else if (painter->paintEngine()->type() == QPaintEngine::OpenGL2)
+    if (painter->paintEngine()->type() == QPaintEngine::OpenGL2)
     {
         if (d->frameUpdated && d->frameFreeze == false)
         {
@@ -1701,15 +1680,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
             d->setOpacity(painter->opacity());
         }
-        else
-        {
-            painter->setPen  (Qt::NoPen);
-            painter->setBrush(Qt::black);
-
-            painter->drawRect(rect);
-
-            return;
-        }
+        else return;
 
         qreal width  = rect.width ();
         qreal height = rect.height();
@@ -1750,11 +1721,11 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
             {
                 W_SCISSOR;
 
-                W_DRAW_BACK_AND_FRAME;
+                W_DRAW_FRAME;
 
                 glDisable(GL_SCISSOR_TEST);
             }
-            else W_DRAW_BACK_AND_FRAME;
+            else W_DRAW_FRAME;
         }
         else if (d->fillMode == PreserveAspectCrop)
         {
@@ -1794,11 +1765,6 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 #endif
     else
     {
-        painter->setPen  (Qt::NoPen);
-        painter->setBrush(Qt::black);
-
-        painter->drawRect(rect);
-
         if (d->frameFreeze == false) d->convertFrameSse();
 
         bool smooth = painter->testRenderHint(QPainter::SmoothPixmapTransform);
