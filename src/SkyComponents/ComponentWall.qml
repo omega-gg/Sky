@@ -93,6 +93,11 @@ ItemWall
     // Events
     //---------------------------------------------------------------------------------------------
 
+//#QT_4
+    onEntered: setItemHovered  (componentWall)
+    onExited : clearItemHovered()
+//#ELSE
     onEntered: parent.setItemHovered  (componentWall)
     onExited : parent.clearItemHovered()
+//#END
 }

@@ -276,7 +276,7 @@ WallBookmarkTrack
 
                     if (videoShot == "")
                     {
-                         itemShot.source = pHighlightedTab.cover;
+                        itemShot.source = pHighlightedTab.cover;
                     }
                     else itemShot.loadSource(videoShot, true);
 
