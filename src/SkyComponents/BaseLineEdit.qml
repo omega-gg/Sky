@@ -26,7 +26,7 @@ MouseArea
     property bool isFocused: textInput.activeFocus
     property bool isHovered: containsMouse
 
-    property int padding: (height - cursorHeight) / 2
+    property int padding: Math.round((height - cursorHeight) / 2)
 
     property int paddingLeft : padding
     property int paddingRight: padding
@@ -81,7 +81,7 @@ MouseArea
 
     hoverEnabled: true
 
-    cursor: MouseArea.IBeamCursor
+    cursor: Qt.IBeamCursor
 
     //---------------------------------------------------------------------------------------------
     // Events
