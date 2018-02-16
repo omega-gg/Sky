@@ -92,7 +92,6 @@ WallBookmarkTrack
 
     signal playerPressed(variant mouse)
 
-    signal contextual
     signal contextualBrowser
 
     //---------------------------------------------------------------------------------------------

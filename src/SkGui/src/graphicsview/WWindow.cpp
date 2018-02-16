@@ -139,7 +139,10 @@ void WWindowPrivate::init()
     QObject::connect(view, SIGNAL(mousePosChanged   ()), q, SIGNAL(mousePosChanged   ()));
     QObject::connect(view, SIGNAL(mouseCursorChanged()), q, SIGNAL(mouseCursorChanged()));
 
-    QObject::connect(view, SIGNAL(openglChanged   ()), q, SIGNAL(openglChanged   ()));
+#ifdef QT_4
+    QObject::connect(view, SIGNAL(openglChanged()), q, SIGNAL(openglChanged()));
+#endif
+
     QObject::connect(view, SIGNAL(antialiasChanged()), q, SIGNAL(antialiasChanged()));
     QObject::connect(view, SIGNAL(vsyncChanged    ()), q, SIGNAL(vsyncChanged    ()));
 
