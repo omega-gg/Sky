@@ -33,12 +33,8 @@
 // Static variables
 
 #ifdef SK_WIN_NATIVE
-#ifdef QT_4
-static const DWORD windowFlags = WS_OVERLAPPED | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
-#else
 static const DWORD windowFlags = WS_OVERLAPPED | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX |
                                  WS_CLIPCHILDREN;
-#endif
 #endif
 
 //-------------------------------------------------------------------------------------------------
