@@ -194,6 +194,8 @@ MouseArea
         anchors.bottomMargin: padding
 
 //#QT_5
+        verticalAlignment: TextInput.AlignVCenter
+
         enabled: baseLineEdit.enabled
 
         clip: true
@@ -281,7 +283,14 @@ MouseArea
 
         anchors.left : textInput.left
         anchors.right: textInput.right
-        anchors.top  : textInput.top
+
+//#QT_4
+        anchors.top: textInput.top
+//#ELSE
+        anchors.top: parent.top
+
+        anchors.topMargin: padding
+//#END
 
         visible: (isFocused == false && textInput.text == "")
 
