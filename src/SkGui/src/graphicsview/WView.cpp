@@ -485,8 +485,8 @@ void WViewPrivate::startFade(bool visible)
     {
 #ifdef QT_4
         q->setWindowOpacity(fadeValue);
-#else
-        q->setOpacity(fadeValue);
+#else // FIXME Qt5: Fading tends to be slow
+        q->setOpacity(0.0);
 #endif
     }
 #ifdef QT_4

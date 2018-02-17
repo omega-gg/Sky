@@ -185,6 +185,7 @@ else
         cp "$Qt5"/bin/Qt5Widgets.dll           deploy
         cp "$Qt5"/bin/Qt5Xml.dll               deploy
         cp "$Qt5"/bin/Qt5XmlPatterns.dll       deploy
+        cp "$Qt5"/bin/Qt5WinExtras.dll         deploy
 
         cp "$Qt5"/plugins/imageformats/qsvg.dll  deploy/imageformats
         cp "$Qt5"/plugins/imageformats/qjpeg.dll deploy/imageformats
