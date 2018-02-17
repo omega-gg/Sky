@@ -160,28 +160,28 @@ else
         cp "$MinGW"/libstdc++-6.dll     deploy
         cp "$MinGW"/libwinpthread-1.dll deploy
 
-        cp "$Qt5"/bin/icudt54.dll deploy
-        cp "$Qt5"/bin/icuin54.dll deploy
-        cp "$Qt5"/bin/icuuc54.dll deploy
+        #cp "$Qt5"/bin/icudt54.dll deploy
+        #cp "$Qt5"/bin/icuin54.dll deploy
+        #cp "$Qt5"/bin/icuuc54.dll deploy
 
         cp "$Qt5"/bin/Qt5Core.dll              deploy
         cp "$Qt5"/bin/Qt5Gui.dll               deploy
         #cp "$Qt5"/bin/Qt5Declarative.dll       deploy
-        cp "$Qt5"/bin/Qt5Multimedia.dll        deploy
-        cp "$Qt5"/bin/Qt5MultimediaWidgets.dll deploy
+        #cp "$Qt5"/bin/Qt5Multimedia.dll        deploy
+        #cp "$Qt5"/bin/Qt5MultimediaWidgets.dll deploy
         cp "$Qt5"/bin/Qt5Network.dll           deploy
         cp "$Qt5"/bin/Qt5OpenGL.dll            deploy
-        cp "$Qt5"/bin/Qt5Positioning.dll       deploy
-        cp "$Qt5"/bin/Qt5PrintSupport.dll      deploy
+        #cp "$Qt5"/bin/Qt5Positioning.dll       deploy
+        #cp "$Qt5"/bin/Qt5PrintSupport.dll      deploy
         cp "$Qt5"/bin/Qt5Qml.dll               deploy
         cp "$Qt5"/bin/Qt5Quick.dll             deploy
         cp "$Qt5"/bin/Qt5Script.dll            deploy
-        cp "$Qt5"/bin/Qt5Sensors.dll           deploy
+        #cp "$Qt5"/bin/Qt5Sensors.dll           deploy
         cp "$Qt5"/bin/Qt5Sql.dll               deploy
         cp "$Qt5"/bin/Qt5Svg.dll               deploy
-        cp "$Qt5"/bin/Qt5WebChannel.dll        deploy
-        cp "$Qt5"/bin/Qt5WebKit.dll            deploy
-        cp "$Qt5"/bin/Qt5WebKitWidgets.dll     deploy
+        #cp "$Qt5"/bin/Qt5WebChannel.dll        deploy
+        #cp "$Qt5"/bin/Qt5WebKit.dll            deploy
+        #cp "$Qt5"/bin/Qt5WebKitWidgets.dll     deploy
         cp "$Qt5"/bin/Qt5Widgets.dll           deploy
         cp "$Qt5"/bin/Qt5Xml.dll               deploy
         cp "$Qt5"/bin/Qt5XmlPatterns.dll       deploy
