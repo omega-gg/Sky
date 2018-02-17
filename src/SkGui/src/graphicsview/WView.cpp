@@ -390,6 +390,8 @@ void WViewPrivate::init(QQuickItem * item)
     format.setSwapInterval(0);
 
     q->setFormat(format);
+
+    q->setClearBeforeRendering(false);
 #endif
 
 #ifdef QT_4

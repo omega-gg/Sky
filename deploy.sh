@@ -9,11 +9,11 @@ external="../3rdparty"
 #--------------------------------------------------------------------------------------------------
 
 Qt4_version="4.8.7"
-Qt5_version="5.10.0"
+Qt5_version="5.10.1"
 
 MinGW_version="5.3.0"
 
-VLC_version="2.2.6"
+VLC_version="2.2.8"
 
 libtorrent_version="1.1.5"
 

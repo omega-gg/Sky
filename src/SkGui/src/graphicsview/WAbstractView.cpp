@@ -33,8 +33,8 @@
 // Static variables
 
 #ifdef SK_WIN_NATIVE
-static const DWORD windowFlags = WS_OVERLAPPED | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX |
-                                 WS_CLIPCHILDREN;
+static const DWORD windowFlags = WS_OVERLAPPED   | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX |
+                                 WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
 #endif
 
 //-------------------------------------------------------------------------------------------------
