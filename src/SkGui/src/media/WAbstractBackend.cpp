@@ -220,8 +220,7 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
     {
         d->deleting = true;
 
-        setParent(NULL);
-
+        setParent    (NULL);
         setParentItem(NULL);
 
         setState(StateStopped);
