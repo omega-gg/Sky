@@ -598,20 +598,12 @@ void WAbstractBackend::deleteNow()
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_4
-QGraphicsItem * WAbstractBackend::parentItem() const
-#else
-QQuickItem * WAbstractBackend::parentItem() const
-#endif
+WDeclarativePlayer * WAbstractBackend::parentItem() const
 {
     Q_D(const WAbstractBackend); return d->parentItem;
 }
 
-#ifdef QT_4
-void WAbstractBackend::setParentItem(QGraphicsItem * parent)
-#else
-void WAbstractBackend::setParentItem(QQuickItem * parent)
-#endif
+void WAbstractBackend::setParentItem(WDeclarativePlayer * parent)
 {
     Q_D(WAbstractBackend);
 

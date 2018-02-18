@@ -144,6 +144,10 @@ public: // Interface
     Q_INVOKABLE void setPreviousTrack();
     Q_INVOKABLE void setNextTrack    ();
 
+#ifdef QT_LATEST
+    Q_INVOKABLE void updateFrame();
+#endif
+
     Q_INVOKABLE QImage getFrame() const;
 
     Q_INVOKABLE void updateHighlightedTab();

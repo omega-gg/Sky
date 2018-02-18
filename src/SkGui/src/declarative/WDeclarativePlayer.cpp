@@ -844,6 +844,19 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_LATEST
+
+void WDeclarativePlayer::updateFrame()
+{
+    Q_D(WDeclarativePlayer);
+
+    d->backend->synchronize(&d->frame);
+
+    update();
+}
+
+#endif
+
 /* Q_INVOKABLE */ QImage WDeclarativePlayer::getFrame() const
 {
     Q_D(const WDeclarativePlayer);

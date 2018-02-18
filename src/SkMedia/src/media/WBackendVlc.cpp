@@ -21,15 +21,14 @@
 // Qt includes
 #ifdef QT_4
 #include <QCoreApplication>
-#include <QGraphicsItem>
 #else
-#include <QQuickItem>
 #include <QOpenGLFunctions>
 #endif
 
 // Sk includes
 #include <WControllerMedia>
 #include <WControllerPlaylist>
+#include <WDeclarativePlayer>
 
 // 3rdparty includes
 #include <3rdparty/vlc/mmxRgb.h>
@@ -1137,7 +1136,11 @@ void WBackendVlcPrivate::onFrameUpdated()
 {
     frameUpdated = true;
 
+#ifdef QT_4
     if (parentItem) parentItem->update();
+#else
+    if (parentItem) parentItem->updateFrame();
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1601,7 +1604,11 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* virtual */ void WBackendVlc::backendDrawFrame(QPainter * painter, const QRect & rect)
+#else
+/* virtual */ void WBackendVlc::backendDrawFrame(QPainter * painter, const QRect &)
+#endif
 {
     Q_D(WBackendVlc);
 

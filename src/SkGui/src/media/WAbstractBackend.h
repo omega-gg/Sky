@@ -32,11 +32,7 @@
 
 // Forward declarations
 class WAbstractBackendPrivate;
-#ifdef QT_4
-class QGraphicsItem;
-#else
-class QQuickItem;
-#endif
+class WDeclarativePlayer;
 class QPainter;
 class QStyleOptionGraphicsItem;
 class WBackendFilter;
@@ -112,13 +108,8 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
     Q_ENUMS(FrameState)
 #endif
 
-#ifdef QT_4
-    Q_PROPERTY(QGraphicsItem * parentItem READ parentItem WRITE setParentItem
+    Q_PROPERTY(WDeclarativePlayer * parentItem READ parentItem WRITE setParentItem
                NOTIFY parentItemChanged)
-#else
-    Q_PROPERTY(QQuickItem * parentItem READ parentItem WRITE setParentItem
-               NOTIFY parentItemChanged)
-#endif
 
     Q_PROPERTY(WBackendFilter * filter READ filter WRITE setFilter NOTIFY filterChanged)
 
@@ -343,13 +334,8 @@ signals:
     void fillModeChanged();
 
 public: // Properties
-#ifdef QT_4
-    QGraphicsItem * parentItem() const;
-    void            setParentItem(QGraphicsItem * parent);
-#else
-    QQuickItem * parentItem() const;
-    void         setParentItem(QQuickItem * parent);
-#endif
+    WDeclarativePlayer * parentItem() const;
+    void                 setParentItem(WDeclarativePlayer * parent);
 
     WBackendFilter * filter() const;
     void             setFilter(WBackendFilter * filter);
