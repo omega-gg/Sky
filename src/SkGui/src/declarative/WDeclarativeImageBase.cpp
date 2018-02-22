@@ -595,7 +595,7 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
 }
 
 //-------------------------------------------------------------------------------------------------
-// Protected QGraphicsItem reimplementation
+// Protected QGraphicsItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
 #ifdef QT_4
@@ -603,7 +603,7 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
                                                          const QVariant &   value)
 #else
 /* virtual */ void WDeclarativeImageBase::itemChange(ItemChange             change,
-                                                     const ItemChangeData & data)
+                                                     const ItemChangeData & value)
 #endif
 {
 #ifdef QT_4
@@ -614,7 +614,7 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
 #else
     Q_D(WDeclarativeImageBase);
 
-    if (d->view && change == ItemVisibleHasChanged && data.boolValue)
+    if (d->view && change == ItemVisibleHasChanged && value.boolValue)
     {
 #endif
         d->loadVisible();
@@ -623,7 +623,7 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
 #ifdef QT_4
     return WDeclarativeItem::itemChange(change, value);
 #else
-    WDeclarativeItemPaint::itemChange(change, data);
+    WDeclarativeItemPaint::itemChange(change, value);
 #endif
 }
 

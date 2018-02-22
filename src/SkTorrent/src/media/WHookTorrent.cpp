@@ -997,23 +997,22 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
             setStateLoad(WAbstractBackend::StateLoadResuming);
         }
     }
+    else if (d->state == WHookTorrentPrivate::StatePaused)
+    {
+        d->stop();
+
+        d->clearReply();
+
+        setDuration   (duration);
+        setCurrentTime(currentTime);
+    }
     else
     {
         setDuration(duration);
 
-        d->currentTime = currentTime;
-
         d->methodSkip.invoke(d->thread);
 
         d->backend->seek(currentTime);
-
-        if (currentTime == -1)
-        {
-             setStateLoad(WAbstractBackend::StateLoadStarting);
-        }
-        else setStateLoad(WAbstractBackend::StateLoadResuming);
-
-        d->state = WHookTorrentPrivate::StateStarting;
     }
 }
 

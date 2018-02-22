@@ -68,22 +68,22 @@ WDeclarativeItemPaint::WDeclarativeItemPaint(WDeclarativeItemPaintPrivate * p, Q
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WDeclarativeItemPaint::itemChange(ItemChange             change,
-                                                     const ItemChangeData & data)
+                                                     const ItemChangeData & value)
 {
     if (change == ItemSceneChange)
     {
         Q_D(WDeclarativeItemPaint);
 
-        d->view = static_cast<WView *> (data.window);
+        d->view = static_cast<WView *> (value.window);
 
         emit viewChanged();
     }
-    else if (change == ItemVisibleHasChanged && data.boolValue)
+    else if (change == ItemVisibleHasChanged && value.boolValue)
     {
         update();
     }
 
-    QQuickPaintedItem::itemChange(change, data);
+    QQuickPaintedItem::itemChange(change, value);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -94,14 +94,5 @@ WView * WDeclarativeItemPaint::view() const
 {
     Q_D(const WDeclarativeItemPaint); return d->view;
 }
-
-#ifdef QT_4
-
-QDeclarativeItem * WDeclarativeItemPaint::viewport() const
-{
-    Q_D(const WDeclarativeItemPaint); return d->viewport;
-}
-
-#endif
 
 #endif // SK_NO_DECLARATIVEITEMPAINT

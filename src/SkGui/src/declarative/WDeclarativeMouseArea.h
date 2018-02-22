@@ -218,10 +218,6 @@ class SK_GUI_EXPORT WDeclarativeMouseArea : public WDeclarativeItem
 {
     Q_OBJECT
 
-#ifdef QT_4
-    Q_ENUMS(CursorShape)
-#endif
-
     Q_PROPERTY(qreal mouseX READ mouseX NOTIFY mousePositionChanged)
     Q_PROPERTY(qreal mouseY READ mouseY NOTIFY mousePositionChanged)
 
@@ -253,40 +249,10 @@ class SK_GUI_EXPORT WDeclarativeMouseArea : public WDeclarativeItem
     Q_PROPERTY(bool preventStealing READ preventStealing WRITE setPreventStealing
                NOTIFY preventStealingChanged /* REVISION 1 */)
 
-    Q_PROPERTY(Qt::CursorShape cursor     READ cursor     WRITE setCursor     NOTIFY cursorChanged)
-    Q_PROPERTY(Qt::CursorShape cursorDrop READ cursorDrop WRITE setCursorDrop NOTIFY cursorDropChanged)
+    Q_PROPERTY(Qt::CursorShape cursor READ cursor WRITE setCursor NOTIFY cursorChanged)
 
-public: // Enums
-#ifdef QT_4
-    enum CursorShape
-    {
-        ArrowCursor,
-        UpArrowCursor,
-        CrossCursor,
-        WaitCursor,
-        IBeamCursor,
-        SizeVerCursor,
-        SizeHorCursor,
-        SizeBDiagCursor,
-        SizeFDiagCursor,
-        SizeAllCursor,
-        BlankCursor,
-        SplitVCursor,
-        SplitHCursor,
-        PointingHandCursor,
-        ForbiddenCursor,
-        WhatsThisCursor,
-        BusyCursor,
-        OpenHandCursor,
-        ClosedHandCursor,
-        DragCopyCursor,
-        DragMoveCursor,
-        DragLinkCursor,
-        LastCursor = DragLinkCursor,
-        BitmapCursor = 24,
-        CustomCursor = 25
-    };
-#endif
+    Q_PROPERTY(Qt::CursorShape cursorDrop READ cursorDrop WRITE setCursorDrop
+               NOTIFY cursorDropChanged)
 
 public:
 #ifdef QT_4
@@ -329,7 +295,7 @@ protected: // QGraphicsItem / QQuickItem reimplementation
 #ifdef QT_4
     /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 #else
-    /* virtual */ void itemChange(ItemChange change, const ItemChangeData & data);
+    /* virtual */ void itemChange(ItemChange change, const ItemChangeData & value);
 #endif
 
 protected: // Events

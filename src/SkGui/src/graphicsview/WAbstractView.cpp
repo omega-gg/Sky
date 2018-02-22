@@ -33,8 +33,8 @@
 // Static variables
 
 #ifdef SK_WIN_NATIVE
-static const DWORD windowFlags = WS_OVERLAPPED   | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX |
-                                 WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
+static const DWORD windowFlags = WS_OVERLAPPED | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX |
+                                 WS_CLIPCHILDREN;
 #endif
 
 //-------------------------------------------------------------------------------------------------
@@ -152,6 +152,8 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     SetWindowLong(id, GWL_STYLE, WS_CHILD | WS_CLIPCHILDREN);
 #else
     SetWindowLong(id, GWL_STYLE, WS_CHILD);
+
+    q->setProperty("_q_embedded_native_parent_handle", (WId) handle);
 #endif
 
     SetParent(id, handle);

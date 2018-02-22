@@ -96,6 +96,7 @@ W_DECLARE_PRIVATE_COPY(Class)    \
 //-------------------------------------------------------------------------------------------------
 
 #define C_STR toLatin1().constData()
+#define C_UTF toUtf8  ().constData()
 
 #define C_URL toString().C_STR
 

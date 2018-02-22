@@ -487,8 +487,8 @@ void WViewPrivate::startFade(bool visible)
     {
 #ifdef QT_4
         q->setWindowOpacity(fadeValue);
-#else // FIXME Qt5: Fading tends to be slow
-        q->setOpacity(0.0);
+#else
+        q->setOpacity(fadeValue);
 #endif
     }
 #ifdef QT_4
@@ -1113,11 +1113,11 @@ QList<WDeclarativeMouseArea *> WViewPrivate::getMouseAreas(const QList<QQuickIte
 #ifdef QT_4
     foreach (QGraphicsItem * item, items)
     {
-        QGraphicsObject * graphicsObject = item->toGraphicsObject();
+        QGraphicsObject * object = item->toGraphicsObject();
 
-        if (graphicsObject == NULL) continue;
+        if (object == NULL) continue;
 
-        WDeclarativeMouseArea * area = qobject_cast<WDeclarativeMouseArea *> (graphicsObject);
+        WDeclarativeMouseArea * area = qobject_cast<WDeclarativeMouseArea *> (object);
 #else
     foreach (QQuickItem * item, items)
     {
@@ -1152,11 +1152,11 @@ QList<WDeclarativeMouseArea *> WViewPrivate::getDropAreas(const QList<QQuickItem
 #ifdef QT_4
     foreach (QGraphicsItem * item, items)
     {
-        QGraphicsObject * graphicsObject = item->toGraphicsObject();
+        QGraphicsObject * object = item->toGraphicsObject();
 
-        if (graphicsObject == NULL) continue;
+        if (object == NULL) continue;
 
-        WDeclarativeMouseArea * area = qobject_cast<WDeclarativeMouseArea *> (graphicsObject);
+        WDeclarativeMouseArea * area = qobject_cast<WDeclarativeMouseArea *> (object);
 #else
     foreach (QQuickItem * item, items)
     {
@@ -2148,7 +2148,7 @@ void WView::hoverLeave()
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_4
+//#ifdef QT_4
 
 ///* virtual */ void WView::enterEvent(QEvent * event)
 //{
@@ -2176,7 +2176,7 @@ void WView::hoverLeave()
 //    WAbstractView::leaveEvent(event);
 //}
 
-#endif
+//#endif
 
 //-------------------------------------------------------------------------------------------------
 

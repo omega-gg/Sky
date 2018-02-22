@@ -44,10 +44,10 @@
 #ifndef SK_NO_BACKENDVLC
 
 // Forward declarations
-class WMediaReply;
 #ifdef QT_LATEST
 class QOpenGLFunctions;
 #endif
+class WMediaReply;
 
 //-------------------------------------------------------------------------------------------------
 // WBackendVlcTexture
@@ -249,8 +249,6 @@ public: // Variables
     GLuint textureIds[3];
 
     WBackendVlcTexture textures[3];
-
-    GLfloat values[16];
 
     bool started;
     bool active;

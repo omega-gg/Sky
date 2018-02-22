@@ -96,7 +96,7 @@ WVlcEngine::WVlcEngine(QThread * thread, QObject * parent)
             "--no-media-library", /* No Media Library */
             "--http-reconnect",   /* Auto reconnect   */
             "--input-fast-seek",  /* Fast seek        */
-            "--avcodec-fast",     /* Speed tricks     */
+            "--avcodec-fast"      /* Speed tricks     */
             //"--avcodec-dr",
             //"--avcodec-hurry-up",
             //"--avcodec-hw=any",

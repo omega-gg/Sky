@@ -23,9 +23,6 @@
 
 // Qt includes
 #include <QMimeData>
-#ifdef QT_4
-#include <QApplication>
-#endif
 #include <QGraphicsScene>
 #include <QGraphicsSceneWheelEvent>
 
@@ -323,9 +320,9 @@ void WDeclarativeMouseAreaPrivate::init()
 
 void WDeclarativeMouseAreaPrivate::mouseUngrab()
 {
-    Q_Q(WDeclarativeMouseArea);
-
     if (pressed == false) return;
+
+    Q_Q(WDeclarativeMouseArea);
 
     pressed = false;
 
@@ -816,7 +813,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QGraphicsSceneMouseEvent * event)
                                                          const QVariant &   value)
 #else
 /* virtual */ void WDeclarativeMouseArea::itemChange(ItemChange             change,
-                                                     const ItemChangeData & data)
+                                                     const ItemChangeData & value)
 #endif
 {
 #ifdef QT_4
@@ -832,14 +829,14 @@ bool WDeclarativeMouseArea::sendMouseEvent(QGraphicsSceneMouseEvent * event)
 
         if (scene == NULL) d->clearView();
 #else
-        if (data.window == NULL) d->clearView();
+        if (value.window == NULL) d->clearView();
 #endif
     }
 
 #ifdef QT_4
     return WDeclarativeItem::itemChange(change, value);
 #else
-    WDeclarativeItem::itemChange(change, data);
+    WDeclarativeItem::itemChange(change, value);
 #endif
 }
 
@@ -1149,9 +1146,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QGraphicsSceneMouseEvent * event)
         return;
     }
 
-    int degrees = event->delta() / 8;
-
-    int steps = degrees / 15;
+    int steps = event->delta() / 120;
 
     emit wheeled(steps);
 }

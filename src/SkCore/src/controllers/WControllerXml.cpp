@@ -409,7 +409,7 @@ bool WControllerXml::readNextStartElement(QXmlStreamReader * stream, const QStri
 {
     stream->readNext();
 
-    return QUrl::fromEncoded(stream->text().toLatin1());
+    return QUrl::fromEncoded(stream->text().toUtf8());
 }
 
 //---------------------------------------------------------------------------------------------

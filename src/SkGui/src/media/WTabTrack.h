@@ -86,7 +86,7 @@ class SK_GUI_EXPORT WTabTrack : public WAbstractTab
 
     Q_PROPERTY(WAbstractBackend::Quality quality READ quality NOTIFY currentBookmarkUpdated)
 
-    Q_PROPERTY(QUrl videoShot READ videoShot NOTIFY currentBookmarkUpdated)    
+    Q_PROPERTY(QUrl videoShot READ videoShot NOTIFY currentBookmarkUpdated)
     Q_PROPERTY(QUrl coverShot READ coverShot NOTIFY currentBookmarkUpdated)
 
     Q_PROPERTY(int currentTime READ currentTime WRITE setCurrentTime NOTIFY currentBookmarkUpdated)

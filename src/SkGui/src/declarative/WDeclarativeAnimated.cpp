@@ -299,7 +299,7 @@ WDeclarativeAnimated::WDeclarativeAnimated(WDeclarativeAnimatedPrivate * p, QQui
 /* virtual */ QVariant WDeclarativeAnimated::itemChange(GraphicsItemChange change,
                                                         const QVariant &   value)
 #else
-/* virtual */ void WDeclarativeAnimated::itemChange(ItemChange change, const ItemChangeData & data)
+/* virtual */ void WDeclarativeAnimated::itemChange(ItemChange change, const ItemChangeData & value)
 #endif
 {
 #ifdef QT_4
@@ -313,7 +313,7 @@ WDeclarativeAnimated::WDeclarativeAnimated(WDeclarativeAnimatedPrivate * p, QQui
 
     if (d->view && change == ItemVisibleHasChanged)
     {
-        bool visible = data.boolValue;
+        bool visible = value.boolValue;
 #endif
 
         if (visible)
@@ -329,7 +329,7 @@ WDeclarativeAnimated::WDeclarativeAnimated(WDeclarativeAnimatedPrivate * p, QQui
 #ifdef QT_4
     return WDeclarativeItem::itemChange(change, value);
 #else
-    WDeclarativeItem::itemChange(change, data);
+    WDeclarativeItem::itemChange(change, value);
 #endif
 }
 

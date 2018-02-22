@@ -37,9 +37,7 @@
 #include <QTextBlock>
 
 // Private includes
-#ifdef QT_4 // FIXME
-#include <private/qdeclarativeglobal_p.h>
-#include <private/qdeclarativestyledtext_p.h>
+#ifdef QT_4
 #include <private/qdeclarativepixmapcache_p.h>
 #endif
 
@@ -69,10 +67,10 @@ public: // Interface
 #ifdef QT_4
 protected:
     QVariant loadResource(int type, const QUrl &name);
-#endif
 
 private slots:
     void requestFinished();
+#endif
 
 private:
     int outstanding;
@@ -305,8 +303,6 @@ QVariant WTextDocumentWithImageResources::loadResource(int type, const QUrl & na
     return QTextDocument::loadResource(type,url);
 }
 
-#endif
-
 //-------------------------------------------------------------------------------------------------
 // Private slots
 //-------------------------------------------------------------------------------------------------
@@ -331,6 +327,8 @@ void WTextDocumentWithImageResources::requestFinished()
 
     d->resetLayout();
 }
+
+#endif
 
 //=================================================================================================
 // WDeclarativeTextPrivate
@@ -504,6 +502,10 @@ void WDeclarativeTextPrivate::updateSize()
 
         if (dsize != layedOutTextRect.size())
         {
+#ifdef QT_4
+            q->prepareGeometryChange();
+#endif
+
             layedOutTextRect = QRect(QPoint(0, 0), dsize);
         }
 
@@ -1312,7 +1314,7 @@ void WDeclarativeTextPrivate::drawTextLayout(QPainter      * painter,
 /* virtual */ void WDeclarativeText::paint(QPainter * painter)
 #endif
 {
-#ifdef QT_5
+#ifdef QT_LATEST
     if (isVisible() == false) return;
 #endif
 

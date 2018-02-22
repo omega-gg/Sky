@@ -200,6 +200,10 @@ WDeclarativeBorderImage::WDeclarativeBorderImage(WDeclarativeBorderImagePrivate 
 /* virtual */ void WDeclarativeBorderImage::paint(QPainter * painter)
 #endif
 {
+#ifdef QT_LATEST
+    if (isVisible() == false) return;
+#endif
+
     Q_D(WDeclarativeBorderImage);
 
     const QPixmap & pixmap = getPixmap();

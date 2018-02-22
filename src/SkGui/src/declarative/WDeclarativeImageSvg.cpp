@@ -364,7 +364,7 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
 /* virtual */ void WDeclarativeImageSvg::svgClear() {}
 
 //-------------------------------------------------------------------------------------------------
-// Protected QGraphicsItem reimplementation
+// Protected QGraphicsItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
 #ifdef QT_4
@@ -372,7 +372,7 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
                                                         const QVariant &   value)
 #else
 /* virtual */ void WDeclarativeImageSvg::itemChange(ItemChange             change,
-                                                    const ItemChangeData & data)
+                                                    const ItemChangeData & value)
 #endif
 {
 #ifdef QT_4
@@ -383,7 +383,7 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
 #else
     Q_D(WDeclarativeImageSvg);
 
-    if (d->view && change == ItemVisibleHasChanged && data.boolValue)
+    if (d->view && change == ItemVisibleHasChanged && value.boolValue)
     {
 #endif
         d->loadVisible();
@@ -392,7 +392,7 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
 #ifdef QT_4
     return WDeclarativeItem::itemChange(change, value);
 #else
-    WDeclarativeItemPaint::itemChange(change, data);
+    WDeclarativeItemPaint::itemChange(change, value);
 #endif
 }
 

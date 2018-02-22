@@ -393,10 +393,10 @@ protected: // Events
     /* virtual */ void moveEvent  (QMoveEvent   * event);
     /* virtual */ void resizeEvent(QResizeEvent * event);
 
-#ifdef QT_4
+//#ifdef QT_4
     ///* virtual */ void enterEvent(QEvent * event);
     ///* virtual */ void leaveEvent(QEvent * event);
-#endif
+//#endif
 
     /* virtual */ void mousePressEvent  (QMouseEvent * event);
     /* virtual */ void mouseReleaseEvent(QMouseEvent * event);

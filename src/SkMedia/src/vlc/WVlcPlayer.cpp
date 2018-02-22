@@ -386,17 +386,17 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
             if (audio.isEmpty())
             {
                 media = libvlc_media_new_location(d->engine->d_func()->instance,
-                                                  d->encodeUrl(eventSource->media).C_STR);
+                                                  d->encodeUrl(eventSource->media).C_UTF);
 
                 libvlc_media_add_option(media, "no-video");
             }
             else media = libvlc_media_new_location(d->engine->d_func()->instance,
-                                                   d->encodeUrl(eventSource->audio).C_STR);
+                                                   d->encodeUrl(eventSource->audio).C_UTF);
         }
         else
         {
             media = libvlc_media_new_location(d->engine->d_func()->instance,
-                                              d->encodeUrl(eventSource->media).C_STR);
+                                              d->encodeUrl(eventSource->media).C_UTF);
 
             if (output != WAbstractBackend::OutputVideo)
             {
@@ -406,7 +406,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
                 {
                     QString input = "input-slave=" + d->encodeUrl(audio);
 
-                    libvlc_media_add_option(media, input.C_STR);
+                    libvlc_media_add_option(media, input.C_UTF);
                 }
             }
             else libvlc_media_add_option(media, "no-audio");

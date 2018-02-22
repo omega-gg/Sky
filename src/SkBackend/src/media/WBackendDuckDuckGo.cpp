@@ -69,7 +69,7 @@ QUrl WBackendDuckDuckGoPrivate::getUrl(const QString & q) const
 
     url.addQueryItem("kl", "en-us");
 
-    url.addQueryItem("kp", "-1");
+    url.addQueryItem("kp", "-2");
 #else
     QUrlQuery query(url);
 
@@ -77,7 +77,7 @@ QUrl WBackendDuckDuckGoPrivate::getUrl(const QString & q) const
 
     query.addQueryItem("kl", "en-us");
 
-    query.addQueryItem("kp", "-1");
+    query.addQueryItem("kp", "-2");
 
     url.setQuery(query);
 #endif

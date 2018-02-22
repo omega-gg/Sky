@@ -700,7 +700,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 /* Q_INVOKABLE static */ QUrl WControllerNetwork::encodedUrl(const QString & string)
 {
-    return QUrl::fromEncoded(string.toLatin1());
+    return QUrl::fromEncoded(string.toUtf8());
 }
 
 //-------------------------------------------------------------------------------------------------

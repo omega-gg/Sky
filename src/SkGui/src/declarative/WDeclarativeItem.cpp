@@ -75,7 +75,7 @@ WDeclarativeItem::WDeclarativeItem(WDeclarativeItemPrivate * p, QQuickItem * par
 /* virtual */ QVariant WDeclarativeItem::itemChange(GraphicsItemChange change,
                                                     const QVariant &   value)
 #else
-/* virtual */ void WDeclarativeItem::itemChange(ItemChange change, const ItemChangeData & data)
+/* virtual */ void WDeclarativeItem::itemChange(ItemChange change, const ItemChangeData & value)
 #endif
 {
 #ifdef QT_4
@@ -103,7 +103,7 @@ WDeclarativeItem::WDeclarativeItem(WDeclarativeItemPrivate * p, QQuickItem * par
             d->viewport = NULL;
         }
 #else
-        d->view = static_cast<WView *> (data.window);
+        d->view = static_cast<WView *> (value.window);
 #endif
 
         emit viewChanged();
@@ -112,7 +112,7 @@ WDeclarativeItem::WDeclarativeItem(WDeclarativeItemPrivate * p, QQuickItem * par
 #ifdef QT_4
     return QDeclarativeItem::itemChange(change, value);
 #else
-    QQuickItem::itemChange(change, data);
+    QQuickItem::itemChange(change, value);
 #endif
 }
 

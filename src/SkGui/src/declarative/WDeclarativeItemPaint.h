@@ -41,7 +41,7 @@ protected:
     WDeclarativeItemPaint(WDeclarativeItemPaintPrivate * p, QQuickItem * parent = NULL);
 
 protected: // QQuickItem reimplementation
-    /* virtual */ void itemChange(ItemChange change, const ItemChangeData & data);
+    /* virtual */ void itemChange(ItemChange change, const ItemChangeData & value);
 
 signals:
     void viewChanged();
