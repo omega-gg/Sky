@@ -307,16 +307,14 @@ WDeclarativeAnimated::WDeclarativeAnimated(WDeclarativeAnimatedPrivate * p, QQui
     {
         Q_D(WDeclarativeAnimated);
 
-        bool visible = value.toBool();
+        if (value.toBool())
 #else
     Q_D(WDeclarativeAnimated);
 
     if (d->view && change == ItemVisibleHasChanged)
     {
-        bool visible = value.boolValue;
+        if (value.boolValue)
 #endif
-
-        if (visible)
         {
             if (d->running && d->stepCount && d->loopCount)
             {
