@@ -27,11 +27,19 @@
     We mean it.
 */
 
+#ifdef SK_SOFTWARE
+#include <private/WDeclarativeItemPaint_p>
+#else
 #include <private/WDeclarativeItem_p>
+#endif
 
 #ifndef SK_NO_DECLARATIVEPLAYER
 
+#ifdef SK_SOFTWARE
+class SK_GUI_EXPORT WDeclarativePlayerPrivate : public WDeclarativeItemPaintPrivate
+#else
 class SK_GUI_EXPORT WDeclarativePlayerPrivate : public WDeclarativeItemPrivate
+#endif
 {
 protected:
     WDeclarativePlayerPrivate(WDeclarativePlayer * p);
@@ -41,7 +49,7 @@ protected:
     void init();
 
 public: // Functions
-#ifdef QT_LATEST
+#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
     void updateGeometry(WBackendNode * node);
 #endif
 
@@ -91,7 +99,7 @@ public: // Variables
 
     WBackendInterface * backendInterface;
 
-#ifdef QT_LATEST
+#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
     WBackendFrame frame;
 
     bool frameUpdate;

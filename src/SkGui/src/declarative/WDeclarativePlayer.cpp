@@ -35,7 +35,11 @@
 //-------------------------------------------------------------------------------------------------
 
 WDeclarativePlayerPrivate::WDeclarativePlayerPrivate(WDeclarativePlayer * p)
+#ifdef SK_SOFTWARE
+    : WDeclarativeItemPaintPrivate(p) {}
+#else
     : WDeclarativeItemPrivate(p) {}
+#endif
 
 /* virtual */ WDeclarativePlayerPrivate::~WDeclarativePlayerPrivate()
 {
@@ -53,7 +57,7 @@ void WDeclarativePlayerPrivate::init()
 
     backendInterface = NULL;
 
-#ifdef QT_LATEST
+#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
     frameUpdate = false;
 #endif
 
@@ -85,7 +89,7 @@ void WDeclarativePlayerPrivate::init()
 
 #ifdef QT_4
     q->setFlag(QGraphicsItem::ItemHasNoContents, false);
-#else
+#elif defined(SK_SOFTWARE) == false
     q->setFlag(QQuickItem::ItemHasContents);
 #endif
 
@@ -97,7 +101,7 @@ void WDeclarativePlayerPrivate::init()
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
 
 void WDeclarativePlayerPrivate::updateGeometry(WBackendNode * node)
 {
@@ -629,7 +633,11 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 #else
 /* explicit */ WDeclarativePlayer::WDeclarativePlayer(QQuickItem * parent)
 #endif
+#ifdef SK_SOFTWARE
+    : WDeclarativeItemPaint(new WDeclarativePlayerPrivate(this), parent)
+#else
     : WDeclarativeItem(new WDeclarativePlayerPrivate(this), parent)
+#endif
 {
     Q_D(WDeclarativePlayer); d->init();
 }
@@ -848,9 +856,11 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 
 void WDeclarativePlayer::updateFrame()
 {
+#ifndef SK_SOFTWARE
     Q_D(WDeclarativePlayer);
 
     d->backend->synchronize(&d->frame);
+#endif
 
     update();
 }
@@ -877,47 +887,42 @@ void WDeclarativePlayer::updateFrame()
     Q_D(WDeclarativePlayer); d->onHighlightedTabChanged();
 }
 
-#ifdef QT_4
+#if defined(QT_4) || defined(SK_SOFTWARE)
 
 //-------------------------------------------------------------------------------------------------
 // QGraphicsItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 /* virtual */ void WDeclarativePlayer::paint(QPainter                       * painter,
                                              const QStyleOptionGraphicsItem * option, QWidget *)
-{
-    Q_D(WDeclarativePlayer);
-
-    if (d->backend)
-    {
-        d->backend->drawFrame(painter, option->rect);
-    }
-}
-
-#endif
-
-//-------------------------------------------------------------------------------------------------
-// Protected QDeclarativeItem / QQuickItem reimplementation
-//-------------------------------------------------------------------------------------------------
-
-/* virtual */ void WDeclarativePlayer::geometryChanged(const QRectF & newGeometry,
-                                                       const QRectF & oldGeometry)
-{
-    Q_D(WDeclarativePlayer);
-
-    WDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
-
-#ifdef QT_4
-    if (d->backend)
-    {
-        d->backend->setSize(newGeometry.size());
-    }
 #else
-    d->frameUpdate = true;
+/* virtual */ void WDeclarativePlayer::paint(QPainter * painter)
 #endif
+{
+#ifdef SK_SOFTWARE
+    if (isVisible() == false) return;
+#endif
+
+    Q_D(WDeclarativePlayer);
+
+    if (d->backend)
+    {
+#ifdef QT_4
+        d->backend->drawFrame(painter, option->rect);
+#else
+        d->backend->drawFrame(painter, boundingRect().toRect());
+#endif
+    }
 }
 
-#ifdef QT_LATEST
+#endif
+
+#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
+
+//-------------------------------------------------------------------------------------------------
+// QQuickItem reimplementation
+//-------------------------------------------------------------------------------------------------
 
 /* virtual */ QSGNode * WDeclarativePlayer::updatePaintNode(QSGNode             * oldNode,
                                                             UpdatePaintNodeData *)
@@ -1002,6 +1007,31 @@ void WDeclarativePlayer::updateFrame()
 }
 
 #endif
+
+//-------------------------------------------------------------------------------------------------
+// Protected QDeclarativeItem / QQuickItem reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WDeclarativePlayer::geometryChanged(const QRectF & newGeometry,
+                                                       const QRectF & oldGeometry)
+{
+    Q_D(WDeclarativePlayer);
+
+#ifdef SK_SOFTWARE
+    WDeclarativeItemPaint::geometryChanged(newGeometry, oldGeometry);
+#else
+    WDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
+#endif
+
+#if defined(QT_4) || defined(SK_SOFTWARE)
+    if (d->backend)
+    {
+        d->backend->setSize(newGeometry.size());
+    }
+#else
+    d->frameUpdate = true;
+#endif
+}
 
 //-------------------------------------------------------------------------------------------------
 // Protected WPlaylistWatcher implementation

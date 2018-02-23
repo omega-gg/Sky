@@ -41,7 +41,7 @@ contains(QT_MAJOR_VERSION, 4) {
 } else {
     DEFINES += QT_LATEST
 
-    win32:DEFINES += SK_WIN_NATIVE
+    win32:DEFINES += SK_WIN_NATIVE #SK_SOFTWARE
 }
 
 include(src/controllers/controllers.pri)

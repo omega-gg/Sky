@@ -102,7 +102,7 @@ protected:
     WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p, QQuickItem * parent = NULL);
 #endif
 
-public: // QDeclarativeItem reimplementation
+public: // QDeclarativeItem / QQuickItem reimplementation
     /* virtual */ void componentComplete();
 
 public: // QGraphicsItem / QQuickPaintedItem reimplementation

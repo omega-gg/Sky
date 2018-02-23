@@ -1769,10 +1769,15 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
         painter->endNativePainting();
     }
-#endif
     else
+#endif
     {
+#ifdef QT_4
         if (d->frameFreeze == false) d->convertFrameSse();
+#else
+        // FIXME Qt5: SSE does not seem to work.
+        if (d->frameFreeze == false) d->convertFrameSse();
+#endif
 
         bool smooth = painter->testRenderHint(QPainter::SmoothPixmapTransform);
 

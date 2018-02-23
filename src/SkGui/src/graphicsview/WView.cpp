@@ -638,7 +638,8 @@ void WViewPrivate::updateDrag()
 #ifdef Q_OS_LINUX
     setMousePos(q->mapFromGlobal(pos));
 #else
-    setMousePos(QPoint(pos.x() - q->x(), pos.y() - q->y()));
+    // FIXME Windows: We have to map the position from global.
+    setMousePos(q->mapFromGlobal(pos));
 #endif
 
     if (isUnderMouse())

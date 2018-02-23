@@ -19,7 +19,7 @@
 #ifndef SK_NO_DECLARATIVEBORDERS
 
 // Qt includes
-#ifdef QT_4
+#if defined(QT_4) || defined(SK_SOFTWARE)
 #include <QPainter>
 #else
 #include <QSGGeometryNode>
@@ -27,9 +27,13 @@
 #endif
 
 // Private includes
+#ifdef SK_SOFTWARE
+#include <private/WDeclarativeItemPaint_p>
+#else
 #include <private/WDeclarativeItem_p>
+#endif
 
-#ifdef QT_LATEST
+#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
 
 //=================================================================================================
 // WDeclarativeBordersLine
@@ -107,7 +111,11 @@ WDeclarativeBordersNode::WDeclarativeBordersNode() : left(&material), right (&ma
 // WDeclarativeBordersPrivate
 //=================================================================================================
 
+#ifdef SK_SOFTWARE
+class SK_GUI_EXPORT WDeclarativeBordersPrivate : public WDeclarativeItemPaintPrivate
+#else
 class SK_GUI_EXPORT WDeclarativeBordersPrivate : public WDeclarativeItemPrivate
+#endif
 {
 public:
     WDeclarativeBordersPrivate(WDeclarativeBorders * p);
@@ -122,7 +130,7 @@ public: // Variables
 
     QColor color;
 
-#ifdef QT_LATEST
+#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
     bool updateLeft;
     bool updateRight;
     bool updateTop;
@@ -138,20 +146,26 @@ protected:
 //-------------------------------------------------------------------------------------------------
 
 WDeclarativeBordersPrivate::WDeclarativeBordersPrivate(WDeclarativeBorders * p)
+#ifdef SK_SOFTWARE
+    : WDeclarativeItemPaintPrivate(p) {}
+#else
     : WDeclarativeItemPrivate(p) {}
+#endif
 
 void WDeclarativeBordersPrivate::init()
 {
-    Q_Q(WDeclarativeBorders);
-
     left   = 0.0;
     right  = 0.0;
     top    = 0.0;
     bottom = 0.0;
 
 #ifdef QT_4
+    Q_Q(WDeclarativeBorders);
+
     q->setFlag(QGraphicsItem::ItemHasNoContents, false);
-#else
+#elif defined(SK_SOFTWARE) == false
+    Q_Q(WDeclarativeBorders);
+
     updateLeft   = true;
     updateRight  = true;
     updateTop    = true;
@@ -173,10 +187,16 @@ void WDeclarativeBordersPrivate::init()
 #else
 /* explicit */ WDeclarativeBorders::WDeclarativeBorders(QQuickItem * parent)
 #endif
+#ifdef SK_SOFTWARE
+    : WDeclarativeItemPaint(new WDeclarativeBordersPrivate(this), parent)
+#else
     : WDeclarativeItem(new WDeclarativeBordersPrivate(this), parent)
+#endif
 {
     Q_D(WDeclarativeBorders); d->init();
 }
+
+#if defined(QT_4) || defined(SK_SOFTWARE)
 
 //-------------------------------------------------------------------------------------------------
 // QGraphicsItem / QQuickItem reimplementation
@@ -186,6 +206,9 @@ void WDeclarativeBordersPrivate::init()
 
 /* virtual */ void WDeclarativeBorders::paint(QPainter * painter,
                                               const QStyleOptionGraphicsItem *, QWidget *)
+#else
+/* virtual */ void WDeclarativeBorders::paint(QPainter * painter)
+#endif
 {
     Q_D(WDeclarativeBorders);
 
@@ -200,7 +223,13 @@ void WDeclarativeBordersPrivate::init()
     painter->drawRect(QRectF(0, height() - d->bottom, width(), d->bottom));
 }
 
-#else
+#endif
+
+#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
+
+//-------------------------------------------------------------------------------------------------
+// QQuickItem reimplementation
+//-------------------------------------------------------------------------------------------------
 
 /* virtual */ QSGNode * WDeclarativeBorders::updatePaintNode(QSGNode             * oldNode,
                                                              UpdatePaintNodeData *)
@@ -293,7 +322,7 @@ void WDeclarativeBorders::setLeft(qreal left)
 
     d->left = left;
 
-#ifdef QT_LATEST
+#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
     d->updateLeft = true;
 #endif
 
@@ -317,7 +346,7 @@ void WDeclarativeBorders::setRight(qreal right)
 
     d->right = right;
 
-#ifdef QT_LATEST
+#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
     d->updateRight = true;
 #endif
 
@@ -341,7 +370,7 @@ void WDeclarativeBorders::setTop(qreal top)
 
     d->top = top;
 
-#ifdef QT_LATEST
+#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
     d->updateTop = true;
 #endif
 
@@ -365,7 +394,7 @@ void WDeclarativeBorders::setBottom(qreal bottom)
 
     d->bottom = bottom;
 
-#ifdef QT_LATEST
+#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
     d->updateBottom = true;
 #endif
 
@@ -389,7 +418,7 @@ void WDeclarativeBorders::setColor(const QColor & color)
 
     d->color = color;
 
-#ifdef QT_LATEST
+#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
     d->updateColor = true;
 #endif
 

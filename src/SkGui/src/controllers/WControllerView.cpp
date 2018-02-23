@@ -25,6 +25,9 @@
 #include <QGraphicsObject>
 #include <QStyleOptionGraphicsItem>
 #else
+#ifdef SK_SOFTWARE
+#include <QQuickWindow>
+#endif
 #include <QQuickItem>
 #include <QQuickItemGrabResult>
 #endif
@@ -91,11 +94,19 @@ WControllerViewPrivate::WControllerViewPrivate(WControllerView * p) : WControlle
 
 void WControllerViewPrivate::init()
 {
+#ifdef SK_SOFTWARE
     opengl = true;
+#else
+    opengl = true;
+#endif
 
     loadMode = WControllerView::LoadAlways;
 
     scaleDelay = 220;
+
+#ifdef SK_SOFTWARE
+    QQuickWindow::setSceneGraphBackend(QSGRendererInterface::Software);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -18,7 +18,11 @@
 #define WDECLARATIVEPLAYER_H
 
 // Sk includes
+#ifdef SK_SOFTWARE
+#include <WDeclarativeItemPaint>
+#else
 #include <WDeclarativeItem>
+#endif
 #include <WPlaylist>
 #include <WTrack>
 
@@ -29,7 +33,11 @@ class WDeclarativePlayerPrivate;
 class WAbstractHook;
 class WTabsTrack;
 
+#ifdef SK_SOFTWARE
+class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItemPaint, public WPlaylistWatcher
+#else
 class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlaylistWatcher
+#endif
 {
     Q_OBJECT
 
@@ -152,18 +160,23 @@ public: // Interface
 
     Q_INVOKABLE void updateHighlightedTab();
 
+#if defined(QT_4) || defined(SK_SOFTWARE)
+public: // QGraphicsItem / QQuickPaintedItem reimplementation
 #ifdef QT_4
-public: // QGraphicsItem reimplementation
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
+#else
+    /* virtual */ void paint(QPainter * painter);
+#endif
+#endif
+
+#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
+public: // QQuickItem reimplementation
+    /* virtual */ QSGNode * updatePaintNode(QSGNode * oldNode, UpdatePaintNodeData * data);
 #endif
 
 protected: // QDeclarativeItem / QQuickItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
-
-#ifdef QT_LATEST
-    /* virtual */ QSGNode * updatePaintNode(QSGNode * oldNode, UpdatePaintNodeData * data);
-#endif
 
 protected: // WPlaylistWatcher implementation
     /* virtual */ void beginTracksInsert(int first, int last);

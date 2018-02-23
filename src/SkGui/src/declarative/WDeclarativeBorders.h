@@ -18,14 +18,22 @@
 #define WDECLARATIVEBORDERS_H
 
 // Sk includes
+#ifdef SK_SOFTWARE
+#include <WDeclarativeItemPaint>
+#else
 #include <WDeclarativeItem>
+#endif
 
 #ifndef SK_NO_DECLARATIVEBORDERS
 
 // Forward declarations
 class WDeclarativeBordersPrivate;
 
+#ifdef SK_SOFTWARE
+class SK_GUI_EXPORT WDeclarativeBorders : public WDeclarativeItemPaint
+#else
 class SK_GUI_EXPORT WDeclarativeBorders : public WDeclarativeItem
+#endif
 {
     Q_OBJECT
 
@@ -43,15 +51,20 @@ public:
     explicit WDeclarativeBorders(QQuickItem * parent = NULL);
 #endif
 
+#if defined(QT_4) || defined(SK_SOFTWARE)
 public: // QGraphicsItem / QQuickItem reimplementation
 #ifdef QT_4
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
 #else
-    /* virtual */ QSGNode * updatePaintNode(QSGNode * oldNode, UpdatePaintNodeData * data);
+    /* virtual */ void paint(QPainter * painter);
+#endif
 #endif
 
-#ifdef QT_LATEST
+#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
+public: // QQuickItem reimplementation
+    /* virtual */ QSGNode * updatePaintNode(QSGNode * oldNode, UpdatePaintNodeData * data);
+
 protected: // QQuickItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
 #endif
