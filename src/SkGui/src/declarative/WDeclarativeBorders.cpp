@@ -199,7 +199,7 @@ void WDeclarativeBordersPrivate::init()
 #if defined(QT_4) || defined(SK_SOFTWARE)
 
 //-------------------------------------------------------------------------------------------------
-// QGraphicsItem / QQuickItem reimplementation
+// QGraphicsItem / QQuickPaintedItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
 #ifdef QT_4

@@ -177,7 +177,7 @@ else
         cp "$Qt5"/bin/Qt5Quick.dll             deploy
         cp "$Qt5"/bin/Qt5Script.dll            deploy
         #cp "$Qt5"/bin/Qt5Sensors.dll           deploy
-        cp "$Qt5"/bin/Qt5Sql.dll               deploy
+        #cp "$Qt5"/bin/Qt5Sql.dll               deploy
         cp "$Qt5"/bin/Qt5Svg.dll               deploy
         #cp "$Qt5"/bin/Qt5WebChannel.dll        deploy
         #cp "$Qt5"/bin/Qt5WebKit.dll            deploy

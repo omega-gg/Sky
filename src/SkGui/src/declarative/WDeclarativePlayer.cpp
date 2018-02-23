@@ -1594,7 +1594,7 @@ void WDeclarativePlayer::setFillMode(WAbstractBackend::FillMode fillMode)
         d->backend->setFillMode(fillMode);
     }
 
-#ifdef QT_LATEST
+#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
     d->frameUpdate = true;
 #endif
 

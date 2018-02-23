@@ -52,7 +52,7 @@ public:
 #endif
 
 #if defined(QT_4) || defined(SK_SOFTWARE)
-public: // QGraphicsItem / QQuickItem reimplementation
+public: // QGraphicsItem / QQuickPaintedItem reimplementation
 #ifdef QT_4
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
