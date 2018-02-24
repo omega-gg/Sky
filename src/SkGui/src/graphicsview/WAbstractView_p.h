@@ -60,6 +60,8 @@ public: // Functions
 
     void setFlag(LONG flag, bool enabled) const;
 
+    void setState(Qt::WindowState state);
+
 public: // Static functions
     static HICON getIcon(const QIcon & icon, int width, int height);
 
@@ -104,6 +106,8 @@ public: // Variables
     bool windowSnap;
     bool windowMaximize;
     bool windowClip;
+
+    Qt::WindowState state;
 
     QMetaMethod method;
 #endif

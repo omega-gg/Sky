@@ -101,6 +101,8 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     windowMaximize = true;
     windowClip     = false;
 
+    state = Qt::WindowNoState;
+
     const QMetaObject * meta = q->metaObject();
 
     method = meta->method(meta->indexOfMethod("onFocus()"));
@@ -201,6 +203,19 @@ void WAbstractViewPrivate::setFlag(LONG flag, bool enabled) const
          SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) | flag);
     }
     else SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) & ~flag);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WAbstractViewPrivate::setState(Qt::WindowState state)
+{
+    if (this->state == state) return;
+
+    Q_Q(WAbstractView);
+
+    this->state = state;
+
+    q->onStateChanged(state);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -346,6 +361,8 @@ void WAbstractViewPrivate::setFlag(LONG flag, bool enabled) const
 
 #ifdef QT_4
             view->QDeclarativeView::setGeometry(border, border, width, height);
+#elif defined(Q_OS_WIN)
+            d->viewport->setGeometry(border - 1, border, width + 1, height);
 #else
             d->viewport->setGeometry(border, border, width, height);
 #endif
@@ -354,7 +371,7 @@ void WAbstractViewPrivate::setFlag(LONG flag, bool enabled) const
             {
                 d->maximized = true;
 
-                view->onStateChanged(Qt::WindowMaximized);
+                view->d_func()->setState(Qt::WindowMaximized);
             }
         }
         else
@@ -367,6 +384,12 @@ void WAbstractViewPrivate::setFlag(LONG flag, bool enabled) const
 
 #ifdef QT_4
             view->QDeclarativeView::setGeometry(0, 0, width, height);
+#elif defined(Q_OS_WIN)
+            if (d->fullScreen)
+            {
+                 d->viewport->setGeometry(-1, 0, width + 1, height);
+            }
+            else d->viewport->setGeometry(0, 0, width, height);
 #else
             d->viewport->setGeometry(0, 0, width, height);
 #endif
@@ -375,7 +398,7 @@ void WAbstractViewPrivate::setFlag(LONG flag, bool enabled) const
             {
                 d->maximized = false;
 
-                view->onStateChanged(Qt::WindowNoState);
+                view->d_func()->setState(Qt::WindowNoState);
             }
         }
 
@@ -463,10 +486,14 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWindow * parent, Qt::Win
     {
         d->restoreFullScreen();
 
+        d->setState(Qt::WindowNoState);
+
         return;
     }
 
     ShowWindow(d->handle, SW_RESTORE);
+
+    d->setState(Qt::WindowNoState);
 }
 
 /* Q_INVOKABLE */ void WAbstractView::showMaximized()
@@ -487,6 +514,8 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWindow * parent, Qt::Win
     else d->maximized = true;
 
     ShowWindow(d->handle, SW_SHOWMAXIMIZED);
+
+    d->setState(Qt::WindowMaximized);
 }
 
 /* Q_INVOKABLE */ void WAbstractView::showFullScreen()
@@ -509,6 +538,8 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWindow * parent, Qt::Win
     d->rect = QRect(x(), y(), width(), height());
 
     d->applyFullScreen();
+
+    d->setState(Qt::WindowFullScreen);
 }
 
 //-------------------------------------------------------------------------------------------------

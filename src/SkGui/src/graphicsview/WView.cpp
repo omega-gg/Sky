@@ -2562,6 +2562,10 @@ void WView::hoverLeave()
     {
         Q_D(WView);
 
+#if defined(Q_OS_WIN) && defined(QT_LATEST)
+        contentItem()->setX(1);
+#endif
+
         if (d->maximized == false)
         {
             d->maximized = true;
@@ -2569,9 +2573,28 @@ void WView::hoverLeave()
             emit maximizedChanged();
         }
     }
+#if defined(Q_OS_WIN) && defined(QT_LATEST)
+    else if (state == Qt::WindowFullScreen)
+    {
+        Q_D(WView);
+
+        contentItem()->setX(1);
+
+        if (d->maximized)
+        {
+            d->maximized = false;
+
+            emit maximizedChanged();
+        }
+    }
+#endif
     else if (state == Qt::WindowNoState)
     {
         Q_D(WView);
+
+#if defined(Q_OS_WIN) && defined(QT_LATEST)
+        contentItem()->setX(0);
+#endif
 
         if (d->maximized)
         {
