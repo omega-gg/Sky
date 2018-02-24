@@ -36,9 +36,10 @@ void WDeclarativeItemPaintPrivate::init()
 
     view = NULL;
 
-    q->setRenderTarget(QQuickPaintedItem::FramebufferObject);
+    // FIXME Qt5
+    /*q->setRenderTarget(QQuickPaintedItem::FramebufferObject);
 
-    q->setPerformanceHint(QQuickPaintedItem::FastFBOResizing);
+    q->setPerformanceHint(QQuickPaintedItem::FastFBOResizing);*/
 
     q->setAntialiasing(false);
     q->setMipmap      (false);
