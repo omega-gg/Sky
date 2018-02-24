@@ -26,11 +26,6 @@
 // Sk includes
 #include <WView>
 
-// Windows includes
-#if defined(Q_OS_WIN) && defined(SK_WIN_NATIVE) == false
-#include <qt_windows.h>
-#endif
-
 // Private includes
 #include <private/WDeclarativeMouseArea_p>
 
@@ -192,7 +187,11 @@ void WViewDragPrivate::clearDrag()
             finalY = maxHeight;
         }
 
+#ifdef QT_4
         d->view->move(finalX, finalY);
+#else
+        d->view->setPosition(finalX, finalY);
+#endif
     }
 
     d->dragLastPos = pos;
