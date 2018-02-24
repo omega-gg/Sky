@@ -41,6 +41,8 @@ protected:
 public: // Variables
     WView * view;
 
+    bool frameBuffer;
+
 protected:
     W_DECLARE_PUBLIC(WDeclarativeItemPaint)
 };

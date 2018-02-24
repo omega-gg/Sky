@@ -36,6 +36,8 @@ void WDeclarativeItemPaintPrivate::init()
 
     view = NULL;
 
+    frameBuffer = false;
+
     // FIXME Qt5
     /*q->setRenderTarget(QQuickPaintedItem::FramebufferObject);
 
@@ -94,6 +96,37 @@ WDeclarativeItemPaint::WDeclarativeItemPaint(WDeclarativeItemPaintPrivate * p, Q
 WView * WDeclarativeItemPaint::view() const
 {
     Q_D(const WDeclarativeItemPaint); return d->view;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WDeclarativeItemPaint::frameBuffer() const
+{
+    Q_D(const WDeclarativeItemPaint); return d->frameBuffer;
+}
+
+void WDeclarativeItemPaint::setFrameBuffer(bool enabled)
+{
+    Q_D(WDeclarativeItemPaint);
+
+    if (d->frameBuffer == enabled) return;
+
+    d->frameBuffer = enabled;
+
+    if (enabled)
+    {
+        setRenderTarget(QQuickPaintedItem::FramebufferObject);
+
+        setPerformanceHint(QQuickPaintedItem::FastFBOResizing);
+    }
+    else
+    {
+        setRenderTarget(QQuickPaintedItem::Image);
+
+        setPerformanceHint(QQuickPaintedItem::FastFBOResizing, false);
+    }
+
+    emit frameBufferChanged();
 }
 
 #endif // SK_NO_DECLARATIVEITEMPAINT

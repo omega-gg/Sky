@@ -207,6 +207,10 @@ Panel
         anchors.bottom: border.top
 
         fillMode: Image.PreserveAspectFit
+
+//#QT_5
+        frameBuffer: true
+//#END
     }
 
     BorderHorizontal

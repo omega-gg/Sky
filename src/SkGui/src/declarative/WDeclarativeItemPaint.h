@@ -35,6 +35,8 @@ class SK_GUI_EXPORT WDeclarativeItemPaint : public QQuickPaintedItem, public WPr
 
     Q_PROPERTY(WView * view READ view NOTIFY viewChanged)
 
+    Q_PROPERTY(bool frameBuffer READ frameBuffer WRITE setFrameBuffer NOTIFY frameBufferChanged)
+
 public:
     explicit WDeclarativeItemPaint(QQuickItem * parent = NULL);
 protected:
@@ -46,8 +48,13 @@ protected: // QQuickItem reimplementation
 signals:
     void viewChanged();
 
+    void frameBufferChanged();
+
 public: // Properties
     WView * view() const;
+
+    bool frameBuffer() const;
+    void setFrameBuffer(bool enabled);
 
 private:
     W_DECLARE_PRIVATE(WDeclarativeItemPaint)
