@@ -398,7 +398,7 @@ void WViewPrivate::init(QQuickItem * item)
     q->setScene(scene);
 
 #ifdef Q_OS_WIN
-    // FIXME Windows: Workaround for opengl full screen flicker.
+    // FIXME Qt4 Windows: Workaround for opengl full screen flicker.
     q->setViewportMargins(0, 0, -1, 0);
 #endif
 #endif
@@ -2562,7 +2562,7 @@ void WView::hoverLeave()
     {
         Q_D(WView);
 
-#if defined(Q_OS_WIN) && defined(QT_LATEST)
+#if defined(QT_LATEST) && defined(Q_OS_WIN)
         contentItem()->setX(1);
 #endif
 
@@ -2573,7 +2573,7 @@ void WView::hoverLeave()
             emit maximizedChanged();
         }
     }
-#if defined(Q_OS_WIN) && defined(QT_LATEST)
+#if defined(QT_LATEST) && defined(Q_OS_WIN)
     else if (state == Qt::WindowFullScreen)
     {
         Q_D(WView);
@@ -2592,7 +2592,7 @@ void WView::hoverLeave()
     {
         Q_D(WView);
 
-#if defined(Q_OS_WIN) && defined(QT_LATEST)
+#if defined(QT_LATEST) && defined(Q_OS_WIN)
         contentItem()->setX(0);
 #endif
 

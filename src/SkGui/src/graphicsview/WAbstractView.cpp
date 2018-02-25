@@ -362,6 +362,7 @@ void WAbstractViewPrivate::setState(Qt::WindowState state)
 #ifdef QT_4
             view->QDeclarativeView::setGeometry(border, border, width, height);
 #elif defined(Q_OS_WIN)
+            // FIXME Qt5 Windows: Workaround for opengl full screen flicker.
             d->viewport->setGeometry(border - 1, border, width + 1, height);
 #else
             d->viewport->setGeometry(border, border, width, height);
@@ -385,6 +386,7 @@ void WAbstractViewPrivate::setState(Qt::WindowState state)
 #ifdef QT_4
             view->QDeclarativeView::setGeometry(0, 0, width, height);
 #elif defined(Q_OS_WIN)
+            // FIXME Qt5 Windows: Workaround for opengl full screen flicker.
             if (d->fullScreen)
             {
                  d->viewport->setGeometry(-1, 0, width + 1, height);
