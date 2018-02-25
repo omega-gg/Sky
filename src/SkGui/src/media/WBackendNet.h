@@ -77,6 +77,7 @@ public: // Variables
 
     bool clearItems;
     bool cookies;
+    bool header;
 
     int maxHost;
     int delay;

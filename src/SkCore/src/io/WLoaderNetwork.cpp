@@ -159,8 +159,10 @@ void WLoaderNetworkPrivate::onFinished(QNetworkReply * reply)
                              QNetworkRequest::Manual);
     }
 
-    // FIXME: Add options flag.
-    request.setRawHeader("User-Agent", "AppleWebKit");
+    if (data->header())
+    {
+        request.setRawHeader("User-Agent", "AppleWebKit");
+    }
 
     return d->manager->get(request);
 }

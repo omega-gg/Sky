@@ -388,9 +388,10 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
             url.setQuery(urlQuery);
 #endif
 
-            query.type = WBackendNetQuery::TypeWeb;
-            query.url  = url;
-            query.id   = 1;
+            query.url = url;
+            query.id  = 1;
+
+            query.header = true;
         }
         else if (label == "people")
         {
@@ -406,9 +407,10 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
             url.setQuery(urlQuery);
 #endif
 
-            query.type = WBackendNetQuery::TypeWeb;
-            query.url  = url;
-            query.id   = 1;
+            query.url = url;
+            query.id  = 1;
+
+            query.header = true;
         }
         else if (label == "channels")
         {
@@ -424,8 +426,9 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
             url.setQuery(urlQuery);
 #endif
 
-            query.type = WBackendNetQuery::TypeWeb;
-            query.url  = url;
+            query.url = url;
+
+            query.header = true;
         }
         else if (label == "groups")
         {
@@ -441,8 +444,9 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
             url.setQuery(urlQuery);
 #endif
 
-            query.type = WBackendNetQuery::TypeWeb;
             query.url  = url;
+
+            query.header = true;
         }
     }
     else if (method == "related" && label == "tracks")
@@ -596,8 +600,7 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
         {
             WBackendNetQuery * nextQuery = &(reply.nextQuery);
 
-            nextQuery->type = WBackendNetQuery::TypeWeb;
-            nextQuery->url  = urls.takeFirst();
+            nextQuery->url = urls.takeFirst();
 
             if (urls.isEmpty() == false)
             {
@@ -605,6 +608,8 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
                 nextQuery->data = urls;
             }
             else nextQuery->id = 4;
+
+            nextQuery->header = true;
         }
 
         return reply;
@@ -615,8 +620,7 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
 
         WBackendNetQuery * nextQuery = &(reply.nextQuery);
 
-        nextQuery->type = WBackendNetQuery::TypeWeb;
-        nextQuery->url  = urls.takeFirst();
+        nextQuery->url = urls.takeFirst();
 
         if (urls.isEmpty() == false)
         {
@@ -624,6 +628,8 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
             nextQuery->data = urls;
         }
         else nextQuery->id = 4;
+
+        nextQuery->header = true;
 
         reply.clearDuplicate = true;
     }
@@ -656,10 +662,12 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
             {
                 WBackendNetQuery * nextQuery = &(reply.nextQuery);
 
-                nextQuery->type = WBackendNetQuery::TypeWeb;
-                nextQuery->url  = url;
-                nextQuery->id   = id;
+                nextQuery->url = url;
+                nextQuery->id  = id;
+
                 nextQuery->data = queryId;
+
+                nextQuery->header = true;
             }
         }
 
@@ -771,10 +779,12 @@ WBackendNetFolder WBackendVimeo::extractFolder(const QByteArray       & data,
         {
             WBackendNetQuery * nextQuery = &(reply.nextQuery);
 
-            nextQuery->type = WBackendNetQuery::TypeWeb;
-            nextQuery->url  = url;
-            nextQuery->id   = query.id;
+            nextQuery->url = url;
+            nextQuery->id  = query.id;
+
             nextQuery->data = id;
+
+            nextQuery->header = true;
         }
     }
 

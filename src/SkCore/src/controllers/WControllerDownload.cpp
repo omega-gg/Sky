@@ -140,6 +140,11 @@ bool WRemoteData::cookies() const
     return _cookies;
 }
 
+bool WRemoteData::header() const
+{
+    return _header;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 int WRemoteData::maxHost() const
@@ -353,6 +358,7 @@ WControllerDownload::WControllerDownload() : WController(new WControllerDownload
                                                              QNetworkRequest::Priority   priority,
                                                              bool                        redirect,
                                                              bool                        cookies,
+                                                             bool                        header,
                                                              int                         maxHost,
                                                              int                         delay)
 {
@@ -378,6 +384,7 @@ WControllerDownload::WControllerDownload() : WController(new WControllerDownload
 
     data->_redirect = redirect;
     data->_cookies  = cookies;
+    data->_header   = header;
 
     data->_redirectCount = 0;
 
@@ -408,10 +415,11 @@ WControllerDownload::WControllerDownload() : WController(new WControllerDownload
                                                              QNetworkRequest::Priority   priority,
                                                              bool                        redirect,
                                                              bool                        cookies,
+                                                             bool                        header,
                                                              int                         maxHost,
                                                              int                         delay)
 {
-    return getData(NULL, url, parent, priority, redirect, cookies, maxHost, delay);
+    return getData(NULL, url, parent, priority, redirect, cookies, header, maxHost, delay);
 }
 
 //-------------------------------------------------------------------------------------------------

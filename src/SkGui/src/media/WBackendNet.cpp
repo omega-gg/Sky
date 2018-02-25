@@ -77,6 +77,7 @@ void WBackendNetQuery::init(Type type, const QUrl & url)
 
     clearItems = true;
     cookies    = false;
+    header     = false;
 
     maxHost = 3;
     delay   = 0;

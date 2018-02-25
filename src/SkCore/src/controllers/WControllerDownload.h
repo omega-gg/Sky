@@ -65,6 +65,7 @@ public: // Properties
 
     bool redirect() const;
     bool cookies () const;
+    bool header  () const;
 
     int maxHost() const;
     int delay  () const;
@@ -85,6 +86,7 @@ private: // Variables
 
     bool _redirect;
     bool _cookies;
+    bool _header;
 
     int _redirectCount;
 
@@ -126,6 +128,7 @@ public: // Interface
                           QNetworkRequest::Priority   priority = QNetworkRequest::NormalPriority,
                           bool                        redirect = true,
                           bool                        cookies  = true,
+                          bool                        header   = false,
                           int                         maxHost  = -1,
                           int                         delay    =  0);
 
@@ -135,6 +138,7 @@ public: // Interface
                           QNetworkRequest::Priority   priority = QNetworkRequest::NormalPriority,
                           bool                        redirect = true,
                           bool                        cookies  = true,
+                          bool                        header   = false,
                           int                         maxHost  = -1,
                           int                         delay    =  0);
 
