@@ -92,7 +92,7 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     maximumHeight = QWIDGETSIZE_MAX;
 
     visible = false;
-    opacity = 0.0;
+    opacity = 1.0;
 
     maximized  = false;
     fullScreen = false;
@@ -145,8 +145,6 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     RegisterClassEx(&wcx);
 
     handle = CreateWindow(L"Window", 0, windowFlags, 0, 0, 0, 0, 0, 0, 0, NULL);
-
-    SetWindowLong(handle, GWL_EXSTYLE, GetWindowLong(handle, GWL_EXSTYLE) | WS_EX_LAYERED);
 
     SetWindowLongPtr(handle, GWLP_USERDATA, reinterpret_cast<LONG_PTR> (q));
 
@@ -991,6 +989,8 @@ void WAbstractView::setOpacity(qreal level)
 {
     Q_D(WAbstractView);
 
+    qreal oldOpacity = d->opacity;
+
     d->opacity = level;
 
     if (level == 1.0)
@@ -1002,8 +1002,11 @@ void WAbstractView::setOpacity(qreal level)
     }
     else
     {
-        SetWindowLong(d->handle,
-                      GWL_EXSTYLE, GetWindowLong(d->handle, GWL_EXSTYLE) | WS_EX_LAYERED);
+        if (oldOpacity == 1.0)
+        {
+            SetWindowLong(d->handle,
+                          GWL_EXSTYLE, GetWindowLong(d->handle, GWL_EXSTYLE) | WS_EX_LAYERED);
+        }
 
         SetLayeredWindowAttributes(d->handle, 0, level * 255, LWA_ALPHA);
     }
