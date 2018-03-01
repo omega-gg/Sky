@@ -146,8 +146,6 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 
     handle = CreateWindow(L"Window", 0, windowFlags, 0, 0, 0, 0, 0, 0, 0, NULL);
 
-    SetWindowLong(handle, GWL_EXSTYLE, GetWindowLong(handle, GWL_EXSTYLE) | WS_EX_LAYERED);
-
     SetWindowLongPtr(handle, GWLP_USERDATA, reinterpret_cast<LONG_PTR> (q));
 
 #ifdef QT_4
@@ -203,19 +201,6 @@ void WAbstractViewPrivate::setFlag(LONG flag, bool enabled) const
          SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) | flag);
     }
     else SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) & ~flag);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void WAbstractViewPrivate::setState(Qt::WindowState state)
-{
-    if (this->state == state) return;
-
-    Q_Q(WAbstractView);
-
-    this->state = state;
-
-    q->onStateChanged(state);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -363,7 +348,7 @@ void WAbstractViewPrivate::setState(Qt::WindowState state)
             view->QDeclarativeView::setGeometry(border, border, width, height);
 #elif defined(Q_OS_WIN)
             // FIXME Qt5 Windows: Workaround for opengl full screen flicker.
-            d->viewport->setGeometry(border - 1, border, width + 1, height);
+            d->viewport->setGeometry(border, border, width + 1, height);
 #else
             d->viewport->setGeometry(border, border, width, height);
 #endif
@@ -372,7 +357,7 @@ void WAbstractViewPrivate::setState(Qt::WindowState state)
             {
                 d->maximized = true;
 
-                view->d_func()->setState(Qt::WindowMaximized);
+                view->onStateChanged(Qt::WindowMaximized);
             }
         }
         else
@@ -389,7 +374,7 @@ void WAbstractViewPrivate::setState(Qt::WindowState state)
             // FIXME Qt5 Windows: Workaround for opengl full screen flicker.
             if (d->fullScreen)
             {
-                 d->viewport->setGeometry(-1, 0, width + 1, height);
+                 d->viewport->setGeometry(0, 0, width + 1, height);
             }
             else d->viewport->setGeometry(0, 0, width, height);
 #else
@@ -400,7 +385,7 @@ void WAbstractViewPrivate::setState(Qt::WindowState state)
             {
                 d->maximized = false;
 
-                view->d_func()->setState(Qt::WindowNoState);
+                view->onStateChanged(Qt::WindowNoState);
             }
         }
 
@@ -488,14 +473,10 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWindow * parent, Qt::Win
     {
         d->restoreFullScreen();
 
-        d->setState(Qt::WindowNoState);
-
         return;
     }
 
     ShowWindow(d->handle, SW_RESTORE);
-
-    d->setState(Qt::WindowNoState);
 }
 
 /* Q_INVOKABLE */ void WAbstractView::showMaximized()
@@ -516,8 +497,6 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWindow * parent, Qt::Win
     else d->maximized = true;
 
     ShowWindow(d->handle, SW_SHOWMAXIMIZED);
-
-    d->setState(Qt::WindowMaximized);
 }
 
 /* Q_INVOKABLE */ void WAbstractView::showFullScreen()
@@ -540,8 +519,6 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWindow * parent, Qt::Win
     d->rect = QRect(x(), y(), width(), height());
 
     d->applyFullScreen();
-
-    d->setState(Qt::WindowFullScreen);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1014,7 +991,20 @@ void WAbstractView::setOpacity(qreal level)
 
     d->opacity = level;
 
-    SetLayeredWindowAttributes(d->handle, 0, level * 255, LWA_ALPHA);
+    if (level == 1.0)
+    {
+        SetLayeredWindowAttributes(d->handle, 0, 255, LWA_ALPHA);
+
+        SetWindowLong(d->handle,
+                      GWL_EXSTYLE, GetWindowLong(d->handle, GWL_EXSTYLE) & ~WS_EX_LAYERED);
+    }
+    else
+    {
+        SetWindowLong(d->handle,
+                      GWL_EXSTYLE, GetWindowLong(d->handle, GWL_EXSTYLE) | WS_EX_LAYERED);
+
+        SetLayeredWindowAttributes(d->handle, 0, level * 255, LWA_ALPHA);
+    }
 }
 
 #endif // SK_WIN_NATIVE

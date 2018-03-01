@@ -64,12 +64,10 @@ protected:
     WDeclarativeImage(WDeclarativeImagePrivate * p, QQuickItem * parent = NULL);
 #endif
 
-public: // QGraphicsItem / QQuickPaintedItem reimplementation
 #ifdef QT_4
+public: // QGraphicsItem reimplementation
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
-#else
-    /* virtual */ void paint(QPainter * painter);
 #endif
 
 protected: // Functions
@@ -83,6 +81,10 @@ protected: // QGraphicsItem / QQuickItem reimplementation
 
 protected: // WDeclarativeImageBase reimplementation
     /* virtual */ void pixmapChange();
+
+#ifdef QT_LATEST
+    virtual void applyGeometry(QSGInternalImageNode * node, const QPixmap & pixmap); /* {} */
+#endif
 
 signals:
     void fillModeChanged();

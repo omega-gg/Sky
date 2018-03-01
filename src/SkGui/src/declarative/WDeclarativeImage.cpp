@@ -32,6 +32,12 @@
 #include <WImageFilter>
 #include <WAbstractThreadAction>
 
+#ifdef QT_LATEST
+// Private includes
+#include <private/qquickwindow_p.h>
+#include <private/qsgadaptationlayer_p.h>
+#endif
+
 //=================================================================================================
 // WDeclarativeImagePrivate
 //=================================================================================================
@@ -74,21 +80,15 @@ WDeclarativeImage::WDeclarativeImage(WDeclarativeImagePrivate * p, QQuickItem * 
     Q_D(WDeclarativeImage); d->init();
 }
 
+#ifdef QT_4
+
 //-------------------------------------------------------------------------------------------------
-// QGraphicsItem / QQuickPaintedItem reimplementation
+// QGraphicsItem / reimplementation
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_4
 /* virtual */ void WDeclarativeImage::paint(QPainter * painter,
                                             const QStyleOptionGraphicsItem *, QWidget *)
-#else
-/* virtual */ void WDeclarativeImage::paint(QPainter * painter)
-#endif
 {
-#ifdef QT_4
-    if (isVisible() == false) return;
-#endif
-
     Q_D(WDeclarativeImage);
 
     const QPixmap & pixmap = getPixmap();
@@ -224,6 +224,8 @@ WDeclarativeImage::WDeclarativeImage(WDeclarativeImagePrivate * p, QQuickItem * 
     painter->setRenderHint(QPainter::SmoothPixmapTransform, smooth);
 }
 
+#endif
+
 //-------------------------------------------------------------------------------------------------
 // Protected functions
 //-------------------------------------------------------------------------------------------------
@@ -334,6 +336,120 @@ void WDeclarativeImage::pixmapChange()
 }
 
 //-------------------------------------------------------------------------------------------------
+
+#ifdef QT_LATEST
+
+/* virtual */ void WDeclarativeImage::applyGeometry(QSGInternalImageNode * node,
+                                                    const QPixmap        & pixmap)
+{
+    Q_D(WDeclarativeImage);
+
+    qreal width  = this->width ();
+    qreal height = this->height();
+
+    int pixmapWidth  = pixmap.width ();
+    int pixmapHeight = pixmap.height();
+
+    QRectF rect;
+
+    if (d->fillMode >= WDeclarativeImage::Tile)
+    {
+        rect = QRectF(0, 0, (int) width, (int) height);
+
+        if (d->fillMode == WDeclarativeImage::TileVertically)
+        {
+            node->setHorizontalWrapMode(QSGTexture::ClampToEdge);
+            node->setVerticalWrapMode  (QSGTexture::Repeat);
+
+            node->setSubSourceRect(QRectF(0, 0, 1, width / pixmapHeight));
+        }
+        else if (d->fillMode == WDeclarativeImage::TileHorizontally)
+        {
+            node->setHorizontalWrapMode(QSGTexture::Repeat);
+            node->setVerticalWrapMode  (QSGTexture::ClampToEdge);
+
+            node->setSubSourceRect(QRectF(0, 0, width / pixmapWidth, 1));
+        }
+        else
+        {
+            node->setHorizontalWrapMode(QSGTexture::Repeat);
+            node->setVerticalWrapMode  (QSGTexture::Repeat);
+
+            node->setSubSourceRect(QRectF(0, 0, width / pixmapWidth, height / pixmapHeight));
+        }
+    }
+    else if (pixmapWidth != width || pixmapHeight != height)
+    {
+        if (d->fillMode == WDeclarativeImage::PreserveAspectFit)
+        {
+            qreal widthScale  = width  / pixmapWidth;
+            qreal heightScale = height / pixmapHeight;
+
+            if (widthScale < heightScale)
+            {
+                heightScale = widthScale;
+
+                qreal y = (height - heightScale * pixmapHeight) / 2;
+
+                rect = QRectF(0, (int) y, (int) width, (int) height - (y * 2));
+            }
+            else if (widthScale > heightScale)
+            {
+                widthScale = heightScale;
+
+                qreal x = (width - widthScale * pixmapWidth) / 2;
+
+                rect = QRectF((int) x, 0, (int) width - (x * 2), (int) height);
+            }
+            else rect = QRectF(0, 0, (int) width, (int) height);
+        }
+        else if (d->fillMode == WDeclarativeImage::PreserveAspectCrop)
+        {
+            qreal widthScale  = width  / pixmapWidth;
+            qreal heightScale = height / pixmapHeight;
+
+            if (widthScale < heightScale)
+            {
+                widthScale = heightScale;
+
+                qreal x = (width - widthScale * pixmapWidth) / 2;
+
+                rect = QRectF((int) x, 0, (int) width - (x * 2), (int) height);
+            }
+            else if (widthScale > heightScale)
+            {
+                heightScale = widthScale;
+
+                qreal y = (height - heightScale * pixmapHeight) / 2;
+
+                rect = QRectF(0, (int) y, (int) width, (int) height - (y * 2));
+            }
+            else rect = QRectF(0, 0, (int) width, (int) height);
+        }
+        else rect = QRectF(0, 0, (int) width, (int) height);
+
+        node->setHorizontalWrapMode(QSGTexture::ClampToEdge);
+        node->setVerticalWrapMode  (QSGTexture::ClampToEdge);
+
+        node->setSubSourceRect(QRectF(0, 0, 1, 1));
+    }
+    else
+    {
+        rect = QRectF(0, 0, (int) width, (int) height);
+
+        node->setHorizontalWrapMode(QSGTexture::ClampToEdge);
+        node->setVerticalWrapMode  (QSGTexture::ClampToEdge);
+
+        node->setSubSourceRect(QRectF(0, 0, 1, 1));
+    }
+
+    node->setTargetRect     (rect);
+    node->setInnerTargetRect(rect);
+}
+
+#endif
+
+//-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
 
@@ -416,6 +532,10 @@ void WDeclarativeImageScalePrivate::restore()
     scaleSize   = QSize  ();
 
     scaled = false;
+
+#ifdef QT_LATEST
+    updateTexture = true;
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------

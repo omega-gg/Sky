@@ -31,8 +31,8 @@ WImageFilterPrivate::WImageFilterPrivate(WImageFilter * p) : WPrivate(p) {}
 
 void WImageFilterPrivate::init()
 {
-    autoUpdate    = true;
-    updatePending = false;
+    update     = false;
+    autoUpdate = true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -101,7 +101,7 @@ void WImageFilter::refreshFilter()
     {
         updateFilter();
     }
-    else d->updatePending = true;
+    else d->update = true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -121,11 +121,11 @@ void WImageFilter::setAutoUpdate(bool autoUpdate)
 
     d->autoUpdate = autoUpdate;
 
-    if (d->autoUpdate && d->updatePending)
+    if (d->autoUpdate && d->update)
     {
         updateFilter();
     }
-    else d->updatePending = false;
+    else d->update = false;
 
     emit autoUpdateChanged();
 }

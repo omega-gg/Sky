@@ -39,8 +39,8 @@ public:
     void init();
 
 public:
+    bool update;
     bool autoUpdate;
-    bool updatePending;
 
 protected:
     W_DECLARE_PUBLIC(WImageFilter)

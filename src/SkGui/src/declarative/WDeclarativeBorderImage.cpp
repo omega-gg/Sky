@@ -361,6 +361,10 @@ void WDeclarativeBorderImageScalePrivate::restore()
     scaleSize   = QSize  ();
 
     scaled = false;
+
+#ifdef QT_LATEST
+    updateTexture = true;
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -406,6 +410,10 @@ void WDeclarativeBorderImageScalePrivate::onScale()
 
         scaled = true;
 
+#ifdef QT_LATEST
+        updateTexture = true;
+#endif
+
         q->update();
     }
     else action = WPixmapCache::loadImage(path, scaleResize, q, SLOT(onLoaded(const QImage &)));
@@ -429,6 +437,10 @@ void WDeclarativeBorderImageScalePrivate::onLoaded(const QImage & image)
     margins = scaleMargins;
 
     scaled = true;
+
+#ifdef QT_LATEST
+    updateTexture = true;
+#endif
 
     q->update();
 }

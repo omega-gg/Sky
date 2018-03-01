@@ -177,6 +177,10 @@ void WDeclarativeImageBasePrivate::loadDefault()
 
     q->pixmapChange();
 
+#ifdef QT_LATEST
+    updateTexture = true;
+#endif
+
     q->update();
 }
 
@@ -235,6 +239,10 @@ void WDeclarativeImageBasePrivate::applyRequest()
     applyFilter();
 
     q->pixmapChange();
+
+#ifdef QT_LATEST
+    updateTexture = true;
+#endif
 
     q->update();
 
@@ -300,6 +308,10 @@ void WDeclarativeImageBasePrivate::applySourceDefault()
         }
 
         q->pixmapChange();
+
+#ifdef QT_LATEST
+        updateTexture = true;
+#endif
 
         q->update();
 
@@ -383,6 +395,10 @@ void WDeclarativeImageBasePrivate::onFilterUpdated()
     filter->applyFilter(const_cast<QPixmap *> (&(pix.pixmap())));
 
     q->pixmapChange();
+
+#ifdef QT_LATEST
+    updateTexture = true;
+#endif
 
     q->update();
 }
@@ -913,6 +929,10 @@ void WDeclarativeImageBase::setSourceDefault(const QUrl & url)
 
             pixmapChange();
 
+#ifdef QT_LATEST
+            d->updateTexture = true;
+#endif
+
             update();
         }
         else d->pixmapDefault = QPixmap();
@@ -1097,6 +1117,10 @@ void WDeclarativeImageBase::setFilter(WImageFilter * filter)
         d->applyFilter();
 
         pixmapChange();
+
+#ifdef QT_LATEST
+        d->updateTexture = true;
+#endif
 
         update();
     }
