@@ -146,6 +146,8 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 
     handle = CreateWindow(L"Window", 0, windowFlags, 0, 0, 0, 0, 0, 0, 0, NULL);
 
+    SetWindowLong(handle, GWL_EXSTYLE, GetWindowLong(handle, GWL_EXSTYLE) | WS_EX_LAYERED);
+
     SetWindowLongPtr(handle, GWLP_USERDATA, reinterpret_cast<LONG_PTR> (q));
 
 #ifdef QT_4
