@@ -38,11 +38,7 @@
 //-------------------------------------------------------------------------------------------------
 
 WDeclarativeImageBasePrivate::WDeclarativeImageBasePrivate(WDeclarativeImageBase * p)
-#ifdef QT_4
     : WDeclarativeItemPrivate(p) {}
-#else
-    : WDeclarativeItemPaintPrivate(p) {}
-#endif
 
 #ifdef QT_LATEST
 
@@ -57,9 +53,7 @@ WDeclarativeImageBasePrivate::WDeclarativeImageBasePrivate(WDeclarativeImageBase
 
 void WDeclarativeImageBasePrivate::init()
 {
-#ifdef QT_4
     Q_Q(WDeclarativeImageBase);
-#endif
 
     file = NULL;
 
@@ -399,11 +393,10 @@ void WDeclarativeImageBasePrivate::onFilterUpdated()
 
 #ifdef QT_4
 /* explicit */ WDeclarativeImageBase::WDeclarativeImageBase(QDeclarativeItem * parent)
-    : WDeclarativeItem(new WDeclarativeImageBasePrivate(this), parent)
 #else
 /* explicit */ WDeclarativeImageBase::WDeclarativeImageBase(QQuickItem * parent)
-    : WDeclarativeItemPaint(new WDeclarativeImageBasePrivate(this), parent)
 #endif
+    : WDeclarativeItem(new WDeclarativeImageBasePrivate(this), parent)
 {
     Q_D(WDeclarativeImageBase); d->init();
 }
@@ -414,11 +407,10 @@ void WDeclarativeImageBasePrivate::onFilterUpdated()
 #ifdef QT_4
 WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p,
                                              QDeclarativeItem             * parent)
-    : WDeclarativeItem(p, parent)
 #else
 WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p, QQuickItem * parent)
-    : WDeclarativeItemPaint(p, parent)
 #endif
+    : WDeclarativeItem(p, parent)
 {
     Q_D(WDeclarativeImageBase); d->init();
 }
@@ -499,11 +491,7 @@ WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p, Q
 {
     Q_D(WDeclarativeImageBase);
 
-#ifdef QT_4
     WDeclarativeItem::componentComplete();
-#else
-    WDeclarativeItemPaint::componentComplete();
-#endif
 
     if (d->url.isValid())
     {
@@ -544,11 +532,11 @@ WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p, Q
 
     if (oldNode)
     {
+        node = static_cast<QSGInternalImageNode *> (oldNode);
+
         if (d->updateTexture)
         {
-            node = static_cast<QSGInternalImageNode *> (oldNode);
-
-            if (d->updateSmooth) applySmooth(node);
+            if (d->updateSmooth) d->applySmooth(node);
 
             d->updateTexture  = false;
             d->updateGeometry = false;
@@ -565,9 +553,7 @@ WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p, Q
         }
         else if (d->updateGeometry)
         {
-            node = static_cast<QSGInternalImageNode *> (oldNode);
-
-            if (d->updateSmooth) applySmooth(node);
+            if (d->updateSmooth) d->applySmooth(node);
 
             d->updateGeometry = false;
 
@@ -577,9 +563,7 @@ WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p, Q
         }
         else if (d->updateSmooth)
         {
-            node = static_cast<QSGInternalImageNode *> (oldNode);
-
-            applySmooth(node);
+            d->applySmooth(node);
 
             node->update();
         }
@@ -786,9 +770,25 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
 #ifdef QT_4
     return WDeclarativeItem::itemChange(change, value);
 #else
-    WDeclarativeItemPaint::itemChange(change, value);
+    WDeclarativeItem::itemChange(change, value);
 #endif
 }
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_LATEST
+
+/* virtual */ void WDeclarativeImageBase::geometryChanged(const QRectF & newGeometry,
+                                                          const QRectF & oldGeometry)
+{
+    Q_D(WDeclarativeImageBase);
+
+    WDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
+
+    d->updateGeometry = true;
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Properties
@@ -1118,6 +1118,10 @@ void WDeclarativeImageBase::setSmooth(bool smooth)
     if (d->smooth == smooth) return;
 
     d->smooth = smooth;
+
+#ifdef QT_LATEST
+    d->updateSmooth = true;
+#endif
 
     update();
 

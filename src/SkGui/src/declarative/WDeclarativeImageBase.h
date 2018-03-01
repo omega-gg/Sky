@@ -18,23 +18,18 @@
 #define WDECLARATIVEIMAGEBASE_H
 
 // Sk includes
-#ifdef QT_4
 #include <WDeclarativeItem>
-#else
-#include <WDeclarativeItemPaint>
-#endif
 
 #ifndef SK_NO_DECLARATIVEIMAGEBASE
 
 // Forward declarations
+#ifdef QT_LATEST
+class QSGInternalImageNode;
+#endif
 class WDeclarativeImageBasePrivate;
 class WImageFilter;
 
-#ifdef QT_4
 class SK_GUI_EXPORT WDeclarativeImageBase : public WDeclarativeItem
-#else
-class SK_GUI_EXPORT WDeclarativeImageBase : public WDeclarativeItemPaint
-#endif
 {
     Q_OBJECT
 
@@ -141,6 +136,8 @@ protected: // QGraphicsItem / QQuickItem reimplementation
     /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 #else
     /* virtual */ void itemChange(ItemChange change, const ItemChangeData & value);
+
+    /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
 #endif
 
 signals:

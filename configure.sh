@@ -121,12 +121,12 @@ elif [ $1 = "qt5" ]; then
     cp "$Qt5"/include/QtQml/*   include/Qt/QtQml
     cp "$Qt5"/include/QtQuick/* include/Qt/QtQuick
 
-    cp "$Qt5"/include/QtCore/$Qt5_version/QtCore/private/*  include/Qt/QtCore/private
-    cp "$Qt5"/include/QtCore/$Qt5_version/QtGui/private/*   include/Qt/QtGui/private
-    cp "$Qt5"/include/QtCore/$Qt5_version/QtQml/private/*   include/Qt/QtQml/private
-    cp "$Qt5"/include/QtCore/$Qt5_version/QtQuick/private/* include/Qt/QtQuick/private
+    cp "$Qt5"/include/QtCore/$Qt5_version/QtCore/private/*   include/Qt/QtCore/private
+    cp "$Qt5"/include/QtGui/$Qt5_version/QtGui/private/*     include/Qt/QtGui/private
+    cp "$Qt5"/include/QtQml/$Qt5_version/QtQml/private/*     include/Qt/QtQml/private
+    cp "$Qt5"/include/QtQuick/$Qt5_version/QtQuick/private/* include/Qt/QtQuick/private
 
-    cp -r "$Qt5"/include/QtCore/$Qt5_version/QtGui/qpa include/Qt/QtGui
+    cp -r "$Qt5"/include/QtGui/$Qt5_version/QtGui/qpa include/Qt/QtGui
 
     if [ $2 = "osx" ]; then
 

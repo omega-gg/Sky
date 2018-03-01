@@ -301,13 +301,6 @@ void WDeclarativeImage::updatePaintedGeometry()
 // Protected virtual functions
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ const QPixmap & WDeclarativeImage::getPixmap()
-{
-    return currentPixmap();
-}
-
-//-------------------------------------------------------------------------------------------------
-
 /* virtual */ void WDeclarativeImage::updatePixmap() {}
 
 //-------------------------------------------------------------------------------------------------
@@ -360,6 +353,10 @@ void WDeclarativeImage::setFillMode(FillMode fillMode)
     updatePaintedGeometry();
 
     updatePixmap();
+
+#ifdef QT_LATEST
+    d->updateGeometry = true;
+#endif
 
     update();
 

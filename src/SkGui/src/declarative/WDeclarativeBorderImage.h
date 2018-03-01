@@ -104,13 +104,14 @@ protected:
     WDeclarativeBorderImage(WDeclarativeBorderImagePrivate * p, QQuickItem * parent = NULL);
 #endif
 
-public: // QGraphicsItem / QQuickPaintedItem reimplementation
 #ifdef QT_4
+public: // QGraphicsItem reimplementation
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
-#else
-    /* virtual */ void paint(QPainter * painter);
 #endif
+
+protected: // Virtual functions
+    virtual const QMargins & getMargins() const;
 
 signals:
     void horizontalTileModeChanged();
@@ -158,14 +159,6 @@ public:
 public: // Interface
     Q_INVOKABLE void applyScale();
 
-public: // QGraphicsItem / QQuickPaintedItem reimplementation
-#ifdef QT_4
-    /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
-                                                 QWidget                        * widget);
-#else
-    /* virtual */ void paint(QPainter * painter);
-#endif
-
 protected: // QGraphicsItem / QQuickItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
 
@@ -174,6 +167,9 @@ protected: // WDeclarativeImageBase reimplementation
 
     /* virtual */ void pixmapChange();
     /* virtual */ void pixmapClear ();
+
+protected: // WDeclarativeBorderImage reimplementation
+    virtual const QMargins & getMargins() const;
 
 signals:
     void scalingChanged();

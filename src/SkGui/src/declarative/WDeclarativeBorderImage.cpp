@@ -189,21 +189,15 @@ WDeclarativeBorderImage::WDeclarativeBorderImage(WDeclarativeBorderImagePrivate 
     Q_D(WDeclarativeBorderImage); d->init();
 }
 
+#ifdef QT_4
+
 //-------------------------------------------------------------------------------------------------
-// QGraphicsItem / QQuickPaintedItem reimplementation
+// QGraphicsItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_4
 /* virtual */ void WDeclarativeBorderImage::paint(QPainter * painter,
                                                   const QStyleOptionGraphicsItem *, QWidget *)
-#else
-/* virtual */ void WDeclarativeBorderImage::paint(QPainter * painter)
-#endif
 {
-#ifdef QT_LATEST
-    if (isVisible() == false) return;
-#endif
-
     Q_D(WDeclarativeBorderImage);
 
     const QPixmap & pixmap = getPixmap();
@@ -222,9 +216,20 @@ WDeclarativeBorderImage::WDeclarativeBorderImage(WDeclarativeBorderImagePrivate 
     QTileRules rules((Qt::TileRule) d->horizontalTileMode, (Qt::TileRule) d->verticalTileMode);
 
     qDrawBorderPixmap(painter, QRect(0, 0, width, height),
-                      d->margins, pixmap, pixmap.rect(), d->margins, rules);
+                      getMargins(), pixmap, pixmap.rect(), d->margins, rules);
 
     painter->setRenderHint(QPainter::SmoothPixmapTransform, smooth);
+}
+
+#endif
+
+//-------------------------------------------------------------------------------------------------
+// Protected virtual functions
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ const QMargins & WDeclarativeBorderImage::getMargins() const
+{
+    Q_D(const WDeclarativeBorderImage); return d->margins;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -251,6 +256,10 @@ void WDeclarativeBorderImage::setHorizontalTileMode(TileMode mode)
 
     d->horizontalTileMode = mode;
 
+#ifdef QT_LATEST
+    d->updateGeometry = true;
+#endif
+
     update();
 
     emit horizontalTileModeChanged();
@@ -270,6 +279,10 @@ void WDeclarativeBorderImage::setVerticalTileMode(TileMode mode)
     if (d->verticalTileMode == mode) return;
 
     d->verticalTileMode = mode;
+
+#ifdef QT_LATEST
+    d->updateGeometry = true;
+#endif
 
     update();
 
@@ -456,44 +469,6 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QQuickItem * parent)
 }
 
 //-------------------------------------------------------------------------------------------------
-// QGraphicsItem / QQuickPaintedItem reimplementation
-//-------------------------------------------------------------------------------------------------
-
-#ifdef QT_4
-/* virtual */ void WDeclarativeBorderImageScale::paint(QPainter * painter,
-                                                       const QStyleOptionGraphicsItem *, QWidget *)
-#else
-/* virtual */ void WDeclarativeBorderImageScale::paint(QPainter * painter)
-#endif
-{
-#ifdef QT_LATEST
-    if (isVisible() == false) return;
-#endif
-
-    Q_D(WDeclarativeBorderImageScale);
-
-    const QPixmap & pixmap = getPixmap();
-
-    if (pixmap.isNull()) return;
-
-    qreal width  = this->width ();
-    qreal height = this->height();
-
-    if (width <= 0.0 || height <= 0.0) return;
-
-    bool smooth = painter->testRenderHint(QPainter::SmoothPixmapTransform);
-
-    painter->setRenderHint(QPainter::SmoothPixmapTransform, d->smooth);
-
-    QTileRules rules((Qt::TileRule) d->horizontalTileMode, (Qt::TileRule) d->verticalTileMode);
-
-    qDrawBorderPixmap(painter, QRect(0, 0, width, height),
-                      d->scaleMargins, pixmap, pixmap.rect(), d->margins, rules);
-
-    painter->setRenderHint(QPainter::SmoothPixmapTransform, smooth);
-}
-
-//-------------------------------------------------------------------------------------------------
 // Protected QGraphicsItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
@@ -596,6 +571,15 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QQuickItem * parent)
     d->abortAction();
 
     d->scalable = false;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Protected WDeclarativeBorderImage reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ const QMargins & WDeclarativeBorderImageScale::getMargins() const
+{
+    Q_D(const WDeclarativeBorderImageScale); return d->scaleMargins;
 }
 
 //-------------------------------------------------------------------------------------------------
