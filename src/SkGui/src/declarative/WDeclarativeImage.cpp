@@ -555,21 +555,6 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
 // Protected WDeclarativeImageBase reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WDeclarativeImageScale::pixmapClear()
-{
-    Q_D(WDeclarativeImageScale);
-
-    d->timer.stop();
-
-    d->abortAction();
-
-    d->scalable = false;
-}
-
-//-------------------------------------------------------------------------------------------------
-// Protected WDeclarativeImage reimplementation
-//-------------------------------------------------------------------------------------------------
-
 /* virtual */ const QPixmap & WDeclarativeImageScale::getPixmap()
 {
     Q_D(WDeclarativeImageScale);
@@ -617,6 +602,21 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
     }
     else return d->scalePixmap;
 }
+
+/* virtual */ void WDeclarativeImageScale::pixmapClear()
+{
+    Q_D(WDeclarativeImageScale);
+
+    d->timer.stop();
+
+    d->abortAction();
+
+    d->scalable = false;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Protected WDeclarativeImage reimplementation
+//-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WDeclarativeImageScale::updatePixmap()
 {

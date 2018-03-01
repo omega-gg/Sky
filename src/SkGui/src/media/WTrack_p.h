@@ -33,7 +33,7 @@
 
 class SK_GUI_EXPORT WTrackPrivate : public WPrivate
 {
-protected:
+public:
     WTrackPrivate(WTrack * p);
 
     void init();

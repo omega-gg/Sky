@@ -76,8 +76,6 @@ protected: // Functions
     void updatePaintedGeometry();
 
 protected: // Virtual functions
-    virtual const QPixmap & getPixmap();
-
     virtual void updatePixmap(); /* {} */
 
 protected: // QGraphicsItem / QQuickItem reimplementation
@@ -133,11 +131,11 @@ protected: // QGraphicsItem / QQuickItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
 
 protected: // WDeclarativeImageBase reimplementation
+    /* virtual */ const QPixmap & getPixmap();
+
     /* virtual */ void pixmapClear();
 
 protected: // WDeclarativeImage reimplementation
-    /* virtual */ const QPixmap & getPixmap();
-
     /* virtual */ void updatePixmap();
 
 signals:

@@ -33,7 +33,7 @@
 
 class SK_GUI_EXPORT WImageFilterPrivate : public WPrivate
 {
-protected:
+public:
     WImageFilterPrivate(WImageFilter * p);
 
     void init();

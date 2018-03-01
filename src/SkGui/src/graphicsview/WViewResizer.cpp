@@ -30,7 +30,7 @@
 
 class SK_GUI_EXPORT WViewResizerPrivate : public WDeclarativeItemPrivate
 {
-protected:
+public:
     WViewResizerPrivate(WViewResizer * p);
 
     void init();

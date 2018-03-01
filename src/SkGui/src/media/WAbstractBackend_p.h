@@ -33,7 +33,7 @@
 
 class SK_GUI_EXPORT WAbstractBackendPrivate : public WPrivate
 {
-protected:
+public:
     WAbstractBackendPrivate(WAbstractBackend * p);
 
     void init();

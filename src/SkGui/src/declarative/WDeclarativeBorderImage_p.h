@@ -41,7 +41,7 @@
 
 class SK_GUI_EXPORT WDeclarativeBorderImagePrivate : public WDeclarativeImageBasePrivate
 {
-protected:
+public:
     WDeclarativeBorderImagePrivate(WDeclarativeBorderImage * p);
 
     void init();
@@ -70,7 +70,7 @@ protected:
 
 class SK_GUI_EXPORT WDeclarativeBorderImageScalePrivate : public WDeclarativeBorderImagePrivate
 {
-protected:
+public:
     WDeclarativeBorderImageScalePrivate(WDeclarativeBorderImageScale * p);
 
     void init();

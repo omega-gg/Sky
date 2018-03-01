@@ -55,7 +55,7 @@ class SK_GUI_EXPORT WDeclarativeTextSvgPrivate : public WDeclarativeItemPrivate
 class SK_GUI_EXPORT WDeclarativeTextSvgPrivate : public WDeclarativeItemPaintPrivate
 #endif
 {
-protected:
+public:
     WDeclarativeTextSvgPrivate(WDeclarativeTextSvg * p);
 
     void init();
@@ -133,7 +133,7 @@ protected:
 
 class SK_GUI_EXPORT WDeclarativeTextSvgScalePrivate : public WDeclarativeTextSvgPrivate
 {
-protected:
+public:
     WDeclarativeTextSvgScalePrivate(WDeclarativeTextSvgScale * p);
 
     void init();

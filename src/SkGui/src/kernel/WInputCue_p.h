@@ -37,7 +37,7 @@
 
 class SK_GUI_EXPORT WInputCuePrivate : public WPrivate
 {
-protected:
+public:
     WInputCuePrivate(WInputCue * p);
 
     /* virtual */ ~WInputCuePrivate();

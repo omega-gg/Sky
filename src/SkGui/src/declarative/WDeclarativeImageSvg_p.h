@@ -56,7 +56,7 @@ class SK_GUI_EXPORT WDeclarativeImageSvgPrivate : public WDeclarativeItemPrivate
 class SK_GUI_EXPORT WDeclarativeImageSvgPrivate : public WDeclarativeItemPaintPrivate
 #endif
 {
-protected:
+public:
     WDeclarativeImageSvgPrivate(WDeclarativeImageSvg * p);
 
     void init();
@@ -110,7 +110,7 @@ protected:
 
 class SK_GUI_EXPORT WDeclarativeImageSvgScalePrivate : public WDeclarativeImageSvgPrivate
 {
-protected:
+public:
     WDeclarativeImageSvgScalePrivate(WDeclarativeImageSvgScale * p);
 
     void init();

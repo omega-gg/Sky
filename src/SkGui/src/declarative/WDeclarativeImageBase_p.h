@@ -54,8 +54,12 @@ class SK_GUI_EXPORT WDeclarativeImageBasePrivate : public WDeclarativeItemPrivat
 class SK_GUI_EXPORT WDeclarativeImageBasePrivate : public WDeclarativeItemPaintPrivate
 #endif
 {
-protected:
+public:
     WDeclarativeImageBasePrivate(WDeclarativeImageBase * p);
+
+#ifdef QT_LATEST
+    /* virtual */ ~WDeclarativeImageBasePrivate();
+#endif
 
     void init();
 
@@ -80,6 +84,10 @@ public: // Functions
 
     void clearFile();
 
+#ifdef QT_LATEST
+    void applySmooth(QSGInternalImageNode * node);
+#endif
+
 public: // Slots
     void onLoaded(WCacheFile * file);
 
@@ -91,6 +99,14 @@ public: // Variables
     WPixmapCache pix;
 
     QPixmap pixmapDefault;
+
+#ifdef QT_LATEST
+    QSGTexture * texture;
+
+    bool updateTexture  : 1;
+    bool updateGeometry : 1;
+    bool updateSmooth   : 1;
+#endif
 
     WDeclarativeImageBase::Status status;
 

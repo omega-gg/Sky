@@ -37,7 +37,7 @@
 
 class SK_GUI_EXPORT WDeclarativeAnimatedPrivate : public WDeclarativeItemPrivate
 {
-protected:
+public:
     WDeclarativeAnimatedPrivate(WDeclarativeAnimated * p);
 
     void init();

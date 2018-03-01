@@ -109,6 +109,10 @@ public: // Interface
 public: // QDeclarativeItem / QQuickItem reimplementation
     /* virtual */ void componentComplete();
 
+#ifdef QT_LATEST
+    /* virtual */ QSGNode * updatePaintNode(QSGNode * oldNode, UpdatePaintNodeData * data);
+#endif
+
 protected: // Functions
     const QPixmap & currentPixmap() const;
 
@@ -119,8 +123,14 @@ protected: // Virtual functions
 
     virtual void clearUrl(WDeclarativeImageBase::Status status);
 
+    virtual const QPixmap & getPixmap();
+
     virtual void pixmapChange();
     virtual void pixmapClear (); /* {} */
+
+#ifdef QT_LATEST
+    virtual void applyGeometry(QSGInternalImageNode * node, const QPixmap & pixmap); /* {} */
+#endif
 
 protected slots:
     virtual void requestFinished();

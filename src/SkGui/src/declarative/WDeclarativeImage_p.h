@@ -41,7 +41,7 @@
 
 class SK_GUI_EXPORT WDeclarativeImagePrivate : public WDeclarativeImageBasePrivate
 {
-protected:
+public:
     WDeclarativeImagePrivate(WDeclarativeImage * p);
 
     void init();
@@ -62,7 +62,7 @@ protected:
 
 class SK_GUI_EXPORT WDeclarativeImageScalePrivate : public WDeclarativeImagePrivate
 {
-protected:
+public:
     WDeclarativeImageScalePrivate(WDeclarativeImageScale * p);
 
     void init();

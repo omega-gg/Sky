@@ -33,7 +33,7 @@
 
 class SK_GUI_EXPORT WDeclarativeItemPaintPrivate : public WPrivate
 {
-protected:
+public:
     WDeclarativeItemPaintPrivate(WDeclarativeItemPaint * p);
 
     void init();

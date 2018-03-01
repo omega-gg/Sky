@@ -33,7 +33,7 @@
 
 class SK_GUI_EXPORT WAbstractTabPrivate : public WLocalObjectPrivate
 {
-protected:
+public:
     WAbstractTabPrivate(WAbstractTab * p);
 
     void init();

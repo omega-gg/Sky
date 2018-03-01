@@ -27,6 +27,12 @@
 #include <WCache>
 #include <WImageFilter>
 
+#ifdef QT_LATEST
+// Private includes
+#include <private/qquickwindow_p.h>
+#include <private/qsgadaptationlayer_p.h>
+#endif
+
 //-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
@@ -38,6 +44,17 @@ WDeclarativeImageBasePrivate::WDeclarativeImageBasePrivate(WDeclarativeImageBase
     : WDeclarativeItemPaintPrivate(p) {}
 #endif
 
+#ifdef QT_LATEST
+
+/* virtual */ WDeclarativeImageBasePrivate::~WDeclarativeImageBasePrivate()
+{
+    if (texture) delete texture;
+}
+
+#endif
+
+//-------------------------------------------------------------------------------------------------
+
 void WDeclarativeImageBasePrivate::init()
 {
 #ifdef QT_4
@@ -46,26 +63,37 @@ void WDeclarativeImageBasePrivate::init()
 
     file = NULL;
 
+#ifdef QT_LATEST
+    texture = NULL;
+
+    updateTexture  = false;
+    updateGeometry = false;
+#endif
+
     status = WDeclarativeImageBase::Null;
+
+    loadMode = static_cast<WDeclarativeImageBase::LoadMode> (wControllerView->loadMode());
+
+    asynchronous = false;
+
+    progress = 0.0;
+
+    filter = NULL;
 
     sourceDefault = true;
 
     explicitSize = false;
 
-    loadMode = static_cast<WDeclarativeImageBase::LoadMode> (wControllerView->loadMode());
-
     loadLater = false;
 
-    asynchronous = false;
-    cache        = true;
+    cache = true;
 
-    progress = 0.0;
-
-    filter = NULL;
     smooth = true;
 
 #ifdef QT_4
     q->setFlag(QGraphicsItem::ItemHasNoContents, false);
+#else
+    q->setFlag(QQuickItem::ItemHasContents);
 #endif
 }
 
@@ -310,6 +338,28 @@ void WDeclarativeImageBasePrivate::clearFile()
 }
 
 //-------------------------------------------------------------------------------------------------
+
+#ifdef QT_LATEST
+
+void WDeclarativeImageBasePrivate::applySmooth(QSGInternalImageNode * node)
+{
+    updateSmooth = false;
+
+    if (smooth)
+    {
+        node->setMipmapFiltering(QSGTexture::Linear);
+        node->setFiltering      (QSGTexture::Linear);
+    }
+    else
+    {
+        node->setMipmapFiltering(QSGTexture::Nearest);
+        node->setFiltering      (QSGTexture::Nearest);
+    }
+}
+
+#endif
+
+//-------------------------------------------------------------------------------------------------
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
@@ -466,6 +516,104 @@ WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p, Q
 }
 
 //-------------------------------------------------------------------------------------------------
+
+#ifdef QT_LATEST
+
+/* virtual */ QSGNode * WDeclarativeImageBase::updatePaintNode(QSGNode             * oldNode,
+                                                               UpdatePaintNodeData *)
+{
+    Q_D(WDeclarativeImageBase);
+
+    const QPixmap & pixmap = getPixmap();
+
+    if (pixmap.isNull())
+    {
+        if (oldNode)
+        {
+            delete oldNode;
+
+            delete d->texture;
+
+            d->texture = NULL;
+        }
+
+        return NULL;
+    }
+
+    QSGInternalImageNode * node;
+
+    if (oldNode)
+    {
+        if (d->updateTexture)
+        {
+            node = static_cast<QSGInternalImageNode *> (oldNode);
+
+            if (d->updateSmooth) applySmooth(node);
+
+            d->updateTexture  = false;
+            d->updateGeometry = false;
+
+            if (d->texture) delete d->texture;
+
+            d->texture = window()->createTextureFromImage(pixmap.toImage());
+
+            node->setTexture(d->texture);
+
+            applyGeometry(node, pixmap);
+
+            node->update();
+        }
+        else if (d->updateGeometry)
+        {
+            node = static_cast<QSGInternalImageNode *> (oldNode);
+
+            if (d->updateSmooth) applySmooth(node);
+
+            d->updateGeometry = false;
+
+            applyGeometry(node, pixmap);
+
+            node->update();
+        }
+        else if (d->updateSmooth)
+        {
+            node = static_cast<QSGInternalImageNode *> (oldNode);
+
+            applySmooth(node);
+
+            node->update();
+        }
+    }
+    else
+    {
+        QQuickWindow * window = this->window();
+
+        QQuickWindowPrivate * p = static_cast<QQuickWindowPrivate *> (QObjectPrivate::get(window));
+
+        QSGContext * context = p->context->sceneGraphContext();
+
+        node = context->createInternalImageNode();
+
+        d->applySmooth(node);
+
+        d->updateTexture  = false;
+        d->updateGeometry = false;
+
+        d->texture = window->createTextureFromImage(pixmap.toImage());
+
+        node->setTexture(d->texture);
+
+        applyGeometry(node, pixmap);
+
+        node->update();
+    }
+
+    return node;
+}
+
+#endif
+
+//-------------------------------------------------------------------------------------------------
 // Protected Functions
 //-------------------------------------------------------------------------------------------------
 
@@ -557,6 +705,13 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
 
 //-------------------------------------------------------------------------------------------------
 
+/* virtual */ const QPixmap & WDeclarativeImageBase::getPixmap()
+{
+    return currentPixmap();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* virtual */ void WDeclarativeImageBase::pixmapChange()
 {
     const QPixmap & pixmap = currentPixmap();
@@ -566,6 +721,14 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
 }
 
 /* virtual */ void WDeclarativeImageBase::pixmapClear() {}
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_LATEST
+
+/* virtual */ void WDeclarativeImageBase::applyGeometry(QSGInternalImageNode *, const QPixmap &) {}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Protected slots
@@ -588,7 +751,7 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
 
     if (d->status == Loading && total)
     {
-        d->progress = qreal(received) / total;
+        d->progress = (qreal) received / total;
 
         emit progressChanged();
     }
@@ -971,7 +1134,7 @@ qreal WDeclarativeImageBase::ratioWidth()  const
 
     const QImage & image = d->pix.pixmap().toImage();
 
-    return (qreal) image.width() / (qreal) image.height();
+    return (qreal) image.width() / image.height();
 }
 
 qreal WDeclarativeImageBase::ratioHeight() const
@@ -982,7 +1145,7 @@ qreal WDeclarativeImageBase::ratioHeight() const
 
     const QImage & image = d->pix.pixmap().toImage();
 
-    return (qreal) image.height() / (qreal) image.width();
+    return (qreal) image.height() / image.width();
 }
 
 #endif // SK_NO_DECLARATIVEIMAGEBASE

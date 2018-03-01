@@ -26,7 +26,7 @@
 
 class SK_GUI_EXPORT WDeclarativeApplicationPrivate : public WDeclarativeCoreApplicationPrivate
 {
-protected:
+public:
     WDeclarativeApplicationPrivate(WDeclarativeApplication * p);
 
     void init();

@@ -112,9 +112,6 @@ public: // QGraphicsItem / QQuickPaintedItem reimplementation
     /* virtual */ void paint(QPainter * painter);
 #endif
 
-protected: // Virtual functions
-    virtual const QPixmap & getPixmap();
-
 signals:
     void horizontalTileModeChanged();
     void verticalTileModeChanged  ();
@@ -173,11 +170,10 @@ protected: // QGraphicsItem / QQuickItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
 
 protected: // WDeclarativeImageBase reimplementation
+    /* virtual */ const QPixmap & getPixmap();
+
     /* virtual */ void pixmapChange();
     /* virtual */ void pixmapClear ();
-
-protected: // WDeclarativeImage reimplementation
-    /* virtual */ const QPixmap & getPixmap();
 
 signals:
     void scalingChanged();

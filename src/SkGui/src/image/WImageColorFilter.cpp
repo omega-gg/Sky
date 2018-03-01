@@ -170,7 +170,7 @@ const QGradient * WDeclarativeGradient::gradient() const
 
 class SK_GUI_EXPORT WImageColorFilterPrivate : public WImageFilterPrivate
 {
-protected:
+public:
     WImageColorFilterPrivate(WImageFilter * p);
 
     void init();

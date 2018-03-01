@@ -23,7 +23,7 @@
 
 class SK_GUI_EXPORT WDeclarativeMouseWatcherPrivate : public WDeclarativeItemPrivate
 {
-protected:
+public:
     WDeclarativeMouseWatcherPrivate(WDeclarativeMouseWatcher * p);
 
     void init();

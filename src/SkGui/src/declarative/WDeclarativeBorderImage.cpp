@@ -228,15 +228,6 @@ WDeclarativeBorderImage::WDeclarativeBorderImage(WDeclarativeBorderImagePrivate 
 }
 
 //-------------------------------------------------------------------------------------------------
-// Protected virtual functions
-//-------------------------------------------------------------------------------------------------
-
-/* virtual */ const QPixmap & WDeclarativeBorderImage::getPixmap()
-{
-    return currentPixmap();
-}
-
-//-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
 
@@ -523,44 +514,6 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QQuickItem * parent)
 // Protected WDeclarativeImageBase reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WDeclarativeBorderImageScale::pixmapChange()
-{
-    Q_D(WDeclarativeBorderImageScale);
-
-    const QPixmap & pixmap = currentPixmap();
-
-    setImplicitWidth (pixmap.width ());
-    setImplicitHeight(pixmap.height());
-
-    if (pixmap.isNull() || d->sourceSize.isValid())
-    {
-         d->scalable = false;
-
-         d->restore();
-    }
-    else
-    {
-        d->scalable = true;
-
-        d->resize(pixmap);
-    }
-}
-
-/* virtual */ void WDeclarativeBorderImageScale::pixmapClear()
-{
-    Q_D(WDeclarativeBorderImageScale);
-
-    d->timer.stop();
-
-    d->abortAction();
-
-    d->scalable = false;
-}
-
-//-------------------------------------------------------------------------------------------------
-// Protected WDeclarativeImage reimplementation
-//-------------------------------------------------------------------------------------------------
-
 /* virtual */ const QPixmap & WDeclarativeBorderImageScale::getPixmap()
 {
     Q_D(WDeclarativeBorderImageScale);
@@ -607,6 +560,42 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QQuickItem * parent)
         return currentPixmap();
     }
     else return d->scalePixmap;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WDeclarativeBorderImageScale::pixmapChange()
+{
+    Q_D(WDeclarativeBorderImageScale);
+
+    const QPixmap & pixmap = currentPixmap();
+
+    setImplicitWidth (pixmap.width ());
+    setImplicitHeight(pixmap.height());
+
+    if (pixmap.isNull() || d->sourceSize.isValid())
+    {
+         d->scalable = false;
+
+         d->restore();
+    }
+    else
+    {
+        d->scalable = true;
+
+        d->resize(pixmap);
+    }
+}
+
+/* virtual */ void WDeclarativeBorderImageScale::pixmapClear()
+{
+    Q_D(WDeclarativeBorderImageScale);
+
+    d->timer.stop();
+
+    d->abortAction();
+
+    d->scalable = false;
 }
 
 //-------------------------------------------------------------------------------------------------

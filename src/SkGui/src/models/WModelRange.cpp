@@ -26,7 +26,7 @@
 
 class SK_GUI_EXPORT WModelRangePrivate : public WPrivate
 {
-protected:
+public:
     WModelRangePrivate(WModelRange * p);
 
     void init();

@@ -41,7 +41,7 @@ class SK_GUI_EXPORT WDeclarativePlayerPrivate : public WDeclarativeItemPaintPriv
 class SK_GUI_EXPORT WDeclarativePlayerPrivate : public WDeclarativeItemPrivate
 #endif
 {
-protected:
+public:
     WDeclarativePlayerPrivate(WDeclarativePlayer * p);
 
     /* virtual */ ~WDeclarativePlayerPrivate();

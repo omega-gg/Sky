@@ -37,7 +37,7 @@
 
 class SK_GUI_EXPORT WActionCuePrivate : public WPrivate
 {
-protected:
+public:
     WActionCuePrivate(WActionCue * p);
 
     void init();
