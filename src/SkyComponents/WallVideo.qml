@@ -402,10 +402,6 @@ WallBookmarkTrack
             cache: false
 
             scaling: isSourceDefault
-
-//#QT_5
-            frameBuffer: true
-//#END
         }
     }
 
@@ -614,10 +610,6 @@ WallBookmarkTrack
 
             scaling: isSourceDefault
 
-//#QT_5
-            frameBuffer: true
-//#END
-
             onVisibleChanged: if (visible) applyScale()
         }
     }
@@ -692,10 +684,6 @@ WallBookmarkTrack
             cache: false
 
             scaling: isSourceDefault
-
-//#QT_5
-            frameBuffer: true
-//#END
         }
     }
 

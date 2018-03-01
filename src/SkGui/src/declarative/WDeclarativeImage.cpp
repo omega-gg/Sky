@@ -117,14 +117,14 @@ WDeclarativeImage::WDeclarativeImage(WDeclarativeImagePrivate * p, QQuickItem * 
 
             if (d->fillMode == TileVertically)
             {
-                transform.scale(width / qreal(pixmapWidth), 1.0);
+                transform.scale(width / pixmapWidth, 1.0);
 
                 drawWidth  = pixmapWidth;
                 drawHeight = height;
             }
             else if (d->fillMode == TileHorizontally)
             {
-                transform.scale(1.0, height / qreal(pixmapHeight));
+                transform.scale(1.0, height / pixmapHeight);
 
                 drawWidth  = width;
                 drawHeight = pixmapHeight;
@@ -152,8 +152,8 @@ WDeclarativeImage::WDeclarativeImage(WDeclarativeImagePrivate * p, QQuickItem * 
             qreal x;
             qreal y;
 
-            qreal widthScale  = width  / qreal(pixmapWidth);
-            qreal heightScale = height / qreal(pixmapHeight);
+            qreal widthScale  = width  / pixmapWidth;
+            qreal heightScale = height / pixmapHeight;
 
             if (d->fillMode == PreserveAspectFit)
             {
@@ -241,17 +241,17 @@ void WDeclarativeImage::updatePaintedGeometry()
         qreal width  = widthValid () ? this->width () : pixmap.width ();
         qreal height = heightValid() ? this->height() : pixmap.height();
 
-        qreal widthScale  = width  / qreal(pixmap.width ());
-        qreal heightScale = height / qreal(pixmap.height());
+        qreal widthScale  = width  / pixmap.width ();
+        qreal heightScale = height / pixmap.height();
 
         if (widthScale <= heightScale)
         {
             d->paintedWidth  = width;
-            d->paintedHeight = widthScale * qreal(pixmap.height());
+            d->paintedHeight = widthScale * pixmap.height();
         }
         else if (heightScale < widthScale)
         {
-            d->paintedWidth  = heightScale * qreal(pixmap.width());
+            d->paintedWidth  = heightScale * pixmap.width();
             d->paintedHeight = height;
         }
 
@@ -273,8 +273,8 @@ void WDeclarativeImage::updatePaintedGeometry()
 
         if (pixmap.width() == 0 || pixmap.height() == 0) return;
 
-        qreal widthScale  = width()  / qreal(pixmap.width ());
-        qreal heightScale = height() / qreal(pixmap.height());
+        qreal widthScale  = width () / pixmap.width ();
+        qreal heightScale = height() / pixmap.height();
 
         if (widthScale < heightScale)
         {
@@ -285,8 +285,8 @@ void WDeclarativeImage::updatePaintedGeometry()
             heightScale = widthScale;
         }
 
-        d->paintedHeight = heightScale * qreal(pixmap.height());
-        d->paintedWidth  = widthScale  * qreal(pixmap.width ());
+        d->paintedHeight = heightScale * pixmap.height();
+        d->paintedWidth  = widthScale  * pixmap.width ();
     }
     else
     {
