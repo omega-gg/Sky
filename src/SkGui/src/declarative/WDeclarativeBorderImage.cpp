@@ -260,8 +260,6 @@ WDeclarativeBorderImage::WDeclarativeBorderImage(WDeclarativeBorderImagePrivate 
 
     node->setTargetRect(QRectF(0, 0, width, height));
 
-    node->setSubSourceRect(QRectF(0, 0, 1, 1));
-
     int pixmapWidth  = pixmap.width ();
     int pixmapHeight = pixmap.height();
 
