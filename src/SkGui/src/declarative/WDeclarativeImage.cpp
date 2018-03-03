@@ -546,10 +546,6 @@ void WDeclarativeImageScalePrivate::restore()
     scaleSize   = QSize  ();
 
     scaled = false;
-
-#ifdef QT_LATEST
-    updateTexture = true;
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -578,7 +574,7 @@ void WDeclarativeImageScalePrivate::onScale()
         const QPixmap & pixmap = q->currentPixmap();
 
 #ifdef QT_LATEST
-    if (pixmap.isNull()) return;
+        if (pixmap.isNull()) return;
 #endif
 
         if (fillMode == WDeclarativeImage::PreserveAspectFit)
@@ -691,6 +687,10 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
     if (d->scalable && oldGeometry.size() != newGeometry.size())
     {
         d->restore();
+
+#ifdef QT_LATEST
+        d->updateTexture = true;
+#endif
     }
 }
 

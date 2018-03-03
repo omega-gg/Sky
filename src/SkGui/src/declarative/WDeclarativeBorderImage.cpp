@@ -356,7 +356,7 @@ void WDeclarativeBorderImageScalePrivate::init()
 
     action = NULL;
 
-    scaling  = false;
+    scaling  = true;
     scalable = false;
     scaled   = false;
 
@@ -495,7 +495,7 @@ void WDeclarativeBorderImageScalePrivate::onScale()
         const QPixmap & pixmap = q->currentPixmap();
 
 #ifdef QT_LATEST
-    if (pixmap.isNull()) return;
+        if (pixmap.isNull()) return;
 #endif
 
         scalePixmap = pixmap.scaled(scaleResize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -590,6 +590,10 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QQuickItem * parent)
         d->restore();
 
         d->resize(currentPixmap());
+
+#ifdef QT_LATEST
+        d->updateGeometry = true;
+#endif
     }
 }
 
@@ -707,7 +711,7 @@ void WDeclarativeBorderImageScale::setScaling(bool scaling)
     Q_D(WDeclarativeBorderImageScale);
 
     if (d->scaling == scaling) return;
-return;
+
     d->scaling = scaling;
 
     if (scaling == false)
