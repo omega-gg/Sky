@@ -261,6 +261,35 @@ WDeclarativeBorderImage::WDeclarativeBorderImage(WDeclarativeBorderImagePrivate 
     node->setTargetRect(QRectF(0, 0, width, height));
 
     node->setSubSourceRect(QRectF(0, 0, 1, 1));
+
+    int pixmapWidth  = pixmap.width ();
+    int pixmapHeight = pixmap.height();
+
+    QSize size(pixmapWidth, pixmapHeight);
+
+    size.scale(width, height, Qt::KeepAspectRatio);
+
+    qreal ratioX = (qreal) size.width () / pixmapWidth;
+    qreal ratioY = (qreal) size.height() / pixmapHeight;
+
+    int left   = d->margins.left  () * ratioX;
+    int right  = d->margins.right () * ratioX;
+    int top    = d->margins.top   () * ratioY;
+    int bottom = d->margins.bottom() * ratioY;
+
+    node->setInnerTargetRect(QRectF(left, top, width - (left + right), height - (top + bottom)));
+
+    const QMargins & margins = getMargins();
+
+    left   = margins.left  ();
+    right  = margins.right ();
+    top    = margins.top   ();
+    bottom = margins.bottom();
+
+    node->setInnerSourceRect(QRectF((qreal) left                           / pixmapWidth,
+                                    (qreal) top                            / pixmapHeight,
+                                    (qreal) (pixmapWidth  - left - right)  / pixmapWidth,
+                                    (qreal) (pixmapHeight - top  - bottom) / pixmapHeight));
 }
 
 #endif
@@ -336,7 +365,7 @@ void WDeclarativeBorderImageScalePrivate::init()
 
     action = NULL;
 
-    scaling  = true;
+    scaling  = false;
     scalable = false;
     scaled   = false;
 
@@ -362,8 +391,8 @@ void WDeclarativeBorderImageScalePrivate::resize(const QPixmap & pixmap)
 
     scaleResize.scale(q->width(), q->height(), Qt::KeepAspectRatio);
 
-    qreal ratioX = (qreal) scaleResize.width () / (qreal) pixmap.width ();
-    qreal ratioY = (qreal) scaleResize.height() / (qreal) pixmap.height();
+    qreal ratioX = (qreal) scaleResize.width () / pixmap.width ();
+    qreal ratioY = (qreal) scaleResize.height() / pixmap.height();
 
     scaleMargins = QMargins(border->left () * ratioX, border->top   () * ratioY,
                             border->right() * ratioX, border->bottom() * ratioY);
@@ -687,7 +716,7 @@ void WDeclarativeBorderImageScale::setScaling(bool scaling)
     Q_D(WDeclarativeBorderImageScale);
 
     if (d->scaling == scaling) return;
-
+return;
     d->scaling = scaling;
 
     if (scaling == false)

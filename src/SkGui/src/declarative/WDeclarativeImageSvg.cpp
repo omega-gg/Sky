@@ -238,7 +238,7 @@ void WDeclarativeImageSvgPrivate::onProgress(qint64 received, qint64 total)
     {
         Q_Q(WDeclarativeImageSvg);
 
-        progress = qreal(received) / total;
+        progress = (qreal) received / total;
 
         emit q->progressChanged();
     }
