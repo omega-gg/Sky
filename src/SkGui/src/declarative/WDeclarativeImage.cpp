@@ -34,7 +34,6 @@
 
 #ifdef QT_LATEST
 // Private includes
-#include <private/qquickwindow_p.h>
 #include <private/qsgadaptationlayer_p.h>
 #endif
 
@@ -522,6 +521,21 @@ void WDeclarativeImageScalePrivate::init()
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
+void WDeclarativeImageScalePrivate::update()
+{
+    Q_Q(WDeclarativeImageScale);
+
+    const QPixmap & pixmap = q->currentPixmap();
+
+    if (pixmap.isNull()
+        ||
+        fillMode > WDeclarativeImage::PreserveAspectCrop || sourceSize.isValid())
+    {
+         scalable = false;
+    }
+    else scalable = true;
+}
+
 void WDeclarativeImageScalePrivate::restore()
 {
     timer.stop();
@@ -579,6 +593,10 @@ void WDeclarativeImageScalePrivate::onScale()
         scaled = true;
 
         q->update();
+
+#ifdef QT_LATEST
+        updateTexture = true;
+#endif
     }
     else
     {
@@ -614,6 +632,10 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
     }
 
     scaled = true;
+
+#ifdef QT_LATEST
+    updateTexture = true;
+#endif
 
     q->update();
 }
@@ -662,7 +684,7 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
 
     WDeclarativeImage::geometryChanged(newGeometry, oldGeometry);
 
-    if (d->scaling && d->scalable && oldGeometry.size() != newGeometry.size())
+    if (d->scalable && oldGeometry.size() != newGeometry.size())
     {
         d->restore();
     }
@@ -676,7 +698,7 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
 {
     Q_D(WDeclarativeImageScale);
 
-    if (d->scaling == false || d->scalable == false)
+    if (d->scalable == false)
     {
         return currentPixmap();
     }
@@ -739,15 +761,10 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
 {
     Q_D(WDeclarativeImageScale);
 
-    if (d->scaling) d->restore();
+    if (d->scaling == false) return;
 
-    const QPixmap & pixmap = currentPixmap();
-
-    if (pixmap.isNull() || d->fillMode > PreserveAspectCrop || d->sourceSize.isValid())
-    {
-         d->scalable = false;
-    }
-    else d->scalable = true;
+    d->restore();
+    d->update ();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -770,7 +787,16 @@ void WDeclarativeImageScale::setScaling(bool scaling)
     if (scaling == false)
     {
         d->restore();
+
+        d->scalable = false;
     }
+    else d->update();
+
+#ifdef QT_LATEST
+    d->updateTexture = true;
+#endif
+
+    update();
 
     emit scalingChanged();
 }

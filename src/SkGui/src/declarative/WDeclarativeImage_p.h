@@ -68,6 +68,7 @@ public:
     void init();
 
 public: // Functions
+    void update ();
     void restore();
 
     void abortAction();

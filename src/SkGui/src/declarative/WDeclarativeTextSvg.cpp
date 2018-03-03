@@ -846,6 +846,15 @@ void WDeclarativeTextSvgScalePrivate::init()
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
+void WDeclarativeTextSvgScalePrivate::update()
+{
+    if (textWidth > 0)
+    {
+         scalable = true;
+    }
+    else scalable = false;
+}
+
 void WDeclarativeTextSvgScalePrivate::restore()
 {
     timer.stop();
@@ -931,7 +940,7 @@ void WDeclarativeTextSvgScalePrivate::onScale()
 
     Q_D(WDeclarativeTextSvgScale);
 
-    if (d->scaling && d->scalable)
+    if (d->scalable)
     {
         if (d->scaled)
         {
@@ -1004,7 +1013,7 @@ void WDeclarativeTextSvgScalePrivate::onScale()
 
     WDeclarativeTextSvg::geometryChanged(newGeometry, oldGeometry);
 
-    if (d->scaling && d->scalable && oldGeometry.size() != newGeometry.size())
+    if (d->scalable && oldGeometry.size() != newGeometry.size())
     {
         d->restore();
     }
@@ -1020,13 +1029,10 @@ void WDeclarativeTextSvgScalePrivate::onScale()
 
     WDeclarativeTextSvg::svgChange();
 
-    if (d->scaling) d->restore();
+    if (d->scaling == false) return;
 
-    if (d->textWidth > 0)
-    {
-         d->scalable = true;
-    }
-    else d->scalable = false;
+    d->restore();
+    d->update ();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1049,7 +1055,12 @@ void WDeclarativeTextSvgScale::setScaling(bool scaling)
     if (scaling == false)
     {
         d->restore();
+
+        d->scalable = false;
     }
+    else d->update();
+
+    update();
 
     emit scalingChanged();
 }

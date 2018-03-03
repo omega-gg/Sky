@@ -52,19 +52,23 @@ include(src/declarative/declarative.pri)
 include(src/models/models.pri)
 include(src/media/media.pri)
 
-INCLUDEPATH += $$SK/include/Qt/QtCore \
-               $$SK/include/Qt/QtGui \
-               $$SK/include/SkCore \
+INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkCore/private \
                $$SK/include/SkGui \
                $$SK/include/SkGui/private \
 
-contains(QT_MAJOR_VERSION, 4) {
-    INCLUDEPATH += $$SK/include/Qt/QtDeclarative
-} else {
-    INCLUDEPATH += $$SK/include/Qt \
-                   $$SK/include/Qt/QtQml \
-                   $$SK/include/Qt/QtQuick
+contains(QT_MAJOR_VERSION, 5) {
+    INCLUDEPATH += $$SK/include/Qt5 \
+                   $$SK/include/Qt5/QtCore \
+                   $$SK/include/Qt5/QtGui \
+                   $$SK/include/Qt5/QtQml \
+                   $$SK/include/Qt5/QtQuick
+}
+
+unix:contains(QT_MAJOR_VERSION, 4) {
+    INCLUDEPATH += $$SK/include/Qt4/QtCore \
+                   $$SK/include/Qt4/QtGui \
+                   $$SK/include/Qt4/QtDeclarative
 }
 
 CONFIG(debug, debug|release) {

@@ -78,6 +78,7 @@ public:
 public: // Functions
     void resize(const QPixmap & pixmap);
 
+    void update ();
     void restore();
 
     void abortAction();
@@ -96,9 +97,6 @@ public: // Variables
     QSize    scaleSize;
     QSize    scaleResize;
     QMargins scaleMargins;
-
-    qreal ratioX;
-    qreal ratioY;
 
     bool scaling  : 1;
     bool scalable : 1;

@@ -35,6 +35,11 @@
 #include <WImageFilter>
 #include <WAbstractThreadAction>
 
+#ifdef QT_LATEST
+// Private includes
+#include <private/qsgadaptationlayer_p.h>
+#endif
+
 //=================================================================================================
 // WDeclarativeBorderImagePrivate
 //=================================================================================================
@@ -78,6 +83,10 @@ WDeclarativeBorderGrid * WDeclarativeBorderImagePrivate::getBorder()
     const WDeclarativeBorderGrid * border = getBorder();
 
     margins = QMargins(border->left(), border->top(), border->right(), border->bottom());
+
+#ifdef QT_LATEST
+    updateGeometry = true;
+#endif
 
     q->update();
 }
@@ -232,6 +241,30 @@ WDeclarativeBorderImage::WDeclarativeBorderImage(WDeclarativeBorderImagePrivate 
     Q_D(const WDeclarativeBorderImage); return d->margins;
 }
 
+#ifdef QT_LATEST
+
+//-------------------------------------------------------------------------------------------------
+// Protected WDeclarativeImageBase reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WDeclarativeBorderImage::applyGeometry(QSGInternalImageNode * node,
+                                                          const QPixmap        & pixmap)
+{
+    Q_D(WDeclarativeBorderImage);
+
+    node->setHorizontalWrapMode(static_cast<QSGTexture::WrapMode> (d->horizontalTileMode));
+    node->setVerticalWrapMode  (static_cast<QSGTexture::WrapMode> (d->verticalTileMode));
+
+    int width  = this->width ();
+    int height = this->height();
+
+    node->setTargetRect(QRectF(0, 0, width, height));
+
+    node->setSubSourceRect(QRectF(0, 0, 1, 1));
+}
+
+#endif
+
 //-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
@@ -303,9 +336,6 @@ void WDeclarativeBorderImageScalePrivate::init()
 
     action = NULL;
 
-    ratioX = 1.0;
-    ratioY = 1.0;
-
     scaling  = true;
     scalable = false;
     scaled   = false;
@@ -328,34 +358,58 @@ void WDeclarativeBorderImageScalePrivate::resize(const QPixmap & pixmap)
 {
     Q_Q(WDeclarativeBorderImageScale);
 
-    restore();
+    scaleResize = pixmap.size();
 
-    const WDeclarativeBorderGrid * border = getBorder();
+    scaleResize.scale(q->width(), q->height(), Qt::KeepAspectRatio);
 
-    margins = QMargins(border->left(), border->top(), border->right(), border->bottom());
+    qreal ratioX = (qreal) scaleResize.width () / (qreal) pixmap.width ();
+    qreal ratioY = (qreal) scaleResize.height() / (qreal) pixmap.height();
 
-    if (sourceSize.isValid() == false)
-    {
-        scaleResize = pixmap.size();
-
-        scaleResize.scale(q->width(), q->height(), Qt::KeepAspectRatio);
-
-        ratioX = (qreal) scaleResize.width () / (qreal) pixmap.width ();
-        ratioY = (qreal) scaleResize.height() / (qreal) pixmap.height();
-
-        scaleMargins = QMargins(border->left () * ratioX, border->top   () * ratioY,
-                                border->right() * ratioX, border->bottom() * ratioY);
-    }
-    else scaleMargins = margins;
+    scaleMargins = QMargins(border->left () * ratioX, border->top   () * ratioY,
+                            border->right() * ratioX, border->bottom() * ratioY);
 }
 
 //-------------------------------------------------------------------------------------------------
+
+void WDeclarativeBorderImageScalePrivate::update()
+{
+    Q_Q(WDeclarativeBorderImageScale);
+
+    const QPixmap & pixmap = q->currentPixmap();
+
+    q->setImplicitWidth (pixmap.width ());
+    q->setImplicitHeight(pixmap.height());
+
+    if (pixmap.isNull())
+    {
+        scalable = false;
+
+        return;
+    }
+
+    if (sourceSize.isValid())
+    {
+        scalable = false;
+
+        scaleMargins = margins;
+    }
+    else
+    {
+        scalable = true;
+
+        resize(pixmap);
+    }
+}
 
 void WDeclarativeBorderImageScalePrivate::restore()
 {
     timer.stop();
 
     abortAction();
+
+    const WDeclarativeBorderGrid * border = getBorder();
+
+    margins = QMargins(border->left(), border->top(), border->right(), border->bottom());
 
     scalePixmap = QPixmap();
     scaleSize   = QSize  ();
@@ -384,11 +438,26 @@ void WDeclarativeBorderImageScalePrivate::abortAction()
 
 /* virtual */ void WDeclarativeBorderImageScalePrivate::onUpdate()
 {
-    if (scalable == false) return;
-
     Q_Q(WDeclarativeBorderImageScale);
 
-    resize(q->currentPixmap());
+    if (scalable)
+    {
+        restore();
+
+        resize(q->currentPixmap());
+    }
+    else
+    {
+        const WDeclarativeBorderGrid * border = getBorder();
+
+        margins = QMargins(border->left(), border->top(), border->right(), border->bottom());
+
+        scaleMargins = margins;
+    }
+
+#ifdef QT_LATEST
+    updateGeometry = true;
+#endif
 
     q->update();
 }
@@ -493,6 +562,8 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QQuickItem * parent)
 
     if (d->scalable && oldGeometry.size() != newGeometry.size())
     {
+        d->restore();
+
         d->resize(currentPixmap());
     }
 }
@@ -505,7 +576,7 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QQuickItem * parent)
 {
     Q_D(WDeclarativeBorderImageScale);
 
-    if (d->scaling == false || d->scalable == false)
+    if (d->scalable == false)
     {
         return currentPixmap();
     }
@@ -555,22 +626,25 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QQuickItem * parent)
 {
     Q_D(WDeclarativeBorderImageScale);
 
-    const QPixmap & pixmap = currentPixmap();
-
-    setImplicitWidth (pixmap.width ());
-    setImplicitHeight(pixmap.height());
-
-    if (pixmap.isNull() || d->sourceSize.isValid())
+    if (d->scaling)
     {
-         d->scalable = false;
-
-         d->restore();
+        d->restore();
+        d->update ();
     }
     else
     {
-        d->scalable = true;
+        const QPixmap & pixmap = currentPixmap();
 
-        d->resize(pixmap);
+        setImplicitWidth (pixmap.width ());
+        setImplicitHeight(pixmap.height());
+
+        if (pixmap.isNull()) return;
+
+        if (d->sourceSize.isValid())
+        {
+            d->scaleMargins = d->margins;
+        }
+        else d->resize(pixmap);
     }
 }
 
@@ -614,7 +688,16 @@ void WDeclarativeBorderImageScale::setScaling(bool scaling)
     if (scaling == false)
     {
         d->restore();
+
+        d->scalable = false;
     }
+    else d->update();
+
+#ifdef QT_LATEST
+    d->updateTexture = true;
+#endif
+
+    update();
 
     emit scalingChanged();
 }

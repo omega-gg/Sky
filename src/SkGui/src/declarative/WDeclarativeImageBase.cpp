@@ -62,6 +62,7 @@ void WDeclarativeImageBasePrivate::init()
 
     updateTexture  = false;
     updateGeometry = false;
+    updateSmooth   = false;
 #endif
 
     status = WDeclarativeImageBase::Null;

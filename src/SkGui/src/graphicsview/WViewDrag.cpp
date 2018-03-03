@@ -26,6 +26,11 @@
 // Sk includes
 #include <WView>
 
+#if defined(QT_4) && defined(Q_OS_WIN)
+// Windows includes
+#include <qt_windows.h>
+#endif
+
 // Private includes
 #include <private/WDeclarativeMouseArea_p>
 

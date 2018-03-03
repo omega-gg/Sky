@@ -121,7 +121,7 @@ void WImageFilter::setAutoUpdate(bool autoUpdate)
 
     d->autoUpdate = autoUpdate;
 
-    if (d->autoUpdate && d->update)
+    if (autoUpdate && d->update)
     {
         updateFilter();
     }

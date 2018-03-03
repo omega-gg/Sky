@@ -69,7 +69,8 @@ if [ $1 = "clean" ]; then
     #----------------------------------------------------------------------------------------------
     # Qt
 
-    rm -rf include/Qt
+    rm -rf include/Qt4
+    rm -rf include/Qt5
 
     #----------------------------------------------------------------------------------------------
     # VLC
@@ -97,36 +98,36 @@ echo "COPYING Qt"
 
 if [ $1 = "qt4" -a $2 = "linux" ]; then
 
-    mkdir -p include/Qt/QtCore/private
-    mkdir -p include/Qt/QtGui/private
-    mkdir -p include/Qt/QtDeclarative/private
+    mkdir -p include/Qt4/QtCore/private
+    mkdir -p include/Qt4/QtGui/private
+    mkdir -p include/Qt4/QtDeclarative/private
 
-    cp "$Qt4"/src/corelib/kernel/*_p.h include/Qt/QtCore/private
+    cp "$Qt4"/src/corelib/kernel/*_p.h include/Qt4/QtCore/private
 
-    cp "$Qt4"/src/gui/kernel/*_p.h include/Qt/QtGui/private
+    cp "$Qt4"/src/gui/kernel/*_p.h include/Qt4/QtGui/private
 
-    cp "$Qt4"/src/declarative/qml/*_p.h           include/Qt/QtDeclarative/private
-    cp "$Qt4"/src/declarative/graphicsitems/*_p.h include/Qt/QtDeclarative/private
-    cp "$Qt4"/src/declarative/util/*_p.h          include/Qt/QtDeclarative/private
+    cp "$Qt4"/src/declarative/qml/*_p.h           include/Qt4/QtDeclarative/private
+    cp "$Qt4"/src/declarative/graphicsitems/*_p.h include/Qt4/QtDeclarative/private
+    cp "$Qt4"/src/declarative/util/*_p.h          include/Qt4/QtDeclarative/private
 
 elif [ $1 = "qt5" ]; then
 
-    mkdir -p include/Qt/QtCore/private
-    mkdir -p include/Qt/QtGui/private
-    mkdir -p include/Qt/QtQml/private
-    mkdir -p include/Qt/QtQuick/private
+    mkdir -p include/Qt5/QtCore/private
+    mkdir -p include/Qt5/QtGui/private
+    mkdir -p include/Qt5/QtQml/private
+    mkdir -p include/Qt5/QtQuick/private
 
-    cp "$Qt5"/include/QtCore/*  include/Qt/QtCore
-    cp "$Qt5"/include/QtGui/*   include/Qt/QtGui
-    cp "$Qt5"/include/QtQml/*   include/Qt/QtQml
-    cp "$Qt5"/include/QtQuick/* include/Qt/QtQuick
+    cp "$Qt5"/include/QtCore/*  include/Qt5/QtCore
+    cp "$Qt5"/include/QtGui/*   include/Qt5/QtGui
+    cp "$Qt5"/include/QtQml/*   include/Qt5/QtQml
+    cp "$Qt5"/include/QtQuick/* include/Qt5/QtQuick
 
-    cp "$Qt5"/include/QtCore/$Qt5_version/QtCore/private/*   include/Qt/QtCore/private
-    cp "$Qt5"/include/QtGui/$Qt5_version/QtGui/private/*     include/Qt/QtGui/private
-    cp "$Qt5"/include/QtQml/$Qt5_version/QtQml/private/*     include/Qt/QtQml/private
-    cp "$Qt5"/include/QtQuick/$Qt5_version/QtQuick/private/* include/Qt/QtQuick/private
+    cp "$Qt5"/include/QtCore/$Qt5_version/QtCore/private/*   include/Qt5/QtCore/private
+    cp "$Qt5"/include/QtGui/$Qt5_version/QtGui/private/*     include/Qt5/QtGui/private
+    cp "$Qt5"/include/QtQml/$Qt5_version/QtQml/private/*     include/Qt5/QtQml/private
+    cp "$Qt5"/include/QtQuick/$Qt5_version/QtQuick/private/* include/Qt5/QtQuick/private
 
-    cp -r "$Qt5"/include/QtGui/$Qt5_version/QtGui/qpa include/Qt/QtGui
+    cp -r "$Qt5"/include/QtGui/$Qt5_version/QtGui/qpa include/Qt5/QtGui
 
     if [ $2 = "osx" ]; then
 

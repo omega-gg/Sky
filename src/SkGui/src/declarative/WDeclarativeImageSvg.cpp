@@ -521,6 +521,11 @@ void WDeclarativeImageSvgScalePrivate::init()
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
+void WDeclarativeImageSvgScalePrivate::update()
+{
+    scalable = size.isValid();
+}
+
 void WDeclarativeImageSvgScalePrivate::restore()
 {
     timer.stop();
@@ -606,7 +611,7 @@ void WDeclarativeImageSvgScalePrivate::onScale()
 
     Q_D(WDeclarativeImageSvgScale);
 
-    if (d->scaling && d->scalable)
+    if (d->scalable)
     {
         if (d->scaled)
         {
@@ -679,7 +684,7 @@ void WDeclarativeImageSvgScalePrivate::onScale()
 
     WDeclarativeImageSvg::geometryChanged(newGeometry, oldGeometry);
 
-    if (d->scaling && d->scalable && oldGeometry.size() != newGeometry.size())
+    if (d->scalable && oldGeometry.size() != newGeometry.size())
     {
         d->restore();
     }
@@ -695,9 +700,10 @@ void WDeclarativeImageSvgScalePrivate::onScale()
 
     WDeclarativeImageSvg::svgChange();
 
-    if (d->scaling) d->restore();
+    if (d->scaling == false) return;
 
-    d->scalable = d->size.isValid();
+    d->restore();
+    d->update ();
 }
 
 /* virtual */ void WDeclarativeImageSvgScale::svgClear()
@@ -729,7 +735,12 @@ void WDeclarativeImageSvgScale::setScaling(bool scaling)
     if (scaling == false)
     {
         d->restore();
+
+        d->scalable = false;
     }
+    else d->update();
+
+    update();
 
     emit scalingChanged();
 }

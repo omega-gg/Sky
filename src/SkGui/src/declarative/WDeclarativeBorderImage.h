@@ -113,6 +113,11 @@ public: // QGraphicsItem reimplementation
 protected: // Virtual functions
     virtual const QMargins & getMargins() const;
 
+#ifdef QT_LATEST
+protected: // WDeclarativeImageBase reimplementation
+    virtual void applyGeometry(QSGInternalImageNode * node, const QPixmap & pixmap); /* {} */
+#endif
+
 signals:
     void horizontalTileModeChanged();
     void verticalTileModeChanged  ();
