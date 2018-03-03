@@ -472,8 +472,13 @@ void WDeclarativeBorderImageScalePrivate::onScale()
 
     if (WPixmapCache::imageIsLocal(path) == false || sourceDefault)
     {
-        scalePixmap = q->currentPixmap().scaled(scaleResize, Qt::KeepAspectRatio,
-                                                             Qt::SmoothTransformation);
+        const QPixmap & pixmap = q->currentPixmap();
+
+#ifdef QT_LATEST
+    if (pixmap.isNull()) return;
+#endif
+
+        scalePixmap = pixmap.scaled(scaleResize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
         margins = scaleMargins;
 

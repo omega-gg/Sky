@@ -531,7 +531,7 @@ WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p, Q
 
     const QPixmap & pixmap = getPixmap();
 
-    if (pixmap.isNull())
+    if (pixmap.isNull() || width() < 1 || height() < 1)
     {
         if (oldNode)
         {

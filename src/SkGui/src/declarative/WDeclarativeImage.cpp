@@ -571,12 +571,16 @@ void WDeclarativeImageScalePrivate::onScale()
 {
     Q_Q(WDeclarativeImageScale);
 
-    const QPixmap & pixmap = q->currentPixmap();
-
     QString path = pix.path();
 
     if (WPixmapCache::imageIsLocal(path) == false || sourceDefault)
     {
+        const QPixmap & pixmap = q->currentPixmap();
+
+#ifdef QT_LATEST
+    if (pixmap.isNull()) return;
+#endif
+
         if (fillMode == WDeclarativeImage::PreserveAspectFit)
         {
             scalePixmap = pixmap.scaled(scaleSize, Qt::KeepAspectRatio,
@@ -600,7 +604,7 @@ void WDeclarativeImageScalePrivate::onScale()
     }
     else
     {
-        QSize size = pixmap.size();
+        QSize size = pix.pixmap().size();
 
         if (fillMode == WDeclarativeImage::PreserveAspectFit)
         {
