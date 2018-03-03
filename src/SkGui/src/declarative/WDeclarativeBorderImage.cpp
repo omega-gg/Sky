@@ -260,29 +260,22 @@ WDeclarativeBorderImage::WDeclarativeBorderImage(WDeclarativeBorderImagePrivate 
 
     node->setTargetRect(QRectF(0, 0, width, height));
 
-    int pixmapWidth  = pixmap.width ();
-    int pixmapHeight = pixmap.height();
+    const QMargins & margins = getMargins();
 
-    QSize size(pixmapWidth, pixmapHeight);
-
-    size.scale(width, height, Qt::KeepAspectRatio);
-
-    qreal ratioX = (qreal) size.width () / pixmapWidth;
-    qreal ratioY = (qreal) size.height() / pixmapHeight;
-
-    int left   = d->margins.left  () * ratioX;
-    int right  = d->margins.right () * ratioX;
-    int top    = d->margins.top   () * ratioY;
-    int bottom = d->margins.bottom() * ratioY;
+    int left   = margins.left  ();
+    int right  = margins.right ();
+    int top    = margins.top   ();
+    int bottom = margins.bottom();
 
     node->setInnerTargetRect(QRectF(left, top, width - (left + right), height - (top + bottom)));
 
-    const QMargins & margins = getMargins();
+    int pixmapWidth  = pixmap.width ();
+    int pixmapHeight = pixmap.height();
 
-    left   = margins.left  ();
-    right  = margins.right ();
-    top    = margins.top   ();
-    bottom = margins.bottom();
+    left   = d->margins.left  ();
+    right  = d->margins.right ();
+    top    = d->margins.top   ();
+    bottom = d->margins.bottom();
 
     node->setInnerSourceRect(QRectF((qreal) left                           / pixmapWidth,
                                     (qreal) top                            / pixmapHeight,
