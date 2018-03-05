@@ -42,6 +42,7 @@
 
 // Forward declarations
 #ifdef QT_LATEST
+class QSGContext;
 class QSGTexture;
 #endif
 class WCacheFile;
@@ -96,6 +97,7 @@ public: // Variables
     QPixmap pixmapDefault;
 
 #ifdef QT_LATEST
+    QSGContext * context;
     QSGTexture * texture;
 
     bool updateTexture  : 1;

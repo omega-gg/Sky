@@ -592,7 +592,7 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QQuickItem * parent)
         d->resize(currentPixmap());
 
 #ifdef QT_LATEST
-        d->updateGeometry = true;
+        d->updateTexture = true;
 #endif
     }
 }

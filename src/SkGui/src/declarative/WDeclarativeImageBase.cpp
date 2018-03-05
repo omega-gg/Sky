@@ -24,6 +24,9 @@
 // Sk includes
 #include <WControllerView>
 #include <WControllerFile>
+#ifdef QT_LATEST
+#include <WView>
+#endif
 #include <WCache>
 #include <WImageFilter>
 
@@ -44,7 +47,7 @@ WDeclarativeImageBasePrivate::WDeclarativeImageBasePrivate(WDeclarativeImageBase
 
 /* virtual */ WDeclarativeImageBasePrivate::~WDeclarativeImageBasePrivate()
 {
-    if (texture) delete texture;
+    if (texture) texture->deleteLater();
 }
 
 #endif
@@ -58,6 +61,7 @@ void WDeclarativeImageBasePrivate::init()
     file = NULL;
 
 #ifdef QT_LATEST
+    context = NULL;
     texture = NULL;
 
     updateTexture  = false;
@@ -560,7 +564,7 @@ WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p, Q
 
             if (d->texture) delete d->texture;
 
-            d->texture = window()->createTextureFromImage(pixmap.toImage());
+            d->texture = d->view->createTextureFromImage(pixmap.toImage());
 
             node->setTexture(d->texture);
 
@@ -587,20 +591,14 @@ WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p, Q
     }
     else
     {
-        QQuickWindow * window = this->window();
-
-        QQuickWindowPrivate * p = static_cast<QQuickWindowPrivate *> (QObjectPrivate::get(window));
-
-        QSGContext * context = p->context->sceneGraphContext();
-
-        node = context->createInternalImageNode();
+        node = d->context->createInternalImageNode();
 
         d->applySmooth(node);
 
         d->updateTexture  = false;
         d->updateGeometry = false;
 
-        d->texture = window->createTextureFromImage(pixmap.toImage());
+        d->texture = d->view->createTextureFromImage(pixmap.toImage());
 
         node->setTexture(d->texture);
 
@@ -778,7 +776,20 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
 #else
     Q_D(WDeclarativeImageBase);
 
-    if (d->view && change == ItemVisibleHasChanged && value.boolValue)
+    if (change == ItemSceneChange)
+    {
+        QQuickWindow * window = value.window;
+
+        if (window)
+        {
+            QQuickWindowPrivate * p
+                = static_cast<QQuickWindowPrivate *> (QObjectPrivate::get(window));
+
+            d->context = p->context->sceneGraphContext();
+        }
+        else d->context = NULL;
+    }
+    else if (d->view && change == ItemVisibleHasChanged && value.boolValue)
     {
 #endif
         d->loadVisible();

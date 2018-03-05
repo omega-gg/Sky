@@ -298,7 +298,7 @@ QList<QRgb> WImageColorFilterPrivate::getGradientColors(const QGradient * gradie
 {
     QList<QRgb> colors;
 
-    qreal cursorInterval = (qreal) 1.0 / size;
+    qreal cursorInterval = 1.0 / size;
     qreal cursor         = 0;
 
     int stopIndex = 0;
@@ -321,9 +321,9 @@ QList<QRgb> WImageColorFilterPrivate::getGradientColors(const QGradient * gradie
     {
         qreal factor = stopCursor / stopSize;
 
-        QRgb color = qRgb(stopColor.red  () + ((qreal) stopRed   * factor),
-                          stopColor.green() + ((qreal) stopGreen * factor),
-                          stopColor.blue () + ((qreal) stopBlue  * factor));
+        QRgb color = qRgb(stopColor.red  () + (stopRed   * factor),
+                          stopColor.green() + (stopGreen * factor),
+                          stopColor.blue () + (stopBlue  * factor));
 
         colors.append(color);
 
