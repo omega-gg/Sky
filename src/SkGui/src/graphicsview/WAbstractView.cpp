@@ -18,15 +18,17 @@
 
 #ifndef SK_NO_ABSTRACTVIEW
 
-// Qt includes
 #ifdef SK_WIN_NATIVE
+// Qt includes
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QFocusEvent>
 #include <QIcon>
-#ifdef QT_LATEST
-#include <QtWinExtras>
 #endif
+
+#if defined(SK_WIN_NATIVE) && defined(QT_LATEST)
+// Windows includes
+#include <QtWinExtras>
 #endif
 
 //-------------------------------------------------------------------------------------------------
@@ -100,8 +102,6 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     windowSnap     = true;
     windowMaximize = true;
     windowClip     = false;
-
-    state = Qt::WindowNoState;
 
     const QMetaObject * meta = q->metaObject();
 

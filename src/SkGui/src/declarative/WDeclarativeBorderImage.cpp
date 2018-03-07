@@ -587,13 +587,13 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QQuickItem * parent)
 
     if (d->scalable && oldGeometry.size() != newGeometry.size())
     {
+#ifdef QT_LATEST
+        if (d->scaled) d->updateTexture = true;
+#endif
+
         d->restore();
 
         d->resize(currentPixmap());
-
-#ifdef QT_LATEST
-        d->updateTexture = true;
-#endif
     }
 }
 
@@ -714,17 +714,24 @@ void WDeclarativeBorderImageScale::setScaling(bool scaling)
 
     d->scaling = scaling;
 
-    if (scaling == false)
+    if (scaling)
     {
+        d->update();
+
+#ifdef QT_LATEST
+        d->updateTexture = true;
+#endif
+    }
+    else
+    {
+#ifdef QT_LATEST
+        if (d->scaled) d->updateTexture = true;
+#endif
+
         d->restore();
 
         d->scalable = false;
     }
-    else d->update();
-
-#ifdef QT_LATEST
-    d->updateTexture = true;
-#endif
 
     update();
 

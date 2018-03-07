@@ -18,8 +18,10 @@
 
 #ifndef SK_NO_DECLARATIVEIMAGEBASE
 
+#ifdef QT_4
 // Qt includes
 #include <QImageReader>
+#endif
 
 // Sk includes
 #include <WControllerView>

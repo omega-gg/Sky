@@ -686,11 +686,11 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
 
     if (d->scalable && oldGeometry.size() != newGeometry.size())
     {
-        d->restore();
-
 #ifdef QT_LATEST
-        d->updateTexture = true;
+        if (d->scaled) d->updateTexture = true;
 #endif
+
+        d->restore();
     }
 }
 
@@ -788,17 +788,24 @@ void WDeclarativeImageScale::setScaling(bool scaling)
 
     d->scaling = scaling;
 
-    if (scaling == false)
+    if (scaling)
     {
+        d->update();
+
+#ifdef QT_LATEST
+        d->updateTexture = true;
+#endif
+    }
+    else
+    {
+#ifdef QT_LATEST
+        if (d->scaled) d->updateTexture = true;
+#endif
+
         d->restore();
 
         d->scalable = false;
     }
-    else d->update();
-
-#ifdef QT_LATEST
-    d->updateTexture = true;
-#endif
 
     update();
 

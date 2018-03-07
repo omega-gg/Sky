@@ -27,13 +27,13 @@
     We mean it.
 */
 
-// Qt includes
 #ifdef SK_WIN_NATIVE
+// Qt includes
 #include <QMetaMethod>
 #endif
 
+#if defined(SK_WIN_NATIVE) && defined(QT_4)
 // Windows includes
-#ifdef SK_WIN_NATIVE
 #include <qt_windows.h>
 #endif
 
@@ -104,8 +104,6 @@ public: // Variables
     bool windowSnap;
     bool windowMaximize;
     bool windowClip;
-
-    Qt::WindowState state;
 
     QMetaMethod method;
 #endif

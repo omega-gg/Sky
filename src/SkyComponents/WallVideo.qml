@@ -237,6 +237,8 @@ WallBookmarkTrack
     {
         if (tabs.highlightedTab == null || tabs.currentIndex == tabs.highlightedIndex) return;
 
+        pCurrentTab = tabs.currentTab;
+
         if (tabs.currentIndex > tabs.highlightedIndex)
         {
              split = 0;
