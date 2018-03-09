@@ -81,7 +81,7 @@ public: // Functions
     void clearFile();
 
 #ifdef QT_LATEST
-    void applySmooth(QSGInternalImageNode * node);
+    void applyMipmap(QSGInternalImageNode * node);
 #endif
 
 public: // Slots
@@ -102,7 +102,7 @@ public: // Variables
 
     bool updateTexture  : 1;
     bool updateGeometry : 1;
-    bool updateSmooth   : 1;
+    bool updateMipmap   : 1;
 #endif
 
     WDeclarativeImageBase::Status status;
@@ -129,7 +129,9 @@ public: // Variables
 
     bool cache : 1;
 
-    bool smooth : 1;
+#ifdef QT_LATEST
+    bool mipmap : 1;
+#endif
 
 protected:
     W_DECLARE_PUBLIC(WDeclarativeImageBase)

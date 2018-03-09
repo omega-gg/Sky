@@ -220,7 +220,7 @@ WDeclarativeBorderImage::WDeclarativeBorderImage(WDeclarativeBorderImagePrivate 
 
     bool smooth = painter->testRenderHint(QPainter::SmoothPixmapTransform);
 
-    painter->setRenderHint(QPainter::SmoothPixmapTransform, d->smooth);
+    painter->setRenderHint(QPainter::SmoothPixmapTransform, true);
 
     QTileRules rules((Qt::TileRule) d->horizontalTileMode, (Qt::TileRule) d->verticalTileMode);
 

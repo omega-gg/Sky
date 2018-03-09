@@ -1144,6 +1144,21 @@ void WBackendVlcPrivate::onFrameUpdated()
 }
 
 //-------------------------------------------------------------------------------------------------
+
+#ifdef QT_LATEST
+
+void WBackendVlcPrivate::onUpdateState()
+{
+    if (started == false) return;
+
+    Q_Q(WBackendVlc);
+
+    q->setStateLoad(WAbstractBackend::StateLoadDefault);
+}
+
+#endif
+
+//-------------------------------------------------------------------------------------------------
 // Static private functions
 //-------------------------------------------------------------------------------------------------
 
@@ -1940,7 +1955,19 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
                 return true;
             }
+
+#ifdef QT_4
+            setStateLoad(StateLoadDefault);
         }
+#else
+            if (d->stateLoad == StateLoadResuming)
+            {
+                QTimer::singleShot(10, this, SLOT(onUpdateState()));
+            }
+            else setStateLoad(StateLoadDefault);
+        }
+        else setStateLoad(StateLoadDefault);
+#endif
 
         int time = eventPlayer->value.toInt();
 
@@ -1950,8 +1977,6 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
         {
             setDuration(time);
         }
-
-        setStateLoad(StateLoadDefault);
 
         return true;
     }

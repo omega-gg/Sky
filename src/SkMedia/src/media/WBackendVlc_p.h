@@ -213,6 +213,10 @@ public: // Slots
 
     void onFrameUpdated();
 
+#ifdef QT_LATEST
+    void onUpdateState();
+#endif
+
 public: // Static functions
     static unsigned setup(void     ** data,     char     * chroma,
                           unsigned *  vlcWidth, unsigned * vlcHeight,

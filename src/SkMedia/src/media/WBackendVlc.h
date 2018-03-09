@@ -97,6 +97,10 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void onLoaded      ())
     Q_PRIVATE_SLOT(d_func(), void onFrameUpdated())
+
+#ifdef QT_LATEST
+    Q_PRIVATE_SLOT(d_func(), void onUpdateState())
+#endif
 };
 
 #include <private/WBackendVlc_p>

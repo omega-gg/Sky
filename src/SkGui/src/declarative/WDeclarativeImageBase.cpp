@@ -68,7 +68,7 @@ void WDeclarativeImageBasePrivate::init()
 
     updateTexture  = false;
     updateGeometry = false;
-    updateSmooth   = false;
+    updateMipmap   = false;
 #endif
 
     status = WDeclarativeImageBase::Null;
@@ -89,11 +89,11 @@ void WDeclarativeImageBasePrivate::init()
 
     cache = true;
 
-    smooth = true;
-
 #ifdef QT_4
     q->setFlag(QGraphicsItem::ItemHasNoContents, false);
 #else
+    mipmap = false;
+
     q->setFlag(QQuickItem::ItemHasContents);
 #endif
 }
@@ -354,20 +354,15 @@ void WDeclarativeImageBasePrivate::clearFile()
 
 #ifdef QT_LATEST
 
-void WDeclarativeImageBasePrivate::applySmooth(QSGInternalImageNode * node)
+void WDeclarativeImageBasePrivate::applyMipmap(QSGInternalImageNode * node)
 {
-    updateSmooth = false;
+    updateMipmap = false;
 
-    if (smooth)
+    if (mipmap)
     {
-        node->setMipmapFiltering(QSGTexture::Linear);
-        node->setFiltering      (QSGTexture::Linear);
+         node->setMipmapFiltering(QSGTexture::Linear);
     }
-    else
-    {
-        node->setMipmapFiltering(QSGTexture::Nearest);
-        node->setFiltering      (QSGTexture::Nearest);
-    }
+    else node->setMipmapFiltering(QSGTexture::None);
 }
 
 #endif
@@ -559,7 +554,7 @@ WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p, Q
 
         if (d->updateTexture)
         {
-            if (d->updateSmooth) d->applySmooth(node);
+            if (d->updateMipmap) d->applyMipmap(node);
 
             d->updateTexture  = false;
             d->updateGeometry = false;
@@ -576,7 +571,7 @@ WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p, Q
         }
         else if (d->updateGeometry)
         {
-            if (d->updateSmooth) d->applySmooth(node);
+            if (d->updateMipmap) d->applyMipmap(node);
 
             d->updateGeometry = false;
 
@@ -584,9 +579,9 @@ WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p, Q
 
             node->update();
         }
-        else if (d->updateSmooth)
+        else if (d->updateMipmap)
         {
-            d->applySmooth(node);
+            d->applyMipmap(node);
 
             node->update();
         }
@@ -595,7 +590,9 @@ WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p, Q
     {
         node = d->context->createInternalImageNode();
 
-        d->applySmooth(node);
+        node->setFiltering(QSGTexture::Linear);
+
+        d->applyMipmap(node);
 
         d->updateTexture  = false;
         d->updateGeometry = false;
@@ -1144,27 +1141,29 @@ void WDeclarativeImageBase::setFilter(WImageFilter * filter)
 
 //-------------------------------------------------------------------------------------------------
 
-bool WDeclarativeImageBase::smooth() const
+#ifdef QT_LATEST
+
+bool WDeclarativeImageBase::mipmap() const
 {
-    Q_D(const WDeclarativeImageBase); return d->smooth;
+    Q_D(const WDeclarativeImageBase); return d->mipmap;
 }
 
-void WDeclarativeImageBase::setSmooth(bool smooth)
+void WDeclarativeImageBase::setMipmap(bool enabled)
 {
     Q_D(WDeclarativeImageBase);
 
-    if (d->smooth == smooth) return;
+    if (d->mipmap == enabled) return;
 
-    d->smooth = smooth;
+    d->mipmap = enabled;
 
-#ifdef QT_LATEST
-    d->updateSmooth = true;
-#endif
+    d->updateMipmap = true;
 
     update();
 
-    emit smoothChanged();
+    emit mipmapChanged();
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
