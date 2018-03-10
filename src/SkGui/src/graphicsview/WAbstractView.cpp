@@ -153,7 +153,7 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 #ifdef QT_4
     SetWindowLong(id, GWL_STYLE, WS_CHILD | WS_CLIPCHILDREN);
 #else
-    SetWindowLong(id, GWL_STYLE, WS_CHILD);
+    SetWindowLong(id, GWL_STYLE, WS_CHILD | WS_CLIPCHILDREN); // FIXME Qt5
 
     q->setProperty("_q_embedded_native_parent_handle", (WId) handle);
 #endif
