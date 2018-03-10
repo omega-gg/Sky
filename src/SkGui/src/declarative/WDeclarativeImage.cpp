@@ -353,7 +353,7 @@ void WDeclarativeImage::pixmapChange()
 
     if (d->fillMode >= WDeclarativeImage::Tile)
     {
-        rect = QRectF(0, 0, (int) width, (int) height);
+        rect = QRectF(0, 0, width, height);
 
         if (d->fillMode == WDeclarativeImage::TileVertically)
         {
@@ -390,7 +390,7 @@ void WDeclarativeImage::pixmapChange()
 
                 qreal y = (height - heightScale * pixmapHeight) / 2;
 
-                rect = QRectF(0, (int) y, (int) width, (int) height - (y * 2));
+                rect = QRectF(0, y, width, height - (y * 2));
             }
             else if (widthScale > heightScale)
             {
@@ -398,9 +398,9 @@ void WDeclarativeImage::pixmapChange()
 
                 qreal x = (width - widthScale * pixmapWidth) / 2;
 
-                rect = QRectF((int) x, 0, (int) width - (x * 2), (int) height);
+                rect = QRectF(x, 0, width - (x * 2), height);
             }
-            else rect = QRectF(0, 0, (int) width, (int) height);
+            else rect = QRectF(0, 0, width, height);
         }
         else if (d->fillMode == WDeclarativeImage::PreserveAspectCrop)
         {
@@ -413,7 +413,7 @@ void WDeclarativeImage::pixmapChange()
 
                 qreal x = (width - widthScale * pixmapWidth) / 2;
 
-                rect = QRectF((int) x, 0, (int) width - (x * 2), (int) height);
+                rect = QRectF(x, 0, width - (x * 2), height);
             }
             else if (widthScale > heightScale)
             {
@@ -421,11 +421,11 @@ void WDeclarativeImage::pixmapChange()
 
                 qreal y = (height - heightScale * pixmapHeight) / 2;
 
-                rect = QRectF(0, (int) y, (int) width, (int) height - (y * 2));
+                rect = QRectF(0, y, width, height - (y * 2));
             }
-            else rect = QRectF(0, 0, (int) width, (int) height);
+            else rect = QRectF(0, 0, width, height);
         }
-        else rect = QRectF(0, 0, (int) width, (int) height);
+        else rect = QRectF(0, 0, width, height);
 
         node->setHorizontalWrapMode(QSGTexture::ClampToEdge);
         node->setVerticalWrapMode  (QSGTexture::ClampToEdge);
@@ -434,7 +434,7 @@ void WDeclarativeImage::pixmapChange()
     }
     else
     {
-        rect = QRectF(0, 0, (int) width, (int) height);
+        rect = QRectF(0, 0, width, height);
 
         node->setHorizontalWrapMode(QSGTexture::ClampToEdge);
         node->setVerticalWrapMode  (QSGTexture::ClampToEdge);

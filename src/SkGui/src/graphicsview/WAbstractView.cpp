@@ -103,6 +103,8 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     windowMaximize = true;
     windowClip     = false;
 
+    version = 0;
+
     const QMetaObject * meta = q->metaObject();
 
     method = meta->method(meta->indexOfMethod("onFocus()"));
@@ -170,7 +172,10 @@ void WAbstractViewPrivate::applyFullScreen()
 {
     Q_Q(WAbstractView);
 
-    SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) & ~WS_CAPTION);
+    if (isWindows10())
+    {
+        SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) & ~WS_CAPTION);
+    }
 
 #ifdef QT_4
     QRect geometry = qApp->desktop()->screenGeometry(q);
@@ -189,7 +194,10 @@ void WAbstractViewPrivate::restoreFullScreen()
 
     q->setGeometry(rect);
 
-    SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) | WS_CAPTION);
+    if (isWindows10())
+    {
+        SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) | WS_CAPTION);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -201,6 +209,22 @@ void WAbstractViewPrivate::setFlag(LONG flag, bool enabled) const
          SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) | flag);
     }
     else SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) & ~flag);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WAbstractViewPrivate::isWindows10()
+{
+    if (version == 0)
+    {
+        version = (int) (LOBYTE(LOWORD(GetVersion())));
+    }
+
+    if (version < 10)
+    {
+         return false;
+    }
+    else return true;
 }
 
 //-------------------------------------------------------------------------------------------------

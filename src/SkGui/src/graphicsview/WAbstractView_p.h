@@ -60,6 +60,8 @@ public: // Functions
 
     void setFlag(LONG flag, bool enabled) const;
 
+    bool isWindows10();
+
 public: // Static functions
     static HICON getIcon(const QIcon & icon, int width, int height);
 
@@ -104,6 +106,8 @@ public: // Variables
     bool windowSnap;
     bool windowMaximize;
     bool windowClip;
+
+    int version;
 
     QMetaMethod method;
 #endif
