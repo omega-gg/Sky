@@ -34,7 +34,7 @@ class WPixmapCacheReply;
 //-------------------------------------------------------------------------------------------------
 // Defines
 
-#ifdef QT_LATEST // FIXME Qt5: QImageReader scaling is not smooth
+#ifdef QT_LATEST // FIXME Qt5: QImageReader scaling is not smooth.
 #define W_SMOOTH
 #endif
 
