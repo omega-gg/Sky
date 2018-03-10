@@ -153,6 +153,7 @@ else
 
     mkdir deploy/imageformats
     mkdir deploy/platforms
+    mkdir deploy/QtQuick.2
 
     if [ $2 = "win32" ]; then
 
@@ -191,6 +192,8 @@ else
         cp "$Qt5"/plugins/imageformats/qjpeg.dll deploy/imageformats
 
         cp "$Qt5"/plugins/platforms/qwindows.dll deploy/platforms
+
+        cp "$Qt5"/qml/QtQuick.2/qtquick2plugin.dll deploy/QtQuick.2
     fi
 
     bin="$bin5"
