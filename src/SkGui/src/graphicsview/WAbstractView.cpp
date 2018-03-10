@@ -515,8 +515,11 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWindow * parent, Qt::Win
 
         d->maximized = true;
 
-        // FIXME Windows: Hiding the window to avoid the animation.
-        ShowWindow(d->handle, SW_HIDE);
+        // FIXME Windows 10: Hiding the window to avoid the animation.
+        if (d->isWindows10())
+        {
+            ShowWindow(d->handle, SW_HIDE);
+        }
     }
     else d->maximized = true;
 
@@ -533,8 +536,12 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWindow * parent, Qt::Win
     {
         d->maximized = false;
 
-        // FIXME Windows: Hiding the window to avoid the animation.
-        ShowWindow(d->handle, SW_HIDE);
+        // FIXME Windows 10: Hiding the window to avoid the animation.
+        if (d->isWindows10())
+        {
+            ShowWindow(d->handle, SW_HIDE);
+        }
+
         ShowWindow(d->handle, SW_RESTORE);
     }
 
