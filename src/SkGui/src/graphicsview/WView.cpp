@@ -391,7 +391,8 @@ void WViewPrivate::init(QQuickItem * item)
 
     q->setFormat(format);
 
-    q->setClearBeforeRendering(false);
+    // FIXME Qt5: We need to clear the color buffer before rendering.
+    //q->setClearBeforeRendering(false);
 #endif
 
 #ifdef QT_4
