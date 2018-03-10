@@ -293,7 +293,7 @@ if [ $2 = "win32" ]; then
     cp "$bin"/SkCore.dll    deploy
     cp "$bin"/SkGui.dll     deploy
     cp "$bin"/SkMedia.dll   deploy
-    cp "$bin"/SkWeb.dll     deploy
+    #cp "$bin"/SkWeb.dll     deploy
     cp "$bin"/SkTorrent.dll deploy
     cp "$bin"/SkBackend.dll deploy
 
@@ -302,7 +302,7 @@ elif [ $2 = "osx" ]; then
     cp "$bin"/libSkCore.dylib    deploy
     cp "$bin"/libSkGui.dylib     deploy
     cp "$bin"/libSkMedia.dylib   deploy
-    cp "$bin"/libSkWeb.dylib     deploy
+    #cp "$bin"/libSkWeb.dylib     deploy
     cp "$bin"/libSkTorrent.dylib deploy
     cp "$bin"/libSkBackend.dylib deploy
 
@@ -311,7 +311,7 @@ elif [ $2 = "linux" ]; then
     cp "$bin"/libSkCore.so    deploy
     cp "$bin"/libSkGui.so     deploy
     cp "$bin"/libSkMedia.so   deploy
-    cp "$bin"/libSkWeb.so     deploy
+    #cp "$bin"/libSkWeb.so     deploy
     cp "$bin"/libSkTorrent.so deploy
     cp "$bin"/libSkBackend.so deploy
 fi
