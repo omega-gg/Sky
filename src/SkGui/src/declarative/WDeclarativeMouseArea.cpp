@@ -312,6 +312,10 @@ void WDeclarativeMouseAreaPrivate::init()
     cursorDrop = Qt::ArrowCursor;
 
     q->setAcceptedMouseButtons(Qt::LeftButton);
+
+#ifdef QT_LATEST
+    q->setAcceptTouchEvents(false);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
