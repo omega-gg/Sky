@@ -1264,6 +1264,21 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_LATEST
+
+/* virtual */ void WDeclarativeMouseArea::windowDeactivateEvent()
+{
+    Q_D(WDeclarativeMouseArea);
+
+    WDeclarativeItem::windowDeactivateEvent();
+
+    d->mouseUngrab();
+}
+
+#endif
+
+//-------------------------------------------------------------------------------------------------
+
 /* virtual */ void WDeclarativeMouseArea::timerEvent(QTimerEvent * event)
 {
     Q_D(WDeclarativeMouseArea);
@@ -1285,21 +1300,6 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
         }
     }
 }
-
-//-------------------------------------------------------------------------------------------------
-
-#ifdef QT_LATEST
-
-/* virtual */ void WDeclarativeMouseArea::windowDeactivateEvent()
-{
-    Q_D(WDeclarativeMouseArea);
-
-    WDeclarativeItem::windowDeactivateEvent();
-
-    d->mouseUngrab();
-}
-
-#endif
 
 //-------------------------------------------------------------------------------------------------
 // Properties
