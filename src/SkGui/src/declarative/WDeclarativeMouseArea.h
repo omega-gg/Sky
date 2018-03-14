@@ -287,6 +287,8 @@ protected: // Functions
 
 #ifdef QT_4
     bool sendMouseEvent(QGraphicsSceneMouseEvent * event);
+#else
+    bool sendMouseEvent(QMouseEvent * event);
 #endif
 
 protected: // QGraphicsItem / QQuickItem reimplementation
@@ -335,6 +337,10 @@ protected: // Events
     /* virtual */ void hoverMoveEvent (QHoverEvent * event);
 
     /* virtual */ void wheelEvent(QWheelEvent * event);
+
+    /* virtual */ bool childMouseEventFilter(QQuickItem * item, QEvent * event);
+
+    /* virtual */ void windowDeactivateEvent();
 #endif
 
     /* virtual */ void timerEvent(QTimerEvent * event);

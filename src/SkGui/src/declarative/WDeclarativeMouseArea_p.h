@@ -50,8 +50,7 @@ public: // Functions
     void saveEvent(QMouseEvent * event);
 #endif
 
-    bool isPressAndHoldConnected();
-    bool isDoubleClickConnected ();
+    bool isDoubleClickConnected();
 
     void setDragAccepted(bool accepted);
 
@@ -61,7 +60,7 @@ public: // Functions
     void clearView();
 
 public: // Variables
-    bool absorb : 1;
+    bool enabled : 1;
 
     bool wheelEnabled : 1;
 

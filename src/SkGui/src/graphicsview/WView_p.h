@@ -252,6 +252,10 @@ public: // Variables
 
     WDeclarativeMouseArea * areaDrop;
 
+#ifdef QT_LATEST
+    bool dragSkip;
+#endif
+
     //---------------------------------------------------------------------------------------------
     // Keys
 

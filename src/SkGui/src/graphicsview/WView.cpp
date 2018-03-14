@@ -324,6 +324,10 @@ void WViewPrivate::init(QQuickItem * item)
 
     areaDrop = NULL;
 
+#ifdef QT_LATEST
+    dragSkip = false;
+#endif
+
     //---------------------------------------------------------------------------------------------
     // Keys
 
@@ -674,10 +678,28 @@ void WViewPrivate::updateDrag()
 
             QPointF posItem = area->mapFromScene(mousePos);
 
-            if (areaPrivate->dragAccepted == false)
+            if (areaPrivate->dragAccepted)
+            {
+                areaPrivate->dragMoveEvent(posItem, dragData);
+
+                return;
+            }
+            else
             {
                 if (areaDrop)
                 {
+#ifdef QT_LATEST
+                    // FIXME Qt5: Sometimes the drop area goes beyond the parent geometry.
+                    QPointF posItem = areaDrop->mapFromScene(mousePos);
+
+                    if (areaDrop->boundingRect().contains(posItem))
+                    {
+                        areaDrop->d_func()->dragMoveEvent(posItem, dragData);
+
+                        return;
+                    }
+#endif
+
                     areaDrop->d_func()->dragLeaveEvent();
                 }
 
@@ -692,12 +714,6 @@ void WViewPrivate::updateDrag()
                     return;
                 }
                 else areaDrop = NULL;
-            }
-            else
-            {
-                areaPrivate->dragMoveEvent(posItem, dragData);
-
-                return;
             }
         }
 
@@ -2333,6 +2349,10 @@ void WView::hoverLeave()
 #ifdef Q_OS_WIN
         d->drag = NULL;
 
+#ifdef QT_LATEST
+        d->dragSkip = true;
+#endif
+
         keybd_event(VK_ESCAPE, 0x81,               0, 0);
         keybd_event(VK_ESCAPE, 0x81, KEYEVENTF_KEYUP, 0);
 #else
@@ -2341,6 +2361,15 @@ void WView::hoverLeave()
     }
     else
     {
+#ifdef QT_LATEST
+        if (d->dragSkip)
+        {
+            d->dragSkip = false;
+
+            return;
+        }
+#endif
+
         d->dragAccepted = true;
 
         const QMimeData * mime = event->mimeData();
