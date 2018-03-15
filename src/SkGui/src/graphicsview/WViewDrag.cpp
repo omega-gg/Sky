@@ -179,7 +179,11 @@ void WViewDragPrivate::clearDrag()
             pos.setY(d->view->y());
         }
 
+#ifdef QT_4
+        int boxY = d->view->pos().y() + moveY;
+#else
         int boxY = d->view->position().y() + moveY;
+#endif
 
         int maxHeight = geometryHeight - 27;
 

@@ -410,16 +410,14 @@ WResizer::WResizer(ResizeType type, QQuickItem * parent)
 }
 
 #ifdef QT_4
-/* virtual */ void WResizer::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
+/* virtual */ void WResizer::mouseMoveEvent(QGraphicsSceneMouseEvent *)
 #else
-/* virtual */ void WResizer::mouseMoveEvent(QMouseEvent * event)
+/* virtual */ void WResizer::mouseMoveEvent(QMouseEvent *)
 #endif
 {
     Q_D(WResizer);
 
 #if defined(Q_OS_WIN)
-    Q_UNUSED(event);
-
     if (GetSystemMenu((HWND) d->view->winId(), FALSE) != 0)
     {
         MSG msg;
