@@ -56,6 +56,10 @@ CONFIG(debug, debug|release) {
             -L$$SK/lib -lSkGui
 }
 
+contains(QT_MAJOR_VERSION, 5):win32 {
+    LIBS += -lopengl32
+}
+
 win32:LIBS += -L$$SK/lib -llibvlc
 unix: LIBS += -lvlc
 
