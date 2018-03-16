@@ -568,12 +568,18 @@ void WViewPrivate::updateFlags()
          SetWindowPos((HWND) q->winId(), HWND_TOPMOST,   0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
     }
     else SetWindowPos((HWND) q->winId(), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-#else
+#elif defined(QT_4)
     if (locked)
     {
          q->setWindowFlags(flags | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
     }
     else q->setWindowFlags(flags);
+#else
+    if (locked)
+    {
+         q->setFlags(flags | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+    }
+    else q->setFlags(flags);
 #endif
 }
 

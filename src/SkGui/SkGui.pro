@@ -22,7 +22,11 @@ contains(QT_MAJOR_VERSION, 4) {
     QT += opengl quick network script xml svg
 }
 
-contains(QT_MAJOR_VERSION, 5): win32:QT += winextras
+contains(QT_MAJOR_VERSION, 5) {
+    win32:QT += winextras
+
+    unix:QT += x11extras
+}
 
 CONFIG       += plugin
 win32:CONFIG += dll
@@ -42,6 +46,8 @@ contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_LATEST
 
     win32:DEFINES += SK_WIN_NATIVE #SK_SOFTWARE
+
+    greaterThan(QT_MINOR_VERSION, 9): DEFINES += QT_5_LATEST
 }
 
 include(src/controllers/controllers.pri)

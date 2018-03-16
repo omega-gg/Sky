@@ -24,24 +24,26 @@
 // Sk includes
 #include <WView>
 
-// Windows includes
 #ifdef Q_OS_WIN
+// Windows includes
 #include <qt_windows.h>
 #endif
 
-// Linux includes
 #ifdef Q_OS_LINUX
+// Linux includes
 #include <QX11Info>
 #endif
 
 // Private includes
 #include <private/WView_p>
-#ifdef Q_OS_LINUX
+#if defined(QT_4) && defined(Q_OS_LINUX)
 #include <private/qt_x11_p.h>
 #endif
 
 //-------------------------------------------------------------------------------------------------
 // Defines
+
+#ifdef Q_OS_WIN
 
 #define SZ_SIZETOPLEFT      0xf004
 #define SZ_SIZETOPRIGHT     0xf005
@@ -52,23 +54,23 @@
 #define SZ_SIZETOP          0xf003
 #define SZ_SIZEBOTTOM       0xf006
 
-#ifdef Q_OS_LINUX
+#elif defined(QT_4) && defined(Q_OS_LINUX)
+
 bool isSupportedByWM(Atom atom)
 {
-    if (!X11->net_supported_list)
-        return false;
+    if (X11->net_supported_list == NULL) return false;
 
-    bool supported = false;
-    int i = 0;
-    while (X11->net_supported_list[i] != 0) {
-        if (X11->net_supported_list[i++] == atom) {
-            supported = true;
-            break;
+    for (int i = 0; X11->net_supported_list[i] != 0; i++)
+    {
+        if (X11->net_supported_list[i] == atom)
+        {
+            return true;
         }
     }
 
-    return supported;
+    return false;
 }
+
 #endif
 
 //-------------------------------------------------------------------------------------------------
@@ -368,16 +370,16 @@ WResizer::WResizer(ResizeType type, QQuickItem * parent)
     PostMessage((HWND) d->view->winId(), WM_SYSCOMMAND, orientation, 0);
 
     return;
-#elif defined(Q_OS_LINUX)
-    if (d->view->isWindow() && isSupportedByWM(ATOM(_NET_WM_MOVERESIZE))
-        &&
-        d->view->testAttribute(Qt::WA_DontShowOnScreen) == false)
+#elif defined(QT_4) && defined(Q_OS_LINUX)
+    if (isSupportedByWM(ATOM(_NET_WM_MOVERESIZE)))
     {
         XEvent xev;
 
+        Display * display = X11->display;
+
         xev.xclient.type         = ClientMessage;
         xev.xclient.message_type = ATOM(_NET_WM_MOVERESIZE);
-        xev.xclient.display      = X11->display;
+        xev.xclient.display      = display;
         xev.xclient.window       = d->view->winId();
         xev.xclient.format       = 32;
         xev.xclient.data.l[0]    = d->view->x();
@@ -395,9 +397,9 @@ WResizer::WResizer(ResizeType type, QQuickItem * parent)
         xev.xclient.data.l[3] = Button1;
         xev.xclient.data.l[4] = 0;
 
-        XUngrabPointer(X11->display, X11->time);
+        XUngrabPointer(display, X11->time);
 
-        XSendEvent(X11->display, QX11Info::appRootWindow(d->view->x11Info().screen()), False,
+        XSendEvent(display, QX11Info::appRootWindow(d->view->x11Info().screen()), false,
                    SubstructureRedirectMask | SubstructureNotifyMask, &xev);
 
         return;
@@ -426,12 +428,8 @@ WResizer::WResizer(ResizeType type, QQuickItem * parent)
 
         return;
     }
-#elif defined(Q_OS_LINUX)
-    if (d->view->isWindow() && isSupportedByWM(ATOM(_NET_WM_MOVERESIZE))
-        &&
-        d->view->isTopLevel()
-        &&
-        d->view->testAttribute(Qt::WA_DontShowOnScreen) == false) return;
+#elif defined(QT_4) && defined(Q_OS_LINUX)
+    if (isSupportedByWM(ATOM(_NET_WM_MOVERESIZE))) return;
 #endif
 
     if (d->resizing) d->resize();
