@@ -19,9 +19,7 @@ import Sky     1.0
 
 MouseArea
 {
-//#QT_5
     id: baseLineEdit
-//#END
 
     //---------------------------------------------------------------------------------------------
     // Properties
@@ -253,7 +251,7 @@ MouseArea
                     timer.start();
                 }
             }
-            else deselect();
+            else baseLineEdit.deselect();
         }
 
         Keys.onPressed:
