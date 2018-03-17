@@ -1480,6 +1480,13 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
     if (d->applyOutput(closestOutput) && hasStarted())
     {
+        if (d->currentMedia.isEmpty())
+        {
+            setOutputActive(closestOutput);
+
+            return;
+        }
+
         d->started = false;
         d->active  = false;
 
