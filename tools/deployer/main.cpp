@@ -129,7 +129,9 @@ void scanFile(const QString & input, const QString & output)
             {
                 content.append("import QtQuick " + version + '\n');
             }
-            else if (line.startsWith("import SkyComponents") == false)
+            else if (line.startsWith("import SkyComponents") == false
+                     &&
+                     line.startsWith("import SkyPresentation") == false)
             {
                 content.append(line + '\n');
             }
