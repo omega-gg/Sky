@@ -1834,7 +1834,7 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 //-------------------------------------------------------------------------------------------------
 // Input
 
-/* Q_INVOKABLE */ void WView::mouseMove(int x, int y, Qt::MouseButton button) const
+/* Q_INVOKABLE */ void WView::mouseMove(int x, int y, Qt::MouseButton button)
 {
     QPoint point(x, y);
 
@@ -1844,15 +1844,15 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 #ifdef QT_4
     QCoreApplication::sendEvent(viewport(), &event);
 #else
-    QCoreApplication::sendEvent(contentItem(), &event);
+    QCoreApplication::sendEvent(this, &event);
 #endif
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WView::mousePress(Qt::MouseButton button) const
+/* Q_INVOKABLE */ void WView::mousePress(Qt::MouseButton button)
 {
-    Q_D(const WView);
+    Q_D(WView);
 
     QMouseEvent event(QEvent::MouseButtonPress,
                       d->mousePos, mapToGlobal(d->mousePos), button, Qt::NoButton, Qt::NoModifier);
@@ -1860,13 +1860,13 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 #ifdef QT_4
     QCoreApplication::sendEvent(viewport(), &event);
 #else
-    QCoreApplication::sendEvent(contentItem(), &event);
+    QCoreApplication::sendEvent(this, &event);
 #endif
 }
 
-/* Q_INVOKABLE */ void WView::mouseRelease(Qt::MouseButton button) const
+/* Q_INVOKABLE */ void WView::mouseRelease(Qt::MouseButton button)
 {
-    Q_D(const WView);
+    Q_D(WView);
 
     QMouseEvent event(QEvent::MouseButtonRelease,
                       d->mousePos, mapToGlobal(d->mousePos), button, Qt::NoButton, Qt::NoModifier);
@@ -1874,11 +1874,11 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 #ifdef QT_4
     QCoreApplication::sendEvent(viewport(), &event);
 #else
-    QCoreApplication::sendEvent(contentItem(), &event);
+    QCoreApplication::sendEvent(this, &event);
 #endif
 }
 
-/* Q_INVOKABLE */ void WView::mouseClick(Qt::MouseButton button, int msec) const
+/* Q_INVOKABLE */ void WView::mouseClick(Qt::MouseButton button, int msec)
 {
     mousePress(button);
 
@@ -1889,9 +1889,9 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WView::wheel(Qt::Orientation orientation, int delta) const
+/* Q_INVOKABLE */ void WView::wheel(Qt::Orientation orientation, int delta)
 {
-    Q_D(const WView);
+    Q_D(WView);
 
     QWheelEvent event(d->mousePos, mapToGlobal(d->mousePos), delta, Qt::NoButton,
                                                                     Qt::NoModifier, orientation);
@@ -1899,45 +1899,45 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 #ifdef QT_4
     QCoreApplication::sendEvent(viewport(), &event);
 #else
-    QCoreApplication::sendEvent(contentItem(), &event);
+    QCoreApplication::sendEvent(this, &event);
 #endif
 }
 
-/* Q_INVOKABLE */ void WView::wheelUp(int delta) const
+/* Q_INVOKABLE */ void WView::wheelUp(int delta)
 {
     wheel(Qt::Vertical, delta);
 }
 
-/* Q_INVOKABLE */ void WView::wheelDown(int delta) const
+/* Q_INVOKABLE */ void WView::wheelDown(int delta)
 {
     wheel(Qt::Vertical, delta);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WView::keyPress(int key, Qt::KeyboardModifiers modifiers) const
+/* Q_INVOKABLE */ void WView::keyPress(int key, Qt::KeyboardModifiers modifiers)
 {
     QKeyEvent event(QEvent::KeyPress, key, modifiers);
 
 #ifdef QT_4
     QCoreApplication::sendEvent(viewport(), &event);
 #else
-    QCoreApplication::sendEvent(contentItem(), &event);
+    QCoreApplication::sendEvent(this, &event);
 #endif
 }
 
-/* Q_INVOKABLE */ void WView::keyRelease(int key, Qt::KeyboardModifiers modifiers) const
+/* Q_INVOKABLE */ void WView::keyRelease(int key, Qt::KeyboardModifiers modifiers)
 {
     QKeyEvent event(QEvent::KeyRelease, key, modifiers);
 
 #ifdef QT_4
     QCoreApplication::sendEvent(viewport(), &event);
 #else
-    QCoreApplication::sendEvent(contentItem(), &event);
+    QCoreApplication::sendEvent(this, &event);
 #endif
 }
 
-/* Q_INVOKABLE */ void WView::keyClick(int key, Qt::KeyboardModifiers modifiers, int msec) const
+/* Q_INVOKABLE */ void WView::keyClick(int key, Qt::KeyboardModifiers modifiers, int msec)
 {
     keyPress(key, modifiers);
 
@@ -1949,48 +1949,48 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 //-------------------------------------------------------------------------------------------------
 // QML
 
-/* Q_INVOKABLE */ void WView::mouseMove(int x, int y, int button) const
+/* Q_INVOKABLE */ void WView::mouseMove(int x, int y, int button)
 {
     mouseMove(x, y, static_cast<Qt::MouseButton> (button));
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WView::mousePress(int button) const
+/* Q_INVOKABLE */ void WView::mousePress(int button)
 {
     mousePress(static_cast<Qt::MouseButton> (button));
 }
 
-/* Q_INVOKABLE */ void WView::mouseRelease(int button) const
+/* Q_INVOKABLE */ void WView::mouseRelease(int button)
 {
     mouseRelease(static_cast<Qt::MouseButton> (button));
 }
 
-/* Q_INVOKABLE */ void WView::mouseClick(int button, int msec) const
+/* Q_INVOKABLE */ void WView::mouseClick(int button, int msec)
 {
     mouseClick(static_cast<Qt::MouseButton> (button), msec);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WView::wheel(int orientation, int delta) const
+/* Q_INVOKABLE */ void WView::wheel(int orientation, int delta)
 {
     wheel(static_cast<Qt::Orientation> (orientation), delta);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WView::keyPress(int key, int modifiers) const
+/* Q_INVOKABLE */ void WView::keyPress(int key, int modifiers)
 {
     keyPress(key, static_cast<Qt::KeyboardModifiers> (modifiers));
 }
 
-/* Q_INVOKABLE */ void WView::keyRelease(int key, int modifiers) const
+/* Q_INVOKABLE */ void WView::keyRelease(int key, int modifiers)
 {
     keyRelease(key, static_cast<Qt::KeyboardModifiers> (modifiers));
 }
 
-/* Q_INVOKABLE */ void WView::keyClick(int key, int modifiers, int msec) const
+/* Q_INVOKABLE */ void WView::keyClick(int key, int modifiers, int msec)
 {
     keyClick(key, static_cast<Qt::KeyboardModifiers> (modifiers), msec);
 }

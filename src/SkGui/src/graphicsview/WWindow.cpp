@@ -435,109 +435,109 @@ void WWindowPrivate::init()
 //-------------------------------------------------------------------------------------------------
 // Input
 
-/* Q_INVOKABLE */ void WWindow::mouseMove(int x, int y, Qt::MouseButton button) const
+/* Q_INVOKABLE */ void WWindow::mouseMove(int x, int y, Qt::MouseButton button)
 {
-    Q_D(const WWindow); d->view->mouseMove(x, y, button);
+    Q_D(WWindow); d->view->mouseMove(x, y, button);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WWindow::mousePress(Qt::MouseButton button) const
+/* Q_INVOKABLE */ void WWindow::mousePress(Qt::MouseButton button)
 {
-    Q_D(const WWindow); d->view->mousePress(button);
+    Q_D(WWindow); d->view->mousePress(button);
 }
 
-/* Q_INVOKABLE */ void WWindow::mouseRelease(Qt::MouseButton button) const
+/* Q_INVOKABLE */ void WWindow::mouseRelease(Qt::MouseButton button)
 {
-    Q_D(const WWindow); d->view->mouseRelease(button);
+    Q_D(WWindow); d->view->mouseRelease(button);
 }
 
-/* Q_INVOKABLE */ void WWindow::mouseClick(Qt::MouseButton button, int msec) const
+/* Q_INVOKABLE */ void WWindow::mouseClick(Qt::MouseButton button, int msec)
 {
-    Q_D(const WWindow); d->view->mouseClick(button, msec);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE */ void WWindow::wheel(Qt::Orientation orientation, int delta) const
-{
-    Q_D(const WWindow); d->view->wheel(orientation, delta);
-}
-
-/* Q_INVOKABLE */ void WWindow::wheelUp(int delta) const
-{
-    Q_D(const WWindow); d->view->wheelUp(delta);
-}
-
-/* Q_INVOKABLE */ void WWindow::wheelDown(int delta) const
-{
-    Q_D(const WWindow); d->view->wheelDown(delta);
+    Q_D(WWindow); d->view->mouseClick(button, msec);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WWindow::keyPress(int key, Qt::KeyboardModifiers modifiers) const
+/* Q_INVOKABLE */ void WWindow::wheel(Qt::Orientation orientation, int delta)
 {
-    Q_D(const WWindow); d->view->keyPress(key, modifiers);
+    Q_D(WWindow); d->view->wheel(orientation, delta);
 }
 
-/* Q_INVOKABLE */ void WWindow::keyRelease(int key, Qt::KeyboardModifiers modifiers) const
+/* Q_INVOKABLE */ void WWindow::wheelUp(int delta)
 {
-    Q_D(const WWindow); d->view->keyRelease(key, modifiers);
+    Q_D(WWindow); d->view->wheelUp(delta);
 }
 
-/* Q_INVOKABLE */ void WWindow::keyClick(int key, Qt::KeyboardModifiers modifiers, int msec) const
+/* Q_INVOKABLE */ void WWindow::wheelDown(int delta)
 {
-    Q_D(const WWindow); d->view->keyClick(key, modifiers, msec);
+    Q_D(WWindow); d->view->wheelDown(delta);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WWindow::keyPress(int key, Qt::KeyboardModifiers modifiers)
+{
+    Q_D(WWindow); d->view->keyPress(key, modifiers);
+}
+
+/* Q_INVOKABLE */ void WWindow::keyRelease(int key, Qt::KeyboardModifiers modifiers)
+{
+    Q_D(WWindow); d->view->keyRelease(key, modifiers);
+}
+
+/* Q_INVOKABLE */ void WWindow::keyClick(int key, Qt::KeyboardModifiers modifiers, int msec)
+{
+    Q_D(WWindow); d->view->keyClick(key, modifiers, msec);
 }
 
 //-------------------------------------------------------------------------------------------------
 // QML
 
-/* Q_INVOKABLE */ void WWindow::mouseMove(int x, int y, int button) const
+/* Q_INVOKABLE */ void WWindow::mouseMove(int x, int y, int button)
 {
-    Q_D(const WWindow); d->view->mouseMove(x, y, button);
+    Q_D(WWindow); d->view->mouseMove(x, y, button);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WWindow::mousePress(int button) const
+/* Q_INVOKABLE */ void WWindow::mousePress(int button)
 {
-    Q_D(const WWindow); d->view->mousePress(button);
+    Q_D(WWindow); d->view->mousePress(button);
 }
 
-/* Q_INVOKABLE */ void WWindow::mouseRelease(int button) const
+/* Q_INVOKABLE */ void WWindow::mouseRelease(int button)
 {
-    Q_D(const WWindow); d->view->mouseRelease(button);
+    Q_D(WWindow); d->view->mouseRelease(button);
 }
 
-/* Q_INVOKABLE */ void WWindow::mouseClick(int button, int msec) const
+/* Q_INVOKABLE */ void WWindow::mouseClick(int button, int msec)
 {
-    Q_D(const WWindow); d->view->mouseClick(button, msec);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE */ void WWindow::wheel(int orientation, int delta) const
-{
-    Q_D(const WWindow); d->view->wheel(orientation, delta);
+    Q_D(WWindow); d->view->mouseClick(button, msec);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WWindow::keyPress(int key, int modifiers) const
+/* Q_INVOKABLE */ void WWindow::wheel(int orientation, int delta)
 {
-    Q_D(const WWindow); d->view->keyPress(key, modifiers);
+    Q_D(WWindow); d->view->wheel(orientation, delta);
 }
 
-/* Q_INVOKABLE */ void WWindow::keyRelease(int key, int modifiers) const
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WWindow::keyPress(int key, int modifiers)
 {
-    Q_D(const WWindow); d->view->keyRelease(key, modifiers);
+    Q_D(WWindow); d->view->keyPress(key, modifiers);
 }
 
-/* Q_INVOKABLE */ void WWindow::keyClick(int key, int modifiers, int msec) const
+/* Q_INVOKABLE */ void WWindow::keyRelease(int key, int modifiers)
 {
-    Q_D(const WWindow); d->view->keyClick(key, modifiers, msec);
+    Q_D(WWindow); d->view->keyRelease(key, modifiers);
+}
+
+/* Q_INVOKABLE */ void WWindow::keyClick(int key, int modifiers, int msec)
+{
+    Q_D(WWindow); d->view->keyClick(key, modifiers, msec);
 }
 
 //-------------------------------------------------------------------------------------------------

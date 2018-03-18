@@ -225,40 +225,40 @@ public: // Interface
     //---------------------------------------------------------------------------------------------
     // Input
 
-    Q_INVOKABLE void mouseMove(int x, int y, Qt::MouseButton button = Qt::NoButton) const;
+    Q_INVOKABLE void mouseMove(int x, int y, Qt::MouseButton button = Qt::NoButton);
 
-    Q_INVOKABLE void mousePress  (Qt::MouseButton button = Qt::LeftButton) const;
-    Q_INVOKABLE void mouseRelease(Qt::MouseButton button = Qt::LeftButton) const;
+    Q_INVOKABLE void mousePress  (Qt::MouseButton button = Qt::LeftButton);
+    Q_INVOKABLE void mouseRelease(Qt::MouseButton button = Qt::LeftButton);
 
-    Q_INVOKABLE void mouseClick(Qt::MouseButton button = Qt::LeftButton, int msec = 100) const;
+    Q_INVOKABLE void mouseClick(Qt::MouseButton button = Qt::LeftButton, int msec = 100);
 
-    Q_INVOKABLE void wheel(Qt::Orientation orientation = Qt::Vertical, int delta = -120) const;
+    Q_INVOKABLE void wheel(Qt::Orientation orientation = Qt::Vertical, int delta = -120);
 
-    Q_INVOKABLE void wheelUp  (int delta =  120) const;
-    Q_INVOKABLE void wheelDown(int delta = -120) const;
+    Q_INVOKABLE void wheelUp  (int delta =  120);
+    Q_INVOKABLE void wheelDown(int delta = -120);
 
-    Q_INVOKABLE void keyPress  (int key, Qt::KeyboardModifiers modifiers = Qt::NoModifier) const;
-    Q_INVOKABLE void keyRelease(int key, Qt::KeyboardModifiers modifiers = Qt::NoModifier) const;
+    Q_INVOKABLE void keyPress  (int key, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+    Q_INVOKABLE void keyRelease(int key, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
 
     Q_INVOKABLE void keyClick(int key, Qt::KeyboardModifiers modifiers = Qt::NoModifier,
-                                       int                   msec      = 100) const;
+                                       int                   msec      = 100);
 
     //---------------------------------------------------------------------------------------------
     // QML
 
-    Q_INVOKABLE void mouseMove(int x, int y, int button) const;
+    Q_INVOKABLE void mouseMove(int x, int y, int button);
 
-    Q_INVOKABLE void mousePress  (int button) const;
-    Q_INVOKABLE void mouseRelease(int button) const;
+    Q_INVOKABLE void mousePress  (int button);
+    Q_INVOKABLE void mouseRelease(int button);
 
-    Q_INVOKABLE void mouseClick(int button, int msec = 100) const;
+    Q_INVOKABLE void mouseClick(int button, int msec = 100);
 
-    Q_INVOKABLE void wheel(int orientation, int delta = -120) const;
+    Q_INVOKABLE void wheel(int orientation, int delta = -120);
 
-    Q_INVOKABLE void keyPress  (int key, int modifiers) const;
-    Q_INVOKABLE void keyRelease(int key, int modifiers) const;
+    Q_INVOKABLE void keyPress  (int key, int modifiers);
+    Q_INVOKABLE void keyRelease(int key, int modifiers);
 
-    Q_INVOKABLE void keyClick(int key, int modifiers, int msec = 100) const;
+    Q_INVOKABLE void keyClick(int key, int modifiers, int msec = 100);
 
     //---------------------------------------------------------------------------------------------
 
