@@ -139,11 +139,17 @@ public: // Interface
     WControllerFileReply * startCreatePath(const QString & path);
 
 public: // Static functions
+    Q_INVOKABLE static QString absolute(const QUrl    & url);
+    Q_INVOKABLE static QString absolute(const QString & string);
+
     Q_INVOKABLE static QString fileUrl(const QUrl    & url);
     Q_INVOKABLE static QString fileUrl(const QString & string);
 
     Q_INVOKABLE static QString filePath(const QUrl    & url);
     Q_INVOKABLE static QString filePath(const QString & string);
+
+    Q_INVOKABLE static QString fileAbsolute(const QUrl    & url);
+    Q_INVOKABLE static QString fileAbsolute(const QString & string);
 
     Q_INVOKABLE static QString applicationPath   (const QString & fileName);
     Q_INVOKABLE static QString applicationFileUrl(const QString & fileName);

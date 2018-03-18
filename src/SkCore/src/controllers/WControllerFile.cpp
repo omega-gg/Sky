@@ -652,6 +652,20 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 // Static functions
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ QString WControllerFile::absolute(const QUrl & url)
+{
+    return absolute(url.toString());
+}
+
+/* Q_INVOKABLE static */ QString WControllerFile::absolute(const QString & string)
+{
+    QFileInfo info(string);
+
+    return info.absoluteFilePath();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE static */ QString WControllerFile::fileUrl(const QUrl & url)
 {
     return fileUrl(url.toString());
@@ -686,6 +700,18 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
          return QUrl(string).toLocalFile();
     }
     else return string;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QString WControllerFile::fileAbsolute(const QUrl & url)
+{
+    return fileAbsolute(url.toString());
+}
+
+/* Q_INVOKABLE static */ QString WControllerFile::fileAbsolute(const QString & string)
+{
+    return fileUrl(absolute(string));
 }
 
 //-------------------------------------------------------------------------------------------------
