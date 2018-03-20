@@ -716,6 +716,18 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ QString WControllerFile::currentPath(const QString & fileName)
+{
+    return QDir::currentPath() + '/' + fileName;
+}
+
+/* Q_INVOKABLE static */ QString WControllerFile::currentFileUrl(const QString & fileName)
+{
+    return fileUrl(currentPath(fileName));
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE static */ QString WControllerFile::applicationPath(const QString & fileName)
 {
     return QCoreApplication::applicationDirPath() + '/' + fileName;
