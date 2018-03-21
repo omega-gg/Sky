@@ -1587,16 +1587,16 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
             }
             else queries.remove(data);
         }
-        else if (backendQuery->type == WBackendNetQuery::TypeDefault && backend)
+        /*else if (backendQuery->type == WBackendNetQuery::TypeDefault && backend)
         {
-            //if (backend)
-            //{
+            if (backend)
+            {
                 backend->queryFailed(*backendQuery);
 
                 queries.remove(data);
 
                 item->d_func()->setQueryDefault();
-            /*}
+            }
             else
             {
                 WBackendNetQuery nextQuery = *backendQuery;
@@ -1619,8 +1619,8 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 
                     getDataFolder(folder, nextQuery);
                 }
-            }*/
-        }
+            }
+        }*/
         else
         {
             if (backend) backend->queryFailed(*backendQuery);
