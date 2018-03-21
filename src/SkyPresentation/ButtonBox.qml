@@ -49,7 +49,7 @@ BaseButton
     width : sp.buttonBox_size
     height: width
 
-    cursor: MouseArea.PointingHandCursor
+    cursor: Qt.PointingHandCursor
 
     //---------------------------------------------------------------------------------------------
     // Childs
