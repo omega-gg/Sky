@@ -427,12 +427,15 @@ void WDeclarativeBorderImageScalePrivate::restore()
 
     abortAction();
 
+    scaleSize = QSize();
+
+    if (scaled == false) return;
+
+    scalePixmap = QPixmap();
+
     const WDeclarativeBorderGrid * border = getBorder();
 
     margins = QMargins(border->left(), border->top(), border->right(), border->bottom());
-
-    scalePixmap = QPixmap();
-    scaleSize   = QSize  ();
 
     scaled = false;
 
@@ -585,15 +588,21 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QQuickItem * parent)
 
     WDeclarativeBorderImage::geometryChanged(newGeometry, oldGeometry);
 
-    if (d->scalable && oldGeometry.size() != newGeometry.size())
-    {
-#ifdef QT_LATEST
-        if (d->scaled) d->updateTexture = true;
-#endif
+    if (oldGeometry.size() == newGeometry.size()) return;
 
+    if (d->scalable)
+    {
         d->restore();
 
         d->resize(currentPixmap());
+    }
+    else
+    {
+        const QPixmap & pixmap = currentPixmap();
+
+        if (pixmap.isNull() || d->sourceSize.isValid()) return;
+
+        d->resize(pixmap);
     }
 }
 
