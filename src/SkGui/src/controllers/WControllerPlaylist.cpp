@@ -1586,6 +1586,29 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
                 playlist->updateTrack(index);
             }
             else queries.remove(data);
+
+            delete data;
+        }
+        else if (query->type == WControllerPlaylistQuery::TypeFolder && backendQuery->id == 0)
+        {
+            WLibraryItem * libraryItem = item->toFolder()->createLibraryItemAt(0, true);
+
+            if (libraryItem)
+            {
+                libraryItem->d_func()->setQueryDefault();
+
+                if (backend) backend->queryFailed(*backendQuery);
+
+                queries.remove(data);
+
+                item->d_func()->setQueryDefault();
+
+                libraryItem->tryDelete();
+
+                delete data;
+
+                return;
+            }
         }
         /*else if (backendQuery->type == WBackendNetQuery::TypeDefault && backend)
         {
@@ -1621,14 +1644,12 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
                 }
             }
         }*/
-        else
-        {
-            if (backend) backend->queryFailed(*backendQuery);
 
-            queries.remove(data);
+        if (backend) backend->queryFailed(*backendQuery);
 
-            item->d_func()->setQueryDefault();
-        }
+        queries.remove(data);
+
+        item->d_func()->setQueryDefault();
 
         delete data;
 
@@ -2188,9 +2209,9 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
     }
     else playlist->d_func()->setQueryEnded();
 
-    playlist->tryDelete();
-
     folder->d_func()->setQueryEnded();
+
+    playlist->tryDelete();
 }
 
 //=================================================================================================

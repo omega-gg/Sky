@@ -596,11 +596,11 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QQuickItem * parent)
 
         d->resize(currentPixmap());
     }
-    else
+    else if (d->sourceSize.isValid() == false)
     {
         const QPixmap & pixmap = currentPixmap();
 
-        if (pixmap.isNull() || d->sourceSize.isValid()) return;
+        if (pixmap.isNull()) return;
 
         d->resize(pixmap);
     }

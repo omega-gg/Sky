@@ -672,7 +672,7 @@ WallBookmarkTrack
 
             anchors.rightMargin: anchors.leftMargin
 
-            source: (currentTab) ? currentTab.coverShot : ""
+            source: (visible && currentTab) ? currentTab.coverShot : ""
 
             sourceDefault: logo
 
