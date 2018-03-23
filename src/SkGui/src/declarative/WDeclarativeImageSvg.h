@@ -76,6 +76,7 @@ public:
 #else
     explicit WDeclarativeImageSvg(QQuickItem * parent = NULL);
 #endif
+
 protected:
 #ifdef QT_4
     WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QDeclarativeItem * parent = NULL);
