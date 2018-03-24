@@ -181,6 +181,11 @@ public:
 public: // Functions
     void populateTableRgb();
 
+#ifdef QT_4
+    void initShader  ();
+    void deleteShader();
+#endif
+
     void convertFrameSoftware();
     void convertFrameSse     ();
 
@@ -250,7 +255,11 @@ public: // Variables
     GLfloat targetWidth;
     GLfloat targetHeight;
 
+#ifdef QT_4
+    bool shader;
+
     GLuint textureIds[3];
+#endif
 
     WBackendVlcTexture textures[3];
 

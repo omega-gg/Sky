@@ -307,69 +307,6 @@ void createShader()
     }
 }
 
-void deleteShader()
-{
-    shaderCount--;
-
-    if (shaderCount == 0)
-    {
-        glDeleteProgramsARB(1, &shaderId);
-    }
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void initShader()
-{
-    if (shaderCount)
-    {
-        shaderCount++;
-
-        return;
-    }
-
-#if defined(Q_OS_WIN)
-    glGenProgramsARB   = (PFNGLGENPROGRAMSARBPROC)   wglGetProcAddress("glGenProgramsARB");
-    glBindProgramARB   = (PFNGLBINDPROGRAMARBPROC)   wglGetProcAddress("glBindProgramARB");
-    glProgramStringARB = (PFNGLPROGRAMSTRINGARBPROC) wglGetProcAddress("glProgramStringARB");
-
-    glDeleteProgramsARB = (PFNGLDELETEPROGRAMSARBPROC) wglGetProcAddress("glDeleteProgramsARB");
-
-    glProgramLocalParameter4fvARB = (PFNGLPROGRAMLOCALPARAMETER4FVARBPROC)
-                                    wglGetProcAddress("glProgramLocalParameter4fvARB");
-
-    glActiveTextureARB   = (PFNGLACTIVETEXTUREARBPROC)   wglGetProcAddress("glActiveTextureARB");
-    glMultiTexCoord2fARB = (PFNGLMULTITEXCOORD2FARBPROC) wglGetProcAddress("glMultiTexCoord2fARB");
-#elif defined(Q_OS_LINUX)
-    glGenProgramsARB = (PFNGLGENPROGRAMSARBPROC) glXGetProcAddress((GLubyte *) "glGenProgramsARB");
-    glBindProgramARB = (PFNGLBINDPROGRAMARBPROC) glXGetProcAddress((GLubyte *) "glBindProgramARB");
-
-    glProgramStringARB = (PFNGLPROGRAMSTRINGARBPROC)
-                         glXGetProcAddress((GLubyte *) "glProgramStringARB");
-
-    glDeleteProgramsARB = (PFNGLDELETEPROGRAMSARBPROC)
-                          glXGetProcAddress((GLubyte *) "glDeleteProgramsARB");
-
-    glProgramLocalParameter4fvARB = (PFNGLPROGRAMLOCALPARAMETER4FVARBPROC)
-                                    glXGetProcAddress((GLubyte *) "glProgramLocalParameter4fvARB");
-
-    glActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC)
-                         glXGetProcAddress((GLubyte *) "glActiveTextureARB");
-
-    glMultiTexCoord2fARB = (PFNGLMULTITEXCOORD2FARBPROC)
-                           glXGetProcAddress((GLubyte *) "glMultiTexCoord2fARB");
-#endif
-
-    if (glGenProgramsARB              && glBindProgramARB   && glProgramStringARB &&
-        glProgramLocalParameter4fvARB && glActiveTextureARB && glMultiTexCoord2fARB)
-    {
-        createShader();
-
-        shaderCount++;
-    }
-    else qWarning("WBackendVlc initShader: Fragment shaders are not supported.");
-}
-
 #else
 
 //=================================================================================================
@@ -583,9 +520,9 @@ WBackendVlcPrivate::WBackendVlcPrivate(WBackendVlc * p) : WAbstractBackendPrivat
 
 #ifdef QT_4
     deleteShader();
-#endif
 
     if (textureIds[0]) glDeleteTextures(3, textureIds);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -606,7 +543,11 @@ void WBackendVlcPrivate::init()
     targetWidth  = 0.f;
     targetHeight = 0.f;
 
+    shader = false;
+
+#ifdef QT_4
     textureIds[0] = 0;
+#endif
 
     started = false;
     active  = false;
@@ -676,6 +617,79 @@ void WBackendVlcPrivate::populateTableRgb()
         tableRgb[BLUE_OFFSET  + i] = qRgb(0, 0, gamma[i]);
     }
 }
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_4
+
+void WBackendVlcPrivate::initShader()
+{
+    if (shaderCount)
+    {
+        shader = true;
+
+        shaderCount++;
+
+        return;
+    }
+
+#if defined(Q_OS_WIN)
+    glGenProgramsARB   = (PFNGLGENPROGRAMSARBPROC)   wglGetProcAddress("glGenProgramsARB");
+    glBindProgramARB   = (PFNGLBINDPROGRAMARBPROC)   wglGetProcAddress("glBindProgramARB");
+    glProgramStringARB = (PFNGLPROGRAMSTRINGARBPROC) wglGetProcAddress("glProgramStringARB");
+
+    glDeleteProgramsARB = (PFNGLDELETEPROGRAMSARBPROC) wglGetProcAddress("glDeleteProgramsARB");
+
+    glProgramLocalParameter4fvARB = (PFNGLPROGRAMLOCALPARAMETER4FVARBPROC)
+                                    wglGetProcAddress("glProgramLocalParameter4fvARB");
+
+    glActiveTextureARB   = (PFNGLACTIVETEXTUREARBPROC)   wglGetProcAddress("glActiveTextureARB");
+    glMultiTexCoord2fARB = (PFNGLMULTITEXCOORD2FARBPROC) wglGetProcAddress("glMultiTexCoord2fARB");
+#elif defined(Q_OS_LINUX)
+    glGenProgramsARB = (PFNGLGENPROGRAMSARBPROC) glXGetProcAddress((GLubyte *) "glGenProgramsARB");
+    glBindProgramARB = (PFNGLBINDPROGRAMARBPROC) glXGetProcAddress((GLubyte *) "glBindProgramARB");
+
+    glProgramStringARB = (PFNGLPROGRAMSTRINGARBPROC)
+                         glXGetProcAddress((GLubyte *) "glProgramStringARB");
+
+    glDeleteProgramsARB = (PFNGLDELETEPROGRAMSARBPROC)
+                          glXGetProcAddress((GLubyte *) "glDeleteProgramsARB");
+
+    glProgramLocalParameter4fvARB = (PFNGLPROGRAMLOCALPARAMETER4FVARBPROC)
+                                    glXGetProcAddress((GLubyte *) "glProgramLocalParameter4fvARB");
+
+    glActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC)
+                         glXGetProcAddress((GLubyte *) "glActiveTextureARB");
+
+    glMultiTexCoord2fARB = (PFNGLMULTITEXCOORD2FARBPROC)
+                           glXGetProcAddress((GLubyte *) "glMultiTexCoord2fARB");
+#endif
+
+    if (glGenProgramsARB              && glBindProgramARB   && glProgramStringARB &&
+        glProgramLocalParameter4fvARB && glActiveTextureARB && glMultiTexCoord2fARB)
+    {
+        createShader();
+
+        shader = true;
+
+        shaderCount++;
+    }
+    else qWarning("WBackendVlc initShader: Fragment shaders are not supported.");
+}
+
+void WBackendVlcPrivate::deleteShader()
+{
+    if (shader == false) return;
+
+    shaderCount--;
+
+    if (shaderCount == 0)
+    {
+        glDeleteProgramsARB(1, &shaderId);
+    }
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -1647,7 +1661,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
             {
                 d->frameReset = false;
 
-                initShader();
+                d->initShader();
 
                 if (d->textureIds[0] != 0)
                 {
@@ -1964,8 +1978,8 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
             }
 
 #ifdef QT_4
-            setStateLoad(StateLoadDefault);
         }
+            setStateLoad(StateLoadDefault);
 #else
             if (d->stateLoad == StateLoadResuming)
             {

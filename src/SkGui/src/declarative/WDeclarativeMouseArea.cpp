@@ -783,7 +783,11 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
         return stealMouse;
     }
 
+#ifdef QT_4
     if (event->type() == QEvent::GraphicsSceneMouseRelease && d->pressed)
+#else
+    if (event->type() == QEvent::MouseButtonRelease && d->pressed)
+#endif
     {
         d->pressed = false;
 
@@ -794,7 +798,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 #ifdef QT_4
         if (scene && scene->mouseGrabberItem() == this)
 #else
-        if (d->view->mouseGrabberItem() == this)
+        if (d->view && d->view->mouseGrabberItem() == this)
 #endif
         {
             ungrabMouse();
@@ -946,7 +950,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
     if (scene && scene->mouseGrabberItem() == this)
 #else
-    if (d->view->mouseGrabberItem() == this)
+    if (d->view && d->view->mouseGrabberItem() == this)
 #endif
     {
         ungrabMouse();
