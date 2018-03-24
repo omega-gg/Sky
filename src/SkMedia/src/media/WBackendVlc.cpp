@@ -543,9 +543,9 @@ void WBackendVlcPrivate::init()
     targetWidth  = 0.f;
     targetHeight = 0.f;
 
+#ifdef QT_4
     shader = false;
 
-#ifdef QT_4
     textureIds[0] = 0;
 #endif
 
