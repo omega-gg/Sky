@@ -565,9 +565,11 @@ void WViewPrivate::updateFlags()
 #ifdef Q_OS_WIN
     if (locked)
     {
-         SetWindowPos((HWND) q->winId(), HWND_TOPMOST,   0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+         SetWindowPos((HWND) q->winId(),
+                      HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
     }
-    else SetWindowPos((HWND) q->winId(), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+    else SetWindowPos((HWND) q->winId(),
+                      HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
 #elif defined(QT_4)
     if (locked)
     {
