@@ -24,8 +24,8 @@
 #ifndef SK_NO_CONTROLLERPLUGIN
 
 // Forward declarations
-class WControllerPluginPrivate;
 class QStringList;
+class WControllerPluginPrivate;
 
 // Defines
 #define wControllerPlugin WControllerPlugin::instance()

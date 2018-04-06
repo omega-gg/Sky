@@ -95,7 +95,7 @@ WControllerViewPrivate::WControllerViewPrivate(WControllerView * p) : WControlle
 void WControllerViewPrivate::init()
 {
 #ifdef SK_SOFTWARE
-    opengl = true;
+    opengl = false;
 #else
     opengl = true;
 #endif

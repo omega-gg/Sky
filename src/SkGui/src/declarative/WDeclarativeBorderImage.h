@@ -114,7 +114,7 @@ protected: // Virtual functions
     virtual const QMargins & getMargins() const;
 
 #ifdef QT_LATEST
-protected: // WDeclarativeImageBase reimplementation
+protected: // WDeclarativeTexture reimplementation
     virtual void applyGeometry(QSGInternalImageNode * node, const QPixmap & pixmap); /* {} */
 #endif
 

@@ -25,8 +25,8 @@
 #include <Sk>
 
 // Forward declarations
-class WFileWatcherPrivate;
 class QStringList;
+class WFileWatcherPrivate;
 
 class SK_CORE_EXPORT WFileWatcher : public QObject, public WPrivatable
 {

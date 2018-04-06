@@ -19,9 +19,9 @@
 
 // Sk includes
 #ifdef QT_4
-#include <WDeclarativeItem>
-#else
 #include <WDeclarativeItemPaint>
+#else
+#include <WDeclarativeTexture>
 #endif
 
 #ifndef SK_NO_DECLARATIVEIMAGESVG
@@ -34,9 +34,9 @@ class WDeclarativeImageSvgScalePrivate;
 //-------------------------------------------------------------------------------------------------
 
 #ifdef QT_4
-class SK_GUI_EXPORT WDeclarativeImageSvg : public WDeclarativeItem
-#else
 class SK_GUI_EXPORT WDeclarativeImageSvg : public WDeclarativeItemPaint
+#else
+class SK_GUI_EXPORT WDeclarativeImageSvg : public WDeclarativeTexture
 #endif
 {
     Q_OBJECT
@@ -57,6 +57,13 @@ class SK_GUI_EXPORT WDeclarativeImageSvg : public WDeclarativeItemPaint
     Q_PROPERTY(FillMode fillMode READ fillMode WRITE setFillMode NOTIFY fillModeChanged)
 
     Q_PROPERTY(qreal progress READ progress NOTIFY progressChanged)
+
+#ifdef QT_LATEST
+    Q_PROPERTY(bool scaleDelayed READ scaleDelayed WRITE setScaleDelayed
+               NOTIFY scaleDelayedChanged)
+
+    Q_PROPERTY(int scaleDelay READ scaleDelay WRITE setScaleDelay NOTIFY scaleDelayChanged)
+#endif
 
 public: // Enums
     enum Status { Null, Loading, Ready, Error };
@@ -87,12 +94,10 @@ protected:
 public: // QDeclarativeItem / QQuickItem reimplementation
     /* virtual */ void componentComplete();
 
-public: // QGraphicsItem / QQuickPaintedItem reimplementation
 #ifdef QT_4
+public: // QGraphicsItem
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
-#else
-    /* virtual */ void paint(QPainter * painter);
 #endif
 
 protected: // Functions
@@ -104,6 +109,16 @@ protected: // QGraphicsItem / QQuickItem reimplementation
     /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 #else
     /* virtual */ void itemChange(ItemChange change, const ItemChangeData & value);
+
+#ifdef QT_LATEST
+    /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
+
+protected: // WDeclarativeTexture implementation
+    /* virtual */ const QPixmap & getPixmap();
+
+protected: // WDeclarativeTexture reimplementation
+    /*virtual */ void applyGeometry(QSGInternalImageNode * node, const QPixmap & pixmap);
+#endif
 #endif
 
 signals:
@@ -117,6 +132,11 @@ signals:
     void fillModeChanged();
 
     void progressChanged();
+
+#ifdef QT_LATEST
+    void scaleDelayedChanged();
+    void scaleDelayChanged  ();
+#endif
 
 public: // Properties
     Status status() const;
@@ -136,13 +156,27 @@ public: // Properties
 
     qreal progress() const;
 
+#ifdef QT_LATEST
+    bool scaleDelayed() const;
+    void setScaleDelayed(bool delayed);
+
+    int  scaleDelay() const;
+    void setScaleDelay(int delay);
+#endif
+
 private:
     W_DECLARE_PRIVATE(WDeclarativeImageSvg)
 
+#ifdef QT_4
     Q_PRIVATE_SLOT(d_func(), void onUpdate())
+#else
+    Q_PRIVATE_SLOT(d_func(), void onTimeout())
+#endif
 };
 
 QML_DECLARE_TYPE(WDeclarativeImageSvg)
+
+#ifdef QT_4
 
 //-------------------------------------------------------------------------------------------------
 // WDeclarativeImageSvgScale
@@ -160,24 +194,16 @@ class SK_GUI_EXPORT WDeclarativeImageSvgScale : public WDeclarativeImageSvg
     Q_PROPERTY(int scaleDelay READ scaleDelay WRITE setScaleDelay NOTIFY scaleDelayChanged)
 
 public:
-#ifdef QT_4
     explicit WDeclarativeImageSvgScale(QDeclarativeItem * parent = NULL);
-#else
-    explicit WDeclarativeImageSvgScale(QQuickItem * parent = NULL);
-#endif
 
 public: // Interface
     Q_INVOKABLE void applyScale();
 
-public: // QGraphicsItem / QQuickPaintedItem reimplementation
-#ifdef QT_4
+public: // QGraphicsItem reimplementation
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
-#else
-    /* virtual */ void paint(QPainter * painter);
-#endif
 
-protected: // QGraphicsItem / QQuickItem reimplementation
+protected: // QGraphicsItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
 
 protected: // WDeclarativeImageSvg reimplementation
@@ -207,6 +233,8 @@ private:
 };
 
 QML_DECLARE_TYPE(WDeclarativeImageSvgScale)
+
+#endif
 
 #include <private/WDeclarativeImageSvg_p>
 

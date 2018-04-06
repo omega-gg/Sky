@@ -35,9 +35,9 @@
 
 // Private includes
 #ifdef QT_4
-#include <private/WDeclarativeItem_p>
-#else
 #include <private/WDeclarativeItemPaint_p>
+#else
+#include <private/WDeclarativeTexture_p>
 #endif
 
 #ifndef SK_NO_DECLARATIVEIMAGESVG
@@ -51,9 +51,9 @@ class WCacheFile;
 //-------------------------------------------------------------------------------------------------
 
 #ifdef QT_4
-class SK_GUI_EXPORT WDeclarativeImageSvgPrivate : public WDeclarativeItemPrivate
-#else
 class SK_GUI_EXPORT WDeclarativeImageSvgPrivate : public WDeclarativeItemPaintPrivate
+#else
+class SK_GUI_EXPORT WDeclarativeImageSvgPrivate : public WDeclarativeTexturePrivate
 #endif
 {
 public:
@@ -62,7 +62,9 @@ public:
     void init();
 
 public: // Functions
-    QRectF getRect(qreal width, qreal height) const;
+#ifdef QT_LATEST
+    void updatePixmap(int width, int height);
+#endif
 
     void load       ();
     void loadVisible();
@@ -75,14 +77,24 @@ public: // Functions
 
     void clearFile();
 
+    QRectF getRect(qreal width, qreal height) const;
+
 public: // Slots
     void onProgress(qint64 received, qint64 total);
 
     void onLoaded(WCacheFile * file);
 
+#ifdef QT_4
     void onUpdate();
+#else
+    void onTimeout();
+#endif
 
 public: // Variables
+#ifdef QT_LATEST
+    QPixmap pixmap;
+#endif
+
     WCacheFile * file;
 
     QSvgRenderer * renderer;
@@ -100,9 +112,18 @@ public: // Variables
 
     qreal progress;
 
+#ifdef QT_LATEST
+    bool scaleDelayed : 1;
+    int  scaleDelay;
+
+    QTimer timer;
+#endif
+
 protected:
     W_DECLARE_PUBLIC(WDeclarativeImageSvg)
 };
+
+#ifdef QT_4
 
 //-------------------------------------------------------------------------------------------------
 // WDeclarativeImageSvgScalePrivate
@@ -138,6 +159,8 @@ public: // Variables
 protected:
     W_DECLARE_PUBLIC(WDeclarativeImageSvgScale)
 };
+
+#endif
 
 #endif // SK_NO_DECLARATIVEIMAGESVG
 #endif // WDECLARATIVEIMAGESVG_P_H

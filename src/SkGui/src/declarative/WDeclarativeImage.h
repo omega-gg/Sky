@@ -83,7 +83,8 @@ protected: // WDeclarativeImageBase reimplementation
     /* virtual */ void pixmapChange();
 
 #ifdef QT_LATEST
-    virtual void applyGeometry(QSGInternalImageNode * node, const QPixmap & pixmap); /* {} */
+protected: // WDeclarativeTexture reimplementation
+    /* virtual */ void applyGeometry(QSGInternalImageNode * node, const QPixmap & pixmap);
 #endif
 
 signals:

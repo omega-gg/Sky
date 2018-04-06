@@ -30,15 +30,20 @@
 #endif
 #include <WCache>
 
+#ifdef QT_LATEST
+// Private includes
+#include <private/qsgadaptationlayer_p.h>
+#endif
+
 //=================================================================================================
 // WDeclarativeImageSvgPrivate
 //=================================================================================================
 
 WDeclarativeImageSvgPrivate::WDeclarativeImageSvgPrivate(WDeclarativeImageSvg * p)
 #ifdef QT_4
-    : WDeclarativeItemPrivate(p) {}
-#else
     : WDeclarativeItemPaintPrivate(p) {}
+#else
+    : WDeclarativeTexturePrivate(p) {}
 #endif
 
 void WDeclarativeImageSvgPrivate::init()
@@ -60,40 +65,48 @@ void WDeclarativeImageSvgPrivate::init()
     progress = 0.0;
 
 #ifdef QT_4
-    q->setFlag(QGraphicsItem::ItemHasNoContents, false);
-#endif
-
     QObject::connect(renderer, SIGNAL(repaintNeeded()), q, SLOT(onUpdate()));
+#else
+    scaleDelayed = true;
+    scaleDelay   = wControllerView->scaleDelay();
+
+    timer.setInterval(scaleDelay);
+
+    timer.setSingleShot(true);
+
+    QObject::connect(renderer, SIGNAL(repaintNeeded()), q, SLOT(update()));
+
+    QObject::connect(&timer, SIGNAL(timeout()), q, SLOT(onTimeout()));
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-QRectF WDeclarativeImageSvgPrivate::getRect(qreal width, qreal height) const
+#ifdef QT_LATEST
+
+void WDeclarativeImageSvgPrivate::updatePixmap(int width, int height)
 {
-    if (fillMode == WDeclarativeImageSvg::PreserveAspectFit)
+    if (width < 1 || height < 1)
     {
-        QSizeF size = this->size;
+        pixmap = QPixmap();
 
-        size.scale(QSizeF(width, height), Qt::KeepAspectRatio);
-
-        QPointF pos((width - size.width()) / 2, (height - size.height()) / 2);
-
-        return QRectF(pos.x(), pos.y(), size.width(), size.height());
+        return;
     }
-    else if (fillMode == WDeclarativeImageSvg::PreserveAspectCrop)
-    {
-        QSizeF size = this->size;
 
-        size.scale(QSizeF(width, height), Qt::KeepAspectRatioByExpanding);
+    pixmap = QPixmap(width, height);
 
-        QPointF pos((width - size.width()) / 2, (height - size.height()) / 2);
+    pixmap.fill(Qt::transparent);
 
-        return QRectF(pos.x(), pos.y(), size.width(), size.height());
-    }
-    else return QRectF(0, 0, width, height);
+    QPainter painter(&pixmap);
+
+    renderer->render(&painter);
+
+    updateTexture = true;
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -189,6 +202,10 @@ void WDeclarativeImageSvgPrivate::applyUrl(const QUrl & url)
 
     size = renderer->defaultSize();
 
+#ifdef QT_LATEST
+    updateTexture = true;
+#endif
+
     q->svgChange();
 
     emit q->progressChanged();
@@ -206,6 +223,15 @@ void WDeclarativeImageSvgPrivate::clearUrl(WDeclarativeImageSvg::Status status)
     this->status = status;
 
     size = QSize();
+
+#ifdef QT_LATEST
+    if (pixmap.isNull() == false)
+    {
+        pixmap = QPixmap();
+
+        updateTexture = true;
+    }
+#endif
 
     q->svgChange();
 
@@ -226,6 +252,33 @@ void WDeclarativeImageSvgPrivate::clearFile()
     file->deleteLater();
 
     file = NULL;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QRectF WDeclarativeImageSvgPrivate::getRect(qreal width, qreal height) const
+{
+    if (fillMode == WDeclarativeImageSvg::PreserveAspectFit)
+    {
+        QSizeF size = this->size;
+
+        size.scale(QSizeF(width, height), Qt::KeepAspectRatio);
+
+        QPointF pos((width - size.width()) / 2, (height - size.height()) / 2);
+
+        return QRectF(pos.x(), pos.y(), size.width(), size.height());
+    }
+    else if (fillMode == WDeclarativeImageSvg::PreserveAspectCrop)
+    {
+        QSizeF size = this->size;
+
+        size.scale(QSizeF(width, height), Qt::KeepAspectRatioByExpanding);
+
+        QPointF pos((width - size.width()) / 2, (height - size.height()) / 2);
+
+        return QRectF(pos.x(), pos.y(), size.width(), size.height());
+    }
+    else return QRectF(0, 0, width, height);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -259,10 +312,27 @@ void WDeclarativeImageSvgPrivate::onLoaded(WCacheFile * file)
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
+
 void WDeclarativeImageSvgPrivate::onUpdate()
 {
     Q_Q(WDeclarativeImageSvg); q->update();
 }
+
+#else
+
+//-------------------------------------------------------------------------------------------------
+
+void WDeclarativeImageSvgPrivate::onTimeout()
+{
+    Q_Q(WDeclarativeImageSvg);
+
+    updateGeometry = true;
+
+    q->update();
+}
+
+#endif
 
 //=================================================================================================
 // WDeclarativeImageSvg
@@ -270,10 +340,10 @@ void WDeclarativeImageSvgPrivate::onUpdate()
 
 #ifdef QT_4
 /* explicit */ WDeclarativeImageSvg::WDeclarativeImageSvg(QDeclarativeItem * parent)
-    : WDeclarativeItem(new WDeclarativeImageSvgPrivate(this), parent)
+    : WDeclarativeItemPaint(new WDeclarativeImageSvgPrivate(this), parent)
 #else
 /* explicit */ WDeclarativeImageSvg::WDeclarativeImageSvg(QQuickItem * parent)
-    : WDeclarativeItemPaint(new WDeclarativeImageSvgPrivate(this), parent)
+    : WDeclarativeTexture(new WDeclarativeImageSvgPrivate(this), parent)
 #endif
 {
     Q_D(WDeclarativeImageSvg); d->init();
@@ -285,10 +355,10 @@ void WDeclarativeImageSvgPrivate::onUpdate()
 #ifdef QT_4
 WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p,
                                            QDeclarativeItem            * parent)
-    : WDeclarativeItem(p, parent)
+    : WDeclarativeItemPaint(p, parent)
 #else
 WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQuickItem * parent)
-    : WDeclarativeItemPaint(p, parent)
+    : WDeclarativeTexture(p, parent)
 #endif
 {
     Q_D(WDeclarativeImageSvg); d->init();
@@ -303,9 +373,9 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
     Q_D(WDeclarativeImageSvg);
 
 #ifdef QT_4
-    WDeclarativeItem::componentComplete();
-#else
     WDeclarativeItemPaint::componentComplete();
+#else
+    WDeclarativeTexture::componentComplete();
 #endif
 
     if (d->url.isValid())
@@ -314,21 +384,15 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
     }
 }
 
+#ifdef QT_4
+
 //-------------------------------------------------------------------------------------------------
-// QGraphicsItem / QQuickPaintedItem reimplementation
+// QGraphicsItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_4
 /* virtual */ void WDeclarativeImageSvg::paint(QPainter * painter,
                                                const QStyleOptionGraphicsItem *, QWidget *)
-#else
-/* virtual */ void WDeclarativeImageSvg::paint(QPainter * painter)
-#endif
 {
-#ifdef QT_LATEST
-    if (isVisible() == false) return;
-#endif
-
     Q_D(WDeclarativeImageSvg);
 
     qreal width  = this->width ();
@@ -348,6 +412,8 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
     }
     else d->renderer->render(painter, rect);
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Protected functions
@@ -390,11 +456,109 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
     }
 
 #ifdef QT_4
-    return WDeclarativeItem::itemChange(change, value);
+    return WDeclarativeItemPaint::itemChange(change, value);
 #else
-    WDeclarativeItemPaint::itemChange(change, value);
+    WDeclarativeTexture::itemChange(change, value);
 #endif
 }
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_LATEST
+
+/* virtual */ void WDeclarativeImageSvg::geometryChanged(const QRectF & newGeometry,
+                                                         const QRectF & oldGeometry)
+{
+    WDeclarativeTexture::geometryChanged(newGeometry, oldGeometry);
+
+    if (oldGeometry.size() == newGeometry.size()) return;
+
+    Q_D(WDeclarativeImageSvg);
+
+    d->updateGeometry = true;
+
+    if (d->scaleDelayed && d->timer.isActive() == false)
+    {
+        d->timer.start();
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+// WDeclarativeTexture implementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ const QPixmap & WDeclarativeImageSvg::getPixmap()
+{
+    Q_D(WDeclarativeImageSvg);
+
+    if (d->updateTexture)
+    {
+        if (d->fillMode == PreserveAspectFit)
+        {
+            QSizeF size = d->size;
+
+            size.scale(QSizeF(width(), height()), Qt::KeepAspectRatio);
+
+            d->updatePixmap(size.width(), size.height());
+        }
+        else if (d->fillMode == PreserveAspectCrop)
+        {
+            QSizeF size = d->size;
+
+            size.scale(QSizeF(width(), height()), Qt::KeepAspectRatioByExpanding);
+
+            d->updatePixmap(size.width(), size.height());
+        }
+        else d->updatePixmap(width(), height());
+    }
+    else if (d->updateGeometry && d->timer.isActive() == false)
+    {
+        if (d->fillMode == PreserveAspectFit)
+        {
+            QSizeF size = d->size;
+
+            size.scale(QSizeF(width(), height()), Qt::KeepAspectRatio);
+
+            if (size.isEmpty() == false)
+            {
+                d->updatePixmap(size.width(), size.height());
+            }
+        }
+        else if (d->fillMode == PreserveAspectCrop)
+        {
+            QSizeF size = d->size;
+
+            size.scale(QSizeF(width(), height()), Qt::KeepAspectRatioByExpanding);
+
+            if (size.isEmpty() == false)
+            {
+                d->updatePixmap(size.width(), size.height());
+            }
+        }
+        else if (d->size.isEmpty() == false)
+        {
+            d->updatePixmap(width(), height());
+        }
+    }
+
+    return d->pixmap;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Protected WDeclarativeTexture reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/*virtual */ void WDeclarativeImageSvg::applyGeometry(QSGInternalImageNode * node, const QPixmap &)
+{
+    Q_D(WDeclarativeImageSvg);
+
+    QRectF rect = d->getRect(width(), height());
+
+    node->setTargetRect     (rect);
+    node->setInnerTargetRect(rect);
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Properties
@@ -492,6 +656,55 @@ qreal WDeclarativeImageSvg::progress() const
     Q_D(const WDeclarativeImageSvg); return d->progress;
 }
 
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_LATEST
+
+bool WDeclarativeImageSvg::scaleDelayed() const
+{
+    Q_D(const WDeclarativeImageSvg); return d->scaleDelayed;
+}
+
+void WDeclarativeImageSvg::setScaleDelayed(bool delayed)
+{
+    Q_D(WDeclarativeImageSvg);
+
+    if (d->scaleDelayed == delayed) return;
+
+    d->scaleDelayed = delayed;
+
+    if (delayed == false && d->timer.isActive())
+    {
+        d->timer.stop();
+
+        d->onTimeout();
+    }
+
+    emit scaleDelayedChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+int WDeclarativeImageSvg::scaleDelay() const
+{
+    Q_D(const WDeclarativeImageSvg); return d->scaleDelay;
+}
+
+void WDeclarativeImageSvg::setScaleDelay(int delay)
+{
+    Q_D(WDeclarativeImageSvg);
+
+    if (d->scaleDelay == delay) return;
+
+    d->scaleDelay = delay;
+
+    d->timer.setInterval(delay);
+
+    emit scaleDelayChanged();
+}
+
+#else
+
 //=================================================================================================
 // WDeclarativeImageSvgScalePrivate
 //=================================================================================================
@@ -566,11 +779,7 @@ void WDeclarativeImageSvgScalePrivate::onScale()
 // WDeclarativeImageSvgScale
 //=================================================================================================
 
-#ifdef QT_4
 /* explicit */ WDeclarativeImageSvgScale::WDeclarativeImageSvgScale(QDeclarativeItem * parent)
-#else
-/* explicit */ WDeclarativeImageSvgScale::WDeclarativeImageSvgScale(QQuickItem * parent)
-#endif
     : WDeclarativeImageSvg(new WDeclarativeImageSvgScalePrivate(this), parent)
 {
     Q_D(WDeclarativeImageSvgScale); d->init();
@@ -594,21 +803,13 @@ void WDeclarativeImageSvgScalePrivate::onScale()
 }
 
 //-------------------------------------------------------------------------------------------------
-// QGraphicsItem / QQuickPaintedItem reimplementation
+// QGraphicsItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_4
 /* virtual */ void WDeclarativeImageSvgScale::paint(QPainter                       * painter,
                                                     const QStyleOptionGraphicsItem * option,
                                                     QWidget                        * widget)
-#else
-/* virtual */ void WDeclarativeImageSvgScale::paint(QPainter * painter)
-#endif
 {
-#ifdef QT_LATEST
-    if (isVisible() == false) return;
-#endif
-
     Q_D(WDeclarativeImageSvgScale);
 
     if (d->scalable)
@@ -642,19 +843,11 @@ void WDeclarativeImageSvgScalePrivate::onScale()
         {
             if (d->scaleDelayed)
             {
-#ifdef QT_4
                 if (d->viewport->scale() == 1.0)
-#else
-                if (d->view->item()->scale() == 1.0)
-#endif
                 {
                     d->scaleSize = size;
 
-#ifdef QT_4
                     d->timer.start();
-#else
-                    QTimer::singleShot(0, &d->timer, SLOT(start()));
-#endif
                 }
             }
             else
@@ -666,15 +859,11 @@ void WDeclarativeImageSvgScalePrivate::onScale()
         }
     }
 
-#ifdef QT_4
     WDeclarativeImageSvg::paint(painter, option, widget);
-#else
-    WDeclarativeImageSvg::paint(painter);
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
-// Protected QGraphicsItem / QQuickItem reimplementation
+// Protected QGraphicsItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WDeclarativeImageSvgScale::geometryChanged(const QRectF & newGeometry,
@@ -789,5 +978,7 @@ void WDeclarativeImageSvgScale::setScaleDelay(int delay)
 
     emit scaleDelayChanged();
 }
+
+#endif
 
 #endif // SK_NO_DECLARATIVEIMAGESVG

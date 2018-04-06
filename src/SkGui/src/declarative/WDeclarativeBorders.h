@@ -18,7 +18,7 @@
 #define WDECLARATIVEBORDERS_H
 
 // Sk includes
-#ifdef SK_SOFTWARE
+#if defined(QT_4) || defined(SK_SOFTWARE)
 #include <WDeclarativeItemPaint>
 #else
 #include <WDeclarativeItem>
@@ -29,7 +29,7 @@
 // Forward declarations
 class WDeclarativeBordersPrivate;
 
-#ifdef SK_SOFTWARE
+#if defined(QT_4) || defined(SK_SOFTWARE)
 class SK_GUI_EXPORT WDeclarativeBorders : public WDeclarativeItemPaint
 #else
 class SK_GUI_EXPORT WDeclarativeBorders : public WDeclarativeItem

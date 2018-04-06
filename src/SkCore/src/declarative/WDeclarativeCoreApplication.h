@@ -30,12 +30,12 @@
 #ifndef SK_NO_COREAPPLICATION
 
 // Forward declarations
-class WDeclarativeCoreApplicationPrivate;
 #ifdef QT_4
 class QDeclarativeItem;
 #else
 class QQuickItem;
 #endif
+class WDeclarativeCoreApplicationPrivate;
 
 class SK_CORE_EXPORT WDeclarativeCoreApplication : public QObject, public WPrivatable
 {

@@ -18,7 +18,11 @@
 #define WDECLARATIVEIMAGEBASE_H
 
 // Sk includes
+#ifdef QT_4
 #include <WDeclarativeItem>
+#else
+#include <WDeclarativeTexture>
+#endif
 
 #ifndef SK_NO_DECLARATIVEIMAGEBASE
 
@@ -29,7 +33,11 @@ class QSGInternalImageNode;
 class WDeclarativeImageBasePrivate;
 class WImageFilter;
 
+#ifdef QT_4
 class SK_GUI_EXPORT WDeclarativeImageBase : public WDeclarativeItem
+#else
+class SK_GUI_EXPORT WDeclarativeImageBase : public WDeclarativeTexture
+#endif
 {
     Q_OBJECT
 
@@ -67,10 +75,6 @@ class SK_GUI_EXPORT WDeclarativeImageBase : public WDeclarativeItem
 
     Q_PROPERTY(WImageFilter * filter READ filter WRITE setFilter NOTIFY filterChanged)
 
-#ifdef QT_LATEST
-    Q_PROPERTY(bool mipmap READ mipmap WRITE setMipmap NOTIFY mipmapChanged)
-#endif
-
     Q_PROPERTY(qreal ratioWidth  READ ratioWidth  NOTIFY sourceSizeChanged)
     Q_PROPERTY(qreal ratioHeight READ ratioHeight NOTIFY sourceSizeChanged)
 
@@ -106,10 +110,6 @@ public: // Interface
 public: // QDeclarativeItem / QQuickItem reimplementation
     /* virtual */ void componentComplete();
 
-#ifdef QT_LATEST
-    /* virtual */ QSGNode * updatePaintNode(QSGNode * oldNode, UpdatePaintNodeData * data);
-#endif
-
 protected: // Functions
     const QPixmap & currentPixmap() const;
 
@@ -120,18 +120,21 @@ protected: // Virtual functions
 
     virtual void clearUrl(WDeclarativeImageBase::Status status);
 
+#ifdef QT_4
     virtual const QPixmap & getPixmap();
+#endif
 
     virtual void pixmapChange();
     virtual void pixmapClear (); /* {} */
 
-#ifdef QT_LATEST
-    virtual void applyGeometry(QSGInternalImageNode * node, const QPixmap & pixmap); /* {} */
-#endif
-
 protected slots:
     virtual void requestFinished();
     virtual void requestProgress(qint64 received, qint64 total);
+
+#ifdef QT_LATEST
+protected: // WDeclarativeTexture implementation
+    virtual const QPixmap & getPixmap();
+#endif
 
 protected: // QGraphicsItem / QQuickItem reimplementation
 #ifdef QT_4
@@ -164,10 +167,6 @@ signals:
     void progressChanged();
 
     void filterChanged();
-
-#ifdef QT_LATEST
-    void mipmapChanged();
-#endif
 
 public: // Properties
     QPixmap pixmap() const;
@@ -209,11 +208,6 @@ public: // Properties
 
     WImageFilter * filter() const;
     void           setFilter(WImageFilter * filter);
-
-#ifdef QT_LATEST
-    bool mipmap() const;
-    void setMipmap(bool enabled);
-#endif
 
     qreal ratioWidth () const;
     qreal ratioHeight() const;

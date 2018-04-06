@@ -36,7 +36,11 @@
 #include <WPixmapCache>
 
 // Private includes
+#ifdef QT_4
 #include <private/WDeclarativeItem_p>
+#else
+#include <private/WDeclarativeTexture_p>
+#endif
 
 #ifndef SK_NO_DECLARATIVEIMAGEBASE
 
@@ -46,16 +50,15 @@ class QSGContext;
 class QSGTexture;
 #endif
 class WCacheFile;
-class WImageFilter;
 
+#ifdef QT_4
 class SK_GUI_EXPORT WDeclarativeImageBasePrivate : public WDeclarativeItemPrivate
+#else
+class SK_GUI_EXPORT WDeclarativeImageBasePrivate : public WDeclarativeTexturePrivate
+#endif
 {
 public:
     WDeclarativeImageBasePrivate(WDeclarativeImageBase * p);
-
-#ifdef QT_LATEST
-    /* virtual */ ~WDeclarativeImageBasePrivate();
-#endif
 
     void init();
 
@@ -80,10 +83,6 @@ public: // Functions
 
     void clearFile();
 
-#ifdef QT_LATEST
-    void applyMipmap(QSGInternalImageNode * node);
-#endif
-
 public: // Slots
     void onLoaded(WCacheFile * file);
 
@@ -95,15 +94,6 @@ public: // Variables
     WPixmapCache pix;
 
     QPixmap pixmapDefault;
-
-#ifdef QT_LATEST
-    QSGContext * context;
-    QSGTexture * texture;
-
-    bool updateTexture  : 1;
-    bool updateGeometry : 1;
-    bool updateMipmap   : 1;
-#endif
 
     WDeclarativeImageBase::Status status;
 
@@ -128,10 +118,6 @@ public: // Variables
     bool loadLater: 1;
 
     bool cache : 1;
-
-#ifdef QT_LATEST
-    bool mipmap : 1;
-#endif
 
 protected:
     W_DECLARE_PUBLIC(WDeclarativeImageBase)

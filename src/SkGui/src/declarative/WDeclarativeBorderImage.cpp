@@ -252,9 +252,6 @@ WDeclarativeBorderImage::WDeclarativeBorderImage(WDeclarativeBorderImagePrivate 
 {
     Q_D(WDeclarativeBorderImage);
 
-    node->setHorizontalWrapMode(static_cast<QSGTexture::WrapMode> (d->horizontalTileMode));
-    node->setVerticalWrapMode  (static_cast<QSGTexture::WrapMode> (d->verticalTileMode));
-
     int width  = this->width ();
     int height = this->height();
 
@@ -267,7 +264,9 @@ WDeclarativeBorderImage::WDeclarativeBorderImage(WDeclarativeBorderImagePrivate 
     int top    = margins.top   ();
     int bottom = margins.bottom();
 
-    node->setInnerTargetRect(QRectF(left, top, width - (left + right), height - (top + bottom)));
+    QRectF target(left, top, width - (left + right), height - (top + bottom));
+
+    node->setInnerTargetRect(target);
 
     int pixmapWidth  = pixmap.width ();
     int pixmapHeight = pixmap.height();
@@ -277,10 +276,29 @@ WDeclarativeBorderImage::WDeclarativeBorderImage(WDeclarativeBorderImagePrivate 
     top    = d->margins.top   ();
     bottom = d->margins.bottom();
 
-    node->setInnerSourceRect(QRectF((qreal) left                           / pixmapWidth,
-                                    (qreal) top                            / pixmapHeight,
-                                    (qreal) (pixmapWidth  - left - right)  / pixmapWidth,
-                                    (qreal) (pixmapHeight - top  - bottom) / pixmapHeight));
+    QRectF source((qreal) left                           / pixmapWidth,
+                  (qreal) top                            / pixmapHeight,
+                  (qreal) (pixmapWidth  - left - right)  / pixmapWidth,
+                  (qreal) (pixmapHeight - top  - bottom) / pixmapHeight);
+
+    node->setInnerSourceRect(source);
+
+    int tileWidth;
+    int tileHeight;
+
+    if (d->horizontalTileMode != Stretch && source.width() > 0)
+    {
+         tileWidth = target.width() / (source.width() * pixmapWidth);
+    }
+    else tileWidth = 1;
+
+    if (d->verticalTileMode != Stretch && source.height() > 0)
+    {
+         tileHeight = target.height() / (source.height() * pixmapHeight);
+    }
+    else tileHeight = 1;
+
+    node->setSubSourceRect(QRectF(0, 0, tileWidth, tileHeight));
 }
 
 #endif
@@ -607,7 +625,7 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QQuickItem * parent)
 }
 
 //-------------------------------------------------------------------------------------------------
-// Protected WDeclarativeImageBase reimplementation
+// Protected WDeclarativeTexture reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ const QPixmap & WDeclarativeBorderImageScale::getPixmap()

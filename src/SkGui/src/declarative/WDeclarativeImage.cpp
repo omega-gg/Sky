@@ -313,6 +313,8 @@ void WDeclarativeImage::updatePaintedGeometry()
 {
     WDeclarativeImageBase::geometryChanged(newGeometry, oldGeometry);
 
+    if (oldGeometry.size() == newGeometry.size()) return;
+
     updatePaintedGeometry();
 }
 
@@ -334,9 +336,11 @@ void WDeclarativeImage::pixmapChange()
     updatePixmap();
 }
 
-//-------------------------------------------------------------------------------------------------
-
 #ifdef QT_LATEST
+
+//-------------------------------------------------------------------------------------------------
+// Protected WDeclarativeTexture reimplementation
+//-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WDeclarativeImage::applyGeometry(QSGInternalImageNode * node,
                                                     const QPixmap        & pixmap)

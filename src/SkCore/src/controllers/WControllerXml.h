@@ -27,9 +27,9 @@
 #ifndef SK_NO_CONTROLLERXML
 
 // Forward declarations
-class WControllerXmlPrivate;
 class QXmlStreamReader;
 class QDateTime;
+class WControllerXmlPrivate;
 
 // Defines
 #define wControllerXml WControllerXml::instance()

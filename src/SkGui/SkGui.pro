@@ -43,9 +43,9 @@ contains(QT_MAJOR_VERSION, 4) {
         win32:DEFINES += SK_WIN_NATIVE
     }
 } else {
-    DEFINES += QT_LATEST
+    DEFINES += QT_LATEST #SK_SOFTWARE
 
-    win32:DEFINES += SK_WIN_NATIVE #SK_SOFTWARE
+    win32:DEFINES += SK_WIN_NATIVE
 
     greaterThan(QT_MINOR_VERSION, 9): DEFINES += QT_5_LATEST
 }

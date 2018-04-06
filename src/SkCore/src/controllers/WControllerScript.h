@@ -28,8 +28,8 @@
 #ifndef SK_NO_CONTROLLERSCRIPT
 
 // Forward declarations
-class WControllerScriptPrivate;
 class QScriptEngine;
+class WControllerScriptPrivate;
 
 // Defines
 #define wControllerScript WControllerScript::instance()

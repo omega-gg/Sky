@@ -37,11 +37,11 @@
 #ifndef SK_NO_CONTROLLERVIEW
 
 // Forward declarations
-class WView;
 #ifdef QT_4
 class QPainter;
 class QGraphicsObject;
 #endif
+class WView;
 
 class SK_GUI_EXPORT WControllerViewPrivate : public WControllerPrivate
 {

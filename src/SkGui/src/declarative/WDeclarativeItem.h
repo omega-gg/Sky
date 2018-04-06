@@ -53,6 +53,7 @@ public:
 #else
     explicit WDeclarativeItem(QQuickItem * parent = NULL);
 #endif
+
 protected:
 #ifdef QT_4
     WDeclarativeItem(WDeclarativeItemPrivate * p, QDeclarativeItem * parent = NULL);

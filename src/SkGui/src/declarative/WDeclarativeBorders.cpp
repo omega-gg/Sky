@@ -27,7 +27,7 @@
 #endif
 
 // Private includes
-#ifdef SK_SOFTWARE
+#if defined(QT_4) || defined(SK_SOFTWARE)
 #include <private/WDeclarativeItemPaint_p>
 #else
 #include <private/WDeclarativeItem_p>
@@ -111,7 +111,7 @@ WDeclarativeBordersNode::WDeclarativeBordersNode() : left(&material), right (&ma
 // WDeclarativeBordersPrivate
 //=================================================================================================
 
-#ifdef SK_SOFTWARE
+#if defined(QT_4) || defined(SK_SOFTWARE)
 class SK_GUI_EXPORT WDeclarativeBordersPrivate : public WDeclarativeItemPaintPrivate
 #else
 class SK_GUI_EXPORT WDeclarativeBordersPrivate : public WDeclarativeItemPrivate
@@ -146,7 +146,7 @@ protected:
 //-------------------------------------------------------------------------------------------------
 
 WDeclarativeBordersPrivate::WDeclarativeBordersPrivate(WDeclarativeBorders * p)
-#ifdef SK_SOFTWARE
+#if defined(QT_4) || defined(SK_SOFTWARE)
     : WDeclarativeItemPaintPrivate(p) {}
 #else
     : WDeclarativeItemPrivate(p) {}
@@ -159,11 +159,7 @@ void WDeclarativeBordersPrivate::init()
     top    = 0.0;
     bottom = 0.0;
 
-#ifdef QT_4
-    Q_Q(WDeclarativeBorders);
-
-    q->setFlag(QGraphicsItem::ItemHasNoContents, false);
-#elif defined(SK_SOFTWARE) == false
+#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
     Q_Q(WDeclarativeBorders);
 
     updateLeft   = true;
@@ -187,7 +183,7 @@ void WDeclarativeBordersPrivate::init()
 #else
 /* explicit */ WDeclarativeBorders::WDeclarativeBorders(QQuickItem * parent)
 #endif
-#ifdef SK_SOFTWARE
+#if defined(QT_4) || defined(SK_SOFTWARE)
     : WDeclarativeItemPaint(new WDeclarativeBordersPrivate(this), parent)
 #else
     : WDeclarativeItem(new WDeclarativeBordersPrivate(this), parent)
@@ -203,7 +199,6 @@ void WDeclarativeBordersPrivate::init()
 //-------------------------------------------------------------------------------------------------
 
 #ifdef QT_4
-
 /* virtual */ void WDeclarativeBorders::paint(QPainter * painter,
                                               const QStyleOptionGraphicsItem *, QWidget *)
 #else
@@ -296,6 +291,8 @@ void WDeclarativeBordersPrivate::init()
     Q_D(WDeclarativeBorders);
 
     WDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
+
+    if (oldGeometry.size() == newGeometry.size()) return;
 
     if (d->left)   d->updateLeft   = true;
     if (d->right)  d->updateRight  = true;
