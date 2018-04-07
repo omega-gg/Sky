@@ -17,7 +17,11 @@
 import QtQuick 1.1
 import Sky     1.0
 
+//#QT_4
 TextSvgScale
+//#ELSE
+TextSvg
+//#END
 {
     id: slideText
 

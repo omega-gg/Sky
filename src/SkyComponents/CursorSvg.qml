@@ -38,12 +38,18 @@ BaseCursor
     // Childs
     //---------------------------------------------------------------------------------------------
 
+//#QT_4
     ImageSvgScale
+//#ELSE
+    ImageSvg
+//#END
     {
         id: image
 
         anchors.fill: parent
 
+//#QT_4
         scaleDelay: 0
+//#END
     }
 }

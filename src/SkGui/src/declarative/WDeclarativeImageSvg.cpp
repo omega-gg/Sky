@@ -479,10 +479,7 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
 
     d->updateGeometry = true;
 
-    if (d->scaleDelayed && d->timer.isActive() == false)
-    {
-        d->timer.start();
-    }
+    if (d->scaleDelayed) d->timer.start();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -521,9 +518,12 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
 
             size.scale(QSizeF(width(), height()), Qt::KeepAspectRatio);
 
-            if (size.isEmpty() == false)
+            int width  = size.width ();
+            int height = size.height();
+
+            if (d->pixmap.width() != width && d->pixmap.height() != height)
             {
-                d->updatePixmap(size.width(), size.height());
+                d->updatePixmap(width, height);
             }
         }
         else if (d->fillMode == PreserveAspectCrop)
@@ -532,14 +532,23 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
 
             size.scale(QSizeF(width(), height()), Qt::KeepAspectRatioByExpanding);
 
-            if (size.isEmpty() == false)
+            int width  = size.width ();
+            int height = size.height();
+
+            if (d->pixmap.width() != width && d->pixmap.height() != height)
             {
-                d->updatePixmap(size.width(), size.height());
+                d->updatePixmap(width, height);
             }
         }
-        else if (d->size.isEmpty() == false)
+        else
         {
-            d->updatePixmap(width(), height());
+            int width  = this->width ();
+            int height = this->height();
+
+            if (d->pixmap.width() != width && d->pixmap.height() != height)
+            {
+                d->updatePixmap(width, height);
+            }
         }
     }
 

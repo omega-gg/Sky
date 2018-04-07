@@ -597,10 +597,7 @@ WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p, QQuickI
 
     d->updateGeometry = true;
 
-    if (d->scaleDelayed && d->timer.isActive() == false)
-    {
-        d->timer.start();
-    }
+    if (d->scaleDelayed) d->timer.start();
 }
 
 //-------------------------------------------------------------------------------------------------

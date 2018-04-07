@@ -68,7 +68,11 @@ Rectangle
             GradientStop { position: 1.0; color: colorB }
         }
 
+//#QT_4
         ImageSvgScale
+//#ELSE
+        ImageSvg
+//#END
         {
             id: highlight
 
