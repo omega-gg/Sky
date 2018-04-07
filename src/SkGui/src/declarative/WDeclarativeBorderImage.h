@@ -115,7 +115,7 @@ protected: // Virtual functions
 
 #ifdef QT_LATEST
 protected: // WDeclarativeTexture reimplementation
-    virtual void applyGeometry(QSGInternalImageNode * node, const QPixmap & pixmap); /* {} */
+    virtual void applyGeometry(QSGInternalImageNode * node, const QPixmap & pixmap);
 #endif
 
 signals:

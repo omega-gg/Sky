@@ -164,8 +164,6 @@ void WDeclarativeBordersPrivate::init()
 #ifdef QT_4
     q->setFlag(QGraphicsItem::ItemHasNoContents, false);
 #elif defined(SK_SOFTWARE) == false
-    Q_Q(WDeclarativeBorders);
-
     updateLeft   = true;
     updateRight  = true;
     updateTop    = true;

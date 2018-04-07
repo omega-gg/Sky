@@ -18,6 +18,7 @@
 #include "WDeclarativePlayer.h"
 #include "WDeclarativeText.h"
 #include "WDeclarativeTextSvg.h"
+#include "WDeclarativeTexture.h"
 #include "WAbstractView.h"
 #include "WResizer.h"
 #include "WView.h"

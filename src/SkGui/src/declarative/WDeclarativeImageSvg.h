@@ -110,7 +110,6 @@ protected: // QGraphicsItem / QQuickItem reimplementation
 #else
     /* virtual */ void itemChange(ItemChange change, const ItemChangeData & value);
 
-#ifdef QT_LATEST
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
 
 protected: // WDeclarativeTexture implementation
@@ -118,7 +117,6 @@ protected: // WDeclarativeTexture implementation
 
 protected: // WDeclarativeTexture reimplementation
     /*virtual */ void applyGeometry(QSGInternalImageNode * node, const QPixmap & pixmap);
-#endif
 #endif
 
 signals:
