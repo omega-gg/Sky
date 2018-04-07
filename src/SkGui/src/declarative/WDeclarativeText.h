@@ -24,7 +24,7 @@
 #ifdef QT_4
 #include <WDeclarativeItem>
 #else
-#include <WDeclarativeItemPaint>
+#include <WDeclarativeTexture>
 #endif
 
 #ifndef SK_NO_DECLARATIVETEXT
@@ -34,7 +34,7 @@ class WDeclarativeTextPrivate;
 #ifdef QT_4
 class SK_GUI_EXPORT WDeclarativeText : public WDeclarativeItem
 #else
-class SK_GUI_EXPORT WDeclarativeText : public WDeclarativeItemPaint
+class SK_GUI_EXPORT WDeclarativeText : public WDeclarativeTexture
 #endif
 {
     Q_OBJECT
@@ -158,12 +158,18 @@ public: // QGraphicsItem / QQuickPaintedItem reimplementation
 #ifdef QT_4
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
-#else
-    /* virtual */ void paint(QPainter * painter);
 #endif
 
 protected: // QGraphicsItem / QQuickItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
+
+#ifdef QT_LATEST
+protected: // WDeclarativeTexture implementation
+    /* virtual */ const QPixmap & getPixmap();
+
+protected: // WDeclarativeTexture reimplementation
+    /* virtual */ void applyGeometry(QSGInternalImageNode * node, const QPixmap & pixmap);
+#endif
 
 protected: // Events
 #ifdef QT_4

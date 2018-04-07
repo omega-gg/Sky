@@ -27,7 +27,7 @@
 #endif
 
 // Private includes
-#if defined(QT_4) || defined(SK_SOFTWARE)
+#ifdef SK_SOFTWARE
 #include <private/WDeclarativeItemPaint_p>
 #else
 #include <private/WDeclarativeItem_p>
@@ -111,7 +111,7 @@ WDeclarativeBordersNode::WDeclarativeBordersNode() : left(&material), right (&ma
 // WDeclarativeBordersPrivate
 //=================================================================================================
 
-#if defined(QT_4) || defined(SK_SOFTWARE)
+#ifdef SK_SOFTWARE
 class SK_GUI_EXPORT WDeclarativeBordersPrivate : public WDeclarativeItemPaintPrivate
 #else
 class SK_GUI_EXPORT WDeclarativeBordersPrivate : public WDeclarativeItemPrivate
@@ -146,7 +146,7 @@ protected:
 //-------------------------------------------------------------------------------------------------
 
 WDeclarativeBordersPrivate::WDeclarativeBordersPrivate(WDeclarativeBorders * p)
-#if defined(QT_4) || defined(SK_SOFTWARE)
+#ifdef SK_SOFTWARE
     : WDeclarativeItemPaintPrivate(p) {}
 #else
     : WDeclarativeItemPrivate(p) {}
@@ -154,12 +154,16 @@ WDeclarativeBordersPrivate::WDeclarativeBordersPrivate(WDeclarativeBorders * p)
 
 void WDeclarativeBordersPrivate::init()
 {
+    Q_Q(WDeclarativeBorders);
+
     left   = 0.0;
     right  = 0.0;
     top    = 0.0;
     bottom = 0.0;
 
-#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
+#ifdef QT_4
+    q->setFlag(QGraphicsItem::ItemHasNoContents, false);
+#elif defined(SK_SOFTWARE) == false
     Q_Q(WDeclarativeBorders);
 
     updateLeft   = true;
@@ -183,7 +187,7 @@ void WDeclarativeBordersPrivate::init()
 #else
 /* explicit */ WDeclarativeBorders::WDeclarativeBorders(QQuickItem * parent)
 #endif
-#if defined(QT_4) || defined(SK_SOFTWARE)
+#ifdef SK_SOFTWARE
     : WDeclarativeItemPaint(new WDeclarativeBordersPrivate(this), parent)
 #else
     : WDeclarativeItem(new WDeclarativeBordersPrivate(this), parent)

@@ -900,7 +900,7 @@ void WDeclarativePlayer::updateFrame()
 /* virtual */ void WDeclarativePlayer::paint(QPainter * painter)
 #endif
 {
-#ifdef SK_SOFTWARE
+#ifdef QT_LATEST
     if (isVisible() == false) return;
 #endif
 
@@ -916,9 +916,7 @@ void WDeclarativePlayer::updateFrame()
     }
 }
 
-#endif
-
-#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
+#else
 
 //-------------------------------------------------------------------------------------------------
 // QQuickItem reimplementation
@@ -1022,6 +1020,8 @@ void WDeclarativePlayer::updateFrame()
 #else
     WDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
 #endif
+
+    if (oldGeometry.size() == newGeometry.size()) return;
 
 #if defined(QT_4) || defined(SK_SOFTWARE)
     if (d->backend)

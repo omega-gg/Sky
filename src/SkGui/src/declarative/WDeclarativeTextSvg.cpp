@@ -29,6 +29,11 @@
 #endif
 #include <WImageColorFilter>
 
+#ifdef QT_LATEST
+// Private includes
+#include <private/qsgadaptationlayer_p.h>
+#endif
+
 //=================================================================================================
 // WDeclarativeTextSvgPrivate
 //=================================================================================================
@@ -37,7 +42,7 @@ WDeclarativeTextSvgPrivate::WDeclarativeTextSvgPrivate(WDeclarativeTextSvg * p)
 #ifdef QT_4
     : WDeclarativeItemPrivate(p) {}
 #else
-    : WDeclarativeItemPaintPrivate(p) {}
+    : WDeclarativeTexturePrivate(p) {}
 #endif
 
 void WDeclarativeTextSvgPrivate::init()
@@ -56,8 +61,6 @@ void WDeclarativeTextSvgPrivate::init()
     marginWidth  = 0;
     marginHeight = 0;
 
-    zoom = 1.0;
-
     gradient = NULL;
 
     style   = WDeclarativeTextSvg::Normal;
@@ -68,68 +71,53 @@ void WDeclarativeTextSvgPrivate::init()
     hAlign = WDeclarativeText::AlignLeft;
     vAlign = WDeclarativeText::AlignTop;
 
+    zoom = 1.0;
+
 #ifdef QT_4
     q->setFlag(QGraphicsItem::ItemHasNoContents, false);
-#endif
 
     QObject::connect(renderer, SIGNAL(repaintNeeded()), q, SLOT(onUpdate()));
+#else
+    scaleDelayed = true;
+    scaleDelay   = wControllerView->scaleDelay();
+
+    timer.setInterval(scaleDelay);
+
+    timer.setSingleShot(true);
+
+    QObject::connect(renderer, SIGNAL(repaintNeeded()), q, SLOT(update()));
+
+    QObject::connect(&timer, SIGNAL(timeout()), q, SLOT(onTimeout()));
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WDeclarativeTextSvgPrivate::setTextSize(int width, int height)
+#ifdef QT_LATEST
+
+void WDeclarativeTextSvgPrivate::updatePixmap(int width, int height)
 {
-    Q_Q(WDeclarativeTextSvg);
-
-    if (textWidth != width)
+    if (width < 1 || height < 1)
     {
-        textWidth = width;
+        pixmap = QPixmap();
 
-        emit q->textWidthChanged();
+        return;
     }
 
-    if (textHeight != height)
-    {
-        textHeight = height;
+    pixmap = QPixmap(width, height);
 
-        emit q->textHeightChanged();
-    }
+    pixmap.fill(Qt::transparent);
+
+    QPainter painter(&pixmap);
+
+    renderer->render(&painter);
+
+    updateTexture = true;
 }
 
-//-------------------------------------------------------------------------------------------------
-
-QRectF WDeclarativeTextSvgPrivate::getRect(qreal width, qreal height)
-{
-    qreal x;
-    qreal y;
-
-    int textWidth  = this->textWidth  * zoom;
-    int textHeight = this->textHeight * zoom;
-
-    if (hAlign == WDeclarativeText::AlignRight)
-    {
-        x = width - textWidth - marginWidth;
-    }
-    else if (hAlign == WDeclarativeText::AlignHCenter)
-    {
-        x = (width - textWidth) / 2;
-    }
-    else x = marginWidth;
-
-    if (vAlign == WDeclarativeText::AlignBottom)
-    {
-        y = height - textHeight - marginHeight;
-    }
-    else if (vAlign == WDeclarativeText::AlignVCenter)
-    {
-        y = (height - textHeight) / 2;
-    }
-    else y = marginHeight;
-
-    return QRectF(x, y, textWidth, textHeight);
-}
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -157,11 +145,24 @@ void WDeclarativeTextSvgPrivate::loadSvg()
 {
     Q_Q(WDeclarativeTextSvg);
 
+#ifdef QT_LATEST
+    timer.stop();
+#endif
+
     if (text.isEmpty())
     {
         setTextSize(0, 0);
 
         renderer->load(QByteArray());
+
+#ifdef QT_LATEST
+        if (pixmap.isNull() == false)
+        {
+            pixmap = QPixmap();
+
+            updateTexture = true;
+        }
+#endif
     }
     else
     {
@@ -260,6 +261,10 @@ void WDeclarativeTextSvgPrivate::loadSvg()
                        item + "</svg>");
 
         renderer->load(content);
+
+#ifdef QT_LATEST
+        updateTexture = true;
+#endif
     }
 
     q->svgChange();
@@ -320,12 +325,70 @@ void WDeclarativeTextSvgPrivate::addText(QString * item, const QString & x,
 
 //-------------------------------------------------------------------------------------------------
 
+void WDeclarativeTextSvgPrivate::setTextSize(int width, int height)
+{
+    Q_Q(WDeclarativeTextSvg);
+
+    if (textWidth != width)
+    {
+        textWidth = width;
+
+        emit q->textWidthChanged();
+    }
+
+    if (textHeight != height)
+    {
+        textHeight = height;
+
+        emit q->textHeightChanged();
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QRectF WDeclarativeTextSvgPrivate::getRect(qreal width, qreal height)
+{
+    qreal x;
+    qreal y;
+
+    int textWidth  = this->textWidth  * zoom;
+    int textHeight = this->textHeight * zoom;
+
+    if (hAlign == WDeclarativeText::AlignRight)
+    {
+        x = width - textWidth - marginWidth;
+    }
+    else if (hAlign == WDeclarativeText::AlignHCenter)
+    {
+        x = (width - textWidth) / 2;
+    }
+    else x = marginWidth;
+
+    if (vAlign == WDeclarativeText::AlignBottom)
+    {
+        y = height - textHeight - marginHeight;
+    }
+    else if (vAlign == WDeclarativeText::AlignVCenter)
+    {
+        y = (height - textHeight) / 2;
+    }
+    else y = marginHeight;
+
+    return QRectF(x, y, textWidth, textHeight);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 int WDeclarativeTextSvgPrivate::getWidth(const QFontMetrics & metrics, const QString & text) const
 {
     // FIXME: Workaround to fix the width of the arial font.
     if (font.family().toLower() == "arial")
     {
-         return metrics.width(text) * 1.01;
+#ifdef QT_4
+        return metrics.width(text) * 1.01;
+#else
+        return metrics.width(text) + (metrics.height() * 0.2);
+#endif
     }
     else return metrics.width(text);
 }
@@ -375,10 +438,27 @@ void WDeclarativeTextSvgPrivate::onLoad()
     if (q->isComponentComplete()) load();
 }
 
+#ifdef QT_4
+
 void WDeclarativeTextSvgPrivate::onUpdate()
 {
     Q_Q(WDeclarativeTextSvg); q->update();
 }
+
+#else
+
+//-------------------------------------------------------------------------------------------------
+
+void WDeclarativeTextSvgPrivate::onTimeout()
+{
+    Q_Q(WDeclarativeTextSvg);
+
+    updateGeometry = true;
+
+    q->update();
+}
+
+#endif
 
 //=================================================================================================
 // WDeclarativeTextSvg
@@ -389,7 +469,7 @@ void WDeclarativeTextSvgPrivate::onUpdate()
     : WDeclarativeItem(new WDeclarativeTextSvgPrivate(this), parent)
 #else
 /* explicit */ WDeclarativeTextSvg::WDeclarativeTextSvg(QQuickItem * parent)
-    : WDeclarativeItemPaint(new WDeclarativeTextSvgPrivate(this), parent)
+    : WDeclarativeTexture(new WDeclarativeTextSvgPrivate(this), parent)
 #endif
 {
     Q_D(WDeclarativeTextSvg); d->init();
@@ -404,7 +484,7 @@ WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p,
     : WDeclarativeItem(p, parent)
 #else
 WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p, QQuickItem * parent)
-    : WDeclarativeItemPaint(p, parent)
+    : WDeclarativeTexture(p, parent)
 #endif
 {
     Q_D(WDeclarativeTextSvg); d->init();
@@ -421,27 +501,21 @@ WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p, QQuickI
 #ifdef QT_4
     WDeclarativeItem::componentComplete();
 #else
-    WDeclarativeItemPaint::componentComplete();
+    WDeclarativeTexture::componentComplete();
 #endif
 
     d->load();
 }
 
+#ifdef QT_4
+
 //-------------------------------------------------------------------------------------------------
-// QGraphicsItem / QQuickPaintedItem reimplementation
+// QGraphicsItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_4
 /* virtual */ void WDeclarativeTextSvg::paint(QPainter * painter,
                                               const QStyleOptionGraphicsItem *, QWidget *)
-#else
-/* virtual */ void WDeclarativeTextSvg::paint(QPainter * painter)
-#endif
 {
-#ifdef QT_LATEST
-    if (isVisible() == false) return;
-#endif
-
     Q_D(WDeclarativeTextSvg);
 
     qreal width  = this->width ();
@@ -461,6 +535,8 @@ WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p, QQuickI
     }
     else d->renderer->render(painter, rect);
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Protected functions
@@ -502,9 +578,76 @@ WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p, QQuickI
 #ifdef QT_4
     return WDeclarativeItem::itemChange(change, value);
 #else
-    WDeclarativeItemPaint::itemChange(change, value);
+    WDeclarativeTexture::itemChange(change, value);
 #endif
 }
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_LATEST
+
+/* virtual */ void WDeclarativeTextSvg::geometryChanged(const QRectF & newGeometry,
+                                                        const QRectF & oldGeometry)
+{
+    WDeclarativeTexture::geometryChanged(newGeometry, oldGeometry);
+
+    if (oldGeometry.size() == newGeometry.size()) return;
+
+    Q_D(WDeclarativeTextSvg);
+
+    d->updateGeometry = true;
+
+    if (d->scaleDelayed && d->timer.isActive() == false)
+    {
+        d->timer.start();
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+// WDeclarativeTexture implementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ const QPixmap & WDeclarativeTextSvg::getPixmap()
+{
+    Q_D(WDeclarativeTextSvg);
+
+    if (d->updateTexture)
+    {
+        int width  = d->textWidth  * d->zoom;
+        int height = d->textHeight * d->zoom;
+
+        d->updatePixmap(width, height);
+    }
+    else if (d->updateGeometry && d->timer.isActive() == false)
+    {
+        int width  = d->textWidth  * d->zoom;
+        int height = d->textHeight * d->zoom;
+
+        if (d->pixmap.width() != width && d->pixmap.height() != height)
+        {
+            d->updatePixmap(width, height);
+        }
+    }
+
+    return d->pixmap;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Protected WDeclarativeTexture reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/*virtual */ void WDeclarativeTextSvg::applyGeometry(QSGInternalImageNode * node,
+                                                     const QPixmap        &)
+{
+    Q_D(WDeclarativeTextSvg);
+
+    QRectF rect = d->getRect(width(), height());
+
+    node->setTargetRect     (rect);
+    node->setInnerTargetRect(rect);
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Properties
@@ -579,6 +722,10 @@ void WDeclarativeTextSvg::setZoom(qreal zoom)
 
     svgChange();
 
+#ifdef QT_LATEST
+    d->updateGeometry = true;
+#endif
+
     update();
 
     emit zoomChanged();
@@ -599,6 +746,10 @@ void WDeclarativeTextSvg::setHAlign(WDeclarativeText::HAlignment align)
 
     d->hAlign = align;
 
+#ifdef QT_LATEST
+    d->updateGeometry = true;
+#endif
+
     update();
 
     emit horizontalAlignmentChanged();
@@ -618,6 +769,10 @@ void WDeclarativeTextSvg::setVAlign(WDeclarativeText::VAlignment align)
     if (d->vAlign == align) return;
 
     d->vAlign = align;
+
+#ifdef QT_LATEST
+    d->updateGeometry = true;
+#endif
 
     update();
 
@@ -817,6 +972,55 @@ void WDeclarativeTextSvg::setStyleSize(int size)
     emit styleSizeChanged();
 }
 
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_LATEST
+
+bool WDeclarativeTextSvg::scaleDelayed() const
+{
+    Q_D(const WDeclarativeTextSvg); return d->scaleDelayed;
+}
+
+void WDeclarativeTextSvg::setScaleDelayed(bool delayed)
+{
+    Q_D(WDeclarativeTextSvg);
+
+    if (d->scaleDelayed == delayed) return;
+
+    d->scaleDelayed = delayed;
+
+    if (delayed == false && d->timer.isActive())
+    {
+        d->timer.stop();
+
+        d->onTimeout();
+    }
+
+    emit scaleDelayedChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+int WDeclarativeTextSvg::scaleDelay() const
+{
+    Q_D(const WDeclarativeTextSvg); return d->scaleDelay;
+}
+
+void WDeclarativeTextSvg::setScaleDelay(int delay)
+{
+    Q_D(WDeclarativeTextSvg);
+
+    if (d->scaleDelay == delay) return;
+
+    d->scaleDelay = delay;
+
+    d->timer.setInterval(delay);
+
+    emit scaleDelayChanged();
+}
+
+#else
+
 //=================================================================================================
 // WDeclarativeTextSvgScalePrivate
 //=================================================================================================
@@ -895,11 +1099,7 @@ void WDeclarativeTextSvgScalePrivate::onScale()
 // WDeclarativeTextSvgScale
 //=================================================================================================
 
-#ifdef QT_4
 /* explicit */ WDeclarativeTextSvgScale::WDeclarativeTextSvgScale(QDeclarativeItem * parent)
-#else
-/* explicit */ WDeclarativeTextSvgScale::WDeclarativeTextSvgScale(QQuickItem * parent)
-#endif
     : WDeclarativeTextSvg(new WDeclarativeTextSvgScalePrivate(this), parent)
 {
     Q_D(WDeclarativeTextSvgScale); d->init();
@@ -923,21 +1123,13 @@ void WDeclarativeTextSvgScalePrivate::onScale()
 }
 
 //-------------------------------------------------------------------------------------------------
-// QGraphicsItem / QQuickPaintedItem reimplementation
+// QGraphicsItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_4
 /* virtual */ void WDeclarativeTextSvgScale::paint(QPainter                       * painter,
                                                    const QStyleOptionGraphicsItem * option,
                                                    QWidget                        * widget)
-#else
-/* virtual */ void WDeclarativeTextSvgScale::paint(QPainter * painter)
-#endif
 {
-#ifdef QT_LATEST
-    if (isVisible() == false) return;
-#endif
-
     Q_D(WDeclarativeTextSvgScale);
 
     if (d->scalable)
@@ -971,19 +1163,11 @@ void WDeclarativeTextSvgScalePrivate::onScale()
         {
             if (d->scaleDelayed)
             {
-#ifdef QT_4
                 if (d->viewport->scale() == 1.0)
-#else
-                if (d->view->item()->scale() == 1.0)
-#endif
                 {
                     d->scaleSize = size;
 
-#ifdef QT_4
                     d->timer.start();
-#else
-                    QTimer::singleShot(0, &d->timer, SLOT(start()));
-#endif
                 }
             }
             else
@@ -995,11 +1179,7 @@ void WDeclarativeTextSvgScalePrivate::onScale()
         }
     }
 
-#ifdef QT_4
     WDeclarativeTextSvg::paint(painter, option, widget);
-#else
-    WDeclarativeTextSvg::paint(painter);
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1109,5 +1289,7 @@ void WDeclarativeTextSvgScale::setScaleDelay(int delay)
 
     emit scaleDelayChanged();
 }
+
+#endif
 
 #endif // SK_NO_DECLARATIVETEXTSVG

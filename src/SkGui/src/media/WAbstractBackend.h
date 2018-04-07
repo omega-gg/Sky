@@ -31,13 +31,14 @@
 #ifndef SK_NO_ABSTRACTBACKEND
 
 // Forward declarations
-class WAbstractBackendPrivate;
-class WDeclarativePlayer;
-class WBackendFilter;
 #ifdef QT_4
 class QPainter;
 class QStyleOptionGraphicsItem;
-#else
+#endif
+class WAbstractBackendPrivate;
+class WDeclarativePlayer;
+class WBackendFilter;
+#ifdef QT_LATEST
 class WBackendFrame;
 class WBackendTexture;
 #endif

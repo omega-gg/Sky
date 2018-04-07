@@ -131,11 +131,6 @@ protected slots:
     virtual void requestFinished();
     virtual void requestProgress(qint64 received, qint64 total);
 
-#ifdef QT_LATEST
-protected: // WDeclarativeTexture implementation
-    virtual const QPixmap & getPixmap();
-#endif
-
 protected: // QGraphicsItem / QQuickItem reimplementation
 #ifdef QT_4
     /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
@@ -143,6 +138,9 @@ protected: // QGraphicsItem / QQuickItem reimplementation
     /* virtual */ void itemChange(ItemChange change, const ItemChangeData & value);
 
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
+
+protected: // WDeclarativeTexture implementation
+    virtual const QPixmap & getPixmap();
 #endif
 
 signals:

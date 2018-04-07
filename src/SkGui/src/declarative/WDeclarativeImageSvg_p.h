@@ -35,7 +35,7 @@
 
 // Private includes
 #ifdef QT_4
-#include <private/WDeclarativeItemPaint_p>
+#include <private/WDeclarativeItem_p>
 #else
 #include <private/WDeclarativeTexture_p>
 #endif
@@ -51,7 +51,7 @@ class WCacheFile;
 //-------------------------------------------------------------------------------------------------
 
 #ifdef QT_4
-class SK_GUI_EXPORT WDeclarativeImageSvgPrivate : public WDeclarativeItemPaintPrivate
+class SK_GUI_EXPORT WDeclarativeImageSvgPrivate : public WDeclarativeItemPrivate
 #else
 class SK_GUI_EXPORT WDeclarativeImageSvgPrivate : public WDeclarativeTexturePrivate
 #endif

@@ -626,19 +626,6 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
     }
 }
 
-#ifdef QT_LATEST
-
-//-------------------------------------------------------------------------------------------------
-// WDeclarativeTexture implementation
-//-------------------------------------------------------------------------------------------------
-
-/* virtual */ const QPixmap & WDeclarativeImageBase::getPixmap()
-{
-    return currentPixmap();
-}
-
-#endif
-
 //-------------------------------------------------------------------------------------------------
 // Protected QGraphicsItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
@@ -690,6 +677,15 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
     if (oldGeometry.size() == newGeometry.size()) return;
 
     d->updateGeometry = true;
+}
+
+//-------------------------------------------------------------------------------------------------
+// WDeclarativeTexture implementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ const QPixmap & WDeclarativeImageBase::getPixmap()
+{
+    return currentPixmap();
 }
 
 #endif

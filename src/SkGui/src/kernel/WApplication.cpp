@@ -180,18 +180,24 @@ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
     qmlRegisterUncreatableType<WDeclarativeImageBase>("Sky", 1,0, "ImageBase",
                                                       "ImageBase is abstract");
 
-    qmlRegisterType<WDeclarativeImage>        ("Sky", 1,0, "Image");
-    qmlRegisterType<WDeclarativeImageScale>   ("Sky", 1,0, "ImageScale");
-    qmlRegisterType<WDeclarativeImageSvg>     ("Sky", 1,0, "ImageSvg");
+    qmlRegisterType<WDeclarativeImage>     ("Sky", 1,0, "Image");
+    qmlRegisterType<WDeclarativeImageScale>("Sky", 1,0, "ImageScale");
+    qmlRegisterType<WDeclarativeImageSvg>  ("Sky", 1,0, "ImageSvg");
+
+#ifdef QT_4
     qmlRegisterType<WDeclarativeImageSvgScale>("Sky", 1,0, "ImageSvgScale");
+#endif
 
     qmlRegisterType<WDeclarativeBorderImage>     ("Sky", 1,0, "BorderImage");
     qmlRegisterType<WDeclarativeBorderImageScale>("Sky", 1,0, "BorderImageScale");
     qmlRegisterType<WDeclarativeBorderGrid>      ("Sky", 1,0, "BorderGrid");
 
-    qmlRegisterType<WDeclarativeText>        ("Sky", 1,0, "Text");
-    qmlRegisterType<WDeclarativeTextSvg>     ("Sky", 1,0, "TextSvg");
+    qmlRegisterType<WDeclarativeText>   ("Sky", 1,0, "Text");
+    qmlRegisterType<WDeclarativeTextSvg>("Sky", 1,0, "TextSvg");
+
+#ifdef QT_4
     qmlRegisterType<WDeclarativeTextSvgScale>("Sky", 1,0, "TextSvgScale");
+#endif
 
     qmlRegisterType<WDeclarativePlayer>("Sky", 1,0, "Player");
 

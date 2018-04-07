@@ -30,10 +30,10 @@
 #ifndef SK_NO_IMAGECOLORFILTER
 
 // Forward declarations
-class WImageColorFilterPrivate;
 #ifdef QT_LATEST
 class QGradient;
 #endif
+class WImageColorFilterPrivate;
 
 //-------------------------------------------------------------------------------------------------
 // WDeclarativeGradientStop

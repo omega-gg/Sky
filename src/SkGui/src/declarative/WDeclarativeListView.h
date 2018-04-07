@@ -23,8 +23,8 @@
 #ifndef SK_NO_DECLARATIVELISTVIEW
 
 // Forward declarations
-class WDeclarativeListViewPrivate;
 class QAbstractItemModel;
+class WDeclarativeListViewPrivate;
 
 //-------------------------------------------------------------------------------------------------
 // WDeclarativeListView

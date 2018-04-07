@@ -37,7 +37,7 @@
 #ifdef QT_4
 #include <private/WDeclarativeItem_p>
 #else
-#include <private/WDeclarativeItemPaint_p>
+#include <private/WDeclarativeTexture_p>
 #endif
 
 #ifndef SK_NO_DECLARATIVETEXTSVG
@@ -52,7 +52,7 @@ class QSvgRenderer;
 #ifdef QT_4
 class SK_GUI_EXPORT WDeclarativeTextSvgPrivate : public WDeclarativeItemPrivate
 #else
-class SK_GUI_EXPORT WDeclarativeTextSvgPrivate : public WDeclarativeItemPaintPrivate
+class SK_GUI_EXPORT WDeclarativeTextSvgPrivate : public WDeclarativeTexturePrivate
 #endif
 {
 public:
@@ -61,9 +61,9 @@ public:
     void init();
 
 public: // Functions
-    void setTextSize(int width, int height);
-
-    QRectF getRect(qreal width, qreal height);
+#ifdef QT_LATEST
+    void updatePixmap(int width, int height);
+#endif
 
     void load       ();
     void loadVisible();
@@ -80,6 +80,10 @@ public: // Functions
                                  const QString & size,
                                  const QString & color, const QString & extra = QString()) const;
 
+    void setTextSize(int width, int height);
+
+    QRectF getRect(qreal width, qreal height);
+
     int getWidth(const QFontMetrics & metrics, const QString & text) const;
 
     QString getStyle () const;
@@ -88,10 +92,19 @@ public: // Functions
     QString getOutline(const QString & color, int size) const;
 
 public: // Slots
-    void onLoad  ();
+    void onLoad();
+
+#ifdef QT_4
     void onUpdate();
+#else
+    void onTimeout();
+#endif
 
 public: // Variables
+#ifdef QT_LATEST
+    QPixmap pixmap;
+#endif
+
     QSvgRenderer * renderer;
 
     WDeclarativeTextSvg::LoadMode loadMode;
@@ -123,9 +136,18 @@ public: // Variables
 
     qreal zoom;
 
+#ifdef QT_LATEST
+    bool scaleDelayed : 1;
+    int  scaleDelay;
+
+    QTimer timer;
+#endif
+
 protected:
     W_DECLARE_PUBLIC(WDeclarativeTextSvg)
 };
+
+#ifdef QT_4
 
 //-------------------------------------------------------------------------------------------------
 // WDeclarativeTextSvgScalePrivate
@@ -161,6 +183,8 @@ public: // Variables
 protected:
     W_DECLARE_PUBLIC(WDeclarativeTextSvgScale)
 };
+
+#endif
 
 #endif // SK_NO_DECLARATIVETEXTSVG
 #endif // WDECLARATIVETEXTSVG_P_H

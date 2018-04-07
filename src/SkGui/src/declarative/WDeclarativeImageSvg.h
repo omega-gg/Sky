@@ -19,7 +19,7 @@
 
 // Sk includes
 #ifdef QT_4
-#include <WDeclarativeItemPaint>
+#include <WDeclarativeItem>
 #else
 #include <WDeclarativeTexture>
 #endif
@@ -34,7 +34,7 @@ class WDeclarativeImageSvgScalePrivate;
 //-------------------------------------------------------------------------------------------------
 
 #ifdef QT_4
-class SK_GUI_EXPORT WDeclarativeImageSvg : public WDeclarativeItemPaint
+class SK_GUI_EXPORT WDeclarativeImageSvg : public WDeclarativeItem
 #else
 class SK_GUI_EXPORT WDeclarativeImageSvg : public WDeclarativeTexture
 #endif

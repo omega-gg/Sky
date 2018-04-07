@@ -39,13 +39,15 @@
 // Private includes
 #ifdef QT_4
 #include <private/qdeclarativepixmapcache_p.h>
+#else
+#include <private/qsgadaptationlayer_p.h>
 #endif
 
 // Private include
 #ifdef QT_4
 #include <private/WDeclarativeItem_p>
 #else
-#include <private/WDeclarativeItemPaint_p>
+#include <private/WDeclarativeTexture_p>
 #endif
 
 //=================================================================================================
@@ -93,7 +95,7 @@ QSet<QUrl> WTextDocumentWithImageResources::errors;
 #ifdef QT_4
 class SK_GUI_EXPORT WDeclarativeTextPrivate : public WDeclarativeItemPrivate
 #else
-class SK_GUI_EXPORT WDeclarativeTextPrivate : public WDeclarativeItemPaintPrivate
+class SK_GUI_EXPORT WDeclarativeTextPrivate : public WDeclarativeTexturePrivate
 #endif
 {
 public:
@@ -338,7 +340,7 @@ WDeclarativeTextPrivate::WDeclarativeTextPrivate(WDeclarativeText * p)
 #ifdef QT_4
     : WDeclarativeItemPrivate(p) {}
 #else
-    : WDeclarativeItemPaintPrivate(p) {}
+    : WDeclarativeTexturePrivate(p) {}
 #endif
 
 void WDeclarativeTextPrivate::init()
@@ -803,6 +805,10 @@ void WDeclarativeTextPrivate::checkImageCache()
         }
     }
     else imageCache = QPixmap();
+
+#ifdef QT_LATEST
+    updateTexture = true;
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1195,7 +1201,7 @@ void WDeclarativeTextPrivate::drawTextLayout(QPainter      * painter,
     : WDeclarativeItem(new WDeclarativeTextPrivate(this), parent)
 #else
 /* explicit */ WDeclarativeText::WDeclarativeText(QQuickItem * parent)
-    : WDeclarativeItemPaint(new WDeclarativeTextPrivate(this), parent)
+    : WDeclarativeTexture(new WDeclarativeTextPrivate(this), parent)
 #endif
 {
     Q_D(WDeclarativeText); d->init();
@@ -1258,7 +1264,7 @@ void WDeclarativeTextPrivate::drawTextLayout(QPainter      * painter,
 #ifdef QT_4
     WDeclarativeItem::componentComplete();
 #else
-    WDeclarativeItemPaint::componentComplete();
+    WDeclarativeTexture::componentComplete();
 #endif
 
     if (d->updateOnComponentComplete == false) return;
@@ -1307,17 +1313,13 @@ void WDeclarativeTextPrivate::drawTextLayout(QPainter      * painter,
     return QRectF(rect);
 }
 
+//-------------------------------------------------------------------------------------------------
+
 #ifdef QT_4
+
 /* virtual */ void WDeclarativeText::paint(QPainter * painter,
                                            const QStyleOptionGraphicsItem *, QWidget *)
-#else
-/* virtual */ void WDeclarativeText::paint(QPainter * painter)
-#endif
 {
-#ifdef QT_LATEST
-    if (isVisible() == false) return;
-#endif
-
     Q_D(WDeclarativeText);
 
     //if (d->cacheAllTextAsImage || d->style != Normal)
@@ -1379,6 +1381,8 @@ void WDeclarativeTextPrivate::drawTextLayout(QPainter      * painter,
     }*/
 }
 
+#endif
+
 //-------------------------------------------------------------------------------------------------
 // Protected QGraphicsItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
@@ -1393,7 +1397,7 @@ void WDeclarativeTextPrivate::drawTextLayout(QPainter      * painter,
 #ifdef QT_4
         WDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
 #else
-        WDeclarativeItemPaint::geometryChanged(newGeometry, oldGeometry);
+        WDeclarativeTexture::geometryChanged(newGeometry, oldGeometry);
 #endif
 
         return;
@@ -1439,9 +1443,43 @@ void WDeclarativeTextPrivate::drawTextLayout(QPainter      * painter,
 #ifdef QT_4
     WDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
 #else
-    WDeclarativeItemPaint::geometryChanged(newGeometry, oldGeometry);
+    d->updateGeometry = true;
+
+    WDeclarativeTexture::geometryChanged(newGeometry, oldGeometry);
 #endif
 }
+
+#ifdef QT_LATEST
+
+//-------------------------------------------------------------------------------------------------
+// Protected WDeclarativeTexture implementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ const QPixmap & WDeclarativeText::getPixmap()
+{
+    Q_D(WDeclarativeText);
+
+    d->checkImageCache();
+
+    return d->imageCache;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Protected WDeclarativeTexture reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WDeclarativeText::applyGeometry(QSGInternalImageNode * node,
+                                                   const QPixmap        & pixmap)
+{
+    QRectF boundingRect = this->boundingRect();
+
+    QRectF rect = QRectF(boundingRect.x(), boundingRect.y(), pixmap.width(), pixmap.height());
+
+    node->setTargetRect     (rect);
+    node->setInnerTargetRect(rect);
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Events
@@ -1470,7 +1508,7 @@ void WDeclarativeTextPrivate::drawTextLayout(QPainter      * painter,
 #ifdef QT_4
         WDeclarativeItem::mousePressEvent(event);
 #else
-        WDeclarativeItemPaint::mousePressEvent(event);
+        WDeclarativeTexture::mousePressEvent(event);
 #endif
     }
 }
@@ -1496,7 +1534,7 @@ void WDeclarativeTextPrivate::drawTextLayout(QPainter      * painter,
 #ifdef QT_4
         WDeclarativeItem::mouseReleaseEvent(event);
 #else
-        WDeclarativeItemPaint::mouseReleaseEvent(event);
+        WDeclarativeTexture::mouseReleaseEvent(event);
 #endif
     }
 }
@@ -1521,7 +1559,7 @@ qreal WDeclarativeText::implicitWidth() const
 #ifdef QT_4
     return WDeclarativeItem::implicitWidth();
 #else
-    return WDeclarativeItemPaint::implicitWidth();
+    return WDeclarativeTexture::implicitWidth();
 #endif
 }
 
@@ -1530,7 +1568,7 @@ qreal WDeclarativeText::implicitHeight() const
 #ifdef QT_4
     return WDeclarativeItem::implicitHeight();
 #else
-    return WDeclarativeItemPaint::implicitHeight();
+    return WDeclarativeTexture::implicitHeight();
 #endif
 }
 

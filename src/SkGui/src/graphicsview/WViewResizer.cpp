@@ -164,6 +164,8 @@ void WViewResizerPrivate::refreshCoordinates()
 
     WDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
 
+    if (oldGeometry.size() == newGeometry.size()) return;
+
     d->refreshCoordinates();
 }
 

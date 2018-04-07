@@ -41,7 +41,7 @@
 
 WDeclarativeImageSvgPrivate::WDeclarativeImageSvgPrivate(WDeclarativeImageSvg * p)
 #ifdef QT_4
-    : WDeclarativeItemPaintPrivate(p) {}
+    : WDeclarativeItemPrivate(p) {}
 #else
     : WDeclarativeTexturePrivate(p) {}
 #endif
@@ -65,6 +65,8 @@ void WDeclarativeImageSvgPrivate::init()
     progress = 0.0;
 
 #ifdef QT_4
+    q->setFlag(QGraphicsItem::ItemHasNoContents, false);
+
     QObject::connect(renderer, SIGNAL(repaintNeeded()), q, SLOT(onUpdate()));
 #else
     scaleDelayed = true;
@@ -340,7 +342,7 @@ void WDeclarativeImageSvgPrivate::onTimeout()
 
 #ifdef QT_4
 /* explicit */ WDeclarativeImageSvg::WDeclarativeImageSvg(QDeclarativeItem * parent)
-    : WDeclarativeItemPaint(new WDeclarativeImageSvgPrivate(this), parent)
+    : WDeclarativeItem(new WDeclarativeImageSvgPrivate(this), parent)
 #else
 /* explicit */ WDeclarativeImageSvg::WDeclarativeImageSvg(QQuickItem * parent)
     : WDeclarativeTexture(new WDeclarativeImageSvgPrivate(this), parent)
@@ -355,7 +357,7 @@ void WDeclarativeImageSvgPrivate::onTimeout()
 #ifdef QT_4
 WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p,
                                            QDeclarativeItem            * parent)
-    : WDeclarativeItemPaint(p, parent)
+    : WDeclarativeItem(p, parent)
 #else
 WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQuickItem * parent)
     : WDeclarativeTexture(p, parent)
@@ -373,7 +375,7 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
     Q_D(WDeclarativeImageSvg);
 
 #ifdef QT_4
-    WDeclarativeItemPaint::componentComplete();
+    WDeclarativeItem::componentComplete();
 #else
     WDeclarativeTexture::componentComplete();
 #endif
@@ -456,7 +458,7 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
     }
 
 #ifdef QT_4
-    return WDeclarativeItemPaint::itemChange(change, value);
+    return WDeclarativeItem::itemChange(change, value);
 #else
     WDeclarativeTexture::itemChange(change, value);
 #endif

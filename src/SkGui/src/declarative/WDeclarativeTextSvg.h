@@ -34,7 +34,7 @@ class WDeclarativeGradient;
 #ifdef QT_4
 class SK_GUI_EXPORT WDeclarativeTextSvg : public WDeclarativeItem
 #else
-class SK_GUI_EXPORT WDeclarativeTextSvg : public WDeclarativeItemPaint
+class SK_GUI_EXPORT WDeclarativeTextSvg : public WDeclarativeTexture
 #endif
 {
     Q_OBJECT
@@ -74,6 +74,13 @@ class SK_GUI_EXPORT WDeclarativeTextSvg : public WDeclarativeItemPaint
     Q_PROPERTY(QColor styleColor READ styleColor WRITE setStyleColor NOTIFY styleColorChanged)
     Q_PROPERTY(int    styleSize  READ styleSize  WRITE setStyleSize  NOTIFY styleSizeChanged)
 
+#ifdef QT_LATEST
+    Q_PROPERTY(bool scaleDelayed READ scaleDelayed WRITE setScaleDelayed
+               NOTIFY scaleDelayedChanged)
+
+    Q_PROPERTY(int scaleDelay READ scaleDelay WRITE setScaleDelay NOTIFY scaleDelayChanged)
+#endif
+
 public: // Enums
     enum LoadMode { LoadAlways, LoadVisible };
 
@@ -105,12 +112,10 @@ protected:
 public: // QDeclarativeItem / QQuickItem reimplementation
     /* virtual */ void componentComplete();
 
-public: // QGraphicsItem / QQuickPaintedItem reimplementation
 #ifdef QT_4
+public: // QGraphicsItem reimplementation
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
-#else
-    /* virtual */ void paint(QPainter * painter);
 #endif
 
 protected: // Functions
@@ -121,6 +126,17 @@ protected: // QGraphicsItem / QQuickItem reimplementation
     /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 #else
     /* virtual */ void itemChange(ItemChange change, const ItemChangeData & value);
+#endif
+
+#ifdef QT_LATEST
+    /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
+
+protected: // WDeclarativeTexture implementation
+    /* virtual */ const QPixmap & getPixmap();
+
+protected: // WDeclarativeTexture reimplementation
+    /*virtual */ void applyGeometry(QSGInternalImageNode * node, const QPixmap & pixmap);
+#endif
 #endif
 
 signals:
@@ -149,6 +165,11 @@ signals:
 
     void styleColorChanged();
     void styleSizeChanged ();
+
+#ifdef QT_LATEST
+    void scaleDelayedChanged();
+    void scaleDelayChanged  ();
+#endif
 
 public: // Properties
     int textWidth () const;
@@ -196,14 +217,29 @@ public: // Properties
     int  styleSize() const;
     void setStyleSize(int size);
 
+#ifdef QT_LATEST
+    bool scaleDelayed() const;
+    void setScaleDelayed(bool delayed);
+
+    int  scaleDelay() const;
+    void setScaleDelay(int delay);
+#endif
+
 private:
     W_DECLARE_PRIVATE(WDeclarativeTextSvg)
 
-    Q_PRIVATE_SLOT(d_func(), void onLoad  ())
+    Q_PRIVATE_SLOT(d_func(), void onLoad())
+
+#ifdef QT_4
     Q_PRIVATE_SLOT(d_func(), void onUpdate())
+#else
+    Q_PRIVATE_SLOT(d_func(), void onTimeout())
+#endif
 };
 
 QML_DECLARE_TYPE(WDeclarativeTextSvg)
+
+#ifdef QT_4
 
 //-------------------------------------------------------------------------------------------------
 // WDeclarativeTextSvgScale
@@ -221,24 +257,16 @@ class SK_GUI_EXPORT WDeclarativeTextSvgScale : public WDeclarativeTextSvg
     Q_PROPERTY(int scaleDelay READ scaleDelay WRITE setScaleDelay NOTIFY scaleDelayChanged)
 
 public:
-#ifdef QT_4
     explicit WDeclarativeTextSvgScale(QDeclarativeItem * parent = NULL);
-#else
-    explicit WDeclarativeTextSvgScale(QQuickItem * parent = NULL);
-#endif
 
 public: // Interface
     Q_INVOKABLE void applyScale();
 
-public: // QGraphicsItem / QQuickPaintedItem reimplementation
-#ifdef QT_4
+public: // QGraphicsItem reimplementation
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
-#else
-    /* virtual */ void paint(QPainter * painter);
-#endif
 
-protected: // QGraphicsItem / QQuickItem reimplementation
+protected: // QGraphicsItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
 
 protected: // WDeclarativeTextSvg reimplementation
@@ -267,6 +295,8 @@ private:
 };
 
 QML_DECLARE_TYPE(WDeclarativeTextSvgScale)
+
+#endif
 
 #include <private/WDeclarativeTextSvg_p>
 

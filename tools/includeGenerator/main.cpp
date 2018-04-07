@@ -52,7 +52,7 @@ void writeInclude(const QFileInfo & info)
         content = "#include \"" + info.filePath() + "\"\n";
     }
 
-    qDebug(info.fileName().toStdString().c_str());
+    qDebug(info.fileName().toLatin1().constData());
 
     fileNew .open(QIODevice::WriteOnly | QIODevice::Truncate);
     fileLite.open(QIODevice::WriteOnly | QIODevice::Truncate);
@@ -82,7 +82,7 @@ void scanFolder(const QString & path, const QString & destination = QString())
     {
         if (info.isDir())
         {
-            qDebug(info.filePath().toStdString().c_str());
+            qDebug(info.filePath().toLatin1().constData());
 
             scanFolder(info.filePath(), destination);
         }
