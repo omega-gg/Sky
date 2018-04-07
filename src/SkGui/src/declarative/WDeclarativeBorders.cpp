@@ -154,16 +154,18 @@ WDeclarativeBordersPrivate::WDeclarativeBordersPrivate(WDeclarativeBorders * p)
 
 void WDeclarativeBordersPrivate::init()
 {
-    Q_Q(WDeclarativeBorders);
-
     left   = 0.0;
     right  = 0.0;
     top    = 0.0;
     bottom = 0.0;
 
 #ifdef QT_4
+    Q_Q(WDeclarativeBorders);
+
     q->setFlag(QGraphicsItem::ItemHasNoContents, false);
 #elif defined(SK_SOFTWARE) == false
+    Q_Q(WDeclarativeBorders);
+
     updateLeft   = true;
     updateRight  = true;
     updateTop    = true;
