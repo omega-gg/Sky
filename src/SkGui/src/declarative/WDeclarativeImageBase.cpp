@@ -47,8 +47,6 @@ WDeclarativeImageBasePrivate::WDeclarativeImageBasePrivate(WDeclarativeImageBase
 
 void WDeclarativeImageBasePrivate::init()
 {
-    Q_Q(WDeclarativeImageBase);
-
     file = NULL;
 
     status = WDeclarativeImageBase::Null;
@@ -70,6 +68,8 @@ void WDeclarativeImageBasePrivate::init()
     cache = true;
 
 #ifdef QT_4
+    Q_Q(WDeclarativeImageBase);
+
     q->setFlag(QGraphicsItem::ItemHasNoContents, false);
 #endif
 }
