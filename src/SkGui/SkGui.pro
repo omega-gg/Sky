@@ -103,14 +103,14 @@ CONFIG(debug, debug|release) {
 #--------------------------------------------------------------------------------------------------
 # Copy library to the bin directory
 
-win32:equals(QMAKE_COPY, "copy /y") {
+win32 {
+equals(QMAKE_COPY, "copy /y") {
     SK ~= s,/,\\,g
 
     QMAKE_POST_LINK += $${QMAKE_COPY} $$SK\\lib\\$${TARGET}.dll $$SK\\$$SK_BIN
-}
-
-win32:equals(QMAKE_COPY, "cp") {
+} else {
     QMAKE_POST_LINK += $${QMAKE_COPY} $$SK/lib/$${TARGET}.dll $$SK/$$SK_BIN
+}
 }
 
 macx: QMAKE_POST_LINK += $${QMAKE_COPY} $$SK/lib/lib$${TARGET}.dylib $$SK/$$SK_BIN
