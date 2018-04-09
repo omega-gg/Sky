@@ -332,6 +332,10 @@ protected: // Events
 
     /* virtual */ void mouseUngrabEvent();
 
+    /* virtual */ void touchEvent(QTouchEvent * event);
+
+    /* virtual */ void touchUngrabEvent();
+
     /* virtual */ void hoverEnterEvent(QHoverEvent * event);
     /* virtual */ void hoverLeaveEvent(QHoverEvent * event);
     /* virtual */ void hoverMoveEvent (QHoverEvent * event);

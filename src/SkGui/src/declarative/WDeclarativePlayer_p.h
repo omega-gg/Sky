@@ -105,10 +105,15 @@ public: // Variables
     bool frameUpdate;
 #endif
 
-    WAbstractBackend::State state;
-
     WLibraryFolder * folder;
     WPlaylist      * playlist;
+
+    WTabsTrack * tabs;
+    WTabTrack  * tab;
+
+    QUrl source;
+
+    WAbstractBackend::State state;
 
     qreal speed;
 
@@ -127,9 +132,6 @@ public: // Variables
     WAbstractBackend::Quality quality;
 
     WAbstractBackend::FillMode fillMode;
-
-    WTabsTrack * tabs;
-    WTabTrack  * tab;
 
     bool keepState;
 

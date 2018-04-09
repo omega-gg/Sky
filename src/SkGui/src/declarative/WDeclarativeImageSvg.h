@@ -95,7 +95,7 @@ public: // QDeclarativeItem / QQuickItem reimplementation
     /* virtual */ void componentComplete();
 
 #ifdef QT_4
-public: // QGraphicsItem
+public: // QGraphicsItem reimplementation
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                                                  QWidget                        * widget);
 #endif

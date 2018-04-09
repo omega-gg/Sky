@@ -1119,16 +1119,22 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 
     if (d->backend == backend) return;
 
-    if (d->backendInterface == d->backend)
-    {
-        d->backendInterface = backend;
-    }
-
     if (d->backend)
     {
+        d->source = d->backendInterface->source();
+
+        if (d->backendInterface == d->backend)
+        {
+            d->backendInterface = backend;
+        }
+
         disconnect(d->backend, 0, this, 0);
 
         d->backend->deleteBackend();
+    }
+    else if (d->backendInterface == d->backend)
+    {
+        d->backendInterface = backend;
     }
 
     d->backend = backend;
@@ -1150,6 +1156,13 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
         backend->setQuality(d->quality);
 
         backend->setFillMode(d->fillMode);
+
+        if (d->source.isEmpty() == false)
+        {
+            d->clearPlaylistAndTabs();
+
+            d->loadSource(d->source, -1, -1);
+        }
 
         connect(backend, SIGNAL(stateChanged    ()), this, SIGNAL(stateChanged    ()));
         connect(backend, SIGNAL(stateLoadChanged()), this, SIGNAL(stateLoadChanged()));
@@ -1221,18 +1234,22 @@ QUrl WDeclarativePlayer::source() const
     {
          return d->backendInterface->source();
     }
-    else return QUrl();
+    else return d->source;
 }
 
 void WDeclarativePlayer::setSource(const QUrl & url)
 {
     Q_D(WDeclarativePlayer);
 
-    if (d->backend && d->backendInterface->source() == url) return;
+    if (d->backend)
+    {
+        if (d->backendInterface->source() == url) return;
 
-    d->clearPlaylistAndTabs();
+        d->clearPlaylistAndTabs();
 
-    d->loadSource(url, -1, -1);
+        d->loadSource(url, -1, -1);
+    }
+    else d->source = url;
 }
 
 //-------------------------------------------------------------------------------------------------

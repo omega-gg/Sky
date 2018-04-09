@@ -244,7 +244,7 @@ WDeclarativeBorderImage::WDeclarativeBorderImage(WDeclarativeBorderImagePrivate 
 #ifdef QT_LATEST
 
 //-------------------------------------------------------------------------------------------------
-// Protected WDeclarativeImageBase reimplementation
+// Protected WDeclarativeTexture reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WDeclarativeBorderImage::applyGeometry(QSGInternalImageNode * node,

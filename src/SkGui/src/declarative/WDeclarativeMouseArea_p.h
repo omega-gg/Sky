@@ -109,6 +109,10 @@ public: // Variables
     Qt::CursorShape cursor;
     Qt::CursorShape cursorDrop;
 
+#ifdef QT_LATEST
+    int idTouch;
+#endif
+
 protected:
     W_DECLARE_PUBLIC(WDeclarativeMouseArea)
 };
