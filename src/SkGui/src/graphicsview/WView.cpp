@@ -314,6 +314,11 @@ void WViewPrivate::init(QQuickItem * item)
     idleTimer.setInterval(3000);
 
     //---------------------------------------------------------------------------------------------
+    // Touch
+
+    idTouch = -1;
+
+    //---------------------------------------------------------------------------------------------
     // Drag
 
     drag = NULL;
@@ -2364,6 +2369,80 @@ void WView::hoverLeave()
 
     WAbstractView::mouseMoveEvent(event);
 }
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_LATEST
+
+/* virtual */ void WView::touchEvent(QTouchEvent * event)
+{
+    Q_D(WView);
+
+    const QList<QTouchEvent::TouchPoint> & points = event->touchPoints();
+
+    if (d->idTouch == -1)
+    {
+        if (points.isEmpty()) return;
+
+        QTouchEvent::TouchPoint point = points.first();
+
+        if (point.state() == Qt::TouchPointPressed)
+        {
+            d->idTouch = point.id();
+
+            QPoint position = point.screenPos().toPoint();
+
+            QMouseEvent event(QEvent::MouseButtonPress, mapFromGlobal(position), position,
+                              Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+
+            QCoreApplication::sendEvent(this, &event);
+        }
+    }
+    else
+    {
+        foreach (const QTouchEvent::TouchPoint & point, points)
+        {
+            if (point.id() == d->idTouch)
+            {
+                if (point.state() == Qt::TouchPointMoved)
+                {
+                    QPoint position = point.screenPos().toPoint();
+
+                    QMouseEvent event(QEvent::MouseMove, mapFromGlobal(position), position,
+                                      Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+
+                    QCoreApplication::sendEvent(this, &event);
+                }
+                else if (point.state() == Qt::TouchPointReleased)
+                {
+                    d->idTouch = -1;
+
+                    QPoint position = point.screenPos().toPoint();
+
+                    QMouseEvent event(QEvent::MouseButtonRelease, mapFromGlobal(position), position,
+                                      Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+
+                    QCoreApplication::sendEvent(this, &event);
+                }
+
+                return;
+            }
+        }
+    }
+}
+
+/* virtual */ void WView::touchUngrabEvent()
+{
+    Q_D(WView);
+
+    if (d->idTouch == -1) return;
+
+    QEvent event(QEvent::UngrabMouse);
+
+    QCoreApplication::sendEvent(this, &event);
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 

@@ -311,10 +311,6 @@ void WDeclarativeMouseAreaPrivate::init()
     cursor     = Qt::ArrowCursor;
     cursorDrop = Qt::ArrowCursor;
 
-#ifdef QT_LATEST
-    idTouch = -1;
-#endif
-
     q->setAcceptedMouseButtons(Qt::LeftButton);
 
 #ifdef QT_LATEST
@@ -1105,33 +1101,12 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
 /* virtual */ void WDeclarativeMouseArea::touchEvent(QTouchEvent * event)
 {
-    Q_D(WDeclarativeMouseArea);
-
-    const QList<QTouchEvent::TouchPoint> & points = event->touchPoints();
-
-    if (d->idTouch == -1)
-    {
-        if (points.isEmpty()) return;
-
-        QTouchEvent::TouchPoint point = points.first();
-
-        d->idTouch = point.id();
-    }
-    else
-    {
-        foreach (const QTouchEvent::TouchPoint & point, points)
-        {
-            if (point.id() == d->idTouch)
-            {
-                return;
-            }
-        }
-    }
+    Q_D(WDeclarativeMouseArea); d->view->touchEvent(event);
 }
 
 /* virtual */ void WDeclarativeMouseArea::touchUngrabEvent()
 {
-    mouseUngrabEvent();
+    Q_D(WDeclarativeMouseArea); d->view->touchUngrabEvent();
 }
 
 #endif
