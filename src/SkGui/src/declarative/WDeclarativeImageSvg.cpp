@@ -71,6 +71,7 @@ void WDeclarativeImageSvgPrivate::init()
 #else
     scaleDelayed = true;
     scaleDelay   = wControllerView->scaleDelay();
+    scaleLater   = true;
 
     timer.setInterval(scaleDelay);
 
@@ -479,7 +480,10 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
 
     d->updateGeometry = true;
 
-    if (d->scaleDelayed) d->timer.start();
+    if (d->scaleDelayed && (d->scaleLater || d->timer.isActive() == false))
+    {
+        d->timer.start();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -712,6 +716,24 @@ void WDeclarativeImageSvg::setScaleDelay(int delay)
     d->timer.setInterval(delay);
 
     emit scaleDelayChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WDeclarativeImageSvg::scaleLater() const
+{
+    Q_D(const WDeclarativeImageSvg); return d->scaleLater;
+}
+
+void WDeclarativeImageSvg::setScaleLater(bool enabled)
+{
+    Q_D(WDeclarativeImageSvg);
+
+    if (d->scaleLater == enabled) return;
+
+    d->scaleLater = enabled;
+
+    emit scaleLaterChanged();
 }
 
 #else

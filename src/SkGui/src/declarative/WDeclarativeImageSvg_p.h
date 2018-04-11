@@ -116,6 +116,8 @@ public: // Variables
     bool scaleDelayed : 1;
     int  scaleDelay;
 
+    bool scaleLater : 1;
+
     QTimer timer;
 #endif
 

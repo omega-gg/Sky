@@ -2390,12 +2390,18 @@ void WView::hoverLeave()
         {
             d->idTouch = point.id();
 
-            QPoint position = point.screenPos().toPoint();
+            QPoint screenPos = point.screenPos().toPoint();
 
-            QMouseEvent event(QEvent::MouseButtonPress, mapFromGlobal(position), position,
-                              Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+            QPoint localPos = mapFromGlobal(screenPos);
 
-            QCoreApplication::sendEvent(this, &event);
+            QMouseEvent eventA(QEvent::MouseMove, localPos, screenPos,
+                               Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+
+            QMouseEvent eventB(QEvent::MouseButtonPress, localPos, screenPos,
+                               Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+
+            QCoreApplication::sendEvent(this, &eventA);
+            QCoreApplication::sendEvent(this, &eventB);
         }
     }
     else
@@ -2406,9 +2412,10 @@ void WView::hoverLeave()
             {
                 if (point.state() == Qt::TouchPointMoved)
                 {
-                    QPoint position = point.screenPos().toPoint();
+                    QPoint screenPos = point.screenPos().toPoint();
 
-                    QMouseEvent event(QEvent::MouseMove, mapFromGlobal(position), position,
+                    QMouseEvent event(QEvent::MouseMove,
+                                      mapFromGlobal(screenPos), screenPos,
                                       Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
 
                     QCoreApplication::sendEvent(this, &event);
@@ -2417,9 +2424,10 @@ void WView::hoverLeave()
                 {
                     d->idTouch = -1;
 
-                    QPoint position = point.screenPos().toPoint();
+                    QPoint screenPos = point.screenPos().toPoint();
 
-                    QMouseEvent event(QEvent::MouseButtonRelease, mapFromGlobal(position), position,
+                    QMouseEvent event(QEvent::MouseButtonRelease,
+                                      mapFromGlobal(screenPos), screenPos,
                                       Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
 
                     QCoreApplication::sendEvent(this, &event);

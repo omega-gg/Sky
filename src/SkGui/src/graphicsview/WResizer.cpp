@@ -350,7 +350,7 @@ WResizer::WResizer(ResizeType type, QQuickItem * parent)
 
     d->view->d_func()->setResizing(true);
 
-#if defined(Q_OS_WIN)
+#ifdef Q_OS_WIN
     Q_UNUSED(event);
 
     uint orientation;
@@ -368,8 +368,6 @@ WResizer::WResizer(ResizeType type, QQuickItem * parent)
     ReleaseCapture();
 
     PostMessage((HWND) d->view->winId(), WM_SYSCOMMAND, orientation, 0);
-
-    return;
 #elif defined(QT_4) && defined(Q_OS_LINUX)
     if (isSupportedByWM(ATOM(_NET_WM_MOVERESIZE)))
     {
@@ -401,14 +399,18 @@ WResizer::WResizer(ResizeType type, QQuickItem * parent)
 
         XSendEvent(display, QX11Info::appRootWindow(d->view->x11Info().screen()), false,
                    SubstructureRedirectMask | SubstructureNotifyMask, &xev);
-
-        return;
     }
-#endif
+    else
+    {
+        d->pressed = true;
 
+        d->startResize(event);
+    }
+#else
     d->pressed = true;
 
     d->startResize(event);
+#endif
 }
 
 #ifdef QT_4
@@ -417,22 +419,17 @@ WResizer::WResizer(ResizeType type, QQuickItem * parent)
 /* virtual */ void WResizer::mouseMoveEvent(QMouseEvent *)
 #endif
 {
+#if defined(QT_4) && defined(Q_OS_LINUX)
+    if (isSupportedByWM(ATOM(_NET_WM_MOVERESIZE))) return;
+
     Q_D(WResizer);
 
-#if defined(Q_OS_WIN)
-    if (GetSystemMenu((HWND) d->view->winId(), FALSE) != 0)
-    {
-        MSG msg;
-
-        while (PeekMessage(&msg, (HWND) d->view->winId(), WM_MOUSEMOVE, WM_MOUSEMOVE, PM_REMOVE));
-
-        return;
-    }
-#elif defined(QT_4) && defined(Q_OS_LINUX)
-    if (isSupportedByWM(ATOM(_NET_WM_MOVERESIZE))) return;
-#endif
+    if (d->resizing) d->resize();
+#elif defined(Q_OS_WIN) == false
+    Q_D(WResizer);
 
     if (d->resizing) d->resize();
+#endif
 }
 
 #endif // SK_NO_RESIZER

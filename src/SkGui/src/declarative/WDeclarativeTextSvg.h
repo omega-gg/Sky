@@ -79,6 +79,8 @@ class SK_GUI_EXPORT WDeclarativeTextSvg : public WDeclarativeTexture
                NOTIFY scaleDelayedChanged)
 
     Q_PROPERTY(int scaleDelay READ scaleDelay WRITE setScaleDelay NOTIFY scaleDelayChanged)
+
+    Q_PROPERTY(bool scaleLater READ scaleLater WRITE setScaleLater NOTIFY scaleLaterChanged)
 #endif
 
 public: // Enums
@@ -166,6 +168,7 @@ signals:
 #ifdef QT_LATEST
     void scaleDelayedChanged();
     void scaleDelayChanged  ();
+    void scaleLaterChanged  ();
 #endif
 
 public: // Properties
@@ -220,6 +223,9 @@ public: // Properties
 
     int  scaleDelay() const;
     void setScaleDelay(int delay);
+
+    bool scaleLater() const;
+    void setScaleLater(bool enabled);
 #endif
 
 private:

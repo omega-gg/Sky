@@ -80,6 +80,7 @@ void WDeclarativeTextSvgPrivate::init()
 #else
     scaleDelayed = true;
     scaleDelay   = wControllerView->scaleDelay();
+    scaleLater   = true;
 
     timer.setInterval(scaleDelay);
 
@@ -348,8 +349,8 @@ void WDeclarativeTextSvgPrivate::setTextSize(int width, int height)
 
 QRectF WDeclarativeTextSvgPrivate::getRect(qreal width, qreal height)
 {
-    qreal x;
-    qreal y;
+    int x;
+    int y;
 
     int textWidth  = this->textWidth  * zoom;
     int textHeight = this->textHeight * zoom;
@@ -597,7 +598,10 @@ WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p, QQuickI
 
     d->updateGeometry = true;
 
-    if (d->scaleDelayed) d->timer.start();
+    if (d->scaleDelayed && (d->scaleLater || d->timer.isActive() == false))
+    {
+        d->timer.start();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1014,6 +1018,24 @@ void WDeclarativeTextSvg::setScaleDelay(int delay)
     d->timer.setInterval(delay);
 
     emit scaleDelayChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WDeclarativeTextSvg::scaleLater() const
+{
+    Q_D(const WDeclarativeTextSvg); return d->scaleLater;
+}
+
+void WDeclarativeTextSvg::setScaleLater(bool enabled)
+{
+    Q_D(WDeclarativeTextSvg);
+
+    if (d->scaleLater == enabled) return;
+
+    d->scaleLater = enabled;
+
+    emit scaleLaterChanged();
 }
 
 #else

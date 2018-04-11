@@ -109,7 +109,7 @@ void WViewDragPrivate::clearDrag()
 {
     Q_D(WViewDrag);
 
-    WDeclarativeMouseArea::mousePressEvent(event);
+    //WDeclarativeMouseArea::mousePressEvent(event);
 
     if (d->dragEnabled && event->button() == Qt::LeftButton)
     {
@@ -124,14 +124,14 @@ void WViewDragPrivate::clearDrag()
 }
 
 #ifdef QT_4
-/* virtual */ void WViewDrag::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
+/* virtual */ void WViewDrag::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 #else
-/* virtual */ void WViewDrag::mouseReleaseEvent(QMouseEvent * event)
+/* virtual */ void WViewDrag::mouseReleaseEvent(QMouseEvent *)
 #endif
 {
     Q_D(WViewDrag);
 
-    WDeclarativeMouseArea::mouseReleaseEvent(event);
+    //WDeclarativeMouseArea::mouseReleaseEvent(event);
 
     d->clearDrag();
 }
@@ -139,21 +139,23 @@ void WViewDragPrivate::clearDrag()
 //-------------------------------------------------------------------------------------------------
 
 #ifdef QT_4
-/* virtual */ void WViewDrag::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
+/* virtual */ void WViewDrag::mouseMoveEvent(QGraphicsSceneMouseEvent *)
 #else
-/* virtual */ void WViewDrag::mouseMoveEvent(QMouseEvent * event)
+/* virtual */ void WViewDrag::mouseMoveEvent(QMouseEvent *)
 #endif
 {
     Q_D(WViewDrag);
 
     if (d->dragging == false)
     {
-        WDeclarativeMouseArea::mouseMoveEvent(event);
+        //WDeclarativeMouseArea::mouseMoveEvent(event);
 
         return;
     }
 
 #ifdef Q_OS_WIN
+    d->dragging = false;
+
     ReleaseCapture();
 
     PostMessage((HWND) d->view->winId(), WM_NCLBUTTONDOWN, HTCAPTION, 0);
@@ -185,7 +187,11 @@ void WViewDragPrivate::clearDrag()
         int boxY = d->view->position().y() + moveY;
 #endif
 
+#ifdef Q_OS_LINUX
         int maxHeight = geometryHeight - 27;
+#else
+        int maxHeight = geometryHeight;
+#endif
 
         if (boxY < geometry.y())
         {
