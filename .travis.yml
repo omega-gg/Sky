@@ -1,15 +1,13 @@
+dist: trusty
+sudo: required
+
+language: cpp
+compiler: gcc
+
 matrix:
   include:
-    - dist: trusty
-      sudo: required
-      compiler: gcc
-      env:
-        - $Qt="4"
-    - dist: trusty
-      sudo: required
-      compiler: gcc
-      env:
-        - $Qt="5"
+    - env: $Qt="4"
+    - env: $Qt="5"
 
 script:
   - if [ $Qt = "4" ]; then sh 3rdparty.sh all ubuntu fi
