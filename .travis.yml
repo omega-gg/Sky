@@ -5,8 +5,10 @@ compiler: gcc
 
 matrix:
   include:
-    env:
-      - $Qt="4"
+    - env:
+        - $Qt="4"
+    - env:
+        - $Qt="5"
 
 script:
   - if [ $Qt = "4" ]; then sh 3rdparty.sh all ubuntu fi
