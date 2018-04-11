@@ -11,4 +11,5 @@ compiler: gcc
 
 script:
   - sh 3rdparty.sh all ubuntu
+  - sh configure.sh qt4 linux
   - sh build.sh qt4 linux deploy
