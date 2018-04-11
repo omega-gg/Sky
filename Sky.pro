@@ -18,6 +18,7 @@ OTHER_FILES += 3rdparty.sh \
                README.md \
                LICENSE.md \
                AUTHORS.md \
+               .travis.yml \
                src/SkyComponents/qmldir \
                src/SkyPresentation/qmldir \
                dist/changes/1.0.1.md \
