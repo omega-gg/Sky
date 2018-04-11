@@ -1,13 +1,14 @@
-dist: trusty
-sudo: required
-
-compiler: gcc
-
 matrix:
   include:
-    - env:
+    - dist: trusty
+      sudo: required
+      compiler: gcc
+      env:
         - $Qt="4"
-    - env:
+    - dist: trusty
+      sudo: required
+      compiler: gcc
+      env:
         - $Qt="5"
 
 script:
