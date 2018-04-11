@@ -10,5 +10,5 @@ matrix:
     - env: $Qt="5"
 
 script:
-  - if [ $Qt = "4" ]; then sh 3rdparty.sh all ubuntu fi
-  - if [ $Qt = "4" ]; sh build.sh qt4 linux deploy fi
+  - then sh 3rdparty.sh all ubuntu
+  - sh build.sh qt4 linux deploy
