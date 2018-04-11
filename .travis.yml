@@ -4,11 +4,11 @@ sudo: required
 language: cpp
 compiler: gcc
 
-matrix:
-  include:
-    - env: $Qt="4"
-    - env: $Qt="5"
+#matrix:
+#  include:
+#    - env: $Qt="4"
+#    - env: $Qt="5"
 
 script:
-  - then sh 3rdparty.sh all ubuntu
+  - sh 3rdparty.sh all ubuntu
   - sh build.sh qt4 linux deploy
