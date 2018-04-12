@@ -128,7 +128,7 @@ fi
 
 if [ $linux = true ]; then
 
-    if [ $(uname -m) = "x86_64" ]; then
+    if [ -d "$lib64" ]; then
 
         lib="$lib64"
     else
