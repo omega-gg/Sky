@@ -11,7 +11,7 @@ matrix:
     #- env: TARGET==xenial-amd64
 
 before_install:
-  - docker run --name ubuntu -d -v $(pwd):/dev ubuntu:latest tail -f /dev/null
+  - docker run -d --name ubuntu -v $(pwd):/dev ubuntu:yakkety tail -f /dev/null
   - docker ps
 
 install:
