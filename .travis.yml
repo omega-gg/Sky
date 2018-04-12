@@ -7,23 +7,22 @@ language: cpp
 
 matrix:
   include:
-    - env: DIST=ubuntu TARGET==xenial-i386
-    #- env: DIST=ubuntu TARGET==xenial-amd64
+    - os: linux
+      env: TARGET==i386
+    #- os: linux
+    #  env: TARGET==amd64
 
 before_install:
-  - docker run -d --name ubuntu-test -v $(pwd):/travis ubuntu:17.10 tail -f /dev/null
+  - docker run -d --name ubuntu -v $(pwd):/travis ubuntu:17.10 tail -f /dev/null
   - docker ps
 
 install:
-  - docker exec -t ubuntu-test bash -c "cd /travis;
-                                        apt-get update;
-                                        apt-get -y install sudo wget;
-                                        ls -la /usr/lib/;
-                                        echo "---";
-                                        ls -la /usr/lib/x86_64-linux-gnu;
-                                        sh 3rdparty.sh all ubuntu;
-                                        sh configure.sh qt4 linux"
+  - docker exec -t ubuntu bash -c "cd /travis;
+                                   apt-get update;
+                                   apt-get -y install sudo wget;
+                                   sh 3rdparty.sh all ubuntu;
+                                   sh configure.sh qt4 linux"
 
 script:
-  - docker exec -t ubuntu-test bash -c "cd /travis;
-                                        sh build.sh qt4 linux deploy"
+  - docker exec -t ubuntu bash -c "cd /travis;
+                                   sh build.sh qt4 linux deploy"
