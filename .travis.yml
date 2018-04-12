@@ -1,15 +1,18 @@
-dist: trusty
 sudo: required
+dist: trusty
 
-services: docker
+services:
+  - docker
 
 language: cpp
-compiler: gcc
+#compiler: gcc
 
 matrix:
   include:
-    - env: DIST=ubuntu TARGET==xenial-i386
-    - env: DIST=ubuntu TARGET==xenial-amd64
+    - os: linux
+      env: DIST=ubuntu TARGET==xenial-i386 PACKAGE=deb
+    - os: linux
+      env: DIST=ubuntu TARGET==xenial-amd64 PACKAGE=deb
 
 install:
   - sh 3rdparty.sh all ubuntu
