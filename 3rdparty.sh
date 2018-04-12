@@ -345,17 +345,17 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
         mkdir -p "$VLC"
 
-        sudo cp "$usr"/libvlc.so.$libvlc_version_linux         "$VLC"/libvlc.so.5
-        sudo cp "$usr"/libvlccore.so.$libvlccore_version_linux "$VLC"/libvlccore.so.8
+        sudo cp "$lib"/libvlc.so.$libvlc_version_linux         "$VLC"/libvlc.so.5
+        sudo cp "$lib"/libvlccore.so.$libvlccore_version_linux "$VLC"/libvlccore.so.8
 
-        sudo cp -r "$usr"/vlc/plugins "$VLC"
+        sudo cp -r "$lib"/vlc/plugins "$VLC"
 
         echo ""
         echo "DEPLOYING libtorrent"
 
         mkdir -p "$libtorrent"
 
-        sudo cp "$usr"/libtorrent-rasterbar.so.$libtorrent_version_linux \
+        sudo cp "$lib"/libtorrent-rasterbar.so.$libtorrent_version_linux \
                 "$libtorrent"/libtorrent-rasterbar.so.9
 
         echo ""
