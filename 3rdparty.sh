@@ -58,7 +58,7 @@ libvlccore_version_ubuntu="8.0.0"
 
 libtorrent_version_ubuntu="9.0.0"
 
-Boost_version_ubuntu="1.61.0"
+Boost_version_ubuntu="1.62.0"
 
 #--------------------------------------------------------------------------------------------------
 
