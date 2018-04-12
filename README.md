@@ -1,6 +1,8 @@
 <a href="http://omega.gg/MotionBox/sources"><img src="dist/pictures/Sky.png" alt="Sky kit" width="128px"></a>
 ---
 
+[![Build Status][travis-img]][travis]
+
 Sky is the complete application kit built for [MotionBox](http://omega.gg/MotionBox).<br>
 Designed for efficiency, scalability and maintainability.<br>
 [omega](http://omega.gg/about) is building Sky kit for the society of sharing.<br>
