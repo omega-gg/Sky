@@ -63,7 +63,7 @@ fi
 
 if [ $2 = "linux" ]; then
 
-    if [ $(uname -m) = "x86_64" ]; then
+    if [ -d "${lib64}" ]; then
 
         base="$base64"
 
