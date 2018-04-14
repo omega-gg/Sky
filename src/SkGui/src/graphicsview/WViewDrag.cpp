@@ -109,7 +109,7 @@ void WViewDragPrivate::clearDrag()
 {
     Q_D(WViewDrag);
 
-    //WDeclarativeMouseArea::mousePressEvent(event);
+    WDeclarativeMouseArea::mousePressEvent(event);
 
     if (d->dragEnabled && event->button() == Qt::LeftButton)
     {
@@ -124,14 +124,14 @@ void WViewDragPrivate::clearDrag()
 }
 
 #ifdef QT_4
-/* virtual */ void WViewDrag::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
+/* virtual */ void WViewDrag::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 #else
-/* virtual */ void WViewDrag::mouseReleaseEvent(QMouseEvent *)
+/* virtual */ void WViewDrag::mouseReleaseEvent(QMouseEvent * event)
 #endif
 {
     Q_D(WViewDrag);
 
-    //WDeclarativeMouseArea::mouseReleaseEvent(event);
+    WDeclarativeMouseArea::mouseReleaseEvent(event);
 
     d->clearDrag();
 }

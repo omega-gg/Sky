@@ -43,7 +43,7 @@ struct WBackendTorrentItem
 
 inline bool sort(const WBackendTorrentItem & itemA, const WBackendTorrentItem & itemB)
 {
-    return (itemA.name < itemB.name);
+    return (itemA.name.toLower() < itemB.name.toLower());
 }
 
 //=================================================================================================
