@@ -367,7 +367,6 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
             sudo cp "$lib"/qt4/plugins/imageformats/libqsvg.so  "$Qt"/plugins/imageformats
             sudo cp "$lib"/qt4/plugins/imageformats/libqjpeg.so "$Qt"/plugins/imageformats
-        else
         fi
 
         echo ""
