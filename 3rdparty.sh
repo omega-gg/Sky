@@ -38,10 +38,10 @@ usr="/usr/lib"
 lib32="/usr/lib/i386-linux-gnu"
 lib64="/usr/lib/x86_64-linux-gnu"
 
+Qt5_version_linux="5.9.1"
+
 #--------------------------------------------------------------------------------------------------
 # Ubuntu
-
-Qt5_version_ubuntu="5.9.1"
 
 QtWebkit_version_ubuntu="4.10.2"
 
@@ -100,7 +100,7 @@ if [ $3 = "ubuntu" ]; then
 
         QtWebkit_version="$QtWebkit_version_ubuntu"
     else
-        Qt5_version="$Qt5_version_ubuntu"
+        Qt5_version="$Qt5_version_linux"
     fi
 
     libvlc_version="$libvlc_version_ubuntu"
