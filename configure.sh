@@ -131,19 +131,38 @@ elif [ $1 = "qt5" ]; then
     mkdir -p include/Qt5/QtQml/private
     mkdir -p include/Qt5/QtQuick/private
 
-    cp "$Qt5"/include/QtCore/*  include/Qt5/QtCore
-    cp "$Qt5"/include/QtGui/*   include/Qt5/QtGui
-    cp "$Qt5"/include/QtQml/*   include/Qt5/QtQml
-    cp "$Qt5"/include/QtQuick/* include/Qt5/QtQuick
+    if [ $2 = "win32" ]; then
 
-    cp "$Qt5"/include/QtCore/$Qt5_version/QtCore/private/*   include/Qt5/QtCore/private
-    cp "$Qt5"/include/QtGui/$Qt5_version/QtGui/private/*     include/Qt5/QtGui/private
-    cp "$Qt5"/include/QtQml/$Qt5_version/QtQml/private/*     include/Qt5/QtQml/private
-    cp "$Qt5"/include/QtQuick/$Qt5_version/QtQuick/private/* include/Qt5/QtQuick/private
+        cp "$Qt5"/include/QtCore/*  include/Qt5/QtCore
+        cp "$Qt5"/include/QtGui/*   include/Qt5/QtGui
+        cp "$Qt5"/include/QtQml/*   include/Qt5/QtQml
+        cp "$Qt5"/include/QtQuick/* include/Qt5/QtQuick
 
-    cp -r "$Qt5"/include/QtGui/$Qt5_version/QtGui/qpa include/Qt5/QtGui
+        cp "$Qt5"/include/QtCore/$Qt5_version/QtCore/private/*   include/Qt5/QtCore/private
+        cp "$Qt5"/include/QtGui/$Qt5_version/QtGui/private/*     include/Qt5/QtGui/private
+        cp "$Qt5"/include/QtQml/$Qt5_version/QtQml/private/*     include/Qt5/QtQml/private
+        cp "$Qt5"/include/QtQuick/$Qt5_version/QtQuick/private/* include/Qt5/QtQuick/private
 
-    if [ $2 = "osx" ]; then
+        cp -r "$Qt5"/include/QtGui/$Qt5_version/QtGui/qpa include/Qt5/QtGui
+
+    elif [ $2 = "linux" ]; then
+
+        cp "$Qt5"/qtbase/include/QtCore/*  include/Qt5/QtCore
+        cp "$Qt5"/qtbase/include/QtGui/*   include/Qt5/QtGui
+
+        cp "$Qt5"/qtdeclarative/include/QtQml/*   include/Qt5/QtQml
+        cp "$Qt5"/qtdeclarative/include/QtQuick/* include/Qt5/QtQuick
+
+        cp "$Qt5"/qtbase/include/QtCore/$Qt5_version/QtCore/private/* include/Qt5/QtCore/private
+        cp "$Qt5"/qtbase/include/QtGui/$Qt5_version/QtGui/private/*   include/Qt5/QtGui/private
+
+        cp "$Qt5"/qtdeclarative/include/QtQml/$Qt5_version/QtQml/private/* \
+           include/Qt5/QtQml/private
+
+        cp "$Qt5"/qtdeclarative/include/QtQuick/$Qt5_version/QtQuick/private/* \
+            include/Qt5/QtQuick/private
+
+    elif [ $2 = "osx" ]; then
 
         Qt5=/usr/local/opt/qt\@5.5
     fi
