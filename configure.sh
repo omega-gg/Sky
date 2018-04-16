@@ -160,7 +160,7 @@ elif [ $1 = "qt5" ]; then
            include/Qt5/QtQml/private
 
         cp "$Qt5"/qtdeclarative/include/QtQuick/$Qt5_version/QtQuick/private/* \
-            include/Qt5/QtQuick/private
+           include/Qt5/QtQuick/private
 
     elif [ $2 = "osx" ]; then
 
