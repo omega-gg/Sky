@@ -74,8 +74,8 @@ if [ $# != 3 ] \
    || \
    [ $3 != "win32" -a $3 != "osx" -a $3 != "ubuntu" ]; then
 
-    echo "Usage: 3rdparty <all | install | uninstall | deploy | clean> <qt4 | qt5>"\
-"<win32 | osx | ubuntu>"
+    echo "Usage: 3rdparty <all | install | uninstall | deploy | clean> <qt4 | qt5> "\
+         "<win32 | osx | ubuntu>"
 
     exit 1
 fi
