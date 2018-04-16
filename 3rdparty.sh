@@ -50,7 +50,9 @@ Boost_version_ubuntu="1.62.0"
 X11_ubuntu="libx11-dev libxi-dev libxinerama-dev libxrandr-dev libxcursor-dev libfontconfig-dev"
 
 Qt4_ubuntu="qt4-default libqtwebkit-dev openssl"
-Qt5_ubuntu="qtdeclarative5-dev qtscript5-dev libqt5xmlpatterns5-dev"
+
+Qt5_ubuntu="qtdeclarative5-dev qtscript5-dev libqt5xmlpatterns5-dev libqt5svg5-dev" \
+           "libqt5x11extras5-dev"
 
 VLC_ubuntu="libvlc-dev vlc"
 
