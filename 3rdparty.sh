@@ -19,21 +19,11 @@ Boost_version="1.55.0"
 
 #--------------------------------------------------------------------------------------------------
 
-Qt4="$external/Qt/$Qt4_version"
-
 VLC="$external/VLC/$VLC_version"
 
 libtorrent="$external/libtorrent/$libtorrent_version"
 
 Boost="$external/Boost/$Boost_version"
-
-#--------------------------------------------------------------------------------------------------
-
-Qt4_name="qt-everywhere-opensource-src-4.8.7"
-
-Qt4_archive="$Qt4_name.tar.gz"
-
-Qt4_sources="http://download.qt.io/official_releases/qt/4.8/4.8.7/$Qt4_archive"
 
 #--------------------------------------------------------------------------------------------------
 # Windows
@@ -67,7 +57,8 @@ Boost_version_ubuntu="1.62.0"
 
 X11_ubuntu="libx11-dev libxi-dev libxinerama-dev libxrandr-dev libxcursor-dev libfontconfig-dev"
 
-Qt_ubuntu="qt4-default libqtwebkit-dev openssl"
+Qt4_ubuntu="qt4-default libqtwebkit-dev openssl"
+Qt5_ubuntu="qt5-default openssl"
 
 VLC_ubuntu="libvlc-dev vlc"
 
@@ -122,9 +113,14 @@ if [ $3 = "ubuntu" ]; then
 
     #----------------------------------------------------------------------------------------------
 
-    X11_linux="$X11_ubuntu"
+    if [ $2 = "qt4" ]; then
 
-    Qt_linux="$Qt_ubuntu"
+        Qt_linux="$Qt4_ubuntu"
+    else
+        Qt_linux="$Qt5_ubuntu"
+    fi
+
+    X11_linux="$X11_ubuntu"
 
     VLC_linux="$VLC_ubuntu"
 
@@ -135,6 +131,25 @@ if [ $3 = "ubuntu" ]; then
     tools_linux="$tools_ubuntu"
 else
     linux=false
+fi
+
+if [ $2 = "qt4" ]; then
+
+    Qt="$external/Qt/$Qt4_version"
+
+    Qt_name="qt-everywhere-opensource-src-$Qt4_version"
+
+    Qt_archive="$Qt_name.tar.gz"
+
+    Qt_sources="http://download.qt.io/official_releases/qt/4.8/$Qt4_version/$Qt_archive"
+else
+    Qt="$external/Qt/$Qt5_version"
+
+    Qt_name="qt-everywhere-opensource-src-$Qt5_version"
+
+    Qt_archive="$Qt_name.tar.xz"
+
+    Qt_sources="http://download.qt.io/official_releases/qt/5.9/$Qt5_version/single/$Qt_archive"
 fi
 
 if [ $linux = true ]; then
@@ -293,7 +308,7 @@ if [ $1 = "clean" -a $linux = true ]; then
 
     echo "CLEANING"
 
-    sudo rm -rf "$Qt4"
+    sudo rm -rf "$Qt"
     sudo rm -rf "$VLC"
     sudo rm -rf "$libtorrent"
     sudo rm -rf "$Boost_linux"
@@ -315,41 +330,45 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
         echo "DEPLOYING Qt"
 
-        if [ ! -d "${Qt4}" ]; then
+        if [ ! -d "${Qt}" ]; then
 
-            mkdir -p "$Qt4"
+            mkdir -p "$Qt"
 
-            cd "$Qt4"
+            cd "$Qt"
 
-            wget "$Qt4_sources"
+            wget "$Qt_sources"
 
-            tar -xzf "$Qt4_archive"
+            tar -xzf "$Qt_archive"
 
-            mv "$Qt4_name"/* .
+            mv "$Qt_name"/* .
 
-            rm -rf "$Qt4_name"
-            rm "$Qt4_archive"
+            rm -rf "$Qt_name"
+            rm "$Qt_archive"
 
             cd -
         fi
 
-        sudo cp "$lib"/libQtCore.so.$Qt4_version        "$Qt4"/lib/libQtCore.so.4
-        sudo cp "$lib"/libQtGui.so.$Qt4_version         "$Qt4"/lib/libQtGui.so.4
-        sudo cp "$lib"/libQtDeclarative.so.$Qt4_version "$Qt4"/lib/libQtDeclarative.so.4
-        sudo cp "$lib"/libQtNetwork.so.$Qt4_version     "$Qt4"/lib/libQtNetwork.so.4
-        sudo cp "$lib"/libQtOpenGL.so.$Qt4_version      "$Qt4"/lib/libQtOpenGL.so.4
-        sudo cp "$lib"/libQtScript.so.$Qt4_version      "$Qt4"/lib/libQtScript.so.4
-        sudo cp "$lib"/libQtSql.so.$Qt4_version         "$Qt4"/lib/libQtSql.so.4
-        sudo cp "$lib"/libQtSvg.so.$Qt4_version         "$Qt4"/lib/libQtSvg.so.4
-        sudo cp "$lib"/libQtXml.so.$Qt4_version         "$Qt4"/lib/libQtXml.so.4
-        sudo cp "$lib"/libQtXmlPatterns.so.$Qt4_version "$Qt4"/lib/libQtXmlPatterns.so.4
+        if [ $2 = "qt4" ]; then
 
-        sudo cp "$lib"/libQtWebKit.so.$QtWebkit_version "$Qt4"/lib/libQtWebKit.so.4
+            sudo cp "$lib"/libQtCore.so.$Qt_version        "$Qt"/lib/libQtCore.so.4
+            sudo cp "$lib"/libQtGui.so.$Qt_version         "$Qt"/lib/libQtGui.so.4
+            sudo cp "$lib"/libQtDeclarative.so.$Qt_version "$Qt"/lib/libQtDeclarative.so.4
+            sudo cp "$lib"/libQtNetwork.so.$Qt_version     "$Qt"/lib/libQtNetwork.so.4
+            sudo cp "$lib"/libQtOpenGL.so.$Qt_version      "$Qt"/lib/libQtOpenGL.so.4
+            sudo cp "$lib"/libQtScript.so.$Qt_version      "$Qt"/lib/libQtScript.so.4
+            sudo cp "$lib"/libQtSql.so.$Qt_version         "$Qt"/lib/libQtSql.so.4
+            sudo cp "$lib"/libQtSvg.so.$Qt_version         "$Qt"/lib/libQtSvg.so.4
+            sudo cp "$lib"/libQtXml.so.$Qt_version         "$Qt"/lib/libQtXml.so.4
+            sudo cp "$lib"/libQtXmlPatterns.so.$Qt_version "$Qt"/lib/libQtXmlPatterns.so.4
 
-        mkdir -p "$Qt4"/plugins/imageformats
+            sudo cp "$lib"/libQtWebKit.so.$QtWebkit_version "$Qt"/lib/libQtWebKit.so.4
 
-        sudo cp "$lib"/qt4/plugins/imageformats/libqsvg.so  "$Qt4"/plugins/imageformats
-        sudo cp "$lib"/qt4/plugins/imageformats/libqjpeg.so "$Qt4"/plugins/imageformats
+            mkdir -p "$Qt"/plugins/imageformats
+
+            sudo cp "$lib"/qt4/plugins/imageformats/libqsvg.so  "$Qt"/plugins/imageformats
+            sudo cp "$lib"/qt4/plugins/imageformats/libqjpeg.so "$Qt"/plugins/imageformats
+        else
+        fi
 
         echo ""
         echo "DEPLOYING VLC"
