@@ -338,7 +338,7 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
             wget "$Qt_sources"
 
-            tar -xzf "$Qt_archive"
+            tar -xf "$Qt_archive"
 
             mv "$Qt_name"/* .
 
