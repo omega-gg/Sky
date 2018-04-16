@@ -51,8 +51,8 @@ X11_ubuntu="libx11-dev libxi-dev libxinerama-dev libxrandr-dev libxcursor-dev li
 
 Qt4_ubuntu="qt4-default libqtwebkit-dev openssl"
 
-Qt5_ubuntu="qtdeclarative5-dev qtscript5-dev libqt5xmlpatterns5-dev libqt5svg5-dev" \
-           "libqt5x11extras5-dev"
+Qt5_ubuntu="qtdeclarative5-dev qtscript5-dev libqt5xmlpatterns5-dev libqt5svg5-dev"\
+"libqt5x11extras5-dev"
 
 VLC_ubuntu="libvlc-dev vlc"
 
@@ -74,8 +74,8 @@ if [ $# != 3 ] \
    || \
    [ $3 != "win32" -a $3 != "osx" -a $3 != "ubuntu" ]; then
 
-    echo "Usage: 3rdparty <all | install | uninstall | deploy | clean> <qt4 | qt5>" \
-         "<win32 | osx | ubuntu>"
+    echo "Usage: 3rdparty <all | install | uninstall | deploy | clean> <qt4 | qt5>"\
+"<win32 | osx | ubuntu>"
 
     exit 1
 fi
