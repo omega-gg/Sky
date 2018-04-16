@@ -18,14 +18,6 @@ libtorrent_version="1.1.6"
 Boost_version="1.55.0"
 
 #--------------------------------------------------------------------------------------------------
-
-VLC="$external/VLC/$VLC_version"
-
-libtorrent="$external/libtorrent/$libtorrent_version"
-
-Boost="$external/Boost/$Boost_version"
-
-#--------------------------------------------------------------------------------------------------
 # Windows
 
 archive_win32="http://omega.gg/get/Sky/3rdparty/win32"
@@ -163,6 +155,14 @@ if [ $linux = true ]; then
 
     Boost="$external/Boost/$Boost_version"
 fi
+
+#--------------------------------------------------------------------------------------------------
+
+VLC="$external/VLC/$VLC_version"
+
+libtorrent="$external/libtorrent/$libtorrent_version"
+
+Boost="$external/Boost/$Boost_version"
 
 #--------------------------------------------------------------------------------------------------
 # Install

@@ -19,17 +19,6 @@ Boost_version="1.55.0"
 
 #--------------------------------------------------------------------------------------------------
 
-Qt4="$external/Qt/$Qt4_version"
-Qt5="$external/Qt/$Qt5_version"
-
-VLC="$external/VLC/$VLC_version"
-
-libtorrent="$external/libtorrent/$libtorrent_version"
-
-Boost="$external/Boost/$Boost_version"
-
-#--------------------------------------------------------------------------------------------------
-
 bin4="bin"
 bin5="latest"
 
@@ -59,6 +48,17 @@ if [ $1 = "qt5" -a $2 = "linux" ]; then
 
     Qt5_version="$Qt5_version_linux"
 fi
+
+#--------------------------------------------------------------------------------------------------
+
+Qt4="$external/Qt/$Qt4_version"
+Qt5="$external/Qt/$Qt5_version"
+
+VLC="$external/VLC/$VLC_version"
+
+libtorrent="$external/libtorrent/$libtorrent_version"
+
+Boost="$external/Boost/$Boost_version"
 
 #--------------------------------------------------------------------------------------------------
 # Clean
