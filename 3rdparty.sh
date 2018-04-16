@@ -9,6 +9,7 @@ external="../3rdparty"
 #--------------------------------------------------------------------------------------------------
 
 Qt4_version="4.8.7"
+Qt5_version="5.10.1"
 
 VLC_version="2.2.8"
 
@@ -50,6 +51,8 @@ lib64="/usr/lib/x86_64-linux-gnu"
 #--------------------------------------------------------------------------------------------------
 # Ubuntu
 
+Qt5_version_ubuntu="5.9.1"
+
 QtWebkit_version_ubuntu="4.10.2"
 
 libvlc_version_ubuntu="5.5.0"
@@ -78,13 +81,16 @@ tools_ubuntu="git"
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# != 2 ] || [ $1 != "all"       -a \
-                    $1 != "install"   -a \
-                    $1 != "uninstall" -a \
-                    $1 != "deploy"    -a \
-                    $1 != "clean" ] || [ $2 != "win32" -a $2 != "osx" -a $2 != "ubuntu" ]; then
+if [ $# != 3 ] \
+   || \
+   [ $1 != "all" -a $1 != "install" -a $1 != "uninstall" -a $1 != "deploy" -a $1 != "clean" ] \
+   || \
+   [ $2 != "qt4" -a $2 != "qt5" ] \
+   || \
+   [ $3 != "win32" -a $3 != "osx" -a $3 != "ubuntu" ]; then
 
-    echo "Usage: 3rdparty <all | install | uninstall | deploy | clean> <win32 | osx | ubuntu>"
+    echo "Usage: 3rdparty <all | install | uninstall | deploy | clean> <qt4 | qt5> " \
+         "<win32 | osx | ubuntu>"
 
     exit 1
 fi
@@ -93,21 +99,26 @@ fi
 # Configuration
 #--------------------------------------------------------------------------------------------------
 
-if [ $2 = "ubuntu" ]; then
+if [ $3 = "ubuntu" ]; then
 
     linux=true
 
     #----------------------------------------------------------------------------------------------
 
-    QtWebkit_version_linux="$QtWebkit_version_ubuntu"
+    if [ $2 = "qt4" ]; then
 
-    libvlc_version_linux="$libvlc_version_ubuntu"
+        QtWebkit_version="$QtWebkit_version_ubuntu"
+    else
+        Qt5_version="$Qt5_version_ubuntu"
+    fi
 
-    libvlccore_version_linux="$libvlccore_version_ubuntu"
+    libvlc_version="$libvlc_version_ubuntu"
 
-    libtorrent_version_linux="$libtorrent_version_ubuntu"
+    libvlccore_version="$libvlccore_version_ubuntu"
 
-    Boost_version_linux="$Boost_version_ubuntu"
+    libtorrent_version="$libtorrent_version_ubuntu"
+
+    Boost_version="$Boost_version_ubuntu"
 
     #----------------------------------------------------------------------------------------------
 
@@ -135,7 +146,7 @@ if [ $linux = true ]; then
         lib="$lib32"
     fi
 
-    Boost="$external/Boost/$Boost_version_linux"
+    Boost="$external/Boost/$Boost_version"
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -144,7 +155,7 @@ fi
 
 if [ $1 = "all" ] || [ $1 = "install" ]; then
 
-    if [ $2 = "osx" ]; then
+    if [ $3 = "osx" ]; then
 
         sudo chown -R $(whoami) /usr/local
 
@@ -208,7 +219,7 @@ fi
 
 if [ $1 = "uninstall" ]; then
 
-    if [ $2 = "osx" ]; then
+    if [ $3 = "osx" ]; then
 
         echo ""
         echo "UNINSTALLING Qt"
@@ -296,7 +307,7 @@ fi
 
 if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
-    if [ $2 = "win32" ]; then
+    if [ $3 = "win32" ]; then
 
         echo "3rdparty archive -> $archive_win32"
 
@@ -304,7 +315,7 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
         echo "DEPLOYING Qt"
 
-        if [ ! -d "$Qt4" ]; then
+        if [ ! -d "${Qt4}" ]; then
 
             mkdir -p "$Qt4"
 
@@ -333,7 +344,7 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
         sudo cp "$lib"/libQtXml.so.$Qt4_version         "$Qt4"/lib/libQtXml.so.4
         sudo cp "$lib"/libQtXmlPatterns.so.$Qt4_version "$Qt4"/lib/libQtXmlPatterns.so.4
 
-        sudo cp "$lib"/libQtWebKit.so.$QtWebkit_version_linux "$Qt4"/lib/libQtWebKit.so.4
+        sudo cp "$lib"/libQtWebKit.so.$QtWebkit_version "$Qt4"/lib/libQtWebKit.so.4
 
         mkdir -p "$Qt4"/plugins/imageformats
 
@@ -345,8 +356,8 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
         mkdir -p "$VLC"
 
-        sudo cp "$lib"/libvlc.so.$libvlc_version_linux         "$VLC"/libvlc.so.5
-        sudo cp "$lib"/libvlccore.so.$libvlccore_version_linux "$VLC"/libvlccore.so.8
+        sudo cp "$lib"/libvlc.so.$libvlc_version         "$VLC"/libvlc.so.5
+        sudo cp "$lib"/libvlccore.so.$libvlccore_version "$VLC"/libvlccore.so.8
 
         sudo cp -r "$lib"/vlc/plugins "$VLC"
 
@@ -355,7 +366,7 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
         mkdir -p "$libtorrent"
 
-        sudo cp "$lib"/libtorrent-rasterbar.so.$libtorrent_version_linux \
+        sudo cp "$lib"/libtorrent-rasterbar.so.$libtorrent_version \
                 "$libtorrent"/libtorrent-rasterbar.so.9
 
         echo ""
@@ -363,8 +374,8 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
         mkdir -p "$Boost"
 
-        sudo cp "$lib"/libboost_system.so.$Boost_version_linux "$Boost"
-        sudo cp "$lib"/libboost_random.so.$Boost_version_linux "$Boost"
-        sudo cp "$lib"/libboost_chrono.so.$Boost_version_linux "$Boost"
+        sudo cp "$lib"/libboost_system.so.$Boost_version "$Boost"
+        sudo cp "$lib"/libboost_random.so.$Boost_version "$Boost"
+        sudo cp "$lib"/libboost_chrono.so.$Boost_version "$Boost"
     fi
 fi

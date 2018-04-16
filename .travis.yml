@@ -20,7 +20,7 @@ install:
   - docker exec -t ubuntu bash -c "cd /travis;
                                    apt-get update;
                                    apt-get -y install sudo wget;
-                                   sh 3rdparty.sh all ubuntu;
+                                   sh 3rdparty.sh all ${QT} ubuntu;
                                    sh configure.sh ${QT} linux"
 
 script:
