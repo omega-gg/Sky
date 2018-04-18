@@ -80,9 +80,9 @@ fi
 
 if [ $1 = "qt4" ]; then
 
-    Qt="$external/Qt/$Qt4_version/bin"
+    Qt="$external/Qt/$Qt4_version"
 else
-    Qt="$external/Qt/$Qt5_version/bin"
+    Qt="$external/Qt/$Qt5_version"
 fi
 
 MinGW="$external/MinGW/$MinGW_version/bin"
