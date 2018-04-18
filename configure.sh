@@ -170,7 +170,7 @@ elif [ $1 = "qt5" ]; then
         cp "$include"/qt5/QtQml/$Qt5_version/QtQml/private/*     include/Qt5/QtQml/private
         cp "$include"/qt5/QtQuick/$Qt5_version/QtQuick/private/* include/Qt5/QtQuick/private
 
-        cp -r "$Qt5"/qt5/QtGui/$Qt5_version/QtGui/qpa include/Qt5/QtGui
+        cp -r "$include"/qt5/QtGui/$Qt5_version/QtGui/qpa include/Qt5/QtGui
 
     elif [ $2 = "osx" ]; then
 
