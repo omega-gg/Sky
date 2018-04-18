@@ -25,8 +25,8 @@ bin5="latest"
 #--------------------------------------------------------------------------------------------------
 # Linux
 
-include32="/usr/lib/i386-linux-gnu"
-include64="/usr/lib/x86_64-linux-gnu"
+include32="/usr/include/i386-linux-gnu"
+include64="/usr/include/x86_64-linux-gnu"
 
 Qt5_version_linux="5.9.1"
 
@@ -58,7 +58,7 @@ if [ $2 = "linux" ]; then
 
         include="$include64"
     else
-        include="$include64"
+        include="$include32"
     fi
 fi
 
