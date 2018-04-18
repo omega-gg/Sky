@@ -48,6 +48,13 @@ fi
 # Configuration
 #--------------------------------------------------------------------------------------------------
 
+if [ $1 = "qt4" ]; then
+
+    Qt="$external/Qt/$Qt4_version/bin"
+else
+    Qt="$external/Qt/$Qt5_version/bin"
+fi
+
 if [ $2 = "linux" ]; then
 
     if [ -d "${lib64}" ]; then
@@ -60,13 +67,6 @@ if [ $2 = "linux" ]; then
 
         lib="$lib32"
     fi
-fi
-
-if [ $1 = "qt4" ]; then
-
-    Qt="$external/Qt/$Qt4_version/bin"
-else
-    Qt="$external/Qt/$Qt5_version/bin"
 fi
 
 #--------------------------------------------------------------------------------------------------

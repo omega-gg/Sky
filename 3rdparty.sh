@@ -84,9 +84,6 @@ fi
 # Configuration
 #--------------------------------------------------------------------------------------------------
 
-Qt="$external/Qt/$Qt4_version"
-Qt="$external/Qt/$Qt5_version"
-
 VLC="$external/VLC/$VLC_version"
 
 libtorrent="$external/libtorrent/$libtorrent_version"
@@ -94,6 +91,13 @@ libtorrent="$external/libtorrent/$libtorrent_version"
 Boost="$external/Boost/$Boost_version"
 
 #--------------------------------------------------------------------------------------------------
+
+if [ $1 = "qt4" ]; then
+
+    Qt="$external/Qt/$Qt4_version/bin"
+else
+    Qt="$external/Qt/$Qt5_version/bin"
+fi
 
 if [ $3 = "ubuntu" ]; then
 
