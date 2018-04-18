@@ -84,6 +84,14 @@ fi
 # Configuration
 #--------------------------------------------------------------------------------------------------
 
+VLC="$external/VLC/$VLC_version"
+
+libtorrent="$external/libtorrent/$libtorrent_version"
+
+Boost="$external/Boost/$Boost_version"
+
+#--------------------------------------------------------------------------------------------------
+
 if [ $3 = "ubuntu" ]; then
 
     linux=true
@@ -93,8 +101,6 @@ if [ $3 = "ubuntu" ]; then
     if [ $2 = "qt4" ]; then
 
         QtWebkit_version="$QtWebkit_version_ubuntu"
-    else
-        Qt5_version="$Qt5_version_linux"
     fi
 
     libvlc_version="$libvlc_version_ubuntu"
@@ -139,6 +145,8 @@ if [ $2 = "qt4" ]; then
 else
     Qt="$external/Qt/$Qt5_version"
 
+    Qt5_version="$Qt5_version_linux"
+
     Qt_name="qt-everywhere-opensource-src-$Qt5_version"
 
     Qt_archive="$Qt_name.tar.xz"
@@ -154,17 +162,7 @@ if [ $linux = true ]; then
     else
         lib="$lib32"
     fi
-
-    Boost="$external/Boost/$Boost_version"
 fi
-
-#--------------------------------------------------------------------------------------------------
-
-VLC="$external/VLC/$VLC_version"
-
-libtorrent="$external/libtorrent/$libtorrent_version"
-
-Boost="$external/Boost/$Boost_version"
 
 #--------------------------------------------------------------------------------------------------
 # Install

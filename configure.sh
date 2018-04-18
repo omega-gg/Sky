@@ -28,8 +28,6 @@ bin5="latest"
 include32="/usr/include/i386-linux-gnu"
 include64="/usr/include/x86_64-linux-gnu"
 
-Qt5_version_linux="5.9.1"
-
 #--------------------------------------------------------------------------------------------------
 # Syntax
 #--------------------------------------------------------------------------------------------------
@@ -47,10 +45,16 @@ fi
 # Configuration
 #--------------------------------------------------------------------------------------------------
 
-if [ $1 = "qt5" -a $2 = "linux" ]; then
+Qt4="$external/Qt/$Qt4_version"
+Qt5="$external/Qt/$Qt5_version"
 
-    Qt5_version="$Qt5_version_linux"
-fi
+VLC="$external/VLC/$VLC_version"
+
+libtorrent="$external/libtorrent/$libtorrent_version"
+
+Boost="$external/Boost/$Boost_version"
+
+#--------------------------------------------------------------------------------------------------
 
 if [ $2 = "linux" ]; then
 
@@ -61,17 +65,6 @@ if [ $2 = "linux" ]; then
         include="$include32"
     fi
 fi
-
-#--------------------------------------------------------------------------------------------------
-
-Qt4="$external/Qt/$Qt4_version"
-Qt5="$external/Qt/$Qt5_version"
-
-VLC="$external/VLC/$VLC_version"
-
-libtorrent="$external/libtorrent/$libtorrent_version"
-
-Boost="$external/Boost/$Boost_version"
 
 #--------------------------------------------------------------------------------------------------
 # Clean

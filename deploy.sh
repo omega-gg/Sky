@@ -32,12 +32,6 @@ lib32="/usr/lib/i386-linux-gnu"
 lib64="/usr/lib/x86_64-linux-gnu"
 
 #--------------------------------------------------------------------------------------------------
-
-Qt5_version_linux="5.9.1"
-
-Boost_version_linux="1.62.0"
-
-#--------------------------------------------------------------------------------------------------
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
@@ -66,19 +60,12 @@ if [ $2 = "linux" ]; then
 
         lib="$lib32"
     fi
-
-    Boost="$external/Boost/$Boost_version_linux"
 fi
 
 if [ $1 = "qt4" ]; then
 
     Qt="$external/Qt/$Qt4_version/bin"
 else
-    if [ $2 = "linux" ]; then
-
-        Qt5_version="$Qt5_version_linux"
-    fi
-
     Qt="$external/Qt/$Qt5_version/bin"
 fi
 
