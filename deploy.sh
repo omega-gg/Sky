@@ -31,6 +31,14 @@ base64="/lib/x86_64-linux-gnu"
 lib32="/usr/lib/i386-linux-gnu"
 lib64="/usr/lib/x86_64-linux-gnu"
 
+Qt5_version_linux="5.9.1"
+
+VLC_version_linux="5.5.0"
+
+libtorrent_version_linux="9.0.0"
+
+Boost_version_linux="1.62.0"
+
 #--------------------------------------------------------------------------------------------------
 # Syntax
 #--------------------------------------------------------------------------------------------------
@@ -48,13 +56,6 @@ fi
 # Configuration
 #--------------------------------------------------------------------------------------------------
 
-if [ $1 = "qt4" ]; then
-
-    Qt="$external/Qt/$Qt4_version/bin"
-else
-    Qt="$external/Qt/$Qt5_version/bin"
-fi
-
 if [ $2 = "linux" ]; then
 
     if [ -d "${lib64}" ]; then
@@ -67,9 +68,22 @@ if [ $2 = "linux" ]; then
 
         lib="$lib32"
     fi
+
+    Qt5_version="$Qt5_version_linux"
+
+    VLC_version="$VLC_version_linux"
+
+    libtorrent_version="$libtorrent_version_linux"
 fi
 
 #--------------------------------------------------------------------------------------------------
+
+if [ $1 = "qt4" ]; then
+
+    Qt="$external/Qt/$Qt4_version/bin"
+else
+    Qt="$external/Qt/$Qt5_version/bin"
+fi
 
 MinGW="$external/MinGW/$MinGW_version/bin"
 
@@ -78,6 +92,11 @@ SSL="$external/OpenSSL"
 VLC="$external/VLC/$VLC_version"
 
 libtorrent="$external/libtorrent/$libtorrent_version"
+
+if [ $2 = "linux" ]; then
+
+    Boost="$external/Boost/$Boost_version_linux"
+fi
 
 #--------------------------------------------------------------------------------------------------
 # Clean
@@ -154,7 +173,6 @@ else
     echo "COPYING Qt5"
 
     mkdir deploy/imageformats
-    mkdir deploy/platforms
     mkdir deploy/QtQuick.2
 
     if [ $2 = "win32" ]; then
@@ -163,28 +181,14 @@ else
         cp "$MinGW"/libstdc++-6.dll     deploy
         cp "$MinGW"/libwinpthread-1.dll deploy
 
-        #cp "$Qt"/bin/icudt54.dll deploy
-        #cp "$Qt"/bin/icuin54.dll deploy
-        #cp "$Qt"/bin/icuuc54.dll deploy
-
         cp "$Qt"/bin/Qt5Core.dll              deploy
         cp "$Qt"/bin/Qt5Gui.dll               deploy
-        #cp "$Qt"/bin/Qt5Declarative.dll       deploy
-        #cp "$Qt"/bin/Qt5Multimedia.dll        deploy
-        #cp "$Qt"/bin/Qt5MultimediaWidgets.dll deploy
         cp "$Qt"/bin/Qt5Network.dll           deploy
         cp "$Qt"/bin/Qt5OpenGL.dll            deploy
-        #cp "$Qt"/bin/Qt5Positioning.dll       deploy
-        #cp "$Qt"/bin/Qt5PrintSupport.dll      deploy
         cp "$Qt"/bin/Qt5Qml.dll               deploy
         cp "$Qt"/bin/Qt5Quick.dll             deploy
         cp "$Qt"/bin/Qt5Script.dll            deploy
-        #cp "$Qt"/bin/Qt5Sensors.dll           deploy
-        #cp "$Qt"/bin/Qt5Sql.dll               deploy
         cp "$Qt"/bin/Qt5Svg.dll               deploy
-        #cp "$Qt"/bin/Qt5WebChannel.dll        deploy
-        #cp "$Qt"/bin/Qt5WebKit.dll            deploy
-        #cp "$Qt"/bin/Qt5WebKitWidgets.dll     deploy
         cp "$Qt"/bin/Qt5Widgets.dll           deploy
         cp "$Qt"/bin/Qt5Xml.dll               deploy
         cp "$Qt"/bin/Qt5XmlPatterns.dll       deploy
@@ -193,10 +197,34 @@ else
         cp "$Qt"/plugins/imageformats/qsvg.dll  deploy/imageformats
         cp "$Qt"/plugins/imageformats/qjpeg.dll deploy/imageformats
 
+        mkdir deploy/platforms
+
         cp "$Qt"/plugins/platforms/qwindows.dll deploy/platforms
 
         cp "$Qt"/qml/QtQuick.2/qtquick2plugin.dll deploy/QtQuick.2
         cp "$Qt"/qml/QtQuick.2/qmldir             deploy/QtQuick.2
+
+    elif [ $2 = "linux" ]; then
+
+        sudo cp "$lib"/libpng16.so.16 deploy
+
+        cp "$Qt"/lib/libQt5Core.so.5        deploy
+        cp "$Qt"/lib/libQt5Gui.so.5         deploy
+        cp "$Qt"/lib/libQt5Network.so.5     deploy
+        cp "$Qt"/lib/libQt5OpenGL.so.5      deploy
+        cp "$Qt"/lib/libQt5Qml.so.5         deploy
+        cp "$Qt"/lib/libQt5Quick.so.5       deploy
+        cp "$Qt"/lib/libQt5Script.so.5      deploy
+        cp "$Qt"/lib/libQt5Svg.so.5         deploy
+        cp "$Qt"/lib/libQt5Widgets.so.5     deploy
+        cp "$Qt"/lib/libQt5Xml.so.5         deploy
+        cp "$Qt"/lib/libQt5XmlPatterns.so.5 deploy
+
+        cp "$Qt"/plugins/imageformats/libqsvg.so  deploy/imageformats
+        cp "$Qt"/plugins/imageformats/libqjpeg.so deploy/imageformats
+
+        cp "$Qt"/qml/QtQuick.2/qtquick2plugin.so deploy/QtQuick.2
+        cp "$Qt"/qml/QtQuick.2/qmldir            deploy/QtQuick.2
     fi
 
     bin="$bin5"

@@ -47,17 +47,6 @@ fi
 # Configuration
 #--------------------------------------------------------------------------------------------------
 
-Qt4="$external/Qt/$Qt4_version"
-Qt5="$external/Qt/$Qt5_version"
-
-VLC="$external/VLC/$VLC_version"
-
-libtorrent="$external/libtorrent/$libtorrent_version"
-
-Boost="$external/Boost/$Boost_version"
-
-#--------------------------------------------------------------------------------------------------
-
 if [ $2 = "linux" ]; then
 
     if [ $1 = "qt5" ]; then
@@ -72,6 +61,17 @@ if [ $2 = "linux" ]; then
         include="$include32"
     fi
 fi
+
+#--------------------------------------------------------------------------------------------------
+
+Qt4="$external/Qt/$Qt4_version"
+Qt5="$external/Qt/$Qt5_version"
+
+VLC="$external/VLC/$VLC_version"
+
+libtorrent="$external/libtorrent/$libtorrent_version"
+
+Boost="$external/Boost/$Boost_version"
 
 #--------------------------------------------------------------------------------------------------
 # Clean

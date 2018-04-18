@@ -37,7 +37,7 @@ Qt5_version_linux="5.9.1"
 
 QtWebkit_version_ubuntu="4.10.2"
 
-libvlc_version_ubuntu="5.5.0"
+VLC_version_ubuntu="5.5.0"
 
 libvlccore_version_ubuntu="8.0.0"
 
@@ -84,35 +84,17 @@ fi
 # Configuration
 #--------------------------------------------------------------------------------------------------
 
-VLC="$external/VLC/$VLC_version"
-
-libtorrent="$external/libtorrent/$libtorrent_version"
-
-Boost="$external/Boost/$Boost_version"
-
-#--------------------------------------------------------------------------------------------------
-
-if [ $1 = "qt4" ]; then
-
-    Qt="$external/Qt/$Qt4_version/bin"
-else
-    Qt="$external/Qt/$Qt5_version/bin"
-fi
-
 if [ $3 = "ubuntu" ]; then
 
     linux=true
 
     #----------------------------------------------------------------------------------------------
 
-    if [ $2 = "qt4" ]; then
+    Qt5_version="$Qt5_version_linux"
 
-        QtWebkit_version="$QtWebkit_version_ubuntu"
-    else
-        Qt5_version="$Qt5_version_linux"
-    fi
+    QtWebkit_version="$QtWebkit_version_ubuntu"
 
-    libvlc_version="$libvlc_version_ubuntu"
+    VLC_version="$libvlc_version_ubuntu"
 
     libvlccore_version="$libvlccore_version_ubuntu"
 
@@ -142,21 +124,6 @@ else
     linux=false
 fi
 
-if [ $2 = "qt4" ]; then
-
-    Qt_name="qt-everywhere-opensource-src-$Qt4_version"
-
-    Qt_archive="$Qt_name.tar.gz"
-
-    Qt_sources="http://download.qt.io/official_releases/qt/4.8/$Qt4_version/$Qt_archive"
-else
-    Qt_name="qt-everywhere-opensource-src-$Qt5_version"
-
-    Qt_archive="$Qt_name.tar.xz"
-
-    Qt_sources="http://download.qt.io/official_releases/qt/5.9/$Qt5_version/single/$Qt_archive"
-fi
-
 if [ $linux = true ]; then
 
     if [ -d "${lib64}" ]; then
@@ -166,6 +133,33 @@ if [ $linux = true ]; then
         lib="$lib32"
     fi
 fi
+
+if [ $2 = "qt4" ]; then
+
+    Qt="$external/Qt/$Qt4_version/bin"
+
+    Qt_name="qt-everywhere-opensource-src-$Qt4_version"
+
+    Qt_archive="$Qt_name.tar.gz"
+
+    Qt_sources="http://download.qt.io/official_releases/qt/4.8/$Qt4_version/$Qt_archive"
+else
+    Qt="$external/Qt/$Qt5_version/bin"
+
+    Qt_name="qt-everywhere-opensource-src-$Qt5_version"
+
+    Qt_archive="$Qt_name.tar.xz"
+
+    Qt_sources="http://download.qt.io/official_releases/qt/5.9/$Qt5_version/single/$Qt_archive"
+fi
+
+#--------------------------------------------------------------------------------------------------
+
+VLC="$external/VLC/$VLC_version"
+
+libtorrent="$external/libtorrent/$libtorrent_version"
+
+Boost="$external/Boost/$Boost_version"
 
 #--------------------------------------------------------------------------------------------------
 # Install
@@ -331,9 +325,9 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
     elif [ $linux = true ]; then
 
-        if [ $2 = "qt4" ]; then
+        echo "DEPLOYING Qt"
 
-            echo "DEPLOYING Qt"
+        if [ $2 = "qt4" ]; then
 
             if [ ! -d "${Qt}" ]; then
 
@@ -370,15 +364,36 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
             sudo cp "$lib"/qt4/plugins/imageformats/libqsvg.so  "$Qt"/plugins/imageformats
             sudo cp "$lib"/qt4/plugins/imageformats/libqjpeg.so "$Qt"/plugins/imageformats
+        else
+            sudo cp "$lib"/libQt5Core.so.$Qt_version        "$Qt"/lib/lib5QtCore.so.5
+            sudo cp "$lib"/libQt5Gui.so.$Qt_version         "$Qt"/lib/lib5QtGui.so.5
+            sudo cp "$lib"/libQt5Network.so.$Qt_version     "$Qt"/lib/lib5QtNetwork.so.5
+            sudo cp "$lib"/libQt5OpenGL.so.$Qt_version      "$Qt"/lib/libQt5OpenGL.so.5
+            sudo cp "$lib"/libQt5Qml.so.$Qt_version         "$Qt"/lib/libQt5Qml.so.5
+            sudo cp "$lib"/libQt5Quick.so.$Qt_version       "$Qt"/lib/libQt5Quick.so.5
+            sudo cp "$lib"/libQt5Script.so.$Qt_version      "$Qt"/lib/libQt5Script.so.5
+            sudo cp "$lib"/libQt5Svg.so.$Qt_version         "$Qt"/lib/libQt5Svg.so.5
+            sudo cp "$lib"/libQt5Widgets.so.$Qt_version     "$Qt"/lib/libQt5Widgets.so.5
+            sudo cp "$lib"/libQt5Xml.so.$Qt_version         "$Qt"/lib/libQt5Xml.so.5
+            sudo cp "$lib"/libQt5XmlPatterns.so.$Qt_version "$Qt"/lib/libQt5XmlPatterns.so.5
 
-            echo ""
+            mkdir -p "$Qt"/plugins/imageformats
+
+            sudo cp "$lib"/qt5/plugins/imageformats/libqsvg.so  "$Qt"/plugins/imageformats
+            sudo cp "$lib"/qt5/plugins/imageformats/libqjpeg.so "$Qt"/plugins/imageformats
+
+            mkdir -p "$Qt"/QtQuick.2
+
+            sudo cp "$lib"/qml/QtQuick.2/qtquick2plugin.so "$Qt"/QtQuick.2
+            sudo cp "$lib"/qml/QtQuick.2/qmldir            "$Qt"/QtQuick.2
         fi
 
+        echo ""
         echo "DEPLOYING VLC"
 
         mkdir -p "$VLC"
 
-        sudo cp "$lib"/libvlc.so.$libvlc_version         "$VLC"/libvlc.so.5
+        sudo cp "$lib"/libvlc.so.$VLC_version            "$VLC"/libvlc.so.5
         sudo cp "$lib"/libvlccore.so.$libvlccore_version "$VLC"/libvlccore.so.8
 
         sudo cp -r "$lib"/vlc/plugins "$VLC"
