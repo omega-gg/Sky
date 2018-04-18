@@ -365,6 +365,8 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
             sudo cp "$lib"/qt4/plugins/imageformats/libqsvg.so  "$Qt"/plugins/imageformats
             sudo cp "$lib"/qt4/plugins/imageformats/libqjpeg.so "$Qt"/plugins/imageformats
         else
+            mkdir -p "$Qt"/lib
+
             sudo cp "$lib"/libQt5Core.so.$Qt5_version        "$Qt"/lib/lib5QtCore.so.5
             sudo cp "$lib"/libQt5Gui.so.$Qt5_version         "$Qt"/lib/lib5QtGui.so.5
             sudo cp "$lib"/libQt5Network.so.$Qt5_version     "$Qt"/lib/lib5QtNetwork.so.5
