@@ -94,7 +94,7 @@ if [ $3 = "ubuntu" ]; then
 
     QtWebkit_version="$QtWebkit_version_ubuntu"
 
-    VLC_version="$libvlc_version_ubuntu"
+    VLC_version="$VLC_version_ubuntu"
 
     libvlccore_version="$libvlccore_version_ubuntu"
 
@@ -136,7 +136,7 @@ fi
 
 if [ $2 = "qt4" ]; then
 
-    Qt="$external/Qt/$Qt4_version/bin"
+    Qt="$external/Qt/$Qt4_version"
 
     Qt_name="qt-everywhere-opensource-src-$Qt4_version"
 
@@ -144,7 +144,7 @@ if [ $2 = "qt4" ]; then
 
     Qt_sources="http://download.qt.io/official_releases/qt/4.8/$Qt4_version/$Qt_archive"
 else
-    Qt="$external/Qt/$Qt5_version/bin"
+    Qt="$external/Qt/$Qt5_version"
 
     Qt_name="qt-everywhere-opensource-src-$Qt5_version"
 
