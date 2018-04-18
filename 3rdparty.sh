@@ -386,8 +386,8 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
             mkdir -p "$Qt"/QtQuick.2
 
-            sudo cp "$lib"/qml/QtQuick.2/qtquick2plugin.so "$Qt"/QtQuick.2
-            sudo cp "$lib"/qml/QtQuick.2/qmldir            "$Qt"/QtQuick.2
+            sudo cp "$lib"/qt5/qml/QtQuick.2/libqtquick2plugin.so "$Qt"/QtQuick.2
+            sudo cp "$lib"/qt5/qml/QtQuick.2/qmldir               "$Qt"/QtQuick.2
         fi
 
         echo ""

@@ -223,8 +223,8 @@ else
         cp "$Qt"/plugins/imageformats/libqsvg.so  deploy/imageformats
         cp "$Qt"/plugins/imageformats/libqjpeg.so deploy/imageformats
 
-        cp "$Qt"/qml/QtQuick.2/qtquick2plugin.so deploy/QtQuick.2
-        cp "$Qt"/qml/QtQuick.2/qmldir            deploy/QtQuick.2
+        cp "$Qt"/qml/QtQuick.2/libqtquick2plugin.so deploy/QtQuick.2
+        cp "$Qt"/qml/QtQuick.2/qmldir               deploy/QtQuick.2
     fi
 
     bin="$bin5"
