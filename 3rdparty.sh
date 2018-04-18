@@ -367,9 +367,9 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
         else
             mkdir -p "$Qt"/lib
 
-            sudo cp "$lib"/libQt5Core.so.$Qt5_version        "$Qt"/lib/lib5QtCore.so.5
-            sudo cp "$lib"/libQt5Gui.so.$Qt5_version         "$Qt"/lib/lib5QtGui.so.5
-            sudo cp "$lib"/libQt5Network.so.$Qt5_version     "$Qt"/lib/lib5QtNetwork.so.5
+            sudo cp "$lib"/libQt5Core.so.$Qt5_version        "$Qt"/lib/libQt5Core.so.5
+            sudo cp "$lib"/libQt5Gui.so.$Qt5_version         "$Qt"/lib/libQt5Gui.so.5
+            sudo cp "$lib"/libQt5Network.so.$Qt5_version     "$Qt"/lib/libQt5Network.so.5
             sudo cp "$lib"/libQt5OpenGL.so.$Qt5_version      "$Qt"/lib/libQt5OpenGL.so.5
             sudo cp "$lib"/libQt5Qml.so.$Qt5_version         "$Qt"/lib/libQt5Qml.so.5
             sudo cp "$lib"/libQt5Quick.so.$Qt5_version       "$Qt"/lib/libQt5Quick.so.5
