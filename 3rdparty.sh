@@ -384,10 +384,10 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
             sudo cp "$lib"/qt5/plugins/imageformats/libqsvg.so  "$Qt"/plugins/imageformats
             sudo cp "$lib"/qt5/plugins/imageformats/libqjpeg.so "$Qt"/plugins/imageformats
 
-            mkdir -p "$Qt"/QtQuick.2
+            mkdir -p "$Qt"/qml/QtQuick.2
 
-            sudo cp "$lib"/qt5/qml/QtQuick.2/libqtquick2plugin.so "$Qt"/QtQuick.2
-            sudo cp "$lib"/qt5/qml/QtQuick.2/qmldir               "$Qt"/QtQuick.2
+            sudo cp "$lib"/qt5/qml/QtQuick.2/libqtquick2plugin.so "$Qt"/qml/QtQuick.2
+            sudo cp "$lib"/qt5/qml/QtQuick.2/qmldir               "$Qt"/qml/QtQuick.2
         fi
 
         echo ""
