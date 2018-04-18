@@ -347,16 +347,16 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
                 cd -
             fi
 
-            sudo cp "$lib"/libQtCore.so.$Qt_version        "$Qt"/lib/libQtCore.so.4
-            sudo cp "$lib"/libQtGui.so.$Qt_version         "$Qt"/lib/libQtGui.so.4
-            sudo cp "$lib"/libQtDeclarative.so.$Qt_version "$Qt"/lib/libQtDeclarative.so.4
-            sudo cp "$lib"/libQtNetwork.so.$Qt_version     "$Qt"/lib/libQtNetwork.so.4
-            sudo cp "$lib"/libQtOpenGL.so.$Qt_version      "$Qt"/lib/libQtOpenGL.so.4
-            sudo cp "$lib"/libQtScript.so.$Qt_version      "$Qt"/lib/libQtScript.so.4
-            sudo cp "$lib"/libQtSql.so.$Qt_version         "$Qt"/lib/libQtSql.so.4
-            sudo cp "$lib"/libQtSvg.so.$Qt_version         "$Qt"/lib/libQtSvg.so.4
-            sudo cp "$lib"/libQtXml.so.$Qt_version         "$Qt"/lib/libQtXml.so.4
-            sudo cp "$lib"/libQtXmlPatterns.so.$Qt_version "$Qt"/lib/libQtXmlPatterns.so.4
+            sudo cp "$lib"/libQtCore.so.$Qt4_version        "$Qt"/lib/libQtCore.so.4
+            sudo cp "$lib"/libQtGui.so.$Qt4_version         "$Qt"/lib/libQtGui.so.4
+            sudo cp "$lib"/libQtDeclarative.so.$Qt4_version "$Qt"/lib/libQtDeclarative.so.4
+            sudo cp "$lib"/libQtNetwork.so.$Qt4_version     "$Qt"/lib/libQtNetwork.so.4
+            sudo cp "$lib"/libQtOpenGL.so.$Qt4_version      "$Qt"/lib/libQtOpenGL.so.4
+            sudo cp "$lib"/libQtScript.so.$Qt4_version      "$Qt"/lib/libQtScript.so.4
+            sudo cp "$lib"/libQtSql.so.$Qt4_version         "$Qt"/lib/libQtSql.so.4
+            sudo cp "$lib"/libQtSvg.so.$Qt4_version         "$Qt"/lib/libQtSvg.so.4
+            sudo cp "$lib"/libQtXml.so.$Qt4_version         "$Qt"/lib/libQtXml.so.4
+            sudo cp "$lib"/libQtXmlPatterns.so.$Qt4_version "$Qt"/lib/libQtXmlPatterns.so.4
 
             sudo cp "$lib"/libQtWebKit.so.$QtWebkit_version "$Qt"/lib/libQtWebKit.so.4
 
@@ -365,17 +365,17 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
             sudo cp "$lib"/qt4/plugins/imageformats/libqsvg.so  "$Qt"/plugins/imageformats
             sudo cp "$lib"/qt4/plugins/imageformats/libqjpeg.so "$Qt"/plugins/imageformats
         else
-            sudo cp "$lib"/libQt5Core.so.$Qt_version        "$Qt"/lib/lib5QtCore.so.5
-            sudo cp "$lib"/libQt5Gui.so.$Qt_version         "$Qt"/lib/lib5QtGui.so.5
-            sudo cp "$lib"/libQt5Network.so.$Qt_version     "$Qt"/lib/lib5QtNetwork.so.5
-            sudo cp "$lib"/libQt5OpenGL.so.$Qt_version      "$Qt"/lib/libQt5OpenGL.so.5
-            sudo cp "$lib"/libQt5Qml.so.$Qt_version         "$Qt"/lib/libQt5Qml.so.5
-            sudo cp "$lib"/libQt5Quick.so.$Qt_version       "$Qt"/lib/libQt5Quick.so.5
-            sudo cp "$lib"/libQt5Script.so.$Qt_version      "$Qt"/lib/libQt5Script.so.5
-            sudo cp "$lib"/libQt5Svg.so.$Qt_version         "$Qt"/lib/libQt5Svg.so.5
-            sudo cp "$lib"/libQt5Widgets.so.$Qt_version     "$Qt"/lib/libQt5Widgets.so.5
-            sudo cp "$lib"/libQt5Xml.so.$Qt_version         "$Qt"/lib/libQt5Xml.so.5
-            sudo cp "$lib"/libQt5XmlPatterns.so.$Qt_version "$Qt"/lib/libQt5XmlPatterns.so.5
+            sudo cp "$lib"/libQt5Core.so.$Qt5_version        "$Qt"/lib/lib5QtCore.so.5
+            sudo cp "$lib"/libQt5Gui.so.$Qt5_version         "$Qt"/lib/lib5QtGui.so.5
+            sudo cp "$lib"/libQt5Network.so.$Qt5_version     "$Qt"/lib/lib5QtNetwork.so.5
+            sudo cp "$lib"/libQt5OpenGL.so.$Qt5_version      "$Qt"/lib/libQt5OpenGL.so.5
+            sudo cp "$lib"/libQt5Qml.so.$Qt5_version         "$Qt"/lib/libQt5Qml.so.5
+            sudo cp "$lib"/libQt5Quick.so.$Qt5_version       "$Qt"/lib/libQt5Quick.so.5
+            sudo cp "$lib"/libQt5Script.so.$Qt5_version      "$Qt"/lib/libQt5Script.so.5
+            sudo cp "$lib"/libQt5Svg.so.$Qt5_version         "$Qt"/lib/libQt5Svg.so.5
+            sudo cp "$lib"/libQt5Widgets.so.$Qt5_version     "$Qt"/lib/libQt5Widgets.so.5
+            sudo cp "$lib"/libQt5Xml.so.$Qt5_version         "$Qt"/lib/libQt5Xml.so.5
+            sudo cp "$lib"/libQt5XmlPatterns.so.$Qt5_version "$Qt"/lib/libQt5XmlPatterns.so.5
 
             mkdir -p "$Qt"/plugins/imageformats
 
