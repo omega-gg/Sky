@@ -196,7 +196,7 @@ Item
 
         anchors.verticalCenter: parent.verticalCenter
 
-        paddingRight: st.dp9
+        paddingRight: (sk.osLinux) ? st.dp10 : st.dp9
 
         enabled: foreground.visible
 
@@ -215,7 +215,7 @@ Item
 
         anchors.verticalCenter: parent.verticalCenter
 
-        paddingLeft: st.dp9
+        paddingLeft: (sk.osLinux) ? st.dp10 : st.dp9
 
         enabled: false
 

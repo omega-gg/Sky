@@ -25,6 +25,9 @@ bin5="latest"
 #--------------------------------------------------------------------------------------------------
 # Linux
 
+include32="/usr/lib/i386-linux-gnu"
+include64="/usr/lib/x86_64-linux-gnu"
+
 Qt5_version_linux="5.9.1"
 
 #--------------------------------------------------------------------------------------------------
@@ -47,6 +50,16 @@ fi
 if [ $1 = "qt5" -a $2 = "linux" ]; then
 
     Qt5_version="$Qt5_version_linux"
+fi
+
+if [ $2 = "linux" ]; then
+
+    if [ -d "${include64}" ]; then
+
+        include="$include64"
+    else
+        include="$include64"
+    fi
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -147,20 +160,17 @@ elif [ $1 = "qt5" ]; then
 
     elif [ $2 = "linux" ]; then
 
-        cp "$Qt5"/qtbase/include/QtCore/*  include/Qt5/QtCore
-        cp "$Qt5"/qtbase/include/QtGui/*   include/Qt5/QtGui
+        cp "$include"/qt5/QtCore/*  include/Qt5/QtCore
+        cp "$include"/qt5/QtGui/*   include/Qt5/QtGui
+        cp "$include"/qt5/QtQml/*   include/Qt5/QtQml
+        cp "$include"/qt5/QtQuick/* include/Qt5/QtQuick
 
-        cp "$Qt5"/qtdeclarative/include/QtQml/*   include/Qt5/QtQml
-        cp "$Qt5"/qtdeclarative/include/QtQuick/* include/Qt5/QtQuick
+        cp "$include"/qt5/QtCore/$Qt5_version/QtCore/private/*   include/Qt5/QtCore/private
+        cp "$include"/qt5/QtGui/$Qt5_version/QtGui/private/*     include/Qt5/QtGui/private
+        cp "$include"/qt5/QtQml/$Qt5_version/QtQml/private/*     include/Qt5/QtQml/private
+        cp "$include"/qt5/QtQuick/$Qt5_version/QtQuick/private/* include/Qt5/QtQuick/private
 
-        cp "$Qt5"/qtbase/include/QtCore/$Qt5_version/QtCore/private/* include/Qt5/QtCore/private
-        cp "$Qt5"/qtbase/include/QtGui/$Qt5_version/QtGui/private/*   include/Qt5/QtGui/private
-
-        cp "$Qt5"/qtdeclarative/include/QtQml/$Qt5_version/QtQml/private/* \
-           include/Qt5/QtQml/private
-
-        cp "$Qt5"/qtdeclarative/include/QtQuick/$Qt5_version/QtQuick/private/* \
-           include/Qt5/QtQuick/private
+        cp -r "$Qt5"/qt5/QtGui/$Qt5_version/QtGui/qpa include/Qt5/QtGui
 
     elif [ $2 = "osx" ]; then
 

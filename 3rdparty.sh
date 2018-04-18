@@ -51,7 +51,7 @@ X11_ubuntu="libx11-dev libxi-dev libxinerama-dev libxrandr-dev libxcursor-dev li
 
 Qt4_ubuntu="qt4-default libqtwebkit-dev openssl"
 
-Qt5_ubuntu="qtdeclarative5-dev qtscript5-dev libqt5xmlpatterns5-dev libqt5svg5-dev"\
+Qt5_ubuntu="qtdeclarative5-private-dev qtscript5-dev libqt5xmlpatterns5-dev libqt5svg5-dev"\
 "libqt5x11extras5-dev"
 
 VLC_ubuntu="libvlc-dev vlc"
@@ -330,27 +330,27 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
     elif [ $linux = true ]; then
 
-        echo "DEPLOYING Qt"
-
-        if [ ! -d "${Qt}" ]; then
-
-            mkdir -p "$Qt"
-
-            cd "$Qt"
-
-            wget "$Qt_sources"
-
-            tar -xf "$Qt_archive"
-
-            mv "$Qt_name"/* .
-
-            rm -rf "$Qt_name"
-            rm "$Qt_archive"
-
-            cd -
-        fi
-
         if [ $2 = "qt4" ]; then
+
+            echo "DEPLOYING Qt"
+
+            if [ ! -d "${Qt}" ]; then
+
+                mkdir -p "$Qt"
+
+                cd "$Qt"
+
+                wget "$Qt_sources"
+
+                tar -xf "$Qt_archive"
+
+                mv "$Qt_name"/* .
+
+                rm -rf "$Qt_name"
+                rm "$Qt_archive"
+
+                cd -
+            fi
 
             sudo cp "$lib"/libQtCore.so.$Qt_version        "$Qt"/lib/libQtCore.so.4
             sudo cp "$lib"/libQtGui.so.$Qt_version         "$Qt"/lib/libQtGui.so.4
@@ -369,9 +369,10 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
             sudo cp "$lib"/qt4/plugins/imageformats/libqsvg.so  "$Qt"/plugins/imageformats
             sudo cp "$lib"/qt4/plugins/imageformats/libqjpeg.so "$Qt"/plugins/imageformats
+
+            echo ""
         fi
 
-        echo ""
         echo "DEPLOYING VLC"
 
         mkdir -p "$VLC"
