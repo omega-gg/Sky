@@ -60,7 +60,7 @@ Boost="$external/Boost/$Boost_version"
 
 if [ $2 = "linux" ]; then
 
-    if [ $2 = "qt5" ]; then
+    if [ $1 = "qt5" ]; then
 
         Qt5_version="$Qt5_version_linux"
     fi
