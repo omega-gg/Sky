@@ -84,6 +84,9 @@ fi
 # Configuration
 #--------------------------------------------------------------------------------------------------
 
+Qt="$external/Qt/$Qt4_version"
+Qt="$external/Qt/$Qt5_version"
+
 VLC="$external/VLC/$VLC_version"
 
 libtorrent="$external/libtorrent/$libtorrent_version"
@@ -101,6 +104,8 @@ if [ $3 = "ubuntu" ]; then
     if [ $2 = "qt4" ]; then
 
         QtWebkit_version="$QtWebkit_version_ubuntu"
+    else
+        Qt5_version="$Qt5_version_linux"
     fi
 
     libvlc_version="$libvlc_version_ubuntu"
@@ -135,18 +140,12 @@ fi
 
 if [ $2 = "qt4" ]; then
 
-    Qt="$external/Qt/$Qt4_version"
-
     Qt_name="qt-everywhere-opensource-src-$Qt4_version"
 
     Qt_archive="$Qt_name.tar.gz"
 
     Qt_sources="http://download.qt.io/official_releases/qt/4.8/$Qt4_version/$Qt_archive"
 else
-    Qt="$external/Qt/$Qt5_version"
-
-    Qt5_version="$Qt5_version_linux"
-
     Qt_name="qt-everywhere-opensource-src-$Qt5_version"
 
     Qt_archive="$Qt_name.tar.xz"
