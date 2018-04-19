@@ -47,7 +47,8 @@ Boost_version_ubuntu="1.62.0"
 
 #--------------------------------------------------------------------------------------------------
 
-X11_ubuntu="libx11-dev libxi-dev libxinerama-dev libxrandr-dev libxcursor-dev libfontconfig-dev"
+X11_ubuntu="libx11-dev libxi-dev libxinerama-dev libxrandr-dev libxcursor-dev libfontconfig-dev "\
+"libaudio2"
 
 Qt4_ubuntu="qt4-default libqtwebkit-dev openssl"
 
