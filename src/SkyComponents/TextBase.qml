@@ -32,9 +32,8 @@ Text
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    anchors.leftMargin : leftMargin
-    anchors.rightMargin: rightMargin
-
+    anchors.leftMargin  : leftMargin
+    anchors.rightMargin : rightMargin
     anchors.topMargin   : topMargin
     anchors.bottomMargin: bottomMargin
 
