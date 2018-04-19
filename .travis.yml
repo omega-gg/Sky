@@ -12,6 +12,8 @@ matrix:
     #- os: linux
     #  env: QT=qt4 OS=ubuntu TARGET=amd64
     - os: linux
+      env: QT=qt5 OS=ubuntu TARGET=i386
+    - os: linux
       env: QT=qt5 OS=ubuntu TARGET=amd64
 
 before_install:
