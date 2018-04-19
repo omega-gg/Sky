@@ -7,10 +7,10 @@ language: cpp
 
 matrix:
   include:
-    #- os: linux
-    #  env: QT=qt4 OS=ubuntu TARGET=i386
-    #- os: linux
-    #  env: QT=qt4 OS=ubuntu TARGET=amd64
+    - os: linux
+      env: QT=qt4 OS=ubuntu TARGET=i386
+    - os: linux
+      env: QT=qt4 OS=ubuntu TARGET=amd64
     - os: linux
       env: QT=qt5 OS=ubuntu TARGET=i386
     - os: linux
@@ -25,11 +25,6 @@ install:
                                    apt-get update;
                                    apt-get -y install sudo wget;
                                    sh 3rdparty.sh all ${QT} ubuntu;
-                                   ls -la /usr/lib/x86_64-linux-gnu/qt5;
-                                   echo "---",
-                                   ls -la /usr/lib/x86_64-linux-gnu/qt5/qml;
-                                   echo "---",
-                                   ls -la /usr/lib/x86_64-linux-gnu/qt5/QtQuick.2;
                                    sh configure.sh ${QT} linux"
 
 script:
