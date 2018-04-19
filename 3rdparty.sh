@@ -51,8 +51,8 @@ X11_ubuntu="libx11-dev libxi-dev libxinerama-dev libxrandr-dev libxcursor-dev li
 
 Qt4_ubuntu="qt4-default libqtwebkit-dev openssl"
 
-Qt5_ubuntu="qt5-default qtdeclarative5-dev qtbase5-private-dev qtdeclarative5-private-dev "\
-"qtscript5-dev libqt5xmlpatterns5-dev libqt5svg5-dev libqt5x11extras5-dev"
+Qt5_ubuntu="qt5-default qtbase5-private-dev qtdeclarative5-private-dev qtscript5-dev "\
+"libqt5xmlpatterns5-dev libqt5svg5-dev libqt5x11extras5-dev"
 
 VLC_ubuntu="libvlc-dev vlc"
 

@@ -23,6 +23,11 @@ install:
                                    apt-get update;
                                    apt-get -y install sudo wget;
                                    sh 3rdparty.sh all ${QT} ubuntu;
+                                   ls -la /usr/lib/x86_64-linux-gnu/qt5;
+                                   echo "---",
+                                   ls -la /usr/lib/x86_64-linux-gnu/qt5/qml;
+                                   echo "---",
+                                   ls -la /usr/lib/x86_64-linux-gnu/qt5/QtQuick.2;
                                    sh configure.sh ${QT} linux"
 
 script:
