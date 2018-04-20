@@ -19,6 +19,7 @@ OTHER_FILES += 3rdparty.sh \
                LICENSE.md \
                AUTHORS.md \
                .travis.yml \
+               .appveyor.yml \
                src/SkyComponents/qmldir \
                src/SkyPresentation/qmldir \
                dist/changes/1.0.1.md \
