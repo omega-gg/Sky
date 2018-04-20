@@ -1,6 +1,6 @@
 install:
   - sh 3rdparty.sh all qt4 win32
-  - sh configure.sh all qt4 win32
+  - sh configure.sh qt4 win32
 
 build_script:
   - sh build qt4 win32 deploy
