@@ -13,8 +13,9 @@ install:
   - pwd
   - cd 3rdparty/Qt/5.10.1
   - ls -la
-  - cd 3rdparty/Qt/5.10.1/include
+  - cd include
   - ls -la
+  - pwd
   - cd Sky
   - sh 3rdparty.sh all %qt% win32
   - sh configure.sh %qt% win32
