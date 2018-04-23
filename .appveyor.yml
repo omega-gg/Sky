@@ -1,4 +1,8 @@
 install:
+  - cd ..
+  - ps: Start-FileDownload http://omega.gg/get/Sky/3rdparty/win32
+  - 7z x 3rdparty.zip
+  - cd -
   - sh 3rdparty.sh all qt4 win32
   - sh configure.sh qt4 win32
 
