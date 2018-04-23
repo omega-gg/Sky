@@ -1,8 +1,9 @@
 clone_folder: c:\dev\workspace\Sky
 
-matrix:
-  - qt: qt4
-  - qt: qt5
+environment:
+  matrix:
+    - qt: qt4
+    - qt: qt5
 
 install:
   - cd ..
