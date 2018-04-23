@@ -1,13 +1,16 @@
 clone_folder: c:\dev\workspace\Sky
 
+matrix:
+  - qt: qt4
+  - qt: qt5
+
 install:
   - cd ..
   - appveyor DownloadFile http://omega.gg/get/Sky/3rdparty/win32 -FileName 3rdparty.zip
   - 7z x 3rdparty.zip
   - cd Sky
-  - sh 3rdparty.sh all qt4 win32
-  - sh configure.sh qt4 win32
+  - sh 3rdparty.sh all %qt% win32
+  - sh configure.sh %qt% win32
 
 build_script:
-  - ls -la /c/dev/workspace/3rdparty
-  - sh build.sh qt4 win32 deploy
+  - sh build.sh %qt% win32 deploy

@@ -95,10 +95,6 @@ if [ $2 = "win32" ]; then
 
     PATH="$Qt/bin:$MinGW:$PATH"
 
-    ls -la $Qt
-
-    env
-
 elif [ $2 = "osx" ]; then
 
     spec=macx-g++
