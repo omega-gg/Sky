@@ -1,7 +1,7 @@
-clone_folder: c:\dev\Sky
+clone_folder: /c/dev/Sky
 
 install:
-  - cd c:\dev
+  - cd ..
   - ps: Start-FileDownload http://omega.gg/get/Sky/3rdparty/win32 -FileName 3rdparty.zip
   - 7z x 3rdparty.zip
   - cd Sky
@@ -9,4 +9,4 @@ install:
   - sh configure.sh qt4 win32
 
 build_script:
-  - sh build qt4 win32 deploy
+  - sh build.sh qt4 win32 deploy
