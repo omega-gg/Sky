@@ -1,4 +1,4 @@
-clone_folder: /c/dev/Sky
+clone_folder: c:\dev\Sky
 
 install:
   - cd ..
