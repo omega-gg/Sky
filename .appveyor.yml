@@ -10,5 +10,4 @@ install:
 
 build_script:
   - ls -la /c/dev/workspace/3rdparty
-  - env
   - sh build.sh qt4 win32 deploy
