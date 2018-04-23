@@ -2384,7 +2384,7 @@ void WView::hoverLeave()
 
     if (d->idTouch == -1)
     {
-        if (points.isEmpty()) return;
+        if (points.count() != 1) return;
 
         QTouchEvent::TouchPoint point = points.first();
 
