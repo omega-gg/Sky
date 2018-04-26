@@ -215,11 +215,16 @@ void WDeclarativeBordersPrivate::init()
 
     painter->setBrush(d->color);
 
-    painter->drawRect(QRectF(0,                  0, d->left,  height()));
-    painter->drawRect(QRectF(width() - d->right, 0, d->right, height()));
+    qreal width  = this->width ();
+    qreal height = this->height();
 
-    painter->drawRect(QRectF(0,                    0, width(), d->top));
-    painter->drawRect(QRectF(0, height() - d->bottom, width(), d->bottom));
+    painter->drawRect(QRectF(0,                0, d->left,  height)));
+    painter->drawRect(QRectF(width - d->right, 0, d->right, height));
+
+    width -= d->left + d->right;
+
+    painter->drawRect(QRectF(d->left,                  0, width, d->top));
+    painter->drawRect(QRectF(d->left, height - d->bottom, width, d->bottom));
 }
 
 #endif
@@ -244,30 +249,54 @@ void WDeclarativeBordersPrivate::init()
 
     if (d->updateLeft)
     {
-        d->updateLeft = false;
-
-        node->left.setRect(QRectF(0, 0, d->left, height));
-    }
-
-    if (d->updateRight)
-    {
-        d->updateRight = false;
-
-        node->right.setRect(QRectF(width - d->right, 0, d->right, height));
-    }
-
-    if (d->updateTop)
-    {
-        d->updateTop = false;
-
-        node->top.setRect(QRectF(0, 0, width, d->top));
-    }
-
-    if (d->updateBottom)
-    {
+        d->updateLeft   = false;
+        d->updateTop    = false;
         d->updateBottom = false;
 
-        node->bottom.setRect(QRectF(0, height - d->bottom, width, d->bottom));
+        node->left.setRect(QRectF(0, 0, d->left, height));
+
+        if (d->updateRight)
+        {
+            d->updateRight = false;
+
+            node->right.setRect(QRectF(width - d->right, 0, d->right, height));
+        }
+
+        width -= d->left + d->right;
+
+        node->top   .setRect(QRectF(d->left,                  0, width, d->top));
+        node->bottom.setRect(QRectF(d->left, height - d->bottom, width, d->bottom));
+    }
+    else if (d->updateRight)
+    {
+        d->updateRight  = false;
+        d->updateTop    = false;
+        d->updateBottom = false;
+
+        node->right.setRect(QRectF(width - d->right, 0, d->right, height));
+
+        width -= d->left + d->right;
+
+        node->top   .setRect(QRectF(d->left,                  0, width, d->top));
+        node->bottom.setRect(QRectF(d->left, height - d->bottom, width, d->bottom));
+    }
+    else
+    {
+        width -= d->left + d->right;
+
+        if (d->updateTop)
+        {
+            d->updateTop = false;
+
+            node->top.setRect(QRectF(d->left, 0, width, d->top));
+        }
+
+        if (d->updateBottom)
+        {
+            d->updateBottom = false;
+
+            node->bottom.setRect(QRectF(d->left, height - d->bottom, width, d->bottom));
+        }
     }
 
     if (d->updateColor)
