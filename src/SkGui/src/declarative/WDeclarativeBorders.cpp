@@ -218,7 +218,7 @@ void WDeclarativeBordersPrivate::init()
     qreal width  = this->width ();
     qreal height = this->height();
 
-    painter->drawRect(QRectF(0,                0, d->left,  height)));
+    painter->drawRect(QRectF(0,                0, d->left,  height));
     painter->drawRect(QRectF(width - d->right, 0, d->right, height));
 
     width -= d->left + d->right;
