@@ -1724,7 +1724,7 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice              * device,
     query->backend->applyTrack(query->backendQuery, reply);
 
     WPlaylist * playlist = query->item->toPlaylist();
-    WTrack       * track    = query->track;
+    WTrack    * track    = query->track;
 
     queries.remove(query->data);
 
