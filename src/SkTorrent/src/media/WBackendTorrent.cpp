@@ -233,12 +233,12 @@ WBackendTorrent::WBackendTorrent() : WBackendNet(new WBackendTorrentPrivate(this
 
 /* Q_INVOKABLE virtual */ QString WBackendTorrent::getId() const
 {
-    return "torrent";
+    return "bittorrent";
 }
 
 /* Q_INVOKABLE virtual */ QString WBackendTorrent::getTitle() const
 {
-    return "Torrent";
+    return "BitTorrent";
 }
 
 //-------------------------------------------------------------------------------------------------
