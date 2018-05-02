@@ -81,8 +81,30 @@ inline bool operator==(const WPixmapCacheKey & keyA, const WPixmapCacheKey & key
 
 inline uint qHash(const WPixmapCacheKey & key)
 {
-    return qHash(*(key.path)) ^ key.size->width() ^ key.size->height()
-                              ^ key.area->width() ^ key.area->height();
+    QByteArray array = key.path->toUtf8();
+
+    int length = array.size();
+
+    array.resize(length + sizeof(int) * 4);
+
+    int * data  = reinterpret_cast<int *> (array.data() + length);
+
+    const QSize * size = key.size;
+
+    *data = size->width();
+    data++;
+
+    *data = size->height();
+    data++;
+
+    size = key.area;
+
+    *data = size->width();
+    data++;
+
+    *data = size->height();
+
+    return qHash(data);
 }
 
 //=================================================================================================
