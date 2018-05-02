@@ -1119,6 +1119,22 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
         {
             d->view->d_func()->idTouch = point.id();
 
+#ifdef Q_OS_WIN
+            //-------------------------------------------------------------------------------------
+            // FIXME Qt5 Windows: Sending a mouse move before the press event.
+
+            QPoint screenPos = point.screenPos().toPoint();
+
+            QPoint localPos = d->view->mapFromGlobal(screenPos);
+
+            QMouseEvent eventMove(QEvent::MouseMove, localPos, screenPos,
+                                  Qt::NoButton, Qt::NoButton, Qt::NoModifier);
+
+            QCoreApplication::sendEvent(this, &eventMove);
+
+            //-------------------------------------------------------------------------------------
+#endif
+
             WDeclarativeItem::touchEvent(event);
         }
     }
