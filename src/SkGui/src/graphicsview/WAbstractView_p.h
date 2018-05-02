@@ -30,6 +30,9 @@
 #ifdef SK_WIN_NATIVE
 // Qt includes
 #include <QMetaMethod>
+#ifdef QT_LATEST
+#include <QTimer>
+#endif
 #endif
 
 #if defined(SK_WIN_NATIVE) && defined(QT_4)
@@ -69,6 +72,10 @@ public: // Static events
     static LRESULT CALLBACK events(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
 
 public: // Slots
+#ifdef QT_LATEST
+    void onMove();
+#endif
+
     void onFocus();
 #endif
 
@@ -110,6 +117,10 @@ public: // Variables
     int version;
 
     QMetaMethod method;
+
+#ifdef QT_LATEST
+    QTimer timer;
+#endif
 #endif
 
 protected:

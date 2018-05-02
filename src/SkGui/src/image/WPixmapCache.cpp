@@ -517,15 +517,15 @@ void WPixmapCacheStore::updateCache()
 {
     WCache * cache = wControllerFile->cache();
 
-    if (cache)
-    {
-        path = cache->path();
+    if (cache == NULL) return;
 
-        connect(cache, SIGNAL(filesRemoved(const QList<QUrl> &, const QList<QUrl> &)),
-                this,  SLOT(onFilesRemoved(const QList<QUrl> &, const QList<QUrl> &)));
+    // FIXME Qt5 Windows: QUrl converts drive letters to lowercase.
+    path = QUrl(cache->path()).toString();
 
-        connect(cache, SIGNAL(filesCleared()), this, SLOT(onFilesCleared()));
-    }
+    connect(cache, SIGNAL(filesRemoved(const QList<QUrl> &, const QList<QUrl> &)),
+            this,  SLOT(onFilesRemoved(const QList<QUrl> &, const QList<QUrl> &)));
+
+    connect(cache, SIGNAL(filesCleared()), this, SLOT(onFilesCleared()));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -566,7 +566,10 @@ void WPixmapCacheStore::onFilesCleared()
 
         WPixmapCacheData * data = i.value();
 
-        if (data->path.startsWith(path))
+        // FIXME Qt5 Windows: QUrl converts drive letters to lowercase.
+        QString path = QUrl(data->path).toString();
+
+        if (path.startsWith(this->path))
         {
             datas.removeOne(data);
 

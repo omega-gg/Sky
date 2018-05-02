@@ -158,6 +158,10 @@ private:
     W_DECLARE_PRIVATE(WAbstractView)
 
 #ifdef SK_WIN_NATIVE
+#ifdef QT_LATEST
+    Q_PRIVATE_SLOT(d_func(), void onMove())
+#endif
+
     Q_PRIVATE_SLOT(d_func(), void onFocus())
 #endif
 };

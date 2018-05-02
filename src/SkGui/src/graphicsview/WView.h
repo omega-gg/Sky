@@ -405,12 +405,6 @@ protected: // Events
 
     /* virtual */ void mouseMoveEvent(QMouseEvent * event);
 
-#ifdef QT_LATEST
-    /* virtual */ void touchEvent(QTouchEvent * event);
-
-    /* virtual */ void touchUngrabEvent();
-#endif
-
     /* virtual */ void dragEnterEvent(QDragEnterEvent * event);
     /* virtual */ void dragLeaveEvent(QDragLeaveEvent * event);
 

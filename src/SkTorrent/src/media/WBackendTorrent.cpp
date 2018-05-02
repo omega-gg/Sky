@@ -260,6 +260,34 @@ WBackendTorrent::WBackendTorrent() : WBackendNet(new WBackendTorrentPrivate(this
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE virtual */ QList<WLibraryFolderItem> WBackendTorrent::getLibraryItems() const
+{
+    WLibraryFolderItem all(WLibraryItem::FolderSearch);
+
+    all.title = tr("Torrents & Magnets");
+    all.label = "all";
+
+    WLibraryFolderItem torrents(WLibraryItem::FolderSearch);
+
+    torrents.title = tr("Torrents");
+    torrents.label = "torrents";
+
+    WLibraryFolderItem magnets(WLibraryItem::FolderSearch);
+
+    magnets.title = tr("Magnets");
+    magnets.label = "magnets";
+
+    QList<WLibraryFolderItem> items;
+
+    items.append(all);
+    items.append(torrents);
+    items.append(magnets);
+
+    return items;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE virtual */
 WAbstractBackend::Output WBackendTorrent::getTrackOutput(const QUrl & url) const
 {

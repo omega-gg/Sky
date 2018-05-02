@@ -37,6 +37,10 @@
 #ifdef SK_WIN_NATIVE
 static const DWORD windowFlags = WS_OVERLAPPED | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX |
                                  WS_CLIPCHILDREN;
+
+#ifdef QT_LATEST
+static const int ABSTRACTVIEW_INTERVAL = 400;
+#endif
 #endif
 
 //-------------------------------------------------------------------------------------------------
@@ -108,6 +112,14 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     const QMetaObject * meta = q->metaObject();
 
     method = meta->method(meta->indexOfMethod("onFocus()"));
+
+#ifdef QT_LATEST
+    timer.setInterval(ABSTRACTVIEW_INTERVAL);
+
+    timer.setSingleShot(true);
+
+    QObject::connect(&timer, SIGNAL(timeout()), q, SLOT(onMove()));
+#endif
 
     //---------------------------------------------------------------------------------------------
 
@@ -338,6 +350,8 @@ bool WAbstractViewPrivate::isWindows10()
 
 #ifdef QT_4
         view->QDeclarativeView::move(0, 0);
+#else
+        d->timer.start();
 #endif
 
         return 0;
@@ -442,6 +456,20 @@ bool WAbstractViewPrivate::isWindows10()
 //-------------------------------------------------------------------------------------------------
 // Private slots
 //-------------------------------------------------------------------------------------------------
+
+#ifdef QT_LATEST
+
+void WAbstractViewPrivate::onMove()
+{
+    if (maximized || fullScreen) return;
+
+    QSize size = viewport->size();
+
+    viewport->resize(size.width() + 1, size.height());
+    viewport->resize(size);
+}
+
+#endif
 
 void WAbstractViewPrivate::onFocus()
 {

@@ -1101,12 +1101,55 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
 /* virtual */ void WDeclarativeMouseArea::touchEvent(QTouchEvent * event)
 {
-    Q_D(WDeclarativeMouseArea); d->view->touchEvent(event);
+    Q_D(WDeclarativeMouseArea);
+
+    if (d->view == NULL) return;
+
+    const QList<QTouchEvent::TouchPoint> & points = event->touchPoints();
+
+    int id = d->view->d_func()->idTouch;
+
+    if (id == -1)
+    {
+        if (points.isEmpty()) return;
+
+        QTouchEvent::TouchPoint point = points.first();
+
+        if (point.state() == Qt::TouchPointPressed)
+        {
+            d->view->d_func()->idTouch = point.id();
+
+            WDeclarativeItem::touchEvent(event);
+        }
+    }
+    else
+    {
+        foreach (const QTouchEvent::TouchPoint & point, points)
+        {
+            if (point.id() == id)
+            {
+                if (point.state() == Qt::TouchPointReleased)
+                {
+                    d->view->d_func()->idTouch = -1;
+                }
+
+                WDeclarativeItem::touchEvent(event);
+
+                return;
+            }
+        }
+    }
 }
 
 /* virtual */ void WDeclarativeMouseArea::touchUngrabEvent()
 {
-    Q_D(WDeclarativeMouseArea); d->view->touchUngrabEvent();
+    Q_D(WDeclarativeMouseArea);
+
+    if (d->view == NULL) return;
+
+    d->view->d_func()->idTouch = -1;
+
+    WDeclarativeItem::touchUngrabEvent();
 }
 
 #endif
