@@ -25,9 +25,6 @@ bin5="latest"
 #--------------------------------------------------------------------------------------------------
 # Linux
 
-base32="/lib/i386-linux-gnu"
-base64="/lib/x86_64-linux-gnu"
-
 lib32="/usr/lib/i386-linux-gnu"
 lib64="/usr/lib/x86_64-linux-gnu"
 
@@ -60,12 +57,8 @@ if [ $2 = "linux" ]; then
 
     if [ -d "${lib64}" ]; then
 
-        base="$base64"
-
         lib="$lib64"
     else
-        base="$base32"
-
         lib="$lib32"
     fi
 
@@ -243,8 +236,8 @@ if [ $2 = "win32" ]; then
 
 elif [ $2 = "linux" ]; then
 
-    sudo cp "$base"/libssl.so.1.0.0    deploy
-    sudo cp "$base"/libcrypto.so.1.0.0 deploy
+    sudo cp "$lib"/libssl.so.1.0.0    deploy
+    sudo cp "$lib"/libcrypto.so.1.0.0 deploy
 fi
 
 #--------------------------------------------------------------------------------------------------
