@@ -104,7 +104,7 @@ inline uint qHash(const WPixmapCacheKey & key)
 
     *data = size->height();
 
-    return qHash(data);
+    return qHash(array);
 }
 
 //=================================================================================================
