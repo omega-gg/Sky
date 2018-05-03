@@ -30,20 +30,20 @@ usr="/usr/lib"
 lib32="/usr/lib/i386-linux-gnu"
 lib64="/usr/lib/x86_64-linux-gnu"
 
-Qt5_version_linux="5.9.1"
+Qt5_version_linux="5.9.5"
 
 #--------------------------------------------------------------------------------------------------
 # Ubuntu
 
 QtWebkit_version_ubuntu="4.10.2"
 
-VLC_version_ubuntu="5.5.0"
+VLC_version_ubuntu="5.6.0"
 
-libvlccore_version_ubuntu="8.0.0"
+libvlccore_version_ubuntu="9.0.0"
 
 libtorrent_version_ubuntu="9.0.0"
 
-Boost_version_ubuntu="1.62.0"
+Boost_version_ubuntu="1.65.1"
 
 #--------------------------------------------------------------------------------------------------
 

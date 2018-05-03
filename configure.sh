@@ -28,7 +28,7 @@ bin5="latest"
 include32="/usr/include/i386-linux-gnu"
 include64="/usr/include/x86_64-linux-gnu"
 
-Qt5_version_linux="5.9.1"
+Qt5_version_linux="5.9.5"
 
 #--------------------------------------------------------------------------------------------------
 # Syntax

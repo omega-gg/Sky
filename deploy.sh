@@ -31,13 +31,13 @@ base64="/lib/x86_64-linux-gnu"
 lib32="/usr/lib/i386-linux-gnu"
 lib64="/usr/lib/x86_64-linux-gnu"
 
-Qt5_version_linux="5.9.1"
+Qt5_version_linux="5.9.5"
 
-VLC_version_linux="5.5.0"
+VLC_version_linux="5.6.0"
 
 libtorrent_version_linux="9.0.0"
 
-Boost_version_linux="1.62.0"
+Boost_version_linux="1.65.1"
 
 #--------------------------------------------------------------------------------------------------
 # Syntax
