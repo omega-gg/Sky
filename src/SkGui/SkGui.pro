@@ -50,6 +50,8 @@ contains(QT_MAJOR_VERSION, 4) {
     greaterThan(QT_MINOR_VERSION, 9): DEFINES += QT_5_LATEST
 }
 
+unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
+
 include(src/controllers/controllers.pri)
 include(src/kernel/kernel.pri)
 include(src/image/image.pri)

@@ -35,6 +35,8 @@ contains(QT_MAJOR_VERSION, 4) {
 
 QMAKE_CXXFLAGS += -msse
 
+unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
+
 include(src/controllers/controllers.pri)
 include(src/media/media.pri)
 include(src/vlc/vlc.pri)

@@ -33,6 +33,8 @@ contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_LATEST
 }
 
+unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
+
 include(src/media/media.pri)
 
 INCLUDEPATH += $$SK/include/SkCore \

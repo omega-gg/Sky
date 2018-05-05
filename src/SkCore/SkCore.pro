@@ -33,6 +33,8 @@ contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_LATEST
 }
 
+unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
+
 include(src/global/global.pri)
 include(src/controllers/controllers.pri)
 include(src/kernel/kernel.pri)

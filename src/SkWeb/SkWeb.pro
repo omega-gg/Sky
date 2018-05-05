@@ -29,6 +29,8 @@ contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_LATEST
 }
 
+unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
+
 include(src/io/io.pri)
 
 INCLUDEPATH += $$SK/include/SkCore \
