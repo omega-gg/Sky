@@ -31,6 +31,67 @@ class WRemoteData;
 // Defines
 #define wControllerPlaylist WControllerPlaylist::instance()
 
+//-------------------------------------------------------------------------------------------------
+// WControllerPlaylistSource
+//-------------------------------------------------------------------------------------------------
+
+struct WControllerPlaylistSource
+{
+    QUrl    url;
+    QString title;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WControllerPlaylistMedia
+//-------------------------------------------------------------------------------------------------
+
+struct WControllerPlaylistMedia
+{
+    QUrl    url;
+    QString title;
+
+    bool local;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WControllerPlaylistData
+//-------------------------------------------------------------------------------------------------
+
+class SK_GUI_EXPORT WControllerPlaylistData
+{
+public: // Interface
+    void applyHtml(const QByteArray & array, const QString & url);
+
+    void applyFolder(const QString & url);
+
+    void applyFile(const QByteArray & array, const QString & url);
+
+private: // Functions
+    void addSource(const QString & url, const QString & title);
+    void addFolder(const QString & url, const QString & title);
+
+    void addFile(const QString & path);
+
+    bool addUrl(QList<QString> * urls, const QString & url) const;
+
+    QString generateUrl  (const QString & url, const QString & baseUrl) const;
+    QString generateTitle(const QString & url, const QString & urlName) const;
+
+public: // Variables
+    QString title;
+    QUrl    cover;
+
+    QList<WControllerPlaylistSource> sources;
+    QList<WControllerPlaylistSource> folders;
+    QList<WControllerPlaylistSource> files;
+
+    QList<WControllerPlaylistMedia> medias;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WControllerPlaylist
+//-------------------------------------------------------------------------------------------------
+
 class SK_GUI_EXPORT WControllerPlaylist : public WController
 {
     Q_OBJECT

@@ -63,6 +63,9 @@ public: // WBackendNet reimplementation
     WBackendNetPlaylist extractPlaylist(const QByteArray       & data,
                                         const WBackendNetQuery & query) const;
 
+    /* Q_INVOKABLE virtual */
+    WBackendNetFolder extractFolder(const QByteArray & data, const WBackendNetQuery & query) const;
+
 private:
     W_DECLARE_PRIVATE(WBackendTorrent)
 };

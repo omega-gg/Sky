@@ -1060,12 +1060,10 @@ void WAbstractView::setOpacity(qreal level)
 {
     Q_D(WAbstractView);
 
-    qreal oldOpacity = d->opacity;
-
-    d->opacity = level;
-
     if (level == 1.0)
     {
+        d->opacity = level;
+
         SetLayeredWindowAttributes(d->handle, 0, 255, LWA_ALPHA);
 
         SetWindowLong(d->handle,
@@ -1073,13 +1071,17 @@ void WAbstractView::setOpacity(qreal level)
     }
     else
     {
+        qreal oldOpacity = d->opacity;
+
+        d->opacity = level;
+
+        SetLayeredWindowAttributes(d->handle, 0, level * 255, LWA_ALPHA);
+
         if (oldOpacity == 1.0)
         {
             SetWindowLong(d->handle,
                           GWL_EXSTYLE, GetWindowLong(d->handle, GWL_EXSTYLE) | WS_EX_LAYERED);
         }
-
-        SetLayeredWindowAttributes(d->handle, 0, level * 255, LWA_ALPHA);
     }
 }
 

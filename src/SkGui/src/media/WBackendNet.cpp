@@ -78,6 +78,7 @@ void WBackendNetQuery::init(Type type, const QUrl & url)
     clearItems = true;
     cookies    = false;
     header     = false;
+    skipError  = false;
 
     maxHost = 3;
     delay   = 0;
@@ -159,7 +160,8 @@ WBackendNetFolder::WBackendNetFolder() : WBackendNetItem()
 {
     currentIndex = -1;
 
-    scanItems = false;
+    clearDuplicate = false;
+    scanItems      = false;
 }
 
 //=================================================================================================
@@ -264,12 +266,7 @@ void WBackendNetPrivate::onLoadSource(WNetReplySource * reply) const
 
     QByteArray data = reply->_device->readAll();
 
-    WBackendNetSource source;
-
-    if (data.isEmpty() == false)
-    {
-        source = q->extractSource(data, reply->_query);
-    }
+    WBackendNetSource source = q->extractSource(data, reply->_query);
 
     emit reply->loaded(reply->_device, source);
 
@@ -282,12 +279,7 @@ void WBackendNetPrivate::onLoadTrack(WNetReplyTrack * reply) const
 
     QByteArray data = reply->_device->readAll();
 
-    WBackendNetTrack track;
-
-    if (data.isEmpty() == false)
-    {
-        track = q->extractTrack(data, reply->_query);
-    }
+    WBackendNetTrack track = q->extractTrack(data, reply->_query);
 
     emit reply->loaded(reply->_device, track);
 
@@ -300,12 +292,7 @@ void WBackendNetPrivate::onLoadPlaylist(WNetReplyPlaylist * reply) const
 
     QByteArray data = reply->_device->readAll();
 
-    WBackendNetPlaylist playlist;
-
-    if (data.isEmpty() == false)
-    {
-        playlist = q->extractPlaylist(data, reply->_query);
-    }
+    WBackendNetPlaylist playlist = q->extractPlaylist(data, reply->_query);
 
     emit reply->loaded(reply->_device, playlist);
 
@@ -318,12 +305,7 @@ void WBackendNetPrivate::onLoadFolder(WNetReplyFolder * reply) const
 
     QByteArray data = reply->_device->readAll();
 
-    WBackendNetFolder folder;
-
-    if (data.isEmpty() == false)
-    {
-        folder = q->extractFolder(data, reply->_query);
-    }
+    WBackendNetFolder folder = q->extractFolder(data, reply->_query);
 
     emit reply->loaded(reply->_device, folder);
 

@@ -48,7 +48,7 @@ public: // Enums
     {
         TargetDefault,
         TargetHtml,
-        TargetDir,
+        TargetFolder,
         TargetFile
     };
 
@@ -67,6 +67,8 @@ public: // Variables
     Type   type;
     Target target;
 
+    QString backend;
+
     QUrl url;
 
     int id;
@@ -78,6 +80,7 @@ public: // Variables
     bool clearItems;
     bool cookies;
     bool header;
+    bool skipError;
 
     int maxHost;
     int delay;
@@ -192,6 +195,7 @@ public: // Variables
 
     int currentIndex;
 
+    bool clearDuplicate;
     bool scanItems;
 };
 

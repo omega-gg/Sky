@@ -63,52 +63,7 @@ public: // Variables
 };
 
 //-------------------------------------------------------------------------------------------------
-// WControllerPlaylistSource
-//-------------------------------------------------------------------------------------------------
-
-struct WControllerPlaylistSource
-{
-    QUrl    url;
-    QString title;
-};
-
-//-------------------------------------------------------------------------------------------------
-// WControllerPlaylistMedia
-//-------------------------------------------------------------------------------------------------
-
-struct WControllerPlaylistMedia
-{
-    QUrl    url;
-    QString title;
-
-    bool local;
-};
-
-//-------------------------------------------------------------------------------------------------
-// WControllerPlaylistData
-//-------------------------------------------------------------------------------------------------
-
-class WControllerPlaylistData
-{
-public: // Interface
-    void addSource(const QString & url, const QString & title);
-    void addFolder(const QString & url, const QString & title);
-
-    void addFile(const QString & path);
-
-public: // Variables
-    QString title;
-    QUrl    cover;
-
-    QList<WControllerPlaylistSource> sources;
-    QList<WControllerPlaylistSource> folders;
-    QList<WControllerPlaylistSource> files;
-
-    QList<WControllerPlaylistMedia> medias;
-};
-
-//-------------------------------------------------------------------------------------------------
-// Classes
+// WControllerPlaylistPrivate
 //-------------------------------------------------------------------------------------------------
 
 class SK_GUI_EXPORT WControllerPlaylistPrivate : public WControllerPrivate
@@ -232,7 +187,7 @@ public: // Variables
     QHash<QIODevice *, WControllerPlaylistQuery *> replies;
 
     QMetaMethod methodHtml;
-    QMetaMethod methodDir;
+    QMetaMethod methodFolder;
     QMetaMethod methodFile;
 
     QString pathCover;

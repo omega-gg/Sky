@@ -164,8 +164,6 @@ WBackendNetFolder WBackendDuckDuckGo::extractFolder(const QByteArray       & dat
 {
     WBackendNetFolder reply;
 
-    QString content = Sk::readUtf8(data);
-
     int id = query.id;
 
     if (id == 1) // Search urls
@@ -222,6 +220,8 @@ WBackendNetFolder WBackendDuckDuckGo::extractFolder(const QByteArray       & dat
     }
     else
     {
+        QString content = Sk::readUtf8(data);
+
         QString source = Sk::sliceIn(content, "nrje('", "'");
 
         WBackendNetQuery * nextQuery = &(reply.nextQuery);

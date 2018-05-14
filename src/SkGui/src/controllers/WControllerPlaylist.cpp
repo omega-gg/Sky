@@ -206,6 +206,171 @@ WControllerPlaylistQuery::WControllerPlaylistQuery(const WBackendNetQuery & back
 //=================================================================================================
 // Interface
 
+void WControllerPlaylistData::applyHtml(const QByteArray & array, const QString & url)
+{
+    QString charset = WControllerNetwork::extractCharset(array);
+
+    QString content;
+
+    if (charset.isEmpty())
+    {
+         content = Sk::readUtf8(array);
+    }
+    else content = Sk::readCodec(array, charset);
+
+    QString head = WControllerNetwork::extractHead(content);
+
+    head.replace("'", "\"");
+
+    QString baseUrl = WControllerNetwork::extractBaseUrl(url);
+
+    QString urlName = WControllerNetwork::urlName(baseUrl);
+
+    QString host;
+    QString title;
+
+    if (WControllerNetwork::urlIsFile(baseUrl))
+    {
+        host = baseUrl;
+
+        title = WControllerNetwork::extractUrlFileName(url);
+    }
+    else
+    {
+        host = WControllerNetwork::extractUrlHost(baseUrl);
+
+        title = WControllerNetwork::extractTitle(head);
+
+        if (title.isEmpty())
+        {
+            title = WControllerNetwork::removeUrlPrefix(baseUrl);
+        }
+    }
+
+    QString cover = WControllerNetwork::extractImage(head);
+
+    if (cover.isEmpty() == false)
+    {
+        cover = generateUrl(cover, host);
+    }
+
+    QList<QString> urls;
+
+    QStringList list = Sk::slices(content, "<a", "</a");
+
+    foreach (const QString & string, list)
+    {
+        QString tag = Sk::sliceIn(string, "<", ">");
+
+        WControllerNetwork::fixAttributes(tag);
+
+        QString url = WControllerNetwork::extractAttributeUtf8(tag, "href");
+
+        if (url.isEmpty()) continue;
+
+        url = generateUrl(url, host);
+
+        if (addUrl(&urls, url))
+        {
+            addSource(url, generateTitle(url, urlName));
+        }
+    }
+
+    list = Sk::slicesIn(content, "<", ">");
+
+    foreach (QString string, list)
+    {
+        WControllerNetwork::fixAttributes(string);
+
+        string.replace("href=\"", "src=\"");
+
+        QStringList sources = Sk::slicesIn(string, "src=\"", "\"");
+
+        foreach (const QString & source, sources)
+        {
+            QString url = generateUrl(source, host);
+
+            if (addUrl(&urls, url))
+            {
+                addSource(url, generateTitle(url, urlName));
+            }
+        }
+    }
+
+    content.replace("'",      "\"");
+    content.replace("&quot;", "\"");
+
+    content.replace(">",  ">\"");
+    content.replace("</", "\"</");
+
+    list = Sk::slicesIn(content, "\"http", "\"");
+
+    foreach (const QString & string, list)
+    {
+        QString url = generateUrl("http" + string, host);
+
+        if (addUrl(&urls, url))
+        {
+            addSource(url, generateTitle(url, urlName));
+        }
+    }
+
+    this->title = title;
+    this->cover = cover;
+}
+
+void WControllerPlaylistData::applyFolder(const QString & url)
+{
+    QDir dir(WControllerFile::filePath(url));
+
+    QFileInfoList list = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files  | QDir::AllDirs
+                                                                | QDir::System | QDir::Hidden,
+                                           QDir::Name | QDir::Type);
+
+    foreach (QFileInfo info, list)
+    {
+        addFile(info.absoluteFilePath());
+    }
+
+    title = dir.dirName();
+}
+
+void WControllerPlaylistData::applyFile(const QByteArray & array, const QString & url)
+{
+    QString baseUrl = WControllerNetwork::extractBaseUrl(url);
+
+    QString urlName = WControllerNetwork::urlName(baseUrl);
+
+    QList<QString> urls;
+
+    QStringList list = Sk::slices(array, QRegExp("file:///|http://|https://"), QRegExp("\\s"));
+
+    QRegExp regExp("[\\s\\.:,;'\"\\)}\\]]");
+
+    foreach (QString url, list)
+    {
+        for (int i = url.length() - 1; i; i--)
+        {
+            QChar character = url.at(i);
+
+            if (regExp.indexIn(character) == -1) break;
+
+            url.chop(1);
+        }
+
+        if (addUrl(&urls, url))
+        {
+            addSource(url, generateTitle(url, urlName));
+        }
+    }
+
+    title = WControllerNetwork::extractUrlFileName(url);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
+
 void WControllerPlaylistData::addSource(const QString & url, const QString & title)
 {
     QUrl urlEncoded = WControllerNetwork::encodedUrl(url);
@@ -284,250 +449,9 @@ void WControllerPlaylistData::addFile(const QString & path)
     }
 }
 
-//=================================================================================================
-// WControllerPlaylistReply
-//=================================================================================================
-
-class WControllerPlaylistReply : public QObject
-{
-    Q_OBJECT
-
-public: // Interface
-    Q_INVOKABLE void extractHtml(QIODevice * device, const QString & url);
-    Q_INVOKABLE void extractDir (QIODevice * device, const QString & url);
-    Q_INVOKABLE void extractFile(QIODevice * device, const QString & url);
-
-private: // Interface
-    QString generateUrl  (const QString & url, const QString & baseUrl) const;
-    QString generateTitle(const QString & url, const QString & urlName) const;
-
-    bool addUrl(QList<QString> * urls, const QString & url) const;
-
-signals:
-    void loaded(QIODevice * device, const WControllerPlaylistData & data);
-};
-
-//-------------------------------------------------------------------------------------------------
-// Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WControllerPlaylistReply::extractHtml(QIODevice     * device,
-                                                             const QString & url)
-{
-    WControllerPlaylistData data;
-
-    QByteArray array = device->readAll();
-
-    QString charset = WControllerNetwork::extractCharset(array);
-
-    QString content;
-
-    if (charset.isEmpty())
-    {
-         content = Sk::readUtf8(array);
-    }
-    else content = Sk::readCodec(array, charset);
-
-    QString head = WControllerNetwork::extractHead(content);
-
-    head.replace("'", "\"");
-
-    QString baseUrl = WControllerNetwork::extractBaseUrl(url);
-
-    QString urlName = WControllerNetwork::urlName(baseUrl);
-
-    QString host;
-    QString title;
-
-    if (WControllerNetwork::urlIsFile(baseUrl))
-    {
-        host = baseUrl;
-
-        title = WControllerNetwork::extractUrlFileName(url);
-    }
-    else
-    {
-        host = WControllerNetwork::extractUrlHost(baseUrl);
-
-        title = WControllerNetwork::extractTitle(head);
-
-        if (title.isEmpty())
-        {
-            title = WControllerNetwork::removeUrlPrefix(baseUrl);
-        }
-    }
-
-    QString cover = WControllerNetwork::extractImage(head);
-
-    if (cover.isEmpty() == false)
-    {
-        cover = generateUrl(cover, host);
-    }
-
-    QList<QString> urls;
-
-    QStringList list = Sk::slices(content, "<a", "</a");
-
-    foreach (const QString & string, list)
-    {
-        QString tag = Sk::sliceIn(string, "<", ">");
-
-        WControllerNetwork::fixAttributes(tag);
-
-        QString url = WControllerNetwork::extractAttributeUtf8(tag, "href");
-
-        if (url.isEmpty()) continue;
-
-        url = generateUrl(url, host);
-
-        if (addUrl(&urls, url))
-        {
-            data.addSource(url, generateTitle(url, urlName));
-        }
-    }
-
-    list = Sk::slicesIn(content, "<", ">");
-
-    foreach (QString string, list)
-    {
-        WControllerNetwork::fixAttributes(string);
-
-        string.replace("href=\"", "src=\"");
-
-        QStringList sources = Sk::slicesIn(string, "src=\"", "\"");
-
-        foreach (const QString & source, sources)
-        {
-            QString url = generateUrl(source, host);
-
-            if (addUrl(&urls, url))
-            {
-                data.addSource(url, generateTitle(url, urlName));
-            }
-        }
-    }
-
-    content.replace("'",      "\"");
-    content.replace("&quot;", "\"");
-
-    content.replace(">",  ">\"");
-    content.replace("</", "\"</");
-
-    list = Sk::slicesIn(content, "\"http", "\"");
-
-    foreach (const QString & string, list)
-    {
-        QString url = generateUrl("http" + string, host);
-
-        if (addUrl(&urls, url))
-        {
-            data.addSource(url, generateTitle(url, urlName));
-        }
-    }
-
-    data.title = title;
-    data.cover = cover;
-
-    emit loaded(device, data);
-
-    deleteLater();
-}
-
-/* Q_INVOKABLE */ void WControllerPlaylistReply::extractDir(QIODevice     * device,
-                                                            const QString & url)
-{
-    WControllerPlaylistData data;
-
-    QDir dir(WControllerFile::filePath(url));
-
-    QFileInfoList list = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files  | QDir::AllDirs
-                                                                | QDir::System | QDir::Hidden,
-                                           QDir::Name | QDir::Type);
-
-    foreach (QFileInfo info, list)
-    {
-        data.addFile(info.absoluteFilePath());
-    }
-
-    data.title = dir.dirName();
-
-    emit loaded(device, data);
-
-    deleteLater();
-}
-
-/* Q_INVOKABLE */ void WControllerPlaylistReply::extractFile(QIODevice     * device,
-                                                             const QString & url)
-{
-    WControllerPlaylistData data;
-
-    QString content = device->readAll();
-
-    QString baseUrl = WControllerNetwork::extractBaseUrl(url);
-
-    QString urlName = WControllerNetwork::urlName(baseUrl);
-
-    QList<QString> urls;
-
-    QStringList list = Sk::slices(content, QRegExp("file:///|http://|https://"), QRegExp("\\s"));
-
-    QRegExp regExp("[\\s\\.:,;'\"\\)}\\]]");
-
-    foreach (QString url, list)
-    {
-        for (int i = url.length() - 1; i; i--)
-        {
-            QChar character = url.at(i);
-
-            if (regExp.indexIn(character) == -1) break;
-
-            url.chop(1);
-        }
-
-        if (addUrl(&urls, url))
-        {
-            data.addSource(url, generateTitle(url, urlName));
-        }
-    }
-
-    data.title = WControllerNetwork::extractUrlFileName(url);
-
-    emit loaded(device, data);
-
-    deleteLater();
-}
-
-//-------------------------------------------------------------------------------------------------
-// Private interface
-//-------------------------------------------------------------------------------------------------
-
-QString WControllerPlaylistReply::generateUrl(const QString & url, const QString & baseUrl) const
-{
-    QString result = url.simplified().remove(' ');
-
-    result = WControllerNetwork::removeUrlFragment(url);
-
-    result = WControllerNetwork::decodeUrl(url);
-
-    result = WControllerNetwork::htmlToUtf8(result);
-
-    result.remove("\\");
-
-    return WControllerNetwork::generateUrl(result, baseUrl);
-}
-
-QString WControllerPlaylistReply::generateTitle(const QString & url, const QString & urlName) const
-{
-    if (WControllerNetwork::urlName(url) == urlName)
-    {
-         return WControllerNetwork::extractUrlPath(url);
-    }
-    else return WControllerNetwork::removeUrlPrefix(url);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-bool WControllerPlaylistReply::addUrl(QList<QString> * urls, const QString & url) const
+bool WControllerPlaylistData::addUrl(QList<QString> * urls, const QString & url) const
 {
     if (WControllerNetwork::urlIsHttp(url))
     {
@@ -548,6 +472,91 @@ bool WControllerPlaylistReply::addUrl(QList<QString> * urls, const QString & url
         return true;
     }
     else return false;
+}
+
+QString WControllerPlaylistData::generateUrl(const QString & url, const QString & baseUrl) const
+{
+    QString result = url.simplified().remove(' ');
+
+    result = WControllerNetwork::removeUrlFragment(url);
+
+    result = WControllerNetwork::decodeUrl(url);
+
+    result = WControllerNetwork::htmlToUtf8(result);
+
+    result.remove("\\");
+
+    return WControllerNetwork::generateUrl(result, baseUrl);
+}
+
+QString WControllerPlaylistData::generateTitle(const QString & url, const QString & urlName) const
+{
+    if (WControllerNetwork::urlName(url) == urlName)
+    {
+         return WControllerNetwork::extractUrlPath(url);
+    }
+    else return WControllerNetwork::removeUrlPrefix(url);
+}
+
+//=================================================================================================
+// WControllerPlaylistReply
+//=================================================================================================
+
+class WControllerPlaylistReply : public QObject
+{
+    Q_OBJECT
+
+public: // Interface
+    Q_INVOKABLE void extractHtml  (QIODevice * device, const QString & url);
+    Q_INVOKABLE void extractFolder(QIODevice * device, const QString & url);
+    Q_INVOKABLE void extractFile  (QIODevice * device, const QString & url);
+
+signals:
+    void loaded(QIODevice * device, const WControllerPlaylistData & data);
+};
+
+//-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WControllerPlaylistReply::extractHtml(QIODevice     * device,
+                                                             const QString & url)
+{
+    QByteArray array = device->readAll();
+
+    WControllerPlaylistData data;
+
+    data.applyHtml(array, url);
+
+    emit loaded(device, data);
+
+    deleteLater();
+}
+
+/* Q_INVOKABLE */ void WControllerPlaylistReply::extractFolder(QIODevice     * device,
+                                                               const QString & url)
+{
+    WControllerPlaylistData data;
+
+    data.applyFolder(url);
+
+    emit loaded(device, data);
+
+    deleteLater();
+}
+
+/* Q_INVOKABLE */ void WControllerPlaylistReply::extractFile(QIODevice     * device,
+                                                             const QString & url)
+{
+    QByteArray array = device->readAll();
+
+    WControllerPlaylistData data;
+
+    data.applyFile(array, url);
+
+    emit loaded(device, data);
+
+    deleteLater();
 }
 
 //=================================================================================================
@@ -590,9 +599,9 @@ void WControllerPlaylistPrivate::init()
 
     const QMetaObject * meta = WControllerPlaylistReply().metaObject();
 
-    methodHtml = meta->method(meta->indexOfMethod("extractHtml(QIODevice*,QString)"));
-    methodDir  = meta->method(meta->indexOfMethod("extractDir(QIODevice*,QString)"));
-    methodFile = meta->method(meta->indexOfMethod("extractFile(QIODevice*,QString)"));
+    methodHtml   = meta->method(meta->indexOfMethod("extractHtml(QIODevice*,QString)"));
+    methodFolder = meta->method(meta->indexOfMethod("extractFolder(QIODevice*,QString)"));
+    methodFile   = meta->method(meta->indexOfMethod("extractFile(QIODevice*,QString)"));
 
     thread = new QThread(q);
 
@@ -763,7 +772,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
         {
             WBackendNetQuery query(source);
 
-            query.target = WBackendNetQuery::TargetDir;
+            query.target = WBackendNetQuery::TargetFolder;
 
             return getDataPlaylist(playlist, query);
         }
@@ -779,7 +788,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
 
                     WBackendNetQuery query(source);
 
-                    query.target = WBackendNetQuery::TargetDir;
+                    query.target = WBackendNetQuery::TargetFolder;
 
                     return getDataPlaylist(playlist, query);
                 }
@@ -884,7 +893,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
             WBackendNetQuery query(source);
 
-            query.target     = WBackendNetQuery::TargetDir;
+            query.target     = WBackendNetQuery::TargetFolder;
             query.clearItems = false;
 
             return getDataFolder(folder, query);
@@ -901,7 +910,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
             {
                 WBackendNetQuery query(WControllerFile::fileUrl(baseUrl));
 
-                query.target     = WBackendNetQuery::TargetDir;
+                query.target     = WBackendNetQuery::TargetFolder;
                 query.clearItems = false;
 
                 return getDataFolder(folder, query);
@@ -1325,9 +1334,9 @@ void WControllerPlaylistPrivate::loadUrls(QIODevice * device, const WBackendNetQ
     {
         method = methodHtml;
     }
-    else if (target == WBackendNetQuery::TargetDir)
+    else if (target == WBackendNetQuery::TargetFolder)
     {
-        method = methodDir;
+        method = methodFolder;
     }
     else method = methodFile;
 
@@ -1563,9 +1572,17 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 
     WBackendNetQuery * backendQuery = &(query->backendQuery);
 
-    WBackendNet * backend = wControllerPlaylist->backendFromUrl(backendQuery->url);
+    WBackendNet * backend;
 
-    if (data->hasError())
+    QString id = backendQuery->backend;
+
+    if (id.isEmpty())
+    {
+         backend = wControllerPlaylist->backendFromUrl(backendQuery->url);
+    }
+    else backend = wControllerPlaylist->backendFromId(id);
+
+    if (data->hasError() && backendQuery->skipError == false)
     {
         if (query->type == WControllerPlaylistQuery::TypeTrack)
         {
@@ -1821,9 +1838,9 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
 
             for (int i = 0; i < tracks->count();)
             {
-                const WTrack * track = &(tracks->at(i));
+                const WTrack & track = tracks->at(i);
 
-                if (playlist->containsSource(track->source()))
+                if (playlist->containsSource(track.source()))
                 {
                     tracks->removeAt(i);
                 }
@@ -1891,7 +1908,28 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
             folder->setCover(cover);
         }
 
-        if (reply.scanItems)
+        if (reply.clearDuplicate)
+        {
+            QList<WLibraryFolderItem> * items
+                                      = const_cast<QList<WLibraryFolderItem> *> (&(reply.items));
+
+            for (int i = 0; i < items->count();)
+            {
+                const WLibraryFolderItem & item = items->at(i);
+
+                if (folder->containsSource(item.source))
+                {
+                    items->removeAt(i);
+                }
+                else i++;
+            }
+
+            if (reply.scanItems)
+            {
+                scanItems(items);
+            }
+        }
+        else if (reply.scanItems)
         {
             QList<WLibraryFolderItem> * items
                                       = const_cast<QList<WLibraryFolderItem> *> (&(reply.items));

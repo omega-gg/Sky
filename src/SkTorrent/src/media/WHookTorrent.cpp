@@ -75,6 +75,10 @@ private slots:
     void onConnection  ();
     void onDisconnected();
 
+    void onBytesWritten(qint64 bytes);
+
+    void onError(QAbstractSocket::SocketError error);
+
 private:
     WTorrentEngine * engine;
     WTorrent       * torrent;
@@ -218,6 +222,8 @@ void WTorrentSocket::onRead()
 
     qDebug("REPLY %s", header.C_STR);
 
+    ready = true;
+
     if (socket->write(header.toLatin1()) != header.length())
     {
         qDebug("HEADER FAILED");
@@ -227,7 +233,7 @@ void WTorrentSocket::onRead()
         return;
     }
 
-    ready = true;
+    socket->waitForBytesWritten();
 
     qint64 progress = thread->progress;
 
@@ -241,9 +247,9 @@ void WTorrentSocket::onRead()
 
             skip = HOOKTORRENT_SKIP;
 
-            writeBuffer(HOOKTORRENT_SKIP_SIZE);
+            ready = false;
 
-            timer.start();
+            writeBuffer(HOOKTORRENT_SKIP_SIZE);
 
             return;
         }
@@ -286,9 +292,9 @@ void WTorrentSocket::onWrite()
 
         skip--;
 
-        writeBuffer(HOOKTORRENT_SIZE);
+        if (skip) ready = false;
 
-        if (skip) timer.start();
+        writeBuffer(HOOKTORRENT_SIZE);
 
         return;
     }
@@ -326,6 +332,8 @@ void WTorrentSocket::onWrite()
 
         if (bytes.count() == buffer)
         {
+            ready = false;
+
             qint64 result = socket->write(bytes);
 
             if (result != -1)
@@ -338,8 +346,6 @@ void WTorrentSocket::onWrite()
 
                     thread->seeking = true;
                 }
-
-                timer.start();
             }
             else
             {
@@ -384,6 +390,8 @@ void WTorrentSocket::onWrite()
 
         if (bytes.count() == buffer)
         {
+            ready = false;
+
             qint64 result = socket->write(bytes);
 
             if (result != -1)
@@ -395,8 +403,6 @@ void WTorrentSocket::onWrite()
                     qDebug("END WRITE INCOMPLETE");
 
                     thread->seeking = true;
-
-                    timer.start();
                 }
             }
             else
@@ -495,14 +501,24 @@ void WTorrentThread::onBuffer(qint64 progress)
 
     this->progress = progress;
 
-    if (data && data->ready) data->onWrite();
+    if (data && data->ready)
+    {
+        data->timer.stop();
+
+        data->onWrite();
+    }
 }
 
 void WTorrentThread::onSeek(qint64 progress)
 {
     this->progress = progress;
 
-    if (data && data->ready) data->onWrite();
+    if (data && data->ready)
+    {
+        data->timer.stop();
+
+        data->onWrite();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -520,6 +536,8 @@ void WTorrentThread::onSkip()
 
     if (data && data->ready)
     {
+        data->timer.stop();
+
         data->skip = HOOKTORRENT_SKIP;
 
         data->onWrite();
@@ -567,6 +585,11 @@ void WTorrentThread::onConnection()
             data = new WTorrentSocket(this, socket);
 
             connect(socket, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
+
+            connect(socket, SIGNAL(bytesWritten(qint64)), this, SLOT(onBytesWritten(qint64)));
+
+            connect(socket, SIGNAL(error(QAbstractSocket::SocketError)),
+                    this,   SLOT(onError(QAbstractSocket::SocketError)));
         }
         else
         {
@@ -584,11 +607,35 @@ void WTorrentThread::onDisconnected()
 {
     qDebug("SOCKET DISCONNECTED");
 
-    data->socket->deleteLater();
+    QTcpSocket * socket = data->socket;
+
+    disconnect(socket, 0, this, 0);
+
+    socket->deleteLater();
 
     delete data;
 
     data = NULL;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WTorrentThread::onBytesWritten(qint64 bytes)
+{
+    if (data == NULL || data->ready) return;
+
+    data->ready = true;
+
+    data->onWrite();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WTorrentThread::onError(QAbstractSocket::SocketError error)
+{
+    qDebug("SOCCKET ERROR %d", error);
+
+    data->socket->disconnect();
 }
 
 //=================================================================================================
