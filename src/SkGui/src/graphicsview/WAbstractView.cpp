@@ -35,8 +35,8 @@
 // Static variables
 
 #ifdef SK_WIN_NATIVE
-static const DWORD windowFlags = WS_OVERLAPPED | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX |
-                                 WS_CLIPCHILDREN;
+static const DWORD ABSTRACTVIEW_FLAGS = WS_OVERLAPPED  | WS_THICKFRAME | WS_MINIMIZEBOX |
+                                        WS_MAXIMIZEBOX | WS_CLIPCHILDREN;
 
 #ifdef QT_LATEST
 static const int ABSTRACTVIEW_INTERVAL = 400;
@@ -158,7 +158,7 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 
     RegisterClassEx(&wcx);
 
-    handle = CreateWindow(L"Window", 0, windowFlags, 0, 0, 0, 0, 0, 0, 0, NULL);
+    handle = CreateWindow(L"Window", 0, ABSTRACTVIEW_FLAGS, 0, 0, 0, 0, 0, 0, 0, NULL);
 
     SetWindowLongPtr(handle, GWLP_USERDATA, reinterpret_cast<LONG_PTR> (q));
 

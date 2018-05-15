@@ -174,18 +174,18 @@ else
         cp "$MinGW"/libstdc++-6.dll     deploy
         cp "$MinGW"/libwinpthread-1.dll deploy
 
-        cp "$Qt"/bin/Qt5Core.dll              deploy
-        cp "$Qt"/bin/Qt5Gui.dll               deploy
-        cp "$Qt"/bin/Qt5Network.dll           deploy
-        cp "$Qt"/bin/Qt5OpenGL.dll            deploy
-        cp "$Qt"/bin/Qt5Qml.dll               deploy
-        cp "$Qt"/bin/Qt5Quick.dll             deploy
-        cp "$Qt"/bin/Qt5Script.dll            deploy
-        cp "$Qt"/bin/Qt5Svg.dll               deploy
-        cp "$Qt"/bin/Qt5Widgets.dll           deploy
-        cp "$Qt"/bin/Qt5Xml.dll               deploy
-        cp "$Qt"/bin/Qt5XmlPatterns.dll       deploy
-        cp "$Qt"/bin/Qt5WinExtras.dll         deploy
+        cp "$Qt"/bin/Qt5Core.dll        deploy
+        cp "$Qt"/bin/Qt5Gui.dll         deploy
+        cp "$Qt"/bin/Qt5Network.dll     deploy
+        cp "$Qt"/bin/Qt5OpenGL.dll      deploy
+        cp "$Qt"/bin/Qt5Qml.dll         deploy
+        cp "$Qt"/bin/Qt5Quick.dll       deploy
+        cp "$Qt"/bin/Qt5Script.dll      deploy
+        cp "$Qt"/bin/Qt5Svg.dll         deploy
+        cp "$Qt"/bin/Qt5Widgets.dll     deploy
+        cp "$Qt"/bin/Qt5Xml.dll         deploy
+        cp "$Qt"/bin/Qt5XmlPatterns.dll deploy
+        cp "$Qt"/bin/Qt5WinExtras.dll   deploy
 
         cp "$Qt"/plugins/imageformats/qsvg.dll  deploy/imageformats
         cp "$Qt"/plugins/imageformats/qjpeg.dll deploy/imageformats
