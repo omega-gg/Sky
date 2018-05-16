@@ -133,7 +133,7 @@ private:
 
     int skip;
 
-    QTimer timer;
+    //QTimer timer;
 
 private:
     friend class WTorrentThread;
@@ -152,13 +152,13 @@ WTorrentSocket::WTorrentSocket(WTorrentThread * thread, QTcpSocket * socket) : Q
 
     skip = 0;
 
-    timer.setInterval(HOOKTORRENT_INTERVAL);
+    //timer.setInterval(HOOKTORRENT_INTERVAL);
 
-    timer.setSingleShot(true);
+    //timer.setSingleShot(true);
 
     connect(socket, SIGNAL(readyRead()), this, SLOT(onRead()));
 
-    connect(&timer, SIGNAL(timeout()), this, SLOT(onWrite()));
+    //connect(&timer, SIGNAL(timeout()), this, SLOT(onWrite()));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -306,10 +306,12 @@ void WTorrentSocket::onWrite()
 
     if (buffer > HOOKTORRENT_BUFFER)
     {
-        if (timer.isActive() == false)
+        /*if (timer.isActive() == false)
         {
             qDebug("WRITE");
-        }
+        }*/
+
+        qDebug("WRITE");
 
         if (thread->seeking)
         {
@@ -363,10 +365,12 @@ void WTorrentSocket::onWrite()
     }
     else
     {
-        if (timer.isActive())
+        /*if (timer.isActive())
         {
             qDebug("WAIT");
-        }
+        }*/
+
+        qDebug("WAIT");
 
         qint64 size = thread->size;
 
@@ -420,9 +424,11 @@ void WTorrentSocket::onWrite()
 
             thread->seeking = true;
 
-            timer.start();
+            //timer.start();
         }
     }
+
+    qDebug("WRITE END");
 }
 
 //=================================================================================================
@@ -503,7 +509,7 @@ void WTorrentThread::onBuffer(qint64 progress)
 
     if (data && data->ready)
     {
-        data->timer.stop();
+        //data->timer.stop();
 
         data->onWrite();
     }
@@ -515,7 +521,7 @@ void WTorrentThread::onSeek(qint64 progress)
 
     if (data && data->ready)
     {
-        data->timer.stop();
+        //data->timer.stop();
 
         data->onWrite();
     }
@@ -536,7 +542,7 @@ void WTorrentThread::onSkip()
 
     if (data && data->ready)
     {
-        data->timer.stop();
+        //data->timer.stop();
 
         data->skip = HOOKTORRENT_SKIP;
 
@@ -620,9 +626,11 @@ void WTorrentThread::onDisconnected()
 
 //-------------------------------------------------------------------------------------------------
 
-void WTorrentThread::onBytesWritten(qint64 bytes)
+void WTorrentThread::onBytesWritten(qint64)
 {
     if (data == NULL || data->ready) return;
+
+    //data->timer.stop();
 
     data->ready = true;
 
@@ -633,7 +641,7 @@ void WTorrentThread::onBytesWritten(qint64 bytes)
 
 void WTorrentThread::onError(QAbstractSocket::SocketError error)
 {
-    qDebug("SOCCKET ERROR %d", error);
+    qDebug("SOCKET ERROR %d", error);
 
     data->socket->disconnect();
 }
