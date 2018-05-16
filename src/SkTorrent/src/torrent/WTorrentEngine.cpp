@@ -1171,6 +1171,8 @@ WTorrentData * WTorrentEnginePrivate::getData(const QUrl & url) const
 {
     foreach (WTorrentData * data, datas)
     {
+        if (data == NULL) continue;
+
         foreach (const QUrl & source, data->source->urls)
         {
             if (source == url)
@@ -1204,7 +1206,7 @@ WTorrentData * WTorrentEnginePrivate::getData(const sha1_hash & hash) const
 {
     foreach (WTorrentData * data, datas)
     {
-        if (data->source->hash == hash)
+        if (data && data->source->hash == hash)
         {
             return data;
         }
@@ -1306,6 +1308,8 @@ WTorrentItem * WTorrentEnginePrivate::getItem(WTorrent * torrent) const
 {
     foreach (WTorrentData * data, datas)
     {
+        if (data == NULL) continue;
+
         foreach (WTorrentItem * item, data->items)
         {
             if (item->torrent == torrent)
@@ -2852,7 +2856,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         foreach (WTorrentData * data, d->datas)
         {
-            delete data;
+            if (data) delete data;
         }
 
         foreach (WMagnetData * data, d->datasMagnets)
