@@ -28,6 +28,7 @@
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/alert_types.hpp>
 #include <libtorrent/create_torrent.hpp>
+#include <libtorrent/magnet_uri.hpp>
 #include <libtorrent/extensions/ut_pex.hpp>
 
 // Boost includes
@@ -2317,7 +2318,18 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
             add_torrent_params params;
 
-            params.url = url.toString().toStdString();
+            error_code error;
+
+            parse_magnet_uri(url.toString().toStdString(), params, error);
+
+            if (error)
+            {
+                qDebug("MAGNET ERROR");
+
+                QCoreApplication::postEvent(magnet, new WTorrentEventMagnet(QByteArray()));
+
+                return true;
+            }
 
             params.save_path = d->pathMagnets.toStdString();
 
