@@ -207,7 +207,7 @@ QString WBackendYoutubePrivate::extractMime(const QString & data) const
 
     mime = mime.mid(10, 3);
 
-    if (mime == "web") return "webM";
+    if (mime == "mp4") return "mp4";
     else               return QString();
 }
 

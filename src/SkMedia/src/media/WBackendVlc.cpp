@@ -2008,32 +2008,12 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
         if (d->started)
         {
-            // FIXME: Sometimes the playback ends when seeking.
-            if ((d->currentTime + 1000) < d->duration)
+            if (d->repeat == false)
             {
-                qWarning("WBackendVlc::event: Vlc player ended.");
-
-                if (d->frameFreeze == false)
-                {
-                    d->started = false;
-
-                    d->frameFreeze = true;
-
-                    d->player->setSource(d->currentMedia, d->currentAudio);
-
-                    d->player->play(d->currentTime);
-                }
-                else stop();
+                d->clearPlayer();
             }
-            else
-            {
-                if (d->repeat == false)
-                {
-                    d->clearPlayer();
-                }
 
-                setEnded(true);
-            }
+            setEnded(true);
         }
         else stop();
 

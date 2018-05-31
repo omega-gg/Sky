@@ -367,8 +367,6 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
         output = d->output;
 
-        QString cache("network-caching=" + QString::number(d->networkCache));
-
         if (d->proxyHost.isEmpty() == false)
         {
             proxy         = "http-proxy="     + d->proxyHost;
@@ -407,12 +405,12 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
                     QString input = "input-slave=" + d->encodeUrl(audio);
 
                     libvlc_media_add_option(media, input.C_UTF);
+
+                    libvlc_media_add_option(media, "network-caching=100");
                 }
             }
             else libvlc_media_add_option(media, "no-audio");
         }
-
-        libvlc_media_add_option(media, cache.C_STR);
 
         if (proxy.isNull() == false)
         {
