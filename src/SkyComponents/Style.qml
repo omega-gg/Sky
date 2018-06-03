@@ -289,12 +289,12 @@ Item
     property color icon_colorA      : icon1_colorA
     property color icon_colorB      : icon1_colorB
     property color icon_colorActiveA: "#00b4ff"
-    property color icon_colorActiveB: "#008cdc"
+    property color icon_colorActiveB: "#00b4ff"
     property color icon_colorShadow : icon1_colorShadow
     property color icon_colorSunken : icon1_colorSunken
 
-    property color icon1_colorA     : "white"
-    property color icon1_colorB     : "#c8c8c8"
+    property color icon1_colorA     : "#dcdcdc"
+    property color icon1_colorB     : "#dcdcdc"
     property color icon1_colorShadow: "#161616"
     property color icon1_colorSunken: "#323232"
 
@@ -386,8 +386,8 @@ Item
 
     property real iconOverlay_opacity: 0.8
 
-    property color iconOverlay_colorA: buttonPush_colorHighlightHoverA
-    property color iconOverlay_colorB: buttonPush_colorHighlightHoverB
+    property color iconOverlay_colorA: icon_colorActiveA
+    property color iconOverlay_colorB: icon_colorActiveB
 
     //---------------------------------------------------------------------------------------------
     // IconLoading
