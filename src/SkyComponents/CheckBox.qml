@@ -30,15 +30,10 @@ BaseButton
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
-
-    property alias shadow: shadow
-
-    //---------------------------------------------------------------------------------------------
     // Style
 
     property alias filterDefault: background .filter
     property alias filterBorder : imageBorder.filter
-    property alias filterShadow : shadow     .filter
 
     //---------------------------------------------------------------------------------------------
     // Signals
@@ -78,11 +73,15 @@ BaseButton
     {
         anchors.fill: parent
 
+        anchors.margins: -st.checkBox_marginFocus
+
         sourceSize: pSourceSize
 
         opacity: (window.isActive && isFocused)
 
-        source: st.checkBox_sourceFocus
+        source: st.checkBox_sourceBorder
+
+        filter: st.checkBox_filterFocus
 
         Behavior on opacity
         {
@@ -100,7 +99,8 @@ BaseButton
 
         source: st.checkBox_sourceDefault
 
-        filter: st.checkBox_filterDefault
+        filter: (isFocused || isHovered) ? st.checkBox_filterHover
+                                         : st.checkBox_filterDefault
     }
 
     Image
@@ -123,36 +123,14 @@ BaseButton
 
     Image
     {
-        id: shadow
-
-        anchors.fill: parent
-
-        opacity: (isHovered) ? st.checkBox_shadowOpacityB
-                             : st.checkBox_shadowOpacityA
-
-        source: st.checkBox_sourceShadow
-
-        filter: st.checkBox_filterShadow
-    }
-
-    Image
-    {
         id: imageBorder
 
         anchors.fill: parent
 
         sourceSize: pSourceSize
 
-        opacity: (checkBox.enabled) ? 1.0 : st.icon_opacityDisable
-
-        source: (isHovered) ? st.checkBox_sourceHover
-                            : st.checkBox_sourceBorder
+        source: st.checkBox_sourceBorder
 
         filter: st.checkBox_filterBorder
-
-        Behavior on opacity
-        {
-            PropertyAnimation { duration: st.duration_fast }
-        }
     }
 }

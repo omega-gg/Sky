@@ -31,20 +31,16 @@ BaseLineEdit
 
     property alias background : background
     property alias imageBorder: imageBorder
-    property alias shadow     : shadow
-    property alias itemFocus  : itemFocus
+    property alias imageFocus : imageFocus
 
     //---------------------------------------------------------------------------------------------
     // Style
 
     property alias sourceBackground: background .source
     property alias sourceBorder    : imageBorder.source
-    property alias sourceShadow    : shadow     .source
-    property alias sourceFocus     : itemFocus  .source
 
     property alias filterDefault: background .filter
     property alias filterBorder : imageBorder.filter
-    property alias filterShadow : shadow     .filter
     property alias filterFocus  : itemFocus  .filter
 
     //---------------------------------------------------------------------------------------------
@@ -62,7 +58,7 @@ BaseLineEdit
 
     BorderImageScale
     {
-        id: itemFocus
+        id: imageFocus
 
         anchors.fill: parent
 
@@ -70,13 +66,17 @@ BaseLineEdit
 
         opacity: (window.isActive && isFocused)
 
-        source: st.lineEdit_sourceFocus
+        source: st.lineEdit_sourceBorder
 
         border
         {
             left : borderBackground.x;     top   : borderBackground.y
             right: borderBackground.width; bottom: borderBackground.height
         }
+
+        filter: st.lineEdit_filterFocus
+
+        scaleDelay: 0
 
         Behavior on opacity
         {
@@ -100,27 +100,8 @@ BaseLineEdit
             right: borderBackground.width; bottom: borderBackground.height
         }
 
-        filter: st.lineEdit_filterDefault
-    }
-
-    BorderImageScale
-    {
-        id: shadow
-
-        anchors.fill: parent
-
-        opacity: (isHovered) ? st.baseLineEdit_shadowOpacityB
-                             : st.baseLineEdit_shadowOpacityA
-
-        source: st.lineEdit_sourceShadow
-
-        border
-        {
-            left : borderBackground.x;     top   : borderBackground.y
-            right: borderBackground.width; bottom: borderBackground.height
-        }
-
-        filter: st.lineEdit_filterShadow
+        filter: (isFocused || isHovered) ? st.lineEdit_filterHover
+                                         : st.lineEdit_filterDefault
     }
 
     BorderImageScale
@@ -129,8 +110,7 @@ BaseLineEdit
 
         anchors.fill: parent
 
-        source: (isHovered) ? st.lineEdit_sourceHover
-                            : st.lineEdit_sourceBorder
+        source: st.lineEdit_sourceBorder
 
         border
         {

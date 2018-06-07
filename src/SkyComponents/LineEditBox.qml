@@ -23,8 +23,8 @@ BaseLineEdit
     // Properties style
     //---------------------------------------------------------------------------------------------
 
-    property color colorA: st.lineEditBox_colorA
-    property color colorB: st.lineEditBox_colorB
+    property color color     : st.lineEdit_color
+    property color colorHover: st.lineEdit_colorHover
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -55,11 +55,8 @@ BaseLineEdit
 
         z: -1
 
-        gradient: Gradient
-        {
-            GradientStop { position: 0.0; color: colorA }
-            GradientStop { position: 1.0; color: colorB }
-        }
+        color: (isFocused || isHovered) ? colorHover
+                                        : lineEditBox.color
     }
 
     RectangleShadow
@@ -87,7 +84,7 @@ BaseLineEdit
 
         opacity: (window.isActive && isFocused)
 
-        color: st.lineEditBox_colorFocus
+        color: st.lineEdit_colorFocus
 
         Behavior on opacity
         {

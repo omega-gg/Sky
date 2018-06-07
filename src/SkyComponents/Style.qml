@@ -1095,31 +1095,19 @@ Item
     // CheckBox
 
     property int checkBox_width : dp22
-    property int checkBox_height: dp22
+    property int checkBox_height: checkBox_width
 
-    property real checkBox_shadowOpacityA: 0.6
-    property real checkBox_shadowOpacityB: 0.8
+    property int checkBox_marginFocus: lineEdit_marginFocus
 
     property url checkBox_sourceDefault: "pictures/checkBoxMask.svg"
     property url checkBox_sourceBorder : "pictures/checkBoxBorder.svg"
-    property url checkBox_sourceHover  : "pictures/checkBoxHover.svg"
-    property url checkBox_sourceShadow : "pictures/checkBoxShadow.png"
-    property url checkBox_sourceFocus  : "pictures/checkBoxFocus.png"
     property url checkBox_sourceCheck  : "pictures/checkBoxCheck.png"
 
-    property color checkBox_color: "white"
-
     property ImageColorFilter checkBox_filterBorder: border_filter
-    property ImageColorFilter checkBox_filterShadow: rectangleShadow_filter
 
-    property alias checkBox_filterDefault: checkBox_filterDefault
-
-    ImageColorFilter
-    {
-        id: checkBox_filterDefault
-
-        color: checkBox_color
-    }
+    property alias checkBox_filterDefault: lineEdit_filterDefault
+    property alias checkBox_filterHover  : lineEdit_filterHover
+    property alias checkBox_filterFocus  : lineEdit_filterFocus
 
     //---------------------------------------------------------------------------------------------
     // CheckBoxText
@@ -1160,24 +1148,38 @@ Item
 
     property url lineEdit_sourceDefault: "pictures/lineEditMask.svg"
     property url lineEdit_sourceBorder : "pictures/lineEditBorder.svg"
-    property url lineEdit_sourceHover  : "pictures/lineEditHover.svg"
-    property url lineEdit_sourceShadow : "pictures/lineEditShadow.png"
-    property url lineEdit_sourceFocus  : "pictures/lineEditFocus.png"
 
     property variant lineEdit_borderBackground: Qt.rect(32, 32, 32, 32)
 
-    property color lineEdit_color: "white"
+    property color lineEdit_color     : "#dcdcdc"
+    property color lineEdit_colorHover: "white"
+    property color lineEdit_colorFocus: "#008cdc"
 
     property ImageColorFilter lineEdit_filterBorder: border_filter
-    property ImageColorFilter lineEdit_filterShadow: rectangleShadow_filter
 
     property alias lineEdit_filterDefault: lineEdit_filterDefault
+    property alias lineEdit_filterHover  : lineEdit_filterHover
+    property alias lineEdit_filterFocus  : lineEdit_filterFocus
 
     ImageColorFilter
     {
         id: lineEdit_filterDefault
 
         color: lineEdit_color
+    }
+
+    ImageColorFilter
+    {
+        id: lineEdit_filterHover
+
+        color: lineEdit_colorHover
+    }
+
+    ImageColorFilter
+    {
+        id: lineEdit_filterFocus
+
+        color: lineEdit_colorFocus
     }
 
     //---------------------------------------------------------------------------------------------
@@ -1194,11 +1196,6 @@ Item
     property int lineEditBox_shadowHeight: dp6
 
     property int lineEditBox_focusSize: dp2
-
-    property color lineEditBox_colorA: "#c8c8c8"
-    property color lineEditBox_colorB: "white"
-
-    property color lineEditBox_colorFocus: baseLineEdit_colorSelection
 
     //---------------------------------------------------------------------------------------------
     // List
