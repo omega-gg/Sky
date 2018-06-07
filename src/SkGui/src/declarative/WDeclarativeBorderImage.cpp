@@ -403,6 +403,8 @@ void WDeclarativeBorderImageScalePrivate::resize(const QPixmap & pixmap)
     qreal ratioX = (qreal) scaleResize.width () / pixmap.width ();
     qreal ratioY = (qreal) scaleResize.height() / pixmap.height();
 
+    const WDeclarativeBorderGrid * border = getBorder();
+
     scaleMargins = QMargins(border->left () * ratioX, border->top   () * ratioY,
                             border->right() * ratioX, border->bottom() * ratioY);
 }
