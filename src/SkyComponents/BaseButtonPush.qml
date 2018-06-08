@@ -47,17 +47,17 @@ BaseButton
 
     property alias background : background
     property alias imageBorder: imageBorder
-    property alias itemFocus  : itemFocus
+    property alias imageFocus : imageFocus
 
     //---------------------------------------------------------------------------------------------
     // Style
 
     property alias sourceBackground: background .source
     property alias sourceBorder    : imageBorder.source
-    property alias sourceFocus     : itemFocus  .source
+    property alias sourceFocus     : imageFocus .source
 
     property alias filterBorder: imageBorder.filter
-    property alias filterFocus : itemFocus  .filter
+    property alias filterFocus : imageFocus .filter
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -71,7 +71,7 @@ BaseButton
 
     BorderImageScale
     {
-        id: itemFocus
+        id: imageFocus
 
         anchors.fill: parent
 

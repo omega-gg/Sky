@@ -101,7 +101,7 @@ Item
     property url  logo
     property real logoRatio: 8.0
 
-    property color logo_colorA: "#242424"
+    property color logo_colorA: "#323232"
     property color logo_colorB: "#646464"
 
     property int cursor_width : dp18
@@ -289,17 +289,17 @@ Item
     property color icon_colorA      : icon1_colorA
     property color icon_colorB      : icon1_colorB
     property color icon_colorActiveA: "#00b4ff"
-    property color icon_colorActiveB: "#00b4ff"
+    property color icon_colorActiveB: icon_colorActiveA
     property color icon_colorShadow : icon1_colorShadow
     property color icon_colorSunken : icon1_colorSunken
 
     property color icon1_colorA     : "#dcdcdc"
-    property color icon1_colorB     : "#dcdcdc"
+    property color icon1_colorB     : icon1_colorA
     property color icon1_colorShadow: "#161616"
     property color icon1_colorSunken: "#323232"
 
     property color icon2_colorA     : "#323232"
-    property color icon2_colorB     : "#161616"
+    property color icon2_colorB     : icon2_colorA
     property color icon2_colorShadow: "#dcdcdc"
     property color icon2_colorSunken: "#f0f0f0"
 
@@ -1144,6 +1144,8 @@ Item
     property int lineEdit_width : dp200
     property int lineEdit_height: dp40
 
+    property int lineEdit_marginFocus: st.dp4
+
     property int lineEdit_padding: dp13
 
     property url lineEdit_sourceDefault: "pictures/lineEditMask.svg"
@@ -1153,7 +1155,7 @@ Item
 
     property color lineEdit_color     : "#dcdcdc"
     property color lineEdit_colorHover: "white"
-    property color lineEdit_colorFocus: "#008cdc"
+    property color lineEdit_colorFocus: baseLineEdit_colorSelection
 
     property ImageColorFilter lineEdit_filterBorder: border_filter
 
@@ -1234,14 +1236,14 @@ Item
 
     property color scrollBar_colorBorder: border_color
 
-    property color scrollBar_colorHandleA: "#8c8c8c"
-    property color scrollBar_colorHandleB: "#646464"
+    property color scrollBar_colorHandleA: buttonPush_colorA
+    property color scrollBar_colorHandleB: buttonPush_colorB
 
-    property color scrollBar_colorHandleHoverA: "#a0a0a0"
-    property color scrollBar_colorHandleHoverB: "#787878"
+    property color scrollBar_colorHandleHoverA: buttonPush_colorHoverA
+    property color scrollBar_colorHandleHoverB: buttonPush_colorHoverB
 
-    property color scrollBar_colorHandlePressA: "#323232"
-    property color scrollBar_colorHandlePressB: "#787878"
+    property color scrollBar_colorHandlePressA: buttonPush_colorPressHoverA
+    property color scrollBar_colorHandlePressB: buttonPush_colorPressHoverB
 
     property alias scrollBar_filterHorizontalDefault    : scrollBar_filterHorizontalDefault
     property alias scrollBar_filterHorizontalHandle     : scrollBar_filterHorizontalHandle

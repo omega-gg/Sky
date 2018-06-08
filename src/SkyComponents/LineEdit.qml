@@ -41,7 +41,7 @@ BaseLineEdit
 
     property alias filterDefault: background .filter
     property alias filterBorder : imageBorder.filter
-    property alias filterFocus  : itemFocus  .filter
+    property alias filterFocus  : imageFocus .filter
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -61,6 +61,8 @@ BaseLineEdit
         id: imageFocus
 
         anchors.fill: parent
+
+        anchors.margins: -st.lineEdit_marginFocus
 
         z: -1
 
