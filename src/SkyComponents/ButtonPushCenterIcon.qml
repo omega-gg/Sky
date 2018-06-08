@@ -20,10 +20,15 @@ import Sky     1.0
 ButtonPushIcon
 {
     //---------------------------------------------------------------------------------------------
-    // Settings style
+    // Settings
     //---------------------------------------------------------------------------------------------
+
+    imageFocus.anchors.leftMargin : 0
+    imageFocus.anchors.rightMargin: 0
+
+    //---------------------------------------------------------------------------------------------
+    // Style
 
     sourceBackground: st.buttonPushCenter_sourceBackground
     sourceBorder    : st.buttonPushCenter_sourceBorder
-    sourceFocus     : st.buttonPushCenter_sourceFocus
 }

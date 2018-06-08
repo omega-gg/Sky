@@ -75,7 +75,11 @@ BaseButton
 
         anchors.fill: parent
 
-        source: st.buttonPush_sourceFocus
+        anchors.margins: -st.buttonPush_margins
+
+        opacity: (window.isActive && isFocused)
+
+        source: imageBorder.source
 
         border
         {
@@ -83,7 +87,7 @@ BaseButton
             right: borderBackground.width; bottom: borderBackground.height
         }
 
-        opacity: (window.isActive && isFocused)
+        filter: st.buttonPush_filterFocus
 
         Behavior on opacity
         {

@@ -62,7 +62,7 @@ BaseLineEdit
 
         anchors.fill: parent
 
-        anchors.margins: -st.lineEdit_marginFocus
+        anchors.margins: -st.lineEdit_margins
 
         z: -1
 
@@ -77,8 +77,6 @@ BaseLineEdit
         }
 
         filter: st.lineEdit_filterFocus
-
-        scaleDelay: 0
 
         Behavior on opacity
         {
@@ -121,7 +119,5 @@ BaseLineEdit
         }
 
         filter: st.lineEdit_filterBorder
-
-        scaleDelay: 0
     }
 }

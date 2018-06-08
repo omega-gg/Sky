@@ -73,7 +73,7 @@ BaseButton
     {
         anchors.fill: parent
 
-        anchors.margins: -st.checkBox_marginFocus
+        anchors.margins: -st.checkBox_margins
 
         sourceSize: pSourceSize
 

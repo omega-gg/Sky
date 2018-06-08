@@ -25,10 +25,11 @@ ButtonPushFull
 
     paddingLeft: padding - st.buttonPushRight_extra
 
+    imageFocus.anchors.leftMargin: 0
+
     //---------------------------------------------------------------------------------------------
     // Style
 
     sourceBackground: st.buttonPushRight_sourceBackground
     sourceBorder    : st.buttonPushRight_sourceBorder
-    sourceFocus     : st.buttonPushRight_sourceFocus
 }

@@ -215,15 +215,23 @@ Item
     property color border_color      : "#161616"
     property color border_colorLight : "#242424"
     property color border_colorShadow: "#323232"
-    property color border_colorFocus : "#c8c8c8"
+    property color border_colorFocus : "#008cdc"
 
-    property alias border_filter: border_filter
+    property alias border_filter     : border_filter
+    property alias border_filterFocus: border_filterFocus
 
     ImageColorFilter
     {
         id: border_filter
 
         color: border_color
+    }
+
+    ImageColorFilter
+    {
+        id: border_filterFocus
+
+        color: border_colorFocus
     }
 
     //---------------------------------------------------------------------------------------------
@@ -497,12 +505,12 @@ Item
 
     property int buttonPush_height: dp40
 
+    property int buttonPush_margins: dp3
     property int buttonPush_padding: dp14
     property int buttonPush_spacing: dp6
 
     property url buttonPush_sourceBackground: "pictures/buttonPushMask.svg"
     property url buttonPush_sourceBorder    : "pictures/buttonPushBorder.svg"
-    property url buttonPush_sourceFocus     : "pictures/buttonPushFocus.png"
 
     property variant buttonPush_borderBackground: Qt.rect(46, 46, 46, 46)
 
@@ -543,6 +551,7 @@ Item
     property alias buttonPush_filterHighlightHover: buttonPush_filterHighlightHover
     property alias buttonPush_filterCheck         : buttonPush_filterCheck
     property alias buttonPush_filterCheckHover    : buttonPush_filterCheckHover
+    property alias buttonPush_filterFocus         : border_filterFocus
 
     ImageColorFilter
     {
@@ -645,14 +654,12 @@ Item
 
     property url buttonPushLeft_sourceBackground: "pictures/buttonPushLeftMask.svg"
     property url buttonPushLeft_sourceBorder    : "pictures/buttonPushLeftBorder.svg"
-    property url buttonPushLeft_sourceFocus     : "pictures/buttonPushLeftFocus.png"
 
     //---------------------------------------------------------------------------------------------
     // ButtonPushCenter
 
     property url buttonPushCenter_sourceBackground: "pictures/buttonPushCenterMask.svg"
     property url buttonPushCenter_sourceBorder    : "pictures/buttonPushCenterBorder.svg"
-    property url buttonPushCenter_sourceFocus     : "pictures/buttonPushCenterFocus.png"
 
     //---------------------------------------------------------------------------------------------
     // ButtonPushRight
@@ -661,7 +668,6 @@ Item
 
     property url buttonPushRight_sourceBackground: "pictures/buttonPushRightMask.svg"
     property url buttonPushRight_sourceBorder    : "pictures/buttonPushRightBorder.svg"
-    property url buttonPushRight_sourceFocus     : "pictures/buttonPushRightFocus.png"
 
     //---------------------------------------------------------------------------------------------
     // ButtonPushLeftIcon
@@ -850,9 +856,10 @@ Item
     property int buttonRound_width : dp48
     property int buttonRound_height: dp48
 
+    property int buttonRound_margins: dp3
+
     property url buttonRound_sourceBackground: "pictures/buttonRoundMask.svg"
     property url buttonRound_sourceBorder    : "pictures/buttonRoundBorder.svg"
-    property url buttonRound_sourceFocus     : "pictures/buttonRoundFocus.png"
 
     property ImageColorFilter buttonRound_filterBorder    : buttonPush_filterBorder
     property ImageColorFilter buttonRound_filterIcon      : buttonPush_filterIcon
@@ -867,6 +874,7 @@ Item
     property alias buttonRound_filterHighlightHover: buttonPush_filterHighlightHover
     property alias buttonRound_filterCheck         : buttonPush_filterCheck
     property alias buttonRound_filterCheckHover    : buttonPush_filterCheckHover
+    property alias buttonRound_filterFocus         : border_filterFocus
 
     //---------------------------------------------------------------------------------------------
     // ButtonCheck
@@ -1097,7 +1105,7 @@ Item
     property int checkBox_width : dp22
     property int checkBox_height: checkBox_width
 
-    property int checkBox_marginFocus: lineEdit_marginFocus
+    property int checkBox_margins: lineEdit_margins
 
     property url checkBox_sourceDefault: "pictures/checkBoxMask.svg"
     property url checkBox_sourceBorder : "pictures/checkBoxBorder.svg"
@@ -1107,7 +1115,7 @@ Item
 
     property alias checkBox_filterDefault: lineEdit_filterDefault
     property alias checkBox_filterHover  : lineEdit_filterHover
-    property alias checkBox_filterFocus  : lineEdit_filterFocus
+    property alias checkBox_filterFocus  : border_filterFocus
 
     //---------------------------------------------------------------------------------------------
     // CheckBoxText
@@ -1144,8 +1152,7 @@ Item
     property int lineEdit_width : dp200
     property int lineEdit_height: dp40
 
-    property int lineEdit_marginFocus: st.dp4
-
+    property int lineEdit_margins: dp3
     property int lineEdit_padding: dp13
 
     property url lineEdit_sourceDefault: "pictures/lineEditMask.svg"
@@ -1155,13 +1162,12 @@ Item
 
     property color lineEdit_color     : "#dcdcdc"
     property color lineEdit_colorHover: "white"
-    property color lineEdit_colorFocus: baseLineEdit_colorSelection
 
     property ImageColorFilter lineEdit_filterBorder: border_filter
 
     property alias lineEdit_filterDefault: lineEdit_filterDefault
     property alias lineEdit_filterHover  : lineEdit_filterHover
-    property alias lineEdit_filterFocus  : lineEdit_filterFocus
+    property alias lineEdit_filterFocus  : border_filterFocus
 
     ImageColorFilter
     {
@@ -1175,13 +1181,6 @@ Item
         id: lineEdit_filterHover
 
         color: lineEdit_colorHover
-    }
-
-    ImageColorFilter
-    {
-        id: lineEdit_filterFocus
-
-        color: lineEdit_colorFocus
     }
 
     //---------------------------------------------------------------------------------------------

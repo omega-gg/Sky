@@ -142,11 +142,13 @@ BaseButton
 
         anchors.fill: parent
 
+        anchors.margins: -st.buttonRound_margins
+
         opacity: (buttonRound.enabled) ? 1.0 : st.icon_opacityDisable
 
-        source: st.buttonRound_sourceBorder
+        source: imageBorder.source
 
-        filter: st.buttonRound_filterBorder
+        filter: st.buttonRound_filterFocus
 
         Behavior on opacity
         {

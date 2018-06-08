@@ -29,6 +29,8 @@ ButtonPushIcon
     // Settings
     //---------------------------------------------------------------------------------------------
 
+    imageFocus.anchors.leftMargin: 0
+
     itemIcon.anchors.centerIn: undefined
 
     itemIcon.anchors.verticalCenter: verticalCenter
@@ -40,5 +42,4 @@ ButtonPushIcon
 
     sourceBackground: st.buttonPushRight_sourceBackground
     sourceBorder    : st.buttonPushRight_sourceBorder
-    sourceFocus     : st.buttonPushRight_sourceFocus
 }
