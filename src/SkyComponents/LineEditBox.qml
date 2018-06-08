@@ -86,7 +86,7 @@ BaseLineEdit
 
         opacity: (window.isActive && isFocused)
 
-        color: st.lineEdit_colorFocus
+        color: st.border_colorFocus
 
         Behavior on opacity
         {
