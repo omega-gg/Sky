@@ -296,7 +296,7 @@ Item
 
     property color icon_colorA      : icon1_colorA
     property color icon_colorB      : icon1_colorB
-    property color icon_colorActiveA: "#00b4ff"
+    property color icon_colorActiveA: "#008cdc"
     property color icon_colorActiveB: icon_colorActiveA
     property color icon_colorShadow : icon1_colorShadow
     property color icon_colorSunken : icon1_colorSunken
