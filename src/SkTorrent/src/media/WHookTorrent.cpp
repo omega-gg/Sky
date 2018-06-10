@@ -254,6 +254,8 @@ void WTorrentSocket::onRead()
         else thread->skip = true;
     }
 
+    ready = true;
+
     skip = 0;
 
     if (position < thread->position || progress < position)
