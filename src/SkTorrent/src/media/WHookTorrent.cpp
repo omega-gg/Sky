@@ -952,8 +952,6 @@ void WHookTorrentPrivate::onSeek(qint64, qint64 bufferBlocks)
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
-
 void WHookTorrentPrivate::onUpdateState()
 {
     if (currentTime != -2) return;
@@ -968,8 +966,6 @@ void WHookTorrentPrivate::onUpdateState()
 
     q->setState(WAbstractBackend::StatePlaying);
 }
-
-#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -1235,24 +1231,14 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
     }
     else if (d->backend->progress() == 1.0)
     {
-#ifdef QT_4
-        d->currentTime = -1;
-
-        backendSetVolume(d->backend->volume());
-
-        d->state = WHookTorrentPrivate::StatePlaying;
-
-        setState(WAbstractBackend::StatePlaying);
-#else
         *stateLoad = d->backend->stateLoad();
 
         if (d->currentTime == -2) return;
 
         d->currentTime = -2;
 
-        // FIXME Qt5: You have to wait for the first frame.
+        // FIXME VLC: You have to wait for the first frame.
         QTimer::singleShot(64, this, SLOT(onUpdateState()));
-#endif
     }
     else
     {
@@ -1261,7 +1247,7 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
         d->methodStart.invoke(d->thread);
         d->methodSkip .invoke(d->thread);
 
-        d->backend->seek(d->currentTime);
+        backendSeek(d->currentTime);
 
         setProgress(1.0);
     }

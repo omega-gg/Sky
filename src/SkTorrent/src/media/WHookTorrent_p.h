@@ -78,9 +78,7 @@ public: // Slots
     void onBuffer(qint64 bufferPieces, qint64 bufferBlocks);
     void onSeek  (qint64 bufferPieces, qint64 bufferBlocks);
 
-#ifdef QT_LATEST
     void onUpdateState();
-#endif
 
     void onDestroyed();
 
