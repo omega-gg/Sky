@@ -60,6 +60,10 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onBuffer(qint64, qint64))
     Q_PRIVATE_SLOT(d_func(), void onSeek  (qint64, qint64))
 
+#ifdef QT_LATEST
+    Q_PRIVATE_SLOT(d_func(), void onUpdateState())
+#endif
+
     Q_PRIVATE_SLOT(d_func(), void onDestroyed())
 };
 
