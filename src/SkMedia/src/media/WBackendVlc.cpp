@@ -1506,6 +1506,8 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
         d->frameFreeze = true;
 
+        d->onFrameUpdated();
+
         d->player->setSource(d->currentMedia, d->currentAudio);
 
         setOutputActive(closestOutput);
@@ -1546,6 +1548,8 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
         d->started = false;
 
         d->frameFreeze = true;
+
+        d->onFrameUpdated();
 
         d->player->setSource(d->currentMedia, d->currentAudio);
 
