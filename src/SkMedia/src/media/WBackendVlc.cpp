@@ -1985,6 +1985,8 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
             {
                 // FIXME Qt5: You have to wait for the first frame.
                 QTimer::singleShot(64, this, SLOT(onUpdateState()));
+
+                return true;
             }
             else setStateLoad(StateLoadDefault);
         }
