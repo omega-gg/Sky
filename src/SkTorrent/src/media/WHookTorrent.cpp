@@ -952,6 +952,8 @@ void WHookTorrentPrivate::onSeek(qint64, qint64 bufferBlocks)
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_LATEST
+
 void WHookTorrentPrivate::onUpdateState()
 {
     if (currentTime != -2) return;
@@ -966,6 +968,8 @@ void WHookTorrentPrivate::onUpdateState()
 
     q->setState(WAbstractBackend::StatePlaying);
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
