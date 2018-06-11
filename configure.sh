@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 #--------------------------------------------------------------------------------------------------
 # Settings
@@ -146,29 +147,29 @@ elif [ $1 = "qt5" ]; then
 
     if [ $2 = "win32" ]; then
 
-        cp "$Qt5"/include/QtCore/*  include/Qt5/QtCore
-        cp "$Qt5"/include/QtGui/*   include/Qt5/QtGui
-        cp "$Qt5"/include/QtQml/*   include/Qt5/QtQml
-        cp "$Qt5"/include/QtQuick/* include/Qt5/QtQuick
+        cp -r "$Qt5"/include/QtCore/*  include/Qt5/QtCore
+        cp -r "$Qt5"/include/QtGui/*   include/Qt5/QtGui
+        cp -r "$Qt5"/include/QtQml/*   include/Qt5/QtQml
+        cp -r "$Qt5"/include/QtQuick/* include/Qt5/QtQuick
 
-        cp "$Qt5"/include/QtCore/$Qt5_version/QtCore/private/*   include/Qt5/QtCore/private
-        cp "$Qt5"/include/QtGui/$Qt5_version/QtGui/private/*     include/Qt5/QtGui/private
-        cp "$Qt5"/include/QtQml/$Qt5_version/QtQml/private/*     include/Qt5/QtQml/private
-        cp "$Qt5"/include/QtQuick/$Qt5_version/QtQuick/private/* include/Qt5/QtQuick/private
+        mv include/Qt5/QtCore/$Qt5_version/QtCore/private/*   include/Qt5/QtCore/private
+        mv include/Qt5/QtGui/$Qt5_version/QtGui/private/*     include/Qt5/QtGui/private
+        mv include/Qt5/QtQml/$Qt5_version/QtQml/private/*     include/Qt5/QtQml/private
+        mv include/Qt5/QtQuick/$Qt5_version/QtQuick/private/* include/Qt5/QtQuick/private
 
         cp -r "$Qt5"/include/QtGui/$Qt5_version/QtGui/qpa include/Qt5/QtGui
 
     elif [ $2 = "linux" ]; then
 
-        cp "$include"/qt5/QtCore/*  include/Qt5/QtCore
-        cp "$include"/qt5/QtGui/*   include/Qt5/QtGui
-        cp "$include"/qt5/QtQml/*   include/Qt5/QtQml
-        cp "$include"/qt5/QtQuick/* include/Qt5/QtQuick
+        cp -r "$include"/qt5/QtCore/*  include/Qt5/QtCore
+        cp -r "$include"/qt5/QtGui/*   include/Qt5/QtGui
+        cp -r "$include"/qt5/QtQml/*   include/Qt5/QtQml
+        cp -r "$include"/qt5/QtQuick/* include/Qt5/QtQuick
 
-        cp "$include"/qt5/QtCore/$Qt5_version/QtCore/private/*   include/Qt5/QtCore/private
-        cp "$include"/qt5/QtGui/$Qt5_version/QtGui/private/*     include/Qt5/QtGui/private
-        cp "$include"/qt5/QtQml/$Qt5_version/QtQml/private/*     include/Qt5/QtQml/private
-        cp "$include"/qt5/QtQuick/$Qt5_version/QtQuick/private/* include/Qt5/QtQuick/private
+        mv include/Qt5/QtCore/$Qt5_version/QtCore/private/*   include/Qt5/QtCore/private
+        mv include/Qt5/QtGui/$Qt5_version/QtGui/private/*     include/Qt5/QtGui/private
+        mv include/Qt5/QtQml/$Qt5_version/QtQml/private/*     include/Qt5/QtQml/private
+        mv include/Qt5/QtQuick/$Qt5_version/QtQuick/private/* include/Qt5/QtQuick/private
 
         cp -r "$include"/qt5/QtGui/$Qt5_version/QtGui/qpa include/Qt5/QtGui
 
