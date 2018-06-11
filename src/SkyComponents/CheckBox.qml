@@ -99,8 +99,8 @@ BaseButton
 
         source: st.checkBox_sourceDefault
 
-        filter: (isFocused || isHovered) ? st.checkBox_filterHover
-                                         : st.checkBox_filterDefault
+        filter: (checkBox.enabled && (isFocused || isHovered)) ? st.checkBox_filterHover
+                                                               : st.checkBox_filterDefault
     }
 
     Image

@@ -19,6 +19,8 @@ import Sky     1.0
 
 BaseLineEdit
 {
+    id: lineEdit
+
     //---------------------------------------------------------------------------------------------
     // Properties style
     //---------------------------------------------------------------------------------------------
@@ -100,8 +102,8 @@ BaseLineEdit
             right: borderBackground.width; bottom: borderBackground.height
         }
 
-        filter: (isFocused || isHovered) ? st.lineEdit_filterHover
-                                         : st.lineEdit_filterDefault
+        filter: (lineEdit.enabled && (isFocused || isHovered)) ? st.lineEdit_filterHover
+                                                               : st.lineEdit_filterDefault
     }
 
     BorderImageScale

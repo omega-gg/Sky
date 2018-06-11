@@ -22,11 +22,17 @@ BaseLineEdit
     id: lineEditBox
 
     //---------------------------------------------------------------------------------------------
-    // Properties style
+    // Properties
     //---------------------------------------------------------------------------------------------
+    // Style
 
     property color color     : st.lineEdit_color
     property color colorHover: st.lineEdit_colorHover
+
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    property bool pEnabled: (enabled && (isFocused || isHovered))
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -57,8 +63,8 @@ BaseLineEdit
 
         z: -1
 
-        color: (isFocused || isHovered) ? colorHover
-                                        : lineEditBox.color
+        color: (pEnabled) ? colorHover
+                          : lineEditBox.color
     }
 
     RectangleShadow
@@ -70,8 +76,8 @@ BaseLineEdit
 
         height: st.lineEditBox_shadowHeight
 
-        opacity: (isFocused || isHovered) ? st.baseLineEdit_shadowOpacityB
-                                          : st.baseLineEdit_shadowOpacityA
+        opacity: (pEnabled) ? st.baseLineEdit_shadowOpacityB
+                            : st.baseLineEdit_shadowOpacityA
 
         direction: Sk.Down
     }
