@@ -140,7 +140,10 @@ if [ $1 = "qt4" -a $2 = "linux" ]; then
 
 elif [ $1 = "qt5" ]; then
 
-    mkdir -p include/Qt5
+    mkdir -p include/Qt5/QtCore/private
+    mkdir -p include/Qt5/QtGui/private
+    mkdir -p include/Qt5/QtQml/private
+    mkdir -p include/Qt5/QtQuick/private
 
     if [ $2 = "win32" ]; then
 
