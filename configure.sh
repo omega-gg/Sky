@@ -140,38 +140,35 @@ if [ $1 = "qt4" -a $2 = "linux" ]; then
 
 elif [ $1 = "qt5" ]; then
 
-    mkdir -p include/Qt5/QtCore/private
-    mkdir -p include/Qt5/QtGui/private
-    mkdir -p include/Qt5/QtQml/private
-    mkdir -p include/Qt5/QtQuick/private
+    mkdir -p include/Qt5
 
     if [ $2 = "win32" ]; then
 
-        cp -r "$Qt5"/include/QtCore/*  include/Qt5/QtCore
-        cp -r "$Qt5"/include/QtGui/*   include/Qt5/QtGui
-        cp -r "$Qt5"/include/QtQml/*   include/Qt5/QtQml
-        cp -r "$Qt5"/include/QtQuick/* include/Qt5/QtQuick
-
-        mv include/Qt5/QtCore/$Qt5_version/QtCore/private/*   include/Qt5/QtCore/private
-        mv include/Qt5/QtGui/$Qt5_version/QtGui/private/*     include/Qt5/QtGui/private
-        mv include/Qt5/QtQml/$Qt5_version/QtQml/private/*     include/Qt5/QtQml/private
-        mv include/Qt5/QtQuick/$Qt5_version/QtQuick/private/* include/Qt5/QtQuick/private
+        cp -r "$Qt5"/include/QtCore  include/Qt5
+        cp -r "$Qt5"/include/QtGui   include/Qt5
+        cp -r "$Qt5"/include/QtQml   include/Qt5
+        cp -r "$Qt5"/include/QtQuick include/Qt5
 
         cp -r "$Qt5"/include/QtGui/$Qt5_version/QtGui/qpa include/Qt5/QtGui
 
+        mv include/Qt5/QtCore/$Qt5_version/QtCore/private   include/Qt5/QtCore/private
+        mv include/Qt5/QtGui/$Qt5_version/QtGui/private     include/Qt5/QtGui/private
+        mv include/Qt5/QtQml/$Qt5_version/QtQml/private     include/Qt5/QtQml/private
+        mv include/Qt5/QtQuick/$Qt5_version/QtQuick/private include/Qt5/QtQuick/private
+
     elif [ $2 = "linux" ]; then
 
-        cp -r "$include"/qt5/QtCore/*  include/Qt5/QtCore
-        cp -r "$include"/qt5/QtGui/*   include/Qt5/QtGui
-        cp -r "$include"/qt5/QtQml/*   include/Qt5/QtQml
-        cp -r "$include"/qt5/QtQuick/* include/Qt5/QtQuick
-
-        mv include/Qt5/QtCore/$Qt5_version/QtCore/private/*   include/Qt5/QtCore/private
-        mv include/Qt5/QtGui/$Qt5_version/QtGui/private/*     include/Qt5/QtGui/private
-        mv include/Qt5/QtQml/$Qt5_version/QtQml/private/*     include/Qt5/QtQml/private
-        mv include/Qt5/QtQuick/$Qt5_version/QtQuick/private/* include/Qt5/QtQuick/private
+        cp -r "$include"/qt5/QtCore  include/Qt5
+        cp -r "$include"/qt5/QtGui   include/Qt5
+        cp -r "$include"/qt5/QtQml   include/Qt5
+        cp -r "$include"/qt5/QtQuick include/Qt5
 
         cp -r "$include"/qt5/QtGui/$Qt5_version/QtGui/qpa include/Qt5/QtGui
+
+        mv include/Qt5/QtCore/$Qt5_version/QtCore/private   include/Qt5/QtCore/private
+        mv include/Qt5/QtGui/$Qt5_version/QtGui/private     include/Qt5/QtGui/private
+        mv include/Qt5/QtQml/$Qt5_version/QtQml/private     include/Qt5/QtQml/private
+        mv include/Qt5/QtQuick/$Qt5_version/QtQuick/private include/Qt5/QtQuick/private
 
     elif [ $2 = "osx" ]; then
 
