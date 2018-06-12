@@ -82,21 +82,20 @@ WVlcEngine::WVlcEngine(QThread * thread, QObject * parent)
     {
         const char * const args[] =
         {
-            "--intf=dummy",       /* No interface     */
+            "--intf=dummy", /* No interface     */
 #ifdef Q_OS_WIN
-            "--dummy-quiet",      /* No command-line  */
-#endif
-#ifdef Q_OS_MAC
+            "--dummy-quiet", /* No command-line  */
+#elif defined(Q_OS_MAC)
             "--vout=macosx",
 #endif
-            "--ignore-config",    /* No configuration */
-            "--no-spu",           /* No sub-pictures  */
-            "--no-osd",           /* No video overlay */
-            "--no-stats",         /* No statistics    */
-            "--no-media-library", /* No Media Library */
-            "--http-reconnect",   /* Auto reconnect   */
-            "--input-fast-seek"   /* Fast seek        */
-            //"--avcodec-fast",
+            "--ignore-config",     /* No configuration */
+            "--no-spu",            /* No sub-pictures  */
+            "--no-osd",            /* No video overlay */
+            "--no-stats",          /* No statistics    */
+            "--no-media-library",  /* No Media Library */
+            "--http-reconnect"     /* Auto reconnect   */
+            //"--input-fast-seek", /* Fast seek        */
+            //"--avcodec-fast",    /* Speed tricks     */
             //"--avcodec-dr",
             //"--avcodec-hurry-up",
             //"--avcodec-hw=any",
