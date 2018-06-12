@@ -2284,7 +2284,8 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
     }
 
     return wControllerDownload->getData(loader, query.url, parent, query.priority, true,
-                                        query.cookies, query.header, query.maxHost, query.delay);
+                                        query.cookies, query.header, query.maxHost, query.delay,
+                                        query.timeout);
 }
 
 /* Q_INVOKABLE */ WRemoteData * WControllerPlaylist::getData(const WBackendNetQuery & query,
@@ -2295,7 +2296,8 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
     WAbstractLoader * loader = d->loaders.value(query.type);
 
     return wControllerDownload->getData(loader, query.url, parent, query.priority, true,
-                                        query.cookies, query.header, query.maxHost, query.delay);
+                                        query.cookies, query.header, query.maxHost, query.delay,
+                                        query.timeout);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2734,7 +2736,8 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
                                                 const WBackendNetQuery & query, QObject * parent)
 {
     return wControllerDownload->getData(loader, query.url, parent, query.priority, true,
-                                        query.cookies, query.header, query.maxHost, query.delay);
+                                        query.cookies, query.header, query.maxHost, query.delay,
+                                        query.timeout);
 }
 
 //-------------------------------------------------------------------------------------------------

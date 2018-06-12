@@ -157,6 +157,11 @@ int WRemoteData::delay() const
     return _delay;
 }
 
+int WRemoteData::timeout() const
+{
+    return _timeout;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 bool WRemoteData::hasError() const
@@ -167,6 +172,52 @@ bool WRemoteData::hasError() const
 QString WRemoteData::error() const
 {
     return _error;
+}
+
+//=================================================================================================
+// WRemoteTimeout
+//=================================================================================================
+
+class SK_CORE_EXPORT WRemoteTimeout : public QTimer
+{
+    Q_OBJECT
+
+public:
+    WRemoteTimeout(WRemoteData * data);
+
+private slots:
+    void onTimeout();
+
+private: // Variables
+    WRemoteData * _data;
+};
+
+//-------------------------------------------------------------------------------------------------
+// Ctor / dtor
+//-------------------------------------------------------------------------------------------------
+
+WRemoteTimeout::WRemoteTimeout(WRemoteData * data) : QTimer(data)
+{
+    _data = data;
+
+    setSingleShot(true);
+
+    connect(this, SIGNAL(timeout()), this, SLOT(onTimeout()));
+
+    connect(_data, SIGNAL(loaded(WRemoteData *)), this, SLOT(deleteLater()));
+
+    start(data->_timeout);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private slots
+//-------------------------------------------------------------------------------------------------
+
+void WRemoteTimeout::onTimeout()
+{
+    QNetworkReply * reply = qobject_cast<QNetworkReply *> (_data->_reply);
+
+    reply->abort();
 }
 
 //=================================================================================================
@@ -234,6 +285,11 @@ void WControllerDownloadPrivate::processJobs()
             jobs.append(data);
 
             data->_loader->get(data);
+
+            if (data->_reply && data->_timeout != -1)
+            {
+                new WRemoteTimeout(data);
+            }
 
             if (jobs.count() == maxJobs) return;
         }
@@ -360,7 +416,8 @@ WControllerDownload::WControllerDownload() : WController(new WControllerDownload
                                                              bool                        cookies,
                                                              bool                        header,
                                                              int                         maxHost,
-                                                             int                         delay)
+                                                             int                         delay,
+                                                             int                         timeout)
 {
     Q_D(WControllerDownload);
 
@@ -390,6 +447,7 @@ WControllerDownload::WControllerDownload() : WController(new WControllerDownload
 
     data->_maxHost = maxHost;
     data->_delay   = delay;
+    data->_timeout = timeout;
 
     for (int i = 0; i < d->jobsPending.count(); i++)
     {
@@ -417,9 +475,11 @@ WControllerDownload::WControllerDownload() : WController(new WControllerDownload
                                                              bool                        cookies,
                                                              bool                        header,
                                                              int                         maxHost,
-                                                             int                         delay)
+                                                             int                         delay,
+                                                             int                         timeout)
 {
-    return getData(NULL, url, parent, priority, redirect, cookies, header, maxHost, delay);
+    return getData(NULL,
+                   url, parent, priority, redirect, cookies, header, maxHost, delay, timeout);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -468,3 +528,5 @@ void WControllerDownload::setMaxJobs(int max)
 }
 
 #endif // SK_NO_CONTROLLERDOWNLOAD
+
+#include "WControllerDownload.moc"

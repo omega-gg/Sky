@@ -80,8 +80,9 @@ void WBackendNetQuery::init(Type type, const QUrl & url)
     header     = false;
     skipError  = false;
 
-    maxHost = 3;
-    delay   = 0;
+    maxHost =  3;
+    delay   =  0;
+    timeout = -1;
 }
 
 //=================================================================================================

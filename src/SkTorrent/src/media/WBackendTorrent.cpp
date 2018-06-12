@@ -38,6 +38,8 @@
 static const int BACKENDTORRENT_MAX_URLS    = 20;
 static const int BACKENDTORRENT_MAX_SOURCES =  5;
 
+static const int BACKENDTORRENT_TIMEOUT = 3000;
+
 //=================================================================================================
 // WBackendTorrentItem
 //=================================================================================================
@@ -265,6 +267,8 @@ void WBackendTorrentPrivate::applyQuery(WBackendNetFolder * reply,
     nextQuery->data = *urls;
 
     nextQuery->skipError = true;
+
+    nextQuery->timeout = BACKENDTORRENT_TIMEOUT;
 }
 
 //-------------------------------------------------------------------------------------------------

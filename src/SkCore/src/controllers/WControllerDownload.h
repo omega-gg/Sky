@@ -69,6 +69,7 @@ public: // Properties
 
     int maxHost() const;
     int delay  () const;
+    int timeout() const;
 
     bool hasError() const;
 
@@ -92,6 +93,7 @@ private: // Variables
 
     int _maxHost;
     int _delay;
+    int _timeout;
 
     QString _error;
 
@@ -100,6 +102,7 @@ private:
     friend class WControllerDownloadPrivate;
     friend class WAbstractLoader;
     friend class WAbstractLoaderPrivate;
+    friend class WRemoteTimeout;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -130,7 +133,8 @@ public: // Interface
                           bool                        cookies  = true,
                           bool                        header   = false,
                           int                         maxHost  = -1,
-                          int                         delay    =  0);
+                          int                         delay    =  0,
+                          int                         timeout  = -1);
 
     Q_INVOKABLE
     WRemoteData * getData(const QUrl                & url,
@@ -140,7 +144,8 @@ public: // Interface
                           bool                        cookies  = true,
                           bool                        header   = false,
                           int                         maxHost  = -1,
-                          int                         delay    =  0);
+                          int                         delay    =  0,
+                          int                         timeout  = -1);
 
     Q_INVOKABLE void setProxy(const QString & host,
                               int             port, const QString & password = QString());
