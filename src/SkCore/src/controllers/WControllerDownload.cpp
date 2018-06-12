@@ -187,6 +187,7 @@ public:
 
 private slots:
     void onTimeout();
+    void onLoaded ();
 
 private: // Variables
     WRemoteData * _data;
@@ -204,7 +205,7 @@ WRemoteTimeout::WRemoteTimeout(WRemoteData * data) : QTimer(data)
 
     connect(this, SIGNAL(timeout()), this, SLOT(onTimeout()));
 
-    connect(_data, SIGNAL(loaded(WRemoteData *)), this, SLOT(deleteLater()));
+    connect(_data, SIGNAL(loaded(WRemoteData *)), this, SLOT(onLoaded()));
 
     start(data->_timeout);
 }
@@ -218,6 +219,13 @@ void WRemoteTimeout::onTimeout()
     QNetworkReply * reply = qobject_cast<QNetworkReply *> (_data->_reply);
 
     reply->abort();
+}
+
+void WRemoteTimeout::onLoaded()
+{
+    stop();
+
+    deleteLater();
 }
 
 //=================================================================================================
