@@ -28,7 +28,9 @@ BaseCursor
     property alias loadMode: image.loadMode
     property alias fillMode: image.fillMode
 
+//#QT_4
     property alias scaling: image.scaling
+//#END
 
     //---------------------------------------------------------------------------------------------
 
