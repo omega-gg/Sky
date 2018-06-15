@@ -106,7 +106,7 @@ MouseArea
         }
     }
 
-    onVisibleChanged: window.clearFocusItem(panel)
+    onVisibleChanged: if (visible == false) window.clearFocusItem(panel)
 
     //---------------------------------------------------------------------------------------------
     // Functions
