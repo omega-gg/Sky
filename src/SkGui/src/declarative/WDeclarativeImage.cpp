@@ -596,11 +596,11 @@ void WDeclarativeImageScalePrivate::onScale()
 
         scaled = true;
 
-        q->update();
-
 #ifdef QT_LATEST
         updateTexture = true;
 #endif
+
+        q->update();
     }
     else
     {

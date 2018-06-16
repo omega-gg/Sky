@@ -1237,7 +1237,7 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 
         d->currentTime = -2;
 
-        // FIXME VLC: You have to wait for the first frame.
+        // FIXME VLC: Waiting for the first frame.
         QTimer::singleShot(64, this, SLOT(onUpdateState()));
     }
     else

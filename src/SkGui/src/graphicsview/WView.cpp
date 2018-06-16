@@ -657,7 +657,7 @@ void WViewPrivate::updateDrag()
 #ifdef Q_OS_LINUX
     setMousePos(q->mapFromGlobal(pos));
 #else
-    // FIXME Windows: You have to map the position from global.
+    // FIXME Windows: Mapping the position from global.
     setMousePos(q->mapFromGlobal(pos));
 #endif
 
@@ -2080,7 +2080,7 @@ void WView::hoverEnter()
     d->setEntered(true);
 
 #ifdef QT_LATEST
-    // FIXME Qt5: You have to reset the cursor by hand.
+    // FIXME Qt5: Resetting the cursor by hand.
     if (d->cursors.contains(d->cursor))
     {
         const QCursor & cursor = d->cursors.value(d->cursor);
