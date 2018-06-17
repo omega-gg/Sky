@@ -277,7 +277,12 @@ QUrl WBackendTorrentPrivate::getUrl(const QString & q) const
 {
     QUrl url("https://duckduckgo.com/");
 
-    QString search = "torrent " + q.simplified();
+    QString search = q.simplified();
+
+    if (search.startsWith("torrent ", Qt::CaseInsensitive) == false)
+    {
+        search.prepend("torrent ");
+    }
 
 #ifdef QT_4
     url.addQueryItem("q", search);
