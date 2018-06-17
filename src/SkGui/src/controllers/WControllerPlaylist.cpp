@@ -1605,6 +1605,8 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
             else queries.remove(data);
 
             delete data;
+
+            return;
         }
         else if (query->type == WControllerPlaylistQuery::TypeFolder && backendQuery->id == 0)
         {
