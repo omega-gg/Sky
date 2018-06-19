@@ -276,7 +276,7 @@ WBackendNetTrack WBackendLastFm::extractTrack(const QByteArray       & data,
 
                 if (d->match(list, listTitle))
                 {
-                    QString source = WControllerNetwork::extractAttribute(string, "href", index);
+                    QString source = WControllerNetwork::extractAttributeUtf8(string, "href", index);
 
                     WBackendNetQuery * nextQuery = &(reply.nextQuery);
 
