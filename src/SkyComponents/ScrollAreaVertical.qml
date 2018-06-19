@@ -30,11 +30,6 @@ MouseArea
     property bool enableUpdateRange: true
 
     //---------------------------------------------------------------------------------------------
-    // Style
-
-    property int wheelMultiplier: st.scrollArea_wheelMultiplier
-
-    //---------------------------------------------------------------------------------------------
     // Private
 
     property int pHeight: -1
@@ -55,6 +50,8 @@ MouseArea
 
     property alias singleStep: scrollBar.singleStep
     property alias pageStep  : scrollBar.pageStep
+
+    property alias wheelMultiplier: scrollBar.wheelMultiplier
 
     property alias atTop   : scrollBar.atMinimum
     property alias atBottom: scrollBar.atMaximum

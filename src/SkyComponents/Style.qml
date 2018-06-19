@@ -1211,11 +1211,6 @@ Item
     property ImageColorFilter listContextual_filterIcon: icon_filter
 
     //---------------------------------------------------------------------------------------------
-    // ScrollArea
-
-    property int scrollArea_wheelMultiplier: 3
-
-    //---------------------------------------------------------------------------------------------
     // ScrollBar
 
     property int scrollBar_intervalPress : 300
@@ -1223,6 +1218,8 @@ Item
 
     property int scrollBar_singleStep: dp8
     property int scrollBar_pageStep  : dp16
+
+    property int scrollBar_wheelMultiplier: 3
 
     property int scrollBar_width: dp16
 

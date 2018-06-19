@@ -30,6 +30,8 @@ Item
     //---------------------------------------------------------------------------------------------
     // Style
 
+    property int wheelMultiplier: st.scrollBar_wheelMultiplier
+
     property int handleMinimumSize: st.scrollBar_handleMinimumSize
 
     property color colorA: st.scrollBar_colorA
