@@ -129,10 +129,7 @@ Window
 
         if (zoom == scale)
         {
-            if (realTime)
-            {
-                pTime = sk.getTime();
-            }
+            if (realTime) pTime = sk.getTime();
 
             timer.restart();
         }
@@ -152,10 +149,7 @@ Window
         }
         else
         {
-            if (realTime)
-            {
-                pTime = sk.getTime();
-            }
+            if (realTime) pTime = sk.getTime();
 
             pRatio = -1;
 

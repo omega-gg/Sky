@@ -876,12 +876,9 @@ void WDeclarativeImageSvgScalePrivate::onScale()
         {
             if (d->scaleDelayed)
             {
-                if (d->viewport->scale() == 1.0)
-                {
-                    d->scaleSize = size;
+                d->scaleSize = size;
 
-                    d->timer.start();
-                }
+                d->timer.start();
             }
             else
             {

@@ -718,22 +718,15 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
         {
             if (d->scaleDelayed)
             {
-#ifdef QT_4
-                if (d->viewport->scale() == 1.0)
-#else
-                if (d->view->item()->scale() == 1.0)
-#endif
-                {
-                    d->abortAction();
+                d->abortAction();
 
-                    d->scaleSize = size;
+                d->scaleSize = size;
 
 #ifdef QT_4
-                    d->timer.start();
+                d->timer.start();
 #else
-                    QTimer::singleShot(0, &d->timer, SLOT(start()));
+                QTimer::singleShot(0, &d->timer, SLOT(start()));
 #endif
-                }
             }
             else
             {

@@ -140,7 +140,7 @@ protected: // QGraphicsItem / QQuickItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
 
 protected: // WDeclarativeTexture implementation
-    virtual const QPixmap & getPixmap();
+    /* virtual */ const QPixmap & getPixmap();
 #endif
 
 signals:
