@@ -718,11 +718,7 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
         {
             if (d->scaleDelayed)
             {
-#ifdef QT_4
-                if (d->viewport->scale() == 1.0)
-#else
-                if (d->view->item()->scale() == 1.0)
-#endif
+                if (d->view->isScaling())
                 {
                     d->abortAction();
 

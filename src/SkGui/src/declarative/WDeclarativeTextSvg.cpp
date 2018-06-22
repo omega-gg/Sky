@@ -1182,7 +1182,7 @@ void WDeclarativeTextSvgScalePrivate::onScale()
         {
             if (d->scaleDelayed)
             {
-                if (d->viewport->scale() == 1.0)
+                if (d->view->isScaling())
                 {
                     d->scaleSize = size;
 

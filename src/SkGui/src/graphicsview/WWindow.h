@@ -87,6 +87,7 @@ class SK_GUI_EXPORT WWindow : public WDeclarativeMouseArea
     Q_PROPERTY(bool maximized  READ isMaximized  WRITE setMaximized  NOTIFY maximizedChanged)
     Q_PROPERTY(bool fullScreen READ isFullScreen WRITE setFullScreen NOTIFY fullScreenChanged)
     Q_PROPERTY(bool locked     READ isLocked     WRITE setLocked     NOTIFY lockedChanged)
+    Q_PROPERTY(bool scaling    READ isScaling    WRITE setScaling    NOTIFY scalingChanged)
 
     Q_PROPERTY(bool isActive   READ isActive   NOTIFY activeChanged)
     Q_PROPERTY(bool isEntered  READ isEntered  NOTIFY enteredChanged)
@@ -360,6 +361,7 @@ signals:
     void maximizedChanged ();
     void fullScreenChanged();
     void lockedChanged    ();
+    void scalingChanged   ();
 
     void activeChanged  ();
     void enteredChanged ();
@@ -475,6 +477,9 @@ public: // Properties
 
     bool isLocked() const;
     void setLocked(bool locked);
+
+    bool isScaling() const;
+    void setScaling(bool scaling);
 
     bool isActive  () const;
     bool isEntered () const;

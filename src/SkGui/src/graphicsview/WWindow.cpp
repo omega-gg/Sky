@@ -129,6 +129,7 @@ void WWindowPrivate::init()
     QObject::connect(view, SIGNAL(maximizedChanged ()), q, SIGNAL(maximizedChanged ()));
     QObject::connect(view, SIGNAL(fullScreenChanged()), q, SIGNAL(fullScreenChanged()));
     QObject::connect(view, SIGNAL(lockedChanged    ()), q, SIGNAL(lockedChanged    ()));
+    QObject::connect(view, SIGNAL(scalingChanged   ()), q, SIGNAL(scalingChanged   ()));
 
     QObject::connect(view, SIGNAL(activeChanged  ()), q, SIGNAL(activeChanged  ()));
     QObject::connect(view, SIGNAL(enteredChanged ()), q, SIGNAL(enteredChanged ()));
@@ -966,6 +967,18 @@ void WWindow::setLocked(bool locked)
 
         emit visibleChanged();
     }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WWindow::isScaling() const
+{
+    Q_D(const WWindow); return d->view->isScaling();
+}
+
+void WWindow::setScaling(bool scaling)
+{
+    Q_D(WWindow); d->view->setScaling(scaling);
 }
 
 //-------------------------------------------------------------------------------------------------

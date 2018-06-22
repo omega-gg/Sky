@@ -262,8 +262,9 @@ void WViewPrivate::init(QQuickItem * item)
         fullScreen = true;
     }
 
-    locked = false;
-    closed = false;
+    locked  = false;
+    scaling = true;
+    closed  = false;
 
     opengl    = wControllerView->opengl();
     antialias = false;
@@ -3117,6 +3118,24 @@ void WView::setLocked(bool locked)
     d->updateFlags();
 
     emit lockedChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WView::isScaling() const
+{
+    Q_D(const WView); return d->scaling;
+}
+
+void WView::setScaling(bool scaling)
+{
+    Q_D(WView);
+
+    if (d->scaling == scaling) return;
+
+    d->scaling = scaling;
+
+    emit scalingChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

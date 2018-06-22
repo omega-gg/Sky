@@ -66,6 +66,8 @@ Window
 
             onRunningChanged:
             {
+                scaling = true;
+
                 if (scale != pRatio) return;
 
                 pRatio = -1;
@@ -139,6 +141,8 @@ Window
             pRatio = scale / zoom;
 
             pAnimate = true;
+
+            scaling = false;
 
             window.scale = pRatio;
 
@@ -225,6 +229,8 @@ Window
             }
 
             pAnimate = true;
+
+            scaling = false;
 
             scale = 1.0;
 

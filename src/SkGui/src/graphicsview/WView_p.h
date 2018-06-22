@@ -173,6 +173,7 @@ public: // Variables
     bool maximized;
     bool fullScreen;
     bool locked;
+    bool scaling;
     bool closed;
 
     bool opengl;
