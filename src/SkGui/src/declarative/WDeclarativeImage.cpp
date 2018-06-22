@@ -718,15 +718,22 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
         {
             if (d->scaleDelayed)
             {
-                d->abortAction();
+#ifdef QT_4
+                if (d->viewport->scale() == 1.0)
+#else
+                if (d->view->item()->scale() == 1.0)
+#endif
+                {
+                    d->abortAction();
 
-                d->scaleSize = size;
+                    d->scaleSize = size;
 
 #ifdef QT_4
-                d->timer.start();
+                    d->timer.start();
 #else
-                QTimer::singleShot(0, &d->timer, SLOT(start()));
+                    QTimer::singleShot(0, &d->timer, SLOT(start()));
 #endif
+                }
             }
             else
             {
@@ -787,18 +794,11 @@ void WDeclarativeImageScale::setScaling(bool scaling)
 
     if (scaling)
     {
-#ifdef QT_4
-        if (d->viewport->scale() == 1.0)
-#else
-        if (d->view->item()->scale() == 1.0)
-#endif
-        {
-            d->update();
+        d->update();
 
 #ifdef QT_LATEST
-            d->updateTexture = true;
+        d->updateTexture = true;
 #endif
-        }
     }
     else
     {
