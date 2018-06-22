@@ -28,6 +28,7 @@
 #include <QTileRules>
 
 // Sk includes
+#include <WControllerFile>
 #include <WControllerView>
 #include <WView>
 #include <WImageFilter>
@@ -509,9 +510,17 @@ void WDeclarativeBorderImageScalePrivate::onScale()
 {
     Q_Q(WDeclarativeBorderImageScale);
 
+    if (sourceDefault)
+    {
+        action = WPixmapCache::loadImage(WControllerFile::toLocalFile(urlDefault),
+                                         scaleResize, q, SLOT(onLoaded(const QImage &)));
+
+        return;
+    }
+
     QString path = pix.path();
 
-    if (WPixmapCache::imageIsLocal(path) == false || sourceDefault)
+    if (WPixmapCache::imageIsLocal(path) == false)
     {
         const QPixmap & pixmap = q->currentPixmap();
 

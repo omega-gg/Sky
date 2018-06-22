@@ -25,6 +25,7 @@
 #endif
 
 // Sk includes
+#include <WControllerFile>
 #include <WControllerView>
 #include <WView>
 #include <WImageFilter>
@@ -569,9 +570,45 @@ void WDeclarativeImageScalePrivate::onScale()
 {
     Q_Q(WDeclarativeImageScale);
 
+    if (sourceDefault)
+    {
+        QSize size = pixmapDefault.size();
+
+        if (fillMode == WDeclarativeImage::PreserveAspectFit)
+        {
+            size.scale(scaleSize, Qt::KeepAspectRatio);
+        }
+        else if (fillMode == WDeclarativeImage::PreserveAspectCrop)
+        {
+            size.scale(scaleSize, Qt::KeepAspectRatioByExpanding);
+        }
+        else size.scale(scaleSize, Qt::IgnoreAspectRatio);
+
+        action = WPixmapCache::loadImage(WControllerFile::toLocalFile(urlDefault),
+                                         size, q, SLOT(onLoaded(const QImage &)));
+
+        return;
+    }
+
     QString path = pix.path();
 
-    if (WPixmapCache::imageIsLocal(path) == false || sourceDefault)
+    if (WPixmapCache::imageIsLocal(path))
+    {
+        QSize size = pix.pixmap().size();
+
+        if (fillMode == WDeclarativeImage::PreserveAspectFit)
+        {
+            size.scale(scaleSize, Qt::KeepAspectRatio);
+        }
+        else if (fillMode == WDeclarativeImage::PreserveAspectCrop)
+        {
+            size.scale(scaleSize, Qt::KeepAspectRatioByExpanding);
+        }
+        else size.scale(scaleSize, Qt::IgnoreAspectRatio);
+
+        action = WPixmapCache::loadImage(path, size, q, SLOT(onLoaded(const QImage &)));
+    }
+    else
     {
         const QPixmap & pixmap = q->currentPixmap();
 
@@ -599,22 +636,6 @@ void WDeclarativeImageScalePrivate::onScale()
 #endif
 
         q->update();
-    }
-    else
-    {
-        QSize size = pix.pixmap().size();
-
-        if (fillMode == WDeclarativeImage::PreserveAspectFit)
-        {
-            size.scale(scaleSize, Qt::KeepAspectRatio);
-        }
-        else if (fillMode == WDeclarativeImage::PreserveAspectCrop)
-        {
-            size.scale(scaleSize, Qt::KeepAspectRatioByExpanding);
-        }
-        else size.scale(scaleSize, Qt::IgnoreAspectRatio);
-
-        action = WPixmapCache::loadImage(path, size, q, SLOT(onLoaded(const QImage &)));
     }
 }
 
