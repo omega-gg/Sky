@@ -26,9 +26,7 @@
 
 // Sk includes
 #include <WControllerView>
-#ifdef QT_LATEST
 #include <WView>
-#endif
 #include <WImageFilter>
 #include <WAbstractThreadAction>
 

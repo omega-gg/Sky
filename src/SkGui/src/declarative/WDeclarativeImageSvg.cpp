@@ -25,9 +25,7 @@
 // Sk includes
 #include <WControllerFile>
 #include <WControllerView>
-#ifdef QT_LATEST
 #include <WView>
-#endif
 #include <WCache>
 
 #ifdef QT_LATEST
