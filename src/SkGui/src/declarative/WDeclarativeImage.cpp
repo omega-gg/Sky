@@ -787,11 +787,18 @@ void WDeclarativeImageScale::setScaling(bool scaling)
 
     if (scaling)
     {
-        d->update();
+#ifdef QT_4
+        if (d->viewport->scale() == 1.0)
+#else
+        if (d->view->item()->scale() == 1.0)
+#endif
+        {
+            d->update();
 
 #ifdef QT_LATEST
-        d->updateTexture = true;
+            d->updateTexture = true;
 #endif
+        }
     }
     else
     {
