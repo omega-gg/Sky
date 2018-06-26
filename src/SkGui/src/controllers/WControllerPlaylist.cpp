@@ -1629,40 +1629,6 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
                 return;
             }
         }
-        /*else if (backendQuery->type == WBackendNetQuery::TypeDefault && backend)
-        {
-            if (backend)
-            {
-                backend->queryFailed(*backendQuery);
-
-                queries.remove(data);
-
-                item->d_func()->setQueryDefault();
-            }
-            else
-            {
-                WBackendNetQuery nextQuery = *backendQuery;
-
-                nextQuery.type = WBackendNetQuery::TypeWeb;
-
-                if (query->type == WControllerPlaylistQuery::TypePlaylist)
-                {
-                    WPlaylist * playlist = item->toPlaylist();
-
-                    queries.remove(data);
-
-                    getDataPlaylist(playlist, nextQuery);
-                }
-                else // if (query->type == WControllerPlaylistQuery::TypeFolder)
-                {
-                    WLibraryFolder * folder = item->toFolder();
-
-                    queries.remove(data);
-
-                    getDataFolder(folder, nextQuery);
-                }
-            }
-        }*/
 
         if (backend) backend->queryFailed(*backendQuery);
 
@@ -1674,7 +1640,8 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 
         return;
     }
-    else if (backend == NULL && backendQuery->target == WBackendNetQuery::TargetDefault)
+
+    if (backend == NULL && backendQuery->target == WBackendNetQuery::TargetDefault)
     {
         queries.remove(data);
 
@@ -1696,6 +1663,8 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 
     if (query->type == WControllerPlaylistQuery::TypeTrack)
     {
+        if (backend == NULL) qDebug("BACKEND SHOULD NOT BE NULL");
+
         query->backend = backend;
 
         backend->loadTrack(networkReply, *backendQuery,
