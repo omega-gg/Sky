@@ -144,7 +144,7 @@ if [ $2 = "qt4" ]; then
 
     Qt_archive="$Qt_name.tar.gz"
 
-    Qt_sources="http://download.qt.io/official_releases/qt/4.8/$Qt4_version/$Qt_archive"
+    Qt_sources="http://download.qt.io/archive/qt/4.8/$Qt4_version/$Qt_archive"
 else
     Qt="$external/Qt/$Qt5_version"
 
