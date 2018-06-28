@@ -347,7 +347,8 @@ int WControllerXml::doQuery(const QUrl & query)
 //---------------------------------------------------------------------------------------------
 // QXmlStreamReader
 
-bool WControllerXml::readNextStartElement(QXmlStreamReader * stream, const QString & name)
+/* static */ bool WControllerXml::readNextStartElement(QXmlStreamReader * stream,
+                                                       const QString    & name)
 {
     while (stream->atEnd() == false)
     {

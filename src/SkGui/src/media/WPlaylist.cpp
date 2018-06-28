@@ -390,58 +390,58 @@ bool WPlaylistRead::loadPlaylist(QXmlStreamReader * stream, WPlaylistReadReply *
     //---------------------------------------------------------------------------------------------
     // source
 
-    if (wControllerXml->readNextStartElement(stream, "source") == false) return false;
+    if (WControllerXml::readNextStartElement(stream, "source") == false) return false;
 
-    reply->source = wControllerXml->readNextUrl(stream);
+    reply->source = WControllerXml::readNextUrl(stream);
 
     //---------------------------------------------------------------------------------------------
     // title
 
-    if (wControllerXml->readNextStartElement(stream, "title") == false) return false;
+    if (WControllerXml::readNextStartElement(stream, "title") == false) return false;
 
-    reply->title = wControllerXml->readNextString(stream);
+    reply->title = WControllerXml::readNextString(stream);
 
     //---------------------------------------------------------------------------------------------
     // cover
 
-    if (wControllerXml->readNextStartElement(stream, "cover") == false) return false;
+    if (WControllerXml::readNextStartElement(stream, "cover") == false) return false;
 
-    reply->cover = wControllerXml->readNextString(stream);
+    reply->cover = WControllerXml::readNextString(stream);
 
     //---------------------------------------------------------------------------------------------
     // label
 
-    if (wControllerXml->readNextStartElement(stream, "label") == false) return false;
+    if (WControllerXml::readNextStartElement(stream, "label") == false) return false;
 
-    reply->label = wControllerXml->readNextString(stream);
+    reply->label = WControllerXml::readNextString(stream);
 
     //---------------------------------------------------------------------------------------------
     // currentIndex
 
-    if (wControllerXml->readNextStartElement(stream, "currentIndex") == false) return false;
+    if (WControllerXml::readNextStartElement(stream, "currentIndex") == false) return false;
 
-    reply->currentIndex = wControllerXml->readNextInt(stream);
+    reply->currentIndex = WControllerXml::readNextInt(stream);
 
     //---------------------------------------------------------------------------------------------
     // currentTime
 
-    if (wControllerXml->readNextStartElement(stream, "currentTime") == false) return false;
+    if (WControllerXml::readNextStartElement(stream, "currentTime") == false) return false;
 
-    reply->currentTime = wControllerXml->readNextInt(stream);
+    reply->currentTime = WControllerXml::readNextInt(stream);
 
     //---------------------------------------------------------------------------------------------
     // scrollValue
 
-    if (wControllerXml->readNextStartElement(stream, "scrollValue") == false) return false;
+    if (WControllerXml::readNextStartElement(stream, "scrollValue") == false) return false;
 
-    reply->scrollValue = wControllerXml->readNextFloat(stream);
+    reply->scrollValue = WControllerXml::readNextFloat(stream);
 
     return true;
 }
 
 bool WPlaylistRead::loadTracks(QXmlStreamReader * stream, WPlaylistReadReply * reply)
 {
-    while (wControllerXml->readNextStartElement(stream, "track"))
+    while (WControllerXml::readNextStartElement(stream, "track"))
     {
         WTrack track;
 
@@ -450,72 +450,72 @@ bool WPlaylistRead::loadTracks(QXmlStreamReader * stream, WPlaylistReadReply * r
         //-----------------------------------------------------------------------------------------
         // id
 
-        if (wControllerXml->readNextStartElement(stream, "id") == false) return false;
+        if (WControllerXml::readNextStartElement(stream, "id") == false) return false;
 
-        p->id = wControllerXml->readNextInt(stream);
+        p->id = WControllerXml::readNextInt(stream);
 
         //-----------------------------------------------------------------------------------------
         // state
 
-        if (wControllerXml->readNextStartElement(stream, "state") == false) return false;
+        if (WControllerXml::readNextStartElement(stream, "state") == false) return false;
 
-        p->state = static_cast<WTrack::State> (wControllerXml->readNextInt(stream));
+        p->state = static_cast<WTrack::State> (WControllerXml::readNextInt(stream));
 
         //-----------------------------------------------------------------------------------------
         // source
 
-        if (wControllerXml->readNextStartElement(stream, "source") == false) return false;
+        if (WControllerXml::readNextStartElement(stream, "source") == false) return false;
 
-        p->source = wControllerXml->readNextUrl(stream);
+        p->source = WControllerXml::readNextUrl(stream);
 
         //-----------------------------------------------------------------------------------------
         // title
 
-        if (wControllerXml->readNextStartElement(stream, "title") == false) return false;
+        if (WControllerXml::readNextStartElement(stream, "title") == false) return false;
 
-        p->title = wControllerXml->readNextString(stream);
+        p->title = WControllerXml::readNextString(stream);
 
         //-----------------------------------------------------------------------------------------
         // cover
 
-        if (wControllerXml->readNextStartElement(stream, "cover") == false) return false;
+        if (WControllerXml::readNextStartElement(stream, "cover") == false) return false;
 
-        p->cover = wControllerXml->readNextString(stream);
+        p->cover = WControllerXml::readNextString(stream);
 
         //-----------------------------------------------------------------------------------------
         // author
 
-        if (wControllerXml->readNextStartElement(stream, "author") == false) return false;
+        if (WControllerXml::readNextStartElement(stream, "author") == false) return false;
 
-        p->author = wControllerXml->readNextString(stream);
+        p->author = WControllerXml::readNextString(stream);
 
         //-----------------------------------------------------------------------------------------
         // feed
 
-        if (wControllerXml->readNextStartElement(stream, "feed") == false) return false;
+        if (WControllerXml::readNextStartElement(stream, "feed") == false) return false;
 
-        p->feed = wControllerXml->readNextString(stream);
+        p->feed = WControllerXml::readNextString(stream);
 
         //-----------------------------------------------------------------------------------------
         // duration
 
-        if (wControllerXml->readNextStartElement(stream, "duration") == false) return false;
+        if (WControllerXml::readNextStartElement(stream, "duration") == false) return false;
 
-        p->duration = wControllerXml->readNextInt(stream);
+        p->duration = WControllerXml::readNextInt(stream);
 
         //-----------------------------------------------------------------------------------------
         // date
 
-        if (wControllerXml->readNextStartElement(stream, "date") == false) return false;
+        if (WControllerXml::readNextStartElement(stream, "date") == false) return false;
 
-        p->date = wControllerXml->readNextDate(stream);
+        p->date = WControllerXml::readNextDate(stream);
 
         //-----------------------------------------------------------------------------------------
         // quality
 
-        if (wControllerXml->readNextStartElement(stream, "quality") == false) return false;
+        if (WControllerXml::readNextStartElement(stream, "quality") == false) return false;
 
-        int quality = wControllerXml->readNextInt(stream);
+        int quality = WControllerXml::readNextInt(stream);
 
         p->quality = static_cast<WAbstractBackend::Quality> (quality);
 

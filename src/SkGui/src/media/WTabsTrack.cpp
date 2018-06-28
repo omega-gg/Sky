@@ -288,17 +288,17 @@ public: // Variables
 
 bool WTabsTrackRead::load(QXmlStreamReader * stream, WTabsTrackReadReply * reply)
 {
-    if (wControllerXml->readNextStartElement(stream, "currentId") == false) return false;
+    if (WControllerXml::readNextStartElement(stream, "currentId") == false) return false;
 
-    reply->currentId = wControllerXml->readNextInt(stream);
+    reply->currentId = WControllerXml::readNextInt(stream);
 
-    while (wControllerXml->readNextStartElement(stream, "tab"))
+    while (WControllerXml::readNextStartElement(stream, "tab"))
     {
         WTabsTrackDataTab data;
 
-        if (wControllerXml->readNextStartElement(stream, "id") == false) return false;
+        if (WControllerXml::readNextStartElement(stream, "id") == false) return false;
 
-        data.id = wControllerXml->readNextInt(stream);
+        data.id = WControllerXml::readNextInt(stream);
 
         reply->dataTabs.append(data);
     }

@@ -407,9 +407,9 @@ bool WLibraryFolderRead::loadFolder(QXmlStreamReader * stream, WLibraryFolderRea
     //---------------------------------------------------------------------------------------------
     // type
 
-    if (wControllerXml->readNextStartElement(stream, "type") == false) return false;
+    if (WControllerXml::readNextStartElement(stream, "type") == false) return false;
 
-    int type = wControllerXml->readNextInt(stream);
+    int type = WControllerXml::readNextInt(stream);
 
     if (type < 0) return false;
 
@@ -418,60 +418,60 @@ bool WLibraryFolderRead::loadFolder(QXmlStreamReader * stream, WLibraryFolderRea
     //---------------------------------------------------------------------------------------------
     // source
 
-    if (wControllerXml->readNextStartElement(stream, "source") == false) return false;
+    if (WControllerXml::readNextStartElement(stream, "source") == false) return false;
 
-    reply->source = wControllerXml->readNextUrl(stream);
+    reply->source = WControllerXml::readNextUrl(stream);
 
     //---------------------------------------------------------------------------------------------
     // title
 
-    if (wControllerXml->readNextStartElement(stream, "title") == false) return false;
+    if (WControllerXml::readNextStartElement(stream, "title") == false) return false;
 
-    reply->title = wControllerXml->readNextString(stream);
+    reply->title = WControllerXml::readNextString(stream);
 
     //---------------------------------------------------------------------------------------------
     // cover
 
-    if (wControllerXml->readNextStartElement(stream, "cover") == false) return false;
+    if (WControllerXml::readNextStartElement(stream, "cover") == false) return false;
 
-    reply->cover = wControllerXml->readNextString(stream);
+    reply->cover = WControllerXml::readNextString(stream);
 
     //---------------------------------------------------------------------------------------------
     // label
 
-    if (wControllerXml->readNextStartElement(stream, "label") == false) return false;
+    if (WControllerXml::readNextStartElement(stream, "label") == false) return false;
 
-    reply->label = wControllerXml->readNextString(stream);
+    reply->label = WControllerXml::readNextString(stream);
 
     //---------------------------------------------------------------------------------------------
     // currentId
 
-    if (wControllerXml->readNextStartElement(stream, "currentId") == false) return false;
+    if (WControllerXml::readNextStartElement(stream, "currentId") == false) return false;
 
-    reply->currentId = wControllerXml->readNextInt(stream);
+    reply->currentId = WControllerXml::readNextInt(stream);
 
     //---------------------------------------------------------------------------------------------
     // scrollValue
 
-    if (wControllerXml->readNextStartElement(stream, "scrollValue") == false) return false;
+    if (WControllerXml::readNextStartElement(stream, "scrollValue") == false) return false;
 
-    reply->scrollValue = wControllerXml->readNextFloat(stream);
+    reply->scrollValue = WControllerXml::readNextFloat(stream);
 
     return true;
 }
 
 bool WLibraryFolderRead::loadItems(QXmlStreamReader * stream, WLibraryFolderReadReply * reply)
 {
-    while (wControllerXml->readNextStartElement(stream, "item"))
+    while (WControllerXml::readNextStartElement(stream, "item"))
     {
         WLibraryFolderItem data;
 
         //-----------------------------------------------------------------------------------------
         // id
 
-        if (wControllerXml->readNextStartElement(stream, "id") == false) return false;
+        if (WControllerXml::readNextStartElement(stream, "id") == false) return false;
 
-        int id = wControllerXml->readNextInt(stream);
+        int id = WControllerXml::readNextInt(stream);
 
         if (id < 0) return false;
 
@@ -480,9 +480,9 @@ bool WLibraryFolderRead::loadItems(QXmlStreamReader * stream, WLibraryFolderRead
         //-----------------------------------------------------------------------------------------
         // type
 
-        if (wControllerXml->readNextStartElement(stream, "type") == false) return false;
+        if (WControllerXml::readNextStartElement(stream, "type") == false) return false;
 
-        int type = wControllerXml->readNextInt(stream);
+        int type = WControllerXml::readNextInt(stream);
 
         if (type < 0) return false;
 
@@ -491,44 +491,44 @@ bool WLibraryFolderRead::loadItems(QXmlStreamReader * stream, WLibraryFolderRead
         //-----------------------------------------------------------------------------------------
         // state
 
-        if (wControllerXml->readNextStartElement(stream, "state") == false) return false;
+        if (WControllerXml::readNextStartElement(stream, "state") == false) return false;
 
-        data.state = static_cast<WLocalObject::State> (wControllerXml->readNextInt(stream));
+        data.state = static_cast<WLocalObject::State> (WControllerXml::readNextInt(stream));
 
         //-----------------------------------------------------------------------------------------
         // stateQuery
 
-        if (wControllerXml->readNextStartElement(stream, "stateQuery") == false) return false;
+        if (WControllerXml::readNextStartElement(stream, "stateQuery") == false) return false;
 
-        data.stateQuery = static_cast<WLocalObject::State> (wControllerXml->readNextInt(stream));
+        data.stateQuery = static_cast<WLocalObject::State> (WControllerXml::readNextInt(stream));
 
         //-----------------------------------------------------------------------------------------
         // source
 
-        if (wControllerXml->readNextStartElement(stream, "source") == false) return false;
+        if (WControllerXml::readNextStartElement(stream, "source") == false) return false;
 
-        data.source = wControllerXml->readNextUrl(stream);
+        data.source = WControllerXml::readNextUrl(stream);
 
         //-----------------------------------------------------------------------------------------
         // title
 
-        if (wControllerXml->readNextStartElement(stream, "title") == false) return false;
+        if (WControllerXml::readNextStartElement(stream, "title") == false) return false;
 
-        data.title = wControllerXml->readNextString(stream);
+        data.title = WControllerXml::readNextString(stream);
 
         //-----------------------------------------------------------------------------------------
         // cover
 
-        if (wControllerXml->readNextStartElement(stream, "cover") == false) return false;
+        if (WControllerXml::readNextStartElement(stream, "cover") == false) return false;
 
-        data.cover = wControllerXml->readNextString(stream);
+        data.cover = WControllerXml::readNextString(stream);
 
         //-----------------------------------------------------------------------------------------
         // label
 
-        if (wControllerXml->readNextStartElement(stream, "label") == false) return false;
+        if (WControllerXml::readNextStartElement(stream, "label") == false) return false;
 
-        data.label = wControllerXml->readNextString(stream);
+        data.label = WControllerXml::readNextString(stream);
 
         //-----------------------------------------------------------------------------------------
 
