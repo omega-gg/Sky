@@ -220,7 +220,7 @@ bool WBackendTorrentPrivate::applyTorrent(WBackendNetFolder * reply, const QUrl 
 
         playlist.source = url;
 
-        playlist.title = QObject::tr("Torrent") + " - " + string;
+        playlist.title = QObject::tr("Torrent") + " - " + string.simplified();
 
         reply->items.append(playlist);
 
@@ -238,7 +238,7 @@ bool WBackendTorrentPrivate::applyMagnet(WBackendNetFolder * reply, const QUrl  
 
         playlist.source = url;
 
-        playlist.title = QObject::tr("Magnet") + " - " + string;
+        playlist.title = QObject::tr("Magnet") + " - " + string.simplified();
 
         reply->items.append(playlist);
 
