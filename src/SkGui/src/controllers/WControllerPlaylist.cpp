@@ -964,19 +964,13 @@ bool WControllerPlaylistPrivate::abortQueriesTracks(WPlaylist * playlist)
 {
     int count = queries.count();
 
-    QMutableHashIterator<WRemoteData *, WControllerPlaylistQuery> i(queries);
-
-    while (i.hasNext())
+    foreach (WControllerPlaylistQuery * query, queries)
     {
-        i.next();
-
-        WControllerPlaylistQuery * query = &(i.value());
-
         if (query->type == WControllerPlaylistQuery::TypeTrack && query->item == playlist)
         {
             int index = playlist->indexOf(query->track);
 
-            removeQuery(i.key(), query);
+            removeQuery(query);
 
             playlist->setTrackState(index, WTrack::Default);
         }
@@ -1015,17 +1009,11 @@ bool WControllerPlaylistPrivate::abortQueriesItem(WLibraryItem * item)
 {
     int count = queries.count();
 
-    QMutableHashIterator<WRemoteData *, WControllerPlaylistQuery> i(queries);
-
-    while (i.hasNext())
+    foreach (WControllerPlaylistQuery * query, queries)
     {
-        i.next();
-
-        WControllerPlaylistQuery * query = &(i.value());
-
         if (query->item == item)
         {
-            removeQuery(i.key(), query);
+            removeQuery(query);
         }
     }
 
@@ -1126,40 +1114,28 @@ WLibraryFolder * WControllerPlaylistPrivate::getFolder(WLibraryFolder * folder,
 
 //-------------------------------------------------------------------------------------------------
 
-WControllerPlaylistQuery * WControllerPlaylistPrivate::getQuery(WRemoteData * data) const
-{
-    QHashIterator<WRemoteData *, WControllerPlaylistQuery> i(queries);
-
-    while (i.hasNext())
-    {
-        i.next();
-
-        if (i.key() == data)
-        {
-            return const_cast<WControllerPlaylistQuery *> (&(i.value()));
-        }
-    }
-
-    return NULL;
-}
-
-void WControllerPlaylistPrivate::removeQuery(WRemoteData                    * data,
-                                             const WControllerPlaylistQuery * query)
+void WControllerPlaylistPrivate::removeQuery(WControllerPlaylistQuery * query)
 {
     QIODevice * reply = query->reply;
 
-    if (reply)
+    if (reply == NULL)
     {
-        replies.remove(reply);
+        WRemoteData * data = query->data;
 
-        queries.remove(data);
-    }
-    else
-    {
-        queries.remove(data);
+        jobs.remove(data);
 
         delete data;
     }
+    else replies.remove(reply);
+
+    deleteQuery(query);
+}
+
+void WControllerPlaylistPrivate::deleteQuery(WControllerPlaylistQuery * query)
+{
+    queries.removeOne(query);
+
+    delete query;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1408,12 +1384,16 @@ bool WControllerPlaylistPrivate::getDataTrack(WPlaylist * playlist,
 
     WRemoteData * data = WControllerPlaylist::getDataQuery(loader, query, q);
 
-    WControllerPlaylistQuery queryTrack(query, WControllerPlaylistQuery::TypeTrack);
+    WControllerPlaylistQuery * queryTrack
+        = new WControllerPlaylistQuery(query, WControllerPlaylistQuery::TypeTrack);
 
-    queryTrack.item  = playlist;
-    queryTrack.track = track;
+    queryTrack->data  = data;
+    queryTrack->item  = playlist;
+    queryTrack->track = track;
 
-    queries.insert(data, queryTrack);
+    queries.append(queryTrack);
+
+    jobs.insert(data, queryTrack);
 
     QObject::connect(data, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoaded(WRemoteData *)));
 
@@ -1438,11 +1418,15 @@ bool WControllerPlaylistPrivate::getDataPlaylist(WPlaylist              * playli
 
     WRemoteData * data = WControllerPlaylist::getDataQuery(loader, query, q);
 
-    WControllerPlaylistQuery queryPlaylist(query, WControllerPlaylistQuery::TypePlaylist);
+    WControllerPlaylistQuery * queryPlaylist
+        = new WControllerPlaylistQuery(query, WControllerPlaylistQuery::TypePlaylist);
 
-    queryPlaylist.item = playlist;
+    queryPlaylist->data = data;
+    queryPlaylist->item = playlist;
 
-    queries.insert(data, queryPlaylist);
+    queries.append(queryPlaylist);
+
+    jobs.insert(data, queryPlaylist);
 
     QObject::connect(data, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoaded(WRemoteData *)));
 
@@ -1467,11 +1451,15 @@ bool WControllerPlaylistPrivate::getDataFolder(WLibraryFolder         * folder,
 
     WRemoteData * data = WControllerPlaylist::getDataQuery(loader, query, q);
 
-    WControllerPlaylistQuery queryFolder(query, WControllerPlaylistQuery::TypeFolder);
+    WControllerPlaylistQuery * queryFolder
+        = new WControllerPlaylistQuery(query, WControllerPlaylistQuery::TypeFolder);
 
-    queryFolder.item = folder;
+    queryFolder->data = data;
+    queryFolder->item = folder;
 
-    queries.insert(data, queryFolder);
+    queries.append(queryFolder);
+
+    jobs.insert(data, queryFolder);
 
     QObject::connect(data, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoaded(WRemoteData *)));
 
@@ -1500,17 +1488,11 @@ bool WControllerPlaylistPrivate::getDataRelated(WBackendNet * backend,
 
 void WControllerPlaylistPrivate::abortTrack(WTrack * track)
 {
-    QHashIterator<WRemoteData *, WControllerPlaylistQuery> i(queries);
-
-    while (i.hasNext())
+    foreach (WControllerPlaylistQuery * query, queries)
     {
-        i.next();
-
-        const WControllerPlaylistQuery * query = &(i.value());
-
         if (query->track == track)
         {
-            removeQuery(i.key(), query);
+            removeQuery(query);
 
             return;
         }
@@ -1519,34 +1501,22 @@ void WControllerPlaylistPrivate::abortTrack(WTrack * track)
 
 void WControllerPlaylistPrivate::abortPlaylist(WPlaylist * playlist)
 {
-    QMutableHashIterator<WRemoteData *, WControllerPlaylistQuery> i(queries);
-
-    while (i.hasNext())
+    foreach (WControllerPlaylistQuery * query, queries)
     {
-        i.next();
-
-        WControllerPlaylistQuery * query = &(i.value());
-
         if (query->type == WControllerPlaylistQuery::TypePlaylist && query->item == playlist)
         {
-            removeQuery(i.key(), query);
+            removeQuery(query);
         }
     }
 }
 
 void WControllerPlaylistPrivate::abortFolder(WLibraryFolder * folder)
 {
-    QMutableHashIterator<WRemoteData *, WControllerPlaylistQuery> i(queries);
-
-    while (i.hasNext())
+    foreach (WControllerPlaylistQuery * query, queries)
     {
-        i.next();
-
-        WControllerPlaylistQuery * query = &(i.value());
-
         if (query->type == WControllerPlaylistQuery::TypeFolder && query->item == folder)
         {
-            removeQuery(i.key(), query);
+            removeQuery(query);
         }
     }
 }
@@ -1557,16 +1527,9 @@ void WControllerPlaylistPrivate::abortFolder(WLibraryFolder * folder)
 
 void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 {
-    WControllerPlaylistQuery * query = getQuery(data);
+    WControllerPlaylistQuery * query = jobs.take(data);
 
-    if (query == NULL)
-    {
-        queries.remove(data);
-
-        delete data;
-
-        return;
-    }
+    if (query == NULL) qDebug("QUERY SHOULD NOT BE NULL");
 
     WLibraryItem * item = query->item;
 
@@ -1596,13 +1559,13 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
             {
                 WTrack * track = query->track;
 
-                queries.remove(data);
+                deleteQuery(query);
 
                 track->setState(WTrack::Default);
 
                 playlist->updateTrack(index);
             }
-            else queries.remove(data);
+            else deleteQuery(query);
 
             delete data;
 
@@ -1618,7 +1581,7 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 
                 if (backend) backend->queryFailed(*backendQuery);
 
-                queries.remove(data);
+                deleteQuery(query);
 
                 item->d_func()->setQueryDefault();
 
@@ -1632,7 +1595,7 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 
         if (backend) backend->queryFailed(*backendQuery);
 
-        queries.remove(data);
+        deleteQuery(query);
 
         item->d_func()->setQueryDefault();
 
@@ -1643,7 +1606,7 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 
     if (backend == NULL && backendQuery->target == WBackendNetQuery::TargetDefault)
     {
-        queries.remove(data);
+        deleteQuery(query);
 
         item->d_func()->setQueryDefault();
 
@@ -1656,7 +1619,7 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 
     QIODevice * networkReply = data->takeReply(NULL);
 
-    query->data  = data;
+    //query->data  = data;
     query->reply = networkReply;
 
     replies.insert(networkReply, query);
@@ -1714,7 +1677,7 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice              * device,
     WPlaylist * playlist = query->item->toPlaylist();
     WTrack    * track    = query->track;
 
-    queries.remove(query->data);
+    deleteQuery(query);
 
     int index = playlist->indexOf(track);
 
@@ -1786,7 +1749,7 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
 
     WPlaylist * playlist = query->item->toPlaylist();
 
-    queries.remove(query->data);
+    deleteQuery(query);
 
     if (reply.valid)
     {
@@ -1862,7 +1825,7 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
 
     WLibraryFolder * folder = query->item->toFolder();
 
-    queries.remove(query->data);
+    deleteQuery(query);
 
     if (reply.valid)
     {
@@ -1974,7 +1937,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         else urlTracks.append(url);
     }
 
-    queries.remove(query->data);
+    deleteQuery(query);
 
     playlist->setTitle(data.title);
     playlist->setCover(data.cover);
@@ -2074,7 +2037,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
     if (query->backendQuery.id == 1)
     {
-        queries.remove(query->data);
+        deleteQuery(query);
 
         for (int i = 0; i < folder->count(); i++)
         {
@@ -2121,7 +2084,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
     QString feed = query->backendQuery.url.toString();
 
-    queries.remove(query->data);
+    deleteQuery(query);
 
     WPlaylist * playlist = folder->createLibraryItemAt(0, true)->toPlaylist();
 
@@ -2619,17 +2582,11 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 {
     Q_D(WControllerPlaylist);
 
-    QMutableHashIterator<WRemoteData *, WControllerPlaylistQuery> i(d->queries);
-
-    while (i.hasNext())
+    foreach (WControllerPlaylistQuery * query, d->queries)
     {
-        i.next();
-
-        WControllerPlaylistQuery * query = &(i.value());
-
         WLibraryItem * item = query->item;
 
-        d->removeQuery(i.key(), query);
+        d->removeQuery(query);
 
         if (item)
         {

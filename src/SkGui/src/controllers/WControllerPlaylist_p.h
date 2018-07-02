@@ -118,9 +118,8 @@ public: // Functions
 
     //---------------------------------------------------------------------------------------------
 
-    WControllerPlaylistQuery * getQuery(WRemoteData * data) const;
-
-    void removeQuery(WRemoteData * data, const WControllerPlaylistQuery * query);
+    void removeQuery(WControllerPlaylistQuery * query);
+    void deleteQuery(WControllerPlaylistQuery * query);
 
     //---------------------------------------------------------------------------------------------
 
@@ -182,9 +181,10 @@ public: // Variables
 
     QHash<WBackendNetQuery::Type, WAbstractLoader *> loaders;
 
-    QHash<WRemoteData *, WControllerPlaylistQuery> queries;
+    QList<WControllerPlaylistQuery *> queries;
 
-    QHash<QIODevice *, WControllerPlaylistQuery *> replies;
+    QHash<WRemoteData *, WControllerPlaylistQuery *> jobs;
+    QHash<QIODevice   *, WControllerPlaylistQuery *> replies;
 
     QMetaMethod methodHtml;
     QMetaMethod methodFolder;
