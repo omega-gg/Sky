@@ -160,6 +160,10 @@ public: // Properties
 private:
     W_DECLARE_PRIVATE(WDeclarativeImageScale)
 
+#ifdef QT_LATEST
+    Q_PRIVATE_SLOT(d_func(), void onStart())
+#endif
+
     Q_PRIVATE_SLOT(d_func(), void onScale())
 
     Q_PRIVATE_SLOT(d_func(), void onLoaded(const QImage &))

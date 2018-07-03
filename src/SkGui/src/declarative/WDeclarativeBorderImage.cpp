@@ -506,6 +506,15 @@ void WDeclarativeBorderImageScalePrivate::abortAction()
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_LATEST
+
+void WDeclarativeBorderImageScalePrivate::onStart()
+{
+    if (scalable && scaled == false) timer.start();
+}
+
+#endif
+
 void WDeclarativeBorderImageScalePrivate::onScale()
 {
     Q_Q(WDeclarativeBorderImageScale);
@@ -662,7 +671,7 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QQuickItem * parent)
 #ifdef QT_4
                     d->timer.start();
 #else
-                    QTimer::singleShot(0, &d->timer, SLOT(start()));
+                    QTimer::singleShot(0, this, SLOT(onStart()));
 #endif
                 }
             }

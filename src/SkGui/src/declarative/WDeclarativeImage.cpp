@@ -566,6 +566,15 @@ void WDeclarativeImageScalePrivate::abortAction()
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_LATEST
+
+void WDeclarativeImageScalePrivate::onStart()
+{
+    if (scalable && scaled == false) timer.start();
+}
+
+#endif
+
 void WDeclarativeImageScalePrivate::onScale()
 {
     Q_Q(WDeclarativeImageScale);
@@ -746,7 +755,7 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
 #ifdef QT_4
                     d->timer.start();
 #else
-                    QTimer::singleShot(0, &d->timer, SLOT(start()));
+                    QTimer::singleShot(0, this, SLOT(onStart()));
 #endif
                 }
             }

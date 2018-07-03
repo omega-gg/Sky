@@ -74,6 +74,10 @@ public: // Functions
     void abortAction();
 
 public: // Slots
+#ifdef QT_LATEST
+    void onStart();
+#endif
+
     void onScale();
 
     void onLoaded(const QImage & image);

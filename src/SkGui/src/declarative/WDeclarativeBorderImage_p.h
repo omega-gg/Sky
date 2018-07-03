@@ -86,6 +86,10 @@ public: // Functions
 public: // Slots
     /* virtual */ void onUpdate();
 
+#ifdef QT_LATEST
+    void onStart();
+#endif
+
     void onScale();
 
     void onLoaded(const QImage & image);
