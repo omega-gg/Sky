@@ -218,7 +218,11 @@ void WRemoteTimeout::onTimeout()
 {
     QNetworkReply * reply = qobject_cast<QNetworkReply *> (_data->_reply);
 
-    reply->abort();
+    if (reply)
+    {
+        reply->abort();
+    }
+    else qWarning("WRemoteTimeout::onTimeout: Reply does not exist.");
 }
 
 void WRemoteTimeout::onLoaded()
