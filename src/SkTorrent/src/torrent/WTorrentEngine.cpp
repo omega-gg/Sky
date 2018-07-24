@@ -57,8 +57,8 @@ Q_DECLARE_METATYPE(torrent_handle)
 
 static const int TORRENTENGINE_BLOCK = 16 * 1024; // 16 bytes
 
-static const int TORRENTENGINE_PRIORITY_COUNT    =   3;
-static const int TORRENTENGINE_PRIORITY_INTERVAL = 100;
+static const int TORRENTENGINE_PRIORITY_COUNT    = 3;
+static const int TORRENTENGINE_PRIORITY_INTERVAL = 1;
 
 static const int TORRENTENGINE_INTERVAL        = 1000;
 static const int TORRENTENGINE_INTERVAL_REMOVE =  100;
@@ -2117,7 +2117,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         dht_settings dht;
 
-        //dht.search_branching = 1;
+        dht.search_branching = 10;
 
         dht.max_fail_count = 3;
 
