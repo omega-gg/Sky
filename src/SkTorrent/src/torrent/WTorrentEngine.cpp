@@ -52,6 +52,8 @@ Q_DECLARE_METATYPE(torrent_handle)
 #define LIBTORRENT_LATEST
 #endif
 
+#define W_ID(handle) (unsigned int) handle.native_handle().get()
+
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
@@ -1600,7 +1602,7 @@ void WTorrentEnginePrivate::events()
 
                 WTorrentProgress progress;
 
-                progress.hash = status.handle.id();
+                progress.hash = W_ID(status.handle);
 
                 progress.progress = status.total_done;
 
@@ -1636,7 +1638,7 @@ void WTorrentEnginePrivate::events()
             metadata_received_alert * event = alert_cast<metadata_received_alert>(alert);
 
             QCoreApplication::postEvent(q, new WTorrentEngineHandle(EventMetaData,
-                                                                    event->handle.id()));
+                                                                    W_ID(event->handle)));
         }
         else if (type == block_finished_alert::alert_type)
         {
@@ -1644,7 +1646,7 @@ void WTorrentEnginePrivate::events()
 
             block_finished_alert * event = alert_cast<block_finished_alert>(alert);
 
-            QCoreApplication::postEvent(q, new WTorrentEngineBlock(event->handle.id(),
+            QCoreApplication::postEvent(q, new WTorrentEngineBlock(W_ID(event->handle),
                                                                    event->piece_index,
                                                                    event->block_index));
 
@@ -1656,7 +1658,7 @@ void WTorrentEnginePrivate::events()
             piece_finished_alert * event = alert_cast<piece_finished_alert>(alert);
 
             QCoreApplication::postEvent(q, new WTorrentEngineValue(EventPiece,
-                                                                   event->handle.id(),
+                                                                   W_ID(event->handle),
                                                                    event->piece_index));
         }
         else if (type == save_resume_data_alert::alert_type)
@@ -1665,7 +1667,7 @@ void WTorrentEnginePrivate::events()
 
             save_resume_data_alert * event = alert_cast<save_resume_data_alert>(alert);
 
-            unsigned int hash = event->handle.id();
+            unsigned int hash = W_ID(event->handle);
 
             QString fileName;
 
@@ -1691,7 +1693,7 @@ void WTorrentEnginePrivate::events()
                 = alert_cast<save_resume_data_failed_alert>(alert);
 
             QCoreApplication::postEvent(q, new WTorrentEngineHandle(EventSaved,
-                                                                    event->handle.id()));
+                                                                    W_ID(event->handle)));
         }
         else if (type == torrent_error_alert::alert_type)
         {
@@ -1702,7 +1704,7 @@ void WTorrentEnginePrivate::events()
             QString message = QString::fromStdString(event->message());
 
             QCoreApplication::postEvent(q, new WTorrentEngineValue(EventError,
-                                                                   event->handle.id(), message));
+                                                                   W_ID(event->handle), message));
         }
 
         i++;
@@ -2388,7 +2390,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         const torrent_handle & handle = eventTorrent->value.value<torrent_handle>();
 
-        unsigned int hash = handle.id();
+        unsigned int hash = W_ID(handle);
 
         if (data == NULL)
         {
