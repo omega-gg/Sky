@@ -52,7 +52,7 @@ Q_DECLARE_METATYPE(torrent_handle)
 #define LIBTORRENT_LATEST
 #endif
 
-#define W_ID(handle) (unsigned int) handle.native_handle().get()
+#define W_ID(handle) reinterpret_cast<unsigned int> (handle.native_handle().get())
 
 //-------------------------------------------------------------------------------------------------
 // Static variables
