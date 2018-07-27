@@ -1740,18 +1740,23 @@ void WTorrentEnginePrivate::onRemove()
     {
         qDebug("REMOVE TORRENT");
 
-        torrents.remove(hash);
-
-        if (torrents.isEmpty())
+        if (torrents.value(hash) == data)
         {
-            timerUpdate->stop();
-        }
+            torrents.remove(hash);
 
-        if (magnets.contains(hash))
-        {
-            handle.move_storage(pathMagnets.toStdString());
+            if (torrents.isEmpty())
+            {
+                timerUpdate->stop();
+            }
+
+            if (magnets.contains(hash))
+            {
+                handle.move_storage(pathMagnets.toStdString());
+            }
+            else session->remove_torrent(handle);
         }
-        else session->remove_torrent(handle);
+        // FIXME libtorrent: Sometimes torrents get removed before calling 'remove_torrent'.
+        else qDebug("TORRENT ALREADY REMOVED");
 
         updateCache(data);
     }
