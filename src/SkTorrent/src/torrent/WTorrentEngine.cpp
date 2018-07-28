@@ -52,7 +52,7 @@ Q_DECLARE_METATYPE(torrent_handle)
 #define LIBTORRENT_LATEST
 #endif
 
-#define W_ID(handle) reinterpret_cast<unsigned int> (handle.native_handle().get())
+#define W_ID(handle) (uintptr_t) handle.native_handle().get()
 
 //-------------------------------------------------------------------------------------------------
 // Static variables
@@ -751,7 +751,7 @@ bool WTorrentEnginePrivate::removeSource(WTorrentSource * source)
 
     int id = source->id;
 
-    QHashIterator<unsigned int, WTorrentData *> i(torrents);
+    QHashIterator<uintptr_t, WTorrentData *> i(torrents);
 
     while (i.hasNext())
     {
@@ -1185,7 +1185,7 @@ WTorrentData * WTorrentEnginePrivate::getData(const QUrl & url) const
         }
     }
 
-    QHashIterator<unsigned int, WTorrentData *> i(torrents);
+    QHashIterator<uintptr_t, WTorrentData *> i(torrents);
 
     while (i.hasNext())
     {
@@ -1215,7 +1215,7 @@ WTorrentData * WTorrentEnginePrivate::getData(const sha1_hash & hash) const
         }
     }
 
-    QHashIterator<unsigned int, WTorrentData *> i(torrents);
+    QHashIterator<uintptr_t, WTorrentData *> i(torrents);
 
     while (i.hasNext())
     {
@@ -1244,7 +1244,7 @@ WMagnetData * WTorrentEnginePrivate::getMagnetData(const QUrl & url) const
         }
     }
 
-    QHashIterator<unsigned int, WMagnetData *> i(magnets);
+    QHashIterator<uintptr_t, WMagnetData *> i(magnets);
 
     while (i.hasNext())
     {
@@ -1271,7 +1271,7 @@ WMagnetData * WTorrentEnginePrivate::getMagnetData(WMagnet * magnet) const
         }
     }
 
-    QHashIterator<unsigned int, WMagnetData *> i(magnets);
+    QHashIterator<uintptr_t, WMagnetData *> i(magnets);
 
     while (i.hasNext())
     {
@@ -1322,7 +1322,7 @@ WTorrentItem * WTorrentEnginePrivate::getItem(WTorrent * torrent) const
         }
     }
 
-    QHashIterator<unsigned int, WTorrentData *> i(torrents);
+    QHashIterator<uintptr_t, WTorrentData *> i(torrents);
 
     while (i.hasNext())
     {
@@ -1667,7 +1667,7 @@ void WTorrentEnginePrivate::events()
 
             save_resume_data_alert * event = alert_cast<save_resume_data_alert>(alert);
 
-            unsigned int hash = W_ID(event->handle);
+            uintptr_t hash = W_ID(event->handle);
 
             QString fileName;
 
@@ -1736,7 +1736,7 @@ void WTorrentEnginePrivate::onRemove()
 
     const torrent_handle & handle = data->handle;
 
-    unsigned int hash = data->hash;
+    uintptr_t hash = data->hash;
 
     if (hash)
     {
@@ -1784,13 +1784,13 @@ void WTorrentEnginePrivate::onRemoveMagnet()
 
     timer->deleteLater();
 
-    unsigned int hash = data->hash;
+    uintptr_t hash = data->hash;
 
     if (hash)
     {
         magnets.remove(hash);
 
-        QHashIterator<unsigned int, WTorrentData *> i(torrents);
+        QHashIterator<uintptr_t, WTorrentData *> i(torrents);
 
         while (i.hasNext())
         {
@@ -2390,7 +2390,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         const torrent_handle & handle = eventTorrent->value.value<torrent_handle>();
 
-        unsigned int hash = W_ID(handle);
+        uintptr_t hash = W_ID(handle);
 
         if (data == NULL)
         {
@@ -2536,7 +2536,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         delete item;
 
-        unsigned int hash = data->hash;
+        uintptr_t hash = data->hash;
 
         if (hash == 0) return true;
 
@@ -2723,7 +2723,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
     {
         WTorrentEngineValue * eventTorrent = static_cast<WTorrentEngineValue *> (event);
 
-        unsigned int hash = eventTorrent->hash;
+        uintptr_t hash = eventTorrent->hash;
 
         QVariant value = eventTorrent->value;
 
@@ -2883,7 +2883,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
             delete data;
         }
 
-        QHashIterator<unsigned int, WTorrentData *> k(d->torrents);
+        QHashIterator<uintptr_t, WTorrentData *> k(d->torrents);
 
         while (k.hasNext())
         {
@@ -2892,7 +2892,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
             delete k.value();
         }
 
-        QHashIterator<unsigned int, WMagnetData *> l(d->magnets);
+        QHashIterator<uintptr_t, WMagnetData *> l(d->magnets);
 
         while (l.hasNext())
         {

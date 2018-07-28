@@ -118,7 +118,7 @@ struct WTorrentData
     int fileCount;
 
     torrent_handle handle;
-    unsigned int   hash;
+    uintptr_t      hash;
 
     int blockCount;
 
@@ -139,7 +139,7 @@ struct WMagnetData
     QUrl url;
 
     torrent_handle handle;
-    unsigned int   hash;
+    uintptr_t      hash;
 
     QList<WMagnet *> magnets;
 };
@@ -302,14 +302,14 @@ public: // Variables
     QList<WTorrentData *> datas;
     QList<WMagnetData  *> datasMagnets;
 
-    QHash<unsigned int, WTorrentData *> torrents;
-    QHash<unsigned int, WMagnetData  *> magnets;
+    QHash<uintptr_t, WTorrentData *> torrents;
+    QHash<uintptr_t, WMagnetData  *> magnets;
 
     WListId ids;
 
     QList<WTorrentSource *> sources;
 
-    QHash<unsigned int, QString> fileNames;
+    QHash<uintptr_t, QString> fileNames;
 
     QHash<QTimer *, WTorrentData *> deleteTorrents;
     QHash<QTimer *, WMagnetData  *> deleteMagnets;
@@ -413,14 +413,14 @@ public: // Variables
 class WTorrentEngineHandle : public QEvent
 {
 public:
-    WTorrentEngineHandle(WTorrentEnginePrivate::EventType type, unsigned int hash)
+    WTorrentEngineHandle(WTorrentEnginePrivate::EventType type, uintptr_t hash)
         : QEvent(static_cast<QEvent::Type> (type))
     {
         this->hash = hash;
     }
 
 public: // Variables
-    unsigned int hash;
+    uintptr_t hash;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -430,7 +430,7 @@ public: // Variables
 class WTorrentEngineValue : public WTorrentEngineHandle
 {
 public:
-    WTorrentEngineValue(WTorrentEnginePrivate::EventType type, unsigned int     hash,
+    WTorrentEngineValue(WTorrentEnginePrivate::EventType type, uintptr_t        hash,
                                                                const QVariant & value)
         : WTorrentEngineHandle(type, hash)
     {
@@ -448,7 +448,7 @@ public: // Variables
 class WTorrentEngineBlock : public WTorrentEngineHandle
 {
 public:
-    WTorrentEngineBlock(unsigned int hash, int piece, int block)
+    WTorrentEngineBlock(uintptr_t hash, int piece, int block)
         : WTorrentEngineHandle(WTorrentEnginePrivate::EventBlock, hash)
     {
         this->piece = piece;
@@ -466,7 +466,7 @@ public: // Variables
 
 struct WTorrentProgress
 {
-    unsigned int hash;
+    uintptr_t hash;
 
     qint64 progress;
 
