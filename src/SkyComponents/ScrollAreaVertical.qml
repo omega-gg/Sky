@@ -248,7 +248,7 @@ MouseArea
         onYChanged: onValueUpdated()
     }
 
-    ScrollBarVertical
+    ScrollBar
     {
         id: scrollBar
 
