@@ -111,8 +111,8 @@ List           1.0 List.qml
 ListCompletion 1.0 ListCompletion.qml
 ListContextual 1.0 ListContextual.qml
 
-ScrollAreaVertical 1.0 ScrollAreaVertical.qml
-ScrollBar          1.0 ScrollBar.qml
+ScrollArea 1.0 ScrollArea.qml
+ScrollBar  1.0 ScrollBar.qml
 
 ScrollView       1.0 ScrollView.qml
 ScrollContextual 1.0 ScrollContextual.qml
