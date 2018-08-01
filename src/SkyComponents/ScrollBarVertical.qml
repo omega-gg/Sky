@@ -170,19 +170,11 @@ Item
 
         repeat: true
 
-        running: (buttonUp.pressed || buttonDown.pressed || pPagePressed)
+        running: pPagePressed
 
         onTriggered:
         {
-            if (buttonUp.pressed)
-            {
-                model.scroll(-1);
-            }
-            else if (buttonDown.pressed)
-            {
-                model.scroll(1);
-            }
-            else if (handleArea.pressed)
+            if (handleArea.pressed)
             {
                 if (handleArea.mouseY >= handle.y)
                 {
@@ -207,13 +199,13 @@ Item
     {
         id: handleArea
 
-        anchors.left  : buttonUp.left
-        anchors.right : buttonUp.right
-        anchors.top   : buttonUp.bottom
-        anchors.bottom: buttonDown.top
+        anchors.left  : border.right
+        anchors.right : parent.right
+        anchors.top   : parent.top
+        anchors.bottom: parent.bottom
 
-        anchors.topMargin   : -(buttonUp  .borderBottom)
-        anchors.bottomMargin: -(buttonDown.borderTop)
+        anchors.topMargin   : -st.border_size
+        anchors.bottomMargin: -st.border_size
 
         wheelEnabled: true
 
@@ -302,47 +294,6 @@ Item
                 color: colorBorder
             }
         }
-    }
-
-    ButtonPianoIcon
-    {
-        id: buttonUp
-
-        anchors.left : border.right
-        anchors.right: parent.right
-
-        height: st.scrollBar_buttonSize
-
-        borderRight : 0
-        borderBottom: borderSize
-
-        icon          : st.icon16x16_scrollUp
-        iconSourceSize: st.size16x16
-
-        cursor: Qt.ArrowCursor
-
-        onPressed: model.scroll(-1)
-    }
-
-    ButtonPianoIcon
-    {
-        id: buttonDown
-
-        anchors.left  : border.right
-        anchors.right : parent.right
-        anchors.bottom: parent.bottom
-
-        height: st.scrollBar_buttonSize
-
-        borderRight: 0
-        borderTop  : borderSize
-
-        icon          : st.icon16x16_scrollDown
-        iconSourceSize: st.size16x16
-
-        cursor: Qt.ArrowCursor
-
-        onPressed: model.scroll(1)
     }
 
     BorderVertical
