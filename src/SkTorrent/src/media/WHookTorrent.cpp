@@ -210,11 +210,20 @@ void WTorrentSocket::onRead()
 
     qint64 length = size - position;
 
+    qint64 end;
+
+    // FIXME VLC: Sometimes the position is equal to the size.
+    if (position == size)
+    {
+         end = size;
+    }
+    else end = size - 1;
+
     QString header = "HTTP/1.1 206 Partial Content\r\n"
                      "Accept-Ranges: bytes\r\n"
                      "Content-Length: "      + QString::number(length)   + "\r\n"
                      "Content-Range: bytes " + QString::number(position) + '-'
-                                             + QString::number(size)     + '/'
+                                             + QString::number(end)      + '/'
                                              + QString::number(size)     + "\r\n"
                      "Connection: close\r\n\r\n";
 
