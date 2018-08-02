@@ -587,9 +587,9 @@ void WViewPrivate::updateFlags()
 #else
     if (locked)
     {
-         q->setFlags(flags | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+         q->QQuickWindow::setFlags(flags | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
     }
-    else q->setFlags(flags);
+    else q->QQuickWindow::setFlags(flags);
 #endif
 }
 
