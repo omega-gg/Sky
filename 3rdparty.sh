@@ -26,8 +26,6 @@ archive_win32="http://omega.gg/get/Sky/3rdparty/win32"
 #--------------------------------------------------------------------------------------------------
 # Linux
 
-usr="/usr/lib"
-
 lib32="/usr/lib/i386-linux-gnu"
 lib64="/usr/lib/x86_64-linux-gnu"
 

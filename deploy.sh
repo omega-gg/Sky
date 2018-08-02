@@ -26,6 +26,9 @@ bin5="latest"
 #--------------------------------------------------------------------------------------------------
 # Linux
 
+base32="/lib/i386-linux-gnu"
+base64="/lib/x86_64-linux-gnu"
+
 lib32="/usr/lib/i386-linux-gnu"
 lib64="/usr/lib/x86_64-linux-gnu"
 
@@ -58,8 +61,12 @@ if [ $2 = "linux" ]; then
 
     if [ -d "${lib64}" ]; then
 
+        base="$base64"
+
         lib="$lib64"
     else
+        base="$base32"
+
         lib="$lib32"
     fi
 
@@ -200,7 +207,18 @@ else
 
     elif [ $2 = "linux" ]; then
 
-        sudo cp "$lib"/libpng16.so.16 deploy
+        mkdir deploy/platforms
+        mkdir deploy/xcbglintegrations
+
+        sudo cp "$base"/libz.so.1 deploy
+
+        sudo cp "$lib"/libicudata.so.60 deploy
+        sudo cp "$lib"/libicui18n.so.60 deploy
+        sudo cp "$lib"/libicuuc.so.60   deploy
+
+        sudo cp "$lib"/libpng16.so.16       deploy
+        sudo cp "$lib"/libharfbuzz.so.0     deploy
+        sudo cp "$lib"/libxcb-xinerama.so.0 deploy
 
         cp "$Qt"/lib/libQt5Core.so.5        deploy
         cp "$Qt"/lib/libQt5Gui.so.5         deploy
@@ -213,12 +231,19 @@ else
         cp "$Qt"/lib/libQt5Widgets.so.5     deploy
         cp "$Qt"/lib/libQt5Xml.so.5         deploy
         cp "$Qt"/lib/libQt5XmlPatterns.so.5 deploy
+        cp "$Qt"/lib/libQt5XcbQpa.so.5      deploy
+        cp "$Qt"/lib/libQt5DBus.so.5        deploy
 
         cp "$Qt"/plugins/imageformats/libqsvg.so  deploy/imageformats
         cp "$Qt"/plugins/imageformats/libqjpeg.so deploy/imageformats
 
         cp "$Qt"/qml/QtQuick.2/libqtquick2plugin.so deploy/QtQuick.2
         cp "$Qt"/qml/QtQuick.2/qmldir               deploy/QtQuick.2
+
+        cp "$Qt"/plugins/platforms/libqxcb.so deploy/platforms
+
+        cp "$Qt"/plugins/xcbglintegrations/libqxcb-egl-integration.so deploy/xcbglintegrations
+        cp "$Qt"/plugins/xcbglintegrations/libqxcb-glx-integration.so deploy/xcbglintegrations
     fi
 
     bin="$bin5"
@@ -237,8 +262,8 @@ if [ $2 = "win32" ]; then
 
 elif [ $2 = "linux" ]; then
 
-    sudo cp "$lib"/libssl.so.1.0.0    deploy
-    sudo cp "$lib"/libcrypto.so.1.0.0 deploy
+    sudo cp "$lib"/libssl.so.1.1    deploy
+    sudo cp "$lib"/libcrypto.so.1.1 deploy
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -284,8 +309,6 @@ elif [ $2 = "linux" ]; then
     #sudo cp -r "$VLC"/plugins/video_output deploy/vlc/plugins
 
     #sudo cp "$VLC"/libvlc*.so* deploy
-
-    sudo cp "$lib"/libaudio.so.2.4 deploy/libaudio.so.2
 fi
 
 #--------------------------------------------------------------------------------------------------
