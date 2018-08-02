@@ -173,6 +173,7 @@ else
 
     echo "COPYING Qt5"
 
+    mkdir deploy/platforms
     mkdir deploy/imageformats
     mkdir deploy/QtQuick.2
 
@@ -195,19 +196,16 @@ else
         cp "$Qt"/bin/Qt5XmlPatterns.dll deploy
         cp "$Qt"/bin/Qt5WinExtras.dll   deploy
 
+        cp "$Qt"/plugins/platforms/qwindows.dll deploy/platforms
+
         cp "$Qt"/plugins/imageformats/qsvg.dll  deploy/imageformats
         cp "$Qt"/plugins/imageformats/qjpeg.dll deploy/imageformats
-
-        mkdir deploy/platforms
-
-        cp "$Qt"/plugins/platforms/qwindows.dll deploy/platforms
 
         cp "$Qt"/qml/QtQuick.2/qtquick2plugin.dll deploy/QtQuick.2
         cp "$Qt"/qml/QtQuick.2/qmldir             deploy/QtQuick.2
 
     elif [ $2 = "linux" ]; then
 
-        mkdir deploy/platforms
         mkdir deploy/xcbglintegrations
 
         sudo cp "$base"/libz.so.1 deploy
@@ -234,16 +232,16 @@ else
         cp "$Qt"/lib/libQt5XcbQpa.so.5      deploy
         cp "$Qt"/lib/libQt5DBus.so.5        deploy
 
+        cp "$Qt"/plugins/platforms/libqxcb.so deploy/platforms
+
         cp "$Qt"/plugins/imageformats/libqsvg.so  deploy/imageformats
         cp "$Qt"/plugins/imageformats/libqjpeg.so deploy/imageformats
 
-        cp "$Qt"/qml/QtQuick.2/libqtquick2plugin.so deploy/QtQuick.2
-        cp "$Qt"/qml/QtQuick.2/qmldir               deploy/QtQuick.2
-
-        cp "$Qt"/plugins/platforms/libqxcb.so deploy/platforms
-
         cp "$Qt"/plugins/xcbglintegrations/libqxcb-egl-integration.so deploy/xcbglintegrations
         cp "$Qt"/plugins/xcbglintegrations/libqxcb-glx-integration.so deploy/xcbglintegrations
+
+        cp "$Qt"/qml/QtQuick.2/libqtquick2plugin.so deploy/QtQuick.2
+        cp "$Qt"/qml/QtQuick.2/qmldir               deploy/QtQuick.2
     fi
 
     bin="$bin5"

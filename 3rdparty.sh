@@ -347,6 +347,8 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
                 cd -
             fi
 
+            mkdir -p "$Qt"/plugins/imageformats
+
             sudo cp "$lib"/libQtCore.so.$Qt4_version        "$Qt"/lib/libQtCore.so.4
             sudo cp "$lib"/libQtGui.so.$Qt4_version         "$Qt"/lib/libQtGui.so.4
             sudo cp "$lib"/libQtDeclarative.so.$Qt4_version "$Qt"/lib/libQtDeclarative.so.4
@@ -360,12 +362,16 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
             sudo cp "$lib"/libQtWebKit.so.$QtWebkit_version "$Qt"/lib/libQtWebKit.so.4
 
-            mkdir -p "$Qt"/plugins/imageformats
-
             sudo cp "$lib"/qt4/plugins/imageformats/libqsvg.so  "$Qt"/plugins/imageformats
             sudo cp "$lib"/qt4/plugins/imageformats/libqjpeg.so "$Qt"/plugins/imageformats
         else
             mkdir -p "$Qt"/lib
+
+            mkdir -p "$Qt"/plugins/platforms
+            mkdir -p "$Qt"/plugins/imageformats
+            mkdir -p "$Qt"/plugins/xcbglintegrations
+
+            mkdir -p "$Qt"/qml/QtQuick.2
 
             sudo cp "$lib"/libQt5Core.so.$Qt5_version        "$Qt"/lib/libQt5Core.so.5
             sudo cp "$lib"/libQt5Gui.so.$Qt5_version         "$Qt"/lib/libQt5Gui.so.5
@@ -378,13 +384,19 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
             sudo cp "$lib"/libQt5Widgets.so.$Qt5_version     "$Qt"/lib/libQt5Widgets.so.5
             sudo cp "$lib"/libQt5Xml.so.$Qt5_version         "$Qt"/lib/libQt5Xml.so.5
             sudo cp "$lib"/libQt5XmlPatterns.so.$Qt5_version "$Qt"/lib/libQt5XmlPatterns.so.5
+            sudo cp "$lib"/libQt5XcbQpa.so.$Qt5_version      "$Qt"/lib/libQt5XcbQpa.so.5
+            sudo cp "$lib"/libQt5DBus.so.$Qt5_version        "$Qt"/lib/libQt5DBus.so.5
 
-            mkdir -p "$Qt"/plugins/imageformats
+            sudo cp "$lib"/qt5/plugins/platforms/libqxcb.so "$Qt"/plugins/platforms
 
             sudo cp "$lib"/qt5/plugins/imageformats/libqsvg.so  "$Qt"/plugins/imageformats
             sudo cp "$lib"/qt5/plugins/imageformats/libqjpeg.so "$Qt"/plugins/imageformats
 
-            mkdir -p "$Qt"/qml/QtQuick.2
+            sudo cp "$lib"/qt5/plugins/xcbglintegrations/libqxcb-egl-integration.so \
+                    "$Qt"/plugins/xcbglintegrations
+
+            sudo cp "$lib"/qt5/plugins/xcbglintegrations/libqxcb-glx-integration.so \
+                    "$Qt"/plugins/xcbglintegrations
 
             sudo cp "$lib"/qt5/qml/QtQuick.2/libqtquick2plugin.so "$Qt"/qml/QtQuick.2
             sudo cp "$lib"/qt5/qml/QtQuick.2/qmldir               "$Qt"/qml/QtQuick.2
