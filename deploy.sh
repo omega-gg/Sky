@@ -291,7 +291,7 @@ if [ $2 = "win32" ]; then
 
     cp "$VLC"/libvlc*.dll deploy
 
-elif [ $2 = "linux" ]; then
+#elif [ $2 = "linux" ]; then
 
     #mkdir -p deploy/vlc/plugins
 
