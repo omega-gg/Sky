@@ -405,12 +405,6 @@ Item
     //---------------------------------------------------------------------------------------------
     // Panel
 
-    property variant panel_shadowPadding: dp16
-
-    property url panel_shadowSource: "pictures/panelShadow.png"
-
-    property variant panel_shadowBorderSize: dp18
-
     property color panel_color: "#404040"
 
     //---------------------------------------------------------------------------------------------
@@ -731,13 +725,10 @@ Item
     property color buttonOverlay_colorBorderA: icon_colorA
     property color buttonOverlay_colorBorderB: icon_colorB
 
-    property color buttonOverlay_colorStyle: "#161616"
-
     property alias buttonOverlay_filterDefault: buttonOverlay_filterDefault
     property alias buttonOverlay_filterHover  : buttonOverlay_filterHover
     property alias buttonOverlay_filterPress  : buttonOverlay_filterPress
     property alias buttonOverlay_filterBorder : buttonOverlay_filterBorder
-    property alias buttonOverlay_filterStyle  : buttonOverlay_filterStyle
 
     ImageColorFilter
     {
@@ -781,13 +772,6 @@ Item
             ScaleGradientStop { position: 0.0; color: buttonOverlay_colorBorderA }
             ScaleGradientStop { position: 1.0; color: buttonOverlay_colorBorderB }
         }
-    }
-
-    ImageColorFilter
-    {
-        id: buttonOverlay_filterStyle
-
-        color: buttonOverlay_colorStyle
     }
 
     //---------------------------------------------------------------------------------------------
@@ -1136,9 +1120,6 @@ Item
 
     property int baseLineEdit_maximumLength: 1000
 
-    property real baseLineEdit_shadowOpacityA: 0.6
-    property real baseLineEdit_shadowOpacityB: 0.8
-
     property color baseLineEdit_colorCursor: "#161616"
 
     property color baseLineEdit_colorSelection    : "#008cdc"
@@ -1194,9 +1175,10 @@ Item
     //---------------------------------------------------------------------------------------------
     // LineEditBox
 
-    property int lineEditBox_shadowHeight: dp6
-
     property int lineEditBox_focusSize: dp2
+
+    property color lineEditBox_colorA: "#c8c8c8"
+    property color lineEditBox_colorB: "white"
 
     //---------------------------------------------------------------------------------------------
     // List

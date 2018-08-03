@@ -26,7 +26,9 @@ BaseLineEdit
     //---------------------------------------------------------------------------------------------
     // Style
 
-    property color color     : st.lineEdit_color
+    property color colorA: st.lineEditBox_colorA
+    property color colorB: st.lineEditBox_colorB
+
     property color colorHover: st.lineEdit_colorHover
 
     //---------------------------------------------------------------------------------------------
@@ -39,7 +41,6 @@ BaseLineEdit
     //---------------------------------------------------------------------------------------------
 
     property alias background: background
-    property alias shadow    : shadow
 
     property alias itemFocus: itemFocus
     property alias borders  : borders
@@ -63,23 +64,22 @@ BaseLineEdit
 
         z: -1
 
-        color: (pEnabled) ? colorHover
-                          : lineEditBox.color
-    }
+        gradient: Gradient
+        {
+            GradientStop
+            {
+                position: 0.0
 
-    RectangleShadow
-    {
-        id: shadow
+                color: (pEnabled) ? colorHover : colorA
+            }
 
-        anchors.left : parent.left
-        anchors.right: parent.right
+            GradientStop
+            {
+                position: 1.0
 
-        height: st.lineEditBox_shadowHeight
-
-        opacity: (pEnabled) ? st.baseLineEdit_shadowOpacityB
-                            : st.baseLineEdit_shadowOpacityA
-
-        direction: Sk.Down
+                color: (pEnabled) ? colorHover : colorB
+            }
+        }
     }
 
     RectangleBorders

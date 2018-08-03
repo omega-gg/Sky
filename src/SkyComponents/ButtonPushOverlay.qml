@@ -29,12 +29,10 @@ ButtonPushIcon
     //---------------------------------------------------------------------------------------------
     // Style
 
-    filterDefault   : st.buttonOverlay_filterDefault
-    filterHover     : st.buttonOverlay_filterHover
-    filterPress     : st.buttonOverlay_filterPress
-    filterBorder    : st.buttonOverlay_filterBorder
-    filterIconShadow: st.buttonOverlay_filterStyle
-    filterIconSunken: st.buttonOverlay_filterStyle
+    filterDefault: st.buttonOverlay_filterDefault
+    filterHover  : st.buttonOverlay_filterHover
+    filterPress  : st.buttonOverlay_filterPress
+    filterBorder : st.buttonOverlay_filterBorder
 
     //---------------------------------------------------------------------------------------------
     // Animations

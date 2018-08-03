@@ -33,11 +33,6 @@ MouseArea
     property bool enableFocus: true
 
     //---------------------------------------------------------------------------------------------
-    // Style
-
-    property variant borderShadow: st.panel_borderShadow
-
-    //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
@@ -61,13 +56,11 @@ MouseArea
     property alias borderSizeWidth : borders.sizeWidth
     property alias borderSizeHeight: borders.sizeHeight
 
-    property alias shadowOpacity    : shadow    .opacity
     property alias backgroundOpacity: background.opacity
 
     //---------------------------------------------------------------------------------------------
 
     property alias background: background
-    property alias shadow    : shadow
 
     property alias borders: borders
 
@@ -120,29 +113,6 @@ MouseArea
     //---------------------------------------------------------------------------------------------
     // Childs
     //---------------------------------------------------------------------------------------------
-
-    BorderImageBack
-    {
-        id: shadow
-
-        anchors.fill: parent
-
-        padding: st.panel_shadowPadding
-
-        source: st.panel_shadowSource
-
-        sourceSize: st.size128x128
-
-        borderSize: st.panel_shadowBorderSize
-
-        Behavior on opacity
-        {
-            PropertyAnimation
-            {
-                duration: (animate) ? st.duration_normal : 0
-            }
-        }
-    }
 
     Rectangle
     {
