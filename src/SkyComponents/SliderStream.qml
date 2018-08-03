@@ -198,13 +198,11 @@ Item
 
         paddingRight: (sk.osLinux) ? st.dp10 : st.dp9
 
-        enabled: foreground.visible
+        enabled: false
 
         text: controllerPlaylist.getPlayerTime(value, 7)
 
         itemText.visible: buttonRight.itemText.visible
-
-        onClicked: reset()
     }
 
     ButtonStream
