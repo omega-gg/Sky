@@ -50,13 +50,15 @@ struct WBackendTorrentItem
 
     QString path;
     QString name;
+
+    int index;
 };
 
 //-------------------------------------------------------------------------------------------------
 
 inline bool sort(const WBackendTorrentItem & itemA, const WBackendTorrentItem & itemB)
 {
-    return (itemA.name.toLower() < itemB.name.toLower());
+    return (itemA.index < itemB.index);
 }
 
 //=================================================================================================
@@ -81,6 +83,8 @@ public: // Functions
     bool applyMagnet (WBackendNetFolder * reply, const QUrl & url, const QString & string) const;
 
     void applyQuery(WBackendNetFolder * reply, QStringList * urls, int id) const;
+
+    int getIndex(const QString & name) const;
 
     QUrl getUrl(const QString & q) const;
 
@@ -140,7 +144,8 @@ QList<WBackendTorrentItem> WBackendTorrentPrivate::extractItems(const QString & 
 
             if (name.isEmpty() == false)
             {
-                item.name = name;
+                item.name  = name;
+                item.index = getIndex(name);
 
                 items.append(item);
             }
@@ -177,7 +182,8 @@ int WBackendTorrentPrivate::extractItem(WBackendTorrentItem * item, const QStrin
     {
         if (data.at(at) == 'e')
         {
-            item->name = string;
+            item->name  = string;
+            item->index = getIndex(string);
 
             at++;
         }
@@ -269,6 +275,28 @@ void WBackendTorrentPrivate::applyQuery(WBackendNetFolder * reply,
     nextQuery->skipError = true;
 
     nextQuery->timeout = BACKENDTORRENT_TIMEOUT;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+int WBackendTorrentPrivate::getIndex(const QString & name) const
+{
+    QString string;
+
+    for (int i = 0; i < name.length(); i++)
+    {
+        QChar character = name.at(i);
+
+        if (character.isDigit() == false) break;
+
+        string.append(character);
+    }
+
+    if (string.isEmpty())
+    {
+         return -1;
+    }
+    else return string.toInt();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -570,8 +598,9 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
     {
         WBackendTorrentItem item;
 
-        item.id   = 1;
-        item.name = name;
+        item.id    = 1;
+        item.name  = name;
+        item.index = -1;
 
         items.append(item);
     }
@@ -586,7 +615,10 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
     {
         QList<WBackendTorrentItem> list = d->getFolder(&items);
 
-        qSort(list.begin(), list.end(), sort);
+        if (list.first().index != -1)
+        {
+            qSort(list.begin(), list.end(), sort);
+        }
 
         foreach (const WBackendTorrentItem & item, list)
         {
