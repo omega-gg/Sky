@@ -1372,7 +1372,19 @@ void WTorrentEnginePrivate::selectFile(WTorrentItem * item) const
     }
     else files[item->index] = 1;
 
-    data->handle.prioritize_files(files);
+    // FIXME libtorrent: Sometimes we have to pause and resume torrents.
+    if (data->items.count() == 1)
+    {
+        qDebug("TORRENT RESUME");
+
+        torrent_handle * handle = &(data->handle);
+
+        handle->prioritize_files(files);
+
+        handle->pause ();
+        handle->resume();
+    }
+    else data->handle.prioritize_files(files);
 }
 
 void WTorrentEnginePrivate::unselectFile(WTorrentItem * item) const
