@@ -566,16 +566,16 @@ WallBookmarkTrack
             {
                 position: 0.0
 
-                color: (playerCover.visible) ? defaultColorA
-                                             : st.wallVideo_colorPlayer
+                color: (playerCover.isSourceDefault) ? defaultColorA
+                                                     : st.wallVideo_colorPlayer
             }
 
             GradientStop
             {
                 position: 1.0
 
-                color: (playerCover.visible) ? defaultColorB
-                                             : st.wallVideo_colorPlayer
+                color: (playerCover.isSourceDefault) ? defaultColorB
+                                                     : st.wallVideo_colorPlayer
             }
         }
 
@@ -588,8 +588,6 @@ WallBookmarkTrack
             anchors.leftMargin: (isSourceDefault) ? logoMargin : 0
 
             anchors.rightMargin: anchors.leftMargin
-
-            visible: (isSourceDefault == false || pAudio)
 
             source:
             {
