@@ -56,7 +56,12 @@ struct WBackendTorrentItem
 
 //-------------------------------------------------------------------------------------------------
 
-inline bool sort(const WBackendTorrentItem & itemA, const WBackendTorrentItem & itemB)
+inline bool sortA(const WBackendTorrentItem & itemA, const WBackendTorrentItem & itemB)
+{
+    return (itemA.name.toLower() < itemB.name.toLower());
+}
+
+inline bool sortB(const WBackendTorrentItem & itemA, const WBackendTorrentItem & itemB)
 {
     return (itemA.index < itemB.index);
 }
@@ -615,10 +620,11 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
     {
         QList<WBackendTorrentItem> list = d->getFolder(&items);
 
-        if (list.first().index != -1)
+        if (list.first().index == -1)
         {
-            qSort(list.begin(), list.end(), sort);
+             qSort(list.begin(), list.end(), sortA);
         }
+        else qSort(list.begin(), list.end(), sortB);
 
         foreach (const WBackendTorrentItem & item, list)
         {
