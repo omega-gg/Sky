@@ -386,7 +386,7 @@ int WDeclarativeTextSvgPrivate::getWidth(const QFontMetrics & metrics, const QSt
 #ifdef QT_4
         return metrics.width(text) * 1.01;
 #else
-        return metrics.width(text) + (metrics.height() * 0.2);
+        return metrics.width(text)/* + (metrics.height() * 0.2)*/;
 #endif
     }
     else return metrics.width(text);
