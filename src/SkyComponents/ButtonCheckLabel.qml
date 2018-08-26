@@ -47,7 +47,7 @@ Item
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: label.getPreferredWidth() + button.anchors.leftMargin + button.width
+    width: label.getWidth() + button.anchors.leftMargin + button.width
 
     height: st.buttonCheckLabel_height
 

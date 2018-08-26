@@ -48,7 +48,7 @@ BaseLabelRound
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: getPreferredWidth()
+    width: getWidth()
 
     height: st.labelRound_height
 
@@ -56,7 +56,7 @@ BaseLabelRound
     // Functions
     //---------------------------------------------------------------------------------------------
 
-    function getPreferredWidth()
+    function getWidth()
     {
         var size = sk.textWidth(font, text) + paddingLeft + paddingRight;
 

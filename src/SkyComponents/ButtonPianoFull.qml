@@ -86,7 +86,7 @@ BaseButtonPiano
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: getPreferredWidth()
+    width: getWidth()
 
     height: st.buttonPiano_height + borderSizeHeight
 
@@ -94,7 +94,7 @@ BaseButtonPiano
     // Functions
     //---------------------------------------------------------------------------------------------
 
-    function getPreferredWidth()
+    function getWidth()
     {
         var size;
 

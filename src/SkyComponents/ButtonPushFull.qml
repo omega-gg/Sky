@@ -81,7 +81,7 @@ BaseButtonPush
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: getPreferredWidth()
+    width: getWidth()
 
     height: st.buttonPush_height
 
@@ -89,7 +89,7 @@ BaseButtonPush
     // Functions
     //---------------------------------------------------------------------------------------------
 
-    function getPreferredWidth()
+    function getWidth()
     {
         var size;
 

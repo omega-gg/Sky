@@ -121,8 +121,6 @@ ScrollCompletion 1.0 ScrollCompletion.qml
 ScrollerVertical 1.0 ScrollerVertical.qml
 ScrollerList     1.0 ScrollerList.qml
 
-SizeHint 1.0 SizeHint.qml
-
 Slider       1.0 Slider.qml
 SliderVolume 1.0 SliderVolume.qml
 SliderStream 1.0 SliderStream.qml
