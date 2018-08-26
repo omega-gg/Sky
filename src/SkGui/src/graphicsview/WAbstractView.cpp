@@ -184,13 +184,13 @@ void WAbstractViewPrivate::applyFullScreen()
 {
     Q_Q(WAbstractView);
 
-#ifdef QT_4
     // FIXME Windows: The task bar overlaps the window.
     if (isWindows10())
     {
         SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) & ~WS_CAPTION);
     }
 
+#ifdef QT_4
     QRect geometry = qApp->desktop()->screenGeometry(q);
 #else
     QRect geometry = q->screen()->geometry();
@@ -207,13 +207,11 @@ void WAbstractViewPrivate::restoreFullScreen()
 
     q->setGeometry(rect);
 
-#ifdef QT_4
     // FIXME Windows: The task bar overlaps the window.
     if (isWindows10())
     {
         SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) | WS_CAPTION);
     }
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
