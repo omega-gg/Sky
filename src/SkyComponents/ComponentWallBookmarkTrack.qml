@@ -87,7 +87,7 @@ ComponentWall
 
     image: item.coverShot
 
-    icon: (item.cover == "") ? item.coverShot
+    icon: (item.cover == "") ? item.videoShot
                              : item.cover
 
 //#QT_4
@@ -111,7 +111,7 @@ ComponentWall
 
     iconFillMode: Image.PreserveAspectCrop
 
-    iconCache: (item.cover != "" && item.coverShot != "")
+    iconCache: (item.cover != "")
 
     acceptedButtons: Qt.NoButton
 

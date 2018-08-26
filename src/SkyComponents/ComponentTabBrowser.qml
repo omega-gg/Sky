@@ -67,8 +67,8 @@ ComponentTab
     isCurrent: (item == parent.currentTab)
 //#END
 
-    icon: (item.cover == "") ? item.coverShot
-                             : item.cover
+    icon: (item.videoShot == "") ? item.cover
+                                 : item.videoShot
 
 //#QT_4
     iconDefault: tabsBrowser.iconDefault
@@ -91,7 +91,7 @@ ComponentTab
 
     iconFillMode: Image.PreserveAspectCrop
 
-    iconCache: (item.cover != "" && item.coverShot != "")
+    iconCache: (item.videoShot == "")
 
     acceptedButtons: Qt.NoButton
 
