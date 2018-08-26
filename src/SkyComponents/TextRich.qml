@@ -26,8 +26,8 @@ TextBase
     //---------------------------------------------------------------------------------------------
     // Style
 
-    property color colorLink     : st.textRich_colorLink
-    property color colorLinkHover: st.textRich_colorLinkHover
+    property color colorLink     : st.text_colorLink
+    property color colorLinkHover: st.text_colorLinkHover
 
     //---------------------------------------------------------------------------------------------
     // Private

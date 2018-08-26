@@ -65,8 +65,8 @@ Item
 
     property real buttonBox_opacity: 0.6
 
-    property color buttonBox_color     : st.textRich_colorLink
-    property color buttonBox_colorHover: st.textRich_colorLinkHover
+    property color buttonBox_color     : st.text_colorLink
+    property color buttonBox_colorHover: st.text_colorLinkHover
 
     //---------------------------------------------------------------------------------------------
     // Slides

@@ -157,10 +157,12 @@ Item
 
     property real text_opacityDisable: 0.6
 
-    property color text_color       : text1_color
-    property color text_colorCurrent: "#00b4ff"
-    property color text_colorShadow : text1_colorShadow
-    property color text_colorSunken : text1_colorSunken
+    property color text_color         : text1_color
+    property color text_colorCurrent  : "#00b4ff"
+    property color text_colorShadow   : text1_colorShadow
+    property color text_colorSunken   : text1_colorSunken
+    property color text_colorLink     : "#008cdc"
+    property color text_colorLinkHover: "#00b4ff"
 
     property color text1_color      : "white"
     property color text1_colorShadow: "#161616"
@@ -177,12 +179,6 @@ Item
     property color text4_color      : "#484848"
     property color text4_colorShadow: "#dcdcdc"
     property color text4_colorSunken: "#f0f0f0"
-
-    //---------------------------------------------------------------------------------------------
-    // TextRich
-
-    property color textRich_colorLink     : "#008cdc"
-    property color textRich_colorLinkHover: "#00b4ff"
 
     //---------------------------------------------------------------------------------------------
     // TextDate
