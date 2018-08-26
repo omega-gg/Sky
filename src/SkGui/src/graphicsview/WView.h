@@ -640,11 +640,16 @@ private:
     W_DECLARE_PRIVATE(WView)
 
     Q_PRIVATE_SLOT(d_func(), void onGeometryChanged())
+
 #ifdef QT_4
     //Q_PRIVATE_SLOT(d_func(), void onLeaveTimeout())
 #endif
-    Q_PRIVATE_SLOT(d_func(), void onFadeTimeout         ())
-    Q_PRIVATE_SLOT(d_func(), void onIdleTimeout         ())
+
+    Q_PRIVATE_SLOT(d_func(), void onFadeTimeout())
+    Q_PRIVATE_SLOT(d_func(), void onIdleTimeout())
+
+    Q_PRIVATE_SLOT(d_func(), void onClose())
+
     Q_PRIVATE_SLOT(d_func(), void onCursorVisibleChanged())
 
     friend class WControllerView;

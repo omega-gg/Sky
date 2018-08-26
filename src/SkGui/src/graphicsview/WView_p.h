@@ -144,6 +144,8 @@ public: // Slots
     void onFadeTimeout();
     void onIdleTimeout();
 
+    void onClose();
+
     void onCursorVisibleChanged();
 
 public: // Variables

@@ -482,6 +482,8 @@ void WViewPrivate::init(QQuickItem * item)
     QObject::connect(&fadeTimer, SIGNAL(timeout()), q, SLOT(onFadeTimeout()));
     QObject::connect(&idleTimer, SIGNAL(timeout()), q, SLOT(onIdleTimeout()));
 
+    QObject::connect(sk, SIGNAL(aboutToQuit()), q, SLOT(onClose()));
+
     QObject::connect(sk, SIGNAL(cursorVisibleChanged()), q, SLOT(onCursorVisibleChanged()));
 }
 
@@ -1286,6 +1288,21 @@ void WViewPrivate::onFadeTimeout()
 void WViewPrivate::onIdleTimeout()
 {
     Q_Q(WView); q->setIdle(true);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WViewPrivate::onClose()
+{
+    if (closed) return;
+
+    Q_Q(WView);
+
+    closed = true;
+
+    emit q->beforeClose();
+
+    if (fade) emit q->fadeOut();
 }
 
 //-------------------------------------------------------------------------------------------------
