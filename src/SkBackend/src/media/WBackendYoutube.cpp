@@ -340,7 +340,7 @@ WBackendYoutube::WBackendYoutube() : WBackendNet(new WBackendYoutubePrivate(this
 // WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendYoutube::isHub() const
+/* Q_INVOKABLE virtual */ bool WBackendYoutube::hasSearch() const
 {
     return true;
 }

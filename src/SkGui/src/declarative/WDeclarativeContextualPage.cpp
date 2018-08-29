@@ -69,8 +69,6 @@ public: // Variables
 
     QList<WDeclarativeContextualItem> items;
 
-    QList<WDeclarativeContextualPage *> pages;
-
     int currentId;
 
 protected:
@@ -208,25 +206,25 @@ void WDeclarativeContextualPage::unregisterWatcher(WContextualPageWatcher * watc
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WDeclarativeContextualPage::addItem(const QString & title,
+/* Q_INVOKABLE */ void WDeclarativeContextualPage::addItem(ItemType        type,
+                                                           int             id,
+                                                           const QString & title,
                                                            const QUrl    & icon,
                                                            const QSizeF  & iconSize,
-                                                           ItemType        type,
-                                                           int             id,
                                                            bool            visible,
                                                            bool            enabled)
 {
     Q_D(WDeclarativeContextualPage);
 
-    insertItem(d->items.count(), title, icon, iconSize, type, id, visible, enabled);
+    insertItem(d->items.count(), type, id, title, icon, iconSize, visible, enabled);
 }
 
 /* Q_INVOKABLE */ void WDeclarativeContextualPage::insertItem(int             index,
+                                                              ItemType        type,
+                                                              int             id,
                                                               const QString & title,
                                                               const QUrl    & icon,
                                                               const QSizeF  & iconSize,
-                                                              ItemType        type,
-                                                              int             id,
                                                               bool            visible,
                                                               bool            enabled)
 {
@@ -539,120 +537,7 @@ const WDeclarativeContextualItem * WDeclarativeContextualPage::currentItemPointe
 }
 
 //-------------------------------------------------------------------------------------------------
-// Pages
-
-/* Q_INVOKABLE */ void WDeclarativeContextualPage::addPage(WDeclarativeContextualPage * page)
-{
-    Q_D(WDeclarativeContextualPage);
-
-    if (d->pages.contains(page)) return;
-
-    if (page->parent() == NULL) page->setParent(this);
-
-    d->pages.append(page);
-}
-
-/* Q_INVOKABLE */ int WDeclarativeContextualPage::pageCount() const
-{
-    Q_D(const WDeclarativeContextualPage); return d->pages.count();
-}
-
-/* Q_INVOKABLE */ WDeclarativeContextualPage * WDeclarativeContextualPage::pageAt(int index)
-{
-    Q_D(WDeclarativeContextualPage);
-
-    if (index < 0 || index >= d->pages.count()) return NULL;
-
-    return d->pages.at(index);
-}
-
-/* Q_INVOKABLE */ void WDeclarativeContextualPage::clearPages()
-{
-    Q_D(WDeclarativeContextualPage);
-
-    foreach (WDeclarativeContextualPage * page, d->pages) delete page;
-
-    d->pages.clear();
-}
-
-//-------------------------------------------------------------------------------------------------
-// Declarative
-//-------------------------------------------------------------------------------------------------
-
-#ifdef QT_4
-/* static */
-void WDeclarativeContextualPage::childrenAppend(QDeclarativeListProperty
-                                                <WDeclarativeContextualPage> * property,
-                                                WDeclarativeContextualPage * item)
-#else
-/* static */
-void WDeclarativeContextualPage::childrenAppend(QQmlListProperty
-                                                <WDeclarativeContextualPage> * property,
-                                                WDeclarativeContextualPage * item)
-#endif
-{
-    static_cast<WDeclarativeContextualPage *> (property->object)->addPage(item);
-}
-
-#ifdef QT_4
-/* static */
-void WDeclarativeContextualPage::childrenClear(QDeclarativeListProperty
-                                               <WDeclarativeContextualPage> * property)
-#else
-/* static */
-void WDeclarativeContextualPage::childrenClear(QQmlListProperty
-                                               <WDeclarativeContextualPage> * property)
-#endif
-{
-    static_cast<WDeclarativeContextualPage *> (property->object)->clearPages();
-}
-
-#ifdef QT_4
-/* static */
-int WDeclarativeContextualPage::childrenCount(QDeclarativeListProperty
-                                              <WDeclarativeContextualPage> * property)
-#else
-/* static */
-int WDeclarativeContextualPage::childrenCount(QQmlListProperty
-                                              <WDeclarativeContextualPage> * property)
-#endif
-{
-    return static_cast<WDeclarativeContextualPage *> (property->object)->pageCount();
-}
-
-#ifdef QT_4
-/* static */ WDeclarativeContextualPage *
-WDeclarativeContextualPage::childrenAt(QDeclarativeListProperty
-                                       <WDeclarativeContextualPage> * property, int index)
-#else
-/* static */ WDeclarativeContextualPage *
-WDeclarativeContextualPage::childrenAt(QQmlListProperty
-                                       <WDeclarativeContextualPage> * property, int index)
-#endif
-{
-    return static_cast<WDeclarativeContextualPage *> (property->object)->pageAt(index);
-}
-
-//-------------------------------------------------------------------------------------------------
 // Properties
-//-------------------------------------------------------------------------------------------------
-
-#ifdef QT_4
-QDeclarativeListProperty<WDeclarativeContextualPage> WDeclarativeContextualPage::pages()
-#else
-QQmlListProperty<WDeclarativeContextualPage> WDeclarativeContextualPage::pages()
-#endif
-{
-#ifdef QT_4
-    return QDeclarativeListProperty<WDeclarativeContextualPage>(this, 0,
-                                                                childrenAppend, childrenCount,
-                                                                childrenAt, childrenClear);
-#else
-    return QQmlListProperty<WDeclarativeContextualPage>(this, 0, childrenAppend, childrenCount,
-                                                                 childrenAt, childrenClear);
-#endif
-}
-
 //-------------------------------------------------------------------------------------------------
 
 QVariantList WDeclarativeContextualPage::values() const
@@ -698,9 +583,9 @@ void WDeclarativeContextualPage::setValues(const QVariantList & values)
 
         if (id.isValid())
         {
-             addItem(title, icon, iconSize, type, id.toInt());
+             addItem(type, id.toInt(), title, icon, iconSize);
         }
-        else addItem(title, icon, iconSize, type);
+        else addItem(type, -1, title, icon, iconSize);
     }
 
     emit valuesChanged(d->values);

@@ -34,7 +34,16 @@ MouseArea
     property alias textMargin: itemText.leftMargin
 
     //---------------------------------------------------------------------------------------------
+
+    property alias background: background
+
+    property alias itemIcon: itemIcon
+    property alias itemText: itemText
+
+    //---------------------------------------------------------------------------------------------
     // Style
+
+    property alias gradient: background.gradient
 
     property alias filter: itemIcon.filter
 
@@ -146,7 +155,7 @@ MouseArea
 
         style: Sk.IconSunken
 
-        filter: listContextual.filterIcon
+        filter: filterIcon
     }
 
     TextBase
@@ -168,6 +177,9 @@ MouseArea
         opacity: (isEnabled) ? 1.0 : st.text_opacityDisable
 
         text: title
+
+        color: (isCurrent || containsMouse) ? st.itemList_colorTextHover
+                                            : st.itemList_colorText
 
         style: Text.Sunken
     }

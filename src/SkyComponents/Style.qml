@@ -62,10 +62,11 @@ Item
     property int dp38: 38 * ratio
 
     property int dp40: 40 * ratio
-    property int dp42: 42 * ratio
     property int dp44: 44 * ratio
     property int dp46: 46 * ratio
     property int dp48: 48 * ratio
+
+    property int dp56: 56 * ratio
 
     property int dp60: 60 * ratio
     property int dp64: 64 * ratio

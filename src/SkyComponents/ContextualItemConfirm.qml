@@ -232,7 +232,7 @@ Item
 
             style: Sk.IconSunken
 
-            filter: listContextual.filterIcon
+            filter: filterIcon
         }
 
         TextBase
@@ -249,6 +249,9 @@ Item
             opacity: (isEnabled) ? 1.0 : st.text_opacityDisable
 
             text: title
+
+            color: (isCurrent || mouseArea.containsMouse) ? st.itemList_colorTextHover
+                                                          : st.itemList_colorText
 
             style: Text.Sunken
         }

@@ -209,7 +209,7 @@ WBackendVimeo::WBackendVimeo() : WBackendNet(new WBackendVimeoPrivate(this))
 // WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendVimeo::isHub() const
+/* Q_INVOKABLE virtual */ bool WBackendVimeo::hasSearch() const
 {
     return true;
 }

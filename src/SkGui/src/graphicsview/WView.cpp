@@ -1105,9 +1105,9 @@ void WViewPrivate::getItems(QList<QQuickItem *> * items,
 {
     if (item->isVisible() == false) return;
 
-    QPointF position = item->mapFromScene(pos);
+    QPoint position = item->mapFromScene(pos).toPoint();
 
-    if (item->boundingRect().contains(position) == false) return;
+    if (item->boundingRect().toRect().contains(position) == false) return;
 
     QList<QQuickItem *> childsA = item->childItems();
     QList<QQuickItem *> childsB;

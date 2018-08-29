@@ -318,7 +318,7 @@ WBackendSoundCloud::WBackendSoundCloud() : WBackendNet(new WBackendSoundCloudPri
 // WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendSoundCloud::isHub() const
+/* Q_INVOKABLE virtual */ bool WBackendSoundCloud::hasSearch() const
 {
     return true;
 }

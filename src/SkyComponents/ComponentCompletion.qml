@@ -20,6 +20,12 @@ import Sky     1.0
 MouseArea
 {
     //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+
+    /* read */ property bool isCurrent: (index == currentIndex)
+
+    //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
@@ -65,10 +71,10 @@ MouseArea
 
                 color:
                 {
-                    if      (index == currentIndex) return st.itemList_colorSelectFocusA;
-                    else if (pressed)               return st.itemList_colorPressA;
-                    else if (containsMouse)         return st.itemList_colorHoverA;
-                    else                            return st.itemList_colorA;
+                    if      (isCurrent)     return st.itemList_colorSelectFocusA;
+                    else if (pressed)       return st.itemList_colorPressA;
+                    else if (containsMouse) return st.itemList_colorHoverA;
+                    else                    return st.itemList_colorA;
                 }
             }
 
@@ -78,10 +84,10 @@ MouseArea
 
                 color:
                 {
-                    if      (index == currentIndex) return st.itemList_colorSelectFocusB;
-                    else if (pressed)               return st.itemList_colorPressB;
-                    else if (containsMouse)         return st.itemList_colorHoverB;
-                    else                            return st.itemList_colorB;
+                    if      (isCurrent)     return st.itemList_colorSelectFocusB;
+                    else if (pressed)       return st.itemList_colorPressB;
+                    else if (containsMouse) return st.itemList_colorHoverB;
+                    else                    return st.itemList_colorB;
                 }
             }
         }
@@ -97,7 +103,11 @@ MouseArea
 
             text: title
 
-            style: Text.Raised
+            color: (isCurrent || containsMouse) ? st.itemList_colorTextHover
+                                                : st.itemList_colorText
+
+            style: (isCurrent) ? Text.Raised
+                               : Text.Sunken
 
             elide: Text.ElideLeft
         }

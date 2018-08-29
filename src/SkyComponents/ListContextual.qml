@@ -54,7 +54,7 @@ List
 
     model: ModelContextual { id: model }
 
-    delegate: ContextualComponent {}
+    delegate: ComponentContextual {}
 
     //---------------------------------------------------------------------------------------------
     // Events

@@ -144,6 +144,7 @@ ItemList 1.0 ItemList.qml
 ItemTab  1.0 ItemTab.qml
 ItemWall 1.0 ItemWall.qml
 
+ComponentContextual        1.0 ComponentContextual.qml
 ComponentCompletion        1.0 ComponentCompletion.qml
 ComponentTab               1.0 ComponentTab.qml
 ComponentTabBrowser        1.0 ComponentTabBrowser.qml
@@ -151,7 +152,6 @@ ComponentTabTrack          1.0 ComponentTabTrack.qml
 ComponentWall              1.0 ComponentWall.qml
 ComponentWallBookmarkTrack 1.0 ComponentWallBookmarkTrack.qml
 
-ContextualComponent   1.0 ContextualComponent.qml
 ContextualCategory    1.0 ContextualCategory.qml
 ContextualItem        1.0 ContextualItem.qml
 ContextualItemCover   1.0 ContextualItemCover.qml

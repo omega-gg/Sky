@@ -459,7 +459,12 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 // Virtual interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendNet::isHub() const
+/* Q_INVOKABLE virtual */ bool WBackendNet::hasSearch() const
+{
+    return false;
+}
+
+/* Q_INVOKABLE virtual */ bool WBackendNet::hasDiscover() const
 {
     return false;
 }

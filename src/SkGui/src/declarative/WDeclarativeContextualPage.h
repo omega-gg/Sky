@@ -66,19 +66,11 @@ class SK_GUI_EXPORT WDeclarativeContextualPage : public QObject, public WPrivata
 
     Q_ENUMS(ItemType)
 
-#ifdef QT_4
-    Q_PROPERTY(QDeclarativeListProperty<WDeclarativeContextualPage> pages READ pages)
-#else
-    Q_PROPERTY(QQmlListProperty<WDeclarativeContextualPage> pages READ pages)
-#endif
-
     Q_PROPERTY(QVariantList values READ values WRITE setValues NOTIFY valuesChanged)
 
     Q_PROPERTY(int currentId READ currentId WRITE setCurrentId NOTIFY currentIdChanged)
 
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIdChanged)
-
-    Q_CLASSINFO("DefaultProperty", "pages")
 
 public: // Enums
     enum ItemType
@@ -99,20 +91,20 @@ public: // Interface
     //---------------------------------------------------------------------------------------------
     // Items
 
-    Q_INVOKABLE void addItem(const QString & title,
+    Q_INVOKABLE void addItem(ItemType        type,
+                             int             id,
+                             const QString & title,
                              const QUrl    & icon     = QUrl(),
                              const QSizeF  & iconSize = QSizeF(),
-                             ItemType        type     = Item,
-                             int             id       = -1,
                              bool            visible  = true,
                              bool            enabled  = true);
 
     Q_INVOKABLE void insertItem(int             index,
+                                ItemType        type,
+                                int             id,
                                 const QString & title,
                                 const QUrl    & icon     = QUrl(),
                                 const QSizeF  & iconSize = QSizeF(),
-                                ItemType        type     = Item,
-                                int             id       = -1,
                                 bool            visible  = true,
                                 bool            enabled  = true);
 
@@ -146,54 +138,12 @@ public: // Interface
 
     Q_INVOKABLE const WDeclarativeContextualItem * currentItemPointer() const;
 
-    //---------------------------------------------------------------------------------------------
-    // Pages
-
-    Q_INVOKABLE void addPage(WDeclarativeContextualPage * page);
-
-    Q_INVOKABLE int pageCount() const;
-
-    Q_INVOKABLE WDeclarativeContextualPage * pageAt(int index);
-
-    Q_INVOKABLE void clearPages();
-
-private: // Declarative
-#ifdef QT_4
-    static void childrenAppend(QDeclarativeListProperty<WDeclarativeContextualPage> * property,
-                               WDeclarativeContextualPage * item);
-
-    static void childrenClear(QDeclarativeListProperty<WDeclarativeContextualPage> * property);
-
-    static int childrenCount(QDeclarativeListProperty<WDeclarativeContextualPage> * property);
-
-    static WDeclarativeContextualPage * childrenAt(QDeclarativeListProperty
-                                                   <WDeclarativeContextualPage> * property,
-                                                   int index);
-#else
-    static void childrenAppend(QQmlListProperty<WDeclarativeContextualPage> * property,
-                               WDeclarativeContextualPage * item);
-
-    static void childrenClear(QQmlListProperty<WDeclarativeContextualPage> * property);
-
-    static int childrenCount(QQmlListProperty<WDeclarativeContextualPage> * property);
-
-    static WDeclarativeContextualPage * childrenAt(QQmlListProperty
-                                                   <WDeclarativeContextualPage> * property,
-                                                   int index);
-#endif
-
 signals:
     void valuesChanged(const QVariantList & values);
 
     void currentIdChanged();
 
 public: // Properties
-#ifdef QT_4
-    QDeclarativeListProperty<WDeclarativeContextualPage> pages();
-#else
-    QQmlListProperty<WDeclarativeContextualPage> pages();
-#endif
-
     QVariantList values() const;
     void         setValues(const QVariantList & values);
 

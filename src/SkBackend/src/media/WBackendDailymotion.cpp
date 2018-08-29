@@ -185,7 +185,7 @@ WBackendDailymotion::WBackendDailymotion() : WBackendNet(new WBackendDailymotion
 // WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendDailymotion::isHub() const
+/* Q_INVOKABLE virtual */ bool WBackendDailymotion::hasSearch() const
 {
     return true;
 }

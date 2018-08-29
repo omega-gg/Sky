@@ -1340,7 +1340,7 @@ void WControllerPlaylistPrivate::scanItems(QList<WLibraryFolderItem> * items) co
         {
             WBackendNet * backend = q->backendFromUrl(item->title);
 
-            if (backend && backend->isHub())
+            if (backend && backend->hasSearch())
             {
                 item->cover = q->backendCover(backend);
             }
@@ -2417,19 +2417,6 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
     WBackendNet * backend = backendFromUrl(url);
 
     if (backend)
-    {
-         return backendCover(backend);
-    }
-    else return QUrl();
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE */ QUrl WControllerPlaylist::backendCoverFromHub(const QUrl & url) const
-{
-    WBackendNet * backend = backendFromUrl(url);
-
-    if (backend && backend->isHub())
     {
          return backendCover(backend);
     }

@@ -143,8 +143,6 @@ public: // Interface
     Q_INVOKABLE QUrl backendCoverFromId (const QString & id)  const;
     Q_INVOKABLE QUrl backendCoverFromUrl(const QUrl    & url) const;
 
-    Q_INVOKABLE QUrl backendCoverFromHub(const QUrl & url) const;
-
     //---------------------------------------------------------------------------------------------
 
     Q_INVOKABLE WLibraryItem::Type urlType(const QUrl & url) const;
