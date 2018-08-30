@@ -14,7 +14,7 @@
 */
 //=================================================================================================
 
-import QtQuick 1.1
+import QtQuick 1.0
 import Sky     1.0
 
 Item
@@ -1698,12 +1698,12 @@ Item
     //---------------------------------------------------------------------------------------------
     // ComponentTabBrowser
 
-    property int componentTabBrowser_iconWidth: dp42
+    property int componentTabBrowser_iconWidth: dp56
 
     //---------------------------------------------------------------------------------------------
     // ComponentWallBookmarkTrack
 
-    property int componentWallBookmarkTrack_iconWidth: dp42
+    property int componentWallBookmarkTrack_iconWidth: dp56
 
     property color componentWallBookmarkTrack_colorA: "black"
     property color componentWallBookmarkTrack_colorB: "black"

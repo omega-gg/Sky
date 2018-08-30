@@ -1340,7 +1340,7 @@ void WControllerPlaylistPrivate::scanItems(QList<WLibraryFolderItem> * items) co
         {
             WBackendNet * backend = q->backendFromUrl(item->title);
 
-            if (backend && backend->hasSearch())
+            if (backend)
             {
                 item->cover = q->backendCover(backend);
             }
