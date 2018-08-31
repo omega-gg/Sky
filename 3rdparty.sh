@@ -371,8 +371,6 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
             mkdir -p "$Qt"/plugins/imageformats
             mkdir -p "$Qt"/plugins/xcbglintegrations
 
-            mkdir -p "$Qt"/qml/QtQuick.2
-
             sudo cp "$lib"/libQt5Core.so.$Qt5_version        "$Qt"/lib/libQt5Core.so.5
             sudo cp "$lib"/libQt5Gui.so.$Qt5_version         "$Qt"/lib/libQt5Gui.so.5
             sudo cp "$lib"/libQt5Network.so.$Qt5_version     "$Qt"/lib/libQt5Network.so.5
@@ -397,9 +395,6 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
 
             sudo cp "$lib"/qt5/plugins/xcbglintegrations/libqxcb-glx-integration.so \
                     "$Qt"/plugins/xcbglintegrations
-
-            sudo cp "$lib"/qt5/qml/QtQuick.2/libqtquick2plugin.so "$Qt"/qml/QtQuick.2
-            sudo cp "$lib"/qt5/qml/QtQuick.2/qmldir               "$Qt"/qml/QtQuick.2
         fi
 
         echo ""

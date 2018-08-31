@@ -175,7 +175,6 @@ else
 
     mkdir deploy/platforms
     mkdir deploy/imageformats
-    mkdir deploy/QtQuick.2
 
     if [ $2 = "win32" ]; then
 
@@ -200,9 +199,6 @@ else
 
         cp "$Qt"/plugins/imageformats/qsvg.dll  deploy/imageformats
         cp "$Qt"/plugins/imageformats/qjpeg.dll deploy/imageformats
-
-        cp "$Qt"/qml/QtQuick.2/qtquick2plugin.dll deploy/QtQuick.2
-        cp "$Qt"/qml/QtQuick.2/qmldir             deploy/QtQuick.2
 
     elif [ $2 = "linux" ]; then
 
@@ -239,9 +235,6 @@ else
 
         cp "$Qt"/plugins/xcbglintegrations/libqxcb-egl-integration.so deploy/xcbglintegrations
         cp "$Qt"/plugins/xcbglintegrations/libqxcb-glx-integration.so deploy/xcbglintegrations
-
-        cp "$Qt"/qml/QtQuick.2/libqtquick2plugin.so deploy/QtQuick.2
-        cp "$Qt"/qml/QtQuick.2/qmldir               deploy/QtQuick.2
     fi
 
     bin="$bin5"
