@@ -203,6 +203,7 @@ else
     elif [ $2 = "linux" ]; then
 
         mkdir deploy/xcbglintegrations
+        mkdir deploy/QtQuick.2
 
         sudo cp "$base"/libz.so.1 deploy
 
@@ -235,6 +236,9 @@ else
 
         cp "$Qt"/plugins/xcbglintegrations/libqxcb-egl-integration.so deploy/xcbglintegrations
         cp "$Qt"/plugins/xcbglintegrations/libqxcb-glx-integration.so deploy/xcbglintegrations
+
+        cp "$Qt"/qml/QtQuick.2/libqtquick2plugin.so deploy/QtQuick.2
+        cp "$Qt"/qml/QtQuick.2/qmldir               deploy/QtQuick.2
     fi
 
     bin="$bin5"
