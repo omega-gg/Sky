@@ -994,7 +994,7 @@ void WDeclarativeImageBase::setFilter(WImageFilter * filter)
 
     d->filter = filter;
 
-    if (filter)
+    if (filter && (d->loadMode != LoadVisible || isVisible()))
     {
         connect(filter, SIGNAL(filterUpdated()), this, SLOT(onFilterUpdated()));
 
