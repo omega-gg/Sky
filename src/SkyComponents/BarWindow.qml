@@ -151,6 +151,8 @@ Item
                 id: borderLine
 
                 color: st.barWindow_colorBorderLine
+
+                visible: (colorA != colorB)
             }
         }
 

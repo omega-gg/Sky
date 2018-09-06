@@ -162,8 +162,8 @@ MouseArea
 
             clip: (fillMode == Image.PreserveAspectCrop)
 
-            style: (isCurrent) ? Sk.IconRaised
-                               : Sk.IconSunken
+            style: (isCurrent) ? st.icon_raised
+                               : st.icon_sunken
 
             enableFilter: isSourceDefault
         }
@@ -184,8 +184,8 @@ MouseArea
 
             opacity: (itemTab.enabled) ? 1.0 : st.text_opacityDisable
 
-            style: (isCurrent) ? Text.Raised
-                               : Text.Sunken
+            style: (isCurrent) ? st.text_raised
+                               : st.text_sunken
         }
     }
 

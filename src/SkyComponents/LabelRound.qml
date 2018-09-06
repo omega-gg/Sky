@@ -89,8 +89,8 @@ BaseLabelRound
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment  : Text.AlignVCenter
 
-        style: (labelRound.enabled) ? Text.Raised
-                                    : Text.Sunken
+        style: (labelRound.enabled) ? st.text_raised
+                                    : st.text_sunken
 
         Behavior on opacity
         {

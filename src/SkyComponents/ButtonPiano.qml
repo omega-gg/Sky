@@ -93,8 +93,8 @@ BaseButtonPiano
 
         opacity: (buttonPiano.enabled) ? 1.0 : window.st.text_opacityDisable
 
-        style: (checked) ? Text.Raised
-                         : Text.Sunken
+        style: (checked) ? st.text_raised
+                         : st.text_sunken
 
         Behavior on opacity
         {

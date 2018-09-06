@@ -87,7 +87,7 @@ Item
 
         sourceSize.height: (scaling) ? -1 : parent.height
 
-        style: Sk.IconRaised
+        style: st.icon_raised
 
         filter: st.icon_filter
     }

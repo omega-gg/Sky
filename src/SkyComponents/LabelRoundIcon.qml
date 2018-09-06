@@ -91,8 +91,8 @@ BaseLabelRound
 
         opacity: (labelRoundIcon.enabled) ? 1.0 : st.icon_opacityDisable
 
-        style: (labelRoundIcon.enabled) ? Sk.IconRaised
-                                        : Sk.IconSunken
+        style: (labelRoundIcon.enabled) ? st.icon_raised
+                                        : st.icon_sunken
 
         filter: (enableFilter) ? filterIcon : null
 

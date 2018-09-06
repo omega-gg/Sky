@@ -129,7 +129,7 @@ Item
 
         anchors.verticalCenter: parent.verticalCenter
 
-        style: Text.Raised
+        style: st.text_raised
 
         font.pixelSize: st.dp14
     }

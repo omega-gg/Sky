@@ -25,7 +25,7 @@ ImageScale
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int style: Sk.IconSunken
+    property int style: st.icon_sunken
 
     property int styleSize: st.icon_styleSize
 
@@ -81,8 +81,8 @@ ImageScale
 
         anchors.fill: parent
 
-        anchors.topMargin   : (style == Sk.IconRaised) ?  styleSize : -styleSize
-        anchors.bottomMargin: (style == Sk.IconRaised) ? -styleSize :  styleSize
+        anchors.topMargin   : (style == st.icon_raised) ?  styleSize : -styleSize
+        anchors.bottomMargin: (style == st.icon_raised) ? -styleSize :  styleSize
 
         sourceSize: (itemIcon.isExplicitSize) ? itemIcon.sourceSize : undefined
 
@@ -103,7 +103,7 @@ ImageScale
 
         scaling: itemIcon.scaling
 
-        filter: (style == Sk.IconSunken) ? filterSunken
-                                         : filterShadow
+        filter: (style == st.icon_sunken) ? filterSunken
+                                          : filterShadow
     }
 }

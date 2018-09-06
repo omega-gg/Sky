@@ -61,5 +61,7 @@ Rectangle
         anchors.bottom: parent.top
 
         color: st.border_colorLight
+
+        visible: (colorA != colorB)
     }
 }

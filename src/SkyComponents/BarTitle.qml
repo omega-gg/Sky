@@ -115,6 +115,8 @@ MouseArea
             id: borderLine
 
             color: st.barTitle_colorBorderLine
+
+            visible: (colorA != colorB)
         }
     }
 }

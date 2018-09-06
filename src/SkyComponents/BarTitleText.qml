@@ -24,7 +24,7 @@ TextBase
 
     verticalAlignment: Text.AlignVCenter
 
-    style: Text.Sunken
+    style: st.text_sunken
 
     font.pixelSize: st.barTitleText_pixelSize
 }

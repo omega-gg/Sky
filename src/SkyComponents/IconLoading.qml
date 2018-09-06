@@ -33,7 +33,7 @@ Icon
 
     sourceSize: (scaling) ? Qt.size(-1, -1) : st.size32x32
 
-    style: Sk.IconRaised
+    style: st.icon_raised
 
     //---------------------------------------------------------------------------------------------
     // Animations

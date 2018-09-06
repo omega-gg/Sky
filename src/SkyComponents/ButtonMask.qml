@@ -85,7 +85,7 @@ BaseButton
 
         sourceSize.height: (scaling) ? -1 : parent.height
 
-        style    : Sk.IconRaised
+        style    : st.icon_raised
         styleSize: st.buttonMask_styleSize
 
         filter:

@@ -154,9 +154,12 @@ Item
 
     property int text_pixelSize: dp12
 
+    property real text_opacityDisable: 0.6
+
     property string text_fontFamily: (sk.osMac) ? "" : "Arial"
 
-    property real text_opacityDisable: 0.6
+    property int text_raised: Text.Raised
+    property int text_sunken: Text.Sunken
 
     property color text_color         : text1_color
     property color text_colorCurrent  : "#00b4ff"
@@ -232,12 +235,6 @@ Item
     }
 
     //---------------------------------------------------------------------------------------------
-    // Separator
-
-    property color separator_colorA: border_color
-    property color separator_colorB: border_colorShadow
-
-    //---------------------------------------------------------------------------------------------
     // Window
 
     property int window_durationAnimation: duration_fast
@@ -290,6 +287,9 @@ Item
     property int icon_styleSize: dp1
 
     property real icon_opacityDisable: 0.5
+
+    property int icon_raised: Sk.IconRaised
+    property int icon_sunken: Sk.IconSunken
 
     property color icon_colorA      : icon1_colorA
     property color icon_colorB      : icon1_colorB
@@ -446,8 +446,8 @@ Item
     property color barWindow_colorA: "#787878"
     property color barWindow_colorB: "#484848"
 
-    property color barWindow_colorDisableA: "#484848"
-    property color barWindow_colorDisableB: "#787878"
+    property color barWindow_colorDisableA: barWindow_colorA
+    property color barWindow_colorDisableB: barWindow_colorB
 
     property color barWindow_colorBorderLine: "#969696"
 
@@ -458,10 +458,10 @@ Item
 
     property int barTitle_borderSize: border_size
 
-    property color barTitle_colorA: "#787878"
-    property color barTitle_colorB: "#484848"
+    property color barTitle_colorA: barWindow_colorA
+    property color barTitle_colorB: barWindow_colorB
 
-    property color barTitle_colorBorderLine: "#969696"
+    property color barTitle_colorBorderLine: barWindow_colorBorderLine
 
     //---------------------------------------------------------------------------------------------
     // BarTitleSmall
@@ -514,7 +514,7 @@ Item
     property color buttonPush_colorPressA: "#242424"
     property color buttonPush_colorPressB: "#484848"
 
-    property color buttonPush_colorPressHoverA: "#242424"
+    property color buttonPush_colorPressHoverA: buttonPush_colorPressA
     property color buttonPush_colorPressHoverB: "#646464"
 
     property color buttonPush_colorHighlightA: "#008cdc"
@@ -526,7 +526,7 @@ Item
     property color buttonPush_colorCheckA: "#0050b4"
     property color buttonPush_colorCheckB: "#008cdc"
 
-    property color buttonPush_colorCheckHoverA: "#0050b4"
+    property color buttonPush_colorCheckHoverA: buttonPush_colorCheckA
     property color buttonPush_colorCheckHoverB: "#00b4ff"
 
     property ImageColorFilter buttonPush_filterBorder    : button_filterBorder
@@ -821,8 +821,8 @@ Item
     property color buttonPianoConfirm_colorHoverA: "#c80000"
     property color buttonPianoConfirm_colorHoverB: "#780000"
 
-    property color buttonPianoConfirm_colorPressA: "#780000"
-    property color buttonPianoConfirm_colorPressB: "#c80000"
+    property color buttonPianoConfirm_colorPressA: buttonPianoConfirm_colorHoverB
+    property color buttonPianoConfirm_colorPressB: buttonPianoConfirm_colorHoverA
 
     property color buttonPianoConfirm_colorFocus: "#ff0000"
 
@@ -894,9 +894,9 @@ Item
     property int buttonMask_styleSize: dp2
 
     property color buttonMask_colorHoverA: "white"
-    property color buttonMask_colorHoverB: "white"
+    property color buttonMask_colorHoverB: buttonMask_colorHoverA
 
-    property color buttonMask_colorPressA: "white"
+    property color buttonMask_colorPressA: buttonMask_colorHoverA
     property color buttonMask_colorPressB: "#646464"
 
     property ImageColorFilter buttonMask_filterDefault: icon_filter
@@ -1327,7 +1327,7 @@ Item
     property color slider_colorHandleHoverB: "#c8c8c8"
 
     property color slider_colorHandlePressA: "#646464"
-    property color slider_colorHandlePressB: "#f0f0f0"
+    property color slider_colorHandlePressB: slider_colorHandleHoverA
 
     property color slider_colorBarA: buttonPush_colorA
     property color slider_colorBarB: buttonPush_colorB
@@ -1622,8 +1622,8 @@ Item
     property color itemList_colorPressA: "#787878"
     property color itemList_colorPressB: "#505050"
 
-    property color itemList_colorContextualHoverA: "#787878"
-    property color itemList_colorContextualHoverB: "#505050"
+    property color itemList_colorContextualHoverA: itemList_colorPressA
+    property color itemList_colorContextualHoverB: itemList_colorPressB
 
     property color itemList_colorSelectA: buttonPush_colorHighlightA
     property color itemList_colorSelectB: buttonPush_colorHighlightB
@@ -1637,7 +1637,7 @@ Item
     property color itemList_colorCurrentA: "#161616"
     property color itemList_colorCurrentB: "#282828"
 
-    property color itemList_colorCurrentHoverA: "#161616"
+    property color itemList_colorCurrentHoverA: itemList_colorCurrentA
     property color itemList_colorCurrentHoverB: "#484848"
 
     property color itemList_colorBorder       : "#202020"
@@ -1904,5 +1904,278 @@ Item
     function duration(value)
     {
         return value * ratioSpeed;
+    }
+
+    //---------------------------------------------------------------------------------------------
+
+    function applyDefault()
+    {
+        logo_colorA = "#323232";
+        logo_colorB = "#646464";
+
+        //-----------------------------------------------------------------------------------------
+
+        text_raised = Text.Raised;
+        text_sunken = Text.Sunken;
+
+        //-----------------------------------------------------------------------------------------
+
+        icon_raised = Sk.IconRaised;
+        icon_sunken = Sk.IconSunken;
+
+        icon1_colorA = "#dcdcdc";
+
+        //-----------------------------------------------------------------------------------------
+
+        barWindow_colorA = "#787878";
+        barWindow_colorB = "#484848";
+
+        barWindow_colorDisableA = barWindow_colorB;
+
+        //-----------------------------------------------------------------------------------------
+
+        barTitleSmall_colorA = "#646464";
+        barTitleSmall_colorB = "#484848";
+
+        //-----------------------------------------------------------------------------------------
+
+        buttonPush_colorA = "#646464";
+        buttonPush_colorB = "#323232";
+
+        buttonPush_colorHoverA = "#848484";
+        buttonPush_colorHoverB = "#424242";
+
+        buttonPush_colorPressA = "#242424";
+        buttonPush_colorPressB = "#484848";
+
+        buttonPush_colorPressHoverA = buttonPush_colorPressA;
+        buttonPush_colorPressHoverB = "#646464";
+
+        buttonPush_colorHighlightA = "#008cdc";
+        buttonPush_colorHighlightB = "#003ca0";
+
+        buttonPush_colorHighlightHoverA = "#00a0f0";
+        buttonPush_colorHighlightHoverB = "#0050b4";
+
+        buttonPush_colorCheckA = "#0050b4";
+        buttonPush_colorCheckB = "#008cdc";
+
+        buttonPush_colorCheckHoverA = buttonPush_colorCheckA;
+        buttonPush_colorCheckHoverB = "#00b4ff";
+
+        //-----------------------------------------------------------------------------------------
+
+        buttonPianoConfirm_colorHoverB = "#780000";
+
+        buttonPianoConfirm_colorPressA = buttonPianoConfirm_colorHoverA;
+        buttonPianoConfirm_colorPressB = buttonPianoConfirm_colorHoverB;
+
+        //-----------------------------------------------------------------------------------------
+
+        buttonMask_colorHoverA = "white";
+
+        buttonMask_colorPressA = buttonMask_colorHoverA;
+        buttonMask_colorPressB = "#646464";
+
+        //-----------------------------------------------------------------------------------------
+
+        lineEditBox_colorA = "#c8c8c8";
+        lineEditBox_colorB = "white";
+
+        //-----------------------------------------------------------------------------------------
+
+        scrollBar_colorHandlePressA = buttonPush_colorPressHoverA;
+        scrollBar_colorHandlePressB = buttonPush_colorPressHoverB;
+
+        //-----------------------------------------------------------------------------------------
+
+        slider_colorHandleA = "#dcdcdc";
+        slider_colorHandleB = "#8c8c8c";
+
+        slider_colorHandleHoverB = "#c8c8c8";
+
+        slider_colorHandlePressA = "#646464";
+        slider_colorHandlePressB = "#f0f0f0";
+
+        //-----------------------------------------------------------------------------------------
+
+        sliderStream_colorBarB = "#0050b4";
+
+        sliderStream_colorBarHoverB = "#0064c8";
+
+        sliderStream_colorBarDisableA = "#dcdcdc";
+        sliderStream_colorBarDisableB = "#646464";
+
+        sliderStream_colorBarDisableHoverA = "#f0f0f0";
+        sliderStream_colorBarDisableHoverB = "#787878";
+
+        sliderStream_colorBarProgressA = "#646464";
+        sliderStream_colorBarProgressB = "#dcdcdc";
+
+        //-----------------------------------------------------------------------------------------
+
+        itemList_colorA = "#383838";
+        itemList_colorB = "#303030";
+
+        itemList_colorDefaultA = "#282828";
+        itemList_colorDefaultB = "#202020";
+
+        itemList_colorHoverB = "#424242";
+
+        itemList_colorPressA = "#787878";
+        itemList_colorPressB = "#505050";
+
+        itemList_colorContextualHoverB = "#505050";
+
+        itemList_colorSelectFocusA = buttonPush_colorCheckA;
+        itemList_colorSelectFocusB = buttonPush_colorCheckB;
+
+        itemList_colorCurrentA = "#161616";
+        itemList_colorCurrentB = "#282828";
+
+        itemList_colorCurrentHoverA = itemList_colorCurrentA;
+        itemList_colorCurrentHoverB = "#484848";
+
+        //-----------------------------------------------------------------------------------------
+
+        itemTab_colorContextualHoverA = "#a0a0a0";
+        itemTab_colorContextualHoverB = "#505050";
+
+        itemTab_colorHighlightContextualA = "#00b4ff";
+        itemTab_colorHighlightContextualB = "#0064c8";
+    }
+
+    function applyFlat()
+    {
+        logo_colorA = "#484848";
+        logo_colorB = logo_colorA;
+
+        //-----------------------------------------------------------------------------------------
+
+        text_raised = Text.Normal;
+        text_sunken = text_raised;
+
+        //-----------------------------------------------------------------------------------------
+
+        icon_raised = Sk.IconNormal;
+        icon_sunken = icon_raised;
+
+        icon1_colorA = "white";
+
+        //-----------------------------------------------------------------------------------------
+
+        barWindow_colorA = "#565656";
+        barWindow_colorB = barWindow_colorA;
+
+        barWindow_colorDisableA = barWindow_colorDisableB;
+
+        //-----------------------------------------------------------------------------------------
+
+        barTitleSmall_colorA = barWindow_colorA;
+        barTitleSmall_colorB = barWindow_colorA;
+
+        //-----------------------------------------------------------------------------------------
+
+        buttonPush_colorA = "#484848";
+        buttonPush_colorB = buttonPush_colorA;
+
+        buttonPush_colorHoverA = "#646464";
+        buttonPush_colorHoverB = buttonPush_colorHoverA;
+
+        buttonPush_colorPressA = "#323232";
+        buttonPush_colorPressB = buttonPush_colorPressA;
+
+        buttonPush_colorPressHoverA = buttonPush_colorHoverA;
+        buttonPush_colorPressHoverB = buttonPush_colorHoverA;
+
+        buttonPush_colorHighlightA = "#0078c8";
+        buttonPush_colorHighlightB = buttonPush_colorHighlightA;
+
+        buttonPush_colorCheckA = buttonPush_colorHighlightA;
+        buttonPush_colorCheckB = buttonPush_colorHighlightA;
+
+        buttonPush_colorCheckHoverA = buttonPush_colorHighlightHoverA;
+        buttonPush_colorCheckHoverB = buttonPush_colorHighlightHoverA;
+
+        //-----------------------------------------------------------------------------------------
+
+        buttonPianoConfirm_colorHoverB = buttonPianoConfirm_colorHoverA;
+
+        buttonPianoConfirm_colorPressA = "#960000";
+        buttonPianoConfirm_colorPressB = buttonPianoConfirm_colorPressA;
+
+        //-----------------------------------------------------------------------------------------
+
+        buttonMask_colorHoverA = "#c8c8c8";
+
+        buttonMask_colorPressA = icon_colorA;
+        buttonMask_colorPressB = icon_colorA;
+
+        //-----------------------------------------------------------------------------------------
+
+        lineEditBox_colorA = lineEdit_color;
+        lineEditBox_colorB = lineEdit_color;
+
+        //-----------------------------------------------------------------------------------------
+
+        scrollBar_colorHandlePressA = buttonPush_colorA;
+        scrollBar_colorHandlePressB = buttonPush_colorA;
+
+        //-----------------------------------------------------------------------------------------
+
+        slider_colorHandleA = "#c8c8c8";
+        slider_colorHandleB = slider_colorHandleA;
+
+        slider_colorHandleHoverB = slider_colorHandleHoverA;
+
+        slider_colorHandlePressA = slider_colorHandleA;
+        slider_colorHandlePressB = slider_colorHandleA;
+
+        //-----------------------------------------------------------------------------------------
+
+        sliderStream_colorBarB = sliderStream_colorBarA;
+
+        sliderStream_colorBarHoverB = sliderStream_colorBarHoverA;
+
+        sliderStream_colorBarDisableA = "#969696";
+        sliderStream_colorBarDisableB = sliderStream_colorBarDisableA;
+
+        sliderStream_colorBarDisableHoverA = "#c8c8c8";
+        sliderStream_colorBarDisableHoverB = sliderStream_colorBarDisableHoverA;
+
+        sliderStream_colorBarProgressA = sliderStream_colorBarDisableHoverA;
+        sliderStream_colorBarProgressB = sliderStream_colorBarDisableHoverA;
+
+        //-----------------------------------------------------------------------------------------
+
+        itemList_colorA = "#323232";
+        itemList_colorB = itemList_colorA;
+
+        itemList_colorDefaultA = "#242424";
+        itemList_colorDefaultB = itemList_colorDefaultA;
+
+        itemList_colorHoverB = itemList_colorHoverA;
+
+        itemList_colorPressA = "#484848";
+        itemList_colorPressB = itemList_colorPressA;
+
+        itemList_colorContextualHoverB = itemList_colorContextualHoverA;
+
+        itemList_colorSelectFocusA = "#008cdc";
+        itemList_colorSelectFocusB = itemList_colorSelectFocusA;
+
+        itemList_colorCurrentA = itemList_colorDefaultA;
+        itemList_colorCurrentB = itemList_colorDefaultA;
+
+        itemList_colorCurrentHoverA = itemList_colorHoverA;
+        itemList_colorCurrentHoverB = itemList_colorHoverA;
+
+        //-----------------------------------------------------------------------------------------
+
+        itemTab_colorContextualHoverA = "#787878";
+        itemTab_colorContextualHoverB = itemTab_colorContextualHoverA;
+
+        itemTab_colorHighlightContextualA = "#008cdc";
+        itemTab_colorHighlightContextualB = itemTab_colorHighlightContextualA;
     }
 }

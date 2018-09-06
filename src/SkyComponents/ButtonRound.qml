@@ -170,8 +170,8 @@ BaseButton
 
         opacity: (buttonRound.enabled) ? 1.0 : st.icon_opacityDisable
 
-        style: (checked) ? Sk.IconRaised
-                         : Sk.IconSunken
+        style: (checked) ? st.icon_raised
+                         : st.icon_sunken
 
         filterDefault: st.buttonRound_filterIcon
         filterShadow : st.buttonRound_filterIconShadow

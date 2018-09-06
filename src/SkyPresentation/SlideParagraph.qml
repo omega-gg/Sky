@@ -45,8 +45,8 @@ Item
     property int style  : TextSvg.Glow
     property int outline: TextSvg.OutlineRound
 
-    property color styleColor: (style == Text.Sunken) ? st.text_colorSunken
-                                                      : st.text_colorShadow
+    property color styleColor: (style == st.text_sunken) ? st.text_colorSunken
+                                                         : st.text_colorShadow
 
     property int styleSize: sp.slideText_styleSize
 

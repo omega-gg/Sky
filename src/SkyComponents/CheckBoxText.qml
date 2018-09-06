@@ -101,7 +101,7 @@ MouseArea
 
         opacity: (checkBoxText.enabled) ? 1.0 : st.text_opacityDisable
 
-        style: Text.Raised
+        style: st.text_raised
 
         font.underline: isHovered
 

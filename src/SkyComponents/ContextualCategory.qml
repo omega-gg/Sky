@@ -56,6 +56,8 @@ Item
             id: borderLine
 
             color: st.contextualCategory_colorBorderLine
+
+            visible: (st.contextualCategory_colorA != st.contextualCategory_colorB)
         }
 
         TextBase
@@ -71,7 +73,7 @@ Item
 
             text: title
 
-            style: Text.Sunken
+            style: st.text_sunken
 
             font.pixelSize: st.contextualCategory_pixelSize
         }

@@ -525,7 +525,7 @@ MouseArea
 
             color: st.playerBrowser_colorTextA
 
-            style: Text.Raised
+            style: st.text_raised
 
             font.pixelSize: st.dp16
 
@@ -585,7 +585,7 @@ MouseArea
             source    : st.icon28x28_hd
             sourceSize: st.size28x28
 
-            style: Sk.IconRaised
+            style: st.icon_raised
         }
 
         TextBase
@@ -605,7 +605,7 @@ MouseArea
 
             color: st.playerBrowser_colorTextB
 
-            style: Text.Raised
+            style: st.text_raised
 
             font.pixelSize: st.dp14
         }
@@ -626,7 +626,7 @@ MouseArea
 
             date: (tab) ? tab.date : null
 
-            style: Text.Raised
+            style: st.text_raised
         }
 
         TextLink
@@ -651,7 +651,7 @@ MouseArea
             color: (isHovered) ? st.text_color
                                : st.playerBrowser_colorTextB
 
-            style: Text.Raised
+            style: st.text_raised
 
             font.pixelSize: st.dp14
 

@@ -153,7 +153,7 @@ MouseArea
         source    : icon
         sourceSize: iconSize
 
-        style: Sk.IconSunken
+        style: st.icon_sunken
 
         filter: filterIcon
     }
@@ -181,7 +181,7 @@ MouseArea
         color: (isCurrent || containsMouse) ? st.itemList_colorTextHover
                                             : st.itemList_colorText
 
-        style: Text.Sunken
+        style: st.text_sunken
     }
 
     BorderHorizontal

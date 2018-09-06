@@ -130,7 +130,7 @@ BaseButton
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment  : Text.AlignVCenter
 
-        style: Text.Raised
+        style: st.text_raised
 
         font.pixelSize: st.dp11
     }

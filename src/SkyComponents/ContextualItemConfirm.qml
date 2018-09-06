@@ -230,7 +230,7 @@ Item
             source    : icon
             sourceSize: iconSize
 
-            style: Sk.IconSunken
+            style: st.icon_sunken
 
             filter: filterIcon
         }
@@ -253,7 +253,7 @@ Item
             color: (isCurrent || mouseArea.containsMouse) ? st.itemList_colorTextHover
                                                           : st.itemList_colorText
 
-            style: Text.Sunken
+            style: st.text_sunken
         }
 
         Icon
@@ -271,7 +271,7 @@ Item
             source    : st.icon24x24_slideRight
             sourceSize: st.size24x24
 
-            style: Sk.IconSunken
+            style: st.icon_sunken
 
             filter: st.icon_filter
         }

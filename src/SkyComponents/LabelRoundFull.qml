@@ -137,8 +137,8 @@ BaseLabelRound
 
         opacity: (labelRoundFull.enabled) ? 1.0 : st.icon_opacityDisable
 
-        style: (labelRoundFull.enabled) ? Sk.IconRaised
-                                        : Sk.IconSunken
+        style: (labelRoundFull.enabled) ? st.icon_raised
+                                        : st.icon_sunken
 
         filter: (enableFilter) ? filterIcon : null
 
@@ -162,8 +162,8 @@ BaseLabelRound
 
         verticalAlignment: Text.AlignVCenter
 
-        style: (labelRoundFull.enabled) ? Text.Raised
-                                        : Text.Sunken
+        style: (labelRoundFull.enabled) ? st.text_raised
+                                        : st.text_sunken
 
         Behavior on opacity
         {

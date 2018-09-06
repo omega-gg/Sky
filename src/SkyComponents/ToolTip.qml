@@ -187,6 +187,6 @@ BaseToolTip
 
         verticalAlignment: Text.AlignVCenter
 
-        style: Text.Raised
+        style: st.text_raised
     }
 }

@@ -137,8 +137,8 @@ BaseButtonPush
 
         opacity: (buttonPushFull.enabled) ? 1.0 : st.icon_opacityDisable
 
-        style: (checked) ? Sk.IconRaised
-                         : Sk.IconSunken
+        style: (checked) ? st.icon_raised
+                         : st.icon_sunken
 
         filterDefault: st.buttonPush_filterIcon
         filterShadow : st.buttonPush_filterIconShadow
@@ -162,8 +162,8 @@ BaseButtonPush
 
         opacity: (buttonPushFull.enabled) ? 1.0 : st.text_opacityDisable
 
-        style: (checked) ? Text.Raised
-                         : Text.Sunken
+        style: (checked) ? st.text_raised
+                         : st.text_sunken
 
         Behavior on opacity
         {

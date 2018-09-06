@@ -106,8 +106,8 @@ MouseArea
             color: (isCurrent || containsMouse) ? st.itemList_colorTextHover
                                                 : st.itemList_colorText
 
-            style: (isCurrent) ? Text.Raised
-                               : Text.Sunken
+            style: (isCurrent) ? st.text_raised
+                               : st.text_sunken
 
             elide: Text.ElideLeft
         }

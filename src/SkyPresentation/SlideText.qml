@@ -59,8 +59,8 @@ TextSvg
     style  : TextSvg.Glow
     outline: TextSvg.OutlineRound
 
-    styleColor: (style == Text.Sunken) ? st.text_colorSunken
-                                       : st.text_colorShadow
+    styleColor: (style == st.text_sunken) ? st.text_colorSunken
+                                          : st.text_colorShadow
 
     styleSize: sp.slideText_styleSize
 

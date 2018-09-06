@@ -167,7 +167,7 @@ Item
                 return controllerPlaylist.getPlayerTime(model.positionToValue(pos), 7);
             }
 
-            style: Text.Raised
+            style: st.text_raised
 
             font.pixelSize: st.dp11
         }

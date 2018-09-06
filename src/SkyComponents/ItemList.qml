@@ -215,8 +215,8 @@ MouseArea
 
             clip: (fillMode == Image.PreserveAspectCrop)
 
-            style: (itemText.style == Text.Raised) ? Sk.IconRaised
-                                                   : Sk.IconSunken
+            style: (itemText.style == st.text_raised) ? st.icon_raised
+                                                      : st.icon_sunken
 
             enableFilter: isSourceDefault
 
@@ -256,14 +256,14 @@ MouseArea
             {
                 if (isSelected)
                 {
-                    if (isFocused) return Text.Raised;
-                    else           return Text.Sunken;
+                    if (isFocused) return st.text_raised;
+                    else           return st.text_sunken;
                 }
                 else if (isCurrent)
                 {
-                     return Text.Raised;
+                     return st.text_raised;
                 }
-                else return Text.Sunken;
+                else return st.text_sunken;
             }
         }
     }
