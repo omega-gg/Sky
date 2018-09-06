@@ -2094,6 +2094,9 @@ Item
         buttonPush_colorCheckA = buttonPush_colorHighlightA;
         buttonPush_colorCheckB = buttonPush_colorHighlightA;
 
+        buttonPush_colorHighlightHoverA = "#008cdc";
+        buttonPush_colorHighlightHoverB = buttonPush_colorHighlightHoverA;
+
         buttonPush_colorCheckHoverA = buttonPush_colorHighlightHoverA;
         buttonPush_colorCheckHoverB = buttonPush_colorHighlightHoverA;
 
