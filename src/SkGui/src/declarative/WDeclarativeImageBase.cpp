@@ -351,7 +351,7 @@ void WDeclarativeImageBasePrivate::onFilterUpdated()
 {
     Q_Q(WDeclarativeImageBase);
 
-    if (pix.isNull()) return;
+    if (pix.isNull() || loadLater) return;
 
     filter->applyFilter(const_cast<QPixmap *> (&(pix.pixmap())));
 
@@ -994,19 +994,22 @@ void WDeclarativeImageBase::setFilter(WImageFilter * filter)
 
     d->filter = filter;
 
-    if (filter && (d->loadMode != LoadVisible || isVisible()))
+    if (filter)
     {
         connect(filter, SIGNAL(filterUpdated()), this, SLOT(onFilterUpdated()));
 
-        d->applyFilter();
+        if (d->loadLater == false)
+        {
+            d->applyFilter();
 
-        pixmapChange();
+            pixmapChange();
 
-#ifdef QT_LATEST
-        d->updateTexture = true;
-#endif
+    #ifdef QT_LATEST
+            d->updateTexture = true;
+    #endif
 
-        update();
+            update();
+        }
     }
 
     emit filterChanged();
