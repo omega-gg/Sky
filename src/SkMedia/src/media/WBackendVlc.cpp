@@ -909,10 +909,10 @@ void WBackendVlcPrivate::applySources(bool play)
         applyOutput(getClosestOutput(output));
 
         if (play) playMedia();
-    }
 
-    qDebug("Current source [%s] %d %s", currentMedia.C_URL,
-                                        reply->medias().count(), reply->error().C_STR);
+        qDebug("Current source [%s] %d %s", currentMedia.C_URL,
+                                            reply->medias().count(), reply->error().C_STR);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
