@@ -297,11 +297,6 @@ bool WControllerPlugin::unloadPlugin(const QString & name)
     return false;
 }
 
-bool WControllerPlugin::loadScriptPlugin(const QString & extension)
-{
-    return wControllerScript->loadPlugin(extension);
-}
-
 //-------------------------------------------------------------------------------------------------
 
 QStringList WControllerPlugin::availablePlugins() const

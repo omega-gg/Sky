@@ -51,8 +51,8 @@ X11_ubuntu="libx11-dev libxi-dev libxinerama-dev libxrandr-dev libxcursor-dev li
 
 Qt4_ubuntu="qt4-default libqtwebkit-dev openssl"
 
-Qt5_ubuntu="qt5-default qtbase5-private-dev qtdeclarative5-private-dev qtscript5-dev "\
-"libqt5xmlpatterns5-dev libqt5svg5-dev libqt5x11extras5-dev qml-module-qtquick-controls"
+Qt5_ubuntu="qt5-default qtbase5-private-dev qtdeclarative5-private-dev libqt5xmlpatterns5-dev "\
+"libqt5svg5-dev libqt5x11extras5-dev qml-module-qtquick-controls"
 
 VLC_ubuntu="libvlc-dev vlc"
 
@@ -379,7 +379,6 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
             sudo cp "$lib"/libQt5OpenGL.so.$Qt5_version      "$Qt"/lib/libQt5OpenGL.so.5
             sudo cp "$lib"/libQt5Qml.so.$Qt5_version         "$Qt"/lib/libQt5Qml.so.5
             sudo cp "$lib"/libQt5Quick.so.$Qt5_version       "$Qt"/lib/libQt5Quick.so.5
-            sudo cp "$lib"/libQt5Script.so.$Qt5_version      "$Qt"/lib/libQt5Script.so.5
             sudo cp "$lib"/libQt5Svg.so.$Qt5_version         "$Qt"/lib/libQt5Svg.so.5
             sudo cp "$lib"/libQt5Widgets.so.$Qt5_version     "$Qt"/lib/libQt5Widgets.so.5
             sudo cp "$lib"/libQt5Xml.so.$Qt5_version         "$Qt"/lib/libQt5Xml.so.5

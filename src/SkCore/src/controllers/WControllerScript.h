@@ -17,18 +17,17 @@
 #ifndef WCONTROLLERSCRIPT_H
 #define WCONTROLLERSCRIPT_H
 
-// Qt includes
-#include <QScriptEngine>
-#include <QScriptValue>
-
 // Sk includes
 #include <WController>
-#include <WScript>
 
 #ifndef SK_NO_CONTROLLERSCRIPT
 
 // Forward declarations
+#ifdef QT_4
 class QScriptEngine;
+#else
+class QJSEngine;
+#endif
 class WControllerScriptPrivate;
 
 // Defines
@@ -44,21 +43,16 @@ private:
 protected: // Initialize
     /* virtual */ void init();
 
-public: // Interface
-    Q_INVOKABLE bool loadPlugin(const QString & extension);
-
-    Q_INVOKABLE bool importFile(const QString & fileName);
-
-    Q_INVOKABLE QScriptValue parseJson(const QByteArray & data) const;
-
 public: // Properties
+#ifdef QT_4
     QScriptEngine * engine();
+#else
+    QJSEngine * engine();
+#endif
 
 private:
     W_DECLARE_PRIVATE   (WControllerScript)
     W_DECLARE_CONTROLLER(WControllerScript)
-
-    friend class WScriptPrivate;
 };
 
 #endif // SK_NO_CONTROLLERSCRIPT

@@ -192,7 +192,6 @@ else
         cp "$Qt"/bin/Qt5OpenGL.dll      deploy
         cp "$Qt"/bin/Qt5Qml.dll         deploy
         cp "$Qt"/bin/Qt5Quick.dll       deploy
-        cp "$Qt"/bin/Qt5Script.dll      deploy
         cp "$Qt"/bin/Qt5Svg.dll         deploy
         cp "$Qt"/bin/Qt5Widgets.dll     deploy
         cp "$Qt"/bin/Qt5Xml.dll         deploy
@@ -227,7 +226,6 @@ else
         cp "$Qt"/lib/libQt5OpenGL.so.5      deploy
         cp "$Qt"/lib/libQt5Qml.so.5         deploy
         cp "$Qt"/lib/libQt5Quick.so.5       deploy
-        cp "$Qt"/lib/libQt5Script.so.5      deploy
         cp "$Qt"/lib/libQt5Svg.so.5         deploy
         cp "$Qt"/lib/libQt5Widgets.so.5     deploy
         cp "$Qt"/lib/libQt5Xml.so.5         deploy

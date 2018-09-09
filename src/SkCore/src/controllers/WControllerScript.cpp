@@ -19,8 +19,11 @@
 #ifndef SK_NO_CONTROLLERSCRIPT
 
 // Qt includes
+#ifdef QT_4
 #include <QScriptEngine>
-#include <QFile>
+#else
+#include <QJSEngine>
+#endif
 
 W_INIT_CONTROLLER(WControllerScript)
 
@@ -40,7 +43,11 @@ public:
     void init();
 
 private: // Variables
+#ifdef QT_4
     QScriptEngine * engine;
+#else
+    QJSEngine * engine;
+#endif
 
 protected:
     W_DECLARE_PUBLIC(WControllerScript)
@@ -62,7 +69,11 @@ void WControllerScriptPrivate::init()
 {
     Q_Q(WControllerScript);
 
+#ifdef QT_4
     engine = new QScriptEngine(q);
+#else
+    engine = new QJSEngine(q);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -81,68 +92,14 @@ WControllerScript::WControllerScript() : WController(new WControllerScriptPrivat
 }
 
 //-------------------------------------------------------------------------------------------------
-// Interface
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE */ bool WControllerScript::loadPlugin(const QString & extension)
-{
-    Q_D(WControllerScript);
-
-    QScriptValue value;
-
-    value = d->engine->importExtension(extension);
-
-    if (value.isError())
-    {
-        if (d->engine->hasUncaughtException())
-        {
-             qWarning("WControllerScript::loadPlugin: Failed to load script plugin %s. %s.",
-                      extension.C_STR, value.toString().C_STR);
-        }
-        else qWarning("WControllerScript::loadPlugin: Failed to load script plugin %s.",
-                      extension.C_STR);
-
-        return false;
-    }
-    else
-    {
-        qDebug("Plugin loaded %s", extension.C_STR);
-
-        return true;
-    }
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE */ bool WControllerScript::importFile(const QString & fileName)
-{
-    Q_D(WControllerScript);
-
-    QFile file(fileName);
-
-    if (file.open(QIODevice::ReadOnly) == false) return false;
-
-    return d->engine->evaluate(file.readAll(), fileName).isValid();
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE */ QScriptValue WControllerScript::parseJson(const QByteArray & data) const
-{
-    Q_D(const WControllerScript);
-
-    QScriptValueList params;
-
-    params << QString(data);
-
-    return d->engine->evaluate("JSON.parse").call(QScriptValue(), params);
-}
-
-//-------------------------------------------------------------------------------------------------
 // Private properties
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
 QScriptEngine * WControllerScript::engine()
+#else
+QJSEngine * WControllerScript::engine()
+#endif
 {
     Q_D(WControllerScript); return d->engine;
 }

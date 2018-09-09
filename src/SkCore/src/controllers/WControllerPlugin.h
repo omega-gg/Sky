@@ -45,8 +45,6 @@ public: // Interface
     bool loadPlugin  (const QString & name);
     bool unloadPlugin(const QString & name);
 
-    bool loadScriptPlugin(const QString & extension);
-
     // Adding path to watch
     bool addPath(const QString dirPath);
 

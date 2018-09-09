@@ -19,7 +19,10 @@
 #ifndef SK_NO_BACKENDYOUTUBE
 
 // Qt includes
-#ifdef QT_LATEST
+#ifdef QT_4
+#include <QScriptEngine>
+#else
+#include <QJSEngine>
 #include <QUrlQuery>
 #endif
 
@@ -67,7 +70,11 @@ public: // Functions
     void applySignatures(WBackendNetSource * source, const QVariantList & variants,
                                                      const QString      & script) const;
 
+#ifdef QT_4
     void applySignature(QString * source, QScriptValue * value) const;
+#else
+    void applySignature(QString * source, QJSValue * value) const;
+#endif
 
     QUrl getNextUrl(const QString & data) const;
 
@@ -267,7 +274,11 @@ void WBackendYoutubePrivate::applySignatures(WBackendNetSource  * source,
     QStringList listMedias = variants.at(0).toStringList();
     QStringList listAudios = variants.at(1).toStringList();
 
+#ifdef QT_4
     QScriptValue value = wControllerScript->engine()->evaluate(script);
+#else
+    QJSValue value = wControllerScript->engine()->evaluate(script);
+#endif
 
     for (int i = 0; i <= WAbstractBackend::QualityMaximum; i++)
     {
@@ -289,13 +300,21 @@ void WBackendYoutubePrivate::applySignatures(WBackendNetSource  * source,
     }
 }
 
+#ifdef QT_4
 void WBackendYoutubePrivate::applySignature(QString * source, QScriptValue * value) const
+#else
+void WBackendYoutubePrivate::applySignature(QString * source, QJSValue * value) const
+#endif
 {
     QRegExp regExp("&s=([a-fA-F0-9\\.]+)");
 
     QString signature = Sk::extract(*source, regExp.pattern(), 1);
 
+#ifdef QT_4
     signature = value->call(QScriptValue(), QScriptValueList() << signature).toString();
+#else
+    signature = value->call(QJSValueList() << signature).toString();
+#endif
 
     source->replace(regExp, "&signature=" + signature);
 }
