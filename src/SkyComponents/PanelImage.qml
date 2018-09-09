@@ -25,22 +25,24 @@ Panel
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    property alias source    : itemImage.source
-    property alias sourceSize: itemImage.sourceSize
+    property alias source    : imageFront.source
+    property alias sourceSize: imageFront.sourceSize
 
-    property alias fillMode: itemImage.fillMode
+    property alias fillMode: imageFront.fillMode
 
     //---------------------------------------------------------------------------------------------
 
-    property alias backgroundImage: backgroundImage
-    property alias itemImage      : itemImage
+    property alias imageBack : imageBack
+    property alias imageFront: imageFront
+
+    property alias imageBackground: imageBack.image
 
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width : itemImage.width  + borderSizeWidth
-    height: itemImage.height + borders.sizeHeight
+    width : imageFront.width  + borderSizeWidth
+    height: imageFront.height + borders.sizeHeight
 
     opacity: (visible)
 
@@ -65,16 +67,16 @@ Panel
 
     RectangleLogo
     {
-        id: backgroundImage
+        id: imageBack
 
-        anchors.fill: itemImage
+        anchors.fill: imageFront
 
-        visible: (itemImage.visible == false)
+        visible: (imageFront.visible == false)
     }
 
     Image
     {
-        id: itemImage
+        id: imageFront
 
         anchors.fill: parent
 
