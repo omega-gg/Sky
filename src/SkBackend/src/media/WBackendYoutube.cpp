@@ -681,23 +681,17 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
     {
         Q_D(const WBackendYoutube);
 
-        QString name = Sk::extract(content, "\"signature\",([a-zA-Z0-9$]+)\\(", 1);
+        int index = content.indexOf("function(a){a=a.split(\"\")");
 
-        QString variable = name + "=function";
-
-        QString function = WControllerNetwork::extractScript(content, variable + "(a)");
-
-        if (function.isEmpty())
-        {
-             function = WControllerNetwork::extractScript(content, "function " + name);
-        }
-        else function.replace(variable, "function " + name);
+        QString function = WControllerNetwork::extractScript(content, "function(a)", index);
 
         QString object = Sk::extract(function, ";([a-zA-Z0-9$]+)\\.", 1);
 
         object = WControllerNetwork::extractScript(content, "var " + object + '=');
 
-        QString script = "(function(a){" + object + ';' + function + "return " + name + "(a);})";
+        function.replace("function(a)", "function b(a)");
+
+        QString script = "(function(a){" + object + ';' + function + "return " + "b(a);})";
 
         QStringList list;
 
