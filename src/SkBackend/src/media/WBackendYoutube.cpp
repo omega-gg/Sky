@@ -691,7 +691,7 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
 
         function.replace("function(a)", "function b(a)");
 
-        QString script = "(function(a){" + object + ';' + function + "return " + "b(a);})";
+        QString script = "(function(a){" + object + ';' + function + "return b(a);})";
 
         QStringList list;
 
