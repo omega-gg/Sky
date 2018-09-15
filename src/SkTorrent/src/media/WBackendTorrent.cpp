@@ -691,7 +691,7 @@ WBackendNetFolder WBackendTorrent::extractFolder(const QByteArray       & data,
     {
         QString content = Sk::readUtf8(data);
 
-        QString source = Sk::sliceIn(content, "nrje('", "'");
+        QString source = Sk::sliceIn(content, ";nrj('", "'");
 
         WBackendNetQuery * nextQuery = &(reply.nextQuery);
 
