@@ -184,7 +184,7 @@ QString WBackendSoundCloudPrivate::extractJson(const QString & data, int index, 
 
     count += index;
 
-    while (string.isEmpty() && index < count)
+    while ((string.isEmpty() || string.startsWith("{\"allows")) && index < count)
     {
         index++;
 
