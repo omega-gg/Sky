@@ -94,7 +94,7 @@ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
 #ifdef QT_4
     QCoreApplication::setAttribute(Qt::AA_ImmediateWidgetCreation);
 #else
-    QCoreApplication::setAttribute(Qt::AA_UseOpenGLES);
+    //QCoreApplication::setAttribute(Qt::AA_UseOpenGLES);
 #endif
 
 #ifdef Q_OS_MAC
