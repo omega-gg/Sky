@@ -183,8 +183,8 @@ else
         cp "$MinGW"/libstdc++-6.dll     deploy
         cp "$MinGW"/libwinpthread-1.dll deploy
 
-        cp "$Qt"/bin/libEGL.dll    deploy
-        cp "$Qt"/bin/libGLESv2.dll deploy
+        #cp "$Qt"/bin/libEGL.dll    deploy
+        #cp "$Qt"/bin/libGLESv2.dll deploy
 
         cp "$Qt"/bin/Qt5Core.dll        deploy
         cp "$Qt"/bin/Qt5Gui.dll         deploy
