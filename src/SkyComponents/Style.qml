@@ -443,7 +443,7 @@ Item
 
     property int barWindow_height: dp24
 
-    property color barWindow_colorA: "#787878"
+    property color barWindow_colorA: "#808080"
     property color barWindow_colorB: "#484848"
 
     property color barWindow_colorDisableA: barWindow_colorA
@@ -471,7 +471,7 @@ Item
     property color barTitleSmall_colorA: "#646464"
     property color barTitleSmall_colorB: "#484848"
 
-    property color barTitleSmall_colorBorderLine: "#787878"
+    property color barTitleSmall_colorBorderLine: "#808080"
 
     //---------------------------------------------------------------------------------------------
     // BarTitleText
@@ -484,9 +484,9 @@ Item
     //---------------------------------------------------------------------------------------------
     // Button
 
-    property color button_colorBorder: "#161616"
+    property color button_colorBorder: border_color
+    property color button_colorFocus : border_colorFocus
 
-    property ImageColorFilter button_filterBorder    : border_filter
     property ImageColorFilter button_filterIcon      : icon_filter
     property ImageColorFilter button_filterIconShadow: icon_filterShadow
     property ImageColorFilter button_filterIconSunken: icon_filterSunken
@@ -496,20 +496,14 @@ Item
 
     property int buttonPush_height: dp40
 
-    property int buttonPush_margins: dp3
     property int buttonPush_padding: dp14
     property int buttonPush_spacing: dp6
-
-    property url buttonPush_sourceBackground: "pictures/buttonPushMask.svg"
-    property url buttonPush_sourceBorder    : "pictures/buttonPushBorder.svg"
-
-    property variant buttonPush_borderBackground: Qt.rect(46, 46, 46, 46)
 
     property color buttonPush_colorA: "#646464"
     property color buttonPush_colorB: "#323232"
 
-    property color buttonPush_colorHoverA: "#848484"
-    property color buttonPush_colorHoverB: "#424242"
+    property color buttonPush_colorHoverA: "#808080"
+    property color buttonPush_colorHoverB: "#404040"
 
     property color buttonPush_colorPressA: "#242424"
     property color buttonPush_colorPressB: "#484848"
@@ -529,146 +523,15 @@ Item
     property color buttonPush_colorCheckHoverA: buttonPush_colorCheckA
     property color buttonPush_colorCheckHoverB: "#00b4ff"
 
-    property ImageColorFilter buttonPush_filterBorder    : button_filterBorder
     property ImageColorFilter buttonPush_filterIcon      : icon_filter
     property ImageColorFilter buttonPush_filterIconShadow: icon_filterShadow
     property ImageColorFilter buttonPush_filterIconSunken: icon_filterSunken
-
-    property alias buttonPush_filterDefault       : buttonPush_filterDefault
-    property alias buttonPush_filterHover         : buttonPush_filterHover
-    property alias buttonPush_filterPress         : buttonPush_filterPress
-    property alias buttonPush_filterPressHover    : buttonPush_filterPressHover
-    property alias buttonPush_filterHighlight     : buttonPush_filterHighlight
-    property alias buttonPush_filterHighlightHover: buttonPush_filterHighlightHover
-    property alias buttonPush_filterCheck         : buttonPush_filterCheck
-    property alias buttonPush_filterCheckHover    : buttonPush_filterCheckHover
-    property alias buttonPush_filterFocus         : border_filterFocus
-
-    ImageColorFilter
-    {
-        id: buttonPush_filterDefault
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: buttonPush_colorA }
-            ScaleGradientStop { position: 1.0; color: buttonPush_colorB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: buttonPush_filterHover
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: buttonPush_colorHoverA }
-            ScaleGradientStop { position: 1.0; color: buttonPush_colorHoverB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: buttonPush_filterPress
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: buttonPush_colorPressA }
-            ScaleGradientStop { position: 1.0; color: buttonPush_colorPressB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: buttonPush_filterPressHover
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: buttonPush_colorPressHoverA }
-            ScaleGradientStop { position: 1.0; color: buttonPush_colorPressHoverB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: buttonPush_filterHighlight
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: buttonPush_colorHighlightA }
-            ScaleGradientStop { position: 1.0; color: buttonPush_colorHighlightB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: buttonPush_filterHighlightHover
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: buttonPush_colorHighlightHoverA }
-            ScaleGradientStop { position: 1.0; color: buttonPush_colorHighlightHoverB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: buttonPush_filterCheck
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: buttonPush_colorCheckA }
-            ScaleGradientStop { position: 1.0; color: buttonPush_colorCheckB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: buttonPush_filterCheckHover
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: buttonPush_colorCheckHoverA }
-            ScaleGradientStop { position: 1.0; color: buttonPush_colorCheckHoverB }
-        }
-    }
 
     //---------------------------------------------------------------------------------------------
     // ButtonPushIcon
 
     property int buttonPushIcon_width : buttonPush_height
     property int buttonPushIcon_height: buttonPush_height
-
-    //---------------------------------------------------------------------------------------------
-    // ButtonPushLeft
-
-    property int buttonPushLeft_extra: dp6
-
-    property url buttonPushLeft_sourceBackground: "pictures/buttonPushLeftMask.svg"
-    property url buttonPushLeft_sourceBorder    : "pictures/buttonPushLeftBorder.svg"
-
-    //---------------------------------------------------------------------------------------------
-    // ButtonPushCenter
-
-    property url buttonPushCenter_sourceBackground: "pictures/buttonPushCenterMask.svg"
-    property url buttonPushCenter_sourceBorder    : "pictures/buttonPushCenterBorder.svg"
-
-    //---------------------------------------------------------------------------------------------
-    // ButtonPushRight
-
-    property int buttonPushRight_extra: dp6
-
-    property url buttonPushRight_sourceBackground: "pictures/buttonPushRightMask.svg"
-    property url buttonPushRight_sourceBorder    : "pictures/buttonPushRightBorder.svg"
-
-    //---------------------------------------------------------------------------------------------
-    // ButtonPushLeftIcon
-
-    property int buttonPushLeftIcon_padding: dp4
-
-    //---------------------------------------------------------------------------------------------
-    // ButtonPushRightIcon
-
-    property int buttonPushRightIcon_padding: dp4
 
     //---------------------------------------------------------------------------------------------
     // ButtonPushConfirm
@@ -678,31 +541,6 @@ Item
 
     property color buttonPushConfirm_colorPressA: "#960000"
     property color buttonPushConfirm_colorPressB: "#c80000"
-
-    property alias buttonPushConfirm_filterHover: buttonPushConfirm_filterHover
-    property alias buttonPushConfirm_filterPress: buttonPushConfirm_filterPress
-
-    ImageColorFilter
-    {
-        id: buttonPushConfirm_filterHover
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: buttonPushConfirm_colorHoverA }
-            ScaleGradientStop { position: 1.0; color: buttonPushConfirm_colorHoverB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: buttonPushConfirm_filterPress
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: buttonPushConfirm_colorPressA }
-            ScaleGradientStop { position: 1.0; color: buttonPushConfirm_colorPressB }
-        }
-    }
 
     //---------------------------------------------------------------------------------------------
     // ButtonOverlay
@@ -721,55 +559,6 @@ Item
 
     property color buttonOverlay_colorBorderA: icon_colorA
     property color buttonOverlay_colorBorderB: icon_colorB
-
-    property alias buttonOverlay_filterDefault: buttonOverlay_filterDefault
-    property alias buttonOverlay_filterHover  : buttonOverlay_filterHover
-    property alias buttonOverlay_filterPress  : buttonOverlay_filterPress
-    property alias buttonOverlay_filterBorder : buttonOverlay_filterBorder
-
-    ImageColorFilter
-    {
-        id: buttonOverlay_filterDefault
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: buttonOverlay_colorA }
-            ScaleGradientStop { position: 1.0; color: buttonOverlay_colorB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: buttonOverlay_filterHover
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: buttonOverlay_colorHoverA }
-            ScaleGradientStop { position: 1.0; color: buttonOverlay_colorHoverB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: buttonOverlay_filterPress
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: buttonOverlay_colorPressA }
-            ScaleGradientStop { position: 1.0; color: buttonOverlay_colorPressB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: buttonOverlay_filterBorder
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: buttonOverlay_colorBorderA }
-            ScaleGradientStop { position: 1.0; color: buttonOverlay_colorBorderB }
-        }
-    }
 
     //---------------------------------------------------------------------------------------------
     // ButtonPiano
@@ -803,8 +592,6 @@ Item
     property color buttonPiano_colorCheckHoverA: buttonPush_colorCheckHoverA
     property color buttonPiano_colorCheckHoverB: buttonPush_colorCheckHoverB
 
-    property color buttonPiano_colorFocus: border_colorFocus
-
     property ImageColorFilter buttonPiano_filterIcon      : icon_filter
     property ImageColorFilter buttonPiano_filterIconShadow: icon_filterShadow
     property ImageColorFilter buttonPiano_filterIconSunken: icon_filterSunken
@@ -837,25 +624,9 @@ Item
     property int buttonRound_width : dp48
     property int buttonRound_height: dp48
 
-    property int buttonRound_margins: dp3
-
-    property url buttonRound_sourceBackground: "pictures/buttonRoundMask.svg"
-    property url buttonRound_sourceBorder    : "pictures/buttonRoundBorder.svg"
-
-    property ImageColorFilter buttonRound_filterBorder    : buttonPush_filterBorder
     property ImageColorFilter buttonRound_filterIcon      : buttonPush_filterIcon
     property ImageColorFilter buttonRound_filterIconShadow: buttonPush_filterIconShadow
     property ImageColorFilter buttonRound_filterIconSunken: buttonPush_filterIconSunken
-
-    property alias buttonRound_filterDefault       : buttonPush_filterDefault
-    property alias buttonRound_filterHover         : buttonPush_filterHover
-    property alias buttonRound_filterPress         : buttonPush_filterPress
-    property alias buttonRound_filterPressHover    : buttonPush_filterPressHover
-    property alias buttonRound_filterHighlight     : buttonPush_filterHighlight
-    property alias buttonRound_filterHighlightHover: buttonPush_filterHighlightHover
-    property alias buttonRound_filterCheck         : buttonPush_filterCheck
-    property alias buttonRound_filterCheckHover    : buttonPush_filterCheckHover
-    property alias buttonRound_filterFocus         : border_filterFocus
 
     //---------------------------------------------------------------------------------------------
     // ButtonCheck
@@ -934,26 +705,7 @@ Item
     property int buttonStream_width : dp70
     property int buttonStream_height: slider_height
 
-    property url buttonStream_sourceBackground: "pictures/sliderMask.svg"
-    property url buttonStream_sourceBorder    : "pictures/sliderBorder.svg"
-
-    property variant buttonStream_borderBackground: slider_borderBackground
-
     property color buttonStream_color: scrollBar_colorA
-
-    property ImageColorFilter buttonStream_filterDefault: buttonPush_filterDefault
-    property ImageColorFilter buttonStream_filterHover  : slider_filterBarHover
-    property ImageColorFilter buttonStream_filterPress  : buttonPush_filterPress
-    property ImageColorFilter buttonStream_filterBorder : button_filterBorder
-
-    property alias buttonStream_filterDisable: buttonStream_filterDisable
-
-    ImageColorFilter
-    {
-        id: buttonStream_filterDisable
-
-        color: buttonStream_color
-    }
 
     //---------------------------------------------------------------------------------------------
     // ButtonsCheck
@@ -971,51 +723,20 @@ Item
 
     property int labelRound_height: dp40
 
-    property int labelRound_padding: dp14
-    property int labelRound_spacing: dp6
-
-    property url labelRound_sourceBackground: "pictures/labelRoundMask.svg"
-    property url labelRound_sourceBorder    : "pictures/labelRoundBorder.svg"
-
-    property variant labelRound_borderBackground: Qt.rect(64, 64, 64, 64)
+    property int labelRound_padding: buttonPush_padding
+    property int labelRound_spacing: buttonPush_spacing
 
     property color labelRound_colorA: buttonPush_colorCheckA
     property color labelRound_colorB: buttonPush_colorCheckB
 
-    property color labelRound_colorDisableA: "#787878"
+    property color labelRound_colorDisableA: "#808080"
     property color labelRound_colorDisableB: "#484848"
 
     property color labelRound_colorText: text_color
 
-    property ImageColorFilter labelRound_filterBorder    : button_filterBorder
     property ImageColorFilter labelRound_filterIcon      : icon_filter
     property ImageColorFilter labelRound_filterIconShadow: icon_filterShadow
     property ImageColorFilter labelRound_filterIconSunken: icon_filterSunken
-
-    property alias labelRound_filterDefault: labelRound_filterDefault
-    property alias labelRound_filterDisable: labelRound_filterDisable
-
-    ImageColorFilter
-    {
-        id: labelRound_filterDefault
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: labelRound_colorA }
-            ScaleGradientStop { position: 1.0; color: labelRound_colorB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: labelRound_filterDisable
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: labelRound_colorDisableA }
-            ScaleGradientStop { position: 1.0; color: labelRound_colorDisableB }
-        }
-    }
 
     //---------------------------------------------------------------------------------------------
     // LabelRoundIcon
@@ -1026,16 +747,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // LabelRoundInfo
 
-    property ImageColorFilter labelRoundInfo_filterBorder: border_filter
-
-    property alias labelRoundInfo_filterDefault: labelRoundInfo_filterDefault
-
-    ImageColorFilter
-    {
-        id: labelRoundInfo_filterDefault
-
-        color: "#323232"
-    }
+    property color labelRoundInfo_color: "#323232"
 
     //---------------------------------------------------------------------------------------------
     // LabelLoading
@@ -1086,18 +798,6 @@ Item
     property int checkBox_width : dp22
     property int checkBox_height: checkBox_width
 
-    property int checkBox_margins: lineEdit_margins
-
-    property url checkBox_sourceDefault: "pictures/checkBoxMask.svg"
-    property url checkBox_sourceBorder : "pictures/checkBoxBorder.svg"
-    property url checkBox_sourceCheck  : "pictures/checkBoxCheck.png"
-
-    property ImageColorFilter checkBox_filterBorder: border_filter
-
-    property alias checkBox_filterDefault: lineEdit_filterDefault
-    property alias checkBox_filterHover  : lineEdit_filterHover
-    property alias checkBox_filterFocus  : border_filterFocus
-
     //---------------------------------------------------------------------------------------------
     // CheckBoxText
 
@@ -1130,36 +830,10 @@ Item
     property int lineEdit_width : dp200
     property int lineEdit_height: dp40
 
-    property int lineEdit_margins: dp3
     property int lineEdit_padding: dp13
-
-    property url lineEdit_sourceDefault: "pictures/lineEditMask.svg"
-    property url lineEdit_sourceBorder : "pictures/lineEditBorder.svg"
-
-    property variant lineEdit_borderBackground: Qt.rect(32, 32, 32, 32)
 
     property color lineEdit_color     : "#dcdcdc"
     property color lineEdit_colorHover: "white"
-
-    property ImageColorFilter lineEdit_filterBorder: border_filter
-
-    property alias lineEdit_filterDefault: lineEdit_filterDefault
-    property alias lineEdit_filterHover  : lineEdit_filterHover
-    property alias lineEdit_filterFocus  : border_filterFocus
-
-    ImageColorFilter
-    {
-        id: lineEdit_filterDefault
-
-        color: lineEdit_color
-    }
-
-    ImageColorFilter
-    {
-        id: lineEdit_filterHover
-
-        color: lineEdit_colorHover
-    }
 
     //---------------------------------------------------------------------------------------------
     // LineEditLabel
@@ -1308,15 +982,6 @@ Item
     property int slider_handleWidth : dp26
     property int slider_handleHeight: dp26
 
-    property url slider_sourceBackground  : "pictures/sliderMask.svg"
-    property url slider_sourceForeground  : "pictures/sliderHandleMask.svg"
-    property url slider_sourceBorder      : "pictures/sliderBorder.svg"
-    property url slider_sourceHandle      : "pictures/sliderHandleMask.svg"
-    property url slider_sourceHandleBorder: "pictures/sliderHandleBorder.svg"
-
-    property variant slider_borderBackground: Qt.rect(39, 39, 39, 39)
-    property variant slider_borderForeground: Qt.rect(39, 39, 39, 39)
-
     property color slider_colorA: scrollBar_colorA
     property color slider_colorB: scrollBar_colorB
 
@@ -1334,81 +999,6 @@ Item
 
     property color slider_colorBarHoverA: buttonPush_colorHoverA
     property color slider_colorBarHoverB: buttonPush_colorHoverB
-
-    property ImageColorFilter slider_filterBorder: border_filter
-
-    property alias slider_filterBackground : slider_filterBackground
-    property alias slider_filterHandle     : slider_filterHandle
-    property alias slider_filterHandleHover: slider_filterHandleHover
-    property alias slider_filterHandlePress: slider_filterHandlePress
-    property alias slider_filterBar        : slider_filterBar
-    property alias slider_filterBarHover   : slider_filterBarHover
-
-    ImageColorFilter
-    {
-        id: slider_filterBackground
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: slider_colorA }
-            ScaleGradientStop { position: 1.0; color: slider_colorB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: slider_filterHandle
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: slider_colorHandleA }
-            ScaleGradientStop { position: 1.0; color: slider_colorHandleB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: slider_filterHandleHover
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: slider_colorHandleHoverA }
-            ScaleGradientStop { position: 1.0; color: slider_colorHandleHoverB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: slider_filterHandlePress
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: slider_colorHandlePressA }
-            ScaleGradientStop { position: 1.0; color: slider_colorHandlePressB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: slider_filterBar
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: slider_colorBarA }
-            ScaleGradientStop { position: 1.0; color: slider_colorBarB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: slider_filterBarHover
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: slider_colorBarHoverA }
-            ScaleGradientStop { position: 1.0; color: slider_colorBarHoverB }
-        }
-    }
 
     //---------------------------------------------------------------------------------------------
     // SliderVolume
@@ -1440,71 +1030,10 @@ Item
     property color sliderStream_colorBarDisableB: "#646464"
 
     property color sliderStream_colorBarDisableHoverA: "#f0f0f0"
-    property color sliderStream_colorBarDisableHoverB: "#787878"
+    property color sliderStream_colorBarDisableHoverB: "#808080"
 
     property color sliderStream_colorBarProgressA: "#646464"
     property color sliderStream_colorBarProgressB: "#dcdcdc"
-
-    property alias sliderStream_filterBar            : sliderStream_filterBar
-    property alias sliderStream_filterBarHover       : sliderStream_filterBarHover
-    property alias sliderStream_filterBarDisable     : sliderStream_filterBarDisable
-    property alias sliderStream_filterBarDisableHover: sliderStream_filterBarDisableHover
-    property alias sliderStream_filterBarProgress    : sliderStream_filterBarProgress
-
-    ImageColorFilter
-    {
-        id: sliderStream_filterBar
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: sliderStream_colorBarA }
-            ScaleGradientStop { position: 1.0; color: sliderStream_colorBarB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: sliderStream_filterBarHover
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: sliderStream_colorBarHoverA }
-            ScaleGradientStop { position: 1.0; color: sliderStream_colorBarHoverB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: sliderStream_filterBarDisable
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: sliderStream_colorBarDisableA }
-            ScaleGradientStop { position: 1.0; color: sliderStream_colorBarDisableB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: sliderStream_filterBarDisableHover
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: sliderStream_colorBarDisableHoverA }
-            ScaleGradientStop { position: 1.0; color: sliderStream_colorBarDisableHoverB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: sliderStream_filterBarProgress
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: sliderStream_colorBarProgressA }
-            ScaleGradientStop { position: 1.0; color: sliderStream_colorBarProgressB }
-        }
-    }
 
     //---------------------------------------------------------------------------------------------
     // BaseTabs
@@ -1617,10 +1146,10 @@ Item
     property color itemList_colorDefaultB: "#202020"
 
     property color itemList_colorHoverA: "#646464"
-    property color itemList_colorHoverB: "#424242"
+    property color itemList_colorHoverB: "#404040"
 
-    property color itemList_colorPressA: "#787878"
-    property color itemList_colorPressB: "#505050"
+    property color itemList_colorPressA: "#808080"
+    property color itemList_colorPressB: "#484848"
 
     property color itemList_colorContextualHoverA: itemList_colorPressA
     property color itemList_colorContextualHoverB: itemList_colorPressB
@@ -1665,7 +1194,7 @@ Item
     property color itemTab_colorHoverB: buttonPiano_colorHoverB
 
     property color itemTab_colorContextualHoverA: "#a0a0a0"
-    property color itemTab_colorContextualHoverB: "#505050"
+    property color itemTab_colorContextualHoverB: "#484848"
 
     property color itemTab_colorSelectA: buttonPush_colorCheckA
     property color itemTab_colorSelectB: buttonPush_colorCheckB
@@ -1927,7 +1456,7 @@ Item
 
         //-----------------------------------------------------------------------------------------
 
-        barWindow_colorA = "#787878";
+        barWindow_colorA = "#808080";
         barWindow_colorB = "#484848";
 
         barWindow_colorDisableA = barWindow_colorB;
@@ -1943,7 +1472,7 @@ Item
         buttonPush_colorB = "#323232";
 
         buttonPush_colorHoverA = "#848484";
-        buttonPush_colorHoverB = "#424242";
+        buttonPush_colorHoverB = "#404040";
 
         buttonPush_colorPressA = "#242424";
         buttonPush_colorPressB = "#484848";
@@ -1962,6 +1491,11 @@ Item
 
         buttonPush_colorCheckHoverA = buttonPush_colorCheckA;
         buttonPush_colorCheckHoverB = "#00b4ff";
+
+        //-----------------------------------------------------------------------------------------
+
+        buttonOverlay_colorA = "#323232";
+        buttonOverlay_colorB = "black";
 
         //-----------------------------------------------------------------------------------------
 
@@ -2007,7 +1541,7 @@ Item
         sliderStream_colorBarDisableB = "#646464";
 
         sliderStream_colorBarDisableHoverA = "#f0f0f0";
-        sliderStream_colorBarDisableHoverB = "#787878";
+        sliderStream_colorBarDisableHoverB = "#808080";
 
         sliderStream_colorBarProgressA = "#646464";
         sliderStream_colorBarProgressB = "#dcdcdc";
@@ -2020,12 +1554,11 @@ Item
         itemList_colorDefaultA = "#282828";
         itemList_colorDefaultB = "#202020";
 
-        itemList_colorHoverB = "#424242";
+        itemList_colorHoverB = "#404040";
 
-        itemList_colorPressA = "#787878";
-        itemList_colorPressB = "#505050";
+        itemList_colorPressB = "#484848";
 
-        itemList_colorContextualHoverB = "#505050";
+        itemList_colorContextualHoverB = "#484848";
 
         itemList_colorSelectFocusA = buttonPush_colorCheckA;
         itemList_colorSelectFocusB = buttonPush_colorCheckB;
@@ -2039,7 +1572,7 @@ Item
         //-----------------------------------------------------------------------------------------
 
         itemTab_colorContextualHoverA = "#a0a0a0";
-        itemTab_colorContextualHoverB = "#505050";
+        itemTab_colorContextualHoverB = "#484848";
 
         itemTab_colorHighlightContextualA = "#00b4ff";
         itemTab_colorHighlightContextualB = "#0064c8";
@@ -2102,6 +1635,11 @@ Item
 
         //-----------------------------------------------------------------------------------------
 
+        buttonOverlay_colorA = "#242424";
+        buttonOverlay_colorB = buttonOverlay_colorA;
+
+        //-----------------------------------------------------------------------------------------
+
         buttonPianoConfirm_colorHoverB = buttonPianoConfirm_colorHoverA;
 
         buttonPianoConfirm_colorPressA = "#960000";
@@ -2159,7 +1697,6 @@ Item
 
         itemList_colorHoverB = itemList_colorHoverA;
 
-        itemList_colorPressA = "#484848";
         itemList_colorPressB = itemList_colorPressA;
 
         itemList_colorContextualHoverB = itemList_colorContextualHoverA;
@@ -2175,7 +1712,7 @@ Item
 
         //-----------------------------------------------------------------------------------------
 
-        itemTab_colorContextualHoverA = "#787878";
+        itemTab_colorContextualHoverA = "#808080";
         itemTab_colorContextualHoverB = itemTab_colorContextualHoverA;
 
         itemTab_colorHighlightContextualA = "#008cdc";

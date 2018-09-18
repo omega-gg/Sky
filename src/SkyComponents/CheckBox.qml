@@ -22,18 +22,31 @@ BaseButton
     id: checkBox
 
     //---------------------------------------------------------------------------------------------
-    // Properties private
+    // Properties
     //---------------------------------------------------------------------------------------------
 
-    property variant pSourceSize: Qt.size(width, height)
+    property int margins: height / 8
+
+//#QT_4
+    property int radius: (height - margins * 2) / 3.75
+//#ELSE
+    property int radius: background.height / 3.75
+//#END
+
+    property int borderSize: st.border_size
+
+    //---------------------------------------------------------------------------------------------
+    // Style
+
+    property color color     : st.lineEdit_color
+    property color colorHover: st.lineEdit_colorHover
 
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
-    // Style
 
-    property alias filterDefault: background .filter
-    property alias filterBorder : imageBorder.filter
+    property alias background: background
+    property alias itemFocus : itemFocus
 
     //---------------------------------------------------------------------------------------------
     // Signals
@@ -69,19 +82,22 @@ BaseButton
     // Childs
     //---------------------------------------------------------------------------------------------
 
-    Image
+    Rectangle
     {
-        anchors.fill: parent
+        id: itemFocus
 
-        anchors.margins: -st.checkBox_margins
+        anchors.fill: background
 
-        sourceSize: pSourceSize
+        anchors.margins: -borderSize
+
+        radius: checkBox.radius
 
         opacity: (window.isActive && isFocused)
 
-        source: st.checkBox_sourceBorder
+        color: "transparent"
 
-        filter: st.checkBox_filterFocus
+        border.width: borderSize
+        border.color: st.border_colorFocus
 
         Behavior on opacity
         {
@@ -89,25 +105,28 @@ BaseButton
         }
     }
 
-    Image
+    Rectangle
     {
         id: background
 
         anchors.fill: parent
 
-        sourceSize: pSourceSize
+        anchors.margins: margins
 
-        source: st.checkBox_sourceDefault
+        radius: checkBox.radius
 
-        filter: (checkBox.enabled && (isFocused || isHovered)) ? st.checkBox_filterHover
-                                                               : st.checkBox_filterDefault
+        color: (checkBox.enabled && (isFocused || isHovered)) ? colorHover
+                                                              : checkBox.color
+
+        border.width: borderSize
+        border.color: st.border_color
     }
 
     Image
     {
         anchors.fill: parent
 
-        sourceSize: pSourceSize
+        sourceSize: Qt.size(width, height)
 
         visible: checked
 
@@ -119,18 +138,5 @@ BaseButton
         {
             PropertyAnimation { duration: st.duration_fast }
         }
-    }
-
-    Image
-    {
-        id: imageBorder
-
-        anchors.fill: parent
-
-        sourceSize: pSourceSize
-
-        source: st.checkBox_sourceBorder
-
-        filter: st.checkBox_filterBorder
     }
 }

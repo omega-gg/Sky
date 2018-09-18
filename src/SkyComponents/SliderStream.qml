@@ -44,18 +44,27 @@ Item
     property real opacityProgressA: st.sliderStream_opacityProgressA
     property real opacityProgressB: st.sliderStream_opacityProgressB
 
-    property ImageColorFilter filterBar            : st.sliderStream_filterBar
-    property ImageColorFilter filterBarHover       : st.sliderStream_filterBarHover
-    property ImageColorFilter filterBarDisable     : st.sliderStream_filterBarDisable
-    property ImageColorFilter filterBarDisableHover: st.sliderStream_filterBarDisableHover
-    property ImageColorFilter filterBarProgress    : st.sliderStream_filterBarProgress
+    property color colorBarA: st.sliderStream_colorBarA
+    property color colorBarB: st.sliderStream_colorBarB
+
+    property color colorBarHoverA: st.sliderStream_colorBarHoverA
+    property color colorBarHoverB: st.sliderStream_colorBarHoverB
+
+    property color colorBarDisableA: st.sliderStream_colorBarDisableA
+    property color colorBarDisableB: st.sliderStream_colorBarDisableB
+
+    property color colorBarDisableHoverA: st.sliderStream_colorBarDisableHoverA
+    property color colorBarDisableHoverB: st.sliderStream_colorBarDisableHoverB
+
+    property color colorBarProgressA: st.sliderStream_colorBarProgressA
+    property color colorBarProgressB: st.sliderStream_colorBarProgressB
 
     //---------------------------------------------------------------------------------------------
     // Private
 
     property int pState: 0
 
-    property int pProgressWidth: slider.width * pProgress
+    property int pProgressWidth: slider.background.width * pProgress
 
     property real pProgress: 0.0
 
@@ -84,12 +93,6 @@ Item
     property alias foreground: slider.foreground
 
     property alias handle: slider.handle
-
-    //---------------------------------------------------------------------------------------------
-    // Style
-
-    property alias filterHandle     : slider.filterHandle
-    property alias filterHandleHover: slider.filterHandleHover
 
     //---------------------------------------------------------------------------------------------
     // Signal
@@ -238,11 +241,17 @@ Item
 
         wheelEnabled: false
 
-        filterBar: (active) ? sliderStream.filterBar
-                            : filterBarDisable
+        colorBarA: (active) ? sliderStream.colorBarA
+                            : colorBarDisableA
 
-        filterBarHover: (active) ? sliderStream.filterBarHover
-                                 : filterBarDisableHover
+        colorBarB: (active) ? sliderStream.colorBarB
+                            : colorBarDisableB
+
+        colorBarHoverA: (active) ? sliderStream.colorBarHoverA
+                                 : colorBarDisableHoverA
+
+        colorBarHoverB: (active) ? sliderStream.colorBarHoverB
+                                 : colorBarDisableHoverB
 
         background.z: -1
 
@@ -251,29 +260,35 @@ Item
 
         onHandleReleased: sliderStream.handleReleased()
 
-        BorderImageScale
+        Rectangle
         {
-            id: imageProgress
+            id: itemProgress
 
-            anchors.top   : parent.top
-            anchors.bottom: parent.bottom
+            anchors.left  : parent.background.left
+            anchors.top   : parent.background.top
+            anchors.bottom: parent.background.bottom
 
             width: Math.max(st.dp32, pProgressWidth)
+
+            radius: parent.radius
 
             z: -1
 
             visible: (opacity != 0.0)
             opacity: 0.0
 
-            source: st.slider_sourceForeground
-
-            border
+            gradient: Gradient
             {
-                left : slider.borderForeground.x;     top   : slider.borderForeground.y
-                right: slider.borderForeground.width; bottom: slider.borderForeground.height
+                GradientStop { position: 0.0; color: colorBarProgressA }
+                GradientStop { position: 1.0; color: colorBarProgressB }
             }
 
-            filter: filterBarProgress
+//#QT_4
+            smooth: true
+//#END
+
+            border.width: slider.borderSize
+            border.color: st.border_color
 
             states:
             [
@@ -295,7 +310,7 @@ Item
                             {
                                 behaviorOpacity.enabled = true;
 
-                                imageProgress.opacity = 0.0;
+                                itemProgress.opacity = 0.0;
 
                                 behaviorOpacity.enabled = false;
                             }
@@ -321,13 +336,13 @@ Item
                 {
                     behaviorOpacity.enabled = true;
 
-                    imageProgress.opacity = opacityProgressB;
+                    itemProgress.opacity = opacityProgressB;
 
                     behaviorOpacity.enabled = false;
                 }
                 else if (pProgress == 0)
                 {
-                    imageProgress.opacity = 0;
+                    itemProgress.opacity = 0;
                 }
             }
 

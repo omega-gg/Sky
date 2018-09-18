@@ -27,22 +27,38 @@ MouseArea
 
     property bool isHovered: containsMouse
 
+    property int margins      : height / 5
+    property int marginsHandle: height / 8
+
+    property int radius: background.height
+
+    property int borderSize: st.border_size
+
     //---------------------------------------------------------------------------------------------
     // Style
 
-    property variant borderBackground: st.slider_borderBackground
-    property variant borderForeground: st.slider_borderForeground
+    property color colorA: st.slider_colorA
+    property color colorB: st.slider_colorB
 
-    property ImageColorFilter filterHandle     : st.slider_filterHandle
-    property ImageColorFilter filterHandleHover: st.slider_filterHandleHover
-    property ImageColorFilter filterHandlePress: st.slider_filterHandlePress
-    property ImageColorFilter filterBar        : st.slider_filterBar
-    property ImageColorFilter filterBarHover   : st.slider_filterBarHover
+    property color colorHandleA: st.slider_colorHandleA
+    property color colorHandleB: st.slider_colorHandleB
+
+    property color colorHandleHoverA: st.slider_colorHandleHoverA
+    property color colorHandleHoverB: st.slider_colorHandleHoverB
+
+    property color colorHandlePressA: st.slider_colorHandlePressA
+    property color colorHandlePressB: st.slider_colorHandlePressB
+
+    property color colorBarA: st.slider_colorBarA
+    property color colorBarB: st.slider_colorBarB
+
+    property color colorBarHoverA: st.slider_colorBarHoverA
+    property color colorBarHoverB: st.slider_colorBarHoverB
 
     //---------------------------------------------------------------------------------------------
     // Private
 
-    property variant pSourceSize: Qt.size(handle.width, handle.height)
+    property bool pHovered: (enabled && isHovered)
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -66,12 +82,6 @@ MouseArea
 
     property alias pageStep  : model.pageStep
     property alias singleStep: model.singleStep
-
-    //---------------------------------------------------------------------------------------------
-    // Style
-
-    property alias filterBackground: background .filter
-    property alias filterBorder    : imageBorder.filter
 
     //---------------------------------------------------------------------------------------------
     // Signal
@@ -151,46 +161,71 @@ MouseArea
         }
     }
 
-    BorderImageScale
+    Rectangle
     {
         id: background
 
         anchors.fill: parent
 
-        source: st.slider_sourceBackground
+        anchors.margins: margins
 
-        border
+        radius: slider.radius
+
+        gradient: Gradient
         {
-            left : borderBackground.x;     top   : borderBackground.y
-            right: borderBackground.width; bottom: borderBackground.height
+            GradientStop { position: 0.0; color: colorA }
+            GradientStop { position: 1.0; color: colorB }
         }
 
-        filter: st.slider_filterBackground
+//#QT_4
+        smooth: true
+//#END
+
+        border.width: borderSize
+        border.color: st.border_color
     }
 
-    BorderImageScale
+    Rectangle
     {
         id: foreground
 
+        anchors.left  : parent.left
         anchors.top   : parent.top
         anchors.bottom: parent.bottom
 
-        width: handle.x + handle.width
+        anchors.margins: margins
+
+        width: handle.x + handleBackground.width - margins
+
+        radius: slider.radius
 
         visible: (value > 0)
 
-        source: st.slider_sourceForeground
-
-        border
+        gradient: Gradient
         {
-            left : borderForeground.x;     top   : borderForeground.y
-            right: borderForeground.width; bottom: borderForeground.height
+            GradientStop
+            {
+                position: 0.0
+
+                color: (pHovered) ? colorBarHoverA
+                                  : colorBarA
+            }
+
+            GradientStop
+            {
+                position: 1.0
+
+                color: (pHovered) ? colorBarHoverB
+                                  : colorBarB
+            }
         }
 
-        filter: (slider.enabled && isHovered) ? filterBarHover
-                                              : filterBar
+//#QT_4
+        smooth: true
+//#END
 
-        scaling: false
+        border.width: borderSize
+        border.color: st.border_color
     }
 
     MouseArea
@@ -208,54 +243,61 @@ MouseArea
 
         onXChanged: position = x
 
-        Image
+        Rectangle
         {
             id: handleBackground
 
             anchors.fill: parent
 
-            sourceSize: pSourceSize
+            anchors.margins: marginsHandle
 
-            source: st.slider_sourceHandle
+            radius: slider.radius
 
-            filter:
+            gradient: Gradient
             {
-                if (slider.pressed)
+                GradientStop
                 {
-                    return filterHandlePress;
+                    position: 0.0
+
+                    color:
+                    {
+                        if (slider.pressed)
+                        {
+                            return colorHandlePressA;
+                        }
+                        else if (handle.containsMouse)
+                        {
+                            return colorHandleHoverA;
+                        }
+                        else return colorHandleA;
+                    }
                 }
-                else if (handle.containsMouse)
+
+                GradientStop
                 {
-                    return filterHandleHover;
+                    position: 1.0
+
+                    color:
+                    {
+                        if (slider.pressed)
+                        {
+                            return colorHandlePressB;
+                        }
+                        else if (handle.containsMouse)
+                        {
+                            return colorHandleHoverB;
+                        }
+                        else return colorHandleB;
+                    }
                 }
-                else return filterHandle;
             }
+
+//#QT_4
+            smooth: true
+//#END
+
+            border.width: borderSize
+            border.color: st.border_color
         }
-
-        Image
-        {
-            anchors.fill: parent
-
-            sourceSize: pSourceSize
-
-            source: st.slider_sourceHandleBorder
-        }
-    }
-
-    BorderImageScale
-    {
-        id: imageBorder
-
-        anchors.fill: parent
-
-        source: st.slider_sourceBorder
-
-        border
-        {
-            left : borderBackground.x;     top   : borderBackground.y
-            right: borderBackground.width; bottom: borderBackground.height
-        }
-
-        filter: st.slider_filterBorder
     }
 }

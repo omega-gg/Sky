@@ -388,8 +388,10 @@ MouseArea
         width : pGetWidth()
         height: width
 
-        iconWidth : Math.round(width / 1.8)
+        iconWidth : Math.round(width / 2)
         iconHeight: iconWidth
+
+        borderSize: background.width / 16
 
         visible: (playerTab == tab) ? player.hasPreviousTrack
                                     : tab   .hasPreviousTrack
@@ -423,6 +425,8 @@ MouseArea
         iconWidth : buttonPrevious.iconWidth
         iconHeight: buttonPrevious.iconHeight
 
+        borderSize: buttonPrevious.borderSize
+
         visible: (playerTab == tab) ? player.hasNextTrack
                                     : tab   .hasNextTrack
 
@@ -451,6 +455,8 @@ MouseArea
         iconWidth : buttonPrevious.iconWidth
         iconHeight: buttonPrevious.iconHeight
 
+        borderSize: buttonPrevious.borderSize
+
         visible: (loading || enabled)
 
         enabled: (tab != null && tab.isValid)
@@ -474,7 +480,7 @@ MouseArea
 
             anchors.centerIn: parent
 
-            width : Math.round(buttonPlay.width * 0.6)
+            width : Math.round(buttonPlay.width / 1.8)
             height: width
 
             visible: loading

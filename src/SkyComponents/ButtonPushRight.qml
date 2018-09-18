@@ -23,13 +23,15 @@ ButtonPush
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    paddingLeft: padding - st.buttonPushRight_extra
+    clip: true
 
-    imageFocus.anchors.leftMargin: 0
+    paddingLeft: padding - margins
+
+    background.anchors.leftMargin: -margins - radius
 
     //---------------------------------------------------------------------------------------------
-    // Style
+    // Childs
+    //---------------------------------------------------------------------------------------------
 
-    sourceBackground: st.buttonPushRight_sourceBackground
-    sourceBorder    : st.buttonPushRight_sourceBorder
+    BorderButton {}
 }

@@ -617,21 +617,6 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWindow * parent, Qt::Win
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ bool WAbstractView::close()
-{
-    Q_D(WAbstractView);
-
-    ShowWindow(d->handle, SW_HIDE);
-
-#ifdef QT_4
-    return QWidget::close();
-#else
-    return QQuickWindow::close();
-#endif
-}
-
-//-------------------------------------------------------------------------------------------------
-
 #ifdef QT_4
 /* Q_INVOKABLE */ void WAbstractView::move(int x, int y)
 #else
@@ -915,6 +900,23 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWindow * parent, Qt::Win
 
 #endif // Q_OS_WIN
 #ifdef SK_WIN_NATIVE
+
+//-------------------------------------------------------------------------------------------------
+// Virtual interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ bool WAbstractView::close()
+{
+    Q_D(WAbstractView);
+
+    ShowWindow(d->handle, SW_HIDE);
+
+#ifdef QT_4
+    return QWidget::close();
+#else
+    return QQuickWindow::close();
+#endif
+}
 
 //-------------------------------------------------------------------------------------------------
 // Events

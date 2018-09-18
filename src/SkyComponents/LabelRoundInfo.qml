@@ -23,6 +23,6 @@ LabelRound
     // Settings style
     //---------------------------------------------------------------------------------------------
 
-    filterDefault: st.labelRoundInfo_filterDefault
-    filterBorder : st.labelRoundInfo_filterBorder
+    colorA: st.labelRoundInfo_color
+    colorB: st.labelRoundInfo_color
 }

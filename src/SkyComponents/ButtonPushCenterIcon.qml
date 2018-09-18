@@ -23,12 +23,26 @@ ButtonPushIcon
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    imageFocus.anchors.leftMargin : 0
-    imageFocus.anchors.rightMargin: 0
+    radius: 0
 
+    clip: true
+
+    background.anchors.leftMargin: -(borderSize / 2)
+
+    background.anchors.rightMargin: background.anchors.leftMargin
+
+// FIXME Qt 4: Something is wrong with clipping and margins.
+//#QT_4
     //---------------------------------------------------------------------------------------------
-    // Style
+    // Childs
+    //---------------------------------------------------------------------------------------------
 
-    sourceBackground: st.buttonPushCenter_sourceBackground
-    sourceBorder    : st.buttonPushCenter_sourceBorder
+    RectangleBorders
+    {
+        anchors.fill: background
+
+        borderTop   : 0
+        borderBottom: 0
+    }
+//#END
 }

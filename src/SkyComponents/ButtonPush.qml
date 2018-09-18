@@ -25,13 +25,13 @@ BaseButtonPush
     // Properties
     //---------------------------------------------------------------------------------------------
 
+    property int minimumWidth: -1
+    property int maximumWidth: -1
+
     property int padding: st.buttonPush_padding
 
     property int paddingLeft : padding
     property int paddingRight: padding
-
-    property int minimumWidth: -1
-    property int maximumWidth: -1
 
     //---------------------------------------------------------------------------------------------
     // Aliases

@@ -27,17 +27,10 @@ Item
 
     /* read */ property int count: (model) ? model.count : 0
 
-    /* read */ property int buttonWidth: (width - extraLeft - extraRight) / count
+    /* read */ property int buttonWidth: (width - extra * 2) / count
 
     property int padding: st.buttonPush_padding
-
-    property int paddingLeft : padding
-    property int paddingRight: padding
-
-    property int extra: st.buttonsCheck_extra
-
-    property int extraLeft : extra
-    property int extraRight: extra
+    property int extra  : st.buttonsCheck_extra
 
     property int currentIndex: -1
 
@@ -70,14 +63,14 @@ Item
         {
              return index * buttonWidth;
         }
-        else return index * buttonWidth + extraLeft;
+        else return index * buttonWidth + extra;
     }
 
     function pGetWidth(index, x)
     {
         if (index == 0)
         {
-            return buttonWidth + extraLeft;
+            return buttonWidth + extra;
         }
         else if (index == count - 1)
         {
@@ -133,8 +126,6 @@ Item
 
                     padding: buttonsCheck.padding
 
-                    paddingRight: padding - extraLeft
-
                     checked   : (index == currentIndex)
                     checkHover: false
 
@@ -152,7 +143,7 @@ Item
                 {
                     anchors.fill: parent
 
-                    padding: buttonsCheck.padding
+                    padding: buttonsCheck.padding - margins
 
                     checked   : (index == currentIndex)
                     checkHover: false
@@ -172,8 +163,6 @@ Item
                     anchors.fill: parent
 
                     padding: buttonsCheck.padding
-
-                    paddingLeft: padding - extraRight
 
                     checked   : (index == currentIndex)
                     checkHover: false

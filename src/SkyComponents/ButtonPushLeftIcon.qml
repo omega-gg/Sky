@@ -20,26 +20,25 @@ import Sky     1.0
 ButtonPushIcon
 {
     //---------------------------------------------------------------------------------------------
-    // Properties
-    //---------------------------------------------------------------------------------------------
-
-    property int padding: st.buttonPushLeftIcon_padding
-
-    //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    imageFocus.anchors.rightMargin: 0
+    clip: true
 
     itemIcon.anchors.centerIn: undefined
 
     itemIcon.anchors.verticalCenter: verticalCenter
 
-    itemIcon.x: padding / 2
+    itemIcon.x: radius / 2 - border.width
 
     //---------------------------------------------------------------------------------------------
-    // Style
+    // Childs
+    //---------------------------------------------------------------------------------------------
 
-    sourceBackground: st.buttonPushLeft_sourceBackground
-    sourceBorder    : st.buttonPushLeft_sourceBorder
+    BorderButton
+    {
+        id: border
+
+        anchors.right: parent.right
+    }
 }

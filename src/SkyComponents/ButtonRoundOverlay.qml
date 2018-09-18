@@ -17,29 +17,11 @@
 import QtQuick 1.0
 import Sky     1.0
 
-ButtonRound
+ButtonPushOverlay
 {
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    opacity: (isHovered || isPressed) ? st.buttonOverlay_opacityHover
-                                      : st.buttonOverlay_opacityDefault
-
-    //---------------------------------------------------------------------------------------------
-    // Style
-
-    filterDefault   : st.buttonOverlay_filterDefault
-    filterHover     : st.buttonOverlay_filterHover
-    filterPress     : st.buttonOverlay_filterPress
-    filterBorder    : st.buttonOverlay_filterBorder
-
-    //---------------------------------------------------------------------------------------------
-    // Animations
-    //---------------------------------------------------------------------------------------------
-
-    Behavior on opacity
-    {
-        PropertyAnimation { duration: st.duration_faster }
-    }
+    radius: height
 }

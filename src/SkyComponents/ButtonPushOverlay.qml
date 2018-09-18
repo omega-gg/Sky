@@ -29,10 +29,31 @@ ButtonPushIcon
     //---------------------------------------------------------------------------------------------
     // Style
 
-    filterDefault: st.buttonOverlay_filterDefault
-    filterHover  : st.buttonOverlay_filterHover
-    filterPress  : st.buttonOverlay_filterPress
-    filterBorder : st.buttonOverlay_filterBorder
+    colorA: (highlighted) ? st.buttonPush_colorHighlightA
+                          : st.buttonOverlay_colorA
+
+    colorB: (highlighted) ? st.buttonPush_colorHighlightB
+                          : st.buttonOverlay_colorB
+
+    colorHoverA: (highlighted) ? st.buttonPush_colorHighlightHoverA
+                               : st.buttonOverlay_colorHoverA
+
+    colorHoverB: (highlighted) ? st.buttonPush_colorHighlightHoverB
+                               : st.buttonOverlay_colorHoverB
+
+    colorPressA: (highlighted || checkable) ? st.buttonPush_colorCheckA
+                                            : st.buttonOverlay_colorPressA
+
+    colorPressB: (highlighted || checkable) ? st.buttonPush_colorCheckB
+                                            : st.buttonOverlay_colorPressB
+
+    colorPressHoverA: (highlighted || checkable) ? st.buttonPush_colorCheckHoverA
+                                                 : st.buttonOverlay_colorPressA
+
+    colorPressHoverB: (highlighted || checkable) ? st.buttonPush_colorCheckHoverB
+                                                 : st.buttonOverlay_colorPressB
+
+    background.border.color: st.buttonOverlay_colorBorderA
 
     //---------------------------------------------------------------------------------------------
     // Animations

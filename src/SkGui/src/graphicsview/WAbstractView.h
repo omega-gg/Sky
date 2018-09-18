@@ -66,8 +66,6 @@ public: // Interface
     Q_INVOKABLE void raise();
     Q_INVOKABLE void lower();
 
-    Q_INVOKABLE bool close();
-
 #ifdef QT_4
     Q_INVOKABLE void move(int x, int y);
     Q_INVOKABLE void move(const QPoint & position);
@@ -114,6 +112,9 @@ public: // Interface
 #endif
 
 #ifdef SK_WIN_NATIVE
+public: // Virtual interface
+    Q_INVOKABLE virtual bool close();
+
 protected: // Events
 #ifdef QT_4
     /* virtual */ bool winEvent(MSG * msg, long * result);

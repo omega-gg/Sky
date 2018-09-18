@@ -55,7 +55,7 @@ BaseButton
     property color colorPressHoverB: (highlighted || checkable) ? st.buttonPiano_colorCheckHoverB
                                                                 : st.buttonPiano_colorPressHoverB
 
-    property color colorFocus: st.buttonPiano_colorFocus
+    property color colorFocus: st.button_colorFocus
 
     //---------------------------------------------------------------------------------------------
     // Aliases

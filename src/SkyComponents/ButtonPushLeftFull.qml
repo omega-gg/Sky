@@ -23,13 +23,15 @@ ButtonPushFull
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    paddingRight: padding - st.buttonPushLeft_extra
+    clip: true
 
-    imageFocus.anchors.rightMargin: 0
+    paddingRight: padding - margins - borderSize
+
+    background.anchors.rightMargin: -margins - radius
 
     //---------------------------------------------------------------------------------------------
-    // Style
+    // Childs
+    //---------------------------------------------------------------------------------------------
 
-    sourceBackground: st.buttonPushLeft_sourceBackground
-    sourceBorder    : st.buttonPushLeft_sourceBorder
+    BorderButton { anchors.right: parent.right }
 }

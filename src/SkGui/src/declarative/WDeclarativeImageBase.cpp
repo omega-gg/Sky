@@ -1004,9 +1004,9 @@ void WDeclarativeImageBase::setFilter(WImageFilter * filter)
 
             pixmapChange();
 
-    #ifdef QT_LATEST
+#ifdef QT_LATEST
             d->updateTexture = true;
-    #endif
+#endif
 
             update();
         }

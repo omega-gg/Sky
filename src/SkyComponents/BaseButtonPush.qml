@@ -22,42 +22,54 @@ BaseButton
     id: baseButtonPush
 
     //---------------------------------------------------------------------------------------------
-    // Properties style
+    // Properties
     //---------------------------------------------------------------------------------------------
 
-    property variant borderBackground: st.buttonPush_borderBackground
+    property int margins: height / 8
 
-    property ImageColorFilter filterDefault: (highlighted) ? st.buttonPush_filterHighlight
-                                                           : st.buttonPush_filterDefault
+//#QT_4
+    property int radius: (height - margins * 2) / 3.75
+//#ELSE
+    property int radius: background.height / 3.75
+//#END
 
-    property ImageColorFilter filterHover: (highlighted) ? st.buttonPush_filterHighlightHover
-                                                         : st.buttonPush_filterHover
+    property int borderSize: st.border_size
 
-    property ImageColorFilter filterPress: (highlighted || checkable) ? st.buttonPush_filterCheck
-                                                                      : st.buttonPush_filterPress
+    //---------------------------------------------------------------------------------------------
+    // Style
 
-    property ImageColorFilter filterPressHover: (highlighted
-                                                 ||
-                                                 checkable) ? st.buttonPush_filterCheckHover
-                                                            : st.buttonPush_filterPressHover
+    property color colorA: (highlighted) ? st.buttonPush_colorHighlightA
+                                         : st.buttonPush_colorA
+
+    property color colorB: (highlighted) ? st.buttonPush_colorHighlightB
+                                         : st.buttonPush_colorB
+
+    property color colorHoverA: (highlighted) ? st.buttonPush_colorHighlightHoverA
+                                              : st.buttonPush_colorHoverA
+
+    property color colorHoverB: (highlighted) ? st.buttonPush_colorHighlightHoverB
+                                              : st.buttonPush_colorHoverB
+
+    property color colorPressA: (highlighted || checkable) ? st.buttonPush_colorCheckA
+                                                           : st.buttonPush_colorPressA
+
+    property color colorPressB: (highlighted || checkable) ? st.buttonPush_colorCheckB
+                                                           : st.buttonPush_colorPressB
+
+    property color colorPressHoverA: (highlighted || checkable) ? st.buttonPush_colorCheckHoverA
+                                                                : st.buttonPush_colorPressHoverA
+
+    property color colorPressHoverB: (highlighted || checkable) ? st.buttonPush_colorCheckHoverB
+                                                                : st.buttonPush_colorPressHoverB
+
+    property color colorFocus: st.button_colorFocus
 
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    property alias background : background
-    property alias imageBorder: imageBorder
-    property alias imageFocus : imageFocus
-
-    //---------------------------------------------------------------------------------------------
-    // Style
-
-    property alias sourceBackground: background .source
-    property alias sourceBorder    : imageBorder.source
-    property alias sourceFocus     : imageFocus .source
-
-    property alias filterBorder: imageBorder.filter
-    property alias filterFocus : imageFocus .filter
+    property alias background: background
+    property alias itemFocus : itemFocus
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -69,25 +81,20 @@ BaseButton
     // Childs
     //---------------------------------------------------------------------------------------------
 
-    BorderImageScale
+    Rectangle
     {
-        id: imageFocus
+        id: itemFocus
 
-        anchors.fill: parent
+        anchors.fill: background
 
-        anchors.margins: -st.buttonPush_margins
+        anchors.margins: -borderSize
+
+        radius: baseButtonPush.radius
 
         opacity: (window.isActive && isFocused)
 
-        source: imageBorder.source
-
-        border
-        {
-            left : borderBackground.x;     top   : borderBackground.y
-            right: borderBackground.width; bottom: borderBackground.height
-        }
-
-        filter: st.buttonPush_filterFocus
+        border.width: borderSize
+        border.color: colorFocus
 
         Behavior on opacity
         {
@@ -95,40 +102,77 @@ BaseButton
         }
     }
 
-    BorderImageScale
+    Rectangle
     {
         id: background
 
         anchors.fill: parent
 
-        source: st.buttonPush_sourceBackground
+        anchors.margins: margins
 
-        border
-        {
-            left : borderBackground.x;     top   : borderBackground.y
-            right: borderBackground.width; bottom: borderBackground.height
-        }
+        radius: baseButtonPush.radius
 
-        filter:
+        gradient: Gradient
         {
-            if (isPressed)
+            GradientStop
             {
-                return filterPress;
-            }
-            else if (checked)
-            {
-                if (isHovered && checkHover)
+                position: 0.0
+
+                color:
                 {
-                     return filterPressHover;
+                    if (isPressed)
+                    {
+                        return colorPressA;
+                    }
+                    else if (checked)
+                    {
+                        if (isHovered && checkHover)
+                        {
+                             return colorPressHoverA;
+                        }
+                        else return colorPressA;
+                    }
+                    else if (isHovered)
+                    {
+                         return colorHoverA;
+                    }
+                    else return colorA;
                 }
-                else return filterPress;
             }
-            else if (isHovered)
+
+            GradientStop
             {
-                 return filterHover;
+                position: 1.0
+
+                color:
+                {
+                    if (isPressed)
+                    {
+                        return colorPressB;
+                    }
+                    else if (checked)
+                    {
+                        if (isHovered && checkHover)
+                        {
+                             return colorPressHoverB;
+                        }
+                        else return colorPressB;
+                    }
+                    else if (isHovered)
+                    {
+                         return colorHoverB;
+                    }
+                    else return colorB;
+                }
             }
-            else return filterDefault;
         }
+
+//#QT_4
+        smooth: true
+//#END
+
+        border.width: borderSize
+        border.color: st.border_color
     }
 
     BorderImageScale

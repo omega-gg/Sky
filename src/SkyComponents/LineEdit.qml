@@ -22,28 +22,31 @@ BaseLineEdit
     id: lineEdit
 
     //---------------------------------------------------------------------------------------------
-    // Properties style
+    // Properties
     //---------------------------------------------------------------------------------------------
 
-    property variant borderBackground: st.lineEdit_borderBackground
+    property int margins: height / 8
+
+//#QT_4
+    property int radius: (height - margins * 2) / 5
+//#ELSE
+    property int radius: background.height / 5
+//#END
+
+    property int borderSize: st.border_size
+
+    //---------------------------------------------------------------------------------------------
+    // Style
+
+    property color color     : st.lineEdit_color
+    property color colorHover: st.lineEdit_colorHover
 
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    property alias background : background
-    property alias imageBorder: imageBorder
-    property alias imageFocus : imageFocus
-
-    //---------------------------------------------------------------------------------------------
-    // Style
-
-    property alias sourceBackground: background .source
-    property alias sourceBorder    : imageBorder.source
-
-    property alias filterDefault: background .filter
-    property alias filterBorder : imageBorder.filter
-    property alias filterFocus  : imageFocus .filter
+    property alias background: background
+    property alias itemFocus : itemFocus
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -58,27 +61,24 @@ BaseLineEdit
     // Childs
     //---------------------------------------------------------------------------------------------
 
-    BorderImageScale
+    Rectangle
     {
-        id: imageFocus
+        id: itemFocus
 
-        anchors.fill: parent
+        anchors.fill: background
 
-        anchors.margins: -st.lineEdit_margins
+        anchors.margins: -borderSize
+
+        radius: lineEdit.radius
 
         z: -1
 
         opacity: (window.isActive && isFocused)
 
-        source: st.lineEdit_sourceBorder
+        color: "transparent"
 
-        border
-        {
-            left : borderBackground.x;     top   : borderBackground.y
-            right: borderBackground.width; bottom: borderBackground.height
-        }
-
-        filter: st.lineEdit_filterFocus
+        border.width: borderSize
+        border.color: st.border_colorFocus
 
         Behavior on opacity
         {
@@ -86,40 +86,22 @@ BaseLineEdit
         }
     }
 
-    BorderImageScale
+    Rectangle
     {
         id: background
 
         anchors.fill: parent
 
+        anchors.margins: margins
+
+        radius: lineEdit.radius
+
         z: -1
 
-        source: st.lineEdit_sourceDefault
+        color: (lineEdit.enabled && (isFocused || isHovered)) ? colorHover
+                                                              : lineEdit.color
 
-        border
-        {
-            left : borderBackground.x;     top   : borderBackground.y
-            right: borderBackground.width; bottom: borderBackground.height
-        }
-
-        filter: (lineEdit.enabled && (isFocused || isHovered)) ? st.lineEdit_filterHover
-                                                               : st.lineEdit_filterDefault
-    }
-
-    BorderImageScale
-    {
-        id: imageBorder
-
-        anchors.fill: parent
-
-        source: st.lineEdit_sourceBorder
-
-        border
-        {
-            left : borderBackground.x;     top   : borderBackground.y
-            right: borderBackground.width; bottom: borderBackground.height
-        }
-
-        filter: st.lineEdit_filterBorder
+        border.width: borderSize
+        border.color: st.border_color
     }
 }

@@ -22,72 +22,68 @@ Item
     id: baseLabelRound
 
     //---------------------------------------------------------------------------------------------
-    // Properties style
+    // Properties
     //---------------------------------------------------------------------------------------------
 
-    property variant borderBackground: st.labelRound_borderBackground
+    property int margins: height / 8
 
-    property ImageColorFilter filterDefault: st.labelRound_filterDefault
-    property ImageColorFilter filterDisable: st.labelRound_filterDisable
+    property int radius: background.height
+
+    property int borderSize: st.border_size
+
+    //---------------------------------------------------------------------------------------------
+    // Style
+
+    property color colorA: st.labelRound_colorA
+    property color colorB: st.labelRound_colorB
+
+    property color colorDisableA: st.labelRound_colorDisableA
+    property color colorDisableB: st.labelRound_colorDisableB
 
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    property alias background : background
-    property alias imageBorder: imageBorder
-
-    //---------------------------------------------------------------------------------------------
-    // Style
-
-    property alias sourceBackground: background .source
-    property alias sourceBorder    : imageBorder.source
-
-    property alias filterBorder: imageBorder.filter
+    property alias background: background
 
     //---------------------------------------------------------------------------------------------
     // Childs
     //---------------------------------------------------------------------------------------------
 
-    BorderImageScale
+    Rectangle
     {
         id: background
 
         anchors.fill: parent
 
-        source: st.labelRound_sourceBackground
+        anchors.margins: margins
 
-        border
+        radius: baseLabelRound.radius
+
+        gradient: Gradient
         {
-            left : borderBackground.x;     top   : borderBackground.y
-            right: borderBackground.width; bottom: borderBackground.height
+            GradientStop
+            {
+                position: 0.0
+
+                color: (baseLabelRound.enabled) ? colorA
+                                                : colorDisableA
+            }
+
+            GradientStop
+            {
+                position: 1.0
+
+                color: (baseLabelRound.enabled) ? colorB
+                                                : colorDisableB
+            }
         }
 
-        filter: (baseLabelRound.enabled) ? filterDefault
-                                         : filterDisable
-    }
+//#QT_4
+        smooth: true
+//#END
 
-    BorderImageScale
-    {
-        id: imageBorder
-
-        anchors.fill: parent
-
-        opacity: (baseLabelRound.enabled) ? 1.0 : st.border_opacityDisable
-
-        source: st.labelRound_sourceBorder
-
-        border
-        {
-            left : borderBackground.x;     top   : borderBackground.y
-            right: borderBackground.width; bottom: borderBackground.height
-        }
-
-        filter: st.labelRound_filterBorder
-
-        Behavior on opacity
-        {
-            PropertyAnimation { duration: st.duration_fast }
-        }
+        border.width: borderSize
+        border.color: st.border_color
     }
 }

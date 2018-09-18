@@ -17,34 +17,21 @@
 import QtQuick 1.0
 import Sky     1.0
 
-ButtonPushFull
+BorderVertical
 {
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    radius: 0
+    anchors.top   : background.top
+    anchors.bottom: background.bottom
 
-    clip: true
-
-    padding: st.buttonPush_padding - margins
-
-    background.anchors.leftMargin: -(borderSize / 2)
-
-    background.anchors.rightMargin: background.anchors.leftMargin
-
-// FIXME Qt 4: Something is wrong with clipping and margins.
-//#QT_4
-    //---------------------------------------------------------------------------------------------
-    // Childs
-    //---------------------------------------------------------------------------------------------
-
-    RectangleBorders
-    {
-        anchors.fill: background
-
-        borderTop   : 0
-        borderBottom: 0
-    }
+//#QT_5
+    anchors.topMargin   : borderSize
+    anchors.bottomMargin: borderSize
 //#END
+
+    width: borderSize / 2
+
+    color: background.border.color
 }

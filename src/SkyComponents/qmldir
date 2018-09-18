@@ -14,6 +14,7 @@ LineVertical       1.0 LineVertical.qml
 
 BorderHorizontal 1.0 BorderHorizontal.qml
 BorderVertical   1.0 BorderVertical.qml
+BorderButton     1.0 BorderButton.qml
 
 Window      1.0 Window.qml
 WindowScale 1.0 WindowScale.qml

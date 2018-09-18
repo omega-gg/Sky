@@ -403,7 +403,7 @@ void WViewPrivate::init(QQuickItem * item)
 
     q->setFormat(format);
 
-    q->setClearBeforeRendering(false);
+    //q->setClearBeforeRendering(false);
 #endif
 
 #ifdef QT_4
@@ -482,7 +482,9 @@ void WViewPrivate::init(QQuickItem * item)
     QObject::connect(&fadeTimer, SIGNAL(timeout()), q, SLOT(onFadeTimeout()));
     QObject::connect(&idleTimer, SIGNAL(timeout()), q, SLOT(onIdleTimeout()));
 
+#ifndef SK_WIN_NATIVE
     QObject::connect(sk, SIGNAL(aboutToQuit()), q, SLOT(onClose()));
+#endif
 
     QObject::connect(sk, SIGNAL(cursorVisibleChanged()), q, SLOT(onCursorVisibleChanged()));
 }

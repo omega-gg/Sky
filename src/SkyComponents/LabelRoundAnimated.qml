@@ -29,8 +29,6 @@ LabelRound
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    imageBorder.scaleDelay: 0
-
     itemText.clip: (enableAnimation)
 
     itemText.elide: Text.ElideNone
