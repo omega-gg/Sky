@@ -93,6 +93,12 @@ BaseButton
 
         opacity: (window.isActive && isFocused)
 
+        color: "transparent"
+
+//#QT_4
+        smooth: true
+//#END
+
         border.width: borderSize
         border.color: colorFocus
 

@@ -30,7 +30,8 @@ Item
     /* read */ property int buttonWidth: (width - extra * 2) / count
 
     property int padding: st.buttonPush_padding
-    property int extra  : st.buttonsCheck_extra
+
+    property int extra: st.buttonsCheck_extra
 
     property int currentIndex: -1
 
