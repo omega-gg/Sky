@@ -798,6 +798,8 @@ Item
     property int checkBox_width : dp22
     property int checkBox_height: checkBox_width
 
+    property url checkBox_sourceCheck: "pictures/checkBoxCheck.png"
+
     //---------------------------------------------------------------------------------------------
     // CheckBoxText
 

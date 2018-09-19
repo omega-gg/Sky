@@ -174,28 +174,4 @@ BaseButton
         border.width: borderSize
         border.color: st.border_color
     }
-
-    BorderImageScale
-    {
-        id: imageBorder
-
-        anchors.fill: parent
-
-        opacity: (baseButtonPush.enabled) ? 1.0 : st.border_opacityDisable
-
-        source: st.buttonPush_sourceBorder
-
-        border
-        {
-            left : borderBackground.x;     top   : borderBackground.y
-            right: borderBackground.width; bottom: borderBackground.height
-        }
-
-        filter: st.buttonPush_filterBorder
-
-        Behavior on opacity
-        {
-            PropertyAnimation { duration: st.duration_fast }
-        }
-    }
 }

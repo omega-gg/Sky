@@ -25,6 +25,8 @@ ButtonPushIcon
 
     clip: true
 
+    background.anchors.rightMargin: -margins - radius
+
     itemIcon.anchors.centerIn: undefined
 
     itemIcon.anchors.verticalCenter: verticalCenter
