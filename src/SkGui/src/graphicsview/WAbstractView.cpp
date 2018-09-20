@@ -444,7 +444,7 @@ bool WAbstractViewPrivate::isWindows10()
         WAbstractView * view
             = reinterpret_cast<WAbstractView *> (GetWindowLongPtr(handle, GWLP_USERDATA));
 
-        view->close();
+        view->onClose();
 
         return 0;
     }
@@ -849,6 +849,7 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWindow * parent, Qt::Win
 }
 
 #endif // SK_WIN_NATIVE
+
 #ifdef Q_OS_WIN
 
 //-------------------------------------------------------------------------------------------------
@@ -899,6 +900,7 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWindow * parent, Qt::Win
 #endif
 
 #endif // Q_OS_WIN
+
 #ifdef SK_WIN_NATIVE
 
 //-------------------------------------------------------------------------------------------------
@@ -959,6 +961,11 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWindow * parent, Qt::Win
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WAbstractView::onStateChanged(Qt::WindowState) {}
+
+/* virtual */ void WAbstractView::onClose()
+{
+    close();
+}
 
 //-------------------------------------------------------------------------------------------------
 // Properties

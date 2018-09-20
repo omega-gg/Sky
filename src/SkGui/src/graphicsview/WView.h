@@ -423,8 +423,12 @@ protected: // Events
 
     /* virtual */ void closeEvent(QCloseEvent * event);
 
+#ifdef SK_WIN_NATIVE
 protected: // WAbstractView reimplementation
     /* virtual */ void onStateChanged(Qt::WindowState state);
+
+    /* virtual */ void onClose();
+#endif
 
 signals:
     void messageReceived(const QString & message);
