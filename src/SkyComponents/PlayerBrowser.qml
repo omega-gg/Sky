@@ -388,7 +388,7 @@ MouseArea
         width : pGetWidth()
         height: width
 
-        iconWidth : Math.round(width / 2)
+        iconWidth : Math.round(width / 1.8)
         iconHeight: iconWidth
 
         borderSize: background.width / 16
@@ -480,7 +480,7 @@ MouseArea
 
             anchors.centerIn: parent
 
-            width : Math.round(buttonPlay.width / 1.8)
+            width : Math.round(buttonPlay.width / 1.6)
             height: width
 
             visible: loading

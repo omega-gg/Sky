@@ -102,8 +102,8 @@ Item
     property url  logo
     property real logoRatio: 8.0
 
-    property color logo_colorA: "#323232"
-    property color logo_colorB: "#646464"
+    property color logo_colorA: "#484848"
+    property color logo_colorB: logo_colorA
 
     property int cursor_width : dp18
     property int cursor_height: dp24
@@ -158,8 +158,8 @@ Item
 
     property string text_fontFamily: (sk.osMac) ? "" : "Arial"
 
-    property int text_raised: Text.Raised
-    property int text_sunken: Text.Sunken
+    property int text_raised: Text.Normal
+    property int text_sunken: text_raised
 
     property color text_color         : text1_color
     property color text_colorCurrent  : "#00b4ff"
@@ -288,8 +288,8 @@ Item
 
     property real icon_opacityDisable: 0.5
 
-    property int icon_raised: Sk.IconRaised
-    property int icon_sunken: Sk.IconSunken
+    property int icon_raised: Sk.IconNormal
+    property int icon_sunken: icon_raised
 
     property color icon_colorA      : icon1_colorA
     property color icon_colorB      : icon1_colorB
@@ -298,7 +298,7 @@ Item
     property color icon_colorShadow : icon1_colorShadow
     property color icon_colorSunken : icon1_colorSunken
 
-    property color icon1_colorA     : "#dcdcdc"
+    property color icon1_colorA     : "white"
     property color icon1_colorB     : icon1_colorA
     property color icon1_colorShadow: "#161616"
     property color icon1_colorSunken: "#323232"
@@ -443,11 +443,11 @@ Item
 
     property int barWindow_height: dp24
 
-    property color barWindow_colorA: "#808080"
-    property color barWindow_colorB: "#484848"
+    property color barWindow_colorA: "#565656"
+    property color barWindow_colorB: barWindow_colorA
 
-    property color barWindow_colorDisableA: barWindow_colorA
-    property color barWindow_colorDisableB: barWindow_colorB
+    property color barWindow_colorDisableA: "#484848"
+    property color barWindow_colorDisableB: barWindow_colorDisableA
 
     property color barWindow_colorBorderLine: "#969696"
 
@@ -468,8 +468,8 @@ Item
 
     property int barTitleSmall_height: dp26
 
-    property color barTitleSmall_colorA: "#646464"
-    property color barTitleSmall_colorB: "#484848"
+    property color barTitleSmall_colorA: barWindow_colorA
+    property color barTitleSmall_colorB: barWindow_colorB
 
     property color barTitleSmall_colorBorderLine: "#808080"
 
@@ -499,29 +499,29 @@ Item
     property int buttonPush_padding: dp14
     property int buttonPush_spacing: dp6
 
-    property color buttonPush_colorA: "#646464"
-    property color buttonPush_colorB: "#323232"
+    property color buttonPush_colorA: "#484848"
+    property color buttonPush_colorB: buttonPush_colorA
 
-    property color buttonPush_colorHoverA: "#808080"
-    property color buttonPush_colorHoverB: "#404040"
+    property color buttonPush_colorHoverA: "#646464"
+    property color buttonPush_colorHoverB: buttonPush_colorHoverA
 
-    property color buttonPush_colorPressA: "#242424"
-    property color buttonPush_colorPressB: "#484848"
+    property color buttonPush_colorPressA: "#323232"
+    property color buttonPush_colorPressB: buttonPush_colorPressA
 
-    property color buttonPush_colorPressHoverA: buttonPush_colorPressA
-    property color buttonPush_colorPressHoverB: "#646464"
+    property color buttonPush_colorPressHoverA: buttonPush_colorHoverA
+    property color buttonPush_colorPressHoverB: buttonPush_colorHoverB
 
-    property color buttonPush_colorHighlightA: "#008cdc"
-    property color buttonPush_colorHighlightB: "#003ca0"
+    property color buttonPush_colorHighlightA: "#0078c8"
+    property color buttonPush_colorHighlightB: buttonPush_colorHighlightA
 
-    property color buttonPush_colorHighlightHoverA: "#00a0f0"
-    property color buttonPush_colorHighlightHoverB: "#0050b4"
+    property color buttonPush_colorHighlightHoverA: "#008cdc"
+    property color buttonPush_colorHighlightHoverB: buttonPush_colorHighlightHoverA
 
-    property color buttonPush_colorCheckA: "#0050b4"
-    property color buttonPush_colorCheckB: "#008cdc"
+    property color buttonPush_colorCheckA: buttonPush_colorHighlightA
+    property color buttonPush_colorCheckB: buttonPush_colorHighlightB
 
-    property color buttonPush_colorCheckHoverA: buttonPush_colorCheckA
-    property color buttonPush_colorCheckHoverB: "#00b4ff"
+    property color buttonPush_colorCheckHoverA: buttonPush_colorHighlightHoverA
+    property color buttonPush_colorCheckHoverB: buttonPush_colorHighlightHoverB
 
     property ImageColorFilter buttonPush_filterIcon      : icon_filter
     property ImageColorFilter buttonPush_filterIconShadow: icon_filterShadow
@@ -537,10 +537,10 @@ Item
     // ButtonPushConfirm
 
     property color buttonPushConfirm_colorHoverA: "#c80000"
-    property color buttonPushConfirm_colorHoverB: "#960000"
+    property color buttonPushConfirm_colorHoverB: buttonPushConfirm_colorHoverA
 
-    property color buttonPushConfirm_colorPressA: "#960000"
-    property color buttonPushConfirm_colorPressB: "#c80000"
+    property color buttonPushConfirm_colorPressA: buttonPushConfirm_colorHoverB
+    property color buttonPushConfirm_colorPressB: buttonPushConfirm_colorHoverA
 
     //---------------------------------------------------------------------------------------------
     // ButtonOverlay
@@ -549,7 +549,7 @@ Item
     property real buttonOverlay_opacityHover  : 1.0
 
     property color buttonOverlay_colorA: "#323232"
-    property color buttonOverlay_colorB: "black"
+    property color buttonOverlay_colorB: buttonOverlay_colorA
 
     property color buttonOverlay_colorHoverA: buttonPush_colorHighlightHoverA
     property color buttonOverlay_colorHoverB: buttonPush_colorHighlightHoverB
@@ -606,7 +606,7 @@ Item
     // ButtonPianoConfirm
 
     property color buttonPianoConfirm_colorHoverA: "#c80000"
-    property color buttonPianoConfirm_colorHoverB: "#780000"
+    property color buttonPianoConfirm_colorHoverB: buttonPianoConfirm_colorHoverA
 
     property color buttonPianoConfirm_colorPressA: buttonPianoConfirm_colorHoverB
     property color buttonPianoConfirm_colorPressB: buttonPianoConfirm_colorHoverA
@@ -664,11 +664,11 @@ Item
 
     property int buttonMask_styleSize: dp2
 
-    property color buttonMask_colorHoverA: "white"
+    property color buttonMask_colorHoverA: "#c8c8c8"
     property color buttonMask_colorHoverB: buttonMask_colorHoverA
 
-    property color buttonMask_colorPressA: buttonMask_colorHoverA
-    property color buttonMask_colorPressB: "#646464"
+    property color buttonMask_colorPressA: icon_colorA
+    property color buttonMask_colorPressB: icon_colorB
 
     property ImageColorFilter buttonMask_filterDefault: icon_filter
     property ImageColorFilter buttonMask_filterShadow : icon_filterShadow
@@ -706,11 +706,6 @@ Item
     property int buttonStream_height: slider_height
 
     property color buttonStream_color: scrollBar_colorA
-
-    //---------------------------------------------------------------------------------------------
-    // ButtonsCheck
-
-    property int buttonsCheck_extra: dp6
 
     //---------------------------------------------------------------------------------------------
     // ButtonsItem
@@ -850,8 +845,8 @@ Item
 
     property int lineEditBox_focusSize: dp2
 
-    property color lineEditBox_colorA: "#c8c8c8"
-    property color lineEditBox_colorB: "white"
+    property color lineEditBox_colorA: lineEdit_color
+    property color lineEditBox_colorB: lineEdit_color
 
     //---------------------------------------------------------------------------------------------
     // List
@@ -893,8 +888,8 @@ Item
     property color scrollBar_colorHandleHoverA: buttonPush_colorHoverA
     property color scrollBar_colorHandleHoverB: buttonPush_colorHoverB
 
-    property color scrollBar_colorHandlePressA: buttonPush_colorPressHoverA
-    property color scrollBar_colorHandlePressB: buttonPush_colorPressHoverB
+    property color scrollBar_colorHandlePressA: buttonPush_colorA
+    property color scrollBar_colorHandlePressB: buttonPush_colorB
 
     property alias scrollBar_filterHorizontalDefault    : scrollBar_filterHorizontalDefault
     property alias scrollBar_filterHorizontalHandle     : scrollBar_filterHorizontalHandle
@@ -987,14 +982,14 @@ Item
     property color slider_colorA: scrollBar_colorA
     property color slider_colorB: scrollBar_colorB
 
-    property color slider_colorHandleA: "#dcdcdc"
-    property color slider_colorHandleB: "#8c8c8c"
+    property color slider_colorHandleA: "#c8c8c8"
+    property color slider_colorHandleB: slider_colorHandleA
 
     property color slider_colorHandleHoverA: "#f0f0f0"
-    property color slider_colorHandleHoverB: "#c8c8c8"
+    property color slider_colorHandleHoverB: slider_colorHandleHoverA
 
-    property color slider_colorHandlePressA: "#646464"
-    property color slider_colorHandlePressB: slider_colorHandleHoverA
+    property color slider_colorHandlePressA: slider_colorHandleA
+    property color slider_colorHandlePressB: slider_colorHandleB
 
     property color slider_colorBarA: buttonPush_colorA
     property color slider_colorBarB: buttonPush_colorB
@@ -1023,19 +1018,19 @@ Item
     property real sliderStream_opacityProgressB: 1.0
 
     property color sliderStream_colorBarA: "#00a0f0"
-    property color sliderStream_colorBarB: "#0050b4"
+    property color sliderStream_colorBarB: sliderStream_colorBarA
 
     property color sliderStream_colorBarHoverA: "#00b4ff"
-    property color sliderStream_colorBarHoverB: "#0064c8"
+    property color sliderStream_colorBarHoverB: sliderStream_colorBarHoverA
 
-    property color sliderStream_colorBarDisableA: "#dcdcdc"
-    property color sliderStream_colorBarDisableB: "#646464"
+    property color sliderStream_colorBarDisableA: "#969696"
+    property color sliderStream_colorBarDisableB: sliderStream_colorBarDisableA
 
-    property color sliderStream_colorBarDisableHoverA: "#f0f0f0"
-    property color sliderStream_colorBarDisableHoverB: "#808080"
+    property color sliderStream_colorBarDisableHoverA: "#c8c8c8"
+    property color sliderStream_colorBarDisableHoverB: sliderStream_colorBarDisableHoverA
 
-    property color sliderStream_colorBarProgressA: "#646464"
-    property color sliderStream_colorBarProgressB: "#dcdcdc"
+    property color sliderStream_colorBarProgressA: sliderStream_colorBarDisableHoverA
+    property color sliderStream_colorBarProgressB: sliderStream_colorBarDisableHoverB
 
     //---------------------------------------------------------------------------------------------
     // BaseTabs
@@ -1141,17 +1136,17 @@ Item
     property int itemList_iconWidth : dp32
     property int itemList_iconHeight: dp32
 
-    property color itemList_colorA: "#383838"
-    property color itemList_colorB: "#303030"
+    property color itemList_colorA: "#323232"
+    property color itemList_colorB: itemList_colorA
 
-    property color itemList_colorDefaultA: "#282828"
-    property color itemList_colorDefaultB: "#202020"
+    property color itemList_colorDefaultA: "#242424"
+    property color itemList_colorDefaultB: itemList_colorDefaultA
 
     property color itemList_colorHoverA: "#646464"
-    property color itemList_colorHoverB: "#404040"
+    property color itemList_colorHoverB: itemList_colorHoverA
 
     property color itemList_colorPressA: "#808080"
-    property color itemList_colorPressB: "#484848"
+    property color itemList_colorPressB: itemList_colorPressA
 
     property color itemList_colorContextualHoverA: itemList_colorPressA
     property color itemList_colorContextualHoverB: itemList_colorPressB
@@ -1162,14 +1157,14 @@ Item
     property color itemList_colorSelectHoverA: buttonPush_colorHighlightHoverA
     property color itemList_colorSelectHoverB: buttonPush_colorHighlightHoverB
 
-    property color itemList_colorSelectFocusA: buttonPush_colorCheckA
-    property color itemList_colorSelectFocusB: buttonPush_colorCheckB
+    property color itemList_colorSelectFocusA: "#008cdc"
+    property color itemList_colorSelectFocusB: itemList_colorSelectFocusA
 
-    property color itemList_colorCurrentA: "#161616"
-    property color itemList_colorCurrentB: "#282828"
+    property color itemList_colorCurrentA: itemList_colorDefaultA
+    property color itemList_colorCurrentB: itemList_colorDefaultB
 
-    property color itemList_colorCurrentHoverA: itemList_colorCurrentA
-    property color itemList_colorCurrentHoverB: "#484848"
+    property color itemList_colorCurrentHoverA: itemList_colorHoverA
+    property color itemList_colorCurrentHoverB: itemList_colorHoverB
 
     property color itemList_colorBorder       : "#202020"
     property color itemList_colorBorderDefault: "#161616"
@@ -1195,8 +1190,8 @@ Item
     property color itemTab_colorHoverA: buttonPiano_colorHoverA
     property color itemTab_colorHoverB: buttonPiano_colorHoverB
 
-    property color itemTab_colorContextualHoverA: "#a0a0a0"
-    property color itemTab_colorContextualHoverB: "#484848"
+    property color itemTab_colorContextualHoverA: "#808080"
+    property color itemTab_colorContextualHoverB: itemTab_colorContextualHoverA
 
     property color itemTab_colorSelectA: buttonPush_colorCheckA
     property color itemTab_colorSelectB: buttonPush_colorCheckB
@@ -1207,8 +1202,8 @@ Item
     property color itemTab_colorHighlightHoverA: buttonPush_colorHighlightHoverA
     property color itemTab_colorHighlightHoverB: buttonPush_colorHighlightHoverB
 
-    property color itemTab_colorHighlightContextualA: "#00b4ff"
-    property color itemTab_colorHighlightContextualB: "#0064c8"
+    property color itemTab_colorHighlightContextualA: "#008cdc"
+    property color itemTab_colorHighlightContextualB: itemTab_colorHighlightContextualA
 
     //---------------------------------------------------------------------------------------------
     // ItemWall
@@ -1439,7 +1434,148 @@ Item
 
     //---------------------------------------------------------------------------------------------
 
-    function applyDefault()
+    function applyFlat()
+    {
+        logo_colorA = "#484848";
+        logo_colorB = logo_colorA;
+
+        //-----------------------------------------------------------------------------------------
+
+        text_raised = Text.Normal;
+        text_sunken = text_raised;
+
+        //-----------------------------------------------------------------------------------------
+
+        icon_raised = Sk.IconNormal;
+        icon_sunken = icon_raised;
+
+        icon1_colorA = "white";
+
+        //-----------------------------------------------------------------------------------------
+
+        barWindow_colorA = "#565656";
+        barWindow_colorB = barWindow_colorA;
+
+        barWindow_colorDisableA = "#484848";
+
+        //-----------------------------------------------------------------------------------------
+
+        barTitleSmall_colorA = barWindow_colorA;
+        barTitleSmall_colorB = barWindow_colorB;
+
+        //-----------------------------------------------------------------------------------------
+
+        buttonPush_colorA = "#484848";
+        buttonPush_colorB = buttonPush_colorA;
+
+        buttonPush_colorHoverA = "#646464";
+        buttonPush_colorHoverB = buttonPush_colorHoverA;
+
+        buttonPush_colorPressA = "#323232";
+        buttonPush_colorPressB = buttonPush_colorPressA;
+
+        buttonPush_colorPressHoverA = buttonPush_colorHoverA;
+        buttonPush_colorPressHoverB = buttonPush_colorHoverB;
+
+        buttonPush_colorHighlightA = "#0078c8";
+        buttonPush_colorHighlightB = buttonPush_colorHighlightA;
+
+        buttonPush_colorHighlightHoverA = "#008cdc";
+        buttonPush_colorHighlightHoverB = buttonPush_colorHighlightHoverA;
+
+        buttonPush_colorCheckA = buttonPush_colorHighlightA;
+        buttonPush_colorCheckB = buttonPush_colorHighlightB;
+
+        buttonPush_colorCheckHoverA = buttonPush_colorHighlightHoverA;
+        buttonPush_colorCheckHoverB = buttonPush_colorHighlightHoverB;
+
+        //-----------------------------------------------------------------------------------------
+
+        buttonPushConfirm_colorHoverB = buttonPushConfirm_colorHoverA;
+
+        //-----------------------------------------------------------------------------------------
+
+        buttonOverlay_colorB = buttonOverlay_colorA;
+
+        //-----------------------------------------------------------------------------------------
+
+        buttonPianoConfirm_colorHoverB = buttonPianoConfirm_colorHoverA;
+
+        //-----------------------------------------------------------------------------------------
+
+        buttonMask_colorHoverA = "#c8c8c8";
+
+        buttonMask_colorPressA = icon_colorA;
+        buttonMask_colorPressB = icon_colorA;
+
+        //-----------------------------------------------------------------------------------------
+
+        lineEditBox_colorA = lineEdit_color;
+        lineEditBox_colorB = lineEdit_color;
+
+        //-----------------------------------------------------------------------------------------
+
+        scrollBar_colorHandlePressA = buttonPush_colorA;
+        scrollBar_colorHandlePressB = buttonPush_colorB;
+
+        //-----------------------------------------------------------------------------------------
+
+        slider_colorHandleA = "#c8c8c8";
+        slider_colorHandleB = slider_colorHandleA;
+
+        slider_colorHandleHoverB = slider_colorHandleHoverA;
+
+        slider_colorHandlePressA = slider_colorHandleA;
+        slider_colorHandlePressB = slider_colorHandleB;
+
+        //-----------------------------------------------------------------------------------------
+
+        sliderStream_colorBarB = sliderStream_colorBarA;
+
+        sliderStream_colorBarHoverB = sliderStream_colorBarHoverA;
+
+        sliderStream_colorBarDisableA = "#969696";
+        sliderStream_colorBarDisableB = sliderStream_colorBarDisableA;
+
+        sliderStream_colorBarDisableHoverA = "#c8c8c8";
+        sliderStream_colorBarDisableHoverB = sliderStream_colorBarDisableHoverA;
+
+        sliderStream_colorBarProgressA = sliderStream_colorBarDisableHoverA;
+        sliderStream_colorBarProgressB = sliderStream_colorBarDisableHoverB;
+
+        //-----------------------------------------------------------------------------------------
+
+        itemList_colorA = "#323232";
+        itemList_colorB = itemList_colorA;
+
+        itemList_colorDefaultA = "#242424";
+        itemList_colorDefaultB = itemList_colorDefaultA;
+
+        itemList_colorHoverB = itemList_colorHoverA;
+
+        itemList_colorPressB = itemList_colorPressA;
+
+        itemList_colorContextualHoverB = itemList_colorPressB;
+
+        itemList_colorSelectFocusA = "#008cdc";
+        itemList_colorSelectFocusB = itemList_colorSelectFocusA;
+
+        itemList_colorCurrentA = itemList_colorDefaultA;
+        itemList_colorCurrentB = itemList_colorDefaultB;
+
+        itemList_colorCurrentHoverA = itemList_colorHoverA;
+        itemList_colorCurrentHoverB = itemList_colorHoverA;
+
+        //-----------------------------------------------------------------------------------------
+
+        itemTab_colorContextualHoverA = "#808080";
+        itemTab_colorContextualHoverB = itemTab_colorContextualHoverA;
+
+        itemTab_colorHighlightContextualA = "#008cdc";
+        itemTab_colorHighlightContextualB = itemTab_colorHighlightContextualA;
+    }
+
+    function applyClassic()
     {
         logo_colorA = "#323232";
         logo_colorB = "#646464";
@@ -1461,7 +1597,7 @@ Item
         barWindow_colorA = "#808080";
         barWindow_colorB = "#484848";
 
-        barWindow_colorDisableA = barWindow_colorB;
+        barWindow_colorDisableA = barWindow_colorA;
 
         //-----------------------------------------------------------------------------------------
 
@@ -1578,146 +1714,5 @@ Item
 
         itemTab_colorHighlightContextualA = "#00b4ff";
         itemTab_colorHighlightContextualB = "#0064c8";
-    }
-
-    function applyFlat()
-    {
-        logo_colorA = "#484848";
-        logo_colorB = logo_colorA;
-
-        //-----------------------------------------------------------------------------------------
-
-        text_raised = Text.Normal;
-        text_sunken = text_raised;
-
-        //-----------------------------------------------------------------------------------------
-
-        icon_raised = Sk.IconNormal;
-        icon_sunken = icon_raised;
-
-        icon1_colorA = "white";
-
-        //-----------------------------------------------------------------------------------------
-
-        barWindow_colorA = "#565656";
-        barWindow_colorB = barWindow_colorA;
-
-        barWindow_colorDisableA = barWindow_colorDisableB;
-
-        //-----------------------------------------------------------------------------------------
-
-        barTitleSmall_colorA = barWindow_colorA;
-        barTitleSmall_colorB = barWindow_colorA;
-
-        //-----------------------------------------------------------------------------------------
-
-        buttonPush_colorA = "#484848";
-        buttonPush_colorB = buttonPush_colorA;
-
-        buttonPush_colorHoverA = "#646464";
-        buttonPush_colorHoverB = buttonPush_colorHoverA;
-
-        buttonPush_colorPressA = "#323232";
-        buttonPush_colorPressB = buttonPush_colorPressA;
-
-        buttonPush_colorPressHoverA = buttonPush_colorHoverA;
-        buttonPush_colorPressHoverB = buttonPush_colorHoverA;
-
-        buttonPush_colorHighlightA = "#0078c8";
-        buttonPush_colorHighlightB = buttonPush_colorHighlightA;
-
-        buttonPush_colorCheckA = buttonPush_colorHighlightA;
-        buttonPush_colorCheckB = buttonPush_colorHighlightA;
-
-        buttonPush_colorHighlightHoverA = "#008cdc";
-        buttonPush_colorHighlightHoverB = buttonPush_colorHighlightHoverA;
-
-        buttonPush_colorCheckHoverA = buttonPush_colorHighlightHoverA;
-        buttonPush_colorCheckHoverB = buttonPush_colorHighlightHoverA;
-
-        //-----------------------------------------------------------------------------------------
-
-        buttonOverlay_colorA = "#242424";
-        buttonOverlay_colorB = buttonOverlay_colorA;
-
-        //-----------------------------------------------------------------------------------------
-
-        buttonPianoConfirm_colorHoverB = buttonPianoConfirm_colorHoverA;
-
-        buttonPianoConfirm_colorPressA = "#960000";
-        buttonPianoConfirm_colorPressB = buttonPianoConfirm_colorPressA;
-
-        //-----------------------------------------------------------------------------------------
-
-        buttonMask_colorHoverA = "#c8c8c8";
-
-        buttonMask_colorPressA = icon_colorA;
-        buttonMask_colorPressB = icon_colorA;
-
-        //-----------------------------------------------------------------------------------------
-
-        lineEditBox_colorA = lineEdit_color;
-        lineEditBox_colorB = lineEdit_color;
-
-        //-----------------------------------------------------------------------------------------
-
-        scrollBar_colorHandlePressA = buttonPush_colorA;
-        scrollBar_colorHandlePressB = buttonPush_colorA;
-
-        //-----------------------------------------------------------------------------------------
-
-        slider_colorHandleA = "#c8c8c8";
-        slider_colorHandleB = slider_colorHandleA;
-
-        slider_colorHandleHoverB = slider_colorHandleHoverA;
-
-        slider_colorHandlePressA = slider_colorHandleA;
-        slider_colorHandlePressB = slider_colorHandleA;
-
-        //-----------------------------------------------------------------------------------------
-
-        sliderStream_colorBarB = sliderStream_colorBarA;
-
-        sliderStream_colorBarHoverB = sliderStream_colorBarHoverA;
-
-        sliderStream_colorBarDisableA = "#969696";
-        sliderStream_colorBarDisableB = sliderStream_colorBarDisableA;
-
-        sliderStream_colorBarDisableHoverA = "#c8c8c8";
-        sliderStream_colorBarDisableHoverB = sliderStream_colorBarDisableHoverA;
-
-        sliderStream_colorBarProgressA = sliderStream_colorBarDisableHoverA;
-        sliderStream_colorBarProgressB = sliderStream_colorBarDisableHoverA;
-
-        //-----------------------------------------------------------------------------------------
-
-        itemList_colorA = "#323232";
-        itemList_colorB = itemList_colorA;
-
-        itemList_colorDefaultA = "#242424";
-        itemList_colorDefaultB = itemList_colorDefaultA;
-
-        itemList_colorHoverB = itemList_colorHoverA;
-
-        itemList_colorPressB = itemList_colorPressA;
-
-        itemList_colorContextualHoverB = itemList_colorContextualHoverA;
-
-        itemList_colorSelectFocusA = "#008cdc";
-        itemList_colorSelectFocusB = itemList_colorSelectFocusA;
-
-        itemList_colorCurrentA = itemList_colorDefaultA;
-        itemList_colorCurrentB = itemList_colorDefaultA;
-
-        itemList_colorCurrentHoverA = itemList_colorHoverA;
-        itemList_colorCurrentHoverB = itemList_colorHoverA;
-
-        //-----------------------------------------------------------------------------------------
-
-        itemTab_colorContextualHoverA = "#808080";
-        itemTab_colorContextualHoverB = itemTab_colorContextualHoverA;
-
-        itemTab_colorHighlightContextualA = "#008cdc";
-        itemTab_colorHighlightContextualB = itemTab_colorHighlightContextualA;
     }
 }

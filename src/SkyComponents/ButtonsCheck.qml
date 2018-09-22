@@ -31,7 +31,7 @@ Item
 
     property int padding: st.buttonPush_padding
 
-    property int extra: st.buttonsCheck_extra
+    property int extra: height / 8 + st.border_size / 2
 
     property int currentIndex: -1
 
