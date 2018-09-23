@@ -191,7 +191,7 @@ PFNGLMULTITEXCOORD2FARBPROC          pglMultiTexCoord2fARB          = 0;
     gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);                   \
                                                                                                \
     gl->glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, Width, Height, GL_LUMINANCE, GL_UNSIGNED_BYTE, \
-                         Bits);                                                                \
+                        Bits);                                                                 \
 }                                                                                              \
 
 #define W_UPDATE_TEXTURE(Unit, Id, Width, Height, Bits)                                        \
@@ -201,7 +201,7 @@ PFNGLMULTITEXCOORD2FARBPROC          pglMultiTexCoord2fARB          = 0;
     gl->glBindTexture(GL_TEXTURE_2D, Id);                                                      \
                                                                                                \
     gl->glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, Width, Height, GL_LUMINANCE, GL_UNSIGNED_BYTE, \
-                         Bits);                                                                \
+                        Bits);                                                                 \
 }                                                                                              \
 
 #define W_BIND_TEXTURE(Unit, Id)          \
@@ -370,14 +370,16 @@ void createShader()
 
 /* virtual */ const char * WBackendVlcShader::vertexShader() const
 {
-    return "attribute highp vec4 vertex;"
+    return "#version 100\n"
+
+           "attribute highp vec4 vertex;"
            "attribute highp vec2 fragment;"
 
            "uniform highp mat4 position;"
 
            "varying highp vec2 vector;"
 
-           "void main(void)"
+           "void main()"
            "{"
            "    gl_Position = position * vertex;"
 
@@ -387,7 +389,9 @@ void createShader()
 
 /* virtual */ const char * WBackendVlcShader::fragmentShader() const
 {
-    return "uniform sampler2D y;"
+    return "#version 100\n"
+
+           "uniform sampler2D y;"
            "uniform sampler2D u;"
            "uniform sampler2D v;"
 
@@ -397,7 +401,7 @@ void createShader()
 
            "uniform lowp float opacity;"
 
-           "void main(void)"
+           "void main()"
            "{"
            "    highp vec4 color = vec4(texture2D(y, vector.st).r,"
            "                            texture2D(u, vector.st).r,"
