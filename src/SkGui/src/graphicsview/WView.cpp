@@ -403,7 +403,7 @@ void WViewPrivate::init(QQuickItem * item)
 
     q->setFormat(format);
 
-    //q->setClearBeforeRendering(false);
+    q->setClearBeforeRendering(false);
 #endif
 
 #ifdef QT_4
