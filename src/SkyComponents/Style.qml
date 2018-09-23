@@ -298,7 +298,7 @@ Item
     property color icon_colorShadow : icon1_colorShadow
     property color icon_colorSunken : icon1_colorSunken
 
-    property color icon1_colorA     : "white"
+    property color icon1_colorA     : "#dcdcdc"
     property color icon1_colorB     : icon1_colorA
     property color icon1_colorShadow: "#161616"
     property color icon1_colorSunken: "#323232"
@@ -548,7 +548,7 @@ Item
     property real buttonOverlay_opacityDefault: 0.8
     property real buttonOverlay_opacityHover  : 1.0
 
-    property color buttonOverlay_colorA: "#323232"
+    property color buttonOverlay_colorA: "#242424"
     property color buttonOverlay_colorB: buttonOverlay_colorA
 
     property color buttonOverlay_colorHoverA: buttonPush_colorHighlightHoverA
@@ -1449,8 +1449,6 @@ Item
         icon_raised = Sk.IconNormal;
         icon_sunken = icon_raised;
 
-        icon1_colorA = "white";
-
         //-----------------------------------------------------------------------------------------
 
         barWindow_colorA = "#565656";
@@ -1495,6 +1493,7 @@ Item
 
         //-----------------------------------------------------------------------------------------
 
+        buttonOverlay_colorA = "#242424";
         buttonOverlay_colorB = buttonOverlay_colorA;
 
         //-----------------------------------------------------------------------------------------
@@ -1589,8 +1588,6 @@ Item
 
         icon_raised = Sk.IconRaised;
         icon_sunken = Sk.IconSunken;
-
-        icon1_colorA = "#dcdcdc";
 
         //-----------------------------------------------------------------------------------------
 
