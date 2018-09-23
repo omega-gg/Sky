@@ -381,9 +381,9 @@ void createShader()
 
            "void main()"
            "{"
-           "    gl_Position = position * vertex;"
+               "gl_Position = position * vertex;"
 
-           "    vector = fragment;"
+               "vector = fragment;"
            "}";
 }
 
@@ -403,11 +403,11 @@ void createShader()
 
            "void main()"
            "{"
-           "    highp vec4 color = vec4(texture2D(y, vector.st).r,"
-           "                            texture2D(u, vector.st).r,"
-           "                            texture2D(v, vector.st).r, 1.0);"
+               "highp vec4 color = vec4(texture2D(y, vector.st).r,"
+                                       "texture2D(u, vector.st).r,"
+                                       "texture2D(v, vector.st).r, 1.0);"
 
-           "    gl_FragColor = matrix * color * opacity;"
+               "gl_FragColor = matrix * color * opacity;"
            "}";
 }
 
