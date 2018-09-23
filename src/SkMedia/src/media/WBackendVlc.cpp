@@ -182,7 +182,7 @@ PFNGLMULTITEXCOORD2FARBPROC          pglMultiTexCoord2fARB          = 0;
     gl->glBindTexture(GL_TEXTURE_2D, Id);                                                      \
                                                                                                \
     gl->glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, Width, Height, 0, GL_LUMINANCE,           \
-                      GL_UNSIGNED_BYTE, 0);                                                    \
+                     GL_UNSIGNED_BYTE, 0);                                                     \
                                                                                                \
     gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);                      \
     gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);                      \
