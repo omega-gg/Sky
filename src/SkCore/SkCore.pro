@@ -42,7 +42,7 @@ include(src/io/io.pri)
 include(src/thread/thread.pri)
 include(src/network/network.pri)
 include(src/declarative/declarative.pri)
-include(src/script/script.pri)
+#include(src/script/script.pri)
 include(src/plugin/plugin.pri)
 
 include(3rdparty/qtsingleapplication/qtsingleapplication.pri)
