@@ -576,6 +576,8 @@ WBackendNetTrack WBackendTmdb::extractTrack(const QByteArray       & data,
                          "/images/backdrops?language=en";
 
         nextQuery->id = 4;
+
+        nextQuery->data = variants;
     }
     else if (id == 1) // Movie
     {
