@@ -736,6 +736,24 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ QString WControllerFile::folderPath(const QString & fileName)
+{
+    QFileInfo info(filePath(fileName));
+
+    if (info.isDir())
+    {
+         return info.absoluteFilePath();
+    }
+    else return info.absolutePath();
+}
+
+/* Q_INVOKABLE static */ QString WControllerFile::folderUrl(const QString & fileName)
+{
+    return fileUrl(folderPath(fileName));
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE static */ QString WControllerFile::folderName(const QString & fileName)
 {
     int index = fileName.lastIndexOf('/');
