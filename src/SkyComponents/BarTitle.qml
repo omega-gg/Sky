@@ -81,18 +81,6 @@ MouseArea
     // Childs
     //---------------------------------------------------------------------------------------------
 
-    RectangleBorders
-    {
-        id: borders
-
-        anchors.fill: parent
-
-        size: st.barTitle_borderSize
-
-        borderLeft : 0
-        borderRight: 0
-    }
-
     Rectangle
     {
         id: content
@@ -118,5 +106,17 @@ MouseArea
 
             visible: (colorA != colorB)
         }
+    }
+
+    RectangleBorders
+    {
+        id: borders
+
+        anchors.fill: parent
+
+        size: st.barTitle_borderSize
+
+        borderLeft : 0
+        borderRight: 0
     }
 }

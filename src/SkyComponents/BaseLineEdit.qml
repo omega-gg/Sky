@@ -53,6 +53,8 @@ MouseArea
 
     property alias echoMode: textInput.echoMode
 
+    property alias font: textInput.font
+
     //---------------------------------------------------------------------------------------------
 
     property alias textInput      : textInput
@@ -68,8 +70,9 @@ MouseArea
 
     property alias colorCursor: textInput.colorCursor
 
-    property alias colorSelection    : textInput.selectionColor
-    property alias colorSelectionText: textInput.selectedTextColor
+    property alias colorText         : textInput.color
+    property alias colorTextSelection: textInput.selectionColor
+    property alias colorTextSelected : textInput.selectedTextColor
 
     property alias colorDefault: itemTextDefault.color
 
@@ -127,21 +130,27 @@ MouseArea
 
     function select(start, end)
     {
+//#QT_4
         timer.stop();
+//#END
 
         textInput.select(start, end);
     }
 
     function selectAll()
     {
+//#QT_4
         timer.stop();
+//#END
 
         textInput.selectAll();
     }
 
     function deselect()
     {
+//#QT_4
         timer.stop();
+//#END
 
         textInput.deselect();
     }
@@ -163,6 +172,7 @@ MouseArea
     // Childs
     //---------------------------------------------------------------------------------------------
 
+//#QT_4
     Timer
     {
         id: timer
@@ -171,6 +181,7 @@ MouseArea
 
         onTriggered: textInput.selectAll()
     }
+//#END
 
     TextInput
     {
@@ -186,12 +197,13 @@ MouseArea
 
         anchors.fill: parent
 
-        anchors.leftMargin  : paddingLeft
-        anchors.rightMargin : paddingRight
+        anchors.leftMargin : paddingLeft
+        anchors.rightMargin: paddingRight
+
+//#QT_4
         anchors.topMargin   : padding
         anchors.bottomMargin: padding
-
-//#QT_5
+//#ELSE
         verticalAlignment: TextInput.AlignVCenter
 
         enabled: baseLineEdit.enabled
@@ -205,8 +217,9 @@ MouseArea
 
         maximumLength: st.baseLineEdit_maximumLength
 
-        selectionColor   : st.baseLineEdit_colorSelection
-        selectedTextColor: st.baseLineEdit_colorSelectionText
+        color            : st.baseLineEdit_colorText
+        selectionColor   : st.baseLineEdit_colorTextSelection
+        selectedTextColor: st.baseLineEdit_colorTextSelected
 
         font.family   : st.text_fontFamily
         font.pixelSize: st.text_pixelSize
@@ -248,7 +261,11 @@ MouseArea
             {
                 if (autoSelect)
                 {
+//#QT_4
                     timer.start();
+//#ELSE
+                    textInput.selectAll();
+//#END
                 }
             }
             else baseLineEdit.deselect();
@@ -279,19 +296,14 @@ MouseArea
     {
         id: itemTextDefault
 
-        anchors.left : textInput.left
-        anchors.right: textInput.right
+        anchors.fill: textInput
 
-//#QT_4
-        anchors.top: textInput.top
-//#ELSE
-        anchors.top: parent.top
-
-        anchors.topMargin: padding
-//#END
+        verticalAlignment: Text.AlignVCenter
 
         visible: (isFocused == false && textInput.text == "")
 
         color: st.baseLineEdit_colorDefault
+
+        font.pixelSize: textInput.font.pixelSize
     }
 }

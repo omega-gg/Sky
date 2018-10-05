@@ -34,6 +34,9 @@ ItemTab
 
     borderLeft : borderSize
     borderRight: borderSize
+
+    isHovered: (index == indexHover)
+    isCurrent: (index == indexCurrent)
 //#ELSE
     width: parent.getItemWidth(index) + parent.borderSize
 
@@ -43,10 +46,10 @@ ItemTab
 
     borderLeft : parent.borderSize
     borderRight: parent.borderSize
-//#END
 
-    isHovered: (index == indexHover)
-    isCurrent: (index == indexCurrent)
+    isHovered: (index == parent.indexHover)
+    isCurrent: (index == parent.indexCurrent)
+//#END
 
     icon       : source
     iconDefault: sourceDefault

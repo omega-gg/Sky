@@ -81,8 +81,8 @@ Item
     property int dp128: 128 * ratio
     property int dp150: 150 * ratio
     property int dp180: 180 * ratio
+    property int dp192: 192 * ratio
 
-    property int dp200: 200 * ratio
     property int dp240: 240 * ratio
 
     property int dp300: 300 * ratio
@@ -102,7 +102,7 @@ Item
     property url  logo
     property real logoRatio: 8.0
 
-    property color logo_colorA: "#484848"
+    property color logo_colorA: "#404040"
     property color logo_colorB: logo_colorA
 
     property int cursor_width : dp18
@@ -239,8 +239,8 @@ Item
 
     property int window_durationAnimation: duration_fast
 
+    property int window_borderSize : dp2
     property int window_resizerSize: dp4
-    property int window_borderSize : dp3
 
     property color window_color: "#323232"
 
@@ -487,6 +487,14 @@ Item
     property color button_colorBorder: border_color
     property color button_colorFocus : border_colorFocus
 
+    property color button_colorConfirmHoverA: "#c80000"
+    property color button_colorConfirmHoverB: button_colorConfirmHoverA
+
+    property color button_colorConfirmPressA: "#960000"
+    property color button_colorConfirmPressB: button_colorConfirmPressA
+
+    property color button_colorConfirmFocus: "#ff0000"
+
     property ImageColorFilter button_filterIcon      : icon_filter
     property ImageColorFilter button_filterIconShadow: icon_filterShadow
     property ImageColorFilter button_filterIconSunken: icon_filterSunken
@@ -532,15 +540,6 @@ Item
 
     property int buttonPushIcon_width : buttonPush_height
     property int buttonPushIcon_height: buttonPush_height
-
-    //---------------------------------------------------------------------------------------------
-    // ButtonPushConfirm
-
-    property color buttonPushConfirm_colorHoverA: "#c80000"
-    property color buttonPushConfirm_colorHoverB: buttonPushConfirm_colorHoverA
-
-    property color buttonPushConfirm_colorPressA: buttonPushConfirm_colorHoverB
-    property color buttonPushConfirm_colorPressB: buttonPushConfirm_colorHoverA
 
     //---------------------------------------------------------------------------------------------
     // ButtonOverlay
@@ -601,17 +600,6 @@ Item
 
     property int buttonPianoIcon_width : buttonPiano_height
     property int buttonPianoIcon_height: buttonPiano_height
-
-    //---------------------------------------------------------------------------------------------
-    // ButtonPianoConfirm
-
-    property color buttonPianoConfirm_colorHoverA: "#c80000"
-    property color buttonPianoConfirm_colorHoverB: buttonPianoConfirm_colorHoverA
-
-    property color buttonPianoConfirm_colorPressA: buttonPianoConfirm_colorHoverB
-    property color buttonPianoConfirm_colorPressB: buttonPianoConfirm_colorHoverA
-
-    property color buttonPianoConfirm_colorFocus: "#ff0000"
 
     //---------------------------------------------------------------------------------------------
     // ButtonPianoReset
@@ -816,15 +804,16 @@ Item
 
     property color baseLineEdit_colorCursor: "#161616"
 
-    property color baseLineEdit_colorSelection    : "#008cdc"
-    property color baseLineEdit_colorSelectionText: "white"
+    property color baseLineEdit_colorText         : text2_color
+    property color baseLineEdit_colorTextSelection: "#008cdc"
+    property color baseLineEdit_colorTextSelected : text1_color
 
     property color baseLineEdit_colorDefault: text4_color
 
     //---------------------------------------------------------------------------------------------
     // LineEdit
 
-    property int lineEdit_width : dp200
+    property int lineEdit_width : dp192
     property int lineEdit_height: dp40
 
     property int lineEdit_padding: dp13
@@ -845,8 +834,16 @@ Item
 
     property int lineEditBox_focusSize: dp2
 
-    property color lineEditBox_colorA: lineEdit_color
-    property color lineEditBox_colorB: lineEdit_color
+    property color lineEditBox_colorA: "#323232"
+    property color lineEditBox_colorB: lineEditBox_colorA
+
+    property color lineEditBox_colorHoverA: "#646464"
+    property color lineEditBox_colorHoverB: lineEditBox_colorHoverA
+
+    property color lineEditBox_colorActive: lineEdit_colorHover
+
+    property color lineEditBox_colorDefault     : "#c8c8c8"
+    property color lineEditBox_colorDefaultHover: text1_color
 
     //---------------------------------------------------------------------------------------------
     // List
@@ -1038,7 +1035,7 @@ Item
     property int baseTabs_height: dp32
 
     property int baseTabs_tabMinimum: dp64
-    property int baseTabs_tabMaximum: dp200
+    property int baseTabs_tabMaximum: dp192
 
     property int baseTabs_borderSize: border_size
 
@@ -1436,20 +1433,26 @@ Item
 
     function applyFlat()
     {
+        //-----------------------------------------------------------------------------------------
+        // Global
+
         logo_colorA = "#484848";
         logo_colorB = logo_colorA;
 
         //-----------------------------------------------------------------------------------------
+        // Text
 
         text_raised = Text.Normal;
         text_sunken = text_raised;
 
         //-----------------------------------------------------------------------------------------
+        // Icon
 
         icon_raised = Sk.IconNormal;
         icon_sunken = icon_raised;
 
         //-----------------------------------------------------------------------------------------
+        // BarWindow
 
         barWindow_colorA = "#565656";
         barWindow_colorB = barWindow_colorA;
@@ -1457,11 +1460,20 @@ Item
         barWindow_colorDisableA = "#484848";
 
         //-----------------------------------------------------------------------------------------
+        // BarTitle
 
         barTitleSmall_colorA = barWindow_colorA;
         barTitleSmall_colorB = barWindow_colorB;
 
         //-----------------------------------------------------------------------------------------
+        // Button
+
+        button_colorConfirmHoverB = button_colorConfirmHoverA;
+
+        button_colorConfirmPressB = button_colorConfirmPressA;
+
+        //-----------------------------------------------------------------------------------------
+        // ButtonPush
 
         buttonPush_colorA = "#484848";
         buttonPush_colorB = buttonPush_colorA;
@@ -1488,19 +1500,13 @@ Item
         buttonPush_colorCheckHoverB = buttonPush_colorHighlightHoverB;
 
         //-----------------------------------------------------------------------------------------
-
-        buttonPushConfirm_colorHoverB = buttonPushConfirm_colorHoverA;
-
-        //-----------------------------------------------------------------------------------------
+        // ButtonOverlay
 
         buttonOverlay_colorA = "#242424";
         buttonOverlay_colorB = buttonOverlay_colorA;
 
         //-----------------------------------------------------------------------------------------
-
-        buttonPianoConfirm_colorHoverB = buttonPianoConfirm_colorHoverA;
-
-        //-----------------------------------------------------------------------------------------
+        // ButtonMask
 
         buttonMask_colorHoverA = "#c8c8c8";
 
@@ -1508,16 +1514,21 @@ Item
         buttonMask_colorPressB = icon_colorA;
 
         //-----------------------------------------------------------------------------------------
+        // LineEditBox
 
-        lineEditBox_colorA = lineEdit_color;
-        lineEditBox_colorB = lineEdit_color;
+        lineEditBox_colorA = buttonPush_colorPressA;
+        lineEditBox_colorB = buttonPush_colorPressB;
+
+        lineEditBox_colorHoverA = buttonPush_colorPressHoverA;
 
         //-----------------------------------------------------------------------------------------
+        // ScrollBar
 
         scrollBar_colorHandlePressA = buttonPush_colorA;
         scrollBar_colorHandlePressB = buttonPush_colorB;
 
         //-----------------------------------------------------------------------------------------
+        // Slider
 
         slider_colorHandleA = "#c8c8c8";
         slider_colorHandleB = slider_colorHandleA;
@@ -1528,6 +1539,7 @@ Item
         slider_colorHandlePressB = slider_colorHandleB;
 
         //-----------------------------------------------------------------------------------------
+        // SliderStream
 
         sliderStream_colorBarB = sliderStream_colorBarA;
 
@@ -1543,6 +1555,7 @@ Item
         sliderStream_colorBarProgressB = sliderStream_colorBarDisableHoverB;
 
         //-----------------------------------------------------------------------------------------
+        // ItemList
 
         itemList_colorA = "#323232";
         itemList_colorB = itemList_colorA;
@@ -1566,6 +1579,7 @@ Item
         itemList_colorCurrentHoverB = itemList_colorHoverA;
 
         //-----------------------------------------------------------------------------------------
+        // ItemTab
 
         itemTab_colorContextualHoverA = "#808080";
         itemTab_colorContextualHoverB = itemTab_colorContextualHoverA;
@@ -1576,32 +1590,48 @@ Item
 
     function applyClassic()
     {
+        //-----------------------------------------------------------------------------------------
+        // Global
+
         logo_colorA = "#323232";
         logo_colorB = "#646464";
 
         //-----------------------------------------------------------------------------------------
+        // Text
 
         text_raised = Text.Raised;
         text_sunken = Text.Sunken;
 
         //-----------------------------------------------------------------------------------------
+        // Icon
 
         icon_raised = Sk.IconRaised;
         icon_sunken = Sk.IconSunken;
 
         //-----------------------------------------------------------------------------------------
+        // BarWindow
 
         barWindow_colorA = "#808080";
         barWindow_colorB = "#484848";
 
-        barWindow_colorDisableA = barWindow_colorA;
+        barWindow_colorDisableA = barWindow_colorB;
+        barWindow_colorDisableB = barWindow_colorA;
 
         //-----------------------------------------------------------------------------------------
+        // BarTitle
 
         barTitleSmall_colorA = "#646464";
         barTitleSmall_colorB = "#484848";
 
         //-----------------------------------------------------------------------------------------
+        // Button
+
+        button_colorConfirmHoverB = "#960000";
+
+        button_colorConfirmPressB = "#c80000";
+
+        //-----------------------------------------------------------------------------------------
+        // ButtonPush
 
         buttonPush_colorA = "#646464";
         buttonPush_colorB = "#323232";
@@ -1612,7 +1642,7 @@ Item
         buttonPush_colorPressA = "#242424";
         buttonPush_colorPressB = "#484848";
 
-        buttonPush_colorPressHoverA = buttonPush_colorPressA;
+        buttonPush_colorPressHoverA = "#323232";
         buttonPush_colorPressHoverB = "#646464";
 
         buttonPush_colorHighlightA = "#008cdc";
@@ -1628,18 +1658,13 @@ Item
         buttonPush_colorCheckHoverB = "#00b4ff";
 
         //-----------------------------------------------------------------------------------------
+        // ButtonOverlay
 
         buttonOverlay_colorA = "#323232";
         buttonOverlay_colorB = "black";
 
         //-----------------------------------------------------------------------------------------
-
-        buttonPianoConfirm_colorHoverB = "#780000";
-
-        buttonPianoConfirm_colorPressA = buttonPianoConfirm_colorHoverA;
-        buttonPianoConfirm_colorPressB = buttonPianoConfirm_colorHoverB;
-
-        //-----------------------------------------------------------------------------------------
+        // ButtonMask
 
         buttonMask_colorHoverA = "white";
 
@@ -1647,16 +1672,22 @@ Item
         buttonMask_colorPressB = "#646464";
 
         //-----------------------------------------------------------------------------------------
+        // LineEditBox
 
-        lineEditBox_colorA = "#c8c8c8";
-        lineEditBox_colorB = "white";
+        lineEditBox_colorA = buttonPush_colorPressA;
+        lineEditBox_colorB = buttonPush_colorPressB;
+
+        lineEditBox_colorHoverA = buttonPush_colorPressHoverA;
+        lineEditBox_colorHoverB = buttonPush_colorPressHoverB;
 
         //-----------------------------------------------------------------------------------------
+        // ScrollBar
 
         scrollBar_colorHandlePressA = buttonPush_colorPressHoverA;
         scrollBar_colorHandlePressB = buttonPush_colorPressHoverB;
 
         //-----------------------------------------------------------------------------------------
+        // Slider
 
         slider_colorHandleA = "#dcdcdc";
         slider_colorHandleB = "#8c8c8c";
@@ -1667,6 +1698,7 @@ Item
         slider_colorHandlePressB = "#f0f0f0";
 
         //-----------------------------------------------------------------------------------------
+        // SliderStream
 
         sliderStream_colorBarB = "#0050b4";
 
@@ -1682,6 +1714,7 @@ Item
         sliderStream_colorBarProgressB = "#dcdcdc";
 
         //-----------------------------------------------------------------------------------------
+        // ItemList
 
         itemList_colorA = "#383838";
         itemList_colorB = "#303030";
@@ -1705,6 +1738,7 @@ Item
         itemList_colorCurrentHoverB = "#484848";
 
         //-----------------------------------------------------------------------------------------
+        // ItemTab
 
         itemTab_colorContextualHoverA = "#a0a0a0";
         itemTab_colorContextualHoverB = "#484848";

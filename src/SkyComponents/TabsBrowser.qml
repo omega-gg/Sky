@@ -571,11 +571,11 @@ BaseTabs
         icon          : st.icon16x16_close
         iconSourceSize: st.size16x16
 
-        colorHoverA: st.buttonPianoConfirm_colorHoverA
-        colorHoverB: st.buttonPianoConfirm_colorHoverB
+        colorHoverA: st.button_colorConfirmHoverA
+        colorHoverB: st.button_colorConfirmHoverB
 
-        colorPressA: st.buttonPianoConfirm_colorPressA
-        colorPressB: st.buttonPianoConfirm_colorPressB
+        colorPressA: st.button_colorConfirmPressA
+        colorPressB: st.button_colorConfirmPressB
 
         onClicked: closeTab(indexHover)
     }

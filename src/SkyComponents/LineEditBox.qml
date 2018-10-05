@@ -29,12 +29,10 @@ BaseLineEdit
     property color colorA: st.lineEditBox_colorA
     property color colorB: st.lineEditBox_colorB
 
-    property color colorHover: st.lineEdit_colorHover
+    property color colorHoverA: st.lineEditBox_colorHoverA
+    property color colorHoverB: st.lineEditBox_colorHoverB
 
-    //---------------------------------------------------------------------------------------------
-    // Private
-
-    property bool pEnabled: (enabled && (isFocused || isHovered))
+    property color colorActive: st.lineEditBox_colorActive
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -51,6 +49,15 @@ BaseLineEdit
     property alias focusSize: itemFocus.size
 
     property alias colorFocus: itemFocus.color
+
+    //---------------------------------------------------------------------------------------------
+    // Settings style
+    //---------------------------------------------------------------------------------------------
+
+    colorText: (isFocused) ? st.baseLineEdit_colorText : colorDefault
+
+    colorDefault: (enabled && isHovered) ? st.lineEditBox_colorDefaultHover
+                                         : st.lineEditBox_colorDefault
 
     //---------------------------------------------------------------------------------------------
     // Childs
@@ -70,14 +77,44 @@ BaseLineEdit
             {
                 position: 0.0
 
-                color: (pEnabled) ? colorHover : colorA
+                color:
+                {
+                    if (enabled)
+                    {
+                        if (isFocused)
+                        {
+                            return colorActive;
+                        }
+                        else if (isHovered)
+                        {
+                            return colorHoverA;
+                        }
+                    }
+
+                    return colorA;
+                }
             }
 
             GradientStop
             {
                 position: 1.0
 
-                color: (pEnabled) ? colorHover : colorB
+                color:
+                {
+                    if (enabled)
+                    {
+                        if (isFocused)
+                        {
+                            return colorActive;
+                        }
+                        else if (isHovered)
+                        {
+                            return colorHoverB;
+                        }
+                    }
+
+                    return colorB;
+                }
             }
         }
     }
@@ -93,11 +130,6 @@ BaseLineEdit
         opacity: (window.isActive && isFocused)
 
         color: st.border_colorFocus
-
-        Behavior on opacity
-        {
-            PropertyAnimation { duration: st.duration_fast }
-        }
 
         RectangleBorders
         {

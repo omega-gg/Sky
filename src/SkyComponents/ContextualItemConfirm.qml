@@ -360,13 +360,13 @@ Item
 
             text: title
 
-            colorHoverA: st.buttonPianoConfirm_colorHoverA
-            colorHoverB: st.buttonPianoConfirm_colorHoverB
+            colorHoverA: st.button_colorConfirmHoverA
+            colorHoverB: st.button_colorConfirmHoverB
 
-            colorPressA: st.buttonPianoConfirm_colorPressA
-            colorPressB: st.buttonPianoConfirm_colorPressB
+            colorPressA: st.button_colorConfirmPressA
+            colorPressB: st.button_colorConfirmPressB
 
-            colorFocus: st.buttonPianoConfirm_colorFocus
+            colorFocus: st.button_colorConfirmFocus
 
             onActiveFocusChanged:
             {

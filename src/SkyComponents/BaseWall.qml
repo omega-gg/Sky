@@ -154,6 +154,8 @@ MouseArea
 
     function enableFixedSize(duration)
     {
+        if (pActive == false) return;
+
         fixedSizeTimer.interval = duration;
 
         fixedSizeTimer.restart();

@@ -79,11 +79,11 @@ Item
 
         cursor: Qt.PointingHandCursor
 
-        colorHoverA: st.buttonPushConfirm_colorHoverA
-        colorHoverB: st.buttonPushConfirm_colorHoverB
+        colorHoverA: st.button_colorConfirmHoverA
+        colorHoverB: st.button_colorConfirmHoverB
 
-        colorPressA: st.buttonPushConfirm_colorPressA
-        colorPressB: st.buttonPushConfirm_colorPressB
+        colorPressA: st.button_colorConfirmPressA
+        colorPressB: st.button_colorConfirmPressB
 
         onClicked: close()
     }

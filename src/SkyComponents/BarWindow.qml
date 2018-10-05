@@ -17,7 +17,7 @@
 import QtQuick 1.0
 import Sky     1.0
 
-Item
+ViewDrag
 {
     id: barWindow
 
@@ -35,17 +35,11 @@ Item
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    default property alias content: viewDrag.data
-
     property alias borderSize: border.size
-
-    property alias dragEnabled: viewDrag.dragEnabled
 
     property alias buttonApplicationMaximum: buttonApplication.maximumWidth
 
     //---------------------------------------------------------------------------------------------
-
-    property alias viewDrag: viewDrag
 
     property alias buttonApplication: buttonApplication
 
@@ -75,172 +69,165 @@ Item
     visible: (window.fullScreen == false)
 
     //---------------------------------------------------------------------------------------------
-    // Functions events
+    // Functions private
     //---------------------------------------------------------------------------------------------
 
-    function onIconify()
+    function pIconify()
     {
         window.minimized = true;
     }
 
-    function onMaximize()
+    function pMaximize()
     {
         window.maximized = !(window.maximized);
     }
 
-    function onClose()
+    function pClose()
     {
         window.close();
     }
 
     //---------------------------------------------------------------------------------------------
 
-    function onDoubleClicked(mouse)
+    function pDoubleClicked(mouse)
     {
-        onMaximize();
+        pMaximize();
     }
 
     //---------------------------------------------------------------------------------------------
     // Childs
     //---------------------------------------------------------------------------------------------
 
-    ViewDrag
-    {
-        id: viewDrag
+    onPressed: window.clearFocus()
 
+    onDoubleClicked:
+    {
+        if (window.hoverCount() == 0)
+        {
+            pDoubleClicked(mouse);
+        }
+    }
+
+    Rectangle
+    {
         anchors.left  : parent.left
         anchors.right : parent.right
         anchors.top   : parent.top
         anchors.bottom: border.top
 
-        onPressed: window.clearFocus()
-
-        onDoubleClicked:
+        gradient: Gradient
         {
-            if (window.hoverCount() == 0)
+            GradientStop
             {
-                barWindow.onDoubleClicked(mouse);
+                position: 0.0
+
+                color: (window.isActive) ? colorA
+                                         : colorDisableA
+            }
+
+            GradientStop
+            {
+                position: 1.0
+
+                color: (window.isActive) ? colorB
+                                         : colorDisableB
             }
         }
 
-        Rectangle
+        BorderHorizontal
         {
-            anchors.fill: parent
+            id: borderLine
 
-            gradient: Gradient
-            {
-                GradientStop
-                {
-                    position: 0.0
+            color: st.barWindow_colorBorderLine
 
-                    color: (window.isActive) ? colorA
-                                             : colorDisableA
-                }
-
-                GradientStop
-                {
-                    position: 1.0
-
-                    color: (window.isActive) ? colorB
-                                             : colorDisableB
-                }
-            }
-
-            BorderHorizontal
-            {
-                id: borderLine
-
-                color: st.barWindow_colorBorderLine
-
-                visible: (colorA != colorB)
-            }
+            visible: (colorA != colorB)
         }
+    }
 
-        ButtonPianoFull
-        {
-            id: buttonApplication
+    ButtonPianoFull
+    {
+        id: buttonApplication
 
-            anchors.top   : parent.top
-            anchors.bottom: parent.bottom
+        anchors.top   : parent.top
+        anchors.bottom: border.top
 
-            maximumWidth: buttonIconify.x - st.dp32
+        maximumWidth: buttonIconify.x - st.dp32
 
-            spacing: st.dp6
+        spacing: st.dp6
 
-            checkable: true
+        checkable: true
 
-            icon: st.icon
+        icon: st.icon
 
-            iconSourceSize: Qt.size(height, height)
+        iconSourceSize: Qt.size(height, height)
 
-            enableFilter: false
+        enableFilter: false
 
-            text: sk.name
+        text: sk.name
 
-            font.pixelSize: st.dp14
+        font.pixelSize: st.dp14
 
-            onPressed: buttonPressed()
-        }
+        onPressed: buttonPressed()
+    }
 
-        ButtonPianoIcon
-        {
-            id: buttonIconify
+    ButtonPianoIcon
+    {
+        id: buttonIconify
 
-            anchors.right : (buttonMaximize.visible) ? buttonMaximize.left
-                                                     : buttonClose   .left
+        anchors.right : (buttonMaximize.visible) ? buttonMaximize.left
+                                                 : buttonClose   .left
 
-            anchors.top   : parent.top
-            anchors.bottom: parent.bottom
+        anchors.top   : buttonClose.top
+        anchors.bottom: buttonClose.bottom
 
-            borderLeft: borderSize
+        borderLeft: borderSize
 
-            icon          : st.icon16x16_iconify
-            iconSourceSize: st.size16x16
+        icon          : st.icon16x16_iconify
+        iconSourceSize: st.size16x16
 
-            onClicked: onIconify()
-        }
+        onClicked: pIconify()
+    }
 
-        ButtonPianoIcon
-        {
-            id: buttonMaximize
+    ButtonPianoIcon
+    {
+        id: buttonMaximize
 
-            anchors.right : buttonClose.left
-            anchors.top   : parent.top
-            anchors.bottom: parent.bottom
+        anchors.right : buttonClose.left
+        anchors.top   : buttonClose.top
+        anchors.bottom: buttonClose.bottom
 
-            highlighted: window.maximized
+        highlighted: window.maximized
 
-            icon: (window.maximized) ? st.icon16x16_minimize
-                                     : st.icon16x16_maximize
+        icon: (window.maximized) ? st.icon16x16_minimize
+                                 : st.icon16x16_maximize
 
-            iconSourceSize: st.size16x16
+        iconSourceSize: st.size16x16
 
-            onClicked: onMaximize()
-        }
+        onClicked: pMaximize()
+    }
 
-        ButtonPianoIcon
-        {
-            id: buttonClose
+    ButtonPianoIcon
+    {
+        id: buttonClose
 
-            anchors.right : parent.right
-            anchors.top   : parent.top
-            anchors.bottom: parent.bottom
+        anchors.right : parent.right
+        anchors.top   : parent.top
+        anchors.bottom: border.top
 
-            anchors.rightMargin: st.dp16
+        anchors.rightMargin: st.dp16
 
-            icon          : st.icon16x16_close
-            iconSourceSize: st.size16x16
+        icon          : st.icon16x16_close
+        iconSourceSize: st.size16x16
 
-            colorHoverA: st.buttonPianoConfirm_colorHoverA
-            colorHoverB: st.buttonPianoConfirm_colorHoverB
+        colorHoverA: st.buttonPiano_colorHoverA
+        colorHoverB: st.buttonPiano_colorHoverB
 
-            colorPressA: st.buttonPianoConfirm_colorPressA
-            colorPressB: st.buttonPianoConfirm_colorPressB
+        colorPressA: st.buttonPiano_colorPressA
+        colorPressB: st.buttonPiano_colorPressB
 
-            colorFocus: st.buttonPianoConfirm_colorFocus
+        colorFocus: st.buttonPiano_colorFocus
 
-            onClicked: onClose()
-        }
+        onClicked: pClose()
     }
 
     BorderHorizontal

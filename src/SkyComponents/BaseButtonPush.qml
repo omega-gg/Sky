@@ -101,11 +101,6 @@ BaseButton
 
         border.width: borderSize
         border.color: colorFocus
-
-        Behavior on opacity
-        {
-            PropertyAnimation { duration: st.duration_fast }
-        }
     }
 
     Rectangle

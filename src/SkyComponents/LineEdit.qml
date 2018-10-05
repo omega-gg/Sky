@@ -79,11 +79,6 @@ BaseLineEdit
 
         border.width: borderSize
         border.color: st.border_colorFocus
-
-        Behavior on opacity
-        {
-            PropertyAnimation { duration: st.duration_fast }
-        }
     }
 
     Rectangle

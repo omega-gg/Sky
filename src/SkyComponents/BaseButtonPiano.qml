@@ -195,11 +195,6 @@ BaseButton
         opacity: (window.isActive && isFocused)
 
         color: colorFocus
-
-        Behavior on opacity
-        {
-            PropertyAnimation { duration: st.duration_fast }
-        }
     }
 
     RectangleBorders
