@@ -172,7 +172,7 @@ void WDeclarativeImageBasePrivate::readDefault()
     WPixmapCache::readPixmap(&(pixmapDefault),
                              WControllerFile::toLocalFile(urlDefault), sourceSize, sourceArea);
 
-    applyFilter();
+    if (filter) applyFilter();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -219,7 +219,7 @@ void WDeclarativeImageBasePrivate::applyRequest()
 
     setSourceDefault(pix.isNull());
 
-    applyFilter();
+    if (filter) applyFilter();
 
     q->pixmapChange();
 
@@ -242,8 +242,6 @@ void WDeclarativeImageBasePrivate::applyRequest()
 
 void WDeclarativeImageBasePrivate::applyFilter()
 {
-    if (filter == NULL) return;
-
     if (sourceDefault == false || pixmapDefault.isNull())
     {
         QPixmap pixmap = pix.pixmap();
@@ -349,11 +347,11 @@ void WDeclarativeImageBasePrivate::onLoaded(WCacheFile * file)
 
 void WDeclarativeImageBasePrivate::onFilterUpdated()
 {
+    if (loadLater) return;
+
     Q_Q(WDeclarativeImageBase);
 
-    if (pix.isNull() || loadLater) return;
-
-    filter->applyFilter(const_cast<QPixmap *> (&(pix.pixmap())));
+    applyFilter();
 
     q->pixmapChange();
 
@@ -998,18 +996,7 @@ void WDeclarativeImageBase::setFilter(WImageFilter * filter)
     {
         connect(filter, SIGNAL(filterUpdated()), this, SLOT(onFilterUpdated()));
 
-        if (d->loadLater == false)
-        {
-            d->applyFilter();
-
-            pixmapChange();
-
-#ifdef QT_LATEST
-            d->updateTexture = true;
-#endif
-
-            update();
-        }
+        d->onFilterUpdated();
     }
 
     emit filterChanged();
