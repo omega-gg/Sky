@@ -384,8 +384,8 @@ protected: // Functions
     void hoverLeave();
 
 #ifdef QT_4
-    /* virtual */ void drawBackground(QPainter * painter, const QRectF & rect); /* {} */
-    /* virtual */ void drawForeground(QPainter * painter, const QRectF & rect); /* {} */
+    /* virtual */ void drawBackground(QPainter * painter, const QRectF & rect); // {}
+    /* virtual */ void drawForeground(QPainter * painter, const QRectF & rect); // {}
 #endif
 
 protected: // Events

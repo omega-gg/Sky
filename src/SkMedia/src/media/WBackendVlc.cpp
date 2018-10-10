@@ -761,10 +761,10 @@ void WBackendVlcPrivate::convertFrameSse()
         {
             for (int x = textures[0].width / 16; x--;)
             {
-                SSE2_CALL (SSE2_INIT_32_ALIGNED
-                           SSE2_YUV_MUL
-                           SSE2_YUV_ADD
-                           SSE2_UNPACK_32_ARGB_ALIGNED);
+                SSE2_CALL(SSE2_INIT_32_ALIGNED
+                          SSE2_YUV_MUL
+                          SSE2_YUV_ADD
+                          SSE2_UNPACK_32_ARGB_ALIGNED);
 
                 p_y += 16;
                 p_u += 8;
@@ -781,10 +781,10 @@ void WBackendVlcPrivate::convertFrameSse()
 
                 p_buffer -= rewind;
 
-                SSE2_CALL (SSE2_INIT_32_UNALIGNED
-                           SSE2_YUV_MUL
-                           SSE2_YUV_ADD
-                           SSE2_UNPACK_32_ARGB_UNALIGNED);
+                SSE2_CALL(SSE2_INIT_32_UNALIGNED
+                          SSE2_YUV_MUL
+                          SSE2_YUV_ADD
+                          SSE2_UNPACK_32_ARGB_UNALIGNED);
 
                 p_y += 16;
                 p_u += 4;
@@ -810,10 +810,10 @@ void WBackendVlcPrivate::convertFrameSse()
         {
             for (int x = textures[0].width / 16; x--;)
             {
-                SSE2_CALL (SSE2_INIT_32_UNALIGNED
-                           SSE2_YUV_MUL
-                           SSE2_YUV_ADD
-                           SSE2_UNPACK_32_ARGB_UNALIGNED);
+                SSE2_CALL(SSE2_INIT_32_UNALIGNED
+                          SSE2_YUV_MUL
+                          SSE2_YUV_ADD
+                          SSE2_UNPACK_32_ARGB_UNALIGNED);
 
                 p_y += 16;
                 p_u += 8;
@@ -830,10 +830,10 @@ void WBackendVlcPrivate::convertFrameSse()
 
                 p_buffer -= rewind;
 
-                SSE2_CALL (SSE2_INIT_32_UNALIGNED
-                           SSE2_YUV_MUL
-                           SSE2_YUV_ADD
-                           SSE2_UNPACK_32_ARGB_UNALIGNED);
+                SSE2_CALL(SSE2_INIT_32_UNALIGNED
+                          SSE2_YUV_MUL
+                          SSE2_YUV_ADD
+                          SSE2_UNPACK_32_ARGB_UNALIGNED);
 
                 p_y += 16;
                 p_u += 8;

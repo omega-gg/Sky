@@ -352,77 +352,77 @@ public: // Abstract interface
     Q_INVOKABLE virtual QString getTitle() const = 0;
 
 public: // Virtual interface
-    Q_INVOKABLE virtual bool hasSearch  () const; /* {} */
-    Q_INVOKABLE virtual bool hasDiscover() const; /* {} */
+    Q_INVOKABLE virtual bool hasSearch  () const; // {}
+    Q_INVOKABLE virtual bool hasDiscover() const; // {}
 
-    Q_INVOKABLE virtual bool isSearchEngine() const; /* {} */
-    Q_INVOKABLE virtual bool isSearchCover () const; /* {} */
+    Q_INVOKABLE virtual bool isSearchEngine() const; // {}
+    Q_INVOKABLE virtual bool isSearchCover () const; // {}
 
-    Q_INVOKABLE virtual bool checkValidUrl(const QUrl & url) const; /* {} */
+    Q_INVOKABLE virtual bool checkValidUrl(const QUrl & url) const; // {}
 
-    Q_INVOKABLE virtual bool checkCover(const QString & label, const QString & q) const; /* {} */
+    Q_INVOKABLE virtual bool checkCover(const QString & label, const QString & q) const; // {}
 
-    Q_INVOKABLE virtual QString getHost() const; /* {} */
+    Q_INVOKABLE virtual QString getHost() const; // {}
 
-    Q_INVOKABLE virtual QList<WLibraryFolderItem> getLibraryItems() const; /* {} */
+    Q_INVOKABLE virtual QList<WLibraryFolderItem> getLibraryItems() const; // {}
 
-    Q_INVOKABLE virtual QString getTrackId(const QUrl & url) const; /* {} */
+    Q_INVOKABLE virtual QString getTrackId(const QUrl & url) const; // {}
 
-    Q_INVOKABLE virtual WAbstractBackend::Output getTrackOutput(const QUrl & url) const; /* {} */
+    Q_INVOKABLE virtual WAbstractBackend::Output getTrackOutput(const QUrl & url) const; // {}
 
-    Q_INVOKABLE virtual WBackendNetPlaylistInfo getPlaylistInfo(const QUrl & url) const; /* {} */
+    Q_INVOKABLE virtual WBackendNetPlaylistInfo getPlaylistInfo(const QUrl & url) const; // {}
 
-    Q_INVOKABLE virtual QUrl getUrlTrack(const QString & id) const; /* {} */
+    Q_INVOKABLE virtual QUrl getUrlTrack(const QString & id) const; // {}
 
-    Q_INVOKABLE virtual QUrl getUrlPlaylist(const WBackendNetPlaylistInfo & info) const; /* {} */
+    Q_INVOKABLE virtual QUrl getUrlPlaylist(const WBackendNetPlaylistInfo & info) const; // {}
 
     //---------------------------------------------------------------------------------------------
 
     Q_INVOKABLE virtual WBackendNetQuery getQuerySource  (const QUrl & url) const;
-    Q_INVOKABLE virtual WBackendNetQuery getQueryTrack   (const QUrl & url) const; /* {} */
-    Q_INVOKABLE virtual WBackendNetQuery getQueryPlaylist(const QUrl & url) const; /* {} */
+    Q_INVOKABLE virtual WBackendNetQuery getQueryTrack   (const QUrl & url) const; // {}
+    Q_INVOKABLE virtual WBackendNetQuery getQueryPlaylist(const QUrl & url) const; // {}
 
     //---------------------------------------------------------------------------------------------
 
     Q_INVOKABLE virtual WBackendNetQuery createQuery(const QString & method,
                                                      const QString & label,
-                                                     const QString & q) const; /* {} */
+                                                     const QString & q) const; // {}
 
     //---------------------------------------------------------------------------------------------
 
     Q_INVOKABLE virtual
     WBackendNetSource extractSource(const QByteArray       & data,
-                                    const WBackendNetQuery & query) const; /* {} */
+                                    const WBackendNetQuery & query) const; // {}
 
     Q_INVOKABLE virtual
     WBackendNetTrack extractTrack(const QByteArray       & data,
-                                  const WBackendNetQuery & query) const; /* {} */
+                                  const WBackendNetQuery & query) const; // {}
 
     Q_INVOKABLE virtual
     WBackendNetPlaylist extractPlaylist(const QByteArray       & data,
-                                        const WBackendNetQuery & query) const; /* {} */
+                                        const WBackendNetQuery & query) const; // {}
 
     Q_INVOKABLE virtual
     WBackendNetFolder extractFolder(const QByteArray       & data,
-                                    const WBackendNetQuery & query) const; /* {} */
+                                    const WBackendNetQuery & query) const; // {}
 
     //---------------------------------------------------------------------------------------------
 
-    Q_INVOKABLE virtual void queryFailed(const WBackendNetQuery & query); /* {} */
+    Q_INVOKABLE virtual void queryFailed(const WBackendNetQuery & query); // {}
 
     //---------------------------------------------------------------------------------------------
 
     Q_INVOKABLE virtual void applySource(const WBackendNetQuery  & query,
-                                         const WBackendNetSource & source); /* {} */
+                                         const WBackendNetSource & source); // {}
 
     Q_INVOKABLE virtual void applyTrack(const WBackendNetQuery & query,
-                                        const WBackendNetTrack & track); /* {} */
+                                        const WBackendNetTrack & track); // {}
 
     Q_INVOKABLE virtual void applyPlaylist(const WBackendNetQuery    & query,
-                                           const WBackendNetPlaylist & playlist); /* {} */
+                                           const WBackendNetPlaylist & playlist); // {}
 
     Q_INVOKABLE virtual void applyFolder(const WBackendNetQuery  & query,
-                                         const WBackendNetFolder & folder); /* {} */
+                                         const WBackendNetFolder & folder); // {}
 
 public: // Properties
     QString id   () const;

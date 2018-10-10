@@ -68,8 +68,8 @@ protected:
     virtual void beginItemsInsert(int first, int last); // {}
     virtual void endItemsInsert  (); // {}
 
-    virtual void beginItemsMove(int first, int last, int to); /* {} */
-    virtual void endItemsMove  ();                            /* {} */
+    virtual void beginItemsMove(int first, int last, int to); // {}
+    virtual void endItemsMove  ();                            // {}
 
     virtual void beginItemsRemove(int first, int last); // {}
     virtual void endItemsRemove  (); // {}
@@ -248,7 +248,7 @@ protected: // Functions
     void updateIndex();
 
 protected: // Virtual functions
-    virtual WLibraryItem * createItem(Type type, WLibraryFolder * parent = NULL); /* {} */
+    virtual WLibraryItem * createItem(Type type, WLibraryFolder * parent = NULL); // {}
 
 protected: // WLocalObject reimplementation
     /* virtual */ void applyId(int id);

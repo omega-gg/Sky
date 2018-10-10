@@ -74,7 +74,7 @@ protected: // Functions
     void updatePaintedGeometry();
 
 protected: // Virtual functions
-    virtual void updatePixmap(); /* {} */
+    virtual void updatePixmap(); // {}
 
 protected: // QGraphicsItem / QQuickItem reimplementation
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);

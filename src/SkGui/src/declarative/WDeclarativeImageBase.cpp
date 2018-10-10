@@ -800,6 +800,11 @@ void WDeclarativeImageBase::setSourceDefault(const QUrl & url)
             d->pixmapDefault = QPixmap();
 
             d->loadLater = true;
+
+            if (d->sourceDefault)
+            {
+                pixmapChange();
+            }
         }
         else if (d->sourceDefault)
         {

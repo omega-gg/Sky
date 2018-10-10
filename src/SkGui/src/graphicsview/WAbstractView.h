@@ -123,7 +123,7 @@ protected: // Events
 #endif
 
 protected: // Virtual functions
-    virtual void onStateChanged(Qt::WindowState state); /* {} */
+    virtual void onStateChanged(Qt::WindowState state); // {}
 
     virtual void onClose();
 

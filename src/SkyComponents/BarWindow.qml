@@ -47,6 +47,7 @@ ViewDrag
     property alias buttonMaximize: buttonMaximize
     property alias buttonClose   : buttonClose
 
+    property alias border    : border
     property alias borderLine: borderLine
 
     //---------------------------------------------------------------------------------------------

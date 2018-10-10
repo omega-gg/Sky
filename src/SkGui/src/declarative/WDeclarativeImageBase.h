@@ -125,7 +125,7 @@ protected: // Virtual functions
 #endif
 
     virtual void pixmapChange();
-    virtual void pixmapClear (); /* {} */
+    virtual void pixmapClear (); // {}
 
 protected slots:
     virtual void requestFinished();

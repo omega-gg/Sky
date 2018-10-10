@@ -111,17 +111,17 @@ protected: // Virtual functions
     virtual void setSaved (bool ok);
     virtual void setLoaded(bool ok);
 
-    virtual WAbstractThreadAction * onSave(const QString & path); /* {} */
-    virtual WAbstractThreadAction * onLoad(const QString & path); /* {} */
+    virtual WAbstractThreadAction * onSave(const QString & path); // {}
+    virtual WAbstractThreadAction * onLoad(const QString & path); // {}
 
-    virtual void onStateChanged      (State state);  /* {} */
-    virtual void onLockChanged       (bool locked);  /* {} */
-    virtual void onSaveEnabledChanged(bool enabled); /* {} */
+    virtual void onStateChanged      (State state);  // {}
+    virtual void onLockChanged       (bool locked);  // {}
+    virtual void onSaveEnabledChanged(bool enabled); // {}
 
-    virtual void onFileDeleted  (); /* {} */
-    virtual void onFolderDeleted(); /* {} */
+    virtual void onFileDeleted  (); // {}
+    virtual void onFolderDeleted(); // {}
 
-    virtual bool hasFolder() const; /* {} */
+    virtual bool hasFolder() const; // {}
 
 signals:
     void saved ();

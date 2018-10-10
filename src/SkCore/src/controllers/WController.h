@@ -107,7 +107,7 @@ public: // Interface
     bool isCreated();
 
 protected: // Functions
-    virtual void init(); /* {} */
+    virtual void init(); // {}
 
 private:
     W_DECLARE_PRIVATE(WController)

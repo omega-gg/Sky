@@ -77,7 +77,6 @@ Item
 
     property int dp96: 96 * ratio
 
-    property int dp120: 120 * ratio
     property int dp128: 128 * ratio
     property int dp150: 150 * ratio
     property int dp180: 180 * ratio
@@ -970,7 +969,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // Slider
 
-    property int slider_width : dp120
+    property int slider_width : dp128
     property int slider_height: dp26
 
     property int slider_handleWidth : dp26
@@ -1457,7 +1456,7 @@ Item
         barWindow_colorA = "#565656";
         barWindow_colorB = barWindow_colorA;
 
-        barWindow_colorDisableA = "#484848";
+        barWindow_colorDisableB = "#484848";
 
         //-----------------------------------------------------------------------------------------
         // BarTitle
@@ -1614,7 +1613,6 @@ Item
         barWindow_colorA = "#808080";
         barWindow_colorB = "#484848";
 
-        barWindow_colorDisableA = barWindow_colorB;
         barWindow_colorDisableB = barWindow_colorA;
 
         //-----------------------------------------------------------------------------------------

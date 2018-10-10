@@ -49,7 +49,7 @@ protected: // Abstract functions
     virtual QIODevice * load(WRemoteData * data) = 0;
 
 protected: // Virtual functions
-    virtual void abort(QIODevice * reply); /* {} */
+    virtual void abort(QIODevice * reply); // {}
 
 protected: // Functions
     WRemoteData * getData(QIODevice * reply) const;

@@ -104,7 +104,7 @@ public: // QGraphicsItem reimplementation
 
 protected: // Functions
     virtual void svgChange();
-    virtual void svgClear (); /* {} */
+    virtual void svgClear (); // {}
 
 protected: // QGraphicsItem / QQuickItem reimplementation
 #ifdef QT_4

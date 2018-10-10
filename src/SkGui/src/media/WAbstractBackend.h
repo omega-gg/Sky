@@ -281,25 +281,25 @@ protected: // Abstract functions
     virtual bool backendDelete() = 0;
 
 protected: // Virtual functions
-    virtual void backendSeek(int msec); /* {} */
+    virtual void backendSeek(int msec); // {}
 
-    virtual void backendSetSpeed(qreal speed); /* {} */
+    virtual void backendSetSpeed(qreal speed); // {}
 
-    virtual void backendSetOutput (Output  output);  /* {} */
-    virtual void backendSetQuality(Quality quality); /* {} */
+    virtual void backendSetOutput (Output  output);  // {}
+    virtual void backendSetQuality(Quality quality); // {}
 
-    virtual void backendSetFillMode(FillMode fillMode); /* {} */
+    virtual void backendSetFillMode(FillMode fillMode); // {}
 
-    virtual void backendSetSize(const QSizeF & size); /* {} */
+    virtual void backendSetSize(const QSizeF & size); // {}
 
 #ifdef QT_LATEST
-    virtual void backendSynchronize(WBackendFrame * frame); /* {} */
+    virtual void backendSynchronize(WBackendFrame * frame); // {}
 #endif
 
-    virtual void backendDrawFrame(QPainter * painter, const QRect & rect); /* {} */
+    virtual void backendDrawFrame(QPainter * painter, const QRect & rect); // {}
 
-    virtual void   backendUpdateFrame();       /* {} */
-    virtual QImage backendGetFrame   () const; /* {} */
+    virtual void   backendUpdateFrame();       // {}
+    virtual QImage backendGetFrame   () const; // {}
 
 signals:
     void ended();
@@ -400,27 +400,27 @@ private:
 class SK_GUI_EXPORT WBackendFilter
 {
 public:
-    virtual void filterState    (WAbstractBackend::State     * state);     /* {} */
-    virtual void filterStateLoad(WAbstractBackend::StateLoad * stateLoad); /* {} */
+    virtual void filterState    (WAbstractBackend::State     * state);     // {}
+    virtual void filterStateLoad(WAbstractBackend::StateLoad * stateLoad); // {}
 
-    virtual void filterEnded(bool * ended); /* {} */
+    virtual void filterEnded(bool * ended); // {}
 
-    virtual void filterCurrentTime(int * msec); /* {} */
-    virtual void filterDuration   (int * msec); /* {} */
+    virtual void filterCurrentTime(int * msec); // {}
+    virtual void filterDuration   (int * msec); // {}
 
-    virtual void filterProgress(qreal * progress); /* {} */
+    virtual void filterProgress(qreal * progress); // {}
 
-    virtual void filterOutput      (WAbstractBackend::Output  * output);  /* {} */
-    virtual void filterOutputActive(WAbstractBackend::Output  * output);  /* {} */
+    virtual void filterOutput      (WAbstractBackend::Output  * output);  // {}
+    virtual void filterOutputActive(WAbstractBackend::Output  * output);  // {}
 
-    virtual void filterQuality      (WAbstractBackend::Quality * quality); /* {} */
-    virtual void filterQualityActive(WAbstractBackend::Quality * quality); /* {} */
+    virtual void filterQuality      (WAbstractBackend::Quality * quality); // {}
+    virtual void filterQualityActive(WAbstractBackend::Quality * quality); // {}
 
-    virtual void filterSpeed(qreal * speed); /* {} */
+    virtual void filterSpeed(qreal * speed); // {}
 
-    virtual void filterVolume(qreal * volume); /* {} */
+    virtual void filterVolume(qreal * volume); // {}
 
-    virtual void filterFillMode(WAbstractBackend::FillMode * fillMode); /* {} */
+    virtual void filterFillMode(WAbstractBackend::FillMode * fillMode); // {}
 };
 
 #ifdef QT_LATEST
