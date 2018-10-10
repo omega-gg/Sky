@@ -85,7 +85,7 @@ Item
 
     property int dp240: 240 * ratio
 
-    property int dp300: 300 * ratio
+    property int dp288: 288 * ratio
 
     property variant size16x16: size(16, 16)
     property variant size24x24: size(24, 24)
@@ -433,7 +433,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // ToolTip
 
-    property int toolTip_maximumWidth: dp300
+    property int toolTip_maximumWidth: dp288
 
     property int toolTip_padding: dp8
     property int toolTip_spacing: dp8
@@ -1046,7 +1046,7 @@ Item
 
     property int tabsBrowser_intervalResize: ms300
 
-    property int tabsBrowser_tabMaximum: dp300
+    property int tabsBrowser_tabMaximum: dp288
 
     property int tabsBrowser_spacing: dp8
 

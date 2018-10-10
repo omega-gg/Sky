@@ -370,9 +370,7 @@ void createShader()
 
 /* virtual */ const char * WBackendVlcShader::vertexShader() const
 {
-    return "#version 100\n"
-
-           "attribute highp vec4 vertex;"
+    return "attribute highp vec4 vertex;"
            "attribute highp vec2 fragment;"
 
            "uniform highp mat4 position;"
@@ -389,9 +387,7 @@ void createShader()
 
 /* virtual */ const char * WBackendVlcShader::fragmentShader() const
 {
-    return "#version 100\n"
-
-           "uniform sampler2D y;"
+    return "uniform sampler2D y;"
            "uniform sampler2D u;"
            "uniform sampler2D v;"
 
