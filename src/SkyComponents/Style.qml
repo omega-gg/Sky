@@ -590,6 +590,8 @@ Item
     property color buttonPiano_colorCheckHoverA: buttonPush_colorCheckHoverA
     property color buttonPiano_colorCheckHoverB: buttonPush_colorCheckHoverB
 
+    property color buttonPiano_colorFocus: "#00b4ff"
+
     property ImageColorFilter buttonPiano_filterIcon      : icon_filter
     property ImageColorFilter buttonPiano_filterIconShadow: icon_filterShadow
     property ImageColorFilter buttonPiano_filterIconSunken: icon_filterSunken

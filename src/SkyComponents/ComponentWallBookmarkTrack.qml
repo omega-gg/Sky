@@ -207,8 +207,8 @@ ComponentWall
     {
         if (isHighlighted)
         {
-            if      (isContextualHovered) return colorBarSelectB;
-            else if (isHovered)           return colorBarSelectA;
+            if      (isContextualHovered) return colorHighlightContextualA;
+            else if (isHovered)           return colorHighlightHoverA;
             else                          return st.border_color;
         }
         else if (isCurrent)           return colorBarSelectB;
