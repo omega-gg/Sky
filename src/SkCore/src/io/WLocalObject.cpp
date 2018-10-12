@@ -737,14 +737,14 @@ bool WLocalObject::isCacheLoad() const
 
 /* virtual */ WAbstractThreadAction * WLocalObject::onSave(const QString &)
 {
-    qWarning("WLocalObject::onSave: Save is not supported.");
+    qWarning("WLocalObject::onSave: Not supported.");
 
     return NULL;
 }
 
 /* virtual */ WAbstractThreadAction * WLocalObject::onLoad(const QString &)
 {
-    qWarning("WLocalObject::onLoad: Load is not supported.");
+    qWarning("WLocalObject::onLoad: Not supported.");
 
     return NULL;
 }

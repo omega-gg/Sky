@@ -238,7 +238,7 @@ Item
 
     property int window_durationAnimation: duration_fast
 
-    property int window_borderSize : dp2
+    property int window_borderSize : border_size
     property int window_resizerSize: dp4
 
     property color window_color: "#323232"

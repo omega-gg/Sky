@@ -882,8 +882,8 @@ WallBookmarkTrack
         anchors.right : (itemActive) ? itemActive.right  : undefined
         anchors.bottom: (itemActive) ? itemActive.bottom : undefined
 
-        anchors.rightMargin : st.dp2
-        anchors.bottomMargin: st.dp2
+        anchors.rightMargin : borderRight
+        anchors.bottomMargin: borderBottom
 
         width : st.wallVideo_overlayHeight
         height: st.wallVideo_overlayHeight

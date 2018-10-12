@@ -525,40 +525,40 @@ void WAbstractBackend::deleteNow()
 
 /* virtual */ void WAbstractBackend::backendSeek(int)
 {
-    qWarning("WAbstractBackend::backendSeek: Seek is not supported.");
+    qWarning("WAbstractBackend::backendSeek: Not supported.");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WAbstractBackend::backendSetSpeed(qreal)
 {
-    qWarning("WAbstractBackend::backendSetSpeed: SetSpeed is not supported.");
+    qWarning("WAbstractBackend::backendSetSpeed: Not supported.");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WAbstractBackend::backendSetOutput(Output)
 {
-    qWarning("WAbstractBackend::backendSetOutput: SetOutput is not supported.");
+    qWarning("WAbstractBackend::backendSetOutput: Not supported.");
 }
 
 /* virtual */ void WAbstractBackend::backendSetQuality(Quality)
 {
-    qWarning("WAbstractBackend::backendSetQuality: SetQuality is not supported.");
+    qWarning("WAbstractBackend::backendSetQuality: Not supported.");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WAbstractBackend::backendSetFillMode(FillMode)
 {
-    qWarning("WAbstractBackend::backendSetFillMode: SetFillMode is not supported.");
+    qWarning("WAbstractBackend::backendSetFillMode: Not supported.");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WAbstractBackend::backendSetSize(const QSizeF &)
 {
-    qWarning("WAbstractBackend::backendSetSize: SetSize is not supported.");
+    qWarning("WAbstractBackend::backendSetSize: Not supported.");
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -567,7 +567,7 @@ void WAbstractBackend::deleteNow()
 
 /* virtual */ void WAbstractBackend::backendSynchronize(WBackendFrame *)
 {
-    qWarning("WAbstractBackend::backendSynchronize: Synchronize is not supported.");
+    qWarning("WAbstractBackend::backendSynchronize: Not supported.");
 }
 
 #endif
@@ -576,19 +576,19 @@ void WAbstractBackend::deleteNow()
 
 /* virtual */ void WAbstractBackend::backendDrawFrame(QPainter *, const QRect &)
 {
-    qWarning("WAbstractBackend::backendDrawFrame: DrawFrame is not supported.");
+    qWarning("WAbstractBackend::backendDrawFrame: Not supported.");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WAbstractBackend::backendUpdateFrame()
 {
-    qWarning("WAbstractBackend::backendUpdateFrame: UpdateFrame is not supported.");
+    qWarning("WAbstractBackend::backendUpdateFrame: Not supported.");
 }
 
 /* virtual */ QImage WAbstractBackend::backendGetFrame() const
 {
-    qWarning("WAbstractBackend::backendGetFrame: GetFrame is not supported.");
+    qWarning("WAbstractBackend::backendGetFrame: Not supported.");
 
     return QImage();
 }
