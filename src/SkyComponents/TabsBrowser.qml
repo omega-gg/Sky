@@ -197,7 +197,7 @@ BaseTabs
 
     function openTabAt(index)
     {
-        if (tabs.isFull || isAnimated) return false;
+        if (tabs.isFull || isAnimated || onBeforeTabOpen(index) == false) return false;
 
         if (index < 0 || index >= count)
         {
@@ -238,7 +238,7 @@ BaseTabs
 
     function closeTab(index)
     {
-        if (isAnimated || index < 0 || index >= count || onBeforeCloseTab(index) == false)
+        if (isAnimated || index < 0 || index >= count || onBeforeTabClose(index) == false)
         {
             return false;
         }
@@ -290,7 +290,9 @@ BaseTabs
 
     function selectTab(index)
     {
-        if (index < 0 || index >= count || indexRemove == index) return;
+        if (index < 0 || index >= count || indexRemove == index
+            ||
+            onBeforeTabSelect(index) == false) return;
 
         tabs.currentIndex = index;
     }
@@ -378,7 +380,10 @@ BaseTabs
     //---------------------------------------------------------------------------------------------
     // Events
 
-    function onBeforeCloseTab(index) { return true; }
+    function onBeforeTabOpen (index) { return true; }
+    function onBeforeTabClose(index) { return true; }
+
+    function onBeforeTabSelect(index) { return true; }
 
     //---------------------------------------------------------------------------------------------
 

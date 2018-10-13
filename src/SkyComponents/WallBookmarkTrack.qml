@@ -254,7 +254,7 @@ BaseWall
 
     function closeItem(index)
     {
-        if (isAnimated || index < 0 || index >= count || onBeforeCloseItem(index) == false)
+        if (isAnimated || index < 0 || index >= count || onBeforeItemClose(index) == false)
         {
             return false;
         }
@@ -408,7 +408,7 @@ BaseWall
     //---------------------------------------------------------------------------------------------
     // Events
 
-    function onBeforeCloseItem(index) { return true; }
+    function onBeforeItemClose(index) { return true; }
 
     //---------------------------------------------------------------------------------------------
 

@@ -42,9 +42,9 @@ TabsTrack
 
     function selectTab(index)
     {
-        if (index < 0 || index >= count || indexRemove == index) return;
-
-        onBeforeSelectTab(index);
+        if (index < 0 || index >= count || indexRemove == index
+            ||
+            onBeforeTabSelect(index) == false) return;
 
         if (highlightedTab)
         {
@@ -70,11 +70,6 @@ TabsTrack
     {
         selectTab(tabs.currentIndex + 1);
     }
-
-    //---------------------------------------------------------------------------------------------
-    // Events
-
-    function onBeforeSelectTab(index) {}
 
     //---------------------------------------------------------------------------------------------
     // Childs
