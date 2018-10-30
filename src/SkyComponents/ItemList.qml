@@ -222,9 +222,9 @@ MouseArea
 
             filterDefault:
             {
-                if      (isSelected) return st.icon_filter;
+                if      (isSelected) return st.icon2_filter;
                 else if (isCurrent)  return st.icon_filterActive;
-                else                 return st.icon_filter;
+                else                 return st.icon1_filter;
             }
         }
 

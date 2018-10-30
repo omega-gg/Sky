@@ -23,6 +23,8 @@ BaseButton
     // Properties
     //---------------------------------------------------------------------------------------------
 
+    property bool isHighlighted: (highlighted || (checkable && (checked || isPressed)))
+
     property variant itemLeft  : null
     property variant itemRight : null
     property variant itemTop   : null
@@ -43,19 +45,22 @@ BaseButton
     property color colorHoverB: (highlighted) ? st.buttonPiano_colorHighlightHoverB
                                               : st.buttonPiano_colorHoverB
 
-    property color colorPressA: (highlighted || checkable) ? st.buttonPiano_colorCheckA
-                                                           : st.buttonPiano_colorPressA
+    property color colorPressA: (pHighlighted) ? st.buttonPiano_colorCheckA
+                                               : st.buttonPiano_colorPressA
 
-    property color colorPressB: (highlighted || checkable) ? st.buttonPiano_colorCheckB
-                                                           : st.buttonPiano_colorPressB
+    property color colorPressB: (pHighlighted) ? st.buttonPiano_colorCheckB
+                                               : st.buttonPiano_colorPressB
 
-    property color colorPressHoverA: (highlighted || checkable) ? st.buttonPiano_colorCheckHoverA
-                                                                : st.buttonPiano_colorPressHoverA
+    property color colorPressHoverA: (pHighlighted) ? st.buttonPiano_colorCheckHoverA
+                                                    : st.buttonPiano_colorPressHoverA
 
-    property color colorPressHoverB: (highlighted || checkable) ? st.buttonPiano_colorCheckHoverB
-                                                                : st.buttonPiano_colorPressHoverB
+    property color colorPressHoverB: (pHighlighted) ? st.buttonPiano_colorCheckHoverB
+                                                    : st.buttonPiano_colorPressHoverB
 
-    property color colorFocus: st.buttonPiano_colorFocus
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    property bool pHighlighted: (highlighted || checkable)
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -77,7 +82,13 @@ BaseButton
     //---------------------------------------------------------------------------------------------
 
     property alias background: background
+    property alias itemFocus : itemFocus
     property alias borders   : borders
+
+    //---------------------------------------------------------------------------------------------
+    // Style
+
+    property alias colorFocus: itemFocus.color
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -190,11 +201,15 @@ BaseButton
 
     RectangleBorders
     {
+        id: itemFocus
+
         anchors.fill: background
+
+        size: st.border_sizeFocus
 
         opacity: (window.isActive && isFocused)
 
-        color: colorFocus
+        color: st.button_colorFocus
     }
 
     RectangleBorders

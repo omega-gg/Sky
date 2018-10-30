@@ -25,4 +25,6 @@ LabelRound
 
     colorA: st.labelRoundInfo_color
     colorB: st.labelRoundInfo_color
+
+    itemText.color: st.labelRoundInfo_colorText
 }

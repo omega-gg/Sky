@@ -25,6 +25,8 @@ BaseButton
     // Properties
     //---------------------------------------------------------------------------------------------
 
+    property bool isHighlighted: (highlighted || (checkable && (checked || isPressed)))
+
     property int margins: height / 8
 
 //#QT_4
@@ -33,7 +35,8 @@ BaseButton
     property int radius: background.height / 3.75
 //#END
 
-    property int borderSize: st.border_size
+    property int borderSize     : st.border_size
+    property int borderSizeFocus: st.border_sizeFocus
 
     //---------------------------------------------------------------------------------------------
     // Style
@@ -50,19 +53,22 @@ BaseButton
     property color colorHoverB: (highlighted) ? st.buttonPush_colorHighlightHoverB
                                               : st.buttonPush_colorHoverB
 
-    property color colorPressA: (highlighted || checkable) ? st.buttonPush_colorCheckA
-                                                           : st.buttonPush_colorPressA
+    property color colorPressA: (pHighlighted) ? st.buttonPush_colorCheckA
+                                               : st.buttonPush_colorPressA
 
-    property color colorPressB: (highlighted || checkable) ? st.buttonPush_colorCheckB
-                                                           : st.buttonPush_colorPressB
+    property color colorPressB: (pHighlighted) ? st.buttonPush_colorCheckB
+                                               : st.buttonPush_colorPressB
 
-    property color colorPressHoverA: (highlighted || checkable) ? st.buttonPush_colorCheckHoverA
-                                                                : st.buttonPush_colorPressHoverA
+    property color colorPressHoverA: (pHighlighted) ? st.buttonPush_colorCheckHoverA
+                                                    : st.buttonPush_colorPressHoverA
 
-    property color colorPressHoverB: (highlighted || checkable) ? st.buttonPush_colorCheckHoverB
-                                                                : st.buttonPush_colorPressHoverB
+    property color colorPressHoverB: (pHighlighted) ? st.buttonPush_colorCheckHoverB
+                                                    : st.buttonPush_colorPressHoverB
 
-    property color colorFocus: st.button_colorFocus
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    property bool pHighlighted: (highlighted || checkable)
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -70,6 +76,11 @@ BaseButton
 
     property alias background: background
     property alias itemFocus : itemFocus
+
+    //---------------------------------------------------------------------------------------------
+    // Style
+
+    property alias colorFocus: itemFocus.color
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -87,7 +98,7 @@ BaseButton
 
         anchors.fill: background
 
-        anchors.margins: -borderSize
+        anchors.margins: -borderSizeFocus
 
         radius: baseButtonPush.radius
 
@@ -99,8 +110,8 @@ BaseButton
         smooth: true
 //#END
 
-        border.width: borderSize
-        border.color: colorFocus
+        border.width: borderSize + borderSizeFocus
+        border.color: st.button_colorFocus
     }
 
     Rectangle

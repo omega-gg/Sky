@@ -30,9 +30,6 @@ Item
     property int paddingLeft : padding
     property int paddingRight: padding
 
-    property int gapX: st.labelStream_gapX
-    property int gapY: st.labelStream_gapY
-
     /* read */ property int position: pGetPosition()
 
     //---------------------------------------------------------------------------------------------
@@ -79,8 +76,6 @@ Item
 
     x: pGetX()
 
-    y: slider.y + slider.slider.y - height + gapY
-
     visible: (slider.enabled && slider.isHovered)
 
     opacity: (visible)
@@ -95,9 +90,9 @@ Item
 
         var x = position - Math.round(width / 2);
 
-        if (x > gapX)
+        if (x > 0)
         {
-            var maximum = area.width - width - gapX;
+            var maximum = area.width - width;
 
             if (x > maximum)
             {
@@ -105,7 +100,7 @@ Item
             }
             else return slider.x + area.x + x;
         }
-        else return slider.x + area.x + gapX;
+        else return slider.x + area.x;
     }
 
     //---------------------------------------------------------------------------------------------

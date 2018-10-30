@@ -41,17 +41,19 @@ ButtonPushIcon
     colorHoverB: (highlighted) ? st.buttonPush_colorHighlightHoverB
                                : st.buttonOverlay_colorHoverB
 
-    colorPressA: (highlighted || checkable) ? st.buttonPush_colorCheckA
-                                            : st.buttonOverlay_colorPressA
+    colorPressA: (pHighlighted) ? st.buttonPush_colorCheckA
+                                : st.buttonOverlay_colorPressA
 
-    colorPressB: (highlighted || checkable) ? st.buttonPush_colorCheckB
-                                            : st.buttonOverlay_colorPressB
+    colorPressB: (pHighlighted) ? st.buttonPush_colorCheckB
+                                : st.buttonOverlay_colorPressB
 
-    colorPressHoverA: (highlighted || checkable) ? st.buttonPush_colorCheckHoverA
-                                                 : st.buttonOverlay_colorPressA
+    colorPressHoverA: (pHighlighted) ? st.buttonPush_colorCheckHoverA
+                                     : st.buttonOverlay_colorPressA
 
-    colorPressHoverB: (highlighted || checkable) ? st.buttonPush_colorCheckHoverB
-                                                 : st.buttonOverlay_colorPressB
+    colorPressHoverB: (pHighlighted) ? st.buttonPush_colorCheckHoverB
+                                     : st.buttonOverlay_colorPressB
+
+    filterIcon: st.buttonOverlay_filterIcon
 
     background.border.color: st.buttonOverlay_colorBorderA
 

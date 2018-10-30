@@ -104,7 +104,7 @@ Panel
 
     cursor: Qt.PointingHandCursor
 
-    color: st.border_color
+    color: st.wallVideo_colorPlayer
 
     colorBorder:
     {
@@ -273,6 +273,9 @@ Panel
                                : st.icon_sunken
 
             enableFilter: isSourceDefault
+
+            filterDefault: (isCurrent) ? st.icon2_filter
+                                       : st.icon1_filter
         }
 
         TextBase
@@ -291,6 +294,9 @@ Panel
             verticalAlignment: Text.AlignVCenter
 
             opacity: (itemWall.enabled) ? 1.0 : st.text_opacityDisable
+
+            color: (isCurrent) ? st.text2_color
+                               : st.text1_color
 
             style: (isCurrent) ? st.text_raised
                                : st.text_sunken

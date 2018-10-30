@@ -33,7 +33,8 @@ BaseButton
     property int radius: background.height / 3.75
 //#END
 
-    property int borderSize: st.border_size
+    property int borderSize     : st.border_size
+    property int borderSizeFocus: st.border_sizeFocus
 
     //---------------------------------------------------------------------------------------------
     // Style
@@ -96,7 +97,11 @@ BaseButton
 
         color: "transparent"
 
-        border.width: borderSize
+//#QT_4
+        smooth: true
+//#END
+
+        border.width: borderSize + borderSizeFocus
         border.color: st.border_colorFocus
     }
 
@@ -112,6 +117,10 @@ BaseButton
 
         color: (checkBox.enabled && (isFocused || isHovered)) ? colorHover
                                                               : checkBox.color
+
+//#QT_4
+        smooth: true
+//#END
 
         border.width: borderSize
         border.color: st.border_color

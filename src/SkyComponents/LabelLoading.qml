@@ -22,6 +22,20 @@ Item
     id: labelLoading
 
     //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+
+    property int margins: height / 8
+
+    property int radius: background.height
+
+    //---------------------------------------------------------------------------------------------
+    // Style
+
+    property color colorA: st.labelLoading_colorA
+    property color colorB: st.labelLoading_colorB
+
+    //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
@@ -73,17 +87,27 @@ Item
     // Childs
     //---------------------------------------------------------------------------------------------
 
-    Image
+    Rectangle
     {
         id: background
 
         anchors.fill: parent
 
-        sourceSize: Qt.size(width, height)
+        anchors.margins: margins
+
+        radius: labelLoading.radius
 
         opacity: st.labelLoading_opacity
 
-        source: st.labelLoading_sourceBackground
+        gradient: Gradient
+        {
+            GradientStop { position: 0.0; color: colorA }
+            GradientStop { position: 0.0; color: colorB }
+        }
+
+//#QT_4
+        smooth: true
+//#END
     }
 
     IconLoading
@@ -93,5 +117,7 @@ Item
         anchors.centerIn: parent
 
         sourceArea: (scaling) ? Qt.size(-1, -1) : Qt.size(parent.width, parent.height)
+
+        filterDefault: st.labelLoading_filterIcon
     }
 }

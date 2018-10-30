@@ -140,7 +140,9 @@ BaseButtonPush
         style: (checked) ? st.icon_raised
                          : st.icon_sunken
 
-        filterDefault: st.buttonPush_filterIcon
+        filterDefault: (isHighlighted) ? st.button_filterIconB
+                                       : st.button_filterIconA
+
         filterShadow : st.buttonPush_filterIconShadow
         filterSunken : st.buttonPush_filterIconSunken
     }
@@ -161,6 +163,9 @@ BaseButtonPush
         verticalAlignment: Text.AlignVCenter
 
         opacity: (buttonPushFull.enabled) ? 1.0 : st.text_opacityDisable
+
+        color: (isHighlighted) ? st.button_colorTextB
+                               : st.button_colorTextA
 
         style: (checked) ? st.text_raised
                          : st.text_sunken

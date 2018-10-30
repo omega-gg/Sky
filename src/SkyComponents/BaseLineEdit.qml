@@ -206,12 +206,12 @@ MouseArea
 //#ELSE
         verticalAlignment: TextInput.AlignVCenter
 
-        enabled: baseLineEdit.enabled
-
         clip: true
 
         renderType: Text.NativeRendering
 //#END
+
+        enabled: baseLineEdit.enabled
 
         selectByMouse: true
 

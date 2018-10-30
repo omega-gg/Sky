@@ -113,8 +113,18 @@ MouseArea
 
             text: title
 
-            color: (isCurrent || containsMouse) ? st.itemList_colorTextHover
-                                                : st.itemList_colorText
+            color:
+            {
+                if (isCurrent)
+                {
+                    return st.itemList_colorTextSelected;
+                }
+                else if (containsMouse)
+                {
+                    return st.itemList_colorTextHover;
+                }
+                else return st.itemList_colorText
+            }
 
             style: (isCurrent) ? st.text_raised
                                : st.text_sunken

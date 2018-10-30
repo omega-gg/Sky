@@ -85,8 +85,10 @@ BaseButtonPiano
         style: (checked) ? st.icon_raised
                          : st.icon_sunken
 
-        filterDefault: st.buttonPiano_filterIcon
-        filterShadow : st.buttonPiano_filterIconShadow
-        filterSunken : st.buttonPiano_filterIconSunken
+        filterDefault: (isHighlighted) ? st.button_filterIconB
+                                       : st.button_filterIconA
+
+        filterShadow: st.buttonPiano_filterIconShadow
+        filterSunken: st.buttonPiano_filterIconSunken
     }
 }

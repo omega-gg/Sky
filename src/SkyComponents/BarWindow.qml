@@ -67,8 +67,6 @@ ViewDrag
 
     height: st.barWindow_height + borderSize
 
-    visible: (window.fullScreen == false)
-
     //---------------------------------------------------------------------------------------------
     // Functions private
     //---------------------------------------------------------------------------------------------
@@ -220,13 +218,14 @@ ViewDrag
         icon          : st.icon16x16_close
         iconSourceSize: st.size16x16
 
-        colorHoverA: st.buttonPiano_colorHoverA
-        colorHoverB: st.buttonPiano_colorHoverB
+        colorHoverA: st.button_colorConfirmHoverA
+        colorHoverB: st.button_colorConfirmHoverB
 
-        colorPressA: st.buttonPiano_colorPressA
-        colorPressB: st.buttonPiano_colorPressB
+        colorPressA: st.button_colorConfirmPressA
+        colorPressB: st.button_colorConfirmPressB
 
-        colorFocus: st.buttonPiano_colorFocus
+        filterIcon: (isHovered) ? st.button_filterIconB
+                                : st.button_filterIconA
 
         onClicked: pClose()
     }

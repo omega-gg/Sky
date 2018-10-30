@@ -38,10 +38,16 @@ ComponentTabBrowser
     property color colorHighlightContextualB: st.itemTab_colorHighlightContextualB
 
     //---------------------------------------------------------------------------------------------
+    // Private
+
+    property bool pHighlighted: (isCurrent || isHighlighted)
+
+    //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    textColor: st.text1_color
+    textColor: (pHighlighted) ? st.text2_color
+                              : st.text1_color
 
     textStyle: (isCurrent) ? st.text_raised
                            : st.text_sunken
@@ -52,7 +58,9 @@ ComponentTabBrowser
     textStyleColor: (isCurrent) ? st.text1_colorShadow
                                 : st.text1_colorSunken
 
-    filterIcon      : st.icon1_filter
+    filterIcon: (pHighlighted) ? st.icon2_filter
+                               : st.icon1_filter
+
     filterIconShadow: st.icon1_filterShadow
 
     background.gradient: Gradient

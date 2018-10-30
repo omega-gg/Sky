@@ -297,21 +297,21 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
 
 /* virtual */ bool WLibraryItem::applySource(const QUrl &)
 {
-    qWarning("WLibraryItem::applySource: Not supported by item.");
+    qWarning("WLibraryItem::applySource: Not supported.");
 
     return false;
 }
 
 /* virtual */ bool WLibraryItem::applyQuery(const WBackendNetQuery &)
 {
-    qWarning("WLibraryItem::applyQuery: Not supported by item.");
+    qWarning("WLibraryItem::applyQuery: Not supported.");
 
     return false;
 }
 
 /* virtual */ bool WLibraryItem::stopQuery()
 {
-    qWarning("WLibraryItem::stopQuery: Not supported by item.");
+    qWarning("WLibraryItem::stopQuery: Not supported.");
 
     return false;
 }
@@ -320,7 +320,7 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
 
 /* virtual */ void WLibraryItem::onApplyCurrentIds(const QList<int> &)
 {
-    qWarning("WLibraryItem::onApplyCurrentIds: Not supported by item.");
+    qWarning("WLibraryItem::onApplyCurrentIds: Not supported.");
 }
 
 //-------------------------------------------------------------------------------------------------

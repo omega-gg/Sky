@@ -564,7 +564,7 @@ WBackendNetQuery WBackendYoutube::getQueryPlaylist(const QUrl & url) const
 
     if (info.type == WLibraryItem::PlaylistFeed)
     {
-        WBackendNetQuery query("https://www.youtube.com/" + info.id + "/videos");
+        WBackendNetQuery query("https://www.youtube.com/" + info.id + "/videos?view=0");
 
         query.id = 1;
 
@@ -1084,7 +1084,7 @@ WBackendNetFolder WBackendYoutube::extractFolder(const QByteArray       & data,
 
             WLibraryFolderItem playlist(WLibraryItem::PlaylistFeed, WLocalObject::Default);
 
-            playlist.source = "https://www.youtube.com" + source + "/videos";
+            playlist.source = "https://www.youtube.com" + source + "/videos?view=0";
 
             playlist.title = title;
             playlist.cover = cover;

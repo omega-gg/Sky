@@ -85,8 +85,10 @@ BaseButtonPush
         style: (checked) ? st.icon_raised
                          : st.icon_sunken
 
-        filterDefault: st.buttonPush_filterIcon
-        filterShadow : st.buttonPush_filterIconShadow
-        filterSunken : st.buttonPush_filterIconSunken
+        filterDefault: (isHighlighted) ? st.button_filterIconB
+                                       : st.button_filterIconA
+
+        filterShadow: st.buttonPush_filterIconShadow
+        filterSunken: st.buttonPush_filterIconSunken
     }
 }

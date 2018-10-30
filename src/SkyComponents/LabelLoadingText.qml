@@ -19,9 +19,15 @@ import Sky     1.0
 
 Item
 {
+    id: labelLoadingText
+
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
+
+    property int margins: height / 8
+
+    property int radius: background.height
 
     property int paddingLeft : st.labelLoadingText_padding
     property int paddingRight: st.labelLoadingText_padding
@@ -31,7 +37,8 @@ Item
     //---------------------------------------------------------------------------------------------
     // Style
 
-    property variant borderBackground: st.labelLoadingText_borderBackground
+    property color colorA: st.labelLoading_colorA
+    property color colorB: st.labelLoading_colorB
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -91,21 +98,27 @@ Item
     // Childs
     //---------------------------------------------------------------------------------------------
 
-    BorderImageScale
+    Rectangle
     {
         id: background
 
         anchors.fill: parent
 
+        anchors.margins: margins
+
+        radius: labelLoadingText.radius
+
         opacity: st.labelLoadingText_opacity
 
-        source: st.labelLoadingText_sourceBackground
-
-        border
+        gradient: Gradient
         {
-            left : borderBackground.x;     top   : borderBackground.y;
-            right: borderBackground.width; bottom: borderBackground.height
+            GradientStop { position: 0.0; color: colorA }
+            GradientStop { position: 1.0; color: colorB }
         }
+
+//#QT_4
+        smooth: true
+//#END
     }
 
     IconLoading
@@ -117,6 +130,8 @@ Item
         anchors.leftMargin: paddingLeft
 
         anchors.verticalCenter: parent.verticalCenter
+
+        filterDefault: st.labelLoading_filterIcon
     }
 
     TextBase
@@ -128,6 +143,8 @@ Item
         leftMargin: spacing
 
         anchors.verticalCenter: parent.verticalCenter
+
+        color: st.labelLoadingText_colorText
 
         style: st.text_raised
 

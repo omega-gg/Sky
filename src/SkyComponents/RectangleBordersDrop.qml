@@ -32,6 +32,8 @@ RectangleBorders
     width : (pItem) ? pItem.width  : 0
     height: (pItem) ? pItem.height : 0
 
+    size: st.border_sizeFocus
+
     visible: false
 
     color: st.border_colorFocus

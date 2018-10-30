@@ -33,7 +33,8 @@ BaseLineEdit
     property int radius: background.height / 5
 //#END
 
-    property int borderSize: st.border_size
+    property int borderSize     : st.border_size
+    property int borderSizeFocus: st.border_sizeFocus
 
     //---------------------------------------------------------------------------------------------
     // Style
@@ -67,7 +68,7 @@ BaseLineEdit
 
         anchors.fill: background
 
-        anchors.margins: -borderSize
+        anchors.margins: -borderSizeFocus
 
         radius: lineEdit.radius
 
@@ -77,8 +78,12 @@ BaseLineEdit
 
         color: "transparent"
 
-        border.width: borderSize
-        border.color: st.border_colorFocus
+//#QT_4
+        smooth: true
+//#END
+
+        border.width: borderSize + borderSizeFocus
+        border.color: st.colorTextSelection
     }
 
     Rectangle
@@ -95,6 +100,10 @@ BaseLineEdit
 
         color: (lineEdit.enabled && (isFocused || isHovered)) ? colorHover
                                                               : lineEdit.color
+
+//#QT_4
+        smooth: true
+//#END
 
         border.width: borderSize
         border.color: st.border_color

@@ -39,16 +39,13 @@ BaseLineEdit
     //---------------------------------------------------------------------------------------------
 
     property alias background: background
-
-    property alias itemFocus: itemFocus
-    property alias borders  : borders
+    property alias itemFocus : itemFocus
+    property alias borders   : borders
 
     //---------------------------------------------------------------------------------------------
     // Style
 
     property alias focusSize: itemFocus.size
-
-    property alias colorFocus: itemFocus.color
 
     //---------------------------------------------------------------------------------------------
     // Settings style
@@ -125,11 +122,11 @@ BaseLineEdit
 
         anchors.fill: parent
 
-        size: st.lineEditBox_focusSize
+        size: st.border_sizeFocus
 
         opacity: (window.isActive && isFocused)
 
-        color: st.border_colorFocus
+        color: colorTextSelection
 
         RectangleBorders
         {

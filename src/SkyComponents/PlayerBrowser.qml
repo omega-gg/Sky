@@ -391,7 +391,7 @@ MouseArea
         iconWidth : Math.round(width / 1.8)
         iconHeight: iconWidth
 
-        borderSize: background.width / 16
+        borderSize: st.border_sizeFocus
 
         visible: (playerTab == tab) ? player.hasPreviousTrack
                                     : tab   .hasPreviousTrack
@@ -486,6 +486,8 @@ MouseArea
             visible: loading
 
             scaling: true
+
+            filterDefault: st.labelLoading_filterIcon
         }
     }
 
@@ -529,7 +531,8 @@ MouseArea
 
             text: (tab) ? tab.title : ""
 
-            color: st.playerBrowser_colorTextA
+            color: (isHovered) ? st.playerBrowser_colorTitleHover
+                               : st.playerBrowser_colorTitle
 
             style: st.text_raised
 
@@ -576,40 +579,21 @@ MouseArea
             color: st.playerBrowser_colorBar
         }
 
-        Icon
-        {
-            id: icon
-
-            anchors.left: parent.left
-
-            anchors.leftMargin: st.dp5
-
-            anchors.verticalCenter: parent.verticalCenter
-
-            visible: (tab && tab.quality >= AbstractBackend.QualityHigh)
-
-            source    : st.icon28x28_hd
-            sourceSize: st.size28x28
-
-            style: st.icon_raised
-        }
-
         TextBase
         {
             id: itemDuration
 
-            anchors.left: (icon.visible) ? icon.right : parent.left
-
+            anchors.left  : parent.left
             anchors.top   : parent.top
             anchors.bottom: parent.bottom
 
-            leftMargin: (icon.visible) ? st.dp4 : st.dp8
+            leftMargin: st.dp8
 
             verticalAlignment: Text.AlignVCenter
 
             text: (tab) ? gui.getTrackDuration(tab.duration) : ""
 
-            color: st.playerBrowser_colorTextB
+            color: st.playerBrowser_colorText
 
             style: st.text_raised
 
@@ -631,6 +615,9 @@ MouseArea
             width: Math.max(0, itemAuthor.width - itemAuthor.mouseArea.width - st.dp8)
 
             date: (tab) ? tab.date : null
+
+            color: (isHovered) ? st.playerBrowser_colorTextHover
+                               : st.playerBrowser_colorText
 
             style: st.text_raised
         }
@@ -654,8 +641,8 @@ MouseArea
 
             text: (tab) ? gui.getTrackAuthor(tab.author, tab.feed) : ""
 
-            color: (isHovered) ? st.text_color
-                               : st.playerBrowser_colorTextB
+            color: (isHovered) ? st.playerBrowser_colorTextHover
+                               : st.playerBrowser_colorText
 
             style: st.text_raised
 

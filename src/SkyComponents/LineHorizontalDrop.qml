@@ -23,7 +23,7 @@ LineHorizontal
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    size: st.lineHorizontalDrop_size
+    size: st.border_sizeFocus
 
     visible: false
 

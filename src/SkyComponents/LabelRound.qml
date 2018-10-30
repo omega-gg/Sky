@@ -89,6 +89,8 @@ BaseLabelRound
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment  : Text.AlignVCenter
 
+        color: st.labelRound_colorText
+
         style: (labelRound.enabled) ? st.text_raised
                                     : st.text_sunken
 

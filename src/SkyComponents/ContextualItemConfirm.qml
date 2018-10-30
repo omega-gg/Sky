@@ -25,6 +25,8 @@ Item
     // Properties private
     //---------------------------------------------------------------------------------------------
 
+    property bool pCurrent: (isCurrent || mouseArea.pressed)
+
     property int pIconWidth: Math.max(itemIcon.width, background.height)
 
     property bool pConfirm: false
@@ -157,7 +159,7 @@ Item
 
             anchors.bottomMargin: border.size
 
-            visible: (isCurrent || mouseArea.pressed || mouseArea.containsMouse)
+            visible: (pCurrent || mouseArea.containsMouse)
 
             gradient: Gradient
             {
@@ -232,7 +234,8 @@ Item
 
             style: st.icon_sunken
 
-            filter: filterIcon
+            filter: (pCurrent) ? st.icon2_filter
+                               : st.icon1_filter
         }
 
         TextBase
@@ -250,8 +253,18 @@ Item
 
             text: title
 
-            color: (isCurrent || mouseArea.containsMouse) ? st.itemList_colorTextHover
-                                                          : st.itemList_colorText
+            color:
+            {
+                if (pCurrent || pConfirm)
+                {
+                    return st.itemList_colorTextSelected;
+                }
+                else if (mouseArea.containsMouse)
+                {
+                    return st.itemList_colorTextHover;
+                }
+                else return st.itemList_colorText;
+            }
 
             style: st.text_sunken
         }
@@ -273,7 +286,8 @@ Item
 
             style: st.icon_sunken
 
-            filter: st.icon_filter
+            filter: (pCurrent) ? st.icon2_filter
+                               : st.icon1_filter
         }
     }
 
@@ -366,7 +380,8 @@ Item
             colorPressA: st.button_colorConfirmPressA
             colorPressB: st.button_colorConfirmPressB
 
-            colorFocus: st.button_colorConfirmFocus
+            itemText.color: (isHovered) ? st.button_colorTextB
+                                        : st.button_colorTextA
 
             onActiveFocusChanged:
             {

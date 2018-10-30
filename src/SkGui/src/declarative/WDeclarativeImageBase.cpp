@@ -278,6 +278,18 @@ void WDeclarativeImageBasePrivate::applySourceDefault()
         {
             loadDefault();
         }
+        else if (filter)
+        {
+            filter->applyFilter(&pixmapDefault);
+
+            q->pixmapChange();
+
+#ifdef QT_LATEST
+            updateTexture = true;
+#endif
+
+            q->update();
+        }
     }
     else
     {

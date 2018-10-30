@@ -91,6 +91,9 @@ BaseButtonPush
 
         opacity: (buttonPush.enabled) ? 1.0 : st.text_opacityDisable
 
+        color: (isHighlighted) ? st.button_colorTextB
+                               : st.button_colorTextA
+
         style: (checked) ? st.text_raised
                          : st.text_sunken
 

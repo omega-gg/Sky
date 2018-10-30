@@ -89,6 +89,6 @@ Item
 
         style: st.icon_raised
 
-        filter: st.icon_filter
+        filter: st.iconOverlay_filter
     }
 }

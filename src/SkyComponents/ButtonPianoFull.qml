@@ -147,9 +147,11 @@ BaseButtonPiano
         style: (checked) ? st.icon_raised
                          : st.icon_sunken
 
-        filterDefault: st.buttonPiano_filterIcon
-        filterShadow : st.buttonPiano_filterIconShadow
-        filterSunken : st.buttonPiano_filterIconSunken
+        filterDefault: (isHighlighted) ? st.button_filterIconB
+                                       : st.button_filterIconA
+
+        filterShadow: st.buttonPiano_filterIconShadow
+        filterSunken: st.buttonPiano_filterIconSunken
     }
 
     TextBase
@@ -166,6 +168,9 @@ BaseButtonPiano
         verticalAlignment: Text.AlignVCenter
 
         opacity: (buttonPianoFull.enabled) ? 1.0 : st.text_opacityDisable
+
+        color: (isHighlighted) ? st.button_colorTextB
+                               : st.button_colorTextA
 
         style: (checked) ? st.text_raised
                          : st.text_sunken

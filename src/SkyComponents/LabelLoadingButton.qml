@@ -54,8 +54,8 @@ LabelLoadingText
 
         anchors.verticalCenter: parent.verticalCenter
 
-        width : st.labelLoadingButton_buttonWidth
-        height: st.labelLoadingButton_buttonHeight
+        width : height
+        height: parent.height - st.labelLoadingText_padding
 
         icon          : st.icon16x16_close
         iconSourceSize: st.size16x16

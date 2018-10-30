@@ -171,23 +171,23 @@ Item
     property color text1_colorShadow: "#161616"
     property color text1_colorSunken: "#323232"
 
-    property color text2_color      : "black"
-    property color text2_colorShadow: "#dcdcdc"
-    property color text2_colorSunken: "#f0f0f0"
+    property color text2_color      : text1_color
+    property color text2_colorShadow: text1_colorShadow
+    property color text2_colorSunken: text1_colorSunken
 
     property color text3_color      : "#c8c8c8"
-    property color text3_colorShadow: "#161616"
-    property color text3_colorSunken: "#323232"
+    property color text3_colorShadow: text1_colorShadow
+    property color text3_colorSunken: text1_colorSunken
 
-    property color text4_color      : "#484848"
-    property color text4_colorShadow: "#dcdcdc"
-    property color text4_colorSunken: "#f0f0f0"
+    property color text4_color      : "#323232"
+    property color text4_colorShadow: text2_colorShadow
+    property color text4_colorSunken: text2_colorSunken
 
     //---------------------------------------------------------------------------------------------
     // TextDate
 
-    property color textDate_color     : "#a0a0a0"
-    property color textDate_colorHover: text_color
+    property color textDate_color     : text3_color
+    property color textDate_colorHover: text1_color
 
     //---------------------------------------------------------------------------------------------
     // TextListDefault
@@ -200,14 +200,10 @@ Item
     property int line_size: dp1
 
     //---------------------------------------------------------------------------------------------
-    // LineHorizontalDrop
-
-    property int lineHorizontalDrop_size: border_size
-
-    //---------------------------------------------------------------------------------------------
     // Border
 
-    property int border_size: dp2
+    property int border_size     : dp2
+    property int border_sizeFocus: border_size
 
     property real border_opacityDisable: 0.8
 
@@ -302,10 +298,10 @@ Item
     property color icon1_colorShadow: "#161616"
     property color icon1_colorSunken: "#323232"
 
-    property color icon2_colorA     : "#323232"
+    property color icon2_colorA     : icon1_colorA
     property color icon2_colorB     : icon2_colorA
-    property color icon2_colorShadow: "#dcdcdc"
-    property color icon2_colorSunken: "#f0f0f0"
+    property color icon2_colorShadow: icon1_colorShadow
+    property color icon2_colorSunken: icon1_colorSunken
 
     property alias icon_filter      : icon_filter
     property alias icon_filterActive: icon_filterActive
@@ -392,6 +388,8 @@ Item
 
     property color iconOverlay_colorA: icon_colorActiveA
     property color iconOverlay_colorB: icon_colorActiveB
+
+    property alias iconOverlay_filter: icon2_filter
 
     //---------------------------------------------------------------------------------------------
     // IconLoading
@@ -486,15 +484,18 @@ Item
     property color button_colorBorder: border_color
     property color button_colorFocus : border_colorFocus
 
+    property color button_colorTextA: text1_color
+    property color button_colorTextB: text2_color
+
     property color button_colorConfirmHoverA: "#c80000"
     property color button_colorConfirmHoverB: button_colorConfirmHoverA
 
     property color button_colorConfirmPressA: "#960000"
     property color button_colorConfirmPressB: button_colorConfirmPressA
 
-    property color button_colorConfirmFocus: "#ff0000"
+    property ImageColorFilter button_filterIconA: icon1_filter
+    property ImageColorFilter button_filterIconB: icon2_filter
 
-    property ImageColorFilter button_filterIcon      : icon_filter
     property ImageColorFilter button_filterIconShadow: icon_filterShadow
     property ImageColorFilter button_filterIconSunken: icon_filterSunken
 
@@ -530,10 +531,6 @@ Item
     property color buttonPush_colorCheckHoverA: buttonPush_colorHighlightHoverA
     property color buttonPush_colorCheckHoverB: buttonPush_colorHighlightHoverB
 
-    property ImageColorFilter buttonPush_filterIcon      : icon_filter
-    property ImageColorFilter buttonPush_filterIconShadow: icon_filterShadow
-    property ImageColorFilter buttonPush_filterIconSunken: icon_filterSunken
-
     //---------------------------------------------------------------------------------------------
     // ButtonPushIcon
 
@@ -546,6 +543,8 @@ Item
     property real buttonOverlay_opacityDefault: 0.8
     property real buttonOverlay_opacityHover  : 1.0
 
+    property color buttonOverlay_colorBorder: icon_colorA
+
     property color buttonOverlay_colorA: "#242424"
     property color buttonOverlay_colorB: buttonOverlay_colorA
 
@@ -555,8 +554,7 @@ Item
     property color buttonOverlay_colorPressA: buttonPush_colorCheckA
     property color buttonOverlay_colorPressB: buttonPush_colorCheckB
 
-    property color buttonOverlay_colorBorderA: icon_colorA
-    property color buttonOverlay_colorBorderB: icon_colorB
+    property ImageColorFilter buttonOverlay_filterIcon: button_filterIconA
 
     //---------------------------------------------------------------------------------------------
     // ButtonPiano
@@ -590,12 +588,6 @@ Item
     property color buttonPiano_colorCheckHoverA: buttonPush_colorCheckHoverA
     property color buttonPiano_colorCheckHoverB: buttonPush_colorCheckHoverB
 
-    property color buttonPiano_colorFocus: "#00b4ff"
-
-    property ImageColorFilter buttonPiano_filterIcon      : icon_filter
-    property ImageColorFilter buttonPiano_filterIconShadow: icon_filterShadow
-    property ImageColorFilter buttonPiano_filterIconSunken: icon_filterSunken
-
     //---------------------------------------------------------------------------------------------
     // ButtonPianoIcon
 
@@ -612,10 +604,6 @@ Item
 
     property int buttonRound_width : dp48
     property int buttonRound_height: dp48
-
-    property ImageColorFilter buttonRound_filterIcon      : buttonPush_filterIcon
-    property ImageColorFilter buttonRound_filterIconShadow: buttonPush_filterIconShadow
-    property ImageColorFilter buttonRound_filterIconSunken: buttonPush_filterIconSunken
 
     //---------------------------------------------------------------------------------------------
     // ButtonCheck
@@ -640,7 +628,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // ButtonImageBorders
 
-    property color buttonImageBorders_colorBackground: "#242424"
+    property color buttonImageBorders_colorBackground: buttonPush_colorA
 
     property color buttonImageBorders_colorBorder     : border_color
     property color buttonImageBorders_colorBorderHover: border_colorFocus
@@ -713,8 +701,8 @@ Item
     property color labelRound_colorA: buttonPush_colorCheckA
     property color labelRound_colorB: buttonPush_colorCheckB
 
-    property color labelRound_colorDisableA: "#808080"
-    property color labelRound_colorDisableB: "#484848"
+    property color labelRound_colorDisableA: buttonPush_colorPressA
+    property color labelRound_colorDisableB: buttonPush_colorPressB
 
     property color labelRound_colorText: text_color
 
@@ -731,7 +719,9 @@ Item
     //---------------------------------------------------------------------------------------------
     // LabelRoundInfo
 
-    property color labelRoundInfo_color: "#323232"
+    property color labelRoundInfo_color: labelRound_colorDisableA
+
+    property color labelRoundInfo_colorText: labelRound_colorText
 
     //---------------------------------------------------------------------------------------------
     // LabelLoading
@@ -741,27 +731,20 @@ Item
 
     property real labelLoading_opacity: 0.8
 
-    property url labelLoading_sourceBackground: "pictures/buttonRoundMask.svg"
+    property color labelLoading_colorA: buttonOverlay_colorA
+    property color labelLoading_colorB: labelLoading_colorA
 
     //---------------------------------------------------------------------------------------------
     // LabelLoadingText
 
     property int labelLoadingText_height: dp44
 
-    property int labelLoadingText_padding: dp6
+    property int labelLoadingText_padding: dp4
     property int labelLoadingText_spacing: dp2
 
     property real labelLoadingText_opacity: 0.6
 
-    property url labelLoadingText_sourceBackground: "pictures/labelRoundMask.svg"
-
-    property variant labelLoadingText_borderBackground: Qt.rect(64, 64, 64, 64)
-
-    //---------------------------------------------------------------------------------------------
-    // LabelLoadingButton
-
-    property int labelLoadingButton_buttonWidth : dp38
-    property int labelLoadingButton_buttonHeight: dp38
+    property color labelLoadingText_colorText: labelRound_colorText
 
     //---------------------------------------------------------------------------------------------
     // LabelStream
@@ -769,9 +752,6 @@ Item
     property int labelStream_height: dp16
 
     property int labelStream_padding: dp4
-
-    property int labelStream_gapX: dp5
-    property int labelStream_gapY: dp7
 
     property color labelStream_colorA: scrollBar_colorA
     property color labelStream_colorB: scrollBar_colorB
@@ -832,8 +812,6 @@ Item
 
     //---------------------------------------------------------------------------------------------
     // LineEditBox
-
-    property int lineEditBox_focusSize: dp2
 
     property color lineEditBox_colorA: "#323232"
     property color lineEditBox_colorB: lineEditBox_colorA
@@ -1107,13 +1085,13 @@ Item
     property real playerBrowser_opacityBar   : 0.6
     property real playerBrowser_opacityShadow: 0.6
 
-    property color playerBrowser_colorA: "black"
-    property color playerBrowser_colorB: "black"
+    property color playerBrowser_colorBar: buttonOverlay_colorA
 
-    property color playerBrowser_colorBar: "black"
+    property color playerBrowser_colorText     : "#c8c8c8"
+    property color playerBrowser_colorTextHover: text_color
 
-    property color playerBrowser_colorTextA: text_color
-    property color playerBrowser_colorTextB: "#c8c8c8"
+    property color playerBrowser_colorTitle     : text_color
+    property color playerBrowser_colorTitleHover: playerBrowser_colorTitle
 
     property color playerBrowser_colorShadow: "#008cdc"
 

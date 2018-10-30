@@ -46,7 +46,7 @@ public: // Interface
 
     Q_INVOKABLE void updateFilter();
 
-protected: // Functions
+protected: // Abstract functions
     virtual bool filter(QImage * image) const = 0;
 
 protected slots:

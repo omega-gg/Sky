@@ -166,6 +166,9 @@ MouseArea
                                : st.icon_sunken
 
             enableFilter: isSourceDefault
+
+            filterDefault: (isCurrent) ? st.icon2_filter
+                                       : st.icon1_filter
         }
 
         TextBase
@@ -183,6 +186,9 @@ MouseArea
             verticalAlignment: Text.AlignVCenter
 
             opacity: (itemTab.enabled) ? 1.0 : st.text_opacityDisable
+
+            color: (isCurrent) ? st.text2_color
+                               : st.text1_color
 
             style: (isCurrent) ? st.text_raised
                                : st.text_sunken
