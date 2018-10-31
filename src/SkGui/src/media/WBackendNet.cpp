@@ -531,7 +531,7 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 /* Q_INVOKABLE virtual */
 QUrl WBackendNet::getUrlTrack(const QString &) const
 {
-    qWarning("WBackendNet::getUrlTrack: Not supported by backend.");
+    qWarning("WBackendNet::getUrlTrack: Not supported.");
 
     return QUrl();
 }
@@ -539,7 +539,7 @@ QUrl WBackendNet::getUrlTrack(const QString &) const
 /* Q_INVOKABLE virtual */
 QUrl WBackendNet::getUrlPlaylist(const WBackendNetPlaylistInfo &) const
 {
-    qWarning("WBackendNet::getUrlPlaylist: Not supported by backend.");
+    qWarning("WBackendNet::getUrlPlaylist: Not supported.");
 
     return QUrl();
 }
@@ -578,7 +578,7 @@ WBackendNetQuery WBackendNet::createQuery(const QString &, const QString &, cons
 WBackendNetSource WBackendNet::extractSource(const QByteArray       &,
                                              const WBackendNetQuery &) const
 {
-    qWarning("WBackendNet::extractSource: Not supported by backend.");
+    qWarning("WBackendNet::extractSource: Not supported.");
 
     return WBackendNetSource();
 }
@@ -587,7 +587,7 @@ WBackendNetSource WBackendNet::extractSource(const QByteArray       &,
 WBackendNetTrack WBackendNet::extractTrack(const QByteArray       &,
                                            const WBackendNetQuery &) const
 {
-    qWarning("WBackendNet::extractTrack: Not supported by backend.");
+    qWarning("WBackendNet::extractTrack: Not supported.");
 
     return WBackendNetTrack();
 }
@@ -596,7 +596,7 @@ WBackendNetTrack WBackendNet::extractTrack(const QByteArray       &,
 WBackendNetPlaylist WBackendNet::extractPlaylist(const QByteArray       &,
                                                  const WBackendNetQuery &) const
 {
-    qWarning("WBackendNet::extractPlaylist: Not supported by backend.");
+    qWarning("WBackendNet::extractPlaylist: Not supported.");
 
     return WBackendNetPlaylist();
 }
@@ -605,7 +605,7 @@ WBackendNetPlaylist WBackendNet::extractPlaylist(const QByteArray       &,
 WBackendNetFolder WBackendNet::extractFolder(const QByteArray       &,
                                              const WBackendNetQuery &) const
 {
-    qWarning("WBackendNet::extractFolder: Not supported by backend.");
+    qWarning("WBackendNet::extractFolder: Not supported.");
 
     return WBackendNetFolder();
 }

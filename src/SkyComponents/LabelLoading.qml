@@ -102,7 +102,7 @@ Item
         gradient: Gradient
         {
             GradientStop { position: 0.0; color: colorA }
-            GradientStop { position: 0.0; color: colorB }
+            GradientStop { position: 1.0; color: colorB }
         }
 
 //#QT_4

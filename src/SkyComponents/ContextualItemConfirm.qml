@@ -183,7 +183,7 @@ Item
                         }
                         else if (mouseArea.pressed || pConfirm)
                         {
-                            return st.itemList_colorCurrentA;
+                            return st.itemList_colorSelectFocusA;
                         }
                         else return st.itemList_colorHoverA;
                     }
@@ -209,7 +209,7 @@ Item
                         }
                         else if (mouseArea.pressed || pConfirm)
                         {
-                            return st.itemList_colorCurrentB;
+                            return st.itemList_colorSelectFocusB;
                         }
                         else return st.itemList_colorHoverB;
                     }
