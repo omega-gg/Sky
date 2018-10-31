@@ -88,7 +88,7 @@ BaseButtonPush
         filterDefault: (isHighlighted) ? st.button_filterIconB
                                        : st.button_filterIconA
 
-        filterShadow: st.buttonPush_filterIconShadow
-        filterSunken: st.buttonPush_filterIconSunken
+        filterShadow: st.button_filterIconShadow
+        filterSunken: st.button_filterIconSunken
     }
 }

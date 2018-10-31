@@ -150,8 +150,8 @@ BaseButtonPiano
         filterDefault: (isHighlighted) ? st.button_filterIconB
                                        : st.button_filterIconA
 
-        filterShadow: st.buttonPiano_filterIconShadow
-        filterSunken: st.buttonPiano_filterIconSunken
+        filterShadow: st.button_filterIconShadow
+        filterSunken: st.button_filterIconSunken
     }
 
     TextBase

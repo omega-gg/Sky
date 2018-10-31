@@ -83,7 +83,7 @@ BaseLineEdit
 //#END
 
         border.width: borderSize + borderSizeFocus
-        border.color: st.colorTextSelection
+        border.color: colorTextSelection
     }
 
     Rectangle

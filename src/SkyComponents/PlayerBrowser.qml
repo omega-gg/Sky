@@ -487,7 +487,7 @@ MouseArea
 
             scaling: true
 
-            filterDefault: st.labelLoading_filterIcon
+            filterDefault: st.labelRound_filterIcon
         }
     }
 

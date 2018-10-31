@@ -118,6 +118,6 @@ Item
 
         sourceArea: (scaling) ? Qt.size(-1, -1) : Qt.size(parent.width, parent.height)
 
-        filterDefault: st.labelLoading_filterIcon
+        filterDefault: st.labelRound_filterIcon
     }
 }

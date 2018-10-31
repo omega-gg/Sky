@@ -131,7 +131,7 @@ Item
 
         anchors.verticalCenter: parent.verticalCenter
 
-        filterDefault: st.labelLoading_filterIcon
+        filterDefault: st.labelRound_filterIcon
     }
 
     TextBase

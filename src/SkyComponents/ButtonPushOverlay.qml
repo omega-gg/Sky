@@ -55,7 +55,7 @@ ButtonPushIcon
 
     filterIcon: st.buttonOverlay_filterIcon
 
-    background.border.color: st.buttonOverlay_colorBorderA
+    background.border.color: st.buttonOverlay_colorBorder
 
     //---------------------------------------------------------------------------------------------
     // Animations
