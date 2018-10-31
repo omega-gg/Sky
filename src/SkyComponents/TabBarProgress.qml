@@ -41,14 +41,16 @@ Rectangle
         {
             position: 0.0
 
-            color: (enabled) ? colorA : colorDisableA
+            color: (enabled) ? colorA
+                             : colorDisableA
         }
 
         GradientStop
         {
             position: 1.0
 
-            color: (enabled) ? colorB : colorDisableB
+            color: (enabled) ? colorB
+                             : colorDisableB
         }
     }
 

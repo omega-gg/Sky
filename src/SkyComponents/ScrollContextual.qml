@@ -38,8 +38,6 @@ ScrollArea
     property alias currentPage: list.currentPage
     property alias currentId  : list.currentId
 
-    property alias spacing: list.spacing
-
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------

@@ -179,10 +179,6 @@ Item
     property color text3_colorShadow: text1_colorShadow
     property color text3_colorSunken: text1_colorSunken
 
-    property color text4_color      : "#323232"
-    property color text4_colorShadow: text2_colorShadow
-    property color text4_colorSunken: text2_colorSunken
-
     //---------------------------------------------------------------------------------------------
     // TextDate
 
@@ -785,11 +781,11 @@ Item
 
     property color baseLineEdit_colorCursor: "#161616"
 
-    property color baseLineEdit_colorText         : text2_color
-    property color baseLineEdit_colorTextSelection: "#008cdc"
+    property color baseLineEdit_colorText         : "black"
+    property color baseLineEdit_colorTextSelection: border_colorFocus
     property color baseLineEdit_colorTextSelected : text1_color
 
-    property color baseLineEdit_colorDefault: text4_color
+    property color baseLineEdit_colorDefault: "#323232"
 
     //---------------------------------------------------------------------------------------------
     // LineEdit
@@ -821,20 +817,13 @@ Item
 
     property color lineEditBox_colorActive: lineEdit_colorHover
 
-    property color lineEditBox_colorDefault     : "#c8c8c8"
+    property color lineEditBox_colorDefault     : text3_color
     property color lineEditBox_colorDefaultHover: text1_color
 
     //---------------------------------------------------------------------------------------------
     // List
 
     property int list_itemSize: dp32 + border_size
-
-    //---------------------------------------------------------------------------------------------
-    // ListContextual
-
-    property int listContextual_spacing: dp2
-
-    property ImageColorFilter listContextual_filterIcon: icon_filter
 
     //---------------------------------------------------------------------------------------------
     // ScrollBar
@@ -1143,7 +1132,7 @@ Item
     property color itemList_colorCurrentHoverB: itemList_colorHoverB
 
     property color itemList_colorBorder       : "#202020"
-    property color itemList_colorBorderDefault: "#161616"
+    property color itemList_colorBorderDefault: border_color
 
     property color itemList_colorText        : "#dcdcdc"
     property color itemList_colorTextHover   : text_color
@@ -1207,8 +1196,8 @@ Item
 
     property int componentWallBookmarkTrack_iconWidth: dp56
 
-    property color componentWallBookmarkTrack_colorA: "black"
-    property color componentWallBookmarkTrack_colorB: "black"
+    property color componentWallBookmarkTrack_colorA: wallVideo_colorPlayer
+    property color componentWallBookmarkTrack_colorB: componentWallBookmarkTrack_colorA
 
     //---------------------------------------------------------------------------------------------
     // ContextualCategory
@@ -1363,11 +1352,6 @@ Item
     property url icon24x24_forward : vector("pictures/icons/24x24/forward.png",  icon_forward)
 
     //---------------------------------------------------------------------------------------------
-    // 28x28
-
-    property url icon28x28_hd: vector("pictures/icons/28x28/hd.png", icon_hd)
-
-    //---------------------------------------------------------------------------------------------
     // 32x32
 
     property url icon32x32_loading: icon_loading
@@ -1410,7 +1394,7 @@ Item
 
     //---------------------------------------------------------------------------------------------
 
-    function applyFlat()
+    function applyNight()
     {
         //-----------------------------------------------------------------------------------------
         // Global
@@ -1424,11 +1408,43 @@ Item
         text_raised = Text.Normal;
         text_sunken = text_raised;
 
+        text_colorCurrent = "#00b4ff";
+
+        text1_color = "white";
+        text2_color = text1_color;
+        text3_color = "#c8c8c8";
+
+        //-----------------------------------------------------------------------------------------
+        // Border
+
+        border_color      = "#161616";
+        border_colorLight = "#242424";
+        border_colorFocus = "#008cdc";
+
+        //-----------------------------------------------------------------------------------------
+        // Window
+
+        window_color = "#323232";
+
         //-----------------------------------------------------------------------------------------
         // Icon
 
         icon_raised = Sk.IconNormal;
         icon_sunken = icon_raised;
+
+        icon1_colorA = "#dcdcdc";
+        icon2_colorA = icon1_colorA;
+
+        //-----------------------------------------------------------------------------------------
+        // IconOverlay
+
+        iconOverlay_colorA = icon_colorActiveA;
+        iconOverlay_colorB = iconOverlay_colorA;
+
+        //-----------------------------------------------------------------------------------------
+        // Panel
+
+        panel_color = "#404040";
 
         //-----------------------------------------------------------------------------------------
         // BarWindow
@@ -1436,7 +1452,8 @@ Item
         barWindow_colorA = "#565656";
         barWindow_colorB = barWindow_colorA;
 
-        barWindow_colorDisableB = "#484848";
+        barWindow_colorDisableA = "#484848";
+        barWindow_colorDisableB = barWindow_colorDisableA;
 
         //-----------------------------------------------------------------------------------------
         // BarTitle
@@ -1447,8 +1464,10 @@ Item
         //-----------------------------------------------------------------------------------------
         // Button
 
+        button_colorConfirmHoverA = "#c80000";
         button_colorConfirmHoverB = button_colorConfirmHoverA;
 
+        button_colorConfirmPressA = "#960000";
         button_colorConfirmPressB = button_colorConfirmPressA;
 
         //-----------------------------------------------------------------------------------------
@@ -1481,8 +1500,18 @@ Item
         //-----------------------------------------------------------------------------------------
         // ButtonOverlay
 
+        buttonOverlay_colorBorder = icon_colorA;
+
         buttonOverlay_colorA = "#242424";
         buttonOverlay_colorB = buttonOverlay_colorA;
+
+        buttonOverlay_colorHoverA = buttonPush_colorHighlightHoverA;
+        buttonOverlay_colorHoverB = buttonPush_colorHighlightHoverB;
+
+        buttonOverlay_colorPressA = buttonPush_colorCheckA;
+        buttonOverlay_colorPressB = buttonPush_colorCheckB;
+
+        buttonOverlay_filterIcon = button_filterIconA;
 
         //-----------------------------------------------------------------------------------------
         // ButtonMask
@@ -1493,12 +1522,44 @@ Item
         buttonMask_colorPressB = icon_colorA;
 
         //-----------------------------------------------------------------------------------------
+        // LabelRound
+
+        labelRound_colorA = buttonPush_colorCheckA;
+        labelRound_colorB = buttonPush_colorCheckB;
+
+        labelRound_filterIcon = icon_filter;
+
+        //-----------------------------------------------------------------------------------------
+        // LabelRoundInfo
+
+        labelRoundInfo_colorText = labelRound_colorText;
+
+        //-----------------------------------------------------------------------------------------
+        // LabelLoadingText
+
+        labelLoadingText_colorText = labelRound_colorText;
+
+        //-----------------------------------------------------------------------------------------
+        // BaseLineEdit
+
+        baseLineEdit_colorText         = "black";
+        baseLineEdit_colorTextSelected = text1_color;
+
+        baseLineEdit_colorDefault = "#323232";
+
+        //-----------------------------------------------------------------------------------------
+        // LineEdit
+
+        lineEdit_color = "#dcdcdc";
+
+        //-----------------------------------------------------------------------------------------
         // LineEditBox
 
         lineEditBox_colorA = buttonPush_colorPressA;
         lineEditBox_colorB = buttonPush_colorPressB;
 
         lineEditBox_colorHoverA = buttonPush_colorPressHoverA;
+        lineEditBox_colorHoverB = lineEditBox_colorHoverA;
 
         //-----------------------------------------------------------------------------------------
         // ScrollBar
@@ -1520,8 +1581,10 @@ Item
         //-----------------------------------------------------------------------------------------
         // SliderStream
 
+        sliderStream_colorBarA = "#00a0f0";
         sliderStream_colorBarB = sliderStream_colorBarA;
 
+        sliderStream_colorBarHoverA = "#00b4ff";
         sliderStream_colorBarHoverB = sliderStream_colorBarHoverA;
 
         sliderStream_colorBarDisableA = "#969696";
@@ -1534,6 +1597,21 @@ Item
         sliderStream_colorBarProgressB = sliderStream_colorBarDisableHoverB;
 
         //-----------------------------------------------------------------------------------------
+        // TabBarProgress
+
+        tabBarProgress_colorDisableA = sliderStream_colorBarDisableB;
+        tabBarProgress_colorDisableB = sliderStream_colorBarDisableA;
+
+        //-----------------------------------------------------------------------------------------
+        // PlayerBrowser
+
+        playerBrowser_colorTitle      = text_color;
+        playerBrowser_colorTitleHover = playerBrowser_colorTitle;
+
+        playerBrowser_colorText      = "#c8c8c8";
+        playerBrowser_colorTextHover = text_color
+
+        //-----------------------------------------------------------------------------------------
         // ItemList
 
         itemList_colorA = "#323232";
@@ -1542,8 +1620,10 @@ Item
         itemList_colorDefaultA = "#242424";
         itemList_colorDefaultB = itemList_colorDefaultA;
 
+        itemList_colorHoverA = "#646464";
         itemList_colorHoverB = itemList_colorHoverA;
 
+        itemList_colorPressA = "#808080";
         itemList_colorPressB = itemList_colorPressA;
 
         itemList_colorContextualHoverB = itemList_colorPressB;
@@ -1557,6 +1637,12 @@ Item
         itemList_colorCurrentHoverA = itemList_colorHoverA;
         itemList_colorCurrentHoverB = itemList_colorHoverA;
 
+        itemList_colorBorder        = "#202020";
+        itemList_colorBorderDefault = border_color;
+
+        itemList_colorText         = "#dcdcdc";
+        itemList_colorTextSelected = text_color;
+
         //-----------------------------------------------------------------------------------------
         // ItemTab
 
@@ -1564,6 +1650,265 @@ Item
         itemTab_colorContextualHoverB = itemTab_colorContextualHoverA;
 
         itemTab_colorHighlightContextualA = "#008cdc";
+        itemTab_colorHighlightContextualB = itemTab_colorHighlightContextualA;
+    }
+
+    function applyLight()
+    {
+        //-----------------------------------------------------------------------------------------
+        // Global
+
+        logo_colorA = "#c8c8c8";
+        logo_colorB = logo_colorA;
+
+        //-----------------------------------------------------------------------------------------
+        // Text
+
+        text_raised = Text.Normal;
+        text_sunken = text_raised;
+
+        text_colorCurrent = "#008cdc";
+
+        text1_color = "#484848";
+        text2_color = "white";
+        text3_color = "#646464";
+
+        //-----------------------------------------------------------------------------------------
+        // Border
+
+        border_color      = "#969696";
+        border_colorLight = "#b4b4b4";
+        border_colorFocus = "#00a0f0";
+
+        //-----------------------------------------------------------------------------------------
+        // Window
+
+        window_color = "#b4b4b4";
+
+        //-----------------------------------------------------------------------------------------
+        // Icon
+
+        icon_raised = Sk.IconNormal;
+        icon_sunken = icon_raised;
+
+        icon1_colorA = "#646464";
+        icon2_colorA = text2_color;
+
+        //-----------------------------------------------------------------------------------------
+        // IconOverlay
+
+        iconOverlay_colorA = "#00b4ff";
+        iconOverlay_colorB = iconOverlay_colorA;
+
+        //-----------------------------------------------------------------------------------------
+        // Panel
+
+        panel_color = logo_colorA;
+
+        //-----------------------------------------------------------------------------------------
+        // BarWindow
+
+        barWindow_colorA = logo_colorA;
+        barWindow_colorB = barWindow_colorA;
+
+        barWindow_colorDisableA = "#dcdcdc";
+        barWindow_colorDisableB = barWindow_colorDisableA;
+
+        //-----------------------------------------------------------------------------------------
+        // BarTitle
+
+        barTitleSmall_colorA = barWindow_colorA;
+        barTitleSmall_colorB = barWindow_colorB;
+
+        //-----------------------------------------------------------------------------------------
+        // Button
+
+        button_colorConfirmHoverA = "#dc0000";
+        button_colorConfirmHoverB = button_colorConfirmHoverA;
+
+        button_colorConfirmPressA = "#b40000";
+        button_colorConfirmPressB = button_colorConfirmPressA;
+
+        //-----------------------------------------------------------------------------------------
+        // ButtonPush
+
+        buttonPush_colorA = "#dcdcdc";
+        buttonPush_colorB = buttonPush_colorA;
+
+        buttonPush_colorHoverA = "#f0f0f0";
+        buttonPush_colorHoverB = buttonPush_colorHoverA;
+
+        buttonPush_colorPressA = "#b4b4b4";
+        buttonPush_colorPressB = buttonPush_colorPressA;
+
+        buttonPush_colorPressHoverA = buttonPush_colorHoverA;
+        buttonPush_colorPressHoverB = buttonPush_colorHoverB;
+
+        buttonPush_colorHighlightA = "#008cdc";
+        buttonPush_colorHighlightB = buttonPush_colorHighlightA;
+
+        buttonPush_colorHighlightHoverA = "#00a0f0";
+        buttonPush_colorHighlightHoverB = buttonPush_colorHighlightHoverA;
+
+        buttonPush_colorCheckA = buttonPush_colorHighlightA;
+        buttonPush_colorCheckB = buttonPush_colorHighlightB;
+
+        buttonPush_colorCheckHoverA = buttonPush_colorHighlightHoverA;
+        buttonPush_colorCheckHoverB = buttonPush_colorHighlightHoverB;
+
+        //-----------------------------------------------------------------------------------------
+        // ButtonOverlay
+
+        buttonOverlay_colorBorder = icon2_colorA;
+
+        buttonOverlay_colorA = "#323232";
+        buttonOverlay_colorB = buttonOverlay_colorA;
+
+        buttonOverlay_colorHoverA = buttonPush_colorHighlightA;
+        buttonOverlay_colorHoverB = buttonPush_colorHighlightB;
+
+        buttonOverlay_colorPressA = buttonPush_colorHighlightHoverA;
+        buttonOverlay_colorPressB = buttonPush_colorHighlightHoverB;
+
+        buttonOverlay_filterIcon = icon2_filter;
+
+        //-----------------------------------------------------------------------------------------
+        // ButtonMask
+
+        buttonMask_colorHoverA = "#323232";
+
+        buttonMask_colorPressA = icon_colorA;
+        buttonMask_colorPressB = icon_colorB;
+
+        //-----------------------------------------------------------------------------------------
+        // LabelRound
+
+        labelRound_colorA = "#f0f0f0";
+        labelRound_colorB = labelRound_colorA;
+
+        labelRound_filterIcon = icon2_filter;
+
+        //-----------------------------------------------------------------------------------------
+        // LabelRoundInfo
+
+        labelRoundInfo_colorText = text_color;
+
+        //-----------------------------------------------------------------------------------------
+        // LabelLoadingText
+
+        labelLoadingText_colorText = text2_color;
+
+        //-----------------------------------------------------------------------------------------
+        // BaseLineEdit
+
+        baseLineEdit_colorText         = text1_color;
+        baseLineEdit_colorTextSelected = text2_color;
+
+        baseLineEdit_colorDefault = text3_color;
+
+        //-----------------------------------------------------------------------------------------
+        // LineEdit
+
+        lineEdit_color = buttonPush_colorHoverA;
+
+        //-----------------------------------------------------------------------------------------
+        // LineEditBox
+
+        lineEditBox_colorA = lineEdit_color;
+        lineEditBox_colorB = lineEditBox_colorA;
+
+        lineEditBox_colorHoverA = lineEdit_colorHover;
+        lineEditBox_colorHoverB = lineEditBox_colorHoverA;
+
+        //-----------------------------------------------------------------------------------------
+        // ScrollBar
+
+        scrollBar_colorHandlePressA = buttonPush_colorA;
+        scrollBar_colorHandlePressB = buttonPush_colorB;
+
+        //-----------------------------------------------------------------------------------------
+        // Slider
+
+        slider_colorHandleA = "#dcdcdc";
+        slider_colorHandleB = slider_colorHandleA;
+
+        slider_colorHandleHoverB = slider_colorHandleHoverA;
+
+        slider_colorHandlePressA = slider_colorHandleA;
+        slider_colorHandlePressB = slider_colorHandleB;
+
+        //-----------------------------------------------------------------------------------------
+        // SliderStream
+
+        sliderStream_colorBarA = "#008cdc"
+        sliderStream_colorBarB = sliderStream_colorBarA;
+
+        sliderStream_colorBarHoverA = "#00a0f0";
+        sliderStream_colorBarHoverB = sliderStream_colorBarHoverA;
+
+        sliderStream_colorBarDisableA = "#dcdcdc";
+        sliderStream_colorBarDisableB = sliderStream_colorBarDisableA;
+
+        sliderStream_colorBarDisableHoverA = "#f0f0f0";
+        sliderStream_colorBarDisableHoverB = sliderStream_colorBarDisableHoverA;
+
+        sliderStream_colorBarProgressA = sliderStream_colorBarDisableHoverA;
+        sliderStream_colorBarProgressB = sliderStream_colorBarDisableHoverB;
+
+        //-----------------------------------------------------------------------------------------
+        // TabBarProgress
+
+        tabBarProgress_colorDisableA = "#969696";
+        tabBarProgress_colorDisableB = tabBarProgress_colorDisableA;
+
+        //-----------------------------------------------------------------------------------------
+        // PlayerBrowser
+
+        playerBrowser_colorTitle      = "#dcdcdc";
+        playerBrowser_colorTitleHover = text2_color;
+
+        playerBrowser_colorText      = playerBrowser_colorTitle;
+        playerBrowser_colorTextHover = text2_color
+
+        //-----------------------------------------------------------------------------------------
+        // ItemList
+
+        itemList_colorA = "#dcdcdc";
+        itemList_colorB = itemList_colorA;
+
+        itemList_colorDefaultA = "#c8c8c8";
+        itemList_colorDefaultB = itemList_colorDefaultA;
+
+        itemList_colorHoverA = "#f0f0f0";
+        itemList_colorHoverB = itemList_colorHoverA;
+
+        itemList_colorPressA = "white";
+        itemList_colorPressB = itemList_colorPressA;
+
+        itemList_colorContextualHoverB = itemList_colorPressB;
+
+        itemList_colorSelectFocusA = buttonPush_colorHighlightHoverA;
+        itemList_colorSelectFocusB = itemList_colorSelectFocusA;
+
+        itemList_colorCurrentA = itemList_colorHoverA;
+        itemList_colorCurrentB = itemList_colorHoverB;
+
+        itemList_colorCurrentHoverA = itemList_colorPressA;
+        itemList_colorCurrentHoverB = itemList_colorPressB;
+
+        itemList_colorBorder        = border_colorLight;
+        itemList_colorBorderDefault = itemList_colorBorder;
+
+        itemList_colorText         = "#646464";
+        itemList_colorTextSelected = text2_color;
+
+        //-----------------------------------------------------------------------------------------
+        // ItemTab
+
+        itemTab_colorContextualHoverA = "white";
+        itemTab_colorContextualHoverB = itemTab_colorContextualHoverA;
+
+        itemTab_colorHighlightContextualA = "#00b4ff";
         itemTab_colorHighlightContextualB = itemTab_colorHighlightContextualA;
     }
 
@@ -1581,11 +1926,43 @@ Item
         text_raised = Text.Raised;
         text_sunken = Text.Sunken;
 
+        text_colorCurrent = "#00b4ff";
+
+        text1_color = "white";
+        text2_color = text1_color;
+        text3_color = "#c8c8c8";
+
+        //-----------------------------------------------------------------------------------------
+        // Border
+
+        border_color      = "#161616";
+        border_colorLight = "#242424";
+        border_colorFocus = "#008cdc";
+
+        //-----------------------------------------------------------------------------------------
+        // Window
+
+        window_color = "#323232";
+
         //-----------------------------------------------------------------------------------------
         // Icon
 
         icon_raised = Sk.IconRaised;
         icon_sunken = Sk.IconSunken;
+
+        icon1_colorA = "#dcdcdc";
+        icon2_colorA = icon1_colorA;
+
+        //-----------------------------------------------------------------------------------------
+        // IconOverlay
+
+        iconOverlay_colorA = icon_colorActiveA;
+        iconOverlay_colorB = icon_colorActiveB;
+
+        //-----------------------------------------------------------------------------------------
+        // Panel
+
+        panel_color = "#404040";
 
         //-----------------------------------------------------------------------------------------
         // BarWindow
@@ -1593,6 +1970,7 @@ Item
         barWindow_colorA = "#808080";
         barWindow_colorB = "#484848";
 
+        barWindow_colorDisableA = barWindow_colorB;
         barWindow_colorDisableB = barWindow_colorA;
 
         //-----------------------------------------------------------------------------------------
@@ -1604,8 +1982,10 @@ Item
         //-----------------------------------------------------------------------------------------
         // Button
 
+        button_colorConfirmHoverA = "#c80000";
         button_colorConfirmHoverB = "#960000";
 
+        button_colorConfirmPressA = "#960000";
         button_colorConfirmPressB = "#c80000";
 
         //-----------------------------------------------------------------------------------------
@@ -1638,8 +2018,18 @@ Item
         //-----------------------------------------------------------------------------------------
         // ButtonOverlay
 
+        buttonOverlay_colorBorder = icon_colorA;
+
         buttonOverlay_colorA = "#323232";
         buttonOverlay_colorB = "black";
+
+        buttonOverlay_colorHoverA = buttonPush_colorHighlightHoverA;
+        buttonOverlay_colorHoverB = buttonPush_colorHighlightHoverB;
+
+        buttonOverlay_colorPressA = buttonPush_colorCheckA;
+        buttonOverlay_colorPressB = buttonPush_colorCheckB;
+
+        buttonOverlay_filterIcon = button_filterIconA;
 
         //-----------------------------------------------------------------------------------------
         // ButtonMask
@@ -1648,6 +2038,42 @@ Item
 
         buttonMask_colorPressA = buttonMask_colorHoverA;
         buttonMask_colorPressB = "#646464";
+
+        //-----------------------------------------------------------------------------------------
+        // LabelRound
+
+        labelRound_colorA = buttonPush_colorCheckA;
+        labelRound_colorB = buttonPush_colorCheckB;
+
+        labelRound_filterIcon = icon_filter;
+
+        //-----------------------------------------------------------------------------------------
+        // LabelRoundInfo
+
+        labelRoundInfo_colorText = labelRound_colorText;
+
+        //-----------------------------------------------------------------------------------------
+        // LabelLoading
+
+        labelLoading_colorA = "black";
+
+        //-----------------------------------------------------------------------------------------
+        // LabelLoadingText
+
+        labelLoadingText_colorText = labelRound_colorText;
+
+        //-----------------------------------------------------------------------------------------
+        // BaseLineEdit
+
+        baseLineEdit_colorText         = "black";
+        baseLineEdit_colorTextSelected = text1_color;
+
+        baseLineEdit_colorDefault = "#323232";
+
+        //-----------------------------------------------------------------------------------------
+        // LineEdit
+
+        lineEdit_color = "#dcdcdc";
 
         //-----------------------------------------------------------------------------------------
         // LineEditBox
@@ -1678,8 +2104,10 @@ Item
         //-----------------------------------------------------------------------------------------
         // SliderStream
 
+        sliderStream_colorBarA = "#00a0f0";
         sliderStream_colorBarB = "#0050b4";
 
+        sliderStream_colorBarHoverA = "#00b4ff";
         sliderStream_colorBarHoverB = "#0064c8";
 
         sliderStream_colorBarDisableA = "#dcdcdc";
@@ -1692,6 +2120,21 @@ Item
         sliderStream_colorBarProgressB = "#dcdcdc";
 
         //-----------------------------------------------------------------------------------------
+        // TabBarProgress
+
+        tabBarProgress_colorDisableA = sliderStream_colorBarDisableB;
+        tabBarProgress_colorDisableB = sliderStream_colorBarDisableA;
+
+        //-----------------------------------------------------------------------------------------
+        // PlayerBrowser
+
+        playerBrowser_colorTitle      = text_color;
+        playerBrowser_colorTitleHover = playerBrowser_colorTitle;
+
+        playerBrowser_colorText      = "#c8c8c8";
+        playerBrowser_colorTextHover = text_color;
+
+        //-----------------------------------------------------------------------------------------
         // ItemList
 
         itemList_colorA = "#383838";
@@ -1700,8 +2143,10 @@ Item
         itemList_colorDefaultA = "#282828";
         itemList_colorDefaultB = "#202020";
 
+        itemList_colorHoverA = "#646464";
         itemList_colorHoverB = "#404040";
 
+        itemList_colorPressA = "#808080";
         itemList_colorPressB = "#484848";
 
         itemList_colorContextualHoverB = "#484848";
@@ -1714,6 +2159,12 @@ Item
 
         itemList_colorCurrentHoverA = itemList_colorCurrentA;
         itemList_colorCurrentHoverB = "#484848";
+
+        itemList_colorBorder        = "#202020";
+        itemList_colorBorderDefault = border_color;
+
+        itemList_colorText         = "#dcdcdc";
+        itemList_colorTextSelected = text_color;
 
         //-----------------------------------------------------------------------------------------
         // ItemTab

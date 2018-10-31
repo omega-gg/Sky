@@ -44,8 +44,9 @@ WallBookmarkTrack
     //---------------------------------------------------------------------------------------------
     // Private
 
-    property int pWidthHalf : (width - st.dp2) / 2
-    property int pWidthRight: width - pWidthHalf - st.dp2
+    property int pWidthHalf: (width - st.border_size) / 2
+
+    property int pWidthRight: width - pWidthHalf - st.border_size
 
     property variant pCurrentTab    : null
     property variant pHighlightedTab: null
@@ -289,13 +290,13 @@ WallBookmarkTrack
                 {
                     rectangleShot.anchors.left = player.right;
 
-                    rectangleShot.anchors.leftMargin = st.dp2;
+                    rectangleShot.anchors.leftMargin = st.border_size;
                 }
                 else
                 {
                     rectangleShot.anchors.right = player.left;
 
-                    rectangleShot.anchors.rightMargin = st.dp2;
+                    rectangleShot.anchors.rightMargin = st.border_size;
                 }
 
                 rectangleShot.visible = true;
@@ -324,7 +325,7 @@ WallBookmarkTrack
         rectangleShot.anchors.right = undefined;
 
         rectangleShot.anchors.leftMargin  = 0;
-        rectangleShot.anchors.rightMargin = st.dp2;
+        rectangleShot.anchors.rightMargin = st.border_size;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -800,7 +801,7 @@ WallBookmarkTrack
 
                     width: pWidthRight
 
-                    x: pWidthHalf + st.dp2
+                    x: pWidthHalf + st.border_size
                 }
             },
             State

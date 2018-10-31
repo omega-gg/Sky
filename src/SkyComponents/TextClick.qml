@@ -54,8 +54,9 @@ TextBase
     {
         id: mouseArea
 
-        anchors.right : (horizontalAlignment == Text.AlignRight)  ? parent.right  : undefined
-        anchors.bottom: (verticalAlignment   == Text.AlignBottom) ? parent.bottom : undefined
+        anchors.right: (horizontalAlignment == Text.AlignRight) ? parent.right : undefined
+
+        anchors.bottom: (verticalAlignment == Text.AlignBottom) ? parent.bottom : undefined
 
         anchors.horizontalCenter: (horizontalAlignment
                                    ==

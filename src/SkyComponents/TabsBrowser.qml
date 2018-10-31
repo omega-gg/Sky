@@ -75,6 +75,8 @@ BaseTabs
     // Signals
     //---------------------------------------------------------------------------------------------
 
+    signal tabPressed(int index)
+
     signal tabClicked      (int index)
     signal tabDoubleClicked(int index)
 
@@ -117,6 +119,8 @@ BaseTabs
         if (mouse.button & Qt.LeftButton)
         {
             hoverEnabled = true;
+
+            tabPressed(indexHover);
 
             if (tabs.currentIndex == indexHover) return;
 
@@ -581,6 +585,9 @@ BaseTabs
 
         colorPressA: st.button_colorConfirmPressA
         colorPressB: st.button_colorConfirmPressB
+
+        filterIcon: (isHovered) ? st.button_filterIconB
+                                : st.button_filterIconA
 
         onClicked: closeTab(indexHover)
     }
