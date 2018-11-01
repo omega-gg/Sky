@@ -2053,11 +2053,6 @@ Item
         labelRoundInfo_colorText = labelRound_colorText;
 
         //-----------------------------------------------------------------------------------------
-        // LabelLoading
-
-        labelLoading_colorA = "black";
-
-        //-----------------------------------------------------------------------------------------
         // LabelLoadingText
 
         labelLoadingText_colorText = labelRound_colorText;
