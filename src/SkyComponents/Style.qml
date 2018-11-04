@@ -727,7 +727,7 @@ Item
 
     property real labelLoading_opacity: 0.8
 
-    property color labelLoading_colorA: buttonOverlay_colorA
+    property color labelLoading_colorA: "black"
     property color labelLoading_colorB: labelLoading_colorA
 
     //---------------------------------------------------------------------------------------------
@@ -1535,6 +1535,11 @@ Item
         labelRoundInfo_colorText = labelRound_colorText;
 
         //-----------------------------------------------------------------------------------------
+        // LabelLoading
+
+        labelLoading_colorA = "black";
+
+        //-----------------------------------------------------------------------------------------
         // LabelLoadingText
 
         labelLoadingText_colorText = labelRound_colorText;
@@ -1794,6 +1799,11 @@ Item
         labelRoundInfo_colorText = text_color;
 
         //-----------------------------------------------------------------------------------------
+        // LabelLoading
+
+        labelLoading_colorA = buttonOverlay_colorA;
+
+        //-----------------------------------------------------------------------------------------
         // LabelLoadingText
 
         labelLoadingText_colorText = text2_color;
@@ -2051,6 +2061,11 @@ Item
         // LabelRoundInfo
 
         labelRoundInfo_colorText = labelRound_colorText;
+
+        //-----------------------------------------------------------------------------------------
+        // LabelLoading
+
+        labelLoading_colorA = "black";
 
         //-----------------------------------------------------------------------------------------
         // LabelLoadingText
