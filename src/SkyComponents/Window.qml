@@ -91,14 +91,24 @@ BaseWindow
     {
         enabled: pAnimate
 
-        PropertyAnimation { duration: durationAnimation }
+        PropertyAnimation
+        {
+            duration: durationAnimation
+
+            easing.type: st.easing
+        }
     }
 
     Behavior on height
     {
         enabled: pAnimate
 
-        PropertyAnimation { duration: durationAnimation }
+        PropertyAnimation
+        {
+            duration: durationAnimation
+
+            easing.type: st.easing
+        }
     }
 
     //---------------------------------------------------------------------------------------------

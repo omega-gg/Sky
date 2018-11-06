@@ -154,7 +154,12 @@ Item
 
         Behavior on opacity
         {
-            PropertyAnimation { duration: durationOpacity }
+            PropertyAnimation
+            {
+                duration: durationOpacity
+
+                easing.type: st.easing
+            }
         }
 
         RectangleShadow
@@ -169,7 +174,12 @@ Item
 
             Behavior on opacity
             {
-                PropertyAnimation { duration: durationOpacity }
+                PropertyAnimation
+                {
+                    duration: durationOpacity
+
+                    easing.type: st.easing
+                }
             }
         }
     }
@@ -196,7 +206,12 @@ Item
 
         Behavior on opacity
         {
-            PropertyAnimation { duration: durationOpacity }
+            PropertyAnimation
+            {
+                duration: durationOpacity
+
+                easing.type: st.easing
+            }
         }
 
         RectangleShadow
@@ -211,7 +226,12 @@ Item
 
             Behavior on opacity
             {
-                PropertyAnimation { duration: durationOpacity }
+                PropertyAnimation
+                {
+                    duration: durationOpacity
+
+                    easing.type: st.easing
+                }
             }
         }
     }

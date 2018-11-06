@@ -63,6 +63,11 @@ ButtonPushIcon
 
     Behavior on opacity
     {
-        PropertyAnimation { duration: st.duration_faster }
+        PropertyAnimation
+        {
+            duration: st.duration_faster
+
+            easing.type: st.easing
+        }
     }
 }

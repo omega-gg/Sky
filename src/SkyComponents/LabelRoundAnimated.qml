@@ -41,6 +41,11 @@ LabelRound
     {
         enabled: enableAnimation
 
-        PropertyAnimation { duration: st.duration_normal }
+        PropertyAnimation
+        {
+            duration: st.duration_normal
+
+            easing.type: st.easing
+        }
     }
 }

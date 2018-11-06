@@ -139,11 +139,21 @@ ComponentTab
 //#QT_4
         enabled: (isAnimated && index != indexStatic)
 
-        PropertyAnimation { duration: durationAnimation }
+        PropertyAnimation
+        {
+            duration: durationAnimation
+
+            easing.type: st.easing
+        }
 //#ELSE
         enabled: (parent.isAnimated && index != parent.indexStatic)
 
-        PropertyAnimation { duration: parent.durationAnimation }
+        PropertyAnimation
+        {
+            duration: parent.durationAnimation
+
+            easing.type: st.easing
+        }
 //#END
     }
 
@@ -152,11 +162,21 @@ ComponentTab
 //#QT_4
         enabled: (isAnimated && index != indexStatic)
 
-        PropertyAnimation { duration: durationAnimation }
+        PropertyAnimation
+        {
+            duration: durationAnimation
+
+            easing.type: st.easing
+        }
 //#ELSE
         enabled: (parent.isAnimated && index != parent.indexStatic)
 
-        PropertyAnimation { duration: parent.durationAnimation }
+        PropertyAnimation
+        {
+            duration: parent.durationAnimation
+
+            easing.type: st.easing
+        }
 //#END
     }
 }

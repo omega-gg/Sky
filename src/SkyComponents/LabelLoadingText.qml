@@ -108,7 +108,7 @@ Item
 
         radius: labelLoadingText.radius
 
-        opacity: st.labelLoadingText_opacity
+        opacity: st.labelLoading_opacity
 
         gradient: Gradient
         {

@@ -127,6 +127,8 @@ MouseArea
             PropertyAnimation
             {
                 duration: (animate) ? st.duration_normal : 0
+
+                easing.type: st.easing
             }
         }
     }

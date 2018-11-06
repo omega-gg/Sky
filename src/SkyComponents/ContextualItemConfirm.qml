@@ -126,7 +126,12 @@ Item
         {
             SequentialAnimation
             {
-                AnchorAnimation { duration: st.duration_normal }
+                AnchorAnimation
+                {
+                    duration: st.duration_normal
+
+                    easing.type: st.easing
+                }
 
                 ScriptAction
                 {

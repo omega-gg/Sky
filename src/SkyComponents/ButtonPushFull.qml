@@ -172,7 +172,12 @@ BaseButtonPush
 
         Behavior on opacity
         {
-            PropertyAnimation { duration: st.duration_fast }
+            PropertyAnimation
+            {
+                duration: st.duration_fast
+
+                easing.type: st.easing
+            }
         }
     }
 }

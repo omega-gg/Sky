@@ -936,11 +936,13 @@ void WTabTrackPrivate::onFocusChanged()
 
     if (hasFocus)
     {
-        const WTrack * track = NULL;
+        if (currentBookmark)
+        {
+            const WTrack * track = currentBookmark->track();
 
-        if (currentBookmark) track = currentBookmark->track();
-
-        playlist->setCurrentTrackPointer(track);
+            playlist->setCurrentTrackPointer(track);
+        }
+        else playlist->setCurrentTrackPointer(NULL);
 
         QObject::connect(playlist, SIGNAL(currentTrackChanged()),
                          q,        SLOT(onCurrentTrackChanged()));

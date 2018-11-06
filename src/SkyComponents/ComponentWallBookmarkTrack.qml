@@ -61,7 +61,7 @@ ComponentWall
     //---------------------------------------------------------------------------------------------
     // Private
 
-    property bool pHighlighted: (isCurrent || isHighlighted)
+    property bool pCurrent: (isCurrent || isHighlighted)
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -222,8 +222,8 @@ ComponentWall
         else                          return st.border_color;
     }
 
-    textColor: (pHighlighted) ? st.text2_color
-                              : st.text1_color
+    textColor: (pCurrent) ? st.text2_color
+                          : st.text1_color
 
     textStyle: (isCurrent) ? st.text_raised
                            : st.text_sunken
@@ -234,8 +234,8 @@ ComponentWall
     textStyleColor: (isCurrent) ? st.text1_colorShadow
                                 : st.text1_colorSunken
 
-    filterIcon: (pHighlighted) ? st.icon2_filter
-                               : st.icon1_filter
+    filterIcon: (pCurrent) ? st.icon2_filter
+                           : st.icon1_filter
 
     filterIconShadow: st.icon1_filterShadow
 

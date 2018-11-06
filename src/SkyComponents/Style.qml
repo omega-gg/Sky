@@ -125,6 +125,8 @@ Item
 
     property bool animate: true
 
+    property int easing: Easing.OutQuad
+
     property int duration_slower: ms300
     property int duration_slow  : ms250
     property int duration_normal: ms200
@@ -725,7 +727,7 @@ Item
     property int labelLoading_width : dp48
     property int labelLoading_height: dp48
 
-    property real labelLoading_opacity: 0.8
+    property real labelLoading_opacity: 0.6
 
     property color labelLoading_colorA: "black"
     property color labelLoading_colorB: labelLoading_colorA
@@ -737,8 +739,6 @@ Item
 
     property int labelLoadingText_padding: dp4
     property int labelLoadingText_spacing: dp2
-
-    property real labelLoadingText_opacity: 0.6
 
     property color labelLoadingText_colorText: labelRound_colorText
 
@@ -1071,8 +1071,7 @@ Item
 
     property int playerBrowser_interval: 200
 
-    property real playerBrowser_opacityBar   : 0.6
-    property real playerBrowser_opacityShadow: 0.6
+    property real playerBrowser_opacity: 0.6
 
     property color playerBrowser_colorBar: buttonOverlay_colorA
 

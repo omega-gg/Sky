@@ -98,7 +98,11 @@ BaseButton
 
         anchors.fill: background
 
+//#QT_4
+        anchors.margins: -borderSize
+//#ELSE
         anchors.margins: -borderSizeFocus
+//#END
 
         radius: baseButtonPush.radius
 

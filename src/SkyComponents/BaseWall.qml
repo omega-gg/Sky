@@ -580,7 +580,12 @@ MouseArea
         {
             enabled: bar.visible
 
-            PropertyAnimation { duration: durationAnimation }
+            PropertyAnimation
+            {
+                duration: durationAnimation
+
+                easing.type: st.easing
+            }
         }
 
         ButtonPianoIcon

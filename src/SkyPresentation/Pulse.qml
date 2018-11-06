@@ -64,7 +64,12 @@ Animated
 
     Behavior on opacity
     {
-        PropertyAnimation { duration: interval }
+        PropertyAnimation
+        {
+            duration: interval
+
+            easing.type: st.easing
+        }
     }
 
     //---------------------------------------------------------------------------------------------

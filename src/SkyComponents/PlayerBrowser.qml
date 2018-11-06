@@ -344,7 +344,7 @@ MouseArea
 
         anchors.rightMargin: Math.round(areaBackward.width / 3)
 
-        opacity: (areaBackward.containsMouse || pBackward) ? st.playerBrowser_opacityShadow : 0.0
+        opacity: (areaBackward.containsMouse || pBackward) ? st.playerBrowser_opacity : 0.0
 
         direction: Sk.Right
 
@@ -352,7 +352,12 @@ MouseArea
 
         Behavior on opacity
         {
-            PropertyAnimation { duration: st.duration_fast }
+            PropertyAnimation
+            {
+                duration: st.duration_fast
+
+                easing.type: st.easing
+            }
         }
     }
 
@@ -365,13 +370,18 @@ MouseArea
 
         anchors.leftMargin: Math.round(areaForward.width / 3)
 
-        opacity: (areaForward.containsMouse || pForward) ? st.playerBrowser_opacityShadow : 0.0
+        opacity: (areaForward.containsMouse || pForward) ? st.playerBrowser_opacity : 0.0
 
         filter: st.playerBrowser_filterShadow
 
         Behavior on opacity
         {
-            PropertyAnimation { duration: st.duration_fast }
+            PropertyAnimation
+            {
+                duration: st.duration_fast
+
+                easing.type: st.easing
+            }
         }
     }
 
@@ -504,14 +514,19 @@ MouseArea
 
         Behavior on opacity
         {
-            PropertyAnimation { duration: st.duration_fast }
+            PropertyAnimation
+            {
+                duration: st.duration_fast
+
+                easing.type: st.easing
+            }
         }
 
         Rectangle
         {
             anchors.fill: parent
 
-            opacity: st.playerBrowser_opacityBar
+            opacity: st.playerBrowser_opacity
 
             color: st.playerBrowser_colorBar
         }
@@ -567,14 +582,19 @@ MouseArea
 
         Behavior on opacity
         {
-            PropertyAnimation { duration: st.duration_fast }
+            PropertyAnimation
+            {
+                duration: st.duration_fast
+
+                easing.type: st.easing
+            }
         }
 
         Rectangle
         {
             anchors.fill: parent
 
-            opacity: st.playerBrowser_opacityBar
+            opacity: st.playerBrowser_opacity
 
             color: st.playerBrowser_colorBar
         }

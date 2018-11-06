@@ -129,7 +129,12 @@ Item
 
         enabled: false
 
-        PropertyAnimation { duration: durationAnimation }
+        PropertyAnimation
+        {
+            duration: durationAnimation
+
+            easing.type: st.easing
+        }
     }
 
     //---------------------------------------------------------------------------------------------
@@ -352,7 +357,12 @@ Item
 
                 enabled: false
 
-                PropertyAnimation { duration: durationAnimation }
+                PropertyAnimation
+                {
+                    duration: durationAnimation
+
+                    easing.type: st.easing
+                }
             }
 
             SequentialAnimation on opacity
@@ -368,6 +378,8 @@ Item
                     to: 0.0
 
                     duration: intervalProgress
+
+                    easing.type: st.easing
                 }
 
                 PropertyAnimation
@@ -375,6 +387,8 @@ Item
                     to: opacityProgressB
 
                     duration: intervalProgress
+
+                    easing.type: st.easing
                 }
             }
 
@@ -391,6 +405,8 @@ Item
                     to: opacityProgressA
 
                     duration: intervalProgress
+
+                    easing.type: st.easing
                 }
 
                 PropertyAnimation
@@ -398,6 +414,8 @@ Item
                     to: opacityProgressB
 
                     duration: intervalProgress
+
+                    easing.type: st.easing
                 }
             }
         }

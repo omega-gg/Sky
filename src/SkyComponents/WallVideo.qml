@@ -547,6 +547,8 @@ WallBookmarkTrack
                 properties: "x, y, width, height"
 
                 duration: (enableAnimation) ? st.duration_normal : 0
+
+                easing.type: st.easing
             }
         }
     }
@@ -830,6 +832,8 @@ WallBookmarkTrack
                 properties: "x, y, width, height"
 
                 duration: (enableAnimation) ? st.duration_normal : 0
+
+                easing.type: st.easing
             }
         }
 
@@ -842,6 +846,8 @@ WallBookmarkTrack
             PropertyAnimation
             {
                 duration: (visible) ? st.duration_fast : 0
+
+                easing.type: st.easing
             }
         }
 

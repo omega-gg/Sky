@@ -776,13 +776,9 @@ void WDeclarativeImageBase::setSource(const QUrl & url)
 
     d->url = url;
 
-    if (d->loadMode == LoadVisible && isVisible() == false)
+    if (d->loadMode == LoadVisible && isVisible() == false && url.isValid())
     {
-        if (url.isValid())
-        {
-             d->setSourceDefault(false);
-        }
-        else d->setSourceDefault(true);
+        d->setSourceDefault(false);
     }
 
     if (isComponentComplete()) load();

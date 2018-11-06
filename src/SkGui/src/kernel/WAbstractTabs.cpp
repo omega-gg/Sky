@@ -571,13 +571,13 @@ void WAbstractTabs::setCurrentTab(WAbstractTab * tab)
     d->currentTab   = tab;
     d->currentIndex = d->tabs.indexOf(tab);
 
+    emit currentTabChanged  ();
+    emit currentIndexChanged();
+
     if (tab)
     {
         tab->d_func()->setFocus(true);
     }
-
-    emit currentTabChanged  ();
-    emit currentIndexChanged();
 
     save();
 }

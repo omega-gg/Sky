@@ -43,6 +43,11 @@ ButtonPiano
 
     Behavior on opacity
     {
-        NumberAnimation { duration: durationOpacity }
+        NumberAnimation
+        {
+            duration: durationOpacity
+
+            easing.type: st.easing
+        }
     }
 }

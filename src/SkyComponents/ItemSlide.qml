@@ -153,6 +153,8 @@ Item
                 AnchorAnimation
                 {
                     duration: (isAnimated) ? durationAnimation : 0
+
+                    easing.type: st.easing
                 }
 
                 ScriptAction
