@@ -34,8 +34,6 @@ Item
     //---------------------------------------------------------------------------------------------
     // Private
 
-    property bool pAnimate: false
-
     property variant pLastPanel : null
     property variant pLastParent: null
 
@@ -217,15 +215,7 @@ Item
 
         currentPanel.updatePosition();
 
-        if (pLastPanel == null)
-        {
-            pAnimate = true;
-
-            currentPanel.pSetActive(true);
-
-            pAnimate = false;
-        }
-        else currentPanel.pSetActive(true);
+        currentPanel.pSetActive(true);
 
         pLastPanel = currentPanel;
 

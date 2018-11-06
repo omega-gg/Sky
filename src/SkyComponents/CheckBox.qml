@@ -95,7 +95,7 @@ BaseButton
         anchors.margins: -borderSizeFocus
 //#END
 
-        radius: checkBox.radius
+        radius: Math.round(checkBox.radius * (height / background.height))
 
         opacity: (window.isActive && isFocused)
 

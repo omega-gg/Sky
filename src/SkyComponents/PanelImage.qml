@@ -44,27 +44,11 @@ Panel
     width : imageFront.width  + borderSizeWidth
     height: imageFront.height + borders.sizeHeight
 
-    opacity: (visible)
-
     acceptedButtons: Qt.NoButton
 
     hoverEnabled: false
 
     color: st.panelImage_color
-
-    //---------------------------------------------------------------------------------------------
-    // Animations
-    //---------------------------------------------------------------------------------------------
-
-    Behavior on opacity
-    {
-        PropertyAnimation
-        {
-            duration: st.duration_faster
-
-            easing.type: st.easing
-        }
-    }
 
     //---------------------------------------------------------------------------------------------
     // Childs

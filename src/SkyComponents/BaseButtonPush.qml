@@ -104,7 +104,7 @@ BaseButton
         anchors.margins: -borderSizeFocus
 //#END
 
-        radius: baseButtonPush.radius
+        radius: Math.round(baseButtonPush.radius * (height / background.height))
 
         opacity: (window.isActive && isFocused)
 

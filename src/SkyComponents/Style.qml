@@ -29,7 +29,8 @@ Item
 
     /* read */ property real ratio: scale * zoom
 
-    property int dp1: 1 * ratio
+    property int dp1: Math.max(1, 1 * ratio)
+
     property int dp2: 2 * ratio
     property int dp3: 3 * ratio
     property int dp4: 4 * ratio

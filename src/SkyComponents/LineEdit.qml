@@ -74,7 +74,7 @@ BaseLineEdit
         anchors.margins: -borderSizeFocus
 //#END
 
-        radius: lineEdit.radius
+        radius: Math.round(lineEdit.radius * (height / background.height))
 
         z: -1
 
