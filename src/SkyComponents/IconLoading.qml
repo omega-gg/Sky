@@ -49,7 +49,5 @@ Icon
         duration: durationAnimation
 
         loops: Animation.Infinite
-
-        easing.type: st.easing
     }
 }

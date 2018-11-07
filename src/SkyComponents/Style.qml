@@ -1708,12 +1708,12 @@ Item
         //-----------------------------------------------------------------------------------------
         // Panel
 
-        panel_color = logo_colorA;
+        panel_color = "#c8c8c8";
 
         //-----------------------------------------------------------------------------------------
         // BarWindow
 
-        barWindow_colorA = logo_colorA;
+        barWindow_colorA = panel_color;
         barWindow_colorB = barWindow_colorA;
 
         barWindow_colorDisableA = "#dcdcdc";
