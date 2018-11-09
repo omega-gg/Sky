@@ -102,7 +102,7 @@ Item
     property url  logo
     property real logoRatio: 8.0
 
-    property color logo_colorA: "#404040"
+    property color logo_colorA: "#c8c8c8"
     property color logo_colorB: logo_colorA
 
     property int cursor_width : dp18
@@ -164,21 +164,21 @@ Item
     property int text_sunken: text_raised
 
     property color text_color         : text1_color
-    property color text_colorCurrent  : "#00b4ff"
+    property color text_colorCurrent  : "#008cdc"
     property color text_colorShadow   : text1_colorShadow
     property color text_colorSunken   : text1_colorSunken
-    property color text_colorLink     : "#008cdc"
+    property color text_colorLink     : text_colorCurrent
     property color text_colorLinkHover: "#00b4ff"
 
-    property color text1_color      : "white"
+    property color text1_color      : "#484848"
     property color text1_colorShadow: "#161616"
     property color text1_colorSunken: "#323232"
 
-    property color text2_color      : text1_color
+    property color text2_color      : "white"
     property color text2_colorShadow: text1_colorShadow
     property color text2_colorSunken: text1_colorSunken
 
-    property color text3_color      : "#c8c8c8"
+    property color text3_color      : "#646464"
     property color text3_colorShadow: text1_colorShadow
     property color text3_colorSunken: text1_colorSunken
 
@@ -206,10 +206,9 @@ Item
 
     property real border_opacityDisable: 0.8
 
-    property color border_color      : "#161616"
-    property color border_colorLight : "#242424"
-    property color border_colorShadow: "#323232"
-    property color border_colorFocus : "#008cdc"
+    property color border_color     : "#969696"
+    property color border_colorLight: "#b4b4b4"
+    property color border_colorFocus: "#00a0f0"
 
     property alias border_filter     : border_filter
     property alias border_filterFocus: border_filterFocus
@@ -236,7 +235,7 @@ Item
     property int window_borderSize : border_size
     property int window_resizerSize: dp4
 
-    property color window_color: "#323232"
+    property color window_color: "#b4b4b4"
 
     //---------------------------------------------------------------------------------------------
     // RectangleBorders
@@ -292,12 +291,12 @@ Item
     property color icon_colorShadow : icon1_colorShadow
     property color icon_colorSunken : icon1_colorSunken
 
-    property color icon1_colorA     : "#dcdcdc"
+    property color icon1_colorA     : "#646464"
     property color icon1_colorB     : icon1_colorA
     property color icon1_colorShadow: "#161616"
     property color icon1_colorSunken: "#323232"
 
-    property color icon2_colorA     : icon1_colorA
+    property color icon2_colorA     : "white"
     property color icon2_colorB     : icon2_colorA
     property color icon2_colorShadow: icon1_colorShadow
     property color icon2_colorSunken: icon1_colorSunken
@@ -385,8 +384,8 @@ Item
 
     property real iconOverlay_opacity: 0.8
 
-    property color iconOverlay_colorA: icon_colorActiveA
-    property color iconOverlay_colorB: icon_colorActiveB
+    property color iconOverlay_colorA: "#00b4ff"
+    property color iconOverlay_colorB: iconOverlay_colorA
 
     property alias iconOverlay_filter: icon2_filter
 
@@ -398,7 +397,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // Panel
 
-    property color panel_color: "#404040"
+    property color panel_color: "#c8c8c8"
 
     //---------------------------------------------------------------------------------------------
     // PanelContextual
@@ -439,10 +438,10 @@ Item
 
     property int barWindow_height: dp24
 
-    property color barWindow_colorA: "#565656"
+    property color barWindow_colorA: panel_color
     property color barWindow_colorB: barWindow_colorA
 
-    property color barWindow_colorDisableA: "#484848"
+    property color barWindow_colorDisableA: "#dcdcdc"
     property color barWindow_colorDisableB: barWindow_colorDisableA
 
     property color barWindow_colorBorderLine: "#969696"
@@ -486,10 +485,10 @@ Item
     property color button_colorTextA: text1_color
     property color button_colorTextB: text2_color
 
-    property color button_colorConfirmHoverA: "#c80000"
+    property color button_colorConfirmHoverA: "#dc0000"
     property color button_colorConfirmHoverB: button_colorConfirmHoverA
 
-    property color button_colorConfirmPressA: "#960000"
+    property color button_colorConfirmPressA: "#b40000"
     property color button_colorConfirmPressB: button_colorConfirmPressA
 
     property ImageColorFilter button_filterIconA: icon1_filter
@@ -506,22 +505,22 @@ Item
     property int buttonPush_padding: dp14
     property int buttonPush_spacing: dp6
 
-    property color buttonPush_colorA: "#484848"
+    property color buttonPush_colorA: "#dcdcdc"
     property color buttonPush_colorB: buttonPush_colorA
 
-    property color buttonPush_colorHoverA: "#646464"
+    property color buttonPush_colorHoverA: "#f0f0f0"
     property color buttonPush_colorHoverB: buttonPush_colorHoverA
 
-    property color buttonPush_colorPressA: "#323232"
+    property color buttonPush_colorPressA: "#b4b4b4"
     property color buttonPush_colorPressB: buttonPush_colorPressA
 
     property color buttonPush_colorPressHoverA: buttonPush_colorHoverA
     property color buttonPush_colorPressHoverB: buttonPush_colorHoverB
 
-    property color buttonPush_colorHighlightA: "#0078c8"
+    property color buttonPush_colorHighlightA: "#008cdc"
     property color buttonPush_colorHighlightB: buttonPush_colorHighlightA
 
-    property color buttonPush_colorHighlightHoverA: "#008cdc"
+    property color buttonPush_colorHighlightHoverA: "#00a0f0"
     property color buttonPush_colorHighlightHoverB: buttonPush_colorHighlightHoverA
 
     property color buttonPush_colorCheckA: buttonPush_colorHighlightA
@@ -542,18 +541,18 @@ Item
     property real buttonOverlay_opacityDefault: 0.8
     property real buttonOverlay_opacityHover  : 1.0
 
-    property color buttonOverlay_colorBorder: icon_colorA
+    property color buttonOverlay_colorBorder: icon2_colorA
 
-    property color buttonOverlay_colorA: "#242424"
+    property color buttonOverlay_colorA: "#323232"
     property color buttonOverlay_colorB: buttonOverlay_colorA
 
-    property color buttonOverlay_colorHoverA: buttonPush_colorHighlightHoverA
-    property color buttonOverlay_colorHoverB: buttonPush_colorHighlightHoverB
+    property color buttonOverlay_colorHoverA: buttonPush_colorHighlightA
+    property color buttonOverlay_colorHoverB: buttonPush_colorHighlightB
 
-    property color buttonOverlay_colorPressA: buttonPush_colorCheckA
-    property color buttonOverlay_colorPressB: buttonPush_colorCheckB
+    property color buttonOverlay_colorPressA: buttonPush_colorHighlightHoverA
+    property color buttonOverlay_colorPressB: buttonPush_colorHighlightHoverB
 
-    property ImageColorFilter buttonOverlay_filterIcon: button_filterIconA
+    property ImageColorFilter buttonOverlay_filterIcon: icon2_filter
 
     //---------------------------------------------------------------------------------------------
     // ButtonPiano
@@ -640,7 +639,7 @@ Item
 
     property int buttonMask_styleSize: dp2
 
-    property color buttonMask_colorHoverA: "#c8c8c8"
+    property color buttonMask_colorHoverA: "#323232"
     property color buttonMask_colorHoverB: buttonMask_colorHoverA
 
     property color buttonMask_colorPressA: icon_colorA
@@ -697,17 +696,17 @@ Item
     property int labelRound_padding: buttonPush_padding
     property int labelRound_spacing: buttonPush_spacing
 
-    property color labelRound_colorA: buttonPush_colorCheckA
-    property color labelRound_colorB: buttonPush_colorCheckB
+    property color labelRound_colorA: "#f0f0f0"
+    property color labelRound_colorB: labelRound_colorA
 
     property color labelRound_colorDisableA: buttonPush_colorPressA
     property color labelRound_colorDisableB: buttonPush_colorPressB
 
     property color labelRound_colorText: text_color
 
-    property ImageColorFilter labelRound_filterIcon      : icon_filter
-    property ImageColorFilter labelRound_filterIconShadow: icon_filterShadow
-    property ImageColorFilter labelRound_filterIconSunken: icon_filterSunken
+    property ImageColorFilter labelRound_filterIcon      : icon2_filter
+    property ImageColorFilter labelRound_filterIconShadow: icon2_filterShadow
+    property ImageColorFilter labelRound_filterIconSunken: icon2_filterSunken
 
     //---------------------------------------------------------------------------------------------
     // LabelRoundIcon
@@ -720,7 +719,7 @@ Item
 
     property color labelRoundInfo_color: labelRound_colorDisableA
 
-    property color labelRoundInfo_colorText: labelRound_colorText
+    property color labelRoundInfo_colorText: text_color
 
     //---------------------------------------------------------------------------------------------
     // LabelLoading
@@ -730,7 +729,7 @@ Item
 
     property real labelLoading_opacity: 0.6
 
-    property color labelLoading_colorA: "black"
+    property color labelLoading_colorA: buttonOverlay_colorA
     property color labelLoading_colorB: labelLoading_colorA
 
     //---------------------------------------------------------------------------------------------
@@ -741,7 +740,7 @@ Item
     property int labelLoadingText_padding: dp4
     property int labelLoadingText_spacing: dp2
 
-    property color labelLoadingText_colorText: labelRound_colorText
+    property color labelLoadingText_colorText: text2_color
 
     //---------------------------------------------------------------------------------------------
     // LabelStream
@@ -782,11 +781,11 @@ Item
 
     property color baseLineEdit_colorCursor: "#161616"
 
-    property color baseLineEdit_colorText         : "black"
+    property color baseLineEdit_colorText         : text1_color
     property color baseLineEdit_colorTextSelection: border_colorFocus
-    property color baseLineEdit_colorTextSelected : text1_color
+    property color baseLineEdit_colorTextSelected : text2_color
 
-    property color baseLineEdit_colorDefault: "#323232"
+    property color baseLineEdit_colorDefault: text3_color
 
     //---------------------------------------------------------------------------------------------
     // LineEdit
@@ -796,7 +795,7 @@ Item
 
     property int lineEdit_padding: dp13
 
-    property color lineEdit_color     : "#dcdcdc"
+    property color lineEdit_color     : buttonPush_colorHoverA
     property color lineEdit_colorHover: "white"
 
     //---------------------------------------------------------------------------------------------
@@ -810,10 +809,10 @@ Item
     //---------------------------------------------------------------------------------------------
     // LineEditBox
 
-    property color lineEditBox_colorA: "#323232"
+    property color lineEditBox_colorA: lineEdit_color
     property color lineEditBox_colorB: lineEditBox_colorA
 
-    property color lineEditBox_colorHoverA: "#646464"
+    property color lineEditBox_colorHoverA: lineEdit_colorHover
     property color lineEditBox_colorHoverB: lineEditBox_colorHoverA
 
     property color lineEditBox_colorActive: lineEdit_colorHover
@@ -948,7 +947,7 @@ Item
     property color slider_colorA: scrollBar_colorA
     property color slider_colorB: scrollBar_colorB
 
-    property color slider_colorHandleA: "#c8c8c8"
+    property color slider_colorHandleA: "#dcdcdc"
     property color slider_colorHandleB: slider_colorHandleA
 
     property color slider_colorHandleHoverA: "#f0f0f0"
@@ -983,16 +982,16 @@ Item
     property real sliderStream_opacityProgressA: 0.5
     property real sliderStream_opacityProgressB: 1.0
 
-    property color sliderStream_colorBarA: "#00a0f0"
+    property color sliderStream_colorBarA: "#008cdc"
     property color sliderStream_colorBarB: sliderStream_colorBarA
 
-    property color sliderStream_colorBarHoverA: "#00b4ff"
+    property color sliderStream_colorBarHoverA: "#00a0f0"
     property color sliderStream_colorBarHoverB: sliderStream_colorBarHoverA
 
-    property color sliderStream_colorBarDisableA: "#969696"
+    property color sliderStream_colorBarDisableA: "#dcdcdc"
     property color sliderStream_colorBarDisableB: sliderStream_colorBarDisableA
 
-    property color sliderStream_colorBarDisableHoverA: "#c8c8c8"
+    property color sliderStream_colorBarDisableHoverA: "#f0f0f0"
     property color sliderStream_colorBarDisableHoverB: sliderStream_colorBarDisableHoverA
 
     property color sliderStream_colorBarProgressA: sliderStream_colorBarDisableHoverA
@@ -1030,7 +1029,7 @@ Item
 
     property int tabBarProgress_height: dp3
 
-    property color tabBarProgress_colorA: sliderStream_colorBarB
+    property color tabBarProgress_colorA: "#969696"
     property color tabBarProgress_colorB: sliderStream_colorBarA
 
     property color tabBarProgress_colorDisableA: sliderStream_colorBarDisableB
@@ -1076,11 +1075,11 @@ Item
 
     property color playerBrowser_colorBar: buttonOverlay_colorA
 
-    property color playerBrowser_colorText     : "#c8c8c8"
-    property color playerBrowser_colorTextHover: text_color
+    property color playerBrowser_colorText     : playerBrowser_colorTitle
+    property color playerBrowser_colorTextHover: text2_color
 
-    property color playerBrowser_colorTitle     : text_color
-    property color playerBrowser_colorTitleHover: playerBrowser_colorTitle
+    property color playerBrowser_colorTitle     : "#dcdcdc"
+    property color playerBrowser_colorTitleHover: text2_color
 
     property color playerBrowser_colorShadow: "#008cdc"
 
@@ -1101,16 +1100,16 @@ Item
     property int itemList_iconWidth : dp32
     property int itemList_iconHeight: dp32
 
-    property color itemList_colorA: "#323232"
+    property color itemList_colorA: "#dcdcdc"
     property color itemList_colorB: itemList_colorA
 
-    property color itemList_colorDefaultA: "#242424"
+    property color itemList_colorDefaultA: "#c8c8c8"
     property color itemList_colorDefaultB: itemList_colorDefaultA
 
-    property color itemList_colorHoverA: "#646464"
+    property color itemList_colorHoverA: "#f0f0f0"
     property color itemList_colorHoverB: itemList_colorHoverA
 
-    property color itemList_colorPressA: "#808080"
+    property color itemList_colorPressA: "white"
     property color itemList_colorPressB: itemList_colorPressA
 
     property color itemList_colorContextualHoverA: itemList_colorPressA
@@ -1122,21 +1121,21 @@ Item
     property color itemList_colorSelectHoverA: buttonPush_colorHighlightHoverA
     property color itemList_colorSelectHoverB: buttonPush_colorHighlightHoverB
 
-    property color itemList_colorSelectFocusA: "#008cdc"
+    property color itemList_colorSelectFocusA: buttonPush_colorHighlightHoverA
     property color itemList_colorSelectFocusB: itemList_colorSelectFocusA
 
     property color itemList_colorCurrentA: itemList_colorDefaultA
     property color itemList_colorCurrentB: itemList_colorDefaultB
 
-    property color itemList_colorCurrentHoverA: itemList_colorHoverA
-    property color itemList_colorCurrentHoverB: itemList_colorHoverB
+    property color itemList_colorCurrentHoverA: itemList_colorPressA
+    property color itemList_colorCurrentHoverB: itemList_colorPressB
 
-    property color itemList_colorBorder       : "#202020"
-    property color itemList_colorBorderDefault: border_color
+    property color itemList_colorBorder       : border_colorLight
+    property color itemList_colorBorderDefault: itemList_colorBorder
 
-    property color itemList_colorText        : "#dcdcdc"
+    property color itemList_colorText        : "#646464"
     property color itemList_colorTextHover   : text_color
-    property color itemList_colorTextSelected: text_color
+    property color itemList_colorTextSelected: text2_color
     property color itemList_colorTextCurrent : text_colorCurrent
 
     //---------------------------------------------------------------------------------------------
@@ -1155,7 +1154,7 @@ Item
     property color itemTab_colorHoverA: buttonPiano_colorHoverA
     property color itemTab_colorHoverB: buttonPiano_colorHoverB
 
-    property color itemTab_colorContextualHoverA: "#808080"
+    property color itemTab_colorContextualHoverA: "white"
     property color itemTab_colorContextualHoverB: itemTab_colorContextualHoverA
 
     property color itemTab_colorSelectA: buttonPush_colorCheckA
@@ -1167,7 +1166,7 @@ Item
     property color itemTab_colorHighlightHoverA: buttonPush_colorHighlightHoverA
     property color itemTab_colorHighlightHoverB: buttonPush_colorHighlightHoverB
 
-    property color itemTab_colorHighlightContextualA: "#008cdc"
+    property color itemTab_colorHighlightContextualA: "#00b4ff"
     property color itemTab_colorHighlightContextualB: itemTab_colorHighlightContextualA
 
     //---------------------------------------------------------------------------------------------
@@ -1409,6 +1408,7 @@ Item
         text_sunken = text_raised;
 
         text_colorCurrent = "#00b4ff";
+        text_colorLink    = "#008cdc";
 
         text1_color = "white";
         text2_color = text1_color;
@@ -1610,11 +1610,11 @@ Item
         //-----------------------------------------------------------------------------------------
         // PlayerBrowser
 
+        playerBrowser_colorText      = "#c8c8c8";
+        playerBrowser_colorTextHover = text_color;
+
         playerBrowser_colorTitle      = text_color;
         playerBrowser_colorTitleHover = playerBrowser_colorTitle;
-
-        playerBrowser_colorText      = "#c8c8c8";
-        playerBrowser_colorTextHover = text_color
 
         //-----------------------------------------------------------------------------------------
         // ItemList
@@ -1673,6 +1673,7 @@ Item
         text_sunken = text_raised;
 
         text_colorCurrent = "#008cdc";
+        text_colorLink    = text_colorCurrent;
 
         text1_color = "#484848";
         text2_color = "white";
@@ -1697,7 +1698,7 @@ Item
         icon_sunken = icon_raised;
 
         icon1_colorA = "#646464";
-        icon2_colorA = text2_color;
+        icon2_colorA = "white";
 
         //-----------------------------------------------------------------------------------------
         // IconOverlay
@@ -1874,11 +1875,11 @@ Item
         //-----------------------------------------------------------------------------------------
         // PlayerBrowser
 
+        playerBrowser_colorText      = playerBrowser_colorTitle;
+        playerBrowser_colorTextHover = text2_color;
+
         playerBrowser_colorTitle      = "#dcdcdc";
         playerBrowser_colorTitleHover = text2_color;
-
-        playerBrowser_colorText      = playerBrowser_colorTitle;
-        playerBrowser_colorTextHover = text2_color
 
         //-----------------------------------------------------------------------------------------
         // ItemList
@@ -1937,6 +1938,7 @@ Item
         text_sunken = Text.Sunken;
 
         text_colorCurrent = "#00b4ff";
+        text_colorLink    = "#008cdc";
 
         text1_color = "white";
         text2_color = text1_color;
@@ -2138,11 +2140,11 @@ Item
         //-----------------------------------------------------------------------------------------
         // PlayerBrowser
 
-        playerBrowser_colorTitle      = text_color;
-        playerBrowser_colorTitleHover = playerBrowser_colorTitle;
-
         playerBrowser_colorText      = "#c8c8c8";
         playerBrowser_colorTextHover = text_color;
+
+        playerBrowser_colorTitle      = text_color;
+        playerBrowser_colorTitleHover = playerBrowser_colorTitle;
 
         //-----------------------------------------------------------------------------------------
         // ItemList
