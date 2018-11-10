@@ -1029,10 +1029,10 @@ Item
 
     property int tabBarProgress_height: dp3
 
-    property color tabBarProgress_colorA: "#969696"
+    property color tabBarProgress_colorA: sliderStream_colorBarB
     property color tabBarProgress_colorB: sliderStream_colorBarA
 
-    property color tabBarProgress_colorDisableA: sliderStream_colorBarDisableB
+    property color tabBarProgress_colorDisableA: "#969696"
     property color tabBarProgress_colorDisableB: sliderStream_colorBarDisableA
 
     //---------------------------------------------------------------------------------------------
