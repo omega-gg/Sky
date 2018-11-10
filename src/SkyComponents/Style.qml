@@ -1124,8 +1124,8 @@ Item
     property color itemList_colorSelectFocusA: buttonPush_colorHighlightHoverA
     property color itemList_colorSelectFocusB: itemList_colorSelectFocusA
 
-    property color itemList_colorCurrentA: itemList_colorDefaultA
-    property color itemList_colorCurrentB: itemList_colorDefaultB
+    property color itemList_colorCurrentA: itemList_colorHoverA
+    property color itemList_colorCurrentB: itemList_colorHoverB
 
     property color itemList_colorCurrentHoverA: itemList_colorPressA
     property color itemList_colorCurrentHoverB: itemList_colorPressB
