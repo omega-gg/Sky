@@ -14,9 +14,8 @@
 */
 //=================================================================================================
 
-import QtQuick       1.1
-import Sky           1.0
-import SkyComponents 1.0
+import QtQuick 1.1
+import Sky     1.0
 
 Rectangle
 {
@@ -24,61 +23,22 @@ Rectangle
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int margin: height / sp.baseLogo_marginRatio
-
     property color colorA: sp.baseLogo_colorA
     property color colorB: sp.baseLogo_colorB
-
-    //---------------------------------------------------------------------------------------------
-    // Aliases
-    //---------------------------------------------------------------------------------------------
-
-    property alias sourceHighlight: highlight.source
-
-    //---------------------------------------------------------------------------------------------
-
-    property alias shadow: shadow
-
-    property alias rectangle: rectangle
-    property alias highlight: highlight
 
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    color: sp.baseLogo_colorBack
+    radius: Math.round(height / 16)
 
-    //---------------------------------------------------------------------------------------------
-    // Childs
-    //---------------------------------------------------------------------------------------------
-
-    BorderImageShadow { id: shadow }
-
-    Rectangle
+    gradient: Gradient
     {
-        id: rectangle
-
-        anchors.fill: parent
-
-        anchors.margins: margin
-
-        gradient: Gradient
-        {
-            GradientStop { position: 0.0; color: colorA }
-            GradientStop { position: 1.0; color: colorB }
-        }
-
-//#QT_4
-        ImageSvgScale
-//#ELSE
-        ImageSvg
-//#END
-        {
-            id: highlight
-
-            anchors.fill: parent
-
-            source: sp.baseLogo_sourceHighlight
-        }
+        GradientStop { position: 0.0; color: colorA }
+        GradientStop { position: 1.0; color: colorB }
     }
+
+    border.width: Math.round(height / sp.baseLogo_borderRatio)
+
+    border.color: st.border_color
 }

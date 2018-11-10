@@ -47,14 +47,10 @@ Item
     //---------------------------------------------------------------------------------------------
     // BaseLogo
 
-    property real baseLogo_marginRatio: 32.0
+    property real baseLogo_borderRatio: 32.0
 
-    property url baseLogo_sourceHighlight: "pictures/highlight.svg"
-
-    property color baseLogo_colorA: "#8c8c8c"
-    property color baseLogo_colorB: "#2a2a2a"
-
-    property color baseLogo_colorBack: "#161616"
+    property color baseLogo_colorA: "#484848"
+    property color baseLogo_colorB: baseLogo_colorA
 
     //---------------------------------------------------------------------------------------------
     // ButtonBox
