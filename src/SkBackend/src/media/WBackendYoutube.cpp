@@ -761,6 +761,23 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
             }
         }
 
+        if (audio.isEmpty())
+        {
+            for (int i = 0; i < list.length(); i++)
+            {
+                const QString & string = list.at(i);
+
+                if (string.contains("%22mp4a"))
+                {
+                    audio = d->extractUrl(string);
+
+                    list.removeAt(i);
+
+                    break;
+                }
+            }
+        }
+
         foreach (const QString & string, list)
         {
             d->loadAdaptative(medias, audios, string, audio);
