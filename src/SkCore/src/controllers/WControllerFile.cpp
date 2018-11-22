@@ -771,9 +771,16 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 {
     if (url.scheme().toLower() == "qrc")
     {
-         return url.toString().mid(3);
+        return url.toString().mid(3);
     }
-    else return url.toLocalFile();
+
+    QString string = url.toLocalFile();
+
+    if (string.isEmpty())
+    {
+        return url.toString();
+    }
+    else return string;
 }
 
 /* Q_INVOKABLE static */ QString WControllerFile::toString(const QUrl & url)
