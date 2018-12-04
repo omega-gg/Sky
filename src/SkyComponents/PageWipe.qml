@@ -17,74 +17,43 @@
 import QtQuick 1.0
 import Sky     1.0
 
-ItemSlide
+LoaderWipe
 {
     //---------------------------------------------------------------------------------------------
-    // Aliases
+    // Properties
     //---------------------------------------------------------------------------------------------
 
-    property alias item: loader.item
+    property url mainSource
 
-    property alias source         : loader.source
-    property alias sourceComponent: loader.sourceComponent
-
-    property alias progress: loader.progress
-
-    property alias status: loader.status
+    property bool enableFocus: true
 
     //---------------------------------------------------------------------------------------------
+    // Settings
+    //---------------------------------------------------------------------------------------------
 
-    property alias loader: loader
+    anchors.fill: parent
+
+    source: mainSource
+
+    //---------------------------------------------------------------------------------------------
+    // Events
+    //---------------------------------------------------------------------------------------------
+
+    onActiveFocusChanged: if (enableFocus && activeFocus && item) item.forceActiveFocus()
+
+    loader.onLoaded: item.forceActiveFocus()
 
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
 
-    function load(source)
+    function loadPage(source)
     {
-        loader.source = source;
+        loadLeft(source);
     }
 
-    function reload()
+    function loadMain()
     {
-        var source = loader.source;
-
-        if (source)
-        {
-            loader.source = "";
-            loader.source = source;
-        }
-    }
-
-    //---------------------------------------------------------------------------------------------
-
-    function loadLeft (source) { pLoad(source, Sk.Left);  }
-    function loadRight(source) { pLoad(source, Sk.Right); }
-    function loadUp   (source) { pLoad(source, Sk.Up);    }
-    function loadDown (source) { pLoad(source, Sk.Down);  }
-
-    //---------------------------------------------------------------------------------------------
-    // Private
-
-    function pLoad(source, direction)
-    {
-        if (loader.source == source) return;
-
-        init();
-
-        loader.source = source;
-
-        pStart(direction);
-    }
-
-    //---------------------------------------------------------------------------------------------
-    // Childs
-    //---------------------------------------------------------------------------------------------
-
-    Loader
-    {
-        id: loader
-
-        anchors.fill: parent
+        loadRight(mainSource);
     }
 }

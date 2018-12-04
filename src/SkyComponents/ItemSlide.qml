@@ -50,10 +50,10 @@ Item
     // Functions
     //---------------------------------------------------------------------------------------------
 
-    function slideLeft () { pStart(Sk.Left);  }
-    function slideRight() { pStart(Sk.Right); }
-    function slideUp   () { pStart(Sk.Up);    }
-    function slideDown () { pStart(Sk.Down);  }
+    function startLeft () { pStart(Sk.Left);  }
+    function startRight() { pStart(Sk.Right); }
+    function startUp   () { pStart(Sk.Up);    }
+    function startDown () { pStart(Sk.Down);  }
 
     //---------------------------------------------------------------------------------------------
 
@@ -76,6 +76,9 @@ Item
         if (pReady == false) init();
 
         clip = true;
+
+        itemImage.width  = width;
+        itemImage.height = height;
 
         itemImage.visible = true;
 
@@ -181,9 +184,6 @@ Item
     Image
     {
         id: itemImage
-
-        width : parent.width
-        height: parent.height
 
         visible: false
 

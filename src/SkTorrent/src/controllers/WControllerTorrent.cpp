@@ -1267,7 +1267,7 @@ void WControllerTorrent::setPort(int port)
 
     if (d->port == port) return;
 
-    port = port;
+    d->port = port;
 
     emit portChanged();
 }

@@ -1661,14 +1661,7 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
 
 /* Q_INVOKABLE */ bool WLibraryFolder::containsSource(const QUrl & source) const
 {
-    Q_D(const WLibraryFolder);
-
-    foreach (const WLibraryFolderItem & item, d->items)
-    {
-        if (item.source == source) return true;
-    }
-
-    return false;
+    return (indexFromSource(source) != -1);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1710,6 +1703,21 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
     for (int i = 0; i < d->items.count(); i++)
     {
         if (d->items.at(i).id == id)
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+/* Q_INVOKABLE */ int WLibraryFolder::indexFromSource(const QUrl & source) const
+{
+    Q_D(const WLibraryFolder);
+
+    for (int i = 0; i < d->items.count(); i++)
+    {
+        if (d->items.at(i).source == source)
         {
             return i;
         }

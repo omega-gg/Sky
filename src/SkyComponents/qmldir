@@ -3,10 +3,13 @@ Style 1.0 Style.qml
 AreaContextual 1.0 AreaContextual.qml
 
 ItemSlide 1.0 ItemSlide.qml
+ItemWipe  1.0 ItemWipe.qml
 
 LoaderSlide 1.0 LoaderSlide.qml
+LoaderWipe  1.0 LoaderWipe.qml
 
 PageSlide 1.0 PageSlide.qml
+PageWipe  1.0 PageWipe.qml
 
 LineHorizontal     1.0 LineHorizontal.qml
 LineHorizontalDrop 1.0 LineHorizontalDrop.qml

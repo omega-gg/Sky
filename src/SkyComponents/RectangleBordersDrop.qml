@@ -50,8 +50,7 @@ RectangleBorders
 
         if (item)
         {
-            x = parent.mapFromItem(item, 0, 0).x;
-            y = parent.mapFromItem(item, 0, 0).y;
+            pApplyPosition();
 
             visible = true;
         }
@@ -74,9 +73,17 @@ RectangleBorders
 
     function updatePosition()
     {
-        if (pItem == null) return;
+        if (pItem) pApplyPosition();
+    }
 
-        x = parent.mapFromItem(pItem, 0, 0).x;
-        y = parent.mapFromItem(pItem, 0, 0).y;
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    function pApplyPosition()
+    {
+        var position = parent.mapFromItem(pItem, 0, 0);
+
+        x = position.x;
+        y = position.y;
     }
 }

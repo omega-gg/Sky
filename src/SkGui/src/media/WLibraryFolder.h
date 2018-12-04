@@ -174,6 +174,8 @@ public: // Interface
 
     Q_INVOKABLE int indexFromId(int id) const;
 
+    Q_INVOKABLE int indexFromSource(const QUrl & source) const;
+
     //---------------------------------------------------------------------------------------------
 
     Q_INVOKABLE WLibraryFolderItem getItemAt    (int index) const;
