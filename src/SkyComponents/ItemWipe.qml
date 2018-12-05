@@ -49,6 +49,11 @@ Item
     default property alias content: content.data
 
     //---------------------------------------------------------------------------------------------
+    // Style
+
+    property alias color: border.color
+
+    //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
 
@@ -131,7 +136,7 @@ Item
             },
             State
             {
-                name: "up"; when: (pDirectionA == Sk.Up)
+                name: "up"; when: (pDirectionB == Sk.Up)
 
                 AnchorChanges
                 {
@@ -142,7 +147,7 @@ Item
             },
             State
             {
-                name: "down"; when: (pDirectionA == Sk.Down)
+                name: "down"; when: (pDirectionB == Sk.Down)
 
                 AnchorChanges
                 {
@@ -165,7 +170,7 @@ Item
         }
     }
 
-    Image
+    Item
     {
         id: backgroundB
 
