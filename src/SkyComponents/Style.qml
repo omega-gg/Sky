@@ -1033,7 +1033,7 @@ Item
     property color tabBarProgress_colorB: sliderStream_colorBarA
 
     property color tabBarProgress_colorDisableA: "#969696"
-    property color tabBarProgress_colorDisableB: sliderStream_colorBarDisableA
+    property color tabBarProgress_colorDisableB: tabBarProgress_colorDisableA
 
     //---------------------------------------------------------------------------------------------
     // BaseWall
