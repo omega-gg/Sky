@@ -121,6 +121,10 @@ public: // Interface
 
     Q_INVOKABLE int insertSource(int index, const QUrl & url);
 
+    Q_INVOKABLE void moveTrack(int from, int to);
+
+    Q_INVOKABLE void moveTracks(const QList<int> & indexes, int to);
+
     Q_INVOKABLE void removeTrack(int index);
 
     Q_INVOKABLE void removeTracks(const QList<int> & indexes);
@@ -173,6 +177,8 @@ public: // Interface
     Q_INVOKABLE int indexOf(const WTrack * track) const;
 
     Q_INVOKABLE int indexFromId(int id) const;
+
+    Q_INVOKABLE int indexFromSource(const QUrl & source) const;
 
     Q_INVOKABLE bool contains(const WTrack & track) const;
 

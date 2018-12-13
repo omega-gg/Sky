@@ -1038,6 +1038,47 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ void WPlaylist::moveTrack(int from, int to)
+{
+    moveTracks(QList<int>() << from, to);
+}
+
+/* Q_INVOKABLE */ void WPlaylist::moveTracks(const QList<int> & indexes, int to)
+{
+    if (indexes.isEmpty() || to < 0 || to > count()) return;
+
+    Q_D(WPlaylist);
+
+    foreach (int from, indexes)
+    {
+        if ((from > to && from != to)
+            ||
+            (from < to && from != (to - 1)))
+        {
+            beginTracksMove(from, from, to);
+
+            if (from < to) to--;
+
+            d->tracks.move(from, to);
+
+            endTracksMove();
+
+            to++;
+        }
+        else if (from >= to) to++;
+    }
+
+    updateIndex();
+
+    emit tracksMoved(indexes, to);
+
+    emit playlistUpdated();
+
+    save();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ void WPlaylist::removeTrack(int index)
 {
     removeTracks(QList<int>() << index);
@@ -1522,6 +1563,8 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     return -1;
 }
 
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ int WPlaylist::indexFromId(int id) const
 {
     Q_D(const WPlaylist);
@@ -1529,6 +1572,21 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     for (int i = 0; i < d->tracks.count(); i++)
     {
         if (d->tracks.at(i).d_func()->id == id)
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+/* Q_INVOKABLE */ int WPlaylist::indexFromSource(const QUrl & source) const
+{
+    Q_D(const WPlaylist);
+
+    for (int i = 0; i < d->tracks.count(); i++)
+    {
+        if (d->tracks.at(i).d_func()->source == source)
         {
             return i;
         }

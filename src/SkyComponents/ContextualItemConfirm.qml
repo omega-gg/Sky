@@ -91,6 +91,8 @@ Item
 
         onClicked:
         {
+            window.clearFocus();
+
             if (list.getCurrentId() != id)
             {
                 list.clearCurrentId();
