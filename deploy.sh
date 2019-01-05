@@ -10,13 +10,13 @@ external="../3rdparty"
 #--------------------------------------------------------------------------------------------------
 
 Qt4_version="4.8.7"
-Qt5_version="5.11.2"
+Qt5_version="5.12.0"
 
-MinGW_version="5.3.0"
+MinGW_version="7.3.0"
 
-VLC_version="3.0.4"
+VLC_version="3.0.5"
 
-libtorrent_version="1.1.9"
+libtorrent_version="1.1.11"
 
 #--------------------------------------------------------------------------------------------------
 
@@ -128,7 +128,7 @@ if [ $1 = "qt4" ]; then
 
     if [ $2 = "win32" ]; then
 
-        cp "$MinGW"/libgcc_s_dw2-1.dll  deploy
+        cp "$MinGW"/libgcc_s_seh-1.dll  deploy
         cp "$MinGW"/libstdc++-6.dll     deploy
         cp "$MinGW"/libwinpthread-1.dll deploy
 
@@ -179,7 +179,7 @@ else
 
     if [ $2 = "win32" ]; then
 
-        cp "$MinGW"/libgcc_s_dw2-1.dll  deploy
+        cp "$MinGW"/libgcc_s_seh-1.dll  deploy
         cp "$MinGW"/libstdc++-6.dll     deploy
         cp "$MinGW"/libwinpthread-1.dll deploy
 

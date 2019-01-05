@@ -10,11 +10,11 @@ external="../3rdparty"
 #--------------------------------------------------------------------------------------------------
 
 Qt4_version="4.8.7"
-Qt5_version="5.11.2"
+Qt5_version="5.12.0"
 
-VLC_version="3.0.4"
+VLC_version="3.0.5"
 
-libtorrent_version="1.1.9"
+libtorrent_version="1.1.11"
 
 Boost_version="1.55.0"
 
