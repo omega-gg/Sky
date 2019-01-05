@@ -28,7 +28,7 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int VLCPLAYER_NETWORK_CACHE = 200;
+static const int VLCPLAYER_NETWORK_CACHE = 300;
 
 //-------------------------------------------------------------------------------------------------
 // Private
@@ -367,6 +367,8 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
         output = d->output;
 
+        QString cache("network-caching=" + QString::number(d->networkCache));
+
         if (d->proxyHost.isEmpty() == false)
         {
             proxy         = "http-proxy="     + d->proxyHost;
@@ -409,6 +411,8 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
             }
             else libvlc_media_add_option(media, "no-audio");
         }
+
+        libvlc_media_add_option(media, cache.C_STR);
 
         if (proxy.isNull() == false)
         {
