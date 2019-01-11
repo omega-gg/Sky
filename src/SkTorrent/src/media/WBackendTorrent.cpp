@@ -799,8 +799,6 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
     {
         Q_D(const WBackendTorrent);
 
-        WBackendNetPlaylist reply;
-
         QString content = Sk::readAscii(data);
 
         content = WControllerTorrent::listAfter(content, "info");
@@ -868,7 +866,7 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
         reply.cache = data;
 
-        if (query.id == 0)
+        if (id == 0)
         {
             int index = query.data.toInt();
 

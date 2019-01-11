@@ -455,6 +455,7 @@ bool WAbstractViewPrivate::isWindows10()
 
         return 0;
     }
+#endif
     else if (message == WM_CLOSE)
     {
         WAbstractView * view

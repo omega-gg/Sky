@@ -90,7 +90,7 @@ void WAbstractLoaderPrivate::init()
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WAbstractLoaderPrivate::abort(QIODevice * reply)
+void WAbstractLoaderPrivate::clear(QIODevice * reply)
 {
     Q_Q(WAbstractLoader);
 
