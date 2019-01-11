@@ -387,8 +387,8 @@ Item
             colorPressA: st.button_colorConfirmPressA
             colorPressB: st.button_colorConfirmPressB
 
-            itemText.color: (isHovered) ? st.button_colorTextB
-                                        : st.button_colorTextA
+            itemText.color: (isHovered || isPressed) ? st.button_colorTextB
+                                                     : st.button_colorTextA
 
             onActiveFocusChanged:
             {

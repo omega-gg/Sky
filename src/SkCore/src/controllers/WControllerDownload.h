@@ -51,6 +51,8 @@ public: // Interface
 
     QIODevice * takeReply(QObject * parent = NULL);
 
+    void abort();
+
 signals:
     void loaded(WRemoteData * data);
 

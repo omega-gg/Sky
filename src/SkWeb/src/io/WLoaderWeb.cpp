@@ -171,6 +171,10 @@ void WLoaderWebPrivate::onLoadFinished(bool ok)
 
     WLoaderWebPage * page = d->pages.take(reply);
 
+    reply->open(QIODevice::ReadOnly);
+
+    complete(reply);
+
     disconnect(page, 0, this, 0);
 
     delete page;

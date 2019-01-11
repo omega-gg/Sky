@@ -55,7 +55,7 @@ WAbstractLoaderPrivate::WAbstractLoaderPrivate(WAbstractLoader * p) : WPrivate(p
         {
             i.next();
 
-            abort(i.key());
+            clear(i.key());
 
             p->jobs.removeOne(i.value());
 
@@ -72,7 +72,7 @@ WAbstractLoaderPrivate::WAbstractLoaderPrivate(WAbstractLoader * p) : WPrivate(p
         {
             i.next();
 
-            abort(i.key());
+            clear(i.key());
         }
     }
 

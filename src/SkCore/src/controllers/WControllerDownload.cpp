@@ -49,7 +49,7 @@ static const int CONTROLLERDOWNLOAD_MAX_JOBS = 10;
     {
         if (_loader)
         {
-            _loader->d_func()->abort(_reply);
+            _loader->d_func()->clear(_reply);
         }
 
         if (controller)
@@ -93,6 +93,16 @@ QIODevice * WRemoteData::takeReply(QObject * parent)
         return reply;
     }
     else return NULL;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WRemoteData::abort()
+{
+    if (_loader && _reply)
+    {
+        _loader->abort(_reply);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -216,13 +226,7 @@ WRemoteTimeout::WRemoteTimeout(WRemoteData * data) : QTimer(data)
 
 void WRemoteTimeout::onTimeout()
 {
-    QNetworkReply * reply = qobject_cast<QNetworkReply *> (_data->_reply);
-
-    if (reply)
-    {
-        reply->abort();
-    }
-    else qWarning("WRemoteTimeout::onTimeout: Reply does not exist.");
+    _data->abort();
 }
 
 void WRemoteTimeout::onLoaded()

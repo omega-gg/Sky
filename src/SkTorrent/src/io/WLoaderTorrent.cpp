@@ -124,6 +124,10 @@ void WLoaderTorrentPrivate::onDestroyed()
 
     WMagnetReply * magnet = d->replies.take(reply);
 
+    reply->open(QIODevice::ReadOnly);
+
+    complete(reply);
+
     disconnect(magnet, 0, this, 0);
 
     delete magnet;

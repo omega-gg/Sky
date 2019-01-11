@@ -158,7 +158,7 @@ void WViewDragPrivate::clearDrag()
 
     ReleaseCapture();
 
-    PostMessage((HWND) d->view->winId(), WM_NCLBUTTONDOWN, HTCAPTION, 0);
+    PostMessage((HWND) d->view->winId(), WM_SYSCOMMAND, 0xf012, 0);
 #else
     QRect geometry = d->view->availableGeometry();
 

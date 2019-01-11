@@ -34,6 +34,8 @@ class SK_GUI_EXPORT WDeclarativeMouseEvent : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(bool accepted READ isAccepted WRITE setAccepted)
+
     Q_PROPERTY(int x READ x)
     Q_PROPERTY(int y READ y)
 
@@ -42,49 +44,37 @@ class SK_GUI_EXPORT WDeclarativeMouseEvent : public QObject
 
     Q_PROPERTY(int modifiers READ modifiers)
 
+    Q_PROPERTY(bool isClick READ isClick)
     Q_PROPERTY(bool wasHeld READ wasHeld)
 
-    Q_PROPERTY(bool isClick READ isClick)
-
-    Q_PROPERTY(bool accepted READ isAccepted WRITE setAccepted)
-
 public:
-    /* virtual */ WDeclarativeMouseEvent(int x, int y,
+    /* virtual */ WDeclarativeMouseEvent(QMouseEvent::Type type, const QPointF & position,
                                          Qt::MouseButton button, Qt::MouseButtons buttons,
                                          Qt::KeyboardModifiers modifiers,
                                          bool isClick = false, bool wasHeld = false);
 
-    int x() const { return _x; }
-    int y() const { return _y; }
+public: // Properties
+    bool isAccepted() const;
+    void setAccepted(bool accepted);
 
-    int button()  const { return _button; }
-    int buttons() const { return _buttons; }
+    QMouseEvent::Type type() const;
 
-    int modifiers() const { return _modifiers; }
+    int x() const;
+    int y() const;
 
-    bool wasHeld() const { return _wasHeld; }
+    int button()  const;
+    int buttons() const;
 
-    bool isClick() const { return _isClick; }
+    int modifiers() const;
 
-    void setX(int x) { _x = x; }
-    void setY(int y) { _y = y; }
-
-    bool isAccepted() { return _accepted; }
-
-    void setAccepted(bool accepted) { _accepted = accepted; }
+    bool isClick() const;
+    bool wasHeld() const;
 
 private:
-    int _x;
-    int _y;
+    QMouseEvent _event;
 
-    Qt::MouseButton  _button;
-    Qt::MouseButtons _buttons;
-
-    Qt::KeyboardModifiers _modifiers;
-
-    bool _wasHeld;
     bool _isClick;
-    bool _accepted;
+    bool _wasHeld;
 
 private:
     Q_DISABLE_COPY(WDeclarativeMouseEvent)

@@ -45,7 +45,7 @@ public:
     void init();
 
 public: // Functions
-    void abort(QIODevice * reply);
+    void clear(QIODevice * reply);
 
 public: // Variables
     QHash<QIODevice *, WRemoteData *> replies;

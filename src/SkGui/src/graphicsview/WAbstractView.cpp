@@ -439,6 +439,22 @@ bool WAbstractViewPrivate::isWindows10()
 
         return 0;
     }
+#ifdef QT_LATEST
+    // FIXME Qt 5.12: We have to send mouse release manually when dragging and resizing.
+    else if (message == WM_CAPTURECHANGED)
+    {
+        WAbstractView * view
+            = reinterpret_cast<WAbstractView *> (GetWindowLongPtr(handle, GWLP_USERDATA));
+
+        QPoint pos = QCursor::pos();
+
+        QMouseEvent event(QEvent::MouseButtonRelease, view->mapFromGlobal(pos), pos,
+                          Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+
+        QCoreApplication::sendEvent(view, &event);
+
+        return 0;
+    }
     else if (message == WM_CLOSE)
     {
         WAbstractView * view
