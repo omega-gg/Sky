@@ -88,7 +88,7 @@ public: // Functions
     bool applyTorrent(WBackendNetFolder * reply, const QUrl & url, const QString & string) const;
     bool applyMagnet (WBackendNetFolder * reply, const QUrl & url, const QString & string) const;
 
-    void applyQuery(WBackendNetFolder * reply, QStringList * urls, int id) const;
+    void applyQuery(WBackendNetItem * reply, QStringList * urls, int id) const;
 
     void applyQueryTorrent(WBackendNetItem * reply, QStringList * urls,
                                                     QStringList * sources) const;
@@ -264,8 +264,8 @@ bool WBackendTorrentPrivate::applyMagnet(WBackendNetFolder * reply, const QUrl  
 
 //-------------------------------------------------------------------------------------------------
 
-void WBackendTorrentPrivate::applyQuery(WBackendNetFolder * reply,
-                                        QStringList       * urls, int id) const
+void WBackendTorrentPrivate::applyQuery(WBackendNetItem * reply,
+                                        QStringList     * urls, int id) const
 {
     if (urls->isEmpty()) return;
 

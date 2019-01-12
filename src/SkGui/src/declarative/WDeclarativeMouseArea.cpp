@@ -248,7 +248,7 @@ WDeclarativeMouseEvent::WDeclarativeMouseEvent(QMouseEvent::Type type, const QPo
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-bool WDeclarativeMouseEvent::isAccepted()
+bool WDeclarativeMouseEvent::isAccepted() const
 {
     return _event.isAccepted();
 }

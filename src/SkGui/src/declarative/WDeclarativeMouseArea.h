@@ -78,6 +78,8 @@ private:
 
 private:
     Q_DISABLE_COPY(WDeclarativeMouseEvent)
+
+    friend class WDeclarativeMouseArea;
 };
 
 //-------------------------------------------------------------------------------------------------
