@@ -234,7 +234,7 @@ void WDeclarativeDrag::setFilterChildren(bool filter)
 //=================================================================================================
 
 /* virtual */
-WDeclarativeMouseEvent::WDeclarativeMouseEvent(QMouseEvent::Type type, const QPointF & position,
+WDeclarativeMouseEvent::WDeclarativeMouseEvent(QMouseEvent::Type type, const QPoint & position,
                                                Qt::MouseButton button, Qt::MouseButtons buttons,
                                                Qt::KeyboardModifiers modifiers,
                                                bool isClick, bool wasHeld)
@@ -612,8 +612,8 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
 {
     Q_D(WDeclarativeMouseArea);
 
-    WDeclarativeMouseEvent event(QEvent::MouseButtonPress, d->lastPos, button, d->lastButtons,
-                                 d->lastModifiers, false, d->longPress);
+    WDeclarativeMouseEvent event(QEvent::MouseButtonPress, d->lastPos.toPoint(), button,
+                                 d->lastButtons, d->lastModifiers, false, d->longPress);
 
     emit pressed(&event);
 }
@@ -622,8 +622,8 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
 {
     Q_D(WDeclarativeMouseArea);
 
-    WDeclarativeMouseEvent event(QEvent::MouseButtonRelease, d->lastPos, button, d->lastButtons,
-                                 d->lastModifiers, true, d->longPress);
+    WDeclarativeMouseEvent event(QEvent::MouseButtonRelease, d->lastPos.toPoint(), button,
+                                 d->lastButtons, d->lastModifiers, true, d->longPress);
 
     emit released(&event);
 }
@@ -634,8 +634,8 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
 {
     Q_D(WDeclarativeMouseArea);
 
-    WDeclarativeMouseEvent event(QEvent::MouseButtonPress, d->lastPos, button, d->lastButtons,
-                                 d->lastModifiers, true, d->longPress);
+    WDeclarativeMouseEvent event(QEvent::MouseButtonPress, d->lastPos.toPoint(), button,
+                                 d->lastButtons, d->lastModifiers, true, d->longPress);
 
     emit clicked(&event);
 }
@@ -721,7 +721,7 @@ bool WDeclarativeMouseArea::setPressed(bool pressed)
 
     d->pressed = pressed;
 
-    WDeclarativeMouseEvent event(QEvent::MouseButtonPress, d->lastPos, d->lastButton,
+    WDeclarativeMouseEvent event(QEvent::MouseButtonPress, d->lastPos.toPoint(), d->lastButton,
                                  d->lastButtons, d->lastModifiers, isClick, d->longPress);
 
     if (d->pressed)
@@ -735,8 +735,6 @@ bool WDeclarativeMouseArea::setPressed(bool pressed)
     else
     {
         emit released(&event);
-
-        event._event.setLocalPos(d->lastPos);
 
         emit pressedChanged();
 
@@ -1031,7 +1029,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
     d->saveEvent(event);
 
-    WDeclarativeMouseEvent mouse(QEvent::MouseButtonDblClick, d->lastPos, d->lastButton,
+    WDeclarativeMouseEvent mouse(QEvent::MouseButtonDblClick, d->lastPos.toPoint(), d->lastButton,
                                  d->lastButtons, d->lastModifiers, true, false);
 
     mouse.setAccepted(d->isDoubleClickConnected());
@@ -1135,8 +1133,8 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
     emit mousePositionChanged();
 
-    WDeclarativeMouseEvent mouse(QEvent::MouseMove, d->lastPos, d->lastButton, d->lastButtons,
-                                 d->lastModifiers, false, d->longPress);
+    WDeclarativeMouseEvent mouse(QEvent::MouseMove, d->lastPos.toPoint(), d->lastButton,
+                                 d->lastButtons, d->lastModifiers, false, d->longPress);
 
     emit positionChanged(&mouse);
 }
@@ -1275,8 +1273,8 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
     emit mousePositionChanged();
 
-    WDeclarativeMouseEvent mouse(QEvent::MouseMove, d->lastPos, Qt::NoButton, Qt::NoButton,
-                                 event->modifiers(), false, false);
+    WDeclarativeMouseEvent mouse(QEvent::MouseMove, d->lastPos.toPoint(), Qt::NoButton,
+                                 Qt::NoButton, event->modifiers(), false, false);
 
     emit positionChanged(&mouse);
 }
@@ -1423,8 +1421,9 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
         {
             d->longPress = true;
 
-            WDeclarativeMouseEvent mouse(QEvent::MouseButtonPress, d->lastPos, d->lastButton,
-                                         d->lastButtons, d->lastModifiers, false, d->longPress);
+            WDeclarativeMouseEvent mouse(QEvent::MouseButtonPress, d->lastPos.toPoint(),
+                                         d->lastButton, d->lastButtons, d->lastModifiers, false,
+                                         d->longPress);
 
             emit pressAndHold(&mouse);
         }

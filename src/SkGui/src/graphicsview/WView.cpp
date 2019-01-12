@@ -2277,8 +2277,8 @@ void WView::hoverLeave()
         d->idleTimer.start();
     }
 
-    WDeclarativeMouseEvent mouse(event->type(), event->localPos(), event->button(),
-                                 event->buttons(), event->modifiers(), false, false);
+    WDeclarativeMouseEvent mouse(event->type(), event->pos(), event->button(), event->buttons(),
+                                 event->modifiers(), false, false);
 
     mouse.setAccepted(false);
 
@@ -2321,7 +2321,7 @@ void WView::hoverLeave()
 
     if (d->mouseAccepted)
     {
-        WDeclarativeMouseEvent mouse(event->type(), event->localPos(), event->button(),
+        WDeclarativeMouseEvent mouse(event->type(), event->pos(), event->button(),
                                      event->buttons(), event->modifiers(), true, false);
 
         mouse.setAccepted(false);
@@ -2343,8 +2343,8 @@ void WView::hoverLeave()
     // FIXME: mousePressEvent is not called before mouseDoubleClickEvent.
     d->setPressed(true);
 
-    WDeclarativeMouseEvent mouse(event->type(), event->localPos(), event->button(),
-                                 event->buttons(), event->modifiers(), true, false);
+    WDeclarativeMouseEvent mouse(event->type(), event->pos(), event->button(), event->buttons(),
+                                 event->modifiers(), true, false);
 
     mouse.setAccepted(false);
 

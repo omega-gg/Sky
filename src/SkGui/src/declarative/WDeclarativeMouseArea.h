@@ -17,6 +17,11 @@
 #ifndef WDECLARATIVEMOUSEAREA_H
 #define WDECLARATIVEMOUSEAREA_H
 
+#ifdef QT_4
+// Qt includes
+#include <QMouseEvent>
+#endif
+
 // Sk includes
 #include <WDeclarativeItem>
 
@@ -48,7 +53,7 @@ class SK_GUI_EXPORT WDeclarativeMouseEvent : public QObject
     Q_PROPERTY(bool wasHeld READ wasHeld)
 
 public:
-    /* virtual */ WDeclarativeMouseEvent(QMouseEvent::Type type, const QPointF & position,
+    /* virtual */ WDeclarativeMouseEvent(QMouseEvent::Type type, const QPoint & position,
                                          Qt::MouseButton button, Qt::MouseButtons buttons,
                                          Qt::KeyboardModifiers modifiers,
                                          bool isClick = false, bool wasHeld = false);
@@ -78,8 +83,6 @@ private:
 
 private:
     Q_DISABLE_COPY(WDeclarativeMouseEvent)
-
-    friend class WDeclarativeMouseArea;
 };
 
 //-------------------------------------------------------------------------------------------------
