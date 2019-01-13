@@ -12,7 +12,8 @@ external="../3rdparty"
 Qt4_version="4.8.7"
 Qt5_version="5.12.0"
 
-MinGW_version="7.3.0"
+MinGW_version_32="5.3.0"
+MinGW_version_64="7.3.0"
 
 VLC_version="3.0.5"
 
@@ -45,10 +46,11 @@ Boost_version_linux="1.65.1"
 #--------------------------------------------------------------------------------------------------
 
 if [ $# != 2 ] || [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] || [ $2 != "win32" -a \
-                                                                       $2 != "osx"   -a \
+                                                                       $2 != "win64" -a \
+                                                                       $2 != "macOS" -a \
                                                                        $2 != "linux" ]; then
 
-    echo "Usage: deploy <qt4 | qt5 | clean> <win32 | osx | linux>"
+    echo "Usage: deploy <qt4 | qt5 | clean> <win32 | win64 | osx | linux>"
 
     exit 1
 fi
@@ -57,7 +59,23 @@ fi
 # Configuration
 #--------------------------------------------------------------------------------------------------
 
-if [ $2 = "linux" ]; then
+if [ $2 = "win32" ]; then
+
+    windows=true
+
+    external="$external/$2"
+
+    MinGW="$external/MinGW/$MinGW_version_32/bin"
+
+elif [ $2 = "win64" ]; then
+
+    windows=true
+
+    external="$external/$2"
+
+    MinGW="$external/MinGW/$MinGW_version_64/bin"
+
+elif [ $2 = "linux" ]; then
 
     if [ -d "${lib64}" ]; then
 
@@ -85,8 +103,6 @@ if [ $1 = "qt4" ]; then
 else
     Qt="$external/Qt/$Qt5_version"
 fi
-
-MinGW="$external/MinGW/$MinGW_version/bin"
 
 SSL="$external/OpenSSL"
 
@@ -126,9 +142,9 @@ if [ $1 = "qt4" ]; then
 
     mkdir deploy/imageformats
 
-    if [ $2 = "win32" ]; then
+    if [ $windows = true ]; then
 
-        cp "$MinGW"/libgcc_s_seh-1.dll  deploy
+        cp "$MinGW"/libgcc_s_dw2-1.dll  deploy
         cp "$MinGW"/libstdc++-6.dll     deploy
         cp "$MinGW"/libwinpthread-1.dll deploy
 
@@ -177,7 +193,7 @@ else
     mkdir deploy/imageformats
     mkdir deploy/QtQuick.2
 
-    if [ $2 = "win32" ]; then
+    if [ $windows = true ]; then
 
         cp "$MinGW"/libgcc_s_seh-1.dll  deploy
         cp "$MinGW"/libstdc++-6.dll     deploy
@@ -254,7 +270,7 @@ fi
 
 echo "COPYING SSL"
 
-if [ $2 = "win32" ]; then
+if [ $windows = true ]; then
 
     cp "$SSL"/libeay32.dll deploy
     cp "$SSL"/ssleay32.dll deploy
@@ -271,7 +287,7 @@ fi
 
 echo "COPYING VLC"
 
-if [ $2 = "win32" ]; then
+if [ $windows = true ]; then
 
     mkdir deploy/plugins
 
@@ -318,9 +334,13 @@ fi
 # libtorrent
 #--------------------------------------------------------------------------------------------------
 
-if [ $2 = "linux" ]; then
+echo "COPYING libtorrent"
 
-    echo "COPYING libtorrent"
+if [ $windows = true ]; then
+
+    cp "$libtorrent"/libtorrent.dll deploy
+
+elif [ $2 = "linux" ]; then
 
     cp "$libtorrent"/libtorrent*.so* deploy
 fi
@@ -342,7 +362,7 @@ fi
 
 echo "COPYING Sky"
 
-if [ $2 = "win32" ]; then
+if [ $windows = true ]; then
 
     cp "$bin"/SkCore.dll    deploy
     cp "$bin"/SkGui.dll     deploy
@@ -351,7 +371,7 @@ if [ $2 = "win32" ]; then
     cp "$bin"/SkTorrent.dll deploy
     cp "$bin"/SkBackend.dll deploy
 
-elif [ $2 = "osx" ]; then
+elif [ $2 = "macOS" ]; then
 
     cp "$bin"/libSkCore.dylib    deploy
     cp "$bin"/libSkGui.dylib     deploy

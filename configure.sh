@@ -16,7 +16,7 @@ VLC_version="3.0.5"
 
 libtorrent_version="1.1.11"
 
-Boost_version="1.55.0"
+Boost_version="1.69.0"
 
 #--------------------------------------------------------------------------------------------------
 
@@ -36,10 +36,11 @@ Qt5_version_linux="5.9.5"
 #--------------------------------------------------------------------------------------------------
 
 if [ $# != 2 ] || [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] || [ $2 != "win32" -a \
-                                                                       $2 != "osx"   -a \
+                                                                       $2 != "win64" -a \
+                                                                       $2 != "macOS" -a \
                                                                        $2 != "linux" ]; then
 
-    echo "Usage: configure <qt4 | qt5 | clean> <win32 | osx | linux>"
+    echo "Usage: configure <qt4 | qt5 | clean> <win32 | win64 | osx | linux>"
 
     exit 1
 fi
@@ -48,7 +49,13 @@ fi
 # Configuration
 #--------------------------------------------------------------------------------------------------
 
-if [ $2 = "linux" ]; then
+if [ $2 = "win32" ] || [ $2 = "win64" ]; then
+
+    windows=true
+
+    external="$external/$2"
+
+elif [ $2 = "linux" ]; then
 
     if [ $1 = "qt5" ]; then
 
@@ -145,7 +152,7 @@ elif [ $1 = "qt5" ]; then
     mkdir -p include/Qt5/QtQml/private
     mkdir -p include/Qt5/QtQuick/private
 
-    if [ $2 = "win32" ]; then
+    if [ $windows = true ]; then
 
         cp -r "$Qt5"/include/QtCore  include/Qt5
         cp -r "$Qt5"/include/QtGui   include/Qt5
@@ -173,7 +180,7 @@ elif [ $1 = "qt5" ]; then
         mv include/Qt5/QtQml/$Qt5_version/QtQml/private/*     include/Qt5/QtQml/private
         mv include/Qt5/QtQuick/$Qt5_version/QtQuick/private/* include/Qt5/QtQuick/private
 
-    elif [ $2 = "osx" ]; then
+    elif [ $2 = "macOS" ]; then
 
         Qt5=/usr/local/opt/qt\@5.5
     fi
@@ -183,7 +190,7 @@ fi
 # VLC
 #--------------------------------------------------------------------------------------------------
 
-if [ $2 = "win32" ]; then
+if [ $windows = true ]; then
 
     echo "COPYING VLC"
 
@@ -191,7 +198,7 @@ if [ $2 = "win32" ]; then
 
     cp "$VLC"/sdk/lib/libvlc* lib
 
-elif [ $2 = "osx" ]; then
+elif [ $2 = "macOS" ]; then
 
     echo "COPYING VLC"
 
@@ -204,7 +211,7 @@ fi
 # libtorrent
 #--------------------------------------------------------------------------------------------------
 
-if [ $2 = "win32" ]; then
+if [ $windows = true ]; then
 
     echo "COPYING libtorrent"
 
@@ -212,7 +219,7 @@ if [ $2 = "win32" ]; then
 
     cp "$libtorrent"/libtorrent.* lib
 
-elif [ $2 = "osx" ]; then
+elif [ $2 = "macOS" ]; then
 
     echo "COPYING libtorrent"
 
@@ -225,7 +232,7 @@ fi
 # Boost
 #--------------------------------------------------------------------------------------------------
 
-if [ $2 = "win32" ]; then
+if [ $windows = true ]; then
 
     echo "COPYING Boost"
 
@@ -233,7 +240,7 @@ if [ $2 = "win32" ]; then
 
     cp "$Boost"/libboost*.* lib
 
-elif [ $2 = "osx" ]; then
+elif [ $2 = "macOS" ]; then
 
     echo "COPYING Boost"
 

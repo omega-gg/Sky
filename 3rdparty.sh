@@ -16,12 +16,13 @@ VLC_version="3.0.5"
 
 libtorrent_version="1.1.11"
 
-Boost_version="1.55.0"
+Boost_version="1.69.0"
 
 #--------------------------------------------------------------------------------------------------
 # Windows
 
 archive_win32="http://omega.gg/get/Sky/3rdparty/win32"
+archive_win64="http://omega.gg/get/Sky/3rdparty/win64"
 
 #--------------------------------------------------------------------------------------------------
 # Linux
@@ -72,10 +73,10 @@ if [ $# != 3 ] \
    || \
    [ $2 != "qt4" -a $2 != "qt5" ] \
    || \
-   [ $3 != "win32" -a $3 != "osx" -a $3 != "ubuntu" ]; then
+   [ $3 != "win32" -a $3 != "win64" -a $3 != "macOS" -a $3 != "ubuntu" ]; then
 
     echo "Usage: 3rdparty <all | install | uninstall | deploy | clean> <qt4 | qt5> "\
-"<win32 | osx | ubuntu>"
+"<win32 | win64 | osx | ubuntu>"
 
     exit 1
 fi
@@ -167,7 +168,7 @@ Boost="$external/Boost/$Boost_version"
 
 if [ $1 = "all" ] || [ $1 = "install" ]; then
 
-    if [ $3 = "osx" ]; then
+    if [ $3 = "macOS" ]; then
 
         sudo chown -R $(whoami) /usr/local
 
@@ -231,7 +232,7 @@ fi
 
 if [ $1 = "uninstall" ]; then
 
-    if [ $3 = "osx" ]; then
+    if [ $3 = "macOS" ]; then
 
         echo ""
         echo "UNINSTALLING Qt"
@@ -322,6 +323,10 @@ if [ $1 = "all" ] || [ $1 = "deploy" ]; then
     if [ $3 = "win32" ]; then
 
         echo "3rdparty archive -> $archive_win32"
+
+    elif [ $3 = "win64" ]; then
+
+        echo "3rdparty archive -> $archive_win64"
 
     elif [ $linux = true ]; then
 

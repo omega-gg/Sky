@@ -57,10 +57,10 @@ CONFIG(debug, debug|release) {
             -L$$SK/lib -lSkGui
 }
 
-win32:LIBS += -static -L$$_PRO_FILE_PWD_ -ltorrent \
-              -static -L$$_PRO_FILE_PWD_ -lboost_system \
-              -static -L$$_PRO_FILE_PWD_ -lboost_random \
-              -static -L$$_PRO_FILE_PWD_ -lboost_chrono \
+win32:LIBS += -L$$SK/lib -ltorrent \
+              -L$$SK/lib -lboost_system \
+              -L$$SK/lib -lboost_random \
+              -L$$SK/lib -lboost_chrono \
               -lmswsock -lws2_32 \
 
 unix:LIBS += -ltorrent-rasterbar \

@@ -8,13 +8,15 @@ set -e
 Sky="../.."
 
 external="/c/dev/workspace/3rdparty"
+external="/c/dev/workspace/3rdparty"
 
 #--------------------------------------------------------------------------------------------------
 
 Qt4_version="4.8.7"
 Qt5_version="5.12.0"
 
-MinGW_version="7.3.0"
+MinGW_version_32="5.3.0"
+MinGW_version_64="7.3.0"
 
 #--------------------------------------------------------------------------------------------------
 
@@ -33,11 +35,11 @@ if [ $# != 2 -a $# != 3 ] \
    || \
    [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] \
    || \
-   [ $2 != "win32" -a $2 != "osx" -a $2 != "linux" ] \
+   [ $2 != "win32" -a $2 != "win64" -a $2 != "macOS" -a $2 != "linux" ] \
    || \
    [ $# = 3 -a "$3" != "deploy" ]; then
 
-    echo "Usage: build <qt4 | qt5 | clean> <win32 | osx | linux> [deploy]"
+    echo "Usage: build <qt4 | qt5 | clean> <win32 | win64 | osx | linux> [deploy]"
 
     exit 1
 fi
@@ -46,14 +48,29 @@ fi
 # Configuration
 #--------------------------------------------------------------------------------------------------
 
+if [ $2 = "win32" ]; then
+
+    windows=true
+
+    external="$external/$2"
+
+    MinGW="$external/MinGW/$MinGW_version_32/bin"
+
+elif [ $2 = "win64" ]; then
+
+    windows=true
+
+    external="$external/$2"
+
+    MinGW="$external/MinGW/$MinGW_version_64/bin"
+fi
+
 if [ $1 = "qt4" ]; then
 
     Qt="$external/Qt/$Qt4_version"
 else
     Qt="$external/Qt/$Qt5_version"
 fi
-
-MinGW="$external/MinGW/$MinGW_version/bin"
 
 #--------------------------------------------------------------------------------------------------
 # Clean
@@ -90,13 +107,13 @@ else
     build="build/qt5"
 fi
 
-if [ $2 = "win32" ]; then
+if [ $windows = true ]; then
 
     spec=win32-g++
 
     PATH="$Qt/bin:$MinGW:$PATH"
 
-elif [ $2 = "osx" ]; then
+elif [ $2 = "macOS" ]; then
 
     spec=macx-g++
 
@@ -122,7 +139,7 @@ cd $build
 qmake -r -spec $spec "CONFIG += release" $Sky
 echo ""
 
-if [ $2 = "win32" ]; then
+if [ $windows = true ]; then
 
     mingw32-make $make_arguments
 else
