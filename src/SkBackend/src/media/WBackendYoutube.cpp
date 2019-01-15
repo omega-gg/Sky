@@ -1093,6 +1093,9 @@ WBackendNetFolder WBackendYoutube::extractFolder(const QByteArray       & data,
 
             QString cover = d->extractPlaylistCover(string, index);
 
+            // FIXME Youtube
+            cover.replace("http://", "https://");
+
             index = string.indexOf("class=\"yt-lockup-title", index);
 
             QString source = WControllerNetwork::extractAttributeUtf8(string, "href", index);

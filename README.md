@@ -39,7 +39,7 @@ Recommended:
 
 You can install third party libraries with:
 
-    sh 3rdparty.sh <all | install | uninstall | deploy | clean> <qt4 | qt5> <win32 | win64 | osx | ubuntu>
+    sh 3rdparty.sh <all | install | uninstall | deploy | clean> <qt4 | qt5> <win32 | win64 | macOS | ubuntu>
 
 - Edit [3rdparty.sh](3rdparty.sh) to check your dependencies.
 
@@ -50,7 +50,7 @@ On Windows:
 
 You can configure Sky with:
 
-    sh configure.sh <qt4 | qt5 | clean> <win32 | win64 |osx | linux>
+    sh configure.sh <qt4 | qt5 | clean> <win32 | win64 | macOS | linux>
 
 - Edit [configure.sh](configure.sh) to check your dependencies.
 
@@ -62,7 +62,7 @@ You can build Sky with Qt Creator:
 
 Or the build script:
 
-    sh build.sh <qt4 | qt5 | clean> <win32 | win64 | osx | linux> [deploy]
+    sh build.sh <qt4 | qt5 | clean> <win32 | win64 | macOS | linux> [deploy]
 
 Or the console:
 
@@ -75,7 +75,7 @@ Or the console:
 
 You can deploy Sky with:
 
-    sh deploy.sh <qt4 | qt5 | clean> <win32 | win64 | osx | linux>
+    sh deploy.sh <qt4 | qt5 | clean> <win32 | win64 | macOS | linux>
 
 - Edit [deploy.sh](deploy.sh) to check your dependencies.
 
