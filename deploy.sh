@@ -184,9 +184,7 @@ if [ $1 = "qt4" ]; then
     fi
 
     bin="$bin4"
-
 else
-
     echo "COPYING Qt5"
 
     mkdir deploy/platforms
