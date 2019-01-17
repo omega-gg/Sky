@@ -541,7 +541,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 /* Q_INVOKABLE static */ bool WControllerNetwork::urlIsFile(const QString & string)
 {
-    if (string.startsWith("file:///"))
+    if (string.startsWith("file://"))
     {
          return true;
     }
@@ -572,7 +572,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
     if (name.isEmpty())
     {
-        return url.toString();
+        return WControllerNetwork::decodeUrl(url);
     }
 
     if (name.startsWith("www."))
@@ -712,7 +712,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::decodeUrl(const QString & string)
 {
-    return QUrl::fromPercentEncoding(string.toLatin1());
+    return QUrl::fromPercentEncoding(string.toUtf8());
 }
 
 //-------------------------------------------------------------------------------------------------

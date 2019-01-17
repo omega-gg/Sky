@@ -682,7 +682,7 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 {
     QString string = url.toString();
 
-    if (string.startsWith("file:///"))
+    if (string.startsWith("file://"))
     {
          return url.toLocalFile();
     }
@@ -691,7 +691,7 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 
 /* Q_INVOKABLE static */ QString WControllerFile::filePath(const QString & string)
 {
-    if (string.startsWith("file:///"))
+    if (string.startsWith("file://"))
     {
          return QUrl(string).toLocalFile();
     }

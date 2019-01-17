@@ -171,6 +171,8 @@ public: // Interface
     Q_INVOKABLE void unregisterLoaders();
 
 public: // Static functions
+    Q_INVOKABLE static QUrl generateSource(const QUrl & url);
+
     Q_INVOKABLE static QUrl createSource(const QString & backend, const QString & method,
                                          const QString & label,   const QString & q = QString());
 

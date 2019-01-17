@@ -343,7 +343,7 @@ void WControllerPlaylistData::applyFile(const QByteArray & array, const QString 
 
     QList<QString> urls;
 
-    QStringList list = Sk::slices(array, QRegExp("file:///|http://|https://"), QRegExp("\\s"));
+    QStringList list = Sk::slices(array, QRegExp("file://|http://|https://"), QRegExp("\\s"));
 
     QRegExp regExp("[\\s\\.:,;'\"\\)}\\]]");
 
@@ -660,7 +660,7 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
 
     abortQueryTrack(track);
 
-    QUrl source = generateSource(url);
+    QUrl source = WControllerPlaylist::generateSource(url);
 
     WBackendNet * backend = q->backendFromUrl(source);
 
@@ -707,7 +707,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
 
     playlist->clearTracks();
 
-    QUrl source = generateSource(url);
+    QUrl source = WControllerPlaylist::generateSource(url);
 
     WBackendNet * backend = q->backendFromUrl(source);
 
@@ -780,7 +780,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
         {
             QString extension = info.suffix().toLower();
 
-            if (q->extensionIsAscii(extension) == false)
+            if (q->extensionIsMarkup(extension) == false)
             {
                 if (q->extensionIsMedia(extension))
                 {
@@ -837,7 +837,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
     folder->clearItems();
 
-    QUrl source = generateSource(url);
+    QUrl source = WControllerPlaylist::generateSource(url);
 
     WBackendNet * backend = q->backendFromUrl(source);
 
@@ -887,7 +887,27 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
             source = WControllerFile::fileUrl(info.symLinkTarget());
         }
 
-        if (info.isDir())
+        if (info.isFile())
+        {
+            QString baseUrl = info.absolutePath();
+
+            addFolderSearch(folder, source, baseUrl);
+
+            QString extension = info.suffix().toLower();
+
+            if (q->extensionIsMarkup(extension) == false
+                &&
+                info.size() < CONTROLLERPLAYLIST_MAX_SIZE)
+            {
+                WBackendNetQuery query(source);
+
+                query.target     = WBackendNetQuery::TargetFile;
+                query.clearItems = false;
+
+                return getDataFolder(folder, query);
+            }
+        }
+        else
         {
             addFolderSearch(folder, source, info.absoluteFilePath());
 
@@ -898,25 +918,6 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
             return getDataFolder(folder, query);
         }
-        else if (info.isFile())
-        {
-            QString baseUrl = info.absolutePath();
-
-            addFolderSearch(folder, source, baseUrl);
-
-            QString extension = info.suffix().toLower();
-
-            if (q->extensionIsAscii(extension) == false)
-            {
-                WBackendNetQuery query(WControllerFile::fileUrl(baseUrl));
-
-                query.target     = WBackendNetQuery::TargetFolder;
-                query.clearItems = false;
-
-                return getDataFolder(folder, query);
-            }
-        }
-        else return false;
     }
     else if (q->urlIsMedia(source))
     {
@@ -1136,33 +1137,6 @@ void WControllerPlaylistPrivate::deleteQuery(WControllerPlaylistQuery * query)
     queries.removeOne(query);
 
     delete query;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-QUrl WControllerPlaylistPrivate::generateSource(const QUrl & url) const
-{
-    QString source = url.toString();
-
-    if (WControllerNetwork::urlIsFile(source) || WControllerNetwork::urlIsHttp(source))
-    {
-        return url;
-    }
-    else if (source.startsWith('/') || (source.length() > 1 && source.at(1) == ':'))
-    {
-        source = QDir::fromNativeSeparators(source);
-
-        if (source.endsWith(':'))
-        {
-             return WControllerFile::fileUrl(source + '/');
-        }
-        else return WControllerFile::fileUrl(source);
-    }
-    else if (url.scheme().isEmpty())
-    {
-         return WControllerNetwork::encodedUrl("http://" + source);
-    }
-    else return WControllerNetwork::encodedUrl(source);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2609,6 +2583,37 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 //-------------------------------------------------------------------------------------------------
 // Static functions
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QUrl WControllerPlaylist::generateSource(const QUrl & url)
+{
+    QString source = url.toString();
+
+    if (WControllerNetwork::urlIsFile(source) || WControllerNetwork::urlIsHttp(source))
+    {
+        return url;
+    }
+#ifdef Q_OS_WIN
+    else if (source.startsWith('/') || source.startsWith('\\')
+             ||
+             (source.length() > 1 && source.at(1) == ':'))
+#else
+    else if (source.startsWith('/') || (source.length() > 1 && source.at(1) == ':'))
+#endif
+    {
+        source = QDir::fromNativeSeparators(source);
+
+        if (source.endsWith(':'))
+        {
+             return WControllerFile::fileUrl(source + '/');
+        }
+        else return WControllerFile::fileUrl(source);
+    }
+    else if (url.scheme().isEmpty())
+    {
+         return WControllerNetwork::encodedUrl("http://" + source);
+    }
+    else return WControllerNetwork::encodedUrl(source);
+}
 
 /* Q_INVOKABLE static */ QUrl WControllerPlaylist::createSource(const QString & backend,
                                                                 const QString & method,

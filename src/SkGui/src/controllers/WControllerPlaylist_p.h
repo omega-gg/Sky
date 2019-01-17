@@ -123,8 +123,6 @@ public: // Functions
 
     //---------------------------------------------------------------------------------------------
 
-    QUrl generateSource(const QUrl & url) const;
-
     void addFolderSearch(WLibraryFolder * folder, const QUrl    & source,
                                                   const QString & title) const;
 

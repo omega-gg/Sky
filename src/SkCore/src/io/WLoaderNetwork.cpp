@@ -76,19 +76,13 @@ void WLoaderNetworkPrivate::onFinished(QNetworkReply * reply)
 
         if (error != QNetworkReply::NoError)
         {
-            if (error == QNetworkReply::ContentOperationNotPermittedError)
+            if (error == QNetworkReply::ContentOperationNotPermittedError
+                &&
+                WControllerNetwork::urlIsFile(data->url()))
             {
-                QString path = data->url().toString();
+                q->complete(reply);
 
-                if (WControllerNetwork::urlIsFile(path))
-                {
-                    if (QFileInfo(WControllerFile::filePath(path)).isDir())
-                    {
-                        q->complete(reply);
-
-                        return;
-                    }
-                }
+                return;
             }
 
             QString errorString = reply->errorString();
