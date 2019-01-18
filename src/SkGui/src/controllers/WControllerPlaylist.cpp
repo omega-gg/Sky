@@ -895,6 +895,31 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
             QString extension = info.suffix().toLower();
 
+            if (q->extensionIsMarkup(extension) == false)
+            {
+                if (q->extensionIsMedia(extension))
+                {
+                    source = WControllerNetwork::extractBaseUrl(source);
+
+                    WBackendNetQuery query(source);
+
+                    query.target     = WBackendNetQuery::TargetFolder;
+                    query.clearItems = false;
+
+                    return getDataFolder(folder, query);
+                }
+                else if (info.size() < CONTROLLERPLAYLIST_MAX_SIZE)
+                {
+                    WBackendNetQuery query(source);
+
+                    query.target     = WBackendNetQuery::TargetFile;
+                    query.clearItems = false;
+
+                    return getDataFolder(folder, query);
+                }
+                else return false;
+            }
+
             if (q->extensionIsMarkup(extension) == false
                 &&
                 info.size() < CONTROLLERPLAYLIST_MAX_SIZE)
@@ -2586,7 +2611,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
 /* Q_INVOKABLE static */ QUrl WControllerPlaylist::generateSource(const QUrl & url)
 {
-    QString source = url.toString();
+    QString source = WControllerNetwork::decodeUrl(url);
 
     if (WControllerNetwork::urlIsFile(source) || WControllerNetwork::urlIsHttp(source))
     {
