@@ -97,7 +97,7 @@ private:
     bool started;
     bool seeking;
 
-    bool skip;
+    int skip;
 
     int port;
 
@@ -248,19 +248,22 @@ void WTorrentSocket::onRead()
         &&
         length > HOOKTORRENT_METADATA && (progress + HOOKTORRENT_SIZE) < position)
     {
-        if (thread->skip)
+        if (thread->skip != -1)
         {
-            qDebug("SKIP DATA");
+            if (thread->skip == 1)
+            {
+                qDebug("SKIP DATA");
 
-            skip = HOOKTORRENT_SKIP;
+                skip = HOOKTORRENT_SKIP;
 
-            ready = false;
+                ready = false;
 
-            writeBuffer(HOOKTORRENT_SKIP_SIZE);
+                writeBuffer(HOOKTORRENT_SKIP_SIZE);
 
-            return;
+                return;
+            }
+            else thread->skip += 1;
         }
-        else thread->skip = true;
     }
 
     ready = true;
@@ -503,7 +506,12 @@ void WTorrentThread::onFile(WTorrent * torrent, const QString & fileName, qint64
     started = false;
     seeking = false;
 
-    skip = false;
+    // NOTE VLC: We get the wrong duration when skipping data on avi files.
+    if (WControllerNetwork::extractUrlExtension(fileName).toLower() == "avi")
+    {
+         skip = -1;
+    }
+    else skip = 0;
 }
 
 //-------------------------------------------------------------------------------------------------

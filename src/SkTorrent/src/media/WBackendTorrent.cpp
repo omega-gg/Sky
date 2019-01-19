@@ -38,8 +38,8 @@
 static const int BACKENDTORRENT_MAX_URLS    = 20;
 static const int BACKENDTORRENT_MAX_SOURCES =  5;
 
-static const int BACKENDTORRENT_TIMEOUT_A = 3000;
-static const int BACKENDTORRENT_TIMEOUT_B = 8000;
+static const int BACKENDTORRENT_TIMEOUT_A =  3000;
+static const int BACKENDTORRENT_TIMEOUT_B = 10000;
 
 //=================================================================================================
 // WBackendTorrentItem
