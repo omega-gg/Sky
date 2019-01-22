@@ -83,10 +83,10 @@ public: // Interface
 
     //---------------------------------------------------------------------------------------------
 
-    bool applySourceTrack(WPlaylist * playlist, WTrack * track, const QUrl & url);
+    bool applySourceTrack(WPlaylist * playlist, WTrack * track, const QString & url);
 
-    bool applySourcePlaylist(WPlaylist      * playlist, const QUrl & url);
-    bool applySourceFolder  (WLibraryFolder * folder,   const QUrl & url);
+    bool applySourcePlaylist(WPlaylist      * playlist, const QString & url);
+    bool applySourceFolder  (WLibraryFolder * folder,   const QString & url);
 
     //---------------------------------------------------------------------------------------------
 
@@ -123,17 +123,17 @@ public: // Functions
 
     //---------------------------------------------------------------------------------------------
 
-    void addFolderSearch(WLibraryFolder * folder, const QUrl    & source,
+    void addFolderSearch(WLibraryFolder * folder, const QString & source,
                                                   const QString & title) const;
 
-    bool applyUrl(WLibraryFolder * folder, WBackendNet * backend, const QUrl & url) const;
+    bool applyUrl(WLibraryFolder * folder, WBackendNet * backend, const QString & url) const;
 
-    void applyPlaylist(WLibraryFolder * folder, WBackendNet * backend, const QUrl  & url,
-                                                                       QList<QUrl> * urls) const;
+    void applyPlaylist(WLibraryFolder * folder, WBackendNet * backend, const QString & url,
+                                                                       QStringList   * urls) const;
 
     void applySources(WLibraryFolder                         * folder,
                       const QList<WControllerPlaylistSource> & sources,
-                      QList<QUrl>                            * urls) const;
+                      QStringList                            * urls) const;
 
     void applyCurrentIndex(WPlaylist * playlist) const;
 
@@ -141,7 +141,7 @@ public: // Functions
 
     void scanItems(QList<WLibraryFolderItem> * items) const;
 
-    void addToCache(const QUrl & url, const QByteArray & array) const;
+    void addToCache(const QString & url, const QByteArray & array) const;
 
     //---------------------------------------------------------------------------------------------
 

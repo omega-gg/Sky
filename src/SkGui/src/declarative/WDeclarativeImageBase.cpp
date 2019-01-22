@@ -140,7 +140,7 @@ void WDeclarativeImageBasePrivate::loadUrl()
         }
         else
         {
-            QUrl url = file->urlCache();
+            QString url = file->urlCache();
 
             clearFile();
 
@@ -189,20 +189,20 @@ void WDeclarativeImageBasePrivate::reload()
 
         loadLater = true;
     }
-    else if (urlDefault.isValid())
+    else if (urlDefault.isEmpty() == false)
     {
         if (sourceDefault == false)
         {
             pixmapDefault = QPixmap();
 
-            if (url.isValid())
+            if (url.isEmpty() == false)
             {
                 loadUrl();
             }
         }
         else loadDefault();
     }
-    else if (url.isValid())
+    else if (url.isEmpty() == false)
     {
         loadUrl();
     }
@@ -274,7 +274,7 @@ void WDeclarativeImageBasePrivate::applySourceDefault()
 
     if (sourceDefault)
     {
-        if (urlDefault.isValid() && pixmapDefault.isNull())
+        if (urlDefault.isEmpty() == false && pixmapDefault.isNull())
         {
             loadDefault();
         }
@@ -295,7 +295,7 @@ void WDeclarativeImageBasePrivate::applySourceDefault()
     {
         sourceDefault = true;
 
-        if (urlDefault.isValid() && pixmapDefault.isNull())
+        if (urlDefault.isEmpty() == false && pixmapDefault.isNull())
         {
             readDefault();
         }
@@ -408,26 +408,26 @@ WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p, Q
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WDeclarativeImageBase::loadSource(const QUrl & url, bool force)
+/* Q_INVOKABLE */ void WDeclarativeImageBase::loadSource(const QString & url, bool force)
 {
     Q_D(WDeclarativeImageBase);
 
-    if (force) d->url = QUrl();
+    if (force) d->url = QString();
 
     setSource(url);
 }
 
-/* Q_INVOKABLE */ void WDeclarativeImageBase::loadNow(const QUrl & url)
+/* Q_INVOKABLE */ void WDeclarativeImageBase::loadNow(const QString & url)
 {
     Q_D(WDeclarativeImageBase);
 
-    QUrl source;
+    QString source;
 
-    if (url.isValid())
+    if (url.isEmpty())
     {
-         source = url;
+         source = d->url;
     }
-    else source = d->url;
+    else source = url;
 
     LoadMode loadMode     = d->loadMode;
     bool     asynchronous = d->asynchronous;
@@ -486,11 +486,11 @@ WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p, Q
     WDeclarativeTexture::componentComplete();
 #endif
 
-    if (d->url.isValid())
+    if (d->url.isEmpty() == false)
     {
         load();
     }
-    else if (d->urlDefault.isValid())
+    else if (d->urlDefault.isEmpty() == false)
     {
         d->loadDefault();
     }
@@ -528,7 +528,7 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WDeclarativeImageBase::applyUrl(const QUrl & url, bool asynchronous)
+/* virtual */ void WDeclarativeImageBase::applyUrl(const QString & url, bool asynchronous)
 {
     Q_D(WDeclarativeImageBase);
 
@@ -715,7 +715,7 @@ void WDeclarativeImageBase::setPixmap(const QPixmap & pixmap)
 
     if (d->url.isEmpty() == false)
     {
-        d->url = QUrl();
+        d->url = QString();
 
         emit sourceChanged();
     }
@@ -763,12 +763,12 @@ bool WDeclarativeImageBase::isExplicitSize() const
 
 //-------------------------------------------------------------------------------------------------
 
-QUrl WDeclarativeImageBase::source() const
+QString WDeclarativeImageBase::source() const
 {
     Q_D(const WDeclarativeImageBase); return d->url;
 }
 
-void WDeclarativeImageBase::setSource(const QUrl & url)
+void WDeclarativeImageBase::setSource(const QString & url)
 {
     Q_D(WDeclarativeImageBase);
 
@@ -776,7 +776,7 @@ void WDeclarativeImageBase::setSource(const QUrl & url)
 
     d->url = url;
 
-    if (d->loadMode == LoadVisible && isVisible() == false && url.isValid())
+    if (d->loadMode == LoadVisible && isVisible() == false && url.isEmpty() == false)
     {
         d->setSourceDefault(false);
     }
@@ -788,12 +788,12 @@ void WDeclarativeImageBase::setSource(const QUrl & url)
 
 //-------------------------------------------------------------------------------------------------
 
-QUrl WDeclarativeImageBase::sourceDefault() const
+QString WDeclarativeImageBase::sourceDefault() const
 {
     Q_D(const WDeclarativeImageBase); return d->urlDefault;
 }
 
-void WDeclarativeImageBase::setSourceDefault(const QUrl & url)
+void WDeclarativeImageBase::setSourceDefault(const QString & url)
 {
     Q_D(WDeclarativeImageBase);
 
@@ -816,11 +816,11 @@ void WDeclarativeImageBase::setSourceDefault(const QUrl & url)
         }
         else if (d->sourceDefault)
         {
-            if (url.isValid())
+            if (url.isEmpty())
             {
-                d->readDefault();
+                d->pixmapDefault = QPixmap();
             }
-            else d->pixmapDefault = QPixmap();
+            else d->readDefault();
 
             pixmapChange();
 

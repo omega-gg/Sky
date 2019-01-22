@@ -52,10 +52,10 @@ struct WTabTrackDataBookmark
 
     WTrack::State state;
 
-    QUrl source;
+    QString source;
 
     QString title;
-    QUrl    cover;
+    QString cover;
 
     QString author;
     QString feed;
@@ -66,8 +66,9 @@ struct WTabTrackDataBookmark
 
     WAbstractBackend::Quality quality;
 
-    QUrl videoShot;
-    int  currentTime;
+    QString videoShot;
+
+    int currentTime;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -103,7 +104,7 @@ public: // Functions
 
     void setTrack(const WTrack * track);
 
-    void setVideoShot(WBookmarkTrack * bookmark, const QUrl & url);
+    void setVideoShot(WBookmarkTrack * bookmark, const QString & url);
 
     void saveState();
 

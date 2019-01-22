@@ -59,7 +59,7 @@ public: // Functions
 
     void setTab(WTabTrack * tab);
 
-    void loadSource(const QUrl & source, int duration, int currentTime);
+    void loadSource(const QString & source, int duration, int currentTime);
 
     void stop();
 
@@ -111,7 +111,7 @@ public: // Variables
     WTabsTrack * tabs;
     WTabTrack  * tab;
 
-    QUrl source;
+    QString source;
 
     WAbstractBackend::State state;
 

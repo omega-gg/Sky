@@ -27,6 +27,10 @@
     We mean it.
 */
 
+// Qt includes
+#include <QUrl>
+
+// Private includes
 #include <private/Sk_p>
 
 #ifndef SK_NO_CONTROLLERAPPLICATION

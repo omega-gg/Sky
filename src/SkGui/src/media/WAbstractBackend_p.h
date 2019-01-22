@@ -48,7 +48,7 @@ public: // Variable
 
     WBackendFilter * filter;
 
-    QUrl source;
+    QString source;
 
     WAbstractBackend::State     state;
     WAbstractBackend::StateLoad stateLoad;

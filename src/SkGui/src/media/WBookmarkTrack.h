@@ -81,10 +81,10 @@ public: // Properties
 
     WTrack::State state() const;
 
-    QUrl source() const;
+    QString source() const;
 
     QString title() const;
-    QUrl    cover() const;
+    QString cover() const;
 
     QString author() const;
     QString feed  () const;
@@ -95,8 +95,9 @@ public: // Properties
 
     WAbstractBackend::Quality quality() const;
 
-    QUrl videoShot  () const;
-    int  currentTime() const;
+    QString videoShot() const;
+
+    int currentTime() const;
 
 private:
     W_DECLARE_PRIVATE_COPY(WBookmarkTrack)

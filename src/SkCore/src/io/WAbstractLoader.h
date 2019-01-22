@@ -27,7 +27,6 @@
 
 // Forward declarations
 class QIODevice;
-class QUrl;
 class WAbstractLoaderPrivate;
 class WRemoteData;
 
@@ -54,7 +53,7 @@ protected: // Virtual functions
 protected: // Functions
     WRemoteData * getData(QIODevice * reply) const;
 
-    void redirect(QIODevice * reply, const QUrl & url);
+    void redirect(QIODevice * reply, const QString & url);
     void complete(QIODevice * reply);
 
     void setError(WRemoteData * data, const QString & error);

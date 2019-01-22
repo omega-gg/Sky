@@ -66,10 +66,10 @@ public: // Interface
     void clear();
 
 public: // QNetworkCookieJar reimplementation
-    /* virtual */ QList<QNetworkCookie> cookiesForUrl(const QUrl & url) const;
+    /* virtual */ QList<QNetworkCookie> cookiesForUrl(const QString & url) const;
 
     /* virtual */ bool setCookiesFromUrl(const QList<QNetworkCookie> & cookies,
-                                         const QUrl                  & url);
+                                         const QString               & url);
 
 protected: // Events
     /* virtual */ void timerEvent(QTimerEvent * event);

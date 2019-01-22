@@ -35,7 +35,7 @@ public: // Enums
     enum State { Default, Loading, Loaded };
 
 public:
-    explicit WTrack(const QUrl & source = QUrl(), State state = Loaded);
+    explicit WTrack(const QString & source = QString(), State state = Loaded);
 
 public: // Interface
     bool isValid() const;
@@ -63,14 +63,14 @@ public: // Properties
     bool isLoading() const;
     bool isLoaded () const;
 
-    QUrl source() const;
-    void setSource(const QUrl & url);
+    QString source() const;
+    void    setSource(const QString & url);
 
     QString title() const;
     void    setTitle(const QString & title);
 
-    QUrl cover() const;
-    void setCover(const QUrl & cover);
+    QString cover() const;
+    void    setCover(const QString & cover);
 
     QString author() const;
     void    setAuthor(const QString & author);

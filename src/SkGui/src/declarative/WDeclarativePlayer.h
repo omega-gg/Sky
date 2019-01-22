@@ -46,7 +46,7 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
     Q_PROPERTY(WAbstractBackend * backend READ backend WRITE setBackend NOTIFY backendChanged)
     Q_PROPERTY(WAbstractHook    * hook    READ hook    WRITE setHook    NOTIFY hookChanged)
 
-    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
 
     Q_PROPERTY(WPlaylist * playlist READ playlist WRITE setPlaylist NOTIFY playlistChanged)
 
@@ -106,7 +106,7 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
     Q_PROPERTY(bool trackIsLoaded  READ trackIsLoaded  NOTIFY currentTrackUpdated)
 
     Q_PROPERTY(QString trackTitle READ trackTitle NOTIFY currentTrackUpdated)
-    Q_PROPERTY(QUrl    trackCover READ trackCover NOTIFY currentTrackUpdated)
+    Q_PROPERTY(QString trackCover READ trackCover NOTIFY currentTrackUpdated)
 
     Q_PROPERTY(int trackCurrentTime READ trackCurrentTime NOTIFY currentTrackUpdated)
     Q_PROPERTY(int trackDuration    READ trackDuration    NOTIFY currentTrackUpdated)
@@ -242,8 +242,8 @@ public: // Properties
     WAbstractHook * hook() const;
     void            setHook(WAbstractHook * hook);
 
-    QUrl source() const;
-    void setSource(const QUrl & url);
+    QString source() const;
+    void    setSource(const QString & url);
 
     WPlaylist * playlist() const;
     void        setPlaylist(WPlaylist * playlist);
@@ -307,7 +307,7 @@ public: // Properties
     bool trackIsLoaded () const;
 
     QString trackTitle() const;
-    QUrl    trackCover() const;
+    QString trackCover() const;
 
     int trackCurrentTime() const;
     int trackDuration   () const;

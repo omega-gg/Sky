@@ -156,7 +156,7 @@ void WBookmarkTrackPrivate::setTrack(const WTrack & track)
 
     quality = track.quality();
 
-    videoShot = QUrl();
+    videoShot = QString();
 
     currentTime = -1;
 }
@@ -482,7 +482,9 @@ bool WBookmarkTrack::isLoaded() const
 
 bool WBookmarkTrack::isValid() const
 {
-    Q_D(const WBookmarkTrack); return d->source.isValid();
+    Q_D(const WBookmarkTrack);
+
+    return (d->source.isEmpty() == false);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -563,7 +565,7 @@ WTrack::State WBookmarkTrack::state() const
 
 //-------------------------------------------------------------------------------------------------
 
-QUrl WBookmarkTrack::source() const
+QString WBookmarkTrack::source() const
 {
     Q_D(const WBookmarkTrack); return d->source;
 }
@@ -575,7 +577,7 @@ QString WBookmarkTrack::title() const
     Q_D(const WBookmarkTrack); return d->title;
 }
 
-QUrl WBookmarkTrack::cover() const
+QString WBookmarkTrack::cover() const
 {
     Q_D(const WBookmarkTrack); return d->cover;
 }
@@ -615,7 +617,7 @@ int WBookmarkTrack::duration() const
 
 //-------------------------------------------------------------------------------------------------
 
-QUrl WBookmarkTrack::videoShot() const
+QString WBookmarkTrack::videoShot() const
 {
     Q_D(const WBookmarkTrack); return d->videoShot;
 }

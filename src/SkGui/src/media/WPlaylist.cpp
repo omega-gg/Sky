@@ -79,7 +79,7 @@ struct WThreadActionDataTrack
 
     WTrack::State state;
 
-    QUrl source;
+    QString source;
 
     QString title;
     QString cover;
@@ -121,10 +121,10 @@ public: // Variables
     QString name;
     QString version;
 
-    QUrl source;
+    QString source;
 
     QString title;
-    QUrl    cover;
+    QString cover;
 
     QString label;
 
@@ -202,10 +202,10 @@ public: // Variables
 
     stream.writeStartElement("playlist");
 
-    stream.writeTextElement("source", source.toString());
+    stream.writeTextElement("source", source);
 
     stream.writeTextElement("title", title);
-    stream.writeTextElement("cover", cover.toString());
+    stream.writeTextElement("cover", cover);
 
     stream.writeTextElement("label", label);
 
@@ -224,7 +224,7 @@ public: // Variables
 
         stream.writeTextElement("state", QString::number(data.state));
 
-        stream.writeTextElement("source", data.source.toString());
+        stream.writeTextElement("source", data.source);
 
         stream.writeTextElement("title", data.title);
         stream.writeTextElement("cover", data.cover);
@@ -313,10 +313,10 @@ protected: // WAbstractThreadReply reimplementation
 public: // Variables
     WPlaylistPrivate * data;
 
-    QUrl source;
+    QString source;
 
     QString title;
-    QUrl    cover;
+    QString cover;
 
     QString label;
 
@@ -392,7 +392,7 @@ bool WPlaylistRead::loadPlaylist(QXmlStreamReader * stream, WPlaylistReadReply *
 
     if (WControllerXml::readNextStartElement(stream, "source") == false) return false;
 
-    reply->source = WControllerXml::readNextUrl(stream);
+    reply->source = WControllerXml::readNextString(stream);
 
     //---------------------------------------------------------------------------------------------
     // title
@@ -466,7 +466,7 @@ bool WPlaylistRead::loadTracks(QXmlStreamReader * stream, WPlaylistReadReply * r
 
         if (WControllerXml::readNextStartElement(stream, "source") == false) return false;
 
-        p->source = WControllerXml::readNextUrl(stream);
+        p->source = WControllerXml::readNextString(stream);
 
         //-----------------------------------------------------------------------------------------
         // title
@@ -574,10 +574,10 @@ bool WPlaylistRead::loadTracks(QXmlStreamReader * stream, WPlaylistReadReply * r
     }
     else
     {
-        q->loadSource(QUrl(), false);
+        q->loadSource(QString(), false);
 
         q->setTitle(QString());
-        q->setCover(QUrl   ());
+        q->setCover(QString());
 
         q->setLabel(QString());
 
@@ -711,14 +711,14 @@ bool WPlaylistPrivate::loadTrack(int index)
 
     if (state == WTrack::Loaded)
     {
-        if (track->cover().isValid() == false)
+        if (track->cover().isEmpty())
         {
             loadCover(track);
         }
     }
     else if (state == WTrack::Default
              &&
-             (track->cover().isValid() || loadCover(track) == false))
+             (track->cover().isEmpty() == false || loadCover(track) == false))
     {
         track->setState(WTrack::Loaded);
 
@@ -1002,18 +1002,18 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ int WPlaylist::addSource(const QUrl & url)
+/* Q_INVOKABLE */ int WPlaylist::addSource(const QString & url)
 {
     return insertSource(count(), url);
 }
 
-/* Q_INVOKABLE */ int WPlaylist::insertSource(int index, const QUrl & url)
+/* Q_INVOKABLE */ int WPlaylist::insertSource(int index, const QString & url)
 {
     Q_D(WPlaylist);
 
     QList<WTrack> tracks;
 
-    QStringList urls = url.toString().split('\n', QString::SkipEmptyParts);
+    QStringList urls = url.split('\n', QString::SkipEmptyParts);
 
     foreach (const QString & source, urls)
     {
@@ -1204,9 +1204,9 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
     foreach (const WTrack & track, d->tracks)
     {
-        QUrl cover = track.d_func()->cover;
+        QString cover = track.d_func()->cover;
 
-        if (cover.isValid())
+        if (cover.isEmpty() == false)
         {
             setCover(cover);
 
@@ -1580,7 +1580,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     return -1;
 }
 
-/* Q_INVOKABLE */ int WPlaylist::indexFromSource(const QUrl & source) const
+/* Q_INVOKABLE */ int WPlaylist::indexFromSource(const QString & source) const
 {
     Q_D(const WPlaylist);
 
@@ -1602,7 +1602,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     Q_D(const WPlaylist); return d->tracks.contains(track);
 }
 
-/* Q_INVOKABLE */ bool WPlaylist::containsSource(const QUrl & source) const
+/* Q_INVOKABLE */ bool WPlaylist::containsSource(const QString & source) const
 {
     Q_D(const WPlaylist);
 
@@ -1783,7 +1783,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ QUrl WPlaylist::trackSource(int index) const
+/* Q_INVOKABLE */ QString WPlaylist::trackSource(int index) const
 {
     const WTrack * track = trackPointerAt(index);
 
@@ -1791,10 +1791,10 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     {
          return track->source();
     }
-    else return QUrl();
+    else return QString();
 }
 
-/* Q_INVOKABLE */ void WPlaylist::setTrackSource(int index, const QUrl & source)
+/* Q_INVOKABLE */ void WPlaylist::setTrackSource(int index, const QString & source)
 {
     Q_D(WPlaylist);
 
@@ -1835,7 +1835,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ QUrl WPlaylist::trackCover(int index) const
+/* Q_INVOKABLE */ QString WPlaylist::trackCover(int index) const
 {
     const WTrack * track = trackPointerAt(index);
 
@@ -1843,10 +1843,10 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     {
          return track->cover();
     }
-    else return QUrl();
+    else return QString();
 }
 
-/* Q_INVOKABLE */ void WPlaylist::setTrackCover(int index, const QUrl & cover)
+/* Q_INVOKABLE */ void WPlaylist::setTrackCover(int index, const QString & cover)
 {
     Q_D(WPlaylist);
 
@@ -2204,7 +2204,7 @@ void WPlaylist::endTracksRemove() const
         data.source = p->source;
 
         data.title = p->title;
-        data.cover = p->cover.toString();
+        data.cover = p->cover;
 
         data.author = p->author;
         data.feed   = p->feed;
@@ -2236,7 +2236,7 @@ void WPlaylist::endTracksRemove() const
 // Protected WLibraryItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ bool WPlaylist::applySource(const QUrl & source)
+/* virtual */ bool WPlaylist::applySource(const QString & source)
 {
     return wControllerPlaylist->d_func()->applySourcePlaylist(this, source);
 }
@@ -2522,7 +2522,7 @@ QString WPlaylist::selectedSources() const
 
     foreach (const WTrack * track, d->selectedTracks)
     {
-        sources.append(track->source().toString() + '\n');
+        sources.append(track->source() + '\n');
     }
 
     return sources;
@@ -2561,7 +2561,7 @@ QString WPlaylist::currentTitle() const
     else return QString();
 }
 
-QUrl WPlaylist::currentCover() const
+QString WPlaylist::currentCover() const
 {
     const WTrack * track = currentTrackPointer();
 
@@ -2569,7 +2569,7 @@ QUrl WPlaylist::currentCover() const
     {
          return track->cover();
     }
-    else return QUrl();
+    else return QString();
 }
 
 int WPlaylist::currentDuration() const

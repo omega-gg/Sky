@@ -76,7 +76,8 @@ public: // Functions
     QStringList getListClear(const QString & data) const;
 
 public: // Variables
-    QList<QString>          shows;
+    QStringList shows;
+
     QHash<QString, QString> hash;
 
 protected:
@@ -150,7 +151,7 @@ void WBackendTmdbPrivate::applyQuery(WBackendNetQuery * query, const QString & l
             url.setQuery(urlQuery);
 #endif
 
-            query->url = url;
+            query->url = url.toString();
 
             query->id = 1;
 
@@ -196,7 +197,7 @@ void WBackendTmdbPrivate::applyQuery(WBackendNetQuery * query, const QString & l
                 url.setQuery(urlQuery);
 #endif
 
-                query->url = url;
+                query->url = url.toString();
 
                 query->id = 3;
             }
@@ -249,7 +250,7 @@ void WBackendTmdbPrivate::applyQuery(WBackendNetQuery * query, const QString & l
     url.setQuery(urlQuery);
 #endif
 
-    query->url = url;
+    query->url = url.toString();
 
     query->data = title;
 }
@@ -487,7 +488,7 @@ WBackendTmdb::WBackendTmdb() : WBackendNet(new WBackendTmdbPrivate(this))
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendTmdb::checkValidUrl(const QUrl & url) const
+/* Q_INVOKABLE virtual */ bool WBackendTmdb::checkValidUrl(const QString & url) const
 {
     QString source = WControllerNetwork::removeUrlPrefix(url);
 
@@ -635,7 +636,7 @@ WBackendNetTrack WBackendTmdb::extractTrack(const QByteArray       & data,
     {
         Q_D(WBackendTmdb);
 
-        QString source = track.nextQuery.url.toString();
+        QString source = track.nextQuery.url;
 
         if (source.isEmpty()) return;
 

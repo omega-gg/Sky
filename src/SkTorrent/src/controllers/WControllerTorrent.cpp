@@ -40,7 +40,7 @@ static const int CONTROLLERTORRENT_PORT = 8000;
 //=================================================================================================
 // Private
 
-WTorrent::WTorrent(const QUrl & url, int index, Mode mode, QObject * parent) : QObject(parent)
+WTorrent::WTorrent(const QString & url, int index, Mode mode, QObject * parent) : QObject(parent)
 {
     _url   = url;
     _index = index;
@@ -171,7 +171,7 @@ WTorrent::WTorrent(const QUrl & url, int index, Mode mode, QObject * parent) : Q
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-QUrl WTorrent::url() const
+QString WTorrent::url() const
 {
     return _url;
 }
@@ -315,7 +315,7 @@ WTorrent * WTorrentReply::torrent() const
 //=================================================================================================
 // Private
 
-WMagnet::WMagnet(const QUrl & url, QObject * parent) : QObject(parent)
+WMagnet::WMagnet(const QString & url, QObject * parent) : QObject(parent)
 {
     _url = url;
 }
@@ -364,7 +364,7 @@ WMagnet::WMagnet(const QUrl & url, QObject * parent) : QObject(parent)
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-QUrl WMagnet::url() const
+QString WMagnet::url() const
 {
     return _url;
 }
@@ -457,8 +457,8 @@ void WControllerTorrentPrivate::init(const QString & path, qint64 sizeMax)
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WControllerTorrentPrivate::loadTorrent(WTorrentReply * reply, const QUrl     & url,
-                                                                   WTorrent::Mode   mode)
+void WControllerTorrentPrivate::loadTorrent(WTorrentReply * reply,
+                                            const QString & url, WTorrent::Mode mode)
 {
     if (mode == WTorrent::Default)
     {
@@ -497,13 +497,11 @@ void WControllerTorrentPrivate::loadTorrent(WTorrentReply * reply, const QUrl   
 
     QString source = WControllerNetwork::removeUrlFragment(url);
 
-    QUrl baseUrl = WControllerNetwork::encodedUrl(source);
-
-    QUrl fileUrl = wControllerFile->getFileUrl(source);
+    QString fileUrl = wControllerFile->getFileUrl(source);
 
     WRemoteData * data;
 
-    if (fileUrl.isValid() == false)
+    if (fileUrl.isEmpty())
     {
         WAbstractLoader * loader;
 
@@ -513,14 +511,14 @@ void WControllerTorrentPrivate::loadTorrent(WTorrentReply * reply, const QUrl   
         }
         else loader = loaders.value(WBackendNetQuery::TypeDefault);
 
-        data = wControllerDownload->getData(loader, baseUrl, q, QNetworkRequest::HighPriority);
+        data = wControllerDownload->getData(loader, source, q, QNetworkRequest::HighPriority);
     }
     else data = wControllerDownload->getData(WControllerFile::fileUrl(fileUrl), q,
                                              QNetworkRequest::HighPriority);
 
     QObject::connect(data, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoaded(WRemoteData *)));
 
-    WTorrent * torrent = new WTorrent(baseUrl, extractIndex(url), mode, q);
+    WTorrent * torrent = new WTorrent(source, extractIndex(url), mode, q);
 
     reply->_torrent = torrent;
 
@@ -531,7 +529,7 @@ void WControllerTorrentPrivate::loadTorrent(WTorrentReply * reply, const QUrl   
     jobs.insert(data, torrent);
 }
 
-void WControllerTorrentPrivate::loadMagnet(WMagnetReply * reply, const QUrl & url)
+void WControllerTorrentPrivate::loadMagnet(WMagnetReply * reply, const QString & url)
 {
     QHashIterator<WRemoteData *, WMagnet *> i(jobsMagnets);
 
@@ -573,9 +571,15 @@ void WControllerTorrentPrivate::loadMagnet(WMagnetReply * reply, const QUrl & ur
 
     magnets.append(magnet);
 
-    QUrl fileUrl = wControllerFile->getFileUrl(url);
+    QString fileUrl = wControllerFile->getFileUrl(url);
 
-    if (fileUrl.isValid())
+    if (fileUrl.isEmpty())
+    {
+        magnet->_cache = false;
+
+        engine->loadMagnet(magnet);
+    }
+    else
     {
         magnet->_cache = true;
 
@@ -586,12 +590,6 @@ void WControllerTorrentPrivate::loadMagnet(WMagnetReply * reply, const QUrl & ur
                          q,    SLOT(onMagnetLoaded(WRemoteData *)));
 
         jobsMagnets.insert(data, magnet);
-    }
-    else
-    {
-        magnet->_cache = false;
-
-        engine->loadMagnet(magnet);
     }
 }
 
@@ -649,9 +647,9 @@ void WControllerTorrentPrivate::removeMagnet(WMagnet * magnet, WMagnetReply * re
 
 //-------------------------------------------------------------------------------------------------
 
-int WControllerTorrentPrivate::extractIndex(const QUrl & url) const
+int WControllerTorrentPrivate::extractIndex(const QString & url) const
 {
-    QString fragment = url.fragment();
+    QString fragment = QUrl(url).fragment();
 
     if (fragment.isEmpty()) return -1;
 
@@ -773,7 +771,7 @@ void WControllerTorrentPrivate::onLoaded(WRemoteData * data)
     if (data->hasError() || data->reply()->size() == 0)
     {
         qWarning("WControllerTorrentPrivate::onLoaded: Failed to load torrent %s.",
-                 data->url().C_URL);
+                 data->url().C_STR);
 
         torrent->_error = data->error();
 
@@ -794,7 +792,7 @@ void WControllerTorrentPrivate::onMagnetLoaded(WRemoteData * data)
     if (data->hasError())
     {
         qWarning("WControllerTorrentPrivate::onMagnetLoaded: Failed to load magnet %s.",
-                 data->url().C_URL);
+                 data->url().C_STR);
 
         magnet->_error = data->error();
 
@@ -818,7 +816,7 @@ WControllerTorrent::WControllerTorrent() : WController(new WControllerTorrentPri
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ WTorrentReply * WControllerTorrent::getTorrent(const QUrl     & url,
+/* Q_INVOKABLE */ WTorrentReply * WControllerTorrent::getTorrent(const QString  & url,
                                                                  QObject        * parent,
                                                                  WTorrent::Mode   mode)
 {
@@ -834,7 +832,8 @@ WControllerTorrent::WControllerTorrent() : WController(new WControllerTorrentPri
     return reply;
 }
 
-/* Q_INVOKABLE */ WMagnetReply * WControllerTorrent::getMagnet(const QUrl & url, QObject * parent)
+/* Q_INVOKABLE */ WMagnetReply * WControllerTorrent::getMagnet(const QString & url,
+                                                               QObject       * parent)
 {
     Q_D(WControllerTorrent);
 
@@ -850,7 +849,7 @@ WControllerTorrent::WControllerTorrent() : WController(new WControllerTorrentPri
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WControllerTorrent::clearSource(const QUrl & url)
+/* Q_INVOKABLE */ void WControllerTorrent::clearSource(const QString & url)
 {
     Q_D(WControllerTorrent);
 

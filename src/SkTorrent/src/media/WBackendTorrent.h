@@ -37,19 +37,19 @@ public: // WBackendNet implementation
     /* Q_INVOKABLE virtual */ QString getTitle() const;
 
 public: // WBackendNet reimplementation
-    /* Q_INVOKABLE virtual */ bool checkValidUrl(const QUrl & url) const;
+    /* Q_INVOKABLE virtual */ bool checkValidUrl(const QString & url) const;
 
     /* Q_INVOKABLE virtual */ QList<WLibraryFolderItem> getLibraryItems() const;
 
-    /* Q_INVOKABLE virtual */ WAbstractBackend::Output getTrackOutput(const QUrl & url) const;
+    /* Q_INVOKABLE virtual */ WAbstractBackend::Output getTrackOutput(const QString & url) const;
 
-    /* Q_INVOKABLE virtual */ WBackendNetPlaylistInfo getPlaylistInfo(const QUrl & url) const;
+    /* Q_INVOKABLE virtual */ WBackendNetPlaylistInfo getPlaylistInfo(const QString & url) const;
 
-    /* Q_INVOKABLE virtual */ QUrl getUrlPlaylist(const WBackendNetPlaylistInfo & info) const;
+    /* Q_INVOKABLE virtual */ QString getUrlPlaylist(const WBackendNetPlaylistInfo & info) const;
 
     //---------------------------------------------------------------------------------------------
 
-    /* Q_INVOKABLE virtual */ WBackendNetQuery getQueryPlaylist(const QUrl & url) const;
+    /* Q_INVOKABLE virtual */ WBackendNetQuery getQueryPlaylist(const QString & url) const;
 
     //---------------------------------------------------------------------------------------------
 

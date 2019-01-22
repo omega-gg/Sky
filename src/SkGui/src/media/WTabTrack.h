@@ -72,10 +72,10 @@ class SK_GUI_EXPORT WTabTrack : public WAbstractTab
 
     Q_PROPERTY(int state READ state NOTIFY currentBookmarkUpdated)
 
-    Q_PROPERTY(QUrl source READ source NOTIFY currentBookmarkUpdated)
+    Q_PROPERTY(QString source READ source NOTIFY currentBookmarkUpdated)
 
     Q_PROPERTY(QString title READ title NOTIFY currentBookmarkUpdated)
-    Q_PROPERTY(QUrl    cover READ cover NOTIFY currentBookmarkUpdated)
+    Q_PROPERTY(QString cover READ cover NOTIFY currentBookmarkUpdated)
 
     Q_PROPERTY(QString author READ author NOTIFY currentBookmarkUpdated)
     Q_PROPERTY(QString feed   READ feed   NOTIFY currentBookmarkUpdated)
@@ -86,8 +86,8 @@ class SK_GUI_EXPORT WTabTrack : public WAbstractTab
 
     Q_PROPERTY(WAbstractBackend::Quality quality READ quality NOTIFY currentBookmarkUpdated)
 
-    Q_PROPERTY(QUrl videoShot READ videoShot NOTIFY currentBookmarkUpdated)
-    Q_PROPERTY(QUrl coverShot READ coverShot NOTIFY currentBookmarkUpdated)
+    Q_PROPERTY(QString videoShot READ videoShot NOTIFY currentBookmarkUpdated)
+    Q_PROPERTY(QString coverShot READ coverShot NOTIFY currentBookmarkUpdated)
 
     Q_PROPERTY(int currentTime READ currentTime WRITE setCurrentTime NOTIFY currentBookmarkUpdated)
 
@@ -180,10 +180,10 @@ public: // Properties
 
     WTrack::State state() const;
 
-    QUrl source() const;
+    QString source() const;
 
     QString title() const;
-    QUrl    cover() const;
+    QString cover() const;
 
     QString author() const;
     QString feed  () const;
@@ -195,8 +195,8 @@ public: // Properties
 
     WAbstractBackend::Quality quality() const;
 
-    QUrl videoShot() const;
-    QUrl coverShot() const;
+    QString videoShot() const;
+    QString coverShot() const;
 
     int  currentTime() const;
     void setCurrentTime(int msec);

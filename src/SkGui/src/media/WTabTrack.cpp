@@ -176,10 +176,10 @@ public: // Variables
 
         stream.writeTextElement("state", QString::number(data.state));
 
-        stream.writeTextElement("source", data.source.toString());
+        stream.writeTextElement("source", data.source);
 
         stream.writeTextElement("title", data.title);
-        stream.writeTextElement("cover", data.cover.toString());
+        stream.writeTextElement("cover", data.cover);
 
         stream.writeTextElement("author", data.author);
         stream.writeTextElement("feed",   data.feed);
@@ -190,7 +190,8 @@ public: // Variables
 
         stream.writeTextElement("quality", QString::number(data.quality));
 
-        stream.writeTextElement("videoShot",   data.videoShot.toString());
+        stream.writeTextElement("videoShot", data.videoShot);
+
         stream.writeTextElement("currentTime", QString::number(data.currentTime));
 
         stream.writeEndElement(); // bookmark
@@ -425,7 +426,7 @@ bool WTabTrackRead::load(QXmlStreamReader * stream, WTabTrackReadReply * reply)
 
         if (WControllerXml::readNextStartElement(stream, "source") == false) return false;
 
-        data.source = WControllerXml::readNextUrl(stream);
+        data.source = WControllerXml::readNextString(stream);
 
         //-----------------------------------------------------------------------------------------
         // title
@@ -658,7 +659,7 @@ void WTabTrackPrivate::removeBookmark(int index)
 {
     WBookmarkTrack * bookmark = &(bookmarks[index]);
 
-    QString videoShot = bookmark->videoShot().toString();
+    QString videoShot = bookmark->videoShot();
 
     if (videoShot.isEmpty() == false && videoShot.startsWith("image:///") == false)
     {
@@ -863,7 +864,7 @@ void WTabTrackPrivate::setTrack(const WTrack * track)
 
 //-------------------------------------------------------------------------------------------------
 
-void WTabTrackPrivate::setVideoShot(WBookmarkTrack * bookmark, const QUrl & url)
+void WTabTrackPrivate::setVideoShot(WBookmarkTrack * bookmark, const QString & url)
 {
     WBookmarkTrackPrivate * p = bookmark->d_func();
 
@@ -1389,7 +1390,7 @@ void WTabTrackPrivate::onPlaylistDestroyed()
 
         data.quality = p->quality;
 
-        QString videoShot = p->videoShot.toString();
+        QString videoShot = p->videoShot;
 
         videoShot.replace("image:///", "file:///");
 
@@ -1746,7 +1747,7 @@ WTrack::State WTabTrack::state() const
 
 //-------------------------------------------------------------------------------------------------
 
-QUrl WTabTrack::source() const
+QString WTabTrack::source() const
 {
     Q_D(const WTabTrack);
 
@@ -1754,7 +1755,7 @@ QUrl WTabTrack::source() const
     {
          return d->currentBookmark->source();
     }
-    else return QUrl();
+    else return QString();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1770,7 +1771,7 @@ QString WTabTrack::title() const
     else return QString();
 }
 
-QUrl WTabTrack::cover() const
+QString WTabTrack::cover() const
 {
     Q_D(const WTabTrack);
 
@@ -1778,7 +1779,7 @@ QUrl WTabTrack::cover() const
     {
          return d->currentBookmark->cover();
     }
-    else return QUrl();
+    else return QString();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1872,7 +1873,7 @@ WAbstractBackend::Quality WTabTrack::quality() const
 
 //-------------------------------------------------------------------------------------------------
 
-QUrl WTabTrack::videoShot() const
+QString WTabTrack::videoShot() const
 {
     Q_D(const WTabTrack);
 
@@ -1880,16 +1881,16 @@ QUrl WTabTrack::videoShot() const
     {
          return d->currentBookmark->videoShot();
     }
-    else return QUrl();
+    else return QString();
 }
 
-QUrl WTabTrack::coverShot() const
+QString WTabTrack::coverShot() const
 {
     Q_D(const WTabTrack);
 
     if (d->currentBookmark == NULL)
     {
-        return QUrl();
+        return QString();
     }
     else if (d->currentBookmark->currentTime() != -1)
     {
@@ -1925,7 +1926,7 @@ void WTabTrack::setCurrentTime(int msec)
 
     if (msec == -1)
     {
-        p->videoShot = QUrl();
+        p->videoShot = QString();
     }
 
     emit currentBookmarkUpdated();

@@ -121,14 +121,21 @@ QNetworkReply * WRemoteData::networkReply() const
 
 //-------------------------------------------------------------------------------------------------
 
-QUrl WRemoteData::urlBase() const
+QString WRemoteData::urlBase() const
 {
     return _urlBase;
 }
 
-QUrl WRemoteData::url() const
+QString WRemoteData::url() const
 {
     return _url;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QString WRemoteData::host() const
+{
+    return _host;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -275,9 +282,8 @@ void WControllerDownloadPrivate::processJobs()
 
     foreach (WRemoteData * data, jobsPending)
     {
-        QUrl url = data->_url;
-
-        QString host = url.host();
+        QString url  = data->_url;
+        QString host = data->_host;
 
         if (checkJobs(host, data->_maxHost))
         {
@@ -285,7 +291,7 @@ void WControllerDownloadPrivate::processJobs()
 
             if (delay)
             {
-                qDebug("Delayed %s %d", url.C_URL, delay);
+                qDebug("Delayed %s %d", url.C_STR, delay);
 
                 if (interval == 0 || delay < interval)
                 {
@@ -294,7 +300,7 @@ void WControllerDownloadPrivate::processJobs()
 
                 continue;
             }
-            else qDebug("Get %s", url.C_URL);
+            else qDebug("Get %s", url.C_STR);
 
             jobsPending.removeOne(data);
 
@@ -327,7 +333,7 @@ bool WControllerDownloadPrivate::checkJobs(const QString & host, int maxHost) co
 
     foreach (WRemoteData * data, jobs)
     {
-        if (data->_url.host() == host) count++;
+        if (data->_host == host) count++;
     }
 
     if (count < maxHost)
@@ -425,7 +431,7 @@ WControllerDownload::WControllerDownload() : WController(new WControllerDownload
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ WRemoteData * WControllerDownload::getData(WAbstractLoader           * loader,
-                                                             const QUrl                & url,
+                                                             const QString             & url,
                                                              QObject                   * parent,
                                                              QNetworkRequest::Priority   priority,
                                                              bool                        redirect,
@@ -452,6 +458,8 @@ WControllerDownload::WControllerDownload() : WController(new WControllerDownload
 
     data->_urlBase = url;
     data->_url     = url;
+
+    data->_host = QUrl(url).host();
 
     data->_priority = priority;
 
@@ -484,7 +492,7 @@ WControllerDownload::WControllerDownload() : WController(new WControllerDownload
     return data;
 }
 
-/* Q_INVOKABLE */ WRemoteData * WControllerDownload::getData(const QUrl                & url,
+/* Q_INVOKABLE */ WRemoteData * WControllerDownload::getData(const QString             & url,
                                                              QObject                   * parent,
                                                              QNetworkRequest::Priority   priority,
                                                              bool                        redirect,

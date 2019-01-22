@@ -71,7 +71,7 @@ public: // Functions
 
     void loadUrl();
 
-    void applyUrl(const QUrl & url);
+    void applyUrl(const QString & url);
 
     void clearUrl(WDeclarativeImageSvg::Status status);
 
@@ -101,7 +101,7 @@ public: // Variables
 
     WDeclarativeImageSvg::Status status;
 
-    QUrl url;
+    QString url;
 
     QSize size;
 

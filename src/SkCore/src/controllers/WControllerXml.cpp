@@ -37,8 +37,8 @@ W_INIT_CONTROLLER(WControllerXml)
 
 struct XmlQueryJob
 {
-    int  id;
-    QUrl query;
+    int     id;
+    QString query;
 };
 
 class WControllerXmlQuery : public QObject
@@ -51,7 +51,7 @@ public:
     /* virtual */ ~WControllerXmlQuery();
 
 public: // Functions
-    int doQuery(const QUrl & query);
+    int doQuery(const QString & query);
 
     void abort(int id);
 
@@ -97,7 +97,7 @@ private: // Variables
 // Functions
 //-------------------------------------------------------------------------------------------------
 
-int WControllerXmlQuery::doQuery(const QUrl & query)
+int WControllerXmlQuery::doQuery(const QString & query)
 {
     XmlQueryJob job;
 
@@ -232,7 +232,7 @@ void WControllerXml::createQueryThread()
             this,        SIGNAL(queryCompleted(int, QString)));
 }
 
-int WControllerXml::doQuery(const QUrl & query)
+int WControllerXml::doQuery(const QString & query)
 {
     Q_D(WControllerXml);
 

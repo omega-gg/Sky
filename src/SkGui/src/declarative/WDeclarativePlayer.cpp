@@ -231,7 +231,7 @@ void WDeclarativePlayerPrivate::setTab(WTabTrack * tab)
 
 //-------------------------------------------------------------------------------------------------
 
-void WDeclarativePlayerPrivate::loadSource(const QUrl & source, int duration, int currentTime)
+void WDeclarativePlayerPrivate::loadSource(const QString & source, int duration, int currentTime)
 {
     Q_Q(WDeclarativePlayer);
 
@@ -555,11 +555,11 @@ void WDeclarativePlayerPrivate::onCurrentBookmarkChanged()
     {
         loadSource(bookmark->source(), bookmark->duration(), bookmark->currentTime());
     }
-    else if (backend && backendInterface->source().isValid())
+    else if (backend && backendInterface->source().isEmpty() == false)
     {
         Q_Q(WDeclarativePlayer);
 
-        backendInterface->loadSource(QUrl());
+        backendInterface->loadSource(QString());
 
         emit q->sourceChanged();
     }
@@ -1226,7 +1226,7 @@ void WDeclarativePlayer::setHook(WAbstractHook * hook)
 
 //-------------------------------------------------------------------------------------------------
 
-QUrl WDeclarativePlayer::source() const
+QString WDeclarativePlayer::source() const
 {
     Q_D(const WDeclarativePlayer);
 
@@ -1237,7 +1237,7 @@ QUrl WDeclarativePlayer::source() const
     else return d->source;
 }
 
-void WDeclarativePlayer::setSource(const QUrl & url)
+void WDeclarativePlayer::setSource(const QString & url)
 {
     Q_D(WDeclarativePlayer);
 
@@ -1738,7 +1738,7 @@ QString WDeclarativePlayer::trackTitle() const
     else return QString();
 }
 
-QUrl WDeclarativePlayer::trackCover() const
+QString WDeclarativePlayer::trackCover() const
 {
     Q_D(const WDeclarativePlayer);
 
@@ -1750,7 +1750,7 @@ QUrl WDeclarativePlayer::trackCover() const
     {
         return d->playlist->currentCover();
     }
-    else return QUrl();
+    else return QString();
 }
 
 //-------------------------------------------------------------------------------------------------

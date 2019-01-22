@@ -62,14 +62,14 @@ public: // Enums
     };
 
 private:
-    WTorrent(const QUrl & url, int index, Mode mode, QObject * parent);
+    WTorrent(const QString & url, int index, Mode mode, QObject * parent);
 
 protected: // Events
     /* virtual */ bool event(QEvent * event);
 
 public: // Properties
-    QUrl url  () const;
-    int  index() const;
+    QString url  () const;
+    int     index() const;
 
     Mode mode() const;
 
@@ -101,8 +101,8 @@ public: // Properties
 private: // Variables
     QList<WTorrentReply *> _replies;
 
-    QUrl _url;
-    int  _index;
+    QString _url;
+    int     _index;
 
     Mode _mode;
 
@@ -173,7 +173,7 @@ class SK_TORRENT_EXPORT WMagnet : public QObject
     Q_OBJECT
 
 private:
-    WMagnet(const QUrl & url, QObject * parent);
+    WMagnet(const QString & url, QObject * parent);
 
 protected: // Events
     /* virtual */ bool event(QEvent * event);
@@ -182,7 +182,7 @@ signals:
     void loaded(WMagnet * reply);
 
 public: // Properties
-    QUrl url() const;
+    QString url() const;
 
     QByteArray data() const;
 
@@ -193,7 +193,7 @@ public: // Properties
 private: // Variables
     QList<WMagnetReply *> _replies;
 
-    QUrl _url;
+    QString _url;
 
     QByteArray _data;
 
@@ -388,13 +388,13 @@ private:
     WControllerTorrent();
 
 public: // Interface
-    Q_INVOKABLE WTorrentReply * getTorrent(const QUrl     & url,
+    Q_INVOKABLE WTorrentReply * getTorrent(const QString  & url,
                                            QObject        * parent = NULL,
                                            WTorrent::Mode   mode   = WTorrent::Default);
 
-    Q_INVOKABLE WMagnetReply * getMagnet(const QUrl & url, QObject * parent = NULL);
+    Q_INVOKABLE WMagnetReply * getMagnet(const QString & url, QObject * parent = NULL);
 
-    Q_INVOKABLE void clearSource(const QUrl & url);
+    Q_INVOKABLE void clearSource(const QString & url);
 
     Q_INVOKABLE void clearTorrents();
 

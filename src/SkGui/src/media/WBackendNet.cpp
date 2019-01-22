@@ -41,12 +41,12 @@
 // WBackendNetQuery
 //=================================================================================================
 
-/* explicit */ WBackendNetQuery::WBackendNetQuery(const QUrl & url)
+/* explicit */ WBackendNetQuery::WBackendNetQuery(const QString & url)
 {
     init(WBackendNetQuery::TypeDefault, url);
 }
 
-WBackendNetQuery::WBackendNetQuery(Type type, const QUrl & url)
+WBackendNetQuery::WBackendNetQuery(Type type, const QString & url)
 {
     init(type, url);
 }
@@ -57,14 +57,14 @@ WBackendNetQuery::WBackendNetQuery(Type type, const QUrl & url)
 
 bool WBackendNetQuery::isValid() const
 {
-    return url.isValid();
+    return (url.isEmpty() == false);
 }
 
 //-------------------------------------------------------------------------------------------------
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WBackendNetQuery::init(Type type, const QUrl & url)
+void WBackendNetQuery::init(Type type, const QString & url)
 {
     this->type = type;
     this->url  = url;
@@ -327,30 +327,30 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ WLibraryItem::Type WBackendNet::getPlaylistType(const QUrl & url) const
+/* Q_INVOKABLE */ WLibraryItem::Type WBackendNet::getPlaylistType(const QString & url) const
 {
     return getPlaylistInfo(url).type;
 }
 
-/* Q_INVOKABLE */ QString WBackendNet::getPlaylistId(const QUrl & url) const
+/* Q_INVOKABLE */ QString WBackendNet::getPlaylistId(const QString & url) const
 {
     return getPlaylistInfo(url).id;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ QUrl WBackendNet::getSourceTrack(const QUrl & url) const
+/* Q_INVOKABLE */ QString WBackendNet::getSourceTrack(const QString & url) const
 {
     QString id = getTrackId(url);
 
     if (id.isEmpty())
     {
-         return QUrl();
+         return QString();
     }
     else return getUrlTrack(id);
 }
 
-/* Q_INVOKABLE */ QUrl WBackendNet::getSourcePlaylist(const QUrl & url) const
+/* Q_INVOKABLE */ QString WBackendNet::getSourcePlaylist(const QString & url) const
 {
     WBackendNetPlaylistInfo info = getPlaylistInfo(url);
 
@@ -358,22 +358,24 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
     {
          return getUrlPlaylist(info);
     }
-    else return QUrl();
+    else return QString();
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ bool WBackendNet::checkQuery(const QUrl & source) const
+/* Q_INVOKABLE */ bool WBackendNet::checkQuery(const QString & url) const
 {
-    if (source.host() == sk->applicationUrl().host())
+    if (QUrl(url).host() == sk->applicationUrl().host())
     {
          return true;
     }
     else return false;
 }
 
-/* Q_INVOKABLE */ WBackendNetQuery WBackendNet::extractQuery(const QUrl & source) const
-{
+/* Q_INVOKABLE */ WBackendNetQuery WBackendNet::extractQuery(const QString & url) const
+{    
+    QUrl source(url);
+
 #ifdef QT_4
     QString method = source.queryItemValue("method");
     QString label  = source.queryItemValue("label");
@@ -483,7 +485,7 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendNet::checkValidUrl(const QUrl &) const
+/* Q_INVOKABLE virtual */ bool WBackendNet::checkValidUrl(const QString &) const
 {
     return false;
 }
@@ -509,19 +511,21 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ QString WBackendNet::getTrackId(const QUrl &) const
+/* Q_INVOKABLE virtual */ QString WBackendNet::getTrackId(const QString &) const
 {
     return QString();
 }
 
-/* Q_INVOKABLE virtual */ WAbstractBackend::Output WBackendNet::getTrackOutput(const QUrl &) const
+/* Q_INVOKABLE virtual */
+WAbstractBackend::Output WBackendNet::getTrackOutput(const QString &) const
 {
     return WAbstractBackend::OutputMedia;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ WBackendNetPlaylistInfo WBackendNet::getPlaylistInfo(const QUrl &) const
+/* Q_INVOKABLE virtual */
+WBackendNetPlaylistInfo WBackendNet::getPlaylistInfo(const QString &) const
 {
     return WBackendNetPlaylistInfo();
 }
@@ -529,37 +533,37 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-QUrl WBackendNet::getUrlTrack(const QString &) const
+QString WBackendNet::getUrlTrack(const QString &) const
 {
     qWarning("WBackendNet::getUrlTrack: Not supported.");
 
-    return QUrl();
+    return QString();
 }
 
 /* Q_INVOKABLE virtual */
-QUrl WBackendNet::getUrlPlaylist(const WBackendNetPlaylistInfo &) const
+QString WBackendNet::getUrlPlaylist(const WBackendNetPlaylistInfo &) const
 {
     qWarning("WBackendNet::getUrlPlaylist: Not supported.");
 
-    return QUrl();
+    return QString();
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-WBackendNetQuery WBackendNet::getQuerySource(const QUrl &) const
+WBackendNetQuery WBackendNet::getQuerySource(const QString &) const
 {
     return WBackendNetQuery();
 }
 
 /* Q_INVOKABLE virtual */
-WBackendNetQuery WBackendNet::getQueryTrack(const QUrl &) const
+WBackendNetQuery WBackendNet::getQueryTrack(const QString &) const
 {
     return WBackendNetQuery();
 }
 
 /* Q_INVOKABLE virtual */
-WBackendNetQuery WBackendNet::getQueryPlaylist(const QUrl &) const
+WBackendNetQuery WBackendNet::getQueryPlaylist(const QString &) const
 {
     return WBackendNetQuery();
 }

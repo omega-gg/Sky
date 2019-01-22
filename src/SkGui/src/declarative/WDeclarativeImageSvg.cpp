@@ -126,7 +126,7 @@ void WDeclarativeImageSvgPrivate::loadVisible()
 
     loadLater = false;
 
-    if (url.isValid()) loadUrl();
+    if (url.isEmpty() == false) loadUrl();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -172,7 +172,7 @@ void WDeclarativeImageSvgPrivate::loadUrl()
         }
         else
         {
-            QUrl url = file->urlCache();
+            QString url = file->urlCache();
 
             clearFile();
 
@@ -184,7 +184,7 @@ void WDeclarativeImageSvgPrivate::loadUrl()
 
 //-------------------------------------------------------------------------------------------------
 
-void WDeclarativeImageSvgPrivate::applyUrl(const QUrl & url)
+void WDeclarativeImageSvgPrivate::applyUrl(const QString & url)
 {
     Q_Q(WDeclarativeImageSvg);
 
@@ -379,7 +379,7 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
     WDeclarativeTexture::componentComplete();
 #endif
 
-    if (d->url.isValid())
+    if (d->url.isEmpty() == false)
     {
         d->load();
     }
@@ -601,12 +601,12 @@ bool WDeclarativeImageSvg::isReady() const
 
 //-------------------------------------------------------------------------------------------------
 
-QUrl WDeclarativeImageSvg::source() const
+QString WDeclarativeImageSvg::source() const
 {
     Q_D(const WDeclarativeImageSvg); return d->url;
 }
 
-void WDeclarativeImageSvg::setSource(const QUrl & url)
+void WDeclarativeImageSvg::setSource(const QString & url)
 {
     Q_D(WDeclarativeImageSvg);
 

@@ -68,7 +68,7 @@ public: // Interface
 
 #ifdef QT_4
 protected:
-    QVariant loadResource(int type, const QUrl &name);
+    QVariant loadResource(int type, const QString & name);
 
 private slots:
     void requestFinished();
@@ -78,14 +78,14 @@ private:
     int outstanding;
 
 #ifdef QT_4
-    QHash<QUrl, QDeclarativePixmap *> resources;
+    QHash<QString, QDeclarativePixmap *> resources;
 
-    static QSet<QUrl> errors;
+    static QSet<QString> errors;
 #endif
 };
 
 #ifdef QT_4
-QSet<QUrl> WTextDocumentWithImageResources::errors;
+QSet<QString> WTextDocumentWithImageResources::errors;
 #endif
 
 //=================================================================================================
@@ -261,15 +261,15 @@ void WTextDocumentWithImageResources::setText(const QString &text)
 // Protected functions
 //-------------------------------------------------------------------------------------------------
 
-QVariant WTextDocumentWithImageResources::loadResource(int type, const QUrl & name)
+QVariant WTextDocumentWithImageResources::loadResource(int type, const QString & name)
 {
     QDeclarativeContext * context = qmlContext(parent());
 
-    QUrl url = context->resolvedUrl(name);
+    QString url = context->resolvedUrl(name);
 
     if (type == QTextDocument::ImageResource)
     {
-        QHash<QUrl, QDeclarativePixmap *>::Iterator iter = resources.find(url);
+        QHash<QString, QDeclarativePixmap *>::Iterator iter = resources.find(url);
 
         if (iter == resources.end())
         {

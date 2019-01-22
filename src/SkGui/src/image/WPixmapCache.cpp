@@ -315,7 +315,7 @@ public: // Interface
 public slots:
     void updateCache();
 
-    void onFilesRemoved(const QList<QUrl> & paths, const QList<QUrl> & pathsCache);
+    void onFilesRemoved(const QStringList & paths, const QStringList & pathsCache);
     void onFilesCleared();
 
 public: // Properties
@@ -541,18 +541,17 @@ void WPixmapCacheStore::updateCache()
 
     if (cache == NULL) return;
 
-    // FIXME Qt5 Windows: QUrl converts drive letters to lowercase.
-    path = QUrl(cache->path()).toString();
+    path = cache->path();
 
-    connect(cache, SIGNAL(filesRemoved(const QList<QUrl> &, const QList<QUrl> &)),
-            this,  SLOT(onFilesRemoved(const QList<QUrl> &, const QList<QUrl> &)));
+    connect(cache, SIGNAL(filesRemoved(const QStringList &, const QStringList &)),
+            this,  SLOT(onFilesRemoved(const QStringList &, const QStringList &)));
 
     connect(cache, SIGNAL(filesCleared()), this, SLOT(onFilesCleared()));
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void WPixmapCacheStore::onFilesRemoved(const QList<QUrl> &, const QList<QUrl> & pathsCache)
+void WPixmapCacheStore::onFilesRemoved(const QStringList &, const QStringList & pathsCache)
 {
     QMutableHashIterator<WPixmapCacheKey, WPixmapCacheData *> i(pixmaps);
 
@@ -588,8 +587,7 @@ void WPixmapCacheStore::onFilesCleared()
 
         WPixmapCacheData * data = i.value();
 
-        // FIXME Qt5 Windows: QUrl converts drive letters to lowercase.
-        QString path = QUrl(data->path).toString();
+        QString path = data->path;
 
         if (path.startsWith(this->path))
         {

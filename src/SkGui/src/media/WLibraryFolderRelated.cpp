@@ -63,13 +63,11 @@ void WLibraryFolderRelatedPrivate::init()
 {
     Q_D(WLibraryFolderRelated);
 
-    QUrl trackSource = track.source();
+    QString trackSource = track.source();
 
-    QString label = trackSource.toString();
+    if (trackSource.isEmpty()) return;
 
-    if (label.isEmpty()) return;
-
-    if (d->currentItem && d->currentItem->label() == label)
+    if (d->currentItem && d->currentItem->label() == trackSource)
     {
         d->currentItem->reloadQuery();
 
@@ -85,7 +83,7 @@ void WLibraryFolderRelatedPrivate::init()
 
     WBackendNet * backend = wControllerPlaylist->backendFromUrl(trackSource);
 
-    QUrl source;
+    QString source;
 
     if (backend != NULL)
     {
@@ -93,7 +91,7 @@ void WLibraryFolderRelatedPrivate::init()
 
         if (id.isEmpty())
         {
-            id = trackSource.toString();
+            id = trackSource;
         }
 
         source = WControllerPlaylist::createSource(backend->id(), "related", "tracks", id);
@@ -117,7 +115,7 @@ void WLibraryFolderRelatedPrivate::init()
 
     WPlaylist * playlist = new WPlaylist;
 
-    playlist->setLabel(label);
+    playlist->setLabel(trackSource);
 
     playlist->setTitle(track.title());
     playlist->setCover(track.cover());
@@ -138,7 +136,7 @@ void WLibraryFolderRelatedPrivate::init()
 
 /* Q_INVOKABLE */ void WLibraryFolderRelated::loadTracks(const QVariantMap & data)
 {
-    WTrack track(WControllerNetwork::encodedUrl(data.value("source").toString()));
+    WTrack track(data.value("source").toString());
 
     WTrack::State state = static_cast<WTrack::State> (data.value("state").toInt());
 

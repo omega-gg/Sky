@@ -1036,7 +1036,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ void WControllerNetwork::appendUrls(QList<QUrl>   * list,
+/* Q_INVOKABLE static */ void WControllerNetwork::appendUrls(QStringList   * list,
                                                              const QString & text,
                                                              const QString & tag,
                                                              const QString & attribute,
@@ -1067,9 +1067,9 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
         if (indexA != -1 && indexA < indexB)
         {
-            QUrl url = extractUrlAt(text, baseUrl, indexA + length);
+            QString url = extractUrlAt(text, baseUrl, indexA + length);
 
-            if (url.isValid() && list->contains(url) == false)
+            if (url.isEmpty() == false && list->contains(url) == false)
             {
                 list->append(url);
             }
@@ -1079,22 +1079,22 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     }
 }
 
-/* Q_INVOKABLE static */ QList<QUrl> WControllerNetwork::extractUrls(const QString & text,
+/* Q_INVOKABLE static */ QStringList WControllerNetwork::extractUrls(const QString & text,
                                                                      const QString & tag,
                                                                      const QString & attribute,
                                                                      const QString & baseUrl,
                                                                      const QString & pattern)
 {
-    QList<QUrl> urls;
+    QStringList urls;
 
     appendUrls(&urls, text, tag, attribute, baseUrl, pattern);
 
     return urls;
 }
 
-/* Q_INVOKABLE static */ QUrl WControllerNetwork::extractUrlAt(const QString & text,
-                                                               const QString & baseUrl,
-                                                               int             index)
+/* Q_INVOKABLE static */ QString WControllerNetwork::extractUrlAt(const QString & text,
+                                                                  const QString & baseUrl,
+                                                                  int             index)
 {
     QString url;
 
@@ -1108,8 +1108,8 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ QUrl WControllerNetwork::getUrlRedirect(const QUrl & origin,
-                                                                 const QUrl & redirect)
+/* Q_INVOKABLE static */ QString WControllerNetwork::getUrlRedirect(const QUrl & origin,
+                                                                    const QUrl & redirect)
 {
     QString source;
 
@@ -1140,7 +1140,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
     uint time = QDateTime::currentDateTime().toTime_t();
 
-    QUrl source = url;
+    QUrl source(url);
 
 #ifdef QT_4
     source.addQueryItem("oauth_consumer_key", key);

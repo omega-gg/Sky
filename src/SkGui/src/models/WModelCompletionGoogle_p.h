@@ -42,7 +42,7 @@ public: // Variables
     QUrl    url;
     QString query;
 
-    QList<QString> listCompletion;
+    QStringList listCompletion;
 
     WRemoteData * data;
 

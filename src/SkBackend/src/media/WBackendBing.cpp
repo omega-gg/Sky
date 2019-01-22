@@ -47,7 +47,7 @@ public:
     void init();
 
 public: // Functions
-    QUrl getUrl(const QString & q) const;
+    QString getUrl(const QString & q) const;
 
 protected:
     W_DECLARE_PUBLIC(WBackendBing)
@@ -63,7 +63,7 @@ void WBackendBingPrivate::init() {}
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-QUrl WBackendBingPrivate::getUrl(const QString & q) const
+QString WBackendBingPrivate::getUrl(const QString & q) const
 {
     QUrl url("http://www.bing.com/images/search");
 
@@ -75,7 +75,7 @@ QUrl WBackendBingPrivate::getUrl(const QString & q) const
 
     if (search.length() < 10 || search.count('+') < 3)
     {
-        return QUrl();
+        return QString();
     }
 
 #ifdef QT_4
@@ -92,7 +92,7 @@ QUrl WBackendBingPrivate::getUrl(const QString & q) const
     url.setQuery(query);
 #endif
 
-    return url;
+    return url.toString();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -122,7 +122,7 @@ WBackendBing::WBackendBing() : WBackendNet(new WBackendBingPrivate(this))
 // WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendBing::checkValidUrl(const QUrl & url) const
+/* Q_INVOKABLE virtual */ bool WBackendBing::checkValidUrl(const QString & url) const
 {
     QString source = WControllerNetwork::removeUrlPrefix(url);
 

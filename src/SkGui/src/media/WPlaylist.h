@@ -102,7 +102,7 @@ class SK_GUI_EXPORT WPlaylist : public WLibraryItem
     Q_PROPERTY(qreal scrollValue READ scrollValue WRITE setScrollValue NOTIFY scrollValueChanged)
 
     Q_PROPERTY(QString currentTitle    READ currentTitle    NOTIFY currentTrackChanged)
-    Q_PROPERTY(QUrl    currentCover    READ currentCover    NOTIFY currentTrackChanged)
+    Q_PROPERTY(QString currentCover    READ currentCover    NOTIFY currentTrackChanged)
     Q_PROPERTY(int     currentDuration READ currentDuration NOTIFY currentTrackChanged)
 
 public:
@@ -117,9 +117,9 @@ public: // Interface
     Q_INVOKABLE void insertTrack (int index, const WTrack        & track);
     Q_INVOKABLE void insertTracks(int index, const QList<WTrack> & tracks);
 
-    Q_INVOKABLE int addSource(const QUrl & url);
+    Q_INVOKABLE int addSource(const QString & url);
 
-    Q_INVOKABLE int insertSource(int index, const QUrl & url);
+    Q_INVOKABLE int insertSource(int index, const QString & url);
 
     Q_INVOKABLE void moveTrack(int from, int to);
 
@@ -178,11 +178,11 @@ public: // Interface
 
     Q_INVOKABLE int indexFromId(int id) const;
 
-    Q_INVOKABLE int indexFromSource(const QUrl & source) const;
+    Q_INVOKABLE int indexFromSource(const QString & source) const;
 
     Q_INVOKABLE bool contains(const WTrack & track) const;
 
-    Q_INVOKABLE bool containsSource(const QUrl & source) const;
+    Q_INVOKABLE bool containsSource(const QString & source) const;
 
     //---------------------------------------------------------------------------------------------
 
@@ -210,14 +210,14 @@ public: // Interface
     Q_INVOKABLE bool trackIsLoading(int index) const;
     Q_INVOKABLE bool trackIsLoaded (int index) const;
 
-    Q_INVOKABLE QUrl trackSource   (int index) const;
-    Q_INVOKABLE void setTrackSource(int index, const QUrl & source);
+    Q_INVOKABLE QString trackSource   (int index) const;
+    Q_INVOKABLE void    setTrackSource(int index, const QString & source);
 
     Q_INVOKABLE QString trackTitle   (int index) const;
     Q_INVOKABLE void    setTrackTitle(int index, const QString & title);
 
-    Q_INVOKABLE QUrl trackCover   (int index) const;
-    Q_INVOKABLE void setTrackCover(int index, const QUrl & cover);
+    Q_INVOKABLE QString trackCover   (int index) const;
+    Q_INVOKABLE void    setTrackCover(int index, const QString & cover);
 
     Q_INVOKABLE QString trackAuthor   (int index) const;
     Q_INVOKABLE void    setTrackAuthor(int index, const QString & author);
@@ -280,7 +280,7 @@ protected: // WLocalObject reimplementation
     /* virtual */ WAbstractThreadAction * onLoad(const QString & path);
 
 protected: // WLibraryItem reimplementation
-    /* virtual */ bool applySource(const QUrl             & source);
+    /* virtual */ bool applySource(const QString          & source);
     /* virtual */ bool applyQuery (const WBackendNetQuery & query);
 
     /* virtual */ bool stopQuery();
@@ -357,7 +357,7 @@ public: // Properties
     void  setScrollValue(qreal value);
 
     QString currentTitle   () const;
-    QUrl    currentCover   () const;
+    QString currentCover   () const;
     int     currentDuration() const;
 
 private:

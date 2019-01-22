@@ -151,17 +151,17 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ bool WLibraryItem::loadSource(const QUrl & source, bool load)
+/* Q_INVOKABLE */ bool WLibraryItem::loadSource(const QString & source, bool load)
 {
     Q_D(WLibraryItem);
 
-    if (d->source.toString() == source.toString()) return false;
+    if (d->source == source) return false;
 
     if (load && source.isEmpty() == false)
     {
         if (applySource(source) == false)
         {
-            qWarning("WLibraryItem::loadSource: Failed to apply source %s.", source.C_URL);
+            qWarning("WLibraryItem::loadSource: Failed to apply source %s.", source.C_STR);
 
             return false;
         }
@@ -183,7 +183,7 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
 
 /* Q_INVOKABLE */ void WLibraryItem::clearSource()
 {
-    loadSource(QUrl(), false);
+    loadSource(QString(), false);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -196,7 +196,7 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
     {
         if (applySource(d->source) == false)
         {
-            qWarning("WLibraryItem::loadQuery: Failed to load source %s.", d->source.C_URL);
+            qWarning("WLibraryItem::loadQuery: Failed to load source %s.", d->source.C_STR);
 
             d->setStateQuery(WLocalObject::Loaded);
 
@@ -215,7 +215,7 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
 
     if (applySource(d->source) == false)
     {
-        qWarning("WLibraryItem::reloadQuery: Failed to reload source %s.", d->source.C_URL);
+        qWarning("WLibraryItem::reloadQuery: Failed to reload source %s.", d->source.C_STR);
 
         d->setStateQuery(WLocalObject::Loaded);
 
@@ -295,7 +295,7 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
 // Protected virtual functions
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ bool WLibraryItem::applySource(const QUrl &)
+/* virtual */ bool WLibraryItem::applySource(const QString &)
 {
     qWarning("WLibraryItem::applySource: Not supported.");
 
@@ -532,12 +532,12 @@ bool WLibraryItem::queryIsLoaded() const
 
 //-------------------------------------------------------------------------------------------------
 
-QUrl WLibraryItem::source() const
+QString WLibraryItem::source() const
 {
     Q_D(const WLibraryItem); return d->source;
 }
 
-void WLibraryItem::setSource(const QUrl & source)
+void WLibraryItem::setSource(const QString & source)
 {
     loadSource(source);
 }
@@ -581,12 +581,12 @@ void WLibraryItem::setTitle(const QString & title)
 
 //-------------------------------------------------------------------------------------------------
 
-QUrl WLibraryItem::cover() const
+QString WLibraryItem::cover() const
 {
     Q_D(const WLibraryItem); return d->cover;
 }
 
-void WLibraryItem::setCover(const QUrl & cover)
+void WLibraryItem::setCover(const QString & cover)
 {
     Q_D(WLibraryItem);
 

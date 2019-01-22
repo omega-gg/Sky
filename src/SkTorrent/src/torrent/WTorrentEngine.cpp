@@ -122,7 +122,7 @@ void WTorrentEnginePrivate::load()
     {
         WTorrentSource * source = new WTorrentSource;
 
-        QList<QUrl> * urls = &(source->urls);
+        QStringList * urls = &(source->urls);
 
         int id;
 
@@ -136,7 +136,7 @@ void WTorrentEnginePrivate::load()
 
         while (length)
         {
-            QUrl url;
+            QString url;
 
             stream >> url;
 
@@ -276,7 +276,7 @@ void WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & file
 //-------------------------------------------------------------------------------------------------
 
 WTorrentData * WTorrentEnginePrivate::createData(TorrentInfoPointer info, const sha1_hash & hash,
-                                                                          const QUrl      & url)
+                                                                          const QString   & url)
 {
     WTorrentData * data = new WTorrentData;
 
@@ -312,7 +312,7 @@ WTorrentData * WTorrentEnginePrivate::createData(TorrentInfoPointer info, const 
         params.resume_data.assign(std::istream_iterator<char>(stream),
                                   std::istream_iterator<char>());
 
-        QList<QUrl> * urls = &(source->urls);
+        QStringList * urls = &(source->urls);
 
         if (urls->contains(url) == false)
         {
@@ -1170,13 +1170,13 @@ void WTorrentEnginePrivate::removeMagnet(WMagnetData * data)
 
 //-------------------------------------------------------------------------------------------------
 
-WTorrentData * WTorrentEnginePrivate::getData(const QUrl & url) const
+WTorrentData * WTorrentEnginePrivate::getData(const QString & url) const
 {
     foreach (WTorrentData * data, datas)
     {
         if (data == NULL) continue;
 
-        foreach (const QUrl & source, data->source->urls)
+        foreach (const QString & source, data->source->urls)
         {
             if (source == url)
             {
@@ -1193,7 +1193,7 @@ WTorrentData * WTorrentEnginePrivate::getData(const QUrl & url) const
 
         WTorrentData * data = i.value();
 
-        foreach (const QUrl & source, data->source->urls)
+        foreach (const QString & source, data->source->urls)
         {
             if (source == url)
             {
@@ -1234,7 +1234,7 @@ WTorrentData * WTorrentEnginePrivate::getData(const sha1_hash & hash) const
 
 //-------------------------------------------------------------------------------------------------
 
-WMagnetData * WTorrentEnginePrivate::getMagnetData(const QUrl & url) const
+WMagnetData * WTorrentEnginePrivate::getMagnetData(const QString & url) const
 {
     foreach (WMagnetData * data, datasMagnets)
     {
@@ -1536,7 +1536,7 @@ void WTorrentEnginePrivate::updateCache(WTorrentData * data)
         Q_Q(WTorrentEngine);
 
         qWarning("WTorrentEnginePrivate::updateCache: File is too large for cache %s.",
-                 source->urls.first().C_URL);
+                 source->urls.first().C_STR);
 
         sources.removeOne(source);
 
@@ -1903,11 +1903,11 @@ void WTorrentEnginePrivate::onSave()
 
         QByteArray array = QByteArray(hash.data(), hash.size);
 
-        const QList<QUrl> & urls = source->urls;
+        const QStringList & urls = source->urls;
 
         stream << source->id << array << (qint64) source->size << urls.count();
 
-        foreach (const QUrl & url, urls)
+        foreach (const QString & url, urls)
         {
             stream << url;
         }
@@ -1970,7 +1970,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WTorrentEngine::clearSource(const QUrl & url)
+/* Q_INVOKABLE */ void WTorrentEngine::clearSource(const QString & url)
 {
     QCoreApplication::postEvent(this,
                                 new WTorrentEngineEvent(WTorrentEnginePrivate::EventClearSource,
@@ -2194,8 +2194,8 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         QIODevice * device = eventTorrent->device;
 
-        QUrl url   = eventTorrent->url;
-        int  index = eventTorrent->index;
+        QString url   = eventTorrent->url;
+        int     index = eventTorrent->index;
 
         WTorrent::Mode mode = eventTorrent->mode;
 
@@ -2327,7 +2327,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         WMagnet * magnet = eventTorrent->magnet;
 
-        QUrl url = magnet->url();
+        QString url = magnet->url();
 
         WMagnetData * data = d->getMagnetData(url);
 
@@ -2339,7 +2339,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
             error_code error;
 
-            parse_magnet_uri(url.toString().toStdString(), params, error);
+            parse_magnet_uri(url.toStdString(), params, error);
 
             if (error)
             {
@@ -2820,11 +2820,11 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
     {
         WTorrentEngineEvent * eventTorrent = static_cast<WTorrentEngineEvent *> (event);
 
-        QUrl url = eventTorrent->value.toUrl();
+        QString url = eventTorrent->value.toString();
 
         foreach (WTorrentSource * source, d->sources)
         {
-            foreach (const QUrl & sourceUrl, source->urls)
+            foreach (const QString & sourceUrl, source->urls)
             {
                 if (sourceUrl != url) continue;
 

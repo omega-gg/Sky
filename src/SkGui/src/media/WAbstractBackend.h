@@ -19,7 +19,6 @@
 
 // Qt includes
 #include <QObject>
-#include <QUrl>
 #include <QImage>
 #ifdef QT_LATEST
 #include <QSGGeometryNode>
@@ -76,12 +75,12 @@ private: // Variables
 class SK_GUI_EXPORT WBackendInterface
 {
 public:
-    virtual QUrl source() const = 0;
+    virtual QString source() const = 0;
 
     virtual bool sourceIsVideo() const = 0;
     virtual bool sourceIsAudio() const = 0;
 
-    virtual void loadSource(const QUrl & url, int duration = -1, int currentTime = -1) = 0;
+    virtual void loadSource(const QString & url, int duration = -1, int currentTime = -1) = 0;
 
     virtual void play  () = 0;
     virtual void replay() = 0;
@@ -115,7 +114,7 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
 
     Q_PROPERTY(WBackendFilter * filter READ filter WRITE setFilter NOTIFY filterChanged)
 
-    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
 
     Q_PROPERTY(bool sourceIsVideo READ sourceIsVideo NOTIFY sourceChanged)
     Q_PROPERTY(bool sourceIsAudio READ sourceIsAudio NOTIFY sourceChanged)
@@ -232,13 +231,13 @@ public: // Interface
     Q_INVOKABLE bool deleteBackend();
 
 public: // WBackendInterface implementation
-    Q_INVOKABLE /* virtual */ QUrl source() const;
+    Q_INVOKABLE /* virtual */ QString source() const;
 
     Q_INVOKABLE /* virtual */ bool sourceIsVideo() const;
     Q_INVOKABLE /* virtual */ bool sourceIsAudio() const;
 
-    Q_INVOKABLE /* virtual */ void loadSource(const QUrl & url, int duration    = -1,
-                                                                int currentTime = -1);
+    Q_INVOKABLE /* virtual */ void loadSource(const QString & url, int duration    = -1,
+                                                                   int currentTime = -1);
 
     Q_INVOKABLE /* virtual */ void play  ();
     Q_INVOKABLE /* virtual */ void replay();
@@ -270,7 +269,7 @@ protected: // Abstract functions
     virtual WBackendNode * backendCreateNode() const = 0;
 #endif
 
-    virtual bool backendSetSource(const QUrl & url) = 0;
+    virtual bool backendSetSource(const QString & url) = 0;
 
     virtual bool backendPlay () = 0;
     virtual bool backendPause() = 0;
@@ -342,7 +341,7 @@ public: // Properties
     WBackendFilter * filter() const;
     void             setFilter(WBackendFilter * filter);
 
-    void setSource(const QUrl & url);
+    void setSource(const QString & url);
 
     State     state    () const;
     StateLoad stateLoad() const;

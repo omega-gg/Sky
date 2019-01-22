@@ -62,9 +62,9 @@ void WLoaderNetworkPrivate::onFinished(QNetworkReply * reply)
 
     if (data == NULL) return;
 
-    QUrl url = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl();
+    QString url = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toString();
 
-    if (data->redirect() && url.isValid())
+    if (data->redirect() && url.isEmpty() == false)
     {
         url = WControllerNetwork::getUrlRedirect(reply->url(), url);
 

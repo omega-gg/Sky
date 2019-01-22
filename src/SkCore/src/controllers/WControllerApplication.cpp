@@ -121,7 +121,7 @@ void WControllerApplicationPrivate::init()
 
     watcher = new WFileWatcher(q);
 
-    applicationUrl = QUrl("http://app.sk");
+    applicationUrl = "http://app.sk";
 
 #ifdef Q_OS_WIN
     timeoutLowPower   = 0;

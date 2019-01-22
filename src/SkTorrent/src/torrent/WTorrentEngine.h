@@ -27,7 +27,6 @@
 
 // Forward declarations
 class QIODevice;
-class QUrl;
 class WTorrentEnginePrivate;
 class WTorrent;
 class WMagnet;
@@ -53,7 +52,7 @@ public: // Interface
     Q_INVOKABLE void loadMagnet  (WMagnet * magnet);
     Q_INVOKABLE void removeMagnet(WMagnet * magnet);
 
-    Q_INVOKABLE void clearSource(const QUrl & url);
+    Q_INVOKABLE void clearSource(const QString & url);
 
     Q_INVOKABLE void clearCache();
 

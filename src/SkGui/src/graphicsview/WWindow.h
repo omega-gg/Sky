@@ -263,7 +263,8 @@ public: // Interface
 
     //---------------------------------------------------------------------------------------------
 
-    Q_INVOKABLE void registerCursorUrl(int shape, const QUrl & url, const QSize & size = QSize());
+    Q_INVOKABLE void registerCursorUrl(int shape, const QString & url,
+                                                  const QSize   & size = QSize());
 
     Q_INVOKABLE void unregisterCursor(int shape);
 

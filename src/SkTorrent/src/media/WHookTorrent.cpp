@@ -811,7 +811,7 @@ void WHookTorrentPrivate::stop()
 
     q->setFilterActive(false);
 
-    q->backendSetSource(QUrl());
+    q->backendSetSource(QString());
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1016,8 +1016,8 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 // WAbstractHook reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ void WHookTorrent::loadSource(const QUrl & url, int duration,
-                                                                          int currentTime)
+/* Q_INVOKABLE virtual */ void WHookTorrent::loadSource(const QString & url, int duration,
+                                                                             int currentTime)
 {
     Q_D(WHookTorrent);
 
@@ -1183,7 +1183,7 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 
     d->clearReply();
 
-    d->source = QUrl();
+    d->source = QString();
 
     setDuration   (-1);
     setCurrentTime(-1);
@@ -1272,13 +1272,9 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 // Protected WAbstractHook implementation
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ bool WHookTorrent::hookCheckSource(const QUrl & url)
+/* virtual */ bool WHookTorrent::hookCheckSource(const QString & url)
 {
-    QString source = url.toString();
-
-    if (WControllerNetwork::extractUrlExtension(source) == "torrent"
-        ||
-        source.startsWith("magnet:?"))
+    if (WControllerNetwork::extractUrlExtension(url) == "torrent" || url.startsWith("magnet:?"))
     {
          return true;
     }

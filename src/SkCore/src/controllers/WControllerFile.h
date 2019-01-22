@@ -94,15 +94,18 @@ protected: // Initialize
     /* virtual */ void init();
 
 public: // Interface
-    Q_INVOKABLE WCacheFile * getFile(const QUrl & url, QObject * parent = NULL, int maxHost = -1);
-    Q_INVOKABLE WCacheFile * getHttp(const QUrl & url, QObject * parent = NULL, int maxHost = -1);
+    Q_INVOKABLE WCacheFile * getFile(const QString & url,
+                                     QObject       * parent = NULL, int maxHost = -1);
 
-    Q_INVOKABLE QUrl getFileUrl(const QUrl & url);
+    Q_INVOKABLE WCacheFile * getHttp(const QString & url,
+                                     QObject       * parent = NULL, int maxHost = -1);
 
-    Q_INVOKABLE WCacheFile * writeFile(const QUrl       & url,
+    Q_INVOKABLE QString getFileUrl(const QString & url);
+
+    Q_INVOKABLE WCacheFile * writeFile(const QString    & url,
                                        const QByteArray & array, QObject * parent = NULL);
 
-    Q_INVOKABLE void addFile(const QUrl & url, const QByteArray & array);
+    Q_INVOKABLE void addFile(const QString & url, const QByteArray & array);
 
     Q_INVOKABLE void waitActions();
 
@@ -112,20 +115,20 @@ public: // Interface
     WAbstractThreadReply * startWriteAction(WAbstractThreadAction * action);
     WAbstractThreadReply * startReadAction (WAbstractThreadAction * action);
 
-    WControllerFileReply * startRenameFiles(const QList<QString> & oldPaths,
-                                            const QList<QString> & newPaths);
+    WControllerFileReply * startRenameFiles(const QStringList & oldPaths,
+                                            const QStringList & newPaths);
 
-    WControllerFileReply * startDeleteFiles(const QList<QString> & paths);
+    WControllerFileReply * startDeleteFiles(const QStringList & paths);
 
-    WControllerFileReply * startCreateFolders(const QList<QString> & paths);
+    WControllerFileReply * startCreateFolders(const QStringList & paths);
 
-    WControllerFileReply * startDeleteFolders(const QList<QString> & paths,
-                                              bool                   recursive = true);
+    WControllerFileReply * startDeleteFolders(const QStringList & paths,
+                                              bool                recursive = true);
 
-    WControllerFileReply * startDeleteFoldersContent(const QList<QString> & paths,
-                                                     bool                   recursive = true);
+    WControllerFileReply * startDeleteFoldersContent(const QStringList & paths,
+                                                     bool                recursive = true);
 
-    WControllerFileReply * startCreatePaths(const QList<QString> & paths);
+    WControllerFileReply * startCreatePaths(const QStringList & paths);
 
     //---------------------------------------------------------------------------------------------
 

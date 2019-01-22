@@ -19,7 +19,6 @@
 
 // Qt includes
 #include <QObject>
-#include <QUrl>
 #include <QSizeF>
 #ifdef QT_4
 #include <QDeclarativeListProperty>
@@ -94,7 +93,7 @@ public: // Interface
     Q_INVOKABLE void addItem(ItemType        type,
                              int             id,
                              const QString & title,
-                             const QUrl    & icon     = QUrl(),
+                             const QString & icon     = QString(),
                              const QSizeF  & iconSize = QSizeF(),
                              bool            visible  = true,
                              bool            enabled  = true);
@@ -103,7 +102,7 @@ public: // Interface
                                 ItemType        type,
                                 int             id,
                                 const QString & title,
-                                const QUrl    & icon     = QUrl(),
+                                const QString & icon     = QString(),
                                 const QSizeF  & iconSize = QSizeF(),
                                 bool            visible  = true,
                                 bool            enabled  = true);
@@ -176,8 +175,8 @@ public: // Variables
 
     QString title;
 
-    QUrl   icon;
-    QSizeF iconSize;
+    QString icon;
+    QSizeF  iconSize;
 
     bool visible;
     bool enabled;

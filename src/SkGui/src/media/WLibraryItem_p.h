@@ -58,10 +58,10 @@ public: // Variables
 
     WLocalObject::State stateQuery;
 
-    QUrl source;
+    QString source;
 
     QString title;
-    QUrl    cover;
+    QString cover;
 
     QString label;
 

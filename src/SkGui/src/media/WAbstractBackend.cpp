@@ -233,7 +233,7 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 // WBackendInterface implementation
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ QUrl WAbstractBackend::source() const
+/* Q_INVOKABLE virtual */ QString WAbstractBackend::source() const
 {
     Q_D(const WAbstractBackend); return d->source;
 }
@@ -256,8 +256,8 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ void WAbstractBackend::loadSource(const QUrl & url, int duration,
-                                                                              int currentTime)
+/* Q_INVOKABLE virtual */ void WAbstractBackend::loadSource(const QString & url, int duration,
+                                                                                 int currentTime)
 {
     Q_D(WAbstractBackend);
 
@@ -300,7 +300,7 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 {
     Q_D(WAbstractBackend);
 
-    if (d->state == StatePlaying || d->source.isValid() == false) return;
+    if (d->state == StatePlaying || d->source.isEmpty()) return;
 
     if (backendPlay()) setState(StatePlaying);
 }
@@ -309,7 +309,7 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 {
     Q_D(WAbstractBackend);
 
-    if (d->source.isValid() == false) return;
+    if (d->source.isEmpty()) return;
 
     d->clearCurrentTime();
 
@@ -338,7 +338,7 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
 /* Q_INVOKABLE virtual */ void WAbstractBackend::clear()
 {
-    loadSource(QUrl());
+    loadSource(QString());
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -633,7 +633,7 @@ void WAbstractBackend::setFilter(WBackendFilter * filter)
 
 //-------------------------------------------------------------------------------------------------
 
-void WAbstractBackend::setSource(const QUrl & url)
+void WAbstractBackend::setSource(const QString & url)
 {
     loadSource(url);
 }

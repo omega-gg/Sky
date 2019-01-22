@@ -48,7 +48,7 @@ void WTrackPrivate::init()
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
-/* explicit */ WTrack::WTrack(const QUrl & source, State state)
+/* explicit */ WTrack::WTrack(const QString & source, State state)
     : WPrivatable(new WTrackPrivate(this))
 {
     Q_D(WTrack);
@@ -65,7 +65,9 @@ void WTrackPrivate::init()
 
 bool WTrack::isValid() const
 {
-    Q_D(const WTrack); return (d->source.isValid());
+    Q_D(const WTrack);
+
+    return (d->source.isEmpty() == false);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -106,7 +108,7 @@ void WTrack::applyDataTo(WTrack * other) const
         op->title = d->title;
     }
 
-    if (d->cover.isValid())
+    if (d->cover.isEmpty() == false)
     {
         op->cover = d->cover;
     }
@@ -283,12 +285,12 @@ bool WTrack::isLoaded() const
 
 //-------------------------------------------------------------------------------------------------
 
-QUrl WTrack::source() const
+QString WTrack::source() const
 {
     Q_D(const WTrack); return d->source;
 }
 
-void WTrack::setSource(const QUrl & url)
+void WTrack::setSource(const QString & url)
 {
     Q_D(WTrack); d->source = url;
 }
@@ -307,12 +309,12 @@ void WTrack::setTitle(const QString & title)
 
 //-------------------------------------------------------------------------------------------------
 
-QUrl WTrack::cover() const
+QString WTrack::cover() const
 {
     Q_D(const WTrack); return d->cover;
 }
 
-void WTrack::setCover(const QUrl & cover)
+void WTrack::setCover(const QString & cover)
 {
     Q_D(WTrack); d->cover = cover;
 }

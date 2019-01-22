@@ -41,16 +41,16 @@ protected:
     WAbstractHook(WAbstractHookPrivate * p, WAbstractBackend * backend);
 
 public: // Interface
-    Q_INVOKABLE bool checkSource(const QUrl & url);
+    Q_INVOKABLE bool checkSource(const QString & url);
 
 public: // WBackendInterface implementation
-    Q_INVOKABLE /* virtual */ QUrl source() const;
+    Q_INVOKABLE /* virtual */ QString source() const;
 
     Q_INVOKABLE /* virtual */ bool sourceIsVideo() const;
     Q_INVOKABLE /* virtual */ bool sourceIsAudio() const;
 
-    Q_INVOKABLE /* virtual */ void loadSource(const QUrl & url, int duration    = -1,
-                                                                int currentTime = -1);
+    Q_INVOKABLE /* virtual */ void loadSource(const QString & url, int duration    = -1,
+                                                                   int currentTime = -1);
 
     Q_INVOKABLE /* virtual */ void play  ();
     Q_INVOKABLE /* virtual */ void replay();
@@ -62,7 +62,7 @@ public: // WBackendInterface implementation
     Q_INVOKABLE /* virtual */ void seek(int msec);
 
 protected: // Functions
-    void applySource(const QUrl & url);
+    void applySource(const QString & url);
 
     void applyState    (WAbstractBackend::State     state);
     void applyStateLoad(WAbstractBackend::StateLoad stateLoad);
@@ -88,7 +88,7 @@ protected: // Functions
     //---------------------------------------------------------------------------------------------
     // Backend abstract functions
 
-    bool backendSetSource(const QUrl & url);
+    bool backendSetSource(const QString & url);
 
     bool backendPlay ();
     bool backendPause();
@@ -118,7 +118,7 @@ protected: // Functions
     QImage backendGetFrame   () const;
 
 protected: // Abstract functions
-    virtual bool hookCheckSource(const QUrl & url) = 0;
+    virtual bool hookCheckSource(const QString & url) = 0;
 
 signals:
     void filterActiveChanged();

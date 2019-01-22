@@ -49,13 +49,13 @@ public: // Functions
 
     bool loadTrack(WTrack * track, const QString & data, int from) const;
 
-    void loadMedia(QHash<WAbstractBackend::Quality, QUrl> * sources,
-                   const QString                          & data) const;
+    void loadMedia(QHash<WAbstractBackend::Quality, QString> * sources,
+                   const QString                             & data) const;
 
-    void loadAdaptative(QHash<WAbstractBackend::Quality, QUrl> * medias,
-                        QHash<WAbstractBackend::Quality, QUrl> * audios,
-                        const QString                          & data,
-                        const QString                          & audio) const;
+    void loadAdaptative(QHash<WAbstractBackend::Quality, QString> * medias,
+                        QHash<WAbstractBackend::Quality, QString> * audios,
+                        const QString                             & data,
+                        const QString                             & audio) const;
 
     QString extractUrl(const QString & data) const;
 
@@ -76,7 +76,7 @@ public: // Functions
     void applySignature(QString * source, QJSValue * value) const;
 #endif
 
-    QUrl getNextUrl(const QString & data) const;
+    QString getNextUrl(const QString & data) const;
 
 private:
     QStringList script;
@@ -140,8 +140,8 @@ bool WBackendYoutubePrivate::loadTrack(WTrack * track, const QString & data, int
 
 //-------------------------------------------------------------------------------------------------
 
-void WBackendYoutubePrivate::loadMedia(QHash<WAbstractBackend::Quality, QUrl> * sources,
-                                       const QString                          & data) const
+void WBackendYoutubePrivate::loadMedia(QHash<WAbstractBackend::Quality, QString> * sources,
+                                       const QString                             & data) const
 {
     QString type = extractType(data);
 
@@ -156,10 +156,10 @@ void WBackendYoutubePrivate::loadMedia(QHash<WAbstractBackend::Quality, QUrl> * 
     sources->insert(quality, url);
 }
 
-void WBackendYoutubePrivate::loadAdaptative(QHash<WAbstractBackend::Quality, QUrl> * medias,
-                                            QHash<WAbstractBackend::Quality, QUrl> * audios,
-                                            const QString                          & data,
-                                            const QString                          & audio) const
+void WBackendYoutubePrivate::loadAdaptative(QHash<WAbstractBackend::Quality, QString> * medias,
+                                            QHash<WAbstractBackend::Quality, QString> * audios,
+                                            const QString                             & data,
+                                            const QString                             & audio) const
 {
     QString mime = extractMime(data);
 
@@ -268,8 +268,8 @@ void WBackendYoutubePrivate::applySignatures(WBackendNetSource  * source,
                                              const QVariantList & variants,
                                              const QString      & script) const
 {
-    QHash<WAbstractBackend::Quality, QUrl> * medias = &(source->medias);
-    QHash<WAbstractBackend::Quality, QUrl> * audios = &(source->audios);
+    QHash<WAbstractBackend::Quality, QString> * medias = &(source->medias);
+    QHash<WAbstractBackend::Quality, QString> * audios = &(source->audios);
 
     QStringList listMedias = variants.at(0).toStringList();
     QStringList listAudios = variants.at(1).toStringList();
@@ -321,11 +321,11 @@ void WBackendYoutubePrivate::applySignature(QString * source, QJSValue * value) 
 
 //-------------------------------------------------------------------------------------------------
 
-QUrl WBackendYoutubePrivate::getNextUrl(const QString & data) const
+QString WBackendYoutubePrivate::getNextUrl(const QString & data) const
 {
     int index = data.indexOf("class=\"branded-page-box search-pager");
 
-    if (index == -1) return QUrl();
+    if (index == -1) return QString();
 
     QString source = WControllerNetwork::extractAttribute(data, "href", index);
 
@@ -366,7 +366,7 @@ WBackendYoutube::WBackendYoutube() : WBackendNet(new WBackendYoutubePrivate(this
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendYoutube::checkValidUrl(const QUrl & url) const
+/* Q_INVOKABLE virtual */ bool WBackendYoutube::checkValidUrl(const QString & url) const
 {
     QString source = WControllerNetwork::removeUrlPrefix(url);
 
@@ -414,7 +414,7 @@ WBackendYoutube::WBackendYoutube() : WBackendNet(new WBackendYoutubePrivate(this
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ QString WBackendYoutube::getTrackId(const QUrl & url) const
+/* Q_INVOKABLE virtual */ QString WBackendYoutube::getTrackId(const QString & url) const
 {
     QString source = WControllerNetwork::removeUrlPrefix(url);
 
@@ -443,7 +443,7 @@ WBackendYoutube::WBackendYoutube() : WBackendNet(new WBackendYoutubePrivate(this
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-WBackendNetPlaylistInfo WBackendYoutube::getPlaylistInfo(const QUrl & url) const
+WBackendNetPlaylistInfo WBackendYoutube::getPlaylistInfo(const QString & url) const
 {
     QString source = WControllerNetwork::removeUrlPrefix(url);
 
@@ -503,13 +503,13 @@ WBackendNetPlaylistInfo WBackendYoutube::getPlaylistInfo(const QUrl & url) const
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-QUrl WBackendYoutube::getUrlTrack(const QString & id) const
+QString WBackendYoutube::getUrlTrack(const QString & id) const
 {
     return "https://www.youtube.com/watch?v=" + id;
 }
 
 /* Q_INVOKABLE virtual */
-QUrl WBackendYoutube::getUrlPlaylist(const WBackendNetPlaylistInfo & info) const
+QString WBackendYoutube::getUrlPlaylist(const WBackendNetPlaylistInfo & info) const
 {
     if (info.isFeed())
     {
@@ -521,7 +521,7 @@ QUrl WBackendYoutube::getUrlPlaylist(const WBackendNetPlaylistInfo & info) const
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-WBackendNetQuery WBackendYoutube::getQuerySource(const QUrl & url) const
+WBackendNetQuery WBackendYoutube::getQuerySource(const QString & url) const
 {
     QString id = getTrackId(url);
 
@@ -544,7 +544,7 @@ WBackendNetQuery WBackendYoutube::getQuerySource(const QUrl & url) const
 }
 
 /* Q_INVOKABLE virtual */
-WBackendNetQuery WBackendYoutube::getQueryTrack(const QUrl & url) const
+WBackendNetQuery WBackendYoutube::getQueryTrack(const QString & url) const
 {
     QString id = getTrackId(url);
 
@@ -556,7 +556,7 @@ WBackendNetQuery WBackendYoutube::getQueryTrack(const QUrl & url) const
 }
 
 /* Q_INVOKABLE virtual */
-WBackendNetQuery WBackendYoutube::getQueryPlaylist(const QUrl & url) const
+WBackendNetQuery WBackendYoutube::getQueryPlaylist(const QString & url) const
 {
     WBackendNetPlaylistInfo info = getPlaylistInfo(url);
 
@@ -601,7 +601,7 @@ WBackendNetQuery WBackendYoutube::createQuery(const QString & method,
             url.setQuery(urlQuery);
 #endif
 
-            query.url = url;
+            query.url = url.toString();
             query.id  = 2;
         }
         else if (label == "channels")
@@ -622,7 +622,7 @@ WBackendNetQuery WBackendYoutube::createQuery(const QString & method,
             url.setQuery(urlQuery);
 #endif
 
-            query.url = url;
+            query.url = url.toString();
             query.id  = 1;
         }
         else if (label == "playlists")
@@ -643,14 +643,14 @@ WBackendNetQuery WBackendYoutube::createQuery(const QString & method,
             url.setQuery(urlQuery);
 #endif
 
-            query.url = url;
+            query.url = url.toString();
         }
     }
     else if (method == "related" && label == "tracks")
     {
         QUrl url("https://www.youtube.com/watch?v=" + q);
 
-        query.url = url;
+        query.url = url.toString();
         query.id  = 3;
     }
 
@@ -714,7 +714,7 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
 
         QStringList list;
 
-        list.append(query.url.toString());
+        list.append(query.url);
         list.append(script);
 
         reply.data = list;
@@ -725,8 +725,8 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
     {
         Q_D(const WBackendYoutube);
 
-        QHash<WAbstractBackend::Quality, QUrl> * medias = &(reply.medias);
-        QHash<WAbstractBackend::Quality, QUrl> * audios = &(reply.audios);
+        QHash<WAbstractBackend::Quality, QString> * medias = &(reply.medias);
+        QHash<WAbstractBackend::Quality, QString> * audios = &(reply.audios);
 
         QString sources = Sk::sliceIn(content, "url_encoded_fmt_stream_map=", "&");
 
@@ -805,7 +805,7 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
 
         for (int i = 0; i <= WAbstractBackend::QualityMaximum; i++)
         {
-            QString string = medias->value(static_cast<WAbstractBackend::Quality> (i)).toString();
+            QString string = medias->value(static_cast<WAbstractBackend::Quality> (i));
 
             if (string.contains("&s=") == false) continue;
 
@@ -820,11 +820,11 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
 
             for (int i = 0; i <= WAbstractBackend::QualityMaximum; i++)
             {
-                const QUrl & media = medias->value(static_cast<WAbstractBackend::Quality> (i));
-                const QUrl & audio = audios->value(static_cast<WAbstractBackend::Quality> (i));
+                const QString & media = medias->value(static_cast<WAbstractBackend::Quality> (i));
+                const QString & audio = audios->value(static_cast<WAbstractBackend::Quality> (i));
 
-                listMedias.append(media.toString());
-                listAudios.append(audio.toString());
+                listMedias.append(media);
+                listAudios.append(audio);
             }
 
             variants.append(listMedias);
@@ -931,7 +931,7 @@ WBackendNetPlaylist WBackendYoutube::extractPlaylist(const QByteArray       & da
                                                                     "data-uix-load-more-href",
                                                                     index);
 
-                QUrl url("https://www.youtube.com" + WControllerNetwork::decodeUrl(data));
+                QString url("https://www.youtube.com" + WControllerNetwork::decodeUrl(data));
 
                 WBackendNetQuery * nextQuery = &(reply.nextQuery);
 
@@ -965,7 +965,7 @@ WBackendNetPlaylist WBackendYoutube::extractPlaylist(const QByteArray       & da
 
         if (query.data.toInt() == 0)
         {
-            QUrl url = d->getNextUrl(content);
+            QString url = d->getNextUrl(content);
 
             if (url.isEmpty()) return reply;
 
@@ -991,9 +991,9 @@ WBackendNetPlaylist WBackendYoutube::extractPlaylist(const QByteArray       & da
                 QString data = WControllerNetwork::extractAttribute(content, "data-continuation",
                                                                     index);
 
-                QUrl url("https://www.youtube.com/related_ajax?continuation="
-                         +
-                         WControllerNetwork::decodeUrl(data));
+                QString url("https://www.youtube.com/related_ajax?continuation="
+                            +
+                            WControllerNetwork::decodeUrl(data));
 
                 WBackendNetQuery * nextQuery = &(reply.nextQuery);
 
@@ -1033,7 +1033,7 @@ WBackendNetPlaylist WBackendYoutube::extractPlaylist(const QByteArray       & da
                                                                     "data-uix-load-more-href",
                                                                     index);
 
-                QUrl url("https://www.youtube.com" + WControllerNetwork::decodeUrl(data));
+                QString url("https://www.youtube.com" + WControllerNetwork::decodeUrl(data));
 
                 WBackendNetQuery * nextQuery = &(reply.nextQuery);
 
@@ -1145,7 +1145,7 @@ WBackendNetFolder WBackendYoutube::extractFolder(const QByteArray       & data,
 
     if (query.data.toInt() == 0)
     {
-        QUrl url = d->getNextUrl(content);
+        QString url = d->getNextUrl(content);
 
         if (url.isEmpty()) return reply;
 

@@ -19,7 +19,6 @@
 
 // Qt includes
 #include <QObject>
-#include <QUrl>
 
 // Sk includes
 #include <Sk>
@@ -49,8 +48,8 @@ signals:
     void progress(qint64 bytesReceived, qint64 bytesTotal);
 
 public: // Properties
-    QUrl url     () const;
-    QUrl urlCache() const;
+    QString url     () const;
+    QString urlCache() const;
 
     bool isLoading() const;
     bool isLoaded () const;
@@ -64,8 +63,8 @@ public: // Properties
 private: // Variables
     WCache * _cache;
 
-    QUrl _url;
-    QUrl _urlCache;
+    QString _url;
+    QString _urlCache;
 
     bool _loaded;
 
@@ -99,19 +98,20 @@ public:
                                  QObject * parent  = NULL);
 
 public: // Interface
-    Q_INVOKABLE WCacheFile * getFile(const QUrl & url, QObject * parent = NULL, int maxHost = -1);
+    Q_INVOKABLE WCacheFile * getFile(const QString & url,
+                                     QObject       * parent = NULL, int maxHost = -1);
 
-    Q_INVOKABLE QUrl getFileUrl(const QUrl & url);
+    Q_INVOKABLE QString getFileUrl(const QString & url);
 
-    Q_INVOKABLE WCacheFile * writeFile(const QUrl       & url,
+    Q_INVOKABLE WCacheFile * writeFile(const QString    & url,
                                        const QByteArray & array, QObject * parent = NULL);
 
-    Q_INVOKABLE void addFile(const QUrl & url, const QByteArray & array);
+    Q_INVOKABLE void addFile(const QString & url, const QByteArray & array);
 
-    Q_INVOKABLE void removeFiles(const QList<QUrl> & urls);
-    Q_INVOKABLE void removeFile (const QUrl        & url);
+    Q_INVOKABLE void removeFiles(const QStringList & urls);
+    Q_INVOKABLE void removeFile (const QString     & url);
 
-    Q_INVOKABLE void load(const QList<QUrl> & urls, int maxHost = -1);
+    Q_INVOKABLE void load(const QStringList & urls, int maxHost = -1);
 
     Q_INVOKABLE void abortLoad();
 
@@ -127,7 +127,7 @@ protected: // Events
     /* virtual */ bool event(QEvent * event);
 
 signals:
-    void filesRemoved(const QList<QUrl> & urls, const QList<QUrl> & urlsCache);
+    void filesRemoved(const QStringList & urls, const QStringList & urlsCache);
     void filesCleared();
 
     void emptyChanged();

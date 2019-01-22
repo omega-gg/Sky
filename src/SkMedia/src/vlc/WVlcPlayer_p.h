@@ -42,7 +42,7 @@ public: // Enums
     {
         EventCreate = QEvent::User,
         EventBackend, // WVlcPlayerEventBackend
-        EventSource,  // WVlcPlayerEvent QUrl
+        EventSource,  // WVlcPlayerEvent QString
         EventPlay,
         EventPause,
         EventStop,
@@ -58,7 +58,7 @@ public:
     void init(WVlcEngine * engine, QThread * thread);
 
 public: // Functions
-    QString encodeUrl(const QUrl & url) const;
+    QString encodeUrl(const QString & url) const;
 
 public: // Static functions
     static void eventPlaying(const struct libvlc_event_t * event, void * data);
@@ -156,7 +156,7 @@ public: // Variables
 class WVlcPlayerEventSource : public QEvent
 {
 public:
-    WVlcPlayerEventSource(const QUrl & media, const QUrl & audio)
+    WVlcPlayerEventSource(const QString & media, const QString & audio)
         : QEvent(static_cast<QEvent::Type> (WVlcPlayerPrivate::EventSource))
     {
         this->media = media;
@@ -164,8 +164,8 @@ public:
     }
 
 public: // Variables
-    QUrl media;
-    QUrl audio;
+    QString media;
+    QString audio;
 };
 
 #endif // SK_NO_VLCPLAYER

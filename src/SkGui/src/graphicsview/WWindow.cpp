@@ -543,7 +543,8 @@ void WWindowPrivate::init()
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WWindow::registerCursorUrl(int shape, const QUrl & url, const QSize & size)
+/* Q_INVOKABLE */ void WWindow::registerCursorUrl(int shape, const QString & url,
+                                                             const QSize   & size)
 {
     Q_D(WWindow); d->view->registerCursorUrl(shape, url, size);
 }

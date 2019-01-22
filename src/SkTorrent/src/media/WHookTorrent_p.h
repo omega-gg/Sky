@@ -94,7 +94,7 @@ public: // Variables
 
     int port;
 
-    QUrl url;
+    QString url;
 
     int currentTime;
 

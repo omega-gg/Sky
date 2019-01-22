@@ -50,7 +50,7 @@ public: // Functions
 
     QString extractJson(const QString & data, int index, int count) const;
 
-    void applyQuery(WBackendNetQuery * query, const QUrl & url, int queryId) const;
+    void applyQuery(WBackendNetQuery * query, const QString & url, int queryId) const;
 
     void applySearch (WBackendNetQuery * query, const QString & source, int queryId) const;
     void applyRelated(WBackendNetQuery * query, const QString & source) const;
@@ -143,10 +143,12 @@ bool WBackendSoundCloudPrivate::extractId(const QString          & data,
 
         QVariantList variants = query.data.toList();
 
-        QUrl url = variants.at(0).toUrl();
+        QString string = variants.at(0).toString();
 
-        if (url.toString().startsWith("https://api"))
+        if (string.startsWith("https://api"))
         {
+            QUrl url(string);
+
 #ifdef QT_4
             url.addQueryItem("client_id", id);
 #else
@@ -156,9 +158,11 @@ bool WBackendSoundCloudPrivate::extractId(const QString          & data,
 
             url.setQuery(query);
 #endif
+
+            string = url.toString();
         }
 
-        nextQuery->url  = url;
+        nextQuery->url  = string;
         nextQuery->id   = variants.at(1).toInt();
         nextQuery->data = id;
 
@@ -197,7 +201,7 @@ QString WBackendSoundCloudPrivate::extractJson(const QString & data, int index, 
 //-------------------------------------------------------------------------------------------------
 
 void WBackendSoundCloudPrivate::applyQuery(WBackendNetQuery * query,
-                                           const QUrl       & url, int queryId) const
+                                           const QString    & url, int queryId) const
 {
     if (id.isEmpty())
     {
@@ -234,7 +238,7 @@ void WBackendSoundCloudPrivate::applySearch(WBackendNetQuery * query,
     }
     else
     {
-        QUrl url = source;
+        QUrl url(source);
 
 #ifdef QT_4
         url.addQueryItem("client_id", id);
@@ -246,7 +250,7 @@ void WBackendSoundCloudPrivate::applySearch(WBackendNetQuery * query,
         url.setQuery(urlQuery);
 #endif
 
-        query->url  = url;
+        query->url  = url.toString();
         query->id   = queryId;
         query->data = id;
     }
@@ -325,7 +329,7 @@ WBackendSoundCloud::WBackendSoundCloud() : WBackendNet(new WBackendSoundCloudPri
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendSoundCloud::checkValidUrl(const QUrl & url) const
+/* Q_INVOKABLE virtual */ bool WBackendSoundCloud::checkValidUrl(const QString & url) const
 {
     QString source = WControllerNetwork::removeUrlPrefix(url);
 
@@ -376,7 +380,7 @@ WBackendSoundCloud::WBackendSoundCloud() : WBackendNet(new WBackendSoundCloudPri
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-QString WBackendSoundCloud::getTrackId(const QUrl & url) const
+QString WBackendSoundCloud::getTrackId(const QString & url) const
 {
     QString source = WControllerNetwork::removeUrlPrefix(url);
 
@@ -402,7 +406,7 @@ QString WBackendSoundCloud::getTrackId(const QUrl & url) const
 }
 
 /* Q_INVOKABLE virtual */
-WAbstractBackend::Output WBackendSoundCloud::getTrackOutput(const QUrl &) const
+WAbstractBackend::Output WBackendSoundCloud::getTrackOutput(const QString &) const
 {
     return WAbstractBackend::OutputAudio;
 }
@@ -410,7 +414,7 @@ WAbstractBackend::Output WBackendSoundCloud::getTrackOutput(const QUrl &) const
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-WBackendNetPlaylistInfo WBackendSoundCloud::getPlaylistInfo(const QUrl & url) const
+WBackendNetPlaylistInfo WBackendSoundCloud::getPlaylistInfo(const QString & url) const
 {
     QString source = WControllerNetwork::removeUrlPrefix(url);
 
@@ -444,13 +448,13 @@ WBackendNetPlaylistInfo WBackendSoundCloud::getPlaylistInfo(const QUrl & url) co
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-QUrl WBackendSoundCloud::getUrlTrack(const QString & id) const
+QString WBackendSoundCloud::getUrlTrack(const QString & id) const
 {
     return "https://soundcloud.com/" + id;
 }
 
 /* Q_INVOKABLE virtual */
-QUrl WBackendSoundCloud::getUrlPlaylist(const WBackendNetPlaylistInfo & info) const
+QString WBackendSoundCloud::getUrlPlaylist(const WBackendNetPlaylistInfo & info) const
 {
     return "https://soundcloud.com/" + info.id;
 }
@@ -458,7 +462,7 @@ QUrl WBackendSoundCloud::getUrlPlaylist(const WBackendNetPlaylistInfo & info) co
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-WBackendNetQuery WBackendSoundCloud::getQuerySource(const QUrl & url) const
+WBackendNetQuery WBackendSoundCloud::getQuerySource(const QString & url) const
 {
     Q_D(const WBackendSoundCloud);
 
@@ -470,13 +474,13 @@ WBackendNetQuery WBackendSoundCloud::getQuerySource(const QUrl & url) const
 }
 
 /* Q_INVOKABLE virtual */
-WBackendNetQuery WBackendSoundCloud::getQueryTrack(const QUrl & url) const
+WBackendNetQuery WBackendSoundCloud::getQueryTrack(const QString & url) const
 {
     return WBackendNetQuery(url);
 }
 
 /* Q_INVOKABLE virtual */
-WBackendNetQuery WBackendSoundCloud::getQueryPlaylist(const QUrl & url) const
+WBackendNetQuery WBackendSoundCloud::getQueryPlaylist(const QString & url) const
 {
     Q_D(const WBackendSoundCloud);
 

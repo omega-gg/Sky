@@ -174,7 +174,7 @@ QString WBackendVimeoPrivate::getNextUrl(const WBackendNetQuery & query,
         return QString();
     }
 
-    QString url = query.url.toString();
+    QString url = query.url;
 
     url.replace("/page:" + QString::number(id),
                 "/page:" + QString::number(id + 1));
@@ -216,7 +216,7 @@ WBackendVimeo::WBackendVimeo() : WBackendNet(new WBackendVimeoPrivate(this))
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendVimeo::checkValidUrl(const QUrl & url) const
+/* Q_INVOKABLE virtual */ bool WBackendVimeo::checkValidUrl(const QString & url) const
 {
     QString source = WControllerNetwork::removeUrlPrefix(url);
 
@@ -270,17 +270,17 @@ WBackendVimeo::WBackendVimeo() : WBackendNet(new WBackendVimeoPrivate(this))
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ QString WBackendVimeo::getTrackId(const QUrl & url) const
+/* Q_INVOKABLE virtual */ QString WBackendVimeo::getTrackId(const QString & url) const
 {
     Q_D(const WBackendVimeo);
 
-    return d->extractId(url.toString());
+    return d->extractId(url);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-WBackendNetPlaylistInfo WBackendVimeo::getPlaylistInfo(const QUrl & url) const
+WBackendNetPlaylistInfo WBackendVimeo::getPlaylistInfo(const QString & url) const
 {
     QString source = WControllerNetwork::removeUrlPrefix(url);
 
@@ -310,20 +310,21 @@ WBackendNetPlaylistInfo WBackendVimeo::getPlaylistInfo(const QUrl & url) const
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-QUrl WBackendVimeo::getUrlTrack(const QString & id) const
+QString WBackendVimeo::getUrlTrack(const QString & id) const
 {
     return "https://vimeo.com/" + id;
 }
 
 /* Q_INVOKABLE virtual */
-QUrl WBackendVimeo::getUrlPlaylist(const WBackendNetPlaylistInfo & info) const
+QString WBackendVimeo::getUrlPlaylist(const WBackendNetPlaylistInfo & info) const
 {
     return "https://vimeo.com/" + info.id;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ WBackendNetQuery WBackendVimeo::getQuerySource(const QUrl & url) const
+/* Q_INVOKABLE virtual */
+WBackendNetQuery WBackendVimeo::getQuerySource(const QString & url) const
 {
     QString id = getTrackId(url);
 
@@ -334,7 +335,8 @@ QUrl WBackendVimeo::getUrlPlaylist(const WBackendNetPlaylistInfo & info) const
     else return WBackendNetQuery("https://player.vimeo.com/video/" + id);
 }
 
-/* Q_INVOKABLE virtual */ WBackendNetQuery WBackendVimeo::getQueryTrack(const QUrl & url) const
+/* Q_INVOKABLE virtual */
+WBackendNetQuery WBackendVimeo::getQueryTrack(const QString & url) const
 {
     QString id = getTrackId(url);
 
@@ -345,7 +347,8 @@ QUrl WBackendVimeo::getUrlPlaylist(const WBackendNetPlaylistInfo & info) const
     else return WBackendNetQuery("https://vimeo.com/" + id);
 }
 
-/* Q_INVOKABLE virtual */ WBackendNetQuery WBackendVimeo::getQueryPlaylist(const QUrl & url) const
+/* Q_INVOKABLE virtual */
+WBackendNetQuery WBackendVimeo::getQueryPlaylist(const QString & url) const
 {
     QString id = getPlaylistInfo(url).id;
 
@@ -388,7 +391,7 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
             url.setQuery(urlQuery);
 #endif
 
-            query.url = url;
+            query.url = url.toString();
             query.id  = 1;
 
             query.header = true;
@@ -407,7 +410,7 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
             url.setQuery(urlQuery);
 #endif
 
-            query.url = url;
+            query.url = url.toString();
             query.id  = 1;
 
             query.header = true;
@@ -426,7 +429,7 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
             url.setQuery(urlQuery);
 #endif
 
-            query.url = url;
+            query.url = url.toString();
 
             query.header = true;
         }
@@ -444,7 +447,7 @@ WBackendNetQuery WBackendVimeo::createQuery(const QString & method,
             url.setQuery(urlQuery);
 #endif
 
-            query.url  = url;
+            query.url = url.toString();
 
             query.header = true;
         }
@@ -473,7 +476,7 @@ WBackendNetSource WBackendVimeo::extractSource(const QByteArray       & data,
 
     QString content = Sk::readUtf8(data);
 
-    QHash<WAbstractBackend::Quality, QUrl> * medias = &(reply.medias);
+    QHash<WAbstractBackend::Quality, QString> * medias = &(reply.medias);
 
     QString json = WControllerNetwork::extractJsonHtml(content, "files");
 
@@ -487,7 +490,7 @@ WBackendNetSource WBackendVimeo::extractSource(const QByteArray       & data,
 
         if (quality != WAbstractBackend::QualityInvalid)
         {
-            QUrl url = WControllerNetwork::extractJson(string, "url");
+            QString url = WControllerNetwork::extractJson(string, "url");
 
             medias->insert(quality, url);
         }

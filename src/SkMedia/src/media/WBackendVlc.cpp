@@ -865,7 +865,7 @@ void WBackendVlcPrivate::loadSources(bool play)
 
     Q_Q(WBackendVlc);
 
-    qDebug("Loading Source %s", source.toString().C_STR);
+    qDebug("Loading Source %s", source.C_STR);
 
     reply = wControllerMedia->getMedia(source, q);
 
@@ -910,7 +910,7 @@ void WBackendVlcPrivate::applySources(bool play)
 
         if (play) playMedia();
 
-        qDebug("Current source [%s] %d %s", currentMedia.C_URL,
+        qDebug("Current source [%s] %d %s", currentMedia.C_STR,
                                             reply->medias().count(), reply->error().C_STR);
     }
 }
@@ -1097,7 +1097,7 @@ WAbstractBackend::Quality WBackendVlcPrivate::getClosestQuality(WAbstractBackend
     {
         return WAbstractBackend::QualityInvalid;
     }
-    else if (medias.value(quality).isValid())
+    else if (medias.value(quality).isEmpty() == false)
     {
         return quality;
     }
@@ -1106,7 +1106,7 @@ WAbstractBackend::Quality WBackendVlcPrivate::getClosestQuality(WAbstractBackend
     {
         WAbstractBackend::Quality closestQuality = static_cast<WAbstractBackend::Quality> (i);
 
-        if (medias.value(closestQuality).isValid())
+        if (medias.value(closestQuality).isEmpty() == false)
         {
             return closestQuality;
         }
@@ -1116,7 +1116,7 @@ WAbstractBackend::Quality WBackendVlcPrivate::getClosestQuality(WAbstractBackend
     {
         WAbstractBackend::Quality closestQuality = static_cast<WAbstractBackend::Quality> (i);
 
-        if (medias.value(closestQuality).isValid())
+        if (medias.value(closestQuality).isEmpty() == false)
         {
             return closestQuality;
         }
@@ -1312,8 +1312,8 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
     d->player->setProxy(host, port, password);
 
-    d->currentMedia = QUrl();
-    d->currentAudio = QUrl();
+    d->currentMedia = QString();
+    d->currentAudio = QString();
 
     d->medias.clear();
     d->audios.clear();
@@ -1327,8 +1327,8 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
     d->player->clearProxy();
 
-    d->currentMedia = QUrl();
-    d->currentAudio = QUrl();
+    d->currentMedia = QString();
+    d->currentAudio = QString();
 
     d->medias.clear();
     d->audios.clear();
@@ -1347,14 +1347,14 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
 #endif
 
-/* virtual */ bool WBackendVlc::backendSetSource(const QUrl & url)
+/* virtual */ bool WBackendVlc::backendSetSource(const QString & url)
 {
     Q_D(WBackendVlc);
 
     d->clearReply();
 
-    d->currentMedia = QUrl();
-    d->currentAudio = QUrl();
+    d->currentMedia = QString();
+    d->currentAudio = QString();
 
     if (url.isEmpty())
     {
@@ -1384,7 +1384,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
     if (isPaused() == false)
     {
-        if (d->currentMedia.isValid() == false)
+        if (d->currentMedia.isEmpty())
         {
             d->loadSources(true);
 
@@ -1533,7 +1533,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
     if (closestQuality == QualityInvalid || d->closestQuality == closestQuality) return;
 
-    QUrl media = d->medias.value(closestQuality);
+    QString media = d->medias.value(closestQuality);
 
     if (d->currentMedia == media) return;
 

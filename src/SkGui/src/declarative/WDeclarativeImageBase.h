@@ -53,9 +53,9 @@ class SK_GUI_EXPORT WDeclarativeImageBase : public WDeclarativeTexture
     Q_PROPERTY(bool isSourceDefault READ isSourceDefault NOTIFY defaultChanged)
     Q_PROPERTY(bool isExplicitSize  READ isExplicitSize  NOTIFY explicitSizeChanged)
 
-    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
 
-    Q_PROPERTY(QUrl sourceDefault READ sourceDefault WRITE setSourceDefault
+    Q_PROPERTY(QString sourceDefault READ sourceDefault WRITE setSourceDefault
                NOTIFY sourceDefaultChanged)
 
     Q_PROPERTY(QSize sourceSize READ sourceSize WRITE setSourceSize RESET resetSourceSize
@@ -97,9 +97,9 @@ protected:
 #endif
 
 public: // Interface
-    Q_INVOKABLE void loadSource(const QUrl & url, bool force = false);
+    Q_INVOKABLE void loadSource(const QString & url, bool force = false);
 
-    Q_INVOKABLE void loadNow(const QUrl & url = QUrl());
+    Q_INVOKABLE void loadNow(const QString & url = QString());
 
 #ifdef QT_4
     Q_INVOKABLE void setItemShot(QGraphicsObject * object);
@@ -116,7 +116,7 @@ protected: // Functions
 protected: // Virtual functions
     virtual void load();
 
-    virtual void applyUrl(const QUrl & url, bool asynchronous);
+    virtual void applyUrl(const QString & url, bool asynchronous);
 
     virtual void clearUrl(WDeclarativeImageBase::Status status);
 
@@ -179,11 +179,11 @@ public: // Properties
     bool isSourceDefault() const;
     bool isExplicitSize () const;
 
-    QUrl source() const;
-    void setSource(const QUrl & url);
+    QString source() const;
+    void    setSource(const QString & url);
 
-    QUrl sourceDefault() const;
-    void setSourceDefault(const QUrl & url);
+    QString sourceDefault() const;
+    void    setSourceDefault(const QString & url);
 
     QSize sourceSize() const;
     void  setSourceSize(const QSize & size);

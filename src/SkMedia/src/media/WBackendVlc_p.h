@@ -274,11 +274,11 @@ public: // Variables
     int  volume;
     bool mute;
 
-    QHash<WAbstractBackend::Quality, QUrl> medias;
-    QHash<WAbstractBackend::Quality, QUrl> audios;
+    QHash<WAbstractBackend::Quality, QString> medias;
+    QHash<WAbstractBackend::Quality, QString> audios;
 
-    QUrl currentMedia;
-    QUrl currentAudio;
+    QString currentMedia;
+    QString currentAudio;
 
     WAbstractBackend::Output  closestOutput;
     WAbstractBackend::Quality closestQuality;

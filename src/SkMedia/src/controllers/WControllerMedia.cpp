@@ -46,7 +46,7 @@ static const int CONTROLLERMEDIA_CACHE_MAX = 1000;
 //=================================================================================================
 // Private
 
-WMediaReply::WMediaReply(const QUrl & url, QObject * parent) : QObject(parent)
+WMediaReply::WMediaReply(const QString & url, QObject * parent) : QObject(parent)
 {
     _url = url;
 
@@ -69,19 +69,19 @@ WMediaReply::WMediaReply(const QUrl & url, QObject * parent) : QObject(parent)
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-QUrl WMediaReply::url() const
+QString WMediaReply::url() const
 {
     return _url;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-QHash<WAbstractBackend::Quality, QUrl> WMediaReply::medias() const
+QHash<WAbstractBackend::Quality, QString> WMediaReply::medias() const
 {
     return _medias;
 }
 
-QHash<WAbstractBackend::Quality, QUrl> WMediaReply::audios() const
+QHash<WAbstractBackend::Quality, QString> WMediaReply::audios() const
 {
     return _audios;
 }
@@ -171,7 +171,7 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 {
     Q_Q(WControllerMedia);
 
-    const QUrl & url = reply->_url;
+    const QString & url = reply->_url;
 
     QHashIterator<WRemoteData *, WPrivateMediaData *> i(jobs);
 
@@ -253,7 +253,7 @@ void WControllerMediaPrivate::updateSources()
 {
     QDateTime date = QDateTime::currentDateTime();
 
-    QMutableHashIterator<QUrl, WPrivateMediaSource> i(sources);
+    QMutableHashIterator<QString, WPrivateMediaSource> i(sources);
 
     while (i.hasNext())
     {
@@ -271,7 +271,7 @@ void WControllerMediaPrivate::updateSources()
 
     while (urls.count() > CONTROLLERMEDIA_CACHE_MAX)
     {
-        QUrl url = urls.takeFirst();
+        QString url = urls.takeFirst();
 
         sources.remove(url);
     }
@@ -322,7 +322,7 @@ void WControllerMediaPrivate::onLoaded(WRemoteData * data)
 
     if (data->hasError())
     {
-        qWarning("WControllerMediaPrivate::onLoaded: Failed to load media %s.", data->url().C_URL);
+        qWarning("WControllerMediaPrivate::onLoaded: Failed to load media %s.", data->url().C_STR);
 
         media->backend->queryFailed(media->query);
 
@@ -389,8 +389,8 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
     }
     else
     {
-        const QHash<WAbstractBackend::Quality, QUrl> & medias = source.medias;
-        const QHash<WAbstractBackend::Quality, QUrl> & audios = source.audios;
+        const QHash<WAbstractBackend::Quality, QString> & medias = source.medias;
+        const QHash<WAbstractBackend::Quality, QString> & audios = source.audios;
 
         if (medias.count())
         {
@@ -401,7 +401,7 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
 
             mediaSource.expiry = source.expiry;
 
-            QUrl url = media->url;
+            QString url = media->url;
 
             urls.append(url);
 
@@ -460,9 +460,9 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ WMediaReply * WControllerMedia::getMedia(const QUrl & url, QObject * parent)
+/* Q_INVOKABLE */ WMediaReply * WControllerMedia::getMedia(const QString & url, QObject * parent)
 {
-    if (url.isValid() == false) return NULL;
+    if (url.isEmpty()) return NULL;
 
     Q_D(WControllerMedia);
 
@@ -499,7 +499,7 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WControllerMedia::clearMedia(const QUrl & url)
+/* Q_INVOKABLE */ void WControllerMedia::clearMedia(const QString & url)
 {
     Q_D(WControllerMedia);
 

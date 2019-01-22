@@ -51,7 +51,7 @@ class SK_GUI_EXPORT WDeclarativeImageSvg : public WDeclarativeTexture
     Q_PROPERTY(bool isLoading READ isLoading NOTIFY statusChanged)
     Q_PROPERTY(bool isReady   READ isReady   NOTIFY statusChanged)
 
-    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
 
     Q_PROPERTY(LoadMode loadMode READ loadMode WRITE setLoadMode NOTIFY loadModeChanged)
     Q_PROPERTY(FillMode fillMode READ fillMode WRITE setFillMode NOTIFY fillModeChanged)
@@ -146,8 +146,8 @@ public: // Properties
     bool isLoading() const;
     bool isReady  () const;
 
-    QUrl source() const;
-    void setSource(const QUrl & url);
+    QString source() const;
+    void    setSource(const QString & url);
 
     LoadMode loadMode() const;
     void     setLoadMode(LoadMode mode);

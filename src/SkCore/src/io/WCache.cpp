@@ -47,8 +47,10 @@ struct WCacheJob
 {
     int id;
 
-    QUrl urlBase;
-    QUrl url;
+    QString urlBase;
+    QString url;
+
+    QString host;
 
     int redirectCount;
 
@@ -65,8 +67,8 @@ struct WCacheData
 {
     int id;
 
-    QUrl url;
-    QUrl urlCache;
+    QString url;
+    QString urlCache;
 
     QString extension;
 
@@ -123,7 +125,7 @@ private: // Functions
     void load();
     void save();
 
-    WCacheJob * getJob(const QUrl & url);
+    WCacheJob * getJob(const QString & url);
 
     void processJobs();
 
@@ -131,14 +133,14 @@ private: // Functions
 
     bool writeFile(QNetworkReply * reply, WCacheJob * job);
 
-    void writeData(const QUrl & url, const QByteArray & array);
+    void writeData(const QString & url, const QByteArray & array);
 
     QString getUrlCache(int id, const QString & extension) const;
 
     void cleanFiles();
 
-    void addData(int id, const QUrl & url,
-                         const QUrl & urlCache, const QString & extension, qint64 size);
+    void addData(int id, const QString & url,
+                         const QString & urlCache, const QString & extension, qint64 size);
 
     void clearFolder();
 
@@ -166,9 +168,9 @@ private: // Variables
 
     QList<WCacheData *> datas;
 
-    QHash<QUrl, WCacheData *> hash;
+    QHash<QString, WCacheData *> hash;
 
-    QHash<QUrl, int> toRemove;
+    QHash<QString, int> toRemove;
 
     QTimer * timer;
 
@@ -182,8 +184,8 @@ private: // Variables
 class WCacheThreadEventFile : public QEvent
 {
 public:
-    WCacheThreadEventFile(WCacheThread::EventType type, WCacheFile * file, const QUrl & url,
-                                                                           int          maxHost)
+    WCacheThreadEventFile(WCacheThread::EventType type, WCacheFile * file, const QString & url,
+                                                                           int             maxHost)
         : QEvent(static_cast<QEvent::Type> (type))
     {
         this->file = file;
@@ -196,7 +198,7 @@ public:
 public: // Variables
     WCacheFile * file;
 
-    QUrl url;
+    QString url;
 
     int maxHost;
 };
@@ -208,7 +210,7 @@ public: // Variables
 class WCacheThreadEventWrite : public QEvent
 {
 public:
-    WCacheThreadEventWrite(const QUrl & url, const QByteArray & array)
+    WCacheThreadEventWrite(const QString & url, const QByteArray & array)
         : QEvent(static_cast<QEvent::Type> (WCacheThread::EventWrite))
     {
         this->url = url;
@@ -217,7 +219,7 @@ public:
     }
 
 public: // Variables
-    QUrl url;
+    QString url;
 
     QByteArray array;
 };
@@ -229,14 +231,14 @@ public: // Variables
 class WCacheThreadEventUrls : public QEvent
 {
 public:
-    WCacheThreadEventUrls(WCacheThread::EventType type, const QList<QUrl> & urls)
+    WCacheThreadEventUrls(WCacheThread::EventType type, const QStringList & urls)
         : QEvent(static_cast<QEvent::Type> (type))
     {
         this->urls = urls;
     }
 
 public: // Variables
-    QList<QUrl> urls;
+    QStringList urls;
 };
 
 //=================================================================================================
@@ -286,8 +288,8 @@ public: // Variables
 class WCacheEventUrls : public QEvent
 {
 public:
-    WCacheEventUrls(WCachePrivate::EventType type, const QList<QUrl> & urls,
-                                                   const QList<QUrl> & urlsCache)
+    WCacheEventUrls(WCachePrivate::EventType type, const QStringList & urls,
+                                                   const QStringList & urlsCache)
         : QEvent(static_cast<QEvent::Type> (type))
     {
         this->urls      = urls;
@@ -295,8 +297,8 @@ public:
     }
 
 public: // Variables
-    QList<QUrl> urls;
-    QList<QUrl> urlsCache;
+    QStringList urls;
+    QStringList urlsCache;
 };
 
 //=================================================================================================
@@ -306,7 +308,7 @@ public: // Variables
 class WCacheEventAdded : public QEvent
 {
 public:
-    WCacheEventAdded(const QUrl & url, const QUrl & urlCache)
+    WCacheEventAdded(const QString & url, const QString & urlCache)
         : QEvent(static_cast<QEvent::Type> (WCachePrivate::EventAdded))
     {
         this->url      = url;
@@ -314,8 +316,8 @@ public:
     }
 
 public: // Variables
-    QUrl url;
-    QUrl urlCache;
+    QString url;
+    QString urlCache;
 };
 
 //=================================================================================================
@@ -325,7 +327,7 @@ public: // Variables
 class WCacheEventFailed : public QEvent
 {
 public:
-    WCacheEventFailed(const QUrl & url, const QString & error)
+    WCacheEventFailed(const QString & url, const QString & error)
         : QEvent(static_cast<QEvent::Type> (WCachePrivate::EventFailed))
     {
         this->url   = url;
@@ -333,7 +335,7 @@ public:
     }
 
 public: // Variables
-    QUrl    url;
+    QString url;
     QString error;
 };
 
@@ -349,14 +351,14 @@ protected: // WAbstractThreadAction implementation
     /* virtual */ bool run();
 
 public: // Variables
-    QList<QUrl> urls;
+    QStringList urls;
 };
 
 /* virtual */ bool WCacheFileDelete::run()
 {
-    foreach (const QUrl & url, urls)
+    foreach (const QString & url, urls)
     {
-        WControllerFile::deleteFile(url.toString());
+        WControllerFile::deleteFile(url);
     }
 
     return true;
@@ -447,10 +449,12 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 
         job->id = ids.generateId();
 
-        QUrl url = eventFile->url;
+        QString url = eventFile->url;
 
         job->urlBase = url;
         job->url     = url;
+
+        job->host = QUrl(url).host();
 
         job->redirectCount = 0;
 
@@ -494,7 +498,7 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
     {
         WCacheThreadEvent * eventCache = static_cast<WCacheThreadEvent *> (event);
 
-        QUrl url = eventCache->value.toUrl();
+        QString url = eventCache->value.toString();
 
         foreach (WCacheJob * job, jobsPending)
         {
@@ -539,7 +543,7 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
     {
         WCacheThreadEventUrls * eventUrls = static_cast<WCacheThreadEventUrls *> (event);
 
-        foreach (const QUrl & url, eventUrls->urls)
+        foreach (const QString & url, eventUrls->urls)
         {
             WCacheData * data = hash.value(url);
 
@@ -557,10 +561,10 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
     {
         WCacheThreadEventUrls * eventUrls = static_cast<WCacheThreadEventUrls *> (event);
 
-        QList<QUrl> urls;
-        QList<QUrl> urlsCache;
+        QStringList urls;
+        QStringList urlsCache;
 
-        foreach (const QUrl & url, eventUrls->urls)
+        foreach (const QString & url, eventUrls->urls)
         {
             WCacheData * data = hash.value(url);
 
@@ -568,8 +572,8 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 
             datas.removeOne(data);
 
-            const QUrl & dataUrl      = data->url;
-            const QUrl & dataUrlCache = data->urlCache;
+            const QString & dataUrl      = data->url;
+            const QString & dataUrlCache = data->urlCache;
 
             hash.remove(dataUrl);
 
@@ -592,7 +596,7 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
     {
         WCacheThreadEventUrls * eventUrls = static_cast<WCacheThreadEventUrls *> (event);
 
-        foreach (const QUrl & url, eventUrls->urls)
+        foreach (const QString & url, eventUrls->urls)
         {
             int id = toRemove.take(url);
 
@@ -705,7 +709,7 @@ void WCacheThread::load()
     if (file.exists() == false)
     {
         QCoreApplication::postEvent(cache, new WCacheEventUrls(WCachePrivate::EventLoaded,
-                                                               QList<QUrl>(), QList<QUrl>()));
+                                                               QStringList(), QStringList()));
 
         return;
     }
@@ -715,13 +719,13 @@ void WCacheThread::load()
         qWarning("WCacheThread::load: Failed to open index %s.", pathIndex.C_STR);
 
         QCoreApplication::postEvent(cache, new WCacheEventUrls(WCachePrivate::EventLoaded,
-                                                               QList<QUrl>(), QList<QUrl>()));
+                                                               QStringList(), QStringList()));
 
         return;
     }
 
-    QList<QUrl> urls;
-    QList<QUrl> urlsCache;
+    QStringList urls;
+    QStringList urlsCache;
 
     QDataStream stream(&file);
 
@@ -735,7 +739,7 @@ void WCacheThread::load()
     {
         int id;
 
-        QUrl url;
+        QString url;
 
         QString extension;
 
@@ -743,7 +747,7 @@ void WCacheThread::load()
 
         stream >> id >> url >> extension >> size;
 
-        QUrl urlCache = pathFile + QString::number(id) + '.' + extension;
+        QString urlCache = pathFile + QString::number(id) + '.' + extension;
 
         addData(id, url, urlCache, extension, size);
 
@@ -774,7 +778,7 @@ void WCacheThread::save()
 
 //-------------------------------------------------------------------------------------------------
 
-WCacheJob * WCacheThread::getJob(const QUrl & url)
+WCacheJob * WCacheThread::getJob(const QString & url)
 {
     foreach (WCacheJob * job, jobsPending)
     {
@@ -803,11 +807,11 @@ void WCacheThread::processJobs()
 
     foreach (WCacheJob * job, jobsPending)
     {
-        const QUrl & url = job->url;
+        const QString & url = job->url;
 
         int maxHost = job->maxHost;
 
-        if (maxHost == -1 || hostCount(url.host()) < maxHost)
+        if (maxHost == -1 || hostCount(job->host) < maxHost)
         {
             QNetworkReply * reply = manager->get(QNetworkRequest(url));
 
@@ -829,7 +833,7 @@ int WCacheThread::hostCount(const QString & host)
 
     foreach (WCacheJob * job, jobs)
     {
-        if (job->url.host() == host) count++;
+        if (job->host == host) count++;
     }
 
     return count;
@@ -839,13 +843,13 @@ int WCacheThread::hostCount(const QString & host)
 
 bool WCacheThread::writeFile(QNetworkReply * reply, WCacheJob * job)
 {
-    const QUrl & url = job->urlBase;
+    const QString & url = job->urlBase;
 
     if (reply->error() != QNetworkReply::NoError)
     {
         QString error = reply->errorString();
 
-        qWarning("WCacheThread::writeFile: Get failed %s code %d. %s", url.C_URL, reply->error(),
+        qWarning("WCacheThread::writeFile: Get failed %s code %d. %s", url.C_STR, reply->error(),
                  error.C_STR);
 
         QCoreApplication::postEvent(cache, new WCacheEventFailed(url, error));
@@ -857,7 +861,7 @@ bool WCacheThread::writeFile(QNetworkReply * reply, WCacheJob * job)
 
     if (size >= sizeMax)
     {
-        qWarning("WCacheThread::writeFile: File is too large %s.", url.C_URL);
+        qWarning("WCacheThread::writeFile: File is too large %s.", url.C_STR);
 
         QCoreApplication::postEvent(cache, new WCacheEventFailed(url, "File is too large"));
 
@@ -902,13 +906,13 @@ bool WCacheThread::writeFile(QNetworkReply * reply, WCacheJob * job)
 
 //-------------------------------------------------------------------------------------------------
 
-void WCacheThread::writeData(const QUrl & url, const QByteArray & array)
+void WCacheThread::writeData(const QString & url, const QByteArray & array)
 {
     qint64 size = array.size() * sizeof(char);
 
     if (size >= sizeMax)
     {
-        qWarning("WCacheThread::writeData: Data is too large %s.", url.C_URL);
+        qWarning("WCacheThread::writeData: Data is too large %s.", url.C_STR);
 
         QCoreApplication::postEvent(cache, new WCacheEventFailed(url, "Data is too large"));
 
@@ -966,15 +970,15 @@ QString WCacheThread::getUrlCache(int id, const QString & extension) const
 
 void WCacheThread::cleanFiles()
 {
-    QList<QUrl> urls;
-    QList<QUrl> urlsCache;
+    QStringList urls;
+    QStringList urlsCache;
 
     while (datas.count() && size >= sizeMax)
     {
         WCacheData * data = datas.takeFirst();
 
-        const QUrl & url      = data->url;
-        const QUrl & urlCache = data->urlCache;
+        const QString & url      = data->url;
+        const QString & urlCache = data->urlCache;
 
         hash.remove(url);
 
@@ -999,8 +1003,9 @@ void WCacheThread::cleanFiles()
 
 //-------------------------------------------------------------------------------------------------
 
-void WCacheThread::addData(int id, const QUrl & url,
-                                   const QUrl & urlCache, const QString & extension, qint64 size)
+void WCacheThread::addData(int id,
+                           const QString & url,
+                           const QString & urlCache, const QString & extension, qint64 size)
 {
     WCacheData * data = new WCacheData;
 
@@ -1045,9 +1050,18 @@ void WCacheThread::onFinished(QNetworkReply * reply)
         return;
     }
 
-    QUrl url = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl();
+    QString url = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toString();
 
-    if (url.isValid())
+    if (url.isEmpty())
+    {
+        if (writeFile(reply, job) == false)
+        {
+            ids.removeOne(job->id);
+        }
+
+        delete job;
+    }
+    else
     {
         if (job->redirectCount < CACHE_MAX_REDIRECT)
         {
@@ -1063,15 +1077,6 @@ void WCacheThread::onFinished(QNetworkReply * reply)
 
             delete job;
         }
-    }
-    else
-    {
-        if (writeFile(reply, job) == false)
-        {
-            ids.removeOne(job->id);
-        }
-
-        delete job;
     }
 
     processJobs();
@@ -1124,12 +1129,12 @@ WCacheFile::WCacheFile(WCache * cache, QObject * parent) : QObject(parent)
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-QUrl WCacheFile::url() const
+QString WCacheFile::url() const
 {
     return _url;
 }
 
-QUrl WCacheFile::urlCache() const
+QString WCacheFile::urlCache() const
 {
     return _urlCache;
 }
@@ -1212,7 +1217,7 @@ void WCachePrivate::init(const QString & path, qint64 sizeMax)
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WCachePrivate::get(WCacheFile * file, const QUrl & url)
+void WCachePrivate::get(WCacheFile * file, const QString & url)
 {
     WCacheFiles * files = urlsPending.value(url);
 
@@ -1244,7 +1249,7 @@ void WCachePrivate::get(WCacheFile * file, const QUrl & url)
     }
 }
 
-void WCachePrivate::write(WCacheFile * file, const QUrl & url, const QByteArray & array)
+void WCachePrivate::write(WCacheFile * file, const QString & url, const QByteArray & array)
 {
     WCacheFiles * files = urlsPending.value(url);
 
@@ -1269,7 +1274,7 @@ void WCachePrivate::write(WCacheFile * file, const QUrl & url, const QByteArray 
 
 //-------------------------------------------------------------------------------------------------
 
-void WCachePrivate::pop(const QUrl & url)
+void WCachePrivate::pop(const QString & url)
 {
     if (loaded == false) return;
 
@@ -1288,7 +1293,7 @@ void WCachePrivate::clearFile(WCacheFile * file)
 {
     if (file->_loaded) return;
 
-    const QUrl & url = file->_url;
+    const QString & url = file->_url;
 
     WCacheFiles * files = urlsPending.value(url);
 
@@ -1333,7 +1338,7 @@ void WCachePrivate::onProgress(qint64 bytesReceived, qint64 bytesTotal)
 
     if (reply == NULL) return;
 
-    WCacheFiles * files = urlsPending.value(reply->url());
+    WCacheFiles * files = urlsPending.value(reply->url().toString());
 
     if (files == NULL) return;
 
@@ -1374,9 +1379,9 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ WCacheFile * WCache::getFile(const QUrl & url, QObject * parent, int maxHost)
+/* Q_INVOKABLE */ WCacheFile * WCache::getFile(const QString & url, QObject * parent, int maxHost)
 {
-    if (url.isValid() == false) return NULL;
+    if (url.isEmpty()) return NULL;
 
     Q_D(WCache);
 
@@ -1389,9 +1394,15 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
     file->_maxHost = maxHost;
 
-    QUrl path = d->urls.value(url);
+    QString path = d->urls.value(url);
 
-    if (path.isValid())
+    if (path.isNull())
+    {
+        file->_loaded = false;
+
+        d->get(file, url);
+    }
+    else
     {
         file->_urlCache = path;
 
@@ -1399,23 +1410,17 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
         d->pop(url);
     }
-    else
-    {
-        file->_loaded = false;
-
-        d->get(file, url);
-    }
 
     return file;
 }
 
-/* Q_INVOKABLE */ QUrl WCache::getFileUrl(const QUrl & url)
+/* Q_INVOKABLE */ QString WCache::getFileUrl(const QString & url)
 {
     Q_D(WCache);
 
-    QUrl path = d->urls.value(url);
+    QString path = d->urls.value(url);
 
-    if (path.isValid())
+    if (path.isNull() == false)
     {
         d->pop(url);
     }
@@ -1425,10 +1430,10 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ WCacheFile * WCache::writeFile(const QUrl       & url,
+/* Q_INVOKABLE */ WCacheFile * WCache::writeFile(const QString    & url,
                                                  const QByteArray & array, QObject * parent)
 {
-    if (url.isValid() == false) return NULL;
+    if (url.isEmpty()) return NULL;
 
     Q_D(WCache);
 
@@ -1441,9 +1446,15 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
     file->_maxHost = -1;
 
-    QUrl path = d->urls.value(url);
+    QString path = d->urls.value(url);
 
-    if (path.isValid())
+    if (path.isNull())
+    {
+        file->_loaded = false;
+
+        d->write(file, url, array);
+    }
+    else
     {
         file->_urlCache = path;
 
@@ -1451,19 +1462,13 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
         d->pop(url);
     }
-    else
-    {
-        file->_loaded = false;
-
-        d->write(file, url, array);
-    }
 
     return file;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WCache::addFile(const QUrl & url, const QByteArray & array)
+/* Q_INVOKABLE */ void WCache::addFile(const QString & url, const QByteArray & array)
 {
     WCacheFile * file = writeFile(url, array, NULL);
 
@@ -1472,13 +1477,13 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WCache::removeFiles(const QList<QUrl> & urls)
+/* Q_INVOKABLE */ void WCache::removeFiles(const QStringList & urls)
 {
     Q_D(WCache);
 
-    QList<QUrl> list;
+    QStringList list;
 
-    foreach (const QUrl & url, urls)
+    foreach (const QString & url, urls)
     {
         if (d->urls.contains(url))
         {
@@ -1495,7 +1500,7 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
     }
 }
 
-/* Q_INVOKABLE */ void WCache::removeFile(const QUrl & url)
+/* Q_INVOKABLE */ void WCache::removeFile(const QString & url)
 {
     Q_D(WCache);
 
@@ -1504,22 +1509,22 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
     d->urls.remove(url);
 
     QCoreApplication::postEvent(d->thread, new WCacheThreadEventUrls(WCacheThread::EventRemove,
-                                                                     QList<QUrl>() << url));
+                                                                     QStringList() << url));
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WCache::load(const QList<QUrl> & urls, int maxHost)
+/* Q_INVOKABLE */ void WCache::load(const QStringList & urls, int maxHost)
 {
     if (urls.isEmpty()) return;
 
     Q_D(WCache);
 
-    QHash<QUrl, WCacheFile *> hash;
+    QHash<QString, WCacheFile *> hash;
 
-    foreach (const QUrl & url, urls)
+    foreach (const QString & url, urls)
     {
-        if (url.isValid() == false) continue;
+        if (url.isEmpty()) continue;
 
         if (d->urls.contains(url) == false)
         {
@@ -1545,7 +1550,7 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
         else d->pop(url);
     }
 
-    QHashIterator<QUrl, WCacheFile *> i(d->urlsLoad);
+    QHashIterator<QString, WCacheFile *> i(d->urlsLoad);
 
     while (i.hasNext())
     {
@@ -1561,7 +1566,7 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 {
     Q_D(WCache);
 
-    QHashIterator<QUrl, WCacheFile *> i(d->urlsLoad);
+    QHashIterator<QString, WCacheFile *> i(d->urlsLoad);
 
     while (i.hasNext())
     {
@@ -1614,11 +1619,11 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
     abortLoad();
 
-    QHash<QUrl, WCacheFiles *> hash = d->urlsPending;
+    QHash<QString, WCacheFiles *> hash = d->urlsPending;
 
     d->urlsPending.clear();
 
-    QHashIterator<QUrl, WCacheFiles *> i(hash);
+    QHashIterator<QString, WCacheFiles *> i(hash);
 
     while (i.hasNext())
     {
@@ -1664,7 +1669,7 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
         WCacheEventUrls * eventUrls = static_cast<WCacheEventUrls *> (event);
 
-        const QList<QUrl> & urls = eventUrls->urls;
+        const QStringList & urls = eventUrls->urls;
 
         QList<WCacheFile *> list;
 
@@ -1672,9 +1677,9 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
         {
             int i = 0;
 
-            foreach (const QUrl & url, urls)
+            foreach (const QString & url, urls)
             {
-                QUrl urlCache = eventUrls->urlsCache.at(i);
+                QString urlCache = eventUrls->urlsCache.at(i);
 
                 WCacheFiles * files = d->urlsPending.take(url);
 
@@ -1705,7 +1710,7 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
         d->loaded = true;
 
-        QHashIterator<QUrl, WCacheFiles *> i(d->urlsPending);
+        QHashIterator<QString, WCacheFiles *> i(d->urlsPending);
 
         while (i.hasNext())
         {
@@ -1715,7 +1720,7 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
             if (list.isEmpty() == false)
             {
-                const QUrl & url = i.key();
+                const QString & url = i.key();
 
                 WCacheFile * file = list.first();
 
@@ -1747,8 +1752,8 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
         WCacheEventAdded * eventAdded = static_cast<WCacheEventAdded *> (event);
 
-        const QUrl & url      = eventAdded->url;
-        const QUrl & urlCache = eventAdded->urlCache;
+        const QString & url      = eventAdded->url;
+        const QString & urlCache = eventAdded->urlCache;
 
         d->urls.insert(url, urlCache);
 
@@ -1780,7 +1785,7 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
         WCacheEventFailed * eventFailed = static_cast<WCacheEventFailed *> (event);
 
-        const QUrl & url = eventFailed->url;
+        const QString & url = eventFailed->url;
 
         WCacheFiles * files = d->urlsPending.take(url);
 
@@ -1805,12 +1810,12 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
         WCacheEventUrls * eventUrls = static_cast<WCacheEventUrls *> (event);
 
-        const QList<QUrl> & urls      = eventUrls->urls;
-        const QList<QUrl> & urlsCache = eventUrls->urlsCache;
+        const QStringList & urls      = eventUrls->urls;
+        const QStringList & urlsCache = eventUrls->urlsCache;
 
         int i = 0;
 
-        foreach (const QUrl & url, urls)
+        foreach (const QString & url, urls)
         {
             d->urls.remove(url);
 

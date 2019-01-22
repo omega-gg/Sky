@@ -37,7 +37,7 @@ class WRemoteData;
 
 struct WControllerPlaylistSource
 {
-    QUrl    url;
+    QString url;
     QString title;
 };
 
@@ -47,7 +47,7 @@ struct WControllerPlaylistSource
 
 struct WControllerPlaylistMedia
 {
-    QUrl    url;
+    QString url;
     QString title;
 
     bool local;
@@ -72,14 +72,14 @@ private: // Functions
 
     void addFile(const QString & path);
 
-    bool addUrl(QList<QString> * urls, const QString & url) const;
+    bool addUrl(QStringList * urls, const QString & url) const;
 
     QString generateUrl  (const QString & url, const QString & baseUrl) const;
     QString generateTitle(const QString & url, const QString & urlName) const;
 
 public: // Variables
     QString title;
-    QUrl    cover;
+    QString cover;
 
     QList<WControllerPlaylistSource> sources;
     QList<WControllerPlaylistSource> folders;
@@ -129,29 +129,29 @@ public: // Interface
 
     Q_INVOKABLE WBackendNet * backendFromId(const QString & id) const;
 
-    Q_INVOKABLE WBackendNet * backendFromUrl(const QUrl & url) const;
+    Q_INVOKABLE WBackendNet * backendFromUrl(const QString & url) const;
 
-    Q_INVOKABLE WBackendNet * backendFromTrack   (const QUrl & url) const;
-    Q_INVOKABLE WBackendNet * backendFromPlaylist(const QUrl & url) const;
+    Q_INVOKABLE WBackendNet * backendFromTrack   (const QString & url) const;
+    Q_INVOKABLE WBackendNet * backendFromPlaylist(const QString & url) const;
 
     Q_INVOKABLE WBackendNet * backendForCover(const QString & label, const QString & q) const;
 
     //---------------------------------------------------------------------------------------------
 
-    Q_INVOKABLE QUrl backendCover(WBackendNet * backend) const;
+    Q_INVOKABLE QString backendCover(WBackendNet * backend) const;
 
-    Q_INVOKABLE QUrl backendCoverFromId (const QString & id)  const;
-    Q_INVOKABLE QUrl backendCoverFromUrl(const QUrl    & url) const;
+    Q_INVOKABLE QString backendCoverFromId (const QString & id)  const;
+    Q_INVOKABLE QString backendCoverFromUrl(const QString & url) const;
 
     //---------------------------------------------------------------------------------------------
 
-    Q_INVOKABLE WLibraryItem::Type urlType(const QUrl & url) const;
+    Q_INVOKABLE WLibraryItem::Type urlType(const QString & url) const;
 
-    Q_INVOKABLE bool urlIsTrack   (const QUrl & url) const;
-    Q_INVOKABLE bool urlIsPlaylist(const QUrl & url) const;
+    Q_INVOKABLE bool urlIsTrack   (const QString & url) const;
+    Q_INVOKABLE bool urlIsPlaylist(const QString & url) const;
 
-    Q_INVOKABLE bool sourceIsVideo(const QUrl & url) const;
-    Q_INVOKABLE bool sourceIsAudio(const QUrl & url) const;
+    Q_INVOKABLE bool sourceIsVideo(const QString & url) const;
+    Q_INVOKABLE bool sourceIsAudio(const QString & url) const;
 
     //---------------------------------------------------------------------------------------------
 
@@ -171,10 +171,10 @@ public: // Interface
     Q_INVOKABLE void unregisterLoaders();
 
 public: // Static functions
-    Q_INVOKABLE static QUrl generateSource(const QUrl & url);
+    Q_INVOKABLE static QString generateSource(const QString & url);
 
-    Q_INVOKABLE static QUrl createSource(const QString & backend, const QString & method,
-                                         const QString & label,   const QString & q = QString());
+    Q_INVOKABLE static QString createSource(const QString & backend, const QString & method,
+                                            const QString & label,   const QString & q = QString());
 
     Q_INVOKABLE static WRemoteData * getDataQuery(WAbstractLoader        * loader,
                                                   const WBackendNetQuery & query,
@@ -186,13 +186,13 @@ public: // Static functions
 
     //---------------------------------------------------------------------------------------------
 
-    Q_INVOKABLE static bool urlIsMedia(const QUrl & url);
-    Q_INVOKABLE static bool urlIsVideo(const QUrl & url);
-    Q_INVOKABLE static bool urlIsAudio(const QUrl & url);
+    Q_INVOKABLE static bool urlIsMedia(const QString & url);
+    Q_INVOKABLE static bool urlIsVideo(const QString & url);
+    Q_INVOKABLE static bool urlIsAudio(const QString & url);
 
-    Q_INVOKABLE static bool urlIsAscii (const QUrl & url);
-    Q_INVOKABLE static bool urlIsMarkup(const QUrl & url);
-    Q_INVOKABLE static bool urlIsText  (const QUrl & url);
+    Q_INVOKABLE static bool urlIsAscii (const QString & url);
+    Q_INVOKABLE static bool urlIsMarkup(const QString & url);
+    Q_INVOKABLE static bool urlIsText  (const QString & url);
 
     //---------------------------------------------------------------------------------------------
 

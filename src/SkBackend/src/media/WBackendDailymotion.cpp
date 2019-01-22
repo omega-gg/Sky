@@ -51,9 +51,9 @@ public: // Functions
 
     QString extractSource(const QString & json, const QString & quality) const;
 
-    QString getSource(const QUrl & url) const;
+    QString getSource(const QString & url) const;
 
-    QUrl getUrlVideos(const QString & id) const;
+    QString getUrlVideos(const QString & id) const;
 
 protected:
     W_DECLARE_PUBLIC(WBackendDailymotion)
@@ -119,7 +119,7 @@ QString WBackendDailymotionPrivate::extractSource(const QString & json,
 
 //-------------------------------------------------------------------------------------------------
 
-QString WBackendDailymotionPrivate::getSource(const QUrl & url) const
+QString WBackendDailymotionPrivate::getSource(const QString & url) const
 {
     QString source = WControllerNetwork::removeUrlPrefix(url);
 
@@ -137,7 +137,7 @@ QString WBackendDailymotionPrivate::getSource(const QUrl & url) const
 
 //-------------------------------------------------------------------------------------------------
 
-QUrl WBackendDailymotionPrivate::getUrlVideos(const QString & id) const
+QString WBackendDailymotionPrivate::getUrlVideos(const QString & id) const
 {
     QUrl url("https://api.dailymotion.com/" + id + "/videos");
 
@@ -155,7 +155,7 @@ QUrl WBackendDailymotionPrivate::getUrlVideos(const QString & id) const
     url.setQuery(query);
 #endif
 
-    return url;
+    return url.toString();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -192,7 +192,7 @@ WBackendDailymotion::WBackendDailymotion() : WBackendNet(new WBackendDailymotion
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendDailymotion::checkValidUrl(const QUrl & url) const
+/* Q_INVOKABLE virtual */ bool WBackendDailymotion::checkValidUrl(const QString & url) const
 {
     QString source = WControllerNetwork::removeUrlPrefix(url);
 
@@ -242,7 +242,7 @@ WBackendDailymotion::WBackendDailymotion() : WBackendNet(new WBackendDailymotion
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ QString WBackendDailymotion::getTrackId(const QUrl & url) const
+/* Q_INVOKABLE virtual */ QString WBackendDailymotion::getTrackId(const QString & url) const
 {
     Q_D(const WBackendDailymotion);
 
@@ -266,7 +266,7 @@ WBackendDailymotion::WBackendDailymotion() : WBackendNet(new WBackendDailymotion
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-WBackendNetPlaylistInfo WBackendDailymotion::getPlaylistInfo(const QUrl & url) const
+WBackendNetPlaylistInfo WBackendDailymotion::getPlaylistInfo(const QString & url) const
 {
     Q_D(const WBackendDailymotion);
 
@@ -301,13 +301,13 @@ WBackendNetPlaylistInfo WBackendDailymotion::getPlaylistInfo(const QUrl & url) c
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-QUrl WBackendDailymotion::getUrlTrack(const QString & id) const
+QString WBackendDailymotion::getUrlTrack(const QString & id) const
 {
     return "http://www.dailymotion.com/video/" + id;
 }
 
 /* Q_INVOKABLE virtual */
-QUrl WBackendDailymotion::getUrlPlaylist(const WBackendNetPlaylistInfo & info) const
+QString WBackendDailymotion::getUrlPlaylist(const WBackendNetPlaylistInfo & info) const
 {
     if (info.isFeed())
     {
@@ -319,7 +319,7 @@ QUrl WBackendDailymotion::getUrlPlaylist(const WBackendNetPlaylistInfo & info) c
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-WBackendNetQuery WBackendDailymotion::getQuerySource(const QUrl & url) const
+WBackendNetQuery WBackendDailymotion::getQuerySource(const QString & url) const
 {
     QString id = getTrackId(url);
 
@@ -331,7 +331,7 @@ WBackendNetQuery WBackendDailymotion::getQuerySource(const QUrl & url) const
 }
 
 /* Q_INVOKABLE virtual */
-WBackendNetQuery WBackendDailymotion::getQueryTrack(const QUrl & url) const
+WBackendNetQuery WBackendDailymotion::getQueryTrack(const QString & url) const
 {
     QString id = getTrackId(url);
 
@@ -349,11 +349,11 @@ WBackendNetQuery WBackendDailymotion::getQueryTrack(const QUrl & url) const
     source.setQuery(query);
 #endif
 
-    return WBackendNetQuery(source);
+    return WBackendNetQuery(source.toString());
 }
 
 /* Q_INVOKABLE virtual */
-WBackendNetQuery WBackendDailymotion::getQueryPlaylist(const QUrl & url) const
+WBackendNetQuery WBackendDailymotion::getQueryPlaylist(const QString & url) const
 {
     WBackendNetQuery query;
 
@@ -379,7 +379,7 @@ WBackendNetQuery WBackendDailymotion::getQueryPlaylist(const QUrl & url) const
         url.setQuery(urlQuery);
 #endif
 
-        query.url  = url;
+        query.url  = url.toString();
         query.id   = 1;
         query.data = "playlist/" + id;
     }
@@ -397,7 +397,7 @@ WBackendNetQuery WBackendDailymotion::getQueryPlaylist(const QUrl & url) const
         url.setQuery(urlQuery);
 #endif
 
-        query.url  = url;
+        query.url  = url.toString();
         query.id   = 2;
         query.data = "user/" + id;
     }
@@ -439,7 +439,7 @@ WBackendNetQuery WBackendDailymotion::createQuery(const QString & method,
             url.setQuery(urlQuery);
 #endif
 
-            query.url = url;
+            query.url = url.toString();
         }
         else if (label == "channels")
         {
@@ -465,7 +465,7 @@ WBackendNetQuery WBackendDailymotion::createQuery(const QString & method,
             url.setQuery(urlQuery);
 #endif
 
-            query.url = url;
+            query.url = url.toString();
             query.id  = 1;
         }
         else if (label == "playlists")
@@ -492,7 +492,7 @@ WBackendNetQuery WBackendDailymotion::createQuery(const QString & method,
             url.setQuery(urlQuery);
 #endif
 
-            query.url = url;
+            query.url = url.toString();
         }
     }
     else if (method == "related" && label == "tracks")
@@ -513,7 +513,7 @@ WBackendNetQuery WBackendDailymotion::createQuery(const QString & method,
         url.setQuery(urlQuery);
 #endif
 
-        query.url = url;
+        query.url = url.toString();
     }
 
     return query;
@@ -541,7 +541,7 @@ WBackendNetSource WBackendDailymotion::extractSource(const QByteArray       & da
     urls.append(d->extractSource(json,  "720"));
     urls.append(d->extractSource(json, "1080"));
 
-    QHash<WAbstractBackend::Quality, QUrl> * medias = &(reply.medias);
+    QHash<WAbstractBackend::Quality, QString> * medias = &(reply.medias);
 
     for (int i = WAbstractBackend::QualityMinimum; i < WAbstractBackend::QualityMaximum; i++)
     {

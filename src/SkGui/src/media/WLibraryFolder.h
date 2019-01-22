@@ -50,10 +50,10 @@ public: // Variables
     WLocalObject::State state;
     WLocalObject::State stateQuery;
 
-    QUrl source;
+    QString source;
 
     QString title;
-    QUrl    cover;
+    QString cover;
 
     QString label;
 };
@@ -133,13 +133,13 @@ public: // Interface
     Q_INVOKABLE void insertItem (int index, const WLibraryFolderItem        & item);
     Q_INVOKABLE void insertItems(int index, const QList<WLibraryFolderItem> & items);
 
-    Q_INVOKABLE void addNewItem(Type type, const QUrl    & source = QUrl   (),
+    Q_INVOKABLE void addNewItem(Type type, const QString & source = QString(),
                                            const QString & title  = QString(),
-                                           const QUrl    & cover  = QUrl   ());
+                                           const QString & cover  = QString());
 
-    Q_INVOKABLE void insertNewItem(int index, Type type, const QUrl    & source = QUrl   (),
+    Q_INVOKABLE void insertNewItem(int index, Type type, const QString & source = QString(),
                                                          const QString & title  = QString(),
-                                                         const QUrl    & cover  = QUrl   ());
+                                                         const QString & cover  = QString());
 
     Q_INVOKABLE void moveItem(int id,   int to);
     Q_INVOKABLE void moveAt  (int from, int to);
@@ -164,7 +164,7 @@ public: // Interface
 
     Q_INVOKABLE bool contains(int id) const;
 
-    Q_INVOKABLE bool containsSource(const QUrl & source) const;
+    Q_INVOKABLE bool containsSource(const QString & source) const;
 
     //---------------------------------------------------------------------------------------------
 
@@ -174,7 +174,7 @@ public: // Interface
 
     Q_INVOKABLE int indexFromId(int id) const;
 
-    Q_INVOKABLE int indexFromSource(const QUrl & source) const;
+    Q_INVOKABLE int indexFromSource(const QString & source) const;
 
     //---------------------------------------------------------------------------------------------
 
@@ -208,16 +208,16 @@ public: // Interface
     Q_INVOKABLE WLocalObject::State itemState     (int index) const;
     Q_INVOKABLE WLocalObject::State itemStateQuery(int index) const;
 
-    Q_INVOKABLE QUrl itemSource   (int index) const;
-    Q_INVOKABLE void setItemSource(int index, const QUrl & source);
+    Q_INVOKABLE QString itemSource   (int index) const;
+    Q_INVOKABLE void    setItemSource(int index, const QString & source);
 
     Q_INVOKABLE bool itemIsLocal(int index) const;
 
     Q_INVOKABLE QString itemTitle   (int index) const;
     Q_INVOKABLE void    setItemTitle(int index, const QString & title);
 
-    Q_INVOKABLE QUrl itemCover   (int index) const;
-    Q_INVOKABLE void setItemCover(int index, const QUrl & cover);
+    Q_INVOKABLE QString itemCover   (int index) const;
+    Q_INVOKABLE void    setItemCover(int index, const QString & cover);
 
     Q_INVOKABLE QString itemLabel   (int index) const;
     Q_INVOKABLE void    setItemLabel(int index, const QString & label);
@@ -265,7 +265,7 @@ protected: // WLocalObject reimplementation
     /* virtual */ bool hasFolder() const;
 
 protected: // WLibraryItem reimplementation
-    /* virtual */ bool applySource(const QUrl             & source);
+    /* virtual */ bool applySource(const QString          & source);
     /* virtual */ bool applyQuery (const WBackendNetQuery & query);
 
     /* virtual */ bool stopQuery();

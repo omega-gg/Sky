@@ -2026,7 +2026,7 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WView::registerCursorUrl(int shape, const QUrl & url, const QSize & size)
+/* Q_INVOKABLE */ void WView::registerCursorUrl(int shape, const QString & url, const QSize & size)
 {
     QPixmap pixmap;
 

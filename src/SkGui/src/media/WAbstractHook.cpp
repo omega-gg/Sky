@@ -83,7 +83,7 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p, WAbstractBackend * backen
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ bool WAbstractHook::checkSource(const QUrl & url)
+/* Q_INVOKABLE */ bool WAbstractHook::checkSource(const QString & url)
 {
     return hookCheckSource(url);
 }
@@ -92,7 +92,7 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p, WAbstractBackend * backen
 // WBackendInterface implementation
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ QUrl WAbstractHook::source() const
+/* Q_INVOKABLE virtual */ QString WAbstractHook::source() const
 {
     Q_D(const WAbstractHook); return d->source;
 }
@@ -115,8 +115,8 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p, WAbstractBackend * backen
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ void WAbstractHook::loadSource(const QUrl & url, int duration,
-                                                                           int currentTime)
+/* Q_INVOKABLE virtual */ void WAbstractHook::loadSource(const QString & url, int duration,
+                                                                              int currentTime)
 {
     Q_D(WAbstractHook); d->backend->loadSource(url, duration, currentTime);
 }
@@ -161,7 +161,7 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p, WAbstractBackend * backen
 // Protected functions
 //-------------------------------------------------------------------------------------------------
 
-void WAbstractHook::applySource(const QUrl & url)
+void WAbstractHook::applySource(const QString & url)
 {
     Q_D(WAbstractHook);
 
@@ -247,7 +247,7 @@ void WAbstractHook::setQualityActive(WAbstractBackend::Quality quality)
 //-------------------------------------------------------------------------------------------------
 // Backend abstract functions
 
-bool WAbstractHook::backendSetSource(const QUrl & url)
+bool WAbstractHook::backendSetSource(const QString & url)
 {
     Q_D(WAbstractHook);
 

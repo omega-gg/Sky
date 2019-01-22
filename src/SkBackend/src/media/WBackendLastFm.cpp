@@ -109,7 +109,7 @@ void WBackendLastFmPrivate::applyQuery(WBackendNetQuery * query, const QString &
     url.setQuery(urlQuery);
 #endif
 
-    query->url = url;
+    query->url = url.toString();
 
     query->data = variants;
 }
@@ -192,7 +192,7 @@ WBackendLastFm::WBackendLastFm() : WBackendNet(new WBackendLastFmPrivate(this))
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendLastFm::checkValidUrl(const QUrl & url) const
+/* Q_INVOKABLE virtual */ bool WBackendLastFm::checkValidUrl(const QString & url) const
 {
     QString source = WControllerNetwork::removeUrlPrefix(url);
 

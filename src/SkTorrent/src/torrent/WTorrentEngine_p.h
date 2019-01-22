@@ -102,7 +102,7 @@ struct WTorrentSource
 
     qint64 size;
 
-    QList<QUrl> urls;
+    QStringList urls;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -136,7 +136,7 @@ struct WTorrentData
 
 struct WMagnetData
 {
-    QUrl url;
+    QString url;
 
     torrent_handle handle;
     uintptr_t      hash;
@@ -188,7 +188,8 @@ public: // Functions
 
     void loadResume(WTorrentData * data, const QString & fileName) const;
 
-    WTorrentData * createData(TorrentInfoPointer info, const sha1_hash & hash, const QUrl & url);
+    WTorrentData * createData(TorrentInfoPointer info, const sha1_hash & hash,
+                                                       const QString   & url);
 
     void updateData(WTorrentData * data);
     void removeData(WTorrentData * data);
@@ -226,11 +227,11 @@ public: // Functions
     void updateMagnet(WMagnetData * data);
     void removeMagnet(WMagnetData * data);
 
-    WTorrentData * getData(const QUrl      & url)  const;
+    WTorrentData * getData(const QString   & url)  const;
     WTorrentData * getData(const sha1_hash & hash) const;
 
-    WMagnetData * getMagnetData(const QUrl & url)    const;
-    WMagnetData * getMagnetData(WMagnet    * magnet) const;
+    WMagnetData * getMagnetData(const QString & url)    const;
+    WMagnetData * getMagnetData(WMagnet       * magnet) const;
 
     WTorrentSource * getSource(const sha1_hash & hash) const;
 
@@ -316,8 +317,8 @@ public: // Variables
 
     QList<WTorrentSource *> deleteSources;
 
-    QList<int>     deleteIds;
-    QList<QString> deletePaths;
+    QList<int>  deleteIds;
+    QStringList deletePaths;
 
     QTimer * timerUpdate;
     QTimer * timerSave;
@@ -386,7 +387,7 @@ class WTorrentEngineAdd : public WTorrentEngineItem
 {
 public:
     WTorrentEngineAdd(WTorrent  * torrent,
-                      QIODevice * device, const QUrl & url, int index, WTorrent::Mode mode)
+                      QIODevice * device, const QString & url, int index, WTorrent::Mode mode)
         : WTorrentEngineItem(WTorrentEnginePrivate::EventAdd, torrent)
     {
         this->device = device;
@@ -400,8 +401,8 @@ public:
 public: // Variables
     QIODevice * device;
 
-    QUrl url;
-    int  index;
+    QString url;
+    int     index;
 
     WTorrent::Mode mode;
 };

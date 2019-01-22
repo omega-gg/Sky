@@ -21,7 +21,6 @@
 #include <QEventLoop>
 #include <QVariant>
 #include <QTime>
-#include <QUrl>
 #include <QStringList>
 
 // Sk includes
@@ -64,8 +63,8 @@ class SK_CORE_EXPORT WControllerApplication : public QObject, public WPrivatable
 
     Q_PROPERTY(QString version READ version WRITE setVersion NOTIFY versionChanged)
 
-    Q_PROPERTY(QUrl applicationUrl READ applicationUrl WRITE setApplicationUrl
-               NOTIFY applicationUrlChanged)
+    Q_PROPERTY(QUrl applicationUrl READ applicationUrl WRITE setApplicationUrl NOTIFY
+               applicationUrlChanged)
 
     Q_PROPERTY(Mode defaultMode READ defaultMode WRITE setDefaultMode NOTIFY defaultModeChanged)
 

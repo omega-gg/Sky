@@ -60,8 +60,10 @@ public: // Properties
     QIODevice     * reply       () const;
     QNetworkReply * networkReply() const;
 
-    QUrl urlBase() const;
-    QUrl url    () const;
+    QString urlBase() const;
+    QString url    () const;
+
+    QString host() const;
 
     QNetworkRequest::Priority priority() const;
 
@@ -82,8 +84,10 @@ private: // Variables
 
     QIODevice * _reply;
 
-    QUrl _urlBase;
-    QUrl _url;
+    QString _urlBase;
+    QString _url;
+
+    QString _host;
 
     QNetworkRequest::Priority _priority;
 
@@ -128,7 +132,7 @@ protected: // Initialize
 public: // Interface
     Q_INVOKABLE
     WRemoteData * getData(WAbstractLoader           * loader,
-                          const QUrl                & url,
+                          const QString             & url,
                           QObject                   * parent   = NULL,
                           QNetworkRequest::Priority   priority = QNetworkRequest::NormalPriority,
                           bool                        redirect = true,
@@ -139,7 +143,7 @@ public: // Interface
                           int                         timeout  = -1);
 
     Q_INVOKABLE
-    WRemoteData * getData(const QUrl                & url,
+    WRemoteData * getData(const QString             & url,
                           QObject                   * parent   = NULL,
                           QNetworkRequest::Priority   priority = QNetworkRequest::NormalPriority,
                           bool                        redirect = true,

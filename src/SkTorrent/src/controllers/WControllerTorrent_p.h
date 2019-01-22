@@ -48,13 +48,13 @@ public:
     void init(const QString & path, qint64 sizeMax);
 
 public: // Functions
-    void loadTorrent(WTorrentReply * reply, const QUrl & url, WTorrent::Mode mode);
-    void loadMagnet (WMagnetReply  * reply, const QUrl & url);
+    void loadTorrent(WTorrentReply * reply, const QString & url, WTorrent::Mode mode);
+    void loadMagnet (WMagnetReply  * reply, const QString & url);
 
     void removeTorrent(WTorrent * torrent, WTorrentReply * reply);
     void removeMagnet (WMagnet  * magnet,  WMagnetReply  * reply);
 
-    int extractIndex(const QUrl & url) const;
+    int extractIndex(const QString & url) const;
 
 public: // Static functions
     static void applyMagnet(WMagnet * magnet, const QByteArray & data);

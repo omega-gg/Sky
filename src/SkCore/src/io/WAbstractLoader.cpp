@@ -158,7 +158,7 @@ WRemoteData * WAbstractLoader::getData(QIODevice * reply) const
 
 //-------------------------------------------------------------------------------------------------
 
-void WAbstractLoader::redirect(QIODevice * reply, const QUrl & url)
+void WAbstractLoader::redirect(QIODevice * reply, const QString & url)
 {
     Q_D(WAbstractLoader);
 
@@ -178,7 +178,7 @@ void WAbstractLoader::redirect(QIODevice * reply, const QUrl & url)
 
         reply->deleteLater();
 
-        qDebug("Redirected %s", url.C_URL);
+        qDebug("Redirected %s", url.C_STR);
     }
     else
     {

@@ -40,25 +40,25 @@ public: // WBackendNet implementation
 public: // WBackendNet reimplementation
     /* Q_INVOKABLE virtual */ bool hasSearch() const;
 
-    /* Q_INVOKABLE virtual */ bool checkValidUrl(const QUrl & url) const;
+    /* Q_INVOKABLE virtual */ bool checkValidUrl(const QString & url) const;
 
     /* Q_INVOKABLE virtual */ QString getHost() const;
 
     /* Q_INVOKABLE virtual */ QList<WLibraryFolderItem> getLibraryItems() const;
 
-    /* Q_INVOKABLE virtual */ QString getTrackId(const QUrl & url) const;
+    /* Q_INVOKABLE virtual */ QString getTrackId(const QString & url) const;
 
-    /* Q_INVOKABLE virtual */ WBackendNetPlaylistInfo getPlaylistInfo(const QUrl & url) const;
+    /* Q_INVOKABLE virtual */ WBackendNetPlaylistInfo getPlaylistInfo(const QString & url) const;
 
-    /* Q_INVOKABLE virtual */ QUrl getUrlTrack(const QString & id) const;
+    /* Q_INVOKABLE virtual */ QString getUrlTrack(const QString & id) const;
 
-    /* Q_INVOKABLE virtual */ QUrl getUrlPlaylist(const WBackendNetPlaylistInfo & info) const;
+    /* Q_INVOKABLE virtual */ QString getUrlPlaylist(const WBackendNetPlaylistInfo & info) const;
 
     //---------------------------------------------------------------------------------------------
 
-    /* Q_INVOKABLE virtual */ WBackendNetQuery getQuerySource  (const QUrl & url) const;
-    /* Q_INVOKABLE virtual */ WBackendNetQuery getQueryTrack   (const QUrl & url) const;
-    /* Q_INVOKABLE virtual */ WBackendNetQuery getQueryPlaylist(const QUrl & url) const;
+    /* Q_INVOKABLE virtual */ WBackendNetQuery getQuerySource  (const QString & url) const;
+    /* Q_INVOKABLE virtual */ WBackendNetQuery getQueryTrack   (const QString & url) const;
+    /* Q_INVOKABLE virtual */ WBackendNetQuery getQueryPlaylist(const QString & url) const;
 
     //---------------------------------------------------------------------------------------------
 

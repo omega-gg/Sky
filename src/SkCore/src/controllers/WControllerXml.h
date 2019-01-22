@@ -47,7 +47,7 @@ protected: // Initialize
 public: // Interface
     void createQueryThread();
 
-    int doQuery(const QUrl & query);
+    int doQuery(const QString & query);
 
 public: // Static Interface
     static bool loadFromFile(QDomDocument * document,

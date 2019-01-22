@@ -43,10 +43,10 @@ public: // Variables
 
     WTrack::State state;
 
-    QUrl source;
+    QString source;
 
     QString title;
-    QUrl    cover;
+    QString cover;
 
     QString author;
     QString feed;

@@ -209,7 +209,7 @@ void WDeclarativeContextualPage::unregisterWatcher(WContextualPageWatcher * watc
 /* Q_INVOKABLE */ void WDeclarativeContextualPage::addItem(ItemType        type,
                                                            int             id,
                                                            const QString & title,
-                                                           const QUrl    & icon,
+                                                           const QString & icon,
                                                            const QSizeF  & iconSize,
                                                            bool            visible,
                                                            bool            enabled)
@@ -223,7 +223,7 @@ void WDeclarativeContextualPage::unregisterWatcher(WContextualPageWatcher * watc
                                                               ItemType        type,
                                                               int             id,
                                                               const QString & title,
-                                                              const QUrl    & icon,
+                                                              const QString & icon,
                                                               const QSizeF  & iconSize,
                                                               bool            visible,
                                                               bool            enabled)
@@ -286,7 +286,7 @@ void WDeclarativeContextualPage::unregisterWatcher(WContextualPageWatcher * watc
 
     if (map.contains("icon"))
     {
-        item->icon = map.value("icon").toUrl();
+        item->icon = map.value("icon").toString();
 
         update = true;
     }
@@ -561,7 +561,7 @@ void WDeclarativeContextualPage::setValues(const QVariantList & values)
 
         QString title = map.value("title").toString();
 
-        QUrl icon = map.value("icon").toUrl();
+        QString icon = map.value("icon").toString();
 
         QSizeF iconSize = map.value("iconSize").toSizeF();
 

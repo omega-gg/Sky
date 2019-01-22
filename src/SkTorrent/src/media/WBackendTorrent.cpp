@@ -85,8 +85,8 @@ public: // Functions
 
     int extractString(QString * string, const QString & data, int at) const;
 
-    bool applyTorrent(WBackendNetFolder * reply, const QUrl & url, const QString & string) const;
-    bool applyMagnet (WBackendNetFolder * reply, const QUrl & url, const QString & string) const;
+    bool applyTorrent(WBackendNetFolder * reply, const QString & url) const;
+    bool applyMagnet (WBackendNetFolder * reply, const QString & url) const;
 
     void applyQuery(WBackendNetItem * reply, QStringList * urls, int id) const;
 
@@ -95,7 +95,7 @@ public: // Functions
 
     int getIndex(const QString & name) const;
 
-    QUrl getUrl(const QString & q) const;
+    QString getUrl(const QString & q) const;
 
     QList<WBackendTorrentItem> getFolder(QList<WBackendTorrentItem> * items) const;
 
@@ -226,16 +226,15 @@ int WBackendTorrentPrivate::extractString(QString * string, const QString & data
 
 //-------------------------------------------------------------------------------------------------
 
-bool WBackendTorrentPrivate::applyTorrent(WBackendNetFolder * reply, const QUrl    & url,
-                                                                     const QString & string) const
+bool WBackendTorrentPrivate::applyTorrent(WBackendNetFolder * reply, const QString & url) const
 {
-    if (WControllerNetwork::extractUrlExtension(string) == "torrent")
+    if (WControllerNetwork::extractUrlExtension(url) == "torrent")
     {
         WLibraryFolderItem playlist(WLibraryItem::Playlist, WLocalObject::Default);
 
         playlist.source = url;
 
-        playlist.title = QObject::tr("Torrent") + " - " + string.simplified();
+        playlist.title = QObject::tr("Torrent") + " - " + url.simplified();
 
         reply->items.append(playlist);
 
@@ -244,16 +243,15 @@ bool WBackendTorrentPrivate::applyTorrent(WBackendNetFolder * reply, const QUrl 
     else return false;
 }
 
-bool WBackendTorrentPrivate::applyMagnet(WBackendNetFolder * reply, const QUrl    & url,
-                                                                    const QString & string) const
+bool WBackendTorrentPrivate::applyMagnet(WBackendNetFolder * reply, const QString & url) const
 {
-    if (string.startsWith("magnet:?"))
+    if (url.startsWith("magnet:?"))
     {
         WLibraryFolderItem playlist(WLibraryItem::Playlist, WLocalObject::Default);
 
         playlist.source = url;
 
-        playlist.title = QObject::tr("Magnet") + " - " + string.simplified();
+        playlist.title = QObject::tr("Magnet") + " - " + url.simplified();
 
         reply->items.append(playlist);
 
@@ -339,7 +337,7 @@ int WBackendTorrentPrivate::getIndex(const QString & name) const
 
 //-------------------------------------------------------------------------------------------------
 
-QUrl WBackendTorrentPrivate::getUrl(const QString & q) const
+QString WBackendTorrentPrivate::getUrl(const QString & q) const
 {
     QUrl url("https://duckduckgo.com/");
 
@@ -368,7 +366,7 @@ QUrl WBackendTorrentPrivate::getUrl(const QString & q) const
     url.setQuery(query);
 #endif
 
-    return url;
+    return url.toString();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -427,13 +425,9 @@ WBackendTorrent::WBackendTorrent() : WBackendNet(new WBackendTorrentPrivate(this
 // WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendTorrent::checkValidUrl(const QUrl & url) const
+/* Q_INVOKABLE virtual */ bool WBackendTorrent::checkValidUrl(const QString & url) const
 {
-    QString source = url.toString();
-
-    if (WControllerNetwork::extractUrlExtension(source) == "torrent"
-        ||
-        source.startsWith("magnet:?"))
+    if (WControllerNetwork::extractUrlExtension(url) == "torrent" || url.startsWith("magnet:?"))
     {
          return true;
     }
@@ -477,9 +471,9 @@ WBackendTorrent::WBackendTorrent() : WBackendNet(new WBackendTorrentPrivate(this
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-WAbstractBackend::Output WBackendTorrent::getTrackOutput(const QUrl & url) const
+WAbstractBackend::Output WBackendTorrent::getTrackOutput(const QString & url) const
 {
-    QString fragment = url.fragment();
+    QString fragment = QUrl(url).fragment();
 
     int index = fragment.indexOf('.');
 
@@ -499,11 +493,11 @@ WAbstractBackend::Output WBackendTorrent::getTrackOutput(const QUrl & url) const
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-WBackendNetPlaylistInfo WBackendTorrent::getPlaylistInfo(const QUrl & url) const
+WBackendNetPlaylistInfo WBackendTorrent::getPlaylistInfo(const QString & url) const
 {
     if (checkValidUrl(url))
     {
-         return WBackendNetPlaylistInfo(WLibraryItem::Playlist, url.toString());
+         return WBackendNetPlaylistInfo(WLibraryItem::Playlist, url);
     }
     else return WBackendNetPlaylistInfo();
 }
@@ -511,30 +505,28 @@ WBackendNetPlaylistInfo WBackendTorrent::getPlaylistInfo(const QUrl & url) const
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-QUrl WBackendTorrent::getUrlPlaylist(const WBackendNetPlaylistInfo & info) const
+QString WBackendTorrent::getUrlPlaylist(const WBackendNetPlaylistInfo & info) const
 {
-    return WControllerNetwork::encodedUrl(info.id);
+    return info.id;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-WBackendNetQuery WBackendTorrent::getQueryPlaylist(const QUrl & url) const
+WBackendNetQuery WBackendTorrent::getQueryPlaylist(const QString & url) const
 {
     WBackendNetQuery query;
 
-    QString source = url.toString();
-
-    if (source.startsWith("magnet:?"))
+    if (url.startsWith("magnet:?"))
     {
         query.type = WBackendNetQuery::TypeTorrent;
     }
-    else if (WControllerNetwork::extractUrlExtension(source) != "torrent")
+    else if (WControllerNetwork::extractUrlExtension(url) != "torrent")
     {
         return query;
     }
 
-    int index = source.indexOf('#');
+    int index = url.indexOf('#');
 
     if (index == -1)
     {
@@ -546,16 +538,16 @@ WBackendNetQuery WBackendTorrent::getQueryPlaylist(const QUrl & url) const
     {
         QString number;
 
-        for (int i = index + 1; i < source.length(); i++)
+        for (int i = index + 1; i < url.length(); i++)
         {
-            QChar character = source.at(i);
+            QChar character = url.at(i);
 
             if (character.isDigit() == false) break;
 
             number.append(character);
         }
 
-        query.url = WControllerNetwork::encodedUrl(source.mid(0, index));
+        query.url = url.mid(0, index);
 
         query.data = number.toInt();
     }
@@ -620,7 +612,7 @@ WBackendNetQuery WBackendTorrent::createQuery(const QString & method,
 
         int index = q.indexOf('#');
 
-        query.url = WControllerNetwork::encodedUrl(q.mid(0, index));
+        query.url = q.mid(0, index);
         query.id  = 1;
     }
 
@@ -647,7 +639,7 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
         nextQuery->backend = getId();
 
-        nextQuery->url = WControllerNetwork::encodedUrl("https://duckduckgo.com" + source);
+        nextQuery->url = "https://duckduckgo.com" + source;
 
         nextQuery->id = 3;
 
@@ -682,7 +674,7 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
         WControllerPlaylistData playlistData;
 
-        playlistData.applyHtml(data, query.url.toString());
+        playlistData.applyHtml(data, query.url);
 
         QStringList sources;
 
@@ -690,7 +682,7 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
         foreach (const WControllerPlaylistSource & source, playlistData.sources)
         {
-            QString string = source.url.toString();
+            QString string = source.url;
 
             if (WControllerNetwork::extractUrlExtension(string) == "torrent")
             {
@@ -706,7 +698,7 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
         {
             foreach (const WControllerPlaylistSource & source, playlistData.sources)
             {
-                QString string = source.url.toString();
+                QString string = source.url;
 
                 if (string.startsWith("magnet:?"))
                 {
@@ -745,7 +737,7 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
             QList<WTrack> * tracks = &(reply.tracks);
 
-            QString url = query.url.toString();
+            QString url = query.url;
 
             while (items.isEmpty() == false)
             {
@@ -767,7 +759,7 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
                     {
                         QString source = url + '#' + QString::number(item.id) + '.' + extension;
 
-                        WTrack track(WControllerNetwork::encodedUrl(source), WTrack::Default);
+                        WTrack track(source, WTrack::Default);
 
                         track.setTitle(title);
 
@@ -824,7 +816,7 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
         QList<int> ids;
 
-        QString url = query.url.toString();
+        QString url = query.url;
 
         while (items.isEmpty() == false)
         {
@@ -848,7 +840,7 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
                     QString source = url + '#' + QString::number(id) + '.' + extension;
 
-                    WTrack track(WControllerNetwork::encodedUrl(source), WTrack::Default);
+                    WTrack track(source, WTrack::Default);
 
                     track.setTitle(title);
 
@@ -908,7 +900,7 @@ WBackendNetFolder WBackendTorrent::extractFolder(const QByteArray       & data,
 
         nextQuery->backend = getId();
 
-        nextQuery->url = WControllerNetwork::encodedUrl("https://duckduckgo.com" + source);
+        nextQuery->url = "https://duckduckgo.com" + source;
 
         nextQuery->id = 1;
 
@@ -945,7 +937,7 @@ WBackendNetFolder WBackendTorrent::extractFolder(const QByteArray       & data,
 
         WControllerPlaylistData playlistData;
 
-        playlistData.applyHtml(data, query.url.toString());
+        playlistData.applyHtml(data, query.url);
 
         int index = 0;
 
@@ -953,11 +945,9 @@ WBackendNetFolder WBackendTorrent::extractFolder(const QByteArray       & data,
         {
             foreach (const WControllerPlaylistSource & source, playlistData.sources)
             {
-                QUrl url = source.url;
+                QString url = source.url;
 
-                QString string = url.toString();
-
-                if (d->applyTorrent(&reply, url, string) || d->applyMagnet(&reply, url, string))
+                if (d->applyTorrent(&reply, url) || d->applyMagnet(&reply, url))
                 {
                     index++;
 
@@ -971,11 +961,9 @@ WBackendNetFolder WBackendTorrent::extractFolder(const QByteArray       & data,
         {
             foreach (const WControllerPlaylistSource & source, playlistData.sources)
             {
-                QUrl url = source.url;
+                QString url = source.url;
 
-                QString string = url.toString();
-
-                if (d->applyTorrent(&reply, url, string))
+                if (d->applyTorrent(&reply, url))
                 {
                     index++;
 
@@ -989,11 +977,9 @@ WBackendNetFolder WBackendTorrent::extractFolder(const QByteArray       & data,
         {
             foreach (const WControllerPlaylistSource & source, playlistData.sources)
             {
-                QUrl url = source.url;
+                QString url = source.url;
 
-                QString string = url.toString();
-
-                if (d->applyMagnet(&reply, url, string))
+                if (d->applyMagnet(&reply, url))
                 {
                     index++;
 

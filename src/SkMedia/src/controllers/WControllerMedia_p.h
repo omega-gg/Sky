@@ -44,7 +44,7 @@ class WRemoteData;
 
 struct WPrivateMediaData
 {
-    QUrl url;
+    QString url;
 
     WBackendNet * backend;
 
@@ -61,8 +61,8 @@ struct WPrivateMediaData
 
 struct WPrivateMediaSource
 {
-    QHash<WAbstractBackend::Quality, QUrl> medias;
-    QHash<WAbstractBackend::Quality, QUrl> audios;
+    QHash<WAbstractBackend::Quality, QString> medias;
+    QHash<WAbstractBackend::Quality, QString> audios;
 
     QDateTime expiry;
 };
@@ -105,8 +105,8 @@ public: // Variables
 
     QHash<QIODevice *, WPrivateMediaData *> queries;
 
-    QList<QUrl>                      urls;
-    QHash<QUrl, WPrivateMediaSource> sources;
+    QStringList                         urls;
+    QHash<QString, WPrivateMediaSource> sources;
 
 protected:
     W_DECLARE_PUBLIC(WControllerMedia)

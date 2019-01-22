@@ -46,7 +46,7 @@ public: // Slots
 public: // Variables
     WAbstractBackend * backend;
 
-    QUrl source;
+    QString source;
 
     bool filterActive;
 

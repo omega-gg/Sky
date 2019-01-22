@@ -97,8 +97,8 @@ public: // Variables
 
     WDeclarativeImageBase::Status status;
 
-    QUrl url;
-    QUrl urlDefault;
+    QString url;
+    QString urlDefault;
 
     QSize sourceSize;
     QSize sourceArea;

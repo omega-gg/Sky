@@ -30,7 +30,7 @@ QString version;
 QString defineA;
 QString defineB;
 
-QList<QString> paths;
+QStringList paths;
 
 //-------------------------------------------------------------------------------------------------
 // Functions

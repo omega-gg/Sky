@@ -79,9 +79,9 @@ public: // Functions
 
     void updateItemState     (int id, WLocalObject::State   state);
     void updateItemStateQuery(int id, WLocalObject::State   stateQuery);
-    void updateItemSource    (int id, const QUrl          & source);
+    void updateItemSource    (int id, const QString       & source);
     void updateItemTitle     (int id, const QString       & title);
-    void updateItemCover     (int id, const QUrl          & cover);
+    void updateItemCover     (int id, const QString       & cover);
     void updateItemLabel     (int id, const QString       & label);
 
     //---------------------------------------------------------------------------------------------

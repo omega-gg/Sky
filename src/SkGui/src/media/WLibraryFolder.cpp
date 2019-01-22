@@ -141,10 +141,10 @@ public: // Variables
 
     WLibraryItem::Type type;
 
-    QUrl source;
+    QString source;
 
     QString title;
-    QUrl    cover;
+    QString cover;
 
     QString label;
 
@@ -223,10 +223,10 @@ public: // Variables
 
     stream.writeTextElement("type", QString::number(type));
 
-    stream.writeTextElement("source", source.toString());
+    stream.writeTextElement("source", source);
 
     stream.writeTextElement("title", title);
-    stream.writeTextElement("cover", cover.toString());
+    stream.writeTextElement("cover", cover);
 
     stream.writeTextElement("label", label);
 
@@ -247,10 +247,10 @@ public: // Variables
         stream.writeTextElement("state",      QString::number(data.state));
         stream.writeTextElement("stateQuery", QString::number(data.stateQuery));
 
-        stream.writeTextElement("source", data.source.toString());
+        stream.writeTextElement("source", data.source);
 
         stream.writeTextElement("title", data.title);
-        stream.writeTextElement("cover", data.cover.toString());
+        stream.writeTextElement("cover", data.cover);
 
         stream.writeTextElement("label", data.label);
 
@@ -331,10 +331,10 @@ public: // Variables
 
     WLibraryItem::Type type;
 
-    QUrl source;
+    QString source;
 
     QString title;
-    QUrl    cover;
+    QString cover;
 
     QString label;
 
@@ -420,7 +420,7 @@ bool WLibraryFolderRead::loadFolder(QXmlStreamReader * stream, WLibraryFolderRea
 
     if (WControllerXml::readNextStartElement(stream, "source") == false) return false;
 
-    reply->source = WControllerXml::readNextUrl(stream);
+    reply->source = WControllerXml::readNextString(stream);
 
     //---------------------------------------------------------------------------------------------
     // title
@@ -507,7 +507,7 @@ bool WLibraryFolderRead::loadItems(QXmlStreamReader * stream, WLibraryFolderRead
 
         if (WControllerXml::readNextStartElement(stream, "source") == false) return false;
 
-        data.source = WControllerXml::readNextUrl(stream);
+        data.source = WControllerXml::readNextString(stream);
 
         //-----------------------------------------------------------------------------------------
         // title
@@ -588,10 +588,10 @@ bool WLibraryFolderRead::loadItems(QXmlStreamReader * stream, WLibraryFolderRead
     }
     else
     {
-        q->loadSource(QUrl(), false);
+        q->loadSource(QString(), false);
 
         q->setTitle(QString());
-        q->setCover(QUrl   ());
+        q->setCover(QString());
 
         q->setLabel(QString());
 
@@ -997,7 +997,7 @@ void WLibraryFolderPrivate::updateItemStateQuery(int id, WLocalObject::State sta
     q->save();
 }
 
-void WLibraryFolderPrivate::updateItemSource(int id, const QUrl & source)
+void WLibraryFolderPrivate::updateItemSource(int id, const QString & source)
 {
     Q_Q(WLibraryFolder);
 
@@ -1031,7 +1031,7 @@ void WLibraryFolderPrivate::updateItemTitle(int id, const QString & title)
     q->save();
 }
 
-void WLibraryFolderPrivate::updateItemCover(int id, const QUrl & cover)
+void WLibraryFolderPrivate::updateItemCover(int id, const QString & cover)
 {
     Q_Q(WLibraryFolder);
 
@@ -1393,17 +1393,17 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WLibraryFolder::addNewItem(Type type,
-                                                  const QUrl    & source,
+                                                  const QString & source,
                                                   const QString & title,
-                                                  const QUrl    & cover)
+                                                  const QString & cover)
 {
     insertNewItem(count(), type, source, title, cover);
 }
 
 /* Q_INVOKABLE */ void WLibraryFolder::insertNewItem(int index, Type type,
-                                                     const QUrl    & source,
+                                                     const QString & source,
                                                      const QString & title,
-                                                     const QUrl    & cover)
+                                                     const QString & cover)
 {
     WLibraryFolderItem item;
 
@@ -1659,7 +1659,7 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
     return (indexFromId(id) != -1);
 }
 
-/* Q_INVOKABLE */ bool WLibraryFolder::containsSource(const QUrl & source) const
+/* Q_INVOKABLE */ bool WLibraryFolder::containsSource(const QString & source) const
 {
     return (indexFromSource(source) != -1);
 }
@@ -1711,7 +1711,7 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
     return -1;
 }
 
-/* Q_INVOKABLE */ int WLibraryFolder::indexFromSource(const QUrl & source) const
+/* Q_INVOKABLE */ int WLibraryFolder::indexFromSource(const QString & source) const
 {
     Q_D(const WLibraryFolder);
 
@@ -1941,7 +1941,7 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ QUrl WLibraryFolder::itemSource(int index) const
+/* Q_INVOKABLE */ QString WLibraryFolder::itemSource(int index) const
 {
     const WLibraryFolderItem * item = itemAt(index);
 
@@ -1949,10 +1949,10 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
     {
          return item->source;
     }
-    else return QUrl();
+    else return QString();
 }
 
-/* Q_INVOKABLE */ void WLibraryFolder::setItemSource(int index, const QUrl & source)
+/* Q_INVOKABLE */ void WLibraryFolder::setItemSource(int index, const QString & source)
 {
     WLibraryItem * item = createLibraryItemAt(index);
 
@@ -1996,7 +1996,7 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ QUrl WLibraryFolder::itemCover(int index) const
+/* Q_INVOKABLE */ QString WLibraryFolder::itemCover(int index) const
 {
     const WLibraryFolderItem * item = itemAt(index);
 
@@ -2004,10 +2004,10 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
     {
          return item->cover;
     }
-    else return QUrl();
+    else return QString();
 }
 
-/* Q_INVOKABLE */ void WLibraryFolder::setItemCover(int index, const QUrl & cover)
+/* Q_INVOKABLE */ void WLibraryFolder::setItemCover(int index, const QString & cover)
 {
     WLibraryItem * item = createLibraryItemAt(index);
 
@@ -2382,7 +2382,7 @@ void WLibraryFolder::updateIndex()
 // Protected WLibraryItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ bool WLibraryFolder::applySource(const QUrl & source)
+/* virtual */ bool WLibraryFolder::applySource(const QString & source)
 {
     return wControllerPlaylist->d_func()->applySourceFolder(this, source);
 }

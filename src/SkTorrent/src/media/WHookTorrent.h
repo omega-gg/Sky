@@ -32,8 +32,8 @@ public:
     WHookTorrent(WAbstractBackend * backend);
 
 public: // WAbstractHook reimplementation
-    /* Q_INVOKABLE virtual */ void loadSource(const QUrl & url, int duration    = -1,
-                                                                int currentTime = -1);
+    /* Q_INVOKABLE virtual */ void loadSource(const QString & url, int duration    = -1,
+                                                                   int currentTime = -1);
 
     /* Q_INVOKABLE virtual */ void play  ();
     /* Q_INVOKABLE virtual */ void replay();
@@ -49,7 +49,7 @@ public: // WBackendFilter reimplementation
     /* virtual */ void filterStateLoad(WAbstractBackend::StateLoad * stateLoad);
 
 protected: // WAbstractHook implementation
-    /* virtual */ bool hookCheckSource(const QUrl & url);
+    /* virtual */ bool hookCheckSource(const QString & url);
 
 private:
     W_DECLARE_PRIVATE(WHookTorrent)

@@ -17,9 +17,6 @@
 #ifndef WLIBRARYITEM_H
 #define WLIBRARYITEM_H
 
-// Qt includes
-#include <QUrl>
-
 // Sk includes
 #include <WLocalObject>
 
@@ -63,13 +60,13 @@ class SK_GUI_EXPORT WLibraryItem : public WLocalObject
     Q_PROPERTY(bool queryIsLoading READ queryIsLoading NOTIFY stateQueryChanged)
     Q_PROPERTY(bool queryIsLoaded  READ queryIsLoaded  NOTIFY stateQueryChanged)
 
-    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
 
     Q_PROPERTY(bool isLocal  READ isLocal  NOTIFY sourceChanged)
     Q_PROPERTY(bool isOnline READ isOnline NOTIFY sourceChanged)
 
     Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
-    Q_PROPERTY(QUrl    cover READ cover WRITE setCover NOTIFY coverChanged)
+    Q_PROPERTY(QString cover READ cover WRITE setCover NOTIFY coverChanged)
 
     Q_PROPERTY(QString label READ label WRITE setLabel NOTIFY labelChanged)
 
@@ -97,7 +94,7 @@ public: // Interface
 
     //---------------------------------------------------------------------------------------------
 
-    Q_INVOKABLE bool loadSource(const QUrl & source, bool load = true);
+    Q_INVOKABLE bool loadSource(const QString & source, bool load = true);
 
     Q_INVOKABLE void clearSource();
 
@@ -122,7 +119,7 @@ public: // WLocalObject reimplementation
     /* Q_INVOKABLE virtual */ QString getParentPath() const;
 
 protected: // Virtual functions
-    virtual bool applySource(const QUrl             & source);
+    virtual bool applySource(const QString          & source);
     virtual bool applyQuery (const WBackendNetQuery & query);
 
     virtual bool stopQuery();
@@ -184,8 +181,8 @@ public: // Properties
     bool queryIsLoading() const;
     bool queryIsLoaded () const;
 
-    QUrl source() const;
-    void setSource(const QUrl & source);
+    QString source() const;
+    void    setSource(const QString & source);
 
     bool isLocal () const;
     bool isOnline() const;
@@ -193,8 +190,8 @@ public: // Properties
     QString title() const;
     void    setTitle(const QString & title);
 
-    QUrl cover() const;
-    void setCover(const QUrl & cover);
+    QString cover() const;
+    void    setCover(const QString & cover);
 
     QString label() const;
     void    setLabel(const QString & label);

@@ -61,10 +61,10 @@ public:
     void init(const QString & path, qint64 sizeMax);
 
 public: // Functions
-    void get  (WCacheFile * file, const QUrl & url);
-    void write(WCacheFile * file, const QUrl & url, const QByteArray & array);
+    void get  (WCacheFile * file, const QString & url);
+    void write(WCacheFile * file, const QString & url, const QByteArray & array);
 
-    void pop(const QUrl & url);
+    void pop(const QString & url);
 
     void clearFile(WCacheFile * file);
 
@@ -87,12 +87,12 @@ public: // Variables
     bool loaded;
     bool empty;
 
-    QHash<QUrl, WCacheFiles *> urlsPending;
-    QHash<QUrl, WCacheFile  *> urlsLoad;
+    QHash<QString, WCacheFiles *> urlsPending;
+    QHash<QString, WCacheFile  *> urlsLoad;
 
-    QHash<QUrl, QUrl> urls;
+    QHash<QString, QString> urls;
 
-    QList<QUrl> urlsPop;
+    QStringList urlsPop;
 
     QTimer timer;
 

@@ -63,9 +63,9 @@ void WVlcPlayerPrivate::init(WVlcEngine * engine, QThread * thread)
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-QString WVlcPlayerPrivate::encodeUrl(const QUrl & url) const
+QString WVlcPlayerPrivate::encodeUrl(const QString & url) const
 {
-    QString result = url.toString();
+    QString result = url;
 
     return result.replace(" ", "%20");
 }
@@ -200,7 +200,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WVlcPlayer::setSource(const QUrl & media, const QUrl & audio)
+/* Q_INVOKABLE */ void WVlcPlayer::setSource(const QString & media, const QString & audio)
 {
     QCoreApplication::postEvent(this, new WVlcPlayerEventSource(media, audio));
 }
@@ -381,7 +381,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
         if (output == WAbstractBackend::OutputAudio)
         {
-            const QUrl & audio = eventSource->audio;
+            const QString & audio = eventSource->audio;
 
             if (audio.isEmpty())
             {
@@ -400,7 +400,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
             if (output != WAbstractBackend::OutputVideo)
             {
-                const QUrl & audio = eventSource->audio;
+                const QString & audio = eventSource->audio;
 
                 if (audio.isEmpty() == false)
                 {

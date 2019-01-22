@@ -125,20 +125,25 @@ public: // Static functions
 
     //---------------------------------------------------------------------------------------------
 
-    Q_INVOKABLE static void appendUrls(QList<QUrl>   * list,
-                                       const QString & text,      const QString & tag,
-                                       const QString & attribute, const QString & baseUrl,
+    Q_INVOKABLE static void appendUrls(QStringList   * list,
+                                       const QString & text,
+                                       const QString & tag,
+                                       const QString & attribute,
+                                       const QString & baseUrl,
                                        const QString & pattern = QString());
 
-    Q_INVOKABLE static QList<QUrl> extractUrls(const QString & text,      const QString & tag,
-                                               const QString & attribute, const QString & baseUrl,
+    Q_INVOKABLE static QStringList extractUrls(const QString & text,
+                                               const QString & tag,
+                                               const QString & attribute,
+                                               const QString & baseUrl,
                                                const QString & pattern = QString());
 
-    Q_INVOKABLE static QUrl extractUrlAt(const QString & text, const QString & baseUrl, int index);
+    Q_INVOKABLE static QString extractUrlAt(const QString & text,
+                                            const QString & baseUrl, int index);
 
     //---------------------------------------------------------------------------------------------
 
-    Q_INVOKABLE static QUrl getUrlRedirect(const QUrl & origin, const QUrl & redirect);
+    Q_INVOKABLE static QString getUrlRedirect(const QUrl & origin, const QUrl & redirect);
 
     Q_INVOKABLE static QUrl getUrlOAuth(const QUrl       & url,
                                         const QByteArray & httpMethod,

@@ -369,7 +369,7 @@ void WCookieJar::clear()
 // QNetworkCookieJar reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ QList<QNetworkCookie> WCookieJar::cookiesForUrl(const QUrl & url) const
+/* virtual */ QList<QNetworkCookie> WCookieJar::cookiesForUrl(const QString & url) const
 {
     Q_D(const WCookieJar);
 
@@ -382,13 +382,13 @@ void WCookieJar::clear()
 }
 
 /* virtual */ bool WCookieJar::setCookiesFromUrl(const QList<QNetworkCookie> & cookies,
-                                                 const QUrl                  & url)
+                                                 const QString               & url)
 {
     Q_D(WCookieJar);
 
     if (d->loaded == false) d->load();
 
-    QString host = url.host();
+    QString host = QUrl(url).host();
 
     bool block;
 

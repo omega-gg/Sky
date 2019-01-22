@@ -41,7 +41,7 @@ class SK_MEDIA_EXPORT WMediaReply : public QObject
     Q_OBJECT
 
 private:
-    WMediaReply(const QUrl & url, QObject * parent);
+    WMediaReply(const QString & url, QObject * parent);
 public:
     /* virtual */ ~WMediaReply();
 
@@ -49,10 +49,10 @@ signals:
     void loaded(WMediaReply * reply);
 
 public: // Properties
-    QUrl url() const;
+    QString url() const;
 
-    QHash<WAbstractBackend::Quality, QUrl> medias() const;
-    QHash<WAbstractBackend::Quality, QUrl> audios() const;
+    QHash<WAbstractBackend::Quality, QString> medias() const;
+    QHash<WAbstractBackend::Quality, QString> audios() const;
 
     bool isLoaded() const;
 
@@ -61,10 +61,10 @@ public: // Properties
     QString error() const;
 
 private: // Variables
-    QUrl _url;
+    QString _url;
 
-    QHash<WAbstractBackend::Quality, QUrl> _medias;
-    QHash<WAbstractBackend::Quality, QUrl> _audios;
+    QHash<WAbstractBackend::Quality, QString> _medias;
+    QHash<WAbstractBackend::Quality, QString> _audios;
 
     bool _loaded;
 
@@ -100,9 +100,9 @@ protected: // Initialize
 public: // Interface
     Q_INVOKABLE WVlcPlayer * createVlcPlayer() const;
 
-    Q_INVOKABLE WMediaReply * getMedia(const QUrl & url, QObject * parent = NULL);
+    Q_INVOKABLE WMediaReply * getMedia(const QString & url, QObject * parent = NULL);
 
-    Q_INVOKABLE void clearMedia (const QUrl & url);
+    Q_INVOKABLE void clearMedia (const QString & url);
     Q_INVOKABLE void clearMedias();
 
 signals:

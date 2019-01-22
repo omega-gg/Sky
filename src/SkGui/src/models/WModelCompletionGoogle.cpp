@@ -152,7 +152,7 @@ void WModelCompletionGooglePrivate::onLoaded(WRemoteData * data)
     }
     else
     {
-        d->data = wControllerDownload->getData(d->url, this);
+        d->data = wControllerDownload->getData(d->url.toString(), this);
 
         d->ready = false;
 
@@ -195,6 +195,8 @@ void WModelCompletionGooglePrivate::onLoaded(WRemoteData * data)
     else d->url = QUrl();
 
     d->ready = true;
+
+    emit urlChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

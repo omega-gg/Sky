@@ -446,7 +446,7 @@ void WTabsTrackPrivate::onHighlightedTabDestroyed()
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ WTabTrack * WTabsTrack::tabFromSource(const QUrl & source) const
+/* Q_INVOKABLE */ WTabTrack * WTabsTrack::tabFromSource(const QString & source) const
 {
     Q_D(const WTabsTrack);
 

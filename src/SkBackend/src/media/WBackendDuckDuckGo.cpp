@@ -41,7 +41,7 @@ public:
     void init();
 
 public: // Functions
-    QUrl getUrl(const QString & q) const;
+    QString getUrl(const QString & q) const;
 
 protected:
     W_DECLARE_PUBLIC(WBackendDuckDuckGo)
@@ -58,7 +58,7 @@ void WBackendDuckDuckGoPrivate::init() {}
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-QUrl WBackendDuckDuckGoPrivate::getUrl(const QString & q) const
+QString WBackendDuckDuckGoPrivate::getUrl(const QString & q) const
 {
     QUrl url("https://duckduckgo.com/");
 
@@ -82,7 +82,7 @@ QUrl WBackendDuckDuckGoPrivate::getUrl(const QString & q) const
     url.setQuery(query);
 #endif
 
-    return url;
+    return url.toString();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -119,7 +119,7 @@ WBackendDuckDuckGo::WBackendDuckDuckGo() : WBackendNet(new WBackendDuckDuckGoPri
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendDuckDuckGo::checkValidUrl(const QUrl & url) const
+/* Q_INVOKABLE virtual */ bool WBackendDuckDuckGo::checkValidUrl(const QString & url) const
 {
     QString source = WControllerNetwork::removeUrlPrefix(url);
 
@@ -211,9 +211,8 @@ WBackendNetFolder WBackendDuckDuckGo::extractFolder(const QByteArray       & dat
 
             WLibraryFolderItem folder(WLibraryItem::FolderSearch, WLocalObject::Default);
 
-            folder.source = WControllerNetwork::encodedUrl(source);
-
-            folder.title = title;
+            folder.source = source;
+            folder.title  = title;
 
             reply.items.append(folder);
         }
@@ -226,7 +225,7 @@ WBackendNetFolder WBackendDuckDuckGo::extractFolder(const QByteArray       & dat
 
         WBackendNetQuery * nextQuery = &(reply.nextQuery);
 
-        nextQuery->url = WControllerNetwork::encodedUrl("https://duckduckgo.com" + source);
+        nextQuery->url = "https://duckduckgo.com" + source;
 
         nextQuery->id = id + 1;
     }

@@ -20,7 +20,6 @@
 // Qt includes
 #include <QEvent>
 #include <QVariant>
-#include <QUrl>
 #include <QStringList>
 
 // Vlc includes
@@ -73,7 +72,7 @@ public: // Interface
                                                    libvlc_video_unlock_cb  unlock  = NULL,
                                                    libvlc_video_display_cb display = NULL);
 
-    Q_INVOKABLE void setSource(const QUrl & media, const QUrl & audio = QUrl());
+    Q_INVOKABLE void setSource(const QString & media, const QString & audio = QString());
 
     Q_INVOKABLE void play(int at = 0);
 

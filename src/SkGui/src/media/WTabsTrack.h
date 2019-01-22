@@ -23,7 +23,6 @@
 #ifndef SK_NO_TABSTRACK
 
 // Forward declarations
-class QUrl;
 class WTabsTrackPrivate;
 
 class SK_GUI_EXPORT WTabsTrack : public WAbstractTabs
@@ -48,7 +47,7 @@ public: // Interface
 
     Q_INVOKABLE WTabTrack * tabBookmarkAt(int index) const;
 
-    Q_INVOKABLE WTabTrack * tabFromSource(const QUrl & source) const;
+    Q_INVOKABLE WTabTrack * tabFromSource(const QString & source) const;
 
 public: // WLocalObject reimplementation
     /* Q_INVOKABLE virtual */ QString getParentPath() const;
