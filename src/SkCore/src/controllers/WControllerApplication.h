@@ -66,6 +66,8 @@ class SK_CORE_EXPORT WControllerApplication : public QObject, public WPrivatable
     Q_PROPERTY(QUrl applicationUrl READ applicationUrl WRITE setApplicationUrl NOTIFY
                applicationUrlChanged)
 
+    Q_PROPERTY(QString applicationHost READ applicationHost NOTIFY applicationUrlChanged)
+
     Q_PROPERTY(Mode defaultMode READ defaultMode WRITE setDefaultMode NOTIFY defaultModeChanged)
 
     Q_PROPERTY(int defaultScreen READ defaultScreen WRITE setDefaultScreen
@@ -272,6 +274,8 @@ public: // Properties
 
     QUrl applicationUrl() const;
     void setApplicationUrl(const QUrl & url);
+
+    QString applicationHost() const;
 
     Mode defaultMode() const;
     void setDefaultMode(Mode mode);

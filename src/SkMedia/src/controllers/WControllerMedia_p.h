@@ -29,6 +29,9 @@
 
 // Qt includes
 #include <QDateTime>
+#ifdef QT_4
+#include <QStringList>
+#endif
 
 // Private includes
 #include <private/WController_p>

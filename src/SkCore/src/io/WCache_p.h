@@ -31,6 +31,9 @@
 #include <QEvent>
 #include <QTimer>
 #include <QHash>
+#ifdef QT_4
+#include <QStringList>
+#endif
 
 // Private includes
 #include <private/Sk_p>

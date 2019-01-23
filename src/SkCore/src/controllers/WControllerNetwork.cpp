@@ -931,7 +931,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
             }
         }
 
-        return extension;
+        return extension.toLower();
     }
     else return QString();
 }

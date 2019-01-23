@@ -265,7 +265,7 @@ QVariant WTextDocumentWithImageResources::loadResource(int type, const QString &
 {
     QDeclarativeContext * context = qmlContext(parent());
 
-    QString url = context->resolvedUrl(name);
+    QString url = context->resolvedUrl(name).toString();
 
     if (type == QTextDocument::ImageResource)
     {

@@ -2313,7 +2313,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 {
     QUrl source(url);
 
-    if (source.host() == sk->applicationUrl().host())
+    if (source.host() == sk->applicationHost())
     {
 #ifdef QT_4
         QString backend = source.queryItemValue("backend");

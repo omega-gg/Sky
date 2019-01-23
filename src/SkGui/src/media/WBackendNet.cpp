@@ -365,7 +365,7 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 
 /* Q_INVOKABLE */ bool WBackendNet::checkQuery(const QString & url) const
 {
-    if (QUrl(url).host() == sk->applicationUrl().host())
+    if (QUrl(url).host() == sk->applicationHost())
     {
          return true;
     }
