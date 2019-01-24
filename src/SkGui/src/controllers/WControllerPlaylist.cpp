@@ -314,6 +314,8 @@ void WControllerPlaylistData::applyHtml(const QByteArray & array, const QString 
         {
             QString url = generateUrl(start + string + end, host);
 
+            if (url.contains(' ')) continue;
+
             if (addUrl(&urls, url))
             {
                 addSource(url, generateTitle(url, urlName));
