@@ -335,7 +335,7 @@ MouseArea
         onClicked: play()
     }
 
-    RectangleShadow
+    /*RectangleShadow
     {
         anchors.left  : areaBackward.left
         anchors.right : areaBackward.right
@@ -383,7 +383,7 @@ MouseArea
                 easing.type: st.easing
             }
         }
-    }
+    }*/
 
     ButtonPushOverlay
     {

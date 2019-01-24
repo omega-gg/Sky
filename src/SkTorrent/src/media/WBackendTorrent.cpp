@@ -79,16 +79,25 @@ public:
     void init();
 
 public: // Functions
+    QStringList extractUrls(const QByteArray & data) const;
+
     QList<WBackendTorrentItem> extractItems(const QString & data) const;
 
     int extractItem(WBackendTorrentItem * item, const QString & data, int at) const;
 
     int extractString(QString * string, const QString & data, int at) const;
 
+    void applyHtml(WControllerPlaylistData * playlistData, const QByteArray & data,
+                                                           const QString    & url) const;
+
     bool applyTorrent(WBackendNetFolder * reply, const QString & url) const;
     bool applyMagnet (WBackendNetFolder * reply, const QString & url) const;
 
-    void applyQuery(WBackendNetItem * reply, QStringList * urls, int id) const;
+    void applyQuerySearch(const QByteArray       & data,
+                          const WBackendNetQuery & query,
+                          WBackendNetItem        * reply, int id) const;
+
+    void applyQueryUrl(WBackendNetItem * reply, QStringList * urls, int id) const;
 
     void applyQueryTorrent(WBackendNetItem * reply, QStringList * urls,
                                                     QStringList * sources) const;
@@ -111,6 +120,30 @@ void WBackendTorrentPrivate::init() {}
 
 //-------------------------------------------------------------------------------------------------
 // Private functions
+
+QStringList WBackendTorrentPrivate::extractUrls(const QByteArray & data) const
+{
+    QStringList urls;
+
+    QString string = Sk::sliceIn(data, "('d',[", "]);");
+
+    QStringList list = WControllerNetwork::splitJson(string);
+
+    foreach (const QString & string, list)
+    {
+        QString source = WControllerNetwork::extractJsonUtf8(string, "c");
+
+        if (source.isEmpty() || urls.contains(source)) continue;
+
+        urls.append(source);
+
+        if (urls.count() == BACKENDTORRENT_MAX_URLS) break;
+    }
+
+    return urls;
+}
+
+//-------------------------------------------------------------------------------------------------
 
 QList<WBackendTorrentItem> WBackendTorrentPrivate::extractItems(const QString & data) const
 {
@@ -226,6 +259,19 @@ int WBackendTorrentPrivate::extractString(QString * string, const QString & data
 
 //-------------------------------------------------------------------------------------------------
 
+void WBackendTorrentPrivate::applyHtml(WControllerPlaylistData * playlistData,
+                                       const QByteArray        & data,
+                                       const QString           & url) const
+{
+    playlistData->addSlice("http");
+    playlistData->addSlice("", ".torrent");
+    playlistData->addSlice("magnet:?");
+
+    playlistData->applyHtml(data, url);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 bool WBackendTorrentPrivate::applyTorrent(WBackendNetFolder * reply, const QString & url) const
 {
     if (WControllerNetwork::extractUrlExtension(url) == "torrent")
@@ -262,8 +308,29 @@ bool WBackendTorrentPrivate::applyMagnet(WBackendNetFolder * reply, const QStrin
 
 //-------------------------------------------------------------------------------------------------
 
-void WBackendTorrentPrivate::applyQuery(WBackendNetItem * reply,
-                                        QStringList     * urls, int id) const
+void WBackendTorrentPrivate::applyQuerySearch(const QByteArray       & data,
+                                              const WBackendNetQuery & query,
+                                              WBackendNetItem        * reply, int id) const
+{
+    Q_Q(const WBackendTorrent);
+
+    QString content = Sk::readUtf8(data);
+
+    QString source = Sk::sliceIn(content, ";nrj('", "'");
+
+    WBackendNetQuery * nextQuery = &(reply->nextQuery);
+
+    nextQuery->backend = q->getId();
+
+    nextQuery->url = "https://duckduckgo.com" + source;
+
+    nextQuery->id = id;
+
+    nextQuery->data = query.data;
+}
+
+void WBackendTorrentPrivate::applyQueryUrl(WBackendNetItem * reply,
+                                           QStringList     * urls, int id) const
 {
     if (urls->isEmpty()) return;
 
@@ -631,42 +698,17 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
     if (id == 2) // Search urls
     {
-        QString content = Sk::readUtf8(data);
+        Q_D(const WBackendTorrent);
 
-        QString source = Sk::sliceIn(content, ";nrj('", "'");
-
-        WBackendNetQuery * nextQuery = &(reply.nextQuery);
-
-        nextQuery->backend = getId();
-
-        nextQuery->url = "https://duckduckgo.com" + source;
-
-        nextQuery->id = 3;
-
-        nextQuery->data = query.data;
+        d->applyQuerySearch(data, query, &reply, 3);
     }
     else if (id == 3) // Extract urls
     {
         Q_D(const WBackendTorrent);
 
-        QStringList urls;
+        QStringList urls = d->extractUrls(data);
 
-        QString string = Sk::sliceIn(data, "('d',[", "]);");
-
-        QStringList list = WControllerNetwork::splitJson(string);
-
-        foreach (const QString & string, list)
-        {
-            QString source = WControllerNetwork::extractJsonUtf8(string, "c");
-
-            if (source.isEmpty() || urls.contains(source)) continue;
-
-            urls.append(source);
-
-            if (urls.count() == BACKENDTORRENT_MAX_URLS) break;
-        }
-
-        d->applyQuery(&reply, &urls, 4);
+        d->applyQueryUrl(&reply, &urls, 4);
     }
     else if (id == 4) // Extract sources
     {
@@ -674,7 +716,7 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
         WControllerPlaylistData playlistData;
 
-        playlistData.applyHtml(data, query.url);
+        d->applyHtml(&playlistData, data, query.url);
 
         QStringList sources;
 
@@ -715,7 +757,7 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
         if (sources.isEmpty())
         {
-             d->applyQuery(&reply, &urls, 4);
+             d->applyQueryUrl(&reply, &urls, 4);
         }
         else d->applyQueryTorrent(&reply, &urls, &sources);
     }
@@ -783,7 +825,7 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
         if (sources.isEmpty())
         {
-             d->applyQuery(&reply, &urls, 4);
+             d->applyQueryUrl(&reply, &urls, 4);
         }
         else d->applyQueryTorrent(&reply, &urls, &sources);
     }
@@ -892,42 +934,17 @@ WBackendNetFolder WBackendTorrent::extractFolder(const QByteArray       & data,
 
     if (id == 0) // Search urls
     {
-        QString content = Sk::readUtf8(data);
+        Q_D(const WBackendTorrent);
 
-        QString source = Sk::sliceIn(content, ";nrj('", "'");
-
-        WBackendNetQuery * nextQuery = &(reply.nextQuery);
-
-        nextQuery->backend = getId();
-
-        nextQuery->url = "https://duckduckgo.com" + source;
-
-        nextQuery->id = 1;
-
-        nextQuery->data = query.data;
+        d->applyQuerySearch(data, query, &reply, 1);
     }
     else if (id == 1) // Extract urls
     {
         Q_D(const WBackendTorrent);
 
-        QStringList urls;
+        QStringList urls = d->extractUrls(data);
 
-        QString string = Sk::sliceIn(data, "('d',[", "]);");
-
-        QStringList list = WControllerNetwork::splitJson(string);
-
-        foreach (const QString & string, list)
-        {
-            QString source = WControllerNetwork::extractJsonUtf8(string, "c");
-
-            if (source.isEmpty() || urls.contains(source)) continue;
-
-            urls.append(source);
-
-            if (urls.count() == BACKENDTORRENT_MAX_URLS) break;
-        }
-
-        d->applyQuery(&reply, &urls, query.data.toInt() + 2);
+        d->applyQueryUrl(&reply, &urls, query.data.toInt() + 2);
     }
     else // Extract sources
     {
@@ -937,7 +954,7 @@ WBackendNetFolder WBackendTorrent::extractFolder(const QByteArray       & data,
 
         WControllerPlaylistData playlistData;
 
-        playlistData.applyHtml(data, query.url);
+        d->applyHtml(&playlistData, data, query.url);
 
         int index = 0;
 
@@ -955,7 +972,7 @@ WBackendNetFolder WBackendTorrent::extractFolder(const QByteArray       & data,
                 }
             }
 
-            d->applyQuery(&reply, &urls, 2);
+            d->applyQueryUrl(&reply, &urls, 2);
         }
         else if (id == 3)
         {
@@ -971,7 +988,7 @@ WBackendNetFolder WBackendTorrent::extractFolder(const QByteArray       & data,
                 }
             }
 
-            d->applyQuery(&reply, &urls, 3);
+            d->applyQueryUrl(&reply, &urls, 3);
         }
         else // if (id == 4)
         {
@@ -987,7 +1004,7 @@ WBackendNetFolder WBackendTorrent::extractFolder(const QByteArray       & data,
                 }
             }
 
-            d->applyQuery(&reply, &urls, 4);
+            d->applyQueryUrl(&reply, &urls, 4);
         }
 
         reply.clearDuplicate = true;

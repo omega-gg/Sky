@@ -303,15 +303,21 @@ void WControllerPlaylistData::applyHtml(const QByteArray & array, const QString 
     content.replace(">",  ">\"");
     content.replace("</", "\"</");
 
-    list = Sk::slicesIn(content, "\"http", "\"");
-
-    foreach (const QString & string, list)
+    foreach (const WControllerPlaylistSlice & slice, slices)
     {
-        QString url = generateUrl("http" + string, host);
+        QString start = slice.start;
+        QString end   = slice.end;
 
-        if (addUrl(&urls, url))
+        list = Sk::slicesIn(content, '"' + start, end + '"');
+
+        foreach (const QString & string, list)
         {
-            addSource(url, generateTitle(url, urlName));
+            QString url = generateUrl(start + string + end, host);
+
+            if (addUrl(&urls, url))
+            {
+                addSource(url, generateTitle(url, urlName));
+            }
         }
     }
 
@@ -365,6 +371,13 @@ void WControllerPlaylistData::applyFile(const QByteArray & array, const QString 
     }
 
     title = WControllerNetwork::extractUrlFileName(url);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WControllerPlaylistData::addSlice(const QString & start, const QString & end)
+{
+    slices.append(WControllerPlaylistSlice(start, end));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -523,6 +536,8 @@ signals:
     QByteArray array = device->readAll();
 
     WControllerPlaylistData data;
+
+    data.addSlice("http");
 
     data.applyHtml(array, url);
 

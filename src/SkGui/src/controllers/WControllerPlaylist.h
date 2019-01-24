@@ -54,6 +54,22 @@ struct WControllerPlaylistMedia
 };
 
 //-------------------------------------------------------------------------------------------------
+// WControllerPlaylistSlice
+//-------------------------------------------------------------------------------------------------
+
+struct WControllerPlaylistSlice
+{
+    WControllerPlaylistSlice(const QString & start, const QString & end)
+    {
+        this->start = start;
+        this->end   = end;
+    }
+
+    QString start;
+    QString end;
+};
+
+//-------------------------------------------------------------------------------------------------
 // WControllerPlaylistData
 //-------------------------------------------------------------------------------------------------
 
@@ -65,6 +81,8 @@ public: // Interface
     void applyFolder(const QString & url);
 
     void applyFile(const QByteArray & array, const QString & url);
+
+    void addSlice(const QString & start, const QString & end = QString());
 
 private: // Functions
     void addSource(const QString & url, const QString & title);
@@ -86,6 +104,8 @@ public: // Variables
     QList<WControllerPlaylistSource> files;
 
     QList<WControllerPlaylistMedia> medias;
+
+    QList<WControllerPlaylistSlice> slices;
 };
 
 //-------------------------------------------------------------------------------------------------
