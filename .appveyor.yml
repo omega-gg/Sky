@@ -16,4 +16,4 @@ install:
   - sh configure.sh %qt% %platform%
 
 build_script:
-  - sh build.sh %qt% win32 deploy
+  - sh build.sh %qt% %platform% deploy
