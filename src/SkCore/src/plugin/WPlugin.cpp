@@ -210,7 +210,7 @@ QString WPlugin::errorString() const
 
 /* static */ QString WPlugin::nameFromSpecFile(const QString & fileName)
 {
-    if (fileName.isNull()) return QString();
+    if (fileName.isEmpty()) return QString();
 
     QDomDocument specifications;
 

@@ -747,7 +747,13 @@ void WCacheThread::load()
 
         stream >> id >> url >> extension >> size;
 
-        QString urlCache = pathFile + QString::number(id) + '.' + extension;
+        QString urlCache;
+
+        if (extension.isEmpty())
+        {
+             urlCache = pathFile + QString::number(id);
+        }
+        else urlCache = pathFile + QString::number(id) + '.' + extension;
 
         addData(id, url, urlCache, extension, size);
 

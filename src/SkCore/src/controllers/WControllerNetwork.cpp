@@ -1049,7 +1049,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
     QString matchB;
 
-    if (pattern.isNull())
+    if (pattern.isEmpty())
     {
          matchB = ' ' + attribute + '=';
     }

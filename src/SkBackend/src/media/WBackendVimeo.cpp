@@ -648,15 +648,9 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
         {
             if (id == 0 && queryId == 1)
             {
-                QString title = WControllerNetwork::extractValue(content, "title");
+                QString json = WControllerNetwork::extractJsonHtml(content, "itemListElement");
 
-                if (title.contains("&quot;"))
-                {
-                     title = Sk::sliceIn(title, "&quot;", "&quot;");
-                }
-                else title = Sk::sliceIn(title, "", "&rsquo;");
-
-                reply.title = WControllerNetwork::htmlToUtf8(title);
+                reply.title = WControllerNetwork::extractJsonUtf8(json, "name");
             }
 
             QString url = d->getNextUrl(query, content, queryId);

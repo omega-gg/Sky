@@ -652,7 +652,7 @@ WDeclarativeContextualItem::WDeclarativeContextualItem()
 
 bool WDeclarativeContextualItem::isValid() const
 {
-    if (title.isNull() && icon.isEmpty())
+    if (title.isEmpty() && icon.isEmpty())
     {
          return false;
     }
