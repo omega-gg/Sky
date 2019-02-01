@@ -50,6 +50,8 @@ contains(QT_MAJOR_VERSION, 4) {
     greaterThan(QT_MINOR_VERSION, 9): DEFINES += QT_5_LATEST
 }
 
+QMAKE_CXXFLAGS += -std=c++11
+
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 
 include(src/controllers/controllers.pri)
@@ -89,7 +91,7 @@ CONFIG(debug, debug|release) {
 macx {
     QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.12
 
-    QMAKE_CXXFLAGS += -std=c++11 -stdlib=libc++
+    QMAKE_CXXFLAGS += -stdlib=libc++
 }
 
 macx {

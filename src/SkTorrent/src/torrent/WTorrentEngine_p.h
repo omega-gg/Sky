@@ -23,6 +23,10 @@
 #include <QTimer>
 
 // libtorrent includes
+#ifdef Q_OS_WIN
+// FIXME libtorrent: We have to include winsock2 before libtorrent includes.
+#include <winsock2.h>
+#endif
 #include <libtorrent/session.hpp>
 
 // Sk includes
@@ -34,9 +38,21 @@
 // Namespaces
 using namespace libtorrent;
 
+// Defines
+#if LIBTORRENT_VERSION_NUM >= 10200
+#define LIBTORRENT_ABI_2
+#else
+#define LIBTORRENT_ABI_1
+#endif
+
 // Typedefs
+#ifdef LIBTORRENT_ABI_1
 typedef boost::shared_ptr<const torrent_info> TorrentInfo;
 typedef boost::shared_ptr<torrent_info>       TorrentInfoPointer;
+#else
+typedef std::shared_ptr<const torrent_info> TorrentInfo;
+typedef std::shared_ptr<torrent_info>       TorrentInfoPointer;
+#endif
 
 // Forward declarations
 struct WTorrentData;
@@ -127,7 +143,11 @@ struct WTorrentData
 
     QList<WTorrentItem *> items;
 
+#ifdef LIBTORRENT_ABI_1
     std::vector<int> files;
+#else
+    std::vector<download_priority_t> files;
+#endif
 };
 
 //-------------------------------------------------------------------------------------------------

@@ -33,7 +33,7 @@ contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_LATEST
 }
 
-QMAKE_CXXFLAGS += -msse
+QMAKE_CXXFLAGS += -std=c++11 -msse
 
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 
@@ -68,7 +68,7 @@ unix: LIBS += -lvlc
 macx {
     QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.12
 
-    QMAKE_CXXFLAGS += -std=c++11 -stdlib=libc++
+    QMAKE_CXXFLAGS += -stdlib=libc++
 }
 
 macx {

@@ -30,12 +30,18 @@
 #include <libtorrent/create_torrent.hpp>
 #include <libtorrent/magnet_uri.hpp>
 #include <libtorrent/extensions/ut_pex.hpp>
+#ifdef LIBTORRENT_ABI_2
+#include <libtorrent/read_resume_data.hpp>
+#include <libtorrent/write_resume_data.hpp>
+#endif
 
+#ifdef LIBTORRENT_ABI_1
 // Boost includes
 #include <boost/bind.hpp>
 
 // C++ includes
 #include <fstream>
+#endif
 
 // Sk includes
 #include <WControllerApplication>
@@ -148,7 +154,7 @@ void WTorrentEnginePrivate::load()
         ids.insertId(id);
 
         source->id   = id;
-        source->hash = sha1_hash(hash);
+        source->hash = sha1_hash(hash.constData());
         source->size = size;
 
         sources.append(source);
@@ -309,8 +315,15 @@ WTorrentData * WTorrentEnginePrivate::createData(TorrentInfoPointer info, const 
 
         stream.unsetf(std::ios_base::skipws);
 
+#ifdef LIBTORRENT_ABI_1
         params.resume_data.assign(std::istream_iterator<char>(stream),
                                   std::istream_iterator<char>());
+#else
+        std::vector<char> buffer { std::istream_iterator<char>(stream),
+                                   std::istream_iterator<char>() };
+
+        params = read_resume_data(buffer);
+#endif
 
         QStringList * urls = &(source->urls);
 
@@ -350,7 +363,11 @@ WTorrentData * WTorrentEnginePrivate::createData(TorrentInfoPointer info, const 
 
     data->hash = 0;
 
+#ifdef LIBTORRENT_ABI_1
     data->files = std::vector<int>(fileCount, 0);
+#else
+    data->files = std::vector<download_priority_t>(fileCount, 0);
+#endif
 
     datas.append(data);
 
@@ -359,10 +376,17 @@ WTorrentData * WTorrentEnginePrivate::createData(TorrentInfoPointer info, const 
     params.ti        = info;
     params.save_path = path.toStdString();
 
+#ifdef LIBTORRENT_ABI_1
     params.flags = add_torrent_params::flag_pinned           |
                    add_torrent_params::flag_update_subscribe |
                    add_torrent_params::flag_auto_managed     |
                    add_torrent_params::flag_apply_ip_filter;
+#else
+    params.flags = torrent_flags::pinned           |
+                   torrent_flags::update_subscribe |
+                   torrent_flags::auto_managed     |
+                   torrent_flags::apply_ip_filter;
+#endif
 
     session->async_add_torrent(params);
 
@@ -1362,7 +1386,11 @@ void WTorrentEnginePrivate::selectFile(WTorrentItem * item) const
 
     WTorrentData * data = item->data;
 
+#ifdef LIBTORRENT_ABI_1
     std::vector<int> & files = data->files;
+#else
+    std::vector<download_priority_t> & files = data->files;
+#endif
 
     int index = item->index;
 
@@ -1397,7 +1425,11 @@ void WTorrentEnginePrivate::unselectFile(WTorrentItem * item) const
 
     if (index == -1)
     {
+#ifdef LIBTORRENT_ABI_1
         std::vector<int> & files = data->files;
+#else
+        std::vector<download_priority_t> & files = data->files;
+#endif
 
         std::fill(files.begin(), files.end(), 0);
 
@@ -1410,7 +1442,11 @@ void WTorrentEnginePrivate::unselectFile(WTorrentItem * item) const
             if (item->index == index) return;
         }
 
+#ifdef LIBTORRENT_ABI_1
         std::vector<int> & files = data->files;
+#else
+        std::vector<download_priority_t> & files = data->files;
+#endif
 
         files[index] = 0;
 
@@ -1424,7 +1460,11 @@ void WTorrentEnginePrivate::updateFiles(WTorrentData * data) const
 {
     qDebug("TORRENT UPDATE FILES");
 
+#ifdef LIBTORRENT_ABI_1
     std::vector<int> & files = data->files;
+#else
+    std::vector<download_priority_t> & files = data->files;
+#endif
 
     foreach (WTorrentItem * item, data->items)
     {
@@ -1671,7 +1711,7 @@ void WTorrentEnginePrivate::events()
 
             QCoreApplication::postEvent(q, new WTorrentEngineValue(EventPiece,
                                                                    W_ID(event->handle),
-                                                                   event->piece_index));
+                                                                   (int) event->piece_index));
         }
         else if (type == save_resume_data_alert::alert_type)
         {
@@ -1693,7 +1733,13 @@ void WTorrentEnginePrivate::events()
 
             stream.unsetf(std::ios_base::skipws);
 
+#ifdef LIBTORRENT_ABI_1
             bencode(std::ostream_iterator<char>(stream), *(event->resume_data));
+#else
+            entry data = write_resume_data(event->params);
+
+            bencode(std::ostream_iterator<char>(stream), data);
+#endif
 
             QCoreApplication::postEvent(q, new WTorrentEngineHandle(EventSaved, hash));
         }
@@ -1901,7 +1947,11 @@ void WTorrentEnginePrivate::onSave()
     {
         const sha1_hash & hash = source->hash;
 
+#ifdef LIBTORRENT_ABI_1
         QByteArray array = QByteArray(hash.data(), hash.size);
+#else
+        QByteArray array = QByteArray(hash.data(), hash.size());
+#endif
 
         const QStringList & urls = source->urls;
 
@@ -2080,10 +2130,19 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         pack.set_str(settings_pack::user_agent, name.toStdString());
 
+#ifdef LIBTORRENT_ABI_1
         pack.set_int(settings_pack::alert_mask, alert::error_notification   |
                                                 alert::storage_notification |
                                                 alert::status_notification  |
                                                 alert::progress_notification);
+#else
+        pack.set_int(settings_pack::alert_mask, alert::error_notification          |
+                                                alert::storage_notification        |
+                                                alert::status_notification         |
+                                                alert::block_progress_notification |
+                                                alert::piece_progress_notification |
+                                                alert::file_progress_notification);
+#endif
 
         pack.set_bool(settings_pack::enable_dht, true);
         pack.set_bool(settings_pack::enable_lsd, true);
@@ -2154,7 +2213,11 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         d->session->add_dht_router(std::make_pair(std::string("dht.aelitis.com"),         6881));
 #endif
 
+#ifdef LIBTORRENT_ABI_1
         boost::function<void()> alert(boost::bind(&WTorrentEnginePrivate::events, d));
+#else
+        std::function<void()> alert(std::bind(&WTorrentEnginePrivate::events, d));
+#endif
 
         d->session->set_alert_notify(alert);
 
@@ -2232,7 +2295,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
                 }
                 else
                 {
-                    boost::shared_ptr<torrent_info> info = boost::shared_ptr<torrent_info> (file);
+                    TorrentInfoPointer info(file);
 
                     data = d->createData(info, hash, url);
 
@@ -2290,7 +2353,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
                 }
                 else
                 {
-                    boost::shared_ptr<torrent_info> info = boost::shared_ptr<torrent_info> (file);
+                    TorrentInfoPointer info(file);
 
                     data = d->createData(info, hash, url);
 
@@ -2352,10 +2415,17 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
             params.save_path = d->pathMagnets.toStdString();
 
+#ifdef LIBTORRENT_ABI_1
             params.flags = add_torrent_params::flag_pinned           |
                            add_torrent_params::flag_update_subscribe |
                            add_torrent_params::flag_auto_managed     |
                            add_torrent_params::flag_apply_ip_filter;
+#else
+            params.flags = torrent_flags::pinned           |
+                           torrent_flags::update_subscribe |
+                           torrent_flags::auto_managed     |
+                           torrent_flags::apply_ip_filter;
+#endif
 
             data = new WMagnetData;
 

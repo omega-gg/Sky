@@ -33,6 +33,8 @@ contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_LATEST
 }
 
+QMAKE_CXXFLAGS += -std=c++11
+
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 
 include(src/controllers/controllers.pri)
@@ -69,7 +71,7 @@ unix:LIBS += -ltorrent-rasterbar \
 macx {
     QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.12
 
-    QMAKE_CXXFLAGS += -std=c++11 -stdlib=libc++
+    QMAKE_CXXFLAGS += -stdlib=libc++
 }
 
 macx {
