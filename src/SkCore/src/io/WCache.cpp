@@ -1402,7 +1402,7 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
     QString path = d->urls.value(url);
 
-    if (path.isNull())
+    if (path.isEmpty())
     {
         file->_loaded = false;
 
@@ -1426,7 +1426,7 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
     QString path = d->urls.value(url);
 
-    if (path.isNull() == false)
+    if (path.isEmpty() == false)
     {
         d->pop(url);
     }
@@ -1454,7 +1454,7 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
     QString path = d->urls.value(url);
 
-    if (path.isNull())
+    if (path.isEmpty())
     {
         file->_loaded = false;
 
