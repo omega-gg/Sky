@@ -12,9 +12,9 @@ external="../3rdparty"
 Qt4_version="4.8.7"
 Qt5_version="5.12.0"
 
-VLC_version="3.0.5"
+VLC_version="3.0.6"
 
-libtorrent_version="1.1.11"
+libtorrent_version="1.1.12"
 
 Boost_version="1.69.0"
 
