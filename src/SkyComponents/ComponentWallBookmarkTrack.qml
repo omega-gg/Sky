@@ -130,9 +130,6 @@ ComponentWall
     itemImage.sourceDefault: parent.logo
 //#END
 
-    itemImage.loadMode: (isCurrent) ? ImageBase.LoadVisible
-                                    : ImageBase.LoadAlways
-
     itemImage.cache: false
 
     itemImage.scaling: itemImage.isSourceDefault

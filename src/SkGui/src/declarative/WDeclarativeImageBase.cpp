@@ -119,7 +119,7 @@ void WDeclarativeImageBasePrivate::loadUrl()
     {
         if (file->isLoading())
         {
-            if (asynchronous == false || pix.pixmap().isNull())
+            if (pix.pixmap().isNull())
             {
                 pix.clear(q);
 

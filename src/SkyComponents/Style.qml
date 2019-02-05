@@ -1904,8 +1904,8 @@ Item
         itemList_colorCurrentA = itemList_colorDefaultA;
         itemList_colorCurrentB = itemList_colorDefaultB;
 
-        itemList_colorCurrentHoverA = itemList_colorHoverA;
-        itemList_colorCurrentHoverB = itemList_colorHoverB;
+        itemList_colorCurrentHoverA = "#484848";
+        itemList_colorCurrentHoverB = itemList_colorCurrentHoverA;
 
         itemList_colorBorder        = "#202020";
         itemList_colorBorderDefault = border_color;

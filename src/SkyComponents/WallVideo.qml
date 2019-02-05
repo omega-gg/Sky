@@ -561,7 +561,7 @@ WallBookmarkTrack
 
         z: player.z
 
-        visible: (player.isResuming || (player.visible && pAudio))
+        visible: (player.isStarting || player.isResuming || (player.visible && pAudio))
 
         gradient: Gradient
         {
@@ -602,7 +602,7 @@ WallBookmarkTrack
                     }
                     else return playerTab.cover;
                 }
-                else return playerTab.videoShot;
+                else return playerTab.coverShot;
             }
 
             sourceDefault: logo
@@ -677,9 +677,6 @@ WallBookmarkTrack
 
             sourceDefault: logo
 
-            loadMode: (pExpanded) ? ImageBase.LoadVisible
-                                  : ImageBase.LoadAlways
-
             fillMode: Image.PreserveAspectFit
 
             asynchronous: wall.asynchronous
@@ -687,6 +684,8 @@ WallBookmarkTrack
             cache: false
 
             scaling: isSourceDefault
+
+            onVisibleChanged: if (visible) loadNow()
         }
     }
 
