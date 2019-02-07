@@ -1851,10 +1851,10 @@ Item
         //-----------------------------------------------------------------------------------------
         // SliderStream
 
-        sliderStream_colorBarA = "#00a0f0";
+        sliderStream_colorBarA = "#008cdc";
         sliderStream_colorBarB = sliderStream_colorBarA;
 
-        sliderStream_colorBarHoverA = "#00b4ff";
+        sliderStream_colorBarHoverA = "#00a0f0";
         sliderStream_colorBarHoverB = sliderStream_colorBarHoverA;
 
         sliderStream_colorBarDisableA = "#969696";
