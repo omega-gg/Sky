@@ -63,6 +63,8 @@ elif [ $2 = "win64" ]; then
     external="$external/$2"
 
     MinGW="$external/MinGW/$MinGW_version_64/bin"
+else
+    windows=false
 fi
 
 if [ $1 = "qt4" ]; then

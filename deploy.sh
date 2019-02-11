@@ -77,6 +77,8 @@ elif [ $2 = "win64" ]; then
 
 elif [ $2 = "linux" ]; then
 
+    windows=false
+
     if [ -d "${lib64}" ]; then
 
         base="$base64"
@@ -93,6 +95,8 @@ elif [ $2 = "linux" ]; then
     VLC_version="$VLC_version_linux"
 
     libtorrent_version="$libtorrent_version_linux"
+else
+    windows=false
 fi
 
 #--------------------------------------------------------------------------------------------------

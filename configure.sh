@@ -57,6 +57,8 @@ if [ $2 = "win32" ] || [ $2 = "win64" ]; then
 
 elif [ $2 = "linux" ]; then
 
+    windows=false
+
     if [ $1 = "qt5" ]; then
 
         Qt5_version="$Qt5_version_linux"
@@ -68,6 +70,8 @@ elif [ $2 = "linux" ]; then
     else
         include="$include32"
     fi
+else
+    windows=false
 fi
 
 #--------------------------------------------------------------------------------------------------
