@@ -767,29 +767,29 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ QString WControllerFile::toLocalFile(const QUrl & url)
+/* Q_INVOKABLE static */ QString WControllerFile::toLocalFile(const QString & url)
 {
-    if (url.scheme().toLower() == "qrc")
+    if (url.toLower().startsWith("qrc"))
     {
-        return url.toString().mid(3);
+        return url.mid(3);
     }
 
-    QString string = url.toLocalFile();
+    QString string = QUrl(url).toLocalFile();
 
     if (string.isEmpty())
     {
-        return url.toString();
+         return url;
     }
     else return string;
 }
 
-/* Q_INVOKABLE static */ QString WControllerFile::toString(const QUrl & url)
+/* Q_INVOKABLE static */ QString WControllerFile::toString(const QString & url)
 {
-    if (url.scheme().toLower() == "qrc")
+    if (url.toLower().startsWith("qrc"))
     {
-         return url.toString().mid(3);
+         return url.mid(3);
     }
-    else return url.toString();
+    else return url;
 }
 
 //-------------------------------------------------------------------------------------------------
