@@ -650,7 +650,9 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
             {
                 QString json = WControllerNetwork::extractJsonHtml(content, "itemListElement");
 
-                reply.title = WControllerNetwork::extractJsonUtf8(json, "name");
+                int index = json.lastIndexOf("\"name\"");
+
+                reply.title = WControllerNetwork::extractJsonUtf8(json, "name", index);
             }
 
             QString url = d->getNextUrl(query, content, queryId);
@@ -715,7 +717,7 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
         id = d->extractId(id);
 
         QString title = WControllerNetwork::extractAttributeUtf8(string, "title");
-        QString cover = WControllerNetwork::extractAttribute    (string, "src");
+        QString cover = WControllerNetwork::extractAttribute    (string, "srcset");
 
         cover = d->extractCover(cover);
 
