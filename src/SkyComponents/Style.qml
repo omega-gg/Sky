@@ -1682,8 +1682,8 @@ Item
         //-----------------------------------------------------------------------------------------
         // Border
 
-        border_color      = "#161616";
-        border_colorLight = "#242424";
+        border_color      = "#242424";
+        border_colorLight = border_color;
         border_colorFocus = "#008cdc";
 
         //-----------------------------------------------------------------------------------------
@@ -1828,8 +1828,8 @@ Item
         lineEditBox_colorA = buttonPush_colorPressA;
         lineEditBox_colorB = buttonPush_colorPressB;
 
-        lineEditBox_colorHoverA = buttonPush_colorPressHoverA;
-        lineEditBox_colorHoverB = lineEditBox_colorHoverA;
+        lineEditBox_colorHoverA = buttonPush_colorA;
+        lineEditBox_colorHoverB = buttonPush_colorB;
 
         //-----------------------------------------------------------------------------------------
         // ScrollBar
@@ -1908,7 +1908,7 @@ Item
         itemList_colorCurrentHoverB = itemList_colorCurrentHoverA;
 
         itemList_colorBorder        = "#202020";
-        itemList_colorBorderDefault = border_color;
+        itemList_colorBorderDefault = "#161616";
 
         itemList_colorText         = "#dcdcdc";
         itemList_colorTextSelected = text_color;
