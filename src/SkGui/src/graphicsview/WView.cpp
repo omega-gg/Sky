@@ -20,10 +20,11 @@
 
 // Qt includes
 #include <QApplication>
-#ifdef QT_LATEST
+#ifdef QT_4
+#include <QDesktopWidget>
+#else
 #include <QScreen>
 #endif
-#include <QDesktopWidget>
 #include <QGLWidget>
 #include <QImageReader>
 #include <QDrag>
@@ -226,6 +227,14 @@ void WViewPrivate::init(QQuickItem * item)
     this->item = item;
 
     currentResizer = NULL;
+
+#ifdef QT_4
+    ratio = 1.0;
+#else
+    QScreen * screen = q->screen();
+
+    ratio = screen->logicalDotsPerInch() / 96;
+#endif
 
     zoom = 1.0;
 
@@ -467,7 +476,14 @@ void WViewPrivate::init(QQuickItem * item)
                          q,    SIGNAL(messageReceived(const QString &)));
     }
 
+#ifdef QT_4
     QObject::connect(qApp->desktop(), SIGNAL(workAreaResized(int)), q, SLOT(onGeometryChanged()));
+#else
+    QObject::connect(q, SIGNAL(screenChanged(QScreen *)), q, SLOT(onGeometryChanged()));
+
+    QObject::connect(screen, SIGNAL(availableGeometryChanged(const QRect &)),
+                     q,      SLOT(onGeometryChanged()));
+#endif
 
     QObject::connect(q, SIGNAL(availableGeometryChanged()), q, SIGNAL(centerXChanged()));
     QObject::connect(q, SIGNAL(availableGeometryChanged()), q, SIGNAL(centerYChanged()));
@@ -1220,6 +1236,17 @@ QList<WDeclarativeMouseArea *> WViewPrivate::getDropAreas(const QList<QQuickItem
 void WViewPrivate::onGeometryChanged()
 {
     Q_Q(WView);
+
+#ifdef QT_LATEST
+    qreal value = q->screen()->logicalDotsPerInch() / 96;
+
+    if (ratio != value)
+    {
+        ratio = value;
+
+        emit q->ratioChanged();
+    }
+#endif
 
     if (maximized == false && fullScreen == false)
     {
@@ -2896,6 +2923,13 @@ void WView::setOriginY(qreal y)
     d->item->setY(-y);
 
     emit originYChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+qreal WView::ratio() const
+{
+    Q_D(const WView); return d->ratio;
 }
 
 //-------------------------------------------------------------------------------------------------

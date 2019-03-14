@@ -40,7 +40,18 @@ static const DWORD ABSTRACTVIEW_FLAGS = WS_OVERLAPPED  | WS_THICKFRAME | WS_MINI
 
 #ifdef QT_LATEST
 static const int ABSTRACTVIEW_INTERVAL = 400;
+
+static const int ABSTRACTVIEW_DELAY = 5000;
 #endif
+#endif
+
+#ifdef QT_LATEST
+//-------------------------------------------------------------------------------------------------
+// Global variables
+
+QWindow * view = NULL;
+
+int count = 0;
 #endif
 
 //-------------------------------------------------------------------------------------------------
@@ -53,6 +64,17 @@ WAbstractViewPrivate::WAbstractViewPrivate(WAbstractView * p) : WPrivate(p) {}
 /* virtual */ WAbstractViewPrivate::~WAbstractViewPrivate()
 {
     DestroyWindow(handle);
+
+#ifdef QT_LATEST
+    count--;
+
+    if (count == 0 && view)
+    {
+        delete view;
+
+        view = NULL;
+    }
+#endif
 }
 #endif
 
@@ -171,6 +193,16 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 #endif
 
     SetParent(id, handle);
+
+#ifdef QT_5
+    // FIXME Qt5 Windows: We need to create a QWindow to receive QScreen events.
+    if (count == 0)
+    {
+        QTimer::singleShot(ABSTRACTVIEW_DELAY, this, SLOT(onCreate()));
+    }
+
+    count++;
+#endif
 #endif // SK_WIN_NATIVE
 }
 
@@ -473,6 +505,19 @@ bool WAbstractViewPrivate::isWindows10()
 //-------------------------------------------------------------------------------------------------
 
 #ifdef QT_LATEST
+
+// FIXME Qt5 Windows: We need to create a QWindow to receive QScreen events.
+void WAbstractViewPrivate::onCreate()
+{
+    view = new QWindow;
+
+    view->setFlags(Qt::Tool | Qt::FramelessWindowHint);
+
+    view->resize(0, 0);
+
+    view->show();
+    view->hide();
+}
 
 void WAbstractViewPrivate::onMove()
 {

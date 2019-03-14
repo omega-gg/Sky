@@ -162,6 +162,8 @@ private:
 
 #ifdef SK_WIN_NATIVE
 #ifdef QT_LATEST
+    Q_PRIVATE_SLOT(d_func(), void onCreate())
+
     Q_PRIVATE_SLOT(d_func(), void onMove())
 #endif
 

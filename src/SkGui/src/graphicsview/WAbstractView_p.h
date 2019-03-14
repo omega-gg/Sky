@@ -73,6 +73,8 @@ public: // Static events
 
 public: // Slots
 #ifdef QT_LATEST
+    void onCreate();
+
     void onMove();
 #endif
 
