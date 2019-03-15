@@ -1,4 +1,4 @@
-clone_folder: c:\dev\workspace\Sky
+clone_folder: C:\dev\workspace\Sky
 
 environment:
   matrix:
