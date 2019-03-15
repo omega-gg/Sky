@@ -67,6 +67,8 @@ class SK_GUI_EXPORT WWindow : public WDeclarativeMouseArea
     Q_PROPERTY(qreal originX READ originX WRITE setOriginX NOTIFY originXChanged)
     Q_PROPERTY(qreal originY READ originY WRITE setOriginY NOTIFY originYChanged)
 
+    Q_PROPERTY(qreal ratio READ ratio NOTIFY ratioChanged)
+
     Q_PROPERTY(qreal zoom READ zoom WRITE setZoom NOTIFY zoomChanged)
 
     Q_PROPERTY(int minimumWidth READ minimumWidth WRITE setMinimumWidth
@@ -348,6 +350,8 @@ signals:
     void originXChanged();
     void originYChanged();
 
+    void ratioChanged();
+
     void zoomChanged();
 
     void minimumWidthChanged ();
@@ -449,6 +453,8 @@ public: // Properties
 
     qreal originY() const;
     void  setOriginY(qreal y);
+
+    qreal ratio() const;
 
     qreal zoom() const;
     void  setZoom(qreal zoom);

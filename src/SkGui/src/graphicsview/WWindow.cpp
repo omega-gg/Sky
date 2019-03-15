@@ -115,6 +115,8 @@ void WWindowPrivate::init()
     QObject::connect(view, SIGNAL(originXChanged()), q, SIGNAL(originXChanged()));
     QObject::connect(view, SIGNAL(originYChanged()), q, SIGNAL(originYChanged()));
 
+    QObject::connect(view, SIGNAL(ratioChanged()), q, SIGNAL(ratioChanged()));
+
     QObject::connect(view, SIGNAL(zoomChanged()), q, SIGNAL(zoomChanged()));
 
     QObject::connect(view, SIGNAL(minimumWidthChanged ()), q, SIGNAL(minimumWidthChanged ()));
@@ -846,6 +848,13 @@ qreal WWindow::originY() const
 void WWindow::setOriginY(qreal y)
 {
     Q_D(WWindow); d->view->setOriginY(y);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+qreal WWindow::ratio() const
+{
+    Q_D(const WWindow); return d->view->ratio();
 }
 
 //-------------------------------------------------------------------------------------------------
