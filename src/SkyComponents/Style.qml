@@ -1682,7 +1682,7 @@ Item
         //-----------------------------------------------------------------------------------------
         // Border
 
-        border_color      = "#242424";
+        border_color      = "#161616";
         border_colorLight = border_color;
         border_colorFocus = "#008cdc";
 
