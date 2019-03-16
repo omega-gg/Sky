@@ -652,7 +652,7 @@ void WViewPrivate::updateHoverable()
 
 void WViewPrivate::updateMouse()
 {
-    if (dragged || resizing) return;
+    if (dragged || resizing || idTouch != -1) return;
 
     Q_Q(WView);
 

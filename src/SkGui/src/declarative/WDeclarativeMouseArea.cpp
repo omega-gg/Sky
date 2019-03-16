@@ -1176,12 +1176,14 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
             QPoint screenPos = point.screenPos().toPoint();
 
-            QPoint localPos = d->view->mapFromGlobal(screenPos);
+            d->view->d_func()->mousePos = d->view->mapFromGlobal(screenPos);
+
+            /*QPoint localPos = d->view->mapFromGlobal(screenPos);
 
             QMouseEvent eventMove(QEvent::MouseMove, localPos, screenPos,
                                   Qt::NoButton, Qt::NoButton, Qt::NoModifier);
 
-            QCoreApplication::sendEvent(this, &eventMove);
+            QCoreApplication::sendEvent(this, &eventMove);*/
 
             //-------------------------------------------------------------------------------------
 #endif
@@ -1195,7 +1197,13 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
         {
             if (point.id() == id)
             {
-                if (point.state() == Qt::TouchPointReleased)
+                if (point.state() == Qt::TouchPointMoved)
+                {
+                    QPoint screenPos = point.screenPos().toPoint();
+
+                    d->view->d_func()->mousePos = d->view->mapFromGlobal(screenPos);
+                }
+                else if (point.state() == Qt::TouchPointReleased)
                 {
                     d->view->d_func()->idTouch = -1;
                 }
@@ -1214,7 +1222,11 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
     if (d->view == NULL) return;
 
-    d->view->d_func()->idTouch = -1;
+    WViewPrivate * p = d->view->d_func();
+
+    p->idTouch = -1;
+
+    p->updateMouse();
 
     WDeclarativeItem::touchUngrabEvent();
 }
