@@ -103,6 +103,10 @@ public: // Interface
 
     Q_INVOKABLE void quit();
 
+    Q_INVOKABLE QPoint cursorPosition() const;
+    Q_INVOKABLE void   setCursorPosition(const QPoint & position);
+    Q_INVOKABLE void   clearCursorPosition();
+
     Q_INVOKABLE QString clipboardText() const;
     Q_INVOKABLE void    setClipboardText(const QString & text);
 

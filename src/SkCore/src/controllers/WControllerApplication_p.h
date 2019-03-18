@@ -29,6 +29,7 @@
 
 // Qt includes
 #include <QUrl>
+#include <QPoint>
 
 // Private includes
 #include <private/Sk_p>
@@ -90,7 +91,8 @@ public: // Variables
     bool screenDimEnabled;
     bool screenSaverEnabled;
 
-    bool cursorVisible;
+    QPoint cursorPosition;
+    bool   cursorVisible;
 
     QObject * object;
 
