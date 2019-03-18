@@ -1170,25 +1170,14 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
         {
             d->view->d_func()->idTouch = point.id();
 
-#ifdef Q_OS_WIN
-            //-------------------------------------------------------------------------------------
-            // FIXME Qt5 Windows: Sending a mouse move before the press event.
-
             QPoint screenPos = point.screenPos().toPoint();
 
-            d->view->d_func()->mousePos = d->view->mapFromGlobal(screenPos);
+            QPoint localPos = d->view->mapFromGlobal(screenPos);
 
-            /*QPoint localPos = d->view->mapFromGlobal(screenPos);
+            QMouseEvent eventPress(QEvent::MouseButtonPress, localPos, screenPos,
+                                   Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
 
-            QMouseEvent eventMove(QEvent::MouseMove, localPos, screenPos,
-                                  Qt::NoButton, Qt::NoButton, Qt::NoModifier);
-
-            QCoreApplication::sendEvent(this, &eventMove);*/
-
-            //-------------------------------------------------------------------------------------
-#endif
-
-            WDeclarativeItem::touchEvent(event);
+            QCoreApplication::sendEvent(d->view, &eventPress);
         }
     }
     else
@@ -1201,14 +1190,24 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
                 {
                     QPoint screenPos = point.screenPos().toPoint();
 
-                    d->view->d_func()->mousePos = d->view->mapFromGlobal(screenPos);
+                    QPoint localPos = d->view->mapFromGlobal(screenPos);
+
+                    QMouseEvent eventMove(QEvent::MouseMove, localPos, screenPos,
+                                          Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+
+                    QCoreApplication::sendEvent(d->view, &eventMove);
                 }
                 else if (point.state() == Qt::TouchPointReleased)
                 {
-                    d->view->d_func()->idTouch = -1;
-                }
+                    QPoint screenPos = point.screenPos().toPoint();
 
-                WDeclarativeItem::touchEvent(event);
+                    QPoint localPos = d->view->mapFromGlobal(screenPos);
+
+                    QMouseEvent eventRelease(QEvent::MouseButtonRelease, localPos, screenPos,
+                                             Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+
+                    QCoreApplication::sendEvent(d->view, &eventRelease);
+                }
 
                 return;
             }
