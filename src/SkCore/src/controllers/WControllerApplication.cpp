@@ -346,32 +346,32 @@ void WControllerApplication::startScript()
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ QPoint WControllerApplication::cursorPosition() const
-{
-    Q_D(const WControllerApplication);
+///* Q_INVOKABLE */ QPoint WControllerApplication::cursorPosition() const
+//{
+//    Q_D(const WControllerApplication);
 
-    if (d->cursorPosition.isNull())
-    {
-         return QCursor::pos();
-    }
-    else return d->cursorPosition;
-}
+//    if (d->cursorPosition.isNull())
+//    {
+//         return QCursor::pos();
+//    }
+//    else return d->cursorPosition;
+//}
 
-/* Q_INVOKABLE */ void WControllerApplication::setCursorPosition(const QPoint & position)
-{
-    Q_D(WControllerApplication);
+///* Q_INVOKABLE */ void WControllerApplication::setCursorPosition(const QPoint & position)
+//{
+//    Q_D(WControllerApplication);
 
-    if (d->cursorPosition == position) return;
+//    if (d->cursorPosition == position) return;
 
-    d->cursorPosition == position;
-}
+//    d->cursorPosition = position;
+//}
 
-/* Q_INVOKABLE */ void WControllerApplication::clearCursorPosition()
-{
-    Q_D(WControllerApplication);
+///* Q_INVOKABLE */ void WControllerApplication::clearCursorPosition()
+//{
+//    Q_D(WControllerApplication);
 
-    d->cursorPosition = QPoint();
-}
+//    d->cursorPosition = QPoint();
+//}
 
 //-------------------------------------------------------------------------------------------------
 

@@ -1174,9 +1174,15 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
             QPoint localPos = d->view->mapFromGlobal(screenPos);
 
+            QCursor::setPos(screenPos);
+
+            QMouseEvent eventMove(QEvent::MouseMove, localPos, screenPos,
+                                  Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+
             QMouseEvent eventPress(QEvent::MouseButtonPress, localPos, screenPos,
                                    Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
 
+            QCoreApplication::sendEvent(d->view, &eventMove);
             QCoreApplication::sendEvent(d->view, &eventPress);
         }
     }
@@ -1191,6 +1197,8 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
                     QPoint screenPos = point.screenPos().toPoint();
 
                     QPoint localPos = d->view->mapFromGlobal(screenPos);
+
+                    QCursor::setPos(screenPos);
 
                     QMouseEvent eventMove(QEvent::MouseMove, localPos, screenPos,
                                           Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
@@ -1207,6 +1215,8 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
                                              Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
 
                     QCoreApplication::sendEvent(d->view, &eventRelease);
+
+                    d->view->d_func()->idTouch = -1;
                 }
 
                 return;
@@ -1221,11 +1231,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
     if (d->view == NULL) return;
 
-    WViewPrivate * p = d->view->d_func();
-
-    p->idTouch = -1;
-
-    p->updateMouse();
+    d->view->d_func()->idTouch = -1;
 
     WDeclarativeItem::touchUngrabEvent();
 }
