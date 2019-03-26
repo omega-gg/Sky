@@ -79,6 +79,8 @@ fi
 Qt4="$external/Qt/$Qt4_version"
 Qt5="$external/Qt/$Qt5_version"
 
+zlib="$external/zlib"
+
 VLC="$external/VLC/$VLC_version"
 
 libtorrent="$external/libtorrent/$libtorrent_version"
@@ -188,6 +190,15 @@ elif [ $1 = "qt5" ]; then
 
         Qt5=/usr/local/opt/qt\@5.5
     fi
+fi
+
+#--------------------------------------------------------------------------------------------------
+# zlib
+#--------------------------------------------------------------------------------------------------
+
+if [ $windows = true ]; then
+
+    cp "$zlib"/lib/libz.a lib
 fi
 
 #--------------------------------------------------------------------------------------------------
