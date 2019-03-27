@@ -40,8 +40,8 @@ public:
 
     void init();
 
-public: // Functions
-    void extractFile(QuaZip * zip, const QString & fileName, const QString & destination);
+public: // Static functions
+    static void extractFile(QuaZip * zip, const QString & fileName, const QString & destination);
 
 public: // Variables
     QString fileName;
@@ -61,11 +61,11 @@ WUnzipperPrivate::WUnzipperPrivate(WUnzipper * p) : WPrivate(p) {}
 void WUnzipperPrivate::init() {}
 
 //-------------------------------------------------------------------------------------------------
-// Prviate functions
+// Prviate static functions
 //-------------------------------------------------------------------------------------------------
 
-void WUnzipperPrivate::extractFile(QuaZip * zip, const QString & fileName,
-                                                 const QString & destination)
+/* static */void WUnzipperPrivate::extractFile(QuaZip * zip, const QString & fileName,
+                                                             const QString & destination)
 {
     zip->setCurrentFile(fileName);
 
@@ -78,11 +78,13 @@ void WUnzipperPrivate::extractFile(QuaZip * zip, const QString & fileName,
         return;
     }
 
-    QFileInfo info(destination);
+    QString path = QDir(destination).absolutePath() + '/' + fileName;
+
+    QFileInfo info(path);
 
     QDir().mkpath(info.absolutePath());
 
-    QFile file(destination);
+    QFile file(path);
 
     if (file.open(QIODevice::WriteOnly) == false)
     {
@@ -108,45 +110,46 @@ void WUnzipperPrivate::extractFile(QuaZip * zip, const QString & fileName,
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WUnzipper::extract()
+/* Q_INVOKABLE */ void WUnzipper::run()
 {
     Q_D(WUnzipper);
 
-    QuaZip zip(d->fileName);
-
-    if (zip.open(QuaZip::mdUnzip) == false)
-    {
-        qWarning("WUnzipper::extract: Cannot open zip file %s.", d->fileName.C_STR);
-
-        return;
-    }
-
-    if (d->fileNames.isEmpty())
-    {
-        d->fileNames = getFileNames(d->fileName);
-    }
-
-    foreach (const QString & fileName, d->fileNames)
-    {
-        QString destination = QDir(d->destination).absolutePath() + '/' + fileName;
-
-        d->extractFile(&zip, fileName, destination);
-    }
-}
-
-/* Q_INVOKABLE */ void WUnzipper::extract(const QString     & fileName,
-                                          const QString     & destination,
-                                          const QStringList & fileNames)
-{
-    setFileName   (fileName);
-    setDestination(destination);
-    setFileNames  (fileNames);
-
-    extract();
+    extract(d->fileName, d->destination, d->fileNames);
 }
 
 //-------------------------------------------------------------------------------------------------
 // Static functions
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ void WUnzipper::extract(const QString     & fileName,
+                                                 const QString     & destination,
+                                                 const QStringList & fileNames)
+{
+    QuaZip zip(fileName);
+
+    if (zip.open(QuaZip::mdUnzip) == false)
+    {
+        qWarning("WUnzipper::extract: Cannot open zip file %s.", fileName.C_STR);
+
+        return;
+    }
+
+    if (fileNames.isEmpty())
+    {
+        foreach (const QString & fileName, getFileNames(fileName))
+        {
+            WUnzipperPrivate::extractFile(&zip, fileName, destination);
+        }
+    }
+    else
+    {
+        foreach (const QString & fileName, fileNames)
+        {
+            WUnzipperPrivate::extractFile(&zip, fileName, destination);
+        }
+    }
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QStringList WUnzipper::getFileNames(const QString & fileName)

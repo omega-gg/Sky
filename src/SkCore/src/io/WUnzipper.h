@@ -43,13 +43,13 @@ public:
     explicit WUnzipper(QObject * parent = NULL);
 
 public: // Interface
-    Q_INVOKABLE void extract();
-
-    Q_INVOKABLE void extract(const QString     & fileName,
-                             const QString     & destination,
-                             const QStringList & fileNames = QStringList());
+    Q_INVOKABLE void run();
 
 public: // Static functions
+    Q_INVOKABLE static void extract(const QString     & fileName,
+                                    const QString     & destination,
+                                    const QStringList & fileNames = QStringList());
+
     Q_INVOKABLE static QStringList getFileNames(const QString & fileName);
 
 signals:
