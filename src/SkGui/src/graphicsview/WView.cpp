@@ -329,6 +329,8 @@ void WViewPrivate::init(QQuickItem * item)
 
     touchId   = -1;
     touchItem = NULL;
+
+    touchTimer.setSingleShot(true);
 #endif
 
     //---------------------------------------------------------------------------------------------

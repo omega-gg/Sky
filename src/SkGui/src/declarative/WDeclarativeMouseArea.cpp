@@ -39,7 +39,8 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int MOUSEAREA_PRESS_HOLD_DELAY = 800;
+static const int MOUSEAREA_DELAY_PRESS_HOLD = 800;
+static const int MOUSEAREA_DELAY_TOUCH      = 100;
 
 //=================================================================================================
 // WDeclarativeDrag
@@ -969,7 +970,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
     if (accept)
     {
-        d->pressAndHoldTimer.start(MOUSEAREA_PRESS_HOLD_DELAY, this);
+        d->pressAndHoldTimer.start(MOUSEAREA_DELAY_PRESS_HOLD, this);
     }
 }
 
@@ -1234,7 +1235,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
                         p->touchItem = this;
 
-                        p->touchTimer.start(100);
+                        p->touchTimer.start(MOUSEAREA_DELAY_TOUCH);
                     }
 
                     p->touchId = -1;
