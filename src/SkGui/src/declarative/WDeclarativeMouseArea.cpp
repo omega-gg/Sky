@@ -1158,7 +1158,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
     const QList<QTouchEvent::TouchPoint> & points = event->touchPoints();
 
-    int id = d->view->d_func()->idTouch;
+    int id = d->view->d_func()->touchId;
 
     if (id == -1)
     {
@@ -1168,7 +1168,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
         if (point.state() == Qt::TouchPointPressed)
         {
-            d->view->d_func()->idTouch = point.id();
+            d->view->d_func()->touchId = point.id();
 
             QPoint screenPos = point.screenPos().toPoint();
 
@@ -1214,9 +1214,30 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
                     QMouseEvent eventRelease(QEvent::MouseButtonRelease, localPos, screenPos,
                                              Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
 
-                    QCoreApplication::sendEvent(d->view, &eventRelease);
+                    WViewPrivate * p = d->view->d_func();
 
-                    d->view->d_func()->idTouch = -1;
+                    if (p->touchItem == this && p->touchTimer.isActive())
+                    {
+                        p->touchTimer.stop();
+
+                        p->touchItem = NULL;
+
+                        QMouseEvent eventClick(QEvent::MouseButtonDblClick, localPos, screenPos,
+                                               Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+
+                        QCoreApplication::sendEvent(d->view, &eventClick);
+                        QCoreApplication::sendEvent(d->view, &eventRelease);
+                    }
+                    else
+                    {
+                        QCoreApplication::sendEvent(d->view, &eventRelease);
+
+                        p->touchItem = this;
+
+                        p->touchTimer.start(100);
+                    }
+
+                    p->touchId = -1;
                 }
 
                 return;
@@ -1231,7 +1252,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
     if (d->view == NULL) return;
 
-    d->view->d_func()->idTouch = -1;
+    d->view->d_func()->touchId = -1;
 
     WDeclarativeItem::touchUngrabEvent();
 }
