@@ -197,7 +197,13 @@ else
 
     if [ $windows = true ]; then
 
-        cp "$MinGW"/libgcc_s_seh-1.dll  deploy
+        if [ $2 = "win32" ]; then
+
+            cp "$MinGW"/libgcc_s_dw2-1.dll deploy
+        else
+            cp "$MinGW"/libgcc_s_seh-1.dll deploy
+        fi
+
         cp "$MinGW"/libstdc++-6.dll     deploy
         cp "$MinGW"/libwinpthread-1.dll deploy
 
