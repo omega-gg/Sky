@@ -12,6 +12,9 @@ external="../3rdparty"
 Qt4_version="4.8.7"
 Qt5_version="5.12.0"
 
+MinGW_version_32="5.3.0"
+MinGW_version_64="7.3.0"
+
 VLC_version="3.0.6"
 
 libtorrent_version="1.1.12"
@@ -49,11 +52,21 @@ fi
 # Configuration
 #--------------------------------------------------------------------------------------------------
 
-if [ $2 = "win32" ] || [ $2 = "win64" ]; then
+if [ $2 = "win32" ]; then
 
     windows=true
 
     external="$external/$2"
+
+    MinGW="$external/MinGW/$MinGW_version_32/i686-w64-mingw32/lib"
+
+elif [ $2 = "win64" ]; then
+
+    windows=true
+
+    external="$external/$2"
+
+    MinGW="$external/MinGW/$MinGW_version_64/x86_64-w64-mingw32/lib"
 
 elif [ $2 = "linux" ]; then
 
@@ -198,7 +211,7 @@ fi
 
 if [ $windows = true ]; then
 
-    cp "$zlib"/lib/libz.a lib
+    cp "$MinGW"/libz.a lib
 fi
 
 #--------------------------------------------------------------------------------------------------
