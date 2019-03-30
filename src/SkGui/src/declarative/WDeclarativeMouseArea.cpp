@@ -40,7 +40,7 @@
 // Static variables
 
 static const int MOUSEAREA_DELAY_PRESS_HOLD = 800;
-static const int MOUSEAREA_DELAY_TOUCH      = 100;
+static const int MOUSEAREA_DELAY_TOUCH      = 200;
 
 //=================================================================================================
 // WDeclarativeDrag
