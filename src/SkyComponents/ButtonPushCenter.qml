@@ -33,7 +33,7 @@ ButtonPush
 
     background.anchors.rightMargin: background.anchors.leftMargin
 
-// FIXME Qt 4: Something is wrong with clipping and margins.
+// FIXME Qt4: Something is wrong with clipping and margins.
 //#QT_4
     //---------------------------------------------------------------------------------------------
     // Childs
