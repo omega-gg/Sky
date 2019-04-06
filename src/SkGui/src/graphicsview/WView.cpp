@@ -2394,18 +2394,14 @@ void WView::hoverLeave()
 
     d->setEntered(true);
 
-    /*if (d->pressed && event->buttons() == Qt::NoButton)
-    {
-        d->pressed = false;
-
-        emit pressedChanged();
-    }*/
-
     d->setMousePos(event->pos());
 
 #ifdef QT_4
     if (d->currentResizer)
     {
+        // FIXME Qt4: We have to clear press manually here.
+        d->setPressed(false);
+
         d->currentResizer = NULL;
 
         d->setResizing(false);
