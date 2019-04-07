@@ -518,8 +518,6 @@ WallBookmarkTrack
                     width: pWidthHalf
 
                     x: (posB) ? playerBrowser.x : 0
-
-                    z: 4
                 }
             },
             State
@@ -534,8 +532,6 @@ WallBookmarkTrack
 
                     x: (posB) ? playerBrowser.x
                               : pWidthHalf + 2
-
-                    z: 4
                 }
             }
         ]
