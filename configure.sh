@@ -12,8 +12,7 @@ external="../3rdparty"
 Qt4_version="4.8.7"
 Qt5_version="5.12.2"
 
-MinGW_version_32="7.3.0"
-MinGW_version_64="7.3.0"
+MinGW_version="7.3.0"
 
 VLC_version="3.0.6"
 
@@ -58,7 +57,7 @@ if [ $2 = "win32" ]; then
 
     external="$external/$2"
 
-    MinGW="$external/MinGW/$MinGW_version_32/i686-w64-mingw32/lib"
+    MinGW="$external/MinGW/$MinGW_version/i686-w64-mingw32/lib"
 
 elif [ $2 = "win64" ]; then
 
@@ -66,7 +65,7 @@ elif [ $2 = "win64" ]; then
 
     external="$external/$2"
 
-    MinGW="$external/MinGW/$MinGW_version_64/x86_64-w64-mingw32/lib"
+    MinGW="$external/MinGW/$MinGW_version/x86_64-w64-mingw32/lib"
 
 elif [ $2 = "linux" ]; then
 
