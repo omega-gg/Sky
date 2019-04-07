@@ -119,8 +119,6 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
 
     Q_PROPERTY(int tabIndex READ tabIndex NOTIFY tabIndexChanged)
 
-    Q_PROPERTY(bool keepState READ keepState WRITE setKeepState NOTIFY keepStateChanged)
-
 public: // Enums
     enum Repeat
     {
@@ -233,8 +231,6 @@ signals:
     void tabChanged     ();
     void tabIndexChanged();
 
-    void keepStateChanged();
-
 public: // Properties
     WAbstractBackend * backend() const;
     void               setBackend(WAbstractBackend * backend);
@@ -320,9 +316,6 @@ public: // Properties
     WTabTrack * tab() const;
 
     int tabIndex() const;
-
-    bool keepState() const;
-    void setKeepState(bool keepState);
 
 private:
     W_DECLARE_PRIVATE(WDeclarativePlayer)

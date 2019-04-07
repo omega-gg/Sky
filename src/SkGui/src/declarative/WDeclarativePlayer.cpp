@@ -241,7 +241,12 @@ void WDeclarativePlayerPrivate::loadSource(const QString & source, int duration,
         {
             bool playing = backend->isPlaying();
 
+            // NOTE: We have to keep state to avoid clearing highlightedTab
+            keepState = true;
+
             backend->clear();
+
+            keepState = false;
 
             backendInterface = hook;
 
@@ -262,7 +267,12 @@ void WDeclarativePlayerPrivate::loadSource(const QString & source, int duration,
         {
             bool playing = hook->backend()->isPlaying();
 
+            // NOTE: We have to keep state to avoid clearing highlightedTab
+            keepState = true;
+
             hook->clear();
+
+            keepState = false;
 
             backendInterface = backend;
 
@@ -1850,38 +1860,6 @@ int WDeclarativePlayer::tabIndex() const
         else return d->tabs->currentIndex();
     }
     else return -1;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-bool WDeclarativePlayer::keepState() const
-{
-    Q_D(const WDeclarativePlayer); return d->keepState;
-}
-
-void WDeclarativePlayer::setKeepState(bool keepState)
-{
-    Q_D(WDeclarativePlayer);
-
-    if (d->keepState == keepState) return;
-
-    d->keepState = keepState;
-
-    if (d->backend)
-    {
-        if (keepState)
-        {
-             disconnect(d->backend, SIGNAL(startedChanged()), this, SIGNAL(startedChanged()));
-             disconnect(d->backend, SIGNAL(endedChanged  ()), this, SIGNAL(endedChanged  ()));
-        }
-        else
-        {
-            connect(d->backend, SIGNAL(startedChanged()), this, SIGNAL(startedChanged()));
-            connect(d->backend, SIGNAL(endedChanged  ()), this, SIGNAL(endedChanged  ()));
-        }
-    }
-
-    emit keepStateChanged();
 }
 
 #endif // SK_NO_DECLARATIVEPLAYER
