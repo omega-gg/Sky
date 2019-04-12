@@ -918,6 +918,8 @@ void WViewPrivate::setResizing(bool resizing)
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_LATEST
+
 void WViewPrivate::setTouch(int id)
 {
     if (touchId == id) return;
@@ -941,6 +943,8 @@ void WViewPrivate::setTouch(int id)
         emit q->touchingChanged();
     }
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 

@@ -104,7 +104,9 @@ public: // Functions
     void setDragged (bool dragged);
     void setResizing(bool resizing);
 
+#ifdef QT_LATEST
     void setTouch(int id);
+#endif
 
     QRect getGeometryDefault(const QRect & rect) const;
     QRect getGeometry       (const QRect & rect) const;
