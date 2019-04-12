@@ -91,11 +91,7 @@ BaseWindow
 
         if (isResizing)
         {
-            pAnimate = true;
-
-            isTouchActive = true;
-
-            pAnimate = false;
+            pTouchShow();
         }
         else timer.restart();
     }
@@ -164,6 +160,22 @@ BaseWindow
 
     //---------------------------------------------------------------------------------------------
 
+    function showTouch()
+    {
+        pTouchShow();
+
+        timer.restart();
+    }
+
+    function hideTouch()
+    {
+        timer.stop();
+
+        pTouchClear();
+    }
+
+    //---------------------------------------------------------------------------------------------
+
     function clearContextual()
     {
         if (areaContextual) areaContextual.hidePanels();
@@ -219,7 +231,16 @@ BaseWindow
     //---------------------------------------------------------------------------------------------
     // Private
 
-    function pClearTouch()
+    function pTouchShow()
+    {
+        pAnimate = true;
+
+        isTouchActive = true;
+
+        pAnimate = false;
+    }
+
+    function pTouchClear()
     {
         if (isResizing) return;
 
@@ -240,7 +261,7 @@ BaseWindow
 
         interval: st.window_intervalTouch
 
-        onTriggered: pClearTouch()
+        onTriggered: pTouchClear()
     }
 
     Rectangle
@@ -273,18 +294,6 @@ BaseWindow
             enabled: pAnimate
 
             PropertyAnimation
-            {
-                duration: durationAnimation
-
-                easing.type: st.easing
-            }
-        }
-
-        Behavior on color
-        {
-            enabled: pAnimate
-
-            ColorAnimation
             {
                 duration: durationAnimation
 
