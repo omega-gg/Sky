@@ -232,8 +232,13 @@ Item
 
     property int window_durationAnimation: duration_fast
 
-    property int window_borderSize : border_size
-    property int window_resizerSize: dp4
+    property int window_intervalTouch: 3000
+
+    property int window_borderSize     : border_size
+    property int window_borderSizeTouch: dp8
+
+    property int window_resizerSize     : dp4
+    property int window_resizerSizeTouch: dp16
 
     property color window_color: "#b4b4b4"
 

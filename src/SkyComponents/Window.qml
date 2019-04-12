@@ -31,6 +31,8 @@ BaseWindow
 
     property bool resizable: true
 
+    /* read */ property bool isTouchActive: false
+
     //---------------------------------------------------------------------------------------------
     // Style
 
@@ -82,6 +84,21 @@ BaseWindow
     onPressed: clearFocus()
 
     onActiveChanged: if (isActive == false) clearContextual()
+
+    onResizingChanged:
+    {
+        if (isTouching == false) return;
+
+        if (isResizing)
+        {
+            pAnimate = true;
+
+            isTouchActive = true;
+
+            pAnimate = false;
+        }
+        else timer.restart();
+    }
 
     //---------------------------------------------------------------------------------------------
     // Animations
@@ -179,8 +196,52 @@ BaseWindow
     }
 
     //---------------------------------------------------------------------------------------------
+    // Virtual
+
+    /* virtual */ function getMargin(size)
+    {
+        if (size)
+        {
+             return st.window_borderSize;
+        }
+        else return 0;
+    }
+
+    /* virtual */ function getBorderSize()
+    {
+        if (isTouchActive)
+        {
+             return st.window_borderSizeTouch;
+        }
+        else return st.window_borderSize;
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    function pClearTouch()
+    {
+        if (isResizing) return;
+
+        pAnimate = true;
+
+        isTouchActive = false;
+
+        pAnimate = false;
+    }
+
+    //---------------------------------------------------------------------------------------------
     // Childs
     //---------------------------------------------------------------------------------------------
+
+    Timer
+    {
+        id: timer
+
+        interval: st.window_intervalTouch
+
+        onTriggered: pClearTouch()
+    }
 
     Rectangle
     {
@@ -188,10 +249,10 @@ BaseWindow
 
         anchors.fill: parent
 
-        anchors.leftMargin  : borderLeft
-        anchors.rightMargin : borderRight
-        anchors.topMargin   : borderTop
-        anchors.bottomMargin: borderBottom
+        anchors.leftMargin  : getMargin(borderLeft)
+        anchors.rightMargin : getMargin(borderRight)
+        anchors.topMargin   : getMargin(borderTop)
+        anchors.bottomMargin: getMargin(borderBottom)
 
         color: st.window_color
     }
@@ -202,7 +263,34 @@ BaseWindow
 
         anchors.fill: parent
 
-        size: (maximized == false && fullScreen == false) ? st.window_borderSize : 0
+        size: (maximized == false && fullScreen == false) ? getBorderSize() : 0
+
+        color: (isTouchActive) ? st.border_colorFocus
+                               : st.border_color
+
+        Behavior on size
+        {
+            enabled: pAnimate
+
+            PropertyAnimation
+            {
+                duration: durationAnimation
+
+                easing.type: st.easing
+            }
+        }
+
+        Behavior on color
+        {
+            enabled: pAnimate
+
+            ColorAnimation
+            {
+                duration: durationAnimation
+
+                easing.type: st.easing
+            }
+        }
     }
 
     ViewResizer
@@ -211,7 +299,8 @@ BaseWindow
 
         anchors.fill: parent
 
-        size: st.window_resizerSize
+        size: (isTouchActive) ? st.window_resizerSizeTouch
+                              : st.window_resizerSize
 
         visible: (resizable && maximized == false && fullScreen == false)
     }
