@@ -306,6 +306,7 @@ void WViewPrivate::init(QQuickItem * item)
 
     dragged  = false;
     resizing = false;
+    touching = false;
 
     mouseAccepted = false;
     dragAccepted  = false;
@@ -913,6 +914,32 @@ void WViewPrivate::setResizing(bool resizing)
     updateMouse();
 
     emit q->resizingChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WViewPrivate::setTouch(int id)
+{
+    if (touchId == id) return;
+
+    touchId = id;
+
+    if (id == -1)
+    {
+        Q_Q(WView);
+
+        touching = false;
+
+        emit q->touchingChanged();
+    }
+    else if (touching == false)
+    {
+        Q_Q(WView);
+
+        touching = true;
+
+        emit q->touchingChanged();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -3229,6 +3256,11 @@ bool WView::isDragged() const
 bool WView::isResizing() const
 {
     Q_D(const WView); return d->resizing;
+}
+
+bool WView::isTouching() const
+{
+    Q_D(const WView); return d->touching;
 }
 
 //-------------------------------------------------------------------------------------------------

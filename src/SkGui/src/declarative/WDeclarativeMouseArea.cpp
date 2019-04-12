@@ -1178,7 +1178,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
         if (point.state() == Qt::TouchPointPressed)
         {
-            d->view->d_func()->touchId = point.id();
+            d->view->d_func()->setTouch(point.id());
 
             QPoint screenPos = point.screenPos().toPoint();
 
@@ -1247,7 +1247,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
                         p->touchTimer.start(MOUSEAREA_DELAY_TOUCH);
                     }
 
-                    p->touchId = -1;
+                    p->setTouch(-1);
                 }
 
                 return;
@@ -1262,7 +1262,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
     if (d->view == NULL) return;
 
-    d->view->d_func()->touchId = -1;
+    d->view->d_func()->setTouch(-1);
 
     WDeclarativeItem::touchUngrabEvent();
 }

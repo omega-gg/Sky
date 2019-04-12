@@ -104,6 +104,8 @@ public: // Functions
     void setDragged (bool dragged);
     void setResizing(bool resizing);
 
+    void setTouch(int id);
+
     QRect getGeometryDefault(const QRect & rect) const;
     QRect getGeometry       (const QRect & rect) const;
 
@@ -211,6 +213,7 @@ public: // Variables
 
     bool dragged;
     bool resizing;
+    bool touching;
 
     bool mouseAccepted;
     bool dragAccepted;
