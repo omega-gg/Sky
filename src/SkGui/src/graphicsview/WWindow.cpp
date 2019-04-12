@@ -138,6 +138,7 @@ void WWindowPrivate::init()
     QObject::connect(view, SIGNAL(draggingChanged()), q, SIGNAL(draggingChanged()));
     QObject::connect(view, SIGNAL(draggedChanged ()), q, SIGNAL(draggedChanged ()));
     QObject::connect(view, SIGNAL(resizingChanged()), q, SIGNAL(resizingChanged()));
+    QObject::connect(view, SIGNAL(touchingChanged()), q, SIGNAL(touchingChanged()));
 
     QObject::connect(view, SIGNAL(mousePosChanged   ()), q, SIGNAL(mousePosChanged   ()));
     QObject::connect(view, SIGNAL(mouseCursorChanged()), q, SIGNAL(mouseCursorChanged()));
@@ -1016,6 +1017,11 @@ bool WWindow::isDragged() const
 bool WWindow::isResizing() const
 {
     Q_D(const WWindow); return d->view->isResizing();
+}
+
+bool WWindow::isTouching() const
+{
+    Q_D(const WWindow); return d->view->isTouching();
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -96,6 +96,7 @@ class SK_GUI_EXPORT WWindow : public WDeclarativeMouseArea
     Q_PROPERTY(bool isDragging READ isDragging NOTIFY draggingChanged)
     Q_PROPERTY(bool isDragged  READ isDragged  NOTIFY draggedChanged)
     Q_PROPERTY(bool isResizing READ isResizing NOTIFY resizingChanged)
+    Q_PROPERTY(bool isTouching READ isTouching NOTIFY touchingChanged)
 
     Q_PROPERTY(QPoint mousePos READ mousePos NOTIFY mousePosChanged)
 
@@ -373,6 +374,7 @@ signals:
     void draggingChanged();
     void draggedChanged ();
     void resizingChanged();
+    void touchingChanged();
 
     void mousePosChanged   ();
     void mouseCursorChanged();
@@ -493,6 +495,7 @@ public: // Properties
     bool isDragging() const;
     bool isDragged () const;
     bool isResizing() const;
+    bool isTouching() const;
 
     QPoint mousePos() const;
 
