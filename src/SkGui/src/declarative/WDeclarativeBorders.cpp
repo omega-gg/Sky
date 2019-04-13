@@ -305,10 +305,25 @@ void WDeclarativeBordersPrivate::init()
 
         node->material.setColor(d->color);
 
-        node->left  .markDirty(QSGNode::DirtyMaterial);
+        //-----------------------------------------------------------------------------------------
+        // FIXME Qt 5.12.2: Mark dirty does not seem to work properly...
+
+        /*node->left  .markDirty(QSGNode::DirtyMaterial);
         node->right .markDirty(QSGNode::DirtyMaterial);
         node->top   .markDirty(QSGNode::DirtyMaterial);
-        node->bottom.markDirty(QSGNode::DirtyMaterial);
+        node->bottom.markDirty(QSGNode::DirtyMaterial);*/
+
+        //-----------------------------------------------------------------------------------------
+        // We have to remove and append nodes to apply the color.
+
+        node->removeAllChildNodes();
+
+        node->appendChildNode(&(node->left));
+        node->appendChildNode(&(node->right));
+        node->appendChildNode(&(node->top));
+        node->appendChildNode(&(node->bottom));
+
+        //-----------------------------------------------------------------------------------------
     }
 
     return node;
