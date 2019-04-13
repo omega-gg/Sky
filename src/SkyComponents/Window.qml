@@ -87,13 +87,14 @@ BaseWindow
 
     onResizingChanged:
     {
-        if (isTouching == false) return;
-
         if (isResizing)
         {
-            pTouchShow();
+            if (isTouching) pTouchShow();
         }
-        else timer.restart();
+        else if (isTouchActive)
+        {
+            timer.restart();
+        }
     }
 
     //---------------------------------------------------------------------------------------------
@@ -172,6 +173,15 @@ BaseWindow
         timer.stop();
 
         pTouchClear();
+    }
+
+    function toggleTouch()
+    {
+        if (isTouchActive)
+        {
+            hideTouch();
+        }
+        else showTouch();
     }
 
     //---------------------------------------------------------------------------------------------
