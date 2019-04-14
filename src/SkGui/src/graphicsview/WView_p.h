@@ -80,6 +80,10 @@ public: // Functions
 
     void applySize(int width, int height);
 
+#ifdef QT_LATEST
+    void updateRatio();
+#endif
+
     void applyDrop();
 
     void updateFlags();
@@ -141,8 +145,8 @@ public: // Functions
 public: // Slots
     void onGeometryChanged();
 
-#ifdef QT_4
-    //void onLeaveTimeout();
+#ifdef QT_LATEST
+    void onScreenChanged();
 #endif
 
     void onFadeTimeout();

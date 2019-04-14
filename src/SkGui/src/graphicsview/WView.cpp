@@ -483,7 +483,7 @@ void WViewPrivate::init(QQuickItem * item)
 #ifdef QT_4
     QObject::connect(qApp->desktop(), SIGNAL(workAreaResized(int)), q, SLOT(onGeometryChanged()));
 #else
-    QObject::connect(q, SIGNAL(screenChanged(QScreen *)), q, SLOT(onGeometryChanged()));
+    QObject::connect(q, SIGNAL(screenChanged(QScreen *)), q, SLOT(onScreenChanged()));
 
     QObject::connect(screen, SIGNAL(availableGeometryChanged(const QRect &)),
                      q,      SLOT(onGeometryChanged()));
@@ -494,10 +494,6 @@ void WViewPrivate::init(QQuickItem * item)
 
     QObject::connect(q, SIGNAL(widthChanged ()), q, SIGNAL(centerXChanged()));
     QObject::connect(q, SIGNAL(heightChanged()), q, SIGNAL(centerYChanged()));
-
-#ifdef QT_4
-    //QObject::connect(&timerLeave, SIGNAL(timeout()), q, SLOT(onLeaveTimeout()));
-#endif
 
     QObject::connect(&fadeTimer, SIGNAL(timeout()), q, SLOT(onFadeTimeout()));
     QObject::connect(&idleTimer, SIGNAL(timeout()), q, SLOT(onIdleTimeout()));
@@ -576,6 +572,26 @@ void WViewPrivate::applySize(int width, int height)
 {
     item->setSize(QSizeF(width * zoom, height * zoom));
 }
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_LATEST
+
+void WViewPrivate::updateRatio()
+{
+    Q_Q(WView);
+
+    qreal value = q->screen()->logicalDotsPerInch() / 96;
+
+    if (ratio != value)
+    {
+        ratio = value;
+
+        emit q->ratioChanged();
+    }
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -1272,14 +1288,7 @@ void WViewPrivate::onGeometryChanged()
     Q_Q(WView);
 
 #ifdef QT_LATEST
-    qreal value = q->screen()->logicalDotsPerInch() / 96;
-
-    if (ratio != value)
-    {
-        ratio = value;
-
-        emit q->ratioChanged();
-    }
+    updateRatio();
 #endif
 
     if (maximized == false && fullScreen == false)
@@ -1290,17 +1299,16 @@ void WViewPrivate::onGeometryChanged()
     emit q->availableGeometryChanged();
 }
 
-//-------------------------------------------------------------------------------------------------
+#ifdef QT_LATEST
 
-#ifdef QT_4
-
-/*void WViewPrivate::onLeaveTimeout()
+void WViewPrivate::onScreenChanged()
 {
     Q_Q(WView);
 
-    q->clearHover ();
-    q->updateHover();
-}*/
+    updateRatio();
+
+    emit q->availableGeometryChanged();
+}
 
 #endif
 

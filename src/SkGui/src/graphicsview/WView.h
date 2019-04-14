@@ -655,8 +655,8 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void onGeometryChanged())
 
-#ifdef QT_4
-    //Q_PRIVATE_SLOT(d_func(), void onLeaveTimeout())
+#ifdef QT_LATEST
+    Q_PRIVATE_SLOT(d_func(), void onScreenChanged())
 #endif
 
     Q_PRIVATE_SLOT(d_func(), void onFadeTimeout())
