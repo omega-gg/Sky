@@ -1901,7 +1901,7 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
     {
          return item->type;
     }
-    else return Invalid;
+    else return Item;
 }
 
 /* Q_INVOKABLE */ bool WLibraryFolder::itemIsPlaylist(int index) const
@@ -2056,7 +2056,11 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
     {
         if (item.id == -1) return NULL;
 
-        if (item.type == Folder)
+        if (item.type == Item)
+        {
+            libraryItem = new WLibraryItem(this);
+        }
+        else if (item.type == Folder)
         {
             libraryItem = new WLibraryFolder(this);
         }

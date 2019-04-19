@@ -99,6 +99,8 @@ public: // Properties
 
     int currentTime() const;
 
+    QString subtitle() const;
+
 private:
     W_DECLARE_PRIVATE_COPY(WBookmarkTrack)
 

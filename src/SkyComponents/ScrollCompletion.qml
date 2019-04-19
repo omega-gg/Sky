@@ -27,7 +27,7 @@ ScrollArea
 
     property string textDefault
 
-    property bool hasNoResults: false
+    /* read */ property bool hasNoResults: false
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -69,6 +69,9 @@ ScrollArea
     contentHeight: (itemText.visible) ? itemText.height
                                       : list.height
 
+    singleStep     : list.itemSize
+    wheelMultiplier: 1
+
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
@@ -97,6 +100,11 @@ ScrollArea
     function scrollToItem(index)
     {
         list.scrollToItem(index);
+    }
+
+    function scrollToItemTop(index)
+    {
+        list.scrollToItemTop(index);
     }
 
     //---------------------------------------------------------------------------------------------
@@ -168,5 +176,7 @@ ScrollArea
 
             scrollCompletion.queryCompleted();
         }
+
+        onCurrentIndexChanged: scrollToItem(currentIndex)
     }
 }

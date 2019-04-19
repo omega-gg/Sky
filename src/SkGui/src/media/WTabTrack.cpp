@@ -194,6 +194,8 @@ public: // Variables
 
         stream.writeTextElement("currentTime", QString::number(data.currentTime));
 
+        stream.writeTextElement("subtitle", data.subtitle);
+
         stream.writeEndElement(); // bookmark
     }
 
@@ -494,6 +496,13 @@ bool WTabTrackRead::load(QXmlStreamReader * stream, WTabTrackReadReply * reply)
         data.currentTime = WControllerXml::readNextInt(stream);
 
         //-----------------------------------------------------------------------------------------
+        // subtitle
+
+        if (WControllerXml::readNextStartElement(stream, "subtitle") == false) return false;
+
+        data.subtitle = WControllerXml::readNextString(stream);
+
+        //-----------------------------------------------------------------------------------------
 
         reply->dataBookmarks.append(data);
     }
@@ -640,6 +649,8 @@ void WTabTrackPrivate::loadBookmarks(const QList<WTabTrackDataBookmark> & bookma
 
         p->videoShot   = bookmark.videoShot;
         p->currentTime = bookmark.currentTime;
+
+        p->subtitle = bookmark.subtitle;
 
         this->bookmarks.append(bookmarkTrack);
 
@@ -1397,6 +1408,8 @@ void WTabTrackPrivate::onPlaylistDestroyed()
         data.videoShot   = videoShot;
         data.currentTime = p->currentTime;
 
+        data.subtitle = p->subtitle;
+
         action->dataBookmarks.append(data);
     }
 
@@ -1928,6 +1941,36 @@ void WTabTrack::setCurrentTime(int msec)
     {
         p->videoShot = QString();
     }
+
+    emit currentBookmarkUpdated();
+
+    save();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QString WTabTrack::subtitle() const
+{
+    Q_D(const WTabTrack);
+
+    if (d->currentBookmark)
+    {
+         return d->currentBookmark->subtitle();
+    }
+    else return QString();
+}
+
+void WTabTrack::setSubtitle(const QString & subtitle)
+{
+    Q_D(WTabTrack);
+
+    if (d->currentBookmark == NULL) return;
+
+    WBookmarkTrackPrivate * p = d->currentBookmark->d_func();
+
+    if (p->subtitle == subtitle) return;
+
+    p->subtitle = subtitle;
 
     emit currentBookmarkUpdated();
 

@@ -99,7 +99,10 @@ void WModelPlaylistPrivate::init()
 
     if (d->playlist == NULL) return QVariant();
 
-    if (index.row() < 0 || index.row() >= d->playlist->count()) return QVariant();
+    if (index.row() < 0 || index.row() >= d->playlist->count())
+    {
+        return QVariant();
+    }
 
     const WTrack * track = static_cast<const WTrack *> (d->playlist->trackPointerAt(index.row()));
 

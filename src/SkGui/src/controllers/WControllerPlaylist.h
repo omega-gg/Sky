@@ -202,7 +202,10 @@ public: // Static functions
 
     Q_INVOKABLE static QString getPlayerTime(int msec, int max = -1);
 
-    Q_INVOKABLE static QString getFileFilter();
+    Q_INVOKABLE static QStringList getLanguages();
+
+    Q_INVOKABLE static QString getFilterFile    ();
+    Q_INVOKABLE static QString getFilterSubtitle();
 
     //---------------------------------------------------------------------------------------------
 

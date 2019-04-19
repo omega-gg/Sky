@@ -568,6 +568,12 @@ WBackendNetQuery WBackendNet::getQueryPlaylist(const QString &) const
     return WBackendNetQuery();
 }
 
+/* Q_INVOKABLE virtual */
+WBackendNetQuery WBackendNet::getQueryFolder(const QString &) const
+{
+    return WBackendNetQuery();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */

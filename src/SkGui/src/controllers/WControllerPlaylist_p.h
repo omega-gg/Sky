@@ -145,10 +145,10 @@ public: // Functions
 
     //---------------------------------------------------------------------------------------------
 
-    bool getDataTrack(WPlaylist * playlist, WTrack * track, const WBackendNetQuery & query);
+    void getDataTrack(WPlaylist * playlist, WTrack * track, const WBackendNetQuery & query);
 
-    bool getDataPlaylist(WPlaylist      * playlist, const WBackendNetQuery & query);
-    bool getDataFolder  (WLibraryFolder * folder,   const WBackendNetQuery & query);
+    void getDataPlaylist(WPlaylist      * playlist, const WBackendNetQuery & query);
+    void getDataFolder  (WLibraryFolder * folder,   const WBackendNetQuery & query);
 
     bool getDataRelated(WBackendNet * backend, WPlaylist * playlist, const QString & id);
 

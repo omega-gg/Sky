@@ -61,6 +61,7 @@
 #include <WDeclarativePlayer>
 
 // Models includes
+#include <WModelList>
 #include <WModelLibraryFolder>
 #include <WModelPlaylist>
 #include <WModelRange>
@@ -209,6 +210,8 @@ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
 
     //---------------------------------------------------------------------------------------------
     // Models
+
+    qmlRegisterType<WModelList>("Sky", 1,0, "ModelList");
 
     qmlRegisterType<WModelLibraryFolder>        ("Sky", 1,0, "ModelLibraryFolder");
     qmlRegisterType<WModelLibraryFolderFiltered>("Sky", 1,0, "ModelLibraryFolderFiltered");

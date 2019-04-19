@@ -225,7 +225,7 @@ void WModelCompletionGooglePrivate::onLoaded(WRemoteData * data)
 {
     Q_D(const WModelCompletionGoogle);
 
-    if (index < 0 || index > d->listCompletion.count())
+    if (index < 0 || index >= d->listCompletion.count())
     {
          return QString();
     }
@@ -263,7 +263,7 @@ void WModelCompletionGooglePrivate::onLoaded(WRemoteData * data)
 
     if (role == RoleTitle)
     {
-         return d->listCompletion[index.row()];
+         return d->listCompletion.at(index.row());
     }
     else return QVariant();
 }

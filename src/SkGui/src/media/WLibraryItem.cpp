@@ -122,8 +122,20 @@ void WLibraryItemPrivate::setQueryEnded()
 }
 
 //-------------------------------------------------------------------------------------------------
-// Protected ctor / dtor
+// Ctor / dtor
 //-------------------------------------------------------------------------------------------------
+
+WLibraryItem::WLibraryItem(WLibraryFolder * parent) : WLocalObject(new WLibraryItemPrivate(this))
+{
+    Q_D(WLibraryItem);
+
+    d->init(Item);
+
+    setParentFolder(parent);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Protected
 
 WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * parent)
     : WLocalObject(p)

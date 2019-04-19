@@ -159,6 +159,8 @@ void WBookmarkTrackPrivate::setTrack(const WTrack & track)
     videoShot = QString();
 
     currentTime = -1;
+
+    subtitle = QString();
 }
 
 void WBookmarkTrackPrivate::clearTrack()
@@ -316,8 +318,10 @@ bool WBookmarkTrack::operator==(const WBookmarkTrack & other) const
 
         d->quality == op->quality &&
 
-        d->videoShot   == op->videoShot &&
-        d->currentTime == op->currentTime)
+        d->videoShot   == op->videoShot   &&
+        d->currentTime == op->currentTime &&
+
+        d->subtitle == op->subtitle)
     {
          return true;
     }
@@ -361,6 +365,8 @@ WBookmarkTrack & WBookmarkTrack::operator=(const WBookmarkTrack & other)
 
     d->videoShot   = op->videoShot;
     d->currentTime = op->currentTime;
+
+    d->subtitle = op->subtitle;
 
     d->emitUpdated();
 
@@ -627,6 +633,13 @@ QString WBookmarkTrack::videoShot() const
 int WBookmarkTrack::currentTime() const
 {
     Q_D(const WBookmarkTrack); return d->currentTime;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QString WBookmarkTrack::subtitle() const
+{
+    Q_D(const WBookmarkTrack); return d->subtitle;
 }
 
 #endif // SK_NO_BOOKMARKTRACK

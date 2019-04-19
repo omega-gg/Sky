@@ -127,7 +127,10 @@ void WModelTabsPrivate::updateTab(int index)
 
     if (d->tabs == NULL) return QVariant();
 
-    if (index.row() < 0 || index.row() >= d->tabs->count()) return QVariant();
+    if (index.row() < 0 || index.row() >= d->tabs->count())
+    {
+        return QVariant();
+    }
 
     if (role == RoleItem)
     {

@@ -47,6 +47,7 @@
 #include "WModelCompletionGoogle.h"
 #include "WModelContextual.h"
 #include "WModelLibraryFolder.h"
+#include "WModelList.h"
 #include "WModelPlaylist.h"
 #include "WModelRange.h"
 #include "WModelTabs.h"

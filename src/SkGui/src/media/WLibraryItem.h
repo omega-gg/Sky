@@ -73,7 +73,7 @@ class SK_GUI_EXPORT WLibraryItem : public WLocalObject
 public: // Enums
     enum Type
     {
-        Invalid          = 0x00,
+        Item             = 0x00,
         Folder           = 0x01,
         FolderSearch     = 0x02,
         FolderSearchable = 0x04,
@@ -85,6 +85,8 @@ public: // Enums
     };
     Q_DECLARE_FLAGS(Types, Type)
 
+public:
+    WLibraryItem(WLibraryFolder * parent = NULL);
 protected:
     WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * parent = NULL);
 

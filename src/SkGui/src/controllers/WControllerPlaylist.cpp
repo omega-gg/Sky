@@ -50,13 +50,15 @@ static const QString CONTROLLERPLAYLIST_MARKUP = "^(html|xml|json)$";
 
 static const QString CONTROLLERPLAYLIST_TEXT = "^(txt|md)$";
 
-static const QString CONTROLLERPLAYLIST_FILTERS
+static const QString CONTROLLERPLAYLIST_FILTER
     =
     "Media files (*.mp4 *.webm *.ogv *.mkv *.avi *.wmv *.mov *.flv *.3gp "
                   "*.mp3 *.ogg *.mka *.wav *.wma *.flac "
                   "*.html *.xml *.json *.torrent "
                   "*.txt *.md);;"
     "All files (*)";
+
+static const QString CONTROLLERPLAYLIST_FILTER_SUBTITLE = "Subtitle files (*.srt)";
 
 //-------------------------------------------------------------------------------------------------
 
@@ -637,7 +639,9 @@ bool WControllerPlaylistPrivate::applyQueryTrack(WPlaylist * playlist,
 
     if (query.isValid())
     {
-         return getDataTrack(playlist, track, query);
+        getDataTrack(playlist, track, query);
+
+        return true;
     }
     else return false;
 }
@@ -649,7 +653,9 @@ bool WControllerPlaylistPrivate::applyQueryPlaylist(WPlaylist              * pla
 
     if (query.isValid())
     {
-         return getDataPlaylist(playlist, query);
+        getDataPlaylist(playlist, query);
+
+        return true;
     }
     else return false;
 }
@@ -661,7 +667,9 @@ bool WControllerPlaylistPrivate::applyQueryFolder(WLibraryFolder         * folde
 
     if (query.isValid())
     {
-         return getDataFolder(folder, query);
+        getDataFolder(folder, query);
+
+        return true;
     }
     else return false;
 }
@@ -687,7 +695,9 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
 
             if (query.isValid())
             {
-                 return getDataTrack(playlist, track, query);
+                getDataTrack(playlist, track, query);
+
+                return true;
             }
             else return false;
         }
@@ -696,7 +706,9 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
 
         if (query.isValid())
         {
-            return getDataTrack(playlist, track, query);
+            getDataTrack(playlist, track, query);
+
+            return true;
         }
     }
 
@@ -734,7 +746,9 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
 
             if (query.isValid())
             {
-                 return getDataPlaylist(playlist, query);
+                getDataPlaylist(playlist, query);
+
+                return true;
             }
             else return false;
         }
@@ -743,7 +757,9 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
 
         if (query.isValid())
         {
-            return getDataPlaylist(playlist, query);
+            getDataPlaylist(playlist, query);
+
+            return true;
         }
 
         QString id = backend->getTrackId(source);
@@ -756,21 +772,18 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
 
             playlist->loadTrack(0);
 
-            if (getDataRelated(backend, playlist, id))
-            {
-                playlist->d_func()->setQueryEnded();
-
-                return true;
-            }
-            else
+            if (getDataRelated(backend, playlist, id) == false)
             {
                 WBackendNetQuery query(source);
 
                 query.target     = WBackendNetQuery::TargetHtml;
                 query.clearItems = false;
 
-                return getDataPlaylist(playlist, query);
+                getDataPlaylist(playlist, query);
             }
+            else playlist->d_func()->setQueryEnded();
+
+            return true;
         }
     }
 
@@ -789,7 +802,9 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
 
             query.target = WBackendNetQuery::TargetFolder;
 
-            return getDataPlaylist(playlist, query);
+            getDataPlaylist(playlist, query);
+
+            return true;
         }
         else if (info.isFile())
         {
@@ -805,7 +820,9 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
 
                     query.target = WBackendNetQuery::TargetFolder;
 
-                    return getDataPlaylist(playlist, query);
+                    getDataPlaylist(playlist, query);
+
+                    return true;
                 }
                 else if (info.size() < CONTROLLERPLAYLIST_MAX_SIZE)
                 {
@@ -813,7 +830,9 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
 
                     query.target = WBackendNetQuery::TargetFile;
 
-                    return getDataPlaylist(playlist, query);
+                    getDataPlaylist(playlist, query);
+
+                    return true;
                 }
                 else return false;
             }
@@ -843,7 +862,9 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
 
     query.target = WBackendNetQuery::TargetHtml;
 
-    return getDataPlaylist(playlist, query);
+    getDataPlaylist(playlist, query);
+
+    return true;
 }
 
 bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, const QString & url)
@@ -864,9 +885,20 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
             if (query.isValid())
             {
-                 return getDataFolder(folder, query);
+                getDataFolder(folder, query);
+
+                return true;
             }
             else return false;
+        }
+
+        WBackendNetQuery query = backend->getQueryFolder(source);
+
+        if (query.isValid())
+        {
+            getDataFolder(folder, query);
+
+            return true;
         }
 
         if (applyUrl(folder, backend, source))
@@ -882,9 +914,10 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
                 query.clearItems = false;
 
-                return getDataFolder(folder, query);
+                getDataFolder(folder, query);
             }
-            else return true;
+
+            return true;
         }
         else addFolderSearch(folder, source, WControllerNetwork::urlName(source));
 
@@ -921,7 +954,9 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
                     query.target     = WBackendNetQuery::TargetFolder;
                     query.clearItems = false;
 
-                    return getDataFolder(folder, query);
+                    getDataFolder(folder, query);
+
+                    return true;
                 }
                 else if (info.size() < CONTROLLERPLAYLIST_MAX_SIZE)
                 {
@@ -930,7 +965,9 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
                     query.target     = WBackendNetQuery::TargetFile;
                     query.clearItems = false;
 
-                    return getDataFolder(folder, query);
+                    getDataFolder(folder, query);
+
+                    return true;
                 }
                 else return false;
             }
@@ -944,7 +981,9 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
                 query.target     = WBackendNetQuery::TargetFile;
                 query.clearItems = false;
 
-                return getDataFolder(folder, query);
+                getDataFolder(folder, query);
+
+                return true;
             }
         }
         else
@@ -956,7 +995,9 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
             query.target     = WBackendNetQuery::TargetFolder;
             query.clearItems = false;
 
-            return getDataFolder(folder, query);
+            getDataFolder(folder, query);
+
+            return true;
         }
     }
     else if (q->urlIsMedia(source))
@@ -978,7 +1019,9 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
     query.target     = WBackendNetQuery::TargetHtml;
     query.clearItems = false;
 
-    return getDataFolder(folder, query);
+    getDataFolder(folder, query);
+
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1389,7 +1432,7 @@ void WControllerPlaylistPrivate::addToCache(const QString & url, const QByteArra
 
 //-------------------------------------------------------------------------------------------------
 
-bool WControllerPlaylistPrivate::getDataTrack(WPlaylist * playlist,
+void WControllerPlaylistPrivate::getDataTrack(WPlaylist * playlist,
                                               WTrack    * track, const WBackendNetQuery & query)
 {
     Q_Q(WControllerPlaylist);
@@ -1414,11 +1457,9 @@ bool WControllerPlaylistPrivate::getDataTrack(WPlaylist * playlist,
     int index = playlist->indexOf(track);
 
     playlist->setTrackState(index, WTrack::Loading);
-
-    return true;
 }
 
-bool WControllerPlaylistPrivate::getDataPlaylist(WPlaylist              * playlist,
+void WControllerPlaylistPrivate::getDataPlaylist(WPlaylist              * playlist,
                                                  const WBackendNetQuery & query)
 {
     Q_Q(WControllerPlaylist);
@@ -1447,11 +1488,9 @@ bool WControllerPlaylistPrivate::getDataPlaylist(WPlaylist              * playli
     playlist->d_func()->setQueryLoading(true);
 
     emit playlist->queryStarted();
-
-    return true;
 }
 
-bool WControllerPlaylistPrivate::getDataFolder(WLibraryFolder         * folder,
+void WControllerPlaylistPrivate::getDataFolder(WLibraryFolder         * folder,
                                                const WBackendNetQuery & query)
 {
     Q_Q(WControllerPlaylist);
@@ -1480,8 +1519,6 @@ bool WControllerPlaylistPrivate::getDataFolder(WLibraryFolder         * folder,
     folder->d_func()->setQueryLoading(true);
 
     emit folder->queryStarted();
-
-    return true;
 }
 
 bool WControllerPlaylistPrivate::getDataRelated(WBackendNet * backend,
@@ -1493,7 +1530,9 @@ bool WControllerPlaylistPrivate::getDataRelated(WBackendNet * backend,
     {
         query.clearItems = false;
 
-        return getDataPlaylist(playlist, query);
+        getDataPlaylist(playlist, query);
+
+        return true;
     }
     else return false;
 }
@@ -1712,7 +1751,9 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice              * device,
             nextQuery.priority
                 = static_cast<QNetworkRequest::Priority> (QNetworkRequest::NormalPriority - 1);
 
-            if (getDataTrack(playlist, track, nextQuery)) return;
+            getDataTrack(playlist, track, nextQuery);
+
+            return;
         }
         else
         {
@@ -1818,7 +1859,9 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
 
             nextQuery.clearItems = false;
 
-            if (getDataPlaylist(playlist, nextQuery)) return;
+            getDataPlaylist(playlist, nextQuery);
+
+            return;
         }
     }
     else emit playlist->queryEnded();
@@ -1907,7 +1950,9 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
 
             nextQuery.clearItems = false;
 
-            if (getDataFolder(folder, nextQuery)) return;
+            getDataFolder(folder, nextQuery);
+
+            return;
         }
     }
     else emit folder->queryEnded();
@@ -2455,7 +2500,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
         }
     }
 
-    return WLibraryItem::Invalid;
+    return WLibraryItem::Item;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2731,9 +2776,90 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ QString WControllerPlaylist::getFileFilter()
+/* Q_INVOKABLE static */ QStringList WControllerPlaylist::getLanguages()
 {
-    return CONTROLLERPLAYLIST_FILTERS;
+    QStringList languages;
+
+    languages.append(tr("Afrikaans"));
+    languages.append(tr("Albanian"));
+    languages.append(tr("Arabic"));
+    languages.append(tr("Aragonese"));
+    languages.append(tr("Asturian"));
+    languages.append(tr("Azerbaijani"));
+    languages.append(tr("Basque"));
+    languages.append(tr("Belarusian"));
+    languages.append(tr("Bosnian"));
+    languages.append(tr("Breton"));
+    languages.append(tr("Bulgarian"));
+    languages.append(tr("Burmese"));
+    languages.append(tr("Catalan"));
+    languages.append(tr("Chinese simplified"));
+    languages.append(tr("Chinese traditional"));
+    languages.append(tr("Croatian"));
+    languages.append(tr("Czech"));
+    languages.append(tr("Danish"));
+    languages.append(tr("Dutch"));
+    languages.append(tr("English"));
+    languages.append(tr("Esperanto"));
+    languages.append(tr("Estonian"));
+    languages.append(tr("Finnish"));
+    languages.append(tr("French"));
+    languages.append(tr("Gaelic"));
+    languages.append(tr("Galician"));
+    languages.append(tr("Georgian"));
+    languages.append(tr("German"));
+    languages.append(tr("Greek"));
+    languages.append(tr("Hebrew"));
+    languages.append(tr("Hindi"));
+    languages.append(tr("Hungarian"));
+    languages.append(tr("Icelandic"));
+    languages.append(tr("Indonesian"));
+    languages.append(tr("Irish"));
+    languages.append(tr("Italian"));
+    languages.append(tr("Japanese"));
+    languages.append(tr("Kannada"));
+    languages.append(tr("Kazakh"));
+    languages.append(tr("Khmer"));
+    languages.append(tr("Korean"));
+    languages.append(tr("Kurdish"));
+    languages.append(tr("Latvian"));
+    languages.append(tr("Lithuanian"));
+    languages.append(tr("Macedonian"));
+    languages.append(tr("Malay"));
+    languages.append(tr("Malayalam"));
+    languages.append(tr("Norwegian"));
+    languages.append(tr("Occitan"));
+    languages.append(tr("Persian"));
+    languages.append(tr("Polish"));
+    languages.append(tr("Portuguese"));
+    languages.append(tr("Romanian"));
+    languages.append(tr("Russian"));
+    languages.append(tr("Serbian"));
+    languages.append(tr("Sinhala"));
+    languages.append(tr("Slovak"));
+    languages.append(tr("Slovenian"));
+    languages.append(tr("Spanish"));
+    languages.append(tr("Swedish"));
+    languages.append(tr("Tamil"));
+    languages.append(tr("Telugu"));
+    languages.append(tr("Thai"));
+    languages.append(tr("Turkish"));
+    languages.append(tr("Ukranian"));
+    languages.append(tr("Vietnamese"));
+
+    return languages;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QString WControllerPlaylist::getFilterFile()
+{
+    return CONTROLLERPLAYLIST_FILTER;
+}
+
+/* Q_INVOKABLE static */ QString WControllerPlaylist::getFilterSubtitle()
+{
+    return CONTROLLERPLAYLIST_FILTER_SUBTITLE;
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -636,11 +636,7 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
 
         reply.clearDuplicate = true;
     }
-    else if (id == 4)
-    {
-        reply.clearDuplicate = true;
-    }
-    else
+    else if (id != 4)
     {
         int queryId = query.data.toInt() + 1;
 
@@ -705,6 +701,7 @@ WBackendNetPlaylist WBackendVimeo::extractPlaylist(const QByteArray       & data
             return reply;
         }
     }
+    else reply.clearDuplicate = true;
 
     QString string = Sk::slice(content, "<ol class=\"js-browse_list", "</ol>");
 

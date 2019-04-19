@@ -1229,12 +1229,14 @@ QList<WDeclarativeMouseArea *> WViewPrivate::getMouseAreas(const QList<QQuickIte
 
         if (area == NULL) continue;
 
-        if (area->d_func()->hoverEnabled)
+        WDeclarativeMouseAreaPrivate * p = area->d_func();
+
+        if (p->enabled && p->hoverEnabled)
         {
             mouseAreas.append(area);
         }
 
-        if (area->d_func()->hoverRetain)
+        if (p->hoverRetain)
         {
             return mouseAreas;
         }

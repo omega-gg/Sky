@@ -1,6 +1,7 @@
 # Models module
 
-HEADERS += src/models/WModelRange.h \
+HEADERS += src/models/WModelList.h \
+           src/models/WModelRange.h \
            src/models/WModelTabs.h \
            src/models/WModelContextual.h \
            src/models/WModelContextual_p.h \
@@ -11,7 +12,8 @@ HEADERS += src/models/WModelRange.h \
            src/models/WModelCompletionGoogle.h \
            src/models/WModelCompletionGoogle_p.h \
 
-SOURCES += src/models/WModelRange.cpp \
+SOURCES += src/models/WModelList.cpp \
+           src/models/WModelRange.cpp \
            src/models/WModelTabs.cpp \
            src/models/WModelContextual.cpp \
            src/models/WModelLibraryFolder.cpp \

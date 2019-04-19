@@ -4,6 +4,7 @@
 #include "WBackendDailymotion.h"
 #include "WBackendDuckDuckGo.h"
 #include "WBackendLastFm.h"
+#include "WBackendOpenSubtitles.h"
 #include "WBackendSoundCloud.h"
 #include "WBackendTmdb.h"
 #include "WBackendVimeo.h"

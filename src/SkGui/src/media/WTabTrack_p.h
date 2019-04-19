@@ -69,6 +69,8 @@ struct WTabTrackDataBookmark
     QString videoShot;
 
     int currentTime;
+
+    QString subtitle;
 };
 
 //-------------------------------------------------------------------------------------------------

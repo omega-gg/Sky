@@ -76,7 +76,10 @@ private:
 
     if (page == NULL) return QVariant();
 
-    if (index.row() < 0 || index.row() >= page->count()) return QVariant();
+    if (index.row() < 0 || index.row() >= page->count())
+    {
+        return QVariant();
+    }
 
     const WDeclarativeContextualItem * item = page->itemAt(index.row());
 

@@ -84,6 +84,8 @@ public: // Variables
 
     int currentTime;
 
+    QString subtitle;
+
 protected:
     W_DECLARE_PUBLIC(WBookmarkTrack)
 };

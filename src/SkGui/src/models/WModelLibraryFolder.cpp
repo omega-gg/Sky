@@ -96,7 +96,10 @@ void WModelLibraryFolderPrivate::init()
 
     if (d->folder == NULL) return QVariant();
 
-    if (index.row() < 0 || index.row() >= d->folder->count()) return QVariant();
+    if (index.row() < 0 || index.row() >= d->folder->count())
+    {
+        return QVariant();
+    }
 
     const WLibraryFolderItem * item = d->folder->itemAt(index.row());
 

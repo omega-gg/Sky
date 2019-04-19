@@ -48,4 +48,11 @@ ListVertical
 
         scrollArea.ensureVisible(y + index * itemSize, itemSize);
     }
+
+    function scrollToItemTop(index)
+    {
+        if (scrollArea == null || index < 0 || index >= count) return;
+
+        scrollArea.ensureVisible(y + (index - 1) * itemSize + scrollArea.height, itemSize);
+    }
 }

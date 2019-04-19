@@ -378,9 +378,10 @@ public: // Virtual interface
 
     //---------------------------------------------------------------------------------------------
 
-    Q_INVOKABLE virtual WBackendNetQuery getQuerySource  (const QString & url) const;
+    Q_INVOKABLE virtual WBackendNetQuery getQuerySource  (const QString & url) const; // {}
     Q_INVOKABLE virtual WBackendNetQuery getQueryTrack   (const QString & url) const; // {}
     Q_INVOKABLE virtual WBackendNetQuery getQueryPlaylist(const QString & url) const; // {}
+    Q_INVOKABLE virtual WBackendNetQuery getQueryFolder  (const QString & url) const; // {}
 
     //---------------------------------------------------------------------------------------------
 

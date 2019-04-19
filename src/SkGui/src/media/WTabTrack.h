@@ -91,6 +91,8 @@ class SK_GUI_EXPORT WTabTrack : public WAbstractTab
 
     Q_PROPERTY(int currentTime READ currentTime WRITE setCurrentTime NOTIFY currentBookmarkUpdated)
 
+    Q_PROPERTY(QString subtitle READ subtitle WRITE setSubtitle NOTIFY currentBookmarkUpdated)
+
 public:
     explicit WTabTrack(WAbstractTabs * parent = NULL);
 
@@ -200,6 +202,9 @@ public: // Properties
 
     int  currentTime() const;
     void setCurrentTime(int msec);
+
+    QString subtitle() const;
+    void    setSubtitle(const QString & subtitle);
 
 private:
     W_DECLARE_PRIVATE(WTabTrack)
