@@ -156,7 +156,7 @@ WBackendOpenSubtitles::WBackendOpenSubtitles()
 {
     QString source = WControllerNetwork::removeUrlPrefix(url);
 
-    return source.startsWith("opensubtitles.com");
+    return source.startsWith("opensubtitles.org");
 }
 
 //-------------------------------------------------------------------------------------------------
