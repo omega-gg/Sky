@@ -21,9 +21,7 @@
 // Qt includes
 #include <QThread>
 #include <QDir>
-#ifdef QT_4
-#include <QStringList>
-#else
+#ifdef QT_LATEST
 #include <QUrlQuery>
 #endif
 

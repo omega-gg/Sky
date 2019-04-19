@@ -19,6 +19,10 @@
 
 // Qt includes
 #include <QAbstractListModel>
+#ifdef QT_4
+#include <QStringList>
+#endif
+
 
 // Sk includes
 #include <Sk>
