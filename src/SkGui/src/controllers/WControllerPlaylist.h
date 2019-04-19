@@ -20,6 +20,9 @@
 // Sk includes
 #include <WController>
 #include <WBackendNet>
+#ifdef QT_4
+#include <QStringList>
+#endif
 
 #ifndef SK_NO_CONTROLLERPLAYLIST
 
