@@ -390,7 +390,7 @@ signals:
 
     void canceled();
 
-    void wheeled(int steps);
+    void wheeled(qreal steps);
 
 public: // Properties
     qreal mouseX() const;

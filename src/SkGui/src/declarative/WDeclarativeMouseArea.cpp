@@ -1339,7 +1339,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
     if (d->wheelEnabled)
     {
-        int steps = event->delta() / 120;
+        qreal steps = (qreal) (event->delta()) / 120;
 
         emit wheeled(steps);
     }
