@@ -86,7 +86,7 @@ public: // Enums
     Q_DECLARE_FLAGS(Types, Type)
 
 public:
-    WLibraryItem(WLibraryFolder * parent = NULL);
+    /* explicit */ WLibraryItem(WLibraryFolder * parent = NULL);
 protected:
     WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * parent = NULL);
 

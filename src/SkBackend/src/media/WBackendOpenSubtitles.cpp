@@ -227,4 +227,4 @@ WBackendNetFolder WBackendOpenSubtitles::extractFolder(const QByteArray       & 
     return reply;
 }
 
-#endif // SK_NO_BACKENDDUCKDUCKGO
+#endif // SK_NO_BACKENDOPENSUBTITLES

@@ -125,7 +125,8 @@ void WLibraryItemPrivate::setQueryEnded()
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
-WLibraryItem::WLibraryItem(WLibraryFolder * parent) : WLocalObject(new WLibraryItemPrivate(this))
+/* explicit */ WLibraryItem::WLibraryItem(WLibraryFolder * parent)
+    : WLocalObject(new WLibraryItemPrivate(this))
 {
     Q_D(WLibraryItem);
 
