@@ -17,49 +17,43 @@
 import QtQuick 1.0
 import Sky     1.0
 
-BaseList
+ScrollArea
 {
-    //---------------------------------------------------------------------------------------------
-    // Properties
-    //---------------------------------------------------------------------------------------------
-
-    property int currentIndex: -1
+    id: scrollList
 
     //---------------------------------------------------------------------------------------------
-    // Signals
+    // Aliases
     //---------------------------------------------------------------------------------------------
 
-    signal itemPressed (int index)
-    signal itemReleased(int index)
-
-    signal itemClicked      (int index)
-    signal itemDoubleClicked(int index)
+    property alias textDefault: itemText.text
 
     //---------------------------------------------------------------------------------------------
-    // Functions
+
+    property alias itemText: itemText
+
+    //---------------------------------------------------------------------------------------------
+    // Settings
     //---------------------------------------------------------------------------------------------
 
-    function selectPrevious()
+    contentHeight: (itemText.visible) ? itemText.height
+                                      : list.height
+
+    //---------------------------------------------------------------------------------------------
+    // Childs
+    //---------------------------------------------------------------------------------------------
+
+    TextListDefault
     {
-        if (currentIndex <= 0)
-        {
-            currentIndex = -1;
-        }
-        else if (count)
-        {
-            currentIndex--;
-        }
-    }
+        id: itemText
 
-    function selectNext()
-    {
-        if (currentIndex >= (count - 1))
-        {
-            currentIndex = -1;
-        }
-        else if (count)
-        {
-            currentIndex++;
-        }
+        anchors.left : parent.left
+        anchors.right: parent.right
+        anchors.top  : parent.top
+
+        anchors.topMargin: st.dp20
+
+        horizontalAlignment: Text.AlignHCenter
+
+        visible: (count == 0)
     }
 }

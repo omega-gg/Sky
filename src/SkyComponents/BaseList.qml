@@ -17,49 +17,42 @@
 import QtQuick 1.0
 import Sky     1.0
 
-BaseList
+ListVertical
 {
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int currentIndex: -1
+    property variant scrollArea: null
 
     //---------------------------------------------------------------------------------------------
-    // Signals
+    // Settings
     //---------------------------------------------------------------------------------------------
 
-    signal itemPressed (int index)
-    signal itemReleased(int index)
-
-    signal itemClicked      (int index)
-    signal itemDoubleClicked(int index)
+    itemSize: st.list_itemSize
 
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
 
-    function selectPrevious()
+    function focus()
     {
-        if (currentIndex <= 0)
-        {
-            currentIndex = -1;
-        }
-        else if (count)
-        {
-            currentIndex--;
-        }
+        if (count) forceActiveFocus();
     }
 
-    function selectNext()
+    //---------------------------------------------------------------------------------------------
+
+    function scrollToItem(index)
     {
-        if (currentIndex >= (count - 1))
-        {
-            currentIndex = -1;
-        }
-        else if (count)
-        {
-            currentIndex++;
-        }
+        if (scrollArea == null || index < 0 || index >= count) return;
+
+        scrollArea.ensureVisible(y + index * itemSize, itemSize);
+    }
+
+    function scrollToItemTop(index)
+    {
+        if (scrollArea == null || index < 0 || index >= count) return;
+
+        scrollArea.ensureVisible(y + (index - 1) * itemSize + scrollArea.height, itemSize);
     }
 }

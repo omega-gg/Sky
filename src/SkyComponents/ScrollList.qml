@@ -19,24 +19,41 @@ import Sky     1.0
 
 ScrollArea
 {
-    id: scrollView
+    id: scrollList
 
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
-
-    property alias list: list
 
     property alias model   : list.model
     property alias delegate: list.delegate
 
     /* read */ property alias count: list.count
 
+    property alias currentIndex: list.currentIndex
+
+    //---------------------------------------------------------------------------------------------
+
+    property alias list: list
+
+    //---------------------------------------------------------------------------------------------
+    // Signals
+    //---------------------------------------------------------------------------------------------
+
+    signal itemPressed (int index)
+    signal itemReleased(int index)
+
+    signal itemClicked      (int index)
+    signal itemDoubleClicked(int index)
+
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
     contentHeight: list.height
+
+    singleStep     : list.itemSize
+    wheelMultiplier: 1
 
     //---------------------------------------------------------------------------------------------
     // Functions
@@ -74,6 +91,18 @@ ScrollArea
     }
 
     //---------------------------------------------------------------------------------------------
+
+    function selectPrevious()
+    {
+        list.selectPrevious();
+    }
+
+    function selectNext()
+    {
+        list.selectNext();
+    }
+
+    //---------------------------------------------------------------------------------------------
     // Childs
     //---------------------------------------------------------------------------------------------
 
@@ -85,5 +114,13 @@ ScrollArea
         anchors.right: parent.right
 
         scrollArea: scrollView
+
+        onItemPressed : scrollList.itemPressed (index)
+        onItemReleased: scrollList.itemReleased(index)
+
+        onItemClicked      : scrollList.itemClicked      (index)
+        onItemDoubleClicked: scrollList.itemDoubleClicked(index)
+
+        onCurrentIndexChanged: scrollToItem(currentIndex)
     }
 }

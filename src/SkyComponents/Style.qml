@@ -1186,9 +1186,14 @@ Item
     property int itemWall_iconHeight: itemTab_iconHeight
 
     //---------------------------------------------------------------------------------------------
+    // ComponentList
+
+    property int componentList_height: itemList_height
+
+    //---------------------------------------------------------------------------------------------
     // ComponentCompletion
 
-    property int componentCompletion_height: itemList_height
+    property int componentCompletion_pixelSize: dp14
 
     //---------------------------------------------------------------------------------------------
     // ComponentTabBrowser

@@ -27,8 +27,6 @@ List
 
     /* read */ property string completion
 
-    property int currentIndex: -1
-
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
@@ -38,9 +36,6 @@ List
     //---------------------------------------------------------------------------------------------
     // Signals
     //---------------------------------------------------------------------------------------------
-
-    signal itemClicked      (int index)
-    signal itemDoubleClicked(int index)
 
     signal queryCompleted
 
@@ -78,32 +73,6 @@ List
     }
 
     function runQuery() { model.runQuery(); }
-
-    //---------------------------------------------------------------------------------------------
-
-    function selectPrevious()
-    {
-        if (currentIndex <= 0)
-        {
-            currentIndex = -1;
-        }
-        else if (count)
-        {
-            currentIndex--;
-        }
-    }
-
-    function selectNext()
-    {
-        if (currentIndex >= (count - 1))
-        {
-            currentIndex = -1;
-        }
-        else if (count)
-        {
-            currentIndex++;
-        }
-    }
 
     //---------------------------------------------------------------------------------------------
     // Private
