@@ -113,7 +113,7 @@ ScrollArea
         anchors.left : parent.left
         anchors.right: parent.right
 
-        scrollArea: scrollView
+        scrollArea: scrollList
 
         onItemPressed : scrollList.itemPressed (index)
         onItemReleased: scrollList.itemReleased(index)
