@@ -2792,8 +2792,8 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
     languages.append(tr("Bulgarian"));
     languages.append(tr("Burmese"));
     languages.append(tr("Catalan"));
-    languages.append(tr("Chinese simplified"));
-    languages.append(tr("Chinese traditional"));
+    languages.append(tr("Chinese #1"));
+    languages.append(tr("Chinese #2"));
     languages.append(tr("Croatian"));
     languages.append(tr("Czech"));
     languages.append(tr("Danish"));

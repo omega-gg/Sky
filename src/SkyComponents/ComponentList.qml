@@ -53,7 +53,7 @@ MouseArea
     {
         currentIndex = index;
 
-        itemClicked(index);
+        itemPressed(index);
     }
 
     onReleased: itemReleased(index)
