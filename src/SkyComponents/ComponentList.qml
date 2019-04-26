@@ -132,8 +132,6 @@ MouseArea
 
             style: (isCurrent) ? st.text_raised
                                : st.text_sunken
-
-            elide: Text.ElideLeft
         }
     }
 

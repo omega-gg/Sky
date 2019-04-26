@@ -2943,15 +2943,6 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
     else return true;
 }
 
-/* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsSubtitle(const QString & extension)
-{
-    if (extension.indexOf(QRegExp(CONTROLLERPLAYLIST_SUBTITLE)) == -1)
-    {
-         return false;
-    }
-    else return true;
-}
-
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsAscii(const QString & extension)
@@ -2971,6 +2962,15 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 /* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsText(const QString & extension)
 {
     if (extension.indexOf(QRegExp(CONTROLLERPLAYLIST_TEXT)) == -1)
+    {
+         return false;
+    }
+    else return true;
+}
+
+/* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsSubtitle(const QString & extension)
+{
+    if (extension.indexOf(QRegExp(CONTROLLERPLAYLIST_SUBTITLE)) == -1)
     {
          return false;
     }

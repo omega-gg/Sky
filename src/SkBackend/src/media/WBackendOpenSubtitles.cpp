@@ -195,7 +195,7 @@ WBackendNetFolder WBackendOpenSubtitles::extractFolder(const QByteArray       & 
 
     QString url = query.urlRedirect;
 
-    // NOTE: We have been redirected to a subtitle page
+    // NOTE: We have been redirected to a subtitle page.
     if (url.contains("/subtitles/"))
     {
         WLibraryFolderItem item(WLibraryItem::Item, WLocalObject::Default);

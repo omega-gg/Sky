@@ -241,7 +241,7 @@ void WDeclarativePlayerPrivate::loadSource(const QString & source, int duration,
         {
             bool playing = backend->isPlaying();
 
-            // NOTE: We have to keep state to avoid clearing highlightedTab
+            // NOTE: We have to keep state to avoid clearing highlightedTab.
             keepState = true;
 
             backend->clear();
@@ -267,7 +267,7 @@ void WDeclarativePlayerPrivate::loadSource(const QString & source, int duration,
         {
             bool playing = hook->backend()->isPlaying();
 
-            // NOTE: We have to keep state to avoid clearing highlightedTab
+            // NOTE: We have to keep state to avoid clearing highlightedTab.
             keepState = true;
 
             hook->clear();
