@@ -422,6 +422,20 @@ void WTorrentEnginePrivate::removeData(WTorrentData * data)
 {
     Q_Q(WTorrentEngine);
 
+    QHashIterator<QTimer *, WTorrentData *> i(deleteTorrents);
+
+    while (i.hasNext())
+    {
+        i.next();
+
+        if (i.value() == data)
+        {
+            i.key()->start();
+
+            return;
+        }
+    }
+
     QTimer * timer = new QTimer;
 
     timer->setInterval(TORRENTENGINE_INTERVAL_REMOVE);

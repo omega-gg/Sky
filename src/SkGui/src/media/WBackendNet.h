@@ -70,6 +70,7 @@ public: // Variables
     QString backend;
 
     QString url;
+    QString urlRedirect;
 
     int id;
 

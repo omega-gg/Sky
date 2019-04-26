@@ -49,6 +49,8 @@ static const QString CONTROLLERPLAYLIST_MARKUP = "^(html|xml|json)$";
 
 static const QString CONTROLLERPLAYLIST_TEXT = "^(txt|md)$";
 
+static const QString CONTROLLERPLAYLIST_SUBTITLE = "^(srt)$";
+
 static const QString CONTROLLERPLAYLIST_FILTER
     =
     "Media files (*.mp4 *.webm *.ogv *.mkv *.avi *.wmv *.mov *.flv *.3gp "
@@ -1587,6 +1589,8 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 
     WBackendNetQuery * backendQuery = &(query->backendQuery);
 
+    backendQuery->urlRedirect = data->url();
+
     WBackendNet * backend;
 
     QString id = backendQuery->backend;
@@ -2907,6 +2911,13 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
     return extensionIsText(extension);
 }
 
+/* Q_INVOKABLE static */ bool WControllerPlaylist::urlIsSubtitle(const QString & url)
+{
+    QString extension = WControllerNetwork::extractUrlExtension(url);
+
+    return extensionIsSubtitle(extension);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsMedia(const QString & extension)
@@ -2926,6 +2937,15 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 /* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsAudio(const QString & extension)
 {
     if (extension.indexOf(QRegExp(CONTROLLERPLAYLIST_AUDIO)) == -1)
+    {
+         return false;
+    }
+    else return true;
+}
+
+/* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsSubtitle(const QString & extension)
+{
+    if (extension.indexOf(QRegExp(CONTROLLERPLAYLIST_SUBTITLE)) == -1)
     {
          return false;
     }

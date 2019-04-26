@@ -175,11 +175,11 @@ WBackendNetQuery WBackendOpenSubtitles::createQuery(const QString & method,
 
         QString search = q.simplified();
 
-        search.replace(' ', '+');
-
         query.url = "https://www.opensubtitles.org/en/search/sublanguageid-" + language
                     +
-                    "/subsumcd-1/subformat-srt/moviename-" + search;
+                    "/subsumcd-1/subformat-srt/moviename-" + search.replace(' ', '+');
+
+        query.data = search;
     }
 
     return query;
@@ -189,9 +189,24 @@ WBackendNetQuery WBackendOpenSubtitles::createQuery(const QString & method,
 
 /* Q_INVOKABLE virtual */
 WBackendNetFolder WBackendOpenSubtitles::extractFolder(const QByteArray       & data,
-                                                       const WBackendNetQuery &) const
+                                                       const WBackendNetQuery & query) const
 {
     WBackendNetFolder reply;
+
+    QString url = query.urlRedirect;
+
+    // NOTE: We have been redirected to a subtitle page
+    if (url.contains("/subtitles/"))
+    {
+        WLibraryFolderItem item(WLibraryItem::Item, WLocalObject::Default);
+
+        item.source = url;
+        item.title  = query.data.toString();
+
+        reply.items.append(item);
+
+        return reply;
+    }
 
     QString content = Sk::readUtf8(data);
 
@@ -208,11 +223,9 @@ WBackendNetFolder WBackendOpenSubtitles::extractFolder(const QByteArray       & 
         if (title.startsWith("<span "))
         {
             title = WControllerNetwork::extractAttribute(title, "title");
-
-            title = WControllerNetwork::htmlToUtf8(title);
         }
 
-        title = title.simplified();
+        title = WControllerNetwork::htmlToUtf8(title).simplified();
 
         QString source = WControllerNetwork::extractAttribute(string, "href");
 

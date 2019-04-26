@@ -216,9 +216,10 @@ public: // Static functions
     Q_INVOKABLE static bool urlIsVideo(const QString & url);
     Q_INVOKABLE static bool urlIsAudio(const QString & url);
 
-    Q_INVOKABLE static bool urlIsAscii (const QString & url);
-    Q_INVOKABLE static bool urlIsMarkup(const QString & url);
-    Q_INVOKABLE static bool urlIsText  (const QString & url);
+    Q_INVOKABLE static bool urlIsAscii   (const QString & url);
+    Q_INVOKABLE static bool urlIsMarkup  (const QString & url);
+    Q_INVOKABLE static bool urlIsText    (const QString & url);
+    Q_INVOKABLE static bool urlIsSubtitle(const QString & url);
 
     //---------------------------------------------------------------------------------------------
 
@@ -226,9 +227,10 @@ public: // Static functions
     Q_INVOKABLE static bool extensionIsVideo(const QString & extension);
     Q_INVOKABLE static bool extensionIsAudio(const QString & extension);
 
-    Q_INVOKABLE static bool extensionIsAscii (const QString & extension);
-    Q_INVOKABLE static bool extensionIsMarkup(const QString & extension);
-    Q_INVOKABLE static bool extensionIsText  (const QString & extension);
+    Q_INVOKABLE static bool extensionIsAscii   (const QString & extension);
+    Q_INVOKABLE static bool extensionIsMarkup  (const QString & extension);
+    Q_INVOKABLE static bool extensionIsText    (const QString & extension);
+    Q_INVOKABLE static bool extensionIsSubtitle(const QString & extension);
 
 signals:
     void filesCleared(const QList<int> & idFull);

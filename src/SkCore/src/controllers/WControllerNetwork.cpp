@@ -1010,6 +1010,24 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ QString WControllerNetwork::removeFileExtension(const QUrl & url)
+{
+    return removeFileExtension(url.toString());
+}
+
+/* Q_INVOKABLE static */ QString WControllerNetwork::removeFileExtension(const QString & string)
+{
+    int index = string.lastIndexOf('.');
+
+    if (index == -1)
+    {
+         return string;
+    }
+    else return string.mid(0, index);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE static */ QString WControllerNetwork::extractIpBase(const QString & string)
 {
     int index = string.indexOf(':');

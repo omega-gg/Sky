@@ -48,8 +48,18 @@ BaseLineEdit
     property alias focusSize: itemFocus.size
 
     //---------------------------------------------------------------------------------------------
-    // Settings style
+    // Settings
     //---------------------------------------------------------------------------------------------
+
+//#QT_5
+    // FIXME Qt5: The cursor gets cropped on the right if we keep the TextInput clip.
+    clip: true
+
+    textInput.clip: false
+//#END
+
+    //---------------------------------------------------------------------------------------------
+    // Style
 
     colorText: (isFocused) ? st.baseLineEdit_colorText : colorDefault
 

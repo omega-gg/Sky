@@ -118,6 +118,9 @@ public: // Static functions
     Q_INVOKABLE static QString removeUrlFragment(const QUrl    & url);
     Q_INVOKABLE static QString removeUrlFragment(const QString & string);
 
+    Q_INVOKABLE static QString removeFileExtension(const QUrl    & url);
+    Q_INVOKABLE static QString removeFileExtension(const QString & string);
+
     //---------------------------------------------------------------------------------------------
 
     Q_INVOKABLE static QString extractIpBase(const QString & string);
