@@ -1193,6 +1193,10 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
                                    Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
 
             QCoreApplication::sendEvent(d->view, &eventMove);
+
+            // Note: We want to update hover right before the press event.
+            d->view->updateHover();
+
             QCoreApplication::sendEvent(d->view, &eventPress);
         }
     }
