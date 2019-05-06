@@ -260,12 +260,12 @@ MouseArea
 
         onValueChanged:
         {
-            // FIXME Qt5: This makes the content blurry due to the float value.
-            /*if (value == maximum)
+            // FIXME Qt5: This might make the content blurry due to the float value.
+            if (value == maximum)
             {
                  content.y = -value;
             }
-            else */content.y = -intValue;
+            else content.y = -intValue;
         }
     }
 }
