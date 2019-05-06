@@ -81,7 +81,7 @@ BaseButton
     {
         id: itemIcon
 
-        anchors.fill: parent
+        anchors.centerIn: parent
 
         sourceSize.height: (scaling) ? -1 : parent.height
 
