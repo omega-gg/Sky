@@ -1785,7 +1785,7 @@ Item
         //-----------------------------------------------------------------------------------------
         // ButtonMask
 
-        buttonMask_colorHoverA = "#c8c8c8";
+        buttonMask_colorHoverA = "white";
 
         buttonMask_colorPressA = icon_colorA;
         buttonMask_colorPressB = icon_colorA;
