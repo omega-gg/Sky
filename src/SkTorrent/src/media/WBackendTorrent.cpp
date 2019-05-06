@@ -773,9 +773,20 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
             QString name = WControllerTorrent::stringAfter(content, "name");
 
-            name = Sk::latinToUtf8(name);
-
             QList<WBackendTorrentItem> items = d->extractItems(content);
+
+            if (items.isEmpty())
+            {
+                WBackendTorrentItem item;
+
+                item.id    = 1;
+                item.name  = name;
+                item.index = -1;
+
+                items.append(item);
+            }
+
+            name = Sk::latinToUtf8(name);
 
             QList<WTrack> * tracks = &(reply.tracks);
 
@@ -839,8 +850,6 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
         QString name = WControllerTorrent::stringAfter(content, "name");
 
-        name = Sk::latinToUtf8(name);
-
         QList<WBackendTorrentItem> items = d->extractItems(content);
 
         if (items.isEmpty())
@@ -853,6 +862,8 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
             items.append(item);
         }
+
+        name = Sk::latinToUtf8(name);
 
         QList<WTrack> * tracks = &(reply.tracks);
 
