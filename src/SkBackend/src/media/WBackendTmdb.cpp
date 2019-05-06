@@ -234,6 +234,18 @@ void WBackendTmdbPrivate::applyQuery(WBackendNetQuery * query, const QString & l
 
     title.chop(1);
 
+    int index = title.lastIndexOf(' ');
+
+    if (index != -1)
+    {
+        QString extension = title.mid(index + 1);
+
+        if (WControllerPlaylist::extensionIsVideo(extension))
+        {
+            title.remove(index, title.length() - index);
+        }
+    }
+
     QUrl url("https://www.themoviedb.org/search");
 
 #ifdef QT_4
