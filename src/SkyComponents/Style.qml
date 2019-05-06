@@ -1080,10 +1080,7 @@ Item
 
     property color playerBrowser_colorBar: buttonOverlay_colorA
 
-    property color playerBrowser_colorTitle     : "#dcdcdc"
-    property color playerBrowser_colorTitleHover: text2_color
-
-    property color playerBrowser_colorText     : playerBrowser_colorTitle
+    property color playerBrowser_colorText     : "#dcdcdc"
     property color playerBrowser_colorTextHover: text2_color
 
     property color playerBrowser_colorShadow: "#008cdc"
@@ -1620,10 +1617,7 @@ Item
         //-----------------------------------------------------------------------------------------
         // PlayerBrowser
 
-        playerBrowser_colorTitle      = "#dcdcdc";
-        playerBrowser_colorTitleHover = text2_color;
-
-        playerBrowser_colorText      = playerBrowser_colorTitle;
+        playerBrowser_colorText      = "#dcdcdc";
         playerBrowser_colorTextHover = text2_color;
 
         //-----------------------------------------------------------------------------------------
@@ -1885,11 +1879,8 @@ Item
         //-----------------------------------------------------------------------------------------
         // PlayerBrowser
 
-        playerBrowser_colorTitle      = text_color;
-        playerBrowser_colorTitleHover = playerBrowser_colorTitle;
-
-        playerBrowser_colorText      = "#c8c8c8";
-        playerBrowser_colorTextHover = text_color;
+        playerBrowser_colorText      = text3_color;
+        playerBrowser_colorTextHover = "#dcdcdc";
 
         //-----------------------------------------------------------------------------------------
         // ItemList
@@ -2150,11 +2141,8 @@ Item
         //-----------------------------------------------------------------------------------------
         // PlayerBrowser
 
-        playerBrowser_colorTitle      = text_color;
-        playerBrowser_colorTitleHover = playerBrowser_colorTitle;
-
-        playerBrowser_colorText      = "#c8c8c8";
-        playerBrowser_colorTextHover = text_color;
+        playerBrowser_colorText      = text3_color;
+        playerBrowser_colorTextHover = "#dcdcdc";
 
         //-----------------------------------------------------------------------------------------
         // ItemList

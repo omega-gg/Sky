@@ -546,8 +546,8 @@ MouseArea
 
             text: (tab) ? tab.title : ""
 
-            color: (isHovered) ? st.playerBrowser_colorTitleHover
-                               : st.playerBrowser_colorTitle
+            color: (isHovered) ? st.playerBrowser_colorTextHover
+                               : st.playerBrowser_colorText
 
             style: st.text_raised
 
