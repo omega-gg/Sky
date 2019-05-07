@@ -1756,7 +1756,7 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
         return;
     }
 
-    if (backend == NULL && backendQuery->target == WBackendNetQuery::TargetDefault)
+    if (backend == NULL)
     {
         if (query->type == WControllerPlaylistQuery::TypeItem)
         {
