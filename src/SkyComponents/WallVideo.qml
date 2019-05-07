@@ -637,8 +637,6 @@ WallBookmarkTrack
 
         icon          : st.icon_loading
         iconSourceSize: st.size48x48
-
-        background.opacity: st.wallVideo_opacityLoader
     }
 
     Rectangle

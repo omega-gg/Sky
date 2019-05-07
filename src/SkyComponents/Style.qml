@@ -1076,8 +1076,6 @@ Item
     property int wallVideo_overlayWidth : componentWallBookmarkTrack_iconWidth
     property int wallVideo_overlayHeight: itemWall_iconHeight
 
-    property real wallVideo_opacityLoader: 0.6
-
     property color wallVideo_colorPlayer: "black"
 
     //---------------------------------------------------------------------------------------------
