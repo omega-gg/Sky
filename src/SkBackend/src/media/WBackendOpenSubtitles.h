@@ -41,6 +41,10 @@ public: // WBackendNet reimplementation
 
     //---------------------------------------------------------------------------------------------
 
+    /* Q_INVOKABLE virtual */ WBackendNetQuery getQueryItem(const QString & url) const;
+
+    //---------------------------------------------------------------------------------------------
+
     /* Q_INVOKABLE virtual */
     WBackendNetQuery createQuery(const QString & method,
                                  const QString & label, const QString & q) const;
@@ -50,6 +54,10 @@ public: // WBackendNet reimplementation
     /* Q_INVOKABLE virtual */
     WBackendNetFolder extractFolder(const QByteArray       & data,
                                     const WBackendNetQuery & query) const;
+
+    /* Q_INVOKABLE virtual */
+    WBackendNetItem extractItem(const QByteArray       & data,
+                                const WBackendNetQuery & query) const;
 
 private:
     W_DECLARE_PRIVATE(WBackendOpenSubtitles)

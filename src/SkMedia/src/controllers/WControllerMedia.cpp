@@ -31,6 +31,7 @@
 #include <WControllerDownload>
 #include <WControllerPlaylist>
 #include <WBackendVlc>
+#include <WBackendSubtitle>
 #include <WVlcEngine>
 #include <WVlcPlayer>
 
@@ -160,7 +161,8 @@ void WControllerMediaPrivate::init()
 
     engine = new WVlcEngine(thread);
 
-    qmlRegisterType<WBackendVlc>("Sky", 1,0, "BackendVlc");
+    qmlRegisterType<WBackendVlc>     ("Sky", 1,0, "BackendVlc");
+    qmlRegisterType<WBackendSubtitle>("Sky", 1,0, "BackendSubtitle");
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -42,7 +42,8 @@ public: // Enums
     {
         TypeTrack,
         TypePlaylist,
-        TypeFolder
+        TypeFolder,
+        TypeItem
     };
 
 public:
@@ -80,6 +81,7 @@ public: // Interface
 
     bool applyQueryPlaylist(WPlaylist      * playlist, const WBackendNetQuery & query);
     bool applyQueryFolder  (WLibraryFolder * folder,   const WBackendNetQuery & query);
+    bool applyQueryItem    (WLibraryItem   * item,     const WBackendNetQuery & query);
 
     //---------------------------------------------------------------------------------------------
 
@@ -87,6 +89,7 @@ public: // Interface
 
     bool applySourcePlaylist(WPlaylist      * playlist, const QString & url);
     bool applySourceFolder  (WLibraryFolder * folder,   const QString & url);
+    bool applySourceItem    (WLibraryItem   * item,     const QString & url);
 
     //---------------------------------------------------------------------------------------------
 
@@ -149,6 +152,7 @@ public: // Functions
 
     void getDataPlaylist(WPlaylist      * playlist, const WBackendNetQuery & query);
     void getDataFolder  (WLibraryFolder * folder,   const WBackendNetQuery & query);
+    void getDataItem    (WLibraryItem   * item,     const WBackendNetQuery & query);
 
     bool getDataRelated(WBackendNet * backend, WPlaylist * playlist, const QString & id);
 
@@ -164,6 +168,7 @@ public: // Slots
     void onTrackLoaded   (QIODevice * device, const WBackendNetTrack    & reply);
     void onPlaylistLoaded(QIODevice * device, const WBackendNetPlaylist & reply);
     void onFolderLoaded  (QIODevice * device, const WBackendNetFolder   & reply);
+    void onItemLoaded    (QIODevice * device, const WBackendNetItem     & reply);
 
     void onUrlPlaylist(QIODevice * device, const WControllerPlaylistData & data);
     void onUrlFolder  (QIODevice * device, const WControllerPlaylistData & data);

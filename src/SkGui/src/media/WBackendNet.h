@@ -131,13 +131,13 @@ public: // Variables
 };
 
 //-------------------------------------------------------------------------------------------------
-// WBackendNetItem
+// WBackendNetBase
 //-------------------------------------------------------------------------------------------------
 
-class SK_GUI_EXPORT WBackendNetItem
+class SK_GUI_EXPORT WBackendNetBase
 {
 public:
-    WBackendNetItem();
+    WBackendNetBase();
 
 public: // Variables
     bool valid;
@@ -151,7 +151,7 @@ public: // Variables
 // WBackendNetTrack
 //-------------------------------------------------------------------------------------------------
 
-class SK_GUI_EXPORT WBackendNetTrack : public WBackendNetItem
+class SK_GUI_EXPORT WBackendNetTrack : public WBackendNetBase
 {
 public:
     WBackendNetTrack();
@@ -164,7 +164,7 @@ public: // Variables
 // WBackendNetPlaylist
 //-------------------------------------------------------------------------------------------------
 
-class SK_GUI_EXPORT WBackendNetPlaylist : public WBackendNetItem
+class SK_GUI_EXPORT WBackendNetPlaylist : public WBackendNetBase
 {
 public:
     WBackendNetPlaylist();
@@ -184,7 +184,7 @@ public: // Variables
 // WBackendNetFolder
 //-------------------------------------------------------------------------------------------------
 
-class SK_GUI_EXPORT WBackendNetFolder : public WBackendNetItem
+class SK_GUI_EXPORT WBackendNetFolder : public WBackendNetBase
 {
 public:
     WBackendNetFolder();
@@ -199,6 +199,16 @@ public: // Variables
 
     bool clearDuplicate;
     bool scanItems;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WBackendNetItem
+//-------------------------------------------------------------------------------------------------
+
+class SK_GUI_EXPORT WBackendNetItem : public WBackendNetBase
+{
+public:
+    WBackendNetItem();
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -304,6 +314,25 @@ private:
 };
 
 //-------------------------------------------------------------------------------------------------
+// WNetReplyItem
+//-------------------------------------------------------------------------------------------------
+
+class SK_GUI_EXPORT WNetReplyItem : public WBackendNetReply
+{
+    Q_OBJECT
+
+public:
+    WNetReplyItem(QIODevice * device, const WBackendNetQuery & query);
+
+signals:
+    void loaded(QIODevice * device, const WBackendNetItem & item);
+
+private:
+    friend class WBackendNet;
+    friend class WBackendNetPrivate;
+};
+
+//-------------------------------------------------------------------------------------------------
 // WBackendNet
 //-------------------------------------------------------------------------------------------------
 
@@ -348,6 +377,11 @@ public: // Interface
                                 QObject                * receiver,
                                 const char             * method);
 
+    Q_INVOKABLE void loadItem(QIODevice              * device,
+                              const WBackendNetQuery & query,
+                              QObject                * receiver,
+                              const char             * method);
+
 public: // Abstract interface
     Q_INVOKABLE virtual QString getId   () const = 0;
     Q_INVOKABLE virtual QString getTitle() const = 0;
@@ -383,6 +417,7 @@ public: // Virtual interface
     Q_INVOKABLE virtual WBackendNetQuery getQueryTrack   (const QString & url) const; // {}
     Q_INVOKABLE virtual WBackendNetQuery getQueryPlaylist(const QString & url) const; // {}
     Q_INVOKABLE virtual WBackendNetQuery getQueryFolder  (const QString & url) const; // {}
+    Q_INVOKABLE virtual WBackendNetQuery getQueryItem    (const QString & url) const; // {}
 
     //---------------------------------------------------------------------------------------------
 
@@ -408,6 +443,10 @@ public: // Virtual interface
     WBackendNetFolder extractFolder(const QByteArray       & data,
                                     const WBackendNetQuery & query) const; // {}
 
+    Q_INVOKABLE virtual
+    WBackendNetItem extractItem(const QByteArray       & data,
+                                const WBackendNetQuery & query) const; // {}
+
     //---------------------------------------------------------------------------------------------
 
     Q_INVOKABLE virtual void queryFailed(const WBackendNetQuery & query); // {}
@@ -425,6 +464,9 @@ public: // Virtual interface
 
     Q_INVOKABLE virtual void applyFolder(const WBackendNetQuery  & query,
                                          const WBackendNetFolder & folder); // {}
+
+    Q_INVOKABLE virtual void applyItem(const WBackendNetQuery & query,
+                                       const WBackendNetItem  & item); // {}
 
 public: // Properties
     QString id   () const;

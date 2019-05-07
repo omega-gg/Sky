@@ -162,6 +162,22 @@ WBackendOpenSubtitles::WBackendOpenSubtitles()
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
+WBackendNetQuery WBackendOpenSubtitles::getQueryItem(const QString & url) const
+{
+    if (checkValidUrl(url) && url.contains("/subtitles/"))
+    {
+        WBackendNetQuery query;
+
+        query.url = url;
+
+        return query;
+    }
+    else return WBackendNetQuery();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */
 WBackendNetQuery WBackendOpenSubtitles::createQuery(const QString & method,
                                                     const QString & label, const QString & q) const
 {
@@ -236,6 +252,15 @@ WBackendNetFolder WBackendOpenSubtitles::extractFolder(const QByteArray       & 
 
         reply.items.append(item);
     }
+
+    return reply;
+}
+
+/* Q_INVOKABLE virtual */
+WBackendNetItem WBackendOpenSubtitles::extractItem(const QByteArray       &,
+                                                   const WBackendNetQuery &) const
+{
+    WBackendNetItem reply;
 
     return reply;
 }

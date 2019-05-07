@@ -128,10 +128,10 @@ WBackendNetSource::WBackendNetSource()
 }
 
 //=================================================================================================
-// WBackendNetItem
+// WBackendNetBase
 //=================================================================================================
 
-WBackendNetItem::WBackendNetItem()
+WBackendNetBase::WBackendNetBase()
 {
     valid = true;
 }
@@ -140,13 +140,13 @@ WBackendNetItem::WBackendNetItem()
 // WBackendNetTrack
 //=================================================================================================
 
-WBackendNetTrack::WBackendNetTrack() : WBackendNetItem() {}
+WBackendNetTrack::WBackendNetTrack() : WBackendNetBase() {}
 
 //=================================================================================================
 // WBackendNetPlaylist
 //=================================================================================================
 
-WBackendNetPlaylist::WBackendNetPlaylist() : WBackendNetItem()
+WBackendNetPlaylist::WBackendNetPlaylist() : WBackendNetBase()
 {
     currentIndex = -1;
 
@@ -157,13 +157,19 @@ WBackendNetPlaylist::WBackendNetPlaylist() : WBackendNetItem()
 // WBackendNetFolder
 //=================================================================================================
 
-WBackendNetFolder::WBackendNetFolder() : WBackendNetItem()
+WBackendNetFolder::WBackendNetFolder() : WBackendNetBase()
 {
     currentIndex = -1;
 
     clearDuplicate = false;
     scanItems      = false;
 }
+
+//=================================================================================================
+// WBackendNetItem
+//=================================================================================================
+
+WBackendNetItem::WBackendNetItem() : WBackendNetBase() {}
 
 //=================================================================================================
 // WBackendNetReply
@@ -221,6 +227,13 @@ WNetReplyFolder::WNetReplyFolder(QIODevice * device, const WBackendNetQuery & qu
     : WBackendNetReply(device, query) {}
 
 //=================================================================================================
+// WNetReplyItem
+//=================================================================================================
+
+WNetReplyItem::WNetReplyItem(QIODevice * device, const WBackendNetQuery & query)
+    : WBackendNetReply(device, query) {}
+
+//=================================================================================================
 // WBackendNetPrivate
 //=================================================================================================
 
@@ -247,6 +260,7 @@ void WBackendNetPrivate::init()
     methodTrack    = meta->method(meta->indexOfMethod("onLoadTrack(WNetReplyTrack*)"));
     methodPlaylist = meta->method(meta->indexOfMethod("onLoadPlaylist(WNetReplyPlaylist*)"));
     methodFolder   = meta->method(meta->indexOfMethod("onLoadFolder(WNetReplyFolder*)"));
+    methodItem     = meta->method(meta->indexOfMethod("onLoadItem(WNetReplyItem*)"));
 
 #ifdef QT_LATEST
     wControllerDeclarative->engine()->setObjectOwnership(q, QQmlEngine::CppOwnership);
@@ -309,6 +323,19 @@ void WBackendNetPrivate::onLoadFolder(WNetReplyFolder * reply) const
     WBackendNetFolder folder = q->extractFolder(data, reply->_query);
 
     emit reply->loaded(reply->_device, folder);
+
+    reply->deleteLater();
+}
+
+void WBackendNetPrivate::onLoadItem(WNetReplyItem * reply) const
+{
+    Q_Q(const WBackendNet);
+
+    QByteArray data = reply->_device->readAll();
+
+    WBackendNetItem item = q->extractItem(data, reply->_query);
+
+    emit reply->loaded(reply->_device, item);
 
     reply->deleteLater();
 }
@@ -457,6 +484,22 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
     d->methodFolder.invoke(this, Q_ARG(WNetReplyFolder *, reply));
 }
 
+/* Q_INVOKABLE */ void WBackendNet::loadItem(QIODevice              * device,
+                                             const WBackendNetQuery & query,
+                                             QObject                * receiver,
+                                             const char             * method)
+{
+    Q_D(WBackendNet);
+
+    WNetReplyItem * reply = new WNetReplyItem(device, query);
+
+    connect(reply, SIGNAL(loaded(QIODevice *, WBackendNetItem)), receiver, method);
+
+    device->moveToThread(thread());
+
+    d->methodItem.invoke(this, Q_ARG(WNetReplyItem *, reply));
+}
+
 //-------------------------------------------------------------------------------------------------
 // Virtual interface
 //-------------------------------------------------------------------------------------------------
@@ -574,6 +617,12 @@ WBackendNetQuery WBackendNet::getQueryFolder(const QString &) const
     return WBackendNetQuery();
 }
 
+/* Q_INVOKABLE virtual */
+WBackendNetQuery WBackendNet::getQueryItem(const QString &) const
+{
+    return WBackendNetQuery();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
@@ -620,6 +669,15 @@ WBackendNetFolder WBackendNet::extractFolder(const QByteArray       &,
     return WBackendNetFolder();
 }
 
+/* Q_INVOKABLE virtual */
+WBackendNetItem WBackendNet::extractItem(const QByteArray       &,
+                                         const WBackendNetQuery &) const
+{
+    qWarning("WBackendNet::extractItem: Not supported.");
+
+    return WBackendNetItem();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ void WBackendNet::queryFailed(const WBackendNetQuery &) {}
@@ -637,6 +695,9 @@ WBackendNetFolder WBackendNet::extractFolder(const QByteArray       &,
 
 /* Q_INVOKABLE virtual */ void WBackendNet::applyFolder(const WBackendNetQuery  &,
                                                         const WBackendNetFolder &) {}
+
+/* Q_INVOKABLE virtual */ void WBackendNet::applyItem(const WBackendNetQuery &,
+                                                      const WBackendNetItem  &) {}
 
 //-------------------------------------------------------------------------------------------------
 // Properties

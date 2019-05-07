@@ -4,7 +4,7 @@
 
     Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
 
-    This file is part of the SkGui module of Sky kit.
+    This file is part of the SkMedia module of Sky kit.
 
     - GNU General Public License Usage:
     This file may be used under the terms of the GNU General Public License version 3 as published
@@ -14,8 +14,8 @@
 */
 //=================================================================================================
 
-#ifndef WBACKENDNET_P_H
-#define WBACKENDNET_P_H
+#ifndef WBACKENDSUBTITLE_P_H
+#define WBACKENDSUBTITLE_P_H
 
 /*  W A R N I N G
     -------------
@@ -27,40 +27,25 @@
     We mean it.
 */
 
-// Qt includes
-#include <QMetaMethod>
-
-// Private includes
 #include <private/Sk_p>
 
-#ifndef SK_NO_BACKENDNET
+#ifndef SK_NO_BACKENDSUBTITLE
 
-class SK_GUI_EXPORT WBackendNetPrivate : public WPrivate
+class SK_MEDIA_EXPORT WBackendSubtitlePrivate : public WPrivate
 {
 public:
-    WBackendNetPrivate(WBackendNet * p);
-
-    /* virtual */ ~WBackendNetPrivate();
+    WBackendSubtitlePrivate(WBackendSubtitle * p);
 
     void init();
 
-public: // Slots
-    void onLoadSource  (WNetReplySource   * reply) const;
-    void onLoadTrack   (WNetReplyTrack    * reply) const;
-    void onLoadPlaylist(WNetReplyPlaylist * reply) const;
-    void onLoadFolder  (WNetReplyFolder   * reply) const;
-    void onLoadItem    (WNetReplyItem     * reply) const;
-
 public: // Variables
-    QMetaMethod methodSource;
-    QMetaMethod methodTrack;
-    QMetaMethod methodPlaylist;
-    QMetaMethod methodFolder;
-    QMetaMethod methodItem;
+    QString source;
+
+    QString text;
 
 protected:
-    W_DECLARE_PUBLIC(WBackendNet)
+    W_DECLARE_PUBLIC(WBackendSubtitle)
 };
 
-#endif // SK_NO_BACKENDNET
-#endif // WBACKENDNET_P_H
+#endif // SK_NO_BACKENDSUBTITLE
+#endif // WBACKENDSUBTITLE_P_H

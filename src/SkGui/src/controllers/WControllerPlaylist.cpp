@@ -675,6 +675,20 @@ bool WControllerPlaylistPrivate::applyQueryFolder(WLibraryFolder         * folde
     else return false;
 }
 
+bool WControllerPlaylistPrivate::applyQueryItem(WLibraryItem           * item,
+                                                const WBackendNetQuery & query)
+{
+    item->abortQuery();
+
+    if (query.isValid())
+    {
+        getDataItem(item, query);
+
+        return true;
+    }
+    else return false;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
@@ -1021,6 +1035,63 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
     query.clearItems = false;
 
     getDataFolder(folder, query);
+
+    return true;
+}
+
+bool WControllerPlaylistPrivate::applySourceItem(WLibraryItem * item, const QString & url)
+{
+    Q_Q(WControllerPlaylist);
+
+    QString source = WControllerPlaylist::generateSource(url);
+
+    WBackendNet * backend = q->backendFromUrl(source);
+
+    if (backend)
+    {
+        if (backend->checkQuery(source))
+        {
+            WBackendNetQuery query = backend->extractQuery(source);
+
+            if (query.isValid())
+            {
+                getDataItem(item, query);
+
+                return true;
+            }
+            else return false;
+        }
+
+        WBackendNetQuery query = backend->getQueryItem(source);
+
+        if (query.isValid())
+        {
+            getDataItem(item, query);
+
+            return true;
+        }
+    }
+
+    if (WControllerNetwork::urlIsFile(source))
+    {
+        QFileInfo info(WControllerFile::filePath(source));
+
+        if (info.isFile() == false || info.size() >= CONTROLLERPLAYLIST_MAX_SIZE)
+        {
+            return false;
+        }
+
+        if (info.isSymLink())
+        {
+            source = WControllerFile::fileUrl(info.symLinkTarget());
+        }
+    }
+
+    WBackendNetQuery query(source);
+
+    query.target = WBackendNetQuery::TargetFile;
+
+    getDataItem(item, query);
 
     return true;
 }
@@ -1522,6 +1593,31 @@ void WControllerPlaylistPrivate::getDataFolder(WLibraryFolder         * folder,
     emit folder->queryStarted();
 }
 
+void WControllerPlaylistPrivate::getDataItem(WLibraryItem * item, const WBackendNetQuery & query)
+{
+    Q_Q(WControllerPlaylist);
+
+    WAbstractLoader * loader = loaders.value(query.type);
+
+    WRemoteData * data = WControllerPlaylist::getDataQuery(loader, query, q);
+
+    WControllerPlaylistQuery * queryFile
+        = new WControllerPlaylistQuery(query, WControllerPlaylistQuery::TypeItem);
+
+    queryFile->data = data;
+    queryFile->item = item;
+
+    queries.append(queryFile);
+
+    jobs.insert(data, queryFile);
+
+    QObject::connect(data, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoaded(WRemoteData *)));
+
+    item->d_func()->setQueryLoading(true);
+
+    emit item->queryStarted();
+}
+
 bool WControllerPlaylistPrivate::getDataRelated(WBackendNet * backend,
                                                 WPlaylist   * playlist, const QString & id)
 {
@@ -1662,13 +1758,28 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 
     if (backend == NULL && backendQuery->target == WBackendNetQuery::TargetDefault)
     {
-        deleteQuery(query);
+        if (query->type == WControllerPlaylistQuery::TypeItem)
+        {
+            deleteQuery(query);
 
-        item->d_func()->setQueryDefault();
+            emit item->queryEnded();
 
-        delete data;
+            item->d_func()->setQueryLoaded();
 
-        return;
+            delete data;
+
+            return;
+        }
+        else if (backendQuery->target == WBackendNetQuery::TargetDefault)
+        {
+            deleteQuery(query);
+
+            item->d_func()->setQueryDefault();
+
+            delete data;
+
+            return;
+        }
     }
 
     Q_Q(WControllerPlaylist);
@@ -1701,7 +1812,7 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
         else loadUrls(networkReply, *backendQuery,
                       SLOT(onUrlPlaylist(QIODevice *, const WControllerPlaylistData &)));
     }
-    else // if (query->type == WControllerPlaylistQuery::TypeFolder)
+    else if (query->type == WControllerPlaylistQuery::TypeFolder)
     {
         if (backendQuery->target == WBackendNetQuery::TargetDefault)
         {
@@ -1713,14 +1824,20 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
         else loadUrls(networkReply, *backendQuery,
                       SLOT(onUrlFolder(QIODevice *, const WControllerPlaylistData &)));
     }
+    else // if (query->type == WControllerPlaylistQuery::TypeItem)
+    {
+        query->backend = backend;
+
+        backend->loadItem(networkReply, *backendQuery,
+                          q, SLOT(onFileLoaded(QIODevice *, WBackendNetItem)));
+    }
 
     delete data;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void WControllerPlaylistPrivate::onTrackLoaded(QIODevice              * device,
-                                               const WBackendNetTrack & reply)
+void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBackendNetTrack & reply)
 {
     WControllerPlaylistQuery * query = replies.take(device);
 
@@ -1961,6 +2078,45 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
     else emit folder->queryEnded();
 
     folder->d_func()->setQueryLoaded();
+}
+
+void WControllerPlaylistPrivate::onItemLoaded(QIODevice * device, const WBackendNetItem & reply)
+{
+    WControllerPlaylistQuery * query = replies.take(device);
+
+    device->deleteLater();
+
+    if (query == NULL) return;
+
+    query->backend->applyItem(query->backendQuery, reply);
+
+    WLibraryItem * item = query->item;
+
+    deleteQuery(query);
+
+    if (reply.valid)
+    {
+        emit item->queryEnded();
+
+        addToCache(item->source(), reply.cache);
+
+        WBackendNetQuery nextQuery = reply.nextQuery;
+
+        if (nextQuery.isValid())
+        {
+            nextQuery.priority
+                = static_cast<QNetworkRequest::Priority> (QNetworkRequest::NormalPriority - 1);
+
+            nextQuery.clearItems = false;
+
+            getDataItem(item, nextQuery);
+
+            return;
+        }
+    }
+    else emit item->queryEnded();
+
+    item->d_func()->setQueryLoaded();
 }
 
 //-------------------------------------------------------------------------------------------------

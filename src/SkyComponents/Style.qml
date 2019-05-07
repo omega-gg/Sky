@@ -194,6 +194,15 @@ Item
     property int textListDefault_pixelSize: dp14
 
     //---------------------------------------------------------------------------------------------
+    // TextSubtitle
+
+    property int textSubtitle_sizeMinimum: text_pixelSize
+    property int textSubtitle_sizeMaximum: dp48
+
+    property color textSubtitle_color     : "#dcdcdc"
+    property color textSubtitle_colorStyle: "#242424"
+
+    //---------------------------------------------------------------------------------------------
     // Line
 
     property int line_size: dp1

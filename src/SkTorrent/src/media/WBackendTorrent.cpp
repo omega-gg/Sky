@@ -95,11 +95,11 @@ public: // Functions
 
     void applyQuerySearch(const QByteArray       & data,
                           const WBackendNetQuery & query,
-                          WBackendNetItem        * reply, int id) const;
+                          WBackendNetBase        * reply, int id) const;
 
-    void applyQueryUrl(WBackendNetItem * reply, QStringList * urls, int id) const;
+    void applyQueryUrl(WBackendNetBase * reply, QStringList * urls, int id) const;
 
-    void applyQueryTorrent(WBackendNetItem * reply, QStringList * urls,
+    void applyQueryTorrent(WBackendNetBase * reply, QStringList * urls,
                                                     QStringList * sources) const;
 
     int getIndex(const QString & name) const;
@@ -310,7 +310,7 @@ bool WBackendTorrentPrivate::applyMagnet(WBackendNetFolder * reply, const QStrin
 
 void WBackendTorrentPrivate::applyQuerySearch(const QByteArray       & data,
                                               const WBackendNetQuery & query,
-                                              WBackendNetItem        * reply, int id) const
+                                              WBackendNetBase        * reply, int id) const
 {
     Q_Q(const WBackendTorrent);
 
@@ -329,7 +329,7 @@ void WBackendTorrentPrivate::applyQuerySearch(const QByteArray       & data,
     nextQuery->data = query.data;
 }
 
-void WBackendTorrentPrivate::applyQueryUrl(WBackendNetItem * reply,
+void WBackendTorrentPrivate::applyQueryUrl(WBackendNetBase * reply,
                                            QStringList     * urls, int id) const
 {
     if (urls->isEmpty()) return;
@@ -351,7 +351,7 @@ void WBackendTorrentPrivate::applyQueryUrl(WBackendNetItem * reply,
     nextQuery->timeout = BACKENDTORRENT_TIMEOUT_A;
 }
 
-void WBackendTorrentPrivate::applyQueryTorrent(WBackendNetItem * reply,
+void WBackendTorrentPrivate::applyQueryTorrent(WBackendNetBase * reply,
                                                QStringList     * urls, QStringList * sources) const
 {
     WBackendNetQuery * nextQuery = &(reply->nextQuery);

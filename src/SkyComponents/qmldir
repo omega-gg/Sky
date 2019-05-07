@@ -44,6 +44,7 @@ TextClick       1.0 TextClick.qml
 TextLink        1.0 TextLink.qml
 TextDate        1.0 TextDate.qml
 TextListDefault 1.0 TextListDefault.qml
+TextSubtitle    1.0 TextSubtitle.qml
 
 Panel           1.0 Panel.qml
 PanelContextual 1.0 PanelContextual.qml

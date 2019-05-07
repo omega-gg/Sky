@@ -332,25 +332,19 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
 // Protected virtual functions
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ bool WLibraryItem::applySource(const QString &)
+/* virtual */ bool WLibraryItem::applySource(const QString & source)
 {
-    qWarning("WLibraryItem::applySource: Not supported.");
-
-    return false;
+    return wControllerPlaylist->d_func()->applySourceItem(this, source);
 }
 
-/* virtual */ bool WLibraryItem::applyQuery(const WBackendNetQuery &)
+/* virtual */ bool WLibraryItem::applyQuery(const WBackendNetQuery & query)
 {
-    qWarning("WLibraryItem::applyQuery: Not supported.");
-
-    return false;
+    return wControllerPlaylist->d_func()->applyQueryItem(this, query);
 }
 
 /* virtual */ bool WLibraryItem::stopQuery()
 {
-    qWarning("WLibraryItem::stopQuery: Not supported.");
-
-    return false;
+    return wControllerPlaylist->d_func()->abortQueriesItem(this);
 }
 
 //-------------------------------------------------------------------------------------------------

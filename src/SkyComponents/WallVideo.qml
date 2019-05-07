@@ -613,6 +613,17 @@ WallBookmarkTrack
         }
     }
 
+    TextSubtitle
+    {
+        anchors.bottom: player.bottom
+
+        anchors.bottomMargin: st.dp16
+
+        anchors.horizontalCenter: player.horizontalCenter
+
+        pixelSize: player.width / 32
+    }
+
     LabelLoading
     {
         anchors.centerIn: player
