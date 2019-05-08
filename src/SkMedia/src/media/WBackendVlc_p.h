@@ -250,12 +250,12 @@ public: // Variables
 
     QRect targetRect;
 
+#ifdef QT_4
     GLfloat targetX;
     GLfloat targetY;
     GLfloat targetWidth;
     GLfloat targetHeight;
 
-#ifdef QT_4
     bool shader;
 
     GLuint textureIds[3];

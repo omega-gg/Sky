@@ -538,12 +538,12 @@ void WBackendVlcPrivate::init()
 
     frameIndex = false;
 
+#ifdef QT_4
     targetX      = 0.f;
     targetY      = 0.f;
     targetWidth  = 0.f;
     targetHeight = 0.f;
 
-#ifdef QT_4
     shader = false;
 
     textureIds[0] = 0;
@@ -974,11 +974,13 @@ void WBackendVlcPrivate::updateTargetRect()
 
     targetRect = QRect(x, y, width, height);
 
+#ifdef QT_4
     targetX = x;
     targetY = y;
 
     targetWidth  = x + width;
     targetHeight = y + height;
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
