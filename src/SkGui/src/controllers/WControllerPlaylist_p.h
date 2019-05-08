@@ -156,6 +156,9 @@ public: // Functions
 
     bool getDataRelated(WBackendNet * backend, WPlaylist * playlist, const QString & id);
 
+    void getDataLibraryItem(WLibraryItem           * item,
+                            const WBackendNetQuery & query, WControllerPlaylistQuery::Type type);
+
     //---------------------------------------------------------------------------------------------
 
     void abortTrack   (WTrack         * track);

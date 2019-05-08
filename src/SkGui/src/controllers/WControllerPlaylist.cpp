@@ -1534,88 +1534,28 @@ void WControllerPlaylistPrivate::getDataTrack(WPlaylist * playlist,
 void WControllerPlaylistPrivate::getDataPlaylist(WPlaylist              * playlist,
                                                  const WBackendNetQuery & query)
 {
-    Q_Q(WControllerPlaylist);
-
     if (query.clearItems)
     {
         playlist->clearTracks();
     }
 
-    WAbstractLoader * loader = loaders.value(query.type);
-
-    WRemoteData * data = WControllerPlaylist::getDataQuery(loader, query, q);
-
-    WControllerPlaylistQuery * queryPlaylist
-        = new WControllerPlaylistQuery(query, WControllerPlaylistQuery::TypePlaylist);
-
-    queryPlaylist->data = data;
-    queryPlaylist->item = playlist;
-
-    queries.append(queryPlaylist);
-
-    jobs.insert(data, queryPlaylist);
-
-    QObject::connect(data, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoaded(WRemoteData *)));
-
-    playlist->d_func()->setQueryLoading(true);
-
-    emit playlist->queryStarted();
+    getDataLibraryItem(playlist, query, WControllerPlaylistQuery::TypePlaylist);
 }
 
 void WControllerPlaylistPrivate::getDataFolder(WLibraryFolder         * folder,
                                                const WBackendNetQuery & query)
 {
-    Q_Q(WControllerPlaylist);
-
     if (query.clearItems)
     {
         folder->clearItems();
     }
 
-    WAbstractLoader * loader = loaders.value(query.type);
-
-    WRemoteData * data = WControllerPlaylist::getDataQuery(loader, query, q);
-
-    WControllerPlaylistQuery * queryFolder
-        = new WControllerPlaylistQuery(query, WControllerPlaylistQuery::TypeFolder);
-
-    queryFolder->data = data;
-    queryFolder->item = folder;
-
-    queries.append(queryFolder);
-
-    jobs.insert(data, queryFolder);
-
-    QObject::connect(data, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoaded(WRemoteData *)));
-
-    folder->d_func()->setQueryLoading(true);
-
-    emit folder->queryStarted();
+    getDataLibraryItem(folder, query, WControllerPlaylistQuery::TypeFolder);
 }
 
 void WControllerPlaylistPrivate::getDataItem(WLibraryItem * item, const WBackendNetQuery & query)
 {
-    Q_Q(WControllerPlaylist);
-
-    WAbstractLoader * loader = loaders.value(query.type);
-
-    WRemoteData * data = WControllerPlaylist::getDataQuery(loader, query, q);
-
-    WControllerPlaylistQuery * queryFile
-        = new WControllerPlaylistQuery(query, WControllerPlaylistQuery::TypeItem);
-
-    queryFile->data = data;
-    queryFile->item = item;
-
-    queries.append(queryFile);
-
-    jobs.insert(data, queryFile);
-
-    QObject::connect(data, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoaded(WRemoteData *)));
-
-    item->d_func()->setQueryLoading(true);
-
-    emit item->queryStarted();
+    getDataLibraryItem(item, query, WControllerPlaylistQuery::TypeItem);
 }
 
 bool WControllerPlaylistPrivate::getDataRelated(WBackendNet * backend,
@@ -1632,6 +1572,34 @@ bool WControllerPlaylistPrivate::getDataRelated(WBackendNet * backend,
         return true;
     }
     else return false;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WControllerPlaylistPrivate::getDataLibraryItem(WLibraryItem                   * item,
+                                                    const WBackendNetQuery         & query,
+                                                    WControllerPlaylistQuery::Type   type)
+{
+    Q_Q(WControllerPlaylist);
+
+    WAbstractLoader * loader = loaders.value(query.type);
+
+    WRemoteData * data = WControllerPlaylist::getDataQuery(loader, query, q);
+
+    WControllerPlaylistQuery * queryFile = new WControllerPlaylistQuery(query, type);
+
+    queryFile->data = data;
+    queryFile->item = item;
+
+    queries.append(queryFile);
+
+    jobs.insert(data, queryFile);
+
+    QObject::connect(data, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoaded(WRemoteData *)));
+
+    item->d_func()->setQueryLoading(true);
+
+    emit item->queryStarted();
 }
 
 //-------------------------------------------------------------------------------------------------
