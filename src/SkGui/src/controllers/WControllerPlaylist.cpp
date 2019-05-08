@@ -1586,14 +1586,14 @@ void WControllerPlaylistPrivate::getDataLibraryItem(WLibraryItem                
 
     WRemoteData * data = WControllerPlaylist::getDataQuery(loader, query, q);
 
-    WControllerPlaylistQuery * queryFile = new WControllerPlaylistQuery(query, type);
+    WControllerPlaylistQuery * queryItem = new WControllerPlaylistQuery(query, type);
 
-    queryFile->data = data;
-    queryFile->item = item;
+    queryItem->data = data;
+    queryItem->item = item;
 
-    queries.append(queryFile);
+    queries.append(queryItem);
 
-    jobs.insert(data, queryFile);
+    jobs.insert(data, queryItem);
 
     QObject::connect(data, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoaded(WRemoteData *)));
 
