@@ -25,12 +25,26 @@ LineEditBox
     // Settings
     //---------------------------------------------------------------------------------------------
 
+    paddingRight: (buttonMask.visible) ? buttonMask.width
+                                       : padding
+
+    //---------------------------------------------------------------------------------------------
+    // Functions
+    //---------------------------------------------------------------------------------------------
+
+    function onClear()
+    {
+        text = "";
+    }
+
     //---------------------------------------------------------------------------------------------
     // Childs
     //---------------------------------------------------------------------------------------------
 
     ButtonMask
     {
+        id: buttonMask
+
         anchors.right : parent.right
         anchors.top   : parent.top
         anchors.bottom: parent.bottom
@@ -41,5 +55,7 @@ LineEditBox
 
         icon          : st.icon16x16_close
         iconSourceSize: st.size16x16
+
+        onClicked: onClear()
     }
 }
