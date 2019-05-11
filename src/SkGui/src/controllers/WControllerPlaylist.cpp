@@ -585,6 +585,8 @@ signals:
     item.extension = WControllerNetwork::extractUrlExtension(url);
 
     emit loadedItem(device, item);
+
+    deleteLater();
 }
 
 //=================================================================================================
@@ -1806,10 +1808,10 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
             query->backend = backend;
 
             backend->loadItem(networkReply, *backendQuery,
-                              q, SLOT(onFileLoaded(QIODevice *, WBackendNetItem)));
+                              q, SLOT(onItemLoaded(QIODevice *, WBackendNetItem)));
         }
         else loadUrls(networkReply, *backendQuery,
-                      SIGNAL(loaded(QIODevice *, const WControllerPlaylistItem &)),
+                      SIGNAL(loadedItem(QIODevice *, const WControllerPlaylistItem &)),
                       SLOT(onUrlItem(QIODevice *, const WControllerPlaylistItem &)));
     }
 
