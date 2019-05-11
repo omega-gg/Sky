@@ -204,6 +204,8 @@ void WDeclarativePlayerPrivate::setTab(WTabTrack * tab)
 
         QObject::connect(tab, SIGNAL(playlistUpdated()), q, SIGNAL(playlistUpdated()));
 
+        QObject::connect(tab, SIGNAL(currentBookmarkUpdated()), q, SIGNAL(subtitleChanged()));
+
         QObject::connect(tab, SIGNAL(currentBookmarkChanged()),
                          q,   SLOT(onCurrentBookmarkChanged()));
 
@@ -1628,6 +1630,32 @@ void WDeclarativePlayer::setFillMode(WAbstractBackend::FillMode fillMode)
     update();
 
     emit fillModeChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QString WDeclarativePlayer::subtitle() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->tab)
+    {
+         return d->tab->subtitle();
+    }
+    else return d->subtitle;
+}
+
+void WDeclarativePlayer::setSubtitle(const QString & subtitle)
+{
+    Q_D(WDeclarativePlayer);
+
+    if (d->subtitle == subtitle) return;
+
+    d->subtitle = subtitle;
+
+    if (d->tab) d->tab->setSubtitle(subtitle);
+
+    emit subtitleChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

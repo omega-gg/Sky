@@ -526,9 +526,11 @@ public: // Interface
     Q_INVOKABLE void extractHtml  (QIODevice * device, const QString & url);
     Q_INVOKABLE void extractFolder(QIODevice * device, const QString & url);
     Q_INVOKABLE void extractFile  (QIODevice * device, const QString & url);
+    Q_INVOKABLE void extractItem  (QIODevice * device, const QString & url);
 
 signals:
-    void loaded(QIODevice * device, const WControllerPlaylistData & data);
+    void loaded    (QIODevice * device, const WControllerPlaylistData & data);
+    void loadedItem(QIODevice * device, const WControllerPlaylistItem & item);
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -538,13 +540,11 @@ signals:
 /* Q_INVOKABLE */ void WControllerPlaylistReply::extractHtml(QIODevice     * device,
                                                              const QString & url)
 {
-    QByteArray array = device->readAll();
-
     WControllerPlaylistData data;
 
     data.addSlice("http");
 
-    data.applyHtml(array, url);
+    data.applyHtml(device->readAll(), url);
 
     emit loaded(device, data);
 
@@ -566,15 +566,25 @@ signals:
 /* Q_INVOKABLE */ void WControllerPlaylistReply::extractFile(QIODevice     * device,
                                                              const QString & url)
 {
-    QByteArray array = device->readAll();
-
     WControllerPlaylistData data;
 
-    data.applyFile(array, url);
+    data.applyFile(device->readAll(), url);
 
     emit loaded(device, data);
 
     deleteLater();
+}
+
+/* Q_INVOKABLE */ void WControllerPlaylistReply::extractItem(QIODevice     * device,
+                                                             const QString & url)
+{
+    WControllerPlaylistItem item;
+
+    item.data = device->readAll();
+
+    item.extension = WControllerNetwork::extractUrlExtension(url);
+
+    emit loadedItem(device, item);
 }
 
 //=================================================================================================
@@ -607,11 +617,13 @@ void WControllerPlaylistPrivate::init()
     qRegisterMetaType<WNetReplyTrack    *>("WNetReplyTrack *");
     qRegisterMetaType<WNetReplyPlaylist *>("WNetReplyPlaylist *");
     qRegisterMetaType<WNetReplyFolder   *>("WNetReplyFolder *");
+    qRegisterMetaType<WNetReplyItem     *>("WNetReplyItem *");
 
     qRegisterMetaType<WBackendNetSource  >("WBackendNetSource");
     qRegisterMetaType<WBackendNetTrack   >("WBackendNetTrack");
     qRegisterMetaType<WBackendNetPlaylist>("WBackendNetPlaylist");
     qRegisterMetaType<WBackendNetFolder  >("WBackendNetFolder");
+    qRegisterMetaType<WBackendNetItem    >("WBackendNetItem");
 
     qRegisterMetaType<WControllerPlaylistData>("WControllerPlaylistData");
 
@@ -620,6 +632,7 @@ void WControllerPlaylistPrivate::init()
     methodHtml   = meta->method(meta->indexOfMethod("extractHtml(QIODevice*,QString)"));
     methodFolder = meta->method(meta->indexOfMethod("extractFolder(QIODevice*,QString)"));
     methodFile   = meta->method(meta->indexOfMethod("extractFile(QIODevice*,QString)"));
+    methodItem   = meta->method(meta->indexOfMethod("extractItem(QIODevice*,QString)"));
 
     thread = new QThread(q);
 
@@ -1089,7 +1102,7 @@ bool WControllerPlaylistPrivate::applySourceItem(WLibraryItem * item, const QStr
 
     WBackendNetQuery query(source);
 
-    query.target = WBackendNetQuery::TargetFile;
+    query.target = WBackendNetQuery::TargetItem;
 
     getDataItem(item, query);
 
@@ -1427,6 +1440,7 @@ void WControllerPlaylistPrivate::applyCurrentIndex(WPlaylist * playlist) const
 //-------------------------------------------------------------------------------------------------
 
 void WControllerPlaylistPrivate::loadUrls(QIODevice * device, const WBackendNetQuery & query,
+                                                              const char             * signal,
                                                               const char             * slot) const
 {
     Q_Q(const WControllerPlaylist);
@@ -1443,11 +1457,15 @@ void WControllerPlaylistPrivate::loadUrls(QIODevice * device, const WBackendNetQ
     {
         method = methodFolder;
     }
-    else method = methodFile;
+    else if (target == WBackendNetQuery::TargetFile)
+    {
+        method = methodFile;
+    }
+    else method = methodItem;
 
     WControllerPlaylistReply * reply = new WControllerPlaylistReply;
 
-    QObject::connect(reply, SIGNAL(loaded(QIODevice *, const WControllerPlaylistData &)), q, slot);
+    QObject::connect(reply, signal, q, slot);
 
     reply ->moveToThread(thread);
     device->moveToThread(thread);
@@ -1653,7 +1671,9 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 
     WBackendNetQuery * backendQuery = &(query->backendQuery);
 
-    backendQuery->urlRedirect = data->url();
+    QString url = data->url();
+
+    backendQuery->urlRedirect = url;
 
     WBackendNet * backend;
 
@@ -1724,30 +1744,15 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
         return;
     }
 
-    if (backend == NULL)
+    if (backend == NULL && backendQuery->target == WBackendNetQuery::TargetDefault)
     {
-        if (query->type == WControllerPlaylistQuery::TypeItem)
-        {
-            deleteQuery(query);
+        deleteQuery(query);
 
-            emit item->queryEnded();
+        item->d_func()->setQueryDefault();
 
-            item->d_func()->setQueryLoaded();
+        delete data;
 
-            delete data;
-
-            return;
-        }
-        else if (backendQuery->target == WBackendNetQuery::TargetDefault)
-        {
-            deleteQuery(query);
-
-            item->d_func()->setQueryDefault();
-
-            delete data;
-
-            return;
-        }
+        return;
     }
 
     Q_Q(WControllerPlaylist);
@@ -1778,6 +1783,7 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
                                   q, SLOT(onPlaylistLoaded(QIODevice *, WBackendNetPlaylist)));
         }
         else loadUrls(networkReply, *backendQuery,
+                      SIGNAL(loaded(QIODevice *, const WControllerPlaylistData &)),
                       SLOT(onUrlPlaylist(QIODevice *, const WControllerPlaylistData &)));
     }
     else if (query->type == WControllerPlaylistQuery::TypeFolder)
@@ -1790,14 +1796,21 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
                                 q, SLOT(onFolderLoaded(QIODevice *, WBackendNetFolder)));
         }
         else loadUrls(networkReply, *backendQuery,
+                      SIGNAL(loaded(QIODevice *, const WControllerPlaylistData &)),
                       SLOT(onUrlFolder(QIODevice *, const WControllerPlaylistData &)));
     }
     else // if (query->type == WControllerPlaylistQuery::TypeItem)
     {
-        query->backend = backend;
+        if (backendQuery->target == WBackendNetQuery::TargetDefault)
+        {
+            query->backend = backend;
 
-        backend->loadItem(networkReply, *backendQuery,
-                          q, SLOT(onFileLoaded(QIODevice *, WBackendNetItem)));
+            backend->loadItem(networkReply, *backendQuery,
+                              q, SLOT(onFileLoaded(QIODevice *, WBackendNetItem)));
+        }
+        else loadUrls(networkReply, *backendQuery,
+                      SIGNAL(loaded(QIODevice *, const WControllerPlaylistItem &)),
+                      SLOT(onUrlItem(QIODevice *, const WControllerPlaylistItem &)));
     }
 
     delete data;
@@ -2370,6 +2383,26 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
     folder->d_func()->setQueryEnded();
 
     playlist->tryDelete();
+}
+
+void WControllerPlaylistPrivate::onUrlItem(QIODevice                     * device,
+                                           const WControllerPlaylistItem & data)
+{
+    WControllerPlaylistQuery * query = replies.take(device);
+
+    device->deleteLater();
+
+    if (query == NULL) return;
+
+    WLibraryItem * item = query->item;
+
+    deleteQuery(query);
+
+    emit item->queryData(data.data, data.extension);
+
+    emit item->queryEnded();
+
+    item->d_func()->setQueryLoaded();
 }
 
 //=================================================================================================

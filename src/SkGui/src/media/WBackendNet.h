@@ -49,7 +49,8 @@ public: // Enums
         TargetDefault,
         TargetHtml,
         TargetFolder,
-        TargetFile
+        TargetFile,
+        TargetItem
     };
 
 public:
@@ -209,6 +210,11 @@ class SK_GUI_EXPORT WBackendNetItem : public WBackendNetBase
 {
 public:
     WBackendNetItem();
+
+public: // Variables
+    QByteArray data;
+
+    QString extension;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -479,6 +485,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onLoadTrack   (WNetReplyTrack    *))
     Q_PRIVATE_SLOT(d_func(), void onLoadPlaylist(WNetReplyPlaylist *))
     Q_PRIVATE_SLOT(d_func(), void onLoadFolder  (WNetReplyFolder   *))
+    Q_PRIVATE_SLOT(d_func(), void onLoadItem    (WNetReplyItem     *))
 };
 
 #include <private/WBackendNet_p>

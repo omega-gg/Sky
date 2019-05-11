@@ -31,6 +31,9 @@
 
 #ifndef SK_NO_BACKENDSUBTITLE
 
+// Forward declarations
+class WLibraryItem;
+
 class SK_MEDIA_EXPORT WBackendSubtitlePrivate : public WPrivate
 {
 public:
@@ -38,7 +41,17 @@ public:
 
     void init();
 
+public: // Functions
+    WLibraryItem * getItem();
+
+public: // Slots
+    void onQueryData(const QByteArray & data, const QString & extension);
+
+    void onQueryCompleted();
+
 public: // Variables
+    WLibraryItem * item;
+
     QString source;
 
     QString text;

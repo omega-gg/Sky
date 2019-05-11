@@ -51,7 +51,13 @@ public: // Properties
 
 private:
     W_DECLARE_PRIVATE(WBackendSubtitle)
+
+    Q_PRIVATE_SLOT(d_func(), void onQueryData(const QByteArray &, const QString &))
+
+    Q_PRIVATE_SLOT(d_func(), void onQueryCompleted())
 };
+
+#include <private/WBackendSubtitle_p>
 
 #endif // SK_NO_BACKENDSUBTITLE
 #endif // WBACKENDSUBTITLE_H

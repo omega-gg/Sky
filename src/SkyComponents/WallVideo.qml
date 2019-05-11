@@ -51,6 +51,8 @@ WallBookmarkTrack
     property variant pCurrentTab    : null
     property variant pHighlightedTab: null
 
+    property variant pPlayerTab: player.tab
+
     property variant pItemA: null
     property variant pItemB: null
 
@@ -596,9 +598,9 @@ WallBookmarkTrack
                     {
                          return pHighlightedTab.cover;
                     }
-                    else return playerTab.cover;
+                    else return pPlayerTab.cover;
                 }
-                else return playerTab.coverShot;
+                else return pPlayerTab.coverShot;
             }
 
             sourceDefault: logo
@@ -620,6 +622,12 @@ WallBookmarkTrack
         anchors.bottomMargin: st.dp16
 
         anchors.horizontalCenter: player.horizontalCenter
+
+        z: player.z
+
+        visible: (source != "")
+
+        source: player.subtitle
 
         pixelSize: player.width / 32
     }

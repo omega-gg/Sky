@@ -112,6 +112,17 @@ public: // Variables
 };
 
 //-------------------------------------------------------------------------------------------------
+// WControllerPlaylistData
+//-------------------------------------------------------------------------------------------------
+
+struct WControllerPlaylistItem
+{
+    QByteArray data;
+
+    QString extension;
+};
+
+//-------------------------------------------------------------------------------------------------
 // WControllerPlaylist
 //-------------------------------------------------------------------------------------------------
 
@@ -264,6 +275,7 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void onUrlPlaylist(QIODevice *, const WControllerPlaylistData &))
     Q_PRIVATE_SLOT(d_func(), void onUrlFolder  (QIODevice *, const WControllerPlaylistData &))
+    Q_PRIVATE_SLOT(d_func(), void onUrlItem    (QIODevice *, const WControllerPlaylistItem &))
 
     friend class WLibraryItem;
     friend class WLibraryItemPrivate;

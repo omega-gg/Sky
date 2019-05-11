@@ -133,6 +133,8 @@ public: // Variables
 
     WAbstractBackend::FillMode fillMode;
 
+    QString subtitle;
+
     bool keepState;
 
 protected:

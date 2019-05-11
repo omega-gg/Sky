@@ -94,6 +94,8 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
     Q_PROPERTY(WAbstractBackend::FillMode fillMode READ fillMode WRITE setFillMode
                NOTIFY fillModeChanged)
 
+    Q_PROPERTY(QString subtitle READ subtitle WRITE setSubtitle NOTIFY subtitleChanged)
+
     Q_PROPERTY(int count READ count NOTIFY countChanged)
 
     Q_PROPERTY(bool hasPreviousTrack READ hasPreviousTrack NOTIFY playlistUpdated)
@@ -222,6 +224,8 @@ signals:
 
     void fillModeChanged();
 
+    void subtitleChanged();
+
     void countChanged();
 
     void currentTrackUpdated();
@@ -290,6 +294,9 @@ public: // Properties
 
     WAbstractBackend::FillMode fillMode() const;
     void                       setFillMode(WAbstractBackend::FillMode fillMode);
+
+    QString subtitle() const;
+    void    setSubtitle(const QString & subtitle);
 
     int count() const;
 

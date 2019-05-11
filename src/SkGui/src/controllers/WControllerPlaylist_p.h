@@ -140,7 +140,8 @@ public: // Functions
 
     void applyCurrentIndex(WPlaylist * playlist) const;
 
-    void loadUrls(QIODevice * device, const WBackendNetQuery & query, const char * slot) const;
+    void loadUrls(QIODevice * device, const WBackendNetQuery & query, const char * signal,
+                                                                      const char * slot) const;
 
     void scanItems(QList<WLibraryFolderItem> * items) const;
 
@@ -175,6 +176,7 @@ public: // Slots
 
     void onUrlPlaylist(QIODevice * device, const WControllerPlaylistData & data);
     void onUrlFolder  (QIODevice * device, const WControllerPlaylistData & data);
+    void onUrlItem    (QIODevice * device, const WControllerPlaylistItem & data);
 
 public: // Variables
     QThread * thread;
@@ -195,6 +197,7 @@ public: // Variables
     QMetaMethod methodHtml;
     QMetaMethod methodFolder;
     QMetaMethod methodFile;
+    QMetaMethod methodItem;
 
     QString pathCover;
 

@@ -140,6 +140,8 @@ protected: // WLocalObject reimplementation
     /* virtual */ void onFileDeleted();
 
 signals:
+    void queryData(const QByteArray & data, const QString & extension);
+
     void queryStarted();
     void queryEnded  ();
 
