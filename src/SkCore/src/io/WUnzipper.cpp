@@ -20,6 +20,7 @@
 
 // Qt includes
 #include <QDir>
+#include <QBuffer>
 #ifdef QT_LATEST
 #include <QFileInfo>
 #endif
@@ -41,7 +42,11 @@ public:
     void init();
 
 public: // Static functions
+    static QByteArray extractData(QuaZip * zip, const QString & fileName);
+
     static void extractFile(QuaZip * zip, const QString & fileName, const QString & destination);
+
+    static QStringList getFileNames(QuaZip * zip);
 
 public: // Variables
     QString fileName;
@@ -64,8 +69,7 @@ void WUnzipperPrivate::init() {}
 // Prviate static functions
 //-------------------------------------------------------------------------------------------------
 
-/* static */void WUnzipperPrivate::extractFile(QuaZip * zip, const QString & fileName,
-                                                             const QString & destination)
+/* static */ QByteArray WUnzipperPrivate::extractData(QuaZip * zip, const QString & fileName)
 {
     zip->setCurrentFile(fileName);
 
@@ -73,10 +77,19 @@ void WUnzipperPrivate::init() {}
 
     if (zipFile.open(QIODevice::ReadOnly) == false)
     {
-        qWarning("WUnzipperPrivate:extractFile: Cannot extract file %s", fileName.C_STR);
+        qWarning("WUnzipperPrivate:extractData: Cannot extract file %s", fileName.C_STR);
 
-        return;
+        return QByteArray();
     }
+    else return zipFile.readAll();
+}
+
+/* static */void WUnzipperPrivate::extractFile(QuaZip * zip, const QString & fileName,
+                                                             const QString & destination)
+{
+    QByteArray data = extractData(zip, fileName);
+
+    if (data.isEmpty()) return;
 
     QString path = QDir(destination).absolutePath() + '/' + fileName;
 
@@ -93,7 +106,25 @@ void WUnzipperPrivate::init() {}
         return;
     }
 
-    file.write(zipFile.readAll());
+    file.write(data);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* static */ QStringList WUnzipperPrivate::getFileNames(QuaZip * zip)
+{
+    QStringList list;
+
+    QuaZipFileInfo info;
+
+    while (zip->getCurrentFileInfo(&info))
+    {
+        list.push_back(info.name);
+
+        if (zip->goToNextFile() == false) break;
+    }
+
+    return list;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -150,6 +181,21 @@ void WUnzipperPrivate::init() {}
     }
 }
 
+/* Q_INVOKABLE static */ QByteArray WUnzipper::extractFile(QBuffer       * buffer,
+                                                           const QString & fileName)
+{
+    QuaZip zip(buffer);
+
+    if (zip.open(QuaZip::mdUnzip) == false)
+    {
+        qWarning("WUnzipper::extractFile: Cannot open zip buffer.");
+
+        return QByteArray();
+    }
+
+    return WUnzipperPrivate::extractData(&zip, fileName);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QStringList WUnzipper::getFileNames(const QString & fileName)
@@ -170,18 +216,28 @@ void WUnzipperPrivate::init() {}
         return QStringList();
     }
 
-    QStringList list;
+    return WUnzipperPrivate::getFileNames(&zip);
+}
 
-    QuaZipFileInfo info;
+/* Q_INVOKABLE static */ QStringList WUnzipper::getFileNames(QBuffer * buffer)
+{
+    QuaZip zip(buffer);
 
-    while (zip.getCurrentFileInfo(&info))
+    if (zip.open(QuaZip::mdUnzip) == false)
     {
-        list.push_back(info.name);
+        qWarning("WUnzipper::getFileNames: Cannot open zip buffer.");
 
-        if (zip.goToNextFile() == false) break;
+        return QStringList();
     }
 
-    return list;
+    if (zip.goToFirstFile() == false)
+    {
+        qWarning("WUnzipper::getFileNames: Zip buffer is empty.");
+
+        return QStringList();
+    }
+
+    return WUnzipperPrivate::getFileNames(&zip);
 }
 
 //-------------------------------------------------------------------------------------------------

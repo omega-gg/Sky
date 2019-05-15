@@ -182,6 +182,8 @@ public: // Static functions
     Q_INVOKABLE static QString extract(const QString & string,
                                        const QString & pattern, int cap, int from = 0);
 
+    Q_INVOKABLE static QString extractLine(QString * string);
+
     //---------------------------------------------------------------------------------------------
 
     Q_INVOKABLE static QString readAscii(const QByteArray & array);

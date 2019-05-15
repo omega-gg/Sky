@@ -24,6 +24,8 @@
 // Sk includes
 #include <Sk>
 
+#ifndef SK_NO_FILEWATCHER
+
 // Forward declarations
 class QStringList;
 class WFileWatcherPrivate;
@@ -62,4 +64,5 @@ private:
     friend class WFileWatch;
 };
 
+#endif // SK_NO_FILEWATCHER
 #endif // WFILEWATCHER_H

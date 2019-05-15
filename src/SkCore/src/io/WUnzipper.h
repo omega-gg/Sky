@@ -27,6 +27,8 @@
 // Sk includes
 #include <Sk>
 
+// Forward declarations
+class QBuffer;
 class WUnzipperPrivate;
 
 class SK_CORE_EXPORT WUnzipper : public QObject, public WPrivatable
@@ -50,7 +52,10 @@ public: // Static functions
                                     const QString     & destination,
                                     const QStringList & fileNames = QStringList());
 
+    Q_INVOKABLE static QByteArray extractFile(QBuffer * buffer, const QString & fileName);
+
     Q_INVOKABLE static QStringList getFileNames(const QString & fileName);
+    Q_INVOKABLE static QStringList getFileNames(QBuffer       * buffer);
 
 signals:
     void fileNameChanged();

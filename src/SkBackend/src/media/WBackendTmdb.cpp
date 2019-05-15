@@ -338,6 +338,12 @@ QString WBackendTmdbPrivate::extractShow(const QString & label) const
 
 bool WBackendTmdbPrivate::match(const QStringList & listA, const QStringList & listB) const
 {
+    // NOTE: To avoid watching small titles.
+    if (listB.length() == 1 && listA.length() > 1)
+    {
+        return false;
+    }
+
     int from = 0;
 
     foreach (const QString & string, listA)

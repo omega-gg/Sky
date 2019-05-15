@@ -18,9 +18,19 @@
 
 #ifndef SK_NO_BACKENDOPENSUBTITLES
 
+// Qt includes
+#include <QBuffer>
+
 // Sk includes
 #include <WControllerApplication>
 #include <WControllerNetwork>
+#include <WControllerPlaylist>
+#include <WUnzipper>
+
+//-------------------------------------------------------------------------------------------------
+// Static variables
+
+static const int BACKENDOPENSUBTITLES_TIMEOUT = 10000;
 
 //-------------------------------------------------------------------------------------------------
 // Private
@@ -170,6 +180,8 @@ WBackendNetQuery WBackendOpenSubtitles::getQueryItem(const QString & url) const
 
         query.url = url;
 
+        query.timeout = BACKENDOPENSUBTITLES_TIMEOUT;
+
         return query;
     }
     else return WBackendNetQuery();
@@ -257,10 +269,55 @@ WBackendNetFolder WBackendOpenSubtitles::extractFolder(const QByteArray       & 
 }
 
 /* Q_INVOKABLE virtual */
-WBackendNetItem WBackendOpenSubtitles::extractItem(const QByteArray       &,
-                                                   const WBackendNetQuery &) const
+WBackendNetItem WBackendOpenSubtitles::extractItem(const QByteArray       & data,
+                                                   const WBackendNetQuery & query) const
 {
     WBackendNetItem reply;
+
+    int id = query.id;
+
+    if (id == 1)
+    {
+        QByteArray bytes = data;
+
+        QBuffer buffer(&bytes);
+
+        QStringList list = WUnzipper::getFileNames(&buffer);
+
+        foreach (const QString & fileName, list)
+        {
+            QString extension = WControllerNetwork::extractUrlExtension(fileName);
+
+            if (WControllerPlaylist::extensionIsSubtitle(extension) == false) continue;
+
+            reply.data = WUnzipper::extractFile(&buffer, fileName);
+
+            reply.extension = extension;
+
+            reply.cache = data;
+
+            return reply;
+        }
+    }
+    else
+    {
+        QString content = Sk::readUtf8(data);
+
+        int index = content.indexOf("<a download");
+
+        QString source = WControllerNetwork::extractAttribute(content, "href", index);
+
+        index = content.indexOf("function dowSub", index);
+
+        QString string = Sk::sliceIn(content, "vrf-", "'", index);
+
+        source.replace("subtitleserve", "download/vrf-" + string);
+
+        WBackendNetQuery * nextQuery = &(reply.nextQuery);
+
+        nextQuery->url = "https://www.opensubtitles.org" + source;
+        nextQuery->id  = 1;
+    }
 
     return reply;
 }

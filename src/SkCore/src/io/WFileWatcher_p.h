@@ -17,11 +17,23 @@
 #ifndef WFILEWATCHER_P_H
 #define WFILEWATCHER_P_H
 
+/*  W A R N I N G
+    -------------
+
+    This file is not part of the Sk API. It exists purely as an
+    implementation detail. This header file may change from version to
+    version without notice, or even be removed.
+
+    We mean it.
+*/
+
 // Qt includes
 #include <QList>
 
 // Private includes
 #include <private/Sk_p>
+
+#ifndef SK_NO_FILEWATCHER
 
 //-------------------------------------------------------------------------------------------------
 // WFileWatch
@@ -157,4 +169,5 @@ protected:
     W_DECLARE_PUBLIC(WFileWatcher)
 };
 
+#endif // SK_NO_FILEWATCHER
 #endif // WFILEWATCHER_P_H

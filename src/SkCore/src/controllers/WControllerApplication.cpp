@@ -801,6 +801,30 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ QString WControllerApplication::extractLine(QString * string)
+{
+    QString result;
+
+    int index = string->indexOf('\n');
+
+    if (index == -1)
+    {
+        result = *string;
+
+        string->clear();
+    }
+    else
+    {
+        result = string->mid(0, index);
+
+        string->remove(0, index + 1);
+    }
+
+    return result;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE static */ QString WControllerApplication::readAscii(const QByteArray & array)
 {
     return QString::fromLatin1(array, array.size());

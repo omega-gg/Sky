@@ -16,6 +16,8 @@
 
 #include "WFileWatcher.h"
 
+#ifndef SK_NO_FILEWATCHER
+
 // Qt includes
 #include <QDir>
 
@@ -769,3 +771,5 @@ void WFileWatcherPrivate::resetCheck()
 
     return false;
 }
+
+#endif // SK_NO_FILEWATCHER

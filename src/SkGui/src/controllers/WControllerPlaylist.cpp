@@ -628,6 +628,7 @@ void WControllerPlaylistPrivate::init()
     qRegisterMetaType<WBackendNetItem    >("WBackendNetItem");
 
     qRegisterMetaType<WControllerPlaylistData>("WControllerPlaylistData");
+    qRegisterMetaType<WControllerPlaylistItem>("WControllerPlaylistItem");
 
     const QMetaObject * meta = WControllerPlaylistReply().metaObject();
 
@@ -2079,14 +2080,14 @@ void WControllerPlaylistPrivate::onItemLoaded(QIODevice * device, const WBackend
 
     if (reply.valid)
     {
-        emit item->queryEnded();
-
-        addToCache(item->source(), reply.cache);
-
         WBackendNetQuery nextQuery = reply.nextQuery;
 
         if (nextQuery.isValid())
         {
+            emit item->queryEnded();
+
+            addToCache(item->source(), reply.cache);
+
             nextQuery.priority
                 = static_cast<QNetworkRequest::Priority> (QNetworkRequest::NormalPriority - 1);
 
@@ -2095,6 +2096,14 @@ void WControllerPlaylistPrivate::onItemLoaded(QIODevice * device, const WBackend
             getDataItem(item, nextQuery);
 
             return;
+        }
+        else
+        {
+            emit item->queryData(reply.data, reply.extension);
+
+            emit item->queryEnded();
+
+            addToCache(item->source(), reply.cache);
         }
     }
     else emit item->queryEnded();
