@@ -338,7 +338,7 @@ QString WBackendTmdbPrivate::extractShow(const QString & label) const
 
 bool WBackendTmdbPrivate::match(const QStringList & listA, const QStringList & listB) const
 {
-    // NOTE: To avoid watching small titles.
+    // NOTE: To avoid watching short titles.
     if (listB.length() == 1 && listA.length() > 1)
     {
         return false;

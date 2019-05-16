@@ -84,8 +84,8 @@ void WUnzipperPrivate::init() {}
     else return zipFile.readAll();
 }
 
-/* static */void WUnzipperPrivate::extractFile(QuaZip * zip, const QString & fileName,
-                                                             const QString & destination)
+/* static */ void WUnzipperPrivate::extractFile(QuaZip * zip, const QString & fileName,
+                                                              const QString & destination)
 {
     QByteArray data = extractData(zip, fileName);
 
