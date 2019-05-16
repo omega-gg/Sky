@@ -72,7 +72,7 @@ void WBackendSubtitlePrivate::loadSrt(const QByteArray & data)
 
     while (content.isEmpty() == false)
     {
-        QString string = Sk::extractNextLine(&content);
+        QString string = Sk::extractLine(&content);
 
         if (parse == false)
         {
@@ -159,7 +159,7 @@ void WBackendSubtitlePrivate::updateText()
             {
                 end = data.start;
 
-                clearTextString();
+                clearString();
             }
         }
         else clearText();
@@ -321,7 +321,7 @@ void WBackendSubtitlePrivate::setText(const QString & text)
 
     if (enabled && currentTime != -1 && list.isEmpty() == false)
     {
-        timer = q->startTimer(BACKENDSUBTITLE_TIMER);
+        timer = q->startTimer(BACKENDSUBTITLE_TIMEOUT);
     }
 
     emit q->textChanged();
@@ -378,13 +378,37 @@ void WBackendSubtitlePrivate::onQueryCompleted()
 {
     Q_D(WBackendSubtitle);
 
-    d->currentTime += BACKENDSUBTITLE_TIMER;
+    d->currentTime += BACKENDSUBTITLE_TIMEOUT;
 
     d->updateText();
 }
 
 //-------------------------------------------------------------------------------------------------
 // Properties
+//-------------------------------------------------------------------------------------------------
+
+bool WBackendSubtitle::isEnabled() const
+{
+    Q_D(const WBackendSubtitle); return d->enabled;
+}
+
+void WBackendSubtitle::setEnabled(bool enabled)
+{
+    Q_D(WBackendSubtitle);
+
+    if (d->enabled == enabled) return;
+
+    d->enabled = enabled;
+
+    if (enabled)
+    {
+        d->updateText();
+    }
+    else d->clearText();
+
+    emit enabledChanged();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 QString WBackendSubtitle::source() const
@@ -400,6 +424,10 @@ void WBackendSubtitle::setSource(const QString & url)
 
     d->source = url;
 
+    d->list.clear();
+
+    d->clearText();
+
     if (url.isEmpty() == false)
     {
         WLibraryItem * item = d->getItem();
@@ -412,6 +440,36 @@ void WBackendSubtitle::setSource(const QString & url)
     }
 
     emit sourceChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+int WBackendSubtitle::currentTime() const
+{
+    Q_D(const WBackendSubtitle); return d->currentTime;
+}
+
+void WBackendSubtitle::setCurrentTime(int msec)
+{
+    Q_D(WBackendSubtitle);
+
+    if (d->currentTime == msec) return;
+
+    d->currentTime = msec;
+
+    if (d->enabled)
+    {
+        if (msec == -1)
+        {
+            d->clearText();
+        }
+        else if (d->checkIndex())
+        {
+            d->updateText();
+        }
+    }
+
+    emit currentTimeChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

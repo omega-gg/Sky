@@ -31,21 +31,38 @@ class SK_MEDIA_EXPORT WBackendSubtitle : public QObject, public WPrivatable
 {
     Q_OBJECT
 
+    Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
+
     Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
+
+    Q_PROPERTY(int currentTime READ currentTime WRITE setCurrentTime NOTIFY currentTimeChanged)
 
     Q_PROPERTY(QString text READ text NOTIFY textChanged)
 
 public:
     explicit WBackendSubtitle(QObject * parent = NULL);
 
+protected: // Events
+    /* virtual */ void timerEvent(QTimerEvent * event);
+
 signals:
+    void enabledChanged();
+
     void sourceChanged();
+
+    void currentTimeChanged();
 
     void textChanged();
 
 public: // Properties
+    bool isEnabled() const;
+    void setEnabled(bool enabled);
+
     QString source() const;
     void    setSource(const QString & url);
+
+    int  currentTime() const;
+    void setCurrentTime(int msec);
 
     QString text() const;
 

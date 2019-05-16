@@ -625,9 +625,11 @@ WallBookmarkTrack
 
         z: player.z
 
-        visible: (source != "")
+        visible: (player.isPlaying && player.isBuffering == false)
 
         source: player.subtitle
+
+        currentTime: player.currentTime
 
         pixelSize: player.width / 32
     }

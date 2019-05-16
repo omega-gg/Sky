@@ -27,12 +27,32 @@
     We mean it.
 */
 
+// Qt includes
+#include <QHash>
+
+// Private includes
 #include <private/Sk_p>
 
 #ifndef SK_NO_BACKENDSUBTITLE
 
 // Forward declarations
 class WLibraryItem;
+
+//-------------------------------------------------------------------------------------------------
+// WBackendSubtitleData
+//-------------------------------------------------------------------------------------------------
+
+struct WBackendSubtitleData
+{
+    int start;
+    int end;
+
+    QString text;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WBackendSubtitlePrivate
+//-------------------------------------------------------------------------------------------------
 
 class SK_MEDIA_EXPORT WBackendSubtitlePrivate : public WPrivate
 {
@@ -42,7 +62,22 @@ public:
     void init();
 
 public: // Functions
+    void loadSrt(const QByteArray & data);
+
+    void updateText();
+
+    void clearText  ();
+    void clearString();
+
+    bool checkIndex();
+
+    void stopTimer();
+
+    int extractMsecs(const QString & string);
+
     WLibraryItem * getItem();
+
+    void setText(const QString & text);
 
 public: // Slots
     void onQueryData(const QByteArray & data, const QString & extension);
@@ -50,11 +85,24 @@ public: // Slots
     void onQueryCompleted();
 
 public: // Variables
+    bool enabled;
+
     WLibraryItem * item;
 
     QString source;
 
+    int currentTime;
+
+    int index;
+
+    int start;
+    int end;
+
     QString text;
+
+    QList<WBackendSubtitleData> list;
+
+    int timer;
 
 protected:
     W_DECLARE_PUBLIC(WBackendSubtitle)

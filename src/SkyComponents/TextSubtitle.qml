@@ -34,7 +34,11 @@ Text
     // Aliases
     //---------------------------------------------------------------------------------------------
 
+    property alias enabled: backend.enabled
+
     property alias source: backend.source
+
+    property alias currentTime: backend.currentTime
 
     //---------------------------------------------------------------------------------------------
 
@@ -85,5 +89,10 @@ Text
     // Childs
     //---------------------------------------------------------------------------------------------
 
-    BackendSubtitle { id: backend }
+    BackendSubtitle
+    {
+        id: backend
+
+        enabled: textSubtitle.visible
+    }
 }
