@@ -3,6 +3,7 @@
 
 [![travis](http://api.travis-ci.org/omega-gg/Sky.svg)](http://travis-ci.org/omega-gg/Sky)
 [![appveyor](http://ci.appveyor.com/api/projects/status/86v4f4gv95u68w18?svg=true)](http://ci.appveyor.com/project/3unjee/sky)
+[![GPLv3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl.html)
 
 Sky is the complete application kit built for [MotionBox](http://omega.gg/MotionBox).<br>
 Designed for efficiency, scalability and maintainability.<br>

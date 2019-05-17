@@ -170,7 +170,7 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
 
     if (d->source == source) return false;
 
-    if (load && source.isEmpty() == false && applySource(source) == false)
+    if (load && applySource(source) == false)
     {
         qWarning("WLibraryItem::loadSource: Failed to apply source %s.", source.C_STR);
 
@@ -193,7 +193,7 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
 
 /* Q_INVOKABLE */ bool WLibraryItem::reloadSource(const QString & source)
 {
-    if (source.isEmpty() == false && applySource(source) == false)
+    if (applySource(source) == false)
     {
         qWarning("WLibraryItem::reloadSource: Failed to apply source %s.", source.C_STR);
 

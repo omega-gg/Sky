@@ -139,6 +139,8 @@ public: // Static functions
 
     //---------------------------------------------------------------------------------------------
 
+    Q_INVOKABLE static int indexAt(const QString & string, const QString & match, int skip);
+
     Q_INVOKABLE static QString trim      (const QString & string);
     Q_INVOKABLE static QString simplify  (const QString & string);
     Q_INVOKABLE static QString reverse   (const QString & string);

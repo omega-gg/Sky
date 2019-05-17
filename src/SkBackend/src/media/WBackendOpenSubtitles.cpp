@@ -32,6 +32,13 @@
 
 static const int BACKENDOPENSUBTITLES_TIMEOUT = 10000;
 
+static const QString BACKENDOPENSUBTITLES_MATCH = "[,.:\\-_(){}\\[\\]]";
+
+static const QString BACKENDOPENSUBTITLES_START = "^[({\\[]";
+static const QString BACKENDOPENSUBTITLES_END   =  "[)}\\]]";
+
+static const QString BACKENDOPENSUBTITLES_FILTER = "720p|1080p|x264|bluray";
+
 //-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
@@ -45,8 +52,15 @@ public:
 
     void init();
 
-public: // Functions
-    QString getLanguage(const QString & language) const;
+public: // Static Functions
+    static void applyQuery(WBackendNetFolder * reply, const QString & language,
+                                                      const QString & search, int id);
+
+    static QString getUrl(const QString & label, const QString & search);
+
+    static QString getQuery(const QString & data);
+
+    static QString getLanguage(const QString & language);
 
 protected:
     W_DECLARE_PUBLIC(WBackendOpenSubtitles)
@@ -60,10 +74,93 @@ WBackendOpenSubtitlesPrivate::WBackendOpenSubtitlesPrivate(WBackendOpenSubtitles
 void WBackendOpenSubtitlesPrivate::init() {}
 
 //-------------------------------------------------------------------------------------------------
-// Private functions
+// Private static functions
 //-------------------------------------------------------------------------------------------------
 
-QString WBackendOpenSubtitlesPrivate::getLanguage(const QString & language) const
+/* static */ void WBackendOpenSubtitlesPrivate::applyQuery(WBackendNetFolder * reply,
+                                                           const QString     & language,
+                                                           const QString     & search,
+                                                           int                 id)
+{
+    WBackendNetQuery * nextQuery = &(reply->nextQuery);
+
+    QStringList list;
+
+    list.append(language);
+    list.append(search);
+
+    nextQuery->url = WBackendOpenSubtitlesPrivate::getUrl(language, search);
+
+    nextQuery->id = id;
+
+    nextQuery->data = list;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* static */ QString WBackendOpenSubtitlesPrivate::getUrl(const QString & language,
+                                                          const QString & search)
+{
+    QString query = search;
+
+    query.replace(' ', '+');
+
+    return "https://www.opensubtitles.org/en/search/sublanguageid-" + language
+           +
+           "/subsumcd-1/subformat-srt/moviename-" + query;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* static */ QString WBackendOpenSubtitlesPrivate::getQuery(const QString & data)
+{
+    QString result = data;
+
+    if (result.contains(QRegExp(BACKENDOPENSUBTITLES_START)))
+    {
+        int index = result.indexOf(QRegExp(BACKENDOPENSUBTITLES_END));
+
+        if (index != -1)
+        {
+            result = result.mid(index + 1);
+        }
+    }
+
+    QStringList listA = result.split(' ');
+
+    while (listA.count() && listA.first().contains(QRegExp(BACKENDOPENSUBTITLES_START)))
+    {
+        listA.removeFirst();
+    }
+
+    result = listA.join(" ");
+
+    result = result.replace(QRegExp(BACKENDOPENSUBTITLES_MATCH), " ");
+
+    listA = result.simplified().toLower().split(' ');
+
+    while (listA.count() && listA.first().toInt())
+    {
+        listA.removeFirst();
+    }
+
+    QStringList listB;
+
+    foreach (const QString & string, listA)
+    {
+        if (string.length() < 4 || string.contains(QRegExp(BACKENDOPENSUBTITLES_FILTER))) continue;
+
+        listB.append(string);
+
+        if (listB.count() == 5) break;
+    }
+
+    return listB.join(" ");
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* static */ QString WBackendOpenSubtitlesPrivate::getLanguage(const QString & language)
 {
     if      (language == "afrikaans")   return "afr";
     else if (language == "albanian")    return "alb";
@@ -197,17 +294,18 @@ WBackendNetQuery WBackendOpenSubtitles::createQuery(const QString & method,
 
     if (method == "subtitles")
     {
-        Q_D(const WBackendOpenSubtitles);
-
-        QString language = d->getLanguage(label);
+        QString language = WBackendOpenSubtitlesPrivate::getLanguage(label);
 
         QString search = q.simplified();
 
-        query.url = "https://www.opensubtitles.org/en/search/sublanguageid-" + language
-                    +
-                    "/subsumcd-1/subformat-srt/moviename-" + search.replace(' ', '+');
+        QStringList list;
 
-        query.data = search;
+        list.append(language);
+        list.append(search);
+
+        query.url = WBackendOpenSubtitlesPrivate::getUrl(language, search);
+
+        query.data = list;
     }
 
     return query;
@@ -221,17 +319,27 @@ WBackendNetFolder WBackendOpenSubtitles::extractFolder(const QByteArray       & 
 {
     WBackendNetFolder reply;
 
+    int id = query.id;
+
     QString url = query.urlRedirect;
 
     // NOTE: We have been redirected to a subtitle page.
-    if (url.contains("/subtitles/"))
+    if (id == 0 && url.contains("/subtitles/"))
     {
+        QStringList list = query.data.toStringList();
+
+        QString search = list.last();
+
         WLibraryFolderItem item(WLibraryItem::Item, WLocalObject::Default);
 
         item.source = url;
-        item.title  = query.data.toString();
+        item.title  = search;
 
         reply.items.append(item);
+
+        search = WBackendOpenSubtitlesPrivate::getQuery(search);
+
+        WBackendOpenSubtitlesPrivate::applyQuery(&reply, list.first(), search, 1);
 
         return reply;
     }
@@ -263,6 +371,43 @@ WBackendNetFolder WBackendOpenSubtitles::extractFolder(const QByteArray       & 
         item.title  = title;
 
         reply.items.append(item);
+    }
+
+    if (id == 1)
+    {
+        reply.clearDuplicate = true;
+
+        if (reply.items.isEmpty() == false)
+        {
+            return reply;
+        }
+
+        QStringList list = query.data.toStringList();
+
+        QString search = list.last();
+
+        int index = Sk::indexAt(search, " ", 1);
+
+        if (index == -1)
+        {
+            return reply;
+        }
+
+        search = search.mid(0, index);
+
+        WBackendOpenSubtitlesPrivate::applyQuery(&reply, list.first(), search, 2);
+    }
+    else if (id == 2)
+    {
+        reply.clearDuplicate = true;
+    }
+    else if (reply.items.count() < 5)
+    {
+        QStringList list = query.data.toStringList();
+
+        QString search = WBackendOpenSubtitlesPrivate::getQuery(list.last());
+
+        WBackendOpenSubtitlesPrivate::applyQuery(&reply, list.first(), search, 1);
     }
 
     return reply;

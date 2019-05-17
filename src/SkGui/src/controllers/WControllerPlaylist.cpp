@@ -710,9 +710,11 @@ bool WControllerPlaylistPrivate::applyQueryItem(WLibraryItem           * item,
 bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
                                                   WTrack    * track, const QString & url)
 {
-    Q_Q(WControllerPlaylist);
-
     abortQueryTrack(track);
+
+    if (url.isEmpty()) return true;
+
+    Q_Q(WControllerPlaylist);
 
     QString source = WControllerPlaylist::generateSource(url);
 
@@ -761,9 +763,11 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
 
 bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const QString & url)
 {
-    Q_Q(WControllerPlaylist);
-
     playlist->clearTracks();
+
+    if (url.isEmpty()) return true;
+
+    Q_Q(WControllerPlaylist);
 
     QString source = WControllerPlaylist::generateSource(url);
 
@@ -900,9 +904,11 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
 
 bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, const QString & url)
 {
-    Q_Q(WControllerPlaylist);
-
     folder->clearItems();
+
+    if (url.isEmpty()) return true;
+
+    Q_Q(WControllerPlaylist);
 
     QString source = WControllerPlaylist::generateSource(url);
 
@@ -1057,6 +1063,10 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
 bool WControllerPlaylistPrivate::applySourceItem(WLibraryItem * item, const QString & url)
 {
+    abortQueriesItem(item);
+
+    if (url.isEmpty()) return true;
+
     Q_Q(WControllerPlaylist);
 
     QString source = WControllerPlaylist::generateSource(url);

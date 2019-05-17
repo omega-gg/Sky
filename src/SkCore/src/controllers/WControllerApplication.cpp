@@ -500,6 +500,32 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ int WControllerApplication::indexAt(const QString & string,
+                                                             const QString & match, int skip)
+{
+    if (skip < 0)
+    {
+        return string.indexOf(match);
+    }
+
+    int index = 0;
+
+    while (skip != -1)
+    {
+        index = string.indexOf(" ", index);
+
+        if (index == -1) return -1;
+
+        index++;
+
+        skip--;
+    }
+
+    return index;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE static */ QString WControllerApplication::trim(const QString & string)
 {
     return string.trimmed();
