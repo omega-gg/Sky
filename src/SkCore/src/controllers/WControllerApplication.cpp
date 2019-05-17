@@ -503,7 +503,7 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 /* Q_INVOKABLE static */ int WControllerApplication::indexAt(const QString & string,
                                                              const QString & match, int skip)
 {
-    if (skip < 0)
+    if (skip < 1)
     {
         return string.indexOf(match);
     }

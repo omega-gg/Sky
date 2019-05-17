@@ -52,7 +52,7 @@ public:
 
     void init();
 
-public: // Static Functions
+public: // Static functions
     static void applyQuery(WBackendNetFolder * reply, const QString & language,
                                                       const QString & search, int id);
 
