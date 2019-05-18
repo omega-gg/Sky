@@ -162,7 +162,10 @@ void WBackendSubtitlePrivate::updateText()
                 clearString();
             }
         }
-        else clearText();
+        else if (text.isNull() == false)
+        {
+            clearString();
+        }
 
         return;
     }
@@ -176,7 +179,7 @@ void WBackendSubtitlePrivate::updateText()
             start = 0;
             end   = data.start;
 
-            clearText();
+            clearString();
 
             return;
         }
@@ -205,7 +208,7 @@ void WBackendSubtitlePrivate::updateText()
 
 void WBackendSubtitlePrivate::clearText()
 {
-    if (text.isNull()) return;
+    if (index == -1) return;
 
     index = -1;
 
@@ -333,6 +336,8 @@ void WBackendSubtitlePrivate::setText(const QString & text)
 
 void WBackendSubtitlePrivate::onQueryData(const QByteArray & data, const QString & extension)
 {
+    qDebug("SUBTITLE %d %s", data.length(), extension.C_STR);
+
     if (extension == "srt")
     {
         loadSrt(data);

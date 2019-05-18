@@ -204,8 +204,6 @@ void WDeclarativePlayerPrivate::setTab(WTabTrack * tab)
 
         QObject::connect(tab, SIGNAL(playlistUpdated()), q, SIGNAL(playlistUpdated()));
 
-        QObject::connect(tab, SIGNAL(currentBookmarkUpdated()), q, SIGNAL(subtitleChanged()));
-
         QObject::connect(tab, SIGNAL(currentBookmarkChanged()),
                          q,   SLOT(onCurrentBookmarkChanged()));
 
@@ -596,6 +594,8 @@ void WDeclarativePlayerPrivate::onCurrentBookmarkUpdated()
     else setPlaylist(NULL);
 
     emit q->currentTrackUpdated();
+
+    emit q->subtitleChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
