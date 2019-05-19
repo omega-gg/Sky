@@ -955,8 +955,6 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
     int oldIndex = index;
 
-    QList<WTrack *> tracksDefault;
-
     foreach (const WTrack & track, tracks)
     {
         d->tracks.insert(index, track);
@@ -978,11 +976,6 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
             qWarning("WPlaylist::insertTracks: Id is already taken '%d'.", id);
 
             p->id = d->ids.generateId();
-        }
-
-        if (p->state != WTrack::Loaded)
-        {
-            tracksDefault.append(newTrack);
         }
 
         index++;

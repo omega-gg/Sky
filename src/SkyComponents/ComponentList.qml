@@ -51,7 +51,7 @@ MouseArea
 
     onPressed:
     {
-        currentIndex = index;
+        onPress();
 
         itemPressed(index);
     }
@@ -61,6 +61,15 @@ MouseArea
     onClicked: itemClicked(index)
 
     onDoubleClicked: itemDoubleClicked(index)
+
+    //---------------------------------------------------------------------------------------------
+    // Functions events
+    //---------------------------------------------------------------------------------------------
+
+    function onPress()
+    {
+        currentIndex = index;
+    }
 
     //---------------------------------------------------------------------------------------------
     // Childs
