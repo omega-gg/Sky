@@ -360,7 +360,7 @@ void WBackendSubtitlePrivate::onQueryCompleted()
 
     QObject::disconnect(item, 0, q, 0);
 
-    delete item;
+    item->deleteLater();
 
     item = NULL;
 }

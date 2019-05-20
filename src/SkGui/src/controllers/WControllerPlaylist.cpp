@@ -2115,14 +2115,12 @@ void WControllerPlaylistPrivate::onItemLoaded(QIODevice * device, const WBackend
 
             return;
         }
-        else
-        {
-            emit item->queryData(reply.data, reply.extension);
 
-            emit item->queryEnded();
+        emit item->queryData(reply.data, reply.extension);
 
-            addToCache(item->source(), reply.cache);
-        }
+        emit item->queryEnded();
+
+        addToCache(item->source(), reply.cache);
     }
     else emit item->queryEnded();
 
