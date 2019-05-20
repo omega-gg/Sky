@@ -745,14 +745,17 @@ void WViewPrivate::updateDrag()
                 if (areaDrop)
                 {
 #ifdef QT_LATEST
-                    // FIXME Qt5: Sometimes the drop area goes beyond the parent geometry.
-                    QPointF posItem = areaDrop->mapFromScene(mousePos);
-
-                    if (areaDrop->boundingRect().contains(posItem))
+                    if (areaDrop == area)
                     {
-                        areaDrop->d_func()->dragMoveEvent(posItem, dragData);
+                        // FIXME Qt5: Sometimes the drop area goes beyond the parent geometry.
+                        QPointF posItem = areaDrop->mapFromScene(mousePos);
 
-                        return;
+                        if (areaDrop->boundingRect().contains(posItem))
+                        {
+                            areaDrop->d_func()->dragMoveEvent(posItem, dragData);
+
+                            return;
+                        }
                     }
 #endif
 

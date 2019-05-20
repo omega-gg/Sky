@@ -1852,7 +1852,9 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
 
     if (reply.valid)
     {
-        reply.track.applyDataTo(track);
+        const WTrack & trackReply = reply.track;
+
+        trackReply.applyDataTo(track);
 
         addToCache(track->source(), reply.cache);
 
@@ -1871,7 +1873,7 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
         }
         else
         {
-            track->setState(WTrack::Loaded);
+            track->setState(trackReply.state());
 
             playlist->updateTrack(index);
 

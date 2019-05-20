@@ -49,6 +49,7 @@ public: // WBackendNet reimplementation
 
     //---------------------------------------------------------------------------------------------
 
+    /* Q_INVOKABLE virtual */ WBackendNetQuery getQueryTrack   (const QString & url) const;
     /* Q_INVOKABLE virtual */ WBackendNetQuery getQueryPlaylist(const QString & url) const;
 
     //---------------------------------------------------------------------------------------------
@@ -58,6 +59,10 @@ public: // WBackendNet reimplementation
                                  const QString & label, const QString & q) const;
 
     //---------------------------------------------------------------------------------------------
+
+    /* Q_INVOKABLE virtual */
+    WBackendNetTrack extractTrack(const QByteArray       & data,
+                                  const WBackendNetQuery & query) const;
 
     /* Q_INVOKABLE virtual */
     WBackendNetPlaylist extractPlaylist(const QByteArray       & data,

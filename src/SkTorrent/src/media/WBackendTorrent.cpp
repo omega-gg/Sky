@@ -580,7 +580,7 @@ QString WBackendTorrent::getUrlPlaylist(const WBackendNetPlaylistInfo & info) co
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */
-WBackendNetQuery WBackendTorrent::getQueryPlaylist(const QString & url) const
+WBackendNetQuery WBackendTorrent::getQueryTrack(const QString & url) const
 {
     WBackendNetQuery query;
 
@@ -620,6 +620,12 @@ WBackendNetQuery WBackendTorrent::getQueryPlaylist(const QString & url) const
     }
 
     return query;
+}
+
+/* Q_INVOKABLE virtual */
+WBackendNetQuery WBackendTorrent::getQueryPlaylist(const QString & url) const
+{
+    return getQueryTrack(url);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -687,6 +693,78 @@ WBackendNetQuery WBackendTorrent::createQuery(const QString & method,
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */
+WBackendNetTrack WBackendTorrent::extractTrack(const QByteArray       & data,
+                                               const WBackendNetQuery & query) const
+{
+    Q_D(const WBackendTorrent);
+
+    WBackendNetTrack reply;
+
+    QString content = Sk::readAscii(data);
+
+    content = WControllerTorrent::listAfter(content, "info");
+
+    QString name = WControllerTorrent::stringAfter(content, "name");
+
+    QList<WBackendTorrentItem> items = d->extractItems(content);
+
+    QString title;
+
+    if (items.isEmpty())
+    {
+        title = Sk::latinToUtf8(name);
+
+        QString extension = WControllerNetwork::extractUrlExtension(title);
+
+        if (WControllerPlaylist::extensionIsMedia(extension) == false)
+        {
+            return reply;
+        }
+
+        name = title;
+    }
+    else
+    {
+        int index = query.data.toInt() - 1;
+
+        if (index > 0)
+        {
+            int count = items.count() - 1;
+
+            if (index > count)
+            {
+                index = count;
+            }
+        }
+        else index = 0;
+
+        const WBackendTorrentItem & item = items.at(index);
+
+        title = Sk::latinToUtf8(item.name);
+
+        QString extension = WControllerNetwork::extractUrlExtension(title);
+
+        if (WControllerPlaylist::extensionIsMedia(extension) == false)
+        {
+            return reply;
+        }
+
+        name = Sk::latinToUtf8(name);
+    }
+
+    WTrack * track = &(reply.track);
+
+    track->setState(WTrack::Default);
+
+    track->setTitle(title);
+
+    track->setAuthor(name);
+    track->setFeed  (query.url);
+
+    return reply;
+}
 
 /* Q_INVOKABLE virtual */
 WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & data,
