@@ -1875,9 +1875,9 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
         {
             WTrack::State state = trackReply.state();
 
-            if (state == WTrack::Cover)
+            if (state > WTrack::Loaded)
             {
-                 track->setState(WTrack::Cover);
+                 track->setState(state);
             }
             else track->setState(WTrack::Loaded);
 

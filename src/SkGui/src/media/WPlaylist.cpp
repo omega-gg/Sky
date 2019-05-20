@@ -725,7 +725,7 @@ bool WPlaylistPrivate::loadTrack(int index)
             loadCover(track);
         }
     }
-    else if (state == WTrack::Loaded)
+    else if (state == WTrack::Cover)
     {
         loadCover(track);
     }
