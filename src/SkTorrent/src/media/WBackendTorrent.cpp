@@ -756,7 +756,7 @@ WBackendNetTrack WBackendTorrent::extractTrack(const QByteArray       & data,
 
     WTrack * track = &(reply.track);
 
-    track->setState(WTrack::Default);
+    track->setState(WTrack::Cover);
 
     track->setTitle(title);
 
@@ -890,7 +890,7 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
                     {
                         QString source = url + '#' + QString::number(item.id) + '.' + extension;
 
-                        WTrack track(source, WTrack::Default);
+                        WTrack track(source, WTrack::Cover);
 
                         track.setTitle(title);
 
@@ -971,7 +971,7 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
 
                     QString source = url + '#' + QString::number(id) + '.' + extension;
 
-                    WTrack track(source, WTrack::Default);
+                    WTrack track(source, WTrack::Cover);
 
                     track.setTitle(title);
 

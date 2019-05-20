@@ -280,7 +280,7 @@ bool WTrack::isLoading() const
 
 bool WTrack::isLoaded() const
 {
-    Q_D(const WTrack); return (d->state == Loaded);
+    Q_D(const WTrack); return (d->state >= Loaded);
 }
 
 //-------------------------------------------------------------------------------------------------

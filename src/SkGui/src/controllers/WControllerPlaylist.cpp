@@ -1873,7 +1873,13 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
         }
         else
         {
-            track->setState(trackReply.state());
+            WTrack::State state = trackReply.state();
+
+            if (state == WTrack::Cover)
+            {
+                 track->setState(WTrack::Cover);
+            }
+            else track->setState(WTrack::Loaded);
 
             playlist->updateTrack(index);
 

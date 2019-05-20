@@ -701,13 +701,22 @@ bool WPlaylistPrivate::loadTrack(int index)
 {
     WTrack * track = &(tracks[index]);
 
-    if (track->isDefault() == false) return false;
+    WTrack::State state = track->state();
+
+    if (state == WTrack::Cover)
+    {
+        loadCover(track);
+
+        return true;
+    }
+
+    if (state != WTrack::Default) return false;
 
     Q_Q(WPlaylist);
 
     wControllerPlaylist->d_func()->applySourceTrack(q, track, track->source());
 
-    WTrack::State state = track->state();
+    state = track->state();
 
     if (state == WTrack::Loaded)
     {
@@ -716,9 +725,11 @@ bool WPlaylistPrivate::loadTrack(int index)
             loadCover(track);
         }
     }
-    else if (state == WTrack::Default
-             &&
-             (track->cover().isEmpty() == false || loadCover(track) == false))
+    else if (state == WTrack::Loaded)
+    {
+        loadCover(track);
+    }
+    else if (state == WTrack::Default)
     {
         track->setState(WTrack::Loaded);
 

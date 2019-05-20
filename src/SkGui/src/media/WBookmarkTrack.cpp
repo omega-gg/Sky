@@ -481,7 +481,7 @@ bool WBookmarkTrack::isLoading() const
 
 bool WBookmarkTrack::isLoaded() const
 {
-    Q_D(const WBookmarkTrack); return (d->state == WTrack::Loaded);
+    Q_D(const WBookmarkTrack); return (d->state >= WTrack::Loaded);
 }
 
 //-------------------------------------------------------------------------------------------------

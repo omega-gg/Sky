@@ -1756,7 +1756,7 @@ bool WDeclarativePlayer::trackIsLoading() const
 
 bool WDeclarativePlayer::trackIsLoaded() const
 {
-    return (trackState() == WTrack::Loaded);
+    return (trackState() >= WTrack::Loaded);
 }
 
 //-------------------------------------------------------------------------------------------------

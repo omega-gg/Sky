@@ -32,7 +32,7 @@ class WPlaylist;
 class SK_GUI_EXPORT WTrack : public WPrivatable
 {
 public: // Enums
-    enum State { Default, Loading, Loaded };
+    enum State { Default, Loading, Loaded, Cover };
 
 public:
     explicit WTrack(const QString & source = QString(), State state = Loaded);
