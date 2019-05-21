@@ -138,7 +138,7 @@ void WBackendSubtitlePrivate::updateText()
 
     if (index == count || (currentTime >= start && currentTime <= end)) return;
 
-    if (index != -1)
+    if (index > -1)
     {
         index++;
 
@@ -176,6 +176,8 @@ void WBackendSubtitlePrivate::updateText()
 
         if (currentTime < data.start)
         {
+            this->index = -2;
+
             start = 0;
             end   = data.start;
 
@@ -324,6 +326,8 @@ void WBackendSubtitlePrivate::setText(const QString & text)
 
     if (enabled && currentTime != -1 && list.isEmpty() == false)
     {
+        time.restart();
+
         timer = q->startTimer(BACKENDSUBTITLE_TIMEOUT);
     }
 
@@ -383,7 +387,9 @@ void WBackendSubtitlePrivate::onQueryCompleted()
 {
     Q_D(WBackendSubtitle);
 
-    d->currentTime += BACKENDSUBTITLE_TIMEOUT;
+    d->currentTime += d->time.elapsed();
+
+    d->time.restart();
 
     d->updateText();
 }

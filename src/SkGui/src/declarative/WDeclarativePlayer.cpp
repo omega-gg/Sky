@@ -52,6 +52,11 @@ void WDeclarativePlayerPrivate::init()
 {
     Q_Q(WDeclarativePlayer);
 
+#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
+    frameWidth  = -1;
+    frameHeight = -1;
+#endif
+
     backend = NULL;
     hook    = NULL;
 
@@ -118,6 +123,9 @@ void WDeclarativePlayerPrivate::updateGeometry(WBackendNode * node)
 
     node->setRect(QRectF((size.width () - width)  / 2,
                          (size.height() - height) / 2, width, height));
+
+    frameWidth  = width;
+    frameHeight = height;
 }
 
 #endif
@@ -1118,6 +1126,38 @@ void WDeclarativePlayer::updateFrame()
 
 //-------------------------------------------------------------------------------------------------
 // Properties
+//-------------------------------------------------------------------------------------------------
+
+int WDeclarativePlayer::frameWidth() const
+{
+    Q_D(const WDeclarativePlayer);
+
+#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
+    return d->frameWidth;
+#else
+    if (d->backend)
+    {
+         return d->backend->getSize().width();
+    }
+    else return -1;
+#endif
+}
+
+int WDeclarativePlayer::frameHeight() const
+{
+    Q_D(const WDeclarativePlayer);
+
+#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
+    return d->frameHeight;
+#else
+    if (d->backend)
+    {
+         return d->backend->getSize().height();
+    }
+    else return -1;
+#endif
+}
+
 //-------------------------------------------------------------------------------------------------
 
 WAbstractBackend * WDeclarativePlayer::backend() const

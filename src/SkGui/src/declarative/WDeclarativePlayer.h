@@ -43,6 +43,9 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
 
     Q_ENUMS(Repeat)
 
+    Q_PROPERTY(int frameWidth  READ frameWidth  NOTIFY widthChanged)
+    Q_PROPERTY(int frameHeight READ frameHeight NOTIFY heightChanged)
+
     Q_PROPERTY(WAbstractBackend * backend READ backend WRITE setBackend NOTIFY backendChanged)
     Q_PROPERTY(WAbstractHook    * hook    READ hook    WRITE setHook    NOTIFY hookChanged)
 
@@ -189,6 +192,12 @@ protected: // WPlaylistWatcher implementation
 signals:
     void ended();
 
+#ifdef QT_4
+    // QGraphicsItem reimplementation
+    void widthChanged ();
+    void heightChanged();
+#endif
+
     void backendChanged();
     void hookChanged   ();
 
@@ -236,6 +245,9 @@ signals:
     void tabIndexChanged();
 
 public: // Properties
+    int frameWidth () const;
+    int frameHeight() const;
+
     WAbstractBackend * backend() const;
     void               setBackend(WAbstractBackend * backend);
 

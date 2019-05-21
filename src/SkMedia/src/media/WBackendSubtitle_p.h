@@ -28,7 +28,7 @@
 */
 
 // Qt includes
-#include <QHash>
+#include <QTime>
 
 // Private includes
 #include <private/Sk_p>
@@ -103,6 +103,8 @@ public: // Variables
     QList<WBackendSubtitleData> list;
 
     int timer;
+
+    QTime time;
 
 protected:
     W_DECLARE_PUBLIC(WBackendSubtitle)

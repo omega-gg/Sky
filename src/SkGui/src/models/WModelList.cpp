@@ -44,7 +44,14 @@ WModelListPrivate::WModelListPrivate(WModelList * p) : WPrivate(p) {}
 
 //-------------------------------------------------------------------------------------------------
 
-void WModelListPrivate::init() {}
+void WModelListPrivate::init()
+{
+#ifdef QT_4
+    Q_Q(WModelList);
+
+    q->setRoleNames(q->roleNames());
+#endif
+}
 
 //-------------------------------------------------------------------------------------------------
 // Ctor / dtor

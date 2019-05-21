@@ -48,6 +48,8 @@ WallBookmarkTrack
 
     property int pWidthRight: width - pWidthHalf - st.border_size
 
+    property int pMargin: pGetMargin()
+
     property variant pCurrentTab    : null
     property variant pHighlightedTab: null
 
@@ -203,15 +205,6 @@ WallBookmarkTrack
     //---------------------------------------------------------------------------------------------
     // Private
 
-    function pGetItemActive()
-    {
-        if      (itemContextual) return itemContextual;
-        else if (itemHovered)    return itemHovered;
-        else                     return null;
-    }
-
-    //---------------------------------------------------------------------------------------------
-
     function pUpdatePlayerItems(isExposed)
     {
         if (isExposed)
@@ -328,6 +321,32 @@ WallBookmarkTrack
 
         rectangleShot.anchors.leftMargin  = 0;
         rectangleShot.anchors.rightMargin = st.border_size;
+    }
+
+    //---------------------------------------------------------------------------------------------
+
+    function pGetItemActive()
+    {
+        if      (itemContextual) return itemContextual;
+        else if (itemHovered)    return itemHovered;
+        else                     return null;
+    }
+
+    //---------------------------------------------------------------------------------------------
+
+    function pGetMargin()
+    {
+        if (itemText.visible)
+        {
+            var height = player.frameHeight;
+
+            if (height != -1)
+            {
+                return (player.height - player.frameHeight) / 2 + st.dp16;
+            }
+        }
+
+        return st.dp16;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -617,9 +636,11 @@ WallBookmarkTrack
 
     TextSubtitle
     {
+        id: itemText
+
         anchors.bottom: player.bottom
 
-        anchors.bottomMargin: st.dp16
+        anchors.bottomMargin: pMargin
 
         anchors.horizontalCenter: player.horizontalCenter
 
