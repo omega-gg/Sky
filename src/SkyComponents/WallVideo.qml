@@ -342,7 +342,7 @@ WallBookmarkTrack
 
             if (height != -1)
             {
-                return (player.height - player.frameHeight) / 2 + st.dp16;
+                return (player.height - height) / 2 + st.dp16;
             }
         }
 
@@ -646,7 +646,7 @@ WallBookmarkTrack
 
         z: player.z
 
-        visible: (player.isPlaying && player.isBuffering == false)
+        visible: (player.isPlaying && player.isLoading == false)
 
         source: player.subtitle
 
