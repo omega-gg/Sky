@@ -228,6 +228,9 @@ public: // Interface
     Q_INVOKABLE void   updateFrame();
     Q_INVOKABLE QImage getFrame   () const;
 
+    Q_INVOKABLE int getFrameWidth () const;
+    Q_INVOKABLE int getFrameHeight() const;
+
     Q_INVOKABLE bool deleteBackend();
 
 public: // WBackendInterface implementation
@@ -299,6 +302,9 @@ protected: // Virtual functions
 
     virtual void   backendUpdateFrame();       // {}
     virtual QImage backendGetFrame   () const; // {}
+
+    virtual int backendFrameWidth () const; // {}
+    virtual int backendFrameHeight() const; // {}
 
 signals:
     void ended();

@@ -204,6 +204,18 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ int WAbstractBackend::getFrameWidth() const
+{
+    return backendFrameWidth();
+}
+
+/* Q_INVOKABLE */ int WAbstractBackend::getFrameHeight() const
+{
+    return backendFrameHeight();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ bool WAbstractBackend::deleteBackend()
 {
     Q_D(WAbstractBackend);
@@ -591,6 +603,22 @@ void WAbstractBackend::deleteNow()
     qWarning("WAbstractBackend::backendGetFrame: Not supported.");
 
     return QImage();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ int WAbstractBackend::backendFrameWidth() const
+{
+    qWarning("WAbstractBackend::backendFrameWidth: Not supported.");
+
+    return -1;
+}
+
+/* virtual */ int WAbstractBackend::backendFrameHeight() const
+{
+    qWarning("WAbstractBackend::backendFrameHeight: Not supported.");
+
+    return -1;
 }
 
 //-------------------------------------------------------------------------------------------------

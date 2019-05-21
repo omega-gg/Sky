@@ -338,9 +338,15 @@ WallBookmarkTrack
     {
         if (itemText.visible)
         {
-            var height = player.frameHeight;
+            var height;
 
-            if (height != -1)
+            if (player.outputActive == AbstractBackend.OutputAudio)
+            {
+                 height = playerCover.paintedHeight;
+            }
+            else height = player.frameHeight;
+
+            if (height > 0)
             {
                 return (player.height - height) / 2 + st.dp16;
             }

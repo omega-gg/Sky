@@ -1856,6 +1856,22 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* virtual */ int WBackendVlc::backendFrameWidth() const
+{
+    Q_D(const WBackendVlc);
+
+    return d->targetRect.width();
+}
+
+/* virtual */ int WBackendVlc::backendFrameHeight() const
+{
+    Q_D(const WBackendVlc);
+
+    return d->targetRect.height();
+}
+
+//-------------------------------------------------------------------------------------------------
 // Events
 //-------------------------------------------------------------------------------------------------
 

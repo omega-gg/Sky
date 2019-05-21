@@ -241,7 +241,7 @@ bool WBackendSubtitlePrivate::checkIndex()
 
     int index = this->index;
 
-    if (index == -1) return true;
+    if (index < 0) return true;
 
     if (index == count)
     {

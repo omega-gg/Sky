@@ -96,7 +96,7 @@ public: // Properties
     FillMode fillMode() const;
     void     setFillMode(FillMode fillMode);
 
-    qreal paintedWidth()  const;
+    qreal paintedWidth () const;
     qreal paintedHeight() const;
 
 private:

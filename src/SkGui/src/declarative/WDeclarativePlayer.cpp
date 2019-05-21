@@ -1137,7 +1137,7 @@ int WDeclarativePlayer::frameWidth() const
 #else
     if (d->backend)
     {
-         return d->backend->getSize().width();
+         return d->backend->getFrameWidth();
     }
     else return -1;
 #endif
@@ -1152,7 +1152,7 @@ int WDeclarativePlayer::frameHeight() const
 #else
     if (d->backend)
     {
-         return d->backend->getSize().height();
+         return d->backend->getFrameHeight();
     }
     else return -1;
 #endif
