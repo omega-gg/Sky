@@ -336,23 +336,24 @@ WallBookmarkTrack
 
     function pGetMargin()
     {
-        if (itemText.visible)
+        if (itemText.visible == false)
         {
-            var height;
-
-            if (player.outputActive == AbstractBackend.OutputAudio)
-            {
-                 height = playerCover.paintedHeight;
-            }
-            else height = player.frameHeight;
-
-            if (height > 0)
-            {
-                return (player.height - height) / 2 + st.dp16;
-            }
+            return st.dp16;
         }
 
-        return st.dp16;
+        var height;
+
+        if (player.outputActive == AbstractBackend.OutputAudio)
+        {
+             height = playerCover.paintedHeight;
+        }
+        else height = player.frameHeight;
+
+        if (height > 0)
+        {
+             return (player.height - height) / 2 + st.dp16;
+        }
+        else return st.dp16;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -652,7 +653,7 @@ WallBookmarkTrack
 
         z: player.z
 
-        visible: (player.isPlaying && player.isLoading == false)
+        visible: (player.visible && player.isLoading == false)
 
         source: player.subtitle
 

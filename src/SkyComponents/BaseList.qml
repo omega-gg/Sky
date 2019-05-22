@@ -53,12 +53,12 @@ ListVertical
     {
         if (scrollArea == null || index < 0 || index >= count) return;
 
-        var value = y + (index - 1) * itemSize + scrollArea.height;
+        var value = index * itemSize;
 
         if (scrollArea.value < value)
         {
-             scrollArea.ensureVisible(y + index * itemSize, itemSize);
+             scrollArea.ensureVisible(y + value - itemSize + scrollArea.height, itemSize);
         }
-        else scrollArea.ensureVisible(value, itemSize);
+        else scrollArea.ensureVisible(y + value, itemSize);
     }
 }

@@ -228,8 +228,7 @@ public: // Interface
     Q_INVOKABLE void   updateFrame();
     Q_INVOKABLE QImage getFrame   () const;
 
-    Q_INVOKABLE int getFrameWidth () const;
-    Q_INVOKABLE int getFrameHeight() const;
+    Q_INVOKABLE QRectF getRect() const;
 
     Q_INVOKABLE bool deleteBackend();
 
@@ -303,8 +302,7 @@ protected: // Virtual functions
     virtual void   backendUpdateFrame();       // {}
     virtual QImage backendGetFrame   () const; // {}
 
-    virtual int backendFrameWidth () const; // {}
-    virtual int backendFrameHeight() const; // {}
+    virtual QRectF backendRect() const; // {}
 
 signals:
     void ended();
@@ -458,20 +456,10 @@ struct WBackendFrame
 {
     WBackendFrame()
     {
-        width  = 0;
-        height = 0;
-
-        fillMode = WAbstractBackend::PreserveAspectFit;
-
         state = WAbstractBackend::FrameDefault;
     }
 
-    int width;
-    int height;
-
     WBackendTexture textures[3];
-
-    WAbstractBackend::FillMode fillMode;
 
     WAbstractBackend::FrameState state;
 };

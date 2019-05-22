@@ -969,10 +969,10 @@ void WBackendVlcPrivate::updateTargetRect()
     qreal width  = frameSize.width ();
     qreal height = frameSize.height();
 
-    int x = (size.width () - width)  / 2;
-    int y = (size.height() - height) / 2;
+    qreal x = (size.width () - width)  / 2;
+    qreal y = (size.height() - height) / 2;
 
-    targetRect = QRect(x, y, width, height);
+    targetRect = QRectF(x, y, width, height);
 
 #ifdef QT_4
     targetX = x;
@@ -1606,16 +1606,11 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
     {
         d->frameUpdated = false;
 
-        frame->fillMode = d->fillMode;
-
         WBackendTexture * textures = frame->textures;
 
         if (d->frameReset)
         {
             d->frameReset = false;
-
-            frame->width  = d->frameWidth;
-            frame->height = d->frameHeight;
 
             for (int i = 0; i < 3; i++)
             {
@@ -1857,18 +1852,11 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ int WBackendVlc::backendFrameWidth() const
+/* virtual */ QRectF WBackendVlc::backendRect() const
 {
     Q_D(const WBackendVlc);
 
-    return d->targetRect.width();
-}
-
-/* virtual */ int WBackendVlc::backendFrameHeight() const
-{
-    Q_D(const WBackendVlc);
-
-    return d->targetRect.height();
+    return d->targetRect;
 }
 
 //-------------------------------------------------------------------------------------------------

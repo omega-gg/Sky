@@ -248,7 +248,7 @@ public: // Variables
 
     bool frameIndex;
 
-    QRect targetRect;
+    QRectF targetRect;
 
 #ifdef QT_4
     GLfloat targetX;

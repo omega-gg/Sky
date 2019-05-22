@@ -94,11 +94,6 @@ public: // Slots
     void onTabDestroyed ();
 
 public: // Variables
-#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
-    int frameWidth;
-    int frameHeight;
-#endif
-
     WAbstractBackend * backend;
     WAbstractHook    * hook;
 

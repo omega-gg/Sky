@@ -52,11 +52,6 @@ void WDeclarativePlayerPrivate::init()
 {
     Q_Q(WDeclarativePlayer);
 
-#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
-    frameWidth  = -1;
-    frameHeight = -1;
-#endif
-
     backend = NULL;
     hook    = NULL;
 
@@ -104,32 +99,6 @@ void WDeclarativePlayerPrivate::init()
 
 //-------------------------------------------------------------------------------------------------
 // Private functions
-//-------------------------------------------------------------------------------------------------
-
-#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
-
-void WDeclarativePlayerPrivate::updateGeometry(WBackendNode * node)
-{
-    Q_Q(WDeclarativePlayer);
-
-    QSizeF frameSize = QSizeF(frame.width, frame.height);
-
-    QSizeF size(q->width(), q->height());
-
-    frameSize.scale(size, static_cast<Qt::AspectRatioMode> (frame.fillMode));
-
-    qreal width  = frameSize.width ();
-    qreal height = frameSize.height();
-
-    node->setRect(QRectF((size.width () - width)  / 2,
-                         (size.height() - height) / 2, width, height));
-
-    frameWidth  = width;
-    frameHeight = height;
-}
-
-#endif
-
 //-------------------------------------------------------------------------------------------------
 
 void WDeclarativePlayerPrivate::applyPlaylist(WPlaylist * playlist)
@@ -961,7 +930,7 @@ void WDeclarativePlayer::updateFrame()
             {
                 d->frameUpdate = false;
 
-                d->updateGeometry(node);
+                node->setRect(d->backend->getRect());
             }
 
             return node;
@@ -980,7 +949,7 @@ void WDeclarativePlayer::updateFrame()
 
         d->frameUpdate = false;
 
-        d->updateGeometry(node);
+        node->setRect(d->backend->getRect());
 
         return node;
     }
@@ -1000,7 +969,7 @@ void WDeclarativePlayer::updateFrame()
             {
                 d->frameUpdate = false;
 
-                d->updateGeometry(node);
+                node->setRect(d->backend->getRect());
             }
         }
         else
@@ -1011,7 +980,7 @@ void WDeclarativePlayer::updateFrame()
 
             d->frameUpdate = false;
 
-            d->updateGeometry(node);
+            node->setRect(d->backend->getRect());
         }
 
         return node;
@@ -1041,14 +1010,9 @@ void WDeclarativePlayer::updateFrame()
     WDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
 #endif
 
-    if (oldGeometry.size() == newGeometry.size()) return;
+    if (oldGeometry.size() == newGeometry.size() || d->backend == NULL) return;
 
-#if defined(QT_4) || defined(SK_SOFTWARE)
-    if (d->backend)
-    {
-        d->backend->setSize(newGeometry.size());
-    }
-#else
+#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
     d->frameUpdate = true;
 #endif
 }
@@ -1132,30 +1096,22 @@ int WDeclarativePlayer::frameWidth() const
 {
     Q_D(const WDeclarativePlayer);
 
-#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
-    return d->frameWidth;
-#else
     if (d->backend)
     {
-         return d->backend->getFrameWidth();
+         return d->backend->getRect().width();
     }
     else return -1;
-#endif
 }
 
 int WDeclarativePlayer::frameHeight() const
 {
     Q_D(const WDeclarativePlayer);
 
-#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
-    return d->frameHeight;
-#else
     if (d->backend)
     {
-         return d->backend->getFrameHeight();
+         return d->backend->getRect().height();
     }
     else return -1;
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------

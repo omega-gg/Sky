@@ -192,11 +192,9 @@ protected: // WPlaylistWatcher implementation
 signals:
     void ended();
 
-#ifdef QT_4
-    // QGraphicsItem reimplementation
+    // QGraphicsItem / QQuickItem reimplementation
     void widthChanged ();
     void heightChanged();
-#endif
 
     void backendChanged();
     void hookChanged   ();
