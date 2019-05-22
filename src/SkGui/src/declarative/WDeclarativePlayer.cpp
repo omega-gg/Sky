@@ -1012,6 +1012,8 @@ void WDeclarativePlayer::updateFrame()
 
     if (oldGeometry.size() == newGeometry.size() || d->backend == NULL) return;
 
+    d->backend->setSize(newGeometry.size());
+
 #if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
     d->frameUpdate = true;
 #endif
