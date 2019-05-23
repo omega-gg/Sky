@@ -48,7 +48,7 @@ WallBookmarkTrack
 
     property int pWidthRight: width - pWidthHalf - st.border_size
 
-    property int pMargin: pGetMargin()
+    property int pMargin: getTextMargin()
 
     property variant pCurrentTab    : null
     property variant pHighlightedTab: null
@@ -139,6 +139,16 @@ WallBookmarkTrack
         }
 
         onTabsMoved: pUpdateSplit()
+    }
+
+    Connections
+    {
+        target: (itemText.visible) ? player : null
+
+        onWidthChanged : pUpdateMargin()
+        onHeightChanged: pUpdateMargin()
+
+        onStateLoadChanged: pUpdateMargin()
     }
 
     //---------------------------------------------------------------------------------------------

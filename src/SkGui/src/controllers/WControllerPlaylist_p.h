@@ -146,7 +146,7 @@ public: // Functions
     void scanItems(QList<WLibraryFolderItem> * items) const;
 
     void addToCache(const QString & url, const QByteArray & array,
-                                         const QString    & extension) const;
+                                         const QString    & extension = QString()) const;
 
     //---------------------------------------------------------------------------------------------
 
