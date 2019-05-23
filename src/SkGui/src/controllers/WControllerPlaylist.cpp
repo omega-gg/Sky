@@ -1526,11 +1526,13 @@ void WControllerPlaylistPrivate::scanItems(QList<WLibraryFolderItem> * items) co
 
 //-------------------------------------------------------------------------------------------------
 
-void WControllerPlaylistPrivate::addToCache(const QString & url, const QByteArray & array) const
+void WControllerPlaylistPrivate::addToCache(const QString    & url,
+                                            const QByteArray & array,
+                                            const QString    & extension) const
 {
     if (array.isEmpty()) return;
 
-    wControllerFile->addFile(url, array);
+    wControllerFile->addFile(url, array, extension);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2098,13 +2100,16 @@ void WControllerPlaylistPrivate::onItemLoaded(QIODevice * device, const WBackend
 
     if (reply.valid)
     {
+        QByteArray cache     = reply.cache;
+        QString    extension = reply.extension;
+
         WBackendNetQuery nextQuery = reply.nextQuery;
 
         if (nextQuery.isValid())
         {
             emit item->queryEnded();
 
-            addToCache(item->source(), reply.cache);
+            addToCache(item->source(), cache, extension);
 
             nextQuery.priority
                 = static_cast<QNetworkRequest::Priority> (QNetworkRequest::NormalPriority - 1);
@@ -2116,11 +2121,11 @@ void WControllerPlaylistPrivate::onItemLoaded(QIODevice * device, const WBackend
             return;
         }
 
-        emit item->queryData(reply.data, reply.extension);
+        emit item->queryData(reply.data, extension);
 
         emit item->queryEnded();
 
-        addToCache(item->source(), reply.cache);
+        addToCache(item->source(), cache, extension);
     }
     else emit item->queryEnded();
 

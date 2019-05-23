@@ -133,7 +133,7 @@ private: // Functions
 
     bool writeFile(QNetworkReply * reply, WCacheJob * job);
 
-    void writeData(const QString & url, const QByteArray & array);
+    void writeData(const QString & url, const QString & extension, const QByteArray & array);
 
     QString getUrlCache(int id, const QString & extension) const;
 
@@ -210,16 +210,19 @@ public: // Variables
 class WCacheThreadEventWrite : public QEvent
 {
 public:
-    WCacheThreadEventWrite(const QString & url, const QByteArray & array)
+    WCacheThreadEventWrite(const QString & url,
+                           const QString & extension, const QByteArray & array)
         : QEvent(static_cast<QEvent::Type> (WCacheThread::EventWrite))
     {
-        this->url = url;
+        this->url       = url;
+        this->extension = extension;
 
         this->array = array;
     }
 
 public: // Variables
     QString url;
+    QString extension;
 
     QByteArray array;
 };
@@ -490,7 +493,7 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
     {
         WCacheThreadEventWrite * eventWrite = static_cast<WCacheThreadEventWrite *> (event);
 
-        writeData(eventWrite->url, eventWrite->array);
+        writeData(eventWrite->url, eventWrite->extension, eventWrite->array);
 
         return true;
     }
@@ -912,7 +915,8 @@ bool WCacheThread::writeFile(QNetworkReply * reply, WCacheJob * job)
 
 //-------------------------------------------------------------------------------------------------
 
-void WCacheThread::writeData(const QString & url, const QByteArray & array)
+void WCacheThread::writeData(const QString & url,
+                             const QString & extension, const QByteArray & array)
 {
     qint64 size = array.size() * sizeof(char);
 
@@ -931,9 +935,15 @@ void WCacheThread::writeData(const QString & url, const QByteArray & array)
 
     int id = ids.generateId();
 
-    QString extension = WControllerNetwork::extractUrlExtension(url);
+    QString urlExtension;
 
-    QString urlCache = getUrlCache(id, extension);
+    if (extension.isEmpty())
+    {
+         urlExtension = WControllerNetwork::extractUrlExtension(url);
+    }
+    else urlExtension = extension;
+
+    QString urlCache = getUrlCache(id, urlExtension);
 
     QFile file(urlCache);
 
@@ -952,7 +962,7 @@ void WCacheThread::writeData(const QString & url, const QByteArray & array)
 
     file.close();
 
-    addData(id, url, urlCache, extension, size);
+    addData(id, url, urlCache, urlExtension, size);
 
     toRemove.remove(urlCache);
 
@@ -1147,6 +1157,13 @@ QString WCacheFile::urlCache() const
 
 //-------------------------------------------------------------------------------------------------
 
+QString WCacheFile::extension() const
+{
+    return _extension;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 bool WCacheFile::isLoading() const
 {
     return (_loaded == false);
@@ -1255,7 +1272,8 @@ void WCachePrivate::get(WCacheFile * file, const QString & url)
     }
 }
 
-void WCachePrivate::write(WCacheFile * file, const QString & url, const QByteArray & array)
+void WCachePrivate::write(WCacheFile * file, const QString & url,
+                                             const QString & extension, const QByteArray & array)
 {
     WCacheFiles * files = urlsPending.value(url);
 
@@ -1274,7 +1292,7 @@ void WCachePrivate::write(WCacheFile * file, const QString & url, const QByteArr
 
     if (loaded)
     {
-        QCoreApplication::postEvent(thread, new WCacheThreadEventWrite(url, array));
+        QCoreApplication::postEvent(thread, new WCacheThreadEventWrite(url, extension, array));
     }
 }
 
@@ -1437,7 +1455,8 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ WCacheFile * WCache::writeFile(const QString    & url,
-                                                 const QByteArray & array, QObject * parent)
+                                                 const QByteArray & array,
+                                                 const QString    & extension, QObject * parent)
 {
     if (url.isEmpty()) return NULL;
 
@@ -1450,6 +1469,8 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
     file->_url = url;
 
+    file->_extension = extension;
+
     file->_maxHost = -1;
 
     QString path = d->urls.value(url);
@@ -1458,7 +1479,7 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
     {
         file->_loaded = false;
 
-        d->write(file, url, array);
+        d->write(file, url, extension, array);
     }
     else
     {
@@ -1474,9 +1495,10 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WCache::addFile(const QString & url, const QByteArray & array)
+/* Q_INVOKABLE */ void WCache::addFile(const QString & url, const QByteArray & array,
+                                                            const QString    & extension)
 {
-    WCacheFile * file = writeFile(url, array, NULL);
+    WCacheFile * file = writeFile(url, array, extension, NULL);
 
     if (file) delete file;
 }

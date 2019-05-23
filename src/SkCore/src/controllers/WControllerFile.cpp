@@ -458,24 +458,26 @@ WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this
 
 /* Q_INVOKABLE */ WCacheFile * WControllerFile::writeFile(const QString    & url,
                                                           const QByteArray & array,
+                                                          const QString    & extension,
                                                           QObject          * parent)
 {
     Q_D(WControllerFile);
 
     if (d->cache)
     {
-         return d->cache->writeFile(url, array, parent);
+         return d->cache->writeFile(url, array, extension, parent);
     }
     else return NULL;
 }
 
-/* Q_INVOKABLE */ void WControllerFile::addFile(const QString & url, const QByteArray & array)
+/* Q_INVOKABLE */ void WControllerFile::addFile(const QString & url, const QByteArray & array,
+                                                                     const QString    & extension)
 {
     Q_D(WControllerFile);
 
     if (d->cache)
     {
-        d->cache->addFile(url, array);
+        d->cache->addFile(url, array, extension);
     }
     else qWarning("WControllerFile::addFile: Cannot add file %s. No cache.", url.C_STR);
 }

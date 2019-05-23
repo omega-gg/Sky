@@ -85,6 +85,8 @@ void WDeclarativePlayerPrivate::init()
 
     fillMode = WAbstractBackend::PreserveAspectFit;
 
+    pauseTimeout = -1;
+
     keepState = false;
 
 #ifdef QT_4
@@ -432,26 +434,39 @@ void WDeclarativePlayerPrivate::onStateChanged()
     {
         if (state == WAbstractBackend::StatePlaying)
         {
+            timer.stop();
+
             tab->setStackEnabled(true);
         }
         else if (state == WAbstractBackend::StatePaused)
         {
             if (tabs->highlightedTab())
             {
+                timer.stop();
+
                 tab->setPlayer(NULL);
 
                 backendInterface->stop();
 
                 return;
             }
+
+            if (pauseTimeout != -1) timer.start();
         }
-        else if (state == WAbstractBackend::StateStopped)
+        else // if (state == WAbstractBackend::StateStopped)
         {
+            timer.stop();
+
             tab->setStackEnabled(false);
 
             tabs->setHighlightedTab(NULL);
         }
     }
+    else if (state == WAbstractBackend::StatePaused)
+    {
+        if (pauseTimeout != -1) timer.start();
+    }
+    else timer.stop();
 
     if (this->state != state)
     {
@@ -606,7 +621,12 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 {
     Q_Q(WDeclarativePlayer);
 
-    if (backend) backendInterface->stop();
+    if (backend)
+    {
+        timer.stop();
+
+        backendInterface->stop();
+    }
 
     tab = NULL;
 
@@ -707,6 +727,11 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
     Q_D(WDeclarativePlayer);
 
     if (d->backend) d->backendInterface->seek(msec);
+
+    if (d->state == WAbstractBackend::StatePaused && d->pauseTimeout > -1)
+    {
+        d->timer.start();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -871,6 +896,19 @@ void WDeclarativePlayer::updateFrame()
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ QRectF WDeclarativePlayer::getRect() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+         return d->backend->getRect();
+    }
+    else return QRectF();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ void WDeclarativePlayer::updateHighlightedTab()
 {
     Q_D(WDeclarativePlayer); d->onHighlightedTabChanged();
@@ -1004,18 +1042,19 @@ void WDeclarativePlayer::updateFrame()
 {
     Q_D(WDeclarativePlayer);
 
+    if (oldGeometry.size() != newGeometry.size() && d->backend)
+    {
+        d->backend->setSize(newGeometry.size());
+
+#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
+        d->frameUpdate = true;
+#endif
+    }
+
 #ifdef SK_SOFTWARE
     WDeclarativeItemPaint::geometryChanged(newGeometry, oldGeometry);
 #else
     WDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
-#endif
-
-    if (oldGeometry.size() == newGeometry.size() || d->backend == NULL) return;
-
-    d->backend->setSize(newGeometry.size());
-
-#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
-    d->frameUpdate = true;
 #endif
 }
 
@@ -1092,30 +1131,6 @@ void WDeclarativePlayer::updateFrame()
 
 //-------------------------------------------------------------------------------------------------
 // Properties
-//-------------------------------------------------------------------------------------------------
-
-int WDeclarativePlayer::frameWidth() const
-{
-    Q_D(const WDeclarativePlayer);
-
-    if (d->backend)
-    {
-         return d->backend->getRect().width();
-    }
-    else return -1;
-}
-
-int WDeclarativePlayer::frameHeight() const
-{
-    Q_D(const WDeclarativePlayer);
-
-    if (d->backend)
-    {
-         return d->backend->getRect().height();
-    }
-    else return -1;
-}
-
 //-------------------------------------------------------------------------------------------------
 
 WAbstractBackend * WDeclarativePlayer::backend() const
@@ -1654,6 +1669,47 @@ void WDeclarativePlayer::setSubtitle(const QString & subtitle)
     if (d->tab) d->tab->setSubtitle(subtitle);
 
     emit subtitleChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+int WDeclarativePlayer::pauseTimeout() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    return d->pauseTimeout;
+}
+
+void WDeclarativePlayer::setPauseTimeout(int msec)
+{
+    Q_D(WDeclarativePlayer);
+
+    if (d->pauseTimeout == msec) return;
+
+    d->pauseTimeout = msec;
+
+    if (msec < 0)
+    {
+        disconnect(&(d->timer), 0, this, 0);
+
+        d->timer.stop();
+    }
+    else
+    {
+        d->timer.setInterval(msec);
+
+        d->timer.setSingleShot(true);
+
+        connect(&(d->timer), SIGNAL(timeout()), this, SIGNAL(stop()));
+
+        if (d->state == WAbstractBackend::StatePaused)
+        {
+             d->timer.start();
+        }
+        else d->timer.stop();
+    }
+
+    emit pauseTimeoutChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

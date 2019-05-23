@@ -51,6 +51,8 @@ public: // Properties
     QString url     () const;
     QString urlCache() const;
 
+    QString extension() const;
+
     bool isLoading() const;
     bool isLoaded () const;
 
@@ -65,6 +67,8 @@ private: // Variables
 
     QString _url;
     QString _urlCache;
+
+    QString _extension;
 
     bool _loaded;
 
@@ -104,9 +108,12 @@ public: // Interface
     Q_INVOKABLE QString getFileUrl(const QString & url);
 
     Q_INVOKABLE WCacheFile * writeFile(const QString    & url,
-                                       const QByteArray & array, QObject * parent = NULL);
+                                       const QByteArray & array,
+                                       const QString    & extension = QString(),
+                                       QObject          * parent    = NULL);
 
-    Q_INVOKABLE void addFile(const QString & url, const QByteArray & array);
+    Q_INVOKABLE void addFile(const QString    & url,
+                             const QByteArray & array, const QString & extension = QString());
 
     Q_INVOKABLE void removeFiles(const QStringList & urls);
     Q_INVOKABLE void removeFile (const QString     & url);

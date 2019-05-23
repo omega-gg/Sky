@@ -85,9 +85,9 @@ public: // Slots
     void onQueryCompleted();
 
 public: // Variables
-    bool enabled;
-
     WLibraryItem * item;
+
+    bool enabled;
 
     QString source;
 

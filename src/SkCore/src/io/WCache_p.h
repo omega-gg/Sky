@@ -64,8 +64,10 @@ public:
     void init(const QString & path, qint64 sizeMax);
 
 public: // Functions
-    void get  (WCacheFile * file, const QString & url);
-    void write(WCacheFile * file, const QString & url, const QByteArray & array);
+    void get(WCacheFile * file, const QString & url);
+
+    void write(WCacheFile * file, const QString & url,
+                                  const QString & extension, const QByteArray & array);
 
     void pop(const QString & url);
 

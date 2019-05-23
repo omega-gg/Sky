@@ -30,7 +30,7 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int BACKENDOPENSUBTITLES_TIMEOUT = 10000;
+static const int BACKENDOPENSUBTITLES_TIMEOUT = 10000; // 10 seconds
 
 static const QString BACKENDOPENSUBTITLES_MATCH = "[,.:\\-_(){}\\[\\]]";
 
@@ -435,11 +435,13 @@ WBackendNetItem WBackendOpenSubtitles::extractItem(const QByteArray       & data
 
             if (WControllerPlaylist::extensionIsSubtitle(extension) == false) continue;
 
-            reply.data = WUnzipper::extractFile(&buffer, fileName);
+            QByteArray bytes = WUnzipper::extractFile(&buffer, fileName);
+
+            reply.data = bytes;
 
             reply.extension = extension;
 
-            reply.cache = data;
+            reply.cache = bytes;
 
             return reply;
         }

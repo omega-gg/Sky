@@ -20,6 +20,7 @@
 
 // Sk includes
 #include <WControllerApplication>
+#include <WControllerFile>
 #include <WControllerPlaylist>
 
 //-------------------------------------------------------------------------------------------------
@@ -39,9 +40,9 @@ WBackendSubtitlePrivate::WBackendSubtitlePrivate(WBackendSubtitle * p) : WPrivat
 
 void WBackendSubtitlePrivate::init()
 {
-    enabled = true;
-
     item = NULL;
+
+    enabled = true;
 
     currentTime = -1;
 
@@ -443,7 +444,13 @@ void WBackendSubtitle::setSource(const QString & url)
     {
         WLibraryItem * item = d->getItem();
 
-        item->loadSource(url);
+        QString fileUrl = wControllerFile->getFileUrl(url);
+
+        if (fileUrl.isEmpty())
+        {
+             item->loadSource(url);
+        }
+        else item->loadSource(fileUrl);
     }
     else if (d->item)
     {

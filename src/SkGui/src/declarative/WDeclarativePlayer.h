@@ -43,9 +43,6 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
 
     Q_ENUMS(Repeat)
 
-    Q_PROPERTY(int frameWidth  READ frameWidth  NOTIFY widthChanged)
-    Q_PROPERTY(int frameHeight READ frameHeight NOTIFY heightChanged)
-
     Q_PROPERTY(WAbstractBackend * backend READ backend WRITE setBackend NOTIFY backendChanged)
     Q_PROPERTY(WAbstractHook    * hook    READ hook    WRITE setHook    NOTIFY hookChanged)
 
@@ -98,6 +95,8 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
                NOTIFY fillModeChanged)
 
     Q_PROPERTY(QString subtitle READ subtitle WRITE setSubtitle NOTIFY subtitleChanged)
+
+    Q_PROPERTY(int pauseTimeout READ pauseTimeout WRITE setPauseTimeout NOTIFY pauseTimeoutChanged)
 
     Q_PROPERTY(int count READ count NOTIFY countChanged)
 
@@ -161,6 +160,8 @@ public: // Interface
 
     Q_INVOKABLE QImage getFrame() const;
 
+    Q_INVOKABLE QRectF getRect() const;
+
     Q_INVOKABLE void updateHighlightedTab();
 
 #if defined(QT_4) || defined(SK_SOFTWARE)
@@ -191,10 +192,6 @@ protected: // WPlaylistWatcher implementation
 
 signals:
     void ended();
-
-    // QGraphicsItem / QQuickItem reimplementation
-    void widthChanged ();
-    void heightChanged();
 
     void backendChanged();
     void hookChanged   ();
@@ -233,6 +230,8 @@ signals:
 
     void subtitleChanged();
 
+    void pauseTimeoutChanged();
+
     void countChanged();
 
     void currentTrackUpdated();
@@ -243,9 +242,6 @@ signals:
     void tabIndexChanged();
 
 public: // Properties
-    int frameWidth () const;
-    int frameHeight() const;
-
     WAbstractBackend * backend() const;
     void               setBackend(WAbstractBackend * backend);
 
@@ -307,6 +303,9 @@ public: // Properties
 
     QString subtitle() const;
     void    setSubtitle(const QString & subtitle);
+
+    int  pauseTimeout() const;
+    void setPauseTimeout(int msec);
 
     int count() const;
 

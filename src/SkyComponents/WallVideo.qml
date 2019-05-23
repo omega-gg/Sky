@@ -191,6 +191,30 @@ WallBookmarkTrack
     }
 
     //---------------------------------------------------------------------------------------------
+
+    function getTextMargin()
+    {
+        if (itemText.visible == false)
+        {
+            return st.dp16;
+        }
+
+        var height;
+
+        if (player.outputActive == AbstractBackend.OutputAudio)
+        {
+             height = playerCover.paintedHeight;
+        }
+        else height = player.getRect().height;
+
+        if (height > 0)
+        {
+             return (player.height - height) / 2 + st.dp16;
+        }
+        else return st.dp16;
+    }
+
+    //---------------------------------------------------------------------------------------------
     // WallBookmarkTrack reimplementation
 
     function getItemBarMargin(index)
@@ -325,35 +349,18 @@ WallBookmarkTrack
 
     //---------------------------------------------------------------------------------------------
 
+    function pUpdateMargin()
+    {
+        pMargin = getTextMargin();
+    }
+
+    //---------------------------------------------------------------------------------------------
+
     function pGetItemActive()
     {
         if      (itemContextual) return itemContextual;
         else if (itemHovered)    return itemHovered;
         else                     return null;
-    }
-
-    //---------------------------------------------------------------------------------------------
-
-    function pGetMargin()
-    {
-        if (itemText.visible == false)
-        {
-            return st.dp16;
-        }
-
-        var height;
-
-        if (player.outputActive == AbstractBackend.OutputAudio)
-        {
-             height = playerCover.paintedHeight;
-        }
-        else height = player.frameHeight;
-
-        if (height > 0)
-        {
-             return (player.height - height) / 2 + st.dp16;
-        }
-        else return st.dp16;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -507,6 +514,8 @@ WallBookmarkTrack
 
         volume: 0.0
 
+        pauseTimeout: 60000 // 1 minute
+
         //-----------------------------------------------------------------------------------------
         // States
         //-----------------------------------------------------------------------------------------
@@ -653,7 +662,7 @@ WallBookmarkTrack
 
         z: player.z
 
-        visible: (player.visible && player.isLoading == false)
+        visible: (player.visible && player.isLoading == false && player.isPlaying)
 
         source: player.subtitle
 

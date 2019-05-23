@@ -103,9 +103,12 @@ public: // Interface
     Q_INVOKABLE QString getFileUrl(const QString & url);
 
     Q_INVOKABLE WCacheFile * writeFile(const QString    & url,
-                                       const QByteArray & array, QObject * parent = NULL);
+                                       const QByteArray & array,
+                                       const QString    & extension = QString(),
+                                       QObject          * parent    = NULL);
 
-    Q_INVOKABLE void addFile(const QString & url, const QByteArray & array);
+    Q_INVOKABLE void addFile(const QString & url, const QByteArray & array,
+                                                  const QString    & extension = QString());
 
     Q_INVOKABLE void waitActions();
 

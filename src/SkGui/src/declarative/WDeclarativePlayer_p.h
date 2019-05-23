@@ -135,7 +135,11 @@ public: // Variables
 
     QString subtitle;
 
+    int pauseTimeout;
+
     bool keepState;
+
+    QTimer timer;
 
 protected:
     W_DECLARE_PUBLIC(WDeclarativePlayer)
