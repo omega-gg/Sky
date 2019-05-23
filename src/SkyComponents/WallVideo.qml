@@ -147,8 +147,6 @@ WallBookmarkTrack
 
         onWidthChanged : pUpdateMargin()
         onHeightChanged: pUpdateMargin()
-
-        onStateLoadChanged: pUpdateMargin()
     }
 
     //---------------------------------------------------------------------------------------------
@@ -204,11 +202,6 @@ WallBookmarkTrack
 
     function getTextMargin()
     {
-        if (itemText.visible == false)
-        {
-            return st.dp16;
-        }
-
         var height;
 
         if (player.outputActive == AbstractBackend.OutputAudio)
@@ -219,9 +212,9 @@ WallBookmarkTrack
 
         if (height > 0)
         {
-             return (player.height - height) / 2 + st.dp16;
+             return (player.height - height) / 2 + height / 64;
         }
-        else return st.dp16;
+        else return player.height / 64;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -679,6 +672,8 @@ WallBookmarkTrack
         currentTime: player.currentTime
 
         pixelSize: player.width / 32
+
+        onVisibleChanged: pUpdateMargin()
     }
 
     LabelLoading
