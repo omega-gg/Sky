@@ -56,6 +56,9 @@ public: // Static functions
     static void applyQuery(WBackendNetFolder * reply, const QString & language,
                                                       const QString & search, int id);
 
+    static void applyNextQuery(const WBackendNetQuery & query,
+                               WBackendNetFolder      * reply, int skip);
+
     static QString getUrl(const QString & label, const QString & search);
 
     static QString getQuery(const QString & data);
@@ -94,6 +97,29 @@ void WBackendOpenSubtitlesPrivate::init() {}
     nextQuery->id = id;
 
     nextQuery->data = list;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* static */ void WBackendOpenSubtitlesPrivate::applyNextQuery(const WBackendNetQuery & query,
+                                                               WBackendNetFolder      * reply,
+                                                               int                      skip)
+{
+    reply->clearDuplicate = true;
+
+    if (reply->items.isEmpty() == false) return;
+
+    QStringList list = query.data.toStringList();
+
+    QString search = list.last();
+
+    int index = Sk::indexAt(search, " ", skip);
+
+    if (index == -1) return;
+
+    search = search.mid(0, index - 1);
+
+    WBackendOpenSubtitlesPrivate::applyQuery(reply, list.first(), search, query.id + 1);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -375,33 +401,13 @@ WBackendNetFolder WBackendOpenSubtitles::extractFolder(const QByteArray       & 
 
     if (id == 1)
     {
-        reply.clearDuplicate = true;
-
-        if (reply.items.isEmpty() == false)
-        {
-            return reply;
-        }
-
-        QStringList list = query.data.toStringList();
-
-        QString search = list.last();
-
-        int index = Sk::indexAt(search, " ", 1);
-
-        if (index == -1)
-        {
-            return reply;
-        }
-
-        search = search.mid(0, index);
-
-        WBackendOpenSubtitlesPrivate::applyQuery(&reply, list.first(), search, 2);
+        WBackendOpenSubtitlesPrivate::applyNextQuery(query, &reply, 2);
     }
     else if (id == 2)
     {
-        reply.clearDuplicate = true;
+        WBackendOpenSubtitlesPrivate::applyNextQuery(query, &reply, 1);
     }
-    else if (reply.items.count() < 5)
+    else if (id != 3 && reply.items.count() < 5)
     {
         QStringList list = query.data.toStringList();
 
