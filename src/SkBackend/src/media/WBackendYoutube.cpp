@@ -534,7 +534,7 @@ WBackendNetQuery WBackendYoutube::getQuerySource(const QString & url) const
     variants.append(id);
     variants.append(d->script);
 
-    WBackendNetQuery query("http://www.youtube.com/get_video_info?video_id=" + id
+    WBackendNetQuery query("https://www.youtube.com/get_video_info?video_id=" + id
                            +
                            "&el=detailpage");
 
@@ -793,9 +793,9 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
 
             WBackendNetQuery * nextQuery = &(reply.nextQuery);
 
-            nextQuery->url  = "http://www.youtube.com/get_video_info?video_id=" + id
-                              +
-                              "&el=embedded";
+            nextQuery->url = "https://www.youtube.com/get_video_info?video_id=" + id
+                             +
+                             "&el=embedded";
 
             nextQuery->id   = 1;
             nextQuery->data = variants;

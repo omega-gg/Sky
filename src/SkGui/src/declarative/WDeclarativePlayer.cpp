@@ -89,6 +89,8 @@ void WDeclarativePlayerPrivate::init()
 
     keepState = false;
 
+    timer.setSingleShot(true);
+
 #ifdef QT_4
     q->setFlag(QGraphicsItem::ItemHasNoContents, false);
 #elif defined(SK_SOFTWARE) == false
@@ -97,6 +99,8 @@ void WDeclarativePlayerPrivate::init()
 
     QObject::connect(q, SIGNAL(playlistChanged()), q, SIGNAL(playlistUpdated()));
     QObject::connect(q, SIGNAL(playlistChanged()), q, SIGNAL(countChanged   ()));
+
+    QObject::connect(&timer, SIGNAL(timeout()), q, SLOT(stop()));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1686,27 +1690,18 @@ void WDeclarativePlayer::setPauseTimeout(int msec)
 
     if (d->pauseTimeout == msec) return;
 
-    d->pauseTimeout = msec;
-
-    if (msec < 0)
+    if (d->pauseTimeout > -1 && d->state == WAbstractBackend::StatePaused)
     {
-        disconnect(&(d->timer), 0, this, 0);
-
         d->timer.stop();
     }
-    else
+
+    d->pauseTimeout = msec;
+
+    if (msec > -1) d->timer.setInterval(msec);
+
+    if (d->state == WAbstractBackend::StatePaused)
     {
-        d->timer.setInterval(msec);
-
-        d->timer.setSingleShot(true);
-
-        connect(&(d->timer), SIGNAL(timeout()), this, SIGNAL(stop()));
-
-        if (d->state == WAbstractBackend::StatePaused)
-        {
-             d->timer.start();
-        }
-        else d->timer.stop();
+        d->timer.start();
     }
 
     emit pauseTimeoutChanged();
