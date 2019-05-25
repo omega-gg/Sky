@@ -30,6 +30,7 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
+static const int BACKENDOPENSUBTITLES_DELAY   = 1000;  //  1 second
 static const int BACKENDOPENSUBTITLES_TIMEOUT = 10000; // 10 seconds
 
 static const QString BACKENDOPENSUBTITLES_MATCH = "[,.:\\-_(){}\\[\\]]";
@@ -303,6 +304,7 @@ WBackendNetQuery WBackendOpenSubtitles::getQueryItem(const QString & url) const
 
         query.url = url;
 
+        query.delay   = BACKENDOPENSUBTITLES_DELAY;
         query.timeout = BACKENDOPENSUBTITLES_TIMEOUT;
 
         return query;
@@ -333,6 +335,7 @@ WBackendNetQuery WBackendOpenSubtitles::createQuery(const QString & method,
 
         query.data = list;
 
+        query.delay   = BACKENDOPENSUBTITLES_DELAY;
         query.timeout = BACKENDOPENSUBTITLES_TIMEOUT;
     }
 
