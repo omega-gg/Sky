@@ -86,6 +86,8 @@ WallBookmarkTrack
     property alias playerBackground: playerBackground
     property alias playerBrowser   : playerBrowser
 
+    property alias itemText: itemText
+
     property alias buttonsItem: buttonsItem
 
     //---------------------------------------------------------------------------------------------

@@ -107,7 +107,7 @@ void WBackendOpenSubtitlesPrivate::init() {}
 {
     reply->clearDuplicate = true;
 
-    if (reply->items.isEmpty() == false) return;
+    if (reply->items.count() > 4) return;
 
     QStringList list = query.data.toStringList();
 
@@ -332,6 +332,8 @@ WBackendNetQuery WBackendOpenSubtitles::createQuery(const QString & method,
         query.url = WBackendOpenSubtitlesPrivate::getUrl(language, search);
 
         query.data = list;
+
+        query.timeout = BACKENDOPENSUBTITLES_TIMEOUT;
     }
 
     return query;
