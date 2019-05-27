@@ -304,6 +304,7 @@ WBackendNetQuery WBackendOpenSubtitles::getQueryItem(const QString & url) const
 
         query.url = url;
 
+        // FIXME OpenSubtitles: We have to delay our requests to avoid the captcha.
         query.delay   = BACKENDOPENSUBTITLES_DELAY;
         query.timeout = BACKENDOPENSUBTITLES_TIMEOUT;
 
@@ -335,6 +336,7 @@ WBackendNetQuery WBackendOpenSubtitles::createQuery(const QString & method,
 
         query.data = list;
 
+        // FIXME OpenSubtitles: We have to delay our requests to avoid the captcha.
         query.delay   = BACKENDOPENSUBTITLES_DELAY;
         query.timeout = BACKENDOPENSUBTITLES_TIMEOUT;
     }
