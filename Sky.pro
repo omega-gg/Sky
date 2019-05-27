@@ -9,7 +9,7 @@ SUBDIRS = src/SkCore \
           src/SkBackend \
           tools \
 
-contains(QT_MAJOR_VERSION, 4): SUBDIRS += src/SkWeb
+#contains(QT_MAJOR_VERSION, 4): SUBDIRS += src/SkWeb
 
 OTHER_FILES += 3rdparty.sh \
                configure.sh \
