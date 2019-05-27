@@ -58,7 +58,7 @@ CONFIG(debug, debug|release) {
             -L$$SK/lib -lSkGui
 }
 
-contains(QT_MAJOR_VERSION, 5):win32 {
+win32:contains(QT_MAJOR_VERSION, 5) {
     LIBS += -lopengl32
 }
 
