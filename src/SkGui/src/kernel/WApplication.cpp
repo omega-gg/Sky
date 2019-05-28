@@ -29,7 +29,6 @@
 #include <WControllerView>
 #include <WControllerDeclarative>
 #include <WControllerNetwork>
-#include <WControllerPlugin>
 #include <WControllerPlaylist>
 
 // Kernel includes
