@@ -369,7 +369,7 @@ elif [ $2 = "macOS" ]; then
     cp -f "$bin"/libSkCore.dylib    deploy
     cp -f "$bin"/libSkGui.dylib     deploy
     cp -f "$bin"/libSkMedia.dylib   deploy
-    #cp "$bin"/libSkWeb.dylib     deploy
+    #cp -f "$bin"/libSkWeb.dylib     deploy
     cp -f "$bin"/libSkTorrent.dylib deploy
     cp -f "$bin"/libSkBackend.dylib deploy
 
