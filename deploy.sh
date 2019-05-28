@@ -357,31 +357,31 @@ echo "COPYING Sky"
 
 if [ $windows = true ]; then
 
-    cp "$bin"/SkCore.dll    deploy
-    cp "$bin"/SkGui.dll     deploy
-    cp "$bin"/SkMedia.dll   deploy
-    #cp "$bin"/SkWeb.dll     deploy
-    cp "$bin"/SkTorrent.dll deploy
-    cp "$bin"/SkBackend.dll deploy
+    cp -f "$bin"/SkCore.dll    deploy
+    cp -f "$bin"/SkGui.dll     deploy
+    cp -f "$bin"/SkMedia.dll   deploy
+    #cp -f "$bin"/SkWeb.dll     deploy
+    cp -f "$bin"/SkTorrent.dll deploy
+    cp -f "$bin"/SkBackend.dll deploy
 
 elif [ $2 = "macOS" ]; then
 
-    cp "$bin"/libSkCore.dylib    deploy
-    cp "$bin"/libSkGui.dylib     deploy
-    cp "$bin"/libSkMedia.dylib   deploy
+    cp -f "$bin"/libSkCore.dylib    deploy
+    cp -f "$bin"/libSkGui.dylib     deploy
+    cp -f "$bin"/libSkMedia.dylib   deploy
     #cp "$bin"/libSkWeb.dylib     deploy
-    cp "$bin"/libSkTorrent.dylib deploy
-    cp "$bin"/libSkBackend.dylib deploy
+    cp -f "$bin"/libSkTorrent.dylib deploy
+    cp -f "$bin"/libSkBackend.dylib deploy
 
 elif [ $2 = "linux" ]; then
 
-    cp "$bin"/libSkCore.so    deploy
-    cp "$bin"/libSkGui.so     deploy
-    cp "$bin"/libSkMedia.so   deploy
-    #cp "$bin"/libSkWeb.so     deploy
-    cp "$bin"/libSkTorrent.so deploy
-    cp "$bin"/libSkBackend.so deploy
+    cp -f "$bin"/libSkCore.so    deploy
+    cp -f "$bin"/libSkGui.so     deploy
+    cp -f "$bin"/libSkMedia.so   deploy
+    #cp -f "$bin"/libSkWeb.so     deploy
+    cp -f "$bin"/libSkTorrent.so deploy
+    cp -f "$bin"/libSkBackend.so deploy
 fi
 
-cp "$bin"/includeGenerator* deploy
-cp "$bin"/deployer*         deploy
+cp -f "$bin"/includeGenerator* deploy
+cp -f "$bin"/deployer*         deploy
