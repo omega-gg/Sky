@@ -20,6 +20,7 @@ OTHER_FILES += 3rdparty.sh \
                AUTHORS.md \
                .travis.yml \
                .appveyor.yml \
+               include/generate.sh \
                src/SkyComponents/qmldir \
                src/SkyPresentation/qmldir \
                dist/changes/1.0.1.md \

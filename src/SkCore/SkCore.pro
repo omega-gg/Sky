@@ -47,13 +47,11 @@ include(src/declarative/declarative.pri)
 #include(src/script/script.pri)
 include(src/plugin/plugin.pri)
 
-include(3rdparty/qtsingleapplication/qtsingleapplication.pri)
-include(3rdparty/quazip/quazip.pri)
+include(src/3rdparty/qtsingleapplication/qtsingleapplication.pri)
+include(src/3rdparty/quazip/quazip.pri)
 
 INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkCore/private \
-               3rdparty/qtsingleapplication \
-               3rdparty/quazip \
 
 win32:LIBS += -L$$SK/lib -lz
 

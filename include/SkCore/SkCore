@@ -1,7 +1,19 @@
 #ifndef SKCORE_H
 #define SKCORE_H
-#include "qtlocalpeer.h"
-#include "qtlockedfile.h"
-#include "qtsingleapplication.h"
-#include "qtsinglecoreapplication.h"
+#include "ioapi.h"
+#include "JlCompress.h"
+#include "minizip_crypt.h"
+#include "quaadler32.h"
+#include "quachecksum32.h"
+#include "quacrc32.h"
+#include "quagzipfile.h"
+#include "quaziodevice.h"
+#include "quazip.h"
+#include "quazip_global.h"
+#include "quazipdir.h"
+#include "quazipfile.h"
+#include "quazipfileinfo.h"
+#include "quazipnewinfo.h"
+#include "unzip.h"
+#include "zip.h"
 #endif // SKCORE_H

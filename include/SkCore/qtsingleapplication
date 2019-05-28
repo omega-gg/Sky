@@ -1,1 +1,1 @@
-#include "../../src/SkCore/3rdparty/qtsingleapplication/qtsingleapplication.h"
+#include "../../src/SkCore/src/3rdparty/qtsingleapplication/qtsingleapplication.h"
