@@ -2,12 +2,16 @@ TEMPLATE = subdirs
 
 CONFIG += ordered
 
-SUBDIRS = src/SkCore \
-          src/SkGui \
-          src/SkMedia \
-          src/SkTorrent \
-          src/SkBackend \
-          tools \
+isEmpty(TOOLS) {
+    SUBDIRS = src/SkCore \
+              src/SkGui \
+              src/SkMedia \
+              src/SkTorrent \
+              src/SkBackend \
+              tools
+} else {
+    SUBDIRS = tools
+}
 
 #contains(QT_MAJOR_VERSION, 4): SUBDIRS += src/SkWeb
 

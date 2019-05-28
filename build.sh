@@ -36,9 +36,9 @@ if [ $# != 2 -a $# != 3 ] \
    || \
    [ $2 != "win32" -a $2 != "win64" -a $2 != "macOS" -a $2 != "linux" ] \
    || \
-   [ $# = 3 -a "$3" != "deploy" ]; then
+   [ $# = 3 -a "$3" != "deploy" -a "$3" != "tools" ]; then
 
-    echo "Usage: build <qt4 | qt5 | clean> <win32 | win64 | macOS | linux> [deploy]"
+    echo "Usage: build <qt4 | qt5 | clean> <win32 | win64 | macOS | linux> [deploy | tools]"
 
     exit 1
 fi
@@ -129,7 +129,13 @@ echo ""
 
 cd $build
 
-qmake -r -spec $spec "CONFIG += release" $Sky
+if [ "$3" = "tools" ]; then
+
+    qmake -r -spec $spec "CONFIG += release" "TOOLS = true" $Sky
+else
+    qmake -r -spec $spec "CONFIG += release" $Sky
+fi
+
 echo ""
 
 if [ $windows = true ]; then
@@ -145,7 +151,7 @@ echo "------------"
 # Deploying Sky
 #--------------------------------------------------------------------------------------------------
 
-if [ "$3" = "deploy" ]; then
+if [ "$3" = "deploy" -o "$3" = "tools" ]; then
 
     echo ""
     echo "DEPLOYING Sky"
