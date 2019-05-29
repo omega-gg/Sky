@@ -151,7 +151,7 @@ echo "------------"
 # Deploying Sky
 #--------------------------------------------------------------------------------------------------
 
-if [ "$3" = "deploy" -o "$3" = "tools" ]; then
+if [ "$3" = "deploy" ]; then
 
     echo ""
     echo "DEPLOYING Sky"
@@ -162,4 +162,16 @@ if [ "$3" = "deploy" -o "$3" = "tools" ]; then
     sh deploy.sh $1 $2
 
     echo "-------------"
+
+elif [ "$3" = "tools" ]; then
+
+    echo ""
+    echo "DEPLOYING Tools"
+    echo "---------------"
+
+    cd $Sky
+
+    sh deploy.sh $1 $2 tools
+
+    echo "---------------"
 fi

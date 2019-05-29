@@ -44,12 +44,15 @@ Boost_version_linux="1.65.1"
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# != 2 ] || [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] || [ $2 != "win32" -a \
-                                                                       $2 != "win64" -a \
-                                                                       $2 != "macOS" -a \
-                                                                       $2 != "linux" ]; then
+if [ $# != 2 -a $# != 3 ] \
+   || \
+   [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] \
+   || \
+   [ $2 != "win32" -a $2 != "win64" -a $2 != "macOS" -a $2 != "linux" ] \
+   || \
+   [ $# = 3 -a "$3" != "tools" ]; then
 
-    echo "Usage: deploy <qt4 | qt5 | clean> <win32 | win64 | macOS | linux>"
+    echo "Usage: deploy <qt4 | qt5 | clean> <win32 | win64 | macOS | linux> [tools]"
 
     exit 1
 fi
@@ -353,35 +356,40 @@ fi
 # Sky
 #--------------------------------------------------------------------------------------------------
 
-echo "COPYING Sky"
+if [ "$3" != "tools" ]; then
 
-if [ $windows = true ]; then
+    echo "COPYING Sky"
 
-    cp "$bin"/SkCore.dll    deploy
-    cp "$bin"/SkGui.dll     deploy
-    cp "$bin"/SkMedia.dll   deploy
-    #cp "$bin"/SkWeb.dll     deploy
-    cp "$bin"/SkTorrent.dll deploy
-    cp "$bin"/SkBackend.dll deploy
+    if [ $windows = true ]; then
 
-elif [ $2 = "macOS" ]; then
+        cp "$bin"/SkCore.dll    deploy
+        cp "$bin"/SkGui.dll     deploy
+        cp "$bin"/SkMedia.dll   deploy
+        #cp "$bin"/SkWeb.dll     deploy
+        cp "$bin"/SkTorrent.dll deploy
+        cp "$bin"/SkBackend.dll deploy
 
-    cp "$bin"/libSkCore.dylib    deploy
-    cp "$bin"/libSkGui.dylib     deploy
-    cp "$bin"/libSkMedia.dylib   deploy
-    #cp "$bin"/libSkWeb.dylib     deploy
-    cp "$bin"/libSkTorrent.dylib deploy
-    cp "$bin"/libSkBackend.dylib deploy
+    elif [ $2 = "macOS" ]; then
 
-elif [ $2 = "linux" ]; then
+        cp "$bin"/libSkCore.dylib    deploy
+        cp "$bin"/libSkGui.dylib     deploy
+        cp "$bin"/libSkMedia.dylib   deploy
+        #cp "$bin"/libSkWeb.dylib     deploy
+        cp "$bin"/libSkTorrent.dylib deploy
+        cp "$bin"/libSkBackend.dylib deploy
 
-    cp "$bin"/libSkCore.so    deploy
-    cp "$bin"/libSkGui.so     deploy
-    cp "$bin"/libSkMedia.so   deploy
-    #cp "$bin"/libSkWeb.so     deploy
-    cp "$bin"/libSkTorrent.so deploy
-    cp "$bin"/libSkBackend.so deploy
+    elif [ $2 = "linux" ]; then
+
+        cp "$bin"/libSkCore.so    deploy
+        cp "$bin"/libSkGui.so     deploy
+        cp "$bin"/libSkMedia.so   deploy
+        #cp "$bin"/libSkWeb.so     deploy
+        cp "$bin"/libSkTorrent.so deploy
+        cp "$bin"/libSkBackend.so deploy
+    fi
 fi
+
+echo "COPYING tools"
 
 cp "$bin"/includeGenerator* deploy
 cp "$bin"/deployer*         deploy
