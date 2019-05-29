@@ -638,15 +638,18 @@ WBackendNetPlaylist WBackendSoundCloud::extractPlaylist(const QByteArray       &
     {
         QString json = d->extractJson(content, 84, 2);
 
+        // NOTE: We have to skip track informations.
+        int index = json.lastIndexOf("\"kind\":\"track\"");
+
+        json = json.mid(index);
+
         QString idPlaylist = WControllerNetwork::extractJsonUtf8(json, "id");
 
         QString title = WControllerNetwork::extractJsonUtf8(json, "title");
-        QString cover = WControllerNetwork::extractJson    (json, "artwork_url");
 
-        if (cover == "null")
-        {
-            cover = WControllerNetwork::extractJson(json, "avatar_url");
-        }
+        index = content.indexOf("<img");
+
+        QString cover = WControllerNetwork::extractAttribute(content, "src", index);
 
         d->applyCover(&cover);
 
