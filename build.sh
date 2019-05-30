@@ -166,7 +166,7 @@ if [ "$3" = "deploy" ]; then
 elif [ "$3" = "tools" ]; then
 
     echo ""
-    echo "DEPLOYING Tools"
+    echo "DEPLOYING tools"
     echo "---------------"
 
     cd $Sky
