@@ -18,7 +18,11 @@
 #define WDECLARATIVETEXTSVG_H
 
 // Sk includes
-#include <WDeclarativeText>
+#ifdef QT_4
+#include <WDeclarativeItem>
+#else
+#include <WDeclarativeTexture>
+#endif
 
 #ifndef SK_NO_DECLARATIVETEXTSVG
 
@@ -39,6 +43,9 @@ class SK_GUI_EXPORT WDeclarativeTextSvg : public WDeclarativeTexture
 {
     Q_OBJECT
 
+    Q_ENUMS(HAlignment)
+    Q_ENUMS(VAlignment)
+
     Q_ENUMS(LoadMode)
     Q_ENUMS(TextStyle)
     Q_ENUMS(TextOutline)
@@ -51,10 +58,10 @@ class SK_GUI_EXPORT WDeclarativeTextSvg : public WDeclarativeTexture
 
     Q_PROPERTY(qreal zoom READ zoom WRITE setZoom NOTIFY zoomChanged)
 
-    Q_PROPERTY(WDeclarativeText::HAlignment horizontalAlignment READ hAlign WRITE setHAlign
+    Q_PROPERTY(HAlignment horizontalAlignment READ hAlign WRITE setHAlign
                NOTIFY horizontalAlignmentChanged)
 
-    Q_PROPERTY(WDeclarativeText::VAlignment verticalAlignment READ vAlign WRITE setVAlign
+    Q_PROPERTY(VAlignment verticalAlignment READ vAlign WRITE setVAlign
                NOTIFY verticalAlignmentChanged)
 
     Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
@@ -84,16 +91,24 @@ class SK_GUI_EXPORT WDeclarativeTextSvg : public WDeclarativeTexture
 #endif
 
 public: // Enums
+    enum HAlignment
+    {
+        AlignLeft    = Qt::AlignLeft,
+        AlignRight   = Qt::AlignRight,
+        AlignHCenter = Qt::AlignHCenter,
+        AlignJustify = Qt::AlignJustify
+    };
+
+    enum VAlignment
+    {
+        AlignTop     = Qt::AlignTop,
+        AlignBottom  = Qt::AlignBottom,
+        AlignVCenter = Qt::AlignVCenter
+    };
+
     enum LoadMode { LoadAlways, LoadVisible };
 
-    enum TextStyle
-    {
-        Normal  = WDeclarativeText::Normal,
-        Outline = WDeclarativeText::Outline,
-        Raised  = WDeclarativeText::Raised,
-        Sunken  = WDeclarativeText::Sunken,
-        Glow
-    };
+    enum TextStyle { Normal, Outline, Raised, Sunken, Glow };
 
     enum TextOutline { OutlineNormal, OutlineRound };
 
@@ -184,11 +199,11 @@ public: // Properties
     qreal zoom() const;
     void  setZoom(qreal zoom);
 
-    WDeclarativeText::HAlignment hAlign() const;
-    void                         setHAlign(WDeclarativeText::HAlignment align);
+    HAlignment hAlign() const;
+    void       setHAlign(HAlignment align);
 
-    WDeclarativeText::VAlignment vAlign() const;
-    void                         setVAlign(WDeclarativeText::VAlignment align);
+    VAlignment vAlign() const;
+    void       setVAlign(VAlignment align);
 
     QString text() const;
     void    setText(const QString & text);

@@ -196,7 +196,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // TextSubtitle
 
-    property int textSubtitle_sizeMinimum: text_pixelSize
+    property int textSubtitle_sizeMinimum: dp18
     property int textSubtitle_sizeMaximum: dp48
 
     property color textSubtitle_color     : "#dcdcdc"

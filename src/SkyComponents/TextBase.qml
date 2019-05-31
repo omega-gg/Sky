@@ -42,11 +42,13 @@ Text
     styleColor: (style == st.text_sunken) ? st.text_colorSunken
                                           : st.text_colorShadow
 
-    styleSize: st.ratio
-
     textFormat: Text.PlainText
 
     elide: Text.ElideRight
+
+//#QT_5
+    renderType: Text.NativeRendering
+//#END
 
     font.family   : st.text_fontFamily
     font.pixelSize: st.text_pixelSize

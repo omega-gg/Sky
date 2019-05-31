@@ -131,8 +131,8 @@ public: // Variables
     QColor styleColor;
     int    styleSize;
 
-    WDeclarativeText::HAlignment hAlign;
-    WDeclarativeText::VAlignment vAlign;
+    WDeclarativeTextSvg::HAlignment hAlign;
+    WDeclarativeTextSvg::VAlignment vAlign;
 
     qreal zoom;
 

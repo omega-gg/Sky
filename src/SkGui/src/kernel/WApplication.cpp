@@ -55,7 +55,7 @@
 #include <WDeclarativeImage>
 #include <WDeclarativeImageSvg>
 #include <WDeclarativeBorderImage>
-#include <WDeclarativeText>
+//#include <WDeclarativeText>
 #include <WDeclarativeTextSvg>
 #include <WDeclarativePlayer>
 
@@ -198,7 +198,7 @@ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
     qmlRegisterType<WDeclarativeBorderImageScale>("Sky", 1,0, "BorderImageScale");
     qmlRegisterType<WDeclarativeBorderGrid>      ("Sky", 1,0, "BorderGrid");
 
-    qmlRegisterType<WDeclarativeText>   ("Sky", 1,0, "Text");
+    //qmlRegisterType<WDeclarativeText>   ("Sky", 1,0, "Text");
     qmlRegisterType<WDeclarativeTextSvg>("Sky", 1,0, "TextSvg");
 
 #ifdef QT_4

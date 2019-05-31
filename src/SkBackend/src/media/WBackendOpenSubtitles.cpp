@@ -414,7 +414,11 @@ WBackendNetFolder WBackendOpenSubtitles::extractFolder(const QByteArray       & 
     {
         WBackendOpenSubtitlesPrivate::applyNextQuery(query, &reply, 1);
     }
-    else if (id != 3 && reply.items.count() < 5)
+    else if (id == 3)
+    {
+        reply.clearDuplicate = true;
+    }
+    else if (reply.items.count() < 5)
     {
         QStringList list = query.data.toStringList();
 

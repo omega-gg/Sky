@@ -16,7 +16,7 @@ HEADERS += src/declarative/WDeclarativeApplication.h \
            src/declarative/WDeclarativeImageSvg_p.h \
            src/declarative/WDeclarativeBorderImage.h \
            src/declarative/WDeclarativeBorderImage_p.h \
-           src/declarative/WDeclarativeText.h \
+           #src/declarative/WDeclarativeText.h \
            src/declarative/WDeclarativeTextSvg.h \
            src/declarative/WDeclarativeTextSvg_p.h \
            src/declarative/WDeclarativeAnimated.h \
@@ -41,7 +41,7 @@ SOURCES += src/declarative/WDeclarativeApplication.cpp \
            src/declarative/WDeclarativeImage.cpp \
            src/declarative/WDeclarativeImageSvg.cpp \
            src/declarative/WDeclarativeBorderImage.cpp \
-           src/declarative/WDeclarativeText.cpp \
+           #src/declarative/WDeclarativeText.cpp \
            src/declarative/WDeclarativeTextSvg.cpp \
            src/declarative/WDeclarativeAnimated.cpp \
            src/declarative/WDeclarativePlayer.cpp \

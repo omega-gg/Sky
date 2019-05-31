@@ -659,11 +659,13 @@ WallBookmarkTrack
     {
         id: itemText
 
+        anchors.left  : player.left
+        anchors.right : player.right
         anchors.bottom: player.bottom
 
+        anchors.leftMargin  : st.dp8
+        anchors.rightMargin : st.dp8
         anchors.bottomMargin: pMargin
-
-        anchors.horizontalCenter: player.horizontalCenter
 
         z: player.z
 
@@ -682,15 +684,15 @@ WallBookmarkTrack
     {
         anchors.centerIn: player
 
-        width : st.dp64
-        height: st.dp64
+        width : st.dp80
+        height: st.dp80
 
         z: player.z
 
         visible: (player.isPlaying && player.isLoading)
 
         icon          : st.icon_loading
-        iconSourceSize: st.size48x48
+        iconSourceSize: st.size64x64
     }
 
     Rectangle

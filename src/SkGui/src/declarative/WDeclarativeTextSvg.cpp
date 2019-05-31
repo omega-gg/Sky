@@ -66,8 +66,8 @@ void WDeclarativeTextSvgPrivate::init()
 
     styleSize = 1;
 
-    hAlign = WDeclarativeText::AlignLeft;
-    vAlign = WDeclarativeText::AlignTop;
+    hAlign = WDeclarativeTextSvg::AlignLeft;
+    vAlign = WDeclarativeTextSvg::AlignTop;
 
     zoom = 1.0;
 
@@ -353,21 +353,21 @@ QRectF WDeclarativeTextSvgPrivate::getRect(qreal width, qreal height)
     int textWidth  = this->textWidth  * zoom;
     int textHeight = this->textHeight * zoom;
 
-    if (hAlign == WDeclarativeText::AlignRight)
+    if (hAlign == WDeclarativeTextSvg::AlignRight)
     {
         x = width - textWidth - marginWidth;
     }
-    else if (hAlign == WDeclarativeText::AlignHCenter)
+    else if (hAlign == WDeclarativeTextSvg::AlignHCenter)
     {
         x = (width - textWidth) / 2;
     }
     else x = marginWidth;
 
-    if (vAlign == WDeclarativeText::AlignBottom)
+    if (vAlign == WDeclarativeTextSvg::AlignBottom)
     {
         y = height - textHeight - marginHeight;
     }
-    else if (vAlign == WDeclarativeText::AlignVCenter)
+    else if (vAlign == WDeclarativeTextSvg::AlignVCenter)
     {
         y = (height - textHeight) / 2;
     }
@@ -732,12 +732,12 @@ void WDeclarativeTextSvg::setZoom(qreal zoom)
 
 //-------------------------------------------------------------------------------------------------
 
-WDeclarativeText::HAlignment WDeclarativeTextSvg::hAlign() const
+WDeclarativeTextSvg::HAlignment WDeclarativeTextSvg::hAlign() const
 {
     Q_D(const WDeclarativeTextSvg); return d->hAlign;
 }
 
-void WDeclarativeTextSvg::setHAlign(WDeclarativeText::HAlignment align)
+void WDeclarativeTextSvg::setHAlign(HAlignment align)
 {
     Q_D(WDeclarativeTextSvg);
 
@@ -756,12 +756,12 @@ void WDeclarativeTextSvg::setHAlign(WDeclarativeText::HAlignment align)
 
 //-------------------------------------------------------------------------------------------------
 
-WDeclarativeText::VAlignment WDeclarativeTextSvg::vAlign() const
+WDeclarativeTextSvg::VAlignment WDeclarativeTextSvg::vAlign() const
 {
     Q_D(const WDeclarativeTextSvg); return d->vAlign;
 }
 
-void WDeclarativeTextSvg::setVAlign(WDeclarativeText::VAlignment align)
+void WDeclarativeTextSvg::setVAlign(VAlignment align)
 {
     Q_D(WDeclarativeTextSvg);
 

@@ -17,7 +17,7 @@
 import QtQuick 1.0
 import Sky     1.0
 
-Text
+TextBase
 {
     id: textSubtitle
 
@@ -52,7 +52,6 @@ Text
     height: paintedHeight
 
     horizontalAlignment: Text.AlignHCenter
-    verticalAlignment  : Text.AlignBottom
 
     text: backend.text
 
@@ -64,9 +63,9 @@ Text
 
     textFormat: Text.RichText
 
-    font.family   : st.text_fontFamily
+    wrapMode: Text.WordWrap
+
     font.pixelSize: pGetSize()
-    font.bold     : true
 
     //---------------------------------------------------------------------------------------------
     // Functions private
