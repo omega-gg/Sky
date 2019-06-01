@@ -48,9 +48,6 @@ TextBase
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width : paintedWidth
-    height: paintedHeight
-
     horizontalAlignment: Text.AlignHCenter
 
     text: backend.text

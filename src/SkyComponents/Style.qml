@@ -92,6 +92,7 @@ Item
     property variant size28x28: size(28, 28)
     property variant size32x32: size(32, 32)
     property variant size48x48: size(48, 48)
+    property variant size64x64: size(64, 64)
 
     property variant size128x128: size(128, 128)
 
