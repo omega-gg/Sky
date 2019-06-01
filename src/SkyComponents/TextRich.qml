@@ -32,15 +32,13 @@ TextBase
     //---------------------------------------------------------------------------------------------
     // Private
 
-    property variant pPos: null
-
     property string pLink
 
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    textFormat: Text.AutoText
+    textFormat: Text.RichText
 
     //---------------------------------------------------------------------------------------------
     // Functions
@@ -68,20 +66,6 @@ TextBase
     }
 
     //---------------------------------------------------------------------------------------------
-    // Private
-
-    function pClearPos()
-    {
-        if (pPos == null) return;
-
-        setBlockForeground(pPos, colorLink);
-
-        pPos = null;
-
-        mouseArea.cursor = Qt.ArrowCursor;
-    }
-
-    //---------------------------------------------------------------------------------------------
     // Childs
     //---------------------------------------------------------------------------------------------
 
@@ -96,38 +80,22 @@ TextBase
 
         onPositionChanged:
         {
-            var pos = Qt.point(mouse.x, mouse.y);
+            pLink = textRich.linkAt(mouseX, mouseY);
 
-            if (textRich.linkAt(pos))
+            if (pLink)
             {
-                pPos = pos;
-
-                if (pressed == false)
-                {
-                    textRich.setBlockForeground(pos, colorLinkHover);
-                }
-
-                cursor = Qt.PointingHandCursor;
+                 cursor = Qt.PointingHandCursor;
             }
-            else pClearPos();
+            else cursor = Qt.ArrowCursor;
         }
 
-        onExited: pClearPos()
-
-        onPressed:
-        {
-            if (pPos == null) return;
-
-            pLink = textRich.linkAt(pPos);
-
-            textRich.setBlockForeground(pPos, colorLink)
-        }
+        onExited: cursor = Qt.ArrowCursor
 
         onReleased:
         {
-            if (pPos == null) return;
+            if (pLink == "") return;
 
-            var link = textRich.linkAt(pPos);
+            var link = textRich.linkAt(mouseX, mouseY);
 
             if (pLink == link)
             {
