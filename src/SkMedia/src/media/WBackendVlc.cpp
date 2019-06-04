@@ -1114,7 +1114,7 @@ WAbstractBackend::Quality WBackendVlcPrivate::getClosestQuality(WAbstractBackend
         }
     }
 
-    for (int i = quality + 1; i <= WAbstractBackend::QualityMaximum; i++)
+    for (int i = quality + 1; i <= WAbstractBackend::Quality2160; i++)
     {
         WAbstractBackend::Quality closestQuality = static_cast<WAbstractBackend::Quality> (i);
 

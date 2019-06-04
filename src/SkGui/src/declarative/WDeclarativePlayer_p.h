@@ -119,6 +119,8 @@ public: // Variables
 
     qreal volume;
 
+    bool autoPlay;
+
     bool shuffle;
 
     QList<const WTrack *> shuffleTracks;

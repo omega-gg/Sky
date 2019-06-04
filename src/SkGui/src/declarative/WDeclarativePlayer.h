@@ -77,6 +77,8 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
 
     Q_PROPERTY(qreal volume READ volume WRITE setVolume NOTIFY volumeChanged)
 
+    Q_PROPERTY(bool autoPlay READ autoPlay WRITE setAutoPlay NOTIFY autoPlayChanged)
+
     Q_PROPERTY(bool shuffle READ shuffle WRITE setShuffle NOTIFY shuffleChanged)
 
     Q_PROPERTY(Repeat repeat READ repeat WRITE setRepeat NOTIFY repeatChanged)
@@ -128,8 +130,7 @@ public: // Enums
     {
         RepeatNone,
         RepeatAll,
-        RepeatOne,
-        RepeatStop
+        RepeatOne
     };
 
 public:
@@ -216,6 +217,8 @@ signals:
 
     void volumeChanged();
 
+    void autoPlayChanged();
+
     void shuffleChanged();
 
     void repeatChanged();
@@ -282,6 +285,9 @@ public: // Properties
 
     qreal volume() const;
     void  setVolume(qreal volume);
+
+    bool autoPlay() const;
+    void setAutoPlay(bool autoPlay);
 
     bool shuffle() const;
     void setShuffle(bool shuffle);

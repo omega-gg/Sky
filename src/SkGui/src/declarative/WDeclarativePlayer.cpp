@@ -73,6 +73,8 @@ void WDeclarativePlayerPrivate::init()
 
     volume = 1.0;
 
+    autoPlay = true;
+
     shuffle = false;
 
     shuffleIndex = -1;
@@ -81,7 +83,7 @@ void WDeclarativePlayerPrivate::init()
     repeat = WDeclarativePlayer::RepeatNone;
 
     output  = WAbstractBackend::OutputMedia;
-    quality = WAbstractBackend::QualityMedium;
+    quality = WAbstractBackend::Quality480;
 
     fillMode = WAbstractBackend::PreserveAspectFit;
 
@@ -389,19 +391,18 @@ void WDeclarativePlayerPrivate::clearPlaylistAndTabs()
 
 void WDeclarativePlayerPrivate::onEnded()
 {
-    if (repeat == WDeclarativePlayer::RepeatOne)
-    {
-        backendInterface->replay();
-    }
-    else if (repeat == WDeclarativePlayer::RepeatStop)
+    if (autoPlay == false)
     {
         Q_Q(WDeclarativePlayer);
 
         stop();
 
         emit q->ended();
+
+        return;
     }
-    else
+
+    if (repeat != WDeclarativePlayer::RepeatOne)
     {
         Q_Q(WDeclarativePlayer);
 
@@ -422,6 +423,7 @@ void WDeclarativePlayerPrivate::onEnded()
         }
         else q->setNextTrack();
     }
+    else backendInterface->replay();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1509,6 +1511,24 @@ void WDeclarativePlayer::setVolume(qreal volume)
     if (d->backend) d->backend->setVolume(volume);
 
     emit volumeChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WDeclarativePlayer::autoPlay() const
+{
+    Q_D(const WDeclarativePlayer); return d->autoPlay;
+}
+
+void WDeclarativePlayer::setAutoPlay(bool autoPlay)
+{
+    Q_D(WDeclarativePlayer);
+
+    if (d->autoPlay == autoPlay) return;
+
+    d->autoPlay = autoPlay;
+
+    emit autoPlayChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

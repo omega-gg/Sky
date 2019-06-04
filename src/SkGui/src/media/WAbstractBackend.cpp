@@ -84,7 +84,7 @@ void WAbstractBackendPrivate::init()
     repeat = false;
 
     output  = WAbstractBackend::OutputMedia;
-    quality = WAbstractBackend::QualityMedium;
+    quality = WAbstractBackend::Quality480;
 
     outputActive  = WAbstractBackend::OutputInvalid;
     qualityActive = WAbstractBackend::QualityInvalid;

@@ -33,7 +33,8 @@ Item
 
     property int extra: height / 8 + st.border_size / 2
 
-    property int currentIndex: -1
+    property int currentIndex : -1
+    property int currentActive: -1
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -127,6 +128,8 @@ Item
 
                     padding: buttonsCheck.padding
 
+                    highlighted: (index == currentActive)
+
                     checked   : (index == currentIndex)
                     checkHover: false
 
@@ -146,6 +149,8 @@ Item
 
                     padding: buttonsCheck.padding - margins
 
+                    highlighted: (index == currentActive)
+
                     checked   : (index == currentIndex)
                     checkHover: false
 
@@ -164,6 +169,8 @@ Item
                     anchors.fill: parent
 
                     padding: buttonsCheck.padding
+
+                    highlighted: (index == currentActive)
 
                     checked   : (index == currentIndex)
                     checkHover: false

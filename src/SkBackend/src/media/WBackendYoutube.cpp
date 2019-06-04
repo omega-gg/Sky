@@ -226,12 +226,12 @@ WAbstractBackend::Quality WBackendYoutubePrivate::extractQuality(const QString &
 
     quality = quality.mid(0, 3);
 
-    if      (quality == "sma") return WAbstractBackend::QualityMinimum;
-    else if (quality == "med") return WAbstractBackend::QualityLow;
-    else if (quality == "lar") return WAbstractBackend::QualityMedium;
-    else if (quality == "hd7") return WAbstractBackend::QualityHigh;
-    else if (quality == "hd1") return WAbstractBackend::QualityUltra;
-    else if (quality == "hig") return WAbstractBackend::QualityMaximum;
+    if      (quality == "sma") return WAbstractBackend::Quality240;
+    else if (quality == "med") return WAbstractBackend::Quality360;
+    else if (quality == "lar") return WAbstractBackend::Quality480;
+    else if (quality == "hd7") return WAbstractBackend::Quality720;
+    else if (quality == "hd1") return WAbstractBackend::Quality1080;
+    else if (quality == "hig") return WAbstractBackend::Quality1440;
     else                       return WAbstractBackend::QualityInvalid;
 }
 
@@ -239,12 +239,13 @@ WAbstractBackend::Quality WBackendYoutubePrivate::extractQualityLabel(const QStr
 {
     QString quality = Sk::sliceIn(data, "quality_label=", "p");
 
-    if      (quality == "240")  return WAbstractBackend::QualityMinimum;
-    else if (quality == "360")  return WAbstractBackend::QualityLow;
-    else if (quality == "480")  return WAbstractBackend::QualityMedium;
-    else if (quality == "720")  return WAbstractBackend::QualityHigh;
-    else if (quality == "1080") return WAbstractBackend::QualityUltra;
-    else if (quality == "1440") return WAbstractBackend::QualityMaximum;
+    if      (quality == "240")  return WAbstractBackend::Quality240;
+    else if (quality == "360")  return WAbstractBackend::Quality360;
+    else if (quality == "480")  return WAbstractBackend::Quality480;
+    else if (quality == "720")  return WAbstractBackend::Quality720;
+    else if (quality == "1080") return WAbstractBackend::Quality1080;
+    else if (quality == "1440") return WAbstractBackend::Quality1440;
+    else if (quality == "2160") return WAbstractBackend::Quality2160;
     else                        return WAbstractBackend::QualityInvalid;
 }
 
@@ -280,7 +281,7 @@ void WBackendYoutubePrivate::applySignatures(WBackendNetSource  * source,
     QJSValue value = wControllerScript->engine()->evaluate(script);
 #endif
 
-    for (int i = 0; i <= WAbstractBackend::QualityMaximum; i++)
+    for (int i = 0; i <= WAbstractBackend::Quality2160; i++)
     {
         QString * source = &(listMedias[i]);
 
@@ -803,7 +804,7 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
             return reply;
         }
 
-        for (int i = 0; i <= WAbstractBackend::QualityMaximum; i++)
+        for (int i = 0; i <= WAbstractBackend::Quality2160; i++)
         {
             QString string = medias->value(static_cast<WAbstractBackend::Quality> (i));
 
@@ -818,7 +819,7 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
             QStringList listMedias;
             QStringList listAudios;
 
-            for (int i = 0; i <= WAbstractBackend::QualityMaximum; i++)
+            for (int i = 0; i <= WAbstractBackend::Quality2160; i++)
             {
                 const QString & media = medias->value(static_cast<WAbstractBackend::Quality> (i));
                 const QString & audio = audios->value(static_cast<WAbstractBackend::Quality> (i));
@@ -889,9 +890,9 @@ WBackendNetTrack WBackendYoutube::extractTrack(const QByteArray       & data,
 
     if (quality.contains("1280"))
     {
-         track->setQuality(WAbstractBackend::QualityHigh);
+         track->setQuality(WAbstractBackend::Quality720);
     }
-    else track->setQuality(WAbstractBackend::QualityMedium);
+    else track->setQuality(WAbstractBackend::Quality480);
 
     return reply;
 }

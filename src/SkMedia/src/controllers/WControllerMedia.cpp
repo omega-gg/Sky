@@ -211,7 +211,7 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
     if (backend == NULL)
     {
-        reply->_medias.insert(WAbstractBackend::QualityMedium, url);
+        reply->_medias.insert(WAbstractBackend::Quality480, url);
 
         reply->_loaded = true;
 
@@ -222,7 +222,7 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
     if (query.isValid() == false)
     {
-        reply->_medias.insert(WAbstractBackend::QualityMedium, url);
+        reply->_medias.insert(WAbstractBackend::Quality480, url);
 
         reply->_loaded = true;
 

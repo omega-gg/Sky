@@ -84,21 +84,25 @@ WAbstractBackend::Quality WBackendVimeoPrivate::extractQuality(const QString & d
 {
     QString quality = WControllerNetwork::extractJson(data, "quality");
 
-    if (quality == "270p" || quality == "360p")
+    if (quality == "270p")
     {
-        return WAbstractBackend::QualityLow;
+        return WAbstractBackend::Quality240;
+    }
+    else if (quality == "360p")
+    {
+        return WAbstractBackend::Quality360;
     }
     else if (quality == "480p")
     {
-        return WAbstractBackend::QualityMedium;
+        return WAbstractBackend::Quality480;
     }
     else if (quality == "720p")
     {
-        return WAbstractBackend::QualityHigh;
+        return WAbstractBackend::Quality720;
     }
     else if (quality == "1080p")
     {
-        return WAbstractBackend::QualityUltra;
+        return WAbstractBackend::Quality1080;
     }
     else return WAbstractBackend::QualityInvalid;
 }
@@ -555,9 +559,9 @@ WBackendNetTrack WBackendVimeo::extractTrack(const QByteArray       & data,
 
     if (quality == "HD")
     {
-         track->setQuality(WAbstractBackend::QualityHigh);
+         track->setQuality(WAbstractBackend::Quality720);
     }
-    else track->setQuality(WAbstractBackend::QualityMedium);
+    else track->setQuality(WAbstractBackend::Quality480);
 
     return reply;
 }

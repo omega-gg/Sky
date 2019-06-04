@@ -573,7 +573,7 @@ WBackendNetSource WBackendSoundCloud::extractSource(const QByteArray       & dat
     {
         QString source = WControllerNetwork::extractJsonUtf8(content, "http_mp3_128_url");
 
-        reply.medias.insert(WAbstractBackend::QualityMedium, source);
+        reply.medias.insert(WAbstractBackend::Quality480, source);
     }
 
     return reply;

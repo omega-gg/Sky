@@ -175,18 +175,19 @@ public:
         OutputInvalid,
         OutputMedia,
         OutputVideo,
-        OutputAudio,
+        OutputAudio
     };
 
     enum Quality
     {
         QualityInvalid,
-        QualityMinimum,
-        QualityLow,
-        QualityMedium,
-        QualityHigh,
-        QualityUltra,
-        QualityMaximum
+        Quality240,
+        Quality360,
+        Quality480,
+        Quality720,
+        Quality1080,
+        Quality1440,
+        Quality2160
     };
 
     enum FillMode

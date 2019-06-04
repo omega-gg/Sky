@@ -96,9 +96,9 @@ void WBackendDailymotionPrivate::loadTrack(WTrack * track, const QString & json)
 
     if (quality.contains("hd720"))
     {
-         track->setQuality(WAbstractBackend::QualityHigh);
+         track->setQuality(WAbstractBackend::Quality720);
     }
-    else track->setQuality(WAbstractBackend::QualityMedium);
+    else track->setQuality(WAbstractBackend::Quality480);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -543,7 +543,7 @@ WBackendNetSource WBackendDailymotion::extractSource(const QByteArray       & da
 
     QHash<WAbstractBackend::Quality, QString> * medias = &(reply.medias);
 
-    for (int i = WAbstractBackend::QualityMinimum; i < WAbstractBackend::QualityMaximum; i++)
+    for (int i = WAbstractBackend::Quality240; i < WAbstractBackend::Quality1440; i++)
     {
         const QString & url = urls.at(i - 1);
 
