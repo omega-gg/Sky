@@ -143,7 +143,7 @@ Item
         anchors.top   : parent.top
         anchors.bottom: parent.bottom
 
-        anchors.leftMargin: st.lineEditLabel_lineEditLeftMargin
+        anchors.leftMargin: -st.lineEditLabel_lineEditLeftMargin
 
         function onKeyPressed(event)
         {

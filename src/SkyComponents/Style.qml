@@ -621,22 +621,30 @@ Item
     //---------------------------------------------------------------------------------------------
     // ButtonCheck
 
+    property int buttonCheck_width : st.dp64
     property int buttonCheck_height: buttonPush_height
 
-    property int buttonCheck_buttonLeftMargin: -dp28
+    property color buttonCheck_colorA: buttonPush_colorPressA
+    property color buttonCheck_colorB: buttonPush_colorPressB
 
-    property int buttonCheck_buttonPaddingLeft : dp30
-    property int buttonCheck_buttonPaddingRight: dp18
+    property color buttonCheck_colorActiveA: buttonPush_colorCheckA
+    property color buttonCheck_colorActiveB: buttonPush_colorCheckB
+
+    property color buttonCheck_colorHandleA: "#dcdcdc"
+    property color buttonCheck_colorHandleB: buttonCheck_colorHandleA
+
+    property color buttonCheck_colorHandleHoverA: "#f0f0f0"
+    property color buttonCheck_colorHandleHoverB: buttonCheck_colorHandleHoverA
+
+    property color buttonCheck_colorHandlePressA: buttonCheck_colorHandleA
+    property color buttonCheck_colorHandlePressB: buttonCheck_colorHandleB
 
     //---------------------------------------------------------------------------------------------
     // ButtonCheckLabel
 
     property int buttonCheckLabel_height: buttonCheck_height
 
-    property int buttonCheckLabel_buttonLeftMargin: -dp32
-
-    property int buttonCheckLabel_labelPaddingLeft : dp16
-    property int buttonCheckLabel_labelPaddingRight: dp34
+    property int buttonCheckLabel_padding: dp4
 
     //---------------------------------------------------------------------------------------------
     // ButtonImageBorders
@@ -708,7 +716,7 @@ Item
 
     property int labelRound_height: dp40
 
-    property int labelRound_padding: buttonPush_padding
+    property int labelRound_padding: dp16
     property int labelRound_spacing: buttonPush_spacing
 
     property color labelRound_colorA: "#f0f0f0"
@@ -816,7 +824,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // LineEditLabel
 
-    property int lineEditLabel_lineEditLeftMargin: -dp26
+    property int lineEditLabel_lineEditLeftMargin: dp26
 
     property int lineEditLabel_labelPaddingLeft : dp16
     property int lineEditLabel_labelPaddingRight: dp30
@@ -956,20 +964,17 @@ Item
     property int slider_width : dp128
     property int slider_height: dp26
 
-    property int slider_handleWidth : dp26
-    property int slider_handleHeight: dp26
-
     property color slider_colorA: scrollBar_colorA
     property color slider_colorB: scrollBar_colorB
 
-    property color slider_colorHandleA: "#dcdcdc"
-    property color slider_colorHandleB: slider_colorHandleA
+    property color slider_colorHandleA: buttonCheck_colorHandleA
+    property color slider_colorHandleB: buttonCheck_colorHandleB
 
-    property color slider_colorHandleHoverA: "#f0f0f0"
-    property color slider_colorHandleHoverB: slider_colorHandleHoverA
+    property color slider_colorHandleHoverA: buttonCheck_colorHandleHoverA
+    property color slider_colorHandleHoverB: buttonCheck_colorHandleHoverB
 
-    property color slider_colorHandlePressA: slider_colorHandleA
-    property color slider_colorHandlePressB: slider_colorHandleB
+    property color slider_colorHandlePressA: buttonCheck_colorHandlePressA
+    property color slider_colorHandlePressB: buttonCheck_colorHandlePressB
 
     property color slider_colorBarA: buttonPush_colorA
     property color slider_colorBarB: buttonPush_colorB
@@ -1529,6 +1534,17 @@ Item
         buttonOverlay_filterIcon = icon2_filter;
 
         //-----------------------------------------------------------------------------------------
+        // ButtonCheck
+
+        buttonCheck_colorHandleA = "#dcdcdc";
+        buttonCheck_colorHandleB = buttonCheck_colorHandleA;
+
+        buttonCheck_colorHandleHoverB = buttonCheck_colorHandleHoverA;
+
+        buttonCheck_colorHandlePressA = buttonCheck_colorHandleA;
+        buttonCheck_colorHandlePressB = buttonCheck_colorHandleB;
+
+        //-----------------------------------------------------------------------------------------
         // ButtonMask
 
         buttonMask_colorHoverA = "#323232";
@@ -1586,17 +1602,6 @@ Item
 
         scrollBar_colorHandlePressA = buttonPush_colorA;
         scrollBar_colorHandlePressB = buttonPush_colorB;
-
-        //-----------------------------------------------------------------------------------------
-        // Slider
-
-        slider_colorHandleA = "#dcdcdc";
-        slider_colorHandleB = slider_colorHandleA;
-
-        slider_colorHandleHoverB = slider_colorHandleHoverA;
-
-        slider_colorHandlePressA = slider_colorHandleA;
-        slider_colorHandlePressB = slider_colorHandleB;
 
         //-----------------------------------------------------------------------------------------
         // SliderStream
@@ -1791,6 +1796,17 @@ Item
         buttonOverlay_filterIcon = button_filterIconA;
 
         //-----------------------------------------------------------------------------------------
+        // ButtonCheck
+
+        buttonCheck_colorHandleA = "#c8c8c8";
+        buttonCheck_colorHandleB = buttonCheck_colorHandleA;
+
+        buttonCheck_colorHandleHoverB = buttonCheck_colorHandleHoverA;
+
+        buttonCheck_colorHandlePressA = buttonCheck_colorHandleA;
+        buttonCheck_colorHandlePressB = buttonCheck_colorHandleB;
+
+        //-----------------------------------------------------------------------------------------
         // ButtonMask
 
         buttonMask_colorHoverA = "white";
@@ -1848,17 +1864,6 @@ Item
 
         scrollBar_colorHandlePressA = buttonPush_colorA;
         scrollBar_colorHandlePressB = buttonPush_colorB;
-
-        //-----------------------------------------------------------------------------------------
-        // Slider
-
-        slider_colorHandleA = "#c8c8c8";
-        slider_colorHandleB = slider_colorHandleA;
-
-        slider_colorHandleHoverB = slider_colorHandleHoverA;
-
-        slider_colorHandlePressA = slider_colorHandleA;
-        slider_colorHandlePressB = slider_colorHandleB;
 
         //-----------------------------------------------------------------------------------------
         // SliderStream
@@ -2053,6 +2058,17 @@ Item
         buttonOverlay_filterIcon = button_filterIconA;
 
         //-----------------------------------------------------------------------------------------
+        // ButtonCheck
+
+        buttonCheck_colorHandleA = "#dcdcdc";
+        buttonCheck_colorHandleB = "#8c8c8c";
+
+        buttonCheck_colorHandleHoverB = "#c8c8c8";
+
+        buttonCheck_colorHandlePressA = "#646464";
+        buttonCheck_colorHandlePressB = "#f0f0f0";
+
+        //-----------------------------------------------------------------------------------------
         // ButtonMask
 
         buttonMask_colorHoverA = "white";
@@ -2110,17 +2126,6 @@ Item
 
         scrollBar_colorHandlePressA = buttonPush_colorPressHoverA;
         scrollBar_colorHandlePressB = buttonPush_colorPressHoverB;
-
-        //-----------------------------------------------------------------------------------------
-        // Slider
-
-        slider_colorHandleA = "#dcdcdc";
-        slider_colorHandleB = "#8c8c8c";
-
-        slider_colorHandleHoverB = "#c8c8c8";
-
-        slider_colorHandlePressA = "#646464";
-        slider_colorHandlePressB = "#f0f0f0";
 
         //-----------------------------------------------------------------------------------------
         // SliderStream

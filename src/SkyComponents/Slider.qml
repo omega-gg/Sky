@@ -232,8 +232,8 @@ MouseArea
     {
         id: handle
 
-        width : st.slider_handleWidth
-        height: st.slider_handleHeight
+        width : parent.height
+        height: width
 
         visible: slider.enabled
 

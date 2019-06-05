@@ -17,23 +17,44 @@
 import QtQuick 1.0
 import Sky     1.0
 
-Item
+MouseArea
 {
     id: buttonCheck
 
     //---------------------------------------------------------------------------------------------
-    // Aliases
+    // Properties
     //---------------------------------------------------------------------------------------------
 
-    property alias checkable: buttonOn.checkable
-    property alias checked  : buttonOn.checked
+    property int margins: height / 5
 
-    property alias text: buttonOn.text
+    property int radius: background.height
+
+    property int borderSize: st.border_size
+
+    property bool checked: false
 
     //---------------------------------------------------------------------------------------------
+    // Style
 
-    property alias buttonOn : buttonOn
-    property alias buttonOff: buttonOff
+    property color colorA: st.buttonCheck_colorA
+    property color colorB: st.buttonCheck_colorB
+
+    property color colorActiveA: st.buttonCheck_colorActiveA
+    property color colorActiveB: st.buttonCheck_colorActiveB
+
+    property color colorHandleA: st.buttonCheck_colorHandleA
+    property color colorHandleB: st.buttonCheck_colorHandleB
+
+    property color colorHandleHoverA: st.buttonCheck_colorHandleHoverA
+    property color colorHandleHoverB: st.buttonCheck_colorHandleHoverB
+
+    property color colorHandlePressA: st.buttonCheck_colorHandlePressA
+    property color colorHandlePressB: st.buttonCheck_colorHandlePressB
+
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    property bool pMaximum: (handle.x == model.handleMaximum)
 
     //---------------------------------------------------------------------------------------------
     // Signals
@@ -45,15 +66,44 @@ Item
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: buttonOn.x + buttonOn.width
-
+    width : st.buttonCheck_width
     height: st.buttonCheck_height
 
+    hoverEnabled: true
+
+    drag.target: handle
+    drag.axis  : Drag.XAxis
+
+    drag.minimumX: model.handleMinimum
+    drag.maximumX: model.handleMaximum
+
     //---------------------------------------------------------------------------------------------
-    // Functions
+    // Events
     //---------------------------------------------------------------------------------------------
 
-    function pClick()
+    onReleased:
+    {
+        if ((model.position + handle.width / 2) < width / 2)
+        {
+            handle.x = 0;
+
+            if (checked == false) return;
+
+            checked = false;
+        }
+        else
+        {
+            handle.x = model.handleMaximum;
+
+            if (checked) return;
+
+            checked = true;
+        }
+
+        checkClicked();
+    }
+
+    onClicked:
     {
         checked = !(checked);
 
@@ -61,51 +111,128 @@ Item
     }
 
     //---------------------------------------------------------------------------------------------
+
+    onCheckedChanged:
+    {
+        if (checked)
+        {
+             handle.x = model.handleMaximum;
+        }
+        else handle.x = 0;
+    }
+
+    //---------------------------------------------------------------------------------------------
     // Childs
     //---------------------------------------------------------------------------------------------
 
-    ButtonPush
+    ModelRange
     {
-        id: buttonOn
+        id: model
 
-        anchors.left  : buttonOff.right
-        anchors.top   : parent.top
-        anchors.bottom: parent.bottom
-
-        anchors.leftMargin: st.buttonCheck_buttonLeftMargin
-
-        paddingLeft : st.buttonCheck_buttonPaddingLeft
-        paddingRight: st.buttonCheck_buttonPaddingRight
-
-        enabled: buttonCheck.enabled
-
-        checkable: true
-        checked  : false
-
-        text: qsTr("ON")
-
-        onClicked: pClick()
+        handleMaximum: width - handle.width
     }
 
-    ButtonRound
+    Rectangle
     {
-        id: buttonOff
+        id: background
 
-        anchors.top   : parent.top
-        anchors.bottom: parent.bottom
+        anchors.fill: parent
 
-        width: buttonOn.height
+        anchors.margins: margins
 
-        icon          : st.icon16x16_close
-        iconSourceSize: st.size16x16
+        radius: buttonCheck.radius
 
-        hoverRetain: true
+        gradient: Gradient
+        {
+            GradientStop
+            {
+                position: 0.0
 
-        enabled: buttonCheck.enabled
+                color: (pMaximum) ? colorActiveA : colorA
+            }
 
-        checked   : (buttonCheck.checked == false)
-        checkHover: false
+            GradientStop
+            {
+                position: 1.0
 
-        onClicked: pClick()
+                color: (pMaximum) ? colorActiveB : colorB
+            }
+        }
+
+//#QT_4
+        smooth: true
+//#END
+
+        border.width: borderSize
+        border.color: st.border_color
+    }
+
+    MouseArea
+    {
+        id: handle
+
+        width : parent.height
+        height: width
+
+        acceptedButtons: Qt.NoButton
+
+        hoverEnabled: true
+
+        onXChanged: model.position = x
+
+        Rectangle
+        {
+            anchors.fill: parent
+
+            anchors.margins: margins
+
+            radius: buttonCheck.radius
+
+            gradient: Gradient
+            {
+                GradientStop
+                {
+                    position: 0.0
+
+                    color:
+                    {
+                        if (buttonCheck.pressed)
+                        {
+                            return colorHandlePressA;
+                        }
+                        else if (handle.containsMouse)
+                        {
+                            return colorHandleHoverA;
+                        }
+                        else return colorHandleA;
+                    }
+                }
+
+                GradientStop
+                {
+                    position: 1.0
+
+                    color:
+                    {
+                        if (buttonCheck.pressed)
+                        {
+                            return colorHandlePressB;
+                        }
+                        else if (handle.containsMouse)
+                        {
+                            return colorHandleHoverB;
+                        }
+                        else return colorHandleB;
+                    }
+                }
+            }
+
+//#QT_4
+            smooth: true
+//#END
+
+            border.width: borderSize
+            border.color: st.border_color
+        }
     }
 }

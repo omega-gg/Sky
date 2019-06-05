@@ -17,7 +17,7 @@
 import QtQuick 1.0
 import Sky     1.0
 
-Item
+LabelRoundInfo
 {
     id: buttonCheckLabel
 
@@ -25,16 +25,10 @@ Item
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    property alias checkable: button.checkable
-    property alias checked  : button.checked
-
-    property alias text: label.text
-
-    property alias buttonText: button.text
+    property alias checked: button.checked
 
     //---------------------------------------------------------------------------------------------
 
-    property alias label : label
     property alias button: button
 
     //---------------------------------------------------------------------------------------------
@@ -47,28 +41,13 @@ Item
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: label.getWidth() + button.anchors.leftMargin + button.width
-
     height: st.buttonCheckLabel_height
+
+    paddingRight: button.width - st.buttonCheckLabel_padding
 
     //---------------------------------------------------------------------------------------------
     // Childs
     //---------------------------------------------------------------------------------------------
-
-    LabelRoundInfo
-    {
-        id: label
-
-        anchors.left  : parent.left
-        anchors.right : parent.right
-        anchors.top   : parent.top
-        anchors.bottom: parent.bottom
-
-        paddingLeft : st.buttonCheckLabel_labelPaddingLeft
-        paddingRight: st.buttonCheckLabel_labelPaddingRight
-
-        itemText.horizontalAlignment: Text.AlignLeft
-    }
 
     ButtonCheck
     {
@@ -77,8 +56,6 @@ Item
         anchors.right : parent.right
         anchors.top   : parent.top
         anchors.bottom: parent.bottom
-
-        anchors.leftMargin: st.buttonCheckLabel_buttonLeftMargin
 
         onCheckClicked: buttonCheckLabel.checkClicked()
     }
