@@ -112,7 +112,15 @@ MouseArea
 
     //---------------------------------------------------------------------------------------------
 
-    onCheckedChanged:
+    onWidthChanged: pUpdate()
+
+    onCheckedChanged: pUpdate()
+
+    //---------------------------------------------------------------------------------------------
+    // Functions private
+    //---------------------------------------------------------------------------------------------
+
+    function pUpdate()
     {
         if (checked)
         {
@@ -130,6 +138,8 @@ MouseArea
         id: model
 
         handleMaximum: width - handle.width
+
+        onHandleMaximumChanged: pUpdate()
     }
 
     Rectangle
