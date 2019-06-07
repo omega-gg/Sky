@@ -680,6 +680,8 @@ WallBookmarkTrack
 
         currentTime: player.currentTime
 
+        onLoaded: subtitleLoaded(ok)
+
         onVisibleChanged: pUpdateText()
     }
 

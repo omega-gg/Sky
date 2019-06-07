@@ -307,6 +307,7 @@ WBackendNetQuery WBackendOpenSubtitles::getQueryItem(const QString & url) const
         query.cookies = true;
 
         // FIXME OpenSubtitles: We have to delay our requests to avoid the captcha.
+        query.maxHost = 1;
         query.delay   = BACKENDOPENSUBTITLES_DELAY;
         query.timeout = BACKENDOPENSUBTITLES_TIMEOUT;
 
@@ -341,6 +342,7 @@ WBackendNetQuery WBackendOpenSubtitles::createQuery(const QString & method,
         query.cookies = true;
 
         // FIXME OpenSubtitles: We have to delay our requests to avoid the captcha.
+        query.maxHost = 1;
         query.delay   = BACKENDOPENSUBTITLES_DELAY;
         query.timeout = BACKENDOPENSUBTITLES_TIMEOUT;
     }
@@ -489,6 +491,7 @@ WBackendNetItem WBackendOpenSubtitles::extractItem(const QByteArray       & data
         nextQuery->cookies = true;
 
         // FIXME OpenSubtitles: We have to delay our requests to avoid the captcha.
+        nextQuery->maxHost = 1;
         nextQuery->delay   = BACKENDOPENSUBTITLES_DELAY;
         nextQuery->timeout = BACKENDOPENSUBTITLES_TIMEOUT;
     }
