@@ -46,6 +46,8 @@ protected: // Events
     /* virtual */ void timerEvent(QTimerEvent * event);
 
 signals:
+    void loaded(bool ok);
+
     void enabledChanged();
 
     void sourceChanged();

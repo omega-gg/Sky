@@ -304,6 +304,8 @@ WBackendNetQuery WBackendOpenSubtitles::getQueryItem(const QString & url) const
 
         query.url = url;
 
+        query.cookies = true;
+
         // FIXME OpenSubtitles: We have to delay our requests to avoid the captcha.
         query.delay   = BACKENDOPENSUBTITLES_DELAY;
         query.timeout = BACKENDOPENSUBTITLES_TIMEOUT;
@@ -335,6 +337,8 @@ WBackendNetQuery WBackendOpenSubtitles::createQuery(const QString & method,
         query.url = WBackendOpenSubtitlesPrivate::getUrl(language, search);
 
         query.data = list;
+
+        query.cookies = true;
 
         // FIXME OpenSubtitles: We have to delay our requests to avoid the captcha.
         query.delay   = BACKENDOPENSUBTITLES_DELAY;
@@ -481,6 +485,12 @@ WBackendNetItem WBackendOpenSubtitles::extractItem(const QByteArray       & data
 
         nextQuery->url = "https://www.opensubtitles.org" + source;
         nextQuery->id  = 1;
+
+        nextQuery->cookies = true;
+
+        // FIXME OpenSubtitles: We have to delay our requests to avoid the captcha.
+        nextQuery->delay   = BACKENDOPENSUBTITLES_DELAY;
+        nextQuery->timeout = BACKENDOPENSUBTITLES_TIMEOUT;
     }
 
     return reply;

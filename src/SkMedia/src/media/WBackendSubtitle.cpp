@@ -357,6 +357,12 @@ void WBackendSubtitlePrivate::onQueryData(const QByteArray & data, const QString
     item->deleteLater();
 
     item = NULL;
+
+    if (list.isEmpty())
+    {
+         emit q->loaded(false);
+    }
+    else emit q->loaded(true);
 }
 
 void WBackendSubtitlePrivate::onQueryCompleted()
@@ -368,6 +374,8 @@ void WBackendSubtitlePrivate::onQueryCompleted()
     item->deleteLater();
 
     item = NULL;
+
+    emit q->loaded(false);
 }
 
 //=================================================================================================

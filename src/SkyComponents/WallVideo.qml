@@ -48,7 +48,7 @@ WallBookmarkTrack
 
     property int pWidthRight: width - pWidthHalf - st.border_size
 
-    property int pMargin: getTextMargin()
+    property int pMargin: 0
 
     property variant pCurrentTab    : null
     property variant pHighlightedTab: null
@@ -101,6 +101,8 @@ WallBookmarkTrack
 
     signal contextualBrowser
 
+    signal subtitleLoaded(bool ok)
+
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
@@ -147,8 +149,8 @@ WallBookmarkTrack
     {
         target: (itemText.visible) ? player : null
 
-        onWidthChanged : pUpdateMargin()
-        onHeightChanged: pUpdateMargin()
+        onWidthChanged : pUpdateText()
+        onHeightChanged: pUpdateText()
     }
 
     //---------------------------------------------------------------------------------------------
@@ -198,25 +200,6 @@ WallBookmarkTrack
     {
         if (isExposed) restore();
         else           expose ();
-    }
-
-    //---------------------------------------------------------------------------------------------
-
-    function getTextMargin()
-    {
-        var height;
-
-        if (player.outputActive == AbstractBackend.OutputAudio)
-        {
-             height = playerCover.paintedHeight;
-        }
-        else height = player.getRect().height;
-
-        if (height > 0)
-        {
-             return (player.height - height) / 2 + height / 64;
-        }
-        else return player.height / 64;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -354,9 +337,31 @@ WallBookmarkTrack
 
     //---------------------------------------------------------------------------------------------
 
-    function pUpdateMargin()
+    function pUpdateText()
     {
-        pMargin = getTextMargin();
+        var width;
+        var height;
+
+        if (player.outputActive == AbstractBackend.OutputAudio)
+        {
+            width  = playerCover.paintedWidth;
+            height = playerCover.paintedHeight;
+        }
+        else
+        {
+            var rect = player.getRect();
+
+            width  = rect.width;
+            height = rect.height;
+        }
+
+        itemText.pixelSize = width / 32;
+
+        if (height > 0)
+        {
+             pMargin = (player.height - height) / 2 + height / 64;
+        }
+        else pMargin = player.height / 64;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -675,9 +680,7 @@ WallBookmarkTrack
 
         currentTime: player.currentTime
 
-        pixelSize: player.width / 32
-
-        onVisibleChanged: pUpdateMargin()
+        onVisibleChanged: pUpdateText()
     }
 
     LabelLoading
