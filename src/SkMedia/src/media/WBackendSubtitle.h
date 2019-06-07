@@ -35,6 +35,8 @@ class SK_MEDIA_EXPORT WBackendSubtitle : public QObject, public WPrivatable
 
     Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
 
+    Q_PROPERTY(bool retry READ retry WRITE setRetry NOTIFY retryChanged)
+
     Q_PROPERTY(int currentTime READ currentTime WRITE setCurrentTime NOTIFY currentTimeChanged)
 
     Q_PROPERTY(QString text READ text NOTIFY textChanged)
@@ -52,6 +54,8 @@ signals:
 
     void sourceChanged();
 
+    void retryChanged();
+
     void currentTimeChanged();
 
     void textChanged();
@@ -62,6 +66,9 @@ public: // Properties
 
     QString source() const;
     void    setSource(const QString & url);
+
+    bool retry() const;
+    void setRetry(int count);
 
     int  currentTime() const;
     void setCurrentTime(int msec);

@@ -44,6 +44,9 @@ void WBackendSubtitlePrivate::init()
 
     enabled = true;
 
+    retry      =  1;
+    retryCount = -1;
+
     currentTime = -1;
 
     index = -1;
@@ -369,6 +372,15 @@ void WBackendSubtitlePrivate::onQueryCompleted()
 {
     Q_Q(WBackendSubtitle);
 
+    if (retryCount > 0)
+    {
+        retryCount--;
+
+        item->reloadQuery();
+
+        return;
+    }
+
     QObject::disconnect(item, 0, q, 0);
 
     item->deleteLater();
@@ -466,6 +478,24 @@ void WBackendSubtitle::setSource(const QString & url)
     }
 
     emit sourceChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WBackendSubtitle::retry() const
+{
+    Q_D(const WBackendSubtitle); return d->retry;
+}
+
+void WBackendSubtitle::setRetry(int count)
+{
+    Q_D(WBackendSubtitle);
+
+    if (d->retry == count) return;
+
+    d->retry = count;
+
+    emit retryChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

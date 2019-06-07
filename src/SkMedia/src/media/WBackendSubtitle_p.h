@@ -91,6 +91,9 @@ public: // Variables
 
     QString source;
 
+    int retry;
+    int retryCount;
+
     int currentTime;
 
     int index;
