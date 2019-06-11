@@ -307,7 +307,7 @@ void WBackendYoutubePrivate::applySignature(QString * source, QScriptValue * val
 void WBackendYoutubePrivate::applySignature(QString * source, QJSValue * value) const
 #endif
 {
-    QRegExp regExp("&s=([a-fA-F0-9\\.\\-\\_\\=]+)");
+    QRegExp regExp("&s=([a-zA-Z0-9\\.\\-\\_\\=]+)");
 
     QString signature = Sk::extract(*source, regExp.pattern(), 1);
 
