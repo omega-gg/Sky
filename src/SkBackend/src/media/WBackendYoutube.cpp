@@ -188,7 +188,7 @@ QString WBackendYoutubePrivate::extractUrl(const QString & data) const
 
         if (signature.isEmpty() == false)
         {
-            return WControllerNetwork::decodeUrl(url) + "&s=" + signature;
+            return WControllerNetwork::decodeUrl(url + "&s=" + signature);
         }
     }
 
@@ -307,7 +307,7 @@ void WBackendYoutubePrivate::applySignature(QString * source, QScriptValue * val
 void WBackendYoutubePrivate::applySignature(QString * source, QJSValue * value) const
 #endif
 {
-    QRegExp regExp("&s=([a-fA-F0-9\\.]+)");
+    QRegExp regExp("&s=([a-fA-F0-9\\.\\-\\_\\=]+)");
 
     QString signature = Sk::extract(*source, regExp.pattern(), 1);
 
@@ -317,7 +317,7 @@ void WBackendYoutubePrivate::applySignature(QString * source, QJSValue * value) 
     signature = value->call(QJSValueList() << signature).toString();
 #endif
 
-    source->replace(regExp, "&signature=" + signature);
+    source->replace(regExp, "&sig=" + signature);
 }
 
 //-------------------------------------------------------------------------------------------------
