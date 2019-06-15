@@ -524,7 +524,7 @@ WallBookmarkTrack
 
         volume: 0.0
 
-        pauseTimeout: 60000 // 1 minute
+        pauseTimeout: 600000 // 10 minutes
 
         //-----------------------------------------------------------------------------------------
         // States
