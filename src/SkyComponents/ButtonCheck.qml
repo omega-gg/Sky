@@ -56,6 +56,8 @@ MouseArea
 
     property bool pMaximum: (handle.x == model.handleMaximum)
 
+    property bool pMove: false
+
     //---------------------------------------------------------------------------------------------
     // Signals
     //---------------------------------------------------------------------------------------------
@@ -81,8 +83,14 @@ MouseArea
     // Events
     //---------------------------------------------------------------------------------------------
 
+    onPositionChanged: pMove = true
+
+    onPressed: pMove = false
+
     onReleased:
     {
+        if (pMove == false) return;
+
         if ((model.position + handle.width / 2) < width / 2)
         {
             handle.x = 0;
