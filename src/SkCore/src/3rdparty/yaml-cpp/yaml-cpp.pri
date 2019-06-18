@@ -3,6 +3,7 @@
 HEADERS += src/3rdparty/yaml-cpp/collectionstack.h \
            src/3rdparty/yaml-cpp/directives.h \
            src/3rdparty/yaml-cpp/emitterstate.h \
+           src/3rdparty/yaml-cpp/emitterutils.h \
            src/3rdparty/yaml-cpp/exp.h \
            src/3rdparty/yaml-cpp/indentation.h \
            src/3rdparty/yaml-cpp/nodebuilder.h \
