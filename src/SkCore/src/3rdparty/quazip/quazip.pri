@@ -15,7 +15,7 @@ HEADERS += src/3rdparty/quazip/minizip_crypt.h \
            src/3rdparty/quazip/quazip.h \
            src/3rdparty/quazip/quazipnewinfo.h \
            src/3rdparty/quazip/unzip.h \
-           src/3rdparty/quazip/zip.h
+           src/3rdparty/quazip/zip.h \
 
 SOURCES += src/3rdparty/quazip/qioapi.cpp \
            src/3rdparty/quazip/JlCompress.cpp \
@@ -29,4 +29,4 @@ SOURCES += src/3rdparty/quazip/qioapi.cpp \
            src/3rdparty/quazip/quazipfileinfo.cpp \
            src/3rdparty/quazip/quazipnewinfo.cpp \
            src/3rdparty/quazip/unzip.c \
-           src/3rdparty/quazip/zip.c
+           src/3rdparty/quazip/zip.c \

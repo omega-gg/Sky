@@ -1,6 +1,8 @@
 # Media module
 
-HEADERS += src/media/WBackendDuckDuckGo.h \
+HEADERS += src/media/WBackendUniversal.h \
+           src/media/WBackendUniversal_p.h \
+           src/media/WBackendDuckDuckGo.h \
            src/media/WBackendBing.h \
            src/media/WBackendTmdb.h \
            src/media/WBackendLastFm.h \
@@ -10,7 +12,8 @@ HEADERS += src/media/WBackendDuckDuckGo.h \
            src/media/WBackendSoundCloud.h \
            src/media/WBackendOpenSubtitles.h \
 
-SOURCES += src/media/WBackendDuckDuckGo.cpp \
+SOURCES += src/media/WBackendUniversal.cpp \
+           src/media/WBackendDuckDuckGo.cpp \
            src/media/WBackendBing.cpp \
            src/media/WBackendTmdb.cpp \
            src/media/WBackendLastFm.cpp \

@@ -57,6 +57,9 @@
 //#include <WControllerZip>
 #include <WFileWatcher>
 
+// 3rdparty includes
+#include <charsetdetect.h>
+
 // Windows includes
 #ifdef Q_OS_WIN
 #include <qt_windows.h>
@@ -911,6 +914,15 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
     }
 
     return result;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QString WControllerApplication::detectCodec(const QByteArray & array)
+{
+    QString codec = csd_codec(array, array.length());
+
+    return codec.toLower();
 }
 
 //-------------------------------------------------------------------------------------------------

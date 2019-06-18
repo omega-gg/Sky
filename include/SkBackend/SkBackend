@@ -7,6 +7,7 @@
 #include "WBackendOpenSubtitles.h"
 #include "WBackendSoundCloud.h"
 #include "WBackendTmdb.h"
+#include "WBackendUniversal.h"
 #include "WBackendVimeo.h"
 #include "WBackendYoutube.h"
 #endif // SKBACKEND_H

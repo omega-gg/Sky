@@ -70,7 +70,15 @@ void WBackendSubtitlePrivate::loadSrt(const QByteArray & data)
 
     QString text;
 
-    QString content = Sk::readUtf8(data);
+    QString codec = Sk::detectCodec(data);
+
+    QString content;
+
+    if (codec.isEmpty() || codec == "ascii")
+    {
+         content = Sk::readCodec(data, "utf-8");
+    }
+    else content = Sk::readCodec(data, codec);
 
     content.remove('\r');
 

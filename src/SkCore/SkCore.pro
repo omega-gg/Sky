@@ -49,8 +49,11 @@ include(src/plugin/plugin.pri)
 
 include(src/3rdparty/qtsingleapplication/qtsingleapplication.pri)
 include(src/3rdparty/quazip/quazip.pri)
+include(src/3rdparty/yaml-cpp/yaml-cpp.pri)
+include(src/3rdparty/libcharsetdetect/libcharsetdetect.pri)
 
-INCLUDEPATH += $$SK/include/SkCore \
+INCLUDEPATH += $$SK/include \
+               $$SK/include/SkCore \
                $$SK/include/SkCore/private \
 
 win32:LIBS += -L$$SK/lib -lz
