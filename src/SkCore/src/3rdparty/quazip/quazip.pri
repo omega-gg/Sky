@@ -30,3 +30,5 @@ SOURCES += src/3rdparty/quazip/qioapi.cpp \
            src/3rdparty/quazip/quazipnewinfo.cpp \
            src/3rdparty/quazip/unzip.c \
            src/3rdparty/quazip/zip.c \
+
+INCLUDEPATH += src/3rdparty/quazip \
