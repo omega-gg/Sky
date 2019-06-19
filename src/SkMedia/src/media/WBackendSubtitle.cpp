@@ -31,38 +31,31 @@ static const int BACKENDSUBTITLE_LENGTH = 1000;
 static const int BACKENDSUBTITLE_TIMEOUT = 16;
 
 //=================================================================================================
-// WBackendSubtitlePrivate
+// WBackendSubtitleQuery
 //=================================================================================================
 
-WBackendSubtitlePrivate::WBackendSubtitlePrivate(WBackendSubtitle * p) : WPrivate(p) {}
-
-//-------------------------------------------------------------------------------------------------
-
-void WBackendSubtitlePrivate::init()
+class WBackendSubtitleQuery : public QObject
 {
-    item = NULL;
+    Q_OBJECT
 
-    enabled = true;
+public: // Interface
+    Q_INVOKABLE void extract(const QByteArray & data);
 
-    retry      =  1;
-    retryCount = -1;
+private: // Functions
+    int extractMsecs(const QString & string);
 
-    currentTime = -1;
-
-    index = -1;
-
-    start = -1;
-    end   = -1;
-
-    timer = -1;
-}
+signals:
+    void loaded(const QList<WBackendSubtitleData> & list);
+};
 
 //-------------------------------------------------------------------------------------------------
-// Private functions
+// Interface
 //-------------------------------------------------------------------------------------------------
 
-void WBackendSubtitlePrivate::loadSrt(const QByteArray & data)
+/* Q_INVOKABLE */ void WBackendSubtitleQuery::extract(const QByteArray & data)
 {
+    QList<WBackendSubtitleData> list;
+
     bool parse = false;
 
     int start = 0;
@@ -136,8 +129,66 @@ void WBackendSubtitlePrivate::loadSrt(const QByteArray & data)
             }
         }
     }
+
+    emit loaded(list);
+
+    deleteLater();
 }
 
+//-------------------------------------------------------------------------------------------------
+
+int WBackendSubtitleQuery::extractMsecs(const QString & string)
+{
+    QTime time = QTime::fromString(string, "HH:mm:ss,zzz");
+
+    return Sk::getMsecs(time);
+}
+
+//=================================================================================================
+// WBackendSubtitlePrivate
+//=================================================================================================
+
+WBackendSubtitlePrivate::WBackendSubtitlePrivate(WBackendSubtitle * p) : WPrivate(p) {}
+
+//-------------------------------------------------------------------------------------------------
+
+void WBackendSubtitlePrivate::init()
+{
+    W_GET_CONTROLLER(WControllerPlaylist, controller);
+
+    if (controller == NULL)
+    {
+        qWarning("WBackendSubtitlePrivate::init: WControllerPlaylist does not exist.");
+
+        thread = NULL;
+    }
+    else thread = controller->thread();
+
+    item = NULL;
+
+    enabled = true;
+
+    retry      =  1;
+    retryCount = -1;
+
+    currentTime = -1;
+
+    index = -1;
+
+    start = -1;
+    end   = -1;
+
+    timer = -1;
+
+    qRegisterMetaType<QList<WBackendSubtitleData> >("QList<WBackendSubtitleData>");
+
+    const QMetaObject * meta = WBackendSubtitleQuery().metaObject();
+
+    method = meta->method(meta->indexOfMethod("extract(QByteArray)"));
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private functions
 //-------------------------------------------------------------------------------------------------
 
 void WBackendSubtitlePrivate::updateText()
@@ -297,15 +348,6 @@ void WBackendSubtitlePrivate::stopTimer()
 
 //-------------------------------------------------------------------------------------------------
 
-int WBackendSubtitlePrivate::extractMsecs(const QString & string)
-{
-    QTime time = QTime::fromString(string, "HH:mm:ss,zzz");
-
-    return Sk::getMsecs(time);
-}
-
-//-------------------------------------------------------------------------------------------------
-
 WLibraryItem * WBackendSubtitlePrivate::getItem()
 {
     if (item) return item;
@@ -354,13 +396,6 @@ void WBackendSubtitlePrivate::onQueryData(const QByteArray & data, const QString
 {
     qDebug("SUBTITLE %d %s", data.length(), extension.C_STR);
 
-    if (extension == "srt")
-    {
-        loadSrt(data);
-
-        if (enabled) updateText();
-    }
-
     Q_Q(WBackendSubtitle);
 
     QObject::disconnect(item, 0, q, 0);
@@ -369,11 +404,22 @@ void WBackendSubtitlePrivate::onQueryData(const QByteArray & data, const QString
 
     item = NULL;
 
-    if (list.isEmpty())
+    if (extension == "srt")
     {
-         emit q->loaded(false);
+        WBackendSubtitleQuery * query = new WBackendSubtitleQuery;
+
+        QObject::connect(query, SIGNAL(loaded(QList<WBackendSubtitleData>)),
+                         q,     SLOT(onLoaded(QList<WBackendSubtitleData>)));
+
+        if (thread)
+        {
+            query->moveToThread(thread);
+
+            method.invoke(query, Q_ARG(QByteArray, data));
+        }
+        else query->extract(data);
     }
-    else emit q->loaded(true);
+    else emit q->loaded(false);
 }
 
 void WBackendSubtitlePrivate::onQueryCompleted()
@@ -396,6 +442,23 @@ void WBackendSubtitlePrivate::onQueryCompleted()
     item = NULL;
 
     emit q->loaded(false);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WBackendSubtitlePrivate::onLoaded(const QList<WBackendSubtitleData> & list)
+{
+    Q_Q(WBackendSubtitle);
+
+    this->list = list;
+
+    if (list.isEmpty() == false)
+    {
+        updateText();
+
+        emit q->loaded(true);
+    }
+    else emit q->loaded(false);
 }
 
 //=================================================================================================
@@ -425,6 +488,24 @@ void WBackendSubtitlePrivate::onQueryCompleted()
 
 //-------------------------------------------------------------------------------------------------
 // Properties
+//-------------------------------------------------------------------------------------------------
+
+QThread * WBackendSubtitle::thread() const
+{
+    Q_D(const WBackendSubtitle); return d->thread;
+}
+
+void WBackendSubtitle::setThread(QThread * thread)
+{
+    Q_D(WBackendSubtitle);
+
+    if (d->thread == thread) return;
+
+    d->thread = thread;
+
+    emit threadChanged();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 bool WBackendSubtitle::isEnabled() const
@@ -544,3 +625,5 @@ QString WBackendSubtitle::text() const
 }
 
 #endif // SK_NO_BACKENDSUBTITLE
+
+#include "WBackendSubtitle.moc"

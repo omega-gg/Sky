@@ -29,6 +29,7 @@
 
 // Qt includes
 #include <QTime>
+#include <QMetaMethod>
 
 // Private includes
 #include <private/Sk_p>
@@ -62,8 +63,6 @@ public:
     void init();
 
 public: // Functions
-    void loadSrt(const QByteArray & data);
-
     void updateText();
 
     void clearText  ();
@@ -72,8 +71,6 @@ public: // Functions
     bool checkIndex();
 
     void stopTimer();
-
-    int extractMsecs(const QString & string);
 
     WLibraryItem * getItem();
 
@@ -84,7 +81,11 @@ public: // Slots
 
     void onQueryCompleted();
 
+    void onLoaded(const QList<WBackendSubtitleData> & list);
+
 public: // Variables
+    QThread * thread;
+
     WLibraryItem * item;
 
     bool enabled;
@@ -108,6 +109,8 @@ public: // Variables
     int timer;
 
     QTime time;
+
+    QMetaMethod method;
 
 protected:
     W_DECLARE_PUBLIC(WBackendSubtitle)

@@ -31,6 +31,8 @@ class SK_MEDIA_EXPORT WBackendSubtitle : public QObject, public WPrivatable
 {
     Q_OBJECT
 
+    Q_PROPERTY(QThread * thread READ thread WRITE setThread NOTIFY threadChanged)
+
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 
     Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
@@ -50,6 +52,8 @@ protected: // Events
 signals:
     void loaded(bool ok);
 
+    void threadChanged();
+
     void enabledChanged();
 
     void sourceChanged();
@@ -61,6 +65,9 @@ signals:
     void textChanged();
 
 public: // Properties
+    QThread * thread() const;
+    void      setThread(QThread * thread);
+
     bool isEnabled() const;
     void setEnabled(bool enabled);
 
@@ -81,6 +88,8 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onQueryData(const QByteArray &, const QString &))
 
     Q_PRIVATE_SLOT(d_func(), void onQueryCompleted())
+
+    Q_PRIVATE_SLOT(d_func(), void onLoaded(const QList<WBackendSubtitleData> &))
 };
 
 #include <private/WBackendSubtitle_p>
