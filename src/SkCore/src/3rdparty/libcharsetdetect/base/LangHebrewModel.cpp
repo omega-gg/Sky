@@ -50,7 +50,7 @@
 
 //Windows-1255 language model
 //Character Mapping Table:
-unsigned char win1255_CharToOrderMap[] =
+static unsigned char win1255_CharToOrderMap[] =
 {
 255,255,255,255,255,255,255,255,255,255,254,255,255,254,255,255,  //00
 255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,  //10
@@ -76,7 +76,7 @@ unsigned char win1255_CharToOrderMap[] =
 //first 1024 sequences: 1.5981%
 //rest  sequences:      0.087%
 //negative sequences:   0.0015%
-char HebrewLangModel[] =
+static char HebrewLangModel[] =
 {
 0,3,3,3,3,3,3,3,3,3,3,2,3,3,3,3,3,3,3,3,3,3,3,2,3,2,1,2,0,1,0,0,
 3,0,3,1,0,0,1,3,2,0,1,1,2,0,2,2,2,1,1,1,1,2,1,1,1,2,0,0,2,2,0,1,
