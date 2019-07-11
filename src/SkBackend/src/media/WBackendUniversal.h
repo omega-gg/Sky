@@ -29,21 +29,58 @@ class SK_BACKEND_EXPORT WBackendUniversal : public WBackendNet
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
-
 public:
-    WBackendUniversal();
+    WBackendUniversal(const QString & id, const QString & source);
 
-signals:
-    void sourceChanged();
+public: // WBackendNet implementation
+    /* Q_INVOKABLE virtual */ QString getId   () const;
+    /* Q_INVOKABLE virtual */ QString getTitle() const;
 
-public: // Properties
-    QString source() const;
-    void    setSource(const QString & source);
+public: // WBackendNet reimplementation
+    /* Q_INVOKABLE virtual */ bool hasSearch() const;
+
+    /* Q_INVOKABLE virtual */ bool isSearchEngine() const;
+    /* Q_INVOKABLE virtual */ bool isSearchCover () const;
+
+    /* Q_INVOKABLE virtual */ bool checkValidUrl(const QString & url) const;
+
+    /* Q_INVOKABLE virtual */ QString getHost() const;
+
+    /* Q_INVOKABLE virtual */ QList<WLibraryFolderItem> getLibraryItems() const;
+
+    /* Q_INVOKABLE virtual */ QString getTrackId(const QString & url) const;
+
+    /* Q_INVOKABLE virtual */ WAbstractBackend::Output getTrackOutput(const QString & url) const;
+
+    /* Q_INVOKABLE virtual */ WBackendNetPlaylistInfo getPlaylistInfo(const QString & url) const;
+
+    /* Q_INVOKABLE virtual */ QString getUrlTrack(const QString & id) const;
+
+    /* Q_INVOKABLE virtual */ QString getUrlPlaylist(const WBackendNetPlaylistInfo & info) const;
+
+    //---------------------------------------------------------------------------------------------
+
+    /* Q_INVOKABLE virtual */ WBackendNetQuery getQuerySource  (const QString & url) const;
+    /* Q_INVOKABLE virtual */ WBackendNetQuery getQueryTrack   (const QString & url) const;
+    /* Q_INVOKABLE virtual */ WBackendNetQuery getQueryPlaylist(const QString & url) const;
+    /* Q_INVOKABLE virtual */ WBackendNetQuery getQueryFolder  (const QString & url) const;
+    /* Q_INVOKABLE virtual */ WBackendNetQuery getQueryItem    (const QString & url) const;
+
+    //---------------------------------------------------------------------------------------------
+
+    /* Q_INVOKABLE virtual */
+        WBackendNetQuery createQuery(const QString & method,
+                                     const QString & label, const QString & q) const;
 
 private:
     W_DECLARE_PRIVATE(WBackendUniversal)
+
+    Q_PRIVATE_SLOT(d_func(), void onLoaded())
+
+    Q_PRIVATE_SLOT(d_func(), void onData(const WBackendUniversalData & data))
 };
+
+#include <private/WBackendUniversal_p>
 
 #endif // SK_NO_BACKENDUNIVERSAL
 #endif // WBACKENDUNIVERSAL_H

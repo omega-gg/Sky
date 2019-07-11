@@ -509,11 +509,6 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
     return false;
 }
 
-/* Q_INVOKABLE virtual */ bool WBackendNet::hasDiscover() const
-{
-    return false;
-}
-
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ bool WBackendNet::isSearchEngine() const

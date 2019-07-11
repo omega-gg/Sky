@@ -32,15 +32,190 @@
 
 #ifndef SK_NO_BACKENDUNIVERSAL
 
+// Forward declarations
+class WRemoteData;
+class WBackendUniversalData;
+class WBackendUniversalParameters;
+
+//=================================================================================================
+// WBackendUniversalData
+//=================================================================================================
+
+struct WBackendUniversalData
+{
+    WBackendUniversalData()
+    {
+        hasSearch = false;
+
+        isSearchEngine = false;
+        isSearchCover  = false;
+    }
+
+    bool hasSearch;
+
+    bool isSearchEngine;
+    bool isSearchCover;
+
+    QString title;
+    QString host;
+
+    QList<WLibraryFolderItem> items;
+
+    //---------------------------------------------------------------------------------------------
+
+    QString validate;
+
+    QString trackId;
+    QString trackOutput;
+
+    QString playlistInfo;
+
+    QString urlTrack;
+    QString urlPlaylist;
+
+    QString querySource;
+    QString queryTrack;
+    QString queryPlaylist;
+    QString queryFolder;
+    QString queryItem;
+
+    QString createQuery;
+};
+
+//=================================================================================================
+// WBackendUniversalNode
+//=================================================================================================
+
+class SK_BACKEND_EXPORT WBackendUniversalNode
+{
+public: // Enums
+    enum Type
+    {
+        Variable,
+        Function
+    };
+
+public:
+    WBackendUniversalNode(Type type);
+
+public: // Interface
+    QVariant run(WBackendUniversalParameters * parameters) const;
+
+    void dump(int indent = 0) const;
+
+    int   getInt  (WBackendUniversalParameters * parameters, int index) const;
+    float getFloat(WBackendUniversalParameters * parameters, int index) const;
+
+    QByteArray getByteArray(WBackendUniversalParameters * parameters, int index) const;
+    QString    getString   (WBackendUniversalParameters * parameters, int index) const;
+
+    QRegExp getRegExp(WBackendUniversalParameters * parameters, int index) const;
+
+    QVariant * getValue(WBackendUniversalParameters * parameters, int index) const;
+
+public: // Variables
+    Type type;
+
+    QString data;
+
+    QList<WBackendUniversalNode> nodes;
+};
+
+//=================================================================================================
+// WBackendUniversalScript
+//=================================================================================================
+
+class SK_BACKEND_EXPORT WBackendUniversalScript
+{
+public:
+    WBackendUniversalScript(const QString & data);
+
+public: // Interface
+    bool isValid() const;
+
+    QVariant run(WBackendUniversalParameters * parameters) const;
+
+    void dump() const;
+
+private: // Functions
+    void load(const QString & data);
+
+    bool loadParameters(WBackendUniversalNode * node,
+                        QString               * string, const QRegExp & regExp) const;
+
+    bool loadFunction(WBackendUniversalNode * node,
+                      QString               * string, const QRegExp & regExp) const;
+
+    QString extractWord  (QString * string) const;
+    QString extractString(QString * string) const;
+
+    bool skipCondition(int * index) const;
+
+    bool getCondition(WBackendUniversalParameters * parameters,
+                      const WBackendUniversalNode & node, int * index) const;
+
+public: // Properties
+    QList<WBackendUniversalNode> nodes;
+};
+
+//=================================================================================================
+// WBackendUniversalParameters
+//=================================================================================================
+
+class SK_BACKEND_EXPORT WBackendUniversalParameters
+{
+public:
+    WBackendUniversalParameters(const WBackendUniversalScript & script);
+
+public: // Interface
+    void add(const QString & name, const QVariant & value = QVariant());
+
+    QVariant       * value     (const QString & name);
+    const QVariant * valueConst(const QString & name) const;
+
+private: // Functions
+    void extract(QStringList * list, const WBackendUniversalNode & node);
+
+public: // Variables
+    QHash<QString, QVariant> parameters;
+};
+
+//=================================================================================================
+// WBackendUniversalPrivate
+//=================================================================================================
+
 class SK_BACKEND_EXPORT WBackendUniversalPrivate : public WBackendNetPrivate
 {
 public:
     WBackendUniversalPrivate(WBackendUniversal * p);
 
-    void init();
+    void init(const QString & id, const QString & source);
+
+public: // Functions
+    void load();
+
+    void runQuery(WBackendNetQuery * query, const QString & source, const QString & url) const;
+
+    void applyQueryParameters(WBackendUniversalParameters * parameters, const QString & url) const;
+
+    void applyQuery(WBackendNetQuery * query, WBackendUniversalParameters * parameters) const;
+
+public: // Events
+    void onLoaded();
+
+    void onData(const WBackendUniversalData & data);
 
 public: // Variables
+    QThread * thread;
+
+    WBackendUniversalData data;
+
+    WRemoteData * remote;
+
+    QString id;
     QString source;
+
+    QMetaMethod method;
 
 protected:
     W_DECLARE_PUBLIC(WBackendUniversal)

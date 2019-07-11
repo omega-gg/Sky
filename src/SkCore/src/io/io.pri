@@ -11,6 +11,7 @@ HEADERS += src/io/WAbstractLoader.h \
            src/io/WCache.h \
            src/io/WCache_p.h \
            src/io/WUnzipper.h \
+           src/io/WYamlReader.h \
 
 SOURCES += src/io/WAbstractLoader.cpp \
            src/io/WLoaderNetwork.cpp \
@@ -18,3 +19,4 @@ SOURCES += src/io/WAbstractLoader.cpp \
            src/io/WFileWatcher.cpp \
            src/io/WCache.cpp \
            src/io/WUnzipper.cpp \
+           src/io/WYamlReader.cpp \
