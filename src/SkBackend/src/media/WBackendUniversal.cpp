@@ -321,6 +321,21 @@ QVariant WBackendUniversalNode::run(WBackendUniversalParameters * parameters) co
             return Sk::readCodec(getByteArray(parameters, 0), getString(parameters, 1));
         }
     }
+    else if (data == "LENGTH")
+    {
+        if (nodes.count())
+        {
+            qDebug("LENGTH [%d]", getString(parameters, 0).length());
+
+            return getString(parameters, 0).length();
+        }
+        else
+        {
+            qDebug("LENGTH [0]");
+
+            return 0;
+        }
+    }
     else if (data == "INDEX_OF")
     {
         if (nodes.count() != 2) return -1;
@@ -834,6 +849,10 @@ QVariant WBackendUniversalScript::run(WBackendUniversalParameters * parameters) 
         }
         else if (condition == 0)
         {
+#ifdef SK_BACKEND_LOG
+            qDebug("SKIP");
+#endif
+
             index++;
 
             continue;
@@ -989,6 +1008,8 @@ bool WBackendUniversalScript::loadParameters(WBackendUniversalNode * node,
 
         node->nodes.append(child);
     }
+
+    loadParameters(node, string, regExp);
 
     return true;
 }

@@ -69,8 +69,8 @@ public: // WBackendNet reimplementation
     //---------------------------------------------------------------------------------------------
 
     /* Q_INVOKABLE virtual */
-        WBackendNetQuery createQuery(const QString & method,
-                                     const QString & label, const QString & q) const;
+    WBackendNetQuery createQuery(const QString & method,
+                                 const QString & label, const QString & q) const;
 
 private:
     W_DECLARE_PRIVATE(WBackendUniversal)
