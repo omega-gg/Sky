@@ -82,6 +82,8 @@ void scanFolder(const QString & path, const QString & destination = QString())
     {
         if (info.isDir())
         {
+            if (info.fileName() == "3rdparty") continue;
+
             qDebug(info.filePath().toLatin1().constData());
 
             scanFolder(info.filePath(), destination);

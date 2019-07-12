@@ -154,7 +154,7 @@ void WYamlReaderPrivate::extractNode(WYamlNode * node, QString * content, QStrin
         {
             extractValue(WYamlReaderPrivate::Line, node, content);
         }
-        else node->value = string;
+        else node->value = *string;
     }
     else extractChilds(node, content);
 }

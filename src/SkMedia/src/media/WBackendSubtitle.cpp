@@ -69,7 +69,7 @@ signals:
 
     if (codec.isEmpty() || codec == "ascii")
     {
-         content = Sk::readCodec(data, "utf-8");
+         content = Sk::readUtf8(data);
     }
     else content = Sk::readCodec(data, codec);
 
@@ -415,7 +415,7 @@ void WBackendSubtitlePrivate::onQueryData(const QByteArray & data, const QString
         {
             query->moveToThread(thread);
 
-            method.invoke(query, Q_ARG(QByteArray, data));
+            method.invoke(query, Q_ARG(const QByteArray &, data));
         }
         else query->extract(data);
     }

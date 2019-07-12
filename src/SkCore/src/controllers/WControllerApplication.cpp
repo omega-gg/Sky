@@ -830,6 +830,54 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ QString WControllerApplication::extractText(QString       * string,
+                                                                     const QString & pattern)
+{
+    QString result;
+
+    int index = string->indexOf(pattern, 1);
+
+    if (index == -1)
+    {
+        result = *string;
+
+        string->clear();
+    }
+    else
+    {
+        result = string->mid(0, index);
+
+        string->remove(0, index);
+    }
+
+    return result;
+}
+
+/* Q_INVOKABLE static */ QString WControllerApplication::extractText(QString       * string,
+                                                                     const QRegExp & regExp)
+{
+    QString result;
+
+    int index = regExp.indexIn(*string, 1);
+
+    if (index == -1)
+    {
+        result = *string;
+
+        string->clear();
+    }
+    else
+    {
+        result = string->mid(0, index);
+
+        string->remove(0, index);
+    }
+
+    return result;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE static */ QString WControllerApplication::extractLine(QString * string)
 {
     QString result;
@@ -850,6 +898,33 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
     }
 
     return result;
+}
+
+/* Q_INVOKABLE static */ QString WControllerApplication::extractWord(QString * string)
+{
+    return extractText(string, " ");
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ void WControllerApplication::skipCharacters(QString     * string,
+                                                                     const QChar & character)
+{
+    int count = 0;
+
+    while (count < string->length())
+    {
+        if (string->at(count) != character) break;
+
+        count++;
+    }
+
+    string->remove(0, count);
+}
+
+/* Q_INVOKABLE static */ void WControllerApplication::skipSpaces(QString * string)
+{
+    skipCharacters(string, ' ');
 }
 
 //-------------------------------------------------------------------------------------------------

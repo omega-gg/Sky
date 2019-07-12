@@ -52,8 +52,7 @@ include(src/3rdparty/quazip/quazip.pri)
 include(src/3rdparty/yaml-cpp/yaml-cpp.pri)
 include(src/3rdparty/libcharsetdetect/libcharsetdetect.pri)
 
-INCLUDEPATH += $$SK/include \
-               $$SK/include/SkCore \
+INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkCore/private \
 
 win32:LIBS += -L$$SK/lib -lz
