@@ -1057,9 +1057,11 @@ QString WBackendUniversalScript::extractString(QString * string) const
     }
     else
     {
-        result = string->mid(1, index - 1);
+        index++;
 
-        string->remove(0, index + 1);
+        result = string->mid(0, index);
+
+        string->remove(0, index);
     }
 
     /*while (string->at(index - 1) == '\\')
@@ -1071,11 +1073,13 @@ QString WBackendUniversalScript::extractString(QString * string) const
         index = at;
     }
 
-    result = string->mid(1, index - 1);
+    index++;
+
+    result = string->mid(0, index);
 
     result.replace("\\\"", "\"");
 
-    string->remove(0, index + 1);*/
+    string->remove(0, index);*/
 
     return result;
 }
