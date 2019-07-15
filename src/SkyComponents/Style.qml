@@ -1079,10 +1079,23 @@ Item
     //---------------------------------------------------------------------------------------------
     // WallVideo
 
+    property int wallVideo_interval: 10000
+
     property int wallVideo_overlayWidth : componentWallBookmarkTrack_iconWidth
     property int wallVideo_overlayHeight: itemWall_iconHeight
 
     property color wallVideo_colorPlayer: "black"
+
+    property color wallVideo_colorShadow: "#008cdc"
+
+    property alias wallVideo_filterShadow: wallVideo_filterShadow
+
+    ImageColorFilter
+    {
+        id: wallVideo_filterShadow
+
+        color: wallVideo_colorShadow
+    }
 
     //---------------------------------------------------------------------------------------------
     // PlayerBrowser
@@ -1095,17 +1108,6 @@ Item
 
     property color playerBrowser_colorText     : "#dcdcdc"
     property color playerBrowser_colorTextHover: text2_color
-
-    property color playerBrowser_colorShadow: "#008cdc"
-
-    property alias playerBrowser_filterShadow: playerBrowser_filterShadow
-
-    ImageColorFilter
-    {
-        id: playerBrowser_filterShadow
-
-        color: playerBrowser_colorShadow
-    }
 
     //---------------------------------------------------------------------------------------------
     // ItemList

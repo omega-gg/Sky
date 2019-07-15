@@ -335,56 +335,6 @@ MouseArea
         onClicked: play()
     }
 
-    /*RectangleShadow
-    {
-        anchors.left  : areaBackward.left
-        anchors.right : areaBackward.right
-        anchors.top   : parent.top
-        anchors.bottom: parent.bottom
-
-        anchors.rightMargin: Math.round(areaBackward.width / 3)
-
-        opacity: (areaBackward.containsMouse || pBackward) ? st.playerBrowser_opacity : 0.0
-
-        direction: Sk.Right
-
-        filter: st.playerBrowser_filterShadow
-
-        Behavior on opacity
-        {
-            PropertyAnimation
-            {
-                duration: st.duration_fast
-
-                easing.type: st.easing
-            }
-        }
-    }
-
-    RectangleShadow
-    {
-        anchors.left  : areaForward.left
-        anchors.right : areaForward.right
-        anchors.top   : parent.top
-        anchors.bottom: parent.bottom
-
-        anchors.leftMargin: Math.round(areaForward.width / 3)
-
-        opacity: (areaForward.containsMouse || pForward) ? st.playerBrowser_opacity : 0.0
-
-        filter: st.playerBrowser_filterShadow
-
-        Behavior on opacity
-        {
-            PropertyAnimation
-            {
-                duration: st.duration_fast
-
-                easing.type: st.easing
-            }
-        }
-    }*/
-
     ButtonPushOverlay
     {
         id: buttonPrevious

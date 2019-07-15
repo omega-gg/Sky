@@ -386,7 +386,7 @@ signals:
     void antialiasChanged();
     void vsyncChanged    ();
 
-    void hoverEnabledChanged ();
+    void hoverEnabledChanged();
 
     void fadeEnabledChanged ();
     void fadeDurationChanged();

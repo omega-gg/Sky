@@ -48,6 +48,8 @@ WallBookmarkTrack
 
     property int pWidthRight: width - pWidthHalf - st.border_size
 
+    property int pWidthArea: player.width / 4
+
     property int pMargin: 0
 
     property variant pCurrentTab    : null
@@ -200,6 +202,14 @@ WallBookmarkTrack
     {
         if (isExposed) restore();
         else           expose ();
+    }
+
+    //---------------------------------------------------------------------------------------------
+
+    function getOpacity(area)
+    {
+        if (area.pressed) return 1.0;
+        else              return 0.5;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -657,6 +667,96 @@ WallBookmarkTrack
             scaling: isSourceDefault
 
             onVisibleChanged: if (visible) applyScale()
+        }
+    }
+
+    MouseArea
+    {
+        id: areaBackward
+
+        anchors.left  : player.left
+        anchors.top   : player.top
+        anchors.bottom: player.bottom
+
+        width: pWidthArea
+
+        z: player.z
+
+        visible: player.visible
+
+        hoverEnabled: true
+
+        cursor: Qt.PointingHandCursor
+
+        onPressed: player.seek(player.currentTime - st.wallVideo_interval)
+
+        RectangleShadow
+        {
+            id: rectangleBackward
+
+            anchors.fill: parent
+
+            visible: (opacity != 0.0)
+
+            opacity: (areaBackward.containsMouse) ? getOpacity(areaBackward) : 0.0
+
+            direction: Sk.Right
+
+            filter: st.wallVideo_filterShadow
+
+            Behavior on opacity
+            {
+                PropertyAnimation
+                {
+                    duration: st.duration_normal
+
+                    easing.type: st.easing
+                }
+            }
+        }
+    }
+
+    MouseArea
+    {
+        id: areaForward
+
+        anchors.right : player.right
+        anchors.top   : player.top
+        anchors.bottom: player.bottom
+
+        width: pWidthArea
+
+        z: player.z
+
+        visible: player.visible
+
+        hoverEnabled: true
+
+        cursor: Qt.PointingHandCursor
+
+        onPressed: player.seek(player.currentTime + st.wallVideo_interval)
+
+        RectangleShadow
+        {
+            id: rectangleForward
+
+            anchors.fill: parent
+
+            visible: (opacity != 0.0)
+
+            opacity: (areaForward.containsMouse) ? getOpacity(areaForward) : 0.0
+
+            filter: st.wallVideo_filterShadow
+
+            Behavior on opacity
+            {
+                PropertyAnimation
+                {
+                    duration: st.duration_normal
+
+                    easing.type: st.easing
+                }
+            }
         }
     }
 
