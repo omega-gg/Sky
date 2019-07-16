@@ -688,7 +688,7 @@ WallBookmarkTrack
 
         cursor: Qt.PointingHandCursor
 
-        onPressed: player.seek(player.currentTime - st.wallVideo_interval)
+        onClicked: player.seek(player.currentTime - st.wallVideo_interval)
 
         RectangleShadow
         {
@@ -734,7 +734,7 @@ WallBookmarkTrack
 
         cursor: Qt.PointingHandCursor
 
-        onPressed: player.seek(player.currentTime + st.wallVideo_interval)
+        onClicked: player.seek(player.currentTime + st.wallVideo_interval)
 
         RectangleShadow
         {
