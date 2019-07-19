@@ -48,7 +48,8 @@ WallBookmarkTrack
 
     property int pWidthRight: width - pWidthHalf - st.border_size
 
-    property int pWidthArea: player.width / 4
+    property int pAreaWidth : player.width  / 4
+    property int pAreaHeight: player.height / 3
 
     property int pMargin: 0
 
@@ -674,11 +675,12 @@ WallBookmarkTrack
     {
         id: areaBackward
 
-        anchors.left  : player.left
-        anchors.top   : player.top
-        anchors.bottom: player.bottom
+        anchors.left: player.left
 
-        width: pWidthArea
+        anchors.verticalCenter: player.verticalCenter
+
+        width : pAreaWidth
+        height: pAreaHeight
 
         z: player.z
 
@@ -689,29 +691,34 @@ WallBookmarkTrack
         cursor: Qt.PointingHandCursor
 
         onClicked: player.seek(player.currentTime - st.wallVideo_interval)
+    }
 
-        RectangleShadow
+    RectangleShadow
+    {
+        id: rectangleBackward
+
+        anchors.left  : areaBackward.left
+        anchors.right : areaBackward.right
+        anchors.top   : player.top
+        anchors.bottom: player.bottom
+
+        z: player.z
+
+        visible: (opacity != 0.0)
+
+        opacity: (areaBackward.containsMouse) ? getOpacity(areaBackward) : 0.0
+
+        direction: Sk.Right
+
+        filter: st.wallVideo_filterShadow
+
+        Behavior on opacity
         {
-            id: rectangleBackward
-
-            anchors.fill: parent
-
-            visible: (opacity != 0.0)
-
-            opacity: (areaBackward.containsMouse) ? getOpacity(areaBackward) : 0.0
-
-            direction: Sk.Right
-
-            filter: st.wallVideo_filterShadow
-
-            Behavior on opacity
+            PropertyAnimation
             {
-                PropertyAnimation
-                {
-                    duration: st.duration_normal
+                duration: st.duration_normal
 
-                    easing.type: st.easing
-                }
+                easing.type: st.easing
             }
         }
     }
@@ -720,11 +727,12 @@ WallBookmarkTrack
     {
         id: areaForward
 
-        anchors.right : player.right
-        anchors.top   : player.top
-        anchors.bottom: player.bottom
+        anchors.right: player.right
 
-        width: pWidthArea
+        anchors.verticalCenter: player.verticalCenter
+
+        width : pAreaWidth
+        height: pAreaHeight
 
         z: player.z
 
@@ -735,27 +743,32 @@ WallBookmarkTrack
         cursor: Qt.PointingHandCursor
 
         onClicked: player.seek(player.currentTime + st.wallVideo_interval)
+    }
 
-        RectangleShadow
+    RectangleShadow
+    {
+        id: rectangleForward
+
+        anchors.left  : areaForward.left
+        anchors.right : areaForward.right
+        anchors.top   : player.top
+        anchors.bottom: player.bottom
+
+        z: player.z
+
+        visible: (opacity != 0.0)
+
+        opacity: (areaForward.containsMouse) ? getOpacity(areaForward) : 0.0
+
+        filter: st.wallVideo_filterShadow
+
+        Behavior on opacity
         {
-            id: rectangleForward
-
-            anchors.fill: parent
-
-            visible: (opacity != 0.0)
-
-            opacity: (areaForward.containsMouse) ? getOpacity(areaForward) : 0.0
-
-            filter: st.wallVideo_filterShadow
-
-            Behavior on opacity
+            PropertyAnimation
             {
-                PropertyAnimation
-                {
-                    duration: st.duration_normal
+                duration: st.duration_normal
 
-                    easing.type: st.easing
-                }
+                easing.type: st.easing
             }
         }
     }
