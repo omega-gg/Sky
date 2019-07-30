@@ -72,6 +72,44 @@ public: // WBackendNet reimplementation
     WBackendNetQuery createQuery(const QString & method,
                                  const QString & label, const QString & q) const;
 
+    //---------------------------------------------------------------------------------------------
+
+    /* Q_INVOKABLE virtual */
+    WBackendNetSource extractSource(const QByteArray       & data,
+                                    const WBackendNetQuery & query) const;
+
+    /* Q_INVOKABLE virtual */
+    WBackendNetTrack extractTrack(const QByteArray       & data,
+                                  const WBackendNetQuery & query) const;
+
+    /* Q_INVOKABLE virtual */
+    WBackendNetPlaylist extractPlaylist(const QByteArray       & data,
+                                        const WBackendNetQuery & query) const;
+
+    /* Q_INVOKABLE virtual */
+    WBackendNetFolder extractFolder(const QByteArray       & data,
+                                    const WBackendNetQuery & query) const;
+
+    /* Q_INVOKABLE virtual */
+    WBackendNetItem extractItem(const QByteArray       & data,
+                                const WBackendNetQuery & query) const;
+
+    //---------------------------------------------------------------------------------------------
+
+    /* Q_INVOKABLE virtual */ void applySource(const WBackendNetQuery  & query,
+                                                   const WBackendNetSource & source);
+
+    /* Q_INVOKABLE virtual */ void applyTrack(const WBackendNetQuery & query,
+                                              const WBackendNetTrack & track);
+
+    /* Q_INVOKABLE virtual */ void applyPlaylist(const WBackendNetQuery    & query,
+                                                 const WBackendNetPlaylist & playlist);
+
+    /* Q_INVOKABLE virtual */ void applyFolder(const WBackendNetQuery  & query,
+                                               const WBackendNetFolder & folder);
+
+    /* Q_INVOKABLE virtual */ void applyItem(const WBackendNetQuery & query,
+                                             const WBackendNetItem  & item);
 private:
     W_DECLARE_PRIVATE(WBackendUniversal)
 

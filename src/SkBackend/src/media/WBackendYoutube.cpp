@@ -718,7 +718,7 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
         list.append(query.url);
         list.append(script);
 
-        reply.data = list;
+        reply.backup = list;
 
         d->applySignatures(&reply, query.data.toList(), script);
     }
@@ -1169,7 +1169,7 @@ WBackendNetFolder WBackendYoutube::extractFolder(const QByteArray       & data,
     {
         Q_D(WBackendYoutube);
 
-        d->script = source.data.toStringList();
+        d->script = source.backup.toStringList();
     }
 }
 

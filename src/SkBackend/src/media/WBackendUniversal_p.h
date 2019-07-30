@@ -51,6 +51,8 @@ struct WBackendUniversalData
         isSearchCover  = false;
     }
 
+    QString api;
+
     bool hasSearch;
 
     bool isSearchEngine;
@@ -80,6 +82,18 @@ struct WBackendUniversalData
     QString queryItem;
 
     QString createQuery;
+
+    QString extractSource;
+    QString extractTrack;
+    QString extractPlaylist;
+    QString extractFolder;
+    QString extractItem;
+
+    QString applySource;
+    QString applyTrack;
+    QString applyPlaylist;
+    QString applyFolder;
+    QString applyItem;
 };
 
 //=================================================================================================
@@ -91,6 +105,7 @@ class SK_BACKEND_EXPORT WBackendUniversalNode
 public: // Enums
     enum Type
     {
+        String,
         Variable,
         Function
     };
@@ -103,6 +118,8 @@ public: // Interface
 
     void dump(int indent = 0) const;
 
+    QVariant getVariant(WBackendUniversalParameters * parameters, int index) const;
+
     int   getInt  (WBackendUniversalParameters * parameters, int index) const;
     float getFloat(WBackendUniversalParameters * parameters, int index) const;
 
@@ -111,7 +128,8 @@ public: // Interface
 
     QRegExp getRegExp(WBackendUniversalParameters * parameters, int index) const;
 
-    QVariant * getValue(WBackendUniversalParameters * parameters, int index) const;
+    QVariant       * getValue     (WBackendUniversalParameters * parameters, int index) const;
+    const QVariant * getValueConst(WBackendUniversalParameters * parameters, int index) const;
 
 public: // Variables
     Type type;
@@ -151,6 +169,8 @@ private: // Functions
 
     bool skipCondition(int * index) const;
 
+    void skipLoop(int * index) const;
+
     bool getCondition(WBackendUniversalParameters * parameters,
                       const WBackendUniversalNode & node, int * index) const;
 
@@ -165,7 +185,7 @@ public: // Properties
 class SK_BACKEND_EXPORT WBackendUniversalParameters
 {
 public:
-    WBackendUniversalParameters(const WBackendUniversalScript & script);
+    WBackendUniversalParameters(const WBackendUniversalScript & script, const QVariant & global);
 
 public: // Interface
     void add(const QString & name, const QVariant & value = QVariant());
@@ -196,9 +216,85 @@ public: // Functions
 
     void runQuery(WBackendNetQuery * query, const QString & source, const QString & url) const;
 
-    void applyQueryParameters(WBackendUniversalParameters * parameters, const QString & url) const;
+    void applyQueryParameters(WBackendUniversalParameters * parameters,
+                              const WBackendNetQuery      & query) const;
 
-    void applyQuery(WBackendNetQuery * query, WBackendUniversalParameters * parameters) const;
+    void applyQueryResults(WBackendUniversalParameters * parameters,
+                           WBackendNetQuery            * query) const;
+
+    //---------------------------------------------------------------------------------------------
+
+    void applySourceParameters(WBackendUniversalParameters * parameters,
+                               const QByteArray            & data,
+                               const WBackendNetQuery      & query,
+                               const WBackendNetSource     & reply) const;
+
+    void applySourceResults(WBackendUniversalParameters * parameters,
+                            WBackendNetSource           * reply) const;
+
+    //---------------------------------------------------------------------------------------------
+
+    void applyTrackParameters(WBackendUniversalParameters * parameters,
+                              const QByteArray            & data,
+                              const WBackendNetQuery      & query,
+                              const WBackendNetTrack      & reply) const;
+
+    void applyTrackResults(WBackendUniversalParameters * parameters,
+                           WBackendNetTrack            * reply) const;
+
+    //---------------------------------------------------------------------------------------------
+
+    void applyPlaylistParameters(WBackendUniversalParameters * parameters,
+                                 const QByteArray            & data,
+                                 const WBackendNetQuery      & query,
+                                 const WBackendNetPlaylist   & reply) const;
+
+    void applyPlaylistResults(WBackendUniversalParameters * parameters,
+                              WBackendNetPlaylist         * reply) const;
+
+    //---------------------------------------------------------------------------------------------
+
+    void applyFolderParameters(WBackendUniversalParameters * parameters,
+                               const QByteArray            & data,
+                               const WBackendNetQuery      & query,
+                               const WBackendNetFolder     & reply) const;
+
+    void applyFolderResults(WBackendUniversalParameters * parameters,
+                            WBackendNetFolder           * reply) const;
+
+    //---------------------------------------------------------------------------------------------
+
+    void applyItemParameters(WBackendUniversalParameters * parameters,
+                             const QByteArray            & data,
+                             const WBackendNetQuery      & query,
+                             const WBackendNetItem       & reply) const;
+
+    void applyItemResults(WBackendUniversalParameters * parameters,
+                          WBackendNetItem             * reply) const;
+
+    //---------------------------------------------------------------------------------------------
+
+    void applyTrack(QList<WTrack>                  * tracks,
+                    const QHash<QString, QVariant> & hash) const;
+
+    void applyItem(QList<WLibraryFolderItem>     * items,
+                   const QHash<QString, QVariant> & hash) const;
+
+    void applyQuery(WBackendNetQuery * query, const QHash<QString, QVariant> & hash) const;
+
+    void applyQualities(QHash<WAbstractBackend::Quality, QString> * qualities,
+                        const QHash<QString, QVariant>            & hash) const;
+
+    //---------------------------------------------------------------------------------------------
+
+    WAbstractBackend::Quality getQuality(const QString & string) const;
+
+    QDateTime getDate(const QVariant & value) const;
+
+    WLibraryItem::Type  getType (const QString & string) const;
+    WLocalObject::State getState(const QString & string) const;
+
+    const QVariant * getVariant(const QHash<QString, QVariant> * hash, const QString & name) const;
 
 public: // Events
     void onLoaded();
@@ -216,6 +312,8 @@ public: // Variables
     QString source;
 
     QMetaMethod method;
+
+    QVariant global;
 
 protected:
     W_DECLARE_PUBLIC(WBackendUniversal)

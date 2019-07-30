@@ -32,7 +32,7 @@ class WBackendNetQuery;
 class SK_GUI_EXPORT WLibraryFolderItem
 {
 public:
-    WLibraryFolderItem(WLibraryItem::Type  type       = WLibraryItem::Folder,
+    WLibraryFolderItem(WLibraryItem::Type  type       = WLibraryItem::Item,
                        WLocalObject::State stateQuery = WLocalObject::Loaded);
 
 public: // Interface

@@ -128,7 +128,7 @@ public: // Variables
 
     WBackendNetQuery nextQuery;
 
-    QVariant data;
+    QVariant backup;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -146,6 +146,8 @@ public: // Variables
     QByteArray cache;
 
     WBackendNetQuery nextQuery;
+
+    QVariant backup;
 };
 
 //-------------------------------------------------------------------------------------------------
