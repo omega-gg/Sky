@@ -274,16 +274,13 @@ public: // Functions
 
     //---------------------------------------------------------------------------------------------
 
-    void applyTrack(QList<WTrack>                  * tracks,
-                    const QHash<QString, QVariant> & hash) const;
+    void applyTrack(QList<WTrack>             * tracks, const QVariant & value) const;
+    void applyItem (QList<WLibraryFolderItem> * items,  const QVariant & value) const;
 
-    void applyItem(QList<WLibraryFolderItem>      * items,
-                   const QHash<QString, QVariant> & hash) const;
-
-    void applyQuery(WBackendNetQuery * query, const QHash<QString, QVariant> & hash) const;
+    void applyQuery(WBackendNetQuery * query, QVariant * value) const;
 
     void applyQualities(QHash<WAbstractBackend::Quality, QString> * qualities,
-                        const QHash<QString, QVariant>            & hash) const;
+                        QVariant                                  * value) const;
 
     //---------------------------------------------------------------------------------------------
 

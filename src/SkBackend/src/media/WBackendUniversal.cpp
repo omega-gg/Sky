@@ -1730,12 +1730,12 @@ void WBackendUniversalPrivate::applySourceResults(WBackendUniversalParameters * 
 {
     reply->valid = parameters->value("valid")->toBool();
 
-    applyQualities(&(reply->medias), parameters->value("medias")->toHash());
-    applyQualities(&(reply->audios), parameters->value("audios")->toHash());
+    applyQualities(&(reply->medias), parameters->value("medias"));
+    applyQualities(&(reply->audios), parameters->value("audios"));
 
     reply->expiry = getDate(*(parameters->value("expiry")));
 
-    applyQuery(&(reply->nextQuery), parameters->value("next")->toHash());
+    applyQuery(&(reply->nextQuery), parameters->value("next"));
 
     reply->backup = *(parameters->value("global"));
 }
@@ -1779,7 +1779,7 @@ void WBackendUniversalPrivate::applyTrackResults(WBackendUniversalParameters * p
 
     reply->cache = parameters->value("cache")->toByteArray();
 
-    applyQuery(&(reply->nextQuery), parameters->value("next")->toHash());
+    applyQuery(&(reply->nextQuery), parameters->value("next"));
 
     reply->backup = *(parameters->value("global"));
 
@@ -1834,7 +1834,7 @@ void WBackendUniversalPrivate::applyPlaylistResults(WBackendUniversalParameters 
 
     reply->cache = parameters->value("cache")->toByteArray();
 
-    applyQuery(&(reply->nextQuery), parameters->value("next")->toHash());
+    applyQuery(&(reply->nextQuery), parameters->value("next"));
 
     reply->backup = *(parameters->value("global"));
 
@@ -1842,7 +1842,7 @@ void WBackendUniversalPrivate::applyPlaylistResults(WBackendUniversalParameters 
 
     for (int i = 0; i < list.count(); i++)
     {
-        applyTrack(&(reply->tracks), list.at(i).toHash());
+        applyTrack(&(reply->tracks), list.at(i));
     }
 
     reply->currentIndex = parameters->value("currentIndex")->toInt();
@@ -1883,7 +1883,7 @@ void WBackendUniversalPrivate::applyFolderResults(WBackendUniversalParameters * 
 
     reply->cache = parameters->value("cache")->toByteArray();
 
-    applyQuery(&(reply->nextQuery), parameters->value("next")->toHash());
+    applyQuery(&(reply->nextQuery), parameters->value("next"));
 
     reply->backup = *(parameters->value("global"));
 
@@ -1891,7 +1891,7 @@ void WBackendUniversalPrivate::applyFolderResults(WBackendUniversalParameters * 
 
     for (int i = 0; i < list.count(); i++)
     {
-        applyItem(&(reply->items), list.at(i).toHash());
+        applyItem(&(reply->items), list.at(i));
     }
 
     reply->clearDuplicate = parameters->value("clearDuplicate")->toBool();
@@ -1926,7 +1926,7 @@ void WBackendUniversalPrivate::applyItemResults(WBackendUniversalParameters * pa
 
     reply->cache = parameters->value("cache")->toByteArray();
 
-    applyQuery(&(reply->nextQuery), parameters->value("next")->toHash());
+    applyQuery(&(reply->nextQuery), parameters->value("next"));
 
     reply->backup = *(parameters->value("global"));
 
@@ -1937,9 +1937,11 @@ void WBackendUniversalPrivate::applyItemResults(WBackendUniversalParameters * pa
 
 //-------------------------------------------------------------------------------------------------
 
-void WBackendUniversalPrivate::applyTrack(QList<WTrack>                  * tracks,
-                                          const QHash<QString, QVariant> & hash) const
+void WBackendUniversalPrivate::applyTrack(QList<WTrack>  * tracks,
+                                          const QVariant & value) const
 {
+    QHash<QString, QVariant> hash = value.toHash();
+
     WTrack track;
 
     track.setSource(hash.value("source").toString());
@@ -1961,9 +1963,11 @@ void WBackendUniversalPrivate::applyTrack(QList<WTrack>                  * track
     tracks->append(track);
 }
 
-void WBackendUniversalPrivate::applyItem(QList<WLibraryFolderItem>      * items,
-                                         const QHash<QString, QVariant> & hash) const
+void WBackendUniversalPrivate::applyItem(QList<WLibraryFolderItem> * items,
+                                         const QVariant            & value) const
 {
+    QHash<QString, QVariant> hash = value.toHash();
+
     WLibraryFolderItem item(getType (hash.value("type") .toString()),
                             getState(hash.value("state").toString()));
 
@@ -1979,9 +1983,10 @@ void WBackendUniversalPrivate::applyItem(QList<WLibraryFolderItem>      * items,
 
 //-------------------------------------------------------------------------------------------------
 
-void WBackendUniversalPrivate::applyQuery(WBackendNetQuery               * query,
-                                          const QHash<QString, QVariant> & hash) const
+void WBackendUniversalPrivate::applyQuery(WBackendNetQuery * query, QVariant * value) const
 {
+    QHash<QString, QVariant> hash = value->toHash();
+
     query->url = hash.value("url").toString();
 
     query->id = hash.value("id").toInt();
@@ -2007,9 +2012,9 @@ void WBackendUniversalPrivate::applyQuery(WBackendNetQuery               * query
 
 void WBackendUniversalPrivate
      ::applyQualities(QHash<WAbstractBackend::Quality, QString> * qualities,
-                      const QHash<QString, QVariant>            & hash) const
+                      QVariant                                  * value) const
 {
-    QHashIterator<QString, QVariant> i(hash);
+    QHashIterator<QString, QVariant> i(value->toHash());
 
     while (i.hasNext())
     {
