@@ -277,7 +277,7 @@ public: // Functions
     void applyTrack(QList<WTrack>                  * tracks,
                     const QHash<QString, QVariant> & hash) const;
 
-    void applyItem(QList<WLibraryFolderItem>     * items,
+    void applyItem(QList<WLibraryFolderItem>      * items,
                    const QHash<QString, QVariant> & hash) const;
 
     void applyQuery(WBackendNetQuery * query, const QHash<QString, QVariant> & hash) const;

@@ -97,7 +97,7 @@ public: // WBackendNet reimplementation
     //---------------------------------------------------------------------------------------------
 
     /* Q_INVOKABLE virtual */ void applySource(const WBackendNetQuery  & query,
-                                                   const WBackendNetSource & source);
+                                               const WBackendNetSource & source);
 
     /* Q_INVOKABLE virtual */ void applyTrack(const WBackendNetQuery & query,
                                               const WBackendNetTrack & track);

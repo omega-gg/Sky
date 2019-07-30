@@ -698,7 +698,7 @@ QVariant WBackendUniversalNode::run(WBackendUniversalParameters * parameters) co
             return WControllerNetwork::extractJson(getString(parameters, 0),
                                                    getString(parameters, 1));
         }
-        else if (count == 3)
+        else if (count > 2)
         {
             return WControllerNetwork::extractJson(getString(parameters, 0),
                                                    getString(parameters, 1),
@@ -746,7 +746,7 @@ QVariant WBackendUniversalNode::run(WBackendUniversalParameters * parameters) co
             return WControllerNetwork::extractJsonHtml(getString(parameters, 0),
                                                        getString(parameters, 1));
         }
-        else if (count == 3)
+        else if (count > 2)
         {
             return WControllerNetwork::extractJsonHtml(getString(parameters, 0),
                                                        getString(parameters, 1),
