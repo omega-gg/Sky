@@ -971,6 +971,8 @@ QVariant WBackendUniversalScript::run(WBackendUniversalParameters * parameters) 
 
             condition = getCondition(parameters, node, &index);
 
+            skipOperators(&index);
+
 #ifdef SK_BACKEND_LOG
             qDebug("IF %d", condition);
 #endif
@@ -1045,6 +1047,8 @@ QVariant WBackendUniversalScript::run(WBackendUniversalParameters * parameters) 
 #endif
 
                 condition = getCondition(parameters, node, &index);
+
+                skipOperators(&index);
             }
 
             continue;
@@ -1452,6 +1456,18 @@ void WBackendUniversalScript::skipLoop(int * index) const
             }
             else count--;
         }
+
+        (*index)++;
+    }
+}
+
+void WBackendUniversalScript::skipOperators(int * index) const
+{
+    while (*index < nodes.count())
+    {
+        const QString & data = nodes.at(*index).data;
+
+        if (data != "AND" && data != "OR") return;
 
         (*index)++;
     }

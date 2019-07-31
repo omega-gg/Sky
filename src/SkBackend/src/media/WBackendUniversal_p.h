@@ -171,6 +171,8 @@ private: // Functions
 
     void skipLoop(int * index) const;
 
+    void skipOperators(int * index) const;
+
     bool getCondition(WBackendUniversalParameters * parameters,
                       const WBackendUniversalNode & node, int * index) const;
 
