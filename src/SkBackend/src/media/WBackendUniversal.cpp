@@ -567,7 +567,12 @@ QVariant WBackendUniversalNode::run(WBackendUniversalParameters * parameters) co
         qDebug("CONTAINS [%d]", string.contains(getString(parameters, 1)));
 #endif
 
+#ifdef QT_4
+        // FIXME Qt4: The code does not compile without the 'QVariant'.
+        return QVariant(string.contains(getString(parameters, 1)));
+#else
         return string.contains(getString(parameters, 1));
+#endif
     }
     else if (data == "STARTS_WITH")
     {
