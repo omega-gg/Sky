@@ -332,6 +332,10 @@ QVariant WBackendUniversalNode::run(WBackendUniversalParameters * parameters) co
 
         if (key == NULL) return false;
 
+#ifdef SK_BACKEND_LOG
+        qDebug("SET");
+#endif
+
         if (count != 2)
         {
             QVariantList list;
@@ -342,25 +346,18 @@ QVariant WBackendUniversalNode::run(WBackendUniversalParameters * parameters) co
             }
 
             *key = list;
-
-#ifdef SK_BACKEND_LOG
-            qDebug("SET LIST [%d]", list.count());
-#endif
         }
-        else
-        {
-            *key = getVariant(parameters, 1);
-
-#ifdef SK_BACKEND_LOG
-            qDebug("SET");
-#endif
-        }
+        else *key = getVariant(parameters, 1);
 
         return true;
     }
     else if (data == "SET_HASH")
     {
         if (nodes.count() < 3) return false;
+
+#ifdef SK_BACKEND_LOG
+        qDebug("SET_HASH");
+#endif
 
         QVariant * key = getValue(parameters, 0);
 
@@ -371,10 +368,6 @@ QVariant WBackendUniversalNode::run(WBackendUniversalParameters * parameters) co
         hash.insert(getString(parameters, 1), getString(parameters, 2));
 
         *key = hash;
-
-#ifdef SK_BACKEND_LOG
-        qDebug("SET_HASH [%s]", getString(parameters, 2).C_STR);
-#endif
 
         return true;
     }
@@ -474,11 +467,11 @@ QVariant WBackendUniversalNode::run(WBackendUniversalParameters * parameters) co
     }
     else if (data == "READ")
     {
-        int count = nodes.count();
-
 #ifdef SK_BACKEND_LOG
         qDebug("READ");
 #endif
+
+        int count = nodes.count();
 
         if (count == 1)
         {
@@ -506,66 +499,103 @@ QVariant WBackendUniversalNode::run(WBackendUniversalParameters * parameters) co
     }
     else if (data == "INDEX_OF")
     {
-        if (nodes.count() < 2) return -1;
+        int count = nodes.count();
 
-        QString string = getString(parameters, 0);
+        if (count < 2) return -1;
 
 #ifdef SK_BACKEND_LOG
-        qDebug("INDEX_OF [%d]", string.indexOf(getString(parameters, 1)));
+        qDebug("INDEX_OF");
 #endif
+        QString string = getString(parameters, 0);
 
-        return string.indexOf(getString(parameters, 1));
+        if (count == 2)
+        {
+            return string.indexOf(getString(parameters, 1));
+        }
+        else if (count > 2)
+        {
+            return string.indexOf(getString(parameters, 1), getInt(parameters, 2));
+        }
     }
     else if (data == "INDEX_OF_REGEXP")
     {
-        if (nodes.count() < 2) return -1;
+        int count = nodes.count();
+
+        if (count < 2) return -1;
+
+#ifdef SK_BACKEND_LOG
+        qDebug("INDEX_OF_REGEXP");
+#endif
 
         QString string = getString(parameters, 0);
 
         QRegExp regExp = getRegExp(parameters, 1);
 
-#ifdef SK_BACKEND_LOG
-        qDebug("INDEX_OF_REGEXP [%d]", string.indexOf(regExp));
-#endif
+        if (count == 2)
+        {
+            return string.indexOf(regExp);
+        }
+        else if (count > 2)
+        {
+            return string.indexOf(regExp, getInt(parameters, 2));
+        }
 
         return string.indexOf(regExp);
     }
     else if (data == "INDEX_END")
     {
-        if (nodes.count() < 2) return -1;
+        int count = nodes.count();
+
+        if (count < 2) return -1;
+
+#ifdef SK_BACKEND_LOG
+        qDebug("INDEX_OF");
+#endif
 
         QString stringA = getString(parameters, 0);
         QString stringB = getString(parameters, 1);
 
-#ifdef SK_BACKEND_LOG
-        qDebug("INDEX_OF [%d]", stringA.indexOf(stringB) + stringB.length());
-#endif
-
-        return stringA.indexOf(stringB) + stringB.length();
+        if (count == 2)
+        {
+            return stringA.indexOf(stringB) + stringB.length();
+        }
+        else if (count > 2)
+        {
+            return stringA.indexOf(stringB, getInt(parameters, 2)) + stringB.length();
+        }
     }
     else if (data == "INDEX_END_REGEXP")
     {
-        if (nodes.count() < 2) return -1;
+        int count = nodes.count();
+
+        if (count < 2) return -1;
+
+#ifdef SK_BACKEND_LOG
+        qDebug("INDEX_OF_REGEXP");
+#endif
 
         QString string = getString(parameters, 0);
 
         QRegExp regExp = getRegExp(parameters, 1);
 
-#ifdef SK_BACKEND_LOG
-        qDebug("INDEX_OF_REGEXP [%d]", string.indexOf(regExp) + regExp.matchedLength());
-#endif
-
-        return string.indexOf(regExp) + regExp.matchedLength();
+        if (count == 2)
+        {
+            return string.indexOf(regExp) + regExp.matchedLength();
+        }
+        else if (count > 2)
+        {
+            return string.indexOf(regExp, getInt(parameters, 2)) + regExp.matchedLength();
+        }
     }
     else if (data == "CONTAINS")
     {
         if (nodes.count() < 2) return false;
 
-        QString string = getString(parameters, 0);
-
 #ifdef SK_BACKEND_LOG
-        qDebug("CONTAINS [%d]", string.contains(getString(parameters, 1)));
+        qDebug("CONTAINS");
 #endif
+
+        QString string = getString(parameters, 0);
 
 #ifdef QT_4
         // FIXME Qt4: The code does not compile without the 'QVariant'.
@@ -578,11 +608,11 @@ QVariant WBackendUniversalNode::run(WBackendUniversalParameters * parameters) co
     {
         if (nodes.count() < 2) return false;
 
-        QString string = getString(parameters, 0);
-
 #ifdef SK_BACKEND_LOG
-        qDebug("STARTS_WITH [%d]", string.startsWith(getString(parameters, 1)));
+        qDebug("STARTS_WITH");
 #endif
+
+        QString string = getString(parameters, 0);
 
         return string.startsWith(getString(parameters, 1));
     }
@@ -590,30 +620,27 @@ QVariant WBackendUniversalNode::run(WBackendUniversalParameters * parameters) co
     {
         if (nodes.count() < 2) return false;
 
+#ifdef SK_BACKEND_LOG
+        qDebug("STARTS_WITH_REGEXP");
+#endif
+
         QString string = getString(parameters, 0);
 
         QRegExp regExp = getRegExp(parameters, 1);
 
         if (string.indexOf(regExp) == 0)
         {
-#ifdef SK_BACKEND_LOG
-            qDebug("STARTS_WITH_REGEXP true");
-#endif
-
-            return true;
+             return true;
         }
-        else
-        {
-#ifdef SK_BACKEND_LOG
-            qDebug("STARTS_WITH_REGEXP false");
-#endif
-
-            return false;
-        }
+        else return false;
     }
     else if (data == "REMOVE_CHARS")
     {
         if (nodes.count() < 3) return QString();
+
+#ifdef SK_BACKEND_LOG
+        qDebug("REMOVE_CHARS");
+#endif
 
         QVariant * key = getValue(parameters, 0);
 
@@ -621,15 +648,15 @@ QVariant WBackendUniversalNode::run(WBackendUniversalParameters * parameters) co
 
         *key = key->toString().remove(getInt(parameters, 1), getInt(parameters, 2));
 
-#ifdef SK_BACKEND_LOG
-        qDebug("REMOVE_CHARS [%s]", key->toString().C_STR);
-#endif
-
         return *key;
     }
     else if (data == "REMOVE_PREFIX")
     {
         if (nodes.count() < 1) return QString();
+
+#ifdef SK_BACKEND_LOG
+        qDebug("REMOVE_PREFIX");
+#endif
 
         QVariant * key = getValue(parameters, 0);
 
@@ -637,24 +664,19 @@ QVariant WBackendUniversalNode::run(WBackendUniversalParameters * parameters) co
 
         *key = WControllerNetwork::removeUrlPrefix(key->toString());
 
-#ifdef SK_BACKEND_LOG
-        qDebug("REMOVE_PREFIX [%s]", key->toString().C_STR);
-#endif
-
         return *key;
     }
     else if (data == "EXTRACT_URL_ELEMENT")
     {
         if (nodes.count() < 2) return QString();
 
+#ifdef SK_BACKEND_LOG
+        qDebug("EXTRACT_URL_ELEMENT");
+#endif
+
         QString string = getString(parameters, 0);
 
         int from = getInt(parameters, 1);
-
-#ifdef SK_BACKEND_LOG
-        qDebug("EXTRACT_URL_ELEMENT [%s]",
-               WControllerNetwork::extractUrlElement(string, from).C_STR);
-#endif
 
         return WControllerNetwork::extractUrlElement(string, from);
     }
@@ -665,6 +687,10 @@ QVariant WBackendUniversalNode::run(WBackendUniversalParameters * parameters) co
         QVariant * key = getValue(parameters, 0);
 
         if (key == NULL) return QString();
+
+#ifdef SK_BACKEND_LOG
+        qDebug("ADD_QUERY");
+#endif
 
         QUrl url(key->toString());
 
@@ -680,19 +706,15 @@ QVariant WBackendUniversalNode::run(WBackendUniversalParameters * parameters) co
 
         *key = url;
 
-#ifdef SK_BACKEND_LOG
-        qDebug("ADD_QUERY [%s]", key->toString().C_STR);
-#endif
-
         return *key;
     }
     else if (data == "EXTRACT_JSON")
     {
-        int count = nodes.count();
-
 #ifdef SK_BACKEND_LOG
         qDebug("EXTRACT_JSON");
 #endif
+
+        int count = nodes.count();
 
         if (count == 1)
         {
@@ -712,11 +734,11 @@ QVariant WBackendUniversalNode::run(WBackendUniversalParameters * parameters) co
     }
     else if (data == "EXTRACT_JSON_UTF8")
     {
-        int count = nodes.count();
-
 #ifdef SK_BACKEND_LOG
         qDebug("EXTRACT_JSON_UTF8");
 #endif
+
+        int count = nodes.count();
 
         if (count == 1)
         {
@@ -736,11 +758,11 @@ QVariant WBackendUniversalNode::run(WBackendUniversalParameters * parameters) co
     }
     else if (data == "EXTRACT_JSON_HTML")
     {
-        int count = nodes.count();
-
 #ifdef SK_BACKEND_LOG
         qDebug("EXTRACT_JSON_HTML");
 #endif
+
+        int count = nodes.count();
 
         if (count == 1)
         {
@@ -760,11 +782,11 @@ QVariant WBackendUniversalNode::run(WBackendUniversalParameters * parameters) co
     }
     else if (data == "SPLIT_JSON")
     {
-        int count = nodes.count();
-
 #ifdef SK_BACKEND_LOG
         qDebug("SPLIT_JSON");
 #endif
+
+        int count = nodes.count();
 
         if (count == 1)
         {
@@ -777,9 +799,18 @@ QVariant WBackendUniversalNode::run(WBackendUniversalParameters * parameters) co
     }
     else if (data == "PRINT")
     {
-        if (nodes.count() < 1) return QString();
+        int count = nodes.count();
 
-        qDebug("PRINT [%s]", getString(parameters, 0).C_STR);
+        if (count < 1) return QString();
+
+        QString string;
+
+        for (int i = 0; i < count; i++)
+        {
+            string.append(getString(parameters, i));
+        }
+
+        qDebug("PRINT [%s]", string.C_STR);
     }
 
     return QVariant();
@@ -1181,22 +1212,15 @@ QVariant WBackendUniversalScript::run(WBackendUniversalParameters * parameters) 
         }
         else if (data == "RETURN")
         {
+#ifdef SK_BACKEND_LOG
+            qDebug("RETURN");
+#endif
+
             if (node.nodes.count())
             {
-#ifdef SK_BACKEND_LOG
-                qDebug("RETURN [%s]", node.getVariant(parameters, 0).toString().C_STR);
-#endif
-
-                return node.getVariant(parameters, 0);
+                 return node.getVariant(parameters, 0);
             }
-            else
-            {
-#ifdef SK_BACKEND_LOG
-                qDebug("RETURN");
-#endif
-
-                return true;
-            }
+            else return true;
         }
         else node.run(parameters);
 
@@ -1503,6 +1527,8 @@ bool WBackendUniversalScript::getCondition(WBackendUniversalParameters * paramet
             {
                 return true;
             }
+
+            (*index)++;
         }
 
         return true;
@@ -1859,6 +1885,9 @@ void WBackendUniversalPrivate::applyPlaylistResults(WBackendUniversalParameters 
 
     reply->backup = *(parameters->value("global"));
 
+    reply->title = parameters->value("title")->toString();
+    reply->cover = parameters->value("cover")->toString();
+
     QList<QVariant> list = parameters->value("tracks")->toList();
 
     for (int i = 0; i < list.count(); i++)
@@ -1907,6 +1936,9 @@ void WBackendUniversalPrivate::applyFolderResults(WBackendUniversalParameters * 
     applyQuery(&(reply->nextQuery), parameters->value("next"));
 
     reply->backup = *(parameters->value("global"));
+
+    reply->title = parameters->value("title")->toString();
+    reply->cover = parameters->value("cover")->toString();
 
     QList<QVariant> list = parameters->value("items")->toList();
 
