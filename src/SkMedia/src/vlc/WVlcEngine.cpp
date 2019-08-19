@@ -93,8 +93,8 @@ WVlcEngine::WVlcEngine(QThread * thread, QObject * parent)
             "--no-osd",            /* No video overlay */
             "--no-stats",          /* No statistics    */
             "--no-media-library",  /* No Media Library */
-            "--http-reconnect",    /* Auto reconnect   */
-            "--avcodec-fast"       /* Speed tricks     */
+            "--http-reconnect"     /* Auto reconnect   */
+            //"--avcodec-fast",    /* Speed tricks     */
             //"--input-fast-seek", /* Fast seek        */
             //"--avcodec-dr",
             //"--avcodec-hurry-up",

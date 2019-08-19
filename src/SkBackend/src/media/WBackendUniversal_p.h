@@ -45,7 +45,7 @@ struct WBackendUniversalData
 {
     WBackendUniversalData()
     {
-        hasSearch = false;
+        //hasSearch = false;
 
         isSearchEngine = false;
         isSearchCover  = false;
@@ -53,7 +53,7 @@ struct WBackendUniversalData
 
     QString api;
 
-    bool hasSearch;
+    //bool hasSearch;
 
     bool isSearchEngine;
     bool isSearchCover;
@@ -130,6 +130,61 @@ public: // Interface
 
     QVariant       * getValue     (WBackendUniversalParameters * parameters, int index) const;
     const QVariant * getValueConst(WBackendUniversalParameters * parameters, int index) const;
+
+private: // Functions
+    inline QVariant equals   (WBackendUniversalParameters * parameters) const;
+    inline QVariant notEquals(WBackendUniversalParameters * parameters) const;
+
+    inline QVariant lower  (WBackendUniversalParameters * parameters) const;
+    inline QVariant greater(WBackendUniversalParameters * parameters) const;
+
+    inline QVariant number  (WBackendUniversalParameters * parameters) const;
+    inline QVariant add     (WBackendUniversalParameters * parameters) const;
+    inline QVariant sub     (WBackendUniversalParameters * parameters) const;
+    inline QVariant multiply(WBackendUniversalParameters * parameters) const;
+
+    inline QVariant set    (WBackendUniversalParameters * parameters) const;
+    inline QVariant setHash(WBackendUniversalParameters * parameters) const;
+
+    inline QVariant prepend   (WBackendUniversalParameters * parameters) const;
+    inline QVariant append    (WBackendUniversalParameters * parameters) const;
+    inline QVariant appendList(WBackendUniversalParameters * parameters) const;
+
+    inline QVariant read(WBackendUniversalParameters * parameters) const;
+
+    inline QVariant length(WBackendUniversalParameters * parameters) const;
+
+    inline QVariant indexOf    (WBackendUniversalParameters * parameters) const;
+    inline QVariant indexRegExp(WBackendUniversalParameters * parameters) const;
+
+    inline QVariant indexEnd      (WBackendUniversalParameters * parameters) const;
+    inline QVariant indexRegExpEnd(WBackendUniversalParameters * parameters) const;
+
+    inline QVariant lastIndexOf    (WBackendUniversalParameters * parameters) const;
+    inline QVariant lastIndexRegExp(WBackendUniversalParameters * parameters) const;
+
+    inline QVariant lastIndexEnd      (WBackendUniversalParameters * parameters) const;
+    inline QVariant lastIndexRegExpEnd(WBackendUniversalParameters * parameters) const;
+
+    inline QVariant contains(WBackendUniversalParameters * parameters) const;
+
+    inline QVariant startsWith      (WBackendUniversalParameters * parameters) const;
+    inline QVariant startsWithRegExp(WBackendUniversalParameters * parameters) const;
+
+    inline QVariant removeChars (WBackendUniversalParameters * parameters) const;
+    inline QVariant removePrefix(WBackendUniversalParameters * parameters) const;
+
+    inline QVariant addQuery(WBackendUniversalParameters * parameters) const;
+
+    inline QVariant extractUrlElement(WBackendUniversalParameters * parameters) const;
+
+    inline QVariant extractJson    (WBackendUniversalParameters * parameters) const;
+    inline QVariant extractJsonUtf8(WBackendUniversalParameters * parameters) const;
+    inline QVariant extractJsonHtml(WBackendUniversalParameters * parameters) const;
+
+    inline QVariant splitJson(WBackendUniversalParameters * parameters) const;
+
+    inline QVariant print(WBackendUniversalParameters * parameters) const;
 
 public: // Variables
     Type type;
