@@ -159,6 +159,7 @@ private: // Functions
     inline QVariant read(WBackendUniversalParameters * parameters) const;
 
     inline QVariant length(WBackendUniversalParameters * parameters) const;
+    inline QVariant count (WBackendUniversalParameters * parameters) const;
 
     inline QVariant indexOf    (WBackendUniversalParameters * parameters) const;
     inline QVariant indexRegExp(WBackendUniversalParameters * parameters) const;
