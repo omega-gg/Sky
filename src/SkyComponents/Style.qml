@@ -844,6 +844,11 @@ Item
     property color lineEditBox_colorDefaultHover: text1_color
 
     //---------------------------------------------------------------------------------------------
+    // BaseTextEdit
+
+    property int baseTextEdit_margin: dp8
+
+    //---------------------------------------------------------------------------------------------
     // List
 
     property int list_itemSize: dp32 + border_size

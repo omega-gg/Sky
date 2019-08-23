@@ -113,6 +113,8 @@ LineEditValue    1.0 LineEditValue.qml
 LineEditBox      1.0 LineEditBox.qml
 LineEditBoxClear 1.0 LineEditBoxClear.qml
 
+BaseLineEdit 1.0 BaseLineEdit.qml
+
 BaseList       1.0 BaseList.qml
 List           1.0 List.qml
 ListCompletion 1.0 ListCompletion.qml

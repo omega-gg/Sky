@@ -128,6 +128,8 @@ public: // Interface
 
     QRegExp getRegExp(WBackendUniversalParameters * parameters, int index) const;
 
+    QList<QVariant> getList(WBackendUniversalParameters * parameters, int index) const;
+
     QVariant       * getValue     (WBackendUniversalParameters * parameters, int index) const;
     const QVariant * getValueConst(WBackendUniversalParameters * parameters, int index) const;
 
@@ -135,7 +137,7 @@ private: // Functions
     inline QVariant equals   (WBackendUniversalParameters * parameters) const;
     inline QVariant notEquals(WBackendUniversalParameters * parameters) const;
 
-    inline QVariant lower  (WBackendUniversalParameters * parameters) const;
+    inline QVariant lesser (WBackendUniversalParameters * parameters) const;
     inline QVariant greater(WBackendUniversalParameters * parameters) const;
 
     inline QVariant number  (WBackendUniversalParameters * parameters) const;
@@ -149,6 +151,10 @@ private: // Functions
     inline QVariant prepend   (WBackendUniversalParameters * parameters) const;
     inline QVariant append    (WBackendUniversalParameters * parameters) const;
     inline QVariant appendList(WBackendUniversalParameters * parameters) const;
+
+    inline QVariant replace(WBackendUniversalParameters * parameters) const;
+
+    inline QVariant take(WBackendUniversalParameters * parameters) const;
 
     inline QVariant read(WBackendUniversalParameters * parameters) const;
 
@@ -174,9 +180,14 @@ private: // Functions
     inline QVariant removeChars (WBackendUniversalParameters * parameters) const;
     inline QVariant removePrefix(WBackendUniversalParameters * parameters) const;
 
+    inline QVariant slice (WBackendUniversalParameters * parameters) const;
+    inline QVariant slices(WBackendUniversalParameters * parameters) const;
+
     inline QVariant addQuery(WBackendUniversalParameters * parameters) const;
 
     inline QVariant extractUrlElement(WBackendUniversalParameters * parameters) const;
+
+    inline QVariant extractAttribute(WBackendUniversalParameters * parameters) const;
 
     inline QVariant extractJson    (WBackendUniversalParameters * parameters) const;
     inline QVariant extractJsonUtf8(WBackendUniversalParameters * parameters) const;

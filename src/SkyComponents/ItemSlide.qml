@@ -63,6 +63,9 @@ Item
 
         itemImage.setItemShot(content);
 
+        //itemImage.width  = width;
+        //itemImage.height = height;
+
         pReady = true;
     }
 
@@ -76,9 +79,6 @@ Item
         if (pReady == false) init();
 
         clip = true;
-
-        itemImage.width  = width;
-        itemImage.height = height;
 
         itemImage.visible = true;
 

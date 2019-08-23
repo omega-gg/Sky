@@ -49,7 +49,7 @@ WallBookmarkTrack
     property int pWidthRight: width - pWidthHalf - st.border_size
 
     property int pAreaWidth : player.width  / 4
-    property int pAreaHeight: player.height / 3
+    property int pAreaHeight: player.height / 4
 
     property int pMargin: 0
 
