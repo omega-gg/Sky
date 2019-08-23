@@ -1104,8 +1104,8 @@ inline QVariant WBackendUniversalNode::slice(WBackendUniversalParameters * param
 
     if (count == 3)
     {
-        return Sk::slice(getString(parameters, 0), getString(parameters, 1),
-                                                   getString(parameters, 2));
+         return Sk::slice(getString(parameters, 0), getString(parameters, 1),
+                                                    getString(parameters, 2));
     }
     else return Sk::slice(getString(parameters, 0), getString(parameters, 1),
                                                     getString(parameters, 2),
