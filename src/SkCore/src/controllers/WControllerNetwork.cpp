@@ -843,9 +843,9 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ int WControllerNetwork::indexUrlElements(const QString & string,
-                                                                  int             index,
-                                                                  int             from)
+/* Q_INVOKABLE static */ int WControllerNetwork::indexUrlElement(const QString & string,
+                                                                 int             index,
+                                                                 int             from)
 {
     int at = string.length();
 

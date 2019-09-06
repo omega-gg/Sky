@@ -171,8 +171,9 @@ private: // Functions
     bool loadFunction(WBackendUniversalNode * node,
                       QString               * string, const QRegExp & regExp) const;
 
-    QString extractWord  (QString * string) const;
-    QString extractString(QString * string) const;
+    QString extractWord(QString * string) const;
+
+    QString extractString(QString * string, const QChar & character) const;
 
     bool skipCondition(int * index) const;
 

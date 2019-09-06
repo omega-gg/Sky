@@ -1091,6 +1091,19 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
     return QTime::currentTime();
 }
 
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QDateTime WControllerApplication::dateFromSecs(qint64 seconds)
+{
+    if (seconds)
+    {
+         return QDateTime::fromSecsSinceEpoch(seconds);
+    }
+    else return QDateTime();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE static */ int WControllerApplication::getMsecs(const QTime & time)
 {
     return time.hour() * 3600000 + time.minute() * 60000 + time.second() * 1000 + time.msec();

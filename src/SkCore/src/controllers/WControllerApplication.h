@@ -228,6 +228,8 @@ public: // Static functions
 
     Q_INVOKABLE static QTime getTime();
 
+    Q_INVOKABLE static QDateTime dateFromSecs(qint64 seconds);
+
     Q_INVOKABLE static int getMsecs  (const QTime & time);
     Q_INVOKABLE static int getElapsed(const QTime & time);
 

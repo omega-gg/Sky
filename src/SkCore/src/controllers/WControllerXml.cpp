@@ -427,11 +427,7 @@ int WControllerXml::doQuery(const QString & query)
 {
     qint64 seconds = readNextInt64(stream);
 
-    if (seconds)
-    {
-         return QDateTime::fromSecsSinceEpoch(seconds);
-    }
-    else return QDateTime();
+    return Sk::dateFromSecs(seconds);
 }
 
 #endif // SK_NO_CONTROLLERXML

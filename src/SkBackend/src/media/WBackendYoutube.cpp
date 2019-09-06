@@ -495,7 +495,7 @@ WBackendNetPlaylistInfo WBackendYoutube::getPlaylistInfo(const QString & url) co
     }
     else
     {
-        QString id = WControllerNetwork::extractUrlElement(source, 2, index + 1, 0);
+        QString id = WControllerNetwork::extractUrlElement(source, 2, index + 1);
 
         return WBackendNetPlaylistInfo(WLibraryItem::PlaylistFeed, id);
     }
