@@ -28,6 +28,7 @@
 
 // Sk incudes
 #include <WControllerScript>
+#include <WControllerApplication>
 
 W_INIT_CONTROLLER(WControllerXml)
 
@@ -379,6 +380,13 @@ int WControllerXml::doQuery(const QString & query)
     return stream->text().toString().toUInt();
 }
 
+/* static */ qint64 WControllerXml::readNextInt64(QXmlStreamReader * stream)
+{
+    stream->readNext();
+
+    return stream->text().toString().toLongLong();
+}
+
 //---------------------------------------------------------------------------------------------
 
 /* static */ float WControllerXml::readNextFloat(QXmlStreamReader * stream)
@@ -417,11 +425,11 @@ int WControllerXml::doQuery(const QString & query)
 
 /* static */ QDateTime WControllerXml::readNextDate(QXmlStreamReader * stream)
 {
-    uint time = readNextUInt(stream);
+    qint64 seconds = readNextInt64(stream);
 
-    if (time)
+    if (seconds)
     {
-         return QDateTime::fromTime_t(time);
+         return QDateTime::fromSecsSinceEpoch(seconds);
     }
     else return QDateTime();
 }

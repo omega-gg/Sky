@@ -296,7 +296,7 @@ WBackendNetPlaylistInfo WBackendVimeo::getPlaylistInfo(const QString & url) cons
     if (source.startsWith("vimeo.com/channels/") || source.startsWith("vimeo.com/groups/"))
     {
         return WBackendNetPlaylistInfo(WLibraryItem::PlaylistFeed,
-                                       WControllerNetwork::extractUrlElements(source, 2, 10));
+                                       WControllerNetwork::extractUrlElement(source, 2, 10));
     }
     else if (source.startsWith("vimeo.com/"))
     {
@@ -482,9 +482,7 @@ WBackendNetSource WBackendVimeo::extractSource(const QByteArray       & data,
 
     QHash<WAbstractBackend::Quality, QString> * medias = &(reply.medias);
 
-    QString json = WControllerNetwork::extractJsonHtml(content, "files");
-
-    json = WControllerNetwork::extractJsonHtml(content, "progressive");
+    QString json = WControllerNetwork::extractJsonHtml(content, "progressive");
 
     QStringList list = WControllerNetwork::splitJson(json);
 

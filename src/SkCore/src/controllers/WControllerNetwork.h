@@ -98,7 +98,10 @@ public: // Static functions
     Q_INVOKABLE static QString extractUrlElement(const QUrl    & url,    int from = 0);
     Q_INVOKABLE static QString extractUrlElement(const QString & string, int from = 0);
 
-    Q_INVOKABLE static int indexUrlElements(const QString & string, int count, int from = 0);
+    Q_INVOKABLE static int indexUrlElement(const QString & string, int index, int from);
+
+    Q_INVOKABLE static QString extractUrlElement(const QUrl    & url,    int index, int from);
+    Q_INVOKABLE static QString extractUrlElement(const QString & string, int index, int from);
 
     Q_INVOKABLE static QString extractUrlElements(const QUrl    & url,    int count, int from = 0);
     Q_INVOKABLE static QString extractUrlElements(const QString & string, int count, int from = 0);

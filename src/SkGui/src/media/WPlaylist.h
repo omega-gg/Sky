@@ -251,7 +251,7 @@ public: // Interface
     //---------------------------------------------------------------------------------------------
     // QML
 
-    Q_INVOKABLE void removeTracks(const QList<QVariant> & indexes);
+    Q_INVOKABLE void removeTracks(const QVariantList & indexes);
 
     Q_INVOKABLE void copyTracksTo(const QVariantList & tracks,
                                   WPlaylist          * destination, int to = -1) const;

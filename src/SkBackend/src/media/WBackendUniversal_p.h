@@ -63,9 +63,9 @@ struct WBackendUniversalData
 
     QList<WLibraryFolderItem> items;
 
-    //---------------------------------------------------------------------------------------------
-
     QString validate;
+
+    //---------------------------------------------------------------------------------------------
 
     QString trackId;
     QString trackOutput;
@@ -88,6 +88,8 @@ struct WBackendUniversalData
     QString extractPlaylist;
     QString extractFolder;
     QString extractItem;
+
+    QString queryFailed;
 
     QString applySource;
     QString applyTrack;
@@ -128,75 +130,13 @@ public: // Interface
 
     QRegExp getRegExp(WBackendUniversalParameters * parameters, int index) const;
 
-    QList<QVariant> getList(WBackendUniversalParameters * parameters, int index) const;
+    QVariantList getList      (WBackendUniversalParameters * parameters, int index) const;
+    QStringList  getStringList(WBackendUniversalParameters * parameters, int index) const;
 
     QVariant       * getValue     (WBackendUniversalParameters * parameters, int index) const;
     const QVariant * getValueConst(WBackendUniversalParameters * parameters, int index) const;
 
-private: // Functions
-    inline QVariant equals   (WBackendUniversalParameters * parameters) const;
-    inline QVariant notEquals(WBackendUniversalParameters * parameters) const;
-
-    inline QVariant lesser (WBackendUniversalParameters * parameters) const;
-    inline QVariant greater(WBackendUniversalParameters * parameters) const;
-
-    inline QVariant number  (WBackendUniversalParameters * parameters) const;
-    inline QVariant add     (WBackendUniversalParameters * parameters) const;
-    inline QVariant sub     (WBackendUniversalParameters * parameters) const;
-    inline QVariant multiply(WBackendUniversalParameters * parameters) const;
-
-    inline QVariant set    (WBackendUniversalParameters * parameters) const;
-    inline QVariant setHash(WBackendUniversalParameters * parameters) const;
-
-    inline QVariant prepend   (WBackendUniversalParameters * parameters) const;
-    inline QVariant append    (WBackendUniversalParameters * parameters) const;
-    inline QVariant appendList(WBackendUniversalParameters * parameters) const;
-
-    inline QVariant replace(WBackendUniversalParameters * parameters) const;
-
-    inline QVariant take(WBackendUniversalParameters * parameters) const;
-
-    inline QVariant read(WBackendUniversalParameters * parameters) const;
-
-    inline QVariant length(WBackendUniversalParameters * parameters) const;
-    inline QVariant count (WBackendUniversalParameters * parameters) const;
-
-    inline QVariant indexOf    (WBackendUniversalParameters * parameters) const;
-    inline QVariant indexRegExp(WBackendUniversalParameters * parameters) const;
-
-    inline QVariant indexEnd      (WBackendUniversalParameters * parameters) const;
-    inline QVariant indexRegExpEnd(WBackendUniversalParameters * parameters) const;
-
-    inline QVariant lastIndexOf    (WBackendUniversalParameters * parameters) const;
-    inline QVariant lastIndexRegExp(WBackendUniversalParameters * parameters) const;
-
-    inline QVariant lastIndexEnd      (WBackendUniversalParameters * parameters) const;
-    inline QVariant lastIndexRegExpEnd(WBackendUniversalParameters * parameters) const;
-
-    inline QVariant contains(WBackendUniversalParameters * parameters) const;
-
-    inline QVariant startsWith      (WBackendUniversalParameters * parameters) const;
-    inline QVariant startsWithRegExp(WBackendUniversalParameters * parameters) const;
-
-    inline QVariant removeChars (WBackendUniversalParameters * parameters) const;
-    inline QVariant removePrefix(WBackendUniversalParameters * parameters) const;
-
-    inline QVariant slice (WBackendUniversalParameters * parameters) const;
-    inline QVariant slices(WBackendUniversalParameters * parameters) const;
-
-    inline QVariant addQuery(WBackendUniversalParameters * parameters) const;
-
-    inline QVariant extractUrlElement(WBackendUniversalParameters * parameters) const;
-
-    inline QVariant extractAttribute(WBackendUniversalParameters * parameters) const;
-
-    inline QVariant extractJson    (WBackendUniversalParameters * parameters) const;
-    inline QVariant extractJsonUtf8(WBackendUniversalParameters * parameters) const;
-    inline QVariant extractJsonHtml(WBackendUniversalParameters * parameters) const;
-
-    inline QVariant splitJson(WBackendUniversalParameters * parameters) const;
-
-    inline QVariant print(WBackendUniversalParameters * parameters) const;
+    const QVariantList variants(const QStringList & list) const;
 
 public: // Variables
     Type type;
@@ -237,6 +177,7 @@ private: // Functions
     bool skipCondition(int * index) const;
 
     void skipLoop(int * index) const;
+    bool skipEnd (int * index) const;
 
     void skipOperators(int * index) const;
 
@@ -281,6 +222,8 @@ public:
     void init(const QString & id, const QString & source);
 
 public: // Functions
+    void populateHash() const;
+
     void load();
 
     void runQuery(WBackendNetQuery * query, const QString & source, const QString & url) const;
@@ -357,8 +300,10 @@ public: // Functions
 
     QDateTime getDate(const QVariant & value) const;
 
-    WLibraryItem::Type  getType (const QString & string) const;
-    WLocalObject::State getState(const QString & string) const;
+    WLibraryItem::Type getType(const QString & string) const;
+
+    WLocalObject::State getState     (const QString & string) const;
+    WTrack::State       getStateTrack(const QString & string) const;
 
     const QVariant * getVariant(const QHash<QString, QVariant> * hash, const QString & name) const;
 

@@ -96,8 +96,9 @@ public: // Static Interface
 
     static bool readNextStartElement(QXmlStreamReader * stream, const QString & name);
 
-    static int  readNextInt (QXmlStreamReader * stream);
-    static uint readNextUInt(QXmlStreamReader * stream);
+    static int    readNextInt  (QXmlStreamReader * stream);
+    static uint   readNextUInt (QXmlStreamReader * stream);
+    static qint64 readNextInt64(QXmlStreamReader * stream);
 
     static float  readNextFloat (QXmlStreamReader * stream);
     static double readNextDouble(QXmlStreamReader * stream);

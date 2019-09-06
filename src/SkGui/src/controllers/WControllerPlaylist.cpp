@@ -1935,14 +1935,17 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
         const QString & title = reply.title;
         const QString & cover = reply.cover;
 
-        if (title.isEmpty() == false)
+        if (playlist->isPlaylistSearch() == false)
         {
-            playlist->setTitle(title);
-        }
+            if (title.isEmpty() == false)
+            {
+                playlist->setTitle(title);
+            }
 
-        if (cover.isEmpty() == false)
-        {
-            playlist->setCover(cover);
+            if (cover.isEmpty() == false)
+            {
+                playlist->setCover(cover);
+            }
         }
 
         if (reply.clearDuplicate)
@@ -2013,14 +2016,17 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
         const QString & title = reply.title;
         const QString & cover = reply.cover;
 
-        if (title.isEmpty() == false)
+        if (folder->isFolderSearch() == false)
         {
-            folder->setTitle(title);
-        }
+            if (title.isEmpty() == false)
+            {
+                folder->setTitle(title);
+            }
 
-        if (cover.isEmpty() == false)
-        {
-            folder->setCover(cover);
+            if (cover.isEmpty() == false)
+            {
+                folder->setCover(cover);
+            }
         }
 
         if (reply.clearDuplicate)

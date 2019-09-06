@@ -2023,7 +2023,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 //-------------------------------------------------------------------------------------------------
 // QML
 
-/* Q_INVOKABLE */ void WPlaylist::removeTracks(const QList<QVariant> & indexes)
+/* Q_INVOKABLE */ void WPlaylist::removeTracks(const QVariantList & indexes)
 {
     QList<int> list;
 

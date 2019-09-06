@@ -844,27 +844,45 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ int WControllerNetwork::indexUrlElements(const QString & string,
-                                                                  int             count,
+                                                                  int             index,
                                                                   int             from)
 {
-    int index = string.length();
+    int at = string.length();
 
-    while (count)
+    while (index)
     {
-        index = indexUrlElement(string, from);
+        at = indexUrlElement(string, from);
 
-        if (index == -1)
+        if (at == -1)
         {
             return string.length();
         }
 
-        from = index + 1;
+        from = at + 1;
 
-        count--;
+        index--;
     }
 
-    return index;
+    return at;
 }
+
+/* Q_INVOKABLE static */ QString WControllerNetwork::extractUrlElement(const QUrl & url,
+                                                                       int          index,
+                                                                       int          from)
+{
+    return extractUrlElement(url.toString(), index, from);
+}
+
+/* Q_INVOKABLE static */ QString WControllerNetwork::extractUrlElement(const QString & string,
+                                                                       int             index,
+                                                                       int             from)
+{
+    int to = indexUrlElement(string, index, from);
+
+    return string.mid(from, to - from);
+}
+
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::extractUrlElements(const QUrl & url,
                                                                         int          count,
@@ -877,9 +895,27 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
                                                                         int             count,
                                                                         int             from)
 {
-    int to = indexUrlElements(string, count, from);
+    if (count < 1) return QString();
 
-    return string.mid(from, to - from);
+    int at = from;
+
+    int index = 0;
+
+    while (count)
+    {
+        index = indexUrlElement(string, at);
+
+        if (index == -1)
+        {
+            return string.mid(from);
+        }
+
+        at = index + 1;
+
+        count--;
+    }
+
+    return string.mid(from, index - from);
 }
 
 //-------------------------------------------------------------------------------------------------

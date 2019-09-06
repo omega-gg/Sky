@@ -96,6 +96,10 @@ public: // WBackendNet reimplementation
 
     //---------------------------------------------------------------------------------------------
 
+    /* Q_INVOKABLE virtual */ void queryFailed(const WBackendNetQuery & query);
+
+    //---------------------------------------------------------------------------------------------
+
     /* Q_INVOKABLE virtual */ void applySource(const WBackendNetQuery  & query,
                                                const WBackendNetSource & source);
 

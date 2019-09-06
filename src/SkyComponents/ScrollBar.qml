@@ -250,12 +250,15 @@ Item
 
             hoverEnabled: true
 
-            drag.target   : handle
-            drag.axis     : Drag.YAxis
-            drag.threshold: 0
+            drag.target: handle
+            drag.axis  : Drag.YAxis
 
             drag.minimumY: 0
             drag.maximumY: handleArea.height - height
+
+//#QT_5
+            drag.threshold: 0
+//#END
 
             onYChanged: if (drag.active) position = y
 
