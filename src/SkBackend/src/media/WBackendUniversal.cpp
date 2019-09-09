@@ -1396,6 +1396,8 @@ signals:
     data.extractFolder   = extractString(reader, "EXTRACT_FOLDER");
     data.extractItem     = extractString(reader, "EXTRACT_ITEM");
 
+    data.queryFailed = extractString(reader, "QUERY_FAILED");
+
     data.applySource   = extractString(reader, "APPLY_SOURCE");
     data.applyTrack    = extractString(reader, "APPLY_TRACK");
     data.applyPlaylist = extractString(reader, "APPLY_PLAYLIST");
@@ -1561,7 +1563,7 @@ QVariant WBackendUniversalNode::getVariant(WBackendUniversalParameters * paramet
     }
     else if (node.type == Variable)
     {
-        QByteArray data = node.data.toUtf8();
+        QString data = node.data;
 
         const QVariant * variant = parameters->valueConst(data);
 
@@ -1633,9 +1635,7 @@ QVariant * WBackendUniversalNode::getValue(WBackendUniversalParameters * paramet
 
     if (node.type == Variable)
     {
-        QByteArray data = node.data.toUtf8();
-
-        return parameters->value(data);
+         return parameters->value(node.data);
     }
     else return NULL;
 }
@@ -1647,9 +1647,7 @@ const QVariant * WBackendUniversalNode::getValueConst(WBackendUniversalParameter
 
     if (node.type == Variable)
     {
-        QByteArray data = node.data.toUtf8();
-
-        return parameters->valueConst(data);
+         return parameters->valueConst(node.data);
     }
     else return NULL;
 }
@@ -3215,13 +3213,13 @@ QString WBackendUniversal::getTrackId(const QString & url) const
 {
     Q_D(const WBackendUniversal);
 
-    WBackendUniversalScript script(d->data.trackId);
-
-    if (script.isValid() == false) return QString();
-
 #ifdef SK_BACKEND_LOG
     qDebug("FUNCTION getTrackId");
 #endif
+
+    WBackendUniversalScript script(d->data.trackId);
+
+    if (script.isValid() == false) return QString();
 
     WBackendUniversalParameters parameters(script, d->global);
 
@@ -3235,13 +3233,13 @@ WAbstractBackend::Output WBackendUniversal::getTrackOutput(const QString & url) 
 {
     Q_D(const WBackendUniversal);
 
-    WBackendUniversalScript script(d->data.trackId);
-
-    if (script.isValid() == false) return WAbstractBackend::OutputMedia;
-
 #ifdef SK_BACKEND_LOG
     qDebug("FUNCTION getTrackOutput");
 #endif
+
+    WBackendUniversalScript script(d->data.trackId);
+
+    if (script.isValid() == false) return WAbstractBackend::OutputMedia;
 
     WBackendUniversalParameters parameters(script, d->global);
 
@@ -3267,13 +3265,13 @@ WBackendNetPlaylistInfo WBackendUniversal::getPlaylistInfo(const QString & url) 
 {
     Q_D(const WBackendUniversal);
 
-    WBackendUniversalScript script(d->data.playlistInfo);
-
-    if (script.isValid() == false) return WBackendNetPlaylistInfo();
-
 #ifdef SK_BACKEND_LOG
     qDebug("FUNCTION getPlaylistInfo");
 #endif
+
+    WBackendUniversalScript script(d->data.playlistInfo);
+
+    if (script.isValid() == false) return WBackendNetPlaylistInfo();
 
     WBackendUniversalParameters parameters(script, d->global);
 
@@ -3306,13 +3304,13 @@ QString WBackendUniversal::getUrlTrack(const QString & id) const
 {
     Q_D(const WBackendUniversal);
 
-    WBackendUniversalScript script(d->data.urlTrack);
-
-    if (script.isValid() == false) return QString();
-
 #ifdef SK_BACKEND_LOG
     qDebug("FUNCTION getUrlTrack");
 #endif
+
+    WBackendUniversalScript script(d->data.urlTrack);
+
+    if (script.isValid() == false) return QString();
 
     WBackendUniversalParameters parameters(script, d->global);
 
@@ -3326,13 +3324,13 @@ QString WBackendUniversal::getUrlPlaylist(const WBackendNetPlaylistInfo & info) 
 {
     Q_D(const WBackendUniversal);
 
-    WBackendUniversalScript script(d->data.urlPlaylist);
-
-    if (script.isValid() == false) return QString();
-
 #ifdef SK_BACKEND_LOG
     qDebug("FUNCTION getUrlPlaylist");
 #endif
+
+    WBackendUniversalScript script(d->data.urlPlaylist);
+
+    if (script.isValid() == false) return QString();
 
     WBackendUniversalParameters parameters(script, d->global);
 
@@ -3437,13 +3435,13 @@ WBackendNetQuery WBackendUniversal::createQuery(const QString & method,
 {
     Q_D(const WBackendUniversal);
 
-    WBackendUniversalScript script(d->data.createQuery);
-
-    if (script.isValid() == false) return WBackendNetQuery();
-
 #ifdef SK_BACKEND_LOG
     qDebug("FUNCTION createQuery");
 #endif
+
+    WBackendUniversalScript script(d->data.createQuery);
+
+    if (script.isValid() == false) return WBackendNetQuery();
 
     WBackendUniversalParameters parameters(script, d->global);
 
@@ -3470,13 +3468,13 @@ WBackendNetSource WBackendUniversal::extractSource(const QByteArray       & data
 {
     Q_D(const WBackendUniversal);
 
-    WBackendUniversalScript script(d->data.extractSource);
-
-    if (script.isValid() == false) return WBackendNetSource();
-
 #ifdef SK_BACKEND_LOG
     qDebug("FUNCTION extractSource");
 #endif
+
+    WBackendUniversalScript script(d->data.extractSource);
+
+    if (script.isValid() == false) return WBackendNetSource();
 
     WBackendUniversalParameters parameters(script, d->global);
 
@@ -3497,13 +3495,13 @@ WBackendNetTrack WBackendUniversal::extractTrack(const QByteArray       & data,
 {
     Q_D(const WBackendUniversal);
 
-    WBackendUniversalScript script(d->data.extractTrack);
-
-    if (script.isValid() == false) return WBackendNetTrack();
-
 #ifdef SK_BACKEND_LOG
     qDebug("FUNCTION extractTrack");
 #endif
+
+    WBackendUniversalScript script(d->data.extractTrack);
+
+    if (script.isValid() == false) return WBackendNetTrack();
 
     WBackendUniversalParameters parameters(script, d->global);
 
@@ -3524,13 +3522,13 @@ WBackendNetPlaylist WBackendUniversal::extractPlaylist(const QByteArray       & 
 {
     Q_D(const WBackendUniversal);
 
-    WBackendUniversalScript script(d->data.extractPlaylist);
-
-    if (script.isValid() == false) return WBackendNetPlaylist();
-
 #ifdef SK_BACKEND_LOG
     qDebug("FUNCTION extractPlaylist");
 #endif
+
+    WBackendUniversalScript script(d->data.extractPlaylist);
+
+    if (script.isValid() == false) return WBackendNetPlaylist();
 
     WBackendUniversalParameters parameters(script, d->global);
 
@@ -3551,13 +3549,13 @@ WBackendNetFolder WBackendUniversal::extractFolder(const QByteArray       & data
 {
     Q_D(const WBackendUniversal);
 
-    WBackendUniversalScript script(d->data.extractFolder);
-
-    if (script.isValid() == false) return WBackendNetFolder();
-
 #ifdef SK_BACKEND_LOG
     qDebug("FUNCTION extractFolder");
 #endif
+
+    WBackendUniversalScript script(d->data.extractFolder);
+
+    if (script.isValid() == false) return WBackendNetFolder();
 
     WBackendUniversalParameters parameters(script, d->global);
 
@@ -3578,13 +3576,13 @@ WBackendNetItem WBackendUniversal::extractItem(const QByteArray       & data,
 {
     Q_D(const WBackendUniversal);
 
-    WBackendUniversalScript script(d->data.extractItem);
-
-    if (script.isValid() == false) return WBackendNetItem();
-
 #ifdef SK_BACKEND_LOG
     qDebug("FUNCTION extractItem");
 #endif
+
+    WBackendUniversalScript script(d->data.extractItem);
+
+    if (script.isValid() == false) return WBackendNetItem();
 
     WBackendUniversalParameters parameters(script, d->global);
 
