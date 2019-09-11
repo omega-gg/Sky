@@ -92,7 +92,7 @@ void WBackendDailymotionPrivate::loadTrack(WTrack * track, const QString & json)
 
     track->setDuration(duration.toInt() * 1000);
 
-    track->setDate(QDateTime::fromSecsSinceEpoch(date.toLongLong()));
+    track->setDate(Sk::dateFromSecs(date.toLongLong()));
 
     if (quality.contains("hd720"))
     {

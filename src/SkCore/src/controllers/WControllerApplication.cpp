@@ -1097,7 +1097,11 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 {
     if (seconds)
     {
-         return QDateTime::fromSecsSinceEpoch(seconds);
+#ifdef QT_4
+        return QDateTime::fromTime_t(seconds);
+#else
+        return QDateTime::fromSecsSinceEpoch(seconds);
+#endif
     }
     else return QDateTime();
 }
