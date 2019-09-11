@@ -190,7 +190,11 @@ inline QVariant date(const WBackendUniversalNode * node,
     QDateTime date = QDateTime::fromString(node->getString(parameters, 0),
                                            node->getString(parameters, 1));
 
+#ifdef QT_4
+    return date.toMSecsSinceEpoch() / 1000;
+#else
     return date.toSecsSinceEpoch();
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
