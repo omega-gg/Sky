@@ -462,6 +462,12 @@ WBackendTorrentPrivate::getFolder(QList<WBackendTorrentItem> * items) const
         else index++;
     }
 
+    if (list.first().index == -1)
+    {
+         qSort(list.begin(), list.end(), sortA);
+    }
+    else qSort(list.begin(), list.end(), sortB);
+
     return list;
 }
 
@@ -874,12 +880,6 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
             {
                 QList<WBackendTorrentItem> list = d->getFolder(&items);
 
-                if (list.first().index == -1)
-                {
-                     qSort(list.begin(), list.end(), sortA);
-                }
-                else qSort(list.begin(), list.end(), sortB);
-
                 foreach (const WBackendTorrentItem & item, list)
                 {
                     QString title = Sk::latinToUtf8(item.name);
@@ -952,12 +952,6 @@ WBackendNetPlaylist WBackendTorrent::extractPlaylist(const QByteArray       & da
         while (items.isEmpty() == false)
         {
             QList<WBackendTorrentItem> list = d->getFolder(&items);
-
-            if (list.first().index == -1)
-            {
-                 qSort(list.begin(), list.end(), sortA);
-            }
-            else qSort(list.begin(), list.end(), sortB);
 
             foreach (const WBackendTorrentItem & item, list)
             {

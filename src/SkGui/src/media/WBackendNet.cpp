@@ -504,6 +504,10 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 // Virtual interface
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE virtual */ void WBackendNet::reload() {}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE virtual */ bool WBackendNet::hasSearch() const
 {
     return false;

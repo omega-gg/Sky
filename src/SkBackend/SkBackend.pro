@@ -38,21 +38,26 @@ QMAKE_CXXFLAGS += -std=c++11
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 
 include(src/media/media.pri)
+include(src/io/io.pri)
 
 INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkCore/private \
                $$SK/include/SkGui \
                $$SK/include/SkGui/private \
+               $$SK/include/SkTorrent \
+               $$SK/include/SkTorrent/private \
                $$SK/include/SkBackend \
                $$SK/include/SkBackend/private \
 
 CONFIG(debug, debug|release) {
 
     LIBS += -L$$SK/lib -lSkCoreD \
-            -L$$SK/lib -lSkGuiD
+            -L$$SK/lib -lSkGuiD \
+            -L$$SK/lib -lSkTorrentD
 } else {
     LIBS += -L$$SK/lib -lSkCore \
-            -L$$SK/lib -lSkGui
+            -L$$SK/lib -lSkGui \
+            -L$$SK/lib -lSkTorrent
 }
 
 macx {

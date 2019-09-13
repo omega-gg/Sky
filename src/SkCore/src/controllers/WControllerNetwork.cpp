@@ -405,6 +405,95 @@ void WControllerNetworkPrivate::checkConnection()
 }
 
 //-------------------------------------------------------------------------------------------------
+// Static functions
+//-------------------------------------------------------------------------------------------------
+
+/* static */ int WControllerNetworkPrivate::indexJsonEndA(const QString & text, int at)
+{
+    at = text.indexOf('"', at + 1);
+
+    if (at == -1) return -1;
+
+    while (text.at(at - 1) == '\\')
+    {
+        at = text.indexOf('"', at + 1);
+
+        if (at == -1) return -1;
+    }
+
+    return at;
+}
+
+/* static */ int WControllerNetworkPrivate::indexJsonEndB(const QString & text, int at,
+                                                          const QChar   & charA)
+{
+    QChar charB;
+
+    if (charA == '{')
+    {
+        charB = '}';
+    }
+    else if (charA == '[')
+    {
+        charB = ']';
+    }
+    else
+    {
+        int index = text.indexOf(QRegExp("[,\"}\\]]"), at);
+
+        if (index == -1)
+        {
+             return text.length();
+        }
+        else return index;
+    }
+
+    at++;
+
+    while (at < text.length())
+    {
+        int indexA = text.indexOf('"', at);
+
+        if (indexA != -1)
+        {
+            while (text.at(indexA - 1) == '\\')
+            {
+                indexA = text.indexOf('"', indexA + 1);
+
+                if (indexA == -1) break;
+            }
+        }
+
+        int indexB = text.indexOf(charA, at);
+
+        if (indexB != -1 && (indexA == -1 || indexB < indexA))
+        {
+            indexA = indexB;
+        }
+
+        indexB = text.indexOf(charB, at);
+
+        if (indexA != -1 && indexA < indexB)
+        {
+            QChar character = text.at(indexA);
+
+            if (character == '"')
+            {
+                 at = indexJsonEndA(text, indexA);
+            }
+            else at = indexJsonEndB(text, indexA, character);
+
+            if (at == -1) return -1;
+
+            at++;
+        }
+        else return indexB;
+    }
+
+    return -1;
+}
+
+//-------------------------------------------------------------------------------------------------
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
@@ -1769,73 +1858,13 @@ QString WControllerNetwork::extractAttributeUtf8(const QString & text,
         return -1;
     }
 
-    if (text.at(at) == '"')
+    QChar charA = text.at(at);
+
+    if (charA == '"')
     {
-        at = text.indexOf('"', at + 1);
-
-        if (at > 0 && text.at(at - 1) == '\\')
-        {
-             return indexJsonEnd(text, at);
-        }
-        else return at;
+         return WControllerNetworkPrivate::indexJsonEndA(text, at);
     }
-    else
-    {
-        QChar charA = text.at(at);
-        QChar charB;
-
-        if (charA == '{')
-        {
-            charB = '}';
-        }
-        else if (charA == '[')
-        {
-            charB = ']';
-        }
-        else
-        {
-            int index = text.indexOf(QRegExp("[ ,\"}\\]]"), at);
-
-            if (index == -1)
-            {
-                 return text.length();
-            }
-            else return index;
-        }
-
-        at++;
-
-        while (at < text.length())
-        {
-            int indexA = text.indexOf('"', at);
-
-            if (indexA > 0 && text.at(indexA - 1) == '\\')
-            {
-                indexA = indexJsonEnd(text, indexA);
-            }
-
-            int indexB = text.indexOf(charA, at);
-
-            if (indexB != -1 && (indexA == -1 || indexB < indexA))
-            {
-                indexA = indexB;
-            }
-
-            indexB = text.indexOf(charB, at);
-
-            if (indexA != -1 && indexA < indexB)
-            {
-                at = indexJsonEnd(text, indexA);
-
-                if (at == -1) return -1;
-
-                at++;
-            }
-            else return indexB;
-        }
-
-        return -1;
-    }
+    else return WControllerNetworkPrivate::indexJsonEndB(text, at, charA);
 }
 
 //-------------------------------------------------------------------------------------------------

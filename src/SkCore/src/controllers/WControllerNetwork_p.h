@@ -48,6 +48,10 @@ public:
 public: // Functions
     void checkConnection();
 
+public: // Static functions
+    static int indexJsonEndA(const QString & text, int at);
+    static int indexJsonEndB(const QString & text, int at, const QChar & charA);
+
 public: // Slots
     void onStateChanged(QAbstractSocket::SocketState socketState);
 

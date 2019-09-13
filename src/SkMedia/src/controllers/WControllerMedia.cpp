@@ -475,7 +475,7 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 
     if (d->sources.contains(url))
     {
-        qDebug("CACHED");
+        qDebug("MEDIA CACHED");
 
         d->urls.removeOne(url);
         d->urls.append   (url);

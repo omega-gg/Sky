@@ -43,17 +43,29 @@ class WBackendUniversalParameters;
 
 struct WBackendUniversalData
 {
+public: // Enums
+    enum Engine
+    {
+        None       = 0x0,
+        Tracks     = 0x1,
+        CoverAudio = 0x2,
+        CoverVideo = 0x4
+    };
+    Q_DECLARE_FLAGS(Engines, Engine)
+
+public: // Ctor / dtor
     WBackendUniversalData()
     {
-        //hasSearch = false;
-
         isSearchEngine = false;
         isSearchCover  = false;
     }
 
+public: // Variables
     QString api;
+    QString version;
 
     //bool hasSearch;
+    Engines engines;
 
     bool isSearchEngine;
     bool isSearchCover;
@@ -307,6 +319,8 @@ public: // Functions
     WTrack::State       getStateTrack(const QString & string) const;
 
     const QVariant * getVariant(const QHash<QString, QVariant> * hash, const QString & name) const;
+
+    QString getUrl(const QString & url) const;
 
 public: // Events
     void onLoaded();

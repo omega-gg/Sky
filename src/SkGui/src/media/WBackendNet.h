@@ -395,6 +395,10 @@ public: // Abstract interface
     Q_INVOKABLE virtual QString getTitle() const = 0;
 
 public: // Virtual interface
+    Q_INVOKABLE virtual void reload(); // {}
+
+    //---------------------------------------------------------------------------------------------
+
     Q_INVOKABLE virtual bool hasSearch() const; // {}
 
     Q_INVOKABLE virtual bool isSearchEngine() const; // {}
