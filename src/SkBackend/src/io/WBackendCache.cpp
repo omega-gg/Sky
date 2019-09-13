@@ -18,6 +18,11 @@
 
 #ifndef SK_NO_BACKENDCACHE
 
+#ifdef QT_4
+// Qt includes
+#include <QStringList>
+#endif
+
 // Sk includes
 #include <WBackendUniversal>
 

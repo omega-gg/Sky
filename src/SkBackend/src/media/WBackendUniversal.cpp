@@ -656,7 +656,7 @@ inline QVariant join(const WBackendUniversalNode * node, WBackendUniversalParame
 
     QStringList list = node->getStringList(parameters, 0);
 
-    return list.join(node->getInt(parameters, 1));
+    return list.join(node->getString(parameters, 1));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1757,15 +1757,15 @@ WBackendUniversalQuery::extractEngines(const WYamlReader & reader, const QString
     {
         if (match == "tracks")
         {
-            engines.setFlag(WBackendUniversalData::Tracks);
+            engines |= WBackendUniversalData::Tracks;
         }
         else if (match == "coverAudio")
         {
-            engines.setFlag(WBackendUniversalData::CoverAudio);
+            engines |= WBackendUniversalData::CoverAudio;
         }
         else // if (match == "coverVideo")
         {
-            engines.setFlag(WBackendUniversalData::CoverVideo);
+            engines |= WBackendUniversalData::CoverVideo;
         }
     }
 
