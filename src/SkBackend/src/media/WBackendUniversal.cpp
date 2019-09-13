@@ -481,9 +481,7 @@ inline QVariant appendList(const WBackendUniversalNode * node,
     qDebug("APPEND_LIST");
 #endif
 
-    int count = node->nodes.count();
-
-    if (count < 2) return false;
+    if (node->nodes.count() < 2) return false;
 
     QVariant * key = node->getValue(parameters, 0);
 
@@ -618,7 +616,7 @@ inline QVariant mid(const WBackendUniversalNode * node,
 
     int count = node->nodes.count();
 
-    if (count < 2) return QVariant();
+    if (count < 2) return QString();
 
     QString string = node->getString(parameters, 0);
 
@@ -682,7 +680,7 @@ inline QVariant simplify(const WBackendUniversalNode * node,
     qDebug("SIMPLIFY");
 #endif
 
-    if (node->nodes.count() < 1) return QVariant();
+    if (node->nodes.count() < 1) return QString();
 
     return node->getString(parameters, 0).simplified();
 }

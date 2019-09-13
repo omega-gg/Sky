@@ -64,7 +64,6 @@ public: // Variables
     QString api;
     QString version;
 
-    //bool hasSearch;
     Engines engines;
 
     bool isSearchEngine;
