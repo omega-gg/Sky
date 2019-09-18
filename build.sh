@@ -7,8 +7,7 @@ set -e
 
 Sky="../.."
 
-external="/c/dev/workspace/3rdparty"
-external="/c/dev/workspace/3rdparty"
+external="$PWD/../3rdparty"
 
 #--------------------------------------------------------------------------------------------------
 
@@ -20,11 +19,6 @@ MinGW_version="7.3.0"
 #--------------------------------------------------------------------------------------------------
 
 make_arguments="-j 4"
-
-#--------------------------------------------------------------------------------------------------
-# Linux
-
-lib64="/lib/x86_64-linux-gnu"
 
 #--------------------------------------------------------------------------------------------------
 # Syntax
@@ -64,6 +58,8 @@ if [ $1 = "qt4" ]; then
 else
     Qt="$external/Qt/$Qt5_version"
 fi
+
+qmake="$Qt/bin/qmake"
 
 #--------------------------------------------------------------------------------------------------
 # Clean
@@ -124,16 +120,16 @@ elif [ $2 = "linux" ]; then
     fi
 fi
 
-qmake --version
+$qmake --version
 echo ""
 
 cd $build
 
 if [ "$3" = "tools" ]; then
 
-    qmake -r -spec $spec "CONFIG += release" "TOOLS = true" $Sky
+    $qmake -r -spec $spec "CONFIG += release" "TOOLS = true" $Sky
 else
-    qmake -r -spec $spec "CONFIG += release" $Sky
+    $qmake -r -spec $spec "CONFIG += release" $Sky
 fi
 
 echo ""

@@ -22,6 +22,7 @@ OTHER_FILES += 3rdparty.sh \
                README.md \
                LICENSE.md \
                AUTHORS.md \
+               .azure-pipelines.yml \
                .travis.yml \
                .appveyor.yml \
                include/generate.sh \
