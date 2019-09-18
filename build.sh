@@ -59,7 +59,12 @@ else
     Qt="$external/Qt/$Qt5_version"
 fi
 
-qmake="$Qt/bin/qmake"
+if [ $windows = true ]; then
+
+    qmake="$Qt/bin/qmake"
+else
+    qmake="qmake"
+fi
 
 #--------------------------------------------------------------------------------------------------
 # Clean
