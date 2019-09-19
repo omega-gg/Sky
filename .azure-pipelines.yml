@@ -54,13 +54,15 @@ jobs:
     vmImage: "ubuntu-latest"
   steps:
   - bash: |
-      docker run -d --name ubuntu -v $PWD:/azure ubuntu:18.04 tail -f /dev/null
-      docker exec -t ubuntu bash -c "cd /azure;
+      docker run -d --name ubuntu -v $(System.DefaultWorkingDirectory):/docker ubuntu:18.04 tail -f /dev/null
+      docker exec -t ubuntu bash -c "cd /docker;
                                      apt-get update;
                                      apt-get -y install sudo wget;
                                      sh 3rdparty.sh all qt4 ubuntu;
                                      sh configure.sh qt4 linux;
                                      sh build.sh qt4 linux deploy"
+  - publish: $(System.DefaultWorkingDirectory)/docker/deploy
+    artifact: Sky-linux32-qt4
 
 #- job: linux32_qt4
   #pool:
