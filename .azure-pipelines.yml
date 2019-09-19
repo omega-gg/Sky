@@ -55,6 +55,7 @@ jobs:
   container: ubuntu:18.04
   steps:
   - bash: |
+      apt-get -y install sudo
       sh 3rdparty.sh all qt4 ubuntu
       sh configure.sh qt4 linux
       sh build.sh qt4 linux deploy
