@@ -56,8 +56,8 @@ jobs:
     vmImage: "ubuntu-latest"
   steps:
   - bash: |
-      docker run -d --name ubuntu -v $PWD:/host i386/ubuntu:18.04 tail -f /dev/null
-      docker exec -t ubuntu bash -c "cd /host;
+      docker run -d --name ubuntu -v $PWD:/Sky i386/ubuntu:18.04 tail -f /dev/null
+      docker exec -t ubuntu bash -c "cd /Sky;
                                      apt-get update;
                                      apt-get -y install sudo wget;
                                      sh 3rdparty.sh all qt4 ubuntu;
@@ -71,8 +71,8 @@ jobs:
     vmImage: "ubuntu-latest"
   steps:
   - bash: |
-      docker run -d --name ubuntu -v $PWD:/host i386/ubuntu:18.04 tail -f /dev/null
-      docker exec -t ubuntu bash -c "cd /host;
+      docker run -d --name ubuntu -v $PWD:/Sky i386/ubuntu:18.04 tail -f /dev/null
+      docker exec -t ubuntu bash -c "cd /Sky;
                                      apt-get update;
                                      apt-get -y install sudo wget;
                                      sh 3rdparty.sh all qt5 ubuntu;
@@ -88,8 +88,8 @@ jobs:
     vmImage: "ubuntu-latest"
   steps:
   - bash: |
-      docker run -d --name ubuntu -v $PWD:/host amd64/ubuntu:18.04 tail -f /dev/null
-      docker exec -t ubuntu bash -c "cd /host;
+      docker run -d --name ubuntu -v $PWD:/Sky amd64/ubuntu:18.04 tail -f /dev/null
+      docker exec -t ubuntu bash -c "cd /Sky;
                                      apt-get update;
                                      apt-get -y install sudo wget;
                                      sh 3rdparty.sh all qt4 ubuntu;
@@ -103,8 +103,8 @@ jobs:
     vmImage: "ubuntu-latest"
   steps:
   - bash: |
-      docker run -d --name ubuntu -v $PWD:/host amd64/ubuntu:18.04 tail -f /dev/null
-      docker exec -t ubuntu bash -c "cd /host;
+      docker run -d --name ubuntu -v $PWD:/Sky amd64/ubuntu:18.04 tail -f /dev/null
+      docker exec -t ubuntu bash -c "cd /Sky;
                                      apt-get update;
                                      apt-get -y install sudo wget;
                                      sh 3rdparty.sh all qt5 ubuntu;
