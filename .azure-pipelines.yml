@@ -52,12 +52,20 @@ jobs:
 - job: linux32_qt4
   pool:
     vmImage: "ubuntu-latest"
-  container: ubuntu:18.04
   steps:
   - bash: |
-      apt-get -y install sudo
-      sh 3rdparty.sh all qt4 ubuntu
-      sh configure.sh qt4 linux
-      sh build.sh qt4 linux deploy
-  - publish: $(System.DefaultWorkingDirectory)/deploy
-    artifact: Sky-linux32-qt4
+      docker run -d --name ubuntu -v $PWD:/azure ubuntu:18.04 tail -f /dev/null
+      docker ps
+
+#- job: linux32_qt4
+  #pool:
+    #vmImage: "ubuntu-latest"
+  #container: ubuntu:18.04
+  #steps:
+  #- bash: |
+      #apt-get -y install sudo
+      #sh 3rdparty.sh all qt4 ubuntu
+      #sh configure.sh qt4 linux
+      #sh build.sh qt4 linux deploy
+  #- publish: $(System.DefaultWorkingDirectory)/deploy
+    #artifact: Sky-linux32-qt4
