@@ -18,7 +18,6 @@ matrix:
 
 before_install:
   - docker run -d --name ubuntu -v $PWD:/travis ${TARGET}/ubuntu:18.04 tail -f /dev/null
-  - docker ps
 
 install:
   - docker exec -t ubuntu bash -c "cd /travis;
