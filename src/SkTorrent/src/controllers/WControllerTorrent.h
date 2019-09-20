@@ -235,6 +235,29 @@ private:
 };
 
 //-------------------------------------------------------------------------------------------------
+// WTorrentItemData
+//-------------------------------------------------------------------------------------------------
+
+struct WTorrentItemData
+{
+    int id;
+
+    QString path;
+    QString name;
+
+    int index;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WTorrentItemFolder
+//-------------------------------------------------------------------------------------------------
+
+struct WTorrentItemFolder
+{
+    QList<WTorrentItemData> items;
+};
+
+//-------------------------------------------------------------------------------------------------
 // WTorrentEvent
 //-------------------------------------------------------------------------------------------------
 
@@ -419,6 +442,12 @@ public: // Initialize
                                       qint64          sizeMax = 1048576 * 1000); // 1 gigabyte
 
 public: // Static functions
+    Q_INVOKABLE
+    static QList<WTorrentItemData> torrentItems(const QString & data);
+
+    Q_INVOKABLE
+    static QList<WTorrentItemFolder> torrentFolders(const QList<WTorrentItemData> & items);
+
     //---------------------------------------------------------------------------------------------
     // Bencode
 

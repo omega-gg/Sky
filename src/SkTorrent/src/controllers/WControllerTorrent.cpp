@@ -36,6 +36,20 @@ W_INIT_CONTROLLER(WControllerTorrent)
 static const int CONTROLLERTORRENT_PORT = 8000;
 
 //=================================================================================================
+// Static functions
+//=================================================================================================
+
+inline bool sortA(const WTorrentItemData & itemA, const WTorrentItemData & itemB)
+{
+    return (itemA.name.toLower() < itemB.name.toLower());
+}
+
+inline bool sortB(const WTorrentItemData & itemA, const WTorrentItemData & itemB)
+{
+    return (itemA.index < itemB.index);
+}
+
+//=================================================================================================
 // WTorrent
 //=================================================================================================
 // Private
@@ -761,6 +775,126 @@ int WControllerTorrentPrivate::extractIndex(const QString & url) const
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* static */ int WControllerTorrentPrivate::extractItem(WTorrentItemData * item,
+                                                        const QString    & data, int at)
+{
+    int index = data.indexOf(':', at);
+
+    if (index == -1) return -1;
+
+    int length = data.mid(at, index - at).toInt();
+
+    if (length == 0) return -1;
+
+    index++;
+
+    QString string = data.mid(index, length);
+
+    at = index + length;
+
+    if (at < data.length())
+    {
+        if (data.at(at) == 'e')
+        {
+            item->name  = string;
+            item->index = getIndex(string);
+
+            at++;
+        }
+        else
+        {
+            item->path.append(string);
+
+            return extractItem(item, data, at);
+        }
+    }
+
+    return at;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* static */ int WControllerTorrentPrivate::extractString(QString       * string,
+                                                          const QString & data, int at)
+{
+    int index = data.indexOf(':', at);
+
+    if (index == -1) return -1;
+
+    int length = data.mid(at, index - at).toInt();
+
+    if (length == 0) return -1;
+
+    index++;
+
+    *string = data.mid(index, length);
+
+    return index + length;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* static */ WTorrentItemFolder
+WControllerTorrentPrivate::extractFolder(QList<WTorrentItemData> * items)
+{
+    QList<WTorrentItemData> list;
+
+    WTorrentItemData item = items->takeAt(0);
+
+    QString path = item.path;
+
+    list.append(item);
+
+    int index = 0;
+
+    while (index < items->length())
+    {
+        if (items->at(index).path == path)
+        {
+            item = items->takeAt(index);
+
+            list.append(item);
+        }
+        else index++;
+    }
+
+    if (list.first().index == -1)
+    {
+         qSort(list.begin(), list.end(), sortA);
+    }
+    else qSort(list.begin(), list.end(), sortB);
+
+    WTorrentItemFolder folder;
+
+    folder.items = list;
+
+    return folder;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* static */ int WControllerTorrentPrivate::getIndex(const QString & name)
+{
+    QString string;
+
+    for (int i = 0; i < name.length(); i++)
+    {
+        QChar character = name.at(i);
+
+        if (character.isDigit() == false) break;
+
+        string.append(character);
+    }
+
+    if (string.isEmpty())
+    {
+         return -1;
+    }
+    else return string.toInt();
+}
+
+//-------------------------------------------------------------------------------------------------
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
@@ -999,6 +1133,80 @@ WControllerTorrent::WControllerTorrent() : WController(new WControllerTorrentPri
 
 //-------------------------------------------------------------------------------------------------
 // Static functions
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */
+QList<WTorrentItemData> WControllerTorrent::torrentItems(const QString & data)
+{
+    QList<WTorrentItemData> items;
+
+    QString list = listAfter(data, "files");
+
+    int index = indexAfter(list, "path");
+
+    int id = 1;
+
+    while (index != -1)
+    {
+        WTorrentItemData item;
+
+        item.id = id;
+
+        QChar character = list.at(index);
+
+        if (character == 'l')
+        {
+            index++;
+
+            index = WControllerTorrentPrivate::extractItem(&item, list, index);
+
+            if (index == -1) return items;
+
+            if (item.name.isEmpty() == false)
+            {
+                items.append(item);
+            }
+        }
+        else
+        {
+            QString name;
+
+            index = WControllerTorrentPrivate::extractString(&name, list, index);
+
+            if (index == -1) return items;
+
+            if (name.isEmpty() == false)
+            {
+                item.name  = name;
+                item.index = WControllerTorrentPrivate::getIndex(name);
+
+                items.append(item);
+            }
+        }
+
+        index = indexAfter(list, "path", index);
+
+        id++;
+    }
+
+    return items;
+}
+
+/* Q_INVOKABLE static */
+QList<WTorrentItemFolder> WControllerTorrent::torrentFolders(const QList<WTorrentItemData> & items)
+{
+    QList<WTorrentItemFolder> list;
+
+    QList<WTorrentItemData> data = items;
+
+    while (items.isEmpty() == false)
+    {
+        list.append(WControllerTorrentPrivate::extractFolder(&data));
+    }
+
+    return list;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */

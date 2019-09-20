@@ -19,6 +19,8 @@
 
 // Sk includes
 #include <WBackendNet>
+#include <WControllerPlaylist>
+#include <WControllerTorrent>
 
 #ifndef SK_NO_BACKENDUNIVERSAL
 

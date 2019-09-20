@@ -61,6 +61,14 @@ public: // Static functions
 
     static int listAfter(const QString & text, const QString & string, int * at);
 
+    static int extractItem(WTorrentItemData * item, const QString & data, int at);
+
+    static int extractString(QString * string, const QString & data, int at);
+
+    static WTorrentItemFolder extractFolder(QList<WTorrentItemData> * items);
+
+    static int getIndex(const QString & name);
+
 public: // Slots
     void onLoaded      (WRemoteData * data);
     void onMagnetLoaded(WRemoteData * data);

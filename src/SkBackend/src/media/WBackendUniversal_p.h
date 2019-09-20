@@ -124,6 +124,7 @@ public: // Enums
     };
 
 public:
+    WBackendUniversalNode();
     WBackendUniversalNode(Type type);
 
 public: // Interface
@@ -141,13 +142,23 @@ public: // Interface
 
     QRegExp getRegExp(WBackendUniversalParameters * parameters, int index) const;
 
-    QVariantList getList      (WBackendUniversalParameters * parameters, int index) const;
-    QStringList  getStringList(WBackendUniversalParameters * parameters, int index) const;
+    QVariantList getList(WBackendUniversalParameters * parameters, int index) const;
+
+    QVariantList getTorrentVariants(const QList<WTorrentItemData> & items) const;
+
+    QStringList getStringList(WBackendUniversalParameters * parameters, int index) const;
+
+    QHash<QString, QVariant> getHash(WBackendUniversalParameters * parameters, int index) const;
+
+    QHash<QString, QVariant> getHtml(const WControllerPlaylistData & data) const;
 
     QVariant       * getValue     (WBackendUniversalParameters * parameters, int index) const;
     const QVariant * getValueConst(WBackendUniversalParameters * parameters, int index) const;
 
     const QVariantList variants(const QStringList & list) const;
+
+    QList<WTorrentItemData> torrentItems(WBackendUniversalParameters * parameters,
+                                         int                           index) const;
 
 public: // Variables
     Type type;
