@@ -1208,6 +1208,7 @@ QList<WTorrentItemFolder> WControllerTorrent::torrentFolders(const QList<WTorren
 }
 
 //-------------------------------------------------------------------------------------------------
+// Bencode
 
 /* Q_INVOKABLE static */
 WControllerTorrent::Type WControllerTorrent::extractType(const QString & text, int at)

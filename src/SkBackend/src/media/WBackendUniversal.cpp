@@ -1666,7 +1666,7 @@ inline QVariant torrentItems(const WBackendUniversalNode * node,
 
     QList<WTorrentItemData> items = WControllerTorrent::torrentItems(data);
 
-    return node->getTorrentVariants(items);
+    return node->getTorrentItems(items);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2079,7 +2079,7 @@ WBackendUniversalNode::getList(WBackendUniversalParameters * parameters, int ind
 //-------------------------------------------------------------------------------------------------
 
 QVariantList
-WBackendUniversalNode::getTorrentVariants(const QList<WTorrentItemData> & items) const
+WBackendUniversalNode::getTorrentItems(const QList<WTorrentItemData> & items) const
 {
     QVariantList list;
 
@@ -2109,7 +2109,7 @@ WBackendUniversalNode::getTorrentFolders(const QList<WTorrentItemFolder> & folde
     {
         QHash<QString, QVariant> hash;
 
-        hash.insert("items", getTorrentVariants(folder.items));
+        hash.insert("items", getTorrentItems(folder.items));
 
         list.append(hash);
     }

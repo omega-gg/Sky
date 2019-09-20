@@ -144,7 +144,8 @@ public: // Interface
 
     QVariantList getList(WBackendUniversalParameters * parameters, int index) const;
 
-    QVariantList getTorrentVariants(const QList<WTorrentItemData> & items) const;
+    QVariantList getTorrentItems  (const QList<WTorrentItemData>   & items)   const;
+    QVariantList getTorrentFolders(const QList<WTorrentItemFolder> & folders) const;
 
     QStringList getStringList(WBackendUniversalParameters * parameters, int index) const;
 
