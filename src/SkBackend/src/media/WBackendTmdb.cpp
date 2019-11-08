@@ -38,7 +38,7 @@ static const QString BACKENDTMDB_MATCH_END   =  "[)}\\]]";
 
 static const int BACKENDTMDB_YEAR = 1800;
 
-static const int BACKENDTMDB_HASH_MAX = 1000;
+static const int BACKENDTMDB_HASH_MAX = 100;
 
 //-------------------------------------------------------------------------------------------------
 // Private
@@ -289,12 +289,7 @@ QString WBackendTmdbPrivate::extractShow(const QString & label) const
                 index++;
             }
 
-            if (index == length && show.isEmpty() == false)
-            {
-                show.chop(1);
-
-                return show;
-            }
+            if (index == length && show.isEmpty() == false) break;
 
             if (string.at(index) == 'e')
             {
@@ -305,31 +300,18 @@ QString WBackendTmdbPrivate::extractShow(const QString & label) const
                     index++;
                 }
 
-                if (index == length && show.isEmpty() == false)
-                {
-                    show.chop(1);
-
-                    return show;
-                }
+                if (index == length && show.isEmpty() == false) break;
             }
 
             index = i + 1;
 
-            if (index != list.count() && list.at(index).toInt() && show.isEmpty() == false)
-            {
-                show.chop(1);
-
-                return show;
-            }
+            if (index != list.count() && list.at(index).toInt() && show.isEmpty() == false) break;
         }
 
         show.append(string + ' ');
     }
 
-    if (show.isEmpty() == false)
-    {
-        show.chop(1);
-    }
+    show.chop(1);
 
     return show;
 }
@@ -339,7 +321,7 @@ QString WBackendTmdbPrivate::extractShow(const QString & label) const
 bool WBackendTmdbPrivate::match(const QStringList & listA, const QStringList & listB) const
 {
     // NOTE: To avoid watching short titles.
-    if (listB.length() == 1 && listA.length() > 1)
+    if (listB.count() == 1 && listA.count() > 1)
     {
         return false;
     }
@@ -506,12 +488,12 @@ WBackendTmdb::WBackendTmdb() : WBackendNet(new WBackendTmdbPrivate(this))
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendTmdb::checkValidUrl(const QString & url) const
+/* Q_INVOKABLE virtual */ QString WBackendTmdb::validate() const
 {
-    QString source = WControllerNetwork::removeUrlPrefix(url);
-
-    return source.startsWith("themoviedb.org");
+    return "^themoviedb.org";
 }
+
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ bool WBackendTmdb::checkCover(const QString &, const QString & q) const
 {
@@ -578,7 +560,7 @@ WBackendNetTrack WBackendTmdb::extractTrack(const QByteArray       & data,
         QStringList listA = d->getList(variants.first().toString());
         QStringList listB = d->getList(title);
 
-        if (d->match(listA, listB) == false && list.length() != 1) return reply;
+        if (list.count() != 1 && d->match(listA, listB) == false) return reply;
 
         QString source = WControllerNetwork::extractAttribute(string, "href");
 
@@ -613,17 +595,17 @@ WBackendNetTrack WBackendTmdb::extractTrack(const QByteArray       & data,
     {
         Q_D(const WBackendTmdb);
 
-        QStringList listTitle = d->getList(query.data.toString());
-
         QStringList list = Sk::slices(content, "<div class=\"image_content\">",
                                                "<p class=\"overview\">");
 
-        if (list.length() == 1)
+        if (list.count() == 1)
         {
             d->applySource(&reply, list.first());
 
             return reply;
         }
+
+        QStringList listTitle = d->getList(query.data.toString());
 
         foreach (const QString & string, list)
         {
@@ -658,7 +640,7 @@ WBackendNetTrack WBackendTmdb::extractTrack(const QByteArray       & data,
 
         if (source.isEmpty()) return;
 
-        source = source.mid(0, source.indexOf("/season") + 8);
+        source = source.mid(0, source.indexOf("/season/") + 8);
 
         while (d->shows.count() > BACKENDTMDB_HASH_MAX)
         {

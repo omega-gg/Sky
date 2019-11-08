@@ -119,11 +119,9 @@ WBackendDuckDuckGo::WBackendDuckDuckGo() : WBackendNet(new WBackendDuckDuckGoPri
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendDuckDuckGo::checkValidUrl(const QString & url) const
+/* Q_INVOKABLE virtual */ QString WBackendDuckDuckGo::validate() const
 {
-    QString source = WControllerNetwork::removeUrlPrefix(url);
-
-    return source.startsWith("duckduckgo.com");
+    return "^duckduckgo.com";
 }
 
 //-------------------------------------------------------------------------------------------------

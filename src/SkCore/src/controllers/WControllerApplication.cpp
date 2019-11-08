@@ -462,11 +462,13 @@ QMimeData * WControllerApplication::duplicateMime(const QMimeData * source)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ bool WControllerApplication::runAdmin(const QString & fileName)
+/* Q_INVOKABLE static */ bool WControllerApplication::runAdmin(const QString & fileName,
+                                                               const QString & parameters)
 {
 #ifdef Q_OS_WIN
     intptr_t result = (intptr_t) ShellExecuteA(NULL, "runas", fileName.toUtf8().constData(),
-                                               "--updater", NULL, SW_SHOWNORMAL);
+                                               parameters.toLatin1().constData(), NULL,
+                                               SW_SHOWNORMAL);
 
     return (result > 32);
 #else

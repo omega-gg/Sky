@@ -114,11 +114,11 @@ void WBackendOpenSubtitlesPrivate::init() {}
 
     QString search = list.last();
 
-    int index = Sk::indexAt(search, " ", skip);
+    int index = Sk::indexSkip(search, " ", skip);
 
     if (index == -1) return;
 
-    search = search.mid(0, index - 1);
+    search = search.mid(0, index);
 
     WBackendOpenSubtitlesPrivate::applyQuery(reply, list.first(), search, query.id + 1);
 }
@@ -286,11 +286,9 @@ WBackendOpenSubtitles::WBackendOpenSubtitles()
 // WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendOpenSubtitles::checkValidUrl(const QString & url) const
+/* Q_INVOKABLE virtual */ QString WBackendOpenSubtitles::validate() const
 {
-    QString source = WControllerNetwork::removeUrlPrefix(url);
-
-    return source.startsWith("opensubtitles.org");
+    return "^opensubtitles.org";
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -298,7 +296,9 @@ WBackendOpenSubtitles::WBackendOpenSubtitles()
 /* Q_INVOKABLE virtual */
 WBackendNetQuery WBackendOpenSubtitles::getQueryItem(const QString & url) const
 {
-    if (checkValidUrl(url) && url.contains("/subtitles/"))
+    QString source = WControllerNetwork::removeUrlPrefix(url);
+
+    if (source.startsWith("opensubtitles.org") && source.contains("/subtitles/"))
     {
         WBackendNetQuery query;
 
@@ -324,28 +324,27 @@ WBackendNetQuery WBackendOpenSubtitles::createQuery(const QString & method,
 {
     WBackendNetQuery query;
 
-    if (method == "subtitles")
-    {
-        QString language = WBackendOpenSubtitlesPrivate::getLanguage(label);
+    if (method != "subtitles") return query;
 
-        QString search = q.simplified();
+    QString language = WBackendOpenSubtitlesPrivate::getLanguage(label);
 
-        QStringList list;
+    QString search = q.simplified();
 
-        list.append(language);
-        list.append(search);
+    QStringList list;
 
-        query.url = WBackendOpenSubtitlesPrivate::getUrl(language, search);
+    list.append(language);
+    list.append(search);
 
-        query.data = list;
+    query.url = WBackendOpenSubtitlesPrivate::getUrl(language, search);
 
-        query.cookies = true;
+    query.data = list;
 
-        // FIXME OpenSubtitles: We have to delay our requests to avoid the captcha.
-        query.maxHost = 1;
-        query.delay   = BACKENDOPENSUBTITLES_DELAY;
-        query.timeout = BACKENDOPENSUBTITLES_TIMEOUT;
-    }
+    query.cookies = true;
+
+    // FIXME OpenSubtitles: We have to delay our requests to avoid the captcha.
+    query.maxHost = 1;
+    query.delay   = BACKENDOPENSUBTITLES_DELAY;
+    query.timeout = BACKENDOPENSUBTITLES_TIMEOUT;
 
     return query;
 }

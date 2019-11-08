@@ -39,7 +39,7 @@ public: // WBackendNet implementation
 public: // WBackendNet reimplementation
     /* Q_INVOKABLE virtual */ bool hasSearch() const;
 
-    /* Q_INVOKABLE virtual */ bool checkValidUrl(const QString & url) const;
+    /* Q_INVOKABLE virtual */ QString validate() const;
 
     /* Q_INVOKABLE virtual */ QString getHost() const;
 

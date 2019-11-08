@@ -220,15 +220,9 @@ WBackendVimeo::WBackendVimeo() : WBackendNet(new WBackendVimeoPrivate(this))
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendVimeo::checkValidUrl(const QString & url) const
+/* Q_INVOKABLE virtual */ QString WBackendVimeo::validate() const
 {
-    QString source = WControllerNetwork::removeUrlPrefix(url);
-
-    if (source.startsWith("vimeo.com") || source.startsWith("player.vimeo.com"))
-    {
-         return true;
-    }
-    else return false;
+    return "^vimeo.com|^player.vimeo.com";
 }
 
 //-------------------------------------------------------------------------------------------------

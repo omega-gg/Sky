@@ -192,17 +192,9 @@ WBackendDailymotion::WBackendDailymotion() : WBackendNet(new WBackendDailymotion
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendDailymotion::checkValidUrl(const QString & url) const
+/* Q_INVOKABLE virtual */ QString WBackendDailymotion::validate() const
 {
-    QString source = WControllerNetwork::removeUrlPrefix(url);
-
-    if (source.startsWith("dailymotion.com") || source.startsWith("api.dailymotion.com")
-        ||
-        source.startsWith("games.dailymotion.com"))
-    {
-         return true;
-    }
-    else return false;
+    return "^dailymotion.com|^api.dailymotion.com|^games.dailymotion.com";
 }
 
 //-------------------------------------------------------------------------------------------------

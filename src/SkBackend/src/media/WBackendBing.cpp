@@ -122,11 +122,9 @@ WBackendBing::WBackendBing() : WBackendNet(new WBackendBingPrivate(this))
 // WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendBing::checkValidUrl(const QString & url) const
+/* Q_INVOKABLE virtual */ QString WBackendBing::validate() const
 {
-    QString source = WControllerNetwork::removeUrlPrefix(url);
-
-    return source.startsWith("bing.com");
+    return "^bing.com";
 }
 
 //-------------------------------------------------------------------------------------------------

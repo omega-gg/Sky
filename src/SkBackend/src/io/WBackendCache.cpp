@@ -94,6 +94,8 @@ WBackendCache::WBackendCache(QObject * parent)
 /* Q_INVOKABLE */ WBackendUniversalScript * WBackendCache::getScript(const QString & name,
                                                                      const QString & data)
 {
+    if (data.isEmpty()) return NULL;
+
     Q_D(WBackendCache);
 
     QHash<QString, WBackendUniversalScript>::iterator i = d->scripts.find(name);
@@ -109,6 +111,13 @@ WBackendCache::WBackendCache(QObject * parent)
     }
 
     WBackendUniversalScript script(data);
+
+    if (script.isValid() == false)
+    {
+        qWarning("WBackendCache::getScript: Cannot load [%s] script.", name.C_STR);
+
+        return NULL;
+    }
 
     i = d->scripts.insert(name, script);
 

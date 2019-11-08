@@ -192,12 +192,12 @@ WBackendLastFm::WBackendLastFm() : WBackendNet(new WBackendLastFmPrivate(this))
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendLastFm::checkValidUrl(const QString & url) const
+/* Q_INVOKABLE virtual */ QString WBackendLastFm::validate() const
 {
-    QString source = WControllerNetwork::removeUrlPrefix(url);
-
-    return source.startsWith("last.fm");
+    return "^last.fm";
 }
+
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ bool WBackendLastFm::checkCover(const QString & label,
                                                           const QString & q) const
@@ -241,11 +241,11 @@ WBackendNetTrack WBackendLastFm::extractTrack(const QByteArray       & data,
 
     if (query.id == 1)
     {
-        int index = content.indexOf("id=\"header-expanded-image\"");
+        int index = content.indexOf("property=\"og:image\"");
 
         if (index == -1) return reply;
 
-        QString cover = WControllerNetwork::extractAttribute(content, "src", index);
+        QString cover = WControllerNetwork::extractAttribute(content, "content", index);
 
         reply.track.setCover(cover);
     }
@@ -260,17 +260,17 @@ WBackendNetTrack WBackendLastFm::extractTrack(const QByteArray       & data,
 
         foreach (const QString & string, list)
         {
-            QString author = WControllerNetwork::extractAttributeUtf8(string, "title");
+            int index = string.indexOf("class=\"chartlist-artist\"");
+
+            QString author = WControllerNetwork::extractAttributeUtf8(string, "title", index);
 
             QStringList list = d->getList(author);
 
             if (d->match(list, listAuthor))
             {
-                int index = string.indexOf("<span class=\"artist-name-spacer\"");
+                int index = string.indexOf("class=\"chartlist-name\"");
 
                 QString title = WControllerNetwork::extractAttributeUtf8(string, "title", index);
-
-                title = title.mid(author.length() + 3);
 
                 list = d->getList(title);
 

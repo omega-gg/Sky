@@ -175,9 +175,7 @@ bool WBackendSoundCloudPrivate::extractId(const QString          & data,
 
 QString WBackendSoundCloudPrivate::extractJson(const QString & data, const QString & id) const
 {
-    int index = data.indexOf("<script>webpackJsonp");
-
-    index = data.indexOf("\"id\":" + id, index + 20);
+    int index = data.indexOf("\"id\":" + id);
 
     return WControllerNetwork::extractJson(data, "data", index + 7);
 }
@@ -329,17 +327,9 @@ WBackendSoundCloud::WBackendSoundCloud() : WBackendNet(new WBackendSoundCloudPri
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendSoundCloud::checkValidUrl(const QString & url) const
+/* Q_INVOKABLE virtual */ QString WBackendSoundCloud::validate() const
 {
-    QString source = WControllerNetwork::removeUrlPrefix(url);
-
-    if (source.startsWith("soundcloud.com") || source.startsWith("api.soundcloud.com")
-        ||
-        source.startsWith("a-v2.sndcdn.com"))
-    {
-         return true;
-    }
-    else return false;
+    return "^soundcloud.com|^api.soundcloud.com|^a-v2.sndcdn.com";
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -557,7 +547,7 @@ WBackendNetSource WBackendSoundCloud::extractSource(const QByteArray       & dat
 
     if (query.id == 0)
     {
-        QString json = d->extractJson(content, 67, 2);
+        QString json = d->extractJson(content, 18, 2);
 
         QString idTrack = WControllerNetwork::extractJsonUtf8(json, "id");
 
@@ -589,7 +579,7 @@ WBackendNetTrack WBackendSoundCloud::extractTrack(const QByteArray       & data,
 
     QString content = Sk::readUtf8(data);
 
-    QString json = d->extractJson(content, 67, 2);
+    QString json = d->extractJson(content, 18, 2);
 
     d->loadTrack(&(reply.track), json);
 
@@ -636,7 +626,7 @@ WBackendNetPlaylist WBackendSoundCloud::extractPlaylist(const QByteArray       &
     }
     else if (id == 1) // playlist
     {
-        QString json = d->extractJson(content, 84, 2);
+        QString json = d->extractJson(content, 40, 2);
 
         // NOTE: We have to skip track informations.
         int index = json.lastIndexOf("\"kind\":\"track\"");
@@ -664,7 +654,7 @@ WBackendNetPlaylist WBackendSoundCloud::extractPlaylist(const QByteArray       &
     }
     else if (id == 2) // feed
     {
-        QString json = d->extractJson(content, 63, 2);
+        QString json = d->extractJson(content, 30, 2);
 
         QString source = WControllerNetwork::extractJsonUtf8(json, "uri");
 
@@ -682,7 +672,7 @@ WBackendNetPlaylist WBackendSoundCloud::extractPlaylist(const QByteArray       &
     }
     else if (id == 3) // related
     {
-        QString json = d->extractJson(content, 67, 2);
+        QString json = d->extractJson(content, 18, 2);
 
         QString idTrack = WControllerNetwork::extractJsonUtf8(json, "id");
 

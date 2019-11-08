@@ -309,7 +309,7 @@ void WBackendYoutubePrivate::applySignature(QString * source, QJSValue * value) 
 {
     QRegExp regExp("&s=([a-zA-Z0-9\\.\\-\\_\\=]+)");
 
-    QString signature = Sk::extract(*source, regExp.pattern(), 1);
+    QString signature = Sk::regExpCap(*source, regExp.pattern(), 1);
 
 #ifdef QT_4
     signature = value->call(QScriptValue(), QScriptValueList() << signature).toString();
@@ -367,15 +367,9 @@ WBackendYoutube::WBackendYoutube() : WBackendNet(new WBackendYoutubePrivate(this
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendYoutube::checkValidUrl(const QString & url) const
+/* Q_INVOKABLE virtual */ QString WBackendYoutube::validate() const
 {
-    QString source = WControllerNetwork::removeUrlPrefix(url);
-
-    if (source.startsWith("youtube.com") || source.startsWith("youtu.be"))
-    {
-         return true;
-    }
-    else return false;
+    return "^youtube.com|^youtu.be";
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -705,7 +699,7 @@ WBackendNetSource WBackendYoutube::extractSource(const QByteArray       & data,
 
         QString function = WControllerNetwork::extractScript(content, "function(a)", index);
 
-        QString object = Sk::extract(function, ";([a-zA-Z0-9$]+)\\.", 1);
+        QString object = Sk::regExpCap(function, ";([a-zA-Z0-9$]+)\\.", 1);
 
         object = WControllerNetwork::extractScript(content, "var " + object + '=');
 
@@ -852,21 +846,26 @@ WBackendNetTrack WBackendYoutube::extractTrack(const QByteArray       & data,
 
     QString content = Sk::readUtf8(data);
 
-    QString cover = WControllerNetwork::extractNodeAttribute(content, "=\"og:image", "content");
+    int index = content.indexOf("=\"og:image");
+
+    QString cover = WControllerNetwork::extractAttribute(content, "content", index);
 
     cover.replace("https://", "http://");
 
-    QString json = WControllerNetwork::extractJsonHtml(content, "args");
+    QString json = Sk::slice(content, "\\\"videoDetails\\\"", "\\\"playerConfig\\\"");
+
+    json.replace("\\\"", "\"");
+    json.replace("\\\\", "\\");
 
     QString title = WControllerNetwork::extractJsonUtf8(json, "title");
 
     QString author = WControllerNetwork::extractJsonUtf8(json, "author");
 
-    QString duration = WControllerNetwork::extractJson(json, "length_seconds");
+    QString duration = WControllerNetwork::extractJson(json, "lengthSeconds");
 
-    QString quality = WControllerNetwork::extractJson(json, "fmt_list");
+    QString quality = WControllerNetwork::extractJson(content, "fmt_list");
 
-    int index = content.indexOf("itemprop=\"datePublished");
+    index = content.indexOf("itemprop=\"datePublished");
 
     QString date = WControllerNetwork::extractAttribute(content, "content", index);
 
@@ -903,13 +902,13 @@ WBackendNetPlaylist WBackendYoutube::extractPlaylist(const QByteArray       & da
 {
     WBackendNetPlaylist reply;
 
+    QString content = Sk::readUtf8(data);
+
     int id = query.id;
 
-    if (id == 1) // PlaylistFeed
+    if (id == 1) // Feed
     {
         Q_D(const WBackendYoutube);
-
-        QString content = Sk::readUtf8(data);
 
         if (query.data.toInt() == 0)
         {
@@ -953,11 +952,9 @@ WBackendNetPlaylist WBackendYoutube::extractPlaylist(const QByteArray       & da
 
         d->loadTracks(&(reply.tracks), list, "class=\"yt-lockup-title");
     }
-    else if (id == 2) // search tracks
+    else if (id == 2) // Search tracks
     {
         Q_D(const WBackendYoutube);
-
-        QString content = Sk::readUtf8(data);
 
         QStringList list = Sk::slices(content, "<div class=\"yt-lockup yt-lockup-tile",
                                                "</div></li>");
@@ -977,24 +974,21 @@ WBackendNetPlaylist WBackendYoutube::extractPlaylist(const QByteArray       & da
             nextQuery->data = 1;
         }
     }
-    else if (id == 3) // related tracks
+    else if (id == 3) // Related tracks
     {
         Q_D(const WBackendYoutube);
 
-        QString content = Sk::readUtf8(data);
-
         if (query.data.toInt() == 0)
         {
-            int index = content.indexOf("data-continuation=\"");
+            int index = content.indexOf("\\\"continuation\\\"");
 
-            if (index != -1)
+            QString json = Sk::sliceIn(content, "\\\"continuation\\\":\\\"", "\\\"", index + 1);
+
+            if (json.isEmpty() == false)
             {
-                QString data = WControllerNetwork::extractAttribute(content, "data-continuation",
-                                                                    index);
-
                 QString url("https://www.youtube.com/related_ajax?continuation="
                             +
-                            WControllerNetwork::decodeUrl(data));
+                            WControllerNetwork::decodeUrl(json));
 
                 WBackendNetQuery * nextQuery = &(reply.nextQuery);
 
@@ -1018,8 +1012,6 @@ WBackendNetPlaylist WBackendYoutube::extractPlaylist(const QByteArray       & da
     }
     else // Playlist
     {
-        QString content = Sk::readUtf8(data);
-
         if (query.data.toInt() == 0)
         {
             int index = content.indexOf("<meta name=\"title");
@@ -1082,7 +1074,7 @@ WBackendNetFolder WBackendYoutube::extractFolder(const QByteArray       & data,
 
     int id = query.id;
 
-    if (id == 1) // search channels
+    if (id == 1) // Search channels
     {
         QStringList list = Sk::slices(content,
                                       "<div class=\"yt-lockup yt-lockup-tile yt-lockup-channel",
@@ -1113,7 +1105,7 @@ WBackendNetFolder WBackendYoutube::extractFolder(const QByteArray       & data,
             reply.items.append(playlist);
         }
     }
-    else // search playlists
+    else // Search playlists
     {
         QStringList list = Sk::slices(content,
                                       "<div class=\"yt-lockup yt-lockup-tile yt-lockup-playlist",
