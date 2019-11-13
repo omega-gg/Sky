@@ -457,6 +457,11 @@ void WViewPrivate::init(QQuickItem * item)
 
     QRect rect = wControllerView->availableGeometry(sk->defaultScreen());
 
+    if (rect.isValid() == false)
+    {
+        rect = wControllerView->availableGeometry();
+    }
+
     geometryNormal = getGeometryDefault(rect);
 
     q->setGeometry(geometryNormal);
@@ -1594,6 +1599,11 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
     Q_D(const WView);
 
     QRect rect = wControllerView->availableGeometry(sk->defaultScreen());
+
+    if (rect.isValid() == false)
+    {
+        rect = wControllerView->availableGeometry();
+    }
 
     return d->getGeometryDefault(rect);
 }

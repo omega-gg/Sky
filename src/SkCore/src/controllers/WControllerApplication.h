@@ -127,7 +127,7 @@ public: // Static functions
 
     //---------------------------------------------------------------------------------------------
 
-    Q_INVOKABLE static bool runAdmin(const QString & fileName);
+    Q_INVOKABLE static bool runAdmin(const QString & fileName, const QString & parameters);
 
     Q_INVOKABLE static void wait(int msec, QEventLoop::ProcessEventsFlags flags
                                            = QEventLoop::AllEvents);
@@ -139,7 +139,7 @@ public: // Static functions
 
     //---------------------------------------------------------------------------------------------
 
-    Q_INVOKABLE static int indexAt(const QString & string, const QString & match, int skip);
+    Q_INVOKABLE static int indexSkip(const QString & string, const QString & match, int skip);
 
     Q_INVOKABLE static QString trim      (const QString & string);
     Q_INVOKABLE static QString simplify  (const QString & string);
@@ -181,18 +181,20 @@ public: // Static functions
                                                                     const QRegExp & end,
                                                                     int             from = 0);
 
-    Q_INVOKABLE static QString extract(const QString & string,
-                                       const QString & pattern, int cap, int from = 0);
-
     Q_INVOKABLE static QString extractText(QString * string, const QString & pattern);
     Q_INVOKABLE static QString extractText(QString * string, const QRegExp & regExp);
 
     Q_INVOKABLE static QString extractLine(QString * string);
     Q_INVOKABLE static QString extractWord(QString * string);
 
+    Q_INVOKABLE static QString regExpCap(const QString & string,
+                                         const QString & pattern, int cap, int from = 0);
+
     Q_INVOKABLE static void skipCharacters(QString * string, const QChar & character);
 
     Q_INVOKABLE static void skipSpaces(QString * string);
+
+    Q_INVOKABLE static bool checkEscaped(const QString & string, int from);
 
     //---------------------------------------------------------------------------------------------
 

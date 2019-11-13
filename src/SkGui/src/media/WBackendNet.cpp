@@ -71,7 +71,8 @@ void WBackendNetQuery::init(Type type, const QString & url)
 
     target = TargetDefault;
 
-    id = 0;
+    id    = 0;
+    index = 0;
 
     priority = QNetworkRequest::NormalPriority;
 
@@ -527,10 +528,12 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendNet::checkValidUrl(const QString &) const
+/* Q_INVOKABLE virtual */ QString WBackendNet::validate() const
 {
-    return false;
+    return QString();
 }
+
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ bool WBackendNet::checkCover(const QString &, const QString &) const
 {

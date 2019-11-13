@@ -684,7 +684,7 @@ WallBookmarkTrack
 
         z: player.z
 
-        visible: player.visible
+        visible: player.isPlaying
 
         hoverEnabled: true
 
@@ -736,7 +736,7 @@ WallBookmarkTrack
 
         z: player.z
 
-        visible: player.visible
+        visible: player.isPlaying
 
         hoverEnabled: true
 

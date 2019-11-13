@@ -1199,7 +1199,7 @@ QList<WTorrentItemFolder> WControllerTorrent::torrentFolders(const QList<WTorren
 
     QList<WTorrentItemData> data = items;
 
-    while (items.isEmpty() == false)
+    while (data.isEmpty() == false)
     {
         list.append(WControllerTorrentPrivate::extractFolder(&data));
     }

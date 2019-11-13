@@ -336,13 +336,9 @@ WBackendTorrent::WBackendTorrent() : WBackendNet(new WBackendTorrentPrivate(this
 // WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ bool WBackendTorrent::checkValidUrl(const QString & url) const
+/* Q_INVOKABLE virtual */ QString WBackendTorrent::validate() const
 {
-    if (WControllerNetwork::extractUrlExtension(url) == "torrent" || url.startsWith("magnet:?"))
-    {
-         return true;
-    }
-    else return false;
+    return ".torrent$|^magnet:?";
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -406,7 +402,7 @@ WAbstractBackend::Output WBackendTorrent::getTrackOutput(const QString & url) co
 /* Q_INVOKABLE virtual */
 WBackendNetPlaylistInfo WBackendTorrent::getPlaylistInfo(const QString & url) const
 {
-    if (checkValidUrl(url))
+    if (WControllerNetwork::extractUrlExtension(url) == "torrent" || url.startsWith("magnet:?"))
     {
          return WBackendNetPlaylistInfo(WLibraryItem::Playlist, url);
     }

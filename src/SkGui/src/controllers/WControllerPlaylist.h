@@ -146,6 +146,8 @@ protected: // Initialize
     /* virtual */ void init();
 
 public: // Interface
+    Q_INVOKABLE void reloadBackends() const;
+
     Q_INVOKABLE WRemoteData * getData(WAbstractLoader        * loader,
                                       const WBackendNetQuery & query,
                                       QObject                * parent = NULL) const;
@@ -206,6 +208,8 @@ public: // Interface
 
 public: // Static functions
     Q_INVOKABLE static QString generateSource(const QString & url);
+
+    Q_INVOKABLE static QString simpleSource(const QString & url);
 
     Q_INVOKABLE static QString createSource(const QString & backend, const QString & method,
                                             const QString & label,   const QString & q = QString());

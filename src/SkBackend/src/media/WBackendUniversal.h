@@ -48,7 +48,7 @@ public: // WBackendNet reimplementation
     /* Q_INVOKABLE virtual */ bool isSearchEngine() const;
     /* Q_INVOKABLE virtual */ bool isSearchCover () const;
 
-    /* Q_INVOKABLE virtual */ bool checkValidUrl(const QString & url) const;
+    /* Q_INVOKABLE virtual */ QString validate() const;
 
     /* Q_INVOKABLE virtual */ bool checkCover(const QString & label, const QString & q) const;
 

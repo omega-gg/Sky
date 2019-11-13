@@ -33,7 +33,7 @@ MouseArea
     property int paddingLeft : padding
     property int paddingRight: padding
 
-    property bool autoSelect: true
+    property bool autoSelect: st.baseLineEdit_autoSelect
 
     //---------------------------------------------------------------------------------------------
     // Aliases

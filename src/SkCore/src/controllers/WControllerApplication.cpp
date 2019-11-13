@@ -505,8 +505,8 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ int WControllerApplication::indexAt(const QString & string,
-                                                             const QString & match, int skip)
+/* Q_INVOKABLE static */ int WControllerApplication::indexSkip(const QString & string,
+                                                               const QString & match, int skip)
 {
     if (skip < 1)
     {
@@ -519,14 +519,21 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
     {
         index = string.indexOf(" ", index);
 
-        if (index == -1) return -1;
+        if (index == -1)
+        {
+            if (skip)
+            {
+                 return -1;
+            }
+            else return string.length();
+        }
 
         index++;
 
         skip--;
     }
 
-    return index;
+    return index - 1;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -819,19 +826,6 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ QString WControllerApplication::extract(const QString & string,
-                                                                 const QString & pattern,
-                                                                 int cap, int from)
-{
-    QRegExp regExp(pattern);
-
-    string.indexOf(regExp, from);
-
-    return regExp.cap(cap);
-}
-
-//-------------------------------------------------------------------------------------------------
-
 /* Q_INVOKABLE static */ QString WControllerApplication::extractText(QString       * string,
                                                                      const QString & pattern)
 {
@@ -909,6 +903,19 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ QString WControllerApplication::regExpCap(const QString & string,
+                                                                   const QString & pattern,
+                                                                   int cap, int from)
+{
+    QRegExp regExp(pattern);
+
+    string.indexOf(regExp, from);
+
+    return regExp.cap(cap);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE static */ void WControllerApplication::skipCharacters(QString     * string,
                                                                      const QChar & character)
 {
@@ -927,6 +934,23 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 /* Q_INVOKABLE static */ void WControllerApplication::skipSpaces(QString * string)
 {
     skipCharacters(string, ' ');
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */
+bool WControllerApplication::checkEscaped(const QString & string, int from)
+{
+    int count = 0;
+
+    for (int i = from - 1; i != -1; i--)
+    {
+        if (string.at(i) != '\\') break;
+
+        count++;
+    }
+
+    return (count % 2);
 }
 
 //-------------------------------------------------------------------------------------------------

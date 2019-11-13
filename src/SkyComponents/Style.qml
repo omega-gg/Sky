@@ -802,6 +802,8 @@ Item
 
     property int baseLineEdit_maximumLength: 1000
 
+    property bool baseLineEdit_autoSelect: true
+
     property color baseLineEdit_colorCursor: "#161616"
 
     property color baseLineEdit_colorText         : text1_color
@@ -1071,8 +1073,8 @@ Item
     property real baseWall_itemRatioWidth : 1.333
     property real baseWall_itemRatioHeight: 0.75
 
-    property int baseWall_itemExtraWidth : dp4
-    property int baseWall_itemExtraHeight: dp38
+    property int baseWall_itemExtraWidth : border_size * 2
+    property int baseWall_itemExtraHeight: border_size * 3 + dp32
 
     property int baseWall_marginsMinSize: dp32
 

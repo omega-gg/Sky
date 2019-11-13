@@ -140,8 +140,6 @@ public: // Interface
     QByteArray getByteArray(WBackendUniversalParameters * parameters, int index) const;
     QString    getString   (WBackendUniversalParameters * parameters, int index) const;
 
-    QRegExp getRegExp(WBackendUniversalParameters * parameters, int index) const;
-
     QVariantList getList(WBackendUniversalParameters * parameters, int index) const;
 
     QVariantList getTorrentItems  (const QList<WTorrentItemData>   & items)   const;
@@ -149,12 +147,16 @@ public: // Interface
 
     QStringList getStringList(WBackendUniversalParameters * parameters, int index) const;
 
+    QList<QRegExp> getRegExps(const QVariantList & variants) const;
+
     QHash<QString, QVariant> getHash(WBackendUniversalParameters * parameters, int index) const;
 
     QHash<QString, QVariant> getHtml(const WControllerPlaylistData & data) const;
 
-    QVariant       * getValue     (WBackendUniversalParameters * parameters, int index) const;
-    const QVariant * getValueConst(WBackendUniversalParameters * parameters, int index) const;
+    QVariant * getKey(WBackendUniversalParameters * parameters, int index) const;
+
+    QVariant * getKeyValue(WBackendUniversalParameters * parameters,
+                           int                           index, QVariant * variant) const;
 
     const QVariantList variants(const QStringList & list) const;
 
@@ -250,7 +252,8 @@ public: // Functions
 
     void load();
 
-    void runQuery(WBackendNetQuery * query, const QString & source, const QString & url) const;
+    void runQuery(WBackendNetQuery * query, const QString & name,
+                                            const QString & source, const QString & url) const;
 
     void applyQueryParameters(WBackendUniversalParameters * parameters,
                               const WBackendNetQuery      & query) const;
@@ -324,14 +327,13 @@ public: // Functions
 
     QDateTime getDate(const QVariant & value) const;
 
-    WLibraryItem::Type getType(const QString & string) const;
+    WLibraryItem::Type     getType     (const QString & string) const;
+    WBackendNetQuery::Type getTypeQuery(const QString & string) const;
 
     WLocalObject::State getState     (const QString & string) const;
     WTrack::State       getStateTrack(const QString & string) const;
 
     const QVariant * getVariant(const QHash<QString, QVariant> * hash, const QString & name) const;
-
-    QString getUrl(const QString & url) const;
 
 public: // Events
     void onLoaded();

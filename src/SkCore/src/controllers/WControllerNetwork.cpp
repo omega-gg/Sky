@@ -414,7 +414,7 @@ void WControllerNetworkPrivate::checkConnection()
 
     if (at == -1) return -1;
 
-    while (text.at(at - 1) == '\\')
+    while (Sk::checkEscaped(text, at))
     {
         at = text.indexOf('"', at + 1);
 
@@ -456,7 +456,7 @@ void WControllerNetworkPrivate::checkConnection()
 
         if (indexA != -1)
         {
-            while (text.at(indexA - 1) == '\\')
+            while (Sk::checkEscaped(text, indexA))
             {
                 indexA = text.indexOf('"', indexA + 1);
 
@@ -1574,7 +1574,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
     int indexB = text.indexOf('"', from);
 
-    while (indexB > 0 && text.at(indexB - 1) == '\\')
+    while (indexB > 0 && Sk::checkEscaped(text, indexB))
     {
         indexB = text.indexOf('"', indexB + 1);
     }

@@ -73,6 +73,8 @@ static const int CONTROLLERPLAYLIST_MAX_SIZE = 1048576 * 10; // 10 megabytes
 static const int CONTROLLERPLAYLIST_MAX_TRACKS = 500;
 static const int CONTROLLERPLAYLIST_MAX_ITEMS  = 500;
 
+static const int CONTROLLERPLAYLIST_MAX_QUERY = 200;
+
 //=================================================================================================
 // WControllerPlaylistLoader
 //=================================================================================================
@@ -816,7 +818,6 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
 
                 getDataPlaylist(playlist, query);
             }
-            else playlist->d_func()->setQueryEnded();
 
             return true;
         }
@@ -1841,7 +1842,11 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
 
     if (query == NULL) return;
 
-    query->backend->applyTrack(query->backendQuery, reply);
+    const WBackendNetQuery & backendQuery = query->backendQuery;
+
+    int indexQuery = backendQuery.index;
+
+    query->backend->applyTrack(backendQuery, reply);
 
     WPlaylist * playlist = query->item->toPlaylist();
     WTrack    * track    = query->track;
@@ -1862,8 +1867,10 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
 
         WBackendNetQuery nextQuery = reply.nextQuery;
 
-        if (nextQuery.isValid())
+        if (nextQuery.isValid() && nextQuery.index < CONTROLLERPLAYLIST_MAX_QUERY)
         {
+            nextQuery.index = indexQuery + 1;
+
             playlist->updateTrack(index);
 
             nextQuery.priority
@@ -1924,7 +1931,11 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
 
     if (query == NULL) return;
 
-    query->backend->applyPlaylist(query->backendQuery, reply);
+    const WBackendNetQuery & backendQuery = query->backendQuery;
+
+    int indexQuery = backendQuery.index;
+
+    query->backend->applyPlaylist(backendQuery, reply);
 
     WPlaylist * playlist = query->item->toPlaylist();
 
@@ -1979,8 +1990,10 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
 
         WBackendNetQuery nextQuery = reply.nextQuery;
 
-        if (nextQuery.isValid())
+        if (nextQuery.isValid() && indexQuery < CONTROLLERPLAYLIST_MAX_QUERY)
         {
+            nextQuery.index = indexQuery + 1;
+
             nextQuery.priority
                 = static_cast<QNetworkRequest::Priority> (QNetworkRequest::NormalPriority - 1);
 
@@ -2005,7 +2018,11 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
 
     if (query == NULL) return;
 
-    query->backend->applyFolder(query->backendQuery, reply);
+    const WBackendNetQuery & backendQuery = query->backendQuery;
+
+    int indexQuery = backendQuery.index;
+
+    query->backend->applyFolder(backendQuery, reply);
 
     WLibraryFolder * folder = query->item->toFolder();
 
@@ -2073,8 +2090,10 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
 
         WBackendNetQuery nextQuery = reply.nextQuery;
 
-        if (nextQuery.isValid())
+        if (nextQuery.isValid() && indexQuery < CONTROLLERPLAYLIST_MAX_QUERY)
         {
+            nextQuery.index = indexQuery + 1;
+
             nextQuery.priority
                 = static_cast<QNetworkRequest::Priority> (QNetworkRequest::NormalPriority - 1);
 
@@ -2098,7 +2117,11 @@ void WControllerPlaylistPrivate::onItemLoaded(QIODevice * device, const WBackend
 
     if (query == NULL) return;
 
-    query->backend->applyItem(query->backendQuery, reply);
+    const WBackendNetQuery & backendQuery = query->backendQuery;
+
+    int indexQuery = backendQuery.index;
+
+    query->backend->applyItem(backendQuery, reply);
 
     WLibraryItem * item = query->item;
 
@@ -2111,11 +2134,13 @@ void WControllerPlaylistPrivate::onItemLoaded(QIODevice * device, const WBackend
 
         WBackendNetQuery nextQuery = reply.nextQuery;
 
-        if (nextQuery.isValid())
+        if (nextQuery.isValid() && indexQuery < CONTROLLERPLAYLIST_MAX_QUERY)
         {
             emit item->queryEnded();
 
             addToCache(item->source(), cache, extension);
+
+            nextQuery.index = indexQuery + 1;
 
             nextQuery.priority
                 = static_cast<QNetworkRequest::Priority> (QNetworkRequest::NormalPriority - 1);
@@ -2463,6 +2488,18 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 // Interface
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ void WControllerPlaylist::reloadBackends() const
+{
+    Q_D(const WControllerPlaylist);
+
+    foreach (WBackendNet * backend, d->backends)
+    {
+        backend->reload();
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ WRemoteData * WControllerPlaylist::getData(WAbstractLoader        * loader,
                                                              const WBackendNetQuery & query,
                                                              QObject                * parent) const
@@ -2585,9 +2622,11 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
     {
         Q_D(const WControllerPlaylist);
 
+        QString source = WControllerPlaylist::simpleSource(url).toLower();
+
         foreach (WBackendNet * backend, d->backends)
         {
-            if (backend->checkValidUrl(url))
+            if (source.indexOf(QRegExp(backend->validate())) != -1)
             {
                 return backend;
             }
@@ -2899,6 +2938,53 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
     }
     else return source;
 }
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QString WControllerPlaylist::simpleSource(const QString & url)
+{
+    int indexA = url.indexOf(":");
+
+    if (indexA == -1) return url;
+
+    int indexB = url.indexOf("//", indexA);
+
+    if (indexA != (indexB - 1)) return url;
+
+    indexA = indexB + 2;
+
+    while (indexA < url.length() && url.at(indexA) == '/')
+    {
+        indexA++;
+    }
+
+    indexB = url.indexOf("www.", indexA);
+
+    if (indexB != -1 && indexB == indexA)
+    {
+        indexA += 4;
+    }
+    else if (indexA == -1)
+    {
+        indexB = url.indexOf(QRegExp("[\\?#]"));
+
+        if (indexB == -1)
+        {
+             return url;
+        }
+        else return url.mid(0, indexB);
+    }
+
+    indexB = url.indexOf(QRegExp("[\\?#]"), indexA);
+
+    if (indexB == -1)
+    {
+         return url.mid(indexA);
+    }
+    else return url.mid(indexA, indexB - indexA);
+}
+
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QString WControllerPlaylist::createSource(const QString & backend,
                                                                    const QString & method,
