@@ -2070,6 +2070,8 @@ signals:
 
     QString content = Sk::readUtf8(array);
 
+    content.remove("\\\n");
+
     content.remove('\r');
 
     content.replace('\t', ' ');

@@ -251,7 +251,7 @@ WBackendNetTrack WBackendLastFm::extractTrack(const QByteArray       & data,
     }
     else
     {
-        QStringList list = Sk::slices(content, "<td class=\"chartlist-name\"", "</td>");
+        QStringList list = Sk::slices(content, "chartlist-row", "</tr>");
 
         QVariantList variants = query.data.toList();
 
@@ -268,7 +268,7 @@ WBackendNetTrack WBackendLastFm::extractTrack(const QByteArray       & data,
 
             if (d->match(list, listAuthor))
             {
-                int index = string.indexOf("class=\"chartlist-name\"");
+                index = string.indexOf("class=\"chartlist-name\"");
 
                 QString title = WControllerNetwork::extractAttributeUtf8(string, "title", index);
 
