@@ -7,7 +7,7 @@
 [![GPLv3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl.html)
 
 Sky is the complete application kit built for [MotionBox](http://omega.gg/MotionBox).<br>
-Designed for efficiency, scalability and maintainability.<br>
+Designed for efficiency, scalability and simplicity.<br>
 [omega](http://omega.gg/about) is building Sky kit to empower people.<br>
 
 ## Technology
