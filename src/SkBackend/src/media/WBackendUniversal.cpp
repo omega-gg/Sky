@@ -2045,10 +2045,6 @@ public: // Interface
     Q_INVOKABLE void extract(const QByteArray & array);
 
 private: // Functions
-    bool extractBool(const WYamlReader & reader, const QString & key) const;
-
-    QString extractString(const WYamlReader & reader, const QString & key) const;
-
     WBackendUniversalData::Engines extractEngines(const WYamlReader & reader,
                                                   const QString     & key) const;
 
@@ -2070,18 +2066,23 @@ signals:
 
     QString content = Sk::readUtf8(array);
 
-    content.remove("\\\n");
-
     content.remove('\r');
+
+    content.remove("\\\n");
 
     content.replace('\t', ' ');
 
     WYamlReader reader(content.toUtf8());
 
-    reader.dump();
+    //reader.dump();
 
-    data.api     = extractString(reader, "api");
-    data.version = extractString(reader, "version");
+    //---------------------------------------------------------------------------------------------
+    // Settings
+
+    data.source = WYamlReader::extractString(reader, "source");
+
+    data.api     = WYamlReader::extractString(reader, "api");
+    data.version = WYamlReader::extractString(reader, "version");
 
     WBackendUniversalData::Engines engines = extractEngines(reader, "search");
 
@@ -2099,44 +2100,45 @@ signals:
         data.isSearchCover = true;
     }
 
-    data.title = extractString(reader, "title");
-    data.host  = extractString(reader, "host");
+    data.title = WYamlReader::extractString(reader, "title");
+    data.host  = WYamlReader::extractString(reader, "host");
 
     data.items = extractItems(reader);
 
-    data.validate = extractString(reader, "validate");
+    data.validate = WYamlReader::extractString(reader, "validate");
 
     //---------------------------------------------------------------------------------------------
+    // Interface
 
-    data.trackId     = extractString(reader, "TRACK_ID");
-    data.trackOutput = extractString(reader, "TRACK_OUTPUT");
+    data.trackId     = WYamlReader::extractString(reader, "TRACK_ID");
+    data.trackOutput = WYamlReader::extractString(reader, "TRACK_OUTPUT");
 
-    data.playlistInfo = extractString(reader, "PLAYLIST_INFO");
+    data.playlistInfo = WYamlReader::extractString(reader, "PLAYLIST_INFO");
 
-    data.urlTrack    = extractString(reader, "URL_TRACK");
-    data.urlPlaylist = extractString(reader, "URL_PLAYLIST");
+    data.urlTrack    = WYamlReader::extractString(reader, "URL_TRACK");
+    data.urlPlaylist = WYamlReader::extractString(reader, "URL_PLAYLIST");
 
-    data.querySource   = extractString(reader, "QUERY_SOURCE");
-    data.queryTrack    = extractString(reader, "QUERY_TRACK");
-    data.queryPlaylist = extractString(reader, "QUERY_PLAYLIST");
-    data.queryFolder   = extractString(reader, "QUERY_FOLDER");
-    data.queryItem     = extractString(reader, "QUERY_ITEM");
+    data.querySource   = WYamlReader::extractString(reader, "QUERY_SOURCE");
+    data.queryTrack    = WYamlReader::extractString(reader, "QUERY_TRACK");
+    data.queryPlaylist = WYamlReader::extractString(reader, "QUERY_PLAYLIST");
+    data.queryFolder   = WYamlReader::extractString(reader, "QUERY_FOLDER");
+    data.queryItem     = WYamlReader::extractString(reader, "QUERY_ITEM");
 
-    data.createQuery = extractString(reader, "CREATE_QUERY");
+    data.createQuery = WYamlReader::extractString(reader, "CREATE_QUERY");
 
-    data.extractSource   = extractString(reader, "EXTRACT_SOURCE");
-    data.extractTrack    = extractString(reader, "EXTRACT_TRACK");
-    data.extractPlaylist = extractString(reader, "EXTRACT_PLAYLIST");
-    data.extractFolder   = extractString(reader, "EXTRACT_FOLDER");
-    data.extractItem     = extractString(reader, "EXTRACT_ITEM");
+    data.extractSource   = WYamlReader::extractString(reader, "EXTRACT_SOURCE");
+    data.extractTrack    = WYamlReader::extractString(reader, "EXTRACT_TRACK");
+    data.extractPlaylist = WYamlReader::extractString(reader, "EXTRACT_PLAYLIST");
+    data.extractFolder   = WYamlReader::extractString(reader, "EXTRACT_FOLDER");
+    data.extractItem     = WYamlReader::extractString(reader, "EXTRACT_ITEM");
 
-    data.queryFailed = extractString(reader, "QUERY_FAILED");
+    data.queryFailed = WYamlReader::extractString(reader, "QUERY_FAILED");
 
-    data.applySource   = extractString(reader, "APPLY_SOURCE");
-    data.applyTrack    = extractString(reader, "APPLY_TRACK");
-    data.applyPlaylist = extractString(reader, "APPLY_PLAYLIST");
-    data.applyFolder   = extractString(reader, "APPLY_FOLDER");
-    data.applyItem     = extractString(reader, "APPLY_ITEM");
+    data.applySource   = WYamlReader::extractString(reader, "APPLY_SOURCE");
+    data.applyTrack    = WYamlReader::extractString(reader, "APPLY_TRACK");
+    data.applyPlaylist = WYamlReader::extractString(reader, "APPLY_PLAYLIST");
+    data.applyFolder   = WYamlReader::extractString(reader, "APPLY_FOLDER");
+    data.applyItem     = WYamlReader::extractString(reader, "APPLY_ITEM");
 
     emit loaded(data);
 
@@ -2147,43 +2149,12 @@ signals:
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-bool WBackendUniversalQuery::extractBool(const WYamlReader & reader, const QString & key) const
-{
-    const WYamlNode * node = reader.at(key);
-
-    if (node == NULL) return false;
-
-    QString value = node->value.toLower();
-
-    if (value == "true")
-    {
-        return true;
-    }
-    else if (value == "false")
-    {
-        return false;
-    }
-    else return value.toInt();
-}
-
-QString WBackendUniversalQuery::extractString(const WYamlReader & reader,
-                                              const QString     & key) const
-{
-    const WYamlNode * node = reader.at(key);
-
-    if (node)
-    {
-         return node->value;
-    }
-    else return QString();
-}
-
 WBackendUniversalData::Engines
 WBackendUniversalQuery::extractEngines(const WYamlReader & reader, const QString & key) const
 {
     QRegExp regExp("tracks|coverAudio|coverVideo");
 
-    QString string = extractString(reader, key);
+    QString string = WYamlReader::extractString(reader, key);
 
     if (string.indexOf(regExp) == -1)
     {
@@ -3420,6 +3391,8 @@ void WBackendUniversalPrivate::init(const QString & id, const QString & source)
 
     remote = NULL;
 
+    loaded = false;
+
     this->id     = id;
     this->source = source;
 
@@ -3543,8 +3516,6 @@ void WBackendUniversalPrivate::populateHash() const
 void WBackendUniversalPrivate::load()
 {
     Q_Q(WBackendUniversal);
-
-    if (remote) delete remote;
 
     remote = wControllerDownload->getData(source);
 
@@ -4030,7 +4001,16 @@ void WBackendUniversalPrivate::onLoaded()
 
     remote = NULL;
 
-    if (array.isEmpty()) return;
+    if (array.isEmpty())
+    {
+        data = WBackendUniversalData();
+
+        loaded = true;
+
+        emit q->loadedChanged();
+
+        return;
+    }
 
     WBackendUniversalQuery * query = new WBackendUniversalQuery;
 
@@ -4052,76 +4032,15 @@ void WBackendUniversalPrivate::onData(const WBackendUniversalData & data)
 
     this->data = data;
 
-    WBackendUniversalScript script(data.trackId);
+    loaded = true;
 
-    //script.dump();
-
-    //---------------------------------------------------------------------------------------------
-    // getTrackId
-
-    QString trackId = q->getTrackId("https://www.dailymotion.com/video/1234567");
-
-    //---------------------------------------------------------------------------------------------
-    // getPlaylistInfo
-
-    WBackendNetPlaylistInfo info = q->getPlaylistInfo("https://www.dailymotion.com/tennisactu");
-
-    //---------------------------------------------------------------------------------------------
-    // getUrlTrack
-
-    QString urlTrack = q->getUrlTrack("1234");
-
-    //---------------------------------------------------------------------------------------------
-    // getUrlPlaylist
-
-    QString urlPlaylist = q->getUrlPlaylist(info);
-
-    //---------------------------------------------------------------------------------------------
-    // getQuery
-
-    WBackendNetQuery querySource = q->getQuerySource("https://www.dailymotion.com/video/1234567");
-    WBackendNetQuery queryTrack  = q->getQueryTrack ("https://www.dailymotion.com/video/1234567");
-
-    WBackendNetQuery queryPlaylist = q->getQueryPlaylist("https://www.dailymotion.com/tennisactu");
-
-    //---------------------------------------------------------------------------------------------
-    // createQuery
-
-    WBackendNetQuery createQuery = q->createQuery("search", "channels", "above & beyond");
-
-    //---------------------------------------------------------------------------------------------
-    // extract
-
-    WBackendNetSource   extractSource   = q->extractSource  ("lol", WBackendNetQuery());
-    WBackendNetTrack    extractTrack    = q->extractTrack   ("lol", WBackendNetQuery());
-    WBackendNetPlaylist extractPlaylist = q->extractPlaylist("lol", WBackendNetQuery());
-    WBackendNetFolder   extractFolder   = q->extractFolder  ("lol", WBackendNetQuery());
-
-    //---------------------------------------------------------------------------------------------
-
-    qDebug("getTrackId [%s]", trackId.C_STR);
-
-    qDebug("getPlaylistInfo [%d] [%s]", info.type, info.id.C_STR);
-
-    qDebug("getUrlTrack [%s]", urlTrack.C_STR);
-
-    qDebug("getUrlPlaylist [%s]", urlPlaylist.C_STR);
-
-    qDebug("getQuerySource   [%s]", querySource  .url.C_STR);
-    qDebug("getQueryTrack    [%s]", queryTrack   .url.C_STR);
-    qDebug("getQueryPlaylist [%s]", queryPlaylist.url.C_STR);
-
-    qDebug("createQuery [%s]", createQuery.url.C_STR);
-
-    qDebug("extractSource   [%d]", extractSource  .valid);
-    qDebug("extractTrack    [%d]", extractTrack   .valid);
-    qDebug("extractPlaylist [%d]", extractPlaylist.valid);
-    qDebug("extractFolder   [%d]", extractFolder  .valid);
+    emit q->loadedChanged();
 }
 
 //=================================================================================================
 // WBackendUniversal
 //=================================================================================================
+// Protected
 
 WBackendUniversal::WBackendUniversal(const QString & id, const QString & source)
     : WBackendNet(new WBackendUniversalPrivate(this))
@@ -4152,6 +4071,8 @@ WBackendUniversal::WBackendUniversal(const QString & id, const QString & source)
     Q_D(WBackendUniversal);
 
     cache->removeScripts(d->id);
+
+    if (d->remote) delete d->remote;
 
     d->load();
 }
@@ -4714,6 +4635,15 @@ void WBackendUniversal::applyItem(const WBackendNetQuery &,
 #endif
 
     d->global = item.backup;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Properties
+//-------------------------------------------------------------------------------------------------
+
+bool WBackendUniversal::isLoaded() const
+{
+    Q_D(const WBackendUniversal); return d->loaded;
 }
 
 #endif // SK_NO_BACKENDUNIVERSAL

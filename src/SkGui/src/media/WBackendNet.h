@@ -492,6 +492,9 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onLoadPlaylist(WNetReplyPlaylist *))
     Q_PRIVATE_SLOT(d_func(), void onLoadFolder  (WNetReplyFolder   *))
     Q_PRIVATE_SLOT(d_func(), void onLoadItem    (WNetReplyItem     *))
+
+    friend class WBackendLoader;
+    friend class WBackendLoaderCache;
 };
 
 #include <private/WBackendNet_p>

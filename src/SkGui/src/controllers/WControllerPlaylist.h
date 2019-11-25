@@ -287,7 +287,7 @@ private:
     friend class WLibraryFolderPrivate;
     friend class WPlaylist;
     friend class WPlaylistPrivate;
-    friend class WBackendNet;
+    friend class WBackendLoaderPrivate;
     friend class WBackendNetPrivate;
     friend class WTabTrack;
     friend class WTabTrackPrivate;

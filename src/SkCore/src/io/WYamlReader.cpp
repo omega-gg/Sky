@@ -372,4 +372,52 @@ WYamlReader::WYamlReader(const QByteArray & data, QObject * parent)
     }
 }
 
+//-------------------------------------------------------------------------------------------------
+// Static functions
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ bool WYamlReader::extractBool(const WYamlReader & reader,
+                                                       const QString     & key)
+{
+    const WYamlNode * node = reader.at(key);
+
+    if (node == NULL) return false;
+
+    QString value = node->value.toLower();
+
+    if (value == "true")
+    {
+        return true;
+    }
+    else if (value == "false")
+    {
+        return false;
+    }
+    else return value.toInt();
+}
+
+/* Q_INVOKABLE static */ int WYamlReader::extractInt(const WYamlReader & reader,
+                                                     const QString     & key)
+{
+    const WYamlNode * node = reader.at(key);
+
+    if (node)
+    {
+         return node->value.toInt();
+    }
+    else return 0;
+}
+
+/* Q_INVOKABLE static */ QString WYamlReader::extractString(const WYamlReader & reader,
+                                                            const QString     & key)
+{
+    const WYamlNode * node = reader.at(key);
+
+    if (node)
+    {
+         return node->value;
+    }
+    else return QString();
+}
+
 #endif // SK_NO_YAMLREADER

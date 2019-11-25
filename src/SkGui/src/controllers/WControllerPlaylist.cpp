@@ -32,7 +32,7 @@
 #include <WControllerDownload>
 #include <WPlaylist>
 #include <WTabTrack>
-#include <WCache>
+#include <WBackendLoader>
 
 // Private includes
 #include <private/WPlaylist_p>
@@ -600,9 +600,9 @@ WControllerPlaylistPrivate::WControllerPlaylistPrivate(WControllerPlaylist * p)
 
 /* virtual */ WControllerPlaylistPrivate::~WControllerPlaylistPrivate()
 {
-    foreach (WBackendNet * backend, backends)
+    foreach (WBackendLoader * loader, backendLoaders)
     {
-        backend->deleteLater();
+        loader->deleteLater();
     }
 
     thread->quit();
@@ -919,6 +919,17 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
     {
         if (backend->checkQuery(source))
         {
+            if (source.contains("method") == false)
+            {
+                folder->addItems(backend->getLibraryItems());
+
+                folder->setCurrentIndex(0);
+
+                folder->d_func()->setQueryEnded();
+
+                return true;
+            }
+
             WBackendNetQuery query = backend->extractQuery(source);
 
             if (query.isValid())
@@ -1209,14 +1220,14 @@ bool WControllerPlaylistPrivate::abortQueriesItem(WLibraryItem * item)
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WControllerPlaylistPrivate::registerBackend(WBackendNet * backend)
+void WControllerPlaylistPrivate::registerLoader(WBackendLoader * loader)
 {
-    backends.append(backend);
+    backendLoaders.append(loader);
 }
 
-void WControllerPlaylistPrivate::unregisterBackend(WBackendNet * backend)
+void WControllerPlaylistPrivate::unregisterLoader(WBackendLoader * loader)
 {
-    backends.removeOne(backend);
+    backendLoaders.removeOne(loader);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1501,10 +1512,7 @@ void WControllerPlaylistPrivate::scanItems(QList<WLibraryFolderItem> * items) co
         {
             WBackendNet * backend = q->backendFromUrl(item->title);
 
-            if (backend)
-            {
-                item->cover = q->backendCover(backend);
-            }
+            if (backend) item->cover = q->backendCover(backend);
         }
         else
         {
@@ -2488,18 +2496,6 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WControllerPlaylist::reloadBackends() const
-{
-    Q_D(const WControllerPlaylist);
-
-    foreach (WBackendNet * backend, d->backends)
-    {
-        backend->reload();
-    }
-}
-
-//-------------------------------------------------------------------------------------------------
-
 /* Q_INVOKABLE */ WRemoteData * WControllerPlaylist::getData(WAbstractLoader        * loader,
                                                              const WBackendNetQuery & query,
                                                              QObject                * parent) const
@@ -2591,12 +2587,15 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 {
     Q_D(const WControllerPlaylist);
 
-    foreach (WBackendNet * backend, d->backends)
+    WBackendNet * backend = WBackendLoader::getBackend(id);
+
+    if (backend) return backend;
+
+    foreach (WBackendLoader * loader, d->backendLoaders)
     {
-        if (backend->id() == id)
-        {
-            return backend;
-        }
+        backend = loader->createNow(id);
+
+        if (backend) return backend;
     }
 
     return NULL;
@@ -2608,8 +2607,10 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 {
     QUrl source(url);
 
-    if (source.host() == sk->applicationHost())
+    if (url.startsWith(sk->applicationUrl()))
     {
+        QUrl source(url);
+
 #ifdef QT_4
         QString backend = source.queryItemValue("backend");
 #else
@@ -2618,19 +2619,20 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
         return backendFromId(backend);
     }
-    else
+    else return backendFromSource(url);
+}
+
+/* Q_INVOKABLE */ WBackendNet * WControllerPlaylist::backendFromSource(const QString & url) const
+{
+    Q_D(const WControllerPlaylist);
+
+    QString source = WControllerPlaylist::simpleSource(url).toLower();
+
+    foreach (WBackendLoader * loader, d->backendLoaders)
     {
-        Q_D(const WControllerPlaylist);
+        WBackendNet * backend = loader->match(source);
 
-        QString source = WControllerPlaylist::simpleSource(url).toLower();
-
-        foreach (WBackendNet * backend, d->backends)
-        {
-            if (source.indexOf(QRegExp(backend->validate())) != -1)
-            {
-                return backend;
-            }
-        }
+        if (backend) return backend;
     }
 
     return NULL;
@@ -2640,32 +2642,24 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
 /* Q_INVOKABLE */ WBackendNet * WControllerPlaylist::backendFromTrack(const QString & url) const
 {
-    Q_D(const WControllerPlaylist);
+    WBackendNet * backend = backendFromSource(url);
 
-    foreach (WBackendNet * backend, d->backends)
+    if (backend && backend->getTrackId(url).isEmpty() == false)
     {
-        if (backend->getTrackId(url).isEmpty() == false)
-        {
-            return backend;
-        }
+         return backend;
     }
-
-    return NULL;
+    else return NULL;
 }
 
 /* Q_INVOKABLE */ WBackendNet * WControllerPlaylist::backendFromPlaylist(const QString & url) const
 {
-    Q_D(const WControllerPlaylist);
+    WBackendNet * backend = backendFromSource(url);
 
-    foreach (WBackendNet * backend, d->backends)
+    if (backend && backend->getPlaylistInfo(url).isValid())
     {
-        if (backend->getPlaylistInfo(url).isValid())
-        {
-            return backend;
-        }
+         return backend;
     }
-
-    return NULL;
+    else return NULL;
 }
 
 //-------------------------------------------------------------------------------------------------

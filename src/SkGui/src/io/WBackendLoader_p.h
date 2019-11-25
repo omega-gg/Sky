@@ -14,8 +14,8 @@
 */
 //=================================================================================================
 
-#ifndef WBACKENDNET_P_H
-#define WBACKENDNET_P_H
+#ifndef WBACKENDLOADER_P_H
+#define WBACKENDLOADER_P_H
 
 /*  W A R N I N G
     -------------
@@ -27,42 +27,23 @@
     We mean it.
 */
 
-// Qt includes
-#include <QMetaMethod>
-
 // Private includes
 #include <private/Sk_p>
 
-#ifndef SK_NO_BACKENDNET
+#ifndef SK_NO_BACKENDLOADER
 
-class SK_GUI_EXPORT WBackendNetPrivate : public WPrivate
+class SK_GUI_EXPORT WBackendLoaderPrivate : public WPrivate
 {
 public:
-    WBackendNetPrivate(WBackendNet * p);
+    WBackendLoaderPrivate(WBackendLoader * p);
 
-    /* virtual */ ~WBackendNetPrivate();
+    /* virtual */ ~WBackendLoaderPrivate();
 
     void init();
 
-public: // Slots
-    void onLoadSource  (WNetReplySource   * reply) const;
-    void onLoadTrack   (WNetReplyTrack    * reply) const;
-    void onLoadPlaylist(WNetReplyPlaylist * reply) const;
-    void onLoadFolder  (WNetReplyFolder   * reply) const;
-    void onLoadItem    (WNetReplyItem     * reply) const;
-
-public: // Variables
-    QMetaMethod methodSource;
-    QMetaMethod methodTrack;
-    QMetaMethod methodPlaylist;
-    QMetaMethod methodFolder;
-    QMetaMethod methodItem;
-
-    int lockCount;
-
 protected:
-    W_DECLARE_PUBLIC(WBackendNet)
+    W_DECLARE_PUBLIC(WBackendLoader)
 };
 
-#endif // SK_NO_BACKENDNET
-#endif // WBACKENDNET_P_H
+#endif // SK_NO_BACKENDLOADER
+#endif // WBACKENDLOADER_P_H

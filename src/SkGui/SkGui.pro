@@ -56,6 +56,7 @@ unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 
 include(src/controllers/controllers.pri)
 include(src/kernel/kernel.pri)
+include(src/io/io.pri)
 include(src/image/image.pri)
 include(src/graphicsview/graphicsview.pri)
 include(src/declarative/declarative.pri)

@@ -61,6 +61,8 @@ public: // Ctor / dtor
     }
 
 public: // Variables
+    QString source;
+
     QString api;
     QString version;
 
@@ -343,9 +345,11 @@ public: // Events
 public: // Variables
     QThread * thread;
 
+    WRemoteData * remote;
+
     WBackendUniversalData data;
 
-    WRemoteData * remote;
+    bool loaded;
 
     QString id;
     QString source;

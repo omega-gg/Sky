@@ -76,8 +76,7 @@ public: // Variables
 
     QString version;
 
-    QUrl    applicationUrl;
-    QString applicationHost;
+    QString applicationUrl;
 
     bool qrc;
 

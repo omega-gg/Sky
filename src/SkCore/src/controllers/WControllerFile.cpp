@@ -84,6 +84,32 @@ public: // Variables
 }
 
 //=================================================================================================
+// WControllerFileCopy
+//=================================================================================================
+
+class WControllerFileCopy : public WControllerFileAction
+{
+    Q_OBJECT
+
+protected: // WAbstractThreadAction implementation
+    /* virtual */ bool run();
+
+public: // Variables
+    QStringList fileNames;
+    QStringList newNames;
+};
+
+/* virtual */ bool WControllerFileCopy::run()
+{
+    for (int i = 0; i < fileNames.count(); i++)
+    {
+        WControllerFile::copyFile(fileNames.at(i), newNames.at(i));
+    }
+
+    return true;
+}
+
+//=================================================================================================
 // WControllerFileDelete
 //=================================================================================================
 
@@ -524,14 +550,27 @@ WAbstractThreadReply * WControllerFile::startReadAction(WAbstractThreadAction * 
 WControllerFileReply * WControllerFile::startRenameFiles(const QStringList & oldPaths,
                                                          const QStringList & newPaths)
 {
-    if (oldPaths.isEmpty()
-        ||
-        oldPaths.count() != newPaths.count()) return NULL;
+    if (oldPaths.isEmpty() || oldPaths.count() != newPaths.count()) return NULL;
 
     WControllerFileRename * action = new WControllerFileRename;
 
     action->oldPaths = oldPaths;
     action->newPaths = newPaths;
+
+    startWriteAction(action);
+
+    return action->controllerReply();
+}
+
+WControllerFileReply * WControllerFile::startCopyFiles(const QStringList & fileNames,
+                                                       const QStringList & newNames)
+{
+    if (fileNames.isEmpty() || fileNames.count() != newNames.count()) return NULL;
+
+    WControllerFileCopy * action = new WControllerFileCopy;
+
+    action->fileNames = fileNames;
+    action->newNames  = newNames;
 
     startWriteAction(action);
 
@@ -617,6 +656,12 @@ WControllerFileReply * WControllerFile::startRenameFile(const QString & oldPath,
                                                         const QString & newPath)
 {
     return startRenameFiles(QStringList() << oldPath, QStringList() << newPath);
+}
+
+WControllerFileReply * WControllerFile::startCopyFile(const QString & fileName,
+                                                      const QString & newName)
+{
+    return startCopyFiles(QStringList() << fileName, QStringList() << newName);
 }
 
 WControllerFileReply * WControllerFile::startDeleteFile(const QString & path)
@@ -841,7 +886,7 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 
     timer.start(60000); // 1 minute timeout
 
-    while (file.isLocked() && timer.isActive()) ;
+    while (file.isLocked() && timer.isActive())
 
     if (file.isLocked())
     {
@@ -855,6 +900,31 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 
 //-------------------------------------------------------------------------------------------------
 
+/* static */ bool WControllerFile::copyFile(const QString & fileName, const QString & newName)
+{
+    QtLockedFile file(newName);
+
+    if (file.exists())
+    {
+        QTimer timer;
+
+        timer.start(60000); // 1 minute timeout
+
+        while (file.isLocked() && timer.isActive());
+
+        if (file.isLocked())
+        {
+            qWarning("WControllerFile::copyFile: File is locked %s.", newName.C_STR);
+
+            return false;
+        }
+    }
+
+    return QFile::copy(fileName, newName);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* static */ bool WControllerFile::deleteFile(const QString & fileName)
 {
     QtLockedFile file(fileName);
@@ -863,7 +933,7 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 
     timer.start(60000); // 1 minute timeout
 
-    while (file.isLocked() && timer.isActive()) ;
+    while (file.isLocked() && timer.isActive())
 
     if (file.isLocked())
     {
@@ -945,8 +1015,6 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 /* static */ QFileInfoList WControllerFile::recursiveEntryInfoList(const QString & path)
 {
      QDir dir(path);
-
-     if (dir.exists() == false) return QFileInfoList();
 
      QFileInfoList list = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
 

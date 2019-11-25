@@ -124,8 +124,7 @@ void WControllerApplicationPrivate::init()
 
     watcher = new WFileWatcher(q);
 
-    applicationUrl  = "http://app.sk";
-    applicationHost = "app.sk";
+    applicationUrl = "app://sk";
 
 #ifdef Q_OS_WIN
     timeoutLowPower   = 0;
@@ -1429,28 +1428,20 @@ void WControllerApplication::setVersion(const QString & version)
 
 //-------------------------------------------------------------------------------------------------
 
-QUrl WControllerApplication::applicationUrl() const
+QString WControllerApplication::applicationUrl() const
 {
     Q_D(const WControllerApplication); return d->applicationUrl;
 }
 
-void WControllerApplication::setApplicationUrl(const QUrl & url)
+void WControllerApplication::setApplicationUrl(const QString & url)
 {
     Q_D(WControllerApplication);
 
     if (d->applicationUrl == url) return;
 
-    d->applicationUrl  = url;
-    d->applicationHost = url.host();
+    d->applicationUrl = url;
 
     emit applicationUrlChanged();
-}
-
-//-------------------------------------------------------------------------------------------------
-
-QString WControllerApplication::applicationHost() const
-{
-    Q_D(const WControllerApplication); return d->applicationHost;
 }
 
 //-------------------------------------------------------------------------------------------------

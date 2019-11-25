@@ -28,6 +28,7 @@
 #include "WImageColorFilter.h"
 #include "WImageFilter.h"
 #include "WPixmapCache.h"
+#include "WBackendLoader.h"
 #include "WAbstractTab.h"
 #include "WAbstractTabs.h"
 #include "WActionCue.h"

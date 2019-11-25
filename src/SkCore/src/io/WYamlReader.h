@@ -67,6 +67,12 @@ public: // Interface
 
     Q_INVOKABLE void dump() const;
 
+public: // Static functions
+    Q_INVOKABLE static bool extractBool(const WYamlReader & reader, const QString & key);
+    Q_INVOKABLE static int  extractInt (const WYamlReader & reader, const QString & key);
+
+    Q_INVOKABLE static QString extractString(const WYamlReader & reader, const QString & key);
+
 private:
     W_DECLARE_PRIVATE(WYamlReader)
 };

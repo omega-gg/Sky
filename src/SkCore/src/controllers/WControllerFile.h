@@ -121,6 +121,9 @@ public: // Interface
     WControllerFileReply * startRenameFiles(const QStringList & oldPaths,
                                             const QStringList & newPaths);
 
+    WControllerFileReply * startCopyFiles(const QStringList & fileNames,
+                                          const QStringList & newNames);
+
     WControllerFileReply * startDeleteFiles(const QStringList & paths);
 
     WControllerFileReply * startCreateFolders(const QStringList & paths);
@@ -136,6 +139,9 @@ public: // Interface
     //---------------------------------------------------------------------------------------------
 
     WControllerFileReply * startRenameFile(const QString & oldPath, const QString & newPath);
+
+    WControllerFileReply * startCopyFile(const QString & fileName, const QString & newName);
+
     WControllerFileReply * startDeleteFile(const QString & path);
 
     WControllerFileReply * startCreateFolder       (const QString & path);
@@ -183,10 +189,9 @@ public: // Static functions
 
     static bool renameFile(const QString & oldPath, const QString & newPath);
 
-    static bool deleteFile(const QString & fileName);
+    static bool copyFile(const QString & fileName, const QString & newName);
 
-    static bool copy     (const QString     & fileName,  const QString & newName);
-    static bool copyFiles(const QStringList & fileNames, const QString & destination);
+    static bool deleteFile(const QString & fileName);
 
     //---------------------------------------------------------------------------------------------
     // Directories
