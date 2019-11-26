@@ -342,8 +342,6 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
     Q_D(WBackendNet); d->init();
 }
 
-/* virtual */ WBackendNet::~WBackendNet() {}
-
 //-------------------------------------------------------------------------------------------------
 // Interface
 //-------------------------------------------------------------------------------------------------

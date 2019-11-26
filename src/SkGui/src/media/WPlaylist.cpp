@@ -172,7 +172,7 @@ public: // Variables
 
     timer.start(60000); // 1 minute timeout
 
-    while (file.isLocked() && timer.isActive())
+    while (file.isLocked() && timer.isActive());
 
     if (file.isLocked())
     {
@@ -347,7 +347,7 @@ public: // Variables
 
     timer.start(60000); // 1 minute timeout
 
-    while (file.isLocked() && timer.isActive())
+    while (file.isLocked() && timer.isActive());
 
     if (file.isLocked())
     {

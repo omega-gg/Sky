@@ -2605,8 +2605,6 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
 /* Q_INVOKABLE */ WBackendNet * WControllerPlaylist::backendFromUrl(const QString & url) const
 {
-    QUrl source(url);
-
     if (url.startsWith(sk->applicationUrl()))
     {
         QUrl source(url);

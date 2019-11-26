@@ -355,8 +355,6 @@ class SK_GUI_EXPORT WBackendNet : public QObject, public WPrivatable
 protected:
     WBackendNet(WBackendNetPrivate * p);
 
-    /* virtual */ ~WBackendNet();
-
 public: // Interface
     Q_INVOKABLE WLibraryItem::Type getPlaylistType(const QString & url) const;
     Q_INVOKABLE QString            getPlaylistId  (const QString & url) const;

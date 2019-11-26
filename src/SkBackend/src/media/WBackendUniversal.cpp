@@ -2140,6 +2140,8 @@ signals:
     data.applyFolder   = WYamlReader::extractString(reader, "APPLY_FOLDER");
     data.applyItem     = WYamlReader::extractString(reader, "APPLY_ITEM");
 
+    //---------------------------------------------------------------------------------------------
+
     emit loaded(data);
 
     deleteLater();
