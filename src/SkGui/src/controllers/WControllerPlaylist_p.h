@@ -31,6 +31,9 @@
 
 #ifndef SK_NO_CONTROLLERPLAYLIST
 
+// Forward declarations
+class WBackendLoader;
+
 //-------------------------------------------------------------------------------------------------
 // WControllerPlaylistQuery
 //-------------------------------------------------------------------------------------------------
@@ -102,8 +105,8 @@ public: // Interface
     bool abortQueriesItem(WLibraryItem * item);
 
 public: // Functions
-    void registerBackend  (WBackendNet * backend);
-    void unregisterBackend(WBackendNet * backend);
+    void registerLoader  (WBackendLoader * loader);
+    void unregisterLoader(WBackendLoader * loader);
 
     void registerFolder  (WLibraryFolder * folder);
     void unregisterFolder(WLibraryFolder * folder);
@@ -182,7 +185,7 @@ public: // Slots
 public: // Variables
     QThread * thread;
 
-    QList<WBackendNet    *> backends;
+    QList<WBackendLoader *> backendLoaders;
     QList<WLibraryFolder *> folders;
     QList<WTabTrack      *> tabs;
 

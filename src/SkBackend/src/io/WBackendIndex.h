@@ -34,6 +34,8 @@ public:
     WBackendIndex(const QString & url, QObject * parent = NULL);
 
 public: // WBackendLoader reimplementation
+    /* Q_INVOKABLE virtual */ bool checkId(const QString & id) const;
+
     /* Q_INVOKABLE virtual */ void createFolderItems(WLibraryFolder * folder) const;
 
 protected: // WBackendLoader reimplementation

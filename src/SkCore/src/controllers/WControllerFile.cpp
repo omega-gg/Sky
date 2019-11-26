@@ -946,32 +946,6 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 }
 
 //-------------------------------------------------------------------------------------------------
-
-/* static */ bool WControllerFile::copy(const QString & fileName, const QString & newName)
-{
-    return QFile::copy(fileName, newName);
-}
-
-/* static */ bool WControllerFile::copyFiles(const QStringList & fileNames,
-                                             const QString     & destination)
-{
-    if (QFile::exists(destination) == false) return false;
-
-    foreach (const QString & file, fileNames)
-    {
-        QFileInfo info(file);
-
-        if (info.exists() == false) continue;
-
-        QString path = destination + "/" + info.fileName();
-
-        QFile::copy(file, path);
-    }
-
-    return true;
-}
-
-//-------------------------------------------------------------------------------------------------
 // Directories
 
 /* static */ bool WControllerFile::createFolder(const QString & path)

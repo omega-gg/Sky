@@ -1512,7 +1512,7 @@ void WControllerPlaylistPrivate::scanItems(QList<WLibraryFolderItem> * items) co
         {
             WBackendNet * backend = q->backendFromUrl(item->title);
 
-            if (backend) item->cover = q->backendCover(backend);
+            if (backend) item->cover = backend->getCover();
         }
         else
         {
@@ -2669,26 +2669,14 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 {
     Q_D(const WControllerPlaylist);
 
-    foreach (WBackendNet * backend, d->backends)
+    foreach (WBackendLoader * loader, d->backendLoaders)
     {
-        if (backend->checkCover(label, q))
-        {
-            return backend;
-        }
+        WBackendNet * backend = loader->matchCover(label, q);
+
+        if (backend) return backend;
     }
 
     return NULL;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE */ QString WControllerPlaylist::backendCover(WBackendNet * backend) const
-{
-    Q_ASSERT(backend);
-
-    Q_D(const WControllerPlaylist);
-
-    return d->pathCover + '/' + backend->id() + ".png";
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2699,7 +2687,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
     if (backend)
     {
-         return backendCover(backend);
+         return backend->getCover();
     }
     else return QString();
 }
@@ -2710,7 +2698,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
     if (backend)
     {
-         return backendCover(backend);
+         return backend->getCover();
     }
     else return QString();
 }
@@ -2719,19 +2707,17 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
 /* Q_INVOKABLE */ WLibraryItem::Type WControllerPlaylist::urlType(const QString & url) const
 {
-    Q_D(const WControllerPlaylist);
+    WBackendNet * backend = backendFromUrl(url);
 
-    foreach (WBackendNet * backend, d->backends)
+    if (backend == NULL) return WLibraryItem::Item;
+
+    WBackendNetPlaylistInfo info = backend->getPlaylistInfo(url);
+
+    if (info.isValid())
     {
-        WBackendNetPlaylistInfo info = backend->getPlaylistInfo(url);
-
-        if (info.isValid())
-        {
-            return info.type;
-        }
+         return info.type;
     }
-
-    return WLibraryItem::Item;
+    else return WLibraryItem::Item;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2784,63 +2770,6 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
         else return false;
     }
     else return true;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE */ void WControllerPlaylist::createBackendItems(WLibraryFolder * folder) const
-{
-    Q_ASSERT(folder);
-
-    Q_D(const WControllerPlaylist);
-
-    QString path = d->pathCover + '/';
-
-    foreach (WBackendNet * backend, d->backends)
-    {
-        QList<WLibraryFolderItem> items = backend->getLibraryItems();
-
-        if (items.isEmpty()) continue;
-
-        WLibraryFolderSearchable * folderBackend = new WLibraryFolderSearchable;
-
-        folderBackend->setTitle(backend->title());
-
-        folderBackend->setCover(path + backend->id() + ".png");
-
-        folderBackend->setLabel(backend->id());
-
-        folderBackend->addItems(items);
-
-        folder->addLibraryItem(folderBackend);
-
-        folderBackend->setCurrentIndex(0);
-
-        folderBackend->tryDelete();
-    }
-}
-
-/* Q_INVOKABLE */ void WControllerPlaylist::restoreBackendItems(WLibraryFolder * folder) const
-{
-    Q_ASSERT(folder);
-
-    for (int i = 0; i < folder->count(); i++)
-    {
-        WLibraryFolder * folderBackend = folder->createLibraryItemAt(i)->toFolder();
-
-        WBackendNet * backend = backendFromId(folderBackend->label());
-
-        if (backend)
-        {
-            folderBackend->clearItems();
-
-            folderBackend->addItems(backend->getLibraryItems());
-
-            folderBackend->setCurrentIndex(0);
-        }
-
-        folderBackend->tryDelete();
-    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -3263,13 +3192,6 @@ QThread * WControllerPlaylist::thread() const
 
 //-------------------------------------------------------------------------------------------------
 
-QList<WBackendNet *> WControllerPlaylist::backends() const
-{
-    Q_D(const WControllerPlaylist); return d->backends;
-}
-
-//-------------------------------------------------------------------------------------------------
-
 QString WControllerPlaylist::pathStorage() const
 {
     return wControllerFile->pathStorage() + CONTROLLERPLAYLIST_PATH_PLAYLISTS;
@@ -3278,24 +3200,6 @@ QString WControllerPlaylist::pathStorage() const
 QString WControllerPlaylist::pathStorageTabs() const
 {
     return wControllerFile->pathStorage() + CONTROLLERPLAYLIST_PATH_TABS;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-QString WControllerPlaylist::pathCover() const
-{
-    Q_D(const WControllerPlaylist); return d->pathCover;
-}
-
-void WControllerPlaylist::setPathCover(const QString & path)
-{
-    Q_D(WControllerPlaylist);
-
-    if (d->pathCover == path) return;
-
-    d->pathCover = path;
-
-    emit pathCoverChanged();
 }
 
 #endif // SK_NO_CONTROLLERPLAYLIST

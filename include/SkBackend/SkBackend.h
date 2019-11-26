@@ -1,6 +1,7 @@
 #ifndef SKBACKEND_H
 #define SKBACKEND_H
 #include "WBackendCache.h"
+#include "WBackendIndex.h"
 #include "WBackendBing.h"
 #include "WBackendDailymotion.h"
 #include "WBackendDuckDuckGo.h"

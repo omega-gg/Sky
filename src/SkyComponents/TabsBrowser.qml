@@ -100,6 +100,7 @@ BaseTabs
 
     //---------------------------------------------------------------------------------------------
 
+    tabMinimum: st.tabsBrowser_tabMinimum
     tabMaximum: st.tabsBrowser_tabMaximum
 
     spacing: st.tabsBrowser_spacing
@@ -136,9 +137,7 @@ BaseTabs
 
     onPositionChanged:
     {
-        if (indexDrag == -1 && hoverEnabled && count > 1 && indexHover != -1
-            &&
-            borderRight.visible == false)
+        if (indexDrag == -1 && hoverEnabled && count > 1 && indexHover != -1)
         {
             var item = itemAt(indexHover);
 
@@ -573,7 +572,9 @@ BaseTabs
         borderLeft  : borderSize
         borderBottom: borderSize
 
-        visible: (pButtonsVisible && itemActive != null && buttonsItem.visible == false)
+        visible: (pButtonsVisible && itemActive != null
+                  &&
+                  (itemActive.isCurrent || tabWidth > tabMinimum) && buttonsItem.visible == false)
 
         enabled: buttonsItem.enabled
 

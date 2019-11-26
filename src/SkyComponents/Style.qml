@@ -1041,6 +1041,7 @@ Item
 
     property int tabsBrowser_intervalResize: ms300
 
+    property int tabsBrowser_tabMinimum: dp56
     property int tabsBrowser_tabMaximum: dp288
 
     property int tabsBrowser_spacing: dp8
@@ -1076,7 +1077,7 @@ Item
     property int baseWall_itemExtraWidth : border_size * 2
     property int baseWall_itemExtraHeight: border_size * 3 + dp32
 
-    property int baseWall_marginsMinSize: dp32
+    property int baseWall_marginsMinSize: dp24
 
     //---------------------------------------------------------------------------------------------
     // WallBookmarkTrack

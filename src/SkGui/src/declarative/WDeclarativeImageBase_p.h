@@ -88,6 +88,9 @@ public: // Slots
 
     void onFilterUpdated();
 
+    void onFilesRemoved(const QStringList & urls);
+    void onFilesCleared();
+
 public: // Variables
     WCacheFile * file;
 

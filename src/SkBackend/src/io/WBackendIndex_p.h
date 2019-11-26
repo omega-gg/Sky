@@ -77,7 +77,7 @@ struct WBackendIndexData
 // WBackendIndexPrivate
 //=================================================================================================
 
-class SK_MEDIA_EXPORT WBackendIndexPrivate : public WBackendLoaderPrivate
+class SK_BACKEND_EXPORT WBackendIndexPrivate : public WBackendLoaderPrivate
 {
 public:
     WBackendIndexPrivate(WBackendIndex * p);

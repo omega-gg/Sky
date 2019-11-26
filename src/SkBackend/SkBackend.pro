@@ -37,8 +37,8 @@ QMAKE_CXXFLAGS += -std=c++11
 
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 
-include(src/media/media.pri)
 include(src/io/io.pri)
+include(src/media/media.pri)
 
 INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkCore/private \

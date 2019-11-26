@@ -213,8 +213,12 @@ public: // Properties
 private:
     W_DECLARE_PRIVATE(WDeclarativeImageBase)
 
-    Q_PRIVATE_SLOT(d_func(), void onLoaded       (WCacheFile *))
+    Q_PRIVATE_SLOT(d_func(), void onLoaded(WCacheFile *))
+
     Q_PRIVATE_SLOT(d_func(), void onFilterUpdated())
+
+    Q_PRIVATE_SLOT(d_func(), void onFilesRemoved(const QStringList &))
+    Q_PRIVATE_SLOT(d_func(), void onFilesCleared())
 };
 
 #include <private/WDeclarativeImageBase_p>

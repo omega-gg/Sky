@@ -240,15 +240,6 @@ WNetReplyItem::WNetReplyItem(QIODevice * device, const WBackendNetQuery & query)
 
 WBackendNetPrivate::WBackendNetPrivate(WBackendNet * p) : WPrivate(p) {}
 
-/* virtual */ WBackendNetPrivate::~WBackendNetPrivate()
-{
-    Q_Q(WBackendNet);
-
-    W_GET_CONTROLLER(WControllerPlaylist, controller);
-
-    if (controller) controller->d_func()->unregisterBackend(q);
-}
-
 //-------------------------------------------------------------------------------------------------
 
 void WBackendNetPrivate::init()
@@ -263,11 +254,11 @@ void WBackendNetPrivate::init()
     methodFolder   = meta->method(meta->indexOfMethod("onLoadFolder(WNetReplyFolder*)"));
     methodItem     = meta->method(meta->indexOfMethod("onLoadItem(WNetReplyItem*)"));
 
+    lockCount = 0;
+
 #ifdef QT_LATEST
     wControllerDeclarative->engine()->setObjectOwnership(q, QQmlEngine::CppOwnership);
 #endif
-
-    wControllerPlaylist->d_func()->registerBackend(q);
 
     q->moveToThread(wControllerPlaylist->d_func()->thread);
 }
@@ -351,6 +342,8 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
     Q_D(WBackendNet); d->init();
 }
 
+/* virtual */ WBackendNet::~WBackendNet() {}
+
 //-------------------------------------------------------------------------------------------------
 // Interface
 //-------------------------------------------------------------------------------------------------
@@ -393,11 +386,7 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 
 /* Q_INVOKABLE */ bool WBackendNet::checkQuery(const QString & url) const
 {
-    if (QUrl(url).host() == sk->applicationHost())
-    {
-         return true;
-    }
-    else return false;
+    return url.startsWith(sk->applicationUrl());
 }
 
 /* Q_INVOKABLE */ WBackendNetQuery WBackendNet::extractQuery(const QString & url) const
@@ -502,6 +491,15 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WBackendNet::deleteLater()
+{
+    Q_D(WBackendNet);
+
+    if (d->lockCount) d->lockCount--;
+}
+
+//-------------------------------------------------------------------------------------------------
 // Virtual interface
 //-------------------------------------------------------------------------------------------------
 
@@ -543,6 +541,11 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ QString WBackendNet::getHost() const
+{
+    return QString();
+}
+
+/* Q_INVOKABLE virtual */ QString WBackendNet::getCover() const
 {
     return QString();
 }

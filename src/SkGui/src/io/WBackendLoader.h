@@ -55,6 +55,8 @@ public: // Static functions
     Q_INVOKABLE static void setMaxCache(int max);
 
 public: // Virtual interface
+    Q_INVOKABLE virtual bool checkId(const QString & id) const; // {}
+
     Q_INVOKABLE virtual void createFolderItems(WLibraryFolder * folder) const; // {}
 
 protected: // Virtual functions

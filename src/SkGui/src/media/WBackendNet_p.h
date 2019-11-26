@@ -40,8 +40,6 @@ class SK_GUI_EXPORT WBackendNetPrivate : public WPrivate
 public:
     WBackendNetPrivate(WBackendNet * p);
 
-    /* virtual */ ~WBackendNetPrivate();
-
     void init();
 
 public: // Slots

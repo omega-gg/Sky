@@ -384,7 +384,7 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 
     if (dir.exists() == false) return false;
 
-    QFileInfoList list = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files);
+    QFileInfoList list = dir.entryInfoList(QDir::Files);
 
     foreach (QFileInfo info, list)
     {

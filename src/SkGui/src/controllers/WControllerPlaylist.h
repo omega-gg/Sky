@@ -132,12 +132,8 @@ class SK_GUI_EXPORT WControllerPlaylist : public WController
 
     Q_PROPERTY(QThread * thread READ thread CONSTANT)
 
-    Q_PROPERTY(QList<WBackendNet *> backends READ backends)
-
     Q_PROPERTY(QString pathStorage     READ pathStorage     NOTIFY pathStorageChanged)
     Q_PROPERTY(QString pathStorageTabs READ pathStorageTabs NOTIFY pathStorageChanged)
-
-    Q_PROPERTY(QString pathCover READ pathCover WRITE setPathCover NOTIFY pathCoverChanged)
 
 private:
     WControllerPlaylist();
@@ -146,8 +142,6 @@ protected: // Initialize
     /* virtual */ void init();
 
 public: // Interface
-    Q_INVOKABLE void reloadBackends() const;
-
     Q_INVOKABLE WRemoteData * getData(WAbstractLoader        * loader,
                                       const WBackendNetQuery & query,
                                       QObject                * parent = NULL) const;
@@ -165,7 +159,8 @@ public: // Interface
 
     Q_INVOKABLE WBackendNet * backendFromId(const QString & id) const;
 
-    Q_INVOKABLE WBackendNet * backendFromUrl(const QString & url) const;
+    Q_INVOKABLE WBackendNet * backendFromUrl   (const QString & url) const;
+    Q_INVOKABLE WBackendNet * backendFromSource(const QString & url) const;
 
     Q_INVOKABLE WBackendNet * backendFromTrack   (const QString & url) const;
     Q_INVOKABLE WBackendNet * backendFromPlaylist(const QString & url) const;
@@ -173,8 +168,6 @@ public: // Interface
     Q_INVOKABLE WBackendNet * backendForCover(const QString & label, const QString & q) const;
 
     //---------------------------------------------------------------------------------------------
-
-    Q_INVOKABLE QString backendCover(WBackendNet * backend) const;
 
     Q_INVOKABLE QString backendCoverFromId (const QString & id)  const;
     Q_INVOKABLE QString backendCoverFromUrl(const QString & url) const;
@@ -188,11 +181,6 @@ public: // Interface
 
     Q_INVOKABLE bool sourceIsVideo(const QString & url) const;
     Q_INVOKABLE bool sourceIsAudio(const QString & url) const;
-
-    //---------------------------------------------------------------------------------------------
-
-    Q_INVOKABLE void createBackendItems (WLibraryFolder * folder) const;
-    Q_INVOKABLE void restoreBackendItems(WLibraryFolder * folder) const;
 
     //---------------------------------------------------------------------------------------------
 
@@ -258,13 +246,8 @@ signals:
 public: // Properties
     QThread * thread() const;
 
-    QList<WBackendNet *> backends() const;
-
     QString pathStorage    () const;
     QString pathStorageTabs() const;
-
-    QString pathCover() const;
-    void    setPathCover(const QString & path);
 
 private:
     W_DECLARE_PRIVATE   (WControllerPlaylist)

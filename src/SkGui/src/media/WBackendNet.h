@@ -355,6 +355,8 @@ class SK_GUI_EXPORT WBackendNet : public QObject, public WPrivatable
 protected:
     WBackendNet(WBackendNetPrivate * p);
 
+    /* virtual */ ~WBackendNet();
+
 public: // Interface
     Q_INVOKABLE WLibraryItem::Type getPlaylistType(const QString & url) const;
     Q_INVOKABLE QString            getPlaylistId  (const QString & url) const;
@@ -391,6 +393,8 @@ public: // Interface
                               QObject                * receiver,
                               const char             * method);
 
+    Q_INVOKABLE void deleteLater();
+
 public: // Abstract interface
     Q_INVOKABLE virtual QString getId   () const = 0;
     Q_INVOKABLE virtual QString getTitle() const = 0;
@@ -409,7 +413,8 @@ public: // Virtual interface
 
     Q_INVOKABLE virtual bool checkCover(const QString & label, const QString & q) const; // {}
 
-    Q_INVOKABLE virtual QString getHost() const; // {}
+    Q_INVOKABLE virtual QString getHost () const; // {}
+    Q_INVOKABLE virtual QString getCover() const; // {}
 
     Q_INVOKABLE virtual QList<WLibraryFolderItem> getLibraryItems() const; // {}
 

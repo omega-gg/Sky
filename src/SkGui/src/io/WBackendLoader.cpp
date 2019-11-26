@@ -170,7 +170,7 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
     {
          return backend;
     }
-    else return createBackend(id);
+    else return createNow(id);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -240,6 +240,11 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
 // Virtual interface
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE virtual */ bool WBackendLoader::checkId(const QString &) const
+{
+    return false;
+}
+
 /* Q_INVOKABLE virtual */ void WBackendLoader::createFolderItems(WLibraryFolder *) const {}
 
 //-------------------------------------------------------------------------------------------------
@@ -271,6 +276,8 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
 
 WBackendNet * WBackendLoader::createNow(const QString & id) const
 {
+    if (checkId(id) == false) return NULL;
+
     WBackendNet * backend = createBackend(id);
 
     backend->d_func()->lockCount++;

@@ -95,6 +95,10 @@ void WDeclarativeImageBasePrivate::loadUrl()
 
     q->pixmapClear();
 
+    WCache * cache = wControllerFile->cache();
+
+    if (cache) QObject::disconnect(cache, 0, q, 0);
+
     if (url.isEmpty())
     {
         if (file) clearFile();
@@ -375,6 +379,18 @@ void WDeclarativeImageBasePrivate::onFilterUpdated()
 }
 
 //-------------------------------------------------------------------------------------------------
+
+void WDeclarativeImageBasePrivate::onFilesRemoved(const QStringList & urls)
+{
+    if (urls.contains(url)) loadUrl();
+}
+
+void WDeclarativeImageBasePrivate::onFilesCleared()
+{
+    loadUrl();
+}
+
+//-------------------------------------------------------------------------------------------------
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
@@ -551,6 +567,16 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
                 d->applySourceDefault();
             }
             else d->pix.changePixmap(pixmap);
+
+            WCache * cache = wControllerFile->cache();
+
+            if (cache)
+            {
+                connect(cache, SIGNAL(filesRemoved(QStringList)),
+                        this,  SLOT(onFilesRemoved(QStringList)));
+
+                connect(cache, SIGNAL(filesCleared()), this, SLOT(onFilesCleared()));
+            }
         }
         else d->applySourceDefault();
 
@@ -616,6 +642,10 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
 /* virtual */ void WDeclarativeImageBase::requestFinished()
 {
     Q_D(WDeclarativeImageBase);
+
+    WCache * cache = wControllerFile->cache();
+
+    if (cache) QObject::disconnect(cache, 0, this, 0);
 
     if (d->pix.isNull())
     {

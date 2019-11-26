@@ -244,6 +244,13 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
 // WBackendLoader reimplementation
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE virtual */ bool WBackendIndex::checkId(const QString & id) const
+{
+    Q_D(const WBackendIndex);
+
+    return d->data.hash.contains(id);
+}
+
 /* Q_INVOKABLE virtual */ void WBackendIndex::createFolderItems(WLibraryFolder * folder) const
 {
     Q_ASSERT(folder);

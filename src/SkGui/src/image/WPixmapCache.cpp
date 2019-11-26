@@ -289,7 +289,7 @@ struct WPixmapCacheDataNull
     QPixmap pixmap;
 };
 
-Q_GLOBAL_STATIC(WPixmapCacheDataNull, dataNull);
+Q_GLOBAL_STATIC(WPixmapCacheDataNull, dataNull)
 
 //=================================================================================================
 // WPixmapCacheStore
@@ -334,7 +334,7 @@ public: // Variables
     qint64 sizeMax;
 };
 
-Q_GLOBAL_STATIC(WPixmapCacheStore, pixmapStore);
+Q_GLOBAL_STATIC(WPixmapCacheStore, pixmapStore)
 
 //=================================================================================================
 // WPixmapCachePrivate
