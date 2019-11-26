@@ -18,9 +18,6 @@
 
 #ifndef SK_NO_BACKENDLOADER
 
-// Qt includes
-#include <QStringList>
-
 // Sk includes
 #include <WControllerPlaylist>
 
