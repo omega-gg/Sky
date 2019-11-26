@@ -18,6 +18,11 @@
 
 #ifndef SK_NO_BACKENDLOADER
 
+#ifdef Q_OS_LINUX
+// Qt includes
+#include <QStringList>
+#endif
+
 // Sk includes
 #include <WControllerPlaylist>
 
