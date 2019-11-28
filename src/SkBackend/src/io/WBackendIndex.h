@@ -33,15 +33,20 @@ class SK_BACKEND_EXPORT WBackendIndex : public WBackendLoader
 public:
     WBackendIndex(const QString & url, QObject * parent = NULL);
 
+public: // Interface
+    /* Q_INVOKABLE virtual */ void reload();
+
 public: // WBackendLoader reimplementation
     /* Q_INVOKABLE virtual */ bool checkId(const QString & id) const;
 
     /* Q_INVOKABLE virtual */ void createFolderItems(WLibraryFolder * folder) const;
 
+    /* Q_INVOKABLE virtual */ QString coverFromId(const QString & id) const;
+
 protected: // WBackendLoader reimplementation
     /* Q_INVOKABLE virtual */ WBackendNet * createBackend(const QString & id) const;
 
-    /* Q_INVOKABLE virtual */ QString matchBackend(const QString & source) const;
+    /* Q_INVOKABLE virtual */ QString getId(const QString & url) const;
 
     /* Q_INVOKABLE virtual */ QStringList getCoverIds() const;
 

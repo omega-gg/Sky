@@ -88,7 +88,7 @@ public: // Slots
 
     void onFilterUpdated();
 
-    void onFilesRemoved(const QStringList & urls);
+    void onFilesRemoved(const QStringList & urls, const QStringList & urlsCache);
     void onFilesCleared();
 
 public: // Variables

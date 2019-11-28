@@ -95,6 +95,8 @@ void WLibraryFolderRelatedPrivate::init()
         }
 
         source = WControllerPlaylist::createSource(backend->id(), "related", "tracks", id);
+
+        backend->tryDelete();
     }
     else source = track.feed();
 

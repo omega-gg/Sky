@@ -380,7 +380,7 @@ void WDeclarativeImageBasePrivate::onFilterUpdated()
 
 //-------------------------------------------------------------------------------------------------
 
-void WDeclarativeImageBasePrivate::onFilesRemoved(const QStringList & urls)
+void WDeclarativeImageBasePrivate::onFilesRemoved(const QStringList & urls, const QStringList &)
 {
     if (urls.contains(url)) loadUrl();
 }
@@ -560,6 +560,16 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
 
     if (d->pix.isLoading())
     {
+        WCache * cache = wControllerFile->cache();
+
+        if (cache)
+        {
+            connect(cache, SIGNAL(filesRemoved(QStringList)),
+                    this,  SLOT(onFilesRemoved(QStringList)));
+
+            connect(cache, SIGNAL(filesCleared()), this, SLOT(onFilesCleared()));
+        }
+
         if (asynchronous)
         {
             if (pixmap.isNull())
@@ -567,16 +577,6 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
                 d->applySourceDefault();
             }
             else d->pix.changePixmap(pixmap);
-
-            WCache * cache = wControllerFile->cache();
-
-            if (cache)
-            {
-                connect(cache, SIGNAL(filesRemoved(QStringList)),
-                        this,  SLOT(onFilesRemoved(QStringList)));
-
-                connect(cache, SIGNAL(filesCleared()), this, SLOT(onFilesCleared()));
-            }
         }
         else d->applySourceDefault();
 

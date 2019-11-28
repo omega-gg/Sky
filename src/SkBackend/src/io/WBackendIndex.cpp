@@ -24,6 +24,7 @@
 // Sk includes
 #include <WControllerApplication>
 #include <WControllerFile>
+#include <WControllerNetwork>
 #include <WControllerDownload>
 #include <WControllerPlaylist>
 #include <WBackendUniversal>
@@ -44,6 +45,11 @@ private: // Functions
     QStringList extractList(const WYamlReader & reader, const QString & key) const;
 
     QList<WBackendIndexItem> extractItems(const WYamlReader & reader) const;
+
+    QHash<QString, QString>
+    extractCovers(const WYamlReader & reader,
+                  const QString     & source,
+                  const QHash<QString, const WBackendIndexItem *> & hash) const;
 
 signals:
     void loaded(const WBackendIndexData & data);
@@ -90,6 +96,8 @@ signals:
         data.hash.insert(item.id, &item);
     }
 
+    data.covers = extractCovers(reader, data.source, data.hash);
+
     //---------------------------------------------------------------------------------------------
 
     emit loaded(data);
@@ -135,6 +143,49 @@ QList<WBackendIndexItem> WBackendIndexQuery::extractItems(const WYamlReader & re
     }
 
     return items;
+}
+
+QHash<QString, QString>
+WBackendIndexQuery::extractCovers(const WYamlReader & reader,
+                                  const QString     & source,
+                                  const QHash<QString, const WBackendIndexItem *> & hash) const
+{
+    QHash<QString, QString> covers;
+
+    QString path;
+
+    int index = source.lastIndexOf('/');
+
+    if (index == -1)
+    {
+         path = source + '/';
+    }
+    else path = source.mid(0, index + 1);
+
+    QString data = WYamlReader::extractString(reader, "covers");
+
+    QStringList list = data.split('\n');
+
+    foreach (const QString & string, list)
+    {
+        QStringList values = string.simplified().split(' ');
+
+        if (values.count() != 2) continue;
+
+        QString id = values.first();
+
+        if (hash.contains(id) == false) continue;
+
+        QString cover = values.last();
+
+        if (WControllerNetwork::textIsUrl(cover))
+        {
+             covers.insert(id, cover);
+        }
+        else covers.insert(id, path + cover);
+    }
+
+    return covers;
 }
 
 //=================================================================================================
@@ -241,6 +292,19 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
 }
 
 //-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ void WBackendIndex::reload()
+{
+    Q_D(WBackendIndex);
+
+    if (d->remote) delete d->remote;
+
+    d->load();
+}
+
+//-------------------------------------------------------------------------------------------------
 // WBackendLoader reimplementation
 //-------------------------------------------------------------------------------------------------
 
@@ -250,6 +314,8 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
 
     return d->data.hash.contains(id);
 }
+
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ void WBackendIndex::createFolderItems(WLibraryFolder * folder) const
 {
@@ -280,6 +346,15 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ QString WBackendIndex::coverFromId(const QString & id) const
+{
+    Q_D(const WBackendIndex);
+
+    return d->data.covers.value(id);
+}
+
+//-------------------------------------------------------------------------------------------------
 // Protected WBackendLoader reimplementation
 //-------------------------------------------------------------------------------------------------
 
@@ -301,7 +376,7 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ QString WBackendIndex::matchBackend(const QString & source) const
+/* Q_INVOKABLE virtual */ QString WBackendIndex::getId(const QString & url) const
 {
     Q_D(const WBackendIndex);
 
@@ -311,7 +386,7 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
     {
         regExp.setPattern(item.validate);
 
-        if (source.indexOf(regExp) != -1)
+        if (url.indexOf(regExp) != -1)
         {
             return item.id;
         }

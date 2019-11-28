@@ -760,6 +760,8 @@ bool WPlaylistPrivate::loadCover(WTrack * track)
 
     wControllerPlaylist->d_func()->applyQueryTrack(q, track, query);
 
+    backend->tryDelete();
+
     return true;
 }
 

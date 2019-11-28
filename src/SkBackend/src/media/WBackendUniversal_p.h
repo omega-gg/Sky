@@ -53,7 +53,7 @@ public: // Enums
     };
     Q_DECLARE_FLAGS(Engines, Engine)
 
-public: // Ctor / dtor
+public:
     WBackendUniversalData()
     {
         isSearchEngine = false;
@@ -72,7 +72,9 @@ public: // Variables
     bool isSearchCover;
 
     QString title;
+
     QString host;
+    QString cover;
 
     QList<WLibraryFolderItem> items;
 

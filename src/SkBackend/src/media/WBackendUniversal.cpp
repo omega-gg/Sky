@@ -2052,6 +2052,8 @@ private: // Functions
 
     QString extractValue(const WYamlNode & node, const QString & key) const;
 
+    QString getPath(const QString & source) const;
+
 signals:
     void loaded(const WBackendUniversalData & data);
 };
@@ -2101,7 +2103,18 @@ signals:
     }
 
     data.title = WYamlReader::extractString(reader, "title");
-    data.host  = WYamlReader::extractString(reader, "host");
+
+    data.host = WYamlReader::extractString(reader, "host");
+
+    QString cover = WYamlReader::extractString(reader, "cover");
+
+    if (WControllerNetwork::textIsUrl(cover) == false)
+    {
+        QString path = getPath(data.source);
+
+        data.cover = path + cover;
+    }
+    else data.cover = cover;
 
     data.items = extractItems(reader);
 
@@ -2236,6 +2249,19 @@ QString WBackendUniversalQuery::extractValue(const WYamlNode & node, const QStri
          return child->value;
     }
     else return QString();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QString WBackendUniversalQuery::getPath(const QString & source) const
+{
+    int index = source.lastIndexOf('/');
+
+    if (index == -1)
+    {
+         return source + '/';
+    }
+    else return source.mid(0, index + 1);
 }
 
 //=================================================================================================
@@ -3540,9 +3566,11 @@ void WBackendUniversalPrivate::runQuery(WBackendNetQuery * query, const QString 
 
     applyQueryParameters(&parameters, *query);
 
-    script->run(&parameters);
-
-    applyQueryResults(&parameters, query);
+    if (script->run(&parameters).toBool())
+    {
+        applyQueryResults(&parameters, query);
+    }
+    else query->url = QString();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -4141,6 +4169,11 @@ WBackendUniversal::WBackendUniversal(const QString & id, const QString & source)
     Q_D(const WBackendUniversal); return d->data.host;
 }
 
+/* Q_INVOKABLE virtual */ QString WBackendUniversal::getCover() const
+{
+    Q_D(const WBackendUniversal); return d->data.cover;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ QList<WLibraryFolderItem> WBackendUniversal::getLibraryItems() const
@@ -4225,21 +4258,23 @@ WBackendNetPlaylistInfo WBackendUniversal::getPlaylistInfo(const QString & url) 
 
     parameters.add("url", url);
 
-    script->run(&parameters);
-
-    WBackendNetPlaylistInfo info;
-
-    QString type = parameters.value("type")->toString();
-
-    if (type == "feed")
+    if (script->run(&parameters).toBool())
     {
-         info.type = WLibraryItem::PlaylistFeed;
+        WBackendNetPlaylistInfo info;
+
+        QString type = parameters.value("type")->toString();
+
+        if (type == "feed")
+        {
+             info.type = WLibraryItem::PlaylistFeed;
+        }
+        else info.type = WLibraryItem::Playlist;
+
+        info.id = parameters.value("id")->toString();
+
+        return info;
     }
-    else info.type = WLibraryItem::Playlist;
-
-    info.id = parameters.value("id")->toString();
-
-    return info;
+    else return WBackendNetPlaylistInfo();
 }
 
 //-------------------------------------------------------------------------------------------------

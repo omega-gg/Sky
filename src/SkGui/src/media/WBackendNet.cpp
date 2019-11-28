@@ -490,7 +490,7 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WBackendNet::deleteLater()
+/* Q_INVOKABLE */ void WBackendNet::tryDelete()
 {
     Q_D(WBackendNet);
 

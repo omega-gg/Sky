@@ -391,7 +391,7 @@ public: // Interface
                               QObject                * receiver,
                               const char             * method);
 
-    Q_INVOKABLE void deleteLater();
+    Q_INVOKABLE void tryDelete();
 
 public: // Abstract interface
     Q_INVOKABLE virtual QString getId   () const = 0;

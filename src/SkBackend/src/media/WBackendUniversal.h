@@ -54,7 +54,8 @@ public: // WBackendNet reimplementation
 
     /* Q_INVOKABLE virtual */ bool checkCover(const QString & label, const QString & q) const;
 
-    /* Q_INVOKABLE virtual */ QString getHost() const;
+    /* Q_INVOKABLE virtual */ QString getHost () const;
+    /* Q_INVOKABLE virtual */ QString getCover() const;
 
     /* Q_INVOKABLE virtual */ QList<WLibraryFolderItem> getLibraryItems() const;
 

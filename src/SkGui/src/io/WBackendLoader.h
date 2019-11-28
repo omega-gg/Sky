@@ -43,14 +43,20 @@ protected:
 public: // Interface
     Q_INVOKABLE WBackendNet * create(const QString & id) const;
 
-    Q_INVOKABLE WBackendNet * match(const QString & pattern) const;
+    Q_INVOKABLE WBackendNet * match(const QString & url) const;
 
     Q_INVOKABLE WBackendNet * matchCover(const QString & label, const QString & q) const;
+
+    Q_INVOKABLE QString idFromUrl(const QString & url) const;
+
+    Q_INVOKABLE QString coverFromUrl(const QString & url) const;
 
 public: // Static functions
     Q_INVOKABLE static void reloadBackends();
 
     Q_INVOKABLE static WBackendNet * getBackend(const QString & id);
+
+    Q_INVOKABLE static void clearCache();
 
     Q_INVOKABLE static int  getMaxCache();
     Q_INVOKABLE static void setMaxCache(int max);
@@ -60,10 +66,12 @@ public: // Virtual interface
 
     Q_INVOKABLE virtual void createFolderItems(WLibraryFolder * folder) const; // {}
 
+    Q_INVOKABLE virtual QString coverFromId(const QString & id) const; // {}
+
 protected: // Virtual functions
     Q_INVOKABLE virtual WBackendNet * createBackend(const QString & id) const; // {}
 
-    Q_INVOKABLE virtual QString matchBackend(const QString & source) const; // {}
+    Q_INVOKABLE virtual QString getId(const QString & url) const; // {}
 
     Q_INVOKABLE virtual QStringList getCoverIds() const; // {}
 

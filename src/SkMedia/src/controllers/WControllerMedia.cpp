@@ -306,12 +306,22 @@ void WControllerMediaPrivate::clearReply(WMediaReply * reply)
 
             medias.removeOne(media);
 
-            delete media;
+            deleteMedia(media);
+
             delete data;
         }
 
         return;
     }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WControllerMediaPrivate::deleteMedia(WPrivateMediaData * media)
+{
+    media->backend->tryDelete();
+
+    delete media;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -339,7 +349,7 @@ void WControllerMediaPrivate::onLoaded(WRemoteData * data)
 
         medias.removeOne(media);
 
-        delete media;
+        deleteMedia(media);
     }
     else
     {
@@ -429,7 +439,7 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
 
         this->medias.removeOne(media);
 
-        delete media;
+        deleteMedia(media);
     }
 }
 

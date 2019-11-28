@@ -70,6 +70,8 @@ struct WBackendIndexData
 
     QList<WBackendIndexItem> backends;
 
+    QHash<QString, QString> covers;
+
     QHash<QString, const WBackendIndexItem *> hash;
 };
 

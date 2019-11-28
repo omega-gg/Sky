@@ -90,6 +90,8 @@ public: // Functions
 
     void clearReply(WMediaReply * reply);
 
+    void deleteMedia(WPrivateMediaData * media);
+
 public: // Slots
     void onLoaded(WRemoteData * data);
 

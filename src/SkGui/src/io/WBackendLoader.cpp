@@ -35,7 +35,7 @@ static const int BACKENDLOADER_MAX = 50;
 
 class WBackendLoaderCache
 {
-public: // Ctor / dtor
+public:
     WBackendLoaderCache();
 
     ~WBackendLoaderCache();
@@ -44,6 +44,8 @@ public: // Functions
     void addBackend(const QString & id, WBackendNet * backend);
 
     WBackendNet * getBackend(const QString & id);
+
+    void clear();
 
 public: // Variables
     QStringList ids;
@@ -78,16 +80,30 @@ WBackendLoaderCache::~WBackendLoaderCache()
 
 void WBackendLoaderCache::addBackend(const QString & id, WBackendNet * backend)
 {
-    while (ids.count() > maxCount)
+    int count = ids.count();
+
+    if (count >= maxCount)
     {
-        WBackendNet * backend = backends.first();
+        int index = 0;
 
-        if (backend->d_func()->lockCount == 0)
+        while (index < count)
         {
-            ids     .removeFirst();
-            backends.removeFirst();
+            WBackendNet * backend = backends.at(index);
 
-            backend->deleteLater();
+            if (backend->d_func()->lockCount == 0)
+            {
+                qDebug("REMOVE BACKEND %s", backend->id().C_STR);
+
+                ids     .removeFirst();
+                backends.removeFirst();
+
+                backend->deleteLater();
+
+                count--;
+
+                if (count == maxCount) break;
+            }
+            else index++;
         }
     }
 
@@ -111,6 +127,33 @@ WBackendNet * WBackendLoaderCache::getBackend(const QString & id)
     backends.append(backend);
 
     return backend;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WBackendLoaderCache::clear()
+{
+    int index = 0;
+
+    int count = ids.count();
+
+    while (index < count)
+    {
+        WBackendNet * backend = backends.at(index);
+
+        if (backend->d_func()->lockCount == 0)
+        {
+            qDebug("CLEAR BACKEND %s", backend->id().C_STR);
+
+            ids     .removeFirst();
+            backends.removeFirst();
+
+            backend->deleteLater();
+
+            count--;
+        }
+        else index++;
+    }
 }
 
 //=================================================================================================
@@ -175,9 +218,9 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ WBackendNet * WBackendLoader::match(const QString & pattern) const
+/* Q_INVOKABLE */ WBackendNet * WBackendLoader::match(const QString & url) const
 {
-    QString id = matchBackend(pattern);
+    QString id = idFromUrl(url);
 
     if (id.isEmpty())
     {
@@ -199,6 +242,26 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
     }
 
     return NULL;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ QString WBackendLoader::idFromUrl(const QString & url) const
+{
+    return getId(WControllerPlaylist::simpleSource(url).toLower());
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ QString WBackendLoader::coverFromUrl(const QString & url) const
+{
+    QString id = idFromUrl(url);
+
+    if (id.isEmpty())
+    {
+         return QString();
+    }
+    else return coverFromId(id);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -226,6 +289,13 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ void WBackendLoader::clearCache()
+{
+    backendCache()->clear();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE static */ int WBackendLoader::getMaxCache()
 {
     return backendCache()->maxCount;
@@ -245,7 +315,16 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
     return false;
 }
 
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE virtual */ void WBackendLoader::createFolderItems(WLibraryFolder *) const {}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ QString WBackendLoader::coverFromId(const QString &) const
+{
+    return QString();
+}
 
 //-------------------------------------------------------------------------------------------------
 // Protected virtual functions
@@ -258,7 +337,7 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ QString WBackendLoader::matchBackend(const QString &) const
+/* Q_INVOKABLE virtual */ QString WBackendLoader::getId(const QString &) const
 {
     return QString();
 }
