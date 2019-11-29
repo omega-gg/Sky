@@ -1539,7 +1539,16 @@ void WControllerPlaylistPrivate::scanItems(QList<WLibraryFolderItem> * items) co
     {
         WLibraryFolderItem * item = const_cast<WLibraryFolderItem *> (&(items->at(i)));
 
-        if (item->isFolder() == false)
+        if (item->isFolder())
+        {
+            QString cover = q->backendCoverFromUrl(item->title);
+
+            if (cover.isEmpty() == false)
+            {
+                item->cover = cover;
+            }
+        }
+        else
         {
             QString url = item->source;
 
@@ -1557,7 +1566,6 @@ void WControllerPlaylistPrivate::scanItems(QList<WLibraryFolderItem> * items) co
                 }
             }
         }
-        else item->cover = q->backendCoverFromUrl(item->title);
     }
 }
 
@@ -2323,6 +2331,8 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
                 return;
             }
+
+            backend->tryDelete();
         }
     }
     else emit playlist->queryEnded();

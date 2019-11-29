@@ -564,8 +564,8 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
 
         if (cache)
         {
-            connect(cache, SIGNAL(filesRemoved(QStringList)),
-                    this,  SLOT(onFilesRemoved(QStringList)));
+            connect(cache, SIGNAL(filesRemoved(QStringList, QStringList)),
+                    this,  SLOT(onFilesRemoved(QStringList, QStringList)));
 
             connect(cache, SIGNAL(filesCleared()), this, SLOT(onFilesCleared()));
         }
