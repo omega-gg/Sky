@@ -497,6 +497,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onLoadItem    (WNetReplyItem     *))
 
     friend class WBackendLoader;
+    friend class WBackendLoaderPrivate;
     friend class WBackendLoaderCache;
 };
 

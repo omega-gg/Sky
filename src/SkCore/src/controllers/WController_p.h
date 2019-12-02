@@ -34,7 +34,7 @@ class SK_CORE_EXPORT WControllerPrivate : public WPrivate
 public:
     WControllerPrivate(WController * p);
 
-    virtual ~WControllerPrivate();
+    /* virtual */ ~WControllerPrivate();
 
     void init();
 

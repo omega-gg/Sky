@@ -39,7 +39,7 @@ class SK_CORE_EXPORT WPluginPrivate : public WPrivate
 public:
     WPluginPrivate(WPlugin * p);
 
-    virtual ~WPluginPrivate();
+    /* virtual */ ~WPluginPrivate();
 
     void init();
 

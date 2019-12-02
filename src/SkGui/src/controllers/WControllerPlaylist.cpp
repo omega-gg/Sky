@@ -933,9 +933,9 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
         {
             if (source.contains("method") == false)
             {
-                backend->tryDelete();
-
                 folder->addItems(backend->getLibraryItems());
+
+                backend->tryDelete();
 
                 folder->setCurrentIndex(0);
 
@@ -2450,6 +2450,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
             backend->tryDelete();
         }
+        else backend->tryDelete();
     }
 
     applySources(folder, data.folders, &urls);
@@ -2650,7 +2651,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 {
     Q_D(const WControllerPlaylist);
 
-    WBackendNet * backend = WBackendLoader::getBackend(id);
+    WBackendNet * backend = WBackendLoaderPrivate::getBackend(id);
 
     if (backend) return backend;
 
@@ -2691,7 +2692,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
     foreach (WBackendLoader * loader, d->backendLoaders)
     {
-        QString id = loader->getId(url);
+        QString id = loader->getId(source);
 
         if (id.isEmpty() == false)
         {

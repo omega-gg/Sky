@@ -41,6 +41,9 @@ public:
 
     void init();
 
+public: // Static functions
+    static WBackendNet * getBackend(const QString & id);
+
 protected:
     W_DECLARE_PUBLIC(WBackendLoader)
 };

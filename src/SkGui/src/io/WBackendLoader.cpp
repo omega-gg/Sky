@@ -182,6 +182,19 @@ void WBackendLoaderPrivate::init()
     q->moveToThread(wControllerPlaylist->d_func()->thread);
 }
 
+//-------------------------------------------------------------------------------------------------
+// Private static functions
+//-------------------------------------------------------------------------------------------------
+
+/* static */ WBackendNet * WBackendLoaderPrivate::getBackend(const QString & id)
+{
+    WBackendNet * backend = backendCache()->getBackend(id);
+
+    if (backend) backend->d_func()->lockCount++;
+
+    return backend;
+}
+
 //=================================================================================================
 // WBackendLoader
 //=================================================================================================
@@ -207,7 +220,7 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
 
 /* Q_INVOKABLE */ WBackendNet * WBackendLoader::create(const QString & id) const
 {
-    WBackendNet * backend = getBackend(id);
+    WBackendNet * backend = WBackendLoaderPrivate::getBackend(id);
 
     if (backend)
     {
@@ -274,17 +287,6 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
     {
         backend->reload();
     }
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE static */ WBackendNet * WBackendLoader::getBackend(const QString & id)
-{
-    WBackendNet * backend = backendCache()->getBackend(id);
-
-    if (backend) backend->d_func()->lockCount++;
-
-    return backend;
 }
 
 //-------------------------------------------------------------------------------------------------

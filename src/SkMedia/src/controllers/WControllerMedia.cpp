@@ -222,6 +222,8 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
     if (query.isValid() == false)
     {
+        backend->tryDelete();
+
         reply->_medias.insert(WAbstractBackend::Quality480, url);
 
         reply->_loaded = true;

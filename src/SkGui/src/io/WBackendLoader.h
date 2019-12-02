@@ -54,8 +54,6 @@ public: // Interface
 public: // Static functions
     Q_INVOKABLE static void reloadBackends();
 
-    Q_INVOKABLE static WBackendNet * getBackend(const QString & id);
-
     Q_INVOKABLE static void clearCache();
 
     Q_INVOKABLE static int  getMaxCache();

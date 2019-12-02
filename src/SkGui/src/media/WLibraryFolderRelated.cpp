@@ -85,7 +85,7 @@ void WLibraryFolderRelatedPrivate::init()
 
     QString source;
 
-    if (backend != NULL)
+    if (backend)
     {
         QString id = backend->getTrackId(trackSource);
 
