@@ -63,7 +63,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onLoad  ())
     Q_PRIVATE_SLOT(d_func(), void onUpdate())
 
-    Q_PRIVATE_SLOT(d_func(), void onData(const WBackendIndexData & data))
+    Q_PRIVATE_SLOT(d_func(), void onData(const WBackendIndexData &))
 
     Q_PRIVATE_SLOT(d_func(), void onBackendUpdate())
 

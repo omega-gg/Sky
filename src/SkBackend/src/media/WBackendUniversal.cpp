@@ -4286,7 +4286,7 @@ WBackendUniversal::WBackendUniversal(const QString & id, const QString & source)
 
     if (source.isEmpty())
     {
-        qWarning("WBackendUniversal::update: source is empty for [%s].", d->id.C_STR);
+        qWarning("WBackendUniversal::update: Source is empty for [%s].", d->id.C_STR);
 
         return;
     }
@@ -4295,7 +4295,7 @@ WBackendUniversal::WBackendUniversal(const QString & id, const QString & source)
 
     d->remote = wControllerDownload->getData(source, BACKENDUNIVERSAL_TIMEOUT_LOAD);
 
-    QObject::connect(d->remote, SIGNAL(loaded(WRemoteData *)), this, SLOT(onUpdate()));
+    connect(d->remote, SIGNAL(loaded(WRemoteData *)), this, SLOT(onUpdate()));
 }
 
 /* Q_INVOKABLE virtual */ void WBackendUniversal::reload()

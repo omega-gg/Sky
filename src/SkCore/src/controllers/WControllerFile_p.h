@@ -54,7 +54,7 @@ public: // Functions
     void registerLocalObject  (WLocalObject * object);
     void unregisterLocalObject(WLocalObject * object);
 
-    bool isLoading();
+    bool isLoading() const;
 
 public: // Static functions
     static bool tryOpen(const QtLP_Private::QtLockedFile & file);

@@ -423,14 +423,14 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
 
     if (source.isEmpty())
     {
-        qWarning("WBackendIndex::update: source is empty.");
+        qWarning("WBackendIndex::update: Source is empty.");
 
         return;
     }
 
     if (d->remote) delete d->remote;
 
-    d->remote = wControllerDownload->getData(d->data.source, BACKENDINDEX_TIMEOUT);
+    d->remote = wControllerDownload->getData(source, BACKENDINDEX_TIMEOUT);
 
     connect(d->remote, SIGNAL(loaded(WRemoteData *)), this, SLOT(onUpdate()));
 }

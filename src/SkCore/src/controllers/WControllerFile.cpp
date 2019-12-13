@@ -379,7 +379,7 @@ void WControllerFilePrivate::unregisterFileWatcher(WFileWatcher * watcher)
 
 //-------------------------------------------------------------------------------------------------
 
-bool WControllerFilePrivate::isLoading()
+bool WControllerFilePrivate::isLoading() const
 {
     foreach (WLocalObject * object, objects)
     {
@@ -403,7 +403,7 @@ bool WControllerFilePrivate::isLoading()
 
     if (file.isLocked())
     {
-        return false;
+         return false;
     }
     else return true;
 }
