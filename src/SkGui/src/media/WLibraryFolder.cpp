@@ -20,6 +20,7 @@
 
 // Qt includes
 #include <QXmlStreamWriter>
+#include <qtlockedfile>
 
 // Sk includes
 #include <WControllerApplication>
@@ -30,9 +31,6 @@
 #include <WLibraryFolderRelated>
 #include <WPlaylist>
 #include <WTabTrack>
-
-// 3rdparty includes
-#include <qtlockedfile>
 
 // Private includes
 #include <private/WControllerPlaylist_p>
@@ -1718,6 +1716,21 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
     for (int i = 0; i < d->items.count(); i++)
     {
         if (d->items.at(i).source == source)
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+/* Q_INVOKABLE */ int WLibraryFolder::indexFromLabel(const QString & label) const
+{
+    Q_D(const WLibraryFolder);
+
+    for (int i = 0; i < d->items.count(); i++)
+    {
+        if (d->items.at(i).label == label)
         {
             return i;
         }

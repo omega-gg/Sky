@@ -1577,7 +1577,7 @@ void WControllerPlaylistPrivate::addToCache(const QString    & url,
 {
     if (array.isEmpty()) return;
 
-    wControllerFile->addFile(url, array, extension);
+    wControllerFile->addCache(url, array, extension);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2571,9 +2571,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
         loader = d->loaders.value(query.type);
     }
 
-    return wControllerDownload->getData(loader, query.url, parent, query.priority, true,
-                                        query.cookies, query.header, query.maxHost, query.delay,
-                                        query.timeout);
+    return WControllerPlaylist::getDataQuery(loader, query, parent);
 }
 
 /* Q_INVOKABLE */ WRemoteData * WControllerPlaylist::getData(const WBackendNetQuery & query,
@@ -2583,9 +2581,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
     WAbstractLoader * loader = d->loaders.value(query.type);
 
-    return wControllerDownload->getData(loader, query.url, parent, query.priority, true,
-                                        query.cookies, query.header, query.maxHost, query.delay,
-                                        query.timeout);
+    return WControllerPlaylist::getDataQuery(loader, query, parent);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2651,7 +2647,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 {
     Q_D(const WControllerPlaylist);
 
-    WBackendNet * backend = WBackendLoaderPrivate::getBackend(id);
+    WBackendNet * backend = WBackendLoader::getBackend(id);
 
     if (backend) return backend;
 
@@ -3038,9 +3034,16 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
                                                 const WBackendNetQuery & query, QObject * parent)
 {
-    return wControllerDownload->getData(loader, query.url, parent, query.priority, true,
-                                        query.cookies, query.header, query.maxHost, query.delay,
-                                        query.timeout);
+    WRemoteParameters parameters;
+
+    parameters.cookies = query.cookies;
+    parameters.header  = query.header;
+
+    parameters.maxHost = query.maxHost;
+    parameters.delay   = query.delay;
+    parameters.timeout = query.timeout;
+
+    return wControllerDownload->getData(loader, query.url, parent, query.priority, parameters);
 }
 
 //-------------------------------------------------------------------------------------------------

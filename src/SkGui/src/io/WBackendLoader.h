@@ -41,11 +41,11 @@ protected:
     WBackendLoader(WBackendLoaderPrivate * p, QObject * parent = NULL);
 
 public: // Interface
-    Q_INVOKABLE WBackendNet * create(const QString & id) const;
+    Q_INVOKABLE WBackendNet * create(const QString & id);
 
-    Q_INVOKABLE WBackendNet * match(const QString & url) const;
+    Q_INVOKABLE WBackendNet * match(const QString & url);
 
-    Q_INVOKABLE WBackendNet * matchCover(const QString & label, const QString & q) const;
+    Q_INVOKABLE WBackendNet * matchCover(const QString & label, const QString & q);
 
     Q_INVOKABLE QString idFromUrl(const QString & url) const;
 
@@ -66,6 +66,9 @@ public: // Virtual interface
 
     Q_INVOKABLE virtual QString coverFromId(const QString & id) const; // {}
 
+protected: // Static functions
+    Q_INVOKABLE static WBackendNet * getBackend(const QString & id);
+
 protected: // Virtual functions
     Q_INVOKABLE virtual WBackendNet * createBackend(const QString & id) const; // {}
 
@@ -74,7 +77,7 @@ protected: // Virtual functions
     Q_INVOKABLE virtual QStringList getCoverIds() const; // {}
 
 private: // Functions
-    WBackendNet * createNow(const QString & id) const;
+    WBackendNet * createNow(const QString & id);
 
 private:
     W_DECLARE_PRIVATE(WBackendLoader)

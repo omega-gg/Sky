@@ -30,6 +30,11 @@
 #include <WBackendUniversal>
 #include <WYamlReader>
 
+//-------------------------------------------------------------------------------------------------
+// Static variables
+
+static const int BACKENDINDEX_TIMEOUT = 60000; // 1 minute
+
 //=================================================================================================
 // WBackendIndexQuery
 //=================================================================================================
@@ -198,16 +203,6 @@ WBackendIndexPrivate::WBackendIndexPrivate(WBackendIndex * p) : WBackendLoaderPr
 
 void WBackendIndexPrivate::init(const QString & url)
 {
-    W_GET_CONTROLLER(WControllerPlaylist, controller);
-
-    if (controller == NULL)
-    {
-        qWarning("WBackendIndexPrivate::init: WControllerPlaylist does not exist.");
-
-        thread = NULL;
-    }
-    else thread = controller->thread();
-
     remote = NULL;
 
     this->url = url;
@@ -229,16 +224,29 @@ void WBackendIndexPrivate::load()
 {
     Q_Q(WBackendIndex);
 
-    remote = wControllerDownload->getData(url + "/index.vbml");
+    remote = wControllerDownload->getData(url + "/index.vbml", BACKENDINDEX_TIMEOUT);
 
-    QObject::connect(remote, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoaded()));
+    QObject::connect(remote, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoad()));
+}
+
+void WBackendIndexPrivate::loadData(const QByteArray & array)
+{
+    Q_Q(WBackendIndex);
+
+    WBackendIndexQuery * query = new WBackendIndexQuery;
+
+    QObject::connect(query, SIGNAL(loaded(WBackendIndexData)), q, SLOT(onData(WBackendIndexData)));
+
+    query->moveToThread(wControllerPlaylist->thread());
+
+    method.invoke(query, Q_ARG(const QByteArray &, array));
 }
 
 //-------------------------------------------------------------------------------------------------
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
-void WBackendIndexPrivate::onLoaded()
+void WBackendIndexPrivate::onLoad()
 {
     Q_Q(WBackendIndex);
 
@@ -259,26 +267,138 @@ void WBackendIndexPrivate::onLoaded()
         return;
     }
 
-    WBackendIndexQuery * query = new WBackendIndexQuery;
-
-    QObject::connect(query, SIGNAL(loaded(WBackendIndexData)), q, SLOT(onData(WBackendIndexData)));
-
-    if (thread)
-    {
-        query->moveToThread(thread);
-
-        method.invoke(query, Q_ARG(const QByteArray &, array));
-    }
-    else query->extract(array);
+    loadData(array);
 }
+
+void WBackendIndexPrivate::onUpdate()
+{
+    Q_Q(WBackendIndex);
+
+    QByteArray array = remote->readAll();
+
+    QObject::disconnect(remote, 0, q, 0);
+
+    remote->deleteLater();
+
+    remote = NULL;
+
+    if (array.isEmpty())
+    {
+        emit q->loaded();
+
+        return;
+    }
+
+    loadData(array);
+
+    wControllerFile->startWriteFile(WControllerFile::filePath(url + "/index.vbml"), array);
+}
+
+//-------------------------------------------------------------------------------------------------
 
 void WBackendIndexPrivate::onData(const WBackendIndexData & data)
 {
     Q_Q(WBackendIndex);
 
+    QString version = this->data.version;
+
+    if (version.isEmpty())
+    {
+        this->data = data;
+
+        emit q->loaded();
+
+        return;
+    }
+
+    QString source = data.source;
+
+    source = source.mid(0, source.lastIndexOf('/') + 1);
+
+    QString path = WControllerFile::filePath(url) + '/';
+
+    foreach (const WBackendIndexItem & item, data.backends)
+    {
+        const WBackendIndexItem * itemHash = this->data.hash.value(item.id);
+
+        if (itemHash)
+        {
+            if (itemHash->version == item.version) continue;
+
+            WBackendNet * pointer = q->getBackend(item.id);
+
+            if (pointer)
+            {
+                WBackendUniversal * backend = static_cast<WBackendUniversal *> (pointer);
+
+                backend->update();
+
+                continue;
+            }
+        }
+
+        QString name = item.id + ".vbml";
+
+        WRemoteData * remote = wControllerDownload->getData(source + name, BACKENDINDEX_TIMEOUT);
+
+        WBackendIndexFile file;
+
+        file.id = item.id;
+
+        file.name = path + name;
+
+        jobs.insert(remote, file);
+
+        QObject::connect(remote, SIGNAL(loaded(WRemoteData *)),
+                         q,      SLOT(onItemLoad(WRemoteData *)));
+    }
+
+
     this->data = data;
 
     emit q->loaded();
+
+    if (version != data.version)
+    {
+        emit q->updated();
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WBackendIndexPrivate::onBackendUpdate()
+{
+    Q_Q(WBackendIndex);
+
+    WBackendUniversal * backend = static_cast<WBackendUniversal *> (q->sender());
+
+    emit q->backendUpdated(backend->id());
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WBackendIndexPrivate::onItemLoad(WRemoteData * data)
+{
+    Q_Q(WBackendIndex);
+
+    WBackendIndexFile file = jobs.take(data);
+
+    ids.append(file.id);
+
+    WControllerFileReply * reply = wControllerFile->startWriteFile(file.name, data->readAll());
+
+    QObject::connect(reply, SIGNAL(actionComplete(bool)), q, SLOT(onActionComplete()));
+
+    data->deleteLater();
+}
+
+void WBackendIndexPrivate::onActionComplete()
+{
+    Q_Q(WBackendIndex);
+
+    QString id = ids.takeFirst();
+
+    emit q->backendUpdated(id);
 }
 
 //=================================================================================================
@@ -294,6 +414,26 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
 //-------------------------------------------------------------------------------------------------
 // Interface
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ void WBackendIndex::update()
+{
+    Q_D(WBackendIndex);
+
+    QString source = d->data.source;
+
+    if (source.isEmpty())
+    {
+        qWarning("WBackendIndex::update: source is empty.");
+
+        return;
+    }
+
+    if (d->remote) delete d->remote;
+
+    d->remote = wControllerDownload->getData(d->data.source, BACKENDINDEX_TIMEOUT);
+
+    connect(d->remote, SIGNAL(loaded(WRemoteData *)), this, SLOT(onUpdate()));
+}
 
 /* Q_INVOKABLE virtual */ void WBackendIndex::reload()
 {
@@ -366,9 +506,18 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
 
     WBackendUniversal * backend = new WBackendUniversal(id, source);
 
+    connect(backend, SIGNAL(updated()), this, SLOT(onBackendUpdate()));
+
     while (backend->isLoaded() == false)
     {
         QCoreApplication::processEvents();
+    }
+
+    const WBackendIndexItem * item = d->data.hash.value(id);
+
+    if (item && item->version != backend->d_func()->data.version)
+    {
+        backend->update();
     }
 
     return backend;

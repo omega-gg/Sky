@@ -176,6 +176,8 @@ public: // Interface
 
     Q_INVOKABLE int indexFromSource(const QString & source) const;
 
+    Q_INVOKABLE int indexFromLabel(const QString & label) const;
+
     //---------------------------------------------------------------------------------------------
 
     Q_INVOKABLE WLibraryFolderItem getItemAt    (int index) const;

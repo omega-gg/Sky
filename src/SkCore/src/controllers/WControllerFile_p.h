@@ -27,6 +27,10 @@
 #ifndef SK_NO_CONTROLLERFILE
 
 // Forward declarations
+namespace QtLP_Private
+{
+    class QtLockedFile;
+};
 class WFileWatcher;
 class WLocalObject;
 class WThreadActions;
@@ -42,7 +46,7 @@ public:
 
 public: // Functions
     void createThreadWrite();
-    void createThreadRead();
+    void createThreadRead ();
 
     void registerFileWatcher  (WFileWatcher * watcher);
     void unregisterFileWatcher(WFileWatcher * watcher);
@@ -50,9 +54,11 @@ public: // Functions
     void registerLocalObject  (WLocalObject * object);
     void unregisterLocalObject(WLocalObject * object);
 
-    bool objectsAreLoading();
+    bool isLoading();
 
 public: // Static functions
+    static bool tryOpen(const QtLP_Private::QtLockedFile & file);
+
     static void deleteDir(QDir & dir, bool recursive);
 
 public: // Slots

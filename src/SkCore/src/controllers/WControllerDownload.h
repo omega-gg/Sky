@@ -34,6 +34,32 @@ class WLoaderNetwork;
 #define wControllerDownload WControllerDownload::instance()
 
 //-------------------------------------------------------------------------------------------------
+// WRemoteParameters
+//-------------------------------------------------------------------------------------------------
+
+struct WRemoteParameters
+{
+    WRemoteParameters()
+    {
+        redirect = true;
+        cookies  = true;
+        header   = false;
+
+        maxHost = -1;
+        delay   =  0;
+        timeout = -1;
+    }
+
+    bool redirect;
+    bool cookies;
+    bool header;
+
+    int maxHost;
+    int delay;
+    int timeout;
+};
+
+//-------------------------------------------------------------------------------------------------
 // WRemoteData
 //-------------------------------------------------------------------------------------------------
 
@@ -133,25 +159,18 @@ public: // Interface
     Q_INVOKABLE
     WRemoteData * getData(WAbstractLoader           * loader,
                           const QString             & url,
-                          QObject                   * parent   = NULL,
-                          QNetworkRequest::Priority   priority = QNetworkRequest::NormalPriority,
-                          bool                        redirect = true,
-                          bool                        cookies  = true,
-                          bool                        header   = false,
-                          int                         maxHost  = -1,
-                          int                         delay    =  0,
-                          int                         timeout  = -1);
+                          QObject                   * parent     = NULL,
+                          QNetworkRequest::Priority   priority   = QNetworkRequest::NormalPriority,
+                          const WRemoteParameters   & parameters = WRemoteParameters());
 
     Q_INVOKABLE
     WRemoteData * getData(const QString             & url,
-                          QObject                   * parent   = NULL,
-                          QNetworkRequest::Priority   priority = QNetworkRequest::NormalPriority,
-                          bool                        redirect = true,
-                          bool                        cookies  = true,
-                          bool                        header   = false,
-                          int                         maxHost  = -1,
-                          int                         delay    =  0,
-                          int                         timeout  = -1);
+                          QObject                   * parent     = NULL,
+                          QNetworkRequest::Priority   priority   = QNetworkRequest::NormalPriority,
+                          const WRemoteParameters   & parameters = WRemoteParameters());
+
+    Q_INVOKABLE
+    WRemoteData * getData(const QString & url, int timeout, QObject * parent = NULL);
 
     Q_INVOKABLE void setProxy(const QString & host,
                               int             port, const QString & password = QString());

@@ -24,6 +24,9 @@
 // Private includes
 #include "WBackendLoader_p.h"
 
+// Forward declarations
+class WBackendLoaderCache;
+
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
@@ -37,8 +40,6 @@ class WBackendLoaderCache
 {
 public:
     WBackendLoaderCache();
-
-    ~WBackendLoaderCache();
 
 public: // Functions
     void addBackend(const QString & id, WBackendNet * backend);
@@ -64,14 +65,6 @@ Q_GLOBAL_STATIC(WBackendLoaderCache, backendCache)
 WBackendLoaderCache::WBackendLoaderCache()
 {
     maxCount = BACKENDLOADER_MAX;
-}
-
-WBackendLoaderCache::~WBackendLoaderCache()
-{
-    foreach (WBackendNet * backend, backends)
-    {
-        backend->deleteLater();
-    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -178,21 +171,6 @@ void WBackendLoaderPrivate::init()
     Q_Q(WBackendLoader);
 
     wControllerPlaylist->d_func()->registerLoader(q);
-
-    q->moveToThread(wControllerPlaylist->d_func()->thread);
-}
-
-//-------------------------------------------------------------------------------------------------
-// Private static functions
-//-------------------------------------------------------------------------------------------------
-
-/* static */ WBackendNet * WBackendLoaderPrivate::getBackend(const QString & id)
-{
-    WBackendNet * backend = backendCache()->getBackend(id);
-
-    if (backend) backend->d_func()->lockCount++;
-
-    return backend;
 }
 
 //=================================================================================================
@@ -218,9 +196,9 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ WBackendNet * WBackendLoader::create(const QString & id) const
+/* Q_INVOKABLE */ WBackendNet * WBackendLoader::create(const QString & id)
 {
-    WBackendNet * backend = WBackendLoaderPrivate::getBackend(id);
+    WBackendNet * backend = getBackend(id);
 
     if (backend)
     {
@@ -231,7 +209,7 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ WBackendNet * WBackendLoader::match(const QString & url) const
+/* Q_INVOKABLE */ WBackendNet * WBackendLoader::match(const QString & url)
 {
     QString id = idFromUrl(url);
 
@@ -243,7 +221,7 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
 }
 
 /* Q_INVOKABLE */ WBackendNet * WBackendLoader::matchCover(const QString & label,
-                                                           const QString & q) const
+                                                           const QString & q)
 {
     QStringList ids = getCoverIds();
 
@@ -329,6 +307,19 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
 }
 
 //-------------------------------------------------------------------------------------------------
+// Protected static functions
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ WBackendNet * WBackendLoader::getBackend(const QString & id)
+{
+    WBackendNet * backend = backendCache()->getBackend(id);
+
+    if (backend) backend->d_func()->lockCount++;
+
+    return backend;
+}
+
+//-------------------------------------------------------------------------------------------------
 // Protected virtual functions
 //-------------------------------------------------------------------------------------------------
 
@@ -355,11 +346,13 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-WBackendNet * WBackendLoader::createNow(const QString & id) const
+WBackendNet * WBackendLoader::createNow(const QString & id)
 {
     if (checkId(id) == false) return NULL;
 
     WBackendNet * backend = createBackend(id);
+
+    backend->setParent(this);
 
     backend->d_func()->lockCount++;
 

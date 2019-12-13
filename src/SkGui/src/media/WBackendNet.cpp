@@ -235,6 +235,156 @@ WNetReplyItem::WNetReplyItem(QIODevice * device, const WBackendNetQuery & query)
     : WBackendNetReply(device, query) {}
 
 //=================================================================================================
+// WBackendNetInterface
+//=================================================================================================
+
+class WBackendNetInterface : public QObject
+{
+    Q_OBJECT
+
+public:
+    WBackendNetInterface();
+
+public: // Functions
+    Q_INVOKABLE void loadSource  (WBackendNet * backend, WNetReplySource   * reply);
+    Q_INVOKABLE void loadTrack   (WBackendNet * backend, WNetReplyTrack    * reply);
+    Q_INVOKABLE void loadPlaylist(WBackendNet * backend, WNetReplyPlaylist * reply);
+    Q_INVOKABLE void loadFolder  (WBackendNet * backend, WNetReplyFolder   * reply);
+    Q_INVOKABLE void loadItem    (WBackendNet * backend, WNetReplyItem     * reply);
+
+private: // Slots
+    Q_INVOKABLE void onSource  (WBackendNet * backend, WNetReplySource   * reply) const;
+    Q_INVOKABLE void onTrack   (WBackendNet * backend, WNetReplyTrack    * reply) const;
+    Q_INVOKABLE void onPlaylist(WBackendNet * backend, WNetReplyPlaylist * reply) const;
+    Q_INVOKABLE void onFolder  (WBackendNet * backend, WNetReplyFolder   * reply) const;
+    Q_INVOKABLE void onItem    (WBackendNet * backend, WNetReplyItem     * reply) const;
+
+public: // Variables
+    QMetaMethod source;
+    QMetaMethod track;
+    QMetaMethod playlist;
+    QMetaMethod folder;
+    QMetaMethod item;
+};
+
+Q_GLOBAL_STATIC(WBackendNetInterface, backendInterface)
+
+//-------------------------------------------------------------------------------------------------
+// Ctor / dtor
+//-------------------------------------------------------------------------------------------------
+
+WBackendNetInterface::WBackendNetInterface()
+{
+    const QMetaObject * meta = metaObject();
+
+    source   = meta->method(meta->indexOfMethod("onSource(WBackendNet*,WNetReplySource*)"));
+    track    = meta->method(meta->indexOfMethod("onTrack(WBackendNet*,WNetReplyTrack*)"));
+    playlist = meta->method(meta->indexOfMethod("onPlaylist(WBackendNet*,WNetReplyPlaylist*)"));
+    folder   = meta->method(meta->indexOfMethod("onFolder(WBackendNet*,WNetReplyFolder*)"));
+    item     = meta->method(meta->indexOfMethod("onItem(WBackendNet*,WNetReplyItem*)"));
+
+    moveToThread(wControllerPlaylist->d_func()->thread);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WBackendNetInterface::loadSource(WBackendNet     * backend,
+                                                        WNetReplySource * reply)
+{
+    source.invoke(this, Q_ARG(WBackendNet *, backend), Q_ARG(WNetReplySource *, reply));
+}
+
+/* Q_INVOKABLE */ void WBackendNetInterface::loadTrack(WBackendNet    * backend,
+                                                       WNetReplyTrack * reply)
+{
+    track.invoke(this, Q_ARG(WBackendNet *, backend), Q_ARG(WNetReplyTrack *, reply));
+}
+
+/* Q_INVOKABLE */ void WBackendNetInterface::loadPlaylist(WBackendNet       * backend,
+                                                          WNetReplyPlaylist * reply)
+{
+    playlist.invoke(this, Q_ARG(WBackendNet *, backend), Q_ARG(WNetReplyPlaylist *, reply));
+}
+
+/* Q_INVOKABLE */ void WBackendNetInterface::loadFolder(WBackendNet     * backend,
+                                                        WNetReplyFolder * reply)
+{
+    folder.invoke(this, Q_ARG(WBackendNet *, backend), Q_ARG(WNetReplyFolder *, reply));
+}
+
+/* Q_INVOKABLE */ void WBackendNetInterface::loadItem(WBackendNet   * backend,
+                                                      WNetReplyItem * reply)
+{
+    item.invoke(this, Q_ARG(WBackendNet *, backend), Q_ARG(WNetReplyItem *, reply));
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private slots
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WBackendNetInterface::onSource(WBackendNet     * backend,
+                                                      WNetReplySource * reply) const
+{
+    QByteArray data = reply->_device->readAll();
+
+    WBackendNetSource source = backend->extractSource(data, reply->_query);
+
+    emit reply->loaded(reply->_device, source);
+
+    reply->deleteLater();
+}
+
+/* Q_INVOKABLE */ void WBackendNetInterface::onTrack(WBackendNet    * backend,
+                                                     WNetReplyTrack * reply) const
+{
+    QByteArray data = reply->_device->readAll();
+
+    WBackendNetTrack track = backend->extractTrack(data, reply->_query);
+
+    emit reply->loaded(reply->_device, track);
+
+    reply->deleteLater();
+}
+
+/* Q_INVOKABLE */ void WBackendNetInterface::onPlaylist(WBackendNet       * backend,
+                                                        WNetReplyPlaylist * reply) const
+{
+    QByteArray data = reply->_device->readAll();
+
+    WBackendNetPlaylist playlist = backend->extractPlaylist(data, reply->_query);
+
+    emit reply->loaded(reply->_device, playlist);
+
+    reply->deleteLater();
+}
+
+/* Q_INVOKABLE */ void WBackendNetInterface::onFolder(WBackendNet     * backend,
+                                                      WNetReplyFolder * reply) const
+{
+    QByteArray data = reply->_device->readAll();
+
+    WBackendNetFolder folder = backend->extractFolder(data, reply->_query);
+
+    emit reply->loaded(reply->_device, folder);
+
+    reply->deleteLater();
+}
+
+/* Q_INVOKABLE */ void WBackendNetInterface::onItem(WBackendNet   * backend,
+                                                    WNetReplyItem * reply) const
+{
+    QByteArray data = reply->_device->readAll();
+
+    WBackendNetItem item = backend->extractItem(data, reply->_query);
+
+    emit reply->loaded(reply->_device, item);
+
+    reply->deleteLater();
+}
+
+//=================================================================================================
 // WBackendNetPrivate
 //=================================================================================================
 
@@ -246,90 +396,11 @@ void WBackendNetPrivate::init()
 {
     Q_Q(WBackendNet);
 
-    const QMetaObject * meta = q->metaObject();
-
-    methodSource   = meta->method(meta->indexOfMethod("onLoadSource(WNetReplySource*)"));
-    methodTrack    = meta->method(meta->indexOfMethod("onLoadTrack(WNetReplyTrack*)"));
-    methodPlaylist = meta->method(meta->indexOfMethod("onLoadPlaylist(WNetReplyPlaylist*)"));
-    methodFolder   = meta->method(meta->indexOfMethod("onLoadFolder(WNetReplyFolder*)"));
-    methodItem     = meta->method(meta->indexOfMethod("onLoadItem(WNetReplyItem*)"));
-
     lockCount = 0;
 
 #ifdef QT_LATEST
     wControllerDeclarative->engine()->setObjectOwnership(q, QQmlEngine::CppOwnership);
 #endif
-
-    q->moveToThread(wControllerPlaylist->d_func()->thread);
-}
-
-//-------------------------------------------------------------------------------------------------
-// Private slots
-//-------------------------------------------------------------------------------------------------
-
-void WBackendNetPrivate::onLoadSource(WNetReplySource * reply) const
-{
-    Q_Q(const WBackendNet);
-
-    QByteArray data = reply->_device->readAll();
-
-    WBackendNetSource source = q->extractSource(data, reply->_query);
-
-    emit reply->loaded(reply->_device, source);
-
-    reply->deleteLater();
-}
-
-void WBackendNetPrivate::onLoadTrack(WNetReplyTrack * reply) const
-{
-    Q_Q(const WBackendNet);
-
-    QByteArray data = reply->_device->readAll();
-
-    WBackendNetTrack track = q->extractTrack(data, reply->_query);
-
-    emit reply->loaded(reply->_device, track);
-
-    reply->deleteLater();
-}
-
-void WBackendNetPrivate::onLoadPlaylist(WNetReplyPlaylist * reply) const
-{
-    Q_Q(const WBackendNet);
-
-    QByteArray data = reply->_device->readAll();
-
-    WBackendNetPlaylist playlist = q->extractPlaylist(data, reply->_query);
-
-    emit reply->loaded(reply->_device, playlist);
-
-    reply->deleteLater();
-}
-
-void WBackendNetPrivate::onLoadFolder(WNetReplyFolder * reply) const
-{
-    Q_Q(const WBackendNet);
-
-    QByteArray data = reply->_device->readAll();
-
-    WBackendNetFolder folder = q->extractFolder(data, reply->_query);
-
-    emit reply->loaded(reply->_device, folder);
-
-    reply->deleteLater();
-}
-
-void WBackendNetPrivate::onLoadItem(WNetReplyItem * reply) const
-{
-    Q_Q(const WBackendNet);
-
-    QByteArray data = reply->_device->readAll();
-
-    WBackendNetItem item = q->extractItem(data, reply->_query);
-
-    emit reply->loaded(reply->_device, item);
-
-    reply->deleteLater();
 }
 
 //=================================================================================================
@@ -413,15 +484,13 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
                                                QObject                * receiver,
                                                const char             * method)
 {
-    Q_D(WBackendNet);
-
     WNetReplySource * reply = new WNetReplySource(device, query);
 
     connect(reply, SIGNAL(loaded(QIODevice *, WBackendNetSource)), receiver, method);
 
     device->moveToThread(thread());
 
-    d->methodSource.invoke(this, Q_ARG(WNetReplySource *, reply));
+    backendInterface()->loadSource(this, reply);
 }
 
 /* Q_INVOKABLE */ void WBackendNet::loadTrack(QIODevice              * device,
@@ -429,15 +498,13 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
                                               QObject                * receiver,
                                               const char             * method)
 {
-    Q_D(WBackendNet);
-
     WNetReplyTrack * reply = new WNetReplyTrack(device, query);
 
     connect(reply, SIGNAL(loaded(QIODevice *, WBackendNetTrack)), receiver, method);
 
     device->moveToThread(thread());
 
-    d->methodTrack.invoke(this, Q_ARG(WNetReplyTrack *, reply));
+    backendInterface()->loadTrack(this, reply);
 }
 
 /* Q_INVOKABLE */ void WBackendNet::loadPlaylist(QIODevice              * device,
@@ -445,15 +512,13 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
                                                  QObject                * receiver,
                                                  const char             * method)
 {
-    Q_D(WBackendNet);
-
     WNetReplyPlaylist * reply = new WNetReplyPlaylist(device, query);
 
     connect(reply, SIGNAL(loaded(QIODevice *, WBackendNetPlaylist)), receiver, method);
 
     device->moveToThread(thread());
 
-    d->methodPlaylist.invoke(this, Q_ARG(WNetReplyPlaylist *, reply));
+    backendInterface()->loadPlaylist(this, reply);
 }
 
 /* Q_INVOKABLE */ void WBackendNet::loadFolder(QIODevice              * device,
@@ -461,15 +526,13 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
                                                QObject                * receiver,
                                                const char             * method)
 {
-    Q_D(WBackendNet);
-
     WNetReplyFolder * reply = new WNetReplyFolder(device, query);
 
     connect(reply, SIGNAL(loaded(QIODevice *, WBackendNetFolder)), receiver, method);
 
     device->moveToThread(thread());
 
-    d->methodFolder.invoke(this, Q_ARG(WNetReplyFolder *, reply));
+    backendInterface()->loadFolder(this, reply);
 }
 
 /* Q_INVOKABLE */ void WBackendNet::loadItem(QIODevice              * device,
@@ -477,15 +540,13 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
                                              QObject                * receiver,
                                              const char             * method)
 {
-    Q_D(WBackendNet);
-
     WNetReplyItem * reply = new WNetReplyItem(device, query);
 
     connect(reply, SIGNAL(loaded(QIODevice *, WBackendNetItem)), receiver, method);
 
     device->moveToThread(thread());
 
-    d->methodItem.invoke(this, Q_ARG(WNetReplyItem *, reply));
+    backendInterface()->loadItem(this, reply);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -717,3 +778,5 @@ QString WBackendNet::title() const
 }
 
 #endif // SK_NO_BACKENDNET
+
+#include "WBackendNet.moc"

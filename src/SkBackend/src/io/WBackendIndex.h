@@ -34,6 +34,7 @@ public:
     WBackendIndex(const QString & url, QObject * parent = NULL);
 
 public: // Interface
+    /* Q_INVOKABLE virtual */ void update();
     /* Q_INVOKABLE virtual */ void reload();
 
 public: // WBackendLoader reimplementation
@@ -51,14 +52,24 @@ protected: // WBackendLoader reimplementation
     /* Q_INVOKABLE virtual */ QStringList getCoverIds() const;
 
 signals:
-    void loaded();
+    void loaded ();
+    void updated();
+
+    void backendUpdated(const QString & id);
 
 private:
     W_DECLARE_PRIVATE(WBackendIndex)
 
-    Q_PRIVATE_SLOT(d_func(), void onLoaded())
+    Q_PRIVATE_SLOT(d_func(), void onLoad  ())
+    Q_PRIVATE_SLOT(d_func(), void onUpdate())
 
     Q_PRIVATE_SLOT(d_func(), void onData(const WBackendIndexData & data))
+
+    Q_PRIVATE_SLOT(d_func(), void onBackendUpdate())
+
+    Q_PRIVATE_SLOT(d_func(), void onItemLoad(WRemoteData *))
+
+    Q_PRIVATE_SLOT(d_func(), void onActionComplete())
 };
 
 #include <private/WBackendIndex_p>

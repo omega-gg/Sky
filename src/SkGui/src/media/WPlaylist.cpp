@@ -20,6 +20,7 @@
 
 // Qt includes
 #include <QXmlStreamWriter>
+#include <qtlockedfile>
 
 // Sk includes
 #include <WControllerApplication>
@@ -27,9 +28,6 @@
 #include <WControllerXml>
 #include <WControllerPlaylist>
 #include <WModelPlaylist>
-
-// 3rdparty includes
-#include <qtlockedfile>
 
 // Private includes
 #include <private/WTrack_p>

@@ -20,6 +20,7 @@
 
 // Qt includes
 #include <QXmlStreamWriter>
+#include <qtlockedfile>
 
 // Sk includes
 #include <WControllerApplication>
@@ -28,10 +29,7 @@
 #include <WTabTrack>
 #include <WAbstractThreadAction>
 
-// 3rdparty includes
-#include <qtlockedfile>
-
-// 3rdparty namespaces
+// Namespaces
 using namespace QtLP_Private;
 
 //=================================================================================================

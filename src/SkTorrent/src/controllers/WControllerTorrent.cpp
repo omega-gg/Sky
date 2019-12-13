@@ -688,7 +688,7 @@ int WControllerTorrentPrivate::extractIndex(const QString & url) const
 
     if (data.isEmpty() == false)
     {
-        wControllerFile->addFile(magnet->_url, data);
+        wControllerFile->addCache(magnet->_url, data);
     }
 
     foreach (WMagnetReply * reply, magnet->_replies)

@@ -203,8 +203,6 @@ public: // Variables
     QMetaMethod methodFile;
     QMetaMethod methodItem;
 
-    QString pathCover;
-
 protected:
     W_DECLARE_PUBLIC(WControllerPlaylist)
 };

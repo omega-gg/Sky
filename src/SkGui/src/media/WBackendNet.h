@@ -242,8 +242,8 @@ private: // Variables
     WBackendNetQuery _query;
 
 private:
-    friend class WBackendNet;
     friend class WBackendNetPrivate;
+    friend class WBackendNetInterface;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -261,8 +261,8 @@ signals:
     void loaded(QIODevice * device, const WBackendNetSource & source);
 
 private:
-    friend class WBackendNet;
     friend class WBackendNetPrivate;
+    friend class WBackendNetInterface;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -280,8 +280,8 @@ signals:
     void loaded(QIODevice * device, const WBackendNetTrack & track);
 
 private:
-    friend class WBackendNet;
     friend class WBackendNetPrivate;
+    friend class WBackendNetInterface;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -299,8 +299,8 @@ signals:
     void loaded(QIODevice * device, const WBackendNetPlaylist & playlist);
 
 private:
-    friend class WBackendNet;
     friend class WBackendNetPrivate;
+    friend class WBackendNetInterface;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -318,8 +318,8 @@ signals:
     void loaded(QIODevice * device, const WBackendNetFolder & folder);
 
 private:
-    friend class WBackendNet;
     friend class WBackendNetPrivate;
+    friend class WBackendNetInterface;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -337,8 +337,8 @@ signals:
     void loaded(QIODevice * device, const WBackendNetItem & item);
 
 private:
-    friend class WBackendNet;
     friend class WBackendNetPrivate;
+    friend class WBackendNetInterface;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -489,12 +489,6 @@ public: // Properties
 
 private:
     W_DECLARE_PRIVATE(WBackendNet)
-
-    Q_PRIVATE_SLOT(d_func(), void onLoadSource  (WNetReplySource   *))
-    Q_PRIVATE_SLOT(d_func(), void onLoadTrack   (WNetReplyTrack    *))
-    Q_PRIVATE_SLOT(d_func(), void onLoadPlaylist(WNetReplyPlaylist *))
-    Q_PRIVATE_SLOT(d_func(), void onLoadFolder  (WNetReplyFolder   *))
-    Q_PRIVATE_SLOT(d_func(), void onLoadItem    (WNetReplyItem     *))
 
     friend class WBackendLoader;
     friend class WBackendLoaderPrivate;

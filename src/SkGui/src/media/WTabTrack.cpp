@@ -21,6 +21,7 @@
 // Qt includes
 #include <QDir>
 #include <QXmlStreamWriter>
+#include <qtlockedfile>
 
 // Sk includes
 #include <WControllerApplication>
@@ -33,13 +34,10 @@
 #include <WDeclarativePlayer>
 #include <WPixmapCache>
 
-// 3rdparty includes
-#include <qtlockedfile>
-
 // Private includes
 #include <private/WBookmarkTrack_p>
 
-// 3rdparty namespaces
+// Namespaces
 using namespace QtLP_Private;
 
 //-------------------------------------------------------------------------------------------------

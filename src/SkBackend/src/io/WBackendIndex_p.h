@@ -76,6 +76,16 @@ struct WBackendIndexData
 };
 
 //=================================================================================================
+// WBackendIndexRemote
+//=================================================================================================
+
+struct WBackendIndexFile
+{
+    QString id;
+    QString name;
+};
+
+//=================================================================================================
 // WBackendIndexPrivate
 //=================================================================================================
 
@@ -89,14 +99,21 @@ public:
 public: // Functions
     void load();
 
+    void loadData(const QByteArray & array);
+
 public: // Events
-    void onLoaded();
+    void onLoad  ();
+    void onUpdate();
 
     void onData(const WBackendIndexData & data);
 
-public: // Variables
-    QThread * thread;
+    void onBackendUpdate();
 
+    void onItemLoad(WRemoteData * data);
+
+    void onActionComplete();
+
+public: // Variables
     WRemoteData * remote;
 
     WBackendIndexData data;
@@ -104,6 +121,10 @@ public: // Variables
     QString url;
 
     QMetaMethod method;
+
+    QHash<WRemoteData *, WBackendIndexFile> jobs;
+
+    QList<QString> ids;
 
 protected:
     W_DECLARE_PUBLIC(WBackendIndex)

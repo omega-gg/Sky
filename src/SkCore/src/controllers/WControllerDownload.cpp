@@ -430,16 +430,12 @@ WControllerDownload::WControllerDownload() : WController(new WControllerDownload
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ WRemoteData * WControllerDownload::getData(WAbstractLoader           * loader,
-                                                             const QString             & url,
-                                                             QObject                   * parent,
-                                                             QNetworkRequest::Priority   priority,
-                                                             bool                        redirect,
-                                                             bool                        cookies,
-                                                             bool                        header,
-                                                             int                         maxHost,
-                                                             int                         delay,
-                                                             int                         timeout)
+/* Q_INVOKABLE */
+WRemoteData * WControllerDownload::getData(WAbstractLoader           * loader,
+                                           const QString             & url,
+                                           QObject                   * parent,
+                                           QNetworkRequest::Priority   priority,
+                                           const WRemoteParameters   & parameters)
 {
     Q_D(WControllerDownload);
 
@@ -463,15 +459,15 @@ WControllerDownload::WControllerDownload() : WController(new WControllerDownload
 
     data->_priority = priority;
 
-    data->_redirect = redirect;
-    data->_cookies  = cookies;
-    data->_header   = header;
+    data->_redirect = parameters.redirect;
+    data->_cookies  = parameters.cookies;
+    data->_header   = parameters.header;
 
     data->_redirectCount = 0;
 
-    data->_maxHost = maxHost;
-    data->_delay   = delay;
-    data->_timeout = timeout;
+    data->_maxHost = parameters.maxHost;
+    data->_delay   = parameters.delay;
+    data->_timeout = parameters.timeout;
 
     for (int i = 0; i < d->jobsPending.count(); i++)
     {
@@ -492,18 +488,25 @@ WControllerDownload::WControllerDownload() : WController(new WControllerDownload
     return data;
 }
 
-/* Q_INVOKABLE */ WRemoteData * WControllerDownload::getData(const QString             & url,
-                                                             QObject                   * parent,
-                                                             QNetworkRequest::Priority   priority,
-                                                             bool                        redirect,
-                                                             bool                        cookies,
-                                                             bool                        header,
-                                                             int                         maxHost,
-                                                             int                         delay,
-                                                             int                         timeout)
+/* Q_INVOKABLE */
+WRemoteData * WControllerDownload::getData(const QString             & url,
+                                           QObject                   * parent,
+                                           QNetworkRequest::Priority   priority,
+                                           const WRemoteParameters   & parameters)
 {
-    return getData(NULL,
-                   url, parent, priority, redirect, cookies, header, maxHost, delay, timeout);
+    return getData(NULL, url, parent, priority, parameters);
+}
+
+/* Q_INVOKABLE */
+WRemoteData * WControllerDownload::getData(const QString & url,
+                                           int             timeout,
+                                           QObject       * parent)
+{
+    WRemoteParameters parameters;
+
+    parameters.timeout = timeout;
+
+    return getData(NULL, url, parent, QNetworkRequest::NormalPriority, parameters);
 }
 
 //-------------------------------------------------------------------------------------------------

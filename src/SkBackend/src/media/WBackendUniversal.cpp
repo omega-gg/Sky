@@ -19,7 +19,9 @@
 #ifndef SK_NO_BACKENDUNIVERSAL
 
 // Qt includes
+#include <QCoreApplication>
 #include <QBuffer>
+#include <QThread>
 #ifdef QT_4
 #include <QScriptEngine>
 #else
@@ -29,6 +31,7 @@
 
 // Sk includes
 #include <WControllerApplication>
+#include <WControllerFile>
 #include <WControllerNetwork>
 #include <WControllerDownload>
 #include <WControllerScript>
@@ -36,6 +39,9 @@
 #include <WBackendCache>
 #include <WYamlReader>
 #include <WUnzipper>
+
+// Forward declarations
+class WBackendUniversalEngine;
 
 //-------------------------------------------------------------------------------------------------
 // Static variables
@@ -63,7 +69,7 @@ static const QString BACKENDUNIVERSAL_FUNCTIONS = "IF|AND|OR|ELSE|ELIF|FI|FOREAC
                                                   "HTML_ATTRIBUTE_UTF8|HTML_ATTRIBUTE_UTF8_AT|"
                                                   "JSON_EXTRACT|JSON_EXTRACT_UTF8|"
                                                   "JSON_EXTRACT_HTML|JSON_SPLIT|JS_EXTRACT|"
-                                                  "JS_EVALUATE|JS_CALL|ZIP_FILENAMES|"
+                                                  "JS_CALL|JS_CALLS|ZIP_FILENAMES|"
                                                   "ZIP_EXTRACT_FILE|TORRENT_STRING_AFTER|"
                                                   "TORRENT_INTEGER_AFTER|TORRENT_LIST_AFTER|"
                                                   "TORRENT_ITEMS|TORRENT_FOLDERS|PRINT";
@@ -75,6 +81,9 @@ static const int BACKENDUNIVERSAL_MAX_LOOPS      = 2;
 
 static const int BACKENDUNIVERSAL_MAX_LOOP = 1000;
 
+static const int BACKENDUNIVERSAL_TIMEOUT_LOAD   = 60000; // 1 minute
+static const int BACKENDUNIVERSAL_TIMEOUT_SCRIPT =  5000; // 5 seconds
+
 //-------------------------------------------------------------------------------------------------
 
 typedef QVariant (*function)(const WBackendUniversalNode *, WBackendUniversalParameters *);
@@ -82,6 +91,150 @@ typedef QVariant (*function)(const WBackendUniversalNode *, WBackendUniversalPar
 static QHash<QString, function> hash;
 
 static WBackendCache * cache = NULL;
+
+static WBackendUniversalEngine * backendEngine = NULL;
+
+//=================================================================================================
+// WBackendUniversalEngine
+//=================================================================================================
+
+class SK_BACKEND_EXPORT WBackendUniversalEngine : public QObject
+{
+    Q_OBJECT
+
+public:
+    WBackendUniversalEngine();
+
+    /* virtual */ ~WBackendUniversalEngine();
+
+public: // Static interface
+    Q_INVOKABLE static QVariantList call(const QString & script, const QVariantList & arguments);
+
+private: // Slots
+    Q_INVOKABLE void onCall(const QString & script, const QVariantList & arguments);
+
+public: // Variables
+    QThread thread;
+
+    QMetaMethod method;
+
+    QVariantList variants;
+
+    bool loaded;
+};
+
+//-------------------------------------------------------------------------------------------------
+// Ctor / dtor
+//-------------------------------------------------------------------------------------------------
+
+WBackendUniversalEngine::WBackendUniversalEngine()
+{
+    const QMetaObject * meta = metaObject();
+
+    method = meta->method(meta->indexOfMethod("onCall(QString,QVariantList)"));
+
+    loaded = false;
+
+    moveToThread(&thread);
+
+    thread.start();
+}
+
+/* virtual */ WBackendUniversalEngine::~WBackendUniversalEngine()
+{
+    thread.quit();
+    thread.wait();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Static interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QVariantList WBackendUniversalEngine::call(const QString      & script,
+                                                                    const QVariantList & arguments)
+{
+    if (backendEngine)
+    {
+        backendEngine->loaded = false;
+    }
+    else backendEngine = new WBackendUniversalEngine;
+
+    backendEngine->method.invoke(backendEngine, Q_ARG(const QString      &, script),
+                                                Q_ARG(const QVariantList &, arguments));
+
+    QTime time = QTime::currentTime().addMSecs(BACKENDUNIVERSAL_TIMEOUT_SCRIPT);
+
+    while (time > QTime::currentTime() && backendEngine->loaded == false)
+    {
+        QCoreApplication::processEvents();
+    }
+
+    QVariantList results;
+
+    // NOTE: If loading takes too long we terminate the thread.
+    if (backendEngine->loaded == false)
+    {
+        backendEngine->thread.terminate();
+
+        delete backendEngine;
+
+        backendEngine = NULL;
+
+        return results;
+    }
+
+    results = backendEngine->variants;
+
+    backendEngine->variants.clear();
+
+    return results;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private slots
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WBackendUniversalEngine::onCall(const QString      & script,
+                                                       const QVariantList & arguments)
+{
+#ifdef QT_4
+    QScriptEngine engine;
+
+    QScriptValue value = engine.evaluate(script);
+#else
+    QJSEngine engine;
+
+    QJSValue value = engine.evaluate(script);
+#endif
+
+    variants.clear();
+
+    if (arguments.isEmpty() == false)
+    {
+        foreach (const QVariant & variant, arguments)
+        {
+#ifdef QT_4
+            QScriptValueList values;
+#else
+            QJSValueList values;
+#endif
+
+            foreach (const QString & string, variant.toStringList())
+            {
+                values.append(string);
+            }
+
+#ifdef QT_4
+            variants.append(value.call(QScriptValue(), values).toVariant());
+#else
+            variants.append(value.call(values).toVariant());
+#endif
+        }
+    }
+    else variants.append(value.call().toVariant());
+
+    loaded = true;
+}
 
 //=================================================================================================
 // Static functions
@@ -1799,21 +1952,7 @@ inline QVariant jsExtract(const WBackendUniversalNode * node,
                                                   node->getInt(parameters, 2));
 }
 
-inline QVariant jsEvaluate(const WBackendUniversalNode * node,
-                           WBackendUniversalParameters * parameters)
-{
-#ifdef SK_BACKEND_LOG
-    qDebug("JS_EVALUATE");
-#endif
-
-    if (node->nodes.count() < 1) return QVariant();
-
-#ifdef QT_4
-    return wControllerScript->engine()->evaluate(node->getString(parameters, 0)).toVariant();
-#else
-    return wControllerScript->engine()->evaluate(node->getString(parameters, 0)).toVariant();
-#endif
-}
+//-------------------------------------------------------------------------------------------------
 
 inline QVariant jsCall(const WBackendUniversalNode * node,
                        WBackendUniversalParameters * parameters)
@@ -1826,37 +1965,38 @@ inline QVariant jsCall(const WBackendUniversalNode * node,
 
     if (count < 1) return QVariant();
 
-    QVariant variant = node->getVariant(parameters, 0);
-
-#ifdef QT_4
-    QScriptValue value = wControllerScript->engine()->toScriptValue(variant);
-#else
-    QJSValue value = wControllerScript->engine()->toScriptValue(variant);
-#endif
+    QVariantList variants;
 
     if (count != 1)
     {
-#ifdef QT_4
-        QScriptValueList list;
-#else
-        QJSValueList list;
-#endif
+        QStringList list;
+
         for (int i = 1; i < count; i++)
         {
             list.append(node->getString(parameters, i));
         }
 
-#ifdef QT_4
-        return value.call(QScriptValue(), list).toVariant();
-#else
-        return value.call(list).toVariant();
-#endif
+        variants.append(list);
     }
-#ifdef QT_4
-    else return value.call(QScriptValue()).toVariant();
-#else
-    else return value.call().toVariant();
+
+    return WBackendUniversalEngine::call(node->getString(parameters, 0), variants);
+}
+
+inline QVariant jsCalls(const WBackendUniversalNode * node,
+                        WBackendUniversalParameters * parameters)
+{
+#ifdef SK_BACKEND_LOG
+    qDebug("JS_CALLS");
 #endif
+
+    int count = node->nodes.count();
+
+    if (count < 2) return QVariant();
+
+    QVariantList variants = WBackendUniversalEngine::call(node->getString(parameters, 0),
+                                                          node->getList  (parameters, 1));
+
+    return variants;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -3412,16 +3552,6 @@ WBackendUniversalPrivate::WBackendUniversalPrivate(WBackendUniversal * p)
 
 void WBackendUniversalPrivate::init(const QString & id, const QString & source)
 {
-    W_GET_CONTROLLER(WControllerPlaylist, controller);
-
-    if (controller == NULL)
-    {
-        qWarning("WBackendUniversalPrivate::init: WControllerPlaylist does not exist.");
-
-        thread = NULL;
-    }
-    else thread = controller->thread();
-
     remote = NULL;
 
     loaded = false;
@@ -3530,8 +3660,8 @@ void WBackendUniversalPrivate::populateHash() const
     hash.insert("JSON_EXTRACT_HTML",      jsonExtractHtml);
     hash.insert("JSON_SPLIT",             jsonSplit);
     hash.insert("JS_EXTRACT",             jsExtract);
-    hash.insert("JS_EVALUATE",            jsEvaluate);
     hash.insert("JS_CALL",                jsCall);
+    hash.insert("JS_CALLS",               jsCalls);
     hash.insert("ZIP_FILENAMES",          zipFileNames);
     hash.insert("ZIP_EXTRACT_FILE",       zipExtractFile);
     hash.insert("TORRENT_STRING_AFTER",   torrentStringAfter);
@@ -3550,9 +3680,23 @@ void WBackendUniversalPrivate::load()
 {
     Q_Q(WBackendUniversal);
 
-    remote = wControllerDownload->getData(source);
+    remote = wControllerDownload->getData(source, BACKENDUNIVERSAL_TIMEOUT_LOAD);
 
-    QObject::connect(remote, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoaded()));
+    QObject::connect(remote, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoad()));
+}
+
+void WBackendUniversalPrivate::loadData(const QByteArray & array)
+{
+    Q_Q(WBackendUniversal);
+
+    WBackendUniversalQuery * query = new WBackendUniversalQuery;
+
+    QObject::connect(query, SIGNAL(loaded(WBackendUniversalData)),
+                     q,     SLOT(onData(WBackendUniversalData)));
+
+    query->moveToThread(wControllerPlaylist->thread());
+
+    method.invoke(query, Q_ARG(const QByteArray &, array));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -4024,7 +4168,7 @@ const QVariant * WBackendUniversalPrivate::getVariant(const QHash<QString, QVari
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
-void WBackendUniversalPrivate::onLoaded()
+void WBackendUniversalPrivate::onLoad()
 {
     Q_Q(WBackendUniversal);
 
@@ -4042,34 +4186,67 @@ void WBackendUniversalPrivate::onLoaded()
 
         loaded = true;
 
-        emit q->loadedChanged();
+        emit q->loaded();
 
         return;
     }
 
-    WBackendUniversalQuery * query = new WBackendUniversalQuery;
-
-    QObject::connect(query, SIGNAL(loaded(WBackendUniversalData)),
-                     q,     SLOT(onData(WBackendUniversalData)));
-
-    if (thread)
-    {
-        query->moveToThread(thread);
-
-        method.invoke(query, Q_ARG(const QByteArray &, array));
-    }
-    else query->extract(array);
+    loadData(array);
 }
+
+void WBackendUniversalPrivate::onUpdate()
+{
+    Q_Q(WBackendUniversal);
+
+    QByteArray array = remote->readAll();
+
+    QObject::disconnect(remote, 0, q, 0);
+
+    remote->deleteLater();
+
+    remote = NULL;
+
+    if (array.isEmpty())
+    {
+        loaded = true;
+
+        emit q->loaded();
+
+        return;
+    }
+
+    loadData(array);
+
+    wControllerFile->startWriteFile(WControllerFile::filePath(source), array);
+}
+
+//-------------------------------------------------------------------------------------------------
 
 void WBackendUniversalPrivate::onData(const WBackendUniversalData & data)
 {
     Q_Q(WBackendUniversal);
 
+    QString version = this->data.version;
+
+    if (version.isEmpty())
+    {
+        this->data = data;
+
+        loaded = true;
+
+        emit q->loaded();
+
+        return;
+    }
+
     this->data = data;
 
-    loaded = true;
+    emit q->loaded();
 
-    emit q->loadedChanged();
+    if (version != data.version)
+    {
+        emit q->updated();
+    }
 }
 
 //=================================================================================================
@@ -4100,6 +4277,26 @@ WBackendUniversal::WBackendUniversal(const QString & id, const QString & source)
 //-------------------------------------------------------------------------------------------------
 // WBackendNet reimplementation
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ void WBackendUniversal::update()
+{
+    Q_D(WBackendUniversal);
+
+    QString source = d->data.source;
+
+    if (source.isEmpty())
+    {
+        qWarning("WBackendUniversal::update: source is empty for [%s].", d->id.C_STR);
+
+        return;
+    }
+
+    if (d->remote) delete d->remote;
+
+    d->remote = wControllerDownload->getData(source, BACKENDUNIVERSAL_TIMEOUT_LOAD);
+
+    QObject::connect(d->remote, SIGNAL(loaded(WRemoteData *)), this, SLOT(onUpdate()));
+}
 
 /* Q_INVOKABLE virtual */ void WBackendUniversal::reload()
 {

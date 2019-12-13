@@ -102,13 +102,13 @@ public: // Interface
 
     Q_INVOKABLE QString getFileUrl(const QString & url);
 
-    Q_INVOKABLE WCacheFile * writeFile(const QString    & url,
-                                       const QByteArray & array,
-                                       const QString    & extension = QString(),
-                                       QObject          * parent    = NULL);
+    Q_INVOKABLE WCacheFile * writeCache(const QString    & url,
+                                        const QByteArray & array,
+                                        const QString    & extension = QString(),
+                                        QObject          * parent    = NULL);
 
-    Q_INVOKABLE void addFile(const QString & url, const QByteArray & array,
-                                                  const QString    & extension = QString());
+    Q_INVOKABLE void addCache(const QString & url, const QByteArray & array,
+                                                   const QString    & extension = QString());
 
     Q_INVOKABLE void waitActions();
 
@@ -117,6 +117,9 @@ public: // Interface
 
     WAbstractThreadReply * startWriteAction(WAbstractThreadAction * action);
     WAbstractThreadReply * startReadAction (WAbstractThreadAction * action);
+
+    WControllerFileReply * startWriteFiles(const QStringList       & fileNames,
+                                           const QList<QByteArray> & datas);
 
     WControllerFileReply * startRenameFiles(const QStringList & oldPaths,
                                             const QStringList & newPaths);
@@ -137,6 +140,8 @@ public: // Interface
     WControllerFileReply * startCreatePaths(const QStringList & paths);
 
     //---------------------------------------------------------------------------------------------
+
+    WControllerFileReply * startWriteFile(const QString & fileName, const QByteArray & data);
 
     WControllerFileReply * startRenameFile(const QString & oldPath, const QString & newPath);
 
@@ -186,6 +191,8 @@ public: // Static functions
 
     //---------------------------------------------------------------------------------------------
     // Files
+
+    static bool writeFile(const QString & fileName, const QByteArray & data);
 
     static bool renameFile(const QString & oldPath, const QString & newPath);
 

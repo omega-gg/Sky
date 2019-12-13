@@ -42,20 +42,7 @@ public:
 
     void init();
 
-public: // Slots
-    void onLoadSource  (WNetReplySource   * reply) const;
-    void onLoadTrack   (WNetReplyTrack    * reply) const;
-    void onLoadPlaylist(WNetReplyPlaylist * reply) const;
-    void onLoadFolder  (WNetReplyFolder   * reply) const;
-    void onLoadItem    (WNetReplyItem     * reply) const;
-
 public: // Variables
-    QMetaMethod methodSource;
-    QMetaMethod methodTrack;
-    QMetaMethod methodPlaylist;
-    QMetaMethod methodFolder;
-    QMetaMethod methodItem;
-
     int lockCount;
 
 protected:

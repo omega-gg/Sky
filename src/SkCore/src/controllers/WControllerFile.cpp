@@ -21,6 +21,7 @@
 // Qt includes
 #include <QCoreApplication>
 #include <QDir>
+#include <qtlockedfile>
 
 // Sk includes
 #include <WControllerApplication>
@@ -30,9 +31,6 @@
 #include <WCache>
 #include <WThreadActions>
 
-// 3rdparty includes
-#include <qtlockedfile>
-
 // Private includes
 #include <private/WFileWatcher_p>
 
@@ -40,6 +38,11 @@
 using namespace QtLP_Private;
 
 W_INIT_CONTROLLER(WControllerFile)
+
+//-------------------------------------------------------------------------------------------------
+// Static variables
+
+static const int CONTROLLERFILE_TIMEOUT = 60000; // 1 minute
 
 //=================================================================================================
 // WControllerFileAction
@@ -55,6 +58,33 @@ W_INIT_CONTROLLER(WControllerFile)
 WControllerFileReply * WControllerFileAction::controllerReply()
 {
     return qobject_cast<WControllerFileReply *> (reply());
+}
+
+//=================================================================================================
+// WControllerFileWrite
+//=================================================================================================
+
+class WControllerFileWrite : public WControllerFileAction
+{
+    Q_OBJECT
+
+protected: // WAbstractThreadAction implementation
+    /* virtual */ bool run();
+
+public: // Variables
+    QStringList fileNames;
+
+    QList<QByteArray> datas;
+};
+
+/* virtual */ bool WControllerFileWrite::run()
+{
+    for (int i = 0; i < fileNames.count(); i++)
+    {
+        WControllerFile::writeFile(fileNames.at(i), datas.at(i));
+    }
+
+    return true;
 }
 
 //=================================================================================================
@@ -349,7 +379,7 @@ void WControllerFilePrivate::unregisterFileWatcher(WFileWatcher * watcher)
 
 //-------------------------------------------------------------------------------------------------
 
-bool WControllerFilePrivate::objectsAreLoading()
+bool WControllerFilePrivate::isLoading()
 {
     foreach (WLocalObject * object, objects)
     {
@@ -361,6 +391,23 @@ bool WControllerFilePrivate::objectsAreLoading()
 
 //-------------------------------------------------------------------------------------------------
 // Private static functions
+//-------------------------------------------------------------------------------------------------
+
+/* static */ bool WControllerFilePrivate::tryOpen(const QtLockedFile & file)
+{
+    QTimer timer;
+
+    timer.start(CONTROLLERFILE_TIMEOUT);
+
+    while (file.isLocked() && timer.isActive());
+
+    if (file.isLocked())
+    {
+        return false;
+    }
+    else return true;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* static */ void WControllerFilePrivate::deleteDir(QDir & dir, bool recursive)
@@ -482,10 +529,10 @@ WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ WCacheFile * WControllerFile::writeFile(const QString    & url,
-                                                          const QByteArray & array,
-                                                          const QString    & extension,
-                                                          QObject          * parent)
+/* Q_INVOKABLE */ WCacheFile * WControllerFile::writeCache(const QString    & url,
+                                                           const QByteArray & array,
+                                                           const QString    & extension,
+                                                           QObject          * parent)
 {
     Q_D(WControllerFile);
 
@@ -496,8 +543,8 @@ WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this
     else return NULL;
 }
 
-/* Q_INVOKABLE */ void WControllerFile::addFile(const QString & url, const QByteArray & array,
-                                                                     const QString    & extension)
+/* Q_INVOKABLE */ void WControllerFile::addCache(const QString & url, const QByteArray & array,
+                                                                      const QString    & extension)
 {
     Q_D(WControllerFile);
 
@@ -518,7 +565,7 @@ WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this
 
     timer.start(10000); // 10 seconds
 
-    while (d->objectsAreLoading() && timer.isActive())
+    while (d->isLoading() && timer.isActive())
     {
         qApp->processEvents();
     }
@@ -546,6 +593,21 @@ WAbstractThreadReply * WControllerFile::startReadAction(WAbstractThreadAction * 
 }
 
 //-------------------------------------------------------------------------------------------------
+
+WControllerFileReply * WControllerFile::startWriteFiles(const QStringList       & fileNames,
+                                                        const QList<QByteArray> & datas)
+{
+    if (fileNames.isEmpty() || fileNames.count() != datas.count()) return NULL;
+
+    WControllerFileWrite * action = new WControllerFileWrite;
+
+    action->fileNames = fileNames;
+    action->datas     = datas;
+
+    startWriteAction(action);
+
+    return action->controllerReply();
+}
 
 WControllerFileReply * WControllerFile::startRenameFiles(const QStringList & oldPaths,
                                                          const QStringList & newPaths)
@@ -651,6 +713,12 @@ WControllerFileReply * WControllerFile::startCreatePaths(const QStringList & pat
 }
 
 //-------------------------------------------------------------------------------------------------
+
+WControllerFileReply * WControllerFile::startWriteFile(const QString    & fileName,
+                                                       const QByteArray & data)
+{
+    return startWriteFiles(QStringList() << fileName, QList<QByteArray>() << data);
+}
 
 WControllerFileReply * WControllerFile::startRenameFile(const QString & oldPath,
                                                         const QString & newPath)
@@ -878,17 +946,27 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 //-------------------------------------------------------------------------------------------------
 // Files
 
+/* static */ bool WControllerFile::writeFile(const QString & fileName, const QByteArray & data)
+{
+    QtLockedFile file(fileName);
+
+    if (WControllerFilePrivate::tryOpen(file))
+    {
+        qWarning("WControllerFile::writeFile: File is locked %s.", fileName.C_STR);
+
+        return false;
+    }
+
+    file.write(data);
+
+    return true;
+}
+
 /* static */ bool WControllerFile::renameFile(const QString & oldPath, const QString & newPath)
 {
     QtLockedFile file(oldPath);
 
-    QTimer timer;
-
-    timer.start(60000); // 1 minute timeout
-
-    while (file.isLocked() && timer.isActive());
-
-    if (file.isLocked())
+    if (WControllerFilePrivate::tryOpen(file) == false)
     {
         qWarning("WControllerFile::renameFile: File is locked %s.", oldPath.C_STR);
 
@@ -898,21 +976,13 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
     return file.rename(newPath);
 }
 
-//-------------------------------------------------------------------------------------------------
-
 /* static */ bool WControllerFile::copyFile(const QString & fileName, const QString & newName)
 {
     QtLockedFile file(newName);
 
     if (file.exists())
     {
-        QTimer timer;
-
-        timer.start(60000); // 1 minute timeout
-
-        while (file.isLocked() && timer.isActive());
-
-        if (file.isLocked())
+        if (WControllerFilePrivate::tryOpen(file) == false)
         {
             qWarning("WControllerFile::copyFile: File is locked %s.", newName.C_STR);
 
@@ -923,19 +993,11 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
     return QFile::copy(fileName, newName);
 }
 
-//-------------------------------------------------------------------------------------------------
-
 /* static */ bool WControllerFile::deleteFile(const QString & fileName)
 {
     QtLockedFile file(fileName);
 
-    QTimer timer;
-
-    timer.start(60000); // 1 minute timeout
-
-    while (file.isLocked() && timer.isActive());
-
-    if (file.isLocked())
+    if (WControllerFilePrivate::tryOpen(file) == false)
     {
         qWarning("WControllerFile::deleteFile: File is locked %s.", fileName.C_STR);
 
@@ -953,14 +1015,10 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
     return QDir().mkdir(path);
 }
 
-//-------------------------------------------------------------------------------------------------
-
 /* static */ bool WControllerFile::moveFolder(const QString & oldPath, const QString & newPath)
 {
     return QDir().rename(oldPath, newPath);
 }
-
-//-------------------------------------------------------------------------------------------------
 
 /* static */ bool WControllerFile::deleteFolder(const QString & path, bool recursive)
 {

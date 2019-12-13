@@ -31,7 +31,7 @@ class SK_BACKEND_EXPORT WBackendUniversal : public WBackendNet
 {
     Q_OBJECT
 
-    Q_PROPERTY(bool isLoaded READ isLoaded NOTIFY loadedChanged)
+    Q_PROPERTY(bool isLoaded READ isLoaded NOTIFY loaded)
 
 protected:
     WBackendUniversal(const QString & id, const QString & source);
@@ -41,6 +41,7 @@ public: // WBackendNet implementation
     /* Q_INVOKABLE virtual */ QString getTitle() const;
 
 public: // WBackendNet reimplementation
+    /* Q_INVOKABLE virtual */ void update();
     /* Q_INVOKABLE virtual */ void reload();
 
     //---------------------------------------------------------------------------------------------
@@ -127,7 +128,10 @@ public: // WBackendNet reimplementation
                                              const WBackendNetItem  & item);
 
 signals:
-    void loadedChanged();
+    void loaded ();
+    void updated();
+
+    void backendUpdated(const QString & id);
 
 public: // Properties
     bool isLoaded() const;
@@ -135,9 +139,10 @@ public: // Properties
 private:
     W_DECLARE_PRIVATE(WBackendUniversal)
 
-    Q_PRIVATE_SLOT(d_func(), void onLoaded())
+    Q_PRIVATE_SLOT(d_func(), void onLoad  ())
+    Q_PRIVATE_SLOT(d_func(), void onUpdate())
 
-    Q_PRIVATE_SLOT(d_func(), void onData(const WBackendUniversalData & data))
+    Q_PRIVATE_SLOT(d_func(), void onData(const WBackendUniversalData &))
 
     friend class WBackendIndex;
 };

@@ -272,6 +272,7 @@ private:
     friend class WPlaylistPrivate;
     friend class WBackendLoaderPrivate;
     friend class WBackendNetPrivate;
+    friend class WBackendNetInterface;
     friend class WTabTrackPrivate;
 };
 

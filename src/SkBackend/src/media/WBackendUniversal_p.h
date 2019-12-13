@@ -258,6 +258,8 @@ public: // Functions
 
     void load();
 
+    void loadData(const QByteArray & array);
+
     void runQuery(WBackendNetQuery * query, const QString & name,
                                             const QString & source, const QString & url) const;
 
@@ -342,13 +344,12 @@ public: // Functions
     const QVariant * getVariant(const QHash<QString, QVariant> * hash, const QString & name) const;
 
 public: // Events
-    void onLoaded();
+    void onLoad  ();
+    void onUpdate();
 
     void onData(const WBackendUniversalData & data);
 
 public: // Variables
-    QThread * thread;
-
     WRemoteData * remote;
 
     WBackendUniversalData data;
@@ -358,9 +359,9 @@ public: // Variables
     QString id;
     QString source;
 
-    QMetaMethod method;
-
     QVariant global;
+
+    QMetaMethod method;
 
 protected:
     W_DECLARE_PUBLIC(WBackendUniversal)
