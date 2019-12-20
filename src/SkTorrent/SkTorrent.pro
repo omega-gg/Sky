@@ -61,8 +61,6 @@ CONFIG(debug, debug|release) {
 
 win32:LIBS += -L$$SK/lib -ltorrent \
               -L$$SK/lib -lboost_system \
-              -L$$SK/lib -lboost_random \
-              -L$$SK/lib -lboost_chrono \
               -lmswsock -lws2_32 \
 
 unix:LIBS += -ltorrent-rasterbar \
