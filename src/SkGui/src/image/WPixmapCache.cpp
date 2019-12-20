@@ -184,8 +184,8 @@ public: // Variables
 // WPixmapCacheRead and WPixmapCacheReply
 //=================================================================================================
 
-class  WPixmapCachePrivate;
-struct WPixmapCacheData;
+class WPixmapCachePrivate;
+class WPixmapCacheData;
 
 class WPixmapCacheRead : public WAbstractThreadAction
 {

@@ -41,8 +41,8 @@
 #ifndef SK_NO_CACHE
 
 // Forward declarations
-class WCacheThread;
-class WCacheFiles;
+class  WCacheThread;
+struct WCacheFiles;
 
 class SK_CORE_EXPORT WCachePrivate : public WPrivate
 {

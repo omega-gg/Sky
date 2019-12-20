@@ -63,27 +63,24 @@ win32:contains(QT_MAJOR_VERSION, 5) {
 }
 
 win32:LIBS += -L$$SK/lib -llibvlc
-unix: LIBS += -lvlc
 
-macx {
-    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.12
+macx:LIBS += -L$$SK/lib -lvlc
 
-    QMAKE_CXXFLAGS += -stdlib=libc++
-}
+unix:!macx: LIBS += -lvlc
 
 macx {
 CONFIG(debug, debug|release) {
     QMAKE_POST_LINK  = install_name_tool -change libSkCoreD.dylib \
-                       @loader_path/libSkCoreD.dylib $${DESTDIR}/lib$${TARGET}.dylib ;
+                       @loader_path/libSkCoreD.dylib $${DESTDIR}/lib$${TARGET}.dylib;
 
     QMAKE_POST_LINK += install_name_tool -change libSkGuiD.dylib \
-                       @loader_path/libSkGuiD.dylib $${DESTDIR}/lib$${TARGET}.dylib ;
+                       @loader_path/libSkGuiD.dylib $${DESTDIR}/lib$${TARGET}.dylib;
 } else {
     QMAKE_POST_LINK  = install_name_tool -change libSkCore.dylib \
-                       @loader_path/libSkCore.dylib $${DESTDIR}/lib$${TARGET}.dylib ;
+                       @loader_path/libSkCore.dylib $${DESTDIR}/lib$${TARGET}.dylib;
 
     QMAKE_POST_LINK += install_name_tool -change libSkGui.dylib \
-                       @loader_path/libSkGui.dylib $${DESTDIR}/lib$${TARGET}.dylib ;
+                       @loader_path/libSkGui.dylib $${DESTDIR}/lib$${TARGET}.dylib;
 }
 }
 

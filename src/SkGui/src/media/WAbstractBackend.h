@@ -38,8 +38,8 @@ class WAbstractBackendPrivate;
 class WDeclarativePlayer;
 class WBackendFilter;
 #ifdef QT_LATEST
-class WBackendFrame;
-class WBackendTexture;
+struct WBackendFrame;
+struct WBackendTexture;
 #endif
 
 

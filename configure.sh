@@ -67,6 +67,12 @@ elif [ $2 = "win64" ]; then
 
     MinGW="$external/MinGW/$MinGW_version/x86_64-w64-mingw32/lib"
 
+elif [ $2 = "macOS" ]; then
+
+    windows=false
+
+    external="$external/$2"
+
 elif [ $2 = "linux" ]; then
 
     windows=false
@@ -82,8 +88,6 @@ elif [ $2 = "linux" ]; then
     else
         include="$include32"
     fi
-else
-    windows=false
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -179,11 +183,6 @@ elif [ $1 = "qt5" ]; then
 
         cp -r "$Qt5"/include/QtGui/$Qt5_version/QtGui/qpa include/Qt5/QtGui
 
-        mv include/Qt5/QtCore/$Qt5_version/QtCore/private/*   include/Qt5/QtCore/private
-        mv include/Qt5/QtGui/$Qt5_version/QtGui/private/*     include/Qt5/QtGui/private
-        mv include/Qt5/QtQml/$Qt5_version/QtQml/private/*     include/Qt5/QtQml/private
-        mv include/Qt5/QtQuick/$Qt5_version/QtQuick/private/* include/Qt5/QtQuick/private
-
     elif [ $2 = "linux" ]; then
 
         cp -r "$include"/qt5/QtCore  include/Qt5
@@ -193,15 +192,20 @@ elif [ $1 = "qt5" ]; then
 
         cp -r "$include"/qt5/QtGui/$Qt5_version/QtGui/qpa include/Qt5/QtGui
 
-        mv include/Qt5/QtCore/$Qt5_version/QtCore/private/*   include/Qt5/QtCore/private
-        mv include/Qt5/QtGui/$Qt5_version/QtGui/private/*     include/Qt5/QtGui/private
-        mv include/Qt5/QtQml/$Qt5_version/QtQml/private/*     include/Qt5/QtQml/private
-        mv include/Qt5/QtQuick/$Qt5_version/QtQuick/private/* include/Qt5/QtQuick/private
-
     elif [ $2 = "macOS" ]; then
 
-        Qt5=/usr/local/opt/qt\@5.5
+        cp -r "$Qt5"/lib/QtCore.framework/Headers/*  include/Qt5/QtCore
+        cp -r "$Qt5"/lib/QtGui.framework/Headers/*   include/Qt5/QtGui
+        cp -r "$Qt5"/lib/QtQml.framework/Headers/*   include/Qt5/QtQml
+        cp -r "$Qt5"/lib/QtQuick.framework/Headers/* include/Qt5/QtQuick
+
+        cp -r "$Qt5"/lib/QtGui.framework/Headers/$Qt5_version/QtGui/qpa include/Qt5/QtGui
     fi
+
+    mv include/Qt5/QtCore/$Qt5_version/QtCore/private/*   include/Qt5/QtCore/private
+    mv include/Qt5/QtGui/$Qt5_version/QtGui/private/*     include/Qt5/QtGui/private
+    mv include/Qt5/QtQml/$Qt5_version/QtQml/private/*     include/Qt5/QtQml/private
+    mv include/Qt5/QtQuick/$Qt5_version/QtQuick/private/* include/Qt5/QtQuick/private
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -229,49 +233,33 @@ elif [ $2 = "macOS" ]; then
 
     echo "COPYING VLC"
 
-    cp -r /Applications/VLC.app/Contents/MacOS/include include
+    cp -r "$VLC"/include/vlc include
 
-    cp -r /Applications/VLC.app/Contents/MacOS/lib lib
+    cp "$VLC"/lib/libvlc* lib
 fi
 
 #--------------------------------------------------------------------------------------------------
 # libtorrent
 #--------------------------------------------------------------------------------------------------
 
-if [ $windows = true ]; then
+if [ $windows = true ] || [ $2 = "macOS" ]; then
 
     echo "COPYING libtorrent"
 
     cp -r "$libtorrent"/libtorrent include
 
     cp "$libtorrent"/libtorrent.* lib
-
-elif [ $2 = "macOS" ]; then
-
-    echo "COPYING libtorrent"
-
-    cp -r /usr/local/include/libtorrent include
-
-    cp /usr/local/lib/libtorrent-* lib
 fi
 
 #--------------------------------------------------------------------------------------------------
 # Boost
 #--------------------------------------------------------------------------------------------------
 
-if [ $windows = true ]; then
+if [ $windows = true ] || [ $2 = "macOS" ]; then
 
     echo "COPYING Boost"
 
     cp -r "$Boost"/Boost include
 
     cp "$Boost"/libboost*.* lib
-
-elif [ $2 = "macOS" ]; then
-
-    echo "COPYING Boost"
-
-    cp -r /usr/local/opt/boost\@1.55/include include
-
-    cp -r /usr/local/opt/boost\@1.55/lib lib
 fi

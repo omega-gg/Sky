@@ -61,24 +61,18 @@ CONFIG(debug, debug|release) {
 }
 
 macx {
-    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.12
-
-    QMAKE_CXXFLAGS += -stdlib=libc++
-}
-
-macx {
 CONFIG(debug, debug|release) {
     QMAKE_POST_LINK  = install_name_tool -change libSkCoreD.dylib \
-                       @loader_path/libSkCoreD.dylib $${DESTDIR}/lib$${TARGET}.dylib ;
+                       @loader_path/libSkCoreD.dylib $${DESTDIR}/lib$${TARGET}.dylib;
 
     QMAKE_POST_LINK += install_name_tool -change libSkGuiD.dylib \
-                       @loader_path/libSkGuiD.dylib $${DESTDIR}/lib$${TARGET}.dylib ;
+                       @loader_path/libSkGuiD.dylib $${DESTDIR}/lib$${TARGET}.dylib;
 } else {
     QMAKE_POST_LINK  = install_name_tool -change libSkCore.dylib \
-                       @loader_path/libSkCore.dylib $${DESTDIR}/lib$${TARGET}.dylib ;
+                       @loader_path/libSkCore.dylib $${DESTDIR}/lib$${TARGET}.dylib;
 
     QMAKE_POST_LINK += install_name_tool -change libSkGui.dylib \
-                       @loader_path/libSkGui.dylib $${DESTDIR}/lib$${TARGET}.dylib ;
+                       @loader_path/libSkGui.dylib $${DESTDIR}/lib$${TARGET}.dylib;
 }
 }
 

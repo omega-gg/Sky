@@ -56,11 +56,7 @@ INCLUDEPATH += $$SK/include/SkCore \
 
 win32:LIBS += -L$$SK/lib -lz
 
-macx {
-    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.12
-
-    QMAKE_CXXFLAGS += -stdlib=libc++
-}
+macx:LIBS += -lz
 
 #--------------------------------------------------------------------------------------------------
 # Copy library to the bin directory

@@ -472,6 +472,7 @@ QMimeData * WControllerApplication::duplicateMime(const QMimeData * source)
     return (result > 32);
 #else
     Q_UNUSED(fileName);
+    Q_UNUSED(parameters);
 
     return false;
 #endif

@@ -33,9 +33,9 @@
 #ifndef SK_NO_BACKENDUNIVERSAL
 
 // Forward declarations
-class WRemoteData;
-class WBackendUniversalData;
-class WBackendUniversalParameters;
+class  WRemoteData;
+class  WBackendUniversalParameters;
+struct WBackendUniversalData;
 
 //=================================================================================================
 // WBackendUniversalData

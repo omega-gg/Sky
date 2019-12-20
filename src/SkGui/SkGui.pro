@@ -25,7 +25,7 @@ contains(QT_MAJOR_VERSION, 4) {
 contains(QT_MAJOR_VERSION, 5) {
     win32:QT += winextras
 
-    unix:QT += x11extras
+    unix:!macx:QT += x11extras
 }
 
 CONFIG       += plugin
@@ -90,18 +90,12 @@ CONFIG(debug, debug|release) {
 }
 
 macx {
-    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.12
-
-    QMAKE_CXXFLAGS += -stdlib=libc++
-}
-
-macx {
 CONFIG(debug, debug|release) {
     QMAKE_POST_LINK = install_name_tool -change libSkCoreD.dylib \
-                      @loader_path/libSkCoreD.dylib $${DESTDIR}/lib$${TARGET}.dylib ;
+                      @loader_path/libSkCoreD.dylib $${DESTDIR}/lib$${TARGET}.dylib;
 } else {
     QMAKE_POST_LINK = install_name_tool -change libSkCore.dylib \
-                      @loader_path/libSkCore.dylib $${DESTDIR}/lib$${TARGET}.dylib ;
+                      @loader_path/libSkCore.dylib $${DESTDIR}/lib$${TARGET}.dylib;
 }
 }
 

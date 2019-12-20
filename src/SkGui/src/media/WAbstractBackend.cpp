@@ -21,11 +21,6 @@
 // Sk includes
 #include <WControllerPlaylist>
 
-//-------------------------------------------------------------------------------------------------
-// Static variables
-
-static const int ABSTRACTBACKEND_TIMER_INTERVAL = 2000;
-
 #ifdef QT_LATEST
 
 //=================================================================================================

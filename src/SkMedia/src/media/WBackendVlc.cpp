@@ -214,10 +214,12 @@ PFNGLMULTITEXCOORD2FARBPROC          pglMultiTexCoord2fARB          = 0;
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
+#ifdef QT_4
 static const int PLAYER_FORMAT          = GL_LUMINANCE;
 static const int PLAYER_FORMAT_INTERNAL = GL_LUMINANCE;
 
 static const int PLAYER_DATA_TYPE = GL_UNSIGNED_BYTE;
+#endif
 
 static const int PLAYER_MAX_WIDTH  = 5760;
 static const int PLAYER_MAX_HEIGHT = 3240;

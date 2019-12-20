@@ -92,8 +92,12 @@ WVlcEngine::WVlcEngine(QThread * thread, QObject * parent)
             "--no-spu",            /* No sub-pictures  */
             "--no-osd",            /* No video overlay */
             "--no-stats",          /* No statistics    */
+#ifndef Q_OS_MAC
             "--no-media-library",  /* No Media Library */
             "--http-reconnect"     /* Auto reconnect   */
+#else
+            "--no-media-library"
+#endif
             //"--avcodec-fast",    /* Speed tricks     */
             //"--input-fast-seek", /* Fast seek        */
             //"--avcodec-dr",
@@ -111,6 +115,10 @@ WVlcEngine::WVlcEngine(QThread * thread, QObject * parent)
             //"--clock-synchro=0",
             //"--verbose=2"
         };
+
+#ifdef Q_OS_MAC
+        qputenv("VLC_PLUGIN_PATH", QCoreApplication::applicationDirPath());
+#endif
 
         d->instance = libvlc_new(sizeof(args) / sizeof(*args), args);
 

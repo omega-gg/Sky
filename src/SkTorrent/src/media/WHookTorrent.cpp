@@ -45,7 +45,7 @@ static const int HOOKTORRENT_METADATA = 1048576 * 10; // 10 megabytes
 static const int HOOKTORRENT_SKIP      =  100;
 static const int HOOKTORRENT_SKIP_SIZE = 1024; // 1 kilobyte
 
-static const int HOOKTORRENT_INTERVAL = 16;
+//static const int HOOKTORRENT_INTERVAL = 16;
 
 //=================================================================================================
 // WTorrentThread
