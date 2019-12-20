@@ -117,7 +117,7 @@ WVlcEngine::WVlcEngine(QThread * thread, QObject * parent)
         };
 
 #ifdef Q_OS_MAC
-        qputenv("VLC_PLUGIN_PATH", QCoreApplication::applicationDirPath());
+        qputenv("VLC_PLUGIN_PATH", QCoreApplication::applicationDirPath().toLatin1());
 #endif
 
         d->instance = libvlc_new(sizeof(args) / sizeof(*args), args);
