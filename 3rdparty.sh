@@ -14,9 +14,9 @@ Qt5_version="5.12.3"
 
 VLC_version="3.0.6"
 
-libtorrent_version="1.1.12"
+libtorrent_version="1.2.2"
 
-Boost_version="1.69.0"
+Boost_version="1.71.0"
 
 #--------------------------------------------------------------------------------------------------
 # Windows
