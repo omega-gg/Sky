@@ -341,7 +341,7 @@ Item
                     ||
                     event.key == Qt.Key_Tab || event.key == Qt.Key_Backtab)
                     &&
-                    event.modifiers == Qt.NoModifier)
+                    sk.keypadModifier(event.modifiers))
                 {
                     event.accepted = true;
 
@@ -351,13 +351,13 @@ Item
 
                     pAutoClear = true;
                 }
-                else if (event.key == Qt.Key_Up && event.modifiers == Qt.NoModifier)
+                else if (event.key == Qt.Key_Up && sk.keypadModifier(event.modifiers))
                 {
                     event.accepted = true;
 
                     pSelectPrevious();
                 }
-                else if (event.key == Qt.Key_Down && event.modifiers == Qt.NoModifier)
+                else if (event.key == Qt.Key_Down && sk.keypadModifier(event.modifiers))
                 {
                     event.accepted = true;
 
@@ -406,7 +406,7 @@ Item
                     ||
                     event.key == Qt.Key_Tab || event.key == Qt.Key_Backtab)
                     &&
-                    event.modifiers == Qt.NoModifier)
+                    sk.keypadModifier(event.modifiers))
                 {
                     event.accepted = true;
 
@@ -416,13 +416,13 @@ Item
 
                     pAutoClear = true;
                 }
-                else if (event.key == Qt.Key_Up && event.modifiers == Qt.NoModifier)
+                else if (event.key == Qt.Key_Up && sk.keypadModifier(event.modifiers))
                 {
                     event.accepted = true;
 
                     pSelectPrevious();
                 }
-                else if (event.key == Qt.Key_Down && event.modifiers == Qt.NoModifier)
+                else if (event.key == Qt.Key_Down && sk.keypadModifier(event.modifiers))
                 {
                     event.accepted = true;
 

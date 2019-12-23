@@ -449,6 +449,13 @@ QMimeData * WControllerApplication::duplicateMime(const QMimeData * source)
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ bool WControllerApplication::keypadModifier(Qt::KeyboardModifiers flags)
+{
+    return (flags == Qt::NoModifier || flags == Qt::KeypadModifier);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE static */ void WControllerApplication::setCurrentPath(const QString & path)
 {
     QDir::setCurrent(path);

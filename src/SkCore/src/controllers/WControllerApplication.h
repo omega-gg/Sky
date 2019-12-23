@@ -117,6 +117,8 @@ public: // Static functions
 
     Q_INVOKABLE static QString getVersionLite(const QString & version);
 
+    Q_INVOKABLE static bool keypadModifier(Qt::KeyboardModifiers flags);
+
     //---------------------------------------------------------------------------------------------
 
     Q_INVOKABLE static void setCurrentPath(const QString & path);
