@@ -233,7 +233,11 @@ void WViewPrivate::init(QQuickItem * item)
 #else
     QScreen * screen = q->screen();
 
+#ifdef Q_OS_MAC
+    ratio = screen->logicalDotsPerInch() / 72;
+#else
     ratio = screen->logicalDotsPerInch() / 96;
+#endif
 #endif
 
     zoom = 1.0;
@@ -586,7 +590,11 @@ void WViewPrivate::updateRatio()
 {
     Q_Q(WView);
 
+#ifdef Q_OS_MAC
+    qreal value = q->screen()->logicalDotsPerInch() / 72;
+#else
     qreal value = q->screen()->logicalDotsPerInch() / 96;
+#endif
 
     if (ratio != value)
     {
