@@ -36,6 +36,8 @@ Item
     property int currentIndex : -1
     property int currentActive: -1
 
+    property int elide: Text.ElideRight
+
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
@@ -135,6 +137,8 @@ Item
 
                     text: title
 
+                    itemText.elide: buttonsCheck.elide
+
                     onPressed: pressAt(index)
                 }
             }
@@ -156,6 +160,8 @@ Item
 
                     text: title
 
+                    itemText.elide: buttonsCheck.elide
+
                     onPressed: pressAt(index)
                 }
             }
@@ -176,6 +182,8 @@ Item
                     checkHover: false
 
                     text: title
+
+                    itemText.elide: buttonsCheck.elide
 
                     onPressed: pressAt(index)
                 }
