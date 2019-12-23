@@ -101,7 +101,7 @@ Animated
 
             if (pLoad) return;
 
-            if (event.modifiers == Qt.ControlModifier)
+            if (event.modifiers == sk.keypad(Qt.ControlModifier))
             {
                 backward();
             }
@@ -113,7 +113,7 @@ Animated
 
             if (pLoad) return;
 
-            if (event.modifiers == Qt.ControlModifier)
+            if (event.modifiers == sk.keypad(Qt.ControlModifier))
             {
                 forward();
             }

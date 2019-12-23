@@ -63,17 +63,17 @@ BaseList
     {
         if ((event.key == Qt.Key_Left || event.key == Qt.Key_Right)
             &&
-            sk.keypadModifier(event.modifiers))
+            event.modifiers == sk.keypad(Qt.NoModifier))
         {
             event.accepted = true;
         }
-        else if (event.key == Qt.Key_Up && sk.keypadModifier(event.modifiers))
+        else if (event.key == Qt.Key_Up && event.modifiers == sk.keypad(Qt.NoModifier))
         {
             event.accepted = true;
 
             selectPrevious();
         }
-        else if (event.key == Qt.Key_Down && sk.keypadModifier(event.modifiers))
+        else if (event.key == Qt.Key_Down && event.modifiers == sk.keypad(Qt.NoModifier))
         {
             event.accepted = true;
 

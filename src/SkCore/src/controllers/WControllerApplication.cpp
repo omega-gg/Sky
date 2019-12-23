@@ -449,9 +449,15 @@ QMimeData * WControllerApplication::duplicateMime(const QMimeData * source)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ bool WControllerApplication::keypadModifier(Qt::KeyboardModifiers flags)
+/* Q_INVOKABLE static */
+Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags)
 {
-    return (flags == Qt::NoModifier || flags == Qt::KeypadModifier);
+#ifdef Q_OS_MAC
+    // NOTE: On macOS an arrow key is considered part of the keypad.
+    return (flags | Qt::KeypadModifier);
+#else
+    return flags;
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
