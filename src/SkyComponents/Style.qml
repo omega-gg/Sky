@@ -844,8 +844,8 @@ Item
     //---------------------------------------------------------------------------------------------
     // List
 
-    property int list_itemBase: dp32
-    property int list_itemSize: list_itemBase + border_size
+    property int list_itemHeight: dp32
+    property int list_itemSize  : list_itemHeight + border_size
 
     //---------------------------------------------------------------------------------------------
     // ScrollBar
@@ -1114,8 +1114,8 @@ Item
 
     property int itemList_height: list_itemSize
 
-    property int itemList_iconWidth : list_itemBase
-    property int itemList_iconHeight: list_itemBase
+    property int itemList_iconWidth : list_itemHeight
+    property int itemList_iconHeight: list_itemHeight
 
     property color itemList_colorA: "#dcdcdc"
     property color itemList_colorB: itemList_colorA
