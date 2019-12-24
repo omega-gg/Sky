@@ -265,16 +265,7 @@ Item
     property url rectangleShadow_sourceUp   : "pictures/shadowUp.png"
     property url rectangleShadow_sourceDown : "pictures/shadowDown.png"
 
-    property color rectangleShadow_color: "black"
-
-    property alias rectangleShadow_filter: rectangleShadow_filter
-
-    ImageColorFilter
-    {
-        id: rectangleShadow_filter
-
-        color: rectangleShadow_color
-    }
+    property alias rectangleShadow_filter: border_filterFocus
 
     //---------------------------------------------------------------------------------------------
     // BorderImageShadow
@@ -853,7 +844,8 @@ Item
     //---------------------------------------------------------------------------------------------
     // List
 
-    property int list_itemSize: dp32 + border_size
+    property int list_itemBase: dp32
+    property int list_itemSize: list_itemBase + border_size
 
     //---------------------------------------------------------------------------------------------
     // ScrollBar
@@ -1122,8 +1114,8 @@ Item
 
     property int itemList_height: list_itemSize
 
-    property int itemList_iconWidth : dp32
-    property int itemList_iconHeight: dp32
+    property int itemList_iconWidth : list_itemBase
+    property int itemList_iconHeight: list_itemBase
 
     property color itemList_colorA: "#dcdcdc"
     property color itemList_colorB: itemList_colorA

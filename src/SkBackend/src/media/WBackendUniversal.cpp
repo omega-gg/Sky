@@ -4228,18 +4228,16 @@ void WBackendUniversalPrivate::onData(const WBackendUniversalData & data)
 
     QString version = this->data.version;
 
+    this->data = data;
+
     if (version.isEmpty())
     {
-        this->data = data;
-
         loaded = true;
 
         emit q->loaded();
 
         return;
     }
-
-    this->data = data;
 
     emit q->loaded();
 
