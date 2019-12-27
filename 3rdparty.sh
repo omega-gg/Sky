@@ -25,6 +25,11 @@ archive_win32="http://omega.gg/get/Sky/3rdparty/win32"
 archive_win64="http://omega.gg/get/Sky/3rdparty/win64"
 
 #--------------------------------------------------------------------------------------------------
+# macOS
+
+archive_macOS="http://omega.gg/get/Sky/3rdparty/macOS"
+
+#--------------------------------------------------------------------------------------------------
 # Linux
 
 lib32="/usr/lib/i386-linux-gnu"
@@ -168,36 +173,7 @@ Boost="$external/Boost/$Boost_version"
 
 if [ $1 = "all" -o $1 = "install" ]; then
 
-    if [ $3 = "macOS" ]; then
-
-        sudo chown -R $(whoami) /usr/local
-
-        echo ""
-        echo "INSTALLING Qt"
-
-        brew install -y Qt@5.5
-
-        echo ""
-        echo "INSTALLING SSL"
-
-        brew install -y openssl
-
-        echo ""
-        echo "INSTALLING VLC"
-
-        brew cask install vlc
-
-        echo ""
-        echo "INSTALLING Boost"
-
-        brew install -y boost@1.55
-
-        echo ""
-        echo "INSTALLING libtorrent"
-
-        brew install -y libtorrent-rasterbar
-
-    elif [ $linux = true ]; then
+    if [ $linux = true ]; then
 
         echo "INSTALLING X11"
 
@@ -232,35 +208,7 @@ fi
 
 if [ $1 = "uninstall" ]; then
 
-    if [ $3 = "macOS" ]; then
-
-        echo ""
-        echo "UNINSTALLING Qt"
-
-        brew remove -y Qt@5.5
-
-        echo ""
-        echo "UNINSTALLING VLC"
-
-        brew cask remove vlc
-
-        echo ""
-        echo "UNINSTALLING Boost"
-
-        brew remove -y boost@1.55
-
-        echo ""
-        echo "UNINSTALLING libtorrent"
-
-        brew remove -y libtorrent-rasterbar
-
-        # We have to remove OpenSSL after libtorrent
-        echo ""
-        echo "UNINSTALLING SSL"
-
-        brew remove -y openssl
-
-    elif [ $linux = true ]; then
+    if [ $linux = true ]; then
 
         echo "UNINSTALLING X11"
 
@@ -327,6 +275,10 @@ if [ $1 = "all" -o $1 = "deploy" ]; then
     elif [ $3 = "win64" ]; then
 
         echo "3rdparty archive -> $archive_win64"
+
+    elif [ $3 = "macOS" ]; then
+
+        echo "macOS archive -> $archive_macOS"
 
     elif [ $linux = true ]; then
 
