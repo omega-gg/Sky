@@ -18,6 +18,8 @@ VLC_version="3.0.6"
 
 libtorrent_version="1.2.2"
 
+Boost_version="1.71.0"
+
 #--------------------------------------------------------------------------------------------------
 
 bin4="bin"
@@ -117,6 +119,8 @@ libtorrent="$external/libtorrent/$libtorrent_version"
 if [ $2 = "linux" ]; then
 
     Boost="$external/Boost/$Boost_version_linux"
+else
+    Boost="$external/Boost/$Boost_version"
 fi
 
 #--------------------------------------------------------------------------------------------------
