@@ -337,9 +337,9 @@ if [ $windows = true ]; then
 
 elif [ $2 = "macOS" ]; then
 
-    mkdir -p deploy/vlc/plugins
+    mkdir -p deploy/plugins
 
-    cp -r "$VLC"/plugins/*.dylib deploy/vlc/plugins
+    cp -r "$VLC"/plugins/*.dylib deploy/plugins
 
     cp "$VLC"/lib/libvlc*.dylib deploy
 
