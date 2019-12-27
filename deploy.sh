@@ -69,6 +69,12 @@ if [ $2 = "win32" -o $2 = "win64" ]; then
 
     MinGW="$external/MinGW/$MinGW_version/bin"
 
+elif [ $2 = "macOS" ]; then
+
+    windows=false
+
+    external="$external/$2"
+
 elif [ $2 = "linux" ]; then
 
     windows=false
@@ -217,6 +223,27 @@ else
 
         cp "$Qt"/qml/QtQuick.2/qtquick2plugin.dll deploy/QtQuick.2
         cp "$Qt"/qml/QtQuick.2/qmldir             deploy/QtQuick.2
+
+    elif [ $2 = "macOS" ]; then
+
+        cp "$Qt"/lib/QtCore.framework/Versions/5/QtCore/QtCore                      deploy
+        cp "$Qt"/lib/QtGui.framework/Versions/5/QtGui/QtGui                         deploy
+        cp "$Qt"/lib/QtNetwork.framework/Versions/5/QtNetwork/QtNetwork             deploy
+        cp "$Qt"/lib/QtQml.framework/Versions/5/QtQml/QtQml                         deploy
+        cp "$Qt"/lib/QtQuick.framework/Versions/5/QtQuick/QtQuick                   deploy
+        cp "$Qt"/lib/QtSvg.framework/Versions/5/QtSvg/QtSvg                         deploy
+        cp "$Qt"/lib/QtWidgets.framework/Versions/5/QtWidgets/QtWidgets             deploy
+        cp "$Qt"/lib/QtXml.framework/Versions/5/QtXml/QtXml                         deploy
+        cp "$Qt"/lib/QtXmlPatterns.framework/Versions/5/QtXmlPatterns/QtXmlPatterns deploy
+        cp "$Qt"/lib/QtCore.framework/Versions/5/QtCore/QtCore                      deploy
+
+        cp "$Qt"/plugins/platforms/libqcocoa.dylib deploy/platforms
+
+        cp "$Qt"/plugins/imageformats/libqsvg.dylib  deploy/imageformats
+        cp "$Qt"/plugins/imageformats/libqjpeg.dylib deploy/imageformats
+
+        cp "$Qt"/qml/QtQuick.2/libqtquick2plugin.dylib deploy/QtQuick.2
+        cp "$Qt"/qml/QtQuick.2/qmldir                  deploy/QtQuick.2
 
     elif [ $2 = "linux" ]; then
 
