@@ -226,16 +226,16 @@ else
 
     elif [ $2 = "macOS" ]; then
 
-        cp "$Qt"/lib/QtCore.framework/Versions/5/QtCore/QtCore                      deploy
-        cp "$Qt"/lib/QtGui.framework/Versions/5/QtGui/QtGui                         deploy
-        cp "$Qt"/lib/QtNetwork.framework/Versions/5/QtNetwork/QtNetwork             deploy
-        cp "$Qt"/lib/QtQml.framework/Versions/5/QtQml/QtQml                         deploy
-        cp "$Qt"/lib/QtQuick.framework/Versions/5/QtQuick/QtQuick                   deploy
-        cp "$Qt"/lib/QtSvg.framework/Versions/5/QtSvg/QtSvg                         deploy
-        cp "$Qt"/lib/QtWidgets.framework/Versions/5/QtWidgets/QtWidgets             deploy
-        cp "$Qt"/lib/QtXml.framework/Versions/5/QtXml/QtXml                         deploy
-        cp "$Qt"/lib/QtXmlPatterns.framework/Versions/5/QtXmlPatterns/QtXmlPatterns deploy
-        cp "$Qt"/lib/QtCore.framework/Versions/5/QtCore/QtCore                      deploy
+        cp "$Qt"/lib/QtCore.framework/Versions/5/QtCore               deploy
+        cp "$Qt"/lib/QtGui.framework/Versions/5/QtGui                 deploy
+        cp "$Qt"/lib/QtNetwork.framework/Versions/5/QtNetwork         deploy
+        cp "$Qt"/lib/QtQml.framework/Versions/5/QtQml                 deploy
+        cp "$Qt"/lib/QtQuick.framework/Versions/5/QtQuick             deploy
+        cp "$Qt"/lib/QtSvg.framework/Versions/5/QtSvg                 deploy
+        cp "$Qt"/lib/QtWidgets.framework/Versions/5/QtWidgets         deploy
+        cp "$Qt"/lib/QtXml.framework/Versions/5/QtXml                 deploy
+        cp "$Qt"/lib/QtXmlPatterns.framework/Versions/5/QtXmlPatterns deploy
+        cp "$Qt"/lib/QtCore.framework/Versions/5/QtCore               deploy
 
         cp "$Qt"/plugins/platforms/libqcocoa.dylib deploy/platforms
 
