@@ -195,10 +195,10 @@ elif [ $1 = "macOS" ]; then
 
     #----------------------------------------------------------------------------------------------
 
-    rm "$qt"/plugins/imageformats/*debug.*
-    rm "$qt"/plugins/platforms/*debug.*
+    rm "$qt"/plugins/imageformats/*debug*
+    rm "$qt"/plugins/platforms/*debug*
 
-    find "$qt"/lib -type f -name *debug.* -delete
+    find "$qt"/lib -type f -name *debug* -delete
 fi
 
 #--------------------------------------------------------------------------------------------------
