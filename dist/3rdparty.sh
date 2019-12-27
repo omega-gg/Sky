@@ -127,10 +127,10 @@ mkdir -p "$qt"/plugins/imageformats
 mkdir -p "$qt"/plugins/platforms
 mkdir -p "$qt"/qml
 
-cp "$Qt5"/bin/qmake.exe       "$qt"/bin
-cp "$Qt5"/bin/moc.exe         "$qt"/bin
-cp "$Qt5"/bin/rcc.exe         "$qt"/bin
-cp "$Qt5"/bin/qmlcachegen.exe "$qt"/bin
+#cp "$Qt5"/bin/qmake.exe       "$qt"/bin
+#cp "$Qt5"/bin/moc.exe         "$qt"/bin
+#cp "$Qt5"/bin/rcc.exe         "$qt"/bin
+#cp "$Qt5"/bin/qmlcachegen.exe "$qt"/bin
 
 #cp "$Qt5"/bin/lib*.dll "$qt"/bin
 
