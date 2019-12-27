@@ -190,8 +190,8 @@ elif [ $1 = "macOS" ]; then
     cp "$Qt5"/bin/rcc         "$qt"/bin
     cp "$Qt5"/bin/qmlcachegen "$qt"/bin
 
-    cp "$Qt5"/plugins/imageformats/q*.dylib "$qt"/plugins/imageformats
-    cp "$Qt5"/plugins/platforms/q*.dylib    "$qt"/plugins/platforms
+    cp "$Qt5"/plugins/imageformats/libq*.dylib "$qt"/plugins/imageformats
+    cp "$Qt5"/plugins/platforms/libq*.dylib    "$qt"/plugins/platforms
 
     #----------------------------------------------------------------------------------------------
 
