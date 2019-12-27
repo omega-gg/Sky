@@ -337,7 +337,7 @@ elif [ $2 = "macOS" ]; then
 
     cp -r "$VLC"/plugins/*.dylib deploy/vlc/plugins
 
-    cp "$VLC"/libvlc*.dylib* deploy
+    cp "$VLC"/lib/libvlc*.dylib deploy
 
 #elif [ $2 = "linux" ]; then
 
@@ -370,6 +370,10 @@ echo "COPYING libtorrent"
 if [ $windows = true ]; then
 
     cp "$libtorrent"/libtorrent.dll deploy
+
+elif [ $2 = "macOS" ]; then
+
+    cp "$libtorrent"/libtorrent.dylib deploy
 
 elif [ $2 = "linux" ]; then
 
