@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 #--------------------------------------------------------------------------------------------------
 # Settings
@@ -25,9 +26,9 @@ Boost_version="1.71.0"
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# != 1 ] || [ $1 != "win32" -a $1 != "win64" ]; then
+if [ $# != 1 ] || [ $1 != "win32" -a $1 != "win64" -a $1 != "macOS" ]; then
 
-    echo "Usage: 3rdparty <win32 | win64>"
+    echo "Usage: 3rdparty <win32 | win64 | macOS>"
 
     exit 1
 fi
@@ -35,6 +36,13 @@ fi
 #--------------------------------------------------------------------------------------------------
 # Configuration
 #--------------------------------------------------------------------------------------------------
+
+if [ $1 = "win32" -o $1 = "win64" ]; then
+
+    windows=true
+else
+    windows=false
+fi
 
 external="$external/$1"
 
@@ -110,16 +118,49 @@ fi
 # Qt5
 #--------------------------------------------------------------------------------------------------
 
-if [ $1 = "win32" -o $1 = "win64" ]; then
+echo "COPYING Qt5"
 
-    echo "COPYING Qt5"
+qt="$path/Qt/$Qt5_version"
 
-    qt="$path/Qt/$Qt5_version"
+mkdir -p "$qt"/bin
+mkdir -p "$qt"/plugins/imageformats
+mkdir -p "$qt"/plugins/platforms
+mkdir -p "$qt"/qml
 
-    mkdir -p "$qt"/bin
-    mkdir -p "$qt"/plugins/imageformats
-    mkdir -p "$qt"/plugins/platforms
-    mkdir -p "$qt"/qml
+cp "$Qt5"/bin/qmake.exe       "$qt"/bin
+cp "$Qt5"/bin/moc.exe         "$qt"/bin
+cp "$Qt5"/bin/rcc.exe         "$qt"/bin
+cp "$Qt5"/bin/qmlcachegen.exe "$qt"/bin
+
+#cp "$Qt5"/bin/lib*.dll "$qt"/bin
+
+#cp "$Qt5"/bin/Qt*.dll "$qt"/bin
+
+cp "$Qt5"/bin/qt.conf "$qt"/bin
+
+#cp "$Qt5"/plugins/imageformats/q*.dll "$qt"/plugins/imageformats
+#cp "$Qt5"/plugins/platforms/q*.dll    "$qt"/plugins/platforms
+
+#--------------------------------------------------------------------------------------------------
+
+cp -r "$Qt5"/lib "$qt"
+
+cp -r "$Qt5"/include "$qt"
+
+cp -r "$Qt5"/qml/QtQuick.2 "$qt"/qml
+
+cp -r "$Qt5"/mkspecs "$qt"
+
+#--------------------------------------------------------------------------------------------------
+
+#rm "$qt"/bin/*d.*
+
+#rm "$qt"/plugins/imageformats/*d.*
+#rm "$qt"/plugins/platforms/*d.*
+
+#rm "$qt"/lib/*d.*
+
+if [ $windows = true ]; then
 
     cp "$Qt5"/bin/qmake.exe       "$qt"/bin
     cp "$Qt5"/bin/moc.exe         "$qt"/bin
@@ -130,20 +171,8 @@ if [ $1 = "win32" -o $1 = "win64" ]; then
 
     cp "$Qt5"/bin/Qt*.dll "$qt"/bin
 
-    cp "$Qt5"/bin/qt.conf "$qt"/bin
-
     cp "$Qt5"/plugins/imageformats/q*.dll "$qt"/plugins/imageformats
     cp "$Qt5"/plugins/platforms/q*.dll    "$qt"/plugins/platforms
-
-    #----------------------------------------------------------------------------------------------
-
-    cp -r "$Qt5"/lib "$qt"
-
-    cp -r "$Qt5"/include "$qt"
-
-    cp -r "$Qt5"/qml/QtQuick.2 "$qt"/qml
-
-    cp -r "$Qt5"/mkspecs "$qt"
 
     #----------------------------------------------------------------------------------------------
 
@@ -153,6 +182,29 @@ if [ $1 = "win32" -o $1 = "win64" ]; then
     rm "$qt"/plugins/platforms/*d.*
 
     rm "$qt"/lib/*d.*
+
+elif [ $1 = "macOS" ]; then
+
+    cp "$Qt5"/bin/qmake       "$qt"/bin
+    cp "$Qt5"/bin/moc         "$qt"/bin
+    cp "$Qt5"/bin/rcc         "$qt"/bin
+    cp "$Qt5"/bin/qmlcachegen "$qt"/bin
+
+    cp "$Qt5"/bin/lib*.dylib "$qt"/bin
+
+    cp "$Qt5"/bin/Qt*.dylib "$qt"/bin
+
+    cp "$Qt5"/plugins/imageformats/q*.dylib "$qt"/plugins/imageformats
+    cp "$Qt5"/plugins/platforms/q*.dylib    "$qt"/plugins/platforms
+
+    #----------------------------------------------------------------------------------------------
+
+    rm "$qt"/bin/*debug.*
+
+    rm "$qt"/plugins/imageformats/*debug.*
+    rm "$qt"/plugins/platforms/*debug.*
+
+    find "$qt"/lib -type f -name *debug.* -delete
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -176,25 +228,31 @@ fi
 # MinGW
 #--------------------------------------------------------------------------------------------------
 
-echo "COPYING MinGW"
+if [ $windows = true ]; then
 
-mingw="$path/MinGW/$MinGW_version"
+    echo "COPYING MinGW"
 
-mkdir -p "$mingw"
+    mingw="$path/MinGW/$MinGW_version"
 
-cp -r "$MinGW"/* "$mingw"
+    mkdir -p "$mingw"
+
+    cp -r "$MinGW"/* "$mingw"
+fi
 
 #--------------------------------------------------------------------------------------------------
 # SSL
 #--------------------------------------------------------------------------------------------------
 
-echo "COPYING SSL"
+if [ $windows = true ]; then
 
-ssl="$path/OpenSSL"
+    echo "COPYING SSL"
 
-mkdir -p "$ssl"
+    ssl="$path/OpenSSL"
 
-cp "$SSL"/*.dll "$ssl"
+    mkdir -p "$ssl"
+
+    cp "$SSL"/*.dll "$ssl"
+fi
 
 #--------------------------------------------------------------------------------------------------
 # VLC
