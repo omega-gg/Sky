@@ -341,7 +341,8 @@ elif [ $2 = "macOS" ]; then
 
     cp -r "$VLC"/plugins/*.dylib deploy/plugins
 
-    cp "$VLC"/lib/libvlc*.dylib deploy
+    cp "$VLC"/lib/libvlc.dylib     deploy
+    cp "$VLC"/lib/libvlccore.dylib deploy
 
 #elif [ $2 = "linux" ]; then
 
