@@ -384,7 +384,13 @@ fi
 # Boost
 #--------------------------------------------------------------------------------------------------
 
-if [ $2 = "linux" ]; then
+if [ $2 = "macOS" ]; then
+
+    echo "COPYING Boost"
+
+    cp "$Boost"/libboost*.dylib deploy
+
+elif [ $2 = "linux" ]; then
 
     echo "COPYING Boost"
 
