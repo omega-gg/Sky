@@ -259,9 +259,19 @@ vlc="$path/VLC/$VLC_version"
 mkdir -p "$vlc"
 
 cp -r "$VLC"/plugins "$vlc"
-cp -r "$VLC"/sdk     "$vlc"
 
-cp "$VLC"/libvlc*.* "$vlc"
+if [ $windows = true ]; then
+
+    cp -r "$VLC"/sdk "$vlc"
+
+    cp "$VLC"/libvlc*.* "$vlc"
+
+elif [ $1 = "macOS" ]; then
+
+    cp -r "$VLC"/include "$vlc"
+    cp -r "$VLC"/lib     "$vlc"
+    cp -r "$VLC"/share   "$vlc"
+fi
 
 #--------------------------------------------------------------------------------------------------
 # libtorrent
