@@ -235,8 +235,8 @@ elif [ $2 = "macOS" ]; then
 
     cp -r "$VLC"/include/vlc include
 
-    cp "$VLC"/lib/libvlc.dylib     deploy
-    cp "$VLC"/lib/libvlccore.dylib deploy
+    cp "$VLC"/lib/libvlc.dylib     lib
+    cp "$VLC"/lib/libvlccore.dylib lib
 fi
 
 #--------------------------------------------------------------------------------------------------
