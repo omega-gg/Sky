@@ -46,7 +46,10 @@ You can install third party libraries with:
 - Edit [3rdparty.sh](3rdparty.sh) to check your dependencies.
 
 On Windows:
-- Get the 3rdparty.zip [32 bit](http://omega.gg/get/Sky/3rdparty/win32) or [64 bit](http://omega.gg/get/Sky/3rdparty/win64) archive.
+- Get the 3rdparty [32 bit](http://omega.gg/get/Sky/3rdparty/win32) or [64 bit](http://omega.gg/get/Sky/3rdparty/win64) archive.
+
+On macOS:
+- Get the [3rdparty](http://omega.gg/get/Sky/3rdparty/macOS) archive.
 
 ## Configure
 
