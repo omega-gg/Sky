@@ -48,6 +48,24 @@ jobs:
     artifact: Sky-win64-qt5
 
 #--------------------------------------------------------------------------------------------------
+# macOS
+#--------------------------------------------------------------------------------------------------
+
+- job: macOS_qt5
+  pool:
+    vmImage: "macOS-latest"
+  steps:
+  - bash: |
+      cd ..
+      curl -L -o 3rdparty.zip http://omega.gg/get/Sky/3rdparty/macOS
+      unzip 3rdparty.zip
+      cd s
+      sh configure.sh qt5 macOS
+      sh build.sh qt5 macOS deploy
+  - publish: $(System.DefaultWorkingDirectory)/deploy
+    artifact: Sky-macOS-qt5
+
+#--------------------------------------------------------------------------------------------------
 # Linux
 #--------------------------------------------------------------------------------------------------
 
