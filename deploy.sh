@@ -240,6 +240,7 @@ else
         cp "$Qt"/lib/QtWidgets.framework/Versions/5/QtWidgets         deploy/QtWidgets.dylib
         cp "$Qt"/lib/QtXml.framework/Versions/5/QtXml                 deploy/QtXml.dylib
         cp "$Qt"/lib/QtXmlPatterns.framework/Versions/5/QtXmlPatterns deploy/QtXmlPatterns.dylib
+        cp "$Qt"/lib/QtDBus.framework/Versions/5/QtXmlPatterns        deploy/QtDBus.dylib
 
         cp "$Qt"/plugins/platforms/libqcocoa.dylib deploy/platforms
 
