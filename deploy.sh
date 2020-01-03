@@ -230,17 +230,18 @@ else
 
     elif [ $2 = "macOS" ]; then
 
-        cp "$Qt"/lib/QtCore.framework/Versions/5/QtCore               deploy/QtCore.dylib
-        cp "$Qt"/lib/QtGui.framework/Versions/5/QtGui                 deploy/QtGui.dylib
-        cp "$Qt"/lib/QtNetwork.framework/Versions/5/QtNetwork         deploy/QtNetwork.dylib
-        cp "$Qt"/lib/QtOpenGL.framework/Versions/5/QtOpenGL           deploy/QtOpenGL.dylib
-        cp "$Qt"/lib/QtQml.framework/Versions/5/QtQml                 deploy/QtQml.dylib
-        cp "$Qt"/lib/QtQuick.framework/Versions/5/QtQuick             deploy/QtQuick.dylib
-        cp "$Qt"/lib/QtSvg.framework/Versions/5/QtSvg                 deploy/QtSvg.dylib
-        cp "$Qt"/lib/QtWidgets.framework/Versions/5/QtWidgets         deploy/QtWidgets.dylib
-        cp "$Qt"/lib/QtXml.framework/Versions/5/QtXml                 deploy/QtXml.dylib
-        cp "$Qt"/lib/QtXmlPatterns.framework/Versions/5/QtXmlPatterns deploy/QtXmlPatterns.dylib
-        cp "$Qt"/lib/QtDBus.framework/Versions/5/QtDBus               deploy/QtDBus.dylib
+        cp "$Qt"/lib/QtCore.framework/Versions/5/QtCore                 deploy/QtCore.dylib
+        cp "$Qt"/lib/QtGui.framework/Versions/5/QtGui                   deploy/QtGui.dylib
+        cp "$Qt"/lib/QtNetwork.framework/Versions/5/QtNetwork           deploy/QtNetwork.dylib
+        cp "$Qt"/lib/QtOpenGL.framework/Versions/5/QtOpenGL             deploy/QtOpenGL.dylib
+        cp "$Qt"/lib/QtQml.framework/Versions/5/QtQml                   deploy/QtQml.dylib
+        cp "$Qt"/lib/QtQuick.framework/Versions/5/QtQuick               deploy/QtQuick.dylib
+        cp "$Qt"/lib/QtSvg.framework/Versions/5/QtSvg                   deploy/QtSvg.dylib
+        cp "$Qt"/lib/QtWidgets.framework/Versions/5/QtWidgets           deploy/QtWidgets.dylib
+        cp "$Qt"/lib/QtXml.framework/Versions/5/QtXml                   deploy/QtXml.dylib
+        cp "$Qt"/lib/QtXmlPatterns.framework/Versions/5/QtXmlPatterns   deploy/QtXmlPatterns.dylib
+        cp "$Qt"/lib/QtDBus.framework/Versions/5/QtDBus                 deploy/QtDBus.dylib
+        cp "$Qt"/lib/QtPrintSupport.framework/Versions/5/QtPrintSupport deploy/QtPrintSupport.dylib
 
         cp "$Qt"/plugins/platforms/libqcocoa.dylib deploy/platforms
 
