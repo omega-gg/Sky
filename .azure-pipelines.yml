@@ -9,7 +9,7 @@ jobs:
   steps:
   - bash: |
       cd ..
-      curl -L -o 3rdparty.zip http://omega.gg/get/Sky/3rdparty/win32
+      curl -L -o 3rdparty.zip --retry 3 http://omega.gg/get/Sky/3rdparty/win32
       unzip 3rdparty.zip
       cd s
       sh configure.sh qt4 win32
@@ -23,7 +23,7 @@ jobs:
   steps:
   - bash: |
       cd ..
-      curl -L -o 3rdparty.zip http://omega.gg/get/Sky/3rdparty/win32
+      curl -L -o 3rdparty.zip --retry 3 http://omega.gg/get/Sky/3rdparty/win32
       unzip 3rdparty.zip
       cd s
       sh configure.sh qt5 win32
@@ -39,7 +39,7 @@ jobs:
   steps:
   - bash: |
       cd ..
-      curl -L -o 3rdparty.zip http://omega.gg/get/Sky/3rdparty/win64
+      curl -L -o 3rdparty.zip --retry 3 http://omega.gg/get/Sky/3rdparty/win64
       unzip 3rdparty.zip
       cd s
       sh configure.sh qt5 win64
@@ -57,7 +57,7 @@ jobs:
   steps:
   - bash: |
       cd ..
-      curl -L -o 3rdparty.zip http://omega.gg/get/Sky/3rdparty/macOS
+      curl -L -o 3rdparty.zip --retry 3 http://omega.gg/get/Sky/3rdparty/macOS
       unzip 3rdparty.zip
       cd s
       sh configure.sh qt5 macOS
