@@ -228,18 +228,6 @@ void WViewPrivate::init(QQuickItem * item)
 
     currentResizer = NULL;
 
-#ifdef QT_4
-    ratio = 1.0;
-#else
-    QScreen * screen = q->screen();
-
-#ifdef Q_OS_MAC
-    ratio = screen->logicalDotsPerInch() / 72;
-#else
-    ratio = screen->logicalDotsPerInch() / 96;
-#endif
-#endif
-
     zoom = 1.0;
 
     minimumWidth  = 400;
@@ -469,6 +457,21 @@ void WViewPrivate::init(QQuickItem * item)
     geometryNormal = getGeometryDefault(rect);
 
     q->setGeometry(geometryNormal);
+
+    //---------------------------------------------------------------------------------------------
+    // ratio
+
+#ifdef QT_4
+    ratio = 1.0;
+#else
+    QScreen * screen = q->screen();
+
+#ifdef Q_OS_MAC
+    ratio = screen->logicalDotsPerInch() / 72;
+#else
+    ratio = screen->logicalDotsPerInch() / 96;
+#endif
+#endif
 
     //---------------------------------------------------------------------------------------------
     // Timer
