@@ -42,7 +42,7 @@ W_INIT_CONTROLLER(WControllerFile)
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int CONTROLLERFILE_TIMEOUT = 60000; // 1 minute
+static const int CONTROLLERFILE_TIMEOUT = 10000; // 10 seconds
 
 //=================================================================================================
 // WControllerFileAction
@@ -950,9 +950,16 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 {
     QtLockedFile file(fileName);
 
-    if (WControllerFilePrivate::tryOpen(file))
+    if (WControllerFilePrivate::tryOpen(file) == false)
     {
         qWarning("WControllerFile::writeFile: File is locked %s.", fileName.C_STR);
+
+        return false;
+    }
+
+    if (file.open(QIODevice::WriteOnly) == false)
+    {
+        qWarning("WControllerFile::writeFile: Cannot open file %s.", fileName.C_STR);
 
         return false;
     }

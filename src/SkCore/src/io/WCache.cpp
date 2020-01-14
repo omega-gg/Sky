@@ -891,9 +891,9 @@ bool WCacheThread::writeFile(QNetworkReply * reply, WCacheJob * job)
 
     if (file.open(QIODevice::WriteOnly) == false)
     {
-        qWarning("WCacheThread::writeFile: Cannot write file %s.", urlCache.C_STR);
+        qWarning("WCacheThread::writeFile: Cannot open file %s.", urlCache.C_STR);
 
-        QCoreApplication::postEvent(cache, new WCacheEventFailed(url, "Cannot write file"));
+        QCoreApplication::postEvent(cache, new WCacheEventFailed(url, "Cannot open file"));
 
         return false;
     }
@@ -949,11 +949,11 @@ void WCacheThread::writeData(const QString & url,
 
     if (file.open(QIODevice::WriteOnly) == false)
     {
-        qWarning("WCacheThread::writeData: Cannot write file %s.", urlCache.C_STR);
+        qWarning("WCacheThread::writeData: Cannot open file %s.", urlCache.C_STR);
 
         ids.removeOne(id);
 
-        QCoreApplication::postEvent(cache, new WCacheEventFailed(url, "Cannot write file"));
+        QCoreApplication::postEvent(cache, new WCacheEventFailed(url, "Cannot open file"));
 
         return;
     }
