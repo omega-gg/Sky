@@ -56,7 +56,7 @@ INCLUDEPATH += $$SK/include/SkCore \
 
 win32:LIBS += -L$$SK/lib -lz
 
-macx:LIBS += -lz
+unix:LIBS += -lz
 
 #--------------------------------------------------------------------------------------------------
 # Copy library to the bin directory
