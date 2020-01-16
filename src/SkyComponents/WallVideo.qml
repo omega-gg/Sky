@@ -207,6 +207,18 @@ WallBookmarkTrack
 
     //---------------------------------------------------------------------------------------------
 
+    function seekBackward()
+    {
+        player.seek(player.currentTime - st.wallVideo_interval);
+    }
+
+    function seekForward()
+    {
+        player.seek(player.currentTime + st.wallVideo_interval);
+    }
+
+    //---------------------------------------------------------------------------------------------
+
     function getOpacity(area)
     {
         if (area.pressed) return 1.0;
@@ -690,7 +702,9 @@ WallBookmarkTrack
 
         cursor: Qt.PointingHandCursor
 
-        onClicked: player.seek(player.currentTime - st.wallVideo_interval)
+        onClicked: if (window.isTouching == false) seekBackward()
+
+        onDoubleClicked: if (window.isTouching) seekBackward()
     }
 
     RectangleShadow
@@ -742,7 +756,9 @@ WallBookmarkTrack
 
         cursor: Qt.PointingHandCursor
 
-        onClicked: player.seek(player.currentTime + st.wallVideo_interval)
+        onClicked: if (window.isTouching == false) seekForward()
+
+        onDoubleClicked: if (window.isTouching) seekForward()
     }
 
     RectangleShadow
