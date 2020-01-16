@@ -696,7 +696,7 @@ WallBookmarkTrack
 
         z: player.z
 
-        visible: player.isPlaying
+        visible: (isExposed == false && player.isPlaying)
 
         hoverEnabled: true
 
@@ -750,7 +750,7 @@ WallBookmarkTrack
 
         z: player.z
 
-        visible: player.isPlaying
+        visible: areaBackward.visible
 
         hoverEnabled: true
 
