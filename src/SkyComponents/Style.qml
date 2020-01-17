@@ -842,6 +842,11 @@ Item
     property int baseTextEdit_margin: dp8
 
     //---------------------------------------------------------------------------------------------
+    // Console
+
+    property int console_maximumLength: 4000
+
+    //---------------------------------------------------------------------------------------------
     // List
 
     property int list_itemHeight: dp32
