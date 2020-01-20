@@ -88,6 +88,33 @@ public: // Variables
 }
 
 //=================================================================================================
+// WControllerFileAppend
+//=================================================================================================
+
+class WControllerFileAppend : public WControllerFileAction
+{
+    Q_OBJECT
+
+protected: // WAbstractThreadAction implementation
+    /* virtual */ bool run();
+
+public: // Variables
+    QStringList fileNames;
+
+    QList<QByteArray> datas;
+};
+
+/* virtual */ bool WControllerFileAppend::run()
+{
+    for (int i = 0; i < fileNames.count(); i++)
+    {
+        WControllerFile::appendFile(fileNames.at(i), datas.at(i));
+    }
+
+    return true;
+}
+
+//=================================================================================================
 // WControllerFileRename
 //=================================================================================================
 
@@ -609,6 +636,23 @@ WControllerFileReply * WControllerFile::startWriteFiles(const QStringList       
     return action->controllerReply();
 }
 
+WControllerFileReply * WControllerFile::startAppendFiles(const QStringList       & fileNames,
+                                                         const QList<QByteArray> & datas)
+{
+    if (fileNames.isEmpty() || fileNames.count() != datas.count()) return NULL;
+
+    WControllerFileAppend * action = new WControllerFileAppend;
+
+    action->fileNames = fileNames;
+    action->datas     = datas;
+
+    startWriteAction(action);
+
+    return action->controllerReply();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 WControllerFileReply * WControllerFile::startRenameFiles(const QStringList & oldPaths,
                                                          const QStringList & newPaths)
 {
@@ -718,6 +762,12 @@ WControllerFileReply * WControllerFile::startWriteFile(const QString    & fileNa
                                                        const QByteArray & data)
 {
     return startWriteFiles(QStringList() << fileName, QList<QByteArray>() << data);
+}
+
+WControllerFileReply * WControllerFile::startAppendFile(const QString    & fileName,
+                                                        const QByteArray & data)
+{
+    return startAppendFiles(QStringList() << fileName, QList<QByteArray>() << data);
 }
 
 WControllerFileReply * WControllerFile::startRenameFile(const QString & oldPath,
@@ -960,6 +1010,29 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
     if (file.open(QIODevice::WriteOnly) == false)
     {
         qWarning("WControllerFile::writeFile: Cannot open file %s.", fileName.C_STR);
+
+        return false;
+    }
+
+    file.write(data);
+
+    return true;
+}
+
+/* static */ bool WControllerFile::appendFile(const QString & fileName, const QByteArray & data)
+{
+    QtLockedFile file(fileName);
+
+    if (WControllerFilePrivate::tryOpen(file) == false)
+    {
+        qWarning("WControllerFile::appendFile: File is locked %s.", fileName.C_STR);
+
+        return false;
+    }
+
+    if (file.open(QIODevice::Append) == false)
+    {
+        qWarning("WControllerFile::appendFile: Cannot open file %s.", fileName.C_STR);
 
         return false;
     }
