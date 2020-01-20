@@ -670,6 +670,11 @@ bool WAbstractBackend::isLoading() const
 
 //-------------------------------------------------------------------------------------------------
 
+bool WAbstractBackend::isDefault() const
+{
+    Q_D(const WAbstractBackend); return (d->stateLoad == StateLoadDefault);
+}
+
 bool WAbstractBackend::isStarting() const
 {
     Q_D(const WAbstractBackend); return (d->stateLoad == StateLoadStarting);

@@ -696,7 +696,9 @@ WallBookmarkTrack
 
         z: player.z
 
-        visible: (isExposed == false && player.isPlaying)
+        visible: (isExposed == false
+                  &&
+                  player.isPlaying && (player.isDefault || player.isBuffering))
 
         hoverEnabled: true
 

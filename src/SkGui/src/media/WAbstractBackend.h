@@ -124,6 +124,7 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
 
     Q_PROPERTY(bool isLoading READ isLoading NOTIFY stateLoadChanged)
 
+    Q_PROPERTY(bool isDefault   READ isDefault   NOTIFY stateLoadChanged)
     Q_PROPERTY(bool isStarting  READ isStarting  NOTIFY stateLoadChanged)
     Q_PROPERTY(bool isResuming  READ isResuming  NOTIFY stateLoadChanged)
     Q_PROPERTY(bool isBuffering READ isBuffering NOTIFY stateLoadChanged)
@@ -353,6 +354,7 @@ public: // Properties
 
     bool isLoading() const;
 
+    bool isDefault  () const;
     bool isStarting () const;
     bool isResuming () const;
     bool isBuffering() const;

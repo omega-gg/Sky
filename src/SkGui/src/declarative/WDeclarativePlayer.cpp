@@ -1338,6 +1338,17 @@ bool WDeclarativePlayer::isLoading() const
 
 //-------------------------------------------------------------------------------------------------
 
+bool WDeclarativePlayer::isDefault() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+         return d->backend->isDefault();
+    }
+    else return false;
+}
+
 bool WDeclarativePlayer::isStarting() const
 {
     Q_D(const WDeclarativePlayer);
