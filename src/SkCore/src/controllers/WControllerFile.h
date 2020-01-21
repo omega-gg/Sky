@@ -83,6 +83,8 @@ class SK_CORE_EXPORT WControllerFile : public WController
 {
     Q_OBJECT
 
+    Q_PROPERTY(QString log READ log NOTIFY logChanged)
+
     Q_PROPERTY(QString pathStorage READ pathStorage WRITE setPathStorage NOTIFY pathStorageChanged)
 
     Q_PROPERTY(WCache * cache READ cache WRITE setCache NOTIFY cacheChanged)
@@ -219,15 +221,16 @@ public: // Static functions
 
     static QFileInfoList recursiveEntryInfoList(const QString & path);
 
-private slots:
-    void onCheckWatchers();
-
 signals:
+    void logChanged(const QString & message);
+
     void pathStorageChanged();
 
     void cacheChanged();
 
 public: // Properties
+    QString log() const;
+
     QString pathStorage() const;
     void    setPathStorage(const QString & path);
 
@@ -240,6 +243,7 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void onCheckWatchers())
 
+    friend class WControllerApplicationPrivate;
     friend class WFileWatcher;
     friend class WFileWatcherPrivate;
     friend class WLocalObject;

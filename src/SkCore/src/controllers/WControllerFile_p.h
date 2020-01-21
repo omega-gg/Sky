@@ -45,6 +45,8 @@ public:
     void init();
 
 public: // Functions
+    void initMessageHandler();
+
     void createThreadWrite();
     void createThreadRead ();
 
@@ -54,9 +56,18 @@ public: // Functions
     void registerLocalObject  (WLocalObject * object);
     void unregisterLocalObject(WLocalObject * object);
 
+    void addLog(const QString & message);
+
     bool isLoading() const;
 
 public: // Static functions
+#ifdef QT_4
+    static void messageOutput(QtMsgType type, const char * message);
+#else
+    static void messageOutput(QtMsgType type, const QMessageLogContext & context,
+                                              const QString            & message);
+#endif
+
     static bool tryOpen(const QtLP_Private::QtLockedFile & file);
 
     static void deleteDir(QDir & dir, bool recursive);
@@ -68,7 +79,10 @@ public: // Variables
     WThreadActions * threadWrite;
     WThreadActions * threadRead;
 
+    QString log;
+
     QString pathStorage;
+    QString pathLog;
 
     WCache * cache;
 

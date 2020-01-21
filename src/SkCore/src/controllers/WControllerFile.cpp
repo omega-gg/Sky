@@ -18,6 +18,9 @@
 
 #ifndef SK_NO_CONTROLLERFILE
 
+// C++ includes
+#include <iostream>
+
 // Qt includes
 #include <QCoreApplication>
 #include <QDir>
@@ -41,6 +44,8 @@ W_INIT_CONTROLLER(WControllerFile)
 
 //-------------------------------------------------------------------------------------------------
 // Static variables
+
+static const int CONTROLLERFILE_LOG_MAX = 10000;
 
 static const int CONTROLLERFILE_TIMEOUT = 10000; // 10 seconds
 
@@ -327,6 +332,12 @@ WControllerFilePrivate::WControllerFilePrivate(WControllerFile * p) : WControlle
 
 /* virtual */ WControllerFilePrivate::~WControllerFilePrivate()
 {
+#ifdef QT_4
+    qInstallMsgHandler(NULL);
+#else
+    qInstallMessageHandler(NULL);
+#endif
+
     W_CLEAR_CONTROLLER(WControllerFile);
 }
 
@@ -337,11 +348,24 @@ void WControllerFilePrivate::init()
     threadWrite = NULL;
     threadRead  = NULL;
 
+    pathLog = "log.txt";
+
     cache = NULL;
 }
 
 //-------------------------------------------------------------------------------------------------
 // Private functions
+//-------------------------------------------------------------------------------------------------
+
+void WControllerFilePrivate::initMessageHandler()
+{
+#ifdef QT_4
+    qInstallMsgHandler(WControllerFilePrivate::messageOutput);
+#else
+    qInstallMessageHandler(WControllerFilePrivate::messageOutput);
+#endif
+}
+
 //-------------------------------------------------------------------------------------------------
 
 void WControllerFilePrivate::createThreadWrite()
@@ -406,6 +430,33 @@ void WControllerFilePrivate::unregisterFileWatcher(WFileWatcher * watcher)
 
 //-------------------------------------------------------------------------------------------------
 
+void WControllerFilePrivate::addLog(const QString & message)
+{
+    Q_Q(WControllerFile);
+
+    QString string = message;
+
+    if (log.isEmpty() == false)
+    {
+        string.prepend('\n');
+    }
+
+    log.append(string);
+
+    int length = log.length();
+
+    if (length > CONTROLLERFILE_LOG_MAX)
+    {
+        log.remove(0, length - CONTROLLERFILE_LOG_MAX);
+    }
+
+    emit q->logChanged(string);
+
+    WControllerFile::appendFile(pathLog, string.toUtf8());
+}
+
+//-------------------------------------------------------------------------------------------------
+
 bool WControllerFilePrivate::isLoading() const
 {
     foreach (WLocalObject * object, objects)
@@ -418,6 +469,28 @@ bool WControllerFilePrivate::isLoading() const
 
 //-------------------------------------------------------------------------------------------------
 // Private static functions
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_4
+/* static */ void WControllerFilePrivate::messageOutput(QtMsgType, const char * message)
+{
+
+}
+#else
+/* static */ void WControllerFilePrivate::messageOutput(QtMsgType,
+                                                        const QMessageLogContext &,
+                                                        const QString            & message)
+{
+    wControllerFile->d_func()->addLog(message);
+
+#ifdef QT_4
+    std::cout << message << std::endl;
+#else
+    std::cout << message.toLatin1().constData() << std::endl;
+#endif
+}
+#endif
+
 //-------------------------------------------------------------------------------------------------
 
 /* static */ bool WControllerFilePrivate::tryOpen(const QtLockedFile & file)
@@ -1139,30 +1212,14 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 }
 
 //-------------------------------------------------------------------------------------------------
-// Private slots
+// Properties
 //-------------------------------------------------------------------------------------------------
 
-void WControllerFile::onCheckWatchers()
+QString WControllerFile::log() const
 {
-    Q_D(WControllerFile);
-
-    int fileCount = 20;
-
-    foreach (WFileWatcher * watcher, d->watchers)
-    {
-        if (watcher->d_func()->checked) continue;
-
-        if (watcher->d_func()->checkChange(fileCount) == false) return;
-    }
-
-    foreach (WFileWatcher * watcher, d->watchers)
-    {
-        watcher->d_func()->resetCheck();
-    }
+    Q_D(const WControllerFile); return d->log;
 }
 
-//-------------------------------------------------------------------------------------------------
-// Properties
 //-------------------------------------------------------------------------------------------------
 
 QString WControllerFile::pathStorage() const
@@ -1177,6 +1234,8 @@ void WControllerFile::setPathStorage(const QString & path)
     if (d->pathStorage == path) return;
 
     d->pathStorage = path;
+
+    d->pathLog = path + "/log.txt";
 
     emit pathStorageChanged();
 }

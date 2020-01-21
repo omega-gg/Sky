@@ -28,6 +28,7 @@
 // Controllers includes
 #include <WControllerView>
 #include <WControllerDeclarative>
+#include <WControllerFile>
 #include <WControllerNetwork>
 #include <WControllerPlaylist>
 
@@ -273,8 +274,9 @@ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
     // QML Context
     //---------------------------------------------------------------------------------------------
 
-    wControllerDeclarative->setContextProperty("sk",                 sk);
-    wControllerDeclarative->setContextProperty("controllerNetwork",  wControllerNetwork);
+    wControllerDeclarative->setContextProperty("sk",                sk);
+    wControllerDeclarative->setContextProperty("controllerFile",    wControllerFile);
+    wControllerDeclarative->setContextProperty("controllerNetwork", wControllerNetwork);
 
     return application;
 }

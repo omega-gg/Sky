@@ -248,18 +248,16 @@ void WControllerApplicationPrivate::initApplication(QCoreApplication * applicati
     //---------------------------------------------------------------------------------------------
     // Controllers - declaration order matters
 
-    W_CREATE_CONTROLLER(WControllerScript);
     W_CREATE_CONTROLLER(WControllerFile);
+
+    wControllerFile->d_func()->initMessageHandler();
+
+    W_CREATE_CONTROLLER(WControllerScript);
     W_CREATE_CONTROLLER(WControllerNetwork);
     W_CREATE_CONTROLLER(WControllerDownload);
     W_CREATE_CONTROLLER(WControllerPlugin);
     W_CREATE_CONTROLLER(WControllerXml);
     W_CREATE_CONTROLLER(WControllerDeclarative);
-
-    //---------------------------------------------------------------------------------------------
-    // QML Context
-
-    wControllerDeclarative->setContextProperty("controllerFile", wControllerFile);
 
     //---------------------------------------------------------------------------------------------
 
