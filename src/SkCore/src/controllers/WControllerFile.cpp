@@ -592,7 +592,7 @@ WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this
 
     if (d->timerLog.isSingleShot())
     {
-        qWarning("WControllerFile::initMessageHandler: Handler already initialized.");
+        qWarning("WControllerFile::initMessageHandler: Handler is already initialized.");
 
         return;
     }
