@@ -96,6 +96,8 @@ protected: // Initialize
     /* virtual */ void init();
 
 public: // Interface
+    Q_INVOKABLE void initMessageHandler();
+
     Q_INVOKABLE WCacheFile * getFile(const QString & url,
                                      QObject       * parent = NULL, int maxHost = -1);
 
@@ -241,9 +243,12 @@ private:
     W_DECLARE_PRIVATE   (WControllerFile)
     W_DECLARE_CONTROLLER(WControllerFile)
 
+    Q_PRIVATE_SLOT(d_func(), void onLog(const QString &))
+
+    Q_PRIVATE_SLOT(d_func(), void onWriteLog())
+
     Q_PRIVATE_SLOT(d_func(), void onCheckWatchers())
 
-    friend class WControllerApplicationPrivate;
     friend class WFileWatcher;
     friend class WFileWatcherPrivate;
     friend class WLocalObject;

@@ -45,7 +45,8 @@ W_INIT_CONTROLLER(WControllerFile)
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int CONTROLLERFILE_LOG_MAX = 10000;
+static const int CONTROLLERFILE_LOG_INTERVAL =  1000; // 1 seconds
+static const int CONTROLLERFILE_LOG_MAX      = 10000;
 
 static const int CONTROLLERFILE_TIMEOUT = 10000; // 10 seconds
 
@@ -332,12 +333,6 @@ WControllerFilePrivate::WControllerFilePrivate(WControllerFile * p) : WControlle
 
 /* virtual */ WControllerFilePrivate::~WControllerFilePrivate()
 {
-#ifdef QT_4
-    qInstallMsgHandler(NULL);
-#else
-    qInstallMessageHandler(NULL);
-#endif
-
     W_CLEAR_CONTROLLER(WControllerFile);
 }
 
@@ -351,19 +346,6 @@ void WControllerFilePrivate::init()
     pathLog = "log.txt";
 
     cache = NULL;
-}
-
-//-------------------------------------------------------------------------------------------------
-// Private functions
-//-------------------------------------------------------------------------------------------------
-
-void WControllerFilePrivate::initMessageHandler()
-{
-#ifdef QT_4
-    qInstallMsgHandler(WControllerFilePrivate::messageOutput);
-#else
-    qInstallMessageHandler(WControllerFilePrivate::messageOutput);
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -408,9 +390,9 @@ void WControllerFilePrivate::registerFileWatcher(WFileWatcher * watcher)
     {
         Q_Q(WControllerFile);
 
-        QObject::connect(&timer, SIGNAL(timeout()), q, SLOT(onCheckWatchers()));
+        QObject::connect(&timerWatcher, SIGNAL(timeout()), q, SLOT(onCheckWatchers()));
 
-        timer.start(1000);
+        timerWatcher.start(1000);
     }
 }
 
@@ -422,37 +404,10 @@ void WControllerFilePrivate::unregisterFileWatcher(WFileWatcher * watcher)
     {
         Q_Q(WControllerFile);
 
-        QObject::disconnect(&timer, 0, q, 0);
+        QObject::disconnect(&timerWatcher, 0, q, 0);
 
-        timer.stop();
+        timerWatcher.stop();
     }
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void WControllerFilePrivate::addLog(const QString & message)
-{
-    Q_Q(WControllerFile);
-
-    QString string = message;
-
-    if (log.isEmpty() == false)
-    {
-        string.prepend('\n');
-    }
-
-    log.append(string);
-
-    int length = log.length();
-
-    if (length > CONTROLLERFILE_LOG_MAX)
-    {
-        log.remove(0, length - CONTROLLERFILE_LOG_MAX);
-    }
-
-    emit q->logChanged(string);
-
-    WControllerFile::appendFile(pathLog, string.toUtf8());
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -472,16 +427,16 @@ bool WControllerFilePrivate::isLoading() const
 //-------------------------------------------------------------------------------------------------
 
 #ifdef QT_4
-/* static */ void WControllerFilePrivate::messageOutput(QtMsgType, const char * message)
+/* static */ void WControllerFilePrivate::messageHandler(QtMsgType, const char * message)
 {
 
 }
 #else
-/* static */ void WControllerFilePrivate::messageOutput(QtMsgType,
-                                                        const QMessageLogContext &,
-                                                        const QString            & message)
+/* static */ void WControllerFilePrivate::messageHandler(QtMsgType,
+                                                         const QMessageLogContext &,
+                                                         const QString            & message)
 {
-    wControllerFile->d_func()->addLog(message);
+    wControllerFile->d_func()->method.invoke(wControllerFile, Q_ARG(const QString &, message));
 
 #ifdef QT_4
     std::cout << message << std::endl;
@@ -553,6 +508,47 @@ bool WControllerFilePrivate::isLoading() const
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
+void WControllerFilePrivate::onLog(const QString & message)
+{
+    Q_Q(WControllerFile);
+
+    QString string = message;
+
+    if (log.isEmpty() == false)
+    {
+        string.prepend('\n');
+    }
+
+    log.append(string);
+
+    int length = log.length();
+
+    if (length > CONTROLLERFILE_LOG_MAX)
+    {
+        log.remove(0, length - CONTROLLERFILE_LOG_MAX);
+    }
+
+    emit q->logChanged(string);
+
+    logBuffer.append(string);
+
+    if (timerLog.isActive() == false)
+    {
+        timerLog.start();
+    }
+}
+
+void WControllerFilePrivate::onWriteLog()
+{
+    Q_Q(WControllerFile);
+
+    q->startAppendFile(pathLog, logBuffer.toUtf8());
+
+    logBuffer.clear();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void WControllerFilePrivate::onCheckWatchers()
 {
     int fileCount = 20;
@@ -588,6 +584,41 @@ WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this
 
 //-------------------------------------------------------------------------------------------------
 // Interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WControllerFile::initMessageHandler()
+{
+    Q_D(WControllerFile);
+
+    if (d->timerLog.isSingleShot())
+    {
+        qWarning("WControllerFile::initMessageHandler: Handler already initialized.");
+
+        return;
+    }
+
+    // NOTE: We clear the log file.
+    startWriteFile(d->pathLog, QByteArray());
+
+    const QMetaObject * meta = metaObject();
+
+    d->method = meta->method(meta->indexOfMethod("onLog(QString)"));
+
+    d->timerLog.setInterval(CONTROLLERFILE_LOG_INTERVAL);
+
+    d->timerLog.setSingleShot(true);
+
+    connect(&d->timerLog, SIGNAL(timeout()), this, SLOT(onWriteLog()));
+
+#ifdef QT_4
+    qInstallMsgHandler(WControllerFilePrivate::messageHandler);
+#else
+    qInstallMessageHandler(WControllerFilePrivate::messageHandler);
+#endif
+
+    qDebug("BEGIN LOG");
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ WCacheFile * WControllerFile::getFile(const QString & url, QObject * parent,
@@ -660,6 +691,18 @@ WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this
 /* Q_INVOKABLE */ void WControllerFile::waitActions()
 {
     Q_D(WControllerFile);
+
+    qDebug("END LOG");
+
+    // NOTE: We rely on 'isSingleShot' to detect if the handler is initialized.
+    if (d->timerLog.isSingleShot())
+    {
+#ifdef QT_4
+        qInstallMsgHandler(NULL);
+#else
+        qInstallMessageHandler(NULL);
+#endif
+    }
 
     QTimer timer;
 

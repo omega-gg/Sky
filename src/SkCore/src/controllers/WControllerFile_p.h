@@ -20,6 +20,7 @@
 // Qt includes
 #include <QList>
 #include <QTimer>
+#include <QMetaMethod>
 
 // Private includes
 #include <private/WController_p>
@@ -45,8 +46,6 @@ public:
     void init();
 
 public: // Functions
-    void initMessageHandler();
-
     void createThreadWrite();
     void createThreadRead ();
 
@@ -62,10 +61,10 @@ public: // Functions
 
 public: // Static functions
 #ifdef QT_4
-    static void messageOutput(QtMsgType type, const char * message);
+    static void messageHandler(QtMsgType type, const char * message);
 #else
-    static void messageOutput(QtMsgType type, const QMessageLogContext & context,
-                                              const QString            & message);
+    static void messageHandler(QtMsgType type, const QMessageLogContext & context,
+                                               const QString            & message);
 #endif
 
     static bool tryOpen(const QtLP_Private::QtLockedFile & file);
@@ -73,6 +72,10 @@ public: // Static functions
     static void deleteDir(QDir & dir, bool recursive);
 
 public: // Slots
+    void onLog(const QString & message);
+
+    void onWriteLog();
+
     void onCheckWatchers();
 
 public: // Variables
@@ -80,6 +83,7 @@ public: // Variables
     WThreadActions * threadRead;
 
     QString log;
+    QString logBuffer;
 
     QString pathStorage;
     QString pathLog;
@@ -89,7 +93,10 @@ public: // Variables
     QList<WLocalObject *> objects;
     QList<WFileWatcher *> watchers;
 
-    QTimer timer;
+    QMetaMethod method;
+
+    QTimer timerLog;
+    QTimer timerWatcher;
 
 protected:
     W_DECLARE_PUBLIC(WControllerFile)

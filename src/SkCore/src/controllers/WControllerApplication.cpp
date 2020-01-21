@@ -249,9 +249,6 @@ void WControllerApplicationPrivate::initApplication(QCoreApplication * applicati
     // Controllers - declaration order matters
 
     W_CREATE_CONTROLLER(WControllerFile);
-
-    wControllerFile->d_func()->initMessageHandler();
-
     W_CREATE_CONTROLLER(WControllerScript);
     W_CREATE_CONTROLLER(WControllerNetwork);
     W_CREATE_CONTROLLER(WControllerDownload);
