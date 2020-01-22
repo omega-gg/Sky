@@ -231,6 +231,19 @@ if [ $windows = true ]; then
     mkdir -p "$mingw"
 
     cp -r "$MinGW"/* "$mingw"
+
+    #----------------------------------------------------------------------------------------------
+    # NOTE Windows: This is helpful to build Qt with OpenGL ES.
+
+    cp -r "$Qt5"/include/QtANGLE/GLES2 "$mingw"/include
+
+    cp "$Qt5"/bin/libEGL.dll    "$mingw"/bin
+    cp "$Qt5"/bin/libGLESv2.dll "$mingw"/bin
+
+    cp "$Qt5"/lib/liblibEGL.a    "$mingw"/lib
+    cp "$Qt5"/lib/liblibGLESv2.a "$mingw"/lib
+
+    #----------------------------------------------------------------------------------------------
 fi
 
 #--------------------------------------------------------------------------------------------------
