@@ -781,7 +781,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
     WBackendNet * backend = q->backendFromUrl(source);
 
     if (backend)
-    {        
+    {
         if (backend->checkQuery(source))
         {
             WBackendNetQuery query = backend->extractQuery(source);

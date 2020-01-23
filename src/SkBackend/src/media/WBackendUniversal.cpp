@@ -3748,6 +3748,8 @@ void WBackendUniversalPrivate::applyQueryParameters(WBackendUniversalParameters 
 void WBackendUniversalPrivate::applyQueryResults(WBackendUniversalParameters * parameters,
                                                  WBackendNetQuery            * query) const
 {
+    query->type = getTypeQuery(parameters->value("type")->toString());
+
     query->backend = parameters->value("backend")->toString();
 
     query->url = parameters->value("url")->toString();
