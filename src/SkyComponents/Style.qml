@@ -1105,7 +1105,8 @@ Item
     //---------------------------------------------------------------------------------------------
     // PlayerBrowser
 
-    property int playerBrowser_interval: 200
+    property int playerBrowser_intervalA: 500
+    property int playerBrowser_intervalB: 200
 
     property real playerBrowser_opacity: 0.6
 

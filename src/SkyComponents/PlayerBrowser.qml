@@ -175,6 +175,8 @@ MouseArea
 
         pScroll = 0;
 
+        timerScroll.interval = st.playerBrowser_intervalA;
+
         timerScroll.restart();
 
         flashPrevious();
@@ -185,6 +187,8 @@ MouseArea
         if (buttonNext.visible == false || (pScroll == 1 && timerScroll.running)) return;
 
         pScroll = 1;
+
+        timerScroll.interval = st.playerBrowser_intervalA;
 
         timerScroll.restart();
 
@@ -232,12 +236,14 @@ MouseArea
     {
         id: timerScroll
 
-        interval: st.playerBrowser_interval
+        interval: st.playerBrowser_intervalA
 
         repeat: true
 
         onTriggered:
         {
+            interval = st.playerBrowser_intervalB;
+
             if (pScroll)
             {
                  flashNext();
@@ -250,7 +256,7 @@ MouseArea
     {
         id: timerBackward
 
-        interval: st.playerBrowser_interval
+        interval: st.playerBrowser_intervalB
 
         onTriggered: pBackward = false
     }
@@ -259,7 +265,7 @@ MouseArea
     {
         id: timerForward
 
-        interval: st.playerBrowser_interval
+        interval: st.playerBrowser_intervalB
 
         onTriggered: pForward = false
     }
