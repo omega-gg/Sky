@@ -45,15 +45,16 @@ if [ $1 = "win32" -o $1 = "win64" ]; then
     windows=true
 
     grep=grep
-
-elif [ $1 = "macOS" ]; then
-
+else
     windows=false
+fi
+
+if [ "$OSTYPE" = "darwin"* ]; then
 
     # NOTE: We use ggrep on macOS because it supports Perl regexp (brew install grep).
     grep=ggrep
 else
-    windows=false
+    grep=grep
 fi
 
 external="$external/$1"
@@ -79,7 +80,7 @@ if [ $windows = true ]; then
 
 elif [ $1 = "macOS" ]; then
 
-    VLC_url="http://download.videolan.org/pub/videolan/vlc/$VLC_version/macosx/vlc-$VLC_version-$1.dmg"
+    VLC_url="http://download.videolan.org/pub/videolan/vlc/$VLC_version/macosx/vlc-$VLC_version.dmg"
 fi
 
 libtorrent_url="https://dev.azure.com/bunjee/libtorrent/_apis/build/builds/465/artifacts"
@@ -162,6 +163,25 @@ elif [ $1 = "macOS" ]; then
     curl -L -o VLC.dmg $VLC_url
 
     test -d "$VLC" && rm -rf "$VLC"/*
+
+    #----------------------------------------------------------------------------------------------
+    # NOTE macOS: We get a header error when extracting the archive with 7z.
+
+    set +e
+
+    7z x VLC.dmg -o"$VLC"
+
+    set -e
+
+    #----------------------------------------------------------------------------------------------
+
+    rm VLC.dmg
+
+    path="$VLC/VLC media player"
+
+    mv "$path"/VLC.app/Contents/MacOS/* "$VLC"
+
+    rm -rf "$path"
 fi
 
 #--------------------------------------------------------------------------------------------------
