@@ -3727,6 +3727,8 @@ void WBackendUniversalPrivate::runQuery(WBackendNetQuery * query, const QString 
 void WBackendUniversalPrivate::applyQueryParameters(WBackendUniversalParameters * parameters,
                                                     const WBackendNetQuery      & query) const
 {
+    parameters->add("type");
+
     parameters->add("backend", query.backend);
 
     parameters->add("url",         query.url);
