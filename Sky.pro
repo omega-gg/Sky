@@ -29,6 +29,7 @@ OTHER_FILES += 3rdparty.sh \
                src/SkyComponents/qmldir \
                src/SkyPresentation/qmldir \
                dist/3rdparty.sh \
+               dist/install-qt.sh \
                dist/changes/1.0.1.md \
                dist/changes/1.1.0.md \
                dist/changes/1.1.1.md \
