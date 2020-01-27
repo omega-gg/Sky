@@ -77,7 +77,7 @@ jobs:
       docker run -d --name ubuntu -v $PWD:/Sky i386/ubuntu:18.04 tail -f /dev/null
       docker exec -t ubuntu bash -c "cd /Sky;
                                      apt-get update;
-                                     apt-get -y install sudo wget;
+                                     apt-get -y install sudo curl;
                                      sh 3rdparty.sh all qt4 ubuntu;
                                      sh configure.sh qt4 linux;
                                      sh build.sh qt4 linux deploy"
@@ -92,7 +92,7 @@ jobs:
       docker run -d --name ubuntu -v $PWD:/Sky i386/ubuntu:18.04 tail -f /dev/null
       docker exec -t ubuntu bash -c "cd /Sky;
                                      apt-get update;
-                                     apt-get -y install sudo wget;
+                                     apt-get -y install sudo curl;
                                      sh 3rdparty.sh all qt5 ubuntu;
                                      sh configure.sh qt5 linux;
                                      sh build.sh qt5 linux deploy"
@@ -109,7 +109,7 @@ jobs:
       docker run -d --name ubuntu -v $PWD:/Sky amd64/ubuntu:18.04 tail -f /dev/null
       docker exec -t ubuntu bash -c "cd /Sky;
                                      apt-get update;
-                                     apt-get -y install sudo wget;
+                                     apt-get -y install sudo curl;
                                      sh 3rdparty.sh all qt4 ubuntu;
                                      sh configure.sh qt4 linux;
                                      sh build.sh qt4 linux deploy"
@@ -124,7 +124,7 @@ jobs:
       docker run -d --name ubuntu -v $PWD:/Sky amd64/ubuntu:18.04 tail -f /dev/null
       docker exec -t ubuntu bash -c "cd /Sky;
                                      apt-get update;
-                                     apt-get -y install sudo wget;
+                                     apt-get -y install sudo curl;
                                      sh 3rdparty.sh all qt5 ubuntu;
                                      sh configure.sh qt5 linux;
                                      sh build.sh qt5 linux deploy"
