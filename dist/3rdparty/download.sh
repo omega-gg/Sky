@@ -201,8 +201,8 @@ libtorrent_url=$(artifact libtorrent-$1)
 
 echo $libtorrent_url
 
-#curl -L -o libtorrent.zip $(artifact libtorrent-$1)
+curl -L -o libtorrent.zip $(artifact libtorrent-$1)
 
-#7z x libtorrent.zip -y -o"$$external"
+7z x libtorrent.zip -y -o"$$external"
 
-#rm libtorrent.zip
+rm libtorrent.zip
