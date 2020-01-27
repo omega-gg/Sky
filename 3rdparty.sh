@@ -292,7 +292,7 @@ if [ $1 = "all" -o $1 = "deploy" ]; then
 
                 cd "$Qt"
 
-                wget "$Qt_sources"
+                curl -L -o "$Qt_archive" "$Qt_sources"
 
                 tar -xf "$Qt_archive"
 
