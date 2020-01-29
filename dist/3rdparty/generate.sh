@@ -1,5 +1,5 @@
 #!/bin/sh
-set -e
+#set -e
 
 #--------------------------------------------------------------------------------------------------
 # Settings
@@ -23,16 +23,38 @@ libtorrent_version="1.2.2"
 Boost_version="1.71.0"
 
 #--------------------------------------------------------------------------------------------------
+# Android
+
+NDK_version="21"
+
+#--------------------------------------------------------------------------------------------------
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
 if [ $# != 1 -a $# != 2 ] \
    || \
-   [ $1 != "win32" -a $1 != "win64" -a $1 != "macOS" ] || [ $# = 2 -a "$2" != "download" ]; then
+   [ $1 != "win32" -a $1 != "win64" -a $1 != "macOS" -a $1 != "android32" -a $1 != "android64" ] \
+   || \
+   [ $# = 2 -a "$2" != "all" -a "$2" != "download" ]; then
 
-    echo "Usage: generate <win32 | win64 | macOS> [download]"
+    echo "Usage: generate <win32 | win64 | macOS | android32 | android64> [all | download]"
 
     exit 1
+fi
+
+#--------------------------------------------------------------------------------------------------
+# All
+#--------------------------------------------------------------------------------------------------
+
+if [ "$2" = "all" ]; then
+
+    sh generate.sh win32
+    sh generate.sh win64
+    sh generate.sh macOS
+    sh generate.sh android32
+    sh generate.sh android64
+
+    exit 0
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -52,9 +74,13 @@ fi
 
 if [ $1 = "win32" -o $1 = "win64" ]; then
 
-    windows=true
+    os="windows"
+
+elif [ $1 = "android32" -o $1 = "android64" ]; then
+
+    os="android"
 else
-    windows=false
+    os=""
 fi
 
 external="$external/$1"
@@ -73,6 +99,8 @@ VLC="$external/VLC/$VLC_version"
 libtorrent="$external/libtorrent/$libtorrent_version"
 
 Boost="$external/boost/$Boost_version"
+
+NDK="$external/NDK/$NDK_version"
 
 tools="$external/tools"
 
@@ -173,7 +201,7 @@ cp -r "$Qt5"/mkspecs "$qt"
 
 #rm "$qt"/lib/*d.*
 
-if [ $windows = true ]; then
+if [ $os = "windows" ]; then
 
     cp "$Qt5"/bin/qmake.exe       "$qt"/bin
     cp "$Qt5"/bin/moc.exe         "$qt"/bin
@@ -212,6 +240,17 @@ elif [ $1 = "macOS" ]; then
     rm "$qt"/plugins/platforms/*debug*
 
     find "$qt"/lib -name "*_debug*" -delete
+
+elif [ $os = "android" ]; then
+
+    cp "$Qt5"/bin/qmake       "$qt"/bin
+    cp "$Qt5"/bin/moc         "$qt"/bin
+    cp "$Qt5"/bin/rcc         "$qt"/bin
+    cp "$Qt5"/bin/qmlcachegen "$qt"/bin
+
+    cp "$Qt5"/plugins/imageformats/libq*.so "$qt"/plugins/imageformats
+
+    cp -r "$Qt5"/plugins/platforms/android "$qt"/plugins/platforms
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -235,7 +274,7 @@ fi
 # MinGW
 #--------------------------------------------------------------------------------------------------
 
-if [ $windows = true ]; then
+if [ $os = "windows" ]; then
 
     echo "COPYING MinGW"
 
@@ -247,14 +286,15 @@ if [ $windows = true ]; then
 
     #----------------------------------------------------------------------------------------------
     # NOTE Windows: This is helpful to build Qt with OpenGL ES.
+    # Update: It seems to be a better idea to install ANGLE on the build machine.
 
-    cp -r "$Qt5"/include/QtANGLE/GLES2 "$mingw"/include
+    #cp -r "$Qt5"/include/QtANGLE/GLES2 "$mingw"/include
 
-    cp "$Qt5"/bin/libEGL.dll    "$mingw"/bin
-    cp "$Qt5"/bin/libGLESv2.dll "$mingw"/bin
+    #cp "$Qt5"/bin/libEGL.dll    "$mingw"/bin
+    #cp "$Qt5"/bin/libGLESv2.dll "$mingw"/bin
 
-    cp "$Qt5"/lib/liblibEGL.a    "$mingw"/lib
-    cp "$Qt5"/lib/liblibGLESv2.a "$mingw"/lib
+    #cp "$Qt5"/lib/liblibEGL.a    "$mingw"/lib
+    #cp "$Qt5"/lib/liblibGLESv2.a "$mingw"/lib
 
     #----------------------------------------------------------------------------------------------
 fi
@@ -263,7 +303,7 @@ fi
 # SSL
 #--------------------------------------------------------------------------------------------------
 
-if [ $windows = true ]; then
+if [ $os = "windows" ]; then
 
     echo "COPYING SSL"
 
@@ -286,7 +326,7 @@ mkdir -p "$vlc"
 
 cp -r "$VLC"/plugins "$vlc"
 
-if [ $windows = true ]; then
+if [ $os = "windows" ]; then
 
     cp -r "$VLC"/sdk "$vlc"
 
@@ -322,6 +362,21 @@ boost="$path/Boost/$Boost_version"
 mkdir -p "$boost"
 
 cp -r "$Boost"/* "$boost"
+
+#--------------------------------------------------------------------------------------------------
+# NDK
+#--------------------------------------------------------------------------------------------------
+
+if [ $os = "android" ]; then
+
+    echo "COPYING NDK"
+
+    ndk="$path/NDK/$NDK_version"
+
+    mkdir -p "$ndk"
+
+    cp -r "$NDK"/* "$ndk"
+fi
 
 #--------------------------------------------------------------------------------------------------
 # tools

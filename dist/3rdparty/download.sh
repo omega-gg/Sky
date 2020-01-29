@@ -13,15 +13,43 @@ Qt5_version="5.12.3"
 
 VLC_version="3.0.6"
 
+libtorrent_version="1.2.2"
+
+Boost_version="1.71.0"
+
+#--------------------------------------------------------------------------------------------------
+# Android
+
+NDK_version="21"
+
 #--------------------------------------------------------------------------------------------------
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# != 1 ] || [ $1 != "win32" -a $1 != "win64" -a $1 != "macOS" ]; then
+if [ $# != 1 -a $# != 2 ] \
+   || \
+   [ $1 != "win32" -a $1 != "win64" -a $1 != "macOS" -a $1 != "android32" -a $1 != "android64" ] \
+   || \
+   [ $# = 2 -a "$2" != "all" ]; then
 
-    echo "Usage: download <win32 | win64 | macOS>"
+    echo "Usage: download <win32 | win64 | macOS | android32 | android64> [all]"
 
     exit 1
+fi
+
+#--------------------------------------------------------------------------------------------------
+# All
+#--------------------------------------------------------------------------------------------------
+
+if [ "$2" = "all" ]; then
+
+    sh download.sh win32
+    sh download.sh win64
+    sh download.sh macOS
+    sh download.sh android32
+    sh download.sh android64
+
+    exit 0
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -42,19 +70,21 @@ function artifact
 
 if [ $1 = "win32" -o $1 = "win64" ]; then
 
-    windows=true
+    os="windows"
 
-    grep=grep
+elif [ $1 = "android32" -o $1 = "android64" ]; then
+
+    os="android"
 else
-    windows=false
+    os=""
 fi
 
 if [ "$OSTYPE" = "darwin"* ]; then
 
     # NOTE: We use ggrep on macOS because it supports Perl regexp (brew install grep).
-    grep=ggrep
+    grep="ggrep"
 else
-    grep=grep
+    grep="grep"
 fi
 
 external="$external/$1"
@@ -65,9 +95,15 @@ SSL="$external/OpenSSL"
 
 VLC="$external/VLC/$VLC_version"
 
+libtorrent="$external/libtorrent/$libtorrent_version"
+
+Boost="$external/Boost/$Boost_version"
+
+NDK="$external/NDK/$NDK_version"
+
 #--------------------------------------------------------------------------------------------------
 
-if [ $windows = true ]; then
+if [ $os = "windows" ]; then
 
     if [ $1 = "win32" ]; then
 
@@ -85,6 +121,11 @@ fi
 
 libtorrent_url="https://dev.azure.com/bunjee/libtorrent/_apis/build/builds/465/artifacts"
 
+if [ $os = "android" ]; then
+
+    NDK_url="https://dl.google.com/android/repository/android-ndk-r$NDK_version-linux-x86_64.zip"
+fi
+
 #--------------------------------------------------------------------------------------------------
 # Qt5
 #--------------------------------------------------------------------------------------------------
@@ -93,9 +134,9 @@ echo "DOWNLOADING Qt5"
 
 test -d "$Qt5" && rm -rf "$Qt5"/*
 
-if [ $windows = true ]; then
+if [ $os = "windows" ]; then
 
-    sh install-qt.sh --directory "$Qt5" --version $Qt5_version --host windows_x86 \
+    sh install-qt.sh --directory "$Qt5" --version $Qt5_version \
                      --toolchain $1_mingw73 qtbase qtdeclarative qtxmlpatterns qtsvg qtwinextras
 
     if [ $1 = "win32" ]; then
@@ -107,10 +148,24 @@ if [ $windows = true ]; then
 
 elif [ $1 = "macOS" ]; then
 
-    sh install-qt.sh --directory "$Qt5" --version $Qt5_version --host mac_x64 \
+    sh install-qt.sh --directory "$Qt5" --version $Qt5_version \
                      --toolchain clang_64 qtbase qtdeclarative qtxmlpatterns qtsvg
 
     mv "$Qt5"/$Qt5_version/clang_64/* "$Qt5"
+
+elif [ $1 = "android32" ]; then
+
+    sh install-qt.sh --directory "$Qt5" --version $Qt5_version --host linux_x64 --target android \
+                     --toolchain android_armv7 qtbase qtdeclarative qtxmlpatterns qtsvg
+
+    mv "$Qt5"/$Qt5_version/android_armv7/* "$Qt5"
+
+elif [ $1 = "android64" ]; then
+
+    sh install-qt.sh --directory "$Qt5" --version $Qt5_version --host linux_x64 --target android \
+                     --toolchain android_arm64_v8a qtbase qtdeclarative qtxmlpatterns qtsvg
+
+    mv "$Qt5"/$Qt5_version/android_arm64_v8a/* "$Qt5"
 fi
 
 rm -rf "$Qt5"/$Qt5_version
@@ -119,7 +174,7 @@ rm -rf "$Qt5"/$Qt5_version
 # SSL
 #--------------------------------------------------------------------------------------------------
 
-if [ $windows = true ]; then
+if [ $os = "windows" ]; then
 
     echo ""
     echo "DOWNLOADING SSL"
@@ -142,7 +197,7 @@ echo ""
 echo "DOWNLOADING VLC"
 echo $VLC_url
 
-if [ $windows = true ]; then
+if [ $os = "windows" ]; then
 
     curl -L -o VLC.7z $VLC_url
 
@@ -193,6 +248,9 @@ echo "DOWNLOADING libtorrent"
 
 curl -L -o artifacts.json $libtorrent_url
 
+test -d "$libtorrent" && rm -rf "$libtorrent"/*
+test -d "$Boost"      && rm -rf "$Boost"/*
+
 artifacts=$(cat artifacts.json)
 
 rm artifacts.json
@@ -201,8 +259,32 @@ libtorrent_url=$(artifact libtorrent-$1)
 
 echo $libtorrent_url
 
-curl -L -o libtorrent.zip $(artifact libtorrent-$1)
+#curl -L -o libtorrent.zip $(artifact libtorrent-$1)
 
-7z x libtorrent.zip -y -o"$$external"
+#7z x libtorrent.zip -y -o"$external"
 
-rm libtorrent.zip
+#rm libtorrent.zip
+
+#--------------------------------------------------------------------------------------------------
+# NDK
+#--------------------------------------------------------------------------------------------------
+
+if [ $os = "android" ]; then
+
+    echo ""
+    echo "DOWNLOADING NDK"
+
+    curl -L -o NDK.zip $NDK_url
+
+    test -d "$NDK" && rm -rf "$NDK"/*
+
+    7z x NDK.zip -o"$NDK"
+
+    rm NDK.zip
+
+    path="$NDK/android-ndk-r$NDK_version"
+
+    mv "$path"/* "$NDK"
+
+    rm -rf "$path"
+fi
