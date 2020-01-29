@@ -167,9 +167,7 @@ WTorrentSocket::WTorrentSocket(WTorrentThread * thread, QTcpSocket * socket) : Q
 
 void WTorrentSocket::writeBuffer(int length)
 {
-    char buffer[length];
-
-    memset(buffer, '0', length);
+    QByteArray buffer(length, '0');
 
     socket->write(buffer);
 }

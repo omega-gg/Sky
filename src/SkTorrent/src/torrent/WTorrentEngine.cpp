@@ -189,7 +189,7 @@ torrent_info * WTorrentEnginePrivate::loadInfo(const QByteArray & array) const
     else return NULL;
 }
 
-void WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & fileName) const
+bool WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & fileName) const
 {
     QFile file(fileName);
 
@@ -197,7 +197,7 @@ void WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & file
     {
         qWarning("WTorrentEnginePrivate::loadResume: Failed to open file %s.", fileName.C_STR);
 
-        return;
+        return false;
     }
 
     QString content = Sk::readAscii(file.readAll());
@@ -236,7 +236,7 @@ void WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & file
         }
     }
 
-    if (unfinished.length() == 1) return;
+    if (unfinished.length() == 1) return true;
 
     QBitArray * blocks = &(data->blocks);
 
@@ -277,6 +277,8 @@ void WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & file
 
         qDebug("ENTRY %d [%s]", block, bitmask.C_STR);
     }
+
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -309,21 +311,22 @@ WTorrentData * WTorrentEnginePrivate::createData(TorrentInfoPointer info, const 
 
         QString fileName = path + "/." + number;
 
-        loadResume(data, fileName);
+        if (loadResume(data, fileName))
+        {
+            std::ifstream stream(fileName.C_STR, std::ios_base::binary);
 
-        std::ifstream stream(fileName.C_STR, std::ios_base::binary);
-
-        stream.unsetf(std::ios_base::skipws);
+            stream.unsetf(std::ios_base::skipws);
 
 #ifdef LIBTORRENT_ABI_1
-        params.resume_data.assign(std::istream_iterator<char>(stream),
-                                  std::istream_iterator<char>());
+            params.resume_data.assign(std::istream_iterator<char>(stream),
+                                      std::istream_iterator<char>());
 #else
-        std::vector<char> buffer { std::istream_iterator<char>(stream),
-                                   std::istream_iterator<char>() };
+            std::vector<char> buffer { std::istream_iterator<char>(stream),
+                                       std::istream_iterator<char>() };
 
-        params = read_resume_data(buffer);
+            params = read_resume_data(buffer);
 #endif
+        }
 
         QStringList * urls = &(source->urls);
 

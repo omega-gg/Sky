@@ -206,7 +206,7 @@ public: // Functions
 
     torrent_info * loadInfo(const QByteArray & array) const;
 
-    void loadResume(WTorrentData * data, const QString & fileName) const;
+    bool loadResume(WTorrentData * data, const QString & fileName) const;
 
     WTorrentData * createData(TorrentInfoPointer info, const sha1_hash & hash,
                                                        const QString   & url);
