@@ -38,7 +38,7 @@ ScrollArea
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    contentHeight: itemText.y + itemText.height
+    contentHeight: itemText.height
 
     onContentHeightChanged: if (pAtBottom) scrollToBottom()
 
@@ -123,7 +123,6 @@ ScrollArea
 
         anchors.left : parent.left
         anchors.right: parent.right
-        anchors.top  : parent.top
 
         wrapMode: Text.Wrap
 
