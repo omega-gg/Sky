@@ -27,8 +27,10 @@
 
 QString version;
 
-QString defineA;
-QString defineB;
+QStringList defines;
+
+//QString defineA;
+//QString defineB;
 
 QStringList paths;
 
@@ -91,17 +93,17 @@ void generateQrc(const QString & path)
 
 //-------------------------------------------------------------------------------------------------
 
-bool skipLines(QTextStream * stream, const QString & string)
+bool skipLines(QTextStream * stream, QString * line, const QString & string)
 {
-    QString line = stream->readLine();
+    *line = stream->readLine();
 
-    if (line.isNull()) return false;
+    if (line->isNull()) return false;
 
-    while (line.startsWith(string) == false)
+    while (line->startsWith(string) == false)
     {
-        line = stream->readLine();
+        *line = stream->readLine();
 
-        if (line.isNull()) return false;
+        if (line->isNull()) return false;
     }
 
     return true;
@@ -133,42 +135,77 @@ void scanFile(const QString & input, const QString & output)
             {
                 content.append(line + '\n');
             }
-        }
-        else if (line.startsWith(defineA))
-        {
+
             line = stream.readLine();
+        }
+        else if (line.startsWith("//#"))
+        {
+            QString string = line.mid(3);
 
-            if (line.isNull()) break;
-
-            while (line.startsWith("//#") == false)
+            if (string == "END")
             {
-                content.append(line + '\n');
-
                 line = stream.readLine();
 
-                if (line.isNull())
-                {
-                    replaceFile(output, content);
+                continue;
+            }
 
-                    return;
+            if (defines.contains(string))
+            {
+                line = stream.readLine();
+
+                if (line.isNull()) break;
+
+                while (line.startsWith("//#") == false)
+                {
+                    content.append(line + '\n');
+
+                    line = stream.readLine();
+
+                    if (line.isNull())
+                    {
+                        replaceFile(output, content);
+
+                        return;
+                    }
+                }
+
+                if (line.startsWith("//#ELSE"))
+                {
+                    if (skipLines(&stream, &line, "//#") == false) break;
                 }
             }
-
-            if (line.startsWith("//#ELSE"))
+            else
             {
-                if (skipLines(&stream, "//#") == false) break;
+                if (skipLines(&stream, &line, "//#") == false) break;
+
+                if (line.startsWith("//#ELSE"))
+                {
+                    line = stream.readLine();
+
+                    if (line.isNull()) break;
+
+                    while (line.startsWith("//#") == false)
+                    {
+                        content.append(line + '\n');
+
+                        line = stream.readLine();
+
+                        if (line.isNull())
+                        {
+                            replaceFile(output, content);
+
+                            return;
+                        }
+                    }
+                }
             }
         }
-        else if (line.startsWith(defineB))
-        {
-            if (skipLines(&stream, "//#") == false) break;
-        }
-        else if (line.startsWith("//#") == false)
+        else
         {
             content.append(line + '\n');
-        }
 
-        line = stream.readLine();
+            line = stream.readLine();
+        }
     }
 
     replaceFile(output, content);
@@ -206,9 +243,9 @@ int main(int argc, char *argv[])
 {
     QCoreApplication application(argc, argv);
 
-    if (argc != 4)
+    if (argc < 4)
     {
-        qDebug("Usage: deployer <path> <version> <qrc output>");
+        qDebug("Usage: deployer <path> <version> <qrc output> [defines]");
 
         return -1;
     }
@@ -221,13 +258,13 @@ int main(int argc, char *argv[])
 
     if (version.startsWith("1."))
     {
-        defineA = "//#QT_4";
-        defineB = "//#QT_5";
+         defines.append("QT_4");
     }
-    else
+    else defines.append("QT_5");
+
+    for (int i = 4; i < argc; i++)
     {
-        defineA = "//#QT_5";
-        defineB = "//#QT_4";
+        defines.append(argv[i]);
     }
 
     scanFolder(argv[1]);
