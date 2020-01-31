@@ -51,11 +51,11 @@ fi
 # Configuration
 #--------------------------------------------------------------------------------------------------
 
+external="$external/$2"
+
 if [ $2 = "win32" ]; then
 
     windows=true
-
-    external="$external/$2"
 
     MinGW="$external/MinGW/$MinGW_version/i686-w64-mingw32/lib"
 
@@ -63,15 +63,11 @@ elif [ $2 = "win64" ]; then
 
     windows=true
 
-    external="$external/$2"
-
     MinGW="$external/MinGW/$MinGW_version/x86_64-w64-mingw32/lib"
 
 elif [ $2 = "macOS" ]; then
 
     windows=false
-
-    external="$external/$2"
 
 elif [ $2 = "linux" ]; then
 
