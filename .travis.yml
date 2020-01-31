@@ -23,7 +23,7 @@ install:
   - docker exec -t ubuntu bash -c "cd /Sky;
                                    apt-get update;
                                    apt-get -y install sudo curl;
-                                   sh 3rdparty.sh all ${QT} ubuntu;
+                                   sh 3rdparty.sh linux;
                                    sh configure.sh ${QT} linux"
 
 script:
