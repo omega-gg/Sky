@@ -1,6 +1,5 @@
 <a href="http://omega.gg/MotionBox/sources"><img src="dist/pictures/Sky.png" alt="Sky kit" width="128px"></a>
 ---
-
 [![azure](https://dev.azure.com/bunjee/Sky/_apis/build/status/omega-gg.Sky)](https://dev.azure.com/bunjee/Sky/_build)
 [![travis](http://api.travis-ci.org/omega-gg/Sky.svg)](http://travis-ci.org/omega-gg/Sky)
 [![appveyor](http://ci.appveyor.com/api/projects/status/86v4f4gv95u68w18?svg=true)](http://ci.appveyor.com/project/3unjee/sky)
@@ -41,23 +40,13 @@ Recommended:
 
 You can install third party libraries with:
 
-    sh 3rdparty.sh <all | install | uninstall | deploy | clean> <qt4 | qt5> <win32 | win64 | macOS | ubuntu>
-
-- Edit [3rdparty.sh](3rdparty.sh) to check your dependencies.
-
-On Windows:
-- Get the 3rdparty [32 bit](http://omega.gg/get/Sky/3rdparty/win32) or [64 bit](http://omega.gg/get/Sky/3rdparty/win64) archive.
-
-On macOS:
-- Get the [3rdparty](http://omega.gg/get/Sky/3rdparty/macOS) archive.
+    sh 3rdparty.sh <win32 | win64 | macOS | linux | android32 | android64>
 
 ## Configure
 
 You can configure Sky with:
 
     sh configure.sh <qt4 | qt5 | clean> <win32 | win64 | macOS | linux>
-
-- Edit [configure.sh](configure.sh) to check your dependencies.
 
 ## Build
 
@@ -74,15 +63,11 @@ Or the console:
     qmake -r
     make (mingw32-make on Windows)
 
-- Edit [build.sh](build.sh) to check your dependencies.
-
 ## Deploy
 
 You can deploy Sky with:
 
     sh deploy.sh <qt4 | qt5 | clean> <win32 | win64 | macOS | linux> [tools]
-
-- Edit [deploy.sh](deploy.sh) to check your dependencies.
 
 ## License
 
