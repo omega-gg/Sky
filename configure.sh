@@ -147,9 +147,9 @@ fi
 # Qt
 #--------------------------------------------------------------------------------------------------
 
-echo "COPYING Qt"
-
 if [ $1 = "qt4" -a $2 = "linux" ]; then
+
+    echo "COPYING Qt4"
 
     mkdir -p include/Qt4/QtCore/private
     mkdir -p include/Qt4/QtGui/private
@@ -164,6 +164,8 @@ if [ $1 = "qt4" -a $2 = "linux" ]; then
     cp "$Qt4"/src/declarative/util/*_p.h          include/Qt4/QtDeclarative/private
 
 elif [ $1 = "qt5" ]; then
+
+    echo "COPYING Qt5"
 
     mkdir -p include/Qt5/QtCore/private
     mkdir -p include/Qt5/QtGui/private
