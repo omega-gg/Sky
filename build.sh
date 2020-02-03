@@ -92,11 +92,11 @@ echo "------------"
 
 if [ $1 = "qt4" ]; then
 
-    QT_SELECT=qt4
+    export QT_SELECT=qt4
 
     build="build/qt4"
 else
-    QT_SELECT=qt5
+    export QT_SELECT=qt5
 
     build="build/qt5"
 fi
