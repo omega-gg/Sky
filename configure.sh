@@ -55,23 +55,23 @@ external="$external/$2"
 
 if [ $2 = "win32" ]; then
 
-    windows=true
+    os="windows"
 
     MinGW="$external/MinGW/$MinGW_version/i686-w64-mingw32/lib"
 
 elif [ $2 = "win64" ]; then
 
-    windows=true
+    os="windows"
 
     MinGW="$external/MinGW/$MinGW_version/x86_64-w64-mingw32/lib"
 
 elif [ $2 = "macOS" ]; then
 
-    windows=false
+    os="default"
 
 elif [ $2 = "linux" ]; then
 
-    windows=false
+    os="default"
 
     if [ $1 = "qt5" ]; then
 
@@ -172,7 +172,7 @@ elif [ $1 = "qt5" ]; then
     mkdir -p include/Qt5/QtQml/private
     mkdir -p include/Qt5/QtQuick/private
 
-    if [ $windows = true ]; then
+    if [ $os = "windows" ]; then
 
         cp -r "$Qt5"/include/QtCore  include/Qt5
         cp -r "$Qt5"/include/QtGui   include/Qt5
@@ -210,7 +210,7 @@ fi
 # zlib
 #--------------------------------------------------------------------------------------------------
 
-if [ $windows = true ]; then
+if [ $os = "windows" ]; then
 
     cp "$MinGW"/libz.a lib
 fi
@@ -219,7 +219,7 @@ fi
 # VLC
 #--------------------------------------------------------------------------------------------------
 
-if [ $windows = true ]; then
+if [ $os = "windows" ]; then
 
     echo "COPYING VLC"
 
@@ -241,7 +241,7 @@ fi
 # libtorrent
 #--------------------------------------------------------------------------------------------------
 
-if [ $windows = true ] || [ $2 = "macOS" ]; then
+if [ $os = "windows" ] || [ $2 = "macOS" ]; then
 
     echo "COPYING libtorrent"
 
@@ -254,7 +254,7 @@ fi
 # Boost
 #--------------------------------------------------------------------------------------------------
 
-if [ $windows = true ] || [ $2 = "macOS" ]; then
+if [ $os = "windows" ] || [ $2 = "macOS" ]; then
 
     echo "COPYING Boost"
 

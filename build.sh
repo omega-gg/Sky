@@ -45,11 +45,11 @@ external="$external/$2"
 
 if [ $2 = "win32" -o $2 = "win64" ]; then
 
-    windows=true
+    os="windows"
 
     MinGW="$external/MinGW/$MinGW_version/bin"
 else
-    windows=false
+    os="default"
 fi
 
 if [ $1 = "qt4" ]; then
@@ -59,7 +59,7 @@ else
     Qt="$external/Qt/$Qt5_version"
 fi
 
-if [ $windows = true -o $2 = "macOS" ]; then
+if [ $os = "windows" -o $2 = "macOS" ]; then
 
     qmake="$Qt/bin/qmake"
 else
@@ -84,7 +84,7 @@ if [ $1 = "clean" ]; then
 fi
 
 #--------------------------------------------------------------------------------------------------
-# Building Sky
+# Build Sky
 #--------------------------------------------------------------------------------------------------
 
 echo "BUILDING Sky"
@@ -101,7 +101,7 @@ else
     build="build/qt5"
 fi
 
-if [ $windows = true ]; then
+if [ $os = "windows" ]; then
 
     spec=win32-g++
 
@@ -137,7 +137,7 @@ fi
 
 echo ""
 
-if [ $windows = true ]; then
+if [ $os = "windows" ]; then
 
     mingw32-make $make_arguments
 else

@@ -67,17 +67,17 @@ external="$external/$2"
 
 if [ $2 = "win32" -o $2 = "win64" ]; then
 
-    windows=true
+    os="windows"
 
     MinGW="$external/MinGW/$MinGW_version/bin"
 
 elif [ $2 = "macOS" ]; then
 
-    windows=false
+    os="default"
 
 elif [ $2 = "linux" ]; then
 
-    windows=false
+    os="default"
 
     if [ -d "${lib64}" ]; then
 
@@ -95,8 +95,6 @@ elif [ $2 = "linux" ]; then
     VLC_version="$VLC_version_linux"
 
     libtorrent_version="$libtorrent_version_linux"
-else
-    windows=false
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -148,7 +146,7 @@ if [ $1 = "qt4" ]; then
 
     mkdir deploy/imageformats
 
-    if [ $windows = true ]; then
+    if [ $os = "windows" ]; then
 
         cp "$MinGW"/libgcc_s_*-1.dll    deploy
         cp "$MinGW"/libstdc++-6.dll     deploy
@@ -197,7 +195,7 @@ else
     mkdir deploy/imageformats
     mkdir deploy/QtQuick.2
 
-    if [ $windows = true ]; then
+    if [ $os = "windows" ]; then
 
         cp "$MinGW"/libgcc_s_*-1.dll    deploy
         cp "$MinGW"/libstdc++-6.dll     deploy
@@ -297,7 +295,7 @@ fi
 
 echo "COPYING SSL"
 
-if [ $windows = true ]; then
+if [ $os = "windows" ]; then
 
     cp "$SSL"/libeay32.dll deploy
     cp "$SSL"/ssleay32.dll deploy
@@ -314,7 +312,7 @@ fi
 
 echo "COPYING VLC"
 
-if [ $windows = true ]; then
+if [ $os = "windows" ]; then
 
     mkdir deploy/plugins
 
@@ -372,7 +370,7 @@ fi
 
 echo "COPYING libtorrent"
 
-if [ $windows = true ]; then
+if [ $os = "windows" ]; then
 
     cp "$libtorrent"/libtorrent.dll deploy
 
@@ -410,7 +408,7 @@ if [ "$3" != "tools" ]; then
 
     echo "COPYING Sky"
 
-    if [ $windows = true ]; then
+    if [ $os = "windows" ]; then
 
         cp "$bin"/SkCore.dll    deploy
         cp "$bin"/SkGui.dll     deploy
