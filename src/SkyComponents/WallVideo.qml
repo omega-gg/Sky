@@ -48,8 +48,8 @@ WallBookmarkTrack
 
     property int pWidthRight: width - pWidthHalf - st.border_size
 
-    property int pAreaWidth : player.width  / 5
-    property int pAreaHeight: player.height / 3
+    property int pAreaWidth : player.width  / 8
+    property int pAreaHeight: player.height / 4
 
     property int pMargin: 0
 
@@ -704,9 +704,7 @@ WallBookmarkTrack
 
         cursor: Qt.PointingHandCursor
 
-        onClicked: if (window.isTouching == false) seekBackward()
-
-        onDoubleClicked: if (window.isTouching) seekBackward()
+        onClicked: seekBackward()
     }
 
     RectangleShadow
@@ -758,9 +756,7 @@ WallBookmarkTrack
 
         cursor: Qt.PointingHandCursor
 
-        onClicked: if (window.isTouching == false) seekForward()
-
-        onDoubleClicked: if (window.isTouching) seekForward()
+        onClicked: seekForward()
     }
 
     RectangleShadow
