@@ -369,7 +369,7 @@ void WDeclarativeMouseAreaPrivate::init()
     q->setAcceptedMouseButtons(Qt::LeftButton);
 
 #ifdef QT_LATEST
-#ifdef QT_5_LATEST
+#ifdef QT_5_9_GREATER
     q->setAcceptTouchEvents(false);
 #endif
 

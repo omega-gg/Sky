@@ -160,7 +160,11 @@ WDeclarativeTexture::WDeclarativeTexture(WDeclarativeTexturePrivate * p, QQuickI
     }
     else
     {
+#ifdef QT_5_12_GREATER
         node = d->context->sceneGraphContext()->createInternalImageNode(d->context);
+#else
+        node = d->context->sceneGraphContext()->createInternalImageNode();
+#endif
 
         node->setFiltering(QSGTexture::Linear);
 
