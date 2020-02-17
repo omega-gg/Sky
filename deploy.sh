@@ -105,14 +105,11 @@ fi
 if [ $1 = "qt4" ]; then
 
     Qt="$external/Qt/$Qt4_version"
-else
-    Qt="$external/Qt/$Qt5_version"
-fi
-
-if [ $1 = "qt4" ]
 
     SSL="$external/OpenSSL/$SSL_versionA"
 else
+    Qt="$external/Qt/$Qt5_version"
+
     SSL="$external/OpenSSL/$SSL_versionB"
 fi
 
