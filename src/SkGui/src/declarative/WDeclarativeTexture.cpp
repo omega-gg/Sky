@@ -160,7 +160,7 @@ WDeclarativeTexture::WDeclarativeTexture(WDeclarativeTexturePrivate * p, QQuickI
     }
     else
     {
-        node = d->context->createInternalImageNode();
+        node = d->context->sceneGraphContext()->createInternalImageNode(d->context);
 
         node->setFiltering(QSGTexture::Linear);
 
@@ -210,7 +210,7 @@ WDeclarativeTexture::WDeclarativeTexture(WDeclarativeTexturePrivate * p, QQuickI
             QQuickWindowPrivate * p
                 = static_cast<QQuickWindowPrivate *> (QObjectPrivate::get(window));
 
-            d->context = p->context->sceneGraphContext();
+            d->context = p->context;
         }
         else d->context = NULL;
     }

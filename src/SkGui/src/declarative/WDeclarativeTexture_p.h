@@ -32,7 +32,7 @@
 #ifndef SK_NO_DECLARATIVETEXTURE
 
 // Forward declarations
-class QSGContext;
+class QSGRenderContext;
 class QSGTexture;
 
 class SK_GUI_EXPORT WDeclarativeTexturePrivate : public WDeclarativeItemPrivate
@@ -48,8 +48,8 @@ public: // Functions
     void applyMipmap(QSGInternalImageNode * node);
 
 public: // Variables
-    QSGContext * context;
-    QSGTexture * texture;
+    QSGRenderContext * context;
+    QSGTexture       * texture;
 
     bool updateTexture  : 1;
     bool updateGeometry : 1;
