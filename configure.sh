@@ -14,7 +14,7 @@ Qt5_version="5.14.1"
 
 MinGW_version="7.3.0"
 
-VLC_version="3.0.6"
+VLC_version="3.0.8"
 
 libtorrent_version="1.2.2"
 
