@@ -222,6 +222,12 @@ else
         cp "$Qt"/bin/Qt5XmlPatterns.dll deploy
         cp "$Qt"/bin/Qt5WinExtras.dll   deploy
 
+        if [ -f "$Qt"/bin/Qt5QmlModels.dll ]; then
+
+            cp "$Qt"/bin/Qt5QmlModels.dll       deploy
+            cp "$Qt"/bin/Qt5QmlWorkerScript.dll deploy
+        fi
+
         cp "$Qt"/plugins/platforms/qwindows.dll deploy/platforms
 
         cp "$Qt"/plugins/imageformats/qsvg.dll  deploy/imageformats
@@ -279,6 +285,12 @@ else
         cp "$Qt"/lib/libQt5XmlPatterns.so.5 deploy
         cp "$Qt"/lib/libQt5XcbQpa.so.5      deploy
         cp "$Qt"/lib/libQt5DBus.so.5        deploy
+
+        if [ -f "$Qt"/lib/libQt5QmlModels.so.5 ]; then
+
+            cp "$Qt"/lib/libQt5QmlModels.so.5       deploy
+            cp "$Qt"/lib/libQt5QmlWorkerScript.so.5 deploy
+        fi
 
         cp "$Qt"/plugins/platforms/libqxcb.so deploy/platforms
 
