@@ -29,7 +29,7 @@
 #include <qt_windows.h>
 #endif
 
-#ifdef Q_OS_LINUX
+#if defined(Q_OS_LINUX) && defined(Q_OS_ANDROID) == false
 // Linux includes
 #include <QX11Info>
 #endif

@@ -428,30 +428,30 @@ if [ "$3" != "tools" ]; then
 
     if [ $os = "windows" ]; then
 
-        cp "$bin"/SkCore.dll    deploy
-        cp "$bin"/SkGui.dll     deploy
-        cp "$bin"/SkMedia.dll   deploy
-        #cp "$bin"/SkWeb.dll     deploy
-        cp "$bin"/SkTorrent.dll deploy
-        cp "$bin"/SkBackend.dll deploy
+        cp lib/SkCore.dll    deploy
+        cp lib/SkGui.dll     deploy
+        cp lib/SkMedia.dll   deploy
+        #cp lib/SkWeb.dll     deploy
+        cp lib/SkTorrent.dll deploy
+        cp lib/SkBackend.dll deploy
 
     elif [ $2 = "macOS" ]; then
 
-        cp "$bin"/libSkCore.dylib    deploy
-        cp "$bin"/libSkGui.dylib     deploy
-        cp "$bin"/libSkMedia.dylib   deploy
-        #cp "$bin"/libSkWeb.dylib     deploy
-        cp "$bin"/libSkTorrent.dylib deploy
-        cp "$bin"/libSkBackend.dylib deploy
+        cp lib/libSkCore.dylib    deploy
+        cp lib/libSkGui.dylib     deploy
+        cp lib/libSkMedia.dylib   deploy
+        #cp lib/libSkWeb.dylib     deploy
+        cp lib/libSkTorrent.dylib deploy
+        cp lib/libSkBackend.dylib deploy
 
     elif [ $2 = "linux" ]; then
 
-        cp "$bin"/libSkCore.so    deploy
-        cp "$bin"/libSkGui.so     deploy
-        cp "$bin"/libSkMedia.so   deploy
-        #cp "$bin"/libSkWeb.so     deploy
-        cp "$bin"/libSkTorrent.so deploy
-        cp "$bin"/libSkBackend.so deploy
+        cp lib/libSkCore.so    deploy
+        cp lib/libSkGui.so     deploy
+        cp lib/libSkMedia.so   deploy
+        #cp lib/libSkWeb.so     deploy
+        cp lib/libSkTorrent.so deploy
+        cp lib/libSkBackend.so deploy
     fi
 fi
 

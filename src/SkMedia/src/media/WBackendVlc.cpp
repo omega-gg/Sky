@@ -32,7 +32,7 @@
 
 // 3rdparty includes
 #include <3rdparty/vlc/mmxRgb.h>
-#ifndef Q_OS_MAC
+#if defined(Q_OS_MAC) == false && defined(Q_OS_ANDROID) == false
 #include <3rdparty/opengl/glext.h>
 #endif
 
@@ -43,7 +43,7 @@
 #endif
 
 // Linux includes
-#ifdef Q_OS_LINUX
+#if defined(Q_OS_LINUX) && defined(Q_OS_ANDROID) == false
 #include <GL/glx.h>
 #endif
 
@@ -64,7 +64,7 @@
 //-------------------------------------------------------------------------------------------------
 // Opengl
 
-#ifndef Q_OS_MAC
+#if defined(QT_4) && defined(Q_OS_MAC) == false
 PFNGLGENPROGRAMSARBPROC              pglGenProgramsARB              = 0;
 PFNGLBINDPROGRAMARBPROC              pglBindProgramARB              = 0;
 PFNGLPROGRAMSTRINGARBPROC            pglProgramStringARB            = 0;
@@ -747,6 +747,8 @@ void WBackendVlcPrivate::convertFrameSoftware()
     }
 }
 
+#ifndef Q_OS_ANDROID
+
 void WBackendVlcPrivate::convertFrameSse()
 {
     uint32_t * p_buffer = (uint32_t *) frameSoftware.bits();
@@ -858,6 +860,8 @@ void WBackendVlcPrivate::convertFrameSse()
 
     SSE2_END;
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -1832,7 +1836,14 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
 /* virtual */ void WBackendVlc::backendUpdateFrame()
 {
-    Q_D(WBackendVlc); d->convertFrameSse();
+    Q_D(WBackendVlc);
+
+#ifdef Q_OS_ANDROID
+    // NOTE: No SSE on Android.
+    d->convertFrameSoftware();
+#else
+    d->convertFrameSse();
+#endif
 }
 
 /* virtual */ QImage WBackendVlc::backendGetFrame() const

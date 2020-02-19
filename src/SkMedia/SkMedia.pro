@@ -49,13 +49,24 @@ INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkMedia/private \
                $$SK/include \
 
-CONFIG(debug, debug|release) {
+android {
+    CONFIG(debug, debug|release) {
 
-    LIBS += -L$$SK/lib -lSkCoreD \
-            -L$$SK/lib -lSkGuiD
+        LIBS += -L$$SK/lib -lSkCoreD_$$ANDROID_TARGET_ARCH \
+                -L$$SK/lib -lSkGuiD_$$ANDROID_TARGET_ARCH
+    } else {
+        LIBS += -L$$SK/lib -lSkCore_$$ANDROID_TARGET_ARCH \
+                -L$$SK/lib -lSkGui_$$ANDROID_TARGET_ARCH
+    }
 } else {
-    LIBS += -L$$SK/lib -lSkCore \
-            -L$$SK/lib -lSkGui
+    CONFIG(debug, debug|release) {
+
+        LIBS += -L$$SK/lib -lSkCoreD \
+                -L$$SK/lib -lSkGuiD
+    } else {
+        LIBS += -L$$SK/lib -lSkCore \
+                -L$$SK/lib -lSkGui
+    }
 }
 
 win32:contains(QT_MAJOR_VERSION, 5) {
@@ -82,23 +93,4 @@ CONFIG(debug, debug|release) {
     QMAKE_POST_LINK += install_name_tool -change libSkGui.dylib \
                        @loader_path/libSkGui.dylib $${DESTDIR}/lib$${TARGET}.dylib;
 }
-}
-
-#--------------------------------------------------------------------------------------------------
-# Copy library to the bin directory
-
-win32 {
-equals(QMAKE_COPY, "copy /y") {
-    SK ~= s,/,\\,g
-
-    QMAKE_POST_LINK += $${QMAKE_COPY} $$SK\\lib\\$${TARGET}.dll $$SK\\$$SK_BIN
-} else {
-    QMAKE_POST_LINK += $${QMAKE_COPY} $$SK/lib/$${TARGET}.dll $$SK/$$SK_BIN
-}
-}
-
-macx: QMAKE_POST_LINK += $${QMAKE_COPY} $$SK/lib/lib$${TARGET}.dylib $$SK/$$SK_BIN
-
-unix:!macx {
-    QMAKE_POST_LINK += $${QMAKE_COPY} $$SK/lib/lib$${TARGET}.so $$SK/$$SK_BIN
 }

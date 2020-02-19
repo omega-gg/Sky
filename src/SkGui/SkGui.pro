@@ -25,13 +25,15 @@ contains(QT_MAJOR_VERSION, 4) {
 contains(QT_MAJOR_VERSION, 5) {
     win32:QT += winextras
 
-    unix:!macx:QT += x11extras
+    unix:!macx:!android:QT += x11extras
 }
 
 CONFIG       += plugin
 win32:CONFIG += dll
 
 DEFINES += QT_QTLOCKEDFILE_IMPORT
+
+android:DEFINES += QT_OPENGL_ES_2
 
 DEFINES += SK_GUI_LIBRARY
 
@@ -83,11 +85,20 @@ unix:contains(QT_MAJOR_VERSION, 4) {
                    $$SK/include/Qt4/QtDeclarative
 }
 
-CONFIG(debug, debug|release) {
+android {
+    CONFIG(debug, debug|release) {
 
-    LIBS += -L$$SK/lib -lSkCoreD
+        LIBS += -L$$SK/lib -lSkCoreD_$$ANDROID_TARGET_ARCH
+    } else {
+        LIBS += -L$$SK/lib -lSkCore_$$ANDROID_TARGET_ARCH
+    }
 } else {
-    LIBS += -L$$SK/lib -lSkCore
+    CONFIG(debug, debug|release) {
+
+        LIBS += -L$$SK/lib -lSkCoreD
+    } else {
+        LIBS += -L$$SK/lib -lSkCore
+    }
 }
 
 macx {
@@ -98,23 +109,4 @@ CONFIG(debug, debug|release) {
     QMAKE_POST_LINK = install_name_tool -change libSkCore.dylib \
                       @loader_path/libSkCore.dylib $${DESTDIR}/lib$${TARGET}.dylib;
 }
-}
-
-#--------------------------------------------------------------------------------------------------
-# Copy library to the bin directory
-
-win32 {
-equals(QMAKE_COPY, "copy /y") {
-    SK ~= s,/,\\,g
-
-    QMAKE_POST_LINK += $${QMAKE_COPY} $$SK\\lib\\$${TARGET}.dll $$SK\\$$SK_BIN
-} else {
-    QMAKE_POST_LINK += $${QMAKE_COPY} $$SK/lib/$${TARGET}.dll $$SK/$$SK_BIN
-}
-}
-
-macx: QMAKE_POST_LINK += $${QMAKE_COPY} $$SK/lib/lib$${TARGET}.dylib $$SK/$$SK_BIN
-
-unix:!macx {
-    QMAKE_POST_LINK += $${QMAKE_COPY} $$SK/lib/lib$${TARGET}.so $$SK/$$SK_BIN
 }
