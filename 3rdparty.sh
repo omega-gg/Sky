@@ -37,4 +37,4 @@ fi
 
 cd 3rdparty
 
-bash generate.sh $1
+sh generate.sh $1
