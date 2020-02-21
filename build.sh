@@ -195,6 +195,7 @@ if [ "$3" = "tools" ]; then
     else
         $qmake -r -spec $spec "CONFIG += release" "TOOLS = true" $Sky
     fi
+
 elif [ $os = "android" ]; then
 
     $qmake -r -spec $spec "CONFIG += release" "ANDROID_ABIS = $abi" $Sky
