@@ -155,11 +155,11 @@ echo ""
 
 if [ $1 = "qt4" ]; then
 
-    echo "COPYING Qt4"
-
-    mkdir deploy/imageformats
-
     if [ $os = "windows" ]; then
+
+        echo "COPYING Qt4"
+
+        mkdir deploy/imageformats
 
         cp "$MinGW"/libgcc_s_*-1.dll    deploy
         cp "$MinGW"/libstdc++-6.dll     deploy
@@ -181,6 +181,10 @@ if [ $1 = "qt4" ]; then
         cp "$Qt"/plugins/imageformats/qjpeg4.dll deploy/imageformats
 
     elif [ $2 = "linux" ]; then
+
+        echo "COPYING Qt4"
+
+        mkdir deploy/imageformats
 
         sudo cp "$lib"/libpng16.so.16 deploy
 
@@ -471,10 +475,22 @@ if [ "$3" != "tools" ]; then
     fi
 fi
 
-if [ $os != "android" ]; then
+#--------------------------------------------------------------------------------------------------
+# tools
+#--------------------------------------------------------------------------------------------------
 
-    echo "COPYING tools"
+echo "COPYING tools"
 
-    cp "$bin"/includeGenerator* deploy
-    cp "$bin"/deployer*         deploy
+if [ $os = "windows" ]; then
+
+    cp "$bin"/includeGenerator.exe deploy
+    cp "$bin"/deployer.exe         deploy
+
+elif [ $os = "android" ]; then
+
+    cp "$bin"/libincludeGenerator* deploy
+    cp "$bin"/libdeployer*         deploy
+else
+    cp "$bin"/includeGenerator deploy
+    cp "$bin"/deployer         deploy
 fi
