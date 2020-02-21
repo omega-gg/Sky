@@ -109,7 +109,7 @@ else
     Qt="$external/Qt/$Qt5_version"
 fi
 
-if [ $os = "windows" -o $2 = "macOS" ]; then
+if [ $os = "windows" -o $2 = "macOS" -o $os = "android" ]; then
 
     qmake="$Qt/bin/qmake"
 else
