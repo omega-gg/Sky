@@ -283,7 +283,7 @@ fi
 # Boost
 #--------------------------------------------------------------------------------------------------
 
-if [ $os = "windows" ] || [ $2 = "macOS" ]; then
+if [ $os = "windows" ] || [ $2 = "macOS" ] || [ $os = "android" ]; then
 
     echo "COPYING Boost"
 
