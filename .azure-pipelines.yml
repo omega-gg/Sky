@@ -120,6 +120,8 @@ jobs:
 #    artifact: Sky-linux64-qt5
 
 #--------------------------------------------------------------------------------------------------
+# Android
+#--------------------------------------------------------------------------------------------------
 
 - job: linux64_android32
   pool:
@@ -129,7 +131,7 @@ jobs:
       docker run -d --name ubuntu -v $PWD:/Sky amd64/ubuntu:18.04 tail -f /dev/null
       docker exec -t ubuntu bash -c "cd /Sky;
                                      apt-get update;
-                                     apt-get -y install sudo curl git;
+                                     apt-get -y install sudo curl unzip git;
                                      sh 3rdparty.sh android32;
                                      sh configure.sh qt5 android32;
                                      sh build.sh qt5 android32 deploy"
