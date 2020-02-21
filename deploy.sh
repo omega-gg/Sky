@@ -500,12 +500,12 @@ if [ "$3" != "tools" ]; then
 
     elif [ $os = "android" ]; then
 
-        cp lib/libSkCore*.so    deploy
-        cp lib/libSkGui*.so     deploy
-        cp lib/libSkMedia*.so   deploy
-        #cp lib/libSkWeb*.so     deploy
-        cp lib/libSkTorrent*.so deploy
-        cp lib/libSkBackend*.so deploy
+        cp lib/libSkCore_$abi.so    deploy
+        cp lib/libSkGui_$abi.so     deploy
+        cp lib/libSkMedia_$abi.so   deploy
+        #cp lib/libSkWeb_$abi.so     deploy
+        cp lib/libSkTorrent_$abi.so deploy
+        cp lib/libSkBackend_$abi.so deploy
     fi
 fi
 
