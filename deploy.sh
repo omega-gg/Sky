@@ -345,6 +345,8 @@ else
 
         cp "$Qt"/plugins/imageformats/lib*qsvg_$abi.so  deploy/imageformats
         cp "$Qt"/plugins/imageformats/lib*qjpeg_$abi.so deploy/imageformats
+
+        cp "$Qt"/qml/QtQuick.2/lib*qtquick2plugin_$abi.so deploy/QtQuick.2
     fi
 
     bin="$bin5"
