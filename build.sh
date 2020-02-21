@@ -86,7 +86,7 @@ if [ $2 = "win32" -o $2 = "win64" ]; then
 
     MinGW="$external/MinGW/$MinGW_version/bin"
 
-if [ $2 = "android32" -o $2 = "android64" ]; then
+elif [ $2 = "android32" -o $2 = "android64" ]; then
 
     if [ $host != "linux" ]; then
 
