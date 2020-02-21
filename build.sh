@@ -29,9 +29,9 @@ getOs()
     os=`uname`
 
     case $os in
-    msys*)   os="win";;
-    darwin*) os="macOS";;
-    linux*)  os="linux";;
+    MINGW*)  os="win";;
+    Darwin*) os="macOS";;
+    Linux*)  os="linux";;
     *)       os="other";;
     esac
 
