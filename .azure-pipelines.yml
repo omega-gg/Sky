@@ -123,7 +123,7 @@ jobs:
 # Android
 #--------------------------------------------------------------------------------------------------
 
-- job: linux64_android32
+- job: android32_qt5
   pool:
     vmImage: "ubuntu-latest"
   steps:
