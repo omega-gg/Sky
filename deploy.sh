@@ -53,11 +53,14 @@ if [ $# != 2 -a $# != 3 ] \
    || \
    [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] \
    || \
-   [ $2 != "win32" -a $2 != "win64" -a $2 != "macOS" -a $2 != "linux" ] \
+   [ $2 != "win32" -a $2 != "win64" -a $2 != "macOS" -a $2 != "linux" -a $2 != "android32" -a \
+                                                                         $2 != "android64" ]  \
    || \
    [ $# = 3 -a "$3" != "tools" ]; then
 
-    echo "Usage: deploy <qt4 | qt5 | clean> <win32 | win64 | macOS | linux> [tools]"
+    echo "Usage: deploy <qt4 | qt5 | clean>"
+    echo "              <win32 | win64 | macOS | linux | android32 | android64>"
+    echo "              [tools]"
 
     exit 1
 fi
@@ -98,6 +101,10 @@ elif [ $2 = "linux" ]; then
     VLC_version="$VLC_version_linux"
 
     libtorrent_version="$libtorrent_version_linux"
+
+elif [ $2 = "android32" -o $2 = "android64" ]; then
+
+    os="android"
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -452,6 +459,15 @@ if [ "$3" != "tools" ]; then
         #cp lib/libSkWeb.so     deploy
         cp lib/libSkTorrent.so deploy
         cp lib/libSkBackend.so deploy
+
+    elif [ $os = "android" ]; then
+
+            cp lib/libSkCore*.so    deploy
+            cp lib/libSkGui*.so     deploy
+            cp lib/libSkMedia*.so   deploy
+            #cp lib/libSkWeb*.so     deploy
+            cp lib/libSkTorrent*.so deploy
+            cp lib/libSkBackend*.so deploy
     fi
 fi
 
