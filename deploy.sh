@@ -462,16 +462,19 @@ if [ "$3" != "tools" ]; then
 
     elif [ $os = "android" ]; then
 
-            cp lib/libSkCore*.so    deploy
-            cp lib/libSkGui*.so     deploy
-            cp lib/libSkMedia*.so   deploy
-            #cp lib/libSkWeb*.so     deploy
-            cp lib/libSkTorrent*.so deploy
-            cp lib/libSkBackend*.so deploy
+        cp lib/libSkCore*.so    deploy
+        cp lib/libSkGui*.so     deploy
+        cp lib/libSkMedia*.so   deploy
+        #cp lib/libSkWeb*.so     deploy
+        cp lib/libSkTorrent*.so deploy
+        cp lib/libSkBackend*.so deploy
     fi
 fi
 
-echo "COPYING tools"
+if [ $os != "android" ]; then
 
-cp "$bin"/includeGenerator* deploy
-cp "$bin"/deployer*         deploy
+    echo "COPYING tools"
+
+    cp "$bin"/includeGenerator* deploy
+    cp "$bin"/deployer*         deploy
+fi
