@@ -21,6 +21,38 @@ MinGW_version="7.3.0"
 make_arguments="-j 4"
 
 #--------------------------------------------------------------------------------------------------
+# Functions
+#--------------------------------------------------------------------------------------------------
+
+getOs()
+{
+    case "$OSTYPE" in
+    msys*)   os="win";;
+    darwin*) os="macOS";;
+    linux*)  os="linux";;
+    *)       os="other";;
+    esac
+
+    type=`uname -m`
+
+    if [ $type = "x86_64" ]; then
+
+        if [ $os = "win" ]; then
+
+            echo win64
+        else
+            echo $os
+        fi
+
+    elif [ $os = "win" ]; then
+
+        echo win32
+    else
+        echo $os
+    fi
+}
+
+#--------------------------------------------------------------------------------------------------
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
@@ -28,11 +60,14 @@ if [ $# != 2 -a $# != 3 ] \
    || \
    [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] \
    || \
-   [ $2 != "win32" -a $2 != "win64" -a $2 != "macOS" -a $2 != "linux" ] \
+   [ $2 != "win32" -a $2 != "win64" -a $2 != "macOS" -a $2 != "linux" -a $2 != "android32" -a \
+                                                                         $2 != "android64" ]  \
    || \
    [ $# = 3 -a "$3" != "deploy" -a "$3" != "tools" ]; then
 
-    echo "Usage: build <qt4 | qt5 | clean> <win32 | win64 | macOS | linux> [deploy | tools]"
+    echo \
+    "Usage: build <qt4 | qt5 | clean> <win32 | win64 | macOS | linux | android32 | android64> \
+[deploy | tools]"
 
     exit 1
 fi
@@ -41,6 +76,8 @@ fi
 # Configuration
 #--------------------------------------------------------------------------------------------------
 
+host=$(getOs)
+
 external="$external/$2"
 
 if [ $2 = "win32" -o $2 = "win64" ]; then
@@ -48,6 +85,17 @@ if [ $2 = "win32" -o $2 = "win64" ]; then
     os="windows"
 
     MinGW="$external/MinGW/$MinGW_version/bin"
+
+if [ $2 = "android32" -o $2 = "android64" ]; then
+
+    if [ $host != "linux" ]; then
+
+        echo "You have to cross-compile $2 from Linux (preferably Ubuntu)."
+
+        exit 1
+    fi
+
+    os="android"
 else
     os="default"
 fi
@@ -121,6 +169,17 @@ elif [ $2 = "linux" ]; then
     else
         spec=linux-g++-32
     fi
+
+elif [ $os = "android" ]; then
+
+    spec=android-clang
+
+    if [ $2 = "android32" ]; then
+
+        abi=armeabi-v7a
+    else
+        abi=arm64-v8a
+    fi
 fi
 
 $qmake --version
@@ -130,7 +189,15 @@ cd $build
 
 if [ "$3" = "tools" ]; then
 
-    $qmake -r -spec $spec "CONFIG += release" "TOOLS = true" $Sky
+    if [ $os = "android" ]; then
+
+        $qmake -r -spec $spec "CONFIG += release" "TOOLS = true" "ANDROID_ABIS = $abi" $Sky
+    else
+        $qmake -r -spec $spec "CONFIG += release" "TOOLS = true" $Sky
+    fi
+elif [ $os = "android" ]; then
+
+    $qmake -r -spec $spec "CONFIG += release" "ANDROID_ABIS = $abi" $Sky
 else
     $qmake -r -spec $spec "CONFIG += release" $Sky
 fi
