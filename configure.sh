@@ -208,12 +208,12 @@ elif [ $1 = "qt5" ]; then
 
     elif [ $os = "android" ]; then
 
-        cp -r "$include"/qt5/QtCore  include/Qt5
-        cp -r "$include"/qt5/QtGui   include/Qt5
-        cp -r "$include"/qt5/QtQml   include/Qt5
-        cp -r "$include"/qt5/QtQuick include/Qt5
+        cp -r "$Qt5"/qt5/QtCore  include/Qt5
+        cp -r "$Qt5"/qt5/QtGui   include/Qt5
+        cp -r "$Qt5"/qt5/QtQml   include/Qt5
+        cp -r "$Qt5"/qt5/QtQuick include/Qt5
 
-        cp -r "$include"/qt5/QtGui/$Qt5_version/QtGui/qpa include/Qt5/QtGui
+        cp -r "$Qt5"/qt5/QtGui/$Qt5_version/QtGui/qpa include/Qt5/QtGui
     fi
 
     mv include/Qt5/QtCore/$Qt5_version/QtCore/private/*   include/Qt5/QtCore/private
