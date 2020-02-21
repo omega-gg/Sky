@@ -65,9 +65,9 @@ if [ $# != 2 -a $# != 3 ] \
    || \
    [ $# = 3 -a "$3" != "deploy" -a "$3" != "tools" ]; then
 
-    echo \
-    "Usage: build <qt4 | qt5 | clean> <win32 | win64 | macOS | linux | android32 | android64> \
-[deploy | tools]"
+    echo "Usage: build <qt4 | qt5 | clean>"
+    echo "             <win32 | win64 | macOS | linux | android32 | android64>"
+    echo "             [deploy | tools]"
 
     exit 1
 fi
