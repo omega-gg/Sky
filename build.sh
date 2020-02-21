@@ -26,7 +26,9 @@ make_arguments="-j 4"
 
 getOs()
 {
-    case "$OSTYPE" in
+    os=`uname`
+
+    case $os in
     msys*)   os="win";;
     darwin*) os="macOS";;
     linux*)  os="linux";;
