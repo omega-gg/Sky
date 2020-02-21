@@ -334,7 +334,6 @@ else
         cp "$Qt"/lib/libQt5Widgets_$abi.so     deploy
         cp "$Qt"/lib/libQt5Xml_$abi.so         deploy
         cp "$Qt"/lib/libQt5XmlPatterns_$abi.so deploy
-        cp "$Qt"/lib/libQt5DBus_$abi.so        deploy
 
         if [ -f "$Qt"/lib/libQt5QmlModels_$abi.so ]; then
 
