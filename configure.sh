@@ -37,12 +37,15 @@ Qt5_version_linux="5.9.5"
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# != 2 ] || [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] || [ $2 != "win32" -a \
-                                                                       $2 != "win64" -a \
-                                                                       $2 != "macOS" -a \
-                                                                       $2 != "linux" ]; then
+if [ $# != 2 ] || [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] || [ $2 != "win32"     -a \
+                                                                       $2 != "win64"     -a \
+                                                                       $2 != "macOS"     -a \
+                                                                       $2 != "linux"     -a \
+                                                                       $2 != "android32" -a \
+                                                                       $2 != "android64" -a ]; then
 
-    echo "Usage: configure <qt4 | qt5 | clean> <win32 | win64 | macOS | linux>"
+    echo \
+    "Usage: configure <qt4 | qt5 | clean> <win32 | win64 | macOS | linux | android32 | android64>"
 
     exit 1
 fi
@@ -84,6 +87,10 @@ elif [ $2 = "linux" ]; then
     else
         include="$include32"
     fi
+
+elif [ $2 = "android32" -o $2 = "android64" ]; then
+
+    os="android"
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -198,6 +205,15 @@ elif [ $1 = "qt5" ]; then
         cp -r "$Qt5"/lib/QtQuick.framework/Headers/* include/Qt5/QtQuick
 
         cp -r "$Qt5"/lib/QtGui.framework/Headers/$Qt5_version/QtGui/qpa include/Qt5/QtGui
+
+    elif [ $os = "android" ]; then
+
+        cp -r "$include"/qt5/QtCore  include/Qt5
+        cp -r "$include"/qt5/QtGui   include/Qt5
+        cp -r "$include"/qt5/QtQml   include/Qt5
+        cp -r "$include"/qt5/QtQuick include/Qt5
+
+        cp -r "$include"/qt5/QtGui/$Qt5_version/QtGui/qpa include/Qt5/QtGui
     fi
 
     mv include/Qt5/QtCore/$Qt5_version/QtCore/private/*   include/Qt5/QtCore/private
