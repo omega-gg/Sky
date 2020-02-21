@@ -287,7 +287,11 @@ if [ $os = "windows" ] || [ $2 = "macOS" ] || [ $os = "android" ]; then
 
     echo "COPYING Boost"
 
-    cp -r "$Boost"/Boost include
+    path="include/boost"
+
+    mkdir -p $path
+
+    cp -r "$Boost"/Boost/* $path
 
     cp "$Boost"/libboost*.* lib
 fi
