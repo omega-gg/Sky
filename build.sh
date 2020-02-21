@@ -103,6 +103,13 @@ elif [ $2 = "android32" -o $2 = "android64" ]; then
     fi
 
     os="android"
+
+    if [ $2 = "android32" ]; then
+
+        abi=armeabi-v7a
+    else
+        abi=arm64-v8a
+    fi
 else
     os="default"
 fi
@@ -180,13 +187,6 @@ elif [ $2 = "linux" ]; then
 elif [ $os = "android" ]; then
 
     spec=android-clang
-
-    if [ $2 = "android32" ]; then
-
-        abi=armeabi-v7a
-    else
-        abi=arm64-v8a
-    fi
 
     export ANDROID_NDK_ROOT="$external/NDK/$NDK_version"
 fi

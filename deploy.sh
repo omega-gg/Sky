@@ -102,9 +102,17 @@ elif [ $2 = "linux" ]; then
 
     libtorrent_version="$libtorrent_version_linux"
 
-elif [ $2 = "android32" -o $2 = "android64" ]; then
+elif [ $2 = "android32" ]; then
 
     os="android"
+
+    abi=armeabi-v7a
+
+elif [ $2 = "android64" ]; then
+
+    os="android"
+
+    abi=arm64-v8a
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -313,6 +321,32 @@ else
 
         cp "$Qt"/qml/QtQuick.2/libqtquick2plugin.so deploy/QtQuick.2
         cp "$Qt"/qml/QtQuick.2/qmldir               deploy/QtQuick.2
+
+    elif [ $os = "android" ]; then
+
+        cp "$Qt"/lib/libQt5Core_$abi.so        deploy
+        cp "$Qt"/lib/libQt5Gui_$abi.so         deploy
+        cp "$Qt"/lib/libQt5Network_$abi.so     deploy
+        cp "$Qt"/lib/libQt5OpenGL_$abi.so      deploy
+        cp "$Qt"/lib/libQt5Qml_$abi.so         deploy
+        cp "$Qt"/lib/libQt5Quick_$abi.so       deploy
+        cp "$Qt"/lib/libQt5Svg_$abi.so         deploy
+        cp "$Qt"/lib/libQt5Widgets_$abi.so     deploy
+        cp "$Qt"/lib/libQt5Xml_$abi.so         deploy
+        cp "$Qt"/lib/libQt5XmlPatterns_$abi.so deploy
+        cp "$Qt"/lib/libQt5XcbQpa_$abi.so      deploy
+        cp "$Qt"/lib/libQt5DBus_$abi.so        deploy
+
+        if [ -f "$Qt"/lib/libQt5QmlModels_$abi.so ]; then
+
+            cp "$Qt"/lib/libQt5QmlModels_$abi.so       deploy
+            cp "$Qt"/lib/libQt5QmlWorkerScript_$abi.so deploy
+        fi
+
+        cp "$Qt"/plugins/platforms/lib*qtforandroid_$abi.so deploy/platforms
+
+        cp "$Qt"/plugins/imageformats/lib*qsvg_$abi.so  deploy/imageformats
+        cp "$Qt"/plugins/imageformats/lib*qjpeg_$abi.so deploy/imageformats
     fi
 
     bin="$bin5"
