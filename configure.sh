@@ -251,13 +251,26 @@ elif [ $2 = "macOS" ]; then
 
     cp "$VLC"/lib/libvlc.5.dylib     lib/libvlc.dylib
     cp "$VLC"/lib/libvlccore.9.dylib lib/libvlccore.dylib
+
+elif [ $os = "android" ]; then
+
+    echo "COPYING VLC"
+
+    cp -r "$VLC"/include/vlc include
+
+    if [ $2 = "android32" ]; then
+
+        cp "$VLC"/jni/armeabi-v7a/libvlc.so lib
+    else
+        cp "$VLC"/jni/arm64-v8a/libvlc.so lib
+    fi
 fi
 
 #--------------------------------------------------------------------------------------------------
 # libtorrent
 #--------------------------------------------------------------------------------------------------
 
-if [ $os = "windows" ] || [ $2 = "macOS" ]; then
+if [ $os = "windows" ] || [ $2 = "macOS" ] || [ $os = "android" ]; then
 
     echo "COPYING libtorrent"
 
