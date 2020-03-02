@@ -3,16 +3,16 @@
 #--------------------------------------------------------------------------------------------------
 
 jobs:
-- job: win32_qt4
-  pool:
-    vmImage: "windows-latest"
-  steps:
-  - bash: |
-      sh 3rdparty.sh win32
-      sh configure.sh qt4 win32
-      sh build.sh qt4 win32 deploy
-  - publish: $(System.DefaultWorkingDirectory)/deploy
-    artifact: Sky-win32-qt4
+#- job: win32_qt4
+#  pool:
+#    vmImage: "windows-latest"
+#  steps:
+#  - bash: |
+#      sh 3rdparty.sh win32
+#      sh configure.sh qt4 win32
+#      sh build.sh qt4 win32 deploy
+#  - publish: $(System.DefaultWorkingDirectory)/deploy
+#    artifact: Sky-win32-qt4
 
 - job: win32_qt5
   pool:
@@ -57,20 +57,20 @@ jobs:
 # Linux
 #--------------------------------------------------------------------------------------------------
 
-- job: linux32_qt4
-  pool:
-    vmImage: "ubuntu-latest"
-  steps:
-  - bash: |
-      docker run -d --name ubuntu -v $PWD:/Sky i386/ubuntu:18.04 tail -f /dev/null
-      docker exec -t ubuntu bash -c "cd /Sky;
-                                     apt-get update;
-                                     apt-get -y install sudo curl git;
-                                     sh 3rdparty.sh linux;
-                                     sh configure.sh qt4 linux;
-                                     sh build.sh qt4 linux deploy"
-  - publish: $(System.DefaultWorkingDirectory)/deploy
-    artifact: Sky-linux32-qt4
+#- job: linux32_qt4
+#  pool:
+#    vmImage: "ubuntu-latest"
+#  steps:
+#  - bash: |
+#      docker run -d --name ubuntu -v $PWD:/Sky i386/ubuntu:18.04 tail -f /dev/null
+#      docker exec -t ubuntu bash -c "cd /Sky;
+#                                     apt-get update;
+#                                     apt-get -y install sudo curl git;
+#                                     sh 3rdparty.sh linux;
+#                                     sh configure.sh qt4 linux;
+#                                     sh build.sh qt4 linux deploy"
+#  - publish: $(System.DefaultWorkingDirectory)/deploy
+#    artifact: Sky-linux32-qt4
 
 - job: linux32_qt5
   pool:
@@ -89,20 +89,20 @@ jobs:
 
 #--------------------------------------------------------------------------------------------------
 
-- job: linux64_qt4
-  pool:
-    vmImage: "ubuntu-latest"
-  steps:
-  - bash: |
-      docker run -d --name ubuntu -v $PWD:/Sky amd64/ubuntu:18.04 tail -f /dev/null
-      docker exec -t ubuntu bash -c "cd /Sky;
-                                     apt-get update;
-                                     apt-get -y install sudo curl git;
-                                     sh 3rdparty.sh linux;
-                                     sh configure.sh qt4 linux;
-                                     sh build.sh qt4 linux deploy"
-  - publish: $(System.DefaultWorkingDirectory)/deploy
-    artifact: Sky-linux64-qt4
+#- job: linux64_qt4
+#  pool:
+#    vmImage: "ubuntu-latest"
+#  steps:
+#  - bash: |
+#      docker run -d --name ubuntu -v $PWD:/Sky amd64/ubuntu:18.04 tail -f /dev/null
+#      docker exec -t ubuntu bash -c "cd /Sky;
+#                                     apt-get update;
+#                                     apt-get -y install sudo curl git;
+#                                     sh 3rdparty.sh linux;
+#                                     sh configure.sh qt4 linux;
+#                                     sh build.sh qt4 linux deploy"
+#  - publish: $(System.DefaultWorkingDirectory)/deploy
+#    artifact: Sky-linux64-qt4
 
 - job: linux64_qt5
   pool:
