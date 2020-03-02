@@ -42,7 +42,7 @@ if [ $# != 2 ] || [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] || [ $2 != "wi
                                                                        $2 != "macOS"     -a \
                                                                        $2 != "linux"     -a \
                                                                        $2 != "android32" -a \
-                                                                       $2 != "android64" -a ]; then
+                                                                       $2 != "android64" ]; then
 
     echo \
     "Usage: configure <qt4 | qt5 | clean> <win32 | win64 | macOS | linux | android32 | android64>"
