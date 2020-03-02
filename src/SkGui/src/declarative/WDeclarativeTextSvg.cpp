@@ -380,6 +380,9 @@ QRectF WDeclarativeTextSvgPrivate::getRect(qreal width, qreal height)
 
 int WDeclarativeTextSvgPrivate::getWidth(const QFontMetrics & metrics, const QString & text) const
 {
+#ifdef QT_5_11
+    return metrics.horizontalAdvance(text);
+#else
     // FIXME: Workaround to fix the width of the arial font.
     if (font.family().toLower() == "arial")
     {
@@ -390,6 +393,7 @@ int WDeclarativeTextSvgPrivate::getWidth(const QFontMetrics & metrics, const QSt
 #endif
     }
     else return metrics.width(text);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
