@@ -2918,6 +2918,8 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
 /* Q_INVOKABLE static */ QString WControllerPlaylist::generateSource(const QString & url)
 {
+    // NOTE: We return the encoded URL for proper arguments parsing.
+
     QString source = WControllerNetwork::decodeUrl(url);
 
     if (WControllerNetwork::urlIsFile(source) || WControllerNetwork::urlIsHttp(source))
