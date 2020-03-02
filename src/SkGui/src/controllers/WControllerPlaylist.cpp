@@ -2942,9 +2942,9 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
     }
     else if (QUrl(url).scheme().isEmpty())
     {
-         return "http://" + source;
+         return "http://" + url;
     }
-    else return source;
+    else return url;
 }
 
 //-------------------------------------------------------------------------------------------------
