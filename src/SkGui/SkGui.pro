@@ -49,7 +49,7 @@ contains(QT_MAJOR_VERSION, 4) {
 
     win32:DEFINES += SK_WIN_NATIVE
 
-    greaterThan(QT_MINOR_VERSION,  8): DEFINES += QT_5_9
+    greaterThan(QT_MINOR_VERSION,  9): DEFINES += QT_5_10
     greaterThan(QT_MINOR_VERSION, 10): DEFINES += QT_5_11
     greaterThan(QT_MINOR_VERSION, 11): DEFINES += QT_5_12
 }
