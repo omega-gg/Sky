@@ -1289,7 +1289,6 @@ Item
 
     property url icon_external: "pictures/icons/scale/external.svg"
     property url icon_related : "pictures/icons/scale/related.svg"
-    property url icon_hd      : "pictures/icons/scale/hd.svg"
 
     //---------------------------------------------------------------------------------------------
 
