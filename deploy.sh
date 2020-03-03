@@ -424,6 +424,8 @@ elif [ $2 = "linux" ]; then
     sudo cp -r "$VLC"/plugins/video_filter  deploy/vlc/plugins
     sudo cp -r "$VLC"/plugins/video_output  deploy/vlc/plugins
 
+    sudo cp -r "$VLC"/plugins/* deploy/vlc/plugins
+
     sudo cp "$VLC"/libvlc*.so* deploy
 fi
 
