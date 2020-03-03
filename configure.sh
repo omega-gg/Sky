@@ -110,42 +110,42 @@ Boost="$external/Boost/$Boost_version"
 # Clean
 #--------------------------------------------------------------------------------------------------
 
+echo "CLEANING"
+
+rm -rf lib
+mkdir  lib
+touch  lib/.gitignore
+
+rm -rf "$bin4"
+mkdir  "$bin4"
+touch  "$bin4"/.gitignore
+
+rm -rf "$bin5"
+mkdir  "$bin5"
+touch  "$bin5"/.gitignore
+
+#----------------------------------------------------------------------------------------------
+# Qt
+
+rm -rf include/Qt4
+rm -rf include/Qt5
+
+#----------------------------------------------------------------------------------------------
+# VLC
+
+rm -rf include/vlc
+
+#----------------------------------------------------------------------------------------------
+# libtorrent
+
+rm -rf include/libtorrent
+
+#----------------------------------------------------------------------------------------------
+# Boost
+
+rm -rf include/Boost
+
 if [ $1 = "clean" ]; then
-
-    echo "CLEANING"
-
-    rm -rf lib
-    mkdir  lib
-    touch  lib/.gitignore
-
-    rm -rf "$bin4"
-    mkdir  "$bin4"
-    touch  "$bin4"/.gitignore
-
-    rm -rf "$bin5"
-    mkdir  "$bin5"
-    touch  "$bin5"/.gitignore
-
-    #----------------------------------------------------------------------------------------------
-    # Qt
-
-    rm -rf include/Qt4
-    rm -rf include/Qt5
-
-    #----------------------------------------------------------------------------------------------
-    # VLC
-
-    rm -rf include/vlc
-
-    #----------------------------------------------------------------------------------------------
-    # libtorrent
-
-    rm -rf include/libtorrent
-
-    #----------------------------------------------------------------------------------------------
-    # Boost
-
-    rm -rf include/Boost
 
     exit 0
 fi
