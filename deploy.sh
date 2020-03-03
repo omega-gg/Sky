@@ -409,20 +409,20 @@ elif [ $2 = "linux" ]; then
 
     mkdir -p deploy/vlc/plugins
 
-    sudo cp -r "$VLC"/plugins/access        deploy/vlc/plugins
-    sudo cp -r "$VLC"/plugins/audio_filter  deploy/vlc/plugins
-    sudo cp -r "$VLC"/plugins/audio_mixer   deploy/vlc/plugins
-    sudo cp -r "$VLC"/plugins/audio_output  deploy/vlc/plugins
-    sudo cp -r "$VLC"/plugins/codec         deploy/vlc/plugins
-    sudo cp -r "$VLC"/plugins/control       deploy/vlc/plugins
-    sudo cp -r "$VLC"/plugins/demux         deploy/vlc/plugins
-    sudo cp -r "$VLC"/plugins/misc          deploy/vlc/plugins
-    sudo cp -r "$VLC"/plugins/packetizer    deploy/vlc/plugins
-    sudo cp -r "$VLC"/plugins/stream_filter deploy/vlc/plugins
-    sudo cp -r "$VLC"/plugins/stream_out    deploy/vlc/plugins
-    sudo cp -r "$VLC"/plugins/video_chroma  deploy/vlc/plugins
-    sudo cp -r "$VLC"/plugins/video_filter  deploy/vlc/plugins
-    sudo cp -r "$VLC"/plugins/video_output  deploy/vlc/plugins
+    #sudo cp -r "$VLC"/plugins/access        deploy/vlc/plugins
+    #sudo cp -r "$VLC"/plugins/audio_filter  deploy/vlc/plugins
+    #sudo cp -r "$VLC"/plugins/audio_mixer   deploy/vlc/plugins
+    #sudo cp -r "$VLC"/plugins/audio_output  deploy/vlc/plugins
+    #sudo cp -r "$VLC"/plugins/codec         deploy/vlc/plugins
+    #sudo cp -r "$VLC"/plugins/control       deploy/vlc/plugins
+    #sudo cp -r "$VLC"/plugins/demux         deploy/vlc/plugins
+    #sudo cp -r "$VLC"/plugins/misc          deploy/vlc/plugins
+    #sudo cp -r "$VLC"/plugins/packetizer    deploy/vlc/plugins
+    #sudo cp -r "$VLC"/plugins/stream_filter deploy/vlc/plugins
+    #sudo cp -r "$VLC"/plugins/stream_out    deploy/vlc/plugins
+    #sudo cp -r "$VLC"/plugins/video_chroma  deploy/vlc/plugins
+    #sudo cp -r "$VLC"/plugins/video_filter  deploy/vlc/plugins
+    #sudo cp -r "$VLC"/plugins/video_output  deploy/vlc/plugins
 
     sudo cp -r "$VLC"/plugins/* deploy/vlc/plugins
 
