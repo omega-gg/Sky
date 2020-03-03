@@ -93,8 +93,8 @@ WVlcEngine::WVlcEngine(QThread * thread, QObject * parent)
             "--no-osd",            /* No video overlay */
             "--no-stats",          /* No statistics    */
 #ifndef Q_OS_MAC
-            "--no-media-library"  /* No Media Library */
-            //"--http-reconnect"     /* Auto reconnect   */
+            "--no-media-library",  /* No Media Library */
+            "--http-reconnect"     /* Auto reconnect   */
 #else
             "--no-media-library"
 #endif
