@@ -116,7 +116,7 @@ WVlcEngine::WVlcEngine(QThread * thread, QObject * parent)
             //"--verbose=2"
         };
 
-#ifdef Q_OS_MAC
+#if defined(Q_OS_MAC) || defined(Q_OS_LINUX)
         qputenv("VLC_PLUGIN_PATH", QCoreApplication::applicationDirPath().toLatin1());
 #endif
 
