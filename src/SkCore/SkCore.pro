@@ -31,8 +31,6 @@ contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_4
 } else {
     DEFINES += QT_LATEST
-
-    greaterThan(QT_MINOR_VERSION, 10): DEFINES += QT_5_11
 }
 
 QMAKE_CXXFLAGS += -std=c++11

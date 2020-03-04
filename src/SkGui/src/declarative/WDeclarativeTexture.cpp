@@ -160,7 +160,7 @@ WDeclarativeTexture::WDeclarativeTexture(WDeclarativeTexturePrivate * p, QQuickI
     }
     else
     {
-#ifdef QT_5_12
+#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
         node = d->context->sceneGraphContext()->createInternalImageNode(d->context);
 #else
         node = d->context->sceneGraphContext()->createInternalImageNode();
