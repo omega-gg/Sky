@@ -1017,6 +1017,8 @@ void WBackendVlcPrivate::clearPlayer()
     }
     else if (frameFreeze)
     {
+        active = false;
+
         frameFreeze = false;
 
         onFrameUpdated();
