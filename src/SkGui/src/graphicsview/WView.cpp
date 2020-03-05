@@ -2551,9 +2551,18 @@ void WView::hoverLeave()
     d->setEntered(false);
 }
 
-/* virtual */ void WView::dragMoveEvent(QDragMoveEvent *)
+/* virtual */ void WView::dragMoveEvent(QDragMoveEvent * event)
 {
-    Q_D(WView); d->updateDrag();
+    Q_D(WView);
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    // FIXME Qt5.14: We need to accept move events for the drag to register.
+    event->accept();
+#else
+    Q_UNUSED(event);
+#endif
+
+    d->updateDrag();
 }
 
 //-------------------------------------------------------------------------------------------------
