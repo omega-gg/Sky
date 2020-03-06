@@ -21,6 +21,7 @@ The video player is based on [VLC](http://github.com/videolan/vlc) and [libtorre
 - Windows XP and later.
 - macOS 64 bit.
 - Linux 32 bit and 64 bit.
+- Android 32 bit and 64 bit.
 
 ## Requirements
 
