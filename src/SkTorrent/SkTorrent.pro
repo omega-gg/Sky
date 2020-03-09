@@ -22,7 +22,6 @@ contains(QT_MAJOR_VERSION, 4) {
     QT += quick network
 }
 
-CONFIG       += plugin
 win32:CONFIG += dll
 
 DEFINES += SK_TORRENT_LIBRARY

@@ -28,7 +28,6 @@ contains(QT_MAJOR_VERSION, 5) {
     unix:!macx:!android:QT += x11extras
 }
 
-CONFIG       += plugin
 win32:CONFIG += dll
 
 DEFINES += QT_QTLOCKEDFILE_IMPORT

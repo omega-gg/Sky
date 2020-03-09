@@ -22,10 +22,9 @@ contains(QT_MAJOR_VERSION, 4) {
     QT += opengl quick network
 }
 
-CONFIG       += plugin
 win32:CONFIG += dll
 
-DEFINES += SK_MEDIA_LIBRARY CAN_COMPILE_SSE2
+DEFINES += SK_MEDIA_LIBRARY
 
 contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_4
@@ -33,7 +32,9 @@ contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_LATEST
 }
 
-QMAKE_CXXFLAGS += -std=c++11 -msse
+QMAKE_CXXFLAGS += -std=c++11
+
+!android:QMAKE_CXXFLAGS += -msse
 
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 

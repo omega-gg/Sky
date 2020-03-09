@@ -22,7 +22,6 @@ contains(QT_MAJOR_VERSION, 4) {
     QT += quick widgets network xml xmlpatterns
 }
 
-CONFIG       += plugin
 win32:CONFIG += dll
 
 DEFINES += SK_CORE_LIBRARY QUAZIP_BUILD
