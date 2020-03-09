@@ -26,6 +26,8 @@ win32:CONFIG += dll
 
 DEFINES += SK_MEDIA_LIBRARY
 
+!android:DEFINES += CAN_COMPILE_SSE2
+
 contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_4
 } else {
