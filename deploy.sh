@@ -521,11 +521,8 @@ if [ $os = "windows" ]; then
     cp "$bin"/includeGenerator.exe deploy
     cp "$bin"/deployer.exe         deploy
 
-elif [ $os = "android" ]; then
+elif [ $os != "android" ]; then
 
-    cp "$bin"/libincludeGenerator* deploy
-    cp "$bin"/libdeployer*         deploy
-else
     cp "$bin"/includeGenerator deploy
     cp "$bin"/deployer         deploy
 fi
