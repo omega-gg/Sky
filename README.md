@@ -41,7 +41,7 @@ Recommended:
 
 You can install third party libraries with:
 
-    sh 3rdparty.sh <win32 | win64 | macOS | linux | android32 | android64>
+    sh 3rdparty.sh <win32 | win64 | macOS | linux | android>
 
 ## Configure
 

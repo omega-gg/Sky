@@ -80,7 +80,9 @@ win32:LIBS += -L$$SK/lib -llibvlc
 
 macx:LIBS += -L$$SK/lib -lvlc
 
-unix:!macx: LIBS += -lvlc
+unix:!macx:!android: LIBS += -lvlc
+
+android:LIBS += -lvlc_$$ANDROID_TARGET_ARCH
 
 macx {
 CONFIG(debug, debug|release) {

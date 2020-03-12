@@ -67,13 +67,12 @@ if [ $# != 2 -a $# != 3 ] \
    || \
    [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] \
    || \
-   [ $2 != "win32" -a $2 != "win64" -a $2 != "macOS" -a $2 != "linux" -a $2 != "android32" -a \
-                                                                         $2 != "android64" ]  \
+   [ $2 != "win32" -a $2 != "win64" -a $2 != "macOS" -a $2 != "linux" -a $2 != "android" ] \
    || \
    [ $# = 3 -a "$3" != "deploy" -a "$3" != "tools" ]; then
 
     echo "Usage: build <qt4 | qt5 | clean>"
-    echo "             <win32 | win64 | macOS | linux | android32 | android64>"
+    echo "             <win32 | win64 | macOS | linux | android>"
     echo "             [deploy | tools]"
 
     exit 1
@@ -93,7 +92,7 @@ if [ $2 = "win32" -o $2 = "win64" ]; then
 
     MinGW="$external/MinGW/$MinGW_version/bin"
 
-elif [ $2 = "android32" -o $2 = "android64" ]; then
+elif [ $2 = "android" ]; then
 
     if [ $host != "linux" ]; then
 
@@ -102,14 +101,9 @@ elif [ $2 = "android32" -o $2 = "android64" ]; then
         exit 1
     fi
 
-    os="android"
+    os="default"
 
-    if [ $2 = "android32" ]; then
-
-        abi=armeabi-v7a
-    else
-        abi=arm64-v8a
-    fi
+    abi=armeabi-v7a
 else
     os="default"
 fi
@@ -121,7 +115,7 @@ else
     Qt="$external/Qt/$Qt5_version"
 fi
 
-if [ $os = "windows" -o $2 = "macOS" -o $os = "android" ]; then
+if [ $os = "windows" -o $2 = "macOS" -o $2 = "android" ]; then
 
     qmake="$Qt/bin/qmake"
 else
@@ -184,7 +178,7 @@ elif [ $2 = "linux" ]; then
         spec=linux-g++-32
     fi
 
-elif [ $os = "android" ]; then
+elif [ $2 = "android" ]; then
 
     spec=android-clang
 
@@ -198,14 +192,14 @@ cd $build
 
 if [ "$3" = "tools" ]; then
 
-    if [ $os = "android" ]; then
+    if [ $2 = "android" ]; then
 
         $qmake -r -spec $spec "CONFIG += release" "TOOLS = true" "ANDROID_ABIS = $abi" $Sky
     else
         $qmake -r -spec $spec "CONFIG += release" "TOOLS = true" $Sky
     fi
 
-elif [ $os = "android" ]; then
+elif [ $2 = "android" ]; then
 
     $qmake -r -spec $spec "CONFIG += release" "ANDROID_ABIS = $abi" $Sky
 else

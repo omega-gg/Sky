@@ -79,7 +79,7 @@ macx:LIBS += -L$$SK/lib -ltorrent \
 unix:!macx:!android:LIBS += -ltorrent-rasterbar \
                             -lboost_system -lboost_random -lboost_chrono \
 
-android:LIBS += -ltorrent
+android:LIBS += -ltorrent_$$ANDROID_TARGET_ARCH
 
 macx {
 CONFIG(debug, debug|release) {

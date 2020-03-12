@@ -37,15 +37,13 @@ Qt5_version_linux="5.9.5"
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# != 2 ] || [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] || [ $2 != "win32"     -a \
-                                                                       $2 != "win64"     -a \
-                                                                       $2 != "macOS"     -a \
-                                                                       $2 != "linux"     -a \
-                                                                       $2 != "android32" -a \
-                                                                       $2 != "android64" ]; then
+if [ $# != 2 ] || [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] || [ $2 != "win32" -a \
+                                                                       $2 != "win64" -a \
+                                                                       $2 != "macOS" -a \
+                                                                       $2 != "linux" -a \
+                                                                       $2 != "android" ]; then
 
-    echo \
-    "Usage: configure <qt4 | qt5 | clean> <win32 | win64 | macOS | linux | android32 | android64>"
+    echo "Usage: configure <qt4 | qt5 | clean> <win32 | win64 | macOS | linux | android>"
 
     exit 1
 fi
@@ -87,10 +85,8 @@ elif [ $2 = "linux" ]; then
     else
         include="$include32"
     fi
-
-elif [ $2 = "android32" -o $2 = "android64" ]; then
-
-    os="android"
+else
+    os="default"
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -210,7 +206,7 @@ elif [ $1 = "qt5" ]; then
 
         cp -r "$Qt5"/lib/QtGui.framework/Headers/$Qt5_version/QtGui/qpa include/Qt5/QtGui
 
-    elif [ $os = "android" ]; then
+    elif [ $2 = "android" ]; then
 
         cp -r "$Qt5"/include/QtCore  include/Qt5
         cp -r "$Qt5"/include/QtGui   include/Qt5
@@ -256,38 +252,33 @@ elif [ $2 = "macOS" ]; then
     cp "$VLC"/lib/libvlc.5.dylib     lib/libvlc.dylib
     cp "$VLC"/lib/libvlccore.9.dylib lib/libvlccore.dylib
 
-elif [ $os = "android" ]; then
+elif [ $2 = "android" ]; then
 
     echo "COPYING VLC"
 
     cp -r "$VLC"/include/vlc include
 
-    if [ $2 = "android32" ]; then
-
-        cp "$VLC"/jni/armeabi-v7a/libvlc.so lib
-    else
-        cp "$VLC"/jni/arm64-v8a/libvlc.so lib
-    fi
+    cp "$VLC"/libvlc*.so lib
 fi
 
 #--------------------------------------------------------------------------------------------------
 # libtorrent
 #--------------------------------------------------------------------------------------------------
 
-if [ $os = "windows" ] || [ $2 = "macOS" ] || [ $os = "android" ]; then
+if [ $os = "windows" ] || [ $2 = "macOS" ] || [ $2 = "android" ]; then
 
     echo "COPYING libtorrent"
 
     cp -r "$libtorrent"/libtorrent include
 
-    cp "$libtorrent"/libtorrent.* lib
+    cp "$libtorrent"/libtorrent*.* lib
 fi
 
 #--------------------------------------------------------------------------------------------------
 # Boost
 #--------------------------------------------------------------------------------------------------
 
-if [ $os = "windows" ] || [ $2 = "macOS" ] || [ $os = "android" ]; then
+if [ $os = "windows" ] || [ $2 = "macOS" ] || [ $2 = "android" ]; then
 
     echo "COPYING Boost"
 

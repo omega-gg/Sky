@@ -53,13 +53,12 @@ if [ $# != 2 -a $# != 3 ] \
    || \
    [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] \
    || \
-   [ $2 != "win32" -a $2 != "win64" -a $2 != "macOS" -a $2 != "linux" -a $2 != "android32" -a \
-                                                                         $2 != "android64" ]  \
+   [ $2 != "win32" -a $2 != "win64" -a $2 != "macOS" -a $2 != "linux" -a $2 != "android" ] \
    || \
    [ $# = 3 -a "$3" != "tools" ]; then
 
     echo "Usage: deploy <qt4 | qt5 | clean>"
-    echo "              <win32 | win64 | macOS | linux | android32 | android64>"
+    echo "              <win32 | win64 | macOS | linux | android>"
     echo "              [tools]"
 
     exit 1
@@ -102,17 +101,11 @@ elif [ $2 = "linux" ]; then
 
     libtorrent_version="$libtorrent_version_linux"
 
-elif [ $2 = "android32" ]; then
+elif [ $2 = "android" ]; then
 
-    os="android"
+    os="default"
 
     abi=armeabi-v7a
-
-elif [ $2 = "android64" ]; then
-
-    os="android"
-
-    abi=arm64-v8a
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -323,7 +316,7 @@ else
         cp "$Qt"/qml/QtQuick.2/libqtquick2plugin.so deploy/QtQuick.2
         cp "$Qt"/qml/QtQuick.2/qmldir               deploy/QtQuick.2
 
-    elif [ $os = "android" ]; then
+    elif [ $2 = "android" ]; then
 
         cp "$Qt"/lib/libQt5Core_$abi.so        deploy
         cp "$Qt"/lib/libQt5Gui_$abi.so         deploy
@@ -499,7 +492,7 @@ if [ "$3" != "tools" ]; then
         cp lib/libSkTorrent.so deploy
         cp lib/libSkBackend.so deploy
 
-    elif [ $os = "android" ]; then
+    elif [ $2 = "android" ]; then
 
         cp lib/libSkCore_$abi.so    deploy
         cp lib/libSkGui_$abi.so     deploy
