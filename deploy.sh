@@ -325,7 +325,7 @@ else
         cp "$Qt"/lib/libQt5Xml_*.so         deploy
         cp "$Qt"/lib/libQt5XmlPatterns_*.so deploy
 
-        if [ -f "$Qt"/lib/libQt5QmlModels_*.so ]; then
+        if [ -f "$Qt"/lib/libQt5QmlModels_armeabi-v7a.so ]; then
 
             cp "$Qt"/lib/libQt5QmlModels_*.so       deploy
             cp "$Qt"/lib/libQt5QmlWorkerScript_*.so deploy
