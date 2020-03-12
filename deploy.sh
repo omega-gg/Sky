@@ -100,12 +100,8 @@ elif [ $2 = "linux" ]; then
     VLC_version="$VLC_version_linux"
 
     libtorrent_version="$libtorrent_version_linux"
-
-elif [ $2 = "android" ]; then
-
+else
     os="default"
-
-    abi=armeabi-v7a
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -318,29 +314,29 @@ else
 
     elif [ $2 = "android" ]; then
 
-        cp "$Qt"/lib/libQt5Core_$abi.so        deploy
-        cp "$Qt"/lib/libQt5Gui_$abi.so         deploy
-        cp "$Qt"/lib/libQt5Network_$abi.so     deploy
-        cp "$Qt"/lib/libQt5OpenGL_$abi.so      deploy
-        cp "$Qt"/lib/libQt5Qml_$abi.so         deploy
-        cp "$Qt"/lib/libQt5Quick_$abi.so       deploy
-        cp "$Qt"/lib/libQt5Svg_$abi.so         deploy
-        cp "$Qt"/lib/libQt5Widgets_$abi.so     deploy
-        cp "$Qt"/lib/libQt5Xml_$abi.so         deploy
-        cp "$Qt"/lib/libQt5XmlPatterns_$abi.so deploy
+        cp "$Qt"/lib/libQt5Core_*.so        deploy
+        cp "$Qt"/lib/libQt5Gui_*.so         deploy
+        cp "$Qt"/lib/libQt5Network_*.so     deploy
+        cp "$Qt"/lib/libQt5OpenGL_*.so      deploy
+        cp "$Qt"/lib/libQt5Qml_*.so         deploy
+        cp "$Qt"/lib/libQt5Quick_*.so       deploy
+        cp "$Qt"/lib/libQt5Svg_*.so         deploy
+        cp "$Qt"/lib/libQt5Widgets_*.so     deploy
+        cp "$Qt"/lib/libQt5Xml_*.so         deploy
+        cp "$Qt"/lib/libQt5XmlPatterns_*.so deploy
 
-        if [ -f "$Qt"/lib/libQt5QmlModels_$abi.so ]; then
+        if [ -f "$Qt"/lib/libQt5QmlModels_*.so ]; then
 
-            cp "$Qt"/lib/libQt5QmlModels_$abi.so       deploy
-            cp "$Qt"/lib/libQt5QmlWorkerScript_$abi.so deploy
+            cp "$Qt"/lib/libQt5QmlModels_*.so       deploy
+            cp "$Qt"/lib/libQt5QmlWorkerScript_*.so deploy
         fi
 
-        cp "$Qt"/plugins/platforms/lib*qtforandroid_$abi.so deploy/platforms
+        cp "$Qt"/plugins/platforms/lib*qtforandroid_*.so deploy/platforms
 
-        cp "$Qt"/plugins/imageformats/lib*qsvg_$abi.so  deploy/imageformats
-        cp "$Qt"/plugins/imageformats/lib*qjpeg_$abi.so deploy/imageformats
+        cp "$Qt"/plugins/imageformats/lib*qsvg_*.so  deploy/imageformats
+        cp "$Qt"/plugins/imageformats/lib*qjpeg_*.so deploy/imageformats
 
-        cp "$Qt"/qml/QtQuick.2/lib*qtquick2plugin_$abi.so deploy/QtQuick.2
+        cp "$Qt"/qml/QtQuick.2/lib*qtquick2plugin_*.so deploy/QtQuick.2
     fi
 
     bin="$bin5"
@@ -494,12 +490,12 @@ if [ "$3" != "tools" ]; then
 
     elif [ $2 = "android" ]; then
 
-        cp lib/libSkCore_$abi.so    deploy
-        cp lib/libSkGui_$abi.so     deploy
-        cp lib/libSkMedia_$abi.so   deploy
-        #cp lib/libSkWeb_$abi.so     deploy
-        cp lib/libSkTorrent_$abi.so deploy
-        cp lib/libSkBackend_$abi.so deploy
+        cp lib/libSkCore_*.so    deploy
+        cp lib/libSkGui_*.so     deploy
+        cp lib/libSkMedia_*.so   deploy
+        #cp lib/libSkWeb_*.so     deploy
+        cp lib/libSkTorrent_*.so deploy
+        cp lib/libSkBackend_*.so deploy
     fi
 fi
 

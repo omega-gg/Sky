@@ -103,7 +103,7 @@ elif [ $2 = "android" ]; then
 
     os="default"
 
-    abi=armeabi-v7a
+    abi="armeabi-v7a arm64-v8a"
 else
     os="default"
 fi
