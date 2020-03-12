@@ -14,44 +14,44 @@ jobs:
 #  - publish: $(System.DefaultWorkingDirectory)/deploy
 #    artifact: Sky-win32-qt4
 
-#- job: win32_qt5
-#  pool:
-#    vmImage: "windows-latest"
-#  steps:
-#  - bash: |
-#      sh 3rdparty.sh win32
-#      sh configure.sh qt5 win32
-#      sh build.sh qt5 win32 deploy
-#  - publish: $(System.DefaultWorkingDirectory)/deploy
-#    artifact: Sky-win32-qt5
+- job: win32_qt5
+  pool:
+    vmImage: "windows-latest"
+  steps:
+  - bash: |
+      sh 3rdparty.sh win32
+      sh configure.sh qt5 win32
+      sh build.sh qt5 win32 deploy
+  - publish: $(System.DefaultWorkingDirectory)/deploy
+    artifact: Sky-win32-qt5
 
 #--------------------------------------------------------------------------------------------------
 
-#- job: win64_qt5
-#  pool:
-#    vmImage: "windows-latest"
-#  steps:
-#  - bash: |
-#      sh 3rdparty.sh win64
-#      sh configure.sh qt5 win64
-#      sh build.sh qt5 win64 deploy
-#  - publish: $(System.DefaultWorkingDirectory)/deploy
-#    artifact: Sky-win64-qt5
+- job: win64_qt5
+  pool:
+    vmImage: "windows-latest"
+  steps:
+  - bash: |
+      sh 3rdparty.sh win64
+      sh configure.sh qt5 win64
+      sh build.sh qt5 win64 deploy
+  - publish: $(System.DefaultWorkingDirectory)/deploy
+    artifact: Sky-win64-qt5
 
 #--------------------------------------------------------------------------------------------------
 # macOS
 #--------------------------------------------------------------------------------------------------
 
-#- job: macOS_qt5
-#  pool:
-#    vmImage: "macOS-latest"
-#  steps:
-#  - bash: |
-#      sh 3rdparty.sh macOS
-#      sh configure.sh qt5 macOS
-#      sh build.sh qt5 macOS deploy
-#  - publish: $(System.DefaultWorkingDirectory)/deploy
-#    artifact: Sky-macOS-qt5
+- job: macOS_qt5
+  pool:
+    vmImage: "macOS-latest"
+  steps:
+  - bash: |
+      sh 3rdparty.sh macOS
+      sh configure.sh qt5 macOS
+      sh build.sh qt5 macOS deploy
+  - publish: $(System.DefaultWorkingDirectory)/deploy
+    artifact: Sky-macOS-qt5
 
 #--------------------------------------------------------------------------------------------------
 # Linux
@@ -72,20 +72,20 @@ jobs:
 #  - publish: $(System.DefaultWorkingDirectory)/deploy
 #    artifact: Sky-linux32-qt4
 
-#- job: linux32_qt5
-#  pool:
-#    vmImage: "ubuntu-latest"
-#  steps:
-#  - bash: |
-#      docker run -d --name ubuntu -v $PWD:/Sky i386/ubuntu:18.04 tail -f /dev/null
-#      docker exec -t ubuntu bash -c "cd /Sky;
-#                                     apt-get update;
-#                                     apt-get -y install sudo curl git;
-#                                     sh 3rdparty.sh linux;
-#                                     sh configure.sh qt5 linux;
-#                                     sh build.sh qt5 linux deploy"
-#  - publish: $(System.DefaultWorkingDirectory)/deploy
-#    artifact: Sky-linux32-qt5
+- job: linux32_qt5
+  pool:
+    vmImage: "ubuntu-latest"
+  steps:
+  - bash: |
+      docker run -d --name ubuntu -v $PWD:/Sky i386/ubuntu:18.04 tail -f /dev/null
+      docker exec -t ubuntu bash -c "cd /Sky;
+                                     apt-get update;
+                                     apt-get -y install sudo curl git;
+                                     sh 3rdparty.sh linux;
+                                     sh configure.sh qt5 linux;
+                                     sh build.sh qt5 linux deploy"
+  - publish: $(System.DefaultWorkingDirectory)/deploy
+    artifact: Sky-linux32-qt5
 
 #--------------------------------------------------------------------------------------------------
 
@@ -104,20 +104,20 @@ jobs:
 #  - publish: $(System.DefaultWorkingDirectory)/deploy
 #    artifact: Sky-linux64-qt4
 
-#- job: linux64_qt5
-#  pool:
-#    vmImage: "ubuntu-latest"
-#  steps:
-#  - bash: |
-#      docker run -d --name ubuntu -v $PWD:/Sky amd64/ubuntu:18.04 tail -f /dev/null
-#      docker exec -t ubuntu bash -c "cd /Sky;
-#                                     apt-get update;
-#                                     apt-get -y install sudo curl git;
-#                                     sh 3rdparty.sh linux;
-#                                     sh configure.sh qt5 linux;
-#                                     sh build.sh qt5 linux deploy"
-#  - publish: $(System.DefaultWorkingDirectory)/deploy
-#    artifact: Sky-linux64-qt5
+- job: linux64_qt5
+  pool:
+    vmImage: "ubuntu-latest"
+  steps:
+  - bash: |
+      docker run -d --name ubuntu -v $PWD:/Sky amd64/ubuntu:18.04 tail -f /dev/null
+      docker exec -t ubuntu bash -c "cd /Sky;
+                                     apt-get update;
+                                     apt-get -y install sudo curl git;
+                                     sh 3rdparty.sh linux;
+                                     sh configure.sh qt5 linux;
+                                     sh build.sh qt5 linux deploy"
+  - publish: $(System.DefaultWorkingDirectory)/deploy
+    artifact: Sky-linux64-qt5
 
 #--------------------------------------------------------------------------------------------------
 # Android
