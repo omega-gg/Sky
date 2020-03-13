@@ -455,7 +455,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // BarTitle
 
-    property int barTitle_height: dp28
+    property int barTitle_height: dp32
 
     property int barTitle_borderSize: border_size
 
