@@ -73,7 +73,7 @@ void WDeclarativePlayerPrivate::init()
 
     volume = 1.0;
 
-    autoPlay = true;
+    autoPlay = false;
 
     shuffle = false;
 
