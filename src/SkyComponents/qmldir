@@ -80,7 +80,6 @@ ButtonPianoIcon      1.0 ButtonPianoIcon.qml
 ButtonPianoFull      1.0 ButtonPianoFull.qml
 ButtonPianoReset     1.0 ButtonPianoReset.qml
 ButtonRound          1.0 ButtonRound.qml
-ButtonRoundOverlay   1.0 ButtonRoundOverlay.qml
 ButtonCheck          1.0 ButtonCheck.qml
 ButtonCheckLabel     1.0 ButtonCheckLabel.qml
 ButtonImage          1.0 ButtonImage.qml

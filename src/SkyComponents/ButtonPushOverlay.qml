@@ -23,39 +23,39 @@ ButtonPushIcon
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    opacity: (isHovered || isPressed) ? st.buttonOverlay_opacityHover
-                                      : st.buttonOverlay_opacityDefault
+    opacity: (isHovered || isPressed) ? st.buttonPushOverlay_opacityHover
+                                      : st.buttonPushOverlay_opacityDefault
 
     //---------------------------------------------------------------------------------------------
     // Style
 
     colorA: (highlighted) ? st.buttonPush_colorHighlightA
-                          : st.buttonOverlay_colorA
+                          : st.buttonPushOverlay_colorA
 
     colorB: (highlighted) ? st.buttonPush_colorHighlightB
-                          : st.buttonOverlay_colorB
+                          : st.buttonPushOverlay_colorB
 
     colorHoverA: (highlighted) ? st.buttonPush_colorHighlightHoverA
-                               : st.buttonOverlay_colorHoverA
+                               : st.buttonPushOverlay_colorHoverA
 
     colorHoverB: (highlighted) ? st.buttonPush_colorHighlightHoverB
-                               : st.buttonOverlay_colorHoverB
+                               : st.buttonPushOverlay_colorHoverB
 
     colorPressA: (pHighlighted) ? st.buttonPush_colorCheckA
-                                : st.buttonOverlay_colorPressA
+                                : st.buttonPushOverlay_colorPressA
 
     colorPressB: (pHighlighted) ? st.buttonPush_colorCheckB
-                                : st.buttonOverlay_colorPressB
+                                : st.buttonPushOverlay_colorPressB
 
     colorPressHoverA: (pHighlighted) ? st.buttonPush_colorCheckHoverA
-                                     : st.buttonOverlay_colorPressA
+                                     : st.buttonPushOverlay_colorPressA
 
     colorPressHoverB: (pHighlighted) ? st.buttonPush_colorCheckHoverB
-                                     : st.buttonOverlay_colorPressB
+                                     : st.buttonPushOverlay_colorPressB
 
-    filterIcon: st.buttonOverlay_filterIcon
+    filterIcon: st.buttonPushOverlay_filterIcon
 
-    background.border.color: st.buttonOverlay_colorBorder
+    background.border.color: st.buttonPushOverlay_colorBorder
 
     //---------------------------------------------------------------------------------------------
     // Animations
