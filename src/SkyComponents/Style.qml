@@ -195,8 +195,7 @@ Item
     property color textSubtitle_colorStyle: "#242424"
 
 //-------------------------------------------------------------------------------------------------
-// Line
-//#LineHorizontal:LineVertical
+//#Line*
 
     property int line_size: dp1
 //#END
@@ -697,7 +696,7 @@ Item
     property int buttonsItem_buttonWidth : dp28
     property int buttonsItem_buttonHeight: dp30
 
-//---------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 //#BaseLabelRound:Label*
 
     property int labelRound_height: dp40
