@@ -89,12 +89,8 @@ Item
 
     property variant size16x16: size(16, 16)
     property variant size24x24: size(24, 24)
-    property variant size28x28: size(28, 28)
     property variant size32x32: size(32, 32)
-    property variant size48x48: size(48, 48)
     property variant size64x64: size(64, 64)
-
-    property variant size128x128: size(128, 128)
 
     //---------------------------------------------------------------------------------------------
 
@@ -134,11 +130,6 @@ Item
     property int duration_normal: ms200
     property int duration_fast  : ms150
     property int duration_faster: ms100
-
-    property int ms1: 1 * ratioSpeed
-
-    property int ms20: 20 * ratioSpeed
-    property int ms50: 50 * ratioSpeed
 
     property int ms100: 100 * ratioSpeed
     property int ms150: 150 * ratioSpeed
@@ -1288,14 +1279,6 @@ Item
     property url icon_add: "pictures/icons/scale/add.svg"
 
     property url icon_external: "pictures/icons/scale/external.svg"
-    property url icon_related : "pictures/icons/scale/related.svg"
-
-    //---------------------------------------------------------------------------------------------
-
-    property url icon_scrollLeft : "pictures/icons/scale/scrollLeft.svg"
-    property url icon_scrollRight: "pictures/icons/scale/scrollRight.svg"
-    property url icon_scrollUp   : "pictures/icons/scale/scrollUp.svg"
-    property url icon_scrollDown : "pictures/icons/scale/scrollDown.svg"
 
     //---------------------------------------------------------------------------------------------
 
@@ -1332,20 +1315,6 @@ Item
 
     //---------------------------------------------------------------------------------------------
 
-    property url icon16x16_scrollLeft: vector("pictures/icons/16x16/scrollLeft.png",
-                                              icon_scrollLeft)
-
-    property url icon16x16_scrollRight: vector("pictures/icons/16x16/scrollRight.png",
-                                               icon_scrollRight)
-
-    property url icon16x16_scrollUp: vector("pictures/icons/16x16/scrollUp.png",
-                                            icon_scrollUp)
-
-    property url icon16x16_scrollDown: vector("pictures/icons/16x16/scrollDown.png",
-                                              icon_scrollDown)
-
-    //---------------------------------------------------------------------------------------------
-
     property url icon16x16_audioMin: vector("pictures/icons/16x16/audioMin.png", icon_audioMin)
     property url icon16x16_audioMax: vector("pictures/icons/16x16/audioMax.png", icon_audioMax)
 
@@ -1366,8 +1335,6 @@ Item
 
     property url icon24x24_extend: vector("pictures/icons/24x24/extend.png", icon_extend)
     property url icon24x24_shrink: vector("pictures/icons/24x24/shrink.png", icon_shrink)
-
-    property url icon24x24_related: vector("pictures/icons/24x24/related.png", icon_related)
 
     //---------------------------------------------------------------------------------------------
 
