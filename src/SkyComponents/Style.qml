@@ -174,19 +174,22 @@ Item
     property color text3_colorShadow: text1_colorShadow
     property color text3_colorSunken: text1_colorSunken
 
-//-------------------------------------------------------------------------------------------------
 //#TextDate
+    //---------------------------------------------------------------------------------------------
+    // TextDate
 
     property color textDate_color     : text3_color
     property color textDate_colorHover: text1_color
 
-//-------------------------------------------------------------------------------------------------
 //#TextListDefault
+    //---------------------------------------------------------------------------------------------
+    // TextListDefault
 
     property int textListDefault_pixelSize: dp14
 
-//-------------------------------------------------------------------------------------------------
 //#TextSubtitle
+    //---------------------------------------------------------------------------------------------
+    //TextSubtitle
 
     property int textSubtitle_sizeMinimum: dp18
     property int textSubtitle_sizeMaximum: dp48
@@ -194,8 +197,9 @@ Item
     property color textSubtitle_color     : "#dcdcdc"
     property color textSubtitle_colorStyle: "#242424"
 
-//-------------------------------------------------------------------------------------------------
 //#Line*
+    //---------------------------------------------------------------------------------------------
+    // Line
 
     property int line_size: dp1
 //#END
@@ -229,8 +233,9 @@ Item
         color: border_colorFocus
     }
 
-//-------------------------------------------------------------------------------------------------
 //#Window:PanelContextual
+    //---------------------------------------------------------------------------------------------
+    // Window
 
     property int window_durationAnimation: duration_fast
 
@@ -244,13 +249,15 @@ Item
 
     property color window_color: "#b4b4b4"
 
-//-------------------------------------------------------------------------------------------------
 //#RectangleBorders
+    //---------------------------------------------------------------------------------------------
+    // RectangleBorders
 
     property int rectangleBorders_size: border_size
 
-//-------------------------------------------------------------------------------------------------
 //#RectangleShadow
+    //---------------------------------------------------------------------------------------------
+    // RectangleShadow
 
     property url rectangleShadow_sourceLeft : "pictures/shadowLeft.png"
     property url rectangleShadow_sourceRight: "pictures/shadowRight.png"
@@ -259,8 +266,9 @@ Item
 
     property alias rectangleShadow_filter: border_filterFocus
 
-//-------------------------------------------------------------------------------------------------
 //#BorderImageShadow
+    //---------------------------------------------------------------------------------------------
+    // BorderImageShadow
 
     property real borderImageShadow_ratio: 4.0
 
@@ -378,8 +386,9 @@ Item
         color: icon2_colorSunken
     }
 
-//-------------------------------------------------------------------------------------------------
 //#IconOverlay
+    //---------------------------------------------------------------------------------------------
+    // IconOverlay
 
     property real iconOverlay_opacity: 0.8
 
@@ -388,28 +397,33 @@ Item
 
     property alias iconOverlay_filter: icon2_filter
 
-//-------------------------------------------------------------------------------------------------
 //#IconLoading
+    //---------------------------------------------------------------------------------------------
+    // IconLoading
 
     property int iconLoading_durationAnimation: ms800
 
-//-------------------------------------------------------------------------------------------------
 //#Panel*
+    //---------------------------------------------------------------------------------------------
+    // Panel
 
     property color panel_color: "#c8c8c8"
 
-//-------------------------------------------------------------------------------------------------
 //#PanelContextual
+    //---------------------------------------------------------------------------------------------
+    // PanelContextual
 
     property real panelContextual_backgroundOpacity: 0.94
 
-//-------------------------------------------------------------------------------------------------
 //#PanelImage
+    //---------------------------------------------------------------------------------------------
+    // PanelImage
 
     property color panelImage_color: "black"
 
-//-------------------------------------------------------------------------------------------------
 //#BaseToolTip:ToolTip
+    //---------------------------------------------------------------------------------------------
+    // BaseToolTip
 
     property int baseToolTip_minimumWidth : dp32
     property int baseToolTip_minimumHeight: dp32
@@ -424,16 +438,18 @@ Item
     property color baseToolTip_colorA: barTitle_colorA
     property color baseToolTip_colorB: barTitle_colorB
 
-//-------------------------------------------------------------------------------------------------
 //#ToolTip
+    //---------------------------------------------------------------------------------------------
+    // ToolTip
 
     property int toolTip_maximumWidth: dp288
 
     property int toolTip_padding: dp8
     property int toolTip_spacing: dp8
 
-//-------------------------------------------------------------------------------------------------
 //#BarWindow
+    //---------------------------------------------------------------------------------------------
+    // BarWindow
 
     property int barWindow_height: dp24
 
@@ -445,8 +461,9 @@ Item
 
     property color barWindow_colorBorderLine: "#969696"
 
-//-------------------------------------------------------------------------------------------------
 //#BarTitle*
+    //---------------------------------------------------------------------------------------------
+    // BarTitle
 
     property int barTitle_height: dp32
 
@@ -457,8 +474,9 @@ Item
 
     property color barTitle_colorBorderLine: barWindow_colorBorderLine
 
-//-------------------------------------------------------------------------------------------------
 //#BarTitleSmall
+    //---------------------------------------------------------------------------------------------
+    // BarTitleSmall
 
     property int barTitleSmall_height: dp26
 
@@ -467,8 +485,9 @@ Item
 
     property color barTitleSmall_colorBorderLine: "#808080"
 
-//-------------------------------------------------------------------------------------------------
 //#BarTitleText
+    //---------------------------------------------------------------------------------------------
+    // BarTitleText
 
     property int barTitleText_leftMargin : dp8
     property int barTitleText_rightMargin: dp8
@@ -476,8 +495,9 @@ Item
     property int barTitleText_pixelSize: dp14
 //#END
 
-//---------------------------------------------------------------------------------------------
 //#BaseButton:Button*
+    //---------------------------------------------------------------------------------------------
+    // BaseButton
 
     property color button_colorBorder: border_color
     property color button_colorFocus : border_colorFocus
@@ -497,8 +517,9 @@ Item
     property ImageColorFilter button_filterIconShadow: icon_filterShadow
     property ImageColorFilter button_filterIconSunken: icon_filterSunken
 
-//-------------------------------------------------------------------------------------------------
 //#ButtonPush*:ButtonStream:ButtonsItem:ButtonsCheck
+    //---------------------------------------------------------------------------------------------
+    // ButtonPush
 
     property int buttonPush_height: dp40
 
@@ -529,14 +550,16 @@ Item
     property color buttonPush_colorCheckHoverA: buttonPush_colorHighlightHoverA
     property color buttonPush_colorCheckHoverB: buttonPush_colorHighlightHoverB
 
-//-------------------------------------------------------------------------------------------------
 //#ButtonPushIcon
+    //---------------------------------------------------------------------------------------------
+    // ButtonPushIcon
 
     property int buttonPushIcon_width : buttonPush_height
     property int buttonPushIcon_height: buttonPush_height
 
-//-------------------------------------------------------------------------------------------------
 //#ButtonPushOverlay
+    //---------------------------------------------------------------------------------------------
+    // ButtonPushOverlay
 
     property real buttonPushOverlay_opacityDefault: 0.8
     property real buttonPushOverlay_opacityHover  : 1.0
@@ -554,8 +577,9 @@ Item
 
     property ImageColorFilter buttonPushOverlay_filterIcon: icon2_filter
 
-//-------------------------------------------------------------------------------------------------
 //#ButtonPiano*
+    //---------------------------------------------------------------------------------------------
+    // ButtonPiano
 
     property int buttonPiano_height: dp32
 
@@ -586,25 +610,29 @@ Item
     property color buttonPiano_colorCheckHoverA: buttonPush_colorCheckHoverA
     property color buttonPiano_colorCheckHoverB: buttonPush_colorCheckHoverB
 
-//-------------------------------------------------------------------------------------------------
 //#ButtonPianoIcon
+    //---------------------------------------------------------------------------------------------
+    // ButtonPianoIcon
 
     property int buttonPianoIcon_width : buttonPiano_height
     property int buttonPianoIcon_height: buttonPiano_height
 
-//-------------------------------------------------------------------------------------------------
 //#ButtonPianoReset
+    //---------------------------------------------------------------------------------------------
+    // ButtonPianoReset
 
     property int buttonPianoReset_durationOpacity: duration_normal
 
-//-------------------------------------------------------------------------------------------------
 //#ButtonRound:LabelLoadingButton
+    //---------------------------------------------------------------------------------------------
+    // ButtonRound
 
     property int buttonRound_width : dp48
     property int buttonRound_height: dp48
 
-//-------------------------------------------------------------------------------------------------
 //#ButtonCheck*
+    //---------------------------------------------------------------------------------------------
+    // ButtonCheck
 
     property int buttonCheck_width : st.dp64
     property int buttonCheck_height: buttonPush_height
@@ -624,23 +652,26 @@ Item
     property color buttonCheck_colorHandlePressA: buttonCheck_colorHandleA
     property color buttonCheck_colorHandlePressB: buttonCheck_colorHandleB
 
-//-------------------------------------------------------------------------------------------------
 //#ButtonCheckLabel
+    //---------------------------------------------------------------------------------------------
+    // ButtonCheckLabel
 
     property int buttonCheckLabel_height: buttonCheck_height
 
     property int buttonCheckLabel_padding: dp4
 
-//-------------------------------------------------------------------------------------------------
 //#ButtonImageBorders
+    //---------------------------------------------------------------------------------------------
+    // ButtonImageBorders
 
     property color buttonImageBorders_colorBackground: buttonPush_colorA
 
     property color buttonImageBorders_colorBorder     : border_color
     property color buttonImageBorders_colorBorderHover: border_colorFocus
 
-//-------------------------------------------------------------------------------------------------
 //#ButtonMask
+    //---------------------------------------------------------------------------------------------
+    // ButtonMask
 
     property int buttonMask_width : dp16
     property int buttonMask_height: dp16
@@ -682,22 +713,25 @@ Item
         }
     }
 
-//-------------------------------------------------------------------------------------------------
 //#ButtonStream
+    //---------------------------------------------------------------------------------------------
+    // ButtonStream
 
     property int buttonStream_width : dp70
     property int buttonStream_height: slider_height
 
     property color buttonStream_color: scrollBar_colorA
 
-//-------------------------------------------------------------------------------------------------
 //#ButtonsItem
+    //---------------------------------------------------------------------------------------------
+    // ButtonsItem
 
     property int buttonsItem_buttonWidth : dp28
     property int buttonsItem_buttonHeight: dp30
 
-//-------------------------------------------------------------------------------------------------
 //#BaseLabelRound:Label*
+    //---------------------------------------------------------------------------------------------
+    // LabelRound
 
     property int labelRound_height: dp40
 
@@ -716,21 +750,24 @@ Item
     property ImageColorFilter labelRound_filterIconShadow: icon2_filterShadow
     property ImageColorFilter labelRound_filterIconSunken: icon2_filterSunken
 
-//-------------------------------------------------------------------------------------------------
 //#LabelRoundIcon
+    //---------------------------------------------------------------------------------------------
+    // LabelRoundIcon
 
     property int labelRoundIcon_width : labelRound_height
     property int labelRoundIcon_height: labelRound_height
 
-//-------------------------------------------------------------------------------------------------
 //#LabelRoundInfo
+    //---------------------------------------------------------------------------------------------
+    // LabelRoundInfo
 
     property color labelRoundInfo_color: labelRound_colorDisableA
 
     property color labelRoundInfo_colorText: text_color
 
-//-------------------------------------------------------------------------------------------------
 //#LabelLoading*
+    //---------------------------------------------------------------------------------------------
+    // LabelLoading
 
     property int labelLoading_width : dp48
     property int labelLoading_height: dp48
@@ -740,8 +777,9 @@ Item
     property color labelLoading_colorA: buttonPushOverlay_colorA
     property color labelLoading_colorB: labelLoading_colorA
 
-//-------------------------------------------------------------------------------------------------
 //#LabelLoadingText
+    //---------------------------------------------------------------------------------------------
+    // LabelLoadingText
 
     property int labelLoadingText_height: dp44
 
@@ -750,8 +788,9 @@ Item
 
     property color labelLoadingText_colorText: text2_color
 
-//-------------------------------------------------------------------------------------------------
 //#LabelStream
+    //---------------------------------------------------------------------------------------------
+    // LabelStream
 
     property int labelStream_height: dp16
 
@@ -760,24 +799,27 @@ Item
     property color labelStream_colorA: scrollBar_colorA
     property color labelStream_colorB: scrollBar_colorB
 
-//-------------------------------------------------------------------------------------------------
 //#CheckBox*
+    //---------------------------------------------------------------------------------------------
+    // CheckBox
 
     property int checkBox_width : dp22
     property int checkBox_height: checkBox_width
 
     property url checkBox_sourceCheck: "pictures/checkBoxCheck.png"
 
-//-------------------------------------------------------------------------------------------------
 //#CheckBoxText
+    //---------------------------------------------------------------------------------------------
+    // CheckBoxText
 
     property int checkBoxText_height: dp28
 
     property int checkBoxText_padding: dp6
     property int checkBoxText_spacing: dp4
 
-//-------------------------------------------------------------------------------------------------
 //#BaseLineEdit:LineEdit*
+    //---------------------------------------------------------------------------------------------
+    // BaseLineEdit
 
     property int baseLineEdit_durationCursor: ms500
 
@@ -797,8 +839,9 @@ Item
 
     property color baseLineEdit_colorDefault: text3_color
 
-//-------------------------------------------------------------------------------------------------
 //#LineEdit*
+    //---------------------------------------------------------------------------------------------
+    // LineEdit
 
     property int lineEdit_width : dp192
     property int lineEdit_height: dp40
@@ -808,16 +851,18 @@ Item
     property color lineEdit_color     : buttonPush_colorHoverA
     property color lineEdit_colorHover: "white"
 
-//-------------------------------------------------------------------------------------------------
 //#LineEditLabel
+    //---------------------------------------------------------------------------------------------
+    // LineEditLabel
 
     property int lineEditLabel_lineEditLeftMargin: dp26
 
     property int lineEditLabel_labelPaddingLeft : dp16
     property int lineEditLabel_labelPaddingRight: dp30
 
-//-------------------------------------------------------------------------------------------------
 //#LineEditBox
+    //---------------------------------------------------------------------------------------------
+    // LineEditBox
 
     property color lineEditBox_colorA: lineEdit_color
     property color lineEditBox_colorB: lineEditBox_colorA
@@ -830,24 +875,28 @@ Item
     property color lineEditBox_colorDefault     : text3_color
     property color lineEditBox_colorDefaultHover: text1_color
 
-//-------------------------------------------------------------------------------------------------
 //#BaseTextEdit:Console
+    //---------------------------------------------------------------------------------------------
+    // BaseTextEdit
 
     property int baseTextEdit_margin: dp8
 
-//-------------------------------------------------------------------------------------------------
 //#Console
+    //---------------------------------------------------------------------------------------------
+    // Console
 
     property int console_maximumLength: 4000
 
-//-------------------------------------------------------------------------------------------------
 //#BaseList:List*
+    //---------------------------------------------------------------------------------------------
+    // List
 
     property int list_itemHeight: dp32
     property int list_itemSize  : list_itemHeight + border_size
 
-//-------------------------------------------------------------------------------------------------
 //#ScrollBar
+    //---------------------------------------------------------------------------------------------
+    // ScrollBar
 
     property int scrollBar_intervalPress : 300
     property int scrollBar_intervalRepeat: 50
@@ -934,8 +983,9 @@ Item
         }
     }
 
-//-------------------------------------------------------------------------------------------------
 //#Scroller*
+    //---------------------------------------------------------------------------------------------
+    // Scroller
 
     property real scroller_scroll: 1.0
 
@@ -951,13 +1001,15 @@ Item
 
     property ImageColorFilter scroller_filter: rectangleShadow_filter
 
-//-------------------------------------------------------------------------------------------------
 //#ScrollerList
+    //---------------------------------------------------------------------------------------------
+    // ScrollerList
 
     property real scrollerList_scroll: 0.1
 
-//-------------------------------------------------------------------------------------------------
 //#Slider*
+    //---------------------------------------------------------------------------------------------
+    // Slider
 
     property int slider_width : dp128
     property int slider_height: dp26
@@ -980,14 +1032,16 @@ Item
     property color slider_colorBarHoverA: buttonPush_colorHoverA
     property color slider_colorBarHoverB: buttonPush_colorHoverB
 
-//-------------------------------------------------------------------------------------------------
 //#SliderVolume
+    //---------------------------------------------------------------------------------------------
+    // SliderVolume
 
     property int sliderVolume_width : dp150
     property int sliderVolume_height: dp32
 
-//-------------------------------------------------------------------------------------------------
 //#SliderStream
+    //---------------------------------------------------------------------------------------------
+    // SliderStream
 
     property int sliderStream_durationAnimation: duration_slower
 
@@ -1015,8 +1069,9 @@ Item
     property color sliderStream_colorBarProgressA: sliderStream_colorBarDisableHoverA
     property color sliderStream_colorBarProgressB: sliderStream_colorBarDisableHoverB
 
-//-------------------------------------------------------------------------------------------------
 //#BaseTabs:Tabs*
+    //---------------------------------------------------------------------------------------------
+    // BaseTabs
 
     property int baseTabs_height: dp32
 
@@ -1027,8 +1082,9 @@ Item
 
     property int baseTabs_spacing: dp4
 
-//-------------------------------------------------------------------------------------------------
 //#TabsBrowser
+    //---------------------------------------------------------------------------------------------
+    // TabsBrowser
 
     property int tabsBrowser_intervalResize: ms300
 
@@ -1037,14 +1093,16 @@ Item
 
     property int tabsBrowser_spacing: dp8
 
-//-------------------------------------------------------------------------------------------------
 //#TabsPlayer:TabsTrack
+    //---------------------------------------------------------------------------------------------
+    // TabsPlayer
 
     property int tabsPlayer_overlayWidth : componentTabBrowser_iconWidth
     property int tabsPlayer_overlayHeight: itemTab_iconHeight
 
-//-------------------------------------------------------------------------------------------------
 //#TabBarProgress:ComponentTabTrack:ComponentWallBookmarkTrack
+    //---------------------------------------------------------------------------------------------
+    // TabBarProgress
 
     property int tabBarProgress_height: dp3
 
@@ -1054,8 +1112,9 @@ Item
     property color tabBarProgress_colorDisableA: "#969696"
     property color tabBarProgress_colorDisableB: tabBarProgress_colorDisableA
 
-//-------------------------------------------------------------------------------------------------
 //#BaseWall:Wall*
+    //---------------------------------------------------------------------------------------------
+    // BaseWall
 
     property int baseWall_intervalUpdate: ms300
 
@@ -1070,13 +1129,15 @@ Item
 
     property int baseWall_marginsMinSize: dp24
 
-//-------------------------------------------------------------------------------------------------
 //#WallBookmarkTrack
+    //---------------------------------------------------------------------------------------------
+    // WallBookmarkTrack
 
     property int wallBookmarkTrack_fixedDuration: ms1000
 
-//-------------------------------------------------------------------------------------------------
 //#WallVideo
+    //---------------------------------------------------------------------------------------------
+    // WallVideo
 
     property int wallVideo_interval: 10000
 
@@ -1096,8 +1157,9 @@ Item
         color: wallVideo_colorShadow
     }
 
-//-------------------------------------------------------------------------------------------------
 //#PlayerBrowser:WallVideo
+    //---------------------------------------------------------------------------------------------
+    // PlayerBrowser
 
     property int playerBrowser_intervalA: 500
     property int playerBrowser_intervalB: 200
@@ -1109,8 +1171,9 @@ Item
     property color playerBrowser_colorText     : "#dcdcdc"
     property color playerBrowser_colorTextHover: text2_color
 
-//-------------------------------------------------------------------------------------------------
 //#ItemList
+    //---------------------------------------------------------------------------------------------
+    // ItemList
 
     property int itemList_height: list_itemSize
 
@@ -1155,8 +1218,9 @@ Item
     property color itemList_colorTextSelected: text2_color
     property color itemList_colorTextCurrent : text_colorCurrent
 
-//-------------------------------------------------------------------------------------------------
 //#ItemTab:ComponentTab*
+    //---------------------------------------------------------------------------------------------
+    // ItemTab
 
     property int itemTab_height: dp32
 
@@ -1186,8 +1250,9 @@ Item
     property color itemTab_colorHighlightContextualA: "#00b4ff"
     property color itemTab_colorHighlightContextualB: itemTab_colorHighlightContextualA
 
-//-------------------------------------------------------------------------------------------------
 //#ItemWall:ComponentWall*
+    //---------------------------------------------------------------------------------------------
+    // ItemWall
 
     property int itemWall_width : baseWall_itemPreferredWidth
     property int itemWall_height: baseWall_itemPreferredHeight
@@ -1197,31 +1262,36 @@ Item
     property int itemWall_iconWidth : itemTab_iconWidth
     property int itemWall_iconHeight: itemTab_iconHeight
 
-//-------------------------------------------------------------------------------------------------
 //#ComponentList:ComponentCompletion
+    //---------------------------------------------------------------------------------------------
+    // ComponentList
 
     property int componentList_height: itemList_height
 
-//-------------------------------------------------------------------------------------------------
 //#ComponentCompletion
+    //---------------------------------------------------------------------------------------------
+    // ComponentCompletion
 
     property int componentCompletion_pixelSize: dp14
 
-//-------------------------------------------------------------------------------------------------
 //#ComponentTabBrowser:ComponentTabTrack:TabsBrowser
+    //---------------------------------------------------------------------------------------------
+    // ComponentTabBrowser
 
     property int componentTabBrowser_iconWidth: dp56
 
-//-------------------------------------------------------------------------------------------------
 //#ComponentWallBookmarkTrack:WallBookmarkTrack
+    //---------------------------------------------------------------------------------------------
+    // ComponentWallBookmarkTrack
 
     property int componentWallBookmarkTrack_iconWidth: dp56
 
     property color componentWallBookmarkTrack_colorA: wallVideo_colorPlayer
     property color componentWallBookmarkTrack_colorB: componentWallBookmarkTrack_colorA
 
-//-------------------------------------------------------------------------------------------------
 //#ContextualCategory:ComponentContextual
+    //---------------------------------------------------------------------------------------------
+    // ContextualCategory
 
     property int contextualCategory_height: barTitle_height + border_size
 
@@ -1234,20 +1304,23 @@ Item
 
     property color contextualCategory_colorBorderLine: barTitle_colorBorderLine
 
-//-------------------------------------------------------------------------------------------------
 //#ContextualItem*:ComponentContextual
+    //---------------------------------------------------------------------------------------------
+    // ContextualItem
 
     property int contextualItem_height: itemList_height
 
     property int contextualItem_padding: dp8
 
-//-------------------------------------------------------------------------------------------------
 //#ContextualItemCover:ComponentContextual
+    //---------------------------------------------------------------------------------------------
+    // ContextualItemCover
 
     property int contextualItemCover_spacing: dp8
 
-//-------------------------------------------------------------------------------------------------
 //#ContextualItemConfirm:ComponentContextual
+    //---------------------------------------------------------------------------------------------
+    // ContextualItemConfirm
 
     property int contextualItemConfirm_height: itemList_height
 

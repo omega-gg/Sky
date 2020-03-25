@@ -44,7 +44,7 @@ void extractPaths(const QString & path)
 
     QFileInfoList list = Dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
 
-    foreach (QFileInfo info, list)
+    foreach (const QFileInfo & info, list)
     {
         if (info.isDir())
         {
@@ -52,6 +52,43 @@ void extractPaths(const QString & path)
         }
         else paths.append(info.filePath());
     }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool match(const QString & string)
+{
+    QStringList list = string.split(':');
+
+    qDebug("MATCH A %s", string.C_STR);
+
+    foreach (const QString & name, list)
+    {
+        qDebug("MATCH B %s", name.C_STR);
+
+        if (name.endsWith('*'))
+        {
+            QString string = name.chopped(1);
+
+            foreach (const QString & define, defines)
+            {
+                if (define.startsWith(string))
+                {
+                    qDebug("MATCH A");
+
+                    return true;
+                }
+            }
+        }
+        else if (defines.contains(name))
+        {
+            qDebug("MATCH B");
+
+            return true;
+        }
+    }
+
+    return false;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -149,7 +186,7 @@ void scanFile(const QString & input, const QString & output)
                 continue;
             }
 
-            if (defines.contains(string))
+            if (match(string))
             {
                 line = stream.readLine();
 
@@ -217,7 +254,10 @@ void scanFolder(const QString & path)
 
     QFileInfoList list = Dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
 
-    foreach (QFileInfo info, list)
+    QStringList inputs;
+    QStringList outputs;
+
+    foreach (const QFileInfo & info, list)
     {
         if (info.isDir())
         {
@@ -229,11 +269,27 @@ void scanFolder(const QString & path)
 
             if (info.suffix().toLower() == "qml")
             {
-                scanFile(filePath, info.path() + '/' + info.fileName());
+                QString name = info.baseName();
+
+                inputs.append(filePath);
+
+                outputs.append(info.path() + '/' + name + ".qml");
+
+                defines.append(name);
             }
 
             paths.append(filePath);
         }
+    }
+
+    foreach (const QString & define, defines)
+    {
+        qDebug("DEFINE %s", define.C_STR);
+    }
+
+    foreach (const QString & input, inputs)
+    {
+        scanFile(input, outputs.takeFirst());
     }
 }
 
