@@ -493,7 +493,6 @@ Item
     property int barTitleText_rightMargin: dp8
 
     property int barTitleText_pixelSize: dp14
-//#END
 
 //#BaseButton:Button*
     //---------------------------------------------------------------------------------------------
@@ -1330,73 +1329,37 @@ Item
     //---------------------------------------------------------------------------------------------
     // Images
 
+//#ScrollBar
     property url image_blank: "pictures/blank.png"
+//#END
 
     //---------------------------------------------------------------------------------------------
     // Icons
 
+//#icons_window:BarWindow
     property url icon_iconify : "pictures/icons/scale/iconify.svg"
     property url icon_maximize: "pictures/icons/scale/maximize.svg"
     property url icon_minimize: "pictures/icons/scale/minimize.svg"
-    property url icon_close   : "pictures/icons/scale/close.svg"
-
-    property url icon_previous: "pictures/icons/scale/previous.svg"
-    property url icon_next    : "pictures/icons/scale/next.svg"
-
-    property url icon_slideLeft : "pictures/icons/scale/slideLeft.svg"
-    property url icon_slideRight: "pictures/icons/scale/slideRight.svg"
-    property url icon_slideUp   : "pictures/icons/scale/slideUp.svg"
-    property url icon_slideDown : "pictures/icons/scale/slideDown.svg"
-
-    property url icon_extend: "pictures/icons/scale/extend.svg"
-    property url icon_shrink: "pictures/icons/scale/shrink.svg"
-
-    property url icon_contextualDown: "pictures/icons/scale/contextualDown.svg"
-
-    property url icon_add: "pictures/icons/scale/add.svg"
-
-    property url icon_external: "pictures/icons/scale/external.svg"
-
-    //---------------------------------------------------------------------------------------------
-
-    property url icon_play : "pictures/icons/scale/play.svg"
-    property url icon_pause: "pictures/icons/scale/pause.svg"
-
-    property url icon_backward: "pictures/icons/scale/backward.svg"
-    property url icon_forward : "pictures/icons/scale/forward.svg"
-
-    property url icon_audioMin: "pictures/icons/scale/audioMin.svg"
-    property url icon_audioMax: "pictures/icons/scale/audioMax.svg"
-
-    //---------------------------------------------------------------------------------------------
-
-    property url icon_loading: "pictures/icons/scale/loading.svg"
-
-    //---------------------------------------------------------------------------------------------
-    // 16x16
 
     property url icon16x16_iconify : vector("pictures/icons/16x16/iconify.png",  icon_iconify)
     property url icon16x16_maximize: vector("pictures/icons/16x16/maximize.png", icon_maximize)
     property url icon16x16_minimize: vector("pictures/icons/16x16/minimize.png", icon_minimize)
-    property url icon16x16_close   : vector("pictures/icons/16x16/close.png",    icon_close)
+
+//#icons_close:BarWindow:ButtonsItem:LabelLoadingButton:LineEditBoxClear:TabsBrowser
+    property url icon_close: "pictures/icons/scale/close.svg"
+
+    property url icon16x16_close: vector("pictures/icons/16x16/close.png", icon_close)
+
+//#icons_navigate:BaseWall
+    property url icon_previous: "pictures/icons/scale/previous.svg"
+    property url icon_next    : "pictures/icons/scale/next.svg"
 
     property url icon16x16_previous: vector("pictures/icons/16x16/previous.png", icon_previous)
     property url icon16x16_next    : vector("pictures/icons/16x16/next.png",     icon_next)
 
-    property url icon16x16_contextualDown: vector("pictures/icons/16x16/contextualDown.png",
-                                                  icon_contextualDown)
-
-    property url icon16x16_add: vector("pictures/icons/16x16/add.png", icon_add)
-
-    property url icon16x16_external: vector("pictures/icons/16x16/external.png", icon_external)
-
-    //---------------------------------------------------------------------------------------------
-
-    property url icon16x16_audioMin: vector("pictures/icons/16x16/audioMin.png", icon_audioMin)
-    property url icon16x16_audioMax: vector("pictures/icons/16x16/audioMax.png", icon_audioMax)
-
-    //---------------------------------------------------------------------------------------------
-    // 24x24
+//#icons_slide:ContextualItemConfirm
+    property url icon_slideLeft : "pictures/icons/scale/slideLeft.svg"
+    property url icon_slideRight: "pictures/icons/scale/slideRight.svg"
 
     property url icon24x24_slideLeft: vector("pictures/icons/24x24/slideLeft.png",
                                              icon_slideLeft)
@@ -1404,27 +1367,78 @@ Item
     property url icon24x24_slideRight: vector("pictures/icons/24x24/slideRight.png",
                                               icon_slideRight)
 
+//#icons_slide
+    property url icon_slideUp   : "pictures/icons/scale/slideUp.svg"
+    property url icon_slideDown : "pictures/icons/scale/slideDown.svg"
+
     property url icon24x24_slideUp: vector("pictures/icons/24x24/slideUp.png",
                                            icon_slideUp)
 
     property url icon24x24_slideDown: vector("pictures/icons/24x24/slideDown.png",
                                              icon_slideDown)
 
+//#icons_scale:WallVideo
+    property url icon_extend: "pictures/icons/scale/extend.svg"
+
     property url icon24x24_extend: vector("pictures/icons/24x24/extend.png", icon_extend)
+
+//#icons_scale:WallVideo
+    property url icon_shrink: "pictures/icons/scale/shrink.svg"
+
     property url icon24x24_shrink: vector("pictures/icons/24x24/shrink.png", icon_shrink)
+
+//#icons_contextual:ButtonsItem
+    property url icon_contextualDown: "pictures/icons/scale/contextualDown.svg"
+
+    property url icon16x16_contextualDown: vector("pictures/icons/16x16/contextualDown.png",
+                                                  icon_contextualDown)
+
+//#icons_add
+    property url icon_add: "pictures/icons/scale/add.svg"
+
+    property url icon16x16_add: vector("pictures/icons/16x16/add.png", icon_add)
+
+//#icons_external
+    property url icon_external: "pictures/icons/scale/external.svg"
+
+    property url icon16x16_external: vector("pictures/icons/16x16/external.png", icon_external)
+//#END
 
     //---------------------------------------------------------------------------------------------
 
-    property url icon24x24_play : vector("pictures/icons/24x24/play.png",  icon_play)
+//#icons_playback:TabsPlayer:WallVideo:PlayerBrowser
+    property url icon_play: "pictures/icons/scale/play.svg"
+
+    property url icon24x24_play : vector("pictures/icons/24x24/play.png", icon_play)
+
+//#icons_playback
+    property url icon_pause: "pictures/icons/scale/pause.svg"
+
     property url icon24x24_pause: vector("pictures/icons/24x24/pause.png", icon_pause)
 
+//#icons_playback:PlayerBrowser
+    property url icon_backward: "pictures/icons/scale/backward.svg"
+    property url icon_forward : "pictures/icons/scale/forward.svg"
+
+//#icons_playback
     property url icon24x24_backward: vector("pictures/icons/24x24/backward.png", icon_backward)
     property url icon24x24_forward : vector("pictures/icons/24x24/forward.png",  icon_forward)
 
+//#icons_audio:SliderVolume
+    property url icon_audioMin: "pictures/icons/scale/audioMin.svg"
+    property url icon_audioMax: "pictures/icons/scale/audioMax.svg"
+
+    property url icon16x16_audioMin: vector("pictures/icons/16x16/audioMin.png", icon_audioMin)
+    property url icon16x16_audioMax: vector("pictures/icons/16x16/audioMax.png", icon_audioMax)
+//#END
+
     //---------------------------------------------------------------------------------------------
-    // 32x32
+
+//#icons_loading:IconLoading
+    property url icon_loading: "pictures/icons/scale/loading.svg"
 
     property url icon32x32_loading: icon_loading
+//#END
 
     //---------------------------------------------------------------------------------------------
     // Functions
