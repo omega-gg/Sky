@@ -25,12 +25,13 @@
 //-------------------------------------------------------------------------------------------------
 // Global variables
 
+QString path;
+
 QString version;
 
 QStringList defines;
 
-//QString defineA;
-//QString defineB;
+QStringList fileNames;
 
 QStringList paths;
 
@@ -102,24 +103,28 @@ void replaceFile(const QString & path, const QString & content)
 
 //-------------------------------------------------------------------------------------------------
 
-void generateQrc(const QString & path)
+void applyFiles(const QString & path)
 {
-    QString content = "<RCC>\n<qresource>\n";
-
-    foreach (const QString & filePath, paths)
+    foreach (const QString & fileName, fileNames)
     {
-        content.append("    <file>" + filePath + "</file>\n");
+        QString name = QDir::fromNativeSeparators(fileName);
+
+        qDebug("FILE %s", name.C_STR);
+
+        int index = name.lastIndexOf('/');
+
+        if (index != -1)
+        {
+            name = name.mid(index + 1);
+        }
+
+        if (QFile::copy(fileName, path + name) == false)
+        {
+            qDebug("applyFiles: Cannot copy file %s", fileName.C_STR);
+        }
+
+        defines.append(name.mid(0, name.indexOf('.')));
     }
-
-    content.append("</qresource>\n</RCC>\n");
-
-    QFile file(path);
-
-    file.open(QIODevice::WriteOnly | QIODevice::Truncate);
-
-    QTextStream stream(&file);
-
-    stream << content;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -242,14 +247,11 @@ void scanFile(const QString & input, const QString & output)
     replaceFile(output, content);
 }
 
-void scanFolder(const QString & path)
+void scanFolder()
 {
     QDir Dir(path);
 
     QFileInfoList list = Dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
-
-    QStringList inputs;
-    QStringList outputs;
 
     foreach (const QFileInfo & info, list)
     {
@@ -263,23 +265,34 @@ void scanFolder(const QString & path)
 
             if (info.suffix().toLower() == "qml")
             {
-                QString name = info.baseName();
-
-                inputs.append(filePath);
-
-                outputs.append(info.path() + '/' + name + ".qml");
-
-                defines.append(name);
+                scanFile(filePath, info.path() + '/' + info.fileName());
             }
 
             paths.append(filePath);
         }
     }
+}
 
-    for (int i = 0; i < inputs.count(); i++)
+//-------------------------------------------------------------------------------------------------
+
+void generateQrc(const QString & path)
+{
+    QString content = "<RCC>\n<qresource>\n";
+
+    foreach (const QString & filePath, paths)
     {
-        scanFile(inputs.at(i), outputs.at(i));
+        content.append("    <file>" + filePath + "</file>\n");
     }
+
+    content.append("</qresource>\n</RCC>\n");
+
+    QFile file(path);
+
+    file.open(QIODevice::WriteOnly | QIODevice::Truncate);
+
+    QTextStream stream(&file);
+
+    stream << content;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -288,9 +301,9 @@ int main(int argc, char *argv[])
 {
     QCoreApplication application(argc, argv);
 
-    if (argc < 4)
+    if (argc < 5)
     {
-        qDebug("Usage: deployer <path> <version> <qrc output> [defines]");
+        qDebug("Usage: deployer <path> <version> <qrc output> <defines> [file paths]");
 
         return -1;
     }
@@ -298,6 +311,8 @@ int main(int argc, char *argv[])
     qDebug("Sky deployer");
 
     qDebug("\nDEPLOYING");
+
+    path = argv[1];
 
     version = argv[2];
 
@@ -307,12 +322,21 @@ int main(int argc, char *argv[])
     }
     else defines.append("QT_5");
 
-    for (int i = 4; i < argc; i++)
+    QStringList list = QString(argv[4]).split(' ');
+
+    foreach (const QString & string, list)
     {
-        defines.append(argv[i]);
+        defines.append(string);
     }
 
-    scanFolder(argv[1]);
+    for (int i = 5; i < argc; i++)
+    {
+        fileNames.append(argv[i]);
+    }
+
+    applyFiles(path + '/');
+
+    scanFolder();
 
     generateQrc(argv[3]);
 
