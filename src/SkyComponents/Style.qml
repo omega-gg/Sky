@@ -1404,7 +1404,7 @@ Item
 
     //---------------------------------------------------------------------------------------------
 
-//#icons_playback:TabsPlayer:WallVideo:PlayerBrowser
+//#icons_playback:TabsPlayer:PlayerBrowser
     property url icon_play: "pictures/icons/scale/play.svg"
 
     property url icon24x24_play : vector("pictures/icons/24x24/play.png", icon_play)
