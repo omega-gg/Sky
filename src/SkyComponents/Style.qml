@@ -494,7 +494,7 @@ Item
 
 //#BaseButton
     //---------------------------------------------------------------------------------------------
-    // BaseButton
+    // Button
 
     property color button_colorBorder: border_color
     property color button_colorFocus : border_colorFocus
@@ -1504,10 +1504,12 @@ Item
         border_colorLight = "#b4b4b4";
         border_colorFocus = "#00a0f0";
 
+//#Window
         //-----------------------------------------------------------------------------------------
         // Window
 
         window_color = "#b4b4b4";
+//#END
 
         //-----------------------------------------------------------------------------------------
         // Icon
@@ -1518,17 +1520,20 @@ Item
         icon1_colorA = "#646464";
         icon2_colorA = "white";
 
+//#IconOverlay
         //-----------------------------------------------------------------------------------------
         // IconOverlay
 
         iconOverlay_colorA = "#00b4ff";
         iconOverlay_colorB = iconOverlay_colorA;
 
+//#Panel
         //-----------------------------------------------------------------------------------------
         // Panel
 
         panel_color = "#c8c8c8";
 
+//#BarWindow
         //-----------------------------------------------------------------------------------------
         // BarWindow
 
@@ -1538,12 +1543,14 @@ Item
         barWindow_colorDisableA = "#dcdcdc";
         barWindow_colorDisableB = barWindow_colorDisableA;
 
+//#BarTitle
         //-----------------------------------------------------------------------------------------
         // BarTitle
 
         barTitleSmall_colorA = barWindow_colorA;
         barTitleSmall_colorB = barWindow_colorB;
 
+//#BaseButton
         //-----------------------------------------------------------------------------------------
         // Button
 
@@ -1553,6 +1560,7 @@ Item
         button_colorConfirmPressA = "#b40000";
         button_colorConfirmPressB = button_colorConfirmPressA;
 
+//#BaseButtonPush
         //-----------------------------------------------------------------------------------------
         // ButtonPush
 
@@ -1580,6 +1588,7 @@ Item
         buttonPush_colorCheckHoverA = buttonPush_colorHighlightHoverA;
         buttonPush_colorCheckHoverB = buttonPush_colorHighlightHoverB;
 
+//#ButtonPushOverlay
         //-----------------------------------------------------------------------------------------
         // ButtonPushOverlay
 
@@ -1596,6 +1605,7 @@ Item
 
         buttonPushOverlay_filterIcon = icon2_filter;
 
+//#ButtonCheck
         //-----------------------------------------------------------------------------------------
         // ButtonCheck
 
@@ -1607,6 +1617,7 @@ Item
         buttonCheck_colorHandlePressA = buttonCheck_colorHandleA;
         buttonCheck_colorHandlePressB = buttonCheck_colorHandleB;
 
+//#ButtonMask
         //-----------------------------------------------------------------------------------------
         // ButtonMask
 
@@ -1615,6 +1626,7 @@ Item
         buttonMask_colorPressA = icon_colorA;
         buttonMask_colorPressB = icon_colorB;
 
+//#BaseLabelRound
         //-----------------------------------------------------------------------------------------
         // LabelRound
 
@@ -1623,21 +1635,25 @@ Item
 
         labelRound_filterIcon = icon2_filter;
 
+//#LabelRoundInfo
         //-----------------------------------------------------------------------------------------
         // LabelRoundInfo
 
         labelRoundInfo_colorText = text_color;
 
+//#LabelLoading*
         //-----------------------------------------------------------------------------------------
         // LabelLoading
 
         labelLoading_colorA = buttonPushOverlay_colorA;
 
+//#LabelLoadingText
         //-----------------------------------------------------------------------------------------
         // LabelLoadingText
 
         labelLoadingText_colorText = text2_color;
 
+//#BaseLineEdit
         //-----------------------------------------------------------------------------------------
         // BaseLineEdit
 
@@ -1646,11 +1662,13 @@ Item
 
         baseLineEdit_colorDefault = text3_color;
 
+//#LineEdit*
         //-----------------------------------------------------------------------------------------
         // LineEdit
 
         lineEdit_color = buttonPush_colorHoverA;
 
+//#LineEditBox
         //-----------------------------------------------------------------------------------------
         // LineEditBox
 
@@ -1660,12 +1678,14 @@ Item
         lineEditBox_colorHoverA = lineEdit_colorHover;
         lineEditBox_colorHoverB = lineEditBox_colorHoverA;
 
+//#ScrollBar
         //-----------------------------------------------------------------------------------------
         // ScrollBar
 
         scrollBar_colorHandlePressA = buttonPush_colorA;
         scrollBar_colorHandlePressB = buttonPush_colorB;
 
+//#SliderStream
         //-----------------------------------------------------------------------------------------
         // SliderStream
 
@@ -1684,18 +1704,21 @@ Item
         sliderStream_colorBarProgressA = sliderStream_colorBarDisableHoverA;
         sliderStream_colorBarProgressB = sliderStream_colorBarDisableHoverB;
 
+//#TabBarProgress
         //-----------------------------------------------------------------------------------------
         // TabBarProgress
 
         tabBarProgress_colorDisableA = "#969696";
         tabBarProgress_colorDisableB = tabBarProgress_colorDisableA;
 
+//#PlayerBrowser
         //-----------------------------------------------------------------------------------------
         // PlayerBrowser
 
         playerBrowser_colorText      = "#dcdcdc";
         playerBrowser_colorTextHover = text2_color;
 
+//#ItemList
         //-----------------------------------------------------------------------------------------
         // ItemList
 
@@ -1728,6 +1751,7 @@ Item
         itemList_colorText         = "#646464";
         itemList_colorTextSelected = text2_color;
 
+//#ItemTab
         //-----------------------------------------------------------------------------------------
         // ItemTab
 
@@ -1736,6 +1760,7 @@ Item
 
         itemTab_colorHighlightContextualA = "#00b4ff";
         itemTab_colorHighlightContextualB = itemTab_colorHighlightContextualA;
+//#END
     }
 
     function applyNight()
@@ -1766,10 +1791,12 @@ Item
         border_colorLight = border_color;
         border_colorFocus = "#008cdc";
 
+//#Window
         //-----------------------------------------------------------------------------------------
         // Window
 
         window_color = "#323232";
+//#END
 
         //-----------------------------------------------------------------------------------------
         // Icon
@@ -1780,17 +1807,20 @@ Item
         icon1_colorA = "#dcdcdc";
         icon2_colorA = icon1_colorA;
 
+//#IconOverlay
         //-----------------------------------------------------------------------------------------
         // IconOverlay
 
         iconOverlay_colorA = icon_colorActiveA;
         iconOverlay_colorB = iconOverlay_colorA;
 
+//#Panel
         //-----------------------------------------------------------------------------------------
         // Panel
 
         panel_color = "#404040";
 
+//#BarWindow
         //-----------------------------------------------------------------------------------------
         // BarWindow
 
@@ -1800,12 +1830,14 @@ Item
         barWindow_colorDisableA = "#484848";
         barWindow_colorDisableB = barWindow_colorDisableA;
 
+//#BarTitle
         //-----------------------------------------------------------------------------------------
         // BarTitle
 
         barTitleSmall_colorA = barWindow_colorA;
         barTitleSmall_colorB = barWindow_colorB;
 
+//#BaseButton
         //-----------------------------------------------------------------------------------------
         // Button
 
@@ -1815,6 +1847,7 @@ Item
         button_colorConfirmPressA = "#960000";
         button_colorConfirmPressB = button_colorConfirmPressA;
 
+//#BaseButtonPush
         //-----------------------------------------------------------------------------------------
         // ButtonPush
 
@@ -1842,6 +1875,7 @@ Item
         buttonPush_colorCheckHoverA = buttonPush_colorHighlightHoverA;
         buttonPush_colorCheckHoverB = buttonPush_colorHighlightHoverB;
 
+//#ButtonPushOverlay
         //-----------------------------------------------------------------------------------------
         // ButtonPushOverlay
 
@@ -1858,6 +1892,7 @@ Item
 
         buttonPushOverlay_filterIcon = button_filterIconA;
 
+//#ButtonCheck
         //-----------------------------------------------------------------------------------------
         // ButtonCheck
 
@@ -1869,6 +1904,7 @@ Item
         buttonCheck_colorHandlePressA = buttonCheck_colorHandleA;
         buttonCheck_colorHandlePressB = buttonCheck_colorHandleB;
 
+//#ButtonMask
         //-----------------------------------------------------------------------------------------
         // ButtonMask
 
@@ -1877,6 +1913,7 @@ Item
         buttonMask_colorPressA = icon_colorA;
         buttonMask_colorPressB = icon_colorA;
 
+//#BaseLabelRound
         //-----------------------------------------------------------------------------------------
         // LabelRound
 
@@ -1885,21 +1922,25 @@ Item
 
         labelRound_filterIcon = icon_filter;
 
+//#LabelRoundInfo
         //-----------------------------------------------------------------------------------------
         // LabelRoundInfo
 
         labelRoundInfo_colorText = labelRound_colorText;
 
+//#LabelLoading*
         //-----------------------------------------------------------------------------------------
         // LabelLoading
 
         labelLoading_colorA = "black";
 
+//#LabelLoadingText
         //-----------------------------------------------------------------------------------------
         // LabelLoadingText
 
         labelLoadingText_colorText = labelRound_colorText;
 
+//#BaseLineEdit
         //-----------------------------------------------------------------------------------------
         // BaseLineEdit
 
@@ -1908,11 +1949,13 @@ Item
 
         baseLineEdit_colorDefault = "#323232";
 
+//#LineEdit*
         //-----------------------------------------------------------------------------------------
         // LineEdit
 
         lineEdit_color = "#dcdcdc";
 
+//#LineEditBox
         //-----------------------------------------------------------------------------------------
         // LineEditBox
 
@@ -1922,12 +1965,14 @@ Item
         lineEditBox_colorHoverA = buttonPush_colorA;
         lineEditBox_colorHoverB = buttonPush_colorB;
 
+//#ScrollBar
         //-----------------------------------------------------------------------------------------
         // ScrollBar
 
         scrollBar_colorHandlePressA = buttonPush_colorA;
         scrollBar_colorHandlePressB = buttonPush_colorB;
 
+//#SliderStream
         //-----------------------------------------------------------------------------------------
         // SliderStream
 
@@ -1946,18 +1991,21 @@ Item
         sliderStream_colorBarProgressA = sliderStream_colorBarDisableHoverA;
         sliderStream_colorBarProgressB = sliderStream_colorBarDisableHoverB;
 
+//#TabBarProgress
         //-----------------------------------------------------------------------------------------
         // TabBarProgress
 
         tabBarProgress_colorDisableA = sliderStream_colorBarDisableB;
         tabBarProgress_colorDisableB = sliderStream_colorBarDisableA;
 
+//#PlayerBrowser
         //-----------------------------------------------------------------------------------------
         // PlayerBrowser
 
         playerBrowser_colorText      = text3_color;
         playerBrowser_colorTextHover = "#dcdcdc";
 
+//#ItemList
         //-----------------------------------------------------------------------------------------
         // ItemList
 
@@ -1990,6 +2038,7 @@ Item
         itemList_colorText         = "#dcdcdc";
         itemList_colorTextSelected = text_color;
 
+//#ItemTab
         //-----------------------------------------------------------------------------------------
         // ItemTab
 
@@ -1998,6 +2047,7 @@ Item
 
         itemTab_colorHighlightContextualA = "#008cdc";
         itemTab_colorHighlightContextualB = itemTab_colorHighlightContextualA;
+//#END
     }
 
     function applyClassic()
@@ -2028,10 +2078,12 @@ Item
         border_colorLight = "#242424";
         border_colorFocus = "#008cdc";
 
+//#Window
         //-----------------------------------------------------------------------------------------
         // Window
 
         window_color = "#323232";
+//#END
 
         //-----------------------------------------------------------------------------------------
         // Icon
@@ -2042,17 +2094,20 @@ Item
         icon1_colorA = "#dcdcdc";
         icon2_colorA = icon1_colorA;
 
+//#IconOverlay
         //-----------------------------------------------------------------------------------------
         // IconOverlay
 
         iconOverlay_colorA = icon_colorActiveA;
         iconOverlay_colorB = icon_colorActiveB;
 
+//#Panel
         //-----------------------------------------------------------------------------------------
         // Panel
 
         panel_color = "#404040";
 
+//#BarWindow
         //-----------------------------------------------------------------------------------------
         // BarWindow
 
@@ -2062,12 +2117,14 @@ Item
         barWindow_colorDisableA = barWindow_colorB;
         barWindow_colorDisableB = barWindow_colorA;
 
+//#BarTitle
         //-----------------------------------------------------------------------------------------
         // BarTitle
 
         barTitleSmall_colorA = "#646464";
         barTitleSmall_colorB = "#484848";
 
+//#BaseButton
         //-----------------------------------------------------------------------------------------
         // Button
 
@@ -2077,6 +2134,7 @@ Item
         button_colorConfirmPressA = "#960000";
         button_colorConfirmPressB = "#c80000";
 
+//#BaseButtonPush
         //-----------------------------------------------------------------------------------------
         // ButtonPush
 
@@ -2104,6 +2162,7 @@ Item
         buttonPush_colorCheckHoverA = buttonPush_colorCheckA;
         buttonPush_colorCheckHoverB = "#00b4ff";
 
+//#ButtonPushOverlay
         //-----------------------------------------------------------------------------------------
         // ButtonPushOverlay
 
@@ -2120,6 +2179,7 @@ Item
 
         buttonPushOverlay_filterIcon = button_filterIconA;
 
+//#ButtonCheck
         //-----------------------------------------------------------------------------------------
         // ButtonCheck
 
@@ -2131,6 +2191,7 @@ Item
         buttonCheck_colorHandlePressA = "#646464";
         buttonCheck_colorHandlePressB = "#f0f0f0";
 
+//#ButtonMask
         //-----------------------------------------------------------------------------------------
         // ButtonMask
 
@@ -2139,6 +2200,7 @@ Item
         buttonMask_colorPressA = buttonMask_colorHoverA;
         buttonMask_colorPressB = "#646464";
 
+//#BaseLabelRound
         //-----------------------------------------------------------------------------------------
         // LabelRound
 
@@ -2147,21 +2209,25 @@ Item
 
         labelRound_filterIcon = icon_filter;
 
+//#LabelRoundInfo
         //-----------------------------------------------------------------------------------------
         // LabelRoundInfo
 
         labelRoundInfo_colorText = labelRound_colorText;
 
+//#LabelLoading*
         //-----------------------------------------------------------------------------------------
         // LabelLoading
 
         labelLoading_colorA = "black";
 
+//#LabelLoadingText
         //-----------------------------------------------------------------------------------------
         // LabelLoadingText
 
         labelLoadingText_colorText = labelRound_colorText;
 
+//#BaseLineEdit
         //-----------------------------------------------------------------------------------------
         // BaseLineEdit
 
@@ -2170,11 +2236,13 @@ Item
 
         baseLineEdit_colorDefault = "#323232";
 
+//#LineEdit*
         //-----------------------------------------------------------------------------------------
         // LineEdit
 
         lineEdit_color = "#dcdcdc";
 
+//#LineEditBox
         //-----------------------------------------------------------------------------------------
         // LineEditBox
 
@@ -2184,12 +2252,14 @@ Item
         lineEditBox_colorHoverA = buttonPush_colorPressHoverA;
         lineEditBox_colorHoverB = buttonPush_colorPressHoverB;
 
+//#ScrollBar
         //-----------------------------------------------------------------------------------------
         // ScrollBar
 
         scrollBar_colorHandlePressA = buttonPush_colorPressHoverA;
         scrollBar_colorHandlePressB = buttonPush_colorPressHoverB;
 
+//#SliderStream
         //-----------------------------------------------------------------------------------------
         // SliderStream
 
@@ -2208,18 +2278,21 @@ Item
         sliderStream_colorBarProgressA = "#646464";
         sliderStream_colorBarProgressB = "#dcdcdc";
 
+//#TabBarProgress
         //-----------------------------------------------------------------------------------------
         // TabBarProgress
 
         tabBarProgress_colorDisableA = sliderStream_colorBarDisableB;
         tabBarProgress_colorDisableB = sliderStream_colorBarDisableA;
 
+//#PlayerBrowser
         //-----------------------------------------------------------------------------------------
         // PlayerBrowser
 
         playerBrowser_colorText      = text3_color;
         playerBrowser_colorTextHover = "#dcdcdc";
 
+//#ItemList
         //-----------------------------------------------------------------------------------------
         // ItemList
 
@@ -2252,6 +2325,7 @@ Item
         itemList_colorText         = "#dcdcdc";
         itemList_colorTextSelected = text_color;
 
+//#ItemTab
         //-----------------------------------------------------------------------------------------
         // ItemTab
 
@@ -2260,5 +2334,6 @@ Item
 
         itemTab_colorHighlightContextualA = "#00b4ff";
         itemTab_colorHighlightContextualB = "#0064c8";
+//#END
     }
 }
