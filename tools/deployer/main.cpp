@@ -60,30 +60,24 @@ bool match(const QString & string)
 {
     QStringList list = string.split(':');
 
-    qDebug("MATCH A %s", string.C_STR);
-
     foreach (const QString & name, list)
     {
-        qDebug("MATCH B %s", name.C_STR);
-
         if (name.endsWith('*'))
         {
-            QString string = name.chopped(1);
+            QString string = name;
+
+            string.chop(1);
 
             foreach (const QString & define, defines)
             {
                 if (define.startsWith(string))
                 {
-                    qDebug("MATCH A");
-
                     return true;
                 }
             }
         }
         else if (defines.contains(name))
         {
-            qDebug("MATCH B");
-
             return true;
         }
     }
@@ -282,14 +276,9 @@ void scanFolder(const QString & path)
         }
     }
 
-    foreach (const QString & define, defines)
+    for (int i = 0; i < inputs.count(); i++)
     {
-        qDebug("DEFINE %s", define.C_STR);
-    }
-
-    foreach (const QString & input, inputs)
-    {
-        scanFile(input, outputs.takeFirst());
+        scanFile(inputs.at(i), outputs.at(i));
     }
 }
 
