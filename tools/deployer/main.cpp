@@ -25,15 +25,13 @@
 //-------------------------------------------------------------------------------------------------
 // Global variables
 
-QString path;
+static QString version;
 
-QString version;
+static QStringList defines;
 
-QStringList defines;
+static QStringList fileNames;
 
-QStringList fileNames;
-
-QStringList paths;
+static QStringList paths;
 
 //-------------------------------------------------------------------------------------------------
 // Functions
@@ -88,6 +86,19 @@ bool match(const QString & string)
 
 //-------------------------------------------------------------------------------------------------
 
+bool copyFile(const QString & fileName, const QString & newName)
+{
+    QFile::remove(newName);
+
+    if (QFile::copy(fileName, newName) == false)
+    {
+        qWarning("copyFile: Cannot copy file %s.", fileName.C_STR);
+
+        return false;
+    }
+    else return true;
+}
+
 void replaceFile(const QString & path, const QString & content)
 {
     qDebug("Generating file: %s", path.C_STR);
@@ -103,27 +114,81 @@ void replaceFile(const QString & path, const QString & content)
 
 //-------------------------------------------------------------------------------------------------
 
+void createFile(const QString & path, const QString & filePath, const QString & source)
+{
+    QString fileName = path + source.mid(0, source.lastIndexOf('/'));
+
+    if (QDir().mkpath(fileName) == false)
+    {
+        qWarning("createFile: Cannot create folder %s.", fileName.C_STR);
+
+        return;
+    }
+
+    qDebug("Copying file: %s", source.C_STR);
+
+    fileName = filePath + source;
+
+    if (copyFile(fileName, path + source) == false)
+    {
+        qWarning("createFile: Cannot copy file %s.", fileName.C_STR);
+    }
+}
+
+void copyFiles(const QString & path, const QString & filePath, const QString & fileName)
+{
+    QFile file(fileName);
+
+    file.open(QIODevice::ReadOnly);
+
+    QByteArray bytes = file.readAll();
+
+    int indexA = bytes.indexOf("\"pictures/");
+
+    while (indexA != -1)
+    {
+        indexA++;
+
+        int indexB = bytes.indexOf('"', indexA);
+
+        QString source = bytes.mid(indexA, indexB - indexA);
+
+        createFile(path, filePath, source);
+
+        indexA = bytes.indexOf("\"pictures/", indexB + 1);
+    }
+}
+
 void applyFiles(const QString & path)
 {
     foreach (const QString & fileName, fileNames)
     {
-        QString name = QDir::fromNativeSeparators(fileName);
-
-        qDebug("FILE %s", name.C_STR);
+        QString name = fileName;
 
         int index = name.lastIndexOf('/');
 
         if (index != -1)
         {
             name = name.mid(index + 1);
-        }
 
-        if (QFile::copy(fileName, path + name) == false)
+            if (name.contains("Style"))
+            {
+                copyFiles(path, fileName.mid(0, index + 1), fileName);
+            }
+        }
+        else if (name.contains("Style"))
         {
-            qDebug("applyFiles: Cannot copy file %s", fileName.C_STR);
+            copyFiles(path, "", fileName);
         }
 
-        defines.append(name.mid(0, name.indexOf('.')));
+        if (copyFile(fileName, path + name) == false)
+        {
+            qWarning("applyFiles: Cannot copy file %s.", fileName.C_STR);
+        }
+
+        name = name.mid(0, name.indexOf('.'));
+
+        defines.append(name);
     }
 }
 
@@ -247,7 +312,7 @@ void scanFile(const QString & input, const QString & output)
     replaceFile(output, content);
 }
 
-void scanFolder()
+void scanFolder(const QString & path)
 {
     QDir Dir(path);
 
@@ -312,7 +377,7 @@ int main(int argc, char *argv[])
 
     qDebug("\nDEPLOYING");
 
-    path = argv[1];
+    QString path = argv[1];
 
     version = argv[2];
 
@@ -331,12 +396,12 @@ int main(int argc, char *argv[])
 
     for (int i = 5; i < argc; i++)
     {
-        fileNames.append(argv[i]);
+        fileNames.append(QDir::fromNativeSeparators(argv[i]));
     }
 
     applyFiles(path + '/');
 
-    scanFolder();
+    scanFolder(path);
 
     generateQrc(argv[3]);
 
