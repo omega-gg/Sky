@@ -31,6 +31,8 @@ static QStringList defines;
 
 static QStringList fileNames;
 
+static QHash<QString, QString> files;
+
 static QStringList paths;
 
 //-------------------------------------------------------------------------------------------------
@@ -45,6 +47,8 @@ void extractPaths(const QString & path)
 
     foreach (const QFileInfo & info, list)
     {
+        if (info.fileName().startsWith('.')) continue;
+
         if (info.isDir())
         {
             extractPaths(info.filePath());
@@ -114,51 +118,6 @@ void replaceFile(const QString & path, const QString & content)
 
 //-------------------------------------------------------------------------------------------------
 
-void createFile(const QString & path, const QString & filePath, const QString & source)
-{
-    QString fileName = path + source.mid(0, source.lastIndexOf('/'));
-
-    if (QDir().mkpath(fileName) == false)
-    {
-        qWarning("createFile: Cannot create folder %s.", fileName.C_STR);
-
-        return;
-    }
-
-    qDebug("Copying file: %s", source.C_STR);
-
-    fileName = filePath + source;
-
-    if (copyFile(fileName, path + source) == false)
-    {
-        qWarning("createFile: Cannot copy file %s.", fileName.C_STR);
-    }
-}
-
-void copyFiles(const QString & path, const QString & filePath, const QString & fileName)
-{
-    QFile file(fileName);
-
-    file.open(QIODevice::ReadOnly);
-
-    QByteArray bytes = file.readAll();
-
-    int indexA = bytes.indexOf("\"pictures/");
-
-    while (indexA != -1)
-    {
-        indexA++;
-
-        int indexB = bytes.indexOf('"', indexA);
-
-        QString source = bytes.mid(indexA, indexB - indexA);
-
-        createFile(path, filePath, source);
-
-        indexA = bytes.indexOf("\"pictures/", indexB + 1);
-    }
-}
-
 void applyFiles(const QString & path)
 {
     foreach (const QString & fileName, fileNames)
@@ -170,15 +129,6 @@ void applyFiles(const QString & path)
         if (index != -1)
         {
             name = name.mid(index + 1);
-
-            if (name.contains("Style"))
-            {
-                copyFiles(path, fileName.mid(0, index + 1), fileName);
-            }
-        }
-        else if (name.contains("Style"))
-        {
-            copyFiles(path, "", fileName);
         }
 
         if (copyFile(fileName, path + name) == false)
@@ -189,6 +139,8 @@ void applyFiles(const QString & path)
         name = name.mid(0, name.indexOf('.'));
 
         defines.append(name);
+
+        files.insert(name, fileName);
     }
 }
 
@@ -210,7 +162,7 @@ bool skipLines(QTextStream * stream, QString * line, const QString & string)
     return true;
 }
 
-void scanFile(const QString & input, const QString & output)
+QString scanFile(const QString & input)
 {
     QString content;
 
@@ -264,9 +216,7 @@ void scanFile(const QString & input, const QString & output)
 
                     if (line.isNull())
                     {
-                        replaceFile(output, content);
-
-                        return;
+                        return content;
                     }
                 }
 
@@ -293,9 +243,7 @@ void scanFile(const QString & input, const QString & output)
 
                         if (line.isNull())
                         {
-                            replaceFile(output, content);
-
-                            return;
+                            return content;
                         }
                     }
                 }
@@ -309,32 +257,81 @@ void scanFile(const QString & input, const QString & output)
         }
     }
 
-    replaceFile(output, content);
+    return content;
+}
+
+void createResource(const QString & path, const QString & filePath, const QString & source)
+{
+    QString fileName = path + source.mid(0, source.lastIndexOf('/'));
+
+    if (QDir().mkpath(fileName) == false)
+    {
+        qWarning("createResource: Cannot create folder %s.", fileName.C_STR);
+
+        return;
+    }
+
+    qDebug("Copying file: %s", source.C_STR);
+
+    fileName = filePath + source;
+
+    if (copyFile(fileName, path + source) == false)
+    {
+        qWarning("createResource: Cannot copy file %s.", fileName.C_STR);
+
+        return;
+    }
+}
+
+void scanResources(const QString & path, const QString & content, const QString & fileName)
+{
+    int indexA = content.indexOf("\"pictures/");
+
+    while (indexA != -1)
+    {
+        indexA++;
+
+        int indexB = content.indexOf('"', indexA);
+
+        QString source = content.mid(indexA, indexB - indexA);
+
+        int index = fileName.lastIndexOf('/');
+
+        if (index != -1)
+        {
+             createResource(path, fileName.mid(0, index + 1), source);
+        }
+        else createResource(path, "", source);
+
+        indexA = content.indexOf("\"pictures/", indexB + 1);
+    }
 }
 
 void scanFolder(const QString & path)
 {
-    QDir Dir(path);
+    QDir dir(path);
 
-    QFileInfoList list = Dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
+    QFileInfoList list = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
 
     foreach (const QFileInfo & info, list)
     {
-        if (info.isDir())
-        {
-            extractPaths(info.filePath());
-        }
-        else if (info.baseName().isEmpty() == false)
-        {
-            QString filePath = info.filePath();
+        if (info.isDir() || info.suffix().toLower() != "qml") continue;
 
-            if (info.suffix().toLower() == "qml")
+        QString content = scanFile(info.filePath());
+
+        QString name = info.baseName();
+
+        if (name.contains("Style"))
+        {
+            QString fileName = files.value(name);
+
+            if (fileName.isEmpty() == false)
             {
-                scanFile(filePath, info.path() + '/' + info.fileName());
+                scanResources(path, content, fileName);
             }
-
-            paths.append(filePath);
         }
+
+        replaceFile(info.path() + '/' + name + ".qml", content);
     }
 }
 
@@ -377,7 +374,7 @@ int main(int argc, char *argv[])
 
     qDebug("\nDEPLOYING");
 
-    QString path = argv[1];
+    QString path = QString(argv[1]) + '/';
 
     version = argv[2];
 
@@ -399,9 +396,11 @@ int main(int argc, char *argv[])
         fileNames.append(QDir::fromNativeSeparators(argv[i]));
     }
 
-    applyFiles(path + '/');
+    applyFiles(path);
 
     scanFolder(path);
+
+    extractPaths(path);
 
     generateQrc(argv[3]);
 
