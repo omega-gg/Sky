@@ -1,4 +1,4 @@
-Style 1.0 Style.qml
+StyleComponents 1.0 StyleComponents.qml
 
 AreaContextual 1.0 AreaContextual.qml
 
@@ -19,13 +19,11 @@ BorderHorizontal 1.0 BorderHorizontal.qml
 BorderVertical   1.0 BorderVertical.qml
 BorderButton     1.0 BorderButton.qml
 
-Window      1.0 Window.qml
 WindowScale 1.0 WindowScale.qml
 
 BaseCursor 1.0 BaseCursor.qml
 CursorSvg  1.0 CursorSvg.qml
 
-RectangleBorders     1.0 RectangleBorders.qml
 RectangleBordersDrop 1.0 RectangleBordersDrop.qml
 RectangleShadow      1.0 RectangleShadow.qml
 RectangleLogo        1.0 RectangleLogo.qml

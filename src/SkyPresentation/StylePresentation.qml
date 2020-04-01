@@ -22,14 +22,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
-    // Global
-
-    property int dp256: st.dp(256)
-
-    property int dp1920: st.dp(1920)
-    property int dp1080: st.dp(1080)
-
-    //---------------------------------------------------------------------------------------------
+    // Tempo
 
     property real velocity: st.speed
 
@@ -55,7 +48,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // ButtonBox
 
-    property int buttonBox_size: dp256
+    property int buttonBox_size: st.dp256
 
     property int buttonBox_pixelSize: st.dp32
 
@@ -76,8 +69,8 @@ Item
 
     property int slide_durationAnimation: bpm(2)
 
-    property int slide_width : dp1920
-    property int slide_height: dp1080
+    property int slide_width : st.dp1920
+    property int slide_height: st.dp1080
 
     //---------------------------------------------------------------------------------------------
     // SlideGradient

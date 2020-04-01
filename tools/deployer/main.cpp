@@ -100,7 +100,10 @@ bool copyFile(const QString & fileName, const QString & newName)
 
         return false;
     }
-    else return true;
+
+    qDebug("Copying file: %s", fileName.C_STR);
+
+    return true;
 }
 
 void replaceFile(const QString & path, const QString & content)
@@ -270,8 +273,6 @@ void createResource(const QString & path, const QString & filePath, const QStrin
 
         return;
     }
-
-    qDebug("Copying file: %s", source.C_STR);
 
     fileName = filePath + source;
 

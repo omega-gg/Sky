@@ -17,162 +17,11 @@
 import QtQuick 1.0
 import Sky     1.0
 
-Item
+Style
 {
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
-    // Global
-
-    property real scale: 1.0
-    property real zoom : 1.0
-
-    property real ratio: scale * zoom
-
-    property int dp1: Math.max(1, 1 * ratio)
-
-    property int dp2: 2 * ratio
-    property int dp3: 3 * ratio
-    property int dp4: 4 * ratio
-    property int dp5: 5 * ratio
-    property int dp6: 6 * ratio
-    property int dp7: 7 * ratio
-    property int dp8: 8 * ratio
-    property int dp9: 9 * ratio
-
-    property int dp10: 10 * ratio
-    property int dp11: 11 * ratio
-    property int dp12: 12 * ratio
-    property int dp13: 13 * ratio
-    property int dp14: 14 * ratio
-    property int dp15: 15 * ratio
-    property int dp16: 16 * ratio
-    property int dp17: 17 * ratio
-    property int dp18: 18 * ratio
-    property int dp19: 19 * ratio
-
-    property int dp20: 20 * ratio
-    property int dp22: 22 * ratio
-    property int dp24: 24 * ratio
-    property int dp26: 26 * ratio
-    property int dp28: 28 * ratio
-
-    property int dp30: 30 * ratio
-    property int dp32: 32 * ratio
-    property int dp34: 34 * ratio
-    property int dp38: 38 * ratio
-
-    property int dp40: 40 * ratio
-    property int dp44: 44 * ratio
-    property int dp46: 46 * ratio
-    property int dp48: 48 * ratio
-
-    property int dp56: 56 * ratio
-
-    property int dp60: 60 * ratio
-    property int dp64: 64 * ratio
-
-    property int dp70: 70 * ratio
-
-    property int dp80: 80 * ratio
-
-    property int dp96: 96 * ratio
-
-    property int dp128: 128 * ratio
-    property int dp150: 150 * ratio
-    property int dp180: 180 * ratio
-    property int dp192: 192 * ratio
-
-    property int dp240: 240 * ratio
-
-    property int dp288: 288 * ratio
-
-    property variant size16x16: size(16, 16)
-    property variant size24x24: size(24, 24)
-    property variant size32x32: size(32, 32)
-    property variant size64x64: size(64, 64)
-
-    //---------------------------------------------------------------------------------------------
-
-    property url icon
-
-    property url  logo
-    property real logoRatio: 8.0
-
-    property color logo_colorA: "#c8c8c8"
-    property color logo_colorB: logo_colorA
-
-    property int cursor_width : dp18
-    property int cursor_height: dp24
-
-    //---------------------------------------------------------------------------------------------
-    // Speed
-
-    property real speed: speed_normal
-
-    property real ratioSpeed: (animate && speed) ? 1 / speed : 0.0
-
-    property real speed_slower: 0.25
-    property real speed_slow  : 0.5
-    property real speed_normal: 1.0
-    property real speed_fast  : 2.0
-    property real speed_faster: 4.0
-
-    //---------------------------------------------------------------------------------------------
-    // Animation
-
-    property bool animate: true
-
-    property int easing: Easing.OutQuad
-
-    property int duration_slower: ms300
-    property int duration_slow  : ms250
-    property int duration_normal: ms200
-    property int duration_fast  : ms150
-    property int duration_faster: ms100
-
-    property int ms100: 100 * ratioSpeed
-    property int ms150: 150 * ratioSpeed
-
-    property int ms200: 200 * ratioSpeed
-    property int ms250: 250 * ratioSpeed
-
-    property int ms300: 300 * ratioSpeed
-    property int ms500: 500 * ratioSpeed
-    property int ms800: 800 * ratioSpeed
-
-    property int ms1000: 1000 * ratioSpeed
-
-    //---------------------------------------------------------------------------------------------
-    // Text
-
-    property int text_pixelSize: dp12
-
-    property real text_opacityDisable: 0.6
-
-    property string text_fontFamily: (sk.osMac) ? "" : "Arial"
-
-    property int text_raised: Text.Normal
-    property int text_sunken: text_raised
-
-    property color text_color         : text1_color
-    property color text_colorCurrent  : "#008cdc"
-    property color text_colorShadow   : text1_colorShadow
-    property color text_colorSunken   : text1_colorSunken
-    property color text_colorLink     : text_colorCurrent
-    property color text_colorLinkHover: "#00b4ff"
-
-    property color text1_color      : "#484848"
-    property color text1_colorShadow: "#161616"
-    property color text1_colorSunken: "#323232"
-
-    property color text2_color      : "white"
-    property color text2_colorShadow: text1_colorShadow
-    property color text2_colorSunken: text1_colorSunken
-
-    property color text3_color      : "#646464"
-    property color text3_colorShadow: text1_colorShadow
-    property color text3_colorSunken: text1_colorSunken
 
 //#TextDate
     //---------------------------------------------------------------------------------------------
@@ -202,50 +51,6 @@ Item
     // Line
 
     property int line_size: dp1
-//#END
-
-    //---------------------------------------------------------------------------------------------
-    // Border
-
-    property int border_size     : dp2
-    property int border_sizeFocus: border_size
-
-    property color border_color     : "#969696"
-    property color border_colorLight: "#b4b4b4"
-    property color border_colorFocus: "#00a0f0"
-
-    property alias border_filter     : border_filter
-    property alias border_filterFocus: border_filterFocus
-
-    ImageColorFilter
-    {
-        id: border_filter
-
-        color: border_color
-    }
-
-    ImageColorFilter
-    {
-        id: border_filterFocus
-
-        color: border_colorFocus
-    }
-
-//#Window
-    //---------------------------------------------------------------------------------------------
-    // Window
-
-    property int window_durationAnimation: duration_fast
-
-    property int window_intervalTouch: 3000
-
-    property int window_borderSize     : border_size
-    property int window_borderSizeTouch: dp8
-
-    property int window_resizerSize     : dp4
-    property int window_resizerSizeTouch: dp16
-
-    property color window_color: "#b4b4b4"
 
 //#RectangleBorders
     //---------------------------------------------------------------------------------------------
@@ -262,7 +67,7 @@ Item
     property url rectangleShadow_sourceUp   : "pictures/shadowUp.png"
     property url rectangleShadow_sourceDown : "pictures/shadowDown.png"
 
-    property alias rectangleShadow_filter: border_filterFocus
+    property ImageColorFilter rectangleShadow_filter: border_filterFocus
 
 //#BorderImageShadow
     //---------------------------------------------------------------------------------------------
@@ -277,112 +82,6 @@ Item
     property url borderImageShadow_source: "pictures/shadow.png"
 
     property int borderImageShadow_borderSize: 128
-//#END
-
-    //---------------------------------------------------------------------------------------------
-    // Icon
-
-    property int icon_styleSize: dp1
-
-    property real icon_opacityDisable: 0.5
-
-    property int icon_raised: Sk.IconNormal
-    property int icon_sunken: icon_raised
-
-    property color icon_colorA      : icon1_colorA
-    property color icon_colorB      : icon1_colorB
-    property color icon_colorActiveA: "#008cdc"
-    property color icon_colorActiveB: icon_colorActiveA
-    property color icon_colorShadow : icon1_colorShadow
-    property color icon_colorSunken : icon1_colorSunken
-
-    property color icon1_colorA     : "#646464"
-    property color icon1_colorB     : icon1_colorA
-    property color icon1_colorShadow: "#161616"
-    property color icon1_colorSunken: "#323232"
-
-    property color icon2_colorA     : "white"
-    property color icon2_colorB     : icon2_colorA
-    property color icon2_colorShadow: icon1_colorShadow
-    property color icon2_colorSunken: icon1_colorSunken
-
-    property alias icon_filter      : icon_filter
-    property alias icon_filterActive: icon_filterActive
-    property alias icon_filterShadow: icon_filterShadow
-    property alias icon_filterSunken: icon_filterSunken
-
-    property alias icon1_filter      : icon_filter
-    property alias icon1_filterShadow: icon_filterShadow
-    property alias icon1_filterSunken: icon_filterSunken
-
-    property alias icon2_filter      : icon2_filter
-    property alias icon2_filterShadow: icon2_filterShadow
-    property alias icon2_filterSunken: icon2_filterSunken
-
-    //---------------------------------------------------------------------------------------------
-
-    ImageColorFilter
-    {
-        id: icon_filter
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: icon_colorA }
-            ScaleGradientStop { position: 1.0; color: icon_colorB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: icon_filterActive
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: icon_colorActiveA }
-            ScaleGradientStop { position: 1.0; color: icon_colorActiveB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: icon_filterShadow
-
-        color: icon_colorShadow
-    }
-
-    ImageColorFilter
-    {
-        id: icon_filterSunken
-
-        color: icon_colorSunken
-    }
-
-    //---------------------------------------------------------------------------------------------
-
-    ImageColorFilter
-    {
-        id: icon2_filter
-
-        gradient: ScaleGradient
-        {
-            ScaleGradientStop { position: 0.0; color: icon2_colorA }
-            ScaleGradientStop { position: 1.0; color: icon2_colorB }
-        }
-    }
-
-    ImageColorFilter
-    {
-        id: icon2_filterShadow
-
-        color: icon2_colorShadow
-    }
-
-    ImageColorFilter
-    {
-        id: icon2_filterSunken
-
-        color: icon2_colorSunken
-    }
 
 //#IconOverlay
     //---------------------------------------------------------------------------------------------
@@ -393,7 +92,7 @@ Item
     property color iconOverlay_colorA: "#00b4ff"
     property color iconOverlay_colorB: iconOverlay_colorA
 
-    property alias iconOverlay_filter: icon2_filter
+    property ImageColorFilter iconOverlay_filter: icon2_filter
 
 //#IconLoading
     //---------------------------------------------------------------------------------------------
