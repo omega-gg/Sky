@@ -872,7 +872,7 @@ QList<int> WPlaylistPrivate::getSelected() const
         selected.append(index);
     }
 
-    qSort(selected.begin(), selected.end());
+    std::sort(selected.begin(), selected.end());
 
     return selected;
 }
@@ -1096,7 +1096,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
     QList<int> sortedIndexes = indexes;
 
-    qSort(sortedIndexes.begin(), sortedIndexes.end());
+    std::sort(sortedIndexes.begin(), sortedIndexes.end());
 
     QList<WTrack *> tracks;
 
@@ -1382,7 +1382,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
     if (changed.count())
     {
-        qSort(changed.begin(), changed.end());
+        std::sort(changed.begin(), changed.end());
 
         d->emitSelectedTracksChanged(changed);
     }
@@ -2505,7 +2505,7 @@ void WPlaylist::setSelectedTracks(const QList<int> & indexes)
 
     if (changed.count())
     {
-        qSort(changed.begin(), changed.end());
+        std::sort(changed.begin(), changed.end());
 
         d->emitSelectedTracksChanged(changed);
     }

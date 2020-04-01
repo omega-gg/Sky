@@ -18,6 +18,7 @@
 #include <QCoreApplication>
 #include <QTextStream>
 #include <QDir>
+#include <QSize>
 
 // Defines
 #define C_STR toLatin1().constData()
@@ -34,6 +35,18 @@ static QStringList fileNames;
 static QHash<QString, QString> files;
 
 static QStringList paths;
+
+static QList<int>   dps;
+static QList<QSize> sizes;
+
+//-------------------------------------------------------------------------------------------------
+// Static functions
+//-------------------------------------------------------------------------------------------------
+
+inline bool sort(const QSize & sizeA, const QSize & sizeB)
+{
+    return (sizeA.width() < sizeB.width());
+}
 
 //-------------------------------------------------------------------------------------------------
 // Functions
@@ -55,6 +68,24 @@ void extractPaths(const QString & path)
         }
         else paths.append(info.filePath());
     }
+}
+
+int extractNumber(const QString & content, int * index)
+{
+    QString string;
+
+    QChar character = content.at(*index);
+
+    while (character.isDigit())
+    {
+        string.append(character);
+
+        (*index)++;
+
+        character = content.at(*index);
+    }
+
+    return string.toInt();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -308,8 +339,61 @@ void scanResources(const QString & path, const QString & content, const QString 
     }
 }
 
+void scanDp(const QString & content)
+{
+    int index = content.indexOf("dp");
+
+    while (index != -1)
+    {
+        index += 2;
+
+        int number = extractNumber(content, &index);
+
+        if (number && dps.contains(number) == false)
+        {
+            dps.append(number);
+        }
+
+        index = content.indexOf("dp", index);
+    }
+}
+
+void scanSize(const QString & content)
+{
+    int index = content.indexOf("size");
+
+    while (index != -1)
+    {
+        index += 4;
+
+        int numberA = extractNumber(content, &index);
+
+        if (numberA && content.at(index) == 'x')
+        {
+            index++;
+
+            int numberB = extractNumber(content, &index);
+
+            if (numberB)
+            {
+                QSize size(numberA, numberB);
+
+                if (sizes.contains(size) == false)
+                {
+                    sizes.append(size);
+                }
+            }
+        }
+
+        index = content.indexOf("size", index);
+    }
+}
+
 void scanFolder(const QString & path)
 {
+    QString stylePath;
+    QString styleContent;
+
     QDir dir(path);
 
     QFileInfoList list = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
@@ -320,6 +404,9 @@ void scanFolder(const QString & path)
 
         QString content = scanFile(info.filePath());
 
+        scanDp  (content);
+        scanSize(content);
+
         QString name = info.baseName();
 
         if (name.contains("Style"))
@@ -329,11 +416,59 @@ void scanFolder(const QString & path)
             if (fileName.isEmpty() == false)
             {
                 scanResources(path, content, fileName);
+
+                if (name == "Style")
+                {
+                    stylePath = info.path() + '/' + name + ".qml";
+
+                    styleContent = content;
+
+                    continue;
+                }
             }
         }
 
         replaceFile(info.path() + '/' + name + ".qml", content);
     }
+
+    if (stylePath.isEmpty()) return;
+
+    std::sort(dps.begin(), dps.end());
+
+    std::sort(sizes.begin(), sizes.end(), sort);
+
+    QString string;
+
+    string.append('\n');
+
+    qDebug("Generating dp(s)");
+
+    foreach (int dp, dps)
+    {
+        QString number = QString::number(dp);
+
+        string.append("    property int dp" + number + ": " + number + " * ratio\n");
+    }
+
+    string.append('\n');
+
+    qDebug("Generating size(s)");
+
+    foreach (const QSize & size, sizes)
+    {
+        QString numberA = QString::number(size.width ());
+        QString numberB = QString::number(size.height());
+
+        string.append("    property variant size" + numberA + 'x' + numberB
+                      +
+                      ": size(" + numberA + ", " + numberB + ")\n");
+    }
+
+    int index = styleContent.indexOf("zoom\n") + 5;
+
+    styleContent.insert(index, string);
+
+    replaceFile(stylePath, styleContent);
 }
 
 //-------------------------------------------------------------------------------------------------

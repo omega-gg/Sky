@@ -1321,7 +1321,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     QList<QPair<QString, QString> > list = query.queryItems(QUrl::FullyEncoded);
 #endif
 
-    qSort(list.begin(), list.end());
+    std::sort(list.begin(), list.end());
 
     for (int i = 0; i < list.count(); i++)
     {

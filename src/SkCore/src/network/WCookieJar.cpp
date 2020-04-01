@@ -150,9 +150,9 @@ void WCookieJarPrivate::load()
     cookiesAllowed = cookieSettings.value(QLatin1String("allow"))          .toStringList();
     cookiesSession = cookieSettings.value(QLatin1String("allowForSession")).toStringList();
 
-    qSort(cookiesBlocked.begin(), cookiesBlocked.end());
-    qSort(cookiesAllowed.begin(), cookiesAllowed.end());
-    qSort(cookiesSession.begin(), cookiesSession.end());
+    std::sort(cookiesBlocked.begin(), cookiesBlocked.end());
+    std::sort(cookiesAllowed.begin(), cookiesAllowed.end());
+    std::sort(cookiesSession.begin(), cookiesSession.end());
 
     loadSettings();
 }
@@ -560,7 +560,7 @@ void WCookieJar::setCookiesBlocked(const QStringList & cookies)
 
     d->cookiesBlocked = cookies;
 
-    qSort(d->cookiesBlocked.begin(), d->cookiesBlocked.end());
+    std::sort(d->cookiesBlocked.begin(), d->cookiesBlocked.end());
 
     d->saveLater();
 }
@@ -587,7 +587,7 @@ void WCookieJar::setCookiesAllowed(const QStringList & cookies)
 
     d->cookiesAllowed = cookies;
 
-    qSort(d->cookiesAllowed.begin(), d->cookiesAllowed.end());
+    std::sort(d->cookiesAllowed.begin(), d->cookiesAllowed.end());
 
     d->saveLater();
 }
@@ -614,7 +614,7 @@ void WCookieJar::setCookiesSession(const QStringList & cookies)
 
     d->cookiesSession = cookies;
 
-    qSort(d->cookiesSession.begin(), d->cookiesSession.end());
+    std::sort(d->cookiesSession.begin(), d->cookiesSession.end());
 
     d->saveLater();
 }

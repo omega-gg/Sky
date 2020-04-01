@@ -861,9 +861,9 @@ WControllerTorrentPrivate::extractFolder(QList<WTorrentItemData> * items)
 
     if (list.first().index == -1)
     {
-         qSort(list.begin(), list.end(), sortA);
+         std::sort(list.begin(), list.end(), sortA);
     }
-    else qSort(list.begin(), list.end(), sortB);
+    else std::sort(list.begin(), list.end(), sortB);
 
     WTorrentItemFolder folder;
 
