@@ -544,7 +544,7 @@ Style
 
     property int lineEdit_padding: dp13
 
-    property color lineEdit_color     : buttonPush_colorHoverA
+    property color lineEdit_color     : "#f0f0f0"
     property color lineEdit_colorHover: "white"
 
 //#LineEditLabel
@@ -1365,7 +1365,7 @@ Style
         //-----------------------------------------------------------------------------------------
         // LineEdit
 
-        lineEdit_color = buttonPush_colorHoverA;
+        lineEdit_color = "#f0f0f0";
 
 //#LineEditBox
         //-----------------------------------------------------------------------------------------
@@ -1658,11 +1658,11 @@ Style
         //-----------------------------------------------------------------------------------------
         // LineEditBox
 
-        lineEditBox_colorA = buttonPush_colorPressA;
-        lineEditBox_colorB = buttonPush_colorPressB;
+        lineEditBox_colorA = "#323232";
+        lineEditBox_colorB = lineEditBox_colorA;
 
-        lineEditBox_colorHoverA = buttonPush_colorA;
-        lineEditBox_colorHoverB = buttonPush_colorB;
+        lineEditBox_colorHoverA = "#484848";
+        lineEditBox_colorHoverB = lineEditBox_colorHoverA;
 
 //#ScrollBar
         //-----------------------------------------------------------------------------------------
@@ -1945,11 +1945,11 @@ Style
         //-----------------------------------------------------------------------------------------
         // LineEditBox
 
-        lineEditBox_colorA = buttonPush_colorPressA;
-        lineEditBox_colorB = buttonPush_colorPressB;
+        lineEditBox_colorA = "#242424";
+        lineEditBox_colorB = "#484848";
 
-        lineEditBox_colorHoverA = buttonPush_colorPressHoverA;
-        lineEditBox_colorHoverB = buttonPush_colorPressHoverB;
+        lineEditBox_colorHoverA = "#323232";
+        lineEditBox_colorHoverB = "#646464";
 
 //#ScrollBar
         //-----------------------------------------------------------------------------------------
