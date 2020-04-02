@@ -17,8 +17,8 @@ SlideColumn 1.0 SlideColumn.qml
 
 SlideRectangle 1.0 SlideRectangle.qml
 
-SlideGradientVertical   1.0 SlideGradientVertical.qml
 SlideGradientHorizontal 1.0 SlideGradientHorizontal.qml
+SlideGradientVertical   1.0 SlideGradientVertical.qml
 
 SlideBackground 1.0 SlideBackground.qml
 SlideFrame      1.0 SlideFrame.qml
