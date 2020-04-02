@@ -38,7 +38,6 @@
 
 // Forward declarations
 class QCoreApplication;
-class WFileWatcher;
 
 class SK_CORE_EXPORT WControllerApplicationPrivate : public WPrivate
 {
@@ -52,7 +51,9 @@ public:
 public: // Functions
     QHash<QString, QString> extractArguments(int & argc, char ** argv);
 
+#ifndef SK_CONSOLE
     void restartScript();
+#endif
 
     void declareController  (WController * controller);
     void undeclareController(WController * controller);
@@ -80,6 +81,7 @@ public: // Variables
 
     bool qrc;
 
+#ifndef SK_CONSOLE
     WControllerApplication::Mode defaultMode;
 
     int defaultScreen;
@@ -92,10 +94,9 @@ public: // Variables
 
     QPoint cursorPosition;
     bool   cursorVisible;
+#endif
 
     QObject * object;
-
-    WFileWatcher * watcher;
 
 #ifdef Q_OS_WIN
     int timeoutLowPower;

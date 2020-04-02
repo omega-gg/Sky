@@ -28,6 +28,7 @@
 #ifndef SK_NO_CONTROLLERAPPLICATION
 
 // Qt includes
+#ifndef SK_CONSOLE
 #ifdef QT_4
 #include <QApplication>
 #include <QDeclarativeEngine>
@@ -38,27 +39,32 @@
 #include <QQmlComponent>
 #include <QCursor>
 #endif
-#include <QCryptographicHash>
-#include <QTextCodec>
 #include <QFontMetrics>
 #include <QClipboard>
+#else
+#include <QCoreApplication>
+#endif
+#include <QCryptographicHash>
+#include <QTextCodec>
 #include <QMimeData>
-#include <QIcon>
 #include <QDir>
 
 // Sk incudes
+#ifndef SK_CONSOLE
 #include <WControllerDeclarative>
+#endif
 #include <WControllerFile>
 #include <WControllerNetwork>
 #include <WControllerDownload>
 #include <WControllerScript>
-#include <WControllerPlugin>
+//#include <WControllerPlugin>
 #include <WControllerXml>
 //#include <WControllerZip>
-#include <WFileWatcher>
 
 // 3rdparty includes
+#ifdef SK_CHARSET
 #include <charsetdetect.h>
+#endif
 
 // Windows includes
 #ifdef Q_OS_WIN
@@ -85,10 +91,12 @@ WControllerApplicationPrivate::WControllerApplicationPrivate(WControllerApplicat
 
 /* virtual */ WControllerApplicationPrivate::~WControllerApplicationPrivate()
 {
+#ifndef SK_CONSOLE
     Q_Q(WControllerApplication);
 
     q->setScreenDimEnabled  (true);
     q->setScreenSaverEnabled(true);
+#endif
 
     W_CLEAR_CONTROLLER(WControllerApplication);
 }
@@ -97,8 +105,6 @@ WControllerApplicationPrivate::WControllerApplicationPrivate(WControllerApplicat
 
 void WControllerApplicationPrivate::init()
 {
-    Q_Q(WControllerApplication);
-
     application = NULL;
 
     type = Sk::Single;
@@ -108,6 +114,7 @@ void WControllerApplicationPrivate::init()
 
     qrc = false;
 
+#ifndef SK_CONSOLE
     defaultMode = WControllerApplication::Normal;
 
     defaultScreen = -1;
@@ -119,10 +126,9 @@ void WControllerApplicationPrivate::init()
     screenSaverEnabled = true;
 
     cursorVisible = true;
+#endif
 
     object = NULL;
-
-    watcher = new WFileWatcher(q);
 
     applicationUrl = "app://sk";
 
@@ -180,6 +186,8 @@ QHash<QString, QString> WControllerApplicationPrivate::extractArguments(int & ar
 
 //-------------------------------------------------------------------------------------------------
 
+#ifndef SK_CONSOLE
+
 void WControllerApplicationPrivate::restartScript()
 {
     QObject * objectOld = object;
@@ -209,26 +217,28 @@ void WControllerApplicationPrivate::restartScript()
     if (objectOld) delete objectOld;
 }
 
+#endif
+
 //-------------------------------------------------------------------------------------------------
 
 void WControllerApplicationPrivate::declareController(WController * controller)
 {
-    Q_Q(WControllerApplication);
+    //Q_Q(WControllerApplication);
 
     controller->setParent(application);
 
     controllers.append(controller);
 
-    emit q->controllerCreated(controller);
+    //emit q->controllerCreated(controller);
 }
 
 void WControllerApplicationPrivate::undeclareController(WController * controller)
 {
-    Q_Q(WControllerApplication);
+    //Q_Q(WControllerApplication);
 
     controllers.removeOne(controller);
 
-    emit q->controllerDestroyed(controller);
+    //emit q->controllerDestroyed(controller);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -252,9 +262,12 @@ void WControllerApplicationPrivate::initApplication(QCoreApplication * applicati
     W_CREATE_CONTROLLER(WControllerScript);
     W_CREATE_CONTROLLER(WControllerNetwork);
     W_CREATE_CONTROLLER(WControllerDownload);
-    W_CREATE_CONTROLLER(WControllerPlugin);
+    //W_CREATE_CONTROLLER(WControllerPlugin);
     W_CREATE_CONTROLLER(WControllerXml);
+
+#ifndef SK_CONSOLE
     W_CREATE_CONTROLLER(WControllerDeclarative);
+#endif
 
     //---------------------------------------------------------------------------------------------
 
@@ -308,6 +321,8 @@ void WControllerApplication::initController()
 // Interface
 //-------------------------------------------------------------------------------------------------
 
+#ifndef SK_CONSOLE
+
 void WControllerApplication::startScript()
 {
     Q_D(WControllerApplication);
@@ -333,6 +348,8 @@ void WControllerApplication::startScript()
         qFatal("Cannot create Main QML object: %s.", component.errorString().C_STR);
     }
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -372,6 +389,8 @@ void WControllerApplication::startScript()
 
 //-------------------------------------------------------------------------------------------------
 
+#ifndef SK_CONSOLE
+
 /* Q_INVOKABLE */ QString WControllerApplication::clipboardText() const
 {
 #ifdef QT_4
@@ -393,6 +412,8 @@ void WControllerApplication::startScript()
 
     clipboard->setText(text);
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Static functions
@@ -1027,12 +1048,16 @@ bool WControllerApplication::checkEscaped(const QString & string, int from)
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef SK_CHARSET
+
 /* Q_INVOKABLE static */ QString WControllerApplication::detectCodec(const QByteArray & array)
 {
     QString codec = csd_codec(array, array.length());
 
     return codec.toLower();
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -1089,6 +1114,8 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 
 //-------------------------------------------------------------------------------------------------
 
+#ifndef SK_CONSOLE
+
 /* Q_INVOKABLE static */ QString WControllerApplication::textElided(const QString     & text,
                                                                     const QFont       & font,
                                                                     int                 width,
@@ -1119,6 +1146,8 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 
     return metrics.height();
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -1455,6 +1484,8 @@ void WControllerApplication::setApplicationUrl(const QString & url)
     emit applicationUrlChanged();
 }
 
+#ifndef SK_CONSOLE
+
 //-------------------------------------------------------------------------------------------------
 
 WControllerApplication::Mode WControllerApplication::defaultMode() const
@@ -1619,5 +1650,7 @@ void WControllerApplication::setCursorVisible(bool visible)
 
     emit cursorVisibleChanged();
 }
+
+#endif
 
 #endif // SK_NO_CONTROLLERAPPLICATION

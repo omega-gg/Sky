@@ -29,7 +29,7 @@
 #include <QNetworkProxy>
 #include <QThread>
 #include <QDir>
-#include <QImageReader>
+#include <QDataStream>
 
 //-------------------------------------------------------------------------------------------------
 // Static variables

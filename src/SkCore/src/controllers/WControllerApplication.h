@@ -29,7 +29,6 @@
 #ifndef SK_NO_CONTROLLERAPPLICATION
 
 // Forward declarations
-class QCoreApplication;
 class QDateTime;
 class QMimeData;
 class WControllerApplicationPrivate;
@@ -66,6 +65,7 @@ class SK_CORE_EXPORT WControllerApplication : public QObject, public WPrivatable
     Q_PROPERTY(QString applicationUrl READ applicationUrl WRITE setApplicationUrl
                NOTIFY applicationUrlChanged)
 
+#ifndef SK_CONSOLE
     Q_PROPERTY(Mode defaultMode READ defaultMode WRITE setDefaultMode NOTIFY defaultModeChanged)
 
     Q_PROPERTY(int defaultScreen READ defaultScreen WRITE setDefaultScreen
@@ -85,11 +85,14 @@ class SK_CORE_EXPORT WControllerApplication : public QObject, public WPrivatable
 
     Q_PROPERTY(bool cursorVisible READ cursorVisible WRITE setCursorVisible
                NOTIFY cursorVisibleChanged)
+#endif
 
 public: // Enums
     enum Type { Single = 0, Multiple };
 
+#ifndef SK_CONSOLE
     enum Mode { Normal = 0, Maximized, FullScreen, FullScreenMaximized };
+#endif
 
 private:
     WControllerApplication();
@@ -105,8 +108,10 @@ public: // Interface
     Q_INVOKABLE void   setCursorPosition(const QPoint & position);
     Q_INVOKABLE void   clearCursorPosition();*/
 
+#ifndef SK_CONSOLE
     Q_INVOKABLE QString clipboardText() const;
     Q_INVOKABLE void    setClipboardText(const QString & text);
+#endif
 
 public: // Static functions
     Q_INVOKABLE static bool fuzzyCompare(qreal valueA, qreal valueB);
@@ -207,7 +212,9 @@ public: // Static functions
 
     Q_INVOKABLE static QString unicodeToUtf8(const QString & string);
 
+#ifdef SK_CHARSET
     Q_INVOKABLE static QString detectCodec(const QByteArray & array);
+#endif
 
     //---------------------------------------------------------------------------------------------
 
@@ -218,6 +225,7 @@ public: // Static functions
 
     //---------------------------------------------------------------------------------------------
 
+#ifndef SK_CONSOLE
     Q_INVOKABLE static QString textElided(const QString     & text,
                                           const QFont       & font,
                                           int                 width,
@@ -225,6 +233,7 @@ public: // Static functions
 
     Q_INVOKABLE static int textWidth (const QFont & font, const QString & text);
     Q_INVOKABLE static int textHeight(const QFont & font);
+#endif
 
     //---------------------------------------------------------------------------------------------
 
@@ -243,8 +252,8 @@ public: // Static functions
     Q_INVOKABLE static QString dateToText(const QDateTime & date);
 
 signals:
-    void controllerCreated  (WController * controller);
-    void controllerDestroyed(WController * controller);
+    //void controllerCreated  (WController * controller);
+    //void controllerDestroyed(WController * controller);
 
     void aboutToQuit();
 
@@ -257,6 +266,7 @@ signals:
 
     void applicationUrlChanged();
 
+#ifndef SK_CONSOLE
     void defaultModeChanged();
 
     void defaultScreenChanged();
@@ -268,6 +278,7 @@ signals:
     void screenSaverEnabledChanged();
 
     void cursorVisibleChanged();
+#endif
 
 public: // Properties
     Type type() const;
@@ -297,6 +308,7 @@ public: // Properties
     QString applicationUrl() const;
     void    setApplicationUrl(const QString & url);
 
+#ifndef SK_CONSOLE
     Mode defaultMode() const;
     void setDefaultMode(Mode mode);
 
@@ -317,6 +329,7 @@ public: // Properties
 
     bool cursorVisible() const;
     void setCursorVisible(bool visible);
+#endif
 
 private:
     W_DECLARE_PRIVATE   (WControllerApplication)

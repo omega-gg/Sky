@@ -5,7 +5,7 @@ HEADERS += src/controllers/WController.h \
            src/controllers/WControllerApplication.h \
            src/controllers/WControllerApplication_p.h \
            src/controllers/WControllerDeclarative.h \
-           src/controllers/WControllerPlugin.h \
+           #src/controllers/WControllerPlugin.h \
            src/controllers/WControllerFile.h \
            src/controllers/WControllerFile_p.h \
            src/controllers/WControllerXml.h \
@@ -18,7 +18,7 @@ HEADERS += src/controllers/WController.h \
 SOURCES += src/controllers/WController.cpp \
            src/controllers/WControllerApplication.cpp \
            src/controllers/WControllerDeclarative.cpp \
-           src/controllers/WControllerPlugin.cpp \
+           #src/controllers/WControllerPlugin.cpp \
            src/controllers/WControllerFile.cpp \
            src/controllers/WControllerXml.cpp \
            src/controllers/WControllerScript.cpp \

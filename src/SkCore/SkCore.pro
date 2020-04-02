@@ -24,7 +24,7 @@ contains(QT_MAJOR_VERSION, 4) {
 
 win32:CONFIG += dll
 
-DEFINES += SK_CORE_LIBRARY QUAZIP_BUILD
+DEFINES += QUAZIP_BUILD SK_CORE_LIBRARY SK_CHARSET
 
 contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_4
@@ -44,7 +44,7 @@ include(src/thread/thread.pri)
 include(src/network/network.pri)
 include(src/declarative/declarative.pri)
 #include(src/script/script.pri)
-include(src/plugin/plugin.pri)
+#include(src/plugin/plugin.pri)
 
 include(src/3rdparty/qtsingleapplication/qtsingleapplication.pri)
 include(src/3rdparty/quazip/quazip.pri)

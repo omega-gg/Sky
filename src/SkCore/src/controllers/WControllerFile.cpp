@@ -427,10 +427,7 @@ bool WControllerFilePrivate::isLoading() const
 //-------------------------------------------------------------------------------------------------
 
 #ifdef QT_4
-/* static */ void WControllerFilePrivate::messageHandler(QtMsgType, const char * message)
-{
-
-}
+/* static */ void WControllerFilePrivate::messageHandler(QtMsgType, const char *) {}
 #else
 /* static */ void WControllerFilePrivate::messageHandler(QtMsgType,
                                                          const QMessageLogContext &,
