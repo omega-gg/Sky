@@ -50,9 +50,7 @@
 #include <QDir>
 
 // Sk incudes
-#ifndef SK_CONSOLE
 #include <WControllerDeclarative>
-#endif
 #include <WControllerFile>
 #include <WControllerNetwork>
 #include <WControllerDownload>
@@ -264,10 +262,7 @@ void WControllerApplicationPrivate::initApplication(QCoreApplication * applicati
     W_CREATE_CONTROLLER(WControllerDownload);
     //W_CREATE_CONTROLLER(WControllerPlugin);
     W_CREATE_CONTROLLER(WControllerXml);
-
-#ifndef SK_CONSOLE
     W_CREATE_CONTROLLER(WControllerDeclarative);
-#endif
 
     //---------------------------------------------------------------------------------------------
 
