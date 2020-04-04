@@ -212,9 +212,7 @@ public: // Static functions
 
     Q_INVOKABLE static QString unicodeToUtf8(const QString & string);
 
-#ifdef SK_CHARSET
     Q_INVOKABLE static QString detectCodec(const QByteArray & array);
-#endif
 
     //---------------------------------------------------------------------------------------------
 

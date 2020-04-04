@@ -1052,6 +1052,13 @@ bool WControllerApplication::checkEscaped(const QString & string, int from)
     return codec.toLower();
 }
 
+#else
+
+/* Q_INVOKABLE static */ QString WControllerApplication::detectCodec(const QByteArray &)
+{
+    return QString();
+}
+
 #endif
 
 //-------------------------------------------------------------------------------------------------
