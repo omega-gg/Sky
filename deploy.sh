@@ -259,6 +259,14 @@ else
         cp "$Qt"/lib/QtDBus.framework/Versions/5/QtDBus                 deploy/QtDBus.dylib
         cp "$Qt"/lib/QtPrintSupport.framework/Versions/5/QtPrintSupport deploy/QtPrintSupport.dylib
 
+        if [ -f "$Qt"/lib/QtQmlModels.framework/Versions/5/QtQmlModels ]; then
+
+            cp "$Qt"/lib/QtQmlModels.framework/Versions/5/QtQmlModels deploy/QtQmlModels.dylib
+
+            cp "$Qt"/lib/QtQmlWorkerScript.framework/Versions/5/QtQmlWorkerScript \
+               deploy/QtQmlWorkerScript.dylib
+        fi
+
         cp "$Qt"/plugins/platforms/libqcocoa.dylib deploy/platforms
 
         cp "$Qt"/plugins/imageformats/libqsvg.dylib  deploy/imageformats
