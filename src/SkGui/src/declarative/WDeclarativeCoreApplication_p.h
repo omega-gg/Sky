@@ -4,7 +4,7 @@
 
     Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
 
-    This file is part of the SkCore module of Sky kit.
+    This file is part of the SkGui module of Sky kit.
 
     - GNU General Public License Usage:
     This file may be used under the terms of the GNU General Public License version 3 as published
@@ -31,7 +31,7 @@
 
 #ifndef SK_NO_DECLARATIVECOREAPPLICATION
 
-class SK_CORE_EXPORT WDeclarativeCoreApplicationPrivate : public WPrivate
+class SK_GUI_EXPORT WDeclarativeCoreApplicationPrivate : public WPrivate
 {
 public:
     WDeclarativeCoreApplicationPrivate(WDeclarativeCoreApplication * p);

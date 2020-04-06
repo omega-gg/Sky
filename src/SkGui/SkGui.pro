@@ -62,6 +62,8 @@ include(src/declarative/declarative.pri)
 include(src/models/models.pri)
 include(src/media/media.pri)
 
+include(src/3rdparty/qtsingleapplication/qtsingleapplication.pri)
+
 INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkCore/private \
                $$SK/include/SkGui \

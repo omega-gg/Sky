@@ -4,7 +4,7 @@
 
     Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
 
-    This file is part of the SkCore module of Sky kit.
+    This file is part of the SkGui module of Sky kit.
 
     - GNU General Public License Usage:
     This file may be used under the terms of the GNU General Public License version 3 as published
@@ -37,7 +37,7 @@ class QQuickItem;
 #endif
 class WDeclarativeCoreApplicationPrivate;
 
-class SK_CORE_EXPORT WDeclarativeCoreApplication : public QObject, public WPrivatable
+class SK_GUI_EXPORT WDeclarativeCoreApplication : public QObject, public WPrivatable
 {
     Q_OBJECT
 

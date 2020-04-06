@@ -19,7 +19,7 @@ TEMPLATE = lib
 contains(QT_MAJOR_VERSION, 4) {
     QT += declarative network script xml xmlpatterns
 } else {
-    QT += quick widgets network xml xmlpatterns
+    QT += qml network xml xmlpatterns
 }
 
 win32:CONFIG += dll
@@ -42,7 +42,6 @@ include(src/kernel/kernel.pri)
 include(src/io/io.pri)
 include(src/thread/thread.pri)
 include(src/network/network.pri)
-include(src/declarative/declarative.pri)
 #include(src/script/script.pri)
 #include(src/plugin/plugin.pri)
 
