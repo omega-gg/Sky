@@ -1,8 +1,6 @@
 # Declarative module
 
-HEADERS += src/declarative/WDeclarativeCoreApplication.h \
-           src/declarative/WDeclarativeCoreApplication_p.h \
-           src/declarative/WDeclarativeApplication.h \
+HEADERS += src/declarative/WDeclarativeApplication.h \
            src/declarative/WDeclarativeItem.h \
            src/declarative/WDeclarativeItem_p.h \
            src/declarative/WDeclarativeMouseArea.h \
@@ -34,8 +32,7 @@ contains(QT_MAJOR_VERSION, 5): HEADERS += src/declarative/WDeclarativeTexture.h 
                                           src/declarative/WDeclarativeItemPaint.h \
                                           src/declarative/WDeclarativeItemPaint_p.h \
 
-SOURCES += src/declarative/WDeclarativeCoreApplication.cpp \
-           src/declarative/WDeclarativeApplication.cpp \
+SOURCES += src/declarative/WDeclarativeApplication.cpp \
            src/declarative/WDeclarativeItem.cpp \
            src/declarative/WDeclarativeMouseArea.cpp \
            src/declarative/WDeclarativeMouseWatcher.cpp \

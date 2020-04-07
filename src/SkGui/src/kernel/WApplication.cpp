@@ -45,7 +45,6 @@
 #include <WWindow>
 
 // Declarative includes
-#include <WDeclarativeCoreApplication>
 #include <WDeclarativeApplication>
 #include <WDeclarativeMouseArea>
 #include <WDeclarativeMouseWatcher>
@@ -143,8 +142,7 @@ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
     //---------------------------------------------------------------------------------------------
     // Applications
 
-    qmlRegisterType<WDeclarativeCoreApplication>("Sky", 1,0, "CoreApplication");
-    qmlRegisterType<WDeclarativeApplication>    ("Sky", 1,0, "Application");
+    qmlRegisterType<WDeclarativeApplication>("Sky", 1,0, "Application");
 
     //---------------------------------------------------------------------------------------------
     // Kernel

@@ -22,14 +22,26 @@
 // Private
 //-------------------------------------------------------------------------------------------------
 
-#include <private/WDeclarativeCoreApplication_p>
+#include <private/Sk_p>
 
-class SK_GUI_EXPORT WDeclarativeApplicationPrivate : public WDeclarativeCoreApplicationPrivate
+class SK_GUI_EXPORT WDeclarativeApplicationPrivate : public WPrivate
 {
 public:
     WDeclarativeApplicationPrivate(WDeclarativeApplication * p);
 
+    /* virtual */ ~WDeclarativeApplicationPrivate();
+
     void init();
+
+public: // Functions
+    void deleteItems();
+
+public: // Variables
+#ifdef QT_4
+    QList<QDeclarativeItem *> items;
+#else
+    QList<QQuickItem *> items;
+#endif
 
 protected:
     W_DECLARE_PUBLIC(WDeclarativeApplication)
@@ -38,18 +50,112 @@ protected:
 //-------------------------------------------------------------------------------------------------
 
 WDeclarativeApplicationPrivate::WDeclarativeApplicationPrivate(WDeclarativeApplication * p)
-    : WDeclarativeCoreApplicationPrivate(p) {}
+    : WPrivate(p) {}
+
+
+/* virtual */ WDeclarativeApplicationPrivate::~WDeclarativeApplicationPrivate()
+{
+    deleteItems();
+}
+
+//-------------------------------------------------------------------------------------------------
 
 void WDeclarativeApplicationPrivate::init() {}
+
+//-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
+
+void WDeclarativeApplicationPrivate::deleteItems()
+{
+#ifdef QT_4
+    foreach (QDeclarativeItem * item, items) delete item;
+#else
+    foreach (QQuickItem * item, items) delete item;
+#endif
+
+    items.clear();
+}
 
 //-------------------------------------------------------------------------------------------------
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
 /* explicit */ WDeclarativeApplication::WDeclarativeApplication(QObject * parent)
-    : WDeclarativeCoreApplication(new WDeclarativeApplicationPrivate(this), parent)
+    : QObject(parent), WPrivatable(new WDeclarativeApplicationPrivate(this))
 {
     Q_D(WDeclarativeApplication); d->init();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Declarative
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_4
+/* static */ void WDeclarativeApplication::childrenAppend(QDeclarativeListProperty
+                                                          <QDeclarativeItem> * property,
+                                                          QDeclarativeItem   * item)
+#else
+/* static */ void WDeclarativeApplication::childrenAppend(QQmlListProperty
+                                                          <QQuickItem> * property,
+                                                          QQuickItem   * item)
+#endif
+{
+    static_cast<WDeclarativeApplication *> (property->object)->d_func()->items.append(item);
+}
+
+#ifdef QT_4
+/* static */ void WDeclarativeApplication::childrenClear(QDeclarativeListProperty
+                                                         <QDeclarativeItem> * property)
+#else
+/* static */ void WDeclarativeApplication::childrenClear(QQmlListProperty
+                                                         <QQuickItem> * property)
+#endif
+{
+    static_cast<WDeclarativeApplication *> (property->object)->d_func()->deleteItems();
+}
+
+#ifdef QT_4
+/* static */ int WDeclarativeApplication::childrenCount(QDeclarativeListProperty
+                                                        <QDeclarativeItem> * property)
+#else
+/* static */ int WDeclarativeApplication::childrenCount(QQmlListProperty
+                                                        <QQuickItem> * property)
+#endif
+{
+    return static_cast<WDeclarativeApplication *> (property->object)->d_func()->items.count();
+}
+
+#ifdef QT_4
+/* static */
+QDeclarativeItem * WDeclarativeApplication::childrenAt(QDeclarativeListProperty
+                                                       <QDeclarativeItem> * property, int index)
+#else
+/* static */ QQuickItem * WDeclarativeApplication::childrenAt(QQmlListProperty
+                                                              <QQuickItem> * property, int index)
+#endif
+{
+    return
+    static_cast<WDeclarativeApplication *> (property->object)->d_func()->items.at(index);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Properties
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_4
+QDeclarativeListProperty<QDeclarativeItem> WDeclarativeApplication::children()
+#else
+QQmlListProperty<QQuickItem> WDeclarativeApplication::children()
+#endif
+{
+#ifdef QT_4
+    return QDeclarativeListProperty<QDeclarativeItem>(this, 0, childrenAppend, childrenCount,
+                                                               childrenAt,     childrenClear);
+#else
+    return QQmlListProperty<QQuickItem>(this, 0, childrenAppend, childrenCount,
+                                                 childrenAt,     childrenClear);
+#endif
 }
 
 #endif // SK_NO_DECLARATIVEAPPLICATION
