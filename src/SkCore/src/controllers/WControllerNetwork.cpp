@@ -28,7 +28,6 @@
 
 // Sk incudes
 #include <WControllerApplication>
-#include <WControllerScript>
 
 W_INIT_CONTROLLER(WControllerNetwork)
 

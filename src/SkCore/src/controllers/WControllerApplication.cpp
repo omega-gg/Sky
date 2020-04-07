@@ -50,14 +50,13 @@
 #include <QDir>
 
 // Sk incudes
-#include <WControllerDeclarative>
 #include <WControllerFile>
 #include <WControllerNetwork>
 #include <WControllerDownload>
-#include <WControllerScript>
-//#include <WControllerPlugin>
 #include <WControllerXml>
-//#include <WControllerZip>
+#ifndef SK_NO_QML
+#include <WControllerDeclarative>
+#endif
 
 // 3rdparty includes
 #ifdef SK_CHARSET
@@ -184,7 +183,7 @@ QHash<QString, QString> WControllerApplicationPrivate::extractArguments(int & ar
 
 //-------------------------------------------------------------------------------------------------
 
-#ifndef SK_CONSOLE
+#if defined(SK_CONSOLE) == false && defined(SK_NO_QML) == false
 
 void WControllerApplicationPrivate::restartScript()
 {
@@ -257,12 +256,14 @@ void WControllerApplicationPrivate::initApplication(QCoreApplication * applicati
     // Controllers - declaration order matters
 
     W_CREATE_CONTROLLER(WControllerFile);
-    W_CREATE_CONTROLLER(WControllerScript);
+    //W_CREATE_CONTROLLER(WControllerScript);
     W_CREATE_CONTROLLER(WControllerNetwork);
     W_CREATE_CONTROLLER(WControllerDownload);
     //W_CREATE_CONTROLLER(WControllerPlugin);
     W_CREATE_CONTROLLER(WControllerXml);
+#ifndef SK_NO_QML
     W_CREATE_CONTROLLER(WControllerDeclarative);
+#endif
 
     //---------------------------------------------------------------------------------------------
 
@@ -316,7 +317,7 @@ void WControllerApplication::initController()
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-#ifndef SK_CONSOLE
+#if defined(SK_CONSOLE) == false && defined(SK_NO_QML) == false
 
 void WControllerApplication::startScript()
 {

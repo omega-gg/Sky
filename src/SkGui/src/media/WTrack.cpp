@@ -22,7 +22,6 @@
 #include <QDateTime>
 
 // Sk includes
-#include <WControllerScript>
 #include <WPlaylist>
 
 //-------------------------------------------------------------------------------------------------

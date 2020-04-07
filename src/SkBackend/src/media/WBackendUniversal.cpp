@@ -34,7 +34,6 @@
 #include <WControllerFile>
 #include <WControllerNetwork>
 #include <WControllerDownload>
-#include <WControllerScript>
 #include <WCache>
 #include <WBackendCache>
 #include <WYamlReader>
