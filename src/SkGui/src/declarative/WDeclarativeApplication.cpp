@@ -18,6 +18,13 @@
 
 #ifndef SK_NO_DECLARATIVEAPPLICATION
 
+// Qt includes
+#ifdef QT_4
+#include <QDeclarativeItem>
+#else
+#include <QQuickItem>
+#endif
+
 //-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------

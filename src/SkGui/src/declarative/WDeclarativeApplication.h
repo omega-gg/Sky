@@ -18,10 +18,23 @@
 #define WDECLARATIVEAPPLICATION_H
 
 // Qt includes
-#include <WDeclarativeCoreApplication>
+#ifdef QT_4
+#include <QDeclarativeListProperty>
+#else
+#include <QQmlListProperty>
+#endif
 
-#ifndef SK_NO_DECLARATIVELAYERAPPLICATION
+// Sk includes
+#include <Sk>
 
+#ifndef SK_NO_DECLARATIVEAPPLICATION
+
+// Forward declarations
+#ifdef QT_4
+class QDeclarativeItem;
+#else
+class QQuickItem;
+#endif
 class WDeclarativeApplicationPrivate;
 
 class SK_GUI_EXPORT WDeclarativeApplication : public QObject, public WPrivatable
@@ -70,5 +83,5 @@ private:
     W_DECLARE_PRIVATE(WDeclarativeApplication)
 };
 
-#endif // SK_NO_DECLARATIVELAYERAPPLICATION
+#endif // SK_NO_DECLARATIVEAPPLICATION
 #endif // WDECLARATIVEAPPLICATION_H
