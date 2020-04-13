@@ -109,7 +109,7 @@ void WControllerApplicationPrivate::init()
 
     version = "1.0";
 
-    qrc = false;
+    qrc = true;
 
 #ifndef SK_CONSOLE
     defaultMode = WControllerApplication::Normal;
