@@ -689,11 +689,11 @@ WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this
 {
     Q_D(WControllerFile);
 
-    qDebug("END LOG");
-
     // NOTE: We rely on 'isSingleShot' to detect if the handler is initialized.
     if (d->timerLog.isSingleShot())
     {
+        qDebug("END LOG");
+
 #ifdef QT_4
         qInstallMsgHandler(NULL);
 #else
