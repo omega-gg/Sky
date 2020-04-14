@@ -394,11 +394,11 @@ WBackendNetPrivate::WBackendNetPrivate(WBackendNet * p) : WPrivate(p) {}
 
 void WBackendNetPrivate::init()
 {
-    Q_Q(WBackendNet);
-
     lockCount = 0;
 
 #ifdef QT_LATEST
+    Q_Q(WBackendNet);
+
     wControllerDeclarative->engine()->setObjectOwnership(q, QQmlEngine::CppOwnership);
 #endif
 }
