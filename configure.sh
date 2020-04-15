@@ -21,11 +21,6 @@ libtorrent_version="1.2.2"
 Boost_version="1.71.0"
 
 #--------------------------------------------------------------------------------------------------
-
-bin4="bin"
-bin5="latest"
-
-#--------------------------------------------------------------------------------------------------
 # Linux
 
 include32="/usr/include/i386-linux-gnu"
@@ -112,11 +107,8 @@ rm -rf lib
 mkdir  lib
 touch  lib/.gitignore
 
-rm -rf "$bin4"/*
-rm -rf "$bin5"/*
-
-touch "$bin4"/.gitignore
-touch "$bin5"/.gitignore
+rm -rf bin/*
+touch  bin/.gitignore
 
 rm -rf build/qt4/*
 rm -rf build/qt5/*

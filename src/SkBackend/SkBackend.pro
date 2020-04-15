@@ -1,10 +1,6 @@
 SK = $$_PRO_FILE_PWD_/../..
 
-contains(QT_MAJOR_VERSION, 4) {
-    SK_BIN = bin
-} else {
-    SK_BIN = latest
-}
+SK_BIN = bin
 
 CONFIG(debug, debug|release) {
     TARGET = SkBackendD

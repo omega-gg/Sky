@@ -24,11 +24,6 @@ libtorrent_version="1.2.2"
 Boost_version="1.71.0"
 
 #--------------------------------------------------------------------------------------------------
-
-bin4="bin"
-bin5="latest"
-
-#--------------------------------------------------------------------------------------------------
 # Linux
 
 base32="/lib/i386-linux-gnu"
@@ -200,8 +195,6 @@ if [ $1 = "qt4" ]; then
         cp "$Qt"/plugins/imageformats/libqsvg.so  deploy/imageformats
         cp "$Qt"/plugins/imageformats/libqjpeg.so deploy/imageformats
     fi
-
-    bin="$bin4"
 else
     echo "COPYING Qt5"
 
@@ -346,8 +339,6 @@ else
 
         cp "$Qt"/qml/QtQuick.2/lib*qtquick2plugin_*.so deploy/QtQuick.2
     fi
-
-    bin="$bin5"
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -515,11 +506,11 @@ echo "COPYING tools"
 
 if [ $os = "windows" ]; then
 
-    cp "$bin"/includeGenerator.exe deploy
-    cp "$bin"/deployer.exe         deploy
+    cp bin/includeGenerator.exe deploy
+    cp bin/deployer.exe         deploy
 
 elif [ $2 != "android" ]; then
 
-    cp "$bin"/includeGenerator deploy
-    cp "$bin"/deployer         deploy
+    cp bin/includeGenerator deploy
+    cp bin/deployer         deploy
 fi

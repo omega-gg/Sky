@@ -2,11 +2,7 @@ SK = $$_PRO_FILE_PWD_/../..
 
 TARGET = deployer
 
-contains(QT_MAJOR_VERSION, 4) {
-    DESTDIR = $$SK/bin
-} else {
-    DESTDIR = $$SK/latest
-}
+DESTDIR = $$SK/bin
 
 QT -= gui
 
