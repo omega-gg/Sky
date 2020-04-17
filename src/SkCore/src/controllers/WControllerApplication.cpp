@@ -183,41 +183,6 @@ QHash<QString, QString> WControllerApplicationPrivate::extractArguments(int & ar
 
 //-------------------------------------------------------------------------------------------------
 
-#if defined(SK_CONSOLE) == false && defined(SK_NO_QML) == false
-
-void WControllerApplicationPrivate::restartScript()
-{
-    QObject * objectOld = object;
-
-    wControllerDeclarative->engine()->clearComponentCache();
-
-#ifdef QT_4
-    QDeclarativeComponent component(wControllerDeclarative->engine());
-#else
-    QQmlComponent component(wControllerDeclarative->engine());
-#endif
-
-    if (qrc)
-    {
-         component.loadUrl(QUrl("qrc:/qrc/Main.qml"));
-    }
-    else component.loadUrl(QUrl("Main.qml"));
-
-    object = component.create();
-
-    if (object == NULL)
-    {
-        qWarning("WControllerApplicationPrivate::restartScript: Cannot reload Main.qml. %s.",
-                 component.errorString().C_STR);
-    }
-
-    if (objectOld) delete objectOld;
-}
-
-#endif
-
-//-------------------------------------------------------------------------------------------------
-
 void WControllerApplicationPrivate::declareController(WController * controller)
 {
     //Q_Q(WControllerApplication);
@@ -319,7 +284,7 @@ void WControllerApplication::initController()
 
 #if defined(SK_CONSOLE) == false && defined(SK_NO_QML) == false
 
-void WControllerApplication::startScript()
+/* Q_INVOKABLE */ void WControllerApplication::startScript()
 {
     Q_D(WControllerApplication);
 
@@ -343,6 +308,37 @@ void WControllerApplication::startScript()
     {
         qFatal("Cannot create Main QML object: %s.", component.errorString().C_STR);
     }
+}
+
+/* Q_INVOKABLE */ void WControllerApplication::restartScript()
+{
+    Q_D(WControllerApplication);
+
+    QObject * objectOld = d->object;
+
+    wControllerDeclarative->engine()->clearComponentCache();
+
+#ifdef QT_4
+    QDeclarativeComponent component(wControllerDeclarative->engine());
+#else
+    QQmlComponent component(wControllerDeclarative->engine());
+#endif
+
+    if (d->qrc)
+    {
+         component.loadUrl(QUrl("qrc:/qrc/Main.qml"));
+    }
+    else component.loadUrl(QUrl("Main.qml"));
+
+    d->object = component.create();
+
+    if (d->object == NULL)
+    {
+        qWarning("WControllerApplication::restartScript: Cannot reload Main.qml. %s.",
+                 component.errorString().C_STR);
+    }
+
+    if (objectOld) objectOld->deleteLater();
 }
 
 #endif

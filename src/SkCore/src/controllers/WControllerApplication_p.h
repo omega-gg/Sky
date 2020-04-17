@@ -51,10 +51,6 @@ public:
 public: // Functions
     QHash<QString, QString> extractArguments(int & argc, char ** argv);
 
-#ifndef SK_CONSOLE
-    void restartScript();
-#endif
-
     void declareController  (WController * controller);
     void undeclareController(WController * controller);
 

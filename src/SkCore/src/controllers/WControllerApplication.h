@@ -100,7 +100,10 @@ private:
     void initController();
 
 public: // Interface
-    void startScript();
+#if defined(SK_CONSOLE) == false && defined(SK_NO_QML) == false
+    Q_INVOKABLE void startScript  ();
+    Q_INVOKABLE void restartScript();
+#endif
 
     Q_INVOKABLE void quit();
 
