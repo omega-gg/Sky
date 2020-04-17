@@ -202,6 +202,8 @@ else
     mkdir deploy/imageformats
     mkdir deploy/QtQuick.2
 
+    cp "$Qt"/bin/qt.conf deploy
+
     if [ $os = "windows" ]; then
 
         cp "$MinGW"/libgcc_s_*-1.dll    deploy
