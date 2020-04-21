@@ -202,8 +202,6 @@ else
     mkdir deploy/imageformats
     mkdir deploy/QtQuick.2
 
-    cp "$Qt"/bin/qt.conf deploy
-
     if [ $os = "windows" ]; then
 
         cp "$MinGW"/libgcc_s_*-1.dll    deploy
@@ -240,6 +238,9 @@ else
         cp "$Qt"/qml/QtQuick.2/qmldir             deploy/QtQuick.2
 
     elif [ $2 = "macOS" ]; then
+
+        # FIXME Qt 5.14 macOS: We have to copy qt.conf to avoid a segfault.
+        cp "$Qt"/bin/qt.conf deploy
 
         cp "$Qt"/lib/QtCore.framework/Versions/5/QtCore                 deploy/QtCore.dylib
         cp "$Qt"/lib/QtGui.framework/Versions/5/QtGui                   deploy/QtGui.dylib
