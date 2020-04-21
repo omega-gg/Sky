@@ -103,6 +103,8 @@ public: // Interface
 #if defined(SK_CONSOLE) == false && defined(SK_NO_QML) == false
     Q_INVOKABLE void startScript  ();
     Q_INVOKABLE void restartScript();
+
+    Q_INVOKABLE void clearComponentCache() const;
 #endif
 
     Q_INVOKABLE void quit();

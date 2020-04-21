@@ -341,6 +341,13 @@ void WControllerApplication::initController()
     if (objectOld) objectOld->deleteLater();
 }
 
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WControllerApplication::clearComponentCache() const
+{
+    wControllerDeclarative->engine()->clearComponentCache();
+}
+
 #endif
 
 //-------------------------------------------------------------------------------------------------
