@@ -62,6 +62,9 @@ class SK_CORE_EXPORT WControllerApplication : public QObject, public WPrivatable
 
     Q_PROPERTY(QString version READ version WRITE setVersion NOTIFY versionChanged)
 
+    Q_PROPERTY(QString versionSky READ versionSky CONSTANT)
+    Q_PROPERTY(QString versionQt  READ versionQt  CONSTANT)
+
     Q_PROPERTY(QString applicationUrl READ applicationUrl WRITE setApplicationUrl
                NOTIFY applicationUrlChanged)
 
@@ -307,6 +310,9 @@ public: // Properties
 
     QString version() const;
     void    setVersion(const QString & version);
+
+    QString versionSky() const;
+    QString versionQt () const;
 
     QString applicationUrl() const;
     void    setApplicationUrl(const QString & url);
