@@ -170,4 +170,6 @@ int main(int argc, char *argv[])
     writeGlobalInclude(name);
 
     qDebug("DONE");
+
+    return 0;
 }

@@ -541,4 +541,6 @@ int main(int argc, char *argv[])
     generateQrc(argv[3]);
 
     qDebug("DONE");
+
+    return 0;
 }
