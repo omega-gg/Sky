@@ -57,7 +57,6 @@ BarTitleText    1.0 BarTitleText.qml
 BarSetting      1.0 BarSetting.qml
 BarSettingReset 1.0 BarSettingReset.qml
 
-BaseButton           1.0 BaseButton.qml
 BaseButtonPush       1.0 BaseButtonPush.qml
 BaseButtonPiano      1.0 BaseButtonPiano.qml
 ButtonPush           1.0 ButtonPush.qml
