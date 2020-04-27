@@ -3,3 +3,5 @@ Style 1.0 Style.qml
 Window 1.0 Window.qml
 
 RectangleBorders 1.0 RectangleBorders.qml
+
+BaseButton 1.0 BaseButton.qml
