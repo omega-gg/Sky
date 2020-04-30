@@ -466,7 +466,7 @@ void WViewPrivate::init(QQuickItem * item)
 #else
     QScreen * screen = q->screen();
 
-#ifdef Q_OS_MAC
+#if defined(Q_OS_MAC) || defined(Q_OS_ANDROID)
     ratio = screen->logicalDotsPerInch() / 72;
 #else
     ratio = screen->logicalDotsPerInch() / 96;
@@ -593,7 +593,7 @@ void WViewPrivate::updateRatio()
 {
     Q_Q(WView);
 
-#ifdef Q_OS_MAC
+#if defined(Q_OS_MAC) || defined(Q_OS_ANDROID)
     qreal value = q->screen()->logicalDotsPerInch() / 72;
 #else
     qreal value = q->screen()->logicalDotsPerInch() / 96;
@@ -1647,6 +1647,9 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 
 /* Q_INVOKABLE */ void WView::checkPosition()
 {
+#ifdef Q_OS_ANDROID
+    return;
+#else
     QRect geometry = availableGeometry();
 
     int x = this->x();
@@ -1690,6 +1693,7 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
     if (update) move(x, y);
 #else
     if (update) setPosition(x, y);
+#endif
 #endif
 }
 
