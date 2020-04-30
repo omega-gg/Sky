@@ -206,7 +206,7 @@ else
     make $make_arguments
 fi
 
-cd -
+cd ..
 
 echo "------------"
 
