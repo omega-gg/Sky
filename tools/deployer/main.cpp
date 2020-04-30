@@ -464,7 +464,9 @@ void scanFolder(const QString & path)
                       ": size(" + numberA + ", " + numberB + ")\n");
     }
 
-    int index = styleContent.indexOf("zoom\n") + 5;
+    int index = styleContent.indexOf("ratio") + 5;
+
+    index = styleContent.indexOf("\n", index) + 1;
 
     styleContent.insert(index, string);
 

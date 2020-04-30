@@ -27,7 +27,7 @@ Item
     property real scale: 1.0
     property real zoom : 1.0
 
-    property real ratio: scale * zoom
+    property real ratio: scale * zoom * window.ratio
 
     //---------------------------------------------------------------------------------------------
 
