@@ -295,7 +295,11 @@ BaseWindow
 
         anchors.fill: parent
 
+//#DESKTOP
         size: (maximized == false && fullScreen == false) ? getBorderSize() : 0
+//#ELSE
+        size: 0
+//#END
 
         color: (isTouchActive) ? st.border_colorFocus
                                : st.border_color

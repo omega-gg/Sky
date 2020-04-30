@@ -985,6 +985,9 @@ void WViewPrivate::setTouch(int id)
 
 QRect WViewPrivate::getGeometryDefault(const QRect & rect) const
 {
+#ifdef Q_OS_ANDROID
+    return rect;
+#else
     int width  = sk->defaultWidth ();
     int height = sk->defaultHeight();
 
@@ -1037,6 +1040,7 @@ QRect WViewPrivate::getGeometryDefault(const QRect & rect) const
     }
 
     return rect.adjusted(left, top, -right, -bottom);
+#endif
 }
 
 QRect WViewPrivate::getGeometry(const QRect & rect) const
