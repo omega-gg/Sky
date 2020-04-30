@@ -5,8 +5,6 @@ set -e
 # Settings
 #--------------------------------------------------------------------------------------------------
 
-Sky="../.."
-
 external="$PWD/../3rdparty"
 
 #--------------------------------------------------------------------------------------------------
@@ -187,16 +185,16 @@ if [ "$3" = "tools" ]; then
 
     if [ $2 = "android" ]; then
 
-        $qmake -r -spec $spec "CONFIG += release" "TOOLS = true" "ANDROID_ABIS = $abi" $Sky
+        $qmake -r -spec $spec "CONFIG += release" "TOOLS = true" "ANDROID_ABIS = $abi" ..
     else
-        $qmake -r -spec $spec "CONFIG += release" "TOOLS = true" $Sky
+        $qmake -r -spec $spec "CONFIG += release" "TOOLS = true" ..
     fi
 
 elif [ $2 = "android" ]; then
 
-    $qmake -r -spec $spec "CONFIG += release" "ANDROID_ABIS = $abi" $Sky
+    $qmake -r -spec $spec "CONFIG += release" "ANDROID_ABIS = $abi" ..
 else
-    $qmake -r -spec $spec "CONFIG += release" $Sky
+    $qmake -r -spec $spec "CONFIG += release" ..
 fi
 
 echo ""
@@ -207,6 +205,8 @@ if [ $os = "windows" ]; then
 else
     make $make_arguments
 fi
+
+cd -
 
 echo "------------"
 
@@ -220,8 +220,6 @@ if [ "$3" = "deploy" ]; then
     echo "DEPLOYING Sky"
     echo "-------------"
 
-    cd $Sky
-
     sh deploy.sh $1 $2
 
     echo "-------------"
@@ -231,8 +229,6 @@ elif [ "$3" = "tools" ]; then
     echo ""
     echo "DEPLOYING tools"
     echo "---------------"
-
-    cd $Sky
 
     sh deploy.sh $1 $2 tools
 
