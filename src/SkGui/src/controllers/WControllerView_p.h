@@ -67,6 +67,8 @@ public: // Variables
 
     bool opengl;
 
+    bool fade;
+
     WControllerView::LoadMode loadMode;
 
     int scaleDelay;

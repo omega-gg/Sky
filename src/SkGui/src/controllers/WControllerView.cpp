@@ -100,6 +100,12 @@ void WControllerViewPrivate::init()
     opengl = true;
 #endif
 
+#ifdef Q_OS_ANDROID
+    fade = false;
+#else
+    fade = true;
+#endif
+
     loadMode = WControllerView::LoadAlways;
 
     scaleDelay = 220;
@@ -429,6 +435,24 @@ void WControllerView::setOpengl(bool enabled)
 }
 
 #endif
+
+//-------------------------------------------------------------------------------------------------
+
+bool WControllerView::fade() const
+{
+    Q_D(const WControllerView); return d->fade;
+}
+
+void WControllerView::setFade(bool enabled)
+{
+    Q_D(WControllerView);
+
+    if (d->fade == enabled) return;
+
+    d->fade = enabled;
+
+    emit fadeChanged();
+}
 
 //-------------------------------------------------------------------------------------------------
 

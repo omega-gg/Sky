@@ -48,6 +48,8 @@ class SK_GUI_EXPORT WControllerView : public WController
     Q_PROPERTY(bool opengl READ opengl CONSTANT)
 #endif
 
+    Q_PROPERTY(bool fade READ fade WRITE setFade NOTIFY fadeChanged)
+
     Q_PROPERTY(LoadMode loadMode READ loadMode WRITE setLoadMode NOTIFY loadModeChanged)
 
     Q_PROPERTY(int scaleDelay READ scaleDelay WRITE setScaleDelay NOTIFY scaleDelayChanged)
@@ -107,6 +109,8 @@ signals:
     void openglChanged();
 #endif
 
+    void fadeChanged();
+
     void loadModeChanged();
 
     void scaleDelayChanged();
@@ -116,6 +120,9 @@ public: // Properties
 #ifdef QT_4
     void setOpengl(bool enabled);
 #endif
+
+    bool fade() const;
+    void setFade(bool enabled);
 
     LoadMode loadMode() const;
     void     setLoadMode(LoadMode mode);

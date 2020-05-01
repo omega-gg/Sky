@@ -278,7 +278,7 @@ void WViewPrivate::init(QQuickItem * item)
     //---------------------------------------------------------------------------------------------
     // Fade
 
-    fade = true;
+    fade = wControllerView->fade();
 
     fadeVisible = false;
 
