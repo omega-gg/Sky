@@ -185,16 +185,16 @@ if [ "$3" = "tools" ]; then
 
     if [ $2 = "android" ]; then
 
-        $qmake -r -spec $spec "CONFIG += release" "TOOLS = true" "ANDROID_ABIS = $abi" ..
+        $qmake -r -spec $spec CONFIG+=release TOOLS=true "ANDROID_ABIS=$abi" ..
     else
-        $qmake -r -spec $spec "CONFIG += release" "TOOLS = true" ..
+        $qmake -r -spec $spec CONFIG+=release TOOLS=true ..
     fi
 
 elif [ $2 = "android" ]; then
 
-    $qmake -r -spec $spec "CONFIG += release" "ANDROID_ABIS = $abi" ..
+    $qmake -r -spec $spec CONFIG+=release ANDROID_ABIS=$abi ..
 else
-    $qmake -r -spec $spec "CONFIG += release" ..
+    $qmake -r -spec $spec CONFIG+=release ..
 fi
 
 echo ""
