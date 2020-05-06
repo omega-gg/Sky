@@ -112,8 +112,10 @@ public: // Functions
     void setTouch(int id);
 #endif
 
+#ifndef Q_OS_ANDROID
     QRect getGeometryDefault(const QRect & rect) const;
     QRect getGeometry       (const QRect & rect) const;
+#endif
 
     void setGeometryNormal(const QRect & rect);
 

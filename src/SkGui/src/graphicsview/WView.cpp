@@ -447,14 +447,16 @@ void WViewPrivate::init(QQuickItem * item)
     q->WAbstractView::setMinimumSize(QSize(minimumWidth, minimumHeight));
 #endif
 
-    QRect rect = wControllerView->availableGeometry(sk->defaultScreen());
+    geometryNormal = wControllerView->availableGeometry(sk->defaultScreen());
 
-    if (rect.isValid() == false)
+    if (geometryNormal.isValid() == false)
     {
-        rect = wControllerView->availableGeometry();
+        geometryNormal = wControllerView->availableGeometry();
     }
 
-    geometryNormal = getGeometryDefault(rect);
+#ifndef Q_OS_ANDROID
+    geometryNormal = getGeometryDefault(geometryNormal);
+#endif
 
     q->setGeometry(geometryNormal);
 
@@ -983,11 +985,10 @@ void WViewPrivate::setTouch(int id)
 
 //-------------------------------------------------------------------------------------------------
 
+#ifndef Q_OS_ANDROID
+
 QRect WViewPrivate::getGeometryDefault(const QRect & rect) const
 {
-#ifdef Q_OS_ANDROID
-    return rect;
-#else
     int width  = sk->defaultWidth ();
     int height = sk->defaultHeight();
 
@@ -1040,7 +1041,6 @@ QRect WViewPrivate::getGeometryDefault(const QRect & rect) const
     }
 
     return rect.adjusted(left, top, -right, -bottom);
-#endif
 }
 
 QRect WViewPrivate::getGeometry(const QRect & rect) const
@@ -1050,6 +1050,8 @@ QRect WViewPrivate::getGeometry(const QRect & rect) const
 
     return rect.adjusted(width, height, -width, -height);
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -1316,10 +1318,14 @@ void WViewPrivate::onGeometryChanged()
     updateRatio();
 #endif
 
+#ifdef Q_OS_ANDROID
+    q->setGeometry(q->availableGeometry());
+#else
     if (maximized == false && fullScreen == false)
     {
         q->checkPosition();
     }
+#endif
 
     emit q->availableGeometryChanged();
 }
@@ -1611,7 +1617,9 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 
 /* Q_INVOKABLE */ QRect WView::getDefaultGeometry() const
 {
+#ifndef Q_OS_ANDROID
     Q_D(const WView);
+#endif
 
     QRect rect = wControllerView->availableGeometry(sk->defaultScreen());
 
@@ -1620,7 +1628,11 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
         rect = wControllerView->availableGeometry();
     }
 
+#ifdef Q_OS_ANDROID
+    return rect;
+#else
     return d->getGeometryDefault(rect);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -3161,7 +3173,7 @@ void WView::setMaximized(bool maximized)
 
     if (maximized)
     {
-#ifdef Q_OS_LINUX
+#if defined(Q_OS_LINUX) && defined(Q_OS_ANDROID) == false
         //-----------------------------------------------------------------------------------------
         // FIXME Linux: Workaround to undock the window.
 
