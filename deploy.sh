@@ -17,7 +17,7 @@ MinGW_version="7.3.0"
 SSL_versionA="1.0.2p"
 SSL_versionB="1.1.1d"
 
-VLC_version="3.0.8"
+VLC_version="3.0.10"
 
 libtorrent_version="1.2.2"
 
