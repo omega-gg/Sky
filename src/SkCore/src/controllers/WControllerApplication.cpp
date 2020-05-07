@@ -1476,7 +1476,7 @@ void WControllerApplication::setVersion(const QString & version)
 
 QString WControllerApplication::versionSky() const
 {
-    return "1.6.0-3";
+    return "1.6.0-4";
 }
 
 QString WControllerApplication::versionQt() const
