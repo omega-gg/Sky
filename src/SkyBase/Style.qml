@@ -114,7 +114,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // Border
 
-    property int border_size     : dp2
+    property int border_size     : dp1
     property int border_sizeFocus: border_size
 
     property color border_color     : "#969696"
