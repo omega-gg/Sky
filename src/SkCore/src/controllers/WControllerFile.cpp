@@ -608,6 +608,10 @@ WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this
     connect(&d->timerLog, SIGNAL(timeout()), this, SLOT(onWriteLog()));
 
 #ifdef QT_4
+    // FIXME Qt4.8.7: qInstallMsgHandler breaks QML 'Keys' events.
+    qWarning("WControllerFile::initMessageHandler: qInstallMsgHandler breaks QML 'Keys' events on "
+             "Qt 4.");
+
     qInstallMsgHandler(WControllerFilePrivate::messageHandler);
 #else
     qInstallMessageHandler(WControllerFilePrivate::messageHandler);

@@ -130,7 +130,11 @@ public: // Static functions
 
     Q_INVOKABLE static QString getVersionLite(const QString & version);
 
+#ifdef QT_4
+    Q_INVOKABLE static int keypad(int modifiers);
+#else
     Q_INVOKABLE static Qt::KeyboardModifiers keypad(Qt::KeyboardModifiers flags);
+#endif
 
     //---------------------------------------------------------------------------------------------
 
