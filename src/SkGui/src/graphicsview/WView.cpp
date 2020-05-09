@@ -931,6 +931,14 @@ void WViewPrivate::setDragged(bool dragged)
 
     this->dragged = dragged;
 
+#ifdef Q_OS_WIN
+    // FIXME Windows: When calling WM_SYSCOMMAND in WViewDrag we don't get the mouseRelease event.
+    if (dragged == false)
+    {
+        setPressed(false);
+    }
+#endif
+
     updateHoverable();
 
     updateMouse();
