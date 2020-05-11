@@ -28,7 +28,7 @@ contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_LATEST
 }
 
-QMAKE_CXXFLAGS += -std=c++11
+!msvc:QMAKE_CXXFLAGS += -std=c++11
 
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 

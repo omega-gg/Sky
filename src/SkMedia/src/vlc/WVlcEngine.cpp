@@ -21,6 +21,12 @@
 // Qt includes
 #include <QCoreApplication>
 
+// FIXME MSVC: ssize_t is required by vlc headers.
+#ifdef _MSC_VER
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
+#endif
+
 // Vlc includes
 #include <vlc/vlc.h>
 

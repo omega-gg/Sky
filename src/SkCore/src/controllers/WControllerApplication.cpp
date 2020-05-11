@@ -66,6 +66,9 @@
 // Windows includes
 #ifdef Q_OS_WIN
 #include <qt_windows.h>
+#ifdef _MSC_VER
+#include <shellapi.h>
+#endif
 #endif
 
 W_INIT_CONTROLLER(WControllerApplication)

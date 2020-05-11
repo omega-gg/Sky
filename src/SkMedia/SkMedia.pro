@@ -22,7 +22,7 @@ win32:CONFIG += dll
 
 DEFINES += SK_MEDIA_LIBRARY
 
-!android:DEFINES += CAN_COMPILE_SSE2
+!msvc:!android:DEFINES += CAN_COMPILE_SSE2
 
 contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_4
@@ -30,9 +30,9 @@ contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_LATEST
 }
 
-QMAKE_CXXFLAGS += -std=c++11
+!msvc:QMAKE_CXXFLAGS += -std=c++11
 
-!android:QMAKE_CXXFLAGS += -msse
+!msvc:!android:QMAKE_CXXFLAGS += -msse
 
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 

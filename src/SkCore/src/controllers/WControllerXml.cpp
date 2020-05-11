@@ -27,7 +27,6 @@
 #include <QDateTime>
 
 // Sk incudes
-#include <WControllerScript>
 #include <WControllerApplication>
 
 W_INIT_CONTROLLER(WControllerXml)

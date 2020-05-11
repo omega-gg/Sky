@@ -45,7 +45,7 @@ contains(QT_MAJOR_VERSION, 4) {
     win32:DEFINES += SK_WIN_NATIVE
 }
 
-QMAKE_CXXFLAGS += -std=c++11
+!msvc:QMAKE_CXXFLAGS += -std=c++11
 
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 
@@ -78,6 +78,9 @@ unix:contains(QT_MAJOR_VERSION, 4) {
                    $$SK/include/Qt4/QtGui \
                    $$SK/include/Qt4/QtDeclarative
 }
+
+# Windows dependency for PostMessage
+msvc:LIBS += User32.lib
 
 android {
     CONFIG(debug, debug|release) {

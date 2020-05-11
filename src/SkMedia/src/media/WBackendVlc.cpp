@@ -747,7 +747,7 @@ void WBackendVlcPrivate::convertFrameSoftware()
     }
 }
 
-#ifndef Q_OS_ANDROID
+#ifdef CAN_COMPILE_SSE2
 
 void WBackendVlcPrivate::convertFrameSse()
 {
@@ -1840,11 +1840,10 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 {
     Q_D(WBackendVlc);
 
-#ifdef Q_OS_ANDROID
-    // NOTE: No SSE on Android.
-    d->convertFrameSoftware();
-#else
+#ifdef CAN_COMPILE_SSE2
     d->convertFrameSse();
+#else
+    d->convertFrameSoftware();
 #endif
 }
 
