@@ -23,12 +23,19 @@
 // Sk includes
 #include <Sk>
 
-class SK_CORE_EXPORT WListId : public QList<int>
+class SK_CORE_EXPORT WListId
 {
 public: // Interface
     int generateId(int id = 1);
 
     bool insertId(int id);
+
+    bool removeOne(int id);
+
+    void clear();
+
+private: // Variables
+    QList<int> ids;
 };
 
 #endif // WLISTID_H

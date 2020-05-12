@@ -24,11 +24,11 @@
 
 int WListId::generateId(int id)
 {
-    for (int i = 0; i < count(); i++)
+    for (int i = 0; i < ids.count(); i++)
     {
-        if (at(i) > id)
+        if (ids.at(i) > id)
         {
-            insert(i, id);
+            ids.insert(i, id);
 
             return id;
         }
@@ -36,16 +36,16 @@ int WListId::generateId(int id)
         id++;
     }
 
-    append(id);
+    ids.append(id);
 
     return id;
 }
 
 bool WListId::insertId(int id)
 {
-    for (int i = 0; i < count(); i++)
+    for (int i = 0; i < ids.count(); i++)
     {
-        int itemId = at(i);
+        int itemId = ids.at(i);
 
         if (itemId == id)
         {
@@ -53,15 +53,27 @@ bool WListId::insertId(int id)
         }
         else if (itemId > id)
         {
-            insert(i, id);
+            ids.insert(i, id);
 
             return true;
         }
     }
 
-    append(id);
+    ids.append(id);
 
     return true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WListId::removeOne(int id)
+{
+    return ids.removeOne(id);
+}
+
+void WListId::clear()
+{
+    ids.clear();
 }
 
 #endif // SK_NO_LISTID

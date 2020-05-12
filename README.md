@@ -47,7 +47,7 @@ You can install third party libraries with:
 
 You can configure Sky with:
 
-    sh configure.sh <qt4 | qt5 | clean> <win32 | win64 | macOS | linux>
+    sh configure.sh <qt4 | qt5 | clean> <win32 | win64 | macOS | linux | android>
 
 ## Build
 
@@ -57,7 +57,7 @@ You can build Sky with Qt Creator:
 
 Or the build script:
 
-    sh build.sh <qt4 | qt5 | clean> <win32 | win64 | macOS | linux> [deploy | tools]
+    sh build.sh <qt4 | qt5 | clean> <win32 | win64 | macOS | linux | android> [deploy | tools]
 
 Or the console:
 
@@ -68,7 +68,7 @@ Or the console:
 
 You can deploy Sky with:
 
-    sh deploy.sh <qt4 | qt5 | clean> <win32 | win64 | macOS | linux> [tools]
+    sh deploy.sh <qt4 | qt5 | clean> <win32 | win64 | macOS | linux | android> [tools]
 
 ## License
 
