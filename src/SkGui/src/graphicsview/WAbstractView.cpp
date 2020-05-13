@@ -28,6 +28,10 @@
 
 #if defined(SK_WIN_NATIVE) && defined(QT_LATEST)
 // Windows includes
+#ifdef _MSC_VER
+// FIXME MSVC: This fixes FORMATETC declaration.
+#include <objidl.h>
+#endif
 #include <QtWinExtras>
 #endif
 
