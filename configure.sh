@@ -35,13 +35,13 @@ Qt5_version_linux="5.9.5"
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# != 2 ] || [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] || [ $2 != "win32" -a \
-                                                                       $2 != "win64" -a \
-                                                                       $2 != "macOS" -a \
-                                                                       $2 != "linux" -a \
-                                                                       $2 != "android" ]; then
+if [ $# != 2 ] || [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] \
+   || \
+   [ $2 != "win32" -a $2 != "win64" -a $2 != "win32-msvc" -a $2 != "win64-msvc" -a \
+     $2 != "macOS" -a $2 != "linux" -a $2 != "android" ]; then
 
-    echo "Usage: configure <qt4 | qt5 | clean> <win32 | win64 | macOS | linux | android>"
+    echo "Usage: configure <qt4 | qt5 | clean>"
+    echo "                 <win32 | win64 | win32-msvc | win64-msvc | macOS | linux | android>"
 
     exit 1
 fi
@@ -52,25 +52,36 @@ fi
 
 external="$external/$2"
 
-if [ $2 = "win32" ]; then
+if [ $2 = "win32" -o $2 = "win64" -o $2 = "win32-msvc" -o $2 = "win64-msvc" ]; then
 
     os="windows"
 
-    MinGW="$external/MinGW/$MinGW_version/i686-w64-mingw32/lib"
+    if [ $2 = "win32" ]; then
 
-elif [ $2 = "win64" ]; then
+        compiler="mingw"
 
-    os="windows"
+        MinGW="$external/MinGW/$MinGW_version/i686-w64-mingw32/lib"
 
-    MinGW="$external/MinGW/$MinGW_version/x86_64-w64-mingw32/lib"
+    elif [ $2 = "win64" ]; then
+
+        compiler="mingw"
+
+        MinGW="$external/MinGW/$MinGW_version/x86_64-w64-mingw32/lib"
+    else
+        compiler="default"
+    fi
 
 elif [ $2 = "macOS" ]; then
 
     os="default"
 
+    compiler="default"
+
 elif [ $2 = "linux" ]; then
 
     os="default"
+
+    compiler="default"
 
     if [ $1 = "qt5" ]; then
 
@@ -85,6 +96,8 @@ elif [ $2 = "linux" ]; then
     fi
 else
     os="default"
+
+    compiler="default"
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -218,7 +231,7 @@ fi
 # zlib
 #--------------------------------------------------------------------------------------------------
 
-if [ $os = "windows" ]; then
+if [ $compiler = "mingw" ]; then
 
     cp "$MinGW"/libz.a lib
 fi

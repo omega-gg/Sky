@@ -52,8 +52,6 @@ msvc:INCLUDEPATH += $$[QT_INSTALL_PREFIX]/include/QtZlib
 
 win32:!msvc:LIBS += -L$$SK/lib -lz
 
-msvc:LIBS += $$SK/lib/libz.a \
-
 # Windows dependency for ShellExecuteA and SystemParametersInfo
 msvc:LIBS += shell32.lib User32.lib \
 

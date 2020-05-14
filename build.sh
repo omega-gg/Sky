@@ -19,7 +19,18 @@ make_arguments="-j 4"
 #--------------------------------------------------------------------------------------------------
 # Windows
 
+ProgramFiles="/c/Program Files (x86)"
+
+BuildTools="$ProgramFiles/Microsoft Visual Studio/2019/BuildTools"
+
+#--------------------------------------------------------------------------------------------------
+
 MinGW_version="7.3.0"
+
+MSVC_version="14.25.28610"
+
+WindowsKit_versionA="10"
+WindowsKit_versionB="10.0.18362.0"
 
 #--------------------------------------------------------------------------------------------------
 # Android
@@ -68,12 +79,13 @@ if [ $# != 2 -a $# != 3 ] \
    || \
    [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] \
    || \
-   [ $2 != "win32" -a $2 != "win64" -a $2 != "macOS" -a $2 != "linux" -a $2 != "android" ] \
+   [ $2 != "win32" -a $2 != "win64" -a $2 != "win32-msvc" -a $2 != "win64-msvc" -a \
+     $2 != "macOS" -a $2 != "linux" -a $2 != "android" ] \
    || \
    [ $# = 3 -a "$3" != "deploy" -a "$3" != "tools" ]; then
 
     echo "Usage: build <qt4 | qt5 | clean>"
-    echo "             <win32 | win64 | macOS | linux | android>"
+    echo "             <win32 | win64 | win32-msvc | win64-msvc | macOS | linux | android>"
     echo "             [deploy | tools]"
 
     exit 1
@@ -87,11 +99,29 @@ host=$(getOs)
 
 external="$external/$2"
 
-if [ $2 = "win32" -o $2 = "win64" ]; then
+if [ $2 = "win32" -o $2 = "win64" -o $2 = "win32-msvc" -o $2 = "win64-msvc" ]; then
 
     os="windows"
 
-    MinGW="$external/MinGW/$MinGW_version/bin"
+    if [ $2 = "win32" -o $2 = "win64" ]; then
+
+        compiler="mingw"
+
+        MinGW="$external/MinGW/$MinGW_version/bin"
+    else
+        compiler="msvc"
+
+        MSVC="$BuildTools/VC/Tools/MSVC/$MSVC_version"
+
+        WindowsKit="$ProgramFiles/Windows Kits/$WindowsKit_versionA"
+
+        if [ $2 = "win32-msvc" ]; then
+
+            target="x86"
+        else
+            target="x64"
+        fi
+    fi
 
 elif [ $2 = "android" ]; then
 
@@ -104,9 +134,13 @@ elif [ $2 = "android" ]; then
 
     os="default"
 
+    compiler="default"
+
     abi="armeabi-v7a arm64-v8a x86 x86_64"
 else
     os="default"
+
+    compiler="default"
 fi
 
 if [ $1 = "qt4" ]; then
@@ -151,11 +185,28 @@ else
     export QT_SELECT=qt5
 fi
 
-if [ $os = "windows" ]; then
+if [ $compiler = "mingw" ]; then
 
     spec=win32-g++
 
     PATH="$Qt/bin:$MinGW:$PATH"
+
+elif [ $compiler = "msvc" ]; then
+
+    spec=win32-msvc
+
+    PATH="$MSVC/bin/Host$target/$target:\
+$WindowsKit/bin/$WindowsKit_versionB/$target:\
+$Qt/bin:$PATH"
+
+    export INCLUDE="$MSVC/include:\
+$WindowsKit/Include/$WindowsKit_versionB/ucrt:\
+$WindowsKit/Include/$WindowsKit_versionB/um:\
+$WindowsKit/Include/$WindowsKit_versionB/shared"
+
+    export LIB="$MSVC/lib/$target:\
+$WindowsKit/Lib/$WindowsKit_versionB/ucrt/$target:\
+$WindowsKit/Lib/$WindowsKit_versionB/um/$target"
 
 elif [ $2 = "macOS" ]; then
 
@@ -202,9 +253,13 @@ fi
 
 echo ""
 
-if [ $os = "windows" ]; then
+if [ $compiler = "mingw" ]; then
 
     mingw32-make $make_arguments
+
+elif [ $compiler = "msvc" ]; then
+
+    nmake
 else
     make $make_arguments
 fi
