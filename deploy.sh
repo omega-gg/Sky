@@ -51,12 +51,13 @@ if [ $# != 2 -a $# != 3 ] \
    || \
    [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] \
    || \
-   [ $2 != "win32" -a $2 != "win64" -a $2 != "macOS" -a $2 != "linux" -a $2 != "android" ] \
+   [ $2 != "win32" -a $2 != "win64" -a $2 != "win32-msvc" -a $2 != "win64-msvc" -a \
+     $2 != "macOS" -a $2 != "linux" -a $2 != "android" ] \
    || \
    [ $# = 3 -a "$3" != "tools" ]; then
 
     echo "Usage: deploy <qt4 | qt5 | clean>"
-    echo "              <win32 | win64 | macOS | linux | android>"
+    echo "              <win32 | win64 | win32-msvc | win64-msvc | macOS | linux | android>"
     echo "              [tools]"
 
     exit 1
@@ -68,19 +69,30 @@ fi
 
 external="$external/$2"
 
-if [ $2 = "win32" -o $2 = "win64" ]; then
+if [ $2 = "win32" -o $2 = "win64" -o $2 = "win32-msvc" -o $2 = "win64-msvc" ]; then
 
     os="windows"
 
-    MinGW="$external/MinGW/$MinGW_version/bin"
+    if [ $2 = "win32" -o $2 = "win64" ]; then
+
+        compiler="mingw"
+
+        MinGW="$external/MinGW/$MinGW_version/bin"
+    else
+        compiler="default"
+    fi
 
 elif [ $2 = "macOS" ]; then
 
     os="default"
 
+    compiler="default"
+
 elif [ $2 = "linux" ]; then
 
     os="default"
+
+    compiler="default"
 
     if [ -d "${lib64}" ]; then
 
@@ -100,6 +112,8 @@ elif [ $2 = "linux" ]; then
     libtorrent_version="$libtorrent_version_linux"
 else
     os="default"
+
+    compiler="default"
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -156,9 +170,12 @@ if [ $1 = "qt4" ]; then
 
         mkdir deploy/imageformats
 
-        cp "$MinGW"/libgcc_s_*-1.dll    deploy
-        cp "$MinGW"/libstdc++-6.dll     deploy
-        cp "$MinGW"/libwinpthread-1.dll deploy
+        if [ $compiler = "mingw" ]; then
+
+            cp "$MinGW"/libgcc_s_*-1.dll    deploy
+            cp "$MinGW"/libstdc++-6.dll     deploy
+            cp "$MinGW"/libwinpthread-1.dll deploy
+        fi
 
         cp "$Qt"/bin/QtCore4.dll        deploy
         cp "$Qt"/bin/QtGui4.dll         deploy
@@ -207,9 +224,12 @@ else
 
     if [ $os = "windows" ]; then
 
-        cp "$MinGW"/libgcc_s_*-1.dll    deploy
-        cp "$MinGW"/libstdc++-6.dll     deploy
-        cp "$MinGW"/libwinpthread-1.dll deploy
+        if [ $compiler = "mingw" ]; then
+
+            cp "$MinGW"/libgcc_s_*-1.dll    deploy
+            cp "$MinGW"/libstdc++-6.dll     deploy
+            cp "$MinGW"/libwinpthread-1.dll deploy
+        fi
 
         cp "$Qt"/bin/libEGL.dll    deploy
         cp "$Qt"/bin/libGLESv2.dll deploy
