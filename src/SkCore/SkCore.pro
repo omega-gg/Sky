@@ -28,7 +28,7 @@ contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_LATEST
 }
 
-!msvc:QMAKE_CXXFLAGS += -std=c++11
+!win32-msvc*:QMAKE_CXXFLAGS += -std=c++11
 
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 
@@ -48,11 +48,11 @@ include(src/3rdparty/libcharsetdetect/libcharsetdetect.pri)
 INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkCore/private \
 
-msvc:INCLUDEPATH += $$[QT_INSTALL_PREFIX]/include/QtZlib
+win32-msvc*:INCLUDEPATH += $$[QT_INSTALL_PREFIX]/include/QtZlib
 
-win32:!msvc:LIBS += -L$$SK/lib -lz
+win32:!win32-msvc*:LIBS += -L$$SK/lib -lz
 
 # Windows dependency for ShellExecuteA and SystemParametersInfo
-msvc:LIBS += shell32.lib User32.lib \
+win32-msvc*:LIBS += shell32.lib User32.lib \
 
 unix:LIBS += -lz

@@ -10,6 +10,6 @@ CONFIG += console
 
 macx:CONFIG -= app_bundle
 
-!msvc:QMAKE_CXXFLAGS += -std=c++11
+!win32-msvc*:QMAKE_CXXFLAGS += -std=c++11
 
 SOURCES += main.cpp

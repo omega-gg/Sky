@@ -23,7 +23,7 @@ win32:CONFIG += dll
 DEFINES += SK_TORRENT_LIBRARY
 
 # libtorrent: This fixes the winsock2 errors
-msvc:DEFINES += WIN32_LEAN_AND_MEAN
+win32-msvc*:DEFINES += WIN32_LEAN_AND_MEAN
 
 contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_4
@@ -31,7 +31,7 @@ contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_LATEST
 }
 
-!msvc:QMAKE_CXXFLAGS += -std=c++11
+!win32-msvc*:QMAKE_CXXFLAGS += -std=c++11
 
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 
@@ -70,11 +70,11 @@ android {
 
 win32::LIBS += -lmswsock -lws2_32
 
-win32:!msvc:LIBS += -L$$SK/lib -ltorrent \
-                    -L$$SK/lib -lboost_system \
+win32:!win32-msvc*:LIBS += -L$$SK/lib -ltorrent \
+                           -L$$SK/lib -lboost_system \
 
-msvc:LIBS += $$SK/lib/libtorrent.a \
-             $$SK/lib/libboost_system.a \
+win32-msvc*:LIBS += $$SK/lib/libtorrent.a \
+                    $$SK/lib/libboost_system.a \
 
 macx:LIBS += -L$$SK/lib -ltorrent \
              -L$$SK/lib -lboost_system \
