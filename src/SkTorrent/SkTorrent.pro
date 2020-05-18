@@ -22,8 +22,13 @@ win32:CONFIG += dll
 
 DEFINES += SK_TORRENT_LIBRARY
 
-# libtorrent: This fixes the winsock2 errors
-win32-msvc*:DEFINES += WIN32_LEAN_AND_MEAN
+win32-msvc* {
+    # libtorrent: This fixes the winsock2 errors
+    DEFINES += WIN32_LEAN_AND_MEAN
+
+    # Boost: This prevents an issue with linking
+    DEFINES += BOOST_ALL_NO_LIB
+}
 
 contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_4
@@ -68,13 +73,13 @@ android {
     }
 }
 
-win32::LIBS += -lmswsock -lws2_32
+win32:LIBS += -lmswsock -lws2_32
 
-win32:!win32-msvc*:LIBS += -L$$SK/lib -ltorrent \
-                           -L$$SK/lib -lboost_system \
+win32:LIBS += -L$$SK/lib -ltorrent \
+              -L$$SK/lib -lboost_system \
 
-win32-msvc*:LIBS += $$SK/lib/libtorrent.a \
-                    $$SK/lib/libboost_system.a \
+# Boost dependencies
+win32-msvc*:LIBS += Advapi32.lib Iphlpapi.lib
 
 macx:LIBS += -L$$SK/lib -ltorrent \
              -L$$SK/lib -lboost_system \

@@ -27,6 +27,8 @@ BuildTools="$ProgramFiles/Microsoft Visual Studio/2019/BuildTools"
 
 MinGW_version="7.3.0"
 
+jom_version="1.1.3"
+
 MSVC_version="14.25.28610"
 
 WindowsKit_versionA="10"
@@ -110,6 +112,8 @@ if [ $2 = "win32" -o $2 = "win64" -o $2 = "win32-msvc" -o $2 = "win64-msvc" ]; t
         MinGW="$external/MinGW/$MinGW_version/bin"
     else
         compiler="msvc"
+
+        jom="$external/jom/$jom_version"
 
         MSVC="$BuildTools/VC/Tools/MSVC/$MSVC_version"
 
@@ -202,7 +206,7 @@ elif [ $compiler = "msvc" ]; then
         spec=win32-msvc
     fi
 
-    PATH="$MSVC/bin/Host$target/$target:\
+    PATH="$jom:$MSVC/bin/Host$target/$target:\
 $WindowsKit/bin/$WindowsKit_versionB/$target:\
 $Qt/bin:$PATH"
 
@@ -266,7 +270,7 @@ if [ $compiler = "mingw" ]; then
 
 elif [ $compiler = "msvc" ]; then
 
-    nmake
+    jom
 else
     make $make_arguments
 fi

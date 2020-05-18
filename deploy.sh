@@ -17,7 +17,7 @@ SSL_versionB="1.1.1d"
 
 VLC_version="3.0.10"
 
-libtorrent_version="1.2.2"
+libtorrent_version="1.2.6"
 
 Boost_version="1.71.0"
 
@@ -450,7 +450,7 @@ echo "COPYING libtorrent"
 
 if [ $os = "windows" ]; then
 
-    cp "$libtorrent"/libtorrent.dll deploy
+    cp "$libtorrent"/*torrent.dll deploy
 
 elif [ $2 = "macOS" ]; then
 

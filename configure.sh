@@ -14,7 +14,7 @@ Qt5_version="5.14.2"
 
 VLC_version="3.0.10"
 
-libtorrent_version="1.2.2"
+libtorrent_version="1.2.6"
 
 Boost_version="1.71.0"
 
@@ -278,7 +278,7 @@ if [ $os = "windows" ] || [ $2 = "macOS" ] || [ $2 = "android" ]; then
 
     cp -r "$libtorrent"/libtorrent include
 
-    cp "$libtorrent"/libtorrent*.* lib
+    cp "$libtorrent"/*torrent*.* lib
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -295,5 +295,5 @@ if [ $os = "windows" ] || [ $2 = "macOS" ] || [ $2 = "android" ]; then
 
     cp -r "$Boost"/Boost/* $path
 
-    cp "$Boost"/libboost*.* lib
+    cp "$Boost"/*boost*.* lib
 fi

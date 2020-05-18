@@ -1154,7 +1154,7 @@ QByteArray WTorrentEnginePrivate::extractMagnet(const torrent_handle & handle) c
 
     bencode(back_inserter(vector), torrent.generate());
 
-    return QByteArray(vector.data(), vector.size());
+    return QByteArray(vector.data(), (int) vector.size());
 }
 
 void WTorrentEnginePrivate::applyMagnet(WMagnetData * data, const torrent_handle & handle) const
