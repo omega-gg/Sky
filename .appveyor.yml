@@ -11,6 +11,5 @@ install:
   - ls -la "/c/Program Files (x86)/Microsoft Visual Studio"
   - ls -la "/c/Program Files (x86)/Microsoft Visual Studio/2019"
   - ls -la "/c/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools"
-
-build_script:
-  - sh build.sh %qt% %platform% deploy
+  - ls -la "/c/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools/VC/Tools/MSVC"
+  - ls -la "/c/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools/VC/Tools/MSVC/14.25.28610"
