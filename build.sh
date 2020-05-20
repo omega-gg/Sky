@@ -210,6 +210,14 @@ elif [ $compiler = "msvc" ]; then
 $WindowsKit/bin/$WindowsKit_versionB/$target:\
 $Qt/bin:$PATH"
 
+printenv PATH
+
+    echo "$MSVC/bin/Host$target/$target"
+    ls -la "$MSVC/bin/Host$target/$target"
+
+    echo "$WindowsKit/bin/$WindowsKit_versionB"
+    ls -la "$WindowsKit/bin/$WindowsKit_versionB"
+
     export INCLUDE="$MSVC/include:\
 $WindowsKit/Include/$WindowsKit_versionB/ucrt:\
 $WindowsKit/Include/$WindowsKit_versionB/um:\
