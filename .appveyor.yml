@@ -6,8 +6,10 @@ environment:
       platform: win64-msvc
 
 install:
-  - sh 3rdparty.sh %platform%
-  - sh configure.sh %qt% %platform%
+  - ls -la "/c/Program Files (x86)"
+  - ls -la "/c/Program Files (x86)/Microsoft Visual Studio"
+  - ls -la "/c/Program Files (x86)/Microsoft Visual Studio/2019"
+  - ls -la "/c/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools"
 
 build_script:
   - sh build.sh %qt% %platform% deploy
