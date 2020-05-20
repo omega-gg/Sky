@@ -83,9 +83,9 @@ Copyright (C) 2015 - 2020 Sky kit authors united with [omega](http://omega.gg/ab
 
 - Benjamin Arnaud aka [bunjee](http://bunjee.me) | <bunjee@omega.gg>
 
-### GNU General Public License Usage
+### GNU Lesser General Public License Usage
 
-Sky kit may be used under the terms of the GNU General Public License version 3 as published
-by the Free Software Foundation and appearing in the LICENSE.md file included in the packaging
-of this file. Please review the following information to ensure the GNU General Public License
-requirements will be met: https://www.gnu.org/licenses/gpl.html.
+Sky kit may be used under the terms of the GNU Lesser General Public License version 3 as published
+by the Free Software Foundation and appearing in the LICENSE.md file included in the packaging of
+this file. Please review the following information to ensure the GNU Lesser General Public License
+requirements will be met: https://www.gnu.org/licenses/lgpl.html.
