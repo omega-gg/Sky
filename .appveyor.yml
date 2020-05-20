@@ -7,6 +7,7 @@ environment:
 
 install:
   - ls -la "/c/Program Files (x86)"
+  - sh 3rdparty.sh %platform%
   - ls -la "/c/Program Files (x86)/Microsoft Visual Studio"
   - ls -la "/c/Program Files (x86)/Microsoft Visual Studio/2019"
   - ls -la "/c/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools"
