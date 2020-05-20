@@ -2,6 +2,18 @@ clone_folder: C:\dev\workspace\Sky
 
 environment:
   matrix:
+    - qt: qt4
+      platform: win32
+
+    - qt: qt5
+      platform: win32
+
+    - qt: qt5
+      platform: win64
+
+    - qt: qt5
+      platform: win32-msvc
+
     - qt: qt5
       platform: win64-msvc
 
