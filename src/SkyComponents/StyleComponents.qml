@@ -67,7 +67,16 @@ Style
     property url rectangleShadow_sourceUp   : "pictures/shadowUp.png"
     property url rectangleShadow_sourceDown : "pictures/shadowDown.png"
 
-    property ImageColorFilter rectangleShadow_filter: border_filterFocus
+    property color rectangleShadow_color: "#161616"
+
+    property ImageColorFilter rectangleShadow_filter: rectangleShadow_filter
+
+    ImageColorFilter
+    {
+        id: rectangleShadow_filter
+
+        color: rectangleShadow_color
+    }
 
 //#BorderImageShadow
     //---------------------------------------------------------------------------------------------
@@ -695,7 +704,7 @@ Style
     property real scroller_opacityA: 0.6
     property real scroller_opacityB: 0.8
 
-    property ImageColorFilter scroller_filter: rectangleShadow_filter
+    property ImageColorFilter scroller_filter: border_filterFocus
 
 //#ScrollerList
     //---------------------------------------------------------------------------------------------
