@@ -37,7 +37,7 @@ On Windows:
 Recommended:
 - [Qt Creator](http://download.qt.io/official_releases/qtcreator) 3.6.0 or later.
 
-## Install
+## 3rdparty
 
 You can install third party libraries with:
 
