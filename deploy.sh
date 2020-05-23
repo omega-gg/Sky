@@ -488,19 +488,12 @@ if [ "$3" != "tools" ]; then
 
     if [ $os = "windows" ]; then
 
-        cp lib/*SkCore.a    deploy
-        cp lib/*SkGui.a     deploy
-        cp lib/*SkMedia.a   deploy
-        #cp lib/*SkWeb.a     deploy
-        cp lib/*SkTorrent.a deploy
-        cp lib/*SkBackend.a deploy
-
-        cp lib/SkCore.dll    deploy
-        cp lib/SkGui.dll     deploy
-        cp lib/SkMedia.dll   deploy
-        #cp lib/SkWeb.dll     deploy
-        cp lib/SkTorrent.dll deploy
-        cp lib/SkBackend.dll deploy
+        cp lib/*SkCore.*    deploy
+        cp lib/*SkGui.*     deploy
+        cp lib/*SkMedia.*   deploy
+        #cp lib/*SkWeb.*     deploy
+        cp lib/*SkTorrent.* deploy
+        cp lib/*SkBackend.* deploy
 
     elif [ $2 = "macOS" ]; then
 
