@@ -322,16 +322,18 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 #ifdef QT_4
 /* Q_INVOKABLE static */ bool WControllerView::saveItemShot(const QString   & fileName,
                                                             QGraphicsObject * item,
+                                                            const QString   & format, int quality,
                                                             const QColor    & background)
 #else
 /* Q_INVOKABLE static */ bool WControllerView::saveItemShot(const QString & fileName,
                                                             QQuickItem    * item,
+                                                            const QString & format, int quality,
                                                             const QColor  & background)
 #endif
 {
     QImage image = takeItemShot(item, background).toImage();
 
-    return image.save(fileName, "png");
+    return image.save(fileName, format.C_STR, quality);
 }
 
 //-------------------------------------------------------------------------------------------------

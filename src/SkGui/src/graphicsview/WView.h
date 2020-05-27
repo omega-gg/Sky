@@ -302,12 +302,14 @@ public: // Interface
     Q_INVOKABLE QPixmap takeShot(int x = 0, int y = 0, int width = -1, int height = -1) const;
 
     Q_INVOKABLE bool saveShot(const QString & fileName,
-                              int x = 0, int y = 0, int width = -1, int height = -1) const;
+                              int x = 0, int y = 0, int width = -1, int height = -1,
+                              const QString & format = "png", int quality = -1) const;
 #else
     Q_INVOKABLE QPixmap takeShot(int x = 0, int y = 0, int width = -1, int height = -1);
 
     Q_INVOKABLE bool saveShot(const QString & fileName,
-                              int x = 0, int y = 0, int width = -1, int height = -1);
+                              int x = 0, int y = 0, int width = -1, int height = -1,
+                              const QString & format = "png", int quality = -1);
 #endif
 
     //---------------------------------------------------------------------------------------------
@@ -370,6 +372,7 @@ public: // Static functions
 
     Q_INVOKABLE static bool saveItemShot(const QString   & fileName,
                                          QGraphicsObject * item,
+                                         const QString   & format = "png", int quality = -1,
                                          const QColor    & background = Qt::transparent);
 #else
     Q_INVOKABLE static QPixmap takeItemShot(QQuickItem   * item,
@@ -377,6 +380,7 @@ public: // Static functions
 
     Q_INVOKABLE static bool saveItemShot(const QString & fileName,
                                          QQuickItem    * item,
+                                         const QString & format = "png", int quality = -1,
                                          const QColor  & background = Qt::transparent);
 #endif
 

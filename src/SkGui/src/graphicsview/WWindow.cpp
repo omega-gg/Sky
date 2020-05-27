@@ -402,11 +402,13 @@ void WWindowPrivate::init()
 }
 
 #ifdef QT_4
-/* Q_INVOKABLE */ bool WWindow::saveShot(const QString & fileName, int x,     int y,
-                                                                   int width, int height) const
+/* Q_INVOKABLE */ bool WWindow::saveShot(const QString & fileName,
+                                         int x, int y, int width, int height,
+                                         const QString & format, int quality) const
 #else
-/* Q_INVOKABLE */ bool WWindow::saveShot(const QString & fileName, int x,     int y,
-                                                                   int width, int height)
+/* Q_INVOKABLE */ bool WWindow::saveShot(const QString & fileName,
+                                         int x, int y, int width, int height,
+                                         const QString & format, int quality)
 #endif
 {
 #ifdef QT_4
@@ -415,7 +417,7 @@ void WWindowPrivate::init()
     Q_D(WWindow);
 #endif
 
-    return d->view->saveShot(fileName, x, y, width, height);
+    return d->view->saveShot(fileName, x, y, width, height, format, quality);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -596,14 +598,16 @@ void WWindowPrivate::init()
 #ifdef QT_4
 /* Q_INVOKABLE static */ bool WWindow::saveItemShot(const QString   & fileName,
                                                     QGraphicsObject * item,
+                                                    const QString   & format, int quality,
                                                     const QColor    & background)
 #else
 /* Q_INVOKABLE static */ bool WWindow::saveItemShot(const QString & fileName,
                                                     QQuickItem    * item,
+                                                    const QString & format, int quality,
                                                     const QColor  & background)
 #endif
 {
-    return WView::saveItemShot(fileName, item, background);
+    return WView::saveItemShot(fileName, item, format, quality, background);
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -92,10 +92,12 @@ public: // Static functions
 #ifdef QT_4
     Q_INVOKABLE static bool saveItemShot(const QString   & fileName,
                                          QGraphicsObject * item,
+                                         const QString   & format = "png", int quality = -1,
                                          const QColor    & background = Qt::transparent);
 #else
     Q_INVOKABLE static bool saveItemShot(const QString & fileName,
                                          QQuickItem    * item,
+                                         const QString & format = "png", int quality = -1,
                                          const QColor  & background = Qt::transparent);
 #endif
 

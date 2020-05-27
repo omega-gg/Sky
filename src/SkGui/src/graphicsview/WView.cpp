@@ -1935,16 +1935,18 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 }
 
 #ifdef QT_4
-/* Q_INVOKABLE */ bool WView::saveShot(const QString & fileName, int x,     int y,
-                                                                 int width, int height) const
+/* Q_INVOKABLE */ bool WView::saveShot(const QString & fileName,
+                                       int x, int y, int width, int height,
+                                       const QString & format, int quality) const
 #else
-/* Q_INVOKABLE */ bool WView::saveShot(const QString & fileName, int x,     int y,
-                                                                 int width, int height)
+/* Q_INVOKABLE */ bool WView::saveShot(const QString & fileName,
+                                       int x, int y, int width, int height,
+                                       const QString & format, int quality)
 #endif
 {
     QImage image = takeShot(x, y, width, height).toImage();
 
-    return image.save(fileName, "png");
+    return image.save(fileName, format.C_STR, quality);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2190,14 +2192,16 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 #ifdef QT_4
 /* Q_INVOKABLE static */ bool WView::saveItemShot(const QString   & fileName,
                                                   QGraphicsObject * item,
+                                                  const QString   & format, int quality,
                                                   const QColor    & background)
 #else
 /* Q_INVOKABLE static */ bool WView::saveItemShot(const QString & fileName,
                                                   QQuickItem    * item,
+                                                  const QString & format, int quality,
                                                   const QColor  & background)
 #endif
 {
-    return WControllerView::saveItemShot(fileName, item, background);
+    return WControllerView::saveItemShot(fileName, item, format, quality, background);
 }
 
 //-------------------------------------------------------------------------------------------------
