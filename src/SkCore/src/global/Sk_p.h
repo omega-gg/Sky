@@ -14,8 +14,8 @@
 */
 //=================================================================================================
 
-#ifndef WGLOBAL_P_H_
-#define WGLOBAL_P_H_
+#ifndef SK_P_H_
+#define SK_P_H_
 
 #include <Sk>
 
@@ -53,4 +53,4 @@ public:
     WPrivatable * sk_q;
 };
 
-#endif /* WGLOBAL_P_H_ */
+#endif /* SK_P_H_ */

@@ -99,7 +99,7 @@ void scanFolder(const QString & path, const QString & destination = QString())
 
 //-------------------------------------------------------------------------------------------------
 
-void writeGlobalInclude(const QString & name)
+/*void writeGlobalInclude(const QString & name)
 {
     qDebug("Generating %s", qPrintable(name + ".h"));
 
@@ -133,7 +133,7 @@ void writeGlobalInclude(const QString & name)
     file.open(QIODevice::WriteOnly | QIODevice::Truncate);
 
     stream << content;
-}
+}*/
 
 //-------------------------------------------------------------------------------------------------
 
@@ -165,9 +165,9 @@ int main(int argc, char *argv[])
 
     scanFolder(path);
 
-    QString name = QDir::current().dirName();
+    //QString name = QDir::current().dirName();
 
-    writeGlobalInclude(name);
+    //writeGlobalInclude(name);
 
     qDebug("DONE");
 

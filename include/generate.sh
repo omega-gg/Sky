@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 includeGenerator="../deploy/includeGenerator"
 

@@ -14,8 +14,8 @@
 */
 //=================================================================================================
 
-#ifndef WGLOBAL_H_
-#define WGLOBAL_H_
+#ifndef SK_H_
+#define SK_H_
 
 #include <QtGlobal>
 
@@ -116,4 +116,4 @@ protected:
     WPrivate * sk_d;
 };
 
-#endif // WGLOBAL_H_
+#endif // SK_H_
