@@ -28,10 +28,6 @@
 #ifndef SK_NO_CONTROLLERFILE
 
 // Forward declarations
-namespace QtLP_Private
-{
-    class QtLockedFile;
-};
 class WFileWatcher;
 class WLocalObject;
 class WThreadActions;
@@ -66,8 +62,6 @@ public: // Static functions
     static void messageHandler(QtMsgType type, const QMessageLogContext & context,
                                                const QString            & message);
 #endif
-
-    static bool tryOpen(const QtLP_Private::QtLockedFile & file);
 
     static void deleteDir(QDir & dir, bool recursive);
 

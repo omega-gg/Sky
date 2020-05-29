@@ -29,6 +29,10 @@
 #ifndef SK_NO_CONTROLLERFILE
 
 // Forward declarations
+namespace QtLP_Private
+{
+    class QtLockedFile;
+};
 class WControllerFilePrivate;
 class WControllerFileReply;
 class WCache;
@@ -202,6 +206,9 @@ public: // Static functions
 
     //---------------------------------------------------------------------------------------------
     // Files
+
+    static bool tryUnlock(const QtLP_Private::QtLockedFile & file,
+                          int                                timeout = 10000); // 10 seconds
 
     static bool writeFile(const QString & fileName, const QByteArray & data);
 

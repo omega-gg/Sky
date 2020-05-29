@@ -48,8 +48,6 @@ W_INIT_CONTROLLER(WControllerFile)
 static const int CONTROLLERFILE_LOG_INTERVAL =  1000; // 1 seconds
 static const int CONTROLLERFILE_LOG_MAX      = 10000;
 
-static const int CONTROLLERFILE_TIMEOUT = 10000; // 10 seconds
-
 //=================================================================================================
 // WControllerFileAction
 //=================================================================================================
@@ -445,23 +443,6 @@ bool WControllerFilePrivate::isLoading() const
 
 //-------------------------------------------------------------------------------------------------
 
-/* static */ bool WControllerFilePrivate::tryOpen(const QtLockedFile & file)
-{
-    QTimer timer;
-
-    timer.start(CONTROLLERFILE_TIMEOUT);
-
-    while (file.isLocked() && timer.isActive());
-
-    if (file.isLocked())
-    {
-         return false;
-    }
-    else return true;
-}
-
-//-------------------------------------------------------------------------------------------------
-
 /* static */ void WControllerFilePrivate::deleteDir(QDir & dir, bool recursive)
 {
     QFileInfoList list;
@@ -616,8 +597,6 @@ WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this
 #else
     qInstallMessageHandler(WControllerFilePrivate::messageHandler);
 #endif
-
-    qDebug("BEGIN LOG");
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -696,8 +675,6 @@ WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this
     // NOTE: We rely on 'isSingleShot' to detect if the handler is initialized.
     if (d->timerLog.isSingleShot())
     {
-        qDebug("END LOG");
-
 #ifdef QT_4
         qInstallMsgHandler(NULL);
 #else
@@ -1113,11 +1090,26 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 //-------------------------------------------------------------------------------------------------
 // Files
 
+/* static */ bool WControllerFile::tryUnlock(const QtLockedFile & file, int timeout)
+{
+    QTimer timer;
+
+    timer.start(timeout);
+
+    while (file.isLocked() && timer.isActive());
+
+    if (file.isLocked())
+    {
+         return false;
+    }
+    else return true;
+}
+
 /* static */ bool WControllerFile::writeFile(const QString & fileName, const QByteArray & data)
 {
     QtLockedFile file(fileName);
 
-    if (WControllerFilePrivate::tryOpen(file) == false)
+    if (WControllerFile::tryUnlock(file) == false)
     {
         qWarning("WControllerFile::writeFile: File is locked %s.", fileName.C_STR);
 
@@ -1140,7 +1132,7 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 {
     QtLockedFile file(fileName);
 
-    if (WControllerFilePrivate::tryOpen(file) == false)
+    if (WControllerFile::tryUnlock(file) == false)
     {
         qWarning("WControllerFile::appendFile: File is locked %s.", fileName.C_STR);
 
@@ -1163,7 +1155,7 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 {
     QtLockedFile file(oldPath);
 
-    if (WControllerFilePrivate::tryOpen(file) == false)
+    if (WControllerFile::tryUnlock(file) == false)
     {
         qWarning("WControllerFile::renameFile: File is locked %s.", oldPath.C_STR);
 
@@ -1179,7 +1171,7 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 
     if (file.exists())
     {
-        if (WControllerFilePrivate::tryOpen(file) == false)
+        if (WControllerFile::tryUnlock(file) == false)
         {
             qWarning("WControllerFile::copyFile: File is locked %s.", newName.C_STR);
 
@@ -1194,7 +1186,7 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 {
     QtLockedFile file(fileName);
 
-    if (WControllerFilePrivate::tryOpen(file) == false)
+    if (WControllerFile::tryUnlock(file) == false)
     {
         qWarning("WControllerFile::deleteFile: File is locked %s.", fileName.C_STR);
 

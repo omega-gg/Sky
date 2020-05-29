@@ -185,13 +185,7 @@ public: // Variables
 {
     QtLockedFile file(path);
 
-    QTimer timer;
-
-    timer.start(60000); // 1 minute timeout
-
-    while (file.isLocked() && timer.isActive());
-
-    if (file.isLocked())
+    if (WControllerFile::tryUnlock(file) == false)
     {
         qWarning("WLibraryFolderWrite::run: File is locked %s.", path.C_STR);
 
@@ -356,13 +350,7 @@ public: // Variables
 {
     QtLockedFile file(path);
 
-    QTimer timer;
-
-    timer.start(60000); // 1 minute timeout
-
-    while (file.isLocked() && timer.isActive());
-
-    if (file.isLocked())
+    if (WControllerFile::tryUnlock(file) == false)
     {
         qWarning("WLibraryFolderRead::run: File is locked %s.", path.C_STR);
 

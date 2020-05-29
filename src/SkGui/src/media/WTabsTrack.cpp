@@ -24,6 +24,7 @@
 
 // Sk includes
 #include <WControllerApplication>
+#include <WControllerFile>
 #include <WControllerXml>
 #include <WControllerPlaylist>
 #include <WTabTrack>
@@ -105,13 +106,7 @@ public: // Variables
 {
     QtLockedFile file(path);
 
-    QTimer timer;
-
-    timer.start(60000); // 1 minute timeout
-
-    while (file.isLocked() && timer.isActive());
-
-    if (file.isLocked())
+    if (WControllerFile::tryUnlock(file) == false)
     {
         qWarning("WTabsTrackWrite::run: File is locked %s.", path.C_STR);
 
@@ -242,13 +237,7 @@ public: // Variables
 
     QtLockedFile file(path);
 
-    QTimer timer;
-
-    timer.start(60000); // 1 minute timeout
-
-    while (file.isLocked() && timer.isActive());
-
-    if (file.isLocked())
+    if (WControllerFile::tryUnlock(file) == false)
     {
         qWarning("WTabsTrackRead::run: File is locked %s.", path.C_STR);
 
