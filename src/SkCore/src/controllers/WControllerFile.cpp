@@ -1271,6 +1271,11 @@ QString WControllerFile::pathStorage() const
     Q_D(const WControllerFile); return d->pathStorage;
 }
 
+QString WControllerFile::pathLog() const
+{
+    Q_D(const WControllerFile); return d->pathLog;
+}
+
 void WControllerFile::setPathStorage(const QString & path)
 {
     Q_D(WControllerFile);

@@ -87,6 +87,8 @@ class SK_CORE_EXPORT WControllerFile : public WController
 
     Q_PROPERTY(QString pathStorage READ pathStorage WRITE setPathStorage NOTIFY pathStorageChanged)
 
+    Q_PROPERTY(QString pathLog READ pathLog NOTIFY pathStorageChanged)
+
     Q_PROPERTY(WCache * cache READ cache WRITE setCache NOTIFY cacheChanged)
 
 private:
@@ -234,7 +236,9 @@ public: // Properties
     QString log() const;
 
     QString pathStorage() const;
-    void    setPathStorage(const QString & path);
+    QString pathLog    () const;
+
+    void setPathStorage(const QString & path);
 
     WCache * cache() const;
     void     setCache(WCache * cache);
