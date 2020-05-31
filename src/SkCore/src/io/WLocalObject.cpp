@@ -177,7 +177,13 @@ bool WLocalObjectPrivate::startSave(bool instant)
     createPath  ();
     createFolder();
 
-    if (instant == false)
+    if (instant)
+    {
+        actionSave->start();
+    }
+    else wControllerFile->startWriteAction(actionSave);
+
+    /*if (instant == false)
     {
         if (wControllerFile->startWriteAction(actionSave) == NULL)
         {
@@ -190,7 +196,7 @@ bool WLocalObjectPrivate::startSave(bool instant)
             return false;
         }
     }
-    else actionSave->start();
+    else actionSave->start();*/
 
     return true;
 }
@@ -568,7 +574,9 @@ WLocalObject::WLocalObject(WLocalObjectPrivate * p, QObject * parent)
 
         d->instant = false;
     }
-    else if (wControllerFile->startReadAction(d->actionLoad) == NULL)
+    else wControllerFile->startReadAction(d->actionLoad);
+
+    /*else if (wControllerFile->startReadAction(d->actionLoad) == NULL)
     {
         qWarning("WLocalObject::load: Failed to start load.");
 
@@ -579,7 +587,7 @@ WLocalObject::WLocalObject(WLocalObjectPrivate * p, QObject * parent)
         d->setState(Default);
 
         return false;
-    }
+    }*/
 
     return true;
 }
