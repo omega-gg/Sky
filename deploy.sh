@@ -420,7 +420,7 @@ elif [ $2 = "macOS" ]; then
     cp "$VLC"/lib/libvlc.5.dylib     deploy/libvlc.dylib
     cp "$VLC"/lib/libvlccore.9.dylib deploy/libvlccore.dylib
 
-# FIXME Linux: We can't seem to be able to enforce our VLC on ArchLinux.
+# FIXME Linux: We can't seem to be able to enforce our VLC libraries on ArchLinux.
 #elif [ $2 = "linux" ]; then
 
     #mkdir -p deploy/vlc/plugins
