@@ -18,10 +18,10 @@ HEADERS += src/media/WBackendNet.h \
            src/media/WAbstractHook_p.h \
            src/media/WBookmarkTrack.h \
            src/media/WBookmarkTrack_p.h \
-           src/media/WTabTrack.h \
-           src/media/WTabTrack_p.h \
            src/media/WTabsTrack.h \
            src/media/WTabsTrack_p.h \
+           src/media/WTabTrack.h \
+           src/media/WTabTrack_p.h \
 
 SOURCES += src/media/WBackendNet.cpp \
            src/media/WTrack.cpp \
