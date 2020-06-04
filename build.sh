@@ -179,7 +179,7 @@ fi
 #--------------------------------------------------------------------------------------------------
 
 # NOTE Android: We need to build the tools for the Linux platform.
-if [ $2 = "android" -a "$3" = "tools" ]; then
+if [ $2 = "android" ]; then
 
     sh build.sh $1 linux tools
 
