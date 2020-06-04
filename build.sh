@@ -183,7 +183,10 @@ if [ $2 = "android" -a "$3" = "tools" ]; then
 
     sh build.sh $1 linux tools
 
-    exit 0
+    if [ "$3" = "tools" ]; then
+
+        exit 0
+    fi
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -296,14 +299,6 @@ elif [ $compiler = "msvc" ]; then
     jom
 else
     make $make_arguments
-fi
-
-# NOTE Android: We need to build the tools for the Linux platform.
-if [ $2 = "android" ]; then
-
-    sh build.sh $1 linux tools
-
-    exit 0
 fi
 
 cd ..
