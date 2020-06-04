@@ -8,9 +8,10 @@ isEmpty(TOOLS) {
               src/SkMedia \
               src/SkTorrent \
               src/SkBackend \
-              tools
+
+    !android:SUBDIRS += tools
 } else {
-    SUBDIRS = tools
+    !android:SUBDIRS = tools
 }
 
 #contains(QT_MAJOR_VERSION, 4): SUBDIRS += src/SkWeb

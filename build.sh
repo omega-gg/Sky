@@ -261,10 +261,8 @@ cd build
 
 if [ "$3" = "tools" ]; then
 
-    if [ $2 = "android" ]; then
+    if [ $2 != "android" ]; then
 
-        $qmake -r -spec $spec CONFIG+=release TOOLS=true "ANDROID_ABIS=$abi" ..
-    else
         $qmake -r -spec $spec CONFIG+=release TOOLS=true ..
     fi
 
@@ -285,6 +283,21 @@ elif [ $compiler = "msvc" ]; then
 
     jom
 else
+    make $make_arguments
+fi
+
+# NOTE Android: We need to build the tools for the Linux platform.
+if [ $2 = "android" ]; then
+
+    if [ -d "/usr/lib/x86_64-linux-gnu" ]; then
+
+        spec=linux-g++-64
+    else
+        spec=linux-g++-32
+    fi
+
+    $qmake -r -spec $spec CONFIG+=release TOOLS=true ..
+
     make $make_arguments
 fi
 
