@@ -101,6 +101,7 @@ jobs:
       docker exec -t ubuntu bash -c "cd /Sky;
                                      apt-get update;
                                      apt-get -y install sudo curl zip unzip git;
+                                     sh 3rdparty.sh linux;
                                      sh 3rdparty.sh android;
                                      sh configure.sh qt5 android;
                                      sh build.sh qt5 android deploy;
