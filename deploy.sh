@@ -535,9 +535,7 @@ if [ $os = "windows" ]; then
 
     cp bin/includeGenerator.exe deploy
     cp bin/deployer.exe         deploy
-
-elif [ $2 != "android" ]; then
-
+else
     cp bin/includeGenerator deploy
     cp bin/deployer         deploy
 fi
