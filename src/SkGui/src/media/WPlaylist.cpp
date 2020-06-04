@@ -27,7 +27,6 @@
 #include <WControllerFile>
 #include <WControllerXml>
 #include <WControllerPlaylist>
-#include <WModelPlaylist>
 
 // Private includes
 #include <private/WTrack_p>
