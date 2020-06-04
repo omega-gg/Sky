@@ -175,6 +175,18 @@ else
 fi
 
 #--------------------------------------------------------------------------------------------------
+# Android
+#--------------------------------------------------------------------------------------------------
+
+# NOTE Android: We need to build the tools for the Linux platform.
+if [ $2 = "android" -a "$3" = "tools" ]; then
+
+    sh build.sh $1 linux tools
+
+    exit 0
+fi
+
+#--------------------------------------------------------------------------------------------------
 # Clean
 #--------------------------------------------------------------------------------------------------
 
@@ -289,16 +301,9 @@ fi
 # NOTE Android: We need to build the tools for the Linux platform.
 if [ $2 = "android" ]; then
 
-    if [ -d "/usr/lib/x86_64-linux-gnu" ]; then
+    sh build.sh $1 linux tools
 
-        spec=linux-g++-64
-    else
-        spec=linux-g++-32
-    fi
-
-    $qmake -r -spec $spec CONFIG+=release TOOLS=true ..
-
-    make $make_arguments
+    exit 0
 fi
 
 cd ..
