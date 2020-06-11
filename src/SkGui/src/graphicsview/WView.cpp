@@ -977,6 +977,9 @@ void WViewPrivate::setTouch(int id)
 
         touching = false;
 
+        // NOTE: After a touch release we simulate a mouse leave.
+        setEntered(false);
+
         emit q->touchingChanged();
     }
     else if (touching == false)
