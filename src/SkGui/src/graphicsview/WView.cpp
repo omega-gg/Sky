@@ -677,9 +677,6 @@ void WViewPrivate::updateViewport()
 
 void WViewPrivate::updateHoverable()
 {
-    qDebug("HOVERABLE %d %d %d %d %d %d %d", hover, entered, pressed, dragging, dragged, resizing,
-           sk->cursorVisible());
-
     if (hover && entered && pressed == false && dragging == false && dragged == false
         &&
         resizing == false && sk->cursorVisible())
