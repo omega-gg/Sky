@@ -26,6 +26,11 @@
 #include <QDir>
 #include <qtlockedfile>
 
+#ifdef Q_OS_ANDROID
+// Android includes
+#include <android/log.h>
+#endif
+
 // Sk includes
 #include <WControllerApplication>
 #include <WControllerNetwork>
@@ -425,7 +430,7 @@ bool WControllerFilePrivate::isLoading() const
 //-------------------------------------------------------------------------------------------------
 
 #ifdef QT_4
-/* static */ void WControllerFilePrivate::messageHandler(QtMsgType, const char *) {}
+/* static */ void WControllerFilePrivate::messageHandler(QtMsgType type, const char *) {}
 #else
 /* static */ void WControllerFilePrivate::messageHandler(QtMsgType,
                                                          const QMessageLogContext &,
@@ -433,10 +438,18 @@ bool WControllerFilePrivate::isLoading() const
 {
     wControllerFile->d_func()->method.invoke(wControllerFile, Q_ARG(const QString &, message));
 
+#ifdef Q_OS_ANDROID
+#ifdef QT_4
+    __android_log_write(ANDROID_LOG_DEBUG, "Sky", message);
+#else
+    __android_log_write(ANDROID_LOG_DEBUG, "Sky", message.C_STR);
+#endif
+#else
 #ifdef QT_4
     std::cout << message << std::endl;
 #else
-    std::cout << message.toLatin1().constData() << std::endl;
+    std::cout << message.C_STR << std::endl;
+#endif
 #endif
 }
 #endif
