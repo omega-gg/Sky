@@ -26,11 +26,8 @@
 #include <QMetaEnum>
 #include <QDir>
 
-#ifdef QT_4
-#include <QDesktopServices>
-#else
-#include <QStandardPaths>
-#endif
+// Sk includes
+#include <WControllerFile>
 
 //-------------------------------------------------------------------------------------------------
 // Static variables
@@ -319,11 +316,7 @@ QString WCookieJarPrivate::getPath()
 {
     if (path.isEmpty())
     {
-#ifdef QT_4
-        return QDesktopServices::storageLocation(QDesktopServices::DataLocation);
-#else
-        return QStandardPaths::writableLocation(QStandardPaths::DataLocation);
-#endif
+         return WControllerFile::pathWritable();
     }
     else return path;
 }

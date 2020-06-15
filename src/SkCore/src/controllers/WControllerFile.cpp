@@ -25,6 +25,11 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <qtlockedfile>
+#ifdef QT_4
+#include <QDesktopServices>
+#else
+#include <QStandardPaths>
+#endif
 
 #ifdef Q_OS_ANDROID
 // Android includes
@@ -1062,6 +1067,17 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
          return url.mid(3);
     }
     else return url;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QString WControllerFile::pathWritable()
+{
+#ifdef QT_4
+    return QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+#else
+    return QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
