@@ -1,1 +1,4 @@
 StyleTouch 1.0 StyleTouch.qml
+
+BaseButtonTouch 1.0 BaseButtonTouch.qml
+ButtonTouch     1.0 ButtonTouch.qml

@@ -17,4 +17,22 @@
 import QtQuick 1.0
 import Sky     1.0
 
-Style {}
+Style
+{
+//#BaseButtonTouch
+    //---------------------------------------------------------------------------------------------
+    // ButtonTouch
+
+    property int buttonTouch_height: dp48
+
+    property int buttonTouch_radius: dp8
+
+    property int buttonTouch_padding: dp48
+
+    property real buttonTouch_opacityA: 0.8
+    property real buttonTouch_opacityB: 1.0
+    property real buttonTouch_opacityC: 0.6
+
+    property color buttonTouch_color: "#161616"
+//#END
+}
