@@ -57,6 +57,8 @@ LabelRoundInfo
         anchors.top   : parent.top
         anchors.bottom: parent.bottom
 
+        enabled: parent.enabled
+
         onCheckClicked: buttonCheckLabel.checkClicked()
     }
 }

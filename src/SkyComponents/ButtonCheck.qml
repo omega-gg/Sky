@@ -71,7 +71,7 @@ MouseArea
     width : st.buttonCheck_width
     height: st.buttonCheck_height
 
-    hoverEnabled: true
+    hoverEnabled: enabled
 
     drag.target: handle
     drag.axis  : Drag.XAxis
@@ -194,7 +194,7 @@ MouseArea
 
         acceptedButtons: Qt.NoButton
 
-        hoverEnabled: true
+        hoverEnabled: parent.enabled
 
         onXChanged: model.position = x
 
