@@ -28,6 +28,9 @@ MouseArea
     property bool isHovered: containsMouse
     property bool isCurrent: false
 
+    property int textSpacing: st.dp8
+    property int textMargin : st.dp8
+
     //---------------------------------------------------------------------------------------------
     // Style
 
@@ -76,9 +79,6 @@ MouseArea
     property alias textColor     : itemText.color
     property alias textStyle     : itemText.style
     property alias textStyleColor: itemText.styleColor
-
-    property alias textSpacing: itemText.leftMargin
-    property alias textMargin : itemText.rightMargin
 
     //---------------------------------------------------------------------------------------------
 
@@ -180,8 +180,8 @@ MouseArea
             anchors.top   : parent.top
             anchors.bottom: parent.bottom
 
-            leftMargin : st.dp8
-            rightMargin: st.dp8
+            anchors.leftMargin : textSpacing
+            anchors.rightMargin: textMargin
 
             verticalAlignment: Text.AlignVCenter
 

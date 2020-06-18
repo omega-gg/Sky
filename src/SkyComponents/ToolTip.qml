@@ -180,10 +180,10 @@ BaseToolTip
 
         anchors.fill: parent
 
-        leftMargin: (iconWidth) ? pIconWidth + spacing
-                                : paddingLeft
+        anchors.leftMargin: (iconWidth) ? pIconWidth + spacing
+                                        : paddingLeft
 
-        rightMargin: paddingRight
+        anchors.rightMargin: paddingRight
 
         verticalAlignment: Text.AlignVCenter
 

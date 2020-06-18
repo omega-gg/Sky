@@ -22,8 +22,14 @@ MouseArea
     id: contextualItem
 
     //---------------------------------------------------------------------------------------------
-    // Properties private
+    // Properties
     //---------------------------------------------------------------------------------------------
+
+    property int textMargin: (itemIcon.width) ? pIconWidth
+                                              : st.contextualItem_padding
+
+    //---------------------------------------------------------------------------------------------
+    // Private
 
     property bool pCurrent: (isCurrent || pressed)
 
@@ -31,10 +37,6 @@ MouseArea
 
     //---------------------------------------------------------------------------------------------
     // Aliases
-    //---------------------------------------------------------------------------------------------
-
-    property alias textMargin: itemText.leftMargin
-
     //---------------------------------------------------------------------------------------------
 
     property alias background: background
@@ -170,10 +172,9 @@ MouseArea
         anchors.top   : parent.top
         anchors.bottom: border.top
 
-        leftMargin: (itemIcon.width) ? pIconWidth
-                                     : st.contextualItem_padding
+        anchors.leftMargin: textMargin
 
-        rightMargin: st.contextualItem_padding
+        anchors.rightMargin: st.contextualItem_padding
 
         verticalAlignment: Text.AlignVCenter
 

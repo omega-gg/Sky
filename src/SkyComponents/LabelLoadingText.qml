@@ -140,7 +140,7 @@ Item
 
         anchors.left: itemIcon.right
 
-        leftMargin: spacing
+        anchors.leftMargin: spacing
 
         anchors.verticalCenter: parent.verticalCenter
 

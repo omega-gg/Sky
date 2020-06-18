@@ -95,7 +95,7 @@ MouseArea
         anchors.top   : parent.top
         anchors.bottom: parent.bottom
 
-        leftMargin: st.dp4
+        anchors.leftMargin: st.dp4
 
         verticalAlignment: Text.AlignVCenter
 

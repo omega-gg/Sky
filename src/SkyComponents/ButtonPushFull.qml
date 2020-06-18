@@ -156,9 +156,9 @@ BaseButtonPush
         anchors.top   : parent.top
         anchors.bottom: parent.bottom
 
-        leftMargin: (iconWidth) ? spacing : 0
+        anchors.leftMargin: (iconWidth) ? spacing : 0
 
-        rightMargin: paddingRight
+        anchors.rightMargin: paddingRight
 
         verticalAlignment: Text.AlignVCenter
 

@@ -119,8 +119,8 @@ MouseArea
 
             anchors.fill: parent
 
-            leftMargin : st.dp8
-            rightMargin: st.dp8
+            anchors.leftMargin : st.dp8
+            anchors.rightMargin: st.dp8
 
             verticalAlignment: Text.AlignVCenter
 

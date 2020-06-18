@@ -20,22 +20,8 @@ import Sky     1.0
 Text
 {
     //---------------------------------------------------------------------------------------------
-    // Properties
-    //---------------------------------------------------------------------------------------------
-
-    property int leftMargin  : 0
-    property int rightMargin : 0
-    property int topMargin   : 0
-    property int bottomMargin: 0
-
-    //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
-
-    anchors.leftMargin  : leftMargin
-    anchors.rightMargin : rightMargin
-    anchors.topMargin   : topMargin
-    anchors.bottomMargin: bottomMargin
 
     color: st.text_color
 

@@ -19,8 +19,8 @@ import Sky     1.0
 
 TextBase
 {
-    leftMargin : st.barTitleText_leftMargin
-    rightMargin: st.barTitleText_rightMargin
+    anchors.leftMargin : st.barTitleText_leftMargin
+    anchors.rightMargin: st.barTitleText_rightMargin
 
     verticalAlignment: Text.AlignVCenter
 

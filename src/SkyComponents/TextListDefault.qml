@@ -18,8 +18,8 @@ import QtQuick 1.0
 
 TextBase
 {
-    leftMargin : st.dp8
-    rightMargin: st.dp8
+    anchors.leftMargin : st.dp8
+    anchors.rightMargin: st.dp8
 
     color: st.text3_color
 

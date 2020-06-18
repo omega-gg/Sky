@@ -160,10 +160,10 @@ BaseButtonPiano
 
         anchors.fill: parent
 
-        leftMargin: (iconWidth) ? pIconWidth + spacing
+        anchors.leftMargin: (iconWidth) ? pIconWidth + spacing
                                 : paddingLeft
 
-        rightMargin: paddingRight
+        anchors.rightMargin: paddingRight
 
         verticalAlignment: Text.AlignVCenter
 

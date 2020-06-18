@@ -249,10 +249,10 @@ Item
         {
             anchors.fill: background
 
-            leftMargin: (itemIcon.width) ? pIconWidth
-                                         : st.contextualItem_padding
+            anchors.leftMargin: (itemIcon.width) ? pIconWidth
+                                                 : st.contextualItem_padding
 
-            rightMargin: st.contextualItem_padding
+            anchors.rightMargin: st.contextualItem_padding
 
             verticalAlignment: Text.AlignVCenter
 

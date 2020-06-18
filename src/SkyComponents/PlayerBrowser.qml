@@ -493,8 +493,8 @@ MouseArea
 
             anchors.fill: parent
 
-            leftMargin : st.dp8
-            rightMargin: st.dp8
+            anchors.leftMargin : st.dp8
+            anchors.rightMargin: st.dp8
 
             verticalAlignment: Text.AlignVCenter
 
@@ -563,7 +563,7 @@ MouseArea
             anchors.top   : parent.top
             anchors.bottom: parent.bottom
 
-            leftMargin: st.dp8
+            anchors.leftMargin: st.dp8
 
             verticalAlignment: Text.AlignVCenter
 
@@ -582,8 +582,8 @@ MouseArea
             anchors.top   : parent.top
             anchors.bottom: parent.bottom
 
-            leftMargin: st.dp4
-            topMargin : st.dp1
+            anchors.leftMargin: st.dp4
+            anchors.topMargin : st.dp1
 
             horizontalAlignment: Text.AlignRight
             verticalAlignment  : Text.AlignVCenter
@@ -607,8 +607,8 @@ MouseArea
             anchors.top   : parent.top
             anchors.bottom: parent.bottom
 
-            leftMargin : st.dp4
-            rightMargin: st.dp8
+            anchors.leftMargin : st.dp4
+            anchors.rightMargin: st.dp8
 
             horizontalAlignment: Text.AlignRight
             verticalAlignment  : Text.AlignVCenter

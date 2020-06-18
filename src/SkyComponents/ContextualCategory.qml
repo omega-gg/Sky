@@ -66,8 +66,8 @@ Item
 
             anchors.fill: parent
 
-            leftMargin : st.contextualCategory_padding
-            rightMargin: st.contextualCategory_padding
+            anchors.leftMargin : st.contextualCategory_padding
+            anchors.rightMargin: st.contextualCategory_padding
 
             verticalAlignment: Text.AlignVCenter
 

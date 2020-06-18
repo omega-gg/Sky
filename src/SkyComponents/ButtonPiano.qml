@@ -85,8 +85,8 @@ BaseButtonPiano
 
         anchors.fill: parent
 
-        leftMargin : paddingLeft
-        rightMargin: paddingRight
+        anchors.leftMargin : paddingLeft
+        anchors.rightMargin: paddingRight
 
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment  : Text.AlignVCenter

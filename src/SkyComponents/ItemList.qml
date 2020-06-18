@@ -35,6 +35,9 @@ MouseArea
     property bool isCurrent   : false
     property bool isContextual: false
 
+    property int textSpacing: st.dp8
+    property int textMargin : st.dp8
+
     //-----------------------------------------------------------------------------------------
     // Aliases
     //-----------------------------------------------------------------------------------------
@@ -64,9 +67,6 @@ MouseArea
 
     property alias text: itemText.text
     property alias font: itemText.font
-
-    property alias textSpacing: itemText.leftMargin
-    property alias textMargin : itemText.rightMargin
 
     //-----------------------------------------------------------------------------------------
 
@@ -237,8 +237,8 @@ MouseArea
             anchors.top   : parent.top
             anchors.bottom: parent.bottom
 
-            leftMargin : st.dp8
-            rightMargin: st.dp8
+            anchors.leftMargin : textSpacing
+            anchors.rightMargin: textMargin
 
             verticalAlignment: Text.AlignVCenter
 
