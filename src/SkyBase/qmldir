@@ -4,4 +4,6 @@ Window 1.0 Window.qml
 
 RectangleBorders 1.0 RectangleBorders.qml
 
+TextBase 1.0 TextBase.qml
+
 BaseButton 1.0 BaseButton.qml

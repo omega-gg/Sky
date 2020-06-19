@@ -37,14 +37,10 @@ BaseButtonTouch
     // Childs
     //---------------------------------------------------------------------------------------------
 
-    Text
+    TextBase
     {
         id: itemText
 
         anchors.centerIn: parent
-
-        color: "#dcdcdc"
-
-        font.pixelSize: st.dp20
     }
 }

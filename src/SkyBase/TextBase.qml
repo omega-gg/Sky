@@ -33,10 +33,10 @@ Text
     elide: Text.ElideRight
 
 //#QT_5
-    renderType: Text.NativeRendering
+    renderType: st.text_renderType
 //#END
 
     font.family   : st.text_fontFamily
     font.pixelSize: st.text_pixelSize
-    font.bold     : true
+    font.bold     : st.text_bold
 }

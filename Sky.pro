@@ -29,6 +29,7 @@ OTHER_FILES += 3rdparty.sh \
                include/generate.sh \
                src/SkyBase/qmldir \
                src/SkyComponents/qmldir \
+               src/SkyTouch/qmldir \
                src/SkyPresentation/qmldir \
                dist/changes/1.0.1.md \
                dist/changes/1.1.0.md \

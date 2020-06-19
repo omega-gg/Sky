@@ -85,12 +85,18 @@ Item
 
     property int text_pixelSize: dp12
 
+    property bool text_bold: false
+
     property real text_opacityDisable: 0.6
 
     property string text_fontFamily: (sk.osMac) ? "" : "Arial"
 
     property int text_raised: Text.Normal
     property int text_sunken: text_raised
+
+//#QT_5
+    property int text_renderType: Text.QtRendering
+//#END
 
     property color text_color         : text1_color
     property color text_colorCurrent  : "#008cdc"

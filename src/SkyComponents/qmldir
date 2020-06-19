@@ -36,7 +36,6 @@ Icon        1.0 Icon.qml
 IconOverlay 1.0 IconOverlay.qml
 IconLoading 1.0 IconLoading.qml
 
-TextBase        1.0 TextBase.qml
 TextRich        1.0 TextRich.qml
 TextClick       1.0 TextClick.qml
 TextLink        1.0 TextLink.qml
