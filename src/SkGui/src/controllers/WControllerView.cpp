@@ -25,6 +25,7 @@
 #include <QGraphicsObject>
 #include <QStyleOptionGraphicsItem>
 #else
+#include <QScreen>
 #ifdef SK_SOFTWARE
 #include <QQuickWindow>
 #endif
@@ -271,6 +272,21 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 {
     return qApp->desktop()->screenGeometry(widget);
 }
+#endif
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_LATEST
+
+/* Q_INVOKABLE static */ qreal WControllerView::screenRatio(QScreen * screen)
+{
+#if defined(Q_OS_MAC) || defined(Q_OS_ANDROID)
+    return screen->logicalDotsPerInch() / 72;
+#else
+    return screen->logicalDotsPerInch() / 96;
+#endif
+}
+
 #endif
 
 //-------------------------------------------------------------------------------------------------

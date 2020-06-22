@@ -63,8 +63,8 @@ BaseButtonPiano
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width : st.buttonPianoIcon_width  + borderSizeWidth
-    height: st.buttonPianoIcon_height + borderSizeHeight
+    width : st.buttonPianoIcon_size + borderSizeWidth
+    height: st.buttonPianoIcon_size + borderSizeHeight
 
     //---------------------------------------------------------------------------------------------
     // Childs

@@ -20,27 +20,59 @@ import Sky     1.0
 BaseButtonTouch
 {
     //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+
+    property bool enableFilter: true
+
+    property int margins: 0
+
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    property int pSize: width - margins * 2
+
+    //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    property alias text: itemText.text
+    property alias icon       : itemIcon.source
+    property alias iconDefault: itemIcon.sourceDefault
+
+    //---------------------------------------------------------------------------------------------
+
+    property alias itemIcon: itemIcon
 
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: sk.textWidth(itemText.font, text) + st.buttonTouch_padding
-
-    height: st.buttonTouch_size
+    width : st.buttonTouch_size
+    height: width
 
     //---------------------------------------------------------------------------------------------
     // Childs
     //---------------------------------------------------------------------------------------------
 
-    TextBase
+    ImageScale
     {
-        id: itemText
+        id: itemIcon
 
         anchors.centerIn: parent
+
+        sourceSize.height: pSize
+
+        filter:
+        {
+            if (enableFilter)
+            {
+                if (isHighlighted)
+                {
+                     return st.button_filterIconB;
+                }
+                else return st.button_filterIconA;
+            }
+            else return null;
+        }
     }
 }

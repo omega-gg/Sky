@@ -17,30 +17,86 @@
 import QtQuick 1.0
 import Sky     1.0
 
-BaseButtonTouch
+Row
 {
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    property alias text: itemText.text
+    property alias buttonMinimize: buttonMinimize
+    property alias buttonMaximize: buttonMaximize
+    property alias buttonClose   : buttonClose
 
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: sk.textWidth(itemText.font, text) + st.buttonTouch_padding
+    spacing: st.dp4
 
-    height: st.buttonTouch_size
+    //---------------------------------------------------------------------------------------------
+    // Functions
+    //---------------------------------------------------------------------------------------------
+    // Events
+
+    function onMaximize()
+    {
+        if (window.fullScreen)
+        {
+//#MAC
+            // FIXME macOS: We can't go from full screen to normal window right away.
+            //              This could be related to the animation.
+            window.fullScreen = false;
+//#ELSE
+            window.fullScreen = false;
+            window.maximized  = false;
+//#END
+        }
+        else window.maximized = !(window.maximized);
+    }
 
     //---------------------------------------------------------------------------------------------
     // Childs
     //---------------------------------------------------------------------------------------------
 
-    TextBase
+    ButtonTouchIcon
     {
-        id: itemText
+        id: buttonMinimize
 
-        anchors.centerIn: parent
+        width: st.dp32
+
+        margins: st.dp8
+
+        icon: st.icon_minimize
+
+        onClicked: window.minimized = true
+    }
+
+    ButtonTouchIcon
+    {
+        id: buttonMaximize
+
+        width: st.dp32
+
+        margins: st.dp8
+
+        highlighted: (window.maximized || window.fullScreen)
+
+        icon: (highlighted) ? st.icon_restore
+                            : st.icon_maximize
+
+        onClicked: onMaximize()
+    }
+
+    ButtonTouchIcon
+    {
+        id: buttonClose
+
+        width: st.dp32
+
+        margins: st.dp4
+
+        icon: st.icon_close
+
+        onClicked: window.close()
     }
 }

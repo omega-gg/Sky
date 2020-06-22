@@ -152,6 +152,8 @@ public: // Interface
     Q_INVOKABLE void activate();
     Q_INVOKABLE void raise   ();
 
+    Q_INVOKABLE void centerWindow();
+
     Q_INVOKABLE bool close();
 
     //---------------------------------------------------------------------------------------------

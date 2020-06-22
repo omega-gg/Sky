@@ -468,11 +468,7 @@ void WViewPrivate::init(QQuickItem * item)
 #else
     QScreen * screen = q->screen();
 
-#if defined(Q_OS_MAC) || defined(Q_OS_ANDROID)
-    ratio = screen->logicalDotsPerInch() / 72;
-#else
-    ratio = screen->logicalDotsPerInch() / 96;
-#endif
+    ratio = WControllerView::screenRatio(screen);
 #endif
 
     //---------------------------------------------------------------------------------------------
@@ -595,11 +591,7 @@ void WViewPrivate::updateRatio()
 {
     Q_Q(WView);
 
-#if defined(Q_OS_MAC) || defined(Q_OS_ANDROID)
-    qreal value = q->screen()->logicalDotsPerInch() / 72;
-#else
-    qreal value = q->screen()->logicalDotsPerInch() / 96;
-#endif
+    qreal value = WControllerView::screenRatio(q->screen());
 
     if (ratio != value)
     {
@@ -1506,6 +1498,21 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
     SetWindowPos(id, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
 #else
     WAbstractView::raise();
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WView::centerWindow()
+{
+    QRect geometry = availableGeometry();
+
+#ifdef QT_4
+    move(geometry.x() + (geometry.width () - width ()) / 2,
+         geometry.y() + (geometry.height() - height()) / 2);
+#else
+    setPosition(geometry.x() + (geometry.width () - width ()) / 2,
+                geometry.y() + (geometry.height() - height()) / 2);
 #endif
 }
 

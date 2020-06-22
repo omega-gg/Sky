@@ -319,8 +319,7 @@ Style
     //---------------------------------------------------------------------------------------------
     // ButtonPianoIcon
 
-    property int buttonPianoIcon_width : buttonPiano_height
-    property int buttonPianoIcon_height: buttonPiano_height
+    property int buttonPianoIcon_size: buttonPiano_height
 
 //#ButtonPianoReset
     //---------------------------------------------------------------------------------------------

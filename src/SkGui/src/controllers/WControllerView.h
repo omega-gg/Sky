@@ -29,6 +29,7 @@
 #ifdef QT_4
 class QGraphicsObject;
 #else
+class QScreen;
 class QQuickItem;
 #endif
 class WControllerViewPrivate;
@@ -79,6 +80,10 @@ public: // Static functions
     Q_INVOKABLE static const QRect screenGeometry(const QPoint  & pos);
 #ifdef QT_4
     Q_INVOKABLE static const QRect screenGeometry(const QWidget * widget);
+#endif
+
+#ifdef QT_LATEST
+    Q_INVOKABLE static qreal screenRatio(QScreen * screen);
 #endif
 
 #ifdef QT_4

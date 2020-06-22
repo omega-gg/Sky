@@ -25,8 +25,6 @@ BaseButton
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property bool isHighlighted: (highlighted || (checkable && (checked || isPressed)))
-
     property int margins: height / 8
 
 //#QT_4

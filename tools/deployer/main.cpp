@@ -315,9 +315,12 @@ void createResource(const QString & path, const QString & filePath, const QStrin
     }
 }
 
-void scanResources(const QString & path, const QString & content, const QString & fileName)
+void scanResources(const QString & name,
+                   const QString & path, const QString & content, const QString & fileName)
 {
-    int indexA = content.indexOf("\"pictures/");
+    QString match = '"' + name + '/';
+
+    int indexA = content.indexOf(match);
 
     while (indexA != -1)
     {
@@ -335,7 +338,7 @@ void scanResources(const QString & path, const QString & content, const QString 
         }
         else createResource(path, "", source);
 
-        indexA = content.indexOf("\"pictures/", indexB + 1);
+        indexA = content.indexOf(match, indexB + 1);
     }
 }
 
@@ -415,7 +418,8 @@ void scanFolder(const QString & path)
 
             if (fileName.isEmpty() == false)
             {
-                scanResources(path, content, fileName);
+                scanResources("pictures", path, content, fileName);
+                scanResources("icons",    path, content, fileName);
 
                 if (name == "Style")
                 {

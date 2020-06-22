@@ -225,6 +225,13 @@ void WWindowPrivate::init()
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ void WWindow::centerWindow()
+{
+    Q_D(WWindow); d->view->centerWindow();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ bool WWindow::close()
 {
     Q_D(WWindow);

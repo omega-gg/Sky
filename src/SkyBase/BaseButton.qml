@@ -29,6 +29,8 @@ MouseArea
 
     property bool isHovered: containsMouse
 
+    property bool isHighlighted: (highlighted || (checkable && (checked || isPressed)))
+
     property bool isPressed: (pressed || isReturnPressed)
 
     property bool isReturnPressed: false

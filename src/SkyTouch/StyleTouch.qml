@@ -23,11 +23,18 @@ Style
     // Properties
     //---------------------------------------------------------------------------------------------
 
+//#BaseButton
+    //---------------------------------------------------------------------------------------------
+    // Button
+
+    property ImageColorFilter button_filterIconA: icon1_filter
+    property ImageColorFilter button_filterIconB: icon2_filter
+
 //#BaseButtonTouch
     //---------------------------------------------------------------------------------------------
     // ButtonTouch
 
-    property int buttonTouch_height: dp48
+    property int buttonTouch_size: dp48
 
     property int buttonTouch_radius: dp8
 
@@ -41,6 +48,16 @@ Style
 //#END
 
     //---------------------------------------------------------------------------------------------
+    // Icons
+
+//#ButtonsWindow
+    property url icon_close   : "icons/times.svg"
+    property url icon_maximize: "icons/window-maximize.svg"
+    property url icon_restore : "icons/window-restore.svg"
+    property url icon_minimize: "icons/window-minimize.svg"
+//#END
+
+    //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
     // Text
@@ -48,4 +65,9 @@ Style
     text_pixelSize: dp20
 
     text1_color: "#dcdcdc"
+
+    //---------------------------------------------------------------------------------------------
+    // Icon
+
+    icon1_colorA: text1_color
 }

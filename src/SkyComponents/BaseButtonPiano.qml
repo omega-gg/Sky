@@ -23,8 +23,6 @@ BaseButton
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property bool isHighlighted: (highlighted || (checkable && (checked || isPressed)))
-
     property variant itemLeft  : null
     property variant itemRight : null
     property variant itemTop   : null
