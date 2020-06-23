@@ -40,11 +40,16 @@ Style
 
     property int buttonTouch_padding: dp48
 
+    property int buttonTouch_borderSize: dp2
+
     property real buttonTouch_opacityA: 0.8
     property real buttonTouch_opacityB: 1.0
     property real buttonTouch_opacityC: 0.6
 
-    property color buttonTouch_color: "#161616"
+    property color buttonTouch_color         : "#161616"
+    property color buttonTouch_colorHighlight: color_highlight
+
+    property color buttonTouch_colorBorder: "#969696"
 //#END
 
     //---------------------------------------------------------------------------------------------

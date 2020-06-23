@@ -22,6 +22,12 @@ BaseButton
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
+
+    property alias background: background
+
+    property alias itemBorder: itemBorder
+
+    //---------------------------------------------------------------------------------------------
     // Style
 
     property alias radius: background.radius
@@ -55,6 +61,31 @@ BaseButton
             else                return st.buttonTouch_opacityA;
         }
 
-        color: st.buttonTouch_color
+        color: (isHighlighted) ? st.buttonTouch_colorHighlight
+                               : st.buttonTouch_color
+
+//#QT_4
+        smooth: true
+//#END
+    }
+
+    Rectangle
+    {
+        id: itemBorder
+
+        anchors.fill: background
+
+        radius: background.radius
+
+        opacity: background.opacity
+
+        color: "transparent"
+
+//#QT_4
+        smooth: true
+//#END
+
+        border.width: st.buttonTouch_borderSize
+        border.color: st.buttonTouch_colorBorder
     }
 }

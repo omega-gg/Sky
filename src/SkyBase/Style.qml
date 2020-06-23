@@ -32,12 +32,9 @@ Item
     //---------------------------------------------------------------------------------------------
 
     property url icon
+    property url logo
 
-    property url  logo
-    property real logoRatio: 8.0
-
-    property color logo_colorA: "#c8c8c8"
-    property color logo_colorB: logo_colorA
+    property color color_highlight: "#008cdc"
 
     property int cursor_width : dp18
     property int cursor_height: dp24

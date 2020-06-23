@@ -20,6 +20,13 @@ import Sky     1.0
 Row
 {
     //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+
+    property int buttonWidth : st.dp40
+    property int buttonHeight: st.dp26
+
+    //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
@@ -31,7 +38,9 @@ Row
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    spacing: st.dp4
+    anchors.margins: spacing
+
+    spacing: st.dp2
 
     //---------------------------------------------------------------------------------------------
     // Functions
@@ -42,13 +51,11 @@ Row
     {
         if (window.fullScreen)
         {
-//#MAC
+            window.fullScreen = false;
+//#!MAC
             // FIXME macOS: We can't go from full screen to normal window right away.
             //              This could be related to the animation.
-            window.fullScreen = false;
-//#ELSE
-            window.fullScreen = false;
-            window.maximized  = false;
+            window.maximized = false;
 //#END
         }
         else window.maximized = !(window.maximized);
@@ -62,9 +69,10 @@ Row
     {
         id: buttonMinimize
 
-        width: st.dp32
+        width : buttonWidth
+        height: buttonHeight
 
-        margins: st.dp8
+        margins: st.dp5
 
         icon: st.icon_minimize
 
@@ -75,9 +83,10 @@ Row
     {
         id: buttonMaximize
 
-        width: st.dp32
+        width : buttonWidth
+        height: buttonHeight
 
-        margins: st.dp8
+        margins: st.dp5
 
         highlighted: (window.maximized || window.fullScreen)
 
@@ -91,9 +100,10 @@ Row
     {
         id: buttonClose
 
-        width: st.dp32
+        width : buttonWidth
+        height: buttonHeight
 
-        margins: st.dp4
+        margins: st.dp2
 
         icon: st.icon_close
 

@@ -227,16 +227,31 @@ QString scanFile(const QString & input)
         }
         else if (line.startsWith("//#"))
         {
-            QString string = line.mid(3);
+            QString string;
 
-            if (string == "END")
+            bool check;
+
+            if (line.at(3) == '!')
             {
-                line = stream.readLine();
+                string = line.mid(4);
 
-                continue;
+                check = !(match(string));
+            }
+            else
+            {
+                string = line.mid(3);
+
+                if (string == "END")
+                {
+                    line = stream.readLine();
+
+                    continue;
+                }
+
+                check = match(string);
             }
 
-            if (match(string))
+            if (check)
             {
                 line = stream.readLine();
 
