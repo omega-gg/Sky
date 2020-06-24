@@ -17,32 +17,47 @@
 import QtQuick 1.0
 import Sky     1.0
 
-BaseButtonTouch
+Item
 {
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    property alias text: itemText.text
+    property alias background: background
 
-    property alias font: itemText.font
+    //---------------------------------------------------------------------------------------------
+    // Style
+
+    property alias radius: background.radius
+
+    property alias backgroundOpacity: background.opacity
+
+    property alias color: background.color
 
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: sk.textWidth(itemText.font, text) + st.buttonTouch_padding
-
-    height: st.buttonTouch_size
+    anchors.margins: st.margins
 
     //---------------------------------------------------------------------------------------------
     // Childs
     //---------------------------------------------------------------------------------------------
 
-    TextBase
+    Rectangle
     {
-        id: itemText
+        id: background
 
-        anchors.centerIn: parent
+        anchors.fill: parent
+
+        radius: st.buttonTouch_radius
+
+        opacity: st.label_opacity
+
+        color: st.label_color
+
+//#QT_4
+        smooth: true
+//#END
     }
 }

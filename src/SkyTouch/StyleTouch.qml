@@ -24,7 +24,8 @@ Style
     //---------------------------------------------------------------------------------------------
     // Global
 
-    property real radius: dp4
+    property int margins: dp2
+    property int radius : dp4
 
 //#BaseButton
     //---------------------------------------------------------------------------------------------
@@ -41,7 +42,7 @@ Style
 
     property int buttonTouch_radius: radius
 
-    property int buttonTouch_padding: dp48
+    property int buttonTouch_padding: buttonTouch_size
 
     property real buttonTouch_opacityA: 0.8
     property real buttonTouch_opacityB: 1.0
@@ -49,7 +50,18 @@ Style
 
     property color buttonTouch_color         : "#dcdcdc"
     property color buttonTouch_colorHighlight: color_highlight
-//#END
+
+//#BaseLabel
+    //---------------------------------------------------------------------------------------------
+    // Label
+
+    property int label_size: buttonTouch_size
+
+    property int label_padding: buttonTouch_padding
+
+    property real label_opacity: buttonTouch_opacityA
+
+    property color label_color: "#f0f0f0"
 
     //---------------------------------------------------------------------------------------------
     // Icons

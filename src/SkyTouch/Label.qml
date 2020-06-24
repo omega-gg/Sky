@@ -17,7 +17,7 @@
 import QtQuick 1.0
 import Sky     1.0
 
-BaseButtonTouch
+BaseLabel
 {
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -31,9 +31,9 @@ BaseButtonTouch
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: sk.textWidth(itemText.font, text) + st.buttonTouch_padding
+    width: sk.textWidth(itemText.font, text) + st.label_padding
 
-    height: st.buttonTouch_size
+    height: st.label_size
 
     //---------------------------------------------------------------------------------------------
     // Childs

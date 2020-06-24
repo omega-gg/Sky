@@ -5,4 +5,6 @@ ButtonTouch     1.0 ButtonTouch.qml
 ButtonTouchIcon 1.0 ButtonTouchIcon.qml
 
 ButtonsWindow 1.0 ButtonsWindow.qml
-sss
+
+BaseLabel 1.0 BaseLabel.qml
+Label     1.0 Label.qml
