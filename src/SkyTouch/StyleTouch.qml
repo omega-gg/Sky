@@ -42,7 +42,7 @@ Style
 
     property int buttonTouch_radius: radius
 
-    property int buttonTouch_padding: buttonTouch_size
+    property int buttonTouch_padding: dp24
 
     property real buttonTouch_opacityA: 0.8
     property real buttonTouch_opacityB: 1.0
@@ -59,9 +59,9 @@ Style
 
     property int label_padding: buttonTouch_padding
 
-    property real label_opacity: buttonTouch_opacityA
+    property real label_opacity: 0.6
 
-    property color label_color: "#f0f0f0"
+    property color label_color: buttonTouch_color
 
     //---------------------------------------------------------------------------------------------
     // Icons

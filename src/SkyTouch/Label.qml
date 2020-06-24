@@ -19,6 +19,14 @@ import Sky     1.0
 
 BaseLabel
 {
+    id: label
+
+    //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+
+    property int padding: st.label_padding
+
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
@@ -28,10 +36,14 @@ BaseLabel
     property alias font: itemText.font
 
     //---------------------------------------------------------------------------------------------
+
+    property alias itemText: itemText
+
+    //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: sk.textWidth(itemText.font, text) + st.label_padding
+    width: sk.textWidth(itemText.font, text) + padding * 2
 
     height: st.label_size
 
@@ -43,6 +55,12 @@ BaseLabel
     {
         id: itemText
 
-        anchors.centerIn: parent
+        anchors.fill: parent
+
+        anchors.leftMargin : label.padding
+        anchors.rightMargin: label.padding
+
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment  : Text.AlignVCenter
     }
 }

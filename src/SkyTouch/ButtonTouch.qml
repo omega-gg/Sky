@@ -20,6 +20,12 @@ import Sky     1.0
 BaseButtonTouch
 {
     //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+
+    property int padding: st.buttonTouch_padding
+
+    //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
@@ -28,10 +34,14 @@ BaseButtonTouch
     property alias font: itemText.font
 
     //---------------------------------------------------------------------------------------------
+
+    property alias itemText: itemText
+
+    //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: sk.textWidth(itemText.font, text) + st.buttonTouch_padding
+    width: sk.textWidth(itemText.font, text) + padding * 2
 
     height: st.buttonTouch_size
 
@@ -43,6 +53,12 @@ BaseButtonTouch
     {
         id: itemText
 
-        anchors.centerIn: parent
+        anchors.fill: parent
+
+        anchors.leftMargin : label.padding
+        anchors.rightMargin: label.padding
+
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment  : Text.AlignVCenter
     }
 }
