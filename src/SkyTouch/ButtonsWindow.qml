@@ -20,14 +20,12 @@ import Sky     1.0
 Row
 {
     //---------------------------------------------------------------------------------------------
-    // Properties
-    //---------------------------------------------------------------------------------------------
-
-    property int buttonWidth : st.dp40
-    property int buttonHeight: st.dp26
-
-    //---------------------------------------------------------------------------------------------
     // Aliases
+    //---------------------------------------------------------------------------------------------
+
+    property alias buttonWidth : buttonMinimize.width
+    property alias buttonHeight: buttonMinimize.height
+
     //---------------------------------------------------------------------------------------------
 
     property alias buttonMinimize: buttonMinimize
@@ -69,10 +67,10 @@ Row
     {
         id: buttonMinimize
 
-        width : buttonWidth
-        height: buttonHeight
+        width : st.dp40
+        height: st.dp26
 
-        margins: st.dp5
+        margins: st.dp6
 
         icon: st.icon_minimize
 
@@ -86,7 +84,7 @@ Row
         width : buttonWidth
         height: buttonHeight
 
-        margins: st.dp5
+        margins: st.dp6
 
         highlighted: (window.maximized || window.fullScreen)
 
@@ -103,7 +101,7 @@ Row
         width : buttonWidth
         height: buttonHeight
 
-        margins: st.dp2
+        margins: st.dp4
 
         icon: st.icon_close
 

@@ -22,6 +22,9 @@ Style
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
+    // Global
+
+    property real radius: dp4
 
 //#BaseButton
     //---------------------------------------------------------------------------------------------
@@ -36,20 +39,16 @@ Style
 
     property int buttonTouch_size: dp48
 
-    property int buttonTouch_radius: dp8
+    property int buttonTouch_radius: radius
 
     property int buttonTouch_padding: dp48
 
-    property int buttonTouch_borderSize: dp2
-
     property real buttonTouch_opacityA: 0.8
     property real buttonTouch_opacityB: 1.0
-    property real buttonTouch_opacityC: 0.6
+    property real buttonTouch_opacityC: 0.4
 
-    property color buttonTouch_color         : "#161616"
+    property color buttonTouch_color         : "#dcdcdc"
     property color buttonTouch_colorHighlight: color_highlight
-
-    property color buttonTouch_colorBorder: "#969696"
 //#END
 
     //---------------------------------------------------------------------------------------------
@@ -69,10 +68,67 @@ Style
 
     text_pixelSize: dp20
 
-    text1_color: "#dcdcdc"
-
     //---------------------------------------------------------------------------------------------
-    // Icon
+    // Functions
+    //---------------------------------------------------------------------------------------------
 
-    icon1_colorA: text1_color
+    function applyLight()
+    {
+        //-----------------------------------------------------------------------------------------
+        // Border
+
+        border_color = "#969696";
+
+        //-----------------------------------------------------------------------------------------
+        // Text
+
+        text1_color = "#484848";
+
+        //-----------------------------------------------------------------------------------------
+        // Icon
+
+        icon1_colorA = "#646464";
+
+        //-----------------------------------------------------------------------------------------
+        // Window
+
+        window_color = "#b4b4b4";
+
+//#BaseButtonTouch
+        //-----------------------------------------------------------------------------------------
+        // ButtonTouch
+
+        buttonTouch_color = "#dcdcdc";
+//#END
+    }
+
+    function applyNight()
+    {
+        //-----------------------------------------------------------------------------------------
+        // Border
+
+        border_color = "#161616";
+
+        //-----------------------------------------------------------------------------------------
+        // Text
+
+        text1_color = "#dcdcdc";
+
+        //-----------------------------------------------------------------------------------------
+        // Icon
+
+        icon1_colorA = text1_color;
+
+        //-----------------------------------------------------------------------------------------
+        // Window
+
+        window_color = "#646464";
+
+//#BaseButtonTouch
+        //-----------------------------------------------------------------------------------------
+        // ButtonTouch
+
+        buttonTouch_color = "#161616";
+//#END
+    }
 }

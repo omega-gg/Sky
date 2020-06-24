@@ -66,7 +66,7 @@ BaseButtonTouch
         {
             if (enableFilter)
             {
-                if (isHighlighted)
+                if (isHighlighted || checked)
                 {
                      return st.button_filterIconB;
                 }

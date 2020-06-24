@@ -230,8 +230,8 @@ void WViewPrivate::init(QQuickItem * item)
 
     zoom = 1.0;
 
-    minimumWidth  = 400;
-    minimumHeight = 300;
+    minimumWidth  = 320;
+    minimumHeight = 200;
 
     maximumWidth  = -1;
     maximumHeight = -1;
