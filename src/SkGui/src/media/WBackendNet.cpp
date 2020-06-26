@@ -77,8 +77,10 @@ void WBackendNetQuery::init(Type type, const QString & url)
 
     target = TargetDefault;
 
-    id    = 0;
-    index = 0;
+    id = 0;
+
+    indexNext   = 0;
+    indexReload = 0;
 
     priority = QNetworkRequest::NormalPriority;
 
@@ -90,6 +92,41 @@ void WBackendNetQuery::init(Type type, const QString & url)
     maxHost =  3;
     delay   =  0;
     timeout = -1;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Operators
+//-------------------------------------------------------------------------------------------------
+
+WBackendNetQuery & WBackendNetQuery::operator=(const WBackendNetQuery & other)
+{
+    type   = other.type;
+    target = other.target;
+
+    backend = other.backend;
+
+    url         = other.url;
+    urlRedirect = other.urlRedirect;
+
+    id = other.id;
+
+    indexNext   = other.indexNext;
+    indexReload = other.indexReload;
+
+    priority = other.priority;
+
+    data = other.data;
+
+    clearItems = other.clearItems;
+    cookies    = other.cookies;
+    header     = other.header;
+    skipError  = other.skipError;
+
+    maxHost = other.maxHost;
+    delay   = other.delay;
+    timeout = other.timeout;
+
+    return *this;
 }
 
 //=================================================================================================
@@ -130,6 +167,8 @@ bool WBackendNetPlaylistInfo::isFeed() const
 WBackendNetBase::WBackendNetBase()
 {
     valid = true;
+
+    reload = false;
 }
 
 //=================================================================================================

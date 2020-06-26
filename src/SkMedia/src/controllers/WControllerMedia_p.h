@@ -98,6 +98,8 @@ public: // Functions
 
     void deleteMedia(WPrivateMediaData * media);
 
+    void getData(WPrivateMediaData * media, WBackendNetQuery * query);
+
 public: // Slots
     void onLoaded(WRemoteData * data);
 

@@ -80,7 +80,8 @@ static const int CONTROLLERPLAYLIST_MAX_SIZE = 1048576 * 10; // 10 megabytes
 static const int CONTROLLERPLAYLIST_MAX_TRACKS = 500;
 static const int CONTROLLERPLAYLIST_MAX_ITEMS  = 500;
 
-static const int CONTROLLERPLAYLIST_MAX_QUERY = 200;
+static const int CONTROLLERPLAYLIST_MAX_QUERY  = 200;
+static const int CONTROLLERPLAYLIST_MAX_RELOAD =  10;
 
 //=================================================================================================
 // WControllerPlaylistLoader
@@ -1894,12 +1895,32 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
 
     const WBackendNetQuery & backendQuery = query->backendQuery;
 
-    int indexQuery = backendQuery.index;
-
-    query->backend->applyTrack(backendQuery, reply);
-
     WPlaylist * playlist = query->item->toPlaylist();
     WTrack    * track    = query->track;
+
+    if (reply.reload)
+    {
+        int indexReload = backendQuery.indexReload;
+
+        if (indexReload < CONTROLLERPLAYLIST_MAX_RELOAD)
+        {
+            WBackendNetQuery nextQuery = reply.nextQuery;
+
+            nextQuery = backendQuery;
+
+            deleteQuery(query);
+
+            nextQuery.indexReload = indexReload + 1;
+
+            getDataTrack(playlist, track, nextQuery);
+
+            return;
+        }
+    }
+
+    int indexNext = backendQuery.indexNext;
+
+    query->backend->applyTrack(backendQuery, reply);
 
     deleteQuery(query);
 
@@ -1917,50 +1938,45 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
 
         WBackendNetQuery nextQuery = reply.nextQuery;
 
-        if (nextQuery.isValid() && nextQuery.index < CONTROLLERPLAYLIST_MAX_QUERY)
+        if (nextQuery.isValid() && nextQuery.indexNext < CONTROLLERPLAYLIST_MAX_QUERY)
         {
-            nextQuery.index = indexQuery + 1;
+            nextQuery.indexNext = indexNext + 1;
 
             playlist->updateTrack(index);
-
-            nextQuery.priority
-                = static_cast<QNetworkRequest::Priority> (QNetworkRequest::NormalPriority - 1);
 
             getDataTrack(playlist, track, nextQuery);
 
             return;
         }
-        else
+
+        WTrack::State state = trackReply.state();
+
+        if (state > WTrack::Loaded)
         {
-            WTrack::State state = trackReply.state();
-
-            if (state > WTrack::Loaded)
-            {
-                 track->setState(state);
-            }
-            else track->setState(WTrack::Loaded);
-
-            playlist->updateTrack(index);
-
-            if (WControllerNetwork::removeUrlPrefix(playlist->source())
-                ==
-                WControllerNetwork::removeUrlPrefix(track->source()))
-            {
-                QString title = track->title();
-                QString cover = track->cover();
-
-                if (title.isEmpty() == false)
-                {
-                    playlist->setTitle(title);
-                }
-
-                if (cover.isEmpty() == false)
-                {
-                    playlist->setCover(cover);
-                }
-            }
-            else playlist->updateCover();
+             track->setState(state);
         }
+        else track->setState(WTrack::Loaded);
+
+        playlist->updateTrack(index);
+
+        if (WControllerNetwork::removeUrlPrefix(playlist->source())
+            ==
+            WControllerNetwork::removeUrlPrefix(track->source()))
+        {
+            QString title = track->title();
+            QString cover = track->cover();
+
+            if (title.isEmpty() == false)
+            {
+                playlist->setTitle(title);
+            }
+
+            if (cover.isEmpty() == false)
+            {
+                playlist->setCover(cover);
+            }
+        }
+        else playlist->updateCover();
     }
     else
     {
@@ -1983,11 +1999,33 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
 
     const WBackendNetQuery & backendQuery = query->backendQuery;
 
-    int indexQuery = backendQuery.index;
+    WPlaylist * playlist = query->item->toPlaylist();
+
+    if (reply.reload)
+    {
+        int indexReload = backendQuery.indexReload;
+
+        if (indexReload < CONTROLLERPLAYLIST_MAX_RELOAD)
+        {
+            WBackendNetQuery nextQuery = reply.nextQuery;
+
+            nextQuery = backendQuery;
+
+            deleteQuery(query);
+
+            nextQuery.indexReload = indexReload + 1;
+
+            nextQuery.clearItems = false;
+
+            getDataPlaylist(playlist, nextQuery);
+
+            return;
+        }
+    }
+
+    int indexNext = backendQuery.indexNext;
 
     query->backend->applyPlaylist(backendQuery, reply);
-
-    WPlaylist * playlist = query->item->toPlaylist();
 
     deleteQuery(query);
 
@@ -2040,12 +2078,9 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
 
         WBackendNetQuery nextQuery = reply.nextQuery;
 
-        if (nextQuery.isValid() && indexQuery < CONTROLLERPLAYLIST_MAX_QUERY)
+        if (nextQuery.isValid() && indexNext < CONTROLLERPLAYLIST_MAX_QUERY)
         {
-            nextQuery.index = indexQuery + 1;
-
-            nextQuery.priority
-                = static_cast<QNetworkRequest::Priority> (QNetworkRequest::NormalPriority - 1);
+            nextQuery.indexNext = indexNext + 1;
 
             nextQuery.clearItems = false;
 
@@ -2070,11 +2105,33 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
 
     const WBackendNetQuery & backendQuery = query->backendQuery;
 
-    int indexQuery = backendQuery.index;
+    WLibraryFolder * folder = query->item->toFolder();
+
+    if (reply.reload)
+    {
+        int indexReload = backendQuery.indexReload;
+
+        if (indexReload < CONTROLLERPLAYLIST_MAX_RELOAD)
+        {
+            WBackendNetQuery nextQuery = reply.nextQuery;
+
+            nextQuery = backendQuery;
+
+            deleteQuery(query);
+
+            nextQuery.indexReload = indexReload + 1;
+
+            nextQuery.clearItems = false;
+
+            getDataFolder(folder, nextQuery);
+
+            return;
+        }
+    }
+
+    int indexNext = backendQuery.indexNext;
 
     query->backend->applyFolder(backendQuery, reply);
-
-    WLibraryFolder * folder = query->item->toFolder();
 
     deleteQuery(query);
 
@@ -2140,12 +2197,9 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
 
         WBackendNetQuery nextQuery = reply.nextQuery;
 
-        if (nextQuery.isValid() && indexQuery < CONTROLLERPLAYLIST_MAX_QUERY)
+        if (nextQuery.isValid() && indexNext < CONTROLLERPLAYLIST_MAX_QUERY)
         {
-            nextQuery.index = indexQuery + 1;
-
-            nextQuery.priority
-                = static_cast<QNetworkRequest::Priority> (QNetworkRequest::NormalPriority - 1);
+            nextQuery.indexNext = indexNext + 1;
 
             nextQuery.clearItems = false;
 
@@ -2169,7 +2223,7 @@ void WControllerPlaylistPrivate::onItemLoaded(QIODevice * device, const WBackend
 
     const WBackendNetQuery & backendQuery = query->backendQuery;
 
-    int indexQuery = backendQuery.index;
+    int indexNext = backendQuery.indexNext;
 
     query->backend->applyItem(backendQuery, reply);
 
@@ -2184,16 +2238,13 @@ void WControllerPlaylistPrivate::onItemLoaded(QIODevice * device, const WBackend
 
         WBackendNetQuery nextQuery = reply.nextQuery;
 
-        if (nextQuery.isValid() && indexQuery < CONTROLLERPLAYLIST_MAX_QUERY)
+        if (nextQuery.isValid() && indexNext < CONTROLLERPLAYLIST_MAX_QUERY)
         {
             emit item->queryEnded();
 
             addToCache(item->source(), cache, extension);
 
-            nextQuery.index = indexQuery + 1;
-
-            nextQuery.priority
-                = static_cast<QNetworkRequest::Priority> (QNetworkRequest::NormalPriority - 1);
+            nextQuery.indexNext = indexNext + 1;
 
             nextQuery.clearItems = false;
 

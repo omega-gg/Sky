@@ -190,7 +190,7 @@ WTrack::WTrack(const WTrack & other) : WPrivatable(new WTrackPrivate(this))
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ bool WTrack::operator==(const WTrack & other) const
+bool WTrack::operator==(const WTrack & other) const
 {
     Q_D(const WTrack);
 
@@ -221,7 +221,7 @@ WTrack::WTrack(const WTrack & other) : WPrivatable(new WTrackPrivate(this))
     else return false;
 }
 
-/* virtual */ WTrack & WTrack::operator=(const WTrack & other)
+WTrack & WTrack::operator=(const WTrack & other)
 {
     Q_D(WTrack);
 

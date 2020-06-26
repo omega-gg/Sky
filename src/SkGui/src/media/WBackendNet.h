@@ -70,6 +70,9 @@ public: // Interface
 private: // Functions
     void init(Type type, const QString & url);
 
+public: // Operators
+    WBackendNetQuery & operator=(const WBackendNetQuery & other);
+
 public: // Variables
     Type   type;
     Target target;
@@ -80,7 +83,9 @@ public: // Variables
     QString urlRedirect;
 
     int id;
-    int index;
+
+    int indexNext;
+    int indexReload;
 
     QNetworkRequest::Priority priority;
 
@@ -133,6 +138,8 @@ public: // Variables
     WBackendNetQuery nextQuery;
 
     QVariant backup;
+
+    bool reload;
 };
 
 //-------------------------------------------------------------------------------------------------

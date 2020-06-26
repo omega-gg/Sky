@@ -3798,6 +3798,8 @@ void WBackendUniversalPrivate::applySourceParameters(WBackendUniversalParameters
     parameters->add("expiry", reply.expiry);
 
     parameters->add("next");
+
+    parameters->add("reload");
 }
 
 void WBackendUniversalPrivate::applySourceResults(WBackendUniversalParameters * parameters,
@@ -3813,6 +3815,8 @@ void WBackendUniversalPrivate::applySourceResults(WBackendUniversalParameters * 
     applyQuery(&(reply->nextQuery), parameters->value("next"));
 
     reply->backup = *(parameters->value("global"));
+
+    reply->reload = parameters->value("reload")->toBool();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -3831,6 +3835,8 @@ void WBackendUniversalPrivate::applyTrackParameters(WBackendUniversalParameters 
     parameters->add("cache");
 
     parameters->add("next");
+
+    parameters->add("reload");
 
     parameters->add("source");
 
@@ -3857,6 +3863,8 @@ void WBackendUniversalPrivate::applyTrackResults(WBackendUniversalParameters * p
     applyQuery(&(reply->nextQuery), parameters->value("next"));
 
     reply->backup = *(parameters->value("global"));
+
+    reply->reload = parameters->value("reload")->toBool();
 
     WTrack & track = reply->track;
 
@@ -3892,6 +3900,8 @@ void WBackendUniversalPrivate::applyPlaylistParameters(WBackendUniversalParamete
 
     parameters->add("next");
 
+    parameters->add("reload");
+
     parameters->add("title");
     parameters->add("cover");
 
@@ -3912,6 +3922,8 @@ void WBackendUniversalPrivate::applyPlaylistResults(WBackendUniversalParameters 
     applyQuery(&(reply->nextQuery), parameters->value("next"));
 
     reply->backup = *(parameters->value("global"));
+
+    reply->reload = parameters->value("reload")->toBool();
 
     reply->title = parameters->value("title")->toString();
     reply->cover = parameters->value("cover")->toString();
@@ -3945,6 +3957,8 @@ void WBackendUniversalPrivate::applyFolderParameters(WBackendUniversalParameters
 
     parameters->add("next");
 
+    parameters->add("reload");
+
     parameters->add("title");
     parameters->add("cover");
 
@@ -3964,6 +3978,8 @@ void WBackendUniversalPrivate::applyFolderResults(WBackendUniversalParameters * 
     applyQuery(&(reply->nextQuery), parameters->value("next"));
 
     reply->backup = *(parameters->value("global"));
+
+    reply->reload = parameters->value("reload")->toBool();
 
     reply->title = parameters->value("title")->toString();
     reply->cover = parameters->value("cover")->toString();
@@ -3996,6 +4012,8 @@ void WBackendUniversalPrivate::applyItemParameters(WBackendUniversalParameters *
 
     parameters->add("next");
 
+    parameters->add("reload");
+
     parameters->add("itemData");
     parameters->add("extension");
 }
@@ -4010,6 +4028,8 @@ void WBackendUniversalPrivate::applyItemResults(WBackendUniversalParameters * pa
     applyQuery(&(reply->nextQuery), parameters->value("next"));
 
     reply->backup = *(parameters->value("global"));
+
+    reply->reload = parameters->value("reload")->toBool();
 
     reply->data = parameters->value("itemData")->toByteArray();
 
