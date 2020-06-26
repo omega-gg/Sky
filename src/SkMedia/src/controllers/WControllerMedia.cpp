@@ -34,6 +34,7 @@
 
 // Sk includes
 #include <WControllerApplication>
+#include <WControllerFile>
 #include <WControllerDownload>
 #include <WControllerPlaylist>
 #include <WVlcEngine>
@@ -385,6 +386,16 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
 
     media->backend->applySource(media->query, source);
 
+    if (source.valid)
+    {
+        const QByteArray & cache = source.cache;
+
+        if (cache.isEmpty() == false)
+        {
+            wControllerFile->addCache(media->url, cache);
+        }
+    }
+
     WBackendNetQuery query = source.nextQuery;
 
     if (query.isValid())
@@ -416,7 +427,7 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
 
             mediaSource.expiry = source.expiry;
 
-            QString url = media->url;
+            const QString & url = media->url;
 
             urls.append(url);
 

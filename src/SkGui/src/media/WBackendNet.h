@@ -117,28 +117,6 @@ public: // Variables
 };
 
 //-------------------------------------------------------------------------------------------------
-// WBackendNetSource
-//-------------------------------------------------------------------------------------------------
-
-class SK_GUI_EXPORT WBackendNetSource
-{
-public:
-    WBackendNetSource();
-
-public: // Variables
-    bool valid;
-
-    QHash<WAbstractBackend::Quality, QString> medias;
-    QHash<WAbstractBackend::Quality, QString> audios;
-
-    QDateTime expiry;
-
-    WBackendNetQuery nextQuery;
-
-    QVariant backup;
-};
-
-//-------------------------------------------------------------------------------------------------
 // WBackendNetBase
 //-------------------------------------------------------------------------------------------------
 
@@ -155,6 +133,22 @@ public: // Variables
     WBackendNetQuery nextQuery;
 
     QVariant backup;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WBackendNetSource
+//-------------------------------------------------------------------------------------------------
+
+class SK_GUI_EXPORT WBackendNetSource : public WBackendNetBase
+{
+public:
+    WBackendNetSource();
+
+public: // Variables
+    QHash<WAbstractBackend::Quality, QString> medias;
+    QHash<WAbstractBackend::Quality, QString> audios;
+
+    QDateTime expiry;
 };
 
 //-------------------------------------------------------------------------------------------------
