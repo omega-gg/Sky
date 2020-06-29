@@ -34,11 +34,11 @@ replace()
 
 if [ $# != 2 -a $# != 3 ] \
    || \
-   [ $1 != "mingw" -a $1 != "msvc" ] || [ $2 != "qt4" -a $2 != "qt5" ] \
+   [ $1 != "gcc" -a $1 != "mingw" -a $1 != "msvc" ] || [ $2 != "qt4" -a $2 != "qt5" ] \
    || \
    [ $# = 3 -a "$3" != "sky" ]; then
 
-    echo "Usage: environment <mingw | msvc> <qt4 | qt5> [3rdparty]"
+    echo "Usage: environment <gcc | mingw | msvc> <qt4 | qt5> [3rdparty]"
 
     exit 1
 fi
@@ -49,8 +49,8 @@ fi
 
 if [ "$2" = "sky" ]; then
 
-    echo "SET ENVIRONMENT 3rdparty"
-    echo "------------------------"
+    echo "ENVIRONMENT 3rdparty"
+    echo "--------------------"
 
     cd "$thirdparty"
 
@@ -58,7 +58,7 @@ if [ "$2" = "sky" ]; then
 
     cd -
 
-    echo "------------------------"
+    echo "--------------------"
     echo ""
 fi
 
@@ -66,5 +66,11 @@ fi
 # Replacements
 #--------------------------------------------------------------------------------------------------
 
-replace compiler_win $compiler_win $1
-replace qt           $qt           $2
+if [ $1 = "msvc" ]; then
+
+    replace compiler_win $compiler_win msvc
+else
+    replace compiler_win $compiler_win mingw
+fi
+
+replace qt $qt $2
