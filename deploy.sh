@@ -12,7 +12,7 @@ external="../3rdparty"
 Qt4_version="4.8.7"
 Qt5_version="5.14.2"
 
-SSL_versionA="1.0.2p"
+SSL_versionA="1.0.2u"
 SSL_versionB="1.1.1d"
 
 VLC_version="3.0.11"
