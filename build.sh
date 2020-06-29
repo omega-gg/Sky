@@ -181,7 +181,7 @@ fi
 # NOTE Android: We need to build the tools for the Linux platform.
 if [ $1 = "android" ]; then
 
-    sh build.sh $1 linux tools
+    sh build.sh linux tools
 
     if [ "$2" = "tools" ]; then
 
