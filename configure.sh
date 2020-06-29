@@ -32,16 +32,23 @@ include64="/usr/include/x86_64-linux-gnu"
 Qt5_version_linux="5.9.5"
 
 #--------------------------------------------------------------------------------------------------
+# environment
+
+compiler_win="mingw"
+
+qt="qt5"
+
+#--------------------------------------------------------------------------------------------------
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# != 2 ] || [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] \
+if [ $# != 2 -a $# != 2 ] \
    || \
-   [ $2 != "win32" -a $2 != "win64" -a $2 != "win32-msvc" -a $2 != "win64-msvc" -a \
-     $2 != "macOS" -a $2 != "linux" -a $2 != "android" ]; then
+   [ $1 != "win32" -a $1 != "win64" -a $1 != "macOS" -a $1 != "linux" -a $1 != "android" ] \
+   || \
+   [ $# = 2 -a "$2" != "clean" ]; then
 
-    echo "Usage: configure <qt4 | qt5 | clean>"
-    echo "                 <win32 | win64 | win32-msvc | win64-msvc | macOS | linux | android>"
+    echo "Usage: configure <win32 | win64 | macOS | linux | android> [clean]"
 
     exit 1
 fi
@@ -50,40 +57,34 @@ fi
 # Configuration
 #--------------------------------------------------------------------------------------------------
 
-external="$external/$2"
+external="$external/$1"
 
-if [ $2 = "win32" -o $2 = "win64" -o $2 = "win32-msvc" -o $2 = "win64-msvc" ]; then
+if [ $1 = "win32" -o $1 = "win64" ]; then
 
     os="windows"
 
-    if [ $2 = "win32" ]; then
+    compiler="$compiler_win"
 
-        compiler="mingw"
+    if [ $1 = "win32" ]; then
 
         MinGW="$external/MinGW/$MinGW_version/i686-w64-mingw32/lib"
-
-    elif [ $2 = "win64" ]; then
-
-        compiler="mingw"
-
-        MinGW="$external/MinGW/$MinGW_version/x86_64-w64-mingw32/lib"
     else
-        compiler="default"
+        MinGW="$external/MinGW/$MinGW_version/x86_64-w64-mingw32/lib"
     fi
 
-elif [ $2 = "macOS" ]; then
+elif [ $1 = "macOS" ]; then
 
     os="default"
 
     compiler="default"
 
-elif [ $2 = "linux" ]; then
+elif [ $1 = "linux" ]; then
 
     os="default"
 
     compiler="default"
 
-    if [ $1 = "qt5" ]; then
+    if [ $qt = "qt5" ]; then
 
         Qt5_version="$Qt5_version_linux"
     fi
@@ -152,7 +153,7 @@ rm -rf include/libtorrent
 
 rm -rf include/Boost
 
-if [ $1 = "clean" ]; then
+if [ "$2" = "clean" ]; then
 
     exit 0
 fi
@@ -161,7 +162,7 @@ fi
 # Qt
 #--------------------------------------------------------------------------------------------------
 
-if [ $1 = "qt4" -a $2 = "linux" ]; then
+if [ $qt = "qt4" -a $1 = "linux" ]; then
 
     echo "COPYING Qt4"
 
@@ -177,7 +178,7 @@ if [ $1 = "qt4" -a $2 = "linux" ]; then
     cp "$Qt4"/src/declarative/graphicsitems/*_p.h include/Qt4/QtDeclarative/private
     cp "$Qt4"/src/declarative/util/*_p.h          include/Qt4/QtDeclarative/private
 
-elif [ $1 = "qt5" ]; then
+elif [ $qt = "qt5" ]; then
 
     echo "COPYING Qt5"
 
@@ -195,7 +196,7 @@ elif [ $1 = "qt5" ]; then
 
         cp -r "$Qt5"/include/QtGui/$Qt5_version/QtGui/qpa include/Qt5/QtGui
 
-    elif [ $2 = "linux" ]; then
+    elif [ $1 = "linux" ]; then
 
         cp -r "$include"/qt5/QtCore  include/Qt5
         cp -r "$include"/qt5/QtGui   include/Qt5
@@ -204,7 +205,7 @@ elif [ $1 = "qt5" ]; then
 
         cp -r "$include"/qt5/QtGui/$Qt5_version/QtGui/qpa include/Qt5/QtGui
 
-    elif [ $2 = "macOS" ]; then
+    elif [ $1 = "macOS" ]; then
 
         cp -r "$Qt5"/lib/QtCore.framework/Headers/*  include/Qt5/QtCore
         cp -r "$Qt5"/lib/QtGui.framework/Headers/*   include/Qt5/QtGui
@@ -213,7 +214,7 @@ elif [ $1 = "qt5" ]; then
 
         cp -r "$Qt5"/lib/QtGui.framework/Headers/$Qt5_version/QtGui/qpa include/Qt5/QtGui
 
-    elif [ $2 = "android" ]; then
+    elif [ $1 = "android" ]; then
 
         cp -r "$Qt5"/include/QtCore  include/Qt5
         cp -r "$Qt5"/include/QtGui   include/Qt5
@@ -250,7 +251,7 @@ if [ $os = "windows" ]; then
 
     cp "$VLC"/sdk/lib/libvlc* lib
 
-elif [ $2 = "macOS" ]; then
+elif [ $1 = "macOS" ]; then
 
     echo "COPYING VLC"
 
@@ -259,7 +260,7 @@ elif [ $2 = "macOS" ]; then
     cp "$VLC"/lib/libvlc.5.dylib     lib/libvlc.dylib
     cp "$VLC"/lib/libvlccore.9.dylib lib/libvlccore.dylib
 
-elif [ $2 = "android" ]; then
+elif [ $1 = "android" ]; then
 
     echo "COPYING VLC"
 
@@ -272,7 +273,7 @@ fi
 # libtorrent
 #--------------------------------------------------------------------------------------------------
 
-if [ $os = "windows" ] || [ $2 = "macOS" ] || [ $2 = "android" ]; then
+if [ $os = "windows" ] || [ $1 = "macOS" ] || [ $1 = "android" ]; then
 
     echo "COPYING libtorrent"
 
@@ -285,7 +286,7 @@ fi
 # Boost
 #--------------------------------------------------------------------------------------------------
 
-if [ $os = "windows" ] || [ $2 = "macOS" ] || [ $2 = "android" ]; then
+if [ $os = "windows" ] || [ $1 = "macOS" ] || [ $1 = "android" ]; then
 
     echo "COPYING Boost"
 

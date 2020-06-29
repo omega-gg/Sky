@@ -9,8 +9,8 @@ jobs:
   steps:
   - bash: |
       sh 3rdparty.sh win32
-      sh configure.sh qt5 win32
-      sh build.sh qt5 win32 deploy
+      sh configure.sh win32
+      sh build.sh win32 deploy
       cd deploy
       7z a ../Sky.zip *
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
@@ -24,8 +24,8 @@ jobs:
   steps:
   - bash: |
       sh 3rdparty.sh win64
-      sh configure.sh qt5 win64
-      sh build.sh qt5 win64 deploy
+      sh configure.sh win64
+      sh build.sh win64 deploy
       cd deploy
       7z a ../Sky.zip *
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
@@ -41,7 +41,7 @@ jobs:
   steps:
   - bash: |
       sh 3rdparty.sh macOS
-      sh configure.sh qt5 macOS
+      sh configure.sh macOS
       sh build.sh qt5 macOS deploy
       cd deploy
       zip -rq ../Sky.zip *
@@ -62,8 +62,8 @@ jobs:
                                      apt-get update;
                                      apt-get -y install sudo curl zip git;
                                      sh 3rdparty.sh linux;
-                                     sh configure.sh qt5 linux;
-                                     sh build.sh qt5 linux deploy;
+                                     sh configure.sh linux;
+                                     sh build.sh linux deploy;
                                      cd deploy;
                                      zip -rq ../Sky.zip *"
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
@@ -81,8 +81,8 @@ jobs:
                                      apt-get update;
                                      apt-get -y install sudo curl zip git;
                                      sh 3rdparty.sh linux;
-                                     sh configure.sh qt5 linux;
-                                     sh build.sh qt5 linux deploy;
+                                     sh configure.sh linux;
+                                     sh build.sh linux deploy;
                                      cd deploy;
                                      zip -rq ../Sky.zip *"
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
@@ -103,8 +103,8 @@ jobs:
                                      apt-get -y install sudo curl zip unzip git;
                                      sh 3rdparty.sh linux;
                                      sh 3rdparty.sh android;
-                                     sh configure.sh qt5 android;
-                                     sh build.sh qt5 android deploy;
+                                     sh configure.sh android;
+                                     sh build.sh android deploy;
                                      cd deploy;
                                      zip -rq ../Sky.zip *"
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip

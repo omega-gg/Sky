@@ -44,21 +44,23 @@ libtorrent_version_linux="9.0.0"
 Boost_version_linux="1.65.1"
 
 #--------------------------------------------------------------------------------------------------
+# environment
+
+compiler_win="mingw"
+
+qt="qt5"
+
+#--------------------------------------------------------------------------------------------------
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# != 2 -a $# != 3 ] \
+if [ $# != 1 -a $# != 2 ] \
    || \
-   [ $1 != "qt4" -a $1 != "qt5" -a $1 != "clean" ] \
+   [ $1 != "win32" -a $1 != "win64" -a $1 != "macOS" -a $1 != "linux" -a $1 != "android" ] \
    || \
-   [ $2 != "win32" -a $2 != "win64" -a $2 != "win32-msvc" -a $2 != "win64-msvc" -a \
-     $2 != "macOS" -a $2 != "linux" -a $2 != "android" ] \
-   || \
-   [ $# = 3 -a "$3" != "tools" ]; then
+   [ $# = 2 -a "$2" != "clean" ]; then
 
-    echo "Usage: deploy <qt4 | qt5 | clean>"
-    echo "              <win32 | win64 | win32-msvc | win64-msvc | macOS | linux | android>"
-    echo "              [tools]"
+    echo "Usage: deploy <win32 | win64 | macOS | linux | android> [tools | clean]"
 
     exit 1
 fi
@@ -67,28 +69,26 @@ fi
 # Configuration
 #--------------------------------------------------------------------------------------------------
 
-external="$external/$2"
+external="$external/$1"
 
-if [ $2 = "win32" -o $2 = "win64" -o $2 = "win32-msvc" -o $2 = "win64-msvc" ]; then
+if [ $1 = "win32" -o $1 = "win64" ]; then
 
     os="windows"
 
-    if [ $2 = "win32" -o $2 = "win64" ]; then
+    compiler="$compiler_win"
 
-        compiler="mingw"
+    if [ $compiler = "mingw" ]; then
 
         MinGW="$external/MinGW/$MinGW_version/bin"
-    else
-        compiler="default"
     fi
 
-elif [ $2 = "macOS" ]; then
+elif [ $1 = "macOS" ]; then
 
     os="default"
 
     compiler="default"
 
-elif [ $2 = "linux" ]; then
+elif [ $1 = "linux" ]; then
 
     os="default"
 
@@ -118,7 +118,7 @@ fi
 
 #--------------------------------------------------------------------------------------------------
 
-if [ $1 = "qt4" ]; then
+if [ $qt = "qt4" ]; then
 
     Qt="$external/Qt/$Qt4_version"
 
@@ -129,12 +129,11 @@ else
     SSL="$external/OpenSSL/$SSL_versionB"
 fi
 
-
 VLC="$external/VLC/$VLC_version"
 
 libtorrent="$external/libtorrent/$libtorrent_version"
 
-if [ $2 = "linux" ]; then
+if [ $1 = "linux" ]; then
 
     Boost="$external/Boost/$Boost_version_linux"
 else
@@ -151,7 +150,7 @@ rm -rf deploy/*
 
 touch deploy/.gitignore
 
-if [ $1 = "clean" ]; then
+if [ "$2" = "clean" ]; then
 
     exit 0
 fi
@@ -162,7 +161,7 @@ echo ""
 # Qt
 #--------------------------------------------------------------------------------------------------
 
-if [ $1 = "qt4" ]; then
+if [ $qt = "qt4" ]; then
 
     if [ $os = "windows" ]; then
 
@@ -192,7 +191,7 @@ if [ $1 = "qt4" ]; then
         cp "$Qt"/plugins/imageformats/qsvg4.dll  deploy/imageformats
         cp "$Qt"/plugins/imageformats/qjpeg4.dll deploy/imageformats
 
-    elif [ $2 = "linux" ]; then
+    elif [ $1 = "linux" ]; then
 
         echo "COPYING Qt4"
 
@@ -260,7 +259,7 @@ else
         cp "$Qt"/qml/QtQuick.2/qtquick2plugin.dll deploy/QtQuick.2
         cp "$Qt"/qml/QtQuick.2/qmldir             deploy/QtQuick.2
 
-    elif [ $2 = "macOS" ]; then
+    elif [ $1 = "macOS" ]; then
 
         # FIXME Qt 5.14 macOS: We have to copy qt.conf to avoid a segfault.
         cp "$Qt"/bin/qt.conf deploy
@@ -294,7 +293,7 @@ else
         cp "$Qt"/qml/QtQuick.2/libqtquick2plugin.dylib deploy/QtQuick.2
         cp "$Qt"/qml/QtQuick.2/qmldir                  deploy/QtQuick.2
 
-    elif [ $2 = "linux" ]; then
+    elif [ $1 = "linux" ]; then
 
         mkdir deploy/xcbglintegrations
 
@@ -339,7 +338,7 @@ else
         cp "$Qt"/qml/QtQuick.2/libqtquick2plugin.so deploy/QtQuick.2
         cp "$Qt"/qml/QtQuick.2/qmldir               deploy/QtQuick.2
 
-    elif [ $2 = "android" ]; then
+    elif [ $1 = "android" ]; then
 
         cp "$Qt"/lib/libQt5Core_*.so        deploy
         cp "$Qt"/lib/libQt5Gui_*.so         deploy
@@ -378,7 +377,7 @@ if [ $os = "windows" ]; then
     cp "$SSL"/*.dll deploy
     cp "$SSL"/*.dll deploy
 
-elif [ $2 = "linux" ]; then
+elif [ $1 = "linux" ]; then
 
     sudo cp "$lib"/libssl.so.1.1    deploy
     sudo cp "$lib"/libcrypto.so.1.1 deploy
@@ -411,7 +410,7 @@ if [ $os = "windows" ]; then
 
     cp "$VLC"/libvlc*.dll deploy
 
-elif [ $2 = "macOS" ]; then
+elif [ $1 = "macOS" ]; then
 
     mkdir -p deploy/plugins
 
@@ -421,7 +420,7 @@ elif [ $2 = "macOS" ]; then
     cp "$VLC"/lib/libvlccore.9.dylib deploy/libvlccore.dylib
 
 # FIXME Linux: We can't seem to be able to enforce our VLC libraries on ArchLinux.
-#elif [ $2 = "linux" ]; then
+#elif [ $1 = "linux" ]; then
 
     #mkdir -p deploy/vlc/plugins
 
@@ -453,11 +452,11 @@ if [ $os = "windows" ]; then
 
     cp "$libtorrent"/*torrent.dll deploy
 
-elif [ $2 = "macOS" ]; then
+elif [ $1 = "macOS" ]; then
 
     cp "$libtorrent"/libtorrent.dylib deploy
 
-elif [ $2 = "linux" ]; then
+elif [ $1 = "linux" ]; then
 
     cp "$libtorrent"/libtorrent*.so* deploy
 fi
@@ -466,13 +465,13 @@ fi
 # Boost
 #--------------------------------------------------------------------------------------------------
 
-if [ $2 = "macOS" ]; then
+if [ $1 = "macOS" ]; then
 
     echo "COPYING Boost"
 
     cp "$Boost"/libboost*.dylib deploy
 
-elif [ $2 = "linux" ]; then
+elif [ $1 = "linux" ]; then
 
     echo "COPYING Boost"
 
@@ -483,7 +482,7 @@ fi
 # Sky
 #--------------------------------------------------------------------------------------------------
 
-if [ "$3" != "tools" ]; then
+if [ "$2" != "tools" ]; then
 
     echo "COPYING Sky"
 
@@ -496,7 +495,7 @@ if [ "$3" != "tools" ]; then
         cp lib/*SkTorrent.* deploy
         cp lib/*SkBackend.* deploy
 
-    elif [ $2 = "macOS" ]; then
+    elif [ $1 = "macOS" ]; then
 
         cp lib/libSkCore.dylib    deploy
         cp lib/libSkGui.dylib     deploy
@@ -505,7 +504,7 @@ if [ "$3" != "tools" ]; then
         cp lib/libSkTorrent.dylib deploy
         cp lib/libSkBackend.dylib deploy
 
-    elif [ $2 = "linux" ]; then
+    elif [ $1 = "linux" ]; then
 
         cp lib/libSkCore.so    deploy
         cp lib/libSkGui.so     deploy
@@ -514,7 +513,7 @@ if [ "$3" != "tools" ]; then
         cp lib/libSkTorrent.so deploy
         cp lib/libSkBackend.so deploy
 
-    elif [ $2 = "android" ]; then
+    elif [ $1 = "android" ]; then
 
         cp lib/libSkCore_*.so    deploy
         cp lib/libSkGui_*.so     deploy

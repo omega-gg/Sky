@@ -16,13 +16,12 @@ matrix:
     - os: linux
       env: QT=qt5 TARGET=amd64
 
-before_install:
-  - docker run -d --name ubuntu -v $PWD:/Sky ${TARGET}/ubuntu:18.04 tail -f /dev/null
-
 script:
+  - docker run -d --name ubuntu -v $PWD:/Sky ${TARGET}/ubuntu:18.04 tail -f /dev/null
   - docker exec -t ubuntu bash -c "cd /Sky;
                                    apt-get update;
                                    apt-get -y install sudo curl git;
+                                   sh environment.sh mingw ${QT} 3rdparty;
                                    sh 3rdparty.sh linux;
                                    sh configure.sh ${QT} linux;
                                    sh build.sh ${QT} linux deploy"
