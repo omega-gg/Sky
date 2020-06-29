@@ -42,7 +42,7 @@ jobs:
   - bash: |
       sh 3rdparty.sh macOS
       sh configure.sh macOS
-      sh build.sh qt5 macOS deploy
+      sh build.sh macOS deploy
       cd deploy
       zip -rq ../Sky.zip *
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
