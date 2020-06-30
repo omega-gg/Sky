@@ -20,7 +20,7 @@ if [ $# != 1 -a $# != 2 ] \
    || \
    [ $1 != "win32" -a $1 != "win64" -a $1 != "macOS" -a $1 != "linux" -a $1 != "android" ] \
    || \
-   [ $# = 2 -a "$2" != "all" ]; then; then
+   [ $# = 2 -a "$2" != "all" ]; then
 
     echo "Usage: 3rdparty <win32 | win64 | macOS | linux | android> [all]"
 
