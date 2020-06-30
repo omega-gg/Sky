@@ -4,19 +4,24 @@ environment:
   matrix:
     - qt: qt4
       platform: win32
+      compiler: mingw
 
     - qt: qt5
       platform: win32
+      compiler: mingw
 
     - qt: qt5
       platform: win64
+      compiler: mingw
 
     - qt: qt5
-      platform: win32-msvc
+      platform: win32
+      compiler: msvc
 
     - qt: qt5
-      platform: win64-msvc
+      platform: win64
+      compiler: msvc
 
 build_script:
-  - sh environment.sh %platform% %qt% all
+  - sh environment.sh %compiler% %qt% all
   - sh build.sh %platform% all
