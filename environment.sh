@@ -21,12 +21,32 @@ replace()
 {
     expression='s/'"$1"'=\"'"$2"'"/'"$1"'=\"'"$3"'"/g'
 
-    sed -i $expression environment.sh
+    apply $expression environment.sh
 
-    sed -i $expression 3rdparty.sh
-    sed -i $expression configure.sh
-    sed -i $expression build.sh
-    sed -i $expression deploy.sh
+    apply $expression 3rdparty.sh
+    apply $expression configure.sh
+    apply $expression build.sh
+    apply $expression deploy.sh
+}
+
+apply()
+{
+    if [ $host = "macOS" ]; then
+
+        sed -i "" $1 $2
+    else
+        sed -i $1 $2
+    fi
+}
+
+#--------------------------------------------------------------------------------------------------
+
+getOs()
+{
+    case `uname` in
+    Darwin*) echo "macOS";;
+    *)       echo "other";;
+    esac
 }
 
 #--------------------------------------------------------------------------------------------------
@@ -43,6 +63,12 @@ if [ $# != 2 -a $# != 3 ] \
 
     exit 1
 fi
+
+#--------------------------------------------------------------------------------------------------
+# Configuration
+#--------------------------------------------------------------------------------------------------
+
+host=$(getOs)
 
 #--------------------------------------------------------------------------------------------------
 # 3rdparty
