@@ -23,5 +23,5 @@ environment:
       compiler: msvc
 
 build_script:
-  - sh environment.sh %compiler% %qt% all
+  - sh environment.sh %compiler% %qt%
   - sh build.sh %platform% all
