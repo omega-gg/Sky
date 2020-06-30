@@ -22,4 +22,4 @@ script:
                                    apt-get update;
                                    apt-get -y install sudo curl git;
                                    sh environment.sh mingw ${QT};
-                                   sh build.sh ${QT} linux all"
+                                   sh build.sh linux all"
