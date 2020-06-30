@@ -44,7 +44,7 @@ fi
 
 cd 3rdparty
 
-if [ "$2" != "all" ]; then
+if [ "$2" = "all" ]; then
 
     sh environment.sh $compiler_win
 fi
