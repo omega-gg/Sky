@@ -55,11 +55,11 @@ getOs()
 
 if [ $# != 2 -a $# != 3 ] \
    || \
-   [ $1 != "gcc" -a $1 != "mingw" -a $1 != "msvc" ] || [ $2 != "qt4" -a $2 != "qt5" ] \
+   [ $1 != "mingw" -a $1 != "msvc" ] || [ $2 != "qt4" -a $2 != "qt5" ] \
    || \
    [ $# = 3 -a "$3" != "all" ]; then
 
-    echo "Usage: environment <gcc | mingw | msvc> <qt4 | qt5> [all]"
+    echo "Usage: environment <mingw | msvc> <qt4 | qt5> [all]"
 
     exit 1
 fi
@@ -81,7 +81,7 @@ if [ "$3" = "all" ]; then
 
     cd "$thirdparty"
 
-    sh environment.sh $1 $2
+    sh environment.sh $1
 
     cd -
 
