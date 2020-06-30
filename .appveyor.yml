@@ -18,7 +18,5 @@ environment:
       platform: win64-msvc
 
 build_script:
-  - sh environment.sh %platform% %qt% 3rdparty
-  - sh 3rdparty.sh %platform%
-  - sh configure.sh %platform%
-  - sh build.sh %platform% deploy
+  - sh environment.sh %platform% %qt% all
+  - sh build.sh %platform% all

@@ -23,6 +23,7 @@ replace()
 
     sed -i $expression environment.sh
 
+    sed -i $expression 3rdparty.sh
     sed -i $expression configure.sh
     sed -i $expression build.sh
     sed -i $expression deploy.sh

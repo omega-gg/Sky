@@ -8,9 +8,7 @@ jobs:
     vmImage: "windows-latest"
   steps:
   - bash: |
-      sh 3rdparty.sh win32
-      sh configure.sh win32
-      sh build.sh win32 deploy
+      sh build.sh win32 all
       cd deploy
       7z a ../Sky.zip *
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
@@ -23,9 +21,7 @@ jobs:
     vmImage: "windows-latest"
   steps:
   - bash: |
-      sh 3rdparty.sh win64
-      sh configure.sh win64
-      sh build.sh win64 deploy
+      sh build.sh win64 all
       cd deploy
       7z a ../Sky.zip *
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
@@ -40,9 +36,7 @@ jobs:
     vmImage: "macOS-latest"
   steps:
   - bash: |
-      sh 3rdparty.sh macOS
-      sh configure.sh macOS
-      sh build.sh macOS deploy
+      sh build.sh macOS all
       cd deploy
       zip -rq ../Sky.zip *
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
@@ -61,9 +55,7 @@ jobs:
       docker exec -t ubuntu bash -c "cd /Sky;
                                      apt-get update;
                                      apt-get -y install sudo curl zip git;
-                                     sh 3rdparty.sh linux;
-                                     sh configure.sh linux;
-                                     sh build.sh linux deploy;
+                                     sh build.sh linux all;
                                      cd deploy;
                                      zip -rq ../Sky.zip *"
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
@@ -80,9 +72,7 @@ jobs:
       docker exec -t ubuntu bash -c "cd /Sky;
                                      apt-get update;
                                      apt-get -y install sudo curl zip git;
-                                     sh 3rdparty.sh linux;
-                                     sh configure.sh linux;
-                                     sh build.sh linux deploy;
+                                     sh build.sh linux all;
                                      cd deploy;
                                      zip -rq ../Sky.zip *"
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
@@ -102,9 +92,7 @@ jobs:
                                      apt-get update;
                                      apt-get -y install sudo curl zip unzip git;
                                      sh 3rdparty.sh linux;
-                                     sh 3rdparty.sh android;
-                                     sh configure.sh android;
-                                     sh build.sh android deploy;
+                                     sh build.sh android all;
                                      cd deploy;
                                      zip -rq ../Sky.zip *"
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip

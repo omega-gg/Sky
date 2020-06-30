@@ -22,6 +22,4 @@ script:
                                    apt-get update;
                                    apt-get -y install sudo curl git;
                                    sh environment.sh gcc ${QT} 3rdparty;
-                                   sh 3rdparty.sh linux;
-                                   sh configure.sh ${QT} linux;
-                                   sh build.sh ${QT} linux deploy"
+                                   sh build.sh ${QT} linux all"

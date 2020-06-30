@@ -94,9 +94,24 @@ if [ $# != 1 -a $# != 2 ] \
    || \
    [ $# = 2 -a "$2" != "deploy" -a "$2" != "tools" -a "$2" != "clean" ]; then
 
-    echo "Usage: build <win32 | win64 | macOS | linux | android> [deploy | tools | clean]"
+    echo "Usage: build <win32 | win64 | macOS | linux | android> [all | deploy | tools | clean]"
 
     exit 1
+fi
+
+#--------------------------------------------------------------------------------------------------
+# All
+#--------------------------------------------------------------------------------------------------
+
+if [ "$2" = "all" ]; then
+
+    sh 3rdparty.sh $1 all
+
+    sh configure.sh $1
+
+    sh build.sh $1 deploy
+
+    exit 0
 fi
 
 #--------------------------------------------------------------------------------------------------

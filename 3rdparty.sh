@@ -8,14 +8,21 @@ set -e
 source="https://github.com/omega-gg/3rdparty"
 
 #--------------------------------------------------------------------------------------------------
+# environment
+
+compiler_win="mingw"
+
+#--------------------------------------------------------------------------------------------------
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# != 1 ] \
+if [ $# != 1 -a $# != 2 ] \
    || \
-   [ $1 != "win32" -a $1 != "win64" -a $1 != "macOS" -a $1 != "linux" -a $1 != "android" ]; then
+   [ $1 != "win32" -a $1 != "win64" -a $1 != "macOS" -a $1 != "linux" -a $1 != "android" ] \
+   || \
+   [ $# = 2 -a "$2" != "all" ]; then; then
 
-    echo "Usage: 3rdparty <win32 | win64 | macOS | linux | android>"
+    echo "Usage: 3rdparty <win32 | win64 | macOS | linux | android> [all]"
 
     exit 1
 fi
@@ -36,5 +43,10 @@ fi
 #--------------------------------------------------------------------------------------------------
 
 cd 3rdparty
+
+if [ "$2" != "all" ]; then
+
+    sh environment.sh $compiler_win
+fi
 
 sh generate.sh $1
