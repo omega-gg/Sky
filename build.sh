@@ -157,7 +157,7 @@ elif [ $1 = "android" ]; then
 
     if [ $host != "linux" ]; then
 
-        echo "You have to cross-compile $2 from Linux (preferably Ubuntu)."
+        echo "You have to cross-compile $1 from Linux (preferably Ubuntu)."
 
         exit 1
     fi
