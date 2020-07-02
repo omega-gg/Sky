@@ -22,6 +22,8 @@ contains(QT_MAJOR_VERSION, 5) {
     win32:QT += winextras
 
     unix:!macx:!android:QT += x11extras
+
+    android:QT += androidextras
 }
 
 win32:CONFIG += dll

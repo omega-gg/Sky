@@ -288,6 +288,10 @@ public: // Interface
 #endif
 
 public: // Static functions
+#if defined(QT_LATEST) && defined(Q_OS_ANDROID)
+    Q_INVOKABLE static void hideSplash(int duration = 0);
+#endif
+
 #ifdef QT_4
     Q_INVOKABLE static QPixmap takeItemShot(QGraphicsObject * item,
                                             const QColor    & background = Qt::transparent);

@@ -25,6 +25,8 @@ import Sky     1.0
 
 BaseButtonTouch
 {
+    id: buttonTouch
+
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
@@ -61,8 +63,8 @@ BaseButtonTouch
 
         anchors.fill: parent
 
-        anchors.leftMargin : label.padding
-        anchors.rightMargin: label.padding
+        anchors.leftMargin : buttonTouch.padding
+        anchors.rightMargin: buttonTouch.padding
 
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment  : Text.AlignVCenter
