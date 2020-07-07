@@ -1001,6 +1001,8 @@ QRect WViewPrivate::getGeometryDefault(const QRect & rect) const
     int width  = sk->defaultWidth ();
     int height = sk->defaultHeight();
 
+    int ratio = sk->defaultMargins();
+
     int left;
     int right;
     int top;
@@ -1008,11 +1010,11 @@ QRect WViewPrivate::getGeometryDefault(const QRect & rect) const
 
     if (width > rect.width() || height > rect.height())
     {
-        left = rect.width() / 8;
+        left = rect.width() / ratio;
 
         right = left;
 
-        top = rect.height() / 8;
+        top = rect.height() / ratio;
 
         bottom = top;
     }
@@ -1020,7 +1022,7 @@ QRect WViewPrivate::getGeometryDefault(const QRect & rect) const
     {
         if (width == -1)
         {
-            left = rect.width() / 8;
+            left = rect.width() / ratio;
 
             right = left;
         }
@@ -1035,7 +1037,7 @@ QRect WViewPrivate::getGeometryDefault(const QRect & rect) const
 
         if (height == -1)
         {
-            top = rect.height() / 8;
+            top = rect.height() / ratio;
 
             bottom = top;
         }

@@ -128,6 +128,8 @@ void WControllerApplicationPrivate::init()
     defaultWidth  = -1;
     defaultHeight = -1;
 
+    defaultMargins = 8;
+
     screenDimEnabled   = true;
     screenSaverEnabled = true;
 
@@ -1589,6 +1591,24 @@ void WControllerApplication::setDefaultHeight(int height)
     d->defaultHeight = height;
 
     emit defaultHeightChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+int WControllerApplication::defaultMargins() const
+{
+    Q_D(const WControllerApplication); return d->defaultMargins;
+}
+
+void WControllerApplication::setDefaultMargins(int ratio)
+{
+    Q_D(WControllerApplication);
+
+    if (d->defaultMargins == ratio) return;
+
+    d->defaultMargins = ratio;
+
+    emit defaultMarginsChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

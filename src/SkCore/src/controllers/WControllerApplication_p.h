@@ -91,6 +91,8 @@ public: // Variables
     int defaultWidth;
     int defaultHeight;
 
+    int defaultMargins;
+
     bool screenDimEnabled;
     bool screenSaverEnabled;
 

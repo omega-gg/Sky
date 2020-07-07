@@ -86,6 +86,9 @@ class SK_CORE_EXPORT WControllerApplication : public QObject, public WPrivatable
     Q_PROPERTY(int defaultHeight READ defaultHeight WRITE setDefaultHeight
                NOTIFY defaultHeightChanged)
 
+    Q_PROPERTY(int defaultMargins READ defaultMargins WRITE setDefaultMargins
+               NOTIFY defaultMarginsChanged)
+
     Q_PROPERTY(bool screenDimEnabled READ screenDimEnabled WRITE setScreenDimEnabled
                NOTIFY screenDimEnabledChanged)
 
@@ -290,6 +293,8 @@ signals:
     void defaultWidthChanged ();
     void defaultHeightChanged();
 
+    void defaultMarginsChanged();
+
     void screenDimEnabledChanged  ();
     void screenSaverEnabledChanged();
 
@@ -339,6 +344,9 @@ public: // Properties
 
     int  defaultHeight() const;
     void setDefaultHeight(int height);
+
+    int  defaultMargins() const;
+    void setDefaultMargins(int ratio);
 
     bool screenDimEnabled() const;
     void setScreenDimEnabled(bool enabled);
