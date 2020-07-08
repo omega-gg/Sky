@@ -46,8 +46,6 @@ Style
 
     property int buttonTouch_size: dp48
 
-    property int buttonTouch_radius: radius
-
     property int buttonTouch_padding: dp24
 
     property real buttonTouch_opacityA: 0.8
@@ -68,6 +66,16 @@ Style
     property real label_opacity: 0.6
 
     property color label_color: buttonTouch_color
+
+//#LineEdit
+    //---------------------------------------------------------------------------------------------
+    // LineEdit
+
+    property int lineEdit_size: buttonTouch_size
+
+    property real lineEdit_opacity: label_opacity
+
+    property color lineEdit_color: label_color
 
     //---------------------------------------------------------------------------------------------
     // Icons

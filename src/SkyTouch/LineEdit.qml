@@ -23,28 +23,16 @@
 import QtQuick 1.0
 import Sky     1.0
 
-Item
+BaseLineEdit
 {
-    //---------------------------------------------------------------------------------------------
-    // Aliases
-    //---------------------------------------------------------------------------------------------
-
-    property alias background: background
-
-    //---------------------------------------------------------------------------------------------
-    // Style
-
-    property alias radius: background.radius
-
-    property alias backgroundOpacity: background.opacity
-
-    property alias color: background.color
-
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
     anchors.margins: st.margins
+
+    width : st.lineEdit_size
+    height: st.lineEdit_size
 
     //---------------------------------------------------------------------------------------------
     // Childs
@@ -58,9 +46,9 @@ Item
 
         radius: st.radius
 
-        opacity: st.label_opacity
+        opacity: st.lineEdit_opacity
 
-        color: st.label_color
+        color: st.lineEdit_color
 
 //#QT_4
         smooth: true

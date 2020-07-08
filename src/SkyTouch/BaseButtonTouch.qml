@@ -58,7 +58,7 @@ BaseButton
 
         anchors.fill: parent
 
-        radius: st.buttonTouch_radius
+        radius: st.radius
 
         opacity:
         {
