@@ -275,6 +275,28 @@ Item
     property int rectangleBorders_size: border_size
 //#END
 
+//#BaseLineEdit
+    //---------------------------------------------------------------------------------------------
+    // BaseLineEdit
+
+    property int baseLineEdit_durationCursor: ms500
+
+    property int baseLineEdit_height: dp32
+
+    property int baseLineEdit_cursorWidth: dp2
+
+    property int baseLineEdit_maximumLength: 1000
+
+    property bool baseLineEdit_autoSelect: true
+
+    property color baseLineEdit_colorCursor: "#161616"
+
+    property color baseLineEdit_colorText         : text1_color
+    property color baseLineEdit_colorTextSelection: border_colorFocus
+    property color baseLineEdit_colorTextSelected : text2_color
+
+    property color baseLineEdit_colorDefault: text3_color
+
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
