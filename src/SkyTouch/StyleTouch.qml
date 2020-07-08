@@ -73,9 +73,10 @@ Style
 
     property int lineEdit_size: buttonTouch_size
 
-    property real lineEdit_opacity: label_opacity
+    property real lineEdit_opacityA: buttonTouch_opacityA
+    property real lineEdit_opacityB: buttonTouch_opacityB
 
-    property color lineEdit_color: label_color
+    property color lineEdit_color: "#f0f0f0"
 
     //---------------------------------------------------------------------------------------------
     // Icons

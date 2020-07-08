@@ -44,9 +44,12 @@ BaseLineEdit
 
         anchors.fill: parent
 
+        z: -1
+
         radius: st.radius
 
-        opacity: st.lineEdit_opacity
+        opacity: (isFocused || isHovered) ? st.lineEdit_opacityB
+                                          : st.lineEdit_opacityA
 
         color: st.lineEdit_color
 

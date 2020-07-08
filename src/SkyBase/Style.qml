@@ -102,7 +102,7 @@ Item
 //#END
 
     property color text_color         : text1_color
-    property color text_colorCurrent  : "#008cdc"
+    property color text_colorCurrent  : color_highlight
     property color text_colorShadow   : text1_colorShadow
     property color text_colorSunken   : text1_colorSunken
     property color text_colorLink     : text_colorCurrent
@@ -128,7 +128,7 @@ Item
 
     property color border_color     : "#969696"
     property color border_colorLight: "#b4b4b4"
-    property color border_colorFocus: "#00a0f0"
+    property color border_colorFocus: color_highlight
 
     property alias border_filter     : border_filter
     property alias border_filterFocus: border_filterFocus
@@ -159,7 +159,7 @@ Item
 
     property color icon_colorA      : icon1_colorA
     property color icon_colorB      : icon1_colorB
-    property color icon_colorActiveA: "#008cdc"
+    property color icon_colorActiveA: color_highlight
     property color icon_colorActiveB: icon_colorActiveA
     property color icon_colorShadow : icon1_colorShadow
     property color icon_colorSunken : icon1_colorSunken

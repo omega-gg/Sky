@@ -255,7 +255,7 @@ Style
     property color buttonPush_colorPressHoverA: buttonPush_colorHoverA
     property color buttonPush_colorPressHoverB: buttonPush_colorHoverB
 
-    property color buttonPush_colorHighlightA: "#008cdc"
+    property color buttonPush_colorHighlightA: color_highlight
     property color buttonPush_colorHighlightB: buttonPush_colorHighlightA
 
     property color buttonPush_colorHighlightHoverA: "#00a0f0"
@@ -748,7 +748,7 @@ Style
     property real sliderStream_opacityProgressA: 0.5
     property real sliderStream_opacityProgressB: 1.0
 
-    property color sliderStream_colorBarA: "#008cdc"
+    property color sliderStream_colorBarA: color_highlight
     property color sliderStream_colorBarB: sliderStream_colorBarA
 
     property color sliderStream_colorBarHoverA: "#00a0f0"
@@ -840,7 +840,7 @@ Style
 
     property color wallVideo_colorPlayer: "black"
 
-    property color wallVideo_colorShadow: "#008cdc"
+    property color wallVideo_colorShadow: color_highlight
 
     property alias wallVideo_filterShadow: wallVideo_filterShadow
 
@@ -1147,6 +1147,11 @@ Style
 //#END
 
     //---------------------------------------------------------------------------------------------
+    // Border
+
+    border_colorFocus: "#00a0f0"
+
+    //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
 
@@ -1198,7 +1203,7 @@ Style
         text_raised = Text.Normal;
         text_sunken = text_raised;
 
-        text_colorCurrent = "#008cdc";
+        text_colorCurrent = color_highlight;
         text_colorLink    = text_colorCurrent;
 
         text1_color = "#484848";
@@ -1284,7 +1289,7 @@ Style
         buttonPush_colorPressHoverA = buttonPush_colorHoverA;
         buttonPush_colorPressHoverB = buttonPush_colorHoverB;
 
-        buttonPush_colorHighlightA = "#008cdc";
+        buttonPush_colorHighlightA = color_highlight;
         buttonPush_colorHighlightB = buttonPush_colorHighlightA;
 
         buttonPush_colorHighlightHoverA = "#00a0f0";
@@ -1397,7 +1402,7 @@ Style
         //-----------------------------------------------------------------------------------------
         // SliderStream
 
-        sliderStream_colorBarA = "#008cdc"
+        sliderStream_colorBarA = color_highlight;
         sliderStream_colorBarB = sliderStream_colorBarA;
 
         sliderStream_colorBarHoverA = "#00a0f0";
@@ -1486,7 +1491,7 @@ Style
         text_sunken = text_raised;
 
         text_colorCurrent = "#00b4ff";
-        text_colorLink    = "#008cdc";
+        text_colorLink    = color_highlight;
 
         text1_color = "white";
         text2_color = text1_color;
@@ -1497,7 +1502,7 @@ Style
 
         border_color      = "#242424";
         border_colorLight = border_color;
-        border_colorFocus = "#008cdc";
+        border_colorFocus = color_highlight;
 
 //#Window
         //-----------------------------------------------------------------------------------------
@@ -1574,7 +1579,7 @@ Style
         buttonPush_colorHighlightA = "#0078c8";
         buttonPush_colorHighlightB = buttonPush_colorHighlightA;
 
-        buttonPush_colorHighlightHoverA = "#008cdc";
+        buttonPush_colorHighlightHoverA = color_highlight;
         buttonPush_colorHighlightHoverB = buttonPush_colorHighlightHoverA;
 
         buttonPush_colorCheckA = buttonPush_colorHighlightA;
@@ -1684,7 +1689,7 @@ Style
         //-----------------------------------------------------------------------------------------
         // SliderStream
 
-        sliderStream_colorBarA = "#008cdc";
+        sliderStream_colorBarA = color_highlight;
         sliderStream_colorBarB = sliderStream_colorBarA;
 
         sliderStream_colorBarHoverA = "#00a0f0";
@@ -1731,7 +1736,7 @@ Style
 
         itemList_colorContextualHoverB = itemList_colorPressB;
 
-        itemList_colorSelectFocusA = "#008cdc";
+        itemList_colorSelectFocusA = color_highlight;
         itemList_colorSelectFocusB = itemList_colorSelectFocusA;
 
         itemList_colorCurrentA = itemList_colorDefaultA;
@@ -1753,7 +1758,7 @@ Style
         itemTab_colorContextualHoverA = "#808080";
         itemTab_colorContextualHoverB = itemTab_colorContextualHoverA;
 
-        itemTab_colorHighlightContextualA = "#008cdc";
+        itemTab_colorHighlightContextualA = color_highlight;
         itemTab_colorHighlightContextualB = itemTab_colorHighlightContextualA;
 //#END
     }
@@ -1773,7 +1778,7 @@ Style
         text_sunken = Text.Sunken;
 
         text_colorCurrent = "#00b4ff";
-        text_colorLink    = "#008cdc";
+        text_colorLink    = color_highlight;
 
         text1_color = "white";
         text2_color = text1_color;
@@ -1784,7 +1789,7 @@ Style
 
         border_color      = "#161616";
         border_colorLight = "#242424";
-        border_colorFocus = "#008cdc";
+        border_colorFocus = color_highlight;
 
 //#Window
         //-----------------------------------------------------------------------------------------
@@ -1858,14 +1863,14 @@ Style
         buttonPush_colorPressHoverA = "#323232";
         buttonPush_colorPressHoverB = "#646464";
 
-        buttonPush_colorHighlightA = "#008cdc";
+        buttonPush_colorHighlightA = color_highlight;
         buttonPush_colorHighlightB = "#003ca0";
 
         buttonPush_colorHighlightHoverA = "#00a0f0";
         buttonPush_colorHighlightHoverB = "#0050b4";
 
         buttonPush_colorCheckA = "#0050b4";
-        buttonPush_colorCheckB = "#008cdc";
+        buttonPush_colorCheckB = color_highlight;
 
         buttonPush_colorCheckHoverA = buttonPush_colorCheckA;
         buttonPush_colorCheckHoverB = "#00b4ff";
