@@ -28,6 +28,12 @@ contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_LATEST
 }
 
+android {
+    DEFINES += SK_MOBILE
+} else {
+    DEFINES += SK_DESKTOP
+}
+
 !win32-msvc*:QMAKE_CXXFLAGS += -std=c++11
 
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"

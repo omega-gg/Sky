@@ -460,7 +460,7 @@ void WViewPrivate::init(QQuickItem * item)
         geometryNormal = wControllerView->availableGeometry();
     }
 
-#ifndef Q_OS_ANDROID
+#ifdef SK_DESKTOP
     geometryNormal = getGeometryDefault(geometryNormal);
 #endif
 
@@ -994,7 +994,7 @@ void WViewPrivate::setTouch(int id)
 
 //-------------------------------------------------------------------------------------------------
 
-#ifndef Q_OS_ANDROID
+#ifdef SK_DESKTOP
 
 QRect WViewPrivate::getGeometryDefault(const QRect & rect) const
 {
@@ -1329,13 +1329,13 @@ void WViewPrivate::onGeometryChanged()
     updateRatio();
 #endif
 
-#ifdef Q_OS_ANDROID
-    q->setGeometry(q->availableGeometry());
-#else
+#ifdef SK_DESKTOP
     if (maximized == false && fullScreen == false)
     {
         q->checkPosition();
     }
+#else
+    q->setGeometry(q->availableGeometry());
 #endif
 
     emit q->availableGeometryChanged();
@@ -1643,7 +1643,7 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 
 /* Q_INVOKABLE */ QRect WView::getDefaultGeometry() const
 {
-#ifndef Q_OS_ANDROID
+#ifdef SK_DESKTOP
     Q_D(const WView);
 #endif
 
@@ -1654,10 +1654,10 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
         rect = wControllerView->availableGeometry();
     }
 
-#ifdef Q_OS_ANDROID
-    return rect;
-#else
+#ifdef SK_DESKTOP
     return d->getGeometryDefault(rect);
+#else
+    return rect;
 #endif
 }
 
@@ -1685,7 +1685,7 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 
 /* Q_INVOKABLE */ void WView::checkPosition()
 {
-#ifdef Q_OS_ANDROID
+#ifndef SK_DESKTOP
     return;
 #else
     QRect geometry = availableGeometry();

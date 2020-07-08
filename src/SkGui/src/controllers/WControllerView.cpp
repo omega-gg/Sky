@@ -107,10 +107,10 @@ void WControllerViewPrivate::init()
     opengl = true;
 #endif
 
-#ifdef Q_OS_ANDROID
-    fade = false;
-#else
+#ifdef SK_DESKTOP
     fade = true;
+#else
+    fade = false;
 #endif
 
     loadMode = WControllerView::LoadAlways;
