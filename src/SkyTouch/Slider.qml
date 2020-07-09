@@ -23,8 +23,24 @@
 import QtQuick 1.0
 import Sky     1.0
 
-BaseButton
+BaseSlider
 {
+    id: slider
+
+    //---------------------------------------------------------------------------------------------
+    // Aliases
+    //---------------------------------------------------------------------------------------------
+
+    property int margins      : st.slider_margins
+    property int marginsHandle: st.slider_marginsHandle
+
+    //---------------------------------------------------------------------------------------------
+    // Style
+
+    property color colorHandle     : st.slider_colorHandle
+    property color colorHandleHover: st.slider_colorHandleHover
+    property color colorHandlePress: st.slider_colorHandlePress
+
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
@@ -46,7 +62,10 @@ BaseButton
 
     anchors.margins: st.margins
 
-    cursor: Qt.PointingHandCursor
+    width : st.slider_size
+    height: st.slider_size
+
+    handle: itemHandle
 
     //---------------------------------------------------------------------------------------------
     // Childs
@@ -58,20 +77,51 @@ BaseButton
 
         anchors.fill: parent
 
-        radius: st.radius
+        anchors.margins: margins
 
-        opacity:
-        {
-            if      (isPressed) return st.buttonTouch_opacityPress;
-            else if (isHovered) return st.buttonTouch_opacityHover;
-            else                return st.buttonTouch_opacity;
-        }
+        radius: height
 
-        color: (isHighlighted || checked) ? st.buttonTouch_colorHighlight
-                                          : st.buttonTouch_color
+        opacity: (isHovered) ? st.slider_opacityHover
+                             : st.slider_opacity
+
+        color: st.slider_color
 
 //#QT_4
         smooth: true
 //#END
+    }
+
+    MouseArea
+    {
+        id: itemHandle
+
+        width : parent.height
+        height: width
+
+        visible: slider.enabled
+
+        acceptedButtons: Qt.NoButton
+
+        hoverEnabled: true
+
+        onXChanged: position = x
+
+        Rectangle
+        {
+            id: handleBackground
+
+            anchors.fill: parent
+
+            anchors.margins: marginsHandle
+
+            radius: height
+
+            color: (handle.containsMouse && slider.pressed == false) ? colorHandleHover
+                                                                     : colorHandle
+
+//#QT_4
+            smooth: true
+//#END
+        }
     }
 }

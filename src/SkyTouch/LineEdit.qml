@@ -48,8 +48,8 @@ BaseLineEdit
 
         radius: st.radius
 
-        opacity: (isFocused || isHovered) ? st.lineEdit_opacityB
-                                          : st.lineEdit_opacityA
+        opacity: (isFocused || isHovered) ? st.lineEdit_opacityHover
+                                          : st.lineEdit_opacity
 
         color: st.lineEdit_color
 

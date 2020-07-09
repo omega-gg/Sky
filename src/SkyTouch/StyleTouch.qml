@@ -48,9 +48,9 @@ Style
 
     property int buttonTouch_padding: dp24
 
-    property real buttonTouch_opacityA: 0.8
-    property real buttonTouch_opacityB: 1.0
-    property real buttonTouch_opacityC: 0.4
+    property real buttonTouch_opacity     : 0.8
+    property real buttonTouch_opacityHover: 1.0
+    property real buttonTouch_opacityPress: 0.4
 
     property color buttonTouch_color         : "#dcdcdc"
     property color buttonTouch_colorHighlight: color_highlight
@@ -73,10 +73,28 @@ Style
 
     property int lineEdit_size: buttonTouch_size
 
-    property real lineEdit_opacityA: buttonTouch_opacityA
-    property real lineEdit_opacityB: buttonTouch_opacityB
+    property real lineEdit_opacity     : buttonTouch_opacity
+    property real lineEdit_opacityHover: buttonTouch_opacityHover
 
     property color lineEdit_color: "#f0f0f0"
+
+//#Slider
+    //---------------------------------------------------------------------------------------------
+    // Slider
+
+    property int slider_size: buttonTouch_size
+
+    property int slider_margins      : dp12
+    property int slider_marginsHandle: dp4
+
+    property real slider_opacity     : label_opacity
+    property real slider_opacityHover: 0.8
+
+    property color slider_color           : "#646464"
+    property color slider_colorHandle     : label_color
+    property color slider_colorHandleHover: "#f0f0f0"
+    property color slider_colorHandlePress: "#c8c8c8"
+//#END
 
     //---------------------------------------------------------------------------------------------
     // Icons
