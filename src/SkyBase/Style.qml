@@ -273,7 +273,6 @@ Item
     // RectangleBorders
 
     property int rectangleBorders_size: border_size
-//#END
 
 //#BaseLineEdit
     //---------------------------------------------------------------------------------------------
@@ -296,6 +295,7 @@ Item
     property color baseLineEdit_colorTextSelected : text2_color
 
     property color baseLineEdit_colorDefault: text3_color
+//#END
 
     //---------------------------------------------------------------------------------------------
     // Functions
