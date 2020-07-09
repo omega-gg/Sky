@@ -23,15 +23,13 @@
 import QtQuick 1.0
 import Sky     1.0
 
-MouseArea
+BaseSlider
 {
     id: slider
 
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
-
-    property bool isHovered: containsMouse
 
     property int margins      : height / 5
     property int marginsHandle: height / 8
@@ -73,28 +71,6 @@ MouseArea
     property alias background: background
     property alias foreground: foreground
 
-    property alias handle: handle
-
-    //---------------------------------------------------------------------------------------------
-    // Model
-
-    property alias model: model
-
-    property alias value   : model.value
-    property alias position: model.position
-
-    property alias minimum: model.minimum
-    property alias maximum: model.maximum
-
-    property alias pageStep  : model.pageStep
-    property alias singleStep: model.singleStep
-
-    //---------------------------------------------------------------------------------------------
-    // Signal
-    //---------------------------------------------------------------------------------------------
-
-    signal handleReleased
-
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
@@ -102,70 +78,11 @@ MouseArea
     width : st.slider_width
     height: st.slider_height
 
-    hoverEnabled: true
-    wheelEnabled: true
-
-    drag.target: handle
-    drag.axis  : Drag.XAxis
-
-    drag.minimumX: model.handleMinimum
-    drag.maximumX: model.handleMaximum
-
-    //---------------------------------------------------------------------------------------------
-    // Events
-    //---------------------------------------------------------------------------------------------
-
-    onPressed:
-    {
-        var pos = mouseX - (handle.width / 2);
-
-        pos = Math.max(model.handleMinimum, pos);
-        pos = Math.min(pos, model.handleMaximum);
-
-        handle.x = pos;
-    }
-
-    onReleased:
-    {
-        position = handle.x;
-
-        handleReleased();
-    }
-
-    onWheeled: if (slider.visible) model.scroll(steps * 2)
-
-    //---------------------------------------------------------------------------------------------
-    // Functions
-    //---------------------------------------------------------------------------------------------
-
-    function moveTo(pos)
-    {
-        pos = Math.max(0, pos);
-        pos = Math.min(pos, maximum);
-
-        value = pos;
-
-        handleReleased();
-    }
+    handle: itemHandle
 
     //---------------------------------------------------------------------------------------------
     // Childs
     //---------------------------------------------------------------------------------------------
-
-    ModelRange
-    {
-        id: model
-
-        handleMaximum: width - handle.width
-
-        onPositionChanged:
-        {
-            if (width > 0 && handle.pressed == false)
-            {
-                handle.x = position;
-            }
-        }
-    }
 
     Rectangle
     {
@@ -236,7 +153,7 @@ MouseArea
 
     MouseArea
     {
-        id: handle
+        id: itemHandle
 
         width : parent.height
         height: width

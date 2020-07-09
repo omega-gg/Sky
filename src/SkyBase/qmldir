@@ -9,3 +9,5 @@ TextBase 1.0 TextBase.qml
 BaseButton 1.0 BaseButton.qml
 
 BaseLineEdit 1.0 BaseLineEdit.qml
+
+BaseSlider 1.0 BaseSlider.qml
