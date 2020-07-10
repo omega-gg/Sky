@@ -84,16 +84,13 @@ Style
 
     property int slider_size: buttonTouch_size
 
-    property int slider_margins      : dp12
-    property int slider_marginsHandle: dp4
+    property int slider_margins: dp6
 
     property real slider_opacity     : label_opacity
     property real slider_opacityHover: 0.8
 
-    property color slider_color           : "#646464"
-    property color slider_colorHandle     : label_color
-    property color slider_colorHandleHover: "#f0f0f0"
-    property color slider_colorHandlePress: "#c8c8c8"
+    property color slider_color           : label_color
+    property color slider_colorFront      : icon1_colorA
 //#END
 
     //---------------------------------------------------------------------------------------------

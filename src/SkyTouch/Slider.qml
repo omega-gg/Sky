@@ -28,18 +28,15 @@ BaseSlider
     id: slider
 
     //---------------------------------------------------------------------------------------------
-    // Aliases
+    // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int margins      : st.slider_margins
-    property int marginsHandle: st.slider_marginsHandle
+    property int margins: st.slider_margins
 
     //---------------------------------------------------------------------------------------------
-    // Style
+    // Private
 
-    property color colorHandle     : st.slider_colorHandle
-    property color colorHandleHover: st.slider_colorHandleHover
-    property color colorHandlePress: st.slider_colorHandlePress
+    property int pMargins: margins * 2
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -54,7 +51,8 @@ BaseSlider
 
     property alias backgroundOpacity: background.opacity
 
-    property alias color: background.color
+    property alias color     : background.color
+    property alias colorFront: foreground.color
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -77,14 +75,38 @@ BaseSlider
 
         anchors.fill: parent
 
-        anchors.margins: margins
-
-        radius: height
+        radius: st.radius
 
         opacity: (isHovered) ? st.slider_opacityHover
                              : st.slider_opacity
 
         color: st.slider_color
+
+//#QT_4
+        smooth: true
+//#END
+    }
+
+    Rectangle
+    {
+        id: foreground
+
+        anchors.left  : parent.left
+        anchors.top   : parent.top
+        anchors.bottom: parent.bottom
+
+        anchors.margins: margins
+
+        width: handle.x + handle.width - pMargins
+
+        radius: st.radius
+
+        visible: (enabled && value > -1)
+
+        opacity: (isHovered) ? st.slider_opacityHover
+                             : st.slider_opacity
+
+        color: st.slider_colorFront
 
 //#QT_4
         smooth: true
@@ -100,28 +122,12 @@ BaseSlider
 
         visible: slider.enabled
 
+        opacity: st.slider_opacityHover
+
         acceptedButtons: Qt.NoButton
 
         hoverEnabled: true
 
         onXChanged: position = x
-
-        Rectangle
-        {
-            id: handleBackground
-
-            anchors.fill: parent
-
-            anchors.margins: marginsHandle
-
-            radius: height
-
-            color: (handle.containsMouse && slider.pressed == false) ? colorHandleHover
-                                                                     : colorHandle
-
-//#QT_4
-            smooth: true
-//#END
-        }
     }
 }
