@@ -67,6 +67,15 @@ Style
 
     property color label_color: buttonTouch_color
 
+//#LabelStream
+    //---------------------------------------------------------------------------------------------
+    // LabelStream
+
+    property int labelStream_width : dp96
+    property int labelStream_height: dp24
+
+    property int labelStream_pixelSize: dp16
+
 //#LineEdit
     //---------------------------------------------------------------------------------------------
     // LineEdit
@@ -89,8 +98,15 @@ Style
     property real slider_opacity     : label_opacity
     property real slider_opacityHover: 0.8
 
-    property color slider_color           : label_color
-    property color slider_colorFront      : icon1_colorA
+    property color slider_color     : label_color
+    property color slider_colorFront: icon1_colorA
+
+//#SliderStream
+    //---------------------------------------------------------------------------------------------
+    // SliderStream
+
+    property color sliderStream_color: color_highlight
+
 //#END
 
     //---------------------------------------------------------------------------------------------

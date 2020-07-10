@@ -6,9 +6,11 @@ ButtonTouchIcon 1.0 ButtonTouchIcon.qml
 
 ButtonsWindow 1.0 ButtonsWindow.qml
 
-BaseLabel 1.0 BaseLabel.qml
-Label     1.0 Label.qml
+BaseLabel   1.0 BaseLabel.qml
+Label       1.0 Label.qml
+LabelStream 1.0 LabelStream.qml
 
 LineEdit 1.0 LineEdit.qml
 
-Slider 1.0 Slider.qml
+Slider       1.0 Slider.qml
+SliderStream 1.0 SliderStream.qml

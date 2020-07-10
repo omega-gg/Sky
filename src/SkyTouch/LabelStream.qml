@@ -23,36 +23,22 @@
 import QtQuick 1.0
 import Sky     1.0
 
-BaseLineEdit
+Label
 {
+    //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+
+    property int currentTime: 0
+
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width : st.lineEdit_size
-    height: st.lineEdit_size
+    width : st.labelStream_width
+    height: st.labelStream_height
 
-    //---------------------------------------------------------------------------------------------
-    // Childs
-    //---------------------------------------------------------------------------------------------
+    text: controllerPlaylist.getPlayerTime(currentTime, 7)
 
-    Rectangle
-    {
-        id: background
-
-        anchors.fill: parent
-
-        z: -1
-
-        radius: st.radius
-
-        opacity: (isFocused || isHovered) ? st.lineEdit_opacityHover
-                                          : st.lineEdit_opacity
-
-        color: st.lineEdit_color
-
-//#QT_4
-        smooth: true
-//#END
-    }
+    font.pixelSize: st.labelStream_pixelSize
 }

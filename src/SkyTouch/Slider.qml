@@ -58,8 +58,6 @@ BaseSlider
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    anchors.margins: st.margins
-
     width : st.slider_size
     height: st.slider_size
 

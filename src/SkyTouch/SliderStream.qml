@@ -23,36 +23,11 @@
 import QtQuick 1.0
 import Sky     1.0
 
-BaseLineEdit
+Slider
 {
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width : st.lineEdit_size
-    height: st.lineEdit_size
-
-    //---------------------------------------------------------------------------------------------
-    // Childs
-    //---------------------------------------------------------------------------------------------
-
-    Rectangle
-    {
-        id: background
-
-        anchors.fill: parent
-
-        z: -1
-
-        radius: st.radius
-
-        opacity: (isFocused || isHovered) ? st.lineEdit_opacityHover
-                                          : st.lineEdit_opacity
-
-        color: st.lineEdit_color
-
-//#QT_4
-        smooth: true
-//#END
-    }
+    colorFront: st.sliderStream_color
 }
