@@ -92,28 +92,46 @@ int extractNumber(const QString & content, int * index)
 
 bool match(const QString & string)
 {
-    QStringList list = string.split(':');
+    QStringList listA = string.split(':');
 
-    foreach (const QString & name, list)
+    foreach (const QString & name, listA)
     {
-        if (name.endsWith('*'))
+        bool result = true;
+
+        QStringList listB = name.split('+');
+
+        foreach (const QString & name, listB)
         {
+            bool match = true;
+
             QString string = name;
 
-            string.chop(1);
-
-            foreach (const QString & define, defines)
+            if (string.startsWith('!'))
             {
-                if (define.startsWith(string))
+                string.remove(0, 1);
+
+                match = false;
+            }
+
+            if (string.endsWith('*'))
+            {
+                string.chop(1);
+
+                foreach (const QString & define, defines)
                 {
-                    return true;
+                    if (define.startsWith(string) != match)
+                    {
+                        result = false;
+                    }
                 }
             }
+            else if (defines.contains(string) != match)
+            {
+                result = false;
+            }
         }
-        else if (defines.contains(name))
-        {
-            return true;
-        }
+
+        if (result) return true;
     }
 
     return false;
@@ -231,25 +249,16 @@ QString scanFile(const QString & input)
 
             bool check;
 
-            if (line.at(3) == '!')
+            string = line.mid(3);
+
+            if (string == "END")
             {
-                string = line.mid(4);
+                line = stream.readLine();
 
-                check = !(match(string));
+                continue;
             }
-            else
-            {
-                string = line.mid(3);
 
-                if (string == "END")
-                {
-                    line = stream.readLine();
-
-                    continue;
-                }
-
-                check = match(string);
-            }
+            check = match(string);
 
             if (check)
             {
