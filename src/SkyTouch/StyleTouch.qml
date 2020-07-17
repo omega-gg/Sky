@@ -33,6 +33,8 @@ Style
     property int margins: dp2
     property int radius : dp4
 
+    property bool isTight: (window.contentWidth < st.dp640)
+
 //#BaseButton
     //---------------------------------------------------------------------------------------------
     // Button
