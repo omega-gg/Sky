@@ -1910,9 +1910,9 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 // Shot
 
 #ifdef QT_4
-/* Q_INVOKABLE */ QPixmap WView::takeShot(int x, int y, int width, int height) const
+/* Q_INVOKABLE */ QImage WView::takeShot(int x, int y, int width, int height) const
 #else
-/* Q_INVOKABLE */ QPixmap WView::takeShot(int x, int y, int width, int height)
+/* Q_INVOKABLE */ QImage WView::takeShot(int x, int y, int width, int height)
 #endif
 {
 #ifdef QT_4
@@ -1930,11 +1930,9 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
         glReadBuffer(GL_FRONT);
 #endif
 
-        QImage image = viewport->grabFrameBuffer().copy(x, y, width, height);
-
-        return QPixmap::fromImage(image);
+        return viewport->grabFrameBuffer().copy(x, y, width, height);
     }
-    else return QPixmap::grabWidget(viewport(), x, y, width, height);
+    else return QPixmap::grabWidget(viewport(), x, y, width, height).toImage();
 #else
 #ifdef Q_OS_WIN
     //---------------------------------------------------------------------------------------------
@@ -1946,9 +1944,7 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
     //---------------------------------------------------------------------------------------------
 #endif
 
-    QImage image = grabWindow().copy(x, y, width, height);
-
-    return QPixmap::fromImage(image);
+    return grabWindow().copy(x, y, width, height);
 #endif
 }
 
@@ -1962,7 +1958,7 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
                                        const QString & format, int quality)
 #endif
 {
-    QImage image = takeShot(x, y, width, height).toImage();
+    QImage image = takeShot(x, y, width, height);
 
     return image.save(fileName, format.C_STR, quality);
 }

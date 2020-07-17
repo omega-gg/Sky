@@ -405,9 +405,9 @@ void WWindowPrivate::init()
 // Shot
 
 #ifdef QT_4
-/* Q_INVOKABLE */ QPixmap WWindow::takeShot(int x, int y, int width, int height) const
+/* Q_INVOKABLE */ QImage WWindow::takeShot(int x, int y, int width, int height) const
 #else
-/* Q_INVOKABLE */ QPixmap WWindow::takeShot(int x, int y, int width, int height)
+/* Q_INVOKABLE */ QImage WWindow::takeShot(int x, int y, int width, int height)
 #endif
 {
 #ifdef QT_4
