@@ -23,6 +23,9 @@
 // Defines
 #define C_STR toLatin1().constData()
 
+// Forward declarations
+void skipLines(QTextStream * stream, QString * content, QString * line);
+
 //-------------------------------------------------------------------------------------------------
 // Global variables
 
@@ -198,13 +201,70 @@ void applyFiles(const QString & path)
 
 //-------------------------------------------------------------------------------------------------
 
-bool skipLines(QTextStream * stream, QString * line, const QString & string)
+bool writeNext(QTextStream * stream, QString * content, QString * line)
 {
     *line = stream->readLine();
 
     if (line->isNull()) return false;
 
-    while (line->startsWith(string) == false)
+    while (line->startsWith("//#") == false)
+    {
+        content->append(*line + '\n');
+
+        *line = stream->readLine();
+
+        if (line->isNull()) return false;
+    }
+
+    return true;
+}
+
+void writeLines(QTextStream * stream, QString * content, QString * line)
+{
+    int count = 0;
+
+    *line = stream->readLine();
+
+    while (line->isNull() == false)
+    {
+        if (writeNext(stream, content, line) == false) return;
+
+        if (line->startsWith("//#ELSE"))
+        {
+            if (count == 0)
+            {
+                skipLines(stream, content, line);
+
+                return;
+            }
+        }
+        else if (line->startsWith("//#END"))
+        {
+            if (count == 0)
+            {
+                stream->readLine();
+
+                return;
+            }
+            else count--;
+        }
+        else count++;
+
+        content->append(line + '\n');
+
+        *line = stream->readLine();
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool skipNext(QTextStream * stream, QString * line)
+{
+    *line = stream->readLine();
+
+    if (line->isNull()) return false;
+
+    while (line->startsWith("//#") == false)
     {
         *line = stream->readLine();
 
@@ -213,6 +273,43 @@ bool skipLines(QTextStream * stream, QString * line, const QString & string)
 
     return true;
 }
+
+void skipLines(QTextStream * stream, QString * content, QString * line)
+{
+    int count = 0;
+
+    *line = stream->readLine();
+
+    while (line->isNull() == false)
+    {
+        if (skipNext(stream, line) == false) return;
+
+        if (line->startsWith("//#ELSE"))
+        {
+            if (count == 0)
+            {
+                writeLines(stream, content, line);
+
+                return;
+            }
+        }
+        else if (line->startsWith("//#END"))
+        {
+            if (count == 0)
+            {
+                stream->readLine();
+
+                return;
+            }
+            else count--;
+        }
+        else count++;
+
+        *line = stream->readLine();
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
 
 QString scanFile(const QString & input)
 {
@@ -245,67 +342,13 @@ QString scanFile(const QString & input)
         }
         else if (line.startsWith("//#"))
         {
-            QString string;
+            QString string = line.mid(3);
 
-            bool check;
-
-            string = line.mid(3);
-
-            if (string == "END")
+            if (match(string))
             {
-                line = stream.readLine();
-
-                continue;
+                writeLines(&stream, &content, &line);
             }
-
-            check = match(string);
-
-            if (check)
-            {
-                line = stream.readLine();
-
-                if (line.isNull()) break;
-
-                while (line.startsWith("//#") == false)
-                {
-                    content.append(line + '\n');
-
-                    line = stream.readLine();
-
-                    if (line.isNull())
-                    {
-                        return content;
-                    }
-                }
-
-                if (line.startsWith("//#ELSE"))
-                {
-                    if (skipLines(&stream, &line, "//#") == false) break;
-                }
-            }
-            else
-            {
-                if (skipLines(&stream, &line, "//#") == false) break;
-
-                if (line.startsWith("//#ELSE"))
-                {
-                    line = stream.readLine();
-
-                    if (line.isNull()) break;
-
-                    while (line.startsWith("//#") == false)
-                    {
-                        content.append(line + '\n');
-
-                        line = stream.readLine();
-
-                        if (line.isNull())
-                        {
-                            return content;
-                        }
-                    }
-                }
-            }
+            else skipLines(&stream, &content, &line);
         }
         else
         {
