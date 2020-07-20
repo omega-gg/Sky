@@ -223,12 +223,8 @@ void writeLines(QTextStream * stream, QString * content, QString * line)
 {
     int count = 0;
 
-    *line = stream->readLine();
-
-    while (line->isNull() == false)
+    while (writeNext(stream, content, line))
     {
-        if (writeNext(stream, content, line) == false) return;
-
         if (line->startsWith("//#ELSE"))
         {
             if (count == 0)
@@ -240,19 +236,20 @@ void writeLines(QTextStream * stream, QString * content, QString * line)
         }
         else if (line->startsWith("//#END"))
         {
-            if (count == 0)
-            {
-                stream->readLine();
+            if (count == 0) return;
 
-                return;
-            }
-            else count--;
+            count--;
         }
-        else count++;
+        else
+        {
+            if (match(line->mid(3)))
+            {
+                writeLines(stream, content, line);
+            }
+            else skipLines(stream, content, line);
 
-        content->append(line + '\n');
-
-        *line = stream->readLine();
+            count++;
+        }
     }
 }
 
@@ -278,12 +275,8 @@ void skipLines(QTextStream * stream, QString * content, QString * line)
 {
     int count = 0;
 
-    *line = stream->readLine();
-
-    while (line->isNull() == false)
+    while (skipNext(stream, line))
     {
-        if (skipNext(stream, line) == false) return;
-
         if (line->startsWith("//#ELSE"))
         {
             if (count == 0)
@@ -295,17 +288,11 @@ void skipLines(QTextStream * stream, QString * content, QString * line)
         }
         else if (line->startsWith("//#END"))
         {
-            if (count == 0)
-            {
-                stream->readLine();
+            if (count == 0) return;
 
-                return;
-            }
-            else count--;
+            count--;
         }
         else count++;
-
-        *line = stream->readLine();
     }
 }
 
@@ -342,13 +329,16 @@ QString scanFile(const QString & input)
         }
         else if (line.startsWith("//#"))
         {
-            QString string = line.mid(3);
-
-            if (match(string))
+            if (match(line.mid(3)))
             {
                 writeLines(&stream, &content, &line);
             }
             else skipLines(&stream, &content, &line);
+
+            if (line.startsWith("//#END"))
+            {
+                line = stream.readLine();
+            }
         }
         else
         {
