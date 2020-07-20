@@ -35,6 +35,15 @@ Style
 
     property bool isTight: (window.contentWidth < st.dp640)
 
+//#Panel
+    //---------------------------------------------------------------------------------------------
+    // Panel
+
+    property real panel_opacity: 0.6
+
+    property color panel_color: "#c8c8c8"
+//#END
+
 //#BaseButton
     //---------------------------------------------------------------------------------------------
     // Button

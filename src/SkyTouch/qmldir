@@ -1,5 +1,7 @@
 StyleTouch 1.0 StyleTouch.qml
 
+Panel 1.0 Panel.qml
+
 BaseButtonTouch 1.0 BaseButtonTouch.qml
 ButtonTouch     1.0 ButtonTouch.qml
 ButtonTouchIcon 1.0 ButtonTouchIcon.qml
