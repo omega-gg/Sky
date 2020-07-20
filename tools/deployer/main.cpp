@@ -93,6 +93,19 @@ int extractNumber(const QString & content, int * index)
 
 //-------------------------------------------------------------------------------------------------
 
+bool matchStar(const QString & string, bool match)
+{
+    foreach (const QString & define, defines)
+    {
+        if (define.startsWith(string) == match)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 bool match(const QString & string)
 {
     QStringList listA = string.split(':');
@@ -120,17 +133,18 @@ bool match(const QString & string)
             {
                 string.chop(1);
 
-                foreach (const QString & define, defines)
+                if (matchStar(string, match) == false)
                 {
-                    if (define.startsWith(string) != match)
-                    {
-                        result = false;
-                    }
+                    result = false;
+
+                    break;
                 }
             }
             else if (defines.contains(string) != match)
             {
                 result = false;
+
+                break;
             }
         }
 

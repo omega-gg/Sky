@@ -41,6 +41,7 @@ Style
 
     property ImageColorFilter button_filterIconA: icon1_filter
     property ImageColorFilter button_filterIconB: icon2_filter
+//#END
 
 //#BaseButtonTouch
     //---------------------------------------------------------------------------------------------
@@ -56,6 +57,7 @@ Style
 
     property color buttonTouch_color         : "#dcdcdc"
     property color buttonTouch_colorHighlight: color_highlight
+//#END
 
 //#BaseLabel
     //---------------------------------------------------------------------------------------------
@@ -68,6 +70,7 @@ Style
     property real label_opacity: 0.6
 
     property color label_color: buttonTouch_color
+//#END
 
 //#LabelStream
     //---------------------------------------------------------------------------------------------
@@ -77,6 +80,7 @@ Style
     property int labelStream_height: dp24
 
     property int labelStream_pixelSize: dp16
+//#END
 
 //#LineEdit
     //---------------------------------------------------------------------------------------------
@@ -88,6 +92,7 @@ Style
     property real lineEdit_opacityHover: buttonTouch_opacityHover
 
     property color lineEdit_color: "#f0f0f0"
+//#END
 
 //#Slider
     //---------------------------------------------------------------------------------------------
@@ -102,13 +107,13 @@ Style
 
     property color slider_color     : label_color
     property color slider_colorFront: icon1_colorA
+//#END
 
 //#SliderStream
     //---------------------------------------------------------------------------------------------
     // SliderStream
 
     property color sliderStream_color: color_highlight
-
 //#END
 
     //---------------------------------------------------------------------------------------------

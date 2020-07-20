@@ -267,12 +267,14 @@ Item
     property int window_resizerSizeTouch: dp16
 
     property color window_color: "#b4b4b4"
+//#END
 
 //#RectangleBorders
     //---------------------------------------------------------------------------------------------
     // RectangleBorders
 
     property int rectangleBorders_size: border_size
+//#END
 
 //#BaseLineEdit
     //---------------------------------------------------------------------------------------------

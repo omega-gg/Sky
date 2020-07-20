@@ -23,7 +23,7 @@
 import QtQuick 1.0
 import Sky     1.0
 
-MouseArea
+BasePanel
 {
     id: panel
 
@@ -31,12 +31,7 @@ MouseArea
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property bool isFocused: activeFocus
-    property bool isHovered: containsMouse
-
     property bool animate: true
-
-    property bool enableFocus: true
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -68,9 +63,9 @@ MouseArea
 
     property alias background: background
 
-    property alias borders: borders
-
     property alias itemContent: content
+
+    property alias borders: borders
 
     //---------------------------------------------------------------------------------------------
     // Style
@@ -79,42 +74,6 @@ MouseArea
     property alias gradient: background.gradient
 
     property alias colorBorder: borders.color
-
-    //---------------------------------------------------------------------------------------------
-    // Settings
-    //---------------------------------------------------------------------------------------------
-
-    acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
-
-    hoverEnabled: true
-    hoverRetain : hoverEnabled
-
-    wheelEnabled: hoverEnabled
-
-    cursor: Qt.ArrowCursor
-
-    //---------------------------------------------------------------------------------------------
-    // Events
-    //---------------------------------------------------------------------------------------------
-
-    onPressed:
-    {
-        if (enableFocus && (mouse.button & Qt.LeftButton))
-        {
-            forceActiveFocus();
-        }
-    }
-
-    onVisibleChanged: if (visible == false) window.clearFocusItem(panel)
-
-    //---------------------------------------------------------------------------------------------
-    // Functions
-    //---------------------------------------------------------------------------------------------
-
-    function focus()
-    {
-        forceActiveFocus();
-    }
 
     //---------------------------------------------------------------------------------------------
     // Childs
