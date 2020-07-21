@@ -374,13 +374,19 @@ echo "COPYING SSL"
 
 if [ $os = "windows" ]; then
 
-    cp "$SSL"/*.dll deploy
-    cp "$SSL"/*.dll deploy
+    if [ $qt = "qt4" ]; then
+
+        cp "$SSL"/libeay32.dll deploy
+        cp "$SSL"/ssleay32.dll deploy
+    else
+        cp "$SSL"/libssl*.dll    deploy
+        cp "$SSL"/libcrypto*.dll deploy
+    fi
 
 elif [ $1 = "linux" ]; then
 
-    sudo cp "$lib"/libssl.so.1.1    deploy
-    sudo cp "$lib"/libcrypto.so.1.1 deploy
+    sudo cp "$lib"/libssl.so*    deploy
+    sudo cp "$lib"/libcrypto.so* deploy
 fi
 
 #--------------------------------------------------------------------------------------------------
