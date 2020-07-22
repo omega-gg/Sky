@@ -34,6 +34,7 @@
 
 // Forward declarations
 class WControllerPlaylistPrivate;
+class WControllerFileReply;
 class WAbstractLoader;
 class WRemoteData;
 
@@ -207,6 +208,9 @@ public: // Static functions
 
     Q_INVOKABLE static QString createSource(const QString & backend, const QString & method,
                                             const QString & label,   const QString & q = QString());
+
+    Q_INVOKABLE static WControllerFileReply * copyBackends(const QString & path,
+                                                           const QString & newPath);
 
     Q_INVOKABLE static WRemoteData * getDataQuery(WAbstractLoader        * loader,
                                                   const WBackendNetQuery & query,

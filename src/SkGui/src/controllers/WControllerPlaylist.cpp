@@ -3090,6 +3090,35 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */
+WControllerFileReply * WControllerPlaylist::copyBackends(const QString & path,
+                                                         const QString & newPath)
+{
+    QStringList fileNames;
+    QStringList newNames;
+
+    QFileInfoList list = QDir(path).entryInfoList(QDir::Files);
+
+    foreach (QFileInfo info, list)
+    {
+        if (info.suffix().toLower() != "vbml") continue;
+
+        fileNames.append(info.filePath());
+
+        newNames.append(newPath + info.fileName());
+    }
+
+    if (QFile::exists(newPath))
+    {
+         wControllerFile->startDeleteFolderContent(newPath);
+    }
+    else wControllerFile->startCreateFolder(newPath);
+
+    return wControllerFile->startCopyFiles(fileNames, newNames);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */
 WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
                                                 const WBackendNetQuery & query, QObject * parent)
 {
