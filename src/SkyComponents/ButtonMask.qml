@@ -31,9 +31,9 @@ BaseButton
     // Properties style
     //---------------------------------------------------------------------------------------------
 
-    property ImageColorFilter filterDefault: st.buttonMask_filterDefault
-    property ImageColorFilter filterHover  : st.buttonMask_filterHover
-    property ImageColorFilter filterPress  : st.buttonMask_filterPress
+    property ImageFilterColor filterDefault: st.buttonMask_filterDefault
+    property ImageFilterColor filterHover  : st.buttonMask_filterHover
+    property ImageFilterColor filterPress  : st.buttonMask_filterPress
 
     //---------------------------------------------------------------------------------------------
     // Aliases

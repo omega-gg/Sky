@@ -62,7 +62,7 @@ Item
     property real opacityA: st.scroller_opacityA
     property real opacityB: st.scroller_opacityB
 
-    property ImageColorFilter filter: st.scroller_filter
+    property ImageFilterColor filter: st.scroller_filter
 
     //---------------------------------------------------------------------------------------------
     // Aliases

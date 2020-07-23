@@ -48,8 +48,8 @@ Style
     //---------------------------------------------------------------------------------------------
     // Button
 
-    property ImageColorFilter button_filterIconA: icon1_filter
-    property ImageColorFilter button_filterIconB: icon2_filter
+    property ImageFilterColor button_filterIconA: icon1_filter
+    property ImageFilterColor button_filterIconB: icon2_filter
 //#END
 
 //#BaseButtonTouch

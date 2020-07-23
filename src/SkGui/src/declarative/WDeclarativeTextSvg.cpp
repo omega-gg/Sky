@@ -31,7 +31,7 @@
 // Sk includes
 #include <WControllerView>
 #include <WView>
-#include <WImageColorFilter>
+#include <WImageFilterColor>
 
 #ifdef QT_LATEST
 // Private includes

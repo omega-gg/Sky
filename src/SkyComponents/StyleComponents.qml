@@ -86,9 +86,9 @@ Style
 
     property color rectangleShadow_color: "#161616"
 
-    property ImageColorFilter rectangleShadow_filter: rectangleShadow_filter
+    property ImageFilterColor rectangleShadow_filter: rectangleShadow_filter
 
-    ImageColorFilter
+    ImageFilterColor
     {
         id: rectangleShadow_filter
 
@@ -120,7 +120,7 @@ Style
     property color iconOverlay_colorA: "#00b4ff"
     property color iconOverlay_colorB: iconOverlay_colorA
 
-    property ImageColorFilter iconOverlay_filter: icon2_filter
+    property ImageFilterColor iconOverlay_filter: icon2_filter
 //#END
 
 //#IconLoading
@@ -246,11 +246,11 @@ Style
     property color button_colorConfirmPressA: "#b40000"
     property color button_colorConfirmPressB: button_colorConfirmPressA
 
-    property ImageColorFilter button_filterIconA: icon1_filter
-    property ImageColorFilter button_filterIconB: icon2_filter
+    property ImageFilterColor button_filterIconA: icon1_filter
+    property ImageFilterColor button_filterIconB: icon2_filter
 
-    property ImageColorFilter button_filterIconShadow: icon_filterShadow
-    property ImageColorFilter button_filterIconSunken: icon_filterSunken
+    property ImageFilterColor button_filterIconShadow: icon_filterShadow
+    property ImageFilterColor button_filterIconSunken: icon_filterSunken
 //#END
 
 //#BaseButtonPush
@@ -313,7 +313,7 @@ Style
     property color buttonPushOverlay_colorPressA: buttonPush_colorHighlightHoverA
     property color buttonPushOverlay_colorPressB: buttonPush_colorHighlightHoverB
 
-    property ImageColorFilter buttonPushOverlay_filterIcon: icon2_filter
+    property ImageFilterColor buttonPushOverlay_filterIcon: icon2_filter
 //#END
 
 //#BaseButtonPiano
@@ -429,14 +429,14 @@ Style
     property color buttonMask_colorPressA: icon_colorA
     property color buttonMask_colorPressB: icon_colorB
 
-    property ImageColorFilter buttonMask_filterDefault: icon_filter
-    property ImageColorFilter buttonMask_filterShadow : icon_filterShadow
-    property ImageColorFilter buttonMask_filterSunken : icon_filterSunken
+    property ImageFilterColor buttonMask_filterDefault: icon_filter
+    property ImageFilterColor buttonMask_filterShadow : icon_filterShadow
+    property ImageFilterColor buttonMask_filterSunken : icon_filterSunken
 
     property alias buttonMask_filterHover: buttonMask_filterHover
     property alias buttonMask_filterPress: buttonMask_filterPress
 
-    ImageColorFilter
+    ImageFilterColor
     {
         id: buttonMask_filterHover
 
@@ -447,7 +447,7 @@ Style
         }
     }
 
-    ImageColorFilter
+    ImageFilterColor
     {
         id: buttonMask_filterPress
 
@@ -494,9 +494,9 @@ Style
 
     property color labelRound_colorText: text_color
 
-    property ImageColorFilter labelRound_filterIcon      : icon2_filter
-    property ImageColorFilter labelRound_filterIconShadow: icon2_filterShadow
-    property ImageColorFilter labelRound_filterIconSunken: icon2_filterSunken
+    property ImageFilterColor labelRound_filterIcon      : icon2_filter
+    property ImageFilterColor labelRound_filterIconShadow: icon2_filterShadow
+    property ImageFilterColor labelRound_filterIconSunken: icon2_filterSunken
 //#END
 
 //#LabelRoundIcon
@@ -671,7 +671,7 @@ Style
     property alias scrollBar_filterHorizontalHandleHover: scrollBar_filterHorizontalHandleHover
     property alias scrollBar_filterHorizontalHandlePress: scrollBar_filterHorizontalHandlePress
 
-    ImageColorFilter
+    ImageFilterColor
     {
         id: scrollBar_filterHorizontalDefault
 
@@ -684,7 +684,7 @@ Style
         }
     }
 
-    ImageColorFilter
+    ImageFilterColor
     {
         id: scrollBar_filterHorizontalHandle
 
@@ -697,7 +697,7 @@ Style
         }
     }
 
-    ImageColorFilter
+    ImageFilterColor
     {
         id: scrollBar_filterHorizontalHandleHover
 
@@ -710,7 +710,7 @@ Style
         }
     }
 
-    ImageColorFilter
+    ImageFilterColor
     {
         id: scrollBar_filterHorizontalHandlePress
 
@@ -740,7 +740,7 @@ Style
     property real scroller_opacityA: 0.6
     property real scroller_opacityB: 0.8
 
-    property ImageColorFilter scroller_filter: border_filterFocus
+    property ImageFilterColor scroller_filter: border_filterFocus
 //#END
 
 //#ScrollerList
@@ -902,7 +902,7 @@ Style
 
     property alias wallVideo_filterShadow: wallVideo_filterShadow
 
-    ImageColorFilter
+    ImageFilterColor
     {
         id: wallVideo_filterShadow
 

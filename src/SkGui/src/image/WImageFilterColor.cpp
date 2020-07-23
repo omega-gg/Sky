@@ -20,9 +20,9 @@
 */
 //=================================================================================================
 
-#include "WImageColorFilter.h"
+#include "WImageFilterColor.h"
 
-#ifndef SK_NO_IMAGECOLORFILTER
+#ifndef SK_NO_IMAGEFILTERCOLOR
 
 // Qt includes
 #ifdef QT_LATEST
@@ -169,15 +169,15 @@ const QGradient * WDeclarativeGradient::gradient() const
 }
 
 //=================================================================================================
-// WImageColorFilterPrivate
+// WImageFilterColorPrivate
 //=================================================================================================
 
 #include <private/WImageFilter_p>
 
-class SK_GUI_EXPORT WImageColorFilterPrivate : public WImageFilterPrivate
+class SK_GUI_EXPORT WImageFilterColorPrivate : public WImageFilterPrivate
 {
 public:
-    WImageColorFilterPrivate(WImageFilter * p);
+    WImageFilterColorPrivate(WImageFilter * p);
 
     void init();
 
@@ -192,14 +192,14 @@ public: // Variables
     WDeclarativeGradient * gradient;
 
 protected:
-    W_DECLARE_PUBLIC(WImageColorFilter)
+    W_DECLARE_PUBLIC(WImageFilterColor)
 };
 
 //-------------------------------------------------------------------------------------------------
 
-WImageColorFilterPrivate::WImageColorFilterPrivate(WImageFilter * p) : WImageFilterPrivate(p) {}
+WImageFilterColorPrivate::WImageFilterColorPrivate(WImageFilter * p) : WImageFilterPrivate(p) {}
 
-void WImageColorFilterPrivate::init()
+void WImageFilterColorPrivate::init()
 {
     gradient = NULL;
 }
@@ -208,7 +208,7 @@ void WImageColorFilterPrivate::init()
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-QRect WImageColorFilterPrivate::getMargins(const QImage & image) const
+QRect WImageFilterColorPrivate::getMargins(const QImage & image) const
 {
     const QRgb * constBits = (const QRgb *) image.constBits();
     const QRgb * bits;
@@ -300,7 +300,7 @@ QRect WImageColorFilterPrivate::getMargins(const QImage & image) const
     return QRect(left, top, right + 1, bottom + 1);
 }
 
-QList<QRgb> WImageColorFilterPrivate::getGradientColors(const QGradient * gradient, int size) const
+QList<QRgb> WImageFilterColorPrivate::getGradientColors(const QGradient * gradient, int size) const
 {
     QList<QRgb> colors;
 
@@ -363,22 +363,22 @@ QList<QRgb> WImageColorFilterPrivate::getGradientColors(const QGradient * gradie
 }
 
 //=================================================================================================
-// WImageColorFilter
+// WImageFilterColor
 //=================================================================================================
 
-/* explicit */ WImageColorFilter::WImageColorFilter(QObject * parent)
-    : WImageFilter(new WImageColorFilterPrivate(this), parent)
+/* explicit */ WImageFilterColor::WImageFilterColor(QObject * parent)
+    : WImageFilter(new WImageFilterColorPrivate(this), parent)
 {
-    Q_D(WImageColorFilter); d->init();
+    Q_D(WImageFilterColor); d->init();
 }
 
 //-------------------------------------------------------------------------------------------------
 // WImageFilter implementation
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ bool WImageColorFilter::filter(QImage * image) const
+/* virtual */ bool WImageFilterColor::filter(QImage * image) const
 {
-    Q_D(const WImageColorFilter);
+    Q_D(const WImageFilterColor);
 
     QImage::Format format = image->format();
 
@@ -469,14 +469,14 @@ QList<QRgb> WImageColorFilterPrivate::getGradientColors(const QGradient * gradie
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-QColor WImageColorFilter::color() const
+QColor WImageFilterColor::color() const
 {
-    Q_D(const WImageColorFilter); return d->color;
+    Q_D(const WImageFilterColor); return d->color;
 }
 
-void WImageColorFilter::setColor(const QColor & color)
+void WImageFilterColor::setColor(const QColor & color)
 {
-    Q_D(WImageColorFilter);
+    Q_D(WImageFilterColor);
 
     if (d->color == color) return;
 
@@ -489,14 +489,14 @@ void WImageColorFilter::setColor(const QColor & color)
 
 //-------------------------------------------------------------------------------------------------
 
-WDeclarativeGradient * WImageColorFilter::gradient() const
+WDeclarativeGradient * WImageFilterColor::gradient() const
 {
-    Q_D(const WImageColorFilter); return d->gradient;
+    Q_D(const WImageFilterColor); return d->gradient;
 }
 
-void WImageColorFilter::setGradient(WDeclarativeGradient * gradient)
+void WImageFilterColor::setGradient(WDeclarativeGradient * gradient)
 {
-    Q_D(WImageColorFilter);
+    Q_D(WImageFilterColor);
 
     if (d->gradient == gradient) return;
 
@@ -517,4 +517,4 @@ void WImageColorFilter::setGradient(WDeclarativeGradient * gradient)
     emit gradientChanged();
 }
 
-#endif // SK_NO_IMAGECOLORFILTER
+#endif // SK_NO_IMAGEFILTERCOLOR

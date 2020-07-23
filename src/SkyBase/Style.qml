@@ -133,14 +133,14 @@ Item
     property alias border_filter     : border_filter
     property alias border_filterFocus: border_filterFocus
 
-    ImageColorFilter
+    ImageFilterColor
     {
         id: border_filter
 
         color: border_color
     }
 
-    ImageColorFilter
+    ImageFilterColor
     {
         id: border_filterFocus
 
@@ -189,7 +189,7 @@ Item
 
     //---------------------------------------------------------------------------------------------
 
-    ImageColorFilter
+    ImageFilterColor
     {
         id: icon_filter
 
@@ -200,7 +200,7 @@ Item
         }
     }
 
-    ImageColorFilter
+    ImageFilterColor
     {
         id: icon_filterActive
 
@@ -211,14 +211,14 @@ Item
         }
     }
 
-    ImageColorFilter
+    ImageFilterColor
     {
         id: icon_filterShadow
 
         color: icon_colorShadow
     }
 
-    ImageColorFilter
+    ImageFilterColor
     {
         id: icon_filterSunken
 
@@ -227,7 +227,7 @@ Item
 
     //---------------------------------------------------------------------------------------------
 
-    ImageColorFilter
+    ImageFilterColor
     {
         id: icon2_filter
 
@@ -238,14 +238,14 @@ Item
         }
     }
 
-    ImageColorFilter
+    ImageFilterColor
     {
         id: icon2_filterShadow
 
         color: icon2_colorShadow
     }
 
-    ImageColorFilter
+    ImageFilterColor
     {
         id: icon2_filterSunken
 

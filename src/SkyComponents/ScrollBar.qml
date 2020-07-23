@@ -51,9 +51,9 @@ Item
     property color colorHandleHoverA: st.scrollBar_colorHandleHoverA
     property color colorHandleHoverB: st.scrollBar_colorHandleHoverB
 
-    property ImageColorFilter filterHandle     : st.scrollBar_filterHorizontalHandle
-    property ImageColorFilter filterHandleHover: st.scrollBar_filterHorizontalHandleHover
-    property ImageColorFilter filterHandlePress: st.scrollBar_filterHorizontalHandlePress
+    property ImageFilterColor filterHandle     : st.scrollBar_filterHorizontalHandle
+    property ImageFilterColor filterHandleHover: st.scrollBar_filterHorizontalHandleHover
+    property ImageFilterColor filterHandlePress: st.scrollBar_filterHorizontalHandlePress
 
     //---------------------------------------------------------------------------------------------
     // Private

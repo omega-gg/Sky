@@ -20,8 +20,8 @@
 */
 //=================================================================================================
 
-#ifndef WIMAGECOLORFILTER_H
-#define WIMAGECOLORFILTER_H
+#ifndef WIMAGEFILTERCOLOR_H
+#define WIMAGEFILTERCOLOR_H
 
 // Qt includes
 #ifdef QT_4
@@ -33,13 +33,13 @@
 // Sk includes
 #include <WImageFilter>
 
-#ifndef SK_NO_IMAGECOLORFILTER
+#ifndef SK_NO_IMAGEFILTERCOLOR
 
 // Forward declarations
 #ifdef QT_LATEST
 class QGradient;
 #endif
-class WImageColorFilterPrivate;
+class WImageFilterColorPrivate;
 
 //-------------------------------------------------------------------------------------------------
 // WDeclarativeGradientStop
@@ -133,10 +133,10 @@ private:
 };
 
 //-------------------------------------------------------------------------------------------------
-// WImageColorFilter
+// WImageFilterColor
 //-------------------------------------------------------------------------------------------------
 
-class SK_GUI_EXPORT WImageColorFilter : public WImageFilter
+class SK_GUI_EXPORT WImageFilterColor : public WImageFilter
 {
     Q_OBJECT
 
@@ -146,7 +146,7 @@ class SK_GUI_EXPORT WImageColorFilter : public WImageFilter
                NOTIFY gradientChanged)
 
 public:
-    explicit WImageColorFilter(QObject * parent = NULL);
+    explicit WImageFilterColor(QObject * parent = NULL);
 
 protected: // WImageFilter implementation
     /* virtual */ bool filter(QImage * image) const;
@@ -163,8 +163,8 @@ public: // Properties
     void                   setGradient(WDeclarativeGradient * gradient);
 
 private:
-    W_DECLARE_PRIVATE(WImageColorFilter)
+    W_DECLARE_PRIVATE(WImageFilterColor)
 };
 
-#endif // SK_NO_IMAGECOLORFILTER
-#endif // WIMAGECOLORFILTER_H
+#endif // SK_NO_IMAGEFILTERCOLOR
+#endif // WIMAGEFILTERCOLOR_H

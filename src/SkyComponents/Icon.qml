@@ -40,9 +40,9 @@ ImageScale
 
     property bool enableFilter: true
 
-    property ImageColorFilter filterDefault: st.icon_filter
-    property ImageColorFilter filterShadow : st.icon_filterShadow
-    property ImageColorFilter filterSunken : st.icon_filterSunken
+    property ImageFilterColor filterDefault: st.icon_filter
+    property ImageFilterColor filterShadow : st.icon_filterShadow
+    property ImageFilterColor filterSunken : st.icon_filterSunken
 
     //---------------------------------------------------------------------------------------------
     // Private
