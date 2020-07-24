@@ -56,7 +56,7 @@ Row
         if (window.fullScreen)
         {
             window.fullScreen = false;
-//#!MAC
+//#!MAC+!MOBILE
             // FIXME macOS: We can't go from full screen to normal window right away.
             //              This could be related to the animation.
             window.maximized = false;
