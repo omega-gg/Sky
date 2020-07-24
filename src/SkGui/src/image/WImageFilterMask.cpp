@@ -85,7 +85,11 @@ void WImageFilterMaskPrivate::updateMask()
         return;
     }
 
+#ifdef QT_4
+    mask = QImage(width, height, QImage::Format_ARGB32_Premultiplied);
+#else
     mask = QImage(width, height, QImage::Format_Alpha8);
+#endif
 
     mask.fill(Qt::transparent);
 
@@ -124,7 +128,11 @@ void WImageFilterMaskPrivate::updateMask()
 
     if (d->mask.size() == image->size())
     {
+#ifdef QT_4
+        image->setAlphaChannel(d->mask.alphaChannel());
+#else
         image->setAlphaChannel(d->mask);
+#endif
 
         return true;
     }
