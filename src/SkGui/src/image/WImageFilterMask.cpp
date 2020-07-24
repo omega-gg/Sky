@@ -24,6 +24,9 @@
 
 #ifndef SK_NO_IMAGEFILTERMASK
 
+// Qt includes
+#include <QPainter>
+
 //=================================================================================================
 // WImageFilterMaskPrivate
 //=================================================================================================
@@ -37,6 +40,18 @@ public:
 
     void init();
 
+    void updateMask();
+
+public: // Variables
+    QImage mask;
+
+    bool update;
+
+    int width;
+    int height;
+
+    int radius;
+
 protected:
     W_DECLARE_PUBLIC(WImageFilterMask)
 };
@@ -45,7 +60,47 @@ protected:
 
 WImageFilterMaskPrivate::WImageFilterMaskPrivate(WImageFilter * p) : WImageFilterPrivate(p) {}
 
-void WImageFilterMaskPrivate::init() {}
+void WImageFilterMaskPrivate::init()
+{
+    update = false;
+
+    width  = 32;
+    height = 32;
+
+    radius = 8;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WImageFilterMaskPrivate::updateMask()
+{
+    if (update == false) return;
+
+    update = false;
+
+    if (width < 1 || height < 1 || radius < 1)
+    {
+        mask = QImage();
+
+        return;
+    }
+
+    mask = QImage(width, height, QImage::Format_Alpha8);
+
+    mask.fill(Qt::transparent);
+
+    QPainter painter(&mask);
+
+    painter.setRenderHint(QPainter::Antialiasing);
+
+    QPainterPath path;
+
+    path.addRoundedRect(0, 0, width, height, radius, radius);
+
+    painter.fillPath(path, Qt::black);
+
+    painter.drawPath(path);
+}
 
 //=================================================================================================
 // WImageFilterMask
@@ -61,17 +116,85 @@ void WImageFilterMaskPrivate::init() {}
 // WImageFilter implementation
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ bool WImageFilterMask::filter(QImage * image) const
+/* virtual */ bool WImageFilterMask::filter(QImage * image)
 {
-    QImage::Format format = image->format();
+    Q_D(WImageFilterMask);
 
-    if (format != QImage::Format_RGB32
-        &&
-        format != QImage::Format_ARGB32
-        &&
-        format != QImage::Format_ARGB32_Premultiplied) return false;
+    d->updateMask();
 
-    return true;
+    if (d->mask.size() == image->size())
+    {
+        image->setAlphaChannel(d->mask);
+
+        return true;
+    }
+    else return false;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Properties
+//-------------------------------------------------------------------------------------------------
+
+int WImageFilterMask::width() const
+{
+    Q_D(const WImageFilterMask); return d->width;
+}
+
+void WImageFilterMask::setWidth(int width)
+{
+    Q_D(WImageFilterMask);
+
+    if (d->width == width) return;
+
+    d->width = width;
+
+    d->update = true;
+
+    refreshFilter();
+
+    emit widthChanged();
+}
+
+int WImageFilterMask::height() const
+{
+    Q_D(const WImageFilterMask); return d->height;
+}
+
+void WImageFilterMask::setHeight(int height)
+{
+    Q_D(WImageFilterMask);
+
+    if (d->height == height) return;
+
+    d->height = height;
+
+    d->update = true;
+
+    refreshFilter();
+
+    emit heightChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+int WImageFilterMask::radius() const
+{
+    Q_D(const WImageFilterMask); return d->radius;
+}
+
+void WImageFilterMask::setRadius(int radius)
+{
+    Q_D(WImageFilterMask);
+
+    if (d->radius == radius) return;
+
+    d->radius = radius;
+
+    d->update = true;
+
+    refreshFilter();
+
+    emit widthChanged();
 }
 
 #endif // SK_NO_IMAGEFILTERMASK

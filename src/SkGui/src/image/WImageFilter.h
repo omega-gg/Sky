@@ -39,7 +39,7 @@ class SK_GUI_EXPORT WImageFilter : public QObject, public WPrivatable
 {
     Q_OBJECT
 
-    Q_PROPERTY(bool autoUpdate READ autoUpdate WRITE setAutoUpdate NOTIFY autoUpdateChanged)
+    Q_PROPERTY(bool filterDelay READ filterDelay WRITE setFilterDelay NOTIFY filterDelayChanged)
 
 public:
     explicit WImageFilter(QObject * parent = NULL);
@@ -47,13 +47,11 @@ protected:
     WImageFilter(WImageFilterPrivate * p, QObject * parent = NULL);
 
 public: // Interface
-    bool applyFilter(QImage  * image)  const;
-    bool applyFilter(QPixmap * pixmap) const;
-
-    Q_INVOKABLE void updateFilter();
+    bool applyFilter(QImage  * image);
+    bool applyFilter(QPixmap * pixmap);
 
 protected: // Abstract functions
-    virtual bool filter(QImage * image) const = 0;
+    virtual bool filter(QImage * image) = 0;
 
 protected slots:
     void refreshFilter();
@@ -61,11 +59,11 @@ protected slots:
 signals:
     void filterUpdated();
 
-    void autoUpdateChanged();
+    void filterDelayChanged();
 
 public: // Properties
-    bool autoUpdate() const;
-    void setAutoUpdate(bool autoUpdate);
+    int  filterDelay() const;
+    void setFilterDelay(int delay);
 
 private:
     W_DECLARE_PRIVATE(WImageFilter)

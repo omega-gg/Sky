@@ -59,6 +59,27 @@ BaseButtonTouch
     height: width
 
     //---------------------------------------------------------------------------------------------
+    // Functions
+    //---------------------------------------------------------------------------------------------
+
+    function getFilterDefault()
+    {
+        if (isHighlighted || checked)
+        {
+             return st.button_filterIconB;
+        }
+        else return st.button_filterIconA;
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Virtual
+
+    /* virtual */ function getFilter()
+    {
+        return getFilterDefault();
+    }
+
+    //---------------------------------------------------------------------------------------------
     // Childs
     //---------------------------------------------------------------------------------------------
 
@@ -70,17 +91,6 @@ BaseButtonTouch
 
         sourceSize.height: pSize
 
-        filter:
-        {
-            if (enableFilter)
-            {
-                if (isHighlighted || checked)
-                {
-                     return st.button_filterIconB;
-                }
-                else return st.button_filterIconA;
-            }
-            else return null;
-        }
+        filter: (enableFilter) ? getFilter() : null
     }
 }

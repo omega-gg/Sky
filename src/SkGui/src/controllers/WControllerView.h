@@ -59,7 +59,8 @@ class SK_GUI_EXPORT WControllerView : public WController
 
     Q_PROPERTY(LoadMode loadMode READ loadMode WRITE setLoadMode NOTIFY loadModeChanged)
 
-    Q_PROPERTY(int scaleDelay READ scaleDelay WRITE setScaleDelay NOTIFY scaleDelayChanged)
+    Q_PROPERTY(int scaleDelay  READ scaleDelay  WRITE setScaleDelay NOTIFY scaleDelayChanged)
+    Q_PROPERTY(int filterDelay READ filterDelay WRITE setFilterDelay NOTIFY filterDelayChanged)
 
 public: // Enums
     enum LoadMode { LoadAlways, LoadVisible };
@@ -126,7 +127,8 @@ signals:
 
     void loadModeChanged();
 
-    void scaleDelayChanged();
+    void scaleDelayChanged ();
+    void filterDelayChanged();
 
 public: // Properties
     bool opengl() const;
@@ -142,6 +144,9 @@ public: // Properties
 
     int  scaleDelay() const;
     void setScaleDelay(int delay);
+
+    int  filterDelay() const;
+    void setFilterDelay(int delay);
 
 private:
     W_DECLARE_PRIVATE   (WControllerView)

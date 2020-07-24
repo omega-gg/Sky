@@ -115,7 +115,8 @@ void WControllerViewPrivate::init()
 
     loadMode = WControllerView::LoadAlways;
 
-    scaleDelay = 220;
+    scaleDelay  = 220;
+    filterDelay =  20;
 
 #ifdef SK_SOFTWARE
     QQuickWindow::setSceneGraphBackend(QSGRendererInterface::Software);
@@ -512,6 +513,22 @@ void WControllerView::setScaleDelay(int delay)
     d->scaleDelay = delay;
 
     emit scaleDelayChanged();
+}
+
+int WControllerView::filterDelay() const
+{
+    Q_D(const WControllerView); return d->filterDelay;
+}
+
+void WControllerView::setFilterDelay(int delay)
+{
+    Q_D(WControllerView);
+
+    if (d->filterDelay == delay) return;
+
+    d->filterDelay = delay;
+
+    emit filterDelayChanged();
 }
 
 #endif // SK_NO_CONTROLLERVIEW

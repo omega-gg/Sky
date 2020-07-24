@@ -78,6 +78,7 @@ public: // Variables
     WControllerView::LoadMode loadMode;
 
     int scaleDelay;
+    int filterDelay;
 
 protected:
     W_DECLARE_PUBLIC(WControllerView)

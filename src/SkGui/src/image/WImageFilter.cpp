@@ -27,6 +27,9 @@
 // Qt includes
 #include <QPixmap>
 
+// Sk includes
+#include <WControllerView>
+
 //-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
@@ -37,8 +40,17 @@ WImageFilterPrivate::WImageFilterPrivate(WImageFilter * p) : WPrivate(p) {}
 
 void WImageFilterPrivate::init()
 {
-    update     = false;
-    autoUpdate = true;
+    Q_Q(WImageFilter);
+
+    update = false;
+
+    filterDelay = wControllerView->filterDelay();
+
+    timer.setInterval(filterDelay);
+
+    timer.setSingleShot(true);
+
+    QObject::connect(&timer, SIGNAL(timeout()), q, SIGNAL(filterUpdated()));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -64,7 +76,7 @@ WImageFilter::WImageFilter(WImageFilterPrivate * p, QObject * parent)
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-bool WImageFilter::applyFilter(QImage * image) const
+bool WImageFilter::applyFilter(QImage * image)
 {
     Q_ASSERT(image);
 
@@ -73,7 +85,7 @@ bool WImageFilter::applyFilter(QImage * image) const
     return filter(image);
 }
 
-bool WImageFilter::applyFilter(QPixmap * pixmap) const
+bool WImageFilter::applyFilter(QPixmap * pixmap)
 {
     Q_ASSERT(pixmap);
 
@@ -89,13 +101,6 @@ bool WImageFilter::applyFilter(QPixmap * pixmap) const
 }
 
 //-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE */ void WImageFilter::updateFilter()
-{
-    emit filterUpdated();
-}
-
-//-------------------------------------------------------------------------------------------------
 // Protected slots
 //-------------------------------------------------------------------------------------------------
 
@@ -103,37 +108,36 @@ void WImageFilter::refreshFilter()
 {
     Q_D(WImageFilter);
 
-    if (d->autoUpdate)
+    if (d->filterDelay < 0)
     {
-        updateFilter();
+        emit filterUpdated();
     }
-    else d->update = true;
+    else d->timer.start();
 }
 
 //-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-bool WImageFilter::autoUpdate() const
+int WImageFilter::filterDelay() const
 {
-    Q_D(const WImageFilter); return d->autoUpdate;
+    Q_D(const WImageFilter); return d->filterDelay;
 }
 
-void WImageFilter::setAutoUpdate(bool autoUpdate)
+void WImageFilter::setFilterDelay(int delay)
 {
     Q_D(WImageFilter);
 
-    if (d->autoUpdate == autoUpdate) return;
+    if (d->filterDelay == delay) return;
 
-    d->autoUpdate = autoUpdate;
+    d->filterDelay = delay;
 
-    if (autoUpdate && d->update)
+    if (delay > -1)
     {
-        updateFilter();
+        d->timer.setInterval(delay);
     }
-    else d->update = false;
 
-    emit autoUpdateChanged();
+    emit filterDelayChanged();
 }
 
 #endif // SK_NO_IMAGEFILTER

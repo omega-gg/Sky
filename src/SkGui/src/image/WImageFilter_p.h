@@ -33,6 +33,10 @@
     We mean it.
 */
 
+// Qt includes
+#include <QTimer>
+
+// Private includes
 #include <private/Sk_p>
 
 #ifndef SK_NO_IMAGEFILTER
@@ -44,9 +48,12 @@ public:
 
     void init();
 
-public:
+public: // Variables
     bool update;
-    bool autoUpdate;
+
+    int filterDelay;
+
+    QTimer timer;
 
 protected:
     W_DECLARE_PUBLIC(WImageFilter)

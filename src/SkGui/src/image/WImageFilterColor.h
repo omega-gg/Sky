@@ -149,7 +149,7 @@ public:
     explicit WImageFilterColor(QObject * parent = NULL);
 
 protected: // WImageFilter implementation
-    /* virtual */ bool filter(QImage * image) const;
+    /* virtual */ bool filter(QImage * image);
 
 signals:
     void colorChanged   ();
