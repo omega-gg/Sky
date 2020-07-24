@@ -187,39 +187,6 @@ void WDeclarativeImageBasePrivate::readDefault()
 
 //-------------------------------------------------------------------------------------------------
 
-void WDeclarativeImageBasePrivate::reload()
-{
-    Q_Q(WDeclarativeImageBase);
-
-    if (q->isComponentComplete() == false) return;
-
-    if (loadMode == WDeclarativeImageBase::LoadVisible && q->isVisible() == false)
-    {
-        pixmapDefault = QPixmap();
-
-        loadLater = true;
-    }
-    else if (urlDefault.isEmpty() == false)
-    {
-        if (sourceDefault == false)
-        {
-            pixmapDefault = QPixmap();
-
-            if (url.isEmpty() == false)
-            {
-                loadUrl();
-            }
-        }
-        else loadDefault();
-    }
-    else if (url.isEmpty() == false)
-    {
-        loadUrl();
-    }
-}
-
-//-------------------------------------------------------------------------------------------------
-
 void WDeclarativeImageBasePrivate::applyRequest()
 {
     Q_Q(WDeclarativeImageBase);
@@ -471,6 +438,39 @@ WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p, Q
 
     d->loadMode     = loadMode;
     d->asynchronous = asynchronous;
+}
+
+//-------------------------------------------------------------------------------------------------s
+
+/* Q_INVOKABLE */ void WDeclarativeImageBase::reload()
+{
+    Q_D(WDeclarativeImageBase);
+
+    if (isComponentComplete() == false) return;
+
+    if (d->loadMode == WDeclarativeImageBase::LoadVisible && isVisible() == false)
+    {
+        d->pixmapDefault = QPixmap();
+
+        d->loadLater = true;
+    }
+    else if (d->urlDefault.isEmpty() == false)
+    {
+        if (d->sourceDefault == false)
+        {
+            d->pixmapDefault = QPixmap();
+
+            if (d->url.isEmpty() == false)
+            {
+                d->loadUrl();
+            }
+        }
+        else d->loadDefault();
+    }
+    else if (d->url.isEmpty() == false)
+    {
+        d->loadUrl();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -895,7 +895,7 @@ void WDeclarativeImageBase::setSourceSize(const QSize & size)
 
     d->setExplicitSize(d->sourceSize.isValid());
 
-    d->reload();
+    reload();
 
     emit sourceSizeChanged();
 }
@@ -910,7 +910,7 @@ void WDeclarativeImageBase::resetSourceSize()
 
     d->setExplicitSize(false);
 
-    d->reload();
+    reload();
 
     emit sourceSizeChanged();
 }
@@ -930,7 +930,7 @@ void WDeclarativeImageBase::setSourceArea(const QSize & size)
 
     d->sourceArea = size;
 
-    d->reload();
+    reload();
 
     emit sourceAreaChanged();
 }
@@ -943,7 +943,7 @@ void WDeclarativeImageBase::resetSourceArea()
 
     d->sourceArea = QSize();
 
-    d->reload();
+    reload();
 
     emit sourceAreaChanged();
 }
@@ -1047,6 +1047,7 @@ void WDeclarativeImageBase::setFilter(WImageFilter * filter)
 
         d->onFilterUpdated();
     }
+    else reload();
 
     emit filterChanged();
 }

@@ -107,6 +107,8 @@ public: // Interface
 
     Q_INVOKABLE void loadNow(const QString & url = QString());
 
+    Q_INVOKABLE void reload();
+
 #ifdef QT_4
     Q_INVOKABLE void setItemShot(QGraphicsObject * object);
 #else

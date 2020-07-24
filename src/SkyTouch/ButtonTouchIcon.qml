@@ -42,6 +42,8 @@ BaseButtonTouch
     // Aliases
     //---------------------------------------------------------------------------------------------
 
+    property alias isSourceDefault: itemIcon.isSourceDefault
+
     property alias icon       : itemIcon.source
     property alias iconDefault: itemIcon.sourceDefault
 

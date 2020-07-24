@@ -76,8 +76,6 @@ public: // Functions
     void loadDefault();
     void readDefault();
 
-    void reload();
-
     void applyRequest();
     void applyFilter ();
 
