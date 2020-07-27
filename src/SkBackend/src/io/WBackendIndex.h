@@ -46,7 +46,8 @@ public: // Interface
 public: // WBackendLoader reimplementation
     /* Q_INVOKABLE virtual */ bool checkId(const QString & id) const;
 
-    /* Q_INVOKABLE virtual */ void createFolderItems(WLibraryFolder * folder) const;
+    /* Q_INVOKABLE virtual */ void createFolderItems(WLibraryFolder * folder,
+                                                     WLibraryItem::Type type) const;
 
     /* Q_INVOKABLE virtual */ QString coverFromId(const QString & id) const;
 

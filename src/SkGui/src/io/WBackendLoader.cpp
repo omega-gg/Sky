@@ -303,7 +303,8 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ void WBackendLoader::createFolderItems(WLibraryFolder *) const {}
+/* Q_INVOKABLE virtual */ void WBackendLoader::createFolderItems(WLibraryFolder *,
+                                                                 WLibraryItem::Type) const {}
 
 //-------------------------------------------------------------------------------------------------
 

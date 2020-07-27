@@ -167,7 +167,7 @@ BaseButtonPiano
         anchors.fill: parent
 
         anchors.leftMargin: (iconWidth) ? pIconWidth + spacing
-                                : paddingLeft
+                                        : paddingLeft
 
         anchors.rightMargin: paddingRight
 

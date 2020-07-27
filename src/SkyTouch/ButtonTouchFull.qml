@@ -25,17 +25,35 @@ import Sky     1.0
 
 BaseButtonTouch
 {
-    id: buttonTouch
+    id: buttonTouchFull
 
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
 
+    property bool enableFilter: true
+
+    property int margins: 0
+
     property int padding: st.buttonTouch_padding
+    property int spacing: st.buttonTouch_spacing
+
+    property int minimumWidth: -1
+    property int maximumWidth: -1
+
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    property int pIconWidth: Math.max(itemIcon.width, background.height)
 
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
+
+    property alias isSourceDefault: itemIcon.isSourceDefault
+
+    property alias icon       : itemIcon.source
+    property alias iconDefault: itemIcon.sourceDefault
 
     property alias text: itemText.text
 
@@ -43,19 +61,88 @@ BaseButtonTouch
 
     //---------------------------------------------------------------------------------------------
 
+    property alias itemIcon: itemIcon
     property alias itemText: itemText
 
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: sk.textWidth(itemText.font, text) + padding * 2
+    width: getWidth()
 
     height: st.buttonTouch_size
 
     //---------------------------------------------------------------------------------------------
+    // Functions
+    //---------------------------------------------------------------------------------------------
+
+    function getWidth()
+    {
+        var size;
+
+        if (pIconWidth)
+        {
+            if (text)
+            {
+                size = Math.max(pIconWidth, height) + sk.textWidth(font, text) + padding + spacing;
+            }
+            else size = Math.max(pIconWidth, height);
+        }
+        else if (text)
+        {
+            size = sk.textWidth(font, text) + padding * 2;
+        }
+
+        if (minimumWidth != -1)
+        {
+            size = Math.max(minimumWidth, size);
+        }
+
+        if (maximumWidth != -1)
+        {
+            size = Math.min(size, maximumWidth);
+        }
+
+        return size;
+    }
+
+    //---------------------------------------------------------------------------------------------
+
+    function getFilterDefault()
+    {
+        if (isHighlighted || checked)
+        {
+             return st.button_filterIconB;
+        }
+        else return st.button_filterIconA;
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Virtual
+
+    /* virtual */ function getFilter()
+    {
+        return getFilterDefault();
+    }
+
+    //---------------------------------------------------------------------------------------------
     // Childs
     //---------------------------------------------------------------------------------------------
+
+    ImageScale
+    {
+        id: itemIcon
+
+        anchors.left: parent.left
+
+        anchors.leftMargin: Math.round((pIconWidth - width) / 2)
+
+        anchors.verticalCenter: parent.verticalCenter
+
+        sourceSize.height: Math.round(parent.height - margins * 2)
+
+        filter: (enableFilter) ? getFilter() : null
+    }
 
     TextBase
     {
@@ -63,11 +150,12 @@ BaseButtonTouch
 
         anchors.fill: parent
 
-        anchors.leftMargin : buttonTouch.padding
-        anchors.rightMargin: buttonTouch.padding
+        anchors.leftMargin: (pIconWidth) ? pIconWidth + spacing
+                                         : buttonTouchFull.padding
 
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment  : Text.AlignVCenter
+        anchors.rightMargin: buttonTouchFull.padding
+
+        verticalAlignment: Text.AlignVCenter
 
         color: (isHighlighted || checked) ? st.text2_color
                                           : st.text1_color

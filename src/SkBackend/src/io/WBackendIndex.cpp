@@ -463,7 +463,8 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ void WBackendIndex::createFolderItems(WLibraryFolder * folder) const
+/* Q_INVOKABLE virtual */ void WBackendIndex::createFolderItems(WLibraryFolder * folder,
+                                                                WLibraryItem::Type type) const
 {
     Q_ASSERT(folder);
 
@@ -477,7 +478,7 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
 
     foreach (const QString & string, d->data.backendTrack)
     {
-        WLibraryFolderItem item(WLibraryItem::FolderSearchable, WLocalObject::Default);
+        WLibraryFolderItem item(type, WLocalObject::Default);
 
         item.source = source + string;
 

@@ -28,7 +28,7 @@
 #include <QStringList>
 
 // Sk includes
-#include <Sk>
+#include <WLibraryItem>
 
 #ifndef SK_NO_BACKENDLOADER
 
@@ -68,7 +68,8 @@ public: // Static functions
 public: // Virtual interface
     Q_INVOKABLE virtual bool checkId(const QString & id) const; // {}
 
-    Q_INVOKABLE virtual void createFolderItems(WLibraryFolder * folder) const; // {}
+    Q_INVOKABLE virtual void createFolderItems(WLibraryFolder * folder,
+                                               WLibraryItem::Type type) const; // {}
 
     Q_INVOKABLE virtual QString coverFromId(const QString & id) const; // {}
 

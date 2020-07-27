@@ -5,12 +5,12 @@ Panel 1.0 Panel.qml
 BaseButtonTouch 1.0 BaseButtonTouch.qml
 ButtonTouch     1.0 ButtonTouch.qml
 ButtonTouchIcon 1.0 ButtonTouchIcon.qml
+ButtonTouchFull 1.0 ButtonTouchFull.qml
 
 ButtonsWindow 1.0 ButtonsWindow.qml
 
-BaseLabel   1.0 BaseLabel.qml
-Label       1.0 Label.qml
-LabelStream 1.0 LabelStream.qml
+BaseLabel 1.0 BaseLabel.qml
+Label     1.0 Label.qml
 
 LineEdit 1.0 LineEdit.qml
 

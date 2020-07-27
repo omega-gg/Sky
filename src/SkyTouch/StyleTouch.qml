@@ -58,7 +58,8 @@ Style
 
     property int buttonTouch_size: dp48
 
-    property int buttonTouch_padding: dp24
+    property int buttonTouch_padding: dp16
+    property int buttonTouch_spacing: dp8
 
     property real buttonTouch_opacity     : 0.8
     property real buttonTouch_opacityHover: 1.0
@@ -81,21 +82,13 @@ Style
     property color label_color: buttonTouch_color
 //#END
 
-//#LabelStream
-    //---------------------------------------------------------------------------------------------
-    // LabelStream
-
-    property int labelStream_width : dp96
-    property int labelStream_height: dp24
-
-    property int labelStream_pixelSize: dp16
-//#END
-
 //#LineEdit
     //---------------------------------------------------------------------------------------------
     // LineEdit
 
     property int lineEdit_size: buttonTouch_size
+
+    property int lineEdit_padding: buttonTouch_padding
 
     property real lineEdit_opacity     : buttonTouch_opacity
     property real lineEdit_opacityHover: buttonTouch_opacityHover

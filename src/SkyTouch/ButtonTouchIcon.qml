@@ -25,6 +25,8 @@ import Sky     1.0
 
 BaseButtonTouch
 {
+    id: buttonTouchIcon
+
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
@@ -32,11 +34,6 @@ BaseButtonTouch
     property bool enableFilter: true
 
     property int margins: 0
-
-    //---------------------------------------------------------------------------------------------
-    // Private
-
-    property int pSize: height - margins * 2
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -89,7 +86,7 @@ BaseButtonTouch
 
         anchors.centerIn: parent
 
-        sourceSize.height: pSize
+        sourceSize.height: Math.round(buttonTouchIcon.height - margins * 2)
 
         filter: (enableFilter) ? getFilter() : null
     }
