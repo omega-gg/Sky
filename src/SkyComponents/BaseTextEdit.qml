@@ -102,7 +102,7 @@ TextEdit
 
     font.family   : st.text_fontFamily
     font.pixelSize: st.text_pixelSize
-    font.bold     : true
+    font.bold     : st.text_bold
 
     //---------------------------------------------------------------------------------------------
     // Events
