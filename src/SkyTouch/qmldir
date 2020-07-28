@@ -14,5 +14,7 @@ Label     1.0 Label.qml
 
 LineEdit 1.0 LineEdit.qml
 
+ScrollBar 1.0 ScrollBar.qml
+
 Slider       1.0 Slider.qml
 SliderStream 1.0 SliderStream.qml

@@ -12,4 +12,6 @@ BaseButton 1.0 BaseButton.qml
 
 BaseLineEdit 1.0 BaseLineEdit.qml
 
+BaseScrollBar 1.0 BaseScrollBar.qml
+
 BaseSlider 1.0 BaseSlider.qml

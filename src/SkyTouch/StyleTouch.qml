@@ -33,7 +33,7 @@ Style
     property int margins: dp2
     property int radius : dp4
 
-    property bool isTight: (window.contentWidth < st.dp640)
+    property bool isTight: (window.contentWidth < st.dp480)
 
 //#Panel
     //---------------------------------------------------------------------------------------------
@@ -96,16 +96,30 @@ Style
     property color lineEdit_color: "#f0f0f0"
 //#END
 
+//#ScrollBar
+    //---------------------------------------------------------------------------------------------
+    // ScrollBar
+
+    property int scrollBar_size: st.dp24
+
+    property int scrollBar_margins: margins
+
+    property real scrollBar_opacity     : label_opacity
+    property real scrollBar_opacityHover: 0.8
+
+    property color scrollBar_color: icon1_colorA
+//#END
+
 //#Slider
     //---------------------------------------------------------------------------------------------
     // Slider
 
     property int slider_size: buttonTouch_size
 
-    property int slider_margins: dp6
+    property int slider_margins: dp8
 
-    property real slider_opacity     : label_opacity
-    property real slider_opacityHover: 0.8
+    property real slider_opacity     : scrollBar_opacity
+    property real slider_opacityHover: scrollBar_opacityHover
 
     property color slider_color     : label_color
     property color slider_colorFront: icon1_colorA

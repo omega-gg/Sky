@@ -23,40 +23,32 @@
 import QtQuick 1.0
 import Sky     1.0
 
-BaseSlider
+BaseScrollBar
 {
-    id: slider
-
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int margins: st.slider_margins
+    property int margins: st.scrollBar_margins
 
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    property alias background: background
+    property alias foreground: foreground
 
     //---------------------------------------------------------------------------------------------
     // Style
 
-    property alias radius: background.radius
+    property alias radius: foreground.radius
 
-    property alias backgroundOpacity: background.opacity
-
-    property alias color     : background.color
-    property alias colorFront: foreground.color
+    property alias color: foreground.color
 
     //---------------------------------------------------------------------------------------------
-    // Settings
+    // Childs
     //---------------------------------------------------------------------------------------------
 
-    width : st.slider_size
-    height: st.slider_size
-
-    handle: itemHandle
+    width: st.scrollBar_size
 
     //---------------------------------------------------------------------------------------------
     // Childs
@@ -64,63 +56,27 @@ BaseSlider
 
     Rectangle
     {
-        id: background
-
-        anchors.fill: parent
-
-        radius: st.radius
-
-        opacity: (isHovered) ? st.slider_opacityHover
-                             : st.slider_opacity
-
-        color: st.slider_color
-
-//#QT_4
-        smooth: true
-//#END
-    }
-
-    Rectangle
-    {
         id: foreground
 
-        anchors.left  : parent.left
-        anchors.top   : parent.top
-        anchors.bottom: parent.bottom
+        anchors.left : handle.left
+        anchors.right: handle.right
+        anchors.top  : handle.top
 
         anchors.margins: margins
 
-        width: handle.x + handle.width - margins * 2
+        height: handle.height - margins * 2
 
         radius: st.radius
 
-        visible: (enabled && value > -1)
+        visible: handle.visible
 
-        opacity: (isHovered) ? st.slider_opacityHover
-                             : st.slider_opacity
+        opacity: (handle.containsMouse) ? st.scrollBar_opacityHover
+                                        : st.scrollBar_opacity
 
-        color: st.slider_colorFront
+        color: st.scrollBar_color
 
 //#QT_4
         smooth: true
 //#END
-    }
-
-    MouseArea
-    {
-        id: itemHandle
-
-        width : parent.height
-        height: width
-
-        visible: slider.enabled
-
-        opacity: st.slider_opacityHover
-
-        acceptedButtons: Qt.NoButton
-
-        hoverEnabled: true
-
-        onXChanged: position = x
     }
 }
