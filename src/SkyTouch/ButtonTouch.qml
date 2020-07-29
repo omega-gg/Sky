@@ -69,6 +69,8 @@ BaseButtonTouch
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment  : Text.AlignVCenter
 
+        opacity: (buttonTouch.enabled) ? 1.0 : st.icon_opacityDisable
+
         color: (isHighlighted || checked) ? st.text2_color
                                           : st.text1_color
     }

@@ -88,6 +88,8 @@ BaseButtonTouch
 
         sourceSize.height: Math.round(buttonTouchIcon.height - margins * 2)
 
+        opacity: (buttonTouchIcon.enabled) ? 1.0 : st.icon_opacityDisable
+
         filter: (enableFilter) ? getFilter() : null
     }
 }

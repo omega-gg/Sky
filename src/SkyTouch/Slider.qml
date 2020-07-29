@@ -94,7 +94,7 @@ BaseSlider
 
         radius: st.radius
 
-        visible: (enabled && value > -1)
+        visible: (slider.enabled && value > -1)
 
         opacity: (isHovered) ? st.slider_opacityHover
                              : st.slider_opacity
