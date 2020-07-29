@@ -37,7 +37,7 @@ MouseArea
     property int padding: Math.round((height - cursorHeight) / 2)
 
     property int paddingLeft : padding
-    property int paddingRight: padding
+    property int paddingRight: paddingLeft
 
     property bool autoSelect: st.baseLineEdit_autoSelect
 

@@ -32,7 +32,7 @@ BaseLineEdit
     width : st.lineEdit_size
     height: st.lineEdit_size
 
-    padding: st.lineEdit_padding
+    paddingLeft: st.lineEdit_padding
 
     //---------------------------------------------------------------------------------------------
     // Childs
