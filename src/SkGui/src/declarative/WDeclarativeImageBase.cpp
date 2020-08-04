@@ -340,15 +340,8 @@ void WDeclarativeImageBasePrivate::onFilterUpdated()
 
     Q_Q(WDeclarativeImageBase);
 
-    applyFilter();
-
-    q->pixmapChange();
-
-#ifdef QT_LATEST
-    updateTexture = true;
-#endif
-
-    q->update();
+    // FIXME: Maybe we could avoid reloading everything here.
+    q->reload();
 }
 
 //-------------------------------------------------------------------------------------------------
