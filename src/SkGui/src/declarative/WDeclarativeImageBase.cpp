@@ -340,7 +340,7 @@ void WDeclarativeImageBasePrivate::onFilterUpdated()
 
     Q_Q(WDeclarativeImageBase);
 
-    // FIXME: Maybe we could avoid reloading everything here.
+    // FIXME: Maybe we could avoid reloading everything.
     q->reload();
 }
 
