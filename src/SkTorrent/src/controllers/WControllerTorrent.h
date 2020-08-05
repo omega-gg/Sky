@@ -444,8 +444,8 @@ public: // Interface
     Q_INVOKABLE void unregisterLoaders();
 
 public: // Initialize
-    /* virtual */ void initController(const QString & path,
-                                      qint64          sizeMax = 1048576 * 1000); // 1 gigabyte
+    virtual void initController(const QString & path,
+                                qint64          sizeMax = 1048576 * 1000); // 1 gigabyte
 
 public: // Static functions
     Q_INVOKABLE
