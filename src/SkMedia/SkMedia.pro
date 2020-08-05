@@ -84,7 +84,7 @@ macx:LIBS += -L$$SK/lib -lvlc
 
 unix:!macx:!android: LIBS += -lvlc
 
-android:LIBS += -lvlc_$$ANDROID_TARGET_ARCH
+android:LIBS += -L$$SK/lib/$$ANDROID_TARGET_ARCH -lvlc
 
 macx {
 CONFIG(debug, debug|release) {
