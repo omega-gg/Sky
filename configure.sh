@@ -291,7 +291,12 @@ if [ $os = "windows" ] || [ $1 = "macOS" ] || [ $1 = "android" ]; then
 
     cp -r "$libtorrent"/libtorrent include
 
-    cp "$libtorrent"/*torrent*.* lib
+    if [ $1 = "android" ]; then
+
+        copyAndroid "$libtorrent" lib
+    else
+        cp "$libtorrent"/*torrent*.* lib
+    fi
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -308,5 +313,10 @@ if [ $os = "windows" ] || [ $1 = "macOS" ] || [ $1 = "android" ]; then
 
     cp -r "$Boost"/Boost/* $path
 
-    cp "$Boost"/*boost*.* lib
+    if [ $1 = "android" ]; then
+
+        copyAndroid "$Boost" lib
+    else
+        cp "$Boost"/*boost*.* lib
+    fi
 fi
