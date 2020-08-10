@@ -44,6 +44,13 @@ BaseButtonTouch
     property alias icon       : itemIcon.source
     property alias iconDefault: itemIcon.sourceDefault
 
+    property alias iconWidth : itemIcon.width
+    property alias iconHeight: itemIcon.height
+
+    property alias iconSourceSize: itemIcon.sourceSize
+
+    property alias iconFillMode: itemIcon.fillMode
+
     //---------------------------------------------------------------------------------------------
 
     property alias itemIcon: itemIcon
@@ -58,6 +65,11 @@ BaseButtonTouch
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
+
+    function getSourceHeight()
+    {
+        return Math.round(height - margins * 2)
+    }
 
     function getFilterDefault()
     {
@@ -86,7 +98,9 @@ BaseButtonTouch
 
         anchors.centerIn: parent
 
-        sourceSize.height: Math.round(buttonTouchIcon.height - margins * 2)
+        sourceSize.height: getSourceHeight()
+
+        clip: (fillMode == Image.PreserveAspectCrop)
 
         opacity: (buttonTouchIcon.enabled) ? 1.0 : st.icon_opacityDisable
 

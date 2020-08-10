@@ -55,6 +55,13 @@ BaseButtonTouch
     property alias icon       : itemIcon.source
     property alias iconDefault: itemIcon.sourceDefault
 
+    property alias iconWidth : itemIcon.width
+    property alias iconHeight: itemIcon.height
+
+    property alias iconSourceSize: itemIcon.sourceSize
+
+    property alias iconFillMode: itemIcon.fillMode
+
     property alias text: itemText.text
 
     property alias font: itemText.font
@@ -108,6 +115,11 @@ BaseButtonTouch
 
     //---------------------------------------------------------------------------------------------
 
+    function getSourceHeight()
+    {
+        return Math.round(height - margins * 2)
+    }
+
     function getFilterDefault()
     {
         if (isHighlighted || checked)
@@ -139,7 +151,11 @@ BaseButtonTouch
 
         anchors.verticalCenter: parent.verticalCenter
 
-        sourceSize.height: Math.round(parent.height - margins * 2)
+        sourceSize.height: getSourceHeight()
+
+        clip: (fillMode == Image.PreserveAspectCrop)
+
+        opacity: (buttonTouchFull.enabled) ? 1.0 : st.icon_opacityDisable
 
         filter: (enableFilter) ? getFilter() : null
     }
@@ -156,6 +172,8 @@ BaseButtonTouch
         anchors.rightMargin: buttonTouchFull.padding
 
         verticalAlignment: Text.AlignVCenter
+
+        opacity: (buttonTouchFull.enabled) ? 1.0 : st.icon_opacityDisable
 
         color: (isHighlighted || checked) ? st.text2_color
                                           : st.text1_color
