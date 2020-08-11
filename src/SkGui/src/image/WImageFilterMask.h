@@ -40,6 +40,8 @@ class SK_GUI_EXPORT WImageFilterMask : public WImageFilter
 
     Q_PROPERTY(int radius READ radius WRITE setRadius NOTIFY radiusChanged)
 
+    Q_PROPERTY(int maxCache READ maxCache WRITE setMaxCache NOTIFY maxCacheChanged)
+
 public:
     explicit WImageFilterMask(QObject * parent = NULL);
 
@@ -52,6 +54,8 @@ signals:
 
     void radiusChanged();
 
+    void maxCacheChanged();
+
 public: // Properties
     int  width() const;
     void setWidth(int width);
@@ -61,6 +65,9 @@ public: // Properties
 
     int  radius() const;
     void setRadius(int radius);
+
+    int  maxCache() const;
+    void setMaxCache(int max);
 
 private:
     W_DECLARE_PRIVATE(WImageFilterMask)

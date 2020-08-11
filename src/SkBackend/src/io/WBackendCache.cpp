@@ -49,7 +49,7 @@ public:
     void init();
 
 public: // Functions
-    void updateScripts();
+    void updateCache();
 
 public: // Variables
     QHash<QString, WBackendUniversalScript> scripts;
@@ -75,9 +75,9 @@ void WBackendCachePrivate::init()
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WBackendCachePrivate::updateScripts()
+void WBackendCachePrivate::updateCache()
 {
-    while (names.count() > BACKENDCACHE_MAX)
+    while (names.count() > maxCount)
     {
         scripts.remove(names.takeFirst());
     }
@@ -129,7 +129,7 @@ WBackendCache::WBackendCache(QObject * parent)
 
     d->names.append(name);
 
-    d->updateScripts();
+    d->updateCache();
 
     return &(i.value());
 }
@@ -170,7 +170,14 @@ void WBackendCache::setMaxCount(int max)
 
     if (d->maxCount == max) return;
 
-    d->maxCount = max;
+    // NOTE: We want to avoid the infinite loop in updateCache()
+    if (max < 1)
+    {
+         d->maxCount = 1;
+    }
+    else d->maxCount = max;
+
+    d->updateCache();
 
     emit maxCountChanged();
 }

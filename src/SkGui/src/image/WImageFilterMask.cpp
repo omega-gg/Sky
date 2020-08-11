@@ -27,6 +27,29 @@
 // Qt includes
 #include <QPainter>
 
+//-------------------------------------------------------------------------------------------------
+// Static variables
+
+static const int IMAGEFILTERMASK_MAX = 10;
+
+//-------------------------------------------------------------------------------------------------
+// Inline functions
+
+inline uint qHash(const QSize & key)
+{
+    // NOTE: It seems I need to initialize bytes to 0 for this to work.
+    QByteArray array(sizeof(int) * 4, 0);
+
+    int * data = reinterpret_cast<int *> (array.data());
+
+    *data = key.width();
+    data++;
+
+    *data = key.height();
+
+    return qHash(array);
+}
+
 //=================================================================================================
 // WImageFilterMaskPrivate
 //=================================================================================================
@@ -40,17 +63,22 @@ public:
 
     void init();
 
-    void updateMask();
+    QImage pushMask(const QSize & size);
+
+    void clearMasks();
+
+    void updateCache();
 
 public: // Variables
-    QImage mask;
-
-    bool update;
+    QHash<QSize, QImage> masks;
+    QList<QSize>         sizes;
 
     int width;
     int height;
 
     int radius;
+
+    int maxCache;
 
 protected:
     W_DECLARE_PUBLIC(WImageFilterMask)
@@ -68,27 +96,18 @@ void WImageFilterMaskPrivate::init()
     height = 32;
 
     radius = 8;
+
+    maxCache = IMAGEFILTERMASK_MAX;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void WImageFilterMaskPrivate::updateMask()
+QImage WImageFilterMaskPrivate::pushMask(const QSize & size)
 {
-    if (update == false) return;
-
-    update = false;
-
-    if (width < 1 || height < 1 || radius < 1)
-    {
-        mask = QImage();
-
-        return;
-    }
-
 #ifdef QT_4
-    mask = QImage(width, height, QImage::Format_ARGB32_Premultiplied);
+    QImage mask(size, QImage::Format_ARGB32_Premultiplied);
 #else
-    mask = QImage(width, height, QImage::Format_Alpha8);
+    QImage mask(size, QImage::Format_Alpha8);
 #endif
 
     mask.fill(Qt::transparent);
@@ -99,11 +118,40 @@ void WImageFilterMaskPrivate::updateMask()
 
     QPainterPath path;
 
-    path.addRoundedRect(0, 0, width, height, radius, radius);
+    int x = (size.width () - width)  / 2;
+    int y = (size.height() - height) / 2;
+
+    path.addRoundedRect(x, y, width, height, radius, radius);
 
     painter.fillPath(path, Qt::black);
 
     painter.drawPath(path);
+
+    masks.insert(size, mask);
+
+    sizes.append(size);
+
+    updateCache();
+
+    return mask;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WImageFilterMaskPrivate::clearMasks()
+{
+    masks.clear();
+    sizes.clear();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WImageFilterMaskPrivate::updateCache()
+{
+    while (sizes.count() > maxCache)
+    {
+        masks.remove(sizes.takeFirst());
+    }
 }
 
 //=================================================================================================
@@ -124,19 +172,26 @@ void WImageFilterMaskPrivate::updateMask()
 {
     Q_D(WImageFilterMask);
 
-    d->updateMask();
+    QSize size = image->size();
 
-    if (d->mask.size() == image->size())
+    QImage mask = d->masks.value(size);
+
+    if (mask.isNull() == false)
     {
+        qDebug("MASK CACHED");
+
+        d->sizes.removeOne(size);
+        d->sizes.append   (size);
+    }
+    else mask = d->pushMask(size);
+
 #ifdef QT_4
-        image->setAlphaChannel(d->mask.alphaChannel());
+    image->setAlphaChannel(mask.alphaChannel());
 #else
-        image->setAlphaChannel(d->mask);
+    image->setAlphaChannel(mask);
 #endif
 
-        return true;
-    }
-    else return false;
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -156,7 +211,7 @@ void WImageFilterMask::setWidth(int width)
 
     d->width = width;
 
-    d->update = true;
+    d->clearMasks();
 
     refreshFilter();
 
@@ -176,7 +231,7 @@ void WImageFilterMask::setHeight(int height)
 
     d->height = height;
 
-    d->update = true;
+    d->clearMasks();
 
     refreshFilter();
 
@@ -198,11 +253,36 @@ void WImageFilterMask::setRadius(int radius)
 
     d->radius = radius;
 
-    d->update = true;
+    d->clearMasks();
 
     refreshFilter();
 
     emit widthChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+int WImageFilterMask::maxCache() const
+{
+    Q_D(const WImageFilterMask); return d->maxCache;
+}
+
+void WImageFilterMask::setMaxCache(int max)
+{
+    Q_D(WImageFilterMask);
+
+    if (d->maxCache == max) return;
+
+    // NOTE: We want to avoid the infinite loop in updateCache()
+    if (max < 1)
+    {
+         d->maxCache = 1;
+    }
+    else d->maxCache = max;
+
+    d->updateCache();
+
+    emit maxCacheChanged();
 }
 
 #endif // SK_NO_IMAGEFILTERMASK
