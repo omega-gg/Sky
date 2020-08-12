@@ -93,6 +93,12 @@ inline uint qHash(const WPixmapCacheKey & key)
 
     array.resize(length + sizeof(int) * 4);
 
+    // NOTE: It seems I need to initialize bytes to 0 for this to work.
+    for (int i = length; i < array.length(); i++)
+    {
+        array[i] = 0;
+    }
+
     int * data = reinterpret_cast<int *> (array.data() + length);
 
     const QSize * size = key.size;

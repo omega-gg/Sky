@@ -178,8 +178,6 @@ void WImageFilterMaskPrivate::updateCache()
 
     if (mask.isNull() == false)
     {
-        qDebug("MASK CACHED");
-
         d->sizes.removeOne(size);
         d->sizes.append   (size);
     }
