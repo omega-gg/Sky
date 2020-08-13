@@ -26,6 +26,9 @@
 
 // Qt includes
 #include <QPainter>
+#ifdef QT_4
+#include <QHash>
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Static variables
