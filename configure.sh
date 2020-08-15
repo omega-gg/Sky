@@ -190,10 +190,10 @@ elif [ $qt = "qt5" ]; then
 
     elif [ $1 = "linux" ]; then
 
-        cp -r "$Qt5"/qt5/QtCore  include/Qt5
-        cp -r "$Qt5"/qt5/QtGui   include/Qt5
-        cp -r "$Qt5"/qt5/QtQml   include/Qt5
-        cp -r "$Qt5"/qt5/QtQuick include/Qt5
+        cp -r "$Qt5"/include/QtCore  include/Qt5
+        cp -r "$Qt5"/include/QtGui   include/Qt5
+        cp -r "$Qt5"/include/QtQml   include/Qt5
+        cp -r "$Qt5"/include/QtQuick include/Qt5
 
         # NOTE: qpa is already copied by 3rdparty.
 
