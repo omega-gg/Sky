@@ -186,7 +186,7 @@ elif [ $qt = "qt5" ]; then
         cp -r "$Qt5"/include/QtQml   include/Qt5
         cp -r "$Qt5"/include/QtQuick include/Qt5
 
-        cp -r "$Qt5"/include/QtGui/$Qt5_version/QtGui/qpa include/Qt5/QtGui
+        cp -r "$Qt5"/include/QtGui/5*/QtGui/qpa include/Qt5/QtGui
 
     elif [ $1 = "linux" ]; then
 
@@ -195,7 +195,7 @@ elif [ $qt = "qt5" ]; then
         cp -r "$Qt5"/include/QtQml   include/Qt5
         cp -r "$Qt5"/include/QtQuick include/Qt5
 
-        # NOTE: qpa is already copied by 3rdparty.
+        cp -r "$Qt5"/include/QtGui/5*/QtGui/qpa include/Qt5/QtGui
 
     elif [ $1 = "macOS" ]; then
 
@@ -204,7 +204,7 @@ elif [ $qt = "qt5" ]; then
         cp -r "$Qt5"/lib/QtQml.framework/Headers/*   include/Qt5/QtQml
         cp -r "$Qt5"/lib/QtQuick.framework/Headers/* include/Qt5/QtQuick
 
-        cp -r "$Qt5"/lib/QtGui.framework/Headers/$Qt5_version/QtGui/qpa include/Qt5/QtGui
+        cp -r "$Qt5"/lib/QtGui.framework/Headers/5*/QtGui/qpa include/Qt5/QtGui
 
     elif [ $1 = "android" ]; then
 
@@ -213,13 +213,13 @@ elif [ $qt = "qt5" ]; then
         cp -r "$Qt5"/include/QtQml   include/Qt5
         cp -r "$Qt5"/include/QtQuick include/Qt5
 
-        cp -r "$Qt5"/include/QtGui/$Qt5_version/QtGui/qpa include/Qt5/QtGui
+        cp -r "$Qt5"/include/QtGui/5*/QtGui/qpa include/Qt5/QtGui
     fi
 
-    mv include/Qt5/QtCore/$Qt5_version/QtCore/private/*   include/Qt5/QtCore/private
-    mv include/Qt5/QtGui/$Qt5_version/QtGui/private/*     include/Qt5/QtGui/private
-    mv include/Qt5/QtQml/$Qt5_version/QtQml/private/*     include/Qt5/QtQml/private
-    mv include/Qt5/QtQuick/$Qt5_version/QtQuick/private/* include/Qt5/QtQuick/private
+    mv include/Qt5/QtCore/5*/QtCore/private/*   include/Qt5/QtCore/private
+    mv include/Qt5/QtGui/5*/QtGui/private/*     include/Qt5/QtGui/private
+    mv include/Qt5/QtQml/5*/QtQml/private/*     include/Qt5/QtQml/private
+    mv include/Qt5/QtQuick/5*/QtQuick/private/* include/Qt5/QtQuick/private
 fi
 
 #--------------------------------------------------------------------------------------------------
