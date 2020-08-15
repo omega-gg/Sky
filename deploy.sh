@@ -27,15 +27,6 @@ Boost_version="1.71.0"
 MinGW_version="7.3.0"
 
 #--------------------------------------------------------------------------------------------------
-# Linux
-
-base32="/lib/i386-linux-gnu"
-base64="/lib/x86_64-linux-gnu"
-
-lib32="/usr/lib/i386-linux-gnu"
-lib64="/usr/lib/x86_64-linux-gnu"
-
-#--------------------------------------------------------------------------------------------------
 # environment
 
 compiler_win="mingw"
@@ -85,17 +76,6 @@ elif [ $1 = "linux" ]; then
     os="default"
 
     compiler="default"
-
-    if [ -d "${lib64}" ]; then
-
-        base="$base64"
-
-        lib="$lib64"
-    else
-        base="$base32"
-
-        lib="$lib32"
-    fi
 else
     os="default"
 
@@ -104,14 +84,19 @@ fi
 
 #--------------------------------------------------------------------------------------------------
 
+lib="$external/lib"
+
 if [ $qt = "qt4" ]; then
 
     Qt="$external/Qt/$Qt4_version"
+else
+    Qt="$external/Qt/$Qt5_version"
+fi
+
+if [ $os = "windows" -a $qt = "qt4" ]; then
 
     SSL="$external/OpenSSL/$SSL_versionA"
 else
-    Qt="$external/Qt/$Qt5_version"
-
     SSL="$external/OpenSSL/$SSL_versionB"
 fi
 
@@ -278,16 +263,16 @@ else
 
         mkdir deploy/xcbglintegrations
 
-        sudo cp "$base"/libz.so.1 deploy
+        sudo cp "$libs"/libz.so.1 deploy
 
-        sudo cp "$lib"/libicudata.so.60 deploy
-        sudo cp "$lib"/libicui18n.so.60 deploy
-        sudo cp "$lib"/libicuuc.so.60   deploy
+        sudo cp "$libs"/libicudata.so.* deploy
+        sudo cp "$libs"/libicui18n.so.* deploy
+        sudo cp "$libs"/libicuuc.so.*   deploy
 
-        sudo cp "$lib"/libdouble-conversion.so.1 deploy
-        sudo cp "$lib"/libpng16.so.16            deploy
-        sudo cp "$lib"/libharfbuzz.so.0          deploy
-        sudo cp "$lib"/libxcb-xinerama.so.0      deploy
+        sudo cp "$libs"/libdouble-conversion.so.* deploy
+        sudo cp "$libs"/libpng16.so.16            deploy
+        sudo cp "$libs"/libharfbuzz.so.0          deploy
+        sudo cp "$libs"/libxcb-xinerama.so.0      deploy
 
         cp "$Qt"/lib/libQt5Core.so.5        deploy
         cp "$Qt"/lib/libQt5Gui.so.5         deploy
@@ -366,8 +351,8 @@ if [ $os = "windows" ]; then
 
 elif [ $1 = "linux" ]; then
 
-    sudo cp "$lib"/libssl.so*    deploy
-    sudo cp "$lib"/libcrypto.so* deploy
+    sudo cp "$SSL"/libssl.so*    deploy
+    sudo cp "$SSL"/libcrypto.so* deploy
 fi
 
 #--------------------------------------------------------------------------------------------------
