@@ -29,8 +29,6 @@ MinGW_version="7.3.0"
 include32="/usr/include/i386-linux-gnu"
 include64="/usr/include/x86_64-linux-gnu"
 
-Qt5_version_linux="5.9.5"
-
 #--------------------------------------------------------------------------------------------------
 # environment
 
@@ -95,11 +93,6 @@ elif [ $1 = "linux" ]; then
     os="default"
 
     compiler="default"
-
-    if [ $qt = "qt5" ]; then
-
-        Qt5_version="$Qt5_version_linux"
-    fi
 
     if [ -d "${include64}" ]; then
 

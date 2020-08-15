@@ -35,14 +35,6 @@ base64="/lib/x86_64-linux-gnu"
 lib32="/usr/lib/i386-linux-gnu"
 lib64="/usr/lib/x86_64-linux-gnu"
 
-Qt5_version_linux="5.9.5"
-
-VLC_version_linux="5.6.0"
-
-libtorrent_version_linux="9.0.0"
-
-Boost_version_linux="1.65.1"
-
 #--------------------------------------------------------------------------------------------------
 # environment
 
@@ -104,12 +96,6 @@ elif [ $1 = "linux" ]; then
 
         lib="$lib32"
     fi
-
-    Qt5_version="$Qt5_version_linux"
-
-    VLC_version="$VLC_version_linux"
-
-    libtorrent_version="$libtorrent_version_linux"
 else
     os="default"
 
@@ -133,12 +119,7 @@ VLC="$external/VLC/$VLC_version"
 
 libtorrent="$external/libtorrent/$libtorrent_version"
 
-if [ $1 = "linux" ]; then
-
-    Boost="$external/Boost/$Boost_version_linux"
-else
-    Boost="$external/Boost/$Boost_version"
-fi
+Boost="$external/Boost/$Boost_version"
 
 #--------------------------------------------------------------------------------------------------
 # Clean
