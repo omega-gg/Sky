@@ -24,12 +24,6 @@ Boost_version="1.71.0"
 MinGW_version="7.3.0"
 
 #--------------------------------------------------------------------------------------------------
-# Linux
-
-include32="/usr/include/i386-linux-gnu"
-include64="/usr/include/x86_64-linux-gnu"
-
-#--------------------------------------------------------------------------------------------------
 # environment
 
 compiler_win="mingw"
@@ -93,13 +87,6 @@ elif [ $1 = "linux" ]; then
     os="default"
 
     compiler="default"
-
-    if [ -d "${include64}" ]; then
-
-        include="$include64"
-    else
-        include="$include32"
-    fi
 else
     os="default"
 
@@ -203,12 +190,12 @@ elif [ $qt = "qt5" ]; then
 
     elif [ $1 = "linux" ]; then
 
-        cp -r "$include"/qt5/QtCore  include/Qt5
-        cp -r "$include"/qt5/QtGui   include/Qt5
-        cp -r "$include"/qt5/QtQml   include/Qt5
-        cp -r "$include"/qt5/QtQuick include/Qt5
+        cp -r "$Qt5"/qt5/QtCore  include/Qt5
+        cp -r "$Qt5"/qt5/QtGui   include/Qt5
+        cp -r "$Qt5"/qt5/QtQml   include/Qt5
+        cp -r "$Qt5"/qt5/QtQuick include/Qt5
 
-        cp -r "$include"/qt5/QtGui/$Qt5_version/QtGui/qpa include/Qt5/QtGui
+        # NOTE: qpa is already copied by 3rdparty.
 
     elif [ $1 = "macOS" ]; then
 
