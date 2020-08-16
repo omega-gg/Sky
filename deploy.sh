@@ -163,7 +163,7 @@ if [ $qt = "qt4" ]; then
 
         mkdir deploy/imageformats
 
-        sudo cp "$lib"/libpng16.so.16 deploy
+        sudo cp "$libs"/libpng16.so.16 deploy
 
         cp "$Qt"/lib/libQtCore.so.4        deploy
         cp "$Qt"/lib/libQtGui.so.4         deploy
@@ -263,16 +263,16 @@ else
 
         mkdir deploy/xcbglintegrations
 
-        sudo cp "$libs"/libz.so.1 deploy
+        sudo cp "$libs"/libz.so.* deploy
 
         sudo cp "$libs"/libicudata.so.* deploy
         sudo cp "$libs"/libicui18n.so.* deploy
         sudo cp "$libs"/libicuuc.so.*   deploy
 
         sudo cp "$libs"/libdouble-conversion.so.* deploy
-        sudo cp "$libs"/libpng16.so.16            deploy
-        sudo cp "$libs"/libharfbuzz.so.0          deploy
-        sudo cp "$libs"/libxcb-xinerama.so.0      deploy
+        sudo cp "$libs"/libpng16.so.*             deploy
+        sudo cp "$libs"/libharfbuzz.so.*          deploy
+        sudo cp "$libs"/libxcb-xinerama.so.*      deploy
 
         cp "$Qt"/lib/libQt5Core.so.5        deploy
         cp "$Qt"/lib/libQt5Gui.so.5         deploy
