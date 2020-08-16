@@ -16,6 +16,7 @@ matrix:
     - os: linux
       env: QT=qt5 TARGET=amd64 VERSION=20.04
 
+# FIXME: Travis requires the --privileged option for Qt on Ubuntu 20.04.
 script:
   - docker run --privileged -d --name ubuntu -v $PWD:/Sky ${TARGET}/ubuntu:${VERSION} tail -f /dev/null
   - docker exec -t ubuntu bash -c "cd /Sky;
