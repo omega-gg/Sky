@@ -17,7 +17,7 @@ matrix:
       env: QT=qt5 TARGET=amd64 VERSION=20.04
 
 script:
-  - docker run -d --name ubuntu -v $PWD:/Sky ${TARGET}/ubuntu:${VERSION} tail -f /dev/null
+  - docker run --privileged -d --name ubuntu -v $PWD:/Sky ${TARGET}/ubuntu:${VERSION} tail -f /dev/null
   - docker exec -t ubuntu bash -c "cd /Sky;
                                    apt-get update;
                                    apt-get -y install sudo curl git;
