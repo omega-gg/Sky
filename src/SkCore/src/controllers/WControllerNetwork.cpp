@@ -604,6 +604,35 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 // Static functions
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ bool WControllerNetwork::textIsUri(const QString & text)
+{
+#ifdef Q_OS_WIN
+    if (textIsUrl(text) || text.startsWith('/') || text.startsWith('\\'))
+#else
+    if (textIsUrl(text) || text.startsWith('/'))
+#endif
+    {
+        return true;
+    }
+    else if (text.contains(':'))
+    {
+        if (text.length() > 1)
+        {
+            if (text.at(0).isLetter() || text.contains(' ') == false)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    else if (text.contains('.') && text.contains(' ') == false)
+    {
+        return true;
+    }
+    else return false;
+}
+
 /* Q_INVOKABLE static */ bool WControllerNetwork::textIsUrl(const QString & text)
 {
      if (urlIsFile(text) || urlIsHttp(text))
