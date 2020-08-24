@@ -89,7 +89,7 @@ void WDeclarativePlayerPrivate::init()
     repeat = WDeclarativePlayer::RepeatNone;
 
     output  = WAbstractBackend::OutputMedia;
-    quality = WAbstractBackend::Quality480;
+    quality = WAbstractBackend::Quality720;
 
     fillMode = WAbstractBackend::PreserveAspectFit;
 

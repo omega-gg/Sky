@@ -63,7 +63,7 @@ Style
 
     property real buttonTouch_opacity     : 0.8
     property real buttonTouch_opacityHover: 1.0
-    property real buttonTouch_opacityPress: 0.4
+    property real buttonTouch_opacityPress: 0.6
 
     property color buttonTouch_color         : "#dcdcdc"
     property color buttonTouch_colorHighlight: color_highlight

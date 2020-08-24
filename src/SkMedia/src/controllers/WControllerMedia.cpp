@@ -216,7 +216,7 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
     if (backend == NULL)
     {
-        reply->_medias.insert(WAbstractBackend::Quality480, url);
+        reply->_medias.insert(WAbstractBackend::Quality720, url);
 
         reply->_loaded = true;
 
@@ -229,7 +229,7 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
     {
         backend->tryDelete();
 
-        reply->_medias.insert(WAbstractBackend::Quality480, url);
+        reply->_medias.insert(WAbstractBackend::Quality720, url);
 
         reply->_loaded = true;
 
