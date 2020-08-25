@@ -42,4 +42,26 @@ Slider
     // Style
 
     colorFront: st.sliderStream_color
+
+    //---------------------------------------------------------------------------------------------
+    // Events
+    //---------------------------------------------------------------------------------------------
+
+    onCurrentTimeChanged: pUpdate()
+    onDurationChanged   : pUpdate()
+
+    //---------------------------------------------------------------------------------------------
+    // Functions
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    function pUpdate()
+    {
+        maximum = duration;
+
+        if (slider.pressed == false && slider.drag.active == false)
+        {
+            value = currentTime;
+        }
+    }
 }

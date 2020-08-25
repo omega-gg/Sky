@@ -77,7 +77,7 @@ Style
 
     property int label_padding: buttonTouch_padding
 
-    property real label_opacity: 0.6
+    property real label_opacity: buttonTouch_opacity
 
     property color label_color: buttonTouch_color
 //#END
