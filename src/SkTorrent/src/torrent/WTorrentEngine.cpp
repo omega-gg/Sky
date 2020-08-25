@@ -2175,7 +2175,8 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         pack.set_bool(settings_pack::smooth_connects, false);
 
-        pack.set_int(settings_pack::connection_speed, 500);
+        pack.set_int(settings_pack::connection_speed,      200);
+        pack.set_int(settings_pack::torrent_connect_boost, 200);
 
         //pack.set_int(settings_pack::max_failcount,      1);
         pack.set_int(settings_pack::min_reconnect_time, 1);
@@ -2868,7 +2869,8 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         d->mutexB.lock();
 
-        pack.set_int(settings_pack::connection_speed, d->connections);
+        pack.set_int(settings_pack::connection_speed,      d->connections);
+        pack.set_int(settings_pack::torrent_connect_boost, d->connections);
 
         pack.set_int(settings_pack::upload_rate_limit,   d->upload);
         pack.set_int(settings_pack::download_rate_limit, d->download);
