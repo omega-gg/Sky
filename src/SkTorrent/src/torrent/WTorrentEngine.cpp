@@ -945,6 +945,12 @@ void WTorrentEnginePrivate::prioritize(const torrent_handle & handle,
     // FIXME: Workaround to clear piece deadlines.
     if (clear) handle.clear_piece_deadlines();
 
+    updatePriority(handle, pieces, current, end);
+}
+
+void WTorrentEnginePrivate::updatePriority(const torrent_handle & handle,
+                                           QBitArray * pieces, int current, int end) const
+{
     int priority = TORRENTENGINE_PRIORITY_COUNT;
     int deadline = TORRENTENGINE_PRIORITY_INTERVAL;
 
@@ -1025,7 +1031,15 @@ void WTorrentEnginePrivate::applyPiece(const torrent_handle & handle,
         return;
     }
 
-    if (stream->current != current) return;
+    if (stream->current != current)
+    {
+        qDebug("TORRENT UPDATE PRIORITY ANYWAY %d %d %d", stream->current, current, end);
+
+        // NOTE: We have the wrong piece but we update priorities anyway.
+        updatePriority(handle, pieces, stream->current, end);
+
+        return;
+    }
 
     current++;
 
@@ -1088,22 +1102,7 @@ void WTorrentEnginePrivate::applyPiece(const torrent_handle & handle,
     //---------------------------------------------------------------------------------------------
     // Deadline
 
-    int priority = TORRENTENGINE_PRIORITY_COUNT;
-    int deadline = TORRENTENGINE_PRIORITY_INTERVAL;
-
-    while (priority && current < end)
-    {
-        if (pieces->at(current) == false)
-        {
-            handle.set_piece_deadline(current, deadline);
-
-            deadline += TORRENTENGINE_PRIORITY_INTERVAL;
-
-            priority--;
-        }
-
-        current++;
-    }
+    updatePriority(handle, pieces, current, end);
 }
 
 //-------------------------------------------------------------------------------------------------
