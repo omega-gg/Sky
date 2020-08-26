@@ -31,7 +31,8 @@ BaseSlider
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int margins: st.slider_margins
+    property int margins      : st.slider_margins
+    property int marginsHandle: st.slider_marginsHandle
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -68,7 +69,7 @@ BaseSlider
 
         anchors.fill: parent
 
-        radius: st.radius
+        radius: height
 
         opacity: (isHovered) ? st.slider_opacityHover
                              : st.slider_opacity
@@ -92,12 +93,9 @@ BaseSlider
 
         width: handle.x + handle.width - margins * 2
 
-        radius: st.radius
+        radius: slider.radius
 
         visible: (slider.enabled && value > -1)
-
-        opacity: (isHovered) ? st.slider_opacityHover
-                             : st.slider_opacity
 
         color: st.slider_colorFront
 
@@ -115,12 +113,21 @@ BaseSlider
 
         visible: slider.enabled
 
-        opacity: st.slider_opacityHover
-
         acceptedButtons: Qt.NoButton
 
         hoverEnabled: true
 
         onXChanged: position = x
+
+        Rectangle
+        {
+            anchors.fill: parent
+
+            anchors.margins: marginsHandle
+
+            radius: slider.radius
+
+            color: foreground.color
+        }
     }
 }

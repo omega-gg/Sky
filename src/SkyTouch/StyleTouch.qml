@@ -104,8 +104,8 @@ Style
 
     property int scrollBar_margins: margins
 
-    property real scrollBar_opacity     : label_opacity
-    property real scrollBar_opacityHover: 0.8
+    property real scrollBar_opacity     : buttonTouch_opacity
+    property real scrollBar_opacityHover: buttonTouch_opacityHover
 
     property color scrollBar_color: icon1_colorA
 //#END
@@ -116,7 +116,8 @@ Style
 
     property int slider_size: buttonTouch_size
 
-    property int slider_margins: dp8
+    property int slider_margins      : dp8
+    property int slider_marginsHandle: dp4
 
     property real slider_opacity     : scrollBar_opacity
     property real slider_opacityHover: scrollBar_opacityHover
