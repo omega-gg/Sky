@@ -236,9 +236,6 @@ void WViewPrivate::init(QQuickItem * item)
 
     zoom = 1.0;
 
-    minimumWidth  = 320;
-    minimumHeight = 200;
-
     maximumWidth  = -1;
     maximumHeight = -1;
 
@@ -445,7 +442,21 @@ void WViewPrivate::init(QQuickItem * item)
 #endif
 
     //---------------------------------------------------------------------------------------------
+    // ratio
+
+#ifdef QT_4
+    ratio = 1.0;
+#else
+    QScreen * screen = q->screen();
+
+    ratio = WControllerView::screenRatio(screen);
+#endif
+
+    //---------------------------------------------------------------------------------------------
     // Default size
+
+    minimumWidth  = 320 * ratio;
+    minimumHeight = 200 * ratio;
 
 #ifdef QT_4
     q->WAbstractView::setMinimumSize(minimumWidth, minimumHeight);
@@ -465,17 +476,6 @@ void WViewPrivate::init(QQuickItem * item)
 #endif
 
     q->setGeometry(geometryNormal);
-
-    //---------------------------------------------------------------------------------------------
-    // ratio
-
-#ifdef QT_4
-    ratio = 1.0;
-#else
-    QScreen * screen = q->screen();
-
-    ratio = WControllerView::screenRatio(screen);
-#endif
 
     //---------------------------------------------------------------------------------------------
     // Timer
