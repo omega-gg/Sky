@@ -70,7 +70,7 @@ Item
 
     property int pState: 0
 
-    property int pProgressWidth: slider.background.width * pProgress
+    property int pProgressWidth: background.width * pProgress
 
     property real pProgress: 0.0
 
@@ -105,8 +105,6 @@ Item
     //---------------------------------------------------------------------------------------------
 
     signal handleReleased
-
-    signal reset
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -266,6 +264,7 @@ Item
         colorBarHoverB: (active) ? sliderStream.colorBarHoverB
                                  : colorBarDisableHoverB
 
+        // NOTE: We want the background to be behind the itemProgress.
         background.z: -1
 
         foreground.opacity: (pState) ? opacityProgressA
@@ -277,9 +276,9 @@ Item
         {
             id: itemProgress
 
-            anchors.left  : parent.background.left
-            anchors.top   : parent.background.top
-            anchors.bottom: parent.background.bottom
+            anchors.left  : background.left
+            anchors.top   : background.top
+            anchors.bottom: background.bottom
 
             width: Math.max(st.dp32, pProgressWidth)
 

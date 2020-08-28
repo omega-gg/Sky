@@ -130,6 +130,13 @@ Style
     //---------------------------------------------------------------------------------------------
     // SliderStream
 
+    property int sliderStream_durationAnimation: duration_slower
+
+    property int sliderStream_intervalProgress: ms1000
+
+    property real sliderStream_opacityProgressA: 0.5
+    property real sliderStream_opacityProgressB: 1.0
+
     property color sliderStream_color: color_highlight
 //#END
 

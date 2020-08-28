@@ -39,6 +39,7 @@ BaseSlider
     //---------------------------------------------------------------------------------------------
 
     property alias background: background
+    property alias foreground: foreground
 
     //---------------------------------------------------------------------------------------------
     // Style
@@ -128,6 +129,10 @@ BaseSlider
             radius: slider.radius
 
             color: foreground.color
+
+//#QT_4
+            smooth: true
+//#END
         }
     }
 }
