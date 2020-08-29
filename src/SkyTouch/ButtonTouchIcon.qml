@@ -48,8 +48,15 @@ BaseButtonTouch
     property alias iconHeight: itemIcon.height
 
     property alias iconSourceSize: itemIcon.sourceSize
+    property alias iconSourceArea: itemIcon.sourceArea
 
+    property alias iconLoadMode: itemIcon.loadMode
     property alias iconFillMode: itemIcon.fillMode
+
+    property alias iconAsynchronous: itemIcon.asynchronous
+    property alias iconCache       : itemIcon.cache
+
+    property alias iconScaling: itemIcon.scaling
 
     //---------------------------------------------------------------------------------------------
 
