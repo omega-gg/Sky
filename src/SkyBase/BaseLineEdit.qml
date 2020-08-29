@@ -146,7 +146,8 @@ MouseArea
     function selectAll()
     {
 //#QT_4
-        timer.stop();
+        // NOTE: If the timer is running we wait for the timeout.
+        if (timer.running) return;
 //#END
 
         textInput.selectAll();
