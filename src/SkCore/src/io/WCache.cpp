@@ -1592,9 +1592,7 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
                 file->_maxHost = maxHost;
 
-                // NOTE: Setting this to true because we don't want to call clearFile in
-                //       WCacheFile destructor.
-                file->_loaded = true;
+                file->_loaded = false;
 
                 d->get(file, url);
 
