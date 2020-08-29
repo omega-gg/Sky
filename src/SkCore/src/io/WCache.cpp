@@ -1144,6 +1144,9 @@ WCacheFile::WCacheFile(WCache * cache, QObject * parent) : QObject(parent)
 
 /* virtual */ WCacheFile::~WCacheFile()
 {
+    if (_loaded) return;
+
+    // NOTE: We call that only when it's not loaded, otherwise _cache could be destroyed.
     _cache->d_func()->clearFile(this);
 }
 
@@ -1207,6 +1210,25 @@ WCachePrivate::WCachePrivate(WCache * p) : WPrivate(p) {}
 
 /* virtual */ WCachePrivate::~WCachePrivate()
 {
+    //---------------------------------------------------------------------------------------------
+    // NOTE: Setting _loaded to true in WCacheFile(s) because it's called in their destructor.
+
+    QHashIterator<QString, WCacheFiles *> i(urlsPending);
+
+    while (i.hasNext())
+    {
+        i.next();
+
+        const QList<WCacheFile *> & list = i.value()->list;
+
+        foreach (WCacheFile * file, list)
+        {
+            file->_loaded = true;
+        }
+    }
+
+    //---------------------------------------------------------------------------------------------
+
     thread->quit();
     thread->wait();
 
@@ -1321,8 +1343,6 @@ void WCachePrivate::pop(const QString & url)
 
 void WCachePrivate::clearFile(WCacheFile * file)
 {
-    if (file->_loaded) return;
-
     const QString & url = file->_url;
 
     WCacheFiles * files = urlsPending.value(url);
@@ -1572,7 +1592,9 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
                 file->_maxHost = maxHost;
 
-                file->_loaded = false;
+                // NOTE: Setting this to true because we don't want to call clearFile in
+                //       WCacheFile destructor.
+                file->_loaded = true;
 
                 d->get(file, url);
 

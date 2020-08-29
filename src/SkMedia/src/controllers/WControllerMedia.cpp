@@ -145,7 +145,8 @@ WControllerMediaPrivate::WControllerMediaPrivate(WControllerMedia * p) : WContro
     jobs   .clear();
     queries.clear();
 
-    sk->processEvents();
+    // FIXME Qt4: Not sure why we needed that before but that causes a crash.
+    //sk->processEvents();
 
     thread->quit();
     thread->wait();
