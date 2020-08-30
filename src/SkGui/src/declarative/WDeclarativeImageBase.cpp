@@ -225,9 +225,14 @@ void WDeclarativeImageBasePrivate::applyFilter()
 
         filter->applyFilter(&pixmap);
 
-        QString path = pix.path();
+        // NOTE
+        if (pix.isLoading() == false)
+        {
+            QString path = pix.path();
 
-        pix.applyPixmap(pixmap, path);
+            pix.applyPixmap(pixmap, path);
+        }
+        else pix.changePixmap(pixmap);
     }
     else filter->applyFilter(&pixmapDefault);
 }
@@ -571,6 +576,7 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
 
         if (asynchronous)
         {
+            // NOTE
             if (pixmap.isNull())
             {
                 d->applySourceDefault();
