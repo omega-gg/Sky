@@ -163,7 +163,7 @@ if [ $qt = "qt4" ]; then
 
         mkdir deploy/imageformats
 
-        sudo cp "$libs"/libpng16.so.16 deploy
+        cp "$libs"/libpng16.so.16 deploy
 
         cp "$Qt"/lib/libQtCore.so.4        deploy
         cp "$Qt"/lib/libQtGui.so.4         deploy
@@ -263,16 +263,16 @@ else
 
         mkdir deploy/xcbglintegrations
 
-        sudo cp "$libs"/libz.so.* deploy
+        cp "$libs"/libz.so.* deploy
 
-        sudo cp "$libs"/libicudata.so.* deploy
-        sudo cp "$libs"/libicui18n.so.* deploy
-        sudo cp "$libs"/libicuuc.so.*   deploy
+        cp "$libs"/libicudata.so.* deploy
+        cp "$libs"/libicui18n.so.* deploy
+        cp "$libs"/libicuuc.so.*   deploy
 
-        sudo cp "$libs"/libdouble-conversion.so.* deploy
-        sudo cp "$libs"/libpng16.so.*             deploy
-        sudo cp "$libs"/libharfbuzz.so.*          deploy
-        sudo cp "$libs"/libxcb-xinerama.so.*      deploy
+        cp "$libs"/libdouble-conversion.so.* deploy
+        cp "$libs"/libpng16.so.*             deploy
+        cp "$libs"/libharfbuzz.so.*          deploy
+        cp "$libs"/libxcb-xinerama.so.*      deploy
 
         cp "$Qt"/lib/libQt5Core.so.5        deploy
         cp "$Qt"/lib/libQt5Gui.so.5         deploy
@@ -340,19 +340,11 @@ echo "COPYING SSL"
 
 if [ $os = "windows" ]; then
 
-    if [ $qt = "qt4" ]; then
-
-        cp "$SSL"/libeay32.dll deploy
-        cp "$SSL"/ssleay32.dll deploy
-    else
-        cp "$SSL"/libssl*.dll    deploy
-        cp "$SSL"/libcrypto*.dll deploy
-    fi
+    cp "$SSL"/*.dll deploy
 
 elif [ $1 = "linux" ]; then
 
-    sudo cp "$SSL"/libssl.so*    deploy
-    sudo cp "$SSL"/libcrypto.so* deploy
+    cp "$SSL"/*.so* deploy
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -396,22 +388,22 @@ elif [ $1 = "macOS" ]; then
 
     #mkdir -p deploy/vlc/plugins
 
-    #sudo cp -r "$VLC"/plugins/access        deploy/vlc/plugins
-    #sudo cp -r "$VLC"/plugins/audio_filter  deploy/vlc/plugins
-    #sudo cp -r "$VLC"/plugins/audio_mixer   deploy/vlc/plugins
-    #sudo cp -r "$VLC"/plugins/audio_output  deploy/vlc/plugins
-    #sudo cp -r "$VLC"/plugins/codec         deploy/vlc/plugins
-    #sudo cp -r "$VLC"/plugins/control       deploy/vlc/plugins
-    #sudo cp -r "$VLC"/plugins/demux         deploy/vlc/plugins
-    #sudo cp -r "$VLC"/plugins/misc          deploy/vlc/plugins
-    #sudo cp -r "$VLC"/plugins/packetizer    deploy/vlc/plugins
-    #sudo cp -r "$VLC"/plugins/stream_filter deploy/vlc/plugins
-    #sudo cp -r "$VLC"/plugins/stream_out    deploy/vlc/plugins
-    #sudo cp -r "$VLC"/plugins/video_chroma  deploy/vlc/plugins
-    #sudo cp -r "$VLC"/plugins/video_filter  deploy/vlc/plugins
-    #sudo cp -r "$VLC"/plugins/video_output  deploy/vlc/plugins
+    #cp -r "$VLC"/plugins/access        deploy/vlc/plugins
+    #cp -r "$VLC"/plugins/audio_filter  deploy/vlc/plugins
+    #cp -r "$VLC"/plugins/audio_mixer   deploy/vlc/plugins
+    #cp -r "$VLC"/plugins/audio_output  deploy/vlc/plugins
+    #cp -r "$VLC"/plugins/codec         deploy/vlc/plugins
+    #cp -r "$VLC"/plugins/control       deploy/vlc/plugins
+    #cp -r "$VLC"/plugins/demux         deploy/vlc/plugins
+    #cp -r "$VLC"/plugins/misc          deploy/vlc/plugins
+    #cp -r "$VLC"/plugins/packetizer    deploy/vlc/plugins
+    #cp -r "$VLC"/plugins/stream_filter deploy/vlc/plugins
+    #cp -r "$VLC"/plugins/stream_out    deploy/vlc/plugins
+    #cp -r "$VLC"/plugins/video_chroma  deploy/vlc/plugins
+    #cp -r "$VLC"/plugins/video_filter  deploy/vlc/plugins
+    #cp -r "$VLC"/plugins/video_output  deploy/vlc/plugins
 
-    #sudo cp "$VLC"/libvlc*.so* deploy
+    #cp "$VLC"/libvlc*.so* deploy
 fi
 
 #--------------------------------------------------------------------------------------------------
