@@ -137,7 +137,7 @@ Style
     property real sliderStream_opacityProgressA: 0.5
     property real sliderStream_opacityProgressB: 1.0
 
-    property color sliderStream_color: color_highlight
+    property color sliderStream_colorActive: color_highlight
 //#END
 
     //---------------------------------------------------------------------------------------------

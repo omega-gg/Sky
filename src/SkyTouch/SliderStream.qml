@@ -72,7 +72,7 @@ Slider
     //---------------------------------------------------------------------------------------------
     // Style
 
-    colorFront: (active) ? st.sliderStream_color
+    colorFront: (active) ? st.sliderStream_colorActive
                          : st.slider_colorFront
 
     //---------------------------------------------------------------------------------------------
