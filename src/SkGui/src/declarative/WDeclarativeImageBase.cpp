@@ -225,7 +225,7 @@ void WDeclarativeImageBasePrivate::applyFilter()
 
         filter->applyFilter(&pixmap);
 
-        // NOTE
+        // NOTE: We cannot 'applyPixmap' while loading or 'requestFinished' is never called.
         if (pix.isLoading() == false)
         {
             QString path = pix.path();
@@ -576,7 +576,7 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
 
         if (asynchronous)
         {
-            // NOTE
+            // NOTE: We enforce the previous pixmap to avoid blinking when loading the new one.
             if (pixmap.isNull())
             {
                 d->applySourceDefault();

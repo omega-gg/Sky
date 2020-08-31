@@ -31,6 +31,8 @@ Slider
     // Properties
     //---------------------------------------------------------------------------------------------
 
+    property bool active: true
+
     property int currentTime: -1
     property int duration   : -1
 
@@ -70,7 +72,8 @@ Slider
     //---------------------------------------------------------------------------------------------
     // Style
 
-    colorFront: st.sliderStream_color
+    colorFront: (active) ? st.sliderStream_color
+                         : st.slider_colorFront
 
     //---------------------------------------------------------------------------------------------
     // Events
