@@ -499,6 +499,9 @@ void WViewPrivate::init(QQuickItem * item)
 #ifdef QT_4
     QObject::connect(qApp->desktop(), SIGNAL(workAreaResized(int)), q, SLOT(onGeometryChanged()));
 #else
+    QObject::connect(qApp, SIGNAL(applicationStateChanged(Qt::ApplicationState)),
+                     q,    SLOT(onStateChanged(Qt::ApplicationState)));
+
     QObject::connect(q, SIGNAL(screenChanged(QScreen *)), q, SLOT(onScreenChanged()));
 
     QObject::connect(screen, SIGNAL(availableGeometryChanged(const QRect &)),
@@ -1320,6 +1323,19 @@ QList<WDeclarativeMouseArea *> WViewPrivate::getDropAreas(const QList<QQuickItem
 //-------------------------------------------------------------------------------------------------
 // Private slots
 //-------------------------------------------------------------------------------------------------
+
+#ifdef QT_LATEST
+
+void WViewPrivate::onStateChanged(Qt::ApplicationState state)
+{
+    if (state == Qt::ApplicationActive)
+    {
+         setActive(true);
+    }
+    else setActive(false);
+}
+
+#endif
 
 void WViewPrivate::onGeometryChanged()
 {

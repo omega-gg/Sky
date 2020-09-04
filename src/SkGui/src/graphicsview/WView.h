@@ -665,6 +665,10 @@ public: // Properties
 private:
     W_DECLARE_PRIVATE(WView)
 
+#ifdef QT_LATEST
+    Q_PRIVATE_SLOT(d_func(), void onStateChanged(Qt::ApplicationState))
+#endif
+
     Q_PRIVATE_SLOT(d_func(), void onGeometryChanged())
 
 #ifdef QT_LATEST

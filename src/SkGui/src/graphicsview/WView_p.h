@@ -151,6 +151,10 @@ public: // Functions
 #endif
 
 public: // Slots
+#ifdef QT_LATEST
+    void onStateChanged(Qt::ApplicationState state);
+#endif
+
     void onGeometryChanged();
 
 #ifdef QT_LATEST
