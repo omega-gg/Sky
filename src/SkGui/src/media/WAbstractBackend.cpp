@@ -330,7 +330,7 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 {
     Q_D(WAbstractBackend);
 
-    if (d->state == StatePaused) return;
+    if (d->state != StatePlaying) return;
 
     if (backendPause()) setState(StatePaused);
 }
