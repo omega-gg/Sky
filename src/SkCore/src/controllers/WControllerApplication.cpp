@@ -1683,11 +1683,11 @@ void WControllerApplication::setScreenSaverEnabled(bool enabled)
         if (jni.isValid())
         {
             // NOTE: 128 is the FLAG_KEEP_SCREEN_ON define.
-            if (screenSaverEnabled())
+            if (enabled)
             {
-                 jni.callMethod<void>("addFlags", "(I)V", 128);
+                 jni.callMethod<void>("clearFlags", "(I)V", 128);
             }
-            else jni.callMethod<void>("clearFlags", "(I)V", 128);
+            else jni.callMethod<void>("addFlags", "(I)V", 128);
         }
     }
 
