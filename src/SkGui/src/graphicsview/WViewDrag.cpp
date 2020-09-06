@@ -124,8 +124,6 @@ void WViewDragPrivate::clearDrag()
 #ifndef Q_OS_WIN
         d->dragLastPos = QPoint(-1, -1);
 #endif
-
-        d->view->d_func()->setDragged(true);
     }
 }
 
@@ -145,21 +143,23 @@ void WViewDragPrivate::clearDrag()
 //-------------------------------------------------------------------------------------------------
 
 #ifdef QT_4
-/* virtual */ void WViewDrag::mouseMoveEvent(QGraphicsSceneMouseEvent *)
+/* virtual */ void WViewDrag::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 #else
-/* virtual */ void WViewDrag::mouseMoveEvent(QMouseEvent *)
+/* virtual */ void WViewDrag::mouseMoveEvent(QMouseEvent * event)
 #endif
 {
     Q_D(WViewDrag);
 
     if (d->dragging == false)
     {
-        //WDeclarativeMouseArea::mouseMoveEvent(event);
+        WDeclarativeMouseArea::mouseMoveEvent(event);
 
         return;
     }
 
 #ifdef Q_OS_WIN
+    d->view->d_func()->setDragged(true);
+
     d->dragging = false;
 
     ReleaseCapture();
@@ -215,6 +215,7 @@ void WViewDragPrivate::clearDrag()
         d->view->setPosition(finalX, finalY);
 #endif
     }
+    else d->view->d_func()->setDragged(true);
 
     d->dragLastPos = pos;
 #endif
