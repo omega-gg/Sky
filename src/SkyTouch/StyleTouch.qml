@@ -150,6 +150,12 @@ Style
     property url icon_minimize: "icons/window-minimize.svg"
 //#END
 
+//#icons_playback:PlayerBrowser
+    property url icon_backward: "icons/backward.svg"
+    property url icon_forward : "icons/forward.svg"
+    property url icon_play    : "icons/play.svg"
+//#END
+
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------

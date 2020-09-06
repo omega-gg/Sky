@@ -18,3 +18,5 @@ ScrollBar 1.0 ScrollBar.qml
 
 Slider       1.0 Slider.qml
 SliderStream 1.0 SliderStream.qml
+
+PlayerBrowser 1.0 PlayerBrowser.qml

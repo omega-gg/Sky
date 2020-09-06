@@ -25,8 +25,6 @@ import Sky     1.0
 
 MouseArea
 {
-    id: playerBrowser
-
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
@@ -65,8 +63,9 @@ MouseArea
     property alias areaForward : areaForward
 
     property alias buttonPrevious: buttonPrevious
-    property alias buttonPlay    : buttonPlay
     property alias buttonNext    : buttonNext
+
+    property alias buttonPlay: buttonPlay
 
     //---------------------------------------------------------------------------------------------
     // Signals
@@ -225,13 +224,13 @@ MouseArea
 
     //---------------------------------------------------------------------------------------------
 
-    function pGetWidth()
+    function pGetSize()
     {
-        var width = Math.round(playerBrowser.width / 6);
+        var size = Math.round(width / 6);
 
-        width = Math.max(st.dp48, width);
+        size = Math.max(st.dp48, size);
 
-        return Math.min(width, st.dp80);
+        return Math.min(size, st.dp80);
     }
 
     //---------------------------------------------------------------------------------------------
@@ -357,7 +356,7 @@ MouseArea
 
         anchors.verticalCenter: parent.verticalCenter
 
-        width : pGetWidth()
+        width : pGetSize()
         height: width
 
         iconWidth : Math.round(width / 1.8)
