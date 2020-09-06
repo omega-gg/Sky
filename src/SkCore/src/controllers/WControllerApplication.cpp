@@ -54,6 +54,10 @@
 #include <QTextCodec>
 #include <QMimeData>
 #include <QDir>
+#ifdef Q_OS_ANDROID
+#include <QtAndroid>
+#include <QAndroidJniEnvironment>
+#endif
 
 // Sk incudes
 #include <WControllerFile>
@@ -1669,6 +1673,28 @@ void WControllerApplication::setScreenSaverEnabled(bool enabled)
         SystemParametersInfo(SPI_SETPOWEROFFTIMEOUT,   d->timeoutPowerOff,   NULL, 0);
         SystemParametersInfo(SPI_SETSCREENSAVETIMEOUT, d->timeoutScreenSave, NULL, 0);
     }
+#elif defined(Q_OS_ANDROID)
+    QAndroidJniObject jni = QtAndroid::androidActivity();
+
+    if (jni.isValid())
+    {
+        jni = jni.callObjectMethod("getWindow", "()Landroid/view/Window;");
+
+        if (jni.isValid())
+        {
+            // NOTE: 128 is the FLAG_KEEP_SCREEN_ON define.
+            if (screenSaverEnabled())
+            {
+                 jni.callMethod<void>("addFlags", "(I)V", 128);
+            }
+            else jni.callMethod<void>("clearFlags", "(I)V", 128);
+        }
+    }
+
+    QAndroidJniEnvironment env;
+
+    // NOTE Android: It seems we need to check exceptions.
+    if (env->ExceptionCheck()) env->ExceptionClear();
 #endif
 
     emit screenSaverEnabledChanged();

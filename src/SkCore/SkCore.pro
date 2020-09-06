@@ -18,6 +18,10 @@ contains(QT_MAJOR_VERSION, 4) {
     QT += qml network xml xmlpatterns
 }
 
+contains(QT_MAJOR_VERSION, 5) {
+    android:QT += androidextras
+}
+
 win32:CONFIG += dll
 
 DEFINES += QUAZIP_BUILD SK_CORE_LIBRARY SK_CHARSET
