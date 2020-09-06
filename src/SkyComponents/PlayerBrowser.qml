@@ -138,26 +138,6 @@ MouseArea
 
     //---------------------------------------------------------------------------------------------
 
-    function setPrevious()
-    {
-        if (playerTab == tab)
-        {
-            player.setPreviousTrack();
-        }
-        else tab.setPreviousTrack();
-    }
-
-    function setNext()
-    {
-        if (playerTab == tab)
-        {
-            player.setNextTrack();
-        }
-        else tab.setNextTrack();
-    }
-
-    //---------------------------------------------------------------------------------------------
-
     function flashPrevious()
     {
         setPrevious();
@@ -203,6 +183,26 @@ MouseArea
     function scrollClear()
     {
         timerScroll.stop();
+    }
+
+    //---------------------------------------------------------------------------------------------
+
+    function setPrevious()
+    {
+        if (playerTab == tab)
+        {
+            player.setPreviousTrack();
+        }
+        else tab.setPreviousTrack();
+    }
+
+    function setNext()
+    {
+        if (playerTab == tab)
+        {
+            player.setNextTrack();
+        }
+        else tab.setNextTrack();
     }
 
     //---------------------------------------------------------------------------------------------

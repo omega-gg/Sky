@@ -140,6 +140,14 @@ Style
     property color sliderStream_colorActive: color_highlight
 //#END
 
+//#PlayerBrowser
+    //---------------------------------------------------------------------------------------------
+    // PlayerBrowser
+
+    property int playerBrowser_intervalA: 500
+    property int playerBrowser_intervalB: 200
+//#END
+
     //---------------------------------------------------------------------------------------------
     // Icons
 
