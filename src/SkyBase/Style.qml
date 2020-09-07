@@ -306,6 +306,14 @@ Item
     property int scrollBar_minimumSize: dp32
 //#END
 
+//#BasePlayerBrowser
+    //---------------------------------------------------------------------------------------------
+    // BasePlayerBrowser
+
+    property int playerBrowser_intervalA: 500
+    property int playerBrowser_intervalB: 200
+//#END
+
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------

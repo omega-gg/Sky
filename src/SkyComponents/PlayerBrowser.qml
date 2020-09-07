@@ -23,30 +23,18 @@
 import QtQuick 1.0
 import Sky     1.0
 
-MouseArea
+BasePlayerBrowser
 {
+    id: playerBrowser
+
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
-
-    /* mandatory */ property Player player
-
-    /* read */ property TabTrack playerTab: player.tab
-
-    property TabTrack tab: playerTab
 
     property bool loading: false
 
     property bool enableTitle : true
     property bool enableAuthor: true
-
-    //---------------------------------------------------------------------------------------------
-    // Private
-
-    property int pScroll: -1
-
-    property bool pBackward: false
-    property bool pForward : false
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -58,9 +46,6 @@ MouseArea
 
     property alias barTitle  : barTitle
     property alias barDetails: barDetails
-
-    property alias areaBackward: areaBackward
-    property alias areaForward : areaForward
 
     property alias buttonPrevious: buttonPrevious
     property alias buttonNext    : buttonNext
@@ -74,51 +59,18 @@ MouseArea
     signal titleClicked (variant mouse)
     signal authorClicked(variant mouse)
 
-    signal contextual
-
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    acceptedButtons: Qt.RightButton
+    areaBackward.anchors.top   : (barTitle  .visible) ? barTitle.bottom : playerBrowser.top
+    areaBackward.anchors.bottom: (barDetails.visible) ? barDetails.top  : playerBrowser.bottom
 
-    wheelEnabled: true
+    areaBackward.visible: buttonPrevious.visible
+    areaForward .visible: buttonNext    .visible
 
-    //---------------------------------------------------------------------------------------------
-    // Events
-    //---------------------------------------------------------------------------------------------
-
-    onPressed: contextual()
-
-    onWheeled:
-    {
-        if (timerScroll.running) return;
-
-        var i = steps;
-
-        if (i > 0)
-        {
-            while (i)
-            {
-                setNext();
-
-                i--;
-            }
-
-            pFlashNext();
-        }
-        else
-        {
-            while (i)
-            {
-                setPrevious();
-
-                i++;
-            }
-
-            pFlashPrevious();
-        }
-    }
+    areaBackward.hoverEnabled: buttonPrevious.visible
+    areaForward .hoverEnabled: buttonNext    .visible
 
     //---------------------------------------------------------------------------------------------
     // Functions
@@ -137,92 +89,7 @@ MouseArea
     }
 
     //---------------------------------------------------------------------------------------------
-
-    function flashPrevious()
-    {
-        setPrevious();
-
-        pFlashPrevious();
-    }
-
-    function flashNext()
-    {
-        setNext();
-
-        pFlashNext();
-    }
-
-    //---------------------------------------------------------------------------------------------
-
-    function scrollPrevious()
-    {
-        if (buttonPrevious.visible == false || (pScroll == 0 && timerScroll.running)) return;
-
-        pScroll = 0;
-
-        timerScroll.interval = st.playerBrowser_intervalA;
-
-        timerScroll.restart();
-
-        flashPrevious();
-    }
-
-    function scrollNext()
-    {
-        if (buttonNext.visible == false || (pScroll == 1 && timerScroll.running)) return;
-
-        pScroll = 1;
-
-        timerScroll.interval = st.playerBrowser_intervalA;
-
-        timerScroll.restart();
-
-        flashNext();
-    }
-
-    function scrollClear()
-    {
-        timerScroll.stop();
-    }
-
-    //---------------------------------------------------------------------------------------------
-
-    function setPrevious()
-    {
-        if (playerTab == tab)
-        {
-            player.setPreviousTrack();
-        }
-        else tab.setPreviousTrack();
-    }
-
-    function setNext()
-    {
-        if (playerTab == tab)
-        {
-            player.setNextTrack();
-        }
-        else tab.setNextTrack();
-    }
-
-    //---------------------------------------------------------------------------------------------
     // Private
-
-    function pFlashPrevious()
-    {
-        pBackward = true;
-
-        timerBackward.restart();
-    }
-
-    function pFlashNext()
-    {
-        pForward = true;
-
-        timerForward.restart();
-    }
-
-    //---------------------------------------------------------------------------------------------
 
     function pGetSize()
     {
@@ -236,97 +103,6 @@ MouseArea
     //---------------------------------------------------------------------------------------------
     // Childs
     //---------------------------------------------------------------------------------------------
-
-    Timer
-    {
-        id: timerScroll
-
-        interval: st.playerBrowser_intervalA
-
-        repeat: true
-
-        onTriggered:
-        {
-            interval = st.playerBrowser_intervalB;
-
-            if (pScroll)
-            {
-                 flashNext();
-            }
-            else flashPrevious();
-        }
-    }
-
-    Timer
-    {
-        id: timerBackward
-
-        interval: st.playerBrowser_intervalB
-
-        onTriggered: pBackward = false
-    }
-
-    Timer
-    {
-        id: timerForward
-
-        interval: st.playerBrowser_intervalB
-
-        onTriggered: pForward = false
-    }
-
-    MouseArea
-    {
-        id: areaBackward
-
-        anchors.top   : (barTitle  .visible) ? barTitle.bottom : parent.top
-        anchors.bottom: (barDetails.visible) ? barDetails.top  : parent.bottom
-
-        width: Math.round(parent.width / 4)
-
-        visible: buttonPrevious.visible
-
-        hoverEnabled: buttonPrevious.visible
-
-        cursor: Qt.PointingHandCursor
-
-        onPressed : scrollPrevious()
-        onReleased: scrollClear   ()
-
-        Behavior on visible
-        {
-            enabled: (areaBackward.visible)
-
-            PropertyAnimation { duration: st.ms1000 }
-        }
-    }
-
-    MouseArea
-    {
-        id: areaForward
-
-        anchors.top   : areaBackward.top
-        anchors.bottom: areaBackward.bottom
-        anchors.right : parent.right
-
-        width: Math.round(parent.width / 4)
-
-        visible: buttonNext.visible
-
-        hoverEnabled: buttonNext.visible
-
-        cursor: Qt.PointingHandCursor
-
-        onPressed : scrollNext ()
-        onReleased: scrollClear()
-
-        Behavior on visible
-        {
-            enabled: (areaForward.visible)
-
-            PropertyAnimation { duration: st.ms1000 }
-        }
-    }
 
     MouseArea
     {

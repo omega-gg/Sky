@@ -23,30 +23,11 @@
 import QtQuick 1.0
 import Sky     1.0
 
-Item
+BasePlayerBrowser
 {
-    id: playerBrowser
-
-    //---------------------------------------------------------------------------------------------
-    // Properties
-    //---------------------------------------------------------------------------------------------
-
-    /* mandatory */ property Player player
-
-    //---------------------------------------------------------------------------------------------
-    // Private
-
-    property int pScroll: -1
-
-    property bool pBackward: false
-    property bool pForward : false
-
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
-
-    property alias areaBackward: areaBackward
-    property alias areaForward : areaForward
 
     property alias buttonPrevious: buttonPrevious
     property alias buttonNext    : buttonNext
@@ -54,80 +35,21 @@ Item
     property alias buttonPlay: buttonPlay
 
     //---------------------------------------------------------------------------------------------
-    // Properties
+    // Settings
     //---------------------------------------------------------------------------------------------
 
     anchors.margins: st.margins
 
+    areaBackward.visible: buttonPrevious.visible
+    areaForward .visible: buttonNext    .visible
+
+    areaBackward.hoverEnabled: buttonPrevious.visible
+    areaForward .hoverEnabled: buttonNext    .visible
+
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
-
-    function flashPrevious()
-    {
-        player.setPreviousTrack();
-
-        pFlashPrevious();
-    }
-
-    function flashNext()
-    {
-        player.setNextTrack();
-
-        pFlashNext();
-    }
-
-    //---------------------------------------------------------------------------------------------
-
-    function scrollPrevious()
-    {
-        if (buttonPrevious.visible == false || (pScroll == 0 && timerScroll.running)) return;
-
-        pScroll = 0;
-
-        timerScroll.interval = st.playerBrowser_intervalA;
-
-        timerScroll.restart();
-
-        flashPrevious();
-    }
-
-    function scrollNext()
-    {
-        if (buttonNext.visible == false || (pScroll == 1 && timerScroll.running)) return;
-
-        pScroll = 1;
-
-        timerScroll.interval = st.playerBrowser_intervalA;
-
-        timerScroll.restart();
-
-        flashNext();
-    }
-
-    function scrollClear()
-    {
-        timerScroll.stop();
-    }
-
-    //---------------------------------------------------------------------------------------------
     // Private
-
-    function pFlashPrevious()
-    {
-        pBackward = true;
-
-        timerBackward.restart();
-    }
-
-    function pFlashNext()
-    {
-        pForward = true;
-
-        timerForward.restart();
-    }
-
-    //---------------------------------------------------------------------------------------------
 
     function pGetSize()
     {
@@ -141,97 +63,6 @@ Item
     //---------------------------------------------------------------------------------------------
     // Childs
     //---------------------------------------------------------------------------------------------
-
-    Timer
-    {
-        id: timerScroll
-
-        interval: st.playerBrowser_intervalA
-
-        repeat: true
-
-        onTriggered:
-        {
-            interval = st.playerBrowser_intervalB;
-
-            if (pScroll)
-            {
-                 flashNext();
-            }
-            else flashPrevious();
-        }
-    }
-
-    Timer
-    {
-        id: timerBackward
-
-        interval: st.playerBrowser_intervalB
-
-        onTriggered: pBackward = false
-    }
-
-    Timer
-    {
-        id: timerForward
-
-        interval: st.playerBrowser_intervalB
-
-        onTriggered: pForward = false
-    }
-
-    MouseArea
-    {
-        id: areaBackward
-
-        anchors.top   : parent.top
-        anchors.bottom: parent.bottom
-
-        width: Math.round(parent.width / 4)
-
-        visible: buttonPrevious.visible
-
-        hoverEnabled: buttonPrevious.visible
-
-        cursor: Qt.PointingHandCursor
-
-        onPressed : scrollPrevious()
-        onReleased: scrollClear   ()
-
-        Behavior on visible
-        {
-            enabled: (areaBackward.visible)
-
-            PropertyAnimation { duration: st.ms1000 }
-        }
-    }
-
-    MouseArea
-    {
-        id: areaForward
-
-        anchors.top   : areaBackward.top
-        anchors.bottom: areaBackward.bottom
-        anchors.right : parent.right
-
-        width: Math.round(parent.width / 4)
-
-        visible: buttonNext.visible
-
-        hoverEnabled: buttonNext.visible
-
-        cursor: Qt.PointingHandCursor
-
-        onPressed : scrollNext ()
-        onReleased: scrollClear()
-
-        Behavior on visible
-        {
-            enabled: (areaForward.visible)
-
-            PropertyAnimation { duration: st.ms1000 }
-        }
-    }
 
     ButtonTouchIcon
     {
