@@ -82,6 +82,20 @@ Style
     property color label_color: buttonTouch_color
 //#END
 
+//#LabelIcon
+    //---------------------------------------------------------------------------------------------
+    // LabelIcon
+
+    property ImageFilterColor label_filterIcon: icon1_filter
+//#END
+
+//#LabelLoading
+    //---------------------------------------------------------------------------------------------
+    // LabelLoading
+
+    property int labelLoading_durationAnimation: ms800
+//#END
+
 //#LineEdit
     //---------------------------------------------------------------------------------------------
     // LineEdit
@@ -143,11 +157,15 @@ Style
     //---------------------------------------------------------------------------------------------
     // Icons
 
-//#ButtonsWindow
+//#icons_window:ButtonsWindow
     property url icon_close   : "icons/times.svg"
     property url icon_maximize: "icons/window-maximize.svg"
     property url icon_restore : "icons/window-restore.svg"
     property url icon_minimize: "icons/window-minimize.svg"
+//#END
+
+//#icons_loading:LabelLoading
+    property url icon_loading: "icons/loading.svg"
 //#END
 
 //#icons_playback:PlayerBrowser
