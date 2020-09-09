@@ -56,12 +56,17 @@ BasePlayerBrowser
     // Signals
     //---------------------------------------------------------------------------------------------
 
+    signal contextual
+
     signal titleClicked (variant mouse)
     signal authorClicked(variant mouse)
 
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
+
+    // NOTE: This is for the 'contextual' signal.
+    acceptedButtons: Qt.RightButton
 
     areaBackward.anchors.top   : (barTitle  .visible) ? barTitle.bottom : playerBrowser.top
     areaBackward.anchors.bottom: (barDetails.visible) ? barDetails.top  : playerBrowser.bottom
@@ -71,6 +76,12 @@ BasePlayerBrowser
 
     areaBackward.hoverEnabled: buttonPrevious.visible
     areaForward .hoverEnabled: buttonNext    .visible
+
+    //---------------------------------------------------------------------------------------------
+    // Events
+    //---------------------------------------------------------------------------------------------
+
+    onPressed: contextual()
 
     //---------------------------------------------------------------------------------------------
     // Functions
