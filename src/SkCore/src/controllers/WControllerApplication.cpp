@@ -1674,27 +1674,36 @@ void WControllerApplication::setScreenSaverEnabled(bool enabled)
         SystemParametersInfo(SPI_SETSCREENSAVETIMEOUT, d->timeoutScreenSave, NULL, 0);
     }
 #elif defined(Q_OS_ANDROID)
-    QAndroidJniObject jni = QtAndroid::androidActivity();
-
-    if (jni.isValid())
+    // NOTE Android: We run it on the GUI thread otherwise we get an exception.
+    QtAndroid::runOnAndroidThread([enabled]
     {
-        jni = jni.callObjectMethod("getWindow", "()Landroid/view/Window;");
+        QAndroidJniObject jni = QtAndroid::androidActivity();
 
         if (jni.isValid())
         {
-            // NOTE: 128 is the FLAG_KEEP_SCREEN_ON define.
-            if (enabled)
+            jni = jni.callObjectMethod("getWindow", "()Landroid/view/Window;");
+
+            if (jni.isValid())
             {
-                 jni.callMethod<void>("clearFlags", "(I)V", 128);
+                // NOTE: 128 is the FLAG_KEEP_SCREEN_ON define.
+                if (enabled)
+                {
+                     jni.callMethod<void>("clearFlags", "(I)V", 128);
+                }
+                else jni.callMethod<void>("addFlags", "(I)V", 128);
             }
-            else jni.callMethod<void>("addFlags", "(I)V", 128);
         }
-    }
 
-    QAndroidJniEnvironment env;
+        QAndroidJniEnvironment env;
 
-    // NOTE Android: It seems we need to check exceptions.
-    if (env->ExceptionCheck()) env->ExceptionClear();
+        // NOTE Android: It seems we need to check exceptions.
+        if (env->ExceptionCheck())
+        {
+            env->ExceptionDescribe();
+
+            env->ExceptionClear();
+        }
+    });
 #endif
 
     emit screenSaverEnabledChanged();
