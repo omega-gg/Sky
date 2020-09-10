@@ -119,7 +119,7 @@ BaseButtonPiano
             size = sk.textWidth(font, text) + borderSizeWidth + paddingLeft + paddingRight;
         }
 
-        return set.getSize(size, minimumWidth, maximumWidth);
+        return st.getSize(size, minimumWidth, maximumWidth);
     }
 
     //---------------------------------------------------------------------------------------------
