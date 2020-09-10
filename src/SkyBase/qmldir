@@ -4,7 +4,9 @@ Window 1.0 Window.qml
 
 RectangleBorders 1.0 RectangleBorders.qml
 
-TextBase 1.0 TextBase.qml
+TextBase  1.0 TextBase.qml
+TextClick 1.0 TextClick.qml
+TextLink  1.0 TextLink.qml
 
 BasePanel 1.0 BasePanel.qml
 

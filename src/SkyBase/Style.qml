@@ -349,4 +349,21 @@ Item
     {
         return value * ratioSpeed;
     }
+
+    //---------------------------------------------------------------------------------------------
+
+    function getSize(size, minimum, maximum)
+    {
+        if (minimum != -1)
+        {
+            size = Math.max(minimum, size);
+        }
+
+        if (maximum != -1)
+        {
+            size = Math.min(size, maximum);
+        }
+
+        return size;
+    }
 }

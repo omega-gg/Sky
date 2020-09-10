@@ -54,30 +54,10 @@ BaseButtonPush
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: getWidth()
+    width: st.getSize(sk.textWidth(font, text) + paddingLeft + paddingRight,
+                      minimumWidth, maximumWidth)
 
     height: st.buttonPush_height
-
-    //---------------------------------------------------------------------------------------------
-    // Functions
-    //---------------------------------------------------------------------------------------------
-
-    function getWidth()
-    {
-        var size = sk.textWidth(font, text) + paddingLeft + paddingRight;
-
-        if (minimumWidth != -1)
-        {
-            size = Math.max(minimumWidth, size);
-        }
-
-        if (maximumWidth != -1)
-        {
-            size = Math.min(size, maximumWidth);
-        }
-
-        return size;
-    }
 
     //---------------------------------------------------------------------------------------------
     // Childs

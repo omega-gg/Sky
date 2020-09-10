@@ -33,6 +33,9 @@ BaseButtonTouch
 
     property int padding: st.buttonTouch_padding
 
+    property int minimumWidth: -1
+    property int maximumWidth: -1
+
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
@@ -49,7 +52,8 @@ BaseButtonTouch
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: sk.textWidth(itemText.font, text) + padding * 2
+    width: st.getSize(sk.textWidth(itemText.font, text) + padding * 2,
+                      minimumWidth, maximumWidth)
 
     height: st.buttonTouch_size
 

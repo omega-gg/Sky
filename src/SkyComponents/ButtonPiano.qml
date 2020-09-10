@@ -54,32 +54,10 @@ BaseButtonPiano
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: getWidth()
+    width: st.getSize(sk.textWidth(font, text) + paddingLeft + paddingRight + borderSizeWidth,
+                      minimumWidth, maximumWidth)
 
     height: st.buttonPiano_height + borderSizeHeight
-
-    //---------------------------------------------------------------------------------------------
-    // Functions
-    //---------------------------------------------------------------------------------------------
-
-    function getWidth()
-    {
-        var size;
-
-        size = sk.textWidth(font, text) + paddingLeft + paddingRight + borderSizeWidth;
-
-        if (minimumWidth != -1)
-        {
-            size = Math.max(minimumWidth, size);
-        }
-
-        if (maximumWidth != -1)
-        {
-            size = Math.min(size, maximumWidth);
-        }
-
-        return size;
-    }
 
     //---------------------------------------------------------------------------------------------
     // Childs

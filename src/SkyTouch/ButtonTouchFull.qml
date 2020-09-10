@@ -107,17 +107,7 @@ BaseButtonTouch
             size = sk.textWidth(font, text) + padding * 2;
         }
 
-        if (minimumWidth != -1)
-        {
-            size = Math.max(minimumWidth, size);
-        }
-
-        if (maximumWidth != -1)
-        {
-            size = Math.min(size, maximumWidth);
-        }
-
-        return size;
+        return st.getSize(size, minimumWidth, maximumWidth);
     }
 
     //---------------------------------------------------------------------------------------------
