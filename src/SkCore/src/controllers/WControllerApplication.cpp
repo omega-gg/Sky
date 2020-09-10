@@ -1674,7 +1674,7 @@ void WControllerApplication::setScreenSaverEnabled(bool enabled)
         SystemParametersInfo(SPI_SETSCREENSAVETIMEOUT, d->timeoutScreenSave, NULL, 0);
     }
 #elif defined(Q_OS_ANDROID)
-    // NOTE Android: We run it on the GUI thread otherwise we get an exception.
+    // NOTE Android: We run this on the GUI thread otherwise we get an exception.
     QtAndroid::runOnAndroidThread([enabled]
     {
         QAndroidJniObject jni = QtAndroid::androidActivity();
