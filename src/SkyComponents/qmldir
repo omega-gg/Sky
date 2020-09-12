@@ -25,7 +25,6 @@ BaseCursor 1.0 BaseCursor.qml
 CursorSvg  1.0 CursorSvg.qml
 
 RectangleBordersDrop 1.0 RectangleBordersDrop.qml
-RectangleShadow      1.0 RectangleShadow.qml
 RectangleLogo        1.0 RectangleLogo.qml
 
 BorderImageBack      1.0 BorderImageBack.qml

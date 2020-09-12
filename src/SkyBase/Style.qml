@@ -276,6 +276,27 @@ Item
     property int rectangleBorders_size: border_size
 //#END
 
+//#RectangleShadow
+    //---------------------------------------------------------------------------------------------
+    // RectangleShadow
+
+    property url rectangleShadow_sourceLeft : "pictures/shadowLeft.png"
+    property url rectangleShadow_sourceRight: "pictures/shadowRight.png"
+    property url rectangleShadow_sourceUp   : "pictures/shadowUp.png"
+    property url rectangleShadow_sourceDown : "pictures/shadowDown.png"
+
+    property color rectangleShadow_color: "#161616"
+
+    property ImageFilterColor rectangleShadow_filter: rectangleShadow_filter
+
+    ImageFilterColor
+    {
+        id: rectangleShadow_filter
+
+        color: rectangleShadow_color
+    }
+//#END
+
 //#BaseLineEdit
     //---------------------------------------------------------------------------------------------
     // BaseLineEdit
