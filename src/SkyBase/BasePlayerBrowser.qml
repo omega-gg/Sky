@@ -35,6 +35,8 @@ MouseArea
 
     property TabTrack tab: playerTab
 
+    property int ratio: 5
+
     //---------------------------------------------------------------------------------------------
     // Private
 
@@ -230,7 +232,7 @@ MouseArea
         anchors.top   : parent.top
         anchors.bottom: parent.bottom
 
-        width: Math.round(parent.width / 4)
+        width: Math.round(parent.width / ratio)
 
         cursor: Qt.PointingHandCursor
 
@@ -253,7 +255,7 @@ MouseArea
         anchors.bottom: areaBackward.bottom
         anchors.right : parent.right
 
-        width: Math.round(parent.width / 4)
+        width: Math.round(parent.width / ratio)
 
         cursor: Qt.PointingHandCursor
 
