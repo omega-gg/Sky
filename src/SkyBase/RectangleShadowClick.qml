@@ -23,24 +23,15 @@
 import QtQuick 1.0
 import Sky     1.0
 
-TextBase
+RectangleShadow
 {
-    id: textClick
+    id: rectangleShadowClick
 
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property bool isFocused: activeFocus
-
-    property bool isHovered: mouseArea.containsMouse
-    property bool isPressed: mouseArea.pressed
-
-    //---------------------------------------------------------------------------------------------
-    // Aliases
-    //---------------------------------------------------------------------------------------------
-
-    property alias mouseArea: mouseArea
+    property int ratio: 4
 
     //---------------------------------------------------------------------------------------------
     // Signals
@@ -53,6 +44,40 @@ TextBase
     signal clicked(variant mouse)
 
     //---------------------------------------------------------------------------------------------
+    // Settings
+    //---------------------------------------------------------------------------------------------
+
+    opacity: getOpacity()
+
+    //---------------------------------------------------------------------------------------------
+    // Functions
+    //---------------------------------------------------------------------------------------------
+
+    function getOpacity()
+    {
+        if (mouseArea.containsMouse)
+        {
+            if (mouseArea.pressed) return 1.0;
+            else                   return 0.5;
+        }
+        else return 0.0;
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Animations
+    //---------------------------------------------------------------------------------------------
+
+    Behavior on opacity
+    {
+        PropertyAnimation
+        {
+            duration: st.duration_normal
+
+            easing.type: st.easing
+        }
+    }
+
+    //---------------------------------------------------------------------------------------------
     // Childs
     //---------------------------------------------------------------------------------------------
 
@@ -60,30 +85,21 @@ TextBase
     {
         id: mouseArea
 
-        anchors.right: (horizontalAlignment == Text.AlignRight) ? parent.right : undefined
+        anchors.left : parent.left
+        anchors.right: parent.right
 
-        anchors.bottom: (verticalAlignment == Text.AlignBottom) ? parent.bottom : undefined
+        anchors.verticalCenter: parent.verticalCenter
 
-        anchors.horizontalCenter: (horizontalAlignment
-                                   ==
-                                   Text.AlignHCenter) ? parent.horizontalCenter : undefined
+        height: Math.round(parent.height / ratio)
 
-        anchors.verticalCenter: (verticalAlignment
-                                 ==
-                                 Text.AlignVCenter) ? parent.verticalCenter : undefined
-
-        width: Math.min(sk.textWidth(font, text), parent.width)
-
-        height: Math.min(sk.textHeight(font), parent.height)
-
-        hoverEnabled: textClick.enabled
+        hoverEnabled: true
 
         cursor: Qt.PointingHandCursor
 
-        onEntered: textClick.entered()
-        onExited : textClick.exited ()
+        onEntered: rectangleShadowClick.entered()
+        onExited : rectangleShadowClick.exited ()
 
-        onPressed: textClick.pressed(mouse)
-        onClicked: textClick.clicked(mouse)
+        onPressed: rectangleShadowClick.pressed(mouse)
+        onClicked: rectangleShadowClick.clicked(mouse)
     }
 }

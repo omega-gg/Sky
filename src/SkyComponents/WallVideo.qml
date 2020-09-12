@@ -54,8 +54,7 @@ WallBookmarkTrack
 
     property int pWidthRight: width - pWidthHalf - st.border_size
 
-    property int pAreaWidth : player.width  / 8
-    property int pAreaHeight: player.height / 4
+    property int pAreaWidth: player.width / 8
 
     property int pMargin: 0
 
@@ -689,16 +688,14 @@ WallBookmarkTrack
         }
     }
 
-    MouseArea
+    RectangleShadowClick
     {
         id: areaBackward
 
-        anchors.left: player.left
+        anchors.top   : player.top
+        anchors.bottom: player.bottom
 
-        anchors.verticalCenter: player.verticalCenter
-
-        width : pAreaWidth
-        height: pAreaHeight
+        width: pAreaWidth
 
         z: player.z
 
@@ -706,91 +703,30 @@ WallBookmarkTrack
                   &&
                   player.isPlaying && (player.isDefault || player.isBuffering))
 
-        hoverEnabled: true
-
-        cursor: Qt.PointingHandCursor
-
-        onClicked: seekBackward()
-    }
-
-    RectangleShadow
-    {
-        id: rectangleBackward
-
-        anchors.left  : areaBackward.left
-        anchors.right : areaBackward.right
-        anchors.top   : player.top
-        anchors.bottom: player.bottom
-
-        z: player.z
-
-        visible: (opacity != 0.0)
-
-        opacity: (areaBackward.containsMouse) ? getOpacity(areaBackward) : 0.0
-
         direction: Sk.Right
 
         filter: st.wallVideo_filterShadow
 
-        Behavior on opacity
-        {
-            PropertyAnimation
-            {
-                duration: st.duration_normal
-
-                easing.type: st.easing
-            }
-        }
+        onClicked: seekBackward()
     }
 
-    MouseArea
+    RectangleShadowClick
     {
         id: areaForward
 
-        anchors.right: player.right
+        anchors.right : player.right
+        anchors.top   : player.top
+        anchors.bottom: player.bottom
 
-        anchors.verticalCenter: player.verticalCenter
-
-        width : pAreaWidth
-        height: pAreaHeight
+        width: pAreaWidth
 
         z: player.z
 
         visible: areaBackward.visible
 
-        hoverEnabled: true
-
-        cursor: Qt.PointingHandCursor
-
-        onClicked: seekForward()
-    }
-
-    RectangleShadow
-    {
-        id: rectangleForward
-
-        anchors.left  : areaForward.left
-        anchors.right : areaForward.right
-        anchors.top   : player.top
-        anchors.bottom: player.bottom
-
-        z: player.z
-
-        visible: (opacity != 0.0)
-
-        opacity: (areaForward.containsMouse) ? getOpacity(areaForward) : 0.0
-
         filter: st.wallVideo_filterShadow
 
-        Behavior on opacity
-        {
-            PropertyAnimation
-            {
-                duration: st.duration_normal
-
-                easing.type: st.easing
-            }
-        }
+        onClicked: seekForward()
     }
 
     TextSubtitle

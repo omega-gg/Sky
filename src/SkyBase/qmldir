@@ -2,8 +2,9 @@ Style 1.0 Style.qml
 
 Window 1.0 Window.qml
 
-RectangleBorders 1.0 RectangleBorders.qml
-RectangleShadow  1.0 RectangleShadow.qml
+RectangleBorders     1.0 RectangleBorders.qml
+RectangleShadow      1.0 RectangleShadow.qml
+RectangleShadowClick 1.0 RectangleShadowClick.qml
 
 TextBase  1.0 TextBase.qml
 TextClick 1.0 TextClick.qml
