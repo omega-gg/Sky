@@ -29,9 +29,13 @@ OTHER_FILES += 3rdparty.sh \
                .appveyor.yml \
                include/generate.sh \
                src/SkyBase/qmldir \
+               src/SkyBase/*.qml \
                src/SkyComponents/qmldir \
+               src/SkyComponents/*.qml \
                src/SkyTouch/qmldir \
+               src/SkyTouch/*.qml \
                src/SkyPresentation/qmldir \
+               src/SkyPresentation/*.qml \
                dist/changes/1.0.1.md \
                dist/changes/1.1.0.md \
                dist/changes/1.1.1.md \
