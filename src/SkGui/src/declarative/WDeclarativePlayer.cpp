@@ -135,6 +135,8 @@ void WDeclarativePlayerPrivate::applyPlaylist(WPlaylist * playlist)
         if (folder)
         {
             folder->setActiveId(playlist->id());
+
+            QObject::connect(folder, SIGNAL(destroyed()), q, SLOT(onFolderDestroyed()));
         }
 
         if (shuffle)
@@ -143,8 +145,6 @@ void WDeclarativePlayerPrivate::applyPlaylist(WPlaylist * playlist)
 
             resetShuffle();
         }
-
-        QObject::connect(folder, SIGNAL(destroyed()), q, SLOT(onFolderDestroyed()));
     }
     else
     {
