@@ -2913,6 +2913,26 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
     }
     else return true;
 }
+//---------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ QString WControllerPlaylist::sourceRelatedTracks(const QString & url)
+{
+    WBackendNet * backend = backendFromUrl(url);
+
+    if (backend == NULL) return QString();
+
+    QString id = backend->id();
+
+    QString trackId = backend->getTrackId(url);
+
+    backend->tryDelete();
+
+    if (trackId.isEmpty())
+    {
+         return createSource(id, "related", "tracks", url);
+    }
+    else return createSource(id, "related", "tracks", trackId);
+}
 
 //-------------------------------------------------------------------------------------------------
 

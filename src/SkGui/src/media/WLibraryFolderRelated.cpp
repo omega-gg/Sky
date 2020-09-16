@@ -87,24 +87,12 @@ void WLibraryFolderRelatedPrivate::init()
         return;
     }
 
-    WBackendNet * backend = wControllerPlaylist->backendFromUrl(trackSource);
+    QString source = wControllerPlaylist->sourceRelatedTracks(trackSource);
 
-    QString source;
-
-    if (backend)
+    if (source.isEmpty())
     {
-        QString id = backend->getTrackId(trackSource);
-
-        if (id.isEmpty())
-        {
-            id = trackSource;
-        }
-
-        source = WControllerPlaylist::createSource(backend->id(), "related", "tracks", id);
-
-        backend->tryDelete();
+        source = track.feed();
     }
-    else source = track.feed();
 
     int index = currentIndex();
 

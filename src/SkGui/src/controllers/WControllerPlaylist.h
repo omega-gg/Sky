@@ -191,6 +191,10 @@ public: // Interface
 
     //---------------------------------------------------------------------------------------------
 
+    Q_INVOKABLE QString sourceRelatedTracks(const QString & url);
+
+    //---------------------------------------------------------------------------------------------
+
     Q_INVOKABLE void abortFolderItems();
 
     Q_INVOKABLE void abortQueries();
