@@ -940,11 +940,9 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
     int countAdd = tracks.count();
 
-    if (countAdd == 0) return;
+    if (countAdd == 0 || checkFull(countAdd)) return;
 
     int count = d->tracks.count();
-
-    if (checkFull(countAdd)) return;
 
     if (index < 0 || index > count)
     {
@@ -1270,7 +1268,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 {
     Q_D(const WPlaylist);
 
-    return (this->count() + count >= d->maxCount);
+    return (this->count() + count > d->maxCount);
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -1337,11 +1337,9 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
 
     int countAdd = items.count();
 
-    if (countAdd == 0) return;
+    if (countAdd == 0 || checkFull(countAdd)) return;
 
     int count = d->items.count();
-
-    if (count >= d->maxCount) return;
 
     if (index < 0 || index > count)
     {
@@ -1642,6 +1640,15 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
     }
 
     if (changed) this->save();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ bool WLibraryFolder::checkFull(int count) const
+{
+    Q_D(const WLibraryFolder);
+
+    return (this->count() + count > d->maxCount);
 }
 
 //-------------------------------------------------------------------------------------------------

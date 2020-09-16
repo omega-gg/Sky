@@ -168,6 +168,8 @@ public: // Interface
 
     //---------------------------------------------------------------------------------------------
 
+    Q_INVOKABLE bool checkFull(int count = 1) const;
+
     Q_INVOKABLE bool contains(int id) const;
 
     Q_INVOKABLE bool containsSource(const QString & source) const;
