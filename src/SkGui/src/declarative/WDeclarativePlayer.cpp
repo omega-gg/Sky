@@ -230,20 +230,29 @@ void WDeclarativePlayerPrivate::loadSource(const QString & source, int duration,
     {
         if (backendInterface && backendInterface == backend)
         {
-            bool playing = backend->isPlaying();
+            if (backend->isPlaying())
+            {
+                // NOTE: We have to keep state to avoid clearing highlightedTab.
+                keepState = true;
 
-            // NOTE: We have to keep state to avoid clearing highlightedTab.
-            keepState = true;
+                backend->clear();
 
-            backend->clear();
+                keepState = false;
 
-            keepState = false;
+                backendInterface = hook;
 
-            backendInterface = hook;
+                hook->loadSource(source, duration, currentTime);
 
-            hook->loadSource(source, duration, currentTime);
+                hook->play();
+            }
+            else
+            {
+                backend->clear();
 
-            if (playing) hook->play();
+                backendInterface = hook;
+
+                hook->loadSource(source, duration, currentTime);
+            }
         }
         else
         {
@@ -256,20 +265,29 @@ void WDeclarativePlayerPrivate::loadSource(const QString & source, int duration,
     {
         if (backendInterface && backendInterface == hook)
         {
-            bool playing = hook->backend()->isPlaying();
+            if (hook->backend()->isPlaying())
+            {
+                // NOTE: We have to keep state to avoid clearing highlightedTab.
+                keepState = true;
 
-            // NOTE: We have to keep state to avoid clearing highlightedTab.
-            keepState = true;
+                hook->clear();
 
-            hook->clear();
+                keepState = false;
 
-            keepState = false;
+                backendInterface = backend;
 
-            backendInterface = backend;
+                backend->loadSource(source, duration, currentTime);
 
-            backend->loadSource(source, duration, currentTime);
+                backend->play();
+            }
+            else
+            {
+                hook->clear();
 
-            if (playing) backend->play();
+                backendInterface = backend;
+
+                backend->loadSource(source, duration, currentTime);
+            }
         }
         else
         {
