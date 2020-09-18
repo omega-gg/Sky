@@ -35,7 +35,7 @@ MouseArea
 
     property TabTrack tab: playerTab
 
-    property int ratio: 5
+    property real ratio: st.playerBrowser_ratio
 
     //---------------------------------------------------------------------------------------------
     // Private

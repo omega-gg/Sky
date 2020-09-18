@@ -297,6 +297,13 @@ Item
     }
 //#END
 
+//#RectangleShadowClick
+    //---------------------------------------------------------------------------------------------
+    // RectangleShadowClick
+
+    property real rectangleShadowClick_ratio: 4.0
+//#END
+
 //#BaseLineEdit
     //---------------------------------------------------------------------------------------------
     // BaseLineEdit
@@ -333,6 +340,8 @@ Item
 
     property int playerBrowser_intervalA: 500
     property int playerBrowser_intervalB: 200
+
+    property real playerBrowser_ratio: 5.0
 //#END
 
     //---------------------------------------------------------------------------------------------
