@@ -16,6 +16,8 @@ LabelLoading 1.0 LabelLoading.qml
 
 LineEdit 1.0 LineEdit.qml
 
+ListLoading 1.0 ListLoading.qml
+
 ScrollBar 1.0 ScrollBar.qml
 
 Slider       1.0 Slider.qml
