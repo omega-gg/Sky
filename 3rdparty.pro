@@ -4,6 +4,7 @@ CONFIG += ordered
 
 SUBDIRS = ../3rdparty \
           ../assets \
+          ../backend \
           ../VLC \
           ../libtorrent \
           ../docker \
