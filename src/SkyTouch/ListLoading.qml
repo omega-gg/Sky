@@ -33,6 +33,21 @@ Column
 
     property int size: st.label_size
 
+    property int radius: st.radius
+
+    //---------------------------------------------------------------------------------------------
+    // Style
+
+    property int duration: st.listLoading_duration
+
+    property color color: st.listLoading_color
+
+    //---------------------------------------------------------------------------------------------
+    // Aliases
+    //---------------------------------------------------------------------------------------------
+
+    property alias repeater: repeater
+
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
@@ -51,9 +66,9 @@ Column
 
         PropertyAnimation
         {
-            to: 0.4
+            to: 0.2
 
-            duration: 500
+            duration: listLoading.duration
 
             easing.type: st.easing
         }
@@ -62,7 +77,7 @@ Column
         {
             to: 1.0
 
-            duration: 500
+            duration: listLoading.duration
 
             easing.type: st.easing
         }
@@ -74,7 +89,9 @@ Column
 
     Repeater
     {
-        model: Math.ceil(listLoading.height / (size + spacing))
+        id: repeater
+
+        model: (visible) ? Math.ceil(listLoading.height / (size + spacing)) : 0
 
         Rectangle
         {
@@ -84,9 +101,9 @@ Column
 
             height: size
 
-            radius: st.radius
+            radius: listLoading.radius
 
-            color: st.lineEdit_color
+            color: listLoading.color
 
 //#QT_4
             smooth: true

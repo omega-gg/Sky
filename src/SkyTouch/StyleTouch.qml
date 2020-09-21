@@ -110,6 +110,15 @@ Style
     property color lineEdit_color: "#f0f0f0"
 //#END
 
+//#ListLoading
+    //---------------------------------------------------------------------------------------------
+    // ListLoading
+
+    property int listLoading_duration: duration_slower
+
+    property color listLoading_color: lineEdit_color
+//#END
+
 //#ScrollBar
     //---------------------------------------------------------------------------------------------
     // ScrollBar
