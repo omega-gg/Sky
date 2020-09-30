@@ -109,7 +109,8 @@ MouseArea
     {
         if (pUpdate == false) return;
 
-        var ratio = view.contentY / pMaximumA;
+        // NOTE: We don't want the scrollBar position to go under 0.
+        var ratio = Math.max(0, view.contentY) / pMaximumA;
 
         if (ratio < 1.0)
         {
