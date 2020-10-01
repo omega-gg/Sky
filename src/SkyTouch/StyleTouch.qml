@@ -116,6 +116,8 @@ Style
 
     property int listLoading_duration: duration_slower
 
+    property int listLoading_minimumCount: 3
+
     property color listLoading_color: lineEdit_color
 //#END
 

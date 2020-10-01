@@ -31,9 +31,13 @@ Column
     // Properties
     //---------------------------------------------------------------------------------------------
 
+    /* mandatory */ property ListView list
+
     property int size: st.label_size
 
     property int radius: st.radius
+
+    property int minimumCount: st.listLoading_minimumCount
 
     //---------------------------------------------------------------------------------------------
     // Style
@@ -51,6 +55,15 @@ Column
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
+
+    anchors.left : list.left
+    anchors.right: list.right
+    anchors.top  : list.top
+
+    anchors.topMargin: -list.contentY
+
+    height: (listPlaylist.count > minimumCount) ? list.contentHeight
+                                                : pGetHeight(minimumCount)
 
     spacing: st.margins
 
@@ -81,6 +94,16 @@ Column
 
             easing.type: st.easing
         }
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Functions
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    function pGetHeight(count)
+    {
+        return (size + spacing) * count;
     }
 
     //---------------------------------------------------------------------------------------------
