@@ -274,6 +274,12 @@ else
         cp "$libs"/libharfbuzz.so.*          deploy
         cp "$libs"/libxcb-xinerama.so.*      deploy
 
+        # NOTE: Required for Ubuntu 20.04.
+        if [ -f "$libs"/libpcre2-16.so.0 ]; then
+
+            cp "$libs"/libpcre2-16.so.0 deploy
+        fi
+
         cp "$Qt"/lib/libQt5Core.so.5        deploy
         cp "$Qt"/lib/libQt5Gui.so.5         deploy
         cp "$Qt"/lib/libQt5Network.so.5     deploy
