@@ -74,7 +74,7 @@ private slots:
     void onSeek  (qint64 progress);
 
     void onStart();
-    void onSkip ();
+    //void onSkip ();
 
     void onClear();
 
@@ -553,7 +553,7 @@ void WTorrentThread::onStart()
     started = true;
 }
 
-void WTorrentThread::onSkip()
+/*void WTorrentThread::onSkip()
 {
     qDebug("SKIP SEEK");
 
@@ -567,7 +567,7 @@ void WTorrentThread::onSkip()
 
         data->onWrite();
     }
-}
+}*/
 
 //-------------------------------------------------------------------------------------------------
 
@@ -706,7 +706,7 @@ void WHookTorrentPrivate::init()
     methodBuffer = meta->method(meta->indexOfMethod("onBuffer(qint64)"));
     methodSeek   = meta->method(meta->indexOfMethod("onSeek(qint64)"));
     methodStart  = meta->method(meta->indexOfMethod("onStart()"));
-    methodSkip   = meta->method(meta->indexOfMethod("onSkip()"));
+    //methodSkip   = meta->method(meta->indexOfMethod("onSkip()"));
     methodClear  = meta->method(meta->indexOfMethod("onClear()"));
 }
 
@@ -1101,7 +1101,7 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
     {
         setDuration(duration);
 
-        d->methodSkip.invoke(d->thread);
+        //d->methodSkip.invoke(d->thread);
 
         d->backend->seek(currentTime);
     }
@@ -1201,7 +1201,7 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 
     if (d->state > WHookTorrentPrivate::StateStarting)
     {
-        d->methodSkip.invoke(d->thread);
+        //d->methodSkip.invoke(d->thread);
 
         d->backend->seek(msec);
     }
@@ -1264,7 +1264,7 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
         *stateLoad = d->backend->stateLoad();
 
         d->methodStart.invoke(d->thread);
-        d->methodSkip .invoke(d->thread);
+        //d->methodSkip .invoke(d->thread);
 
         backendSeek(d->currentTime);
 
