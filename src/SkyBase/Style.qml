@@ -92,7 +92,7 @@ Item
 
     property real text_opacityDisable: 0.6
 
-    property string text_fontFamily: (sk.osMac) ? "" : "Arial"
+    property string text_fontFamily: "Arial"
 
     property int text_raised: Text.Normal
     property int text_sunken: text_raised
