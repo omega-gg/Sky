@@ -1,11 +1,11 @@
-<a href="http://omega.gg/MotionBox/sources"><img src="dist/pictures/Sky.png" alt="Sky kit" width="128px"></a>
+<a href="http://omega.gg/Sky"><img src="dist/pictures/Sky.png" alt="Sky kit" width="128px"></a>
 ---
 [![azure](https://dev.azure.com/bunjee/Sky/_apis/build/status/omega-gg.Sky)](https://dev.azure.com/bunjee/Sky/_build)
 [![travis](http://api.travis-ci.org/omega-gg/Sky.svg)](http://travis-ci.org/omega-gg/Sky)
 [![appveyor](https://ci.appveyor.com/api/projects/status/86v4f4gv95u68w18?svg=true)](https://ci.appveyor.com/project/3unjee/sky)
 [![LGPLv3](https://img.shields.io/badge/License-LGPLv3-blue.svg)](https://www.gnu.org/licenses/lgpl.html)
 
-Sky is an application kit designed for multimedia software.<br>
+Sky is an Application Kit designed for Multimedia Software.<br>
 With a focus on efficiency, scalability and simplicity.<br>
 [omega](http://omega.gg/about) is building Sky kit to empower people.<br>
 
