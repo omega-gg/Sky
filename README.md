@@ -10,7 +10,6 @@ With a focus on efficiency, scalability and simplicity.<br>
 [omega](http://omega.gg/about) is building Sky kit to empower people.<br>
 
 ## Technology
-<a href="http://omega.gg/MotionBox"><img src="dist/pictures/MotionBox.png" alt="MotionBox" width="512px"></a>
 
 Sky is built in C++ on the [Qt framework](http://github.com/qtproject).<br>
 The GUI is powered by [QML](http://github.com/qtproject/qtdeclarative) and rendered with OpenGL.<br>
