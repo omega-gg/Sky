@@ -593,6 +593,7 @@ void WTorrentThread::onClear()
 
 void WTorrentThread::onConnection()
 {
+    // NOTE: When the file does not exist the connection comes from an outsider. So we ignore it.
     if (file == NULL)
     {
         qDebug("SKIP CONNECTION");
