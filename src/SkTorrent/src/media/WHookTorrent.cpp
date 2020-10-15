@@ -593,39 +593,42 @@ void WTorrentThread::onClear()
 
 void WTorrentThread::onConnection()
 {
+    if (file == NULL)
+    {
+        qDebug("SKIP CONNECTION");
+
+        return;
+    }
+
     qDebug("NEW CONNECTION");
 
     QTcpSocket * socket = server->nextPendingConnection();
 
-    if (file)
+    if (data)
     {
-        if (data)
-        {
-            delete data->socket;
-            delete data;
-        }
-
-        if (file->isOpen() || file->open(QIODevice::ReadOnly))
-        {
-            data = new WTorrentSocket(this, socket);
-
-            connect(socket, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
-
-            connect(socket, SIGNAL(bytesWritten(qint64)), this, SLOT(onBytesWritten(qint64)));
-
-            connect(socket, SIGNAL(error(QAbstractSocket::SocketError)),
-                    this,   SLOT(onError(QAbstractSocket::SocketError)));
-        }
-        else
-        {
-            qDebug("FAILED TO OPEN FILE");
-
-            data = NULL;
-
-            delete socket;
-        }
+        delete data->socket;
+        delete data;
     }
-    else delete socket;
+
+    if (file->isOpen() || file->open(QIODevice::ReadOnly))
+    {
+        data = new WTorrentSocket(this, socket);
+
+        connect(socket, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
+
+        connect(socket, SIGNAL(bytesWritten(qint64)), this, SLOT(onBytesWritten(qint64)));
+
+        connect(socket, SIGNAL(error(QAbstractSocket::SocketError)),
+                this,   SLOT(onError(QAbstractSocket::SocketError)));
+    }
+    else
+    {
+        qDebug("FAILED TO OPEN FILE");
+
+        data = NULL;
+
+        delete socket;
+    }
 }
 
 void WTorrentThread::onDisconnected()
