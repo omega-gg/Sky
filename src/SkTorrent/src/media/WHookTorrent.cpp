@@ -67,6 +67,9 @@ public:
 protected: // QThread reimplementation
     /* virtual */ void run();
 
+private: // Functions
+    void clearData();
+
 private slots:
     void onFile(WTorrent * torrent, const QString & fileName, qint64 size);
 
@@ -482,15 +485,31 @@ WTorrentThread::WTorrentThread(WTorrentEngine * engine, int port)
 }
 
 //-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
+
+void WTorrentThread::clearData()
+{
+    QTcpSocket * socket = data->socket;
+
+    // NOTE: We need to disconnect to avoid receiving a disconnect signal upon deletion.
+    disconnect(socket, 0, this, 0);
+
+    delete socket;
+    delete data;
+}
+
+//-------------------------------------------------------------------------------------------------
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
 void WTorrentThread::onFile(WTorrent * torrent, const QString & fileName, qint64 size)
 {
+    qDebug("TORRENT FILE");
+
     if (data)
     {
-        delete data->socket;
-        delete data;
+        clearData();
 
         data = NULL;
     }
@@ -573,10 +592,11 @@ void WTorrentThread::onStart()
 
 void WTorrentThread::onClear()
 {
+    qDebug("CLEAR CONNECTION");
+
     if (data)
     {
-        delete data->socket;
-        delete data;
+        clearData();
 
         data = NULL;
     }
@@ -593,23 +613,20 @@ void WTorrentThread::onClear()
 
 void WTorrentThread::onConnection()
 {
-    // NOTE: When the file does not exist the connection comes from an outsider. So we ignore it.
-    if (file == NULL)
-    {
-        qDebug("SKIP CONNECTION");
-
-        return;
-    }
-
     qDebug("NEW CONNECTION");
 
     QTcpSocket * socket = server->nextPendingConnection();
 
-    if (data)
+    if (file == NULL)
     {
-        delete data->socket;
-        delete data;
+        qDebug("SKIP CONNECTION");
+
+        delete socket;
+
+        return;
     }
+
+    if (data) clearData();
 
     if (file->isOpen() || file->open(QIODevice::ReadOnly))
     {
