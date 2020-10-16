@@ -1203,13 +1203,19 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 {
     Q_D(WHookTorrent);
 
-    if (d->state > WHookTorrentPrivate::StateStarting)
+    if (d->state < WHookTorrentPrivate::StatePlaying)
+    {
+        setCurrentTime(msec);
+
+        // NOTE: We set a temporary variable and we'll apply once we start streaming.
+        d->currentTime = msec;
+    }
+    else
     {
         //d->methodSkip.invoke(d->thread);
 
         d->backend->seek(msec);
     }
-    else setCurrentTime(msec);
 }
 
 //-------------------------------------------------------------------------------------------------
