@@ -79,6 +79,10 @@ static Class * _instance;             \
                                                        \
     Class::instance()->initController(Param1, Param2); \
 
+#define W_CREATE_CONTROLLER_3(Class, Param1, Param2, Param3)   \
+                                                               \
+    Class::instance()->initController(Param1, Param2, Param3); \
+
 //-------------------------------------------------------------------------------------------------
 
 #define W_CLEAR_CONTROLLER(Class) \

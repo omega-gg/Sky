@@ -62,8 +62,7 @@ Column
 
     anchors.topMargin: -list.contentY
 
-    height: (listPlaylist.count > minimumCount) ? list.contentHeight
-                                                : pGetHeight(minimumCount)
+    height: list.contentHeight + pGetHeight(minimumCount)
 
     spacing: st.margins
 
@@ -103,7 +102,11 @@ Column
 
     function pGetHeight(count)
     {
-        return (size + spacing) * count;
+        if (count > 1)
+        {
+             return size * count + spacing * (count - 1);
+        }
+        else return size;
     }
 
     //---------------------------------------------------------------------------------------------
