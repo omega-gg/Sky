@@ -102,9 +102,9 @@ Column
 
     function pGetHeight(count)
     {
-        if (count > 1)
+        if (list.count > 1)
         {
-             return size * count + spacing * (count - 1);
+             return (size + spacing) * count;
         }
         else return size;
     }
