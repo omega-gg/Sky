@@ -153,6 +153,8 @@ public: // Static functions
 
     //---------------------------------------------------------------------------------------------
 
+    Q_INVOKABLE static bool runUpdate();
+
     Q_INVOKABLE static bool runAdmin(const QString & fileName, const QString & parameters);
 
     Q_INVOKABLE static void wait(int msec, QEventLoop::ProcessEventsFlags flags

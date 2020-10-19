@@ -54,6 +54,7 @@
 #include <QTextCodec>
 #include <QMimeData>
 #include <QDir>
+#include <QProcess>
 #ifdef Q_OS_ANDROID
 #include <QtAndroid>
 #include <QAndroidJniEnvironment>
@@ -511,6 +512,29 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ bool WControllerApplication::runUpdate()
+{
+#ifdef Q_OS_WIN
+    QString path = QCoreApplication::applicationDirPath() + "/setup.exe";
+#else
+    QString path = QCoreApplication::applicationDirPath() + "/setup";
+#endif
+
+    if (WControllerFile::tryAppend(WControllerFile::fileUrl(path)))
+    {
+        if (QProcess::startDetached(quote(path), QStringList("--updater")) == false)
+        {
+            return false;
+        }
+    }
+    else if (runAdmin(path, "--updater") == false)
+    {
+        return false;
+    }
+
+    return true;
+}
 
 /* Q_INVOKABLE static */ bool WControllerApplication::runAdmin(const QString & fileName,
                                                                const QString & parameters)
