@@ -102,6 +102,7 @@ Column
 
     function pGetHeight(count)
     {
+        // NOTE: We only want spacing when the list has more than one item.
         if (list.count > 1)
         {
              return (size + spacing) * count;
