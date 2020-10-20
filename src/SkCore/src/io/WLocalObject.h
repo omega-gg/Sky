@@ -72,6 +72,8 @@ protected:
     WLocalObject(WLocalObjectPrivate * p, QObject * parent = NULL);
 
 public: // Interface
+    Q_INVOKABLE void createPath();
+
     Q_INVOKABLE bool saveNow();
 
     Q_INVOKABLE void abortSave();

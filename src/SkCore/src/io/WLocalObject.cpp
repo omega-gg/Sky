@@ -180,7 +180,8 @@ bool WLocalObjectPrivate::startSave(bool instant)
         return false;
     }
 
-    createPath  ();
+    q->createPath();
+
     createFolder();
 
     if (instant)
@@ -208,28 +209,6 @@ bool WLocalObjectPrivate::startSave(bool instant)
 }
 
 //-------------------------------------------------------------------------------------------------
-
-void WLocalObjectPrivate::createPath()
-{
-    if (pathCreated) return;
-
-    Q_Q(WLocalObject);
-
-    QString path = q->getParentPath();
-
-    if (QFile::exists(path))
-    {
-        pathCreated = true;
-
-        return;
-    }
-
-    if (QDir().mkpath(path) == false)
-    {
-        qWarning("WLocalObjectPrivate::createPath: Failed to create path %s.", path.C_STR);
-    }
-    else pathCreated = true;
-}
 
 void WLocalObjectPrivate::createFolder()
 {
@@ -338,6 +317,30 @@ WLocalObject::WLocalObject(WLocalObjectPrivate * p, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 // Interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WLocalObject::createPath()
+{
+    Q_D(WLocalObject);
+
+    if (d->pathCreated) return;
+
+    QString path = getParentPath();
+
+    if (QFile::exists(path))
+    {
+        d->pathCreated = true;
+
+        return;
+    }
+
+    if (QDir().mkpath(path) == false)
+    {
+        qWarning("WLocalObject::createPath: Failed to create path %s.", path.C_STR);
+    }
+    else d->pathCreated = true;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ bool WLocalObject::saveNow()
