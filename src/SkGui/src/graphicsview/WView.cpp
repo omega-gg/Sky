@@ -276,7 +276,7 @@ void WViewPrivate::init(QQuickItem * item)
 #ifdef QT_4
     vsync = false;
 #else
-    // NOTE Android: Vsync by default otherwise animations are messed up.
+    // NOTE Android: Without vsync animations are messed up.
     vsync = true;
 #endif
 
@@ -417,7 +417,7 @@ void WViewPrivate::init(QQuickItem * item)
 #ifdef QT_4
     format.setSwapInterval(0);
 #else
-    // NOTE Android: Vsync by default otherwise animations are messed up.
+    // NOTE Android: Without vsync animations are messed up.
     format.setSwapInterval(1);
 #endif
 
