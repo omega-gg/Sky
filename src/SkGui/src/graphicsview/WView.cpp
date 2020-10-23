@@ -273,11 +273,11 @@ void WViewPrivate::init(QQuickItem * item)
     opengl    = wControllerView->opengl();
     antialias = false;
 
-#ifdef QT_4
-    vsync = false;
-#else
+#ifdef Q_OS_ANDROID
     // NOTE Android: Without vsync animations are messed up.
     vsync = true;
+#else
+    vsync = false;
 #endif
 
 #ifdef QT_4
@@ -414,11 +414,11 @@ void WViewPrivate::init(QQuickItem * item)
 
     format.setSamples(0);
 
-#ifdef QT_4
-    format.setSwapInterval(0);
-#else
+#ifdef Q_OS_ANDROID
     // NOTE Android: Without vsync animations are messed up.
     format.setSwapInterval(1);
+#else
+    format.setSwapInterval(0);
 #endif
 
     q->setFormat(format);
