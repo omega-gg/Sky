@@ -26,6 +26,12 @@ import Sky     1.0
 BasePanel
 {
     //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+
+    property bool isActive: true
+
+    //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
@@ -34,11 +40,51 @@ BasePanel
     //---------------------------------------------------------------------------------------------
     // Style
 
+    property int durationAnimation: st.panel_durationAnimation
+
     property alias radius: background.radius
 
     property alias backgroundOpacity: background.opacity
 
     property alias color: background.color
+
+    //---------------------------------------------------------------------------------------------
+    // Events
+    //---------------------------------------------------------------------------------------------
+
+    onIsActiveChanged:
+    {
+        if (isActive)
+        {
+            opacity = 0.0;
+            visible = true;
+
+            behaviorOpacity.enabled = true;
+
+            opacity = 1.0;
+
+            behaviorOpacity.enabled = false;
+        }
+        else visible = false;
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Animations
+    //---------------------------------------------------------------------------------------------
+
+    Behavior on opacity
+    {
+        id: behaviorOpacity
+
+        enabled: false
+
+        PropertyAnimation
+        {
+            duration: durationAnimation
+
+            easing.type: st.easing
+        }
+    }
 
     //---------------------------------------------------------------------------------------------
     // Childs

@@ -26,6 +26,12 @@ import Sky     1.0
 BasePlayerBrowser
 {
     //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+
+    property bool isActive: true
+
+    //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
@@ -33,6 +39,11 @@ BasePlayerBrowser
     property alias buttonNext    : buttonNext
 
     property alias buttonPlay: buttonPlay
+
+    //---------------------------------------------------------------------------------------------
+    // Style
+
+    property int durationAnimation: st.playerBrowser_durationAnimation
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -45,6 +56,44 @@ BasePlayerBrowser
 
     areaBackward.hoverEnabled: buttonPrevious.visible
     areaForward .hoverEnabled: buttonNext    .visible
+
+    //---------------------------------------------------------------------------------------------
+    // Events
+    //---------------------------------------------------------------------------------------------
+
+    onIsActiveChanged:
+    {
+        if (isActive)
+        {
+            opacity = 0.0;
+            visible = true;
+
+            behaviorOpacity.enabled = true;
+
+            opacity = 1.0;
+
+            behaviorOpacity.enabled = false;
+        }
+        else visible = false;
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Animations
+    //---------------------------------------------------------------------------------------------
+
+    Behavior on opacity
+    {
+        id: behaviorOpacity
+
+        enabled: false
+
+        PropertyAnimation
+        {
+            duration: durationAnimation
+
+            easing.type: st.easing
+        }
+    }
 
     //---------------------------------------------------------------------------------------------
     // Functions

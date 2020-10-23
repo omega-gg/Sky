@@ -39,6 +39,8 @@ Style
     //---------------------------------------------------------------------------------------------
     // Panel
 
+    property int panel_durationAnimation: duration_faster
+
     property real panel_opacity: 0.8
 
     property color panel_color: "#c8c8c8"
@@ -163,6 +165,13 @@ Style
     property real sliderStream_opacityProgressB: 1.0
 
     property color sliderStream_colorActive: color_highlight
+//#END
+
+//#PlayerBrowser
+    //---------------------------------------------------------------------------------------------
+    // PlayerBrowser
+
+    property int playerBrowser_durationAnimation: duration_fast
 //#END
 
     //---------------------------------------------------------------------------------------------
