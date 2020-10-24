@@ -382,6 +382,32 @@ Item
 
     //---------------------------------------------------------------------------------------------
 
+    function animateVisible(item, visible, animation, animate)
+    {
+        if (visible)
+        {
+            if (animate)
+            {
+                item.opacity = 0.0;
+                item.visible = true;
+
+                animation.enabled = true;
+
+                item.opacity = 1.0;
+
+                animation.enabled = false;
+            }
+            else
+            {
+                item.opacity = 1.0;
+                item.visible = true;
+            }
+        }
+        else item.visible = false;
+    }
+
+    //---------------------------------------------------------------------------------------------
+
     function getSize(size, minimum, maximum)
     {
         if (minimum != -1)

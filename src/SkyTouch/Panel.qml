@@ -25,11 +25,15 @@ import Sky     1.0
 
 BasePanel
 {
+    id: panel
+
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
 
     property bool isActive: true
+
+    property bool animate: true
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -52,21 +56,7 @@ BasePanel
     // Events
     //---------------------------------------------------------------------------------------------
 
-    onIsActiveChanged:
-    {
-        if (isActive)
-        {
-            opacity = 0.0;
-            visible = true;
-
-            behaviorOpacity.enabled = true;
-
-            opacity = 1.0;
-
-            behaviorOpacity.enabled = false;
-        }
-        else visible = false;
-    }
+    onIsActiveChanged: st.animateVisible(panel, isActive, behaviorOpacity, animate)
 
     //---------------------------------------------------------------------------------------------
     // Animations

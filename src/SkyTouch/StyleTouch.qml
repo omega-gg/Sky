@@ -171,7 +171,7 @@ Style
     //---------------------------------------------------------------------------------------------
     // PlayerBrowser
 
-    property int playerBrowser_durationAnimation: duration_fast
+    property int playerBrowser_durationAnimation: panel_durationAnimation
 //#END
 
     //---------------------------------------------------------------------------------------------

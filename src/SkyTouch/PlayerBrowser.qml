@@ -25,11 +25,15 @@ import Sky     1.0
 
 BasePlayerBrowser
 {
+    id: playerBrowser
+
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
 
     property bool isActive: true
+
+    property bool animate: true
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -61,21 +65,7 @@ BasePlayerBrowser
     // Events
     //---------------------------------------------------------------------------------------------
 
-    onIsActiveChanged:
-    {
-        if (isActive)
-        {
-            opacity = 0.0;
-            visible = true;
-
-            behaviorOpacity.enabled = true;
-
-            opacity = 1.0;
-
-            behaviorOpacity.enabled = false;
-        }
-        else visible = false;
-    }
+    onIsActiveChanged: st.animateVisible(playerBrowser, isActive, behaviorOpacity, animate)
 
     //---------------------------------------------------------------------------------------------
     // Animations
