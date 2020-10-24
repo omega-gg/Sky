@@ -264,11 +264,9 @@ WAbstractTabs::WAbstractTabs(WAbstractTabsPrivate * p, QObject * parent)
 {
     Q_D(WAbstractTabs);
 
-    if (from == to
+    if (from < 0 || from > d->tabs.count()
         ||
-        from < 0 || from >= d->tabs.count()
-        ||
-        to   < 0 || to   >= d->tabs.count()) return;
+        to < 0 || to > d->tabs.count()) return;
 
     if (to > from)
     {
