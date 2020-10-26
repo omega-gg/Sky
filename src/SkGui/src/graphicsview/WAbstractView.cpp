@@ -482,7 +482,7 @@ bool WAbstractViewPrivate::isWindows10()
         return 0;
     }
 #ifdef QT_LATEST
-    // FIXME Qt 5.12: We have to send mouse release manually when dragging and resizing.
+    // FIXME Qt5.12: We have to send mouse release manually when dragging and resizing.
     else if (message == WM_CAPTURECHANGED)
     {
         WAbstractView * view

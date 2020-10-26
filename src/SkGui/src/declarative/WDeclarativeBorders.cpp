@@ -312,7 +312,7 @@ void WDeclarativeBordersPrivate::init()
         node->material.setColor(d->color);
 
         //-----------------------------------------------------------------------------------------
-        // FIXME Qt 5.12.2: Mark dirty does not seem to work properly...
+        // FIXME Qt5.12.2: Mark dirty does not seem to work properly...
 
         /*node->left  .markDirty(QSGNode::DirtyMaterial);
         node->right .markDirty(QSGNode::DirtyMaterial);

@@ -918,7 +918,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 #endif
     }
 #ifdef QT_LATEST
-    // FIXME Qt 5.12.2: 'mouseUngrabEvent' is not called when the item is hidden.
+    // FIXME Qt5.12.2: 'mouseUngrabEvent' is not called when the item is hidden.
     else if (change == ItemVisibleHasChanged && value.boolValue == false)
     {
         Q_D(WDeclarativeMouseArea);

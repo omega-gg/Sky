@@ -57,6 +57,12 @@ public: // Enums
 public:
     explicit WModelPlaylist(QObject * parent = NULL);
 
+public: // Interface
+#ifdef Q_OS_ANDROID
+    // FIXME Qt5.14.2/android: Sometimes we need to reset the model manually.
+    Q_INVOKABLE void reset();
+#endif
+
 public: // QAbstractItemModel reimplementation
     /* virtual */ QHash<int, QByteArray> roleNames() const;
 
