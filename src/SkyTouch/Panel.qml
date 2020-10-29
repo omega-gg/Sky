@@ -56,7 +56,7 @@ BasePanel
     // Events
     //---------------------------------------------------------------------------------------------
 
-    onIsActiveChanged: st.animateVisible(panel, isActive, behaviorOpacity, animate)
+    onIsActiveChanged: st.animateShow(panel, isActive, behaviorOpacity, animate)
 
     //---------------------------------------------------------------------------------------------
     // Animations

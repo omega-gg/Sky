@@ -382,7 +382,7 @@ Item
 
     //---------------------------------------------------------------------------------------------
 
-    function animateVisible(item, visible, animation, animate)
+    function animateShow(item, visible, animation, animate)
     {
         if (visible)
         {

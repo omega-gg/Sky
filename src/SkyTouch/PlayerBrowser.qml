@@ -65,7 +65,7 @@ BasePlayerBrowser
     // Events
     //---------------------------------------------------------------------------------------------
 
-    onIsActiveChanged: st.animateVisible(playerBrowser, isActive, behaviorOpacity, animate)
+    onIsActiveChanged: st.animateShow(playerBrowser, isActive, behaviorOpacity, animate)
 
     //---------------------------------------------------------------------------------------------
     // Animations
