@@ -39,7 +39,7 @@ Style
     //---------------------------------------------------------------------------------------------
     // Panel
 
-    property int panel_durationAnimation: duration_faster
+    property int panel_durationAnimation: duration_fast
 
     property real panel_opacity: 0.8
 
@@ -117,6 +117,9 @@ Style
     // ListLoading
 
     property int listLoading_duration: duration_slower
+
+    property real listLoading_opacityA: 0.2
+    property real listLoading_opacityB: 1.0
 
     property int listLoading_minimumCount: 1
 

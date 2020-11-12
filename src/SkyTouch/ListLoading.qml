@@ -33,6 +33,8 @@ Column
 
     /* mandatory */ property ListView list
 
+    property bool active: false
+
     property int size: st.label_size
 
     property int radius: st.radius
@@ -43,6 +45,9 @@ Column
     // Style
 
     property int duration: st.listLoading_duration
+
+    property real opacityA: st.listLoading_opacityA
+    property real opacityB: st.listLoading_opacityB
 
     property color color: st.listLoading_color
 
@@ -66,6 +71,11 @@ Column
 
     spacing: st.margins
 
+    // NOTE: We want to hide this component when the opacity is at the lowest.
+    visible: (active == true || opacity != opacityA)
+
+    opacity: opacityA
+
     //---------------------------------------------------------------------------------------------
     // Animations
     //---------------------------------------------------------------------------------------------
@@ -78,7 +88,7 @@ Column
 
         PropertyAnimation
         {
-            to: 0.2
+            to: opacityA
 
             duration: listLoading.duration
 
@@ -87,7 +97,7 @@ Column
 
         PropertyAnimation
         {
-            to: 1.0
+            to: opacityB
 
             duration: listLoading.duration
 
