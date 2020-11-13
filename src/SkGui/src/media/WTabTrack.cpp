@@ -64,8 +64,8 @@ public:
     {
         this->data = data;
 
-        name    = sk->name   ();
-        version = sk->version();
+        name    = sk->name      ();
+        version = sk->versionSky();
     }
 
 protected: // WAbstractThreadAction reimplementation

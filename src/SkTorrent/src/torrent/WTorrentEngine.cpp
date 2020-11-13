@@ -2148,7 +2148,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
     {
         settings_pack pack;
 
-        QString name = sk->name() + "/" + sk->version();
+        QString name = sk->name() + "/" + sk->versionSky();
 
         pack.set_str(settings_pack::user_agent, name.toStdString());
 
