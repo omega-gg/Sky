@@ -516,7 +516,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
     for (int i = 0; i < length; i++)
     {
         int valueA = listA.takeFirst().toInt();
-        int valueB = listA.takeFirst().toInt();
+        int valueB = listB.takeFirst().toInt();
 
         if (valueA < valueB)
         {
