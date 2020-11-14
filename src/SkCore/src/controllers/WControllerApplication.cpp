@@ -473,13 +473,6 @@ QMimeData * WControllerApplication::duplicateMime(const QMimeData * source)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ QString WControllerApplication::getVersionLite(const QString & version)
-{
-    return sliceIn(version, "", "-");
-}
-
-//-------------------------------------------------------------------------------------------------
-
 /* Q_INVOKABLE static */
 #ifdef QT_4
 int WControllerApplication::keypad(int modifiers)
@@ -500,6 +493,82 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 }
 
 //-------------------------------------------------------------------------------------------------
+// Version
+
+/* Q_INVOKABLE static */ int WControllerApplication::versionCheck(const QString & versionA,
+                                                                  const QString & versionB)
+{
+    QString stringA = versionA;
+    QString stringB = versionB;
+
+    // NOTE: Points and dashes are equivalent to us.
+    stringA.replace('-', '.');
+    stringB.replace('-', '.');
+
+    QStringList listA = stringA.split('.');
+    QStringList listB = stringB.split('.');
+
+    int lengthA = listA.length();
+    int lengthB = listB.length();
+
+    int length = qMin(lengthA, lengthB);
+
+    for (int i = 0; i < length; i++)
+    {
+        int valueA = listA.takeFirst().toInt();
+        int valueB = listA.takeFirst().toInt();
+
+        if (valueA < valueB)
+        {
+            return -1;
+        }
+        else if (valueA > valueB)
+        {
+            return 1;
+        }
+    }
+
+    // NOTE: A longer version is considered higher than a shorter one.
+    if (lengthA < lengthB)
+    {
+        return -1;
+    }
+    else if (lengthA > lengthB)
+    {
+        return 1;
+    }
+    else return 0;
+}
+
+/* Q_INVOKABLE static */ bool WControllerApplication::versionIsLower(const QString & versionA,
+                                                                     const QString & versionB)
+{
+    if (versionCheck(versionA, versionB) == -1)
+    {
+         return true;
+    }
+    else return false;
+}
+
+/* Q_INVOKABLE static */ bool WControllerApplication::versionIsHigher(const QString & versionA,
+                                                                      const QString & versionB)
+{
+    if (versionCheck(versionA, versionB) == 1)
+    {
+         return true;
+    }
+    else return false;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QString WControllerApplication::getVersionLite(const QString & version)
+{
+    return sliceIn(version, "", "-");
+}
+
+//-------------------------------------------------------------------------------------------------
+// File
 
 /* Q_INVOKABLE static */ void WControllerApplication::setCurrentPath(const QString & path)
 {
@@ -512,6 +581,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 }
 
 //-------------------------------------------------------------------------------------------------
+// Process
 
 /* Q_INVOKABLE static */ bool WControllerApplication::runUpdate()
 {
@@ -579,6 +649,7 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 }
 
 //-------------------------------------------------------------------------------------------------
+// String
 
 /* Q_INVOKABLE static */ int WControllerApplication::indexSkip(const QString & string,
                                                                const QString & match, int skip)
@@ -1029,6 +1100,7 @@ bool WControllerApplication::checkEscaped(const QString & string, int from)
 }
 
 //-------------------------------------------------------------------------------------------------
+// Read
 
 /* Q_INVOKABLE static */ QString WControllerApplication::readAscii(const QByteArray & array)
 {
@@ -1113,6 +1185,7 @@ bool WControllerApplication::checkEscaped(const QString & string, int from)
 #endif
 
 //-------------------------------------------------------------------------------------------------
+// Generate
 
 /* Q_INVOKABLE static */ QByteArray WControllerApplication::generateRandomString(int length)
 {
@@ -1166,6 +1239,7 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 }
 
 //-------------------------------------------------------------------------------------------------
+// Text
 
 #ifndef SK_CONSOLE
 
@@ -1203,6 +1277,7 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 #endif
 
 //-------------------------------------------------------------------------------------------------
+// Time
 
 /* Q_INVOKABLE static */ QTime WControllerApplication::getTime()
 {

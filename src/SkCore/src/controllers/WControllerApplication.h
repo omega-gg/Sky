@@ -137,8 +137,6 @@ public: // Static functions
 
     Q_INVOKABLE static QMimeData * duplicateMime(const QMimeData * source);
 
-    Q_INVOKABLE static QString getVersionLite(const QString & version);
-
 #ifdef QT_4
     Q_INVOKABLE static int keypad(int modifiers);
 #else
@@ -146,12 +144,29 @@ public: // Static functions
 #endif
 
     //---------------------------------------------------------------------------------------------
+    // Version
+
+    // NOTE: Returns 0 when equal, -1 when lower, and 1 when higher.
+    Q_INVOKABLE static int versionCheck(const QString & versionA,
+                                        const QString & versionB);
+
+    Q_INVOKABLE static bool versionIsLower(const QString & versionA,
+                                           const QString & versionB);
+
+    Q_INVOKABLE static bool versionIsHigher(const QString & versionA,
+                                            const QString & versionB);
+
+    Q_INVOKABLE static QString getVersionLite(const QString & version);
+
+    //---------------------------------------------------------------------------------------------
+    // File
 
     Q_INVOKABLE static void setCurrentPath(const QString & path);
 
     Q_INVOKABLE static bool fileExists(const QString & fileName);
 
     //---------------------------------------------------------------------------------------------
+    // Process
 
     Q_INVOKABLE static bool runUpdate();
 
@@ -166,6 +181,7 @@ public: // Static functions
     Q_INVOKABLE static void processEvents(QEventLoop::ProcessEventsFlags flags, int maxtime);
 
     //---------------------------------------------------------------------------------------------
+    // String
 
     Q_INVOKABLE static int indexSkip(const QString & string, const QString & match, int skip);
 
@@ -225,6 +241,7 @@ public: // Static functions
     Q_INVOKABLE static bool checkEscaped(const QString & string, int from);
 
     //---------------------------------------------------------------------------------------------
+    // Read
 
     Q_INVOKABLE static QString readAscii(const QByteArray & array);
 
@@ -238,6 +255,7 @@ public: // Static functions
     Q_INVOKABLE static QString detectCodec(const QByteArray & array);
 
     //---------------------------------------------------------------------------------------------
+    // Generate
 
     Q_INVOKABLE static QByteArray generateRandomString(int length);
 
@@ -245,6 +263,7 @@ public: // Static functions
                                                    const QByteArray & key);
 
     //---------------------------------------------------------------------------------------------
+    // Text
 
 #ifndef SK_CONSOLE
     Q_INVOKABLE static QString textElided(const QString     & text,
@@ -257,6 +276,7 @@ public: // Static functions
 #endif
 
     //---------------------------------------------------------------------------------------------
+    // Time
 
     Q_INVOKABLE static QTime getTime();
 
