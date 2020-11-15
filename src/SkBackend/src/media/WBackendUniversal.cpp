@@ -40,6 +40,7 @@
 #include <WControllerFile>
 #include <WControllerNetwork>
 #include <WControllerDownload>
+#include <WControllerPlaylist>
 #include <WCache>
 #include <WBackendCache>
 #include <WYamlReader>
@@ -4339,16 +4340,33 @@ void WBackendUniversalPrivate::onData(const WBackendUniversalData & data)
 
     QString version = this->data.version;
 
-    this->data = data;
-
     if (version.isEmpty())
     {
+        if (Sk::versionIsLower(WControllerPlaylist::versionApi(), data.api))
+        {
+            qWarning("WBackendUniversalPrivate::onData: The required API is too high.");
+        }
+
+        this->data = data;
+
         loaded = true;
 
         emit q->loaded();
 
         return;
     }
+
+    // NOTE: If the required API version is too high we keep our previous data.
+    if (Sk::versionIsLower(WControllerPlaylist::versionApi(), data.api))
+    {
+        qWarning("WBackendUniversalPrivate::onData: Cannot update, the required API is too high.");
+
+        emit q->loaded();
+
+        return;
+    }
+
+    this->data = data;
 
     emit q->loaded();
 

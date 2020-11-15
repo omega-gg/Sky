@@ -139,6 +139,8 @@ class SK_GUI_EXPORT WControllerPlaylist : public WController
 
     Q_PROPERTY(QThread * thread READ thread CONSTANT)
 
+    Q_PROPERTY(QString versionApi READ versionApi CONSTANT)
+
     Q_PROPERTY(QString pathStorage     READ pathStorage     NOTIFY pathStorageChanged)
     Q_PROPERTY(QString pathStorageTabs READ pathStorageTabs NOTIFY pathStorageChanged)
 
@@ -259,6 +261,8 @@ signals:
 
 public: // Properties
     QThread * thread() const;
+
+    static QString versionApi();
 
     QString pathStorage    () const;
     QString pathStorageTabs() const;

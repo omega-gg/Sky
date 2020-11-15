@@ -348,8 +348,8 @@ public: // Properties
     QString version() const;
     void    setVersion(const QString & version);
 
-    QString versionSky() const;
-    QString versionQt () const;
+    static QString versionSky();
+    static QString versionQt ();
 
     QString applicationUrl() const;
     void    setApplicationUrl(const QString & url);

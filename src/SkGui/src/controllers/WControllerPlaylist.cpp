@@ -3392,6 +3392,13 @@ QThread * WControllerPlaylist::thread() const
 
 //-------------------------------------------------------------------------------------------------
 
+/* static */ QString WControllerPlaylist::versionApi()
+{
+    return "1.0.0";
+}
+
+//-------------------------------------------------------------------------------------------------
+
 QString WControllerPlaylist::pathStorage() const
 {
     return wControllerFile->pathStorage() + CONTROLLERPLAYLIST_PATH_PLAYLISTS;

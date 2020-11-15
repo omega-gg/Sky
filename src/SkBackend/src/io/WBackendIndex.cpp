@@ -310,7 +310,22 @@ void WBackendIndexPrivate::onData(const WBackendIndexData & data)
 
     if (version.isEmpty())
     {
+        if (Sk::versionIsLower(WControllerPlaylist::versionApi(), data.api))
+        {
+            qWarning("WBackendIndexPrivate::onData: The required API is too high.");
+        }
+
         this->data = data;
+
+        emit q->loaded();
+
+        return;
+    }
+
+    // NOTE: If the required API version is too high we keep our previous data.
+    if (Sk::versionIsLower(WControllerPlaylist::versionApi(), data.api))
+    {
+        qWarning("WBackendIndexPrivate::onData: Cannot update, the required API is too high.");
 
         emit q->loaded();
 
