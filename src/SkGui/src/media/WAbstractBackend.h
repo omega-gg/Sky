@@ -188,6 +188,7 @@ public:
     enum Quality
     {
         QualityInvalid,
+        Quality144,
         Quality240,
         Quality360,
         Quality480,

@@ -4213,7 +4213,8 @@ void WBackendUniversalPrivate
 
 WAbstractBackend::Quality WBackendUniversalPrivate::getQuality(const QString & string) const
 {
-    if      (string ==  "240") return WAbstractBackend::Quality240;
+    if      (string ==  "144") return WAbstractBackend::Quality144;
+    else if (string ==  "240") return WAbstractBackend::Quality240;
     else if (string ==  "360") return WAbstractBackend::Quality360;
     else if (string ==  "480") return WAbstractBackend::Quality480;
     else if (string ==  "720") return WAbstractBackend::Quality720;
