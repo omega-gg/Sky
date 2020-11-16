@@ -64,6 +64,15 @@ struct WBackendIndexItem
 
 struct WBackendIndexData
 {
+public:
+    WBackendIndexData()
+    {
+        valid = true;
+    }
+
+public: // Variables
+    bool valid;
+
     QString source;
 
     QString api;

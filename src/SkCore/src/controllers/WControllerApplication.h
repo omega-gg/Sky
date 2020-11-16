@@ -191,6 +191,10 @@ public: // Static functions
     Q_INVOKABLE static QString capitalize(const QString & string);
     Q_INVOKABLE static QString quote     (const QString & string);
 
+    Q_INVOKABLE static void replaceFirst(QString * string, const QString & before,
+                                                           const QString & after,
+                                                           int             from = 0);
+
     Q_INVOKABLE static QString slice(const QString & string, int start, int end);
 
     Q_INVOKABLE static QString slice(const QString & string, const QString & start,

@@ -37,6 +37,11 @@
 #include <WYamlReader>
 
 //-------------------------------------------------------------------------------------------------
+// Functions declarations
+
+void WBackendIndex_patch(QString & data, const QString & api);
+
+//-------------------------------------------------------------------------------------------------
 // Static variables
 
 static const int BACKENDINDEX_TIMEOUT = 60000; // 1 minute
@@ -85,11 +90,33 @@ signals:
     WYamlReader reader(content.toUtf8());
 
     //---------------------------------------------------------------------------------------------
+    // Api
+
+    QString api = WYamlReader::extractString(reader, "api");
+
+    if (Sk::versionIsHigher(WControllerPlaylist::versionApi(), api))
+    {
+        WBackendIndex_patch(content, api);
+
+        extract(content.toUtf8());
+
+        return;
+    }
+
+    if (Sk::versionIsLower(WControllerPlaylist::versionApi(), api))
+    {
+        qWarning("WBackendIndexQuery::extract: The required API is too high.");
+
+        data.valid = false;
+    }
+
+    //---------------------------------------------------------------------------------------------
     // Settings
 
     data.source = WYamlReader::extractString(reader, "source");
 
-    data.api     = WYamlReader::extractString(reader, "api");
+    data.api = api;
+
     data.version = WYamlReader::extractString(reader, "version");
 
     //---------------------------------------------------------------------------------------------
@@ -310,11 +337,6 @@ void WBackendIndexPrivate::onData(const WBackendIndexData & data)
 
     if (version.isEmpty())
     {
-        if (Sk::versionIsLower(WControllerPlaylist::versionApi(), data.api))
-        {
-            qWarning("WBackendIndexPrivate::onData: The required API is too high.");
-        }
-
         this->data = data;
 
         emit q->loaded();
@@ -323,7 +345,7 @@ void WBackendIndexPrivate::onData(const WBackendIndexData & data)
     }
 
     // NOTE: If the required API version is too high we keep our previous data.
-    if (Sk::versionIsLower(WControllerPlaylist::versionApi(), data.api))
+    if (data.valid == false)
     {
         qWarning("WBackendIndexPrivate::onData: Cannot update, the required API is too high.");
 

@@ -62,11 +62,15 @@ public: // Enums
 public:
     WBackendUniversalData()
     {
+        valid = true;
+
         isSearchEngine = false;
         isSearchCover  = false;
     }
 
 public: // Variables
+    bool valid;
+
     QString source;
 
     QString api;

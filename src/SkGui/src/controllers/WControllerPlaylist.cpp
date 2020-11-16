@@ -3394,7 +3394,7 @@ QThread * WControllerPlaylist::thread() const
 
 /* static */ QString WControllerPlaylist::versionApi()
 {
-    return "1.0.0";
+    return "1.0.1";
 }
 
 //-------------------------------------------------------------------------------------------------

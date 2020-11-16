@@ -726,6 +726,16 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ void WControllerApplication::replaceFirst(QString       * string,
+                                                                   const QString & before,
+                                                                   const QString & after,
+                                                                   int             from)
+{
+    string->replace(string->indexOf(before, from), before.length(), after);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE static */ QString WControllerApplication::slice(const QString & string, int start,
                                                                                        int end)
 {
