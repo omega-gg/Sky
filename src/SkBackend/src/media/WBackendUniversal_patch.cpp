@@ -36,8 +36,6 @@ void WBackendUniversal_patch(QString & data, const QString & api)
 {
     if (Sk::versionIsLower(api, "1.0.1"))
     {
-        qDebug("PATCHING");
-
         // String
         data.replace("PREPEND_CHAR", "PREPEND");
         data.replace("APPEND_CHAR",  "APPEND");
