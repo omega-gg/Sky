@@ -39,7 +39,7 @@ Style
     //---------------------------------------------------------------------------------------------
     // Panel
 
-    property int panel_durationAnimation: duration_fast
+    property int panel_durationAnimation: duration_faster
 
     property real panel_opacity: 0.8
 
