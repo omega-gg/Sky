@@ -70,8 +70,8 @@ BaseScrollBar
 
         visible: handle.visible
 
-        opacity: (handle.containsMouse) ? st.scrollBar_opacityHover
-                                        : st.scrollBar_opacity
+        opacity: (handle.containsMouse && handle.pressed == false) ? st.scrollBar_opacityHover
+                                                                   : st.scrollBar_opacity
 
         color: st.scrollBar_color
 
