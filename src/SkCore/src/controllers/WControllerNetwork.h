@@ -61,16 +61,12 @@ public: // Static functions
 
     //---------------------------------------------------------------------------------------------
 
-    Q_INVOKABLE static bool urlIsFile(const QUrl    & url);
     Q_INVOKABLE static bool urlIsFile(const QString & string);
-
-    Q_INVOKABLE static bool urlIsHttp(const QUrl    & url);
     Q_INVOKABLE static bool urlIsHttp(const QString & string);
 
     Q_INVOKABLE static QString urlName (const QUrl & url);
     Q_INVOKABLE static QString urlTitle(const QUrl & url);
 
-    Q_INVOKABLE static QString urlScheme(const QUrl    & url);
     Q_INVOKABLE static QString urlScheme(const QString & string);
 
     //---------------------------------------------------------------------------------------------
@@ -80,55 +76,40 @@ public: // Static functions
 
     Q_INVOKABLE static QString resolveUrl(const QString & string, const QString & baseUrl);
 
-    Q_INVOKABLE static QString encodeUrl(const QUrl    & url);
     Q_INVOKABLE static QString encodeUrl(const QString & string);
 
-    Q_INVOKABLE static QUrl encodedUrl(const QUrl    & url);
     Q_INVOKABLE static QUrl encodedUrl(const QString & string);
 
-    Q_INVOKABLE static QString decodeUrl(const QUrl    & url);
     Q_INVOKABLE static QString decodeUrl(const QString & string);
 
-    Q_INVOKABLE static QString extractBaseUrl(const QUrl    & url);
     Q_INVOKABLE static QString extractBaseUrl(const QString & string);
 
-    Q_INVOKABLE static QString extractUrlHost(const QUrl    & url);
     Q_INVOKABLE static QString extractUrlHost(const QString & string);
-
-    Q_INVOKABLE static QString extractUrlPath(const QUrl    & url);
     Q_INVOKABLE static QString extractUrlPath(const QString & string);
 
     Q_INVOKABLE static QString extractUrlValue(const QUrl & url, const QString & key);
 
     Q_INVOKABLE static int indexUrlElement(const QString & string, int from = 0);
 
-    Q_INVOKABLE static QString extractUrlElement(const QUrl    & url,    int from = 0);
-    Q_INVOKABLE static QString extractUrlElement(const QString & string, int from = 0);
-
     Q_INVOKABLE static int indexUrlElement(const QString & string, int index, int from);
 
-    Q_INVOKABLE static QString extractUrlElement(const QUrl    & url,    int index, int from);
+    Q_INVOKABLE static QString extractUrlElement(const QString & string, int from = 0);
+
     Q_INVOKABLE static QString extractUrlElement(const QString & string, int index, int from);
 
-    Q_INVOKABLE static QString extractUrlElements(const QUrl    & url,    int count, int from = 0);
     Q_INVOKABLE static QString extractUrlElements(const QString & string, int count, int from = 0);
 
-    Q_INVOKABLE static QString extractUrlFileName(const QUrl    & url);
-    Q_INVOKABLE static QString extractUrlFileName(const QString & string);
-
-    Q_INVOKABLE static QString extractUrlExtension(const QUrl    & url);
+    Q_INVOKABLE static QString extractUrlFileName (const QString & string);
     Q_INVOKABLE static QString extractUrlExtension(const QString & string);
 
-    Q_INVOKABLE static QString removeUrlPrefix(const QUrl    & url);
-    Q_INVOKABLE static QString removeUrlPrefix(const QString & string);
+    Q_INVOKABLE static QString extractFragmentValue(const QString & string, const QString & key);
 
-    Q_INVOKABLE static QString removeUrlExtension(const QUrl    & url);
-    Q_INVOKABLE static QString removeUrlExtension(const QString & string);
+    Q_INVOKABLE static QString applyFragmentValue(const QString & string,
+                                                  const QString & key, const QString & value);
 
-    Q_INVOKABLE static QString removeUrlFragment(const QUrl    & url);
-    Q_INVOKABLE static QString removeUrlFragment(const QString & string);
-
-    Q_INVOKABLE static QString removeFileExtension(const QUrl    & url);
+    Q_INVOKABLE static QString removeUrlPrefix    (const QString & string);
+    Q_INVOKABLE static QString removeUrlExtension (const QString & string);
+    Q_INVOKABLE static QString removeUrlFragment  (const QString & string);
     Q_INVOKABLE static QString removeFileExtension(const QString & string);
 
     //---------------------------------------------------------------------------------------------

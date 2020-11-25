@@ -657,11 +657,6 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ bool WControllerNetwork::urlIsFile(const QUrl & url)
-{
-    return urlIsFile(url.toString());
-}
-
 /* Q_INVOKABLE static */ bool WControllerNetwork::urlIsFile(const QString & string)
 {
     if (string.startsWith("file://"))
@@ -669,13 +664,6 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
          return true;
     }
     else return false;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE static */ bool WControllerNetwork::urlIsHttp(const QUrl & url)
-{
-    return urlIsHttp(url.toString());
 }
 
 /* Q_INVOKABLE static */ bool WControllerNetwork::urlIsHttp(const QString & string)
@@ -695,7 +683,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
     if (name.isEmpty())
     {
-        return WControllerNetwork::decodeUrl(url);
+        return WControllerNetwork::decodeUrl(url.toString());
     }
 
     if (name.startsWith("www."))
@@ -728,11 +716,6 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 }
 
 //-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE static */ QString WControllerNetwork::urlScheme(const QUrl & url)
-{
-    return url.scheme();
-}
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::urlScheme(const QString & string)
 {
@@ -804,33 +787,14 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ QString WControllerNetwork::encodeUrl(const QUrl & url)
-{
-    return encodeUrl(url.toString());
-}
-
 /* Q_INVOKABLE static */ QString WControllerNetwork::encodeUrl(const QString & string)
 {
     return QUrl::toPercentEncoding(string);
 }
 
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE static */ QUrl WControllerNetwork::encodedUrl(const QUrl & url)
-{
-    return encodedUrl(url.toString());
-}
-
 /* Q_INVOKABLE static */ QUrl WControllerNetwork::encodedUrl(const QString & string)
 {
     return QUrl::fromEncoded(string.toUtf8());
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE static */ QString WControllerNetwork::decodeUrl(const QUrl & url)
-{
-    return decodeUrl(url.toString());
 }
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::decodeUrl(const QString & string)
@@ -839,11 +803,6 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 }
 
 //-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE static */ QString WControllerNetwork::extractBaseUrl(const QUrl & url)
-{
-    return extractBaseUrl(url.toString());
-}
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::extractBaseUrl(const QString & string)
 {
@@ -874,11 +833,6 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ QString WControllerNetwork::extractUrlHost(const QUrl & url)
-{
-    return extractUrlHost(url.toString());
-}
-
 /* Q_INVOKABLE static */ QString WControllerNetwork::extractUrlHost(const QString & string)
 {
     int index = string.indexOf("//");
@@ -894,13 +848,6 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
          return string;
     }
     else return string.mid(0, index);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE static */ QString WControllerNetwork::extractUrlPath(const QUrl & url)
-{
-    return extractUrlPath(url.toString());
 }
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::extractUrlPath(const QString & string)
@@ -946,26 +893,6 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     return string.indexOf(QRegExp("[/\\?&#]"), from);
 }
 
-/* Q_INVOKABLE static */ QString WControllerNetwork::extractUrlElement(const QUrl & url,
-                                                                       int          from)
-{
-    return extractUrlElement(url.toString(), from);
-}
-
-/* Q_INVOKABLE static */ QString WControllerNetwork::extractUrlElement(const QString & string,
-                                                                       int             from)
-{
-    int to = indexUrlElement(string, from);
-
-    if (to == -1)
-    {
-         return string.mid(from);
-    }
-    else return string.mid(from, to - from);
-}
-
-//-------------------------------------------------------------------------------------------------
-
 /* Q_INVOKABLE static */ int WControllerNetwork::indexUrlElement(const QString & string,
                                                                  int             index,
                                                                  int             from)
@@ -989,11 +916,18 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     return at;
 }
 
-/* Q_INVOKABLE static */ QString WControllerNetwork::extractUrlElement(const QUrl & url,
-                                                                       int          index,
-                                                                       int          from)
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QString WControllerNetwork::extractUrlElement(const QString & string,
+                                                                       int             from)
 {
-    return extractUrlElement(url.toString(), index, from);
+    int to = indexUrlElement(string, from);
+
+    if (to == -1)
+    {
+         return string.mid(from);
+    }
+    else return string.mid(from, to - from);
 }
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::extractUrlElement(const QString & string,
@@ -1003,15 +937,6 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     int to = indexUrlElement(string, index, from);
 
     return string.mid(from, to - from);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE static */ QString WControllerNetwork::extractUrlElements(const QUrl & url,
-                                                                        int          count,
-                                                                        int          from)
-{
-    return extractUrlElements(url.toString(), count, from);
 }
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::extractUrlElements(const QString & string,
@@ -1043,11 +968,6 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ QString WControllerNetwork::extractUrlFileName(const QUrl & url)
-{
-    return extractUrlFileName(url.toString());
-}
-
 /* Q_INVOKABLE static */ QString WControllerNetwork::extractUrlFileName(const QString & string)
 {
     QString fileName = removeUrlExtension(string);
@@ -1063,13 +983,6 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
          return QString();
     }
     else return fileName.mid(index + 1);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE static */ QString WControllerNetwork::extractUrlExtension(const QUrl & url)
-{
-    return extractUrlExtension(url.toString());
 }
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::extractUrlExtension(const QString & string)
@@ -1097,10 +1010,20 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ QString WControllerNetwork::removeUrlPrefix(const QUrl & url)
+/* Q_INVOKABLE static */ QString WControllerNetwork::extractFragmentValue(const QString & string,
+                                                                          const QString & key)
 {
-    return removeUrlPrefix(url.toString());
+    return QString();
 }
+
+/* Q_INVOKABLE static */ QString WControllerNetwork::applyFragmentValue(const QString & string,
+                                                                        const QString & key,
+                                                                        const QString & value)
+{
+    return QString();
+}
+
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::removeUrlPrefix(const QString & string)
 {
@@ -1131,13 +1054,6 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     else return string.mid(index);
 }
 
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE static */ QString WControllerNetwork::removeUrlExtension(const QUrl & url)
-{
-    return removeUrlExtension(url.toString());
-}
-
 /* Q_INVOKABLE static */ QString WControllerNetwork::removeUrlExtension(const QString & string)
 {
     int index = string.indexOf(QRegExp("[\\?#]"));
@@ -1149,13 +1065,6 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     else return string.mid(0, index);
 }
 
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE static */ QString WControllerNetwork::removeUrlFragment(const QUrl & url)
-{
-    return removeUrlFragment(url.toString());
-}
-
 /* Q_INVOKABLE static */ QString WControllerNetwork::removeUrlFragment(const QString & string)
 {
     int index = string.indexOf('#');
@@ -1165,13 +1074,6 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
          return string;
     }
     else return string.mid(0, index);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE static */ QString WControllerNetwork::removeFileExtension(const QUrl & url)
-{
-    return removeFileExtension(url.toString());
 }
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::removeFileExtension(const QString & string)
@@ -1377,7 +1279,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
     //---------------------------------------------------------------------------------------------
 
-    QByteArray baseUrl = WControllerNetwork::extractBaseUrl(url).toLatin1();
+    QByteArray baseUrl = WControllerNetwork::extractBaseUrl(url.toString()).toLatin1();
 
     signature.prepend(httpMethod.toUpper() + '&' + baseUrl.toPercentEncoding() + '&');
 
