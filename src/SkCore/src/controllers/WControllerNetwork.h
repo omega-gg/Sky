@@ -102,8 +102,11 @@ public: // Static functions
     Q_INVOKABLE static QString extractUrlFileName (const QString & string);
     Q_INVOKABLE static QString extractUrlExtension(const QString & string);
 
+    // NOTE: Extract a fragment value with the '#key=value' format.
     Q_INVOKABLE static QString extractFragmentValue(const QString & string, const QString & key);
 
+    // NOTE: Apply a fragment value with the '#key=value' format.
+    //       If the key does not exist we add it.
     Q_INVOKABLE static QString applyFragmentValue(const QString & string,
                                                   const QString & key, const QString & value);
 

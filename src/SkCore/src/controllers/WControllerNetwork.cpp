@@ -1013,14 +1013,56 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 /* Q_INVOKABLE static */ QString WControllerNetwork::extractFragmentValue(const QString & string,
                                                                           const QString & key)
 {
-    return QString();
+    int indexA = string.lastIndexOf('#');
+
+    if (indexA == -1) return QString();
+
+    indexA = string.indexOf(key + '=', indexA + 1);
+
+    if (indexA == -1) return QString();
+
+    indexA += key.length() + 1;
+
+    int indexB = string.indexOf('&', indexA);
+
+    if (indexB == -1)
+    {
+         return string.mid(indexA);
+    }
+    else return string.mid(indexA, indexB - indexA);
 }
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::applyFragmentValue(const QString & string,
                                                                         const QString & key,
                                                                         const QString & value)
 {
-    return QString();
+    int indexA = string.lastIndexOf('#');
+
+    if (indexA == -1)
+    {
+        return string + '#' + key + '=' + value;
+    }
+
+    indexA = string.indexOf(key + '=', indexA + 1);
+
+    if (indexA == -1)
+    {
+        return string + '&' + key + '=' + value;
+    }
+
+    indexA += key.length() + 1;
+
+    int indexB = string.indexOf('&', indexA);
+
+    QString result = string;
+
+    if (indexB == -1)
+    {
+         result.replace(indexA, result.length() - indexA, value);
+    }
+    else result.replace(indexA, indexB - indexA, value);
+
+    return result;
 }
 
 //-------------------------------------------------------------------------------------------------
