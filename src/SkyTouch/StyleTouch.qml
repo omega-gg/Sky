@@ -25,6 +25,8 @@ import Sky     1.0
 
 Style
 {
+    id: styleTouch
+
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
@@ -33,7 +35,7 @@ Style
     property int margins: dp2
     property int radius : dp4
 
-    property bool isTight: (window.contentWidth < st.dp480)
+    property bool isTight: (window.contentWidth < dp480)
 
 //#Panel
     //---------------------------------------------------------------------------------------------
@@ -130,7 +132,7 @@ Style
     //---------------------------------------------------------------------------------------------
     // ScrollBar
 
-    property int scrollBar_size: st.dp24
+    property int scrollBar_size: dp24
 
     property int scrollBar_margins: margins
 
@@ -177,6 +179,50 @@ Style
     property int playerBrowser_durationAnimation: panel_durationAnimation
 //#END
 
+//#ComponentBackend*
+    //---------------------------------------------------------------------------------------------
+    // ComponentBackend
+
+    property int componentBackend_margins       : dp4
+    property int componentBackend_marginsDefault: dp8
+//#END
+
+//#ComponentTrack
+    //---------------------------------------------------------------------------------------------
+    // ComponentTrack
+
+    property int componentTrack_iconWidth: dp24
+
+    property int componentTrack_margins       : dp4
+    property int componentTrack_marginsDefault: dp8
+//#END
+
+//#ComponentTrackHistory
+    //---------------------------------------------------------------------------------------------
+    // ComponentTrackHistory
+
+    property real componentTrackHistory_opacity: 0.2
+
+    property color componentTrackHistory_color: st.slider_colorFront
+//#END
+
+    //---------------------------------------------------------------------------------------------
+    // Filters
+
+//#filter_round:ComponentBackend:ComponentTrack
+    property alias icon_filterRound: icon_filterRound
+
+    ImageFilterMask
+    {
+        id: icon_filterRound
+
+        width : buttonTouch_size - componentTrack_margins * 2
+        height: width
+
+        radius: styleTouch.radius
+    }
+//#END
+
     //---------------------------------------------------------------------------------------------
     // Icons
 
@@ -197,6 +243,10 @@ Style
     property url icon_play    : "icons/play.svg"
 //#END
 
+//#icons_feed:ComponentBackend:ComponentTrack
+    property url icon_feed: "icons/rss.svg"
+//#END
+
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
@@ -214,7 +264,7 @@ Style
         {
              return buttonTouch_size;
         }
-        else return buttonTouch_size * count + st.margins * (count - 1);
+        else return buttonTouch_size * count + margins * (count - 1);
     }
 
     //---------------------------------------------------------------------------------------------

@@ -422,4 +422,34 @@ Item
 
         return size;
     }
+
+    //---------------------------------------------------------------------------------------------
+
+    function getTrackTitle(title, state, source)
+    {
+        if (title)
+        {
+            return title;
+        }
+        else if (state == LocalObject.Loading)
+        {
+            return qsTr("Loading Track...");
+        }
+        else if (source != "")
+        {
+            return getUrlTitle(source, qsTr("Track"));
+        }
+        else return qsTr("Invalid Track");
+    }
+
+    function getUrlTitle(source, text)
+    {
+        var title = controllerNetwork.urlTitle(source);
+
+        if (title)
+        {
+             return title + ' ' + text;
+        }
+        else return text;
+    }
 }
