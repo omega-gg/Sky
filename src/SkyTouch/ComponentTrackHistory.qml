@@ -93,7 +93,7 @@ ComponentTrack
 
         width: pGetWidth()
 
-        radius: st.radius
+        radius: height
 
         visible: (width != 0)
 
