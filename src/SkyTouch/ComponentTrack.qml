@@ -33,6 +33,8 @@ Item
 
     property alias checked: buttonText.checked
 
+    property alias itemText: buttonText.itemText
+
     //---------------------------------------------------------------------------------------------
 
     property alias buttonIcon: buttonIcon
