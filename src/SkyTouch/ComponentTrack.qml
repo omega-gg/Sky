@@ -23,8 +23,21 @@
 import QtQuick 1.0
 import Sky     1.0
 
-ButtonTouchFull
+Item
 {
+    //---------------------------------------------------------------------------------------------
+    // Aliases
+    //---------------------------------------------------------------------------------------------
+
+    default property alias content: buttonText.data
+
+    property alias checked: buttonText.checked
+
+    //---------------------------------------------------------------------------------------------
+
+    property alias buttonIcon: buttonIcon
+    property alias buttonText: buttonText
+
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
@@ -36,49 +49,78 @@ ButtonTouchFull
     anchors.right: parent.right
 //#END
 
-    iconWidth: (isSourceDefault) ? st.componentTrack_iconWidth
-                                 : st.icon_filterRound.width
-
-    iconSourceSize.height: (isSourceDefault) ? getSourceHeight()
-                                             : st.icon_filterRound.height
-
-    margins: (isSourceDefault) ? st.componentTrack_marginsDefault
-                               : st.componentTrack_margins
-
-    checked: (index == ListView.view.currentIndex)
-
-    icon: cover
-
-    iconDefault: st.icon_feed
-
-    iconFillMode: (isSourceDefault) ? Image.PreserveAspectFit
-                                    : Image.PreserveAspectCrop
-
-    iconAsynchronous: gui.asynchronous
-
-    text: st.getTrackTitle(title, loadState, source)
-
-    itemText.wrapMode: Text.Wrap
-
-    itemText.maximumLineCount: 2
-
-    //---------------------------------------------------------------------------------------------
-    // Events
-    //---------------------------------------------------------------------------------------------
-
-    onClicked: ListView.view.currentIndex = index
+    height: st.buttonTouch_size
 
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
-    // ButtonTouchIcon reimplementation
+    // Events
 
-    /* virtual */ function getFilter()
+    function onClick()
     {
-        if (isSourceDefault)
+        ListView.view.currentIndex = index;
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Childs
+    //---------------------------------------------------------------------------------------------
+
+    ButtonTouchIcon
+    {
+        id: buttonIcon
+
+        margins: (isSourceDefault) ? st.componentTrack_marginsDefault
+                                   : st.componentTrack_margins
+
+        iconWidth: (isSourceDefault) ? st.componentTrack_iconWidth
+                                     : st.icon_filterRound.width
+
+        iconSourceSize.height: (isSourceDefault) ? getSourceHeight()
+                                                 : st.icon_filterRound.height
+
+        icon: cover
+
+        iconDefault: st.icon_feed
+
+        iconFillMode: (isSourceDefault) ? Image.PreserveAspectFit
+                                        : Image.PreserveAspectCrop
+
+        iconAsynchronous: gui.asynchronous
+
+        //-----------------------------------------------------------------------------------------
+        // Functions
+        //-----------------------------------------------------------------------------------------
+        // ButtonTouchIcon reimplementation
+
+        /* virtual */ function getFilter()
         {
-            return getFilterDefault();
+            if (isSourceDefault)
+            {
+                return getFilterDefault();
+            }
+            else return st.icon_filterRound;
         }
-        else return st.icon_filterRound;
+    }
+
+    ButtonTouch
+    {
+        id: buttonText
+
+        anchors.left : buttonIcon.right
+        anchors.right: parent.right
+
+        anchors.leftMargin: st.margins
+
+        checked: (index == ListView.view.currentIndex)
+
+        text: st.getTrackTitle(title, loadState, source)
+
+        itemText.horizontalAlignment: Text.AlignLeft
+
+        itemText.wrapMode: Text.Wrap
+
+        itemText.maximumLineCount: 2
+
+        onClicked: onClick()
     }
 }

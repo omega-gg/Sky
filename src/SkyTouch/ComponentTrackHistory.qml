@@ -46,9 +46,8 @@ ComponentTrack
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    // NOTE: We want the icon and the text on top of the foreground.
-    itemIcon.z: 1
-    itemText.z: 1
+    // NOTE: We want the text on top of the foreground.
+    buttonText.itemText.z: 1
 
     //---------------------------------------------------------------------------------------------
     // Functions

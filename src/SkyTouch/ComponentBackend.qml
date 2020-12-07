@@ -38,15 +38,25 @@ ButtonTouchIcon
 
     iconDefault: st.icon_feed
 
-    iconAsynchronous: gui.asynchronous
-
     iconFillMode: Image.PreserveAspectCrop
+
+    iconAsynchronous: gui.asynchronous
 
     //---------------------------------------------------------------------------------------------
     // Events
     //---------------------------------------------------------------------------------------------
 
-    onClicked: ListView.view.currentIndex = index
+    onClicked: onClick()
+
+    //---------------------------------------------------------------------------------------------
+    // Functions
+    //---------------------------------------------------------------------------------------------
+    // Events
+
+    function onClick()
+    {
+        ListView.view.currentIndex = index;
+    }
 
     //---------------------------------------------------------------------------------------------
     // Functions
