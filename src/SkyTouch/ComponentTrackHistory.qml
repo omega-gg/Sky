@@ -29,7 +29,7 @@ ComponentTrack
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int margins: st.componentTrack_margins
+    property int margins: st.margins
 
     //---------------------------------------------------------------------------------------------
     // Aliases

@@ -75,7 +75,7 @@ MouseArea
         {
             while (i)
             {
-                setNext();
+                onNext();
 
                 i--;
             }
@@ -86,7 +86,7 @@ MouseArea
         {
             while (i)
             {
-                setPrevious();
+                onPrevious();
 
                 i++;
             }
@@ -101,14 +101,14 @@ MouseArea
 
     function flashPrevious()
     {
-        setPrevious();
+        onPrevious();
 
         pFlashPrevious();
     }
 
     function flashNext()
     {
-        setNext();
+        onNext();
 
         pFlashNext();
     }
@@ -164,6 +164,19 @@ MouseArea
             player.setNextTrack();
         }
         else tab.setNextTrack();
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Events
+
+    function onPrevious()
+    {
+        setPrevious();
+    }
+
+    function onNext()
+    {
+        setNext();
     }
 
     //---------------------------------------------------------------------------------------------
