@@ -34,6 +34,8 @@
 
 void WBackendIndex_patch(QString & data, const QString & api)
 {
+    qWarning("WBackendIndex_patch: Patching.");
+
     // NOTE: We replace the first occurence after the 'api' key.
     Sk::replaceFirst(&data, api, WControllerPlaylist::versionApi(), data.indexOf("api"));
 }
