@@ -1050,6 +1050,15 @@ void WBackendVlcPrivate::clearActive()
     q->setQualityActive(WAbstractBackend::QualityInvalid);
 }
 
+void WBackendVlcPrivate::clearSources()
+{
+    currentMedia = QString();
+    currentAudio = QString();
+
+    medias.clear();
+    audios.clear();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 #ifdef QT_4
@@ -1328,11 +1337,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
     d->player->setProxy(host, port, password);
 
-    d->currentMedia = QString();
-    d->currentAudio = QString();
-
-    d->medias.clear();
-    d->audios.clear();
+    d->clearSources();
 }
 
 /* Q_INVOKABLE */ void WBackendVlc::clearProxy()
@@ -1343,11 +1348,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
     d->player->clearProxy();
 
-    d->currentMedia = QString();
-    d->currentAudio = QString();
-
-    d->medias.clear();
-    d->audios.clear();
+    d->clearSources();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1440,6 +1441,9 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
     d->player->pause();
 
     d->clearActive();
+
+    // NOTE: We clear sources because we want check their validity when we resume playback.
+    d->clearSources();
 
     return true;
 }

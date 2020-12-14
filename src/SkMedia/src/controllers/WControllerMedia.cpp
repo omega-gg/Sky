@@ -273,6 +273,8 @@ void WControllerMediaPrivate::updateSources()
 
         if (expiry.isValid() && expiry < date)
         {
+            qDebug("MEDIA EXPIRED");
+
             urls.removeOne(i.key());
 
             i.remove();
@@ -533,14 +535,14 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
     if (parent) reply = new WMediaReply(url, parent);
     else        reply = new WMediaReply(url, this);
 
+    d->updateSources();
+
     if (d->sources.contains(url))
     {
         qDebug("MEDIA CACHED");
 
         d->urls.removeOne(url);
         d->urls.append   (url);
-
-        d->updateSources();
 
         WPrivateMediaSource source = d->sources.value(url);
 
@@ -549,12 +551,7 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 
         reply->_loaded = true;
     }
-    else
-    {
-        d->updateSources();
-
-        d->loadSources(reply);
-    }
+    else d->loadSources(reply);
 
     return reply;
 }

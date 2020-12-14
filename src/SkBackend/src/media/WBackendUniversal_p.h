@@ -148,8 +148,8 @@ public: // Interface
 
     QVariant getVariant(WBackendUniversalParameters * parameters, int index) const;
 
-    int   getInt  (WBackendUniversalParameters * parameters, int index) const;
-    float getFloat(WBackendUniversalParameters * parameters, int index) const;
+    int   getInt (WBackendUniversalParameters * parameters, int index) const;
+    qreal getReal(WBackendUniversalParameters * parameters, int index) const;
 
     QByteArray getByteArray(WBackendUniversalParameters * parameters, int index) const;
     QString    getString   (WBackendUniversalParameters * parameters, int index) const;

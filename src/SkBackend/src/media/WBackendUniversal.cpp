@@ -369,8 +369,8 @@ inline QVariant lesser(const WBackendUniversalNode * node,
 
     if (node->nodes.count() < 2) return false;
 
-    float valueA = node->getFloat(parameters, 0);
-    float valueB = node->getFloat(parameters, 1);
+    qreal valueA = node->getReal(parameters, 0);
+    qreal valueB = node->getReal(parameters, 1);
 
     return (valueA < valueB);
 }
@@ -384,8 +384,8 @@ inline QVariant greater(const WBackendUniversalNode * node,
 
     if (node->nodes.count() < 2) return false;
 
-    float valueA = node->getFloat(parameters, 0);
-    float valueB = node->getFloat(parameters, 1);
+    qreal valueA = node->getReal(parameters, 0);
+    qreal valueB = node->getReal(parameters, 1);
 
     return (valueA > valueB);
 }
@@ -401,8 +401,8 @@ inline QVariant lesserEqual(const WBackendUniversalNode * node,
 
     if (node->nodes.count() < 2) return false;
 
-    float valueA = node->getFloat(parameters, 0);
-    float valueB = node->getFloat(parameters, 1);
+    qreal valueA = node->getReal(parameters, 0);
+    qreal valueB = node->getReal(parameters, 1);
 
     return (valueA <= valueB);
 }
@@ -416,8 +416,8 @@ inline QVariant greaterEqual(const WBackendUniversalNode * node,
 
     if (node->nodes.count() < 2) return false;
 
-    float valueA = node->getFloat(parameters, 0);
-    float valueB = node->getFloat(parameters, 1);
+    qreal valueA = node->getReal(parameters, 0);
+    qreal valueB = node->getReal(parameters, 1);
 
     return (valueA >= valueB);
 }
@@ -466,17 +466,24 @@ inline QVariant number(const WBackendUniversalNode * node,
 
     if (node->nodes.count() < 1) return 0;
 
-    return node->getFloat(parameters, 0);
+    return node->getReal(parameters, 0);
 }
 
 inline QVariant time(const WBackendUniversalNode * node,
                      WBackendUniversalParameters * parameters)
 {
 #ifdef SK_BACKEND_LOG
-    qDebug("MSEC");
+    qDebug("TIME");
 #endif
 
-    if (node->nodes.count() < 2) return QTime();
+    int count = node->nodes.count();
+
+    if (count == 0)
+    {
+        return Sk::getMsecs(QTime::currentTime());
+    }
+
+    if (count < 2) return QTime();
 
     QTime time = QTime::fromString(node->getString(parameters, 0),
                                    node->getString(parameters, 1));
@@ -491,7 +498,18 @@ inline QVariant date(const WBackendUniversalNode * node,
     qDebug("DATE");
 #endif
 
-    if (node->nodes.count() < 2) return QDateTime();
+    int count = node->nodes.count();
+
+    if (count == 0)
+    {
+#ifdef QT_4
+        return QDateTime::currentDateTime().toMSecsSinceEpoch() / 1000;
+#else
+        return QDateTime::currentDateTime().toSecsSinceEpoch();
+#endif
+    }
+
+    if (count < 2) return QDateTime();
 
     QDateTime date = QDateTime::fromString(node->getString(parameters, 0),
                                            node->getString(parameters, 1));
@@ -519,8 +537,8 @@ inline QVariant add(const WBackendUniversalNode * node,
 
     if (node->nodes.count() < 2) return false;
 
-    float valueA = node->getFloat(parameters, 0);
-    float valueB = node->getFloat(parameters, 1);
+    qreal valueA = node->getReal(parameters, 0);
+    qreal valueB = node->getReal(parameters, 1);
 
     return (valueA + valueB);
 }
@@ -534,8 +552,8 @@ inline QVariant sub(const WBackendUniversalNode * node,
 
     if (node->nodes.count() < 2) return false;
 
-    float valueA = node->getFloat(parameters, 0);
-    float valueB = node->getFloat(parameters, 1);
+    qreal valueA = node->getReal(parameters, 0);
+    qreal valueB = node->getReal(parameters, 1);
 
     return (valueA - valueB);
 }
@@ -549,8 +567,8 @@ inline QVariant multiply(const WBackendUniversalNode * node,
 
     if (node->nodes.count() < 2) return false;
 
-    float valueA = node->getFloat(parameters, 0);
-    float valueB = node->getFloat(parameters, 1);
+    qreal valueA = node->getReal(parameters, 0);
+    qreal valueB = node->getReal(parameters, 1);
 
     return (valueA * valueB);
 }
@@ -564,8 +582,8 @@ inline QVariant divide(const WBackendUniversalNode * node,
 
     if (node->nodes.count() < 2) return false;
 
-    float valueA = node->getFloat(parameters, 0);
-    float valueB = node->getFloat(parameters, 1);
+    qreal valueA = node->getReal(parameters, 0);
+    qreal valueB = node->getReal(parameters, 1);
 
     return (valueA / valueB);
 }
@@ -2622,9 +2640,9 @@ int WBackendUniversalNode::getInt(WBackendUniversalParameters * parameters, int 
     return getVariant(parameters, index).toInt();
 }
 
-float WBackendUniversalNode::getFloat(WBackendUniversalParameters * parameters, int index) const
+qreal WBackendUniversalNode::getReal(WBackendUniversalParameters * parameters, int index) const
 {
-    return getVariant(parameters, index).toFloat();
+    return getVariant(parameters, index).toReal();
 }
 
 //-------------------------------------------------------------------------------------------------

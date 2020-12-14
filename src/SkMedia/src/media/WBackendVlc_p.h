@@ -206,9 +206,10 @@ public: // Functions
 
     void updateLoading();
 
-    void clearPlayer();
-    void clearReply ();
-    void clearActive();
+    void clearPlayer ();
+    void clearReply  ();
+    void clearActive ();
+    void clearSources();
 
 #ifdef QT_4
     void setOpacity(GLfloat opacity);
