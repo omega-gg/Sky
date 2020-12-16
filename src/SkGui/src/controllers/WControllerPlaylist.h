@@ -240,6 +240,8 @@ public: // Static functions
     Q_INVOKABLE static bool urlIsText    (const QString & url);
     Q_INVOKABLE static bool urlIsSubtitle(const QString & url);
 
+    Q_INVOKABLE static bool urlIsTorrent(const QString & url); // torrent or magnet.
+
     //---------------------------------------------------------------------------------------------
 
     Q_INVOKABLE static bool extensionIsMedia(const QString & extension);

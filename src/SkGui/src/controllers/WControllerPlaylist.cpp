@@ -3324,6 +3324,21 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ bool WControllerPlaylist::urlIsTorrent(const QString & url)
+{
+    if (url.startsWith("magnet:?")) return true;
+
+    QString extension = WControllerNetwork::extractUrlExtension(url);
+
+    if (extension.indexOf("torrent") == -1)
+    {
+         return false;
+    }
+    else return true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsMedia(const QString & extension)
 {
     return (extensionIsVideo(extension) || extensionIsAudio(extension));
