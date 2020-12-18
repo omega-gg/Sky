@@ -1548,7 +1548,7 @@ void WControllerPlaylistPrivate::scanItems(QList<WLibraryFolderItem> * items) co
 
         if (item->isFolder())
         {
-            QString cover = q->backendCoverFromUrl(item->title);
+            QString cover = q->backendCoverFromUrl(item->source);
 
             if (cover.isEmpty() == false)
             {
