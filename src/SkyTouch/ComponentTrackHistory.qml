@@ -71,7 +71,7 @@ ComponentTrack
 
         if (duration < 1 || time > duration) return 0;
 
-        var size = background.width - margins * 2;
+        var size = buttonText.width - margins * 2;
 
         return Math.max(0, size * (time / duration));
     }
@@ -92,7 +92,7 @@ ComponentTrack
 
         width: pGetWidth()
 
-        radius: height
+        radius: st.radius
 
         visible: (width != 0)
 

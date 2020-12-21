@@ -41,7 +41,7 @@ Style
     //---------------------------------------------------------------------------------------------
     // Panel
 
-    property int panel_durationAnimation: duration_faster
+    property int panel_durationAnimation: duration_fast
 
     property real panel_opacity: 0.8
 
@@ -62,7 +62,9 @@ Style
 
     property int buttonTouch_size: dp48
 
-    property int buttonTouch_padding: dp16
+    property int buttonTouch_padding: (isTight) ? dp8
+                                                : dp16
+
     property int buttonTouch_spacing: dp8
 
     property real buttonTouch_opacity     : 0.8

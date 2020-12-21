@@ -6,12 +6,12 @@ HEADERS += src/media/WBackendNet.h \
            src/media/WTrack_p.h \
            src/media/WLibraryItem.h \
            src/media/WLibraryItem_p.h \
-           src/media/WPlaylist.h \
-           src/media/WPlaylist_p.h \
            src/media/WLibraryFolder.h \
+           src/media/WLibraryFolder_p.h \
            src/media/WLibraryFolderRelated.h \
            src/media/WLibraryFolderRelated_p.h \
-           src/media/WLibraryFolder_p.h \
+           src/media/WPlaylist.h \
+           src/media/WPlaylist_p.h \
            src/media/WAbstractBackend.h \
            src/media/WAbstractBackend_p.h \
            src/media/WAbstractHook.h \

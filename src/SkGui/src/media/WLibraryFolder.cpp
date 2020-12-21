@@ -32,6 +32,7 @@
 #include <WControllerApplication>
 #include <WControllerFile>
 #include <WControllerXml>
+#include <WControllerNetwork>
 #include <WControllerPlaylist>
 #include <WAbstractThreadAction>
 #include <WLibraryFolderRelated>
@@ -1710,15 +1711,31 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
     return -1;
 }
 
-/* Q_INVOKABLE */ int WLibraryFolder::indexFromSource(const QString & source) const
+/* Q_INVOKABLE */ int WLibraryFolder::indexFromSource(const QString & source,
+                                                      bool            noFragment) const
 {
     Q_D(const WLibraryFolder);
 
-    for (int i = 0; i < d->items.count(); i++)
+    if (noFragment)
     {
-        if (d->items.at(i).source == source)
+        QString string = WControllerNetwork::removeUrlFragment(source);
+
+        for (int i = 0; i < d->items.count(); i++)
         {
-            return i;
+            if (WControllerNetwork::removeUrlFragment(d->items.at(i).source) == string)
+            {
+                return i;
+            }
+        }
+    }
+    else
+    {
+        for (int i = 0; i < d->items.count(); i++)
+        {
+            if (d->items.at(i).source == source)
+            {
+                return i;
+            }
         }
     }
 
