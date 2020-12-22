@@ -696,6 +696,15 @@ WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this
 {
     Q_D(WControllerFile);
 
+    QTimer timer;
+
+    timer.start(10000); // 10 seconds
+
+    while (d->isLoading() && timer.isActive())
+    {
+        qApp->processEvents();
+    }
+
     // NOTE: We rely on 'isSingleShot' to detect if the handler is initialized.
     if (d->timerLog.isSingleShot())
     {
@@ -704,15 +713,6 @@ WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this
 #else
         qInstallMessageHandler(NULL);
 #endif
-    }
-
-    QTimer timer;
-
-    timer.start(10000); // 10 seconds
-
-    while (d->isLoading() && timer.isActive())
-    {
-        qApp->processEvents();
     }
 }
 
