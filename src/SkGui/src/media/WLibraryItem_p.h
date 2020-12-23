@@ -47,6 +47,8 @@ public:
     void init(WLibraryItem::Type type);
 
 public: // Functions
+    void applyIds(const QList<int> & ids);
+
     void setStateQuery(WLocalObject::State state);
 
     void setQueryLoading(bool loading);

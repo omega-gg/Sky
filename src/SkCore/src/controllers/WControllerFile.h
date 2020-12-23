@@ -270,6 +270,7 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void onCheckWatchers())
 
+    friend class WControllerApplicationPrivate;
     friend class WFileWatcher;
     friend class WFileWatcherPrivate;
     friend class WLocalObject;

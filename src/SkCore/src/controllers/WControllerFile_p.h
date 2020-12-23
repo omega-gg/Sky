@@ -59,6 +59,8 @@ public: // Functions
 
     void addLog(const QString & message);
 
+    void clearMessageHandler();
+
     bool isLoading() const;
 
 public: // Static functions

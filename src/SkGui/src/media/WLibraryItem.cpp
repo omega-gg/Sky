@@ -65,6 +65,19 @@ void WLibraryItemPrivate::init(WLibraryItem::Type type)
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
+void WLibraryItemPrivate::applyIds(const QList<int> & ids)
+{
+    Q_Q(WLibraryItem);
+
+    if (q->isLoading())
+    {
+        futureIds = ids;
+    }
+    else q->onApplyCurrentIds(ids);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void WLibraryItemPrivate::setStateQuery(WLocalObject::State state)
 {
     if (stateQuery == state) return;
@@ -280,15 +293,20 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ void WLibraryItem::setFutureId(int id)
+{
+    Q_D(WLibraryItem);
+
+    d->applyIds(QList<int>() << id);
+}
+
 /* Q_INVOKABLE */ void WLibraryItem::setCurrentIds(const QList<int> & ids)
 {
     if (ids.isEmpty()) return;
 
-    if (isLoading())
-    {
-        Q_D(WLibraryItem); d->futureIds = ids;
-    }
-    else onApplyCurrentIds(ids);
+    Q_D(WLibraryItem);
+
+    d->applyIds(ids);
 }
 
 /* Q_INVOKABLE */ void WLibraryItem::setCurrentTabIds(WTabTrack * tab)

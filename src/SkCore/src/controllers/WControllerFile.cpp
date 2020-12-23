@@ -426,6 +426,21 @@ void WControllerFilePrivate::unregisterFileWatcher(WFileWatcher * watcher)
 
 //-------------------------------------------------------------------------------------------------
 
+void WControllerFilePrivate::clearMessageHandler()
+{
+    // NOTE: We rely on 'isSingleShot' to detect if the handler is initialized.
+    if (timerLog.isSingleShot())
+    {
+#ifdef QT_4
+        qInstallMsgHandler(NULL);
+#else
+        qInstallMessageHandler(NULL);
+#endif
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
 bool WControllerFilePrivate::isLoading() const
 {
     foreach (WLocalObject * object, objects)
@@ -703,16 +718,6 @@ WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this
     while (d->isLoading() && timer.isActive())
     {
         qApp->processEvents();
-    }
-
-    // NOTE: We rely on 'isSingleShot' to detect if the handler is initialized.
-    if (d->timerLog.isSingleShot())
-    {
-#ifdef QT_4
-        qInstallMsgHandler(NULL);
-#else
-        qInstallMessageHandler(NULL);
-#endif
     }
 }
 

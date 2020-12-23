@@ -263,6 +263,8 @@ void WControllerApplicationPrivate::onAboutToQuit()
 
     wControllerFile->waitActions();
 
+    wControllerFile->d_func()->clearMessageHandler();
+
     if (object)
     {
         delete object;

@@ -116,6 +116,8 @@ public: // Interface
 
     //---------------------------------------------------------------------------------------------
 
+    Q_INVOKABLE void setFutureId(int id);
+
     Q_INVOKABLE void setCurrentIds(const QList<int> & ids);
 
     Q_INVOKABLE void setCurrentTabIds(WTabTrack * tab);
