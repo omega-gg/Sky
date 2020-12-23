@@ -1,5 +1,6 @@
 <a href="http://omega.gg/Sky"><img src="dist/logo.png" alt="Sky kit" width="128px"></a>
 ---
+[![Discord](https://img.shields.io/discord/705770212485496852)](http://omega.gg/discord)
 [![azure](https://dev.azure.com/bunjee/Sky/_apis/build/status/omega-gg.Sky)](https://dev.azure.com/bunjee/Sky/_build)
 [![travis](http://api.travis-ci.org/omega-gg/Sky.svg)](http://travis-ci.org/omega-gg/Sky)
 [![appveyor](https://ci.appveyor.com/api/projects/status/86v4f4gv95u68w18?svg=true)](https://ci.appveyor.com/project/3unjee/sky)
