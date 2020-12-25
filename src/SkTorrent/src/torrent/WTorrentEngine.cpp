@@ -216,20 +216,22 @@ bool WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & file
 
     QString unfinished = WControllerTorrent::extractList(content, index);
 
-    qDebug("BLOCK COUNT %d %d [%s] [%s]",
-           finished.length(), unfinished.length(), finished.C_STR, unfinished.C_STR);
+    int lengthA = finished  .length();
+    int lengthB = unfinished.length();
+
+    qDebug("BLOCK COUNT %d %d [%s] [%s]", lengthA, lengthB, finished.C_STR, unfinished.C_STR);
+
+    if (lengthA == 0 && lengthB == 0) return false;
 
     QBitArray * pieces = &(data->pieces);
 
     int count = pieces->count();
 
-    int length = finished.length();
-
-    if (count == length)
+    if (count == lengthA)
     {
         const char * bits = finished.C_STR;
 
-        for (int i = 0; i < length; i++)
+        for (int i = 0; i < lengthA; i++)
         {
             if (*bits & 1)
             {
@@ -242,7 +244,7 @@ bool WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & file
         }
     }
 
-    if (unfinished.length() == 1) return true;
+    if (lengthB == 1) return true;
 
     QBitArray * blocks = &(data->blocks);
 

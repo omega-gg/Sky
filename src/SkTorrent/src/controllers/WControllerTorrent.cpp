@@ -1429,7 +1429,7 @@ WControllerTorrent::Type WControllerTorrent::extractType(const QString & text, i
     int index = 0;
     int at    = skipList(text);
 
-    while (at != text.length())
+    while (at < text.length())
     {
         QString string = text.mid(index, at - index);
 
