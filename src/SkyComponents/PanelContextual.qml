@@ -23,6 +23,7 @@
 import QtQuick 1.0
 import Sky     1.0
 
+// NOTE: This is mostly a copy paste of the Panel item.
 BasePanelContextual
 {
     id: panel
