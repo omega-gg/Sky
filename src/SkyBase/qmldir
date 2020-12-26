@@ -2,6 +2,8 @@ Style 1.0 Style.qml
 
 Window 1.0 Window.qml
 
+AreaContextual 1.0 AreaContextual.qml
+
 RectangleBorders     1.0 RectangleBorders.qml
 RectangleShadow      1.0 RectangleShadow.qml
 RectangleShadowClick 1.0 RectangleShadowClick.qml
@@ -10,7 +12,8 @@ TextBase  1.0 TextBase.qml
 TextClick 1.0 TextClick.qml
 TextLink  1.0 TextLink.qml
 
-BasePanel 1.0 BasePanel.qml
+BasePanel           1.0 BasePanel.qml
+BasePanelContextual 1.0 BasePanelContextual.qml
 
 BaseButton 1.0 BaseButton.qml
 

@@ -23,391 +23,101 @@
 import QtQuick 1.0
 import Sky     1.0
 
-Panel
+BasePanelContextual
 {
-    id: panelContextual
+    id: panel
 
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    /* read */ property bool isActive: false
+    property bool animate: true
 
-    /* read */ property bool isCursorChild: false
+    //---------------------------------------------------------------------------------------------
+    // Aliases
+    //---------------------------------------------------------------------------------------------
 
-    /* read */ property variant item: null
+    default property alias content: content.data
 
-    /* read */ property int position: -1
-
-    /* read */ property int posX: -1
-    /* read */ property int posY: -1
-
-    /* read */ property int marginX: 0
-    /* read */ property int marginY: 0
+    property alias contentWidth : content.width
+    property alias contentHeight: content.height
 
     //---------------------------------------------------------------------------------------------
 
-    property int minimumWidth : st.dp32
-    property int minimumHeight: st.dp32
+    property alias clip: content.clip
 
-    property int maximumWidth : -1
-    property int maximumHeight: -1
+    property alias borderSize : borders.size
+    property alias borderColor: borders.color
 
-    property int preferredWidth : -1
-    property int preferredHeight: -1
+    property alias borderLeft  : borders.borderLeft
+    property alias borderRight : borders.borderRight
+    property alias borderTop   : borders.borderTop
+    property alias borderBottom: borders.borderBottom
 
-    //---------------------------------------------------------------------------------------------
+    property alias borderSizeWidth : borders.sizeWidth
+    property alias borderSizeHeight: borders.sizeHeight
 
-    property int leftMargin  : -st.window_borderSize
-    property int rightMargin : -st.window_borderSize
-    property int topMargin   : -st.window_borderSize
-    property int bottomMargin: -st.window_borderSize
-
-    //---------------------------------------------------------------------------------------------
-
-    property int panelWidth : -1
-    property int panelHeight: -1
+    property alias backgroundOpacity: background.opacity
 
     //---------------------------------------------------------------------------------------------
-    // Settings
-    //---------------------------------------------------------------------------------------------
 
-    visible: false
-    opacity: 0.0
+    property alias background: background
 
-    enableFocus: false
+    property alias itemContent: content
 
-    backgroundOpacity: st.panelContextual_backgroundOpacity
+    property alias borders: borders
 
     //---------------------------------------------------------------------------------------------
-    // Events
-    //---------------------------------------------------------------------------------------------
+    // Style
 
-    onMinimumWidthChanged : pUpdateWidth ()
-    onMinimumHeightChanged: pUpdateHeight()
+    property alias color   : background.color
+    property alias gradient: background.gradient
 
-    onMaximumWidthChanged : pUpdateWidth ()
-    onMaximumHeightChanged: pUpdateHeight()
-
-    onPreferredWidthChanged : pUpdateWidth ()
-    onPreferredHeightChanged: pUpdateHeight()
+    property alias colorBorder: borders.color
 
     //---------------------------------------------------------------------------------------------
-    // Keys
+    // Childs
     //---------------------------------------------------------------------------------------------
 
-    Keys.onPressed:
+    Rectangle
     {
-        if (event.key == Qt.Key_Escape)
+        id: background
+
+        anchors.fill: parent
+
+        opacity: st.panelContextual_backgroundOpacity
+
+        color: st.panel_color
+
+        Behavior on opacity
         {
-            event.accepted = true;
-
-            hidePanels();
-        }
-    }
-
-    //---------------------------------------------------------------------------------------------
-    // Functions
-    //---------------------------------------------------------------------------------------------
-
-    function updatePosition()
-    {
-        if (item == null) return;
-
-        //-----------------------------------------------------------------------------------------
-        // Position
-
-        var x;
-        var y;
-
-        var parentWidth;
-        var parentHeight;
-
-        if (posX == -1)
-        {
-            parentWidth = item.width;
-
-            x = areaContextual.mapFromItem(item, 0, 0).x + marginX;
-        }
-        else
-        {
-            if (isCursorChild) parentWidth = st.cursor_width;
-            else               parentWidth = 0;
-
-            x = Math.max(leftMargin, posX);
-
-            x = Math.min(x, areaContextual.width - parentWidth - rightMargin);
-        }
-
-        if (posY == -1)
-        {
-            parentHeight = item.height;
-
-            y = areaContextual.mapFromItem(item, 0, 0).y + marginY;
-        }
-        else
-        {
-            if (isCursorChild) parentHeight = st.cursor_height;
-            else               parentHeight = 0;
-
-            y = Math.max(topMargin, posY);
-
-            y = Math.min(y, areaContextual.height - parentHeight - bottomMargin);
-        }
-
-        //-----------------------------------------------------------------------------------------
-        // Size
-
-        var width  = pGetWidth ();
-        var height = pGetHeight();
-
-        //-----------------------------------------------------------------------------------------
-        // Checking size
-
-        var widthBefore = x + parentWidth - leftMargin;
-
-        var widthAfter = areaContextual.width - x - parentWidth - rightMargin;
-
-        var heightBefore = y - topMargin;
-
-        var heightAfter = areaContextual.height - y - parentHeight - bottomMargin;
-
-        var panelLeft;
-        var panelBottom;
-
-        if (position == Sk.BottomLeft)
-        {
-            panelLeft   = pGetPanelLeft  (width,  widthBefore,  widthAfter);
-            panelBottom = pGetPanelBottom(height, heightBefore, heightAfter);
-
-            if (posX == -1 && panelLeft == false)
+            PropertyAnimation
             {
-                x -= marginX;
-            }
+                duration: (animate) ? st.duration_normal : 0
 
-            if (posY == -1 && panelBottom == false)
-            {
-                y -= marginY;
+                easing.type: st.easing
             }
         }
-        else if (position == Sk.BottomRight)
-        {
-            panelLeft   = pGetPanelRight (width,  widthBefore,  widthAfter);
-            panelBottom = pGetPanelBottom(height, heightBefore, heightAfter);
-
-            if (posX == -1 && panelLeft)
-            {
-                x -= marginX;
-            }
-
-            if (posY == -1 && panelBottom == false)
-            {
-                y -= marginY;
-            }
-        }
-        else if (position == Sk.TopLeft)
-        {
-            panelLeft   = pGetPanelLeft(width,  widthBefore,  widthAfter);
-            panelBottom = pGetPanelTop (height, heightBefore, heightAfter);
-
-            if (posX == -1 && panelLeft == false)
-            {
-                x -= marginX;
-            }
-
-            if (posY == -1 && panelBottom)
-            {
-                y -= marginY;
-            }
-        }
-        else // if (position == Sk.TopRight)
-        {
-            panelLeft   = pGetPanelRight(width,  widthBefore,  widthAfter);
-            panelBottom = pGetPanelTop  (height, heightBefore, heightAfter);
-
-            if (posX == -1 && panelLeft)
-            {
-                x -= marginX;
-            }
-
-            if (posY == -1 && panelBottom)
-            {
-                y -= marginY;
-            }
-        }
-
-        //-----------------------------------------------------------------------------------------
-
-        if (panelLeft) width = Math.min(width, widthBefore);
-        else           width = Math.min(width, widthAfter);
-
-        if (panelBottom) height = Math.min(height, heightAfter);
-        else             height = Math.min(height, heightBefore);
-
-        width  = Math.max(minimumWidth,  width);
-        height = Math.max(minimumHeight, height);
-
-        //-----------------------------------------------------------------------------------------
-
-        if (panelLeft)
-        {
-             panelContextual.x = Math.round(x - width + parentWidth);
-        }
-        else panelContextual.x = Math.round(x);
-
-        if (panelBottom)
-        {
-             panelContextual.y = Math.round(y + parentHeight);
-        }
-        else panelContextual.y = Math.round(y - height);
-
-        panelWidth  = width;
-        panelHeight = height;
-
-        panelContextual.width  = width;
-        panelContextual.height = height;
     }
 
-    //---------------------------------------------------------------------------------------------
-    // Private
-
-    function pSetActive(active)
+    Item
     {
-        if (active)
-        {
-            visible = true;
-            opacity = 1.0;
+        id: content
 
-            isActive = true;
-        }
-        else
-        {
-            visible = false;
-            opacity = 0.0;
+        anchors.fill: parent
 
-            isActive = false;
-        }
+        anchors.leftMargin  : borderLeft
+        anchors.rightMargin : borderRight
+        anchors.topMargin   : borderTop
+        anchors.bottomMargin: borderBottom
     }
 
-    //---------------------------------------------------------------------------------------------
-
-    function pUpdateWidth()
+    RectangleBorders
     {
-        if (isCursorChild == false || posX == -1)
-        {
-            updatePosition();
+        id: borders
 
-            return;
-        }
+        anchors.fill: parent
 
-        if (item == null) return;
-
-        var width = Math.max(minimumWidth, pGetWidth());
-
-        if ((x + width) < (areaContextual.width - rightMargin))
-        {
-            panelWidth = width;
-
-            panelContextual.width = width;
-        }
-        else updatePosition();
-    }
-
-    function pUpdateHeight()
-    {
-        if (isCursorChild == false || posY == -1)
-        {
-            updatePosition();
-
-            return;
-        }
-
-        if (item == null) return;
-
-        var height = Math.max(minimumHeight, pGetHeight());
-
-        if ((y + height) < (areaContextual.height - bottomMargin))
-        {
-            panelHeight = height;
-
-            panelContextual.height = height;
-        }
-        else updatePosition();
-    }
-
-    //---------------------------------------------------------------------------------------------
-
-    function pGetWidth()
-    {
-        if (maximumWidth != -1)
-        {
-            return Math.min(preferredWidth, maximumWidth);
-        }
-        else return preferredWidth;
-    }
-
-    function pGetHeight()
-    {
-        if (maximumHeight != -1)
-        {
-            return Math.min(preferredHeight, maximumHeight);
-        }
-        else return preferredHeight;
-    }
-
-    //---------------------------------------------------------------------------------------------
-
-    function pGetPanelLeft(width, before, after)
-    {
-        if (before >= width)
-        {
-            return true;
-        }
-        else if (after > before)
-        {
-            return false;
-        }
-        else return true;
-    }
-
-    function pGetPanelRight(width, before, after)
-    {
-        if (after >= width)
-        {
-            return false;
-        }
-        else if (before > after)
-        {
-            return true;
-        }
-        else return false;
-    }
-
-    //---------------------------------------------------------------------------------------------
-
-    function pGetPanelTop(height, before, after)
-    {
-        if (before >= height)
-        {
-            return false;
-        }
-        else if (after > before)
-        {
-            return true;
-        }
-        else return false;
-    }
-
-    function pGetPanelBottom(height, before, after)
-    {
-        if (after >= height)
-        {
-            return true;
-        }
-        else if (before > after)
-        {
-            return false;
-        }
-        else return true;
+        color: st.border_color
     }
 }
