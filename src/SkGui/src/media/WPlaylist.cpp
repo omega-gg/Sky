@@ -170,25 +170,9 @@ public: // Variables
 
 /* virtual */ bool WPlaylistWrite::run()
 {
-    QtLockedFile file(path);
+    QByteArray data;
 
-    if (WControllerFile::tryUnlock(file) == false)
-    {
-        qWarning("WPlaylistWrite::run: File is locked %s.", path.C_STR);
-
-        return false;
-    }
-
-    if (file.open(QIODevice::WriteOnly) == false)
-    {
-        qWarning("WPlaylistWrite::run: Failed to open file %s.", path.C_STR);
-
-        return false;
-    }
-
-    file.lock(QtLockedFile::WriteLock);
-
-    QXmlStreamWriter stream(&file);
+    QXmlStreamWriter stream(&data);
 
     stream.setAutoFormatting(true);
 
@@ -245,7 +229,7 @@ public: // Variables
 
     stream.writeEndDocument();
 
-    file.unlock();
+    WControllerFile::writeFile(path, data);
 
     qDebug("PLAYLIST SAVED");
 
@@ -337,27 +321,11 @@ public: // Variables
 
 /* virtual */ bool WPlaylistRead::run()
 {
-    QtLockedFile file(path);
-
-    if (WControllerFile::tryUnlock(file) == false)
-    {
-        qWarning("WPlaylistRead::run: File is locked %s.", path.C_STR);
-
-        return false;
-    }
-
-    if (file.open(QIODevice::ReadOnly) == false)
-    {
-        qWarning("WPlaylistRead::run: Failed to open file %s.", path.C_STR);
-
-        return false;
-    }
-
     WPlaylistReadReply * reply = qobject_cast<WPlaylistReadReply *> (this->reply());
 
-    file.lock(QtLockedFile::ReadLock);
+    QByteArray data = WControllerFile::readFile(path);
 
-    QXmlStreamReader stream(&file);
+    QXmlStreamReader stream(data);
 
     if (loadPlaylist(&stream, reply) == false || loadTracks(&stream, reply) == false)
     {
@@ -365,8 +333,6 @@ public: // Variables
 
         return false;
     }
-
-    file.unlock();
 
     qDebug("PLAYLIST LOADED");
 

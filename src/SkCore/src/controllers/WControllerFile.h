@@ -220,6 +220,8 @@ public: // Static functions
     static bool tryUnlock(const QtLP_Private::QtLockedFile & file,
                           int                                timeout = 10000); // 10 seconds
 
+    static QByteArray readFile(const QString & fileName);
+
     static bool writeFile(const QString & fileName, const QByteArray & data);
 
     static bool appendFile(const QString & fileName, const QByteArray & data);

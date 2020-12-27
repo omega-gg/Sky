@@ -121,25 +121,9 @@ public: // Variables
 
 /* virtual */ bool WTabTrackWrite::run()
 {
-    QtLockedFile file(path);
+    QByteArray data;
 
-    if (WControllerFile::tryUnlock(file) == false)
-    {
-        qWarning("WTabTrackWrite::run: File is locked %s.", path.C_STR);
-
-        return false;
-    }
-
-    if (file.open(QIODevice::WriteOnly) == false)
-    {
-        qWarning("WTabTrackWrite::run: Failed to open file %s.", path.C_STR);
-
-        return false;
-    }
-
-    file.lock(QtLockedFile::WriteLock);
-
-    QXmlStreamWriter stream(&file);
+    QXmlStreamWriter stream(&data);
 
     stream.setAutoFormatting(true);
 
@@ -203,9 +187,7 @@ public: // Variables
 
     stream.writeEndDocument();
 
-    file.unlock();
-
-    file.close();
+    WControllerFile::writeFile(path, data);
 
     if (videoShots.count())
     {
@@ -327,25 +309,9 @@ public: // Variables
 {
     WTabTrackReadReply * reply = qobject_cast<WTabTrackReadReply *> (this->reply());
 
-    QtLockedFile file(path);
+    QByteArray data = WControllerFile::readFile(path);
 
-    if (WControllerFile::tryUnlock(file) == false)
-    {
-        qWarning("WTabTrackRead::run: File is locked %s.", path.C_STR);
-
-        return false;
-    }
-
-    if (file.open(QIODevice::ReadOnly) == false)
-    {
-        qWarning("WTabTrackRead::run: Failed to open file %s.", path.C_STR);
-
-        return false;
-    }
-
-    file.lock(QtLockedFile::ReadLock);
-
-    QXmlStreamReader stream(&file);
+    QXmlStreamReader stream(data);
 
     if (load(&stream, reply) == false)
     {
@@ -353,8 +319,6 @@ public: // Variables
 
         return false;
     }
-
-    file.unlock();
 
     qDebug("TAB LOADED");
 

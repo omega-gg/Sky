@@ -190,25 +190,9 @@ public: // Variables
 
 /* virtual */ bool WLibraryFolderWrite::run()
 {
-    QtLockedFile file(path);
+    QByteArray data;
 
-    if (WControllerFile::tryUnlock(file) == false)
-    {
-        qWarning("WLibraryFolderWrite::run: File is locked %s.", path.C_STR);
-
-        return false;
-    }
-
-    if (file.open(QIODevice::WriteOnly) == false)
-    {
-        qWarning("WLibraryFolderWrite::run: Failed to open file %s.", path.C_STR);
-
-        return false;
-    }
-
-    file.lock(QtLockedFile::WriteLock);
-
-    QXmlStreamWriter stream(&file);
+    QXmlStreamWriter stream(&data);
 
     stream.setAutoFormatting(true);
 
@@ -262,7 +246,7 @@ public: // Variables
 
     stream.writeEndDocument();
 
-    file.unlock();
+    WControllerFile::writeFile(path, data);
 
     qDebug("FOLDER SAVED");
 
@@ -355,27 +339,11 @@ public: // Variables
 
 /* virtual */ bool WLibraryFolderRead::run()
 {
-    QtLockedFile file(path);
-
-    if (WControllerFile::tryUnlock(file) == false)
-    {
-        qWarning("WLibraryFolderRead::run: File is locked %s.", path.C_STR);
-
-        return false;
-    }
-
-    if (file.open(QIODevice::ReadOnly) == false)
-    {
-        qWarning("WLibraryFolderRead::run: Failed to open file %s.", path.C_STR);
-
-        return false;
-    }
-
     WLibraryFolderReadReply * reply = qobject_cast<WLibraryFolderReadReply *> (this->reply());
 
-    file.lock(QtLockedFile::ReadLock);
+    QByteArray data = WControllerFile::readFile(path);
 
-    QXmlStreamReader stream(&file);
+    QXmlStreamReader stream(data);
 
     if (loadFolder(&stream, reply) == false || loadItems(&stream, reply) == false)
     {
@@ -383,8 +351,6 @@ public: // Variables
 
         return false;
     }
-
-    file.unlock();
 
     qDebug("FOLDER LOADED");
 

@@ -1145,6 +1145,27 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
     else return true;
 }
 
+/* static */ QByteArray WControllerFile::readFile(const QString & fileName)
+{
+    QtLockedFile file(fileName);
+
+    if (WControllerFile::tryUnlock(file) == false)
+    {
+        qWarning("WControllerFile::readFile: File is locked %s.", fileName.C_STR);
+
+        return QByteArray();
+    }
+
+    if (file.open(QIODevice::ReadOnly) == false)
+    {
+        qWarning("WControllerFile::readFile: Cannot open file %s.", fileName.C_STR);
+
+        return QByteArray();
+    }
+
+    return file.readAll();
+}
+
 /* static */ bool WControllerFile::writeFile(const QString & fileName, const QByteArray & data)
 {
     QtLockedFile file(fileName);
