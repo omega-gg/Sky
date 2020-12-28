@@ -50,7 +50,8 @@ class SK_CORE_EXPORT WControllerDeclarative : public WController
 public: // Enums
     enum Direction { Left, Right, Up, Down };
 
-    enum Corner { TopLeft, TopRight, BottomLeft, BottomRight };
+    enum Corner { TopLeft, TopRight, BottomLeft, BottomRight,
+                  TopLeftCorner, TopRightCorner, BottomLeftCorner, BottomRightCorner };
 
     enum IconStyle
     {

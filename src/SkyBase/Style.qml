@@ -386,6 +386,9 @@ Item
     {
         if (visible)
         {
+            // NOTE: We don't run the animation if the item is already fully visible.
+            if (item.visible && item.opacity == 1.0) return;
+
             if (animate)
             {
                 item.opacity = 0.0;

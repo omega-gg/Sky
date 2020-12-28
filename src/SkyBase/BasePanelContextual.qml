@@ -173,7 +173,37 @@ BasePanel
         var panelLeft;
         var panelBottom;
 
-        if (position == Sk.BottomLeft)
+        if (position == Sk.TopLeft)
+        {
+            panelLeft   = pGetPanelLeft(width,  widthBefore,  widthAfter);
+            panelBottom = pGetPanelTop (height, heightBefore, heightAfter);
+
+            if (posX == -1 && panelLeft == false)
+            {
+                x -= marginX;
+            }
+
+            if (posY == -1 && panelBottom)
+            {
+                y -= marginY;
+            }
+        }
+        else if (position == Sk.TopRight)
+        {
+            panelLeft   = pGetPanelRight(width,  widthBefore,  widthAfter);
+            panelBottom = pGetPanelTop  (height, heightBefore, heightAfter);
+
+            if (posX == -1 && panelLeft)
+            {
+                x -= marginX;
+            }
+
+            if (posY == -1 && panelBottom)
+            {
+                y -= marginY;
+            }
+        }
+        else if (position == Sk.BottomLeft)
         {
             panelLeft   = pGetPanelLeft  (width,  widthBefore,  widthAfter);
             panelBottom = pGetPanelBottom(height, heightBefore, heightAfter);
@@ -203,34 +233,96 @@ BasePanel
                 y -= marginY;
             }
         }
-        else if (position == Sk.TopLeft)
+        else if (position == Sk.TopLeftCorner)
         {
             panelLeft   = pGetPanelLeft(width,  widthBefore,  widthAfter);
             panelBottom = pGetPanelTop (height, heightBefore, heightAfter);
 
-            if (posX == -1 && panelLeft == false)
+            if (posX == -1)
             {
-                x -= marginX;
+                if (panelLeft)
+                {
+                     x -= parentWidth;
+                }
+                else x += parentWidth - marginX;
             }
 
-            if (posY == -1 && panelBottom)
+            if (posY == -1)
             {
-                y -= marginY;
+                if (panelBottom)
+                {
+                     y -= parentHeight + marginY;
+                }
+                else y += parentHeight;
             }
         }
-        else // if (position == Sk.TopRight)
+        else if (position == Sk.TopRightCorner)
         {
             panelLeft   = pGetPanelRight(width,  widthBefore,  widthAfter);
             panelBottom = pGetPanelTop  (height, heightBefore, heightAfter);
 
-            if (posX == -1 && panelLeft)
+            if (posX == -1)
             {
-                x -= marginX;
+                if (panelLeft)
+                {
+                     x -= parentWidth + marginX;
+                }
+                else x += parentWidth;
             }
 
-            if (posY == -1 && panelBottom)
+            if (posY == -1)
             {
-                y -= marginY;
+                if (panelBottom)
+                {
+                     y -= parentHeight + marginY;
+                }
+                else y += parentHeight;
+            }
+        }
+        else if (position == Sk.BottomLeftCorner)
+        {
+            panelLeft   = pGetPanelLeft  (width,  widthBefore,  widthAfter);
+            panelBottom = pGetPanelBottom(height, heightBefore, heightAfter);
+
+            if (posX == -1)
+            {
+                if (panelLeft)
+                {
+                     x -= parentWidth;
+                }
+                else x += parentWidth - marginX;
+            }
+
+            if (posY == -1)
+            {
+                if (panelBottom)
+                {
+                     y -= parentHeight;
+                }
+                else y += parentHeight - marginY;
+            }
+        }
+        else // if (position == Sk.BottomRightCorner)
+        {
+            panelLeft   = pGetPanelRight (width,  widthBefore,  widthAfter);
+            panelBottom = pGetPanelBottom(height, heightBefore, heightAfter);
+
+            if (posX == -1)
+            {
+                if (panelLeft)
+                {
+                     x -= parentWidth + marginX;
+                }
+                else x += parentWidth;
+            }
+
+            if (posY == -1)
+            {
+                if (panelBottom)
+                {
+                     y -= parentHeight;
+                }
+                else y += parentHeight - marginY;
             }
         }
 
