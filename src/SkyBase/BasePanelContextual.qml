@@ -235,6 +235,12 @@ BasePanel
         }
         else if (position == Sk.TopLeftCorner)
         {
+            // NOTE: We need to take the item size into account for Corner positionning.
+            widthAfter -= parentWidth;
+
+            heightBefore += parentHeight;
+            heightAfter  += parentHeight;
+
             panelLeft   = pGetPanelLeft(width,  widthBefore,  widthAfter);
             panelBottom = pGetPanelTop (height, heightBefore, heightAfter);
 
@@ -258,6 +264,12 @@ BasePanel
         }
         else if (position == Sk.TopRightCorner)
         {
+            // NOTE: We need to take the item size into account for Corner positionning.
+            widthAfter -= parentWidth;
+
+            heightBefore += parentHeight;
+            heightAfter  += parentHeight;
+
             panelLeft   = pGetPanelRight(width,  widthBefore,  widthAfter);
             panelBottom = pGetPanelTop  (height, heightBefore, heightAfter);
 
@@ -281,6 +293,12 @@ BasePanel
         }
         else if (position == Sk.BottomLeftCorner)
         {
+            // NOTE: We need to take the item size into account for Corner positionning.
+            widthAfter -= parentWidth;
+
+            heightBefore += parentHeight;
+            heightAfter  += parentHeight;
+
             panelLeft   = pGetPanelLeft  (width,  widthBefore,  widthAfter);
             panelBottom = pGetPanelBottom(height, heightBefore, heightAfter);
 
@@ -304,6 +322,12 @@ BasePanel
         }
         else // if (position == Sk.BottomRightCorner)
         {
+            // NOTE: We need to take the item size into account for Corner positionning.
+            widthAfter -= parentWidth;
+
+            heightBefore += parentHeight;
+            heightAfter  += parentHeight;
+
             panelLeft   = pGetPanelRight (width,  widthBefore,  widthAfter);
             panelBottom = pGetPanelBottom(height, heightBefore, heightAfter);
 
