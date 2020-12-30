@@ -34,11 +34,26 @@ BasePanelContextual
 
     property bool animate: true
 
+    property int margins: st.margins
+
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
+    default property alias content: content.data
+
+    property alias contentWidth : content.width
+    property alias contentHeight: content.height
+
+    //---------------------------------------------------------------------------------------------
+
+    property alias clip: content.clip
+
+    //---------------------------------------------------------------------------------------------
+
     property alias background: background
+
+    property alias itemContent: content
 
     //---------------------------------------------------------------------------------------------
     // Style
@@ -94,5 +109,14 @@ BasePanelContextual
 //#QT_4
         smooth: true
 //#END
+    }
+
+    Item
+    {
+        id: content
+
+        anchors.fill: parent
+
+        anchors.margins: margins
     }
 }
