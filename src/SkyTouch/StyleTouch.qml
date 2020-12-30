@@ -54,7 +54,7 @@ Style
 
     property real panelContextual_opacity: 1.0
 
-    property color panelContextual_color: border_color
+    property color panelContextual_color: icon1_colorA
 //#END
 
 //#BaseButton
