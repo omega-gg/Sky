@@ -250,14 +250,14 @@ BasePanel
                 {
                      x -= parentWidth;
                 }
-                else x += parentWidth - marginX;
+                else x += parentWidth - marginX * 2;
             }
 
             if (posY == -1)
             {
                 if (panelBottom)
                 {
-                     y -= parentHeight + marginY;
+                     y -= parentHeight + marginY * 2;
                 }
                 else y += parentHeight;
             }
@@ -277,7 +277,7 @@ BasePanel
             {
                 if (panelLeft)
                 {
-                     x -= parentWidth + marginX;
+                     x -= parentWidth + marginX * 2;
                 }
                 else x += parentWidth;
             }
@@ -286,7 +286,7 @@ BasePanel
             {
                 if (panelBottom)
                 {
-                     y -= parentHeight + marginY;
+                     y -= parentHeight + marginY * 2;
                 }
                 else y += parentHeight;
             }
@@ -308,7 +308,7 @@ BasePanel
                 {
                      x -= parentWidth;
                 }
-                else x += parentWidth - marginX;
+                else x += parentWidth - marginX * 2;
             }
 
             if (posY == -1)
@@ -317,7 +317,7 @@ BasePanel
                 {
                      y -= parentHeight;
                 }
-                else y += parentHeight - marginY;
+                else y += parentHeight - marginY * 2;
             }
         }
         else // if (position == Sk.BottomRightCorner)
@@ -335,7 +335,7 @@ BasePanel
             {
                 if (panelLeft)
                 {
-                     x -= parentWidth + marginX;
+                     x -= parentWidth + marginX * 2;
                 }
                 else x += parentWidth;
             }
@@ -346,7 +346,7 @@ BasePanel
                 {
                      y -= parentHeight;
                 }
-                else y += parentHeight - marginY;
+                else y += parentHeight - marginY * 2;
             }
         }
 

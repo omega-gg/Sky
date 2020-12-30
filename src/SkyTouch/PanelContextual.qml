@@ -23,7 +23,7 @@
 import QtQuick 1.0
 import Sky     1.0
 
-// NOTE: This is a copy paste of the Panel item.
+// NOTE: This is mostly copy paste of the Panel item.
 BasePanelContextual
 {
     id: panel
@@ -87,9 +87,9 @@ BasePanelContextual
 
         radius: st.radius
 
-        opacity: st.panel_opacity
+        opacity: st.panelContextual_opacity
 
-        color: st.panel_color
+        color: st.panelContextual_color
 
 //#QT_4
         smooth: true

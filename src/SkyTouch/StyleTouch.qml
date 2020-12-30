@@ -48,6 +48,15 @@ Style
     property color panel_color: "#c8c8c8"
 //#END
 
+//#PanelContextual
+    //---------------------------------------------------------------------------------------------
+    // PanelContextual
+
+    property real panelContextual_opacity: 1.0
+
+    property color panelContextual_color: border_color
+//#END
+
 //#BaseButton
     //---------------------------------------------------------------------------------------------
     // Button
