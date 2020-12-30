@@ -34,7 +34,7 @@ BasePanelContextual
 
     property bool animate: true
 
-    property int margins: st.margins
+    property int margins: st.panelContextual_margins
 
     //---------------------------------------------------------------------------------------------
     // Aliases
