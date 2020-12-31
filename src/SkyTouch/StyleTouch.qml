@@ -105,7 +105,7 @@ Style
 
     property real label_opacity: buttonTouch_opacity
 
-    property color label_color: buttonTouch_color
+    property color label_color: "#f0f0f0"
 //#END
 
 //#LabelIcon
@@ -133,7 +133,7 @@ Style
     property real lineEdit_opacity     : buttonTouch_opacity
     property real lineEdit_opacityHover: buttonTouch_opacityHover
 
-    property color lineEdit_color: "#f0f0f0"
+    property color lineEdit_color: label_color
 //#END
 
 //#ListLoading

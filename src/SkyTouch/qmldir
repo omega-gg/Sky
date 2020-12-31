@@ -14,10 +14,11 @@ ButtonContextualFull 1.0 ButtonContextualFull.qml
 
 ButtonsWindow 1.0 ButtonsWindow.qml
 
-BaseLabel    1.0 BaseLabel.qml
-Label        1.0 Label.qml
-LabelIcon    1.0 LabelIcon.qml
-LabelLoading 1.0 LabelLoading.qml
+BaseLabel       1.0 BaseLabel.qml
+Label           1.0 Label.qml
+LabelIcon       1.0 LabelIcon.qml
+LabelLoading    1.0 LabelLoading.qml
+LabelContextual 1.0 LabelContextual.qml
 
 LineEdit 1.0 LineEdit.qml
 

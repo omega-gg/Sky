@@ -69,7 +69,11 @@ BaseLabel
         anchors.leftMargin : label.padding
         anchors.rightMargin: label.padding
 
-        horizontalAlignment: Text.AlignHCenter
+        horizontalAlignment: Text.AlignLeft
         verticalAlignment  : Text.AlignVCenter
+
+        wrapMode: Text.Wrap
+
+        maximumLineCount: 2
     }
 }

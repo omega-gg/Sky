@@ -172,6 +172,10 @@ BaseButtonTouch
 
         opacity: (buttonTouchFull.enabled) ? 1.0 : st.icon_opacityDisable
 
+        wrapMode: Text.Wrap
+
+        maximumLineCount: 2
+
         color: (isHighlighted || checked) ? st.text2_color
                                           : st.text1_color
     }

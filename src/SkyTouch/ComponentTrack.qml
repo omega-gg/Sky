@@ -119,10 +119,6 @@ Item
 
         itemText.horizontalAlignment: Text.AlignLeft
 
-        itemText.wrapMode: Text.Wrap
-
-        itemText.maximumLineCount: 2
-
         onClicked: onClick()
     }
 }
