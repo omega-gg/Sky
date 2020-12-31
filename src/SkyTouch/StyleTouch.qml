@@ -52,6 +52,8 @@ Style
     //---------------------------------------------------------------------------------------------
     // PanelContextual
 
+    property int panelContextual_preferredWidth: dp192
+
     property int panelContextual_margins: dp4
 
     property real panelContextual_opacity: 1.0
@@ -84,6 +86,13 @@ Style
 
     property color buttonTouch_color         : "#dcdcdc"
     property color buttonTouch_colorHighlight: color_highlight
+//#END
+
+//#ButtonContextualFull
+    //---------------------------------------------------------------------------------------------
+    // ButtonContextualFull
+
+    property int buttonContextualFull_margins: dp12
 //#END
 
 //#BaseLabel

@@ -1,12 +1,16 @@
 StyleTouch 1.0 StyleTouch.qml
 
-Panel           1.0 Panel.qml
-PanelContextual 1.0 PanelContextual.qml
+Panel                    1.0 Panel.qml
+PanelContextual          1.0 PanelContextual.qml
+PanelContextualFlickable 1.0 PanelContextualFlickable.qml
 
-BaseButtonTouch 1.0 BaseButtonTouch.qml
-ButtonTouch     1.0 ButtonTouch.qml
-ButtonTouchIcon 1.0 ButtonTouchIcon.qml
-ButtonTouchFull 1.0 ButtonTouchFull.qml
+BaseButtonTouch      1.0 BaseButtonTouch.qml
+ButtonTouch          1.0 ButtonTouch.qml
+ButtonTouchLeft      1.0 ButtonTouchLeft.qml
+ButtonTouchIcon      1.0 ButtonTouchIcon.qml
+ButtonTouchFull      1.0 ButtonTouchFull.qml
+ButtonContextual     1.0 ButtonContextual.qml
+ButtonContextualFull 1.0 ButtonContextualFull.qml
 
 ButtonsWindow 1.0 ButtonsWindow.qml
 
@@ -16,6 +20,8 @@ LabelIcon    1.0 LabelIcon.qml
 LabelLoading 1.0 LabelLoading.qml
 
 LineEdit 1.0 LineEdit.qml
+
+ColumnContextual 1.0 ColumnContextual.qml
 
 ListLoading 1.0 ListLoading.qml
 

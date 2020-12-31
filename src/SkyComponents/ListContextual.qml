@@ -155,9 +155,11 @@ BaseList
     {
         for (var i = 0; i < children.length; i++)
         {
-            if (typeof children[i].getId == "function" && children[i].getId() == id)
+            var child = children[i];
+
+            if (typeof child.getId == "function" && child.getId() == id)
             {
-                return children[i];
+                return child;
             }
         }
 

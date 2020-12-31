@@ -184,9 +184,11 @@ Item
         {
             for (var i = 0; i < children.length; i++)
             {
-                if (children[i] != mouseWatcher && children[i] != currentPanel)
+                var child = children[i];
+
+                if (child != mouseWatcher && child != currentPanel)
                 {
-                    children[i].visible = false;
+                    child.visible = false;
                 }
             }
         }
