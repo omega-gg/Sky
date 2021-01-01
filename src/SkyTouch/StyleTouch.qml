@@ -52,7 +52,7 @@ Style
     //---------------------------------------------------------------------------------------------
     // PanelContextual
 
-    property int panelContextual_preferredWidth: dp192
+    property int panelContextual_preferredWidth: dp256
 
     property int panelContextual_margins: dp4
 
