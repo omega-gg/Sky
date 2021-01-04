@@ -25,7 +25,7 @@ import Sky     1.0
 
 Item
 {
-    id: componentTrack
+    id: componentCompletion
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -39,8 +39,8 @@ Item
 
     //---------------------------------------------------------------------------------------------
 
-    property alias buttonIcon: buttonIcon
     property alias buttonText: buttonText
+    property alias buttonIcon: buttonIcon
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -60,67 +60,41 @@ Item
     //---------------------------------------------------------------------------------------------
     // Events
 
-    function onClick()
-    {
-        ListView.view.currentIndex = index;
-    }
+    function onSelect() {}
+    function onClick () {}
 
     //---------------------------------------------------------------------------------------------
     // Childs
     //---------------------------------------------------------------------------------------------
 
-    ButtonTouchIcon
-    {
-        id: buttonIcon
-
-        margins: (isSourceDefault) ? st.componentTrack_marginsDefault
-                                   : st.componentTrack_margins
-
-        iconWidth: (isSourceDefault) ? st.componentTrack_iconWidth
-                                     : st.icon_filterRound.width
-
-        iconSourceSize.height: (isSourceDefault) ? getSourceHeight()
-                                                 : st.icon_filterRound.height
-
-        icon: cover
-
-        iconDefault: st.icon_feed
-
-        iconFillMode: (isSourceDefault) ? Image.PreserveAspectFit
-                                        : Image.PreserveAspectCrop
-
-        iconAsynchronous: gui.asynchronous
-
-        //-----------------------------------------------------------------------------------------
-        // Functions
-        //-----------------------------------------------------------------------------------------
-        // ButtonTouchIcon reimplementation
-
-        /* virtual */ function getFilter()
-        {
-            if (isSourceDefault)
-            {
-                return getFilterDefault();
-            }
-            else return st.icon_filterRound;
-        }
-    }
-
     ButtonTouch
     {
         id: buttonText
 
-        anchors.left : buttonIcon.right
-        anchors.right: parent.right
+        anchors.left : parent.left
+        anchors.right: buttonIcon.left
 
-        anchors.leftMargin: st.margins
+        anchors.rightMargin: st.margins
 
-        checked: (index == componentTrack.ListView.view.currentIndex)
+        checked: (index == componentCompletion.ListView.view.currentIndex)
 
-        text: st.getTrackTitle(title, loadState, source)
+        text: title
 
         itemText.horizontalAlignment: Text.AlignLeft
 
         onClicked: onClick()
+    }
+
+    ButtonTouchIcon
+    {
+        id: buttonIcon
+
+        anchors.right: parent.right
+
+        margins: st.componentCompletion_margins
+
+        iconDefault: st.icon_right
+
+        onClicked: onSelect()
     }
 }

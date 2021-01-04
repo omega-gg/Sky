@@ -201,6 +201,13 @@ Style
     property int playerBrowser_durationAnimation: panel_durationAnimation
 //#END
 
+//#ComponentCompletion
+    //---------------------------------------------------------------------------------------------
+    // ComponentCompletion
+
+    property int componentCompletion_margins: buttonContextualFull_margins
+//#END
+
 //#ComponentBackend*
     //---------------------------------------------------------------------------------------------
     // ComponentBackend
@@ -263,6 +270,10 @@ Style
     property url icon_backward: "icons/backward.svg"
     property url icon_forward : "icons/forward.svg"
     property url icon_play    : "icons/play.svg"
+//#END
+
+//#icons_direction:ComponentCompletion
+    property url icon_right: "icons/chevron-right.svg"
 //#END
 
 //#icons_feed:ComponentBackend:ComponentTrack
