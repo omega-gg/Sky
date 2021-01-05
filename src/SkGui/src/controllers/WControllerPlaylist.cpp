@@ -3071,6 +3071,15 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
     else return url.mid(indexA, indexB - indexA);
 }
 
+/* Q_INVOKABLE static */ QString WControllerPlaylist::simpleQuery(const QString & text)
+{
+    QString result = text;
+
+    result.replace(QRegExp("[.:]"), " ");
+
+    return result.simplified();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QString WControllerPlaylist::createSource(const QString & backend,

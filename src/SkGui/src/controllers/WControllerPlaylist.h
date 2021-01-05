@@ -212,6 +212,8 @@ public: // Static functions
 
     Q_INVOKABLE static QString simpleSource(const QString & url);
 
+    Q_INVOKABLE static QString simpleQuery(const QString & text);
+
     Q_INVOKABLE static QString createSource(const QString & backend, const QString & method,
                                             const QString & label,   const QString & q = QString());
 
