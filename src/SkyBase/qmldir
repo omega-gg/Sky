@@ -2,6 +2,12 @@ Style 1.0 Style.qml
 
 Window 1.0 Window.qml
 
+ItemSlide 1.0 ItemSlide.qml
+ItemWipe  1.0 ItemWipe.qml
+
+LoaderSlide 1.0 LoaderSlide.qml
+LoaderWipe  1.0 LoaderWipe.qml
+
 AreaContextual 1.0 AreaContextual.qml
 
 RectangleBorders     1.0 RectangleBorders.qml

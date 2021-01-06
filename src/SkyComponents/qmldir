@@ -1,11 +1,5 @@
 StyleComponents 1.0 StyleComponents.qml
 
-ItemSlide 1.0 ItemSlide.qml
-ItemWipe  1.0 ItemWipe.qml
-
-LoaderSlide 1.0 LoaderSlide.qml
-LoaderWipe  1.0 LoaderWipe.qml
-
 PageSlide 1.0 PageSlide.qml
 PageWipe  1.0 PageWipe.qml
 
