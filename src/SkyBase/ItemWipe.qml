@@ -54,6 +54,8 @@ Item
 
     default property alias content: content.data
 
+    property alias radius: borders.radius
+
     //---------------------------------------------------------------------------------------------
     // Style
 
@@ -246,19 +248,26 @@ Item
         }
     }
 
-    RectangleBorders
+    Rectangle
     {
         id: borders
 
         anchors.fill: parent
 
-        size: borderSize
+        radius: st.radius
 
         visible: (opacity != 0.0)
 
         opacity: (itemWipe.clip) ? 1.0 : 0.0
 
-        color: border.color
+        color: "transparent"
+
+//#QT_4
+        smooth: true
+//#END
+
+        border.width: borderSize
+        border.color: border.color
 
         Behavior on opacity
         {
@@ -275,7 +284,8 @@ Item
     {
         id: border
 
-        anchors.margins: borderSize
+        // NOTE: When we have a radius we don't want margins otherwise it looks weird.
+        anchors.margins: (radius) ? borderSize : 0
 
         width: (pDirectionB == Sk.Left || pDirectionB == Sk.Right) ? borderSize : 0
 
@@ -286,6 +296,10 @@ Item
         opacity: borders.opacity
 
         color: st.border_colorFocus
+
+//#QT_4
+        smooth: true
+//#END
 
         states:
         [

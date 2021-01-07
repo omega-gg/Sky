@@ -35,6 +35,8 @@ Item
 
     property real ratio: scale * zoom * window.ratio
 
+    property int radius: 0
+
     //---------------------------------------------------------------------------------------------
 
     property url icon
