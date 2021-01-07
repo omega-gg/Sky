@@ -178,6 +178,8 @@ public: // Interface
 
     //---------------------------------------------------------------------------------------------
 
+    Q_INVOKABLE QString backendIdFromSource(const QString & url) const;
+
     Q_INVOKABLE QString backendCoverFromId (const QString & id)  const;
     Q_INVOKABLE QString backendCoverFromUrl(const QString & url) const;
 

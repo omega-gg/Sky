@@ -2799,6 +2799,17 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ QString WControllerPlaylist::backendIdFromSource(const QString & url) const
+{
+    WBackendNet * backend = backendFromSource(url);
+
+    if (backend)
+    {
+        return backend->id();
+    }
+    else return QString();
+}
+
 /* Q_INVOKABLE */ QString WControllerPlaylist::backendCoverFromId(const QString & id) const
 {
     Q_D(const WControllerPlaylist);
