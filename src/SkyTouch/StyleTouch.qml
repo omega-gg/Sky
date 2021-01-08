@@ -87,6 +87,13 @@ Style
     property color buttonTouch_colorHighlight: color_highlight
 //#END
 
+//#ButtonTouchTiny
+    //---------------------------------------------------------------------------------------------
+    // ButtonTouchTiny
+
+    property int buttonTouchTiny_size: dp32
+//#END
+
 //#ButtonContextualFull
     //---------------------------------------------------------------------------------------------
     // ButtonContextualFull

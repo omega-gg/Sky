@@ -7,6 +7,7 @@ PanelContextualFlickable 1.0 PanelContextualFlickable.qml
 BaseButtonTouch      1.0 BaseButtonTouch.qml
 ButtonTouch          1.0 ButtonTouch.qml
 ButtonTouchLeft      1.0 ButtonTouchLeft.qml
+ButtonTouchTiny      1.0 ButtonTouchTiny.qml
 ButtonTouchIcon      1.0 ButtonTouchIcon.qml
 ButtonTouchFull      1.0 ButtonTouchFull.qml
 ButtonContextual     1.0 ButtonContextual.qml
