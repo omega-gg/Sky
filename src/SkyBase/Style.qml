@@ -384,6 +384,17 @@ Item
 
     //---------------------------------------------------------------------------------------------
 
+    function checkTiny(size, maximumSize)
+    {
+        if (size < maximumSize)
+        {
+             return false;
+        }
+        else return true;
+    }
+
+    //---------------------------------------------------------------------------------------------
+
     function animateShow(item, visible, animation, animate)
     {
         if (visible)

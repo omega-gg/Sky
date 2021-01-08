@@ -32,7 +32,7 @@ ButtonTouchFull
     anchors.left : parent.left
     anchors.right: parent.right
 
-    margins: st.buttonContextualFull_margins
+    margins: st.buttonWideFull_margins
 
     spacing: 0
 }

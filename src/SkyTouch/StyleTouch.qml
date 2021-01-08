@@ -94,11 +94,11 @@ Style
     property int buttonTouchTiny_size: dp32
 //#END
 
-//#ButtonContextualFull
+//#ButtonWideFull
     //---------------------------------------------------------------------------------------------
-    // ButtonContextualFull
+    // ButtonWideFull
 
-    property int buttonContextualFull_margins: dp12
+    property int buttonWideFull_margins: dp12
 //#END
 
 //#BaseLabel
@@ -112,6 +112,13 @@ Style
     property real label_opacity: buttonTouch_opacity
 
     property color label_color: "#f0f0f0"
+//#END
+
+//#LabelTiny
+    //---------------------------------------------------------------------------------------------
+    // LabelTiny
+
+    property int labelTiny_size: buttonTouchTiny_size
 //#END
 
 //#LabelIcon
@@ -211,7 +218,7 @@ Style
     //---------------------------------------------------------------------------------------------
     // ComponentCompletion
 
-    property int componentCompletion_margins: buttonContextualFull_margins
+    property int componentCompletion_margins: buttonWideFull_margins
 //#END
 
 //#ComponentBackend*

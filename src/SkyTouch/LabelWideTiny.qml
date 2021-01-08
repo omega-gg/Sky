@@ -23,35 +23,12 @@
 import QtQuick 1.0
 import Sky     1.0
 
-ButtonTouch
+LabelTiny
 {
-    //---------------------------------------------------------------------------------------------
-    // Properties
-    //---------------------------------------------------------------------------------------------
-
-    /* read */ property bool isTiny: st.checkTiny(preferredSize, maximumWidth)
-
-    property int preferredSize: sk.textWidth(itemText.font, text) + padding * 2
-
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: st.getSize(preferredSize, minimumWidth, maximumWidth)
-
-    height: (isTiny) ? st.buttonTouchTiny_size
-                     : st.buttonTouch_size
-
-    itemText.horizontalAlignment: Text.AlignLeft
-
-    itemText.wrapMode: (isTiny) ? Text.NoWrap
-                                : Text.Wrap
-
-    itemText.maximumLineCount: 2
-
-//#DESKTOP
-    // FIXME Qt5.14: Sometimes sk.textWidth() is too short.
-    itemText.elide: (width == maximumWidth) ? Text.ElideRight
-                                            : Text.ElideNone
-//#END
+    anchors.left : parent.left
+    anchors.right: parent.right
 }

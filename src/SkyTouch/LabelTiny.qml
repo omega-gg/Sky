@@ -23,10 +23,10 @@
 import QtQuick 1.0
 import Sky     1.0
 
-ButtonTouch
+Label
 {
     //---------------------------------------------------------------------------------------------
-    // Properties
+    // Settings
     //---------------------------------------------------------------------------------------------
 
     /* read */ property bool isTiny: st.checkTiny(preferredSize, maximumWidth)
@@ -39,8 +39,8 @@ ButtonTouch
 
     width: st.getSize(preferredSize, minimumWidth, maximumWidth)
 
-    height: (isTiny) ? st.buttonTouchTiny_size
-                     : st.buttonTouch_size
+    height: (isTiny) ? st.labelTiny_size
+                     : st.label_size
 
     itemText.horizontalAlignment: Text.AlignLeft
 
