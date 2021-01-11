@@ -735,9 +735,19 @@ bool WDeclarativeMouseArea::setPressed(bool pressed)
     {
         /*if (d->doubleClick == false)*/ emit this->pressed(&event);
 
+        bool accepted = event.isAccepted();
+
+        // NOTE: If the even is not accepted we want to set 'pressed' to false.
+        if (accepted == false)
+        {
+            d->pressed = false;
+        }
+
         emit mousePositionChanged();
 
         emit pressedChanged();
+
+        return accepted;
     }
     else
     {
@@ -749,9 +759,9 @@ bool WDeclarativeMouseArea::setPressed(bool pressed)
         {
             emit clicked(&event);
         }
-    }
 
-    return event.isAccepted();
+        return event.isAccepted();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------

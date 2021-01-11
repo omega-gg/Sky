@@ -113,6 +113,8 @@ Style
     //---------------------------------------------------------------------------------------------
     // PanelContextual
 
+    property real panelContextual_margins: -(window_borderSize)
+
     property real panelContextual_backgroundOpacity: 0.94
 //#END
 

@@ -3,6 +3,7 @@ StyleTouch 1.0 StyleTouch.qml
 Panel                    1.0 Panel.qml
 PanelContextual          1.0 PanelContextual.qml
 PanelContextualFlickable 1.0 PanelContextualFlickable.qml
+PanelContextualList      1.0 PanelContextualList.qml
 
 BaseButtonTouch 1.0 BaseButtonTouch.qml
 ButtonTouch     1.0 ButtonTouch.qml

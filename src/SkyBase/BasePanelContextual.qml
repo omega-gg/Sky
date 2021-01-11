@@ -37,6 +37,9 @@ BasePanel
 
     /* read */ property variant item: null
 
+    // NOTE: This is useful when we want to avoid showing twice the same panel in a 'clicked' event.
+    /* read */ property variant lastItem: null
+
     /* read */ property int position: -1
 
     /* read */ property int posX: -1
@@ -56,17 +59,12 @@ BasePanel
     property int preferredWidth : -1
     property int preferredHeight: -1
 
-    //---------------------------------------------------------------------------------------------
-
-    property int leftMargin  : -st.window_borderSize
-    property int rightMargin : -st.window_borderSize
-    property int topMargin   : -st.window_borderSize
-    property int bottomMargin: -st.window_borderSize
+    property int margins: 0
 
     //---------------------------------------------------------------------------------------------
 
-    property int panelWidth : -1
-    property int panelHeight: -1
+    /* read */ property int panelWidth : -1
+    /* read */ property int panelHeight: -1
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -132,9 +130,9 @@ BasePanel
             if (isCursorChild) parentWidth = st.cursor_width;
             else               parentWidth = 0;
 
-            x = Math.max(leftMargin, posX);
+            x = Math.max(margins, posX);
 
-            x = Math.min(x, areaContextual.width - parentWidth - rightMargin);
+            x = Math.min(x, areaContextual.width - parentWidth - margins);
         }
 
         if (posY == -1)
@@ -148,9 +146,9 @@ BasePanel
             if (isCursorChild) parentHeight = st.cursor_height;
             else               parentHeight = 0;
 
-            y = Math.max(topMargin, posY);
+            y = Math.max(margins, posY);
 
-            y = Math.min(y, areaContextual.height - parentHeight - bottomMargin);
+            y = Math.min(y, areaContextual.height - parentHeight - margins);
         }
 
         //-----------------------------------------------------------------------------------------
@@ -162,13 +160,13 @@ BasePanel
         //-----------------------------------------------------------------------------------------
         // Checking size
 
-        var widthBefore = x + parentWidth - leftMargin;
+        var widthBefore = x + parentWidth - margins;
 
-        var widthAfter = areaContextual.width - x - parentWidth - rightMargin;
+        var widthAfter = areaContextual.width - x - parentWidth - margins;
 
-        var heightBefore = y - topMargin;
+        var heightBefore = y - margins;
 
-        var heightAfter = areaContextual.height - y - parentHeight - bottomMargin;
+        var heightAfter = areaContextual.height - y - parentHeight - margins;
 
         var panelLeft;
         var panelBottom;
@@ -236,6 +234,7 @@ BasePanel
         else if (position == Sk.TopLeftCorner)
         {
             // NOTE: We need to take the item size into account for Corner positionning.
+            widthBefore  -= parentWidth;
             heightBefore += parentHeight;
             heightAfter  += parentHeight;
 
@@ -290,6 +289,7 @@ BasePanel
         else if (position == Sk.BottomLeftCorner)
         {
             // NOTE: We need to take the item size into account for Corner positionning.
+            widthBefore  -= parentWidth;
             heightBefore += parentHeight;
             heightAfter  += parentHeight;
 
@@ -395,6 +395,13 @@ BasePanel
         }
     }
 
+    function pSetItem(item)
+    {
+        lastItem = panel.item;
+
+        panel.item = item;
+    }
+
     //---------------------------------------------------------------------------------------------
 
     function pUpdateWidth()
@@ -410,7 +417,7 @@ BasePanel
 
         var width = Math.max(minimumWidth, pGetWidth());
 
-        if ((x + width) < (areaContextual.width - rightMargin))
+        if ((x + width) < (areaContextual.width - margins))
         {
             panelWidth = width;
 
@@ -432,7 +439,7 @@ BasePanel
 
         var height = Math.max(minimumHeight, pGetHeight());
 
-        if ((y + height) < (areaContextual.height - bottomMargin))
+        if ((y + height) < (areaContextual.height - margins))
         {
             panelHeight = height;
 

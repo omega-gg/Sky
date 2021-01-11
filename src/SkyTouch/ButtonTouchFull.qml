@@ -44,7 +44,7 @@ BaseButtonTouch
     //---------------------------------------------------------------------------------------------
     // Private
 
-    property int pIconWidth: Math.max(itemIcon.width, background.height)
+    property int pIconWidth: (iconWidth) ? Math.max(itemIcon.width, background.height) : 0
 
     //---------------------------------------------------------------------------------------------
     // Aliases

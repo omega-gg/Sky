@@ -44,6 +44,12 @@ Item
     property variant pLastParent: null
 
     //---------------------------------------------------------------------------------------------
+    // Aliases
+    //---------------------------------------------------------------------------------------------
+
+    property alias mouseWatcher: mouseWatcher
+
+    //---------------------------------------------------------------------------------------------
     // Events
     //---------------------------------------------------------------------------------------------
 
@@ -152,7 +158,7 @@ Item
 
         pSetPanel(null);
 
-        pLastPanel = null;
+        pClearLastPanel();
 
         isActive = false;
     }
@@ -175,7 +181,7 @@ Item
         {
             currentPanel.pSetActive(false);
 
-            currentPanel.item = null;
+            currentPanel.pSetItem(null);
         }
 
         currentPanel = panel;
@@ -209,7 +215,7 @@ Item
             return;
         }
 
-        currentPanel.item = item;
+        currentPanel.pSetItem(item);
 
         currentPanel.position = position;
 
@@ -241,6 +247,15 @@ Item
         parentContextual = null;
     }
 
+    function pClearLastPanel()
+    {
+        if (pLastPanel == null) return;
+
+        pLastPanel.lastItem = null;
+
+        pLastPanel = null;
+    }
+
     //---------------------------------------------------------------------------------------------
     // Childs
     //---------------------------------------------------------------------------------------------
@@ -265,7 +280,8 @@ Item
         {
             if (currentPanel) return;
 
-            pLastPanel  = null;
+            pClearLastPanel();
+
             pLastParent = null;
 
             isActive = false;
