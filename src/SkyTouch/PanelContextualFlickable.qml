@@ -55,7 +55,7 @@ PanelContextual
 
         anchors.fill: parent
 
-        anchors.rightMargin: (scrollBar.visible) ? scrollBar.width : 0
+        anchors.rightMargin: (scrollBar.isActive) ? scrollBar.width : 0
 
         contentHeight: loader.height
 

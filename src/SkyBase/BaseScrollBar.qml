@@ -31,6 +31,8 @@ MouseArea
     // Properties
     //---------------------------------------------------------------------------------------------
 
+    /* read */ property bool isActive: (view.contentHeight > 0 && height != handle.height)
+
     /* mandatory */ property variant view
 
     property int minimumSize: st.scrollBar_minimumSize
@@ -56,7 +58,7 @@ MouseArea
 
     height: view.height
 
-    visible: (view.contentHeight > 0 && height != handle.height)
+    visible: isActive
 
     //---------------------------------------------------------------------------------------------
     // Events
