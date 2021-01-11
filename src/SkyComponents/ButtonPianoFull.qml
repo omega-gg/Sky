@@ -44,7 +44,7 @@ BaseButtonPiano
     //---------------------------------------------------------------------------------------------
     // Private
 
-    property int pIconWidth: Math.max(itemIcon.width, background.height)
+    property int pIconWidth: Math.max(iconWidth, background.height)
 
     //---------------------------------------------------------------------------------------------
     // Aliases

@@ -41,7 +41,7 @@ BaseToolTip
     //---------------------------------------------------------------------------------------------
     // Private
 
-    property int pIconWidth: Math.max(itemIcon.width, itemContent.height)
+    property int pIconWidth: Math.max(iconWidth, itemContent.height)
 
     //---------------------------------------------------------------------------------------------
     // Aliases

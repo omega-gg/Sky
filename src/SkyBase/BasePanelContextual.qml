@@ -59,7 +59,14 @@ BasePanel
     property int preferredWidth : -1
     property int preferredHeight: -1
 
+    //---------------------------------------------------------------------------------------------
+
     property int margins: 0
+
+    property int leftMargin  : margins
+    property int rightMargin : margins
+    property int topMargin   : margins
+    property int bottomMargin: margins
 
     //---------------------------------------------------------------------------------------------
 
@@ -130,9 +137,9 @@ BasePanel
             if (isCursorChild) parentWidth = st.cursor_width;
             else               parentWidth = 0;
 
-            x = Math.max(margins, posX);
+            x = Math.max(leftMargin, posX);
 
-            x = Math.min(x, areaContextual.width - parentWidth - margins);
+            x = Math.min(x, areaContextual.width - parentWidth - rightMargin);
         }
 
         if (posY == -1)
@@ -146,9 +153,9 @@ BasePanel
             if (isCursorChild) parentHeight = st.cursor_height;
             else               parentHeight = 0;
 
-            y = Math.max(margins, posY);
+            y = Math.max(topMargin, posY);
 
-            y = Math.min(y, areaContextual.height - parentHeight - margins);
+            y = Math.min(y, areaContextual.height - parentHeight - bottomMargin);
         }
 
         //-----------------------------------------------------------------------------------------
@@ -160,13 +167,13 @@ BasePanel
         //-----------------------------------------------------------------------------------------
         // Checking size
 
-        var widthBefore = x + parentWidth - margins;
+        var widthBefore = x + parentWidth - leftMargin;
 
-        var widthAfter = areaContextual.width - x - parentWidth - margins;
+        var widthAfter = areaContextual.width - x - parentWidth - rightMargin;
 
-        var heightBefore = y - margins;
+        var heightBefore = y - topMargin;
 
-        var heightAfter = areaContextual.height - y - parentHeight - margins;
+        var heightAfter = areaContextual.height - y - parentHeight - bottomMargin;
 
         var panelLeft;
         var panelBottom;
@@ -417,7 +424,7 @@ BasePanel
 
         var width = Math.max(minimumWidth, pGetWidth());
 
-        if ((x + width) < (areaContextual.width - margins))
+        if ((x + width) < (areaContextual.width - rightMargin))
         {
             panelWidth = width;
 
@@ -439,7 +446,7 @@ BasePanel
 
         var height = Math.max(minimumHeight, pGetHeight());
 
-        if ((y + height) < (areaContextual.height - margins))
+        if ((y + height) < (areaContextual.height - bottomMargin))
         {
             panelHeight = height;
 
