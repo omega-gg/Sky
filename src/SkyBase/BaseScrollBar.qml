@@ -31,7 +31,7 @@ MouseArea
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    /* read */ property bool isActive: (view.contentHeight > 0 && height != handle.height)
+    /* read */ property bool isActive: (view.contentHeight > 0 && height > handle.height)
 
     /* mandatory */ property variant view
 

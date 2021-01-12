@@ -120,11 +120,14 @@ BasePanel
         //-----------------------------------------------------------------------------------------
         // Position
 
-        var x;
-        var y;
+        var areaWidth  = areaContextual.width;
+        var areaHeight = areaContextual.height;
 
         var parentWidth;
         var parentHeight;
+
+        var x;
+        var y;
 
         if (posX == -1)
         {
@@ -139,7 +142,7 @@ BasePanel
 
             x = Math.max(leftMargin, posX);
 
-            x = Math.min(x, areaContextual.width - parentWidth - rightMargin);
+            x = Math.min(x, areaWidth - parentWidth - rightMargin);
         }
 
         if (posY == -1)
@@ -155,7 +158,7 @@ BasePanel
 
             y = Math.max(topMargin, posY);
 
-            y = Math.min(y, areaContextual.height - parentHeight - bottomMargin);
+            y = Math.min(y, areaHeight - parentHeight - bottomMargin);
         }
 
         //-----------------------------------------------------------------------------------------
@@ -169,11 +172,11 @@ BasePanel
 
         var widthBefore = x + parentWidth - leftMargin;
 
-        var widthAfter = areaContextual.width - x - parentWidth - rightMargin;
+        var widthAfter = areaWidth - x - parentWidth - rightMargin;
 
         var heightBefore = y - topMargin;
 
-        var heightAfter = areaContextual.height - y - parentHeight - bottomMargin;
+        var heightAfter = areaHeight - y - parentHeight - bottomMargin;
 
         var panelLeft;
         var panelBottom;
@@ -360,25 +363,36 @@ BasePanel
         width  = Math.max(minimumWidth,  width);
         height = Math.max(minimumHeight, height);
 
+        width  = Math.min(width,  areaWidth);
+        height = Math.min(height, areaHeight);
+
         //-----------------------------------------------------------------------------------------
 
         if (panelLeft)
         {
-             panel.x = Math.round(x - width + parentWidth);
+             x = Math.round(x - width + parentWidth);
         }
-        else panel.x = Math.round(x);
+        else x = Math.round(x);
 
         if (panelBottom)
         {
-             panel.y = Math.round(y + parentHeight);
+             y = Math.round(y + parentHeight);
         }
-        else panel.y = Math.round(y - height);
+        else y = Math.round(y - height);
+
+        x = Math.max(0, x);
+        y = Math.max(0, y);
+
+        //-----------------------------------------------------------------------------------------
 
         panelWidth  = width;
         panelHeight = height;
 
         panel.width  = width;
         panel.height = height;
+
+        panel.x = x;
+        panel.y = y;
     }
 
     //---------------------------------------------------------------------------------------------
