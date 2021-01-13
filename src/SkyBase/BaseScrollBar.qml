@@ -31,7 +31,8 @@ MouseArea
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    /* read */ property bool isActive: (view.contentHeight > 0 && height > handle.height)
+    // FIXME Qt5.14.2: We have binding loops when we define this directly.
+    /* read */ property bool isActive: false
 
     /* mandatory */ property variant view
 
@@ -91,6 +92,13 @@ MouseArea
     }
 
     //---------------------------------------------------------------------------------------------
+
+    onHeightChanged     : pUpdateActive()
+    onMinimumSizeChanged: pUpdateActive()
+
+    onViewChanged: pUpdateHandle()
+
+    //---------------------------------------------------------------------------------------------
     // Connections
     //---------------------------------------------------------------------------------------------
 
@@ -98,14 +106,23 @@ MouseArea
     {
         target: view
 
-        onContentHeightChanged: pUpdateY()
-        onContentYChanged     : pUpdateY()
+        onContentHeightChanged: pUpdateHandle()
+
+        onContentYChanged: pUpdateY()
     }
 
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
     // Private
+
+    function pUpdateHandle()
+    {
+        pUpdateY     ();
+        pUpdateActive();
+    }
+
+    //---------------------------------------------------------------------------------------------
 
     function pUpdateY()
     {
@@ -119,6 +136,41 @@ MouseArea
              handle.y = pMaximumB * ratio;
         }
         else handle.y = pMaximumB;
+    }
+
+    function pUpdateActive()
+    {
+        var contentHeight = view.contentHeight;
+
+        if (contentHeight == 0)
+        {
+            handle.height = 0;
+
+            isActive = false;
+
+            return;
+        }
+
+        var size = height * (height / contentHeight);
+
+        if (size < minimumSize)
+        {
+            handle.height = minimumSize;
+
+            isActive = true;
+        }
+        else if (size < height)
+        {
+            handle.height = size;
+
+            isActive = true;
+        }
+        else
+        {
+            handle.height = height;
+
+            isActive = false;
+        }
     }
 
     //---------------------------------------------------------------------------------------------
