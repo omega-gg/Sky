@@ -363,9 +363,6 @@ BasePanel
         width  = Math.max(minimumWidth,  width);
         height = Math.max(minimumHeight, height);
 
-        width  = Math.min(width,  areaWidth);
-        height = Math.min(height, areaHeight);
-
         //-----------------------------------------------------------------------------------------
 
         if (panelLeft)
@@ -380,8 +377,14 @@ BasePanel
         }
         else y = Math.round(y - height);
 
+        //-----------------------------------------------------------------------------------------
+        // NOTE: We make sure we stay inside the contextual area geometry.
+
         x = Math.max(0, x);
         y = Math.max(0, y);
+
+        width  = Math.min(width,  areaWidth  - x);
+        height = Math.min(height, areaHeight - y);
 
         //-----------------------------------------------------------------------------------------
 
