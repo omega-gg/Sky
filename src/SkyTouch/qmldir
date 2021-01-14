@@ -29,6 +29,8 @@ LabelWideTiny 1.0 LabelWideTiny.qml
 
 LineEdit 1.0 LineEdit.qml
 
+Console 1.0 Console.qml
+
 ColumnWide   1.0 ColumnWide.qml
 ColumnScroll 1.0 ColumnScroll.qml
 

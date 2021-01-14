@@ -32,12 +32,27 @@ Item
     default property alias contents: flickable.data
 
     property alias contentHeight: flickable.contentHeight
+    property alias contentY     : flickable.contentY
 
     //---------------------------------------------------------------------------------------------
 
     property alias flickable: flickable
 
     property alias scrollBar: scrollBar
+
+    //---------------------------------------------------------------------------------------------
+    // Functions
+    //---------------------------------------------------------------------------------------------
+
+    function scrollToTop()
+    {
+        contentY = 0;
+    }
+
+    function scrollToBottom()
+    {
+        contentY = contentHeight - height;
+    }
 
     //---------------------------------------------------------------------------------------------
     // Childs
