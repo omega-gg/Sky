@@ -31,7 +31,7 @@ MouseArea
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    /* read */ property bool isActive: (height < view.contentHeight)
+    /* read */ property bool isActive: (pMaximumA > 0)
 
     /* mandatory */ property variant view
 
@@ -90,7 +90,12 @@ MouseArea
         }
     }
 
+    //---------------------------------------------------------------------------------------------
+
     onViewChanged: pUpdateY()
+
+    onPMaximumAChanged: pUpdateY()
+    onPMaximumBChanged: pUpdateY()
 
     //---------------------------------------------------------------------------------------------
     // Connections
@@ -100,8 +105,7 @@ MouseArea
     {
         target: view
 
-        onContentHeightChanged: pUpdateY()
-        onContentYChanged     : pUpdateY()
+        onContentYChanged: pUpdateY()
     }
 
     //---------------------------------------------------------------------------------------------
