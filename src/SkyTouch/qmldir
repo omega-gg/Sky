@@ -12,8 +12,9 @@ ButtonTouchTiny 1.0 ButtonTouchTiny.qml
 ButtonTouchIcon 1.0 ButtonTouchIcon.qml
 ButtonTouchFull 1.0 ButtonTouchFull.qml
 
-ButtonWide     1.0 ButtonWide.qml
-ButtonWideFull 1.0 ButtonWideFull.qml
+ButtonWide       1.0 ButtonWide.qml
+ButtonWideAction 1.0 ButtonWideAction.qml
+ButtonWideFull   1.0 ButtonWideFull.qml
 
 ButtonsWindow 1.0 ButtonsWindow.qml
 

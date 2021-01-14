@@ -75,16 +75,12 @@ BaseButtonTouch
 
     function getSourceHeight()
     {
-        return Math.round(height - margins * 2)
+        return st.getHeight(height, margins);
     }
 
     function getFilterDefault()
     {
-        if (isHighlighted || checked)
-        {
-             return st.button_filterIconB;
-        }
-        else return st.button_filterIconA;
+        return st.getButtonFilter(buttonTouchIcon);
     }
 
     //---------------------------------------------------------------------------------------------

@@ -441,6 +441,13 @@ Item
 
     //---------------------------------------------------------------------------------------------
 
+    function getHeight(height, margins)
+    {
+        return Math.round(height - margins * 2);
+    }
+
+    //---------------------------------------------------------------------------------------------
+
     function getTrackTitle(title, state, source)
     {
         if (title)

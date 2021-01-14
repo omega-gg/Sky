@@ -94,11 +94,11 @@ Style
     property int buttonTouchTiny_size: dp32
 //#END
 
-//#ButtonWideFull
+//#ButtonWide*:ComponentCompletion
     //---------------------------------------------------------------------------------------------
-    // ButtonWideFull
+    // ButtonWide
 
-    property int buttonWideFull_margins: dp12
+    property int buttonWide_margins: dp12
 //#END
 
 //#BaseLabel
@@ -218,7 +218,7 @@ Style
     //---------------------------------------------------------------------------------------------
     // ComponentCompletion
 
-    property int componentCompletion_margins: buttonWideFull_margins
+    property int componentCompletion_margins: buttonWide_margins
 //#END
 
 //#ComponentBackend*
@@ -275,6 +275,14 @@ Style
     property url icon_minimize: "icons/window-minimize.svg"
 //#END
 
+//#icons_direction:ButtonWideAction
+    property url icon_down: "icons/chevron-down.svg"
+//#END
+
+//#icons_direction:ButtonWideAction:ComponentCompletion
+    property url icon_right: "icons/chevron-right.svg"
+//#END
+
 //#icons_loading:LabelLoading
     property url icon_loading: "icons/loading.svg"
 //#END
@@ -283,10 +291,6 @@ Style
     property url icon_backward: "icons/backward.svg"
     property url icon_forward : "icons/forward.svg"
     property url icon_play    : "icons/play.svg"
-//#END
-
-//#icons_direction:ComponentCompletion
-    property url icon_right: "icons/chevron-right.svg"
 //#END
 
 //#icons_feed:ComponentBackend:ComponentTrack
@@ -316,6 +320,17 @@ Style
              return buttonTouch_size;
         }
         else return buttonTouch_size * count + margins * (count - 1);
+    }
+
+    //---------------------------------------------------------------------------------------------
+
+    function getButtonFilter(button)
+    {
+        if (button.isHighlighted || button.checked)
+        {
+             return button_filterIconB;
+        }
+        else return button_filterIconA;
     }
 
     //---------------------------------------------------------------------------------------------

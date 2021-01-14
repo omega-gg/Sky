@@ -23,71 +23,31 @@
 import QtQuick 1.0
 import Sky     1.0
 
-BaseLabel
+ButtonWide
 {
+    id: buttonWideAction
+
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property bool enableFilter: true
-
-    property int margins: 0
+    property int margins: st.buttonWide_margins
 
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    property alias isSourceDefault: itemIcon.isSourceDefault
-
-    property alias icon       : itemIcon.source
-    property alias iconDefault: itemIcon.sourceDefault
-
-    property alias iconWidth : itemIcon.width
-    property alias iconHeight: itemIcon.height
-
-    property alias iconSourceSize: itemIcon.sourceSize
-    property alias iconSourceArea: itemIcon.sourceArea
-
-    property alias iconLoadMode: itemIcon.loadMode
-    property alias iconFillMode: itemIcon.fillMode
-
-    property alias iconAsynchronous: itemIcon.asynchronous
-    property alias iconCache       : itemIcon.cache
-
-    property alias iconScaling: itemIcon.scaling
+    property alias iconAction: itemAction.source
 
     //---------------------------------------------------------------------------------------------
 
-    property alias itemIcon: itemIcon
+    property alias itemAction: itemAction
 
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width : st.label_size
-    height: width
-
-    //---------------------------------------------------------------------------------------------
-    // Functions
-    //---------------------------------------------------------------------------------------------
-
-    function getSourceHeight()
-    {
-        return st.getHeight(height, margins);
-    }
-
-    function getFilterDefault()
-    {
-        return st.label_filterIcon;
-    }
-
-    //---------------------------------------------------------------------------------------------
-    // Virtual
-
-    /* virtual */ function getFilter()
-    {
-        return getFilterDefault();
-    }
+    itemText.anchors.rightMargin: padding + itemAction.width
 
     //---------------------------------------------------------------------------------------------
     // Childs
@@ -95,14 +55,20 @@ BaseLabel
 
     ImageScale
     {
-        id: itemIcon
+        id: itemAction
 
-        anchors.centerIn: parent
+        anchors.right: parent.right
 
-        sourceSize.height: getSourceHeight()
+        anchors.rightMargin: margins
 
-        clip: (fillMode == Image.PreserveAspectCrop)
+        anchors.verticalCenter: parent.verticalCenter
 
-        filter: (enableFilter) ? getFilter() : null
+        opacity: (buttonWideAction.enabled) ? 1.0 : st.icon_opacityDisable
+
+        sourceSize.height: st.getHeight(buttonWideAction.height, margins)
+
+        source: st.icon_down
+
+        filter: st.getButtonFilter(buttonWideAction)
     }
 }
