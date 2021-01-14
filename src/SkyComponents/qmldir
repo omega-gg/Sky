@@ -96,8 +96,7 @@ LineEditValue    1.0 LineEditValue.qml
 LineEditBox      1.0 LineEditBox.qml
 LineEditBoxClear 1.0 LineEditBoxClear.qml
 
-BaseTextEdit 1.0 BaseTextEdit.qml
-Console      1.0 Console.qml
+Console 1.0 Console.qml
 
 BaseList       1.0 BaseList.qml
 List           1.0 List.qml

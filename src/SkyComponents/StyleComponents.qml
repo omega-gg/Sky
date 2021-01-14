@@ -586,20 +586,6 @@ Style
     property color lineEditBox_colorDefaultHover: text1_color
 //#END
 
-//#BaseTextEdit
-    //---------------------------------------------------------------------------------------------
-    // BaseTextEdit
-
-    property int baseTextEdit_margin: dp8
-//#END
-
-//#Console
-    //---------------------------------------------------------------------------------------------
-    // Console
-
-    property int console_maximumLength: 4000
-//#END
-
 //#BaseList
     //---------------------------------------------------------------------------------------------
     // List

@@ -88,13 +88,13 @@ Item
     //---------------------------------------------------------------------------------------------
     // Text
 
-    property int text_pixelSize: dp12
-
-    property bool text_bold: false
-
     property real text_opacityDisable: 0.6
 
     property string text_fontFamily: "Arial"
+
+    property int text_pixelSize: dp12
+
+    property bool text_bold: false
 
     property int text_raised: Text.Normal
     property int text_sunken: text_raised
@@ -327,6 +327,28 @@ Item
     property color baseLineEdit_colorTextSelected : text2_color
 
     property color baseLineEdit_colorDefault: text3_color
+//#END
+
+//#BaseTextEdit
+    //---------------------------------------------------------------------------------------------
+    // BaseTextEdit
+
+    property int baseTextEdit_margin: dp8
+//#END
+
+//#BaseConsole
+    //---------------------------------------------------------------------------------------------
+    // BaseConsole
+
+    property int baseConsole_maximumLength: 4000
+
+    property string baseConsole_fontFamily: "consolas"
+
+    property int baseConsole_pixelSize: dp14
+
+    property bool baseConsole_bold: false
+
+    property color baseConsole_color: text_color
 //#END
 
 //#BaseScrollBar

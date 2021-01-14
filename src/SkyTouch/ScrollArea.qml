@@ -4,7 +4,7 @@
 
     Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
 
-    This file is part of SkyComponents.
+    This file is part of SkyTouch.
 
     - GNU Lesser General Public License Usage:
     This file may be used under the terms of the GNU Lesser General Public License version 3 as
@@ -23,53 +23,55 @@
 import QtQuick 1.0
 import Sky     1.0
 
-ScrollArea
+Item
 {
-    //---------------------------------------------------------------------------------------------
-    // Properties
-    //---------------------------------------------------------------------------------------------
-    // Private
-
-    property bool pAtBottom: true
-
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    property alias text: itemConsole.log
+    default property alias contents: flickable.data
+
+    property alias contentHeight: flickable.contentHeight
 
     //---------------------------------------------------------------------------------------------
 
-    property alias itemConsole: itemConsole
+    property alias flickable: flickable
 
-    //---------------------------------------------------------------------------------------------
-    // Events
-    //---------------------------------------------------------------------------------------------
-
-    contentHeight: itemConsole.contentHeight
-
-    onContentHeightChanged: if (pAtBottom) scrollToBottom()
-
-    onValueChanged: pAtBottom = atBottom
-
-    //---------------------------------------------------------------------------------------------
-    // Functions
-    //---------------------------------------------------------------------------------------------
-
-    function append(string)
-    {
-        itemConsole.append(string);
-    }
+    property alias scrollBar: scrollBar
 
     //---------------------------------------------------------------------------------------------
     // Childs
     //---------------------------------------------------------------------------------------------
 
-    BaseConsole
+    Flickable
     {
-        id: itemConsole
+        id: flickable
 
-        anchors.left : parent.left
+        anchors.fill: parent
+
+        anchors.rightMargin: (scrollBar.isActive) ? scrollBar.width : 0
+
+        clip: true
+
+        // FIXME Qt5.14.2: We have to reparent the second item manually if we want scrolling
+        //                 to work.
+        onChildrenChanged:
+        {
+            var item = flickable.children[1];
+
+            if (item) item.parent = flickable.contentItem;
+        }
+
+        // NOTE: When we have a contextual area we hide its panels when scrolling.
+        onMovementStarted: if (areaContextual) areaContextual.hidePanels()
+    }
+
+    ScrollBar
+    {
+        id: scrollBar
+
         anchors.right: parent.right
+
+        view: flickable
     }
 }

@@ -4,7 +4,7 @@
 
     Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
 
-    This file is part of SkyComponents.
+    This file is part of SkyTouch.
 
     - GNU Lesser General Public License Usage:
     This file may be used under the terms of the GNU Lesser General Public License version 3 as
@@ -26,48 +26,24 @@ import Sky     1.0
 ScrollArea
 {
     //---------------------------------------------------------------------------------------------
-    // Properties
-    //---------------------------------------------------------------------------------------------
-    // Private
-
-    property bool pAtBottom: true
-
-    //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    property alias text: itemConsole.log
+    default property alias content: column.data
 
     //---------------------------------------------------------------------------------------------
-
-    property alias itemConsole: itemConsole
-
-    //---------------------------------------------------------------------------------------------
-    // Events
+    // Settings
     //---------------------------------------------------------------------------------------------
 
-    contentHeight: itemConsole.contentHeight
-
-    onContentHeightChanged: if (pAtBottom) scrollToBottom()
-
-    onValueChanged: pAtBottom = atBottom
-
-    //---------------------------------------------------------------------------------------------
-    // Functions
-    //---------------------------------------------------------------------------------------------
-
-    function append(string)
-    {
-        itemConsole.append(string);
-    }
+    contentHeight: column.height
 
     //---------------------------------------------------------------------------------------------
     // Childs
     //---------------------------------------------------------------------------------------------
 
-    BaseConsole
+    ColumnWide
     {
-        id: itemConsole
+        id: column
 
         anchors.left : parent.left
         anchors.right: parent.right

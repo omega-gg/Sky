@@ -4,7 +4,7 @@
 
     Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
 
-    This file is part of SkyComponents.
+    This file is part of SkyBase.
 
     - GNU Lesser General Public License Usage:
     This file may be used under the terms of the GNU Lesser General Public License version 3 as
@@ -23,34 +23,46 @@
 import QtQuick 1.0
 import Sky     1.0
 
-ScrollArea
+BaseTextEdit
 {
+    id: baseConsole
+
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
+
+    property string log
+
+    property int maximumLength: st.baseConsole_maximumLength
+
+    //---------------------------------------------------------------------------------------------
     // Private
 
-    property bool pAtBottom: true
+    property bool pUpdate: true
 
     //---------------------------------------------------------------------------------------------
-    // Aliases
+    // Settings
     //---------------------------------------------------------------------------------------------
 
-    property alias text: itemConsole.log
+    wrapMode: Text.Wrap
 
     //---------------------------------------------------------------------------------------------
+    // Style
 
-    property alias itemConsole: itemConsole
+    color      : st.baseConsole_color
+    colorCursor: color
+
+    font.family   : st.baseConsole_fontFamily
+    font.pixelSize: st.baseConsole_pixelSize
+    font.bold     : st.baseConsole_bold
 
     //---------------------------------------------------------------------------------------------
     // Events
     //---------------------------------------------------------------------------------------------
 
-    contentHeight: itemConsole.contentHeight
+    onVisibleChanged: if (visible) text = log
 
-    onContentHeightChanged: if (pAtBottom) scrollToBottom()
-
-    onValueChanged: pAtBottom = atBottom
+    onLogChanged: if (visible && pUpdate) text = log
 
     //---------------------------------------------------------------------------------------------
     // Functions
@@ -58,18 +70,58 @@ ScrollArea
 
     function append(string)
     {
-        itemConsole.append(string);
+//#QT_4
+        pSetLog(log + string);
+
+        var size = log.length;
+
+        if (size > maximumLength)
+        {
+            pSetLog(log.substring(size - maximumLength));
+        }
+
+        if (visible) text = log;
+//#ELSE
+        if (visible)
+        {
+            var size = log.length;
+
+            pSetLog(log + string);
+
+            insert(size, string);
+
+            var count = length - maximumLength;
+
+            if (count > 0)
+            {
+                pSetLog(log.substring(count));
+
+                remove(0, count);
+            }
+        }
+        else
+        {
+            pSetLog(log + string);
+
+            /* var */ size = log.length;
+
+            if (size > maximumLength)
+            {
+                pSetLog(log.substring(size - maximumLength));
+            }
+        }
+//#END
     }
 
     //---------------------------------------------------------------------------------------------
-    // Childs
-    //---------------------------------------------------------------------------------------------
+    // Private
 
-    BaseConsole
+    function pSetLog(string)
     {
-        id: itemConsole
+        pUpdate = false;
 
-        anchors.left : parent.left
-        anchors.right: parent.right
+        log = string;
+
+        pUpdate = true;
     }
 }
