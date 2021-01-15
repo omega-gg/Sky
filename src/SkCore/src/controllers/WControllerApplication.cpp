@@ -1793,9 +1793,8 @@ void WControllerApplication::setScreenSaverEnabled(bool enabled)
 
         CFRelease(url);
 
-        IOPMAssertionCreateWithDescription(kIOPMAssertionTypePreventUserIdleSystemSleep,
-                                           CFSTR(name().C_STR), NULL, NULL), path, 0, NULL,
-                                           &assertion);
+        IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep,
+                                    kIOPMAssertionLevelOn, CFSTR(name().C_STR), &assertion);
 
         CFRelease(path);
     }
