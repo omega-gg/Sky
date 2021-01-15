@@ -44,6 +44,7 @@ SliderStream 1.0 SliderStream.qml
 
 PlayerBrowser 1.0 PlayerBrowser.qml
 
+ComponentContextual   1.0 ComponentContextual.qml
 ComponentCompletion   1.0 ComponentCompletion.qml
 ComponentBackend      1.0 ComponentBackend.qml
 ComponentBackendFull  1.0 ComponentBackendFull.qml

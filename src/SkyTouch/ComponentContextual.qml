@@ -23,72 +23,36 @@
 import QtQuick 1.0
 import Sky     1.0
 
-PanelContextual
+ButtonWideFull
 {
-    //---------------------------------------------------------------------------------------------
-    // Properties
-    //---------------------------------------------------------------------------------------------
-
-    property int activeIndex: -1
-
-    //---------------------------------------------------------------------------------------------
-    // Aliases
-    //---------------------------------------------------------------------------------------------
-
-    property alias currentIndex: list.currentIndex
-
-    property alias model: list.model
-
-    property alias delegate: list.delegate
-
-    //---------------------------------------------------------------------------------------------
-
-    property alias list: list
-
-    property alias scrollBar: scrollBar
-
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    preferredHeight: list.contentHeight + margins * 2
+    checked: (currentIndex == index)
+
+    iconDefault: cover
+
+    text: title
+
+    itemText.horizontalAlignment: Text.AlignHCenter
+
+    itemText.color: getColor()
 
     //---------------------------------------------------------------------------------------------
-    // Childs
+    // Functions
     //---------------------------------------------------------------------------------------------
 
-    ListView
+    function getColor()
     {
-        id: list
-
-        anchors.fill: parent
-
-        anchors.rightMargin: (scrollBar.isActive) ? scrollBar.width : 0
-
-        spacing: st.margins
-
-        model: ListModel {}
-
-        delegate: ButtonWideFull
+        if (isHighlighted || checked)
         {
-            checked: (currentIndex == index)
-
-            iconDefault: cover
-
-            text: title
+            return st.text2_color;
         }
-
-        clip: true
-
-        onVisibleChanged: if (visible) positionViewAtIndex(currentIndex, ListView.Contain)
-    }
-
-    ScrollBar
-    {
-        id: scrollBar
-
-        anchors.right: parent.right
-
-        view: list
+        else if (activeIndex == index)
+        {
+            return st.text_colorCurrent;
+        }
+        else return st.text1_color;
     }
 }
