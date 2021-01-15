@@ -1798,7 +1798,7 @@ void WControllerApplication::setScreenSaverEnabled(bool enabled)
         IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep,
                                     kIOPMAssertionLevelOn, name, &(d->assertion));
 
-        CFRelease(string);
+        CFRelease(name);
     }
     else IOPMAssertionRelease(d->assertion);
 #elif defined(Q_OS_ANDROID)
