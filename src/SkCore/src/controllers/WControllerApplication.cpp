@@ -321,9 +321,18 @@ void WControllerApplication::initController()
 
     if (d->qrc)
     {
-         component.loadUrl(QUrl("qrc:/qrc/Main.qml"));
+        component.loadUrl(QUrl("qrc:/qrc/Main.qml"));
+    }
+#ifdef Q_OS_MAC
+    // NOTE macOS: We have to take the application bundle into account.
+    if (d->gui)
+    {
+        component.loadUrl(QUrl("../../../Main.qml"));
     }
     else component.loadUrl(QUrl("Main.qml"));
+#else
+    else component.loadUrl(QUrl("Main.qml"));
+#endif
 
     d->object = component.create();
 
