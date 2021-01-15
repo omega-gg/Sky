@@ -37,6 +37,11 @@
 #include <QUrl>
 #include <QPoint>
 
+// macOS includes
+#ifdef Q_OS_MAC
+#include <IOKit/pwr_mgt/IOPMLib.h>
+#endif
+
 // Private includes
 #include <private/Sk_p>
 

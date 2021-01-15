@@ -82,6 +82,11 @@
 #endif
 #endif
 
+// macOS includes
+#ifdef Q_OS_MAC
+#include <CoreServices/CoreServices.h>
+#endif
+
 W_INIT_CONTROLLER(WControllerApplication)
 
 //-------------------------------------------------------------------------------------------------
@@ -1787,18 +1792,15 @@ void WControllerApplication::setScreenSaverEnabled(bool enabled)
 #elif defined(Q_OS_MAC)
     if (enabled == false)
     {
-        CFURLRef url = CFBundleCopyBundleURL(CFBundleGetMainBundle());
-
-        CFStringRef path = CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
-
-        CFRelease(url);
+        CFStringRef string = CFStringCreateWithCString(NULL, d->name.C_STR,
+                                                       kCFStringEncodingASCII);
 
         IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep,
-                                    kIOPMAssertionLevelOn, CFSTR(name().C_STR), &assertion);
+                                    kIOPMAssertionLevelOn, string, &(d->assertion));
 
-        CFRelease(path);
+        CFRelease(string);
     }
-    else IOPMAssertionRelease(assertion);
+    else IOPMAssertionRelease(d->assertion);
 #elif defined(Q_OS_ANDROID)
     // NOTE Android: We run this on the GUI thread otherwise we get an exception.
     QtAndroid::runOnAndroidThread([enabled]
