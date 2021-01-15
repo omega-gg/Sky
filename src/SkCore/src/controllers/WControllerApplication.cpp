@@ -1784,6 +1784,22 @@ void WControllerApplication::setScreenSaverEnabled(bool enabled)
         SystemParametersInfo(SPI_SETPOWEROFFTIMEOUT,   d->timeoutPowerOff,   NULL, 0);
         SystemParametersInfo(SPI_SETSCREENSAVETIMEOUT, d->timeoutScreenSave, NULL, 0);
     }
+#elif defined(Q_OS_MAC)
+    if (enabled == false)
+    {
+        CFURLRef url = CFBundleCopyBundleURL(CFBundleGetMainBundle());
+
+        CFStringRef path = CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
+
+        CFRelease(url);
+
+        IOPMAssertionCreateWithDescription(kIOPMAssertionTypePreventUserIdleSystemSleep,
+                                           CFSTR(name().C_STR), NULL, NULL), path, 0, NULL,
+                                           &assertion);
+
+        CFRelease(path);
+    }
+    else IOPMAssertionRelease(assertion);
 #elif defined(Q_OS_ANDROID)
     // NOTE Android: We run this on the GUI thread otherwise we get an exception.
     QtAndroid::runOnAndroidThread([enabled]

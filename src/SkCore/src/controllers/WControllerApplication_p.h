@@ -106,6 +106,8 @@ public: // Variables
     int timeoutLowPower;
     int timeoutPowerOff;
     int timeoutScreenSave;
+#elif defined(Q_OS_MAC)
+    IOPMAssertionID assertion;
 #endif
 
 protected:
