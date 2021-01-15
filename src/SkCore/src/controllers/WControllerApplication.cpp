@@ -325,7 +325,7 @@ void WControllerApplication::initController()
     }
 #ifdef Q_OS_MAC
     // NOTE macOS: We have to take the application bundle into account.
-    if (d->gui)
+    else if (d->gui)
     {
         component.loadUrl(QUrl("../../../Main.qml"));
     }
