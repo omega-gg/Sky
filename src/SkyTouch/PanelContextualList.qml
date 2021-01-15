@@ -29,6 +29,8 @@ PanelContextual
     // Aliases
     //---------------------------------------------------------------------------------------------
 
+    property alias currentIndex: list.currentIndex
+
     property alias model: list.model
 
     property alias delegate: list.delegate
@@ -63,12 +65,16 @@ PanelContextual
 
         delegate: ButtonWideFull
         {
+            checked: (currentIndex == index)
+
             iconDefault: cover
 
             text: title
         }
 
         clip: true
+
+        onVisibleChanged: if (visible) positionViewAtIndex(currentIndex, ListView.Contain)
     }
 
     ScrollBar
