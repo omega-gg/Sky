@@ -1792,11 +1792,11 @@ void WControllerApplication::setScreenSaverEnabled(bool enabled)
 #elif defined(Q_OS_MAC)
     if (enabled == false)
     {
-        CFStringRef string = CFStringCreateWithCString(NULL, d->name.C_STR,
+        CFStringRef name = CFStringCreateWithCString(NULL, d->name.C_STR,
                                                        kCFStringEncodingASCII);
 
         IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep,
-                                    kIOPMAssertionLevelOn, string, &(d->assertion));
+                                    kIOPMAssertionLevelOn, name, &(d->assertion));
 
         CFRelease(string);
     }
