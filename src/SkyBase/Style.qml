@@ -320,7 +320,7 @@ Item
 
     property bool baseLineEdit_autoSelect: true
 
-    property color baseLineEdit_colorCursor: "#161616"
+    property color baseLineEdit_colorCursor: text1_color
 
     property color baseLineEdit_colorText         : text1_color
     property color baseLineEdit_colorTextSelection: border_colorFocus
