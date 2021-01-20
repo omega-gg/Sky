@@ -28,8 +28,9 @@ Item
     id: contextualItemConfirm
 
     //---------------------------------------------------------------------------------------------
-    // Properties private
+    // Properties
     //---------------------------------------------------------------------------------------------
+    // Private
 
     property bool pCurrent: (isCurrent || mouseArea.pressed)
 

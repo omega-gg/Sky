@@ -26,6 +26,12 @@ import Sky     1.0
 ButtonWideFull
 {
     //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+
+    /* read */ property bool isActive: (activeIndex == index)
+
+    //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
@@ -37,22 +43,5 @@ ButtonWideFull
 
     itemText.horizontalAlignment: Text.AlignHCenter
 
-    itemText.color: getColor()
-
-    //---------------------------------------------------------------------------------------------
-    // Functions
-    //---------------------------------------------------------------------------------------------
-
-    function getColor()
-    {
-        if (isHighlighted || checked)
-        {
-            return st.text2_color;
-        }
-        else if (activeIndex == index)
-        {
-            return st.text_colorCurrent;
-        }
-        else return st.text1_color;
-    }
+    itemText.color: st.getTextColor(isHighlighted, checked, isActive)
 }

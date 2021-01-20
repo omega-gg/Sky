@@ -31,7 +31,7 @@ BasePlayerBrowser
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property bool isActive: true
+    property bool active: true
 
     property bool animate: true
 
@@ -65,7 +65,7 @@ BasePlayerBrowser
     // Events
     //---------------------------------------------------------------------------------------------
 
-    onIsActiveChanged: st.animateShow(playerBrowser, isActive, behaviorOpacity, animate)
+    onActiveChanged: st.animateShow(playerBrowser, active, behaviorOpacity, animate)
 
     //---------------------------------------------------------------------------------------------
     // Animations

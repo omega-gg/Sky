@@ -335,6 +335,21 @@ Style
 
     //---------------------------------------------------------------------------------------------
 
+    function getTextColor(highlighed, checked, active)
+    {
+        if (highlighed || checked)
+        {
+            return text2_color;
+        }
+        else if (active)
+        {
+            return text_colorCurrent;
+        }
+        else return text1_color;
+    }
+
+    //---------------------------------------------------------------------------------------------
+
     function applyStyle(index)
     {
         if (index == 0)

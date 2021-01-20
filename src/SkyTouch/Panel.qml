@@ -31,7 +31,7 @@ BasePanel
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property bool isActive: true
+    property bool active: true
 
     property bool animate: true
 
@@ -56,7 +56,7 @@ BasePanel
     // Events
     //---------------------------------------------------------------------------------------------
 
-    onIsActiveChanged: st.animateShow(panel, isActive, behaviorOpacity, animate)
+    onActiveChanged: st.animateShow(panel, active, behaviorOpacity, animate)
 
     //---------------------------------------------------------------------------------------------
     // Animations
