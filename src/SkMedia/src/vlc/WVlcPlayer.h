@@ -34,7 +34,7 @@
 typedef SSIZE_T ssize_t;
 #endif
 
-// Vlc includes
+// VLC includes
 #include <vlc/vlc.h>
 
 // Sk includes
