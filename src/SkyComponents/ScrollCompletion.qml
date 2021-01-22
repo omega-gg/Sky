@@ -33,11 +33,11 @@ ScrollArea
 
     property string textDefault
 
-    /* read */ property bool hasNoResults: false
-
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
+
+    /* read */ property alias hasNoResults: list.hasNoResults
 
     property alias model   : list.model
     property alias delegate: list.delegate
@@ -121,6 +121,13 @@ ScrollArea
         list.addQueryItem(key, value);
     }
 
+    //---------------------------------------------------------------------------------------------
+
+    function runCompletion(text)
+    {
+        list.runCompletion(text);
+    }
+
     function runQuery()
     {
         list.runQuery();
@@ -172,16 +179,7 @@ ScrollArea
         onItemClicked      : scrollCompletion.itemClicked      (index)
         onItemDoubleClicked: scrollCompletion.itemDoubleClicked(index)
 
-        onQueryCompleted:
-        {
-            if (query != "" && count == 0)
-            {
-                 hasNoResults = true;
-            }
-            else hasNoResults = false;
-
-            scrollCompletion.queryCompleted();
-        }
+        onQueryCompleted: scrollCompletion.queryCompleted()
 
         onCurrentIndexChanged: scrollToItem(currentIndex)
     }

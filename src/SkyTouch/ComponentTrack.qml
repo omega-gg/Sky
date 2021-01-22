@@ -106,7 +106,7 @@ Item
         }
     }
 
-    ButtonTouch
+    ButtonTouchLeft
     {
         id: buttonText
 
@@ -118,8 +118,6 @@ Item
         checked: (index == componentTrack.ListView.view.currentIndex)
 
         text: st.getTrackTitle(title, loadState, source)
-
-        itemText.horizontalAlignment: Text.AlignLeft
 
         onClicked: onClick()
     }

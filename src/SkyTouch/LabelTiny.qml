@@ -42,8 +42,6 @@ Label
     height: (isTiny) ? st.labelTiny_size
                      : st.label_size
 
-    itemText.horizontalAlignment: Text.AlignLeft
-
     itemText.wrapMode: (isTiny) ? Text.NoWrap
                                 : Text.Wrap
 

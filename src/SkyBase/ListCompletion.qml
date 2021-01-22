@@ -23,13 +23,15 @@
 import QtQuick 1.0
 import Sky     1.0
 
-ListView
+List
 {
     id: listCompletion
 
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
+
+    /* read */ property bool hasNoResults: false
 
     /* read */ property string completion
 
@@ -55,6 +57,8 @@ ListView
 
         onQueryCompleted:
         {
+            hasNoResults = (query && count == 0);
+
             pUpdateCompletion();
 
             listCompletion.queryCompleted();
@@ -71,7 +75,41 @@ ListView
     // Functions
     //---------------------------------------------------------------------------------------------
 
+    function runCompletion(text)
+    {
+        currentIndex = -1;
+
+        query = text;
+
+        runQuery();
+    }
+
     function runQuery() { model.runQuery(); }
+
+    //---------------------------------------------------------------------------------------------
+    // List reimplementation
+
+    function selectPrevious()
+    {
+        var index = currentIndex;
+
+        if (index < 1)
+        {
+             currentIndex = -1;
+        }
+        else currentIndex--;
+    }
+
+    function selectNext()
+    {
+        var index = currentIndex;
+
+        if (index > count - 2)
+        {
+             currentIndex = -1;
+        }
+        else currentIndex++;
+    }
 
     //---------------------------------------------------------------------------------------------
     // Private

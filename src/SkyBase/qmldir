@@ -32,6 +32,7 @@ BaseScrollBar 1.0 BaseScrollBar.qml
 
 BaseSlider 1.0 BaseSlider.qml
 
+List           1.0 List.qml
 ListCompletion 1.0 ListCompletion.qml
 
 BasePlayerBrowser 1.0 BasePlayerBrowser.qml

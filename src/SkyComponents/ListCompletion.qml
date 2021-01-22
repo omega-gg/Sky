@@ -31,6 +31,8 @@ List
     // Properties
     //---------------------------------------------------------------------------------------------
 
+    /* read */ property bool hasNoResults: false
+
     /* read */ property string completion
 
     //---------------------------------------------------------------------------------------------
@@ -55,6 +57,8 @@ List
 
         onQueryCompleted:
         {
+            hasNoResults = (query && count == 0);
+
             pUpdateCompletion();
 
             listCompletion.queryCompleted();
@@ -78,7 +82,43 @@ List
         model.addQueryItem(key, value);
     }
 
+    //---------------------------------------------------------------------------------------------
+
+    function runCompletion(text)
+    {
+        currentIndex = -1;
+
+        query = text;
+
+        runQuery();
+    }
+
     function runQuery() { model.runQuery(); }
+
+    //---------------------------------------------------------------------------------------------
+    // List reimplementation
+
+    function selectPrevious()
+    {
+        var index = currentIndex;
+
+        if (index < 1)
+        {
+             currentIndex = -1;
+        }
+        else currentIndex--;
+    }
+
+    function selectNext()
+    {
+        var index = currentIndex;
+
+        if (index > count - 2)
+        {
+             currentIndex = -1;
+        }
+        else currentIndex++;
+    }
 
     //---------------------------------------------------------------------------------------------
     // Private

@@ -4,7 +4,7 @@
 
     Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
 
-    This file is part of SkyTouch.
+    This file is part of SkyBase.
 
     - GNU Lesser General Public License Usage:
     This file may be used under the terms of the GNU Lesser General Public License version 3 as
@@ -23,76 +23,29 @@
 import QtQuick 1.0
 import Sky     1.0
 
-Item
+ListView
 {
-    id: componentCompletion
-
     //---------------------------------------------------------------------------------------------
-    // Aliases
+    // Events
     //---------------------------------------------------------------------------------------------
 
-    default property alias content: buttonText.data
-
-    property alias checked: buttonText.checked
-
-    property alias itemText: buttonText.itemText
-
-    //---------------------------------------------------------------------------------------------
-
-    property alias buttonText: buttonText
-    property alias buttonIcon: buttonIcon
-
-    //---------------------------------------------------------------------------------------------
-    // Settings
-    //---------------------------------------------------------------------------------------------
-
-//#QT_4
-    width: ListView.view.width
-//#ELSE
-    anchors.left : parent.left
-    anchors.right: parent.right
-//#END
-
-    height: st.buttonTouch_size
+    onCurrentIndexChanged: positionViewAtIndex(currentIndex, ListView.Contain)
 
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
-    // Events
 
-    function onSelect() {}
-    function onClick () {}
-
-    //---------------------------------------------------------------------------------------------
-    // Childs
-    //---------------------------------------------------------------------------------------------
-
-    ButtonTouchLeft
+    function selectPrevious()
     {
-        id: buttonText
+        if (count == 0 || currentIndex < 1) return;
 
-        anchors.left : parent.left
-        anchors.right: buttonIcon.left
-
-        anchors.rightMargin: st.margins
-
-        checked: (index == componentCompletion.ListView.view.currentIndex)
-
-        text: title
-
-        onClicked: onClick()
+        currentIndex--;
     }
 
-    ButtonTouchIcon
+    function selectNext()
     {
-        id: buttonIcon
+        if (count == 0 || currentIndex == count - 1) return;
 
-        anchors.right: parent.right
-
-        margins: st.componentCompletion_margins
-
-        iconDefault: st.icon_right
-
-        onClicked: onSelect()
+        currentIndex++;
     }
 }
