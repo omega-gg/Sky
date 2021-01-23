@@ -3416,6 +3416,19 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
     else return true;
 }
 
+//---------------------------------------------------------------------------------------------
+// QML
+
+/* Q_INVOKABLE static */ WLibraryFolder * WControllerPlaylist::createFolder(int type)
+{
+    return WLibraryFolder::create(static_cast<WLibraryItem::Type> (type));
+}
+
+/* Q_INVOKABLE static */ WPlaylist * WControllerPlaylist::createPlaylist(int type)
+{
+    return WPlaylist::create(static_cast<WLibraryItem::Type> (type));
+}
+
 //-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------

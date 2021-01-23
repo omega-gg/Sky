@@ -34,6 +34,7 @@ Console 1.0 Console.qml
 ColumnWide   1.0 ColumnWide.qml
 ColumnScroll 1.0 ColumnScroll.qml
 
+List        1.0 List.qml
 ListLoading 1.0 ListLoading.qml
 
 ScrollArea 1.0 ScrollArea.qml

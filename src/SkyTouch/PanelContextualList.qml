@@ -57,15 +57,13 @@ PanelContextual
     // Childs
     //---------------------------------------------------------------------------------------------
 
-    ListView
+    List
     {
         id: list
 
         anchors.fill: parent
 
         anchors.rightMargin: (scrollBar.isActive) ? scrollBar.width : 0
-
-        spacing: st.margins
 
         model: ListModel {}
 

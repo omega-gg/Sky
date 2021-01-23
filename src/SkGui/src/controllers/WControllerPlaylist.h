@@ -257,6 +257,12 @@ public: // Static functions
     Q_INVOKABLE static bool extensionIsText    (const QString & extension);
     Q_INVOKABLE static bool extensionIsSubtitle(const QString & extension);
 
+    //---------------------------------------------------------------------------------------------
+    // QML
+
+    Q_INVOKABLE static WLibraryFolder * createFolder  (int type = WLibraryItem::Folder);
+    Q_INVOKABLE static WPlaylist      * createPlaylist(int type = WLibraryItem::Playlist);
+
 signals:
     void filesCleared(const QList<int> & idFull);
     void filesDeleted(const QList<int> & idFull);
