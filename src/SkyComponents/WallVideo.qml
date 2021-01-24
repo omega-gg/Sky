@@ -159,6 +159,8 @@ WallBookmarkTrack
 
         onWidthChanged : pUpdateText()
         onHeightChanged: pUpdateText()
+
+        onFillModeChanged: pUpdateText()
     }
 
     //---------------------------------------------------------------------------------------------

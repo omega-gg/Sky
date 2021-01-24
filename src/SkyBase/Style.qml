@@ -306,6 +306,17 @@ Item
     property real rectangleShadowClick_ratio: 4.0
 //#END
 
+//#TextSubtitle
+    //---------------------------------------------------------------------------------------------
+    //TextSubtitle
+
+    property int textSubtitle_sizeMinimum: dp18
+    property int textSubtitle_sizeMaximum: dp48
+
+    property color textSubtitle_color     : "#dcdcdc"
+    property color textSubtitle_colorStyle: "#242424"
+//#END
+
 //#BaseLineEdit
     //---------------------------------------------------------------------------------------------
     // BaseLineEdit

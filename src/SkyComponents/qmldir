@@ -30,7 +30,6 @@ IconLoading 1.0 IconLoading.qml
 TextRich        1.0 TextRich.qml
 TextDate        1.0 TextDate.qml
 TextListDefault 1.0 TextListDefault.qml
-TextSubtitle    1.0 TextSubtitle.qml
 
 Panel           1.0 Panel.qml
 PanelContextual 1.0 PanelContextual.qml
