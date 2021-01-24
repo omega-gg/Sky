@@ -23,61 +23,11 @@
 import QtQuick 1.0
 import Sky     1.0
 
-ButtonTouchFull
+ButtonWide
 {
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-//#QT_4
-    width: ListView.view.width
-//#ELSE
-    anchors.left : parent.left
-    anchors.right: parent.right
-//#END
-
-    margins: (isSourceDefault) ? st.componentBackend_marginsDefault
-                               : st.componentBackend_margins
-
     checked: (ListView.view.currentIndex == index)
-
-    icon: cover
-
-    iconDefault: st.icon_feed
-
-    iconFillMode: Image.PreserveAspectCrop
-
-    iconAsynchronous: gui.asynchronous
-
-    text: title
-
-    //---------------------------------------------------------------------------------------------
-    // Events
-    //---------------------------------------------------------------------------------------------
-
-    onClicked: onClick()
-
-    //---------------------------------------------------------------------------------------------
-    // Functions
-    //---------------------------------------------------------------------------------------------
-    // Events
-
-    function onClick()
-    {
-        ListView.view.currentIndex = index;
-    }
-
-    //---------------------------------------------------------------------------------------------
-    // Functions
-    //---------------------------------------------------------------------------------------------
-    // ButtonTouchIcon reimplementation
-
-    /* virtual */ function getFilter()
-    {
-        if (isSourceDefault)
-        {
-            return getFilterDefault();
-        }
-        else return st.icon_filterRound;
-    }
 }

@@ -32,7 +32,7 @@ ButtonTouchIcon
     margins: (isSourceDefault) ? st.componentBackend_marginsDefault
                                : st.componentBackend_margins
 
-    checked: (index == ListView.view.currentIndex)
+    checked: (ListView.view.currentIndex == index)
 
     icon: cover
 
