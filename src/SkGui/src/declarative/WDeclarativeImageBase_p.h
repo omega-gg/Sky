@@ -91,6 +91,7 @@ public: // Slots
     void onLoaded(WCacheFile * file);
 
     void onFilterUpdated();
+    void onFilterClear  ();
 
     void onFilesRemoved(const QStringList & urls, const QStringList & urlsCache);
     void onFilesCleared();

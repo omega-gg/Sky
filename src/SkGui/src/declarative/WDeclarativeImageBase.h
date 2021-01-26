@@ -224,6 +224,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onLoaded(WCacheFile *))
 
     Q_PRIVATE_SLOT(d_func(), void onFilterUpdated())
+    Q_PRIVATE_SLOT(d_func(), void onFilterClear  ())
 
     Q_PRIVATE_SLOT(d_func(), void onFilesRemoved(const QStringList &, const QStringList &))
     Q_PRIVATE_SLOT(d_func(), void onFilesCleared())

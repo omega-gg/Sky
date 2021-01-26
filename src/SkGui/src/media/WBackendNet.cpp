@@ -370,11 +370,15 @@ WBackendNetInterface::WBackendNetInterface()
 /* Q_INVOKABLE */ void WBackendNetInterface::onSource(WBackendNet     * backend,
                                                       WNetReplySource * reply) const
 {
-    QByteArray data = reply->_device->readAll();
+    QIODevice * device = reply->_device;
+
+    QByteArray data = device->readAll();
 
     WBackendNetSource source = backend->extractSource(data, reply->_query);
 
-    emit reply->loaded(reply->_device, source);
+    emit reply->loaded(device, source);
+
+    device->deleteLater();
 
     reply->deleteLater();
 }
@@ -382,11 +386,15 @@ WBackendNetInterface::WBackendNetInterface()
 /* Q_INVOKABLE */ void WBackendNetInterface::onTrack(WBackendNet    * backend,
                                                      WNetReplyTrack * reply) const
 {
-    QByteArray data = reply->_device->readAll();
+    QIODevice * device = reply->_device;
+
+    QByteArray data = device->readAll();
 
     WBackendNetTrack track = backend->extractTrack(data, reply->_query);
 
-    emit reply->loaded(reply->_device, track);
+    emit reply->loaded(device, track);
+
+    device->deleteLater();
 
     reply->deleteLater();
 }
@@ -394,11 +402,15 @@ WBackendNetInterface::WBackendNetInterface()
 /* Q_INVOKABLE */ void WBackendNetInterface::onPlaylist(WBackendNet       * backend,
                                                         WNetReplyPlaylist * reply) const
 {
-    QByteArray data = reply->_device->readAll();
+    QIODevice * device = reply->_device;
+
+    QByteArray data = device->readAll();
 
     WBackendNetPlaylist playlist = backend->extractPlaylist(data, reply->_query);
 
-    emit reply->loaded(reply->_device, playlist);
+    emit reply->loaded(device, playlist);
+
+    device->deleteLater();
 
     reply->deleteLater();
 }
@@ -406,11 +418,15 @@ WBackendNetInterface::WBackendNetInterface()
 /* Q_INVOKABLE */ void WBackendNetInterface::onFolder(WBackendNet     * backend,
                                                       WNetReplyFolder * reply) const
 {
-    QByteArray data = reply->_device->readAll();
+    QIODevice * device = reply->_device;
+
+    QByteArray data = device->readAll();
 
     WBackendNetFolder folder = backend->extractFolder(data, reply->_query);
 
-    emit reply->loaded(reply->_device, folder);
+    emit reply->loaded(device, folder);
+
+    device->deleteLater();
 
     reply->deleteLater();
 }
@@ -418,11 +434,15 @@ WBackendNetInterface::WBackendNetInterface()
 /* Q_INVOKABLE */ void WBackendNetInterface::onItem(WBackendNet   * backend,
                                                     WNetReplyItem * reply) const
 {
-    QByteArray data = reply->_device->readAll();
+    QIODevice * device = reply->_device;
+
+    QByteArray data = device->readAll();
 
     WBackendNetItem item = backend->extractItem(data, reply->_query);
 
-    emit reply->loaded(reply->_device, item);
+    emit reply->loaded(device, item);
+
+    device->deleteLater();
 
     reply->deleteLater();
 }
@@ -594,11 +614,20 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WBackendNet::tryDelete()
+/* Q_INVOKABLE */ bool WBackendNet::tryDelete()
 {
     Q_D(WBackendNet);
 
-    if (d->lockCount) d->lockCount--;
+    if (d->lockCount)
+    {
+        d->lockCount--;
+
+        return false;
+    }
+
+    deleteLater();
+
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------

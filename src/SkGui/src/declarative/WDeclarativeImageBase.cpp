@@ -349,6 +349,13 @@ void WDeclarativeImageBasePrivate::onFilterUpdated()
     q->reload();
 }
 
+void WDeclarativeImageBasePrivate::onFilterClear()
+{
+    filter = NULL;
+
+    onFilterUpdated();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 void WDeclarativeImageBasePrivate::onFilesRemoved(const QStringList & urls, const QStringList &)
@@ -1044,9 +1051,11 @@ void WDeclarativeImageBase::setFilter(WImageFilter * filter)
     {
         connect(filter, SIGNAL(filterUpdated()), this, SLOT(onFilterUpdated()));
 
-        d->onFilterUpdated();
+        // NOTE: Sometimes the filter gets destroyed before the image.
+        connect(filter, SIGNAL(destroyed()), this, SLOT(onFilterClear()));
     }
-    else reload();
+
+    d->onFilterUpdated();
 
     emit filterChanged();
 }

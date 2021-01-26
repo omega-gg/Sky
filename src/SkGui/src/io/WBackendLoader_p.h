@@ -47,6 +47,9 @@ public:
 
     void init();
 
+public: // Slots
+    void onDestroyed();
+
 protected:
     W_DECLARE_PUBLIC(WBackendLoader)
 };

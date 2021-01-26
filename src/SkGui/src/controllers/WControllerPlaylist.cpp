@@ -558,6 +558,8 @@ signals:
 
     emit loaded(device, data);
 
+    device->deleteLater();
+
     deleteLater();
 }
 
@@ -570,6 +572,8 @@ signals:
 
     emit loaded(device, data);
 
+    device->deleteLater();
+
     deleteLater();
 }
 
@@ -581,6 +585,8 @@ signals:
     data.applyFile(device->readAll(), url);
 
     emit loaded(device, data);
+
+    device->deleteLater();
 
     deleteLater();
 }
@@ -595,6 +601,8 @@ signals:
     item.extension = WControllerNetwork::extractUrlExtension(url);
 
     emit loadedItem(device, item);
+
+    device->deleteLater();
 
     deleteLater();
 }
@@ -1350,7 +1358,14 @@ void WControllerPlaylistPrivate::removeQuery(WControllerPlaylistQuery * query)
     {
         WRemoteData * data = query->data;
 
-        jobs.remove(data);
+        // NOTE: We must check if the job still exists because we could be in a backendFrom*
+        //       processEvents from the onLoaded() function.
+        if (jobs.remove(data) == 0)
+        {
+            query->item = NULL;
+
+            return;
+        }
 
         delete data;
     }
@@ -1752,6 +1767,16 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
     }
     else backend = wControllerPlaylist->backendFromId(id);
 
+    // NOTE: Maybe the item was destroyed while we were loading the backend.
+    if (item == NULL)
+    {
+        deleteQuery(query);
+
+        delete data;
+
+        return;
+    }
+
     if (data->hasError() && backendQuery->skipError == false)
     {
         if (query->type == WControllerPlaylistQuery::TypeTrack)
@@ -1889,8 +1914,6 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
 {
     WControllerPlaylistQuery * query = replies.take(device);
 
-    device->deleteLater();
-
     if (query == NULL) return;
 
     const WBackendNetQuery & backendQuery = query->backendQuery;
@@ -1992,8 +2015,6 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
                                                   const WBackendNetPlaylist & reply)
 {
     WControllerPlaylistQuery * query = replies.take(device);
-
-    device->deleteLater();
 
     if (query == NULL) return;
 
@@ -2098,8 +2119,6 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
                                                 const WBackendNetFolder & reply)
 {
     WControllerPlaylistQuery * query = replies.take(device);
-
-    device->deleteLater();
 
     if (query == NULL) return;
 
@@ -2217,8 +2236,6 @@ void WControllerPlaylistPrivate::onItemLoaded(QIODevice * device, const WBackend
 {
     WControllerPlaylistQuery * query = replies.take(device);
 
-    device->deleteLater();
-
     if (query == NULL) return;
 
     const WBackendNetQuery & backendQuery = query->backendQuery;
@@ -2270,8 +2287,6 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
                                                const WControllerPlaylistData & data)
 {
     WControllerPlaylistQuery * query = replies.take(device);
-
-    device->deleteLater();
 
     if (query == NULL) return;
 
@@ -2401,8 +2416,6 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
                                              const WControllerPlaylistData & data)
 {
     WControllerPlaylistQuery * query = replies.take(device);
-
-    device->deleteLater();
 
     if (query == NULL) return;
 
@@ -2581,8 +2594,6 @@ void WControllerPlaylistPrivate::onUrlItem(QIODevice                     * devic
                                            const WControllerPlaylistItem & data)
 {
     WControllerPlaylistQuery * query = replies.take(device);
-
-    device->deleteLater();
 
     if (query == NULL) return;
 
@@ -2969,10 +2980,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
         d->removeQuery(query);
 
-        if (item)
-        {
-            item->d_func()->setQueryLoading(false);
-        }
+        if (item) item->d_func()->setQueryLoading(false);
     }
 }
 

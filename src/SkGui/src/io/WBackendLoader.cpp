@@ -27,9 +27,6 @@
 // Sk includes
 #include <WControllerPlaylist>
 
-// Private includes
-#include "WBackendLoader_p.h"
-
 // Forward declarations
 class WBackendLoaderCache;
 
@@ -49,6 +46,8 @@ public:
 
 public: // Functions
     void addBackend(const QString & id, WBackendNet * backend);
+
+    void removeBackend(WBackendNet * backend);
 
     WBackendNet * getBackend(const QString & id);
 
@@ -110,6 +109,21 @@ void WBackendLoaderCache::addBackend(const QString & id, WBackendNet * backend)
 
     backends.append(backend);
 }
+
+void WBackendLoaderCache::removeBackend(WBackendNet * backend)
+{
+    for (int i = 0; i < ids.count(); i++)
+    {
+        if (backends.at(i) != backend) continue;
+
+        ids     .removeAt(i);
+        backends.removeAt(i);
+
+        return;
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
 
 WBackendNet * WBackendLoaderCache::getBackend(const QString & id)
 {
@@ -177,6 +191,17 @@ void WBackendLoaderPrivate::init()
     Q_Q(WBackendLoader);
 
     wControllerPlaylist->d_func()->registerLoader(q);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private slots
+//-------------------------------------------------------------------------------------------------
+
+void WBackendLoaderPrivate::onDestroyed()
+{
+    Q_Q(WBackendLoader);
+
+    backendCache()->removeBackend(static_cast<WBackendNet *> (q->sender()));
 }
 
 //=================================================================================================
@@ -364,6 +389,8 @@ WBackendNet * WBackendLoader::createNow(const QString & id)
     backend->d_func()->lockCount++;
 
     backendCache()->addBackend(id, backend);
+
+    connect(backend, SIGNAL(destroyed()), this, SLOT(onDestroyed()));
 
     return backend;
 }

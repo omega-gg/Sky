@@ -29,6 +29,12 @@ LabelTiny
     // Settings
     //---------------------------------------------------------------------------------------------
 
+//#QT_4
+    // NOTE Qt4: When using this with a loader we sometimes get an undefined parent.
+    anchors.left : (parent) ? parent.left  : undefined
+    anchors.right: (parent) ? parent.right : undefined
+//#ELSE
     anchors.left : parent.left
     anchors.right: parent.right
+//#END
 }

@@ -29,6 +29,11 @@ ListView
     // Events
     //---------------------------------------------------------------------------------------------
 
+//#QT_4
+    // NOTE Qt4: We update the contentHeight to 1 because it's not updated properly when it's on 0.
+    onCountChanged: if (count == 0) contentHeight = 1
+//#END
+
     onCurrentIndexChanged: positionViewAtIndex(currentIndex, ListView.Contain)
 
     //---------------------------------------------------------------------------------------------

@@ -89,8 +89,12 @@ private: // Functions
 private:
     W_DECLARE_PRIVATE(WBackendLoader)
 
+    Q_PRIVATE_SLOT(d_func(), void onDestroyed())
+
     friend class WControllerPlaylist;
 };
+
+#include <private/WBackendLoader_p>
 
 #endif // SK_NO_BACKENDLOADER
 #endif // WBACKENDLOADER_H
