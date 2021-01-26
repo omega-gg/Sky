@@ -1749,13 +1749,7 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 
     if (query == NULL) qDebug("QUERY SHOULD NOT BE NULL");
 
-    WLibraryItem * item = query->item;
-
     WBackendNetQuery * backendQuery = &(query->backendQuery);
-
-    QString url = data->url();
-
-    backendQuery->urlRedirect = url;
 
     WBackendNet * backend;
 
@@ -1767,6 +1761,8 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
     }
     else backend = wControllerPlaylist->backendFromId(id);
 
+    WLibraryItem * item = query->item;
+
     // NOTE: Maybe the item was destroyed while we were loading the backend.
     if (item == NULL)
     {
@@ -1776,6 +1772,10 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 
         return;
     }
+
+    QString url = data->url();
+
+    backendQuery->urlRedirect = url;
 
     if (data->hasError() && backendQuery->skipError == false)
     {
