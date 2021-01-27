@@ -418,8 +418,6 @@ protected: // Events
     /* virtual */ void mousePressEvent  (QMouseEvent * event);
     /* virtual */ void mouseReleaseEvent(QMouseEvent * event);
 
-    /* virtual */ void touchEvent(QTouchEvent * event);
-
     /* virtual */ void mouseDoubleClickEvent(QMouseEvent * event);
 
     /* virtual */ void mouseMoveEvent(QMouseEvent * event);
