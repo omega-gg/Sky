@@ -313,6 +313,8 @@ Item
     property int textSubtitle_sizeMinimum: dp18
     property int textSubtitle_sizeMaximum: dp48
 
+    property bool textSubtitle_bold: true
+
     property color textSubtitle_color     : "#dcdcdc"
     property color textSubtitle_colorStyle: "#242424"
 //#END

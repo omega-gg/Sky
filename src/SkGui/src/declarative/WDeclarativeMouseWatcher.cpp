@@ -38,7 +38,20 @@
 WDeclarativeMouseWatcherPrivate::WDeclarativeMouseWatcherPrivate(WDeclarativeMouseWatcher * p)
     : WDeclarativeItemPrivate(p) {}
 
-void WDeclarativeMouseWatcherPrivate::init() {}
+void WDeclarativeMouseWatcherPrivate::init()
+{
+#ifdef QT_LATEST
+    Q_Q(WDeclarativeMouseWatcher);
+
+    touch = false;
+
+    timer.setInterval(1);
+
+    timer.setSingleShot(true);
+
+    QObject::connect(&timer, SIGNAL(timeout()), q, SIGNAL(released()));
+#endif
+}
 
 //-------------------------------------------------------------------------------------------------
 // Private slots
@@ -81,10 +94,37 @@ void WDeclarativeMouseWatcherPrivate::onPressedChanged()
 
     event->ignore();
 
+#ifdef QT_LATEST
+    // NOTE: When we receive a touch event we have to trigger the release signal manually.
+    if (d->touch)
+    {
+        d->touch = false;
+
+        emit pressed();
+
+        d->timer.start();
+
+        return;
+    }
+#endif
+
     connect(d->view, SIGNAL(pressedChanged()), this, SLOT(onPressedChanged()));
 
     emit pressed();
 }
+
+#ifdef QT_LATEST
+
+/* virtual */ void WDeclarativeMouseWatcher::touchEvent(QTouchEvent * event)
+{
+    Q_D(WDeclarativeMouseWatcher);
+
+    event->ignore();
+
+    d->touch = true;
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Properties

@@ -49,6 +49,8 @@ protected: // Events
     /* virtual */ void mousePressEvent(QGraphicsSceneMouseEvent * event);
 #else
     /* virtual */ void mousePressEvent(QMouseEvent * event);
+
+    /* virtual */ void touchEvent(QTouchEvent * event);
 #endif
 
 signals:

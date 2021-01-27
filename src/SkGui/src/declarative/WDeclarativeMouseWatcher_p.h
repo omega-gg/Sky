@@ -23,6 +23,12 @@
 #ifndef WDECLARATIVEMOUSEWATCHER_P_H
 #define WDECLARATIVEMOUSEWATCHER_P_H
 
+#ifdef QT_LATEST
+// Qt includes
+#include <QTimer>
+#endif
+
+// Private includes
 #include <private/WDeclarativeItem_p>
 
 #ifndef SK_NO_DECLARATIVEMOUSEWATCHER
@@ -36,6 +42,13 @@ public:
 
 public: // Slots
     void onPressedChanged();
+
+#ifdef QT_LATEST
+public: // Variables
+    bool touch;
+
+    QTimer timer;
+#endif
 
 protected:
     W_DECLARE_PUBLIC(WDeclarativeMouseWatcher)
