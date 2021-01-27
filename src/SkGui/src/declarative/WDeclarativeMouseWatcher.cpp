@@ -45,6 +45,7 @@ void WDeclarativeMouseWatcherPrivate::init()
 
     touch = false;
 
+    // NOTE: We just want to make sure all the press events have been processed.
     timer.setInterval(1);
 
     timer.setSingleShot(true);
