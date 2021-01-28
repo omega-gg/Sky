@@ -46,6 +46,11 @@ BaseTextEdit
 
     wrapMode: Text.Wrap
 
+//#MOBILE
+    // NOTE: We want to be read only on mobile.
+    enabled: false
+//#END
+
     //---------------------------------------------------------------------------------------------
     // Style
 
