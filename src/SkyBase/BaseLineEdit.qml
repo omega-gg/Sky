@@ -224,6 +224,11 @@ MouseArea
 
         maximumLength: st.baseLineEdit_maximumLength
 
+//#QT_5+ANDROID
+        // FIXME Android: This fixes onTextChanged events.
+        inputMethodHints: Qt.ImhSensitiveData
+//#END
+
         color            : st.baseLineEdit_colorText
         selectionColor   : st.baseLineEdit_colorTextSelection
         selectedTextColor: st.baseLineEdit_colorTextSelected
