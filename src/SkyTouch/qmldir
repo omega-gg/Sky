@@ -16,6 +16,8 @@ ButtonWide       1.0 ButtonWide.qml
 ButtonWideAction 1.0 ButtonWideAction.qml
 ButtonWideFull   1.0 ButtonWideFull.qml
 
+ButtonMask 1.0 ButtonMask.qml
+
 ButtonsWindow 1.0 ButtonsWindow.qml
 
 BaseLabel    1.0 BaseLabel.qml
@@ -27,7 +29,8 @@ LabelLoading 1.0 LabelLoading.qml
 LabelWide     1.0 LabelWide.qml
 LabelWideTiny 1.0 LabelWideTiny.qml
 
-LineEdit 1.0 LineEdit.qml
+LineEdit      1.0 LineEdit.qml
+LineEditClear 1.0 LineEditClear.qml
 
 Console 1.0 Console.qml
 

@@ -4,7 +4,7 @@
 
     Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
 
-    This file is part of SkyComponents.
+    This file is part of SkyTouch.
 
     - GNU Lesser General Public License Usage:
     This file may be used under the terms of the GNU Lesser General Public License version 3 as
@@ -23,9 +23,9 @@
 import QtQuick 1.0
 import Sky     1.0
 
-LineEditBox
+LineEdit
 {
-    id: lineEditBoxClear
+    id: lineEditClear
 
     //---------------------------------------------------------------------------------------------
     // Alias
@@ -61,10 +61,11 @@ LineEditBox
 
         width: height
 
-        visible: (lineEditBoxClear.isFocused == false && text != "")
+        margins: st.buttonMask_margins
 
-        icon          : st.icon16x16_close
-        iconSourceSize: st.size16x16
+        visible: (lineEditClear.isFocused == false && text != "")
+
+        icon: st.icon_close
 
         onClicked: onClear()
     }

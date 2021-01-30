@@ -94,11 +94,22 @@ Style
     property int buttonTouchTiny_size: dp32
 //#END
 
-//#ButtonWide*:ComponentCompletion
+//#ButtonWide*
     //---------------------------------------------------------------------------------------------
     // ButtonWide
 
     property int buttonWide_margins: dp12
+//#END
+
+//#ButtonMask
+    //---------------------------------------------------------------------------------------------
+    // ButtonMask
+
+    property int buttonMask_margins: dp10
+
+    property real buttonMask_opacity     : buttonTouch_opacityHover
+    property real buttonMask_opacityHover: buttonTouch_opacity
+    property real buttonMask_opacityPress: buttonTouch_opacityPress
 //#END
 
 //#BaseLabel
@@ -218,7 +229,7 @@ Style
     //---------------------------------------------------------------------------------------------
     // ComponentCompletion
 
-    property int componentCompletion_margins: buttonWide_margins
+    property int componentCompletion_margins: dp12
 //#END
 
 //#ComponentBackend*
@@ -268,8 +279,11 @@ Style
     //---------------------------------------------------------------------------------------------
     // Icons
 
+//#icons_window:ButtonsWindow:LineEditClear
+    property url icon_close: "icons/times.svg"
+//#END
+
 //#icons_window:ButtonsWindow
-    property url icon_close   : "icons/times.svg"
     property url icon_maximize: "icons/window-maximize.svg"
     property url icon_restore : "icons/window-restore.svg"
     property url icon_minimize: "icons/window-minimize.svg"
