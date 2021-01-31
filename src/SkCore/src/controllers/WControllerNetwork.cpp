@@ -1065,6 +1065,30 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     return result;
 }
 
+/* Q_INVOKABLE static */ QString WControllerNetwork::removeFragmentValue(const QString & string,
+                                                                         const QString & key)
+{
+    int indexA = string.lastIndexOf('#');
+
+    if (indexA == -1) return string;
+
+    indexA = string.indexOf(key + '=', indexA + 1);
+
+    if (indexA == -1) return string;
+
+    int indexB = string.indexOf('&', indexA);
+
+    QString result = string;
+
+    if (indexB == -1)
+    {
+         result.remove(indexA, result.length() - indexA);
+    }
+    else result.remove(indexA, indexB - indexA);
+
+    return result;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::removeUrlPrefix(const QString & string)

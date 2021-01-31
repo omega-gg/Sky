@@ -1811,7 +1811,7 @@ void WControllerApplication::setScreenSaverEnabled(bool enabled)
     }
     else IOPMAssertionRelease(d->assertion);
 #elif defined(Q_OS_ANDROID)
-    // NOTE Android: We run this on the GUI thread otherwise we get an exception.
+    // NOTE android: We run this on the GUI thread otherwise we get an exception.
     QtAndroid::runOnAndroidThread([enabled]
     {
         QAndroidJniObject jni = QtAndroid::androidActivity();
@@ -1833,7 +1833,7 @@ void WControllerApplication::setScreenSaverEnabled(bool enabled)
 
         QAndroidJniEnvironment env;
 
-        // NOTE Android: It seems we need to check exceptions.
+        // NOTE android: It seems we need to check exceptions.
         if (env->ExceptionCheck())
         {
             env->ExceptionDescribe();

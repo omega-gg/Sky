@@ -225,7 +225,7 @@ MouseArea
         maximumLength: st.baseLineEdit_maximumLength
 
 //#QT_5+ANDROID
-        // FIXME Android: This fixes onTextChanged events.
+        // FIXME android: This fixes onTextChanged events.
         inputMethodHints: Qt.ImhSensitiveData
 //#END
 

@@ -110,6 +110,9 @@ public: // Static functions
     Q_INVOKABLE static QString applyFragmentValue(const QString & string,
                                                   const QString & key, const QString & value);
 
+    // NOTE: Remove a fragment value with the '#key=value' format.
+    Q_INVOKABLE static QString removeFragmentValue(const QString & string, const QString & key);
+
     Q_INVOKABLE static QString removeUrlPrefix    (const QString & string);
     Q_INVOKABLE static QString removeUrlExtension (const QString & string);
     Q_INVOKABLE static QString removeUrlFragment  (const QString & string);

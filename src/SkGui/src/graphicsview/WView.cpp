@@ -273,8 +273,8 @@ void WViewPrivate::init(QQuickItem * item)
     opengl    = wControllerView->opengl();
     antialias = false;
 
-#ifdef Q_OS_ANDROID
-    // NOTE Android: Without vsync animations are messed up.
+#if defined(Q_OS_MAC) || defined(Q_OS_ANDROID)
+    // NOTE macOS/Android: Without vsync animations are messed up.
     vsync = true;
 #else
     vsync = false;
@@ -414,8 +414,8 @@ void WViewPrivate::init(QQuickItem * item)
 
     format.setSamples(0);
 
-#ifdef Q_OS_ANDROID
-    // NOTE Android: Without vsync animations are messed up.
+#if defined(Q_OS_MAC) || defined(Q_OS_ANDROID)
+    // NOTE macOS/Android: Without vsync animations are messed up.
     format.setSwapInterval(1);
 #else
     format.setSwapInterval(0);

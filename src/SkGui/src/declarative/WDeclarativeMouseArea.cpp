@@ -1203,7 +1203,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
             QCursor::setPos(screenPos);
 
 #ifdef Q_OS_ANDROID
-            // NOTE Android: We need to make sure we grab the mouse first.
+            // NOTE android: We need to make sure we grab the mouse first.
             //               Sometimes we lose it when interacting with a Flickable.
             grabMouse();
 #endif

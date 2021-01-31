@@ -191,7 +191,7 @@ fi
 # Android
 #--------------------------------------------------------------------------------------------------
 
-# NOTE Android: We need to build the tools for the Linux platform.
+# NOTE android: We need to build the tools for the Linux platform.
 if [ $1 = "android" ]; then
 
     sh build.sh linux tools
