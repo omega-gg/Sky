@@ -339,7 +339,7 @@ Style
     //---------------------------------------------------------------------------------------------
     // ButtonCheck
 
-    property int buttonCheck_width : st.dp64
+    property int buttonCheck_width : dp64
     property int buttonCheck_height: buttonPush_height
 
     property color buttonCheck_colorA: buttonPush_colorPressA

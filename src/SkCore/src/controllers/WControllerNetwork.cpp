@@ -1082,9 +1082,18 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
     if (indexB == -1)
     {
+        // NOTE: We have to remove the '#' or '&' prior to the key.
+        indexA--;
+
          result.remove(indexA, result.length() - indexA);
     }
-    else result.remove(indexA, indexB - indexA);
+    else
+    {
+        // NOTE: We have to remove the '&' after the value.
+        indexB++;
+
+        result.remove(indexA, indexB - indexA);
+    }
 
     return result;
 }

@@ -323,17 +323,22 @@ WTorrentData * WTorrentEnginePrivate::createData(TorrentInfoPointer info, const 
         {
             std::ifstream stream(fileName.C_STR, std::ios_base::binary);
 
-            stream.unsetf(std::ios_base::skipws);
+            if (stream.is_open())
+            {
+                stream.unsetf(std::ios_base::skipws);
 
 #ifdef LIBTORRENT_ABI_1
-            params.resume_data.assign(std::istream_iterator<char>(stream),
-                                      std::istream_iterator<char>());
+                params.resume_data.assign(std::istream_iterator<char>(stream),
+                                          std::istream_iterator<char>());
 #else
-            std::vector<char> buffer { std::istream_iterator<char>(stream),
-                                       std::istream_iterator<char>() };
+                std::vector<char> buffer { std::istream_iterator<char>(stream),
+                                           std::istream_iterator<char>() };
 
-            params = read_resume_data(buffer);
+                params = read_resume_data(buffer);
 #endif
+            }
+            else qWarning("WTorrentEnginePrivate::createData: Failed to open file %s.",
+                          fileName.C_STR);
         }
 
         QStringList * urls = &(source->urls);

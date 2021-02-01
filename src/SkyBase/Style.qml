@@ -478,7 +478,10 @@ Item
 
     function getHeight(height, margins)
     {
-        return Math.round(height - margins * 2);
+        var size = Math.round(height - margins * 2);
+
+        if (size < 1) return 0;
+        else          return size;
     }
 
     //---------------------------------------------------------------------------------------------

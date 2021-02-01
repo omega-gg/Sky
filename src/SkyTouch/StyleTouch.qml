@@ -68,7 +68,7 @@ Style
     property ImageFilterColor button_filterIconB: icon2_filter
 //#END
 
-//#BaseButtonTouch
+//#BaseButtonTouch:ButtonMask
     //---------------------------------------------------------------------------------------------
     // ButtonTouch
 
@@ -256,7 +256,7 @@ Style
 
     property real componentTrackHistory_opacity: 0.2
 
-    property color componentTrackHistory_color: st.slider_colorFront
+    property color componentTrackHistory_color: slider_colorFront
 //#END
 
     //---------------------------------------------------------------------------------------------
@@ -405,7 +405,7 @@ Style
         panel_color = "#c8c8c8";
 //#END
 
-//#BaseButtonTouch
+//#BaseButtonTouch:ButtonMask
         //-----------------------------------------------------------------------------------------
         // ButtonTouch
 
@@ -449,7 +449,7 @@ Style
         panel_color = "#484848";
 //#END
 
-//#BaseButtonTouch
+//#BaseButtonTouch:ButtonMask
         //-----------------------------------------------------------------------------------------
         // ButtonTouch
 

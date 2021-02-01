@@ -1747,7 +1747,7 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 {
     WControllerPlaylistQuery * query = jobs.take(data);
 
-    if (query == NULL) qDebug("QUERY SHOULD NOT BE NULL");
+    if (query == NULL) qDebug("TEST: QUERY SHOULD NOT BE NULL");
 
     WBackendNetQuery * backendQuery = &(query->backendQuery);
 
