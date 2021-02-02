@@ -378,8 +378,6 @@ WBackendNetInterface::WBackendNetInterface()
 
     emit reply->loaded(device, source);
 
-    device->deleteLater();
-
     reply->deleteLater();
 }
 
@@ -393,8 +391,6 @@ WBackendNetInterface::WBackendNetInterface()
     WBackendNetTrack track = backend->extractTrack(data, reply->_query);
 
     emit reply->loaded(device, track);
-
-    device->deleteLater();
 
     reply->deleteLater();
 }
@@ -410,8 +406,6 @@ WBackendNetInterface::WBackendNetInterface()
 
     emit reply->loaded(device, playlist);
 
-    device->deleteLater();
-
     reply->deleteLater();
 }
 
@@ -426,8 +420,6 @@ WBackendNetInterface::WBackendNetInterface()
 
     emit reply->loaded(device, folder);
 
-    device->deleteLater();
-
     reply->deleteLater();
 }
 
@@ -441,8 +433,6 @@ WBackendNetInterface::WBackendNetInterface()
     WBackendNetItem item = backend->extractItem(data, reply->_query);
 
     emit reply->loaded(device, item);
-
-    device->deleteLater();
 
     reply->deleteLater();
 }

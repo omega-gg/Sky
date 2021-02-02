@@ -334,7 +334,17 @@ WTorrentData * WTorrentEnginePrivate::createData(TorrentInfoPointer info, const 
                 std::vector<char> buffer { std::istream_iterator<char>(stream),
                                            std::istream_iterator<char>() };
 
-                params = read_resume_data(buffer);
+                // NOTE libtorrent: We must catch exceptions in case the data is corrupted.
+                try
+                {
+                    params = read_resume_data(buffer);
+                }
+                catch (std::exception & ecception)
+                {
+                    qWarning("WTorrentEnginePrivate::createData: %s.", ecception.what());
+
+                    params = add_torrent_params();
+                }
 #endif
             }
             else qWarning("WTorrentEnginePrivate::createData: Failed to open file %s.",

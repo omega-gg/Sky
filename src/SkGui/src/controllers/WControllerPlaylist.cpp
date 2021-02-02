@@ -558,8 +558,6 @@ signals:
 
     emit loaded(device, data);
 
-    device->deleteLater();
-
     deleteLater();
 }
 
@@ -572,8 +570,6 @@ signals:
 
     emit loaded(device, data);
 
-    device->deleteLater();
-
     deleteLater();
 }
 
@@ -585,8 +581,6 @@ signals:
     data.applyFile(device->readAll(), url);
 
     emit loaded(device, data);
-
-    device->deleteLater();
 
     deleteLater();
 }
@@ -601,8 +595,6 @@ signals:
     item.extension = WControllerNetwork::extractUrlExtension(url);
 
     emit loadedItem(device, item);
-
-    device->deleteLater();
 
     deleteLater();
 }
@@ -1761,6 +1753,9 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
     }
     else backend = wControllerPlaylist->backendFromId(id);
 
+    // NOTE: We apply the backend to the query so we can delete it later.
+    query->backend = backend;
+
     WLibraryItem * item = query->item;
 
     // NOTE: Maybe the item was destroyed while we were loading the backend.
@@ -1860,8 +1855,6 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
     {
         if (backend == NULL) qDebug("BACKEND SHOULD NOT BE NULL");
 
-        query->backend = backend;
-
         backend->loadTrack(networkReply, *backendQuery,
                            q, SLOT(onTrackLoaded(QIODevice *, WBackendNetTrack)));
     }
@@ -1869,8 +1862,6 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
     {
         if (backendQuery->target == WBackendNetQuery::TargetDefault)
         {
-            query->backend = backend;
-
             backend->loadPlaylist(networkReply, *backendQuery,
                                   q, SLOT(onPlaylistLoaded(QIODevice *, WBackendNetPlaylist)));
         }
@@ -1882,8 +1873,6 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
     {
         if (backendQuery->target == WBackendNetQuery::TargetDefault)
         {
-            query->backend = backend;
-
             backend->loadFolder(networkReply, *backendQuery,
                                 q, SLOT(onFolderLoaded(QIODevice *, WBackendNetFolder)));
         }
@@ -1895,8 +1884,6 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
     {
         if (backendQuery->target == WBackendNetQuery::TargetDefault)
         {
-            query->backend = backend;
-
             backend->loadItem(networkReply, *backendQuery,
                               q, SLOT(onItemLoaded(QIODevice *, WBackendNetItem)));
         }
@@ -1913,6 +1900,8 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBackendNetTrack & reply)
 {
     WControllerPlaylistQuery * query = replies.take(device);
+
+    device->deleteLater();
 
     if (query == NULL) return;
 
@@ -2015,6 +2004,8 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
                                                   const WBackendNetPlaylist & reply)
 {
     WControllerPlaylistQuery * query = replies.take(device);
+
+    device->deleteLater();
 
     if (query == NULL) return;
 
@@ -2119,6 +2110,8 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
                                                 const WBackendNetFolder & reply)
 {
     WControllerPlaylistQuery * query = replies.take(device);
+
+    device->deleteLater();
 
     if (query == NULL) return;
 
@@ -2236,6 +2229,8 @@ void WControllerPlaylistPrivate::onItemLoaded(QIODevice * device, const WBackend
 {
     WControllerPlaylistQuery * query = replies.take(device);
 
+    device->deleteLater();
+
     if (query == NULL) return;
 
     const WBackendNetQuery & backendQuery = query->backendQuery;
@@ -2287,6 +2282,8 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
                                                const WControllerPlaylistData & data)
 {
     WControllerPlaylistQuery * query = replies.take(device);
+
+    device->deleteLater();
 
     if (query == NULL) return;
 
@@ -2416,6 +2413,8 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
                                              const WControllerPlaylistData & data)
 {
     WControllerPlaylistQuery * query = replies.take(device);
+
+    device->deleteLater();
 
     if (query == NULL) return;
 
@@ -2594,6 +2593,8 @@ void WControllerPlaylistPrivate::onUrlItem(QIODevice                     * devic
                                            const WControllerPlaylistItem & data)
 {
     WControllerPlaylistQuery * query = replies.take(device);
+
+    device->deleteLater();
 
     if (query == NULL) return;
 

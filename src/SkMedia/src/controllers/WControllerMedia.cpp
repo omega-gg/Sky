@@ -399,6 +399,8 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
 {
     WPrivateMediaData * media = queries.take(device);
 
+    device->deleteLater();
+
     if (media == NULL) return;
 
     media->reply = NULL;
