@@ -1777,7 +1777,7 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
         if (query->type == WControllerPlaylistQuery::TypeTrack)
         {
             if (backend) backend->queryFailed(*backendQuery);
-w
+
             WPlaylist * playlist = item->toPlaylist();
 
             int index = playlist->indexOf(query->track);
