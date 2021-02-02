@@ -1777,7 +1777,7 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
         if (query->type == WControllerPlaylistQuery::TypeTrack)
         {
             if (backend) backend->queryFailed(*backendQuery);
-
+w
             WPlaylist * playlist = item->toPlaylist();
 
             int index = playlist->indexOf(query->track);
@@ -1853,7 +1853,7 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 
     if (query->type == WControllerPlaylistQuery::TypeTrack)
     {
-        if (backend == NULL) qDebug("BACKEND SHOULD NOT BE NULL");
+        if (backend == NULL) qDebug("TEST: BACKEND SHOULD NOT BE NULL");
 
         backend->loadTrack(networkReply, *backendQuery,
                            q, SLOT(onTrackLoaded(QIODevice *, WBackendNetTrack)));
