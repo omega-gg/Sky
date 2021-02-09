@@ -81,6 +81,38 @@ TextBase
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
+
+    // NOTE: This function applies the proper subtitle size and returns the bottom margin.
+    function applySize(player, cover)
+    {
+        var width;
+        var height;
+
+        var playerHeight = player.height;
+
+        if (player.outputActive == AbstractBackend.OutputAudio)
+        {
+            width  = cover.paintedWidth;
+            height = cover.paintedHeight;
+        }
+        else
+        {
+            var rect = player.getRect();
+
+            width  = Math.min(rect.width,  player.width);
+            height = Math.min(rect.height, playerHeight);
+        }
+
+        pixelSize = width / 32;
+
+        if (height > 0)
+        {
+             return (playerHeight - height) / 2 + height / 64;
+        }
+        else return playerHeight / 64;
+    }
+
+    //---------------------------------------------------------------------------------------------
     // Private
 
     function pGetSize()

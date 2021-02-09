@@ -55,8 +55,6 @@ Style
 
     property int panelContextual_margins: dp4
 
-    property real panelContextual_opacity: 1.0
-
     property color panelContextual_color: border_color
 //#END
 

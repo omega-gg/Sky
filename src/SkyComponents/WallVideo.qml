@@ -369,29 +369,7 @@ WallBookmarkTrack
 
     function pUpdateText()
     {
-        var width;
-        var height;
-
-        if (player.outputActive == AbstractBackend.OutputAudio)
-        {
-            width  = playerCover.paintedWidth;
-            height = playerCover.paintedHeight;
-        }
-        else
-        {
-            var rect = player.getRect();
-
-            width  = rect.width;
-            height = rect.height;
-        }
-
-        itemText.pixelSize = width / 32;
-
-        if (height > 0)
-        {
-             pMargin = (player.height - height) / 2 + height / 64;
-        }
-        else pMargin = player.height / 64;
+        pMargin = itemText.applySize(player, playerCover);
     }
 
     //---------------------------------------------------------------------------------------------
@@ -703,7 +681,7 @@ WallBookmarkTrack
 
         visible: (isExposed == false
                   &&
-                  player.isPlaying && (player.isDefault || player.isBuffering))
+                  player.isPlaying && player.duration != -1)
 
         direction: Sk.Right
 
