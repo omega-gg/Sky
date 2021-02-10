@@ -89,11 +89,14 @@ BaseTextEdit
 //#ELSE
         if (visible)
         {
-            var size = log.length;
+            //-------------------------------------------------------------------------------------
+            // NOTE: The length between log and the TextEdit may vary.
 
             pSetLog(log + string);
 
-            insert(size, string);
+            insert(length, string);
+
+            //-------------------------------------------------------------------------------------
 
             var count = length - maximumLength;
 
@@ -108,7 +111,7 @@ BaseTextEdit
         {
             pSetLog(log + string);
 
-            /* var */ size = log.length;
+            var size = log.length;
 
             if (size > maximumLength)
             {
