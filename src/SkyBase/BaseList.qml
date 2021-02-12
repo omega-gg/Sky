@@ -25,6 +25,8 @@ import Sky     1.0
 
 ListView
 {
+    id: baseList
+
     //---------------------------------------------------------------------------------------------
     // Events
     //---------------------------------------------------------------------------------------------
@@ -37,7 +39,7 @@ ListView
     onCurrentIndexChanged: positionViewAtIndex(currentIndex, ListView.Contain)
 
     // NOTE: When we have a contextual area we hide its panels when scrolling.
-    onMovementStarted: if (areaContextual) areaContextual.hidePanels()
+    onMovementStarted: window.checkContextual(areaContextual, baseList)
 
     //---------------------------------------------------------------------------------------------
     // Functions

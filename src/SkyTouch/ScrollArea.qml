@@ -78,7 +78,7 @@ Item
         }
 
         // NOTE: When we have a contextual area we hide its panels when scrolling.
-        onMovementStarted: if (areaContextual) areaContextual.hidePanels()
+        onMovementStarted: window.checkContextual(areaContextual, flickable)
     }
 
     ScrollBar

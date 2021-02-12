@@ -225,6 +225,35 @@ BaseWindow
     }
 
     //---------------------------------------------------------------------------------------------
+
+    function hasParent(item, parent)
+    {
+        var itemParent = item.parent;
+
+        if (itemParent == null)
+        {
+            return false;
+        }
+        else if (itemParent == parent)
+        {
+            return true;
+        }
+        else return checkParent(itemParent, parent);
+    }
+
+    //---------------------------------------------------------------------------------------------
+
+    // NOTE: This function hides the contextual panel when the item is not a child of it.
+    function checkContextual(areaContextual, item)
+    {
+        if (areaContextual == null || areaContextual.isActive == false
+            ||
+            hasParent(item, areaContextual) == false) return;
+
+        areaContextual.hidePanels();
+    }
+
+    //---------------------------------------------------------------------------------------------
     // Virtual
 
     /* virtual */ function getMargin(size)

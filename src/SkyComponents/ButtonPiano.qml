@@ -75,7 +75,7 @@ BaseButtonPiano
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment  : Text.AlignVCenter
 
-        opacity: (buttonPiano.enabled) ? 1.0 : window.st.text_opacityDisable
+        opacity: (buttonPiano.enabled) ? 1.0 : st.text_opacityDisable
 
         color: (isHighlighted) ? st.button_colorTextB
                                : st.button_colorTextA
