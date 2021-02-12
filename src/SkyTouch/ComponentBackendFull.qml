@@ -39,6 +39,9 @@ ButtonTouchFull
     margins: (isSourceDefault) ? st.componentBackend_marginsDefault
                                : st.componentBackend_margins
 
+    // NOTE: We want to avoid the flickering when pressing the button when highlighted.
+    isPressed: false
+
     checked: (ListView.view.currentIndex == index)
 
     icon: cover

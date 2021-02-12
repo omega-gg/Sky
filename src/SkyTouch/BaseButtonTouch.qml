@@ -60,9 +60,15 @@ BaseButton
 
         opacity:
         {
-            if      (isPressed) return st.buttonTouch_opacityPress;
-            else if (isHovered) return st.buttonTouch_opacityHover;
-            else                return st.buttonTouch_opacity;
+            if (isPressed)
+            {
+                return st.buttonTouch_opacityPress;
+            }
+            else if (isHovered && (checked == false || checkHover))
+            {
+                return st.buttonTouch_opacityHover;
+            }
+            else return st.buttonTouch_opacity;
         }
 
         color: (isHighlighted || checked) ? st.buttonTouch_colorHighlight
