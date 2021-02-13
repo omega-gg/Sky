@@ -68,8 +68,11 @@ void WWindowPrivate::init()
     //---------------------------------------------------------------------------------------------
     // View
 
-#if defined(SK_WIN_NATIVE)
+#ifdef SK_WIN_NATIVE
     view = new WView(q, NULL);
+#elif defined(SK_MOBILE)
+    // NOTE: This makes sure the full screen occupies the entire screen area including notches.
+    view = new WView(q, NULL, Qt::FramelessWindowHint | Qt::MaximizeUsingFullscreenGeometryHint);
 #elif defined(Q_OS_WIN)
     view = new WView(q, NULL, Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
 #else

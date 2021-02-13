@@ -180,8 +180,9 @@ Style
 
     property int scrollBar_margins: margins
 
-    property real scrollBar_opacity     : buttonTouch_opacity
-    property real scrollBar_opacityHover: buttonTouch_opacityHover
+    property real scrollBar_opacity     : 0.8
+    property real scrollBar_opacityHover: 0.9
+    property real scrollBar_opacityPress: 1.0
 
     property color scrollBar_color: icon1_colorA
 //#END

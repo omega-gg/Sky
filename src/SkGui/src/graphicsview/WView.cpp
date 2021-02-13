@@ -641,7 +641,10 @@ void WViewPrivate::updateFlags()
 {
     Q_Q(WView);
 
-#ifdef Q_OS_WIN
+#ifdef SK_MOBILE
+    // NOTE: We have no 'locked' support on mobile.
+    q->QQuickWindow::setFlags(flags);
+#elif defined(Q_OS_WIN)
     if (locked)
     {
          SetWindowPos((HWND) q->winId(),
