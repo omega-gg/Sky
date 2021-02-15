@@ -238,7 +238,7 @@ BaseWindow
         {
             return true;
         }
-        else return checkParent(itemParent, parent);
+        else return hasParent(itemParent, parent);
     }
 
     //---------------------------------------------------------------------------------------------
