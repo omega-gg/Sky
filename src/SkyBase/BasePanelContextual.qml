@@ -399,24 +399,30 @@ BasePanel
     }
 
     //---------------------------------------------------------------------------------------------
-    // Private
+    // Events
 
-    function pSetActive(active)
+    function onActive(active)
     {
         if (active)
         {
             visible = true;
             opacity = 1.0;
-
-            isActive = true;
         }
         else
         {
             visible = false;
             opacity = 0.0;
-
-            isActive = false;
         }
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    function pSetActive(active)
+    {
+        onActive(active);
+
+        isActive = active;
     }
 
     function pSetItem(item)
