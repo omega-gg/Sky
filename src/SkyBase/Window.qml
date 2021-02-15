@@ -248,7 +248,7 @@ BaseWindow
     {
         if (areaContextual == null || areaContextual.isActive == false
             ||
-            hasParent(item, areaContextual) == false) return;
+            hasParent(item, areaContextual)) return;
 
         areaContextual.hidePanels();
     }
