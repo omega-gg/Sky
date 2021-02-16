@@ -434,12 +434,8 @@ Item
     {
         if (visible)
         {
-            // NOTE: We don't run the animation if the item is already fully visible.
-            if (item.visible && item.opacity == 1.0) return;
-
             if (animate)
             {
-                item.opacity = 0.0;
                 item.visible = true;
 
                 animation.enabled = true;
@@ -454,7 +450,20 @@ Item
                 item.visible = true;
             }
         }
-        else item.visible = false;
+        else
+        {
+            item.visible = false;
+
+            if (animate)
+            {
+                animation.enabled = true;
+
+                item.opacity = 0.0;
+
+                animation.enabled = false;
+            }
+            else item.opacity = 0.0;
+        }
     }
 
     //---------------------------------------------------------------------------------------------
