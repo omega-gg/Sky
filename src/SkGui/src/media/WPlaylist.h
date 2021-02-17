@@ -184,7 +184,7 @@ public: // Interface
 
     Q_INVOKABLE int indexFromId(int id) const;
 
-    Q_INVOKABLE int indexFromSource(const QString & source, bool noFragment = false) const;
+    Q_INVOKABLE int indexFromSource(const QString & source, bool cleanFragment = false) const;
 
     Q_INVOKABLE bool contains(const WTrack & track) const;
 

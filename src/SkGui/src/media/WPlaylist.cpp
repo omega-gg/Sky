@@ -1542,17 +1542,17 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     return -1;
 }
 
-/* Q_INVOKABLE */ int WPlaylist::indexFromSource(const QString & source, bool noFragment) const
+/* Q_INVOKABLE */ int WPlaylist::indexFromSource(const QString & source, bool cleanFragment) const
 {
     Q_D(const WPlaylist);
 
-    if (noFragment)
+    if (cleanFragment)
     {
-        QString string = WControllerNetwork::removeUrlFragment(source);
+        QString string = WControllerNetwork::cleanUrlFragment(source);
 
         for (int i = 0; i < d->tracks.count(); i++)
         {
-            if (WControllerNetwork::removeUrlFragment(d->tracks.at(i).d_func()->source) == string)
+            if (WControllerNetwork::cleanUrlFragment(d->tracks.at(i).d_func()->source) == string)
             {
                 return i;
             }

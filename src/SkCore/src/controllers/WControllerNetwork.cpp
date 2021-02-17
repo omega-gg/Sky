@@ -1164,6 +1164,30 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ QString WControllerNetwork::cleanUrlFragment(const QString & string)
+{
+    int indexA = string.indexOf('#');
+
+    if (indexA == -1) return string;
+
+    int indexB = indexA + 1;
+
+    // NOTE: If we have a digit it's probably a file index that we want to keep.
+    if (indexB < string.length() && string.at(indexB).isDigit())
+    {
+        indexB = string.indexOf('&', indexB);
+
+        if (indexB == -1)
+        {
+             return string;
+        }
+        else return string.mid(0, indexB);
+    }
+    else return string.mid(0, indexA);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE static */ QString WControllerNetwork::extractIpBase(const QString & string)
 {
     int index = string.indexOf(':');
