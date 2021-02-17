@@ -107,17 +107,17 @@ TextBase
 
     function pGetSize()
     {
-        var pixelSize = width / 32;
+        var size = width / 32;
 
-        if (pixelSize < sizeMinimum)
+        if (size < sizeMinimum)
         {
             return sizeMinimum;
         }
-        else if (pixelSize > sizeMaximum)
+        else if (size > sizeMaximum)
         {
             return sizeMaximum;
         }
-        else return pixelSize;
+        else return size;
     }
 
     //---------------------------------------------------------------------------------------------
