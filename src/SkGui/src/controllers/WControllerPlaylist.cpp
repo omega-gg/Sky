@@ -1540,7 +1540,7 @@ void WControllerPlaylistPrivate::loadUrls(QIODevice * device, const WBackendNetQ
     reply->moveToThread(thread);
 
     // NOTE: We get crashes in QNetworkRequest when doing this on Android. But maybe we don't need
-    //       that since readAll() seems to be thread safe.
+    //       it since readAll() seems to be thread safe.
     //device->moveToThread(thread);
 
     method.invoke(reply, Q_ARG(QIODevice *, device), Q_ARG(const QString &, query.url));
