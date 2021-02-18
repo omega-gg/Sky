@@ -2020,7 +2020,8 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
 /* Q_INVOKABLE */ void WTorrentEngine::load(WTorrent * torrent, QIODevice * device)
 {
-    device->moveToThread(thread());
+    // NOTE: We get crashes in QNetworkRequest when doing this on Android.
+    //device->moveToThread(thread());
 
     QCoreApplication::postEvent(this, new WTorrentEngineAdd(torrent, device, torrent->url  (),
                                                                              torrent->index(),
@@ -2311,7 +2312,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
             {
                 torrent_info * file = d->loadInfo(device->readAll());
 
-                delete device;
+                device->deleteLater();
 
                 if (file == NULL)
                 {
@@ -2345,7 +2346,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
                     return true;
                 }
             }
-            else delete device;
+            else device->deleteLater();
 
             d->updateData(data);
 
@@ -2369,7 +2370,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
             {
                 torrent_info * file = d->loadInfo(device->readAll());
 
-                delete device;
+                device->deleteLater();
 
                 if (file == NULL)
                 {
@@ -2403,7 +2404,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
                     return true;
                 }
             }
-            else delete device;
+            else device->deleteLater();
 
             d->updateData(data);
 

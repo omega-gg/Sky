@@ -541,7 +541,8 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 
     connect(reply, SIGNAL(loaded(QIODevice *, WBackendNetSource)), receiver, method);
 
-    device->moveToThread(thread());
+    // NOTE: We get crashes in QNetworkRequest when doing this on Android.
+    //device->moveToThread(thread());
 
     backendInterface()->loadSource(this, reply);
 }
@@ -555,7 +556,8 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 
     connect(reply, SIGNAL(loaded(QIODevice *, WBackendNetTrack)), receiver, method);
 
-    device->moveToThread(thread());
+    // NOTE: We get crashes in QNetworkRequest when doing this on Android.
+    //device->moveToThread(thread());
 
     backendInterface()->loadTrack(this, reply);
 }
@@ -569,7 +571,8 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 
     connect(reply, SIGNAL(loaded(QIODevice *, WBackendNetPlaylist)), receiver, method);
 
-    device->moveToThread(thread());
+    // NOTE: We get crashes in QNetworkRequest when doing this on Android.
+    //device->moveToThread(thread());
 
     backendInterface()->loadPlaylist(this, reply);
 }
@@ -583,7 +586,8 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 
     connect(reply, SIGNAL(loaded(QIODevice *, WBackendNetFolder)), receiver, method);
 
-    device->moveToThread(thread());
+    // NOTE: We get crashes in QNetworkRequest when doing this on Android.
+    //device->moveToThread(thread());
 
     backendInterface()->loadFolder(this, reply);
 }
@@ -597,7 +601,8 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 
     connect(reply, SIGNAL(loaded(QIODevice *, WBackendNetItem)), receiver, method);
 
-    device->moveToThread(thread());
+    // NOTE: We get crashes in QNetworkRequest when doing this on Android.
+    //device->moveToThread(thread());
 
     backendInterface()->loadItem(this, reply);
 }
