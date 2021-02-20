@@ -678,7 +678,9 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onFadeTimeout())
     Q_PRIVATE_SLOT(d_func(), void onIdleTimeout())
 
+#ifdef SK_MOBILE
     Q_PRIVATE_SLOT(d_func(), void onMessageUpdated())
+#endif
 
     Q_PRIVATE_SLOT(d_func(), void onClose())
 
