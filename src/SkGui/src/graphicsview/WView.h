@@ -678,6 +678,8 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onFadeTimeout())
     Q_PRIVATE_SLOT(d_func(), void onIdleTimeout())
 
+    Q_PRIVATE_SLOT(d_func(), void onMessageUpdated())
+
     Q_PRIVATE_SLOT(d_func(), void onClose())
 
     Q_PRIVATE_SLOT(d_func(), void onCursorVisibleChanged())

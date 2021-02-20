@@ -1303,6 +1303,62 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 #endif
 
 //-------------------------------------------------------------------------------------------------
+// Message
+
+/* Q_INVOKABLE static */ QString WControllerApplication::extractArgument(const QString & message)
+{
+    int indexA = message.indexOf(' ');
+
+    if (indexA == -1) return QString();
+
+    indexA++;
+
+    int indexB = message.indexOf(' ', indexA);
+
+    if (indexB == -1)
+    {
+         return message.mid(indexA, indexB);
+    }
+    else return message.mid(indexA, indexB - indexA);
+}
+
+/* Q_INVOKABLE static */ QString WControllerApplication::getMessage()
+{
+#ifdef Q_OS_ANDROID
+    return getIntentText();
+#else
+    return QString();
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef Q_OS_ANDROID
+
+/* Q_INVOKABLE static */ QString WControllerApplication::getIntentText()
+{
+    QAndroidJniObject object = QtAndroid::androidActivity();
+
+    if (object.isValid() == false) return QString();
+
+    object = object.callObjectMethod("getIntent", "()Landroid/content/Intent;");
+
+    if (object.isValid() == false) return QString();
+
+    object = object.callObjectMethod("getExtras", "()Landroid/os/Bundle;");
+
+    if (object.isValid() == false) return QString();
+
+    QAndroidJniObject key = QAndroidJniObject::fromString("android.intent.extra.TEXT");
+
+    return object.callObjectMethod("getCharSequence",
+                                   "(Ljava/lang/String;)Ljava/lang/CharSequence;",
+                                   key.object<jstring>()).toString();
+}
+
+#endif
+
+//-------------------------------------------------------------------------------------------------
 // Time
 
 /* Q_INVOKABLE static */ QTime WControllerApplication::getTime()
@@ -1879,5 +1935,29 @@ void WControllerApplication::setCursorVisible(bool visible)
 }
 
 #endif
+
+#ifdef Q_OS_ANDROID
+
+//---------------------------------------------------------------------------------------------
+// Android JNI
+//---------------------------------------------------------------------------------------------
+// NOTE: These functions must be exported as C functions.
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+JNIEXPORT void JNICALL
+Java_gg_omega_WActivity_updateIntent(JNIEnv *, jobject)
+{
+    emit sk->messageUpdated();
+}
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif // Q_OS_ANDROID
 
 #endif // SK_NO_CONTROLLERAPPLICATION

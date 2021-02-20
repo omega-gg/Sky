@@ -164,6 +164,10 @@ public: // Slots
     void onFadeTimeout();
     void onIdleTimeout();
 
+#ifdef SK_MOBILE
+    void onMessageUpdated();
+#endif
+
     void onClose();
 
     void onCursorVisibleChanged();

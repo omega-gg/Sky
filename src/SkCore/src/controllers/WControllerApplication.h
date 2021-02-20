@@ -280,6 +280,19 @@ public: // Static functions
 #endif
 
     //---------------------------------------------------------------------------------------------
+    // Message
+
+    // NOTE: This is useful to extract the argument from QtSingleApplication::messageReceived().
+    Q_INVOKABLE static QString extractArgument(const QString & message);
+
+    // NOTE: On Android this returns the 'intent' text.
+    Q_INVOKABLE static QString getMessage();
+
+#ifdef Q_OS_ANDROID
+    Q_INVOKABLE static QString getIntentText();
+#endif
+
+    //---------------------------------------------------------------------------------------------
     // Time
 
     Q_INVOKABLE static QTime getTime();
@@ -299,6 +312,11 @@ public: // Static functions
 signals:
     //void controllerCreated  (WController * controller);
     //void controllerDestroyed(WController * controller);
+
+#ifdef SK_MOBILE
+    // NOTE: This is useful on Android to notify that the 'intent' has changed.
+    void messageUpdated();
+#endif
 
     void aboutToQuit();
 
