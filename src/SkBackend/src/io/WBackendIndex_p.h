@@ -116,6 +116,8 @@ public: // Functions
 
     void loadData(const QByteArray & array);
 
+    void applyLoaded();
+
 public: // Events
     void onLoad  ();
     void onUpdate();
@@ -140,6 +142,8 @@ public: // Variables
     QHash<WRemoteData *, WBackendIndexFile> jobs;
 
     QList<QString> ids;
+
+    bool loaded;
 
 protected:
     W_DECLARE_PUBLIC(WBackendIndex)

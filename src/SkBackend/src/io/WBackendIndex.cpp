@@ -240,6 +240,8 @@ void WBackendIndexPrivate::init(const QString & url)
 
     this->url = url;
 
+    loaded = false;
+
     qRegisterMetaType<WBackendIndexData>("WBackendIndexData");
 
     const QMetaObject * meta = WBackendIndexQuery().metaObject();
@@ -276,6 +278,22 @@ void WBackendIndexPrivate::loadData(const QByteArray & array)
 }
 
 //-------------------------------------------------------------------------------------------------
+
+void WBackendIndexPrivate::applyLoaded()
+{
+    Q_Q(WBackendIndex);
+
+    if (loaded == false)
+    {
+        loaded = true;
+
+        emit q->loadedChanged();
+    }
+
+    emit q->loaded();
+}
+
+//-------------------------------------------------------------------------------------------------
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
@@ -295,7 +313,7 @@ void WBackendIndexPrivate::onLoad()
     {
         data = WBackendIndexData();
 
-        emit q->loaded();
+        applyLoaded();
 
         return;
     }
@@ -317,7 +335,7 @@ void WBackendIndexPrivate::onUpdate()
 
     if (array.isEmpty())
     {
-        emit q->loaded();
+        applyLoaded();
 
         return;
     }
@@ -339,7 +357,7 @@ void WBackendIndexPrivate::onData(const WBackendIndexData & data)
     {
         this->data = data;
 
-        emit q->loaded();
+        applyLoaded();
 
         return;
     }
@@ -349,7 +367,7 @@ void WBackendIndexPrivate::onData(const WBackendIndexData & data)
     {
         qWarning("WBackendIndexPrivate::onData: Cannot update, the required API is too high.");
 
-        emit q->loaded();
+        applyLoaded();
 
         return;
     }
@@ -399,7 +417,7 @@ void WBackendIndexPrivate::onData(const WBackendIndexData & data)
 
     this->data = data;
 
-    emit q->loaded();
+    applyLoaded();
 
     if (version != data.version)
     {
@@ -593,6 +611,15 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
 /* Q_INVOKABLE virtual */ QStringList WBackendIndex::getCoverIds() const
 {
     Q_D(const WBackendIndex); return d->data.backendCover;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Properties
+//-------------------------------------------------------------------------------------------------
+
+bool WBackendIndex::isLoaded() const
+{
+    Q_D(const WBackendIndex); return d->loaded;
 }
 
 #endif // SK_NO_BACKENDINDEX

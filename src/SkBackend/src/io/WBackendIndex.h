@@ -36,6 +36,8 @@ class SK_BACKEND_EXPORT WBackendIndex : public WBackendLoader
 {
     Q_OBJECT
 
+    Q_PROPERTY(bool isLoaded READ isLoaded NOTIFY loadedChanged)
+
 public:
     WBackendIndex(const QString & url, QObject * parent = NULL);
 
@@ -63,6 +65,11 @@ signals:
     void updated();
 
     void backendUpdated(const QString & id);
+
+    void loadedChanged();
+
+public: // Properties
+    bool isLoaded() const;
 
 private:
     W_DECLARE_PRIVATE(WBackendIndex)
