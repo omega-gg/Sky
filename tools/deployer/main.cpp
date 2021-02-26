@@ -154,6 +154,22 @@ bool match(const QString & string)
     return false;
 }
 
+bool matchElif(const QString & string)
+{
+    if (string.startsWith("//#ELIF") == false)
+    {
+        return false;
+    }
+
+    int index = string.lastIndexOf(' ', 7);
+
+    if (index == -1)
+    {
+        return false;
+    }
+    else return match(string.mid(index + 1));
+}
+
 //-------------------------------------------------------------------------------------------------
 
 bool copyFile(const QString & fileName, const QString & newName)
@@ -235,35 +251,22 @@ bool writeNext(QTextStream * stream, QString * content, QString * line)
 
 void writeLines(QTextStream * stream, QString * content, QString * line)
 {
-    int count = 0;
-
     while (writeNext(stream, content, line))
     {
-        if (line->startsWith("//#ELSE"))
-        {
-            if (count == 0)
-            {
-                skipLines(stream, content, line);
+        if (line->startsWith("//#END")) return;
 
-                return;
-            }
-        }
-        else if (line->startsWith("//#END"))
+        if (line->startsWith("//#ELSE") || line->startsWith("//#ELIF"))
         {
-            if (count == 0) return;
+            skipLines(stream, content, line);
 
-            count--;
+            return;
         }
-        else
+
+        if (match(line->mid(3)))
         {
-            if (match(line->mid(3)))
-            {
-                writeLines(stream, content, line);
-            }
-            else skipLines(stream, content, line);
-
-            count++;
+            writeLines(stream, content, line);
         }
+        else skipLines(stream, content, line);
     }
 }
 
@@ -291,7 +294,7 @@ void skipLines(QTextStream * stream, QString * content, QString * line)
 
     while (skipNext(stream, line))
     {
-        if (line->startsWith("//#ELSE"))
+        if (line->startsWith("//#ELSE") || matchElif(*line))
         {
             if (count == 0)
             {

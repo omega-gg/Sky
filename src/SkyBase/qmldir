@@ -14,6 +14,9 @@ RectangleBorders     1.0 RectangleBorders.qml
 RectangleShadow      1.0 RectangleShadow.qml
 RectangleShadowClick 1.0 RectangleShadowClick.qml
 
+CursorSvg   1.0 CursorSvg.qml
+CursorTouch 1.0 CursorTouch.qml
+
 TextBase     1.0 TextBase.qml
 TextClick    1.0 TextClick.qml
 TextLink     1.0 TextLink.qml

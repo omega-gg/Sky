@@ -28,8 +28,9 @@ Item
     id: iconOverlay
 
     //---------------------------------------------------------------------------------------------
-    // Properties style
+    // Properties
     //---------------------------------------------------------------------------------------------
+    // Style
 
     property color colorA: st.iconOverlay_colorA
     property color colorB: st.iconOverlay_colorB

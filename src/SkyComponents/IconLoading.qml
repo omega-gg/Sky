@@ -26,8 +26,9 @@ import Sky     1.0
 Icon
 {
     //---------------------------------------------------------------------------------------------
-    // Properties style
+    // Properties
     //---------------------------------------------------------------------------------------------
+    // Style
 
     property int durationAnimation: st.iconLoading_durationAnimation
 

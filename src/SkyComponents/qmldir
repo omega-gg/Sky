@@ -13,9 +13,6 @@ BorderButton     1.0 BorderButton.qml
 
 WindowScale 1.0 WindowScale.qml
 
-BaseCursor 1.0 BaseCursor.qml
-CursorSvg  1.0 CursorSvg.qml
-
 RectangleBordersDrop 1.0 RectangleBordersDrop.qml
 RectangleLogo        1.0 RectangleLogo.qml
 

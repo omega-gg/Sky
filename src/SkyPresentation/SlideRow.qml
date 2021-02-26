@@ -27,8 +27,9 @@ Row
     id: slideRow
 
     //---------------------------------------------------------------------------------------------
-    // Properties style
+    // Properties
     //---------------------------------------------------------------------------------------------
+    // Style
 
     property int durationAnimation: sp.slide_durationAnimation
 

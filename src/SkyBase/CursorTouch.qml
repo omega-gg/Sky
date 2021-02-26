@@ -4,7 +4,7 @@
 
     Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
 
-    This file is part of SkyComponents.
+    This file is part of SkyBase.
 
     - GNU Lesser General Public License Usage:
     This file may be used under the terms of the GNU Lesser General Public License version 3 as
@@ -23,41 +23,81 @@
 import QtQuick 1.0
 import Sky     1.0
 
-BaseCursor
+Item
 {
+    //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+    // Style
+
+    property int durationOpacity: st.cursorTouch_durationOpacity
+
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    property alias source: image.source
-
-    property alias loadMode: image.loadMode
-    property alias fillMode: image.fillMode
-
-//#QT_4
-    property alias scaling: image.scaling
-//#END
+    property alias background: background
+    property alias itemBorder: itemBorder
 
     //---------------------------------------------------------------------------------------------
+    // Settings
+    //---------------------------------------------------------------------------------------------
 
-    property alias image: image
+    width : st.cursor_size
+    height: width
+
+    x: window.contentMouseX() - width  / 2
+    y: window.contentMouseY() - height / 2
+
+    visible: (sk.cursorVisible && window.isEntered)
 
     //---------------------------------------------------------------------------------------------
     // Childs
     //---------------------------------------------------------------------------------------------
 
-//#QT_4
-    ImageSvgScale
-//#ELSE
-    ImageSvg
-//#END
+    Rectangle
     {
-        id: image
+        id: background
 
         anchors.fill: parent
 
+        radius: height
+
+        opacity: (window.view.isPressed) ? st.cursorTouch_opacityB
+                                         : st.cursorTouch_opacityA
+
+        color: st.cursorTouch_color
+
 //#QT_4
-        scaleDelay: 0
+        smooth: true
 //#END
+
+        Behavior on opacity
+        {
+            NumberAnimation
+            {
+                duration: durationOpacity
+
+                easing.type: st.easing
+            }
+        }
+    }
+
+    Rectangle
+    {
+        id: itemBorder
+
+        anchors.fill: parent
+
+        radius: background.radius
+
+        color: "transparent"
+
+//#QT_4
+        smooth: true
+//#END
+
+        border.width: st.border_size
+        border.color: st.border_color
     }
 }

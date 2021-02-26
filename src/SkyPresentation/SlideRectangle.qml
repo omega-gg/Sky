@@ -28,8 +28,9 @@ Rectangle
     id: slideRectangle
 
     //---------------------------------------------------------------------------------------------
-    // Properties style
+    // Properties
     //---------------------------------------------------------------------------------------------
+    // Style
 
     property int durationAnimation: sp.slide_durationAnimation
 

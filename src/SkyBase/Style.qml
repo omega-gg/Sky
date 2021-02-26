@@ -306,9 +306,28 @@ Item
     property real rectangleShadowClick_ratio: 4.0
 //#END
 
+//#Cursor*
+    //---------------------------------------------------------------------------------------------
+    // Cursor
+
+    property int cursor_size: dp48
+//#END
+
+//#CursorTouch
+    //---------------------------------------------------------------------------------------------
+    // CursorTouch
+
+    property int cursorTouch_durationOpacity: duration_normal
+
+    property real cursorTouch_opacityA: 0.6
+    property real cursorTouch_opacityB: 0.8
+
+    property color cursorTouch_color: "#242424"
+//#END
+
 //#TextSubtitle
     //---------------------------------------------------------------------------------------------
-    //TextSubtitle
+    // TextSubtitle
 
     property int textSubtitle_sizeMinimum: dp18
     property int textSubtitle_sizeMaximum: dp48

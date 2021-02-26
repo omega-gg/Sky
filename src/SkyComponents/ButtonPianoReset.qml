@@ -26,8 +26,9 @@ import Sky     1.0
 ButtonPiano
 {
     //---------------------------------------------------------------------------------------------
-    // Properties style
+    // Properties
     //---------------------------------------------------------------------------------------------
+    // Style
 
     property int durationOpacity: st.buttonPianoReset_durationOpacity
 

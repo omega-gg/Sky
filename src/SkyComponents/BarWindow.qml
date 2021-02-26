@@ -28,8 +28,9 @@ ViewDrag
     id: barWindow
 
     //---------------------------------------------------------------------------------------------
-    // Properties style
+    // Properties
     //---------------------------------------------------------------------------------------------
+    // Style
 
     property color colorA: st.barWindow_colorA
     property color colorB: st.barWindow_colorB

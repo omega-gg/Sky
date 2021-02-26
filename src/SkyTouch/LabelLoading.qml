@@ -26,8 +26,9 @@ import Sky     1.0
 LabelIcon
 {
     //---------------------------------------------------------------------------------------------
-    // Properties style
+    // Properties
     //---------------------------------------------------------------------------------------------
+    // Style
 
     property int durationAnimation: st.labelLoading_durationAnimation
 

@@ -28,8 +28,9 @@ BaseButton
     id: buttonBox
 
     //---------------------------------------------------------------------------------------------
-    // Properties style
+    // Properties
     //---------------------------------------------------------------------------------------------
+    // Style
 
     property color color     : sp.buttonBox_color
     property color colorHover: sp.buttonBox_colorHover

@@ -26,8 +26,9 @@ import Sky     1.0
 Rectangle
 {
     //---------------------------------------------------------------------------------------------
-    // Properties style
+    // Properties
     //---------------------------------------------------------------------------------------------
+    // Style
 
     property color colorA: st.tabBarProgress_colorA
     property color colorB: st.tabBarProgress_colorB

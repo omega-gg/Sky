@@ -28,8 +28,9 @@ Item
     id: slideLayer
 
     //---------------------------------------------------------------------------------------------
-    // Properties style
+    // Properties
     //---------------------------------------------------------------------------------------------
+    // Style
 
     property int durationAnimation: sp.slide_durationAnimation
 

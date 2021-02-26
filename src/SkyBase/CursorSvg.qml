@@ -23,14 +23,25 @@
 import QtQuick 1.0
 import Sky     1.0
 
-Item
+//#QT_4
+ImageSvgScale
+//#ELSE
+ImageSvg
+//#END
 {
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
+    width : st.cursor_size
+    height: width
+
     x: window.contentMouseX() - width  / 2
     y: window.contentMouseY() - height / 2
 
     visible: (sk.cursorVisible && window.isEntered)
+
+//#QT_4
+    scaleDelay: 0
+//#END
 }

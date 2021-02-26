@@ -28,8 +28,9 @@ BaseButton
     id: buttonMask
 
     //---------------------------------------------------------------------------------------------
-    // Properties style
+    // Properties
     //---------------------------------------------------------------------------------------------
+    // Style
 
     property ImageFilterColor filterDefault: st.buttonMask_filterDefault
     property ImageFilterColor filterHover  : st.buttonMask_filterHover
