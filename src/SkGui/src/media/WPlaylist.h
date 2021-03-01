@@ -129,8 +129,6 @@ public: // Interface
 
     Q_INVOKABLE void moveTrack(int from, int to);
 
-    Q_INVOKABLE void moveTracks(const QList<int> & indexes, int to);
-
     Q_INVOKABLE void removeTrack(int index);
 
     Q_INVOKABLE void removeTracks(const QList<int> & indexes);

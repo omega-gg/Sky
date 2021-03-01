@@ -1002,35 +1002,34 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
 /* Q_INVOKABLE */ void WPlaylist::moveTrack(int from, int to)
 {
-    moveTracks(QList<int>() << from, to);
-}
-
-/* Q_INVOKABLE */ void WPlaylist::moveTracks(const QList<int> & indexes, int to)
-{
-    if (indexes.isEmpty() || to < 0 || to > count()) return;
-
     Q_D(WPlaylist);
 
-    foreach (int from, indexes)
+    int count = d->tracks.count();
+
+    if (from < 0 || from > count
+        ||
+        to < 0 || to > count) return;
+
+    if ((from > to && from != to)
+        ||
+        (from < to && from != (to - 1)))
     {
-        if ((from > to && from != to)
-            ||
-            (from < to && from != (to - 1)))
+        beginTracksMove(from, from, to);
+
+        if (from < to)
         {
-            beginTracksMove(from, from, to);
-
-            if (from < to) to--;
-
-            d->tracks.move(from, to);
-
-            endTracksMove();
-
-            to++;
+             d->tracks.move(from, to - 1);
         }
-        else if (from >= to) to++;
+        else d->tracks.move(from, to);
+
+        endTracksMove();
     }
 
     updateIndex();
+
+    QList<int> indexes;
+
+    indexes.append(from);
 
     emit tracksMoved(indexes, to);
 
@@ -1393,6 +1392,9 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
     QList<int> indexes = selectedTracks();
 
+    // NOTE: We backup the 'to' before messing up with it.
+    int at = to;
+
     foreach (const WTrack * track, d->selectedTracks)
     {
         int from = indexOf(track);
@@ -1416,7 +1418,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
     updateIndex();
 
-    emit tracksMoved(indexes, to);
+    emit tracksMoved(indexes, at);
 
     emit playlistUpdated();
 

@@ -1387,9 +1387,11 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
 {
     Q_D(WLibraryFolder);
 
-    if (from < 0 || from > d->items.count()
+    int count = d->items.count();
+
+    if (from < 0 || from > count
         ||
-        to < 0 || to > d->items.count()) return;
+        to < 0 || to > count) return;
 
     if ((from > to && from != to)
         ||
