@@ -158,11 +158,6 @@ bool match(const QString & string)
 
 bool matchElif(const QString & string)
 {
-    if (string.startsWith("//#ELIF") == false)
-    {
-        return false;
-    }
-
     int index = string.lastIndexOf(' ', 7);
 
     if (index == -1)
@@ -296,9 +291,18 @@ void skipLines(QTextStream * stream, QString * content, QString * line)
 
     while (skipNext(stream, line))
     {
-        if (line->startsWith("//#ELSE") || matchElif(*line))
+        if (line->startsWith("//#ELSE"))
         {
             if (count == 0)
+            {
+                writeLines(stream, content, line);
+
+                return;
+            }
+        }
+        else if (line->startsWith("//#ELIF"))
+        {
+            if (count == 0 && matchElif(*line))
             {
                 writeLines(stream, content, line);
 
