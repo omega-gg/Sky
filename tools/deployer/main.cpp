@@ -321,7 +321,7 @@ void skipElse(QTextStream * stream, QString * line)
 
     while (skipNext(stream, line))
     {
-        if (line->startsWith("//#ELSE") || line->startsWith("//#ELSE")) continue;
+        if (line->startsWith("//#ELSE") || line->startsWith("//#ELIF")) continue;
 
         if (line->startsWith("//#END"))
         {
