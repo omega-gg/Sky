@@ -26,6 +26,8 @@
 // Forward declarations
 void skipLines(QTextStream * stream, QString * content, QString * line);
 
+void skipElse(QTextStream * stream, QString * line);
+
 //-------------------------------------------------------------------------------------------------
 // Global variables
 
@@ -257,7 +259,7 @@ void writeLines(QTextStream * stream, QString * content, QString * line)
 
         if (line->startsWith("//#ELSE") || line->startsWith("//#ELIF"))
         {
-            skipLines(stream, content, line);
+            skipElse(stream, line);
 
             return;
         }
@@ -304,6 +306,24 @@ void skipLines(QTextStream * stream, QString * content, QString * line)
             }
         }
         else if (line->startsWith("//#END"))
+        {
+            if (count == 0) return;
+
+            count--;
+        }
+        else count++;
+    }
+}
+
+void skipElse(QTextStream * stream, QString * line)
+{
+    int count = 0;
+
+    while (skipNext(stream, line))
+    {
+        if (line->startsWith("//#ELSE") || line->startsWith("//#ELSE")) continue;
+
+        if (line->startsWith("//#END"))
         {
             if (count == 0) return;
 
