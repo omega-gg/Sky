@@ -8,7 +8,8 @@ BaseLogo 1.0 BaseLogo.qml
 
 ButtonBox 1.0 ButtonBox.qml
 
-Slides 1.0 Slides.qml
+Slides     1.0 Slides.qml
+SlidePages 1.0 SlidePages.qml
 
 SlideLayer 1.0 SlideLayer.qml
 
