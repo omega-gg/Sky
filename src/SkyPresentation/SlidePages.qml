@@ -33,8 +33,6 @@ Slides
 
     property variant indexes: getIndexes()
 
-    property int indexStart: 0
-
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
@@ -56,7 +54,7 @@ Slides
     {
         var indexes = new Array;
 
-        var at = indexStart;
+        var at = 0;
 
         indexes.push(at);
 
@@ -67,12 +65,6 @@ Slides
             at += pages[i];
 
             indexes.push(at);
-        }
-
-        // NOTE: We take the 'indexStart' into account for the first page length.
-        if (length)
-        {
-            pages[0] += indexStart;
         }
 
         return indexes;
