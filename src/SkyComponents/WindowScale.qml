@@ -137,7 +137,8 @@ Window
 
         if (zoom == scale)
         {
-            if (realTime) pTime = sk.getTime();
+            // FIXME Qt5.14.2: We must use 'date' instead of 'time' to avoid conversions issues.
+            if (realTime) pTime = sk.getDate();
 
             timer.restart();
         }
@@ -159,7 +160,8 @@ Window
         }
         else
         {
-            if (realTime) pTime = sk.getTime();
+            // FIXME Qt5.14.2: We must use 'date' instead of 'time' to avoid conversions issues.
+            if (realTime) pTime = sk.getDate();
 
             pRatio = -1;
 

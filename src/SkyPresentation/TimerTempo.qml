@@ -64,7 +64,8 @@ Timer
 
         if (running)
         {
-            pTime = sk.getTime();
+            // FIXME Qt5.14.2: We must use 'date' instead of 'time' to avoid conversions issues.
+            pTime = sk.getDate();
 
             pElapsed = 0;
         }

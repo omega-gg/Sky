@@ -295,7 +295,8 @@ public: // Static functions
     //---------------------------------------------------------------------------------------------
     // Time
 
-    Q_INVOKABLE static QTime getTime();
+    Q_INVOKABLE static QTime     getTime();
+    Q_INVOKABLE static QDateTime getDate();
 
     Q_INVOKABLE static QDateTime dateFromSecs(qint64 seconds);
 
