@@ -1010,9 +1010,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
         ||
         to < 0 || to > count) return;
 
-    if ((from > to && from != to)
-        ||
-        (from < to && from != (to - 1)))
+    if (from > to || from < to - 1)
     {
         beginTracksMove(from, from, to);
 
@@ -1399,9 +1397,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     {
         int from = indexOf(track);
 
-        if ((from > to && from != to)
-            ||
-            (from < to && from != (to - 1)))
+        if (from > to || from < to - 1)
         {
             beginTracksMove(from, from, to);
 
@@ -1413,7 +1409,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
             to++;
         }
-        else if (from >= to) to++;
+        else if (from == to) to++;
     }
 
     updateIndex();

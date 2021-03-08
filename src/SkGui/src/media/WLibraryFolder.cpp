@@ -1393,9 +1393,7 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
         ||
         to < 0 || to > count) return;
 
-    if ((from > to && from != to)
-        ||
-        (from < to && from != (to - 1)))
+    if (from > to || from < to - 1)
     {
         d->beginItemsMove(from, from, to);
 
