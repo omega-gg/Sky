@@ -144,7 +144,7 @@ void WModelContextualPrivate::init()
 }
 
 //-------------------------------------------------------------------------------------------------
-// Protected QSortFilterProxyModel reimplementation
+// QAbstractItemModel reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ QHash<int, QByteArray> WModelContextual::roleNames() const
@@ -161,6 +161,10 @@ void WModelContextualPrivate::init()
 
     return roles;
 }
+
+//-------------------------------------------------------------------------------------------------
+// Protected QSortFilterProxyModel reimplementation
+//-------------------------------------------------------------------------------------------------
 
 /* virtual */ bool WModelContextual::filterAcceptsRow(int source_row, const QModelIndex &) const
 {

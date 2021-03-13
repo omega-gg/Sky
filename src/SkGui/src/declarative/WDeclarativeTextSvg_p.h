@@ -140,6 +140,8 @@ public: // Variables
     WDeclarativeTextSvg::HAlignment hAlign;
     WDeclarativeTextSvg::VAlignment vAlign;
 
+    qreal multiplier;
+
     qreal zoom;
 
 #ifdef QT_LATEST

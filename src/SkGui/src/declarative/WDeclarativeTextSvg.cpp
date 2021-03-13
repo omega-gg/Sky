@@ -75,6 +75,8 @@ void WDeclarativeTextSvgPrivate::init()
     hAlign = WDeclarativeTextSvg::AlignLeft;
     vAlign = WDeclarativeTextSvg::AlignTop;
 
+    multiplier = 1.0;
+
     zoom = 1.0;
 
 #ifdef QT_4
@@ -387,7 +389,7 @@ QRectF WDeclarativeTextSvgPrivate::getRect(qreal width, qreal height)
 int WDeclarativeTextSvgPrivate::getWidth(const QFontMetrics & metrics, const QString & text) const
 {
 #if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
-    return metrics.horizontalAdvance(text);
+    return metrics.horizontalAdvance(text) * multiplier;
 #else
     // FIXME: Workaround to fix the width of the arial font.
     if (font.family().toLower() == "arial")
@@ -395,7 +397,7 @@ int WDeclarativeTextSvgPrivate::getWidth(const QFontMetrics & metrics, const QSt
 #ifdef QT_4
         return metrics.width(text) * 1.01;
 #else
-        return metrics.width(text)/* + (metrics.height() * 0.2)*/;
+        return metrics.width(text) * multiplier/* + (metrics.height() * 0.2)*/;
 #endif
     }
     else return metrics.width(text);
@@ -712,6 +714,26 @@ void WDeclarativeTextSvg::setMarginHeight(int height)
     update();
 
     emit marginHeightChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+qreal WDeclarativeTextSvg::multiplier() const
+{
+    Q_D(const WDeclarativeTextSvg); return d->multiplier;
+}
+
+void WDeclarativeTextSvg::setMultiplier(qreal multiplier)
+{
+    Q_D(WDeclarativeTextSvg);
+
+    if (d->multiplier == multiplier) return;
+
+    d->multiplier = multiplier;
+
+    if (isComponentComplete()) d->load();
+
+    emit multiplierChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

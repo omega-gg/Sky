@@ -104,17 +104,8 @@ void WModelTabsPrivate::updateTab(int index)
 }
 
 //-------------------------------------------------------------------------------------------------
-// QAbstractItemModel reimplementation
+// QAbstractItemModel implementation
 //-------------------------------------------------------------------------------------------------
-
-/* virtual */ QHash<int, QByteArray> WModelTabs::roleNames() const
-{
-    QHash<int, QByteArray> roles;
-
-    roles.insert(WModelTabs::RoleItem, "item");
-
-    return roles;
-}
 
 /* virtual */ int WModelTabs::rowCount(const QModelIndex &) const
 {
@@ -149,6 +140,19 @@ void WModelTabsPrivate::updateTab(int index)
         else return QVariant();
     }
     else return QVariant();
+}
+
+//-------------------------------------------------------------------------------------------------
+// QAbstractItemModel reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ QHash<int, QByteArray> WModelTabs::roleNames() const
+{
+    QHash<int, QByteArray> roles;
+
+    roles.insert(WModelTabs::RoleItem, "item");
+
+    return roles;
 }
 
 //-------------------------------------------------------------------------------------------------

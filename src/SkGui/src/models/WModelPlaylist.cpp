@@ -85,22 +85,8 @@ void WModelPlaylistPrivate::init()
 #endif
 
 //-------------------------------------------------------------------------------------------------
-// QAbstractItemModel reimplementation
+// QAbstractItemModel implementation
 //-------------------------------------------------------------------------------------------------
-
-/* virtual */ QHash<int, QByteArray> WModelPlaylist::roleNames() const
-{
-    QHash<int, QByteArray> roles;
-
-    roles.insert(WModelPlaylist::RoleState,    "loadState");
-    roles.insert(WModelPlaylist::RoleSource,   "source");
-    roles.insert(WModelPlaylist::RoleTitle,    "title");
-    roles.insert(WModelPlaylist::RoleCover,    "cover");
-    roles.insert(WModelPlaylist::RoleSelected, "selected");
-    roles.insert(WModelPlaylist::RoleCurrent,  "current");
-
-    return roles;
-}
 
 /* virtual */ int WModelPlaylist::rowCount(const QModelIndex &) const
 {
@@ -133,6 +119,24 @@ void WModelPlaylistPrivate::init()
     else if (role == RoleSelected) return d->playlist->indexSelected(index.row());
     else if (role == RoleCurrent)  return (d->playlist->currentIndex() == index.row());
     else                           return QVariant();
+}
+
+//-------------------------------------------------------------------------------------------------
+// QAbstractItemModel reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ QHash<int, QByteArray> WModelPlaylist::roleNames() const
+{
+    QHash<int, QByteArray> roles;
+
+    roles.insert(WModelPlaylist::RoleState,    "loadState");
+    roles.insert(WModelPlaylist::RoleSource,   "source");
+    roles.insert(WModelPlaylist::RoleTitle,    "title");
+    roles.insert(WModelPlaylist::RoleCover,    "cover");
+    roles.insert(WModelPlaylist::RoleSelected, "selected");
+    roles.insert(WModelPlaylist::RoleCurrent,  "current");
+
+    return roles;
 }
 
 //-------------------------------------------------------------------------------------------------

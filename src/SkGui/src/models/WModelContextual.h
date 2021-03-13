@@ -56,9 +56,10 @@ public: // Enums
 public:
     explicit WModelContextual(QObject * parent = NULL);
 
-protected: // QSortFilterProxyModel reimplementation
+public: // QAbstractItemModel reimplementation
     /* virtual */ QHash<int, QByteArray> roleNames() const;
 
+protected: // QSortFilterProxyModel reimplementation
     /* virtual */ bool filterAcceptsRow(int source_row, const QModelIndex & source_parent) const;
 
 protected: // WContextualPageWatcher implementation

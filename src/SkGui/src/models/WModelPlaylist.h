@@ -63,12 +63,13 @@ public: // Interface
     Q_INVOKABLE void reset();
 #endif
 
-public: // QAbstractItemModel reimplementation
-    /* virtual */ QHash<int, QByteArray> roleNames() const;
-
+public: // QAbstractItemModel implementation
     /* virtual */ int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
     /* virtual */ QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
+
+public: // QAbstractItemModel reimplementation
+    /* virtual */ QHash<int, QByteArray> roleNames() const;
 
 protected: // WPlaylistWatcher implementation
     /* virtual */ void beginTracksInsert(int first, int last);

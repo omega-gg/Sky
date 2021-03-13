@@ -63,12 +63,13 @@ public: // Interface
 
     Q_INVOKABLE QString getCompletionAt(int index) const;
 
-public: // QAbstractItemModel reimplementation
-    /* virtual */ QHash<int, QByteArray> roleNames() const;
-
+public: // QAbstractItemModel implementation
     /* virtual */ int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
     /* virtual */ QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
+
+public: // QAbstractItemModel reimplementation
+    /* virtual */ QHash<int, QByteArray> roleNames() const;
 
 signals:
     void urlChanged();

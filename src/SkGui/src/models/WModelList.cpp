@@ -85,17 +85,8 @@ void WModelListPrivate::init()
 }
 
 //-------------------------------------------------------------------------------------------------
-// QAbstractItemModel reimplementation
+// QAbstractItemModel implementation
 //-------------------------------------------------------------------------------------------------
-
-/* virtual */ QHash<int, QByteArray> WModelList::roleNames() const
-{
-    QHash<int, QByteArray> roles;
-
-    roles.insert(WModelList::RoleTitle, "title");
-
-    return roles;
-}
 
 /* virtual */ int WModelList::rowCount(const QModelIndex &) const
 {
@@ -118,6 +109,19 @@ void WModelListPrivate::init()
         return d->titles.at(index.row());
     }
     else return QVariant();
+}
+
+//-------------------------------------------------------------------------------------------------
+// QAbstractItemModel reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ QHash<int, QByteArray> WModelList::roleNames() const
+{
+    QHash<int, QByteArray> roles;
+
+    roles.insert(WModelList::RoleTitle, "title");
+
+    return roles;
 }
 
 //-------------------------------------------------------------------------------------------------

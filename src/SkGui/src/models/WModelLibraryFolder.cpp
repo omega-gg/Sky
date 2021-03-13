@@ -65,25 +65,8 @@ void WModelLibraryFolderPrivate::init()
 }
 
 //-------------------------------------------------------------------------------------------------
-// QAbstractItemModel reimplementation
+// QAbstractItemModel implementation
 //-------------------------------------------------------------------------------------------------
-
-/* virtual */ QHash<int, QByteArray> WModelLibraryFolder::roleNames() const
-{
-    QHash<int, QByteArray> roles;
-
-    roles.insert(WModelLibraryFolder::RoleId,         "id");
-    roles.insert(WModelLibraryFolder::RoleType,       "type");
-    roles.insert(WModelLibraryFolder::RoleState,      "loadState");
-    roles.insert(WModelLibraryFolder::RoleStateQuery, "loadStateQuery");
-    roles.insert(WModelLibraryFolder::RoleSource,     "source");
-    roles.insert(WModelLibraryFolder::RoleTitle,      "title");
-    roles.insert(WModelLibraryFolder::RoleCover,      "cover");
-    roles.insert(WModelLibraryFolder::RoleLabel,      "label");
-    roles.insert(WModelLibraryFolder::RoleCurrent,    "current");
-
-    return roles;
-}
 
 /* virtual */ int WModelLibraryFolder::rowCount(const QModelIndex &) const
 {
@@ -119,6 +102,27 @@ void WModelLibraryFolderPrivate::init()
     else if (role == RoleLabel)      return item->label;
     else if (role == RoleCurrent)    return (d->folder->currentIndex() == index.row());
     else                             return QVariant();
+}
+
+//-------------------------------------------------------------------------------------------------
+// QAbstractItemModel reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ QHash<int, QByteArray> WModelLibraryFolder::roleNames() const
+{
+    QHash<int, QByteArray> roles;
+
+    roles.insert(WModelLibraryFolder::RoleId,         "id");
+    roles.insert(WModelLibraryFolder::RoleType,       "type");
+    roles.insert(WModelLibraryFolder::RoleState,      "loadState");
+    roles.insert(WModelLibraryFolder::RoleStateQuery, "loadStateQuery");
+    roles.insert(WModelLibraryFolder::RoleSource,     "source");
+    roles.insert(WModelLibraryFolder::RoleTitle,      "title");
+    roles.insert(WModelLibraryFolder::RoleCover,      "cover");
+    roles.insert(WModelLibraryFolder::RoleLabel,      "label");
+    roles.insert(WModelLibraryFolder::RoleCurrent,    "current");
+
+    return roles;
 }
 
 //-------------------------------------------------------------------------------------------------

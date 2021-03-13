@@ -62,6 +62,8 @@ class SK_GUI_EXPORT WDeclarativeTextSvg : public WDeclarativeTexture
     Q_PROPERTY(int marginWidth  READ marginWidth  WRITE setMarginWidth  NOTIFY marginWidthChanged)
     Q_PROPERTY(int marginHeight READ marginHeight WRITE setMarginHeight NOTIFY marginHeightChanged)
 
+    Q_PROPERTY(qreal multiplier READ multiplier WRITE setMultiplier NOTIFY multiplierChanged)
+
     Q_PROPERTY(qreal zoom READ zoom WRITE setZoom NOTIFY zoomChanged)
 
     Q_PROPERTY(HAlignment horizontalAlignment READ hAlign WRITE setHAlign
@@ -166,6 +168,8 @@ signals:
     void marginWidthChanged ();
     void marginHeightChanged();
 
+    void multiplierChanged();
+
     void zoomChanged();
 
     void horizontalAlignmentChanged();
@@ -201,6 +205,9 @@ public: // Properties
 
     int  marginHeight() const;
     void setMarginHeight(int height);
+
+    qreal multiplier() const;
+    void  setMultiplier(qreal multiplier);
 
     qreal zoom() const;
     void  setZoom(qreal zoom);
