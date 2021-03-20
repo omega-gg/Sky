@@ -35,6 +35,9 @@ Animated
 
     /* read */ property real ratio: width / slide_width
 
+    /* read */ property variant item: (pLoader == loaderA) ? loaderB.item
+                                                           : loaderA.item
+
     property bool animate: true
 
     property real volume: 1.0
@@ -44,7 +47,7 @@ Animated
 
     property int durationAnimation: sp.slides_duration
 
-    property int easing: Easing.Linear
+    property int easing: sp.easing
 
     property int slide_width : sp.slide_width
     property int slide_height: sp.slide_height

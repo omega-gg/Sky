@@ -49,13 +49,15 @@ Player
     property int durationFadeIn : sp.slidePlayer_durationFadeIn
     property int durationFadeOut: sp.slidePlayer_durationFadeOut
 
-    property int easing: Easing.Linear
+    property int easing: sp.easing
 
     //---------------------------------------------------------------------------------------------
     // Private
 
     property bool pReady : false
     property bool pVolume: false
+
+    property int pDuration: 0
 
     //---------------------------------------------------------------------------------------------
 
@@ -70,7 +72,7 @@ Player
 
     backend: BackendVlc {}
 
-    volume: (slides && pVolume) ? slides.volume : 0.0
+    volume: (fade == false || (slides && pVolume)) ? slides.volume : 0.0
 
     //---------------------------------------------------------------------------------------------
     // Events
@@ -109,7 +111,7 @@ Player
 
                 if (time >= timeB)
                 {
-                    pVolume = false;
+                    pApplyVolume(false);
                 }
             }
             else if (time >= timeB)
@@ -136,7 +138,7 @@ Player
             pPlay();
         }
 
-        onClear: if (fade) pVolume = false
+        onClear: if (fade) pApplyVolume(false)
 
         onPlay: togglePlay()
 
@@ -194,7 +196,7 @@ Player
             sk.processEvents();
         }
 
-        if (fade) pVolume = true;
+        if (fade) pApplyVolume(true);
     }
 
     //---------------------------------------------------------------------------------------------
@@ -203,13 +205,30 @@ Player
     {
         if (fade && volume)
         {
-            pVolume = false;
+            pApplyVolume(false);
 
             while (volume)
             {
                 sk.processEvents();
             }
         }
+    }
+
+    function pApplyVolume(volume)
+    {
+        if (pVolume == volume) return;
+
+        if (st.animate && fade)
+        {
+            if (volume)
+            {
+                 pDuration = durationFadeIn;
+            }
+            else pDuration = durationFadeOut;
+        }
+        else pDuration = 0;
+
+        pVolume = volume;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -232,18 +251,7 @@ Player
         {
             PropertyAnimation
             {
-                duration:
-                {
-                    if (st.animate && fade)
-                    {
-                        if (pVolume)
-                        {
-                             return durationFadeIn;
-                        }
-                        else return durationFadeOut;
-                    }
-                    else return 0;
-                }
+                duration: pDuration
 
                 easing.type: slidePlayer.easing
             }

@@ -34,7 +34,7 @@ Rectangle
 
     property int durationAnimation: sp.slide_durationAnimation
 
-    property int easing: Easing.Linear
+    property int easing: sp.easing
 
     //---------------------------------------------------------------------------------------------
     // Settings

@@ -65,7 +65,7 @@ Item
 
     property int durationAnimation: sp.slideText_durationAnimation
 
-    property int easing: Easing.Linear
+    property int easing: sp.easing
 
     //---------------------------------------------------------------------------------------------
     // Private

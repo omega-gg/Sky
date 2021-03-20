@@ -28,6 +28,11 @@ Item
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
+    // Animation
+
+    property int easing: st.easing
+
+    //---------------------------------------------------------------------------------------------
     // Tempo
 
     property real velocity: st.speed
@@ -66,9 +71,11 @@ Item
     //---------------------------------------------------------------------------------------------
     // Slides
 
-    property int slides_borderSize: st.dp8
+    property int slides_borderSize: 0
 
-    property int slides_duration: bpm(1)
+    property int slides_bpm: 1
+
+    property int slides_duration: bpm(slides_bpm)
 
     //---------------------------------------------------------------------------------------------
     // Slide
@@ -132,7 +139,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // PulseGradient
 
-    property color pulseGradient_color    : "white"
+    property color pulseGradient_color    : pulseColor_color
     property color pulseGradient_colorBack: "black"
 
     //---------------------------------------------------------------------------------------------

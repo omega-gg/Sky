@@ -34,7 +34,7 @@ Item
 
     property int durationAnimation: sp.slide_durationAnimation
 
-    property int easing: Easing.Linear
+    property int easing: sp.easing
 
     property color colorA: sp.slideGradient_colorA
     property color colorB: sp.slideGradient_colorB

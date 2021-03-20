@@ -31,9 +31,13 @@ Timer
 
     /* read */ property int count: 0
 
-    /* read */ property real value: (tempo) ? 60000 / tempo * sp.ratioVelocity : 0.0
+    /* read */ property real ratioTempo: (tempo) ? 60000 / tempo : 0.0
+
+    /* read */ property real value: (tempo) ? ratioTempo * sp.ratioVelocity : 0.0
 
     /* read */ property real sum: 0.0
+
+    property real sumStart: 0.0
 
     property int tempo: sp.tempo
 
@@ -60,7 +64,7 @@ Timer
     {
         count = 0;
 
-        sum = 0.0;
+        sum = sumStart;
 
         if (running)
         {
@@ -85,5 +89,14 @@ Timer
 
             count++;
         }
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Functions
+    //---------------------------------------------------------------------------------------------
+
+    function bpm(value)
+    {
+        return value * ratioTempo * sp.ratioVelocity;
     }
 }

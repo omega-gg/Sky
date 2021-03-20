@@ -74,7 +74,7 @@ Animated
         {
             duration: interval
 
-            easing.type: st.easing
+            easing.type: sp.easing
         }
     }
 
