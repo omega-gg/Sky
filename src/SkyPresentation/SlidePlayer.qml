@@ -91,6 +91,9 @@ Player
 
     onTimeAChanged: if (pReady) seek(timeA)
 
+    // NOTE: This is useful if we want to change the fade duration during playback.
+    onDurationFadeInChanged: pDuration = durationFadeIn
+
     onCurrentTimeChanged:
     {
         if (autoRepeat)
@@ -218,15 +221,11 @@ Player
     {
         if (pVolume == volume) return;
 
-        if (st.animate && fade)
+        if (volume)
         {
-            if (volume)
-            {
-                 pDuration = durationFadeIn;
-            }
-            else pDuration = durationFadeOut;
+             pDuration = durationFadeIn;
         }
-        else pDuration = 0;
+        else pDuration = durationFadeOut;
 
         pVolume = volume;
     }
@@ -251,7 +250,7 @@ Player
         {
             PropertyAnimation
             {
-                duration: pDuration
+                duration: (st.animate && fade) ? pDuration : 0
 
                 easing.type: slidePlayer.easing
             }
