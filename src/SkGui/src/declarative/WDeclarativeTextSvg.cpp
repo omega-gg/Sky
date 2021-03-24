@@ -391,16 +391,7 @@ int WDeclarativeTextSvgPrivate::getWidth(const QFontMetrics & metrics, const QSt
 #if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
     return metrics.horizontalAdvance(text) * multiplier;
 #else
-    // FIXME: Workaround to fix the width of the arial font.
-    if (font.family().toLower() == "arial")
-    {
-#ifdef QT_4
-        return metrics.width(text) * 1.01;
-#else
-        return metrics.width(text) * multiplier/* + (metrics.height() * 0.2)*/;
-#endif
-    }
-    else return metrics.width(text);
+    return metrics.width(text) * multiplier;
 #endif
 }
 

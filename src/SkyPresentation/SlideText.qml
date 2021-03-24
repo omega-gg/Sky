@@ -70,6 +70,9 @@ TextSvg
 
     styleSize: sp.slideText_styleSize
 
+    // NOTE: This makes sure the font width metric is accurate.
+    multiplier: 1.01
+
     scaleDelay: sp.slideText_scaleDelay
 
     font.family   : family

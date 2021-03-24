@@ -56,6 +56,8 @@ Item
 
     property int styleSize: sp.slideText_styleSize
 
+    property real multiplier: 1.0
+
     property string family   : st.text_fontFamily
     property int    pixelSize: sp.slideText_pixelSize
     property bool   bold     : true
@@ -227,6 +229,8 @@ Item
 
             styleColor: slideParagraph.styleColor
             styleSize : slideParagraph.styleSize
+
+            multiplier: slideParagraph.multiplier
 
             font.family   : slideParagraph.family
             font.pixelSize: slideParagraph.pixelSize
