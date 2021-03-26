@@ -113,7 +113,7 @@ Item
     property int slideText_scaleDelay: bpm(4)
 
     property int slideText_pixelSize: st.dp128
-    property int slideText_styleSize: st.dp8
+    property int slideText_styleSize: 8
 
     //---------------------------------------------------------------------------------------------
     // SlidePlayer
@@ -149,5 +149,13 @@ Item
     function bpm(value)
     {
         return value * ratioTempo * ratioVelocity;
+    }
+
+    //---------------------------------------------------------------------------------------------
+
+    // NOTE: This can be useful to check a bpm interval.
+    function bpmCheck(bpm, bpmAt, duration)
+    {
+        return (bpm >= bpmAt && bpm < bpmAt + duration);
     }
 }

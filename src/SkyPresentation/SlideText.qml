@@ -53,7 +53,7 @@ TextSvg
     marginWidth : ds(textHeight / 4)
     marginHeight: ds(textHeight / 8)
 
-    zoom: (slides) ? slides.ratio : 1.0
+    zoom: (typeof slides == "undefined") ? 1.0 : slides.ratio
 
     horizontalAlignment: Text.AlignHCenter
     verticalAlignment  : Text.AlignVCenter

@@ -565,6 +565,9 @@ void WBackendVlcPrivate::init()
     frameUpdated = false;
     frameFreeze  = false;
 
+    // FIXME VLC: This forces our default volume instead of the saved one.
+    WAbstractBackendPrivate::volume = -1.0;
+
     volume = 100;
     mute   = false;
 
