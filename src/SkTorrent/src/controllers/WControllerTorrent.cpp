@@ -948,6 +948,24 @@ void WControllerTorrentPrivate::onMagnetLoaded(WRemoteData * data)
 WControllerTorrent::WControllerTorrent() : WController(new WControllerTorrentPrivate(this)) {}
 
 //-------------------------------------------------------------------------------------------------
+// Initialize
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WControllerTorrent::initController(const QString & path,
+                                                      int port, qint64 sizeMax)
+{
+    Q_D(WControllerTorrent);
+
+    if (d->created == false)
+    {
+        d->created = true;
+
+        d->init(path, port, sizeMax);
+    }
+    else qWarning("WControllerTorrent::initController: Controller is already initialized.");
+}
+
+//-------------------------------------------------------------------------------------------------
 // Interface
 //-------------------------------------------------------------------------------------------------
 
@@ -1113,24 +1131,6 @@ WControllerTorrent::WControllerTorrent() : WController(new WControllerTorrentPri
     Q_D(WControllerTorrent);
 
     d->loaders.clear();
-}
-
-//-------------------------------------------------------------------------------------------------
-// Initialize
-//-------------------------------------------------------------------------------------------------
-
-/* virtual */ void WControllerTorrent::initController(const QString & path,
-                                                      int port, qint64 sizeMax)
-{
-    Q_D(WControllerTorrent);
-
-    if (d->created == false)
-    {
-        d->created = true;
-
-        d->init(path, port, sizeMax);
-    }
-    else qWarning("WControllerTorrent::initController: Controller is already initialized.");
 }
 
 //-------------------------------------------------------------------------------------------------

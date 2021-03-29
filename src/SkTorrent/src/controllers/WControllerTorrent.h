@@ -416,6 +416,11 @@ public: // Enums
 private:
     WControllerTorrent();
 
+public: // Initialize
+    virtual void initController(const QString & path,
+                                int             port = 8000, // NOTE: Default port for testing.
+                                qint64          sizeMax = 1048576 * 1000); // 1 gigabyte
+
 public: // Interface
     Q_INVOKABLE WTorrentReply * getTorrent(const QString  & url,
                                            QObject        * parent = NULL,
@@ -442,11 +447,6 @@ public: // Interface
     Q_INVOKABLE void registerLoader   (WBackendNetQuery::Type type, WAbstractLoader * loader);
     Q_INVOKABLE void unregisterLoader (WBackendNetQuery::Type type);
     Q_INVOKABLE void unregisterLoaders();
-
-public: // Initialize
-    virtual void initController(const QString & path,
-                                int             port = 8000, // NOTE: Default port for testing.
-                                qint64          sizeMax = 1048576 * 1000); // 1 gigabyte
 
 public: // Static functions
     Q_INVOKABLE

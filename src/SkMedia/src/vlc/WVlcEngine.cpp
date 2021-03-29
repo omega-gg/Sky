@@ -46,11 +46,13 @@ WVlcEnginePrivate::WVlcEnginePrivate(WVlcEngine * p) : WPrivate(p) {}
 
 //-------------------------------------------------------------------------------------------------
 
-void WVlcEnginePrivate::init(QThread * thread)
+void WVlcEnginePrivate::init(const QStringList & options, QThread * thread)
 {
     Q_Q(WVlcEngine);
 
     instance = NULL;
+
+    this->options = options;
 
     if (thread) q->moveToThread(thread);
 
@@ -63,10 +65,11 @@ void WVlcEnginePrivate::init(QThread * thread)
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
-WVlcEngine::WVlcEngine(QThread * thread, QObject * parent)
+/* explicit */ WVlcEngine::WVlcEngine(const QStringList & options,
+                                      QThread * thread, QObject * parent)
     : QObject(parent), WPrivatable(new WVlcEnginePrivate(this))
 {
-    Q_D(WVlcEngine); d->init(thread);
+    Q_D(WVlcEngine); d->init(options, thread);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -81,6 +84,29 @@ WVlcEngine::WVlcEngine(QThread * thread, QObject * parent)
 }
 
 //-------------------------------------------------------------------------------------------------
+// Static functions
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QStringList WVlcEngine::getOptions()
+{
+    QStringList options;
+
+    options.append("--intf=dummy");
+#ifdef Q_OS_WIN
+    options.append("--dummy-quiet");
+#elif defined(Q_OS_MAC)
+    options.append("--vout=macosx");
+#endif
+    options.append("--ignore-config");
+    options.append("--no-spu");
+    options.append("--no-osd");
+    options.append("--no-stats");
+    options.append("--no-media-library");
+
+    return options;
+}
+
+//-------------------------------------------------------------------------------------------------
 // Events
 //-------------------------------------------------------------------------------------------------
 
@@ -92,47 +118,65 @@ WVlcEngine::WVlcEngine(QThread * thread, QObject * parent)
 
     if (type == static_cast<QEvent::Type> (WVlcEnginePrivate::EventCreate))
     {
-        const char * const args[] =
-        {
-            "--intf=dummy", /* No interface     */
-#ifdef Q_OS_WIN
-            "--dummy-quiet", /* No command-line  */
-#elif defined(Q_OS_MAC)
-            "--vout=macosx",
-#endif
-            "--ignore-config",     /* No configuration */
-            "--no-spu",            /* No sub-pictures  */
-            "--no-osd",            /* No video overlay */
-            "--no-stats",          /* No statistics    */
-#ifndef Q_OS_MAC
-            "--no-media-library"   /* No Media Library */
-#else
-            "--no-media-library"
-#endif
-            //"--http-reconnect",  /* Auto reconnect   */
-            //"--avcodec-fast",    /* Speed tricks     */
-            //"--input-fast-seek", /* Fast seek        */
-            //"--avcodec-dr",
-            //"--avcodec-hurry-up",
-            //"--avcodec-hw=any",
-            //"--avcodec-error-resilience=1",
-            //"--avcodec-workaround-bugs=1",
-            //"--avcodec-skip-frame=0",
-            //"--avcodec-skip-idct=0",
-            //"--avcodec-vismv=0",
-            //"--avcodec-lowres=0",
-            //"--avcodec-skiploopfilter=0",
-            //"--network-caching=200",
-            //"--cr-average=10000",
-            //"--clock-synchro=0",
-            //"--verbose=2"
-        };
-
 #ifdef Q_OS_MAC
         qputenv("VLC_PLUGIN_PATH", QCoreApplication::applicationDirPath().toLatin1());
 #endif
 
-        d->instance = libvlc_new(sizeof(args) / sizeof(*args), args);
+        if (d->options.isEmpty())
+        {
+            const char * const args[] =
+            {
+                "--intf=dummy", /* No interface     */
+#ifdef Q_OS_WIN
+                "--dummy-quiet", /* No command-line  */
+#elif defined(Q_OS_MAC)
+                "--vout=macosx",
+#endif
+                "--ignore-config",     /* No configuration */
+                "--no-spu",            /* No sub-pictures  */
+                "--no-osd",            /* No video overlay */
+                "--no-stats",          /* No statistics    */
+                "--no-media-library"   /* No Media Library */
+                //"--http-reconnect",  /* Auto reconnect   */
+                //"--avcodec-fast",    /* Speed tricks     */
+                //"--input-fast-seek", /* Fast seek        */
+                //"--avcodec-dr",
+                //"--avcodec-hurry-up",
+                //"--avcodec-hw=any",
+                //"--avcodec-error-resilience=1",
+                //"--avcodec-workaround-bugs=1",
+                //"--avcodec-skip-frame=0",
+                //"--avcodec-skip-idct=0",
+                //"--avcodec-vismv=0",
+                //"--avcodec-lowres=0",
+                //"--avcodec-skiploopfilter=0",
+                //"--network-caching=200",
+                //"--cr-average=10000",
+                //"--clock-synchro=0",
+                //"--verbose=2"
+            };
+
+            d->instance = libvlc_new(sizeof(args) / sizeof(*args), args);
+        }
+        else
+        {
+            int argc = d->options.length();
+
+            char ** args = new char * [argc];
+
+            int index = 0;
+
+            foreach (const QString & string, d->options)
+            {
+                args[index] = new char [string.length()];
+
+                strcpy(args[index], string.C_STR);
+
+                index++;
+            }
+
+            d->instance = libvlc_new(argc, args);
+        }
 
 #ifdef Q_OS_LINUX
         if (d->instance == NULL)

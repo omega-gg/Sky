@@ -158,7 +158,7 @@ WControllerMediaPrivate::WControllerMediaPrivate(WControllerMedia * p) : WContro
 
 //-------------------------------------------------------------------------------------------------
 
-void WControllerMediaPrivate::init()
+void WControllerMediaPrivate::init(const QStringList & options)
 {
     Q_Q(WControllerMedia);
 
@@ -168,7 +168,7 @@ void WControllerMediaPrivate::init()
 
     thread->start();
 
-    engine = new WVlcEngine(thread);
+    engine = new WVlcEngine(options, thread);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -506,9 +506,17 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 // Initialize
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WControllerMedia::init()
+/* virtual */ void WControllerMedia::initController(const QStringList & options)
 {
-    Q_D(WControllerMedia); d->init();
+    Q_D(WControllerMedia);
+
+    if (d->created == false)
+    {
+        d->created = true;
+
+        d->init(options);
+    }
+    else qWarning("WControllerMedia::initController: Controller is already initialized.");
 }
 
 //-------------------------------------------------------------------------------------------------

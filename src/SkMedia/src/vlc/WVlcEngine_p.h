@@ -49,10 +49,12 @@ public: // Enums
 public:
     WVlcEnginePrivate(WVlcEngine * p);
 
-    void init(QThread * thread);
+    void init(const QStringList & options, QThread * thread);
 
 public: // Variables
     libvlc_instance_t * instance;
+
+    QStringList options;
 
 protected:
     W_DECLARE_PUBLIC(WVlcEngine)

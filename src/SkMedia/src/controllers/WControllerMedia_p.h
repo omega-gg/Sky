@@ -87,7 +87,7 @@ public:
 
     /* virtual */ ~WControllerMediaPrivate();
 
-    void init();
+    void init(const QStringList & options);
 
 public: // Functions
     void loadSources(WMediaReply * reply);

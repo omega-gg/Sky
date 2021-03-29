@@ -100,8 +100,8 @@ class SK_MEDIA_EXPORT WControllerMedia : public WController
 private:
     WControllerMedia();
 
-protected: // Initialize
-    /* virtual */ void init();
+public: // Initialize
+    virtual void initController(const QStringList & options = QStringList());
 
 public: // Interface
     Q_INVOKABLE WVlcPlayer * createVlcPlayer() const;
