@@ -41,6 +41,9 @@ Player
 
     property bool fade: false
 
+    // NOTE: This is the desired volume when we are not fading in / out.
+    property real volumeActive: slides.volume
+
     //---------------------------------------------------------------------------------------------
     // Style
 
@@ -72,7 +75,7 @@ Player
 
     backend: BackendVlc {}
 
-    volume: (fade == false || (slides && pVolume)) ? slides.volume : 0.0
+    volume: (fade == false || (slides && pVolume)) ? volumeActive : 0.0
 
     //---------------------------------------------------------------------------------------------
     // Events
