@@ -28,7 +28,6 @@
 #include <QThread>
 #ifdef QT_4
 #include <QDeclarativeComponent>
-#include <QStringList>
 #else
 #include <QQmlComponent>
 #endif

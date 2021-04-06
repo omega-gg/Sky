@@ -23,6 +23,11 @@
 #ifndef WCONTROLLERMEDIA_H
 #define WCONTROLLERMEDIA_H
 
+#ifdef QT_4
+// Qt includes
+#include <QStringList>
+#endif
+
 // Sk includes
 #include <WController>
 #include <WBackendNet>
