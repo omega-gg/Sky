@@ -3188,6 +3188,20 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ QString WControllerPlaylist::getFeed(const QString & feed,
+                                                              const QString & url)
+{
+    if (WControllerNetwork::urlScheme(feed) == "")
+    {
+        const QString & host = WControllerNetwork::extractUrlHost(url);
+
+        return WControllerNetwork::resolveUrl(feed, host);
+    }
+    else return feed;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE static */ QString WControllerPlaylist::getPlayerTime(int msec, int max)
 {
     if (msec < 1) return "0:00";

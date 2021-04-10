@@ -226,6 +226,9 @@ public: // Static functions
                                                   const WBackendNetQuery & query,
                                                   QObject                * parent = NULL);
 
+    // NOTE: This is useful when the feed is not a URL.
+    Q_INVOKABLE static QString getFeed(const QString & feed, const QString & url);
+
     Q_INVOKABLE static QString getPlayerTime(int msec, int max = -1);
 
     Q_INVOKABLE static QStringList getLanguages();
