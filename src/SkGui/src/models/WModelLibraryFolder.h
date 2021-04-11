@@ -125,9 +125,9 @@ public:
     explicit WModelLibraryFolderFiltered(QObject * parent = NULL);
 
 public: // Interface
-    Q_INVOKABLE int idAt(int index);
+    Q_INVOKABLE int idAt(int index) const;
 
-    Q_INVOKABLE int indexFromId(int id);
+    Q_INVOKABLE int indexFromId(int id) const;
 
 signals:
     void modelChanged();

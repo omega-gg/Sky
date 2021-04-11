@@ -78,8 +78,7 @@ class SK_GUI_EXPORT WPlaylist : public WLibraryItem
 
     Q_PROPERTY(int currentId READ currentId WRITE setCurrentId NOTIFY currentTrackChanged)
 
-    Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex
-               NOTIFY currentIndexChanged)
+    Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
 
     Q_PROPERTY(int currentTime READ currentTime WRITE setCurrentTime
                NOTIFY currentTimeChanged)

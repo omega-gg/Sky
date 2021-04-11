@@ -299,7 +299,7 @@ void WModelLibraryFolderFilteredPrivate::init()
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ int WModelLibraryFolderFiltered::idAt(int index)
+/* Q_INVOKABLE */ int WModelLibraryFolderFiltered::idAt(int index) const
 {
     QModelIndex modelIndex = this->index(index, 0);
 
@@ -312,7 +312,7 @@ void WModelLibraryFolderFilteredPrivate::init()
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ int WModelLibraryFolderFiltered::indexFromId(int id)
+/* Q_INVOKABLE */ int WModelLibraryFolderFiltered::indexFromId(int id) const
 {
     QModelIndex index = this->index(0, 0);
 
