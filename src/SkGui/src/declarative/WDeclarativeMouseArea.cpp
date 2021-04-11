@@ -1202,12 +1202,6 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
             QCursor::setPos(screenPos);
 
-#ifdef Q_OS_ANDROID
-            // NOTE android: We need to make sure we grab the mouse first.
-            //               Sometimes we lose it when interacting with a Flickable.
-            grabMouse();
-#endif
-
             QMouseEvent eventMove(QEvent::MouseMove, localPos, screenPos,
                                   Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
 
@@ -1215,6 +1209,13 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
                                    Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
 
             QCoreApplication::sendEvent(d->view, &eventMove);
+
+#ifdef Q_OS_ANDROID
+            // NOTE android: We need to make sure we grab the mouse *before* the press event
+            //               (sometimes we lose it when interacting with a Flickable). Also, we need
+            //               to grab it *after* the move event, otherwise it breaks drag actions.
+            grabMouse();
+#endif
 
             // NOTE: We want to update hover right before the press event.
             d->view->updateHover();
