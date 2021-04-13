@@ -29,5 +29,5 @@ ButtonPianoIcon
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width : st.buttonPianoWindow_width + borderSizeWidth
+    width: st.buttonPianoWindow_width + borderSizeWidth
 }
