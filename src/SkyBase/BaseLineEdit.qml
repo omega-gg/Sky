@@ -61,8 +61,6 @@ MouseArea
 
     property alias font: textInput.font
 
-    property alias activeFocusOnPress: textInput.activeFocusOnPress
-
     //---------------------------------------------------------------------------------------------
 
     property alias textInput      : textInput
@@ -102,7 +100,7 @@ MouseArea
 
     onPressed:
     {
-        if (textInput.activeFocusOnPress && mouse.button & Qt.LeftButton)
+        if (mouse.button & Qt.LeftButton)
         {
             textInput.forceActiveFocus();
         }
