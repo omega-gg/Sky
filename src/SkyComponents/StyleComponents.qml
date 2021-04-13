@@ -320,6 +320,13 @@ Style
     property int buttonPianoIcon_size: buttonPiano_height
 //#END
 
+//#ButtonPianoWindow
+    //---------------------------------------------------------------------------------------------
+    // ButtonPianoWindow
+
+    property int buttonPianoWindow_width: dp40
+//#END
+
 //#ButtonPianoReset
     //---------------------------------------------------------------------------------------------
     // ButtonPianoReset

@@ -177,7 +177,7 @@ ViewDrag
         onPressed: buttonPressed()
     }
 
-    ButtonPianoIcon
+    ButtonPianoWindow
     {
         id: buttonIconify
 
@@ -195,7 +195,7 @@ ViewDrag
         onClicked: pIconify()
     }
 
-    ButtonPianoIcon
+    ButtonPianoWindow
     {
         id: buttonMaximize
 
@@ -213,7 +213,7 @@ ViewDrag
         onClicked: pMaximize()
     }
 
-    ButtonPianoIcon
+    ButtonPianoWindow
     {
         id: buttonClose
 
@@ -221,7 +221,7 @@ ViewDrag
         anchors.top   : parent.top
         anchors.bottom: border.top
 
-        anchors.rightMargin: st.dp16
+        borderRight: 0
 
         icon          : st.icon16x16_close
         iconSourceSize: st.size16x16
