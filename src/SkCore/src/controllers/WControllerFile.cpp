@@ -174,13 +174,15 @@ protected: // WAbstractThreadAction implementation
 public: // Variables
     QStringList fileNames;
     QStringList newNames;
+
+    QFileDevice::Permissions permissions;
 };
 
 /* virtual */ bool WControllerFileCopy::run()
 {
     for (int i = 0; i < fileNames.count(); i++)
     {
-        WControllerFile::copyFile(fileNames.at(i), newNames.at(i));
+        WControllerFile::copyFile(fileNames.at(i), newNames.at(i), permissions);
     }
 
     return true;
@@ -792,7 +794,8 @@ WControllerFileReply * WControllerFile::startRenameFiles(const QStringList & old
 }
 
 WControllerFileReply * WControllerFile::startCopyFiles(const QStringList & fileNames,
-                                                       const QStringList & newNames)
+                                                       const QStringList & newNames,
+                                                       QFileDevice::Permissions permissions)
 {
     if (fileNames.isEmpty() || fileNames.count() != newNames.count()) return NULL;
 
@@ -800,6 +803,8 @@ WControllerFileReply * WControllerFile::startCopyFiles(const QStringList & fileN
 
     action->fileNames = fileNames;
     action->newNames  = newNames;
+
+    action->permissions = permissions;
 
     startWriteAction(action);
 
@@ -900,9 +905,10 @@ WControllerFileReply * WControllerFile::startRenameFile(const QString & oldPath,
 }
 
 WControllerFileReply * WControllerFile::startCopyFile(const QString & fileName,
-                                                      const QString & newName)
+                                                      const QString & newName,
+                                                      QFileDevice::Permissions permissions)
 {
-    return startCopyFiles(QStringList() << fileName, QStringList() << newName);
+    return startCopyFiles(QStringList() << fileName, QStringList() << newName, permissions);
 }
 
 WControllerFileReply * WControllerFile::startDeleteFile(const QString & path)
@@ -1226,7 +1232,8 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
     return file.rename(newPath);
 }
 
-/* static */ bool WControllerFile::copyFile(const QString & fileName, const QString & newName)
+/* static */ bool WControllerFile::copyFile(const QString & fileName, const QString & newName,
+                                            QFileDevice::Permissions permissions)
 {
     QtLockedFile file(newName);
 
@@ -1240,7 +1247,17 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
         }
     }
 
-    return QFile::copy(fileName, newName);
+    bool result = QFile::copy(fileName, newName);
+
+    if (permissions)
+    {
+        if (result)
+        {
+             return QFile::setPermissions(newName, permissions);
+        }
+        else return false;
+    }
+    else return result;
 }
 
 /* static */ bool WControllerFile::deleteFile(const QString & fileName)

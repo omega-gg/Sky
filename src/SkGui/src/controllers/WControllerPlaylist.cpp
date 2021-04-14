@@ -3165,7 +3165,13 @@ WControllerFileReply * WControllerPlaylist::copyBackends(const QString & path,
     }
     else wControllerFile->startCreateFolder(newPath);
 
+#ifdef Q_OS_UNIX
+    // NOTE Unix: We need to make sure we can write on these files.
+    return wControllerFile->startCopyFiles(fileNames, newNames,
+                                           QFileDevice::ReadOwner | QFileDevice::WriteOwner);
+#else
     return wControllerFile->startCopyFiles(fileNames, newNames);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------

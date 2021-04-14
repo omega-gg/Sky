@@ -144,7 +144,8 @@ public: // Interface
                                             const QStringList & newPaths);
 
     WControllerFileReply * startCopyFiles(const QStringList & fileNames,
-                                          const QStringList & newNames);
+                                          const QStringList & newNames,
+                                          QFileDevice::Permissions permissions = 0);
 
     WControllerFileReply * startDeleteFiles(const QStringList & paths);
 
@@ -166,7 +167,9 @@ public: // Interface
 
     WControllerFileReply * startRenameFile(const QString & oldPath, const QString & newPath);
 
-    WControllerFileReply * startCopyFile(const QString & fileName, const QString & newName);
+    WControllerFileReply * startCopyFile(const QString & fileName,
+                                         const QString & newName,
+                                         QFileDevice::Permissions permissions = 0);
 
     WControllerFileReply * startDeleteFile(const QString & path);
 
@@ -228,7 +231,8 @@ public: // Static functions
 
     static bool renameFile(const QString & oldPath, const QString & newPath);
 
-    static bool copyFile(const QString & fileName, const QString & newName);
+    static bool copyFile(const QString & fileName,
+                         const QString & newName, QFileDevice::Permissions permissions = 0);
 
     static bool deleteFile(const QString & fileName);
 
