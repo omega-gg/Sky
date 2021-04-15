@@ -63,8 +63,8 @@ LabelLoadingText
         width : height
         height: parent.height - st.labelLoadingText_padding
 
-        icon          : st.icon16x16_close
-        iconSourceSize: st.size16x16
+        icon          : st.icon12x12_close
+        iconSourceSize: st.size12x12
 
         onPressed: labelLoading.pressed(mouse)
         onClicked: labelLoading.clicked(mouse)

@@ -215,7 +215,7 @@ MouseArea
 
         clip: true
 
-        renderType: Text.NativeRendering
+        renderType: st.text_renderType
 //#END
 
         enabled: baseLineEdit.enabled

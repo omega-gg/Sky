@@ -1055,19 +1055,19 @@ Style
     // Icons
 
 //#icons_window:BarWindow
-    property url icon_iconify : "icons/scale/iconify.svg"
-    property url icon_maximize: "icons/scale/maximize.svg"
-    property url icon_minimize: "icons/scale/minimize.svg"
+    property url icon_iconify : "icons/window-minimize.svg"
+    property url icon_maximize: "icons/window-maximize.svg"
+    property url icon_minimize: "icons/window-restore.svg"
 
-    property url icon16x16_iconify : vector("icons/16x16/iconify.png",  icon_iconify)
+    property url icon12x12_iconify : icon_iconify
     property url icon16x16_maximize: vector("icons/16x16/maximize.png", icon_maximize)
     property url icon16x16_minimize: vector("icons/16x16/minimize.png", icon_minimize)
 //#END
 
 //#icons_close:BarWindow:ButtonsItem:LabelLoadingButton:LineEditBoxClear:TabsBrowser
-    property url icon_close: "icons/scale/close.svg"
+    property url icon_close: "icons/times.svg"
 
-    property url icon16x16_close: vector("icons/16x16/close.png", icon_close)
+    property url icon12x12_close: icon_close
 //#END
 
 //#icons_navigate:BaseWall
@@ -1175,7 +1175,7 @@ Style
     text_bold: true
 
 //#QT_5
-    text_renderType: Text.NativeRendering
+    //text_renderType: Text.NativeRendering
 //#END
 
     //---------------------------------------------------------------------------------------------

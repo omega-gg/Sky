@@ -189,8 +189,8 @@ ViewDrag
 
         borderLeft: borderSize
 
-        icon          : st.icon16x16_iconify
-        iconSourceSize: st.size16x16
+        icon          : st.icon12x12_iconify
+        iconSourceSize: st.size12x12
 
         onClicked: pIconify()
     }
@@ -223,8 +223,8 @@ ViewDrag
 
         borderRight: 0
 
-        icon          : st.icon16x16_close
-        iconSourceSize: st.size16x16
+        icon          : st.icon12x12_close
+        iconSourceSize: st.size12x12
 
         colorHoverA: st.button_colorConfirmHoverA
         colorHoverB: st.button_colorConfirmHoverB

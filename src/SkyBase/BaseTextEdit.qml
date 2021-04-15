@@ -58,7 +58,7 @@ TextEdit
     textMargin: st.baseTextEdit_margin
 
 //#QT_5
-    renderType: Text.NativeRendering
+    renderType: st.text_renderType
 //#END
 
     selectByMouse: true

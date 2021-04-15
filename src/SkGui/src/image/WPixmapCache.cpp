@@ -1242,6 +1242,10 @@ void WPixmapCache::clear(QObject * receiver)
 
                 QPainter painter(&content);
 
+                // NOTE: We need to update margins according to the new size.
+                marginX = (width  - front.width ()) / 2;
+                marginY = (height - front.height()) / 2;
+
                 painter.drawImage(marginX, marginY, front);
 
                 *image = content;
@@ -1280,6 +1284,10 @@ void WPixmapCache::clear(QObject * receiver)
                 content.fill(Qt::transparent);
 
                 QPainter painter(&content);
+
+                // NOTE: We need to update margins according to the new size.
+                marginX = (width  - front.width ()) / 2;
+                marginY = (height - front.height()) / 2;
 
                 painter.drawPixmap(marginX, marginY, front);
 
