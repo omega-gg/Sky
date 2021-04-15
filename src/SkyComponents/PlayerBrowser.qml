@@ -146,7 +146,7 @@ BasePlayerBrowser
         width : pGetSize()
         height: width
 
-        iconWidth : Math.round(width / 1.8)
+        iconWidth : Math.round(width / 3)
         iconHeight: iconWidth
 
         borderSize: st.border_sizeFocus

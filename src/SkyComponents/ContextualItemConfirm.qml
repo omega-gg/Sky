@@ -295,8 +295,8 @@ Item
 
             opacity: (isEnabled) ? 1.0 : st.icon_opacityDisable
 
-            source    : st.icon24x24_slideRight
-            sourceSize: st.size24x24
+            source    : st.icon12x12_slideRight
+            sourceSize: st.size12x12
 
             style: st.icon_sunken
 
@@ -329,8 +329,8 @@ Item
 
             borderRight: borderSize
 
-            icon          : st.icon24x24_slideLeft
-            iconSourceSize: st.size24x24
+            icon          : st.icon12x12_slideLeft
+            iconSourceSize: st.size12x12
 
             onActiveFocusChanged:
             {

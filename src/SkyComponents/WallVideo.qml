@@ -1017,8 +1017,8 @@ WallBookmarkTrack
 
         visible: buttonsItem.visible
 
-        icon          : st.icon24x24_extend
-        iconSourceSize: st.size24x24
+        icon          : st.icon20x20_extend
+        iconSourceSize: st.size20x20
 
         onClicked:
         {
@@ -1046,7 +1046,7 @@ WallBookmarkTrack
                   &&
                   pHoveredTab.currentTime != -1)
 
-        source    : st.icon24x24_play
-        sourceSize: st.size24x24
+        source    : st.icon16x16_play
+        sourceSize: st.size16x16
     }
 }

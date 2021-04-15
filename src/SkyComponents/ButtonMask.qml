@@ -75,8 +75,8 @@ BaseButton
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width : st.buttonMask_width
-    height: st.buttonMask_height
+    width : st.buttonMask_size
+    height: width
 
     cursor: Qt.PointingHandCursor
 

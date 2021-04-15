@@ -608,8 +608,8 @@ MouseArea
 
             enabled: (currentPage > 0)
 
-            icon          : st.icon16x16_previous
-            iconSourceSize: st.size16x16
+            icon          : st.icon8x8_previous
+            iconSourceSize: st.size8x8
 
             cursor: Qt.PointingHandCursor
 
@@ -630,8 +630,8 @@ MouseArea
 
             enabled: (currentPage < (pageCount - 1))
 
-            icon          : st.icon16x16_next
-            iconSourceSize: st.size16x16
+            icon          : st.icon8x8_next
+            iconSourceSize: st.size8x8
 
             cursor: Qt.PointingHandCursor
 

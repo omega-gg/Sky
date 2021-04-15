@@ -205,8 +205,8 @@ ViewDrag
 
         highlighted: window.maximized
 
-        icon: (window.maximized) ? st.icon16x16_minimize
-                                 : st.icon16x16_maximize
+        icon: (window.maximized) ? st.icon12x12_minimize
+                                 : st.icon12x12_maximize
 
         iconSourceSize: st.size16x16
 

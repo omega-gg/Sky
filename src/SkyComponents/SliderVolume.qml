@@ -26,6 +26,12 @@ import Sky     1.0
 Item
 {
     //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+
+    property int margins: st.sliderVolume_margins
+
+    //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
@@ -80,6 +86,8 @@ Item
 
         anchors.left : buttonMinimum.right
         anchors.right: buttonMaximum.left
+
+        anchors.margins: margins
 
         anchors.verticalCenter: parent.verticalCenter
 

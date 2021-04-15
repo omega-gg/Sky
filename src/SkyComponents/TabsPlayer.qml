@@ -98,7 +98,7 @@ TabsTrack
                   &&
                   pHoveredTab.currentTime != -1)
 
-        source    : st.icon24x24_play
-        sourceSize: st.size24x24
+        source    : st.icon16x16_play
+        sourceSize: st.size16x16
     }
 }
