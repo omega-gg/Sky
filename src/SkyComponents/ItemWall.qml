@@ -34,6 +34,8 @@ Panel
     property bool isHovered: containsMouse
     property bool isCurrent: false
 
+    property variant iconDefaultSize: null
+
     property int textSpacing: st.dp8
     property int textMargin : st.dp8
 
@@ -319,7 +321,10 @@ Panel
             width : st.itemWall_iconWidth
             height: st.itemWall_iconHeight
 
-            sourceSize: Qt.size(width, height)
+            sourceSize: (isSourceDefault && iconDefaultSize) ? iconDefaultSize
+                                                             : Qt.size(width, height)
+
+            sourceArea: Qt.size(width, height)
 
             opacity: (itemWall.enabled) ? 1.0 : st.icon_opacityDisable
 

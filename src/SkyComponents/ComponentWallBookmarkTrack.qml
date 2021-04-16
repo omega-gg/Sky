@@ -75,6 +75,8 @@ ComponentWall
 
     iconWidth: st.componentWallBookmarkTrack_iconWidth
 
+    iconDefaultSize: st.size16x16
+
     z:
     {
 //#QT_4

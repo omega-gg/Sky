@@ -1114,9 +1114,9 @@ Style
 //#END
 
 //#icons_external
-    property url icon_external: "icons/scale/external.svg"
+    property url icon_external: "icons/external-link-alt.svg"
 
-    property url icon16x16_external: vector("icons/16x16/external.png", icon_external)
+    property url icon16x16_external: icon_external
 //#END
 
     //---------------------------------------------------------------------------------------------

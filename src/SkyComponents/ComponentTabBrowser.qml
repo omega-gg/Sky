@@ -51,6 +51,8 @@ ComponentTab
 
     iconWidth: st.componentTabBrowser_iconWidth
 
+    iconDefaultSize: st.size16x16
+
 //#QT_4
     x: getItemX(index)
 

@@ -41,6 +41,8 @@ MouseArea
     property bool isCurrent   : false
     property bool isContextual: false
 
+    property variant iconDefaultSize: null
+
     property int textSpacing: st.dp8
     property int textMargin : st.dp8
 
@@ -217,7 +219,10 @@ MouseArea
             width : st.itemList_iconWidth
             height: st.itemList_iconHeight
 
-            sourceSize: Qt.size(width, height)
+            sourceSize: (isSourceDefault && iconDefaultSize) ? iconDefaultSize
+                                                             : Qt.size(width, height)
+
+            sourceArea: Qt.size(width, height)
 
             clip: (fillMode == Image.PreserveAspectCrop)
 

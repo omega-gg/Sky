@@ -38,6 +38,8 @@ BaseToolTip
 
     property int spacing: st.toolTip_spacing
 
+    property variant iconDefaultSize: null
+
     //---------------------------------------------------------------------------------------------
     // Private
 
@@ -132,7 +134,7 @@ BaseToolTip
         itemIcon.width  = width;
         itemIcon.height = height;
 
-        itemIcon.sourceSize = Qt.size(width, height);
+        iconDefaultSize = Qt.size(width, height);
 
         iconFillMode = Image.Stretch;
 
@@ -144,12 +146,12 @@ BaseToolTip
         pActivate();
     }
 
-    function showIcon(text, iconDefault, icon, width, height)
+    function showIcon(text, iconDefault, widthDefault, heightDefault, icon, width, height)
     {
         itemIcon.width  = width;
         itemIcon.height = height;
 
-        itemIcon.sourceSize = Qt.size(width, height);
+        iconDefaultSize = Qt.size(widthDefault, heightDefault);
 
         iconFillMode = Image.PreserveAspectCrop;
 
@@ -174,6 +176,11 @@ BaseToolTip
         anchors.leftMargin: Math.round((pIconWidth - width) / 2)
 
         anchors.verticalCenter: parent.verticalCenter
+
+        sourceSize: (isSourceDefault && iconDefaultSize) ? iconDefaultSize
+                                                         : Qt.size(width, height)
+
+        sourceArea: Qt.size(width, height)
 
         clip: (fillMode == Image.PreserveAspectCrop)
 
