@@ -204,11 +204,11 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 
     SetParent(id, handle);
 
-#ifdef QT_5
+#ifdef QT_LATEST
     // FIXME Qt5 Windows: We need to create a QWindow to receive QScreen events.
     if (count == 0)
     {
-        QTimer::singleShot(ABSTRACTVIEW_DELAY, this, SLOT(onCreate()));
+        QTimer::singleShot(ABSTRACTVIEW_DELAY, q, SLOT(onCreate()));
     }
 
     count++;
