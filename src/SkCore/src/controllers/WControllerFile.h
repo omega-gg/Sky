@@ -27,7 +27,7 @@
 #include <QFileInfo>
 #include <QUrl>
 #ifdef QT_4
-#include <QFileDevice>
+#include <QFile>
 #endif
 
 // Sk includes
