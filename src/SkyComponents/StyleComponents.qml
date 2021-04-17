@@ -1154,7 +1154,7 @@ Style
     //---------------------------------------------------------------------------------------------
 
 //#icons_loading:IconLoading
-    property url icon_loading: "icons/scale/loading.svg"
+    property url icon_loading: "icons/loading.svg"
 
     property url icon32x32_loading: icon_loading
 //#END

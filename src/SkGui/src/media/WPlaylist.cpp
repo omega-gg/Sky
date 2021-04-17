@@ -1546,11 +1546,11 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
     if (cleanFragment)
     {
-        QString string = WControllerNetwork::cleanUrlFragment(source);
+        QString string = WControllerPlaylist::cleanSource(source);
 
         for (int i = 0; i < d->tracks.count(); i++)
         {
-            if (WControllerNetwork::cleanUrlFragment(d->tracks.at(i).d_func()->source) == string)
+            if (WControllerPlaylist::cleanSource(d->tracks.at(i).d_func()->source) == string)
             {
                 return i;
             }

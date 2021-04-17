@@ -219,6 +219,12 @@ public: // Static functions
     Q_INVOKABLE static QString createSource(const QString & backend, const QString & method,
                                             const QString & label,   const QString & q = QString());
 
+    // NOTE: Returns the source fragment cleaned up. That's useful for comparison.
+    Q_INVOKABLE static QString cleanSource(const QString & url);
+
+    // NOTE: A source match with both fragments cleaned up.
+    Q_INVOKABLE static bool cleanMatch(const QString & urlA, const QString & urlB);
+
     Q_INVOKABLE static WControllerFileReply * copyBackends(const QString & path,
                                                            const QString & newPath);
 

@@ -118,9 +118,6 @@ public: // Static functions
     Q_INVOKABLE static QString removeUrlFragment  (const QString & string);
     Q_INVOKABLE static QString removeFileExtension(const QString & string);
 
-    // NOTE: The fragment cleaned without the volatile values. That's useful for comparison.
-    Q_INVOKABLE static QString cleanUrlFragment(const QString & string);
-
     //---------------------------------------------------------------------------------------------
 
     Q_INVOKABLE static QString extractIpBase(const QString & string);

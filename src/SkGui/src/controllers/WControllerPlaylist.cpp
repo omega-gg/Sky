@@ -3141,6 +3141,37 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ QString WControllerPlaylist::cleanSource(const QString & url)
+{
+    int indexA = url.indexOf('#');
+
+    if (indexA == -1) return url;
+
+    int indexB = indexA + 1;
+
+    // NOTE: If we have a digit it's probably a file index that we want to keep.
+    if (indexB < url.length() && url.at(indexB).isDigit())
+    {
+        indexB = url.indexOf('&', indexB);
+
+        if (indexB == -1)
+        {
+             return url;
+        }
+        else return url.mid(0, indexB);
+    }
+    else return url.mid(0, indexA);
+}
+
+
+/* Q_INVOKABLE static */ bool WControllerPlaylist::cleanMatch(const QString & urlA,
+                                                              const QString & urlB)
+{
+    return (cleanSource(urlA) == cleanSource(urlB));
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE static */
 WControllerFileReply * WControllerPlaylist::copyBackends(const QString & path,
                                                          const QString & newPath)
