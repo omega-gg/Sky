@@ -26,9 +26,6 @@
 // Qt includes
 #include <QFileInfo>
 #include <QUrl>
-#ifdef QT_4
-#include <QFile>
-#endif
 
 // Sk includes
 #include <WController>
@@ -146,9 +143,16 @@ public: // Interface
     WControllerFileReply * startRenameFiles(const QStringList & oldPaths,
                                             const QStringList & newPaths);
 
+#ifdef QT_4
+    WControllerFileReply * startCopyFiles(const QStringList & fileNames,
+                                          const QStringList & newNames,
+                                          QFile::Permissions permissions = 0);
+#else
+
     WControllerFileReply * startCopyFiles(const QStringList & fileNames,
                                           const QStringList & newNames,
                                           QFileDevice::Permissions permissions = 0);
+#endif
 
     WControllerFileReply * startDeleteFiles(const QStringList & paths);
 
@@ -170,9 +174,16 @@ public: // Interface
 
     WControllerFileReply * startRenameFile(const QString & oldPath, const QString & newPath);
 
+
+#ifdef QT_4
+    WControllerFileReply * startCopyFile(const QString & fileName,
+                                         const QString & newName,
+                                         QFile::Permissions permissions = 0);
+#else
     WControllerFileReply * startCopyFile(const QString & fileName,
                                          const QString & newName,
                                          QFileDevice::Permissions permissions = 0);
+#endif
 
     WControllerFileReply * startDeleteFile(const QString & path);
 
@@ -234,8 +245,13 @@ public: // Static functions
 
     static bool renameFile(const QString & oldPath, const QString & newPath);
 
+#ifdef QT_4
+    static bool copyFile(const QString & fileName,
+                         const QString & newName, QFile::Permissions permissions = 0);
+#else
     static bool copyFile(const QString & fileName,
                          const QString & newName, QFileDevice::Permissions permissions = 0);
+#endif
 
     static bool deleteFile(const QString & fileName);
 
