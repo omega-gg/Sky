@@ -1041,8 +1041,6 @@ Style
     // ContextualItemConfirm
 
     property int contextualItemConfirm_height: itemList_height
-
-    property int contextualItemConfirm_paddingRight: dp2
 //#END
 
     //---------------------------------------------------------------------------------------------

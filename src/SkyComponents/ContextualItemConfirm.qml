@@ -289,14 +289,14 @@ Item
 
             anchors.right: parent.right
 
-            anchors.rightMargin: st.contextualItemConfirm_paddingRight
-
             anchors.verticalCenter: background.verticalCenter
 
             opacity: (isEnabled) ? 1.0 : st.icon_opacityDisable
 
             source    : st.icon12x12_slideRight
             sourceSize: st.size12x12
+
+            sourceArea: Qt.size(parent.height, parent.height)
 
             style: st.icon_sunken
 
