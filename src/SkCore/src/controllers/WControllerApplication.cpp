@@ -1285,7 +1285,7 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
     QFontMetrics metrics(font);
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
-    return metrics.horizontalAdvance(text) + 1;
+    return metrics.horizontalAdvance(text) + 2;
 #elif defined(Q_OS_MAC) || defined(Q_OS_LINUX)
     return metrics.width(text) + 1;
 #else

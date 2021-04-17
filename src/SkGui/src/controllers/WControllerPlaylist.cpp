@@ -3198,8 +3198,13 @@ WControllerFileReply * WControllerPlaylist::copyBackends(const QString & path,
 
 #ifdef Q_OS_UNIX
     // NOTE Unix: We need to make sure we can write on these files.
+#ifdef QT_4
+    return wControllerFile->startCopyFiles(fileNames, newNames,
+                                           QFile::ReadOwner | QFile::WriteOwner);
+#else
     return wControllerFile->startCopyFiles(fileNames, newNames,
                                            QFileDevice::ReadOwner | QFileDevice::WriteOwner);
+#endif
 #else
     return wControllerFile->startCopyFiles(fileNames, newNames);
 #endif
