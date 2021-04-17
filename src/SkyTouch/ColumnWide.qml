@@ -32,20 +32,27 @@ Column
 
     function pGetHeight()
     {
-        var height = 0;
+        var y = -1;
+
+        var height;
 
         for (var i = 0; i < children.length; i++)
         {
             var child = children[i];
 
-            if (child.visible) height += child.height + spacing;
+            if (child.visible && child.y > y)
+            {
+                y = child.y;
+
+                height = child.height;
+            }
         }
 
-        if (height)
+        if (y == -1)
         {
-            return height - spacing;
+            return 0;
         }
-        else return 0;
+        else return y + height;
     }
 
     //---------------------------------------------------------------------------------------------
