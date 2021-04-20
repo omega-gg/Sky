@@ -32,11 +32,13 @@ BaseLineEdit 1.0 BaseLineEdit.qml
 BaseTextEdit 1.0 BaseTextEdit.qml
 BaseConsole  1.0 BaseConsole.qml
 
-BaseScrollBar 1.0 BaseScrollBar.qml
-
-BaseSlider 1.0 BaseSlider.qml
+ColumnAuto 1.0 ColumnAuto.qml
 
 BaseList       1.0 BaseList.qml
 ListCompletion 1.0 ListCompletion.qml
+
+BaseScrollBar 1.0 BaseScrollBar.qml
+
+BaseSlider 1.0 BaseSlider.qml
 
 BasePlayerBrowser 1.0 BasePlayerBrowser.qml
