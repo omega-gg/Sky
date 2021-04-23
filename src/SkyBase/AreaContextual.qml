@@ -62,7 +62,7 @@ Item
 
     function showPanel(panel, item, position, x, y, marginX, marginY, isCursorChild)
     {
-        if (pLastPanel == panel && pLastParent == item)
+        if (checkPanel(panel, item))
         {
             hidePanels();
 
@@ -161,6 +161,13 @@ Item
         pClearLastPanel();
 
         isActive = false;
+    }
+
+    //---------------------------------------------------------------------------------------------
+
+    function checkPanel(panel, item)
+    {
+        return (pLastPanel == panel && pLastParent == item);
     }
 
     //---------------------------------------------------------------------------------------------
