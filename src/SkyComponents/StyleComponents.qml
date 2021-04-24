@@ -489,8 +489,7 @@ Style
     //---------------------------------------------------------------------------------------------
     // LabelLoading
 
-    property int labelLoading_width : dp48
-    property int labelLoading_height: dp48
+    property int labelLoading_size: dp48
 
     property real labelLoading_opacity: 0.6
 

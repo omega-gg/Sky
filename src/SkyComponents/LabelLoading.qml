@@ -86,8 +86,8 @@ Item
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width : st.labelLoading_width
-    height: st.labelLoading_height
+    width : st.labelLoading_size
+    height: st.labelLoading_size
 
     //---------------------------------------------------------------------------------------------
     // Childs
