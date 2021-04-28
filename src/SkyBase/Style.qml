@@ -512,6 +512,31 @@ Item
         else          return size;
     }
 
+    function getHeightColumn(column)
+    {
+        var y = -1;
+
+        var height;
+
+        for (var i = 0; i < column.children.length; i++)
+        {
+            var child = column.children[i];
+
+            if (child.visible && child.y > y)
+            {
+                y = child.y;
+
+                height = child.height;
+            }
+        }
+
+        if (y == -1)
+        {
+            return 0;
+        }
+        else return y + height;
+    }
+
     //---------------------------------------------------------------------------------------------
 
     function getTrackTitle(title, state, source)

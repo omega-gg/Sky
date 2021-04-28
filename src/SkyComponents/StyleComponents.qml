@@ -1210,6 +1210,21 @@ Style
 
     //---------------------------------------------------------------------------------------------
 
+    function getTextColor(highlighed, active)
+    {
+        if (highlighed)
+        {
+            return button_colorTextB;
+        }
+        else if (active)
+        {
+            return text_colorCurrent;
+        }
+        else return button_colorTextA;
+    }
+
+    //---------------------------------------------------------------------------------------------
+
     function applyLight()
     {
         //-----------------------------------------------------------------------------------------

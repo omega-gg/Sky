@@ -25,38 +25,11 @@ import Sky     1.0
 
 Column
 {
-    //---------------------------------------------------------------------------------------------
-    // Functions
-    //---------------------------------------------------------------------------------------------
-
-    function getHeight()
-    {
-        var y = -1;
-
-        var height;
-
-        for (var i = 0; i < children.length; i++)
-        {
-            var child = children[i];
-
-            if (child.visible && child.y > y)
-            {
-                y = child.y;
-
-                height = child.height;
-            }
-        }
-
-        if (y == -1)
-        {
-            return 0;
-        }
-        else return y + height;
-    }
+    id: columnAuto
 
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    height: getHeight()
+    height: st.getHeightColumn(columnAuto)
 }
