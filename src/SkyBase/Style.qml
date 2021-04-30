@@ -387,7 +387,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // BaseScrollBar
 
-    property int scrollBar_minimumSize: dp32
+    property int scrollBar_minimumSize: dp48
 //#END
 
 //#BasePlayerBrowser

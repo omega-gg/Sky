@@ -61,6 +61,8 @@ WallBookmarkTrack
     property variant pCurrentTab    : null
     property variant pHighlightedTab: null
 
+    property variant pFillMode: player.fillMode
+
     property variant pPlayerTab: player.tab
 
     property variant pItemA: null
@@ -451,9 +453,12 @@ WallBookmarkTrack
 
             anchors.rightMargin: anchors.leftMargin
 
+            clip: (fillMode == Image.PreserveAspectCrop)
+
             sourceDefault: logo
 
-            fillMode: Image.PreserveAspectFit
+            fillMode: (isSourceDefault) ? Image.PreserveAspectFit
+                                        : pFillMode
 
             cache: false
 
@@ -646,6 +651,8 @@ WallBookmarkTrack
 
             anchors.rightMargin: anchors.leftMargin
 
+            clip: (fillMode == Image.PreserveAspectCrop)
+
             source:
             {
                 if (pAudio)
@@ -661,7 +668,8 @@ WallBookmarkTrack
 
             sourceDefault: logo
 
-            fillMode: Image.PreserveAspectFit
+            fillMode: (isSourceDefault) ? Image.PreserveAspectFit
+                                        : pFillMode
 
             cache: false
 
@@ -791,11 +799,14 @@ WallBookmarkTrack
 
             anchors.rightMargin: anchors.leftMargin
 
+            clip: (fillMode == Image.PreserveAspectCrop)
+
             source: (currentTab) ? currentTab.coverShot : ""
 
             sourceDefault: logo
 
-            fillMode: Image.PreserveAspectFit
+            fillMode: (isSourceDefault) ? Image.PreserveAspectFit
+                                        : pFillMode
 
             asynchronous: wall.asynchronous
 

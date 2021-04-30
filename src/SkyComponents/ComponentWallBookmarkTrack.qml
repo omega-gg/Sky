@@ -132,11 +132,15 @@ ComponentWall
 
     itemImage.anchors.rightMargin: itemImage.anchors.leftMargin
 
+    itemImage.clip: (itemImage.fillMode == Image.PreserveAspectCrop)
+
 //#QT_4
     itemImage.sourceDefault: logo
 //#ELSE
     itemImage.sourceDefault: parent.logo
 //#END
+
+    itemImage.fillMode: player.fillMode
 
     itemImage.cache: false
 
