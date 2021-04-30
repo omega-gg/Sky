@@ -527,7 +527,7 @@ WallBookmarkTrack
         }
 
         // NOTE: When the wall is exposed we want to make sure we clip the video properly.
-        clip: (isExposed && fillMode == AbstractBackend.PreserveAspectCrop)
+        clip: (isActive && fillMode == AbstractBackend.PreserveAspectCrop)
 
         backend: BackendVlc {}
 
