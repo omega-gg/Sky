@@ -124,14 +124,16 @@ void WModelTabsPrivate::updateTab(int index)
 
     if (d->tabs == NULL) return QVariant();
 
-    if (index.row() < 0 || index.row() >= d->tabs->count())
+    int row = index.row();
+
+    if (row < 0 || row >= d->tabs->count())
     {
         return QVariant();
     }
 
     if (role == RoleItem)
     {
-        WAbstractTab * tab = d->tabs->tabAt(index.row());
+        WAbstractTab * tab = d->tabs->tabAt(row);
 
         if (tab)
         {

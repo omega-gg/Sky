@@ -253,14 +253,16 @@ void WModelCompletionGooglePrivate::onLoaded(WRemoteData * data)
 {
     Q_D(const WModelCompletionGoogle);
 
-    if (index.row() < 0 || index.row() >= d->listCompletion.count())
+    int row = index.row();
+
+    if (row < 0 || row >= d->listCompletion.count())
     {
         return QVariant();
     }
 
     if (role == RoleTitle)
     {
-         return d->listCompletion.at(index.row());
+         return d->listCompletion.at(row);
     }
     else return QVariant();
 }

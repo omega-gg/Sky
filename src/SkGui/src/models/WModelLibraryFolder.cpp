@@ -85,12 +85,14 @@ void WModelLibraryFolderPrivate::init()
 
     if (d->folder == NULL) return QVariant();
 
-    if (index.row() < 0 || index.row() >= d->folder->count())
+    int row = index.row();
+
+    if (row < 0 || row >= d->folder->count())
     {
         return QVariant();
     }
 
-    const WLibraryFolderItem * item = d->folder->itemAt(index.row());
+    const WLibraryFolderItem * item = d->folder->itemAt(row);
 
     if      (role == RoleId)         return item->id;
     else if (role == RoleType)       return item->type;
@@ -100,7 +102,7 @@ void WModelLibraryFolderPrivate::init()
     else if (role == RoleTitle)      return item->title;
     else if (role == RoleCover)      return item->cover;
     else if (role == RoleLabel)      return item->label;
-    else if (role == RoleCurrent)    return (d->folder->currentIndex() == index.row());
+    else if (role == RoleCurrent)    return (d->folder->currentIndex() == row);
     else                             return QVariant();
 }
 

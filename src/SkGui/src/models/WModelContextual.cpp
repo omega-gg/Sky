@@ -82,12 +82,14 @@ private:
 
     if (page == NULL) return QVariant();
 
-    if (index.row() < 0 || index.row() >= page->count())
+    int row = index.row();
+
+    if (row < 0 || row >= page->count())
     {
         return QVariant();
     }
 
-    const WDeclarativeContextualItem * item = page->itemAt(index.row());
+    const WDeclarativeContextualItem * item = page->itemAt(row);
 
     if      (role == WModelContextual::RoleType)     return item->type;
     else if (role == WModelContextual::RoleId)       return item->id;
@@ -95,7 +97,8 @@ private:
     else if (role == WModelContextual::RoleIcon)     return item->icon;
     else if (role == WModelContextual::RoleIconSize) return item->iconSize;
     else if (role == WModelContextual::RoleEnabled)  return item->enabled;
-    else if (role == WModelContextual::RoleCurrent)  return (page->currentIndex() == index.row());
+    else if (role == WModelContextual::RoleSelected) return (page->selectedIndex() == row);
+    else if (role == WModelContextual::RoleCurrent)  return (page->currentIndex() == row);
     else                                             return QVariant();
 }
 
@@ -122,7 +125,8 @@ void WModelContextualPrivate::init()
 
     currentPage = NULL;
 
-    oldItem = NULL;
+    oldSelected = NULL;
+    oldCurrent  = NULL;
 
     q->setSourceModel(model);
 
@@ -157,6 +161,7 @@ void WModelContextualPrivate::init()
     roles.insert(WModelContextual::RoleIcon,     "icon");
     roles.insert(WModelContextual::RoleIconSize, "iconSize");
     roles.insert(WModelContextual::RoleEnabled,  "isEnabled");
+    roles.insert(WModelContextual::RoleSelected, "isSelected");
     roles.insert(WModelContextual::RoleCurrent,  "isCurrent");
 
     return roles;
@@ -227,20 +232,36 @@ void WModelContextualPrivate::init()
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WModelContextual::currentIndexChanged(int index)
+/* virtual */ void WModelContextual::selectedIndexChanged(int index)
 {
     Q_D(WModelContextual);
 
-    if (d->oldItem)
+    if (d->oldSelected)
     {
-        int index = d->currentPage->indexOf(d->oldItem);
+        int index = d->currentPage->indexOf(d->oldSelected);
 
         if (index != -1) itemUpdated(index);
     }
 
     if (index != -1) itemUpdated(index);
 
-    d->oldItem = d->currentPage->currentItemPointer();
+    d->oldSelected = d->currentPage->itemSelected();
+}
+
+/* virtual */ void WModelContextual::currentIndexChanged(int index)
+{
+    Q_D(WModelContextual);
+
+    if (d->oldCurrent)
+    {
+        int index = d->currentPage->indexOf(d->oldCurrent);
+
+        if (index != -1) itemUpdated(index);
+    }
+
+    if (index != -1) itemUpdated(index);
+
+    d->oldCurrent = d->currentPage->itemCurrent();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -277,9 +298,14 @@ void WModelContextual::setCurrentPage(WDeclarativeContextualPage * page)
     {
         d->currentPage->registerWatcher(this);
 
-        d->oldItem = d->currentPage->currentItemPointer();
+        d->oldSelected = d->currentPage->itemSelected();
+        d->oldCurrent  = d->currentPage->itemCurrent ();
     }
-    else d->oldItem = NULL;
+    else
+    {
+        d->oldSelected = NULL;
+        d->oldCurrent  = NULL;
+    }
 
     emit currentPageChanged();
 }

@@ -50,6 +50,7 @@ public: // Enums
         RoleIcon,
         RoleIconSize,
         RoleEnabled,
+        RoleSelected,
         RoleCurrent
     };
 
@@ -71,7 +72,8 @@ protected: // WContextualPageWatcher implementation
     /* virtual */ void beginItemsClear();
     /* virtual */ void endItemsClear  ();
 
-    /* virtual */ void currentIndexChanged(int index);
+    /* virtual */ void selectedIndexChanged(int index);
+    /* virtual */ void currentIndexChanged (int index);
 
     /* virtual */ void contextualPageDestroyed();
 

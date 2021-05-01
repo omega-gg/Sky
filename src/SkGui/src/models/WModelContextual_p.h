@@ -44,7 +44,8 @@ public: // Variables
 
     WDeclarativeContextualPage * currentPage;
 
-    const WDeclarativeContextualItem * oldItem;
+    const WDeclarativeContextualItem * oldSelected;
+    const WDeclarativeContextualItem * oldCurrent;
 
 protected:
     W_DECLARE_PUBLIC(WModelContextual)

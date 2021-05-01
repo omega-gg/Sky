@@ -33,8 +33,6 @@ BaseList
 
     property bool isReturnPressed: false
 
-    property int currentId: -1
-
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
@@ -95,7 +93,7 @@ BaseList
 
             var id;
 
-            if (currentPage) id = currentPage.currentId;
+            if (currentPage) id = currentPage.selectedId;
             else             id = -1;
 
             if (id == -1) return;
@@ -116,25 +114,25 @@ BaseList
     // Functions
     //---------------------------------------------------------------------------------------------
 
-    function getCurrentId()
+    function getSelectedId()
     {
         if (currentPage)
         {
-             return currentPage.currentId;
+             return currentPage.selectedId;
         }
         else return -1;
     }
 
-    function setCurrentId(id)
+    function setSelectedId(id)
     {
-        if (currentPage) currentPage.currentId = id;
+        if (currentPage) currentPage.selectedId = id;
     }
 
     //---------------------------------------------------------------------------------------------
 
-    function clearCurrentId()
+    function clearSelectedId()
     {
-        if (currentPage) currentPage.currentId = -1;
+        if (currentPage) currentPage.selectedId = -1;
     }
 
     //---------------------------------------------------------------------------------------------

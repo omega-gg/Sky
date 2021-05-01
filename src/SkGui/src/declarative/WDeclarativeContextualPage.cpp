@@ -36,7 +36,8 @@
 /* virtual */ void WContextualPageWatcher::beginItemsClear() {}
 /* virtual */ void WContextualPageWatcher::endItemsClear  () {}
 
-/* virtual */ void WContextualPageWatcher::currentIndexChanged(int) {}
+/* virtual */ void WContextualPageWatcher::selectedIndexChanged(int) {}
+/* virtual */ void WContextualPageWatcher::currentIndexChanged( int) {}
 
 /* virtual */ void WContextualPageWatcher::contextualPageDestroyed() {}
 
@@ -66,7 +67,8 @@ public: // Functions
     void beginItemsClear() const;
     void endItemsClear  () const;
 
-    void currentIndexChanged(int index) const;
+    void selectedChanged(int index) const;
+    void currentChanged (int index) const;
 
 public: // Variables
     QList<WContextualPageWatcher *> watchers;
@@ -75,6 +77,7 @@ public: // Variables
 
     QList<WDeclarativeContextualItem> items;
 
+    int selectedId;
     int currentId;
 
 protected:
@@ -98,7 +101,8 @@ WDeclarativeContextualPagePrivate(WDeclarativeContextualPage * p) : WPrivate(p) 
 
 void WDeclarativeContextualPagePrivate::init()
 {
-    currentId = -1;
+    selectedId = -1;
+    currentId  = -1;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -163,7 +167,15 @@ void WDeclarativeContextualPagePrivate::endItemsClear() const
 
 //-------------------------------------------------------------------------------------------------
 
-void WDeclarativeContextualPagePrivate::currentIndexChanged(int index) const
+void WDeclarativeContextualPagePrivate::selectedChanged(int index) const
+{
+    foreach (WContextualPageWatcher * watcher, watchers)
+    {
+        watcher->selectedIndexChanged(index);
+    }
+}
+
+void WDeclarativeContextualPagePrivate::currentChanged(int index) const
 {
     foreach (WContextualPageWatcher * watcher, watchers)
     {
@@ -361,7 +373,8 @@ void WDeclarativeContextualPage::unregisterWatcher(WContextualPageWatcher * watc
 {
     Q_D(WDeclarativeContextualPage);
 
-    d->currentId = -1;
+    d->selectedId = -1;
+    d->currentId  = -1;
 
     d->beginItemsClear();
 
@@ -385,11 +398,11 @@ void WDeclarativeContextualPage::unregisterWatcher(WContextualPageWatcher * watc
 
     int index;
 
-    if (d->currentId == -1)
+    if (d->selectedId == -1)
     {
          index = d->items.count() - 1;
     }
-    else index = currentIndex() - 1;
+    else index = selectedIndex() - 1;
 
     while (index != -1)
     {
@@ -397,7 +410,7 @@ void WDeclarativeContextualPage::unregisterWatcher(WContextualPageWatcher * watc
 
         if (item.id != -1 && item.visible && item.enabled)
         {
-            setCurrentId(item.id);
+            setSelectedId(item.id);
 
             return;
         }
@@ -405,9 +418,9 @@ void WDeclarativeContextualPage::unregisterWatcher(WContextualPageWatcher * watc
         index--;
     }
 
-    if (d->currentId != -1)
+    if (d->selectedId != -1)
     {
-        d->currentId = -1;
+        d->selectedId = -1;
 
         selectPrevious();
     }
@@ -419,8 +432,8 @@ void WDeclarativeContextualPage::unregisterWatcher(WContextualPageWatcher * watc
 
     int index;
 
-    if (d->currentId == -1) index = 0;
-    else                    index = currentIndex() + 1;
+    if (d->selectedId == -1) index = 0;
+    else                     index = selectedIndex() + 1;
 
     while (index != d->items.count())
     {
@@ -428,7 +441,7 @@ void WDeclarativeContextualPage::unregisterWatcher(WContextualPageWatcher * watc
 
         if (item.id != -1 && item.visible && item.enabled)
         {
-            setCurrentId(item.id);
+            setSelectedId(item.id);
 
             return;
         }
@@ -436,9 +449,9 @@ void WDeclarativeContextualPage::unregisterWatcher(WContextualPageWatcher * watc
         index++;
     }
 
-    if (d->currentId != -1)
+    if (d->selectedId != -1)
     {
-        d->currentId = -1;
+        d->selectedId = -1;
 
         selectNext();
     }
@@ -535,7 +548,15 @@ const WDeclarativeContextualItem * WDeclarativeContextualPage::itemFromId(int id
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */
-const WDeclarativeContextualItem * WDeclarativeContextualPage::currentItemPointer() const
+const WDeclarativeContextualItem * WDeclarativeContextualPage::itemSelected() const
+{
+    Q_D(const WDeclarativeContextualPage);
+
+    return itemFromId(d->selectedId);
+}
+
+/* Q_INVOKABLE */
+const WDeclarativeContextualItem * WDeclarativeContextualPage::itemCurrent() const
 {
     Q_D(const WDeclarativeContextualPage);
 
@@ -599,43 +620,98 @@ void WDeclarativeContextualPage::setValues(const QVariantList & values)
 
 //-------------------------------------------------------------------------------------------------
 
+int WDeclarativeContextualPage::selectedId() const
+{
+    Q_D(const WDeclarativeContextualPage);
+
+    return d->selectedId;
+}
+
+void WDeclarativeContextualPage::setSelectedId(int id)
+{
+    Q_D(WDeclarativeContextualPage);
+
+    if (d->selectedId == id
+        ||
+        (id != -1 && d->containsId(id) == false)) return;
+
+    d->selectedId = id;
+
+    d->selectedChanged(indexFromId(id));
+
+    emit selectedIdChanged();
+}
+
+int WDeclarativeContextualPage::selectedIndex() const
+{
+    Q_D(const WDeclarativeContextualPage);
+
+    return indexFromId(d->selectedId);
+}
+
+void WDeclarativeContextualPage::setSelectedIndex(int index)
+{
+    int id = idAt(index);
+
+    Q_D(WDeclarativeContextualPage);
+
+    if (d->selectedId == id
+        ||
+        (id != -1 && d->containsId(id) == false)) return;
+
+    d->selectedId = id;
+
+    d->selectedChanged(index);
+
+    emit selectedIdChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 int WDeclarativeContextualPage::currentId() const
 {
-    Q_D(const WDeclarativeContextualPage); return d->currentId;
+    Q_D(const WDeclarativeContextualPage);
+
+    return d->currentId;
 }
 
 void WDeclarativeContextualPage::setCurrentId(int id)
 {
     Q_D(WDeclarativeContextualPage);
 
-    if (d->currentId == id) return;
-
-    if (id != -1 && d->containsId(id) == false)
-    {
-        return;
-    }
+    if (d->currentId == id
+        ||
+        (id != -1 && d->containsId(id) == false)) return;
 
     d->currentId = id;
 
-    int index = indexFromId(id);
-
-    d->currentIndexChanged(index);
+    d->currentChanged(indexFromId(id));
 
     emit currentIdChanged();
 }
 
-//-------------------------------------------------------------------------------------------------
-
 int WDeclarativeContextualPage::currentIndex() const
 {
-    Q_D(const WDeclarativeContextualPage); return indexFromId(d->currentId);
+    Q_D(const WDeclarativeContextualPage);
+
+    return indexFromId(d->currentId);
 }
 
 void WDeclarativeContextualPage::setCurrentIndex(int index)
 {
     int id = idAt(index);
 
-    setCurrentId(id);
+    Q_D(WDeclarativeContextualPage);
+
+    if (d->currentId == id
+        ||
+        (id != -1 && d->containsId(id) == false)) return;
+
+    d->currentId = id;
+
+    d->currentChanged(index);
+
+    emit currentIdChanged();
 }
 
 //=================================================================================================

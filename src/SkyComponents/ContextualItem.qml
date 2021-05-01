@@ -37,7 +37,7 @@ MouseArea
     //---------------------------------------------------------------------------------------------
     // Private
 
-    property bool pCurrent: (isCurrent || pressed)
+    property bool pSelected: (isSelected || pressed)
 
     property int pIconWidth: Math.max(itemIcon.width, background.height)
 
@@ -90,7 +90,7 @@ MouseArea
         anchors.top   : parent.top
         anchors.bottom: border.top
 
-        visible: (isCurrent || pressed || containsMouse)
+        visible: (isSelected || pressed || containsMouse)
 
         gradient: Gradient
         {
@@ -100,7 +100,7 @@ MouseArea
 
                 color:
                 {
-                    if (isCurrent)
+                    if (isSelected)
                     {
                         if (pressed || isReturnPressed)
                         {
@@ -126,7 +126,7 @@ MouseArea
 
                 color:
                 {
-                    if (isCurrent)
+                    if (isSelected)
                     {
                         if (pressed || isReturnPressed)
                         {
@@ -165,8 +165,12 @@ MouseArea
 
         style: st.icon_sunken
 
-        filter: (pCurrent) ? st.icon2_filter
-                           : st.icon1_filter
+        filter:
+        {
+            if      (pSelected) return st.icon2_filter;
+            else if (isCurrent) return st.icon_filterActive;
+            else                return st.icon1_filter;
+        }
     }
 
     TextBase
@@ -190,15 +194,10 @@ MouseArea
 
         color:
         {
-            if (pCurrent)
-            {
-                return st.itemList_colorTextSelected;
-            }
-            else if (containsMouse)
-            {
-                return st.itemList_colorTextHover;
-            }
-            else return st.itemList_colorText;
+            if      (pSelected)     return st.itemList_colorTextSelected;
+            else if (isCurrent)     return st.itemList_colorTextCurrent;
+            else if (containsMouse) return st.itemList_colorTextHover;
+            else                    return st.itemList_colorText;
         }
 
         style: st.text_sunken

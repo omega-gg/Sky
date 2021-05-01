@@ -99,14 +99,16 @@ void WModelListPrivate::init()
 {
     Q_D(const WModelList);
 
-    if (index.row() < 0 || index.row() >= d->titles.count())
+    int row = index.row();
+
+    if (row < 0 || row >= d->titles.count())
     {
         return QVariant();
     }
 
     if (role == RoleTitle)
     {
-        return d->titles.at(index.row());
+        return d->titles.at(row);
     }
     else return QVariant();
 }

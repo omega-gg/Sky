@@ -56,7 +56,8 @@ protected:
     virtual void beginItemsClear(); // {}
     virtual void endItemsClear  (); // {}
 
-    virtual void currentIndexChanged(int index); // {}
+    virtual void selectedIndexChanged(int index); // {}
+    virtual void currentIndexChanged (int index); // {}
 
     virtual void contextualPageDestroyed(); // {}
 
@@ -73,8 +74,12 @@ class SK_GUI_EXPORT WDeclarativeContextualPage : public QObject, public WPrivata
 
     Q_PROPERTY(QVariantList values READ values WRITE setValues NOTIFY valuesChanged)
 
-    Q_PROPERTY(int currentId READ currentId WRITE setCurrentId NOTIFY currentIdChanged)
+    Q_PROPERTY(int selectedId READ selectedId WRITE setSelectedId NOTIFY selectedIdChanged)
 
+    Q_PROPERTY(int selectedIndex READ selectedIndex WRITE setSelectedIndex
+               NOTIFY selectedIdChanged)
+
+    Q_PROPERTY(int currentId    READ currentId    WRITE setCurrentId    NOTIFY currentIdChanged)
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIdChanged)
 
 public: // Enums
@@ -141,16 +146,24 @@ public: // Interface
     Q_INVOKABLE const WDeclarativeContextualItem * itemAt    (int index) const;
     Q_INVOKABLE const WDeclarativeContextualItem * itemFromId(int id)    const;
 
-    Q_INVOKABLE const WDeclarativeContextualItem * currentItemPointer() const;
+    Q_INVOKABLE const WDeclarativeContextualItem * itemSelected() const;
+    Q_INVOKABLE const WDeclarativeContextualItem * itemCurrent () const;
 
 signals:
     void valuesChanged(const QVariantList & values);
 
-    void currentIdChanged();
+    void selectedIdChanged();
+    void currentIdChanged ();
 
 public: // Properties
     QVariantList values() const;
     void         setValues(const QVariantList & values);
+
+    int  selectedId() const;
+    void setSelectedId(int id);
+
+    int  selectedIndex() const;
+    void setSelectedIndex(int index);
 
     int  currentId() const;
     void setCurrentId(int id);

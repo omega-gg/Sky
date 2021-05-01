@@ -32,7 +32,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // Private
 
-    property bool pCurrent: (isCurrent || mouseArea.pressed)
+    property bool pSelected: (isSelected || mouseArea.pressed)
 
     property int pIconWidth: Math.max(itemIcon.width, background.height)
 
@@ -100,9 +100,9 @@ Item
         {
             window.clearFocus();
 
-            if (list.getCurrentId() != id)
+            if (list.getSelectedId() != id)
             {
-                list.clearCurrentId();
+                list.clearSelectedId();
             }
 
             pConfirm = true;
@@ -173,7 +173,7 @@ Item
 
             anchors.bottomMargin: border.size
 
-            visible: (pCurrent || mouseArea.containsMouse)
+            visible: (isSelected || mouseArea.containsMouse)
 
             gradient: Gradient
             {
@@ -183,7 +183,7 @@ Item
 
                     color:
                     {
-                        if (isCurrent)
+                        if (isSelected)
                         {
                             if (mouseArea.pressed || isReturnPressed)
                             {
@@ -209,7 +209,7 @@ Item
 
                     color:
                     {
-                        if (isCurrent)
+                        if (isSelected)
                         {
                             if (mouseArea.pressed || isReturnPressed)
                             {
@@ -248,8 +248,12 @@ Item
 
             style: st.icon_sunken
 
-            filter: (pCurrent) ? st.icon2_filter
-                               : st.icon1_filter
+            filter:
+            {
+                if      (pSelected) return st.icon2_filter;
+                else if (isCurrent) return st.icon_filterActive;
+                else                return st.icon1_filter;
+            }
         }
 
         TextBase
@@ -269,15 +273,10 @@ Item
 
             color:
             {
-                if (pCurrent || pConfirm)
-                {
-                    return st.itemList_colorTextSelected;
-                }
-                else if (mouseArea.containsMouse)
-                {
-                    return st.itemList_colorTextHover;
-                }
-                else return st.itemList_colorText;
+                if      (pSelected || pConfirm)   return st.itemList_colorTextSelected;
+                else if (isCurrent)               return st.itemList_colorTextCurrent;
+                else if (mouseArea.containsMouse) return st.itemList_colorTextHover;
+                else                              return st.itemList_colorText;
             }
 
             style: st.text_sunken
@@ -300,8 +299,7 @@ Item
 
             style: st.icon_sunken
 
-            filter: (pCurrent) ? st.icon2_filter
-                               : st.icon1_filter
+            filter: itemIcon.filter
         }
     }
 
