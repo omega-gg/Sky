@@ -161,7 +161,7 @@ void WLoaderNetworkPrivate::onFinished(QNetworkReply * reply)
 
     if (data->header())
     {
-        request.setRawHeader("User-Agent", "AppleWebKit");
+        request.setRawHeader("User-Agent", "Mozilla/5.0 AppleWebKit/537 Chrome/90 Safari/537");
     }
 
     return d->manager->get(request);
