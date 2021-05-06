@@ -105,7 +105,6 @@ Style
 
     property int buttonsWindow_width : dp40
     property int buttonsWindow_height: dp26
-
 //#END
 
 //#ButtonMask
