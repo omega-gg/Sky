@@ -99,6 +99,15 @@ Style
     property int buttonWide_margins: dp12
 //#END
 
+//#ButtonsWindow
+    //---------------------------------------------------------------------------------------------
+    // ButtonsWindow
+
+    property int buttonsWindow_width : dp40
+    property int buttonsWindow_height: dp26
+
+//#END
+
 //#ButtonMask
     //---------------------------------------------------------------------------------------------
     // ButtonMask

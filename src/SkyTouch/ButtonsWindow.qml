@@ -73,8 +73,8 @@ Row
     {
         id: buttonMinimize
 
-        width : st.dp40
-        height: st.dp26
+        width : st.buttonsWindow_width
+        height: st.buttonsWindow_height
 
         margins: st.dp6
 
