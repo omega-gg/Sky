@@ -40,6 +40,8 @@ Item
     property int marginWidth : ds(textHeight / 4)
     property int marginHeight: ds(textHeight / 8)
 
+    property real zoom: (typeof slides == "undefined") ? 1.0 : slides.ratio
+
     property int horizontalAlignment: Text.AlignHCenter
     property int verticalAlignment  : Text.AlignVCenter
 
@@ -212,6 +214,8 @@ Item
 
             marginWidth : slideParagraph.marginWidth
             marginHeight: 0
+
+            zoom: slideParagraph.zoom
 
             horizontalAlignment: slideParagraph.horizontalAlignment
             verticalAlignment  : slideParagraph.verticalAlignment
