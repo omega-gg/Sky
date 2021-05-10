@@ -65,6 +65,18 @@ Item
         ListView.view.currentIndex = index;
     }
 
+    //-----------------------------------------------------------------------------------------
+    // Virtual
+
+    /* virtual */ function getFilter()
+    {
+        if (buttonIcon.isSourceDefault)
+        {
+            return buttonIcon.getFilterDefault();
+        }
+        else return st.icon_filterRound;
+    }
+
     //---------------------------------------------------------------------------------------------
     // Childs
     //---------------------------------------------------------------------------------------------
@@ -73,14 +85,16 @@ Item
     {
         id: buttonIcon
 
+        width: parent.height
+
         margins: (isSourceDefault) ? st.componentTrack_marginsDefault
                                    : st.componentTrack_margins
 
         iconWidth: (isSourceDefault) ? st.componentTrack_iconWidth
-                                     : st.icon_filterRound.width
+                                     : itemIcon.filter.width
 
         iconSourceSize.height: (isSourceDefault) ? getSourceHeight()
-                                                 : st.icon_filterRound.height
+                                                 : itemIcon.filter.height
 
         icon: cover
 
@@ -98,11 +112,7 @@ Item
 
         /* virtual */ function getFilter()
         {
-            if (isSourceDefault)
-            {
-                return getFilterDefault();
-            }
-            else return st.icon_filterRound;
+            return componentTrack.getFilter();
         }
     }
 
@@ -110,8 +120,10 @@ Item
     {
         id: buttonText
 
-        anchors.left : buttonIcon.right
-        anchors.right: parent.right
+        anchors.left  : buttonIcon.right
+        anchors.right : parent.right
+        anchors.top   : parent.top
+        anchors.bottom: parent.bottom
 
         anchors.leftMargin: st.margins
 
