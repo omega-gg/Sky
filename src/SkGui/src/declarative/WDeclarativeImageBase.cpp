@@ -882,13 +882,7 @@ void WDeclarativeImageBase::setSourceDefault(const QString & url)
 
 QSize WDeclarativeImageBase::sourceSize() const
 {
-    Q_D(const WDeclarativeImageBase);
-
-    if (d->explicitSize)
-    {
-         return d->sourceSize;
-    }
-    else return QSize(implicitWidth(), implicitHeight());
+    Q_D(const WDeclarativeImageBase); return d->sourceSize;
 }
 
 void WDeclarativeImageBase::setSourceSize(const QSize & size)
@@ -899,7 +893,11 @@ void WDeclarativeImageBase::setSourceSize(const QSize & size)
 
     d->sourceSize = size;
 
-    d->setExplicitSize(d->sourceSize.isValid());
+    if (size.width() > 0 || size.height() > 0)
+    {
+         d->setExplicitSize(true);
+    }
+    else d->setExplicitSize(false);
 
     reload();
 

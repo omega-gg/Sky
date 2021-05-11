@@ -99,9 +99,8 @@ Item
         iconWidth: (isSourceDefault) ? componentTrack.iconWidth
                                      : itemIcon.filter.width
 
-        // NOTE: We must specify the width if we want 'isExplicitSize' to be true.
-        iconSourceSize: (isSourceDefault) ? Qt.size(0, getSourceHeight())
-                                          : Qt.size(0, itemIcon.filter.height)
+        iconSourceSize.height: (isSourceDefault) ? getSourceHeight()
+                                                 : itemIcon.filter.height
 
         icon: cover
 
