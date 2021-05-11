@@ -28,6 +28,12 @@ Item
     id: componentTrack
 
     //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+
+    property int iconWidth: st.componentTrack_iconWidth
+
+    //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
@@ -90,11 +96,11 @@ Item
         margins: (isSourceDefault) ? st.componentTrack_marginsDefault
                                    : st.componentTrack_margins
 
-        iconWidth: (isSourceDefault) ? st.componentTrack_iconWidth
+        iconWidth: (isSourceDefault) ? componentTrack.iconWidth
                                      : itemIcon.filter.width
 
-        iconSourceSize.height: (isSourceDefault) ? getSourceHeight()
-                                                 : itemIcon.filter.height
+        iconSourceSize: (isSourceDefault) ? Qt.size(0, getSourceHeight())
+                                          : Qt.size(0, itemIcon.filter.height)
 
         icon: cover
 
