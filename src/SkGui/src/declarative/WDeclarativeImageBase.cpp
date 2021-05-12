@@ -206,10 +206,10 @@ void WDeclarativeImageBasePrivate::applyRequest()
 
     q->update();
 
-    if (sourceSize.width() != pix.width() || sourceSize.height() != pix.height())
+    /*if (sourceSize.width() != pix.width() || sourceSize.height() != pix.height())
     {
         emit q->sourceSizeChanged();
-    }
+    }*/
 
     emit q->progressChanged();
     emit q->statusChanged  ();
@@ -883,6 +883,12 @@ void WDeclarativeImageBase::setSourceDefault(const QString & url)
 QSize WDeclarativeImageBase::sourceSize() const
 {
     Q_D(const WDeclarativeImageBase); return d->sourceSize;
+
+    /*if (d->explicitSize)
+    {
+        return d->sourceSize;
+    }
+    else return QSize(implicitWidth(), implicitHeight());*/
 }
 
 void WDeclarativeImageBase::setSourceSize(const QSize & size)
