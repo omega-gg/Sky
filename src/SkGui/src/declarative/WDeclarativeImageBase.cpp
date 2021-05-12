@@ -893,6 +893,7 @@ void WDeclarativeImageBase::setSourceSize(const QSize & size)
 
     d->sourceSize = size;
 
+    // NOTE: Size can be valid even when the other half is -1.
     if (size.width() > 0 || size.height() > 0)
     {
          d->setExplicitSize(true);
