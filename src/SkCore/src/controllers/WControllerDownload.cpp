@@ -239,6 +239,8 @@ WRemoteTimeout::WRemoteTimeout(WRemoteData * data) : QTimer(data)
 
 void WRemoteTimeout::onTimeout()
 {
+    qDebug("TIMEOUT");
+
     _data->abort();
 }
 

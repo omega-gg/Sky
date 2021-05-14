@@ -2217,7 +2217,9 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         //-----------------------------------------------------------------------------------------
 
-        pack.set_bool(settings_pack::announce_to_all_tiers,    true);
+        // NOTE: This seems to increase magnets loading time.
+        //pack.set_bool(settings_pack::announce_to_all_tiers, true);
+
         pack.set_bool(settings_pack::announce_to_all_trackers, true);
 
         //pack.set_bool(settings_pack::prioritize_partial_pieces, true);
@@ -2225,10 +2227,9 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         pack.set_int(settings_pack::stop_tracker_timeout, 1);
 
 #ifdef LIBTORRENT_LATEST
-        pack.set_str(settings_pack::dht_bootstrap_nodes, "router.bittorrent.com:6881,"
+        pack.set_str(settings_pack::dht_bootstrap_nodes, "dht.libtorrent.org:25401,"
+                                                         "router.bittorrent.com:6881,"
                                                          "router.utorrent.com:6881,"
-                                                         "router.bitcomet.com:6881,"
-                                                         "dht.libtorrent.org:25401,"
                                                          "dht.transmissionbt.com:6881,"
                                                          "dht.aelitis.com:6881");
 #endif
@@ -2244,15 +2245,14 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         //dht.max_dht_items =  1000;
         //dht.max_peers     = 10000;
 
-        d->session->set_dht_settings(dht);
+        //d->session->set_dht_settings(dht);
 
 #ifndef LIBTORRENT_LATEST
-        d->session->add_dht_router(std::make_pair(std::string("router.bittorrent.com"),   6881));
-        d->session->add_dht_router(std::make_pair(std::string("router.utorrent.com"),     6881));
-        d->session->add_dht_router(std::make_pair(std::string("router.bitcomet.com"),     6881));
-        d->session->add_dht_router(std::make_pair(std::string("dht.libtorrent.org"),     25401));
-        d->session->add_dht_router(std::make_pair(std::string("dht.transmissionbt.com"),  6881));
-        d->session->add_dht_router(std::make_pair(std::string("dht.aelitis.com"),         6881));
+        d->session->add_dht_router(std::make_pair(std::string("dht.libtorrent.org"),    25401));
+        d->session->add_dht_router(std::make_pair(std::string("router.bittorrent.com"),  6881));
+        d->session->add_dht_router(std::make_pair(std::string("router.utorrent.com"),    6881));
+        d->session->add_dht_router(std::make_pair(std::string("dht.transmissionbt.com"), 6881));
+        d->session->add_dht_router(std::make_pair(std::string("dht.aelitis.com"),        6881));
 #endif
 
 #ifdef LIBTORRENT_ABI_1
