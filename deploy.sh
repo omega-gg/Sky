@@ -420,15 +420,15 @@ echo "COPYING libtorrent"
 
 if [ $os = "windows" ]; then
 
-    cp "$libtorrent"/*torrent.dll deploy
+    cp "$libtorrent"/*torrent-rasterbar.dll deploy
 
 elif [ $1 = "macOS" ]; then
 
-    cp "$libtorrent"/libtorrent.dylib deploy
+    cp "$libtorrent"/libtorrent-rasterbar.dylib deploy
 
 elif [ $1 = "linux" ]; then
 
-    cp "$libtorrent"/libtorrent*.so* deploy
+    cp "$libtorrent"/libtorrent-rasterbar*.so* deploy
 fi
 
 #--------------------------------------------------------------------------------------------------
