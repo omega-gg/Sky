@@ -24,15 +24,6 @@ Boost_version="1.71.0"
 MinGW_version="7.3.0"
 
 #--------------------------------------------------------------------------------------------------
-# Android
-
-JDK_version="8u291"
-
-TOOLS_version="30.0.0"
-
-SDK_version="29"
-
-#--------------------------------------------------------------------------------------------------
 # environment
 
 compiler_win="mingw"
@@ -70,7 +61,7 @@ fi
 # Configuration
 #--------------------------------------------------------------------------------------------------
 
-external="$PWD/$external/$1"
+external="$external/$1"
 
 if [ $1 = "win32" -o $1 = "win64" ]; then
 
@@ -238,30 +229,6 @@ fi
 if [ $compiler = "mingw" ]; then
 
     cp "$MinGW"/libz.a lib
-fi
-
-#--------------------------------------------------------------------------------------------------
-# SDK
-#--------------------------------------------------------------------------------------------------
-
-if [ $1 = "android" ]; then
-
-    echo "CONFIGURING SDK"
-
-    cd "$external/SDK/$SDK_version/tools/bin"
-
-    export JAVA_HOME="$external/JDK/$JDK_version"
-
-    path="$PWD/../.."
-
-    yes | ./sdkmanager --sdk_root="$path" --licenses
-
-    ./sdkmanager --sdk_root="$path" "build-tools;$TOOLS_version" \
-                                    "platforms;android-$SDK_version" \
-
-    ./sdkmanager --sdk_root="$path" --update
-
-    cd -
 fi
 
 #--------------------------------------------------------------------------------------------------
