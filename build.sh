@@ -281,7 +281,7 @@ elif [ $1 = "android" ]; then
 
     spec=android-clang
 
-    export ANDROID_NDK_PLATFORM="$SDK_version"
+    export ANDROID_NDK_PLATFORM="android-$SDK_version"
 
     export ANDROID_NDK_ROOT="$external/NDK/$NDK_version"
 fi
