@@ -36,6 +36,8 @@ WindowsKit_version="10"
 #--------------------------------------------------------------------------------------------------
 # Android
 
+SDK_version="29"
+
 NDK_version="21"
 
 #--------------------------------------------------------------------------------------------------
@@ -278,6 +280,8 @@ elif [ $1 = "linux" ]; then
 elif [ $1 = "android" ]; then
 
     spec=android-clang
+
+    export ANDROID_NDK_PLATFORM="$SDK_version"
 
     export ANDROID_NDK_ROOT="$external/NDK/$NDK_version"
 fi
