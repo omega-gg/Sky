@@ -81,19 +81,19 @@ android {
 
 win32:LIBS += -lmswsock -lws2_32
 
-win32:LIBS += -L$$SK/lib -ltorrent \
+win32:LIBS += -L$$SK/lib -ltorrent-rasterbar \
               -L$$SK/lib -lboost_system \
 
 # Boost dependencies
 win32-msvc*:LIBS += Advapi32.lib Iphlpapi.lib
 
-macx:LIBS += -L$$SK/lib -ltorrent \
+macx:LIBS += -L$$SK/lib -ltorrent-rasterbar \
              -L$$SK/lib -lboost_system \
 
 unix:!macx:!android:LIBS += -ltorrent-rasterbar \
                             -lboost_system -lboost_random -lboost_chrono \
 
-android:LIBS += -L$$SK/lib/$$ANDROID_TARGET_ARCH -ltorrent
+android:LIBS += -L$$SK/lib/$$ANDROID_TARGET_ARCH -ltorrent-rasterbar
 
 macx {
 CONFIG(debug, debug|release) {
