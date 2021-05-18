@@ -20,9 +20,6 @@ contains(QT_MAJOR_VERSION, 4) {
 
 win32:CONFIG += dll
 
-# NOTE macOS: This seems to be required when building against libtorrent 2.0+.
-macx:CONFIG += c++14
-
 DEFINES += SK_TORRENT_LIBRARY
 
 win32-msvc* {
