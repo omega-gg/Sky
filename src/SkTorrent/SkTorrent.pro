@@ -81,7 +81,7 @@ android {
 
 win32:LIBS += -lmswsock -lws2_32
 
-win32:LIBS += -L$$SK/lib -ltorrent-rasterbar \
+win32:LIBS += -L$$SK/lib -ltorrent \
               -L$$SK/lib -lboost_system \
 
 # Boost dependencies
