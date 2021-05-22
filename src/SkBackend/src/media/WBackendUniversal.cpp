@@ -129,6 +129,7 @@ static const QString BACKENDUNIVERSAL_FUNCTIONS = \
     "EXTENSION_IS_AUDIO|"
     "EXTENSION_IS_SUBTITLE|"
     "URL_GENERATE|"
+    "URL_ENCODE|"
     "URL_DECODE|"
     "URL_NAME|"
     "URL_VALUE|"
@@ -1653,6 +1654,18 @@ inline QVariant urlGenerate(const WBackendUniversalNode * node,
     }
     else return WControllerNetwork::generateUrl(node->getString(parameters, 0),
                                                 node->getString(parameters, 1));
+}
+
+inline QVariant urlEncode(const WBackendUniversalNode * node,
+                          WBackendUniversalParameters * parameters)
+{
+#ifdef SK_BACKEND_LOG
+    qDebug("URL_ENCODE");
+#endif
+
+    if (node->nodes.count() < 1) return QString();
+
+    return WControllerNetwork::encodeUrl(node->getString(parameters, 0));
 }
 
 inline QVariant urlDecode(const WBackendUniversalNode * node,
@@ -3784,6 +3797,7 @@ void WBackendUniversalPrivate::populateHash() const
     hash.insert("EXTENSION_IS_AUDIO",     extensionIsAudio);
     hash.insert("EXTENSION_IS_SUBTITLE",  extensionIsSubtitle);
     hash.insert("URL_GENERATE",           urlGenerate);
+    hash.insert("URL_ENCODE",             urlEncode);
     hash.insert("URL_DECODE",             urlDecode);
     hash.insert("URL_NAME",               urlName);
     hash.insert("URL_VALUE",              urlValue);
