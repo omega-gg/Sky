@@ -219,7 +219,7 @@ bool WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & file
     int lengthA = finished  .length();
     int lengthB = unfinished.length();
 
-    qDebug("BLOCK COUNT %d %d [%s] [%s]", lengthA, lengthB, finished.C_STR, unfinished.C_STR);
+    qDebug("BLOCK COUNT %d %d", lengthA, lengthB);
 
     if (lengthA == 0 && lengthB == 0) return false;
 
