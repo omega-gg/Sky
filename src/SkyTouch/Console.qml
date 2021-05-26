@@ -46,7 +46,11 @@ ScrollArea
     // Settings
     //---------------------------------------------------------------------------------------------
 
+//#QT_4
+    contentHeight: itemConsole.paintedHeight
+//#ELSE
     contentHeight: itemConsole.contentHeight
+//#END
 
     //---------------------------------------------------------------------------------------------
     // Events
