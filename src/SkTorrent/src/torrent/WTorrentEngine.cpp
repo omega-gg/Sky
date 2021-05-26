@@ -2217,9 +2217,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         //-----------------------------------------------------------------------------------------
 
-        // NOTE: This seems to increase magnets loading time.
-        //pack.set_bool(settings_pack::announce_to_all_tiers, true);
-
+        pack.set_bool(settings_pack::announce_to_all_tiers,    true);
         pack.set_bool(settings_pack::announce_to_all_trackers, true);
 
         //pack.set_bool(settings_pack::prioritize_partial_pieces, true);
@@ -2236,16 +2234,22 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         d->session = new session(pack);
 
-        dht_settings dht;
+        //-----------------------------------------------------------------------------------------
+        // NOTE: This seems to increase magnets loading time. I'm not too sure what I'm doing here
+        //       anyway...
 
-        dht.search_branching = 10;
+        //dht_settings dht;
 
-        dht.max_fail_count = 3;
+        //dht.search_branching = 10;
 
-        //dht.max_dht_items =  1000;
-        //dht.max_peers     = 10000;
+        //dht.max_fail_count = 3;
 
-        d->session->set_dht_settings(dht);
+        ////dht.max_dht_items =  1000;
+        ////dht.max_peers     = 10000;
+
+        //d->session->set_dht_settings(dht);
+
+        //-----------------------------------------------------------------------------------------
 
 #ifndef LIBTORRENT_LATEST
         d->session->add_dht_router(std::make_pair(std::string("dht.libtorrent.org"),    25401));

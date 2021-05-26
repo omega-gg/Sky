@@ -270,7 +270,9 @@ void WViewPrivate::init(QQuickItem * item)
     scaling = true;
     closed  = false;
 
-    opengl    = wControllerView->opengl();
+    WControllerViewPrivate * p = wControllerView->d_func();
+
+    opengl    = p->opengl;
     antialias = false;
 
 #ifdef QT_4
@@ -287,7 +289,7 @@ void WViewPrivate::init(QQuickItem * item)
     //---------------------------------------------------------------------------------------------
     // Fade
 
-    fade = wControllerView->fade();
+    fade = p->fade;
 
     fadeVisible = false;
 
@@ -493,7 +495,7 @@ void WViewPrivate::init(QQuickItem * item)
     //---------------------------------------------------------------------------------------------
     // Registering view
 
-    wControllerView->d_func()->registerView(q);
+    p->registerView(q);
 
     //---------------------------------------------------------------------------------------------
     // Signals
