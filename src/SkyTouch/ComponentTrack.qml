@@ -55,8 +55,9 @@ Item
 //#QT_4
     width: ListView.view.width
 //#ELSE
-    anchors.left : parent.left
-    anchors.right: parent.right
+    // NOTE Qt5.15: sometimes we get an undefined parent.
+    anchors.left : (parent) ? parent.left  : undefined
+    anchors.right: (parent) ? parent.right : undefined
 //#END
 
     height: st.buttonTouch_size
