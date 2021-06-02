@@ -3218,8 +3218,9 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 {
     WRemoteParameters parameters;
 
+    parameters.header = query.header;
+
     parameters.cookies = query.cookies;
-    parameters.header  = query.header;
 
     parameters.maxHost = query.maxHost;
     parameters.delay   = query.delay;

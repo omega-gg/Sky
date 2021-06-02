@@ -3898,9 +3898,10 @@ void WBackendUniversalPrivate::applyQueryParameters(WBackendUniversalParameters 
 
     parameters->add("queryData", query.data);
 
+    parameters->add("header", query.header);
+
     parameters->add("clearItems", query.clearItems);
     parameters->add("cookies",    query.cookies);
-    parameters->add("header",     query.header);
     parameters->add("skipError",  query.skipError);
 
     parameters->add("delay",   query.delay);
@@ -3920,9 +3921,10 @@ void WBackendUniversalPrivate::applyQueryResults(WBackendUniversalParameters * p
 
     query->data = *(parameters->value("queryData"));
 
+    query->header = parameters->value("header")->toString();
+
     query->clearItems = parameters->value("clearItems")->toBool();
     query->cookies    = parameters->value("cookies")   ->toBool();
-    query->header     = parameters->value("header")    ->toBool();
     query->skipError  = parameters->value("skipError") ->toBool();
 
     query->delay   = parameters->value("delay")  ->toInt();
@@ -4250,12 +4252,13 @@ void WBackendUniversalPrivate::applyQuery(WBackendNetQuery * query, QVariant * v
 
     query->data = hash.value("queryData");
 
+    query->header = hash.value("header").toString();
+
     const QVariant * variant = getVariant(&hash, "clearItems");
 
     if (variant) query->clearItems = variant->toBool();
 
     query->cookies   = hash.value("cookies")  .toBool();
-    query->header    = hash.value("header")   .toBool();
     query->skipError = hash.value("skipError").toBool();
 
     query->delay = hash.value("delay").toInt();

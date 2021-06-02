@@ -49,16 +49,16 @@ struct WRemoteParameters
     {
         redirect = true;
         cookies  = true;
-        header   = false;
 
         maxHost = -1;
         delay   =  0;
         timeout = -1;
     }
 
+    QString header;
+
     bool redirect;
     bool cookies;
-    bool header;
 
     int maxHost;
     int delay;
@@ -99,9 +99,10 @@ public: // Properties
 
     QNetworkRequest::Priority priority() const;
 
+    QString header() const;
+
     bool redirect() const;
     bool cookies () const;
-    bool header  () const;
 
     int maxHost() const;
     int delay  () const;
@@ -123,9 +124,10 @@ private: // Variables
 
     QNetworkRequest::Priority _priority;
 
+    QString _header;
+
     bool _redirect;
     bool _cookies;
-    bool _header;
 
     int _redirectCount;
 

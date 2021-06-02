@@ -159,10 +159,8 @@ void WLoaderNetworkPrivate::onFinished(QNetworkReply * reply)
                              QNetworkRequest::Manual);
     }
 
-    if (data->header())
-    {
-        request.setRawHeader("User-Agent", "Mozilla/5.0 AppleWebKit/537 Chrome/90 Safari/537");
-    }
+    // FIXME: Implement header support.
+    request.setRawHeader("User-Agent", "Mozilla/5.0 AppleWebKit/537 Chrome/90 Safari/537");
 
     return d->manager->get(request);
 }

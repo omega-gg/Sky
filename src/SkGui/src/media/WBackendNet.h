@@ -91,9 +91,10 @@ public: // Variables
 
     QVariant data;
 
+    QString header;
+
     bool clearItems;
     bool cookies;
-    bool header;
     bool skipError;
 
     int maxHost;

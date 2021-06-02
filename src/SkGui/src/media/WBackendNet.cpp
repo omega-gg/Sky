@@ -86,7 +86,6 @@ void WBackendNetQuery::init(Type type, const QString & url)
 
     clearItems = true;
     cookies    = false;
-    header     = false;
     skipError  = false;
 
     maxHost =  3;
@@ -117,9 +116,10 @@ WBackendNetQuery & WBackendNetQuery::operator=(const WBackendNetQuery & other)
 
     data = other.data;
 
+    header = other.header;
+
     clearItems = other.clearItems;
     cookies    = other.cookies;
-    header     = other.header;
     skipError  = other.skipError;
 
     maxHost = other.maxHost;

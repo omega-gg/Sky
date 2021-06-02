@@ -153,6 +153,13 @@ QNetworkRequest::Priority WRemoteData::priority() const
 
 //-------------------------------------------------------------------------------------------------
 
+QString WRemoteData::header() const
+{
+    return _header;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 bool WRemoteData::redirect() const
 {
     return _redirect;
@@ -161,11 +168,6 @@ bool WRemoteData::redirect() const
 bool WRemoteData::cookies() const
 {
     return _cookies;
-}
-
-bool WRemoteData::header() const
-{
-    return _header;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -467,9 +469,10 @@ WRemoteData * WControllerDownload::getData(WAbstractLoader           * loader,
 
     data->_priority = priority;
 
+    data->_header = parameters.header;
+
     data->_redirect = parameters.redirect;
     data->_cookies  = parameters.cookies;
-    data->_header   = parameters.header;
 
     data->_redirectCount = 0;
 
