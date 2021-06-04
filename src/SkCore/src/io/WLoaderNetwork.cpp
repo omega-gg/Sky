@@ -159,7 +159,36 @@ void WLoaderNetworkPrivate::onFinished(QNetworkReply * reply)
                              QNetworkRequest::Manual);
     }
 
-    // FIXME: Implement header support.
+    QString header = data->header();
+
+    if (header.isNull() == false)
+    {
+        // NOTE: When the header is empty we send the request right away.
+        if (header.isEmpty())
+        {
+            return d->manager->get(request);
+        }
+
+        QStringList list = WControllerApplication::slicesIn(header, "\"", "\"");
+
+        int count = list.count() - 1;
+
+        if (count > 0)
+        {
+            int index = 0;
+
+            while (index < count)
+            {
+                request.setRawHeader(list.at(index).C_STR, list.at(index + 1).C_STR);
+
+                index += 2;
+            }
+
+            return d->manager->get(request);
+        }
+    }
+
+    // NOTE: That's our default header.
     request.setRawHeader("User-Agent", "Mozilla/5.0 AppleWebKit/537 Chrome/90 Safari/537");
 
     return d->manager->get(request);

@@ -539,6 +539,23 @@ Item
 
     //---------------------------------------------------------------------------------------------
 
+    function getTabTitle(title, state, source)
+    {
+        if (title)
+        {
+            return title;
+        }
+        else if (state == LocalObject.Loading)
+        {
+            return qsTr("Loading...");
+        }
+        else if (source != "")
+        {
+            return getUrlTitle(source, qsTr("Track"));
+        }
+        else return qsTr("New Tab");
+    }
+
     function getTrackTitle(title, state, source)
     {
         if (title)
