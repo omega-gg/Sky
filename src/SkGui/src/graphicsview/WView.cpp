@@ -2109,12 +2109,23 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 {
     Q_D(WView);
 
+#ifdef QT_4
     QWheelEvent event(d->mousePos, mapToGlobal(d->mousePos), delta, Qt::NoButton,
                                                                     Qt::NoModifier, orientation);
 
-#ifdef QT_4
     QCoreApplication::sendEvent(viewport(), &event);
 #else
+    QPoint point;
+
+    if (orientation == Qt::Horizontal)
+    {
+         point = QPoint(delta, 0);
+    }
+    else point = QPoint(0, delta);
+
+    QWheelEvent event(d->mousePos, mapToGlobal(d->mousePos), QPoint(), point, Qt::NoButton,
+                      Qt::NoModifier, Qt::NoScrollPhase, false);
+
     QCoreApplication::sendEvent(this, &event);
 #endif
 }

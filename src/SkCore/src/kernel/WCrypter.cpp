@@ -184,7 +184,7 @@ QByteArray WCrypter::encryptToByteArray(const QByteArray & bytes) const
         protection.append(hash.result());
     }
 
-    array = char(qrand() & 0xFF) + protection + array;
+    array = char(Sk::randomInt() & 0xFF) + protection + array;
 
     char lastChar = 0;
 

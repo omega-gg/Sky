@@ -31,6 +31,7 @@
 #include <QSettings>
 #include <QMetaEnum>
 #include <QDir>
+#include <QDateTime>
 
 // Sk includes
 #include <WControllerFile>
@@ -264,7 +265,10 @@ void WCookieJarPrivate::save()
 
 void WCookieJarPrivate::saveLater()
 {
-    if (time.isNull()) time.start();
+    if (time.isValid() == false)
+    {
+        time.start();
+    }
 
     if (time.elapsed() <= COOKIEJAR_WAIT)
     {
@@ -282,7 +286,7 @@ void WCookieJarPrivate::saveNow()
 {
     timer.stop();
 
-    time = QTime();
+    time = QElapsedTimer();
 
     save();
 }

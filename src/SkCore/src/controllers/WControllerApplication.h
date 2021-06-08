@@ -261,7 +261,9 @@ public: // Static functions
     //---------------------------------------------------------------------------------------------
     // Generate
 
-    Q_INVOKABLE static QByteArray generateRandomString(int length);
+    Q_INVOKABLE static int randomInt();
+
+    Q_INVOKABLE static QByteArray randomString(int length);
 
     Q_INVOKABLE static QByteArray generateHmacSha1(const QByteArray & bytes,
                                                    const QByteArray & key);

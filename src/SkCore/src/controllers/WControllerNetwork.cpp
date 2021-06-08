@@ -1290,7 +1290,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
                                                               const QByteArray & secret,
                                                               const QByteArray & token)
 {
-    QByteArray nonce = sk->generateRandomString(16);
+    QByteArray nonce = sk->randomString(16);
 
     uint time = QDateTime::currentDateTime().toTime_t();
 
@@ -1342,9 +1342,9 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
         QPair<QString, QString> pair = list.at(i);
 #endif
 
-        signature.append(pair.first);
+        signature.append(pair.first.toUtf8());
         signature.append('=');
-        signature.append(pair.second);
+        signature.append(pair.second.toUtf8());
         signature.append('&');
     }
 

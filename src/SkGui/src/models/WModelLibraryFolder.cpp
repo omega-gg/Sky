@@ -280,7 +280,7 @@ void WModelLibraryFolderFilteredPrivate::init()
 
     model = NULL;
 
-    filter = 0;
+    filter = WLibraryItem::Item;
 
     local = false;
 
@@ -438,7 +438,7 @@ void WModelLibraryFolderFiltered::resetFilter()
 
     beginResetModel();
 
-    d->filter = 0;
+    d->filter = WLibraryItem::Item;
 
     endResetModel();
 

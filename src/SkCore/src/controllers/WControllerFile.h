@@ -93,6 +93,8 @@ class SK_CORE_EXPORT WControllerFile : public WController
 {
     Q_OBJECT
 
+    Q_ENUMS(Permission)
+
     Q_PROPERTY(QString log READ log NOTIFY logChanged)
 
     Q_PROPERTY(QString pathStorage READ pathStorage WRITE setPathStorage NOTIFY pathStorageChanged)
@@ -100,6 +102,17 @@ class SK_CORE_EXPORT WControllerFile : public WController
     Q_PROPERTY(QString pathLog READ pathLog NOTIFY pathStorageChanged)
 
     Q_PROPERTY(WCache * cache READ cache WRITE setCache NOTIFY cacheChanged)
+
+public: // Enums
+    enum Permission
+    {
+        Default   = 0,
+        ReadOwner = QFile::ReadOwner, WriteOwner = QFile::WriteOwner, ExeOwner = QFile::ExeOwner,
+        ReadUser  = QFile::ReadUser,  WriteUser  = QFile::WriteUser,  ExeUser  = QFile::ExeUser,
+        ReadGroup = QFile::ReadGroup, WriteGroup = QFile::WriteGroup, ExeGroup = QFile::ExeGroup,
+        ReadOther = QFile::ReadOther, WriteOther = QFile::WriteOther, ExeOther = QFile::ExeOther
+    };
+    Q_DECLARE_FLAGS(Permissions, Permission)
 
 private:
     WControllerFile();
@@ -143,16 +156,9 @@ public: // Interface
     WControllerFileReply * startRenameFiles(const QStringList & oldPaths,
                                             const QStringList & newPaths);
 
-#ifdef QT_4
     WControllerFileReply * startCopyFiles(const QStringList & fileNames,
                                           const QStringList & newNames,
-                                          QFile::Permissions permissions = 0);
-#else
-
-    WControllerFileReply * startCopyFiles(const QStringList & fileNames,
-                                          const QStringList & newNames,
-                                          QFileDevice::Permissions permissions = 0);
-#endif
+                                          Permissions permissions = Default);
 
     WControllerFileReply * startDeleteFiles(const QStringList & paths);
 
@@ -174,16 +180,9 @@ public: // Interface
 
     WControllerFileReply * startRenameFile(const QString & oldPath, const QString & newPath);
 
-
-#ifdef QT_4
     WControllerFileReply * startCopyFile(const QString & fileName,
                                          const QString & newName,
-                                         QFile::Permissions permissions = 0);
-#else
-    WControllerFileReply * startCopyFile(const QString & fileName,
-                                         const QString & newName,
-                                         QFileDevice::Permissions permissions = 0);
-#endif
+                                         Permissions permissions = Default);
 
     WControllerFileReply * startDeleteFile(const QString & path);
 
@@ -245,13 +244,8 @@ public: // Static functions
 
     static bool renameFile(const QString & oldPath, const QString & newPath);
 
-#ifdef QT_4
     static bool copyFile(const QString & fileName,
-                         const QString & newName, QFile::Permissions permissions = 0);
-#else
-    static bool copyFile(const QString & fileName,
-                         const QString & newName, QFileDevice::Permissions permissions = 0);
-#endif
+                         const QString & newName, Permissions permissions = Default);
 
     static bool deleteFile(const QString & fileName);
 

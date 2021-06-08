@@ -975,7 +975,11 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
     QList<WTrack> tracks;
 
+#ifdef QT_4
     QStringList urls = url.split('\n', QString::SkipEmptyParts);
+#else
+    QStringList urls = url.split('\n', Qt::SkipEmptyParts);
+#endif
 
     foreach (const QString & source, urls)
     {

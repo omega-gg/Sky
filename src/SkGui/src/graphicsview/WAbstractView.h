@@ -47,15 +47,17 @@ class SK_GUI_EXPORT WAbstractView : public QQuickWindow, public WPrivatable
 
 public:
 #ifdef QT_4
-    WAbstractView(QWidget * parent = NULL, Qt::WindowFlags flags = 0);
+    WAbstractView(QWidget * parent = NULL, Qt::WindowFlags flags = Qt::Widget);
 #else
-    WAbstractView(QWindow * parent = NULL, Qt::WindowFlags flags = 0);
+    WAbstractView(QWindow * parent = NULL, Qt::WindowFlags flags = Qt::Widget);
 #endif
 protected:
 #ifdef QT_4
-    WAbstractView(WAbstractViewPrivate * p, QWidget * parent = NULL, Qt::WindowFlags flags = 0);
+    WAbstractView(WAbstractViewPrivate * p,
+                  QWidget * parent = NULL, Qt::WindowFlags flags = Qt::Widget);
 #else
-    WAbstractView(WAbstractViewPrivate * p, QWindow * parent = NULL, Qt::WindowFlags flags = 0);
+    WAbstractView(WAbstractViewPrivate * p,
+                  QWindow * parent = NULL, Qt::WindowFlags flags = Qt::Widget);
 #endif
 
 #ifdef SK_WIN_NATIVE

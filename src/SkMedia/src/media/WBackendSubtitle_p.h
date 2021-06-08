@@ -34,7 +34,7 @@
 */
 
 // Qt includes
-#include <QTime>
+#include <QElapsedTimer>
 #include <QMetaMethod>
 
 // Private includes
@@ -114,7 +114,7 @@ public: // Variables
 
     int timer;
 
-    QTime time;
+    QElapsedTimer time;
 
     QMetaMethod method;
 

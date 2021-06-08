@@ -233,7 +233,13 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 
 /* Q_INVOKABLE static */ int WControllerView::screenNumber(const QPoint & pos)
 {
+#ifdef QT_4
     return qApp->desktop()->screenNumber(pos);
+#else
+    QScreen * screen = QGuiApplication::screenAt(pos);
+
+    return QGuiApplication::screens().indexOf(screen);
+#endif
 }
 
 #ifdef QT_4
@@ -245,14 +251,32 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ const QRect WControllerView::availableGeometry(int screen)
+/* Q_INVOKABLE static */ const QRect WControllerView::availableGeometry(int index)
 {
+#ifdef QT_4
     return qApp->desktop()->availableGeometry(screen);
+#else
+    QList<QScreen *> screens = QGuiApplication::screens();
+
+    if (index < 0 || index >= screens.count()) return QRect();
+
+    return screens.at(index)->availableGeometry();
+#endif
 }
 
 /* Q_INVOKABLE static */ const QRect WControllerView::availableGeometry(const QPoint & pos)
 {
+#ifdef QT_4
     return qApp->desktop()->availableGeometry(pos);
+#else
+    QScreen * screen = QGuiApplication::screenAt(pos);
+
+    if (screen)
+    {
+        return screen->availableGeometry();
+    }
+    else return QRect();
+#endif
 }
 
 #ifdef QT_4
@@ -264,14 +288,32 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ const QRect WControllerView::screenGeometry(int screen)
+/* Q_INVOKABLE static */ const QRect WControllerView::screenGeometry(int index)
 {
+#ifdef QT_4
     return qApp->desktop()->screenGeometry(screen);
+#else
+    QList<QScreen *> screens = QGuiApplication::screens();
+
+    if (index < 0 || index >= screens.count()) return QRect();
+
+    return screens.at(index)->geometry();
+#endif
 }
 
 /* Q_INVOKABLE static */ const QRect WControllerView::screenGeometry(const QPoint & pos)
 {
+#ifdef QT_4
     return qApp->desktop()->screenGeometry(pos);
+#else
+    QScreen * screen = QGuiApplication::screenAt(pos);
+
+    if (screen)
+    {
+        return screen->geometry();
+    }
+    else return QRect();
+#endif
 }
 
 #ifdef QT_4

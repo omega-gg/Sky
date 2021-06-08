@@ -146,7 +146,7 @@ QQmlListProperty<WDeclarativeGradientStop> WDeclarativeGradient::stops()
 #ifdef QT_4
     return QDeclarativeListProperty<WDeclarativeGradientStop>(this, _stops);
 #else
-    return QQmlListProperty<WDeclarativeGradientStop>(this, _stops);
+    return QQmlListProperty<WDeclarativeGradientStop>(this, &_stops);
 #endif
 }
 

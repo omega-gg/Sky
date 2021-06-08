@@ -178,7 +178,7 @@ public: // Variables
 #ifdef QT_4
     QFile::Permissions permissions;
 #else
-    QFileDevice::Permissions permissions;
+    WControllerFile::Permissions permissions;
 #endif
 };
 
@@ -800,11 +800,11 @@ WControllerFileReply * WControllerFile::startRenameFiles(const QStringList & old
 #ifdef QT_4
 WControllerFileReply * WControllerFile::startCopyFiles(const QStringList & fileNames,
                                                        const QStringList & newNames,
-                                                       QFile::Permissions permissions)
+                                                       Permissions         permissions)
 #else
 WControllerFileReply * WControllerFile::startCopyFiles(const QStringList & fileNames,
                                                        const QStringList & newNames,
-                                                       QFileDevice::Permissions permissions)
+                                                       Permissions         permissions)
 #endif
 {
     if (fileNames.isEmpty() || fileNames.count() != newNames.count()) return NULL;
@@ -914,15 +914,9 @@ WControllerFileReply * WControllerFile::startRenameFile(const QString & oldPath,
     return startRenameFiles(QStringList() << oldPath, QStringList() << newPath);
 }
 
-#ifdef QT_4
 WControllerFileReply * WControllerFile::startCopyFile(const QString & fileName,
                                                       const QString & newName,
-                                                      QFile::Permissions permissions)
-#else
-WControllerFileReply * WControllerFile::startCopyFile(const QString & fileName,
-                                                      const QString & newName,
-                                                      QFileDevice::Permissions permissions)
-#endif
+                                                      Permissions     permissions)
 {
     return startCopyFiles(QStringList() << fileName, QStringList() << newName, permissions);
 }
@@ -1248,13 +1242,8 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
     return file.rename(newPath);
 }
 
-#ifdef QT_4
 /* static */ bool WControllerFile::copyFile(const QString & fileName, const QString & newName,
-                                            QFile::Permissions permissions)
-#else
-/* static */ bool WControllerFile::copyFile(const QString & fileName, const QString & newName,
-                                            QFileDevice::Permissions permissions)
-#endif
+                                            Permissions permissions)
 {
     QtLockedFile file(newName);
 
@@ -1270,11 +1259,15 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 
     bool result = QFile::copy(fileName, newName);
 
-    if (permissions)
+    if (permissions != Default)
     {
         if (result)
         {
-             return QFile::setPermissions(newName, permissions);
+#ifdef QT_4
+            return QFile::setPermissions(newName, QFile::Permissions((int) permissions));
+#else
+            return QFile::setPermissions(newName, QFileDevice::Permissions((int) permissions));
+#endif
         }
         else return false;
     }

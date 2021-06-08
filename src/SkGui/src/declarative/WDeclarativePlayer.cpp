@@ -30,6 +30,7 @@
 #endif
 
 // Sk includes
+#include <WControllerApplication>
 #include <WAbstractHook>
 #include <WPlaylist>
 #include <WTabsTrack>
@@ -801,7 +802,7 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 
             if (count == 0) return;
 
-            int index = qrand() % count;
+            int index = Sk::randomInt() % count;
 
             track = d->shuffleTracks.takeAt(index);
 
@@ -865,7 +866,7 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 
             if (count == 0) return;
 
-            int index = qrand() % count;
+            int index = Sk::randomInt() % count;
 
             track = d->shuffleTracks.takeAt(index);
 

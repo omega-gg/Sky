@@ -44,6 +44,7 @@
 #include <QQmlEngine>
 #include <QQmlComponent>
 #include <QCursor>
+#include <QRandomGenerator>
 #endif
 #include <QFontMetrics>
 #include <QClipboard>
@@ -156,7 +157,9 @@ void WControllerApplicationPrivate::init()
     timeoutScreenSave = 0;
 #endif
 
+#ifdef QT_4
     qsrand(QTime::currentTime().msec());
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1213,15 +1216,24 @@ bool WControllerApplication::checkEscaped(const QString & string, int from)
 //-------------------------------------------------------------------------------------------------
 // Generate
 
-/* Q_INVOKABLE static */ QByteArray WControllerApplication::generateRandomString(int length)
+/* Q_INVOKABLE static */ int WControllerApplication::randomInt()
+{
+#ifdef QT_4
+    return qrand();
+#else
+    return QRandomGenerator::global()->generate();
+#endif
+}
+
+/* Q_INVOKABLE static */ QByteArray WControllerApplication::randomString(int length)
 {
     QByteArray string;
 
     for (int i = 0; i < length; i++)
     {
-        int index = qrand() % 62;
+        int index = randomInt() % 62;
 
-        string.append(CONTROLLERAPPLICATION_CHARACTERS.at(index));
+        string.append(CONTROLLERAPPLICATION_CHARACTERS.at(index).toLatin1());
     }
 
     return string;

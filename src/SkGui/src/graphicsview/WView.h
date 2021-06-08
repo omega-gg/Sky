@@ -243,20 +243,21 @@ class SK_GUI_EXPORT WView : public WAbstractView
 
 public:
 #ifdef QT_4
-    WView(QDeclarativeItem * item, QWidget * parent = NULL, Qt::WindowFlags flags = 0);
+    WView(QDeclarativeItem * item, QWidget * parent = NULL, Qt::WindowFlags flags = Qt::Widget);
 
-    WView(QWidget * parent = NULL, Qt::WindowFlags flags = 0);
+    WView(QWidget * parent = NULL, Qt::WindowFlags flags = Qt::Widget);
 #else
-    WView(QQuickItem * item, QWindow * parent = NULL, Qt::WindowFlags flags = 0);
+    WView(QQuickItem * item, QWindow * parent = NULL, Qt::WindowFlags flags = Qt::Widget);
 
-    WView(QWindow * parent = NULL, Qt::WindowFlags flags = 0);
+    WView(QWindow * parent = NULL, Qt::WindowFlags flags = Qt::Widget);
 #endif
 protected:
 #ifdef QT_4
     WView(WViewPrivate     * p,
-          QDeclarativeItem * item, QWidget * parent = NULL, Qt::WindowFlags flags = 0);
+          QDeclarativeItem * item, QWidget * parent = NULL, Qt::WindowFlags flags = Qt::Widget);
 #else
-    WView(WViewPrivate * p, QQuickItem * item, QWindow * parent = NULL, Qt::WindowFlags flags = 0);
+    WView(WViewPrivate * p,
+          QQuickItem   * item, QWindow * parent = NULL, Qt::WindowFlags flags = Qt::Widget);
 #endif
 
 public: // Interface

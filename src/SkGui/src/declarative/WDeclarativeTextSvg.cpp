@@ -261,13 +261,11 @@ void WDeclarativeTextSvgPrivate::loadSvg()
         QString stringWidth  = QString::number(textWidth);
         QString stringHeight = QString::number(textHeight);
 
-        QByteArray content;
+        QString content("<svg width=\"" + stringWidth + "\" height=\"" + stringHeight + "\">"
+                        +
+                        item + "</svg>");
 
-        content.append("<svg width=\"" + stringWidth + "\" height=\"" + stringHeight + "\">"
-                       +
-                       item + "</svg>");
-
-        renderer->load(content);
+        renderer->load(content.toUtf8());
 
 #ifdef QT_LATEST
         updateTexture = true;

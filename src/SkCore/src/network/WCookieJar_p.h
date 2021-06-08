@@ -35,7 +35,7 @@
 
 // Qt includes
 #include <QBasicTimer>
-#include <QTime>
+#include <QElapsedTimer>
 
 // Private includes
 #include <private/Sk_p>
@@ -77,7 +77,7 @@ public: // Variables
 
     QBasicTimer timer;
 
-    QTime time;
+    QElapsedTimer time;
 
 protected:
     W_DECLARE_PUBLIC(WCookieJar)

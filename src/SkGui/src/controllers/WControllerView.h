@@ -77,13 +77,13 @@ public: // Static functions
     Q_INVOKABLE static int screenNumber(const QWidget * widget = NULL);
 #endif
 
-    Q_INVOKABLE static const QRect availableGeometry(int            screen = -1);
+    Q_INVOKABLE static const QRect availableGeometry(int            index = 0);
     Q_INVOKABLE static const QRect availableGeometry(const QPoint & pos);
 #ifdef QT_4
     Q_INVOKABLE static const QRect availableGeometry(const QWidget * widget);
 #endif
 
-    Q_INVOKABLE static const QRect screenGeometry(int             screen = -1);
+    Q_INVOKABLE static const QRect screenGeometry(int             index = 0);
     Q_INVOKABLE static const QRect screenGeometry(const QPoint  & pos);
 #ifdef QT_4
     Q_INVOKABLE static const QRect screenGeometry(const QWidget * widget);
