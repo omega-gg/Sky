@@ -296,6 +296,8 @@ private:
     friend class WLocalObjectPrivate;
 };
 
+Q_DECLARE_OPERATORS_FOR_FLAGS(WControllerFile::Permissions)
+
 #include <private/WControllerFile_p>
 
 #endif // SK_NO_CONTROLLERFILE

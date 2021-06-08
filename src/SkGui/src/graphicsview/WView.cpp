@@ -2128,8 +2128,13 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
     }
     else point = QPoint(0, delta);
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
     QWheelEvent event(d->mousePos, mapToGlobal(d->mousePos), QPoint(), point, Qt::NoButton,
                       Qt::NoModifier, Qt::NoScrollPhase, false);
+#else
+    QWheelEvent event(d->mousePos, mapToGlobal(d->mousePos), delta, Qt::NoButton,
+                                                                    Qt::NoModifier, orientation);
+#endif
 
     QCoreApplication::sendEvent(this, &event);
 #endif
