@@ -146,7 +146,11 @@ QQmlListProperty<WDeclarativeGradientStop> WDeclarativeGradient::stops()
 #ifdef QT_4
     return QDeclarativeListProperty<WDeclarativeGradientStop>(this, _stops);
 #else
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
     return QQmlListProperty<WDeclarativeGradientStop>(this, &_stops);
+#else
+    return QQmlListProperty<WDeclarativeGradientStop>(this, _stops);
+#endif
 #endif
 }
 

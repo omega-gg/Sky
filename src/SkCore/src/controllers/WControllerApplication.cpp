@@ -44,7 +44,9 @@
 #include <QQmlEngine>
 #include <QQmlComponent>
 #include <QCursor>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
 #include <QRandomGenerator>
+#endif
 #endif
 #include <QFontMetrics>
 #include <QClipboard>
@@ -1218,10 +1220,10 @@ bool WControllerApplication::checkEscaped(const QString & string, int from)
 
 /* Q_INVOKABLE static */ int WControllerApplication::randomInt()
 {
-#ifdef QT_4
-    return qrand();
-#else
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     return QRandomGenerator::global()->generate();
+#else
+    return qrand();
 #endif
 }
 
