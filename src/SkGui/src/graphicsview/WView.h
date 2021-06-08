@@ -219,8 +219,6 @@ class SK_GUI_EXPORT WView : public WAbstractView
 
     Q_PROPERTY(bool fadeEnabled READ fadeEnabled WRITE setFadeEnabled NOTIFY fadeEnabledChanged)
 
-    Q_PROPERTY(int fadeDuration READ fadeDuration WRITE setFadeDuration NOTIFY fadeDurationChanged)
-
     //---------------------------------------------------------------------------------------------
     // Mouse idle
 
@@ -516,8 +514,7 @@ signals:
 
     void hoverEnabledChanged();
 
-    void fadeEnabledChanged ();
-    void fadeDurationChanged();
+    void fadeEnabledChanged();
 
     void idleCheckChanged();
     void idleChanged     ();
@@ -634,9 +631,6 @@ public: // Properties
 
     bool fadeEnabled() const;
     void setFadeEnabled(bool enabled);
-
-    int  fadeDuration() const;
-    void setFadeDuration(int msec);
 
     //---------------------------------------------------------------------------------------------
     // Mouse idle

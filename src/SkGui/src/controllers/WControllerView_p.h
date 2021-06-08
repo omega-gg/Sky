@@ -75,6 +75,9 @@ public: // Variables
 
     bool fade;
 
+    int fadeIn;
+    int fadeOut;
+
     WControllerView::LoadMode loadMode;
 
     int scaleDelay;

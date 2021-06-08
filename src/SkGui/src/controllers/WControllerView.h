@@ -57,6 +57,9 @@ class SK_GUI_EXPORT WControllerView : public WController
 
     Q_PROPERTY(bool fade READ fade WRITE setFade NOTIFY fadeChanged)
 
+    Q_PROPERTY(int fadeIn  READ fadeIn  WRITE setFadeIn  NOTIFY fadeInChanged)
+    Q_PROPERTY(int fadeOut READ fadeOut WRITE setFadeOut NOTIFY fadeOutChanged)
+
     Q_PROPERTY(LoadMode loadMode READ loadMode WRITE setLoadMode NOTIFY loadModeChanged)
 
     Q_PROPERTY(int scaleDelay  READ scaleDelay  WRITE setScaleDelay NOTIFY scaleDelayChanged)
@@ -125,6 +128,9 @@ signals:
 
     void fadeChanged();
 
+    void fadeInChanged ();
+    void fadeOutChanged();
+
     void loadModeChanged();
 
     void scaleDelayChanged ();
@@ -138,6 +144,12 @@ public: // Properties
 
     bool fade() const;
     void setFade(bool enabled);
+
+    int  fadeIn() const;
+    void setFadeIn(int msec);
+
+    int  fadeOut() const;
+    void setFadeOut(int msec);
 
     LoadMode loadMode() const;
     void     setLoadMode(LoadMode mode);

@@ -218,7 +218,6 @@ public: // Variables
 
     bool fadeVisible;
 
-    int   fadeDuration;
     qreal fadeValue;
 
     QTimer fadeTimer;

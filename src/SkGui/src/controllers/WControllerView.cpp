@@ -113,6 +113,10 @@ void WControllerViewPrivate::init()
     fade = false;
 #endif
 
+    // NOTE: In general fading in looks faster than fading out. So we compensate here.
+    fadeIn  = 300;
+    fadeOut = 150;
+
     loadMode = WControllerView::LoadAlways;
 
     scaleDelay  = 220;
@@ -519,6 +523,40 @@ void WControllerView::setFade(bool enabled)
     d->fade = enabled;
 
     emit fadeChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+int WControllerView::fadeIn() const
+{
+    Q_D(const WControllerView); return d->fadeIn;
+}
+
+void WControllerView::setFadeIn(int msec)
+{
+    Q_D(WControllerView);
+
+    if (d->fadeIn == msec) return;
+
+    d->fadeIn = msec;
+
+    emit fadeInChanged();
+}
+
+int WControllerView::fadeOut() const
+{
+    Q_D(const WControllerView); return d->fadeOut;
+}
+
+void WControllerView::setFadeOut(int msec)
+{
+    Q_D(WControllerView);
+
+    if (d->fadeOut == msec) return;
+
+    d->fadeOut = msec;
+
+    emit fadeOutChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

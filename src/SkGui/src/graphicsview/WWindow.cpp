@@ -163,8 +163,7 @@ void WWindowPrivate::init()
 
     QObject::connect(view, SIGNAL(hoverEnabledChanged()), q, SIGNAL(hoverEnabledChanged()));
 
-    QObject::connect(view, SIGNAL(fadeEnabledChanged ()), q, SIGNAL(fadeEnabledChanged ()));
-    QObject::connect(view, SIGNAL(fadeDurationChanged()), q, SIGNAL(fadeDurationChanged()));
+    QObject::connect(view, SIGNAL(fadeEnabledChanged()), q, SIGNAL(fadeEnabledChanged()));
 
     //---------------------------------------------------------------------------------------------
 
@@ -1145,16 +1144,6 @@ bool WWindow::fadeEnabled() const
 void WWindow::setFadeEnabled(bool enabled)
 {
     Q_D(WWindow); d->view->setFadeEnabled(enabled);
-}
-
-int WWindow::fadeDuration() const
-{
-    Q_D(const WWindow); return d->view->fadeDuration();
-}
-
-void WWindow::setFadeDuration(int msec)
-{
-    Q_D(WWindow); d->view->setFadeDuration(msec);
 }
 
 //-------------------------------------------------------------------------------------------------

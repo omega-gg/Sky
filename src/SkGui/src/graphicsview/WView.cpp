@@ -293,9 +293,7 @@ void WViewPrivate::init(QQuickItem * item)
 
     fadeVisible = false;
 
-    fadeDuration = 150;
-
-    fadeValue = 16.0 / fadeDuration;
+    fadeValue = 0.0;
 
     //---------------------------------------------------------------------------------------------
     // Mouse
@@ -550,17 +548,24 @@ void WViewPrivate::startFade(bool visible)
 
     if (visible)
     {
+        fadeValue = 16.0 / wControllerView->fadeIn();
+
 #ifdef QT_4
         q->setWindowOpacity(fadeValue);
 #else
         q->setOpacity(fadeValue);
 #endif
     }
+    else
+    {
+        fadeValue = 16.0 / wControllerView->fadeOut();
+
 #ifdef QT_4
-    else q->setWindowOpacity(1.0 - fadeValue);
+        q->setWindowOpacity(1.0 - fadeValue);
 #else
-    else q->setOpacity(1.0 - fadeValue);
+        q->setOpacity(1.0 - fadeValue);
 #endif
+    }
 
     fadeTimer.start(16);
 }
@@ -3593,24 +3598,6 @@ void WView::setFadeEnabled(bool enabled)
     }
 
     emit fadeEnabledChanged();
-}
-
-int WView::fadeDuration() const
-{
-    Q_D(const WView); return d->fadeDuration;
-}
-
-void WView::setFadeDuration(int msec)
-{
-    Q_D(WView);
-
-    if (d->fadeDuration == msec) return;
-
-    d->fadeDuration = msec;
-
-    d->fadeValue = 16.0 / d->fadeDuration;
-
-    emit fadeDurationChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
