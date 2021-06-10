@@ -237,12 +237,12 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 
 /* Q_INVOKABLE static */ int WControllerView::screenNumber(const QPoint & pos)
 {
-#ifdef QT_4
-    return qApp->desktop()->screenNumber(pos);
-#else
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     QScreen * screen = QGuiApplication::screenAt(pos);
 
     return QGuiApplication::screens().indexOf(screen);
+#else
+    return qApp->desktop()->screenNumber(pos);
 #endif
 }
 
@@ -270,9 +270,7 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 
 /* Q_INVOKABLE static */ const QRect WControllerView::availableGeometry(const QPoint & pos)
 {
-#ifdef QT_4
-    return qApp->desktop()->availableGeometry(pos);
-#else
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     QScreen * screen = QGuiApplication::screenAt(pos);
 
     if (screen)
@@ -280,6 +278,8 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
         return screen->availableGeometry();
     }
     else return QRect();
+#else
+    return qApp->desktop()->availableGeometry(pos);
 #endif
 }
 
@@ -307,9 +307,7 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 
 /* Q_INVOKABLE static */ const QRect WControllerView::screenGeometry(const QPoint & pos)
 {
-#ifdef QT_4
-    return qApp->desktop()->screenGeometry(pos);
-#else
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     QScreen * screen = QGuiApplication::screenAt(pos);
 
     if (screen)
@@ -317,6 +315,8 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
         return screen->geometry();
     }
     else return QRect();
+#else
+    return qApp->desktop()->screenGeometry(pos);
 #endif
 }
 
