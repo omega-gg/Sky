@@ -1338,14 +1338,19 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     {
 #ifdef QT_4
         QPair<QByteArray, QByteArray> pair = list.at(i);
+
+        signature.append(pair.first);
+        signature.append('=');
+        signature.append(pair.second);
+        signature.append('&');
 #else
         QPair<QString, QString> pair = list.at(i);
-#endif
 
         signature.append(pair.first.toUtf8());
         signature.append('=');
         signature.append(pair.second.toUtf8());
         signature.append('&');
+#endif
     }
 
     signature.chop(1);
