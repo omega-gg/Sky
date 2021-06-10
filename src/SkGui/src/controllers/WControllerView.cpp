@@ -258,7 +258,7 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 /* Q_INVOKABLE static */ const QRect WControllerView::availableGeometry(int index)
 {
 #ifdef QT_4
-    return qApp->desktop()->availableGeometry(screen);
+    return qApp->desktop()->availableGeometry(index);
 #else
     QList<QScreen *> screens = QGuiApplication::screens();
 
@@ -295,7 +295,7 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 /* Q_INVOKABLE static */ const QRect WControllerView::screenGeometry(int index)
 {
 #ifdef QT_4
-    return qApp->desktop()->screenGeometry(screen);
+    return qApp->desktop()->screenGeometry(index);
 #else
     QList<QScreen *> screens = QGuiApplication::screens();
 
