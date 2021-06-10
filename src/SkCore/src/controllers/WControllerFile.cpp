@@ -175,11 +175,7 @@ public: // Variables
     QStringList fileNames;
     QStringList newNames;
 
-#ifdef QT_4
-    QFile::Permissions permissions;
-#else
     WControllerFile::Permissions permissions;
-#endif
 };
 
 /* virtual */ bool WControllerFileCopy::run()
