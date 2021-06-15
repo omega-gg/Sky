@@ -58,6 +58,10 @@ include(src/3rdparty/libcharsetdetect/libcharsetdetect.pri)
 INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkCore/private \
 
+unix:!macx:!android:contains(QT_MAJOR_VERSION, 5) {
+    INCLUDEPATH += $$SK/include/Qt5/QtDBus
+}
+
 win32-msvc*:INCLUDEPATH += $$[QT_INSTALL_PREFIX]/include/QtZlib
 
 win32:!win32-msvc*:LIBS += -L$$SK/lib -lz

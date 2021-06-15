@@ -194,6 +194,7 @@ elif [ $qt = "qt5" ]; then
         cp -r "$Qt5"/include/QtGui   include/Qt5
         cp -r "$Qt5"/include/QtQml   include/Qt5
         cp -r "$Qt5"/include/QtQuick include/Qt5
+        cp -r "$Qt5"/include/QtDBus  include/Qt5
 
         cp -r "$Qt5"/include/QtGui/5*/QtGui/qpa include/Qt5/QtGui
 

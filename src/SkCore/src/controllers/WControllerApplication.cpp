@@ -46,6 +46,9 @@
 #include <QCursor>
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
 #include <QRandomGenerator>
+#ifdef Q_OS_LINUX
+#include <QDBusInterface>
+#endif
 #endif
 #endif
 #include <QFontMetrics>
@@ -1878,8 +1881,7 @@ void WControllerApplication::setScreenSaverEnabled(bool enabled)
 #elif defined(Q_OS_MAC)
     if (enabled == false)
     {
-        CFStringRef name = CFStringCreateWithCString(NULL, d->name.C_STR,
-                                                       kCFStringEncodingASCII);
+        CFStringRef name = CFStringCreateWithCString(NULL, d->name.C_STR, kCFStringEncodingASCII);
 
         IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep,
                                     kIOPMAssertionLevelOn, name, &(d->assertion));
@@ -1887,6 +1889,36 @@ void WControllerApplication::setScreenSaverEnabled(bool enabled)
         CFRelease(name);
     }
     else IOPMAssertionRelease(d->assertion);
+    // NOTE linux: Currently we're only supporting D-Bus on Qt5.
+#elif defined(Q_OS_LINUX) && defined(QT_LATEST)
+    QDBusConnection bus = QDBusConnection::sessionBus();
+
+    if (bus.isConnected())
+    {
+        QStringList services;
+        QStringList paths;
+
+        services.append("org.freedesktop.ScreenSaver");
+        services.append("org.gnome.SessionManager");
+
+        paths.append("/org/freedesktop/ScreenSaver");
+        paths.append("/org/gnome/SessionManager");
+
+        for (int i = 0; i < 2; i++)
+        {
+            QString service = services.at(i);
+
+            QDBusInterface interface(service, paths.at(i), service, bus, this);
+
+            if (interface.isValid() == false) continue;
+
+            if (enabled)
+            {
+                 interface.call("UnInhibit");
+            }
+            else interface.call("Inhibit", d->name.C_STR, "reason");
+        }
+    }
 #elif defined(Q_OS_ANDROID)
     // NOTE android: We run this on the GUI thread otherwise we get an exception.
     QtAndroid::runOnAndroidThread([enabled]
