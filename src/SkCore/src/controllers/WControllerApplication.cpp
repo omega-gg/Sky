@@ -46,9 +46,9 @@
 #include <QCursor>
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
 #include <QRandomGenerator>
+#endif
 #ifdef Q_OS_LINUX
 #include <QDBusInterface>
-#endif
 #endif
 #endif
 #include <QFontMetrics>
