@@ -47,7 +47,7 @@
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
 #include <QRandomGenerator>
 #endif
-#ifdef Q_OS_LINUX
+#if defined(Q_OS_LINUX) && defined(Q_OS_ANDROID) == false
 #include <QDBusInterface>
 #endif
 #endif
