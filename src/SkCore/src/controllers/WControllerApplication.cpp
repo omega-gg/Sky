@@ -36,20 +36,17 @@
 // Qt includes
 #ifndef SK_CONSOLE
 #ifdef QT_4
-#include <QApplication>
-#include <QDeclarativeEngine>
-#include <QDeclarativeComponent>
+    #include <QApplication>
+    #include <QDeclarativeEngine>
+    #include <QDeclarativeComponent>
 #else
-#include <QGuiApplication>
-#include <QQmlEngine>
-#include <QQmlComponent>
-#include <QCursor>
-#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
-#include <QRandomGenerator>
-#endif
-#if defined(Q_OS_LINUX) && defined(Q_OS_ANDROID) == false
-#include <QDBusInterface>
-#endif
+    #include <QGuiApplication>
+    #include <QQmlEngine>
+    #include <QQmlComponent>
+    #include <QCursor>
+    #if defined(Q_OS_LINUX) && defined(Q_OS_ANDROID) == false
+        #include <QDBusInterface>
+    #endif
 #endif
 #include <QFontMetrics>
 #include <QClipboard>
@@ -61,6 +58,9 @@
 #include <QMimeData>
 #include <QDir>
 #include <QProcess>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+#include <QRandomGenerator>
+#endif
 #ifdef Q_OS_ANDROID
 #include <QtAndroid>
 #include <QAndroidJniEnvironment>
