@@ -93,7 +93,7 @@ macx:LIBS += -L$$SK/lib -ltorrent-rasterbar \
 unix:!macx:!android:LIBS += -ltorrent-rasterbar \
                             -lboost_system -lboost_random -lboost_chrono \
 
-android:LIBS += -L$$SK/lib/$$ANDROID_TARGET_ARCH -ltorrent-rasterbar
+android:LIBS += -L$$SK/lib/$$ANDROID_TARGET_ARCH -ltorrent-rasterbar -ltry_signal
 
 macx {
 CONFIG(debug, debug|release) {
