@@ -20,10 +20,11 @@ contains(QT_MAJOR_VERSION, 4) {
 
 win32:CONFIG += dll
 
+# C++17
 contains(QT_MAJOR_VERSION, 4) {
-    QMAKE_CXXFLAGS += -std=c++17
+    QMAKE_CXXFLAGS += -std=c++1z
 } else {
-    CONFIG += c++17
+    CONFIG += c++1z
 }
 
 DEFINES += SK_BACKEND_LIBRARY SK_BACKEND_LOG

@@ -10,10 +10,11 @@ CONFIG += console
 
 macx:CONFIG -= app_bundle
 
+# C++17
 contains(QT_MAJOR_VERSION, 4) {
-    QMAKE_CXXFLAGS += -std=c++17
+    QMAKE_CXXFLAGS += -std=c++1z
 } else {
-    CONFIG += c++17
+    CONFIG += c++1z
 }
 
 SOURCES += main.cpp
