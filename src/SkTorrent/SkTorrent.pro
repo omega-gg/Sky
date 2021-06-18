@@ -21,9 +21,9 @@ contains(QT_MAJOR_VERSION, 4) {
 win32:CONFIG += dll
 
 contains(QT_MAJOR_VERSION, 4) {
-    QMAKE_CXXFLAGS += -std=c++14
+    QMAKE_CXXFLAGS += -std=c++1z
 } else {
-    CONFIG += c++14
+    CONFIG += c++1z
 }
 
 DEFINES += SK_TORRENT_LIBRARY
