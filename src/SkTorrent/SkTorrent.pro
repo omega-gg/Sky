@@ -20,6 +20,9 @@ contains(QT_MAJOR_VERSION, 4) {
 
 win32:CONFIG += dll
 
+# NOTE macOS: This seems to be required when building against libtorrent 2.0+.
+macx:CONFIG += c++14
+
 DEFINES += SK_TORRENT_LIBRARY
 
 win32-msvc* {
@@ -82,18 +85,19 @@ android {
 win32:LIBS += -lmswsock -lws2_32
 
 win32:LIBS += -L$$SK/lib -ltorrent \
-              -L$$SK/lib -lboost_system \
+              -L$$SK/lib -lboost_system
 
 # Boost dependencies
 win32-msvc*:LIBS += Advapi32.lib Iphlpapi.lib
 
 macx:LIBS += -L$$SK/lib -ltorrent-rasterbar \
-             -L$$SK/lib -lboost_system \
+             -L$$SK/lib -lboost_system
 
 unix:!macx:!android:LIBS += -ltorrent-rasterbar \
-                            -lboost_system -lboost_random -lboost_chrono \
+                            -lboost_system -lboost_random -lboost_chrono
 
-android:LIBS += -L$$SK/lib/$$ANDROID_TARGET_ARCH -ltorrent-rasterbar -ltry_signal
+android:LIBS += -L$$SK/lib/$$ANDROID_TARGET_ARCH -ltorrent-rasterbar \
+                -L$$SK/lib/$$ANDROID_TARGET_ARCH -ltry_signal
 
 macx {
 CONFIG(debug, debug|release) {
