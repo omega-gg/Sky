@@ -20,8 +20,11 @@ contains(QT_MAJOR_VERSION, 4) {
 
 win32:CONFIG += dll
 
-# NOTE macOS/msvx: This seems to be required when building against libtorrent 2.0+.
-macx:win32-msvc*:CONFIG += c++14
+contains(QT_MAJOR_VERSION, 4) {
+    QMAKE_CXXFLAGS += -std=c++14
+} else {
+    CONFIG += c++14
+}
 
 DEFINES += SK_TORRENT_LIBRARY
 
@@ -44,8 +47,6 @@ android {
 } else {
     DEFINES += SK_DESKTOP
 }
-
-!win32-msvc*:QMAKE_CXXFLAGS += -std=c++14
 
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 
