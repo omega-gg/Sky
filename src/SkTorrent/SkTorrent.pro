@@ -29,10 +29,10 @@ contains(QT_MAJOR_VERSION, 4) {
 DEFINES += SK_TORRENT_LIBRARY
 
 win32-msvc* {
-    # libtorrent: This fixes the winsock2 errors
-    DEFINES += WIN32_LEAN_AND_MEAN
+    # libtorrent: This fixes the winsock2 and std::min errors.
+    DEFINES += WIN32_LEAN_AND_MEAN NOMINMAX
 
-    # Boost: This prevents an issue with linking
+    # Boost: This prevents an issue with linking.
     DEFINES += BOOST_ALL_NO_LIB
 }
 
