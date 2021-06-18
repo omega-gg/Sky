@@ -21,9 +21,9 @@ contains(QT_MAJOR_VERSION, 4) {
 win32:CONFIG += dll
 
 contains(QT_MAJOR_VERSION, 4) {
-    QMAKE_CXXFLAGS += -std=c++1z
+    QMAKE_CXXFLAGS += -std=c++17
 } else {
-    CONFIG += c++1z
+    CONFIG += c++17
 }
 
 DEFINES += SK_MEDIA_LIBRARY

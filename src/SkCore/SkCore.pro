@@ -25,9 +25,9 @@ contains(QT_MAJOR_VERSION, 5) {
 win32:CONFIG += dll
 
 contains(QT_MAJOR_VERSION, 4) {
-    QMAKE_CXXFLAGS += -std=c++1z
+    QMAKE_CXXFLAGS += -std=c++17
 } else {
-    CONFIG += c++1z
+    CONFIG += c++17
 }
 
 DEFINES += QUAZIP_BUILD SK_CORE_LIBRARY SK_CHARSET
