@@ -20,6 +20,12 @@ contains(QT_MAJOR_VERSION, 4) {
 
 win32:CONFIG += dll
 
+contains(QT_MAJOR_VERSION, 4) {
+    QMAKE_CXXFLAGS += -std=c++1z
+} else {
+    CONFIG += c++1z
+}
+
 DEFINES += SK_MEDIA_LIBRARY
 
 !win32-msvc*:!android:DEFINES += CAN_COMPILE_SSE2
@@ -35,8 +41,6 @@ android {
 } else {
     DEFINES += SK_DESKTOP
 }
-
-!win32-msvc*:QMAKE_CXXFLAGS += -std=c++14
 
 !win32-msvc*:!android:QMAKE_CXXFLAGS += -msse
 

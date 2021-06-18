@@ -26,6 +26,12 @@ contains(QT_MAJOR_VERSION, 4) {
 
 win32:CONFIG += dll
 
+contains(QT_MAJOR_VERSION, 4) {
+    QMAKE_CXXFLAGS += -std=c++1z
+} else {
+    CONFIG += c++1z
+}
+
 DEFINES += QT_QTLOCKEDFILE_IMPORT
 
 android:DEFINES += QT_OPENGL_ES_2
@@ -50,8 +56,6 @@ android {
 } else {
     DEFINES += SK_DESKTOP
 }
-
-!win32-msvc*:QMAKE_CXXFLAGS += -std=c++14
 
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 

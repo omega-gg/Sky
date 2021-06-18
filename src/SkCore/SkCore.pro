@@ -24,6 +24,12 @@ contains(QT_MAJOR_VERSION, 5) {
 
 win32:CONFIG += dll
 
+contains(QT_MAJOR_VERSION, 4) {
+    QMAKE_CXXFLAGS += -std=c++1z
+} else {
+    CONFIG += c++1z
+}
+
 DEFINES += QUAZIP_BUILD SK_CORE_LIBRARY SK_CHARSET
 
 contains(QT_MAJOR_VERSION, 4) {
@@ -37,8 +43,6 @@ android {
 } else {
     DEFINES += SK_DESKTOP
 }
-
-!win32-msvc*:QMAKE_CXXFLAGS += -std=c++14
 
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 
