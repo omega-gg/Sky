@@ -50,6 +50,9 @@
 #endif
 #include <QFontMetrics>
 #include <QClipboard>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 1)
+    #include <QLoggingCategory>
+#endif
 #else
 #include <QCoreApplication>
 #endif
@@ -320,6 +323,11 @@ void WControllerApplication::initController()
     Q_D(WControllerApplication);
 
     if (d->object) return;
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 1)
+    // NOTE: This removes the infamous QML Connections warning.
+    QLoggingCategory::setFilterRules("qt.qml.connections.warning=false");
+#endif
 
 #ifdef QT_4
     QDeclarativeComponent component(wControllerDeclarative->engine());
