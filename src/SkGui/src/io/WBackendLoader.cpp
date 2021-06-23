@@ -24,6 +24,9 @@
 
 #ifndef SK_NO_BACKENDLOADER
 
+// Qt includes
+#include <QCoreApplication>
+
 // Sk includes
 #include <WControllerPlaylist>
 
@@ -190,12 +193,31 @@ void WBackendLoaderPrivate::init()
 {
     Q_Q(WBackendLoader);
 
+    const QMetaObject * meta = q->metaObject();
+
+    create = meta->method(meta->indexOfMethod("onCreate(QString)"));
+
     wControllerPlaylist->d_func()->registerLoader(q);
 }
 
 //-------------------------------------------------------------------------------------------------
 // Private slots
 //-------------------------------------------------------------------------------------------------
+
+void WBackendLoaderPrivate::onCreate(const QString & id)
+{
+    Q_Q(WBackendLoader);
+
+    WBackendNet * backend = q->createBackend(id);
+
+    backend->setParent(q);
+
+    backend->d_func()->lockCount++;
+
+    backendCache()->addBackend(id, backend);
+
+    QObject::connect(backend, SIGNAL(destroyed()), q, SLOT(onDestroyed()));
+}
 
 void WBackendLoaderPrivate::onDestroyed()
 {
@@ -382,15 +404,19 @@ WBackendNet * WBackendLoader::createNow(const QString & id)
 {
     if (checkId(id) == false) return NULL;
 
-    WBackendNet * backend = createBackend(id);
+    Q_D(WBackendLoader);
 
-    backend->setParent(this);
+    // NOTE: We want backend loading to be thread safe.
+    d->create.invoke(this, Q_ARG(QString, id));
 
-    backend->d_func()->lockCount++;
+    WBackendNet * backend = backendCache()->getBackend(id);
 
-    backendCache()->addBackend(id, backend);
+    while (backend == NULL)
+    {
+        QCoreApplication::processEvents();
 
-    connect(backend, SIGNAL(destroyed()), this, SLOT(onDestroyed()));
+        backend = backendCache()->getBackend(id);
+    }
 
     return backend;
 }

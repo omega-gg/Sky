@@ -89,6 +89,7 @@ private: // Functions
 private:
     W_DECLARE_PRIVATE(WBackendLoader)
 
+    Q_PRIVATE_SLOT(d_func(), void onCreate(const QString &))
     Q_PRIVATE_SLOT(d_func(), void onDestroyed())
 
     friend class WControllerPlaylist;

@@ -45,6 +45,17 @@ class WRemoteData;
 // WControllerPlaylistSource
 //-------------------------------------------------------------------------------------------------
 
+struct WControllerPlaylistUrl
+{
+    WLibraryItem::Type type;
+
+    QString url;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WControllerPlaylistSource
+//-------------------------------------------------------------------------------------------------
+
 struct WControllerPlaylistSource
 {
     QString url;
@@ -265,6 +276,13 @@ public: // Static functions
     Q_INVOKABLE static bool extensionIsMarkup  (const QString & extension);
     Q_INVOKABLE static bool extensionIsText    (const QString & extension);
     Q_INVOKABLE static bool extensionIsSubtitle(const QString & extension);
+
+    //---------------------------------------------------------------------------------------------
+
+    Q_INVOKABLE static QStringList extractTracks(const WControllerPlaylistData & data);
+
+    Q_INVOKABLE
+    static QList<WControllerPlaylistUrl> extractPlaylists(const WControllerPlaylistData & data);
 
     //---------------------------------------------------------------------------------------------
     // QML

@@ -3481,6 +3481,110 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 }
 
 //---------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */
+QStringList WControllerPlaylist::extractTracks(const WControllerPlaylistData & data)
+{
+    QStringList list;
+
+    foreach (const WControllerPlaylistSource & source, data.sources)
+    {
+        const QString & url = source.url;
+
+        WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
+
+        if (backend == NULL) continue;
+
+        QString id = backend->getTrackId(url);
+
+        if (id.isEmpty())
+        {
+            backend->tryDelete();
+
+            continue;
+        }
+
+        QString urlTrack = backend->getUrlTrack(id);
+
+        backend->tryDelete();
+
+        if (list.contains(urlTrack)) continue;
+
+        list.append(urlTrack);
+
+        if (list.count() == CONTROLLERPLAYLIST_MAX_TRACKS)
+        {
+            return list;
+        }
+    }
+
+    foreach (const WControllerPlaylistMedia & media, data.medias)
+    {
+        const QString & url = media.url;
+
+        if (list.contains(url)) continue;
+
+        list.append(url);
+
+        if (list.count() == CONTROLLERPLAYLIST_MAX_TRACKS)
+        {
+            return list;
+        }
+    }
+
+    return list;
+}
+
+/* Q_INVOKABLE static */ QList<WControllerPlaylistUrl>
+WControllerPlaylist::extractPlaylists(const WControllerPlaylistData & data)
+{
+    QStringList list;
+
+    QList<WControllerPlaylistUrl> items;
+
+    foreach (const WControllerPlaylistSource & source, data.sources)
+    {
+        const QString & url = source.url;
+
+        WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
+
+        if (backend == NULL) continue;
+
+        WBackendNetPlaylistInfo info = backend->getPlaylistInfo(url);
+
+        if (info.isValid() == false)
+        {
+            backend->tryDelete();
+
+            continue;
+        }
+
+        QString urlPlaylist = backend->getUrlPlaylist(info);
+
+        backend->tryDelete();
+
+        if (list.contains(urlPlaylist)) continue;
+
+        list.append(urlPlaylist);
+
+        WControllerPlaylistUrl item;
+
+        item.type = info.type;
+
+        item.url = urlPlaylist;
+
+        items.append(item);
+
+        if (items.count() == CONTROLLERPLAYLIST_MAX_ITEMS)
+        {
+            return items;
+        }
+    }
+
+    return items;
+}
+
+//---------------------------------------------------------------------------------------------
 // QML
 
 /* Q_INVOKABLE static */ WLibraryFolder * WControllerPlaylist::createFolder(int type)

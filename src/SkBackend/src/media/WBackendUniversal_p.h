@@ -146,6 +146,8 @@ public: // Interface
 
     void dump(int indent = 0) const;
 
+    void applySlice(WControllerPlaylistData * data, const QStringList & list) const;
+
     QVariant getVariant(WBackendUniversalParameters * parameters, int index) const;
 
     int   getInt (WBackendUniversalParameters * parameters, int index) const;
@@ -166,6 +168,8 @@ public: // Interface
     QHash<QString, QVariant> getHash(WBackendUniversalParameters * parameters, int index) const;
 
     QHash<QString, QVariant> getHtml(const WControllerPlaylistData & data) const;
+
+    QVariantList getPlaylists(const QList<WControllerPlaylistUrl> & urls) const;
 
     QVariant * getKey(WBackendUniversalParameters * parameters, int index) const;
 

@@ -33,6 +33,9 @@
     We mean it.
 */
 
+// Qt includes
+#include <QMetaMethod>
+
 // Private includes
 #include <private/Sk_p>
 
@@ -48,7 +51,12 @@ public:
     void init();
 
 public: // Slots
+    void onCreate(const QString & id);
+
     void onDestroyed();
+
+public: // Variables
+    QMetaMethod create;
 
 protected:
     W_DECLARE_PUBLIC(WBackendLoader)

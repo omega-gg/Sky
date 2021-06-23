@@ -143,6 +143,8 @@ static const QString BACKENDUNIVERSAL_FUNCTIONS = \
     "URL_REMOVE_EXTENSION|"
     "HTML_TO_UTF8|"
     "HTML_EXTRACT|"
+    "HTML_TRACKS|"
+    "HTML_PLAYLISTS|"
     "HTML_ATTRIBUTE|"
     "HTML_ATTRIBUTE_AT|"
     "HTML_ATTRIBUTE_UTF8|"
@@ -1860,6 +1862,8 @@ inline QVariant htmlToUtf8(const WBackendUniversalNode * node,
     return WControllerNetwork::htmlToUtf8(node->getString(parameters, 0));
 }
 
+//-------------------------------------------------------------------------------------------------
+
 inline QVariant htmlExtract(const WBackendUniversalNode * node,
                             WBackendUniversalParameters * parameters)
 {
@@ -1875,23 +1879,62 @@ inline QVariant htmlExtract(const WBackendUniversalNode * node,
 
     if (count != 2)
     {
-        QStringList list = node->getStringList(parameters, 2);
-
-        foreach (const QString & string, list)
-        {
-            int index = string.indexOf('|');
-
-            if (index == -1)
-            {
-                 data.addSlice(string);
-            }
-            else data.addSlice(string.mid(0, index), string.mid(index + 1));
-        }
+        node->applySlice(&data, node->getStringList(parameters, 2));
     }
 
     data.applyHtml(node->getByteArray(parameters, 0), node->getString(parameters, 1));
 
     return node->getHtml(data);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+inline QVariant htmlTracks(const WBackendUniversalNode * node,
+                           WBackendUniversalParameters * parameters)
+{
+#ifdef SK_BACKEND_LOG
+    qDebug("HTML_TRACKS");
+#endif
+
+    int count = node->nodes.count();
+
+    if (count < 2) return QVariant();
+
+    WControllerPlaylistData data;
+
+    if (count != 2)
+    {
+        node->applySlice(&data, node->getStringList(parameters, 2));
+    }
+
+    data.applyHtml(node->getByteArray(parameters, 0), node->getString(parameters, 1));
+
+    return WControllerPlaylist::extractTracks(data);
+}
+
+inline QVariant htmlPlaylists(const WBackendUniversalNode * node,
+                              WBackendUniversalParameters * parameters)
+{
+#ifdef SK_BACKEND_LOG
+    qDebug("HTML_PLAYLISTS");
+#endif
+
+    int count = node->nodes.count();
+
+    if (count < 2) return QVariant();
+
+    WControllerPlaylistData data;
+
+    if (count != 2)
+    {
+        node->applySlice(&data, node->getStringList(parameters, 2));
+    }
+
+    data.applyHtml(node->getByteArray(parameters, 0), node->getString(parameters, 1));
+
+    QList<WControllerPlaylistUrl> urls = WControllerPlaylist::extractPlaylists(data);
+
+    return node->getPlaylists(urls);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2619,6 +2662,23 @@ void WBackendUniversalNode::dump(int indent) const
 
 //-------------------------------------------------------------------------------------------------
 
+void WBackendUniversalNode::applySlice(WControllerPlaylistData * data,
+                                       const QStringList       & list) const
+{
+    foreach (const QString & string, list)
+    {
+        int index = string.indexOf('|');
+
+        if (index == -1)
+        {
+             data->addSlice(string);
+        }
+        else data->addSlice(string.mid(0, index), string.mid(index + 1));
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
 QVariant WBackendUniversalNode::getVariant(WBackendUniversalParameters * parameters,
                                            int                           index) const
 {
@@ -2800,6 +2860,28 @@ QHash<QString, QVariant> WBackendUniversalNode::getHtml(const WControllerPlaylis
     hash.insert("medias", list);
 
     return hash;
+}
+
+QVariantList WBackendUniversalNode::getPlaylists(const QList<WControllerPlaylistUrl> & urls) const
+{
+    QVariantList list;
+
+    foreach (const WControllerPlaylistUrl & url, urls)
+    {
+        QHash<QString, QVariant> variant;
+
+        if (url.type == WLibraryItem::PlaylistFeed)
+        {
+             variant.insert("type", "feed");
+        }
+        else variant.insert("type", "playlist");
+
+        variant.insert("url", url.url);
+
+        list.append(variant);
+    }
+
+    return list;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -3811,6 +3893,8 @@ void WBackendUniversalPrivate::populateHash() const
     hash.insert("URL_REMOVE_EXTENSION",   urlRemoveExtension);
     hash.insert("HTML_TO_UTF8",           htmlToUtf8);
     hash.insert("HTML_EXTRACT",           htmlExtract);
+    hash.insert("HTML_TRACKS",            htmlTracks);
+    hash.insert("HTML_PLAYLISTS",         htmlPlaylists);
     hash.insert("HTML_ATTRIBUTE",         htmlAttribute);
     hash.insert("HTML_ATTRIBUTE_AT",      htmlAttributeAt);
     hash.insert("HTML_ATTRIBUTE_UTF8",    htmlAttributeUtf8);
