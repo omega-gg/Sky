@@ -3284,8 +3284,9 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
     languages.append(tr("Bulgarian"));
     languages.append(tr("Burmese"));
     languages.append(tr("Catalan"));
-    languages.append(tr("Chinese #1"));
-    languages.append(tr("Chinese #2"));
+    languages.append(tr("Chinese"));
+    languages.append(tr("Chinese (TR)"));
+    languages.append(tr("Chinese (BI)"));
     languages.append(tr("Croatian"));
     languages.append(tr("Czech"));
     languages.append(tr("Danish"));
@@ -3323,6 +3324,8 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
     languages.append(tr("Persian"));
     languages.append(tr("Polish"));
     languages.append(tr("Portuguese"));
+    languages.append(tr("Portuguese (BR)"));
+    languages.append(tr("Portuguese (MZ)"));
     languages.append(tr("Romanian"));
     languages.append(tr("Russian"));
     languages.append(tr("Serbian"));
@@ -3330,6 +3333,8 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
     languages.append(tr("Slovak"));
     languages.append(tr("Slovenian"));
     languages.append(tr("Spanish"));
+    languages.append(tr("Spanish (EU)"));
+    languages.append(tr("Spanish (LA)"));
     languages.append(tr("Swedish"));
     languages.append(tr("Tamil"));
     languages.append(tr("Telugu"));
@@ -3610,7 +3615,7 @@ QThread * WControllerPlaylist::thread() const
 
 /* static */ QString WControllerPlaylist::versionApi()
 {
-    return "1.0.2";
+    return "1.0.3";
 }
 
 //-------------------------------------------------------------------------------------------------

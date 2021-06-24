@@ -100,8 +100,11 @@ Item
         iconWidth: (isSourceDefault) ? componentTrack.iconWidth
                                      : itemIcon.filter.width
 
-        iconSourceSize.height: (isSourceDefault) ? getSourceHeight()
-                                                 : itemIcon.filter.height
+        // FIXME Qt 5.15: For some reason this property tends to get corrupted when using
+        //                iconSourceSize.height directly. Could be related to components lazy
+        //                loading.
+        iconSourceSize: (isSourceDefault) ? Qt.size(-1, getSourceHeight())
+                                          : Qt.size(-1, itemIcon.filter.height)
 
         icon: cover
 
