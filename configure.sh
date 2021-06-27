@@ -12,7 +12,7 @@ external="../3rdparty"
 Qt4_version="4.8.7"
 Qt5_version="5.15.2"
 
-VLC_version="3.0.12"
+VLC_version="3.0.16"
 
 libtorrent_version="2.0.4"
 
