@@ -1234,7 +1234,7 @@ void WBackendVlcPrivate::onUpdateState()
 
     lines[2] = lines[1];
 
-    d->mutex.lock();
+    //d->mutex.lock();
 
     if (d->frameA.width() != width || d->frameA.height() != height)
     {
@@ -1257,13 +1257,13 @@ void WBackendVlcPrivate::onUpdateState()
         d->textures[1].bits = d->textures[1].bitsA;
         d->textures[2].bits = d->textures[2].bitsA;
 
-        d->mutex.unlock();
+        //d->mutex.unlock();
 
         QCoreApplication::postEvent(d->q_func(),
                                     new WBackendVlcEventSetup(width, height,
                                                               pitches[0], pitches[1], pitches[2]));
     }
-    else d->mutex.unlock();
+    //else d->mutex.unlock();
 
     return 1;
 }
@@ -1274,7 +1274,7 @@ void WBackendVlcPrivate::onUpdateState()
 {
     WBackendVlcPrivate * d = static_cast<WBackendVlc *> (data)->d_func();
 
-    d->mutex.lock();
+    //d->mutex.lock();
 
     d->frameIndex = !(d->frameIndex);
 
@@ -1313,7 +1313,7 @@ void WBackendVlcPrivate::onUpdateState()
         d->textures[2].bits = d->textures[2].bitsB;
     }
 
-    d->mutex.unlock();
+    //d->mutex.unlock();
 
     d->method.invoke(backend);
 }

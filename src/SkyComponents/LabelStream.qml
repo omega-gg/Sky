@@ -171,6 +171,9 @@ Item
 
             style: st.text_raised
 
+            // FIXME Qt5.14: Sometimes sk.textWidth() is too short.
+            elide: Text.ElideNone
+
             font.pixelSize: st.dp11
         }
     }

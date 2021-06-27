@@ -239,7 +239,8 @@ public: // Static functions
     static void unlock(void * data, void * id, void * const * pixels);
 
 public: // Variables
-    QMutex mutex;
+    // NOTE: Do we really need a mutex on here after all ?
+    //QMutex mutex;
 
     WVlcPlayer * player;
 
