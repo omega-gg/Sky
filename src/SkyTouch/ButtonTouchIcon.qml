@@ -47,7 +47,9 @@ BaseButtonTouch
     property alias iconWidth : itemIcon.width
     property alias iconHeight: itemIcon.height
 
-    property alias iconSourceSize: itemIcon.sourceSize
+    property alias iconSourceSize : itemIcon.sourceSize
+    property alias iconDefaultSize: itemIcon.defaultSize
+
     property alias iconSourceArea: itemIcon.sourceArea
 
     property alias iconLoadMode: itemIcon.loadMode
@@ -78,17 +80,17 @@ BaseButtonTouch
         return st.getHeight(height, margins);
     }
 
-    function getFilterDefault()
-    {
-        return st.getButtonFilter(buttonTouchIcon);
-    }
-
     //---------------------------------------------------------------------------------------------
     // Virtual
 
     /* virtual */ function getFilter()
     {
         return getFilterDefault();
+    }
+
+    /* virtual */ function getFilterDefault()
+    {
+        return st.getButtonFilter(buttonTouchIcon);
     }
 
     //---------------------------------------------------------------------------------------------

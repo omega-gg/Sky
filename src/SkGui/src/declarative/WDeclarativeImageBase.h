@@ -67,6 +67,9 @@ class SK_GUI_EXPORT WDeclarativeImageBase : public WDeclarativeTexture
     Q_PROPERTY(QSize sourceSize READ sourceSize WRITE setSourceSize RESET resetSourceSize
                NOTIFY sourceSizeChanged)
 
+    Q_PROPERTY(QSize defaultSize READ defaultSize WRITE setDefaultSize RESET resetDefaultSize
+               NOTIFY defaultSizeChanged)
+
     Q_PROPERTY(QSize sourceArea READ sourceArea WRITE setSourceArea RESET resetSourceArea
                NOTIFY sourceAreaChanged)
 
@@ -162,7 +165,9 @@ signals:
     void sourceChanged       ();
     void sourceDefaultChanged();
 
-    void sourceSizeChanged();
+    void sourceSizeChanged ();
+    void defaultSizeChanged();
+
     void sourceAreaChanged();
 
     void loadModeChanged();
@@ -196,6 +201,10 @@ public: // Properties
     QSize sourceSize() const;
     void  setSourceSize(const QSize & size);
     void  resetSourceSize();
+
+    QSize defaultSize() const;
+    void  setDefaultSize(const QSize & size);
+    void  resetDefaultSize();
 
     QSize sourceArea() const;
     void  setSourceArea(const QSize & size);

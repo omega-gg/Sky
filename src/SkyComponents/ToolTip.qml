@@ -38,8 +38,6 @@ BaseToolTip
 
     property int spacing: st.toolTip_spacing
 
-    property variant iconDefaultSize: null
-
     //---------------------------------------------------------------------------------------------
     // Private
 
@@ -57,7 +55,9 @@ BaseToolTip
     property alias iconWidth : itemIcon.width
     property alias iconHeight: itemIcon.height
 
-    property alias iconSourceSize: itemIcon.sourceSize
+    property alias iconSourceSize : itemIcon.sourceSize
+    property alias iconDefaultSize: itemIcon.defaultSize
+
     property alias iconSourceArea: itemIcon.sourceArea
 
     property alias iconLoadMode: itemIcon.loadMode
@@ -177,9 +177,7 @@ BaseToolTip
 
         anchors.verticalCenter: parent.verticalCenter
 
-        sourceSize: (isSourceDefault && iconDefaultSize) ? iconDefaultSize
-                                                         : Qt.size(width, height)
-
+        sourceSize: Qt.size(width, height)
         sourceArea: Qt.size(width, height)
 
         clip: (fillMode == Image.PreserveAspectCrop)

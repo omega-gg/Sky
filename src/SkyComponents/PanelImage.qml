@@ -31,8 +31,10 @@ Panel
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    property alias source    : imageFront.source
-    property alias sourceSize: imageFront.sourceSize
+    property alias source: imageFront.source
+
+    property alias sourceSize : imageFront.sourceSize
+    property alias defaultSize: imageFront.defaultSize
 
     property alias fillMode: imageFront.fillMode
 

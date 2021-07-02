@@ -79,9 +79,19 @@ Item
     {
         if (buttonIcon.isSourceDefault)
         {
-            return buttonIcon.getFilterDefault();
+             return getFilterDefault();
         }
-        else return st.icon_filterRound;
+        else return getFilterMask();
+    }
+
+    /* virtual */ function getFilterDefault()
+    {
+        return buttonIcon.getFilterDefault();
+    }
+
+    /* virtual */ function getFilterMask()
+    {
+        return st.icon_filterRound;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -100,11 +110,9 @@ Item
         iconWidth: (isSourceDefault) ? componentTrack.iconWidth
                                      : itemIcon.filter.width
 
-        // FIXME Qt 5.15: For some reason this property tends to get corrupted when using
-        //                iconSourceSize.height directly. Could be related to components lazy
-        //                loading.
-        iconSourceSize: (isSourceDefault) ? Qt.size(-1, getSourceHeight())
-                                          : Qt.size(-1, itemIcon.filter.height)
+        iconSourceSize.height: getFilterMask().height
+
+        iconDefaultSize.height: getSourceHeight()
 
         icon: cover
 

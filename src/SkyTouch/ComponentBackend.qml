@@ -61,14 +61,22 @@ ButtonTouchIcon
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
+    // Virtual
+
+    /* virtual */ function getFilterMask()
+    {
+        return st.icon_filterRound;
+    }
+
+    //---------------------------------------------------------------------------------------------
     // ButtonTouchIcon reimplementation
 
     /* virtual */ function getFilter()
     {
         if (isSourceDefault)
         {
-            return getFilterDefault();
+             return getFilterDefault();
         }
-        else return st.icon_filterRound;
+        else return getFilterMask();
     }
 }

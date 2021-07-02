@@ -34,8 +34,6 @@ MouseArea
     property bool isHovered: containsMouse
     property bool isCurrent: false
 
-    property variant iconDefaultSize: null
-
     property int textSpacing: st.dp8
     property int textMargin : st.dp8
 
@@ -68,7 +66,9 @@ MouseArea
     property alias iconWidth : itemIcon.width
     property alias iconHeight: itemIcon.height
 
-    property alias iconSourceSize: itemIcon.sourceSize
+    property alias iconSourceSize : itemIcon.sourceSize
+    property alias iconDefaultSize: itemIcon.defaultSize
+
     property alias iconSourceArea: itemIcon.sourceArea
 
     property alias iconLoadMode: itemIcon.loadMode
@@ -164,9 +164,7 @@ MouseArea
             width : st.itemTab_iconWidth
             height: st.itemTab_iconHeight
 
-            sourceSize: (isSourceDefault && iconDefaultSize) ? iconDefaultSize
-                                                             : Qt.size(width, height)
-
+            sourceSize: Qt.size(width, height)
             sourceArea: Qt.size(width, height)
 
             opacity: (itemTab.enabled) ? 1.0 : st.icon_opacityDisable

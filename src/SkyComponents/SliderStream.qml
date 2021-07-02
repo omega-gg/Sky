@@ -157,7 +157,7 @@ Item
 
     function pUpdate()
     {
-        maximum = duration;
+        maximum = Math.max(0, duration);
 
         if (slider.pressed == false && slider.drag.active == false)
         {

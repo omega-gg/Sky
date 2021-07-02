@@ -109,6 +109,8 @@ public: // Variables
     QString urlDefault;
 
     QSize sourceSize;
+    QSize defaultSize;
+
     QSize sourceArea;
 
     WDeclarativeImageBase::LoadMode loadMode;

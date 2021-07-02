@@ -42,7 +42,9 @@ Item
     property alias source       : itemIcon.source
     property alias sourceDefault: itemIcon.sourceDefault
 
-    property alias sourceSize: itemIcon.sourceSize
+    property alias sourceSize : itemIcon.sourceSize
+    property alias defaultSize: itemIcon.defaultSize
+
     property alias sourceArea: itemIcon.sourceArea
 
     property alias loadMode: itemIcon.loadMode

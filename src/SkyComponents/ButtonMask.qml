@@ -48,7 +48,9 @@ BaseButton
     property alias iconWidth : itemIcon.width
     property alias iconHeight: itemIcon.height
 
-    property alias iconSourceSize: itemIcon.sourceSize
+    property alias iconSourceSize : itemIcon.sourceSize
+    property alias iconDefaultSize: itemIcon.defaultSize
+
     property alias iconSourceArea: itemIcon.sourceArea
 
     property alias iconLoadMode: itemIcon.loadMode

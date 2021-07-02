@@ -43,7 +43,9 @@ BaseButton
     property alias imageWidth : itemImage.width
     property alias imageHeight: itemImage.height
 
-    property alias sourceSize: itemImage.sourceSize
+    property alias sourceSize : itemImage.sourceSize
+    property alias defaultSize: itemImage.defaultSize
+
     property alias sourceArea: itemImage.sourceArea
 
     property alias loadMode: itemImage.loadMode

@@ -179,8 +179,13 @@ void WDeclarativeImageBasePrivate::loadDefault()
 
 void WDeclarativeImageBasePrivate::readDefault()
 {
-    WPixmapCache::readPixmap(&(pixmapDefault),
-                             WControllerFile::toLocalFile(urlDefault), sourceSize, sourceArea);
+    if (defaultSize.isValid())
+    {
+         WPixmapCache::readPixmap(&(pixmapDefault), WControllerFile::toLocalFile(urlDefault),
+                                  defaultSize, sourceArea);
+    }
+    else WPixmapCache::readPixmap(&(pixmapDefault), WControllerFile::toLocalFile(urlDefault),
+                                  sourceSize, sourceArea);
 
     if (filter) applyFilter();
 }
@@ -924,6 +929,35 @@ void WDeclarativeImageBase::resetSourceSize()
     reload();
 
     emit sourceSizeChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QSize WDeclarativeImageBase::defaultSize() const
+{
+    Q_D(const WDeclarativeImageBase); return d->defaultSize;
+}
+
+void WDeclarativeImageBase::setDefaultSize(const QSize & size)
+{
+    Q_D(WDeclarativeImageBase);
+
+    if (d->defaultSize == size) return;
+
+    d->defaultSize = size;
+
+    emit defaultSizeChanged();
+}
+
+void WDeclarativeImageBase::resetDefaultSize()
+{
+    Q_D(WDeclarativeImageBase);
+
+    if (d->defaultSize.isValid() == false) return;
+
+    d->defaultSize = QSize();
+
+    emit defaultSizeChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
