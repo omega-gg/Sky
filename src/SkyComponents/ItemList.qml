@@ -220,7 +220,6 @@ MouseArea
             height: st.itemList_iconHeight
 
             sourceSize: Qt.size(width, height)
-
             sourceArea: Qt.size(width, height)
 
             clip: (fillMode == Image.PreserveAspectCrop)
