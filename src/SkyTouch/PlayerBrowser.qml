@@ -44,6 +44,8 @@ BasePlayerBrowser
 
     property alias buttonPlay: buttonPlay
 
+    property alias areaPlay: areaPlay
+
     //---------------------------------------------------------------------------------------------
     // Style
 
@@ -157,6 +159,24 @@ BasePlayerBrowser
         onReleased: scrollClear()
     }
 
+    MouseArea
+    {
+        id: areaPlay
+
+        anchors.centerIn: parent
+
+        width : Math.round(buttonPlay.width * 1.4)
+        height: width
+
+        visible: buttonPlay.visible
+
+        hoverEnabled: buttonPlay.visible
+
+        cursor: Qt.PointingHandCursor
+
+        onClicked: play()
+    }
+
     ButtonTouchIcon
     {
         id: buttonPlay
@@ -169,6 +189,10 @@ BasePlayerBrowser
         margins: buttonPrevious.margins
 
         visible: (player.source != "")
+
+        isHovered: (containsMouse || areaPlay.containsMouse)
+
+        isPressed: (pressed || isReturnPressed || areaPlay.pressed)
 
         icon: st.icon_play
 
