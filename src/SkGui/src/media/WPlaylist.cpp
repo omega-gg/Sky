@@ -1189,38 +1189,31 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     d->loadTrack(at);
 }
 
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ void WPlaylist::loadTracks(int at, int count)
 {
     Q_D(WPlaylist);
 
     if (at < 0 || at >= d->tracks.count() || count < 1) return;
 
+    while (at < d->tracks.count() && count)
+    {
+        d->loadTrack(at);
+
+        count--;
+
+        at++;
+    }
+}
+
+/* Q_INVOKABLE */ void WPlaylist::loadTracksBetween(int at, int count)
+{
     int index = at - count / 2;
 
     if (index < 0) index = 0;
 
-    while (index < at)
-    {
-        if (d->loadTrack(index))
-        {
-            count--;
-
-            index++;
-
-            break;
-        }
-
-        index++;
-    }
-
-    while (index < d->tracks.count() && count)
-    {
-        d->loadTrack(index);
-
-        count--;
-
-        index++;
-    }
+    loadTracks(index, count);
 }
 
 //-------------------------------------------------------------------------------------------------

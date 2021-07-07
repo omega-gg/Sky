@@ -180,6 +180,13 @@ Style
     property color listLoading_color: lineEdit_color
 //#END
 
+//#ListPlaylist
+    //---------------------------------------------------------------------------------------------
+    // ListPlaylist
+
+    property int listPlaylist_interval: 200
+//#END
+
 //#ScrollBar
     //---------------------------------------------------------------------------------------------
     // ScrollBar
