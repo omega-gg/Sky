@@ -1209,11 +1209,11 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
 /* Q_INVOKABLE */ void WPlaylist::loadTracksBetween(int at, int count)
 {
-    int index = at - count / 2;
+    at -= count / 2;
 
-    if (index < 0) index = 0;
+    if (at < 0) at = 0;
 
-    loadTracks(index, count);
+    loadTracks(at, count);
 }
 
 //-------------------------------------------------------------------------------------------------
