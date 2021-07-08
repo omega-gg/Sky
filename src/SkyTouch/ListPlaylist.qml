@@ -69,6 +69,8 @@ List
 
         var index = Math.floor(contentY / sizeTrack);
 
+        // NOTE: We add 1 to cover the entire region when half a track is exposed at the top and
+        //       the bottom of the list.
         var count = Math.ceil(height / sizeTrack) + 1;
 
         playlist.loadTracks(index, count);

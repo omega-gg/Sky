@@ -1211,9 +1211,11 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 {
     at -= count / 2;
 
-    if (at < 0) at = 0;
-
-    loadTracks(at, count);
+    if (at < 0)
+    {
+         loadTracks(0, count);
+    }
+    else loadTracks(at, count);
 }
 
 //-------------------------------------------------------------------------------------------------
