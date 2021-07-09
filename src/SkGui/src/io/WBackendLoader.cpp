@@ -108,9 +108,10 @@ void WBackendLoaderCache::addBackend(const QString & id, WBackendNet * backend)
         }
     }
 
-    ids.append(id);
-
     backends.append(backend);
+
+    // NOTE: We call append on 'ids' at the end because 'createNow' depends on it.
+    ids.append(id);
 }
 
 void WBackendLoaderCache::removeBackend(WBackendNet * backend)
@@ -214,9 +215,10 @@ void WBackendLoaderPrivate::onCreate(const QString & id)
 
     backend->d_func()->lockCount++;
 
-    backendCache()->addBackend(id, backend);
-
     QObject::connect(backend, SIGNAL(destroyed()), q, SLOT(onDestroyed()));
+
+    // NOTE: We call 'addBackend' at the end because 'createNow' depends on it.
+    backendCache()->addBackend(id, backend);
 }
 
 void WBackendLoaderPrivate::onDestroyed()
