@@ -136,7 +136,9 @@ void WVlcEnginePrivate::init(const QStringList & options, QThread * thread)
                 "--no-spu",            /* No sub-pictures  */
                 "--no-osd",            /* No video overlay */
                 "--no-stats",          /* No statistics    */
-                "--no-media-library"   /* No Media Library */
+                "--no-media-library",  /* No Media Library */
+                // NOTE: This is useful for mkv default langauge.
+                "--audio-language=en"  /* Audio english    */
                 //"--http-reconnect",  /* Auto reconnect   */
                 //"--avcodec-fast",    /* Speed tricks     */
                 //"--input-fast-seek", /* Fast seek        */

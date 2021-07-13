@@ -55,6 +55,7 @@ public: // Enums
         EventSeek,   // WVlcPlayerEvent int
         EventSpeed,  // WVlcPlayerEvent qreal
         EventVolume, // WVlcPlayerEvent int
+        EventScan,   // WVlcPlayerEvent bool
         EventDelete
     };
 
@@ -66,19 +67,30 @@ public:
 public: // Functions
     QString encodeUrl(const QString & url) const;
 
-public: // Static functions
-    static void eventPlaying(const struct libvlc_event_t * event, void * data);
-    static void eventPaused (const struct libvlc_event_t * event, void * data);
-    static void eventStopped(const struct libvlc_event_t * event, void * data);
+    void clearDiscoverers();
 
-    static void eventBuffering(const struct libvlc_event_t * event, void * data);
+public: // Static events
+    //---------------------------------------------------------------------------------------------
+    // Player
 
-    static void eventLengthChanged(const struct libvlc_event_t * event, void * data);
-    static void eventTimeChanged  (const struct libvlc_event_t * event, void * data);
+    static void onPlaying(const struct libvlc_event_t * event, void * data);
+    static void onPaused (const struct libvlc_event_t * event, void * data);
+    static void onStopped(const struct libvlc_event_t * event, void * data);
 
-    static void eventEndReached(const struct libvlc_event_t * event, void * data);
+    static void onBuffering(const struct libvlc_event_t * event, void * data);
 
-    static void eventEncounteredError(const struct libvlc_event_t * event, void * data);
+    static void onLengthChanged(const struct libvlc_event_t * event, void * data);
+    static void onTimeChanged  (const struct libvlc_event_t * event, void * data);
+
+    static void onEndReached(const struct libvlc_event_t * event, void * data);
+
+    static void onEncounteredError(const struct libvlc_event_t * event, void * data);
+
+    //---------------------------------------------------------------------------------------------
+    // Renderer
+
+    static void onRendererAdded  (const struct libvlc_event_t * event, void * data);
+    static void onRendererDeleted(const struct libvlc_event_t * event, void * data);
 
 public: // Variables
     QMutex mutex;
@@ -92,6 +104,8 @@ public: // Variables
     QStringList options;
 
     WAbstractBackend::Output output;
+
+    QList<libvlc_renderer_discoverer_t *> discoverers;
 
     int networkCache;
 

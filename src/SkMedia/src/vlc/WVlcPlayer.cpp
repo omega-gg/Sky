@@ -77,10 +77,24 @@ QString WVlcPlayerPrivate::encodeUrl(const QString & url) const
 }
 
 //-------------------------------------------------------------------------------------------------
-// Private static functions
-//-------------------------------------------------------------------------------------------------
 
-/* static */ void WVlcPlayerPrivate::eventPlaying(const struct libvlc_event_t *, void * data)
+void WVlcPlayerPrivate::clearDiscoverers()
+{
+    foreach (libvlc_renderer_discoverer_t * discoverer, discoverers)
+    {
+        // NOTE: This calls also stops the discoverer.
+        libvlc_renderer_discoverer_release(discoverer);
+    }
+
+    discoverers.clear();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private static events
+//-------------------------------------------------------------------------------------------------
+// Player
+
+/* static */ void WVlcPlayerPrivate::onPlaying(const struct libvlc_event_t *, void * data)
 {
     WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
 
@@ -90,7 +104,7 @@ QString WVlcPlayerPrivate::encodeUrl(const QString & url) const
                                 new QEvent(static_cast<QEvent::Type> (WVlcPlayer::EventPlaying)));
 }
 
-/* static */ void WVlcPlayerPrivate::eventPaused(const struct libvlc_event_t *, void * data)
+/* static */ void WVlcPlayerPrivate::onPaused(const struct libvlc_event_t *, void * data)
 {
     WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
 
@@ -100,7 +114,7 @@ QString WVlcPlayerPrivate::encodeUrl(const QString & url) const
                                 new QEvent(static_cast<QEvent::Type> (WVlcPlayer::EventPaused)));
 }
 
-/* static */ void WVlcPlayerPrivate::eventStopped(const struct libvlc_event_t *, void * data)
+/* static */ void WVlcPlayerPrivate::onStopped(const struct libvlc_event_t *, void * data)
 {
     WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
 
@@ -112,7 +126,7 @@ QString WVlcPlayerPrivate::encodeUrl(const QString & url) const
 
 //-------------------------------------------------------------------------------------------------
 
-/* static */ void WVlcPlayerPrivate::eventBuffering(const struct libvlc_event_t *, void * data)
+/* static */ void WVlcPlayerPrivate::onBuffering(const struct libvlc_event_t *, void * data)
 {
     WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
 
@@ -124,8 +138,8 @@ QString WVlcPlayerPrivate::encodeUrl(const QString & url) const
 
 //-------------------------------------------------------------------------------------------------
 
-/* static */ void WVlcPlayerPrivate::eventLengthChanged(const struct libvlc_event_t * event,
-                                                        void                        * data)
+/* static */ void WVlcPlayerPrivate::onLengthChanged(const struct libvlc_event_t * event,
+                                                     void                        * data)
 {
     WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
 
@@ -141,8 +155,8 @@ QString WVlcPlayerPrivate::encodeUrl(const QString & url) const
                                 new WVlcPlayerEvent(WVlcPlayer::EventLengthChanged, length));
 }
 
-/* static */ void WVlcPlayerPrivate::eventTimeChanged(const struct libvlc_event_t * event,
-                                                      void                        * data)
+/* static */ void WVlcPlayerPrivate::onTimeChanged(const struct libvlc_event_t * event,
+                                                   void                        * data)
 {
     WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
 
@@ -156,8 +170,7 @@ QString WVlcPlayerPrivate::encodeUrl(const QString & url) const
 
 //-------------------------------------------------------------------------------------------------
 
-/* static */ void WVlcPlayerPrivate::eventEndReached(const struct libvlc_event_t *,
-                                                     void                        * data)
+/* static */ void WVlcPlayerPrivate::onEndReached(const struct libvlc_event_t *, void * data)
 {
     WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
 
@@ -169,8 +182,7 @@ QString WVlcPlayerPrivate::encodeUrl(const QString & url) const
 
 //-------------------------------------------------------------------------------------------------
 
-/* static */ void WVlcPlayerPrivate::eventEncounteredError(const struct libvlc_event_t *,
-                                                           void                        * data)
+/* static */ void WVlcPlayerPrivate::onEncounteredError(const struct libvlc_event_t *, void * data)
 {
     WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
 
@@ -178,6 +190,19 @@ QString WVlcPlayerPrivate::encodeUrl(const QString & url) const
 
     QCoreApplication::postEvent(d->backend,
                                 new QEvent(static_cast<QEvent::Type> (WVlcPlayer::EventError)));
+}
+
+//-------------------------------------------------------------------------------------------------
+// Renderer
+
+/* static */ void WVlcPlayerPrivate::onRendererAdded(const struct libvlc_event_t * event, void *)
+{
+    libvlc_renderer_item_t * renderer = event->u.renderer_discoverer_item_added.item;
+}
+
+/* static */ void WVlcPlayerPrivate::onRendererDeleted(const struct libvlc_event_t * event, void *)
+{
+    libvlc_renderer_item_t * renderer = event->u.renderer_discoverer_item_added.item;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -257,6 +282,14 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ void WVlcPlayer::scanRenderers(bool enabled)
+{
+    QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventScan,
+                                                                 enabled));
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ void WVlcPlayer::setProxy(const QString & host,
                                             int             port, const QString & password)
 {
@@ -308,29 +341,20 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
         // FIXME: Applying the player default volume.
         //libvlc_audio_set_volume(d->player, 100);
 
-        libvlc_event_attach(libvlc_media_player_event_manager(d->player),
-                            libvlc_MediaPlayerPlaying, d->eventPlaying, d);
+        libvlc_event_manager_t * manager = libvlc_media_player_event_manager(d->player);
 
-        libvlc_event_attach(libvlc_media_player_event_manager(d->player),
-                            libvlc_MediaPlayerPaused, d->eventPaused, d);
+        libvlc_event_attach(manager, libvlc_MediaPlayerPlaying, d->onPlaying, d);
+        libvlc_event_attach(manager, libvlc_MediaPlayerPaused,  d->onPaused,  d);
+        libvlc_event_attach(manager, libvlc_MediaPlayerStopped, d->onStopped, d);
 
-        libvlc_event_attach(libvlc_media_player_event_manager(d->player),
-                            libvlc_MediaPlayerStopped, d->eventStopped, d);
+        libvlc_event_attach(manager, libvlc_MediaPlayerBuffering, d->onBuffering, d);
 
-        libvlc_event_attach(libvlc_media_player_event_manager(d->player),
-                            libvlc_MediaPlayerBuffering, d->eventBuffering, d);
+        libvlc_event_attach(manager, libvlc_MediaPlayerLengthChanged, d->onLengthChanged, d);
+        libvlc_event_attach(manager, libvlc_MediaPlayerTimeChanged,   d->onTimeChanged,   d);
 
-        libvlc_event_attach(libvlc_media_player_event_manager(d->player),
-                            libvlc_MediaPlayerLengthChanged, d->eventLengthChanged, d);
+        libvlc_event_attach(manager, libvlc_MediaPlayerEndReached, d->onEndReached, d);
 
-        libvlc_event_attach(libvlc_media_player_event_manager(d->player),
-                            libvlc_MediaPlayerTimeChanged, d->eventTimeChanged, d);
-
-        libvlc_event_attach(libvlc_media_player_event_manager(d->player),
-                            libvlc_MediaPlayerEndReached, d->eventEndReached, d);
-
-        libvlc_event_attach(libvlc_media_player_event_manager(d->player),
-                            libvlc_MediaPlayerEncounteredError, d->eventEncounteredError, d);
+        libvlc_event_attach(manager, libvlc_MediaPlayerEncounteredError, d->onEncounteredError, d);
 
         return true;
     }
@@ -483,6 +507,53 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
         return true;
     }
+    else if (type == static_cast<QEvent::Type> (WVlcPlayerPrivate::EventScan))
+    {
+        WVlcPlayerPrivateEvent * eventPlayer = static_cast<WVlcPlayerPrivateEvent *> (event);
+
+        if (eventPlayer->value.toBool() == false)
+        {
+            d->clearDiscoverers();
+
+            return true;
+        }
+
+        //-----------------------------------------------------------------------------------------
+        // NOTE: Maybe this should all be done at the VlcEngine level.
+
+        libvlc_rd_description_t ** services;
+
+        libvlc_instance_t * instance = d->engine->d_func()->instance;
+
+        ssize_t count = libvlc_renderer_discoverer_list_get(instance, &services);
+
+        for (int i = 0; i < count; i++)
+        {
+            libvlc_rd_description_t * service = services[i];
+
+            libvlc_renderer_discoverer_t * discoverer
+                = libvlc_renderer_discoverer_new(instance, service->psz_name);
+
+            libvlc_event_manager_t * manager
+                = libvlc_renderer_discoverer_event_manager(discoverer);
+
+            libvlc_event_attach(manager, libvlc_RendererDiscovererItemAdded,
+                                d->onRendererAdded, d);
+
+            libvlc_event_attach(manager, libvlc_RendererDiscovererItemDeleted,
+                                d->onRendererDeleted, d);
+
+            d->discoverers.append(discoverer);
+
+            libvlc_renderer_discoverer_start(discoverer);
+        }
+
+        libvlc_renderer_discoverer_list_release(services, count);
+
+        //-----------------------------------------------------------------------------------------
+
+        return true;
+    }
     else if (type == static_cast<QEvent::Type> (WVlcPlayerPrivate::EventDelete))
     {
         libvlc_media_player_stop(d->player);
@@ -490,6 +561,8 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
         libvlc_media_player_release(d->player);
 
         d->player = NULL;
+
+        d->clearDiscoverers();
 
         if (d->backend)
         {
