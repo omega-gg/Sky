@@ -81,6 +81,8 @@ public: // Variable
 
     WAbstractBackend::FillMode fillMode;
 
+    bool scanOutput;
+
     QSizeF size;
 
     bool deleting;

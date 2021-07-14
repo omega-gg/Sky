@@ -97,7 +97,7 @@ public: // Interface
 
     Q_INVOKABLE void setVolume(int percent);
 
-    Q_INVOKABLE void scanRenderers(bool enabled);
+    Q_INVOKABLE void setScanOutput(bool enabled);
 
     Q_INVOKABLE void setProxy(const QString & host,
                               int             port, const QString & password = QString());

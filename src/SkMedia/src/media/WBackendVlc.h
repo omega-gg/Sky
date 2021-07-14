@@ -72,6 +72,8 @@ protected: // WAbstractBackend reimplementation
 
     /* virtual */ void backendSetFillMode(FillMode fillMode);
 
+    /* virtual */ void backendSetScanOutput(bool enabled);
+
     /* virtual */ void backendSetSize(const QSizeF & size);
 
 #ifdef QT_LATEST

@@ -92,6 +92,8 @@ void WAbstractBackendPrivate::init()
 
     fillMode = WAbstractBackend::PreserveAspectFit;
 
+    scanOutput = false;
+
     deleting = false;
 }
 
@@ -564,6 +566,13 @@ void WAbstractBackend::deleteNow()
 
 //-------------------------------------------------------------------------------------------------
 
+/* virtual */ void WAbstractBackend::backendSetScanOutput(bool)
+{
+    qWarning("WAbstractBackend::backendSetScanOutput: Not supported.");
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* virtual */ void WAbstractBackend::backendSetSize(const QSizeF &)
 {
     qWarning("WAbstractBackend::backendSetSize: Not supported.");
@@ -882,6 +891,28 @@ void WAbstractBackend::setFillMode(FillMode fillMode)
     emit fillModeChanged();
 }
 
+//-------------------------------------------------------------------------------------------------
+
+bool WAbstractBackend::scanOutput() const
+{
+    Q_D(const WAbstractBackend); return d->scanOutput;
+}
+
+void WAbstractBackend::setScanOutput(bool enabled)
+{
+    Q_D(WAbstractBackend);
+
+    if (d->filter) d->filter->filterScanOutput(&enabled);
+
+    if (d->scanOutput == enabled) return;
+
+    d->scanOutput = enabled;
+
+    backendSetScanOutput(enabled);
+
+    emit scanOutputChanged();
+}
+
 //=================================================================================================
 // WBackendFilter
 //=================================================================================================
@@ -907,5 +938,7 @@ void WAbstractBackend::setFillMode(FillMode fillMode)
 /* virtual */ void WBackendFilter::filterVolume(qreal *) {}
 
 /* virtual */ void WBackendFilter::filterFillMode(WAbstractBackend::FillMode *) {}
+
+/* virtual */ void WBackendFilter::filterScanOutput(bool *) {}
 
 #endif // SK_NO_ABSTRACTBACKEND

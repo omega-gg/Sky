@@ -141,6 +141,8 @@ public: // Variables
 
     WAbstractBackend::FillMode fillMode;
 
+    bool scanOutput;
+
     QString subtitle;
 
     int pauseTimeout;

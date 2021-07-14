@@ -1604,6 +1604,15 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
 //-------------------------------------------------------------------------------------------------
 
+/* virtual */ void WBackendVlc::backendSetScanOutput(bool enabled)
+{
+    Q_D(WBackendVlc);
+
+    d->player->setScanOutput(enabled);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* virtual */ void WBackendVlc::backendSetSize(const QSizeF &)
 {
     Q_D(WBackendVlc);

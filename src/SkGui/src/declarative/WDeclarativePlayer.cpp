@@ -94,6 +94,8 @@ void WDeclarativePlayerPrivate::init()
 
     fillMode = WAbstractBackend::PreserveAspectFit;
 
+    scanOutput = false;
+
     pauseTimeout = -1;
 
     keepState = false;
@@ -1213,6 +1215,8 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 
         backend->setFillMode(d->fillMode);
 
+        backend->setScanOutput(d->scanOutput);
+
         if (d->source.isEmpty() == false)
         {
             d->clearPlaylistAndTabs();
@@ -1703,6 +1707,29 @@ void WDeclarativePlayer::setFillMode(WAbstractBackend::FillMode fillMode)
     update();
 
     emit fillModeChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WDeclarativePlayer::scanOutput() const
+{
+    Q_D(const WDeclarativePlayer); return d->scanOutput;
+}
+
+void WDeclarativePlayer::setScanOutput(bool enabled)
+{
+    Q_D(WDeclarativePlayer);
+
+    if (d->scanOutput == enabled) return;
+
+    d->scanOutput = enabled;
+
+    if (d->backend)
+    {
+        d->backend->setScanOutput(enabled);
+    }
+
+    emit scanOutputChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

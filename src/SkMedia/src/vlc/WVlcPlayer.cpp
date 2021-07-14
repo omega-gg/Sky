@@ -282,7 +282,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WVlcPlayer::scanRenderers(bool enabled)
+/* Q_INVOKABLE */ void WVlcPlayer::setScanOutput(bool enabled)
 {
     QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventScan,
                                                                  enabled));

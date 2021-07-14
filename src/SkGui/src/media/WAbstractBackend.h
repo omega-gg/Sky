@@ -161,6 +161,8 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
 
     Q_PROPERTY(FillMode fillMode READ fillMode WRITE setFillMode NOTIFY fillModeChanged)
 
+    Q_PROPERTY(bool scanOutput READ scanOutput WRITE setScanOutput NOTIFY scanOutputChanged)
+
 public:
     enum State
     {
@@ -300,6 +302,8 @@ protected: // Virtual functions
 
     virtual void backendSetFillMode(FillMode fillMode); // {}
 
+    virtual void backendSetScanOutput(bool enabled); // {}
+
     virtual void backendSetSize(const QSizeF & size); // {}
 
 #ifdef QT_LATEST
@@ -346,6 +350,8 @@ signals:
     void qualityActiveChanged();
 
     void fillModeChanged();
+
+    void scanOutputChanged();
 
 public: // Properties
     WDeclarativePlayer * parentItem() const;
@@ -399,6 +405,9 @@ public: // Properties
     FillMode fillMode() const;
     void     setFillMode(FillMode fillMode);
 
+    bool scanOutput() const;
+    void setScanOutput(bool enabled);
+
 private:
     W_DECLARE_PRIVATE(WAbstractBackend)
 
@@ -434,6 +443,8 @@ public:
     virtual void filterVolume(qreal * volume); // {}
 
     virtual void filterFillMode(WAbstractBackend::FillMode * fillMode); // {}
+
+    virtual void filterScanOutput(bool * enabled); // {}
 };
 
 #ifdef QT_LATEST
