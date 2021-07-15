@@ -32,7 +32,7 @@ Style
     //---------------------------------------------------------------------------------------------
     // Global
 
-    property int margins: dp2
+    property int margins: dp1
 
     property bool isTight: (window.contentWidth < dp480)
 
@@ -383,11 +383,30 @@ Style
 
     function applyStyle(index)
     {
-        if (index == 0)
+        if (index == 0) // Light
         {
-             applyLight();
+            margins = dp1;
+
+            applyLight();
         }
-        else applyNight();
+        else if (index == 1) // Night
+        {
+            margins = dp1;
+
+            applyNight();
+        }
+        else if (index == 2) // Light bold
+        {
+            margins = dp2;
+
+            applyLight();
+        }
+        else // Night bold
+        {
+            margins = dp2;
+
+            applyNight();
+        }
     }
 
     function applyLight()
