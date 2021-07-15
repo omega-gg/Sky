@@ -95,7 +95,8 @@ ImageScale
         anchors.topMargin   : (style == st.icon_raised) ?  styleSize : -styleSize
         anchors.bottomMargin: (style == st.icon_raised) ? -styleSize :  styleSize
 
-        sourceSize: (itemIcon.isExplicitSize) ? itemIcon.sourceSize : undefined
+        sourceSize : itemIcon.sourceSize
+        defaultSize: itemIcon.defaultSize
 
         sourceArea: itemIcon.sourceArea
 
