@@ -96,6 +96,8 @@ void WDeclarativePlayerPrivate::init()
 
     scanOutput = false;
 
+    currentOutput = 0;
+
     pauseTimeout = -1;
 
     keepState = false;
@@ -1217,6 +1219,8 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 
         backend->setScanOutput(d->scanOutput);
 
+        backend->setCurrentOutput(d->currentOutput);
+
         if (d->source.isEmpty() == false)
         {
             d->clearPlaylistAndTabs();
@@ -1730,6 +1734,27 @@ void WDeclarativePlayer::setScanOutput(bool enabled)
     }
 
     emit scanOutputChanged();
+}
+
+int WDeclarativePlayer::currentOutput() const
+{
+    Q_D(const WDeclarativePlayer); return d->currentOutput;
+}
+
+void WDeclarativePlayer::setCurrentOutput(int index)
+{
+    Q_D(WDeclarativePlayer);
+
+    if (d->currentOutput == index) return;
+
+    d->currentOutput = index;
+
+    if (d->backend)
+    {
+        d->backend->setCurrentOutput(index);
+    }
+
+    emit currentOutputChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

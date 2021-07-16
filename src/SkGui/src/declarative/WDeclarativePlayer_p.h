@@ -143,6 +143,8 @@ public: // Variables
 
     bool scanOutput;
 
+    int currentOutput;
+
     QString subtitle;
 
     int pauseTimeout;

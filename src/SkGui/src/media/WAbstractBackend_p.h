@@ -83,6 +83,8 @@ public: // Variable
 
     bool scanOutput;
 
+    int currentOutput;
+
     QSizeF size;
 
     bool deleting;

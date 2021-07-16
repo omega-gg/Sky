@@ -99,6 +99,8 @@ public: // Interface
 
     Q_INVOKABLE void setScanOutput(bool enabled);
 
+    Q_INVOKABLE void setCurrentOutput(int index);
+
     Q_INVOKABLE void setProxy(const QString & host,
                               int             port, const QString & password = QString());
 

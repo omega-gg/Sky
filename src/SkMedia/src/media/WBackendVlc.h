@@ -74,6 +74,8 @@ protected: // WAbstractBackend reimplementation
 
     /* virtual */ void backendSetScanOutput(bool enabled);
 
+    /* virtual */ void backendSetCurrentOutput(int index);
+
     /* virtual */ void backendSetSize(const QSizeF & size);
 
 #ifdef QT_LATEST

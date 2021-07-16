@@ -105,6 +105,9 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
 
     Q_PROPERTY(bool scanOutput READ scanOutput WRITE setScanOutput NOTIFY scanOutputChanged)
 
+    Q_PROPERTY(int currentOutput READ currentOutput WRITE setCurrentOutput
+               NOTIFY currentOutputChanged)
+
     Q_PROPERTY(QString subtitle READ subtitle WRITE setSubtitle NOTIFY subtitleChanged)
 
     Q_PROPERTY(int pauseTimeout READ pauseTimeout WRITE setPauseTimeout NOTIFY pauseTimeoutChanged)
@@ -242,6 +245,8 @@ signals:
 
     void scanOutputChanged();
 
+    void currentOutputChanged();
+
     void subtitleChanged();
 
     void pauseTimeoutChanged();
@@ -321,6 +326,9 @@ public: // Properties
 
     bool scanOutput() const;
     void setScanOutput(bool enabled);
+
+    int  currentOutput() const;
+    void setCurrentOutput(int index);
 
     QString subtitle() const;
     void    setSubtitle(const QString & subtitle);

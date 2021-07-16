@@ -32,11 +32,6 @@
 #include <private/WVlcEngine_p>
 
 //-------------------------------------------------------------------------------------------------
-// Static variables
-
-static const int VLCPLAYER_NETWORK_CACHE = 300;
-
-//-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
 
@@ -56,7 +51,7 @@ void WVlcPlayerPrivate::init(WVlcEngine * engine, QThread * thread)
 
     output = WAbstractBackend::OutputMedia;
 
-    networkCache = VLCPLAYER_NETWORK_CACHE;
+    networkCache = -1;
 
     if (thread) q->moveToThread(thread);
 
@@ -87,6 +82,8 @@ void WVlcPlayerPrivate::clearDiscoverers()
     }
 
     discoverers.clear();
+
+    renderers.clear();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -195,14 +192,20 @@ void WVlcPlayerPrivate::clearDiscoverers()
 //-------------------------------------------------------------------------------------------------
 // Renderer
 
-/* static */ void WVlcPlayerPrivate::onRendererAdded(const struct libvlc_event_t * event, void *)
+/* static */ void WVlcPlayerPrivate::onRendererAdded(const struct libvlc_event_t * event,
+                                                     void                        * data)
 {
-    libvlc_renderer_item_t * renderer = event->u.renderer_discoverer_item_added.item;
+    WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
+
+    d->renderers.append(event->u.renderer_discoverer_item_added.item);
 }
 
-/* static */ void WVlcPlayerPrivate::onRendererDeleted(const struct libvlc_event_t * event, void *)
+/* static */ void WVlcPlayerPrivate::onRendererDeleted(const struct libvlc_event_t * event,
+                                                       void                        * data)
 {
-    libvlc_renderer_item_t * renderer = event->u.renderer_discoverer_item_added.item;
+    WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
+
+    d->renderers.removeOne(event->u.renderer_discoverer_item_deleted.item);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -286,6 +289,12 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 {
     QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventScan,
                                                                  enabled));
+}
+
+/* Q_INVOKABLE */ void WVlcPlayer::setCurrentOutput(int index)
+{
+    QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventOutput,
+                                                                 index));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -390,6 +399,8 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
         WAbstractBackend::Output output;
 
+        QString cache;
+
         QString proxy;
         QString proxyPassword;
 
@@ -397,7 +408,11 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
         output = d->output;
 
-        QString cache("network-caching=" + QString::number(d->networkCache));
+        // NOTE: I'm not sure we need this anymore ?
+        if (d->networkCache != -1)
+        {
+            cache = "network-caching=" + QString::number(d->networkCache);
+        }
 
         if (d->proxyHost.isEmpty() == false)
         {
@@ -442,7 +457,10 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
             else libvlc_media_add_option(media, "no-audio");
         }
 
-        libvlc_media_add_option(media, cache.C_STR);
+        if (cache.isNull() == false)
+        {
+            libvlc_media_add_option(media, cache.C_STR);
+        }
 
         if (proxy.isNull() == false)
         {
@@ -554,6 +572,20 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
         return true;
     }
+    else if (type == static_cast<QEvent::Type> (WVlcPlayerPrivate::EventOutput))
+    {
+        WVlcPlayerPrivateEvent * eventPlayer = static_cast<WVlcPlayerPrivateEvent *> (event);
+
+        int index = eventPlayer->value.toInt();
+
+        if (index < 0 || index >= d->renderers.count())
+        {
+             libvlc_media_player_set_renderer(d->player, NULL);
+        }
+        else libvlc_media_player_set_renderer(d->player, d->renderers.at(index));
+
+        return true;
+    }
     else if (type == static_cast<QEvent::Type> (WVlcPlayerPrivate::EventDelete))
     {
         libvlc_media_player_stop(d->player);
@@ -648,6 +680,8 @@ void WVlcPlayer::setNetworkCache(int msec)
     QMutexLocker locker(&d->mutex);
 
     if (d->networkCache == msec) return;
+
+    qDebug("CACHEEEE!!");
 
     d->networkCache = msec;
 

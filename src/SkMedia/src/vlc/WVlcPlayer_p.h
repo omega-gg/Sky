@@ -56,6 +56,7 @@ public: // Enums
         EventSpeed,  // WVlcPlayerEvent qreal
         EventVolume, // WVlcPlayerEvent int
         EventScan,   // WVlcPlayerEvent bool
+        EventOutput, // WVlcPlayerEvent int
         EventDelete
     };
 
@@ -106,6 +107,8 @@ public: // Variables
     WAbstractBackend::Output output;
 
     QList<libvlc_renderer_discoverer_t *> discoverers;
+
+    QList<libvlc_renderer_item_t *> renderers;
 
     int networkCache;
 

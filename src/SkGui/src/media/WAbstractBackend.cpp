@@ -94,6 +94,8 @@ void WAbstractBackendPrivate::init()
 
     scanOutput = false;
 
+    currentOutput = 0;
+
     deleting = false;
 }
 
@@ -571,6 +573,11 @@ void WAbstractBackend::deleteNow()
     qWarning("WAbstractBackend::backendSetScanOutput: Not supported.");
 }
 
+/* virtual */ void WAbstractBackend::backendSetCurrentOutput(int)
+{
+    qWarning("WAbstractBackend::backendSetCurrentOutput: Not supported.");
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WAbstractBackend::backendSetSize(const QSizeF &)
@@ -913,6 +920,27 @@ void WAbstractBackend::setScanOutput(bool enabled)
     emit scanOutputChanged();
 }
 
+int WAbstractBackend::currentOutput() const
+{
+    Q_D(const WAbstractBackend); return d->currentOutput;
+}
+
+void WAbstractBackend::setCurrentOutput(int index)
+{
+    Q_D(WAbstractBackend);
+
+    if (d->filter) d->filter->filterCurrentOutput(&index);
+
+    if (d->currentOutput == index) return;
+
+    d->currentOutput = index;
+
+    // NOTE: The first index is the player itself so we substract one.
+    backendSetCurrentOutput(index - 1);
+
+    emit currentOutputChanged();
+}
+
 //=================================================================================================
 // WBackendFilter
 //=================================================================================================
@@ -940,5 +968,7 @@ void WAbstractBackend::setScanOutput(bool enabled)
 /* virtual */ void WBackendFilter::filterFillMode(WAbstractBackend::FillMode *) {}
 
 /* virtual */ void WBackendFilter::filterScanOutput(bool *) {}
+
+/* virtual */ void WBackendFilter::filterCurrentOutput(int *) {}
 
 #endif // SK_NO_ABSTRACTBACKEND
