@@ -681,8 +681,6 @@ void WVlcPlayer::setNetworkCache(int msec)
 
     if (d->networkCache == msec) return;
 
-    qDebug("CACHEEEE!!");
-
     d->networkCache = msec;
 
     locker.unlock();
