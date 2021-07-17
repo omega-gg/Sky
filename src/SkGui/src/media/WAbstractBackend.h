@@ -104,7 +104,38 @@ public:
 
 struct WBackendOutput
 {
+public:
+    WBackendOutput(const QString & name)
+    {
+        this->name = name;
+    }
+
     QString name;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WBackendWatcher
+//-------------------------------------------------------------------------------------------------
+
+class SK_GUI_EXPORT WBackendWatcher
+{
+protected:
+    virtual void beginOutputInsert(int first, int last);
+    virtual void endOutputInsert  ();
+
+    virtual void beginOutputRemove(int first, int last);
+    virtual void endOutputRemove  ();
+
+    virtual void beginOutputClear();
+    virtual void endOutputClear  ();
+
+    virtual void currentOutputChanged(int index);
+
+    virtual void backendDestroyed();
+
+private:
+    friend class WAbstractBackend;
+    friend class WAbstractBackendPrivate;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -175,6 +206,8 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
     Q_PROPERTY(int currentOutput READ currentOutput WRITE setCurrentOutput
                NOTIFY currentOutputChanged)
 
+    Q_PROPERTY(int countOutput READ countOutput NOTIFY outputsChanged)
+
 public:
     enum State
     {
@@ -235,6 +268,8 @@ protected:
     WAbstractBackend(WAbstractBackendPrivate * p);
 
 public: // Interface
+    Q_INVOKABLE const WBackendOutput * outputAt(int index) const;
+
 #ifdef QT_LATEST
     Q_INVOKABLE WBackendNode * createNode() const;
 #endif
@@ -254,6 +289,12 @@ public: // Interface
     Q_INVOKABLE QRectF getRect() const;
 
     Q_INVOKABLE bool deleteBackend();
+
+    //---------------------------------------------------------------------------------------------
+    // Watchers
+
+    Q_INVOKABLE void registerWatcher  (WBackendWatcher * watcher);
+    Q_INVOKABLE void unregisterWatcher(WBackendWatcher * watcher);
 
 public: // WBackendInterface implementation
     Q_INVOKABLE /* virtual */ QString source() const;
@@ -294,6 +335,15 @@ protected: // Functions
     void setQualityActive(Quality quality);
 
     void deleteNow();
+
+    //---------------------------------------------------------------------------------------------
+    // Watchers
+
+    void beginOutputInsert(int first, int last) const;
+    void beginOutputRemove(int first, int last) const;
+
+    void endOutputInsert() const;
+    void endOutputRemove() const;
 
 protected: // Abstract functions
 #ifdef QT_LATEST
@@ -434,6 +484,8 @@ public: // Properties
 
     int  currentOutput() const;
     void setCurrentOutput(int index);
+
+    int countOutput() const;
 
 private:
     W_DECLARE_PRIVATE(WAbstractBackend)

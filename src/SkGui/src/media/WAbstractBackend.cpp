@@ -97,10 +97,19 @@ void WAbstractBackendPrivate::init()
     currentOutput = 0;
 
     deleting = false;
+
+    applyOutputs();
 }
 
 //-------------------------------------------------------------------------------------------------
 // Private functions
+//-------------------------------------------------------------------------------------------------
+
+void WAbstractBackendPrivate::applyOutputs()
+{
+    outputs.append(WBackendOutput(QObject::tr("Default")));
+}
+
 //-------------------------------------------------------------------------------------------------
 
 void WAbstractBackendPrivate::clearCurrentTime()
@@ -128,6 +137,23 @@ void WAbstractBackendPrivate::setStarted(bool started)
 }
 
 //=================================================================================================
+// WBackendWatcher
+//=================================================================================================
+
+/* virtual */ void WBackendWatcher::beginOutputInsert(int, int) {}
+/* virtual */ void WBackendWatcher::endOutputInsert  ()         {}
+
+/* virtual */ void WBackendWatcher::beginOutputRemove(int, int) {}
+/* virtual */ void WBackendWatcher::endOutputRemove  ()         {}
+
+/* virtual */ void WBackendWatcher::beginOutputClear() {}
+/* virtual */ void WBackendWatcher::endOutputClear  () {}
+
+/* virtual */ void WBackendWatcher::currentOutputChanged(int) {}
+
+/* virtual */ void WBackendWatcher::backendDestroyed() {}
+
+//=================================================================================================
 // WAbstractBackend
 //=================================================================================================
 
@@ -148,6 +174,17 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
 //-------------------------------------------------------------------------------------------------
 // Interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ const WBackendOutput * WAbstractBackend::outputAt(int index) const
+{
+    Q_D(const WAbstractBackend);
+
+    if (index < 0 || index >= d->outputs.count()) return NULL;
+
+    return &(d->outputs.at(index));
+}
+
 //-------------------------------------------------------------------------------------------------
 
 #ifdef QT_LATEST
@@ -239,6 +276,31 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
         return false;
     }
+}
+
+//-------------------------------------------------------------------------------------------------
+// Watchers
+
+/* Q_INVOKABLE */ void WAbstractBackend::registerWatcher(WBackendWatcher * watcher)
+{
+    Q_ASSERT(watcher);
+
+    Q_D(WAbstractBackend);
+
+    if (d->watchers.contains(watcher)) return;
+
+    d->watchers.append(watcher);
+}
+
+/* Q_INVOKABLE */ void WAbstractBackend::unregisterWatcher(WBackendWatcher * watcher)
+{
+    Q_ASSERT(watcher);
+
+    Q_D(WAbstractBackend);
+
+    if (d->watchers.contains(watcher) == false) return;
+
+    d->watchers.removeOne(watcher);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -380,7 +442,13 @@ void WAbstractBackend::addOutput(const WBackendOutput & output)
 
     if (d->filter) d->filter->filterAddOutput(&data);
 
+    int index = d->outputs.count();
+
+    beginOutputInsert(index, index);
+
     d->outputs.append(data);
+
+    endOutputInsert();
 
     emit outputsChanged();
 }
@@ -393,7 +461,11 @@ void WAbstractBackend::removeOutput(int index)
 
     if (index < 0 || index >= d->outputs.count()) return;
 
+    beginOutputRemove(index, index);
+
     d->outputs.removeAt(index);
+
+    endOutputRemove();
 
     emit outputsChanged();
 }
@@ -406,7 +478,19 @@ void WAbstractBackend::clearOutputs()
 
     if (d->outputs.isEmpty()) return;
 
+    foreach (WBackendWatcher * watcher, d->watchers)
+    {
+        watcher->beginOutputClear();
+    }
+
     d->outputs.clear();
+
+    foreach (WBackendWatcher * watcher, d->watchers)
+    {
+        watcher->beginOutputClear();
+    }
+
+    d->applyOutputs();
 
     emit outputsChanged();
 }
@@ -570,6 +654,51 @@ void WAbstractBackend::deleteNow()
     Q_D(WAbstractBackend);
 
     if (d->deleting) delete this;
+}
+
+//---------------------------------------------------------------------------------------------
+// Watchers
+
+void WAbstractBackend::beginOutputInsert(int first, int last) const
+{
+    Q_D(const WAbstractBackend);
+
+    foreach (WBackendWatcher * watcher, d->watchers)
+    {
+        watcher->beginOutputInsert(first, last);
+    }
+}
+
+void WAbstractBackend::beginOutputRemove(int first, int last) const
+{
+    Q_D(const WAbstractBackend);
+
+    foreach (WBackendWatcher * watcher, d->watchers)
+    {
+        watcher->beginOutputRemove(first, last);
+    }
+}
+
+//---------------------------------------------------------------------------------------------
+
+void WAbstractBackend::endOutputInsert() const
+{
+    Q_D(const WAbstractBackend);
+
+    foreach (WBackendWatcher * watcher, d->watchers)
+    {
+        watcher->endOutputInsert();
+    }
+}
+
+void WAbstractBackend::endOutputRemove() const
+{
+    Q_D(const WAbstractBackend);
+
+    foreach (WBackendWatcher * watcher, d->watchers)
+    {
+        watcher->endOutputRemove();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -979,7 +1108,17 @@ void WAbstractBackend::setCurrentOutput(int index)
     // NOTE: The first index is the player itself so we substract one.
     backendSetCurrentOutput(index - 1);
 
+    foreach (WBackendWatcher * watcher, d->watchers)
+    {
+        watcher->currentOutputChanged(index);
+    }
+
     emit currentOutputChanged();
+}
+
+int WAbstractBackend::countOutput() const
+{
+    Q_D(const WAbstractBackend); return d->outputs.count();
 }
 
 //=================================================================================================

@@ -45,6 +45,8 @@ public:
     void init();
 
 public: // Functions
+    void applyOutputs();
+
     void clearCurrentTime();
 
     void setStarted(bool started);
@@ -90,6 +92,8 @@ public: // Variable
     QSizeF size;
 
     bool deleting;
+
+    QList<WBackendWatcher *> watchers;
 
 protected:
     W_DECLARE_PUBLIC(WAbstractBackend)
