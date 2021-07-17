@@ -99,6 +99,15 @@ public:
 };
 
 //-------------------------------------------------------------------------------------------------
+// WBackendOutput
+//-------------------------------------------------------------------------------------------------
+
+struct WBackendOutput
+{
+    QString name;
+};
+
+//-------------------------------------------------------------------------------------------------
 // WAbstractBackend
 //-------------------------------------------------------------------------------------------------
 
@@ -165,6 +174,7 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
 
     Q_PROPERTY(int currentOutput READ currentOutput WRITE setCurrentOutput
                NOTIFY currentOutputChanged)
+
 public:
     enum State
     {
@@ -264,6 +274,12 @@ public: // WBackendInterface implementation
     Q_INVOKABLE /* virtual */ void seek(int msec);
 
 protected: // Functions
+    void addOutput(const WBackendOutput & output);
+
+    void removeOutput(int index);
+
+    void clearOutputs();
+
     void setState    (State     state);
     void setStateLoad(StateLoad stateLoad);
 
@@ -359,6 +375,8 @@ signals:
 
     void currentOutputChanged();
 
+    void outputsChanged();
+
 public: // Properties
     WDeclarativePlayer * parentItem() const;
     void                 setParentItem(WDeclarativePlayer * parent);
@@ -431,6 +449,10 @@ private:
 class SK_GUI_EXPORT WBackendFilter
 {
 public:
+    virtual void filterAddOutput(WBackendOutput * output); // {}
+
+    virtual void filterRemoveOutput(int * index); // {}
+
     virtual void filterState    (WAbstractBackend::State     * state);     // {}
     virtual void filterStateLoad(WAbstractBackend::StateLoad * stateLoad); // {}
 

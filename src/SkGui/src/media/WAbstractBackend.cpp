@@ -372,6 +372,47 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 // Protected functions
 //-------------------------------------------------------------------------------------------------
 
+void WAbstractBackend::addOutput(const WBackendOutput & output)
+{
+    Q_D(WAbstractBackend);
+
+    WBackendOutput data = output;
+
+    if (d->filter) d->filter->filterAddOutput(&data);
+
+    d->outputs.append(data);
+
+    emit outputsChanged();
+}
+
+void WAbstractBackend::removeOutput(int index)
+{
+    Q_D(WAbstractBackend);
+
+    if (d->filter) d->filter->filterRemoveOutput(&index);
+
+    if (index < 0 || index >= d->outputs.count()) return;
+
+    d->outputs.removeAt(index);
+
+    emit outputsChanged();
+}
+
+void WAbstractBackend::clearOutputs()
+{
+    Q_D(WAbstractBackend);
+
+    // NOTE: Currently, there is no filter for this function.
+
+    if (d->outputs.isEmpty()) return;
+
+    d->outputs.clear();
+
+    emit outputsChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void WAbstractBackend::setState(State state)
 {
     Q_D(WAbstractBackend);
@@ -944,6 +985,10 @@ void WAbstractBackend::setCurrentOutput(int index)
 //=================================================================================================
 // WBackendFilter
 //=================================================================================================
+
+/* virtual */ void WBackendFilter::filterAddOutput(WBackendOutput *) {}
+
+/* virtual */ void WBackendFilter::filterRemoveOutput(int *) {}
 
 /* virtual */ void WBackendFilter::filterState    (WAbstractBackend::State     *) {}
 /* virtual */ void WBackendFilter::filterStateLoad(WAbstractBackend::StateLoad *) {}

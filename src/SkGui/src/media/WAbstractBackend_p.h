@@ -85,6 +85,8 @@ public: // Variable
 
     int currentOutput;
 
+    QList<WBackendOutput> outputs;
+
     QSizeF size;
 
     bool deleting;

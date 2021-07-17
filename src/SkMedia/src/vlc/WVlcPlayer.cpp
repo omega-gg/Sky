@@ -84,6 +84,10 @@ void WVlcPlayerPrivate::clearDiscoverers()
     discoverers.clear();
 
     renderers.clear();
+
+    // NOTE: Since we are no longer receiving renderers events we clear them completely.
+    QCoreApplication::postEvent(backend, new QEvent(static_cast<QEvent::Type>
+                                                    (WVlcPlayer::EventOutputClear)));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -197,7 +201,15 @@ void WVlcPlayerPrivate::clearDiscoverers()
 {
     WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
 
-    d->renderers.append(event->u.renderer_discoverer_item_added.item);
+    libvlc_renderer_item_t * item = event->u.renderer_discoverer_item_added.item;
+
+    d->renderers.append(item);
+
+    WVlcOutputEvent * eventOutput = new WVlcOutputEvent(WVlcPlayer::EventOutputAdd, item);
+
+    eventOutput->name = libvlc_renderer_item_name(item);
+
+    QCoreApplication::postEvent(d->backend, eventOutput);
 }
 
 /* static */ void WVlcPlayerPrivate::onRendererDeleted(const struct libvlc_event_t * event,
@@ -205,7 +217,17 @@ void WVlcPlayerPrivate::clearDiscoverers()
 {
     WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
 
-    d->renderers.removeOne(event->u.renderer_discoverer_item_deleted.item);
+    libvlc_renderer_item_t * item = event->u.renderer_discoverer_item_deleted.item;
+
+    for (int i = 0; i < d->renderers.count(); i++)
+    {
+        if (d->renderers.at(i) != item) continue;
+
+        d->renderers.removeAt(i);
+
+        QCoreApplication::postEvent(d->backend,
+                                    new WVlcPlayerEvent(WVlcPlayer::EventOutputRemove, i));
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -408,7 +430,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
         output = d->output;
 
-        // NOTE: I'm not sure we need this anymore ?
+        // NOTE: I'm not sure we need this anymore.
         if (d->networkCache != -1)
         {
             cache = "network-caching=" + QString::number(d->networkCache);

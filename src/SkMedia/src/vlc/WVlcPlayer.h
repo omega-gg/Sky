@@ -69,8 +69,10 @@ public: // Enums
         EventLengthChanged, // WVlcPlayerEvent int
         EventTimeChanged,   // WVlcPlayerEvent int
         EventEndReached,
+        EventOutputAdd,
+        EventOutputRemove,
+        EventOutputClear,
         EventError,
-        EventUser,
         EventDelete
     };
 
@@ -150,6 +152,25 @@ public:
 
 public: // Variables
     QVariant value;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WVlcOutputEvent
+//-------------------------------------------------------------------------------------------------
+
+class WVlcOutputEvent : public QEvent
+{
+public:
+    WVlcOutputEvent(WVlcPlayer::EventType type, libvlc_renderer_item_t * item)
+        : QEvent(static_cast<QEvent::Type> (type))
+    {
+        this->item = item;
+    }
+
+public: // Variables
+    libvlc_renderer_item_t * item;
+
+    QString name;
 };
 
 #endif // SK_NO_VLCPLAYER
