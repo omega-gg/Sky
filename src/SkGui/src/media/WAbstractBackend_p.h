@@ -51,6 +51,8 @@ public: // Functions
 
     void setStarted(bool started);
 
+    void currentOutputChanged();
+
 public: // Variable
     WDeclarativePlayer * parentItem;
 

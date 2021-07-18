@@ -136,6 +136,20 @@ void WAbstractBackendPrivate::setStarted(bool started)
     emit q->startedChanged();
 }
 
+//-------------------------------------------------------------------------------------------------
+
+void WAbstractBackendPrivate::currentOutputChanged()
+{
+    Q_Q(WAbstractBackend);
+
+    foreach (WBackendWatcher * watcher, watchers)
+    {
+        watcher->currentOutputChanged(currentOutput);
+    }
+
+    emit q->currentOutputChanged();
+}
+
 //=================================================================================================
 // WBackendWatcher
 //=================================================================================================
@@ -467,6 +481,19 @@ void WAbstractBackend::removeOutput(int index)
 
     endOutputRemove();
 
+    if (index == d->currentOutput)
+    {
+        d->currentOutput = -1;
+
+        d->currentOutputChanged();
+    }
+    else if (index < d->currentOutput)
+    {
+        d->currentOutput--;
+
+        d->currentOutputChanged();
+    }
+
     emit outputsChanged();
 }
 
@@ -491,6 +518,14 @@ void WAbstractBackend::clearOutputs()
     }
 
     d->applyOutputs();
+
+    // NOTE: The current output no longer exists in our list. But it might still be valid.
+    if (d->currentOutput > 0)
+    {
+        d->currentOutput = -1;
+
+        d->currentOutputChanged();
+    }
 
     emit outputsChanged();
 }
