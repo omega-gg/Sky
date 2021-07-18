@@ -514,10 +514,14 @@ void WAbstractBackend::clearOutputs()
 
     foreach (WBackendWatcher * watcher, d->watchers)
     {
-        watcher->beginOutputClear();
+        watcher->endOutputClear();
     }
 
+    beginOutputInsert(0, 0);
+
     d->applyOutputs();
+
+    endOutputInsert();
 
     // NOTE: The current output no longer exists in our list. But it might still be valid.
     if (d->currentOutput > 0)
