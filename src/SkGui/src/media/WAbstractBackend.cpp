@@ -190,17 +190,6 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ const WBackendOutput * WAbstractBackend::outputAt(int index) const
-{
-    Q_D(const WAbstractBackend);
-
-    if (index < 0 || index >= d->outputs.count()) return NULL;
-
-    return &(d->outputs.at(index));
-}
-
-//-------------------------------------------------------------------------------------------------
-
 #ifdef QT_LATEST
 
 /* Q_INVOKABLE */ WBackendNode * WAbstractBackend::createNode() const
@@ -290,6 +279,51 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
         return false;
     }
+}
+
+//-------------------------------------------------------------------------------------------------
+// Output
+
+/* Q_INVOKABLE */ WBackendOutput WAbstractBackend::outputAt(int index) const
+{
+    Q_D(const WAbstractBackend);
+
+    if (index < 0 || index >= d->outputs.count())
+    {
+        return WBackendOutput();
+    }
+    else return d->outputs.at(index);
+}
+
+/* Q_INVOKABLE */ const WBackendOutput * WAbstractBackend::outputPointerAt(int index) const
+{
+    Q_D(const WAbstractBackend);
+
+    if (index < 0 || index >= d->outputs.count()) return NULL;
+
+    return &(d->outputs.at(index));
+}
+
+/* Q_INVOKABLE */ const WBackendOutput * WAbstractBackend::currentOutputPointer() const
+{
+    Q_D(const WAbstractBackend);
+
+    return outputPointerAt(d->currentOutput);
+}
+
+/* Q_INVOKABLE */ int WAbstractBackend::indexOutput(const WBackendOutput * output) const
+{
+    Q_D(const WAbstractBackend);
+
+    for (int i = 0; i < d->outputs.count(); i++)
+    {
+        if (&(d->outputs.at(i)) == output)
+        {
+            return i;
+        }
+    }
+
+    return -1;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -465,11 +499,22 @@ void WAbstractBackend::addOutput(const WBackendOutput & output)
     endOutputInsert();
 
     emit outputsChanged();
+
+    // NOTE: We are trying to restore the currentOutput if we've lost it before.
+    if (d->currentOutput == -1 && d->outputData == data)
+    {
+        d->currentOutput = index;
+
+        d->currentOutputChanged();
+    }
 }
 
 void WAbstractBackend::removeOutput(int index)
 {
     Q_D(WAbstractBackend);
+
+    // NOTE: The first index is the player itself so we add one.
+    index++;
 
     if (d->filter) d->filter->filterRemoveOutput(&index);
 
@@ -1129,6 +1174,8 @@ void WAbstractBackend::setScanOutput(bool enabled)
     emit scanOutputChanged();
 }
 
+//-------------------------------------------------------------------------------------------------
+
 int WAbstractBackend::currentOutput() const
 {
     Q_D(const WAbstractBackend); return d->currentOutput;
@@ -1144,20 +1191,68 @@ void WAbstractBackend::setCurrentOutput(int index)
 
     d->currentOutput = index;
 
+    // NOTE: This might be useful if the renderer gets removed while still being selected. That way
+    //       we can restore the currentOutput later.
+    d->outputData = outputAt(index);
+
     // NOTE: The first index is the player itself so we substract one.
     backendSetCurrentOutput(index - 1);
 
-    foreach (WBackendWatcher * watcher, d->watchers)
-    {
-        watcher->currentOutputChanged(index);
-    }
-
-    emit currentOutputChanged();
+    d->currentOutputChanged();
 }
+
+QString WAbstractBackend::outputName() const
+{
+    Q_D(const WAbstractBackend); return d->outputData.name;
+}
+
+WAbstractBackend::OutputType WAbstractBackend::outputType() const
+{
+    Q_D(const WAbstractBackend); return d->outputData.type;
+}
+
+//-------------------------------------------------------------------------------------------------
 
 int WAbstractBackend::countOutput() const
 {
     Q_D(const WAbstractBackend); return d->outputs.count();
+}
+
+//=================================================================================================
+// WBackendOutput
+//=================================================================================================
+
+WBackendOutput::WBackendOutput(const QString & name, WAbstractBackend::OutputType type)
+{
+    this->name = name;
+    this->type = type;
+}
+
+WBackendOutput::WBackendOutput()
+{
+    type = WAbstractBackend::TypeDefault;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Operators
+//-------------------------------------------------------------------------------------------------
+
+WBackendOutput::WBackendOutput(const WBackendOutput & other)
+{
+    *this = other;
+}
+
+bool WBackendOutput::operator==(const WBackendOutput & other) const
+{
+    return (name == other.name && type == other.type);
+}
+
+WBackendOutput & WBackendOutput::operator=(const WBackendOutput & other)
+{
+    name = other.name;
+    type = other.type;
+
+    return *this;
 }
 
 //=================================================================================================

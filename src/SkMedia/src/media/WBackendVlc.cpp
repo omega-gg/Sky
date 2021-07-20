@@ -2074,7 +2074,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
     {
         WVlcOutputEvent * eventOutput = static_cast<WVlcOutputEvent *> (event);
 
-        addOutput(WBackendOutput(eventOutput->name));
+        addOutput(WBackendOutput(eventOutput->name, eventOutput->type));
 
         return true;
     }

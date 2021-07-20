@@ -161,16 +161,17 @@ public: // Variables
 class WVlcOutputEvent : public QEvent
 {
 public:
-    WVlcOutputEvent(WVlcPlayer::EventType type, libvlc_renderer_item_t * item)
-        : QEvent(static_cast<QEvent::Type> (type))
+    WVlcOutputEvent(const QString & name, WAbstractBackend::OutputType type)
+        : QEvent(static_cast<QEvent::Type> (WVlcPlayer::EventOutputAdd))
     {
-        this->item = item;
+        this->name = name;
+        this->type = type;
     }
 
 public: // Variables
-    libvlc_renderer_item_t * item;
-
     QString name;
+
+    WAbstractBackend::OutputType type;
 };
 
 #endif // SK_NO_VLCPLAYER

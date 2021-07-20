@@ -205,9 +205,14 @@ void WVlcPlayerPrivate::clearDiscoverers()
 
     d->renderers.append(item);
 
-    WVlcOutputEvent * eventOutput = new WVlcOutputEvent(WVlcPlayer::EventOutputAdd, item);
+    QString string = libvlc_renderer_item_type(item);
 
-    eventOutput->name = libvlc_renderer_item_name(item);
+    WAbstractBackend::OutputType type;
+
+    if (string == "chromecast") type = WAbstractBackend::TypeChromecast;
+    else                        type = WAbstractBackend::TypeUnknown;
+
+    WVlcOutputEvent * eventOutput = new WVlcOutputEvent(libvlc_renderer_item_name(item), type);
 
     QCoreApplication::postEvent(d->backend, eventOutput);
 }
@@ -227,6 +232,8 @@ void WVlcPlayerPrivate::clearDiscoverers()
 
         QCoreApplication::postEvent(d->backend,
                                     new WVlcPlayerEvent(WVlcPlayer::EventOutputRemove, i));
+
+        return;
     }
 }
 

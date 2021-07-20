@@ -89,6 +89,8 @@ public: // Variable
 
     int currentOutput;
 
+    WBackendOutput outputData;
+
     QList<WBackendOutput> outputs;
 
     QSizeF size;

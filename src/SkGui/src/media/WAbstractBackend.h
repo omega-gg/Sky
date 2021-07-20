@@ -43,6 +43,7 @@ class QStyleOptionGraphicsItem;
 class WAbstractBackendPrivate;
 class WDeclarativePlayer;
 class WBackendFilter;
+class WBackendOutput;
 #ifdef QT_LATEST
 struct WBackendFrame;
 struct WBackendTexture;
@@ -99,21 +100,6 @@ public:
 };
 
 //-------------------------------------------------------------------------------------------------
-// WBackendOutput
-//-------------------------------------------------------------------------------------------------
-
-struct WBackendOutput
-{
-public:
-    WBackendOutput(const QString & name)
-    {
-        this->name = name;
-    }
-
-    QString name;
-};
-
-//-------------------------------------------------------------------------------------------------
 // WBackendWatcher
 //-------------------------------------------------------------------------------------------------
 
@@ -149,6 +135,7 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
     Q_ENUMS(State)
     Q_ENUMS(StateLoad)
     Q_ENUMS(Output)
+    Q_ENUMS(OutputType)
     Q_ENUMS(Quality)
     Q_ENUMS(FillMode)
 #ifdef QT_LATEST
@@ -206,6 +193,9 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
     Q_PROPERTY(int currentOutput READ currentOutput WRITE setCurrentOutput
                NOTIFY currentOutputChanged)
 
+    Q_PROPERTY(QString    outputName READ outputName NOTIFY currentOutputChanged)
+    Q_PROPERTY(OutputType outputType READ outputType NOTIFY currentOutputChanged)
+
     Q_PROPERTY(int countOutput READ countOutput NOTIFY outputsChanged)
 
 public:
@@ -230,6 +220,13 @@ public:
         OutputMedia,
         OutputVideo,
         OutputAudio
+    };
+
+    enum OutputType
+    {
+        TypeDefault,
+        TypeUnknown,
+        TypeChromecast
     };
 
     enum Quality
@@ -268,8 +265,6 @@ protected:
     WAbstractBackend(WAbstractBackendPrivate * p);
 
 public: // Interface
-    Q_INVOKABLE const WBackendOutput * outputAt(int index) const;
-
 #ifdef QT_LATEST
     Q_INVOKABLE WBackendNode * createNode() const;
 #endif
@@ -289,6 +284,17 @@ public: // Interface
     Q_INVOKABLE QRectF getRect() const;
 
     Q_INVOKABLE bool deleteBackend();
+
+    //---------------------------------------------------------------------------------------------
+    // Output
+
+    Q_INVOKABLE WBackendOutput outputAt(int index) const;
+
+    Q_INVOKABLE const WBackendOutput * outputPointerAt(int index) const;
+
+    Q_INVOKABLE const WBackendOutput * currentOutputPointer() const;
+
+    Q_INVOKABLE int indexOutput(const WBackendOutput * item) const;
 
     //---------------------------------------------------------------------------------------------
     // Watchers
@@ -485,6 +491,9 @@ public: // Properties
     int  currentOutput() const;
     void setCurrentOutput(int index);
 
+    QString    outputName() const;
+    OutputType outputType() const;
+
     int countOutput() const;
 
 private:
@@ -492,6 +501,31 @@ private:
 
     friend class WAbstractHook;
     friend class WAbstractHookPrivate;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WBackendOutput
+//-------------------------------------------------------------------------------------------------
+
+class WBackendOutput
+{
+public:
+    WBackendOutput(const QString & name,
+                   WAbstractBackend::OutputType type = WAbstractBackend::TypeDefault);
+
+    WBackendOutput();
+
+public: // Operators
+    WBackendOutput(const WBackendOutput & other);
+
+    bool operator==(const WBackendOutput & other) const;
+
+    WBackendOutput & operator=(const WBackendOutput & other);
+
+public: // Variables
+    QString name;
+
+    WAbstractBackend::OutputType type;
 };
 
 //-------------------------------------------------------------------------------------------------

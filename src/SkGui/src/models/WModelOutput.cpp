@@ -39,8 +39,13 @@ public:
 
     void init();
 
+public:
+    void itemUpdated(int index);
+
 public: // Variables
     WAbstractBackend * backend;
+
+    const WBackendOutput * oldOutput;
 
 protected:
     W_DECLARE_PUBLIC(WModelOutput)
@@ -63,11 +68,26 @@ void WModelOutputPrivate::init()
 {
     backend = NULL;
 
+    oldOutput = NULL;
+
 #ifdef QT_4
     Q_Q(WModelOutput);
 
     q->setRoleNames(q->roleNames());
 #endif
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
+
+void WModelOutputPrivate::itemUpdated(int index)
+{
+    Q_Q(WModelOutput);
+
+    QModelIndex modelIndex = q->index(index);
+
+    emit q->dataChanged(modelIndex, modelIndex);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -108,7 +128,7 @@ void WModelOutputPrivate::init()
         return QVariant();
     }
 
-    const WBackendOutput * output = d->backend->outputAt(row);
+    const WBackendOutput * output = d->backend->outputPointerAt(row);
 
     if      (role == RoleName)    return output->name;
     else if (role == RoleCurrent) return (d->backend->currentOutput() == row);
@@ -171,9 +191,18 @@ void WModelOutputPrivate::init()
 
 /* virtual */ void WModelOutput::currentOutputChanged(int index)
 {
-    QModelIndex modelIndex = this->index(index);
+    Q_D(WModelOutput);
 
-    emit dataChanged(modelIndex, modelIndex);
+    if (d->oldOutput)
+    {
+        int index = d->backend->indexOutput(d->oldOutput);
+
+        if (index != -1) d->itemUpdated(index);
+    }
+
+    if (index != -1) d->itemUpdated(index);
+
+    d->oldOutput = d->backend->currentOutputPointer();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -212,7 +241,10 @@ void WModelOutput::setBackend(WAbstractBackend * backend)
     if (d->backend)
     {
         d->backend->registerWatcher(this);
+
+        d->oldOutput = d->backend->currentOutputPointer();
     }
+    else d->oldOutput = NULL;
 
     emit backendChanged();
 }
