@@ -1757,6 +1757,28 @@ void WDeclarativePlayer::setCurrentOutput(int index)
     emit currentOutputChanged();
 }
 
+QString WDeclarativePlayer::outputName() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+        return d->backend->outputName();
+    }
+    else return QString();
+}
+
+WAbstractBackend::OutputType WDeclarativePlayer::outputType() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+        return d->backend->outputType();
+    }
+    else return WAbstractBackend::TypeDefault;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 QString WDeclarativePlayer::subtitle() const

@@ -108,6 +108,9 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
     Q_PROPERTY(int currentOutput READ currentOutput WRITE setCurrentOutput
                NOTIFY currentOutputChanged)
 
+    Q_PROPERTY(QString                      outputName READ outputName NOTIFY currentOutputChanged)
+    Q_PROPERTY(WAbstractBackend::OutputType outputType READ outputType NOTIFY currentOutputChanged)
+
     Q_PROPERTY(QString subtitle READ subtitle WRITE setSubtitle NOTIFY subtitleChanged)
 
     Q_PROPERTY(int pauseTimeout READ pauseTimeout WRITE setPauseTimeout NOTIFY pauseTimeoutChanged)
@@ -329,6 +332,9 @@ public: // Properties
 
     int  currentOutput() const;
     void setCurrentOutput(int index);
+
+    QString                      outputName() const;
+    WAbstractBackend::OutputType outputType() const;
 
     QString subtitle() const;
     void    setSubtitle(const QString & subtitle);
