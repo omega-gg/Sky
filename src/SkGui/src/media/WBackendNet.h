@@ -62,7 +62,7 @@ public: // Enums
 public:
     explicit WBackendNetQuery(const QString & url = QString());
 
-    WBackendNetQuery(Type type, const QString & url = QString());
+    explicit WBackendNetQuery(Type type, const QString & url = QString());
 
 public: // Interface
     bool isValid() const;
@@ -88,6 +88,8 @@ public: // Variables
     int indexReload;
 
     QNetworkRequest::Priority priority;
+
+    WAbstractBackend::SourceMode mode;
 
     QVariant data;
 

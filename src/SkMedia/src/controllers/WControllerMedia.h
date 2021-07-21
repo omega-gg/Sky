@@ -52,7 +52,9 @@ class SK_MEDIA_EXPORT WMediaReply : public QObject
     Q_OBJECT
 
 private:
-    WMediaReply(const QString & url, QObject * parent);
+    explicit WMediaReply(const QString & url,
+                         WAbstractBackend::SourceMode mode = WAbstractBackend::SourceDefault,
+                         QObject * parent                  = NULL);
 public:
     /* virtual */ ~WMediaReply();
 
@@ -73,6 +75,8 @@ public: // Properties
 
 private: // Variables
     QString _url;
+
+    WAbstractBackend::SourceMode _mode;
 
     QHash<WAbstractBackend::Quality, QString> _medias;
     QHash<WAbstractBackend::Quality, QString> _audios;
@@ -111,7 +115,10 @@ public: // Initialize
 public: // Interface
     Q_INVOKABLE WVlcPlayer * createVlcPlayer() const;
 
-    Q_INVOKABLE WMediaReply * getMedia(const QString & url, QObject * parent = NULL);
+    Q_INVOKABLE
+    WMediaReply * getMedia(const QString & url,
+                           WAbstractBackend::SourceMode mode = WAbstractBackend::SourceDefault,
+                           QObject * parent                  = NULL);
 
     Q_INVOKABLE void clearMedia (const QString & url);
     Q_INVOKABLE void clearMedias();

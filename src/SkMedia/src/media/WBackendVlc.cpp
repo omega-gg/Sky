@@ -882,7 +882,12 @@ void WBackendVlcPrivate::loadSources(bool play)
 
     qDebug("Loading Source %s", source.C_STR);
 
-    reply = wControllerMedia->getMedia(source, q);
+    // NOTE: When using Chromecast we want to increase source compatibility.
+    if (outputData.type == WAbstractBackend::TypeChromecast)
+    {
+         reply = wControllerMedia->getMedia(source, WAbstractBackend::SourceSafe, q);
+    }
+    else reply = wControllerMedia->getMedia(source, WAbstractBackend::SourceDefault, q);
 
     if (reply == NULL)
     {

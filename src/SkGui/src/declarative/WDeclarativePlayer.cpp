@@ -1482,6 +1482,13 @@ bool WDeclarativePlayer::hasEnded() const
 
 //-------------------------------------------------------------------------------------------------
 
+bool WDeclarativePlayer::hasOutput() const
+{
+    return (outputType() != WAbstractBackend::TypeDefault);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 int WDeclarativePlayer::currentTime() const
 {
     Q_D(const WDeclarativePlayer);

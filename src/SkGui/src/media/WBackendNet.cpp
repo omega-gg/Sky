@@ -52,7 +52,7 @@
     init(WBackendNetQuery::TypeDefault, url);
 }
 
-WBackendNetQuery::WBackendNetQuery(Type type, const QString & url)
+/* explicit */ WBackendNetQuery::WBackendNetQuery(Type type, const QString & url)
 {
     init(type, url);
 }
@@ -84,6 +84,8 @@ void WBackendNetQuery::init(Type type, const QString & url)
 
     priority = QNetworkRequest::NormalPriority;
 
+    mode = WAbstractBackend::SourceDefault;
+
     clearItems = true;
     cookies    = false;
     skipError  = false;
@@ -113,6 +115,8 @@ WBackendNetQuery & WBackendNetQuery::operator=(const WBackendNetQuery & other)
     indexReload = other.indexReload;
 
     priority = other.priority;
+
+    mode = other.mode;
 
     data = other.data;
 

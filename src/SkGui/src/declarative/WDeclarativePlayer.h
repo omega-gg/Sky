@@ -75,6 +75,8 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
     Q_PROPERTY(bool hasStarted READ hasStarted NOTIFY startedChanged)
     Q_PROPERTY(bool hasEnded   READ hasEnded   NOTIFY endedChanged)
 
+    Q_PROPERTY(bool hasOutput READ hasOutput NOTIFY currentOutputChanged)
+
     Q_PROPERTY(int currentTime READ currentTime NOTIFY currentTimeChanged)
     Q_PROPERTY(int duration    READ duration    NOTIFY durationChanged)
 
@@ -294,6 +296,8 @@ public: // Properties
 
     bool hasStarted() const;
     bool hasEnded  () const;
+
+    bool hasOutput() const;
 
     int currentTime() const;
     int duration   () const;

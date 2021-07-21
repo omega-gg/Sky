@@ -1187,6 +1187,9 @@ void WAbstractBackend::setCurrentOutput(int index)
 
     if (d->filter) d->filter->filterCurrentOutput(&index);
 
+    // NOTE: The currentOuput can never be under 0.
+    if (index < 0) index = 0;
+
     if (d->currentOutput == index) return;
 
     d->currentOutput = index;

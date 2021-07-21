@@ -89,11 +89,12 @@ TextBase
 
         var playerHeight = player.height;
 
-        if (player.outputActive == AbstractBackend.OutputAudio)
+        // NOTE: The active playback has to be video based on the default output.
+        if (player.outputActive != AbstractBackend.OutputAudio || player.hasOutput == false)
         {
-             height = cover.paintedHeight;
+             height = Math.min(player.getRect().height, playerHeight);
         }
-        else height = Math.min(player.getRect().height, playerHeight);
+        else height = cover.paintedHeight;
 
         if (height > 0)
         {

@@ -222,6 +222,7 @@ public:
         OutputAudio
     };
 
+    // NOTE: The device type where we want to output our media.
     enum OutputType
     {
         TypeDefault,
@@ -240,6 +241,14 @@ public:
         Quality1080,
         Quality1440,
         Quality2160
+    };
+
+    // NOTE: This is a compatibility cursor for sources retrieval.
+    //       For instance, this is useful to enforce compatible sources with Chromecast.
+    enum SourceMode
+    {
+        SourceDefault,
+        SourceSafe
     };
 
     enum FillMode

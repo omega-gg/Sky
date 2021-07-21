@@ -3980,6 +3980,8 @@ void WBackendUniversalPrivate::applyQueryParameters(WBackendUniversalParameters 
 
     parameters->add("id", query.id);
 
+    parameters->add("mode", query.mode);
+
     parameters->add("queryData", query.data);
 
     parameters->add("header", query.header);
@@ -4405,6 +4407,13 @@ WBackendNetQuery::Type WBackendUniversalPrivate::getTypeQuery(const QString & st
 {
     if (string == "torrent") return WBackendNetQuery::TypeTorrent;
     else                     return WBackendNetQuery::TypeDefault;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+WAbstractBackend::SourceMode WBackendUniversalPrivate::getSourceMode(int index) const
+{
+    return static_cast<WAbstractBackend::SourceMode> (index);
 }
 
 //-------------------------------------------------------------------------------------------------

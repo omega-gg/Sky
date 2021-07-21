@@ -55,9 +55,12 @@ static const int CONTROLLERMEDIA_MAX_RELOAD =  10;
 //=================================================================================================
 // Private
 
-WMediaReply::WMediaReply(const QString & url, QObject * parent) : QObject(parent)
+WMediaReply::WMediaReply(const QString & url,
+                         WAbstractBackend::SourceMode mode, QObject * parent) : QObject(parent)
 {
     _url = url;
+
+    _mode = mode;
 
     _backend = NULL;
 
@@ -239,6 +242,8 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
     query.priority = QNetworkRequest::HighPriority;
 
+    query.mode = reply->_mode;
+
     WRemoteData * data = wControllerPlaylist->getData(loader, query, q);
 
     QObject::connect(data, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoaded(WRemoteData *)));
@@ -419,6 +424,9 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
 
             nextQuery.indexReload = indexReload + 1;
 
+            // NOTE: We propagate the compatibility mode.
+            nextQuery.mode = backendQuery.mode;
+
             media->query = nextQuery;
 
             getData(media, &nextQuery);
@@ -446,6 +454,9 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
     if (nextQuery.isValid() && indexNext < CONTROLLERMEDIA_MAX_QUERY)
     {
         nextQuery.indexNext = indexNext + 1;
+
+        // NOTE: We propagate the compatibility mode.
+        nextQuery.mode = backendQuery.mode;
 
         media->query = nextQuery;
 
@@ -532,7 +543,9 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ WMediaReply * WControllerMedia::getMedia(const QString & url, QObject * parent)
+/* Q_INVOKABLE */ WMediaReply * WControllerMedia::getMedia(const QString & url,
+                                                           WAbstractBackend::SourceMode mode,
+                                                           QObject * parent)
 {
     if (url.isEmpty()) return NULL;
 
@@ -540,8 +553,8 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 
     WMediaReply * reply;
 
-    if (parent) reply = new WMediaReply(url, parent);
-    else        reply = new WMediaReply(url, this);
+    if (parent) reply = new WMediaReply(url, mode, parent);
+    else        reply = new WMediaReply(url, mode, this);
 
     d->updateSources();
 
