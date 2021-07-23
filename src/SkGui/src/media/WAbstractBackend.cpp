@@ -256,6 +256,16 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ WAbstractBackend::SourceMode WAbstractBackend::getMode() const
+{
+    Q_D(const WAbstractBackend);
+
+    if (d->output == OutputAudio) return WAbstractBackend::SourceAudio;
+    else                          return WAbstractBackend::SourceDefault;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ bool WAbstractBackend::deleteBackend()
 {
     Q_D(WAbstractBackend);

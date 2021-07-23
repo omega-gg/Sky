@@ -882,12 +882,16 @@ void WBackendVlcPrivate::loadSources(bool play)
 
     qDebug("Loading Source %s", source.C_STR);
 
-    // NOTE: When using Chromecast we want to increase source compatibility.
-    if (outputData.type == WAbstractBackend::TypeChromecast)
+    WAbstractBackend::SourceMode mode = q->getMode();
+
+    // NOTE: When using Chromecast for video we want to increase source compatibility.
+    if (outputData.type == WAbstractBackend::TypeChromecast
+        &&
+        mode != WAbstractBackend::SourceAudio)
     {
          reply = wControllerMedia->getMedia(source, WAbstractBackend::SourceSafe, q);
     }
-    else reply = wControllerMedia->getMedia(source, WAbstractBackend::SourceDefault, q);
+    else reply = wControllerMedia->getMedia(source, mode, q);
 
     if (reply == NULL)
     {
@@ -1041,6 +1045,16 @@ void WBackendVlcPrivate::clearPlayer()
     playing = false;
 }
 
+void WBackendVlcPrivate::clearActive()
+{
+    Q_Q(WBackendVlc);
+
+    q->setOutputActive (WAbstractBackend::OutputInvalid);
+    q->setQualityActive(WAbstractBackend::QualityInvalid);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void WBackendVlcPrivate::clearReply()
 {
     if (reply == NULL) return;
@@ -1050,12 +1064,12 @@ void WBackendVlcPrivate::clearReply()
     reply = NULL;
 }
 
-void WBackendVlcPrivate::clearActive()
+void WBackendVlcPrivate::clearMedia()
 {
-    Q_Q(WBackendVlc);
+    clearReply();
 
-    q->setOutputActive (WAbstractBackend::OutputInvalid);
-    q->setQualityActive(WAbstractBackend::QualityInvalid);
+    currentMedia = QString();
+    currentAudio = QString();
 }
 
 void WBackendVlcPrivate::clearSources()
@@ -1376,10 +1390,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 {
     Q_D(WBackendVlc);
 
-    d->clearReply();
-
-    d->currentMedia = QString();
-    d->currentAudio = QString();
+    d->clearMedia();
 
     if (url.isEmpty())
     {
@@ -1514,43 +1525,20 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WBackendVlc::backendSetOutput(Output output)
+// NOTE: When switching the output we want to reload sources in case they are different.
+/* virtual */ void WBackendVlc::backendSetOutput(Output)
 {
     Q_D(WBackendVlc);
 
-    Output closestOutput = d->getClosestOutput(output);
+    if (hasStarted() == false) return;
 
-    if (d->applyOutput(closestOutput) && hasStarted())
-    {
-        if (d->currentMedia.isEmpty())
-        {
-            setOutputActive(closestOutput);
+    d->clearMedia();
 
-            return;
-        }
+    d->updateLoading();
 
-        d->started = false;
-        d->active  = false;
+    backendStop();
 
-        d->frameFreeze = true;
-
-        d->onFrameUpdated();
-
-        d->player->setSource(d->currentMedia, d->currentAudio);
-
-        setOutputActive(closestOutput);
-
-        if (d->state == StatePlaying)
-        {
-            d->player->play(d->currentTime);
-        }
-        else if (d->state == StatePaused)
-        {
-            d->setMute(true);
-
-            d->player->play(d->currentTime);
-        }
-    }
+    d->loadSources(true);
 }
 
 /* virtual */ void WBackendVlc::backendSetQuality(Quality quality)

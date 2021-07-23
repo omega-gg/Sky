@@ -248,7 +248,8 @@ public:
     enum SourceMode
     {
         SourceDefault,
-        SourceSafe
+        SourceSafe,
+        SourceAudio
     };
 
     enum FillMode
@@ -291,6 +292,8 @@ public: // Interface
     Q_INVOKABLE QImage getFrame   () const;
 
     Q_INVOKABLE QRectF getRect() const;
+
+    Q_INVOKABLE SourceMode getMode() const;
 
     Q_INVOKABLE bool deleteBackend();
 

@@ -274,11 +274,27 @@ void WControllerMediaPrivate::updateSources()
     {
         i.next();
 
-        QDateTime expiry = i.value().expiry;
+        QHash<WAbstractBackend::SourceMode, WPrivateMediaMode> & modes = i.value().modes;
 
-        if (expiry.isValid() && expiry < date)
+        QMutableHashIterator<WAbstractBackend::SourceMode, WPrivateMediaMode> j(modes);
+
+        while (j.hasNext())
         {
-            qDebug("MEDIA EXPIRED");
+            j.next();
+
+            QDateTime expiry = j.value().expiry;
+
+            if (expiry.isValid() && expiry < date)
+            {
+                qDebug("MEDIA EXPIRED");
+
+                j.remove();
+            }
+        }
+
+        if (sources.isEmpty())
+        {
+            qDebug("SOURCE EXPIRED");
 
             urls.removeOne(i.key());
 
@@ -470,18 +486,29 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
 
     if (medias.count())
     {
-        WPrivateMediaSource mediaSource;
+        WPrivateMediaMode mode;
 
-        mediaSource.medias = source.medias;
-        mediaSource.audios = source.audios;
+        mode.medias = source.medias;
+        mode.audios = source.audios;
 
-        mediaSource.expiry = source.expiry;
+        mode.expiry = source.expiry;
 
         const QString & url = media->url;
 
-        urls.append(url);
+        if (sources.contains(url))
+        {
+            WPrivateMediaSource * source = &(sources[url]);
 
-        sources.insert(url, mediaSource);
+            source->modes.insert(backendQuery.mode, mode);
+        }
+        else
+        {
+            WPrivateMediaSource source;
+
+            source.modes.insert(backendQuery.mode, mode);
+
+            sources.insert(url, source);
+        }
 
         foreach (WMediaReply * reply, media->replies)
         {
@@ -560,19 +587,29 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 
     if (d->sources.contains(url))
     {
-        qDebug("MEDIA CACHED");
+        const WPrivateMediaSource & source = d->sources[url];
 
-        d->urls.removeOne(url);
-        d->urls.append   (url);
+        const QHash<WAbstractBackend::SourceMode, WPrivateMediaMode> & sources = source.modes;
 
-        WPrivateMediaSource source = d->sources.value(url);
+        if (sources.contains(mode))
+        {
+            qDebug("MEDIA CACHED");
 
-        reply->_medias = source.medias;
-        reply->_audios = source.audios;
+            d->urls.removeOne(url);
+            d->urls.append   (url);
 
-        reply->_loaded = true;
+            const WPrivateMediaMode & source = sources[mode];
+
+            reply->_medias = source.medias;
+            reply->_audios = source.audios;
+
+            reply->_loaded = true;
+
+            return reply;
+        }
     }
-    else d->loadSources(reply);
+
+    d->loadSources(reply);
 
     return reply;
 }

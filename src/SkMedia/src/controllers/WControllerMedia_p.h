@@ -65,15 +65,24 @@ struct WPrivateMediaData
 };
 
 //-------------------------------------------------------------------------------------------------
-// WPrivateMediaSource
+// WPrivateMediaMode
 //-------------------------------------------------------------------------------------------------
 
-struct WPrivateMediaSource
+struct WPrivateMediaMode
 {
     QHash<WAbstractBackend::Quality, QString> medias;
     QHash<WAbstractBackend::Quality, QString> audios;
 
     QDateTime expiry;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WPrivateMediaSource
+//-------------------------------------------------------------------------------------------------
+
+struct WPrivateMediaSource
+{
+    QHash<WAbstractBackend::SourceMode, WPrivateMediaMode> modes;
 };
 
 //-------------------------------------------------------------------------------------------------

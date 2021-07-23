@@ -206,9 +206,11 @@ public: // Functions
 
     void updateLoading();
 
-    void clearPlayer ();
+    void clearPlayer();
+    void clearActive();
+
     void clearReply  ();
-    void clearActive ();
+    void clearMedia  ();
     void clearSources();
 
 #ifdef QT_4
