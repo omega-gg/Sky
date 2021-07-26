@@ -89,16 +89,16 @@ TextBase
 
         var playerHeight = player.height;
 
-        // NOTE: The active playback has to be video based on the default output.
-        if (player.outputActive != AbstractBackend.OutputAudio || player.hasOutput == false)
+        // NOTE: When the player is hidden we display the subtitles on the cover.
+        if (player.outputActive == AbstractBackend.OutputAudio || player.hasOutput)
         {
-             height = Math.min(player.getRect().height, playerHeight);
+            height = cover.paintedHeight;
         }
-        else height = cover.paintedHeight;
+        else height = Math.min(player.getRect().height, playerHeight);
 
         if (height > 0)
         {
-             return (playerHeight - height) / 2 + height / 64;
+            return (playerHeight - height) / 2 + height / 64;
         }
         else return playerHeight / 64;
     }

@@ -519,7 +519,7 @@ private:
 // WBackendOutput
 //-------------------------------------------------------------------------------------------------
 
-class WBackendOutput
+class SK_GUI_EXPORT WBackendOutput
 {
 public:
     WBackendOutput(const QString & name,
