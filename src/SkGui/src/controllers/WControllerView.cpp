@@ -114,7 +114,7 @@ void WControllerViewPrivate::init()
 #endif
 
     // NOTE: In general fading in looks faster than fading out. So we compensate here.
-    fadeIn  = 300;
+    fadeIn  = 200;
     fadeOut = 150;
 
     loadMode = WControllerView::LoadAlways;
