@@ -147,6 +147,23 @@ public: // Interface
     WAbstractThreadReply * startWriteAction(WAbstractThreadAction * action);
     WAbstractThreadReply * startReadAction (WAbstractThreadAction * action);
 
+    //---------------------------------------------------------------------------------------------
+    // File actions
+
+    WControllerFileReply * startWriteFile(const QString & fileName, const QByteArray & data);
+
+    WControllerFileReply * startAppendFile(const QString & fileName, const QByteArray & data);
+
+    WControllerFileReply * startRenameFile(const QString & oldPath, const QString & newPath);
+
+    WControllerFileReply * startCopyFile(const QString & fileName,
+                                         const QString & newName,
+                                         Permissions permissions = Default);
+
+    WControllerFileReply * startDeleteFile(const QString & path);
+
+    //---------------------------------------------------------------------------------------------
+
     WControllerFileReply * startWriteFiles(const QStringList       & fileNames,
                                            const QList<QByteArray> & datas);
 
@@ -162,6 +179,17 @@ public: // Interface
 
     WControllerFileReply * startDeleteFiles(const QStringList & paths);
 
+    //---------------------------------------------------------------------------------------------
+    // Folder actions
+
+    WControllerFileReply * startCreateFolder       (const QString & path);
+    WControllerFileReply * startDeleteFolder       (const QString & path, bool recursive = true);
+    WControllerFileReply * startDeleteFolderContent(const QString & path, bool recursive = true);
+
+    WControllerFileReply * startCreatePath(const QString & path);
+
+    //---------------------------------------------------------------------------------------------
+
     WControllerFileReply * startCreateFolders(const QStringList & paths);
 
     WControllerFileReply * startDeleteFolders(const QStringList & paths,
@@ -173,24 +201,17 @@ public: // Interface
     WControllerFileReply * startCreatePaths(const QStringList & paths);
 
     //---------------------------------------------------------------------------------------------
+    // Image actions
 
-    WControllerFileReply * startWriteFile(const QString & fileName, const QByteArray & data);
+    WControllerFileReply * startWriteImage(const QString & fileName,
+                                           const QImage  & image,
+                                           const QString & format  = "png",
+                                           int             quality = -1);
 
-    WControllerFileReply * startAppendFile(const QString & fileName, const QByteArray & data);
-
-    WControllerFileReply * startRenameFile(const QString & oldPath, const QString & newPath);
-
-    WControllerFileReply * startCopyFile(const QString & fileName,
-                                         const QString & newName,
-                                         Permissions permissions = Default);
-
-    WControllerFileReply * startDeleteFile(const QString & path);
-
-    WControllerFileReply * startCreateFolder       (const QString & path);
-    WControllerFileReply * startDeleteFolder       (const QString & path, bool recursive = true);
-    WControllerFileReply * startDeleteFolderContent(const QString & path, bool recursive = true);
-
-    WControllerFileReply * startCreatePath(const QString & path);
+    WControllerFileReply * startWriteImages(const QStringList   & fileNames,
+                                            const QList<QImage> & images,
+                                            const QString       & format = "png",
+                                            int                   quality = -1);
 
 public: // Static functions
     Q_INVOKABLE static QString absolute(const QUrl    & url);
@@ -250,7 +271,7 @@ public: // Static functions
     static bool deleteFile(const QString & fileName);
 
     //---------------------------------------------------------------------------------------------
-    // Directories
+    // Folders
 
     static bool createFolder(const QString & path);
 

@@ -218,12 +218,18 @@ public: // Interface
     Q_INVOKABLE bool saveShot(const QString & fileName,
                               int x = 0, int y = 0, int width = -1, int height = -1,
                               const QString & format = "png", int quality = -1) const;
+
+    Q_INVOKABLE void writeShot(const QString & path,
+                               const QString & format = "png", int quality = -1) const;
 #else
     Q_INVOKABLE QImage takeShot(int x = 0, int y = 0, int width = -1, int height = -1);
 
     Q_INVOKABLE bool saveShot(const QString & fileName,
                               int x = 0, int y = 0, int width = -1, int height = -1,
                               const QString & format = "png", int quality = -1);
+
+    Q_INVOKABLE void writeShot(const QString & path,
+                               const QString & format = "png", int quality = -1);
 #endif
 
     //---------------------------------------------------------------------------------------------

@@ -305,18 +305,27 @@ public: // Interface
     //---------------------------------------------------------------------------------------------
     // Shot
 
+    // NOTE: writeShot is a convenient function that creates the 'path' folder and writes a
+    //       threaded screenshot of the entire view with a time stamped file name.
+
 #ifdef QT_4
     Q_INVOKABLE QImage takeShot(int x = 0, int y = 0, int width = -1, int height = -1) const;
 
     Q_INVOKABLE bool saveShot(const QString & fileName,
                               int x = 0, int y = 0, int width = -1, int height = -1,
                               const QString & format = "png", int quality = -1) const;
+
+    Q_INVOKABLE void writeShot(const QString & path,
+                               const QString & format = "png", int quality = -1) const;
 #else
     Q_INVOKABLE QImage takeShot(int x = 0, int y = 0, int width = -1, int height = -1);
 
     Q_INVOKABLE bool saveShot(const QString & fileName,
                               int x = 0, int y = 0, int width = -1, int height = -1,
                               const QString & format = "png", int quality = -1);
+
+    Q_INVOKABLE void writeShot(const QString & path,
+                               const QString & format = "png", int quality = -1);
 #endif
 
     //---------------------------------------------------------------------------------------------

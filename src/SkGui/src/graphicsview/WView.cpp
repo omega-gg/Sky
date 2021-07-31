@@ -2016,6 +2016,25 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
     return image.save(fileName, format.C_STR, quality);
 }
 
+#ifdef QT_4
+/* Q_INVOKABLE */ void WView::writeShot(const QString & path,
+                                        const QString & format, int quality) const
+#else
+/* Q_INVOKABLE */ void WView::writeShot(const QString & path,
+                                        const QString & format, int quality)
+#endif
+{
+    WControllerFile::createFolder(path);
+
+    QImage image = takeShot(0, 0, width(), height());
+
+    QString fileName = path + '/' + sk->name() + '_'
+                       +
+                       Sk::currentDateString("yyyy-MM-dd_hh-mm-ss-zzz") + '.' + format;
+
+    wControllerFile->startWriteImage(fileName, image, format, quality);
+}
+
 //-------------------------------------------------------------------------------------------------
 // Cursor
 

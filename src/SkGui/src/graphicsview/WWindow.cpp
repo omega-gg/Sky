@@ -437,6 +437,23 @@ void WWindowPrivate::init()
     return d->view->saveShot(fileName, x, y, width, height, format, quality);
 }
 
+#ifdef QT_4
+/* Q_INVOKABLE */ void WWindow::writeShot(const QString & path,
+                                          const QString & format, int quality) const
+#else
+/* Q_INVOKABLE */ void WWindow::writeShot(const QString & path,
+                                          const QString & format, int quality)
+#endif
+{
+#ifdef QT_4
+    Q_D(const WWindow);
+#else
+    Q_D(WWindow);
+#endif
+
+    return d->view->writeShot(path, format, quality);
+}
+
 //-------------------------------------------------------------------------------------------------
 // Cursor
 

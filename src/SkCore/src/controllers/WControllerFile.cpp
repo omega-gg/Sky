@@ -30,6 +30,7 @@
 // Qt includes
 #include <QCoreApplication>
 #include <QDir>
+#include <QImage>
 #include <qtlockedfile>
 #ifdef QT_4
 #include <QDesktopServices>
@@ -326,6 +327,44 @@ public: // Variables
         if (dir.mkpath(path) == false)
         {
             qWarning("WControllerFileCreatePaths::run: Failed to create path %s.", path.C_STR);
+        }
+    }
+
+    return true;
+}
+
+//=================================================================================================
+// WControllerFileWriteImages
+//=================================================================================================
+
+class WControllerFileWriteImages : public WControllerFileAction
+{
+    Q_OBJECT
+
+protected: // WAbstractThreadAction implementation
+    /* virtual */ bool run();
+
+public: // Variables
+    QStringList fileNames;
+
+    QList<QImage> images;
+
+    QString format;
+
+    int quality;
+};
+
+/* virtual */ bool WControllerFileWriteImages::run()
+{
+    const char * formatData = format.C_STR;
+
+    for (int i = 0; i < fileNames.count(); i++)
+    {
+        const QString & name = fileNames.at(i);
+
+        if (images.at(i).save(name, formatData, quality) == false)
+        {
+            qWarning("WControllerFileWriteImages::run: Failed to save image %s.", name.C_STR);
         }
     }
 
@@ -724,7 +763,7 @@ WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this
 }
 
 //-------------------------------------------------------------------------------------------------
-// Threaded write and read
+// Thread actions
 
 WAbstractThreadReply * WControllerFile::startWriteAction(WAbstractThreadAction * action)
 {
@@ -742,6 +781,39 @@ WAbstractThreadReply * WControllerFile::startReadAction(WAbstractThreadAction * 
     d->createThreadRead();
 
     return d->threadRead->pushAction(action);
+}
+
+//-------------------------------------------------------------------------------------------------
+// File actions
+
+WControllerFileReply * WControllerFile::startWriteFile(const QString    & fileName,
+                                                       const QByteArray & data)
+{
+    return startWriteFiles(QStringList() << fileName, QList<QByteArray>() << data);
+}
+
+WControllerFileReply * WControllerFile::startAppendFile(const QString    & fileName,
+                                                        const QByteArray & data)
+{
+    return startAppendFiles(QStringList() << fileName, QList<QByteArray>() << data);
+}
+
+WControllerFileReply * WControllerFile::startRenameFile(const QString & oldPath,
+                                                        const QString & newPath)
+{
+    return startRenameFiles(QStringList() << oldPath, QStringList() << newPath);
+}
+
+WControllerFileReply * WControllerFile::startCopyFile(const QString & fileName,
+                                                      const QString & newName,
+                                                      Permissions     permissions)
+{
+    return startCopyFiles(QStringList() << fileName, QStringList() << newName, permissions);
+}
+
+WControllerFileReply * WControllerFile::startDeleteFile(const QString & path)
+{
+    return startDeleteFiles(QStringList() << path);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -775,8 +847,6 @@ WControllerFileReply * WControllerFile::startAppendFiles(const QStringList      
 
     return action->controllerReply();
 }
-
-//-------------------------------------------------------------------------------------------------
 
 WControllerFileReply * WControllerFile::startRenameFiles(const QStringList & oldPaths,
                                                          const QStringList & newPaths)
@@ -831,6 +901,31 @@ WControllerFileReply * WControllerFile::startDeleteFiles(const QStringList & pat
 }
 
 //-------------------------------------------------------------------------------------------------
+// Folder actions
+
+WControllerFileReply * WControllerFile::startCreateFolder(const QString & path)
+{
+    return startCreateFolders(QStringList() << path);
+}
+
+WControllerFileReply * WControllerFile::startDeleteFolder(const QString & path,
+                                                          bool            recursive)
+{
+    return startDeleteFolders(QStringList() << path, recursive);
+}
+
+WControllerFileReply * WControllerFile::startDeleteFolderContent(const QString & path,
+                                                                 bool            recursive)
+{
+    return startDeleteFoldersContent(QStringList() << path, recursive);
+}
+
+WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
+{
+    return startCreatePaths(QStringList() << path);
+}
+
+//-------------------------------------------------------------------------------------------------
 
 WControllerFileReply * WControllerFile::startCreateFolders(const QStringList & paths)
 {
@@ -875,8 +970,6 @@ WControllerFileReply * WControllerFile::startDeleteFoldersContent(const QStringL
     return action->controllerReply();
 }
 
-//-------------------------------------------------------------------------------------------------
-
 WControllerFileReply * WControllerFile::startCreatePaths(const QStringList & paths)
 {
     if (paths.isEmpty()) return NULL;
@@ -890,62 +983,32 @@ WControllerFileReply * WControllerFile::startCreatePaths(const QStringList & pat
     return action->controllerReply();
 }
 
-//-------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------
+// Image actions
 
-WControllerFileReply * WControllerFile::startWriteFile(const QString    & fileName,
-                                                       const QByteArray & data)
+WControllerFileReply * WControllerFile::startWriteImage(const QString & fileName,
+                                                        const QImage  & image,
+                                                        const QString & format, int quality)
 {
-    return startWriteFiles(QStringList() << fileName, QList<QByteArray>() << data);
+    return startWriteImages(QStringList() << fileName, QList<QImage>() << image, format, quality);
 }
 
-WControllerFileReply * WControllerFile::startAppendFile(const QString    & fileName,
-                                                        const QByteArray & data)
+WControllerFileReply * WControllerFile::startWriteImages(const QStringList   & fileNames,
+                                                         const QList<QImage> & images,
+                                                         const QString       & format, int quality)
 {
-    return startAppendFiles(QStringList() << fileName, QList<QByteArray>() << data);
-}
+    if (fileNames.isEmpty() || fileNames.count() != images.count()) return NULL;
 
-WControllerFileReply * WControllerFile::startRenameFile(const QString & oldPath,
-                                                        const QString & newPath)
-{
-    return startRenameFiles(QStringList() << oldPath, QStringList() << newPath);
-}
+    WControllerFileWriteImages * action = new WControllerFileWriteImages;
 
-WControllerFileReply * WControllerFile::startCopyFile(const QString & fileName,
-                                                      const QString & newName,
-                                                      Permissions     permissions)
-{
-    return startCopyFiles(QStringList() << fileName, QStringList() << newName, permissions);
-}
+    action->fileNames = fileNames;
+    action->images    = images;
+    action->format    = format;
+    action->quality   = quality;
 
-WControllerFileReply * WControllerFile::startDeleteFile(const QString & path)
-{
-    return startDeleteFiles(QStringList() << path);
-}
+    startWriteAction(action);
 
-//-------------------------------------------------------------------------------------------------
-
-WControllerFileReply * WControllerFile::startCreateFolder(const QString & path)
-{
-    return startCreateFolders(QStringList() << path);
-}
-
-WControllerFileReply * WControllerFile::startDeleteFolder(const QString & path,
-                                                          bool            recursive)
-{
-    return startDeleteFolders(QStringList() << path, recursive);
-}
-
-WControllerFileReply * WControllerFile::startDeleteFolderContent(const QString & path,
-                                                                 bool            recursive)
-{
-    return startDeleteFoldersContent(QStringList() << path, recursive);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
-{
-    return startCreatePaths(QStringList() << path);
+    return action->controllerReply();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1285,7 +1348,7 @@ WControllerFileReply * WControllerFile::startCreatePath(const QString & path)
 }
 
 //-------------------------------------------------------------------------------------------------
-// Directories
+// Folders
 
 /* static */ bool WControllerFile::createFolder(const QString & path)
 {
