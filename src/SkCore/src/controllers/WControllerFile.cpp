@@ -30,12 +30,12 @@
 // Qt includes
 #include <QCoreApplication>
 #include <QDir>
-#include <QImage>
 #include <qtlockedfile>
 #ifdef QT_4
 #include <QDesktopServices>
 #else
 #include <QStandardPaths>
+#include <QImage>
 #endif
 
 #ifdef Q_OS_ANDROID
