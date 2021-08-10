@@ -107,7 +107,8 @@ WallBookmarkTrack
     signal titleClicked (variant mouse)
     signal authorClicked(variant mouse)
 
-    signal playerPressed(variant mouse)
+    signal playerPressed      (variant mouse)
+    signal playerDoubleClicked(variant mouse)
 
     signal contextualBrowser
 
@@ -482,6 +483,8 @@ WallBookmarkTrack
         cursor: Qt.PointingHandCursor
 
         onPressed: playerPressed(mouse)
+
+        onDoubleClicked: playerDoubleClicked(mouse)
     }
 
     Rectangle

@@ -323,8 +323,6 @@ Item
             anchors.top   : parent.top
             anchors.bottom: parent.bottom
 
-            width: height + borderSizeWidth
-
             borderRight: borderSize
 
             icon          : st.icon12x12_slideLeft
