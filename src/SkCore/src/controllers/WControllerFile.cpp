@@ -983,7 +983,7 @@ WControllerFileReply * WControllerFile::startCreatePaths(const QStringList & pat
     return action->controllerReply();
 }
 
-//---------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // Image actions
 
 WControllerFileReply * WControllerFile::startWriteImage(const QString & fileName,
