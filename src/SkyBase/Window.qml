@@ -35,7 +35,12 @@ BaseWindow
 
     property variant areaContextual: null
 
+//#MOBILE
+    // NOTE Mobile: The window is not resizable by default.
+    property bool resizable: false
+//#ELSE
     property bool resizable: true
+//#END
 
     /* read */ property bool isTouchActive: false
 

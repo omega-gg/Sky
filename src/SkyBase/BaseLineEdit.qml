@@ -48,6 +48,11 @@ MouseArea
     property alias text       : textInput      .text
     property alias textDefault: itemTextDefault.text
 
+//#QT_5
+    // NOTE android: This is useful to get each 'text changed' events.
+    property alias displayText: textInput.displayText
+//#END
+
     property alias selectedText: textInput.selectedText
 
     property alias cursorPosition: textInput.cursorPosition
@@ -223,11 +228,6 @@ MouseArea
         selectByMouse: true
 
         maximumLength: st.baseLineEdit_maximumLength
-
-//#QT_5+ANDROID
-        // FIXME android: This fixes onTextChanged events.
-        inputMethodHints: Qt.ImhSensitiveData
-//#END
 
         color            : st.baseLineEdit_colorText
         selectionColor   : st.baseLineEdit_colorTextSelection
