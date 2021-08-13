@@ -1231,19 +1231,11 @@ bool WControllerPlaylistPrivate::abortQueriesFolder(WLibraryFolder * folder)
     return (count != queries.count());
 }
 
-//-------------------------------------------------------------------------------------------------
-
 bool WControllerPlaylistPrivate::abortQueriesItem(WLibraryItem * item)
 {
     int count = queries.count();
 
-    foreach (WControllerPlaylistQuery * query, queries)
-    {
-        if (query->item == item)
-        {
-            removeQuery(query);
-        }
-    }
+    abortItem(item);
 
     item->d_func()->setQueryLoading(false);
 
@@ -1699,6 +1691,134 @@ void WControllerPlaylistPrivate::getDataLibraryItem(WLibraryItem                
 
 //-------------------------------------------------------------------------------------------------
 
+bool WControllerPlaylistPrivate::getNextTrack(WPlaylist * playlist, WTrack * track,
+                                              const WBackendNetTrack & reply, int index)
+{
+    if (index >= CONTROLLERPLAYLIST_MAX_QUERY) return false;
+
+    WBackendNetQuery nextQuery = reply.nextQuery;
+
+    if (nextQuery.isValid() == false) return false;
+
+    nextQuery.indexNext = index + 1;
+
+    getDataTrack(playlist, track, nextQuery);
+
+    return true;
+}
+
+bool WControllerPlaylistPrivate::getNextPlaylist(WPlaylist * playlist,
+                                                 const WBackendNetPlaylist & reply, int index)
+{
+    if (index >= CONTROLLERPLAYLIST_MAX_QUERY) return false;
+
+    WBackendNetQuery nextQuery = reply.nextQuery;
+
+    if (nextQuery.isValid() == false) return false;
+
+    nextQuery.indexNext = index + 1;
+
+    nextQuery.clearItems = false;
+
+    getDataPlaylist(playlist, nextQuery);
+
+    return true;
+}
+
+bool WControllerPlaylistPrivate::getNextFolder(WLibraryFolder * folder,
+                                               const WBackendNetFolder & reply, int index)
+{
+    if (index >= CONTROLLERPLAYLIST_MAX_QUERY) return false;
+
+    WBackendNetQuery nextQuery = reply.nextQuery;
+
+    if (nextQuery.isValid() == false) return false;
+
+    nextQuery.indexNext = index + 1;
+
+    nextQuery.clearItems = false;
+
+    getDataFolder(folder, nextQuery);
+
+    return true;
+}
+
+bool WControllerPlaylistPrivate::getNextItem(WLibraryItem * item,
+                                             const WBackendNetItem & reply, int index)
+{
+    if (index >= CONTROLLERPLAYLIST_MAX_QUERY) return false;
+
+    WBackendNetQuery nextQuery = reply.nextQuery;
+
+    if (nextQuery.isValid() == false) return false;
+
+    nextQuery.indexNext = index + 1;
+
+    nextQuery.clearItems = false;
+
+    getDataItem(item, nextQuery);
+
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WControllerPlaylistPrivate::checkTrack(WTrack * track)
+{
+    foreach (WControllerPlaylistQuery * query, queries)
+    {
+        if (query->track == track)
+        {
+            removeQuery(query);
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool WControllerPlaylistPrivate::checkPlaylist(WPlaylist * playlist)
+{
+    foreach (WControllerPlaylistQuery * query, queries)
+    {
+        if (query->type == WControllerPlaylistQuery::TypePlaylist && query->item == playlist)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool WControllerPlaylistPrivate::checkFolder(WLibraryFolder * folder)
+{
+    foreach (WControllerPlaylistQuery * query, queries)
+    {
+        if (query->type == WControllerPlaylistQuery::TypeFolder && query->item == folder)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool WControllerPlaylistPrivate::checkItem(WLibraryItem * item)
+{
+    foreach (WControllerPlaylistQuery * query, queries)
+    {
+        if (query->type == WControllerPlaylistQuery::TypeItem && query->item == item)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void WControllerPlaylistPrivate::abortTrack(WTrack * track)
 {
     foreach (WControllerPlaylistQuery * query, queries)
@@ -1728,6 +1848,17 @@ void WControllerPlaylistPrivate::abortFolder(WLibraryFolder * folder)
     foreach (WControllerPlaylistQuery * query, queries)
     {
         if (query->type == WControllerPlaylistQuery::TypeFolder && query->item == folder)
+        {
+            removeQuery(query);
+        }
+    }
+}
+
+void WControllerPlaylistPrivate::abortItem(WLibraryItem * item)
+{
+    foreach (WControllerPlaylistQuery * query, queries)
+    {
+        if (query->type == WControllerPlaylistQuery::TypeItem && query->item == item)
         {
             removeQuery(query);
         }
@@ -1949,20 +2080,19 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
 
         trackReply.applyDataTo(track);
 
+        emit playlist->trackQueryEnded();
+
         addToCache(track->source(), reply.cache);
 
-        WBackendNetQuery nextQuery = reply.nextQuery;
-
-        if (nextQuery.isValid() && nextQuery.indexNext < CONTROLLERPLAYLIST_MAX_QUERY)
+        if (getNextTrack(playlist, track, reply, indexNext))
         {
-            nextQuery.indexNext = indexNext + 1;
-
             playlist->updateTrack(index);
-
-            getDataTrack(playlist, track, nextQuery);
 
             return;
         }
+
+        // NOTE: Maybe other queries are still loading.
+        if (checkTrack(track)) return;
 
         WTrack::State state = trackReply.state();
 
@@ -1995,12 +2125,15 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
     }
     else
     {
+        emit playlist->trackQueryEnded();
+
+        // NOTE: Maybe other queries are still loading.
+        if (checkTrack(track)) return;
+
         track->setState(WTrack::Default);
 
         playlist->updateTrack(index);
     }
-
-    emit playlist->trackQueryEnded();
 }
 
 void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * device,
@@ -2091,20 +2224,12 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
 
         addToCache(playlist->source(), reply.cache);
 
-        WBackendNetQuery nextQuery = reply.nextQuery;
-
-        if (nextQuery.isValid() && indexNext < CONTROLLERPLAYLIST_MAX_QUERY)
-        {
-            nextQuery.indexNext = indexNext + 1;
-
-            nextQuery.clearItems = false;
-
-            getDataPlaylist(playlist, nextQuery);
-
-            return;
-        }
+        if (getNextPlaylist(playlist, reply, indexNext)) return;
     }
     else emit playlist->queryEnded();
+
+    // NOTE: Maybe other queries are still loading.
+    if (checkPlaylist(playlist)) return;
 
     playlist->d_func()->setQueryLoaded();
 }
@@ -2210,20 +2335,12 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
 
         addToCache(folder->source(), reply.cache);
 
-        WBackendNetQuery nextQuery = reply.nextQuery;
-
-        if (nextQuery.isValid() && indexNext < CONTROLLERPLAYLIST_MAX_QUERY)
-        {
-            nextQuery.indexNext = indexNext + 1;
-
-            nextQuery.clearItems = false;
-
-            getDataFolder(folder, nextQuery);
-
-            return;
-        }
+        if (getNextFolder(folder, reply, indexNext)) return;
     }
     else emit folder->queryEnded();
+
+    // NOTE: Maybe other queries are still loading.
+    if (checkFolder(folder)) return;
 
     folder->d_func()->setQueryLoaded();
 }
@@ -2248,33 +2365,16 @@ void WControllerPlaylistPrivate::onItemLoaded(QIODevice * device, const WBackend
 
     if (reply.valid)
     {
-        QByteArray cache     = reply.cache;
-        QString    extension = reply.extension;
-
-        WBackendNetQuery nextQuery = reply.nextQuery;
-
-        if (nextQuery.isValid() && indexNext < CONTROLLERPLAYLIST_MAX_QUERY)
-        {
-            emit item->queryEnded();
-
-            addToCache(item->source(), cache, extension);
-
-            nextQuery.indexNext = indexNext + 1;
-
-            nextQuery.clearItems = false;
-
-            getDataItem(item, nextQuery);
-
-            return;
-        }
-
-        emit item->queryData(reply.data, extension);
-
         emit item->queryEnded();
 
-        addToCache(item->source(), cache, extension);
+        addToCache(item->source(), reply.cache, reply.extension);
+
+        if (getNextItem(item, reply, indexNext)) return;
     }
     else emit item->queryEnded();
+
+    // NOTE: Maybe other queries are still loading.
+    if (checkItem(item)) return;
 
     item->d_func()->setQueryLoaded();
 }

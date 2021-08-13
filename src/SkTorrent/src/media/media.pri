@@ -1,8 +1,6 @@
 # Media module
 
-HEADERS += src/media/WBackendTorrent.h \
-           src/media/WHookTorrent.h \
+HEADERS += src/media/WHookTorrent.h \
            src/media/WHookTorrent_p.h \
 
-SOURCES += src/media/WBackendTorrent.cpp \
-           src/media/WHookTorrent.cpp \
+SOURCES += src/media/WHookTorrent.cpp \
