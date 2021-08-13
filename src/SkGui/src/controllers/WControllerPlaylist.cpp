@@ -2050,9 +2050,7 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
 
         if (indexReload < CONTROLLERPLAYLIST_MAX_RELOAD)
         {
-            WBackendNetQuery nextQuery = reply.nextQuery;
-
-            nextQuery = backendQuery;
+            WBackendNetQuery nextQuery = backendQuery;
 
             deleteQuery(query);
 
@@ -2155,9 +2153,7 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
 
         if (indexReload < CONTROLLERPLAYLIST_MAX_RELOAD)
         {
-            WBackendNetQuery nextQuery = reply.nextQuery;
-
-            nextQuery = backendQuery;
+            WBackendNetQuery nextQuery = backendQuery;
 
             deleteQuery(query);
 
@@ -2253,9 +2249,7 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
 
         if (indexReload < CONTROLLERPLAYLIST_MAX_RELOAD)
         {
-            WBackendNetQuery nextQuery = reply.nextQuery;
-
-            nextQuery = backendQuery;
+            WBackendNetQuery nextQuery = backendQuery;
 
             deleteQuery(query);
 

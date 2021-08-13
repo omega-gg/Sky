@@ -434,9 +434,7 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
 
         if (indexReload < CONTROLLERMEDIA_MAX_RELOAD)
         {
-            WBackendNetQuery nextQuery = source.nextQuery;
-
-            nextQuery = backendQuery;
+            WBackendNetQuery nextQuery = backendQuery;
 
             nextQuery.indexReload = indexReload + 1;
 
