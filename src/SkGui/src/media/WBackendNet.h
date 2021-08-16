@@ -138,11 +138,11 @@ public: // Variables
 
     QByteArray cache;
 
-    WBackendNetQuery nextQuery;
-
     QVariant backup;
 
     bool reload;
+
+    QList<WBackendNetQuery> nextQueries;
 };
 
 //-------------------------------------------------------------------------------------------------

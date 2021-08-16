@@ -169,12 +169,15 @@ public: // Functions
     void getDataLibraryItem(WLibraryItem           * item,
                             const WBackendNetQuery & query, WControllerPlaylistQuery::Type type);
 
-    bool getNextTrack(WPlaylist * playlist, WTrack * track, const WBackendNetTrack & reply,
+    bool getNextTrack(WPlaylist * playlist, WTrack * track, const QList<WBackendNetQuery> & queries,
                       int index);
 
-    bool getNextPlaylist(WPlaylist      * playlist, const WBackendNetPlaylist & reply, int index);
-    bool getNextFolder  (WLibraryFolder * folder,   const WBackendNetFolder   & reply, int index);
-    bool getNextItem    (WLibraryItem   * item,     const WBackendNetItem     & reply, int index);
+    bool getNextPlaylist(WPlaylist * playlist, const QList<WBackendNetQuery> & queries, int index);
+
+    bool getNextFolder(WLibraryFolder * folder, const QList<WBackendNetQuery> & queries,
+                       int index);
+
+    bool getNextItem(WLibraryItem * item, const QList<WBackendNetQuery> & queries, int index);
 
     //---------------------------------------------------------------------------------------------
 

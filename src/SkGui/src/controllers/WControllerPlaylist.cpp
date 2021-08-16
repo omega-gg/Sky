@@ -1692,73 +1692,102 @@ void WControllerPlaylistPrivate::getDataLibraryItem(WLibraryItem                
 //-------------------------------------------------------------------------------------------------
 
 bool WControllerPlaylistPrivate::getNextTrack(WPlaylist * playlist, WTrack * track,
-                                              const WBackendNetTrack & reply, int index)
+                                              const QList<WBackendNetQuery> & queries, int index)
 {
-    if (index >= CONTROLLERPLAYLIST_MAX_QUERY) return false;
+    bool result = false;
 
-    WBackendNetQuery nextQuery = reply.nextQuery;
+    foreach (WBackendNetQuery query, queries)
+    {
+        if (index >= CONTROLLERPLAYLIST_MAX_QUERY) return result;
 
-    if (nextQuery.isValid() == false) return false;
+        if (query.isValid() == false) continue;
 
-    nextQuery.indexNext = index + 1;
+        index++;
 
-    getDataTrack(playlist, track, nextQuery);
+        query.indexNext = index;
 
-    return true;
+        getDataTrack(playlist, track, query);
+
+        result = true;
+    }
+
+    return result;
 }
 
 bool WControllerPlaylistPrivate::getNextPlaylist(WPlaylist * playlist,
-                                                 const WBackendNetPlaylist & reply, int index)
+                                                 const QList<WBackendNetQuery> & queries,
+                                                 int index)
 {
-    if (index >= CONTROLLERPLAYLIST_MAX_QUERY) return false;
+    bool result = false;
 
-    WBackendNetQuery nextQuery = reply.nextQuery;
+    foreach (WBackendNetQuery query, queries)
+    {
+        if (index >= CONTROLLERPLAYLIST_MAX_QUERY) return result;
 
-    if (nextQuery.isValid() == false) return false;
+        if (query.isValid() == false) continue;
 
-    nextQuery.indexNext = index + 1;
+        index++;
 
-    nextQuery.clearItems = false;
+        query.indexNext = index;
 
-    getDataPlaylist(playlist, nextQuery);
+        query.clearItems = false;
 
-    return true;
+        getDataPlaylist(playlist, query);
+
+        result = true;
+    }
+
+    return result;
 }
 
 bool WControllerPlaylistPrivate::getNextFolder(WLibraryFolder * folder,
-                                               const WBackendNetFolder & reply, int index)
+                                               const QList<WBackendNetQuery> & queries, int index)
 {
-    if (index >= CONTROLLERPLAYLIST_MAX_QUERY) return false;
+    bool result = false;
 
-    WBackendNetQuery nextQuery = reply.nextQuery;
+    foreach (WBackendNetQuery query, queries)
+    {
+        if (index >= CONTROLLERPLAYLIST_MAX_QUERY) return result;
 
-    if (nextQuery.isValid() == false) return false;
+        if (query.isValid() == false) continue;
 
-    nextQuery.indexNext = index + 1;
+        index++;
 
-    nextQuery.clearItems = false;
+        query.indexNext = index;
 
-    getDataFolder(folder, nextQuery);
+        query.clearItems = false;
 
-    return true;
+        getDataFolder(folder, query);
+
+        result = true;
+    }
+
+    return result;
 }
 
 bool WControllerPlaylistPrivate::getNextItem(WLibraryItem * item,
-                                             const WBackendNetItem & reply, int index)
+                                             const QList<WBackendNetQuery> & queries, int index)
 {
-    if (index >= CONTROLLERPLAYLIST_MAX_QUERY) return false;
+    bool result = false;
 
-    WBackendNetQuery nextQuery = reply.nextQuery;
+    foreach (WBackendNetQuery query, queries)
+    {
+        if (index >= CONTROLLERPLAYLIST_MAX_QUERY) return result;
 
-    if (nextQuery.isValid() == false) return false;
+        if (query.isValid() == false) continue;
 
-    nextQuery.indexNext = index + 1;
+        index++;
 
-    nextQuery.clearItems = false;
+        query.indexNext = index;
 
-    getDataItem(item, nextQuery);
+        query.clearItems = false;
 
-    return true;
+        getDataItem(item, query);
+
+        result = true;
+    }
+
+    return result;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1769,8 +1798,6 @@ bool WControllerPlaylistPrivate::checkTrack(WTrack * track)
     {
         if (query->track == track)
         {
-            removeQuery(query);
-
             return true;
         }
     }
@@ -1826,8 +1853,6 @@ void WControllerPlaylistPrivate::abortTrack(WTrack * track)
         if (query->track == track)
         {
             removeQuery(query);
-
-            return;
         }
     }
 }
@@ -1858,7 +1883,8 @@ void WControllerPlaylistPrivate::abortItem(WLibraryItem * item)
 {
     foreach (WControllerPlaylistQuery * query, queries)
     {
-        if (query->type == WControllerPlaylistQuery::TypeItem && query->item == item)
+        // NOTE: This is supposed to remove all queries for a given item, no matter the type.
+        if (query->item == item)
         {
             removeQuery(query);
         }
@@ -2082,7 +2108,7 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
 
         addToCache(track->source(), reply.cache);
 
-        if (getNextTrack(playlist, track, reply, indexNext))
+        if (getNextTrack(playlist, track, reply.nextQueries, indexNext))
         {
             playlist->updateTrack(index);
 
@@ -2220,7 +2246,7 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
 
         addToCache(playlist->source(), reply.cache);
 
-        if (getNextPlaylist(playlist, reply, indexNext)) return;
+        if (getNextPlaylist(playlist, reply.nextQueries, indexNext)) return;
     }
     else emit playlist->queryEnded();
 
@@ -2329,7 +2355,7 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
 
         addToCache(folder->source(), reply.cache);
 
-        if (getNextFolder(folder, reply, indexNext)) return;
+        if (getNextFolder(folder, reply.nextQueries, indexNext)) return;
     }
     else emit folder->queryEnded();
 
@@ -2363,7 +2389,7 @@ void WControllerPlaylistPrivate::onItemLoaded(QIODevice * device, const WBackend
 
         addToCache(item->source(), reply.cache, reply.extension);
 
-        if (getNextItem(item, reply, indexNext)) return;
+        if (getNextItem(item, reply.nextQueries, indexNext)) return;
     }
     else emit item->queryEnded();
 

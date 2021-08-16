@@ -166,11 +166,12 @@ static const QString BACKENDUNIVERSAL_FUNCTIONS = \
     "PRINT";
 
 static const int BACKENDUNIVERSAL_MAX_NODES = 300;
+static const int BACKENDUNIVERSAL_MAX_LOOP  = 1000;
 
-static const int BACKENDUNIVERSAL_MAX_CONDITIONS = 1;
-static const int BACKENDUNIVERSAL_MAX_LOOPS      = 2;
+static const int BACKENDUNIVERSAL_MAX_QUERIES = 30;
 
-static const int BACKENDUNIVERSAL_MAX_LOOP = 1000;
+static const int BACKENDUNIVERSAL_DEPTH_IF   = 1;
+static const int BACKENDUNIVERSAL_DEPTH_LOOP = 2;
 
 static const int BACKENDUNIVERSAL_TIMEOUT_LOAD   = 60000; // 1 minute
 static const int BACKENDUNIVERSAL_TIMEOUT_SCRIPT =  5000; // 5 seconds
@@ -3033,7 +3034,7 @@ QVariant WBackendUniversalScript::run(WBackendUniversalParameters * parameters) 
 
             if (condition != -1)
             {
-                if (condition > BACKENDUNIVERSAL_MAX_CONDITIONS)
+                if (condition > BACKENDUNIVERSAL_DEPTH_IF)
                 {
                     qWarning("WBackendUniversalScript::run: Maximum 'IF' depth reached.");
 
@@ -3186,7 +3187,7 @@ QVariant WBackendUniversalScript::run(WBackendUniversalParameters * parameters) 
                 }
                 else
                 {
-                    if (loops.count() > BACKENDUNIVERSAL_MAX_LOOPS)
+                    if (loops.count() > BACKENDUNIVERSAL_DEPTH_LOOP)
                     {
                         qWarning("WBackendUniversalScript::run: Maximum 'FOREACH' depth reached.");
 
@@ -4060,7 +4061,7 @@ void WBackendUniversalPrivate::applySourceResults(WBackendUniversalParameters * 
 
     reply->expiry = getDate(*(parameters->value("expiry")));
 
-    applyQuery(&(reply->nextQuery), parameters->value("next"));
+    applyQueries(&(reply->nextQueries), parameters->value("next"));
 
     reply->backup = *(parameters->value("global"));
 
@@ -4108,7 +4109,7 @@ void WBackendUniversalPrivate::applyTrackResults(WBackendUniversalParameters * p
 
     reply->cache = parameters->value("cache")->toByteArray();
 
-    applyQuery(&(reply->nextQuery), parameters->value("next"));
+    applyQueries(&(reply->nextQueries), parameters->value("next"));
 
     reply->backup = *(parameters->value("global"));
 
@@ -4167,7 +4168,7 @@ void WBackendUniversalPrivate::applyPlaylistResults(WBackendUniversalParameters 
 
     reply->cache = parameters->value("cache")->toByteArray();
 
-    applyQuery(&(reply->nextQuery), parameters->value("next"));
+    applyQueries(&(reply->nextQueries), parameters->value("next"));
 
     reply->backup = *(parameters->value("global"));
 
@@ -4223,7 +4224,7 @@ void WBackendUniversalPrivate::applyFolderResults(WBackendUniversalParameters * 
 
     reply->cache = parameters->value("cache")->toByteArray();
 
-    applyQuery(&(reply->nextQuery), parameters->value("next"));
+    applyQueries(&(reply->nextQueries), parameters->value("next"));
 
     reply->backup = *(parameters->value("global"));
 
@@ -4273,7 +4274,7 @@ void WBackendUniversalPrivate::applyItemResults(WBackendUniversalParameters * pa
 
     reply->cache = parameters->value("cache")->toByteArray();
 
-    applyQuery(&(reply->nextQuery), parameters->value("next"));
+    applyQueries(&(reply->nextQueries), parameters->value("next"));
 
     reply->backup = *(parameters->value("global"));
 
@@ -4334,34 +4335,29 @@ void WBackendUniversalPrivate::applyItem(QList<WLibraryFolderItem> * items,
 
 //-------------------------------------------------------------------------------------------------
 
-void WBackendUniversalPrivate::applyQuery(WBackendNetQuery * query, QVariant * value) const
+void WBackendUniversalPrivate::applyQueries(QList<WBackendNetQuery> * queries,
+                                            QVariant * value) const
 {
-    QHash<QString, QVariant> hash = value->toHash();
+    // NOTE: If it's a list we extract each query. Otherwise it's a single query.
+    if (value->canConvert<QVariantList>())
+    {
+        QVariantList list = value->toList();
 
-    query->type = getTypeQuery(hash.value("type").toString());
+        for (int i = 0; i < list.count(); i++)
+        {
+            const QVariant & variant = list.at(i);
 
-    query->backend = hash.value("backend").toString();
+            queries->append(getQuery(variant));
 
-    query->url = hash.value("url").toString();
+            if (i == BACKENDUNIVERSAL_MAX_QUERIES)
+            {
+                qWarning("WBackendUniversalPrivate::applyQueries: Maximum queries reached.");
 
-    query->id = hash.value("id").toInt();
-
-    query->data = hash.value("queryData");
-
-    query->header = hash.value("header").toString();
-
-    const QVariant * variant = getVariant(&hash, "clearItems");
-
-    if (variant) query->clearItems = variant->toBool();
-
-    query->cookies   = hash.value("cookies")  .toBool();
-    query->skipError = hash.value("skipError").toBool();
-
-    query->delay = hash.value("delay").toInt();
-
-    variant = getVariant(&hash, "timeout");
-
-    if (variant) query->timeout = variant->toInt();
+                return;
+            }
+        }
+    }
+    else queries->append(getQuery(*value));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -4378,6 +4374,42 @@ void WBackendUniversalPrivate
 
         qualities->insert(getQuality(i.key()), i.value().toString());
     }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+WBackendNetQuery WBackendUniversalPrivate::getQuery(const QVariant & value) const
+{
+    WBackendNetQuery query;
+
+    QHash<QString, QVariant> hash = value.toHash();
+
+    query.type = getTypeQuery(hash.value("type").toString());
+
+    query.backend = hash.value("backend").toString();
+
+    query.url = hash.value("url").toString();
+
+    query.id = hash.value("id").toInt();
+
+    query.data = hash.value("queryData");
+
+    query.header = hash.value("header").toString();
+
+    const QVariant * variant = getVariant(&hash, "clearItems");
+
+    if (variant) query.clearItems = variant->toBool();
+
+    query.cookies   = hash.value("cookies")  .toBool();
+    query.skipError = hash.value("skipError").toBool();
+
+    query.delay = hash.value("delay").toInt();
+
+    variant = getVariant(&hash, "timeout");
+
+    if (variant) query.timeout = variant->toInt();
+
+    return query;
 }
 
 //-------------------------------------------------------------------------------------------------

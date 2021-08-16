@@ -461,22 +461,27 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
         }
     }
 
-    WBackendNetQuery nextQuery = source.nextQuery;
+    const QList<WBackendNetQuery> & queries = source.nextQueries;
 
-    int indexNext = backendQuery.indexNext;
-
-    if (nextQuery.isValid() && indexNext < CONTROLLERMEDIA_MAX_QUERY)
+    if (queries.isEmpty() == false)
     {
-        nextQuery.indexNext = indexNext + 1;
+        WBackendNetQuery nextQuery = queries.first();
 
-        // NOTE: We propagate the compatibility mode.
-        nextQuery.mode = backendQuery.mode;
+        int indexNext = backendQuery.indexNext;
 
-        media->query = nextQuery;
+        if (nextQuery.isValid() && indexNext < CONTROLLERMEDIA_MAX_QUERY)
+        {
+            nextQuery.indexNext = indexNext + 1;
 
-        getData(media, &nextQuery);
+            // NOTE: We propagate the compatibility mode.
+            nextQuery.mode = backendQuery.mode;
 
-        return;
+            media->query = nextQuery;
+
+            getData(media, &nextQuery);
+
+            return;
+        }
     }
 
     const QHash<WAbstractBackend::Quality, QString> & medias = source.medias;
