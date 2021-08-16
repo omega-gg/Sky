@@ -1831,6 +1831,13 @@ void WTorrentEnginePrivate::onRemove()
 
     timer->deleteLater();
 
+    if (data->items.isEmpty() == false)
+    {
+        qDebug("TORRENT IS NOT EMPTY");
+
+        return;
+    }
+
     const torrent_handle & handle = data->handle;
 
     uintptr_t hash = data->hash;
@@ -1880,6 +1887,13 @@ void WTorrentEnginePrivate::onRemoveMagnet()
     WMagnetData * data = deleteMagnets.take(timer);
 
     timer->deleteLater();
+
+    if (data->magnets.isEmpty() == false)
+    {
+        qDebug("MAGNET IS NOT EMPTY");
+
+        return;
+    }
 
     uintptr_t hash = data->hash;
 
@@ -2526,16 +2540,33 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
             WMagnetData * data = d->datasMagnets.takeFirst();
 
-            data->handle = handle;
-            data->hash   = hash;
-
-            d->magnets.insert(hash, data);
-
-            if (data->magnets.isEmpty())
+            if (d->magnets.contains(hash))
             {
-                d->removeMagnet(data);
+                qDebug("MAGNET HASH ALREADY EXISTS");
+
+                const QList<WMagnet *> & magnets = data->magnets;
+
+                data = d->magnets[hash];
+
+                // NOTE: We append the new magnets to the existing data.
+                data->magnets.append(magnets);
             }
-            else if (handle.status().has_metadata)
+            else
+            {
+                data->handle = handle;
+                data->hash   = hash;
+
+                d->magnets.insert(hash, data);
+
+                if (data->magnets.isEmpty())
+                {
+                    d->removeMagnet(data);
+
+                    return true;
+                }
+            }
+
+            if (handle.status().has_metadata)
             {
                 qDebug("METADATA ALREADY DONE");
 
@@ -2547,38 +2578,52 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         qDebug("TORRENT ADDED");
 
-        WMagnetData * dataMagnet = d->magnets.value(hash);
-
-        if (dataMagnet)
+        if (d->torrents.contains(hash))
         {
-            qDebug("TORRENT MOVE STORAGE");
+            qDebug("TORRENT HASH ALREADY EXISTS");
 
-            handle.move_storage(data->path.toStdString());
+            const QList<WTorrentItem *> & items = data->items;
+
+            data = d->torrents[hash];
+
+            // NOTE: We append the new items to the existing data.
+            data->items.append(items);
         }
-
-        data->handle = handle;
-        data->hash   = hash;
-
-        d->torrents.insert(hash, data);
-
-        if (data->items.isEmpty())
+        else
         {
-            d->removeData(data);
+            WMagnetData * dataMagnet = d->magnets.value(hash);
 
-            return true;
-        }
-
-        d->renameFiles(data, handle);
-
-        foreach (WTorrentItem * item, data->items)
-        {
-            if (item->mode == WTorrent::Stream)
+            if (dataMagnet)
             {
-                WTorrentStream * stream = static_cast<WTorrentStream *> (item);
+                qDebug("TORRENT MOVE STORAGE");
 
-                d->addStream(handle, stream);
+                handle.move_storage(data->path.toStdString());
             }
-            else d->addItem(handle, item);
+
+            data->handle = handle;
+            data->hash   = hash;
+
+            d->torrents.insert(hash, data);
+
+            if (data->items.isEmpty())
+            {
+                d->removeData(data);
+
+                return true;
+            }
+
+            d->renameFiles(data, handle);
+
+            foreach (WTorrentItem * item, data->items)
+            {
+                if (item->mode == WTorrent::Stream)
+                {
+                    WTorrentStream * stream = static_cast<WTorrentStream *> (item);
+
+                    d->addStream(handle, stream);
+                }
+                else d->addItem(handle, item);
+            }
         }
 
         d->updateFiles(data);

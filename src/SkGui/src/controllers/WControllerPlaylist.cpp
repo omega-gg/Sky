@@ -740,6 +740,10 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
 
             if (query.isValid())
             {
+                // NOTE: The custom query priority should be high because it's often tied to the
+                //       current action.
+                query.priority = QNetworkRequest::HighPriority;
+
                 getDataTrack(playlist, track, query);
 
                 return true;
@@ -797,6 +801,10 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
 
             if (query.isValid())
             {
+                // NOTE: The custom query priority should be high because it's often tied to the
+                //       current action.
+                query.priority = QNetworkRequest::HighPriority;
+
                 getDataPlaylist(playlist, query);
 
                 return true;
@@ -957,6 +965,10 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
             if (query.isValid())
             {
+                // NOTE: The custom query priority should be high because it's often tied to the
+                //       current action.
+                query.priority = QNetworkRequest::HighPriority;
+
                 getDataFolder(folder, query);
 
                 return true;
@@ -1125,6 +1137,10 @@ bool WControllerPlaylistPrivate::applySourceItem(WLibraryItem * item, const QStr
 
             if (query.isValid())
             {
+                // NOTE: The custom query priority should be high because it's often tied to the
+                //       current action.
+                query.priority = QNetworkRequest::HighPriority;
+
                 getDataItem(item, query);
 
                 return true;
