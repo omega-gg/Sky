@@ -79,7 +79,7 @@ BaseButton
 
     function getSourceHeight()
     {
-        return st.getHeight(height, margins);
+        return st.getSizeMargins(height, margins);
     }
 
     //---------------------------------------------------------------------------------------------

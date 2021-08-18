@@ -37,8 +37,12 @@ ButtonTouchFull
     anchors.right: (parent) ? parent.right : undefined
 //#END
 
-    margins: (isSourceDefault) ? st.componentBackend_marginsDefault
-                               : st.componentBackend_margins
+    iconWidth: (isSourceDefault) ? st.componentBackend_iconWidth
+                                 : itemIcon.filter.width
+
+    iconSourceSize.height: getFilterMask().height
+
+    iconDefaultSize.height: getSourceHeight()
 
     checked: (ListView.view.currentIndex == index)
 
@@ -46,7 +50,8 @@ ButtonTouchFull
 
     iconDefault: st.icon_feed
 
-    iconFillMode: Image.PreserveAspectCrop
+    iconFillMode: (isSourceDefault) ? Image.PreserveAspectFit
+                                    : Image.PreserveAspectCrop
 
     iconAsynchronous: gui.asynchronous
 

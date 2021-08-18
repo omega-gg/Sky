@@ -65,7 +65,7 @@ ButtonWide
 
         opacity: (buttonWideAction.enabled) ? 1.0 : st.icon_opacityDisable
 
-        sourceSize.height: st.getHeight(buttonWideAction.height, margins)
+        sourceSize.height: st.getSizeMargins(buttonWideAction.height, margins)
 
         source: st.icon_down
 

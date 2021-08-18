@@ -502,15 +502,15 @@ Item
         return size;
     }
 
-    //---------------------------------------------------------------------------------------------
-
-    function getHeight(height, margins)
+    function getSizeMargins(size, margins)
     {
-        var size = Math.round(height - margins * 2);
+        size = Math.round(size - margins * 2);
 
         if (size < 1) return 0;
         else          return size;
     }
+
+    //---------------------------------------------------------------------------------------------
 
     function getHeightColumn(column)
     {

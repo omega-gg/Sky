@@ -104,9 +104,6 @@ Item
 
         width: parent.height
 
-        margins: (isSourceDefault) ? st.componentTrack_marginsDefault
-                                   : st.componentTrack_margins
-
         iconWidth: (isSourceDefault) ? componentTrack.iconWidth
                                      : itemIcon.filter.width
 

@@ -250,8 +250,7 @@ Style
     //---------------------------------------------------------------------------------------------
     // ComponentBackend
 
-    property int componentBackend_margins       : dp4
-    property int componentBackend_marginsDefault: dp8
+    property int componentBackend_iconWidth: dp24
 //#END
 
 //#ComponentTrack
@@ -259,9 +258,6 @@ Style
     // ComponentTrack
 
     property int componentTrack_iconWidth: dp24
-
-    property int componentTrack_margins       : dp4
-    property int componentTrack_marginsDefault: dp8
 //#END
 
 //#ComponentTrackHistory
@@ -277,13 +273,15 @@ Style
     // Filters
 
 //#filter_round:ComponentBackend:ComponentTrack
+    property int filterRound_margins: dp4
+
     property alias icon_filterRound: icon_filterRound
 
     ImageFilterMask
     {
         id: icon_filterRound
 
-        width : buttonTouch_size - componentTrack_margins * 2
+        width : buttonTouch_size - filterRound_margins * 2
         height: width
 
         radius: styleTouch.radius
