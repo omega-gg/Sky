@@ -56,10 +56,14 @@ public: // Functions
 public: // Slots
     void onCreate(const QString & id);
     void onUpdate();
+    void onReload();
+    void onClear ();
 
 public: // Variables
     QMetaMethod create;
     QMetaMethod update;
+    QMetaMethod reload;
+    QMetaMethod clear;
 
 protected:
     W_DECLARE_PUBLIC(WBackendLoader)

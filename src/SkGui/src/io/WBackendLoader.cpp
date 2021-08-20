@@ -179,8 +179,8 @@ void WBackendLoaderCache::clear()
         {
             qDebug("CLEAR BACKEND %s", backend->id().C_STR);
 
-            ids     .removeFirst();
-            backends.removeFirst();
+            ids     .removeAt(index);
+            backends.removeAt(index);
 
             backend->deleteLater();
 
@@ -215,6 +215,8 @@ void WBackendLoaderPrivate::init()
 
     create = meta->method(meta->indexOfMethod("onCreate(QString)"));
     update = meta->method(meta->indexOfMethod("onUpdate()"));
+    reload = meta->method(meta->indexOfMethod("onReload()"));
+    clear  = meta->method(meta->indexOfMethod("onClear()"));
 
     wControllerPlaylist->d_func()->registerLoader(q);
 }
@@ -270,6 +272,19 @@ void WBackendLoaderPrivate::onCreate(const QString & id)
 void WBackendLoaderPrivate::onUpdate()
 {
     backendCache()->updateCache();
+}
+
+void WBackendLoaderPrivate::onReload()
+{
+    foreach (WBackendNet * backend, backendCache()->backends)
+    {
+        backend->reload();
+    }
+}
+
+void WBackendLoaderPrivate::onClear()
+{
+    backendCache()->clear();
 }
 
 //=================================================================================================
@@ -355,24 +370,25 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WBackendLoader::reloadBackends()
+{
+    Q_D(WBackendLoader);
+
+    // NOTE: We want backend reloading to be thread safe.
+    d->reload.invoke(this);
+}
+
+/* Q_INVOKABLE */ void WBackendLoader::clearCache()
+{
+    Q_D(WBackendLoader);
+
+    // NOTE: We want backend clearing to be thread safe.
+    d->clear.invoke(this);
+}
+
+//-------------------------------------------------------------------------------------------------
 // Static functions
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE static */ void WBackendLoader::reloadBackends()
-{
-    foreach (WBackendNet * backend, backendCache()->backends)
-    {
-        backend->reload();
-    }
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE static */ void WBackendLoader::clearCache()
-{
-    backendCache()->clear();
-}
-
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ int WBackendLoader::getMaxCache()

@@ -57,11 +57,11 @@ public: // Interface
 
     Q_INVOKABLE QString coverFromUrl(const QString & url) const;
 
+    Q_INVOKABLE void reloadBackends();
+
+    Q_INVOKABLE void clearCache();
+
 public: // Static functions
-    Q_INVOKABLE static void reloadBackends();
-
-    Q_INVOKABLE static void clearCache();
-
     Q_INVOKABLE static int  getMaxCache();
     Q_INVOKABLE static void setMaxCache(int max);
 
@@ -93,6 +93,8 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void onCreate(const QString &))
     Q_PRIVATE_SLOT(d_func(), void onUpdate())
+    Q_PRIVATE_SLOT(d_func(), void onReload())
+    Q_PRIVATE_SLOT(d_func(), void onClear())
 
     friend class WControllerPlaylist;
     friend class WBackendNet;
