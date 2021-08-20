@@ -52,7 +52,11 @@ public: // Functions
 
     void removeBackend(WBackendNet * backend);
 
+    WBackendNet * backendFromId(const QString & id);
+
     WBackendNet * getBackend(const QString & id);
+
+    void updateCache();
 
     void clear();
 
@@ -81,32 +85,7 @@ WBackendLoaderCache::WBackendLoaderCache()
 
 void WBackendLoaderCache::addBackend(const QString & id, WBackendNet * backend)
 {
-    int count = ids.count();
-
-    if (count >= maxCount)
-    {
-        int index = 0;
-
-        while (index < count)
-        {
-            WBackendNet * backend = backends.at(index);
-
-            if (backend->d_func()->lockCount == 0)
-            {
-                qDebug("REMOVE BACKEND %s", backend->id().C_STR);
-
-                ids     .removeFirst();
-                backends.removeFirst();
-
-                backend->deleteLater();
-
-                count--;
-
-                if (count == maxCount) break;
-            }
-            else index++;
-        }
-    }
+    updateCache();
 
     backends.append(backend);
 
@@ -129,6 +108,15 @@ void WBackendLoaderCache::removeBackend(WBackendNet * backend)
 
 //-------------------------------------------------------------------------------------------------
 
+WBackendNet * WBackendLoaderCache::backendFromId(const QString & id)
+{
+    int index = ids.indexOf(id);
+
+    if (index == -1) return NULL;
+
+    return backends.at(index);
+}
+
 WBackendNet * WBackendLoaderCache::getBackend(const QString & id)
 {
     int index = ids.indexOf(id);
@@ -147,6 +135,35 @@ WBackendNet * WBackendLoaderCache::getBackend(const QString & id)
 }
 
 //-------------------------------------------------------------------------------------------------
+
+void WBackendLoaderCache::updateCache()
+{
+    int count = ids.count();
+
+    if (count < maxCount) return;
+
+    int index = 0;
+
+    while (index < count)
+    {
+        WBackendNet * backend = backends.at(index);
+
+        if (backend->d_func()->lockCount == 0)
+        {
+            qDebug("REMOVE BACKEND %s", backend->id().C_STR);
+
+            ids     .removeFirst();
+            backends.removeFirst();
+
+            backend->deleteLater();
+
+            count--;
+
+            if (count == maxCount) break;
+        }
+        else index++;
+    }
+}
 
 void WBackendLoaderCache::clear()
 {
@@ -197,8 +214,21 @@ void WBackendLoaderPrivate::init()
     const QMetaObject * meta = q->metaObject();
 
     create = meta->method(meta->indexOfMethod("onCreate(QString)"));
+    update = meta->method(meta->indexOfMethod("onUpdate()"));
 
     wControllerPlaylist->d_func()->registerLoader(q);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
+
+void WBackendLoaderPrivate::updateCache()
+{
+    Q_Q(WBackendLoader);
+
+    // NOTE: We want cache updates to be thread safe.
+    update.invoke(q);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -209,23 +239,37 @@ void WBackendLoaderPrivate::onCreate(const QString & id)
 {
     Q_Q(WBackendLoader);
 
-    WBackendNet * backend = q->createBackend(id);
+    WBackendLoaderCache * cache = backendCache();
+
+    // NOTE: Maybe the backend was already created in a previous call.
+    WBackendNet * backend = cache->backendFromId(id);
+
+    if (backend)
+    {
+        qDebug("BACKEND ALREADY CREATED %s", id.C_STR);
+
+        backend->d_func()->lockCount++;
+
+        return;
+    }
+
+    qDebug("CREATE BACKEND %s", id.C_STR);
+
+    backend = q->createBackend(id);
 
     backend->setParent(q);
 
+    backend->d_func()->loader = q;
+
     backend->d_func()->lockCount++;
 
-    QObject::connect(backend, SIGNAL(destroyed()), q, SLOT(onDestroyed()));
-
     // NOTE: We call 'addBackend' at the end because 'createNow' depends on it.
-    backendCache()->addBackend(id, backend);
+    cache->addBackend(id, backend);
 }
 
-void WBackendLoaderPrivate::onDestroyed()
+void WBackendLoaderPrivate::onUpdate()
 {
-    Q_Q(WBackendLoader);
-
-    backendCache()->removeBackend(static_cast<WBackendNet *> (q->sender()));
+    backendCache()->updateCache();
 }
 
 //=================================================================================================
@@ -384,6 +428,8 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
     return NULL;
 }
 
+/* Q_INVOKABLE virtual */ void WBackendLoader::waitBackend(WBackendNet *) const {}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ QString WBackendLoader::getId(const QString &) const
@@ -411,14 +457,18 @@ WBackendNet * WBackendLoader::createNow(const QString & id)
     // NOTE: We want backend loading to be thread safe.
     d->create.invoke(this, Q_ARG(QString, id));
 
-    WBackendNet * backend = backendCache()->getBackend(id);
+    WBackendLoaderCache * cache = backendCache();
+
+    WBackendNet * backend = cache->backendFromId(id);
 
     while (backend == NULL)
     {
         QCoreApplication::processEvents();
 
-        backend = backendCache()->getBackend(id);
+        backend = cache->backendFromId(id);
     }
+
+    waitBackend(backend);
 
     return backend;
 }

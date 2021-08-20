@@ -41,6 +41,9 @@
 
 #ifndef SK_NO_BACKENDNET
 
+// Forward declarations
+class WBackendLoader;
+
 class SK_GUI_EXPORT WBackendNetPrivate : public WPrivate
 {
 public:
@@ -49,6 +52,8 @@ public:
     void init();
 
 public: // Variables
+    WBackendLoader * loader;
+
     int lockCount;
 
 protected:

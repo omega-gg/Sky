@@ -570,19 +570,28 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
 
     connect(backend, SIGNAL(updated()), this, SLOT(onBackendUpdate()));
 
-    while (backend->isLoaded() == false)
+    return backend;
+}
+
+/* Q_INVOKABLE virtual */ void WBackendIndex::waitBackend(WBackendNet * backend) const
+{
+    Q_D(const WBackendIndex);
+
+    WBackendUniversal * backendUniversal = static_cast<WBackendUniversal *>(backend);
+
+    while (backendUniversal->isLoaded() == false)
     {
         QCoreApplication::processEvents();
     }
 
-    const WBackendIndexItem * item = d->data.hash.value(id);
+    WBackendUniversalPrivate * p = backendUniversal->d_func();
 
-    if (item && item->version != backend->d_func()->data.version)
+    const WBackendIndexItem * item = d->data.hash.value(p->id);
+
+    if (item && item->version != p->data.version)
     {
-        backend->update();
+        backendUniversal->update();
     }
-
-    return backend;
 }
 
 //-------------------------------------------------------------------------------------------------

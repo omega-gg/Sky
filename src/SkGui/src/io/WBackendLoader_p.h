@@ -50,13 +50,16 @@ public:
 
     void init();
 
+public: // Functions
+    void updateCache();
+
 public: // Slots
     void onCreate(const QString & id);
-
-    void onDestroyed();
+    void onUpdate();
 
 public: // Variables
     QMetaMethod create;
+    QMetaMethod update;
 
 protected:
     W_DECLARE_PUBLIC(WBackendLoader)

@@ -80,7 +80,7 @@ static const int CONTROLLERPLAYLIST_MAX_SIZE = 1048576 * 10; // 10 megabytes
 static const int CONTROLLERPLAYLIST_MAX_TRACKS = 500;
 static const int CONTROLLERPLAYLIST_MAX_ITEMS  = 500;
 
-static const int CONTROLLERPLAYLIST_MAX_QUERY  = 200;
+static const int CONTROLLERPLAYLIST_MAX_QUERY  = 100;
 static const int CONTROLLERPLAYLIST_MAX_RELOAD =  10;
 
 //=================================================================================================

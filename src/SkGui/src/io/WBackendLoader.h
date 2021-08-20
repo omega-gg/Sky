@@ -79,6 +79,8 @@ protected: // Static functions
 protected: // Virtual functions
     Q_INVOKABLE virtual WBackendNet * createBackend(const QString & id) const; // {}
 
+    Q_INVOKABLE virtual void waitBackend(WBackendNet * backend) const; // {}
+
     Q_INVOKABLE virtual QString getId(const QString & url) const; // {}
 
     Q_INVOKABLE virtual QStringList getCoverIds() const; // {}
@@ -90,9 +92,10 @@ private:
     W_DECLARE_PRIVATE(WBackendLoader)
 
     Q_PRIVATE_SLOT(d_func(), void onCreate(const QString &))
-    Q_PRIVATE_SLOT(d_func(), void onDestroyed())
+    Q_PRIVATE_SLOT(d_func(), void onUpdate())
 
     friend class WControllerPlaylist;
+    friend class WBackendNet;
 };
 
 #include <private/WBackendLoader_p>

@@ -408,6 +408,7 @@ public: // Abstract interface
     Q_INVOKABLE virtual QString getTitle() const = 0;
 
 public: // Virtual interface
+
     Q_INVOKABLE virtual void reload(); // {}
 
     //---------------------------------------------------------------------------------------------

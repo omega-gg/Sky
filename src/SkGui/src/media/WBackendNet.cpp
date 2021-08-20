@@ -39,9 +39,11 @@
 #endif
 #include <WControllerNetwork>
 #include <WControllerPlaylist>
+#include <WBackendLoader>
 
 // Private includes
 #include <private/WControllerPlaylist_p>
+#include <private/WBackendLoader_p>
 
 //=================================================================================================
 // WBackendNetQuery
@@ -451,6 +453,8 @@ WBackendNetPrivate::WBackendNetPrivate(WBackendNet * p) : WPrivate(p) {}
 
 void WBackendNetPrivate::init()
 {
+    loader = NULL;
+
     lockCount = 0;
 
 #ifdef QT_LATEST
@@ -624,7 +628,12 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
         return false;
     }
 
-    deleteLater();
+    // NOTE: If we have a loader we let him handle the 'deleteLater' call in the cache.
+    if (d->loader)
+    {
+        d->loader->d_func()->updateCache();
+    }
+    else deleteLater();
 
     return true;
 }
