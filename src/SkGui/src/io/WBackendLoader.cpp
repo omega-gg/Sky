@@ -428,6 +428,7 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
 
 /* Q_INVOKABLE virtual */ WBackendNet * WBackendLoader::getBackend(const QString & id)
 {
+    // NOTE: Maybe we need a mutex here.
     WBackendNet * backend = backendCache()->getBackend(id);
 
     if (backend) backend->d_func()->lockCount++;
