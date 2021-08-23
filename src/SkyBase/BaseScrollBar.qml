@@ -40,7 +40,8 @@ MouseArea
     //---------------------------------------------------------------------------------------------
     // Private
 
-    property int pMaximumA: view.contentHeight - height
+    // NOTE: We want to take Flickable.originY into account.
+    property int pMaximumA: view.originY + view.contentHeight - height
 
     property int pMaximumB: height - handle.height
 
@@ -64,27 +65,28 @@ MouseArea
     // Events
     //---------------------------------------------------------------------------------------------
 
+    // NOTE: This handles 'page up' and 'page down' mouse interactions.
     onPressed:
     {
+        var originY = view.originY;
+
         if (mouseY < handle.y)
         {
-            var position = view.contentY - view.height;
+            var position = originY + view.contentY - view.height;
 
-            if (position < 0)
+            if (position < originY)
             {
-                 view.contentY = 0;
+                 view.contentY = originY;
             }
             else view.contentY = position;
         }
         else
         {
-            /* var */ position = view.contentY + view.height;
+            /* var */ position = originY + view.contentY + view.height;
 
-            var maximum = pMaximumA;
-
-            if (position > maximum)
+            if (position > pMaximumA)
             {
-                 view.contentY = maximum;
+                 view.contentY = pMaximumA;
             }
             else view.contentY = position;
         }
@@ -92,10 +94,10 @@ MouseArea
 
     //---------------------------------------------------------------------------------------------
 
-    onViewChanged: pUpdateY()
+    onViewChanged: pUpdateHandle()
 
-    onPMaximumAChanged: pUpdateY()
-    onPMaximumBChanged: pUpdateY()
+    onPMaximumAChanged: pUpdateHandle()
+    onPMaximumBChanged: pUpdateHandle()
 
     //---------------------------------------------------------------------------------------------
     // Connections
@@ -105,7 +107,7 @@ MouseArea
     {
         target: view
 
-        onContentYChanged: pUpdateY()
+        onContentYChanged: pUpdateHandle()
     }
 
     //---------------------------------------------------------------------------------------------
@@ -113,18 +115,18 @@ MouseArea
     //---------------------------------------------------------------------------------------------
     // Private
 
-    function pUpdateY()
+    function pUpdateHandle()
     {
         if (pUpdate == false) return;
 
-        // NOTE: We don't want the scrollBar position to go under 0.
-        var ratio = Math.max(0, view.contentY) / pMaximumA;
+        var ratio = view.contentY / pMaximumA;
 
+        // NOTE: We don't want the scrollBar position to go under 0.
         if (ratio < 1.0)
         {
-             handle.y = pMaximumB * ratio;
+             handle.y = Math.max(0, pMaximumB * ratio);
         }
-        else handle.y = pMaximumB;
+        else handle.y = Math.max(0, pMaximumB);
     }
 
     //---------------------------------------------------------------------------------------------

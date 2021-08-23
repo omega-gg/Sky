@@ -51,17 +51,19 @@ public:
     void init();
 
 public: // Functions
-    void updateCache();
+    void removeBackend(const QString & id);
 
 public: // Slots
     void onCreate(const QString & id);
-    void onUpdate();
+    void onUpdate(const QString & id);
+    void onRemove(const QString & id);
     void onReload();
     void onClear ();
 
 public: // Variables
     QMetaMethod create;
     QMetaMethod update;
+    QMetaMethod remove;
     QMetaMethod reload;
     QMetaMethod clear;
 

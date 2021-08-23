@@ -621,6 +621,14 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 {
     Q_D(WBackendNet);
 
+    // NOTE: If we have a loader we let him handle the 'deleteLater' call.
+    if (d->loader)
+    {
+        d->loader->d_func()->removeBackend(getId());
+
+        return false;
+    }
+
     if (d->lockCount)
     {
         d->lockCount--;
@@ -628,12 +636,7 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
         return false;
     }
 
-    // NOTE: If we have a loader we let him handle the 'deleteLater' call in the cache.
-    if (d->loader)
-    {
-        d->loader->d_func()->updateCache();
-    }
-    else deleteLater();
+    deleteLater();
 
     return true;
 }

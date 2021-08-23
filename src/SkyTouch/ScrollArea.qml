@@ -46,12 +46,12 @@ Item
 
     function scrollToTop()
     {
-        contentY = 0;
+        contentY = originY;
     }
 
     function scrollToBottom()
     {
-        contentY = contentHeight - height;
+        contentY = originY + contentHeight - height;
     }
 
     //---------------------------------------------------------------------------------------------

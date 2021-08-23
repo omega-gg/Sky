@@ -65,7 +65,7 @@ Column
     anchors.right: list.right
     anchors.top  : list.top
 
-    anchors.topMargin: -list.contentY
+    anchors.topMargin: -(list.originY + list.contentY)
 
     height: list.contentHeight + pGetHeight(minimumCount)
 

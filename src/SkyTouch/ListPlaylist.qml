@@ -67,7 +67,7 @@ List
     {
         if (playlist == null) return;
 
-        var index = Math.floor(contentY / sizeTrack);
+        var index = Math.floor(getY() / sizeTrack);
 
         // NOTE: We add 1 to cover the entire region when half a track is exposed at the top and
         //       the bottom of the list.

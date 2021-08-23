@@ -92,7 +92,8 @@ private:
     W_DECLARE_PRIVATE(WBackendLoader)
 
     Q_PRIVATE_SLOT(d_func(), void onCreate(const QString &))
-    Q_PRIVATE_SLOT(d_func(), void onUpdate())
+    Q_PRIVATE_SLOT(d_func(), void onUpdate(const QString &))
+    Q_PRIVATE_SLOT(d_func(), void onRemove(const QString &))
     Q_PRIVATE_SLOT(d_func(), void onReload())
     Q_PRIVATE_SLOT(d_func(), void onClear())
 

@@ -58,4 +58,23 @@ ListView
 
         currentIndex++;
     }
+
+    //---------------------------------------------------------------------------------------------
+
+    function scrollToTop()
+    {
+        contentY = originY;
+    }
+
+    function scrollToBottom()
+    {
+        contentY = originY + contentHeight - height;
+    }
+
+    //---------------------------------------------------------------------------------------------
+
+    function getY()
+    {
+        return originY + contentY;
+    }
 }
