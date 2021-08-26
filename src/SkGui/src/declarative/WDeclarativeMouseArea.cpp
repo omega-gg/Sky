@@ -728,29 +728,36 @@ bool WDeclarativeMouseArea::setPressed(bool pressed)
 
     d->pressed = pressed;
 
-    WDeclarativeMouseEvent event(QEvent::MouseButtonPress, d->lastPos.toPoint(), d->lastButton,
-                                 d->lastButtons, d->lastModifiers, isClick, d->longPress);
-
     if (d->pressed)
     {
+        WDeclarativeMouseEvent event(QEvent::MouseButtonPress, d->lastPos.toPoint(),
+                                     d->lastButton, d->lastButtons, d->lastModifiers, isClick,
+                                     d->longPress);
+
         /*if (d->doubleClick == false)*/ emit this->pressed(&event);
 
         bool accepted = event.isAccepted();
 
-        // NOTE: If the even is not accepted we want to set 'pressed' to false.
+        emit mousePositionChanged();
+
+        // NOTE: If the event is not accepted we want to ungrab the mouse right away.
         if (accepted == false)
         {
-            d->pressed = false;
-        }
+            d->mouseUngrab();
 
-        emit mousePositionChanged();
+            return false;
+        }
 
         emit pressedChanged();
 
-        return accepted;
+        return true;
     }
     else
     {
+        WDeclarativeMouseEvent event(QEvent::MouseButtonRelease, d->lastPos.toPoint(),
+                                     d->lastButton, d->lastButtons, d->lastModifiers, isClick,
+                                     d->longPress);
+
         emit released(&event);
 
         emit pressedChanged();

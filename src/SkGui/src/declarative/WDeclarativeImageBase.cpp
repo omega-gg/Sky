@@ -904,10 +904,24 @@ void WDeclarativeImageBase::setSourceSize(const QSize & size)
 
     d->sourceSize = size;
 
+    int width  = size.width ();
+    int height = size.height();
+
     // NOTE: Size can be valid even when the other half is -1.
-    if (size.width() > 0 || size.height() > 0)
+    if (width > 0 || height > 0)
     {
-         d->setExplicitSize(true);
+        // NOTE: Making sure sourceSize.isValid returns true. This is important to avoid
+        //       unnecessary scaling in ImageScale(s).
+        if (width < 0)
+        {
+            d->sourceSize.setWidth(0);
+        }
+        else if (height < 0)
+        {
+            d->sourceSize.setHeight(0);
+        }
+
+        d->setExplicitSize(true);
     }
     else d->setExplicitSize(false);
 

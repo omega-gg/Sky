@@ -31,6 +31,8 @@ Item
 
     default property alias contents: flickable.data
 
+    property alias originY: flickable.originY
+
     property alias contentHeight: flickable.contentHeight
     property alias contentY     : flickable.contentY
 
