@@ -10,5 +10,6 @@ SUBDIRS = $$PATH/3rdparty \
           $$PATH/VLC \
           $$PATH/libtorrent \
           $$PATH/docker \
+          $$PATH/BML \
           $$PATH/VBML \
           $$PATH/status \
