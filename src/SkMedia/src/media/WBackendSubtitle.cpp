@@ -400,6 +400,9 @@ void WBackendSubtitlePrivate::setText(const QString & text)
 
 void WBackendSubtitlePrivate::onQueryData(const QByteArray & data, const QString & extension)
 {
+    // NOTE: If the data is empty we skip the query.
+    if (data.isEmpty()) return;
+
     qDebug("SUBTITLE %d %s", data.length(), extension.C_STR);
 
     Q_Q(WBackendSubtitle);

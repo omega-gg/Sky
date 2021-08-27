@@ -2401,9 +2401,13 @@ void WControllerPlaylistPrivate::onItemLoaded(QIODevice * device, const WBackend
 
     if (reply.valid)
     {
+        QString extension = reply.extension;
+
+        emit item->queryData(reply.data, extension);
+
         emit item->queryEnded();
 
-        addToCache(item->source(), reply.cache, reply.extension);
+        addToCache(item->source(), reply.cache, extension);
 
         if (getNextItem(item, reply.nextQueries, indexNext)) return;
     }
