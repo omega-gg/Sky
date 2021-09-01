@@ -31,7 +31,7 @@ MouseArea
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    /* read */ property bool isActive: (pMaximumA > 0)
+    /* read */ property bool isActive: (pMaximumY > 0)
 
     /* mandatory */ property variant view
 
@@ -41,9 +41,9 @@ MouseArea
     // Private
 
     // NOTE: We want to take Flickable.originY into account.
-    property int pMaximumA: view.originY + view.contentHeight - height
+    property int pMaximumY: view.contentHeight - height
 
-    property int pMaximumB: height - handle.height
+    property int pMaximumHandle: height - handle.height
 
     property bool pUpdate: true
 
@@ -84,9 +84,11 @@ MouseArea
         {
             /* var */ position = originY + view.contentY + view.height;
 
-            if (position > pMaximumA)
+            var maximum = originY + pMaximumY;
+
+            if (position > maximum)
             {
-                 view.contentY = pMaximumA;
+                 view.contentY = maximum;
             }
             else view.contentY = position;
         }
@@ -96,8 +98,8 @@ MouseArea
 
     onViewChanged: pUpdateHandle()
 
-    onPMaximumAChanged: pUpdateHandle()
-    onPMaximumBChanged: pUpdateHandle()
+    onPMaximumYChanged     : pUpdateHandle()
+    onPMaximumHandleChanged: pUpdateHandle()
 
     //---------------------------------------------------------------------------------------------
     // Connections
@@ -119,14 +121,15 @@ MouseArea
     {
         if (pUpdate == false) return;
 
-        var ratio = view.contentY / pMaximumA;
+        // NOTE: We need to take the originY 'delta' into account to get the proper ratio.
+        var ratio = (view.contentY - view.originY) / pMaximumY;
 
         // NOTE: We don't want the scrollBar position to go under 0.
         if (ratio < 1.0)
         {
-             handle.y = Math.max(0, pMaximumB * ratio);
+             handle.y = Math.max(0, pMaximumHandle * ratio);
         }
-        else handle.y = Math.max(0, pMaximumB);
+        else handle.y = Math.max(0, pMaximumHandle);
     }
 
     //---------------------------------------------------------------------------------------------
@@ -135,13 +138,14 @@ MouseArea
     {
         pUpdate = false;
 
-        var ratio = handle.y / pMaximumB;
+        var ratio = handle.y / pMaximumHandle;
 
+        // NOTE: We need to take originY into account to get the right position.
         if (ratio < 1.0)
         {
-             view.contentY = pMaximumA * ratio;
+             view.contentY = view.originY + pMaximumY * ratio;
         }
-        else view.contentY = pMaximumA;
+        else view.contentY = view.originY + pMaximumY;
 
         pUpdate = true;
     }
