@@ -26,7 +26,7 @@
 // Qt includes
 #include <QObject>
 #include <QImage>
-#ifdef QT_LATEST
+#if defined(QT_LATEST) && defined(SK_NO_QML) == false
 #include <QSGGeometryNode>
 #endif
 
@@ -44,13 +44,13 @@ class WAbstractBackendPrivate;
 class WDeclarativePlayer;
 class WBackendFilter;
 class WBackendOutput;
-#ifdef QT_LATEST
+#if defined(QT_LATEST) && defined(SK_NO_QML) == false
 struct WBackendFrame;
 struct WBackendTexture;
 #endif
 
 
-#ifdef QT_LATEST
+#if defined(QT_LATEST) && defined(SK_NO_QML) == false
 
 //-------------------------------------------------------------------------------------------------
 // WBackendNode
@@ -138,7 +138,7 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
     Q_ENUMS(OutputType)
     Q_ENUMS(Quality)
     Q_ENUMS(FillMode)
-#ifdef QT_LATEST
+#if defined(QT_LATEST) && defined(SK_NO_QML) == false
     Q_ENUMS(FrameState)
 #endif
 
@@ -259,7 +259,7 @@ public:
         PreserveAspectCrop
     };
 
-#ifdef QT_LATEST
+#if defined(QT_LATEST) && defined(SK_NO_QML) == false
     enum FrameState
     {
         FrameDefault,
@@ -275,14 +275,14 @@ protected:
     WAbstractBackend(WAbstractBackendPrivate * p);
 
 public: // Interface
-#ifdef QT_LATEST
+#if defined(QT_LATEST) && defined(SK_NO_QML) == false
     Q_INVOKABLE WBackendNode * createNode() const;
 #endif
 
     Q_INVOKABLE const QSizeF & getSize() const;
     Q_INVOKABLE void           setSize(const QSizeF & size);
 
-#ifdef QT_LATEST
+#if defined(QT_LATEST) && defined(SK_NO_QML) == false
     Q_INVOKABLE void synchronize(WBackendFrame * frame);
 #endif
 
@@ -364,7 +364,7 @@ protected: // Functions
     void endOutputRemove() const;
 
 protected: // Abstract functions
-#ifdef QT_LATEST
+#if defined(QT_LATEST) && defined(SK_NO_QML) == false
     virtual WBackendNode * backendCreateNode() const = 0;
 #endif
 
@@ -394,7 +394,7 @@ protected: // Virtual functions
 
     virtual void backendSetSize(const QSizeF & size); // {}
 
-#ifdef QT_LATEST
+#if defined(QT_LATEST) && defined(SK_NO_QML) == false
     virtual void backendSynchronize(WBackendFrame * frame); // {}
 #endif
 
@@ -578,7 +578,7 @@ public:
     virtual void filterCurrentOutput(int * index); // {}
 };
 
-#ifdef QT_LATEST
+#if defined(QT_LATEST) && defined(SK_NO_QML) == false
 
 //-------------------------------------------------------------------------------------------------
 // WBackendTexture

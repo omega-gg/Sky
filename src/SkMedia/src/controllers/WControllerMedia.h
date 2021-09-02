@@ -37,8 +37,10 @@
 // Forward declarations
 class WControllerMediaPrivate;
 class WAbstractLoader;
+#ifndef SK_NO_PLAYER
 class WVlcEngine;
 class WVlcPlayer;
+#endif
 
 // Defines
 #define wControllerMedia WControllerMedia::instance()
@@ -102,7 +104,9 @@ class SK_MEDIA_EXPORT WControllerMedia : public WController
 {
     Q_OBJECT
 
+#ifndef SK_NO_PLAYER
     Q_PROPERTY(WVlcEngine * engine READ engine CONSTANT)
+#endif
 
     Q_PROPERTY(WAbstractLoader * loader READ loader WRITE setLoader NOTIFY loaderChanged)
 
@@ -113,7 +117,9 @@ public: // Initialize
     virtual void initController(const QStringList & options = QStringList());
 
 public: // Interface
+#ifndef SK_NO_PLAYER
     Q_INVOKABLE WVlcPlayer * createVlcPlayer() const;
+#endif
 
     Q_INVOKABLE
     WMediaReply * getMedia(const QString & url,
@@ -127,7 +133,9 @@ signals:
     void loaderChanged();
 
 public: // Properties
+#ifndef SK_NO_PLAYER
     WVlcEngine * engine() const;
+#endif
 
     WAbstractLoader * loader() const;
     void              setLoader(WAbstractLoader * loader);

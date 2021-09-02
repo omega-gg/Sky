@@ -53,7 +53,7 @@ INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkTorrent \
                $$SK/include/SkTorrent/private \
                $$SK/include/SkBackend \
-               $$SK/include/SkBackend/private \
+               $$SK/include/SkBackend/private
 
 android {
     CONFIG(debug, debug|release) {

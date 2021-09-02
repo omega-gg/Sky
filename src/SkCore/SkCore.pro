@@ -61,7 +61,7 @@ include(src/3rdparty/quazip/quazip.pri)
 include(src/3rdparty/libcharsetdetect/libcharsetdetect.pri)
 
 INCLUDEPATH += $$SK/include/SkCore \
-               $$SK/include/SkCore/private \
+               $$SK/include/SkCore/private
 
 unix:!macx:!android:contains(QT_MAJOR_VERSION, 5) {
     INCLUDEPATH += $$SK/include/Qt5/QtDBus

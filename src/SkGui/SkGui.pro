@@ -74,7 +74,7 @@ include(src/3rdparty/qtsingleapplication/qtsingleapplication.pri)
 INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkCore/private \
                $$SK/include/SkGui \
-               $$SK/include/SkGui/private \
+               $$SK/include/SkGui/private
 
 contains(QT_MAJOR_VERSION, 5) {
     INCLUDEPATH += $$SK/include/Qt5 \

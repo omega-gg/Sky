@@ -26,19 +26,16 @@
 
 // Qt includes
 #include <QThread>
-#ifdef QT_4
-#include <QDeclarativeComponent>
-#else
-#include <QQmlComponent>
-#endif
 
 // Sk includes
 #include <WControllerApplication>
 #include <WControllerFile>
 #include <WControllerDownload>
 #include <WControllerPlaylist>
+#ifndef SK_NO_PLAYER
 #include <WVlcEngine>
 #include <WVlcPlayer>
+#endif
 
 W_INIT_CONTROLLER(WControllerMedia)
 
@@ -125,7 +122,9 @@ WControllerMediaPrivate::WControllerMediaPrivate(WControllerMedia * p) : WContro
 
 /* virtual */ WControllerMediaPrivate::~WControllerMediaPrivate()
 {
+#ifndef SK_NO_PLAYER
     engine->deleteInstance();
+#endif
 
     QHashIterator<WRemoteData *, WPrivateMediaData *> i(jobs);
 
@@ -154,14 +153,20 @@ WControllerMediaPrivate::WControllerMediaPrivate(WControllerMedia * p) : WContro
     thread->quit();
     thread->wait();
 
+#ifndef SK_NO_PLAYER
     delete engine;
+#endif
 
     W_CLEAR_CONTROLLER(WControllerMedia);
 }
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef SK_NO_PLAYER
+void WControllerMediaPrivate::init(const QStringList &)
+#else
 void WControllerMediaPrivate::init(const QStringList & options)
+#endif
 {
     Q_Q(WControllerMedia);
 
@@ -171,7 +176,9 @@ void WControllerMediaPrivate::init(const QStringList & options)
 
     thread->start();
 
+#ifndef SK_NO_PLAYER
     engine = new WVlcEngine(options, thread);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -564,12 +571,16 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 // Interface
 //-------------------------------------------------------------------------------------------------
 
+#ifndef SK_NO_PLAYER
+
 /* Q_INVOKABLE */ WVlcPlayer * WControllerMedia::createVlcPlayer() const
 {
     Q_D(const WControllerMedia);
 
     return new WVlcPlayer(d->engine, d->thread);
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -705,10 +716,14 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 // Properties
 //-------------------------------------------------------------------------------------------------
 
+#ifndef SK_NO_PLAYER
+
 WVlcEngine * WControllerMedia::engine() const
 {
     Q_D(const WControllerMedia); return d->engine;
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 

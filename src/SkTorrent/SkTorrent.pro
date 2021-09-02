@@ -62,7 +62,7 @@ INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkGui/private \
                $$SK/include/SkTorrent \
                $$SK/include/SkTorrent/private \
-               $$SK/include \
+               $$SK/include
 
 android {
     CONFIG(debug, debug|release) {

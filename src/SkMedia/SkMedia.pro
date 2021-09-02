@@ -57,7 +57,7 @@ INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkGui/private \
                $$SK/include/SkMedia \
                $$SK/include/SkMedia/private \
-               $$SK/include \
+               $$SK/include
 
 android {
     CONFIG(debug, debug|release) {

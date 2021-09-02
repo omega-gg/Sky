@@ -117,7 +117,9 @@ public: // Slots
 public: // Variables
     QThread * thread;
 
+#ifndef SK_NO_PLAYER
     WVlcEngine * engine;
+#endif
 
     WAbstractLoader * loader;
 

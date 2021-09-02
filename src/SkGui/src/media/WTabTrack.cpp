@@ -37,7 +37,9 @@
 #include <WAbstractTabs>
 #include <WAbstractThreadAction>
 #include <WPlaylist>
+#ifndef SK_NO_PLAYER
 #include <WDeclarativePlayer>
+#endif
 #include <WPixmapCache>
 
 // Private includes
@@ -514,7 +516,10 @@ void WTabTrackPrivate::init()
     Q_Q(WTabTrack);
 
     playlist = NULL;
-    player   = NULL;
+
+#ifndef SK_NO_PLAYER
+    player = NULL;
+#endif
 
     currentBookmark = NULL;
 
@@ -567,7 +572,9 @@ void WTabTrackPrivate::loadBookmarks(const QList<WTabTrackDataBookmark> & bookma
         {
             playlist->unselectTracks();
 
+#ifndef SK_NO_PLAYER
             if (player) player->stop();
+#endif
         }
 
         this->bookmarks.clear();
@@ -693,10 +700,12 @@ bool WTabTrackPrivate::setPlaylist(WPlaylist * playlist)
 
     if (this->playlist)
     {
+#ifndef SK_NO_PLAYER
         if (player)
         {
             this->playlist->setCurrentTime(player->currentTime());
         }
+#endif
 
         clearPlaylist();
     }
@@ -848,6 +857,7 @@ void WTabTrackPrivate::setVideoShot(WBookmarkTrack * bookmark, const QString & u
 
 void WTabTrackPrivate::saveState()
 {
+#ifndef SK_NO_PLAYER
     if (currentBookmark == NULL
         ||
         player == NULL || player->hasStarted() == false || player->isResuming()) return;
@@ -890,6 +900,7 @@ void WTabTrackPrivate::saveState()
     else emit q->currentBookmarkUpdated();
 
     q->save();
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1098,12 +1109,14 @@ void WTabTrackPrivate::onPlaylistDestroyed()
                 d->playlist->unselectTracks();
             }
 
+#ifndef SK_NO_PLAYER
             if (d->player)
             {
                 d->playlist->setCurrentTime(d->player->currentTime());
 
                 d->player->stop();
             }
+#endif
 
             d->clearPlaylist();
 
@@ -1465,6 +1478,8 @@ void WTabTrack::setPlaylist(WPlaylist * playlist)
 
 //-------------------------------------------------------------------------------------------------
 
+#ifndef SK_NO_PLAYER
+
 WDeclarativePlayer * WTabTrack::player() const
 {
     Q_D(const WTabTrack); return d->player;
@@ -1482,6 +1497,8 @@ void WTabTrack::setPlayer(WDeclarativePlayer * player)
 
     emit playerChanged();
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
