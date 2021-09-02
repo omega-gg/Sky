@@ -26,9 +26,6 @@
 // Qt includes
 #include <QFileInfo>
 #include <QUrl>
-#ifdef QT_4
-#include <QImage>
-#endif
 
 // Sk includes
 #include <WController>
@@ -202,19 +199,6 @@ public: // Interface
                                                      bool                recursive = true);
 
     WControllerFileReply * startCreatePaths(const QStringList & paths);
-
-    //---------------------------------------------------------------------------------------------
-    // Image actions
-
-    WControllerFileReply * startWriteImage(const QString & fileName,
-                                           const QImage  & image,
-                                           const QString & format  = "png",
-                                           int             quality = -1);
-
-    WControllerFileReply * startWriteImages(const QStringList   & fileNames,
-                                            const QList<QImage> & images,
-                                            const QString       & format = "png",
-                                            int                   quality = -1);
 
 public: // Static functions
     Q_INVOKABLE static QString absolute(const QUrl    & url);

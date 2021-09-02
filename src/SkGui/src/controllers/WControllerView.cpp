@@ -49,6 +49,44 @@ W_INIT_CONTROLLER(WControllerView)
 #ifdef QT_LATEST
 
 //=================================================================================================
+// WControllerViewWriteImages
+//=================================================================================================
+
+class WControllerViewWriteImages : public WControllerFileAction
+{
+    Q_OBJECT
+
+protected: // WAbstractThreadAction implementation
+    /* virtual */ bool run();
+
+public: // Variables
+    QStringList fileNames;
+
+    QList<QImage> images;
+
+    QString format;
+
+    int quality;
+};
+
+/* virtual */ bool WControllerViewWriteImages::run()
+{
+    const char * formatData = format.C_STR;
+
+    for (int i = 0; i < fileNames.count(); i++)
+    {
+        const QString & name = fileNames.at(i);
+
+        if (images.at(i).save(name, formatData, quality) == false)
+        {
+            qWarning("WControllerViewWriteImages::run: Failed to save image %s.", name.C_STR);
+        }
+    }
+
+    return true;
+}
+
+//=================================================================================================
 // WControllerViewLoader
 //=================================================================================================
 
@@ -481,6 +519,34 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
     }
 
     return true;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Image actions
+
+WControllerFileReply * WControllerView::startWriteImage(const QString & fileName,
+                                                        const QImage  & image,
+                                                        const QString & format, int quality)
+{
+    return startWriteImages(QStringList() << fileName, QList<QImage>() << image, format, quality);
+}
+
+WControllerFileReply * WControllerView::startWriteImages(const QStringList   & fileNames,
+                                                         const QList<QImage> & images,
+                                                         const QString       & format, int quality)
+{
+    if (fileNames.isEmpty() || fileNames.count() != images.count()) return NULL;
+
+    WControllerViewWriteImages * action = new WControllerViewWriteImages;
+
+    action->fileNames = fileNames;
+    action->images    = images;
+    action->format    = format;
+    action->quality   = quality;
+
+    wControllerFile->startWriteAction(action);
+
+    return action->controllerReply();
 }
 
 //-------------------------------------------------------------------------------------------------

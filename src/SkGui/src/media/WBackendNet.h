@@ -34,6 +34,7 @@
 #ifndef SK_NO_BACKENDNET
 
 // Forward declarations
+class QIODevice;
 class WBackendNetPrivate;
 
 //-------------------------------------------------------------------------------------------------

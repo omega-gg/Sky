@@ -219,7 +219,9 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
 //-------------------------------------------------------------------------------------------------
 
-#if defined(QT_LATEST) && defined(SK_NO_QML) == false
+#ifndef SK_NO_QML
+
+#ifdef QT_LATEST
 
 /* Q_INVOKABLE */ void WAbstractBackend::synchronize(WBackendFrame * frame)
 {
@@ -253,6 +255,8 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 {
     return backendRect();
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -851,7 +855,9 @@ void WAbstractBackend::endOutputRemove() const
 
 //-------------------------------------------------------------------------------------------------
 
-#if defined(QT_LATEST) && defined(SK_NO_QML) == false
+#ifndef SK_NO_QML
+
+#ifdef QT_LATEST
 
 /* virtual */ void WAbstractBackend::backendSynchronize(WBackendFrame *)
 {
@@ -889,6 +895,8 @@ void WAbstractBackend::endOutputRemove() const
 
     return QRectF();
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Properties

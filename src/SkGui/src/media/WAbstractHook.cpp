@@ -340,6 +340,8 @@ void WAbstractHook::backendSetSize(const QSizeF & size)
 
 //-------------------------------------------------------------------------------------------------
 
+#ifndef SK_NO_QML
+
 void WAbstractHook::backendDrawFrame(QPainter * painter, const QRect & rect)
 {
     Q_D(WAbstractHook); d->backend->backendDrawFrame(painter, rect);
@@ -358,6 +360,8 @@ QImage WAbstractHook::backendGetFrame() const
 
     return d->backend->backendGetFrame();
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Properties

@@ -35,7 +35,9 @@
 
 // Qt includes
 #include <QDateTime>
+#ifndef SK_NO_PLAYER
 #include <QPixmap>
+#endif
 
 // Sk includes
 #include <WListId>
@@ -133,7 +135,9 @@ public: // Variables
     WListId                      ids;
     QHash<int, WBookmarkTrack *> idHash;
 
+#ifndef SK_NO_PLAYER
     QHash<int, QPair<QString, QPixmap> > videoShots;
+#endif
 
     WPlaylist          * playlist;
     WDeclarativePlayer * player;

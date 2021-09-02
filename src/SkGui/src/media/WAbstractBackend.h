@@ -25,7 +25,9 @@
 
 // Qt includes
 #include <QObject>
+#ifndef SK_NO_QML
 #include <QImage>
+#endif
 #if defined(QT_LATEST) && defined(SK_NO_QML) == false
 #include <QSGGeometryNode>
 #endif
@@ -282,7 +284,8 @@ public: // Interface
     Q_INVOKABLE const QSizeF & getSize() const;
     Q_INVOKABLE void           setSize(const QSizeF & size);
 
-#if defined(QT_LATEST) && defined(SK_NO_QML) == false
+#ifndef SK_NO_QML
+#ifdef QT_LATEST
     Q_INVOKABLE void synchronize(WBackendFrame * frame);
 #endif
 
@@ -292,6 +295,7 @@ public: // Interface
     Q_INVOKABLE QImage getFrame   () const;
 
     Q_INVOKABLE QRectF getRect() const;
+#endif
 
     Q_INVOKABLE SourceMode getMode() const;
 
@@ -394,7 +398,8 @@ protected: // Virtual functions
 
     virtual void backendSetSize(const QSizeF & size); // {}
 
-#if defined(QT_LATEST) && defined(SK_NO_QML) == false
+#ifndef SK_NO_QML
+#ifdef QT_LATEST
     virtual void backendSynchronize(WBackendFrame * frame); // {}
 #endif
 
@@ -404,6 +409,7 @@ protected: // Virtual functions
     virtual QImage backendGetFrame   () const; // {}
 
     virtual QRectF backendRect() const; // {}
+#endif
 
 signals:
     void ended();

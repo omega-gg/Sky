@@ -38,7 +38,6 @@
 
 // Sk includes
 #include <WControllerApplication>
-#include <WControllerFile>
 #include <WControllerView>
 #include <WResizer>
 
@@ -2032,7 +2031,7 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
                        +
                        Sk::currentDateString("yyyy-MM-dd_hh-mm-ss-zzz") + '.' + format;
 
-    wControllerFile->startWriteImage(fileName, image, format, quality);
+    wControllerView->startWriteImage(fileName, image, format, quality);
 }
 
 //-------------------------------------------------------------------------------------------------

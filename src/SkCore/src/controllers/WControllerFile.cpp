@@ -35,7 +35,6 @@
 #include <QDesktopServices>
 #else
 #include <QStandardPaths>
-#include <QImage>
 #endif
 
 #ifdef Q_OS_ANDROID
@@ -327,44 +326,6 @@ public: // Variables
         if (dir.mkpath(path) == false)
         {
             qWarning("WControllerFileCreatePaths::run: Failed to create path %s.", path.C_STR);
-        }
-    }
-
-    return true;
-}
-
-//=================================================================================================
-// WControllerFileWriteImages
-//=================================================================================================
-
-class WControllerFileWriteImages : public WControllerFileAction
-{
-    Q_OBJECT
-
-protected: // WAbstractThreadAction implementation
-    /* virtual */ bool run();
-
-public: // Variables
-    QStringList fileNames;
-
-    QList<QImage> images;
-
-    QString format;
-
-    int quality;
-};
-
-/* virtual */ bool WControllerFileWriteImages::run()
-{
-    const char * formatData = format.C_STR;
-
-    for (int i = 0; i < fileNames.count(); i++)
-    {
-        const QString & name = fileNames.at(i);
-
-        if (images.at(i).save(name, formatData, quality) == false)
-        {
-            qWarning("WControllerFileWriteImages::run: Failed to save image %s.", name.C_STR);
         }
     }
 
@@ -977,34 +938,6 @@ WControllerFileReply * WControllerFile::startCreatePaths(const QStringList & pat
     WControllerFileCreatePaths * action = new WControllerFileCreatePaths;
 
     action->paths = paths;
-
-    startWriteAction(action);
-
-    return action->controllerReply();
-}
-
-//-------------------------------------------------------------------------------------------------
-// Image actions
-
-WControllerFileReply * WControllerFile::startWriteImage(const QString & fileName,
-                                                        const QImage  & image,
-                                                        const QString & format, int quality)
-{
-    return startWriteImages(QStringList() << fileName, QList<QImage>() << image, format, quality);
-}
-
-WControllerFileReply * WControllerFile::startWriteImages(const QStringList   & fileNames,
-                                                         const QList<QImage> & images,
-                                                         const QString       & format, int quality)
-{
-    if (fileNames.isEmpty() || fileNames.count() != images.count()) return NULL;
-
-    WControllerFileWriteImages * action = new WControllerFileWriteImages;
-
-    action->fileNames = fileNames;
-    action->images    = images;
-    action->format    = format;
-    action->quality   = quality;
 
     startWriteAction(action);
 

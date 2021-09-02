@@ -27,7 +27,7 @@
 #include <QPixmap>
 
 // Sk includes
-#include <WController>
+#include <WControllerFile>
 
 #ifndef SK_NO_CONTROLLERVIEW
 
@@ -120,6 +120,21 @@ public: // Static functions
 
     Q_INVOKABLE static bool compressShot (const QString & fileName, int quality = 0);
     Q_INVOKABLE static bool compressShots(const QString & path,     int quality = 0);
+
+    //---------------------------------------------------------------------------------------------
+    // Image actions
+
+    // NOTE: These are not declared in WControllerFile because it depends on QtGui.
+
+    WControllerFileReply * startWriteImage(const QString & fileName,
+                                           const QImage  & image,
+                                           const QString & format  = "png",
+                                           int             quality = -1);
+
+    WControllerFileReply * startWriteImages(const QStringList   & fileNames,
+                                            const QList<QImage> & images,
+                                            const QString       & format = "png",
+                                            int                   quality = -1);
 
 signals:
 #ifdef QT_4

@@ -88,7 +88,9 @@ public: // Variables
 
     QList<WTabTrackDataBookmark> dataBookmarks;
 
+#ifndef SK_NO_PLAYER
     QHash<int, QPair<QString, QPixmap> > videoShots;
+#endif
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -191,6 +193,7 @@ public: // Variables
 
     WControllerFile::writeFile(path, data);
 
+#ifndef SK_NO_PLAYER
     if (videoShots.count())
     {
         WTabTrackWriteReply * reply = qobject_cast<WTabTrackWriteReply *> (this->reply());
@@ -209,6 +212,7 @@ public: // Variables
             reply->paths.insert(i.key(), fileName);
         }
     }
+#endif
 
     qDebug("TAB SAVED");
 
@@ -221,6 +225,7 @@ public: // Variables
 
 /* virtual */ void WTabTrackWriteReply::onCompleted(bool ok)
 {
+#ifndef SK_NO_PLAYER
     if (paths.count())
     {
         QHashIterator<int, QString> i(paths);
@@ -241,6 +246,7 @@ public: // Variables
             WPixmapCache::unregisterPixmap(path);
         }
     }
+#endif
 
     data->setSaved(ok);
 }
@@ -1382,9 +1388,11 @@ void WTabTrackPrivate::onPlaylistDestroyed()
         action->dataBookmarks.append(data);
     }
 
+#ifndef SK_NO_PLAYER
     action->videoShots = d->videoShots;
 
     d->videoShots.clear();
+#endif
 
     return action;
 }

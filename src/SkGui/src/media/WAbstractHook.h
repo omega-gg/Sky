@@ -118,10 +118,12 @@ protected: // Functions
 
     void backendSetSize(const QSizeF & size);
 
+#ifndef SK_NO_QML
     void backendDrawFrame(QPainter * painter, const QRect & rect);
 
     void   backendUpdateFrame();
     QImage backendGetFrame   () const;
+#endif
 
 protected: // Abstract functions
     virtual bool hookCheckSource(const QString & url) = 0;
