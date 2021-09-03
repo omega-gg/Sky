@@ -33,9 +33,6 @@
     We mean it.
 */
 
-// Qt includes
-#include <QSizeF>
-
 // Private includes
 #include <private/Sk_p>
 

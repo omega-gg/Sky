@@ -24,7 +24,7 @@
 #define WABSTRACTBACKEND_H
 
 // Qt includes
-#include <QObject>
+#include <QSizeF>
 #ifndef SK_NO_QML
 #include <QImage>
 #endif
