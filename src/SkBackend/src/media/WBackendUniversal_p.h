@@ -33,6 +33,11 @@
     We mean it.
 */
 
+#ifndef SK_NO_TORRENT
+// Sk includes
+#include <WControllerTorrent>
+#endif
+
 // Private includes
 #include <private/WBackendNet_p>
 
@@ -158,8 +163,10 @@ public: // Interface
 
     QVariantList getList(WBackendUniversalParameters * parameters, int index) const;
 
+#ifndef SK_NO_TORRENT
     QVariantList getTorrentItems  (const QList<WTorrentItemData>   & items)   const;
     QVariantList getTorrentFolders(const QList<WTorrentItemFolder> & folders) const;
+#endif
 
     QStringList getStringList(WBackendUniversalParameters * parameters, int index) const;
 
@@ -178,8 +185,10 @@ public: // Interface
 
     const QVariantList variants(const QStringList & list) const;
 
+#ifndef SK_NO_TORRENT
     QList<WTorrentItemData> torrentItems(WBackendUniversalParameters * parameters,
                                          int                           index) const;
+#endif
 
 public: // Variables
     Type type;

@@ -158,11 +158,13 @@ static const QString BACKENDUNIVERSAL_FUNCTIONS = \
     "JS_CALLS|"
     "ZIP_FILENAMES|"
     "ZIP_EXTRACT_FILE|"
+#ifndef SK_NO_TORRENT
     "TORRENT_STRING_AFTER|"
     "TORRENT_INTEGER_AFTER|"
     "TORRENT_LIST_AFTER|"
     "TORRENT_ITEMS|"
     "TORRENT_FOLDERS|"
+#endif
     "PRINT";
 
 static const int BACKENDUNIVERSAL_MAX_NODES = 300;
@@ -2217,6 +2219,8 @@ inline QVariant zipExtractFile(const WBackendUniversalNode * node,
     return WUnzipper::extractFile(&buffer, node->getString(parameters, 1));
 }
 
+#ifndef SK_NO_TORRENT
+
 //-------------------------------------------------------------------------------------------------
 // Torrent
 
@@ -2318,6 +2322,8 @@ inline QVariant torrentFolders(const WBackendUniversalNode * node,
 
     return node->getTorrentFolders(folder);
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -2743,6 +2749,8 @@ WBackendUniversalNode::getList(WBackendUniversalParameters * parameters, int ind
 
 //-------------------------------------------------------------------------------------------------
 
+#ifndef SK_NO_TORRENT
+
 QVariantList
 WBackendUniversalNode::getTorrentItems(const QList<WTorrentItemData> & items) const
 {
@@ -2781,6 +2789,8 @@ WBackendUniversalNode::getTorrentFolders(const QList<WTorrentItemFolder> & folde
 
     return list;
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -2953,6 +2963,8 @@ const QVariantList WBackendUniversalNode::variants(const QStringList & list) con
 
 //-------------------------------------------------------------------------------------------------
 
+#ifndef SK_NO_TORRENT
+
 QList<WTorrentItemData>
 WBackendUniversalNode::torrentItems(WBackendUniversalParameters * parameters, int index) const
 {
@@ -2978,6 +2990,8 @@ WBackendUniversalNode::torrentItems(WBackendUniversalParameters * parameters, in
 
     return items;
 }
+
+#endif
 
 //=================================================================================================
 // WBackendUniversalScript
@@ -3909,11 +3923,13 @@ void WBackendUniversalPrivate::populateHash() const
     hash.insert("JS_CALLS",               jsCalls);
     hash.insert("ZIP_FILENAMES",          zipFileNames);
     hash.insert("ZIP_EXTRACT_FILE",       zipExtractFile);
+#ifndef SK_NO_TORRENT
     hash.insert("TORRENT_STRING_AFTER",   torrentStringAfter);
     hash.insert("TORRENT_INTEGER_AFTER",  torrentIntegerAfter);
     hash.insert("TORRENT_LIST_AFTER",     torrentListAfter);
     hash.insert("TORRENT_ITEMS",          torrentItems);
     hash.insert("TORRENT_FOLDERS",        torrentFolders);
+#endif
     hash.insert("PRINT",                  print);
 
     cache = new WBackendCache(sk);
