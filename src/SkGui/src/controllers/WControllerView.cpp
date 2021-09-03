@@ -679,6 +679,4 @@ void WControllerView::setFilterDelay(int delay)
 
 #endif // SK_NO_CONTROLLERVIEW
 
-#ifdef QT_LATEST
 #include "WControllerView.moc"
-#endif
