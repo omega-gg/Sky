@@ -46,8 +46,6 @@
 
 W_INIT_CONTROLLER(WControllerView)
 
-#ifdef QT_LATEST
-
 //=================================================================================================
 // WControllerViewWriteImages
 //=================================================================================================
@@ -86,11 +84,13 @@ public: // Variables
     return true;
 }
 
+#ifdef QT_LATEST
+
 //=================================================================================================
 // WControllerViewLoader
 //=================================================================================================
 
-class SK_GUI_EXPORT WControllerViewLoader : public QObject
+class WControllerViewLoader : public QObject
 {
     Q_OBJECT
 
