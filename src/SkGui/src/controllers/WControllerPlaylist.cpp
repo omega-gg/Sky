@@ -2174,6 +2174,8 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
 
         playlist->updateTrack(index);
     }
+
+    emit playlist->trackQueryCompleted();
 }
 
 void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * device,

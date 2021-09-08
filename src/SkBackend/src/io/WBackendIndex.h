@@ -42,8 +42,8 @@ public:
     WBackendIndex(const QString & url, QObject * parent = NULL);
 
 public: // Interface
-    /* Q_INVOKABLE virtual */ void update();
-    /* Q_INVOKABLE virtual */ void reload();
+    Q_INVOKABLE void update();
+    Q_INVOKABLE void reload();
 
 public: // WBackendLoader reimplementation
     /* Q_INVOKABLE virtual */ bool checkId(const QString & id) const;

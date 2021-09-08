@@ -305,7 +305,8 @@ signals:
 
     void tracksCleared();
 
-    void trackQueryEnded();
+    void trackQueryEnded    ();
+    void trackQueryCompleted();
 
     void countChanged();
 

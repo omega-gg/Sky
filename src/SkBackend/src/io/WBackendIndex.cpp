@@ -476,7 +476,7 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ void WBackendIndex::update()
+/* Q_INVOKABLE */ void WBackendIndex::update()
 {
     Q_D(WBackendIndex);
 
@@ -496,7 +496,7 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
     connect(d->remote, SIGNAL(loaded(WRemoteData *)), this, SLOT(onUpdate()));
 }
 
-/* Q_INVOKABLE virtual */ void WBackendIndex::reload()
+/* Q_INVOKABLE */ void WBackendIndex::reload()
 {
     Q_D(WBackendIndex);
 
