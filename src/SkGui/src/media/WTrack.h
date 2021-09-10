@@ -52,6 +52,8 @@ public: // Interface
 public: // Virtual interface
     virtual QVariantMap toMap() const;
 
+    virtual QString toVbml() const;
+
 public: // Operators
     WTrack(const WTrack & other);
 

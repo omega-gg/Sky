@@ -1694,6 +1694,17 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     else return QVariantMap();
 }
 
+/* Q_INVOKABLE */ QString WPlaylist::trackVbml(int index) const
+{
+    const WTrack * track = trackPointerAt(index);
+
+    if (track)
+    {
+         return track->toVbml();
+    }
+    else return QString();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ WTrack::State WPlaylist::trackState(int index) const

@@ -209,6 +209,7 @@ public: // Interface
     Q_INVOKABLE bool trackIsValid(int index) const;
 
     Q_INVOKABLE QVariantMap trackData(int index) const;
+    Q_INVOKABLE QString     trackVbml(int index) const;
 
     Q_INVOKABLE WTrack::State trackState   (int index) const;
     Q_INVOKABLE void          setTrackState(int index, WTrack::State state);

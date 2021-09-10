@@ -366,6 +366,38 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 }
 
 //-------------------------------------------------------------------------------------------------
+// Static functions
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */
+WAbstractBackend::Quality WAbstractBackend::qualityFromString(const QString & string)
+{
+    if      (string ==  "144") return WAbstractBackend::Quality144;
+    else if (string ==  "240") return WAbstractBackend::Quality240;
+    else if (string ==  "360") return WAbstractBackend::Quality360;
+    else if (string ==  "480") return WAbstractBackend::Quality480;
+    else if (string ==  "720") return WAbstractBackend::Quality720;
+    else if (string == "1080") return WAbstractBackend::Quality1080;
+    else if (string == "1440") return WAbstractBackend::Quality1440;
+    else if (string == "2160") return WAbstractBackend::Quality2160;
+    else                       return WAbstractBackend::QualityInvalid;
+}
+
+/* Q_INVOKABLE static */
+QString WAbstractBackend::qualityToString(WAbstractBackend::Quality quality)
+{
+    if      (quality == WAbstractBackend::Quality144)  return  "144";
+    else if (quality == WAbstractBackend::Quality240)  return  "240";
+    else if (quality == WAbstractBackend::Quality360)  return  "360";
+    else if (quality == WAbstractBackend::Quality480)  return  "480";
+    else if (quality == WAbstractBackend::Quality720)  return  "720";
+    else if (quality == WAbstractBackend::Quality1080) return "1080";
+    else if (quality == WAbstractBackend::Quality1440) return "1440";
+    else if (quality == WAbstractBackend::Quality2160) return "2160";
+    else                                               return QString();
+}
+
+//-------------------------------------------------------------------------------------------------
 // WBackendInterface implementation
 //-------------------------------------------------------------------------------------------------
 

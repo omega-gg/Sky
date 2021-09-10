@@ -758,6 +758,24 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ QString WControllerApplication::tabs(int count, int size)
+{
+    QString result;
+
+    QString tabs;
+
+    tabs.fill(' ', size);
+
+    for (int i = 0; i < count; i++)
+    {
+        result.append(tabs);
+    }
+
+    return result;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE static */ void WControllerApplication::replaceFirst(QString       * string,
                                                                    const QString & before,
                                                                    const QString & after,
@@ -1424,6 +1442,22 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 /* Q_INVOKABLE static */ int WControllerApplication::getElapsed(const QTime & time)
 {
     return time.msecsTo(QTime::currentTime());
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ qint64 WControllerApplication::dateToMSecs(const QDateTime & date)
+{
+    return date.toMSecsSinceEpoch();
+}
+
+/* Q_INVOKABLE static */ qint64 WControllerApplication::dateToSecs(const QDateTime & date)
+{
+#ifdef QT_4
+    return date.toMSecsSinceEpoch() / 1000;
+#else
+    return date.toSecsSinceEpoch();
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------

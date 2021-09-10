@@ -1952,9 +1952,9 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
     {
         if (query->type == WControllerPlaylistQuery::TypeTrack)
         {
-            if (backend) backend->queryFailed(*backendQuery);
-
             WPlaylist * playlist = item->toPlaylist();
+
+            if (backend) backend->queryFailed(*backendQuery);
 
             int index = playlist->indexOf(query->track);
 
@@ -1969,6 +1969,9 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
                 playlist->updateTrack(index);
             }
             else deleteQuery(query);
+
+            emit playlist->trackQueryEnded    ();
+            emit playlist->trackQueryCompleted();
 
             delete data;
 
@@ -2112,7 +2115,13 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
 
     int index = playlist->indexOf(track);
 
-    if (index == -1) return;
+    if (index == -1)
+    {
+        emit playlist->trackQueryEnded    ();
+        emit playlist->trackQueryCompleted();
+
+        return;
+    }
 
     if (reply.valid)
     {

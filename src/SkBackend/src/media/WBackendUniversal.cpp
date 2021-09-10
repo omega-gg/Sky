@@ -508,11 +508,7 @@ inline QVariant date(const WBackendUniversalNode * node,
 
     if (count == 0)
     {
-#ifdef QT_4
-        return QDateTime::currentDateTime().toMSecsSinceEpoch() / 1000;
-#else
-        return QDateTime::currentDateTime().toSecsSinceEpoch();
-#endif
+        return Sk::dateToSecs(QDateTime::currentDateTime());
     }
 
     if (count < 2) return QDateTime();
@@ -525,11 +521,7 @@ inline QVariant date(const WBackendUniversalNode * node,
         return QDateTime();
     }
 
-#ifdef QT_4
-    return date.toMSecsSinceEpoch() / 1000;
-#else
-    return date.toSecsSinceEpoch();
-#endif
+    return Sk::dateToSecs(date);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -4432,15 +4424,7 @@ WBackendNetQuery WBackendUniversalPrivate::getQuery(const QVariant & value) cons
 
 WAbstractBackend::Quality WBackendUniversalPrivate::getQuality(const QString & string) const
 {
-    if      (string ==  "144") return WAbstractBackend::Quality144;
-    else if (string ==  "240") return WAbstractBackend::Quality240;
-    else if (string ==  "360") return WAbstractBackend::Quality360;
-    else if (string ==  "480") return WAbstractBackend::Quality480;
-    else if (string ==  "720") return WAbstractBackend::Quality720;
-    else if (string == "1080") return WAbstractBackend::Quality1080;
-    else if (string == "1440") return WAbstractBackend::Quality1440;
-    else if (string == "2160") return WAbstractBackend::Quality2160;
-    else                       return WAbstractBackend::QualityInvalid;
+    return WAbstractBackend::qualityFromString(string);
 }
 
 QDateTime WBackendUniversalPrivate::getDate(const QVariant & value) const

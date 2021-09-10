@@ -191,6 +191,8 @@ public: // Static functions
     Q_INVOKABLE static QString capitalize(const QString & string);
     Q_INVOKABLE static QString quote     (const QString & string);
 
+    Q_INVOKABLE static QString tabs(int count, int size = 4);
+
     Q_INVOKABLE static void replaceFirst(QString * string, const QString & before,
                                                            const QString & after,
                                                            int             from = 0);
@@ -304,6 +306,9 @@ public: // Static functions
 
     Q_INVOKABLE static int getMsecs  (const QTime & time);
     Q_INVOKABLE static int getElapsed(const QTime & time);
+
+    Q_INVOKABLE static qint64 dateToMSecs(const QDateTime & date);
+    Q_INVOKABLE static qint64 dateToSecs (const QDateTime & date);
 
     Q_INVOKABLE static QString dateToString      (const QDateTime & date, const QString & format);
     Q_INVOKABLE static QString dateToStringNumber(const QDateTime & date);

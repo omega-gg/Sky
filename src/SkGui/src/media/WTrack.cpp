@@ -28,6 +28,7 @@
 #include <QDateTime>
 
 // Sk includes
+#include <WControllerApplication>
 #include <WPlaylist>
 
 //-------------------------------------------------------------------------------------------------
@@ -173,6 +174,29 @@ void WTrack::applyDataTo(WTrack * other) const
     map.insert("quality", d->quality);
 
     return map;
+}
+
+/* virtual */ QString WTrack::toVbml() const
+{
+    Q_D(const WTrack);
+
+    QString vbml;
+
+    vbml.append("type: track\n\n");
+
+    vbml.append("source: " + d->source + "\n\n");
+
+    vbml.append("title: " + d->title + "\n\n");
+    vbml.append("cover: " + d->cover + "\n\n");
+
+    vbml.append("author: " + d->author + "\n\n");
+    vbml.append("feed: "   + d->feed   + "\n\n");
+
+    vbml.append("duration: " + QString::number(d->duration) + "\n\n");
+
+    vbml.append("date: " + Sk::dateToStringNumber(d->date) + "\n");
+
+    return vbml;
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -75,6 +75,43 @@ WMediaReply::WMediaReply(const QString & url,
 }
 
 //-------------------------------------------------------------------------------------------------
+// Virtual interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ QString WMediaReply::toVbml() const
+{
+    QString vbml;
+
+    vbml.append("type: media\n\n");
+
+    vbml.append("medias:\n");
+
+    QString tabs = WControllerApplication::tabs(1);
+
+    QHashIterator<WAbstractBackend::Quality, QString> i(_medias);
+
+    while (i.hasNext())
+    {
+        i.next();
+
+        vbml.append(tabs + WAbstractBackend::qualityToString(i.key()) + ": " + i.value() + '\n');
+    }
+
+    i = _audios;
+
+    vbml.append("\naudios:\n");
+
+    while (i.hasNext())
+    {
+        i.next();
+
+        vbml.append(tabs + WAbstractBackend::qualityToString(i.key()) + ": " + i.value() + '\n');
+    }
+
+    return vbml;
+}
+
+//-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
 

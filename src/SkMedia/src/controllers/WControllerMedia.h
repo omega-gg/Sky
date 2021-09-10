@@ -60,6 +60,9 @@ private:
 public:
     /* virtual */ ~WMediaReply();
 
+public: // Virtual interface
+    Q_INVOKABLE virtual QString toVbml() const;
+
 signals:
     void loaded(WMediaReply * reply);
 
