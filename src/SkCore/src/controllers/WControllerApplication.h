@@ -317,6 +317,20 @@ public: // Static functions
 
     Q_INVOKABLE static QString dateToText(const QDateTime & date);
 
+    //---------------------------------------------------------------------------------------------
+    // BML
+
+    Q_INVOKABLE static void bmlTag(QString       & vbml,
+                                   const QString & name,
+                                   const QString & append = QString('\n'));
+
+    Q_INVOKABLE static void bmlPair(QString       & vbml,
+                                    const QString & key,
+                                    const QString & value,
+                                    const QString & append = QString('\n'));
+
+    Q_INVOKABLE static QString bmlDate(const QDateTime & date);
+
 signals:
     //void controllerCreated  (WController * controller);
     //void controllerDestroyed(WController * controller);

@@ -760,18 +760,7 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 
 /* Q_INVOKABLE static */ QString WControllerApplication::tabs(int count, int size)
 {
-    QString result;
-
-    QString tabs;
-
-    tabs.fill(' ', size);
-
-    for (int i = 0; i < count; i++)
-    {
-        result.append(tabs);
-    }
-
-    return result;
+    return QString().fill(' ', count * size);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1575,6 +1564,32 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
          return QString("%1 ").arg(seconds) + tr("second ago");
     }
     else return QString("%1 ").arg(seconds) + tr("seconds ago");
+}
+
+//---------------------------------------------------------------------------------------------
+// BML
+
+/* Q_INVOKABLE static */ void WControllerApplication::bmlTag(QString       & vbml,
+                                                             const QString & name,
+                                                             const QString & append)
+{
+    vbml.append(name + ':' + append);
+}
+
+
+/* Q_INVOKABLE static */ void WControllerApplication::bmlPair(QString       & vbml,
+                                                              const QString & key,
+                                                              const QString & value,
+                                                              const QString & append)
+{
+    if (value.isEmpty()) return;
+
+    vbml.append(key + ": " + value + append);
+}
+
+/* Q_INVOKABLE static */ QString WControllerApplication::bmlDate(const QDateTime & date)
+{
+    return date.toString(Qt::ISODate);
 }
 
 //-------------------------------------------------------------------------------------------------

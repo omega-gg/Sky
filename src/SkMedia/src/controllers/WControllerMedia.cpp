@@ -82,31 +82,40 @@ WMediaReply::WMediaReply(const QString & url,
 {
     QString vbml;
 
-    vbml.append("type: media\n\n");
+    Sk::bmlPair(vbml, "type", "media", "\n\n");
 
-    vbml.append("medias:\n");
+    QString tab = WControllerApplication::tabs(1);
 
-    QString tabs = WControllerApplication::tabs(1);
-
-    QHashIterator<WAbstractBackend::Quality, QString> i(_medias);
-
-    while (i.hasNext())
+    if (_medias.isEmpty() == false)
     {
-        i.next();
+        Sk::bmlTag(vbml, "medias");
 
-        vbml.append(tabs + WAbstractBackend::qualityToString(i.key()) + ": " + i.value() + '\n');
+        QHashIterator<WAbstractBackend::Quality, QString> i(_medias);
+
+        while (i.hasNext())
+        {
+            i.next();
+
+            Sk::bmlPair(vbml, tab + WAbstractBackend::qualityToString(i.key()), i.value(), "\n\n");
+        }
     }
 
-    i = _audios;
-
-    vbml.append("\naudios:\n");
-
-    while (i.hasNext())
+    if (_audios.isEmpty() == false)
     {
-        i.next();
+        Sk::bmlTag(vbml, "audios", "\n");
 
-        vbml.append(tabs + WAbstractBackend::qualityToString(i.key()) + ": " + i.value() + '\n');
+        QHashIterator<WAbstractBackend::Quality, QString> i(_audios);
+
+        while (i.hasNext())
+        {
+            i.next();
+
+            Sk::bmlPair(vbml, tab + WAbstractBackend::qualityToString(i.key()), i.value(), "\n\n");
+        }
     }
+
+    // NOTE: We clear the last '\n'.
+    if (vbml.isEmpty() == false) vbml.chop(1);
 
     return vbml;
 }

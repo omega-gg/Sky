@@ -2025,6 +2025,60 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
 #endif
 
+//---------------------------------------------------------------------------------------------
+// VBML
+
+/* Q_INVOKABLE */ QString WPlaylist::toVbml() const
+{
+    Q_D(const WPlaylist);
+
+    QString vbml;
+
+    Sk::bmlPair(vbml, "type", "playlist", "\n\n");
+
+    Sk::bmlPair(vbml, "source", d->source, "\n\n");
+
+    Sk::bmlPair(vbml, "title", d->title, "\n\n");
+    Sk::bmlPair(vbml, "cover", d->cover, "\n\n");
+
+    Sk::bmlTag(vbml, "tracks");
+
+    QString tabA = Sk::tabs(1);
+    QString tabB = Sk::tabs(2);
+
+    foreach (const WTrack & track, d->tracks)
+    {
+        const WTrackPrivate * p = track.d_func();
+
+        Sk::bmlTag(vbml, tabA + "track");
+
+        Sk::bmlPair(vbml, tabB + "source", p->source);
+
+        Sk::bmlPair(vbml, tabB + "title", p->title);
+        Sk::bmlPair(vbml, tabB + "cover", p->cover);
+
+        Sk::bmlPair(vbml, tabB + "author", p->author);
+        Sk::bmlPair(vbml, tabB + "feed",   p->feed);
+
+        if (p->duration != -1)
+        {
+            Sk::bmlPair(vbml, tabB + "duration", QString::number(p->duration));
+        }
+
+        if (p->date.isValid())
+        {
+            Sk::bmlPair(vbml, tabB + "date", Sk::bmlDate(p->date));
+        }
+
+        vbml.append('\n');
+    }
+
+    // NOTE: We clear the last '\n'.
+    if (d->tracks.isEmpty() == false) vbml.chop(1);
+
+    return vbml;
+}
+
 //-------------------------------------------------------------------------------------------------
 // Static functions
 //-------------------------------------------------------------------------------------------------

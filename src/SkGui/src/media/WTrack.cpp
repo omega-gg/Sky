@@ -182,19 +182,28 @@ void WTrack::applyDataTo(WTrack * other) const
 
     QString vbml;
 
-    vbml.append("type: track\n\n");
+    Sk::bmlPair(vbml, "type", "track", "\n\n");
 
-    vbml.append("source: " + d->source + "\n\n");
+    Sk::bmlPair(vbml, "source", d->source, "\n\n");
 
-    vbml.append("title: " + d->title + "\n\n");
-    vbml.append("cover: " + d->cover + "\n\n");
+    Sk::bmlPair(vbml, "title", d->title, "\n\n");
+    Sk::bmlPair(vbml, "cover", d->cover, "\n\n");
 
-    vbml.append("author: " + d->author + "\n\n");
-    vbml.append("feed: "   + d->feed   + "\n\n");
+    Sk::bmlPair(vbml, "author", d->author, "\n\n");
+    Sk::bmlPair(vbml, "feed",   d->feed,   "\n\n");
 
-    vbml.append("duration: " + QString::number(d->duration) + "\n\n");
+    if (d->duration != -1)
+    {
+        Sk::bmlPair(vbml, "duration", QString::number(d->duration), "\n\n");
+    }
 
-    vbml.append("date: " + Sk::dateToStringNumber(d->date) + "\n");
+    if (d->date.isValid())
+    {
+        Sk::bmlPair(vbml, "date", Sk::bmlDate(d->date), "\n\n");
+    }
+
+    // NOTE: We clear the last '\n'.
+    if (vbml.isEmpty() == false) vbml.chop(1);
 
     return vbml;
 }
