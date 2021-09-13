@@ -732,7 +732,7 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
 
     if (backend)
     {
-        if (backend->checkQuery(source))
+        if (WBackendNet::checkQuery(source))
         {
             WBackendNetQuery query = backend->extractQuery(source);
 
@@ -793,7 +793,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
 
     if (backend)
     {
-        if (backend->checkQuery(source))
+        if (WBackendNet::checkQuery(source))
         {
             WBackendNetQuery query = backend->extractQuery(source);
 
@@ -944,7 +944,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
     if (backend)
     {
-        if (backend->checkQuery(source))
+        if (WBackendNet::checkQuery(source))
         {
             if (source.contains("method") == false)
             {
@@ -1129,7 +1129,7 @@ bool WControllerPlaylistPrivate::applySourceItem(WLibraryItem * item, const QStr
 
     if (backend)
     {
-        if (backend->checkQuery(source))
+        if (WBackendNet::checkQuery(source))
         {
             WBackendNetQuery query = backend->extractQuery(source);
 
@@ -2888,7 +2888,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
 /* Q_INVOKABLE */ WBackendNet * WControllerPlaylist::backendFromUrl(const QString & url) const
 {
-    if (url.startsWith(sk->applicationUrl()))
+    if (WBackendNet::checkQuery(url))
     {
         QUrl source(url);
 

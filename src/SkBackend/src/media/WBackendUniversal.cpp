@@ -4709,6 +4709,19 @@ WBackendUniversal::WBackendUniversal(const QString & id, const QString & source)
     Q_D(const WBackendUniversal); return d->data.items;
 }
 
+/* Q_INVOKABLE virtual */
+WLibraryFolderItem WBackendUniversal::getLibraryItem(const QString & id) const
+{
+    Q_D(const WBackendUniversal);
+
+    foreach (const WLibraryFolderItem & item, d->data.items)
+    {
+        if (item.id == id) return item;
+    }
+
+    return WLibraryFolderItem();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */

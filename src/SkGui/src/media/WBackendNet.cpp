@@ -516,13 +516,8 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ bool WBackendNet::checkQuery(const QString & url) const
-{
-    return url.startsWith(sk->applicationUrl());
-}
-
 /* Q_INVOKABLE */ WBackendNetQuery WBackendNet::extractQuery(const QString & url) const
-{    
+{
     QUrl source(url);
 
 #ifdef QT_4
@@ -538,6 +533,37 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 #endif
 
     return createQuery(method, label, WControllerNetwork::decodeUrl(q));
+}
+
+/* Q_INVOKABLE */ WLibraryItem::Type WBackendNet::typeFromQuery(const QString & url) const
+{
+    QUrl source(url);
+
+#ifdef QT_4
+    QString method = source.queryItemValue("method");
+#else
+    QUrlQuery query(source);
+
+    QString method = query.queryItemValue("method");
+#endif
+
+    if (method == "search")
+    {
+#ifdef QT_4
+        QString label = source.queryItemValue("label");
+#else
+        QString label = query.queryItemValue("label");
+#endif
+
+        WLibraryFolderItem item = getLibraryItem(label);
+
+        if (item.isFolder())
+        {
+            return WLibraryItem::Folder;
+        }
+    }
+
+    return WLibraryItem::Playlist;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -644,6 +670,16 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 }
 
 //-------------------------------------------------------------------------------------------------
+// Static functions
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ bool WBackendNet::checkQuery(const QString & url)
+{
+    // NOTE: This could either be the application URL or a vbml 'run' command.
+    return (url.startsWith(sk->applicationUrl()) || url.startsWith("vbml://run"));
+}
+
+//-------------------------------------------------------------------------------------------------
 // Virtual interface
 //-------------------------------------------------------------------------------------------------
 
@@ -699,6 +735,11 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 /* Q_INVOKABLE virtual */ QList<WLibraryFolderItem> WBackendNet::getLibraryItems() const
 {
     return QList<WLibraryFolderItem>();
+}
+
+/* Q_INVOKABLE virtual */ WLibraryFolderItem WBackendNet::getLibraryItem(const QString &) const
+{
+    return WLibraryFolderItem();
 }
 
 //-------------------------------------------------------------------------------------------------

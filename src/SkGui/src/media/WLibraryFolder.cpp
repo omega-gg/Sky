@@ -81,6 +81,11 @@ bool WLibraryFolderItem::isPlaylist() const
 
 //-------------------------------------------------------------------------------------------------
 
+bool WLibraryFolderItem::isValid() const
+{
+    return (id != -1);
+}
+
 bool WLibraryFolderItem::isLocal() const
 {
     return source.isEmpty();

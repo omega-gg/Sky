@@ -65,6 +65,8 @@ public: // WBackendNet reimplementation
 
     /* Q_INVOKABLE virtual */ QList<WLibraryFolderItem> getLibraryItems() const;
 
+    /* Q_INVOKABLE virtual */ WLibraryFolderItem getLibraryItem(const QString & id) const;
+
     /* Q_INVOKABLE virtual */ QString getTrackId(const QString & url) const;
 
     /* Q_INVOKABLE virtual */ WAbstractBackend::Output getTrackOutput(const QString & url) const;

@@ -45,6 +45,7 @@ public: // Interface
     bool isFolder  () const;
     bool isPlaylist() const;
 
+    bool isValid () const;
     bool isLocal () const;
     bool isOnline() const;
 

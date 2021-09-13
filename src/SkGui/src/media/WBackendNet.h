@@ -373,9 +373,9 @@ public: // Interface
     Q_INVOKABLE QString getSourceTrack   (const QString & url) const;
     Q_INVOKABLE QString getSourcePlaylist(const QString & url) const;
 
-    Q_INVOKABLE bool checkQuery(const QString & url) const;
-
     Q_INVOKABLE WBackendNetQuery extractQuery(const QString & url) const;
+
+    Q_INVOKABLE WLibraryItem::Type typeFromQuery(const QString & url) const;
 
     Q_INVOKABLE void loadSource(QIODevice              * device,
                                 const WBackendNetQuery & query,
@@ -404,6 +404,9 @@ public: // Interface
 
     Q_INVOKABLE bool tryDelete();
 
+public: // Static functions
+    Q_INVOKABLE static bool checkQuery(const QString & url);
+
 public: // Abstract interface
     Q_INVOKABLE virtual QString getId   () const = 0;
     Q_INVOKABLE virtual QString getTitle() const = 0;
@@ -427,6 +430,8 @@ public: // Virtual interface
     Q_INVOKABLE virtual QString getCover() const; // {}
 
     Q_INVOKABLE virtual QList<WLibraryFolderItem> getLibraryItems() const; // {}
+
+    Q_INVOKABLE virtual WLibraryFolderItem getLibraryItem(const QString & id) const; // {}
 
     Q_INVOKABLE virtual QString getTrackId(const QString & url) const; // {}
 
