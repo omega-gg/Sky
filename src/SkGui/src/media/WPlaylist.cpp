@@ -2025,10 +2025,28 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
 #endif
 
-//---------------------------------------------------------------------------------------------
-// VBML
+//-------------------------------------------------------------------------------------------------
+// Static functions
+//-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ QString WPlaylist::toVbml() const
+/* Q_INVOKABLE static */ WPlaylist * WPlaylist::create(Type type)
+{
+    if (type == PlaylistFeed)
+    {
+        return new WPlaylistFeed;
+    }
+    else if (type == PlaylistSearch)
+    {
+        return new WPlaylistSearch;
+    }
+    else return new WPlaylist;
+}
+
+//---------------------------------------------------------------------------------------------
+// WLibraryItem reimplementation
+//---------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ QString WPlaylist::toVbml() const
 {
     Q_D(const WPlaylist);
 
@@ -2040,6 +2058,8 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
     Sk::bmlPair(vbml, "title", d->title, "\n\n");
     Sk::bmlPair(vbml, "cover", d->cover, "\n\n");
+
+    Sk::bmlPair(vbml, "label", d->label, "\n\n");
 
     Sk::bmlTag(vbml, "tracks");
 
@@ -2077,23 +2097,6 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     if (d->tracks.isEmpty() == false) vbml.chop(1);
 
     return vbml;
-}
-
-//-------------------------------------------------------------------------------------------------
-// Static functions
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE static */ WPlaylist * WPlaylist::create(Type type)
-{
-    if (type == PlaylistFeed)
-    {
-        return new WPlaylistFeed;
-    }
-    else if (type == PlaylistSearch)
-    {
-        return new WPlaylistSearch;
-    }
-    else return new WPlaylist;
 }
 
 //-------------------------------------------------------------------------------------------------

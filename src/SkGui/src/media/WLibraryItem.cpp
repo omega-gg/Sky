@@ -330,6 +330,24 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
     return (type >= Playlist && type <= PlaylistSearch);
 }
 
+/* Q_INVOKABLE static */ QString WLibraryItem::typeToString(Type type)
+{
+    if (typeIsFolder(type))   return "folder";
+    if (typeIsPlaylist(type)) return "playlist";
+    else                      return "item";
+}
+
+//-------------------------------------------------------------------------------------------------
+// Virtual interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ QString WLibraryItem::toVbml() const
+{
+    qWarning("WLibraryItem::toVbml: Not supported.");
+
+    return QString();
+}
+
 //-------------------------------------------------------------------------------------------------
 // WLocalObject reimplementation
 //-------------------------------------------------------------------------------------------------

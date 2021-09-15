@@ -50,8 +50,6 @@ public:
 public: // Functions
     void addBackend(const QString & id, WBackendNet * backend);
 
-    void removeBackend(WBackendNet * backend);
-
     WBackendNet * getBackend(const QString & id);
 
     void updateBackend(const QString & id);
@@ -61,7 +59,7 @@ public: // Functions
     void clear();
 
 public: // Variables
-    QStringList ids;
+    QHash<QString, WBackendNet *> hash;
 
     QList<WBackendNet *> backends;
 
@@ -89,18 +87,28 @@ void WBackendLoaderCache::addBackend(const QString & id, WBackendNet * backend)
 
     backends.append(backend);
 
-    // NOTE: We call append on 'ids' at the end because 'createNow' depends on it.
-    ids.append(id);
+    // NOTE: We append on the hash at the end because 'createNow' depends on it.
+    hash.insert(id, backend);
 }
 
-void WBackendLoaderCache::removeBackend(WBackendNet * backend)
-{
-    for (int i = 0; i < ids.count(); i++)
-    {
-        if (backends.at(i) != backend) continue;
+//-------------------------------------------------------------------------------------------------
 
-        ids     .removeAt(i);
-        backends.removeAt(i);
+WBackendNet * WBackendLoaderCache::getBackend(const QString & id)
+{
+    return hash.value(id);
+}
+
+void WBackendLoaderCache::updateBackend(const QString & id)
+{
+    foreach (WBackendNet * backend, backends)
+    {
+        if (backend->id() != id) continue;
+
+        backend->d_func()->lockCount++;
+
+        // NOTE: This is useful for caching considerations.
+        backends.removeOne(backend);
+        backends.append   (backend);
 
         return;
     }
@@ -108,37 +116,9 @@ void WBackendLoaderCache::removeBackend(WBackendNet * backend)
 
 //-------------------------------------------------------------------------------------------------
 
-WBackendNet * WBackendLoaderCache::getBackend(const QString & id)
-{
-    int index = ids.indexOf(id);
-
-    if (index == -1) return NULL;
-
-    return backends.at(index);
-}
-
-void WBackendLoaderCache::updateBackend(const QString & id)
-{
-    int index = ids.indexOf(id);
-
-    if (index == -1) return;
-
-    ids.removeAt(index);
-
-    ids.append(id);
-
-    WBackendNet * backend = backends.takeAt(index);
-
-    backend->d_func()->lockCount++;
-
-    backends.append(backend);
-}
-
-//-------------------------------------------------------------------------------------------------
-
 void WBackendLoaderCache::cleanCache()
 {
-    int count = ids.count();
+    int count = backends.count();
 
     if (count < maxCount) return;
 
@@ -150,10 +130,14 @@ void WBackendLoaderCache::cleanCache()
 
         if (backend->d_func()->lockCount == 0)
         {
-            qDebug("REMOVE BACKEND %s", backend->id().C_STR);
+            QString id = backend->id();
 
-            ids     .removeFirst();
-            backends.removeFirst();
+            qDebug("REMOVE BACKEND %s", id.C_STR);
+
+            // NOTE: We remove the id first to avoid returning an invalid backend.
+            hash.remove(id);
+
+            backends.removeAt(index);
 
             backend->deleteLater();
 
@@ -169,7 +153,7 @@ void WBackendLoaderCache::clear()
 {
     int index = 0;
 
-    int count = ids.count();
+    int count = backends.count();
 
     while (index < count)
     {
@@ -177,9 +161,13 @@ void WBackendLoaderCache::clear()
 
         if (backend->d_func()->lockCount == 0)
         {
-            qDebug("CLEAR BACKEND %s", backend->id().C_STR);
+            QString id = backend->id();
 
-            ids     .removeAt(index);
+            qDebug("CLEAR BACKEND %s", id.C_STR);
+
+            // NOTE: We remove the hash first to avoid returning an invalid backend.
+            hash.remove(id);
+
             backends.removeAt(index);
 
             backend->deleteLater();

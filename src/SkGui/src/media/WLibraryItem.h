@@ -126,6 +126,11 @@ public: // Static functions
     Q_INVOKABLE static bool typeIsFolder  (Type type);
     Q_INVOKABLE static bool typeIsPlaylist(Type type);
 
+    Q_INVOKABLE static QString typeToString(Type type);
+
+public: // Virtual interface
+    Q_INVOKABLE virtual QString toVbml() const; // {}
+
 public: // WLocalObject reimplementation
     /* Q_INVOKABLE virtual */ QString getParentPath() const;
 
@@ -135,7 +140,7 @@ protected: // Virtual functions
 
     virtual bool stopQuery();
 
-    virtual void onApplyCurrentIds(const QList<int> & ids);
+    virtual void onApplyCurrentIds(const QList<int> & ids); // {}
 
 protected: // WLocalObject reimplementation
     /* virtual */ void applyId(int id);

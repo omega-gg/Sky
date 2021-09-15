@@ -265,13 +265,11 @@ public: // Interface
                                   WPlaylist          * destination, int to = -1) const;
 #endif
 
-    //---------------------------------------------------------------------------------------------
-    // VBML
-
-    Q_INVOKABLE QString toVbml() const;
-
 public: // Static functions
     Q_INVOKABLE static WPlaylist * create(Type type = Playlist);
+
+public: // WLibraryItem reimplementation
+    Q_INVOKABLE /* virtual */ QString toVbml() const;
 
 protected: // Functions
     void updateIndex();

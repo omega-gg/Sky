@@ -2250,6 +2250,50 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
     return true;
 }
 
+//---------------------------------------------------------------------------------------------
+// WLibraryItem reimplementation
+//---------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ QString WLibraryFolder::toVbml() const
+{
+    Q_D(const WLibraryFolder);
+
+    QString vbml;
+
+    Sk::bmlPair(vbml, "type", "folder", "\n\n");
+
+    Sk::bmlPair(vbml, "source", d->source, "\n\n");
+
+    Sk::bmlPair(vbml, "title", d->title, "\n\n");
+    Sk::bmlPair(vbml, "cover", d->cover, "\n\n");
+
+    Sk::bmlPair(vbml, "label", d->label, "\n\n");
+
+    Sk::bmlTag(vbml, "items");
+
+    QString tabA = Sk::tabs(1);
+    QString tabB = Sk::tabs(2);
+
+    foreach (const WLibraryFolderItem & item, d->items)
+    {
+        Sk::bmlTag(vbml, tabA + WLibraryItem::typeToString(item.type));
+
+        Sk::bmlPair(vbml, tabB + "source", item.source);
+
+        Sk::bmlPair(vbml, tabB + "title", item.title);
+        Sk::bmlPair(vbml, tabB + "cover", item.cover);
+
+        Sk::bmlPair(vbml, tabB + "label", item.label);
+
+        vbml.append('\n');
+    }
+
+    // NOTE: We clear the last '\n'.
+    if (d->items.isEmpty() == false) vbml.chop(1);
+
+    return vbml;
+}
+
 //-------------------------------------------------------------------------------------------------
 // Protected functions
 //-------------------------------------------------------------------------------------------------

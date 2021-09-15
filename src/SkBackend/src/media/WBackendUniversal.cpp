@@ -4716,7 +4716,8 @@ WLibraryFolderItem WBackendUniversal::getLibraryItem(const QString & id) const
 
     foreach (const WLibraryFolderItem & item, d->data.items)
     {
-        if (item.id == id) return item;
+        // NOTE: By default the label is the lowercased title.
+        if (item.label == id) return item;
     }
 
     return WLibraryFolderItem();

@@ -257,6 +257,9 @@ public: // Static functions
     Q_INVOKABLE static bool move(WLibraryFolder * folderA, int from,
                                  WLibraryFolder * folderB, int to, bool remove = true);
 
+public: // WLibraryItem reimplementation
+    Q_INVOKABLE /* virtual */ QString toVbml() const;
+
 protected: // Functions
     void updateIndex();
 

@@ -557,13 +557,26 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 
         WLibraryFolderItem item = getLibraryItem(label);
 
-        if (item.isFolder())
+        // NOTE: We also check the search engine label(s).
+        if (item.isFolder() || label == "urls" || label == "site")
         {
             return WLibraryItem::Folder;
         }
+        else if (item.isPlaylist())
+        {
+            return WLibraryItem::Playlist;
+        }
+    }
+    else if (method == "subtitles")
+    {
+        return WLibraryItem::Folder;
+    }
+    else if (method == "related")
+    {
+        return WLibraryItem::Playlist;
     }
 
-    return WLibraryItem::Playlist;
+    return WLibraryItem::Item;
 }
 
 //-------------------------------------------------------------------------------------------------
