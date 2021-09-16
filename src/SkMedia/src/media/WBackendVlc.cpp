@@ -1230,10 +1230,15 @@ void WBackendVlcPrivate::onUpdateState()
 {
     WBackendVlcPrivate * d = static_cast<WBackendVlc *> (*data)->d_func();
 
-    libvlc_video_get_size(d->player->d_func()->player, 0, vlcWidth, vlcHeight);
+    int index = libvlc_video_get_track(d->player->d_func()->player);
 
-    int width  = qMin((int) (*vlcWidth),  PLAYER_MAX_WIDTH);
-    int height = qMin((int) (*vlcHeight), PLAYER_MAX_HEIGHT);
+    libvlc_video_get_size(d->player->d_func()->player, index, vlcWidth, vlcHeight);
+
+    *vlcWidth  = qMin((int) (*vlcWidth),  PLAYER_MAX_WIDTH);
+    *vlcHeight = qMin((int) (*vlcHeight), PLAYER_MAX_HEIGHT);
+
+    int width  = *vlcWidth;
+    int height = *vlcHeight;
 
     strcpy(chroma, "I420");
 

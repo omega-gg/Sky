@@ -33,6 +33,10 @@
     We mean it.
 */
 
+// Qt includes
+#include <QMutex>
+
+// Private includes
 #include <private/Sk_p>
 
 #ifndef SK_NO_VLCPLAYER

@@ -35,7 +35,7 @@
 
 // Qt includes
 #include <QGLWidget>
-#include <QMutex>
+//#include <QMutex>
 #include <QMetaMethod>
 #ifdef QT_LATEST
 #include <QSGMaterial>
