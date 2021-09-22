@@ -51,6 +51,7 @@ void WVlcPlayerPrivate::init(WVlcEngine * engine, QThread * thread)
 
     output = WAbstractBackend::OutputMedia;
 
+    // FIXME: Should we set this to 1000 by default like VLC ?
     networkCache = -1;
 
     if (thread) q->moveToThread(thread);

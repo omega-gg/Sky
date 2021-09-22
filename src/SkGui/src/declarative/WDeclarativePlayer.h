@@ -72,6 +72,8 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
     Q_PROPERTY(bool isVideo READ isVideo NOTIFY sourceChanged)
     Q_PROPERTY(bool isAudio READ isAudio NOTIFY sourceChanged)
 
+    Q_PROPERTY(bool isLive READ isLive NOTIFY liveChanged)
+
     Q_PROPERTY(bool hasStarted READ hasStarted NOTIFY startedChanged)
     Q_PROPERTY(bool hasEnded   READ hasEnded   NOTIFY endedChanged)
 
@@ -222,6 +224,8 @@ signals:
     void stateChanged    ();
     void stateLoadChanged();
 
+    void liveChanged();
+
     void startedChanged();
     void endedChanged  ();
 
@@ -293,6 +297,8 @@ public: // Properties
 
     bool isVideo() const;
     bool isAudio() const;
+
+    bool isLive() const;
 
     bool hasStarted() const;
     bool hasEnded  () const;

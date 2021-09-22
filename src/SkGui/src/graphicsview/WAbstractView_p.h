@@ -112,6 +112,10 @@ public: // Variables
 
     QRect rect;
 
+#ifdef QT_LATEST
+    QScreen * screen;
+#endif
+
     bool  visible;
     qreal opacity;
 

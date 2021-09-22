@@ -1231,6 +1231,8 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
         connect(backend, SIGNAL(stateChanged    ()), this, SIGNAL(stateChanged    ()));
         connect(backend, SIGNAL(stateLoadChanged()), this, SIGNAL(stateLoadChanged()));
 
+        connect(backend, SIGNAL(liveChanged()), this, SIGNAL(liveChanged()));
+
         connect(backend, SIGNAL(startedChanged()), this, SIGNAL(startedChanged()));
         connect(backend, SIGNAL(endedChanged  ()), this, SIGNAL(endedChanged  ()));
 
@@ -1452,6 +1454,19 @@ bool WDeclarativePlayer::isAudio() const
     if (d->backend)
     {
          return d->backendInterface->sourceIsAudio();
+    }
+    else return false;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WDeclarativePlayer::isLive() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+         return d->backend->isLive();
     }
     else return false;
 }

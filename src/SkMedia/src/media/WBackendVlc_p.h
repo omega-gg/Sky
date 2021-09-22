@@ -240,6 +240,9 @@ public: // Static functions
 
     static void unlock(void * data, void * id, void * const * pixels);
 
+    static void applyFrames(WBackendVlcPrivate * d, QImage & frameA, QImage & frameB,
+                            int cursorU, int cursorV);
+
 public: // Variables
     // NOTE: Do we really need a mutex on here after all ?
     //QMutex mutex;
@@ -248,14 +251,17 @@ public: // Variables
 
     uint32_t tableRgb[1935];
 
+    int width;
+    int height;
+
     int frameWidth;
     int frameHeight;
 
-    QImage frameA;
-    QImage frameB;
+    QImage frames[4];
 
     QImage frameSoftware;
 
+    bool frameSwap;
     bool frameIndex;
 
     QRectF targetRect;

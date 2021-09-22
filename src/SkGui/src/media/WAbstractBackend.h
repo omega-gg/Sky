@@ -169,6 +169,8 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
     Q_PROPERTY(bool isPaused  READ isPaused  NOTIFY stateChanged)
     Q_PROPERTY(bool isStopped READ isStopped NOTIFY stateChanged)
 
+    Q_PROPERTY(bool isLive READ isLive NOTIFY liveChanged)
+
     Q_PROPERTY(bool hasStarted READ hasStarted NOTIFY startedChanged)
     Q_PROPERTY(bool hasEnded   READ hasEnded   NOTIFY endedChanged)
 
@@ -352,6 +354,8 @@ protected: // Functions
     void setState    (State     state);
     void setStateLoad(StateLoad stateLoad);
 
+    void setLive(bool live);
+
     void setEnded(bool ended);
 
     void setCurrentTime(int msec);
@@ -429,6 +433,8 @@ signals:
     void stateChanged    ();
     void stateLoadChanged();
 
+    void liveChanged();
+
     void startedChanged();
     void endedChanged  ();
 
@@ -479,6 +485,8 @@ public: // Properties
     bool isPlaying() const;
     bool isPaused () const;
     bool isStopped() const;
+
+    bool isLive() const;
 
     bool hasStarted() const;
     bool hasEnded  () const;
@@ -565,6 +573,8 @@ public:
 
     virtual void filterState    (WAbstractBackend::State     * state);     // {}
     virtual void filterStateLoad(WAbstractBackend::StateLoad * stateLoad); // {}
+
+    virtual void filterLive(bool * live); // {}
 
     virtual void filterEnded(bool * ended); // {}
 

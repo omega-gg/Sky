@@ -129,6 +129,10 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     maximumWidth  = QWIDGETSIZE_MAX;
     maximumHeight = QWIDGETSIZE_MAX;
 
+#ifdef QT_LATEST
+    screen = NULL;
+#endif
+
     visible = false;
     opacity = 1.0;
 
@@ -531,6 +535,18 @@ void WAbstractViewPrivate::onCreate()
 
 void WAbstractViewPrivate::onMove()
 {
+    Q_Q(WAbstractView);
+
+    // FIXME Qt5: We need to manually detect and send the 'screenChanged' signal.
+    QScreen * screen = QGuiApplication::screenAt(QPoint(x, y));
+
+    if (screen && this->screen != screen)
+    {
+        this->screen = screen;
+
+        emit q->screenChanged(screen);
+    }
+
     if (maximized || fullScreen) return;
 
     QSize size = viewport->size();
@@ -1056,7 +1072,13 @@ QScreen * WAbstractView::screen() const
 {
     Q_D(const WAbstractView);
 
-    return fromWinId((WId) d->id)->screen();
+    QScreen * screen = QGuiApplication::screenAt(QPoint(d->x, d->y));
+
+    if (screen)
+    {
+        return screen;
+    }
+    else return QGuiApplication::primaryScreen();
 }
 
 #endif

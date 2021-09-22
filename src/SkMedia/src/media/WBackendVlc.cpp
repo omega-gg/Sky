@@ -541,9 +541,13 @@ void WBackendVlcPrivate::init()
 
     player = wControllerMedia->createVlcPlayer();
 
+    width  = -1;
+    height = -1;
+
     frameWidth  = -1;
     frameHeight = -1;
 
+    frameSwap  = false;
     frameIndex = false;
 
 #ifdef QT_4
@@ -1258,36 +1262,45 @@ void WBackendVlcPrivate::onUpdateState()
 
     lines[2] = lines[1];
 
+    // NOTE: Sometimes the same size is requested several times.
+    if (d->width == width && d->height == height)
+    {
+        return 1;
+    }
+
+    d->width  = width;
+    d->height = height;
+
+    int cursorU = pitches[0] * lines[0];
+
+    int cursorV = cursorU + pitches[1] * lines[1];
+
+    // NOTE: We make sure we're not writing a new frame while applying it on a texture.
     //d->mutex.lock();
 
-    if (d->frameA.width() != width || d->frameA.height() != height)
+    // NOTE: We need to swap image(s) in case we're still reading bits from the rendering thread.
+    if (d->frameSwap)
     {
-        d->frameA = QImage(width, height, QImage::Format_RGB16);
-        d->frameB = QImage(width, height, QImage::Format_RGB16);
+        d->frames[0] = QImage(width, height, QImage::Format_RGB16);
+        d->frames[1] = QImage(width, height, QImage::Format_RGB16);
 
-        int cursorU = pitches[0] * lines[0];
-
-        int cursorV = cursorU + pitches[1] * lines[1];
-
-        d->textures[0].bitsA = d->frameA.bits();
-        d->textures[1].bitsA = d->frameA.bits() + cursorU;
-        d->textures[2].bitsA = d->frameA.bits() + cursorV;
-
-        d->textures[0].bitsB = d->frameB.bits();
-        d->textures[1].bitsB = d->frameB.bits() + cursorU;
-        d->textures[2].bitsB = d->frameB.bits() + cursorV;
-
-        d->textures[0].bits = d->textures[0].bitsA;
-        d->textures[1].bits = d->textures[1].bitsA;
-        d->textures[2].bits = d->textures[2].bitsA;
-
-        //d->mutex.unlock();
-
-        QCoreApplication::postEvent(d->q_func(),
-                                    new WBackendVlcEventSetup(width, height,
-                                                              pitches[0], pitches[1], pitches[2]));
+        applyFrames(d, d->frames[0], d->frames[1], cursorU, cursorV);
     }
-    //else d->mutex.unlock();
+    else
+    {
+        d->frames[2] = QImage(width, height, QImage::Format_RGB16);
+        d->frames[3] = QImage(width, height, QImage::Format_RGB16);
+
+        applyFrames(d, d->frames[2], d->frames[3], cursorU, cursorV);
+    }
+
+    //d->mutex.unlock();
+
+    d->frameIndex = false;
+
+    QCoreApplication::postEvent(d->q_func(),
+                                new WBackendVlcEventSetup(width, height,
+                                                          pitches[0], pitches[1], pitches[2]));
 
     return 1;
 }
@@ -1340,6 +1353,25 @@ void WBackendVlcPrivate::onUpdateState()
     //d->mutex.unlock();
 
     d->method.invoke(backend);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* static */ void WBackendVlcPrivate::applyFrames(WBackendVlcPrivate * d,
+                                                  QImage & frameA, QImage & frameB,
+                                                  int cursorU, int cursorV)
+{
+    d->textures[0].bitsA = frameA.bits();
+    d->textures[1].bitsA = frameA.bits() + cursorU;
+    d->textures[2].bitsA = frameA.bits() + cursorV;
+
+    d->textures[0].bitsB = frameB.bits();
+    d->textures[1].bitsB = frameB.bits() + cursorU;
+    d->textures[2].bitsB = frameB.bits() + cursorV;
+
+    d->textures[0].bits = d->textures[0].bitsA;
+    d->textures[1].bits = d->textures[1].bitsA;
+    d->textures[2].bits = d->textures[2].bitsA;
 }
 
 //=================================================================================================
@@ -1448,7 +1480,12 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
     if (d->started)
     {
-        d->player->pause();
+        // FIXME VLC 3.0.16: Pause does not seem to work on a live stream.
+        if (d->live)
+        {
+             d->player->stop();
+        }
+        else d->player->pause();
     }
     // FIXME VLC: Muting the sound to avoid the audio glitch.
     else d->setMute(true);
@@ -1462,7 +1499,12 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
     d->clearPlayer();
 
-    d->player->pause();
+    // FIXME VLC 3.0.16: Pause does not seem to work on a live stream.
+    if (d->live)
+    {
+         d->player->stop();
+    }
+    else d->player->pause();
 
     d->clearActive();
 
@@ -1639,13 +1681,23 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
     }
     else if (d->frameUpdated && d->frameFreeze == false)
     {
-        d->frameUpdated = false;
-
         WBackendTexture * textures = frame->textures;
 
         if (d->frameReset)
         {
+            // NOTE: If the frame has already changed in 'setup' we wait for the next bits.
+            if (d->width != d->frameWidth || d->height != d->frameHeight)
+            {
+                qDebug("INVALID FRAME");
+
+                return;
+            }
+
+            d->frameUpdated = false;
+
             d->frameReset = false;
+
+            //d->mutex.lock();
 
             for (int i = 0; i < 3; i++)
             {
@@ -1658,10 +1710,16 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
                 textureA->bits = textureB->bits;
             }
 
+            d->frameSwap = !(d->frameSwap);
+
+            //d->mutex.unlock();
+
             frame->state = WAbstractBackend::FrameReset;
         }
         else
         {
+            d->frameUpdated = false;
+
             textures[0].bits = d->textures[0].bits;
             textures[1].bits = d->textures[1].bits;
             textures[2].bits = d->textures[2].bits;
@@ -1693,7 +1751,10 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
         {
             d->frameUpdated = false;
 
-            if (d->frameReset)
+            if (d->frameReset
+                &&
+                // NOTE: If the frame has already changed in 'setup' we wait for the next bits.
+                d->width == d->frameWidth && d->height == d->frameHeight)
             {
                 d->frameReset = false;
 
@@ -1705,6 +1766,8 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
                 }
 
                 glGenTextures(3, d->textureIds);
+
+                //d->mutex.lock();
 
                 for (int i = 0; i < 3; i++)
                 {
@@ -1726,6 +1789,10 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
                                     d->textures[i].width, d->textures[i].height,
                                     PLAYER_FORMAT, PLAYER_DATA_TYPE, d->textures[i].bits);
                 }
+
+                d->frameSwap = !(d->frameSwap);
+
+                //d->mutex.unlock();
 
                 if (glGetError() == GL_INVALID_OPERATION)
                 {
@@ -1924,6 +1991,8 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
         d->frameWidth  = width;
         d->frameHeight = height;
 
+        qDebug("SETUP %d %d", width, height);
+
         d->frameSoftware = QImage(width, height, QImage::Format_RGB32);
 
         d->textures[0].width  = width;
@@ -1943,8 +2012,6 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
         d->textures[1].pitchMargin = pitchU - d->textures[1].width;
 
         d->textures[2].pitchMargin = d->textures[1].pitchMargin;
-
-        d->frameIndex = false;
 
         d->updateTargetRect();
 
@@ -2002,7 +2069,22 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
     {
         WVlcPlayerEvent * eventPlayer = static_cast<WVlcPlayerEvent *> (event);
 
-        setDuration(eventPlayer->value.toInt());
+        int length = eventPlayer->value.toInt();
+
+        if (length)
+        {
+            Q_D(WBackendVlc);
+
+            // NOTE: If length is 30 seconds then it's still a live feed.
+            if (d->live && length != 30000)
+            {
+                setLive(false);
+            }
+        }
+        // NOTE: If length is 0 then it's a live feed.
+        else setLive(true);
+
+        setDuration(length);
 
         return true;
     }

@@ -64,6 +64,8 @@ public: // Variable
     WAbstractBackend::State     state;
     WAbstractBackend::StateLoad stateLoad;
 
+    bool live;
+
     bool started;
     bool ended;
 

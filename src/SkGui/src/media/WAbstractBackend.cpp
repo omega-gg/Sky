@@ -70,6 +70,8 @@ void WAbstractBackendPrivate::init()
     state     = WAbstractBackend::StateStopped;
     stateLoad = WAbstractBackend::StateLoadDefault;
 
+    live = false;
+
     started = false;
     ended   = false;
 
@@ -438,6 +440,8 @@ QString WAbstractBackend::qualityToString(WAbstractBackend::Quality quality)
         setDuration   (duration);
         setCurrentTime(currentTime);
 
+        setLive(false);
+
         backendSetSource(url);
 
         emit sourceChanged();
@@ -665,6 +669,21 @@ void WAbstractBackend::setStateLoad(StateLoad stateLoad)
     d->stateLoad = stateLoad;
 
     emit stateLoadChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WAbstractBackend::setLive(bool live)
+{
+    Q_D(WAbstractBackend);
+
+    if (d->filter) d->filter->filterLive(&live);
+
+    if (d->live == live) return;
+
+    d->live = live;
+
+    emit liveChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1035,6 +1054,13 @@ bool WAbstractBackend::isStopped() const
 
 //-------------------------------------------------------------------------------------------------
 
+bool WAbstractBackend::isLive() const
+{
+    Q_D(const WAbstractBackend); return d->live;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 bool WAbstractBackend::hasStarted() const
 {
     Q_D(const WAbstractBackend); return d->started;
@@ -1318,6 +1344,8 @@ WBackendOutput & WBackendOutput::operator=(const WBackendOutput & other)
 
 /* virtual */ void WBackendFilter::filterState    (WAbstractBackend::State     *) {}
 /* virtual */ void WBackendFilter::filterStateLoad(WAbstractBackend::StateLoad *) {}
+
+/* virtual */ void WBackendFilter::filterLive(bool *) {}
 
 /* virtual */ void WBackendFilter::filterEnded(bool *) {}
 
