@@ -1681,8 +1681,6 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
     }
     else if (d->frameUpdated && d->frameFreeze == false)
     {
-        WBackendTexture * textures = frame->textures;
-
         if (d->frameReset)
         {
             // NOTE: If the frame has already changed in 'setup' we wait for the next bits.
@@ -1696,6 +1694,8 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
             d->frameUpdated = false;
 
             d->frameReset = false;
+
+            WBackendTexture * textures = frame->textures;
 
             //d->mutex.lock();
 
@@ -1720,11 +1720,18 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
         {
             d->frameUpdated = false;
 
+            WBackendTexture * textures = frame->textures;
+
             textures[0].bits = d->textures[0].bits;
             textures[1].bits = d->textures[1].bits;
             textures[2].bits = d->textures[2].bits;
 
-            frame->state = WAbstractBackend::FrameUpdate;
+            // NOTE: When frame reset is pending we keep it that way. Otherwise we won't reset the
+            //       texture properly in 'updatePaintNode'.
+            if (frame->state != WAbstractBackend::FrameReset)
+            {
+                frame->state = WAbstractBackend::FrameUpdate;
+            }
         }
     }
     else frame->state = WAbstractBackend::FrameDefault;
