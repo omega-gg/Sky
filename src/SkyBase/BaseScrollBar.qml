@@ -40,10 +40,15 @@ MouseArea
     //---------------------------------------------------------------------------------------------
     // Private
 
-    // NOTE: We want to take Flickable.originY into account.
     property int pMaximumY: view.contentHeight - height
 
     property int pMaximumHandle: height - handle.height
+
+//#QT_4
+    property int pOriginY: 0
+//#ELSE
+    property int pOriginY: view.originY
+//#END
 
     property bool pUpdate: true
 
@@ -68,23 +73,21 @@ MouseArea
     // NOTE: This handles 'page up' and 'page down' mouse interactions.
     onPressed:
     {
-        var originY = view.originY;
-
         if (mouseY < handle.y)
         {
-            var position = originY + view.contentY - view.height;
+            var position = pOriginY + view.contentY - view.height;
 
-            if (position < originY)
+            if (position < pOriginY)
             {
-                 view.contentY = originY;
+                 view.contentY = pOriginY;
             }
             else view.contentY = position;
         }
         else
         {
-            /* var */ position = originY + view.contentY + view.height;
+            /* var */ position = pOriginY + view.contentY + view.height;
 
-            var maximum = originY + pMaximumY;
+            var maximum = pOriginY + pMaximumY;
 
             if (position > maximum)
             {
@@ -122,7 +125,7 @@ MouseArea
         if (pUpdate == false) return;
 
         // NOTE: We need to take the originY 'delta' into account to get the proper ratio.
-        var ratio = (view.contentY - view.originY) / pMaximumY;
+        var ratio = (view.contentY - pOriginY) / pMaximumY;
 
         // NOTE: We don't want the scrollBar position to go under 0.
         if (ratio < 1.0)
@@ -143,9 +146,9 @@ MouseArea
         // NOTE: We need to take originY into account to get the right position.
         if (ratio < 1.0)
         {
-             view.contentY = view.originY + pMaximumY * ratio;
+             view.contentY = pOriginY + pMaximumY * ratio;
         }
-        else view.contentY = view.originY + pMaximumY;
+        else view.contentY = pOriginY + pMaximumY;
 
         pUpdate = true;
     }

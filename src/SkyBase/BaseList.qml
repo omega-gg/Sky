@@ -63,18 +63,30 @@ ListView
 
     function scrollToTop()
     {
+//#QT_4
+        contentY = 0;
+//#ELSE
         contentY = originY;
+//#END
     }
 
     function scrollToBottom()
     {
+//#QT_4
+        contentY = contentHeight - height;
+//#ELSE
         contentY = originY + contentHeight - height;
+//#END
     }
 
     //---------------------------------------------------------------------------------------------
 
     function getY()
     {
+//#QT_4
+        return contentY;
+//#ELSE
         return originY + contentY;
+//#END
     }
 }

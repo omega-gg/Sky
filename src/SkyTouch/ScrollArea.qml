@@ -31,7 +31,9 @@ Item
 
     default property alias contents: flickable.data
 
+//#QT_5
     property alias originY: flickable.originY
+//#END
 
     property alias contentHeight: flickable.contentHeight
     property alias contentY     : flickable.contentY
@@ -48,12 +50,20 @@ Item
 
     function scrollToTop()
     {
+//#QT_4
+        contentY = 0;
+//#ELSE
         contentY = originY;
+//#END
     }
 
     function scrollToBottom()
     {
+//#QT_4
+        contentY = contentHeight - height;
+//#ELSE
         contentY = originY + contentHeight - height;
+//#END
     }
 
     //---------------------------------------------------------------------------------------------
