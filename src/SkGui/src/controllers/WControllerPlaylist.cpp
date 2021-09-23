@@ -49,7 +49,7 @@ W_INIT_CONTROLLER(WControllerPlaylist)
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const QString CONTROLLERPLAYLIST_VIDEO = "^(mp4|webm|ogv|mkv|avi|wmv|mov|flv|3gp)$";
+static const QString CONTROLLERPLAYLIST_VIDEO = "^(mp4|webm|ogv|mkv|avi|wmv|mov|flv|3gp|m3u8)$";
 static const QString CONTROLLERPLAYLIST_AUDIO = "^(mp3|ogg|mka|wav|wma|flac)$";
 
 static const QString CONTROLLERPLAYLIST_MARKUP = "^(html|xml|json)$";
@@ -60,7 +60,7 @@ static const QString CONTROLLERPLAYLIST_SUBTITLE = "^(srt)$";
 
 static const QString CONTROLLERPLAYLIST_FILTER
     =
-    "Media files (*.mp4 *.webm *.ogv *.mkv *.avi *.wmv *.mov *.flv *.3gp "
+    "Media files (*.mp4 *.webm *.ogv *.mkv *.avi *.wmv *.mov *.flv *.3gp *.m3u8 "
                   "*.mp3 *.ogg *.mka *.wav *.wma *.flac "
                   "*.html *.xml *.json *.torrent "
                   "*.txt *.md);;"
