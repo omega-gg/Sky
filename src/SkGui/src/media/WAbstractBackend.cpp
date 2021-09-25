@@ -374,29 +374,29 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 /* Q_INVOKABLE static */
 WAbstractBackend::Quality WAbstractBackend::qualityFromString(const QString & string)
 {
-    if      (string ==  "144") return WAbstractBackend::Quality144;
-    else if (string ==  "240") return WAbstractBackend::Quality240;
-    else if (string ==  "360") return WAbstractBackend::Quality360;
-    else if (string ==  "480") return WAbstractBackend::Quality480;
-    else if (string ==  "720") return WAbstractBackend::Quality720;
-    else if (string == "1080") return WAbstractBackend::Quality1080;
-    else if (string == "1440") return WAbstractBackend::Quality1440;
-    else if (string == "2160") return WAbstractBackend::Quality2160;
-    else                       return WAbstractBackend::QualityInvalid;
+    if      (string ==  "144") return Quality144;
+    else if (string ==  "240") return Quality240;
+    else if (string ==  "360") return Quality360;
+    else if (string ==  "480") return Quality480;
+    else if (string ==  "720") return Quality720;
+    else if (string == "1080") return Quality1080;
+    else if (string == "1440") return Quality1440;
+    else if (string == "2160") return Quality2160;
+    else                       return QualityInvalid;
 }
 
 /* Q_INVOKABLE static */
-QString WAbstractBackend::qualityToString(WAbstractBackend::Quality quality)
+QString WAbstractBackend::qualityToString(Quality quality)
 {
-    if      (quality == WAbstractBackend::Quality144)  return  "144";
-    else if (quality == WAbstractBackend::Quality240)  return  "240";
-    else if (quality == WAbstractBackend::Quality360)  return  "360";
-    else if (quality == WAbstractBackend::Quality480)  return  "480";
-    else if (quality == WAbstractBackend::Quality720)  return  "720";
-    else if (quality == WAbstractBackend::Quality1080) return "1080";
-    else if (quality == WAbstractBackend::Quality1440) return "1440";
-    else if (quality == WAbstractBackend::Quality2160) return "2160";
-    else                                               return QString();
+    if      (quality == Quality144)  return  "144";
+    else if (quality == Quality240)  return  "240";
+    else if (quality == Quality360)  return  "360";
+    else if (quality == Quality480)  return  "480";
+    else if (quality == Quality720)  return  "720";
+    else if (quality == Quality1080) return "1080";
+    else if (quality == Quality1440) return "1440";
+    else if (quality == Quality2160) return "2160";
+    else                             return QString();
 }
 
 //-------------------------------------------------------------------------------------------------

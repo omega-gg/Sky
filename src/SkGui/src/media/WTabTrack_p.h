@@ -72,8 +72,6 @@ struct WTabTrackDataBookmark
 
     QDateTime date;
 
-    WAbstractBackend::Quality quality;
-
     QString videoShot;
 
     int currentTime;

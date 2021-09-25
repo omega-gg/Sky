@@ -174,8 +174,6 @@ public: // Variables
 
         stream.writeTextElement("date", Sk::dateToStringNumber(data.date));
 
-        stream.writeTextElement("quality", QString::number(data.quality));
-
         stream.writeTextElement("videoShot", data.videoShot);
 
         stream.writeTextElement("currentTime", QString::number(data.currentTime));
@@ -437,15 +435,6 @@ bool WTabTrackRead::load(QXmlStreamReader * stream, WTabTrackReadReply * reply)
         data.date = WControllerXml::readNextDate(stream);
 
         //-----------------------------------------------------------------------------------------
-        // quality
-
-        if (WControllerXml::readNextStartElement(stream, "quality") == false) return false;
-
-        int quality = WControllerXml::readNextInt(stream);
-
-        data.quality = static_cast<WAbstractBackend::Quality> (quality);
-
-        //-----------------------------------------------------------------------------------------
         // videoShot
 
         if (WControllerXml::readNextStartElement(stream, "videoShot") == false) return false;
@@ -613,8 +602,6 @@ void WTabTrackPrivate::loadBookmarks(const QList<WTabTrackDataBookmark> & bookma
         p->duration = bookmark.duration;
 
         p->date = bookmark.date;
-
-        p->quality = bookmark.quality;
 
         p->videoShot   = bookmark.videoShot;
         p->currentTime = bookmark.currentTime;
@@ -1374,8 +1361,6 @@ void WTabTrackPrivate::onPlaylistDestroyed()
 
         data.date = p->date;
 
-        data.quality = p->quality;
-
         QString videoShot = p->videoShot;
 
         videoShot.replace("image:///", "file:///");
@@ -1728,6 +1713,19 @@ QVariantMap WTabTrack::trackData() const
 
 //-------------------------------------------------------------------------------------------------
 
+WTrack::Type WTabTrack::type() const
+{
+    Q_D(const WTabTrack);
+
+    if (d->currentBookmark)
+    {
+         return d->currentBookmark->type();
+    }
+    else return WTrack::Media;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 WTrack::State WTabTrack::state() const
 {
     Q_D(const WTabTrack);
@@ -1850,19 +1848,6 @@ QDateTime WTabTrack::date() const
          return d->currentBookmark->date();
     }
     else return QDateTime();
-}
-
-//-------------------------------------------------------------------------------------------------
-
-WAbstractBackend::Quality WTabTrack::quality() const
-{
-    Q_D(const WTabTrack);
-
-    if (d->currentBookmark)
-    {
-         return d->currentBookmark->quality();
-    }
-    else return WAbstractBackend::QualityInvalid;
 }
 
 //-------------------------------------------------------------------------------------------------

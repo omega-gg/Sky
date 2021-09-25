@@ -62,11 +62,11 @@ void WBookmarkTrackPrivate::init()
 
     idTrack = -1;
 
+    type = WTrack::Media;
+
     state = WTrack::Default;
 
     duration = -1;
-
-    quality = WAbstractBackend::QualityInvalid;
 
     currentTime = -1;
 }
@@ -146,6 +146,8 @@ void WBookmarkTrackPrivate::setTrack(const WTrack & track)
         idPlaylist = playlist->idFull();
     }
 
+    type = track.type();
+
     state = track.state();
 
     source = track.source();
@@ -159,8 +161,6 @@ void WBookmarkTrackPrivate::setTrack(const WTrack & track)
     duration = track.duration();
 
     date = track.date();
-
-    quality = track.quality();
 
     videoShot = QString();
 
@@ -245,6 +245,8 @@ WTrack WBookmarkTrack::toTrack() const
 
     WTrack track(d->source);
 
+    track.setType(d->type);
+
     track.setState(d->state);
 
     track.setTitle(d->title);
@@ -256,8 +258,6 @@ WTrack WBookmarkTrack::toTrack() const
     track.setDuration(d->duration);
 
     track.setDate(d->date);
-
-    track.setQuality(d->quality);
 
     return track;
 }
@@ -308,6 +308,8 @@ bool WBookmarkTrack::operator==(const WBookmarkTrack & other) const
         d->idPlaylist == op->idPlaylist &&
         d->idTrack    == op->idTrack    &&
 
+        d->type == op->type &&
+
         d->state == op->state &&
 
         d->source == op->source &&
@@ -321,8 +323,6 @@ bool WBookmarkTrack::operator==(const WBookmarkTrack & other) const
         d->duration == op->duration &&
 
         d->date == op->date &&
-
-        d->quality == op->quality &&
 
         d->videoShot   == op->videoShot   &&
         d->currentTime == op->currentTime &&
@@ -353,6 +353,8 @@ WBookmarkTrack & WBookmarkTrack::operator=(const WBookmarkTrack & other)
     d->idPlaylist = op->idPlaylist;
     d->idTrack    = op->idTrack;
 
+    d->type = op->type;
+
     d->state = op->state;
 
     d->source = op->source;
@@ -366,8 +368,6 @@ WBookmarkTrack & WBookmarkTrack::operator=(const WBookmarkTrack & other)
     d->duration = op->duration;
 
     d->date = op->date;
-
-    d->quality = op->quality;
 
     d->videoShot   = op->videoShot;
     d->currentTime = op->currentTime;
@@ -431,6 +431,8 @@ WBookmarkTrack & WBookmarkTrack::operator=(const WBookmarkTrack & other)
 
     if (d->track != track) return;
 
+    d->type = track->type();
+
     d->state = track->state();
 
     d->source = track->source();
@@ -444,8 +446,6 @@ WBookmarkTrack & WBookmarkTrack::operator=(const WBookmarkTrack & other)
     d->duration = track->duration();
 
     d->date = track->date();
-
-    d->quality = track->quality();
 
     d->emitUpdated();
 
@@ -570,6 +570,13 @@ int WBookmarkTrack::idFolderRoot() const
 
 //-------------------------------------------------------------------------------------------------
 
+WTrack::Type WBookmarkTrack::type() const
+{
+    Q_D(const WBookmarkTrack); return d->type;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 WTrack::State WBookmarkTrack::state() const
 {
     Q_D(const WBookmarkTrack); return d->state;
@@ -611,13 +618,6 @@ QString WBookmarkTrack::feed() const
 QDateTime WBookmarkTrack::date() const
 {
     Q_D(const WBookmarkTrack); return d->date;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-WAbstractBackend::Quality WBookmarkTrack::quality() const
-{
-    Q_D(const WBookmarkTrack); return d->quality;
 }
 
 //-------------------------------------------------------------------------------------------------

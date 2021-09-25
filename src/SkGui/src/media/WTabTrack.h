@@ -80,7 +80,14 @@ class SK_GUI_EXPORT WTabTrack : public WAbstractTab
 
     Q_PROPERTY(QVariantMap trackData READ trackData NOTIFY currentBookmarkUpdated)
 
+    //---------------------------------------------------------------------------------------------
+    // NOTE: We cannot use WTrack::Type and WTrack::State because WTrack is not a QObject.
+
+    Q_PROPERTY(int type READ type NOTIFY currentBookmarkUpdated)
+
     Q_PROPERTY(int state READ state NOTIFY currentBookmarkUpdated)
+
+    //---------------------------------------------------------------------------------------------
 
     Q_PROPERTY(QString source READ source NOTIFY currentBookmarkUpdated)
 
@@ -93,8 +100,6 @@ class SK_GUI_EXPORT WTabTrack : public WAbstractTab
     Q_PROPERTY(int duration READ duration NOTIFY currentBookmarkUpdated)
 
     Q_PROPERTY(QDateTime date READ date NOTIFY currentBookmarkUpdated)
-
-    Q_PROPERTY(WAbstractBackend::Quality quality READ quality NOTIFY currentBookmarkUpdated)
 
     Q_PROPERTY(QString videoShot READ videoShot NOTIFY currentBookmarkUpdated)
     Q_PROPERTY(QString coverShot READ coverShot NOTIFY currentBookmarkUpdated)
@@ -195,6 +200,8 @@ public: // Properties
 
     QVariantMap trackData() const;
 
+    WTrack::Type type() const;
+
     WTrack::State state() const;
 
     QString source() const;
@@ -209,8 +216,6 @@ public: // Properties
     void setDuration(int msec);
 
     QDateTime date() const;
-
-    WAbstractBackend::Quality quality() const;
 
     QString videoShot() const;
     QString coverShot() const;

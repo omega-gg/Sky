@@ -183,6 +183,8 @@ public: // Static functions
     //---------------------------------------------------------------------------------------------
     // String
 
+    Q_INVOKABLE static int indexBefore(const QString & string, const QChar & match, int from = -1);
+
     Q_INVOKABLE static int indexSkip(const QString & string, const QString & match, int skip);
 
     Q_INVOKABLE static QString trim      (const QString & string);
@@ -196,6 +198,28 @@ public: // Static functions
     Q_INVOKABLE static void replaceFirst(QString * string, const QString & before,
                                                            const QString & after,
                                                            int             from = 0);
+
+    //---------------------------------------------------------------------------------------------
+    // NOTE: Insert a line on the next line(s) after the matched 'pattern'.
+
+    Q_INVOKABLE static void insertLine(QString * string,
+                                       const QString & line, const QString & pattern,
+                                       int from = 0);
+
+    Q_INVOKABLE static void insertLines(QString * string,
+                                        const QString & line, const QString & pattern,
+                                        int from = 0, int to = -1);
+
+    //---------------------------------------------------------------------------------------------
+    // NOTE: Remove the line(s) containing the matched 'pattern'.
+
+    Q_INVOKABLE static void removeLine(QString * string, const QString & pattern,
+                                       int from = 0);
+
+    Q_INVOKABLE static void removeLines(QString * string, const QString & pattern,
+                                        int from = 0, int to = -1);
+
+    //---------------------------------------------------------------------------------------------
 
     Q_INVOKABLE static QString slice(const QString & string, int start, int end);
 

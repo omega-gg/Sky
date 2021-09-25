@@ -70,6 +70,8 @@ public: // Variables
     QList<int> idPlaylist;
     int        idTrack;
 
+    WTrack::Type type;
+
     WTrack::State state;
 
     QString source;
@@ -83,8 +85,6 @@ public: // Variables
     int duration;
 
     QDateTime date;
-
-    WAbstractBackend::Quality quality;
 
     QString videoShot;
 

@@ -27,6 +27,7 @@ SOURCES += src/media/WBackendNet.cpp \
            src/media/WTrack.cpp \
            src/media/WLibraryItem.cpp \
            src/media/WPlaylist.cpp \
+           src/media/WPlaylist_patch.cpp \
            src/media/WLibraryFolder.cpp \
            src/media/WLibraryFolderRelated.cpp \
            src/media/WAbstractBackend.cpp \

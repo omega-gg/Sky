@@ -45,6 +45,11 @@
 using namespace QtLP_Private;
 
 //-------------------------------------------------------------------------------------------------
+// Functions declarations
+
+void WBackendPlaylist_patch(QString & data, const QString & api);
+
+//-------------------------------------------------------------------------------------------------
 // Static variables
 
 static const int PLAYLIST_MAX = 500;
@@ -81,6 +86,8 @@ struct WThreadActionDataTrack
 {
     int id;
 
+    WTrack::Type type;
+
     WTrack::State state;
 
     QString source;
@@ -94,8 +101,6 @@ struct WThreadActionDataTrack
     int duration;
 
     QDateTime date;
-
-    WAbstractBackend::Quality quality;
 };
 
 class WPlaylistWrite : public WAbstractThreadAction
@@ -204,6 +209,8 @@ public: // Variables
 
         stream.writeTextElement("id", QString::number(data.id));
 
+        stream.writeTextElement("type", QString::number(data.type));
+
         stream.writeTextElement("state", QString::number(data.state));
 
         stream.writeTextElement("source", data.source);
@@ -217,8 +224,6 @@ public: // Variables
         stream.writeTextElement("duration", QString::number(data.duration));
 
         stream.writeTextElement("date", Sk::dateToStringNumber(data.date));
-
-        stream.writeTextElement("quality", QString::number(data.quality));
 
         stream.writeEndElement(); // track
     }
@@ -268,6 +273,8 @@ protected: // WAbstractThreadAction implementation
     /* virtual */ bool run();
 
 private: // Functions
+    bool extract(WPlaylistReadReply * reply, const QByteArray & array);
+
     bool loadPlaylist(QXmlStreamReader * stream, WPlaylistReadReply * reply);
     bool loadTracks  (QXmlStreamReader * stream, WPlaylistReadReply * reply);
 
@@ -323,13 +330,33 @@ public: // Variables
 {
     WPlaylistReadReply * reply = qobject_cast<WPlaylistReadReply *> (this->reply());
 
-    QByteArray data = WControllerFile::readFile(path);
+    return extract(reply, WControllerFile::readFile(path));
+}
 
-    QXmlStreamReader stream(data);
+//-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
+
+bool WPlaylistRead::extract(WPlaylistReadReply * reply, const QByteArray & array)
+{
+    QXmlStreamReader stream(array);
+
+    if (WControllerXml::readNextStartElement(&stream, "version") == false) return false;
+
+    QString version = WControllerXml::readNextString(&stream);
+
+    if (Sk::versionIsHigher(Sk::versionSky(), version))
+    {
+        QString content = array;
+
+        WBackendPlaylist_patch(content, version);
+
+        return extract(reply, content.toUtf8());
+    }
 
     if (loadPlaylist(&stream, reply) == false || loadTracks(&stream, reply) == false)
     {
-        qWarning("WPlaylistRead::run: Invalid file %s.", path.C_STR);
+        qWarning("WPlaylistRead::extract: Invalid file %s.", path.C_STR);
 
         return false;
     }
@@ -339,8 +366,6 @@ public: // Variables
     return true;
 }
 
-//-------------------------------------------------------------------------------------------------
-// Private functions
 //-------------------------------------------------------------------------------------------------
 
 bool WPlaylistRead::loadPlaylist(QXmlStreamReader * stream, WPlaylistReadReply * reply)
@@ -413,6 +438,13 @@ bool WPlaylistRead::loadTracks(QXmlStreamReader * stream, WPlaylistReadReply * r
         p->id = WControllerXml::readNextInt(stream);
 
         //-----------------------------------------------------------------------------------------
+        // type
+
+        if (WControllerXml::readNextStartElement(stream, "type") == false) return false;
+
+        p->type = static_cast<WTrack::Type> (WControllerXml::readNextInt(stream));
+
+        //-----------------------------------------------------------------------------------------
         // state
 
         if (WControllerXml::readNextStartElement(stream, "state") == false) return false;
@@ -467,15 +499,6 @@ bool WPlaylistRead::loadTracks(QXmlStreamReader * stream, WPlaylistReadReply * r
         if (WControllerXml::readNextStartElement(stream, "date") == false) return false;
 
         p->date = WControllerXml::readNextDate(stream);
-
-        //-----------------------------------------------------------------------------------------
-        // quality
-
-        if (WControllerXml::readNextStartElement(stream, "quality") == false) return false;
-
-        int quality = WControllerXml::readNextInt(stream);
-
-        p->quality = static_cast<WAbstractBackend::Quality> (quality);
 
         //-----------------------------------------------------------------------------------------
 
@@ -1707,6 +1730,32 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ WTrack::Type WPlaylist::trackType(int index) const
+{
+    const WTrack * track = trackPointerAt(index);
+
+    if (track)
+    {
+         return track->type();
+    }
+    else return WTrack::Media;
+}
+
+/* Q_INVOKABLE */ void WPlaylist::setTrackType(int index, WTrack::Type type)
+{
+    Q_D(WPlaylist);
+
+    WTrack * track = d->getTrack(index);
+
+    if (track == NULL || track->type() == type) return;
+
+    track->setType(type);
+
+    updateTrack(index);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ WTrack::State WPlaylist::trackState(int index) const
 {
     const WTrack * track = trackPointerAt(index);
@@ -2072,6 +2121,8 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
         Sk::bmlTag(vbml, tabA + "track");
 
+        Sk::bmlPair(vbml, tabB + "type", WTrack::typeToString(p->type));
+
         Sk::bmlPair(vbml, tabB + "source", p->source);
 
         Sk::bmlPair(vbml, tabB + "title", p->title);
@@ -2241,6 +2292,8 @@ void WPlaylist::endTracksRemove() const
 
         data.id = p->id;
 
+        data.type = p->type;
+
         data.state = p->state;
 
         data.source = p->source;
@@ -2254,8 +2307,6 @@ void WPlaylist::endTracksRemove() const
         data.duration = p->duration;
 
         data.date = p->date;
-
-        data.quality = p->quality;
 
         action->dataTracks.append(data);
     }

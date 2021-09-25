@@ -114,6 +114,7 @@ void WModelPlaylistPrivate::init()
 
     const WTrack * track = static_cast<const WTrack *> (d->playlist->trackPointerAt(row));
 
+    if      (role == RoleType)     return track->type();
     if      (role == RoleState)    return track->state();
     else if (role == RoleSource)   return track->source();
     else if (role == RoleTitle)    return track->title();
@@ -131,6 +132,7 @@ void WModelPlaylistPrivate::init()
 {
     QHash<int, QByteArray> roles;
 
+    roles.insert(WModelPlaylist::RoleType,     "type");
     roles.insert(WModelPlaylist::RoleState,    "loadState");
     roles.insert(WModelPlaylist::RoleSource,   "source");
     roles.insert(WModelPlaylist::RoleTitle,    "title");

@@ -41,11 +41,11 @@ WTrackPrivate::WTrackPrivate(WTrack * p) : WPrivate(p) {}
 
 void WTrackPrivate::init()
 {
+    type = WTrack::Media;
+
     id = -1;
 
     duration = -1;
-
-    quality = WAbstractBackend::QualityInvalid;
 
     playlist = NULL;
 }
@@ -84,6 +84,8 @@ void WTrack::copyDataTo(WTrack * other) const
 
     WTrackPrivate * op = other->d_func();
 
+    op->type = d->type;
+
     if (d->state == Loading)
     {
          op->state = Default;
@@ -99,8 +101,6 @@ void WTrack::copyDataTo(WTrack * other) const
     op->duration = d->duration;
 
     op->date = d->date;
-
-    op->quality = d->quality;
 }
 
 void WTrack::applyDataTo(WTrack * other) const
@@ -108,6 +108,11 @@ void WTrack::applyDataTo(WTrack * other) const
     Q_D(const WTrack);
 
     WTrackPrivate * op = other->d_func();
+
+    if (d->type != WTrack::Unknown)
+    {
+        op->type = d->type;
+    }
 
     if (d->title.isEmpty() == false)
     {
@@ -138,11 +143,26 @@ void WTrack::applyDataTo(WTrack * other) const
     {
         op->date = d->date;
     }
+}
 
-    if (d->quality != WAbstractBackend::QualityInvalid)
-    {
-        op->quality = d->quality;
-    }
+//-------------------------------------------------------------------------------------------------
+// Static functions
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */
+WTrack::Type WTrack::typeFromString(const QString & string)
+{
+    if (string == "media") return WTrack::Media;
+    if (string == "live")  return WTrack::Live;
+    else                   return WTrack::Unknown;
+}
+
+/* Q_INVOKABLE static */
+QString WTrack::typeToString(Type type)
+{
+    if (type == Media) return "media";
+    if (type == Live)  return "live";
+    else               return "";
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -171,8 +191,6 @@ void WTrack::applyDataTo(WTrack * other) const
 
     map.insert("date", d->date);
 
-    map.insert("quality", d->quality);
-
     return map;
 }
 
@@ -182,7 +200,7 @@ void WTrack::applyDataTo(WTrack * other) const
 
     QString vbml;
 
-    Sk::bmlPair(vbml, "type", "track", "\n\n");
+    Sk::bmlPair(vbml, "type", "track " + typeToString(d->type), "\n\n");
 
     Sk::bmlPair(vbml, "source", d->source, "\n\n");
 
@@ -231,6 +249,8 @@ bool WTrack::operator==(const WTrack & other) const
 
     if (d->id == op->id &&
 
+        d->type == op->type &&
+
         d->state == op->state &&
 
         d->source == op->source &&
@@ -244,8 +264,6 @@ bool WTrack::operator==(const WTrack & other) const
         d->duration == op->duration &&
 
         d->date == op->date &&
-
-        d->quality == op->quality &&
 
         d->playlist == op->playlist)
     {
@@ -262,6 +280,8 @@ WTrack & WTrack::operator=(const WTrack & other)
 
     d->id = op->id;
 
+    d->type = op->type;
+
     d->state = op->state;
 
     d->source = op->source;
@@ -276,8 +296,6 @@ WTrack & WTrack::operator=(const WTrack & other)
 
     d->date = op->date;
 
-    d->quality = op->quality;
-
     d->playlist = op->playlist;
 
     return *this;
@@ -290,6 +308,18 @@ WTrack & WTrack::operator=(const WTrack & other)
 int WTrack::id() const
 {
     Q_D(const WTrack); return d->id;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+WTrack::Type WTrack::type() const
+{
+    Q_D(const WTrack); return d->type;
+}
+
+void WTrack::setType(WTrack::Type type)
+{
+    Q_D(WTrack); d->type = type;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -403,18 +433,6 @@ QDateTime WTrack::date() const
 void WTrack::setDate(const QDateTime & date)
 {
     Q_D(WTrack); d->date = date;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-WAbstractBackend::Quality WTrack::quality() const
-{
-    Q_D(const WTrack); return d->quality;
-}
-
-void WTrack::setQuality(WAbstractBackend::Quality quality)
-{
-    Q_D(WTrack); d->quality = quality;
 }
 
 //-------------------------------------------------------------------------------------------------

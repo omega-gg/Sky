@@ -683,6 +683,28 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 //-------------------------------------------------------------------------------------------------
 // String
 
+/* Q_INVOKABLE static */ int WControllerApplication::indexBefore(const QString & string,
+                                                                 const QChar   & match, int from)
+{
+    if (from < -1) return -1;
+
+    int length = string.length() - 1;
+
+    if (from == -1 || from > length)
+    {
+        from = length;
+    }
+
+    while (from != -1)
+    {
+        if (string[from] == match) return from;
+
+        from--;
+    }
+
+    return -1;
+}
+
 /* Q_INVOKABLE static */ int WControllerApplication::indexSkip(const QString & string,
                                                                const QString & match, int skip)
 {
@@ -771,6 +793,120 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
                                                                    int             from)
 {
     string->replace(string->indexOf(before, from), before.length(), after);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ void WControllerApplication::insertLine(QString       * string,
+                                                                 const QString & line,
+                                                                 const QString & pattern,
+                                                                 int             from)
+{
+    int index = string->indexOf(pattern, from);
+
+    if (index == -1) return;
+
+    index = string->indexOf('\n', index + 1);
+
+    if (index == -1) return;
+
+    string->insert(index + 1, line + '\n');
+}
+
+/* Q_INVOKABLE static */ void WControllerApplication::insertLines(QString       * string,
+                                                                  const QString & line,
+                                                                  const QString & pattern,
+                                                                  int             from,
+                                                                  int             to)
+{
+    QString text = line + '\n';
+
+    int length = text.length();
+
+    if (to == -1) to = string->length();
+
+    int index = string->indexOf(pattern, from);
+
+    while (index != -1 && index < to)
+    {
+        index = string->indexOf('\n', index + 1);
+
+        if (index == -1 || index >= to) return;
+
+        index++;
+
+        string->insert(index, text);
+
+        // NOTE: We've just added 'text' so we increment the maximum index.
+        to += length;
+
+        // NOTE: We want to skip the line to avoid an infinite loop if it contains the pattern.
+        index = string->indexOf(pattern, index + length);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ void WControllerApplication::removeLine(QString       * string,
+                                                                 const QString & pattern,
+                                                                 int             from)
+{
+    int indexA = string->indexOf(pattern, from);
+
+    if (indexA == -1) return;
+
+    int indexB = string->indexOf('\n', indexA);
+
+    if (indexB == -1)
+    {
+        indexB = string->length();
+    }
+    else indexB++;
+
+    indexA = indexBefore(*string, '\n', indexA);
+
+    if (indexA == -1)
+    {
+        indexA = 0;
+    }
+    else indexA++;
+
+    string->remove(indexA, indexB - indexA);
+}
+
+/* Q_INVOKABLE static */ void WControllerApplication::removeLines(QString       * string,
+                                                                  const QString & pattern,
+                                                                  int             from,
+                                                                  int             to)
+{
+    int length = string->length();
+
+    if (to == -1) to = length;
+
+    int indexA = string->indexOf(pattern, from);
+
+    while (indexA != -1)
+    {
+        int indexB = string->indexOf('\n', indexA);
+
+        if (indexB == -1)
+        {
+            indexB = length;
+        }
+        else indexB++;
+
+        indexA = indexBefore(*string, '\n', indexA);
+
+        if (indexA == -1)
+        {
+            indexA = 0;
+        }
+        else indexA++;
+
+        string->remove(indexA, indexB - indexA);
+
+        indexA = string->indexOf(pattern, indexA);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1762,7 +1898,7 @@ void WControllerApplication::setVersion(const QString & version)
 
 /* static */ QString WControllerApplication::versionSky()
 {
-    return "1.7.0-4";
+    return "1.7.0-5";
 }
 
 /* static */ QString WControllerApplication::versionQt()

@@ -38,6 +38,8 @@ class WPlaylist;
 class SK_GUI_EXPORT WTrack : public WPrivatable
 {
 public: // Enums
+    enum Type { Unknown, Media, Live };
+
     enum State { Default, Loading, Loaded, Cover };
 
 public:
@@ -48,6 +50,11 @@ public: // Interface
 
     void copyDataTo (WTrack * other) const;
     void applyDataTo(WTrack * other) const;
+
+public: // Static functions
+    static Type typeFromString(const QString & string);
+
+    static QString typeToString(Type type);
 
 public: // Virtual interface
     virtual QVariantMap toMap() const;
@@ -63,6 +70,9 @@ public: // Operators
 
 public: // Properties
     int id() const;
+
+    Type type() const;
+    void setType(Type type);
 
     State state() const;
     void  setState(State state);
@@ -91,9 +101,6 @@ public: // Properties
 
     QDateTime date() const;
     void      setDate(const QDateTime & date);
-
-    WAbstractBackend::Quality quality() const;
-    void                      setQuality(WAbstractBackend::Quality quality);
 
     WPlaylist * playlist() const;
 

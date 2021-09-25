@@ -134,6 +134,8 @@ void WLibraryFolderRelatedPrivate::init()
 {
     WTrack track(data.value("source").toString());
 
+    track.setType(static_cast<WTrack::Type> (data.value("type").toInt()));
+
     WTrack::State state = static_cast<WTrack::State> (data.value("state").toInt());
 
     if (state == WTrack::Loading)
@@ -151,8 +153,6 @@ void WLibraryFolderRelatedPrivate::init()
     track.setDuration(data.value("duration").toInt());
 
     track.setDate(data.value("date").toDateTime());
-
-    track.setQuality(static_cast<WAbstractBackend::Quality> (data.value("quality").toInt()));
 
     loadTracks(track);
 }

@@ -46,7 +46,8 @@ class SK_GUI_EXPORT WModelPlaylist : public QAbstractListModel, public WPlaylist
 public: // Enums
     enum TrackRoles
     {
-        RoleState = Qt::UserRole + 1,
+        RoleType = Qt::UserRole + 1,
+        RoleState,
         RoleSource,
         RoleTitle,
         RoleCover,

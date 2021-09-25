@@ -364,6 +364,7 @@ public: // Functions
 
     WLibraryItem::Type     getType     (const QString & string) const;
     WBackendNetQuery::Type getTypeQuery(const QString & string) const;
+    WTrack::Type           getTypeTrack(const QString & string) const;
 
     WLocalObject::State getState     (const QString & string) const;
     WTrack::State       getStateTrack(const QString & string) const;

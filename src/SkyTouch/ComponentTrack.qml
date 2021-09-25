@@ -98,7 +98,7 @@ Item
     // Childs
     //---------------------------------------------------------------------------------------------
 
-    ButtonTouchIcon
+    ButtonTouchTrack
     {
         id: buttonIcon
 
@@ -119,6 +119,8 @@ Item
                                         : Image.PreserveAspectCrop
 
         iconAsynchronous: gui.asynchronous
+
+        trackType: type
 
         //-----------------------------------------------------------------------------------------
         // Functions

@@ -85,6 +85,8 @@ public: // Properties
     int        idTrack     () const;
     int        idFolderRoot() const;
 
+    WTrack::Type type() const;
+
     WTrack::State state() const;
 
     QString source() const;
@@ -98,8 +100,6 @@ public: // Properties
     int duration() const;
 
     QDateTime date() const;
-
-    WAbstractBackend::Quality quality() const;
 
     QString videoShot() const;
 

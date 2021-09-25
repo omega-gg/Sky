@@ -4095,6 +4095,8 @@ void WBackendUniversalPrivate::applyTrackParameters(WBackendUniversalParameters 
 
     parameters->add("reload");
 
+    parameters->add("type");
+
     parameters->add("source");
 
     parameters->add("title");
@@ -4106,8 +4108,6 @@ void WBackendUniversalPrivate::applyTrackParameters(WBackendUniversalParameters 
     parameters->add("duration", reply.track.duration());
 
     parameters->add("date");
-
-    parameters->add("quality");
 }
 
 void WBackendUniversalPrivate::applyTrackResults(WBackendUniversalParameters * parameters,
@@ -4125,6 +4125,8 @@ void WBackendUniversalPrivate::applyTrackResults(WBackendUniversalParameters * p
 
     WTrack & track = reply->track;
 
+    track.setType(getTypeTrack(parameters->value("type")->toString()));
+
     track.setSource(parameters->value("source")->toString());
 
     track.setTitle(parameters->value("title")->toString());
@@ -4136,8 +4138,6 @@ void WBackendUniversalPrivate::applyTrackResults(WBackendUniversalParameters * p
     track.setDuration(parameters->value("duration")->toInt());
 
     track.setDate(getDate(*(parameters->value("date"))));
-
-    track.setQuality(getQuality(parameters->value("quality")->toString()));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -4302,6 +4302,8 @@ void WBackendUniversalPrivate::applyTrack(QList<WTrack>  * tracks,
 
     WTrack track;
 
+    track.setType(getTypeTrack(hash.value("type").toString()));
+
     track.setState(getStateTrack(hash.value("state").toString()));
 
     track.setSource(hash.value("source").toString());
@@ -4317,8 +4319,6 @@ void WBackendUniversalPrivate::applyTrack(QList<WTrack>  * tracks,
     if (variant) track.setDuration(variant->toInt());
 
     track.setDate(getDate(hash.value("date")));
-
-    track.setQuality(getQuality(hash.value("quality").toString()));
 
     tracks->append(track);
 }
@@ -4449,6 +4449,11 @@ WBackendNetQuery::Type WBackendUniversalPrivate::getTypeQuery(const QString & st
 {
     if (string == "torrent") return WBackendNetQuery::TypeTorrent;
     else                     return WBackendNetQuery::TypeDefault;
+}
+
+WTrack::Type WBackendUniversalPrivate::getTypeTrack(const QString & string) const
+{
+    return WTrack::typeFromString(string);
 }
 
 //-------------------------------------------------------------------------------------------------

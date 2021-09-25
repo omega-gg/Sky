@@ -20,54 +20,34 @@
 */
 //=================================================================================================
 
-#ifndef WTRACK_P_H
-#define WTRACK_P_H
+#include "WPlaylist.h"
 
-/*  W A R N I N G
-    -------------
+#ifndef SK_NO_PLAYLIST
 
-    This file is not part of the Sk API. It exists purely as an
-    implementation detail. This header file may change from version to
-    version without notice, or even be removed.
+// Sk includes
+#include <WControllerApplication>
 
-    We mean it.
-*/
+//-------------------------------------------------------------------------------------------------
+// Functions
+//-------------------------------------------------------------------------------------------------
 
-#include <private/Sk_p>
-
-#ifndef SK_NO_TRACK
-
-class SK_GUI_EXPORT WTrackPrivate : public WPrivate
+void WBackendPlaylist_patch(QString & data, const QString & api)
 {
-public:
-    WTrackPrivate(WTrack * p);
+    qWarning("WBackendPlaylist_patch: Patching.");
 
-    void init();
+    if (Sk::versionIsLower(api, "1.7.0-5"))
+    {
+        int index = data.indexOf("<tracks>");
 
-public: // Variables
-    int id;
+        // NOTE: We've added a 'type' property for tracks.
+        Sk::insertLines(&data, Sk::tabs(4) + "<type>0</type>", "<id>", index);
 
-    WTrack::Type type;
+        // NOTE: We don't need 'quality' anymore.
+        Sk::removeLines(&data, "<quality>", index);
+    }
 
-    WTrack::State state;
+    // NOTE: We replace the first occurence after the 'version' key.
+    Sk::replaceFirst(&data, api, Sk::versionSky(), data.indexOf("version"));
+}
 
-    QString source;
-
-    QString title;
-    QString cover;
-
-    QString author;
-    QString feed;
-
-    int duration;
-
-    QDateTime date;
-
-    WPlaylist * playlist;
-
-protected:
-    W_DECLARE_PUBLIC(WTrack)
-};
-
-#endif // SK_NO_TRACK
-#endif // WTRACK_P_H
+#endif // SK_NO_PLAYLIST

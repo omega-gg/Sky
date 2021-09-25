@@ -72,6 +72,9 @@ class SK_GUI_EXPORT WPlaylist : public WLibraryItem
 {
     Q_OBJECT
 
+    Q_ENUMS(TrackType)
+    Q_ENUMS(TrackState)
+
     Q_PROPERTY(bool isBase   READ isBase   CONSTANT)
     Q_PROPERTY(bool isFeed   READ isFeed   CONSTANT)
     Q_PROPERTY(bool isSearch READ isSearch CONSTANT)
@@ -109,6 +112,16 @@ class SK_GUI_EXPORT WPlaylist : public WLibraryItem
     Q_PROPERTY(QString currentTitle    READ currentTitle    NOTIFY currentTrackChanged)
     Q_PROPERTY(QString currentCover    READ currentCover    NOTIFY currentTrackChanged)
     Q_PROPERTY(int     currentDuration READ currentDuration NOTIFY currentTrackChanged)
+
+public: // Enums
+    //---------------------------------------------------------------------------------------------
+    // NOTE: These enums are useful in QML because WTrack is not a QObject.
+
+    enum TrackType { TrackUnknown, TrackMedia, TrackLive };
+
+    enum TrackState { TrackDefault, TrackLoading, TrackLoaded, TrackCover };
+
+    //---------------------------------------------------------------------------------------------
 
 public:
     explicit WPlaylist(WLibraryFolder * parent = NULL);
@@ -210,6 +223,9 @@ public: // Interface
 
     Q_INVOKABLE QVariantMap trackData(int index) const;
     Q_INVOKABLE QString     trackVbml(int index) const;
+
+    Q_INVOKABLE WTrack::Type trackType   (int index) const;
+    Q_INVOKABLE void         setTrackType(int index, WTrack::Type type);
 
     Q_INVOKABLE WTrack::State trackState   (int index) const;
     Q_INVOKABLE void          setTrackState(int index, WTrack::State state);
