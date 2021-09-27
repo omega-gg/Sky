@@ -693,11 +693,18 @@ bool WPlaylistPrivate::loadTrack(int index)
 
     if (state != WTrack::Default) return false;
 
+    applyTrack(track, index);
+
+    return true;
+}
+
+void WPlaylistPrivate::applyTrack(WTrack * track, int index)
+{
     Q_Q(WPlaylist);
 
     wControllerPlaylist->d_func()->applySourceTrack(q, track, track->source());
 
-    state = track->state();
+    WTrack::State state = track->state();
 
     if (state == WTrack::Loaded)
     {
@@ -716,9 +723,9 @@ bool WPlaylistPrivate::loadTrack(int index)
 
         q->updateTrack(index);
     }
-
-    return true;
 }
+
+//-------------------------------------------------------------------------------------------------
 
 bool WPlaylistPrivate::loadCover(WTrack * track)
 {
@@ -1212,6 +1219,17 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     d->loadTrack(at);
 }
 
+/* Q_INVOKABLE */ void WPlaylist::reloadTrack(int at)
+{
+    Q_D(WPlaylist);
+
+    if (at < 0 || at >= d->tracks.count()) return;
+
+    WTrack * track = &(d->tracks[at]);
+
+    d->applyTrack(track, at);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WPlaylist::loadTracks(int at, int count)
@@ -1230,6 +1248,28 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     }
 }
 
+/* Q_INVOKABLE */ void WPlaylist::reloadTracks(int at, int count)
+{
+    Q_D(WPlaylist);
+
+    qDebug("RELOADING TRACKS!");
+
+    if (at < 0 || at >= d->tracks.count() || count < 1) return;
+
+    while (at < d->tracks.count() && count)
+    {
+        WTrack * track = &(d->tracks[at]);
+
+        d->applyTrack(track, at);
+
+        count--;
+
+        at++;
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ void WPlaylist::loadTracksBetween(int at, int count)
 {
     at -= count / 2;
@@ -1239,6 +1279,17 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
          loadTracks(0, count);
     }
     else loadTracks(at, count);
+}
+
+/* Q_INVOKABLE */ void WPlaylist::reloadTracksBetween(int at, int count)
+{
+    at -= count / 2;
+
+    if (at < 0)
+    {
+         reloadTracks(0, count);
+    }
+    else reloadTracks(at, count);
 }
 
 //-------------------------------------------------------------------------------------------------

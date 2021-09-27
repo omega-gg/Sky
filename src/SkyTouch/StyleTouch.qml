@@ -194,7 +194,8 @@ Style
     //---------------------------------------------------------------------------------------------
     // ListPlaylist
 
-    property int listPlaylist_interval: 200
+    property int listPlaylist_intervalLoad  :   200
+    property int listPlaylist_intervalReload: 60000 // 1 minute
 //#END
 
 //#ScrollBar

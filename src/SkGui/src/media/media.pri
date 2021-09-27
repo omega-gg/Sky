@@ -34,4 +34,5 @@ SOURCES += src/media/WBackendNet.cpp \
            src/media/WAbstractHook.cpp \
            src/media/WBookmarkTrack.cpp \
            src/media/WTabTrack.cpp \
+           src/media/WTabTrack_patch.cpp \
            src/media/WTabsTrack.cpp \

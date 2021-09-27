@@ -49,6 +49,11 @@
 using namespace QtLP_Private;
 
 //-------------------------------------------------------------------------------------------------
+// Functions declarations
+
+void WTabTrack_patch(QString & data, const QString & api);
+
+//-------------------------------------------------------------------------------------------------
 // Static variables
 
 static const int TABTRACK_MAX = 8;
@@ -272,6 +277,8 @@ protected: // WAbstractThreadAction implementation
     /* virtual */ bool run();
 
 private: // Functions
+    bool extract(WTabTrackReadReply * reply, const QByteArray & array);
+
     bool load(QXmlStreamReader * stream, WTabTrackReadReply * reply);
 
 public: // Variables
@@ -315,13 +322,33 @@ public: // Variables
 {
     WTabTrackReadReply * reply = qobject_cast<WTabTrackReadReply *> (this->reply());
 
-    QByteArray data = WControllerFile::readFile(path);
+    return extract(reply, WControllerFile::readFile(path));
+}
 
-    QXmlStreamReader stream(data);
+//-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
+
+bool WTabTrackRead::extract(WTabTrackReadReply * reply, const QByteArray & array)
+{
+    QXmlStreamReader stream(array);
+
+    if (WControllerXml::readNextStartElement(&stream, "version") == false) return false;
+
+    QString version = WControllerXml::readNextString(&stream);
+
+    if (Sk::versionIsHigher(Sk::versionSky(), version))
+    {
+        QString content = array;
+
+        WTabTrack_patch(content, version);
+
+        return extract(reply, content.toUtf8());
+    }
 
     if (load(&stream, reply) == false)
     {
-        qWarning("WTabTrackRead::run: Invalid file %s.", path.C_STR);
+        qWarning("WTabTrackRead::extract: Invalid file %s.", path.C_STR);
 
         return false;
     }
@@ -330,10 +357,6 @@ public: // Variables
 
     return true;
 }
-
-//-------------------------------------------------------------------------------------------------
-// Private functions
-//-------------------------------------------------------------------------------------------------
 
 bool WTabTrackRead::load(QXmlStreamReader * stream, WTabTrackReadReply * reply)
 {

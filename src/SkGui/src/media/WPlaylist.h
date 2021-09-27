@@ -153,12 +153,15 @@ public: // Interface
 
     //---------------------------------------------------------------------------------------------
 
-    Q_INVOKABLE void loadTrack(int at);
+    Q_INVOKABLE void loadTrack  (int at);
+    Q_INVOKABLE void reloadTrack(int at);
 
-    Q_INVOKABLE void loadTracks(int at, int count);
+    Q_INVOKABLE void loadTracks  (int at, int count);
+    Q_INVOKABLE void reloadTracks(int at, int count);
 
     // NOTE: Loading a 'count' of tracks before and after the 'at' index.
-    Q_INVOKABLE void loadTracksBetween(int at, int count);
+    Q_INVOKABLE void loadTracksBetween  (int at, int count);
+    Q_INVOKABLE void reloadTracksBetween(int at, int count);
 
     Q_INVOKABLE void abortTracks();
 

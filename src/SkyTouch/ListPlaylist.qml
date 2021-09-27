@@ -34,6 +34,11 @@ List
     property int sizeTrack: st.buttonTouch_size + spacing
 
     //---------------------------------------------------------------------------------------------
+    // Private
+
+    property bool pReload: false
+
+    //---------------------------------------------------------------------------------------------
     // Events
     //---------------------------------------------------------------------------------------------
 
@@ -45,7 +50,7 @@ List
 
     //---------------------------------------------------------------------------------------------
 
-    onPlaylistChanged: loadTracks()
+    onPlaylistChanged: reloadTracks()
 
     onCountChanged: loadTracks()
 
@@ -57,23 +62,58 @@ List
     {
         if (visible == false) return;
 
-        timer.restart();
+        timerLoad.restart();
+    }
+
+    function reloadTracks()
+    {
+        if (visible == false) return;
+
+        pReload = true;
+
+        timerLoad.restart();
     }
 
     //---------------------------------------------------------------------------------------------
     // Private
 
-    function pApplyTracks()
+    function pApplyLoad()
     {
         if (playlist == null) return;
 
-        var index = Math.floor(getY() / sizeTrack);
+        if (pReload)
+        {
+            pReload = false;
 
+            playlist.reloadTracks(pGetIndex(), pGetCount());
+        }
+        else playlist.loadTracks(pGetIndex(), pGetCount());
+    }
+
+    function pApplyReload()
+    {
+        if (playlist == null) return;
+
+        // NOTE: We are reloading so we don't need to load anymore.
+        timerLoad.stop();
+
+        pReload = false;
+
+        playlist.reloadTracks(pGetIndex(), pGetCount());
+    }
+
+    //---------------------------------------------------------------------------------------------
+
+    function pGetIndex()
+    {
+        return Math.floor(getY() / sizeTrack);
+    }
+
+    function pGetCount()
+    {
         // NOTE: We add 1 to cover the entire region when half a track is exposed at the top and
         //       the bottom of the list.
-        var count = Math.ceil(height / sizeTrack) + 1;
-
-        playlist.loadTracks(index, count);
+        return Math.ceil(height / sizeTrack) + 1;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -82,10 +122,22 @@ List
 
     Timer
     {
-        id: timer
+        id: timerLoad
 
-        interval: st.listPlaylist_interval
+        interval: st.listPlaylist_intervalLoad
 
-        onTriggered: pApplyTracks()
+        onTriggered: pApplyLoad()
+    }
+
+    // NOTE: We want to reload each tracks periodically.
+    Timer
+    {
+        id: timerReload
+
+        interval: st.listPlaylist_intervalReload
+
+        repeat: true
+
+        onTriggered: pApplyReload()
     }
 }

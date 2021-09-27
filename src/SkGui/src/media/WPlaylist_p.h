@@ -56,6 +56,8 @@ public: // Function
 
     bool loadTrack(int index);
 
+    void applyTrack(WTrack * track, int index);
+
     bool loadCover(WTrack * track);
 
     void setPrevious(bool cycle);
