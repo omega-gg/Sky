@@ -522,7 +522,9 @@ Item
         {
             var child = column.children[i];
 
-            if (child.visible && child.y > y)
+            // NOTE: We check against opacity instead of visible because we want the proper height
+            //       even when the parent is hidden.
+            if (child.opacity && child.y > y)
             {
                 y = child.y;
 
