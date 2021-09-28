@@ -12,9 +12,9 @@ With a focus on efficiency, scalability and simplicity.<br>
 
 ## Projects
 
-- [MotionBox](http://omega.gg/MotionBox/sources): Video Browser.
-- MotionMonkey: Semantic Video Player.
-- [clientVBML](http://omega.gg/clientVBML/sources): VBML retriever and extractor.
+- [MotionBox](http://omega.gg/MotionBox/sources) - Video Browser
+- MotionMonkey - Semantic Video Player
+- [clientVBML](http://omega.gg/clientVBML/sources) - VBML retriever and extractor
 
 ## Technology
 
