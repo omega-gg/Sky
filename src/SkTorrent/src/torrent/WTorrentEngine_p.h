@@ -214,11 +214,11 @@ public: // Functions
 
     bool loadResume(WTorrentData * data, const QString & fileName) const;
 
-    WTorrentData * createData(TorrentInfoPointer info, const sha1_hash & hash,
-                                                       const QString   & url);
+    WTorrentData * createTorrent(TorrentInfoPointer info, const sha1_hash & hash,
+                                                          const QString   & url);
 
-    void updateData(WTorrentData * data);
-    void removeData(WTorrentData * data);
+    void updateTorrent(WTorrentData * data);
+    void removeTorrent(WTorrentData * data);
 
     WTorrentItem * createItem(TorrentInfo info, WTorrentData * data,
                                                 WTorrent     * torrent,

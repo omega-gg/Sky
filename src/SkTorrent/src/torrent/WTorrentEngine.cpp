@@ -291,8 +291,8 @@ bool WTorrentEnginePrivate::loadResume(WTorrentData * data, const QString & file
 
 //-------------------------------------------------------------------------------------------------
 
-WTorrentData * WTorrentEnginePrivate::createData(TorrentInfoPointer info, const sha1_hash & hash,
-                                                                          const QString   & url)
+WTorrentData * WTorrentEnginePrivate::createTorrent(TorrentInfoPointer info,
+                                                    const sha1_hash & hash, const QString & url)
 {
     WTorrentData * data = new WTorrentData;
 
@@ -341,13 +341,13 @@ WTorrentData * WTorrentEnginePrivate::createData(TorrentInfoPointer info, const 
                 }
                 catch (std::exception & ecception)
                 {
-                    qWarning("WTorrentEnginePrivate::createData: %s.", ecception.what());
+                    qWarning("WTorrentEnginePrivate::createTorrent: %s.", ecception.what());
 
                     params = add_torrent_params();
                 }
 #endif
             }
-            else qWarning("WTorrentEnginePrivate::createData: Failed to open file %s.",
+            else qWarning("WTorrentEnginePrivate::createTorrent: Failed to open file %s.",
                           fileName.C_STR);
         }
 
@@ -421,7 +421,7 @@ WTorrentData * WTorrentEnginePrivate::createData(TorrentInfoPointer info, const 
 
 //-------------------------------------------------------------------------------------------------
 
-void WTorrentEnginePrivate::updateData(WTorrentData * data)
+void WTorrentEnginePrivate::updateTorrent(WTorrentData * data)
 {
     QHashIterator<QTimer *, WTorrentData *> i(deleteTorrents);
 
@@ -431,7 +431,7 @@ void WTorrentEnginePrivate::updateData(WTorrentData * data)
 
         if (i.value() == data)
         {
-            qDebug("TORRENT REMOVE TIMER");
+            qDebug("TORRENT TIMER REMOVE");
 
             QTimer * timer = i.key();
 
@@ -439,12 +439,14 @@ void WTorrentEnginePrivate::updateData(WTorrentData * data)
 
             delete timer;
 
+            qDebug("TORRENT TIMER REMOVED");
+
             return;
         }
     }
 }
 
-void WTorrentEnginePrivate::removeData(WTorrentData * data)
+void WTorrentEnginePrivate::removeTorrent(WTorrentData * data)
 {
     Q_Q(WTorrentEngine);
 
@@ -1202,13 +1204,15 @@ void WTorrentEnginePrivate::updateMagnet(WMagnetData * data)
 
         if (i.value() == data)
         {
-            qDebug("MAGNET REMOVE TIMER");
+            qDebug("MAGNET TIMER REMOVE");
 
             QTimer * timer = i.key();
 
             deleteMagnets.remove(timer);
 
             delete timer;
+
+            qDebug("MAGNET TIMER REMOVED");
 
             return;
         }
@@ -1863,16 +1867,10 @@ void WTorrentEnginePrivate::onRemove()
         qDebug("REMOVE TORRENT");
 
         // FIXME libtorrent: Sometimes torrents get removed before calling 'remove_torrent'.
-        if (torrents.value(hash) == data)
+        if (torrents.remove(hash) == 0)
         {
-            torrents.remove(hash);
-
-            if (torrents.isEmpty())
-            {
-                timerUpdate->stop();
-            }
+            qDebug("TORRENT ALREADY REMOVED");
         }
-        else qDebug("TORRENT ALREADY REMOVED");
 
         if (magnets.contains(hash))
         {
@@ -1881,12 +1879,6 @@ void WTorrentEnginePrivate::onRemove()
         else session->remove_torrent(handle);
 
         updateCache(data);
-    }
-    else
-    {
-        qDebug("REMOVE TORRENT ADD");
-
-        datas.removeOne(data);
     }
 
     delete data;
@@ -1915,7 +1907,10 @@ void WTorrentEnginePrivate::onRemoveMagnet()
 
     if (hash)
     {
-        magnets.remove(hash);
+        if (magnets.remove(hash) == 0)
+        {
+            qDebug("TORRENT ALREADY REMOVED");
+        }
 
         QHashIterator<uintptr_t, WTorrentData *> i(torrents);
 
@@ -2375,7 +2370,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
                 {
                     TorrentInfoPointer info(file);
 
-                    data = d->createData(info, hash, url);
+                    data = d->createTorrent(info, hash, url);
 
                     d->createStream(info, data, torrent, index, mode);
 
@@ -2384,7 +2379,8 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
             }
             else device->deleteLater();
 
-            d->updateData(data);
+            // NOTE: Maybe the data is pending removal.
+            d->updateTorrent(data);
 
             const torrent_handle & handle = data->handle;
 
@@ -2433,7 +2429,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
                 {
                     TorrentInfoPointer info(file);
 
-                    data = d->createData(info, hash, url);
+                    data = d->createTorrent(info, hash, url);
 
                     d->createItem(info, data, torrent, index, mode);
 
@@ -2442,7 +2438,8 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
             }
             else device->deleteLater();
 
-            d->updateData(data);
+            // NOTE: Maybe the data is pending removal.
+            d->updateTorrent(data);
 
             const torrent_handle & handle = data->handle;
 
@@ -2521,6 +2518,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
         {
             qDebug("MAGNET ALREADY EXISTS");
 
+            // NOTE: Maybe the data is pending removal.
             d->updateMagnet(data);
 
             data->magnets.append(magnet);
@@ -2566,6 +2564,9 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
                 data = d->magnets[hash];
 
+                // NOTE: Maybe the data is pending removal.
+                d->updateMagnet(data);
+
                 // NOTE: We append the new magnets to the existing data.
                 data->magnets.append(magnets);
             }
@@ -2604,6 +2605,9 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
             data = d->torrents[hash];
 
+            // NOTE: Maybe the data is pending removal.
+            d->updateTorrent(data);
+
             // NOTE: We append the new items to the existing data.
             data->items.append(items);
         }
@@ -2625,7 +2629,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
             if (data->items.isEmpty())
             {
-                d->removeData(data);
+                d->removeTorrent(data);
 
                 return true;
             }
@@ -2788,7 +2792,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         if (data->items.isEmpty())
         {
-            d->removeData(data);
+            d->removeTorrent(data);
         }
 
         return true;
