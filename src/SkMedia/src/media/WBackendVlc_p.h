@@ -198,7 +198,9 @@ public: // Functions
     void loadSources (bool play);
     void applySources(bool play);
 
-    bool applyOutput(WAbstractBackend::Output output);
+    void applyOutput(WAbstractBackend::Output output);
+
+    bool applyQuality(WAbstractBackend::Quality quality);
 
     void playMedia();
 
@@ -220,8 +222,6 @@ public: // Functions
     void setMute(bool enabled);
 
     WAbstractBackend::Output getOutput(WAbstractBackend::Output output);
-
-    bool applyQuality(WAbstractBackend::Quality quality);
 
 public: // Slots
     void onLoaded();

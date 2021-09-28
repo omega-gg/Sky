@@ -1692,7 +1692,7 @@ WAbstractBackend::Output WDeclarativePlayer::outputActive() const
     {
          return d->backend->outputActive();
     }
-    else return WAbstractBackend::OutputInvalid;
+    else return WAbstractBackend::OutputNone;
 }
 
 WAbstractBackend::Quality WDeclarativePlayer::qualityActive() const

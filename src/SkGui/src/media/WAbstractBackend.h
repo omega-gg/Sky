@@ -221,7 +221,7 @@ public:
 
     enum Output
     {
-        OutputInvalid,
+        OutputNone,
         OutputMedia,
         OutputVideo,
         OutputAudio

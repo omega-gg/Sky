@@ -89,7 +89,7 @@ void WAbstractBackendPrivate::init()
     output  = WAbstractBackend::OutputMedia;
     quality = WAbstractBackend::QualityDefault;
 
-    outputActive  = WAbstractBackend::OutputInvalid;
+    outputActive  = WAbstractBackend::OutputNone;
     qualityActive = WAbstractBackend::QualityDefault;
 
     fillMode = WAbstractBackend::PreserveAspectFit;
