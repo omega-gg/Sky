@@ -219,8 +219,9 @@ public: // Functions
 
     void setMute(bool enabled);
 
-    WAbstractBackend::Output  getClosestOutput (WAbstractBackend::Output  output);
-    WAbstractBackend::Quality getClosestQuality(WAbstractBackend::Quality quality);
+    WAbstractBackend::Output getOutput(WAbstractBackend::Output output);
+
+    bool applyQuality(WAbstractBackend::Quality quality);
 
 public: // Slots
     void onLoaded();

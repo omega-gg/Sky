@@ -1252,8 +1252,6 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 {
     Q_D(WPlaylist);
 
-    qDebug("RELOADING TRACKS!");
-
     if (at < 0 || at >= d->tracks.count() || count < 1) return;
 
     while (at < d->tracks.count() && count)

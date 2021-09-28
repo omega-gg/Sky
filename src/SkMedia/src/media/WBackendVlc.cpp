@@ -576,7 +576,7 @@ void WBackendVlcPrivate::init()
     mute   = false;
 
     closestOutput  = WAbstractBackend::OutputInvalid;
-    closestQuality = WAbstractBackend::QualityInvalid;
+    closestQuality = WAbstractBackend::QualityDefault;
 
     ratio = Qt::KeepAspectRatio;
 
@@ -899,7 +899,7 @@ void WBackendVlcPrivate::loadSources(bool play)
 
     if (reply == NULL)
     {
-        applyOutput(getClosestOutput(output));
+        applyOutput(getOutput(output));
 
         if (play) playMedia();
     }
@@ -921,25 +921,23 @@ void WBackendVlcPrivate::applySources(bool play)
     medias = reply->medias();
     audios = reply->audios();
 
-    closestQuality = getClosestQuality(quality);
-
-    if (closestQuality == WAbstractBackend::QualityInvalid)
-    {
-        closestOutput = WAbstractBackend::OutputInvalid;
-
-        q->stop();
-    }
-    else
+    if (applyQuality(quality))
     {
         currentMedia = medias.value(closestQuality);
         currentAudio = audios.value(closestQuality);
 
-        applyOutput(getClosestOutput(output));
+        applyOutput(getOutput(output));
 
         if (play) playMedia();
 
         qDebug("Current source [%s] %d %s", currentMedia.C_STR,
                                             reply->medias().count(), reply->error().C_STR);
+    }
+    else
+    {
+        closestOutput = WAbstractBackend::OutputInvalid;
+
+        q->stop();
     }
 }
 
@@ -1054,7 +1052,7 @@ void WBackendVlcPrivate::clearActive()
     Q_Q(WBackendVlc);
 
     q->setOutputActive (WAbstractBackend::OutputInvalid);
-    q->setQualityActive(WAbstractBackend::QualityInvalid);
+    q->setQualityActive(WAbstractBackend::QualityDefault);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1126,7 +1124,7 @@ void WBackendVlcPrivate::setMute(bool enabled)
 
 //-------------------------------------------------------------------------------------------------
 
-WAbstractBackend::Output WBackendVlcPrivate::getClosestOutput(WAbstractBackend::Output output)
+WAbstractBackend::Output WBackendVlcPrivate::getOutput(WAbstractBackend::Output output)
 {
     if (output == WAbstractBackend::OutputInvalid)
     {
@@ -1142,24 +1140,24 @@ WAbstractBackend::Output WBackendVlcPrivate::getClosestOutput(WAbstractBackend::
     else return output;
 }
 
-WAbstractBackend::Quality WBackendVlcPrivate::getClosestQuality(WAbstractBackend::Quality quality)
+bool WBackendVlcPrivate::applyQuality(WAbstractBackend::Quality quality)
 {
-    if (quality == WAbstractBackend::QualityInvalid)
+    if (medias.value(quality).isEmpty() == false)
     {
-        return WAbstractBackend::QualityInvalid;
-    }
-    else if (medias.value(quality).isEmpty() == false)
-    {
-        return quality;
+        closestQuality = quality;
+
+        return true;
     }
 
-    for (int i = quality - 1; i > WAbstractBackend::QualityInvalid; i--)
+    for (int i = quality - 1; i >= WAbstractBackend::QualityDefault; i--)
     {
         WAbstractBackend::Quality closestQuality = static_cast<WAbstractBackend::Quality> (i);
 
         if (medias.value(closestQuality).isEmpty() == false)
         {
-            return closestQuality;
+            this->closestQuality = closestQuality;
+
+            return true;
         }
     }
 
@@ -1169,11 +1167,13 @@ WAbstractBackend::Quality WBackendVlcPrivate::getClosestQuality(WAbstractBackend
 
         if (medias.value(closestQuality).isEmpty() == false)
         {
-            return closestQuality;
+            this->closestQuality = closestQuality;
+
+            return true;
         }
     }
 
-    return WAbstractBackend::QualityInvalid;
+    return false;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1592,19 +1592,15 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 {
     Q_D(WBackendVlc);
 
-    Quality closestQuality = d->getClosestQuality(quality);
+    if (d->closestQuality == quality || d->applyQuality(quality) == false) return;
 
-    if (closestQuality == QualityInvalid || d->closestQuality == closestQuality) return;
-
-    QString media = d->medias.value(closestQuality);
+    QString media = d->medias.value(d->closestQuality);
 
     if (d->currentMedia == media) return;
 
-    d->closestQuality = closestQuality;
-
     d->currentMedia = media;
 
-    d->currentAudio = d->audios.value(closestQuality);
+    d->currentAudio = d->audios.value(d->closestQuality);
 
     if (hasStarted())
     {
@@ -1616,7 +1612,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
         d->player->setSource(d->currentMedia, d->currentAudio);
 
-        setQualityActive(closestQuality);
+        setQualityActive(d->closestQuality);
 
         if (d->state == StatePlaying)
         {

@@ -10,6 +10,12 @@ Sky is an application kit designed for multimedia software.<br>
 With a focus on efficiency, scalability and simplicity.<br>
 [omega](http://omega.gg/about) is building Sky kit to empower people.<br>
 
+## Projects
+
+- [MotionBox](http://omega.gg/MotionBox/sources): Video Browser.
+- MotionMonkey: Semantic Video Player.
+- [clientVBML](http://omega.gg/clientVBML/sources): VBML retriever and extractor.
+
 ## Technology
 
 Sky is built in C++ on the [Qt framework](http://github.com/qtproject).<br>

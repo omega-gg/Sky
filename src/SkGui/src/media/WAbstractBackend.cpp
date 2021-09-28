@@ -87,10 +87,10 @@ void WAbstractBackendPrivate::init()
     repeat = false;
 
     output  = WAbstractBackend::OutputMedia;
-    quality = WAbstractBackend::Quality720;
+    quality = WAbstractBackend::QualityDefault;
 
     outputActive  = WAbstractBackend::OutputInvalid;
-    qualityActive = WAbstractBackend::QualityInvalid;
+    qualityActive = WAbstractBackend::QualityDefault;
 
     fillMode = WAbstractBackend::PreserveAspectFit;
 
@@ -382,7 +382,7 @@ WAbstractBackend::Quality WAbstractBackend::qualityFromString(const QString & st
     else if (string == "1080") return Quality1080;
     else if (string == "1440") return Quality1440;
     else if (string == "2160") return Quality2160;
-    else                       return QualityInvalid;
+    else                       return QualityDefault;
 }
 
 /* Q_INVOKABLE static */

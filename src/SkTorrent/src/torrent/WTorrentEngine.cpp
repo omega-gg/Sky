@@ -454,6 +454,7 @@ void WTorrentEnginePrivate::removeData(WTorrentData * data)
     {
         i.next();
 
+        // NOTE: When the deletion is pending we restart the timer.
         if (i.value() == data)
         {
             i.key()->start();
@@ -1218,6 +1219,21 @@ void WTorrentEnginePrivate::removeMagnet(WMagnetData * data)
 {
     Q_Q(WTorrentEngine);
 
+    QHashIterator<QTimer *, WMagnetData *> i(deleteMagnets);
+
+    while (i.hasNext())
+    {
+        i.next();
+
+        // NOTE: When the deletion is pending we restart the timer.
+        if (i.value() == data)
+        {
+            i.key()->start();
+
+            return;
+        }
+    }
+
     QTimer * timer = new QTimer;
 
     timer->setInterval(TORRENTENGINE_INTERVAL_REMOVE);
@@ -1925,6 +1941,8 @@ void WTorrentEnginePrivate::onRemoveMagnet()
     WControllerFile::deleteFolder(pathMagnets);
 
     delete data;
+
+    qDebug("MAGNET REMOVED");
 }
 
 void WTorrentEnginePrivate::onRemoveSource()

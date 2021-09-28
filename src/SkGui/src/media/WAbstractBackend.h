@@ -237,7 +237,7 @@ public:
 
     enum Quality
     {
-        QualityInvalid,
+        QualityDefault,
         Quality144,
         Quality240,
         Quality360,

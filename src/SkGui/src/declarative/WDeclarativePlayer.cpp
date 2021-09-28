@@ -90,7 +90,7 @@ void WDeclarativePlayerPrivate::init()
     repeat = WDeclarativePlayer::RepeatNone;
 
     output  = WAbstractBackend::OutputMedia;
-    quality = WAbstractBackend::Quality720;
+    quality = WAbstractBackend::QualityDefault;
 
     fillMode = WAbstractBackend::PreserveAspectFit;
 
@@ -1703,7 +1703,7 @@ WAbstractBackend::Quality WDeclarativePlayer::qualityActive() const
     {
          return d->backend->qualityActive();
     }
-    else return WAbstractBackend::QualityInvalid;
+    else return WAbstractBackend::QualityDefault;
 }
 
 //-------------------------------------------------------------------------------------------------
