@@ -1,10 +1,6 @@
 SK = $$_PRO_FILE_PWD_/../..
 
-contains(QT_MAJOR_VERSION, 4) {
-    SK_BIN = bin
-} else {
-    SK_BIN = latest
-}
+SK_BIN = bin
 
 CONFIG(debug, debug|release) {
     TARGET = SkWebD
@@ -16,10 +12,20 @@ DESTDIR = $$SK/lib
 
 TEMPLATE = lib
 
-QT += network webkit webkitwidgets
+contains(QT_MAJOR_VERSION, 4) {
+    QT += network webkit
+} else {
+    QT += quick network xml
+}
 
-CONFIG       += plugin
 win32:CONFIG += dll
+
+# C++17
+contains(QT_MAJOR_VERSION, 4) {
+    QMAKE_CXXFLAGS += -std=c++1z
+} else {
+    CONFIG += c++1z
+}
 
 DEFINES += SK_WEB_LIBRARY
 
@@ -29,7 +35,11 @@ contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_LATEST
 }
 
-QMAKE_CXXFLAGS += -std=c++11
+android {
+    DEFINES += SK_MOBILE
+} else {
+    DEFINES += SK_DESKTOP
+}
 
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 
@@ -40,21 +50,26 @@ INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkGui \
                $$SK/include/SkGui/private \
                $$SK/include/SkWeb \
-               $$SK/include/SkWeb/private \
+               $$SK/include/SkWeb/private
 
-CONFIG(debug, debug|release) {
+android {
+    CONFIG(debug, debug|release) {
 
-    LIBS += -L$$SK/lib -lSkCoreD \
-            -L$$SK/lib -lSkGuiD
+        LIBS += -L$$SK/lib -lSkCoreD_$$ANDROID_TARGET_ARCH \
+                -L$$SK/lib -lSkGuiD_$$ANDROID_TARGET_ARCH
+    } else {
+        LIBS += -L$$SK/lib -lSkCore_$$ANDROID_TARGET_ARCH \
+                -L$$SK/lib -lSkGui_$$ANDROID_TARGET_ARCH
+    }
 } else {
-    LIBS += -L$$SK/lib -lSkCore \
-            -L$$SK/lib -lSkGui
-}
+    CONFIG(debug, debug|release) {
 
-macx {
-    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.12
-
-    QMAKE_CXXFLAGS += -stdlib=libc++
+        LIBS += -L$$SK/lib -lSkCoreD \
+                -L$$SK/lib -lSkGuiD
+    } else {
+        LIBS += -L$$SK/lib -lSkCore \
+                -L$$SK/lib -lSkGui
+    }
 }
 
 macx {
@@ -71,23 +86,4 @@ CONFIG(debug, debug|release) {
     QMAKE_POST_LINK += install_name_tool -change libSkGui.dylib \
                        @loader_path/libSkGui.dylib $${DESTDIR}/lib$${TARGET}.dylib ;
 }
-}
-
-#--------------------------------------------------------------------------------------------------
-# Copy library to the bin directory
-
-win32 {
-equals(QMAKE_COPY, "copy /y") {
-    SK ~= s,/,\\,g
-
-    QMAKE_POST_LINK += $${QMAKE_COPY} $$SK\\lib\\$${TARGET}.dll $$SK\\$$SK_BIN
-} else {
-    QMAKE_POST_LINK += $${QMAKE_COPY} $$SK/lib/$${TARGET}.dll $$SK/$$SK_BIN
-}
-}
-
-macx: QMAKE_POST_LINK += $${QMAKE_COPY} $$SK/lib/lib$${TARGET}.dylib $$SK/$$SK_BIN
-
-unix:!macx {
-    QMAKE_POST_LINK += $${QMAKE_COPY} $$SK/lib/lib$${TARGET}.so $$SK/$$SK_BIN
 }

@@ -153,6 +153,7 @@ if [ $qt = "qt4" ]; then
         cp "$Qt"/bin/QtWebKit4.dll      deploy
         cp "$Qt"/bin/QtXml4.dll         deploy
         cp "$Qt"/bin/QtXmlPatterns4.dll deploy
+        cp "$Qt"/bin/QtWebKit4.dll      deploy
 
         cp "$Qt"/plugins/imageformats/qsvg4.dll  deploy/imageformats
         cp "$Qt"/plugins/imageformats/qjpeg4.dll deploy/imageformats
