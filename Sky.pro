@@ -6,16 +6,24 @@ isEmpty(TOOLS) {
     SUBDIRS = src/SkCore \
               src/SkGui \
               src/SkMedia \
-              src/SkWeb \
               src/SkTorrent \
               src/SkBackend \
+
+    contains(QT_MAJOR_VERSION, 4) {
+        SUBDIRS += src/SkWeb
+    } else {
+        # NOTE Windows: The WebView module only works with MSVC.
+        win32 {
+            win32-msvc*:SUBDIRS += src/SkWeb
+        } else {
+            SUBDIRS += src/SkWeb
+        }
+    }
 
     !android:SUBDIRS += tools
 } else {
     !android:SUBDIRS = tools
 }
-
-#contains(QT_MAJOR_VERSION, 4): SUBDIRS += src/SkWeb
 
 OTHER_FILES += 3rdparty.sh \
                configure.sh \

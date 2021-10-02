@@ -32,9 +32,9 @@
 #include <QStyleOptionGraphicsItem>
 #else
 #include <QScreen>
-#ifdef SK_SOFTWARE
-#include <QQuickWindow>
-#endif
+    #ifdef SK_SOFTWARE
+    #include <QQuickWindow>
+    #endif
 #include <QQuickItem>
 #include <QQuickItemGrabResult>
 #endif
