@@ -29,27 +29,33 @@
 #ifndef SK_NO_LOADERWEB
 
 // Forward declarations
+class WLoaderWebPrivate;
+#ifdef QT_4
 class QAbstractNetworkCache;
 class QNetworkCookieJar;
-class WLoaderWebPrivate;
+#endif
 
 class SK_WEB_EXPORT WLoaderWeb : public WAbstractLoader
 {
     Q_OBJECT
 
+#ifdef QT_4
     Q_PROPERTY(QAbstractNetworkCache * cache READ cache WRITE setCache NOTIFY cacheChanged)
 
     Q_PROPERTY(QNetworkCookieJar * cookieJar READ cookieJar WRITE setCookieJar
                NOTIFY cookieJarChanged)
+#endif
 
 public:
     explicit WLoaderWeb(QObject * parent = NULL);
 
+#ifdef QT_4
 public: // Interface
     Q_INVOKABLE void setProxy(const QString & host,
                               int             port, const QString & password = QString());
 
     Q_INVOKABLE void clearProxy();
+#endif
 
 protected: // WAbstractLoader implementation
     /* virtual */ QIODevice * load(WRemoteData * data);
@@ -57,6 +63,7 @@ protected: // WAbstractLoader implementation
 protected: // WAbstractLoader reimplementation
     /* virtual */ void abort(QIODevice * reply);
 
+#ifdef QT_4
 signals:
     void cacheChanged();
 
@@ -68,6 +75,7 @@ public: // Properties
 
     QNetworkCookieJar * cookieJar() const;
     void                setCookieJar(QNetworkCookieJar * cookieJar);
+#endif
 
 private:
     W_DECLARE_PRIVATE(WLoaderWeb)

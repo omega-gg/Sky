@@ -15,7 +15,7 @@ TEMPLATE = lib
 contains(QT_MAJOR_VERSION, 4) {
     QT += network webkit
 } else {
-    QT += quick network xml
+    QT += webenginewidgets
 }
 
 win32:CONFIG += dll

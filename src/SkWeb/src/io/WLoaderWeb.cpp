@@ -25,28 +25,45 @@
 #ifndef SK_NO_LOADERWEB
 
 // Qt includes
+#ifdef QT_4
 #include <QNetworkProxy>
 #include <QWebPage>
 #include <QWebFrame>
+#else
+#include <QWebEnginePage>
+#include <QWebEngineSettings>
+#endif
 #include <QBuffer>
 
-// Sk includes
+// Sky includes
 #include <WControllerDownload>
 
 //=================================================================================================
 // WLoaderWebPage
 //=================================================================================================
 
+#ifdef QT_4
 class WLoaderWebPage : public QWebPage
+#else
+class WLoaderWebPage : public QWebEnginePage
+#endif
 {
     Q_OBJECT
 
+#ifdef QT_4
 public slots: // QWebPage reimplementation
     bool shouldInterruptJavaScript();
+#endif
 
 public: // Variables
+#ifdef QT_LATEST
+    WLoaderWeb * loader;
+#endif
+
     QBuffer * buffer;
 };
+
+#ifdef QT_4
 
 //-------------------------------------------------------------------------------------------------
 // QWebPage slots reimplementation
@@ -59,6 +76,8 @@ bool WLoaderWebPage::shouldInterruptJavaScript()
     return true;
 }
 
+#endif
+
 //=================================================================================================
 // WLoaderWebPrivate
 //=================================================================================================
@@ -69,9 +88,11 @@ WLoaderWebPrivate::WLoaderWebPrivate(WLoaderWeb * p) : WAbstractLoaderPrivate(p)
 
 void WLoaderWebPrivate::init()
 {
+#ifdef QT_4
     Q_Q(WLoaderWeb);
 
     manager = new QNetworkAccessManager(q);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -93,6 +114,7 @@ void WLoaderWebPrivate::onLoadFinished(bool ok)
         q->setError(q->getData(buffer), "Error(s) occured while loading the Webpage");
     }
 
+#ifdef QT_4
     QByteArray bytes = page->mainFrame()->toHtml().toUtf8();
 
     buffer->setData(bytes);
@@ -100,6 +122,16 @@ void WLoaderWebPrivate::onLoadFinished(bool ok)
     buffer->open(QIODevice::ReadOnly);
 
     q->complete(buffer);
+#else
+    page->toHtml([q, buffer](const QString & html)
+    {
+        buffer->setData(html.toUtf8());
+
+        buffer->open(QIODevice::ReadOnly);
+
+        q->complete(buffer);
+    });
+#endif
 
     QObject::disconnect(page, 0, q, 0);
 
@@ -115,6 +147,8 @@ void WLoaderWebPrivate::onLoadFinished(bool ok)
 {
     Q_D(WLoaderWeb); d->init();
 }
+
+#ifdef QT_4
 
 //-------------------------------------------------------------------------------------------------
 // Interface
@@ -137,6 +171,8 @@ void WLoaderWebPrivate::onLoadFinished(bool ok)
     d->manager->setProxy(QNetworkProxy());
 }
 
+#endif
+
 //-------------------------------------------------------------------------------------------------
 // Protected WAbstractLoader implementation
 //-------------------------------------------------------------------------------------------------
@@ -151,18 +187,27 @@ void WLoaderWebPrivate::onLoadFinished(bool ok)
 
     page->buffer = buffer;
 
+#ifdef QT_4
     page->setNetworkAccessManager(d->manager);
 
     QWebSettings * settings = page->settings();
 
-    settings->setAttribute(QWebSettings::AutoLoadImages,    false);
-    settings->setAttribute(QWebSettings::JavascriptEnabled, false);
+    settings->setAttribute(QWebSettings::AutoLoadImages, false);
+#else
+    QWebEngineSettings * settings = page->settings();
+
+    settings->setAttribute(QWebEngineSettings::AutoLoadImages, false);
+#endif
 
     connect(page, SIGNAL(loadFinished(bool)), this, SLOT(onLoadFinished(bool)));
 
     d->pages.insert(buffer, page);
 
+#ifdef QT_4
     page->mainFrame()->load(data->url());
+#else
+    page->load(data->url());
+#endif
 
     return buffer;
 }
@@ -185,6 +230,8 @@ void WLoaderWebPrivate::onLoadFinished(bool ok)
 
     delete page;
 }
+
+#ifdef QT_4
 
 //-------------------------------------------------------------------------------------------------
 // Properties
@@ -223,6 +270,8 @@ void WLoaderWeb::setCookieJar(QNetworkCookieJar * cookieJar)
 
     emit cookieJarChanged();
 }
+
+#endif
 
 #endif // SK_NO_LOADERWEB
 

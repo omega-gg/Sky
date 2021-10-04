@@ -38,7 +38,9 @@
 #ifndef SK_NO_LOADERWEB
 
 // Forward declarations
+#ifdef QT_4
 class QNetworkAccessManager;
+#endif
 class WLoaderWebPage;
 
 class SK_WEB_EXPORT WLoaderWebPrivate : public WAbstractLoaderPrivate
@@ -52,7 +54,9 @@ public: // Slots
     void onLoadFinished(bool ok);
 
 public: // Variables
+#ifdef QT_4
     QNetworkAccessManager * manager;
+#endif
 
     QHash<QIODevice *, WLoaderWebPage *> pages;
 
