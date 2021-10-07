@@ -4447,9 +4447,8 @@ WLibraryItem::Type WBackendUniversalPrivate::getType(const QString & string) con
 
 WBackendNetQuery::Type WBackendUniversalPrivate::getTypeQuery(const QString & string) const
 {
-    if      (string == "web")     return WBackendNetQuery::TypeWeb;
-    else if (string == "torrent") return WBackendNetQuery::TypeTorrent;
-    else                          return WBackendNetQuery::TypeDefault;
+    if (string == "torrent") return WBackendNetQuery::TypeTorrent;
+    else                     return WBackendNetQuery::TypeDefault;
 }
 
 WTrack::Type WBackendUniversalPrivate::getTypeTrack(const QString & string) const
