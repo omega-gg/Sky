@@ -10,9 +10,9 @@ isEmpty(TOOLS) {
               src/SkBackend \
 
     # NOTE Qt5 Windows: The WebView module is only available for MSVC but currently unsupported.
-    contains(QT_MAJOR_VERSION, 4) {
-        SUBDIRS += src/SkWeb
-    }
+    # contains(QT_MAJOR_VERSION, 4) {
+    #     SUBDIRS += src/SkWeb
+    # }
 
     !android:SUBDIRS += tools
 } else {
