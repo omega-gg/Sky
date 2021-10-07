@@ -135,6 +135,7 @@ void WLoaderWebPrivate::onLoadFinished(bool ok)
 
     QObject::disconnect(page, 0, q, 0);
 
+    // NOTE Qt5: Maybe it's unwise deleting this before 'toHtml' callback gets called.
     page->deleteLater();
 }
 

@@ -9,8 +9,8 @@ isEmpty(TOOLS) {
               src/SkTorrent \
               src/SkBackend \
 
-    # NOTE Qt5 Windows: The WebView module only works with MSVC.
-    contains(QT_MAJOR_VERSION, 4)|!win32|win32-msvc* {
+    # NOTE Qt5 Windows: The WebView module is only available for MSVC but currently unsupported.
+    contains(QT_MAJOR_VERSION, 4) {
         SUBDIRS += src/SkWeb
     }
 
