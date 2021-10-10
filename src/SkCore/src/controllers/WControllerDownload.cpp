@@ -158,6 +158,11 @@ QString WRemoteData::header() const
     return _header;
 }
 
+QString WRemoteData::body() const
+{
+    return _body;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 bool WRemoteData::redirect() const
@@ -470,6 +475,7 @@ WRemoteData * WControllerDownload::getData(WAbstractLoader           * loader,
     data->_priority = priority;
 
     data->_header = parameters.header;
+    data->_body   = parameters.body;
 
     data->_redirect = parameters.redirect;
     data->_cookies  = parameters.cookies;

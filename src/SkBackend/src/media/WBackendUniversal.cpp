@@ -4004,6 +4004,7 @@ void WBackendUniversalPrivate::applyQueryParameters(WBackendUniversalParameters 
     parameters->add("queryData", query.data);
 
     parameters->add("header", query.header);
+    parameters->add("body",   query.body);
 
     parameters->add("clearItems", query.clearItems);
     parameters->add("cookies",    query.cookies);
@@ -4027,6 +4028,7 @@ void WBackendUniversalPrivate::applyQueryResults(WBackendUniversalParameters * p
     query->data = *(parameters->value("queryData"));
 
     query->header = parameters->value("header")->toString();
+    query->body   = parameters->value("body")  ->toString();
 
     query->clearItems = parameters->value("clearItems")->toBool();
     query->cookies    = parameters->value("cookies")   ->toBool();
@@ -4403,6 +4405,7 @@ WBackendNetQuery WBackendUniversalPrivate::getQuery(const QVariant & value) cons
     query.data = hash.value("queryData");
 
     query.header = hash.value("header").toString();
+    query.body   = hash.value("body")  .toString();
 
     const QVariant * variant = getVariant(&hash, "clearItems");
 

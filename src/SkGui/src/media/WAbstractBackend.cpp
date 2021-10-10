@@ -396,7 +396,7 @@ QString WAbstractBackend::qualityToString(Quality quality)
     else if (quality == Quality1080) return "1080";
     else if (quality == Quality1440) return "1440";
     else if (quality == Quality2160) return "2160";
-    else                             return QString();
+    else                             return "default";
 }
 
 //-------------------------------------------------------------------------------------------------

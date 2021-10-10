@@ -3365,6 +3365,7 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
     WRemoteParameters parameters;
 
     parameters.header = query.header;
+    parameters.body   = query.body;
 
     parameters.cookies = query.cookies;
 
@@ -3380,6 +3381,8 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 /* Q_INVOKABLE static */ QString WControllerPlaylist::getFeed(const QString & feed,
                                                               const QString & url)
 {
+    if (feed.isEmpty()) return QString();
+
     if (WControllerNetwork::urlScheme(feed) == "")
     {
         const QString & host = WControllerNetwork::extractUrlHost(url);

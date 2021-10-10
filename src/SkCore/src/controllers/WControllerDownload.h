@@ -56,6 +56,7 @@ struct WRemoteParameters
     }
 
     QString header;
+    QString body;
 
     bool redirect;
     bool cookies;
@@ -100,6 +101,7 @@ public: // Properties
     QNetworkRequest::Priority priority() const;
 
     QString header() const;
+    QString body  () const;
 
     bool redirect() const;
     bool cookies () const;
@@ -125,6 +127,7 @@ private: // Variables
     QNetworkRequest::Priority _priority;
 
     QString _header;
+    QString _body;
 
     bool _redirect;
     bool _cookies;

@@ -95,6 +95,7 @@ public: // Variables
     QVariant data;
 
     QString header;
+    QString body;
 
     bool clearItems;
     bool cookies;

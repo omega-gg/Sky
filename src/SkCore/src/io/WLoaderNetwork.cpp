@@ -159,6 +159,9 @@ void WLoaderNetworkPrivate::onFinished(QNetworkReply * reply)
                              QNetworkRequest::Manual);
     }
 
+    // NOTE: That's our default header.
+    request.setRawHeader("User-Agent", "Mozilla/5.0 AppleWebKit/537 Chrome/90 Safari/537");
+
     QString header = data->header();
 
     if (header.isNull() == false)
@@ -183,15 +186,16 @@ void WLoaderNetworkPrivate::onFinished(QNetworkReply * reply)
 
                 index += 2;
             }
-
-            return d->manager->get(request);
         }
     }
 
-    // NOTE: That's our default header.
-    request.setRawHeader("User-Agent", "Mozilla/5.0 AppleWebKit/537 Chrome/90 Safari/537");
+    QString body = data->body();
 
-    return d->manager->get(request);
+    if (body.isEmpty())
+    {
+        return d->manager->get(request);
+    }
+    else return d->manager->post(request, body.toUtf8());
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -2069,18 +2069,11 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
         int length = eventPlayer->value.toInt();
 
-        if (length)
-        {
-            Q_D(WBackendVlc);
-
-            // NOTE: If length is 30 seconds then it's still a live feed.
-            if (d->live && length != 30000)
-            {
-                setLive(false);
-            }
-        }
         // NOTE: If length is 0 then it's a live feed.
-        else setLive(true);
+        if (length == 0)
+        {
+            setLive(true);
+        }
 
         setDuration(length);
 
