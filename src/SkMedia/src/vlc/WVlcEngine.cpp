@@ -138,10 +138,11 @@ void WVlcEnginePrivate::init(const QStringList & options, QThread * thread)
                 "--no-stats",          /* No statistics    */
                 "--no-media-library",  /* No Media Library */
                 // NOTE: This is useful for mkv default langauge.
-                "--audio-language=en"  /* Audio english    */
+                "--audio-language=en", /* Audio english    */
+                // NOTE: We want the player to seek efficiently.
+                "--input-fast-seek"    /* Fast seek        */
                 //"--http-reconnect",  /* Auto reconnect   */
                 //"--avcodec-fast",    /* Speed tricks     */
-                //"--input-fast-seek", /* Fast seek        */
                 //"--avcodec-dr",
                 //"--avcodec-hurry-up",
                 //"--avcodec-hw=any",
