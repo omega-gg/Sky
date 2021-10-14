@@ -138,7 +138,7 @@ List
         onTriggered: pApplyLoad()
     }
 
-    // NOTE: We want to reload each tracks periodically.
+    // NOTE: We want to reload each track periodically.
     Timer
     {
         id: timerReload
