@@ -35,6 +35,16 @@ Style
     property color logo_colorA: "#c8c8c8"
     property color logo_colorB: logo_colorA
 
+//#RectangleLive
+    //---------------------------------------------------------------------------------------------
+    // RectangleLive
+
+    property int rectangleLive_size: dp10
+
+    property color rectangleLive_color      : "red"
+    property color rectangleLive_colorBorder: "#161616"
+//#END
+
 //#TextDate
     //---------------------------------------------------------------------------------------------
     // TextDate

@@ -111,7 +111,7 @@ ComponentTabBrowser
     }
 
     //---------------------------------------------------------------------------------------------
-    // Childs
+    // Children
     //---------------------------------------------------------------------------------------------
 
     TabBarProgress
@@ -124,5 +124,15 @@ ComponentTabBrowser
         visible: (isCurrent == false && isHighlighted == false && item.currentTime > 0)
 
         enabled: player.isPlaying
+    }
+
+    RectangleLive
+    {
+        anchors.left  : parent.left
+        anchors.bottom: parent.bottom
+
+        anchors.leftMargin: iconWidth - width
+
+        visible: (item.type == Playlist.TrackLive)
     }
 }

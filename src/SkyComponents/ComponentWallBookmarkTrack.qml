@@ -264,4 +264,14 @@ ComponentWall
 
         enabled: player.isPlaying
     }
+
+    RectangleLive
+    {
+        anchors.left  : parent.left
+        anchors.bottom: parent.bottom
+
+        anchors.leftMargin: iconWidth - width
+
+        visible: (item.type == Playlist.TrackLive)
+    }
 }

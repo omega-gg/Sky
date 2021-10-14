@@ -46,7 +46,16 @@ List
 
     onContentYChanged: loadTracks()
 
-    onVisibleChanged: loadTracks()
+    onVisibleChanged:
+    {
+        if (visible)
+        {
+            loadTracks();
+
+            timerReload.start();
+        }
+        else timerReload.stop();
+    }
 
     //---------------------------------------------------------------------------------------------
 

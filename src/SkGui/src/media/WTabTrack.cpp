@@ -165,6 +165,8 @@ public: // Variables
 
         stream.writeTextElement("idTrack", QString::number(data.idTrack));
 
+        stream.writeTextElement("type", QString::number(data.type));
+
         stream.writeTextElement("state", QString::number(data.state));
 
         stream.writeTextElement("source", data.source);
@@ -402,6 +404,13 @@ bool WTabTrackRead::load(QXmlStreamReader * stream, WTabTrackReadReply * reply)
         data.idTrack = WControllerXml::readNextInt(stream);
 
         //-----------------------------------------------------------------------------------------
+        // type
+
+        if (WControllerXml::readNextStartElement(stream, "type") == false) return false;
+
+        data.type = static_cast<WTrack::Type> (WControllerXml::readNextInt(stream));
+
+        //-----------------------------------------------------------------------------------------
         // state
 
         if (WControllerXml::readNextStartElement(stream, "state") == false) return false;
@@ -611,6 +620,8 @@ void WTabTrackPrivate::loadBookmarks(const QList<WTabTrackDataBookmark> & bookma
 
         p->idPlaylist = bookmark.idPlaylist;
         p->idTrack    = bookmark.idTrack;
+
+        p->type = bookmark.type;
 
         p->state = bookmark.state;
 
@@ -884,11 +895,15 @@ void WTabTrackPrivate::saveState()
 
     WBookmarkTrackPrivate * p = currentBookmark->d_func();
 
-    p->currentTime = time;
+    // NOTE: We don't want to save the currentTime on a live stream.
+    if (player->isLive() == false)
+    {
+        p->currentTime = time;
 
-    WPlaylist * playlist = p->playlist;
+        WPlaylist * playlist = p->playlist;
 
-    if (playlist) playlist->setCurrentTime(time);
+        if (playlist) playlist->setCurrentTime(time);
+    }
 
     if (player->outputActive() == WAbstractBackend::OutputAudio)
     {
@@ -1369,6 +1384,8 @@ void WTabTrackPrivate::onPlaylistDestroyed()
 
         data.idPlaylist = p->idPlaylist;
         data.idTrack    = p->idTrack;
+
+        data.type = p->type;
 
         data.state = p->state;
 

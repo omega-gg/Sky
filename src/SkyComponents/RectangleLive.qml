@@ -4,7 +4,7 @@
 
     Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
 
-    This file is part of SkGui.
+    This file is part of SkyComponents.
 
     - GNU Lesser General Public License Usage:
     This file may be used under the terms of the GNU Lesser General Public License version 3 as
@@ -20,34 +20,22 @@
 */
 //=================================================================================================
 
-#include "WTabTrack.h"
+import QtQuick 1.0
+import Sky     1.0
 
-#ifndef SK_NO_TABTRACK
-
-// Sk includes
-#include <WControllerApplication>
-
-//-------------------------------------------------------------------------------------------------
-// Functions
-//-------------------------------------------------------------------------------------------------
-
-void WTabTrack_patch(QString & data, const QString & api)
+Rectangle
 {
-    qWarning("WTabTrack_patch: Patching.");
+    //---------------------------------------------------------------------------------------------
+    // Settings
+    //---------------------------------------------------------------------------------------------
 
-    if (Sk::versionIsLower(api, "1.7.0-5"))
-    {
-        int index = data.indexOf("<tabs>");
+    width: st.rectangleLive_size
 
-        // NOTE: We've added a 'type' property for tracks.
-        Sk::insertLines(&data, Sk::tabs(4) + "<type>0</type>", "<idTrack>", index);
+    height: width
+    radius: width
 
-        // NOTE: We don't need 'quality' anymore.
-        Sk::removeLines(&data, "<quality>", index);
-    }
+    color: st.rectangleLive_color
 
-    // NOTE: We replace the first occurence after the 'version' key.
-    Sk::replaceFirst(&data, api, Sk::versionSky(), data.indexOf("version"));
+    border.width: st.border_size
+    border.color: st.rectangleLive_colorBorder
 }
-
-#endif // SK_NO_TABTRACK

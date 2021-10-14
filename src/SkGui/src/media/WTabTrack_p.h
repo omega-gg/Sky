@@ -58,6 +58,8 @@ struct WTabTrackDataBookmark
     QList<int> idPlaylist;
     int        idTrack;
 
+    WTrack::Type type;
+
     WTrack::State state;
 
     QString source;

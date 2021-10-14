@@ -15,6 +15,7 @@ WindowScale 1.0 WindowScale.qml
 
 RectangleBordersDrop 1.0 RectangleBordersDrop.qml
 RectangleLogo        1.0 RectangleLogo.qml
+RectangleLive        1.0 RectangleLive.qml
 
 BorderImageBack      1.0 BorderImageBack.qml
 BorderImageScaleBack 1.0 BorderImageScaleBack.qml
