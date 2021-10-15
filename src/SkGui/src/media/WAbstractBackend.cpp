@@ -440,9 +440,10 @@ QString WAbstractBackend::qualityToString(Quality quality)
         setDuration   (duration);
         setCurrentTime(currentTime);
 
-        setLive(false);
-
         backendSetSource(url);
+
+        // NOTE: We need to restore this after everything has been stopped and cleared.
+        setLive(false);
 
         emit sourceChanged();
     }

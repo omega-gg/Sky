@@ -36,4 +36,45 @@ TabsBrowser
     //---------------------------------------------------------------------------------------------
 
     delegate: ComponentTabTrack {}
+
+    //---------------------------------------------------------------------------------------------
+    // Events
+    //---------------------------------------------------------------------------------------------
+
+    Component.onCompleted: pUpdateVisible()
+
+    onVisibleChanged: pUpdateVisible()
+
+    //---------------------------------------------------------------------------------------------
+    // Functions
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    function pUpdateVisible()
+    {
+        // NOTE: We reload each track when the tabs are visible.
+        if (visible)
+        {
+            tabs.reloadTracks();
+
+            timer.start();
+        }
+        else timer.stop();
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Children
+    //---------------------------------------------------------------------------------------------
+
+    // NOTE: We want to reload each track periodically.
+    Timer
+    {
+        id: timer
+
+        interval: st.tabsTrack_interval
+
+        repeat: true
+
+        onTriggered: tabs.reloadTracks()
+    }
 }

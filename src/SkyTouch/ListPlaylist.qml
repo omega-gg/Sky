@@ -42,20 +42,13 @@ List
     // Events
     //---------------------------------------------------------------------------------------------
 
+    Component.onCompleted: pUpdateVisible()
+
     onHeightChanged: loadTracks()
 
     onContentYChanged: loadTracks()
 
-    onVisibleChanged:
-    {
-        if (visible)
-        {
-            loadTracks();
-
-            timerReload.start();
-        }
-        else timerReload.stop();
-    }
+    onVisibleChanged: pUpdateVisible()
 
     //---------------------------------------------------------------------------------------------
 
@@ -85,6 +78,17 @@ List
 
     //---------------------------------------------------------------------------------------------
     // Private
+
+    function pUpdateVisible()
+    {
+        if (visible)
+        {
+            loadTracks();
+
+            timerReload.start();
+        }
+        else timerReload.stop();
+    }
 
     function pApplyLoad()
     {

@@ -807,6 +807,13 @@ Style
     property int tabsBrowser_spacing: dp8
 //#END
 
+//#TabsTrack
+    //---------------------------------------------------------------------------------------------
+    // TabsTrack
+
+    property int tabsTrack_interval: 60000 // 1 minute
+//#END
+
 //#TabsPlayer
     //---------------------------------------------------------------------------------------------
     // TabsPlayer

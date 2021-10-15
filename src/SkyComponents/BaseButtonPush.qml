@@ -146,7 +146,7 @@ BaseButton
                     }
                     else if (checked)
                     {
-                        if (isHovered && checkHover)
+                        if (checkHover && isHovered)
                         {
                              return colorPressHoverA;
                         }
@@ -172,7 +172,7 @@ BaseButton
                     }
                     else if (checked)
                     {
-                        if (isHovered && checkHover)
+                        if (checkHover && isHovered)
                         {
                              return colorPressHoverB;
                         }

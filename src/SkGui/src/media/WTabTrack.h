@@ -129,6 +129,9 @@ public: // Interface
 
     Q_INVOKABLE void updateBookmark();
 
+    Q_INVOKABLE void loadTrack  ();
+    Q_INVOKABLE void reloadTrack();
+
 public: // WLocalObject reimplementation
     /* Q_INVOKABLE virtual */ QString getParentPath() const;
 
@@ -232,6 +235,8 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onFocusChanged())
 
     Q_PRIVATE_SLOT(d_func(), void onCurrentTrackChanged())
+
+    Q_PRIVATE_SLOT(d_func(), void onTrackLoaded())
 
     Q_PRIVATE_SLOT(d_func(), void onFilesUpdated(const QList<int> &))
 

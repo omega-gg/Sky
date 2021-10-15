@@ -31,8 +31,14 @@ MouseArea
 
     /* read */ property bool isCurrent: (index == currentIndex)
 
+    property bool checkHover: true
+
     //---------------------------------------------------------------------------------------------
     // Aliases
+    //---------------------------------------------------------------------------------------------
+
+    property alias text: itemText.text
+
     //---------------------------------------------------------------------------------------------
 
     property alias background: background
@@ -99,7 +105,14 @@ MouseArea
 
                 color:
                 {
-                    if      (isCurrent)     return st.itemList_colorSelectFocusA;
+                    if (isCurrent)
+                    {
+                        if (checkHover && containsMouse)
+                        {
+                             return st.itemList_colorSelectFocusA;
+                        }
+                        else return st.itemList_colorSelectA;
+                    }
                     else if (pressed)       return st.itemList_colorPressA;
                     else if (containsMouse) return st.itemList_colorHoverA;
                     else                    return st.itemList_colorA;
@@ -112,7 +125,14 @@ MouseArea
 
                 color:
                 {
-                    if      (isCurrent)     return st.itemList_colorSelectFocusB;
+                    if (isCurrent)
+                    {
+                        if (checkHover && containsMouse)
+                        {
+                             return st.itemList_colorSelectFocusB;
+                        }
+                        else return st.itemList_colorSelectB;
+                    }
                     else if (pressed)       return st.itemList_colorPressB;
                     else if (containsMouse) return st.itemList_colorHoverB;
                     else                    return st.itemList_colorB;

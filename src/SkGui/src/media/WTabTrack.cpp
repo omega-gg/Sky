@@ -531,6 +531,8 @@ WTabTrackPrivate::WTabTrackPrivate(WTabTrack * p) : WAbstractTabPrivate(p) {}
 
     if (playlist) playlist->tryDelete();
 
+    if (playlistTrack) playlistTrack->tryDelete();
+
     W_GET_CONTROLLER(WControllerPlaylist, controller);
 
     if (controller) controller->d_func()->unregisterTab(q);
@@ -542,7 +544,8 @@ void WTabTrackPrivate::init()
 {
     Q_Q(WTabTrack);
 
-    playlist = NULL;
+    playlist      = NULL;
+    playlistTrack = NULL;
 
 #ifndef SK_NO_PLAYER
     player = NULL;
@@ -867,6 +870,36 @@ void WTabTrackPrivate::setTrack(const WTrack * track)
 
 //-------------------------------------------------------------------------------------------------
 
+void WTabTrackPrivate::updatePlaylistTrack()
+{
+    Q_Q(WTabTrack);
+
+    if (playlistTrack == NULL)
+    {
+        playlistTrack = new WPlaylist;
+
+        QObject::connect(playlistTrack, SIGNAL(trackQueryCompleted()), q, SLOT(onTrackLoaded()));
+    }
+    else playlistTrack->clearTracks();
+
+    q->copyTrackTo(playlistTrack);
+}
+
+void WTabTrackPrivate::checkPlaylistTrack()
+{
+    if (playlistTrack->trackIsLoading(0)) return;
+
+    Q_Q(WTabTrack);
+
+    QObject::connect(playlistTrack, 0, q, 0);
+
+    playlistTrack->tryDelete();
+
+    playlistTrack = NULL;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void WTabTrackPrivate::setVideoShot(WBookmarkTrack * bookmark, const QString & url)
 {
     WBookmarkTrackPrivate * p = bookmark->d_func();
@@ -968,6 +1001,17 @@ void WTabTrackPrivate::onCurrentTrackChanged()
     const WTrack * track = playlist->currentTrackPointer();
 
     setTrack(track);
+}
+
+void WTabTrackPrivate::onTrackLoaded()
+{
+    const WTrack * track = playlistTrack->currentTrackPointer();
+
+    setTrack(track);
+
+    playlistTrack->tryDelete();
+
+    playlistTrack = NULL;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1343,6 +1387,38 @@ void WTabTrackPrivate::onPlaylistDestroyed()
 /* Q_INVOKABLE */ void WTabTrack::updateBookmark()
 {
     emit currentBookmarkUpdated();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WTabTrack::loadTrack()
+{
+    Q_D(WTabTrack);
+
+    if (d->playlist == NULL)
+    {
+        d->updatePlaylistTrack();
+
+        d->playlistTrack->loadTrack(0);
+
+        d->checkPlaylistTrack();
+    }
+    else d->playlist->loadTrack(trackIndex());
+}
+
+/* Q_INVOKABLE */ void WTabTrack::reloadTrack()
+{
+    Q_D(WTabTrack);
+
+    if (d->playlist == NULL)
+    {
+        d->updatePlaylistTrack();
+
+        d->playlistTrack->reloadTrack(0);
+
+        d->checkPlaylistTrack();
+    }
+    else d->playlist->reloadTrack(trackIndex());
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -114,6 +114,10 @@ public: // Functions
 
     void setTrack(const WTrack * track);
 
+    void updatePlaylistTrack();
+
+    void checkPlaylistTrack();
+
     void setVideoShot(WBookmarkTrack * bookmark, const QString & url);
 
     void saveState();
@@ -122,6 +126,8 @@ public: // Slots
     void onFocusChanged();
 
     void onCurrentTrackChanged();
+
+    void onTrackLoaded();
 
     void onRegisterItemId(WLibraryItem * item, const QList<int> & idFull);
 
@@ -139,7 +145,9 @@ public: // Variables
     QHash<int, QPair<QString, QPixmap> > videoShots;
 #endif
 
-    WPlaylist          * playlist;
+    WPlaylist * playlist;
+    WPlaylist * playlistTrack;
+
     WDeclarativePlayer * player;
 
     WBookmarkTrack * currentBookmark;

@@ -55,6 +55,9 @@ public: // Interface
 
     Q_INVOKABLE WTabTrack * tabFromSource(const QString & source) const;
 
+    Q_INVOKABLE void loadTracks  ();
+    Q_INVOKABLE void reloadTracks();
+
 public: // WLocalObject reimplementation
     /* Q_INVOKABLE virtual */ QString getParentPath() const;
 

@@ -423,6 +423,28 @@ void WTabsTrackPrivate::onHighlightedTabDestroyed()
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WTabsTrack::loadTracks()
+{
+    Q_D(const WTabsTrack);
+
+    foreach (WAbstractTab * tab, d->tabs)
+    {
+        tab->toTabTrack()->loadTrack();
+    }
+}
+
+/* Q_INVOKABLE */ void WTabsTrack::reloadTracks()
+{
+    Q_D(const WTabsTrack);
+
+    foreach (WAbstractTab * tab, d->tabs)
+    {
+        tab->toTabTrack()->reloadTrack();
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
 // WLocalObject reimplementation
 //-------------------------------------------------------------------------------------------------
 
