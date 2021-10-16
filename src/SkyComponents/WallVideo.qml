@@ -78,7 +78,7 @@ WallBookmarkTrack
                            ||
                            player.outputActive == AbstractBackend.OutputAudio
                            ||
-                           player.isAudio)
+                           player.isAudio || player.hasOutput)
 
     //---------------------------------------------------------------------------------------------
     // Aliases
