@@ -36,19 +36,28 @@ List
     //---------------------------------------------------------------------------------------------
     // Private
 
-    property bool pReload: false
+    // NOTE: We need this to avoid loading tracks when the item is not loaded.
+    property bool pReady: false
+
+    // NOTE: We want to reload tracks by default.
+    property bool pReload: true
 
     //---------------------------------------------------------------------------------------------
     // Events
     //---------------------------------------------------------------------------------------------
 
-    Component.onCompleted: pUpdateVisible()
+    Component.onCompleted:
+    {
+        pReady = true;
+
+        pUpdateVisible();
+    }
 
     onHeightChanged: loadTracks()
 
     onContentYChanged: loadTracks()
 
-    onVisibleChanged: pUpdateVisible()
+    onVisibleChanged: if (pReady) pUpdateVisible()
 
     //---------------------------------------------------------------------------------------------
 
@@ -62,14 +71,14 @@ List
 
     function loadTracks()
     {
-        if (visible == false) return;
+        if (pReady == false || visible == false) return;
 
         timerLoad.restart();
     }
 
     function reloadTracks()
     {
-        if (visible == false) return;
+        if (pReady == false || visible == false) return;
 
         pReload = true;
 

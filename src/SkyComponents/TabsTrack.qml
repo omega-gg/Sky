@@ -32,6 +32,12 @@ TabsBrowser
     property variant highlightedTab: tabs.highlightedTab
 
     //---------------------------------------------------------------------------------------------
+    // Private
+
+    // NOTE: We need this to avoid loading tracks when the item is not loaded.
+    property bool pReady: false
+
+    //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
@@ -41,9 +47,14 @@ TabsBrowser
     // Events
     //---------------------------------------------------------------------------------------------
 
-    Component.onCompleted: pUpdateVisible()
+    Component.onCompleted:
+    {
+        pReady = true;
 
-    onVisibleChanged: pUpdateVisible()
+        pUpdateVisible();
+    }
+
+    onVisibleChanged: if (pReady) pUpdateVisible()
 
     //---------------------------------------------------------------------------------------------
     // Functions
