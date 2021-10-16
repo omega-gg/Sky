@@ -1585,6 +1585,16 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 #endif
 }
 
+/* Q_INVOKABLE static */ qint64 WControllerApplication::currentDateToMSecs()
+{
+    return dateToMSecs(QDateTime::currentDateTime());
+}
+
+/* Q_INVOKABLE static */ qint64 WControllerApplication::currentDateToSecs()
+{
+    return dateToSecs(QDateTime::currentDateTime());
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QString WControllerApplication::dateToString(const QDateTime & date,

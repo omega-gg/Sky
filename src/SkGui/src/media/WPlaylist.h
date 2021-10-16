@@ -153,15 +153,16 @@ public: // Interface
 
     //---------------------------------------------------------------------------------------------
 
+    // NOTE: When reloading you can specify a delay in msec to skip recently reloaded tracks.
     Q_INVOKABLE void loadTrack  (int at);
-    Q_INVOKABLE void reloadTrack(int at);
+    Q_INVOKABLE void reloadTrack(int at, int delay = 0);
 
     Q_INVOKABLE void loadTracks  (int at, int count);
-    Q_INVOKABLE void reloadTracks(int at, int count);
+    Q_INVOKABLE void reloadTracks(int at, int count, int delay = 0);
 
     // NOTE: Loading a 'count' of tracks before and after the 'at' index.
     Q_INVOKABLE void loadTracksBetween  (int at, int count);
-    Q_INVOKABLE void reloadTracksBetween(int at, int count);
+    Q_INVOKABLE void reloadTracksBetween(int at, int count, int delay = 0);
 
     Q_INVOKABLE void abortTracks();
 

@@ -65,6 +65,8 @@ public: // Variables
 
     WPlaylist * playlist;
 
+    qint64 timeUpdate;
+
 protected:
     W_DECLARE_PUBLIC(WTrack)
 };

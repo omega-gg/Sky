@@ -56,7 +56,9 @@ ScrollArea
     // Events
     //---------------------------------------------------------------------------------------------
 
-    onContentHeightChanged: if (pAtBottom) scrollToBottom()
+    onHeightChanged: pScrollToBottom()
+
+    onContentHeightChanged: pScrollToBottom()
 
     onValueChanged: pAtBottom = atBottom
 
@@ -67,6 +69,14 @@ ScrollArea
     function append(string)
     {
         itemConsole.append(string);
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    function pScrollToBottom()
+    {
+        if (pAtBottom) scrollToBottom();
     }
 
     //---------------------------------------------------------------------------------------------

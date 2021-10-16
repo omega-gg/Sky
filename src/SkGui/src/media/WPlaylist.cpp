@@ -693,14 +693,23 @@ bool WPlaylistPrivate::loadTrack(int index)
 
     if (state != WTrack::Default) return false;
 
-    applyTrack(track, index);
+    applyTrack(track, index, 0);
 
     return true;
 }
 
-void WPlaylistPrivate::applyTrack(WTrack * track, int index)
+void WPlaylistPrivate::applyTrack(WTrack * track, int index, int delay)
 {
     Q_Q(WPlaylist);
+
+    WTrackPrivate * p = track->d_func();
+
+    qint64 timeUpdate = p->timeUpdate;
+
+    p->timeUpdate = Sk::currentDateToMSecs();
+
+    // NOTE: Sometimes we don't want to reload a track too soon.
+    if (p->timeUpdate - timeUpdate < delay) return;
 
     wControllerPlaylist->d_func()->applySourceTrack(q, track, track->source());
 
@@ -1219,7 +1228,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     d->loadTrack(at);
 }
 
-/* Q_INVOKABLE */ void WPlaylist::reloadTrack(int at)
+/* Q_INVOKABLE */ void WPlaylist::reloadTrack(int at, int delay)
 {
     Q_D(WPlaylist);
 
@@ -1227,7 +1236,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
     WTrack * track = &(d->tracks[at]);
 
-    d->applyTrack(track, at);
+    d->applyTrack(track, at, delay);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1248,7 +1257,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     }
 }
 
-/* Q_INVOKABLE */ void WPlaylist::reloadTracks(int at, int count)
+/* Q_INVOKABLE */ void WPlaylist::reloadTracks(int at, int count, int delay)
 {
     Q_D(WPlaylist);
 
@@ -1258,7 +1267,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     {
         WTrack * track = &(d->tracks[at]);
 
-        d->applyTrack(track, at);
+        d->applyTrack(track, at, delay);
 
         count--;
 
@@ -1279,15 +1288,15 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     else loadTracks(at, count);
 }
 
-/* Q_INVOKABLE */ void WPlaylist::reloadTracksBetween(int at, int count)
+/* Q_INVOKABLE */ void WPlaylist::reloadTracksBetween(int at, int count, int delay)
 {
     at -= count / 2;
 
     if (at < 0)
     {
-         reloadTracks(0, count);
+         reloadTracks(0, count, delay);
     }
-    else reloadTracks(at, count);
+    else reloadTracks(at, count, delay);
 }
 
 //-------------------------------------------------------------------------------------------------

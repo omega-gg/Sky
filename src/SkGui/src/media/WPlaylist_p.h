@@ -56,7 +56,7 @@ public: // Function
 
     bool loadTrack(int index);
 
-    void applyTrack(WTrack * track, int index);
+    void applyTrack(WTrack * track, int index, int delay);
 
     bool loadCover(WTrack * track);
 
