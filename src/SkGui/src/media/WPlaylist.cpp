@@ -682,16 +682,10 @@ bool WPlaylistPrivate::loadTrack(int index)
 {
     WTrack * track = &(tracks[index]);
 
-    WTrack::State state = track->state();
-
-    if (state == WTrack::Cover)
+    if (track->state() != WTrack::Default)
     {
-        loadCover(track, QNetworkRequest::NormalPriority);
-
-        return true;
+        return false;
     }
-
-    if (state != WTrack::Default) return false;
 
     applyTrack(track, index, -1);
 
@@ -713,11 +707,11 @@ void WPlaylistPrivate::applyTrack(WTrack * track, int index, int delay)
 
     // FIXME: For now, we don't want to reload a loaded torrent. It causes issues when a magnet
     //        is not responding well.
-    if (p->state < WTrack::Loaded
+    if (p->state == WTrack::Default
         ||
-        WControllerPlaylist::urlIsTorrent(track->d_func()->source) == false)
+        WControllerPlaylist::urlIsTorrent(p->source) == false)
     {
-        wControllerPlaylist->d_func()->applySourceTrack(q, track, track->source());
+        wControllerPlaylist->d_func()->applySourceTrack(q, track, p->source);
     }
 
     WTrack::State state = track->state();
