@@ -686,14 +686,14 @@ bool WPlaylistPrivate::loadTrack(int index)
 
     if (state == WTrack::Cover)
     {
-        loadCover(track);
+        loadCover(track, QNetworkRequest::NormalPriority);
 
         return true;
     }
 
     if (state != WTrack::Default) return false;
 
-    applyTrack(track, index, 0);
+    applyTrack(track, index, -1);
 
     return true;
 }
@@ -711,7 +711,14 @@ void WPlaylistPrivate::applyTrack(WTrack * track, int index, int delay)
     // NOTE: Sometimes we don't want to reload a track too soon.
     if (p->timeUpdate - timeUpdate < delay) return;
 
-    wControllerPlaylist->d_func()->applySourceTrack(q, track, track->source());
+    // FIXME: For now, we don't want to reload a loaded torrent. It causes issues when a magnet
+    //        is not responding well.
+    if (p->state < WTrack::Loaded
+        ||
+        WControllerPlaylist::urlIsTorrent(track->d_func()->source) == false)
+    {
+        wControllerPlaylist->d_func()->applySourceTrack(q, track, track->source());
+    }
 
     WTrack::State state = track->state();
 
@@ -719,14 +726,14 @@ void WPlaylistPrivate::applyTrack(WTrack * track, int index, int delay)
     {
         if (track->cover().isEmpty())
         {
-            loadCover(track);
+            loadCover(track, QNetworkRequest::NormalPriority);
         }
     }
     else if (state == WTrack::Cover)
     {
-        loadCover(track);
+        loadCover(track, QNetworkRequest::NormalPriority);
     }
-    else if (state == WTrack::Default)
+    if (state == WTrack::Default)
     {
         track->setState(WTrack::Loaded);
 
@@ -736,7 +743,7 @@ void WPlaylistPrivate::applyTrack(WTrack * track, int index, int delay)
 
 //-------------------------------------------------------------------------------------------------
 
-bool WPlaylistPrivate::loadCover(WTrack * track)
+void WPlaylistPrivate::loadCover(WTrack * track, QNetworkRequest::Priority priority)
 {
     QString label = track->author();
 
@@ -749,17 +756,44 @@ bool WPlaylistPrivate::loadCover(WTrack * track)
 
     WBackendNet * backend = wControllerPlaylist->backendForCover(label, title);
 
-    if (backend == NULL) return false;
+    if (backend == NULL) return;
 
     Q_Q(WPlaylist);
 
     WBackendNetQuery query = backend->createQuery("cover", label, title);
 
+    query.priority = priority;
+
     wControllerPlaylist->d_func()->applyQueryTrack(q, track, query);
 
     backend->tryDelete();
+}
 
-    return true;
+//-------------------------------------------------------------------------------------------------
+
+void WPlaylistPrivate::applyTrackDefault()
+{
+    Q_Q(WPlaylist);
+
+    emit q->trackQueryEnded    ();
+    emit q->trackQueryCompleted();
+}
+
+void WPlaylistPrivate::applyTrackLoaded(int index)
+{
+    Q_Q(WPlaylist);
+
+    WTrack * track = &(tracks[index]);
+
+    if (track->state() != WTrack::Cover)
+    {
+        emit q->trackQueryCompleted();
+
+        return;
+    }
+
+    // NOTE: The priority should be high because it's tied to the track loading completion.
+    loadCover(track, QNetworkRequest::HighPriority);
 }
 
 //-------------------------------------------------------------------------------------------------

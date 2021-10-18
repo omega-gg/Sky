@@ -891,7 +891,7 @@ void WTabTrackPrivate::checkPlaylistTrack()
 
     Q_Q(WTabTrack);
 
-    QObject::connect(playlistTrack, 0, q, 0);
+    QObject::disconnect(playlistTrack, 0, q, 0);
 
     playlistTrack->tryDelete();
 

@@ -4099,6 +4099,8 @@ void WBackendUniversalPrivate::applyTrackParameters(WBackendUniversalParameters 
 
     parameters->add("type");
 
+    parameters->add("state");
+
     parameters->add("source");
 
     parameters->add("title");
@@ -4128,6 +4130,8 @@ void WBackendUniversalPrivate::applyTrackResults(WBackendUniversalParameters * p
     WTrack & track = reply->track;
 
     track.setType(getTypeTrack(parameters->value("type")->toString()));
+
+    track.setState(getStateTrack(parameters->value("state")->toString()));
 
     track.setSource(parameters->value("source")->toString());
 

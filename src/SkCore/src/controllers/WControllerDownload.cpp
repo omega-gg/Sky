@@ -35,7 +35,7 @@ W_INIT_CONTROLLER(WControllerDownload)
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int CONTROLLERDOWNLOAD_MAX_JOBS = 10;
+static const int CONTROLLERDOWNLOAD_MAX_JOBS = 32;
 
 //=================================================================================================
 // WRemoteData

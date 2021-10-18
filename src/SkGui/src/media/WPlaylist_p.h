@@ -58,7 +58,10 @@ public: // Function
 
     void applyTrack(WTrack * track, int index, int delay);
 
-    bool loadCover(WTrack * track);
+    void loadCover(WTrack * track, QNetworkRequest::Priority priority);
+
+    void applyTrackDefault();
+    void applyTrackLoaded (int index);
 
     void setPrevious(bool cycle);
     void setNext    (bool cycle);

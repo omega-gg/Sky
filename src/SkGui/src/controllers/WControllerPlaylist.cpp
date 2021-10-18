@@ -1970,8 +1970,7 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
             }
             else deleteQuery(query);
 
-            emit playlist->trackQueryEnded    ();
-            emit playlist->trackQueryCompleted();
+            playlist->d_func()->applyTrackDefault();
 
             delete data;
 
@@ -2117,8 +2116,7 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
 
     if (index == -1)
     {
-        emit playlist->trackQueryEnded    ();
-        emit playlist->trackQueryCompleted();
+        playlist->d_func()->applyTrackDefault();
 
         return;
     }
@@ -2184,7 +2182,7 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
         playlist->updateTrack(index);
     }
 
-    emit playlist->trackQueryCompleted();
+    playlist->d_func()->applyTrackLoaded(index);
 }
 
 void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * device,
