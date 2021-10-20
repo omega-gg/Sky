@@ -93,7 +93,7 @@ void WBackendNetQuery::init(Type type, const QString & url)
     cookies    = false;
     skipError  = false;
 
-    maxHost =  5;
+    maxHost =  3;
     delay   =  0;
     timeout = -1;
 }
