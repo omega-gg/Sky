@@ -790,6 +790,20 @@ void WPlaylistPrivate::applyTrackLoaded(int index)
     loadCover(track, QNetworkRequest::HighPriority);
 }
 
+void WPlaylistPrivate::applyTrackAbort(int index)
+{
+    Q_Q(WPlaylist);
+
+    WTrack * track = &(tracks[index]);
+
+    // NOTE: We want to clear the update timeout so we can reload the track right away.
+    track->d_func()->timeUpdate = 0;
+
+    track->setState(WTrack::Default);
+
+    q->updateTrack(index);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 void WPlaylistPrivate::setPrevious(bool cycle)

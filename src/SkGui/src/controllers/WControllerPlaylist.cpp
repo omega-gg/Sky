@@ -1216,7 +1216,7 @@ bool WControllerPlaylistPrivate::abortQueriesTracks(WPlaylist * playlist)
 
             removeQuery(query);
 
-            playlist->setTrackState(index, WTrack::Default);
+            playlist->d_func()->applyTrackAbort(index);
         }
     }
 

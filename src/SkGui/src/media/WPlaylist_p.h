@@ -63,6 +63,8 @@ public: // Function
     void applyTrackDefault();
     void applyTrackLoaded (int index);
 
+    void applyTrackAbort(int index);
+
     void setPrevious(bool cycle);
     void setNext    (bool cycle);
 
