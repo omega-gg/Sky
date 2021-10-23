@@ -145,6 +145,8 @@ public: // Interface
 
     Q_INVOKABLE void removeTracks(const QList<int> & indexes);
 
+    Q_INVOKABLE void removeTracks(int from, int count);
+
     Q_INVOKABLE void removeSelectedTracks();
 
     Q_INVOKABLE void clearTracks();

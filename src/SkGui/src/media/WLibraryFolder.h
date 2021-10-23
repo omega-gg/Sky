@@ -158,6 +158,10 @@ public: // Interface
     Q_INVOKABLE void removeItem(int id);
     Q_INVOKABLE void removeAt  (int index);
 
+    Q_INVOKABLE void removeItems(const QList<int> & indexes);
+
+    Q_INVOKABLE void removeItems(int from, int count);
+
     Q_INVOKABLE void clearItems();
 
     //---------------------------------------------------------------------------------------------
@@ -289,9 +293,9 @@ protected: // WLibraryItem reimplementation
 signals:
     void itemsInserted(int index, int count);
 
-    void itemMoved(int from, int to);
+    void itemsMoved(const QList<int> & indexes, int to);
 
-    void itemRemoved(int index);
+    void itemsRemoved(const QList<int> & indexes);
 
     void itemsCleared();
 

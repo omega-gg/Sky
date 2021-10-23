@@ -1095,18 +1095,17 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
         ||
         to < 0 || to > count) return;
 
-    if (from > to || from < to - 1)
+    if (from <= to && from > to - 2) return;
+
+    beginTracksMove(from, from, to);
+
+    if (from < to)
     {
-        beginTracksMove(from, from, to);
-
-        if (from < to)
-        {
-             d->tracks.move(from, to - 1);
-        }
-        else d->tracks.move(from, to);
-
-        endTracksMove();
+         d->tracks.move(from, to - 1);
     }
+    else d->tracks.move(from, to);
+
+    endTracksMove();
 
     updateIndex();
 
@@ -1190,6 +1189,22 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     emit tracksRemoved(sortedIndexes);
 
     save();
+}
+
+/* Q_INVOKABLE */ void WPlaylist::removeTracks(int from, int count)
+{
+    QList<int> indexes;
+
+    while (count)
+    {
+        indexes.append(from);
+
+        from++;
+
+        count--;
+    }
+
+    removeTracks(indexes);
 }
 
 /* Q_INVOKABLE */ void WPlaylist::removeSelectedTracks()

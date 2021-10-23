@@ -1398,24 +1398,27 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
         ||
         to < 0 || to > count) return;
 
-    if (from > to || from < to - 1)
+    if (from <= to && from > to - 2) return;
+
+    d->beginItemsMove(from, from, to);
+
+    if (from < to)
     {
-        d->beginItemsMove(from, from, to);
-
-        if (from < to)
-        {
-             d->items.move(from, to - 1);
-        }
-        else d->items.move(from, to);
-
-        d->endItemsMove();
-
-        updateIndex();
-
-        emit itemMoved(from, to);
-
-        save();
+         d->items.move(from, to - 1);
     }
+    else d->items.move(from, to);
+
+    d->endItemsMove();
+
+    updateIndex();
+
+    QList<int> indexes;
+
+    indexes.append(from);
+
+    emit itemsMoved(indexes, to);
+
+    save();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1434,57 +1437,96 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
 
 /* Q_INVOKABLE */ void WLibraryFolder::removeItem(int id)
 {
+    removeAt(indexFromId(id));
+}
+
+/* Q_INVOKABLE */ void WLibraryFolder::removeAt(int index)
+{
+    removeItems(QList<int>() << index);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WLibraryFolder::removeItems(const QList<int> & indexes)
+{
     Q_D(WLibraryFolder);
 
-    int index = indexFromId(id);
+    if (indexes.isEmpty()) return;
 
-    if (index == -1) return;
+    QList<int> sortedIndexes = indexes;
 
-    if (d->currentId == id)
+    std::sort(sortedIndexes.begin(), sortedIndexes.end());
+
+    QList<int> ids;
+
+    foreach (int index, sortedIndexes)
     {
-        d->setCurrentItem(NULL);
+        if (index < 0 || index >= d->items.count()) continue;
+
+        int id = d->items.at(index).id;
+
+        ids.append(id);
     }
 
-    if (d->activeId == id)
+    foreach (int id, ids)
     {
-        setActiveId(-1);
-    }
+        if (d->currentId == id)
+        {
+            d->setCurrentItem(NULL);
+        }
 
-    d->ids.removeOne(id);
+        if (d->activeId == id)
+        {
+            setActiveId(-1);
+        }
 
-    WLibraryItem * item = d->idHash.take(id);
+        d->ids.removeOne(id);
 
-    d->itemIds.remove(item);
+        WLibraryItem * item = d->idHash.take(id);
 
-    d->deleteFile(id);
+        d->itemIds.remove(item);
 
-    d->beginItemsRemove(index, index);
+        d->deleteFile(id);
 
-    d->items.removeAt(index);
+        int index = indexFromId(id);
 
-    d->endItemsRemove();
+        d->beginItemsRemove(index, index);
 
-    if (item)
-    {
-        item->d_func()->parentFolder = NULL;
+        d->items.removeAt(index);
 
-        item->abortAndDelete();
+        d->endItemsRemove();
+
+        if (item)
+        {
+            item->d_func()->parentFolder = NULL;
+
+            item->abortAndDelete();
+        }
     }
 
     updateIndex();
 
     emit countChanged();
 
-    emit itemRemoved(index);
+    emit itemsRemoved(sortedIndexes);
 
     save();
 }
 
-/* Q_INVOKABLE */ void WLibraryFolder::removeAt(int index)
+/* Q_INVOKABLE */ void WLibraryFolder::removeItems(int from, int count)
 {
-    int id = idAt(index);
+    QList<int> indexes;
 
-    removeItem(id);
+    while (count)
+    {
+        indexes.append(from);
+
+        from++;
+
+        count--;
+    }
+
+    removeItems(indexes);
 }
 
 //-------------------------------------------------------------------------------------------------
