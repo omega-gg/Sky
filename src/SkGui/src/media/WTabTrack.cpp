@@ -929,14 +929,16 @@ void WTabTrackPrivate::saveState()
     WBookmarkTrackPrivate * p = currentBookmark->d_func();
 
     // NOTE: We don't want to save the currentTime on a live stream.
-    if (player->isLive() == false)
+    if (player->isLive() && time > 0)
     {
-        p->currentTime = time;
-
-        WPlaylist * playlist = p->playlist;
-
-        if (playlist) playlist->setCurrentTime(time);
+        time = 0;
     }
+
+    p->currentTime = time;
+
+    WPlaylist * playlist = p->playlist;
+
+    if (playlist) playlist->setCurrentTime(time);
 
     if (player->outputActive() == WAbstractBackend::OutputAudio)
     {
