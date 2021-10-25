@@ -54,12 +54,6 @@ class WPrivate;
 #   define SK_WEB_EXPORT Q_DECL_IMPORT
 #endif
 
-#if defined(SK_PRESENTATION_LIBRARY)
-#   define SK_PRESENTATION_EXPORT Q_DECL_EXPORT
-#else
-#   define SK_PRESENTATION_EXPORT Q_DECL_IMPORT
-#endif
-
 #if defined(SK_TORRENT_LIBRARY)
 #   define SK_TORRENT_EXPORT Q_DECL_EXPORT
 #else

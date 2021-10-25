@@ -40,7 +40,7 @@ Item
     property int marginWidth : ds(textHeight / 4)
     property int marginHeight: ds(textHeight / 8)
 
-    property real zoom: (typeof slides == "undefined") ? 1.0 : slides.ratio
+    property real zoom: (pSlides) ? slides.ratio : 1.0
 
     property int horizontalAlignment: Text.AlignHCenter
     property int verticalAlignment  : Text.AlignVCenter
@@ -73,6 +73,8 @@ Item
 
     //---------------------------------------------------------------------------------------------
     // Private
+
+    property bool pSlides: (typeof slides != "undefined")
 
     property bool pReady: false
 

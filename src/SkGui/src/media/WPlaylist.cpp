@@ -678,18 +678,20 @@ void WPlaylistPrivate::loadTracks(const QList<WTrack> & tracks)
 
 //-------------------------------------------------------------------------------------------------
 
-bool WPlaylistPrivate::loadTrack(int index)
+void WPlaylistPrivate::loadTrack(int index)
 {
     WTrack * track = &(tracks[index]);
 
-    if (track->state() != WTrack::Default)
+    WTrack::State state = track->state();
+
+    if (state == WTrack::Cover)
     {
-        return false;
+        loadCover(track, QNetworkRequest::NormalPriority);
     }
-
-    applyTrack(track, index, -1);
-
-    return true;
+    else if (state == WTrack::Default)
+    {
+        applyTrack(track, index, -1);
+    }
 }
 
 void WPlaylistPrivate::applyTrack(WTrack * track, int index, int delay)

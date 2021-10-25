@@ -47,13 +47,18 @@ TextSvg
     property int easing: sp.easing
 
     //---------------------------------------------------------------------------------------------
+    // Private
+
+    property bool pSlides: (typeof slides != "undefined")
+
+    //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    marginWidth : ds(textHeight / 4)
-    marginHeight: ds(textHeight / 8)
+    marginWidth : (pSlides) ? ds(textHeight / 4) : 0
+    marginHeight: (pSlides) ? ds(textHeight / 8) : 0
 
-    zoom: (typeof slides == "undefined") ? 1.0 : slides.ratio
+    zoom: (pSlides) ? slides.ratio : 1.0
 
     horizontalAlignment: Text.AlignHCenter
     verticalAlignment  : Text.AlignVCenter

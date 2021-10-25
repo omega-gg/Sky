@@ -20,8 +20,8 @@
 */
 //=================================================================================================
 
-#ifndef WPLAYLIST_P_H
-#define WPLAYLIST_P_H
+#ifndef WDECLARATIVENOISE_P_H
+#define WDECLARATIVENOISE_P_H
 
 /*  W A R N I N G
     -------------
@@ -33,75 +33,51 @@
     We mean it.
 */
 
-#include <private/WLibraryItem_p>
+// Qt includes
+#include <QBasicTimer>
 
-#ifndef SK_NO_PLAYLIST
+// Sk includes
+#ifdef QT_4
+#include <private/WDeclarativeItem_p>
+#else
+#include <private/WDeclarativeItemPaint_p>
+#endif
 
-class SK_GUI_EXPORT WPlaylistPrivate : public WLibraryItemPrivate
+#ifndef SK_NO_DECLARATIVENOISE
+
+#ifdef QT_4
+class SK_GUI_EXPORT WDeclarativeNoisePrivate : public WDeclarativeItemPrivate
+#else
+class SK_GUI_EXPORT WDeclarativeNoisePrivate : public WDeclarativeItemPaintPrivate
+#endif
 {
-public:
-    WPlaylistPrivate(WPlaylist * p);
-
-    /* virtual */ ~WPlaylistPrivate();
+protected:
+    WDeclarativeNoisePrivate(WDeclarativeNoise * p);
 
     void init();
 
-public: // Function
-    const WTrack * itemFromId(int id)    const;
-    const WTrack * itemAt    (int index) const;
+public: // Functions
+    void updateSize();
 
-    WTrack * getTrack(int index);
-
-    void loadTracks(const QList<WTrack> & tracks);
-
-    void loadTrack(int index);
-
-    void applyTrack(WTrack * track, int index, int delay);
-
-    void loadCover(WTrack * track, QNetworkRequest::Priority priority);
-
-    void applyTrackDefault();
-    void applyTrackLoaded (int index);
-
-    void applyTrackAbort(int index);
-
-    void setPrevious(bool cycle);
-    void setNext    (bool cycle);
-
-    bool hasPrevious(int index) const;
-    bool hasNext    (int index) const;
-
-    bool insertSelected(const QList<int> & indexes, const WTrack * track, int index);
-
-    QList<int> getSelected() const;
-
-    void currentIndexChanged();
-
-    void emitSelectedTracksChanged(const QList<int> & indexes);
+    void resetColor();
 
 public: // Variables
-    QList<WTrack> tracks;
+    QImage image;
 
-    WListId ids;
+    QBasicTimer timer;
 
-    const WTrack * currentTrack;
+    QSize density;
 
-    int currentIndex;
-    int currentTime;
+    int interval;
 
-    qreal scrollValue;
+    int increment;
 
-    int maxCount;
-
-    QList<const WTrack *> selectedTracks;
-
-    QList<WPlaylistWatcher *> watchers;
+    QColor colorBack;
+    QColor colorFront;
 
 protected:
-    W_DECLARE_PUBLIC(WPlaylist)
-
-    friend class WPlaylistReadReply;
+    W_DECLARE_PUBLIC(WDeclarativeNoise)
 };
 
-#endif // SK_NO_PLAYLIST
-#endif // WPLAYLIST_P_H
+#endif // SK_NO_DECLARATIVENOISE
+#endif // WDECLARATIVENOISE_P_H
