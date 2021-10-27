@@ -98,6 +98,6 @@ Item
 //#END
 
         border.width: st.border_size
-        border.color: st.border_color
+        border.color: st.cursorTouch_colorBorder
     }
 }

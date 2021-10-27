@@ -322,7 +322,8 @@ Item
     property real cursorTouch_opacityA: 0.6
     property real cursorTouch_opacityB: 0.8
 
-    property color cursorTouch_color: "#242424"
+    property color cursorTouch_color      : "#161616"
+    property color cursorTouch_colorBorder: "#c8c8c8"
 //#END
 
 //#TextSubtitle
