@@ -1354,22 +1354,30 @@ void WControllerPlaylistPrivate::removeQuery(WControllerPlaylistQuery * query)
 {
     QIODevice * reply = query->reply;
 
-    if (reply == NULL)
+    // NOTE: This means the query is already in progress.
+    if (reply)
     {
-        WRemoteData * data = query->data;
+        WControllerPlaylistQuery * query = replies.value(reply);
 
-        // NOTE: We must check if the job still exists because we could be in a backendFrom*
-        //       processEvents from the onLoaded() function.
-        if (jobs.remove(data) == 0)
-        {
-            query->item = NULL;
+        // NOTE: We clear the item to notify we should not do anything after loading the query.
+        //       This is done like this because we need to keep the WBackendNetQuery alive.
+        query->item = NULL;
 
-            return;
-        }
-
-        delete data;
+        return;
     }
-    else replies.remove(reply);
+
+    WRemoteData * data = query->data;
+
+    // NOTE: We must check if the job still exists because we could be in a backendFrom*
+    //       processEvents from the onLoaded() function.
+    if (jobs.remove(data) == 0)
+    {
+        query->item = NULL;
+
+        return;
+    }
+
+    delete data;
 
     deleteQuery(query);
 }
@@ -2081,11 +2089,19 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
 
     device->deleteLater();
 
-    if (query == NULL) return;
+    WLibraryItem * item = query->item;
+
+    // NOTE: The item was cleared so the query is deleted right away.
+    if (item == NULL)
+    {
+        deleteQuery(query);
+
+        return;
+    }
 
     const WBackendNetQuery & backendQuery = query->backendQuery;
 
-    WPlaylist * playlist = query->item->toPlaylist();
+    WPlaylist * playlist = item->toPlaylist();
     WTrack    * track    = query->track;
 
     if (reply.reload)
@@ -2192,11 +2208,19 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
 
     device->deleteLater();
 
-    if (query == NULL) return;
+    WLibraryItem * item = query->item;
+
+    // NOTE: The item was cleared so the query is deleted right away.
+    if (item == NULL)
+    {
+        deleteQuery(query);
+
+        return;
+    }
 
     const WBackendNetQuery & backendQuery = query->backendQuery;
 
-    WPlaylist * playlist = query->item->toPlaylist();
+    WPlaylist * playlist = item->toPlaylist();
 
     if (reply.reload)
     {
@@ -2288,11 +2312,19 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
 
     device->deleteLater();
 
-    if (query == NULL) return;
+    WLibraryItem * item = query->item;
+
+    // NOTE: The item was cleared so the query is deleted right away.
+    if (item == NULL)
+    {
+        deleteQuery(query);
+
+        return;
+    }
 
     const WBackendNetQuery & backendQuery = query->backendQuery;
 
-    WLibraryFolder * folder = query->item->toFolder();
+    WLibraryFolder * folder = item->toFolder();
 
     if (reply.reload)
     {
@@ -2396,15 +2428,21 @@ void WControllerPlaylistPrivate::onItemLoaded(QIODevice * device, const WBackend
 
     device->deleteLater();
 
-    if (query == NULL) return;
+    WLibraryItem * item = query->item;
+
+    // NOTE: The item was cleared so the query is deleted right away.
+    if (item == NULL)
+    {
+        deleteQuery(query);
+
+        return;
+    }
 
     const WBackendNetQuery & backendQuery = query->backendQuery;
 
     int indexNext = backendQuery.indexNext;
 
     query->backend->applyItem(backendQuery, reply);
-
-    WLibraryItem * item = query->item;
 
     deleteQuery(query);
 
@@ -2437,9 +2475,17 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
     device->deleteLater();
 
-    if (query == NULL) return;
+    WLibraryItem * item = query->item;
 
-    WPlaylist * playlist = query->item->toPlaylist();
+    // NOTE: The item was cleared so the query is deleted right away.
+    if (item == NULL)
+    {
+        deleteQuery(query);
+
+        return;
+    }
+
+    WPlaylist * playlist = item->toPlaylist();
 
     QString feed = query->backendQuery.url;
 
@@ -2568,9 +2614,17 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
     device->deleteLater();
 
-    if (query == NULL) return;
+    WLibraryItem * item = query->item;
 
-    WLibraryFolder * folder = query->item->toFolder();
+    // NOTE: The item was cleared so the query is deleted right away.
+    if (item == NULL)
+    {
+        deleteQuery(query);
+
+        return;
+    }
+
+    WLibraryFolder * folder = item->toFolder();
 
     QStringList urls;
 
@@ -2748,11 +2802,12 @@ void WControllerPlaylistPrivate::onUrlItem(QIODevice                     * devic
 
     device->deleteLater();
 
-    if (query == NULL) return;
-
     WLibraryItem * item = query->item;
 
     deleteQuery(query);
+
+    // NOTE: The item was cleared so we return right away.
+    if (item == NULL) return;
 
     emit item->queryData(data.data, data.extension);
 
