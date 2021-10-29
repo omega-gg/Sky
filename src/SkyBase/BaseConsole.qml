@@ -48,7 +48,7 @@ BaseTextEdit
 
 //#MOBILE
     // NOTE: We want to be read only.
-    enabled: false
+    readOnly: false
 //#END
 
     //---------------------------------------------------------------------------------------------
