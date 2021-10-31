@@ -12,6 +12,8 @@ source="https://github.com/omega-gg/3rdparty"
 
 compiler_win="mingw"
 
+qt="qt5"
+
 #--------------------------------------------------------------------------------------------------
 # Syntax
 #--------------------------------------------------------------------------------------------------
@@ -46,7 +48,7 @@ cd 3rdparty
 
 if [ "$2" = "all" ]; then
 
-    sh environment.sh $compiler_win
+    sh environment.sh $compiler_win $qt
 fi
 
 sh generate.sh $1
