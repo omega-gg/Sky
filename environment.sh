@@ -81,7 +81,7 @@ if [ "$3" = "all" ]; then
 
     cd "$thirdparty"
 
-    sh environment.sh $1
+    sh environment.sh $1 $qt
 
     cd -
 
