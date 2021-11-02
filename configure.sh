@@ -11,6 +11,7 @@ external="../3rdparty"
 
 Qt4_version="4.8.7"
 Qt5_version="5.15.2"
+Qt6_version="6.2.1"
 
 VLC_version="3.0.16"
 
@@ -95,8 +96,24 @@ fi
 
 #--------------------------------------------------------------------------------------------------
 
-Qt4="$external/Qt/$Qt4_version"
-Qt5="$external/Qt/$Qt5_version"
+if [ $qt = "qt4" ]; then
+
+    Qt_version="$Qt4_version"
+
+    QtX="Qt4"
+
+elif [ $qt = "qt5" ]; then
+
+    Qt_version="$Qt5_version"
+
+    QtX="Qt5"
+else
+    Qt_version="$Qt6_version"
+
+    QtX="Qt6"
+fi
+
+Qt="$external/Qt/$Qt_version"
 
 zlib="$external/zlib"
 
@@ -154,73 +171,74 @@ fi
 # Qt
 #--------------------------------------------------------------------------------------------------
 
-if [ $qt = "qt4" -a $1 = "linux" ]; then
+if [ $qt = "qt4" ]; then
 
-    echo "COPYING Qt4"
+    if [ $1 = "linux" ]; then
 
-    mkdir -p include/Qt4/QtCore/private
-    mkdir -p include/Qt4/QtGui/private
-    mkdir -p include/Qt4/QtDeclarative/private
+        echo "COPYING Qt"
 
-    cp "$Qt4"/src/corelib/kernel/*_p.h include/Qt4/QtCore/private
+        mkdir -p include/$QtX/QtCore/private
+        mkdir -p include/$QtX/QtGui/private
+        mkdir -p include/$QtX/QtDeclarative/private
 
-    cp "$Qt4"/src/gui/kernel/*_p.h include/Qt4/QtGui/private
+        cp "$Qt"/src/corelib/kernel/*_p.h include/$QtX/QtCore/private
 
-    cp "$Qt4"/src/declarative/qml/*_p.h           include/Qt4/QtDeclarative/private
-    cp "$Qt4"/src/declarative/graphicsitems/*_p.h include/Qt4/QtDeclarative/private
-    cp "$Qt4"/src/declarative/util/*_p.h          include/Qt4/QtDeclarative/private
+        cp "$Qt"/src/gui/kernel/*_p.h include/$QtX/QtGui/private
 
-elif [ $qt = "qt5" ]; then
+        cp "$Qt"/src/declarative/qml/*_p.h           include/$QtX/QtDeclarative/private
+        cp "$Qt"/src/declarative/graphicsitems/*_p.h include/$QtX/QtDeclarative/private
+        cp "$Qt"/src/declarative/util/*_p.h          include/$QtX/QtDeclarative/private
+    fi
+else
+    echo "COPYING Qt"
 
-    echo "COPYING Qt5"
-
-    mkdir -p include/Qt5/QtCore/private
-    mkdir -p include/Qt5/QtGui/private
-    mkdir -p include/Qt5/QtQml/private
-    mkdir -p include/Qt5/QtQuick/private
+    mkdir -p include/$QtX/QtCore/private
+    mkdir -p include/$QtX/QtGui/private
+    mkdir -p include/$QtX/QtQml/private
+    mkdir -p include/$QtX/QtQuick/private
 
     if [ $os = "windows" ]; then
 
-        cp -r "$Qt5"/include/QtCore  include/Qt5
-        cp -r "$Qt5"/include/QtGui   include/Qt5
-        cp -r "$Qt5"/include/QtQml   include/Qt5
-        cp -r "$Qt5"/include/QtQuick include/Qt5
+        cp -r "$Qt"/include/QtCore  include/$QtX
+        cp -r "$Qt"/include/QtGui   include/$QtX
+        cp -r "$Qt"/include/QtQml   include/$QtX
+        cp -r "$Qt"/include/QtQuick include/$QtX
 
-        cp -r "$Qt5"/include/QtGui/5*/QtGui/qpa include/Qt5/QtGui
+        cp -r "$Qt"/include/QtGui/$Qt_version/QtGui/qpa include/$QtX/QtGui
 
     elif [ $1 = "linux" ]; then
 
-        cp -r "$Qt5"/include/QtCore  include/Qt5
-        cp -r "$Qt5"/include/QtGui   include/Qt5
-        cp -r "$Qt5"/include/QtQml   include/Qt5
-        cp -r "$Qt5"/include/QtQuick include/Qt5
-        cp -r "$Qt5"/include/QtDBus  include/Qt5
+        cp -r "$Qt"/include/QtCore  include/$QtX
+        cp -r "$Qt"/include/QtGui   include/$QtX
+        cp -r "$Qt"/include/QtQml   include/$QtX
+        cp -r "$Qt"/include/QtQuick include/$QtX
+        cp -r "$Qt"/include/QtDBus  include/$QtX
 
-        cp -r "$Qt5"/include/QtGui/5*/QtGui/qpa include/Qt5/QtGui
+        cp -r "$Qt"/include/QtGui/$Qt_version/QtGui/qpa include/$QtX/QtGui
 
     elif [ $1 = "macOS" ]; then
 
-        cp -r "$Qt5"/lib/QtCore.framework/Headers/*  include/Qt5/QtCore
-        cp -r "$Qt5"/lib/QtGui.framework/Headers/*   include/Qt5/QtGui
-        cp -r "$Qt5"/lib/QtQml.framework/Headers/*   include/Qt5/QtQml
-        cp -r "$Qt5"/lib/QtQuick.framework/Headers/* include/Qt5/QtQuick
+        cp -r "$Qt"/lib/QtCore.framework/Headers/*  include/$QtX/QtCore
+        cp -r "$Qt"/lib/QtGui.framework/Headers/*   include/$QtX/QtGui
+        cp -r "$Qt"/lib/QtQml.framework/Headers/*   include/$QtX/QtQml
+        cp -r "$Qt"/lib/QtQuick.framework/Headers/* include/$QtX/QtQuick
 
-        cp -r "$Qt5"/lib/QtGui.framework/Headers/5*/QtGui/qpa include/Qt5/QtGui
+        cp -r "$Qt"/lib/QtGui.framework/Headers/$Qt_version/QtGui/qpa include/$QtX/QtGui
 
     elif [ $1 = "android" ]; then
 
-        cp -r "$Qt5"/include/QtCore  include/Qt5
-        cp -r "$Qt5"/include/QtGui   include/Qt5
-        cp -r "$Qt5"/include/QtQml   include/Qt5
-        cp -r "$Qt5"/include/QtQuick include/Qt5
+        cp -r "$Qt"/include/QtCore  include/$QtX
+        cp -r "$Qt"/include/QtGui   include/$QtX
+        cp -r "$Qt"/include/QtQml   include/$QtX
+        cp -r "$Qt"/include/QtQuick include/$QtX
 
-        cp -r "$Qt5"/include/QtGui/5*/QtGui/qpa include/Qt5/QtGui
+        cp -r "$Qt"/include/QtGui/$Qt_version/QtGui/qpa include/$QtX/QtGui
     fi
 
-    mv include/Qt5/QtCore/5*/QtCore/private/*   include/Qt5/QtCore/private
-    mv include/Qt5/QtGui/5*/QtGui/private/*     include/Qt5/QtGui/private
-    mv include/Qt5/QtQml/5*/QtQml/private/*     include/Qt5/QtQml/private
-    mv include/Qt5/QtQuick/5*/QtQuick/private/* include/Qt5/QtQuick/private
+    mv include/$QtX/QtCore/$Qt_version/QtCore/private/*   include/$QtX/QtCore/private
+    mv include/$QtX/QtGui/$Qt_version/QtGui/private/*     include/$QtX/QtGui/private
+    mv include/$QtX/QtQml/$Qt_version/QtQml/private/*     include/$QtX/QtQml/private
+    mv include/$QtX/QtQuick/$Qt_version/QtQuick/private/* include/$QtX/QtQuick/private
 fi
 
 #--------------------------------------------------------------------------------------------------

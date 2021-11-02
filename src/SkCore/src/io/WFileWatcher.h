@@ -33,7 +33,6 @@
 #ifndef SK_NO_FILEWATCHER
 
 // Forward declarations
-class QStringList;
 class WFileWatcherPrivate;
 
 class SK_CORE_EXPORT WFileWatcher : public QObject, public WPrivatable

@@ -27,7 +27,6 @@
 // Qt incudes
 #include <QRegExp>
 #include <QDateTime>
-
 #ifdef QT_LATEST
 #include <QUrlQuery>
 #endif

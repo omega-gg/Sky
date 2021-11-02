@@ -28,6 +28,9 @@
 #include <QCryptographicHash>
 #include <QDataStream>
 #include <QVector>
+#ifdef QT_6
+#include <QIODevice>
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Private

@@ -2,6 +2,14 @@ SK = $$_PRO_FILE_PWD_/../..
 
 SK_BIN = bin
 
+contains(QT_MAJOR_VERSION, 4) {
+    QTX = qt4
+} else:contains(QT_MAJOR_VERSION, 5) {
+    QTX = qt5
+} else {
+    QTX = qt6
+}
+
 CONFIG(debug, debug|release) {
     TARGET = SkCoreD
 } else {
@@ -14,8 +22,10 @@ TEMPLATE = lib
 
 contains(QT_MAJOR_VERSION, 4) {
     QT += declarative network script xml xmlpatterns
-} else {
+} else:contains(QT_MAJOR_VERSION, 5) {
     QT += qml network xml xmlpatterns
+} else {
+    QT += qml network xml core5compat
 }
 
 contains(QT_MAJOR_VERSION, 5) {
@@ -35,7 +45,11 @@ DEFINES += QUAZIP_BUILD SK_CORE_LIBRARY SK_CHARSET
 
 contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_4
+} else:contains(QT_MAJOR_VERSION, 5) {
+    DEFINES += QT_5
+    DEFINES += QT_LATEST
 } else {
+    DEFINES += QT_6
     DEFINES += QT_LATEST
 }
 
@@ -64,7 +78,7 @@ INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkCore/private
 
 unix:!macx:!android:contains(QT_MAJOR_VERSION, 5) {
-    INCLUDEPATH += $$SK/include/Qt5/QtDBus
+    INCLUDEPATH += $$SK/include/$$QTX/QtDBus
 }
 
 win32-msvc*:INCLUDEPATH += $$[QT_INSTALL_PREFIX]/include/QtZlib
