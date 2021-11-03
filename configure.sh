@@ -98,22 +98,24 @@ fi
 
 if [ $qt = "qt4" ]; then
 
-    Qt_version="$Qt4_version"
+    Qt="$external/Qt/$Qt4_version"
 
     QtX="Qt4"
 
 elif [ $qt = "qt5" ]; then
 
-    Qt_version="$Qt5_version"
+    Qt="$external/Qt/$Qt5_version"
+
+    Qt_version="5*"
 
     QtX="Qt5"
 else
-    Qt_version="$Qt6_version"
+    Qt="$external/Qt/$Qt6_version"
+
+    Qt_version="6*"
 
     QtX="Qt6"
 fi
-
-Qt="$external/Qt/$Qt_version"
 
 zlib="$external/zlib"
 
