@@ -2,12 +2,10 @@ SK = $$_PRO_FILE_PWD_/../..
 
 SK_BIN = bin
 
-contains(QT_MAJOR_VERSION, 4) {
-    QTX = qt4
-} else:contains(QT_MAJOR_VERSION, 5) {
-    QTX = qt5
+contains(QT_MAJOR_VERSION, 5) {
+    QTX = Qt5
 } else {
-    QTX = qt6
+    QTX = Qt6
 }
 
 CONFIG(debug, debug|release) {
@@ -77,7 +75,7 @@ include(src/3rdparty/libcharsetdetect/libcharsetdetect.pri)
 INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkCore/private
 
-unix:!macx:!android:contains(QT_MAJOR_VERSION, 5) {
+unix:!macx:!android:greaterThan(QT_MAJOR_VERSION, 4) {
     INCLUDEPATH += $$SK/include/$$QTX/QtDBus
 }
 
