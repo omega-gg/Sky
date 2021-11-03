@@ -29,7 +29,6 @@
 #include <QStringList>
 #endif
 
-
 // Sk includes
 #include <Sk>
 

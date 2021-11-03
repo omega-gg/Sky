@@ -41,6 +41,7 @@
 #include <WControllerNetwork>
 #include <WControllerDownload>
 #include <WControllerPlaylist>
+#include <WRegExp>
 #include <WCache>
 #include <WBackendCache>
 #include <WYamlReader>
@@ -704,9 +705,9 @@ inline QVariant replace(const WBackendUniversalNode * node,
 
     QVariant variant = node->getVariant(parameters, 1);
 
-    if (variant.type() == QVariant::RegExp)
+    if (WRegExp::isRegExp(variant))
     {
-         return node->getString(parameters, 0).replace(variant.toRegExp(),
+         return node->getString(parameters, 0).replace(WRegExp::fromVariant(variant),
                                                        node->getString(parameters, 2));
     }
     else return node->getString(parameters, 0).replace(variant.toString(),
@@ -888,13 +889,13 @@ inline QVariant indexOf(const WBackendUniversalNode * node,
 
     QVariant variant = node->getVariant(parameters, 1);
 
-    if (variant.type() == QVariant::RegExp)
+    if (WRegExp::isRegExp(variant))
     {
         if (count == 2)
         {
-             return string.indexOf(variant.toRegExp());
+             return string.indexOf(WRegExp::fromVariant(variant));
         }
-        else return string.indexOf(variant.toRegExp(), node->getInt(parameters, 2));
+        else return string.indexOf(WRegExp::fromVariant(variant), node->getInt(parameters, 2));
     }
     else if (count == 2)
     {
@@ -922,15 +923,15 @@ inline QVariant indexEnd(const WBackendUniversalNode * node,
 
     int index;
 
-    if (variant.type() == QVariant::RegExp)
+    if (WRegExp::isRegExp(variant))
     {
-        QRegExp regExp = variant.toRegExp();
+        WRegExp regExp = WRegExp::fromVariant(variant);
 
         if (count == 2)
         {
-             index = stringA.indexOf(regExp);
+             index = regExp.indexIn(stringA);
         }
-        else index = stringA.indexOf(regExp, node->getInt(parameters, 2));
+        else index = regExp.indexIn(stringA, node->getInt(parameters, 2));
 
         if (index == -1)
         {
@@ -990,13 +991,13 @@ inline QVariant lastIndexOf(const WBackendUniversalNode * node,
 
     QVariant variant = node->getVariant(parameters, 1);
 
-    if (variant.type() == QVariant::RegExp)
+    if (WRegExp::isRegExp(variant))
     {
         if (count == 2)
         {
-             return string.lastIndexOf(variant.toRegExp());
+             return string.lastIndexOf(WRegExp::fromVariant(variant));
         }
-        else return string.lastIndexOf(variant.toRegExp(), node->getInt(parameters, 2));
+        else return string.lastIndexOf(WRegExp::fromVariant(variant), node->getInt(parameters, 2));
     }
     else if (count == 2)
     {
@@ -1024,17 +1025,17 @@ inline QVariant lastIndexEnd(const WBackendUniversalNode * node,
 
     int index;
 
-    if (variant.type() == QVariant::RegExp)
+    if (WRegExp::isRegExp(variant))
     {
-        QRegExp regExp = variant.toRegExp();
+        WRegExp regExp = WRegExp::fromVariant(variant);
 
         int index;
 
         if (count == 2)
         {
-             index = stringA.lastIndexOf(regExp);
+             index = regExp.lastIndexIn(stringA);
         }
-        else index = stringA.lastIndexOf(regExp, node->getInt(parameters, 2));
+        else index = regExp.lastIndexIn(stringA, node->getInt(parameters, 2));
 
         if (index == -1)
         {
@@ -1075,13 +1076,13 @@ inline QVariant contain(const WBackendUniversalNode * node,
 
     QVariant variant = node->getVariant(parameters, 1);
 
-    if (variant.type() == QVariant::RegExp)
+    if (WRegExp::isRegExp(variant))
     {
 #ifdef QT_4
         // FIXME Qt4: The code does not compile without the 'QVariant'.
-        return QVariant(string.contains(variant.toRegExp()));
+        return QVariant(string.contains(WRegExp::fromVariant(variant)));
 #else
-        return string.contains(variant.toRegExp());
+        return string.contains(WRegExp::fromVariant(variant));
 #endif
     }
     else
@@ -1110,9 +1111,9 @@ inline QVariant startWith(const WBackendUniversalNode * node,
 
     QVariant variant = node->getVariant(parameters, 1);
 
-    if (variant.type() == QVariant::RegExp)
+    if (WRegExp::isRegExp(variant))
     {
-        if (string.indexOf(variant.toRegExp()) == 0)
+        if (string.indexOf(WRegExp::fromVariant(variant)) == 0)
         {
              return true;
         }
@@ -1136,11 +1137,11 @@ inline QVariant endWith(const WBackendUniversalNode * node,
 
     QVariant variant = node->getVariant(parameters, 1);
 
-    if (variant.type() == QVariant::RegExp)
+    if (WRegExp::isRegExp(variant))
     {
-        QRegExp regExp = variant.toRegExp();
+        WRegExp regExp = WRegExp::fromVariant(variant);
 
-        int index = string.indexOf(regExp);
+        int index = regExp.indexIn(string);
 
         if (string.length() == (index + regExp.matchedLength()))
         {
@@ -1169,7 +1170,7 @@ inline QVariant slice(const WBackendUniversalNode * node,
     list.append(node->getVariant(parameters, 1));
     list.append(node->getVariant(parameters, 2));
 
-    QList<QRegExp> regExps = node->getRegExps(list);
+    QList<WRegExp> regExps = node->getRegExps(list);
 
     if (regExps.isEmpty())
     {
@@ -1208,7 +1209,7 @@ inline QVariant sliceIn(const WBackendUniversalNode * node,
     list.append(node->getVariant(parameters, 1));
     list.append(node->getVariant(parameters, 2));
 
-    QList<QRegExp> regExps = node->getRegExps(list);
+    QList<WRegExp> regExps = node->getRegExps(list);
 
     if (regExps.isEmpty())
     {
@@ -1555,7 +1556,7 @@ inline QVariant regExp(const WBackendUniversalNode * node,
 
     if (node->nodes.count() < 1) return QVariant();
 
-    return QRegExp(node->getString(parameters, 0));
+    return WRegExp(node->getString(parameters, 0));
 }
 
 inline QVariant regExpCap(const WBackendUniversalNode * node,
@@ -1572,11 +1573,11 @@ inline QVariant regExpCap(const WBackendUniversalNode * node,
     if (count == 3)
     {
         return Sk::regExpCap(node->getString(parameters, 0),
-                             node->getString(parameters, 1),
+                             WRegExp(node->getString(parameters, 1)),
                              node->getInt(parameters, 2));
     }
     else return Sk::regExpCap(node->getString(parameters, 0),
-                              node->getString(parameters, 1),
+                              WRegExp(node->getString(parameters, 1)),
                               node->getInt(parameters, 2), node->getInt(parameters, 3));
 }
 
@@ -2508,11 +2509,11 @@ signals:
 WBackendUniversalData::Engines
 WBackendUniversalQuery::extractEngines(const WYamlReader & reader, const QString & key) const
 {
-    QRegExp regExp("tracks|coverAudio|coverVideo");
-
     QString string = WYamlReader::extractString(reader, key);
 
-    if (string.indexOf(regExp) == -1)
+    WRegExp regExp("tracks|coverAudio|coverVideo");
+
+    if (regExp.indexIn(string) == -1)
     {
         return WBackendUniversalData::None;
     }
@@ -2794,27 +2795,27 @@ WBackendUniversalNode::getStringList(WBackendUniversalParameters * parameters, i
 
 //-------------------------------------------------------------------------------------------------
 
-QList<QRegExp> WBackendUniversalNode::getRegExps(const QVariantList & variants) const
+QList<WRegExp> WBackendUniversalNode::getRegExps(const QVariantList & variants) const
 {
     foreach (const QVariant & variant, variants)
     {
-        if (variant.type() != QVariant::RegExp) continue;
+        if (WRegExp::isRegExp(variant) == false) continue;
 
-        QList<QRegExp> regExps;
+        QList<WRegExp> regExps;
 
         foreach (const QVariant & variant, variants)
         {
-            if (variant.type() == QVariant::RegExp)
+            if (WRegExp::isRegExp(variant))
             {
-                 regExps.append(variant.toRegExp());
+                 regExps.append(WRegExp::fromVariant(variant));
             }
-            else regExps.append(QRegExp(variant.toString()));
+            else regExps.append(WRegExp(variant.toString()));
         }
 
         return regExps;
     }
 
-    return QList<QRegExp>();
+    return QList<WRegExp>();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -3352,7 +3353,7 @@ void WBackendUniversalScript::load(const QString & data)
 {
     if (data.isEmpty()) return;
 
-    QRegExp regExp(BACKENDUNIVERSAL_FUNCTIONS);
+    WRegExp regExp(BACKENDUNIVERSAL_FUNCTIONS);
 
     QString content = data;
 
@@ -3418,7 +3419,7 @@ void WBackendUniversalScript::load(const QString & data)
 
 bool WBackendUniversalScript::loadParameters(WBackendUniversalNode * node,
                                              QString               * string,
-                                             const QRegExp         & regExp) const
+                                             const WRegExp         & regExp) const
 {
     Sk::skipSpaces(string);
 
@@ -3482,7 +3483,7 @@ bool WBackendUniversalScript::loadParameters(WBackendUniversalNode * node,
 
 bool WBackendUniversalScript::loadFunction(WBackendUniversalNode * node,
                                            QString               * string,
-                                           const QRegExp         & regExp) const
+                                           const WRegExp         & regExp) const
 {
     QString word = extractWord(string);
 
@@ -3499,7 +3500,7 @@ bool WBackendUniversalScript::loadFunction(WBackendUniversalNode * node,
 
 QString WBackendUniversalScript::extractWord(QString * string) const
 {
-    return Sk::extractText(string, QRegExp("[\\s()]"));
+    return Sk::extractText(string, WRegExp("[\\s()]"));
 }
 
 QString WBackendUniversalScript::extractString(QString * string, const QChar & character) const

@@ -36,6 +36,7 @@
 #include <WControllerFile>
 #include <WControllerNetwork>
 #include <WControllerDownload>
+#include <WRegExp>
 #include <WPlaylist>
 #include <WTabTrack>
 #include <WBackendLoader>
@@ -364,9 +365,9 @@ void WControllerPlaylistData::applyFile(const QByteArray & array, const QString 
 
     QStringList urls;
 
-    QStringList list = Sk::slices(array, QRegExp("file://|http://|https://"), QRegExp("\\s"));
+    QStringList list = Sk::slices(array, WRegExp("file://|http://|https://"), WRegExp("\\s"));
 
-    QRegExp regExp("[\\s\\.:,;'\"\\)}\\]]");
+    WRegExp regExp("[\\s\\.:,;'\"\\)}\\]]");
 
     foreach (QString url, list)
     {
@@ -3280,7 +3281,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
     }
     else if (indexA == -1)
     {
-        indexB = url.indexOf(QRegExp("[\\?#]"));
+        indexB = url.indexOf(WRegExp("[\\?#]"));
 
         if (indexB == -1)
         {
@@ -3289,7 +3290,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
         else return url.mid(0, indexB);
     }
 
-    indexB = url.indexOf(QRegExp("[\\?#]"), indexA);
+    indexB = url.indexOf(WRegExp("[\\?#]"), indexA);
 
     if (indexB == -1)
     {
@@ -3302,7 +3303,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 {
     QString result = text;
 
-    result.replace(QRegExp("[.:]"), " ");
+    result.replace(WRegExp("[.:]"), " ");
 
     return result.simplified();
 }
@@ -3642,7 +3643,7 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsVideo(const QString & extension)
 {
-    if (extension.indexOf(QRegExp(CONTROLLERPLAYLIST_VIDEO)) == -1)
+    if (extension.indexOf(WRegExp(CONTROLLERPLAYLIST_VIDEO)) == -1)
     {
          return false;
     }
@@ -3651,7 +3652,7 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsAudio(const QString & extension)
 {
-    if (extension.indexOf(QRegExp(CONTROLLERPLAYLIST_AUDIO)) == -1)
+    if (extension.indexOf(WRegExp(CONTROLLERPLAYLIST_AUDIO)) == -1)
     {
          return false;
     }
@@ -3667,7 +3668,7 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsMarkup(const QString & extension)
 {
-    if (extension.indexOf(QRegExp(CONTROLLERPLAYLIST_MARKUP)) == -1)
+    if (extension.indexOf(WRegExp(CONTROLLERPLAYLIST_MARKUP)) == -1)
     {
          return false;
     }
@@ -3676,7 +3677,7 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsText(const QString & extension)
 {
-    if (extension.indexOf(QRegExp(CONTROLLERPLAYLIST_TEXT)) == -1)
+    if (extension.indexOf(WRegExp(CONTROLLERPLAYLIST_TEXT)) == -1)
     {
          return false;
     }
@@ -3685,7 +3686,7 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsSubtitle(const QString & extension)
 {
-    if (extension.indexOf(QRegExp(CONTROLLERPLAYLIST_SUBTITLE)) == -1)
+    if (extension.indexOf(WRegExp(CONTROLLERPLAYLIST_SUBTITLE)) == -1)
     {
          return false;
     }

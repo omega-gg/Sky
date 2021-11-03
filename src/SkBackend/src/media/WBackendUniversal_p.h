@@ -33,10 +33,11 @@
     We mean it.
 */
 
-#ifndef SK_NO_TORRENT
 // Sk includes
+#ifndef SK_NO_TORRENT
 #include <WControllerTorrent>
 #endif
+#include <WRegExp>
 
 // Private includes
 #include <private/WBackendNet_p>
@@ -170,7 +171,7 @@ public: // Interface
 
     QStringList getStringList(WBackendUniversalParameters * parameters, int index) const;
 
-    QList<QRegExp> getRegExps(const QVariantList & variants) const;
+    QList<WRegExp> getRegExps(const QVariantList & variants) const;
 
     QHash<QString, QVariant> getHash(WBackendUniversalParameters * parameters, int index) const;
 
@@ -218,10 +219,10 @@ private: // Functions
     void load(const QString & data);
 
     bool loadParameters(WBackendUniversalNode * node,
-                        QString               * string, const QRegExp & regExp) const;
+                        QString               * string, const WRegExp & regExp) const;
 
     bool loadFunction(WBackendUniversalNode * node,
-                      QString               * string, const QRegExp & regExp) const;
+                      QString               * string, const WRegExp & regExp) const;
 
     QString extractWord(QString * string) const;
 

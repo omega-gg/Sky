@@ -600,7 +600,7 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
 {
     Q_D(const WBackendIndex);
 
-    QRegExp regExp;
+    WRegExp regExp;
 
     foreach (const WBackendIndexItem & item, d->data.backends)
     {

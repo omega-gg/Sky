@@ -77,6 +77,7 @@
 #ifndef SK_NO_QML
 #include <WControllerDeclarative>
 #endif
+#include <WRegExp>
 
 // 3rdparty includes
 #ifdef SK_CHARSET
@@ -942,8 +943,8 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 }
 
 /* Q_INVOKABLE static */ QString WControllerApplication::slice(const QString & string,
-                                                               const QRegExp & start,
-                                                               const QRegExp & end,
+                                                               const WRegExp & start,
+                                                               const WRegExp & end,
                                                                int             from)
 {
     int indexA = start.indexIn(string, from);
@@ -982,8 +983,8 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 }
 
 /* Q_INVOKABLE static */ QString WControllerApplication::sliceIn(const QString & string,
-                                                                 const QRegExp & start,
-                                                                 const QRegExp & end,
+                                                                 const WRegExp & start,
+                                                                 const WRegExp & end,
                                                                  int             from)
 {
     int indexA = start.indexIn(string, from);
@@ -1041,8 +1042,8 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 }
 
 /* Q_INVOKABLE static */ QStringList WControllerApplication::slices(const QString & string,
-                                                                    const QRegExp & start,
-                                                                    const QRegExp & end,
+                                                                    const WRegExp & start,
+                                                                    const WRegExp & end,
                                                                     int             from)
 {
     QStringList list;
@@ -1118,8 +1119,8 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 }
 
 /* Q_INVOKABLE static */ QStringList WControllerApplication::slicesIn(const QString & string,
-                                                                      const QRegExp & start,
-                                                                      const QRegExp & end,
+                                                                      const WRegExp & start,
+                                                                      const WRegExp & end,
                                                                       int             from)
 {
     QStringList list;
@@ -1181,7 +1182,7 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 }
 
 /* Q_INVOKABLE static */ QString WControllerApplication::extractText(QString       * string,
-                                                                     const QRegExp & regExp)
+                                                                     const WRegExp & regExp)
 {
     QString result;
 
@@ -1234,19 +1235,6 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ QString WControllerApplication::regExpCap(const QString & string,
-                                                                   const QString & pattern,
-                                                                   int cap, int from)
-{
-    QRegExp regExp(pattern);
-
-    string.indexOf(regExp, from);
-
-    return regExp.cap(cap);
-}
-
-//-------------------------------------------------------------------------------------------------
-
 /* Q_INVOKABLE static */ void WControllerApplication::skipCharacters(QString     * string,
                                                                      const QChar & character)
 {
@@ -1282,6 +1270,32 @@ bool WControllerApplication::checkEscaped(const QString & string, int from)
     }
 
     return (count % 2);
+}
+
+//---------------------------------------------------------------------------------------------
+// Regular expression
+
+/* Q_INVOKABLE static */ QString WControllerApplication::regExpCap(const QString & string,
+                                                                   const WRegExp & regExp,
+                                                                   int cap, int from)
+{
+    regExp.indexIn(string, from);
+
+    return regExp.cap(cap);
+}
+
+/* Q_INVOKABLE static */
+int WControllerApplication::regExpCapture(QStringList * captured,
+                                          const QString & string,
+                                          const WRegExp & regExp, int from)
+{
+    from = regExp.indexIn(string, from);
+
+    if (from == -1) return -1;
+
+    *captured = regExp.capturedTexts();
+
+    return from;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1335,15 +1349,15 @@ bool WControllerApplication::checkEscaped(const QString & string, int from)
 {
     QString result = string;
 
-    QRegExp regExp("(\\\\u[0-9a-fA-F]{4})");
+    WRegExp regExp("(\\\\u[0-9a-fA-F]{4})");
 
-    int index = result.indexOf(regExp);
+    int index = regExp.indexIn(result);
 
     while (index != -1)
     {
         result.replace(index, 6, QChar(regExp.cap(1).right(4).toUShort(0, 16)));
 
-        index = result.indexOf(regExp, index);
+        index = regExp.indexIn(result);
     }
 
     return result;

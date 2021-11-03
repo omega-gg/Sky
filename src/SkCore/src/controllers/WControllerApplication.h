@@ -38,6 +38,7 @@
 class QDateTime;
 class QMimeData;
 class WControllerApplicationPrivate;
+class WRegExp;
 
 // Defines
 #define sk WControllerApplication::instance()
@@ -227,48 +228,55 @@ public: // Static functions
                                                              const QString & end,
                                                              int             from = 0);
 
-    Q_INVOKABLE static QString slice(const QString & string, const QRegExp & start,
-                                                             const QRegExp & end,
+    Q_INVOKABLE static QString slice(const QString & string, const WRegExp & start,
+                                                             const WRegExp & end,
                                                              int             from = 0);
 
     Q_INVOKABLE static QString sliceIn(const QString & string, const QString & start,
                                                                const QString & end,
                                                                int             from = 0);
 
-    Q_INVOKABLE static QString sliceIn(const QString & string, const QRegExp & start,
-                                                               const QRegExp & end,
+    Q_INVOKABLE static QString sliceIn(const QString & string, const WRegExp & start,
+                                                               const WRegExp & end,
                                                                int             from = 0);
 
     Q_INVOKABLE static QStringList slices(const QString & string, const QString & start,
                                                                   const QString & end,
                                                                   int             from = 0);
 
-    Q_INVOKABLE static QStringList slices(const QString & string, const QRegExp & start,
-                                                                  const QRegExp & end,
+    Q_INVOKABLE static QStringList slices(const QString & string, const WRegExp & start,
+                                                                  const WRegExp & end,
                                                                   int             from = 0);
 
     Q_INVOKABLE static QStringList slicesIn(const QString & string, const QString & start,
                                                                     const QString & end,
                                                                     int             from = 0);
 
-    Q_INVOKABLE static QStringList slicesIn(const QString & string, const QRegExp & start,
-                                                                    const QRegExp & end,
+    Q_INVOKABLE static QStringList slicesIn(const QString & string, const WRegExp & start,
+                                                                    const WRegExp & end,
                                                                     int             from = 0);
 
     Q_INVOKABLE static QString extractText(QString * string, const QString & pattern);
-    Q_INVOKABLE static QString extractText(QString * string, const QRegExp & regExp);
+    Q_INVOKABLE static QString extractText(QString * string, const WRegExp & regExp);
 
     Q_INVOKABLE static QString extractLine(QString * string);
     Q_INVOKABLE static QString extractWord(QString * string);
-
-    Q_INVOKABLE static QString regExpCap(const QString & string,
-                                         const QString & pattern, int cap, int from = 0);
 
     Q_INVOKABLE static void skipCharacters(QString * string, const QChar & character);
 
     Q_INVOKABLE static void skipSpaces(QString * string);
 
     Q_INVOKABLE static bool checkEscaped(const QString & string, int from);
+
+    //---------------------------------------------------------------------------------------------
+    // Regular expression
+
+    Q_INVOKABLE static QString regExpCap(const QString & string,
+                                         const WRegExp & regExp, int cap, int from = 0);
+
+    Q_INVOKABLE static int regExpCapture(QStringList * captured,
+                                         const QString & string,
+                                         const WRegExp & regExp, int from);
 
     //---------------------------------------------------------------------------------------------
     // Read

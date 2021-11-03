@@ -25,7 +25,6 @@
 #ifndef SK_NO_CONTROLLERNETWORK
 
 // Qt incudes
-#include <QRegExp>
 #include <QDateTime>
 #ifdef QT_LATEST
 #include <QUrlQuery>
@@ -33,6 +32,7 @@
 
 // Sk incudes
 #include <WControllerApplication>
+#include <WRegExp>
 
 W_INIT_CONTROLLER(WControllerNetwork)
 
@@ -443,7 +443,7 @@ void WControllerNetworkPrivate::checkConnection()
     }
     else
     {
-        int index = text.indexOf(QRegExp("[,\"}\\]]"), at);
+        int index = text.indexOf(WRegExp("[,\"}\\]]"), at);
 
         if (index == -1)
         {
@@ -889,7 +889,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 /* Q_INVOKABLE static */ int WControllerNetwork::indexUrlElement(const QString & string,
                                                                  int             from)
 {
-    return string.indexOf(QRegExp("[/\\?&#]"), from);
+    return string.indexOf(WRegExp("[/\\?&#]"), from);
 }
 
 /* Q_INVOKABLE static */ int WControllerNetwork::indexUrlElement(const QString & string,
@@ -1130,7 +1130,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::removeUrlExtension(const QString & string)
 {
-    int index = string.indexOf(QRegExp("[\\?#]"));
+    int index = string.indexOf(WRegExp("[\\?#]"));
 
     if (index == -1)
     {
@@ -1990,13 +1990,13 @@ QString WControllerNetwork::extractAttributeUtf8(const QString & text,
 
     QChar character;
 
-    QRegExp regExp("[{\"]");
+    QStringList captured;
 
-    from = text.indexOf(regExp, from);
+    from = Sk::regExpCapture(&captured, text, WRegExp("[{\"]"), from);
 
     if (from == -1) return list;
 
-    if (regExp.capturedTexts().first() == "{")
+    if (captured.first() == "{")
     {
          character = '{';
     }

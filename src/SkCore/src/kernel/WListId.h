@@ -29,6 +29,8 @@
 // Sk includes
 #include <Sk>
 
+#ifndef SK_NO_LISTID
+
 class SK_CORE_EXPORT WListId
 {
 public: // Interface
@@ -44,4 +46,5 @@ private: // Variables
     QList<int> ids;
 };
 
+#endif // SK_NO_LISTID
 #endif // WLISTID_H
