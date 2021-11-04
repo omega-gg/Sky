@@ -169,7 +169,7 @@ WRegExp::WRegExp(const WRegExp & other)
 bool WRegExp::operator==(const WRegExp & other) const
 {
 #ifdef QT_4
-    return QRegularExpression::operator==(static_cast<const QRegExp &> (other));
+    return QRegExp::operator==(static_cast<const QRegExp &> (other));
 #else
     return QRegularExpression::operator==(static_cast<const QRegularExpression &> (other));
 #endif

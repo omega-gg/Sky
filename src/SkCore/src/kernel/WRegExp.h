@@ -26,6 +26,7 @@
 // Qt includes
 #ifdef QT_4
 #include <QRegExp>
+#include <QVariant>
 #else
 #include <QRegularExpression>
 #endif
