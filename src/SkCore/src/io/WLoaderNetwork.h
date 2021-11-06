@@ -23,14 +23,22 @@
 #ifndef WLOADERNETWORK_H
 #define WLOADERNETWORK_H
 
+#ifdef QT_6
+// Qt includes
+#include <QAbstractNetworkCache>
+#include <QNetworkCookieJar>
+#endif
+
 // Sk includes
 #include <WAbstractLoader>
 
 #ifndef SK_NO_LOADERNETWORK
 
 // Forward declarations
+#ifndef QT_6
 class QAbstractNetworkCache;
 class QNetworkCookieJar;
+#endif
 class WLoaderNetworkPrivate;
 
 class SK_CORE_EXPORT WLoaderNetwork : public WAbstractLoader

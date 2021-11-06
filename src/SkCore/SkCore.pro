@@ -45,9 +45,11 @@ contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_4
 } else:contains(QT_MAJOR_VERSION, 5) {
     DEFINES += QT_5
-    DEFINES += QT_LATEST
 } else {
     DEFINES += QT_6
+}
+
+greaterThan(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_LATEST
 }
 

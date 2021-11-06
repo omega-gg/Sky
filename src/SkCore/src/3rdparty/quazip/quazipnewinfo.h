@@ -1,45 +1,23 @@
-//=================================================================================================
-/*
-    Copyright (C) 2015-2020 Sky kit authors. <http://omega.gg/Sky>
-
-    Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
-
-    This file is part of SkCore.
-
-    - GNU Lesser General Public License Usage:
-    This file may be used under the terms of the GNU Lesser General Public License version 3 as
-    published by the Free Software Foundation and appearing in the LICENSE.md file included in the
-    packaging of this file. Please review the following information to ensure the GNU Lesser
-    General Public License requirements will be met: https://www.gnu.org/licenses/lgpl.html.
-
-    - Private License Usage:
-    Sky kit licensees holding valid private licenses may use this file in accordance with the
-    private license agreement provided with the Software or, alternatively, in accordance with the
-    terms contained in written agreement between you and Sky kit authors. For further information
-    contact us at contact@omega.gg.
-*/
-//=================================================================================================
-
 #ifndef QUA_ZIPNEWINFO_H
 #define QUA_ZIPNEWINFO_H
 
 /*
 Copyright (C) 2005-2014 Sergey A. Tachenov
 
-This file is part of QuaZIP.
+This file is part of QuaZip.
 
-QuaZIP is free software: you can redistribute it and/or modify
+QuaZip is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
 the Free Software Foundation, either version 2.1 of the License, or
 (at your option) any later version.
 
-QuaZIP is distributed in the hope that it will be useful,
+QuaZip is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License
-along with QuaZIP.  If not, see <http://www.gnu.org/licenses/>.
+along with QuaZip.  If not, see <http://www.gnu.org/licenses/>.
 
 See COPYING file for the full LGPL text.
 
@@ -47,9 +25,9 @@ Original ZIP package is copyrighted by Gilles Vollant, see
 quazip/(un)zip.h files for details, basically it's zlib license.
  **/
 
-#include <QDateTime>
-#include <QFile>
-#include <QString>
+#include <QtCore/QDateTime>
+#include <QtCore/QFile>
+#include <QtCore/QString>
 
 #include "quazip_global.h"
 
@@ -170,8 +148,9 @@ struct QUAZIP_EXPORT QuaZipNewInfo {
   /**
    * If the file doesn't exist, a warning is printed to the stderr and nothing
    * is done. Otherwise, all three times, as reported by
-   * QFileInfo::lastModified(), QFileInfo::lastRead() and QFileInfo::created(),
-   * are written to the NTFS extra field record.
+   * QFileInfo::lastModified(), QFileInfo::lastRead() and
+   * QFileInfo::birthTime() (>=Qt5.10) or QFileInfo::created(), are written to
+   * the NTFS extra field record.
    *
    * The NTFS record is written to
    * both the local and the global extra fields, updating the existing record

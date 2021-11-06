@@ -1,25 +1,3 @@
-//=================================================================================================
-/*
-    Copyright (C) 2015-2020 Sky kit authors. <http://omega.gg/Sky>
-
-    Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
-
-    This file is part of SkCore.
-
-    - GNU Lesser General Public License Usage:
-    This file may be used under the terms of the GNU Lesser General Public License version 3 as
-    published by the Free Software Foundation and appearing in the LICENSE.md file included in the
-    packaging of this file. Please review the following information to ensure the GNU Lesser
-    General Public License requirements will be met: https://www.gnu.org/licenses/lgpl.html.
-
-    - Private License Usage:
-    Sky kit licensees holding valid private licenses may use this file in accordance with the
-    private license agreement provided with the Software or, alternatively, in accordance with the
-    terms contained in written agreement between you and Sky kit authors. For further information
-    contact us at contact@omega.gg.
-*/
-//=================================================================================================
-
 /* ioapi.c -- IO base function header for compress/uncompress .zip
    files using zlib + zip or unzip API
 
@@ -37,13 +15,8 @@
 
 #include "ioapi.h"
 #include "quazip_global.h"
-#include <QIODevice>
-#if (QT_VERSION >= 0x050100)
-#define QUAZIP_QSAVEFILE_BUG_WORKAROUND
-#endif
-#ifdef QUAZIP_QSAVEFILE_BUG_WORKAROUND
-#include <QSaveFile>
-#endif
+#include <QtCore/QIODevice>
+#include "quazip_qt_compat.h"
 
 /* I've found an old Unix (a SunOS 4.1.3_U1) without all SEEK_* defined.... */
 
@@ -61,7 +34,7 @@
 
 voidpf call_zopen64 (const zlib_filefunc64_32_def* pfilefunc,voidpf file,int mode)
 {
-    if (pfilefunc->zfile_func64.zopen64_file != NULL)
+    if (pfilefunc->zfile_func64.zopen64_file != nullptr)
         return (*(pfilefunc->zfile_func64.zopen64_file)) (pfilefunc->zfile_func64.opaque,file,mode);
     else
     {
@@ -71,7 +44,7 @@ voidpf call_zopen64 (const zlib_filefunc64_32_def* pfilefunc,voidpf file,int mod
 
 int call_zseek64 (const zlib_filefunc64_32_def* pfilefunc,voidpf filestream, ZPOS64_T offset, int origin)
 {
-    if (pfilefunc->zfile_func64.zseek64_file != NULL)
+    if (pfilefunc->zfile_func64.zseek64_file != nullptr)
         return (*(pfilefunc->zfile_func64.zseek64_file)) (pfilefunc->zfile_func64.opaque,filestream,offset,origin);
     else
     {
@@ -85,7 +58,7 @@ int call_zseek64 (const zlib_filefunc64_32_def* pfilefunc,voidpf filestream, ZPO
 
 ZPOS64_T call_ztell64 (const zlib_filefunc64_32_def* pfilefunc,voidpf filestream)
 {
-    if (pfilefunc->zfile_func64.zseek64_file != NULL)
+    if (pfilefunc->zfile_func64.zseek64_file != nullptr)
         return (*(pfilefunc->zfile_func64.ztell64_file)) (pfilefunc->zfile_func64.opaque,filestream);
     else
     {
@@ -127,7 +100,7 @@ voidpf ZCALLBACK qiodevice_open_file_func (
                     && iodevice->isSequential()) {
                 // We can use sequential devices only for writing.
                 delete d;
-                return NULL;
+                return nullptr;
             } else {
                 if ((desiredMode & QIODevice::WriteOnly) != 0) {
                     // open for writing, need to seek existing device
@@ -141,7 +114,7 @@ voidpf ZCALLBACK qiodevice_open_file_func (
             return iodevice;
         } else {
             delete d;
-            return NULL;
+            return nullptr;
         }
     }
     iodevice->open(desiredMode);
@@ -150,13 +123,13 @@ voidpf ZCALLBACK qiodevice_open_file_func (
             // We can use sequential devices only for writing.
             iodevice->close();
             delete d;
-            return NULL;
+            return nullptr;
         } else {
             return iodevice;
         }
     } else {
         delete d;
-        return NULL;
+        return nullptr;
     }
 }
 
@@ -309,17 +282,7 @@ int ZCALLBACK qiodevice_close_file_func (
     QIODevice_descriptor *d = reinterpret_cast<QIODevice_descriptor*>(opaque);
     delete d;
     QIODevice *device = reinterpret_cast<QIODevice*>(stream);
-#ifdef QUAZIP_QSAVEFILE_BUG_WORKAROUND
-    // QSaveFile terribly breaks the is-a idiom:
-    // it IS a QIODevice, but it is NOT compatible with it: close() is private
-    QSaveFile *file = qobject_cast<QSaveFile*>(device);
-    if (file != NULL) {
-        // We have to call the ugly commit() instead:
-        return file->commit() ? 0 : -1;
-    }
-#endif
-    device->close();
-    return 0;
+    return quazip_close(device) ? 0 : -1;
 }
 
 int ZCALLBACK qiodevice_fakeclose_file_func (
@@ -369,17 +332,17 @@ void fill_qiodevice64_filefunc (
 
 void fill_zlib_filefunc64_32_def_from_filefunc32(zlib_filefunc64_32_def* p_filefunc64_32,const zlib_filefunc_def* p_filefunc32)
 {
-    p_filefunc64_32->zfile_func64.zopen64_file = NULL;
+    p_filefunc64_32->zfile_func64.zopen64_file = nullptr;
     p_filefunc64_32->zopen32_file = p_filefunc32->zopen_file;
     p_filefunc64_32->zfile_func64.zerror_file = p_filefunc32->zerror_file;
     p_filefunc64_32->zfile_func64.zread_file = p_filefunc32->zread_file;
     p_filefunc64_32->zfile_func64.zwrite_file = p_filefunc32->zwrite_file;
-    p_filefunc64_32->zfile_func64.ztell64_file = NULL;
-    p_filefunc64_32->zfile_func64.zseek64_file = NULL;
+    p_filefunc64_32->zfile_func64.ztell64_file = nullptr;
+    p_filefunc64_32->zfile_func64.zseek64_file = nullptr;
     p_filefunc64_32->zfile_func64.zclose_file = p_filefunc32->zclose_file;
     p_filefunc64_32->zfile_func64.zerror_file = p_filefunc32->zerror_file;
     p_filefunc64_32->zfile_func64.opaque = p_filefunc32->opaque;
-    p_filefunc64_32->zfile_func64.zfakeclose_file = NULL;
+    p_filefunc64_32->zfile_func64.zfakeclose_file = nullptr;
     p_filefunc64_32->zseek32_file = p_filefunc32->zseek_file;
     p_filefunc64_32->ztell32_file = p_filefunc32->ztell_file;
 }

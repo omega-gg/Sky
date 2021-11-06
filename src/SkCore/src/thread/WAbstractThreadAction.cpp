@@ -26,7 +26,9 @@
 
 // Sk includes
 #include <WThreadActions>
+#ifndef QT_6
 #include <WAbstractThreadReply>
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Private

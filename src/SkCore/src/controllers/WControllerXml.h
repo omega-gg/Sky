@@ -50,11 +50,6 @@ private:
 protected: // Initialize
     /* virtual */ void init();
 
-public: // Interface
-    void createQueryThread();
-
-    int doQuery(const QString & query);
-
 public: // Static Interface
     static bool loadFromFile(QDomDocument * document,
                              const QString & fileName, QString * errorMsg = 0,

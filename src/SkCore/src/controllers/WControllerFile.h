@@ -31,6 +31,9 @@
 #include <WController>
 #include <WAbstractThreadAction>
 #include <WAbstractThreadReply>
+#ifdef QT_6
+#include <WCache>
+#endif
 
 #ifndef SK_NO_CONTROLLERFILE
 
@@ -41,7 +44,9 @@ namespace QtLP_Private
 };
 class WControllerFilePrivate;
 class WControllerFileReply;
+#ifndef QT_6
 class WCache;
+#endif
 class WCacheFile;
 
 // Defines

@@ -47,7 +47,9 @@
 #include <WControllerNetwork>
 #include <WLocalObject>
 #include <WFileWatcher>
+#ifndef QT_6
 #include <WCache>
+#endif
 #include <WThreadActions>
 
 // Private includes
@@ -1094,8 +1096,10 @@ WControllerFileReply * WControllerFile::startCreatePaths(const QStringList & pat
 {
 #ifdef QT_4
     return QDesktopServices::storageLocation(QDesktopServices::DataLocation);
-#else
+#elif defined(QT_5)
     return QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+#else
+    return QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
 #endif
 }
 

@@ -1621,7 +1621,7 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 {
     if (date.isValid())
     {
-         return QString::number(date.toTime_t());
+         return QString::number(dateToSecs(date));
     }
     else return QString();
 }

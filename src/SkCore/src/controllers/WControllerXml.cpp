@@ -26,9 +26,6 @@
 
 // Qt includes
 #include <QFile>
-#include <QThread>
-#include <QMutex>
-#include <QXmlQuery>
 #include <QXmlStreamReader>
 #include <QDateTime>
 
@@ -37,140 +34,9 @@
 
 W_INIT_CONTROLLER(WControllerXml)
 
-//=================================================================================================
-// WControllerXmlQuery
-//=================================================================================================
-
-struct XmlQueryJob
-{
-    int     id;
-    QString query;
-};
-
-class WControllerXmlQuery : public QObject
-{
-    Q_OBJECT
-
-public:
-    explicit WControllerXmlQuery(QObject * parent = NULL);
-
-    /* virtual */ ~WControllerXmlQuery();
-
-public: // Functions
-    int doQuery(const QString & query);
-
-    void abort(int id);
-
-private: // Functions
-    QString doQueryJob(XmlQueryJob * currentJob);
-
-private slots:
-    void processQuery(int id);
-
-signals:
-    void queryCompleted(int id, const QString & result);
-
-private: // Variables
-    QMutex mutex;
-
-    QThread * thread;
-
-    QHash<int, XmlQueryJob> jobs;
-
-    int queryId;
-};
-
 //-------------------------------------------------------------------------------------------------
-
-/* explicit */ WControllerXmlQuery::WControllerXmlQuery(QObject * parent) : QObject(parent)
-{
-    thread = new QThread(this);
-
-    queryId = 1;
-
-    moveToThread(thread);
-
-    thread->start(QThread::IdlePriority);
-}
-
-/* virtual */ WControllerXmlQuery::~WControllerXmlQuery()
-{
-    thread->quit();
-    thread->wait();
-}
-
+// Private
 //-------------------------------------------------------------------------------------------------
-// Functions
-//-------------------------------------------------------------------------------------------------
-
-int WControllerXmlQuery::doQuery(const QString & query)
-{
-    XmlQueryJob job;
-
-    job.id    = queryId;
-    job.query = query;
-
-    QMutexLocker locker(&mutex);
-
-    jobs.insert(queryId, job);
-
-    queryId++;
-
-    if (queryId <= 0) queryId = 1;
-
-    QMetaObject::invokeMethod(this, "processQuery", Qt::QueuedConnection, Q_ARG(int, job.id));
-
-    return job.id;
-}
-
-void WControllerXmlQuery::abort(int id)
-{
-    QMutexLocker locker(&mutex);
-
-    if (id != -1) jobs.remove(id);
-}
-
-//-------------------------------------------------------------------------------------------------
-// Private functions
-//-------------------------------------------------------------------------------------------------
-
-QString WControllerXmlQuery::doQueryJob(XmlQueryJob * currentJob)
-{
-    Q_ASSERT(currentJob->id != -1);
-
-    QString result;
-
-    QXmlQuery query;
-
-    query.setQuery(currentJob->query);
-
-    query.evaluateTo(&result);
-
-    return result;
-}
-
-//-------------------------------------------------------------------------------------------------
-// Private slots
-//-------------------------------------------------------------------------------------------------
-
-void WControllerXmlQuery::processQuery(int id)
-{
-    XmlQueryJob job;
-
-    QMutexLocker locker(&mutex);
-
-    if (jobs.contains(id) == false) return;
-
-    job = jobs.take(id);
-
-    QString result = doQueryJob(&job);
-
-    emit queryCompleted(job.id, result);
-}
-
-//=================================================================================================
-// WControllerXmlPrivate
-//=================================================================================================
 
 #include <private/WController_p>
 
@@ -182,9 +48,6 @@ public:
     /* virtual */ ~WControllerXmlPrivate();
 
     void init();
-
-public: // Variables
-    WControllerXmlQuery * xmlQuery;
 
 protected:
     W_DECLARE_PUBLIC(WControllerXml)
@@ -201,10 +64,7 @@ WControllerXmlPrivate::WControllerXmlPrivate(WControllerXml * p) : WControllerPr
 
 //-------------------------------------------------------------------------------------------------
 
-void WControllerXmlPrivate::init()
-{
-    xmlQuery = NULL;
-}
+void WControllerXmlPrivate::init() {}
 
 //=================================================================================================
 // WControllerXml
@@ -220,31 +80,6 @@ WControllerXml::WControllerXml() : WController(new WControllerXmlPrivate(this)) 
 /* virtual */ void WControllerXml::init()
 {
     Q_D(WControllerXml); d->init();
-}
-
-//-------------------------------------------------------------------------------------------------
-// Interface
-//-------------------------------------------------------------------------------------------------
-
-void WControllerXml::createQueryThread()
-{
-    Q_D(WControllerXml);
-
-    if (d->xmlQuery) return;
-
-    d->xmlQuery = new WControllerXmlQuery(this);
-
-    connect(d->xmlQuery, SIGNAL(queryCompleted(int, QString)),
-            this,        SIGNAL(queryCompleted(int, QString)));
-}
-
-int WControllerXml::doQuery(const QString & query)
-{
-    Q_D(WControllerXml);
-
-    createQueryThread();
-
-    return d->xmlQuery->doQuery(query);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -436,5 +271,3 @@ int WControllerXml::doQuery(const QString & query)
 }
 
 #endif // SK_NO_CONTROLLERXML
-
-#include "WControllerXml.moc"

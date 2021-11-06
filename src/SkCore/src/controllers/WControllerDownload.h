@@ -27,14 +27,19 @@
 #include <QNetworkReply>
 
 // Sk includes
-#include <WController.h>
+#include <WController>
+#ifdef QT_6
+#include <WLoaderNetwork>
+#endif
 
 #ifndef SK_NO_CONTROLLERDOWNLOAD
 
 // Forward declarations
 class WControllerDownloadPrivate;
 class WAbstractLoader;
+#ifndef QT_6
 class WLoaderNetwork;
+#endif
 
 // Defines
 #define wControllerDownload WControllerDownload::instance()

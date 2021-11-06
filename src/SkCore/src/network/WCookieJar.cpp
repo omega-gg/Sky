@@ -139,7 +139,9 @@ void WCookieJarPrivate::load()
 {
     Q_Q(WCookieJar);
 
+#ifndef QT_6
     qRegisterMetaTypeStreamOperators<QList<QNetworkCookie> >("QList<QNetworkCookie>");
+#endif
 
     QSettings cookieSettings(getPath() + QLatin1String("/cookies.ini"), QSettings::IniFormat);
 
@@ -395,8 +397,12 @@ void WCookieJar::clear()
 
     bool block;
 
+#ifdef QT_4
     if (qBinaryFind(d->cookiesBlocked.begin(),
                     d->cookiesBlocked.end  (), host) == d->cookiesBlocked.end())
+#else
+    if (std::binary_search(d->cookiesBlocked.begin(), d->cookiesBlocked.end(), host))
+#endif
     {
          block = false;
     }
@@ -404,8 +410,12 @@ void WCookieJar::clear()
 
     bool allow;
 
+#ifdef QT_4
     if (qBinaryFind(d->cookiesAllowed.begin(),
                     d->cookiesAllowed.end  (), host) == d->cookiesAllowed.end())
+#else
+    if (std::binary_search(d->cookiesAllowed.begin(), d->cookiesAllowed.end(), host))
+#endif
     {
          allow = false;
     }
@@ -413,8 +423,12 @@ void WCookieJar::clear()
 
     bool session;
 
+#ifdef QT_4
     if (qBinaryFind(d->cookiesSession.begin(),
                     d->cookiesSession.end  (), host) == d->cookiesSession.end())
+#else
+    if (std::binary_search(d->cookiesSession.begin(), d->cookiesSession.end(), host))
+#endif
     {
          session = false;
     }

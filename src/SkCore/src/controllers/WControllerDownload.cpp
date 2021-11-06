@@ -27,8 +27,10 @@
 // Qt includes
 #include <QTime>
 
+#ifndef QT_6
 // Sk includes
 #include <WLoaderNetwork>
+#endif
 
 W_INIT_CONTROLLER(WControllerDownload)
 

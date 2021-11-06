@@ -1,45 +1,23 @@
-//=================================================================================================
-/*
-    Copyright (C) 2015-2020 Sky kit authors. <http://omega.gg/Sky>
-
-    Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
-
-    This file is part of SkCore.
-
-    - GNU Lesser General Public License Usage:
-    This file may be used under the terms of the GNU Lesser General Public License version 3 as
-    published by the Free Software Foundation and appearing in the LICENSE.md file included in the
-    packaging of this file. Please review the following information to ensure the GNU Lesser
-    General Public License requirements will be met: https://www.gnu.org/licenses/lgpl.html.
-
-    - Private License Usage:
-    Sky kit licensees holding valid private licenses may use this file in accordance with the
-    private license agreement provided with the Software or, alternatively, in accordance with the
-    terms contained in written agreement between you and Sky kit authors. For further information
-    contact us at contact@omega.gg.
-*/
-//=================================================================================================
-
 #ifndef QUAZIP_GLOBAL_H
 #define QUAZIP_GLOBAL_H
 
 /*
 Copyright (C) 2005-2014 Sergey A. Tachenov
 
-This file is part of QuaZIP.
+This file is part of QuaZip.
 
-QuaZIP is free software: you can redistribute it and/or modify
+QuaZip is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
 the Free Software Foundation, either version 2.1 of the License, or
 (at your option) any later version.
 
-QuaZIP is distributed in the hope that it will be useful,
+QuaZip is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License
-along with QuaZIP.  If not, see <http://www.gnu.org/licenses/>.
+along with QuaZip.  If not, see <http://www.gnu.org/licenses/>.
 
 See COPYING file for the full LGPL text.
 
@@ -47,7 +25,7 @@ Original ZIP package is copyrighted by Gilles Vollant and contributors,
 see quazip/(un)zip.h files for details. Basically it's the zlib license.
 */
 
-#include <QtCore/qglobal.h>
+#include <QtCore/QtGlobal>
 
 /**
   This is automatically defined when building a static library, but when
@@ -77,5 +55,9 @@ see quazip/(un)zip.h files for details. Basically it's the zlib license.
 
 #define QUAZIP_EXTRA_NTFS_MAGIC 0x000Au
 #define QUAZIP_EXTRA_NTFS_TIME_MAGIC 0x0001u
+#define QUAZIP_EXTRA_EXT_TIME_MAGIC 0x5455u
+#define QUAZIP_EXTRA_EXT_MOD_TIME_FLAG 1
+#define QUAZIP_EXTRA_EXT_AC_TIME_FLAG 2
+#define QUAZIP_EXTRA_EXT_CR_TIME_FLAG 4
 
 #endif // QUAZIP_GLOBAL_H

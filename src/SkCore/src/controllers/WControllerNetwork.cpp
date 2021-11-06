@@ -1291,7 +1291,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 {
     QByteArray nonce = sk->randomString(16);
 
-    uint time = QDateTime::currentDateTime().toTime_t();
+    qint64 time = Sk::currentDateToSecs();
 
     QUrl source(url);
 
@@ -1531,7 +1531,11 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     const WControllerNetworkEntity * start = &(CONTROLLERNETWORK_ENTITIES[0]);
     const WControllerNetworkEntity * end   = &(CONTROLLERNETWORK_ENTITIES[258]);
 
+#ifdef QT_4
     const WControllerNetworkEntity * resolved = qBinaryFind(start, end, entity);
+#else
+    const WControllerNetworkEntity * resolved = std::lower_bound(start, end, entity);
+#endif
 
     if (resolved != end)
     {
@@ -1567,9 +1571,9 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
             if (QChar::requiresSurrogates(number))
             {
-                 return QString(QChar::highSurrogate(number) + QChar::lowSurrogate(number));
+                 return QString(QChar(QChar::highSurrogate(number) + QChar::lowSurrogate(number)));
             }
-            else return QString(number);
+            else return QString(QChar(number));
         }
     }
 

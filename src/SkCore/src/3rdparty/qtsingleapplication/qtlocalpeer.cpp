@@ -1,25 +1,3 @@
-//=================================================================================================
-/*
-    Copyright (C) 2015-2020 Sky kit authors. <http://omega.gg/Sky>
-
-    Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
-
-    This file is part of SkCore.
-
-    - GNU Lesser General Public License Usage:
-    This file may be used under the terms of the GNU Lesser General Public License version 3 as
-    published by the Free Software Foundation and appearing in the LICENSE.md file included in the
-    packaging of this file. Please review the following information to ensure the GNU Lesser
-    General Public License requirements will be met: https://www.gnu.org/licenses/lgpl.html.
-
-    - Private License Usage:
-    Sky kit licensees holding valid private licenses may use this file in accordance with the
-    private license agreement provided with the Software or, alternatively, in accordance with the
-    terms contained in written agreement between you and Sky kit authors. For further information
-    contact us at contact@omega.gg.
-*/
-//=================================================================================================
-
 /****************************************************************************
 **
 ** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
@@ -65,6 +43,9 @@
 #include <QCoreApplication>
 #include <QDataStream>
 #include <QTime>
+#ifndef QT_4
+#include <QRegularExpression>
+#endif
 
 #if defined(Q_OS_WIN)
 #include <QLibrary>
@@ -100,7 +81,11 @@ QtLocalPeer::QtLocalPeer(QObject* parent, const QString &appId)
 #endif
         prefix = id.section(QLatin1Char('/'), -1);
     }
+#ifdef QT_4
     prefix.remove(QRegExp("[^a-zA-Z]"));
+#else
+    prefix.remove(QRegularExpression("[^a-zA-Z]"));
+#endif
     prefix.truncate(6);
 
     QByteArray idc = id.toUtf8();
@@ -162,7 +147,7 @@ bool QtLocalPeer::sendMessage(const QString &message, int timeout)
 
     QLocalSocket socket;
     bool connOk = false;
-    for (int i = 0; i < 2; i++) {
+    for(int i = 0; i < 2; i++) {
         // Try twice, in case the other instance is just starting up
         socket.connectToServer(socketName);
         connOk = socket.waitForConnected(timeout/2);
@@ -198,8 +183,17 @@ void QtLocalPeer::receiveConnection()
     if (!socket)
         return;
 
-    while (socket->bytesAvailable() < (int)sizeof(quint32))
+    while (true) {
+        if (socket->state() == QLocalSocket::UnconnectedState) {
+            qWarning("QtLocalPeer: Peer disconnected");
+            delete socket;
+            return;
+        }
+        if (socket->bytesAvailable() >= qint64(sizeof(quint32)))
+            break;
         socket->waitForReadyRead();
+    }
+
     QDataStream ds(socket);
     QByteArray uMsg;
     quint32 remaining;

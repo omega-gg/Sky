@@ -1,45 +1,23 @@
-//=================================================================================================
-/*
-    Copyright (C) 2015-2020 Sky kit authors. <http://omega.gg/Sky>
-
-    Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
-
-    This file is part of SkCore.
-
-    - GNU Lesser General Public License Usage:
-    This file may be used under the terms of the GNU Lesser General Public License version 3 as
-    published by the Free Software Foundation and appearing in the LICENSE.md file included in the
-    packaging of this file. Please review the following information to ensure the GNU Lesser
-    General Public License requirements will be met: https://www.gnu.org/licenses/lgpl.html.
-
-    - Private License Usage:
-    Sky kit licensees holding valid private licenses may use this file in accordance with the
-    private license agreement provided with the Software or, alternatively, in accordance with the
-    terms contained in written agreement between you and Sky kit authors. For further information
-    contact us at contact@omega.gg.
-*/
-//=================================================================================================
-
 #ifndef QUACHECKSUM32_H
 #define QUACHECKSUM32_H
 
 /*
 Copyright (C) 2005-2014 Sergey A. Tachenov
 
-This file is part of QuaZIP.
+This file is part of QuaZip.
 
-QuaZIP is free software: you can redistribute it and/or modify
+QuaZip is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
 the Free Software Foundation, either version 2.1 of the License, or
 (at your option) any later version.
 
-QuaZIP is distributed in the hope that it will be useful,
+QuaZip is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License
-along with QuaZIP.  If not, see <http://www.gnu.org/licenses/>.
+along with QuaZip.  If not, see <http://www.gnu.org/licenses/>.
 
 See COPYING file for the full LGPL text.
 
@@ -47,7 +25,7 @@ Original ZIP package is copyrighted by Gilles Vollant and contributors,
 see quazip/(un)zip.h files for details. Basically it's the zlib license.
 */
 
-#include <QByteArray>
+#include <QtCore/QByteArray>
 #include "quazip_global.h"
 
 /// Checksum interface.
@@ -75,6 +53,7 @@ class QUAZIP_EXPORT QuaChecksum32
 {
 
 public:
+    virtual ~QuaChecksum32();
 	///Calculates the checksum for data.
 	/** \a data source data
 	 * \return data checksum

@@ -1,25 +1,3 @@
-//=================================================================================================
-/*
-    Copyright (C) 2015-2020 Sky kit authors. <http://omega.gg/Sky>
-
-    Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
-
-    This file is part of SkCore.
-
-    - GNU Lesser General Public License Usage:
-    This file may be used under the terms of the GNU Lesser General Public License version 3 as
-    published by the Free Software Foundation and appearing in the LICENSE.md file included in the
-    packaging of this file. Please review the following information to ensure the GNU Lesser
-    General Public License requirements will be met: https://www.gnu.org/licenses/lgpl.html.
-
-    - Private License Usage:
-    Sky kit licensees holding valid private licenses may use this file in accordance with the
-    private license agreement provided with the Software or, alternatively, in accordance with the
-    terms contained in written agreement between you and Sky kit authors. For further information
-    contact us at contact@omega.gg.
-*/
-//=================================================================================================
-
 /* zip.h -- IO on .zip files using zlib
    Version 1.1, February 14h, 2010
    part of the MiniZip project - ( http://www.winimage.com/zLibDll/minizip.html )
@@ -151,7 +129,7 @@ extern zipFile ZEXPORT zipOpen OF((voidpf file, int append));
 extern zipFile ZEXPORT zipOpen64 OF((voidpf file, int append));
 /*
   Create a zipfile.
-     the file argument depends on the API used, for QuaZIP it's a QIODevice
+     the file argument depends on the API used, for QuaZip it's a QIODevice
        pointer.
      if the file pathname exist and append==APPEND_STATUS_CREATEAFTER, the zip
        will be created at the end of the file.
@@ -179,9 +157,9 @@ extern zipFile ZEXPORT zipOpen2_64 OF((voidpf file,
                                    zlib_filefunc64_def* pzlib_filefunc_def));
 
 /*
- * Exported by Sergey A. Tachenov to suit the needs of QuaZIP.
+ * Exported by Sergey A. Tachenov to suit the needs of QuaZip.
  * Note that this function MAY change signature in order to
- * provide new QuaZIP features. You have been warned!
+ * provide new QuaZip features. You have been warned!
  * */
 extern zipFile ZEXPORT zipOpen3 (voidpf file,
                                  int append,
