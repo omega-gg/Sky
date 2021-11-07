@@ -349,6 +349,7 @@ void QuaZip::close()
   p->zipError=UNZ_OK;
   switch(p->mode) {
     case mdNotOpen:
+      qWarning("QuaZip::close(): ZIP is not open");
       return;
     case mdUnzip:
       p->zipError=unzClose(p->unzFile_f);
@@ -370,7 +371,8 @@ void QuaZip::close()
       p->ioDevice = nullptr;
   }
   p->clearDirectoryMap();
-  p->mode=mdNotOpen;
+  if(p->zipError==UNZ_OK)
+    p->mode=mdNotOpen;
 }
 
 void QuaZip::setZipName(const QString& zipName)
