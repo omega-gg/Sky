@@ -1,4 +1,4 @@
-# QuaZIP module
+# QuaZip module
 
 HEADERS += src/3rdparty/quazip/ioapi.h \
            src/3rdparty/quazip/JlCompress.h \

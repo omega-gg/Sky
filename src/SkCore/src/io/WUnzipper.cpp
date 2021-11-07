@@ -31,7 +31,7 @@
 #include <QFileInfo>
 #endif
 
-// QuaZIP includes
+// QuaZip includes
 #include <quazipfile.h>
 
 //-------------------------------------------------------------------------------------------------
