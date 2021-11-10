@@ -12,7 +12,7 @@ source="https://github.com/omega-gg/3rdparty"
 
 compiler_win="mingw"
 
-qt="qt6"
+qt="qt5"
 
 #--------------------------------------------------------------------------------------------------
 # Syntax
