@@ -48,9 +48,7 @@
 //-------------------------------------------------------------------------------------------------
 // Defines
 
-#ifdef QT_6
-#define QWIDGETSIZE_MAX ((1 << 24) - 1)
-#endif
+#define WIDGETSIZE_MAX ((1 << 24) - 1)
 
 //-------------------------------------------------------------------------------------------------
 // Static variables
@@ -137,8 +135,8 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     minimumWidth  = 0;
     minimumHeight = 0;
 
-    maximumWidth  = QWIDGETSIZE_MAX;
-    maximumHeight = QWIDGETSIZE_MAX;
+    maximumWidth  = WIDGETSIZE_MAX;
+    maximumHeight = WIDGETSIZE_MAX;
 
 #ifdef QT_LATEST
     screen = NULL;

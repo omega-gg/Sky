@@ -48,9 +48,7 @@
 //-------------------------------------------------------------------------------------------------
 // Defines
 
-#ifdef QT_6
-#define QWIDGETSIZE_MAX ((1 << 24) - 1)
-#endif
+#define WIDGETSIZE_MAX ((1 << 24) - 1)
 
 //=================================================================================================
 // WDeclarativeKeyEvent
@@ -1670,13 +1668,13 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
         if (height == -1)
         {
 #ifdef QT_4
-             WAbstractView::setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+             WAbstractView::setMaximumSize(WIDGETSIZE_MAX, WIDGETSIZE_MAX);
         }
-        else WAbstractView::setMaximumSize(QWIDGETSIZE_MAX, height);
+        else WAbstractView::setMaximumSize(WIDGETSIZE_MAX, height);
 #else
-            WAbstractView::setMaximumSize(QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
+            WAbstractView::setMaximumSize(QSize(WIDGETSIZE_MAX, WIDGETSIZE_MAX));
        }
-       else WAbstractView::setMaximumSize(QSize(QWIDGETSIZE_MAX, height));
+       else WAbstractView::setMaximumSize(QSize(WIDGETSIZE_MAX, height));
 #endif
     }
     else if (height == -1)
@@ -1684,13 +1682,13 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
         if (width == -1)
         {
 #ifdef QT_4
-             WAbstractView::setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+             WAbstractView::setMaximumSize(WIDGETSIZE_MAX, WIDGETSIZE_MAX);
         }
-        else WAbstractView::setMaximumSize(width, QWIDGETSIZE_MAX);
+        else WAbstractView::setMaximumSize(width, WIDGETSIZE_MAX);
 #else
-            WAbstractView::setMaximumSize(QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
+            WAbstractView::setMaximumSize(QSize(WIDGETSIZE_MAX, WIDGETSIZE_MAX));
        }
-       else WAbstractView::setMaximumSize(QSize(width, QWIDGETSIZE_MAX));
+       else WAbstractView::setMaximumSize(QSize(width, WIDGETSIZE_MAX));
 #endif
     }
 
@@ -3228,7 +3226,7 @@ void WView::setMaximumWidth(int width)
 
     if (width == -1)
     {
-         WAbstractView::setMaximumWidth(QWIDGETSIZE_MAX);
+         WAbstractView::setMaximumWidth(WIDGETSIZE_MAX);
     }
     else WAbstractView::setMaximumWidth(width);
 
@@ -3250,7 +3248,7 @@ void WView::setMaximumHeight(int height)
 
     if (height == -1)
     {
-         WAbstractView::setMaximumHeight(QWIDGETSIZE_MAX);
+         WAbstractView::setMaximumHeight(WIDGETSIZE_MAX);
     }
     else WAbstractView::setMaximumHeight(height);
 
