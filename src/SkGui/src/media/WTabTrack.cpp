@@ -384,7 +384,7 @@ bool WTabTrackRead::load(QXmlStreamReader * stream, WTabTrackReadReply * reply)
 
         stream->readNextStartElement();
 
-        while (stream->name() == "id")
+        while (stream->name() == QString("id"))
         {
             int id = WControllerXml::readNextInt(stream);
 

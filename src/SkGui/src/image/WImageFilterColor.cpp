@@ -392,7 +392,11 @@ QList<QRgb> WImageFilterColorPrivate::getGradientColors(const QGradient * gradie
         &&
         format != QImage::Format_ARGB32_Premultiplied) return false;
 
+#ifdef QT_OLD
     const QImage alphaChannel = image->alphaChannel();
+#else
+    const QImage alphaChannel = image->convertToFormat(QImage::Format_Alpha8);
+#endif
 
     QRect margins = d->getMargins(*image);
 

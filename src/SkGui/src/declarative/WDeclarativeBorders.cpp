@@ -339,12 +339,21 @@ void WDeclarativeBordersPrivate::init()
 // Protected QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_OLD
 /* virtual */ void WDeclarativeBorders::geometryChanged(const QRectF & newGeometry,
                                                         const QRectF & oldGeometry)
+#else
+/* virtual */ void WDeclarativeBorders::geometryChange(const QRectF & newGeometry,
+                                                       const QRectF & oldGeometry)
+#endif
 {
     Q_D(WDeclarativeBorders);
 
+#ifdef QT_OLD
     WDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
+#else
+    WDeclarativeItem::geometryChange(newGeometry, oldGeometry);
+#endif
 
     if (oldGeometry.size() == newGeometry.size()) return;
 

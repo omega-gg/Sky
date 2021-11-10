@@ -41,7 +41,7 @@
 #endif
 #endif
 
-#if defined(SK_WIN_NATIVE) && defined(QT_4)
+#if defined(SK_WIN_NATIVE) && defined(QT_5) == false
 // Windows includes
 #include <qt_windows.h>
 #endif

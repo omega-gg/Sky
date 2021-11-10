@@ -28,16 +28,15 @@
 
 // Sk includes
 #include <Sk>
-#ifdef QT_6
-#include <WAbstractThreadReply>
-#endif
 
 #ifndef SK_NO_ABSTRACTTHREADACTION
 
 // Forward declarations
 class WAbstractThreadActionPrivate;
-#ifndef QT_6
 class WAbstractThreadReply;
+
+#ifdef QT_6
+Q_MOC_INCLUDE("WAbstractThreadReply.h")
 #endif
 
 class SK_CORE_EXPORT WAbstractThreadAction : public QObject, public WPrivatable

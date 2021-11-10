@@ -28,17 +28,16 @@
 
 // Sk includes
 #include <WController>
-#ifdef QT_6
-#include <WLoaderNetwork>
-#endif
 
 #ifndef SK_NO_CONTROLLERDOWNLOAD
 
 // Forward declarations
 class WControllerDownloadPrivate;
 class WAbstractLoader;
-#ifndef QT_6
 class WLoaderNetwork;
+
+#ifdef QT_6
+Q_MOC_INCLUDE("WLoaderNetwork.h")
 #endif
 
 // Defines

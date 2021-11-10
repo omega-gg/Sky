@@ -171,7 +171,11 @@ public: // Interface
     Q_INVOKABLE void applyScale();
 
 protected: // QGraphicsItem / QQuickItem reimplementation
+#ifdef QT_OLD
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
+#else
+    /* virtual */ void geometryChange(const QRectF & newGeometry, const QRectF & oldGeometry);
+#endif
 
 protected: // WDeclarativeImageBase reimplementation
     /* virtual */ const QPixmap & getPixmap();

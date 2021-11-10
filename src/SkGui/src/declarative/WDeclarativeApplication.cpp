@@ -131,9 +131,12 @@ void WDeclarativeApplicationPrivate::deleteItems()
 #ifdef QT_4
 /* static */ int WDeclarativeApplication::childrenCount(QDeclarativeListProperty
                                                         <QDeclarativeItem> * property)
-#else
+#elif defined(QT_5)
 /* static */ int WDeclarativeApplication::childrenCount(QQmlListProperty
                                                         <QQuickItem> * property)
+#else // QT_6
+/* static */ qsizetype WDeclarativeApplication::childrenCount(QQmlListProperty
+                                                              <QQuickItem> * property)
 #endif
 {
     return static_cast<WDeclarativeApplication *> (property->object)->d_func()->items.count();
@@ -143,9 +146,13 @@ void WDeclarativeApplicationPrivate::deleteItems()
 /* static */
 QDeclarativeItem * WDeclarativeApplication::childrenAt(QDeclarativeListProperty
                                                        <QDeclarativeItem> * property, int index)
-#else
+#elif defined(QT_5)
 /* static */ QQuickItem * WDeclarativeApplication::childrenAt(QQmlListProperty
                                                               <QQuickItem> * property, int index)
+#else // QT_6
+/* static */ QQuickItem * WDeclarativeApplication::childrenAt(QQmlListProperty
+                                                              <QQuickItem> * property,
+                                                              qsizetype index)
 #endif
 {
     return

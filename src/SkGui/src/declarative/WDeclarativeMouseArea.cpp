@@ -891,12 +891,21 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 // Protected QGraphicsItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_OLD
 /* virtual */ void WDeclarativeMouseArea::geometryChanged(const QRectF & newGeometry,
                                                           const QRectF & oldGeometry)
+#else
+/* virtual */ void WDeclarativeMouseArea::geometryChange(const QRectF & newGeometry,
+                                                         const QRectF & oldGeometry)
+#endif
 {
     Q_D(WDeclarativeMouseArea);
 
+#ifdef QT_OLD
     WDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
+#else
+    WDeclarativeItem::geometryChange(newGeometry, oldGeometry);
+#endif
 
     if (d->lastScenePos.isNull())
     {
@@ -1478,7 +1487,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+#ifdef QT_5
 
 /* virtual */ void WDeclarativeMouseArea::windowDeactivateEvent()
 {

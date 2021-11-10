@@ -27,6 +27,9 @@
 // Qt includes
 #include <QPainter>
 
+// Sk includes
+#include <WControllerApplication>
+
 //-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
@@ -87,7 +90,7 @@ void WDeclarativeNoisePrivate::resetColor()
 
         for (int x = 0; x < image.width(); x++)
         {
-            int alpha = qrand() % 256;
+            int alpha = Sk::randomInt() % 256;
 
             *line = qRgba(red, green, blue, alpha);
 
@@ -179,7 +182,7 @@ void WDeclarativeNoisePrivate::resetColor()
         {
             QRgb & color = *line;
 
-            int rand = qrand() % (d->increment + 1);
+            int rand = Sk::randomInt() % (d->increment + 1);
 
             int alpha = (qAlpha(color) + rand) % 256;
 

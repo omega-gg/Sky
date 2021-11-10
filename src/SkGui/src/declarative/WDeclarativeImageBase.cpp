@@ -720,15 +720,20 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
 
 #ifdef QT_LATEST
 
+#ifdef QT_OLD
 /* virtual */ void WDeclarativeImageBase::geometryChanged(const QRectF & newGeometry,
                                                           const QRectF & oldGeometry)
+#else
+/* virtual */ void WDeclarativeImageBase::geometryChange(const QRectF & newGeometry,
+                                                         const QRectF & oldGeometry)
+#endif
 {
     Q_D(WDeclarativeImageBase);
 
-#ifdef QT_4
+#ifdef QT_OLD
     WDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
 #else
-    WDeclarativeTexture::geometryChanged(newGeometry, oldGeometry);
+    WDeclarativeTexture::geometryChange(newGeometry, oldGeometry);
 #endif
 
     if (oldGeometry.size() == newGeometry.size()) return;

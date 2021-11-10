@@ -39,6 +39,10 @@
 class WDeclarativeItemPrivate;
 class WView;
 
+#ifdef QT_6
+Q_MOC_INCLUDE("WView.h")
+#endif
+
 #ifdef QT_4
 class SK_GUI_EXPORT WDeclarativeItem : public QDeclarativeItem, public WPrivatable
 #else

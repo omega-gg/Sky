@@ -2,6 +2,14 @@ SK = $$_PRO_FILE_PWD_/../..
 
 SK_BIN = bin
 
+contains(QT_MAJOR_VERSION, 4) {
+    QTX = Qt4
+} else:contains(QT_MAJOR_VERSION, 5) {
+    QTX = Qt5
+} else {
+    QTX = Qt6
+}
+
 CONFIG(debug, debug|release) {
     TARGET = SkGuiD
 } else {
@@ -13,9 +21,13 @@ DESTDIR = $$SK/lib
 TEMPLATE = lib
 
 contains(QT_MAJOR_VERSION, 4) {
+
     QT += opengl declarative network script xml svg
 } else {
     QT += opengl quick network xml svg
+}
+
+contains(QT_MAJOR_VERSION, 5) {
 
     win32:QT += winextras
 
@@ -41,14 +53,26 @@ DEFINES += SK_GUI_LIBRARY
 
 contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_4
+} else:contains(QT_MAJOR_VERSION, 5) {
+    DEFINES += QT_5
+} else {
+    DEFINES += QT_6
+}
 
+lessThan(QT_MAJOR_VERSION, 6) {
+    DEFINES += QT_OLD
+}
+
+greaterThan(QT_MAJOR_VERSION, 4) {
+    DEFINES += QT_LATEST #SK_SOFTWARE
+}
+
+contains(QT_MAJOR_VERSION, 4) {
     CONFIG(release, debug|release) {
 
         win32:DEFINES += SK_WIN_NATIVE
     }
 } else {
-    DEFINES += QT_LATEST #SK_SOFTWARE
-
     win32:DEFINES += SK_WIN_NATIVE
 }
 
@@ -76,18 +100,18 @@ INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkGui \
                $$SK/include/SkGui/private
 
-contains(QT_MAJOR_VERSION, 5) {
-    INCLUDEPATH += $$SK/include/Qt5 \
-                   $$SK/include/Qt5/QtCore \
-                   $$SK/include/Qt5/QtGui \
-                   $$SK/include/Qt5/QtQml \
-                   $$SK/include/Qt5/QtQuick
+unix:contains(QT_MAJOR_VERSION, 4) {
+    INCLUDEPATH += $$SK/include/$$QTX/QtCore \
+                   $$SK/include/$$QTX/QtGui \
+                   $$SK/include/$$QTX/QtDeclarative
 }
 
-unix:contains(QT_MAJOR_VERSION, 4) {
-    INCLUDEPATH += $$SK/include/Qt4/QtCore \
-                   $$SK/include/Qt4/QtGui \
-                   $$SK/include/Qt4/QtDeclarative
+greaterThan(QT_MAJOR_VERSION, 4) {
+    INCLUDEPATH += $$SK/include/$$QTX \
+                   $$SK/include/$$QTX/QtCore \
+                   $$SK/include/$$QTX/QtGui \
+                   $$SK/include/$$QTX/QtQml \
+                   $$SK/include/$$QTX/QtQuick
 }
 
 # Windows dependency for PostMessage

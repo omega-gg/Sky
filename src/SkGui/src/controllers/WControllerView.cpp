@@ -26,7 +26,9 @@
 
 // Qt includes
 #include <QApplication>
+#ifdef QT_OLD
 #include <QDesktopWidget>
+#endif
 #ifdef QT_4
 #include <QGraphicsObject>
 #include <QStyleOptionGraphicsItem>
@@ -161,7 +163,11 @@ void WControllerViewPrivate::init()
     filterDelay =  20;
 
 #ifdef SK_SOFTWARE
+#ifdef QT_5
     QQuickWindow::setSceneGraphBackend(QSGRendererInterface::Software);
+#else
+    QQuickWindow::setGraphicsApi(QSGRendererInterface::Software);
+#endif
 #endif
 }
 

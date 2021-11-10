@@ -126,8 +126,10 @@ public: // Virtual interface
 protected: // Events
 #ifdef QT_4
     /* virtual */ bool winEvent(MSG * msg, long * result);
-#else
+#elif defined(QT_5)
     /* virtual */ bool nativeEvent(const QByteArray & event, void * msg, long * result);
+#else
+    /* virtual */ bool nativeEvent(const QByteArray & event, void * msg, qintptr * result);
 #endif
 
 protected: // Virtual functions

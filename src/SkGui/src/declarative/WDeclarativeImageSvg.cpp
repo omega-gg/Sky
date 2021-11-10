@@ -473,10 +473,19 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
 
 #ifdef QT_LATEST
 
+#ifdef QT_OLD
 /* virtual */ void WDeclarativeImageSvg::geometryChanged(const QRectF & newGeometry,
                                                          const QRectF & oldGeometry)
+#else
+/* virtual */ void WDeclarativeImageSvg::geometryChange(const QRectF & newGeometry,
+                                                        const QRectF & oldGeometry)
+#endif
 {
+#ifdef QT_OLD
     WDeclarativeTexture::geometryChanged(newGeometry, oldGeometry);
+#else
+    WDeclarativeTexture::geometryChange(newGeometry, oldGeometry);
+#endif
 
     if (oldGeometry.size() == newGeometry.size()) return;
 
@@ -740,7 +749,7 @@ void WDeclarativeImageSvg::setScaleLater(bool enabled)
     emit scaleLaterChanged();
 }
 
-#else
+#else // QT_4
 
 //=================================================================================================
 // WDeclarativeImageSvgScalePrivate
@@ -1016,6 +1025,6 @@ void WDeclarativeImageSvgScale::setScaleDelay(int delay)
     emit scaleDelayChanged();
 }
 
-#endif
+#endif // QT_4
 
 #endif // SK_NO_DECLARATIVEIMAGESVG

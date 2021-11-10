@@ -293,7 +293,11 @@ protected: // Functions
 #endif
 
 protected: // QGraphicsItem / QQuickItem reimplementation
+#ifdef QT_OLD
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
+#else
+    /* virtual */ void geometryChange(const QRectF & newGeometry, const QRectF & oldGeometry);
+#endif
 
 #ifdef QT_4
     /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
@@ -345,7 +349,9 @@ protected: // Events
 
     /* virtual */ bool childMouseEventFilter(QQuickItem * item, QEvent * event);
 
+#ifdef QT_5
     /* virtual */ void windowDeactivateEvent();
+#endif
 #endif
 
     /* virtual */ void timerEvent(QTimerEvent * event);

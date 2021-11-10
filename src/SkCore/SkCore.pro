@@ -2,7 +2,9 @@ SK = $$_PRO_FILE_PWD_/../..
 
 SK_BIN = bin
 
-contains(QT_MAJOR_VERSION, 5) {
+contains(QT_MAJOR_VERSION, 4) {
+    QTX = Qt4
+} else:contains(QT_MAJOR_VERSION, 5) {
     QTX = Qt5
 } else {
     QTX = Qt6
@@ -19,8 +21,11 @@ DESTDIR = $$SK/lib
 TEMPLATE = lib
 
 contains(QT_MAJOR_VERSION, 4) {
+
     QT += declarative network script xml xmlpatterns
+
 } else:contains(QT_MAJOR_VERSION, 5) {
+
     QT += qml network xml xmlpatterns
 } else {
     QT += qml network xml core5compat
@@ -34,6 +39,7 @@ win32:CONFIG += dll
 
 # C++17
 contains(QT_MAJOR_VERSION, 4) {
+
     QMAKE_CXXFLAGS += -std=c++1z
 } else {
     CONFIG += c++1z
@@ -47,6 +53,10 @@ contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_5
 } else {
     DEFINES += QT_6
+}
+
+lessThan(QT_MAJOR_VERSION, 6) {
+    DEFINES += QT_OLD
 }
 
 greaterThan(QT_MAJOR_VERSION, 4) {
@@ -78,6 +88,7 @@ INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkCore/private
 
 unix:!macx:!android:greaterThan(QT_MAJOR_VERSION, 4) {
+
     INCLUDEPATH += $$SK/include/$$QTX/QtDBus
 }
 

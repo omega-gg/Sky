@@ -38,6 +38,10 @@ class WControllerFileReply;
 class WAbstractLoader;
 class WRemoteData;
 
+#ifdef QT_6
+Q_MOC_INCLUDE("QThread.h")
+#endif
+
 // Defines
 #define wControllerPlaylist WControllerPlaylist::instance()
 

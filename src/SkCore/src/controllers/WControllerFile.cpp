@@ -47,9 +47,7 @@
 #include <WControllerNetwork>
 #include <WLocalObject>
 #include <WFileWatcher>
-#ifndef QT_6
 #include <WCache>
-#endif
 #include <WThreadActions>
 
 // Private includes

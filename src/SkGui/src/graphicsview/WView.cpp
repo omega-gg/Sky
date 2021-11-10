@@ -28,10 +28,10 @@
 #include <QApplication>
 #ifdef QT_4
 #include <QDesktopWidget>
+#include <QGLWidget>
 #else
 #include <QScreen>
 #endif
-#include <QGLWidget>
 #include <QImageReader>
 #include <QDrag>
 #include <QMimeData>
@@ -44,6 +44,13 @@
 // Private includes
 #include <private/WControllerView_p>
 #include <private/WDeclarativeMouseArea_p>
+
+//-------------------------------------------------------------------------------------------------
+// Defines
+
+#ifdef QT_6
+#define QWIDGETSIZE_MAX ((1 << 24) - 1)
+#endif
 
 //=================================================================================================
 // WDeclarativeKeyEvent
@@ -61,7 +68,12 @@ WDeclarativeKeyEvent::WDeclarativeKeyEvent(QEvent::Type            type,
 }
 
 WDeclarativeKeyEvent::WDeclarativeKeyEvent(const QKeyEvent & event)
+#ifdef QT_OLD
     : _event(event)
+#else
+    : _event(event.type(), event.key(), event.modifiers(), event.text(), event.isAutoRepeat(),
+             event.count())
+#endif
 {
     _event.setAccepted(false);
 }
@@ -418,7 +430,9 @@ void WViewPrivate::init(QQuickItem * item)
 
     q->setFormat(format);
 
+#ifdef QT_5
     q->setClearBeforeRendering(false);
+#endif
 #endif
 
 #ifdef QT_4

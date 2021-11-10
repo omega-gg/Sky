@@ -73,9 +73,15 @@ private: // Declarative
     static void childrenAppend(QQmlListProperty<QQuickItem> * property, QQuickItem * item);
     static void childrenClear (QQmlListProperty<QQuickItem> * property);
 
+#ifdef QT_5
     static int childrenCount(QQmlListProperty<QQuickItem> * property);
 
     static QQuickItem * childrenAt(QQmlListProperty<QQuickItem> * property, int index);
+#else // QT_6
+    static qsizetype childrenCount(QQmlListProperty<QQuickItem> * property);
+
+    static QQuickItem * childrenAt(QQmlListProperty<QQuickItem> * property, qsizetype index);
+#endif
 #endif
 
 public: // Properties

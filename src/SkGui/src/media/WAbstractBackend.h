@@ -52,6 +52,9 @@ struct WBackendFrame;
 struct WBackendTexture;
 #endif
 
+#ifdef QT_6
+Q_MOC_INCLUDE("WDeclarativePlayer.h")
+#endif
 
 #if defined(QT_LATEST) && defined(SK_NO_QML) == false
 

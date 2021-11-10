@@ -39,6 +39,12 @@ class WDeclarativePlayerPrivate;
 class WAbstractHook;
 class WTabsTrack;
 
+#ifdef QT_6
+Q_MOC_INCLUDE("WAbstractHook.h")
+Q_MOC_INCLUDE("WTabsTrack.h")
+Q_MOC_INCLUDE("WTabTrack.h")
+#endif
+
 #ifdef SK_SOFTWARE
 class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItemPaint, public WPlaylistWatcher
 #else
@@ -200,7 +206,11 @@ public: // QQuickItem reimplementation
 #endif
 
 protected: // QDeclarativeItem / QQuickItem reimplementation
+#ifdef QT_OLD
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
+#else
+    /* virtual */ void geometryChange(const QRectF & newGeometry, const QRectF & oldGeometry);
+#endif
 
 protected: // WPlaylistWatcher implementation
     /* virtual */ void beginTracksInsert(int first, int last);

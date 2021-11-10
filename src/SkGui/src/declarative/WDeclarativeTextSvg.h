@@ -37,6 +37,10 @@ class WDeclarativeTextSvgPrivate;
 class WDeclarativeTextSvgScalePrivate;
 class WDeclarativeGradient;
 
+#ifdef QT_6
+Q_MOC_INCLUDE("WImageFilterColor.h") // WDeclarativeGradient
+#endif
+
 //-------------------------------------------------------------------------------------------------
 // WDeclarativeTextSvg
 //-------------------------------------------------------------------------------------------------
@@ -152,7 +156,11 @@ protected: // QGraphicsItem / QQuickItem reimplementation
 #else
     /* virtual */ void itemChange(ItemChange change, const ItemChangeData & value);
 
+#ifdef QT_OLD
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
+#else
+    /* virtual */ void geometryChange(const QRectF & newGeometry, const QRectF & oldGeometry);
+#endif
 
 protected: // WDeclarativeTexture implementation
     /* virtual */ const QPixmap & getPixmap();
@@ -327,7 +335,7 @@ private:
 
 QML_DECLARE_TYPE(WDeclarativeTextSvgScale)
 
-#endif
+#endif // QT_4
 
 #include <private/WDeclarativeTextSvg_p>
 

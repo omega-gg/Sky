@@ -72,7 +72,11 @@ public: // QQuickItem reimplementation
     /* virtual */ QSGNode * updatePaintNode(QSGNode * oldNode, UpdatePaintNodeData * data);
 
 protected: // QQuickItem reimplementation
+#ifdef QT_OLD
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
+#else
+    /* virtual */ void geometryChange(const QRectF & newGeometry, const QRectF & oldGeometry);
+#endif
 #endif
 
 signals:

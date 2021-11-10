@@ -1072,8 +1072,13 @@ void WDeclarativePlayer::updateFrame()
 // Protected QDeclarativeItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_OLD
 /* virtual */ void WDeclarativePlayer::geometryChanged(const QRectF & newGeometry,
                                                        const QRectF & oldGeometry)
+#else
+/* virtual */ void WDeclarativePlayer::geometryChange(const QRectF & newGeometry,
+                                                      const QRectF & oldGeometry)
+#endif
 {
     Q_D(WDeclarativePlayer);
 
@@ -1086,10 +1091,18 @@ void WDeclarativePlayer::updateFrame()
 #endif
     }
 
+#ifdef QT_OLD
 #ifdef SK_SOFTWARE
     WDeclarativeItemPaint::geometryChanged(newGeometry, oldGeometry);
 #else
     WDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
+#endif
+#else
+#ifdef SK_SOFTWARE
+    WDeclarativeItemPaint::geometryChange(newGeometry, oldGeometry);
+#else
+    WDeclarativeItem::geometryChange(newGeometry, oldGeometry);
+#endif
 #endif
 }
 

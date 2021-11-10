@@ -118,7 +118,11 @@ protected: // QGraphicsItem / QQuickItem reimplementation
 #else
     /* virtual */ void itemChange(ItemChange change, const ItemChangeData & value);
 
+#ifdef QT_OLD
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
+#else
+    /* virtual */ void geometryChange(const QRectF & newGeometry, const QRectF & oldGeometry);
+#endif
 
 protected: // WDeclarativeTexture implementation
     /* virtual */ const QPixmap & getPixmap();
@@ -244,7 +248,7 @@ private:
 
 QML_DECLARE_TYPE(WDeclarativeImageSvgScale)
 
-#endif
+#endif // QT_4
 
 #include <private/WDeclarativeImageSvg_p>
 

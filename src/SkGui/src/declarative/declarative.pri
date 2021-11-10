@@ -29,10 +29,10 @@ HEADERS += src/declarative/WDeclarativeApplication.h \
            src/declarative/WDeclarativeListView_p.h \
            src/declarative/WDeclarativeContextualPage.h \
 
-contains(QT_MAJOR_VERSION, 5): HEADERS += src/declarative/WDeclarativeTexture.h \
-                                          src/declarative/WDeclarativeTexture_p.h \
-                                          src/declarative/WDeclarativeItemPaint.h \
-                                          src/declarative/WDeclarativeItemPaint_p.h \
+greaterThan(QT_MAJOR_VERSION, 4): HEADERS += src/declarative/WDeclarativeTexture.h \
+                                             src/declarative/WDeclarativeTexture_p.h \
+                                             src/declarative/WDeclarativeItemPaint.h \
+                                             src/declarative/WDeclarativeItemPaint_p.h \
 
 SOURCES += src/declarative/WDeclarativeApplication.cpp \
            src/declarative/WDeclarativeItem.cpp \
@@ -51,5 +51,5 @@ SOURCES += src/declarative/WDeclarativeApplication.cpp \
            src/declarative/WDeclarativeListView.cpp \
            src/declarative/WDeclarativeContextualPage.cpp \
 
-contains(QT_MAJOR_VERSION, 5): SOURCES += src/declarative/WDeclarativeTexture.cpp \
-                                          src/declarative/WDeclarativeItemPaint.cpp \
+greaterThan(QT_MAJOR_VERSION, 4): SOURCES += src/declarative/WDeclarativeTexture.cpp \
+                                             src/declarative/WDeclarativeItemPaint.cpp \

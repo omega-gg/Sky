@@ -27,7 +27,9 @@
 #ifdef SK_WIN_NATIVE
 // Qt includes
 #include <QApplication>
+#ifdef QT_OLD
 #include <QDesktopWidget>
+#endif
 #include <QFocusEvent>
 #include <QIcon>
 #endif
@@ -35,10 +37,19 @@
 #if defined(SK_WIN_NATIVE) && defined(QT_LATEST)
 // Windows includes
 #ifdef _MSC_VER
-// FIXME MSVC: This fixes FORMATETC declaration.
-#include <objidl.h>
+    // FIXME MSVC: This fixes FORMATETC declaration.
+    #include <objidl.h>
 #endif
-#include <QtWinExtras>
+#ifdef QT_5
+    #include <QtWinExtras>
+#endif
+#endif
+
+//-------------------------------------------------------------------------------------------------
+// Defines
+
+#ifdef QT_6
+#define QWIDGETSIZE_MAX ((1 << 24) - 1)
 #endif
 
 //-------------------------------------------------------------------------------------------------
@@ -311,8 +322,10 @@ bool WAbstractViewPrivate::isWindows10()
     }
 #ifdef QT_4
     else return pixmap.toWinHICON();
-#else
+#elif defined(QT_5)
     else return QtWin::toHICON(pixmap);
+#else
+    else return pixmap.toImage().toHICON();
 #endif
 }
 
@@ -1014,8 +1027,11 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWindow * parent, Qt::Win
 
 #ifdef QT_4
 /* virtual */ bool WAbstractView::winEvent(MSG * msg, long * result)
-#else
+#elif defined(QT_5)
 /* virtual */ bool WAbstractView::nativeEvent(const QByteArray & event, void * msg, long * result)
+#else
+/* virtual */ bool WAbstractView::nativeEvent(const QByteArray & event, void * msg,
+                                              qintptr * result)
 #endif
 {
 #ifdef QT_4

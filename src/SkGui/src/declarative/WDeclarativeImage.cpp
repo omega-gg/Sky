@@ -313,10 +313,19 @@ void WDeclarativeImage::updatePaintedGeometry()
 // Protected QGraphicsItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_OLD
 /* virtual */ void WDeclarativeImage::geometryChanged(const QRectF & newGeometry,
                                                       const QRectF & oldGeometry)
+#else
+/* virtual */ void WDeclarativeImage::geometryChange(const QRectF & newGeometry,
+                                                     const QRectF & oldGeometry)
+#endif
 {
+#ifdef QT_OLD
     WDeclarativeImageBase::geometryChanged(newGeometry, oldGeometry);
+#else
+    WDeclarativeImageBase::geometryChange(newGeometry, oldGeometry);
+#endif
 
     if (oldGeometry.size() == newGeometry.size()) return;
 
@@ -715,12 +724,21 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
 // Protected QGraphicsItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_OLD
 /* virtual */ void WDeclarativeImageScale::geometryChanged(const QRectF & newGeometry,
                                                            const QRectF & oldGeometry)
+#else
+/* virtual */ void WDeclarativeImageScale::geometryChange(const QRectF & newGeometry,
+                                                          const QRectF & oldGeometry)
+#endif
 {
     Q_D(WDeclarativeImageScale);
 
+#ifdef QT_OLD
     WDeclarativeImage::geometryChanged(newGeometry, oldGeometry);
+#else
+    WDeclarativeImage::geometryChange(newGeometry, oldGeometry);
+#endif
 
     if (d->scalable && oldGeometry.size() != newGeometry.size())
     {

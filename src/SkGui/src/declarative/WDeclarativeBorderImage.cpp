@@ -623,12 +623,21 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QQuickItem * parent)
 // Protected QGraphicsItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_OLD
 /* virtual */ void WDeclarativeBorderImageScale::geometryChanged(const QRectF & newGeometry,
                                                                  const QRectF & oldGeometry)
+#else
+/* virtual */ void WDeclarativeBorderImageScale::geometryChange(const QRectF & newGeometry,
+                                                                const QRectF & oldGeometry)
+#endif
 {
     Q_D(WDeclarativeBorderImageScale);
 
+#ifdef QT_OLD
     WDeclarativeBorderImage::geometryChanged(newGeometry, oldGeometry);
+#else
+    WDeclarativeBorderImage::geometryChange(newGeometry, oldGeometry);
+#endif
 
     if (oldGeometry.size() == newGeometry.size()) return;
 

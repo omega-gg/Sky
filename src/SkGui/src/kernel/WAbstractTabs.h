@@ -33,6 +33,10 @@ class WAbstractTabsPrivate;
 class WAbstractTab;
 class WTabTrack;
 
+#ifdef QT_6
+Q_MOC_INCLUDE("WAbstractTab.h")
+#endif
+
 //-------------------------------------------------------------------------------------------------
 // WAbstractTabsWatcher
 //-------------------------------------------------------------------------------------------------

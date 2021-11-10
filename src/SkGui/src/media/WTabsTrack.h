@@ -31,6 +31,10 @@
 // Forward declarations
 class WTabsTrackPrivate;
 
+#ifdef QT_6
+Q_MOC_INCLUDE("WTabTrack.h")
+#endif
+
 class SK_GUI_EXPORT WTabsTrack : public WAbstractTabs
 {
     Q_OBJECT

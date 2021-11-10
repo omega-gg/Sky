@@ -586,10 +586,19 @@ WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p, QQuickI
 
 #ifdef QT_LATEST
 
+#ifdef QT_OLD
 /* virtual */ void WDeclarativeTextSvg::geometryChanged(const QRectF & newGeometry,
                                                         const QRectF & oldGeometry)
+#else
+/* virtual */ void WDeclarativeTextSvg::geometryChange(const QRectF & newGeometry,
+                                                       const QRectF & oldGeometry)
+#endif
 {
+#ifdef QT_OLD
     WDeclarativeTexture::geometryChanged(newGeometry, oldGeometry);
+#else
+    WDeclarativeTexture::geometryChange(newGeometry, oldGeometry);
+#endif
 
     if (oldGeometry.size() == newGeometry.size()) return;
 
@@ -1057,7 +1066,7 @@ void WDeclarativeTextSvg::setScaleLater(bool enabled)
     emit scaleLaterChanged();
 }
 
-#else
+#else // QT_4
 
 //=================================================================================================
 // WDeclarativeTextSvgScalePrivate
@@ -1328,6 +1337,6 @@ void WDeclarativeTextSvgScale::setScaleDelay(int delay)
     emit scaleDelayChanged();
 }
 
-#endif
+#endif // QT_4
 
 #endif // SK_NO_DECLARATIVETEXTSVG
