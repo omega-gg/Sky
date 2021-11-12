@@ -48,7 +48,8 @@ cd 3rdparty
 
 if [ "$2" = "all" ]; then
 
-    sh environment.sh $compiler_win $qt
+    sh environment.sh $compiler_win
+    sh environment.sh $qt
 fi
 
 sh generate.sh $1
