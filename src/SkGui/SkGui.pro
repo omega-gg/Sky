@@ -2,14 +2,6 @@ SK = $$_PRO_FILE_PWD_/../..
 
 SK_BIN = bin
 
-contains(QT_MAJOR_VERSION, 4) {
-    QTX = Qt4
-} else:contains(QT_MAJOR_VERSION, 5) {
-    QTX = Qt5
-} else {
-    QTX = Qt6
-}
-
 CONFIG(debug, debug|release) {
     TARGET = SkGuiD
 } else {
@@ -21,14 +13,12 @@ DESTDIR = $$SK/lib
 TEMPLATE = lib
 
 contains(QT_MAJOR_VERSION, 4) {
-
     QT += opengl declarative network script xml svg
 } else {
     QT += opengl quick network xml svg
 }
 
 contains(QT_MAJOR_VERSION, 5) {
-
     win32:QT += winextras
 
     unix:!macx:!android:QT += x11extras
@@ -52,38 +42,17 @@ android:DEFINES += QT_OPENGL_ES_2
 DEFINES += SK_GUI_LIBRARY
 
 contains(QT_MAJOR_VERSION, 4) {
-    DEFINES += QT_4
-} else:contains(QT_MAJOR_VERSION, 5) {
-    DEFINES += QT_5
-} else {
-    DEFINES += QT_6
-}
-
-lessThan(QT_MAJOR_VERSION, 6) {
-    DEFINES += QT_OLD
-}
-
-greaterThan(QT_MAJOR_VERSION, 4) {
-    DEFINES += QT_LATEST #SK_SOFTWARE
-}
-
-contains(QT_MAJOR_VERSION, 4) {
     CONFIG(release, debug|release) {
 
         win32:DEFINES += SK_WIN_NATIVE
     }
 } else {
-    win32:DEFINES += SK_WIN_NATIVE
-}
-
-android {
-    DEFINES += SK_MOBILE
-} else {
-    DEFINES += SK_DESKTOP
+    win32:DEFINES += SK_WIN_NATIVE #SK_SOFTWARE
 }
 
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 
+include(../Sk.pri)
 include(src/controllers/controllers.pri)
 include(src/kernel/kernel.pri)
 include(src/io/io.pri)

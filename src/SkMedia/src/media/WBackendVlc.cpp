@@ -27,8 +27,12 @@
 // Qt includes
 #ifdef QT_4
 #include <QCoreApplication>
-#else
+#elif defined(QT_5)
 #include <QOpenGLFunctions>
+#endif
+#ifdef QT_6
+#include <QPainter>
+#include <QOpenGLShaderProgram>
 #endif
 
 // Sk includes
@@ -334,6 +338,8 @@ void createShader()
 /* virtual */ void WBackendVlcShader::updateState(const RenderState & state,
                                                   QSGMaterial       * newMaterial, QSGMaterial *)
 {
+// FIXME Qt6
+#ifndef QT_6
     QOpenGLShaderProgram * program = this->program();
 
     if (state.isMatrixDirty())
@@ -349,6 +355,7 @@ void createShader()
     WBackendVlcMaterial * material = static_cast<WBackendVlcMaterial *> (newMaterial);
 
     material->updateTextures();
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -357,6 +364,8 @@ void createShader()
 
 /* virtual */ void WBackendVlcShader::initialize()
 {
+// FIXME Qt6
+#ifndef QT_6
     QOpenGLShaderProgram * program = this->program();
 
     idPosition = program->uniformLocation("position");
@@ -372,6 +381,7 @@ void createShader()
     program->setUniformValue(idY, 0);
     program->setUniformValue(idU, 1);
     program->setUniformValue(idV, 2);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -483,7 +493,12 @@ void WBackendVlcMaterial::updateTextures()
     return &materialType;
 }
 
+#ifdef QT_5
 /* virtual */ QSGMaterialShader * WBackendVlcMaterial::createShader() const
+#else
+/* virtual */
+QSGMaterialShader * WBackendVlcMaterial::createShader(QSGRendererInterface::RenderMode) const
+#endif
 {
     return new WBackendVlcShader;
 }

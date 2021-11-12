@@ -43,6 +43,7 @@ android {
 
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 
+include(../Sk.pri)
 include(src/io/io.pri)
 include(src/media/media.pri)
 
@@ -53,7 +54,8 @@ INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkTorrent \
                $$SK/include/SkTorrent/private \
                $$SK/include/SkBackend \
-               $$SK/include/SkBackend/private
+               $$SK/include/SkBackend/private \
+               $$SK/include
 
 android {
     CONFIG(debug, debug|release) {
@@ -77,6 +79,10 @@ android {
                 -L$$SK/lib -lSkGui \
                 -L$$SK/lib -lSkTorrent
     }
+}
+
+contains(QT_MAJOR_VERSION, 6) {
+    win32:LIBS += -lws2_32
 }
 
 macx {

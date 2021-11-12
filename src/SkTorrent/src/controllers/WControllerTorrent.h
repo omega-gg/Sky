@@ -39,6 +39,10 @@ class WTorrentEngine;
 class WTorrentReply;
 class WMagnetReply;
 
+#ifdef QT_6
+Q_MOC_INCLUDE("WTorrentEngine.h")
+#endif
+
 // Defines
 #define wControllerTorrent WControllerTorrent::instance()
 

@@ -34,11 +34,16 @@
 */
 
 // Qt includes
+#ifndef QT_6
 #include <QGLWidget>
+#endif
 //#include <QMutex>
 #include <QMetaMethod>
 #ifdef QT_LATEST
 #include <QSGMaterial>
+#endif
+#ifdef QT_6
+#include <QOpenGLFunctions>
 #endif
 
 // Sk includes
@@ -135,7 +140,12 @@ public: // Functions
 public: // QSGMaterial implementation
     /* virtual */ QSGMaterialType * type() const;
 
+#ifdef QT_5
     /* virtual */ QSGMaterialShader * createShader() const;
+#else
+    /* virtual */
+    QSGMaterialShader * createShader(QSGRendererInterface::RenderMode renderMode) const;
+#endif
 
 public: // Properties
     QOpenGLFunctions * gl;

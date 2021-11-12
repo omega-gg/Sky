@@ -31,22 +31,11 @@ DEFINES += SK_MEDIA_LIBRARY
 
 !win32-msvc*:!android:DEFINES += CAN_COMPILE_SSE2
 
-contains(QT_MAJOR_VERSION, 4) {
-    DEFINES += QT_4
-} else {
-    DEFINES += QT_LATEST
-}
-
-android {
-    DEFINES += SK_MOBILE
-} else {
-    DEFINES += SK_DESKTOP
-}
-
 !win32-msvc*:!android:QMAKE_CXXFLAGS += -msse
 
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 
+include(../Sk.pri)
 include(src/controllers/controllers.pri)
 include(src/media/media.pri)
 include(src/vlc/vlc.pri)
@@ -79,7 +68,7 @@ android {
     }
 }
 
-win32:contains(QT_MAJOR_VERSION, 5) {
+win32:greaterThan(QT_MAJOR_VERSION, 4) {
     LIBS += -lopengl32
 }
 

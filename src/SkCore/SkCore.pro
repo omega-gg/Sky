@@ -2,14 +2,6 @@ SK = $$_PRO_FILE_PWD_/../..
 
 SK_BIN = bin
 
-contains(QT_MAJOR_VERSION, 4) {
-    QTX = Qt4
-} else:contains(QT_MAJOR_VERSION, 5) {
-    QTX = Qt5
-} else {
-    QTX = Qt6
-}
-
 CONFIG(debug, debug|release) {
     TARGET = SkCoreD
 } else {
@@ -47,30 +39,9 @@ contains(QT_MAJOR_VERSION, 4) {
 
 DEFINES += QUAZIP_BUILD SK_CORE_LIBRARY SK_CHARSET
 
-contains(QT_MAJOR_VERSION, 4) {
-    DEFINES += QT_4
-} else:contains(QT_MAJOR_VERSION, 5) {
-    DEFINES += QT_5
-} else {
-    DEFINES += QT_6
-}
-
-lessThan(QT_MAJOR_VERSION, 6) {
-    DEFINES += QT_OLD
-}
-
-greaterThan(QT_MAJOR_VERSION, 4) {
-    DEFINES += QT_LATEST
-}
-
-android {
-    DEFINES += SK_MOBILE
-} else {
-    DEFINES += SK_DESKTOP
-}
-
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 
+include(../Sk.pri)
 include(src/global/global.pri)
 include(src/controllers/controllers.pri)
 include(src/kernel/kernel.pri)

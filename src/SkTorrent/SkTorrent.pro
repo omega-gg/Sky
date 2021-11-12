@@ -37,20 +37,9 @@ win32-msvc* {
     DEFINES += BOOST_ALL_NO_LIB
 }
 
-contains(QT_MAJOR_VERSION, 4) {
-    DEFINES += QT_4
-} else {
-    DEFINES += QT_LATEST
-}
-
-android {
-    DEFINES += SK_MOBILE
-} else {
-    DEFINES += SK_DESKTOP
-}
-
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 
+include(../Sk.pri)
 include(src/controllers/controllers.pri)
 include(src/io/io.pri)
 include(src/media/media.pri)

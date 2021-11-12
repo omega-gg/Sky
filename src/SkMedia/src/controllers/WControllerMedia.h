@@ -42,6 +42,13 @@ class WVlcEngine;
 class WVlcPlayer;
 #endif
 
+#ifdef QT_6
+#ifndef SK_NO_PLAYER
+Q_MOC_INCLUDE("WVlcEngine.h")
+#endif
+Q_MOC_INCLUDE("WAbstractLoader.h")
+#endif
+
 // Defines
 #define wControllerMedia WControllerMedia::instance()
 

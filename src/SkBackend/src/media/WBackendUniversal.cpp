@@ -670,7 +670,7 @@ inline QVariant remove(const WBackendUniversalNode * node,
 
     if (count == 2)
     {
-         return string.remove(node->getInt(parameters, 1));
+         return string.remove(node->getString(parameters, 1));
     }
     else return string.remove(node->getInt(parameters, 1), node->getInt(parameters, 2));
 }
