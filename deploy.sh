@@ -11,6 +11,7 @@ external="../3rdparty"
 
 Qt4_version="4.8.7"
 Qt5_version="5.15.2"
+Qt6_version="6.2.1"
 
 SSL_versionA="1.0.2u"
 SSL_versionB="1.1.1l"
@@ -89,8 +90,20 @@ libs="$external/lib"
 if [ $qt = "qt4" ]; then
 
     Qt="$external/Qt/$Qt4_version"
-else
+
+elif [ $qt = "qt5" ]; then
+
     Qt="$external/Qt/$Qt5_version"
+
+    QtX="Qt5"
+
+    qx="5"
+else
+    Qt="$external/Qt/$Qt6_version"
+
+    QtX="Qt6"
+
+    qx="6"
 fi
 
 if [ $os = "windows" -a $qt = "qt4" ]; then
@@ -127,11 +140,20 @@ echo ""
 # Qt
 #--------------------------------------------------------------------------------------------------
 
+if [ $qt = "qt5" ]; then
+
+    QtQuick="QtQuick.2"
+
+elif [ $qt = "qt6" ]; then
+
+    QtQuick="QtQuick"
+fi
+
 if [ $qt = "qt4" ]; then
 
     if [ $os = "windows" ]; then
 
-        echo "COPYING Qt4"
+        echo "COPYING Qt"
 
         mkdir deploy/imageformats
 
@@ -160,7 +182,7 @@ if [ $qt = "qt4" ]; then
 
     elif [ $1 = "linux" ]; then
 
-        echo "COPYING Qt4"
+        echo "COPYING Qt"
 
         mkdir deploy/imageformats
 
@@ -182,11 +204,11 @@ if [ $qt = "qt4" ]; then
         cp "$Qt"/plugins/imageformats/libqjpeg.so deploy/imageformats
     fi
 else
-    echo "COPYING Qt5"
+    echo "COPYING Qt"
 
     mkdir deploy/platforms
     mkdir deploy/imageformats
-    mkdir deploy/QtQuick.2
+    mkdir deploy/$QtQuick
 
     if [ $os = "windows" ]; then
 
@@ -197,25 +219,34 @@ else
             cp "$MinGW"/libwinpthread-1.dll deploy
         fi
 
-        cp "$Qt"/bin/libEGL.dll    deploy
-        cp "$Qt"/bin/libGLESv2.dll deploy
+        if [ $qt = "qt5" ]; then
 
-        cp "$Qt"/bin/Qt5Core.dll        deploy
-        cp "$Qt"/bin/Qt5Gui.dll         deploy
-        cp "$Qt"/bin/Qt5Network.dll     deploy
-        cp "$Qt"/bin/Qt5OpenGL.dll      deploy
-        cp "$Qt"/bin/Qt5Qml.dll         deploy
-        cp "$Qt"/bin/Qt5Quick.dll       deploy
-        cp "$Qt"/bin/Qt5Svg.dll         deploy
-        cp "$Qt"/bin/Qt5Widgets.dll     deploy
-        cp "$Qt"/bin/Qt5Xml.dll         deploy
-        cp "$Qt"/bin/Qt5XmlPatterns.dll deploy
-        cp "$Qt"/bin/Qt5WinExtras.dll   deploy
+            cp "$Qt"/bin/libEGL.dll    deploy
+            cp "$Qt"/bin/libGLESv2.dll deploy
+        fi
 
-        if [ -f "$Qt"/bin/Qt5QmlModels.dll ]; then
+        cp "$Qt"/bin/"$QtX"Core.dll    deploy
+        cp "$Qt"/bin/"$QtX"Gui.dll     deploy
+        cp "$Qt"/bin/"$QtX"Network.dll deploy
+        cp "$Qt"/bin/"$QtX"OpenGL.dll  deploy
+        cp "$Qt"/bin/"$QtX"Qml.dll     deploy
+        cp "$Qt"/bin/"$QtX"Quick.dll   deploy
+        cp "$Qt"/bin/"$QtX"Svg.dll     deploy
+        cp "$Qt"/bin/"$QtX"Widgets.dll deploy
+        cp "$Qt"/bin/"$QtX"Xml.dll     deploy
 
-            cp "$Qt"/bin/Qt5QmlModels.dll       deploy
-            cp "$Qt"/bin/Qt5QmlWorkerScript.dll deploy
+        if [ $qt = "qt5" ]; then
+
+            cp "$Qt"/bin/"$QtX"XmlPatterns.dll deploy
+            cp "$Qt"/bin/"$QtX"WinExtras.dll   deploy
+        else
+            cp "$Qt"/bin/"$QtX"Core5Compat.dll deploy
+        fi
+
+        if [ -f "$Qt"/bin/"$QtX"QmlModels.dll ]; then
+
+            cp "$Qt"/bin/"$QtX"QmlModels.dll       deploy
+            cp "$Qt"/bin/"$QtX"QmlWorkerScript.dll deploy
         fi
 
         cp "$Qt"/plugins/platforms/qwindows.dll deploy/platforms
@@ -223,32 +254,40 @@ else
         cp "$Qt"/plugins/imageformats/qsvg.dll  deploy/imageformats
         cp "$Qt"/plugins/imageformats/qjpeg.dll deploy/imageformats
 
-        cp "$Qt"/qml/QtQuick.2/qtquick2plugin.dll deploy/QtQuick.2
-        cp "$Qt"/qml/QtQuick.2/qmldir             deploy/QtQuick.2
+        cp "$Qt"/qml/$QtQuick/qtquick2plugin.dll deploy/$QtQuick
+        cp "$Qt"/qml/$QtQuick/qmldir             deploy/$QtQuick
 
     elif [ $1 = "macOS" ]; then
 
         # FIXME Qt 5.14 macOS: We have to copy qt.conf to avoid a segfault.
         cp "$Qt"/bin/qt.conf deploy
 
-        cp "$Qt"/lib/QtCore.framework/Versions/5/QtCore                 deploy/QtCore.dylib
-        cp "$Qt"/lib/QtGui.framework/Versions/5/QtGui                   deploy/QtGui.dylib
-        cp "$Qt"/lib/QtNetwork.framework/Versions/5/QtNetwork           deploy/QtNetwork.dylib
-        cp "$Qt"/lib/QtOpenGL.framework/Versions/5/QtOpenGL             deploy/QtOpenGL.dylib
-        cp "$Qt"/lib/QtQml.framework/Versions/5/QtQml                   deploy/QtQml.dylib
-        cp "$Qt"/lib/QtQuick.framework/Versions/5/QtQuick               deploy/QtQuick.dylib
-        cp "$Qt"/lib/QtSvg.framework/Versions/5/QtSvg                   deploy/QtSvg.dylib
-        cp "$Qt"/lib/QtWidgets.framework/Versions/5/QtWidgets           deploy/QtWidgets.dylib
-        cp "$Qt"/lib/QtXml.framework/Versions/5/QtXml                   deploy/QtXml.dylib
-        cp "$Qt"/lib/QtXmlPatterns.framework/Versions/5/QtXmlPatterns   deploy/QtXmlPatterns.dylib
-        cp "$Qt"/lib/QtDBus.framework/Versions/5/QtDBus                 deploy/QtDBus.dylib
-        cp "$Qt"/lib/QtPrintSupport.framework/Versions/5/QtPrintSupport deploy/QtPrintSupport.dylib
+        cp "$Qt"/lib/QtCore.framework/Versions/$qx/QtCore                 deploy/QtCore.dylib
+        cp "$Qt"/lib/QtGui.framework/Versions/$qx/QtGui                   deploy/QtGui.dylib
+        cp "$Qt"/lib/QtNetwork.framework/Versions/$qx/QtNetwork           deploy/QtNetwork.dylib
+        cp "$Qt"/lib/QtOpenGL.framework/Versions/$qx/QtOpenGL             deploy/QtOpenGL.dylib
+        cp "$Qt"/lib/QtQml.framework/Versions/$qx/QtQml                   deploy/QtQml.dylib
+        cp "$Qt"/lib/QtQuick.framework/Versions/$qx/QtQuick               deploy/QtQuick.dylib
+        cp "$Qt"/lib/QtSvg.framework/Versions/$qx/QtSvg                   deploy/QtSvg.dylib
+        cp "$Qt"/lib/QtWidgets.framework/Versions/$qx/QtWidgets           deploy/QtWidgets.dylib
+        cp "$Qt"/lib/QtXml.framework/Versions/$qx/QtXml                   deploy/QtXml.dylib
+        cp "$Qt"/lib/QtDBus.framework/Versions/$qx/QtDBus                 deploy/QtDBus.dylib
+        cp "$Qt"/lib/QtPrintSupport.framework/Versions/$qx/QtPrintSupport deploy/QtPrintSupport.dylib
 
-        if [ -f "$Qt"/lib/QtQmlModels.framework/Versions/5/QtQmlModels ]; then
+        if [ $qt = "qt5" ]; then
 
-            cp "$Qt"/lib/QtQmlModels.framework/Versions/5/QtQmlModels deploy/QtQmlModels.dylib
+            cp "$Qt"/lib/QtXmlPatterns.framework/Versions/$qx/QtXmlPatterns \
+                deploy/QtXmlPatterns.dylib
+        else
+            cp "$Qt"/lib/QtCore5Compat.framework/Versions/$qx/QtCore5Compat \
+                deploy/QtCore5Compat.dylib
+        fi
 
-            cp "$Qt"/lib/QtQmlWorkerScript.framework/Versions/5/QtQmlWorkerScript \
+        if [ -f "$Qt"/lib/QtQmlModels.framework/Versions/$qx/QtQmlModels ]; then
+
+            cp "$Qt"/lib/QtQmlModels.framework/Versions/$qx/QtQmlModels deploy/QtQmlModels.dylib
+
+            cp "$Qt"/lib/QtQmlWorkerScript.framework/Versions/$qx/QtQmlWorkerScript \
                deploy/QtQmlWorkerScript.dylib
         fi
 
@@ -257,8 +296,8 @@ else
         cp "$Qt"/plugins/imageformats/libqsvg.dylib  deploy/imageformats
         cp "$Qt"/plugins/imageformats/libqjpeg.dylib deploy/imageformats
 
-        cp "$Qt"/qml/QtQuick.2/libqtquick2plugin.dylib deploy/QtQuick.2
-        cp "$Qt"/qml/QtQuick.2/qmldir                  deploy/QtQuick.2
+        cp "$Qt"/qml/$QtQuick/libqtquick2plugin.dylib deploy/$QtQuick
+        cp "$Qt"/qml/$QtQuick/qmldir                  deploy/$QtQuick
 
     elif [ $1 = "linux" ]; then
 
@@ -281,23 +320,29 @@ else
             cp "$libs"/libpcre2-16.so.0 deploy
         fi
 
-        cp "$Qt"/lib/libQt5Core.so.5        deploy
-        cp "$Qt"/lib/libQt5Gui.so.5         deploy
-        cp "$Qt"/lib/libQt5Network.so.5     deploy
-        cp "$Qt"/lib/libQt5OpenGL.so.5      deploy
-        cp "$Qt"/lib/libQt5Qml.so.5         deploy
-        cp "$Qt"/lib/libQt5Quick.so.5       deploy
-        cp "$Qt"/lib/libQt5Svg.so.5         deploy
-        cp "$Qt"/lib/libQt5Widgets.so.5     deploy
-        cp "$Qt"/lib/libQt5Xml.so.5         deploy
-        cp "$Qt"/lib/libQt5XmlPatterns.so.5 deploy
-        cp "$Qt"/lib/libQt5XcbQpa.so.5      deploy
-        cp "$Qt"/lib/libQt5DBus.so.5        deploy
+        cp "$Qt"/lib/lib"$QtX"Core.so.$qx    deploy
+        cp "$Qt"/lib/lib"$QtX"Gui.so.$qx     deploy
+        cp "$Qt"/lib/lib"$QtX"Network.so.$qx deploy
+        cp "$Qt"/lib/lib"$QtX"OpenGL.so.$qx  deploy
+        cp "$Qt"/lib/lib"$QtX"Qml.so.$qx     deploy
+        cp "$Qt"/lib/lib"$QtX"Quick.so.$qx   deploy
+        cp "$Qt"/lib/lib"$QtX"Svg.so.$qx     deploy
+        cp "$Qt"/lib/lib"$QtX"Widgets.so.$qx deploy
+        cp "$Qt"/lib/lib"$QtX"Xml.so.$qx     deploy
+        cp "$Qt"/lib/lib"$QtX"XcbQpa.so.$qx  deploy
+        cp "$Qt"/lib/lib"$QtX"DBus.so.$qx    deploy
 
-        if [ -f "$Qt"/lib/libQt5QmlModels.so.5 ]; then
+        if [ $qt = "qt5" ]; then
 
-            cp "$Qt"/lib/libQt5QmlModels.so.5       deploy
-            cp "$Qt"/lib/libQt5QmlWorkerScript.so.5 deploy
+            cp "$Qt"/lib/lib"$QtX"XmlPatterns.so.$qx deploy
+        else
+            cp "$Qt"/lib/lib"$QtX"Core5Compat.so.$qx deploy
+        fi
+
+        if [ -f "$Qt"/lib/lib"$QtX"QmlModels.so.$qx ]; then
+
+            cp "$Qt"/lib/lib"$QtX"QmlModels.so.$qx       deploy
+            cp "$Qt"/lib/lib"$QtX"QmlWorkerScript.so.$qx deploy
         fi
 
         cp "$Qt"/plugins/platforms/libqxcb.so deploy/platforms
@@ -308,26 +353,32 @@ else
         cp "$Qt"/plugins/xcbglintegrations/libqxcb-egl-integration.so deploy/xcbglintegrations
         cp "$Qt"/plugins/xcbglintegrations/libqxcb-glx-integration.so deploy/xcbglintegrations
 
-        cp "$Qt"/qml/QtQuick.2/libqtquick2plugin.so deploy/QtQuick.2
-        cp "$Qt"/qml/QtQuick.2/qmldir               deploy/QtQuick.2
+        cp "$Qt"/qml/$QtQuick/libqtquick2plugin.so deploy/$QtQuick
+        cp "$Qt"/qml/$QtQuick/qmldir               deploy/$QtQuick
 
     elif [ $1 = "android" ]; then
 
-        cp "$Qt"/lib/libQt5Core_*.so        deploy
-        cp "$Qt"/lib/libQt5Gui_*.so         deploy
-        cp "$Qt"/lib/libQt5Network_*.so     deploy
-        cp "$Qt"/lib/libQt5OpenGL_*.so      deploy
-        cp "$Qt"/lib/libQt5Qml_*.so         deploy
-        cp "$Qt"/lib/libQt5Quick_*.so       deploy
-        cp "$Qt"/lib/libQt5Svg_*.so         deploy
-        cp "$Qt"/lib/libQt5Widgets_*.so     deploy
-        cp "$Qt"/lib/libQt5Xml_*.so         deploy
-        cp "$Qt"/lib/libQt5XmlPatterns_*.so deploy
+        cp "$Qt"/lib/lib"$QtX"Core_*.so    deploy
+        cp "$Qt"/lib/lib"$QtX"Gui_*.so     deploy
+        cp "$Qt"/lib/lib"$QtX"Network_*.so deploy
+        cp "$Qt"/lib/lib"$QtX"OpenGL_*.so  deploy
+        cp "$Qt"/lib/lib"$QtX"Qml_*.so     deploy
+        cp "$Qt"/lib/lib"$QtX"Quick_*.so   deploy
+        cp "$Qt"/lib/lib"$QtX"Svg_*.so     deploy
+        cp "$Qt"/lib/lib"$QtX"Widgets_*.so deploy
+        cp "$Qt"/lib/lib"$QtX"Xml_*.so     deploy
 
-        if [ -f "$Qt"/lib/libQt5QmlModels_armeabi-v7a.so ]; then
+        if [ $qt = "qt5" ]; then
 
-            cp "$Qt"/lib/libQt5QmlModels_*.so       deploy
-            cp "$Qt"/lib/libQt5QmlWorkerScript_*.so deploy
+            cp "$Qt"/lib/lib"$QtX"XmlPatterns_*.so deploy
+        else
+            cp "$Qt"/lib/lib"$QtX"Core5Compat_*.so deploy
+        fi
+
+        if [ -f "$Qt"/lib/lib"$QtX"QmlModels_armeabi-v7a.so ]; then
+
+            cp "$Qt"/lib/lib"$QtX"QmlModels_*.so       deploy
+            cp "$Qt"/lib/lib"$QtX"QmlWorkerScript_*.so deploy
         fi
 
         cp "$Qt"/plugins/platforms/lib*qtforandroid_*.so deploy/platforms
@@ -335,7 +386,7 @@ else
         cp "$Qt"/plugins/imageformats/lib*qsvg_*.so  deploy/imageformats
         cp "$Qt"/plugins/imageformats/lib*qjpeg_*.so deploy/imageformats
 
-        cp "$Qt"/qml/QtQuick.2/lib*qtquick2plugin_*.so deploy/QtQuick.2
+        cp "$Qt"/qml/$QtQuick/lib*qtquick2plugin_*.so deploy/$QtQuick
     fi
 fi
 

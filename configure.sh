@@ -106,15 +106,15 @@ elif [ $qt = "qt5" ]; then
 
     Qt="$external/Qt/$Qt5_version"
 
-    Qt_version="5*"
-
     QtX="Qt5"
+
+    qx="5"
 else
     Qt="$external/Qt/$Qt6_version"
 
-    Qt_version="6*"
-
     QtX="Qt6"
+
+    qx="6"
 fi
 
 zlib="$external/zlib"
@@ -206,7 +206,7 @@ else
         cp -r "$Qt"/include/QtQml   include/$QtX
         cp -r "$Qt"/include/QtQuick include/$QtX
 
-        cp -r "$Qt"/include/QtGui/$Qt_version/QtGui/qpa include/$QtX/QtGui
+        cp -r "$Qt"/include/QtGui/$qx/QtGui/qpa include/$QtX/QtGui
 
     elif [ $1 = "linux" ]; then
 
@@ -216,7 +216,7 @@ else
         cp -r "$Qt"/include/QtQuick include/$QtX
         cp -r "$Qt"/include/QtDBus  include/$QtX
 
-        cp -r "$Qt"/include/QtGui/$Qt_version/QtGui/qpa include/$QtX/QtGui
+        cp -r "$Qt"/include/QtGui/$qx/QtGui/qpa include/$QtX/QtGui
 
     elif [ $1 = "macOS" ]; then
 
@@ -225,7 +225,7 @@ else
         cp -r "$Qt"/lib/QtQml.framework/Headers/*   include/$QtX/QtQml
         cp -r "$Qt"/lib/QtQuick.framework/Headers/* include/$QtX/QtQuick
 
-        cp -r "$Qt"/lib/QtGui.framework/Headers/$Qt_version/QtGui/qpa include/$QtX/QtGui
+        cp -r "$Qt"/lib/QtGui.framework/Headers/$qx/QtGui/qpa include/$QtX/QtGui
 
     elif [ $1 = "android" ]; then
 
@@ -234,13 +234,13 @@ else
         cp -r "$Qt"/include/QtQml   include/$QtX
         cp -r "$Qt"/include/QtQuick include/$QtX
 
-        cp -r "$Qt"/include/QtGui/$Qt_version/QtGui/qpa include/$QtX/QtGui
+        cp -r "$Qt"/include/QtGui/$qx/QtGui/qpa include/$QtX/QtGui
     fi
 
-    mv include/$QtX/QtCore/$Qt_version/QtCore/private/*   include/$QtX/QtCore/private
-    mv include/$QtX/QtGui/$Qt_version/QtGui/private/*     include/$QtX/QtGui/private
-    mv include/$QtX/QtQml/$Qt_version/QtQml/private/*     include/$QtX/QtQml/private
-    mv include/$QtX/QtQuick/$Qt_version/QtQuick/private/* include/$QtX/QtQuick/private
+    mv include/$QtX/QtCore/$qx/QtCore/private/*   include/$QtX/QtCore/private
+    mv include/$QtX/QtGui/$qx/QtGui/private/*     include/$QtX/QtGui/private
+    mv include/$QtX/QtQml/$qx/QtQml/private/*     include/$QtX/QtQml/private
+    mv include/$QtX/QtQuick/$qx/QtQuick/private/* include/$QtX/QtQuick/private
 fi
 
 #--------------------------------------------------------------------------------------------------
