@@ -1270,7 +1270,7 @@ Style
         border_colorLight = "#b4b4b4";
         border_colorFocus = "#00a0f0";
 
-//#Window
+//#WindowSky
         //-----------------------------------------------------------------------------------------
         // Window
 
@@ -1578,7 +1578,7 @@ Style
         border_colorLight = border_color;
         border_colorFocus = color_highlight;
 
-//#Window
+//#WindowSky
         //-----------------------------------------------------------------------------------------
         // Window
 
@@ -1886,7 +1886,7 @@ Style
         border_colorLight = "#242424";
         border_colorFocus = color_highlight;
 
-//#Window
+//#WindowSky
         //-----------------------------------------------------------------------------------------
         // Window
 
