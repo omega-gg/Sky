@@ -15,6 +15,8 @@ With a focus on efficiency, scalability and simplicity.<br>
 - [MotionBox](http://omega.gg/MotionBox/sources) - Video Browser
 - [MotionMonkey](http://omega.gg/MotionMonkey) - Semantic Video Player
 - [clientVBML](http://omega.gg/clientVBML/sources) - VBML retriever and extractor
+- [HelloConsole](http://omega.gg/HelloConsole/sources) - "Hello World" console application
+- [HelloSky](http://omega.gg/HelloSky/sources) - "Hello World" application
 
 ## Technology
 
