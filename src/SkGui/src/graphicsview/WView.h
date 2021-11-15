@@ -413,6 +413,10 @@ protected: // Functions
 #endif
 
 protected: // Events
+#ifdef QT_LATEST
+    /* virtual */ bool event(QEvent * event);
+#endif
+
     /* virtual */ void showEvent(QShowEvent * event);
 
     /* virtual */ void moveEvent  (QMoveEvent   * event);

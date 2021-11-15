@@ -431,6 +431,8 @@ void createShader()
 
 WBackendVlcMaterial::WBackendVlcMaterial()
 {
+// FIXME Qt6
+#ifndef QT_6
     gl = QOpenGLContext::currentContext()->functions();
 
     textures = NULL;
@@ -440,13 +442,17 @@ WBackendVlcMaterial::WBackendVlcMaterial()
     update = false;
 
     setFlag(Blending, false);
+#endif
 }
 
 /* virtual */ WBackendVlcMaterial::~WBackendVlcMaterial()
 {
+// FIXME Qt6
+#ifndef QT_6
     if (ids[0] == 0) return;
 
     gl->glDeleteTextures(3, ids);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -138,8 +138,10 @@ int WRegExp::matchedLength() const
 {
 #ifdef QT_4
     return (variant.type() == QVariant::RegExp);
-#else
+#elif defined(QT_5)
     return (variant.type() == QVariant::RegularExpression);
+#else
+    return (variant.typeId() == QMetaType::QRegularExpression);
 #endif
 }
 

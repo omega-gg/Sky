@@ -325,12 +325,12 @@ protected: // Events
     /* virtual */ void hoverEnterEvent(QHoverEvent * event);
     /* virtual */ void hoverLeaveEvent(QHoverEvent * event);
 
-    /* virtual */ void dragEnterEvent(QDragEnterEvent * event);
-    /* virtual */ void dragLeaveEvent(QDragLeaveEvent * event);
+//    /* virtual */ void dragEnterEvent(QDragEnterEvent * event);
+//    /* virtual */ void dragLeaveEvent(QDragLeaveEvent * event);
 
-    /* virtual */ void dragMoveEvent(QDragMoveEvent * event);
+//    /* virtual */ void dragMoveEvent(QDragMoveEvent * event);
 
-    /* virtual */ void dropEvent(QDropEvent * event);
+//    /* virtual */ void dropEvent(QDropEvent * event);
 #endif
 
 signals:

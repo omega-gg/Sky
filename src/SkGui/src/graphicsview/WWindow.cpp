@@ -699,31 +699,31 @@ void WWindowPrivate::init()
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+//#ifdef QT_LATEST
 
-/* virtual */ void WWindow::dragEnterEvent(QDragEnterEvent * event)
-{
-    Q_D(WWindow); d->view->dragEnterEvent(event);
-}
+///* virtual */ void WWindow::dragEnterEvent(QDragEnterEvent * event)
+//{
+//    Q_D(WWindow); d->view->dragEnterEvent(event);
+//}
 
-/* virtual */ void WWindow::dragLeaveEvent(QDragLeaveEvent * event)
-{
-    Q_D(WWindow); d->view->dragLeaveEvent(event);
-}
+///* virtual */ void WWindow::dragLeaveEvent(QDragLeaveEvent * event)
+//{
+//    Q_D(WWindow); d->view->dragLeaveEvent(event);
+//}
 
-/* virtual */ void WWindow::dragMoveEvent(QDragMoveEvent * event)
-{
-    Q_D(WWindow); d->view->dragMoveEvent(event);
-}
+///* virtual */ void WWindow::dragMoveEvent(QDragMoveEvent * event)
+//{
+//    Q_D(WWindow); d->view->dragMoveEvent(event);
+//}
 
-//-------------------------------------------------------------------------------------------------
+////-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WWindow::dropEvent(QDropEvent * event)
-{
-    Q_D(WWindow); d->view->dropEvent(event);
-}
+///* virtual */ void WWindow::dropEvent(QDropEvent * event)
+//{
+//    Q_D(WWindow); d->view->dropEvent(event);
+//}
 
-#endif
+//#endif
 
 //-------------------------------------------------------------------------------------------------
 // Properties

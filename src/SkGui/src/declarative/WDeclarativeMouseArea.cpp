@@ -1208,7 +1208,11 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
         QTouchEvent::TouchPoint point = points.first();
 
+#ifdef QT_5
         if (point.state() == Qt::TouchPointPressed)
+#else
+        if (point.state() == QEventPoint::Pressed)
+#endif
         {
             d->view->d_func()->setTouch(point.id());
 
@@ -1245,7 +1249,11 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
         {
             if (point.id() == id)
             {
+#ifdef QT_5
                 if (point.state() == Qt::TouchPointMoved)
+#else
+                if (point.state() == QEventPoint::Updated)
+#endif
                 {
                     QPoint screenPos = point.screenPos().toPoint();
 
@@ -1258,7 +1266,11 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
                     QCoreApplication::sendEvent(d->view, &eventMove);
                 }
+#ifdef QT_5
                 else if (point.state() == Qt::TouchPointReleased)
+#else
+                else if (point.state() == QEventPoint::Released)
+#endif
                 {
                     QPoint screenPos = point.screenPos().toPoint();
 

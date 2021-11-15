@@ -36,6 +36,11 @@
 #include <QDrag>
 #include <QMimeData>
 
+#ifdef QT_6
+// Windows includes
+#include <qt_windows.h>
+#endif
+
 // Sk includes
 #include <WControllerApplication>
 #include <WControllerView>
@@ -2406,6 +2411,89 @@ void WView::hoverLeave()
 
 //-------------------------------------------------------------------------------------------------
 // Events
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_LATEST
+
+// NOTE: We want to process some events directly and avoid the default implementation.
+/* virtual */ bool WView::event(QEvent * event)
+{
+    QEvent::Type type = event->type();
+
+#ifdef QT_6
+    if (type == QEvent::MouseButtonPress)
+    {
+        QMouseEvent * mouse = static_cast<QMouseEvent *> (event);
+
+        mousePressEvent(mouse);
+
+        return true;
+    }
+    else if (type == QEvent::MouseButtonRelease)
+    {
+        QMouseEvent * mouse = static_cast<QMouseEvent *> (event);
+
+        mouseReleaseEvent(mouse);
+
+        return true;
+    }
+    else if (type == QEvent::MouseButtonDblClick)
+    {
+        QMouseEvent * mouse = static_cast<QMouseEvent *> (event);
+
+        mouseDoubleClickEvent(mouse);
+
+        return true;
+    }
+    else if (type == QEvent::MouseMove)
+    {
+        QMouseEvent * mouse = static_cast<QMouseEvent *> (event);
+
+        mouseMoveEvent(mouse);
+
+        return true;
+    }
+    else if (type == QEvent::DragEnter)
+#else
+    if (type == QEvent::DragEnter)
+#endif
+    {
+        QDragEnterEvent * drag = static_cast<QDragEnterEvent *> (event);
+
+        dragEnterEvent(drag);
+
+        return true;
+    }
+    else if (type == QEvent::DragLeave)
+    {
+        QDragLeaveEvent * drag = static_cast<QDragLeaveEvent *> (event);
+
+        dragLeaveEvent(drag);
+
+        return true;
+    }
+    else if (type == QEvent::DragMove)
+    {
+        QDragMoveEvent * drag = static_cast<QDragMoveEvent *> (event);
+
+        dragMoveEvent(drag);
+
+        return true;
+    }
+    else if (type == QEvent::Drop)
+    {
+        QDropEvent * drag = static_cast<QDropEvent *> (event);
+
+        dropEvent(drag);
+
+        return true;
+    }
+
+    return WAbstractView::event(event);
+}
+
+#endif
+
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WView::showEvent(QShowEvent * event)
