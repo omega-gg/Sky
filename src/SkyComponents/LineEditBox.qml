@@ -57,7 +57,7 @@ BaseLineEdit
     // Settings
     //---------------------------------------------------------------------------------------------
 
-//#QT_5
+//#QT_LATEST
     // FIXME Qt5: The cursor gets cropped on the right if we keep the TextInput clip.
     clip: true
 

@@ -74,9 +74,9 @@ void writeInclude(const QFileInfo & info)
 
 void scanFolder(const QString & path, const QString & destination = QString())
 {
-    QDir Dir(path);
+    QDir dir(path);
 
-    QFileInfoList list = Dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
+    QFileInfoList list = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
 
     foreach (QFileInfo info, list)
     {

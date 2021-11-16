@@ -262,7 +262,7 @@ Item
             drag.minimumY: 0
             drag.maximumY: handleArea.height - height
 
-//#QT_5
+//#QT_LATEST
             drag.threshold: 0
 //#END
 

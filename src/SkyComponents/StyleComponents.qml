@@ -1180,7 +1180,7 @@ Style
 
     text_bold: true
 
-//#QT_5
+//#QT_LATEST
     //text_renderType: Text.NativeRendering
 //#END
 

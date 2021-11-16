@@ -25,7 +25,7 @@ import Sky     1.0
 
 ComponentWall
 {
-//#QT_5
+//#QT_LATEST
     id: componentWall
 //#END
 

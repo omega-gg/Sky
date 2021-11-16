@@ -31,7 +31,7 @@ Item
 
     default property alias contents: flickable.data
 
-//#QT_5
+//#QT_LATEST
     property alias originY: flickable.originY
 //#END
 

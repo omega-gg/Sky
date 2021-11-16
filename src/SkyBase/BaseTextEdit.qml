@@ -57,7 +57,7 @@ TextEdit
 
     textMargin: st.baseTextEdit_margin
 
-//#QT_5
+//#QT_LATEST
     renderType: st.text_renderType
 //#END
 

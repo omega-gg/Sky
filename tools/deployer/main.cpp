@@ -618,12 +618,6 @@ int main(int argc, char *argv[])
 
     version = argv[2];
 
-    if (version.startsWith("1."))
-    {
-         defines.append("QT_4");
-    }
-    else defines.append("QT_5");
-
     QStringList list = QString(argv[4]).split(' ');
 
     foreach (const QString & string, list)

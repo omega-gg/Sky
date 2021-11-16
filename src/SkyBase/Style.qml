@@ -99,7 +99,7 @@ Item
     property int text_raised: Text.Normal
     property int text_sunken: text_raised
 
-//#QT_5
+//#QT_LATEST
     property int text_renderType: Text.QtRendering
 //#END
 
