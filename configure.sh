@@ -98,24 +98,26 @@ fi
 
 if [ $qt = "qt4" ]; then
 
-    Qt="$external/Qt/$Qt4_version"
+    Qt_version="$Qt4_version"
 
     QtX="Qt4"
 
 elif [ $qt = "qt5" ]; then
 
-    Qt="$external/Qt/$Qt5_version"
+    Qt_version="$Qt5_version"
 
     QtX="Qt5"
 
     qx="5"
 else
-    Qt="$external/Qt/$Qt6_version"
+    Qt_version="$Qt6_version"
 
     QtX="Qt6"
 
     qx="6"
 fi
+
+Qt="$external/Qt/$Qt_version"
 
 zlib="$external/zlib"
 
@@ -206,7 +208,7 @@ else
         cp -r "$Qt"/include/QtQml   include/$QtX
         cp -r "$Qt"/include/QtQuick include/$QtX
 
-        cp -r "$Qt"/include/QtGui/"$qx"*/QtGui/qpa include/$QtX/QtGui
+        cp -r "$Qt"/include/QtGui/$Qt_version/QtGui/qpa include/$QtX/QtGui
 
     elif [ $1 = "linux" ]; then
 
@@ -216,7 +218,7 @@ else
         cp -r "$Qt"/include/QtQuick include/$QtX
         cp -r "$Qt"/include/QtDBus  include/$QtX
 
-        cp -r "$Qt"/include/QtGui/"$qx"*/QtGui/qpa include/$QtX/QtGui
+        cp -r "$Qt"/include/QtGui/$Qt_version/QtGui/qpa include/$QtX/QtGui
 
     elif [ $1 = "macOS" ]; then
 
@@ -225,7 +227,7 @@ else
         cp -r "$Qt"/lib/QtQml.framework/Headers/*   include/$QtX/QtQml
         cp -r "$Qt"/lib/QtQuick.framework/Headers/* include/$QtX/QtQuick
 
-        cp -r "$Qt"/lib/QtGui.framework/Headers/"$qx"*/QtGui/qpa include/$QtX/QtGui
+        cp -r "$Qt"/lib/QtGui.framework/Headers/$Qt_version/QtGui/qpa include/$QtX/QtGui
 
     elif [ $1 = "android" ]; then
 
@@ -234,7 +236,7 @@ else
         cp -r "$Qt"/include/QtQml   include/$QtX
         cp -r "$Qt"/include/QtQuick include/$QtX
 
-        cp -r "$Qt"/include/QtGui/"$qx"*/QtGui/qpa include/$QtX/QtGui
+        cp -r "$Qt"/include/QtGui/$Qt_version/QtGui/qpa include/$QtX/QtGui
     fi
 
     mv include/$QtX/QtCore/$qx/QtCore/private/*   include/$QtX/QtCore/private
