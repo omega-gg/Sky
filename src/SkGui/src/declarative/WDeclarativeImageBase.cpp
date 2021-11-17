@@ -139,7 +139,7 @@ void WDeclarativeImageBasePrivate::loadUrl()
 
     file = wControllerFile->getHttp(source, q);
 #else
-    file = wControllerFile->getHttp(source, url);
+    file = wControllerFile->getHttp(url, q);
 #endif
 
     if (file)
