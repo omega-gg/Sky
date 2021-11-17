@@ -210,6 +210,11 @@ else
     mkdir deploy/imageformats
     mkdir deploy/$QtQuick
 
+    if [ $qt = "qt6" ]; then
+
+        mkdir -p deploy/QtQml/WorkerScript
+    fi
+
     if [ $os = "windows" ]; then
 
         if [ $compiler = "mingw" ]; then
@@ -257,6 +262,12 @@ else
         cp "$Qt"/qml/$QtQuick/qtquick2plugin.dll deploy/$QtQuick
         cp "$Qt"/qml/$QtQuick/qmldir             deploy/$QtQuick
 
+        if [ $qt = "qt6" ]; then
+
+            cp "$Qt"/qml/QtQml/WorkerScript/workerscriptplugin.dll deploy/QtQml/WorkerScript
+            cp "$Qt"/qml/QtQml/WorkerScript/qmldir                 deploy/QtQml/WorkerScript
+        fi
+
     elif [ $1 = "macOS" ]; then
 
         # FIXME Qt 5.14 macOS: We have to copy qt.conf to avoid a segfault.
@@ -298,6 +309,12 @@ else
 
         cp "$Qt"/qml/$QtQuick/libqtquick2plugin.dylib deploy/$QtQuick
         cp "$Qt"/qml/$QtQuick/qmldir                  deploy/$QtQuick
+
+        if [ $qt = "qt6" ]; then
+
+            cp "$Qt"/qml/QtQml/WorkerScript/libworkerscriptplugin.dylib deploy/QtQml/WorkerScript
+            cp "$Qt"/qml/QtQml/WorkerScript/qmldir                      deploy/QtQml/WorkerScript
+        fi
 
     elif [ $1 = "linux" ]; then
 
@@ -356,6 +373,12 @@ else
         cp "$Qt"/qml/$QtQuick/libqtquick2plugin.so deploy/$QtQuick
         cp "$Qt"/qml/$QtQuick/qmldir               deploy/$QtQuick
 
+        if [ $qt = "qt6" ]; then
+
+            cp "$Qt"/qml/QtQml/WorkerScript/libworkerscriptplugin.so deploy/QtQml/WorkerScript
+            cp "$Qt"/qml/QtQml/WorkerScript/qmldir                   deploy/QtQml/WorkerScript
+        fi
+
     elif [ $1 = "android" ]; then
 
         cp "$Qt"/lib/lib"$QtX"Core_*.so    deploy
@@ -387,6 +410,11 @@ else
         cp "$Qt"/plugins/imageformats/lib*qjpeg_*.so deploy/imageformats
 
         cp "$Qt"/qml/$QtQuick/lib*qtquick2plugin_*.so deploy/$QtQuick
+
+        if [ $qt = "qt6" ]; then
+
+            cp "$Qt"/qml/QtQml/WorkerScript/lib*workerscriptplugin_*.so deploy/QtQml/WorkerScript
+        fi
     fi
 fi
 

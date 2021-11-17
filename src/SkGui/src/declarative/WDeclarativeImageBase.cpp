@@ -37,6 +37,9 @@
 #endif
 #include <WCache>
 #include <WImageFilter>
+#ifdef QT_6
+#include <QQmlContext>
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Private
@@ -123,7 +126,21 @@ void WDeclarativeImageBasePrivate::loadUrl()
         file->deleteLater();
     }
 
-    file = wControllerFile->getHttp(url, q);
+#ifdef QT_6
+    QQmlContext * context = qmlContext(q);
+
+    QString source;
+
+    if (context)
+    {
+         source = context->resolvedUrl(url).toString();
+    }
+    else source = url;
+
+    file = wControllerFile->getHttp(source, q);
+#else
+    file = wControllerFile->getHttp(source, url);
+#endif
 
     if (file)
     {
@@ -157,7 +174,11 @@ void WDeclarativeImageBasePrivate::loadUrl()
             q->applyUrl(url, asynchronous);
         }
     }
+#ifdef QT_6
+    else q->applyUrl(source, asynchronous);
+#else
     else q->applyUrl(url, asynchronous);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------

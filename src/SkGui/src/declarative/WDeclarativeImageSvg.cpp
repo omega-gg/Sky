@@ -27,6 +27,9 @@
 // Qt includes
 #include <QSvgRenderer>
 #include <QPainter>
+#ifdef QT_6
+#include <QQmlContext>
+#endif
 
 // Sk includes
 #include <WControllerFile>
@@ -159,7 +162,21 @@ void WDeclarativeImageSvgPrivate::loadUrl()
         file->deleteLater();
     }
 
-    file = wControllerFile->getHttp(url, q);
+#ifdef QT_6
+    QQmlContext * context = qmlContext(q);
+
+    QString source;
+
+    if (context)
+    {
+         source = context->resolvedUrl(url).toString();
+    }
+    else source = url;
+
+    file = wControllerFile->getHttp(source, q);
+#else
+    file = wControllerFile->getHttp(source, url);
+#endif
 
     if (file)
     {
@@ -185,7 +202,11 @@ void WDeclarativeImageSvgPrivate::loadUrl()
             applyUrl(url);
         }
     }
+#ifdef QT_6
+    else applyUrl(source);
+#else
     else applyUrl(url);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
