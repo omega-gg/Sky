@@ -239,10 +239,10 @@ else
         cp -r "$Qt"/include/QtGui/$Qt_version/QtGui/qpa include/$QtX/QtGui
     fi
 
-    mv include/$QtX/QtCore/$qx/QtCore/private/*   include/$QtX/QtCore/private
-    mv include/$QtX/QtGui/$qx/QtGui/private/*     include/$QtX/QtGui/private
-    mv include/$QtX/QtQml/$qx/QtQml/private/*     include/$QtX/QtQml/private
-    mv include/$QtX/QtQuick/$qx/QtQuick/private/* include/$QtX/QtQuick/private
+    mv include/$QtX/QtCore/$Qt_version/QtCore/private/*   include/$QtX/QtCore/private
+    mv include/$QtX/QtGui/$Qt_version/QtGui/private/*     include/$QtX/QtGui/private
+    mv include/$QtX/QtQml/$Qt_version/QtQml/private/*     include/$QtX/QtQml/private
+    mv include/$QtX/QtQuick/$Qt_version/QtQuick/private/* include/$QtX/QtQuick/private
 fi
 
 #--------------------------------------------------------------------------------------------------
