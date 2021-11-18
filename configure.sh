@@ -286,38 +286,32 @@ fi
 # libtorrent
 #--------------------------------------------------------------------------------------------------
 
-if [ $os = "windows" ] || [ $1 = "macOS" ] || [ $1 = "android" ]; then
+echo "COPYING libtorrent"
 
-    echo "COPYING libtorrent"
+cp -r "$libtorrent"/libtorrent include
 
-    cp -r "$libtorrent"/libtorrent include
+if [ $1 = "android" ]; then
 
-    if [ $1 = "android" ]; then
-
-        copyAndroid "$libtorrent" lib
-    else
-        cp "$libtorrent"/*torrent*.* lib
-    fi
+    copyAndroid "$libtorrent" lib
+else
+    cp "$libtorrent"/*torrent*.* lib
 fi
 
 #--------------------------------------------------------------------------------------------------
 # Boost
 #--------------------------------------------------------------------------------------------------
 
-if [ $os = "windows" ] || [ $1 = "macOS" ] || [ $1 = "android" ]; then
+echo "COPYING Boost"
 
-    echo "COPYING Boost"
+path="include/boost"
 
-    path="include/boost"
+mkdir -p $path
 
-    mkdir -p $path
+cp -r "$Boost"/Boost/* $path
 
-    cp -r "$Boost"/Boost/* $path
+if [ $1 = "android" ]; then
 
-    if [ $1 = "android" ]; then
-
-        copyAndroid "$Boost" lib
-    else
-        cp "$Boost"/*boost*.* lib
-    fi
+    copyAndroid "$Boost" lib
+else
+    cp "$Boost"/*boost*.* lib
 fi
