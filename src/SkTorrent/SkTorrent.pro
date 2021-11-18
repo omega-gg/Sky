@@ -85,7 +85,7 @@ macx:LIBS += -L$$SK/lib -ltorrent-rasterbar \
              -L$$SK/lib -lboost_system
 
 unix:!macx:!android:LIBS += -ltorrent-rasterbar \
-                            -lboost_system -lboost_random -lboost_chrono
+                            -lboost_system
 
 android:LIBS += -L$$SK/lib/$$ANDROID_TARGET_ARCH -ltorrent-rasterbar \
                 -L$$SK/lib/$$ANDROID_TARGET_ARCH -ltry_signal
