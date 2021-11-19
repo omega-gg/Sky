@@ -322,10 +322,6 @@ else
 
         cp "$libs"/libz.so.* deploy
 
-        cp "$libs"/libicudata.so.* deploy
-        cp "$libs"/libicui18n.so.* deploy
-        cp "$libs"/libicuuc.so.*   deploy
-
         cp "$libs"/libdouble-conversion.so.* deploy
         cp "$libs"/libpng16.so.*             deploy
         cp "$libs"/libharfbuzz.so.*          deploy
@@ -336,6 +332,10 @@ else
 
             cp "$libs"/libpcre2-16.so.0 deploy
         fi
+
+        cp "$Qt"/lib/libicudata.so.* deploy
+        cp "$Qt"/lib/libicui18n.so.* deploy
+        cp "$Qt"/lib/libicuuc.so.*   deploy
 
         cp "$Qt"/lib/lib"$QtX"Core.so.$qx    deploy
         cp "$Qt"/lib/lib"$QtX"Gui.so.$qx     deploy
