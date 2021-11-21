@@ -72,7 +72,7 @@ Style
 
     property int buttonTouch_size: dp48
 
-    property int buttonTouch_padding: (isTight) ? dp8
+    property int buttonTouch_padding: (isTight) ? dp12
                                                 : dp16
 
     property int buttonTouch_spacing: dp8
