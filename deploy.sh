@@ -338,9 +338,12 @@ else
         cp "$Qt"/lib/libicuuc.so.*   deploy
 
         # NOTE: We only want one occurence of each library.
-        rm deploy/libicudata.so.*.*
-        rm deploy/libicui18n.so.*.*
-        rm deploy/libicuuc.so.*.*
+        if [ -f deploy/libicudata.so.*.* ]; then
+
+            rm deploy/libicudata.so.*.*
+            rm deploy/libicui18n.so.*.*
+            rm deploy/libicuuc.so.*.*
+        fi
 
         cp "$Qt"/lib/lib"$QtX"Core.so.$qx    deploy
         cp "$Qt"/lib/lib"$QtX"Gui.so.$qx     deploy
