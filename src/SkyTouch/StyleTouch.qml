@@ -203,7 +203,7 @@ Style
     // ScrollBar
 
     property int scrollBar_size: (isTight) ? dp12
-                                           : dp24
+                                           : dp20
 
     property int scrollBar_margins: margins
 
