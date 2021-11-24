@@ -537,7 +537,7 @@ elif [ $1 = "linux" ]; then
     echo "COPYING Boost"
 
     # NOTE: We make sure the deployed library will be resolved by the binary.
-    cp "$Boost"/libboost.so deploy/libboost.so.$Boost_version
+    cp "$Boost"/libboost_system.so deploy/libboost_system.so.$Boost_version
 fi
 
 #--------------------------------------------------------------------------------------------------
