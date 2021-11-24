@@ -518,7 +518,8 @@ elif [ $1 = "macOS" ]; then
 
 elif [ $1 = "linux" ]; then
 
-    cp "$libtorrent"/libtorrent-rasterbar*.so* deploy
+    # NOTE: We make sure the deployed library will be resolved by the binary.
+    cp "$libtorrent"/libtorrent-rasterbar.so deploy/libtorrent-rasterbar.so.$libtorrent_version
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -535,7 +536,8 @@ elif [ $1 = "linux" ]; then
 
     echo "COPYING Boost"
 
-    cp "$Boost"/libboost*.so* deploy
+    # NOTE: We make sure the deployed library will be resolved by the binary.
+    cp "$Boost"/libboost.so deploy/libboost.so.$Boost_version
 fi
 
 #--------------------------------------------------------------------------------------------------
