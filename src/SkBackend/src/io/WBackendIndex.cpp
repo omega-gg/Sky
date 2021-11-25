@@ -577,7 +577,7 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
 {
     Q_D(const WBackendIndex);
 
-    WBackendUniversal * backendUniversal = static_cast<WBackendUniversal *>(backend);
+    WBackendUniversal * backendUniversal = static_cast<WBackendUniversal *> (backend);
 
     while (backendUniversal->isLoaded() == false)
     {
