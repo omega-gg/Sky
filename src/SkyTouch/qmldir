@@ -26,6 +26,7 @@ Label        1.0 Label.qml
 LabelTiny    1.0 LabelTiny.qml
 LabelIcon    1.0 LabelIcon.qml
 LabelLoading 1.0 LabelLoading.qml
+LabelStream  1.0 LabelStream.qml
 
 LabelWide     1.0 LabelWide.qml
 LabelWideTiny 1.0 LabelWideTiny.qml

@@ -542,6 +542,40 @@ Item
 
     //---------------------------------------------------------------------------------------------
 
+    function getSliderX(slider, width, position)
+    {
+        var x = position - Math.round(width / 2);
+
+        if (x > 0)
+        {
+            var maximum = slider.width - width;
+
+            if (x > maximum)
+            {
+                 return slider.x + maximum;
+            }
+            else return slider.x + x;
+        }
+        else return slider.x;
+    }
+
+    function getSliderValue(slider, position)
+    {
+        var model = slider.model;
+
+        var minimum = model.handleMinimum;
+        var maximum = model.handleMaximum;
+
+        var pos = position - Math.round(slider.handle.width / 2);
+
+        if      (pos < minimum) pos = minimum;
+        else if (pos > maximum) pos = maximum;
+
+        return model.positionToValue(pos);
+    }
+
+    //---------------------------------------------------------------------------------------------
+
     function getTabTitle(title, state, source)
     {
         if (title)

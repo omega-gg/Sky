@@ -162,6 +162,13 @@ Style
     property int labelLoading_durationAnimation: ms800
 //#END
 
+//#LabelStream
+    //---------------------------------------------------------------------------------------------
+    // LabelStream
+
+    property int labelStream_padding: dp8
+//#END
+
 //#LineEdit
     //---------------------------------------------------------------------------------------------
     // LineEdit

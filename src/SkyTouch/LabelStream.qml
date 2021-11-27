@@ -4,7 +4,7 @@
 
     Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
 
-    This file is part of SkyComponents.
+    This file is part of SkyTouch.
 
     - GNU Lesser General Public License Usage:
     This file may be used under the terms of the GNU Lesser General Public License version 3 as
@@ -23,7 +23,7 @@
 import QtQuick 1.0
 import Sky     1.0
 
-Item
+BaseLabel
 {
     //---------------------------------------------------------------------------------------------
     // Properties
@@ -33,42 +33,11 @@ Item
 
     property int padding: st.labelStream_padding
 
-    property int paddingLeft : padding
-    property int paddingRight: padding
-
     /* read */ property int position: pGetPosition()
-
-    //---------------------------------------------------------------------------------------------
-    // Style
-
-    property color colorA: st.labelStream_colorA
-    property color colorB: st.labelStream_colorB
 
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
-
-    default property alias content: background.data
-
-    property alias borderSize : borders.size
-    property alias borderColor: borders.color
-
-    property alias borderLeft  : borders.borderLeft
-    property alias borderRight : borders.borderRight
-    property alias borderTop   : borders.borderTop
-    property alias borderBottom: borders.borderBottom
-
-    property alias borderSizeWidth : borders.sizeWidth
-    property alias borderSizeHeight: borders.sizeHeight
-
-    /* read */ property alias text: itemText.text
-
-    property alias font: itemText.font
-
-    //---------------------------------------------------------------------------------------------
-
-    property alias background: background
-    property alias borders   : borders
 
     property alias itemText: itemText
 
@@ -76,15 +45,13 @@ Item
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: paddingLeft + paddingRight + borderSizeWidth + sk.textWidth(font, text)
+    width: sk.textWidth(itemText.font, itemText.text) + padding * 2
 
-    height: st.labelStream_height + borderSizeHeight
+    height: st.labelTiny_size
 
-    x: slider.x + st.getSliderX(slider.slider, width, position)
+    x: st.getSliderX(slider, width, position)
 
     visible: (slider.enabled && slider.isHovered)
-
-    opacity: (visible)
 
     //---------------------------------------------------------------------------------------------
     // Functions
@@ -95,7 +62,7 @@ Item
     {
         if (visible)
         {
-             return window.mapToItem(slider.slider, window.mouseX, 0).x;
+             return window.mapToItem(slider, window.mouseX, 0).x;
         }
         else return -1;
     }
@@ -104,50 +71,15 @@ Item
     // Childs
     //---------------------------------------------------------------------------------------------
 
-    Rectangle
+    TextBase
     {
-        id: background
+        id: itemText
 
         anchors.fill: parent
 
-        anchors.leftMargin  : borderLeft
-        anchors.rightMargin : borderRight
-        anchors.topMargin   : borderTop
-        anchors.bottomMargin: borderBottom
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment  : Text.AlignVCenter
 
-        gradient: Gradient
-        {
-            GradientStop { position: 0.0; color: colorA }
-            GradientStop { position: 1.0; color: colorB }
-        }
-
-        TextBase
-        {
-            id: itemText
-
-            anchors.fill: parent
-
-            anchors.leftMargin : paddingLeft
-            anchors.rightMargin: paddingRight
-
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment  : Text.AlignVCenter
-
-            text: controllerPlaylist.getPlayerTime(st.getSliderValue(slider, position), 7)
-
-            style: st.text_raised
-
-            // FIXME Qt5.14: Sometimes sk.textWidth() is too short.
-            elide: Text.ElideNone
-
-            font.pixelSize: st.dp11
-        }
-    }
-
-    RectangleBorders
-    {
-        id: borders
-
-        anchors.fill: parent
+        text: controllerPlaylist.getPlayerTime(st.getSliderValue(slider, position), 8)
     }
 }
