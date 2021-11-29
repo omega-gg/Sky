@@ -55,8 +55,6 @@ BasePlayerBrowser
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    anchors.margins: st.margins
-
     areaBackward.visible: buttonPrevious.visible
     areaForward .visible: buttonNext    .visible
 
