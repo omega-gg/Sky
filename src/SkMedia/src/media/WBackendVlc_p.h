@@ -48,6 +48,9 @@
 
 // Sk includes
 #include <WVlcPlayer>
+#ifdef QT_6
+#include <WTextureVideo>
+#endif
 
 // Private includes
 #include <private/WAbstractBackend_p>
@@ -100,20 +103,38 @@ struct WBackendVlcTexture
 
 class SK_MEDIA_EXPORT WBackendVlcShader : public QSGMaterialShader
 {
+#ifdef QT_6
+public:
+    WBackendVlcShader();
+#endif
+
+#ifdef QT_5
 public: // QSGMaterialShader implementation
     /* virtual */ char const * const * attributeNames() const;
+#endif
 
 public: // QSGMaterialShader reimplementation
+#ifdef QT_5
     /* virtual */ void updateState(const RenderState & state, QSGMaterial * newMaterial,
                                                               QSGMaterial * oldMaterial);
+#else
+    /* virtual */ bool updateUniformData(RenderState & state, QSGMaterial * newMaterial,
+                                         QSGMaterial * oldMaterial);
 
+    /* virtual */ void updateSampledImage(RenderState & state, int binding, QSGTexture ** texture,
+                                          QSGMaterial * newMaterial, QSGMaterial * oldMaterial);
+#endif
+
+#ifdef QT_5
 protected: // QSGMaterialShader reimplementation
     /* virtual */ void initialize();
 
     /* virtual */ const char * vertexShader  () const;
     /* virtual */ const char * fragmentShader() const;
+#endif
 
 public: // Properties
+#ifdef QT_5
     int idPosition;
     int idOpacity;
     int idColor;
@@ -121,6 +142,9 @@ public: // Properties
     int idY;
     int idU;
     int idV;
+#else
+    bool isNew;
+#endif
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -134,8 +158,10 @@ public:
 
     /* virtual */ ~WBackendVlcMaterial();
 
+#ifdef QT_5
 public: // Functions
     void updateTextures();
+#endif
 
 public: // QSGMaterial implementation
     /* virtual */ QSGMaterialType * type() const;
@@ -148,11 +174,17 @@ public: // QSGMaterial implementation
 #endif
 
 public: // Properties
+#ifdef QT_5
     QOpenGLFunctions * gl;
+#endif
 
     WBackendTexture * textures;
 
+#ifdef QT_5
     GLuint ids[3];
+#else
+    WTextureVideo data[3];
+#endif
 
     bool update;
 };

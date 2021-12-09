@@ -14,8 +14,12 @@ TEMPLATE = lib
 
 contains(QT_MAJOR_VERSION, 4) {
     QT += opengl declarative network script xml svg
-} else {
+
+} else:contains(QT_MAJOR_VERSION, 5) {
+
     QT += opengl quick network xml svg
+} else {
+    QT += quick network xml svg
 }
 
 contains(QT_MAJOR_VERSION, 5) {

@@ -14,8 +14,12 @@ TEMPLATE = lib
 
 contains(QT_MAJOR_VERSION, 4) {
     QT += opengl declarative network
-} else {
+
+} else:contains(QT_MAJOR_VERSION, 5) {
+
     QT += opengl quick network
+} else {
+    QT += quick network
 }
 
 win32:CONFIG += dll

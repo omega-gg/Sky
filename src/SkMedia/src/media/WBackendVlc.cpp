@@ -32,7 +32,6 @@
 #endif
 #ifdef QT_6
 #include <QPainter>
-#include <QOpenGLShaderProgram>
 #endif
 
 // Sk includes
@@ -42,18 +41,18 @@
 
 // 3rdparty includes
 #include <3rdparty/vlc/mmxRgb.h>
-#if defined(Q_OS_MAC) == false && defined(Q_OS_ANDROID) == false
+#if defined(QT_6) == false && defined(Q_OS_MAC) == false && defined(Q_OS_ANDROID) == false
 #include <3rdparty/opengl/glext.h>
 #endif
 
 // Mac includes
-#ifdef Q_OS_MAC
+#if defined(QT_6) == false && defined(Q_OS_MAC)
 #include <OpenGL/gl.h>
 #include <OpenGL/glext.h>
 #endif
 
 // Linux includes
-#if defined(Q_OS_LINUX) && defined(Q_OS_ANDROID) == false
+#if defined(QT_6) == false && defined(Q_OS_LINUX) && defined(Q_OS_ANDROID) == false
 #include <GL/glx.h>
 #endif
 
@@ -249,7 +248,9 @@ static GLfloat shaderOpacity = 1.f;
 
 static QSGMaterialType materialType;
 
+#ifdef QT_5
 static const char * shaderNames[] = { "vertex", "fragment", 0 };
+#endif
 
 static const QMatrix4x4 matrix
 (
@@ -324,22 +325,38 @@ void createShader()
 //=================================================================================================
 // WBackendVlcShader
 //=================================================================================================
+
+#ifdef QT_6
+
+WBackendVlcShader::WBackendVlcShader()
+{
+    isNew = true;
+}
+
+#endif
+
+#ifdef QT_5
+
+//-------------------------------------------------------------------------------------------------
 // QSGMaterialShader implementation
+//-------------------------------------------------------------------------------------------------
 
 /* virtual */ char const * const * WBackendVlcShader::attributeNames() const
 {
     return shaderNames;
 }
 
+#endif
+
 //-------------------------------------------------------------------------------------------------
 // QSGMaterialShader reimplementation
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_5
+
 /* virtual */ void WBackendVlcShader::updateState(const RenderState & state,
                                                   QSGMaterial       * newMaterial, QSGMaterial *)
 {
-// FIXME Qt6
-#ifndef QT_6
     QOpenGLShaderProgram * program = this->program();
 
     if (state.isMatrixDirty())
@@ -355,17 +372,91 @@ void createShader()
     WBackendVlcMaterial * material = static_cast<WBackendVlcMaterial *> (newMaterial);
 
     material->updateTextures();
-#endif
 }
+
+#else // QT_6
+
+/* virtual */ bool WBackendVlcShader::updateUniformData(RenderState & state,
+                                                        QSGMaterial * newMaterial,
+                                                        QSGMaterial *)
+{
+    WBackendVlcMaterial * material = static_cast<WBackendVlcMaterial *> (newMaterial);
+
+    if (material->update)
+    {
+        WTextureVideo & dataA = material->data[0];
+        WTextureVideo & dataB = material->data[1];
+        WTextureVideo & dataC = material->data[2];
+
+        if (dataA.rhiTexture())
+        {
+            dataA.upload(state, material->textures[0]);
+            dataB.upload(state, material->textures[1]);
+            dataC.upload(state, material->textures[2]);
+        }
+        else
+        {
+            dataA.create(state, material->textures[0]);
+            dataB.create(state, material->textures[1]);
+            dataC.create(state, material->textures[2]);
+        }
+    }
+
+    char * data = state.uniformData()->data();
+
+    bool update = false;
+
+    if (state.isMatrixDirty())
+    {
+        QMatrix4x4 combined = state.combinedMatrix();
+
+        memcpy(data, &combined, 64);
+
+        update = true;
+    }
+
+    // NOTE: The color matrix stays the same at all time, so we set it once.
+    if (isNew)
+    {
+        isNew = false;
+
+        memcpy(data + 64, &matrix, 64);
+
+        update = true;
+    }
+
+    if (state.isOpacityDirty())
+    {
+        float opacity = state.opacity();
+
+        memcpy(data + 128, &opacity, 4);
+
+        update = true;
+    }
+
+    return update;
+}
+
+/* virtual */ void WBackendVlcShader::updateSampledImage(RenderState &, int binding,
+                                                         QSGTexture ** texture,
+                                                         QSGMaterial * newMaterial,
+                                                         QSGMaterial *)
+{
+    WBackendVlcMaterial * material = static_cast<WBackendVlcMaterial *> (newMaterial);
+
+    *texture = &(material->data[binding - 1]);
+}
+
+#endif // QT_6
 
 //-------------------------------------------------------------------------------------------------
 // Protected QSGMaterialShader reimplementation
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_5
+
 /* virtual */ void WBackendVlcShader::initialize()
 {
-// FIXME Qt6
-#ifndef QT_6
     QOpenGLShaderProgram * program = this->program();
 
     idPosition = program->uniformLocation("position");
@@ -381,7 +472,6 @@ void createShader()
     program->setUniformValue(idY, 0);
     program->setUniformValue(idU, 1);
     program->setUniformValue(idV, 2);
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -425,35 +515,39 @@ void createShader()
            "}";
 }
 
+#endif
+
 //=================================================================================================
 // WBackendVlcMaterial
 //=================================================================================================
 
 WBackendVlcMaterial::WBackendVlcMaterial()
 {
-// FIXME Qt6
-#ifndef QT_6
+#ifdef QT_5
     gl = QOpenGLContext::currentContext()->functions();
+#endif
 
     textures = NULL;
 
+#ifdef QT_5
     ids[0] = 0;
+#endif
 
     update = false;
 
     setFlag(Blending, false);
-#endif
 }
 
 /* virtual */ WBackendVlcMaterial::~WBackendVlcMaterial()
 {
-// FIXME Qt6
-#ifndef QT_6
+#ifdef QT_5
     if (ids[0] == 0) return;
 
     gl->glDeleteTextures(3, ids);
 #endif
 }
+
+#ifdef QT_5
 
 //-------------------------------------------------------------------------------------------------
 // Functions
@@ -489,6 +583,8 @@ void WBackendVlcMaterial::updateTextures()
         W_BIND_TEXTURE(GL_TEXTURE0, ids[0]);
     }
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // QSGMaterial implementation
