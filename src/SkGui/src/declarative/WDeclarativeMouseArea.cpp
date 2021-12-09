@@ -36,7 +36,7 @@
 #include <WControllerView>
 #include <WView>
 
-// Private includes
+// Qt private includes
 #include <private/qobject_p.h>
 
 // Private include

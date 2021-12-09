@@ -40,11 +40,13 @@
 #include <QX11Info>
 #endif
 
-// Private includes
-#include <private/WView_p>
 #if defined(QT_4) && defined(Q_OS_LINUX)
+// Qt private includes
 #include <private/qt_x11_p.h>
 #endif
+
+// Private includes
+#include <private/WView_p>
 
 //-------------------------------------------------------------------------------------------------
 // Defines

@@ -11,9 +11,14 @@ HEADERS += src/graphicsview/WAbstractView.h \
            src/graphicsview/WResizer.h \
            src/graphicsview/WResizer_p.h \
 
+greaterThan(QT_MAJOR_VERSION, 5): HEADERS += src/graphicsview/WTextureVideo.h \
+                                             src/graphicsview/WTextureVideo_p.h \
+
 SOURCES += src/graphicsview/WAbstractView.cpp \
            src/graphicsview/WView.cpp \
            src/graphicsview/WViewResizer.cpp \
            src/graphicsview/WViewDrag.cpp \
            src/graphicsview/WWindow.cpp \
            src/graphicsview/WResizer.cpp \
+
+greaterThan(QT_MAJOR_VERSION, 5): SOURCES += src/graphicsview/WTextureVideo.cpp \

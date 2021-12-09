@@ -613,16 +613,31 @@ struct WBackendTexture
 {
     WBackendTexture()
     {
+
+#ifdef QT_OLD
         width  = 0;
         height = 0;
+#endif
 
         bits = NULL;
+
+#ifdef QT_6
+        length = 0;
+#endif
     }
 
+#ifdef QT_OLD
     int width;
     int height;
+#else
+    QSize size;
+#endif
 
     uchar * bits;
+
+#ifdef QT_6
+    int length;
+#endif
 };
 
 //-------------------------------------------------------------------------------------------------

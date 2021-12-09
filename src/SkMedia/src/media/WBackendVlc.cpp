@@ -1716,10 +1716,21 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
                 WBackendTexture    * textureA = &(textures[i]);
                 WBackendVlcTexture * textureB = &(d->textures[i]);
 
+#ifdef QT_OLD
                 textureA->width  = textureB->width;
                 textureA->height = textureB->height;
+#else
+                int width  = textureB->width;
+                int height = textureB->height;
+
+                textureA->size = QSize(width, height);
+#endif
 
                 textureA->bits = textureB->bits;
+
+#ifdef QT_6
+                textureA->length = width * height;
+#endif
             }
 
             d->frameSwap = !(d->frameSwap);

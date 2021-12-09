@@ -27,7 +27,7 @@
 // Sk includes
 #include <WView>
 
-// Private includes
+// Qt private includes
 #include <private/qquickwindow_p.h>
 #include <private/qsgadaptationlayer_p.h>
 

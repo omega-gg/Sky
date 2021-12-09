@@ -38,7 +38,7 @@
 #include <WAbstractThreadAction>
 
 #ifdef QT_LATEST
-// Private includes
+// Qt private includes
 #include <private/qsgadaptationlayer_p.h>
 #endif
 

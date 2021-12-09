@@ -30,6 +30,9 @@
 #else
 #include <QQmlComponent>
 #endif
+#ifdef QT_6
+//#include <QQuickWindow>
+#endif
 
 // Sk includes
 #include <WControllerView>
@@ -46,8 +49,10 @@ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
 {
 #ifdef QT_4
     QCoreApplication::setAttribute(Qt::AA_ImmediateWidgetCreation);
-#else
+#elif defined(QT_5)
     //QCoreApplication::setAttribute(Qt::AA_UseOpenGLES);
+#else // QT_6
+    //QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
 #endif
 
 #ifdef Q_OS_MAC

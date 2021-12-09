@@ -23,11 +23,8 @@
 #ifndef WRESIZER_H
 #define WRESIZER_H
 
-// Qt includes
-#include <WDeclarativeMouseArea>
-
 // Sk includes
-#include <Sk>
+#include <WDeclarativeMouseArea>
 
 #ifndef SK_NO_RESIZER
 
