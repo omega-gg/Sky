@@ -59,9 +59,9 @@ inline bool sort(const QSize & sizeA, const QSize & sizeB)
 
 void extractPaths(const QString & path)
 {
-    QDir Dir(path);
+    QDir dir(path);
 
-    QFileInfoList list = Dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
+    QFileInfoList list = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
 
     foreach (const QFileInfo & info, list)
     {
