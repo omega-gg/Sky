@@ -317,6 +317,10 @@ public: // Static functions
     Q_INVOKABLE static bool compressShot (const QString & fileName, int quality = 0);
     Q_INVOKABLE static bool compressShots(const QString & path,     int quality = 0);
 
+#ifdef QT_6
+    Q_INVOKABLE static QString graphicsApiName();
+#endif
+
 protected: // Events
 #ifdef QT_4
     /* virtual */ void hoverEnterEvent(QGraphicsSceneHoverEvent * event);

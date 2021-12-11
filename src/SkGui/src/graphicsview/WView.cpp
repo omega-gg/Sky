@@ -2335,6 +2335,26 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 }
 
 //-------------------------------------------------------------------------------------------------
+
+#ifdef QT_6
+
+/* Q_INVOKABLE static */ QString WView::graphicsApiName()
+{
+    QSGRendererInterface::GraphicsApi api = graphicsApi();
+
+    if      (api == QSGRendererInterface::Unknown)    return "unknown";
+    else if (api == QSGRendererInterface::Software)   return "software";
+    else if (api == QSGRendererInterface::OpenVG)     return "OpenVG";
+    else if (api == QSGRendererInterface::OpenGL)     return "OpenGL";
+    else if (api == QSGRendererInterface::Direct3D11) return "Direct3d";
+    else if (api == QSGRendererInterface::Vulkan)     return "Vulkan";
+    else if (api == QSGRendererInterface::Metal)      return "Metal";
+    else                                              return "";
+}
+
+#endif
+
+//-------------------------------------------------------------------------------------------------
 // Protected functions
 //-------------------------------------------------------------------------------------------------
 

@@ -35,6 +35,9 @@
 #endif
 
 // Sk includes
+#ifdef QT_6
+#include <WControllerApplication>
+#endif
 #include <WControllerMedia>
 #include <WControllerPlaylist>
 #include <WDeclarativePlayer>
@@ -331,6 +334,19 @@ void createShader()
 WBackendVlcShader::WBackendVlcShader()
 {
     isNew = true;
+
+    if (sk->isQrc())
+    {
+        setShaderFileName(VertexStage,   ":/shaders/video.vert.qsb");
+        setShaderFileName(FragmentStage, ":/shaders/video.frag.qsb");
+    }
+    else
+    {
+        QString path = QCoreApplication::applicationDirPath() + '/';
+
+        setShaderFileName(VertexStage,   path + "shaders/video.vert.qsb");
+        setShaderFileName(FragmentStage, path + "shaders/video.frag.qsb");
+    }
 }
 
 #endif
