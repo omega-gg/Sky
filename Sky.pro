@@ -39,6 +39,9 @@ OTHER_FILES += 3rdparty.sh \
                src/SkyTouch/*.qml \
                src/SkyPresentation/qmldir \
                src/SkyPresentation/*.qml \
+               dist/shaders/generate.sh \
+               dist/shaders/video.vert \
+               dist/shaders/video.frag \
                dist/android/src/gg/omega/WActivity.java \
                dist/changes/1.0.1.md \
                dist/changes/1.1.0.md \
