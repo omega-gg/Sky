@@ -600,3 +600,16 @@ else
     cp bin/includeGenerator deploy
     cp bin/deployer         deploy
 fi
+
+#--------------------------------------------------------------------------------------------------
+# shaders
+#--------------------------------------------------------------------------------------------------
+
+if [ $qt = "qt6" ]; then
+
+    echo "COPYING shaders"
+
+    mkdir -p deploy/shaders
+
+    cp dist/shaders/qsb/*.qsb deploy/shaders
+fi
