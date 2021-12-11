@@ -338,7 +338,7 @@ void WControllerApplication::initController()
 
     if (d->qrc)
     {
-        component.loadUrl(QUrl("qrc:/qrc/Main.qml"));
+        component.loadUrl(QUrl("qrc:/Main.qml"));
     }
 #ifdef Q_OS_MAC
     // NOTE macOS: We have to take the application bundle into account.
@@ -375,7 +375,7 @@ void WControllerApplication::initController()
 
     if (d->qrc)
     {
-         component.loadUrl(QUrl("qrc:/qrc/Main.qml"));
+         component.loadUrl(QUrl("qrc:/Main.qml"));
     }
     else component.loadUrl(QUrl("Main.qml"));
 

@@ -57,7 +57,7 @@ inline bool sort(const QSize & sizeA, const QSize & sizeB)
 // Functions
 //-------------------------------------------------------------------------------------------------
 
-void extractPaths(const QString & path)
+void extractPaths(const QString & path, const QString & base)
 {
     QDir dir(path);
 
@@ -69,9 +69,9 @@ void extractPaths(const QString & path)
 
         if (info.isDir())
         {
-            extractPaths(info.filePath());
+            extractPaths(info.filePath(), base + info.fileName() + '/');
         }
-        else paths.append(info.filePath());
+        else paths.append(base + info.fileName());
     }
 }
 
@@ -634,7 +634,8 @@ int main(int argc, char *argv[])
 
     scanFolder(path);
 
-    extractPaths(path);
+    // NOTE: We want a clean base path.
+    extractPaths(path, QString());
 
     generateQrc(argv[3]);
 
