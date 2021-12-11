@@ -42,7 +42,7 @@ fi
 
 external="$external/$1"
 
-if [ $qt = "qt4" -o $qt = "qt4" ]; then
+if [ $qt = "qt4" -o $qt = "qt5" ]; then
 
     echo "The qsb tools needs Qt 6 or higher"
 
