@@ -2473,10 +2473,22 @@ void WView::hoverLeave()
 
         return true;
     }
-    else if (type == QEvent::DragEnter)
+    else if (type == QEvent::Enter)
 #else
-    if (type == QEvent::DragEnter)
+    if (type == QEvent::Enter)
 #endif
+    {
+        hoverEnter();
+
+        return true;
+    }
+    else if (type == QEvent::Leave)
+    {
+        hoverLeave();
+
+        return true;
+    }
+    else if (type == QEvent::DragEnter)
     {
         QDragEnterEvent * drag = static_cast<QDragEnterEvent *> (event);
 

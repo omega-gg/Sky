@@ -326,8 +326,8 @@ protected: // Events
     /* virtual */ void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
     /* virtual */ void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
 #else
-    /* virtual */ void hoverEnterEvent(QHoverEvent * event);
-    /* virtual */ void hoverLeaveEvent(QHoverEvent * event);
+//    /* virtual */ void hoverEnterEvent(QHoverEvent * event);
+//    /* virtual */ void hoverLeaveEvent(QHoverEvent * event);
 
 //    /* virtual */ void dragEnterEvent(QDragEnterEvent * event);
 //    /* virtual */ void dragLeaveEvent(QDragLeaveEvent * event);

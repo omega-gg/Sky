@@ -683,10 +683,8 @@ void WWindowPrivate::init()
 //-------------------------------------------------------------------------------------------------
 
 #ifdef QT_4
+
 /* virtual */ void WWindow::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
-#else
-/* virtual */ void WWindow::hoverEnterEvent(QHoverEvent * event)
-#endif
 {
     Q_D(WWindow);
 
@@ -695,11 +693,8 @@ void WWindowPrivate::init()
     WDeclarativeMouseArea::hoverEnterEvent(event);
 }
 
-#ifdef QT_4
 /* virtual */ void WWindow::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
-#else
-/* virtual */ void WWindow::hoverLeaveEvent(QHoverEvent * event)
-#endif
+
 {
     Q_D(WWindow);
 
@@ -707,6 +702,8 @@ void WWindowPrivate::init()
 
     WDeclarativeMouseArea::hoverLeaveEvent(event);
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
