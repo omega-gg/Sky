@@ -45,7 +45,7 @@ public:
 
 public: // Interface
     void create(QSGMaterialShader::RenderState & state, const WBackendTexture & texture);
-    void upload(QSGMaterialShader::RenderState & state, const WBackendTexture & texture) const;
+    void upload(QSGMaterialShader::RenderState & state, const WBackendTexture & texture);
 
 public: // QSGTexture implementation
     /* virtual */ qint64 comparisonKey() const;

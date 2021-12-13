@@ -74,6 +74,10 @@ struct WBackendVlcTexture
         width  = 0;
         height = 0;
 
+#ifdef QT_6
+        length = 0;
+#endif
+
         pitch       = 0;
         pitchMargin = 0;
 
@@ -85,6 +89,10 @@ struct WBackendVlcTexture
 
     int width;
     int height;
+
+#ifdef QT_6
+    int length;
+#endif
 
     int pitch;
     int pitchMargin;
@@ -359,7 +367,12 @@ protected:
 class WBackendVlcEventSetup : public QEvent
 {
 public:
+#ifdef QT_OLD
     WBackendVlcEventSetup(int width, int height, int pitchY, int pitchU, int pitchV)
+#else // QT_6
+    WBackendVlcEventSetup(int width, int height, int pitchY, int pitchU, int pitchV,
+                          int cursorU, int cursorV)
+#endif
         : QEvent(static_cast<QEvent::Type> (WBackendVlcPrivate::EventSetup))
     {
         this->width  = width;
@@ -368,6 +381,11 @@ public:
         this->pitchY = pitchY;
         this->pitchU = pitchU;
         this->pitchV = pitchV;
+
+#ifdef QT_6
+        this->cursorU = cursorU;
+        this->cursorV = cursorV;
+#endif
     }
 
 public: // Variables
@@ -377,6 +395,11 @@ public: // Variables
     int pitchY;
     int pitchU;
     int pitchV;
+
+#ifdef QT_6
+    int cursorU;
+    int cursorV;
+#endif
 };
 
 #endif // SK_NO_BACKENDVLC

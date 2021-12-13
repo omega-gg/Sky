@@ -1428,7 +1428,8 @@ void WBackendVlcPrivate::onUpdateState()
 
     QCoreApplication::postEvent(d->q_func(),
                                 new WBackendVlcEventSetup(width, height,
-                                                          pitches[0], pitches[1], pitches[2]));
+                                                          pitches[0], pitches[1], pitches[2],
+                                                          cursorU, cursorV));
 
     return 1;
 }
@@ -1841,7 +1842,8 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
                 textureA->bits = textureB->bits;
 
 #ifdef QT_6
-                textureA->length = width * height;
+                textureA->length = textureB->length;
+                textureA->pitch  = textureB->pitch;
 #endif
             }
 
@@ -2152,8 +2154,13 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
         d->textures[0].pitchMargin = pitchY - d->textures[0].width;
         d->textures[1].pitchMargin = pitchU - d->textures[1].width;
-
         d->textures[2].pitchMargin = d->textures[1].pitchMargin;
+
+#ifdef QT_6
+        d->textures[0].length = setup->cursorU;
+        d->textures[1].length = setup->cursorV - setup->cursorU;
+        d->textures[2].length = d->textures[1].length;
+#endif
 
         d->updateTargetRect();
 

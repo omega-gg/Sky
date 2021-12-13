@@ -623,6 +623,7 @@ struct WBackendTexture
 
 #ifdef QT_6
         length = 0;
+        pitch  = 0;
 #endif
     }
 
@@ -637,6 +638,7 @@ struct WBackendTexture
 
 #ifdef QT_6
     int length;
+    int pitch;
 #endif
 };
 

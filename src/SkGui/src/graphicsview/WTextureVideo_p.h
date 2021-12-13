@@ -53,6 +53,8 @@ public: // Variables
 
     QRhiTexture * texture;
 
+    QRhiTextureSubresourceUploadDescription description;
+
 protected:
     W_DECLARE_PUBLIC(WTextureVideo)
 };

@@ -75,27 +75,28 @@ void WTextureVideo::create(QSGMaterialShader::RenderState & state,
 
     d->texture->create();
 
-    QRhiTextureSubresourceUploadDescription subresDesc(texture.bits, texture.length);
+    d->description = QRhiTextureSubresourceUploadDescription(texture.bits, texture.length);
+
+    // NOTE: This is required when the data is padded on each line.
+    d->description.setDataStride(texture.pitch);
 
     // NOTE: The rendering seems to work without this call.
-    //subresDesc.setSourceSize(d->size);
+    //d->description.setSourceSize(d->size);
 
-    QRhiTextureUploadDescription description(QRhiTextureUploadEntry(0, 0, subresDesc));
+    QRhiTextureUploadDescription description(QRhiTextureUploadEntry(0, 0, d->description));
 
     state.resourceUpdateBatch()->uploadTexture(d->texture, description);
 }
 
 void WTextureVideo::upload(QSGMaterialShader::RenderState & state,
-                           const WBackendTexture          & texture) const
+                           const WBackendTexture          & texture)
 {
-    Q_D(const WTextureVideo);
+    Q_D(WTextureVideo);
 
-    QRhiTextureSubresourceUploadDescription subresDesc(texture.bits, texture.length);
+    d->description.setData(QByteArray(reinterpret_cast<const char *> (texture.bits),
+                                      texture.length));
 
-    // NOTE: The rendering seems to work without this call.
-    //subresDesc.setSourceSize(d->size);
-
-    QRhiTextureUploadDescription description(QRhiTextureUploadEntry(0, 0, subresDesc));
+    QRhiTextureUploadDescription description(QRhiTextureUploadEntry(0, 0, d->description));
 
     state.resourceUpdateBatch()->uploadTexture(d->texture, description);
 }
