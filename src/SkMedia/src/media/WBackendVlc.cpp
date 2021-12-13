@@ -1426,10 +1426,16 @@ void WBackendVlcPrivate::onUpdateState()
 
     d->frameIndex = false;
 
+#ifdef QT_OLD
+    QCoreApplication::postEvent(d->q_func(),
+                                new WBackendVlcEventSetup(width, height,
+                                                          pitches[0], pitches[1], pitches[2]));
+#else
     QCoreApplication::postEvent(d->q_func(),
                                 new WBackendVlcEventSetup(width, height,
                                                           pitches[0], pitches[1], pitches[2],
                                                           cursorU, cursorV));
+#endif
 
     return 1;
 }
