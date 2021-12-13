@@ -75,7 +75,8 @@ void WTextureVideo::create(QSGMaterialShader::RenderState & state,
 
     d->texture->create();
 
-    d->description = QRhiTextureSubresourceUploadDescription(texture.bits, texture.length);
+    d->description.setData(QByteArray(reinterpret_cast<const char *> (texture.bits),
+                                      texture.length));
 
     // NOTE: This is required when the data is padded on each line.
     d->description.setDataStride(texture.pitch);
