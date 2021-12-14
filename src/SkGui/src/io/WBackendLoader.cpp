@@ -26,6 +26,7 @@
 
 // Qt includes
 #include <QCoreApplication>
+#include <QMutex>
 
 // Sk includes
 #include <WControllerPlaylist>
@@ -59,6 +60,9 @@ public: // Functions
     void clear();
 
 public: // Variables
+    // NOTE: Do we really need a mutex here ?
+    QMutex mutex;
+
     QHash<QString, WBackendNet *> hash;
 
     QList<WBackendNet *> backends;
@@ -87,15 +91,20 @@ void WBackendLoaderCache::addBackend(const QString & id, WBackendNet * backend)
 
     backends.append(backend);
 
-    // NOTE : We append on the hash at the end because 'createNow' depends on it.
-    // FIXME: Maybe we need a mutex here.
+    mutex.lock();
+
+    // NOTE: We append on the hash at the end because 'createNow' depends on it.
     hash.insert(id, backend);
+
+    mutex.unlock();
 }
 
 //-------------------------------------------------------------------------------------------------
 
 WBackendNet * WBackendLoaderCache::getBackend(const QString & id)
 {
+    const QMutexLocker locker(&mutex);
+
     return hash.value(id);
 }
 
@@ -135,8 +144,12 @@ void WBackendLoaderCache::cleanCache()
 
             qDebug("REMOVE BACKEND %s", id.C_STR);
 
+            mutex.lock();
+
             // NOTE: We remove the id first to avoid returning an invalid backend.
             hash.remove(id);
+
+            mutex.unlock();
 
             backends.removeAt(index);
 
@@ -166,8 +179,12 @@ void WBackendLoaderCache::clear()
 
             qDebug("CLEAR BACKEND %s", id.C_STR);
 
+            mutex.lock();
+
             // NOTE: We remove the hash first to avoid returning an invalid backend.
             hash.remove(id);
+
+            mutex.unlock();
 
             backends.removeAt(index);
 
@@ -429,7 +446,6 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
 
 /* Q_INVOKABLE static */ WBackendNet * WBackendLoader::getBackend(const QString & id)
 {
-    // NOTE: Maybe we need a mutex here.
     WBackendNet * backend = backendCache()->getBackend(id);
 
     if (backend == NULL) return NULL;
