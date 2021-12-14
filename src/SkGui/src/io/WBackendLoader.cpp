@@ -60,8 +60,8 @@ public: // Functions
     void clear();
 
 public: // Variables
-    // NOTE: Do we really need a mutex here ? On Android it seems we do, based on a crash in
-    //       waitBackend.
+    // NOTE: Do we really need a mutex here ?
+    // On Android it seems we do, based on a crash in waitBackend.
     QMutex mutex;
 
     QHash<QString, WBackendNet *> hash;
