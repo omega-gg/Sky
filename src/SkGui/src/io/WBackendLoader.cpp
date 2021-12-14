@@ -87,7 +87,8 @@ void WBackendLoaderCache::addBackend(const QString & id, WBackendNet * backend)
 
     backends.append(backend);
 
-    // NOTE: We append on the hash at the end because 'createNow' depends on it.
+    // NOTE : We append on the hash at the end because 'createNow' depends on it.
+    // FIXME: Maybe we need a mutex here.
     hash.insert(id, backend);
 }
 
