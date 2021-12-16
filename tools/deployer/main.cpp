@@ -35,6 +35,8 @@ static QString version;
 
 static QStringList defines;
 
+static int qt;
+
 static QStringList fileNames;
 
 static QHash<QString, QString> files;
@@ -383,6 +385,29 @@ QString scanFile(const QString & input)
         }
         else
         {
+            int index = 0;
+
+            // NOTE: Skipping the line spaces.
+            while (index < line.length()
+                   &&
+                   line.at(index).isSpace()) index++;
+
+            if (line.indexOf("QML_EVENT ") == index)
+            {
+                line.remove(index, 10);
+
+                if (qt < 6)
+                {
+                    int index = line.indexOf(':') + 1;
+
+                    // NOTE: Removing the function(...) part.
+                    while (index < line.length() && line.at(index) != '{')
+                    {
+                        line.remove(index, 1);
+                    }
+                }
+            }
+
             content.append(line + '\n');
 
             line = stream.readLine();
@@ -624,6 +649,10 @@ int main(int argc, char *argv[])
     {
         defines.append(string);
     }
+
+    if      (defines.contains("QT_4")) qt = 4;
+    else if (defines.contains("QT_5")) qt = 5;
+    else                               qt = 6;
 
     for (int i = 5; i < argc; i++)
     {
