@@ -407,6 +407,32 @@ QString scanFile(const QString & input)
                     }
                 }
             }
+            else if (line.indexOf("QML_CONNECTION ") == index)
+            {
+                line.remove(index, 15);
+
+                // NOTE: Replacing the function(...) part.
+                if (qt < 6)
+                {
+                    int indexB = line.indexOf("function ", index);
+
+                    if (indexB != -1)
+                    {
+                        line.remove(index, indexB + 9 - index);
+
+                        index = line.indexOf('(', index);
+
+                        if (index != -1)
+                        {
+                            indexB = line.indexOf(')', index + 1) + 1;
+
+                            line.remove(index, indexB - index);
+
+                            line.insert(index, ':');
+                        }
+                    }
+                }
+            }
 
             content.append(line + '\n');
 
