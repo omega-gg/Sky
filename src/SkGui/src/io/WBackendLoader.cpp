@@ -115,8 +115,6 @@ void WBackendLoaderCache::updateBackend(const QString & id)
     {
         if (backend->id() != id) continue;
 
-        backend->d_func()->lockCount++;
-
         // NOTE: This is useful for caching considerations.
         backends.removeOne(backend);
         backends.append   (backend);
@@ -139,13 +137,13 @@ void WBackendLoaderCache::cleanCache()
     {
         WBackendNet * backend = backends.at(index);
 
+        mutex.lock();
+
         if (backend->d_func()->lockCount == 0)
         {
             QString id = backend->id();
 
             qDebug("REMOVE BACKEND %s", id.C_STR);
-
-            mutex.lock();
 
             // NOTE: We remove the id first to avoid returning an invalid backend.
             hash.remove(id);
@@ -160,7 +158,12 @@ void WBackendLoaderCache::cleanCache()
 
             if (count == maxCount) break;
         }
-        else index++;
+        else
+        {
+            mutex.unlock();
+
+            index++;
+        }
     }
 }
 
@@ -174,13 +177,13 @@ void WBackendLoaderCache::clear()
     {
         WBackendNet * backend = backends.at(index);
 
+        mutex.lock();
+
         if (backend->d_func()->lockCount == 0)
         {
             QString id = backend->id();
 
             qDebug("CLEAR BACKEND %s", id.C_STR);
-
-            mutex.lock();
 
             // NOTE: We remove the hash first to avoid returning an invalid backend.
             hash.remove(id);
@@ -193,7 +196,12 @@ void WBackendLoaderCache::clear()
 
             count--;
         }
-        else index++;
+        else
+        {
+            mutex.unlock();
+
+            index++;
+        }
     }
 }
 
@@ -271,6 +279,7 @@ void WBackendLoaderPrivate::onCreate(const QString & id)
 
     backend->d_func()->loader = q;
 
+    // NOTE: We don't need to lock here because the backend is not in the hash yet.
     backend->d_func()->lockCount++;
 
     // NOTE: We call 'addBackend' at the end because 'createNow' depends on it.
@@ -284,11 +293,19 @@ void WBackendLoaderPrivate::onUpdate(const QString & id)
 
 void WBackendLoaderPrivate::onRemove(const QString & id)
 {
-    WBackendNet * backend = backendCache()->getBackend(id);
+    WBackendLoaderCache * cache = backendCache();
+
+    WBackendNet * backend = cache->getBackend(id);
 
     if (backend == NULL) return;
 
+    QMutex & mutex = cache->mutex;
+
+    mutex.lock();
+
     backend->d_func()->lockCount--;
+
+    mutex.unlock();
 
     backendCache()->cleanCache();
 }
@@ -447,9 +464,25 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
 
 /* Q_INVOKABLE static */ WBackendNet * WBackendLoader::getBackend(const QString & id)
 {
-    WBackendNet * backend = backendCache()->getBackend(id);
+    WBackendLoaderCache * cache = backendCache();
 
-    if (backend == NULL) return NULL;
+    QMutex & mutex = cache->mutex;
+
+    mutex.lock();
+
+    WBackendNet * backend = cache->hash.value(id);
+
+    if (backend == NULL)
+    {
+        mutex.unlock();
+
+        return NULL;
+    }
+
+    // NOTE: We have to lock this to make sure we're not removing the backend in another thread.
+    backend->d_func()->lockCount++;
+
+    mutex.unlock();
 
     WBackendLoader * loader = backend->d_func()->loader;
 
