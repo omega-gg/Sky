@@ -135,7 +135,7 @@ Player
     {
         target: (standalone) ? null : slides
 
-        onSlide:
+        QML_CONNECTION function onSlide()
         {
             if (pReady) return;
 
@@ -144,13 +144,22 @@ Player
             pPlay();
         }
 
-        onClear: if (fade) pApplyVolume(false)
+        QML_CONNECTION function onClear()
+        {
+            if (fade) pApplyVolume(false);
+        }
 
-        onPlay: togglePlay()
+        QML_CONNECTION function onPlay() { togglePlay() }
 
-        onBackward: seek(Math.max(0, currentTime - sp.slidePlayer_interval))
+        QML_CONNECTION function onBackward()
+        {
+            seek(Math.max(0, currentTime - sp.slidePlayer_interval));
+        }
 
-        onForward: seek(Math.min(currentTime + sp.slidePlayer_interval, duration))
+        QML_CONNECTION function onForward()
+        {
+            seek(Math.min(currentTime + sp.slidePlayer_interval, duration));
+        }
     }
 
     //---------------------------------------------------------------------------------------------

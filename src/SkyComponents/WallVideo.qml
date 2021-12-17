@@ -139,31 +139,31 @@ WallBookmarkTrack
     {
         target: tabs
 
-        onCurrentTabChanged:
+        QML_CONNECTION function onCurrentTabChanged()
         {
             pUpdatePlayerItems(isExposed);
 
             pUpdateSplit();
         }
 
-        onHighlightedTabChanged:
+        QML_CONNECTION function onHighlightedTabChanged()
         {
             pUpdatePlayerItems(isExposed);
 
             pCheckSplit();
         }
 
-        onTabsMoved: pUpdateSplit()
+        QML_CONNECTION function onTabsMoved() { pUpdateSplit() }
     }
 
     Connections
     {
         target: (itemText.visible) ? player : null
 
-        onWidthChanged : pUpdateText()
-        onHeightChanged: pUpdateText()
+        QML_CONNECTION function onWidthChanged () { pUpdateText() }
+        QML_CONNECTION function onHeightChanged() { pUpdateText() }
 
-        onFillModeChanged: pUpdateText()
+        QML_CONNECTION function onFillModeChanged() { pUpdateText() }
     }
 
     //---------------------------------------------------------------------------------------------

@@ -228,16 +228,19 @@ BaseWall
     {
         target: itemTabs
 
-        onIsAnimatedChanged:
+        QML_CONNECTION function onIsAnimatedChanged()
         {
             if (pActive == false) return;
 
             isAnimated = itemTabs.isAnimated;
         }
 
-        onIndexTopChanged: indexTop = itemTabs.indexTop
+        QML_CONNECTION function onIndexTopChanged()
+        {
+            indexTop = itemTabs.indexTop
+        }
 
-        onIndexRemoveChanged:
+        QML_CONNECTION function onIndexRemoveChanged()
         {
             if (itemTabs.indexRemove == indexRemove) return;
 
@@ -251,7 +254,7 @@ BaseWall
     {
         target: tabs
 
-        onCurrentIndexChanged: updateCurrentPage()
+        QML_CONNECTION function onCurrentIndexChanged() { updateCurrentPage() }
     }
 
     //---------------------------------------------------------------------------------------------

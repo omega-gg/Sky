@@ -95,15 +95,15 @@ Panel
     {
         target: (isActive && window.isDragged == false) ? window : null
 
-        onScaleChanged: pUpdatePosition()
+        QML_CONNECTION function onScaleChanged() { pUpdatePosition() }
 
-        onOriginXChanged: pUpdatePosition()
-        onOriginYChanged: pUpdatePosition()
+        QML_CONNECTION function onOriginXChanged() { pUpdatePosition() }
+        QML_CONNECTION function onOriginYChanged() { pUpdatePosition() }
 
-        onMousePosChanged: pUpdatePosition()
+        QML_CONNECTION function onMousePosChanged() { pUpdatePosition() }
 
-        onContentWidthChanged : pUpdatePosition()
-        onContentHeightChanged: pUpdatePosition()
+        QML_CONNECTION function onContentWidthChanged () { pUpdatePosition() }
+        QML_CONNECTION function onContentHeightChanged() { pUpdatePosition() }
     }
 
     //---------------------------------------------------------------------------------------------

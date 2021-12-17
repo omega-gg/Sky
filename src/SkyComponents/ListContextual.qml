@@ -63,7 +63,7 @@ BaseList
     // Keys
     //---------------------------------------------------------------------------------------------
 
-    Keys.onPressed:
+    QML_EVENT Keys.onPressed: function(event)
     {
         if ((event.key == Qt.Key_Left || event.key == Qt.Key_Right)
             &&

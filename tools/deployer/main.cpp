@@ -341,6 +341,51 @@ void skipElse(QTextStream * stream, QString * line)
 
 //-------------------------------------------------------------------------------------------------
 
+void applyEvent(QString * line, int index)
+{
+    line->remove(index, 10);
+
+    if (qt > 5) return;
+
+    index = line->indexOf(':', index) + 1;
+
+    // NOTE: Removing the function(...) part.
+    while (index < line->length() && line->at(index) != '{')
+    {
+        line->remove(index, 1);
+    }
+}
+
+void applyConnection(QString * line, int index)
+{
+    line->remove(index, 15);
+
+    if (qt > 5) return;
+
+    //---------------------------------------------------------------------------------------------
+    // NOTE: Replacing the function(...) part.
+
+    int indexB = line->indexOf("function ", index);
+
+    if (indexB == -1) return;
+
+    line->remove(index, indexB + 9 - index);
+
+    index = line->indexOf('(', index);
+
+    if (index == -1) return;
+
+    indexB = line->indexOf(')', index + 1) + 1;
+
+    line->remove(index, indexB - index);
+
+    line->insert(index, ':');
+
+    //---------------------------------------------------------------------------------------------
+}
+
+//-------------------------------------------------------------------------------------------------
+
 QString scanFile(const QString & input)
 {
     QString content;
@@ -394,44 +439,11 @@ QString scanFile(const QString & input)
 
             if (line.indexOf("QML_EVENT ") == index)
             {
-                line.remove(index, 10);
-
-                if (qt < 6)
-                {
-                    int index = line.indexOf(':') + 1;
-
-                    // NOTE: Removing the function(...) part.
-                    while (index < line.length() && line.at(index) != '{')
-                    {
-                        line.remove(index, 1);
-                    }
-                }
+                applyEvent(&line, index);
             }
             else if (line.indexOf("QML_CONNECTION ") == index)
             {
-                line.remove(index, 15);
-
-                // NOTE: Replacing the function(...) part.
-                if (qt < 6)
-                {
-                    int indexB = line.indexOf("function ", index);
-
-                    if (indexB != -1)
-                    {
-                        line.remove(index, indexB + 9 - index);
-
-                        index = line.indexOf('(', index);
-
-                        if (index != -1)
-                        {
-                            indexB = line.indexOf(')', index + 1) + 1;
-
-                            line.remove(index, indexB - index);
-
-                            line.insert(index, ':');
-                        }
-                    }
-                }
+                applyConnection(&line, index);
             }
 
             content.append(line + '\n');

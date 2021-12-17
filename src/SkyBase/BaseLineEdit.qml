@@ -283,7 +283,7 @@ MouseArea
             else baseLineEdit.deselect();
         }
 
-        Keys.onPressed:
+        QML_EVENT Keys.onPressed: function(event)
         {
             if (event.key == Qt.Key_Left
                 &&
@@ -301,7 +301,10 @@ MouseArea
             onKeyPressed(event);
         }
 
-        Keys.onReleased: onKeyReleased(event)
+        QML_EVENT Keys.onReleased: function(event)
+        {
+            onKeyReleased(event);
+        }
     }
 
     TextBase

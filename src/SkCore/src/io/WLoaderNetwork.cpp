@@ -46,11 +46,13 @@ void WLoaderNetworkPrivate::init()
 
     manager = new QNetworkAccessManager(q);
 
+#ifdef QT_OLD
     // FIXME: Fake request to avoid the first request freeze.
     if (q->parent() == wControllerDownload)
     {
         delete manager->get(QNetworkRequest());
     }
+#endif
 
     QObject::connect(manager, SIGNAL(finished(QNetworkReply *)),
                      q,       SLOT(onFinished(QNetworkReply *)));
