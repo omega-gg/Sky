@@ -237,7 +237,7 @@ BaseWall
 
         QML_CONNECTION function onIndexTopChanged()
         {
-            indexTop = itemTabs.indexTop
+            indexTop = itemTabs.indexTop;
         }
 
         QML_CONNECTION function onIndexRemoveChanged()
@@ -254,7 +254,7 @@ BaseWall
     {
         target: tabs
 
-        QML_CONNECTION function onCurrentIndexChanged() { updateCurrentPage() }
+        QML_CONNECTION function onCurrentIndexChanged() { updateCurrentPage(); }
     }
 
     //---------------------------------------------------------------------------------------------

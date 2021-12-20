@@ -149,7 +149,7 @@ Player
             if (fade) pApplyVolume(false);
         }
 
-        QML_CONNECTION function onPlay() { togglePlay() }
+        QML_CONNECTION function onPlay() { togglePlay(); }
 
         QML_CONNECTION function onBackward()
         {

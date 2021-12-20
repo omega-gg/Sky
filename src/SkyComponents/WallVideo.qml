@@ -153,17 +153,17 @@ WallBookmarkTrack
             pCheckSplit();
         }
 
-        QML_CONNECTION function onTabsMoved() { pUpdateSplit() }
+        QML_CONNECTION function onTabsMoved() { pUpdateSplit(); }
     }
 
     Connections
     {
         target: (itemText.visible) ? player : null
 
-        QML_CONNECTION function onWidthChanged () { pUpdateText() }
-        QML_CONNECTION function onHeightChanged() { pUpdateText() }
+        QML_CONNECTION function onWidthChanged () { pUpdateText(); }
+        QML_CONNECTION function onHeightChanged() { pUpdateText(); }
 
-        QML_CONNECTION function onFillModeChanged() { pUpdateText() }
+        QML_CONNECTION function onFillModeChanged() { pUpdateText(); }
     }
 
     //---------------------------------------------------------------------------------------------
