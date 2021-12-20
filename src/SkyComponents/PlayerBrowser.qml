@@ -303,7 +303,7 @@ BasePlayerBrowser
 
             font.pixelSize: st.dp16
 
-            onClicked: titleClicked(mouse)
+            QML_EVENT onClicked: function(mouse) { titleClicked(mouse); }
         }
     }
 
@@ -418,7 +418,7 @@ BasePlayerBrowser
 
             font.pixelSize: st.dp14
 
-            onClicked: authorClicked(mouse)
+            QML_EVENT onClicked: function(mouse) { authorClicked(mouse); }
         }
     }
 }

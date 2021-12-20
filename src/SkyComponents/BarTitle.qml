@@ -75,7 +75,7 @@ MouseArea
     // Events
     //---------------------------------------------------------------------------------------------
 
-    onPressed:
+    QML_EVENT onPressed: function(mouse)
     {
         if (enableFocus && (mouse.button & Qt.LeftButton))
         {

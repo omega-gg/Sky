@@ -107,7 +107,7 @@ ViewDrag
 
     onPressed: window.clearFocus()
 
-    onDoubleClicked:
+    QML_EVENT onDoubleClicked: function(mouse)
     {
         if (window.hoverCount() == 0)
         {

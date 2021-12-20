@@ -89,7 +89,10 @@ MouseArea
         handleReleased();
     }
 
-    onWheeled: if (visible) model.scroll(steps * 2)
+    QML_EVENT onWheeled: function(steps)
+    {
+        if (visible) model.scroll(steps * 2);
+    }
 
     //---------------------------------------------------------------------------------------------
     // Functions

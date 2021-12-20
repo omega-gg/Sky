@@ -83,7 +83,7 @@ TextBase
         onEntered: textClick.entered()
         onExited : textClick.exited ()
 
-        onPressed: textClick.pressed(mouse)
-        onClicked: textClick.clicked(mouse)
+        QML_EVENT onPressed: function(mouse) { textClick.pressed(mouse); }
+        QML_EVENT onClicked: function(mouse) { textClick.clicked(mouse); }
     }
 }

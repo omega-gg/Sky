@@ -228,7 +228,10 @@ Item
 
         onReleased: pPagePressed = false
 
-        onWheeled: if (visible) model.scroll(-steps * 3)
+        QML_EVENT onWheeled: function(steps)
+        {
+            if (visible) model.scroll(-steps * 3);
+        }
 
         Image
         {

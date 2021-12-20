@@ -482,9 +482,9 @@ WallBookmarkTrack
 
         cursor: Qt.PointingHandCursor
 
-        onPressed: playerPressed(mouse)
+        QML_EVENT onPressed: function(mouse) { playerPressed(mouse); }
 
-        onDoubleClicked: playerDoubleClicked(mouse)
+        QML_EVENT onDoubleClicked: function(mouse) { playerDoubleClicked(mouse); }
     }
 
     Rectangle
@@ -743,7 +743,7 @@ WallBookmarkTrack
 
         currentTime: player.currentTime
 
-        onLoaded: subtitleLoaded(ok)
+        QML_EVENT onLoaded: function(ok) { subtitleLoaded(ok); }
 
         onVisibleChanged: pUpdateText()
     }
@@ -986,8 +986,8 @@ WallBookmarkTrack
         // Events
         //-----------------------------------------------------------------------------------------
 
-        onTitleClicked : wall.titleClicked (mouse)
-        onAuthorClicked: wall.authorClicked(mouse)
+        QML_EVENT onTitleClicked : function(mouse) { wall.titleClicked (mouse); }
+        QML_EVENT onAuthorClicked: function(mouse) { wall.authorClicked(mouse); }
 
         onContextual: contextualBrowser()
     }

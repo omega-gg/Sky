@@ -101,7 +101,7 @@ BaseWall
     // Events
     //---------------------------------------------------------------------------------------------
 
-    onPressed:
+    QML_EVENT onPressed: function(mouse)
     {
         window.clearFocus();
 
@@ -182,7 +182,7 @@ BaseWall
         }
     }
 
-    onClicked:
+    QML_EVENT onClicked: function(mouse)
     {
         if (indexPress == -1 || indexPress != indexHover) return;
 
@@ -196,7 +196,7 @@ BaseWall
         }
     }
 
-    onDoubleClicked:
+    QML_EVENT onDoubleClicked: function(mouse)
     {
         if (indexPress == -1 || indexPress != indexHover) return;
 

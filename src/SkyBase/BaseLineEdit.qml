@@ -103,7 +103,7 @@ MouseArea
     // Events
     //---------------------------------------------------------------------------------------------
 
-    onPressed:
+    QML_EVENT onPressed: function(mouse)
     {
         if (mouse.button & Qt.LeftButton)
         {

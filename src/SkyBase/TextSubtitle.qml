@@ -131,6 +131,6 @@ TextBase
 
         enabled: textSubtitle.visible
 
-        onLoaded: textSubtitle.loaded(ok)
+        QML_EVENT onLoaded: function(ok) { textSubtitle.loaded(ok) }
     }
 }
