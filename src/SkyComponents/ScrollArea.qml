@@ -90,7 +90,7 @@ MouseArea
         pUpdateRange();
     }
 
-    QML_EVENT onWheeled: function(steps)
+    /* QML_EVENT */ onWheeled: function(steps)
     {
         if (scrollBar.visible && scrollBar.handle.pressed == false)
         {

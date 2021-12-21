@@ -228,7 +228,7 @@ Item
 
         onReleased: pPagePressed = false
 
-        QML_EVENT onWheeled: function(steps)
+        /* QML_EVENT */ onWheeled: function(steps)
         {
             if (visible) model.scroll(-steps * 3);
         }

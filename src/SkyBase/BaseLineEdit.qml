@@ -103,7 +103,7 @@ MouseArea
     // Events
     //---------------------------------------------------------------------------------------------
 
-    QML_EVENT onPressed: function(mouse)
+    /* QML_EVENT */ onPressed: function(mouse)
     {
         if (mouse.button & Qt.LeftButton)
         {
@@ -283,7 +283,7 @@ MouseArea
             else baseLineEdit.deselect();
         }
 
-        QML_EVENT Keys.onPressed: function(event)
+        /* QML_EVENT */ Keys.onPressed: function(event)
         {
             if (event.key == Qt.Key_Left
                 &&
@@ -301,7 +301,7 @@ MouseArea
             onKeyPressed(event);
         }
 
-        QML_EVENT Keys.onReleased: function(event)
+        /* QML_EVENT */ Keys.onReleased: function(event)
         {
             onKeyReleased(event);
         }

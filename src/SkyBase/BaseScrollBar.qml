@@ -112,7 +112,7 @@ MouseArea
     {
         target: view
 
-        QML_CONNECTION function onContentYChanged() { pUpdateHandle(); }
+        /* QML_CONNECTION */ function onContentYChanged() { pUpdateHandle(); }
     }
 
     //---------------------------------------------------------------------------------------------

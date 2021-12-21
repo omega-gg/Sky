@@ -139,31 +139,31 @@ WallBookmarkTrack
     {
         target: tabs
 
-        QML_CONNECTION function onCurrentTabChanged()
+        /* QML_CONNECTION */ function onCurrentTabChanged()
         {
             pUpdatePlayerItems(isExposed);
 
             pUpdateSplit();
         }
 
-        QML_CONNECTION function onHighlightedTabChanged()
+        /* QML_CONNECTION */ function onHighlightedTabChanged()
         {
             pUpdatePlayerItems(isExposed);
 
             pCheckSplit();
         }
 
-        QML_CONNECTION function onTabsMoved() { pUpdateSplit(); }
+        /* QML_CONNECTION */ function onTabsMoved() { pUpdateSplit(); }
     }
 
     Connections
     {
         target: (itemText.visible) ? player : null
 
-        QML_CONNECTION function onWidthChanged () { pUpdateText(); }
-        QML_CONNECTION function onHeightChanged() { pUpdateText(); }
+        /* QML_CONNECTION */ function onWidthChanged () { pUpdateText(); }
+        /* QML_CONNECTION */ function onHeightChanged() { pUpdateText(); }
 
-        QML_CONNECTION function onFillModeChanged() { pUpdateText(); }
+        /* QML_CONNECTION */ function onFillModeChanged() { pUpdateText(); }
     }
 
     //---------------------------------------------------------------------------------------------
@@ -482,9 +482,9 @@ WallBookmarkTrack
 
         cursor: Qt.PointingHandCursor
 
-        QML_EVENT onPressed: function(mouse) { playerPressed(mouse); }
+        /* QML_EVENT */ onPressed: function(mouse) { playerPressed(mouse); }
 
-        QML_EVENT onDoubleClicked: function(mouse) { playerDoubleClicked(mouse); }
+        /* QML_EVENT */ onDoubleClicked: function(mouse) { playerDoubleClicked(mouse); }
     }
 
     Rectangle
@@ -743,7 +743,7 @@ WallBookmarkTrack
 
         currentTime: player.currentTime
 
-        QML_EVENT onLoaded: function(ok) { subtitleLoaded(ok); }
+        /* QML_EVENT */ onLoaded: function(ok) { subtitleLoaded(ok); }
 
         onVisibleChanged: pUpdateText()
     }
@@ -986,8 +986,8 @@ WallBookmarkTrack
         // Events
         //-----------------------------------------------------------------------------------------
 
-        QML_EVENT onTitleClicked : function(mouse) { wall.titleClicked (mouse); }
-        QML_EVENT onAuthorClicked: function(mouse) { wall.authorClicked(mouse); }
+        /* QML_EVENT */ onTitleClicked : function(mouse) { wall.titleClicked (mouse); }
+        /* QML_EVENT */ onAuthorClicked: function(mouse) { wall.authorClicked(mouse); }
 
         onContextual: contextualBrowser()
     }

@@ -65,7 +65,7 @@ MouseArea
     // Events
     //---------------------------------------------------------------------------------------------
 
-    QML_EVENT onWheeled: function(steps)
+    /* QML_EVENT */ onWheeled: function(steps)
     {
         if (timerScroll.running) return;
 

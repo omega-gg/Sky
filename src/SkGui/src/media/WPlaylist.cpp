@@ -1003,9 +1003,9 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
         else index = count;
     }
 
-    beginTracksInsert(index, index + countAdd - 1);
-
     int oldIndex = index;
+
+    beginTracksInsert(index, index + countAdd - 1);
 
     foreach (const WTrack & track, tracks)
     {
@@ -2277,14 +2277,13 @@ void WPlaylist::updateIndex()
 
     int index = indexOf(d->currentTrack);
 
-    if (d->currentIndex != index)
-    {
-        d->currentIndex = index;
+    if (d->currentIndex == index) return;
 
-        d->currentIndexChanged();
+    d->currentIndex = index;
 
-        emit currentIndexChanged();
-    }
+    d->currentIndexChanged();
+
+    emit currentIndexChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

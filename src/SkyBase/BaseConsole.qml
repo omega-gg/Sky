@@ -121,6 +121,14 @@ BaseTextEdit
 //#END
     }
 
+//#QT_6
+    //---------------------------------------------------------------------------------------------
+    // BaseTextEdit events reimplementation
+
+    function onKeyPressed (event) {}
+    function onKeyReleased(event) {}
+//#END
+
     //---------------------------------------------------------------------------------------------
     // Private
 

@@ -124,7 +124,7 @@ TextEdit
     // Keys
     //---------------------------------------------------------------------------------------------
 
-    QML_EVENT Keys.onPressed: function(event)
+    /* QML_EVENT */ Keys.onPressed: function(event)
     {
         if (event.key == Qt.Key_Left
             &&
@@ -142,7 +142,7 @@ TextEdit
         onKeyPressed(event);
     }
 
-    QML_EVENT Keys.onReleased: function(event)
+    /* QML_EVENT */ Keys.onReleased: function(event)
     {
         onKeyReleased(event);
     }

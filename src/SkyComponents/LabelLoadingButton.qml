@@ -66,7 +66,7 @@ LabelLoadingText
         icon          : st.icon12x12_close
         iconSourceSize: st.size12x12
 
-        QML_EVENT onPressed: function(mouse) { labelLoading.pressed(mouse); }
-        QML_EVENT onClicked: function(mouse) { labelLoading.clicked(mouse); }
+        /* QML_EVENT */ onPressed: function(mouse) { labelLoading.pressed(mouse); }
+        /* QML_EVENT */ onClicked: function(mouse) { labelLoading.clicked(mouse); }
     }
 }

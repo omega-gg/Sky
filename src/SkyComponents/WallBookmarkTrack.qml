@@ -101,7 +101,7 @@ BaseWall
     // Events
     //---------------------------------------------------------------------------------------------
 
-    QML_EVENT onPressed: function(mouse)
+    /* QML_EVENT */ onPressed: function(mouse)
     {
         window.clearFocus();
 
@@ -182,7 +182,7 @@ BaseWall
         }
     }
 
-    QML_EVENT onClicked: function(mouse)
+    /* QML_EVENT */ onClicked: function(mouse)
     {
         if (indexPress == -1 || indexPress != indexHover) return;
 
@@ -196,7 +196,7 @@ BaseWall
         }
     }
 
-    QML_EVENT onDoubleClicked: function(mouse)
+    /* QML_EVENT */ onDoubleClicked: function(mouse)
     {
         if (indexPress == -1 || indexPress != indexHover) return;
 
@@ -228,19 +228,19 @@ BaseWall
     {
         target: itemTabs
 
-        QML_CONNECTION function onIsAnimatedChanged()
+        /* QML_CONNECTION */ function onIsAnimatedChanged()
         {
             if (pActive == false) return;
 
             isAnimated = itemTabs.isAnimated;
         }
 
-        QML_CONNECTION function onIndexTopChanged()
+        /* QML_CONNECTION */ function onIndexTopChanged()
         {
             indexTop = itemTabs.indexTop;
         }
 
-        QML_CONNECTION function onIndexRemoveChanged()
+        /* QML_CONNECTION */ function onIndexRemoveChanged()
         {
             if (itemTabs.indexRemove == indexRemove) return;
 
@@ -254,7 +254,7 @@ BaseWall
     {
         target: tabs
 
-        QML_CONNECTION function onCurrentIndexChanged() { updateCurrentPage(); }
+        /* QML_CONNECTION */ function onCurrentIndexChanged() { updateCurrentPage(); }
     }
 
     //---------------------------------------------------------------------------------------------

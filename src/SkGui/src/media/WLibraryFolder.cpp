@@ -1318,9 +1318,9 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
         index = count;
     }
 
-    d->beginItemsInsert(index, index + countAdd - 1);
-
     int oldIndex = index;
+
+    d->beginItemsInsert(index, index + countAdd - 1);
 
     foreach (const WLibraryFolderItem & item, items)
     {

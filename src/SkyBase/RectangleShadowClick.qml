@@ -99,7 +99,7 @@ RectangleShadow
         onEntered: rectangleShadowClick.entered()
         onExited : rectangleShadowClick.exited ()
 
-        QML_EVENT onPressed: function(mouse) { rectangleShadowClick.pressed(mouse); }
-        QML_EVENT onClicked: function(mouse) { rectangleShadowClick.clicked(mouse); }
+        /* QML_EVENT */ onPressed: function(mouse) { rectangleShadowClick.pressed(mouse); }
+        /* QML_EVENT */ onClicked: function(mouse) { rectangleShadowClick.clicked(mouse); }
     }
 }

@@ -343,7 +343,7 @@ void skipElse(QTextStream * stream, QString * line)
 
 void applyEvent(QString * line, int index)
 {
-    line->remove(index, 10);
+    line->remove(index, 16);
 
     if (qt > 5) return;
 
@@ -358,7 +358,7 @@ void applyEvent(QString * line, int index)
 
 void applyConnection(QString * line, int index)
 {
-    line->remove(index, 15);
+    line->remove(index, 21);
 
     if (qt > 5) return;
 
@@ -437,11 +437,11 @@ QString scanFile(const QString & input)
                    &&
                    line.at(index).isSpace()) index++;
 
-            if (line.indexOf("QML_EVENT ") == index)
+            if (line.indexOf("/* QML_EVENT */ ") == index)
             {
                 applyEvent(&line, index);
             }
-            else if (line.indexOf("QML_CONNECTION ") == index)
+            else if (line.indexOf("/* QML_CONNECTION */ ") == index)
             {
                 applyConnection(&line, index);
             }
