@@ -28,6 +28,9 @@
 
 // Sk includes
 #include <WAbstractBackend>
+#ifdef QT_6
+#include <WList>
+#endif
 
 #ifndef SK_NO_TRACK
 
@@ -111,6 +114,13 @@ private:
     friend class WPlaylistPrivate;
     friend class WPlaylistRead;
 };
+
+// Typedefs
+#ifdef QT_OLD
+typedef QList<WTrack> WListTrack;
+#else
+typedef WList<WTrack> WListTrack;
+#endif
 
 #endif // SK_NO_TRACK
 #endif // WTRACK_H

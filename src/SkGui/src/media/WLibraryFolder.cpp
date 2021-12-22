@@ -162,7 +162,7 @@ public: // Variables
 
     qreal scrollValue;
 
-    QList<WLibraryFolderItem> dataItems;
+    WListFolderItem dataItems;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -224,7 +224,7 @@ public: // Variables
 
     stream.writeStartElement("items");
 
-    foreach (const WLibraryFolderItem & data, dataItems)
+    W_FOREACH (const WLibraryFolderItem & data, dataItems)
     {
         stream.writeStartElement("item");
 
@@ -330,7 +330,7 @@ public: // Variables
 
     qreal scrollValue;
 
-    QList<WLibraryFolderItem> dataItems;
+    WListFolderItem dataItems;
 };
 
 //=================================================================================================
@@ -866,7 +866,7 @@ WLibraryFolderItem * WLibraryFolderPrivate::itemAt(int index)
 
 //-------------------------------------------------------------------------------------------------
 
-void WLibraryFolderPrivate::loadItems(const QList<WLibraryFolderItem> & items)
+void WLibraryFolderPrivate::loadItems(const WListFolderItem & items)
 {
     Q_Q(WLibraryFolder);
 
@@ -1271,7 +1271,7 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
 /* Q_INVOKABLE */ void WLibraryFolder::insertLibraryItems(int index,
                                                           const QList<WLibraryItem *> & items)
 {
-    QList<WLibraryFolderItem> folderItems;
+    WListFolderItem folderItems;
 
     foreach (WLibraryItem * item, items)
     {
@@ -1287,10 +1287,10 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
 
 /* Q_INVOKABLE */ void WLibraryFolder::addItem(const WLibraryFolderItem & item)
 {
-    insertItems(count(), QList<WLibraryFolderItem>() << item);
+    insertItems(count(), WListFolderItem() << item);
 }
 
-/* Q_INVOKABLE */ void WLibraryFolder::addItems(const QList<WLibraryFolderItem> & items)
+/* Q_INVOKABLE */ void WLibraryFolder::addItems(const WListFolderItem & items)
 {
     insertItems(count(), items);
 }
@@ -1299,11 +1299,10 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
 
 /* Q_INVOKABLE */ void WLibraryFolder::insertItem(int index, const WLibraryFolderItem & item)
 {
-    insertItems(index, QList<WLibraryFolderItem>() << item);
+    insertItems(index, WListFolderItem() << item);
 }
 
-/* Q_INVOKABLE */ void WLibraryFolder::insertItems(int index,
-                                                   const QList<WLibraryFolderItem> & items)
+/* Q_INVOKABLE */ void WLibraryFolder::insertItems(int index, const WListFolderItem & items)
 {
     Q_D(WLibraryFolder);
 
@@ -1322,7 +1321,7 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
 
     d->beginItemsInsert(index, index + countAdd - 1);
 
-    foreach (const WLibraryFolderItem & item, items)
+    W_FOREACH (const WLibraryFolderItem & item, items)
     {
         d->items.insert(index, item);
 
@@ -2316,7 +2315,7 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
     QString tabA = Sk::tabs(1);
     QString tabB = Sk::tabs(2);
 
-    foreach (const WLibraryFolderItem & item, d->items)
+    W_FOREACH (const WLibraryFolderItem & item, d->items)
     {
         Sk::bmlTag(vbml, tabA + WLibraryItem::typeToString(item.type));
 
@@ -2419,7 +2418,7 @@ void WLibraryFolder::updateIndex()
 
     action->scrollValue = d->scrollValue;
 
-    foreach (const WLibraryFolderItem & item, d->items)
+    W_FOREACH (const WLibraryFolderItem & item, d->items)
     {
         action->dataItems.append(item);
     }

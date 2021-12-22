@@ -52,7 +52,7 @@ public: // Function
 
     WTrack * getTrack(int index);
 
-    void loadTracks(const QList<WTrack> & tracks);
+    void loadTracks(const WListTrack & tracks);
 
     void loadTrack(int index);
 
@@ -80,7 +80,7 @@ public: // Function
     void emitSelectedTracksChanged(const QList<int> & indexes);
 
 public: // Variables
-    QList<WTrack> tracks;
+    WListTrack tracks;
 
     WListId ids;
 

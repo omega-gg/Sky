@@ -853,7 +853,11 @@ inline QVariant count(const WBackendUniversalNode * node,
 
     QVariant variant = node->getVariant(parameters, 0);
 
+#ifdef QT_OLD
     if (variant.type() == QVariant::Hash)
+#else
+    if (variant.typeId() == QMetaType::QVariantHash)
+#endif
     {
          return variant.toHash().count();
     }
@@ -2368,7 +2372,7 @@ private: // Functions
     WBackendUniversalData::Engines extractEngines(const WYamlReader & reader,
                                                   const QString     & key) const;
 
-    QList<WLibraryFolderItem> extractItems(const WYamlReader & reader) const;
+    WListFolderItem extractItems(const WYamlReader & reader) const;
 
     QString extractValue(const WYamlNode & node, const QString & key) const;
 
@@ -2541,9 +2545,9 @@ WBackendUniversalQuery::extractEngines(const WYamlReader & reader, const QString
 
 //-------------------------------------------------------------------------------------------------
 
-QList<WLibraryFolderItem> WBackendUniversalQuery::extractItems(const WYamlReader & reader) const
+WListFolderItem WBackendUniversalQuery::extractItems(const WYamlReader & reader) const
 {
-    QList<WLibraryFolderItem> list;
+    WListFolderItem list;
 
     const WYamlNode * node = reader.at("items");
 
@@ -4302,7 +4306,7 @@ void WBackendUniversalPrivate::applyItemResults(WBackendUniversalParameters * pa
 
 //-------------------------------------------------------------------------------------------------
 
-void WBackendUniversalPrivate::applyTrack(QList<WTrack>  * tracks,
+void WBackendUniversalPrivate::applyTrack(WListTrack     * tracks,
                                           const QVariant & value) const
 {
     QHash<QString, QVariant> hash = value.toHash();
@@ -4330,8 +4334,7 @@ void WBackendUniversalPrivate::applyTrack(QList<WTrack>  * tracks,
     tracks->append(track);
 }
 
-void WBackendUniversalPrivate::applyItem(QList<WLibraryFolderItem> * items,
-                                         const QVariant            & value) const
+void WBackendUniversalPrivate::applyItem(WListFolderItem * items, const QVariant & value) const
 {
     QHash<QString, QVariant> hash = value.toHash();
 
@@ -4717,7 +4720,7 @@ WBackendUniversal::WBackendUniversal(const QString & id, const QString & source)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ QList<WLibraryFolderItem> WBackendUniversal::getLibraryItems() const
+/* Q_INVOKABLE virtual */ WListFolderItem WBackendUniversal::getLibraryItems() const
 {
     Q_D(const WBackendUniversal); return d->data.items;
 }
@@ -4727,7 +4730,7 @@ WLibraryFolderItem WBackendUniversal::getLibraryItem(const QString & id) const
 {
     Q_D(const WBackendUniversal);
 
-    foreach (const WLibraryFolderItem & item, d->data.items)
+    W_FOREACH (const WLibraryFolderItem & item, d->data.items)
     {
         // NOTE: By default the label is the lowercased title.
         if (item.label == id) return item;

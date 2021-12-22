@@ -314,7 +314,7 @@ public: // Variables
 
     qreal scrollValue;
 
-    QList<WTrack> dataTracks;
+    WListTrack dataTracks;
 };
 
 //=================================================================================================
@@ -626,7 +626,7 @@ void WPlaylistPrivate::init()
 
 /* virtual */ const WTrack * WPlaylistPrivate::itemAt(int index) const
 {
-    return &(tracks[index]);
+    return &(tracks.at(index));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -638,7 +638,7 @@ void WPlaylistPrivate::init()
 
 //-------------------------------------------------------------------------------------------------
 
-void WPlaylistPrivate::loadTracks(const QList<WTrack> & tracks)
+void WPlaylistPrivate::loadTracks(const WListTrack & tracks)
 {
     Q_Q(WPlaylist);
 
@@ -969,10 +969,10 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
 /* Q_INVOKABLE */ void WPlaylist::addTrack(const WTrack & track)
 {
-    insertTracks(count(), QList<WTrack>() << track);
+    insertTracks(count(), WListTrack() << track);
 }
 
-/* Q_INVOKABLE */ void WPlaylist::addTracks(const QList<WTrack> & tracks)
+/* Q_INVOKABLE */ void WPlaylist::addTracks(const WListTrack & tracks)
 {
     insertTracks(count(), tracks);
 }
@@ -981,10 +981,10 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
 /* Q_INVOKABLE */ void WPlaylist::insertTrack(int index, const WTrack & track)
 {
-    insertTracks(index, QList<WTrack>() << track);
+    insertTracks(index, WListTrack() << track);
 }
 
-/* Q_INVOKABLE */ void WPlaylist::insertTracks(int index, const QList<WTrack> & tracks)
+/* Q_INVOKABLE */ void WPlaylist::insertTracks(int index, const WListTrack & tracks)
 {
     Q_D(WPlaylist);
 
@@ -1007,7 +1007,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
     beginTracksInsert(index, index + countAdd - 1);
 
-    foreach (const WTrack & track, tracks)
+    W_FOREACH (const WTrack & track, tracks)
     {
         d->tracks.insert(index, track);
 
@@ -1056,7 +1056,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 {
     Q_D(WPlaylist);
 
-    QList<WTrack> tracks;
+    WListTrack tracks;
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
     QStringList urls = url.split('\n', Qt::SkipEmptyParts);
@@ -1077,7 +1077,10 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     {
         count = d->maxCount - this->count() - 1;
 
-        tracks = tracks.mid(0, count);
+        while (tracks.count() > count)
+        {
+            tracks.pop_back();
+        }
     }
 
     insertTracks(index, tracks);
@@ -1164,7 +1167,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
         d->emitSelectedTracksChanged(changed);
     }
 
-    foreach (WTrack * track, tracks)
+    W_FOREACH (WTrack * track, tracks)
     {
         wControllerPlaylist->d_func()->abortQueryTrack(track);
 
@@ -1263,7 +1266,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
         ||
         (d->type != Playlist && d->type != PlaylistFeed)) return;
 
-    foreach (const WTrack & track, d->tracks)
+    W_FOREACH (const WTrack & track, d->tracks)
     {
         QString cover = track.d_func()->cover;
 
@@ -1720,7 +1723,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 {
     Q_D(const WPlaylist);
 
-    foreach (const WTrack & track, d->tracks)
+    W_FOREACH (const WTrack & track, d->tracks)
     {
         if (track.d_func()->source == source) return true;
     }
@@ -1764,7 +1767,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 {
     Q_ASSERT(destination);
 
-    QList<WTrack> tracks;
+    WListTrack tracks;
 
     foreach (int index, indexes)
     {
@@ -2232,7 +2235,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     QString tabA = Sk::tabs(1);
     QString tabB = Sk::tabs(2);
 
-    foreach (const WTrack & track, d->tracks)
+    W_FOREACH (const WTrack & track, d->tracks)
     {
         const WTrackPrivate * p = track.d_func();
 
@@ -2400,7 +2403,7 @@ void WPlaylist::endTracksRemove() const
 
     action->scrollValue = d->scrollValue;
 
-    foreach (const WTrack & track, d->tracks)
+    W_FOREACH (const WTrack & track, d->tracks)
     {
         const WTrackPrivate * p = track.d_func();
 

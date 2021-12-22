@@ -189,7 +189,7 @@ public: // Variables
     QString title;
     QString cover;
 
-    QList<WTrack> tracks;
+    WListTrack tracks;
 
     int currentIndex;
 
@@ -209,7 +209,7 @@ public: // Variables
     QString title;
     QString cover;
 
-    QList<WLibraryFolderItem> items;
+    WListFolderItem items;
 
     int currentIndex;
 
@@ -429,7 +429,7 @@ public: // Virtual interface
     Q_INVOKABLE virtual QString getHost () const; // {}
     Q_INVOKABLE virtual QString getCover() const; // {}
 
-    Q_INVOKABLE virtual QList<WLibraryFolderItem> getLibraryItems() const; // {}
+    Q_INVOKABLE virtual WListFolderItem getLibraryItems() const; // {}
 
     Q_INVOKABLE virtual WLibraryFolderItem getLibraryItem(const QString & id) const; // {}
 

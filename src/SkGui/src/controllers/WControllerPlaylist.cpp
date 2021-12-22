@@ -1565,7 +1565,7 @@ void WControllerPlaylistPrivate::loadUrls(QIODevice * device, const WBackendNetQ
 
 //-------------------------------------------------------------------------------------------------
 
-void WControllerPlaylistPrivate::scanItems(QList<WLibraryFolderItem> * items) const
+void WControllerPlaylistPrivate::scanItems(WListFolderItem * items) const
 {
     Q_Q(const WControllerPlaylist);
 
@@ -2269,7 +2269,7 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
 
         if (reply.clearDuplicate)
         {
-            QList<WTrack> * tracks = const_cast<QList<WTrack> *> (&(reply.tracks));
+            WListTrack * tracks = const_cast<WListTrack *> (&(reply.tracks));
 
             for (int i = 0; i < tracks->count();)
             {
@@ -2373,8 +2373,7 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
 
         if (reply.clearDuplicate)
         {
-            QList<WLibraryFolderItem> * items
-                                      = const_cast<QList<WLibraryFolderItem> *> (&(reply.items));
+            WListFolderItem * items = const_cast<WListFolderItem *> (&(reply.items));
 
             for (int i = 0; i < items->count();)
             {
@@ -2394,8 +2393,7 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
         }
         else if (reply.scanItems)
         {
-            QList<WLibraryFolderItem> * items
-                                      = const_cast<QList<WLibraryFolderItem> *> (&(reply.items));
+            WListFolderItem * items = const_cast<WListFolderItem *> (&(reply.items));
 
             scanItems(items);
         }
