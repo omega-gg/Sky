@@ -2114,11 +2114,13 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
 /* Q_INVOKABLE */ QList<const WTrack *> WPlaylist::trackPointers() const
 {
+    Q_D(const WPlaylist);
+
     QList<const WTrack *> tracks;
 
     for (int i = 0; i < count(); i++)
     {
-        tracks.append(trackPointerAt(i));
+        tracks.append(d->itemAt(i));
     }
 
     return tracks;

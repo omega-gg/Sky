@@ -76,7 +76,7 @@ public: // Functions
 
     void updateLock(WLibraryItem * item, bool locked);
 
-    void loadItems(const WListFolderItem & items);
+    void loadItems(const QList<WLibraryFolderItem> & items);
 
     void deleteItems();
 
@@ -115,7 +115,7 @@ public: // Slots
     void onItemLoaded    ();
 
 public: // Variables
-    WListFolderItem items;
+    QList<WLibraryFolderItem> items;
 
     WListId                    ids;
     QHash<int, WLibraryItem *> idHash;

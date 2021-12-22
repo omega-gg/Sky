@@ -92,7 +92,7 @@ public: // Variables
     QString host;
     QString cover;
 
-    WListFolderItem items;
+    QList<WLibraryFolderItem> items;
 
     QString validate;
 
@@ -345,8 +345,8 @@ public: // Functions
 
     //---------------------------------------------------------------------------------------------
 
-    void applyTrack(WListTrack      * tracks, const QVariant & value) const;
-    void applyItem (WListFolderItem * items,  const QVariant & value) const;
+    void applyTrack(WListTrack                * tracks, const QVariant & value) const;
+    void applyItem (QList<WLibraryFolderItem> * items,  const QVariant & value) const;
 
     void applyQueries(QList<WBackendNetQuery> * queries, QVariant * value) const;
 

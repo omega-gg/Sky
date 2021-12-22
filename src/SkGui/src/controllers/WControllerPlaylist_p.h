@@ -151,7 +151,7 @@ public: // Functions
     void loadUrls(QIODevice * device, const WBackendNetQuery & query, const char * signal,
                                                                       const char * slot) const;
 
-    void scanItems(WListFolderItem * items) const;
+    void scanItems(QList<WLibraryFolderItem> * items) const;
 
     void addToCache(const QString & url, const QByteArray & array,
                                          const QString    & extension = QString()) const;

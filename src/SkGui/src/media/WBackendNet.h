@@ -209,7 +209,7 @@ public: // Variables
     QString title;
     QString cover;
 
-    WListFolderItem items;
+    QList<WLibraryFolderItem> items;
 
     int currentIndex;
 
@@ -429,7 +429,7 @@ public: // Virtual interface
     Q_INVOKABLE virtual QString getHost () const; // {}
     Q_INVOKABLE virtual QString getCover() const; // {}
 
-    Q_INVOKABLE virtual WListFolderItem getLibraryItems() const; // {}
+    Q_INVOKABLE virtual QList<WLibraryFolderItem> getLibraryItems() const; // {}
 
     Q_INVOKABLE virtual WLibraryFolderItem getLibraryItem(const QString & id) const; // {}
 

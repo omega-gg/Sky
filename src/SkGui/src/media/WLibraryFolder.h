@@ -68,13 +68,6 @@ public: // Variables
     QString label;
 };
 
-// Typedefs
-#ifdef QT_OLD
-typedef WListFolderItem WListFolderItem;
-#else
-typedef WList<WLibraryFolderItem> WListFolderItem;
-#endif
-
 //-------------------------------------------------------------------------------------------------
 // WLibraryFolderWatcher
 //-------------------------------------------------------------------------------------------------
@@ -144,11 +137,11 @@ public: // Interface
     Q_INVOKABLE void insertLibraryItem (int index, WLibraryItem                * item);
     Q_INVOKABLE void insertLibraryItems(int index, const QList<WLibraryItem *> & items);
 
-    Q_INVOKABLE void addItem (const WLibraryFolderItem & item);
-    Q_INVOKABLE void addItems(const WListFolderItem    & items);
+    Q_INVOKABLE void addItem (const WLibraryFolderItem        & item);
+    Q_INVOKABLE void addItems(const QList<WLibraryFolderItem> & items);
 
-    Q_INVOKABLE void insertItem (int index, const WLibraryFolderItem & item);
-    Q_INVOKABLE void insertItems(int index, const WListFolderItem    & items);
+    Q_INVOKABLE void insertItem (int index, const WLibraryFolderItem        & item);
+    Q_INVOKABLE void insertItems(int index, const QList<WLibraryFolderItem> & items);
 
     Q_INVOKABLE void addNewItem(Type type, const QString & source = QString(),
                                            const QString & title  = QString(),

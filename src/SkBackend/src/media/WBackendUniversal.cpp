@@ -2372,7 +2372,7 @@ private: // Functions
     WBackendUniversalData::Engines extractEngines(const WYamlReader & reader,
                                                   const QString     & key) const;
 
-    WListFolderItem extractItems(const WYamlReader & reader) const;
+    QList<WLibraryFolderItem> extractItems(const WYamlReader & reader) const;
 
     QString extractValue(const WYamlNode & node, const QString & key) const;
 
@@ -2545,9 +2545,9 @@ WBackendUniversalQuery::extractEngines(const WYamlReader & reader, const QString
 
 //-------------------------------------------------------------------------------------------------
 
-WListFolderItem WBackendUniversalQuery::extractItems(const WYamlReader & reader) const
+QList<WLibraryFolderItem> WBackendUniversalQuery::extractItems(const WYamlReader & reader) const
 {
-    WListFolderItem list;
+    QList<WLibraryFolderItem> list;
 
     const WYamlNode * node = reader.at("items");
 
@@ -4334,7 +4334,8 @@ void WBackendUniversalPrivate::applyTrack(WListTrack     * tracks,
     tracks->append(track);
 }
 
-void WBackendUniversalPrivate::applyItem(WListFolderItem * items, const QVariant & value) const
+void WBackendUniversalPrivate::applyItem(QList<WLibraryFolderItem> * items,
+                                         const QVariant            & value) const
 {
     QHash<QString, QVariant> hash = value.toHash();
 
@@ -4720,7 +4721,7 @@ WBackendUniversal::WBackendUniversal(const QString & id, const QString & source)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ WListFolderItem WBackendUniversal::getLibraryItems() const
+/* Q_INVOKABLE virtual */ QList<WLibraryFolderItem> WBackendUniversal::getLibraryItems() const
 {
     Q_D(const WBackendUniversal); return d->data.items;
 }
@@ -4730,7 +4731,7 @@ WLibraryFolderItem WBackendUniversal::getLibraryItem(const QString & id) const
 {
     Q_D(const WBackendUniversal);
 
-    W_FOREACH (const WLibraryFolderItem & item, d->data.items)
+    foreach (const WLibraryFolderItem & item, d->data.items)
     {
         // NOTE: By default the label is the lowercased title.
         if (item.label == id) return item;
