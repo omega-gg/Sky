@@ -25,9 +25,6 @@
 
 // Sk includes
 #include <WLibraryItem>
-#ifdef QT_6
-#include <WList>
-#endif
 
 #ifndef SK_NO_LIBRARYFOLDER
 

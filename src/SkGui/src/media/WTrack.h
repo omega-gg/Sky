@@ -28,9 +28,6 @@
 
 // Sk includes
 #include <WAbstractBackend>
-#ifdef QT_6
-#include <WList>
-#endif
 
 #ifndef SK_NO_TRACK
 

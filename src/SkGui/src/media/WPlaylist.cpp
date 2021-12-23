@@ -670,11 +670,9 @@ void WPlaylistPrivate::insertTracks(int index, WList<WTrack> tracks)
 {
     Q_Q(WPlaylist);
 
-    int countAdd = tracks.count();
-
-    if (countAdd == 0 || q->checkFull(countAdd)) return;
-
     int count = tracks.count();
+
+    if (count == 0 || q->checkFull(count)) return;
 
     index = beginInsert(index, count);
 
@@ -1073,11 +1071,9 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 {
     Q_D(WPlaylist);
 
-    int countAdd = tracks.count();
-
-    if (countAdd == 0 || checkFull(countAdd)) return;
-
     int count = tracks.count();
+
+    if (count == 0 || checkFull(count)) return;
 
     index = d->beginInsert(index, count);
 

@@ -105,6 +105,7 @@ W_DECLARE_PRIVATE_COPY(Class)    \
 #ifdef QT_OLD
 #define W_FOREACH(value, list) foreach (value, list)
 #else
+// NOTE: C++11 is required for this.
 #define W_FOREACH(value, list) for (value : list)
 #endif
 

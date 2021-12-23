@@ -33,6 +33,12 @@
     We mean it.
 */
 
+// Qt includes
+#ifdef QT_6
+#include <WList>
+#endif
+
+// Private includes
 #include <private/WLibraryItem_p>
 
 #ifndef SK_NO_PLAYLIST
@@ -89,10 +95,10 @@ public: // Function
     void emitSelectedTracksChanged(const QList<int> & indexes);
 
 public: // Variables
-    // NOTE: We want to ensure that data pointers are updated on a move operation.
 #ifdef QT_OLD
     QList<WTrack> tracks;
 #else
+    // NOTE: We want to ensure that data pointers are updated on a move operation.
     WList<WTrack> tracks;
 #endif
 
