@@ -4306,7 +4306,7 @@ void WBackendUniversalPrivate::applyItemResults(WBackendUniversalParameters * pa
 
 //-------------------------------------------------------------------------------------------------
 
-void WBackendUniversalPrivate::applyTrack(WListTrack     * tracks,
+void WBackendUniversalPrivate::applyTrack(QList<WTrack>  * tracks,
                                           const QVariant & value) const
 {
     QHash<QString, QVariant> hash = value.toHash();

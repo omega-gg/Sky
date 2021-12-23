@@ -47,12 +47,21 @@ public:
     void init();
 
 public: // Function
+    int  beginInsert(int index, int count);
+    void endInsert  (int index, int count);
+
+    void insertTrack(WPlaylist * playlist, int index, const WTrack & track);
+
+#ifdef QT_6
+    void insertTracks(int index, WList<WTrack> tracks);
+#endif
+
     const WTrack * itemFromId(int id)    const;
     const WTrack * itemAt    (int index) const;
 
     WTrack * getTrack(int index);
 
-    void loadTracks(const WListTrack & tracks);
+    void loadTracks(const QList<WTrack> & tracks);
 
     void loadTrack(int index);
 
@@ -80,7 +89,12 @@ public: // Function
     void emitSelectedTracksChanged(const QList<int> & indexes);
 
 public: // Variables
-    WListTrack tracks;
+    // NOTE: We want to ensure that data pointers are updated on a move operation.
+#ifdef QT_OLD
+    QList<WTrack> tracks;
+#else
+    WList<WTrack> tracks;
+#endif
 
     WListId ids;
 

@@ -31,8 +31,10 @@
 
 #ifndef SK_NO_LIST
 
-// NOTE Qt6: We need a WList when we want to ensure the data pointers are updated on a move
-//           operation. A QList will move the data without changing the pointers.
+// NOTE Qt6: A WList is useful when we want to ensure that data pointers are updated on a move
+//           operation. A QList will move the data between pointers (std::rotate). When using a
+//           WList we're losing the QList implicit sharing. So it should be used when we have no
+//           other choice.
 
 // NOTE: You should use W_FOREACH instead of foreach to avoid copying the elements while looping.
 
@@ -58,8 +60,6 @@ public: // Interface
 
 public: // Operators
     T & operator[](int index);
-
-    WList<T> & operator<<(const T & value);
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -141,14 +141,6 @@ T & WList<T>::operator[](int index)
     Q_ASSERT(index >= 0 && index < (int) this->size());
 
     return *(std::next(this->begin(), index));
-}
-
-template<typename T>
-WList<T> & WList<T>::operator<<(const T & value)
-{
-    append(value);
-
-    return *this;
 }
 
 #endif // SK_NO_LIST

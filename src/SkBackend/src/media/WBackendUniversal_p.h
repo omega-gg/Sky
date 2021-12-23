@@ -345,7 +345,7 @@ public: // Functions
 
     //---------------------------------------------------------------------------------------------
 
-    void applyTrack(WListTrack                * tracks, const QVariant & value) const;
+    void applyTrack(QList<WTrack>             * tracks, const QVariant & value) const;
     void applyItem (QList<WLibraryFolderItem> * items,  const QVariant & value) const;
 
     void applyQueries(QList<WBackendNetQuery> * queries, QVariant * value) const;

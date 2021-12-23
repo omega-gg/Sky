@@ -2269,7 +2269,7 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
 
         if (reply.clearDuplicate)
         {
-            WListTrack * tracks = const_cast<WListTrack *> (&(reply.tracks));
+            QList<WTrack> * tracks = const_cast<QList<WTrack> *> (&(reply.tracks));
 
             for (int i = 0; i < tracks->count();)
             {

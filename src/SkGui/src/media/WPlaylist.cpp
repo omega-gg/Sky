@@ -314,7 +314,7 @@ public: // Variables
 
     qreal scrollValue;
 
-    WListTrack dataTracks;
+    QList<WTrack> dataTracks;
 };
 
 //=================================================================================================
@@ -609,6 +609,91 @@ void WPlaylistPrivate::init()
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
+int WPlaylistPrivate::beginInsert(int index, int count)
+{
+    Q_Q(WPlaylist);
+
+    if (index < 0 || index > count)
+    {
+        if (type == WPlaylist::PlaylistFeed) index = 0;
+        else                                 index = count;
+    }
+
+    q->beginTracksInsert(index, index + count - 1);
+
+    return index;
+}
+
+void WPlaylistPrivate::endInsert(int index, int count)
+{
+    Q_Q(WPlaylist);
+
+    q->endTracksInsert();
+
+    q->updateCover();
+    q->updateIndex();
+
+    emit q->countChanged();
+
+    emit q->tracksInserted(index, count);
+
+    q->save();
+}
+
+void WPlaylistPrivate::insertTrack(WPlaylist * playlist, int index, const WTrack & track)
+{
+    tracks.insert(index, track);
+
+    WTrackPrivate * p = tracks[index].d_func();
+
+    p->playlist = playlist;
+
+    int id = p->id;
+
+    if (id == -1)
+    {
+        p->id = ids.generateId();
+    }
+    else if (ids.insertId(id) == false)
+    {
+        qWarning("WPlaylistPrivate::insertTrack: Id is already taken '%d'.", id);
+
+        p->id = ids.generateId();
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_6
+
+void WPlaylistPrivate::insertTracks(int index, WList<WTrack> tracks)
+{
+    Q_Q(WPlaylist);
+
+    int countAdd = tracks.count();
+
+    if (countAdd == 0 || q->checkFull(countAdd)) return;
+
+    int count = tracks.count();
+
+    index = beginInsert(index, count);
+
+    int oldIndex = index;
+
+    W_FOREACH (const WTrack & track, tracks)
+    {
+        insertTrack(q, index, track);
+
+        index++;
+    }
+
+    endInsert(oldIndex, count);
+}
+
+#endif
+
+//-------------------------------------------------------------------------------------------------
+
 /* virtual */ const WTrack * WPlaylistPrivate::itemFromId(int id) const
 {
     for (int i = 0; i < tracks.count(); i++)
@@ -638,7 +723,7 @@ void WPlaylistPrivate::init()
 
 //-------------------------------------------------------------------------------------------------
 
-void WPlaylistPrivate::loadTracks(const WListTrack & tracks)
+void WPlaylistPrivate::loadTracks(const QList<WTrack> & tracks)
 {
     Q_Q(WPlaylist);
 
@@ -969,10 +1054,10 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
 /* Q_INVOKABLE */ void WPlaylist::addTrack(const WTrack & track)
 {
-    insertTracks(count(), WListTrack() << track);
+    insertTracks(count(), QList<WTrack>() << track);
 }
 
-/* Q_INVOKABLE */ void WPlaylist::addTracks(const WListTrack & tracks)
+/* Q_INVOKABLE */ void WPlaylist::addTracks(const QList<WTrack> & tracks)
 {
     insertTracks(count(), tracks);
 }
@@ -981,10 +1066,10 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
 /* Q_INVOKABLE */ void WPlaylist::insertTrack(int index, const WTrack & track)
 {
-    insertTracks(index, WListTrack() << track);
+    insertTracks(index, QList<WTrack>() << track);
 }
 
-/* Q_INVOKABLE */ void WPlaylist::insertTracks(int index, const WListTrack & tracks)
+/* Q_INVOKABLE */ void WPlaylist::insertTracks(int index, const QList<WTrack> & tracks)
 {
     Q_D(WPlaylist);
 
@@ -992,57 +1077,20 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
     if (countAdd == 0 || checkFull(countAdd)) return;
 
-    int count = d->tracks.count();
+    int count = tracks.count();
 
-    if (index < 0 || index > count)
-    {
-        if (d->type == PlaylistFeed)
-        {
-             index = 0;
-        }
-        else index = count;
-    }
+    index = d->beginInsert(index, count);
 
     int oldIndex = index;
 
-    beginTracksInsert(index, index + countAdd - 1);
-
-    W_FOREACH (const WTrack & track, tracks)
+    foreach (const WTrack & track, tracks)
     {
-        d->tracks.insert(index, track);
-
-        WTrack * newTrack = &(d->tracks[index]);
-
-        WTrackPrivate * p = newTrack->d_func();
-
-        p->playlist = this;
-
-        int id = p->id;
-
-        if (id == -1)
-        {
-            p->id = d->ids.generateId();
-        }
-        else if (d->ids.insertId(id) == false)
-        {
-            qWarning("WPlaylist::insertTracks: Id is already taken '%d'.", id);
-
-            p->id = d->ids.generateId();
-        }
+        d->insertTrack(this, index, track);
 
         index++;
     }
 
-    endTracksInsert();
-
-    updateCover();
-    updateIndex();
-
-    emit countChanged();
-
-    emit tracksInserted(oldIndex, countAdd);
-
-    save();
+    d->endInsert(oldIndex, count);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1056,7 +1104,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 {
     Q_D(WPlaylist);
 
-    WListTrack tracks;
+    QList<WTrack> tracks;
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
     QStringList urls = url.split('\n', Qt::SkipEmptyParts);
@@ -1167,7 +1215,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
         d->emitSelectedTracksChanged(changed);
     }
 
-    W_FOREACH (WTrack * track, tracks)
+    foreach (WTrack * track, tracks)
     {
         wControllerPlaylist->d_func()->abortQueryTrack(track);
 
@@ -1750,7 +1798,11 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     playlist->setTitle(d->title);
     playlist->setCover(d->cover);
 
+#ifdef QT_OLD
     playlist->addTracks(d->tracks);
+#else
+    playlist->d_func()->insertTracks(0, d->tracks);
+#endif
 
     playlist->setCurrentIndex(d->currentIndex);
     playlist->setCurrentTime (d->currentTime);
@@ -1767,7 +1819,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 {
     Q_ASSERT(destination);
 
-    WListTrack tracks;
+    QList<WTrack> tracks;
 
     foreach (int index, indexes)
     {
@@ -1798,7 +1850,11 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
     Q_D(const WPlaylist);
 
+#ifdef QT_OLD
     destination->insertTracks(to, d->tracks);
+#else
+    destination->d_func()->insertTracks(to, d->tracks);
+#endif
 }
 
 /* Q_INVOKABLE */ void WPlaylist::copySelectedTo(WPlaylist * destination, int to) const

@@ -115,12 +115,5 @@ private:
     friend class WPlaylistRead;
 };
 
-// Typedefs
-#ifdef QT_OLD
-typedef QList<WTrack> WListTrack;
-#else
-typedef WList<WTrack> WListTrack;
-#endif
-
 #endif // SK_NO_TRACK
 #endif // WTRACK_H

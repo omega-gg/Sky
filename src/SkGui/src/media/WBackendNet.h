@@ -189,7 +189,7 @@ public: // Variables
     QString title;
     QString cover;
 
-    WListTrack tracks;
+    QList<WTrack> tracks;
 
     int currentIndex;
 
