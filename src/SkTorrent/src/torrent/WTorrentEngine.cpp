@@ -991,13 +991,25 @@ void WTorrentEnginePrivate::updatePriority(const torrent_handle & handle,
 
 //-------------------------------------------------------------------------------------------------
 
-void WTorrentEnginePrivate::applyBlock(WTorrentStream * stream, int block)
+void WTorrentEnginePrivate::applyBlock(const torrent_handle & handle,
+                                       WTorrentStream * stream, int block)
 {
     WTorrentData * data = stream->data;
 
     QBitArray * blocks = &(data->blocks);
 
     int blockCount = data->blockCount;
+
+    // FIXME libtorrent: Sometimes we receive a block event on a completed piece. This might be
+    //                   related to a corrupted resume data.
+    if (block == blockCount)
+    {
+        qDebug("PIECE ALREADY LOADED %d", stream->piece);
+
+        applyPiece(handle, stream, stream->piece);
+
+        return;
+    }
 
     int blockCurrent = stream->current * blockCount + block;
 
@@ -2828,6 +2840,8 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         if (data == NULL) return true;
 
+        const torrent_handle & handle = data->handle;
+
         int piece = eventTorrent->piece;
         int block = eventTorrent->block;
 
@@ -2843,7 +2857,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
                     &&
                     stream->current == piece && stream->block == block)
                 {
-                    d->applyBlock(stream, block);
+                    d->applyBlock(handle, stream, block);
                 }
             }
         }
@@ -2858,9 +2872,13 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
         if (data == NULL) return true;
 
+        const torrent_handle & handle = data->handle;
+
+        QBitArray * pieces = &(data->pieces);
+
         int piece = eventTorrent->value.toInt();
 
-        data->pieces.setBit(piece);
+        pieces->setBit(piece);
 
         int block      = 0;
         int blockCount = data->blockCount;
@@ -2883,7 +2901,7 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
 
                 if (stream->finished == false)
                 {
-                    d->applyPiece(data->handle, stream, piece);
+                    d->applyPiece(handle, stream, piece);
                 }
             }
             else if (item->finished == false)
@@ -2891,8 +2909,6 @@ WTorrentEngine::WTorrentEngine(const QString & path, qint64 sizeMax, QThread * t
                 int current = item->current;
 
                 if (current != piece) return true;
-
-                QBitArray * pieces = &(data->pieces);
 
                 int end = item->end;
 

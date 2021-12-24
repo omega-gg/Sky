@@ -242,8 +242,7 @@ public: // Functions
     void updatePriority(const torrent_handle & handle, QBitArray * pieces, int current,
                                                                            int end) const;
 
-    void applyBlock(WTorrentStream * stream, int block);
-
+    void applyBlock(const torrent_handle & handle, WTorrentStream * stream, int block);
     void applyPiece(const torrent_handle & handle, WTorrentStream * stream, int current);
 
     void applyBuffer(WTorrentStream * item) const;
