@@ -2019,7 +2019,7 @@ void WTorrentEnginePrivate::onSave()
 
     QDataStream stream(&file);
 
-    stream << sources.count();
+    stream << (int) sources.count();
 
     foreach (WTorrentSource * source, sources)
     {
@@ -2033,7 +2033,7 @@ void WTorrentEnginePrivate::onSave()
 
         const QStringList & urls = source->urls;
 
-        stream << source->id << array << (qint64) source->size << urls.count();
+        stream << source->id << array << (qint64) source->size << (int) urls.count();
 
         foreach (const QString & url, urls)
         {

@@ -1121,7 +1121,7 @@ void WCacheThread::onSave()
 
     QDataStream stream(&file);
 
-    stream << datas.count();
+    stream << (int) datas.count();
 
     foreach (WCacheData * data, datas)
     {
