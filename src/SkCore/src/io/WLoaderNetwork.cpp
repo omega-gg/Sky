@@ -70,39 +70,42 @@ void WLoaderNetworkPrivate::onFinished(QNetworkReply * reply)
 
     if (data == NULL) return;
 
-    QString url = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toString();
-
-    if (data->redirect() && url.isEmpty() == false)
+    if (data->redirect())
     {
-        url = WControllerNetwork::getUrlRedirect(reply->url(), url);
+        QString url = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toString();
 
-        q->redirect(reply, url);
-    }
-    else
-    {
-        QNetworkReply::NetworkError error = reply->error();
-
-        if (error != QNetworkReply::NoError)
+        if (url.isEmpty() == false)
         {
-            if (error == QNetworkReply::ContentOperationNotPermittedError
-                &&
-                WControllerNetwork::urlIsFile(data->url()))
-            {
-                q->complete(reply);
+            url = WControllerNetwork::getUrlRedirect(reply->url(), url);
 
-                return;
-            }
+            q->redirect(reply, url);
 
-            QString errorString = reply->errorString();
+            return;
+        }
+    }
 
-            qWarning("WLoaderNetworkPrivate::onFinished: Get failed %s code %d. %s",
-                     reply->url().C_URL, error, errorString.C_STR);
+    QNetworkReply::NetworkError error = reply->error();
 
-            q->setError(data, errorString);
+    if (error != QNetworkReply::NoError)
+    {
+        if (error == QNetworkReply::ContentOperationNotPermittedError
+            &&
+            WControllerNetwork::urlIsFile(data->url()))
+        {
+            q->complete(reply);
+
+            return;
         }
 
-        q->complete(reply);
+        QString errorString = reply->errorString();
+
+        qWarning("WLoaderNetworkPrivate::onFinished: Get failed %s code %d. %s",
+                 reply->url().C_URL, error, errorString.C_STR);
+
+        q->setError(data, errorString);
     }
+
+    q->complete(reply);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -160,6 +163,12 @@ void WLoaderNetworkPrivate::onFinished(QNetworkReply * reply)
         request.setAttribute(QNetworkRequest::CookieSaveControlAttribute,
                              QNetworkRequest::Manual);
     }
+
+#ifdef QT_6
+    // NOTE Qt6: We want to handle redirections manually from the onFinished slot.
+    request.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
+                         QNetworkRequest::ManualRedirectPolicy);
+#endif
 
     // NOTE: That's our default header.
     request.setRawHeader("User-Agent", "Mozilla/5.0 AppleWebKit/537 Chrome/90 Safari/537");

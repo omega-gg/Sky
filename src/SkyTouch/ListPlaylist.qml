@@ -29,7 +29,9 @@ List
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    /* mandatory */ property variant playlist
+    // FIXME Qt6: Strangely, when using a var property we might get a changed events several times
+    //            for the same playlist.
+    /* mandatory */ property Playlist playlist
 
     property int sizeTrack: st.buttonTouch_size + spacing
 
