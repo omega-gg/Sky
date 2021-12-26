@@ -636,8 +636,13 @@ void WTorrentThread::onConnection()
 
         connect(socket, SIGNAL(bytesWritten(qint64)), this, SLOT(onBytesWritten(qint64)));
 
+#ifdef QT_OLD
         connect(socket, SIGNAL(error(QAbstractSocket::SocketError)),
                 this,   SLOT(onError(QAbstractSocket::SocketError)));
+#else
+        connect(socket, SIGNAL(errorOccurred(QAbstractSocket::SocketError)),
+                this,   SLOT(onError(QAbstractSocket::SocketError)));
+#endif
     }
     else
     {
