@@ -25,6 +25,9 @@
 
 // Qt includes
 #include <QApplication>
+#ifdef QT_6
+#include <QQuickWindow>
+#endif
 
 // Sk includes
 #include <WControllerApplication>
@@ -34,7 +37,14 @@
 class SK_GUI_EXPORT WApplication : public QApplication
 {
 public: // Static functions
+#ifdef QT_OLD
     static QApplication * create(int & argc, char ** argv, Sk::Type type = Sk::Single);
+#else
+    // NOTE Qt: Passing a Null api will set the default renderer.
+    static
+    QApplication * create(int & argc, char ** argv, Sk::Type type = Sk::Single,
+                          QSGRendererInterface::GraphicsApi api = QSGRendererInterface::Null);
+#endif
 
 protected: // Static functions
     static QApplication * createApplication(int & argc, char ** argv, Sk::Type type);
