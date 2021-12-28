@@ -288,8 +288,11 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
     {
         d->deleting = true;
 
-        setParent    (NULL);
+        setParent(NULL);
+
+#ifndef SK_NO_QML
         setParentItem(NULL);
+#endif
 
         setState(StateStopped);
 
@@ -954,6 +957,8 @@ void WAbstractBackend::endOutputRemove() const
 // Properties
 //-------------------------------------------------------------------------------------------------
 
+#ifndef SK_NO_QML
+
 WDeclarativePlayer * WAbstractBackend::parentItem() const
 {
     Q_D(const WAbstractBackend); return d->parentItem;
@@ -969,6 +974,8 @@ void WAbstractBackend::setParentItem(WDeclarativePlayer * parent)
 
     emit parentItemChanged();
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 

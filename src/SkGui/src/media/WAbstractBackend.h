@@ -52,7 +52,7 @@ struct WBackendFrame;
 struct WBackendTexture;
 #endif
 
-#ifdef QT_6
+#if defined(QT_6) && defined(SK_NO_QML) == false
 Q_MOC_INCLUDE("WDeclarativePlayer.h")
 #endif
 
@@ -148,8 +148,10 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
     Q_ENUMS(FrameState)
 #endif
 
+#ifndef SK_NO_QML
     Q_PROPERTY(WDeclarativePlayer * parentItem READ parentItem WRITE setParentItem
                NOTIFY parentItemChanged)
+#endif
 
     Q_PROPERTY(WBackendFilter * filter READ filter WRITE setFilter NOTIFY filterChanged)
 
@@ -427,7 +429,9 @@ protected: // Virtual functions
 signals:
     void ended();
 
+#ifndef SK_NO_QML
     void parentItemChanged();
+#endif
 
     void filterChanged();
 
@@ -467,8 +471,10 @@ signals:
     void outputsChanged();
 
 public: // Properties
+#ifndef SK_NO_QML
     WDeclarativePlayer * parentItem() const;
     void                 setParentItem(WDeclarativePlayer * parent);
+#endif
 
     WBackendFilter * filter() const;
     void             setFilter(WBackendFilter * filter);
