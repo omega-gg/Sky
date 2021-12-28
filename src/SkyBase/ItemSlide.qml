@@ -107,51 +107,48 @@ Item
         width : parent.width
         height: parent.height
 
+        // FIXME Qt6: Changing anchors seems to screw the width and height bindings.
         states:
         [
             State
             {
                 name: "left"; when: (pDirectionA == Sk.Left)
 
-                AnchorChanges
-                {
-                    target: content
-
-                    anchors.left: parent.right
-                }
+//#QT_OLD
+                AnchorChanges { target: content; anchors.left: parent.right }
+//#ELSE
+                PropertyChanges { target: content; x: parent.width }
+//#END
             },
             State
             {
                 name: "right"; when: (pDirectionA == Sk.Right)
 
-                AnchorChanges
-                {
-                    target: content
-
-                    anchors.right: parent.left
-                }
+//#QT_OLD
+                AnchorChanges { target: content; anchors.right: parent.left }
+//#ELSE
+                PropertyChanges { target: content; x: -(parent.width) }
+//#END
             },
             State
             {
                 name: "up"; when: (pDirectionA == Sk.Up)
 
-                AnchorChanges
-                {
-                    target: content
-
-                    anchors.top: parent.bottom
-                }
+//#QT_OLD
+                AnchorChanges { target: content; anchors.top: parent.bottom }
+//#ELSE
+                PropertyChanges { target: content; y: parent.height }
+//#END
             },
             State
             {
                 name: "down"; when: (pDirectionA == Sk.Down)
 
-                AnchorChanges
-                {
-                    target: content
-
-                    anchors.bottom: parent.top
-                }
+//#QT_OLD
+                AnchorChanges { target: content; anchors.bottom: parent.top }
+//#ELSE
+                PropertyChanges { target: content; y: -(parent.height) }
+//#END
             }
         ]
 
@@ -159,12 +156,23 @@ Item
         {
             SequentialAnimation
             {
+//#QT_OLD
                 AnchorAnimation
                 {
                     duration: (isAnimated) ? durationAnimation : 0
 
                     easing.type: st.easing
                 }
+//#ELSE
+                PropertyAnimation
+                {
+                    properties: "x, y"
+
+                    duration: (isAnimated) ? durationAnimation : 0
+
+                    easing.type: st.easing
+                }
+//#END
 
                 ScriptAction
                 {

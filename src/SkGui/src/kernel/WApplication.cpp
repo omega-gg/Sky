@@ -56,8 +56,9 @@
     // NOTE Qt6: Let's stick to OpenGL by default.
     if (api == QSGRendererInterface::Null)
     {
-        QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
+         QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
     }
+    else QQuickWindow::setGraphicsApi(api);
 #endif
 
 #ifdef Q_OS_MAC
