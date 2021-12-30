@@ -33,8 +33,8 @@
 #ifndef SK_NO_TEXTUREVIDEO
 
 // Forward declarations
-class WTextureVideoPrivate;
-class WBackendTexture;
+class  WTextureVideoPrivate;
+struct WBackendTexture;
 
 class SK_GUI_EXPORT WTextureVideo : public QSGTexture, public WPrivatable
 {
