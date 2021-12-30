@@ -62,7 +62,7 @@ makeAndroid()
         qtconf=""
     fi
 
-    $qmake -r -spec $spec "$config" $qtconf \
+    $qmake -r -spec $spec $qtconf "$config" \
         "ANDROID_ABIS=$1" \
         "ANDROID_MIN_SDK_VERSION=$SDK_version_minimum" \
         "ANDROID_TARGET_SDK_VERSION=$SDK_version" ..
@@ -301,7 +301,12 @@ elif [ $1 = "linux" ]; then
 
 elif [ $1 = "android" ]; then
 
-    spec=android-clang
+    if [ "$2" = "tools" ]; then
+
+        spec=linux-g++-64
+    else
+        spec=android-clang
+    fi
 
     export ANDROID_NDK_ROOT="$external/NDK/$NDK_version"
 
