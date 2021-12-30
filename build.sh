@@ -53,6 +53,25 @@ qt="qt5"
 # Functions
 #--------------------------------------------------------------------------------------------------
 
+makeAndroid()
+{
+    if [ "$2" != "" ]; then
+
+        qtconf="-qtconf $2"
+    else
+        qtconf=""
+    fi
+
+    $qmake -r -spec $spec "$config" $qtconf \
+        "ANDROID_ABIS=$1" \
+        "ANDROID_MIN_SDK_VERSION=$SDK_version_minimum" \
+        "ANDROID_TARGET_SDK_VERSION=$SDK_version" ..
+
+    make $make_arguments
+}
+
+#--------------------------------------------------------------------------------------------------
+
 getOs()
 {
     case `uname` in
@@ -203,7 +222,12 @@ else
     Qt="$external/Qt/$Qt6_version"
 fi
 
-qmake="$Qt/bin/qmake"
+if [ $1 = "android" -a $qt = "qt6" ]; then
+
+    qmake="$Qt/gcc_64/bin/qmake"
+else
+    qmake="$Qt/bin/qmake"
+fi
 
 #--------------------------------------------------------------------------------------------------
 # Clean
@@ -229,6 +253,8 @@ echo "BUILDING Sky"
 echo "------------"
 
 export QT_SELECT="$qt"
+
+config="CONFIG+=release"
 
 if [ $compiler = "mingw" ]; then
 
@@ -289,16 +315,21 @@ cd build
 
 if [ "$2" = "tools" ]; then
 
-    $qmake -r -spec $spec CONFIG+=release TOOLS=true ..
+    $qmake -r -spec $spec "$config" TOOLS=true ..
 
 elif [ $1 = "android" ]; then
 
-    $qmake -r -spec $spec CONFIG+=release \
-        "ANDROID_ABIS=$abi" \
-        "ANDROID_MIN_SDK_VERSION=$SDK_version_minimum" \
-        "ANDROID_TARGET_SDK_VERSION=$SDK_version" ..
+    if [ $qt = "qt5" ]; then
+
+        makeAndroid "$abi"
+    else
+        makeAndroid "armeabi-v7a" "$Qt"/android_armv7/bin/target_qt.conf
+        makeAndroid "arm64-v8a"   "$Qt"/android_arm64_v8a/bin/target_qt.conf
+        makeAndroid "x86"         "$Qt"/android_x86/bin/target_qt.conf
+        makeAndroid "x86_64"      "$Qt"/android_x86_64/bin/target_qt.conf
+    fi
 else
-    $qmake -r -spec $spec CONFIG+=release ..
+    $qmake -r -spec $spec "$config" ..
 fi
 
 echo ""
@@ -310,7 +341,8 @@ if [ $compiler = "mingw" ]; then
 elif [ $compiler = "msvc" ]; then
 
     jom
-else
+
+elif [ $1 != "android" ]; then
     make $make_arguments
 fi
 
