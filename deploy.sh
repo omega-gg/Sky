@@ -99,12 +99,7 @@ elif [ $qt = "qt5" ]; then
 
     qx="5"
 else
-    if [ $1 = "android" ]; then
-
-        Qt="$external/Qt/$Qt6_version/gcc_64"
-    else
-        Qt="$external/Qt/$Qt6_version"
-    fi
+    Qt="$external/Qt/$Qt6_version"
 
     QtX="Qt6"
 

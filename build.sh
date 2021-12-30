@@ -139,8 +139,8 @@ fi
 # Android
 #--------------------------------------------------------------------------------------------------
 
-# NOTE android: When using and older Qt we have to build the tools for the Linux platform.
-if [ $1 = "android" -a $qt != "qt6" ]; then
+# NOTE android: We have to build the tools for the Linux platform.
+if [ $1 = "android" ]; then
 
     sh build.sh linux tools
 
@@ -301,12 +301,7 @@ elif [ $1 = "linux" ]; then
 
 elif [ $1 = "android" ]; then
 
-    if [ "$2" = "tools" ]; then
-
-        spec=linux-g++-64
-    else
-        spec=android-clang
-    fi
+    spec=android-clang
 
     export ANDROID_NDK_ROOT="$external/NDK/$NDK_version"
 
