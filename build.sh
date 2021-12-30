@@ -117,6 +117,21 @@ if [ "$2" = "all" ]; then
 fi
 
 #--------------------------------------------------------------------------------------------------
+# Android
+#--------------------------------------------------------------------------------------------------
+
+# NOTE android: When using and older Qt we have to build the tools for the Linux platform.
+if [ $1 = "android" -a $qt != "qt6" ]; then
+
+    sh build.sh linux tools
+
+    if [ "$2" = "tools" ]; then
+
+        exit 0
+    fi
+fi
+
+#--------------------------------------------------------------------------------------------------
 # Configuration
 #--------------------------------------------------------------------------------------------------
 
@@ -189,21 +204,6 @@ else
 fi
 
 qmake="$Qt/bin/qmake"
-
-#--------------------------------------------------------------------------------------------------
-# Android
-#--------------------------------------------------------------------------------------------------
-
-# NOTE android: We need to build the tools for the Linux platform.
-if [ $1 = "android" ]; then
-
-    sh build.sh linux tools
-
-    if [ "$2" = "tools" ]; then
-
-        exit 0
-    fi
-fi
 
 #--------------------------------------------------------------------------------------------------
 # Clean
@@ -289,10 +289,7 @@ cd build
 
 if [ "$2" = "tools" ]; then
 
-    if [ $1 != "android" ]; then
-
-        $qmake -r -spec $spec CONFIG+=release TOOLS=true ..
-    fi
+    $qmake -r -spec $spec CONFIG+=release TOOLS=true ..
 
 elif [ $1 = "android" ]; then
 
