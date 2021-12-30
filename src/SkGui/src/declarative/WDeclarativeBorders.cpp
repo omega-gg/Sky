@@ -39,7 +39,7 @@
 #include <private/WDeclarativeItem_p>
 #endif
 
-#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
+#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
 
 //=================================================================================================
 // WDeclarativeBordersLine
@@ -136,7 +136,7 @@ public: // Variables
 
     QColor color;
 
-#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
+#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
     bool updateLeft;
     bool updateRight;
     bool updateTop;
@@ -235,7 +235,7 @@ void WDeclarativeBordersPrivate::init()
 
 #endif
 
-#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
+#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
 
 //-------------------------------------------------------------------------------------------------
 // QQuickItem reimplementation
@@ -382,7 +382,7 @@ void WDeclarativeBorders::setLeft(qreal left)
 
     d->left = left;
 
-#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
+#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
     d->updateLeft = true;
 #endif
 
@@ -406,7 +406,7 @@ void WDeclarativeBorders::setRight(qreal right)
 
     d->right = right;
 
-#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
+#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
     d->updateRight = true;
 #endif
 
@@ -430,7 +430,7 @@ void WDeclarativeBorders::setTop(qreal top)
 
     d->top = top;
 
-#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
+#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
     d->updateTop = true;
 #endif
 
@@ -454,7 +454,7 @@ void WDeclarativeBorders::setBottom(qreal bottom)
 
     d->bottom = bottom;
 
-#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
+#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
     d->updateBottom = true;
 #endif
 
@@ -478,7 +478,7 @@ void WDeclarativeBorders::setColor(const QColor & color)
 
     d->color = color;
 
-#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
+#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
     d->updateColor = true;
 #endif
 

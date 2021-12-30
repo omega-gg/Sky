@@ -34,7 +34,7 @@
 */
 
 // Qt includes
-#ifdef QT_LATEST
+#ifdef QT_NEW
 #include <QPixmap>
 #endif
 
@@ -51,7 +51,7 @@
 #ifndef SK_NO_DECLARATIVEIMAGEBASE
 
 // Forward declarations
-#ifdef QT_LATEST
+#ifdef QT_NEW
 class QSGContext;
 class QSGTexture;
 #endif

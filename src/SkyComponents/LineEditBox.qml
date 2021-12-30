@@ -57,7 +57,7 @@ BaseLineEdit
     // Settings
     //---------------------------------------------------------------------------------------------
 
-//#QT_LATEST
+//#QT_NEW
     // FIXME Qt5: The cursor gets cropped on the right if we keep the TextInput clip.
     clip: true
 
@@ -73,7 +73,7 @@ BaseLineEdit
                                          : st.lineEditBox_colorDefault
 
     //---------------------------------------------------------------------------------------------
-    // Childs
+    // Children
     //---------------------------------------------------------------------------------------------
 
     Rectangle

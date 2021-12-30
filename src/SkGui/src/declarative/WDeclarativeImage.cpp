@@ -37,7 +37,7 @@
 #include <WImageFilter>
 #include <WAbstractThreadAction>
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 // Qt private includes
 #include <private/qsgadaptationlayer_p.h>
 #endif
@@ -350,7 +350,7 @@ void WDeclarativeImage::pixmapChange()
     updatePixmap();
 }
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 //-------------------------------------------------------------------------------------------------
 // Protected WDeclarativeTexture reimplementation
@@ -487,7 +487,7 @@ void WDeclarativeImage::setFillMode(FillMode fillMode)
 
     updatePixmap();
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     d->updateGeometry = true;
 #endif
 
@@ -581,7 +581,7 @@ void WDeclarativeImageScalePrivate::abortAction()
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 void WDeclarativeImageScalePrivate::onStart()
 {
@@ -636,7 +636,7 @@ void WDeclarativeImageScalePrivate::onScale()
     {
         const QPixmap & pixmap = q->currentPixmap();
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
         if (pixmap.isNull()) return;
 #endif
 
@@ -655,7 +655,7 @@ void WDeclarativeImageScalePrivate::onScale()
 
         scaled = true;
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
         updateTexture = true;
 #endif
 
@@ -680,7 +680,7 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
 
     scaled = true;
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     updateTexture = true;
 #endif
 
@@ -742,7 +742,7 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
 
     if (d->scalable && oldGeometry.size() != newGeometry.size())
     {
-#ifdef QT_LATEST
+#ifdef QT_NEW
         if (d->scaled) d->updateTexture = true;
 #endif
 
@@ -844,13 +844,13 @@ void WDeclarativeImageScale::setScaling(bool scaling)
     {
         d->update();
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
         d->updateTexture = true;
 #endif
     }
     else
     {
-#ifdef QT_LATEST
+#ifdef QT_NEW
         if (d->scaled) d->updateTexture = true;
 #endif
 

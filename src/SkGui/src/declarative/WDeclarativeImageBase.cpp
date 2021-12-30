@@ -32,7 +32,7 @@
 // Sk includes
 #include <WControllerView>
 #include <WControllerFile>
-#ifdef QT_LATEST
+#ifdef QT_NEW
 #include <WView>
 #endif
 #include <WCache>
@@ -191,7 +191,7 @@ void WDeclarativeImageBasePrivate::loadDefault()
 
     q->pixmapChange();
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     updateTexture = true;
 #endif
 
@@ -226,7 +226,7 @@ void WDeclarativeImageBasePrivate::applyRequest()
 
     q->pixmapChange();
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     updateTexture = true;
 #endif
 
@@ -292,7 +292,7 @@ void WDeclarativeImageBasePrivate::applySourceDefault()
 
             q->pixmapChange();
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
             updateTexture = true;
 #endif
 
@@ -310,7 +310,7 @@ void WDeclarativeImageBasePrivate::applySourceDefault()
 
         q->pixmapChange();
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
         updateTexture = true;
 #endif
 
@@ -739,7 +739,7 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 #ifdef QT_OLD
 /* virtual */ void WDeclarativeImageBase::geometryChanged(const QRectF & newGeometry,
@@ -897,7 +897,7 @@ void WDeclarativeImageBase::setSourceDefault(const QString & url)
 
             pixmapChange();
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
             d->updateTexture = true;
 #endif
 

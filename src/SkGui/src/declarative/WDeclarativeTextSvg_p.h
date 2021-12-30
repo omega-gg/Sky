@@ -34,7 +34,7 @@
 */
 
 // Qt includes
-#ifdef QT_LATEST
+#ifdef QT_NEW
 #include <QPixmap>
 #endif
 #include <QTimer>
@@ -67,7 +67,7 @@ public:
     void init();
 
 public: // Functions
-#ifdef QT_LATEST
+#ifdef QT_NEW
     void updatePixmap(int width, int height);
 #endif
 
@@ -107,7 +107,7 @@ public: // Slots
 #endif
 
 public: // Variables
-#ifdef QT_LATEST
+#ifdef QT_NEW
     QPixmap pixmap;
 #endif
 
@@ -144,7 +144,7 @@ public: // Variables
 
     qreal zoom;
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     bool scaleDelayed : 1;
     int  scaleDelay;
 

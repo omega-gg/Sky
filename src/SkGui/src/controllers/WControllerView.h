@@ -92,7 +92,7 @@ public: // Static functions
     Q_INVOKABLE static const QRect screenGeometry(const QWidget * widget);
 #endif
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     Q_INVOKABLE static qreal screenRatio(QScreen * screen);
 #endif
 

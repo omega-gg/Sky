@@ -92,7 +92,7 @@ public: // Functions
 public: // Slots
     /* virtual */ void onUpdate();
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     void onStart();
 #endif
 

@@ -47,7 +47,7 @@ public: // Interface
     void dump(int indent = 0) const;
 
 public: // Variables
-    QList<WYamlNode> childs;
+    QList<WYamlNode> children;
 
     QString key;
     QString value;

@@ -1338,7 +1338,7 @@ void WBackendVlcPrivate::onFrameUpdated()
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 void WBackendVlcPrivate::onUpdateState()
 {
@@ -1549,7 +1549,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 // Protected WAbstractBackend implementation
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 /* virtual */ WBackendNode * WBackendVlc::backendCreateNode() const
 {
@@ -1800,7 +1800,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 /* virtual */ void WBackendVlc::backendSynchronize(WBackendFrame * frame)
 {
@@ -2257,7 +2257,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
                 return true;
             }
-#ifdef QT_LATEST
+#ifdef QT_NEW
             // FIXME Qt5: Waiting for the first frame.
             QTimer::singleShot(64, this, SLOT(onUpdateState()));
 

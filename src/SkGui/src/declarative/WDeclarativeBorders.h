@@ -67,7 +67,7 @@ public: // QGraphicsItem / QQuickPaintedItem reimplementation
 #endif
 #endif
 
-#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
+#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
 public: // QQuickItem reimplementation
     /* virtual */ QSGNode * updatePaintNode(QSGNode * oldNode, UpdatePaintNodeData * data);
 

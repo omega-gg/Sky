@@ -35,7 +35,7 @@ TextBase
     property color colorLink     : st.text_colorLink
     property color colorLinkHover: st.text_colorLinkHover
 
-//#QT_LATEST
+//#QT_NEW
     //---------------------------------------------------------------------------------------------
     // Private
 
@@ -81,9 +81,9 @@ TextBase
         Qt.openUrlExternally(link)
     }
 
-//#QT_LATEST
+//#QT_NEW
     //---------------------------------------------------------------------------------------------
-    // Childs
+    // Children
     //---------------------------------------------------------------------------------------------
 
     MouseArea

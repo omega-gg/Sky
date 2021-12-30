@@ -27,7 +27,7 @@
 // Qt includes
 #include <QDir>
 #include <QBuffer>
-#ifdef QT_LATEST
+#ifdef QT_NEW
 #include <QFileInfo>
 #endif
 

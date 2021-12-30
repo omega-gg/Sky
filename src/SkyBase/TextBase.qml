@@ -38,7 +38,7 @@ Text
 
     elide: Text.ElideRight
 
-//#QT_LATEST
+//#QT_NEW
     renderType: st.text_renderType
 //#END
 

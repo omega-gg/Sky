@@ -171,7 +171,7 @@ MouseArea
     }
 
     //---------------------------------------------------------------------------------------------
-    // Childs
+    // Children
     //---------------------------------------------------------------------------------------------
 
     MouseArea
@@ -193,7 +193,7 @@ MouseArea
         drag.minimumY: 0
         drag.maximumY: parent.height - height
 
-//#QT_LATEST
+//#QT_NEW
         drag.threshold: 0
 //#END
 

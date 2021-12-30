@@ -64,7 +64,7 @@ void WDeclarativePlayerPrivate::init()
 
     backendInterface = NULL;
 
-#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
+#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
     frameUpdate = false;
 #endif
 
@@ -901,7 +901,7 @@ void WDeclarativePlayerPrivate::onTabDestroyed()
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 void WDeclarativePlayer::updateFrame()
 {
@@ -962,7 +962,7 @@ void WDeclarativePlayer::updateFrame()
 /* virtual */ void WDeclarativePlayer::paint(QPainter * painter)
 #endif
 {
-#ifdef QT_LATEST
+#ifdef QT_NEW
     if (isVisible() == false) return;
 #endif
 
@@ -1086,7 +1086,7 @@ void WDeclarativePlayer::updateFrame()
     {
         d->backend->setSize(newGeometry.size());
 
-#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
+#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
         d->frameUpdate = true;
 #endif
     }
@@ -1739,7 +1739,7 @@ void WDeclarativePlayer::setFillMode(WAbstractBackend::FillMode fillMode)
         d->backend->setFillMode(fillMode);
     }
 
-#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
+#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
     d->frameUpdate = true;
 #endif
 

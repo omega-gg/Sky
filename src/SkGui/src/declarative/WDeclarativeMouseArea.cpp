@@ -339,7 +339,7 @@ void WDeclarativeMouseAreaPrivate::init()
 
     wheelEnabled = false;
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     dropEnabled = false;
 #endif
 
@@ -374,7 +374,7 @@ void WDeclarativeMouseAreaPrivate::init()
 
     q->setAcceptedMouseButtons(Qt::LeftButton);
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     q->setAcceptTouchEvents(false);
 #endif
@@ -943,7 +943,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
         if (value.window == NULL) d->clearView();
 #endif
     }
-#ifdef QT_LATEST
+#ifdef QT_NEW
     // FIXME Qt5.12.2: 'mouseUngrabEvent' is not called when the item is hidden.
     else if (change == ItemVisibleHasChanged && value.boolValue == false)
     {
@@ -1183,7 +1183,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 /* virtual */ void WDeclarativeMouseArea::mouseUngrabEvent()
 {

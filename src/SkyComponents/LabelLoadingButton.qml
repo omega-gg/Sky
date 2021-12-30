@@ -47,7 +47,7 @@ LabelLoadingText
     width: paddingLeft + itemIcon.width + spacing + itemText.width + button.width + paddingRight
 
     //---------------------------------------------------------------------------------------------
-    // Childs
+    // Children
     //---------------------------------------------------------------------------------------------
 
     ButtonRound

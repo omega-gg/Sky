@@ -2553,7 +2553,7 @@ QList<WLibraryFolderItem> WBackendUniversalQuery::extractItems(const WYamlReader
 
     if (node == NULL) return list;
 
-    foreach (const WYamlNode & node, node->childs)
+    foreach (const WYamlNode & node, node->children)
     {
         WLibraryFolderItem item;
 

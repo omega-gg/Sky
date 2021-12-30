@@ -40,7 +40,7 @@ WDeclarativeMouseWatcherPrivate::WDeclarativeMouseWatcherPrivate(WDeclarativeMou
 
 void WDeclarativeMouseWatcherPrivate::init()
 {
-#ifdef QT_LATEST
+#ifdef QT_NEW
     Q_Q(WDeclarativeMouseWatcher);
 
     touch = false;
@@ -95,7 +95,7 @@ void WDeclarativeMouseWatcherPrivate::onPressedChanged()
 
     event->ignore();
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     // NOTE: When we receive a touch event we have to trigger the release signal manually.
     if (d->touch)
     {
@@ -114,7 +114,7 @@ void WDeclarativeMouseWatcherPrivate::onPressedChanged()
     emit pressed();
 }
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 /* virtual */ void WDeclarativeMouseWatcher::touchEvent(QTouchEvent * event)
 {

@@ -26,7 +26,7 @@
 
 // Qt includes
 #include <QCoreApplication>
-#ifdef QT_LATEST
+#ifdef QT_NEW
 #include <QDataStream>
 #endif
 

@@ -25,7 +25,7 @@
 #ifndef SK_NO_IMAGEFILTERCOLOR
 
 // Qt includes
-#ifdef QT_LATEST
+#ifdef QT_NEW
 #include <QGradient>
 #endif
 

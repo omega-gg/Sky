@@ -180,7 +180,7 @@ public: // Interface
     Q_INVOKABLE void setPreviousTrack();
     Q_INVOKABLE void setNextTrack    ();
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     Q_INVOKABLE void updateFrame();
 #endif
 
@@ -200,7 +200,7 @@ public: // QGraphicsItem / QQuickPaintedItem reimplementation
 #endif
 #endif
 
-#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
+#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
 public: // QQuickItem reimplementation
     /* virtual */ QSGNode * updatePaintNode(QSGNode * oldNode, UpdatePaintNodeData * data);
 #endif

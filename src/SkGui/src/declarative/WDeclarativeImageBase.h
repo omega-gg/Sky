@@ -33,7 +33,7 @@
 #ifndef SK_NO_DECLARATIVEIMAGEBASE
 
 // Forward declarations
-#ifdef QT_LATEST
+#ifdef QT_NEW
 class QSGInternalImageNode;
 #endif
 class WDeclarativeImageBasePrivate;

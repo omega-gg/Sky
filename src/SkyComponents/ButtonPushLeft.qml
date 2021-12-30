@@ -36,7 +36,7 @@ ButtonPush
     background.anchors.rightMargin: -margins - radius
 
     //---------------------------------------------------------------------------------------------
-    // Childs
+    // Children
     //---------------------------------------------------------------------------------------------
 
     BorderButton { anchors.right: parent.right }

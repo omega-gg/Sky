@@ -40,7 +40,7 @@
 #include <WImageFilter>
 #include <WAbstractThreadAction>
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 // Qt private includes
 #include <private/qsgadaptationlayer_p.h>
 #endif
@@ -89,7 +89,7 @@ WDeclarativeBorderGrid * WDeclarativeBorderImagePrivate::getBorder()
 
     margins = QMargins(border->left(), border->top(), border->right(), border->bottom());
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     updateGeometry = true;
 #endif
 
@@ -246,7 +246,7 @@ WDeclarativeBorderImage::WDeclarativeBorderImage(WDeclarativeBorderImagePrivate 
     Q_D(const WDeclarativeBorderImage); return d->margins;
 }
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 //-------------------------------------------------------------------------------------------------
 // Protected WDeclarativeTexture reimplementation
@@ -332,7 +332,7 @@ void WDeclarativeBorderImage::setHorizontalTileMode(TileMode mode)
 
     d->horizontalTileMode = mode;
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     d->updateGeometry = true;
 #endif
 
@@ -356,7 +356,7 @@ void WDeclarativeBorderImage::setVerticalTileMode(TileMode mode)
 
     d->verticalTileMode = mode;
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     d->updateGeometry = true;
 #endif
 
@@ -464,7 +464,7 @@ void WDeclarativeBorderImageScalePrivate::restore()
 
     scaled = false;
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     updateTexture = true;
 #endif
 }
@@ -503,7 +503,7 @@ void WDeclarativeBorderImageScalePrivate::abortAction()
         scaleMargins = margins;
     }
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     updateGeometry = true;
 #endif
 
@@ -512,7 +512,7 @@ void WDeclarativeBorderImageScalePrivate::abortAction()
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 void WDeclarativeBorderImageScalePrivate::onStart()
 {
@@ -539,7 +539,7 @@ void WDeclarativeBorderImageScalePrivate::onScale()
     {
         const QPixmap & pixmap = q->currentPixmap();
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
         if (pixmap.isNull()) return;
 #endif
 
@@ -549,7 +549,7 @@ void WDeclarativeBorderImageScalePrivate::onScale()
 
         scaled = true;
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
         updateTexture = true;
 #endif
 
@@ -577,7 +577,7 @@ void WDeclarativeBorderImageScalePrivate::onLoaded(const QImage & image)
 
     scaled = true;
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     updateTexture = true;
 #endif
 
@@ -774,13 +774,13 @@ void WDeclarativeBorderImageScale::setScaling(bool scaling)
     {
         d->update();
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
         d->updateTexture = true;
 #endif
     }
     else
     {
-#ifdef QT_LATEST
+#ifdef QT_NEW
         if (d->scaled) d->updateTexture = true;
 #endif
 

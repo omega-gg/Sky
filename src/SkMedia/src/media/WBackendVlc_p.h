@@ -39,7 +39,7 @@
 #endif
 //#include <QMutex>
 #include <QMetaMethod>
-#ifdef QT_LATEST
+#ifdef QT_NEW
 #include <QSGMaterial>
 #endif
 #ifdef QT_6
@@ -58,7 +58,7 @@
 #ifndef SK_NO_BACKENDVLC
 
 // Forward declarations
-#ifdef QT_LATEST
+#ifdef QT_NEW
 class QOpenGLFunctions;
 #endif
 class WMediaReply;
@@ -103,7 +103,7 @@ struct WBackendVlcTexture
     uchar * bits;
 };
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 //-------------------------------------------------------------------------------------------------
 // WBackendVlcShader
@@ -278,7 +278,7 @@ public: // Slots
 
     void onFrameUpdated();
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     void onUpdateState();
 #endif
 

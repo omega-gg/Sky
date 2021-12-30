@@ -339,7 +339,7 @@ void WViewPrivate::init(QQuickItem * item)
 
     idleTimer.setInterval(3000);
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     //---------------------------------------------------------------------------------------------
     // Touch
 
@@ -360,7 +360,7 @@ void WViewPrivate::init(QQuickItem * item)
 
     areaDrop = NULL;
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     dragSkip = false;
 #endif
 
@@ -629,7 +629,7 @@ void WViewPrivate::applySize(int width, int height)
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 void WViewPrivate::updateRatio()
 {
@@ -801,7 +801,7 @@ void WViewPrivate::updateDrag()
             {
                 if (areaDrop)
                 {
-#ifdef QT_LATEST
+#ifdef QT_NEW
                     if (areaDrop == area)
                     {
                         // FIXME Qt5: Sometimes the drop area goes beyond the parent geometry.
@@ -1002,7 +1002,7 @@ void WViewPrivate::setResizing(bool resizing)
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 void WViewPrivate::setTouch(int id)
 {
@@ -1149,7 +1149,7 @@ bool WViewPrivate::isUnderMouse() const
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 bool WViewPrivate::itemUnderMouse(QQuickItem * item) const
 {
@@ -1243,7 +1243,7 @@ void WViewPrivate::setKeyAltPressed(bool pressed)
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 void WViewPrivate::getItems(QList<QQuickItem *> * items,
                             QQuickItem          * item, const QPoint & pos) const
@@ -1362,7 +1362,7 @@ QList<WDeclarativeMouseArea *> WViewPrivate::getDropAreas(const QList<QQuickItem
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 void WViewPrivate::onStateChanged(Qt::ApplicationState state)
 {
@@ -1379,7 +1379,7 @@ void WViewPrivate::onGeometryChanged()
 {
     Q_Q(WView);
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     updateRatio();
 #endif
 
@@ -1395,7 +1395,7 @@ void WViewPrivate::onGeometryChanged()
     emit q->availableGeometryChanged();
 }
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 void WViewPrivate::onScreenChanged()
 {
@@ -2364,7 +2364,7 @@ void WView::hoverEnter()
 
     d->setEntered(true);
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     // FIXME Qt5: Resetting the cursor by hand.
     if (d->cursors.contains(d->cursor))
     {
@@ -2433,7 +2433,7 @@ void WView::hoverLeave()
 // Events
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 // NOTE: We want to process some events directly and avoid the default implementation.
 /* virtual */ bool WView::event(QEvent * event)
@@ -2670,7 +2670,7 @@ void WView::hoverLeave()
         d->setPressed(false);
     }
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     if (d->currentResizer)
     {
         d->currentResizer = NULL;
@@ -2759,7 +2759,7 @@ void WView::hoverLeave()
 #ifdef Q_OS_WIN
         d->drag = NULL;
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
         d->dragSkip = true;
 #endif
 
@@ -2771,7 +2771,7 @@ void WView::hoverLeave()
     }
     else
     {
-#ifdef QT_LATEST
+#ifdef QT_NEW
         if (d->dragSkip)
         {
             d->dragSkip = false;

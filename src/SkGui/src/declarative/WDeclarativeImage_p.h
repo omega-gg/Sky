@@ -80,7 +80,7 @@ public: // Functions
     void abortAction();
 
 public: // Slots
-#ifdef QT_LATEST
+#ifdef QT_NEW
     void onStart();
 #endif
 

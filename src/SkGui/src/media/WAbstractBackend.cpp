@@ -27,7 +27,7 @@
 // Sk includes
 #include <WControllerPlaylist>
 
-#if defined(QT_LATEST) && defined(SK_NO_QML) == false
+#if defined(QT_NEW) && defined(SK_NO_QML) == false
 
 //=================================================================================================
 // WBackendNode
@@ -192,7 +192,7 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-#if defined(QT_LATEST) && defined(SK_NO_QML) == false
+#if defined(QT_NEW) && defined(SK_NO_QML) == false
 
 /* Q_INVOKABLE */ WBackendNode * WAbstractBackend::createNode() const
 {
@@ -223,7 +223,7 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
 #ifndef SK_NO_QML
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 /* Q_INVOKABLE */ void WAbstractBackend::synchronize(WBackendFrame * frame)
 {
@@ -912,7 +912,7 @@ void WAbstractBackend::endOutputRemove() const
 
 #ifndef SK_NO_QML
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 /* virtual */ void WAbstractBackend::backendSynchronize(WBackendFrame *)
 {

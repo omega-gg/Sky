@@ -26,7 +26,7 @@
 
 // Qt includes
 #include <QFile>
-#ifdef QT_LATEST
+#ifdef QT_NEW
     #ifndef SK_NO_QML
     #include <QQmlEngine>
     #endif
@@ -35,7 +35,7 @@
 
 // Sk includes
 #include <WControllerApplication>
-#if defined(QT_LATEST) && defined(SK_NO_QML) == false
+#if defined(QT_NEW) && defined(SK_NO_QML) == false
 #include <WControllerDeclarative>
 #endif
 #include <WControllerNetwork>
@@ -458,7 +458,7 @@ void WBackendNetPrivate::init()
 
     lockCount = 0;
 
-#if defined(QT_LATEST) && defined(SK_NO_QML) == false
+#if defined(QT_NEW) && defined(SK_NO_QML) == false
     Q_Q(WBackendNet);
 
     // NOTE Qt5: We must enforce CppOwnership for backends. Otherwise they get destroyed too early.

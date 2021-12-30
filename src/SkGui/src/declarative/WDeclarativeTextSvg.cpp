@@ -33,7 +33,7 @@
 #include <WView>
 #include <WImageFilterColor>
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 // Qt private includes
 #include <private/qsgadaptationlayer_p.h>
 #endif
@@ -102,7 +102,7 @@ void WDeclarativeTextSvgPrivate::init()
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 void WDeclarativeTextSvgPrivate::updatePixmap(int width, int height)
 {
@@ -152,7 +152,7 @@ void WDeclarativeTextSvgPrivate::loadSvg()
 {
     Q_Q(WDeclarativeTextSvg);
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     timer.stop();
 #endif
 
@@ -162,7 +162,7 @@ void WDeclarativeTextSvgPrivate::loadSvg()
 
         renderer->load(QByteArray());
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
         if (pixmap.isNull() == false)
         {
             pixmap = QPixmap();
@@ -267,7 +267,7 @@ void WDeclarativeTextSvgPrivate::loadSvg()
 
         renderer->load(content.toUtf8());
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
         updateTexture = true;
 #endif
     }
@@ -584,7 +584,7 @@ WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p, QQuickI
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 #ifdef QT_OLD
 /* virtual */ void WDeclarativeTextSvg::geometryChanged(const QRectF & newGeometry,
@@ -751,7 +751,7 @@ void WDeclarativeTextSvg::setZoom(qreal zoom)
 
     svgChange();
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     d->updateGeometry = true;
 #endif
 
@@ -775,7 +775,7 @@ void WDeclarativeTextSvg::setHAlign(HAlignment align)
 
     d->hAlign = align;
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     d->updateGeometry = true;
 #endif
 
@@ -799,7 +799,7 @@ void WDeclarativeTextSvg::setVAlign(VAlignment align)
 
     d->vAlign = align;
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     d->updateGeometry = true;
 #endif
 
@@ -1003,7 +1003,7 @@ void WDeclarativeTextSvg::setStyleSize(int size)
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 bool WDeclarativeTextSvg::scaleDelayed() const
 {

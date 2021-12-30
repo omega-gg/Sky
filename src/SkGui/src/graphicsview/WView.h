@@ -417,7 +417,7 @@ protected: // Functions
 #endif
 
 protected: // Events
-#ifdef QT_LATEST
+#ifdef QT_NEW
     /* virtual */ bool event(QEvent * event);
 #endif
 
@@ -677,13 +677,13 @@ public: // Properties
 private:
     W_DECLARE_PRIVATE(WView)
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     Q_PRIVATE_SLOT(d_func(), void onStateChanged(Qt::ApplicationState))
 #endif
 
     Q_PRIVATE_SLOT(d_func(), void onGeometryChanged())
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     Q_PRIVATE_SLOT(d_func(), void onScreenChanged())
 #endif
 

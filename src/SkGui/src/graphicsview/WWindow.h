@@ -24,7 +24,7 @@
 #define WWINDOW_H
 
 // Qt includes
-#ifdef QT_LATEST
+#ifdef QT_NEW
 #include <QPixmap>
 #endif
 
@@ -292,7 +292,7 @@ public: // Interface
 #endif
 
 public: // Static functions
-#if defined(QT_LATEST) && defined(Q_OS_ANDROID)
+#if defined(QT_NEW) && defined(Q_OS_ANDROID)
     Q_INVOKABLE static void hideSplash(int duration = 0);
 #endif
 

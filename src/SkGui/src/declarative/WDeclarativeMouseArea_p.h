@@ -70,7 +70,7 @@ public: // Variables
 
     bool wheelEnabled : 1;
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     bool dropEnabled : 1;
 #endif
 

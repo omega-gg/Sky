@@ -23,7 +23,7 @@
 #ifndef WDECLARATIVEMOUSEWATCHER_P_H
 #define WDECLARATIVEMOUSEWATCHER_P_H
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 // Qt includes
 #include <QTimer>
 #endif
@@ -43,7 +43,7 @@ public:
 public: // Slots
     void onPressedChanged();
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 public: // Variables
     bool touch;
 

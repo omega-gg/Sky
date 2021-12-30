@@ -149,7 +149,7 @@ void WDeclarativeNoisePrivate::resetColor()
 /* virtual */ void WDeclarativeNoise::paint(QPainter * painter)
 #endif
 {
-#ifdef QT_LATEST
+#ifdef QT_NEW
     if (isVisible() == false) return;
 #endif
 

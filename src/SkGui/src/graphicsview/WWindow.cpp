@@ -24,7 +24,7 @@
 
 #ifndef SK_NO_WINDOW
 
-#if defined(QT_LATEST) && defined(Q_OS_ANDROID)
+#if defined(QT_NEW) && defined(Q_OS_ANDROID)
 // Qt includes
 #include <QtAndroid>
 #endif
@@ -61,7 +61,7 @@ void WWindowPrivate::init()
 
     q->setAcceptHoverEvents(true);
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     q->setFlag(QQuickItem::ItemAcceptsDrops);
 #endif
 
@@ -618,7 +618,7 @@ void WWindowPrivate::init()
 // Static functions
 //-------------------------------------------------------------------------------------------------
 
-#if defined(QT_LATEST) && defined(Q_OS_ANDROID)
+#if defined(QT_NEW) && defined(Q_OS_ANDROID)
 
 /* Q_INVOKABLE static */ void WWindow::hideSplash(int duration)
 {
@@ -707,7 +707,7 @@ void WWindowPrivate::init()
 
 //-------------------------------------------------------------------------------------------------
 
-//#ifdef QT_LATEST
+//#ifdef QT_NEW
 
 ///* virtual */ void WWindow::dragEnterEvent(QDragEnterEvent * event)
 //{

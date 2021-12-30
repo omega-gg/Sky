@@ -48,7 +48,7 @@ MouseArea
     property alias text       : textInput      .text
     property alias textDefault: itemTextDefault.text
 
-//#QT_LATEST
+//#QT_NEW
     // NOTE android: This is useful to get each 'text changed' events.
     property alias displayText: textInput.displayText
 //#END
@@ -181,7 +181,7 @@ MouseArea
     function onKeyReleased(event) {}
 
     //---------------------------------------------------------------------------------------------
-    // Childs
+    // Children
     //---------------------------------------------------------------------------------------------
 
 //#QT_4

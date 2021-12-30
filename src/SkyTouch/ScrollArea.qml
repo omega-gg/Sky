@@ -31,7 +31,7 @@ Item
 
     default property alias contents: flickable.data
 
-//#QT_LATEST
+//#QT_NEW
     property alias originY: flickable.originY
 //#END
 
@@ -67,7 +67,7 @@ Item
     }
 
     //---------------------------------------------------------------------------------------------
-    // Childs
+    // Children
     //---------------------------------------------------------------------------------------------
 
     Flickable

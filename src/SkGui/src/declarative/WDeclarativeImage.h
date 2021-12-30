@@ -92,7 +92,7 @@ protected: // QGraphicsItem / QQuickItem reimplementation
 protected: // WDeclarativeImageBase reimplementation
     /* virtual */ void pixmapChange();
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 protected: // WDeclarativeTexture reimplementation
     /* virtual */ void applyGeometry(QSGInternalImageNode * node, const QPixmap & pixmap);
 #endif
@@ -174,7 +174,7 @@ public: // Properties
 private:
     W_DECLARE_PRIVATE(WDeclarativeImageScale)
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     Q_PRIVATE_SLOT(d_func(), void onStart())
 #endif
 

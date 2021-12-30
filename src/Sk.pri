@@ -19,7 +19,7 @@ lessThan(QT_MAJOR_VERSION, 6) {
 }
 
 greaterThan(QT_MAJOR_VERSION, 4) {
-    DEFINES += QT_LATEST
+    DEFINES += QT_NEW
 }
 
 android {

@@ -42,7 +42,7 @@ WYamlNode::WYamlNode(const QString & key)
 
 const WYamlNode * WYamlNode::at(const QString & key) const
 {
-    foreach (const WYamlNode & node, childs)
+    foreach (const WYamlNode & node, children)
     {
         if (node.key == key) return &node;
     }
@@ -61,13 +61,13 @@ void WYamlNode::dump(int indent) const
         string.append(' ');
     }
 
-    if (childs.isEmpty() == false)
+    if (children.isEmpty() == false)
     {
         qDebug("%s[%s]", string.C_STR, key.C_STR);
 
         indent += 4;
 
-        foreach (const WYamlNode & node, childs)
+        foreach (const WYamlNode & node, children)
         {
             node.dump(indent);
         }
@@ -187,7 +187,7 @@ void WYamlReaderPrivate::extractChilds(WYamlNode * node, QString * content) cons
 
         extractNode(&child, content, &string);
 
-        node->childs.append(child);
+        node->children.append(child);
 
         if (getIndent(content) != indent) return;
     }

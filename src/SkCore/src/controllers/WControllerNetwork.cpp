@@ -26,7 +26,7 @@
 
 // Qt incudes
 #include <QDateTime>
-#ifdef QT_LATEST
+#ifdef QT_NEW
 #include <QUrlQuery>
 #endif
 

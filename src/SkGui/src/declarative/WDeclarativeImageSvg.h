@@ -64,7 +64,7 @@ class SK_GUI_EXPORT WDeclarativeImageSvg : public WDeclarativeTexture
 
     Q_PROPERTY(qreal progress READ progress NOTIFY progressChanged)
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     Q_PROPERTY(bool scaleDelayed READ scaleDelayed WRITE setScaleDelayed
                NOTIFY scaleDelayedChanged)
 
@@ -143,7 +143,7 @@ signals:
 
     void progressChanged();
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     void scaleDelayedChanged();
     void scaleDelayChanged  ();
     void scaleLaterChanged  ();
@@ -167,7 +167,7 @@ public: // Properties
 
     qreal progress() const;
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     bool scaleDelayed() const;
     void setScaleDelayed(bool delayed);
 

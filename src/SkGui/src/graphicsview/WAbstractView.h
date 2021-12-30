@@ -140,7 +140,7 @@ protected: // Virtual functions
 public: // Properties
     WId winId() const;
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     QScreen * screen() const;
 #endif
 
@@ -171,7 +171,7 @@ private:
     W_DECLARE_PRIVATE(WAbstractView)
 
 #ifdef SK_WIN_NATIVE
-#ifdef QT_LATEST
+#ifdef QT_NEW
     Q_PRIVATE_SLOT(d_func(), void onCreate())
 
     Q_PRIVATE_SLOT(d_func(), void onMove())

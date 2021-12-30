@@ -86,7 +86,7 @@ public: // Functions
 
     void applySize(int width, int height);
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     void updateRatio();
 #endif
 
@@ -114,7 +114,7 @@ public: // Functions
     void setDragged (bool dragged);
     void setResizing(bool resizing);
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     void setTouch(int id);
 #endif
 
@@ -129,7 +129,7 @@ public: // Functions
 
     bool isUnderMouse() const;
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     bool itemUnderMouse(QQuickItem * item) const;
 #endif
 
@@ -151,13 +151,13 @@ public: // Functions
 #endif
 
 public: // Slots
-#ifdef QT_LATEST
+#ifdef QT_NEW
     void onStateChanged(Qt::ApplicationState state);
 #endif
 
     void onGeometryChanged();
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     void onScreenChanged();
 #endif
 
@@ -263,7 +263,7 @@ public: // Variables
     int    idleDelay;
     QTimer idleTimer;
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     //---------------------------------------------------------------------------------------------
     // Touch
 
@@ -290,7 +290,7 @@ public: // Variables
 
     WDeclarativeMouseArea * areaDrop;
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     bool dragSkip;
 #endif
 

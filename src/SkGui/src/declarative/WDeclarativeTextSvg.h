@@ -93,7 +93,7 @@ class SK_GUI_EXPORT WDeclarativeTextSvg : public WDeclarativeTexture
     Q_PROPERTY(QColor styleColor READ styleColor WRITE setStyleColor NOTIFY styleColorChanged)
     Q_PROPERTY(int    styleSize  READ styleSize  WRITE setStyleSize  NOTIFY styleSizeChanged)
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     Q_PROPERTY(bool scaleDelayed READ scaleDelayed WRITE setScaleDelayed
                NOTIFY scaleDelayedChanged)
 
@@ -198,7 +198,7 @@ signals:
     void styleColorChanged();
     void styleSizeChanged ();
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     void scaleDelayedChanged();
     void scaleDelayChanged  ();
     void scaleLaterChanged  ();
@@ -253,7 +253,7 @@ public: // Properties
     int  styleSize() const;
     void setStyleSize(int size);
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     bool scaleDelayed() const;
     void setScaleDelayed(bool delayed);
 

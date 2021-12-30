@@ -48,7 +48,7 @@ public: // Interface
     Q_INVOKABLE void clearProxy();
 
 protected: // WAbstractBackend implementation
-#ifdef QT_LATEST
+#ifdef QT_NEW
     /* virtual */ WBackendNode * backendCreateNode() const;
 #endif
 
@@ -78,7 +78,7 @@ protected: // WAbstractBackend reimplementation
 
     /* virtual */ void backendSetSize(const QSizeF & size);
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     /* virtual */ void backendSynchronize(WBackendFrame * frame);
 #endif
 
@@ -110,7 +110,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onLoaded      ())
     Q_PRIVATE_SLOT(d_func(), void onFrameUpdated())
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     Q_PRIVATE_SLOT(d_func(), void onUpdateState())
 #endif
 };

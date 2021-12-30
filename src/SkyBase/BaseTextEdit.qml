@@ -57,7 +57,7 @@ TextEdit
 
     textMargin: st.baseTextEdit_margin
 
-//#QT_LATEST
+//#QT_NEW
     renderType: st.text_renderType
 //#END
 
@@ -180,7 +180,7 @@ TextEdit
     function onKeyReleased(event) {}
 
     //---------------------------------------------------------------------------------------------
-    // Childs
+    // Children
     //---------------------------------------------------------------------------------------------
 
     MouseArea

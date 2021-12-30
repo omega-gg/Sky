@@ -36,7 +36,7 @@
 #ifdef SK_WIN_NATIVE
 // Qt includes
 #include <QMetaMethod>
-#ifdef QT_LATEST
+#ifdef QT_NEW
 #include <QTimer>
 #endif
 #endif
@@ -78,7 +78,7 @@ public: // Static events
     static LRESULT CALLBACK events(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
 
 public: // Slots
-#ifdef QT_LATEST
+#ifdef QT_NEW
     void onCreate();
 
     void onMove();
@@ -94,7 +94,7 @@ public: // Variables
     HWND id;
     HWND handle;
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     QWindow * viewport;
 #endif
 
@@ -112,7 +112,7 @@ public: // Variables
 
     QRect rect;
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     QScreen * screen;
 #endif
 
@@ -130,7 +130,7 @@ public: // Variables
 
     QMetaMethod method;
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     QTimer timer;
 #endif
 #endif

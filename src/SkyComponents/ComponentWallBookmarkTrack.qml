@@ -25,7 +25,7 @@ import Sky     1.0
 
 ComponentWall
 {
-//#QT_LATEST
+//#QT_NEW
     id: componentWall
 //#END
 
@@ -249,7 +249,7 @@ ComponentWall
     filterIconShadow: st.icon1_filterShadow
 
     //---------------------------------------------------------------------------------------------
-    // Childs
+    // Children
     //---------------------------------------------------------------------------------------------
 
     TabBarProgress

@@ -55,7 +55,7 @@ public:
     void init();
 
 public: // Functions
-#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
+#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
     void updateGeometry(WBackendNode * node);
 #endif
 
@@ -105,7 +105,7 @@ public: // Variables
 
     WBackendInterface * backendInterface;
 
-#if defined(QT_LATEST) && defined(SK_SOFTWARE) == false
+#if defined(QT_NEW) && defined(SK_SOFTWARE) == false
     WBackendFrame frame;
 
     bool frameUpdate;

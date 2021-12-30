@@ -37,7 +37,7 @@
 #include <WView>
 #include <WCache>
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 // Qt private includes
 #include <private/qsgadaptationlayer_p.h>
 #endif
@@ -94,7 +94,7 @@ void WDeclarativeImageSvgPrivate::init()
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 void WDeclarativeImageSvgPrivate::updatePixmap(int width, int height)
 {
@@ -230,7 +230,7 @@ void WDeclarativeImageSvgPrivate::applyUrl(const QString & url)
 
     size = renderer->defaultSize();
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     updateTexture = true;
 #endif
 
@@ -252,7 +252,7 @@ void WDeclarativeImageSvgPrivate::clearUrl(WDeclarativeImageSvg::Status status)
 
     size = QSize();
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     if (pixmap.isNull() == false)
     {
         pixmap = QPixmap();
@@ -492,7 +492,7 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 #ifdef QT_OLD
 /* virtual */ void WDeclarativeImageSvg::geometryChanged(const QRectF & newGeometry,
@@ -707,7 +707,7 @@ qreal WDeclarativeImageSvg::progress() const
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 bool WDeclarativeImageSvg::scaleDelayed() const
 {

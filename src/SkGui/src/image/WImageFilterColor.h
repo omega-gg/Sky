@@ -36,7 +36,7 @@
 #ifndef SK_NO_IMAGEFILTERCOLOR
 
 // Forward declarations
-#ifdef QT_LATEST
+#ifdef QT_NEW
 class QGradient;
 #endif
 class WImageFilterColorPrivate;

@@ -32,7 +32,7 @@ BorderVertical
     anchors.top   : background.top
     anchors.bottom: background.bottom
 
-//#QT_LATEST
+//#QT_NEW
     anchors.topMargin   : borderSize
     anchors.bottomMargin: borderSize
 //#END

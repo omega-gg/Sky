@@ -86,7 +86,7 @@ public: // Variables
     return true;
 }
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 //=================================================================================================
 // WControllerViewLoader
@@ -194,7 +194,7 @@ void WControllerViewPrivate::unregisterView(WView * view)
 /* static */ void WControllerViewPrivate::paintRecursive(QPainter        * painter,
                                                          QGraphicsObject * item)
 {
-    QList<QGraphicsObject *> childs;
+    QList<QGraphicsObject *> children;
 
     foreach (QGraphicsItem * item, item->childItems())
     {
@@ -206,7 +206,7 @@ void WControllerViewPrivate::unregisterView(WView * view)
             {
                 paintChild(painter, child);
             }
-            else childs.append(child);
+            else children.append(child);
         }
     }
 
@@ -218,7 +218,7 @@ void WControllerViewPrivate::unregisterView(WView * view)
 
     item->paint(painter, &style);
 
-    foreach (QGraphicsObject * child, childs)
+    foreach (QGraphicsObject * child, children)
     {
         paintChild(painter, child);
     }
@@ -373,7 +373,7 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 /* Q_INVOKABLE static */ qreal WControllerView::screenRatio(QScreen * screen)
 {
@@ -406,7 +406,7 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 
     pixmap.fill(background);
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     QSharedPointer<QQuickItemGrabResult> grab = item->grabToImage();
 
     WControllerViewLoader loader;

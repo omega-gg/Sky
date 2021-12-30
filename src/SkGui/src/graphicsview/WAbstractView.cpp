@@ -34,7 +34,7 @@
 #include <QIcon>
 #endif
 
-#if defined(SK_WIN_NATIVE) && defined(QT_LATEST)
+#if defined(SK_WIN_NATIVE) && defined(QT_NEW)
 // Windows includes
 #ifdef _MSC_VER
     // FIXME MSVC: This fixes FORMATETC declaration.
@@ -57,14 +57,14 @@
 static const DWORD ABSTRACTVIEW_FLAGS = WS_OVERLAPPED  | WS_THICKFRAME | WS_MINIMIZEBOX |
                                         WS_MAXIMIZEBOX | WS_CLIPCHILDREN;
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 static const int ABSTRACTVIEW_INTERVAL = 400;
 
 static const int ABSTRACTVIEW_DELAY = 5000;
 #endif
 #endif
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 //-------------------------------------------------------------------------------------------------
 // Global variables
 
@@ -84,7 +84,7 @@ WAbstractViewPrivate::WAbstractViewPrivate(WAbstractView * p) : WPrivate(p) {}
 {
     DestroyWindow(handle);
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     count--;
 
     if (count == 0 && view)
@@ -138,7 +138,7 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
     maximumWidth  = ABSTRACTVIEW_MAX;
     maximumHeight = ABSTRACTVIEW_MAX;
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     screen = NULL;
 #endif
 
@@ -158,7 +158,7 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 
     method = meta->method(meta->indexOfMethod("onFocus()"));
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     timer.setInterval(ABSTRACTVIEW_INTERVAL);
 
     timer.setSingleShot(true);
@@ -217,7 +217,7 @@ void WAbstractViewPrivate::init(Qt::WindowFlags flags)
 
     SetParent(id, handle);
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
     // FIXME Qt5 Windows: We need to create a QWindow to receive QScreen events.
     if (count == 0)
     {
@@ -496,7 +496,7 @@ bool WAbstractViewPrivate::isWindows10()
 
         return 0;
     }
-#ifdef QT_LATEST
+#ifdef QT_NEW
     // FIXME Qt5.12: We have to send mouse release manually when dragging and resizing.
     else if (message == WM_CAPTURECHANGED)
     {
@@ -529,7 +529,7 @@ bool WAbstractViewPrivate::isWindows10()
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 // FIXME Qt5 Windows: We need to create a QWindow to receive QScreen events.
 void WAbstractViewPrivate::onCreate()
@@ -1080,7 +1080,7 @@ WId WAbstractView::winId() const
 
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_LATEST
+#ifdef QT_NEW
 
 QScreen * WAbstractView::screen() const
 {
