@@ -97,3 +97,20 @@ jobs:
                                      zip -rq ../Sky.zip *"
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
     artifact: Sky-android-qt5
+
+- job: android_qt6
+  pool:
+    vmImage: "ubuntu-latest"
+  steps:
+  - bash: |
+      docker run -d --name ubuntu -v $PWD:/Sky amd64/ubuntu:20.04 tail -f /dev/null
+      docker exec -t ubuntu bash -c "cd /Sky;
+                                     apt-get update;
+                                     apt-get -y install sudo curl zip unzip git;
+                                     sh environment.sh qt6;
+                                     sh 3rdparty.sh linux;
+                                     sh build.sh android all;
+                                     cd deploy;
+                                     zip -rq ../Sky.zip *"
+  - publish: $(System.DefaultWorkingDirectory)/Sky.zip
+    artifact: Sky-android-qt6
