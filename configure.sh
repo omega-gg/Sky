@@ -255,10 +255,10 @@ else
     #----------------------------------------------------------------------------------------------
     # NOTE: Removing configuration files
 
-    rm include/$QtX/QtCore/*-config.*
-    rm include/$QtX/QtGui/*-config.*
-    rm include/$QtX/QtQml/*-config.*
-    rm include/$QtX/QtQuick/*-config.*
+    rm include/$QtX/QtCore/*config.*
+    rm include/$QtX/QtGui/*config.*
+    rm include/$QtX/QtQml/*config.*
+    rm include/$QtX/QtQuick/*config.*
 fi
 
 #--------------------------------------------------------------------------------------------------
