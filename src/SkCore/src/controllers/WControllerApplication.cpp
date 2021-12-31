@@ -65,8 +65,12 @@
 #include <QRandomGenerator>
 #endif
 #ifdef Q_OS_ANDROID
-#include <QtAndroid>
-#include <QAndroidJniEnvironment>
+#ifdef QT_5
+    #include <QtAndroid>
+    #include <QAndroidJniEnvironment>
+#else
+    #include <QJniObject>
+#endif
 #endif
 
 // Sk incudes
@@ -1520,7 +1524,11 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 
 /* Q_INVOKABLE static */ QString WControllerApplication::getIntentText()
 {
+#ifdef QT_5
     QAndroidJniObject object = QtAndroid::androidActivity();
+#else
+    QJniObject object = QNativeInterface::QAndroidApplication::context();
+#endif
 
     if (object.isValid() == false) return QString();
 
@@ -1532,7 +1540,11 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 
     if (object.isValid() == false) return QString();
 
+#ifdef QT_5
     QAndroidJniObject key = QAndroidJniObject::fromString("android.intent.extra.TEXT");
+#else
+    QJniObject key = QJniObject::fromString("android.intent.extra.TEXT");
+#endif
 
     return object.callObjectMethod("getCharSequence",
                                    "(Ljava/lang/String;)Ljava/lang/CharSequence;",
@@ -2139,9 +2151,17 @@ void WControllerApplication::setScreenSaverEnabled(bool enabled)
     }
 #elif defined(Q_OS_ANDROID)
     // NOTE android: We run this on the GUI thread otherwise we get an exception.
+#ifdef QT_5
     QtAndroid::runOnAndroidThread([enabled]
+#else
+    QNativeInterface::QAndroidApplication::runOnAndroidMainThread([enabled]
+#endif
     {
+#ifdef QT_5
         QAndroidJniObject jni = QtAndroid::androidActivity();
+#else
+        QJniObject jni = QNativeInterface::QAndroidApplication::context();
+#endif
 
         if (jni.isValid())
         {
@@ -2158,7 +2178,11 @@ void WControllerApplication::setScreenSaverEnabled(bool enabled)
             }
         }
 
+#ifdef QT_5
         QAndroidJniEnvironment env;
+#else
+        QJniEnvironment env;
+#endif
 
         // NOTE android: It seems we need to check exceptions.
         if (env->ExceptionCheck())

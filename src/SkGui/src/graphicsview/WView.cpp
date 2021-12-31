@@ -36,7 +36,7 @@
 #include <QDrag>
 #include <QMimeData>
 
-#ifdef QT_6
+#if defined(Q_OS_WIN) && defined(QT_6)
 // Windows includes
 #include <qt_windows.h>
 #endif

@@ -32,7 +32,7 @@
 // Sk includes
 #include <WView>
 
-#if defined(QT_5) == false && defined(Q_OS_WIN)
+#if defined(Q_OS_WIN) && defined(QT_5) == false
 // Windows includes
 #include <qt_windows.h>
 #endif
