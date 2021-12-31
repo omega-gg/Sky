@@ -103,7 +103,12 @@ else
 
     QtX="Qt6"
 
-    qx="6"
+    if [ $1 = "macOS" ]; then
+
+        qx="Current"
+    else
+        qx="6"
+    fi
 fi
 
 if [ $os = "windows" -a $qt = "qt4" ]; then
