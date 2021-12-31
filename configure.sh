@@ -246,6 +246,24 @@ else
     mv include/$QtX/QtGui/"$qx"*/QtGui/private/*     include/$QtX/QtGui/private
     mv include/$QtX/QtQml/"$qx"*/QtQml/private/*     include/$QtX/QtQml/private
     mv include/$QtX/QtQuick/"$qx"*/QtQuick/private/* include/$QtX/QtQuick/private
+
+    rm -rf include/$QtX/QtCore/"$qx"*
+    rm -rf include/$QtX/QtGui/"$qx"*
+    rm -rf include/$QtX/QtQml/"$qx"*
+    rm -rf include/$QtX/QtQuick/"$qx"*
+
+    #----------------------------------------------------------------------------------------------
+    # Removing configuration files
+
+    rm include/$QtX/QtCore/*-config*
+    rm include/$QtX/QtGui/*-config*
+    rm include/$QtX/QtQml/*-config*
+    rm include/$QtX/QtQuick/*-config*
+
+    rm include/$QtX/QtCore/private/*-config*
+    rm include/$QtX/QtGui/private/*-config*
+    rm include/$QtX/QtQml/private/*-config*
+    rm include/$QtX/QtQuick/private/*-config*
 fi
 
 #--------------------------------------------------------------------------------------------------
