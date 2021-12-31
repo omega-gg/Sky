@@ -34,7 +34,7 @@
 class WBackendSubtitlePrivate;
 
 #ifdef QT_6
-Q_MOC_INCLUDE("QThread.h")
+Q_MOC_INCLUDE("QThread")
 #endif
 
 class SK_MEDIA_EXPORT WBackendSubtitle : public QObject, public WPrivatable

@@ -32,7 +32,7 @@
 class WTabsTrackPrivate;
 
 #ifdef QT_6
-Q_MOC_INCLUDE("WTabTrack.h")
+Q_MOC_INCLUDE("WTabTrack")
 #endif
 
 class SK_GUI_EXPORT WTabsTrack : public WAbstractTabs

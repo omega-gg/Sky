@@ -40,9 +40,9 @@ class WAbstractHook;
 class WTabsTrack;
 
 #ifdef QT_6
-Q_MOC_INCLUDE("WAbstractHook.h")
-Q_MOC_INCLUDE("WTabsTrack.h")
-Q_MOC_INCLUDE("WTabTrack.h")
+Q_MOC_INCLUDE("WAbstractHook")
+Q_MOC_INCLUDE("WTabsTrack")
+Q_MOC_INCLUDE("WTabTrack")
 #endif
 
 #ifdef SK_SOFTWARE

@@ -53,7 +53,7 @@ struct WBackendTexture;
 #endif
 
 #if defined(QT_6) && defined(SK_NO_QML) == false
-Q_MOC_INCLUDE("WDeclarativePlayer.h")
+Q_MOC_INCLUDE("WDeclarativePlayer")
 #endif
 
 #if defined(QT_NEW) && defined(SK_NO_QML) == false

@@ -40,7 +40,7 @@ class WDeclarativeImageBasePrivate;
 class WImageFilter;
 
 #ifdef QT_6
-Q_MOC_INCLUDE("WImageFilter.h")
+Q_MOC_INCLUDE("WImageFilter")
 #endif
 
 #ifdef QT_4

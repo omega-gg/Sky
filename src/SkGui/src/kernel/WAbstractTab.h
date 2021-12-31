@@ -34,7 +34,7 @@ class WAbstractTabs;
 class WTabTrack;
 
 #ifdef QT_6
-Q_MOC_INCLUDE("WAbstractTabs.h")
+Q_MOC_INCLUDE("WAbstractTabs")
 #endif
 
 class SK_GUI_EXPORT WAbstractTab : public WLocalObject

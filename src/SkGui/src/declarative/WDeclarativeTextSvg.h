@@ -38,7 +38,7 @@ class WDeclarativeTextSvgScalePrivate;
 class WDeclarativeGradient;
 
 #ifdef QT_6
-Q_MOC_INCLUDE("WImageFilterColor.h") // WDeclarativeGradient
+Q_MOC_INCLUDE("WImageFilterColor") // WDeclarativeGradient
 #endif
 
 //-------------------------------------------------------------------------------------------------

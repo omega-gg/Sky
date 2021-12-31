@@ -44,9 +44,9 @@ class WVlcPlayer;
 
 #ifdef QT_6
 #ifndef SK_NO_PLAYER
-Q_MOC_INCLUDE("WVlcEngine.h")
+Q_MOC_INCLUDE("WVlcEngine")
 #endif
-Q_MOC_INCLUDE("WAbstractLoader.h")
+Q_MOC_INCLUDE("WAbstractLoader")
 #endif
 
 // Defines

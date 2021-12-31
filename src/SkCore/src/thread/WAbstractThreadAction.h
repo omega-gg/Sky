@@ -36,7 +36,7 @@ class WAbstractThreadActionPrivate;
 class WAbstractThreadReply;
 
 #ifdef QT_6
-Q_MOC_INCLUDE("WAbstractThreadReply.h")
+Q_MOC_INCLUDE("WAbstractThreadReply")
 #endif
 
 class SK_CORE_EXPORT WAbstractThreadAction : public QObject, public WPrivatable

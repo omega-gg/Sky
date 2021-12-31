@@ -35,7 +35,7 @@
 #include <qt_windows.h>
 #endif
 
-#if defined(Q_OS_LINUX) && defined(Q_OS_ANDROID) == false
+#if defined(Q_OS_LINUX) && defined(Q_OS_ANDROID) == false && defined(QT_6) == false
 // Linux includes
 #include <QX11Info>
 #endif

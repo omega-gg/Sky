@@ -36,7 +36,7 @@ class WTabTrack;
 class WBackendNetQuery;
 
 #ifdef QT_6
-Q_MOC_INCLUDE("WLibraryFolder.h")
+Q_MOC_INCLUDE("WLibraryFolder")
 #endif
 
 class SK_GUI_EXPORT WLibraryItem : public WLocalObject

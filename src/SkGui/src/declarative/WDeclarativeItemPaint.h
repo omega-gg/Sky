@@ -36,7 +36,7 @@ class WDeclarativeItemPaintPrivate;
 class WView;
 
 #ifdef QT_6
-Q_MOC_INCLUDE("WView.h")
+Q_MOC_INCLUDE("WView")
 #endif
 
 class SK_GUI_EXPORT WDeclarativeItemPaint : public QQuickPaintedItem, public WPrivatable

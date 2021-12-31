@@ -45,7 +45,7 @@ class WCache;
 class WCacheFile;
 
 #ifdef QT_6
-Q_MOC_INCLUDE("WCache.h")
+Q_MOC_INCLUDE("WCache")
 #endif
 
 // Defines

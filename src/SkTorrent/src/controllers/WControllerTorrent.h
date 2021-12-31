@@ -40,7 +40,7 @@ class WTorrentReply;
 class WMagnetReply;
 
 #ifdef QT_6
-Q_MOC_INCLUDE("WTorrentEngine.h")
+Q_MOC_INCLUDE("WTorrentEngine")
 #endif
 
 // Defines

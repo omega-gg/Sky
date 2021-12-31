@@ -37,7 +37,7 @@ class WAbstractLoader;
 class WLoaderNetwork;
 
 #ifdef QT_6
-Q_MOC_INCLUDE("WLoaderNetwork.h")
+Q_MOC_INCLUDE("WLoaderNetwork")
 #endif
 
 // Defines

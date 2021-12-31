@@ -34,8 +34,8 @@ class QNetworkCookieJar;
 class WLoaderNetworkPrivate;
 
 #ifdef QT_6
-Q_MOC_INCLUDE("QAbstractNetworkCache.h")
-Q_MOC_INCLUDE("QNetworkCookieJar.h")
+Q_MOC_INCLUDE("QAbstractNetworkCache")
+Q_MOC_INCLUDE("QNetworkCookieJar")
 #endif
 
 class SK_CORE_EXPORT WLoaderNetwork : public WAbstractLoader

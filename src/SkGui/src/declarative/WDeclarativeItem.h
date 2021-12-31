@@ -40,7 +40,7 @@ class WDeclarativeItemPrivate;
 class WView;
 
 #ifdef QT_6
-Q_MOC_INCLUDE("WView.h")
+Q_MOC_INCLUDE("WView")
 #endif
 
 #ifdef QT_4
