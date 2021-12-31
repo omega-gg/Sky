@@ -3,7 +3,11 @@ contains(QT_MAJOR_VERSION, 4) {
 } else:contains(QT_MAJOR_VERSION, 5) {
     QTX = Qt5
 } else {
-    QTX = Qt6
+    android {
+        QTX = Qt6/$$ANDROID_TARGET_ARCH
+    } else {
+        QTX = Qt6
+    }
 }
 
 contains(QT_MAJOR_VERSION, 4) {

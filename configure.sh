@@ -43,6 +43,30 @@ copyAndroid()
     cp -r "$1"/x86_64      "$2"
 }
 
+copyIncludes()
+{
+    include="include/$2"
+
+    mkdir -p $include
+
+    cp -r "$1"/include/QtCore  $include
+    cp -r "$1"/include/QtGui   $include
+    cp -r "$1"/include/QtQml   $include
+    cp -r "$1"/include/QtQuick $include
+
+    cp -r "$1"/include/QtGui/"$qx"*/QtGui/qpa $include/QtGui
+
+    mv $include/QtCore/"$qx"*/QtCore/private/*   $include/QtCore/private
+    mv $include/QtGui/"$qx"*/QtGui/private/*     $include/QtGui/private
+    mv $include/QtQml/"$qx"*/QtQml/private/*     $include/QtQml/private
+    mv $include/QtQuick/"$qx"*/QtQuick/private/* $include/QtQuick/private
+
+    rm -rf $include/QtCore/"$qx"*
+    rm -rf $include/QtGui/"$qx"*
+    rm -rf $include/QtQml/"$qx"*
+    rm -rf $include/QtQuick/"$qx"*
+}
+
 #--------------------------------------------------------------------------------------------------
 # Syntax
 #--------------------------------------------------------------------------------------------------
@@ -110,13 +134,7 @@ elif [ $qt = "qt5" ]; then
 
     qx="5"
 else
-    if [ $1 = "android" ]; then
-
-        # NOTE: This is required for include folders.
-        Qt="$external/Qt/$Qt6_version/gcc_64"
-    else
-        Qt="$external/Qt/$Qt6_version"
-    fi
+    Qt="$external/Qt/$Qt6_version"
 
     QtX="Qt6"
 
@@ -179,92 +197,85 @@ fi
 # Qt
 #--------------------------------------------------------------------------------------------------
 
+include="include/$QtX"
+
 if [ $qt = "qt4" ]; then
 
     if [ $1 = "linux" ]; then
 
         echo "COPYING Qt"
 
-        mkdir -p include/$QtX/QtCore/private
-        mkdir -p include/$QtX/QtGui/private
-        mkdir -p include/$QtX/QtDeclarative/private
+        mkdir -p $include/QtCore/private
+        mkdir -p $include/QtGui/private
+        mkdir -p $include/QtDeclarative/private
 
-        cp "$Qt"/src/corelib/kernel/*_p.h include/$QtX/QtCore/private
+        cp "$Qt"/src/corelib/kernel/*_p.h $include/QtCore/private
 
-        cp "$Qt"/src/gui/kernel/*_p.h include/$QtX/QtGui/private
+        cp "$Qt"/src/gui/kernel/*_p.h $include/QtGui/private
 
-        cp "$Qt"/src/declarative/qml/*_p.h           include/$QtX/QtDeclarative/private
-        cp "$Qt"/src/declarative/graphicsitems/*_p.h include/$QtX/QtDeclarative/private
-        cp "$Qt"/src/declarative/util/*_p.h          include/$QtX/QtDeclarative/private
+        cp "$Qt"/src/declarative/qml/*_p.h           $include/QtDeclarative/private
+        cp "$Qt"/src/declarative/graphicsitems/*_p.h $include/QtDeclarative/private
+        cp "$Qt"/src/declarative/util/*_p.h          $include/QtDeclarative/private
     fi
 else
     echo "COPYING Qt"
 
-    mkdir -p include/$QtX/QtCore/private
-    mkdir -p include/$QtX/QtGui/private
-    mkdir -p include/$QtX/QtQml/private
-    mkdir -p include/$QtX/QtQuick/private
+    if [ $1 = "android" ]; then
 
-    if [ $os = "windows" ]; then
+        if [ $qt = "qt5" ]; then
 
-        cp -r "$Qt"/include/QtCore  include/$QtX
-        cp -r "$Qt"/include/QtGui   include/$QtX
-        cp -r "$Qt"/include/QtQml   include/$QtX
-        cp -r "$Qt"/include/QtQuick include/$QtX
+            copyIncludes "$Qt" $QtX
+        else
+            copyIncludes "$Qt"/android_armv7     $QtX/armeabi-v7a
+            copyIncludes "$Qt"/android_arm64_v8a $QtX/arm64-v8a
+            copyIncludes "$Qt"/android_x86       $QtX/x86
+            copyIncludes "$Qt"/android_x86_64    $QtX/x86_64
+        fi
+    else
+        mkdir -p $include/QtCore/private
+        mkdir -p $include/QtGui/private
+        mkdir -p $include/QtQml/private
+        mkdir -p $include/QtQuick/private
 
-        cp -r "$Qt"/include/QtGui/"$qx"*/QtGui/qpa include/$QtX/QtGui
+        if [ $os = "windows" ]; then
 
-    elif [ $1 = "linux" ]; then
+            cp -r "$Qt"/include/QtCore  $include
+            cp -r "$Qt"/include/QtGui   $include
+            cp -r "$Qt"/include/QtQml   $include
+            cp -r "$Qt"/include/QtQuick $include
 
-        cp -r "$Qt"/include/QtCore  include/$QtX
-        cp -r "$Qt"/include/QtGui   include/$QtX
-        cp -r "$Qt"/include/QtQml   include/$QtX
-        cp -r "$Qt"/include/QtQuick include/$QtX
-        cp -r "$Qt"/include/QtDBus  include/$QtX
+            cp -r "$Qt"/include/QtGui/"$qx"*/QtGui/qpa $include/QtGui
 
-        cp -r "$Qt"/include/QtGui/"$qx"*/QtGui/qpa include/$QtX/QtGui
+        elif [ $1 = "linux" ]; then
 
-    elif [ $1 = "macOS" ]; then
+            cp -r "$Qt"/include/QtCore  $include
+            cp -r "$Qt"/include/QtGui   $include
+            cp -r "$Qt"/include/QtQml   $include
+            cp -r "$Qt"/include/QtQuick $include
+            cp -r "$Qt"/include/QtDBus  $include
 
-        cp -r "$Qt"/lib/QtCore.framework/Headers/*  include/$QtX/QtCore
-        cp -r "$Qt"/lib/QtGui.framework/Headers/*   include/$QtX/QtGui
-        cp -r "$Qt"/lib/QtQml.framework/Headers/*   include/$QtX/QtQml
-        cp -r "$Qt"/lib/QtQuick.framework/Headers/* include/$QtX/QtQuick
+            cp -r "$Qt"/include/QtGui/"$qx"*/QtGui/qpa $include/QtGui
 
-        cp -r "$Qt"/lib/QtGui.framework/Headers/"$qx"*/QtGui/qpa include/$QtX/QtGui
+        elif [ $1 = "macOS" ]; then
 
-    elif [ $1 = "android" ]; then
+            cp -r "$Qt"/lib/QtCore.framework/Headers/*  $include/QtCore
+            cp -r "$Qt"/lib/QtGui.framework/Headers/*   $include/QtGui
+            cp -r "$Qt"/lib/QtQml.framework/Headers/*   $include/QtQml
+            cp -r "$Qt"/lib/QtQuick.framework/Headers/* $include/QtQuick
 
-        cp -r "$Qt"/include/QtCore  include/$QtX
-        cp -r "$Qt"/include/QtGui   include/$QtX
-        cp -r "$Qt"/include/QtQml   include/$QtX
-        cp -r "$Qt"/include/QtQuick include/$QtX
+            cp -r "$Qt"/lib/QtGui.framework/Headers/"$qx"*/QtGui/qpa $include/QtGui
+        fi
 
-        cp -r "$Qt"/include/QtGui/"$qx"*/QtGui/qpa include/$QtX/QtGui
+        mv $include/QtCore/"$qx"*/QtCore/private/*   $include/QtCore/private
+        mv $include/QtGui/"$qx"*/QtGui/private/*     $include/QtGui/private
+        mv $include/QtQml/"$qx"*/QtQml/private/*     $include/QtQml/private
+        mv $include/QtQuick/"$qx"*/QtQuick/private/* $include/QtQuick/private
+
+        rm -rf $include/QtCore/"$qx"*
+        rm -rf $include/QtGui/"$qx"*
+        rm -rf $include/QtQml/"$qx"*
+        rm -rf $include/QtQuick/"$qx"*
     fi
-
-    mv include/$QtX/QtCore/"$qx"*/QtCore/private/*   include/$QtX/QtCore/private
-    mv include/$QtX/QtGui/"$qx"*/QtGui/private/*     include/$QtX/QtGui/private
-    mv include/$QtX/QtQml/"$qx"*/QtQml/private/*     include/$QtX/QtQml/private
-    mv include/$QtX/QtQuick/"$qx"*/QtQuick/private/* include/$QtX/QtQuick/private
-
-    rm -rf include/$QtX/QtCore/"$qx"*
-    rm -rf include/$QtX/QtGui/"$qx"*
-    rm -rf include/$QtX/QtQml/"$qx"*
-    rm -rf include/$QtX/QtQuick/"$qx"*
-
-    #----------------------------------------------------------------------------------------------
-    # NOTE: Removing configuration files
-
-    rm include/$QtX/QtCore/*config*
-    rm include/$QtX/QtGui/*config*
-    rm include/$QtX/QtQml/*config*
-    rm include/$QtX/QtQuick/*config*
-
-    rm include/$QtX/QtCore/private/*config*
-    rm include/$QtX/QtGui/private/*config*
-    rm include/$QtX/QtQml/private/*config*
-    rm include/$QtX/QtQuick/private/*config*
 fi
 
 #--------------------------------------------------------------------------------------------------
