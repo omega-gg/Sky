@@ -47,7 +47,10 @@ copyIncludes()
 {
     include="include/$2"
 
-    mkdir -p $include
+    mkdir -p $include/QtCore/private
+    mkdir -p $include/QtGui/private
+    mkdir -p $include/QtQml/private
+    mkdir -p $include/QtQuick/private
 
     cp -r "$1"/include/QtCore  $include
     cp -r "$1"/include/QtGui   $include
