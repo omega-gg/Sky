@@ -112,6 +112,7 @@ elif [ $qt = "qt5" ]; then
 else
     if [ $1 = "android" ]; then
 
+        # NOTE: This is required for include folders.
         Qt="$external/Qt/$Qt6_version/gcc_64"
     else
         Qt="$external/Qt/$Qt6_version"
