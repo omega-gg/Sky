@@ -24,7 +24,7 @@
 
 #ifndef SK_NO_WINDOW
 
-#if defined(QT_NEW) && defined(Q_OS_ANDROID)
+#if defined(Q_OS_ANDROID) && defined(QT_5)
 // Qt includes
 #include <QtAndroid>
 #endif
@@ -618,11 +618,15 @@ void WWindowPrivate::init()
 // Static functions
 //-------------------------------------------------------------------------------------------------
 
-#if defined(QT_NEW) && defined(Q_OS_ANDROID)
+#if defined(Q_OS_ANDROID) && defined(QT_NEW)
 
 /* Q_INVOKABLE static */ void WWindow::hideSplash(int duration)
 {
+#ifdef QT_5
     QtAndroid::hideSplashScreen(duration);
+#else
+    QNativeInterface::QAndroidApplication::hideSplashScreen(duration);
+#endif
 }
 
 #endif
