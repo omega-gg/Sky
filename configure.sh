@@ -253,17 +253,17 @@ else
     rm -rf include/$QtX/QtQuick/"$qx"*
 
     #----------------------------------------------------------------------------------------------
-    # Removing configuration files
+    # NOTE: Removing configuration files
 
-    rm include/$QtX/QtCore/*-config*
-    rm include/$QtX/QtGui/*-config*
-    rm include/$QtX/QtQml/*-config*
-    rm include/$QtX/QtQuick/*-config*
+    rm include/$QtX/QtCore/*-config.*
+    rm include/$QtX/QtGui/*-config.*
+    rm include/$QtX/QtQml/*-config.*
+    rm include/$QtX/QtQuick/*-config.*
 
-    rm include/$QtX/QtCore/private/*-config*
-    rm include/$QtX/QtGui/private/*-config*
-    rm include/$QtX/QtQml/private/*-config*
-    rm include/$QtX/QtQuick/private/*-config*
+    rm include/$QtX/QtCore/private/*-config.*
+    rm include/$QtX/QtGui/private/*-config.*
+    rm include/$QtX/QtQml/private/*-config.*
+    rm include/$QtX/QtQuick/private/*-config.*
 fi
 
 #--------------------------------------------------------------------------------------------------
