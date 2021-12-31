@@ -14,8 +14,6 @@ jobs:
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
     artifact: Sky-win32-qt5
 
-#--------------------------------------------------------------------------------------------------
-
 - job: win64_qt5
   pool:
     vmImage: "windows-latest"
@@ -61,8 +59,6 @@ jobs:
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
     artifact: Sky-linux32-qt5
 
-#--------------------------------------------------------------------------------------------------
-
 - job: linux64_qt5
   pool:
     vmImage: "ubuntu-latest"
@@ -77,6 +73,24 @@ jobs:
                                      zip -rq ../Sky.zip *"
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
     artifact: Sky-linux64-qt5
+
+#--------------------------------------------------------------------------------------------------
+
+- job: linux64_qt6
+  pool:
+    vmImage: "ubuntu-latest"
+  steps:
+  - bash: |
+      docker run -d --name ubuntu -v $PWD:/Sky amd64/ubuntu:20.04 tail -f /dev/null
+      docker exec -t ubuntu bash -c "cd /Sky;
+                                     apt-get update;
+                                     apt-get -y install sudo curl zip git;
+                                     sh environment.sh qt6;
+                                     sh build.sh linux all;
+                                     cd deploy;
+                                     zip -rq ../Sky.zip *"
+  - publish: $(System.DefaultWorkingDirectory)/Sky.zip
+    artifact: Sky-linux64-qt6
 
 #--------------------------------------------------------------------------------------------------
 # Android
