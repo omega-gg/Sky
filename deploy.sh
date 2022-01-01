@@ -57,7 +57,7 @@ copyAndroid()
         cp "$1"/lib/lib"$QtX"Core5Compat_*.so deploy
     fi
 
-    if [ -f "$1"/lib/lib"$QtX"QmlModels_*.so ]; then
+    if [ -f "$1"/lib/lib"$QtX"QmlModels_"$2".so ]; then
 
         cp "$1"/lib/lib"$QtX"QmlModels_*.so       deploy
         cp "$1"/lib/lib"$QtX"QmlWorkerScript_*.so deploy
@@ -438,12 +438,12 @@ else
 
         if [ $qt = "qt5" ]; then
 
-            copyAndroid "$Qt"
+            copyAndroid "$Qt" armeabi-v7a
         else
-            copyAndroid "$Qt"/android_armv7
-            copyAndroid "$Qt"/android_arm64_v8a
-            copyAndroid "$Qt"/android_x86
-            copyAndroid "$Qt"/android_x86_64
+            copyAndroid "$Qt"/android_armv7     armeabi-v7a
+            copyAndroid "$Qt"/android_arm64_v8a arm64-v8a
+            copyAndroid "$Qt"/android_x86       x86
+            copyAndroid "$Qt"/android_x86_64    x86_64
         fi
     fi
 fi

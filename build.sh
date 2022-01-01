@@ -69,16 +69,18 @@ makeAndroid()
 
     make $make_arguments
 
-    #----------------------------------------------------------------------------------------------
-    # NOTE Android: We clean and copy the build to its own folder.
+    if [ $# = 2 ]; then
 
-    if [ -d "$1" ]; then
+        cd ..
 
-        rm -rf $1
+        # NOTE Android: We copy the build to its own folder.
+        mv build build-$1
+
+        mkdir build
+        touch build/.gitignore
+
+        cd build
     fi
-
-    mkdir $1
-    mv src/ Makefile .qmake.stash $1
 }
 
 #--------------------------------------------------------------------------------------------------
