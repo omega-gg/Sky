@@ -55,6 +55,10 @@ qt="qt5"
 
 makeAndroid()
 {
+    # NOTE Android: We have to clean between builds.
+    rm -rf *
+    touch  .gitignore
+
     if [ "$2" != "" ]; then
 
         qtconf="-qtconf $2"
