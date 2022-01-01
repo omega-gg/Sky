@@ -78,8 +78,7 @@ makeAndroid()
     fi
 
     mkdir $1
-    mv src/ tools/ Makefile $1
-    rm .qmake.stash
+    mv src/ tools/ Makefile .qmake.stash $1
 }
 
 #--------------------------------------------------------------------------------------------------
