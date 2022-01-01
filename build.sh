@@ -70,7 +70,7 @@ makeAndroid()
     make $make_arguments
 
     #----------------------------------------------------------------------------------------------
-    # NOTE Android: We clean the folder and copy the build to its own folder.    
+    # NOTE Android: We clean and copy the build to its own folder.
 
     if [ -d $1 ]; then
 
@@ -354,6 +354,7 @@ elif [ $compiler = "msvc" ]; then
     jom
 
 elif [ $1 != "android" ]; then
+
     make $make_arguments
 fi
 
