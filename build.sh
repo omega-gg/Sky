@@ -57,7 +57,7 @@ makeAndroid()
 {
     # NOTE Android: We have to clean between builds.
     rm -rf *
-    touch  .gitignore
+    touch .gitignore
 
     if [ "$2" != "" ]; then
 
