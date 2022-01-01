@@ -35,6 +35,48 @@ compiler_win="mingw"
 qt="qt5"
 
 #--------------------------------------------------------------------------------------------------
+# Functions
+#--------------------------------------------------------------------------------------------------
+
+copyAndroid()
+{
+    cp "$1"/lib/lib"$QtX"Core_*.so    deploy
+    cp "$1"/lib/lib"$QtX"Gui_*.so     deploy
+    cp "$1"/lib/lib"$QtX"Network_*.so deploy
+    cp "$1"/lib/lib"$QtX"OpenGL_*.so  deploy
+    cp "$1"/lib/lib"$QtX"Qml_*.so     deploy
+    cp "$1"/lib/lib"$QtX"Quick_*.so   deploy
+    cp "$1"/lib/lib"$QtX"Svg_*.so     deploy
+    cp "$1"/lib/lib"$QtX"Widgets_*.so deploy
+    cp "$1"/lib/lib"$QtX"Xml_*.so     deploy
+
+    if [ $qt = "qt5" ]; then
+
+        cp "$1"/lib/lib"$QtX"XmlPatterns_*.so deploy
+    else
+        cp "$1"/lib/lib"$QtX"Core5Compat_*.so deploy
+    fi
+
+    if [ -f "$1"/lib/lib"$QtX"QmlModels_armeabi-v7a.so ]; then
+
+        cp "$1"/lib/lib"$QtX"QmlModels_*.so       deploy
+        cp "$1"/lib/lib"$QtX"QmlWorkerScript_*.so deploy
+    fi
+
+    cp "$1"/plugins/platforms/lib*qtforandroid_*.so deploy/platforms
+
+    cp "$1"/plugins/imageformats/lib*qsvg_*.so  deploy/imageformats
+    cp "$1"/plugins/imageformats/lib*qjpeg_*.so deploy/imageformats
+
+    cp "$1"/qml/$QtQuick/lib*qtquick2plugin_*.so deploy/$QtQuick
+
+    if [ $qt = "qt6" ]; then
+
+        cp "$1"/qml/QtQml/WorkerScript/lib*workerscriptplugin_*.so deploy/QtQml/WorkerScript
+    fi
+}
+
+#--------------------------------------------------------------------------------------------------
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
@@ -394,39 +436,14 @@ else
 
     elif [ $1 = "android" ]; then
 
-        cp "$Qt"/lib/lib"$QtX"Core_*.so    deploy
-        cp "$Qt"/lib/lib"$QtX"Gui_*.so     deploy
-        cp "$Qt"/lib/lib"$QtX"Network_*.so deploy
-        cp "$Qt"/lib/lib"$QtX"OpenGL_*.so  deploy
-        cp "$Qt"/lib/lib"$QtX"Qml_*.so     deploy
-        cp "$Qt"/lib/lib"$QtX"Quick_*.so   deploy
-        cp "$Qt"/lib/lib"$QtX"Svg_*.so     deploy
-        cp "$Qt"/lib/lib"$QtX"Widgets_*.so deploy
-        cp "$Qt"/lib/lib"$QtX"Xml_*.so     deploy
-
         if [ $qt = "qt5" ]; then
 
-            cp "$Qt"/lib/lib"$QtX"XmlPatterns_*.so deploy
+            copyAndroid "$Qt"
         else
-            cp "$Qt"/lib/lib"$QtX"Core5Compat_*.so deploy
-        fi
-
-        if [ -f "$Qt"/lib/lib"$QtX"QmlModels_armeabi-v7a.so ]; then
-
-            cp "$Qt"/lib/lib"$QtX"QmlModels_*.so       deploy
-            cp "$Qt"/lib/lib"$QtX"QmlWorkerScript_*.so deploy
-        fi
-
-        cp "$Qt"/plugins/platforms/lib*qtforandroid_*.so deploy/platforms
-
-        cp "$Qt"/plugins/imageformats/lib*qsvg_*.so  deploy/imageformats
-        cp "$Qt"/plugins/imageformats/lib*qjpeg_*.so deploy/imageformats
-
-        cp "$Qt"/qml/$QtQuick/lib*qtquick2plugin_*.so deploy/$QtQuick
-
-        if [ $qt = "qt6" ]; then
-
-            cp "$Qt"/qml/QtQml/WorkerScript/lib*workerscriptplugin_*.so deploy/QtQml/WorkerScript
+            copyAndroid "$Qt"/android_armv7
+            copyAndroid "$Qt"/android_arm64_v8a
+            copyAndroid "$Qt"/android_x86
+            copyAndroid "$Qt"/android_x86_64
         fi
     fi
 fi

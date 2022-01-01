@@ -55,10 +55,6 @@ qt="qt5"
 
 makeAndroid()
 {
-    # NOTE Android: We have to clean between builds.
-    rm -rf *
-    touch .gitignore
-
     if [ "$2" != "" ]; then
 
         qtconf="-qtconf $2"
@@ -72,6 +68,11 @@ makeAndroid()
         "ANDROID_TARGET_SDK_VERSION=$SDK_version" ..
 
     make $make_arguments
+
+    # NOTE Android: We clean the folder and copy the build to its own folder.
+    mkdir $1
+    mv * $1
+    touch .gitignore
 }
 
 #--------------------------------------------------------------------------------------------------
