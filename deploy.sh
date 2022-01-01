@@ -57,7 +57,7 @@ copyAndroid()
         cp "$1"/lib/lib"$QtX"Core5Compat_*.so deploy
     fi
 
-    if [ -f "$1"/lib/lib"$QtX"QmlModels_armeabi-v7a.so ]; then
+    if [ -f "$1"/lib/lib"$QtX"QmlModels_*.so ]; then
 
         cp "$1"/lib/lib"$QtX"QmlModels_*.so       deploy
         cp "$1"/lib/lib"$QtX"QmlWorkerScript_*.so deploy
