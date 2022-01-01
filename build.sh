@@ -72,7 +72,7 @@ makeAndroid()
     #----------------------------------------------------------------------------------------------
     # NOTE Android: We clean and copy the build to its own folder.
 
-    if [ -d $1 ]; then
+    if [ -d "$1" ]; then
 
         rm -rf $1
     fi
