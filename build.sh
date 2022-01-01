@@ -78,7 +78,7 @@ makeAndroid()
     fi
 
     mkdir $1
-    mv * $1/
+    mv src/ tools/ Makefile $1
     touch .gitignore
 }
 
