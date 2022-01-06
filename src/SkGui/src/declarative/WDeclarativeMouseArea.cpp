@@ -1226,7 +1226,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
                                   Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
 
             QMouseEvent eventPress(QEvent::MouseButtonPress, localPos, screenPos,
-                                   Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+                                   Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
 
             QCoreApplication::sendEvent(d->view, &eventMove);
 
@@ -1262,7 +1262,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
                     QCursor::setPos(screenPos);
 
                     QMouseEvent eventMove(QEvent::MouseMove, localPos, screenPos,
-                                          Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+                                          Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
 
                     QCoreApplication::sendEvent(d->view, &eventMove);
                 }
@@ -1277,7 +1277,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
                     QPoint localPos = d->view->mapFromGlobal(screenPos);
 
                     QMouseEvent eventRelease(QEvent::MouseButtonRelease, localPos, screenPos,
-                                             Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+                                             Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
 
                     WViewPrivate * p = d->view->d_func();
 

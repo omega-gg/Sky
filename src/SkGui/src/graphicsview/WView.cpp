@@ -2094,8 +2094,8 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 {
     QPoint point(x, y);
 
-    QMouseEvent event(QEvent::MouseMove, point, mapToGlobal(point), button, Qt::NoButton,
-                                                                            Qt::NoModifier);
+    QMouseEvent event(QEvent::MouseMove, point, mapToGlobal(point), button, button,
+                      Qt::NoModifier);
 
 #ifdef QT_4
     QCoreApplication::sendEvent(viewport(), &event);
@@ -2111,7 +2111,7 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
     Q_D(WView);
 
     QMouseEvent event(QEvent::MouseButtonPress,
-                      d->mousePos, mapToGlobal(d->mousePos), button, Qt::NoButton, Qt::NoModifier);
+                      d->mousePos, mapToGlobal(d->mousePos), button, button, Qt::NoModifier);
 
 #ifdef QT_4
     QCoreApplication::sendEvent(viewport(), &event);
