@@ -1376,8 +1376,8 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
     emit mousePositionChanged();
 
-    WDeclarativeMouseEvent mouse(QEvent::MouseMove, d->lastPos.toPoint(), Qt::NoButton,
-                                 Qt::NoButton, event->modifiers(), false, false);
+    WDeclarativeMouseEvent mouse(QEvent::MouseMove, d->lastPos.toPoint(), d->lastButton,
+                                 d->lastButtons, event->modifiers(), false, false);
 
     emit positionChanged(&mouse);
 }
