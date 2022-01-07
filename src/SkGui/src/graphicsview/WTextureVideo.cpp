@@ -62,6 +62,9 @@ WTextureVideo::WTextureVideo()
 // Interface
 //-------------------------------------------------------------------------------------------------
 
+// FIXME Qt6.2.1: When running on VirtualBox with Ubuntu 20.04 and 3D acceleration enabled it seems
+//                the texture stays green.
+
 void WTextureVideo::create(QSGMaterialShader::RenderState & state,
                            const WBackendTexture          & texture)
 {
