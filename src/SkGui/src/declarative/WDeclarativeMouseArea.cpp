@@ -1413,7 +1413,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 {
     bool acceptsContextMenuButton;
 
-#if defined(Q_OS_SYMBIAN)
+#ifdef Q_OS_SYMBIAN
     acceptsContextMenuButton = acceptedButtons() & Qt::LeftButton;
 #elif defined(Q_OS_WINCE)
     acceptsContextMenuButton = acceptedButtons() & (Qt::LeftButton | Qt::RightButton);
