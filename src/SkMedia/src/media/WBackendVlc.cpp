@@ -781,7 +781,7 @@ void WBackendVlcPrivate::initShader()
         return;
     }
 
-#if defined(Q_OS_WIN)
+#ifdef Q_OS_WIN
     glGenProgramsARB   = (PFNGLGENPROGRAMSARBPROC)   wglGetProcAddress("glGenProgramsARB");
     glBindProgramARB   = (PFNGLBINDPROGRAMARBPROC)   wglGetProcAddress("glBindProgramARB");
     glProgramStringARB = (PFNGLPROGRAMSTRINGARBPROC) wglGetProcAddress("glProgramStringARB");
