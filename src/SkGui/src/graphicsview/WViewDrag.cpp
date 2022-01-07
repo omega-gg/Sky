@@ -32,7 +32,7 @@
 // Sk includes
 #include <WView>
 
-#if defined(Q_OS_WIN) && defined(QT_5) == false
+#if defined(Q_OS_WIN) && defined(SK_WIN_NATIVE) && defined(QT_5) == false
 // Windows includes
 #include <qt_windows.h>
 #endif
@@ -58,7 +58,7 @@ public: // Variables
     bool dragEnabled;
     bool dragging;
 
-#ifndef Q_OS_WIN
+#if defined(Q_OS_WIN) == false || defined(SK_WIN_NATIVE) == false
     QPoint dragLastPos;
 #endif
 
@@ -121,7 +121,7 @@ void WViewDragPrivate::clearDrag()
     {
         d->dragging = true;
 
-#ifndef Q_OS_WIN
+#if defined(Q_OS_WIN) == false || defined(SK_WIN_NATIVE) == false
         d->dragLastPos = QPoint(-1, -1);
 #endif
     }
@@ -157,7 +157,7 @@ void WViewDragPrivate::clearDrag()
         return;
     }
 
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN) && defined(SK_WIN_NATIVE)
     d->view->d_func()->setDragged(true);
 
     d->dragging = false;
