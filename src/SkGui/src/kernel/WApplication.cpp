@@ -59,6 +59,11 @@
          QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
     }
     else QQuickWindow::setGraphicsApi(api);
+
+    // NOTE: We want the view geometry to be integer based at all time.
+    QGuiApplication
+        ::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Round);
+
 #endif
 
 #ifdef Q_OS_MAC

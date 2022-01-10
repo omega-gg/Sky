@@ -1198,7 +1198,11 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
     if (d->view == NULL) return;
 
+#ifdef QT_5
     const QList<QTouchEvent::TouchPoint> & points = event->touchPoints();
+#else
+    const QList<QTouchEvent::TouchPoint> & points = event->points();
+#endif
 
     int id = d->view->d_func()->touchId;
 
