@@ -161,14 +161,6 @@ void WControllerViewPrivate::init()
 
     scaleDelay  = 220;
     filterDelay =  20;
-
-#ifdef SK_SOFTWARE
-#ifdef QT_5
-    QQuickWindow::setSceneGraphBackend(QSGRendererInterface::Software);
-#else
-    QQuickWindow::setGraphicsApi(QSGRendererInterface::Software);
-#endif
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------

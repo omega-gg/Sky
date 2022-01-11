@@ -51,27 +51,35 @@
 #ifdef QT_4
     QCoreApplication::setAttribute(Qt::AA_ImmediateWidgetCreation);
 #elif defined(QT_5)
+#ifdef SK_SOFTWARE
+    QQuickWindow::setSceneGraphBackend(QSGRendererInterface::Software);
+#else
     //QCoreApplication::setAttribute(Qt::AA_UseOpenGLES);
+#endif
 #else // QT_6
-    // NOTE Qt6: Let's stick to OpenGL by default.
+    // NOTE: We want to handle dpi scaling ourselves.
+    qputenv("QT_ENABLE_HIGHDPI_SCALING", "0");
+
     if (api == QSGRendererInterface::Null)
     {
-         QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
+#ifdef SK_SOFTWARE
+        QQuickWindow::setGraphicsApi(QSGRendererInterface::Software);
+#else
+        // NOTE Qt6: Let's stick to OpenGL by default.
+        QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
+#endif
     }
     else QQuickWindow::setGraphicsApi(api);
 
-    // NOTE: We want the view geometry to be integer based at all time.
-    QGuiApplication
-        ::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Round);
+    // NOTE: We want the view geometry to be integer based at all time. We don't need this when
+    //       setting QT_ENABLE_HIGHDPI_SCALING to 0.
+    //QGuiApplication
+    //    ::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Round);
 
 #endif
 
 #ifdef Q_OS_MAC
     //QApplication::setGraphicsSystem("raster");
-#endif
-
-#ifdef QT_NO_DEBUG
-    //qInstallMsgHandler(messageHandler);
 #endif
 
     QApplication * application = createApplication(argc, argv, type);
