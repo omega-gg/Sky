@@ -100,7 +100,9 @@ void WResizerPrivate::init(WResizer::ResizeType type)
 
     resizing = false;
 
+#ifndef Q_OS_WIN
     q->setAcceptHoverEvents(true);
+#endif
 
     Qt::CursorShape shape;
 

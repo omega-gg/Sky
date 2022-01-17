@@ -75,7 +75,6 @@
     //       setting QT_ENABLE_HIGHDPI_SCALING to 0.
     //QGuiApplication
     //    ::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Round);
-
 #endif
 
 #ifdef Q_OS_MAC

@@ -43,13 +43,15 @@ DEFINES += QT_QTLOCKEDFILE_IMPORT
 
 DEFINES += SK_GUI_LIBRARY
 
+#DEFINES += SK_SOFTWARE
+
 contains(QT_MAJOR_VERSION, 4) {
     CONFIG(release, debug|release) {
 
         win32:DEFINES += SK_WIN_NATIVE
     }
 } else {
-    win32:DEFINES += SK_WIN_NATIVE #SK_SOFTWARE
+    win32:DEFINES += SK_WIN_NATIVE
 }
 
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
