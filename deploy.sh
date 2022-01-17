@@ -40,27 +40,27 @@ qt="qt5"
 
 copyAndroid()
 {
-    cp "$1"/lib/lib"$QtX"Core_*.so    deploy
-    cp "$1"/lib/lib"$QtX"Gui_*.so     deploy
-    cp "$1"/lib/lib"$QtX"Network_*.so deploy
-    cp "$1"/lib/lib"$QtX"OpenGL_*.so  deploy
-    cp "$1"/lib/lib"$QtX"Qml_*.so     deploy
-    cp "$1"/lib/lib"$QtX"Quick_*.so   deploy
-    cp "$1"/lib/lib"$QtX"Svg_*.so     deploy
-    cp "$1"/lib/lib"$QtX"Widgets_*.so deploy
-    cp "$1"/lib/lib"$QtX"Xml_*.so     deploy
+    cp "$1/lib/lib$QtX"Core_*.so    deploy
+    cp "$1/lib/lib$QtX"Gui_*.so     deploy
+    cp "$1/lib/lib$QtX"Network_*.so deploy
+    cp "$1/lib/lib$QtX"OpenGL_*.so  deploy
+    cp "$1/lib/lib$QtX"Qml_*.so     deploy
+    cp "$1/lib/lib$QtX"Quick_*.so   deploy
+    cp "$1/lib/lib$QtX"Svg_*.so     deploy
+    cp "$1/lib/lib$QtX"Widgets_*.so deploy
+    cp "$1/lib/lib$QtX"Xml_*.so     deploy
 
     if [ $qt = "qt5" ]; then
 
-        cp "$1"/lib/lib"$QtX"XmlPatterns_*.so deploy
+        cp "$1/lib/lib$QtX"XmlPatterns_*.so deploy
     else
-        cp "$1"/lib/lib"$QtX"Core5Compat_*.so deploy
+        cp "$1/lib/lib$QtX"Core5Compat_*.so deploy
     fi
 
-    if [ -f "$1"/lib/lib"$QtX"QmlModels_"$2".so ]; then
+    if [ -f "$1/lib/lib$QtX"QmlModels_"$2".so ]; then
 
-        cp "$1"/lib/lib"$QtX"QmlModels_*.so       deploy
-        cp "$1"/lib/lib"$QtX"QmlWorkerScript_*.so deploy
+        cp "$1/lib/lib$QtX"QmlModels_*.so       deploy
+        cp "$1/lib/lib$QtX"QmlWorkerScript_*.so deploy
     fi
 
     cp "$1"/plugins/platforms/lib*qtforandroid_*.so deploy/platforms
@@ -277,28 +277,28 @@ else
             cp "$Qt"/bin/libGLESv2.dll deploy
         fi
 
-        cp "$Qt"/bin/"$QtX"Core.dll    deploy
-        cp "$Qt"/bin/"$QtX"Gui.dll     deploy
-        cp "$Qt"/bin/"$QtX"Network.dll deploy
-        cp "$Qt"/bin/"$QtX"OpenGL.dll  deploy
-        cp "$Qt"/bin/"$QtX"Qml.dll     deploy
-        cp "$Qt"/bin/"$QtX"Quick.dll   deploy
-        cp "$Qt"/bin/"$QtX"Svg.dll     deploy
-        cp "$Qt"/bin/"$QtX"Widgets.dll deploy
-        cp "$Qt"/bin/"$QtX"Xml.dll     deploy
+        cp "$Qt/bin/$QtX"Core.dll    deploy
+        cp "$Qt/bin/$QtX"Gui.dll     deploy
+        cp "$Qt/bin/$QtX"Network.dll deploy
+        cp "$Qt/bin/$QtX"OpenGL.dll  deploy
+        cp "$Qt/bin/$QtX"Qml.dll     deploy
+        cp "$Qt/bin/$QtX"Quick.dll   deploy
+        cp "$Qt/bin/$QtX"Svg.dll     deploy
+        cp "$Qt/bin/$QtX"Widgets.dll deploy
+        cp "$Qt/bin/$QtX"Xml.dll     deploy
 
         if [ $qt = "qt5" ]; then
 
-            cp "$Qt"/bin/"$QtX"XmlPatterns.dll deploy
-            cp "$Qt"/bin/"$QtX"WinExtras.dll   deploy
+            cp "$Qt/bin/$QtX"XmlPatterns.dll deploy
+            cp "$Qt/bin/$QtX"WinExtras.dll   deploy
         else
-            cp "$Qt"/bin/"$QtX"Core5Compat.dll deploy
+            cp "$Qt/bin/$QtX"Core5Compat.dll deploy
         fi
 
-        if [ -f "$Qt"/bin/"$QtX"QmlModels.dll ]; then
+        if [ -f "$Qt/bin/$QtX"QmlModels.dll ]; then
 
-            cp "$Qt"/bin/"$QtX"QmlModels.dll       deploy
-            cp "$Qt"/bin/"$QtX"QmlWorkerScript.dll deploy
+            cp "$Qt/bin/$QtX"QmlModels.dll       deploy
+            cp "$Qt/bin/$QtX"QmlWorkerScript.dll deploy
         fi
 
         cp "$Qt"/plugins/platforms/qwindows.dll deploy/platforms
@@ -392,29 +392,29 @@ else
             rm deploy/libicuuc.so.*.*
         fi
 
-        cp "$Qt"/lib/lib"$QtX"Core.so.$qx    deploy
-        cp "$Qt"/lib/lib"$QtX"Gui.so.$qx     deploy
-        cp "$Qt"/lib/lib"$QtX"Network.so.$qx deploy
-        cp "$Qt"/lib/lib"$QtX"OpenGL.so.$qx  deploy
-        cp "$Qt"/lib/lib"$QtX"Qml.so.$qx     deploy
-        cp "$Qt"/lib/lib"$QtX"Quick.so.$qx   deploy
-        cp "$Qt"/lib/lib"$QtX"Svg.so.$qx     deploy
-        cp "$Qt"/lib/lib"$QtX"Widgets.so.$qx deploy
-        cp "$Qt"/lib/lib"$QtX"Xml.so.$qx     deploy
-        cp "$Qt"/lib/lib"$QtX"XcbQpa.so.$qx  deploy
-        cp "$Qt"/lib/lib"$QtX"DBus.so.$qx    deploy
+        cp "$Qt/lib/lib$QtX"Core.so.$qx    deploy
+        cp "$Qt/lib/lib$QtX"Gui.so.$qx     deploy
+        cp "$Qt/lib/lib$QtX"Network.so.$qx deploy
+        cp "$Qt/lib/lib$QtX"OpenGL.so.$qx  deploy
+        cp "$Qt/lib/lib$QtX"Qml.so.$qx     deploy
+        cp "$Qt/lib/lib$QtX"Quick.so.$qx   deploy
+        cp "$Qt/lib/lib$QtX"Svg.so.$qx     deploy
+        cp "$Qt/lib/lib$QtX"Widgets.so.$qx deploy
+        cp "$Qt/lib/lib$QtX"Xml.so.$qx     deploy
+        cp "$Qt/lib/lib$QtX"XcbQpa.so.$qx  deploy
+        cp "$Qt/lib/lib$QtX"DBus.so.$qx    deploy
 
         if [ $qt = "qt5" ]; then
 
-            cp "$Qt"/lib/lib"$QtX"XmlPatterns.so.$qx deploy
+            cp "$Qt/lib/lib$QtX"XmlPatterns.so.$qx deploy
         else
-            cp "$Qt"/lib/lib"$QtX"Core5Compat.so.$qx deploy
+            cp "$Qt/lib/lib$QtX"Core5Compat.so.$qx deploy
         fi
 
-        if [ -f "$Qt"/lib/lib"$QtX"QmlModels.so.$qx ]; then
+        if [ -f "$Qt/lib/lib$QtX"QmlModels.so.$qx ]; then
 
-            cp "$Qt"/lib/lib"$QtX"QmlModels.so.$qx       deploy
-            cp "$Qt"/lib/lib"$QtX"QmlWorkerScript.so.$qx deploy
+            cp "$Qt/lib/lib$QtX"QmlModels.so.$qx       deploy
+            cp "$Qt/lib/lib$QtX"QmlWorkerScript.so.$qx deploy
         fi
 
         cp "$Qt"/plugins/platforms/libqxcb.so deploy/platforms
