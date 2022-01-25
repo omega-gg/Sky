@@ -10,6 +10,21 @@ contains(QT_MAJOR_VERSION, 4) {
     }
 }
 
+android {
+    ABI = $$ANDROID_TARGET_ARCH
+
+    ANDROID_LIB = $$_PRO_FILE_PWD_/dist/android/data/$$ABI/libs/$$ABI
+
+    # NOTE Qt5: That's the only way to retrieve the proper path.
+    contains(QT_MAJOR_VERSION, 5) {
+        for (abi, ANDROID_ABIS) {
+            ANDROID_PACKAGE = $$_PRO_FILE_PWD_/dist/android/data/$$abi
+        }
+    } else {
+        ANDROID_PACKAGE = $$_PRO_FILE_PWD_/dist/android/data/$$ABI
+    }
+}
+
 contains(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_4
 } else:contains(QT_MAJOR_VERSION, 5) {
