@@ -4,15 +4,15 @@ contains(QT_MAJOR_VERSION, 4) {
     QTX = Qt5
 } else {
     android {
-        ABI = $$ANDROID_TARGET_ARCH
-
-        QTX = Qt6/$$ABI
+        QTX = Qt6/$$ANDROID_TARGET_ARCH
     } else {
         QTX = Qt6
     }
 }
 
 android {
+    ABI = $$ANDROID_TARGET_ARCH
+
     ANDROID_LIB = $$_PRO_FILE_PWD_/dist/android/data/$$ABI/libs/$$ABI
 
     # NOTE Qt5: That's the only way to retrieve the proper path.
