@@ -123,7 +123,7 @@ BaseTextEdit
 
 //#QT_6
     //---------------------------------------------------------------------------------------------
-    // BaseTextEdit events reimplementation
+    // BaseTextEdit events
 
     function onKeyPressed (event) {}
     function onKeyReleased(event) {}
