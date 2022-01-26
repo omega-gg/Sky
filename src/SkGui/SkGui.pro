@@ -93,9 +93,9 @@ win32-msvc*:LIBS += User32.lib
 android {
     CONFIG(debug, debug|release) {
 
-        LIBS += -L$$SK/lib -lSkCoreD_$$ANDROID_TARGET_ARCH
+        LIBS += -L$$SK/lib -lSkCoreD_$$ABI
     } else {
-        LIBS += -L$$SK/lib -lSkCore_$$ANDROID_TARGET_ARCH
+        LIBS += -L$$SK/lib -lSkCore_$$ABI
     }
 } else {
     CONFIG(debug, debug|release) {

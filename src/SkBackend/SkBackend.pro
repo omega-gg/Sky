@@ -48,13 +48,13 @@ INCLUDEPATH += $$SK/include/SkCore \
 android {
     CONFIG(debug, debug|release) {
 
-        LIBS += -L$$SK/lib -lSkCoreD_$$ANDROID_TARGET_ARCH \
-                -L$$SK/lib -lSkGuiD_$$ANDROID_TARGET_ARCH \
-                -L$$SK/lib -lSkTorrentD_$$ANDROID_TARGET_ARCH
+        LIBS += -L$$SK/lib -lSkCoreD_$$ABI \
+                -L$$SK/lib -lSkGuiD_$$ABI \
+                -L$$SK/lib -lSkTorrentD_$$ABI
     } else {
-        LIBS += -L$$SK/lib -lSkCore_$$ANDROID_TARGET_ARCH \
-                -L$$SK/lib -lSkGui_$$ANDROID_TARGET_ARCH \
-                -L$$SK/lib -lSkTorrent_$$ANDROID_TARGET_ARCH
+        LIBS += -L$$SK/lib -lSkCore_$$ABI \
+                -L$$SK/lib -lSkGui_$$ABI \
+                -L$$SK/lib -lSkTorrent_$$ABI
     }
 } else {
     CONFIG(debug, debug|release) {

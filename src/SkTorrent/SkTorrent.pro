@@ -56,11 +56,11 @@ INCLUDEPATH += $$SK/include/SkCore \
 android {
     CONFIG(debug, debug|release) {
 
-        LIBS += -L$$SK/lib -lSkCoreD_$$ANDROID_TARGET_ARCH \
-                -L$$SK/lib -lSkGuiD_$$ANDROID_TARGET_ARCH
+        LIBS += -L$$SK/lib -lSkCoreD_$$ABI \
+                -L$$SK/lib -lSkGuiD_$$ABI
     } else {
-        LIBS += -L$$SK/lib -lSkCore_$$ANDROID_TARGET_ARCH \
-                -L$$SK/lib -lSkGui_$$ANDROID_TARGET_ARCH
+        LIBS += -L$$SK/lib -lSkCore_$$ABI \
+                -L$$SK/lib -lSkGui_$$ABI
     }
 } else {
     CONFIG(debug, debug|release) {
@@ -87,8 +87,8 @@ macx:LIBS += -L$$SK/lib -ltorrent-rasterbar \
 unix:!macx:!android:LIBS += -L$$SK/lib -ltorrent-rasterbar \
                             -L$$SK/lib -lboost_system
 
-android:LIBS += -L$$SK/lib/$$ANDROID_TARGET_ARCH -ltorrent-rasterbar \
-                -L$$SK/lib/$$ANDROID_TARGET_ARCH -ltry_signal
+android:LIBS += -L$$SK/lib/$$ABI -ltorrent-rasterbar \
+                -L$$SK/lib/$$ABI -ltry_signal
 
 macx {
 CONFIG(debug, debug|release) {
