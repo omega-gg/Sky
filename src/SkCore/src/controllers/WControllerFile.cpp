@@ -36,6 +36,11 @@
 #else
 #include <QStandardPaths>
 #endif
+#if defined(SK_CONSOLE) == false && defined(QT_6)
+#include <QQmlEngine>
+#include <QQmlContext>
+#endif
+
 
 #ifdef Q_OS_ANDROID
 // Android includes
@@ -1087,6 +1092,28 @@ WControllerFileReply * WControllerFile::startCreatePaths(const QStringList & pat
     }
     else return url;
 }
+
+//-------------------------------------------------------------------------------------------------
+
+#ifndef SK_CONSOLE
+
+/* Q_INVOKABLE static */ QString WControllerFile::resolvedUrl(const QObject * object,
+                                                              const QString & url)
+{
+#ifdef QT_6
+    QQmlContext * context = QQmlEngine::contextForObject(object);
+
+    if (context)
+    {
+         return context->resolvedUrl(url).toString();
+    }
+    else return url;
+#else
+    return url;
+#endif
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 

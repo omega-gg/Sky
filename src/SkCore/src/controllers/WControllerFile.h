@@ -231,6 +231,10 @@ public: // Static functions
     Q_INVOKABLE static QString toLocalFile(const QString & url);
     Q_INVOKABLE static QString toString   (const QString & url);
 
+#ifndef SK_CONSOLE
+    Q_INVOKABLE static QString resolvedUrl(const QObject * object, const QString & url);
+#endif
+
     //---------------------------------------------------------------------------------------------
 
     Q_INVOKABLE static QString pathWritable();

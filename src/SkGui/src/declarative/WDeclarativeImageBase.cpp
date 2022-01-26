@@ -126,21 +126,9 @@ void WDeclarativeImageBasePrivate::loadUrl()
         file->deleteLater();
     }
 
-#ifdef QT_6
-    QQmlContext * context = qmlContext(q);
-
-    QString source;
-
-    if (context)
-    {
-         source = context->resolvedUrl(url).toString();
-    }
-    else source = url;
+    QString source = WControllerFile::resolvedUrl(q, url);
 
     file = wControllerFile->getHttp(source, q);
-#else
-    file = wControllerFile->getHttp(url, q);
-#endif
 
     if (file)
     {
@@ -174,11 +162,7 @@ void WDeclarativeImageBasePrivate::loadUrl()
             q->applyUrl(url, asynchronous);
         }
     }
-#ifdef QT_6
     else q->applyUrl(source, asynchronous);
-#else
-    else q->applyUrl(url, asynchronous);
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -200,12 +184,16 @@ void WDeclarativeImageBasePrivate::loadDefault()
 
 void WDeclarativeImageBasePrivate::readDefault()
 {
+    Q_Q(WDeclarativeImageBase);
+
+    QString source = WControllerFile::resolvedUrl(q, urlDefault);
+
     if (defaultSize.isValid())
     {
-         WPixmapCache::readPixmap(&(pixmapDefault), WControllerFile::toLocalFile(urlDefault),
+         WPixmapCache::readPixmap(&(pixmapDefault), WControllerFile::toLocalFile(source),
                                   defaultSize, sourceArea);
     }
-    else WPixmapCache::readPixmap(&(pixmapDefault), WControllerFile::toLocalFile(urlDefault),
+    else WPixmapCache::readPixmap(&(pixmapDefault), WControllerFile::toLocalFile(source),
                                   sourceSize, sourceArea);
 
     if (filter) applyFilter();

@@ -162,21 +162,9 @@ void WDeclarativeImageSvgPrivate::loadUrl()
         file->deleteLater();
     }
 
-#ifdef QT_6
-    QQmlContext * context = qmlContext(q);
-
-    QString source;
-
-    if (context)
-    {
-         source = context->resolvedUrl(url).toString();
-    }
-    else source = url;
+    QString source = WControllerFile::resolvedUrl(q, url);
 
     file = wControllerFile->getHttp(source, q);
-#else
-    file = wControllerFile->getHttp(url, q);
-#endif
 
     if (file)
     {
@@ -202,11 +190,7 @@ void WDeclarativeImageSvgPrivate::loadUrl()
             applyUrl(url);
         }
     }
-#ifdef QT_6
     else applyUrl(source);
-#else
-    else applyUrl(url);
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
