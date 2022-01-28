@@ -1196,7 +1196,12 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 {
     Q_D(WDeclarativeMouseArea);
 
-    if (d->view == NULL) return;
+    if (d->view == NULL || (acceptedButtons() == Qt::NoButton))
+    {
+        WDeclarativeItem::touchEvent(event);
+
+        return;
+    }
 
 #ifdef QT_5
     const QList<QTouchEvent::TouchPoint> & points = event->touchPoints();
