@@ -493,7 +493,7 @@ void WDeclarativeMouseAreaPrivate::saveEvent(QMouseEvent * event)
 #elif defined(QT_5)
     lastScenePos = event->screenPos();
 #else
-    lastScenePos = event->scenePosition();
+    lastScenePos = event->globalPosition();
 #endif
 
     lastButton  = event->button ();
@@ -1019,7 +1019,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 #elif defined(QT_5)
     d->startScene = event->screenPos();
 #else
-    d->startScene = event->scenePosition();
+    d->startScene = event->globalPosition();
 #endif
 
     setKeepMouseGrab(d->stealMouse);
@@ -1139,7 +1139,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 #elif defined(QT_5)
             posCurrent = drag()->target()->parentItem()->mapFromScene(event->screenPos());
 #else
-            posCurrent = drag()->target()->parentItem()->mapFromScene(event->scenePosition());
+            posCurrent = drag()->target()->parentItem()->mapFromScene(event->globalPosition());
 #endif
         }
         else
@@ -1151,7 +1151,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 #elif defined(QT_5)
             posCurrent = event->screenPos();
 #else
-            posCurrent = event->scenePosition();
+            posCurrent = event->globalPosition();
 #endif
         }
 
