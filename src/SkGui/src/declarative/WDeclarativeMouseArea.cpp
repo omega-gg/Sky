@@ -276,12 +276,20 @@ QMouseEvent::Type WDeclarativeMouseEvent::type() const
 
 int WDeclarativeMouseEvent::x() const
 {
+#ifdef QT_OLD
     return _event.x();
+#else
+    return _event.position().x();
+#endif
 }
 
 int WDeclarativeMouseEvent::y() const
 {
+#ifdef QT_OLD
     return _event.y();
+#else
+    return _event.position().y();
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -482,8 +490,10 @@ void WDeclarativeMouseAreaPrivate::saveEvent(QMouseEvent * event)
 
 #ifdef QT_4
     lastScenePos = event->scenePos();
-#else
+#elif defined(QT_5)
     lastScenePos = event->screenPos();
+#else
+    lastScenePos = event->scenePosition();
 #endif
 
     lastButton  = event->button ();
@@ -796,7 +806,11 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 #else
     QQuickItem * grabber = d->view->mouseGrabberItem();
 
+#ifdef QT_5
     QPointF localPos = mapFromScene(event->windowPos());
+#else
+    QPointF localPos = mapFromScene(event->scenePosition());
+#endif
 #endif
 
     bool stealMouse = d->stealMouse;
@@ -827,8 +841,11 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
         mouse.setPos    (mapFromScene(event->scenePos    ()));
         mouse.setLastPos(mapFromScene(event->lastScenePos()));
-#else
+#elif defined(QT_5)
         QMouseEvent mouse(event->type(), localPos, event->windowPos(), event->screenPos(),
+                          event->button(), event->buttons(), event->modifiers());
+#else
+        QMouseEvent mouse(event->type(), localPos, event->scenePosition(), event->globalPosition(),
                           event->button(), event->buttons(), event->modifiers());
 #endif
 
@@ -999,8 +1016,10 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
 #ifdef QT_4
     d->startScene = event->scenePos();
-#else
+#elif defined(QT_5)
     d->startScene = event->screenPos();
+#else
+    d->startScene = event->scenePosition();
 #endif
 
     setKeepMouseGrab(d->stealMouse);
@@ -1117,8 +1136,10 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
 #ifdef QT_4
             posCurrent = drag()->target()->parentItem()->mapFromScene(event->scenePos());
-#else
+#elif defined(QT_5)
             posCurrent = drag()->target()->parentItem()->mapFromScene(event->screenPos());
+#else
+            posCurrent = drag()->target()->parentItem()->mapFromScene(event->scenePosition());
 #endif
         }
         else
@@ -1127,8 +1148,10 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
 #ifdef QT_4
             posCurrent = event->scenePos();
-#else
+#elif defined(QT_5)
             posCurrent = event->screenPos();
+#else
+            posCurrent = event->scenePosition();
 #endif
         }
 
@@ -1225,7 +1248,11 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
         {
             d->view->d_func()->setTouch(point.id());
 
+#ifdef QT_5
             QPoint screenPos = point.screenPos().toPoint();
+#else
+            QPoint screenPos = point.globalPosition().toPoint();
+#endif
 
             QPoint localPos = d->view->mapFromGlobal(screenPos);
 
@@ -1264,7 +1291,11 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
                 if (point.state() == QEventPoint::Updated)
 #endif
                 {
+#ifdef QT_5
                     QPoint screenPos = point.screenPos().toPoint();
+#else
+                    QPoint screenPos = point.globalPosition().toPoint();
+#endif
 
                     QPoint localPos = d->view->mapFromGlobal(screenPos);
 
@@ -1281,7 +1312,11 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
                 else if (point.state() == QEventPoint::Released)
 #endif
                 {
+#ifdef QT_5
                     QPoint screenPos = point.screenPos().toPoint();
+#else
+                    QPoint screenPos = point.globalPosition().toPoint();
+#endif
 
                     QPoint localPos = d->view->mapFromGlobal(screenPos);
 
@@ -1345,7 +1380,11 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
     if (d->enabled)
     {
+#ifdef QT_OLD
         d->lastPos = event->pos();
+#else
+        d->lastPos = event->position();
+#endif
 
         emit mousePositionChanged();
     }
@@ -1381,7 +1420,11 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
         return;
     }
 
+#ifdef QT_OLD
     d->lastPos = event->pos();
+#else
+    d->lastPos = event->position();
+#endif
 
     emit mousePositionChanged();
 
