@@ -1258,11 +1258,10 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
             QCursor::setPos(screenPos);
 
+            // NOTE Qt6: We can't declare QMouseEvent(s) sequentially without calling sendEvent.
+            //           It's messing up mouse events on Android and took me hours to figure out.
             QMouseEvent eventMove(QEvent::MouseMove, localPos, screenPos,
                                   Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
-
-            QMouseEvent eventPress(QEvent::MouseButtonPress, localPos, screenPos,
-                                   Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
 
             QCoreApplication::sendEvent(d->view, &eventMove);
 
@@ -1275,6 +1274,9 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
             // NOTE: We want to update hover right before the press event.
             d->view->updateHover();
+
+            QMouseEvent eventPress(QEvent::MouseButtonPress, localPos, screenPos,
+                                   Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
 
             QCoreApplication::sendEvent(d->view, &eventPress);
         }
@@ -1320,9 +1322,6 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
                     QPoint localPos = d->view->mapFromGlobal(screenPos);
 
-                    QMouseEvent eventRelease(QEvent::MouseButtonRelease, localPos, screenPos,
-                                             Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
-
                     WViewPrivate * p = d->view->d_func();
 
                     if (p->touchItem == this && p->touchTimer.isActive())
@@ -1335,10 +1334,17 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
                                                Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
 
                         QCoreApplication::sendEvent(d->view, &eventClick);
+
+                        QMouseEvent eventRelease(QEvent::MouseButtonRelease, localPos, screenPos,
+                                                 Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+
                         QCoreApplication::sendEvent(d->view, &eventRelease);
                     }
                     else
                     {
+                        QMouseEvent eventRelease(QEvent::MouseButtonRelease, localPos, screenPos,
+                                                 Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+
                         QCoreApplication::sendEvent(d->view, &eventRelease);
 
                         p->touchItem = this;
