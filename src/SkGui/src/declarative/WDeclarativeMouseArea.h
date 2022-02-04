@@ -73,7 +73,7 @@ public: // Properties
     int x() const;
     int y() const;
 
-    int button()  const;
+    int button () const;
     int buttons() const;
 
     int modifiers() const;
@@ -82,7 +82,17 @@ public: // Properties
     bool wasHeld() const;
 
 private:
-    QMouseEvent _event;
+    bool _isAccepted;
+
+    QMouseEvent::Type _type;
+
+    int _x;
+    int _y;
+
+    int _button;
+    int _buttons;
+
+    int _modifiers;
 
     bool _isClick;
     bool _wasHeld;

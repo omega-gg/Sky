@@ -245,8 +245,19 @@ WDeclarativeMouseEvent::WDeclarativeMouseEvent(QMouseEvent::Type type, const QPo
                                                Qt::MouseButton button, Qt::MouseButtons buttons,
                                                Qt::KeyboardModifiers modifiers,
                                                bool isClick, bool wasHeld)
-    : _event(type, position, button, buttons, modifiers)
 {
+    _isAccepted = true;
+
+    _type = type;
+
+    _x = position.x();
+    _y = position.y();
+
+    _button  = button;
+    _buttons = buttons;
+
+    _modifiers = modifiers;
+
     _isClick = isClick;
     _wasHeld = wasHeld;
 }
@@ -257,58 +268,50 @@ WDeclarativeMouseEvent::WDeclarativeMouseEvent(QMouseEvent::Type type, const QPo
 
 bool WDeclarativeMouseEvent::isAccepted() const
 {
-    return _event.isAccepted();
+    return _isAccepted;
 }
 
 void WDeclarativeMouseEvent::setAccepted(bool accepted)
 {
-    _event.setAccepted(accepted);
+    _isAccepted = accepted;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 QMouseEvent::Type WDeclarativeMouseEvent::type() const
 {
-    return _event.type();
+    return _type;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 int WDeclarativeMouseEvent::x() const
 {
-#ifdef QT_OLD
-    return _event.x();
-#else
-    return _event.position().x();
-#endif
+    return _x;
 }
 
 int WDeclarativeMouseEvent::y() const
 {
-#ifdef QT_OLD
-    return _event.y();
-#else
-    return _event.position().y();
-#endif
+    return _y;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 int WDeclarativeMouseEvent::button() const
 {
-    return _event.button();
+    return _button;
 }
 
 int WDeclarativeMouseEvent::buttons() const
 {
-    return _event.buttons();
+    return _buttons;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 int WDeclarativeMouseEvent::modifiers() const
 {
-    return _event.modifiers();
+    return _modifiers;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -493,7 +496,7 @@ void WDeclarativeMouseAreaPrivate::saveEvent(QMouseEvent * event)
 #elif defined(QT_5)
     lastScenePos = event->screenPos();
 #else
-    lastScenePos = event->globalPosition();
+    lastScenePos = event->scenePosition();
 #endif
 
     lastButton  = event->button ();
@@ -1019,7 +1022,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 #elif defined(QT_5)
     d->startScene = event->screenPos();
 #else
-    d->startScene = event->globalPosition();
+    d->startScene = event->scenePosition();
 #endif
 
     setKeepMouseGrab(d->stealMouse);
@@ -1139,7 +1142,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 #elif defined(QT_5)
             posCurrent = drag()->target()->parentItem()->mapFromScene(event->screenPos());
 #else
-            posCurrent = drag()->target()->parentItem()->mapFromScene(event->globalPosition());
+            posCurrent = drag()->target()->parentItem()->mapFromScene(event->scenePosition());
 #endif
         }
         else
@@ -1151,7 +1154,7 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 #elif defined(QT_5)
             posCurrent = event->screenPos();
 #else
-            posCurrent = event->globalPosition();
+            posCurrent = event->scenePosition();
 #endif
         }
 
@@ -1249,14 +1252,14 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
             d->view->d_func()->setTouch(point.id());
 
 #ifdef QT_5
-            QPoint screenPos = point.screenPos().toPoint();
+            QPointF screenPos = point.screenPos();
 #else
-            QPoint screenPos = point.globalPosition().toPoint();
+            QPointF screenPos = point.globalPosition();
 #endif
 
-            QPoint localPos = d->view->mapFromGlobal(screenPos);
+            QPointF localPos = d->view->mapFromGlobal(screenPos);
 
-            QCursor::setPos(screenPos);
+            QCursor::setPos(screenPos.toPoint());
 
             // NOTE Qt6: We can't declare QMouseEvent(s) sequentially without calling sendEvent.
             //           It's messing up mouse events on Android and took me hours to figure out.
@@ -1294,14 +1297,14 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 #endif
             {
 #ifdef QT_5
-                QPoint screenPos = point.screenPos().toPoint();
+                QPointF screenPos = point.screenPos();
 #else
-                QPoint screenPos = point.globalPosition().toPoint();
+                QPointF screenPos = point.globalPosition();
 #endif
 
-                QPoint localPos = d->view->mapFromGlobal(screenPos);
+                QPointF localPos = d->view->mapFromGlobal(screenPos);
 
-                QCursor::setPos(screenPos);
+                QCursor::setPos(screenPos.toPoint());
 
                 QMouseEvent eventMove(QEvent::MouseMove, localPos, screenPos,
                                       Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
@@ -1315,12 +1318,12 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 #endif
             {
 #ifdef QT_5
-                QPoint screenPos = point.screenPos().toPoint();
+                QPointF screenPos = point.screenPos();
 #else
-                QPoint screenPos = point.globalPosition().toPoint();
+                QPointF screenPos = point.globalPosition();
 #endif
 
-                QPoint localPos = d->view->mapFromGlobal(screenPos);
+                QPointF localPos = d->view->mapFromGlobal(screenPos);
 
                 WViewPrivate * p = d->view->d_func();
 
