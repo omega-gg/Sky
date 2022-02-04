@@ -150,13 +150,13 @@ Item
                         {
                             mouseArea.visible = false;
 
-                            buttonConfirm.focus();
+                            buttonConfirm.setFocus();
                         }
                         else
                         {
                             itemConfirm.visible = false;
 
-                            list.focus();
+                            list.setFocus();
                         }
 
                         contextualItemConfirm.clip = false;
@@ -350,7 +350,7 @@ Item
 
                     pAutoClear = false;
 
-                    buttonConfirm.focus();
+                    buttonConfirm.setFocus();
 
                     pAutoClear = true;
                 }
@@ -415,7 +415,7 @@ Item
 
                     pAutoClear = false;
 
-                    buttonCancel.focus();
+                    buttonCancel.setFocus();
 
                     pAutoClear = true;
                 }

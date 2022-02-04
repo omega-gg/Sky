@@ -110,7 +110,7 @@ MouseArea
     // Functions
     //-----------------------------------------------------------------------------------------
 
-    function focus() { return forceActiveFocus(); }
+    function setFocus() { return forceActiveFocus(); }
 
     //-----------------------------------------------------------------------------------------
     // Children

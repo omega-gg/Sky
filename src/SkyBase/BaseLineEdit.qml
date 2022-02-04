@@ -115,7 +115,7 @@ MouseArea
     // Functions
     //---------------------------------------------------------------------------------------------
 
-    function focus()
+    function setFocus()
     {
         textInput.forceActiveFocus();
     }

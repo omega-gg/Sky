@@ -110,25 +110,25 @@ BaseButton
         {
             event.accepted = true;
 
-            if (itemLeft) itemLeft.focus();
+            if (itemLeft) itemLeft.setFocus();
         }
         else if (event.key == Qt.Key_Right)
         {
             event.accepted = true;
 
-            if (itemRight) itemRight.focus();
+            if (itemRight) itemRight.setFocus();
         }
         else if (event.key == Qt.Key_Up)
         {
             event.accepted = true;
 
-            if (itemTop) itemTop.focus();
+            if (itemTop) itemTop.setFocus();
         }
         else if (event.key == Qt.Key_Down)
         {
             event.accepted = true;
 
-            if (itemBottom) itemBottom.focus();
+            if (itemBottom) itemBottom.setFocus();
         }
     }
 

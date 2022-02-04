@@ -89,7 +89,7 @@ MouseArea
     // Functions
     //---------------------------------------------------------------------------------------------
 
-    function focus()
+    function setFocus()
     {
         forceActiveFocus();
     }

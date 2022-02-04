@@ -41,7 +41,7 @@ ListVertical
     // Functions
     //---------------------------------------------------------------------------------------------
 
-    function focus()
+    function setFocus()
     {
         if (count) forceActiveFocus();
     }
