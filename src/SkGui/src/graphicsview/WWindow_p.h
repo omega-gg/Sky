@@ -54,8 +54,6 @@ public: // Variables
 
     bool visible;
 
-    WWindowHoverItem * hoverItem;
-
 protected:
     W_DECLARE_PUBLIC(WWindow)
 };

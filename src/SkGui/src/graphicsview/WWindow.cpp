@@ -57,8 +57,6 @@ void WWindowPrivate::init()
 
     visible = true;
 
-    hoverItem = NULL;
-
     q->setAcceptHoverEvents(true);
 
 #ifdef QT_NEW
