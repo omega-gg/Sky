@@ -575,7 +575,6 @@ private:
 
     friend class WWindowTopPrivate;
     friend class WWindowPressWatcher;
-    friend class WWindowHoverItem;
 };
 
 #endif // SK_NO_WINDOW

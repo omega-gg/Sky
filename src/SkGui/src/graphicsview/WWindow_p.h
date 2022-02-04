@@ -37,9 +37,6 @@
 
 #ifndef SK_NO_WINDOW
 
-// Forward declarations
-class WWindowHoverItem;
-
 class SK_GUI_EXPORT WWindowPrivate : public WDeclarativeMouseAreaPrivate
 {
 public:
