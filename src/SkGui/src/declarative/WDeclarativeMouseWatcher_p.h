@@ -45,7 +45,9 @@ public: // Slots
 
 #ifdef QT_NEW
 public: // Variables
+#ifdef QT_5
     bool touch;
+#endif
 
     QTimer timer;
 #endif

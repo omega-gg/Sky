@@ -43,7 +43,9 @@ void WDeclarativeMouseWatcherPrivate::init()
 #ifdef QT_NEW
     Q_Q(WDeclarativeMouseWatcher);
 
+#ifdef QT_5
     touch = false;
+#endif
 
     // NOTE: We just want to make sure all the press events have been processed.
     timer.setInterval(1);
@@ -51,6 +53,10 @@ void WDeclarativeMouseWatcherPrivate::init()
     timer.setSingleShot(true);
 
     QObject::connect(&timer, SIGNAL(timeout()), q, SIGNAL(released()));
+
+#ifdef QT_6
+    q->setAcceptTouchEvents(true);
+#endif
 #endif
 }
 
@@ -95,7 +101,7 @@ void WDeclarativeMouseWatcherPrivate::onPressedChanged()
 
     event->ignore();
 
-#ifdef QT_NEW
+#ifdef QT_5
     // NOTE: When we receive a touch event we have to trigger the release signal manually.
     if (d->touch)
     {
@@ -122,7 +128,13 @@ void WDeclarativeMouseWatcherPrivate::onPressedChanged()
 
     event->ignore();
 
+#ifdef QT_5
     d->touch = true;
+#else
+    emit pressed();
+
+    d->timer.start();
+#endif
 }
 
 #endif
@@ -138,12 +150,11 @@ Qt::MouseButtons WDeclarativeMouseWatcher::acceptedButtons() const
 
 void WDeclarativeMouseWatcher::setAcceptedButtons(Qt::MouseButtons buttons)
 {
-    if (buttons != acceptedMouseButtons())
-    {
-        setAcceptedMouseButtons(buttons);
+    if (buttons == acceptedMouseButtons()) return;
 
-        emit acceptedButtonsChanged();
-    }
+    setAcceptedMouseButtons(buttons);
+
+    emit acceptedButtonsChanged();
 }
 
 #endif // SK_NO_DECLARATIVEMOUSEWATCHER

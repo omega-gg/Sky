@@ -1285,78 +1285,77 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
     {
         foreach (const QTouchEvent::TouchPoint & point, points)
         {
-            if (point.id() == id)
+            if (point.id() != id) continue;
+
+#ifdef QT_5
+            if (point.state() == Qt::TouchPointMoved)
+#else
+            if (point.state() == QEventPoint::Updated)
+#endif
             {
 #ifdef QT_5
-                if (point.state() == Qt::TouchPointMoved)
+                QPoint screenPos = point.screenPos().toPoint();
 #else
-                if (point.state() == QEventPoint::Updated)
-#endif
-                {
-#ifdef QT_5
-                    QPoint screenPos = point.screenPos().toPoint();
-#else
-                    QPoint screenPos = point.globalPosition().toPoint();
+                QPoint screenPos = point.globalPosition().toPoint();
 #endif
 
-                    QPoint localPos = d->view->mapFromGlobal(screenPos);
+                QPoint localPos = d->view->mapFromGlobal(screenPos);
 
-                    QCursor::setPos(screenPos);
+                QCursor::setPos(screenPos);
 
-                    QMouseEvent eventMove(QEvent::MouseMove, localPos, screenPos,
-                                          Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+                QMouseEvent eventMove(QEvent::MouseMove, localPos, screenPos,
+                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
 
-                    QCoreApplication::sendEvent(d->view, &eventMove);
-                }
-#ifdef QT_5
-                else if (point.state() == Qt::TouchPointReleased)
-#else
-                else if (point.state() == QEventPoint::Released)
-#endif
-                {
-#ifdef QT_5
-                    QPoint screenPos = point.screenPos().toPoint();
-#else
-                    QPoint screenPos = point.globalPosition().toPoint();
-#endif
-
-                    QPoint localPos = d->view->mapFromGlobal(screenPos);
-
-                    WViewPrivate * p = d->view->d_func();
-
-                    if (p->touchItem == this && p->touchTimer.isActive())
-                    {
-                        p->touchTimer.stop();
-
-                        p->touchItem = NULL;
-
-                        QMouseEvent eventClick(QEvent::MouseButtonDblClick, localPos, screenPos,
-                                               Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-
-                        QCoreApplication::sendEvent(d->view, &eventClick);
-
-                        QMouseEvent eventRelease(QEvent::MouseButtonRelease, localPos, screenPos,
-                                                 Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
-
-                        QCoreApplication::sendEvent(d->view, &eventRelease);
-                    }
-                    else
-                    {
-                        QMouseEvent eventRelease(QEvent::MouseButtonRelease, localPos, screenPos,
-                                                 Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
-
-                        QCoreApplication::sendEvent(d->view, &eventRelease);
-
-                        p->touchItem = this;
-
-                        p->touchTimer.start(MOUSEAREA_DELAY_TOUCH);
-                    }
-
-                    p->setTouch(-1);
-                }
-
-                return;
+                QCoreApplication::sendEvent(d->view, &eventMove);
             }
+#ifdef QT_5
+            else if (point.state() == Qt::TouchPointReleased)
+#else
+            else if (point.state() == QEventPoint::Released)
+#endif
+            {
+#ifdef QT_5
+                QPoint screenPos = point.screenPos().toPoint();
+#else
+                QPoint screenPos = point.globalPosition().toPoint();
+#endif
+
+                QPoint localPos = d->view->mapFromGlobal(screenPos);
+
+                WViewPrivate * p = d->view->d_func();
+
+                if (p->touchItem == this && p->touchTimer.isActive())
+                {
+                    p->touchTimer.stop();
+
+                    p->touchItem = NULL;
+
+                    QMouseEvent eventClick(QEvent::MouseButtonDblClick, localPos, screenPos,
+                                           Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+
+                    QCoreApplication::sendEvent(d->view, &eventClick);
+
+                    QMouseEvent eventRelease(QEvent::MouseButtonRelease, localPos, screenPos,
+                                             Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+
+                    QCoreApplication::sendEvent(d->view, &eventRelease);
+                }
+                else
+                {
+                    QMouseEvent eventRelease(QEvent::MouseButtonRelease, localPos, screenPos,
+                                             Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+
+                    QCoreApplication::sendEvent(d->view, &eventRelease);
+
+                    p->touchItem = this;
+
+                    p->touchTimer.start(MOUSEAREA_DELAY_TOUCH);
+                }
+
+                p->setTouch(-1);
+            }
+
+            return;
         }
     }
 }
