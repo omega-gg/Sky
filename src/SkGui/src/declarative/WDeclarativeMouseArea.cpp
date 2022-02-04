@@ -1257,9 +1257,15 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
             QPointF screenPos = point.globalPosition();
 #endif
 
-            QPointF localPos = d->view->mapFromGlobal(screenPos);
+            QPoint position = screenPos.toPoint();
 
-            QCursor::setPos(screenPos.toPoint());
+#ifdef QT_5
+            QPointF localPos = d->view->mapFromGlobal(position);
+#else
+            QPointF localPos = d->view->mapFromGlobal(screenPos);
+#endif
+
+            QCursor::setPos(position);
 
             // NOTE Qt6: We can't declare QMouseEvent(s) sequentially without calling sendEvent.
             //           It's messing up mouse events on Android and took me hours to figure out.
@@ -1302,9 +1308,15 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
                 QPointF screenPos = point.globalPosition();
 #endif
 
-                QPointF localPos = d->view->mapFromGlobal(screenPos);
+                QPoint position = screenPos.toPoint();
 
-                QCursor::setPos(screenPos.toPoint());
+#ifdef QT_5
+                QPointF localPos = d->view->mapFromGlobal(position);
+#else
+                QPointF localPos = d->view->mapFromGlobal(screenPos);
+#endif
+
+                QCursor::setPos(position);
 
                 QMouseEvent eventMove(QEvent::MouseMove, localPos, screenPos,
                                       Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
@@ -1323,7 +1335,11 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
                 QPointF screenPos = point.globalPosition();
 #endif
 
+#ifdef QT_5
+                QPointF localPos = d->view->mapFromGlobal(screenPos.toPoint());
+#else
                 QPointF localPos = d->view->mapFromGlobal(screenPos);
+#endif
 
                 WViewPrivate * p = d->view->d_func();
 
