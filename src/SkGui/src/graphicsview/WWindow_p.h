@@ -33,11 +33,11 @@
     We mean it.
 */
 
-#include <private/Sk_p>
+#include <private/WView_p>
 
 #ifndef SK_NO_WINDOW
 
-class SK_GUI_EXPORT WWindowPrivate : public WPrivate
+class SK_GUI_EXPORT WWindowPrivate : public WViewPrivate
 {
 public:
     WWindowPrivate(WWindow * p);
@@ -50,11 +50,9 @@ public: // Functions
     void deleteItems();
 
 public: // Variables
-    WDeclarativeMouseArea viewport;
+    WDeclarativeMouseArea * viewport;
 
     QList<QObject *> items;
-
-    WView * view;
 
     QString icon;
 
