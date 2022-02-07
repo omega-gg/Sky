@@ -36,11 +36,6 @@
 #ifndef SK_NO_DECLARATIVEAPPLICATION
 
 // Forward declarations
-#ifdef QT_4
-class QDeclarativeItem;
-#else
-class QQuickItem;
-#endif
 class WDeclarativeApplicationPrivate;
 
 class SK_GUI_EXPORT WDeclarativeApplication : public QObject, public WPrivatable
@@ -48,9 +43,9 @@ class SK_GUI_EXPORT WDeclarativeApplication : public QObject, public WPrivatable
     Q_OBJECT
 
 #ifdef QT_4
-    Q_PROPERTY(QDeclarativeListProperty<QDeclarativeItem> children READ children)
+    Q_PROPERTY(QDeclarativeListProperty<QObject> children READ children)
 #else
-    Q_PROPERTY(QQmlListProperty<QQuickItem> children READ children)
+    Q_PROPERTY(QQmlListProperty<QObject> children READ children)
 #endif
 
     Q_CLASSINFO("DefaultProperty", "children")
@@ -60,35 +55,32 @@ public:
 
 private: // Declarative
 #ifdef QT_4
-    static void childrenAppend(QDeclarativeListProperty<QDeclarativeItem> * property,
-                               QDeclarativeItem * item);
+    static void childrenAppend(QDeclarativeListProperty<QObject> * property, QObject * object);
+    static void childrenClear (QDeclarativeListProperty<QObject> * property);
 
-    static void childrenClear(QDeclarativeListProperty<QDeclarativeItem> * property);
+    static int childrenCount(QDeclarativeListProperty<QObject> * property);
 
-    static int childrenCount(QDeclarativeListProperty<QDeclarativeItem> * property);
-
-    static QDeclarativeItem * childrenAt(QDeclarativeListProperty<QDeclarativeItem> * property,
-                                         int index);
+    static QObject * childrenAt(QDeclarativeListProperty<QObject> * property, int index);
 #else
-    static void childrenAppend(QQmlListProperty<QQuickItem> * property, QQuickItem * item);
-    static void childrenClear (QQmlListProperty<QQuickItem> * property);
+    static void childrenAppend(QQmlListProperty<QObject> * property, QObject * object);
+    static void childrenClear (QQmlListProperty<QObject> * property);
 
 #ifdef QT_5
-    static int childrenCount(QQmlListProperty<QQuickItem> * property);
+    static int childrenCount(QQmlListProperty<QObject> * property);
 
-    static QQuickItem * childrenAt(QQmlListProperty<QQuickItem> * property, int index);
+    static QObject * childrenAt(QQmlListProperty<QObject> * property, int index);
 #else // QT_6
-    static qsizetype childrenCount(QQmlListProperty<QQuickItem> * property);
+    static qsizetype childrenCount(QQmlListProperty<QObject> * property);
 
-    static QQuickItem * childrenAt(QQmlListProperty<QQuickItem> * property, qsizetype index);
+    static QObject * childrenAt(QQmlListProperty<QObject> * property, qsizetype index);
 #endif
 #endif
 
 public: // Properties
 #ifdef QT_4
-    QDeclarativeListProperty<QDeclarativeItem> children();
+    QDeclarativeListProperty<QObject> children();
 #else
-    QQmlListProperty<QQuickItem> children();
+    QQmlListProperty<QObject> children();
 #endif
 
 private:

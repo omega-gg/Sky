@@ -1109,6 +1109,8 @@ WControllerFileReply * WControllerFile::startCreatePaths(const QStringList & pat
     }
     else return url;
 #else
+    Q_UNUSED(object);
+
     return url;
 #endif
 }

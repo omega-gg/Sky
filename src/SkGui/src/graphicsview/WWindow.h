@@ -24,27 +24,46 @@
 #define WWINDOW_H
 
 // Qt includes
-#ifdef QT_NEW
+#ifdef QT_4
+#include <QDeclarativeListProperty>
+#else
+#include <QQmlListProperty>
 #include <QPixmap>
 #endif
 
 // Sk includes
-#include <WDeclarativeMouseArea>
+#include <Sk>
 
 #ifndef SK_NO_WINDOW
 
 // Forward declarations
+#ifdef QT_4
+class QDeclarativeItem;
+#else
+class QQuickItem;
+#endif
 class WWindowPrivate;
 class WView;
+class WDeclarativeMouseEvent;
 class WDeclarativeKeyEvent;
 
 //-------------------------------------------------------------------------------------------------
 // WWindow
 //-------------------------------------------------------------------------------------------------
 
-class SK_GUI_EXPORT WWindow : public WDeclarativeMouseArea
+class SK_GUI_EXPORT WWindow : public QObject, public WPrivatable
 {
     Q_OBJECT
+
+#ifdef QT_4
+    Q_PROPERTY(QDeclarativeListProperty<QObject> children READ children)
+#else
+    Q_PROPERTY(QQmlListProperty<QObject> children READ children)
+#endif
+
+    Q_CLASSINFO("DefaultProperty", "children")
+
+    //---------------------------------------------------------------------------------------------
 
     Q_PROPERTY(WView * view READ view CONSTANT)
 
@@ -146,11 +165,7 @@ class SK_GUI_EXPORT WWindow : public WDeclarativeMouseArea
     Q_PROPERTY(QRect screenGeometry    READ screenGeometry    NOTIFY availableGeometryChanged)
 
 public:
-#ifdef QT_4
-    explicit WWindow(QDeclarativeItem * parent = NULL);
-#else
-    explicit WWindow(QQuickItem * parent = NULL);
-#endif
+    explicit WWindow(QObject * parent = NULL);
 
 public: // Interface
     Q_INVOKABLE void activate();
@@ -164,6 +179,8 @@ public: // Interface
     // Focus
 
     Q_INVOKABLE bool getFocus() const;
+
+    Q_INVOKABLE void setFocus(bool focus);
 
     Q_INVOKABLE void clearFocus();
 
@@ -322,10 +339,10 @@ public: // Static functions
 #endif
 
 protected: // Events
-#ifdef QT_4
-    /* virtual */ void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
-    /* virtual */ void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
-#else
+//#ifdef QT_4
+//    /* virtual */ void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
+//    /* virtual */ void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
+//#else
 //    /* virtual */ void hoverEnterEvent(QHoverEvent * event);
 //    /* virtual */ void hoverLeaveEvent(QHoverEvent * event);
 
@@ -335,6 +352,29 @@ protected: // Events
 //    /* virtual */ void dragMoveEvent(QDragMoveEvent * event);
 
 //    /* virtual */ void dropEvent(QDropEvent * event);
+//#endif
+
+private: // Declarative
+#ifdef QT_4
+    static void childrenAppend(QDeclarativeListProperty<QObject> * property, QObject * item);
+    static void childrenClear (QDeclarativeListProperty<QObject> * property);
+
+    static int childrenCount(QDeclarativeListProperty<QObject> * property);
+
+    static QObject * childrenAt(QDeclarativeListProperty<QObject> * property, int index);
+#else
+    static void childrenAppend(QQmlListProperty<QObject> * property, QObject * item);
+    static void childrenClear (QQmlListProperty<QObject> * property);
+
+#ifdef QT_5
+    static int childrenCount(QQmlListProperty<QObject> * property);
+
+    static QObject * childrenAt(QQmlListProperty<QObject> * property, int index);
+#else // QT_6
+    static qsizetype childrenCount(QQmlListProperty<QObject> * property);
+
+    static QObject * childrenAt(QQmlListProperty<QObject> * property, qsizetype index);
+#endif
 #endif
 
 signals:
@@ -440,6 +480,12 @@ signals:
     void availableGeometryChanged();
 
 public: // Properties
+#ifdef QT_4
+    QDeclarativeListProperty<QObject> children();
+#else
+    QQmlListProperty<QObject> children();
+#endif
+
     WView * view() const;
 
     QString icon() const;

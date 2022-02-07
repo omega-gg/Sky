@@ -40,10 +40,12 @@
 
 #include "WWindow_p.h"
 
-WWindowPrivate::WWindowPrivate(WWindow * p) : WDeclarativeMouseAreaPrivate(p) {}
+WWindowPrivate::WWindowPrivate(WWindow * p) : WPrivate(p) {}
 
 /* virtual */ WWindowPrivate::~WWindowPrivate()
 {
+    deleteItems();
+
     view->deleteLater();
 }
 
@@ -57,21 +59,21 @@ void WWindowPrivate::init()
 
     visible = true;
 
-    q->setAcceptHoverEvents(true);
+    viewport.setAcceptHoverEvents(true);
 
 #ifdef QT_NEW
-    q->setFlag(QQuickItem::ItemAcceptsDrops);
+    viewport.setFlag(QQuickItem::ItemAcceptsDrops);
 #endif
 
     //---------------------------------------------------------------------------------------------
     // View
 
 #ifdef SK_WIN_NATIVE
-    view = new WView(q, NULL);
+    view = new WView(&viewport, NULL);
 #elif defined(Q_OS_WIN)
-    view = new WView(q, NULL, Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
+    view = new WView(&viewport, NULL, Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
 #else
-    view = new WView(q, NULL, Qt::FramelessWindowHint);
+    view = new WView(&viewport, NULL, Qt::FramelessWindowHint);
 #endif
 
 #ifdef QT_4
@@ -203,16 +205,23 @@ void WWindowPrivate::init()
                      q,    SIGNAL(availableGeometryChanged()));
 }
 
+//-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
+
+void WWindowPrivate::deleteItems()
+{
+    foreach (QObject * item, items) delete item;
+
+    items.clear();
+}
+
 //=================================================================================================
 // WWindow
 //=================================================================================================
 
-#ifdef QT_4
-/* explicit */ WWindow::WWindow(QDeclarativeItem * parent)
-#else
-/* explicit */ WWindow::WWindow(QQuickItem * parent)
-#endif
-    : WDeclarativeMouseArea(new WWindowPrivate(this), parent)
+/* explicit */ WWindow::WWindow(QObject * parent)
+    : QObject(parent), WPrivatable(new WWindowPrivate(this))
 {
     Q_D(WWindow); d->init();
 }
@@ -263,10 +272,17 @@ void WWindowPrivate::init()
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ void WWindow::setFocus(bool focus)
+{
+    Q_D(WWindow); d->viewport.setFocus(focus);
+}
+
 /* Q_INVOKABLE */ void WWindow::clearFocus()
 {
     setFocus(true);
 }
+
+//-------------------------------------------------------------------------------------------------
 
 #ifdef QT_4
 /* Q_INVOKABLE */ void WWindow::clearFocusItem(QDeclarativeItem * item)
@@ -684,28 +700,28 @@ void WWindowPrivate::init()
 // Protected events
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_4
+//#ifdef QT_4
 
-/* virtual */ void WWindow::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
-{
-    Q_D(WWindow);
+///* virtual */ void WWindow::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
+//{
+//    Q_D(WWindow);
 
-    d->view->hoverEnter();
+//    d->view->hoverEnter();
 
-    WDeclarativeMouseArea::hoverEnterEvent(event);
-}
+//    WDeclarativeMouseArea::hoverEnterEvent(event);
+//}
 
-/* virtual */ void WWindow::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
+///* virtual */ void WWindow::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
 
-{
-    Q_D(WWindow);
+//{
+//    Q_D(WWindow);
 
-    d->view->hoverLeave();
+//    d->view->hoverLeave();
 
-    WDeclarativeMouseArea::hoverLeaveEvent(event);
-}
+//    WDeclarativeMouseArea::hoverLeaveEvent(event);
+//}
 
-#endif
+//#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -736,7 +752,81 @@ void WWindowPrivate::init()
 //#endif
 
 //-------------------------------------------------------------------------------------------------
+// Private declarative
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_4
+/* static */ void WWindow::childrenAppend(QDeclarativeListProperty<QObject> * property,
+                                          QObject                           * object)
+#else
+/* static */ void WWindow::childrenAppend(QQmlListProperty<QObject> * property,
+                                          QObject                   * object)
+#endif
+{
+    WWindowPrivate * p = static_cast<WWindow *> (property->object)->d_func();
+
+#ifdef QT_4
+    QDeclarativeItem * item = qobject_cast<QDeclarativeItem *> (object);
+#else
+    QQuickItem * item = qobject_cast<QQuickItem *> (object);
+#endif
+
+    if (item) item->setParentItem(&(p->viewport));
+
+    p->items.append(object);
+}
+
+#ifdef QT_4
+/* static */ void WWindow::childrenClear(QDeclarativeListProperty<QObject> * property)
+#else
+/* static */ void WWindow::childrenClear(QQmlListProperty<QObject> * property)
+#endif
+{
+    static_cast<WWindow *> (property->object)->d_func()->deleteItems();
+}
+
+#ifdef QT_4
+/* static */ int WWindow::childrenCount(QDeclarativeListProperty<QObject> * property)
+#elif defined(QT_5)
+/* static */ int WWindow::childrenCount(QQmlListProperty<QObject> * property)
+#else // QT_6
+/* static */ qsizetype WWindow::childrenCount(QQmlListProperty<QObject> * property)
+#endif
+{
+    return static_cast<WWindow *> (property->object)->d_func()->items.count();
+}
+
+#ifdef QT_4
+/* static */ QObject * WWindow::childrenAt(QDeclarativeListProperty<QObject> * property, int index)
+#elif defined(QT_5)
+/* static */ QObject * WWindow::childrenAt(QQmlListProperty<QObject> * property, int index)
+#else // QT_6
+/* static */ QQuickItem * WWindow::childrenAt(QQmlListProperty<QObject> * property,
+                                              qsizetype index)
+#endif
+{
+    return static_cast<WWindow *> (property->object)->d_func()->items.at(index);
+}
+
+//-------------------------------------------------------------------------------------------------
 // Properties
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_4
+QDeclarativeListProperty<QObject> WWindow::children()
+#else
+QQmlListProperty<QObject> WWindow::children()
+#endif
+{
+#ifdef QT_4
+    return QDeclarativeListProperty<QObject>(this, 0, childrenAppend, childrenCount, childrenAt,
+                                             childrenClear);
+#else
+    return QQmlListProperty<QObject>(this, 0, childrenAppend, childrenCount, childrenAt,
+                                     childrenClear);
+#endif
+}
+
 //-------------------------------------------------------------------------------------------------
 
 WView * WWindow::view() const

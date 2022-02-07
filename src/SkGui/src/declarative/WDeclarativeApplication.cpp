@@ -24,13 +24,6 @@
 
 #ifndef SK_NO_DECLARATIVEAPPLICATION
 
-// Qt includes
-#ifdef QT_4
-#include <QDeclarativeItem>
-#else
-#include <QQuickItem>
-#endif
-
 //-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
@@ -50,11 +43,7 @@ public: // Functions
     void deleteItems();
 
 public: // Variables
-#ifdef QT_4
-    QList<QDeclarativeItem *> items;
-#else
-    QList<QQuickItem *> items;
-#endif
+    QList<QObject *> items;
 
 protected:
     W_DECLARE_PUBLIC(WDeclarativeApplication)
@@ -81,11 +70,7 @@ void WDeclarativeApplicationPrivate::init() {}
 
 void WDeclarativeApplicationPrivate::deleteItems()
 {
-#ifdef QT_4
-    foreach (QDeclarativeItem * item, items) delete item;
-#else
-    foreach (QQuickItem * item, items) delete item;
-#endif
+    foreach (QObject * item, items) delete item;
 
     items.clear();
 }
@@ -101,42 +86,38 @@ void WDeclarativeApplicationPrivate::deleteItems()
 }
 
 //-------------------------------------------------------------------------------------------------
-// Declarative
+// Private declarative
 //-------------------------------------------------------------------------------------------------
 
 #ifdef QT_4
-/* static */ void WDeclarativeApplication::childrenAppend(QDeclarativeListProperty
-                                                          <QDeclarativeItem> * property,
-                                                          QDeclarativeItem   * item)
+/* static */
+void WDeclarativeApplication::childrenAppend(QDeclarativeListProperty<QObject> * property,
+                                             QObject                           * object)
 #else
-/* static */ void WDeclarativeApplication::childrenAppend(QQmlListProperty
-                                                          <QQuickItem> * property,
-                                                          QQuickItem   * item)
+/* static */ void WDeclarativeApplication::childrenAppend(QQmlListProperty<QObject> * property,
+                                                          QObject                   * object)
 #endif
 {
-    static_cast<WDeclarativeApplication *> (property->object)->d_func()->items.append(item);
+    static_cast<WDeclarativeApplication *> (property->object)->d_func()->items.append(object);
 }
 
 #ifdef QT_4
-/* static */ void WDeclarativeApplication::childrenClear(QDeclarativeListProperty
-                                                         <QDeclarativeItem> * property)
+/* static */
+void WDeclarativeApplication::childrenClear(QDeclarativeListProperty<QObject> * property)
 #else
-/* static */ void WDeclarativeApplication::childrenClear(QQmlListProperty
-                                                         <QQuickItem> * property)
+/* static */ void WDeclarativeApplication::childrenClear(QQmlListProperty<QObject> * property)
 #endif
 {
     static_cast<WDeclarativeApplication *> (property->object)->d_func()->deleteItems();
 }
 
 #ifdef QT_4
-/* static */ int WDeclarativeApplication::childrenCount(QDeclarativeListProperty
-                                                        <QDeclarativeItem> * property)
+/* static */
+int WDeclarativeApplication::childrenCount(QDeclarativeListProperty<QObject> * property)
 #elif defined(QT_5)
-/* static */ int WDeclarativeApplication::childrenCount(QQmlListProperty
-                                                        <QQuickItem> * property)
+/* static */ int WDeclarativeApplication::childrenCount(QQmlListProperty<QObject> * property)
 #else // QT_6
-/* static */ qsizetype WDeclarativeApplication::childrenCount(QQmlListProperty
-                                                              <QQuickItem> * property)
+/* static */ qsizetype WDeclarativeApplication::childrenCount(QQmlListProperty<QObject> * property)
 #endif
 {
     return static_cast<WDeclarativeApplication *> (property->object)->d_func()->items.count();
@@ -144,19 +125,17 @@ void WDeclarativeApplicationPrivate::deleteItems()
 
 #ifdef QT_4
 /* static */
-QDeclarativeItem * WDeclarativeApplication::childrenAt(QDeclarativeListProperty
-                                                       <QDeclarativeItem> * property, int index)
+QObject * WDeclarativeApplication::childrenAt(QDeclarativeListProperty<QObject> * property,
+                                              int index)
 #elif defined(QT_5)
-/* static */ QQuickItem * WDeclarativeApplication::childrenAt(QQmlListProperty
-                                                              <QQuickItem> * property, int index)
+/* static */ QObject * WDeclarativeApplication::childrenAt(QQmlListProperty<QObject> * property,
+                                                           int index)
 #else // QT_6
-/* static */ QQuickItem * WDeclarativeApplication::childrenAt(QQmlListProperty
-                                                              <QQuickItem> * property,
-                                                              qsizetype index)
+/* static */ QObject * WDeclarativeApplication::childrenAt(QQmlListProperty<QObject> * property,
+                                                           qsizetype index)
 #endif
 {
-    return
-    static_cast<WDeclarativeApplication *> (property->object)->d_func()->items.at(index);
+    return static_cast<WDeclarativeApplication *> (property->object)->d_func()->items.at(index);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -164,17 +143,17 @@ QDeclarativeItem * WDeclarativeApplication::childrenAt(QDeclarativeListProperty
 //-------------------------------------------------------------------------------------------------
 
 #ifdef QT_4
-QDeclarativeListProperty<QDeclarativeItem> WDeclarativeApplication::children()
+QDeclarativeListProperty<QObject> WDeclarativeApplication::children()
 #else
-QQmlListProperty<QQuickItem> WDeclarativeApplication::children()
+QQmlListProperty<QObject> WDeclarativeApplication::children()
 #endif
 {
 #ifdef QT_4
-    return QDeclarativeListProperty<QDeclarativeItem>(this, 0, childrenAppend, childrenCount,
-                                                               childrenAt,     childrenClear);
+    return QDeclarativeListProperty<QObject>(this, 0, childrenAppend, childrenCount, childrenAt,
+                                             childrenClear);
 #else
-    return QQmlListProperty<QQuickItem>(this, 0, childrenAppend, childrenCount,
-                                                 childrenAt,     childrenClear);
+    return QQmlListProperty<QObject>(this, 0, childrenAppend, childrenCount, childrenAt,
+                                     childrenClear);
 #endif
 }
 
