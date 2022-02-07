@@ -29,16 +29,7 @@
 #ifndef SK_NO_WINDOW
 
 // Forward declarations
-#ifdef QT_4
-class QDeclarativeItem;
-#else
-class QQuickItem;
-#endif
 class WWindowPrivate;
-
-//-------------------------------------------------------------------------------------------------
-// WWindow
-//-------------------------------------------------------------------------------------------------
 
 class SK_GUI_EXPORT WWindow : public WView
 {
