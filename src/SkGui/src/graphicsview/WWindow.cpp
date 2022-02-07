@@ -80,6 +80,73 @@ void WWindowPrivate::init()
     }
 
     q->WView::setVisible(true);
+
+    //---------------------------------------------------------------------------------------------
+    // WDeclarativeMouseArea
+
+    QObject::connect(viewport, SIGNAL(scaleChanged()), q, SIGNAL(scaleChanged()));
+
+    QObject::connect(viewport, SIGNAL(hoveredChanged()), q, SIGNAL(hoveredChanged()));
+    QObject::connect(viewport, SIGNAL(pressedChanged()), q, SIGNAL(pressedChanged()));
+
+    QObject::connect(viewport, SIGNAL(enabledChanged()), q, SIGNAL(enabledChanged()));
+
+    QObject::connect(viewport, SIGNAL(acceptedButtonsChanged()),
+                     q,        SIGNAL(acceptedButtonsChanged()));
+
+    QObject::connect(viewport, SIGNAL(hoverEnabledChanged()), q, SIGNAL(hoverEnabledChanged()));
+    QObject::connect(viewport, SIGNAL(hoverRetainChanged ()), q, SIGNAL(hoverRetainChanged ()));
+
+    QObject::connect(viewport, SIGNAL(wheelEnabledChanged()), q, SIGNAL(wheelEnabledChanged()));
+
+    QObject::connect(viewport, SIGNAL(dropEnabledChanged()), q, SIGNAL(dropEnabledChanged()));
+
+    QObject::connect(viewport, SIGNAL(dragAcceptedChanged()), q, SIGNAL(dragAcceptedChanged()));
+
+    QObject::connect(viewport, SIGNAL(preventStealingChanged()),
+                     q,        SIGNAL(preventStealingChanged()));
+
+    QObject::connect(viewport, SIGNAL(cursorChanged    ()), q, SIGNAL(cursorChanged    ()));
+    QObject::connect(viewport, SIGNAL(cursorDropChanged()), q, SIGNAL(cursorDropChanged()));
+
+    QObject::connect(viewport, SIGNAL(positionChanged(WDeclarativeMouseEvent *)),
+                     q,        SIGNAL(positionChanged(WDeclarativeMouseEvent *)));
+
+    QObject::connect(viewport, SIGNAL(mousePositionChanged()), q, SIGNAL(mousePositionChanged()));
+
+    QObject::connect(viewport, SIGNAL(pressed(WDeclarativeMouseEvent *)),
+                     q,        SIGNAL(pressed(WDeclarativeMouseEvent *)));
+
+    QObject::connect(viewport, SIGNAL(pressAndHold(WDeclarativeMouseEvent *)),
+                     q,        SIGNAL(pressAndHold(WDeclarativeMouseEvent *)));
+
+    QObject::connect(viewport, SIGNAL(released(WDeclarativeMouseEvent *)),
+                     q,        SIGNAL(released(WDeclarativeMouseEvent *)));
+
+    QObject::connect(viewport, SIGNAL(clicked(WDeclarativeMouseEvent *)),
+                     q,        SIGNAL(clicked(WDeclarativeMouseEvent *)));
+
+    QObject::connect(viewport, SIGNAL(doubleClicked(WDeclarativeMouseEvent *)),
+                     q,        SIGNAL(doubleClicked(WDeclarativeMouseEvent *)));
+
+    QObject::connect(viewport, SIGNAL(entered()), q, SIGNAL(entered()));
+    QObject::connect(viewport, SIGNAL(exited ()), q, SIGNAL(exited ()));
+
+    QObject::connect(viewport, SIGNAL(dragEntered(WDeclarativeDropEvent *)),
+                     q,        SIGNAL(dragEntered(WDeclarativeDropEvent *)));
+
+    QObject::connect(viewport, SIGNAL(dragExited(WDeclarativeDropEvent *)),
+                     q,        SIGNAL(dragExited(WDeclarativeDropEvent *)));
+
+    QObject::connect(viewport, SIGNAL(dragMove(WDeclarativeDropEvent *)),
+                     q,        SIGNAL(dragMove(WDeclarativeDropEvent *)));
+
+    QObject::connect(viewport, SIGNAL(drop(WDeclarativeDropEvent *)),
+                     q,        SIGNAL(drop(WDeclarativeDropEvent *)));
+
+    QObject::connect(viewport, SIGNAL(canceled()), q, SIGNAL(canceled()));
+
+    QObject::connect(viewport, SIGNAL(wheeled(qreal)), q, SIGNAL(wheeled(qreal)));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -174,6 +241,42 @@ void WWindowPrivate::deleteItems()
         }
     }
 #endif
+}
+
+//-------------------------------------------------------------------------------------------------
+// WDeclarativeMouseArea
+
+/* Q_INVOKABLE */ void WWindow::press(Qt::MouseButton button)
+{
+    Q_D(WWindow); d->viewport->press(button);
+}
+
+/* Q_INVOKABLE */ void WWindow::release(Qt::MouseButton button)
+{
+    Q_D(WWindow); d->viewport->release(button);
+}
+
+/* Q_INVOKABLE */ void WWindow::click(Qt::MouseButton button)
+{
+    Q_D(WWindow); d->viewport->click(button);
+}
+
+//---------------------------------------------------------------------------------------------
+// QML
+
+/* Q_INVOKABLE */ void WWindow::press(int button)
+{
+    Q_D(WWindow); d->viewport->press(button);
+}
+
+/* Q_INVOKABLE */ void WWindow::release(int button)
+{
+    Q_D(WWindow); d->viewport->release(button);
+}
+
+/* Q_INVOKABLE */ void WWindow::click(int button)
+{
+    Q_D(WWindow); d->viewport->click(button);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -308,6 +411,13 @@ void WWindowPrivate::deleteItems()
 // Properties
 //-------------------------------------------------------------------------------------------------
 
+WDeclarativeMouseArea * WWindow::viewport() const
+{
+    Q_D(const WWindow); return d->viewport;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 #ifdef QT_4
 QDeclarativeListProperty<QObject> WWindow::children()
 #else
@@ -409,6 +519,184 @@ void WWindow::setLocked(bool locked)
 
         emit visibleChanged();
     }
+}
+
+//-------------------------------------------------------------------------------------------------
+// WDeclarativeMouseArea
+
+qreal WWindow::scale() const
+{
+    Q_D(const WWindow); return d->viewport->scale();
+}
+
+void WWindow::setScale(qreal scale)
+{
+    Q_D(WWindow);
+
+    d->viewport->setScale(scale);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+qreal WWindow::mouseX() const
+{
+    Q_D(const WWindow); return d->viewport->mouseX();
+}
+
+qreal WWindow::mouseY() const
+{
+    Q_D(const WWindow); return d->viewport->mouseY();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WWindow::isEnabled() const
+{
+    Q_D(const WWindow); return d->viewport->isEnabled();
+}
+
+void WWindow::setEnabled(bool enabled)
+{
+    Q_D(WWindow);
+
+    d->viewport->setEnabled(enabled);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WWindow::hovered() const
+{
+    Q_D(const WWindow); return d->viewport->hovered();
+}
+
+bool WWindow::pressed() const
+{
+    Q_D(const WWindow); return d->viewport->pressed();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+Qt::MouseButtons WWindow::pressedButtons() const
+{
+    Q_D(const WWindow); return d->viewport->pressedButtons();
+}
+
+Qt::MouseButtons WWindow::acceptedButtons() const
+{
+    Q_D(const WWindow); return d->viewport->acceptedButtons();
+}
+
+void WWindow::setAcceptedButtons(Qt::MouseButtons buttons)
+{
+    Q_D(WWindow);
+
+    d->viewport->setAcceptedButtons(buttons);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WWindow::hoverEnabled() const
+{
+    Q_D(const WWindow); return d->viewport->hoverEnabled();
+}
+
+void WWindow::setHoverEnabled(bool enabled)
+{
+    Q_D(WWindow);
+
+    d->viewport->setHoverEnabled(enabled);
+}
+
+bool WWindow::hoverRetain() const
+{
+    Q_D(const WWindow); return d->viewport->hoverRetain();
+}
+
+void WWindow::setHoverRetain(bool retain)
+{
+    Q_D(WWindow);
+
+    d->viewport->setHoverRetain(retain);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WWindow::wheelEnabled() const
+{
+    Q_D(const WWindow); return d->viewport->wheelEnabled();
+}
+
+void WWindow::setWheelEnabled(bool enabled)
+{
+    Q_D(WWindow);
+
+    d->viewport->setWheelEnabled(enabled);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WWindow::dropEnabled() const
+{
+    Q_D(const WWindow); return d->viewport->dropEnabled();
+}
+
+void WWindow::setDropEnabled(bool enabled)
+{
+    Q_D(WWindow);
+
+    d->viewport->setDropEnabled(enabled);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WWindow::dragAccepted() const
+{
+    Q_D(const WWindow); return d->viewport->dragAccepted();
+}
+
+WDeclarativeDrag * WWindow::drag()
+{
+    Q_D(const WWindow); return d->viewport->drag();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WWindow::preventStealing() const
+{
+    Q_D(const WWindow); return d->viewport->preventStealing();
+}
+
+void WWindow::setPreventStealing(bool prevent)
+{
+    Q_D(WWindow);
+
+    d->viewport->setPreventStealing(prevent);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+Qt::CursorShape WWindow::cursor() const
+{
+    Q_D(const WWindow); return d->viewport->cursor();
+}
+
+void WWindow::setCursor(Qt::CursorShape shape)
+{
+    Q_D(WWindow);
+
+    d->viewport->setCursor(shape);
+}
+
+Qt::CursorShape WWindow::cursorDrop() const
+{
+    Q_D(const WWindow); return d->viewport->cursorDrop();
+}
+
+void WWindow::setCursorDrop(Qt::CursorShape shape)
+{
+    Q_D(WWindow);
+
+    d->viewport->setCursorDrop(shape);
 }
 
 #endif // SK_NO_WINDOW

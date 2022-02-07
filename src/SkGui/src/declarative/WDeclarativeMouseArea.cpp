@@ -1664,8 +1664,6 @@ Qt::MouseButtons WDeclarativeMouseArea::pressedButtons() const
     Q_D(const WDeclarativeMouseArea); return d->lastButtons;
 }
 
-//-------------------------------------------------------------------------------------------------
-
 Qt::MouseButtons WDeclarativeMouseArea::acceptedButtons() const
 {
     return acceptedMouseButtons();
@@ -1701,8 +1699,6 @@ void WDeclarativeMouseArea::setHoverEnabled(bool enabled)
 
     emit hoverEnabledChanged();
 }
-
-//-------------------------------------------------------------------------------------------------
 
 bool WDeclarativeMouseArea::hoverRetain() const
 {
@@ -1779,8 +1775,6 @@ bool WDeclarativeMouseArea::dragAccepted() const
     Q_D(const WDeclarativeMouseArea); return d->dragAccepted;
 }
 
-//-------------------------------------------------------------------------------------------------
-
 WDeclarativeDrag * WDeclarativeMouseArea::drag()
 {
     Q_D(WDeclarativeMouseArea);
@@ -1816,7 +1810,7 @@ void WDeclarativeMouseArea::setPreventStealing(bool prevent)
 
 //-------------------------------------------------------------------------------------------------
 
-Qt::CursorShape WDeclarativeMouseArea::cursor()
+Qt::CursorShape WDeclarativeMouseArea::cursor() const
 {
     Q_D(const WDeclarativeMouseArea); return d->cursor;
 }
@@ -1834,7 +1828,7 @@ void WDeclarativeMouseArea::setCursor(Qt::CursorShape shape)
     emit cursorChanged();
 }
 
-Qt::CursorShape WDeclarativeMouseArea::cursorDrop()
+Qt::CursorShape WDeclarativeMouseArea::cursorDrop() const
 {
     Q_D(const WDeclarativeMouseArea); return d->cursorDrop;
 }

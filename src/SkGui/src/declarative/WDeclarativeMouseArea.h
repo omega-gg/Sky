@@ -448,10 +448,10 @@ public: // Properties
     bool preventStealing() const;
     void setPreventStealing(bool prevent);
 
-    Qt::CursorShape cursor();
+    Qt::CursorShape cursor() const;
     void            setCursor(Qt::CursorShape shape);
 
-    Qt::CursorShape cursorDrop();
+    Qt::CursorShape cursorDrop() const;
     void            setCursorDrop(Qt::CursorShape shape);
 
 private: // Functions

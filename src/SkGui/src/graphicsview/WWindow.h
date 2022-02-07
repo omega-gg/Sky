@@ -35,6 +35,8 @@ class SK_GUI_EXPORT WWindow : public WView
 {
     Q_OBJECT
 
+    Q_PROPERTY(WDeclarativeMouseArea * viewport READ viewport CONSTANT)
+
 #ifdef QT_4
     Q_PROPERTY(QDeclarativeListProperty<QObject> children READ children)
 #else
@@ -50,6 +52,47 @@ class SK_GUI_EXPORT WWindow : public WView
     Q_PROPERTY(bool visible READ isVisible WRITE setVisible NOTIFY visibleChanged)
 
     Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity NOTIFY opacityChanged)
+
+    //---------------------------------------------------------------------------------------------
+    // WDeclarativeMouseArea
+
+    Q_PROPERTY(qreal scale READ scale WRITE setScale NOTIFY scaleChanged)
+
+    Q_PROPERTY(qreal mouseX READ mouseX NOTIFY mousePositionChanged)
+    Q_PROPERTY(qreal mouseY READ mouseY NOTIFY mousePositionChanged)
+
+    Q_PROPERTY(bool containsMouse READ hovered NOTIFY hoveredChanged)
+
+    Q_PROPERTY(bool pressed READ pressed NOTIFY pressedChanged)
+
+    Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
+
+    Q_PROPERTY(Qt::MouseButtons pressedButtons READ pressedButtons NOTIFY pressedChanged)
+
+    Q_PROPERTY(Qt::MouseButtons acceptedButtons READ acceptedButtons WRITE setAcceptedButtons
+               NOTIFY acceptedButtonsChanged)
+
+    Q_PROPERTY(bool hoverEnabled READ hoverEnabled WRITE setHoverEnabled
+               NOTIFY hoverEnabledChanged)
+
+    Q_PROPERTY(bool hoverRetain READ hoverRetain WRITE setHoverRetain NOTIFY hoverRetainChanged)
+
+    Q_PROPERTY(bool wheelEnabled READ wheelEnabled WRITE setWheelEnabled
+               NOTIFY wheelEnabledChanged)
+
+    Q_PROPERTY(bool dropEnabled READ dropEnabled WRITE setDropEnabled NOTIFY dropEnabledChanged)
+
+    Q_PROPERTY(bool dragAccepted READ dragAccepted NOTIFY dragAcceptedChanged)
+
+    Q_PROPERTY(WDeclarativeDrag * drag READ drag CONSTANT)
+
+    Q_PROPERTY(bool preventStealing READ preventStealing WRITE setPreventStealing
+               NOTIFY preventStealingChanged /* REVISION 1 */)
+
+    Q_PROPERTY(Qt::CursorShape cursor READ cursor WRITE setCursor NOTIFY cursorChanged)
+
+    Q_PROPERTY(Qt::CursorShape cursorDrop READ cursorDrop WRITE setCursorDrop
+               NOTIFY cursorDropChanged)
 
 public:
 #ifdef QT_4
@@ -73,6 +116,23 @@ public: // Interface
 #else
     Q_INVOKABLE void clearFocusItem(QQuickItem * item);
 #endif
+
+    //---------------------------------------------------------------------------------------------
+    // WDeclarativeMouseArea
+    //---------------------------------------------------------------------------------------------
+
+    Q_INVOKABLE void press  (Qt::MouseButton button = Qt::LeftButton);
+    Q_INVOKABLE void release(Qt::MouseButton button = Qt::LeftButton);
+
+    Q_INVOKABLE void click(Qt::MouseButton button = Qt::LeftButton);
+
+    //---------------------------------------------------------------------------------------------
+    // QML
+
+    Q_INVOKABLE void press  (int button);
+    Q_INVOKABLE void release(int button);
+
+    Q_INVOKABLE void click(int button);
 
 public: // Static functions
 #if defined(QT_NEW) && defined(Q_OS_ANDROID)
@@ -125,7 +185,61 @@ signals:
 
     void opacityChanged();
 
+    //---------------------------------------------------------------------------------------------
+    // WDeclarativeMouseArea
+
+    void scaleChanged();
+
+    void hoveredChanged();
+    void pressedChanged();
+
+    void enabledChanged();
+
+    void acceptedButtonsChanged();
+
+    void hoverEnabledChanged();
+    void hoverRetainChanged ();
+
+    void wheelEnabledChanged();
+
+    void dropEnabledChanged();
+
+    void dragAcceptedChanged();
+
+    /* Q_REVISION(1) */ void preventStealingChanged();
+
+    void cursorChanged    ();
+    void cursorDropChanged();
+
+    void positionChanged(WDeclarativeMouseEvent * mouse);
+
+    void mousePositionChanged();
+
+    void pressed     (WDeclarativeMouseEvent * mouse);
+    void pressAndHold(WDeclarativeMouseEvent * mouse);
+
+    void released(WDeclarativeMouseEvent * mouse);
+
+    void clicked      (WDeclarativeMouseEvent * mouse);
+    void doubleClicked(WDeclarativeMouseEvent * mouse);
+
+    void entered();
+    void exited ();
+
+    void dragEntered(WDeclarativeDropEvent * event);
+    void dragExited (WDeclarativeDropEvent * event);
+
+    void dragMove(WDeclarativeDropEvent * event);
+
+    void drop(WDeclarativeDropEvent * event);
+
+    void canceled();
+
+    void wheeled(qreal steps);
+
 public: // Properties
+    WDeclarativeMouseArea * viewport() const;
+
 #ifdef QT_4
     QDeclarativeListProperty<QObject> children();
 #else
@@ -142,6 +256,51 @@ public: // Properties
     void  setOpacity(qreal opacity);
 
     void setLocked(bool locked);
+
+    //---------------------------------------------------------------------------------------------
+    // WDeclarativeMouseArea
+
+    qreal scale() const;
+    void  setScale(qreal scale);
+
+    qreal mouseX() const;
+    qreal mouseY() const;
+
+    bool isEnabled() const;
+    void setEnabled(bool enabled);
+
+    bool hovered() const;
+    bool pressed() const;
+
+    Qt::MouseButtons pressedButtons() const;
+
+    Qt::MouseButtons acceptedButtons() const;
+    void             setAcceptedButtons(Qt::MouseButtons buttons);
+
+    bool hoverEnabled() const;
+    void setHoverEnabled(bool enabled);
+
+    bool hoverRetain() const;
+    void setHoverRetain(bool retain);
+
+    bool wheelEnabled() const;
+    void setWheelEnabled(bool enabled);
+
+    bool dropEnabled() const;
+    void setDropEnabled(bool enabled);
+
+    bool dragAccepted() const;
+
+    WDeclarativeDrag * drag();
+
+    bool preventStealing() const;
+    void setPreventStealing(bool prevent);
+
+    Qt::CursorShape cursor() const;
+    void            setCursor(Qt::CursorShape shape);
+
+    Qt::CursorShape cursorDrop() const;
+    void            setCursorDrop(Qt::CursorShape shape);
 
 private:
     W_DECLARE_PRIVATE(WWindow)

@@ -63,8 +63,8 @@ Item
 
         radius: height
 
-        opacity: (window.view.isPressed) ? st.cursorTouch_opacityB
-                                         : st.cursorTouch_opacityA
+        opacity: (window.isPressed) ? st.cursorTouch_opacityB
+                                    : st.cursorTouch_opacityA
 
         color: st.cursorTouch_color
 
