@@ -102,6 +102,8 @@ void WWindowPrivate::deleteItems()
 #else
 /* explicit */ WWindow::WWindow(QWindow * parent)
 #endif
+// NOTE: We need to new WDeclarativeMouseArea here to avoid a crash in 'setParentItem' from the
+//       WViewPrivate::init function.
 #ifdef SK_WIN_NATIVE
     : WView(new WWindowPrivate(this), new WDeclarativeMouseArea, parent)
 #elif defined(Q_OS_WIN)
