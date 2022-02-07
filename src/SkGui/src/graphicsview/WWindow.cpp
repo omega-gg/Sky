@@ -296,8 +296,7 @@ void WWindowPrivate::deleteItems()
 #elif defined(QT_5)
 /* static */ QObject * WWindow::childrenAt(QQmlListProperty<QObject> * property, int index)
 #else // QT_6
-/* static */ QQuickItem * WWindow::childrenAt(QQmlListProperty<QObject> * property,
-                                              qsizetype index)
+/* static */ QObject * WWindow::childrenAt(QQmlListProperty<QObject> * property, qsizetype index)
 #endif
 {
     return static_cast<WWindow *> (property->object)->d_func()->items.at(index);
