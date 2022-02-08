@@ -29,13 +29,37 @@
 #ifndef SK_NO_WINDOW
 
 // Forward declarations
+class WViewportPrivate;
 class WWindowPrivate;
+
+//-------------------------------------------------------------------------------------------------
+// WViewport
+//-------------------------------------------------------------------------------------------------
+
+class SK_GUI_EXPORT WViewport : public WDeclarativeMouseArea
+{
+    Q_OBJECT
+
+public:
+#ifdef QT_4
+    explicit WViewport(QDeclarativeItem * parent = NULL);
+#else
+    explicit WViewport(QQuickItem * parent = NULL);
+#endif
+
+private:
+    W_DECLARE_PRIVATE(WViewport)
+};
+
+//-------------------------------------------------------------------------------------------------
+// WWindow
+//-------------------------------------------------------------------------------------------------
 
 class SK_GUI_EXPORT WWindow : public WView
 {
     Q_OBJECT
 
-    Q_PROPERTY(WDeclarativeMouseArea * viewport READ viewport CONSTANT)
+    Q_PROPERTY(WViewport * viewport READ viewport CONSTANT)
 
 #ifdef QT_4
     Q_PROPERTY(QDeclarativeListProperty<QObject> children READ children)
@@ -53,27 +77,28 @@ class SK_GUI_EXPORT WWindow : public WView
 
     Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity NOTIFY opacityChanged)
 
+    // NOTE: Some properties need to be skipped because they already exist in WView.
     //---------------------------------------------------------------------------------------------
-    // WDeclarativeMouseArea
+    // WViewport
 
     Q_PROPERTY(qreal scale READ scale WRITE setScale NOTIFY scaleChanged)
 
-    Q_PROPERTY(qreal mouseX READ mouseX NOTIFY mousePositionChanged)
-    Q_PROPERTY(qreal mouseY READ mouseY NOTIFY mousePositionChanged)
+    //Q_PROPERTY(qreal mouseX READ mouseX NOTIFY mousePositionChanged)
+    //Q_PROPERTY(qreal mouseY READ mouseY NOTIFY mousePositionChanged)
 
     Q_PROPERTY(bool containsMouse READ hovered NOTIFY hoveredChanged)
 
-    Q_PROPERTY(bool pressed READ pressed NOTIFY pressedChanged)
+    Q_PROPERTY(bool pressed READ pressed NOTIFY mousePressedChanged)
 
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 
-    Q_PROPERTY(Qt::MouseButtons pressedButtons READ pressedButtons NOTIFY pressedChanged)
+    Q_PROPERTY(Qt::MouseButtons pressedButtons READ pressedButtons NOTIFY mousePressedChanged)
 
     Q_PROPERTY(Qt::MouseButtons acceptedButtons READ acceptedButtons WRITE setAcceptedButtons
                NOTIFY acceptedButtonsChanged)
 
-    Q_PROPERTY(bool hoverEnabled READ hoverEnabled WRITE setHoverEnabled
-               NOTIFY hoverEnabledChanged)
+    //Q_PROPERTY(bool hoverEnabled READ hoverEnabled WRITE setHoverEnabled
+    //           NOTIFY hoverEnabledChanged)
 
     Q_PROPERTY(bool hoverRetain READ hoverRetain WRITE setHoverRetain NOTIFY hoverRetainChanged)
 
@@ -118,7 +143,7 @@ public: // Interface
 #endif
 
     //---------------------------------------------------------------------------------------------
-    // WDeclarativeMouseArea
+    // WViewport
     //---------------------------------------------------------------------------------------------
 
     Q_INVOKABLE void press  (Qt::MouseButton button = Qt::LeftButton);
@@ -185,19 +210,21 @@ signals:
 
     void opacityChanged();
 
+    // NOTE: Some signals need to be renamed because they already exist in WView.
     //---------------------------------------------------------------------------------------------
-    // WDeclarativeMouseArea
+    // WViewport
 
     void scaleChanged();
 
     void hoveredChanged();
-    void pressedChanged();
+
+    void mousePressedChanged();
 
     void enabledChanged();
 
     void acceptedButtonsChanged();
 
-    void hoverEnabledChanged();
+    //void hoverEnabledChanged();
     void hoverRetainChanged ();
 
     void wheelEnabledChanged();
@@ -213,7 +240,7 @@ signals:
 
     void positionChanged(WDeclarativeMouseEvent * mouse);
 
-    void mousePositionChanged();
+    //void mousePositionChanged();
 
     void pressed     (WDeclarativeMouseEvent * mouse);
     void pressAndHold(WDeclarativeMouseEvent * mouse);
@@ -238,7 +265,7 @@ signals:
     void wheeled(qreal steps);
 
 public: // Properties
-    WDeclarativeMouseArea * viewport() const;
+    WViewport * viewport() const;
 
 #ifdef QT_4
     QDeclarativeListProperty<QObject> children();
@@ -258,13 +285,13 @@ public: // Properties
     void setLocked(bool locked);
 
     //---------------------------------------------------------------------------------------------
-    // WDeclarativeMouseArea
+    // WViewport
 
     qreal scale() const;
     void  setScale(qreal scale);
 
-    qreal mouseX() const;
-    qreal mouseY() const;
+    //qreal mouseX() const;
+    //qreal mouseY() const;
 
     bool isEnabled() const;
     void setEnabled(bool enabled);
@@ -277,8 +304,8 @@ public: // Properties
     Qt::MouseButtons acceptedButtons() const;
     void             setAcceptedButtons(Qt::MouseButtons buttons);
 
-    bool hoverEnabled() const;
-    void setHoverEnabled(bool enabled);
+    //bool hoverEnabled() const;
+    //void setHoverEnabled(bool enabled);
 
     bool hoverRetain() const;
     void setHoverRetain(bool retain);

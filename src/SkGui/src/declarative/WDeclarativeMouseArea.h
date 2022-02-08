@@ -271,6 +271,7 @@ public:
 #else
     explicit WDeclarativeMouseArea(QQuickItem * parent = NULL);
 #endif
+
 protected:
 #ifdef QT_4
     WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, QDeclarativeItem * parent = NULL);

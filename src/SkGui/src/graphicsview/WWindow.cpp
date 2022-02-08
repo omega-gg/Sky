@@ -33,11 +33,34 @@
 #include <WControllerApplication>
 #include <WControllerFile>
 
-//-------------------------------------------------------------------------------------------------
-// Private
-//-------------------------------------------------------------------------------------------------
-
+// Private includes
 #include "WWindow_p.h"
+
+//=================================================================================================
+// WViewportPrivate
+//=================================================================================================
+
+WViewportPrivate::WViewportPrivate(WViewport * p) : WDeclarativeMouseAreaPrivate(p) {}
+
+void WViewportPrivate::init() {}
+
+//=================================================================================================
+// WViewport
+//=================================================================================================
+
+#ifdef QT_4
+/* explicit */ WViewport::WViewport(QDeclarativeItem * parent)
+#else
+/* explicit */ WViewport::WViewport(QQuickItem * parent)
+#endif
+    : WDeclarativeMouseArea(new WViewportPrivate(this), parent)
+{
+    Q_D(WViewport); d->init();
+}
+
+//=================================================================================================
+// WWindowPrivate
+//=================================================================================================
 
 WWindowPrivate::WWindowPrivate(WWindow * p) : WViewPrivate(p) {}
 
@@ -52,7 +75,7 @@ void WWindowPrivate::init()
 {
     Q_Q(WWindow);
 
-    viewport = static_cast<WDeclarativeMouseArea *> (item);
+    viewport = static_cast<WViewport *> (item);
 
     icon = sk->icon();
 
@@ -82,19 +105,19 @@ void WWindowPrivate::init()
     q->WView::setVisible(true);
 
     //---------------------------------------------------------------------------------------------
-    // WDeclarativeMouseArea
+    // WViewport
 
     QObject::connect(viewport, SIGNAL(scaleChanged()), q, SIGNAL(scaleChanged()));
 
-    QObject::connect(viewport, SIGNAL(hoveredChanged()), q, SIGNAL(hoveredChanged()));
-    QObject::connect(viewport, SIGNAL(pressedChanged()), q, SIGNAL(pressedChanged()));
+    QObject::connect(viewport, SIGNAL(hoveredChanged     ()), q, SIGNAL(hoveredChanged     ()));
+    QObject::connect(viewport, SIGNAL(mousePressedChanged()), q, SIGNAL(mousePressedChanged()));
 
     QObject::connect(viewport, SIGNAL(enabledChanged()), q, SIGNAL(enabledChanged()));
 
     QObject::connect(viewport, SIGNAL(acceptedButtonsChanged()),
                      q,        SIGNAL(acceptedButtonsChanged()));
 
-    QObject::connect(viewport, SIGNAL(hoverEnabledChanged()), q, SIGNAL(hoverEnabledChanged()));
+    //QObject::connect(viewport, SIGNAL(hoverEnabledChanged()), q, SIGNAL(hoverEnabledChanged()));
     QObject::connect(viewport, SIGNAL(hoverRetainChanged ()), q, SIGNAL(hoverRetainChanged ()));
 
     QObject::connect(viewport, SIGNAL(wheelEnabledChanged()), q, SIGNAL(wheelEnabledChanged()));
@@ -112,7 +135,7 @@ void WWindowPrivate::init()
     QObject::connect(viewport, SIGNAL(positionChanged(WDeclarativeMouseEvent *)),
                      q,        SIGNAL(positionChanged(WDeclarativeMouseEvent *)));
 
-    QObject::connect(viewport, SIGNAL(mousePositionChanged()), q, SIGNAL(mousePositionChanged()));
+    //QObject::connect(viewport, SIGNAL(mousePositionChanged()), q, SIGNAL(mousePositionChanged()));
 
     QObject::connect(viewport, SIGNAL(pressed(WDeclarativeMouseEvent *)),
                      q,        SIGNAL(pressed(WDeclarativeMouseEvent *)));
@@ -160,24 +183,24 @@ void WWindowPrivate::deleteItems()
     items.clear();
 }
 
-//-------------------------------------------------------------------------------------------------
-// Ctor / dtor
-//-------------------------------------------------------------------------------------------------
+//=================================================================================================
+// WWindow
+//=================================================================================================
 
 #ifdef QT_4
 /* explicit */ WWindow::WWindow(QWidget * parent)
 #else
 /* explicit */ WWindow::WWindow(QWindow * parent)
 #endif
-// NOTE: We need to new WDeclarativeMouseArea here to avoid a crash in 'setParentItem' from the
+// NOTE: We need to new WViewport here to avoid a crash in 'setParentItem' from the
 //       WViewPrivate::init function.
 #ifdef SK_WIN_NATIVE
-    : WView(new WWindowPrivate(this), new WDeclarativeMouseArea, parent)
+    : WView(new WWindowPrivate(this), new WViewport, parent)
 #elif defined(Q_OS_WIN)
-    : WView(new WWindowPrivate(this), new WDeclarativeMouseArea, parent,
+    : WView(new WWindowPrivate(this), new WViewport, parent,
             Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
 #else
-    : WView(new WWindowPrivate(this), new WDeclarativeMouseArea, parent, Qt::FramelessWindowHint)
+    : WView(new WWindowPrivate(this), new WViewport, parent, Qt::FramelessWindowHint)
 #endif
 {
     Q_D(WWindow); d->init();
@@ -244,7 +267,7 @@ void WWindowPrivate::deleteItems()
 }
 
 //-------------------------------------------------------------------------------------------------
-// WDeclarativeMouseArea
+// WViewport
 
 /* Q_INVOKABLE */ void WWindow::press(Qt::MouseButton button)
 {
@@ -411,7 +434,7 @@ void WWindowPrivate::deleteItems()
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-WDeclarativeMouseArea * WWindow::viewport() const
+WViewport * WWindow::viewport() const
 {
     Q_D(const WWindow); return d->viewport;
 }
@@ -522,7 +545,7 @@ void WWindow::setLocked(bool locked)
 }
 
 //-------------------------------------------------------------------------------------------------
-// WDeclarativeMouseArea
+// WViewport
 
 qreal WWindow::scale() const
 {
@@ -538,15 +561,15 @@ void WWindow::setScale(qreal scale)
 
 //-------------------------------------------------------------------------------------------------
 
-qreal WWindow::mouseX() const
-{
-    Q_D(const WWindow); return d->viewport->mouseX();
-}
+//qreal WWindow::mouseX() const
+//{
+//    Q_D(const WWindow); return d->viewport->mouseX();
+//}
 
-qreal WWindow::mouseY() const
-{
-    Q_D(const WWindow); return d->viewport->mouseY();
-}
+//qreal WWindow::mouseY() const
+//{
+//    Q_D(const WWindow); return d->viewport->mouseY();
+//}
 
 //-------------------------------------------------------------------------------------------------
 
@@ -595,17 +618,17 @@ void WWindow::setAcceptedButtons(Qt::MouseButtons buttons)
 
 //-------------------------------------------------------------------------------------------------
 
-bool WWindow::hoverEnabled() const
-{
-    Q_D(const WWindow); return d->viewport->hoverEnabled();
-}
+//bool WWindow::hoverEnabled() const
+//{
+//    Q_D(const WWindow); return d->viewport->hoverEnabled();
+//}
 
-void WWindow::setHoverEnabled(bool enabled)
-{
-    Q_D(WWindow);
+//void WWindow::setHoverEnabled(bool enabled)
+//{
+//    Q_D(WWindow);
 
-    d->viewport->setHoverEnabled(enabled);
-}
+//    d->viewport->setHoverEnabled(enabled);
+//}
 
 bool WWindow::hoverRetain() const
 {

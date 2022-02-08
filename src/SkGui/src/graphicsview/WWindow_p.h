@@ -33,9 +33,30 @@
     We mean it.
 */
 
+// Private includes
 #include <private/WView_p>
+#include <private/WDeclarativeMouseArea_p>
 
 #ifndef SK_NO_WINDOW
+
+//-------------------------------------------------------------------------------------------------
+// WViewportPrivate
+//-------------------------------------------------------------------------------------------------
+
+class SK_GUI_EXPORT WViewportPrivate : public WDeclarativeMouseAreaPrivate
+{
+public:
+    WViewportPrivate(WViewport * p);
+
+    void init();
+
+protected:
+    W_DECLARE_PUBLIC(WViewport)
+};
+
+//-------------------------------------------------------------------------------------------------
+// WWindowPrivate
+//-------------------------------------------------------------------------------------------------
 
 class SK_GUI_EXPORT WWindowPrivate : public WViewPrivate
 {
@@ -50,7 +71,7 @@ public: // Functions
     void deleteItems();
 
 public: // Variables
-    WDeclarativeMouseArea * viewport;
+    WViewport * viewport;
 
     QList<QObject *> items;
 
