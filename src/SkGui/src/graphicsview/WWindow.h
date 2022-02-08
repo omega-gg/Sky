@@ -47,6 +47,10 @@ public:
     explicit WViewport(QQuickItem * parent = NULL);
 #endif
 
+protected: // Events
+    /* virtual */ void keyPressEvent  (QKeyEvent * event);
+    /* virtual */ void keyReleaseEvent(QKeyEvent * event);
+
 private:
     W_DECLARE_PRIVATE(WViewport)
 };
@@ -59,7 +63,7 @@ class SK_GUI_EXPORT WWindow : public WView
 {
     Q_OBJECT
 
-    Q_PROPERTY(WViewport * viewport READ viewport CONSTANT)
+    Q_PROPERTY(WDeclarativeMouseArea * viewport READ viewport CONSTANT)
 
 #ifdef QT_4
     Q_PROPERTY(QDeclarativeListProperty<QObject> children READ children)
@@ -79,7 +83,7 @@ class SK_GUI_EXPORT WWindow : public WView
 
     // NOTE: Some properties need to be skipped because they already exist in WView.
     //---------------------------------------------------------------------------------------------
-    // WViewport
+    // WDeclarativeMouseArea
 
     Q_PROPERTY(qreal scale READ scale WRITE setScale NOTIFY scaleChanged)
 
@@ -143,7 +147,7 @@ public: // Interface
 #endif
 
     //---------------------------------------------------------------------------------------------
-    // WViewport
+    // WDeclarativeMouseArea
     //---------------------------------------------------------------------------------------------
 
     Q_INVOKABLE void press  (Qt::MouseButton button = Qt::LeftButton);
@@ -212,7 +216,7 @@ signals:
 
     // NOTE: Some signals need to be renamed because they already exist in WView.
     //---------------------------------------------------------------------------------------------
-    // WViewport
+    // WDeclarativeMouseArea
 
     void scaleChanged();
 
@@ -265,7 +269,7 @@ signals:
     void wheeled(qreal steps);
 
 public: // Properties
-    WViewport * viewport() const;
+    WDeclarativeMouseArea * viewport() const;
 
 #ifdef QT_4
     QDeclarativeListProperty<QObject> children();
@@ -285,7 +289,7 @@ public: // Properties
     void setLocked(bool locked);
 
     //---------------------------------------------------------------------------------------------
-    // WViewport
+    // WDeclarativeMouseArea
 
     qreal scale() const;
     void  setScale(qreal scale);

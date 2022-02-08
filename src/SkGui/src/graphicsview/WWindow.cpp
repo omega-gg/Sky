@@ -58,6 +58,35 @@ void WViewportPrivate::init() {}
     Q_D(WViewport); d->init();
 }
 
+//-------------------------------------------------------------------------------------------------
+// Protected events
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WViewport::keyPressEvent(QKeyEvent * event)
+{
+    Q_D(WViewport);
+
+    WDeclarativeKeyEvent keyEvent(*event);
+
+    emit d->view->viewportKeyPressed(&keyEvent);
+
+    if (keyEvent.isAccepted() == false)
+    {
+        WDeclarativeMouseArea::keyPressEvent(event);
+    }
+}
+
+/* virtual */ void WViewport::keyReleaseEvent(QKeyEvent * event)
+{
+    Q_D(WViewport);
+
+    WDeclarativeKeyEvent keyEvent(*event);
+
+    emit d->view->viewportKeyReleased(&keyEvent);
+
+    WDeclarativeMouseArea::keyReleaseEvent(event);
+}
+
 //=================================================================================================
 // WWindowPrivate
 //=================================================================================================
@@ -105,12 +134,12 @@ void WWindowPrivate::init()
     q->WView::setVisible(true);
 
     //---------------------------------------------------------------------------------------------
-    // WViewport
+    // WDeclarativeMouseArea
 
     QObject::connect(viewport, SIGNAL(scaleChanged()), q, SIGNAL(scaleChanged()));
 
-    QObject::connect(viewport, SIGNAL(hoveredChanged     ()), q, SIGNAL(hoveredChanged     ()));
-    QObject::connect(viewport, SIGNAL(mousePressedChanged()), q, SIGNAL(mousePressedChanged()));
+    QObject::connect(viewport, SIGNAL(hoveredChanged()), q, SIGNAL(hoveredChanged     ()));
+    QObject::connect(viewport, SIGNAL(pressedChanged()), q, SIGNAL(mousePressedChanged()));
 
     QObject::connect(viewport, SIGNAL(enabledChanged()), q, SIGNAL(enabledChanged()));
 
@@ -267,7 +296,7 @@ void WWindowPrivate::deleteItems()
 }
 
 //-------------------------------------------------------------------------------------------------
-// WViewport
+// WDeclarativeMouseArea
 
 /* Q_INVOKABLE */ void WWindow::press(Qt::MouseButton button)
 {
@@ -434,7 +463,7 @@ void WWindowPrivate::deleteItems()
 // Properties
 //-------------------------------------------------------------------------------------------------
 
-WViewport * WWindow::viewport() const
+WDeclarativeMouseArea * WWindow::viewport() const
 {
     Q_D(const WWindow); return d->viewport;
 }
@@ -545,7 +574,7 @@ void WWindow::setLocked(bool locked)
 }
 
 //-------------------------------------------------------------------------------------------------
-// WViewport
+// WDeclarativeMouseArea
 
 qreal WWindow::scale() const
 {

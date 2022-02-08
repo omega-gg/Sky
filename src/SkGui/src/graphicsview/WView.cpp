@@ -63,22 +63,39 @@ WDeclarativeKeyEvent::WDeclarativeKeyEvent(QEvent::Type            type,
                                            int                     key,
                                            Qt::KeyboardModifiers   modifiers,
                                            const QString         & text,
-                                           bool                    autorep,
+                                           bool                    autoRepeat,
                                            ushort                  count)
-    : _event(type, key, modifiers, text, autorep, count)
 {
-    _event.setAccepted(false);
+    _isAccepted = false;
+
+    _type = type;
+
+    _key = key;
+
+    _modifiers = modifiers;
+
+    _text = text;
+
+    _autoRepeat = autoRepeat;
+
+    _count = count;
 }
 
 WDeclarativeKeyEvent::WDeclarativeKeyEvent(const QKeyEvent & event)
-#ifdef QT_OLD
-    : _event(event)
-#else
-    : _event(event.type(), event.key(), event.modifiers(), event.text(), event.isAutoRepeat(),
-             event.count())
-#endif
 {
-    _event.setAccepted(false);
+    _isAccepted = false;
+
+    _type = event.type();
+
+    _key = event.key();
+
+    _modifiers = event.modifiers();
+
+    _text = event.text();
+
+    _autoRepeat = event.isAutoRepeat();
+
+    _count = event.count();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -87,47 +104,45 @@ WDeclarativeKeyEvent::WDeclarativeKeyEvent(const QKeyEvent & event)
 
 bool WDeclarativeKeyEvent::isAccepted() const
 {
-    return _event.isAccepted();
+    return _isAccepted;
 }
 
 void WDeclarativeKeyEvent::setAccepted(bool accepted)
 {
-    _event.setAccepted(accepted);
+    _isAccepted = accepted;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 int WDeclarativeKeyEvent::key() const
 {
-    return _event.key();
+    return _key;
+}
+
+int WDeclarativeKeyEvent::modifiers() const
+{
+    return _modifiers;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 QString WDeclarativeKeyEvent::text() const
 {
-    return _event.text();
-}
-
-//-------------------------------------------------------------------------------------------------
-
-int WDeclarativeKeyEvent::modifiers() const
-{
-    return _event.modifiers();
+    return _text;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 bool WDeclarativeKeyEvent::isAutoRepeat() const
 {
-    return _event.isAutoRepeat();
+    return _autoRepeat;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 int WDeclarativeKeyEvent::count() const
 {
-    return _event.count();
+    return _count;
 }
 
 //=================================================================================================

@@ -613,10 +613,12 @@ int WPlaylistPrivate::beginInsert(int index, int count)
 {
     Q_Q(WPlaylist);
 
-    if (index < 0 || index > count)
+    int trackCount = tracks.count();
+
+    if (index < 0 || index > trackCount)
     {
         if (type == WPlaylist::PlaylistFeed) index = 0;
-        else                                 index = count;
+        else                                 index = trackCount;
     }
 
     q->beginTracksInsert(index, index + count - 1);

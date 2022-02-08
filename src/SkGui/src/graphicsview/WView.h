@@ -60,10 +60,10 @@ class SK_GUI_EXPORT WDeclarativeKeyEvent : public QObject
 public:
     WDeclarativeKeyEvent(QEvent::Type            type,
                          int                     key,
-                         Qt::KeyboardModifiers   modifiers = Qt::NoModifier,
-                         const QString         & text      = QString(),
-                         bool                    autorep   = false,
-                         ushort                  count     = 1);
+                         Qt::KeyboardModifiers   modifiers  = Qt::NoModifier,
+                         const QString         & text       = QString(),
+                         bool                    autoRepeat = false,
+                         ushort                  count      = 1);
 
     WDeclarativeKeyEvent(const QKeyEvent & event);
 
@@ -73,16 +73,28 @@ public: // Properties
 
     int key() const;
 
-    QString text() const;
-
     int modifiers() const;
+
+    QString text() const;
 
     bool isAutoRepeat() const;
 
     int count() const;
 
 private:
-    QKeyEvent _event;
+    bool _isAccepted;
+
+    QEvent::Type _type;
+
+    int _key;
+
+    int _modifiers;
+
+    QString _text;
+
+    bool _autoRepeat;
+
+    int _count;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -543,6 +555,9 @@ signals:
 
     void keyPressed (WDeclarativeKeyEvent * event);
     void keyReleased(WDeclarativeKeyEvent * event);
+
+    void viewportKeyPressed (WDeclarativeKeyEvent * event);
+    void viewportKeyReleased(WDeclarativeKeyEvent * event);
 
     void keyShiftPressedChanged  ();
     void keyControlPressedChanged();
