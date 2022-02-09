@@ -227,7 +227,7 @@ void WWindowPrivate::deleteItems()
     : WView(new WWindowPrivate(this), new WViewport, parent)
 #elif defined(Q_OS_WIN)
     : WView(new WWindowPrivate(this), new WViewport, parent,
-            Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
+            Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint)
 #else
     : WView(new WWindowPrivate(this), new WViewport, parent, Qt::FramelessWindowHint)
 #endif
