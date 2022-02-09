@@ -259,18 +259,6 @@ BaseWindow
     }
 
     //---------------------------------------------------------------------------------------------
-
-    function mapFromItem(item, x, y)
-    {
-        return viewport.mapFromItem(item, x, y);
-    }
-
-    function mapToItem(item, x, y)
-    {
-        return viewport.mapToItem(item, x, y);
-    }
-
-    //---------------------------------------------------------------------------------------------
     // Virtual
 
     /* virtual */ function getMargin(size)

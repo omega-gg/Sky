@@ -62,7 +62,7 @@ BaseLabel
     {
         if (visible)
         {
-             return window.mapToItem(slider, window.mouseX, 0).x;
+             return window.viewport.mapToItem(slider, window.mouseX, 0).x;
         }
         else return -1;
     }

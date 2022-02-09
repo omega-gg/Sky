@@ -34,7 +34,9 @@
 */
 
 // Private includes
+#ifdef QT_NEW
 #include <private/WView_p>
+#endif
 #include <private/WDeclarativeMouseArea_p>
 
 #ifndef SK_NO_WINDOW
@@ -58,7 +60,11 @@ protected:
 // WWindowPrivate
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_4
+class SK_GUI_EXPORT WWindowPrivate : public WViewportPrivate
+#else
 class SK_GUI_EXPORT WWindowPrivate : public WViewPrivate
+#endif
 {
 public:
     WWindowPrivate(WWindow * p);
@@ -67,13 +73,19 @@ public:
 
     void init();
 
+#ifdef QT_NEW
 public: // Functions
     void deleteItems();
+#endif
 
 public: // Variables
+#ifdef QT_4
+    WDeclarativeMouseArea * viewport;
+#else
     WViewport * viewport;
 
     QList<QObject *> items;
+#endif
 
     QString icon;
 
