@@ -723,6 +723,9 @@ private:
     friend class WResizerPrivate;
     friend class WWindow;
     friend class WWindowPrivate;
+#ifdef QT_4
+    friend class WViewport;
+#endif
 };
 
 #ifdef QT_4
