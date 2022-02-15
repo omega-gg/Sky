@@ -342,7 +342,11 @@ WBackendVlcShader::WBackendVlcShader()
     }
     else
     {
+#ifdef Q_OS_MAC
+        QString path = QCoreApplication::applicationDirPath() + "/../../../";
+#else
         QString path = QCoreApplication::applicationDirPath() + '/';
+#endif
 
         setShaderFileName(VertexStage,   path + "shaders/video.vert.qsb");
         setShaderFileName(FragmentStage, path + "shaders/video.frag.qsb");
