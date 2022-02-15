@@ -608,7 +608,9 @@ void WDeclarativeImageScalePrivate::onScale()
         }
         else size.scale(scaleSize, Qt::IgnoreAspectRatio);
 
-        action = WPixmapCache::loadImage(WControllerFile::toLocalFile(urlDefault),
+        QString source = WControllerFile::resolvedUrl(q, urlDefault);
+
+        action = WPixmapCache::loadImage(WControllerFile::toLocalFile(source),
                                          size, q, SLOT(onLoaded(const QImage &)));
 
         return;

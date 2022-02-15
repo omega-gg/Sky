@@ -527,7 +527,9 @@ void WDeclarativeBorderImageScalePrivate::onScale()
 
     if (sourceDefault)
     {
-        action = WPixmapCache::loadImage(WControllerFile::toLocalFile(urlDefault),
+        QString source = WControllerFile::resolvedUrl(q, urlDefault);
+
+        action = WPixmapCache::loadImage(WControllerFile::toLocalFile(source),
                                          scaleResize, q, SLOT(onLoaded(const QImage &)));
 
         return;
