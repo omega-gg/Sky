@@ -622,7 +622,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 
 /* Q_INVOKABLE static */ bool WControllerApplication::runUpdate()
 {
-#ifdef Q_OS_IOS
+#ifdef QT_NO_PROCESS
     // NOTE: QProcess is not supported on iOS.
     return false;
 #else
