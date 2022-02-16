@@ -37,8 +37,8 @@
 #include <QUrl>
 #include <QPoint>
 
+#ifdef Q_OS_MACX
 // macOS includes
-#ifdef Q_OS_MAC
 #include <IOKit/pwr_mgt/IOPMLib.h>
 #endif
 
@@ -111,7 +111,7 @@ public: // Variables
     int timeoutLowPower;
     int timeoutPowerOff;
     int timeoutScreenSave;
-#elif defined(Q_OS_MAC)
+#elif defined(Q_OS_MACX)
     IOPMAssertionID assertion;
 #endif
 

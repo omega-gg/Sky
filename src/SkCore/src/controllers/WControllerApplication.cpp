@@ -622,6 +622,10 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 
 /* Q_INVOKABLE static */ bool WControllerApplication::runUpdate()
 {
+#ifdef Q_OS_IOS
+    // NOTE: QProcess is not supported on iOS.
+    return false;
+#else
 #ifdef Q_OS_WIN
     QString path = QCoreApplication::applicationDirPath() + "/setup.exe";
 #else
@@ -641,6 +645,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
     }
 
     return true;
+#endif
 }
 
 /* Q_INVOKABLE static */ bool WControllerApplication::runAdmin(const QString & fileName,
@@ -2108,7 +2113,7 @@ void WControllerApplication::setScreenSaverEnabled(bool enabled)
         SystemParametersInfo(SPI_SETPOWEROFFTIMEOUT,   d->timeoutPowerOff,   NULL, 0);
         SystemParametersInfo(SPI_SETSCREENSAVETIMEOUT, d->timeoutScreenSave, NULL, 0);
     }
-#elif defined(Q_OS_MAC)
+#elif defined(Q_OS_MACX)
     if (enabled == false)
     {
         CFStringRef name = CFStringCreateWithCString(NULL, d->name.C_STR, kCFStringEncodingASCII);
