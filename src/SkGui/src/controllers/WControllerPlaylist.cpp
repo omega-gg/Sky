@@ -3368,7 +3368,6 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
     else return url.mid(0, indexA);
 }
 
-
 /* Q_INVOKABLE static */ bool WControllerPlaylist::cleanMatch(const QString & urlA,
                                                               const QString & urlB)
 {
@@ -3389,6 +3388,11 @@ WControllerFileReply * WControllerPlaylist::copyBackends(const QString & path,
     foreach (QFileInfo info, list)
     {
         if (info.suffix().toLower() != "vbml") continue;
+
+#ifdef SK_NO_TORRENT
+        // FIXME: We should come up with a smarter way to filter BitTorrent backends.
+        if (info.baseName() == "bittorrent") continue;
+#endif
 
         fileNames.append(info.filePath());
 

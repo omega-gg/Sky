@@ -110,6 +110,16 @@ W_DECLARE_PRIVATE_COPY(Class)    \
 #endif
 
 //-------------------------------------------------------------------------------------------------
+// Torrent
+
+#ifdef SK_NO_TORRENT
+#define SK_NO_CONTROLLERTORRENT
+#define SK_NO_LOADERTORRENT
+#define SK_NO_HOOKTORRENT
+#define SK_NO_TORRENTENGINE
+#endif
+
+//-------------------------------------------------------------------------------------------------
 
 /**
  * \internal
