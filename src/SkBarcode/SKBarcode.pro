@@ -1,9 +1,9 @@
 SK = $$_PRO_FILE_PWD_/../..
 
 CONFIG(debug, debug|release) {
-    TARGET = SkBackendD
+    TARGET = SkBarcodeD
 } else {
-    TARGET = SkBackend
+    TARGET = SkBarcode
 }
 
 DESTDIR = $$SK/lib
@@ -11,9 +11,9 @@ DESTDIR = $$SK/lib
 TEMPLATE = lib
 
 contains(QT_MAJOR_VERSION, 4) {
-    QT += declarative network script xml
+    QT += declarative
 } else {
-    QT += quick network xml
+    QT += qml
 }
 
 win32:CONFIG += dll
@@ -25,50 +25,37 @@ contains(QT_MAJOR_VERSION, 4) {
     CONFIG += c++1z
 }
 
-DEFINES += SK_BACKEND_LIBRARY SK_BACKEND_LOG
+DEFINES += SK_BARCODE_LIBRARY
 
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 
 include(../Sk.pri)
 include(src/io/io.pri)
-include(src/media/media.pri)
 
 INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkCore/private \
                $$SK/include/SkGui \
                $$SK/include/SkGui/private \
-               $$SK/include/SkTorrent \
-               $$SK/include/SkTorrent/private \
-               $$SK/include/SkBackend \
-               $$SK/include/SkBackend/private \
                $$SK/include
 
 android {
     CONFIG(debug, debug|release) {
 
         LIBS += -L$$SK/lib -lSkCoreD_$$ABI \
-                -L$$SK/lib -lSkGuiD_$$ABI \
-                -L$$SK/lib -lSkTorrentD_$$ABI
+                -L$$SK/lib -lSkGuiD_$$ABI
     } else {
         LIBS += -L$$SK/lib -lSkCore_$$ABI \
-                -L$$SK/lib -lSkGui_$$ABI \
-                -L$$SK/lib -lSkTorrent_$$ABI
+                -L$$SK/lib -lSkGui_$$ABI
     }
 } else {
     CONFIG(debug, debug|release) {
 
         LIBS += -L$$SK/lib -lSkCoreD \
-                -L$$SK/lib -lSkGuiD \
-                -L$$SK/lib -lSkTorrentD
+                -L$$SK/lib -lSkGuiD
     } else {
         LIBS += -L$$SK/lib -lSkCore \
-                -L$$SK/lib -lSkGui \
-                -L$$SK/lib -lSkTorrent
+                -L$$SK/lib -lSkGui
     }
-}
-
-contains(QT_MAJOR_VERSION, 6) {
-    win32:LIBS += -lws2_32
 }
 
 macx {
@@ -78,17 +65,11 @@ CONFIG(debug, debug|release) {
 
     QMAKE_POST_LINK += install_name_tool -change libSkGuiD.dylib \
                        @loader_path/libSkGuiD.dylib $${DESTDIR}/lib$${TARGET}.dylib;
-
-    QMAKE_POST_LINK += install_name_tool -change libSkTorrentD.dylib \
-                        @loader_path/libSkTorrentD.dylib $${DESTDIR}/lib$${TARGET}.dylib;
 } else {
     QMAKE_POST_LINK  = install_name_tool -change libSkCore.dylib \
                        @loader_path/libSkCore.dylib $${DESTDIR}/lib$${TARGET}.dylib;
 
     QMAKE_POST_LINK += install_name_tool -change libSkGui.dylib \
                        @loader_path/libSkGui.dylib $${DESTDIR}/lib$${TARGET}.dylib;
-
-   QMAKE_POST_LINK += install_name_tool -change libSkTorrent.dylib \
-                      @loader_path/libSkTorrent.dylib $${DESTDIR}/lib$${TARGET}.dylib;
 }
 }

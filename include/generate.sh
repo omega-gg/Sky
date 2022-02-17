@@ -10,4 +10,5 @@ includeGenerator="../deploy/includeGenerator"
 "$includeGenerator" ../../src/SkMedia/src                             SkMedia
 "$includeGenerator" ../../src/SkWeb/src                               SkWeb
 "$includeGenerator" ../../src/SkTorrent/src                           SkTorrent
+"$includeGenerator" ../../src/SkBarcode/src                           SkBarcode
 "$includeGenerator" ../../src/SkBackend/src                           SkBackend

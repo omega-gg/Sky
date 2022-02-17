@@ -7,6 +7,7 @@ isEmpty(TOOLS) {
               src/SkGui \
               src/SkMedia \
               src/SkTorrent \
+              src/SkBarcode \
               src/SkBackend \
 
     # NOTE Qt5 Windows: The WebView module is only available for MSVC but currently unsupported.

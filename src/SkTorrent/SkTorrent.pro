@@ -1,7 +1,5 @@
 SK = $$_PRO_FILE_PWD_/../..
 
-SK_BIN = bin
-
 CONFIG(debug, debug|release) {
     TARGET = SkTorrentD
 } else {
