@@ -234,7 +234,10 @@ qmake="$QtBin/qmake"
 # NOTE android: We have to copy the tools for the Linux platform.
 if [ $1 = "android" ]; then
 
-    cp -r "$external"/Sky/* deploy
+    if [ ! -f "deploy/deployer" ]; then
+
+        cp -r "$external"/Sky/* deploy
+    fi
 
     if [ "$2" = "tools" ]; then
 
