@@ -17,4 +17,6 @@ contains(QT_MAJOR_VERSION, 4) {
     CONFIG += c++1z
 }
 
+unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
+
 SOURCES += main.cpp
