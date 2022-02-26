@@ -117,6 +117,7 @@ jobs:
       docker exec -t ubuntu bash -c "cd /Sky;
                                      apt-get update;
                                      apt-get -y install sudo curl zip unzip git;
+                                     sh install.sh linux;
                                      sh build.sh android all;
                                      cd deploy;
                                      zip -rq ../Sky.zip *"
@@ -133,6 +134,7 @@ jobs:
                                      apt-get update;
                                      apt-get -y install sudo curl zip unzip git;
                                      sh environment.sh qt6;
+                                     sh install.sh linux;
                                      sh build.sh android all;
                                      cd deploy;
                                      zip -rq ../Sky.zip *"
