@@ -76,11 +76,12 @@ copyIncludes()
 
 if [ $# != 1 -a $# != 2 ] \
    || \
-   [ $1 != "win32" -a $1 != "win64" -a $1 != "macOS" -a $1 != "linux" -a $1 != "android" ] \
+   [ $1 != "win32" -a $1 != "win64" -a $1 != "macOS" -a $1 != "iOS" -a $1 != "linux" -a \
+     $1 != "android" ] \
    || \
    [ $# = 2 -a "$2" != "clean" ]; then
 
-    echo "Usage: configure <win32 | win64 | macOS | linux | android> [clean]"
+    echo "Usage: configure <win32 | win64 | macOS | iOS | linux | android> [clean]"
 
     exit 1
 fi
@@ -103,18 +104,6 @@ if [ $1 = "win32" -o $1 = "win64" ]; then
     else
         MinGW="$external/MinGW/$MinGW_version/x86_64-w64-mingw32/lib"
     fi
-
-elif [ $1 = "macOS" ]; then
-
-    os="default"
-
-    compiler="default"
-
-elif [ $1 = "linux" ]; then
-
-    os="default"
-
-    compiler="default"
 else
     os="default"
 

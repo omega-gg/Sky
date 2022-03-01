@@ -124,11 +124,13 @@ getPath()
 
 if [ $# != 1 -a $# != 2 ] \
    || \
-   [ $1 != "win32" -a $1 != "win64" -a $1 != "macOS" -a $1 != "linux" -a $1 != "android" ] \
+   [ $1 != "win32" -a $1 != "win64" -a $1 != "macOS" -a $1 != "iOS" -a $1 != "linux" -a \
+     $1 != "android" ] \
    || \
    [ $# = 2 -a "$2" != "all" -a "$2" != "deploy" -a "$2" != "tools" -a "$2" != "clean" ]; then
 
-    echo "Usage: build <win32 | win64 | macOS | linux | android> [all | deploy | tools | clean]"
+    echo "Usage: build <win32 | win64 | macOS | iOS | linux | android>"
+    echo "             [all | deploy | tools | clean]"
 
     exit 1
 fi
@@ -188,20 +190,14 @@ if [ $1 = "win32" -o $1 = "win64" ]; then
             abi="x64"
         fi
     fi
-
-elif [ $1 = "android" ]; then
-
-    if [ $host != "linux" ]; then
+else
+    if [ $1 = "android" -a $host != "linux" ]; then
 
         echo "You have to cross-compile $1 from Linux (preferably Ubuntu)."
 
         exit 1
     fi
 
-    os="default"
-
-    compiler="default"
-else
     os="default"
 
     compiler="default"
