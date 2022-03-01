@@ -249,10 +249,10 @@ else
 
         elif [ $1 = "iOS" ]; then
 
-            cp -r "$Qt"/include/QtCore $include
-            cp -r "$Qt"/include/QtGui  $include
-            cp -r "$Qt"/include/QtQml  $include
-            cp -r "$Qt"/include/QtDBus $include
+            cp -r "$Qt"/include/QtCore  $include
+            cp -r "$Qt"/include/QtGui   $include
+            cp -r "$Qt"/include/QtQml   $include
+            cp -r "$Qt"/include/QtQuick $include
 
             cp -r "$Qt"/include/QtGui/"$qx"*/QtGui/qpa $include/QtGui
 
