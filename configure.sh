@@ -309,6 +309,12 @@ elif [ $1 = "macOS" ]; then
     cp "$VLC"/lib/libvlc.5.dylib     lib/libvlc.dylib
     cp "$VLC"/lib/libvlccore.9.dylib lib/libvlccore.dylib
 
+elif [ $1 = "iOS" ]; then
+
+    echo "COPYING VLC"
+
+    cp -r "$VLC"/include/vlc include
+
 elif [ $1 = "android" ]; then
 
     echo "COPYING VLC"
