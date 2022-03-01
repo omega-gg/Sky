@@ -49,7 +49,7 @@
 #endif
 
 // Mac includes
-#if defined(QT_6) == false && defined(Q_OS_MAC)
+#if defined(QT_6) == false && defined(Q_OS_MAC) && defined(Q_OS_IOS) == false
 #include <OpenGL/gl.h>
 #include <OpenGL/glext.h>
 #endif

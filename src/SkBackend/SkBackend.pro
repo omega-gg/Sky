@@ -27,6 +27,8 @@ contains(QT_MAJOR_VERSION, 4) {
 
 DEFINES += SK_BACKEND_LIBRARY SK_BACKEND_LOG
 
+ios:DEFINES += SK_NO_TORRENT
+
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 
 include(../Sk.pri)

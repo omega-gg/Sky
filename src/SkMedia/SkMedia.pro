@@ -31,9 +31,9 @@ contains(QT_MAJOR_VERSION, 4) {
 
 DEFINES += SK_MEDIA_LIBRARY
 
-!win32-msvc*:!android:DEFINES += CAN_COMPILE_SSE2
+!win32-msvc*:!ios:!android:DEFINES += CAN_COMPILE_SSE2
 
-!win32-msvc*:!android:QMAKE_CXXFLAGS += -msse
+!win32-msvc*:!ios:!android:QMAKE_CXXFLAGS += -msse
 
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 

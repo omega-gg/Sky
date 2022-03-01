@@ -6,18 +6,20 @@ isEmpty(TOOLS) {
     SUBDIRS = src/SkCore \
               src/SkGui \
               src/SkMedia \
-              src/SkTorrent \
               src/SkBarcode \
               src/SkBackend \
+
+    # NOTE: Torrents are not available on iOS.
+    !ios: SUBDIRS += src/SkTorrent
 
     # NOTE Qt5 Windows: The WebView module is only available for MSVC but currently unsupported.
     # contains(QT_MAJOR_VERSION, 4) {
     #     SUBDIRS += src/SkWeb
     # }
 
-    !android:SUBDIRS += tools
+    !ios:!android:SUBDIRS += tools
 } else {
-    !android:SUBDIRS = tools
+    !ios:!android:SUBDIRS = tools
 }
 
 OTHER_FILES += 3rdparty.sh \
