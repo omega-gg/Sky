@@ -247,7 +247,16 @@ else
 
             cp -r "$Qt"/lib/QtGui.framework/Headers/"$qx"*/QtGui/qpa $include/QtGui
 
-        elif [ $1 = "linux" -o $1 = "iOS" ]; then
+        elif [ $1 = "iOS" ]; then
+
+            cp -r "$Qt"/include/QtCore $include
+            cp -r "$Qt"/include/QtGui  $include
+            cp -r "$Qt"/include/QtQml  $include
+            cp -r "$Qt"/include/QtDBus $include
+
+            cp -r "$Qt"/include/QtGui/"$qx"*/QtGui/qpa $include/QtGui
+
+        elif [ $1 = "linux" ]; then
 
             cp -r "$Qt"/include/QtCore  $include
             cp -r "$Qt"/include/QtGui   $include
@@ -313,32 +322,38 @@ fi
 # libtorrent
 #--------------------------------------------------------------------------------------------------
 
-echo "COPYING libtorrent"
+if [ $1 != "iOS" ]; then
 
-cp -r "$libtorrent"/libtorrent include
+    echo "COPYING libtorrent"
 
-if [ $1 = "android" ]; then
+    cp -r "$libtorrent"/libtorrent include
 
-    copyAndroid "$libtorrent" lib
-else
-    cp "$libtorrent"/*torrent*.* lib
+    if [ $1 = "android" ]; then
+
+        copyAndroid "$libtorrent" lib
+    else
+        cp "$libtorrent"/*torrent*.* lib
+    fi
 fi
 
 #--------------------------------------------------------------------------------------------------
 # Boost
 #--------------------------------------------------------------------------------------------------
 
-echo "COPYING Boost"
+if [ $1 != "iOS" ]; then
 
-path="include/boost"
+    echo "COPYING Boost"
 
-mkdir -p $path
+    path="include/boost"
 
-cp -r "$Boost"/Boost/* $path
+    mkdir -p $path
 
-if [ $1 = "android" ]; then
+    cp -r "$Boost"/Boost/* $path
 
-    copyAndroid "$Boost" lib
-else
-    cp "$Boost"/*boost*.* lib
+    if [ $1 = "android" ]; then
+
+        copyAndroid "$Boost" lib
+    else
+        cp "$Boost"/*boost*.* lib
+    fi
 fi
