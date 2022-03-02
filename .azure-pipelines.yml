@@ -67,6 +67,18 @@ jobs:
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
     artifact: Sky-iOS-qt5
 
+- job: iOS_qt6
+  pool:
+    vmImage: "macOS-10.15"
+  steps:
+  - bash: |
+      sh environment.sh qt6
+      sh build.sh iOS all
+      cd deploy
+      zip -rq ../Sky.zip *
+  - publish: $(System.DefaultWorkingDirectory)/Sky.zip
+    artifact: Sky-iOS-qt6
+
 #--------------------------------------------------------------------------------------------------
 # Linux
 #--------------------------------------------------------------------------------------------------
