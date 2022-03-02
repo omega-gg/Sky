@@ -302,6 +302,12 @@ elif [ $1 = "macOS" ]; then
 
     export PATH=$Qt/bin:$PATH
 
+elif [ $1 = "macOS" ]; then
+
+    spec=macx-ios-clang
+
+    export PATH=$Qt/bin:$PATH
+
 elif [ $1 = "linux" ]; then
 
     if [ -d "/usr/lib/x86_64-linux-gnu" ]; then
