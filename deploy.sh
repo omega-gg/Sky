@@ -616,6 +616,15 @@ if [ "$2" != "tools" ]; then
         cp lib/libSkTorrent.dylib deploy
         cp lib/libSkBackend.dylib deploy
 
+    elif [ $1 = "iOS" ]; then
+
+        cp lib/libSkCore.a    deploy
+        cp lib/libSkGui.a     deploy
+        cp lib/libSkMedia.a   deploy
+        #cp lib/libSkWeb.a     deploy
+        cp lib/libSkTorrent.a deploy
+        cp lib/libSkBackend.a deploy
+
     elif [ $1 = "linux" ]; then
 
         cp lib/libSkCore.so    deploy
