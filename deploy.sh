@@ -304,6 +304,45 @@ else
             cp "$Qt"/qml/QtQml/WorkerScript/qmldir                 deploy/QtQml/WorkerScript
         fi
 
+    elif [ $1 = "iOS" ]; then
+
+        cp "$Qt/lib/lib$QtX"Core.a    deploy
+        cp "$Qt/lib/lib$QtX"Gui.a     deploy
+        cp "$Qt/lib/lib$QtX"Network.a deploy
+        cp "$Qt/lib/lib$QtX"OpenGL.a  deploy
+        cp "$Qt/lib/lib$QtX"Qml.a     deploy
+        cp "$Qt/lib/lib$QtX"Quick.a   deploy
+        cp "$Qt/lib/lib$QtX"Svg.a     deploy
+        cp "$Qt/lib/lib$QtX"Widgets.a deploy
+        cp "$Qt/lib/lib$QtX"Xml.a     deploy
+
+        if [ $qt = "qt5" ]; then
+
+            cp "$Qt/lib/lib$QtX"XmlPatterns.a deploy
+        else
+            cp "$Qt/lib/lib$QtX"Core5Compat.a deploy
+        fi
+
+        if [ -f "$Qt/lib/lib$QtX"QmlModels.a ]; then
+
+            cp "$Qt/lib/lib$QtX"QmlModels.a       deploy
+            cp "$Qt/lib/lib$QtX"QmlWorkerScript.a deploy
+        fi
+
+        cp "$Qt"/plugins/platforms/libqios.a deploy/platforms
+
+        cp "$Qt"/plugins/imageformats/libqsvg.a  deploy/imageformats
+        cp "$Qt"/plugins/imageformats/libqjpeg.a deploy/imageformats
+
+        cp "$Qt"/qml/$QtQuick/libqtquick2plugin.a deploy/$QtQuick
+        cp "$Qt"/qml/$QtQuick/qmldir              deploy/$QtQuick
+
+        if [ $qt = "qt6" ]; then
+
+            cp "$Qt"/qml/QtQml/WorkerScript/libworkerscriptplugin.a deploy/QtQml/WorkerScript
+            cp "$Qt"/qml/QtQml/WorkerScript/qmldir                  deploy/QtQml/WorkerScript
+        fi
+
     elif [ $1 = "macOS" ]; then
 
         # FIXME Qt 5.14 macOS: We have to copy qt.conf to avoid a segfault.
