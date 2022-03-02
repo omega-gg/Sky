@@ -198,7 +198,12 @@ else
         exit 1
     fi
 
-    os="default"
+    if [ $1 = "iOS" -o $1 = "android" ]; then
+
+        os="mobile"
+    else
+        os="default"
+    fi
 
     compiler="default"
 fi
@@ -227,8 +232,8 @@ qmake="$QtBin/qmake"
 # Android
 #--------------------------------------------------------------------------------------------------
 
-# NOTE android: We have to copy the tools for the Linux platform.
-if [ $1 = "android" ]; then
+# NOTE Mobile: We have to copy the tools for the mobile platforms.
+if [ $os = "mobile" ]; then
 
     if [ ! -f "deploy/deployer" ]; then
 

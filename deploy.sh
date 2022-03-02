@@ -109,7 +109,12 @@ if [ $1 = "win32" -o $1 = "win64" ]; then
         MinGW="$external/MinGW/$MinGW_version/bin"
     fi
 else
-    os="default"
+    if [ $1 = "iOS" -o $1 = "android" ]; then
+
+        os="mobile"
+    else
+        os="default"
+    fi
 
     compiler="default"
 fi
@@ -655,7 +660,7 @@ if [ $os = "windows" ]; then
     cp bin/includeGenerator.exe deploy
     cp bin/deployer.exe         deploy
 
-elif [ $1 != "iOS" -a $1 != "android" ]; then
+elif [ $os != "mobile" ]; then
 
     echo "COPYING tools"
 
