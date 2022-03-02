@@ -640,14 +640,16 @@ fi
 # tools
 #--------------------------------------------------------------------------------------------------
 
-echo "COPYING tools"
-
 if [ $os = "windows" ]; then
+
+    echo "COPYING tools"
 
     cp bin/includeGenerator.exe deploy
     cp bin/deployer.exe         deploy
 
 elif [ $1 != "iOS" -a $1 != "android" ]; then
+
+    echo "COPYING tools"
 
     cp bin/includeGenerator deploy
     cp bin/deployer         deploy
