@@ -302,7 +302,7 @@ elif [ $1 = "macOS" ]; then
 
     export PATH=$Qt/bin:$PATH
 
-elif [ $1 = "macOS" ]; then
+elif [ $1 = "iOS" ]; then
 
     spec=macx-ios-clang
 
