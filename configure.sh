@@ -126,7 +126,7 @@ elif [ $qt = "qt5" ]; then
 
     qx="5"
 else
-    if [ $1 = "ios" ]; then
+    if [ $1 = "iOS" ]; then
 
         Qt="$external/Qt/$Qt6_version/ios"
     else
