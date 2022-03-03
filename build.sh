@@ -223,7 +223,7 @@ if [ $qt = "qt6" ]; then
 
     if [ $1 = "iOS" ]; then
 
-        QtBin="$Qt/ios/bin"
+        QtBin="$Qt/macos/bin"
 
     elif [ $1 = "android" ]; then
 
