@@ -223,7 +223,7 @@ if [ $qt = "qt6" ]; then
 
     if [ $1 = "iOS" ]; then
 
-        QtBin="$Qt/macos/bin"
+        QtBin="$Qt/ios/bin"
 
     elif [ $1 = "android" ]; then
 
@@ -319,8 +319,6 @@ elif [ $1 = "macOS" ]; then
 elif [ $1 = "iOS" ]; then
 
     spec=macx-ios-clang
-
-    export PATH=$Qt/bin:$PATH
 
 elif [ $1 = "linux" ]; then
 
