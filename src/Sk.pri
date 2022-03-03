@@ -41,7 +41,7 @@ greaterThan(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_NEW
 }
 
-android {
+ios:android {
     DEFINES += SK_MOBILE
 } else {
     DEFINES += SK_DESKTOP
