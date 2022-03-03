@@ -351,7 +351,14 @@ if [ "$2" = "tools" ]; then
 
 elif [ $1 = "iOS" ]; then
 
-    $qmake -r -spec $spec "$config" -qtconf "$Qt"/ios/bin/target_qt.conf ..
+    if [ $qt = "qt5" ]; then
+
+        qtconf=""
+    else
+        qtconf="-qtconf $Qt/ios/bin/target_qt.conf"
+    fi
+
+    $qmake -r -spec $spec "$config" $qtconf ..
 
 elif [ $1 = "android" ]; then
 
