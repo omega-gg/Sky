@@ -219,9 +219,18 @@ else
     Qt="$external/Qt/$Qt6_version"
 fi
 
-if [ $1 = "android" -a $qt = "qt6" ]; then
+if [ $qt = "qt6" ]; then
 
-    QtBin="$Qt/gcc_64/bin"
+    if [ $1 = "iOS" ]; then
+
+        QtBin="$Qt/macos/bin"
+
+    if [ $1 = "android" ]; then
+
+        QtBin="$Qt/gcc_64/bin"
+    else
+        QtBin="$Qt/bin"
+    fi
 else
     QtBin="$Qt/bin"
 fi
