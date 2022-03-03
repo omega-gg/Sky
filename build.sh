@@ -225,7 +225,7 @@ if [ $qt = "qt6" ]; then
 
         QtBin="$Qt/macos/bin"
 
-    if [ $1 = "android" ]; then
+    elif [ $1 = "android" ]; then
 
         QtBin="$Qt/gcc_64/bin"
     else
