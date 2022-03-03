@@ -223,7 +223,7 @@ if [ $qt = "qt6" ]; then
 
     if [ $1 = "iOS" ]; then
 
-        QtBin="$Qt/ios/bin"
+        QtBin="$Qt/macos/bin"
 
     elif [ $1 = "android" ]; then
 
@@ -348,6 +348,10 @@ cd build
 if [ "$2" = "tools" ]; then
 
     $qmake -r -spec $spec "$config" TOOLS=true ..
+
+elif [ $1 = "iOS" ]; then
+
+    $qmake -r -spec $spec "$config" -qtconf "$Qt"/ios/bin/target_qt.conf ..
 
 elif [ $1 = "android" ]; then
 
