@@ -41,7 +41,10 @@ greaterThan(QT_MAJOR_VERSION, 4) {
     DEFINES += QT_NEW
 }
 
-ios:android {
+# NOTE Qt5: qmake won't let me write 'ios:android' in a condition with brackets.
+ios {
+    DEFINES += SK_MOBILE
+} else:android {
     DEFINES += SK_MOBILE
 } else {
     DEFINES += SK_DESKTOP
