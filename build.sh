@@ -242,11 +242,17 @@ qmake="$QtBin/qmake"
 #--------------------------------------------------------------------------------------------------
 
 # NOTE Mobile: We have to copy the tools for the mobile platforms.
-if [ $os = "mobile" -a "$2" = "tools" ]; then
+if [ $os = "mobile" ]; then
 
-    sh deploy.sh $1 tools
+    if [ ! -f "deploy/deployer" ]; then
 
-    exit 0
+        cp -r "$external"/Sky/* deploy
+    fi
+
+    if [ "$2" = "tools" ]; then
+
+        exit 0
+    fi
 fi
 
 #--------------------------------------------------------------------------------------------------
