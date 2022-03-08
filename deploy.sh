@@ -658,17 +658,17 @@ fi
 # tools
 #--------------------------------------------------------------------------------------------------
 
-if [ $os = "windows" ]; then
+echo "COPYING tools"
 
-    echo "COPYING tools"
+if [ $os = "windows" ]; then
 
     cp bin/includeGenerator.exe deploy
     cp bin/deployer.exe         deploy
 
-elif [ $os != "mobile" ]; then
+elif [ $os = "mobile" ]; then
 
-    echo "COPYING tools"
-
+    cp -r "$external"/Sky/* deploy
+else
     cp bin/includeGenerator deploy
     cp bin/deployer         deploy
 fi
