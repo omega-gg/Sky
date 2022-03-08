@@ -242,14 +242,11 @@ qmake="$QtBin/qmake"
 #--------------------------------------------------------------------------------------------------
 
 # NOTE Mobile: We have to copy the tools for the mobile platforms.
-if [ $os = "mobile" ]; then
+if [ $os = "mobile" -a "$2" = "tools" ]; then
 
     sh deploy.sh $1 tools
 
-    if [ "$2" = "tools" ]; then
-
-        exit 0
-    fi
+    exit 0
 fi
 
 #--------------------------------------------------------------------------------------------------
