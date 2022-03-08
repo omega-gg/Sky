@@ -673,6 +673,21 @@ else
     cp bin/deployer         deploy
 fi
 
+if [ $1 = "macOS" ]; then
+
+    #----------------------------------------------------------------------------------------------
+    # includeGenerator
+
+    install_name_tool -change @rpath/QtCore.framework/Versions/$qx/QtCore \
+                              @loader_path/QtCore.dylib deploy/includeGenerator
+
+    #----------------------------------------------------------------------------------------------
+    # deployer
+
+    install_name_tool -change @rpath/QtCore.framework/Versions/$qx/QtCore \
+                              @loader_path/QtCore.dylib deploy/deployer
+fi
+
 #--------------------------------------------------------------------------------------------------
 # shaders
 #--------------------------------------------------------------------------------------------------
