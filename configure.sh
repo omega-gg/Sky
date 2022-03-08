@@ -320,6 +320,8 @@ elif [ $1 = "iOS" ]; then
 
     cp -r "$VLC"/include/vlc include
 
+    cp -r "$VLC"/ios-arm64_armv7_armv7s/MobileVLCKit.framework lib
+
 elif [ $1 = "android" ]; then
 
     echo "COPYING VLC"
