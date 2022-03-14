@@ -41,6 +41,7 @@ Item
 
     property alias checked: buttonText.checked
 
+    property alias itemIcon: buttonIcon.itemIcon
     property alias itemText: buttonText.itemText
 
     //---------------------------------------------------------------------------------------------
@@ -122,8 +123,6 @@ Item
 
         trackType: type
 
-        //-----------------------------------------------------------------------------------------
-        // Functions
         //-----------------------------------------------------------------------------------------
         // ButtonTouchIcon reimplementation
 

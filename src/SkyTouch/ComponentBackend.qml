@@ -23,50 +23,72 @@
 import QtQuick 1.0
 import Sky     1.0
 
-ButtonTouchIcon
+Item
 {
+    id: componentBackend
+
+    //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+
+    property int iconWidth: st.componentBackend_iconWidth
+
+    //---------------------------------------------------------------------------------------------
+    // Aliases
+    //---------------------------------------------------------------------------------------------
+
+    property alias checked: buttonIcon.checked
+
+    property alias itemIcon: buttonIcon.itemIcon
+    property alias itemText: buttonText.itemText
+
+    //---------------------------------------------------------------------------------------------
+
+    property alias buttonIcon: buttonIcon
+    property alias buttonText: buttonText
+
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    iconWidth: (isSourceDefault) ? st.componentBackend_iconWidth
-                                 : itemIcon.filter.width
+//#QT_4
+    width: ListView.view.width
+//#ELSE
+    // NOTE Qt5.15: sometimes we get an undefined parent.
+    anchors.left : (parent) ? parent.left  : undefined
+    anchors.right: (parent) ? parent.right : undefined
+//#END
 
-    iconSourceSize.height: getFilterMask().height
-
-    iconDefaultSize.height: getSourceHeight()
-
-    checked: (ListView.view.currentIndex == index)
-
-    icon: cover
-
-    iconDefault: st.icon_feed
-
-    iconFillMode: (isSourceDefault) ? Image.PreserveAspectFit
-                                    : Image.PreserveAspectCrop
-
-    iconAsynchronous: gui.asynchronous
-
-    //---------------------------------------------------------------------------------------------
-    // Events
-    //---------------------------------------------------------------------------------------------
-
-    onClicked: onClick()
+    height: st.buttonTouch_size
 
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
     // Events
 
-    function onClick()
+    function onClickIcon()
     {
         ListView.view.currentIndex = index;
     }
 
-    //---------------------------------------------------------------------------------------------
-    // Functions
-    //---------------------------------------------------------------------------------------------
+    function onClickText() { onClickIcon(); }
+
+    //-----------------------------------------------------------------------------------------
     // Virtual
+
+    /* virtual */ function getFilter()
+    {
+        if (buttonIcon.isSourceDefault)
+        {
+             return getFilterDefault();
+        }
+        else return getFilterMask();
+    }
+
+    /* virtual */ function getFilterDefault()
+    {
+        return buttonIcon.getFilterDefault();
+    }
 
     /* virtual */ function getFilterMask()
     {
@@ -74,14 +96,57 @@ ButtonTouchIcon
     }
 
     //---------------------------------------------------------------------------------------------
-    // ButtonTouchIcon reimplementation
+    // Children
+    //---------------------------------------------------------------------------------------------
 
-    /* virtual */ function getFilter()
+    ButtonTouchIcon
     {
-        if (isSourceDefault)
+        id: buttonIcon
+
+        width: parent.height
+
+        iconWidth: (isSourceDefault) ? componentBackend.iconWidth
+                                     : itemIcon.filter.width
+
+        iconSourceSize.height: getFilterMask().height
+
+        iconDefaultSize.height: getSourceHeight()
+
+        icon: cover
+
+        iconDefault: st.icon_feed
+
+        iconFillMode: (isSourceDefault) ? Image.PreserveAspectFit
+                                        : Image.PreserveAspectCrop
+
+        iconAsynchronous: gui.asynchronous
+
+        onClicked: onClickIcon()
+
+        //-----------------------------------------------------------------------------------------
+        // ButtonTouchIcon reimplementation
+
+        /* virtual */ function getFilter()
         {
-             return getFilterDefault();
+            return componentBackend.getFilter();
         }
-        else return getFilterMask();
+    }
+
+    ButtonTouchLeft
+    {
+        id: buttonText
+
+        anchors.left  : buttonIcon.right
+        anchors.right : parent.right
+        anchors.top   : parent.top
+        anchors.bottom: parent.bottom
+
+        anchors.leftMargin: st.margins
+
+        checked: buttonIcon.checked
+
+        text: title
+
+        onClicked: onClickText()
     }
 }
