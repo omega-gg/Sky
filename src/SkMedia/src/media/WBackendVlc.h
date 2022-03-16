@@ -72,6 +72,9 @@ protected: // WAbstractBackend reimplementation
 
     /* virtual */ void backendSetFillMode(FillMode fillMode);
 
+    /* virtual */ void backendSetVideo(int index);
+    /* virtual */ void backendSetAudio(int index);
+
     /* virtual */ void backendSetScanOutput(bool enabled);
 
     /* virtual */ void backendSetCurrentOutput(int index);

@@ -69,6 +69,7 @@ public: // Enums
         EventLengthChanged, // WVlcPlayerEvent int
         EventTimeChanged,   // WVlcPlayerEvent int
         EventEndReached,
+        EventTracks,
         EventOutputAdd,
         EventOutputRemove,
         EventOutputClear,
@@ -99,9 +100,12 @@ public: // Interface
 
     Q_INVOKABLE void setVolume(int percent);
 
+    Q_INVOKABLE void setVideo(int id);
+    Q_INVOKABLE void setAudio(int id);
+
     Q_INVOKABLE void setScanOutput(bool enabled);
 
-    Q_INVOKABLE void setCurrentOutput(int index);
+    Q_INVOKABLE void setOutput(int index);
 
     Q_INVOKABLE void setProxy(const QString & host,
                               int             port, const QString & password = QString());
@@ -152,6 +156,23 @@ public:
 
 public: // Variables
     QVariant value;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WVlcTracksEvent
+//-------------------------------------------------------------------------------------------------
+
+class WVlcTracksEvent : public QEvent
+{
+public:
+    WVlcTracksEvent(const QList<WBackendTrack> & tracks)
+        : QEvent(static_cast<QEvent::Type> (WVlcPlayer::EventTracks))
+    {
+        this->tracks = tracks;
+    }
+
+public: // Variables
+    QList<WBackendTrack> tracks;
 };
 
 //-------------------------------------------------------------------------------------------------

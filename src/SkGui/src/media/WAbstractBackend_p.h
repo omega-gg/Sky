@@ -88,6 +88,12 @@ public: // Variable
 
     WAbstractBackend::FillMode fillMode;
 
+    QList<WBackendTrack> videos;
+    QList<WBackendTrack> audios;
+
+    int currentVideo;
+    int currentAudio;
+
     bool scanOutput;
 
     int currentOutput;

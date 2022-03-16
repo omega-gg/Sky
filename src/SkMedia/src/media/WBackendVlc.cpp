@@ -1026,7 +1026,7 @@ void WBackendVlcPrivate::loadSources(bool play)
     WAbstractBackend::SourceMode mode = q->getMode();
 
     // NOTE: When using Chromecast for video we want to increase source compatibility.
-    if (outputData.type == WAbstractBackend::TypeChromecast
+    if (outputData.type == WAbstractBackend::OutputChromecast
         &&
         mode != WAbstractBackend::SourceAudio)
     {
@@ -1779,6 +1779,22 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
 //-------------------------------------------------------------------------------------------------
 
+/* virtual */ void WBackendVlc::backendSetVideo(int id)
+{
+    Q_D(WBackendVlc);
+
+    d->player->setVideo(id);
+}
+
+/* virtual */ void WBackendVlc::backendSetAudio(int id)
+{
+    Q_D(WBackendVlc);
+
+    d->player->setAudio(id);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* virtual */ void WBackendVlc::backendSetScanOutput(bool enabled)
 {
     Q_D(WBackendVlc);
@@ -1790,7 +1806,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 {
     Q_D(WBackendVlc);
 
-    d->player->setCurrentOutput(index);
+    d->player->setOutput(index);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2299,6 +2315,14 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
             setEnded(true);
         }
         else stop();
+
+        return true;
+    }
+    else if (type == static_cast<QEvent::Type> (WVlcPlayer::EventTracks))
+    {
+        WVlcTracksEvent * eventTracks = static_cast<WVlcTracksEvent *> (event);
+
+        applyTracks(eventTracks->tracks);
 
         return true;
     }

@@ -1512,7 +1512,7 @@ bool WDeclarativePlayer::hasEnded() const
 
 bool WDeclarativePlayer::hasOutput() const
 {
-    return (outputType() != WAbstractBackend::TypeDefault);
+    return (outputType() != WAbstractBackend::OutputDefault);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1811,7 +1811,7 @@ WAbstractBackend::OutputType WDeclarativePlayer::outputType() const
     {
         return d->backend->outputType();
     }
-    else return WAbstractBackend::TypeDefault;
+    else return WAbstractBackend::OutputDefault;
 }
 
 //-------------------------------------------------------------------------------------------------

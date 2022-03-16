@@ -110,7 +110,7 @@ void WModelOutputPrivate::itemUpdated(int index)
 
     if (d->backend)
     {
-         return d->backend->countOutput();
+         return d->backend->countOutputs();
     }
     else return 0;
 }
@@ -123,7 +123,7 @@ void WModelOutputPrivate::itemUpdated(int index)
 
     int row = index.row();
 
-    if (row < 0 || row >= d->backend->countOutput())
+    if (row < 0 || row >= d->backend->countOutputs())
     {
         return QVariant();
     }

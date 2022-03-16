@@ -46,6 +46,7 @@ class QStyleOptionGraphicsItem;
 class WAbstractBackendPrivate;
 class WDeclarativePlayer;
 class WBackendFilter;
+class WBackendTrack;
 class WBackendOutput;
 #if defined(QT_NEW) && defined(SK_NO_QML) == false
 struct WBackendFrame;
@@ -198,6 +199,12 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
 
     Q_PROPERTY(FillMode fillMode READ fillMode WRITE setFillMode NOTIFY fillModeChanged)
 
+    Q_PROPERTY(int currentVideo READ currentVideo WRITE setCurrentVideo NOTIFY currentVideoChanged)
+    Q_PROPERTY(int currentAudio READ currentAudio WRITE setCurrentAudio NOTIFY currentAudioChanged)
+
+    Q_PROPERTY(int countVideos READ countVideos NOTIFY videosChanged)
+    Q_PROPERTY(int countAudios READ countAudios NOTIFY audiosChanged)
+
     Q_PROPERTY(bool scanOutput READ scanOutput WRITE setScanOutput NOTIFY scanOutputChanged)
 
     Q_PROPERTY(int currentOutput READ currentOutput WRITE setCurrentOutput
@@ -206,7 +213,7 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
     Q_PROPERTY(QString    outputName READ outputName NOTIFY currentOutputChanged)
     Q_PROPERTY(OutputType outputType READ outputType NOTIFY currentOutputChanged)
 
-    Q_PROPERTY(int countOutput READ countOutput NOTIFY outputsChanged)
+    Q_PROPERTY(int countOutputs READ countOutputs NOTIFY outputsChanged)
 
 public:
     enum State
@@ -232,12 +239,18 @@ public:
         OutputAudio
     };
 
+    enum TrackType
+    {
+        TrackVideo,
+        TrackAudio
+    };
+
     // NOTE: The device type where we want to output our media.
     enum OutputType
     {
-        TypeDefault,
-        TypeUnknown,
-        TypeChromecast
+        OutputDefault,
+        OutputUnknown,
+        OutputChromecast
     };
 
     enum Quality
@@ -350,6 +363,12 @@ public: // WBackendInterface implementation
     Q_INVOKABLE /* virtual */ void seek(int msec);
 
 protected: // Functions
+    // NOTE: This functions resets and applies all the tracks at once (video / audio).
+    void applyTracks(const QList<WBackendTrack> & tracks);
+
+    void applyVideos(const QList<WBackendTrack> & videos);
+    void applyAudios(const QList<WBackendTrack> & audios);
+
     void addOutput(const WBackendOutput & output);
 
     void removeOutput(int index);
@@ -407,6 +426,9 @@ protected: // Virtual functions
 
     virtual void backendSetFillMode(FillMode fillMode); // {}
 
+    virtual void backendSetVideo(int id); // {}
+    virtual void backendSetAudio(int id); // {}
+
     virtual void backendSetScanOutput(bool enabled); // {}
 
     virtual void backendSetCurrentOutput(int index); // {}
@@ -463,6 +485,12 @@ signals:
     void qualityActiveChanged();
 
     void fillModeChanged();
+
+    void currentVideoChanged();
+    void currentAudioChanged();
+
+    void videosChanged();
+    void audiosChanged();
 
     void scanOutputChanged();
 
@@ -526,6 +554,15 @@ public: // Properties
     FillMode fillMode() const;
     void     setFillMode(FillMode fillMode);
 
+    int  currentVideo() const;
+    void setCurrentVideo(int index);
+
+    int  currentAudio() const;
+    void setCurrentAudio(int index);
+
+    int countVideos() const;
+    int countAudios() const;
+
     bool scanOutput() const;
     void setScanOutput(bool enabled);
 
@@ -535,13 +572,40 @@ public: // Properties
     QString    outputName() const;
     OutputType outputType() const;
 
-    int countOutput() const;
+    int countOutputs() const;
 
 private:
     W_DECLARE_PRIVATE(WAbstractBackend)
 
     friend class WAbstractHook;
     friend class WAbstractHookPrivate;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WBackendTrack
+//-------------------------------------------------------------------------------------------------
+
+class SK_GUI_EXPORT WBackendTrack
+{
+public:
+    WBackendTrack(int id, const QString & name,
+                  WAbstractBackend::TrackType type = WAbstractBackend::TrackVideo);
+
+    WBackendTrack();
+
+public: // Operators
+    WBackendTrack(const WBackendTrack & other);
+
+    bool operator==(const WBackendTrack & other) const;
+
+    WBackendTrack & operator=(const WBackendTrack & other);
+
+public: // Variables
+    int id;
+
+    QString name;
+
+    WAbstractBackend::TrackType type;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -552,7 +616,7 @@ class SK_GUI_EXPORT WBackendOutput
 {
 public:
     WBackendOutput(const QString & name,
-                   WAbstractBackend::OutputType type = WAbstractBackend::TypeDefault);
+                   WAbstractBackend::OutputType type = WAbstractBackend::OutputDefault);
 
     WBackendOutput();
 

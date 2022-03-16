@@ -59,6 +59,8 @@ public: // Enums
         EventSeek,   // WVlcPlayerEvent int
         EventSpeed,  // WVlcPlayerEvent qreal
         EventVolume, // WVlcPlayerEvent int
+        EventVideo,  // WVlcPlayerEvent int
+        EventAudio,  // WVlcPlayerEvent int
         EventScan,   // WVlcPlayerEvent bool
         EventOutput, // WVlcPlayerEvent int
         EventDelete

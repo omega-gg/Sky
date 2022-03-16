@@ -104,6 +104,37 @@ void WVlcPlayerPrivate::clearDiscoverers()
 
     QCoreApplication::postEvent(d->backend,
                                 new QEvent(static_cast<QEvent::Type> (WVlcPlayer::EventPlaying)));
+
+    libvlc_media_track_t ** tracks;
+
+    int count = libvlc_media_tracks_get(libvlc_media_player_get_media(d->player),
+                                                 &tracks);
+
+    if (count == 0) return;
+
+    QList<WBackendTrack> backendTracks;
+
+    for (int i = 0; i < count; i++)
+    {
+        libvlc_media_track_t * track = tracks[i];
+
+        libvlc_track_type_t type = track->i_type;
+
+        if (type == libvlc_track_video)
+        {
+            backendTracks.append(WBackendTrack(track->i_id, track->psz_language,
+                                               WAbstractBackend::TrackVideo));
+        }
+        else if (type == libvlc_track_audio)
+        {
+            backendTracks.append(WBackendTrack(track->i_id, track->psz_language,
+                                               WAbstractBackend::TrackAudio));
+        }
+    }
+
+    WVlcTracksEvent * eventTracks = new WVlcTracksEvent(backendTracks);
+
+    QCoreApplication::postEvent(d->backend, eventTracks);
 }
 
 /* static */ void WVlcPlayerPrivate::onPaused(const struct libvlc_event_t *, void * data)
@@ -210,8 +241,8 @@ void WVlcPlayerPrivate::clearDiscoverers()
 
     WAbstractBackend::OutputType type;
 
-    if (string == "chromecast") type = WAbstractBackend::TypeChromecast;
-    else                        type = WAbstractBackend::TypeUnknown;
+    if (string == "chromecast") type = WAbstractBackend::OutputChromecast;
+    else                        type = WAbstractBackend::OutputUnknown;
 
     WVlcOutputEvent * eventOutput = new WVlcOutputEvent(libvlc_renderer_item_name(item), type);
 
@@ -315,13 +346,27 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ void WVlcPlayer::setVideo(int index)
+{
+    QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventVideo,
+                                                                 index));
+}
+
+/* Q_INVOKABLE */ void WVlcPlayer::setAudio(int index)
+{
+    QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventAudio,
+                                                                 index));
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ void WVlcPlayer::setScanOutput(bool enabled)
 {
     QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventScan,
                                                                  enabled));
 }
 
-/* Q_INVOKABLE */ void WVlcPlayer::setCurrentOutput(int index)
+/* Q_INVOKABLE */ void WVlcPlayer::setOutput(int index)
 {
     QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventOutput,
                                                                  index));
@@ -552,6 +597,22 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
         WVlcPlayerPrivateEvent * eventPlayer = static_cast<WVlcPlayerPrivateEvent *> (event);
 
         libvlc_audio_set_volume(d->player, eventPlayer->value.toInt());
+
+        return true;
+    }
+    else if (type == static_cast<QEvent::Type> (WVlcPlayerPrivate::EventVideo))
+    {
+        WVlcPlayerPrivateEvent * eventPlayer = static_cast<WVlcPlayerPrivateEvent *> (event);
+
+        libvlc_video_set_track(d->player, eventPlayer->value.toInt());
+
+        return true;
+    }
+    else if (type == static_cast<QEvent::Type> (WVlcPlayerPrivate::EventAudio))
+    {
+        WVlcPlayerPrivateEvent * eventPlayer = static_cast<WVlcPlayerPrivateEvent *> (event);
+
+        libvlc_audio_set_track(d->player, eventPlayer->value.toInt());
 
         return true;
     }

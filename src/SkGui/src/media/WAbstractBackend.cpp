@@ -94,6 +94,9 @@ void WAbstractBackendPrivate::init()
 
     fillMode = WAbstractBackend::PreserveAspectFit;
 
+    currentVideo = 0;
+    currentAudio = 0;
+
     scanOutput = false;
 
     currentOutput = 0;
@@ -536,6 +539,61 @@ QString WAbstractBackend::qualityToString(Quality quality)
 // Protected functions
 //-------------------------------------------------------------------------------------------------
 
+void WAbstractBackend::applyTracks(const QList<WBackendTrack> & tracks)
+{
+    QList<WBackendTrack> videos;
+    QList<WBackendTrack> audios;
+
+    foreach (const WBackendTrack & track, tracks)
+    {
+        if (track.type == TrackVideo)
+        {
+            videos.append(track);
+        }
+        else if (track.type == TrackAudio)
+        {
+            audios.append(track);
+        }
+    }
+
+    applyVideos(videos);
+    applyAudios(audios);
+}
+
+void WAbstractBackend::applyVideos(const QList<WBackendTrack> & videos)
+{
+    Q_D(WAbstractBackend);
+
+    d->videos = videos;
+
+    if (d->currentVideo)
+    {
+        d->currentVideo = 0;
+
+        emit currentVideoChanged();
+    }
+
+    emit videosChanged();
+}
+
+void WAbstractBackend::applyAudios(const QList<WBackendTrack> & audios)
+{
+    Q_D(WAbstractBackend);
+
+    d->audios = audios;
+
+    if (d->currentAudio)
+    {
+        d->currentAudio = 0;
+
+        emit currentAudioChanged();
+    }
+
+    emit audiosChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void WAbstractBackend::addOutput(const WBackendOutput & output)
 {
     Q_D(WAbstractBackend);
@@ -891,6 +949,18 @@ void WAbstractBackend::endOutputRemove() const
 
 //-------------------------------------------------------------------------------------------------
 
+/* virtual */ void WAbstractBackend::backendSetVideo(int)
+{
+    qWarning("WAbstractBackend::backendSetVideo: Not supported.");
+}
+
+/* virtual */ void WAbstractBackend::backendSetAudio(int)
+{
+    qWarning("WAbstractBackend::backendSetAudio: Not supported.");
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* virtual */ void WAbstractBackend::backendSetScanOutput(bool)
 {
     qWarning("WAbstractBackend::backendSetScanOutput: Not supported.");
@@ -1238,6 +1308,60 @@ void WAbstractBackend::setFillMode(FillMode fillMode)
 
 //-------------------------------------------------------------------------------------------------
 
+int WAbstractBackend::currentVideo() const
+{
+    Q_D(const WAbstractBackend); return d->currentVideo;
+}
+
+void WAbstractBackend::setCurrentVideo(int index)
+{
+    Q_D(WAbstractBackend);
+
+    if (d->currentVideo == index
+        ||
+        index < 0 || index >= d->videos.count()) return;
+
+    d->currentVideo = index;
+
+    backendSetVideo(d->videos.at(index).id);
+
+    emit currentVideoChanged();
+}
+
+int WAbstractBackend::currentAudio() const
+{
+    Q_D(const WAbstractBackend); return d->currentAudio;
+}
+
+void WAbstractBackend::setCurrentAudio(int index)
+{
+    Q_D(WAbstractBackend);
+
+    if (d->currentAudio == index
+        ||
+        index < 0 || index >= d->audios.count()) return;
+
+    d->currentAudio = index;
+
+    backendSetAudio(d->audios.at(index).id);
+
+    emit currentAudioChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+int WAbstractBackend::countVideos() const
+{
+    Q_D(const WAbstractBackend); return d->videos.count();
+}
+
+int WAbstractBackend::countAudios() const
+{
+    Q_D(const WAbstractBackend); return d->audios.count();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 bool WAbstractBackend::scanOutput() const
 {
     Q_D(const WAbstractBackend); return d->scanOutput;
@@ -1271,8 +1395,8 @@ void WAbstractBackend::setCurrentOutput(int index)
 
     if (d->filter) d->filter->filterCurrentOutput(&index);
 
-    // NOTE: The currentOuput can never be under 0.
-    if (index < 0) index = 0;
+    // NOTE: The output index can either be valid or 0 (default).
+    if (index < 0 || index >= d->outputs.count()) index = 0;
 
     if (d->currentOutput == index) return;
 
@@ -1300,9 +1424,50 @@ WAbstractBackend::OutputType WAbstractBackend::outputType() const
 
 //-------------------------------------------------------------------------------------------------
 
-int WAbstractBackend::countOutput() const
+int WAbstractBackend::countOutputs() const
 {
     Q_D(const WAbstractBackend); return d->outputs.count();
+}
+
+//=================================================================================================
+// WBackendTrack
+//=================================================================================================
+
+WBackendTrack::WBackendTrack(int id, const QString & name, WAbstractBackend::TrackType type)
+{
+    this->id = id;
+
+    this->name = name;
+    this->type = type;
+}
+
+WBackendTrack::WBackendTrack()
+{
+    type = WAbstractBackend::TrackVideo;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Operators
+//-------------------------------------------------------------------------------------------------
+
+WBackendTrack::WBackendTrack(const WBackendTrack & other)
+{
+    *this = other;
+}
+
+bool WBackendTrack::operator==(const WBackendTrack & other) const
+{
+    return (id == other.id && name == other.name && type == other.type);
+}
+
+WBackendTrack & WBackendTrack::operator=(const WBackendTrack & other)
+{
+    id = other.id;
+
+    name = other.name;
+    type = other.type;
+
+    return *this;
 }
 
 //=================================================================================================
@@ -1317,7 +1482,7 @@ WBackendOutput::WBackendOutput(const QString & name, WAbstractBackend::OutputTyp
 
 WBackendOutput::WBackendOutput()
 {
-    type = WAbstractBackend::TypeDefault;
+    type = WAbstractBackend::OutputDefault;
 }
 
 //-------------------------------------------------------------------------------------------------
