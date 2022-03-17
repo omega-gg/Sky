@@ -113,6 +113,12 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
     Q_PROPERTY(WAbstractBackend::FillMode fillMode READ fillMode WRITE setFillMode
                NOTIFY fillModeChanged)
 
+    Q_PROPERTY(int trackVideo READ trackVideo WRITE setTrackVideo NOTIFY trackVideoChanged)
+    Q_PROPERTY(int trackAudio READ trackAudio WRITE setTrackAudio NOTIFY trackAudioChanged)
+
+    Q_PROPERTY(int countVideos READ countVideos NOTIFY videosChanged)
+    Q_PROPERTY(int countAudios READ countAudios NOTIFY audiosChanged)
+
     Q_PROPERTY(bool scanOutput READ scanOutput WRITE setScanOutput NOTIFY scanOutputChanged)
 
     Q_PROPERTY(int currentOutput READ currentOutput WRITE setCurrentOutput
@@ -120,6 +126,8 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
 
     Q_PROPERTY(QString                      outputName READ outputName NOTIFY currentOutputChanged)
     Q_PROPERTY(WAbstractBackend::OutputType outputType READ outputType NOTIFY currentOutputChanged)
+
+    Q_PROPERTY(int countOutputs READ countOutputs NOTIFY outputsChanged)
 
     Q_PROPERTY(QString subtitle READ subtitle WRITE setSubtitle NOTIFY subtitleChanged)
 
@@ -262,9 +270,17 @@ signals:
 
     void fillModeChanged();
 
+    void trackVideoChanged();
+    void trackAudioChanged();
+
+    void videosChanged();
+    void audiosChanged();
+
     void scanOutputChanged();
 
     void currentOutputChanged();
+
+    void outputsChanged();
 
     void subtitleChanged();
 
@@ -347,6 +363,15 @@ public: // Properties
     WAbstractBackend::FillMode fillMode() const;
     void                       setFillMode(WAbstractBackend::FillMode fillMode);
 
+    int  trackVideo() const;
+    void setTrackVideo(int id);
+
+    int  trackAudio() const;
+    void setTrackAudio(int id);
+
+    int countVideos() const;
+    int countAudios() const;
+
     bool scanOutput() const;
     void setScanOutput(bool enabled);
 
@@ -355,6 +380,8 @@ public: // Properties
 
     QString                      outputName() const;
     WAbstractBackend::OutputType outputType() const;
+
+    int countOutputs() const;
 
     QString subtitle() const;
     void    setSubtitle(const QString & subtitle);

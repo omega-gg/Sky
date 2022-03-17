@@ -94,6 +94,9 @@ void WDeclarativePlayerPrivate::init()
 
     fillMode = WAbstractBackend::PreserveAspectFit;
 
+    trackVideo = -1;
+    trackAudio = -1;
+
     scanOutput = false;
 
     currentOutput = 0;
@@ -1230,6 +1233,9 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 
         backend->setFillMode(d->fillMode);
 
+        backend->setTrackVideo(d->trackVideo);
+        backend->setTrackAudio(d->trackAudio);
+
         backend->setScanOutput(d->scanOutput);
 
         backend->setCurrentOutput(d->currentOutput);
@@ -1256,6 +1262,11 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 
         connect(backend, SIGNAL(outputActiveChanged ()), this, SIGNAL(outputActiveChanged ()));
         connect(backend, SIGNAL(qualityActiveChanged()), this, SIGNAL(qualityActiveChanged()));
+
+        connect(backend, SIGNAL(videosChanged()), this, SIGNAL(videosChanged()));
+        connect(backend, SIGNAL(audiosChanged()), this, SIGNAL(audiosChanged()));
+
+        connect(backend, SIGNAL(outputsChanged()), this, SIGNAL(outputsChanged()));
 
         connect(backend, SIGNAL(ended()), this, SLOT(onEnded()));
 
@@ -1750,6 +1761,72 @@ void WDeclarativePlayer::setFillMode(WAbstractBackend::FillMode fillMode)
 
 //-------------------------------------------------------------------------------------------------
 
+int WDeclarativePlayer::trackVideo() const
+{
+    Q_D(const WDeclarativePlayer); return d->trackVideo;
+}
+
+void WDeclarativePlayer::setTrackVideo(int id)
+{
+    Q_D(WDeclarativePlayer);
+
+    if (d->trackVideo == id) return;
+
+    d->trackVideo = id;
+
+    if (d->backend)
+    {
+        d->backend->setTrackVideo(id);
+    }
+
+    emit trackVideoChanged();
+}
+
+int WDeclarativePlayer::trackAudio() const
+{
+    Q_D(const WDeclarativePlayer); return d->trackAudio;
+}
+
+void WDeclarativePlayer::setTrackAudio(int id)
+{
+    Q_D(WDeclarativePlayer);
+
+    if (d->trackAudio == id) return;
+
+    d->trackAudio = id;
+
+    if (d->backend)
+    {
+        d->backend->setTrackAudio(id);
+    }
+
+    emit trackAudioChanged();
+}
+
+int WDeclarativePlayer::countVideos() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+        return d->backend->countVideos();
+    }
+    else return 0;
+}
+
+int WDeclarativePlayer::countAudios() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+        return d->backend->countVideos();
+    }
+    else return 0;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 bool WDeclarativePlayer::scanOutput() const
 {
     Q_D(const WDeclarativePlayer); return d->scanOutput;
@@ -1812,6 +1889,17 @@ WAbstractBackend::OutputType WDeclarativePlayer::outputType() const
         return d->backend->outputType();
     }
     else return WAbstractBackend::OutputDefault;
+}
+
+int WDeclarativePlayer::countOutputs() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+        return d->backend->countOutputs();
+    }
+    else return 0;
 }
 
 //-------------------------------------------------------------------------------------------------

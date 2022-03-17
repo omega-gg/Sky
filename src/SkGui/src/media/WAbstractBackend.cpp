@@ -94,8 +94,8 @@ void WAbstractBackendPrivate::init()
 
     fillMode = WAbstractBackend::PreserveAspectFit;
 
-    currentVideo = 0;
-    currentAudio = 0;
+    trackVideo = -1;
+    trackAudio = -1;
 
     scanOutput = false;
 
@@ -304,6 +304,37 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 }
 
 //-------------------------------------------------------------------------------------------------
+// Tracks
+
+/* Q_INVOKABLE */ int WAbstractBackend::indexVideo(int id) const
+{
+    Q_D(const WAbstractBackend);
+
+    for (int i = 0; i < d->videos.count(); i++)
+    {
+        if (d->videos.at(i).id != id) continue;
+
+        return i;
+    }
+
+    return -1;
+}
+
+/* Q_INVOKABLE */ int WAbstractBackend::indexAudio(int id) const
+{
+    Q_D(const WAbstractBackend);
+
+    for (int i = 0; i < d->audios.count(); i++)
+    {
+        if (d->audios.at(i).id != id) continue;
+
+        return i;
+    }
+
+    return -1;
+}
+
+//-------------------------------------------------------------------------------------------------
 // Output
 
 /* Q_INVOKABLE */ WBackendOutput WAbstractBackend::outputAt(int index) const
@@ -448,8 +479,15 @@ QString WAbstractBackend::qualityToString(Quality quality)
 
         backendSetSource(url);
 
-        // NOTE: We need to restore this after everything has been stopped and cleared.
+        //-----------------------------------------------------------------------------------------
+        // NOTE: We need to restore these after everything has been stopped and cleared.
+
+        setTrackVideo(-1);
+        setTrackAudio(-1);
+
         setLive(false);
+
+        //-----------------------------------------------------------------------------------------
 
         emit sourceChanged();
     }
@@ -539,7 +577,8 @@ QString WAbstractBackend::qualityToString(Quality quality)
 // Protected functions
 //-------------------------------------------------------------------------------------------------
 
-void WAbstractBackend::applyTracks(const QList<WBackendTrack> & tracks)
+void WAbstractBackend::applyTracks(const QList<WBackendTrack> & tracks,
+                                   int trackVideo, int trackAudio)
 {
     QList<WBackendTrack> videos;
     QList<WBackendTrack> audios;
@@ -556,37 +595,47 @@ void WAbstractBackend::applyTracks(const QList<WBackendTrack> & tracks)
         }
     }
 
-    applyVideos(videos);
-    applyAudios(audios);
+    applyVideos(videos, trackVideo);
+    applyAudios(audios, trackAudio);
 }
 
-void WAbstractBackend::applyVideos(const QList<WBackendTrack> & videos)
+void WAbstractBackend::applyVideos(const QList<WBackendTrack> & videos, int trackVideo)
 {
     Q_D(WAbstractBackend);
 
     d->videos = videos;
 
-    if (d->currentVideo)
+    // NOTE: When we have a valid track id we try to apply it to the player.
+    if (d->trackVideo != -1)
     {
-        d->currentVideo = 0;
+        backendSetVideo(d->trackVideo);
+    }
+    else if (d->trackVideo != trackVideo)
+    {
+        d->trackVideo = trackVideo;
 
-        emit currentVideoChanged();
+        emit trackVideoChanged();
     }
 
     emit videosChanged();
 }
 
-void WAbstractBackend::applyAudios(const QList<WBackendTrack> & audios)
+void WAbstractBackend::applyAudios(const QList<WBackendTrack> & audios, int trackAudio)
 {
     Q_D(WAbstractBackend);
 
     d->audios = audios;
 
-    if (d->currentAudio)
+    // NOTE: When we have a valid track id we try to apply it to the player.
+    if (d->trackAudio != -1)
     {
-        d->currentAudio = 0;
+        backendSetAudio(d->trackAudio);
+    }
+    else if (d->trackAudio != trackAudio)
+    {
+        d->trackAudio = trackAudio;
 
-        emit currentAudioChanged();
+        emit trackAudioChanged();
     }
 
     emit audiosChanged();
@@ -1308,44 +1357,40 @@ void WAbstractBackend::setFillMode(FillMode fillMode)
 
 //-------------------------------------------------------------------------------------------------
 
-int WAbstractBackend::currentVideo() const
+int WAbstractBackend::trackVideo() const
 {
-    Q_D(const WAbstractBackend); return d->currentVideo;
+    Q_D(const WAbstractBackend); return d->trackVideo;
 }
 
-void WAbstractBackend::setCurrentVideo(int index)
+void WAbstractBackend::setTrackVideo(int id)
 {
     Q_D(WAbstractBackend);
 
-    if (d->currentVideo == index
-        ||
-        index < 0 || index >= d->videos.count()) return;
+    if (d->trackVideo == id) return;
 
-    d->currentVideo = index;
+    d->trackVideo = id;
 
-    backendSetVideo(d->videos.at(index).id);
+    backendSetVideo(id);
 
-    emit currentVideoChanged();
+    emit trackVideoChanged();
 }
 
-int WAbstractBackend::currentAudio() const
+int WAbstractBackend::trackAudio() const
 {
-    Q_D(const WAbstractBackend); return d->currentAudio;
+    Q_D(const WAbstractBackend); return d->trackAudio;
 }
 
-void WAbstractBackend::setCurrentAudio(int index)
+void WAbstractBackend::setTrackAudio(int id)
 {
     Q_D(WAbstractBackend);
 
-    if (d->currentAudio == index
-        ||
-        index < 0 || index >= d->audios.count()) return;
+    if (d->trackAudio == id) return;
 
-    d->currentAudio = index;
+    d->trackAudio = id;
 
-    backendSetAudio(d->audios.at(index).id);
+    backendSetAudio(id);
 
-    emit currentAudioChanged();
+    emit trackAudioChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1395,8 +1440,8 @@ void WAbstractBackend::setCurrentOutput(int index)
 
     if (d->filter) d->filter->filterCurrentOutput(&index);
 
-    // NOTE: The output index can either be valid or 0 (default).
-    if (index < 0 || index >= d->outputs.count()) index = 0;
+    // NOTE: The currentOuput can never be under 0.
+    if (index < 0) index = 0;
 
     if (d->currentOutput == index) return;
 

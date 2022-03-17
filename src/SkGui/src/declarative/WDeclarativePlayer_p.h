@@ -141,6 +141,9 @@ public: // Variables
 
     WAbstractBackend::FillMode fillMode;
 
+    int trackVideo;
+    int trackAudio;
+
     bool scanOutput;
 
     int currentOutput;

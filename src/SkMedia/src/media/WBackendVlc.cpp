@@ -1783,12 +1783,16 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 {
     Q_D(WBackendVlc);
 
+    if (id == -1) return;
+
     d->player->setVideo(id);
 }
 
 /* virtual */ void WBackendVlc::backendSetAudio(int id)
 {
     Q_D(WBackendVlc);
+
+    if (id == -1) return;
 
     d->player->setAudio(id);
 }
@@ -2322,7 +2326,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
     {
         WVlcTracksEvent * eventTracks = static_cast<WVlcTracksEvent *> (event);
 
-        applyTracks(eventTracks->tracks);
+        applyTracks(eventTracks->tracks, eventTracks->trackVideo, eventTracks->trackAudio);
 
         return true;
     }

@@ -199,8 +199,8 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
 
     Q_PROPERTY(FillMode fillMode READ fillMode WRITE setFillMode NOTIFY fillModeChanged)
 
-    Q_PROPERTY(int currentVideo READ currentVideo WRITE setCurrentVideo NOTIFY currentVideoChanged)
-    Q_PROPERTY(int currentAudio READ currentAudio WRITE setCurrentAudio NOTIFY currentAudioChanged)
+    Q_PROPERTY(int trackVideo READ trackVideo WRITE setTrackVideo NOTIFY trackVideoChanged)
+    Q_PROPERTY(int trackAudio READ trackAudio WRITE setTrackAudio NOTIFY trackAudioChanged)
 
     Q_PROPERTY(int countVideos READ countVideos NOTIFY videosChanged)
     Q_PROPERTY(int countAudios READ countAudios NOTIFY audiosChanged)
@@ -323,6 +323,12 @@ public: // Interface
     Q_INVOKABLE bool deleteBackend();
 
     //---------------------------------------------------------------------------------------------
+    // Tracks
+
+    Q_INVOKABLE int indexVideo(int id) const;
+    Q_INVOKABLE int indexAudio(int id) const;
+
+    //---------------------------------------------------------------------------------------------
     // Output
 
     Q_INVOKABLE WBackendOutput outputAt(int index) const;
@@ -364,10 +370,11 @@ public: // WBackendInterface implementation
 
 protected: // Functions
     // NOTE: This functions resets and applies all the tracks at once (video / audio).
-    void applyTracks(const QList<WBackendTrack> & tracks);
+    void applyTracks(const QList<WBackendTrack> & tracks, int trackVideo = -1,
+                                                          int trackAudio = -1);
 
-    void applyVideos(const QList<WBackendTrack> & videos);
-    void applyAudios(const QList<WBackendTrack> & audios);
+    void applyVideos(const QList<WBackendTrack> & videos, int trackVideo = -1);
+    void applyAudios(const QList<WBackendTrack> & audios, int trackAudio = -1);
 
     void addOutput(const WBackendOutput & output);
 
@@ -486,8 +493,8 @@ signals:
 
     void fillModeChanged();
 
-    void currentVideoChanged();
-    void currentAudioChanged();
+    void trackVideoChanged();
+    void trackAudioChanged();
 
     void videosChanged();
     void audiosChanged();
@@ -554,11 +561,11 @@ public: // Properties
     FillMode fillMode() const;
     void     setFillMode(FillMode fillMode);
 
-    int  currentVideo() const;
-    void setCurrentVideo(int index);
+    int  trackVideo() const;
+    void setTrackVideo(int id);
 
-    int  currentAudio() const;
-    void setCurrentAudio(int index);
+    int  trackAudio() const;
+    void setTrackAudio(int id);
 
     int countVideos() const;
     int countAudios() const;

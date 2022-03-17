@@ -91,8 +91,8 @@ public: // Variable
     QList<WBackendTrack> videos;
     QList<WBackendTrack> audios;
 
-    int currentVideo;
-    int currentAudio;
+    int trackVideo;
+    int trackAudio;
 
     bool scanOutput;
 

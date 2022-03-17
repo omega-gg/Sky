@@ -165,14 +165,20 @@ public: // Variables
 class WVlcTracksEvent : public QEvent
 {
 public:
-    WVlcTracksEvent(const QList<WBackendTrack> & tracks)
+    WVlcTracksEvent(const QList<WBackendTrack> & tracks, int trackVideo, int trackAudio)
         : QEvent(static_cast<QEvent::Type> (WVlcPlayer::EventTracks))
     {
         this->tracks = tracks;
+
+        this->trackVideo = trackVideo;
+        this->trackAudio = trackAudio;
     }
 
 public: // Variables
     QList<WBackendTrack> tracks;
+
+    int trackVideo;
+    int trackAudio;
 };
 
 //-------------------------------------------------------------------------------------------------

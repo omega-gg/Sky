@@ -107,12 +107,17 @@ void WVlcPlayerPrivate::clearDiscoverers()
 
     libvlc_media_track_t ** tracks;
 
-    int count = libvlc_media_tracks_get(libvlc_media_player_get_media(d->player),
-                                                 &tracks);
+    int count = libvlc_media_tracks_get(libvlc_media_player_get_media(d->player), &tracks);
 
     if (count == 0) return;
 
     QList<WBackendTrack> backendTracks;
+
+    int trackVideo = -1;
+    int trackAudio = -1;
+
+    int idVideo = libvlc_video_get_track(d->player);
+    int idAudio = libvlc_audio_get_track(d->player);
 
     for (int i = 0; i < count; i++)
     {
@@ -122,17 +127,27 @@ void WVlcPlayerPrivate::clearDiscoverers()
 
         if (type == libvlc_track_video)
         {
-            backendTracks.append(WBackendTrack(track->i_id, track->psz_language,
+            int id = track->i_id;
+
+            if (id == idVideo) trackVideo = id;
+
+            backendTracks.append(WBackendTrack(id, track->psz_language,
                                                WAbstractBackend::TrackVideo));
         }
         else if (type == libvlc_track_audio)
         {
-            backendTracks.append(WBackendTrack(track->i_id, track->psz_language,
+            int id = track->i_id;
+
+            if (id == idAudio) trackAudio = id;
+
+            backendTracks.append(WBackendTrack(id, track->psz_language,
                                                WAbstractBackend::TrackAudio));
         }
     }
 
-    WVlcTracksEvent * eventTracks = new WVlcTracksEvent(backendTracks);
+    libvlc_media_tracks_release(tracks, count);
+
+    WVlcTracksEvent * eventTracks = new WVlcTracksEvent(backendTracks, trackVideo, trackAudio);
 
     QCoreApplication::postEvent(d->backend, eventTracks);
 }
@@ -346,16 +361,16 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WVlcPlayer::setVideo(int index)
+/* Q_INVOKABLE */ void WVlcPlayer::setVideo(int id)
 {
     QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventVideo,
-                                                                 index));
+                                                                 id));
 }
 
-/* Q_INVOKABLE */ void WVlcPlayer::setAudio(int index)
+/* Q_INVOKABLE */ void WVlcPlayer::setAudio(int id)
 {
     QCoreApplication::postEvent(this, new WVlcPlayerPrivateEvent(WVlcPlayerPrivate::EventAudio,
-                                                                 index));
+                                                                 id));
 }
 
 //-------------------------------------------------------------------------------------------------
