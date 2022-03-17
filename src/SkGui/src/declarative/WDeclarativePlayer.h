@@ -198,6 +198,18 @@ public: // Interface
 
     Q_INVOKABLE void updateHighlightedTab();
 
+    //---------------------------------------------------------------------------------------------
+    // Tracks
+
+    Q_INVOKABLE int idVideo(int index) const;
+    Q_INVOKABLE int idAudio(int index) const;
+
+    Q_INVOKABLE int indexVideo(int id) const;
+    Q_INVOKABLE int indexAudio(int id) const;
+
+    Q_INVOKABLE QString videoName(int id) const;
+    Q_INVOKABLE QString audioName(int id) const;
+
 #if defined(QT_4) || defined(SK_SOFTWARE)
 public: // QGraphicsItem / QQuickPaintedItem reimplementation
 #ifdef QT_4

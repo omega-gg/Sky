@@ -105,6 +105,8 @@ void WVlcPlayerPrivate::clearDiscoverers()
     QCoreApplication::postEvent(d->backend,
                                 new QEvent(static_cast<QEvent::Type> (WVlcPlayer::EventPlaying)));
 
+    // NOTE: When the playback started the media tracks should be retrievable.
+
     libvlc_media_track_t ** tracks;
 
     int count = libvlc_media_tracks_get(libvlc_media_player_get_media(d->player), &tracks);

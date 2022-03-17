@@ -952,6 +952,75 @@ void WDeclarativePlayer::updateFrame()
     Q_D(WDeclarativePlayer); d->onHighlightedTabChanged();
 }
 
+//---------------------------------------------------------------------------------------------
+// Tracks
+
+/* Q_INVOKABLE */ int WDeclarativePlayer::idVideo(int index) const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+         return d->backend->idVideo(index);
+    }
+    else return -1;
+}
+
+/* Q_INVOKABLE */ int WDeclarativePlayer::idAudio(int index) const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+         return d->backend->idAudio(index);
+    }
+    else return -1;
+}
+
+/* Q_INVOKABLE */ int WDeclarativePlayer::indexVideo(int id) const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+         return d->backend->indexVideo(id);
+    }
+    else return -1;
+}
+
+/* Q_INVOKABLE */ int WDeclarativePlayer::indexAudio(int id) const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+         return d->backend->indexAudio(id);
+    }
+    else return -1;
+}
+
+/* Q_INVOKABLE */ QString WDeclarativePlayer::videoName(int id) const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+         return d->backend->videoName(id);
+    }
+    else return QString();
+}
+
+/* Q_INVOKABLE */ QString WDeclarativePlayer::audioName(int id) const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+         return d->backend->audioName(id);
+    }
+    else return QString();
+}
+
 #if defined(QT_4) || defined(SK_SOFTWARE)
 
 //-------------------------------------------------------------------------------------------------
@@ -1260,14 +1329,27 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 
         connect(backend, SIGNAL(progressChanged()), this, SIGNAL(progressChanged()));
 
+        connect(backend, SIGNAL(speedChanged()), this, SIGNAL(speedChanged()));
+
+        connect(backend, SIGNAL(volumeChanged()), this, SIGNAL(volumeChanged()));
+
+        connect(backend, SIGNAL(repeatChanged()), this, SIGNAL(repeatChanged()));
+
+        connect(backend, SIGNAL(outputChanged ()), this, SIGNAL(outputChanged ()));
+        connect(backend, SIGNAL(qualityChanged()), this, SIGNAL(qualityChanged()));
+
         connect(backend, SIGNAL(outputActiveChanged ()), this, SIGNAL(outputActiveChanged ()));
         connect(backend, SIGNAL(qualityActiveChanged()), this, SIGNAL(qualityActiveChanged()));
+
+        connect(backend, SIGNAL(fillModeChanged()), this, SIGNAL(fillModeChanged()));
 
         connect(backend, SIGNAL(trackVideoChanged()), this, SIGNAL(trackVideoChanged()));
         connect(backend, SIGNAL(trackAudioChanged()), this, SIGNAL(trackAudioChanged()));
 
         connect(backend, SIGNAL(videosChanged()), this, SIGNAL(videosChanged()));
         connect(backend, SIGNAL(audiosChanged()), this, SIGNAL(audiosChanged()));
+
+        connect(backend, SIGNAL(scanOutputChanged()), this, SIGNAL(scanOutputChanged()));
 
         connect(backend, SIGNAL(currentOutputChanged()), this, SIGNAL(currentOutputChanged()));
 
@@ -1583,9 +1665,11 @@ void WDeclarativePlayer::setSpeed(qreal speed)
 
     d->speed = speed;
 
-    if (d->backend) d->backend->setSpeed(speed);
-
-    emit speedChanged();
+    if (d->backend)
+    {
+        d->backend->setSpeed(speed);
+    }
+    else emit speedChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1603,9 +1687,11 @@ void WDeclarativePlayer::setVolume(qreal volume)
 
     d->volume = volume;
 
-    if (d->backend) d->backend->setVolume(volume);
-
-    emit volumeChanged();
+    if (d->backend)
+    {
+        d->backend->setVolume(volume);
+    }
+    else emit volumeChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1664,9 +1750,11 @@ void WDeclarativePlayer::setRepeat(Repeat repeat)
 
     d->repeat = repeat;
 
-    if (d->backend) d->updateRepeat();
-
-    emit repeatChanged();
+    if (d->backend)
+    {
+        d->updateRepeat();
+    }
+    else emit repeatChanged();
 
     emit playlistUpdated();
 }
@@ -1686,9 +1774,11 @@ void WDeclarativePlayer::setOutput(WAbstractBackend::Output output)
 
     d->output = output;
 
-    if (d->backend) d->backend->setOutput(output);
-
-    emit outputChanged();
+    if (d->backend)
+    {
+        d->backend->setOutput(output);
+    }
+    else emit outputChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1706,9 +1796,11 @@ void WDeclarativePlayer::setQuality(WAbstractBackend::Quality quality)
 
     d->quality = quality;
 
-    if (d->backend) d->backend->setQuality(quality);
-
-    emit qualityChanged();
+    if (d->backend)
+    {
+        d->backend->setQuality(quality);
+    }
+    else emit qualityChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1754,21 +1846,26 @@ void WDeclarativePlayer::setFillMode(WAbstractBackend::FillMode fillMode)
     {
         d->backend->setFillMode(fillMode);
     }
+    else emit fillModeChanged();
 
 #if defined(QT_NEW) && defined(SK_SOFTWARE) == false
     d->frameUpdate = true;
 #endif
 
     update();
-
-    emit fillModeChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
 
 int WDeclarativePlayer::trackVideo() const
 {
-    Q_D(const WDeclarativePlayer); return d->trackVideo;
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+        return d->backend->trackVideo();
+    }
+    else return -1;
 }
 
 void WDeclarativePlayer::setTrackVideo(int id)
@@ -1788,7 +1885,13 @@ void WDeclarativePlayer::setTrackVideo(int id)
 
 int WDeclarativePlayer::trackAudio() const
 {
-    Q_D(const WDeclarativePlayer); return d->trackAudio;
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+        return d->backend->trackAudio();
+    }
+    else return -1;
 }
 
 void WDeclarativePlayer::setTrackAudio(int id)
@@ -1823,7 +1926,7 @@ int WDeclarativePlayer::countAudios() const
 
     if (d->backend)
     {
-        return d->backend->countVideos();
+        return d->backend->countAudios();
     }
     else return 0;
 }
@@ -1847,8 +1950,7 @@ void WDeclarativePlayer::setScanOutput(bool enabled)
     {
         d->backend->setScanOutput(enabled);
     }
-
-    emit scanOutputChanged();
+    else emit scanOutputChanged();
 }
 
 int WDeclarativePlayer::currentOutput() const

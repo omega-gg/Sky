@@ -306,6 +306,28 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 //-------------------------------------------------------------------------------------------------
 // Tracks
 
+/* Q_INVOKABLE */ int WAbstractBackend::idVideo(int index) const
+{
+    Q_D(const WAbstractBackend);
+
+    if (index < 0 || index >= d->videos.count())
+    {
+        return -1;
+    }
+    else return d->videos.at(index).id;
+}
+
+/* Q_INVOKABLE */ int WAbstractBackend::idAudio(int index) const
+{
+    Q_D(const WAbstractBackend);
+
+    if (index < 0 || index >= d->audios.count())
+    {
+        return -1;
+    }
+    else return d->audios.at(index).id;
+}
+
 /* Q_INVOKABLE */ int WAbstractBackend::indexVideo(int id) const
 {
     Q_D(const WAbstractBackend);
@@ -332,6 +354,28 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
     }
 
     return -1;
+}
+
+/* Q_INVOKABLE */ QString WAbstractBackend::videoName(int id) const
+{
+    int index = indexVideo(id);
+
+    if (index == -1) return QString();
+
+    Q_D(const WAbstractBackend);
+
+    return d->videos.at(index).name;
+}
+
+/* Q_INVOKABLE */ QString WAbstractBackend::audioName(int id) const
+{
+    int index = indexAudio(id);
+
+    if (index == -1) return QString();
+
+    Q_D(const WAbstractBackend);
+
+    return d->audios.at(index).name;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -605,17 +649,14 @@ void WAbstractBackend::applyVideos(const QList<WBackendTrack> & videos, int trac
 
     d->videos = videos;
 
-    // NOTE: When we have a valid track id we try to apply it to the player.
-    if (d->trackVideo != -1)
-    {
-        backendSetVideo(d->trackVideo);
-    }
-    else if (d->trackVideo != trackVideo)
+    if (d->trackVideo == -1)
     {
         d->trackVideo = trackVideo;
-
-        emit trackVideoChanged();
     }
+    // NOTE: When we have a valid track id we try to apply it to the player.
+    else backendSetVideo(d->trackVideo);
+
+    emit trackVideoChanged();
 
     emit videosChanged();
 }
@@ -626,17 +667,14 @@ void WAbstractBackend::applyAudios(const QList<WBackendTrack> & audios, int trac
 
     d->audios = audios;
 
-    // NOTE: When we have a valid track id we try to apply it to the player.
-    if (d->trackAudio != -1)
-    {
-        backendSetAudio(d->trackAudio);
-    }
-    else if (d->trackAudio != trackAudio)
+    if (d->trackAudio == -1)
     {
         d->trackAudio = trackAudio;
-
-        emit trackAudioChanged();
     }
+    // NOTE: When we have a valid track id we try to apply it to the player.
+    else backendSetAudio(d->trackAudio);
+
+    emit trackAudioChanged();
 
     emit audiosChanged();
 }

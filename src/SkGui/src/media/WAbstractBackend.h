@@ -325,8 +325,14 @@ public: // Interface
     //---------------------------------------------------------------------------------------------
     // Tracks
 
+    Q_INVOKABLE int idVideo(int index) const;
+    Q_INVOKABLE int idAudio(int index) const;
+
     Q_INVOKABLE int indexVideo(int id) const;
     Q_INVOKABLE int indexAudio(int id) const;
+
+    Q_INVOKABLE QString videoName(int id) const;
+    Q_INVOKABLE QString audioName(int id) const;
 
     //---------------------------------------------------------------------------------------------
     // Output
