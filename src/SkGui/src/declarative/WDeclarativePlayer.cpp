@@ -1263,8 +1263,13 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
         connect(backend, SIGNAL(outputActiveChanged ()), this, SIGNAL(outputActiveChanged ()));
         connect(backend, SIGNAL(qualityActiveChanged()), this, SIGNAL(qualityActiveChanged()));
 
+        connect(backend, SIGNAL(trackVideoChanged()), this, SIGNAL(trackVideoChanged()));
+        connect(backend, SIGNAL(trackAudioChanged()), this, SIGNAL(trackAudioChanged()));
+
         connect(backend, SIGNAL(videosChanged()), this, SIGNAL(videosChanged()));
         connect(backend, SIGNAL(audiosChanged()), this, SIGNAL(audiosChanged()));
+
+        connect(backend, SIGNAL(currentOutputChanged()), this, SIGNAL(currentOutputChanged()));
 
         connect(backend, SIGNAL(outputsChanged()), this, SIGNAL(outputsChanged()));
 
@@ -1778,8 +1783,7 @@ void WDeclarativePlayer::setTrackVideo(int id)
     {
         d->backend->setTrackVideo(id);
     }
-
-    emit trackVideoChanged();
+    else emit trackVideoChanged();
 }
 
 int WDeclarativePlayer::trackAudio() const
@@ -1799,8 +1803,7 @@ void WDeclarativePlayer::setTrackAudio(int id)
     {
         d->backend->setTrackAudio(id);
     }
-
-    emit trackAudioChanged();
+    else emit trackAudioChanged();
 }
 
 int WDeclarativePlayer::countVideos() const
@@ -1865,8 +1868,7 @@ void WDeclarativePlayer::setCurrentOutput(int index)
     {
         d->backend->setCurrentOutput(index);
     }
-
-    emit currentOutputChanged();
+    else emit currentOutputChanged();
 }
 
 QString WDeclarativePlayer::outputName() const
