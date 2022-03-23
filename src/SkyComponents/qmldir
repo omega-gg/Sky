@@ -97,6 +97,8 @@ LineEditBoxClear 1.0 LineEditBoxClear.qml
 
 Console 1.0 Console.qml
 
+ColumnScroll 1.0 ColumnScroll.qml
+
 BaseList       1.0 BaseList.qml
 List           1.0 List.qml
 ListCompletion 1.0 ListCompletion.qml
