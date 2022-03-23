@@ -310,22 +310,18 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 {
     Q_D(const WAbstractBackend);
 
-    if (index < 0 || index >= d->videos.count())
-    {
-        return -1;
-    }
-    else return d->videos.at(index).id;
+    if (index < 0 || index >= d->videos.count()) return -1;
+
+    return d->videos.at(index).id;
 }
 
 /* Q_INVOKABLE */ int WAbstractBackend::idAudio(int index) const
 {
     Q_D(const WAbstractBackend);
 
-    if (index < 0 || index >= d->audios.count())
-    {
-        return -1;
-    }
-    else return d->audios.at(index).id;
+    if (index < 0 || index >= d->audios.count()) return -1;
+
+    return d->audios.at(index).id;
 }
 
 /* Q_INVOKABLE */ int WAbstractBackend::indexVideo(int id) const
@@ -524,10 +520,21 @@ QString WAbstractBackend::qualityToString(Quality quality)
         backendSetSource(url);
 
         //-----------------------------------------------------------------------------------------
-        // NOTE: We need to restore these after everything has been stopped and cleared.
+        // NOTE: We need to clear these when changing the source.
 
-        setTrackVideo(-1);
-        setTrackAudio(-1);
+        if (d->videos.isEmpty() == false)
+        {
+            d->videos.clear();
+
+            emit videosChanged();
+        }
+
+        if (d->audios.isEmpty() == false)
+        {
+            d->audios.clear();
+
+            emit audiosChanged();
+        }
 
         setLive(false);
 
