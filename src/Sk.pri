@@ -49,3 +49,6 @@ ios {
 } else {
     DEFINES += SK_DESKTOP
 }
+
+# NOTE iOS: Sky projects should be prefixed with the omega domain.
+ios:QMAKE_TARGET_BUNDLE_PREFIX = gg.omega
