@@ -31,6 +31,8 @@ compiler_win="mingw"
 
 qt="qt5"
 
+mobile="simulator"
+
 #--------------------------------------------------------------------------------------------------
 # Functions
 #--------------------------------------------------------------------------------------------------
@@ -320,7 +322,12 @@ elif [ $1 = "iOS" ]; then
 
     cp -r "$VLC"/include/vlc include
 
-    cp -r "$VLC"/ios-arm64_i386_x86_64-simulator/MobileVLCKit.framework lib
+    if [ $mobile = "simulator" ]; then
+
+        cp -r "$VLC"/ios-arm64_i386_x86_64-simulator/MobileVLCKit.framework lib
+    else
+        cp -r "$VLC"/ios-arm64_armv7_armv7s/MobileVLCKit.framework lib
+    fi
 
 elif [ $1 = "android" ]; then
 
