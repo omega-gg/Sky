@@ -1121,7 +1121,10 @@ WControllerFileReply * WControllerFile::startCreatePaths(const QStringList & pat
 
 /* Q_INVOKABLE static */ QString WControllerFile::pathWritable()
 {
-#ifdef QT_4
+#ifdef Q_IOS
+    // NOTE iOS: We need to write in the documents location.
+    return QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+#elif defined(QT_4)
     return QDesktopServices::storageLocation(QDesktopServices::DataLocation);
 #elif defined(QT_5)
     return QStandardPaths::writableLocation(QStandardPaths::DataLocation);
