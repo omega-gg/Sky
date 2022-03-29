@@ -113,7 +113,7 @@ void WDeclarativeTextSvgPrivate::updatePixmap(int width, int height)
         return;
     }
 
-    pixmap = QPixmap(width, height);
+    pixmap = QPixmap(view->pixelSize(width, height));
 
     pixmap.fill(Qt::transparent);
 

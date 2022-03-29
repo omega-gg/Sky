@@ -178,7 +178,8 @@ class SK_GUI_EXPORT WView : public WAbstractView
     Q_PROPERTY(qreal originX READ originX WRITE setOriginX NOTIFY originXChanged)
     Q_PROPERTY(qreal originY READ originY WRITE setOriginY NOTIFY originYChanged)
 
-    Q_PROPERTY(qreal ratio READ ratio NOTIFY ratioChanged)
+    Q_PROPERTY(qreal ratio      READ ratio      NOTIFY ratioChanged)
+    Q_PROPERTY(qreal ratioPixel READ ratioPixel NOTIFY ratioPixelChanged)
 
     Q_PROPERTY(qreal zoom READ zoom WRITE setZoom NOTIFY zoomChanged)
 
@@ -280,6 +281,8 @@ public: // Interface
 
     //---------------------------------------------------------------------------------------------
     // Geometry
+
+    Q_INVOKABLE QSize pixelSize(int width, int height) const;
 
     Q_INVOKABLE int getScreenNumber() const;
 
@@ -505,7 +508,8 @@ signals:
     void originXChanged();
     void originYChanged();
 
-    void ratioChanged();
+    void ratioChanged     ();
+    void ratioPixelChanged();
 
     void zoomChanged();
 
@@ -598,7 +602,8 @@ public: // Properties
     qreal originY() const;
     void  setOriginY(qreal y);
 
-    qreal ratio() const;
+    qreal ratio     () const;
+    qreal ratioPixel() const;
 
     qreal zoom() const;
     void  setZoom(qreal zoom);

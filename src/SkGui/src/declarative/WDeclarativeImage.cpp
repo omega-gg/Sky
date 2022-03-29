@@ -717,7 +717,7 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
 
     d->abortAction();
 
-    d->scaleSize = QSize(width(), height());
+    d->scaleSize = d->view->pixelSize(width(), height());
 
     d->onScale();
 }
@@ -766,7 +766,7 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
     }
     else if (d->scaled == false)
     {
-        QSize size = QSize(width(), height());
+        QSize size = d->view->pixelSize(width(), height());
 
         if (d->scaleSize != size)
         {

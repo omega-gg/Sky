@@ -376,6 +376,11 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 #endif
 }
 
+/* Q_INVOKABLE static */ qreal WControllerView::screenRatioPixel(QScreen * screen)
+{
+    return screen->devicePixelRatio();
+}
+
 #endif
 
 //-------------------------------------------------------------------------------------------------

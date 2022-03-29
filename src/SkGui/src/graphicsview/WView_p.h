@@ -184,6 +184,8 @@ public: // Variables
     WResizer * currentResizer;
 
     qreal ratio;
+    qreal ratioPixel;
+
     qreal zoom;
 
     int minimumWidth;

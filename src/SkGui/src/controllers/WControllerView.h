@@ -93,7 +93,8 @@ public: // Static functions
 #endif
 
 #ifdef QT_NEW
-    Q_INVOKABLE static qreal screenRatio(QScreen * screen);
+    Q_INVOKABLE static qreal screenRatio     (QScreen * screen);
+    Q_INVOKABLE static qreal screenRatioPixel(QScreen * screen);
 #endif
 
 #ifdef QT_4

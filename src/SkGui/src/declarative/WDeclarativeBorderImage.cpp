@@ -616,7 +616,7 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QQuickItem * parent)
 
     d->abortAction();
 
-    d->scaleSize = QSize(width(), height());
+    d->scaleSize = d->view->pixelSize(width(), height());
 
     d->onScale();
 }
@@ -673,7 +673,7 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QQuickItem * parent)
     }
     else if (d->scaled == false)
     {
-        QSize size = QSize(width(), height());
+        QSize size = d->view->pixelSize(width(), height());
 
         if (d->scaleSize != size)
         {
