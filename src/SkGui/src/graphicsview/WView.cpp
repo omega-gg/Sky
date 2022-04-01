@@ -1653,6 +1653,13 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
     return QSize(width * d->ratioPixel, height * d->ratioPixel);
 }
 
+/* Q_INVOKABLE */ QSize WView::pixelSize(const QSize & size) const
+{
+    Q_D(const WView);
+
+    return QSize(size.width() * d->ratioPixel, size.height() * d->ratioPixel);
+}
+
 /* Q_INVOKABLE */ int WView::getScreenNumber() const
 {
 #ifdef QT_4
