@@ -191,10 +191,10 @@ void WDeclarativeImageBasePrivate::readDefault()
     if (defaultSize.isValid())
     {
          WPixmapCache::readPixmap(&(pixmapDefault), WControllerFile::toLocalFile(source),
-                                  view->pixelSize(defaultSize), view->pixelSize(sourceArea));
+                                  defaultSize, sourceArea);
     }
     else WPixmapCache::readPixmap(&(pixmapDefault), WControllerFile::toLocalFile(source),
-                                  view->pixelSize(sourceSize), view->pixelSize(sourceArea));
+                                  sourceSize, sourceArea);
 
     if (filter) applyFilter();
 }
@@ -577,12 +577,11 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
 
     if (d->explicitSize)
     {
-         d->pix.load(WControllerFile::toString(url), d->view->pixelSize(d->sourceSize),
-                     d->view->pixelSize(d->sourceArea), asynchronous, d->cache, this,
-                     SLOT(requestFinished()));
+         d->pix.load(WControllerFile::toString(url), d->sourceSize, d->sourceArea, asynchronous,
+                     d->cache, this, SLOT(requestFinished()));
     }
-    else d->pix.load(WControllerFile::toString(url), QSize(), QSize(), asynchronous, d->cache,
-                     this, SLOT(requestFinished()));
+    else d->pix.load(WControllerFile::toString(url), QSize(), QSize(), asynchronous,
+                     d->cache, this, SLOT(requestFinished()));
 
     if (d->pix.isLoading())
     {
