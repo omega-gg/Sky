@@ -284,8 +284,6 @@ public: // Interface
 
     Q_INVOKABLE QSize pixelSize(int width, int height) const;
 
-    Q_INVOKABLE QSize pixelSize(const QSize & size) const;
-
     Q_INVOKABLE int getScreenNumber() const;
 
     Q_INVOKABLE void setMinimumSize(int width, int height);
