@@ -1274,10 +1274,10 @@ bool WDeclarativeMouseArea::sendMouseEvent(QMouseEvent * event)
 
             QCoreApplication::sendEvent(d->view, &eventMove);
 
-#ifdef Q_OS_ANDROID
-            // NOTE android: We need to make sure we grab the mouse *before* the press event
-            //               (sometimes we lose it when interacting with a Flickable). Also, we need
-            //               to grab it *after* the move event, otherwise it breaks drag actions.
+#ifdef SK_MOBILE
+            // NOTE mobile: We need to make sure we grab the mouse *before* the press event
+            //              (sometimes we lose it when interacting with a Flickable). Also, we need
+            //              to grab it *after* the move event, otherwise it breaks drag actions.
             grabMouse();
 #endif
 
