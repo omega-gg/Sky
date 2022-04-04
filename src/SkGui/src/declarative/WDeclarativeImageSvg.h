@@ -92,6 +92,9 @@ public:
     explicit WDeclarativeImageSvg(QQuickItem * parent = NULL);
 #endif
 
+public: // Interface
+    Q_INVOKABLE void reload();
+
 protected:
 #ifdef QT_4
     WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QDeclarativeItem * parent = NULL);

@@ -377,6 +377,26 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
 }
 
 //-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WDeclarativeImageSvg::reload()
+{
+    Q_D(WDeclarativeImageSvg);
+
+    if (isComponentComplete() == false) return;
+
+    if (d->loadMode == WDeclarativeImageSvg::LoadVisible && isVisible() == false)
+    {
+        d->loadLater = true;
+    }
+    else if (d->url.isEmpty() == false)
+    {
+        d->loadUrl();
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
 // QDeclarativeItem / QQuickItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
