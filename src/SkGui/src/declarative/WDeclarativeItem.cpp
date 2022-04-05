@@ -126,7 +126,7 @@ WDeclarativeItem::WDeclarativeItem(WDeclarativeItemPrivate * p, QQuickItem * par
 
         d->view = static_cast<WView *> (value.window);
 
-        connect(d->view, SIGNAL(ratioPixelChanged()), this, SLOT(onRatioChanged()));
+        if (d->view) connect(d->view, SIGNAL(ratioPixelChanged()), this, SLOT(onRatioChanged()));
 #endif
 
         emit viewChanged();
