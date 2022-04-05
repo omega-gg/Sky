@@ -751,7 +751,16 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
 }
 
 //-------------------------------------------------------------------------------------------------
-// WDeclarativeTexture implementation
+// Protected WDeclarativeItem reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WDeclarativeImageBase::updateRatioPixel()
+{
+    reload();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Protected WDeclarativeTexture implementation
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ const QPixmap & WDeclarativeImageBase::getPixmap()

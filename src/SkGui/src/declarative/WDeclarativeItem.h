@@ -71,6 +71,9 @@ protected:
     WDeclarativeItem(WDeclarativeItemPrivate * p, QQuickItem * parent = NULL);
 #endif
 
+protected: // Virtual functions
+    virtual void updateRatioPixel(); // {}
+
 protected: // QGraphicsItem / QQuickItem reimplementation
 #ifdef QT_4
     /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
@@ -90,7 +93,11 @@ public: // Properties
 
 private:
     W_DECLARE_PRIVATE(WDeclarativeItem)
+
+    Q_PRIVATE_SLOT(d_func(), void onRatioChanged())
 };
+
+#include <private/WDeclarativeItem_p>
 
 #endif // SK_NO_DECLARATIVEITEM
 #endif // WDECLARATIVEITEM_H

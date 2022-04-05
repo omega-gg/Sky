@@ -525,7 +525,16 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
 }
 
 //-------------------------------------------------------------------------------------------------
-// WDeclarativeTexture implementation
+// Protected WDeclarativeItem reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WDeclarativeImageSvg::updateRatioPixel()
+{
+    reload();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Protected WDeclarativeTexture implementation
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ const QPixmap & WDeclarativeImageSvg::getPixmap()

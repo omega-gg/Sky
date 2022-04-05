@@ -613,7 +613,7 @@ WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p, QQuickI
 }
 
 //-------------------------------------------------------------------------------------------------
-// WDeclarativeTexture implementation
+// Protected WDeclarativeTexture implementation
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ const QPixmap & WDeclarativeTextSvg::getPixmap()

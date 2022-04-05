@@ -31,8 +31,6 @@
 // Private
 //-------------------------------------------------------------------------------------------------
 
-#include "WDeclarativeItem_p.h"
-
 WDeclarativeItemPrivate::WDeclarativeItemPrivate(WDeclarativeItem * p) : WPrivate(p) {}
 
 void WDeclarativeItemPrivate::init()
@@ -42,6 +40,15 @@ void WDeclarativeItemPrivate::init()
 #ifdef QT_4
     viewport = NULL;
 #endif
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private slots
+//-------------------------------------------------------------------------------------------------
+
+void WDeclarativeItemPrivate::onRatioChanged()
+{
+    Q_Q(WDeclarativeItem); q->updateRatioPixel();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -72,6 +79,12 @@ WDeclarativeItem::WDeclarativeItem(WDeclarativeItemPrivate * p, QQuickItem * par
 {
     Q_D(WDeclarativeItem); d->init();
 }
+
+//-------------------------------------------------------------------------------------------------
+// Protected virtual functions
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WDeclarativeItem::updateRatioPixel() {}
 
 //-------------------------------------------------------------------------------------------------
 // Protected QGraphicsItem / QQuickItem reimplementation
@@ -109,7 +122,11 @@ WDeclarativeItem::WDeclarativeItem(WDeclarativeItemPrivate * p, QQuickItem * par
             d->viewport = NULL;
         }
 #else
+        if (d->view) disconnect(d->view, 0, this, 0);
+
         d->view = static_cast<WView *> (value.window);
+
+        connect(d->view, SIGNAL(ratioPixelChanged()), this, SLOT(onRatioChanged()));
 #endif
 
         emit viewChanged();

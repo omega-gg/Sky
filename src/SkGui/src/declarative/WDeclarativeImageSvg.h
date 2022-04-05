@@ -127,6 +127,9 @@ protected: // QGraphicsItem / QQuickItem reimplementation
     /* virtual */ void geometryChange(const QRectF & newGeometry, const QRectF & oldGeometry);
 #endif
 
+protected: // WDeclarativeItem reimplementation
+    /* virtual */ void updateRatioPixel();
+
 protected: // WDeclarativeTexture implementation
     /* virtual */ const QPixmap & getPixmap();
 

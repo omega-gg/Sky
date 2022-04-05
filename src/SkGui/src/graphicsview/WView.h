@@ -722,6 +722,7 @@ private:
     friend class WControllerViewPrivate;
     friend class WViewDrag;
     friend class WViewDragPrivate;
+    friend class WDeclarativeItemPrivate;
     friend class WDeclarativeMouseArea;
     friend class WDeclarativeMouseAreaPrivate;
     friend class WResizer;

@@ -44,6 +44,9 @@ public:
 
     void init();
 
+public: // Slots
+    void onRatioChanged();
+
 public: // Variables
     WView * view;
 
