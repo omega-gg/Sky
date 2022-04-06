@@ -71,6 +71,13 @@ protected:
     WDeclarativeItem(WDeclarativeItemPrivate * p, QQuickItem * parent = NULL);
 #endif
 
+public: // Interface
+    Q_INVOKABLE qreal ratioPixel() const;
+
+    Q_INVOKABLE QSize sizeRatio(int width, int height) const;
+
+    Q_INVOKABLE QSize sizeRatio(const QSize & size) const;
+
 protected: // Virtual functions
     virtual void updateRatioPixel(); // {}
 

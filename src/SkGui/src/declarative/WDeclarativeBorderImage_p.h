@@ -82,7 +82,7 @@ public:
     void init();
 
 public: // Functions
-    void resize(const QPixmap & pixmap);
+    void resize(const QPixmap & pixmap, qreal ratio);
 
     void update ();
     void restore();

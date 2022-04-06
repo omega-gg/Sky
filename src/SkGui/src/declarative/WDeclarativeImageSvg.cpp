@@ -105,7 +105,9 @@ void WDeclarativeImageSvgPrivate::updatePixmap(int width, int height)
         return;
     }
 
-    pixmap = QPixmap(view->pixelSize(width, height));
+    Q_Q(WDeclarativeImageSvg);
+
+    pixmap = QPixmap(q->sizeRatio(width, height));
 
     pixmap.fill(Qt::transparent);
 
@@ -563,6 +565,9 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
     }
     else if (d->updateGeometry && d->timer.isActive() == false)
     {
+        // NOTE: We take the pixel ratio into account.
+        qreal ratio = ratioPixel();
+
         if (d->fillMode == PreserveAspectFit)
         {
             QSizeF size = d->size;
@@ -572,7 +577,7 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
             int width  = size.width ();
             int height = size.height();
 
-            if (d->pixmap.width() != width && d->pixmap.height() != height)
+            if ((d->pixmap.width() / ratio) != width && (d->pixmap.height() / ratio) != height)
             {
                 d->updatePixmap(width, height);
             }
@@ -586,7 +591,7 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
             int width  = size.width ();
             int height = size.height();
 
-            if (d->pixmap.width() != width && d->pixmap.height() != height)
+            if ((d->pixmap.width() / ratio) != width && (d->pixmap.height() / ratio) != height)
             {
                 d->updatePixmap(width, height);
             }
@@ -596,7 +601,7 @@ WDeclarativeImageSvg::WDeclarativeImageSvg(WDeclarativeImageSvgPrivate * p, QQui
             int width  = this->width ();
             int height = this->height();
 
-            if (d->pixmap.width() != width && d->pixmap.height() != height)
+            if ((d->pixmap.width() / ratio) != width && (d->pixmap.height() / ratio) != height)
             {
                 d->updatePixmap(width, height);
             }

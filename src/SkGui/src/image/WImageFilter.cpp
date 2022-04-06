@@ -76,16 +76,16 @@ WImageFilter::WImageFilter(WImageFilterPrivate * p, QObject * parent)
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-bool WImageFilter::applyFilter(QImage * image)
+bool WImageFilter::applyFilter(QImage * image, qreal ratio)
 {
     Q_ASSERT(image);
 
     if (image->isNull()) return false;
 
-    return filter(image);
+    return filter(image, ratio);
 }
 
-bool WImageFilter::applyFilter(QPixmap * pixmap)
+bool WImageFilter::applyFilter(QPixmap * pixmap, qreal ratio)
 {
     Q_ASSERT(pixmap);
 
@@ -93,7 +93,7 @@ bool WImageFilter::applyFilter(QPixmap * pixmap)
 
     QImage image = pixmap->toImage();
 
-    bool result = filter(&image);
+    bool result = filter(&image, ratio);
 
     *pixmap = QPixmap::fromImage(image);
 

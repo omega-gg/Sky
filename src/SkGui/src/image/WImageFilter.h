@@ -47,11 +47,11 @@ protected:
     WImageFilter(WImageFilterPrivate * p, QObject * parent = NULL);
 
 public: // Interface
-    bool applyFilter(QImage  * image);
-    bool applyFilter(QPixmap * pixmap);
+    bool applyFilter(QImage  * image,  qreal ratio);
+    bool applyFilter(QPixmap * pixmap, qreal ratio);
 
 protected: // Abstract functions
-    virtual bool filter(QImage * image) = 0;
+    virtual bool filter(QImage * image, qreal ratio) = 0;
 
 protected slots:
     void refreshFilter();

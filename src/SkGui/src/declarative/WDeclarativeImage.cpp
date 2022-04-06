@@ -240,24 +240,24 @@ void WDeclarativeImage::updatePaintedGeometry()
 
     if (d->fillMode == PreserveAspectFit)
     {
-        const QPixmap & pixmap = currentPixmap();
+        QSize size = currentSize();
 
-        if (pixmap.width() == 0 || pixmap.height() == 0) return;
+        if (size.width() == 0 || size.height() == 0) return;
 
-        qreal width  = widthValid () ? this->width () : pixmap.width ();
-        qreal height = heightValid() ? this->height() : pixmap.height();
+        qreal width  = widthValid () ? this->width () : size.width ();
+        qreal height = heightValid() ? this->height() : size.height();
 
-        qreal widthScale  = width  / pixmap.width ();
-        qreal heightScale = height / pixmap.height();
+        qreal widthScale  = width  / size.width ();
+        qreal heightScale = height / size.height();
 
         if (widthScale <= heightScale)
         {
             d->paintedWidth  = width;
-            d->paintedHeight = widthScale * pixmap.height();
+            d->paintedHeight = widthScale * size.height();
         }
         else if (heightScale < widthScale)
         {
-            d->paintedWidth  = heightScale * pixmap.width();
+            d->paintedWidth  = heightScale * size.width();
             d->paintedHeight = height;
         }
 
@@ -265,22 +265,22 @@ void WDeclarativeImage::updatePaintedGeometry()
         {
              setImplicitHeight(d->paintedHeight);
         }
-        else setImplicitHeight(pixmap.height());
+        else setImplicitHeight(size.height());
 
         if (heightValid() && widthValid() == false)
         {
              setImplicitWidth(d->paintedWidth);
         }
-        else setImplicitWidth(pixmap.width());
+        else setImplicitWidth(size.width());
     }
     else if (d->fillMode == PreserveAspectCrop)
     {
-        const QPixmap & pixmap = currentPixmap();
+        QSize size = currentSize();
 
-        if (pixmap.width() == 0 || pixmap.height() == 0) return;
+        if (size.width() == 0 || size.height() == 0) return;
 
-        qreal widthScale  = width () / pixmap.width ();
-        qreal heightScale = height() / pixmap.height();
+        qreal widthScale  = width () / size.width ();
+        qreal heightScale = height() / size.height();
 
         if (widthScale < heightScale)
         {
@@ -291,8 +291,8 @@ void WDeclarativeImage::updatePaintedGeometry()
             heightScale = widthScale;
         }
 
-        d->paintedHeight = heightScale * pixmap.height();
-        d->paintedWidth  = widthScale  * pixmap.width ();
+        d->paintedHeight = heightScale * size.height();
+        d->paintedWidth  = widthScale  * size.width ();
     }
     else
     {
@@ -364,8 +364,11 @@ void WDeclarativeImage::pixmapChange()
     qreal width  = this->width ();
     qreal height = this->height();
 
-    int pixmapWidth  = pixmap.width ();
-    int pixmapHeight = pixmap.height();
+    // NOTE: We take the pixel ratio into account.
+    qreal ratio = ratioPixel();
+
+    int pixmapWidth  = pixmap.width () / ratio;
+    int pixmapHeight = pixmap.height() / ratio;
 
     QRectF rect;
 
@@ -611,7 +614,7 @@ void WDeclarativeImageScalePrivate::onScale()
         QString source = WControllerFile::resolvedUrl(q, urlDefault);
 
         action = WPixmapCache::loadImage(WControllerFile::toLocalFile(source),
-                                         size, q, SLOT(onLoaded(const QImage &)));
+                                         q->sizeRatio(size), q, SLOT(onLoaded(const QImage &)));
 
         return;
     }
@@ -632,7 +635,8 @@ void WDeclarativeImageScalePrivate::onScale()
         }
         else size.scale(scaleSize, Qt::IgnoreAspectRatio);
 
-        action = WPixmapCache::loadImage(path, size, q, SLOT(onLoaded(const QImage &)));
+        action = WPixmapCache::loadImage(path, q->sizeRatio(size),
+                                         q, SLOT(onLoaded(const QImage &)));
     }
     else
     {
@@ -644,16 +648,16 @@ void WDeclarativeImageScalePrivate::onScale()
 
         if (fillMode == WDeclarativeImage::PreserveAspectFit)
         {
-            scalePixmap = pixmap.scaled(scaleSize, Qt::KeepAspectRatio,
-                                                   Qt::SmoothTransformation);
+            scalePixmap = pixmap.scaled(q->sizeRatio(scaleSize), Qt::KeepAspectRatio,
+                                                                 Qt::SmoothTransformation);
         }
         else if (fillMode == WDeclarativeImage::PreserveAspectCrop)
         {
-            scalePixmap = pixmap.scaled(scaleSize, Qt::KeepAspectRatioByExpanding,
-                                                   Qt::SmoothTransformation);
+            scalePixmap = pixmap.scaled(q->sizeRatio(scaleSize), Qt::KeepAspectRatioByExpanding,
+                                                                 Qt::SmoothTransformation);
         }
-        else scalePixmap = pixmap.scaled(scaleSize, Qt::IgnoreAspectRatio,
-                                                    Qt::SmoothTransformation);
+        else scalePixmap = pixmap.scaled(q->sizeRatio(scaleSize), Qt::IgnoreAspectRatio,
+                                                                  Qt::SmoothTransformation);
 
         scaled = true;
 
@@ -677,7 +681,7 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
 
     if (filter)
     {
-        filter->applyFilter(&scalePixmap);
+        filter->applyFilter(&scalePixmap, q->ratioPixel());
     }
 
     scaled = true;
@@ -717,7 +721,7 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
 
     d->abortAction();
 
-    d->scaleSize = d->view->pixelSize(width(), height());
+    d->scaleSize = QSize(width(), height());
 
     d->onScale();
 }
@@ -766,7 +770,7 @@ void WDeclarativeImageScalePrivate::onLoaded(const QImage & image)
     }
     else if (d->scaled == false)
     {
-        QSize size = d->view->pixelSize(width(), height());
+        QSize size = QSize(width(), height());
 
         if (d->scaleSize != size)
         {

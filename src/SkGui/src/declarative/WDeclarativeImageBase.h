@@ -128,6 +128,8 @@ public: // QDeclarativeItem / QQuickItem reimplementation
 protected: // Functions
     const QPixmap & currentPixmap() const;
 
+    QSize currentSize() const;
+
 protected: // Virtual functions
     virtual void load();
 
@@ -158,7 +160,7 @@ protected: // QGraphicsItem / QQuickItem reimplementation
     /* virtual */ void geometryChange(const QRectF & newGeometry, const QRectF & oldGeometry);
 #endif
 
-protected: // WDeclarativeItem reimplementation
+protected: // WDeclarativeTexture reimplementation
     /* virtual */ void updateRatioPixel();
 
 protected: // WDeclarativeTexture implementation

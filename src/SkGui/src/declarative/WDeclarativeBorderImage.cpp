@@ -273,8 +273,11 @@ WDeclarativeBorderImage::WDeclarativeBorderImage(WDeclarativeBorderImagePrivate 
 
     node->setInnerTargetRect(target);
 
-    int pixmapWidth  = pixmap.width ();
-    int pixmapHeight = pixmap.height();
+    // NOTE: We take the pixel ratio into account.
+    qreal ratio = ratioPixel();
+
+    int pixmapWidth  = pixmap.width () / ratio;
+    int pixmapHeight = pixmap.height() / ratio;
 
     left   = d->margins.left  ();
     right  = d->margins.right ();
@@ -397,7 +400,7 @@ void WDeclarativeBorderImageScalePrivate::init()
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WDeclarativeBorderImageScalePrivate::resize(const QPixmap & pixmap)
+void WDeclarativeBorderImageScalePrivate::resize(const QPixmap & pixmap, qreal ratio)
 {
     Q_Q(WDeclarativeBorderImageScale);
 
@@ -405,8 +408,8 @@ void WDeclarativeBorderImageScalePrivate::resize(const QPixmap & pixmap)
 
     scaleResize.scale(q->width(), q->height(), Qt::KeepAspectRatio);
 
-    qreal ratioX = (qreal) scaleResize.width () / pixmap.width ();
-    qreal ratioY = (qreal) scaleResize.height() / pixmap.height();
+    qreal ratioX = (qreal) scaleResize.width () / (pixmap.width () / ratio);
+    qreal ratioY = (qreal) scaleResize.height() / (pixmap.height() / ratio);
 
     const WDeclarativeBorderGrid * border = getBorder();
 
@@ -422,8 +425,11 @@ void WDeclarativeBorderImageScalePrivate::update()
 
     const QPixmap & pixmap = q->currentPixmap();
 
-    q->setImplicitWidth (pixmap.width ());
-    q->setImplicitHeight(pixmap.height());
+    // NOTE: We take the pixel ratio into account.
+    qreal ratio = q->ratioPixel();
+
+    q->setImplicitWidth (pixmap.width () / ratio);
+    q->setImplicitHeight(pixmap.height() / ratio);
 
     if (pixmap.isNull())
     {
@@ -442,7 +448,7 @@ void WDeclarativeBorderImageScalePrivate::update()
     {
         scalable = true;
 
-        resize(pixmap);
+        resize(pixmap, ratio);
     }
 }
 
@@ -492,7 +498,7 @@ void WDeclarativeBorderImageScalePrivate::abortAction()
     {
         restore();
 
-        resize(q->currentPixmap());
+        resize(q->currentPixmap(), q->ratioPixel());
     }
     else
     {
@@ -530,7 +536,8 @@ void WDeclarativeBorderImageScalePrivate::onScale()
         QString source = WControllerFile::resolvedUrl(q, urlDefault);
 
         action = WPixmapCache::loadImage(WControllerFile::toLocalFile(source),
-                                         scaleResize, q, SLOT(onLoaded(const QImage &)));
+                                         q->sizeRatio(scaleResize),
+                                         q, SLOT(onLoaded(const QImage &)));
 
         return;
     }
@@ -545,7 +552,8 @@ void WDeclarativeBorderImageScalePrivate::onScale()
         if (pixmap.isNull()) return;
 #endif
 
-        scalePixmap = pixmap.scaled(scaleResize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        scalePixmap = pixmap.scaled(q->sizeRatio(scaleResize),
+                                    Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
         margins = scaleMargins;
 
@@ -557,7 +565,8 @@ void WDeclarativeBorderImageScalePrivate::onScale()
 
         q->update();
     }
-    else action = WPixmapCache::loadImage(path, scaleResize, q, SLOT(onLoaded(const QImage &)));
+    else action = WPixmapCache::loadImage(path, q->sizeRatio(scaleResize),
+                                          q, SLOT(onLoaded(const QImage &)));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -572,7 +581,7 @@ void WDeclarativeBorderImageScalePrivate::onLoaded(const QImage & image)
 
     if (filter)
     {
-        filter->applyFilter(&scalePixmap);
+        filter->applyFilter(&scalePixmap, q->ratioPixel());
     }
 
     margins = scaleMargins;
@@ -616,7 +625,7 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QQuickItem * parent)
 
     d->abortAction();
 
-    d->scaleSize = d->view->pixelSize(width(), height());
+    d->scaleSize = QSize(width(), height());
 
     d->onScale();
 }
@@ -647,7 +656,7 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QQuickItem * parent)
     {
         d->restore();
 
-        d->resize(currentPixmap());
+        d->resize(currentPixmap(), ratioPixel());
     }
     else if (d->sourceSize.isValid() == false)
     {
@@ -655,7 +664,7 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QQuickItem * parent)
 
         if (pixmap.isNull()) return;
 
-        d->resize(pixmap);
+        d->resize(pixmap, ratioPixel());
     }
 }
 
@@ -673,7 +682,7 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QQuickItem * parent)
     }
     else if (d->scaled == false)
     {
-        QSize size = d->view->pixelSize(width(), height());
+        QSize size = QSize(width(), height());
 
         if (d->scaleSize != size)
         {
@@ -722,8 +731,11 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QQuickItem * parent)
     {
         const QPixmap & pixmap = currentPixmap();
 
-        setImplicitWidth (pixmap.width ());
-        setImplicitHeight(pixmap.height());
+        // NOTE: We take the pixel ratio into account.
+        qreal ratio = ratioPixel();
+
+        setImplicitWidth (pixmap.width () / ratio);
+        setImplicitHeight(pixmap.height() / ratio);
 
         if (pixmap.isNull()) return;
 
@@ -731,7 +743,7 @@ WDeclarativeBorderImageScale::WDeclarativeBorderImageScale(QQuickItem * parent)
         {
             d->scaleMargins = d->margins;
         }
-        else d->resize(pixmap);
+        else d->resize(pixmap, ratio);
     }
 }
 

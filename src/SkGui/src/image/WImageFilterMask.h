@@ -46,7 +46,7 @@ public:
     explicit WImageFilterMask(QObject * parent = NULL);
 
 protected: // WImageFilter implementation
-    /* virtual */ bool filter(QImage * image);
+    /* virtual */ bool filter(QImage * image, qreal ratio);
 
 signals:
     void widthChanged ();

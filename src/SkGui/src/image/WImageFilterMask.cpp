@@ -69,7 +69,7 @@ public:
 
     void init();
 
-    QImage pushMask(const QSize & size);
+    QImage pushMask(const QSize & size, qreal ratio);
 
     void clearMasks();
 
@@ -108,7 +108,7 @@ void WImageFilterMaskPrivate::init()
 
 //-------------------------------------------------------------------------------------------------
 
-QImage WImageFilterMaskPrivate::pushMask(const QSize & size)
+QImage WImageFilterMaskPrivate::pushMask(const QSize & size, qreal ratio)
 {
 #ifdef QT_4
     QImage mask(size, QImage::Format_ARGB32_Premultiplied);
@@ -123,6 +123,16 @@ QImage WImageFilterMaskPrivate::pushMask(const QSize & size)
     painter.setRenderHint(QPainter::Antialiasing);
 
     QPainterPath path;
+
+    //---------------------------------------------------------------------------------------------
+    // NOTE: We take the pixel size into account.
+
+    int width  = this->width  * ratio;
+    int height = this->height * ratio;
+
+    int radius = this->radius * ratio;
+
+    //---------------------------------------------------------------------------------------------
 
     int x = (size.width () - width)  / 2;
     int y = (size.height() - height) / 2;
@@ -174,7 +184,7 @@ void WImageFilterMaskPrivate::updateCache()
 // WImageFilter implementation
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ bool WImageFilterMask::filter(QImage * image)
+/* virtual */ bool WImageFilterMask::filter(QImage * image, qreal ratio)
 {
     Q_D(WImageFilterMask);
 
@@ -187,7 +197,7 @@ void WImageFilterMaskPrivate::updateCache()
         d->sizes.removeOne(size);
         d->sizes.append   (size);
     }
-    else mask = d->pushMask(size);
+    else mask = d->pushMask(size, ratio);
 
 #ifdef QT_4
     image->setAlphaChannel(mask.alphaChannel());

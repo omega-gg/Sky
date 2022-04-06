@@ -113,7 +113,9 @@ void WDeclarativeTextSvgPrivate::updatePixmap(int width, int height)
         return;
     }
 
-    pixmap = QPixmap(view->pixelSize(width, height));
+    Q_Q(WDeclarativeTextSvg);
+
+    pixmap = QPixmap(q->sizeRatio(width, height));
 
     pixmap.fill(Qt::transparent);
 
@@ -632,7 +634,10 @@ WDeclarativeTextSvg::WDeclarativeTextSvg(WDeclarativeTextSvgPrivate * p, QQuickI
         int width  = d->textWidth  * d->zoom;
         int height = d->textHeight * d->zoom;
 
-        if (d->pixmap.width() != width && d->pixmap.height() != height)
+        // NOTE: We take the pixel ratio into account.
+        qreal ratio = ratioPixel();
+
+        if ((d->pixmap.width() / ratio) != width && (d->pixmap.height() / ratio) != height)
         {
             d->updatePixmap(width, height);
         }

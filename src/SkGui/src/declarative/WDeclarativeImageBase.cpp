@@ -188,13 +188,14 @@ void WDeclarativeImageBasePrivate::readDefault()
 
     QString source = WControllerFile::resolvedUrl(q, urlDefault);
 
+    // NOTE: We take the pixel ratio into account.
     if (defaultSize.isValid())
     {
          WPixmapCache::readPixmap(&(pixmapDefault), WControllerFile::toLocalFile(source),
-                                  defaultSize, sourceArea);
+                                  q->sizeRatio(defaultSize), q->sizeRatio(sourceArea));
     }
     else WPixmapCache::readPixmap(&(pixmapDefault), WControllerFile::toLocalFile(source),
-                                  sourceSize, sourceArea);
+                                  q->sizeRatio(sourceSize), q->sizeRatio(sourceArea));
 
     if (filter) applyFilter();
 }
@@ -233,11 +234,13 @@ void WDeclarativeImageBasePrivate::applyRequest()
 
 void WDeclarativeImageBasePrivate::applyFilter()
 {
+    Q_Q(WDeclarativeImageBase);
+
     if (sourceDefault == false || pixmapDefault.isNull())
     {
         QPixmap pixmap = pix.pixmap();
 
-        filter->applyFilter(&pixmap);
+        filter->applyFilter(&pixmap, q->ratioPixel());
 
         // NOTE: We cannot 'applyPixmap' while loading or 'requestFinished' is never called.
         if (pix.isLoading() == false)
@@ -248,7 +251,7 @@ void WDeclarativeImageBasePrivate::applyFilter()
         }
         else pix.changePixmap(pixmap);
     }
-    else filter->applyFilter(&pixmapDefault);
+    else filter->applyFilter(&pixmapDefault, q->ratioPixel());
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -276,7 +279,7 @@ void WDeclarativeImageBasePrivate::applySourceDefault()
         }
         else if (filter)
         {
-            filter->applyFilter(&pixmapDefault);
+            filter->applyFilter(&pixmapDefault, q->ratioPixel());
 
             q->pixmapChange();
 
@@ -552,6 +555,16 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
     else return d->pix.pixmap();
 }
 
+QSize WDeclarativeImageBase::currentSize() const
+{
+    const QPixmap & pixmap = currentPixmap();
+
+    qreal ratio = ratioPixel();
+
+    // NOTE: We take the pixel ratio into account.
+    return QSize(pixmap.width() / ratio, pixmap.height() / ratio);
+}
+
 //-------------------------------------------------------------------------------------------------
 // Protected virtual functions
 //-------------------------------------------------------------------------------------------------
@@ -577,8 +590,10 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
 
     if (d->explicitSize)
     {
-         d->pix.load(WControllerFile::toString(url), d->sourceSize, d->sourceArea, asynchronous,
-                     d->cache, this, SLOT(requestFinished()));
+         // NOTE: We take the pixel ratio into account.
+         d->pix.load(WControllerFile::toString(url), sizeRatio(d->sourceSize),
+                     sizeRatio(d->sourceArea), asynchronous, d->cache,
+                     this, SLOT(requestFinished()));
     }
     else d->pix.load(WControllerFile::toString(url), QSize(), QSize(), asynchronous,
                      d->cache, this, SLOT(requestFinished()));
@@ -653,10 +668,10 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
 
 /* virtual */ void WDeclarativeImageBase::pixmapChange()
 {
-    const QPixmap & pixmap = currentPixmap();
+    QSize size = currentSize();
 
-    setImplicitWidth (pixmap.width ());
-    setImplicitHeight(pixmap.height());
+    setImplicitWidth (size.width ());
+    setImplicitHeight(size.height());
 }
 
 /* virtual */ void WDeclarativeImageBase::pixmapClear() {}
@@ -751,7 +766,7 @@ const QPixmap & WDeclarativeImageBase::currentPixmap() const
 }
 
 //-------------------------------------------------------------------------------------------------
-// Protected WDeclarativeItem reimplementation
+// Protected WDeclarativeTexture reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WDeclarativeImageBase::updateRatioPixel()

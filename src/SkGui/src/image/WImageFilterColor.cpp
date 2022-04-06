@@ -380,7 +380,7 @@ QList<QRgb> WImageFilterColorPrivate::getGradientColors(const QGradient * gradie
 // WImageFilter implementation
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ bool WImageFilterColor::filter(QImage * image)
+/* virtual */ bool WImageFilterColor::filter(QImage * image, qreal)
 {
     Q_D(WImageFilterColor);
 

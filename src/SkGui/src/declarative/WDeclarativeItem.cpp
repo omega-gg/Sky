@@ -81,6 +81,47 @@ WDeclarativeItem::WDeclarativeItem(WDeclarativeItemPrivate * p, QQuickItem * par
 }
 
 //-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ qreal WDeclarativeItem::ratioPixel() const
+{
+    Q_D(const WDeclarativeItem);
+
+    if (d->view)
+    {
+        return d->view->ratioPixel();
+    }
+    else return 1.0;
+}
+
+/* Q_INVOKABLE */ QSize WDeclarativeItem::sizeRatio(int width, int height) const
+{
+    Q_D(const WDeclarativeItem);
+
+    if (d->view)
+    {
+        qreal ratio = d->view->ratioPixel();
+
+        return QSize(width * ratio, height * ratio);
+    }
+    else return QSize(width, height);
+}
+
+/* Q_INVOKABLE */ QSize WDeclarativeItem::sizeRatio(const QSize & size) const
+{
+    Q_D(const WDeclarativeItem);
+
+    if (d->view)
+    {
+        qreal ratio = d->view->ratioPixel();
+
+        return QSize(size.width() * ratio, size.height() * ratio);
+    }
+    else return size;
+}
+
+//-------------------------------------------------------------------------------------------------
 // Protected virtual functions
 //-------------------------------------------------------------------------------------------------
 
