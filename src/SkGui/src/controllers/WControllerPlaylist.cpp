@@ -3389,11 +3389,6 @@ WControllerFileReply * WControllerPlaylist::copyBackends(const QString & path,
     {
         if (info.suffix().toLower() != "vbml") continue;
 
-#ifdef SK_NO_TORRENT
-        // FIXME: We should come up with a smarter way to filter BitTorrent backends.
-        if (info.baseName() == "bittorrent") continue;
-#endif
-
         fileNames.append(info.filePath());
 
         newNames.append(newPath + info.fileName());

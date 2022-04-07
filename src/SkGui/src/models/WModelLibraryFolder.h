@@ -129,6 +129,8 @@ public: // Interface
 
     Q_INVOKABLE int indexFromId(int id) const;
 
+    Q_INVOKABLE int indexFromRole(int role, const QVariant & value) const;
+
 signals:
     void modelChanged();
 

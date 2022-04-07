@@ -316,9 +316,15 @@ void WModelLibraryFolderFilteredPrivate::init()
 
 /* Q_INVOKABLE */ int WModelLibraryFolderFiltered::indexFromId(int id) const
 {
+    return indexFromRole(WModelLibraryFolder::RoleId, id);
+}
+
+/* Q_INVOKABLE */ int WModelLibraryFolderFiltered::indexFromRole(int role,
+                                                                 const QVariant & value) const
+{
     QModelIndex index = this->index(0, 0);
 
-    QModelIndexList indexes = match(index, WModelLibraryFolder::RoleId, id, 1, Qt::MatchExactly);
+    QModelIndexList indexes = match(index, role, value, 1, Qt::MatchExactly);
 
     if (indexes.isEmpty())
     {
