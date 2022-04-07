@@ -131,7 +131,16 @@ signals:
 
     foreach (const WBackendIndexItem & item, data.backends)
     {
+#ifdef SK_NO_TORRENT
+        QString id = item.id;
+
+        // FIXME: We should come up with a smarter way to filter BitTorrent backends.
+        if (id == "bittorrent") continue;
+
+        data.hash.insert(id, &item);
+#else
         data.hash.insert(item.id, &item);
+#endif
     }
 
     data.covers = extractCovers(reader, data.source, data.hash);
@@ -381,11 +390,6 @@ void WBackendIndexPrivate::onData(const WBackendIndexData & data)
     foreach (const WBackendIndexItem & item, data.backends)
     {
         QString id = item.id;
-
-#ifdef SK_NO_TORRENT
-        // FIXME: We should come up with a smarter way to filter BitTorrent backends.
-        if (id == "bittorrent") continue;
-#endif
 
         const WBackendIndexItem * itemHash = this->data.hash.value(id);
 
