@@ -380,13 +380,20 @@ void WBackendIndexPrivate::onData(const WBackendIndexData & data)
 
     foreach (const WBackendIndexItem & item, data.backends)
     {
-        const WBackendIndexItem * itemHash = this->data.hash.value(item.id);
+        QString id = item.id;
+
+#ifdef SK_NO_TORRENT
+        // FIXME: We should come up with a smarter way to filter BitTorrent backends.
+        if (id == "bittorrent") continue;
+#endif
+
+        const WBackendIndexItem * itemHash = this->data.hash.value(id);
 
         if (itemHash)
         {
             if (itemHash->version == item.version) continue;
 
-            WBackendNet * pointer = q->getBackend(item.id);
+            WBackendNet * pointer = q->getBackend(id);
 
             if (pointer)
             {
@@ -398,13 +405,13 @@ void WBackendIndexPrivate::onData(const WBackendIndexData & data)
             }
         }
 
-        QString name = item.id + ".vbml";
+        QString name = id + ".vbml";
 
         WRemoteData * remote = wControllerDownload->getData(source + name, BACKENDINDEX_TIMEOUT);
 
         WBackendIndexFile file;
 
-        file.id = item.id;
+        file.id = id;
 
         file.name = path + name;
 
