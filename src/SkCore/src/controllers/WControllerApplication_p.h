@@ -65,6 +65,11 @@ public: // Functions
     void declareController  (WController * controller);
     void undeclareController(WController * controller);
 
+#ifdef Q_OS_IOS
+    // NOTE iOS: This function is defined in WControllerApplication.mm
+    void setScreenSaverEnabled(bool enabled);
+#endif
+
 public: // WCoreApplication and WApplication interface
     void initApplication(QCoreApplication * application, Sk::Type type, bool gui);
 

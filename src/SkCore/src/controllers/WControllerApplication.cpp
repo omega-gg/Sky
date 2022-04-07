@@ -2124,8 +2124,11 @@ void WControllerApplication::setScreenSaverEnabled(bool enabled)
         CFRelease(name);
     }
     else IOPMAssertionRelease(d->assertion);
-    // NOTE linux: Currently we're only supporting D-Bus on Qt5.
+#elif defined(Q_OS_IOS)
+    d->setScreenSaverEnabled(enabled);
 #elif defined(Q_OS_LINUX) && defined(Q_OS_ANDROID) == false && defined(QT_NEW)
+    // NOTE linux: We're not supporting D-Bus on Qt4.
+
     QDBusConnection bus = QDBusConnection::sessionBus();
 
     if (bus.isConnected())

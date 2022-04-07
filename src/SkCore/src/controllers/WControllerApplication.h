@@ -144,6 +144,11 @@ public: // Static functions
     Q_INVOKABLE static Qt::KeyboardModifiers keypad(Qt::KeyboardModifiers flags);
 #endif
 
+#ifdef Q_OS_IOS
+    // NOTE iOS: This function is defined in WControllerApplication.mm
+    Q_INVOKABLE static void triggerLocal();
+#endif
+
     //---------------------------------------------------------------------------------------------
     // Version
 
