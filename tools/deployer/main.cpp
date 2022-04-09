@@ -31,7 +31,9 @@ void skipElse(QTextStream * stream, QString * line);
 //-------------------------------------------------------------------------------------------------
 // Global variables
 
-static QString version;
+
+static QStringList imports;
+static QStringList versions;
 
 static QStringList defines;
 
@@ -341,6 +343,22 @@ void skipElse(QTextStream * stream, QString * line)
 
 //-------------------------------------------------------------------------------------------------
 
+bool applyImports(QString * content, const QString & line)
+{
+    for (int i = 0; i < imports.count(); i++)
+    {
+        QString import = imports.at(i);
+
+        if (line.startsWith(import) == false) continue;
+
+        content->append(import + ' ' + versions.at(i) + '\n');
+
+        return true;
+    }
+
+    return false;
+}
+
 void applyEvent(QString * line, int index)
 {
     line->remove(index, 16);
@@ -404,11 +422,9 @@ QString scanFile(const QString & input)
         {
             line = line.simplified();
 
-            if (line.startsWith("import QtQuick"))
-            {
-                content.append("import QtQuick " + version + '\n');
-            }
-            else if (line.startsWith("import Sky") == false || line.at(10) == ' ')
+            if (applyImports(&content, line) == false
+                &&
+                (line.startsWith("import Sky") == false || line.at(10) == ' '))
             {
                 content.append(line + '\n');
             }
@@ -679,9 +695,20 @@ int main(int argc, char *argv[])
 
     QString path = QString(argv[1]) + '/';
 
-    version = argv[2];
+    QStringList list = QString(argv[2]).split(' ');
 
-    QStringList list = QString(argv[4]).split(' ');
+    foreach (const QString & string, list)
+    {
+        QStringList value = string.split('=');
+
+        if (value.count() != 2) continue;
+
+        imports.append("import " + value.at(0));
+
+        versions.append(value.at(1));
+    }
+
+    list = QString(argv[4]).split(' ');
 
     foreach (const QString & string, list)
     {
