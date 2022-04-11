@@ -24,6 +24,15 @@
 
 #ifndef SK_NO_BARCODEDECODER
 
+// Qt includes
+#include <QImage>
+
+// ZXing includes
+#include <ReadBarcode.h>
+
+// Namespaces
+using namespace ZXing;
+
 //-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
@@ -61,10 +70,37 @@ void WBarcodeDecoderPrivate::init() {}
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WBarcodeDecoder::process(const QImage & image,
-                                                ZXing::BarcodeFormats formats)
+/* Q_INVOKABLE */ void WBarcodeDecoder::decode(const QImage & image, BarcodeFormats formats)
 {
+    QImage::Format format = image.format();
 
+    ImageFormat imageFormat;
+
+    if (format == QImage::Format_RGB32 || format == QImage::Format_ARGB32)
+    {
+#if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
+        imageFormat = ImageFormat::BGRX;
+#else
+        imageFormat = ImageFormat::XRGB;
+#endif
+    }
+    else if (format == QImage::Format_RGB888)
+    {
+        imageFormat = ImageFormat::RGB;
+    }
+    else if (format == QImage::Format_RGBX8888 || format == QImage::Format_RGBA8888)
+    {
+        imageFormat = ImageFormat::RGBX;
+    }
+    else if (format == QImage::Format_Grayscale8)
+    {
+        imageFormat = ImageFormat::Lum;
+    }
+    else imageFormat = ImageFormat::None;
+
+    ImageView imageView(image.bits(), image.width(), image.height(), imageFormat);
+
+    //Result result = ReadBarcode(capturedImage, hints);
 }
 
 #endif // SK_NO_BARCODEDECODER

@@ -43,7 +43,7 @@ public:
     explicit WBarcodeDecoder(QObject * parent = NULL);
 
 public: // Interface
-    Q_INVOKABLE void process(const QImage & image, ZXing::BarcodeFormats formats);
+    Q_INVOKABLE void decode(const QImage & image, ZXing::BarcodeFormats formats);
 
 private:
     W_DECLARE_PRIVATE(WBarcodeDecoder)
