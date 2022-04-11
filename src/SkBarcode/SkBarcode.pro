@@ -32,6 +32,8 @@ unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 include(../Sk.pri)
 include(src/io/io.pri)
 
+include(src/3rdparty/zxing-cpp/zxing-cpp.pri)
+
 INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkCore/private \
                $$SK/include/SkGui \

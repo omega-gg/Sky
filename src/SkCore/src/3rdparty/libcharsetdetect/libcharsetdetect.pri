@@ -1,5 +1,9 @@
 # libcharsetdetect module
 
+INCLUDEPATH += src/3rdparty/libcharsetdetect \
+               src/3rdparty/libcharsetdetect/base \
+               src/3rdparty/libcharsetdetect/nspr-emu \
+
 HEADERS += src/3rdparty/libcharsetdetect/charsetdetect.h \
            src/3rdparty/libcharsetdetect/charsetdetectPriv.h \
            src/3rdparty/libcharsetdetect/nscore.h \
@@ -59,7 +63,3 @@ SOURCES += src/3rdparty/libcharsetdetect/charsetdetect.cpp \
            src/3rdparty/libcharsetdetect/base/nsSJISProber.cpp \
            src/3rdparty/libcharsetdetect/base/nsUniversalDetector.cpp \
            src/3rdparty/libcharsetdetect/base/nsUTF8Prober.cpp \
-
-INCLUDEPATH += src/3rdparty/libcharsetdetect \
-               src/3rdparty/libcharsetdetect/base \
-               src/3rdparty/libcharsetdetect/nspr-emu \

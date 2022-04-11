@@ -1,5 +1,7 @@
 # QuaZip module
 
+INCLUDEPATH += src/3rdparty/quazip \
+
 HEADERS += src/3rdparty/quazip/ioapi.h \
            src/3rdparty/quazip/JlCompress.h \
            src/3rdparty/quazip/minizip_crypt.h \
@@ -32,5 +34,3 @@ SOURCES += src/3rdparty/quazip/JlCompress.cpp \
            src/3rdparty/quazip/quazipnewinfo.cpp \
            src/3rdparty/quazip/unzip.c \
            src/3rdparty/quazip/zip.c \
-
-INCLUDEPATH += src/3rdparty/quazip \

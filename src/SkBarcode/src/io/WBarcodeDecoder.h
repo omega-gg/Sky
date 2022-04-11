@@ -26,6 +26,9 @@
 // Qt includes
 #include <QObject>
 
+// ZXing includes
+#include <BarcodeFormat.h>
+
 // Sk includes
 #include <Sk>
 
@@ -38,6 +41,9 @@ class SK_BARCODE_EXPORT WBarcodeDecoder : public QObject, public WPrivatable
 
 public:
     explicit WBarcodeDecoder(QObject * parent = NULL);
+
+public: // Interface
+    Q_INVOKABLE void process(const QImage & image, ZXing::BarcodeFormats formats);
 
 private:
     W_DECLARE_PRIVATE(WBarcodeDecoder)

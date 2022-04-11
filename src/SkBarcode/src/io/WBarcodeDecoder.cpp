@@ -57,4 +57,14 @@ void WBarcodeDecoderPrivate::init() {}
     Q_D(WBarcodeDecoder); d->init();
 }
 
+//-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WBarcodeDecoder::process(const QImage & image,
+                                                ZXing::BarcodeFormats formats)
+{
+
+}
+
 #endif // SK_NO_BARCODEDECODER
