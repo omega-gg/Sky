@@ -766,7 +766,7 @@ QSize WDeclarativeImageBase::currentSize() const
 }
 
 //-------------------------------------------------------------------------------------------------
-// Protected WDeclarativeTexture reimplementation
+// Protected WDeclarativeItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
 /* virtual */ void WDeclarativeImageBase::updateRatioPixel()

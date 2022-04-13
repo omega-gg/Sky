@@ -128,6 +128,7 @@ public: // QDeclarativeItem / QQuickItem reimplementation
 protected: // Functions
     const QPixmap & currentPixmap() const;
 
+    // NOTE: The current pixmap size divided by the pixel ratio.
     QSize currentSize() const;
 
 protected: // Virtual functions
@@ -160,7 +161,7 @@ protected: // QGraphicsItem / QQuickItem reimplementation
     /* virtual */ void geometryChange(const QRectF & newGeometry, const QRectF & oldGeometry);
 #endif
 
-protected: // WDeclarativeTexture reimplementation
+protected: // WDeclarativeItem reimplementation
     /* virtual */ void updateRatioPixel();
 
 protected: // WDeclarativeTexture implementation

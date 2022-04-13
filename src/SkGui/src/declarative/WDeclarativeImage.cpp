@@ -613,8 +613,8 @@ void WDeclarativeImageScalePrivate::onScale()
 
         QString source = WControllerFile::resolvedUrl(q, urlDefault);
 
-        action = WPixmapCache::loadImage(WControllerFile::toLocalFile(source),
-                                         q->sizeRatio(size), q, SLOT(onLoaded(const QImage &)));
+        action = WPixmapCache::loadImage(WControllerFile::toLocalFile(source), q->sizeRatio(size),
+                                         q, SLOT(onLoaded(const QImage &)));
 
         return;
     }

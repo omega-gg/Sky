@@ -125,7 +125,7 @@ QImage WImageFilterMaskPrivate::pushMask(const QSize & size, qreal ratio)
     QPainterPath path;
 
     //---------------------------------------------------------------------------------------------
-    // NOTE: We take the pixel size into account.
+    // NOTE: We take the pixel ratio into account.
 
     int width  = this->width  * ratio;
     int height = this->height * ratio;

@@ -552,8 +552,8 @@ void WDeclarativeBorderImageScalePrivate::onScale()
         if (pixmap.isNull()) return;
 #endif
 
-        scalePixmap = pixmap.scaled(q->sizeRatio(scaleResize),
-                                    Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        scalePixmap = pixmap.scaled(q->sizeRatio(scaleResize), Qt::KeepAspectRatio,
+                                                               Qt::SmoothTransformation);
 
         margins = scaleMargins;
 
