@@ -441,11 +441,7 @@ Item
 
     function checkTiny(size, maximumSize)
     {
-        if (maximumSize == -1 || size < maximumSize)
-        {
-             return true;
-        }
-        else return false;
+        return (maximumSize == -1 || size < maximumSize)
     }
 
     //---------------------------------------------------------------------------------------------

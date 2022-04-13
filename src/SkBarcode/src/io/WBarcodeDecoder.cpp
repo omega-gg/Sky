@@ -67,10 +67,11 @@ void WBarcodeDecoderPrivate::init() {}
 }
 
 //-------------------------------------------------------------------------------------------------
-// Interface
+// Static functions
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WBarcodeDecoder::decode(const QImage & image, BarcodeFormats formats)
+/* Q_INVOKABLE static */ QString WBarcodeDecoder::decode(const QImage & image,
+                                                         ZXing::BarcodeFormats formats)
 {
     QImage::Format format = image.format();
 
@@ -100,7 +101,13 @@ void WBarcodeDecoderPrivate::init() {}
 
     ImageView imageView(image.bits(), image.width(), image.height(), imageFormat);
 
-    //Result result = ReadBarcode(capturedImage, hints);
+    DecodeHints hints;
+
+    hints.setFormats(formats);
+
+    Result result = ReadBarcode(imageView, hints);
+
+    return QString::fromWCharArray(result.text().c_str());
 }
 
 #endif // SK_NO_BARCODEDECODER

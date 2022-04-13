@@ -42,8 +42,8 @@ class SK_BARCODE_EXPORT WBarcodeDecoder : public QObject, public WPrivatable
 public:
     explicit WBarcodeDecoder(QObject * parent = NULL);
 
-public: // Interface
-    Q_INVOKABLE void decode(const QImage & image, ZXing::BarcodeFormats formats);
+public: // Static functions
+    Q_INVOKABLE static QString decode(const QImage & image, ZXing::BarcodeFormats formats);
 
 private:
     W_DECLARE_PRIVATE(WBarcodeDecoder)
