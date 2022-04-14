@@ -89,6 +89,7 @@ void WBarcodeDecoderPrivate::init() {}
     {
         imageFormat = ImageFormat::RGB;
     }
+#ifdef QT_NEW
     else if (format == QImage::Format_RGBX8888 || format == QImage::Format_RGBA8888)
     {
         imageFormat = ImageFormat::RGBX;
@@ -97,6 +98,7 @@ void WBarcodeDecoderPrivate::init() {}
     {
         imageFormat = ImageFormat::Lum;
     }
+#endif
     else imageFormat = ImageFormat::None;
 
     ImageView imageView(image.bits(), image.width(), image.height(), imageFormat);
