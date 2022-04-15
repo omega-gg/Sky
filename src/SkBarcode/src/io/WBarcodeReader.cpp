@@ -20,9 +20,9 @@
 */
 //=================================================================================================
 
-#include "WBarcodeDecoder.h"
+#include "WBarcodeReader.h"
 
-#ifndef SK_NO_BARCODEDECODER
+#ifndef SK_NO_BARCODEREADER
 
 // Qt includes
 #include <QImage>
@@ -91,7 +91,7 @@ public: // Variables
 {
     WBarcodeReply * reply = qobject_cast<WBarcodeReply *> (this->reply());
 
-    reply->text = WBarcodeDecoder::decode(image, formats);
+    reply->text = WBarcodeReader::read(image, formats);
 
     return true;
 }
@@ -104,44 +104,43 @@ public: // Variables
 }
 
 //=================================================================================================
-// WBarcodeDecoderPrivate
+// WBarcodeReaderPrivate
 //=================================================================================================
 
 #include <private/Sk_p>
 
-class SK_BARCODE_EXPORT WBarcodeDecoderPrivate : public WPrivate
+class SK_BARCODE_EXPORT WBarcodeReaderPrivate : public WPrivate
 {
 public:
-    WBarcodeDecoderPrivate(WBarcodeDecoder * p);
+    WBarcodeReaderPrivate(WBarcodeReader * p);
 
     void init();
 
 protected:
-    W_DECLARE_PUBLIC(WBarcodeDecoder)
+    W_DECLARE_PUBLIC(WBarcodeReader)
 };
 
 //-------------------------------------------------------------------------------------------------
 
-WBarcodeDecoderPrivate::WBarcodeDecoderPrivate(WBarcodeDecoder * p) : WPrivate(p) {}
+WBarcodeReaderPrivate::WBarcodeReaderPrivate(WBarcodeReader * p) : WPrivate(p) {}
 
-void WBarcodeDecoderPrivate::init() {}
+void WBarcodeReaderPrivate::init() {}
 
 //=================================================================================================
-// WBarcodeDecoder
+// WBarcodeReader
 //=================================================================================================
 
-/* explicit */ WBarcodeDecoder::WBarcodeDecoder(QObject * parent)
-    : QObject(parent), WPrivatable(new WBarcodeDecoderPrivate(this))
+/* explicit */ WBarcodeReader::WBarcodeReader(QObject * parent)
+    : QObject(parent), WPrivatable(new WBarcodeReaderPrivate(this))
 {
-    Q_D(WBarcodeDecoder); d->init();
+    Q_D(WBarcodeReader); d->init();
 }
 
 //-------------------------------------------------------------------------------------------------
 // Static functions
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ QString WBarcodeDecoder::decode(const QImage & image,
-                                                         BarcodeFormats formats)
+/* Q_INVOKABLE static */ QString WBarcodeReader::read(const QImage & image, BarcodeFormats formats)
 {
     QImage::Format format = image.format();
 
@@ -185,10 +184,10 @@ void WBarcodeDecoderPrivate::init() {}
 }
 
 /* Q_INVOKABLE static */
-WAbstractThreadAction * WBarcodeDecoder::startDecode(const QImage   & image,
-                                                     BarcodeFormats   formats,
-                                                     QObject        * receiver,
-                                                     const char     * method)
+WAbstractThreadAction * WBarcodeReader::startRead(const QImage   & image,
+                                                  BarcodeFormats   formats,
+                                                  QObject        * receiver,
+                                                  const char     * method)
 {
     WBarcodeRead * action = new WBarcodeRead(image, formats);
 
@@ -200,6 +199,6 @@ WAbstractThreadAction * WBarcodeDecoder::startDecode(const QImage   & image,
     return action;
 }
 
-#endif // SK_NO_BARCODEDECODER
+#endif // SK_NO_BARCODEREADER
 
-#include "WBarcodeDecoder.moc"
+#include "WBarcodeReader.moc"
