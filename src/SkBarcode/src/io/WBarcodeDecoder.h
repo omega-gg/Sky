@@ -36,6 +36,7 @@
 #include <Sk>
 
 // Forward declarations
+class WAbstractThreadAction;
 class WBarcodeDecoderPrivate;
 
 class SK_BARCODE_EXPORT WBarcodeDecoder : public QObject, public WPrivatable
@@ -46,7 +47,15 @@ public:
     explicit WBarcodeDecoder(QObject * parent = NULL);
 
 public: // Static functions
-    Q_INVOKABLE static QString decode(const QImage & image, ZXing::BarcodeFormats formats);
+    Q_INVOKABLE static
+    QString decode(const QImage & image,
+                   ZXing::BarcodeFormats formats = ZXing::BarcodeFormat::TwoDCodes);
+
+    // NOTE: The 'method' format is loaded(const QString &).
+    Q_INVOKABLE static WAbstractThreadAction * startDecode(const QImage          & image,
+                                                           ZXing::BarcodeFormats   formats,
+                                                           QObject               * receiver,
+                                                           const char            * method);
 
 private:
     W_DECLARE_PRIVATE(WBarcodeDecoder)

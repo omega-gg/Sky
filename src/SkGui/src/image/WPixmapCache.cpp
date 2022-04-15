@@ -34,9 +34,6 @@
 #include <WAbstractThreadAction>
 #include <WCache>
 
-// Forward declarations
-class WPixmapCacheReply;
-
 //-------------------------------------------------------------------------------------------------
 // Defines
 

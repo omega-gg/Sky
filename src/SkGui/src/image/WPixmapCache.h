@@ -53,6 +53,7 @@ public:
     WPixmapCache();
 
 public: // Interface
+    // NOTE: The 'method' format is loaded(const QImage &).
     void load(const QString & path, const QSize & size         = QSize(),
                                     const QSize & area         = QSize(),
                                     bool          asynchronous = false,

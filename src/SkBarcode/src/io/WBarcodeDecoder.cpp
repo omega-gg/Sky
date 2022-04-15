@@ -30,12 +30,82 @@
 // ZXing includes
 #include <ReadBarcode.h>
 
+// Sk includes
+#include <WControllerFile>
+#include <WAbstractThreadAction>
+#include <WAbstractThreadReply>
+
 // Namespaces
 using namespace ZXing;
 
+//=================================================================================================
+// WBarcodeRead and WBarcodeReply
+//=================================================================================================
+
+class WBarcodeRead : public WAbstractThreadAction
+{
+    Q_OBJECT
+
+public:
+    WBarcodeRead(const QImage & image, BarcodeFormats formats)
+    {
+        this->image   = image;
+        this->formats = formats;
+    }
+
+protected: // WAbstractThreadAction reimplementation
+    /* virtual */ WAbstractThreadReply * createReply() const;
+
+protected: // WAbstractThreadAction implementation
+    /* virtual */ bool run();
+
+public: // Variables
+    QImage         image;
+    BarcodeFormats formats;
+};
+
 //-------------------------------------------------------------------------------------------------
-// Private
+
+class WBarcodeReply : public WAbstractThreadReply
+{
+    Q_OBJECT
+
+protected: // WAbstractThreadReply reimplementation
+    /* virtual */ void onCompleted(bool ok);
+
+signals:
+    void loaded(const QString & text);
+
+public: // Variables
+    QString text;
+};
+
 //-------------------------------------------------------------------------------------------------
+
+/* virtual */ WAbstractThreadReply * WBarcodeRead::createReply() const
+{
+    return new WBarcodeReply;
+}
+
+/* virtual */ bool WBarcodeRead::run()
+{
+    WBarcodeReply * reply = qobject_cast<WBarcodeReply *> (this->reply());
+
+    reply->text = WBarcodeDecoder::decode(image, formats);
+
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WBarcodeReply::onCompleted(bool)
+{
+    emit loaded(text);
+}
+
+//=================================================================================================
+// WBarcodeDecoderPrivate
+//=================================================================================================
 
 #include <private/Sk_p>
 
@@ -56,9 +126,9 @@ WBarcodeDecoderPrivate::WBarcodeDecoderPrivate(WBarcodeDecoder * p) : WPrivate(p
 
 void WBarcodeDecoderPrivate::init() {}
 
-//-------------------------------------------------------------------------------------------------
-// Ctor / dtor
-//-------------------------------------------------------------------------------------------------
+//=================================================================================================
+// WBarcodeDecoder
+//=================================================================================================
 
 /* explicit */ WBarcodeDecoder::WBarcodeDecoder(QObject * parent)
     : QObject(parent), WPrivatable(new WBarcodeDecoderPrivate(this))
@@ -71,7 +141,7 @@ void WBarcodeDecoderPrivate::init() {}
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QString WBarcodeDecoder::decode(const QImage & image,
-                                                         ZXing::BarcodeFormats formats)
+                                                         BarcodeFormats formats)
 {
     QImage::Format format = image.format();
 
@@ -109,7 +179,27 @@ void WBarcodeDecoderPrivate::init() {}
 
     Result result = ReadBarcode(imageView, hints);
 
+    if (result.isValid() == false) return QString();
+
     return QString::fromWCharArray(result.text().c_str());
 }
 
+/* Q_INVOKABLE static */
+WAbstractThreadAction * WBarcodeDecoder::startDecode(const QImage   & image,
+                                                     BarcodeFormats   formats,
+                                                     QObject        * receiver,
+                                                     const char     * method)
+{
+    WBarcodeRead * action = new WBarcodeRead(image, formats);
+
+    WBarcodeReply * reply = qobject_cast<WBarcodeReply *>
+                            (wControllerFile->startReadAction(action));
+
+    QObject::connect(reply, SIGNAL(loaded(const QString &)), receiver, method);
+
+    return action;
+}
+
 #endif // SK_NO_BARCODEDECODER
+
+#include "WBarcodeDecoder.moc"
