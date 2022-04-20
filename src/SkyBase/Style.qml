@@ -384,6 +384,13 @@ Item
     property color baseConsole_color: text_color
 //#END
 
+//#FlickablePages
+    //---------------------------------------------------------------------------------------------
+    // FlickablePages
+
+    property real flickablePages_ratioVelocity: 3
+//#END
+
 //#BaseScrollBar
     //---------------------------------------------------------------------------------------------
     // BaseScrollBar

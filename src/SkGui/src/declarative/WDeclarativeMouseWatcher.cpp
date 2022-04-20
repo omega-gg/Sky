@@ -40,23 +40,25 @@ WDeclarativeMouseWatcherPrivate::WDeclarativeMouseWatcherPrivate(WDeclarativeMou
 
 void WDeclarativeMouseWatcherPrivate::init()
 {
-#ifdef QT_NEW
     Q_Q(WDeclarativeMouseWatcher);
 
 #ifdef QT_5
     touch = false;
 #endif
 
+#ifdef QT_NEW
     // NOTE: We just want to make sure all the press events have been processed.
     timer.setInterval(1);
 
     timer.setSingleShot(true);
 
     QObject::connect(&timer, SIGNAL(timeout()), q, SIGNAL(released()));
+#endif
+
+    q->setAcceptedMouseButtons(Qt::LeftButton);
 
 #ifdef QT_6
     q->setAcceptTouchEvents(true);
-#endif
 #endif
 }
 
