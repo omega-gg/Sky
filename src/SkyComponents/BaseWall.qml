@@ -83,7 +83,7 @@ MouseArea
     //---------------------------------------------------------------------------------------------
     // Style
 
-    /* read */ property int durationAnimation: st.duration_normal
+    property int durationAnimation: st.duration_normal
 
     //---------------------------------------------------------------------------------------------
     // Private
