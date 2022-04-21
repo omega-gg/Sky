@@ -388,7 +388,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // FlickablePages
 
-    property real flickablePages_ratioVelocity: 3
+    property real flickablePages_ratioVelocity: 1.0
 //#END
 
 //#BaseScrollBar
