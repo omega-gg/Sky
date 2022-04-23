@@ -95,7 +95,8 @@ void WResizerPrivate::init(WResizer::ResizeType type)
 
     this->type = type;
 
-    hoverEnabled = true;
+    q->setHoverEnabled(true);
+
     hoverRetain  = true;
 
     resizing = false;

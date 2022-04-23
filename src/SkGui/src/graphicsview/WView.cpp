@@ -1332,14 +1332,12 @@ QList<WDeclarativeMouseArea *> WViewPrivate::getMouseAreas(const QList<QQuickIte
 
         if (area == NULL) continue;
 
-        WDeclarativeMouseAreaPrivate * p = area->d_func();
-
-        if (p->enabled && p->hoverEnabled)
+        if (area->isEnabled() && area->hoverEnabled())
         {
             mouseAreas.append(area);
         }
 
-        if (p->hoverRetain)
+        if (area->d_func()->hoverRetain)
         {
             return mouseAreas;
         }
@@ -1929,12 +1927,12 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 
         foreach (WDeclarativeMouseArea * item, d->itemsHovered)
         {
-            item->setHovered(false);
+            item->d_func()->setHoverActive(false);
         }
 
         foreach (WDeclarativeMouseArea * item, areas)
         {
-            item->setHovered(true);
+            item->d_func()->setHoverActive(true);
         }
 
         d->itemsHovered = areas;
@@ -1979,7 +1977,7 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 
     foreach (WDeclarativeMouseArea * item, d->itemsHovered)
     {
-        item->setHovered(false);
+        item->d_func()->setHoverActive(false);
     }
 
     d->itemsHovered.clear();
@@ -2663,8 +2661,14 @@ void WView::hoverLeave()
         d->idleTimer.start();
     }
 
-    WDeclarativeMouseEvent mouse(event->type(), event->pos(), event->button(), event->buttons(),
-                                 event->modifiers(), false, false);
+#ifdef QT_4
+    QDeclarativeMouseEvent mouse;
+#else
+    QQuickMouseEvent mouse;
+#endif
+
+    mouse.reset(event->pos().x(), event->pos().y(), event->button(), event->buttons(),
+                event->modifiers(), false, false);
 
     mouse.setAccepted(false);
 
@@ -2707,8 +2711,14 @@ void WView::hoverLeave()
 
     if (d->mouseAccepted)
     {
-        WDeclarativeMouseEvent mouse(event->type(), event->pos(), event->button(),
-                                     event->buttons(), event->modifiers(), true, false);
+#ifdef QT_4
+        QDeclarativeMouseEvent mouse;
+#else
+        QQuickMouseEvent mouse;
+#endif
+
+        mouse.reset(event->pos().x(), event->pos().y(), event->button(), event->buttons(),
+                    event->modifiers(), true, false);
 
         mouse.setAccepted(false);
 
@@ -2729,8 +2739,14 @@ void WView::hoverLeave()
     // FIXME: mousePressEvent is not called before mouseDoubleClickEvent.
     d->setPressed(true);
 
-    WDeclarativeMouseEvent mouse(event->type(), event->pos(), event->button(), event->buttons(),
-                                 event->modifiers(), true, false);
+#ifdef QT_4
+    QDeclarativeMouseEvent mouse;
+#else
+    QQuickMouseEvent mouse;
+#endif
+
+    mouse.reset(event->pos().x(), event->pos().y(), event->button(), event->buttons(),
+                event->modifiers(), true, false);
 
     mouse.setAccepted(false);
 

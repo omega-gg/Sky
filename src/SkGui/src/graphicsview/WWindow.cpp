@@ -252,14 +252,14 @@ void WWindowPrivate::init()
 
     //---------------------------------------------------------------------------------------------
 
-    QObject::connect(view, SIGNAL(mousePressed(WDeclarativeMouseEvent *)),
-                     q,    SIGNAL(mousePressed(WDeclarativeMouseEvent *)));
+    QObject::connect(view, SIGNAL(mousePressed(QDeclarativeMouseEvent *)),
+                     q,    SIGNAL(mousePressed(QDeclarativeMouseEvent *)));
 
-    QObject::connect(view, SIGNAL(mouseReleased(WDeclarativeMouseEvent *)),
-                     q,    SIGNAL(mouseReleased(WDeclarativeMouseEvent *)));
+    QObject::connect(view, SIGNAL(mouseReleased(QDeclarativeMouseEvent *)),
+                     q,    SIGNAL(mouseReleased(QDeclarativeMouseEvent *)));
 
-    QObject::connect(view, SIGNAL(mouseDoubleClicked(WDeclarativeMouseEvent *)),
-                     q,    SIGNAL(mouseDoubleClicked(WDeclarativeMouseEvent *)));
+    QObject::connect(view, SIGNAL(mouseDoubleClicked(QDeclarativeMouseEvent *)),
+                     q,    SIGNAL(mouseDoubleClicked(QDeclarativeMouseEvent *)));
 
     QObject::connect(view, SIGNAL(keyPressed(WDeclarativeKeyEvent *)),
                      q,    SIGNAL(keyPressed(WDeclarativeKeyEvent *)));
@@ -294,7 +294,9 @@ void WWindowPrivate::init()
 
     QObject::connect(viewport, SIGNAL(scaleChanged()), q, SIGNAL(scaleChanged()));
 
-    QObject::connect(viewport, SIGNAL(hoveredChanged()), q, SIGNAL(hoveredChanged     ()));
+    QObject::connect(viewport, SIGNAL(hoveredChanged    ()), q, SIGNAL(hoveredChanged    ()));
+    QObject::connect(viewport, SIGNAL(hoverActiveChanged()), q, SIGNAL(hoverActiveChanged()));
+
     QObject::connect(viewport, SIGNAL(pressedChanged()), q, SIGNAL(mousePressedChanged()));
 
     QObject::connect(viewport, SIGNAL(enabledChanged()), q, SIGNAL(enabledChanged()));
@@ -317,28 +319,31 @@ void WWindowPrivate::init()
     QObject::connect(viewport, SIGNAL(cursorChanged    ()), q, SIGNAL(cursorChanged    ()));
     QObject::connect(viewport, SIGNAL(cursorDropChanged()), q, SIGNAL(cursorDropChanged()));
 
-    QObject::connect(viewport, SIGNAL(positionChanged(WDeclarativeMouseEvent *)),
-                     q,        SIGNAL(positionChanged(WDeclarativeMouseEvent *)));
+    QObject::connect(viewport, SIGNAL(positionChanged(QQuickMouseEvent *)),
+                     q,        SIGNAL(positionChanged(QQuickMouseEvent *)));
 
     //QObject::connect(viewport, SIGNAL(mousePositionChanged()), q, SIGNAL(mousePositionChanged()));
 
-    QObject::connect(viewport, SIGNAL(pressed(WDeclarativeMouseEvent *)),
-                     q,        SIGNAL(pressed(WDeclarativeMouseEvent *)));
+    QObject::connect(viewport, SIGNAL(pressed(QQuickMouseEvent *)),
+                     q,        SIGNAL(pressed(QQuickMouseEvent *)));
 
-    QObject::connect(viewport, SIGNAL(pressAndHold(WDeclarativeMouseEvent *)),
-                     q,        SIGNAL(pressAndHold(WDeclarativeMouseEvent *)));
+    QObject::connect(viewport, SIGNAL(pressAndHold(QQuickMouseEvent *)),
+                     q,        SIGNAL(pressAndHold(QQuickMouseEvent *)));
 
-    QObject::connect(viewport, SIGNAL(released(WDeclarativeMouseEvent *)),
-                     q,        SIGNAL(released(WDeclarativeMouseEvent *)));
+    QObject::connect(viewport, SIGNAL(released(QQuickMouseEvent *)),
+                     q,        SIGNAL(released(QQuickMouseEvent *)));
 
-    QObject::connect(viewport, SIGNAL(clicked(WDeclarativeMouseEvent *)),
-                     q,        SIGNAL(clicked(WDeclarativeMouseEvent *)));
+    QObject::connect(viewport, SIGNAL(clicked(QQuickMouseEvent *)),
+                     q,        SIGNAL(clicked(QQuickMouseEvent *)));
 
-    QObject::connect(viewport, SIGNAL(doubleClicked(WDeclarativeMouseEvent *)),
-                     q,        SIGNAL(doubleClicked(WDeclarativeMouseEvent *)));
+    QObject::connect(viewport, SIGNAL(doubleClicked(QQuickMouseEvent *)),
+                     q,        SIGNAL(doubleClicked(QQuickMouseEvent *)));
 
     QObject::connect(viewport, SIGNAL(entered()), q, SIGNAL(entered()));
     QObject::connect(viewport, SIGNAL(exited ()), q, SIGNAL(exited ()));
+
+    QObject::connect(viewport, SIGNAL(hoverEntered()), q, SIGNAL(hoverEntered()));
+    QObject::connect(viewport, SIGNAL(hoverExited ()), q, SIGNAL(hoverExited ()));
 
     QObject::connect(viewport, SIGNAL(dragEntered(WDeclarativeDropEvent *)),
                      q,        SIGNAL(dragEntered(WDeclarativeDropEvent *)));
@@ -1527,6 +1532,11 @@ bool WWindow::hovered() const
     Q_D(const WWindow); return d->viewport->hovered();
 }
 
+bool WWindow::hoverActive() const
+{
+    Q_D(const WWindow); return d->viewport->hoverActive();
+}
+
 bool WWindow::pressed() const
 {
     Q_D(const WWindow); return d->viewport->pressed();
@@ -1612,7 +1622,11 @@ bool WWindow::dragAccepted() const
     Q_D(const WWindow); return d->viewport->dragAccepted();
 }
 
-WDeclarativeDrag * WWindow::drag()
+#ifdef QT_4
+QDeclarativeDrag * WWindow::drag()
+#else
+QQuickDrag * WWindow::drag()
+#endif
 {
     Q_D(const WWindow); return d->viewport->drag();
 }

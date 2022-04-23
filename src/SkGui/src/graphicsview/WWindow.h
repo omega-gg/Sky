@@ -199,6 +199,9 @@ class SK_GUI_EXPORT WWindow : public WView
 
     Q_PROPERTY(bool containsMouse READ hovered NOTIFY hoveredChanged)
 
+    // NOTE: This 'hoverActive' implementation is our custom 'containsMouse' implementation.
+    Q_PROPERTY(bool hoverActive READ hoverActive NOTIFY hoverActiveChanged)
+
     Q_PROPERTY(bool pressed READ pressed NOTIFY mousePressedChanged)
 
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
@@ -220,7 +223,11 @@ class SK_GUI_EXPORT WWindow : public WView
 
     Q_PROPERTY(bool dragAccepted READ dragAccepted NOTIFY dragAcceptedChanged)
 
-    Q_PROPERTY(WDeclarativeDrag * drag READ drag CONSTANT)
+#ifdef QT_4
+    Q_PROPERTY(QDeclarativeDrag * drag READ drag CONSTANT)
+#else
+    Q_PROPERTY(QQuickDrag * drag READ drag CONSTANT)
+#endif
 
     Q_PROPERTY(bool preventStealing READ preventStealing WRITE setPreventStealing
                NOTIFY preventStealingChanged /* REVISION 1 */)
@@ -520,9 +527,9 @@ signals:
 
     //---------------------------------------------------------------------------------------------
 
-    void mousePressed      (WDeclarativeMouseEvent * event);
-    void mouseReleased     (WDeclarativeMouseEvent * event);
-    void mouseDoubleClicked(WDeclarativeMouseEvent * event);
+    void mousePressed      (QDeclarativeMouseEvent * event);
+    void mouseReleased     (QDeclarativeMouseEvent * event);
+    void mouseDoubleClicked(QDeclarativeMouseEvent * event);
 
     void keyPressed (WDeclarativeKeyEvent * event);
     void keyReleased(WDeclarativeKeyEvent * event);
@@ -546,7 +553,8 @@ signals:
 
     void scaleChanged();
 
-    void hoveredChanged();
+    void hoveredChanged    ();
+    void hoverActiveChanged();
 
     void mousePressedChanged();
 
@@ -568,20 +576,24 @@ signals:
     void cursorChanged    ();
     void cursorDropChanged();
 
-    void positionChanged(WDeclarativeMouseEvent * mouse);
+    void positionChanged(QQuickMouseEvent * mouse);
 
     //void mousePositionChanged();
 
-    void pressed     (WDeclarativeMouseEvent * mouse);
-    void pressAndHold(WDeclarativeMouseEvent * mouse);
+    void pressed     (QQuickMouseEvent * mouse);
+    void pressAndHold(QQuickMouseEvent * mouse);
 
-    void released(WDeclarativeMouseEvent * mouse);
+    void released(QQuickMouseEvent * mouse);
 
-    void clicked      (WDeclarativeMouseEvent * mouse);
-    void doubleClicked(WDeclarativeMouseEvent * mouse);
+    void clicked      (QQuickMouseEvent * mouse);
+    void doubleClicked(QQuickMouseEvent * mouse);
 
     void entered();
     void exited ();
+
+    // NOTE: These custom 'entered / exited' signals are tied to 'hoverActive'.
+    void hoverEntered();
+    void hoverExited ();
 
     void dragEntered(WDeclarativeDropEvent * event);
     void dragExited (WDeclarativeDropEvent * event);
@@ -737,7 +749,9 @@ public: // Properties
     bool isEnabled() const;
     void setEnabled(bool enabled);
 
-    bool hovered() const;
+    bool hovered    () const;
+    bool hoverActive() const;
+
     bool pressed() const;
 
     Qt::MouseButtons pressedButtons() const;
@@ -759,7 +773,11 @@ public: // Properties
 
     bool dragAccepted() const;
 
-    WDeclarativeDrag * drag();
+#ifdef QT_4
+    QDeclarativeDrag * drag();
+#else
+    QQuickDrag * drag();
+#endif
 
     bool preventStealing() const;
     void setPreventStealing(bool prevent);

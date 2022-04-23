@@ -23,15 +23,15 @@
 #ifndef WDECLARATIVEMOUSEAREA_P_H
 #define WDECLARATIVEMOUSEAREA_P_H
 
-// Qt includes
-#include <QBasicTimer>
-
 // Private includes
-#include <private/WDeclarativeItem_p>
+#include <private/Sk_p>
 
 #ifndef SK_NO_DECLARATIVEMOUSEAREA
 
-class SK_GUI_EXPORT WDeclarativeMouseAreaPrivate : public WDeclarativeItemPrivate
+// Forward declarations
+class WViewDragData;
+
+class SK_GUI_EXPORT WDeclarativeMouseAreaPrivate : public WPrivate
 {
 public:
     WDeclarativeMouseAreaPrivate(WDeclarativeMouseArea * p);
@@ -41,8 +41,6 @@ public:
     void init();
 
 public: // Functions
-    void mouseUngrab();
-
     bool dragEnterEvent(const QPointF & pos, WViewDragData * data);
     void dragLeaveEvent();
 
@@ -50,13 +48,7 @@ public: // Functions
 
     void dropEvent(const QPointF & pos, const WViewDragData & data);
 
-#ifdef QT_4
-    void saveEvent(QGraphicsSceneMouseEvent * event);
-#else
-    void saveEvent(QMouseEvent * event);
-#endif
-
-    bool isDoubleClickConnected();
+    void setHoverActive(bool active);
 
     void setDragAccepted(bool accepted);
 
@@ -65,52 +57,26 @@ public: // Functions
 
     void clearView();
 
+public: // Events
+    void onClearHover();
+
 public: // Variables
-    bool enabled : 1;
+    WView * view;
 
-    bool wheelEnabled : 1;
-
-#ifdef QT_NEW
-    bool dropEnabled : 1;
+#ifdef QT_4
+    QDeclarativeItem * viewport;
 #endif
 
-    bool dragAccepted : 1;
+    bool hoverActive;
+    bool hoverRetain;
 
-    bool preventStealing : 1;
+    bool wheelEnabled;
 
-    bool hoverEnabled: 1;
-    bool hoverRetain : 1;
+#ifdef QT_NEW
+    bool dropEnabled;
+#endif
 
-    bool moved : 1;
-
-    bool hovered : 1;
-
-    bool pressed   : 1;
-    bool longPress : 1;
-
-    bool doubleClick : 1;
-
-    bool dragX : 1;
-    bool dragY : 1;
-
-    bool stealMouse : 1;
-
-    WDeclarativeDrag * drag;
-
-    QPointF startScene;
-
-    qreal startX;
-    qreal startY;
-
-    QPointF lastPos;
-    QPointF lastScenePos;
-
-    Qt::MouseButton  lastButton;
-    Qt::MouseButtons lastButtons;
-
-    Qt::KeyboardModifiers lastModifiers;
-
-    QBasicTimer pressAndHoldTimer;
+    bool dragAccepted;
 
     Qt::CursorShape cursor;
     Qt::CursorShape cursorDrop;

@@ -35,7 +35,6 @@
 // Forward declarations
 class QDeclarativeItem;
 class WViewPrivate;
-class WDeclarativeMouseEvent;
 
 //-------------------------------------------------------------------------------------------------
 // WDeclarativeKeyEvent
@@ -551,9 +550,15 @@ signals:
     void idleChanged     ();
     void idleDelayChanged();
 
-    void mousePressed      (WDeclarativeMouseEvent * event);
-    void mouseReleased     (WDeclarativeMouseEvent * event);
-    void mouseDoubleClicked(WDeclarativeMouseEvent * event);
+#ifdef QT_4
+    void mousePressed      (QDeclarativeMouseEvent * event);
+    void mouseReleased     (QDeclarativeMouseEvent * event);
+    void mouseDoubleClicked(QDeclarativeMouseEvent * event);
+#else
+    void mousePressed      (QQuickMouseEvent * event);
+    void mouseReleased     (QQuickMouseEvent * event);
+    void mouseDoubleClicked(QQuickMouseEvent * event);
+#endif
 
     void keyPressed (WDeclarativeKeyEvent * event);
     void keyReleased(WDeclarativeKeyEvent * event);
