@@ -54,13 +54,23 @@ Flickable
     // Events
     //---------------------------------------------------------------------------------------------
 
+//#QT_4
+    onWidthChanged: if (moving == false) pUpdateX()
+//#ELSE
     onWidthChanged: if (dragging == false) pUpdateX()
+//#END
 
     onCurrentPageChanged: if (animation.running == false) pUpdateX()
 
+//#QT_4
+    onMovingChanged:
+    {
+        if (moving) return;
+//#ELSE
     onDraggingChanged:
     {
         if (dragging) return;
+//#END
 
         var position = contentX - currentPage * width;
 
