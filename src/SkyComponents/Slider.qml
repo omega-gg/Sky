@@ -188,7 +188,7 @@ BaseSlider
                         {
                             return colorHandlePressA;
                         }
-                        else if (handle.containsMouse)
+                        else if (handle.hoverActive)
                         {
                             return colorHandleHoverA;
                         }
@@ -206,7 +206,7 @@ BaseSlider
                         {
                             return colorHandlePressB;
                         }
-                        else if (handle.containsMouse)
+                        else if (handle.hoverActive)
                         {
                             return colorHandleHoverB;
                         }

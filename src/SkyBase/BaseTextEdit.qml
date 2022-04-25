@@ -32,7 +32,7 @@ TextEdit
     //---------------------------------------------------------------------------------------------
 
     property bool isFocused: activeFocus
-    property bool isHovered: mouseArea.containsMouse
+    property bool isHovered: mouseArea.hoverActive
 
     property bool autoSelect: false
 

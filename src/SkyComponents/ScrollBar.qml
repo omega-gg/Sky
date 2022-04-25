@@ -284,9 +284,9 @@ Item
 
                 filter:
                 {
-                    if      (handle.pressed)       return filterHandlePress;
-                    else if (handle.containsMouse) return filterHandleHover;
-                    else                           return filterHandle;
+                    if      (handle.pressed)     return filterHandlePress;
+                    else if (handle.hoverActive) return filterHandleHover;
+                    else                         return filterHandle;
                 }
             }
 

@@ -31,7 +31,7 @@ MouseArea
 
     /* mandatory */ property variant handle
 
-    property bool isHovered: containsMouse
+    property bool isHovered: hoverActive
 
     //---------------------------------------------------------------------------------------------
     // Aliases

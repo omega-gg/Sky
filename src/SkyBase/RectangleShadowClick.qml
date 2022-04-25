@@ -55,7 +55,7 @@ RectangleShadow
 
     function getOpacity()
     {
-        if (mouseArea.containsMouse)
+        if (mouseArea.hoverActive)
         {
             if (mouseArea.pressed) return 1.0;
             else                   return 0.5;
@@ -96,8 +96,8 @@ RectangleShadow
 
         cursor: Qt.PointingHandCursor
 
-        onEntered: rectangleShadowClick.entered()
-        onExited : rectangleShadowClick.exited ()
+        onHoverEntered: rectangleShadowClick.entered()
+        onHoverExited : rectangleShadowClick.exited ()
 
         /* QML_EVENT */ onPressed: function(mouse) { rectangleShadowClick.pressed(mouse); }
         /* QML_EVENT */ onClicked: function(mouse) { rectangleShadowClick.clicked(mouse); }

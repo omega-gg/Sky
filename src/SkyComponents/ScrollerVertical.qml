@@ -33,13 +33,13 @@ Item
 
     /* mandatory */ property variant scrollArea
 
-    property bool isHoveredA: (mouseAreaUp.containsMouse
+    property bool isHoveredA: (mouseAreaUp.hoverActive
                                ||
                                (visible
                                 &&
                                 scrollArea.dragAccepted && scrollArea.mouseY < size))
 
-    property bool isHoveredB: (mouseAreaDown.containsMouse
+    property bool isHoveredB: (mouseAreaDown.hoverActive
                                ||
                                (visible
                                 &&

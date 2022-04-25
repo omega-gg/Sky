@@ -33,7 +33,7 @@ TextBase
 
     property bool isFocused: activeFocus
 
-    property bool isHovered: mouseArea.containsMouse
+    property bool isHovered: mouseArea.hoverActive
     property bool isPressed: mouseArea.pressed
 
     //---------------------------------------------------------------------------------------------
@@ -80,8 +80,8 @@ TextBase
 
         cursor: Qt.PointingHandCursor
 
-        onEntered: textClick.entered()
-        onExited : textClick.exited ()
+        onHoverEntered: textClick.entered()
+        onHoverExited : textClick.exited ()
 
         /* QML_EVENT */ onPressed: function(mouse) { textClick.pressed(mouse); }
         /* QML_EVENT */ onClicked: function(mouse) { textClick.clicked(mouse); }

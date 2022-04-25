@@ -103,7 +103,7 @@ TextBase
             else cursor = Qt.ArrowCursor;
         }
 
-        onExited: cursor = Qt.ArrowCursor
+        onHoverExited: cursor = Qt.ArrowCursor
 
         onReleased:
         {

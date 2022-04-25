@@ -33,7 +33,7 @@ MouseArea
 
     property bool isFocused: activeFocus
 
-    property bool isHovered: containsMouse
+    property bool isHovered: hoverActive
 
     property bool isHighlighted: (highlighted || (checkable && (checked || isPressed)))
 

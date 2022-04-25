@@ -173,7 +173,7 @@ Item
 
             anchors.bottomMargin: border.size
 
-            visible: (isSelected || mouseArea.containsMouse)
+            visible: (isSelected || mouseArea.hoverActive)
 
             gradient: Gradient
             {
@@ -189,7 +189,7 @@ Item
                             {
                                 return st.itemList_colorSelectFocusA;
                             }
-                            else if (mouseArea.containsMouse)
+                            else if (mouseArea.hoverActive)
                             {
                                 return st.itemList_colorSelectHoverA;
                             }
@@ -215,7 +215,7 @@ Item
                             {
                                 return st.itemList_colorSelectFocusB;
                             }
-                            else if (mouseArea.containsMouse)
+                            else if (mouseArea.hoverActive)
                             {
                                 return st.itemList_colorSelectHoverB;
                             }
@@ -273,10 +273,10 @@ Item
 
             color:
             {
-                if      (pSelected || pConfirm)   return st.itemList_colorTextSelected;
-                else if (isCurrent)               return st.itemList_colorTextCurrent;
-                else if (mouseArea.containsMouse) return st.itemList_colorTextHover;
-                else                              return st.itemList_colorText;
+                if      (pSelected || pConfirm) return st.itemList_colorTextSelected;
+                else if (isCurrent)             return st.itemList_colorTextCurrent;
+                else if (mouseArea.hoverActive) return st.itemList_colorTextHover;
+                else                            return st.itemList_colorText;
             }
 
             style: st.text_sunken

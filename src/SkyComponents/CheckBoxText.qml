@@ -86,7 +86,7 @@ MouseArea
 
         enabled: checkBoxText.enabled
 
-        isHovered: (checkBoxText.containsMouse || containsMouse)
+        isHovered: (checkBoxText.hoverActive || hoverActive)
 
         cursor: Qt.PointingHandCursor
 

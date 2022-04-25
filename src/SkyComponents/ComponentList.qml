@@ -107,15 +107,15 @@ MouseArea
                 {
                     if (isCurrent)
                     {
-                        if (checkHover && containsMouse)
+                        if (checkHover && hoverActive)
                         {
                              return st.itemList_colorSelectFocusA;
                         }
                         else return st.itemList_colorSelectA;
                     }
-                    else if (pressed)       return st.itemList_colorPressA;
-                    else if (containsMouse) return st.itemList_colorHoverA;
-                    else                    return st.itemList_colorA;
+                    else if (pressed)     return st.itemList_colorPressA;
+                    else if (hoverActive) return st.itemList_colorHoverA;
+                    else                  return st.itemList_colorA;
                 }
             }
 
@@ -127,15 +127,15 @@ MouseArea
                 {
                     if (isCurrent)
                     {
-                        if (checkHover && containsMouse)
+                        if (checkHover && hoverActive)
                         {
                              return st.itemList_colorSelectFocusB;
                         }
                         else return st.itemList_colorSelectB;
                     }
-                    else if (pressed)       return st.itemList_colorPressB;
-                    else if (containsMouse) return st.itemList_colorHoverB;
-                    else                    return st.itemList_colorB;
+                    else if (pressed)     return st.itemList_colorPressB;
+                    else if (hoverActive) return st.itemList_colorHoverB;
+                    else                  return st.itemList_colorB;
                 }
             }
         }
@@ -159,7 +159,7 @@ MouseArea
                 {
                     return st.itemList_colorTextSelected;
                 }
-                else if (containsMouse)
+                else if (hoverActive)
                 {
                     return st.itemList_colorTextHover;
                 }

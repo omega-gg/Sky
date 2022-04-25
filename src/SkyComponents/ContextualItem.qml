@@ -90,7 +90,7 @@ MouseArea
         anchors.top   : parent.top
         anchors.bottom: border.top
 
-        visible: (isSelected || pressed || containsMouse)
+        visible: (isSelected || pressed || hoverActive)
 
         gradient: Gradient
         {
@@ -106,7 +106,7 @@ MouseArea
                         {
                             return st.itemList_colorSelectFocusA;
                         }
-                        else if (containsMouse)
+                        else if (hoverActive)
                         {
                             return st.itemList_colorSelectHoverA;
                         }
@@ -132,7 +132,7 @@ MouseArea
                         {
                             return st.itemList_colorSelectFocusB;
                         }
-                        else if (containsMouse)
+                        else if (hoverActive)
                         {
                             return st.itemList_colorSelectHoverB;
                         }
@@ -194,10 +194,10 @@ MouseArea
 
         color:
         {
-            if      (pSelected)     return st.itemList_colorTextSelected;
-            else if (isCurrent)     return st.itemList_colorTextCurrent;
-            else if (containsMouse) return st.itemList_colorTextHover;
-            else                    return st.itemList_colorText;
+            if      (pSelected)   return st.itemList_colorTextSelected;
+            else if (isCurrent)   return st.itemList_colorTextCurrent;
+            else if (hoverActive) return st.itemList_colorTextHover;
+            else                  return st.itemList_colorText;
         }
 
         style: st.text_sunken

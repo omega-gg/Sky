@@ -79,13 +79,13 @@ ItemTab
     //---------------------------------------------------------------------------------------------
 
 //#QT_4
-    onEntered: setItemHovered  (componentTab)
-    onExited : clearItemHovered()
+    onHoverEntered: setItemHovered  (componentTab)
+    onHoverExited : clearItemHovered()
 
     onPressed: selectTab(index)
 //#ELSE
-    onEntered: parent.setItemHovered  (componentTab)
-    onExited : parent.clearItemHovered()
+    onHoverEntered: parent.setItemHovered  (componentTab)
+    onHoverExited : parent.clearItemHovered()
 
     onPressed: parent.selectTab(index)
 //#END

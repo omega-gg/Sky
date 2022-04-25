@@ -34,7 +34,7 @@ MouseArea
     property bool isFocused: activeFocus
 
     property bool isPressed: (pressed && (pressedButtons & Qt.LeftButton))
-    property bool isHovered: containsMouse
+    property bool isHovered: hoverActive
 
     property bool isDefault   : false
     property bool isSelected  : false

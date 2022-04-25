@@ -32,7 +32,7 @@ MouseArea
     //---------------------------------------------------------------------------------------------
 
     property bool isFocused: textInput.activeFocus
-    property bool isHovered: containsMouse
+    property bool isHovered: hoverActive
 
     property int padding: Math.round((height - cursorHeight) / 2)
 

@@ -31,7 +31,7 @@ MouseArea
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property bool isHovered: containsMouse
+    property bool isHovered: hoverActive
     property bool isCurrent: false
 
     property int textSpacing: st.dp8

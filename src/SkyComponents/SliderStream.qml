@@ -31,7 +31,7 @@ Item
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property bool isHovered: slider.containsMouse
+    property bool isHovered: slider.hoverActive
 
     property bool active: true
 

@@ -76,7 +76,7 @@ BaseScrollBar
             {
                 return st.scrollBar_opacityPress;
             }
-            else if (handle.containsMouse)
+            else if (handle.hoverActive)
             {
                 return st.scrollBar_opacityHover;
             }

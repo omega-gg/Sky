@@ -122,7 +122,7 @@ BasePlayerBrowser
 
         visible: player.hasPreviousTrack
 
-        isHovered: (containsMouse || areaBackward.containsMouse)
+        isHovered: (hoverActive || areaBackward.hoverActive)
 
         isPressed: (pressed || isReturnPressed || areaBackward.pressed || pBackward)
 
@@ -147,7 +147,7 @@ BasePlayerBrowser
 
         visible: player.hasNextTrack
 
-        isHovered: (containsMouse || areaForward.containsMouse)
+        isHovered: (hoverActive || areaForward.hoverActive)
 
         isPressed: (pressed || isReturnPressed || areaForward.pressed || pForward)
 
@@ -188,7 +188,7 @@ BasePlayerBrowser
 
         visible: (player.source != "")
 
-        isHovered: (containsMouse || areaPlay.containsMouse)
+        isHovered: (hoverActive || areaPlay.hoverActive)
 
         isPressed: (pressed || isReturnPressed || areaPlay.pressed)
 

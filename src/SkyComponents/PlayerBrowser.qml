@@ -156,7 +156,7 @@ BasePlayerBrowser
         visible: (playerTab == tab) ? player.hasPreviousTrack
                                     : tab   .hasPreviousTrack
 
-        isHovered: (containsMouse || areaBackward.containsMouse)
+        isHovered: (hoverActive || areaBackward.hoverActive)
 
         isPressed: (pressed || isReturnPressed || areaBackward.pressed || pBackward)
 
@@ -190,7 +190,7 @@ BasePlayerBrowser
         visible: (playerTab == tab) ? player.hasNextTrack
                                     : tab   .hasNextTrack
 
-        isHovered: (containsMouse || areaForward.containsMouse)
+        isHovered: (hoverActive || areaForward.hoverActive)
 
         isPressed: (pressed || isReturnPressed || areaForward.pressed || pForward)
 
@@ -221,7 +221,7 @@ BasePlayerBrowser
 
         enabled: (tab != null && tab.isValid)
 
-        isHovered: (containsMouse || areaPlay.containsMouse)
+        isHovered: (hoverActive || areaPlay.hoverActive)
 
         isPressed: (pressed || isReturnPressed || areaPlay.pressed)
 
