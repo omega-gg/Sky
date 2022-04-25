@@ -411,15 +411,8 @@ WResizer::WResizer(ResizeType type, QQuickItem * parent)
         XSendEvent(display, QX11Info::appRootWindow(d->view->x11Info().screen()), false,
                    SubstructureRedirectMask | SubstructureNotifyMask, &xev);
     }
-    else
-    {
-        d->pressed = true;
-
-        d->startResize(event);
-    }
+    else d->startResize(event);
 #else
-    d->pressed = true;
-
     d->startResize(event);
 #endif
 }
