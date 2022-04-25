@@ -29,6 +29,7 @@
 // Qt private includes
 #ifdef QT_4
 #include <private/qdeclarativemousearea_p.h>
+#include <private/qdeclarativeevents_p_p.h>
 #else
 #include <private/qquickmousearea_p.h>
 #include <private/qquickevents_p_p.h>

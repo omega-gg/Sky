@@ -758,6 +758,8 @@ private:
 
     friend class WDeclarativeItem;
     friend class WDeclarativeItemPrivate;
+    friend class WDeclarativeMouseArea;
+    friend class WDeclarativeMouseAreaPrivate;
 };
 
 #endif

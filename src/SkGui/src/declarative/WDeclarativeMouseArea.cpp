@@ -26,6 +26,7 @@
 
 #ifdef QT_4
 // Qt includes
+#include <QCoreApplication>
 #include <QGraphicsScene>
 #include <QGraphicsSceneWheelEvent>
 #endif
@@ -269,8 +270,8 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
 
     QPoint position = d->view->d_func()->mousePos;
 
-    QMouseEvent event(QEvent::MouseButtonPress,
-                      position, mapToGlobal(position), button, button, Qt::NoModifier);
+    QMouseEvent event(QEvent::MouseButtonPress, position, d->view->mapToGlobal(position),
+                      button, button, Qt::NoModifier);
 
     QCoreApplication::sendEvent(this, &event);
 }
@@ -281,8 +282,8 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
 
     QPoint position = d->view->d_func()->mousePos;
 
-    QMouseEvent event(QEvent::MouseButtonRelease,
-                      position, mapToGlobal(position), button, Qt::NoButton, Qt::NoModifier);
+    QMouseEvent event(QEvent::MouseButtonRelease, position, d->view->mapToGlobal(position),
+                      button, Qt::NoButton, Qt::NoModifier);
 
     QCoreApplication::sendEvent(this, &event);
 }
