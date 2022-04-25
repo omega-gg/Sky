@@ -29,7 +29,7 @@
 #ifndef SK_NO_DECLARATIVEMOUSEAREA
 
 // Forward declarations
-class WViewDragData;
+struct WViewDragData;
 
 class SK_GUI_EXPORT WDeclarativeMouseAreaPrivate : public WPrivate
 {
