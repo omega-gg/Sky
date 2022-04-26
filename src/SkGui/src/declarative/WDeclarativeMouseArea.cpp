@@ -360,6 +360,82 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
 // Events
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_NEW
+
+/* virtual */ void WDeclarativeMouseArea::touchEvent(QTouchEvent * event)
+{
+    Q_D(WDeclarativeMouseArea);
+
+    if (d->view == NULL || (acceptedButtons() == Qt::NoButton))
+    {
+        QQuickMouseArea::touchEvent(event);
+
+        return;
+    }
+
+#ifdef QT_5
+    const QList<QTouchEvent::TouchPoint> & points = event->touchPoints();
+#else
+    const QList<QTouchEvent::TouchPoint> & points = event->points();
+#endif
+
+    WViewPrivate * p = d->view->d_func();
+
+    int id = p->touchId;
+
+    if (id == -1)
+    {
+        if (points.isEmpty())
+        {
+            QQuickMouseArea::touchEvent(event);
+
+            return;
+        }
+
+        QTouchEvent::TouchPoint point = points.first();
+
+#ifdef QT_5
+        if (point.state() == Qt::TouchPointPressed)
+#else
+        if (point.state() == QEventPoint::Pressed)
+#endif
+        {
+            p->setTouch(point.id());
+        }
+    }
+    else
+    {
+        foreach (const QTouchEvent::TouchPoint & point, points)
+        {
+            if (point.id() != id) continue;
+
+#ifdef QT_5
+            if (point.state() == Qt::TouchPointReleased)
+#else
+            if (point.state() == QEventPoint::Released)
+#endif
+            {
+                p->setTouch(-1);
+            }
+        }
+    }
+
+    QQuickMouseArea::touchEvent(event);
+}
+
+/* virtual */ void WDeclarativeMouseArea::touchUngrabEvent()
+{
+    Q_D(WDeclarativeMouseArea);
+
+    if (d->view == NULL) return;
+
+    d->view->d_func()->setTouch(-1);
+
+    QQuickMouseArea::touchUngrabEvent();
+}
+
+#endif
+
 #ifdef QT_4
 /* virtual */ void WDeclarativeMouseArea::wheelEvent(QGraphicsSceneWheelEvent * event)
 #else

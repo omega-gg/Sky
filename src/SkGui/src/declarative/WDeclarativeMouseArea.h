@@ -112,6 +112,10 @@ protected: // Events
 #ifdef QT_4
     /* virtual */ void wheelEvent(QGraphicsSceneWheelEvent * event);
 #else
+    /* virtual */ void touchEvent(QTouchEvent * event);
+
+    /* virtual */ void touchUngrabEvent();
+
     /* virtual */ void wheelEvent(QWheelEvent * event);
 #endif
 
