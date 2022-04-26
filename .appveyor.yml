@@ -22,6 +22,14 @@ environment:
       platform: win64
       compiler: msvc
 
+    - qt: qt6
+      platform: win64
+      compiler: mingw
+
+    - qt: qt6
+      platform: win64
+      compiler: msvc
+
 build_script:
   - sh environment.sh %compiler%
   - sh environment.sh %qt%

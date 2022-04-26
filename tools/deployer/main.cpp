@@ -367,11 +367,10 @@ void applyEvent(QString * line, int index)
 
     index = line->indexOf(':', index) + 1;
 
+    int indexB = line->indexOf(')', index + 1) + 1;
+
     // NOTE: Removing the function(...) part.
-    while (index < line->length() && line->at(index) != '{')
-    {
-        line->remove(index, 1);
-    }
+    line->remove(index, indexB - index);
 }
 
 void applyConnection(QString * line, int index)
