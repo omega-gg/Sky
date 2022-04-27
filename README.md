@@ -1,4 +1,4 @@
-<a href="http://omega.gg/Sky"><img src="dist/logo.png" alt="Sky kit" width="128px"></a>
+<a href="http://omega.gg/Sky"><img src="dist/logo.png" alt="Sky kit" height="128px"></a>
 ---
 [![Discord](https://img.shields.io/discord/705770212485496852)](http://omega.gg/discord)
 [![azure](https://dev.azure.com/bunjee/Sky/_apis/build/status/omega-gg.Sky)](https://dev.azure.com/bunjee/Sky/_build)
