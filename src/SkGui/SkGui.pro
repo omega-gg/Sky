@@ -72,7 +72,8 @@ INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkGui/private
 
 unix:contains(QT_MAJOR_VERSION, 4) {
-    INCLUDEPATH += $$SK/include/$$QTX/QtCore \
+    INCLUDEPATH += $$SK/include/$$QTX \
+                   $$SK/include/$$QTX/QtCore \
                    $$SK/include/$$QTX/QtGui \
                    $$SK/include/$$QTX/QtDeclarative
 }

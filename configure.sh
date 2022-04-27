@@ -209,8 +209,13 @@ if [ $qt = "qt4" ]; then
         mkdir -p $include/QtDeclarative/private
 
         cp "$Qt"/src/corelib/kernel/*_p.h $include/QtCore/private
+        cp "$Qt"/src/corelib/thread/*_p.h $include/QtCore/private
 
-        cp "$Qt"/src/gui/kernel/*_p.h $include/QtGui/private
+        cp "$Qt"/src/gui/kernel/*_p.h       $include/QtGui/private
+        cp "$Qt"/src/gui/image/*_p.h        $include/QtGui/private
+        cp "$Qt"/src/gui/widgets/*_p.h      $include/QtGui/private
+        cp "$Qt"/src/gui/graphicsview/*_p.h $include/QtGui/private
+        cp "$Qt"/src/gui/effects/*_p.h      $include/QtGui/private
 
         cp "$Qt"/src/declarative/qml/*_p.h           $include/QtDeclarative/private
         cp "$Qt"/src/declarative/graphicsitems/*_p.h $include/QtDeclarative/private
