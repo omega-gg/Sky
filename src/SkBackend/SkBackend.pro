@@ -29,6 +29,11 @@ DEFINES += SK_BACKEND_LIBRARY SK_BACKEND_LOG
 
 ios:DEFINES += SK_NO_TORRENT
 
+win32-msvc*:contains(QT_MAJOR_VERSION, 6) {
+    # Boost: This prevents an issue with linking and Q_MOC_INCLUDE("WTorrentEngine").
+    DEFINES += BOOST_ALL_NO_LIB
+}
+
 unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 
 include(../Sk.pri)
