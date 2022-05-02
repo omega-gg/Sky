@@ -109,14 +109,6 @@ Style
     property int buttonWide_margins: dp12
 //#END
 
-//#ButtonsWindow
-    //---------------------------------------------------------------------------------------------
-    // ButtonsWindow
-
-    property int buttonsWindow_width : dp40
-    property int buttonsWindow_height: dp26
-//#END
-
 //#ButtonMask
     //---------------------------------------------------------------------------------------------
     // ButtonMask
@@ -126,6 +118,21 @@ Style
     property real buttonMask_opacity     : buttonTouch_opacityHover
     property real buttonMask_opacityHover: buttonTouch_opacity
     property real buttonMask_opacityPress: buttonTouch_opacityPress
+//#END
+
+//#ButtonsWindow
+    //---------------------------------------------------------------------------------------------
+    // ButtonsWindow
+
+    property int buttonsWindow_width : dp40
+    property int buttonsWindow_height: dp26
+//#END
+
+//#ButtonsSlide
+    //---------------------------------------------------------------------------------------------
+    // ButtonsSlide
+
+    property int buttonsSlides_margins: dp4
 //#END
 
 //#BaseLabel

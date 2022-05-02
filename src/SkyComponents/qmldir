@@ -44,6 +44,7 @@ BarSettingReset 1.0 BarSettingReset.qml
 
 BaseButtonPush       1.0 BaseButtonPush.qml
 BaseButtonPiano      1.0 BaseButtonPiano.qml
+
 ButtonPush           1.0 ButtonPush.qml
 ButtonPushIcon       1.0 ButtonPushIcon.qml
 ButtonPushFull       1.0 ButtonPushFull.qml
@@ -57,19 +58,25 @@ ButtonPushRight      1.0 ButtonPushRight.qml
 ButtonPushRightIcon  1.0 ButtonPushRightIcon.qml
 ButtonPushRightFull  1.0 ButtonPushRightFull.qml
 ButtonPushOverlay    1.0 ButtonPushOverlay.qml
+
+ButtonRound 1.0 ButtonRound.qml
+
 ButtonPiano          1.0 ButtonPiano.qml
 ButtonPianoIcon      1.0 ButtonPianoIcon.qml
 ButtonPianoFull      1.0 ButtonPianoFull.qml
 ButtonPianoAction    1.0 ButtonPianoAction.qml
 ButtonPianoWindow    1.0 ButtonPianoWindow.qml
 ButtonPianoReset     1.0 ButtonPianoReset.qml
-ButtonRound          1.0 ButtonRound.qml
+
 ButtonCheck          1.0 ButtonCheck.qml
 ButtonCheckLabel     1.0 ButtonCheckLabel.qml
+
 ButtonImage          1.0 ButtonImage.qml
 ButtonImageBorders   1.0 ButtonImageBorders.qml
-ButtonMask           1.0 ButtonMask.qml
-ButtonStream         1.0 ButtonStream.qml
+
+ButtonMask 1.0 ButtonMask.qml
+
+ButtonStream 1.0 ButtonStream.qml
 
 ButtonsCheck 1.0 ButtonsCheck.qml
 ButtonsItem  1.0 ButtonsItem.qml

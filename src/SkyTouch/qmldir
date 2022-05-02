@@ -20,6 +20,7 @@ ButtonWideFull   1.0 ButtonWideFull.qml
 ButtonMask 1.0 ButtonMask.qml
 
 ButtonsWindow 1.0 ButtonsWindow.qml
+ButtonsSlide  1.0 ButtonsSlide.qml
 
 BaseLabel    1.0 BaseLabel.qml
 Label        1.0 Label.qml
