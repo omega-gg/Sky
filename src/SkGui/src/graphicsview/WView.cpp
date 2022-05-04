@@ -563,7 +563,7 @@ void WViewPrivate::init(QQuickItem * item)
 #endif
 
 #ifndef SK_WIN_NATIVE
-    QObject::connect(sk, SIGNAL(aboutToQuit()), q, SLOT(onClose()));
+    QObject::connect(sk, SIGNAL(aboutToQuit()), q, SLOT(onBeforeClose()));
 #endif
 
     QObject::connect(sk, SIGNAL(cursorVisibleChanged()), q, SLOT(onCursorVisibleChanged()));
@@ -1498,7 +1498,7 @@ void WViewPrivate::onMessageUpdated()
 
 //-------------------------------------------------------------------------------------------------
 
-void WViewPrivate::onClose()
+void WViewPrivate::onBeforeClose()
 {
     if (closed) return;
 

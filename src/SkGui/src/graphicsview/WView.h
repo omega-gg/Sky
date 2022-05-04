@@ -717,7 +717,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onMessageUpdated())
 #endif
 
-    Q_PRIVATE_SLOT(d_func(), void onClose())
+    Q_PRIVATE_SLOT(d_func(), void onBeforeClose())
 
     Q_PRIVATE_SLOT(d_func(), void onCursorVisibleChanged())
 

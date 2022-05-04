@@ -168,7 +168,7 @@ public: // Slots
     void onMessageUpdated();
 #endif
 
-    void onClose();
+    void onBeforeClose();
 
     void onCursorVisibleChanged();
 
