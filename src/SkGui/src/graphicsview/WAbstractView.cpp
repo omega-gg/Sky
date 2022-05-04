@@ -68,7 +68,7 @@ static const int ABSTRACTVIEW_DELAY = 5000;
 //-------------------------------------------------------------------------------------------------
 // Global variables
 
-QWindow * view = NULL;
+QWindow * window = NULL;
 
 int count = 0;
 #endif
@@ -87,11 +87,11 @@ WAbstractViewPrivate::WAbstractViewPrivate(WAbstractView * p) : WPrivate(p) {}
 #ifdef QT_NEW
     count--;
 
-    if (count == 0 && view)
+    if (count == 0 && window)
     {
-        delete view;
+        delete window;
 
-        view = NULL;
+        window = NULL;
     }
 #endif
 }
@@ -534,14 +534,14 @@ bool WAbstractViewPrivate::isWindows10()
 // FIXME Qt5 Windows: We need to create a QWindow to receive QScreen events.
 void WAbstractViewPrivate::onCreate()
 {
-    view = new QWindow;
+    window = new QWindow;
 
-    view->setFlags(Qt::Tool | Qt::FramelessWindowHint);
+    window->setFlags(Qt::Tool | Qt::FramelessWindowHint);
 
-    view->resize(0, 0);
+    window->resize(0, 0);
 
-    view->show();
-    view->hide();
+    window->show();
+    window->hide();
 }
 
 void WAbstractViewPrivate::onMove()
