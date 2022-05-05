@@ -1056,6 +1056,10 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWindow * parent, Qt::Win
 #endif
 }
 
+#endif
+
+//#ifdef SK_WIN_NATIVE
+
 //-------------------------------------------------------------------------------------------------
 // Protected virtual functions
 //-------------------------------------------------------------------------------------------------
@@ -1066,6 +1070,10 @@ WAbstractView::WAbstractView(WAbstractViewPrivate * p, QWindow * parent, Qt::Win
 {
     close();
 }
+
+//#endif
+
+#ifdef SK_WIN_NATIVE
 
 //-------------------------------------------------------------------------------------------------
 // Properties

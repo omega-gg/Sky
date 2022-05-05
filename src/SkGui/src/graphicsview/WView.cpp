@@ -3051,7 +3051,7 @@ void WView::hoverLeave()
     close();
 }
 
-#ifdef SK_WIN_NATIVE
+//#ifdef SK_WIN_NATIVE
 
 //-------------------------------------------------------------------------------------------------
 // WAbstractView reimplementation
@@ -3090,7 +3090,7 @@ void WView::hoverLeave()
     close();
 }
 
-#endif
+//#endif
 
 //-------------------------------------------------------------------------------------------------
 // Properties

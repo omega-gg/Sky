@@ -113,7 +113,7 @@ public: // Interface
     Q_INVOKABLE void setIcon (const QIcon   & icon);
     Q_INVOKABLE void setTitle(const QString & title);
 #endif
-#endif
+#endif // SK_WIN_NATIVE
 
 #ifdef Q_OS_WIN
     Q_INVOKABLE void setWindowSnap    (bool enabled);
@@ -130,12 +130,17 @@ protected: // Events
 #else
     /* virtual */ bool nativeEvent(const QByteArray & event, void * msg, qintptr * result);
 #endif
+#endif // SK_WIN_NATIVE
 
+//#ifdef SK_WIN_NATIVE
+// NOTE: We need these functions for binary compatibility.
 protected: // Virtual functions
     virtual void onStateChanged(Qt::WindowState state); // {}
 
     virtual void onClose();
+//#endif
 
+#ifdef SK_WIN_NATIVE
 public: // Properties
     WId winId() const;
 
@@ -164,7 +169,7 @@ public: // Properties
     qreal opacity() const;
     void  setOpacity(qreal level);
 #endif
-#endif
+#endif // SK_WIN_NATIVE
 
 private:
     W_DECLARE_PRIVATE(WAbstractView)
@@ -177,7 +182,7 @@ private:
 #endif
 
     Q_PRIVATE_SLOT(d_func(), void onFocus())
-#endif
+#endif // SK_WIN_NATIVE
 };
 
 #include <private/WAbstractView_p>
