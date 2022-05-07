@@ -35,11 +35,16 @@ BaseButton
 
     property int size: st.buttonTouch_size
 
-    property int margins: st.buttonsSlides_margins
+    property int margins: st.buttonsSlide_margins
 
     property int currentIndex: -1
 
     property bool enableFilter: true
+
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    property bool pActive: (handle.pressed || animation.running)
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -50,6 +55,8 @@ BaseButton
     //---------------------------------------------------------------------------------------------
 
     property alias background: background
+
+    property alias handle    : handle
     property alias foreground: foreground
 
     property alias repeater: repeater
@@ -62,6 +69,19 @@ BaseButton
     height: size
 
     cursor: Qt.PointingHandCursor
+
+    //---------------------------------------------------------------------------------------------
+    // Events
+    //---------------------------------------------------------------------------------------------
+
+    onPressed: pApplyX(mouseX)
+
+    onCurrentIndexChanged:
+    {
+        if (animation.running) return;
+
+        handle.x = size * currentIndex;
+    }
 
     //---------------------------------------------------------------------------------------------
     // Functions
@@ -90,6 +110,57 @@ BaseButton
     }
 
     //---------------------------------------------------------------------------------------------
+    // Private
+
+    function pApplyX(x)
+    {
+        var index = Math.floor(x / size);
+
+        var from = handle.x;
+        var to   = size * index;
+
+        if (from != to)
+        {
+            animation.from = from;
+            animation.to   = to;
+
+            animation.running = true;
+        }
+
+        currentIndex = index;
+    }
+
+    function pGetFilter(index)
+    {
+        if (enableFilter)
+        {
+            if (currentIndex == index && pActive == false)
+            {
+                 return getFilter(true);
+            }
+            else return getFilter(false);
+        }
+        else return null;
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Animations
+    //---------------------------------------------------------------------------------------------
+
+    NumberAnimation
+    {
+        id: animation
+
+        target: handle
+
+        property: "x"
+
+        duration: st.duration_normal
+
+        easing.type: st.easing
+    }
+
+    //---------------------------------------------------------------------------------------------
     // Children
     //---------------------------------------------------------------------------------------------
 
@@ -111,21 +182,44 @@ BaseButton
 //#END
     }
 
-    Rectangle
+    MouseArea
     {
-        id: foreground
+        id: handle
 
-        width : size - margins * 2
-        height: width
+        anchors.top   : parent.top
+        anchors.bottom: parent.bottom
 
-        x: size * currentIndex + margins
-        y: margins
+        width: size
 
-        radius: height
+        visible: (currentIndex >= 0 && currentIndex < count)
 
-        visible: (currentIndex >= 0 && currentIndex < count - 1)
+        hoverEnabled: true
 
-        color: st.buttonTouch_colorHighlight
+        cursor: Qt.PointingHandCursor
+
+        drag.target: handle
+        drag.axis  : Drag.XAxis
+
+        drag.minimumX: 0
+        drag.maximumX: parent.width - width
+
+        onReleased: pApplyX(x + width / 2)
+
+        Rectangle
+        {
+            id: foreground
+
+            anchors.fill: parent
+
+            anchors.margins: margins
+
+            radius: height
+
+            opacity: (pActive) ? st.buttonsSlide_opacityPress : 1.0
+
+            color: (pActive) ? st.buttonsSlide_colorHandlePress
+                             : st.buttonsSlide_colorHandle
+        }
     }
 
     Repeater
@@ -155,7 +249,7 @@ BaseButton
 
                 source: cover
 
-                filter: (enableFilter) ? getFilter(currentIndex == index) : null
+                filter: pGetFilter(index)
             }
         }
     }

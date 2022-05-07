@@ -132,7 +132,12 @@ Style
     //---------------------------------------------------------------------------------------------
     // ButtonsSlide
 
-    property int buttonsSlides_margins: dp4
+    property int buttonsSlide_margins: dp4
+
+    property real buttonsSlide_opacityPress: 0.3
+
+    property color buttonsSlide_colorHandle     : buttonTouch_colorHighlight
+    property color buttonsSlide_colorHandlePress: icon1_colorA
 //#END
 
 //#BaseLabel

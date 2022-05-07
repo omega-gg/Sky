@@ -121,10 +121,15 @@ Flickable
 
     function pApplyPage(index)
     {
-        animation.from = contentX;
-        animation.to   = index * width;
+        var to = width * index;
 
-        animation.running = true;
+        if (contentX != to)
+        {
+            animation.from = contentX;
+            animation.to   = to;
+
+            animation.running = true;
+        }
 
         currentPage = index;
     }
