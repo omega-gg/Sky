@@ -128,16 +128,16 @@ Style
     property int buttonsWindow_height: dp26
 //#END
 
-//#ButtonsSlide
+//#ButtonSlide
     //---------------------------------------------------------------------------------------------
-    // ButtonsSlide
+    // ButtonSlide
 
-    property int buttonsSlide_margins: dp4
+    property int buttonSlide_margins: dp4
 
-    property real buttonsSlide_opacityPress: 0.3
+    property real buttonSlide_opacityPress: 0.3
 
-    property color buttonsSlide_colorHandle     : buttonTouch_colorHighlight
-    property color buttonsSlide_colorHandlePress: icon1_colorA
+    property color buttonSlide_colorHandle     : buttonTouch_colorHighlight
+    property color buttonSlide_colorHandlePress: icon1_colorA
 //#END
 
 //#BaseLabel

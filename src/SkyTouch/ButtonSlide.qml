@@ -35,7 +35,7 @@ BaseButton
 
     property int size: st.buttonTouch_size
 
-    property int margins: st.buttonsSlide_margins
+    property int margins: st.buttonSlide_margins
 
     property int currentIndex: -1
 
@@ -215,10 +215,10 @@ BaseButton
 
             radius: height
 
-            opacity: (pActive) ? st.buttonsSlide_opacityPress : 1.0
+            opacity: (pActive) ? st.buttonSlide_opacityPress : 1.0
 
-            color: (pActive) ? st.buttonsSlide_colorHandlePress
-                             : st.buttonsSlide_colorHandle
+            color: (pActive) ? st.buttonSlide_colorHandlePress
+                             : st.buttonSlide_colorHandle
         }
     }
 
