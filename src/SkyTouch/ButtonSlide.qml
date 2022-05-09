@@ -72,6 +72,9 @@ BaseButton
     width : size * count
     height: size
 
+    // NOTE: This is useful when we want a custom 'highlighted' behavior.
+    highlighted: (isActive == false)
+
     cursor: Qt.PointingHandCursor
 
     //---------------------------------------------------------------------------------------------
@@ -150,7 +153,7 @@ BaseButton
     {
         if (enableFilter)
         {
-            if (currentIndex == index && isActive == false)
+            if (currentIndex == index && highlighted)
             {
                  return getFilter(true);
             }
@@ -231,10 +234,10 @@ BaseButton
 
             radius: height
 
-            opacity: (isActive) ? st.buttonSlide_opacityPress : 1.0
+            opacity: (highlighted) ? 1.0 : st.buttonSlide_opacityPress
 
-            color: (isActive) ? st.buttonSlide_colorHandlePress
-                              : st.buttonSlide_colorHandle
+            color: (highlighted) ? st.buttonSlide_colorHandle
+                                 : st.buttonSlide_colorHandlePress
 
 //#QT_4
             smooth: true
