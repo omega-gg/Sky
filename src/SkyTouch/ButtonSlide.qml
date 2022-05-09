@@ -80,12 +80,9 @@ BaseButton
 
     onPressed: pApplyX(mouseX)
 
-    onCurrentIndexChanged:
-    {
-        if (pUdpate == false) return;
+    onSizeChanged: pApplyHandle()
 
-        handle.x = size * currentIndex;
-    }
+    onCurrentIndexChanged: if (pUdpate) pApplyHandle()
 
     //---------------------------------------------------------------------------------------------
     // Functions
@@ -125,6 +122,11 @@ BaseButton
 
     //---------------------------------------------------------------------------------------------
     // Private
+
+    function pApplyHandle()
+    {
+        handle.x = size * currentIndex;
+    }
 
     function pApplyX(x)
     {
@@ -233,6 +235,10 @@ BaseButton
 
             color: (isActive) ? st.buttonSlide_colorHandlePress
                               : st.buttonSlide_colorHandle
+
+//#QT_4
+            smooth: true
+//#END
         }
     }
 
