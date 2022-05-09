@@ -31,6 +31,8 @@ BaseButton
     // Properties
     //---------------------------------------------------------------------------------------------
 
+    /* read */ property bool isActive: (handle.pressed || animation.running)
+
     /* read */ property int count: model.count
 
     property int size: st.buttonTouch_size
@@ -44,13 +46,15 @@ BaseButton
     //---------------------------------------------------------------------------------------------
     // Private
 
-    property bool pActive: (handle.pressed || animation.running)
+    property bool pUdpate: true
 
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
     property alias model: repeater.model
+
+    property alias position: handle.x
 
     //---------------------------------------------------------------------------------------------
 
@@ -78,7 +82,7 @@ BaseButton
 
     onCurrentIndexChanged:
     {
-        if (animation.running) return;
+        if (pUdpate == false) return;
 
         handle.x = size * currentIndex;
     }
@@ -86,6 +90,16 @@ BaseButton
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
+
+    // NOTE: Can be useful when we're working in tandem with a FlickablePages.
+    function applyIndex(index)
+    {
+        pUdpate = false;
+
+        currentIndex = index;
+
+        pUdpate = true;
+    }
 
     function getSourceHeight(margins)
     {
@@ -127,14 +141,14 @@ BaseButton
             animation.running = true;
         }
 
-        currentIndex = index;
+        applyIndex(index);
     }
 
     function pGetFilter(index)
     {
         if (enableFilter)
         {
-            if (currentIndex == index && pActive == false)
+            if (currentIndex == index && isActive == false)
             {
                  return getFilter(true);
             }
@@ -215,10 +229,10 @@ BaseButton
 
             radius: height
 
-            opacity: (pActive) ? st.buttonSlide_opacityPress : 1.0
+            opacity: (isActive) ? st.buttonSlide_opacityPress : 1.0
 
-            color: (pActive) ? st.buttonSlide_colorHandlePress
-                             : st.buttonSlide_colorHandle
+            color: (isActive) ? st.buttonSlide_colorHandlePress
+                              : st.buttonSlide_colorHandle
         }
     }
 

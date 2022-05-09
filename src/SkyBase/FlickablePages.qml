@@ -31,11 +31,22 @@ Flickable
     // Properties
     //---------------------------------------------------------------------------------------------
 
+//#QT_4
+    /* read */ property bool isActive: (moving || animation.running)
+//#ELSE
+    /* read */ property bool isActive: (dragging || animation.running)
+//#END
+
     property int count: 1
 
     property int currentPage: 0
 
     property real ratioVelocity: st.flickablePages_ratioVelocity
+
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    property bool pUdpate: true
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -60,18 +71,40 @@ Flickable
     onWidthChanged: if (dragging == false) pUpdateX()
 //#END
 
-    onCurrentPageChanged: if (animation.running == false) pUpdateX()
+    onCurrentPageChanged: if (pUdpate) pUpdateX()
 
 //#QT_4
-    onMovingChanged:
-    {
-        if (moving) return;
+    onMovingChanged: if (moving == false) pApplyPosition()
 //#ELSE
-    onDraggingChanged:
-    {
-        if (dragging) return;
+    onDraggingChanged: if (dragging == false) pApplyPosition()
 //#END
 
+    //---------------------------------------------------------------------------------------------
+    // Functions
+    //---------------------------------------------------------------------------------------------
+
+    function setPage(index)
+    {
+        if (index < 0 || index >= count) return;
+
+        pApplyPage(index);
+    }
+
+    // NOTE: Can be useful when we're working in tandem with a ButtonSlide.
+    function applyPage(index)
+    {
+        pUdpate = false;
+
+        currentPage = index;
+
+        pUdpate = true;
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    function pApplyPosition()
+    {
         var position = contentX - currentPage * width;
 
         if (position == 0) return;
@@ -105,20 +138,6 @@ Flickable
         }
     }
 
-    //---------------------------------------------------------------------------------------------
-    // Functions
-    //---------------------------------------------------------------------------------------------
-
-    function setPage(index)
-    {
-        if (index < 0 || index >= count) return;
-
-        pApplyPage(index);
-    }
-
-    //---------------------------------------------------------------------------------------------
-    // Private
-
     function pApplyPage(index)
     {
         var to = width * index;
@@ -131,7 +150,7 @@ Flickable
             animation.running = true;
         }
 
-        currentPage = index;
+        applyPage(index);
     }
 
     function pUpdateX()
