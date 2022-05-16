@@ -36,8 +36,10 @@ OTHER_FILES += 3rdparty.sh \
                include/generate.sh \
                src/SkyBase/qmldir \
                src/SkyBase/*.qml \
+               src/SkyComponents/icons.sh \
                src/SkyComponents/qmldir \
                src/SkyComponents/*.qml \
+               src/SkyTouch/icons.sh \
                src/SkyTouch/qmldir \
                src/SkyTouch/*.qml \
                src/SkyPresentation/qmldir \

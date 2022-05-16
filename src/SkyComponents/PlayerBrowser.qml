@@ -212,7 +212,8 @@ BasePlayerBrowser
         width : buttonPrevious.width
         height: buttonPrevious.height
 
-        iconWidth : buttonPrevious.iconWidth
+        // FIXME fontawesome: Taking the svg viewBox into account.
+        iconWidth : Math.round(iconHeight * 0.75)
         iconHeight: buttonPrevious.iconHeight
 
         borderSize: buttonPrevious.borderSize
