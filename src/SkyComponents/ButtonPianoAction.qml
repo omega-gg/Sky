@@ -51,8 +51,8 @@ ButtonPianoFull
 
         opacity: itemIcon.opacity
 
-        source    : st.icon12x12_contextualDown
-        sourceSize: st.size12x12
+        source    : st.icon10x10_contextualDown
+        sourceSize: st.size10x10
 
         sourceArea: Qt.size(parent.height, parent.height)
 

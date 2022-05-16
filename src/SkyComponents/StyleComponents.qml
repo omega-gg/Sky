@@ -1124,7 +1124,7 @@ Style
 //#icons_contextual:ButtonsItem
     property url icon_contextualDown: "icons/caret-down.svg"
 
-    property url icon12x12_contextualDown: icon_contextualDown
+    property url icon10x10_contextualDown: icon_contextualDown
 //#END
 
 //#icons_external

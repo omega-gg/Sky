@@ -63,8 +63,8 @@ Item
         width : st.buttonsItem_buttonWidth
         height: st.buttonsItem_buttonHeight
 
-        icon          : st.icon12x12_contextualDown
-        iconSourceSize: st.size12x12
+        icon          : st.icon10x10_contextualDown
+        iconSourceSize: st.size10x10
 
         cursor: Qt.PointingHandCursor
 
