@@ -144,7 +144,7 @@
         }
         else return application;
     }
-#ifdef QT_4
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     else return new QApplication(argc, argv);
 #else
     else return new QGuiApplication(argc, argv);

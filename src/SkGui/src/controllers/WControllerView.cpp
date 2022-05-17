@@ -25,12 +25,15 @@
 #ifndef SK_NO_CONTROLLERVIEW
 
 // Qt includes
-#ifdef QT_4
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
 #include <QApplication>
+#else
+#include <QGuiApplication>
+#endif
+#ifdef QT_4
 #include <QGraphicsObject>
 #include <QStyleOptionGraphicsItem>
 #else
-#include <QGuiApplication>
 #include <QScreen>
     #ifdef SK_SOFTWARE
     #include <QQuickWindow>

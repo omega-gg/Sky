@@ -24,7 +24,8 @@
 #define WAPPLICATION_H
 
 // Qt includes
-#ifdef QT_4
+#include <QtGlobal>
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
 #include <QApplication>
 #else
 #include <QGuiApplication>
