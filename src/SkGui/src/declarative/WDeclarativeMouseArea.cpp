@@ -337,16 +337,26 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
 
         WViewScene * mainScene = static_cast<WViewScene *> (scene);
 
-        if (mainScene)
+        if (mainScene == NULL)
         {
-             d->view = mainScene->view;
+            d->clearView();
+
+            d->view = NULL;
         }
-        else d->view = NULL;
+        else d->view = mainScene->view;
 #else
-        d->view = static_cast<WView *> (value.window);
+        QQuickWindow * window = value.window;
+
+        if (window == NULL)
+        {
+            d->clearView();
+
+            d->view = NULL;
+        }
+        else d->view = static_cast<WView *> (window);
 #endif
 
-        if (d->view == NULL) d->clearView();
+        emit viewChanged();
     }
 
 #ifdef QT_4
