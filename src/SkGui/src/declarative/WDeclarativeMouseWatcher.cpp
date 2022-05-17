@@ -24,8 +24,10 @@
 
 #ifndef SK_NO_DECLARATIVEMOUSEWATCHER
 
+#ifdef QT_4
 // Qt includes
 #include <QGraphicsSceneMouseEvent>
+#endif
 
 // Sk includes
 #include <WControllerView>

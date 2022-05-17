@@ -24,9 +24,13 @@
 #define WAPPLICATION_H
 
 // Qt includes
+#ifdef QT_4
 #include <QApplication>
+#else
+#include <QGuiApplication>
 #ifdef QT_6
-#include <QQuickWindow>
+    #include <QQuickWindow>
+#endif
 #endif
 
 // Sk includes
@@ -34,20 +38,30 @@
 
 #ifndef SK_NO_APPLICATION
 
+#ifdef QT_4
 class SK_GUI_EXPORT WApplication : public QApplication
+#else
+class SK_GUI_EXPORT WApplication : public QGuiApplication
+#endif
 {
 public: // Static functions
-#ifdef QT_OLD
+#ifdef QT_4
     static QApplication * create(int & argc, char ** argv, Sk::Type type = Sk::Single);
+#elif defined(QT_5)
+    static QGuiApplication * create(int & argc, char ** argv, Sk::Type type = Sk::Single);
 #else
     // NOTE Qt: Passing a Null api will set the default renderer.
     static
-    QApplication * create(int & argc, char ** argv, Sk::Type type = Sk::Single,
-                          QSGRendererInterface::GraphicsApi api = QSGRendererInterface::Null);
+    QGuiApplication * create(int & argc, char ** argv, Sk::Type type = Sk::Single,
+                             QSGRendererInterface::GraphicsApi api = QSGRendererInterface::Null);
 #endif
 
 protected: // Static functions
+#ifdef QT_4
     static QApplication * createApplication(int & argc, char ** argv, Sk::Type type);
+#else
+    static QGuiApplication * createApplication(int & argc, char ** argv, Sk::Type type);
+#endif
 };
 
 #endif // SK_NO_APPLICATION

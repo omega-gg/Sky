@@ -25,20 +25,21 @@
 #ifndef SK_NO_CONTROLLERVIEW
 
 // Qt includes
-#include <QApplication>
-#ifdef QT_OLD
-#include <QDesktopWidget>
-#endif
 #ifdef QT_4
+#include <QApplication>
 #include <QGraphicsObject>
 #include <QStyleOptionGraphicsItem>
 #else
+#include <QGuiApplication>
 #include <QScreen>
     #ifdef SK_SOFTWARE
     #include <QQuickWindow>
     #endif
 #include <QQuickItem>
 #include <QQuickItemGrabResult>
+#endif
+#ifdef QT_OLD
+#include <QDesktopWidget>
 #endif
 #include <QPainter>
 #include <QDir>

@@ -41,7 +41,11 @@
 #ifndef QTSINGLEAPPLICATION_H
 #define QTSINGLEAPPLICATION_H
 
+#ifdef QT_4
 #include <QApplication>
+#else
+#include <QGuiApplication>
+#endif
 
 // Sk includes
 #include <Sk>
@@ -64,7 +68,11 @@ class QtLocalPeer;
 #  define QT_QTSINGLEAPPLICATION_EXPORT
 #endif
 
+#ifdef QT_4
 class SK_GUI_EXPORT QtSingleApplication : public QApplication
+#else
+class SK_GUI_EXPORT QtSingleApplication : public QGuiApplication
+#endif
 {
     Q_OBJECT
 

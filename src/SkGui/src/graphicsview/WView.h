@@ -298,7 +298,7 @@ public: // Interface
     //---------------------------------------------------------------------------------------------
     // Drag
 
-    Q_INVOKABLE bool testDrag(const QPointF & posA, const QPointF & posB, qreal distance = -1);
+    Q_INVOKABLE bool testDrag(const QPointF & posA, const QPointF & posB, qreal distance);
 
     Q_INVOKABLE void startDrag(const QString & text, int actions = Qt::CopyAction);
 

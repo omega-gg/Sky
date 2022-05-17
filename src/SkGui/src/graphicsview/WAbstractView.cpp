@@ -26,7 +26,11 @@
 
 #ifdef SK_WIN_NATIVE
 // Qt includes
+#ifdef QT_4
 #include <QApplication>
+#else
+#include <QGuiApplication>
+#endif
 #ifdef QT_OLD
 #include <QDesktopWidget>
 #endif

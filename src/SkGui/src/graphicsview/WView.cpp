@@ -25,11 +25,12 @@
 #ifndef SK_NO_VIEW
 
 // Qt includes
-#include <QApplication>
 #ifdef QT_4
+#include <QApplication>
 #include <QDesktopWidget>
 #include <QGLWidget>
 #else
+#include <QGuiApplication>
 #include <QScreen>
 #endif
 #include <QImageReader>
@@ -1844,13 +1845,7 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 
 /* Q_INVOKABLE */ bool WView::testDrag(const QPointF & posA, const QPointF & posB, qreal distance)
 {
-    if (distance == -1) distance = QApplication::startDragDistance();
-
-    if ((posA - posB).manhattanLength() >= distance)
-    {
-         return true;
-    }
-    else return false;
+    return ((posA - posB).manhattanLength() >= distance);
 }
 
 /* Q_INVOKABLE */ void WView::startDrag(const QString & text, int actions)

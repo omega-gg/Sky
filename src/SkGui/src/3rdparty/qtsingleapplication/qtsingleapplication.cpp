@@ -156,7 +156,11 @@ void QtSingleApplication::sysInit(const QString &appId)
 */
 
 QtSingleApplication::QtSingleApplication(int &argc, char **argv, bool GUIenabled)
+#ifdef QT_4
     : QApplication(argc, argv, GUIenabled)
+#else
+    : QGuiApplication(argc, argv, GUIenabled)
+#endif
 {
     sysInit();
 }
@@ -169,7 +173,11 @@ QtSingleApplication::QtSingleApplication(int &argc, char **argv, bool GUIenabled
 */
 
 QtSingleApplication::QtSingleApplication(const QString &appId, int &argc, char **argv)
+#ifdef QT_4
     : QApplication(argc, argv)
+#else
+    : QGuiApplication(argc, argv)
+#endif
 {
     sysInit(appId);
 }

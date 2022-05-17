@@ -41,11 +41,13 @@
 // Static functions
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_OLD
+#ifdef QT_4
 /* static */ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
+#elif defined(QT_5)
+/* static */ QGuiApplication * WApplication::create(int & argc, char ** argv, Sk::Type type)
 #else
-/* static */ QApplication * WApplication::create(int & argc, char ** argv, Sk::Type type,
-                                                 QSGRendererInterface::GraphicsApi api)
+/* static */ QGuiApplication * WApplication::create(int & argc, char ** argv, Sk::Type type,
+                                                    QSGRendererInterface::GraphicsApi api)
 #endif
 {
 #ifdef QT_4
@@ -81,7 +83,11 @@
     //QApplication::setGraphicsSystem("raster");
 #endif
 
+#ifdef QT_4
     QApplication * application = createApplication(argc, argv, type);
+#else
+    QGuiApplication * application = createApplication(argc, argv, type);
+#endif
 
     if (application == NULL) return NULL;
 
@@ -109,8 +115,13 @@
 // Protected static functions
 //-------------------------------------------------------------------------------------------------
 
-/* static */ QApplication * WApplication::createApplication(int  &  argc,
-                                                            char ** argv, Sk::Type type)
+#ifdef QT_4
+/* static */ QApplication * WApplication::createApplication(int & argc, char ** argv,
+                                                            Sk::Type type)
+#else
+/* static */ QGuiApplication * WApplication::createApplication(int & argc, char ** argv,
+                                                               Sk::Type type)
+#endif
 {
     if (type == Sk::Single)
     {
@@ -133,7 +144,11 @@
         }
         else return application;
     }
+#ifdef QT_4
     else return new QApplication(argc, argv);
+#else
+    else return new QGuiApplication(argc, argv);
+#endif
 }
 
 #endif // SK_NO_APPLICATION
