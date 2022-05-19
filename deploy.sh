@@ -199,13 +199,13 @@ if [ $qt = "qt5" ]; then
 
     QtQuick="QtQuick.2"
 
-    $quick="declarative"
+    quick="declarative"
 
 elif [ $qt = "qt6" ]; then
 
     QtQuick="QtQuick"
 
-    $quick="quick"
+    quick="quick"
 fi
 
 if [ $qt = "qt4" ]; then
