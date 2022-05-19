@@ -481,8 +481,8 @@ else
         cp "$Qt/lib/lib$QtX"Svg.so.$qx               deploy
         cp "$Qt/lib/lib$QtX"Widgets.so.$qx           deploy
         cp "$Qt/lib/lib$QtX"Xml.so.$qx               deploy
-        cp "$Qt/lib/lib$QtX"QtMultimedia.so.$qx      deploy
-        cp "$Qt/lib/lib$QtX"QtMultimediaQuick.so.$qx deploy
+        cp "$Qt/lib/lib$QtX"Multimedia.so.$qx      deploy
+        cp "$Qt/lib/lib$QtX"MultimediaQuick.so.$qx deploy
         cp "$Qt/lib/lib$QtX"XcbQpa.so.$qx            deploy
         cp "$Qt/lib/lib$QtX"DBus.so.$qx              deploy
 
