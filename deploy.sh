@@ -72,7 +72,7 @@ copyAndroid()
 
     if [ $qt = "qt5" ]; then
 
-        cp "$1"/plugins/mediaservice/*.so deploy/mediaservice
+        cp "$1"/plugins/mediaservice/lib*qtmedia_*.so deploy/mediaservice
     fi
 
     cp "$1"/qml/$QtQuick/lib*qtquick2plugin_*.so deploy/$QtQuick
@@ -325,7 +325,7 @@ else
 
         if [ $qt = "qt5" ]; then
 
-            cp "$Qt"/plugins/mediaservice/*.dll deploy/mediaservice
+            cp "$Qt"/plugins/mediaservice/dsengine.dll deploy/mediaservice
         fi
 
         cp "$Qt"/qml/$QtQuick/qtquick2plugin.dll deploy/$QtQuick
@@ -338,55 +338,6 @@ else
 
             cp "$Qt"/qml/QtQml/WorkerScript/workerscriptplugin.dll deploy/QtQml/WorkerScript
             cp "$Qt"/qml/QtQml/WorkerScript/qmldir                 deploy/QtQml/WorkerScript
-        fi
-
-    elif [ $1 = "iOS" ]; then
-
-        cp "$Qt/lib/lib$QtX"Core.a            deploy
-        cp "$Qt/lib/lib$QtX"Gui.a             deploy
-        cp "$Qt/lib/lib$QtX"Network.a         deploy
-        cp "$Qt/lib/lib$QtX"OpenGL.a          deploy
-        cp "$Qt/lib/lib$QtX"Qml.a             deploy
-        cp "$Qt/lib/lib$QtX"Quick.a           deploy
-        cp "$Qt/lib/lib$QtX"Svg.a             deploy
-        cp "$Qt/lib/lib$QtX"Widgets.a         deploy
-        cp "$Qt/lib/lib$QtX"Xml.a             deploy
-        cp "$Qt/lib/lib$QtX"Multimedia.a      deploy
-        cp "$Qt/lib/lib$QtX"MultimediaQuick.a deploy
-
-        if [ $qt = "qt5" ]; then
-
-            cp "$Qt/lib/lib$QtX"XmlPatterns.a deploy
-        else
-            cp "$Qt/lib/lib$QtX"Core5Compat.a deploy
-        fi
-
-        if [ -f "$Qt/lib/lib$QtX"QmlModels.a ]; then
-
-            cp "$Qt/lib/lib$QtX"QmlModels.a       deploy
-            cp "$Qt/lib/lib$QtX"QmlWorkerScript.a deploy
-        fi
-
-        cp "$Qt"/plugins/platforms/libqios.a deploy/platforms
-
-        cp "$Qt"/plugins/imageformats/libqsvg.a  deploy/imageformats
-        cp "$Qt"/plugins/imageformats/libqjpeg.a deploy/imageformats
-
-        if [ $qt = "qt5" ]; then
-
-            cp "$Qt"/plugins/mediaservice/*.a deploy/mediaservice
-        fi
-
-        cp "$Qt"/qml/$QtQuick/libqtquick2plugin.a deploy/$QtQuick
-        cp "$Qt"/qml/$QtQuick/qmldir              deploy/$QtQuick
-
-        cp "$Qt"/qml/QtMultimedia/lib"$quick"_multimedia.a deploy/QtMultimedia
-        cp "$Qt"/qml/QtMultimedia/qmldir                   deploy/QtMultimedia
-
-        if [ $qt = "qt6" ]; then
-
-            cp "$Qt"/qml/QtQml/WorkerScript/libworkerscriptplugin.a deploy/QtQml/WorkerScript
-            cp "$Qt"/qml/QtQml/WorkerScript/qmldir                  deploy/QtQml/WorkerScript
         fi
 
     elif [ $1 = "macOS" ]; then
@@ -432,7 +383,7 @@ else
 
         if [ $qt = "qt5" ]; then
 
-            cp "$Qt"/plugins/mediaservice/*.dylib  deploy/mediaservice
+            cp "$Qt"/plugins/mediaservice/libqavfcamera.dylib deploy/mediaservice
         fi
 
         cp "$Qt"/qml/$QtQuick/libqtquick2plugin.dylib deploy/$QtQuick
@@ -445,6 +396,55 @@ else
 
             cp "$Qt"/qml/QtQml/WorkerScript/libworkerscriptplugin.dylib deploy/QtQml/WorkerScript
             cp "$Qt"/qml/QtQml/WorkerScript/qmldir                      deploy/QtQml/WorkerScript
+        fi
+
+    elif [ $1 = "iOS" ]; then
+
+        cp "$Qt/lib/lib$QtX"Core.a            deploy
+        cp "$Qt/lib/lib$QtX"Gui.a             deploy
+        cp "$Qt/lib/lib$QtX"Network.a         deploy
+        cp "$Qt/lib/lib$QtX"OpenGL.a          deploy
+        cp "$Qt/lib/lib$QtX"Qml.a             deploy
+        cp "$Qt/lib/lib$QtX"Quick.a           deploy
+        cp "$Qt/lib/lib$QtX"Svg.a             deploy
+        cp "$Qt/lib/lib$QtX"Widgets.a         deploy
+        cp "$Qt/lib/lib$QtX"Xml.a             deploy
+        cp "$Qt/lib/lib$QtX"Multimedia.a      deploy
+        cp "$Qt/lib/lib$QtX"MultimediaQuick.a deploy
+
+        if [ $qt = "qt5" ]; then
+
+            cp "$Qt/lib/lib$QtX"XmlPatterns.a deploy
+        else
+            cp "$Qt/lib/lib$QtX"Core5Compat.a deploy
+        fi
+
+        if [ -f "$Qt/lib/lib$QtX"QmlModels.a ]; then
+
+            cp "$Qt/lib/lib$QtX"QmlModels.a       deploy
+            cp "$Qt/lib/lib$QtX"QmlWorkerScript.a deploy
+        fi
+
+        cp "$Qt"/plugins/platforms/libqios.a deploy/platforms
+
+        cp "$Qt"/plugins/imageformats/libqsvg.a  deploy/imageformats
+        cp "$Qt"/plugins/imageformats/libqjpeg.a deploy/imageformats
+
+        if [ $qt = "qt5" ]; then
+
+            cp "$Qt"/plugins/mediaservice/libqavfcamera.a deploy/mediaservice
+        fi
+
+        cp "$Qt"/qml/$QtQuick/libqtquick2plugin.a deploy/$QtQuick
+        cp "$Qt"/qml/$QtQuick/qmldir              deploy/$QtQuick
+
+        cp "$Qt"/qml/QtMultimedia/lib"$quick"_multimedia.a deploy/QtMultimedia
+        cp "$Qt"/qml/QtMultimedia/qmldir                   deploy/QtMultimedia
+
+        if [ $qt = "qt6" ]; then
+
+            cp "$Qt"/qml/QtQml/WorkerScript/libworkerscriptplugin.a deploy/QtQml/WorkerScript
+            cp "$Qt"/qml/QtQml/WorkerScript/qmldir                  deploy/QtQml/WorkerScript
         fi
 
     elif [ $1 = "linux" ]; then
@@ -510,7 +510,7 @@ else
 
         if [ $qt = "qt5" ]; then
 
-            cp "$Qt"/plugins/mediaservice/*.so deploy/mediaservice
+            cp "$Qt"/plugins/mediaservice/libgstcamerabin.so deploy/mediaservice
         fi
 
         cp "$Qt"/plugins/xcbglintegrations/libqxcb-egl-integration.so deploy/xcbglintegrations
