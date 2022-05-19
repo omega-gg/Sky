@@ -77,7 +77,7 @@ copyAndroid()
 
     cp "$1"/qml/$QtQuick/lib*qtquick2plugin_*.so deploy/$QtQuick
 
-    cp "$1"/qml/$QtQuick/lib*$quick_multimedia_*.so deploy/$QtQuick
+    cp "$1"/qml/$QtQuick/lib*"$quick"_multimedia_*.so deploy/$QtQuick
 
     if [ $qt = "qt6" ]; then
 
@@ -331,8 +331,8 @@ else
         cp "$Qt"/qml/$QtQuick/qtquick2plugin.dll deploy/$QtQuick
         cp "$Qt"/qml/$QtQuick/qmldir             deploy/$QtQuick
 
-        cp "$Qt"/qml/QtMultimedia/$quick_multimedia.dll deploy/QtMultimedia
-        cp "$Qt"/qml/QtMultimedia/qmldir                deploy/QtMultimedia
+        cp "$Qt"/qml/QtMultimedia/"$quick"_multimedia.dll deploy/QtMultimedia
+        cp "$Qt"/qml/QtMultimedia/qmldir                  deploy/QtMultimedia
 
         if [ $qt = "qt6" ]; then
 
@@ -380,8 +380,8 @@ else
         cp "$Qt"/qml/$QtQuick/libqtquick2plugin.a deploy/$QtQuick
         cp "$Qt"/qml/$QtQuick/qmldir              deploy/$QtQuick
 
-        cp "$Qt"/qml/QtMultimedia/lib$quick_multimedia.a deploy/QtMultimedia
-        cp "$Qt"/qml/QtMultimedia/qmldir                 deploy/QtMultimedia
+        cp "$Qt"/qml/QtMultimedia/lib"$quick"_multimedia.a deploy/QtMultimedia
+        cp "$Qt"/qml/QtMultimedia/qmldir                   deploy/QtMultimedia
 
         if [ $qt = "qt6" ]; then
 
@@ -438,8 +438,8 @@ else
         cp "$Qt"/qml/$QtQuick/libqtquick2plugin.dylib deploy/$QtQuick
         cp "$Qt"/qml/$QtQuick/qmldir                  deploy/$QtQuick
 
-        cp "$Qt"/qml/QtMultimedia/lib$quick_multimedia.dylib deploy/QtMultimedia
-        cp "$Qt"/qml/QtMultimedia/qmldir                     deploy/QtMultimedia
+        cp "$Qt"/qml/QtMultimedia/lib"$quick"_multimedia.dylib deploy/QtMultimedia
+        cp "$Qt"/qml/QtMultimedia/qmldir                       deploy/QtMultimedia
 
         if [ $qt = "qt6" ]; then
 
@@ -519,8 +519,8 @@ else
         cp "$Qt"/qml/$QtQuick/libqtquick2plugin.so deploy/$QtQuick
         cp "$Qt"/qml/$QtQuick/qmldir               deploy/$QtQuick
 
-        cp "$Qt"/qml/QtMultimedia/lib$quick_multimedia.so deploy/QtMultimedia
-        cp "$Qt"/qml/QtMultimedia/qmldir                  deploy/QtMultimedia
+        cp "$Qt"/qml/QtMultimedia/lib"$quick"_multimedia.so deploy/QtMultimedia
+        cp "$Qt"/qml/QtMultimedia/qmldir                    deploy/QtMultimedia
 
         if [ $qt = "qt6" ]; then
 
