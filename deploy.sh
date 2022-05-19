@@ -70,6 +70,11 @@ copyAndroid()
     cp "$1"/plugins/imageformats/lib*qsvg_*.so  deploy/imageformats
     cp "$1"/plugins/imageformats/lib*qjpeg_*.so deploy/imageformats
 
+    if [ $qt = "qt5" ]; then
+
+        cp "$1"/plugins/mediaservice/*.so deploy/mediaservice
+    fi
+
     cp "$1"/qml/$QtQuick/lib*qtquick2plugin_*.so deploy/$QtQuick
 
     cp "$1"/qml/$QtQuick/lib*declarative_multimedia_*.so deploy/$QtQuick
@@ -261,8 +266,10 @@ else
     mkdir deploy/$QtQuick
     mkdir deploy/QtMultimedia
 
-    if [ $qt = "qt6" ]; then
+    if [ $qt = "qt5" ]; then
 
+        mkdir -p deploy/mediaservice
+    else
         mkdir -p deploy/QtQml/WorkerScript
     fi
 
@@ -312,6 +319,11 @@ else
         cp "$Qt"/plugins/imageformats/qsvg.dll  deploy/imageformats
         cp "$Qt"/plugins/imageformats/qjpeg.dll deploy/imageformats
 
+        if [ $qt = "qt5" ]; then
+
+            cp "$Qt"/plugins/mediaservice/*.dll deploy/mediaservice
+        fi
+
         cp "$Qt"/qml/$QtQuick/qtquick2plugin.dll deploy/$QtQuick
         cp "$Qt"/qml/$QtQuick/qmldir             deploy/$QtQuick
 
@@ -356,11 +368,16 @@ else
         cp "$Qt"/plugins/imageformats/libqsvg.a  deploy/imageformats
         cp "$Qt"/plugins/imageformats/libqjpeg.a deploy/imageformats
 
+        if [ $qt = "qt5" ]; then
+
+            cp "$Qt"/plugins/mediaservice/*.a deploy/mediaservice
+        fi
+
         cp "$Qt"/qml/$QtQuick/libqtquick2plugin.a deploy/$QtQuick
         cp "$Qt"/qml/$QtQuick/qmldir              deploy/$QtQuick
 
-        cp "$Qt"/qml/QtMultimedia/declarative_multimedia.a deploy/QtMultimedia
-        cp "$Qt"/qml/QtMultimedia/qmldir                   deploy/QtMultimedia
+        cp "$Qt"/qml/QtMultimedia/libdeclarative_multimedia.a deploy/QtMultimedia
+        cp "$Qt"/qml/QtMultimedia/qmldir                      deploy/QtMultimedia
 
         if [ $qt = "qt6" ]; then
 
@@ -409,11 +426,16 @@ else
         cp "$Qt"/plugins/imageformats/libqsvg.dylib  deploy/imageformats
         cp "$Qt"/plugins/imageformats/libqjpeg.dylib deploy/imageformats
 
+        if [ $qt = "qt5" ]; then
+
+            cp "$Qt"/plugins/mediaservice/*.dylib  deploy/mediaservice
+        fi
+
         cp "$Qt"/qml/$QtQuick/libqtquick2plugin.dylib deploy/$QtQuick
         cp "$Qt"/qml/$QtQuick/qmldir                  deploy/$QtQuick
 
-        cp "$Qt"/qml/QtMultimedia/declarative_multimedia.dylib deploy/QtMultimedia
-        cp "$Qt"/qml/QtMultimedia/qmldir                       deploy/QtMultimedia
+        cp "$Qt"/qml/QtMultimedia/libdeclarative_multimedia.dylib deploy/QtMultimedia
+        cp "$Qt"/qml/QtMultimedia/qmldir                          deploy/QtMultimedia
 
         if [ $qt = "qt6" ]; then
 
@@ -482,14 +504,19 @@ else
         cp "$Qt"/plugins/imageformats/libqsvg.so  deploy/imageformats
         cp "$Qt"/plugins/imageformats/libqjpeg.so deploy/imageformats
 
+        if [ $qt = "qt5" ]; then
+
+            cp "$Qt"/plugins/mediaservice/*.so deploy/mediaservice
+        fi
+
         cp "$Qt"/plugins/xcbglintegrations/libqxcb-egl-integration.so deploy/xcbglintegrations
         cp "$Qt"/plugins/xcbglintegrations/libqxcb-glx-integration.so deploy/xcbglintegrations
 
         cp "$Qt"/qml/$QtQuick/libqtquick2plugin.so deploy/$QtQuick
         cp "$Qt"/qml/$QtQuick/qmldir               deploy/$QtQuick
 
-        cp "$Qt"/qml/QtMultimedia/declarative_multimedia.so deploy/QtMultimedia
-        cp "$Qt"/qml/QtMultimedia/qmldir                    deploy/QtMultimedia
+        cp "$Qt"/qml/QtMultimedia/libdeclarative_multimedia.so deploy/QtMultimedia
+        cp "$Qt"/qml/QtMultimedia/qmldir                       deploy/QtMultimedia
 
         if [ $qt = "qt6" ]; then
 
