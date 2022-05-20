@@ -77,7 +77,7 @@ copyAndroid()
 
     cp "$1"/qml/$QtQuick/lib*qtquick2plugin_*.so deploy/$QtQuick
 
-    cp "$1"/qml/$QtQuick/lib*multimedia_*.so deploy/$QtQuick
+    cp "$1"/qml/QtMultimedia/lib*multimedia_*.so deploy/$QtQuick
 
     if [ $qt = "qt6" ]; then
 
