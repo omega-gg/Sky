@@ -27,11 +27,11 @@
 // Qt includes
 #ifdef QT_4
 #include <QDeclarativeEngine>
+#include <QTileRules>
 #else
 #include <QQmlEngine>
 #endif
 #include <QPainter>
-#include <QTileRules>
 
 // Sk includes
 #include <WControllerFile>
