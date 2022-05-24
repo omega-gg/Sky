@@ -24,6 +24,9 @@
 
 #ifndef SK_NO_TORRENTENGINE
 
+// C++ includes
+#include <fstream>
+
 // Qt includes
 #include <QCoreApplication>
 #ifdef QT_NEW
@@ -44,9 +47,6 @@
 #ifdef LIBTORRENT_ABI_1
 // Boost includes
 #include <boost/bind.hpp>
-
-// C++ includes
-#include <fstream>
 #endif
 
 // Sk includes
