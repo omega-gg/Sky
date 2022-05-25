@@ -658,8 +658,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 
     return (result > 32);
 #else
-    Q_UNUSED(fileName);
-    Q_UNUSED(parameters);
+    Q_UNUSED(fileName); Q_UNUSED(parameters);
 
     return false;
 #endif

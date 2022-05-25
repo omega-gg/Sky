@@ -43,7 +43,7 @@
 
 // Qt includes
 #include <QtGlobal>
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
+#if SK_DESKTOP || QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
 #include <QApplication>
 #else
 #include <QGuiApplication>
@@ -70,8 +70,9 @@ class QtLocalPeer;
 #  define QT_QTSINGLEAPPLICATION_EXPORT
 #endif
 
+// NOTE desktop: We need a QApplication for creating QWidget(s) like QFileDialog(s).
 // FIXME Qt4: For some reason we have to check against QT_4 otherwise the moc fails.
-#if QT_4 || QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
+#if QT_4 || SK_DESKTOP || QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
 class SK_GUI_EXPORT QtSingleApplication : public QApplication
 #else
 class SK_GUI_EXPORT QtSingleApplication : public QGuiApplication

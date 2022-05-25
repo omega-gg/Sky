@@ -156,7 +156,7 @@ void QtSingleApplication::sysInit(const QString &appId)
 */
 
 QtSingleApplication::QtSingleApplication(int &argc, char **argv, bool GUIenabled)
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
+#if SK_DESKTOP || QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     : QApplication(argc, argv, GUIenabled)
 #else
     : QGuiApplication(argc, argv, GUIenabled)
@@ -173,7 +173,7 @@ QtSingleApplication::QtSingleApplication(int &argc, char **argv, bool GUIenabled
 */
 
 QtSingleApplication::QtSingleApplication(const QString &appId, int &argc, char **argv)
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
+#if SK_DESKTOP || QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     : QApplication(argc, argv)
 #else
     : QGuiApplication(argc, argv)

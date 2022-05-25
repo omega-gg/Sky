@@ -144,7 +144,7 @@
         }
         else return application;
     }
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
+#if SK_DESKTOP || QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     else return new QApplication(argc, argv);
 #else
     else return new QGuiApplication(argc, argv);
