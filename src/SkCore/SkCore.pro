@@ -21,6 +21,15 @@ contains(QT_MAJOR_VERSION, 4) {
     QT += qml network xml core5compat
 }
 
+# NOTE Qt6.3: We need the widgets for QApplication and QFileDialog(s).
+contains(QT_MAJOR_VERSION, 6) {
+    win32:QT += widgets
+
+    macx:QT += widgets
+
+    unix:!android:QT += widgets
+}
+
 contains(QT_MAJOR_VERSION, 5) {
     android:QT += androidextras
 }
