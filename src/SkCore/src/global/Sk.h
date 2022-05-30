@@ -48,16 +48,22 @@ class WPrivate;
 #   define SK_MEDIA_EXPORT Q_DECL_IMPORT
 #endif
 
-#if defined(SK_WEB_LIBRARY)
-#   define SK_WEB_EXPORT Q_DECL_EXPORT
-#else
-#   define SK_WEB_EXPORT Q_DECL_IMPORT
-#endif
-
 #if defined(SK_BARCODE_LIBRARY)
 #   define SK_BARCODE_EXPORT Q_DECL_EXPORT
 #else
 #   define SK_BARCODE_EXPORT Q_DECL_IMPORT
+#endif
+
+#if defined(SK_MULTIMEDIA_LIBRARY)
+#   define SK_MULTIMEDIA_EXPORT Q_DECL_EXPORT
+#else
+#   define SK_MULTIMEDIA_EXPORT Q_DECL_IMPORT
+#endif
+
+#if defined(SK_WEB_LIBRARY)
+#   define SK_WEB_EXPORT Q_DECL_EXPORT
+#else
+#   define SK_WEB_EXPORT Q_DECL_IMPORT
 #endif
 
 #if defined(SK_TORRENT_LIBRARY)

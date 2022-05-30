@@ -8,7 +8,8 @@ includeGenerator="../deploy/includeGenerator"
 "$includeGenerator" ../../src/SkGui/src                               SkGui
 "$includeGenerator" ../../src/SkGui/src/3rdparty/qtsingleapplication  SkGui
 "$includeGenerator" ../../src/SkMedia/src                             SkMedia
+"$includeGenerator" ../../src/SkBarcode/src                           SkBarcode
+"$includeGenerator" ../../src/SkMultimedia/src                        SkMultimedia
 "$includeGenerator" ../../src/SkWeb/src                               SkWeb
 "$includeGenerator" ../../src/SkTorrent/src                           SkTorrent
-"$includeGenerator" ../../src/SkBarcode/src                           SkBarcode
 "$includeGenerator" ../../src/SkBackend/src                           SkBackend

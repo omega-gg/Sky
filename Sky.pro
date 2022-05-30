@@ -8,6 +8,10 @@ isEmpty(TOOLS) {
               src/SkMedia \
               src/SkBarcode \
 
+    greaterThan(QT_MAJOR_VERSION, 4) {
+        SUBDIRS += src/SkMultimedia
+    }
+
     # NOTE Qt5 Windows: The WebView module is only available for MSVC but currently unsupported.
     # contains(QT_MAJOR_VERSION, 4) {
     #     SUBDIRS += src/SkWeb
