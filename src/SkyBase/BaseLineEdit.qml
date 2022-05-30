@@ -315,6 +315,8 @@ MouseArea
 
         verticalAlignment: Text.AlignVCenter
 
+        maximumLineCount: 1
+
         visible: (isFocused == false && textInput.text == "")
 
         color: st.baseLineEdit_colorDefault
