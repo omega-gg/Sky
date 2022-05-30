@@ -51,11 +51,21 @@ public: // Static functions
     QString read(const QImage & image,
                  ZXing::BarcodeFormats formats = ZXing::BarcodeFormat::TwoDCodes);
 
+    Q_INVOKABLE static
+    QString readFile(const QString & fileName,
+                     ZXing::BarcodeFormats formats = ZXing::BarcodeFormat::TwoDCodes);
+
     // NOTE: The 'method' format is loaded(const QString &).
     Q_INVOKABLE static WAbstractThreadAction * startRead(const QImage          & image,
                                                          ZXing::BarcodeFormats   formats,
                                                          QObject               * receiver,
                                                          const char            * method);
+
+    // NOTE: The 'method' format is loaded(const QString &).
+    Q_INVOKABLE static WAbstractThreadAction * startReadFile(const QString         & fileName,
+                                                             ZXing::BarcodeFormats   formats,
+                                                             QObject               * receiver,
+                                                             const char            * method);
 
 private:
     W_DECLARE_PRIVATE(WBarcodeReader)

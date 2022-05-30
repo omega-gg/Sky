@@ -39,7 +39,7 @@
 using namespace ZXing;
 
 //=================================================================================================
-// WBarcodeRead and WBarcodeReply
+// WBarcodeRead, WBarcodeFile and WBarcodeReply
 //=================================================================================================
 
 class WBarcodeRead : public WAbstractThreadAction
@@ -64,7 +64,27 @@ public: // Variables
     BarcodeFormats formats;
 };
 
-//-------------------------------------------------------------------------------------------------
+class WBarcodeFile : public WAbstractThreadAction
+{
+    Q_OBJECT
+
+public:
+    WBarcodeFile(const QString & fileName, BarcodeFormats formats)
+    {
+        this->fileName = fileName;
+        this->formats  = formats;
+    }
+
+protected: // WAbstractThreadAction reimplementation
+    /* virtual */ WAbstractThreadReply * createReply() const;
+
+protected: // WAbstractThreadAction implementation
+    /* virtual */ bool run();
+
+public: // Variables
+    QString        fileName;
+    BarcodeFormats formats;
+};
 
 class WBarcodeReply : public WAbstractThreadReply
 {
@@ -87,6 +107,11 @@ public: // Variables
     return new WBarcodeReply;
 }
 
+/* virtual */ WAbstractThreadReply * WBarcodeFile::createReply() const
+{
+    return new WBarcodeReply;
+}
+
 /* virtual */ bool WBarcodeRead::run()
 {
     WBarcodeReply * reply = qobject_cast<WBarcodeReply *> (this->reply());
@@ -96,7 +121,14 @@ public: // Variables
     return true;
 }
 
-//-------------------------------------------------------------------------------------------------
+/* virtual */ bool WBarcodeFile::run()
+{
+    WBarcodeReply * reply = qobject_cast<WBarcodeReply *> (this->reply());
+
+    reply->text = WBarcodeReader::read(QImage(fileName), formats);
+
+    return true;
+}
 
 /* virtual */ void WBarcodeReply::onCompleted(bool)
 {
@@ -185,6 +217,12 @@ void WBarcodeReaderPrivate::init() {}
     return QString::fromWCharArray(result.text().c_str());
 }
 
+/* Q_INVOKABLE static */ QString WBarcodeReader::readFile(const QString & fileName,
+                                                          BarcodeFormats  formats)
+{
+    return read(QImage(fileName), formats);
+}
+
 /* Q_INVOKABLE static */
 WAbstractThreadAction * WBarcodeReader::startRead(const QImage   & image,
                                                   BarcodeFormats   formats,
@@ -192,6 +230,22 @@ WAbstractThreadAction * WBarcodeReader::startRead(const QImage   & image,
                                                   const char     * method)
 {
     WBarcodeRead * action = new WBarcodeRead(image, formats);
+
+    WBarcodeReply * reply = qobject_cast<WBarcodeReply *>
+                            (wControllerFile->startReadAction(action));
+
+    QObject::connect(reply, SIGNAL(loaded(const QString &)), receiver, method);
+
+    return action;
+}
+
+/* Q_INVOKABLE static */
+WAbstractThreadAction * WBarcodeReader::startReadFile(const QString  & fileName,
+                                                      BarcodeFormats   formats,
+                                                      QObject        * receiver,
+                                                      const char     * method)
+{
+    WBarcodeFile * action = new WBarcodeFile(fileName, formats);
 
     WBarcodeReply * reply = qobject_cast<WBarcodeReply *>
                             (wControllerFile->startReadAction(action));
