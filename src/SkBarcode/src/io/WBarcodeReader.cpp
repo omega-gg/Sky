@@ -142,6 +142,8 @@ void WBarcodeReaderPrivate::init() {}
 
 /* Q_INVOKABLE static */ QString WBarcodeReader::read(const QImage & image, BarcodeFormats formats)
 {
+    if (image.isNull()) return QString();
+
     QImage::Format format = image.format();
 
     ImageFormat imageFormat;

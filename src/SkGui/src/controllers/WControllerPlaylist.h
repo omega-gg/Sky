@@ -258,6 +258,7 @@ public: // Static functions
     Q_INVOKABLE static QString getFilterSubtitle();
 
     //---------------------------------------------------------------------------------------------
+    // Urls
 
     Q_INVOKABLE static bool urlIsMedia(const QString & url);
     Q_INVOKABLE static bool urlIsVideo(const QString & url);

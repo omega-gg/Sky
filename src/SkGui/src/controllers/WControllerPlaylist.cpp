@@ -59,15 +59,15 @@ static const QString CONTROLLERPLAYLIST_TEXT = "^(txt|md)$";
 
 static const QString CONTROLLERPLAYLIST_SUBTITLE = "^(srt)$";
 
-static const QString CONTROLLERPLAYLIST_FILTER
+static const QString CONTROLLERPLAYLIST_FILTER_FILE
     =
-    "Media files (*.mp4 *.webm *.ogv *.mkv *.avi *.wmv *.mov *.flv *.3gp *.m3u8 "
-                  "*.mp3 *.ogg *.mka *.wav *.wma *.flac "
-                  "*.html *.xml *.json *.torrent "
-                  "*.txt *.md);;"
+    "Medias (*.mp4 *.webm *.ogv *.mkv *.avi *.wmv *.mov *.flv *.3gp *.m3u8 "
+            "*.mp3 *.ogg *.mka *.wav *.wma *.flac "
+            "*.html *.xml *.json *.torrent "
+            "*.txt *.md);;"
     "All files (*)";
 
-static const QString CONTROLLERPLAYLIST_FILTER_SUBTITLE = "Subtitle files (*.srt)";
+static const QString CONTROLLERPLAYLIST_FILTER_SUBTITLE = "Subtitles (*.srt)";
 
 //-------------------------------------------------------------------------------------------------
 
@@ -3557,7 +3557,7 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 
 /* Q_INVOKABLE static */ QString WControllerPlaylist::getFilterFile()
 {
-    return CONTROLLERPLAYLIST_FILTER;
+    return CONTROLLERPLAYLIST_FILTER_FILE;
 }
 
 /* Q_INVOKABLE static */ QString WControllerPlaylist::getFilterSubtitle()
@@ -3566,6 +3566,7 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 }
 
 //-------------------------------------------------------------------------------------------------
+// Urls
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::urlIsMedia(const QString & url)
 {
@@ -3642,20 +3643,12 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsVideo(const QString & extension)
 {
-    if (extension.indexOf(WRegExp(CONTROLLERPLAYLIST_VIDEO)) == -1)
-    {
-         return false;
-    }
-    else return true;
+    return (extension.indexOf(WRegExp(CONTROLLERPLAYLIST_VIDEO)) != -1);
 }
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsAudio(const QString & extension)
 {
-    if (extension.indexOf(WRegExp(CONTROLLERPLAYLIST_AUDIO)) == -1)
-    {
-         return false;
-    }
-    else return true;
+    return (extension.indexOf(WRegExp(CONTROLLERPLAYLIST_AUDIO)) != -1);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -3667,29 +3660,17 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsMarkup(const QString & extension)
 {
-    if (extension.indexOf(WRegExp(CONTROLLERPLAYLIST_MARKUP)) == -1)
-    {
-         return false;
-    }
-    else return true;
+    return (extension.indexOf(WRegExp(CONTROLLERPLAYLIST_MARKUP)) != -1);
 }
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsText(const QString & extension)
 {
-    if (extension.indexOf(WRegExp(CONTROLLERPLAYLIST_TEXT)) == -1)
-    {
-         return false;
-    }
-    else return true;
+    return (extension.indexOf(WRegExp(CONTROLLERPLAYLIST_TEXT)) != -1);
 }
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsSubtitle(const QString & extension)
 {
-    if (extension.indexOf(WRegExp(CONTROLLERPLAYLIST_SUBTITLE)) == -1)
-    {
-         return false;
-    }
-    else return true;
+    return (extension.indexOf(WRegExp(CONTROLLERPLAYLIST_SUBTITLE)) != -1);
 }
 
 //---------------------------------------------------------------------------------------------
