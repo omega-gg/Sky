@@ -252,6 +252,9 @@ Animated
         loaderA.z = zA;
         loaderB.z = zB;
 
+        // NOTE: We clip to avoid overlapping the other page during the transition.
+        loader.clip = true;
+
         slide();
 
         pBorder(loader);
@@ -284,6 +287,9 @@ Animated
         border.visible = false;
 
         pLoader.sourceComponent = null;
+
+        loaderA.clip = false;
+        loaderB.clip = false;
     }
 
     //---------------------------------------------------------------------------------------------
