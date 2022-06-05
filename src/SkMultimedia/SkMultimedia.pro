@@ -30,6 +30,8 @@ INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkGui/private \
                $$SK/include/SkBarcode \
                $$SK/include/SkBarcode/private \
+               $$SK/include/SkMultimedia \
+               $$SK/include/SkMultimedia/private \
                $$SK/include
 
 android {
