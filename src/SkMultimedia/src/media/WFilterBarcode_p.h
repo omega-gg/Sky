@@ -33,6 +33,9 @@
     We mean it.
 */
 
+// Sk includes
+#include <WBarcodeReader>
+
 // Private includes
 #include <private/Sk_p>
 
@@ -44,6 +47,16 @@ public:
     WFilterBarcodePrivate(WFilterBarcode * p);
 
     void init();
+
+public: // Slots
+    void onLoaded(const QString & text);
+
+public: // Variables
+    WBarcodeReader reader;
+
+    QRect target;
+
+    bool loading;
 
 protected:
     W_DECLARE_PUBLIC(WFilterBarcode)

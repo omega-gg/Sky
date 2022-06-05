@@ -24,7 +24,7 @@
 #define WFILTERBARCODE_H
 
 // Qt includes
-#include <QObject>
+#include <QAbstractVideoFilter>
 
 // Sk includes
 #include <Sk>
@@ -33,16 +33,46 @@
 
 class WFilterBarcodePrivate;
 
-class SK_MULTIMEDIA_EXPORT WFilterBarcode : public QObject, public WPrivatable
+class SK_MULTIMEDIA_EXPORT WFilterBarcode : public QAbstractVideoFilter, public WPrivatable
 {
     Q_OBJECT
+
+    Q_ENUMS(FillMode)
+
+    Q_PROPERTY(QRect target READ target WRITE setTarget NOTIFY targetChanged)
+
+public: // Enums
+    enum FillMode
+    {
+        Stretch,
+        PreserveAspectFit,
+        PreserveAspectCrop
+    };
 
 public:
     explicit WFilterBarcode(QObject * parent = NULL);
 
+public: // QAbstractVideoFilter implementation
+    /* virtual */ QVideoFilterRunnable * createFilterRunnable();
+
+signals:
+    void loaded(const QString & text);
+
+    void targetChanged();
+
+public: // Properties
+    QRect target() const;
+    void setTarget(const QRect & target);
+
 private:
     W_DECLARE_PRIVATE(WFilterBarcode)
+
+    Q_PRIVATE_SLOT(d_func(), void onLoaded(const QString &))
+
+    friend class WFilterRunnable;
 };
+
+#include <private/WFilterBarcode_p>
 
 #endif // SK_NO_FILTERBARCODE
 #endif // WFILTERBARCODE_H

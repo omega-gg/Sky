@@ -24,24 +24,123 @@
 
 #ifndef SK_NO_FILTERBARCODE
 
-//-------------------------------------------------------------------------------------------------
-// Private
-//-------------------------------------------------------------------------------------------------
+//=================================================================================================
+// WFilterRunnable
+//=================================================================================================
 
-#include "WFilterBarcode_p.h"
+class WFilterRunnable : public QVideoFilterRunnable
+{
+public:
+    explicit WFilterRunnable(WFilterBarcode * filter);
+
+public: // QVideoFilterRunnable implementation
+    /* virtual */ QVideoFrame run(QVideoFrame * input,
+                                  const QVideoSurfaceFormat & surfaceFormat, RunFlags flags);
+
+private: // Variables
+    WFilterBarcode * filter;
+};
+
+/* explicit */ WFilterRunnable::WFilterRunnable(WFilterBarcode * filter)
+{
+    this->filter = filter;
+}
+
+/* virtual */ QVideoFrame WFilterRunnable::run(QVideoFrame * input, const QVideoSurfaceFormat &,
+                                               QVideoFilterRunnable::RunFlags)
+{
+    WFilterBarcodePrivate * p = filter->d_func();
+
+    // NOTE: We wait for the last run to finish before starting a new one.
+    if (p->loading) return *input;
+
+    p->loading = true;
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+    input->map(QAbstractVideoBuffer::ReadOnly);
+
+    QImage image = imageFromVideoFrame(videoFrame);
+
+    input->unmap();
+#else
+    QImage image = input->image();
+#endif
+
+    QRect target = p->target;
+
+    if (target.isValid())
+    {
+        image = image.copy(target);
+    }
+
+    p->reader.startRead(image, ZXing::BarcodeFormat::Any, filter, SLOT(onLoaded(const QString &)));
+
+    return *input;
+}
+
+//=================================================================================================
+// WFilterBarcodePrivate
+//=================================================================================================
 
 WFilterBarcodePrivate::WFilterBarcodePrivate(WFilterBarcode * p) : WPrivate(p) {}
 
-void WFilterBarcodePrivate::init() {}
+void WFilterBarcodePrivate::init()
+{
+    loading = false;
+}
 
 //-------------------------------------------------------------------------------------------------
-// Ctor / dtor
+// Private slots
 //-------------------------------------------------------------------------------------------------
+
+void WFilterBarcodePrivate::onLoaded(const QString & text)
+{
+    loading = false;
+
+    if (text.isEmpty()) return;
+
+    Q_Q(WFilterBarcode);
+
+    emit q->loaded(text);
+}
+
+//=================================================================================================
+// WFilterBarcode
+//=================================================================================================
 
 /* explicit */ WFilterBarcode::WFilterBarcode(QObject * parent)
-    : QObject(parent), WPrivatable(new WFilterBarcodePrivate(this))
+    : QAbstractVideoFilter(parent), WPrivatable(new WFilterBarcodePrivate(this))
 {
     Q_D(WFilterBarcode); d->init();
+}
+
+//-------------------------------------------------------------------------------------------------
+// QAbstractVideoFilter implementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ QVideoFilterRunnable * WFilterBarcode::createFilterRunnable()
+{
+    return new WFilterRunnable(this);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Properties
+//-------------------------------------------------------------------------------------------------
+
+QRect WFilterBarcode::target() const
+{
+    Q_D(const WFilterBarcode); return d->target;
+}
+
+void WFilterBarcode::setTarget(const QRect & target)
+{
+    Q_D(WFilterBarcode);
+
+    if (d->target == target) return;
+
+    d->target = target;
+
+    emit targetChanged();
 }
 
 #endif // SK_NO_FILTERBARCODE

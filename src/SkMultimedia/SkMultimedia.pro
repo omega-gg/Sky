@@ -10,7 +10,7 @@ DESTDIR = $$SK/lib
 
 TEMPLATE = lib
 
-QT += qml
+QT += qml multimedia
 
 win32:CONFIG += dll
 
