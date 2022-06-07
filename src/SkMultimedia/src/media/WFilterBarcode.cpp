@@ -24,11 +24,6 @@
 
 #ifndef SK_NO_FILTERBARCODE
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-// Qt private includes
-#include <private/qvideoframeconversionhelper_p.h>
-#endif
-
 //=================================================================================================
 // WFilterRunnable
 //=================================================================================================
