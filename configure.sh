@@ -29,7 +29,7 @@ MinGW_version="11.2.0"
 
 compiler_win="mingw"
 
-qt="qt5"
+qt="qt6"
 
 mobile="simulator"
 
