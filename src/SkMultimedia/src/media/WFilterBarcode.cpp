@@ -66,7 +66,7 @@ private: // Variables
     QImage image = input->image();
 #endif
 
-    p->reader.startRead(image, ZXing::BarcodeFormat::Any, filter, SLOT(onLoaded(const QString &)),
+    p->reader.startRead(image, WBarcodeReader::Any, filter, SLOT(onLoaded(const QString &)),
                         p->target);
 
     return *input;

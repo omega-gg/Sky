@@ -30,9 +30,6 @@
 #endif
 #include <QRect>
 
-// ZXing includes
-#include <BarcodeFormat.h>
-
 // Sk includes
 #include <Sk>
 
@@ -44,30 +41,60 @@ class SK_BARCODE_EXPORT WBarcodeReader : public QObject, public WPrivatable
 {
     Q_OBJECT
 
+    Q_ENUMS(Format)
+
+public: // Enums
+    // NOTE: These are copied from BarcodeFormat.h. We have to make a modification in
+    //       zxing-cpp/Flags.h to make the conversion work.
+    enum Format
+    {
+        None            = 0,         ///< Used as a return value
+        Aztec           = (1 << 0),  ///< Aztec (2D)
+        Codabar         = (1 << 1),  ///< Codabar (1D)
+        Code39          = (1 << 2),  ///< Code39 (1D)
+        Code93          = (1 << 3),  ///< Code93 (1D)
+        Code128         = (1 << 4),  ///< Code128 (1D)
+        DataBar         = (1 << 5),  ///< GS1 DataBar, formerly known as RSS 14
+        DataBarExpanded = (1 << 6),  ///< GS1 DataBar Expanded, formerly known as RSS EXPANDED
+        DataMatrix      = (1 << 7),  ///< DataMatrix (2D)
+        EAN8            = (1 << 8),  ///< EAN-8 (1D)
+        EAN13           = (1 << 9),  ///< EAN-13 (1D)
+        ITF             = (1 << 10), ///< ITF (Interleaved Two of Five) (1D)
+        MaxiCode        = (1 << 11), ///< MaxiCode (2D)
+        PDF417          = (1 << 12), ///< PDF417 (1D) or (2D)
+        QRCode          = (1 << 13), ///< QR Code (2D)
+        UPCA            = (1 << 14), ///< UPC-A (1D)
+        UPCE            = (1 << 15), ///< UPC-E (1D)
+
+        OneDCodes = Codabar | Code39 | Code93 | Code128 | EAN8 | EAN13 | ITF | DataBar | \
+                    DataBarExpanded | UPCA | UPCE,
+        TwoDCodes = Aztec | DataMatrix | MaxiCode | PDF417 | QRCode,
+        Any       = OneDCodes | TwoDCodes,
+    };
+    Q_DECLARE_FLAGS(Formats, Format)
+
 public:
     explicit WBarcodeReader(QObject * parent = NULL);
 
 public: // Static functions
     Q_INVOKABLE static
-    QString read(const QImage & image,
-                 ZXing::BarcodeFormats formats = ZXing::BarcodeFormat::TwoDCodes);
+    QString read(const QImage & image, Formats formats = Any);
 
     Q_INVOKABLE static
-    QString readFile(const QString & fileName,
-                     ZXing::BarcodeFormats formats = ZXing::BarcodeFormat::TwoDCodes);
+    QString readFile(const QString & fileName, Formats formats = Any);
 
     // NOTE: The 'method' format is loaded(const QString &).
-    Q_INVOKABLE static WAbstractThreadAction * startRead(const QImage          & image,
-                                                         ZXing::BarcodeFormats   formats,
-                                                         QObject               * receiver,
-                                                         const char            * method,
-                                                         const QRect           & target = QRect());
+    Q_INVOKABLE static WAbstractThreadAction * startRead(const QImage & image,
+                                                         Formats        formats,
+                                                         QObject      * receiver,
+                                                         const char   * method,
+                                                         const QRect  & target = QRect());
 
     // NOTE: The 'method' format is loaded(const QString &).
-    Q_INVOKABLE static WAbstractThreadAction * startReadFile(const QString         & fileName,
-                                                             ZXing::BarcodeFormats   formats,
-                                                             QObject               * receiver,
-                                                             const char            * method);
+    Q_INVOKABLE static WAbstractThreadAction * startReadFile(const QString & fileName,
+                                                             Formats         formats,
+                                                             QObject       * receiver,
+                                                             const char    * method);
 
 private:
     W_DECLARE_PRIVATE(WBarcodeReader)

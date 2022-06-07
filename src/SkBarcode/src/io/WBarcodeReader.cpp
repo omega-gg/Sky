@@ -47,7 +47,7 @@ class WBarcodeRead : public WAbstractThreadAction
     Q_OBJECT
 
 public:
-    WBarcodeRead(const QImage & image, const QRect & target, BarcodeFormats formats)
+    WBarcodeRead(const QImage & image, const QRect & target, WBarcodeReader::Formats formats)
     {
         this->image  = image;
         this->target = target;
@@ -65,7 +65,7 @@ public: // Variables
     QImage image;
     QRect  target;
 
-    BarcodeFormats formats;
+    WBarcodeReader::Formats formats;
 };
 
 class WBarcodeFile : public WAbstractThreadAction
@@ -73,7 +73,7 @@ class WBarcodeFile : public WAbstractThreadAction
     Q_OBJECT
 
 public:
-    WBarcodeFile(const QString & fileName, BarcodeFormats formats)
+    WBarcodeFile(const QString & fileName, WBarcodeReader::Formats formats)
     {
         this->fileName = fileName;
         this->formats  = formats;
@@ -86,8 +86,9 @@ protected: // WAbstractThreadAction implementation
     /* virtual */ bool run();
 
 public: // Variables
-    QString        fileName;
-    BarcodeFormats formats;
+    QString fileName;
+
+    WBarcodeReader::Formats formats;
 };
 
 class WBarcodeReply : public WAbstractThreadReply
@@ -180,7 +181,7 @@ void WBarcodeReaderPrivate::init() {}
 // Static functions
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ QString WBarcodeReader::read(const QImage & image, BarcodeFormats formats)
+/* Q_INVOKABLE static */ QString WBarcodeReader::read(const QImage & image, Formats formats)
 {
     if (image.isNull()) return QString();
 
@@ -216,7 +217,7 @@ void WBarcodeReaderPrivate::init() {}
 
     DecodeHints hints;
 
-    hints.setFormats(formats);
+    hints.setFormats(static_cast<const BarcodeFormats> (formats));
 
     Result result = ReadBarcode(imageView, hints);
 
@@ -226,17 +227,17 @@ void WBarcodeReaderPrivate::init() {}
 }
 
 /* Q_INVOKABLE static */ QString WBarcodeReader::readFile(const QString & fileName,
-                                                          BarcodeFormats  formats)
+                                                          Formats         formats)
 {
     return read(QImage(fileName), formats);
 }
 
 /* Q_INVOKABLE static */
-WAbstractThreadAction * WBarcodeReader::startRead(const QImage   & image,
-                                                  BarcodeFormats   formats,
-                                                  QObject        * receiver,
-                                                  const char     * method,
-                                                  const QRect    & target)
+WAbstractThreadAction * WBarcodeReader::startRead(const QImage & image,
+                                                  Formats        formats,
+                                                  QObject      * receiver,
+                                                  const char   * method,
+                                                  const QRect  & target)
 {
     WBarcodeRead * action = new WBarcodeRead(image, target, formats);
 
@@ -249,10 +250,10 @@ WAbstractThreadAction * WBarcodeReader::startRead(const QImage   & image,
 }
 
 /* Q_INVOKABLE static */
-WAbstractThreadAction * WBarcodeReader::startReadFile(const QString  & fileName,
-                                                      BarcodeFormats   formats,
-                                                      QObject        * receiver,
-                                                      const char     * method)
+WAbstractThreadAction * WBarcodeReader::startReadFile(const QString & fileName,
+                                                      Formats         formats,
+                                                      QObject       * receiver,
+                                                      const char    * method)
 {
     WBarcodeFile * action = new WBarcodeFile(fileName, formats);
 
