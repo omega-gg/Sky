@@ -217,7 +217,7 @@ void WBarcodeReaderPrivate::init() {}
 
     DecodeHints hints;
 
-    hints.setFormats(static_cast<const BarcodeFormats> (formats));
+    hints.setFormats(static_cast<BarcodeFormats> (formats));
 
     Result result = ReadBarcode(imageView, hints);
 
