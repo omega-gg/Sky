@@ -53,23 +53,27 @@ copyIncludes()
     mkdir -p $include/QtGui/private
     mkdir -p $include/QtQml/private
     mkdir -p $include/QtQuick/private
+    mkdir -p $include/QtMultimedia/private
 
-    cp -r "$1"/include/QtCore  $include
-    cp -r "$1"/include/QtGui   $include
-    cp -r "$1"/include/QtQml   $include
-    cp -r "$1"/include/QtQuick $include
+    cp -r "$1"/include/QtCore       $include
+    cp -r "$1"/include/QtGui        $include
+    cp -r "$1"/include/QtQml        $include
+    cp -r "$1"/include/QtQuick      $include
+    cp -r "$1"/include/QtMultimedia $include
 
     cp -r "$1"/include/QtGui/"$qx"*/QtGui/qpa $include/QtGui
 
-    mv $include/QtCore/"$qx"*/QtCore/private/*   $include/QtCore/private
-    mv $include/QtGui/"$qx"*/QtGui/private/*     $include/QtGui/private
-    mv $include/QtQml/"$qx"*/QtQml/private/*     $include/QtQml/private
-    mv $include/QtQuick/"$qx"*/QtQuick/private/* $include/QtQuick/private
+    mv $include/QtCore/"$qx"*/QtCore/private/*             $include/QtCore/private
+    mv $include/QtGui/"$qx"*/QtGui/private/*               $include/QtGui/private
+    mv $include/QtQml/"$qx"*/QtQml/private/*               $include/QtQml/private
+    mv $include/QtQuick/"$qx"*/QtQuick/private/*           $include/QtQuick/private
+    mv $include/QtMultimedia/"$qx"*/QtMultimedia/private/* $include/QtMultimedia/private
 
     rm -rf $include/QtCore/"$qx"*
     rm -rf $include/QtGui/"$qx"*
     rm -rf $include/QtQml/"$qx"*
     rm -rf $include/QtQuick/"$qx"*
+    rm -rf $include/QtMultimedia/"$qx"*
 }
 
 #--------------------------------------------------------------------------------------------------
@@ -240,54 +244,61 @@ else
         mkdir -p $include/QtGui/private
         mkdir -p $include/QtQml/private
         mkdir -p $include/QtQuick/private
+        mkdir -p $include/QtMultimedia/private
 
         if [ $os = "windows" ]; then
 
-            cp -r "$Qt"/include/QtCore  $include
-            cp -r "$Qt"/include/QtGui   $include
-            cp -r "$Qt"/include/QtQml   $include
-            cp -r "$Qt"/include/QtQuick $include
+            cp -r "$Qt"/include/QtCore       $include
+            cp -r "$Qt"/include/QtGui        $include
+            cp -r "$Qt"/include/QtQml        $include
+            cp -r "$Qt"/include/QtQuick      $include
+            cp -r "$Qt"/include/QtMultimedia $include
 
             cp -r "$Qt"/include/QtGui/"$qx"*/QtGui/qpa $include/QtGui
 
         elif [ $1 = "macOS" ]; then
 
-            cp -r "$Qt"/lib/QtCore.framework/Headers/*  $include/QtCore
-            cp -r "$Qt"/lib/QtGui.framework/Headers/*   $include/QtGui
-            cp -r "$Qt"/lib/QtQml.framework/Headers/*   $include/QtQml
-            cp -r "$Qt"/lib/QtQuick.framework/Headers/* $include/QtQuick
+            cp -r "$Qt"/lib/QtCore.framework/Headers/*       $include/QtCore
+            cp -r "$Qt"/lib/QtGui.framework/Headers/*        $include/QtGui
+            cp -r "$Qt"/lib/QtQml.framework/Headers/*        $include/QtQml
+            cp -r "$Qt"/lib/QtQuick.framework/Headers/*      $include/QtQuick
+            cp -r "$Qt"/lib/QtMultimedia.framework/Headers/* $include/QtMultimedia
 
             cp -r "$Qt"/lib/QtGui.framework/Headers/"$qx"*/QtGui/qpa $include/QtGui
 
         elif [ $1 = "iOS" ]; then
 
-            cp -r "$Qt"/include/QtCore  $include
-            cp -r "$Qt"/include/QtGui   $include
-            cp -r "$Qt"/include/QtQml   $include
-            cp -r "$Qt"/include/QtQuick $include
+            cp -r "$Qt"/include/QtCore       $include
+            cp -r "$Qt"/include/QtGui        $include
+            cp -r "$Qt"/include/QtQml        $include
+            cp -r "$Qt"/include/QtQuick      $include
+            cp -r "$Qt"/include/QtMultimedia $include
 
             cp -r "$Qt"/include/QtGui/"$qx"*/QtGui/qpa $include/QtGui
 
         elif [ $1 = "linux" ]; then
 
-            cp -r "$Qt"/include/QtCore  $include
-            cp -r "$Qt"/include/QtGui   $include
-            cp -r "$Qt"/include/QtQml   $include
-            cp -r "$Qt"/include/QtQuick $include
-            cp -r "$Qt"/include/QtDBus  $include
+            cp -r "$Qt"/include/QtCore       $include
+            cp -r "$Qt"/include/QtGui        $include
+            cp -r "$Qt"/include/QtQml        $include
+            cp -r "$Qt"/include/QtQuick      $include
+            cp -r "$Qt"/include/QtMultimedia $include
+            cp -r "$Qt"/include/QtDBus       $include
 
             cp -r "$Qt"/include/QtGui/"$qx"*/QtGui/qpa $include/QtGui
         fi
 
-        mv $include/QtCore/"$qx"*/QtCore/private/*   $include/QtCore/private
-        mv $include/QtGui/"$qx"*/QtGui/private/*     $include/QtGui/private
-        mv $include/QtQml/"$qx"*/QtQml/private/*     $include/QtQml/private
-        mv $include/QtQuick/"$qx"*/QtQuick/private/* $include/QtQuick/private
+        mv $include/QtCore/"$qx"*/QtCore/private/*             $include/QtCore/private
+        mv $include/QtGui/"$qx"*/QtGui/private/*               $include/QtGui/private
+        mv $include/QtQml/"$qx"*/QtQml/private/*               $include/QtQml/private
+        mv $include/QtQuick/"$qx"*/QtQuick/private/*           $include/QtQuick/private
+        mv $include/QtMultimedia/"$qx"*/QtMultimedia/private/* $include/QtMultimedia/private
 
         rm -rf $include/QtCore/"$qx"*
         rm -rf $include/QtGui/"$qx"*
         rm -rf $include/QtQml/"$qx"*
         rm -rf $include/QtQuick/"$qx"*
+        rm -rf $include/QtMultimedia/"$qx"*
     fi
 fi
 

@@ -24,6 +24,11 @@
 
 #ifndef SK_NO_FILTERBARCODE
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+// Qt private includes
+#include <private/qvideoframeconversionhelper_p.h>
+#endif
+
 //=================================================================================================
 // WFilterRunnable
 //=================================================================================================
@@ -67,7 +72,7 @@ QImage WFilterRunnable::imageFromFrame(const QVideoFrame & frame) const
         return QImage(frame.bits(), frame.width(), frame.height(), format);
     }
 
-    uchar * data = new uchar[(videoFrame.width() * videoFrame.height()) * 4];
+    uchar * data = new uchar[(frame.width() * frame.height()) * 4];
 
     if   (format == QVideoFrame::Format_YUYV)    qt_convert_YUYV_to_ARGB32   (frame, data);
     else (format == QVideoFrame::Format_NV12)    qt_convert_NV12_to_ARGB32   (frame, data);
