@@ -35,7 +35,7 @@ public:
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
 public: // Functions
-    QImage imageFromFrame(QVideoFrame * frame) const;
+    QImage imageFromFrame(const QVideoFrame & frame) const;
 #endif
 
 public: // QVideoFilterRunnable implementation
