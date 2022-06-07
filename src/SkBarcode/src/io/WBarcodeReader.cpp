@@ -47,9 +47,11 @@ class WBarcodeRead : public WAbstractThreadAction
     Q_OBJECT
 
 public:
-    WBarcodeRead(const QImage & image, BarcodeFormats formats)
+    WBarcodeRead(const QImage & image, const QRect & target, BarcodeFormats formats)
     {
-        this->image   = image;
+        this->image  = image;
+        this->target = target;
+
         this->formats = formats;
     }
 
@@ -60,7 +62,9 @@ protected: // WAbstractThreadAction implementation
     /* virtual */ bool run();
 
 public: // Variables
-    QImage         image;
+    QImage image;
+    QRect  target;
+
     BarcodeFormats formats;
 };
 
@@ -116,7 +120,11 @@ public: // Variables
 {
     WBarcodeReply * reply = qobject_cast<WBarcodeReply *> (this->reply());
 
-    reply->text = WBarcodeReader::read(image, formats);
+    if (target.isValid())
+    {
+         reply->text = WBarcodeReader::read(image.copy(target), formats);
+    }
+    else reply->text = WBarcodeReader::read(image, formats);
 
     return true;
 }
@@ -227,9 +235,10 @@ void WBarcodeReaderPrivate::init() {}
 WAbstractThreadAction * WBarcodeReader::startRead(const QImage   & image,
                                                   BarcodeFormats   formats,
                                                   QObject        * receiver,
-                                                  const char     * method)
+                                                  const char     * method,
+                                                  const QRect    & target)
 {
-    WBarcodeRead * action = new WBarcodeRead(image, formats);
+    WBarcodeRead * action = new WBarcodeRead(image, target, formats);
 
     WBarcodeReply * reply = qobject_cast<WBarcodeReply *>
                             (wControllerFile->startReadAction(action));

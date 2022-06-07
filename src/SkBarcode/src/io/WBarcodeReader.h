@@ -28,6 +28,7 @@
 #ifdef QT_4
 #include <QImage>
 #endif
+#include <QRect>
 
 // ZXing includes
 #include <BarcodeFormat.h>
@@ -59,7 +60,8 @@ public: // Static functions
     Q_INVOKABLE static WAbstractThreadAction * startRead(const QImage          & image,
                                                          ZXing::BarcodeFormats   formats,
                                                          QObject               * receiver,
-                                                         const char            * method);
+                                                         const char            * method,
+                                                         const QRect           & target = QRect());
 
     // NOTE: The 'method' format is loaded(const QString &).
     Q_INVOKABLE static WAbstractThreadAction * startReadFile(const QString         & fileName,

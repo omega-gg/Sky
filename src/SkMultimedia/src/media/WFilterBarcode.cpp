@@ -66,14 +66,8 @@ private: // Variables
     QImage image = input->image();
 #endif
 
-    QRect target = p->target;
-
-    if (target.isValid())
-    {
-        image = image.copy(target);
-    }
-
-    p->reader.startRead(image, ZXing::BarcodeFormat::Any, filter, SLOT(onLoaded(const QString &)));
+    p->reader.startRead(image, ZXing::BarcodeFormat::Any, filter, SLOT(onLoaded(const QString &)),
+                        p->target);
 
     return *input;
 }
