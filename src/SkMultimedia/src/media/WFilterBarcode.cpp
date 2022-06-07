@@ -25,8 +25,18 @@
 #ifndef SK_NO_FILTERBARCODE
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-// Qt private includes
-#include <private/qvideoframeconversionhelper_p.h>
+extern void QT_FASTCALL qt_convert_BGRA32_to_ARGB32 (const QVideoFrame &, uchar *);
+extern void QT_FASTCALL qt_convert_BGR24_to_ARGB32  (const QVideoFrame &, uchar *);
+extern void QT_FASTCALL qt_convert_BGR565_to_ARGB32 (const QVideoFrame &, uchar *);
+extern void QT_FASTCALL qt_convert_BGR555_to_ARGB32 (const QVideoFrame &, uchar *);
+extern void QT_FASTCALL qt_convert_AYUV444_to_ARGB32(const QVideoFrame &, uchar *);
+extern void QT_FASTCALL qt_convert_YUV444_to_ARGB32 (const QVideoFrame &, uchar *);
+extern void QT_FASTCALL qt_convert_YUV420P_to_ARGB32(const QVideoFrame &, uchar *);
+extern void QT_FASTCALL qt_convert_YV12_to_ARGB32   (const QVideoFrame &, uchar *);
+extern void QT_FASTCALL qt_convert_UYVY_to_ARGB32   (const QVideoFrame &, uchar *);
+extern void QT_FASTCALL qt_convert_YUYV_to_ARGB32   (const QVideoFrame &, uchar *);
+extern void QT_FASTCALL qt_convert_NV12_to_ARGB32   (const QVideoFrame &, uchar *);
+extern void QT_FASTCALL qt_convert_NV21_to_ARGB32   (const QVideoFrame &, uchar *);
 #endif
 
 //=================================================================================================
@@ -74,18 +84,18 @@ QImage WFilterRunnable::imageFromFrame(const QVideoFrame & frame) const
 
     uchar * data = new uchar[(frame.width() * frame.height()) * 4];
 
-    if   (format == QVideoFrame::Format_BGRA32)  qt_convert_BGRA32_to_ARGB32 (frame, data);
-    else (format == QVideoFrame::Format_BGR24)   qt_convert_BGR24_to_ARGB32  (frame, data);
-    else (format == QVideoFrame::Format_BGR565)  qt_convert_BGR565_to_ARGB32 (frame, data);
-    else (format == QVideoFrame::Format_BGR555)  qt_convert_BGR555_to_ARGB32 (frame, data);
-    else (format == QVideoFrame::Format_AYUV444) qt_convert_AYUV444_to_ARGB32(frame, data);
-    else (format == QVideoFrame::Format_YUV444)  qt_convert_YUV444_to_ARGB32 (frame, data);
-    else (format == QVideoFrame::Format_YUV420P) qt_convert_YUV420P_to_ARGB32(frame, data);
-    else (format == QVideoFrame::Format_YV12)    qt_convert_YV12_to_ARGB32   (frame, data);
-    else (format == QVideoFrame::Format_UYVY)    qt_convert_UYVY_to_ARGB32   (frame, data);
-    else (format == QVideoFrame::Format_YUYV)    qt_convert_YUYV_to_ARGB32   (frame, data);
-    else (format == QVideoFrame::Format_NV12)    qt_convert_NV12_to_ARGB32   (frame, data);
-    else (format == QVideoFrame::Format_NV21)    qt_convert_NV21_to_ARGB32   (frame, data);
+    if      (format == QVideoFrame::Format_BGRA32)  qt_convert_BGRA32_to_ARGB32 (frame, data);
+    else if (format == QVideoFrame::Format_BGR24)   qt_convert_BGR24_to_ARGB32  (frame, data);
+    else if (format == QVideoFrame::Format_BGR565)  qt_convert_BGR565_to_ARGB32 (frame, data);
+    else if (format == QVideoFrame::Format_BGR555)  qt_convert_BGR555_to_ARGB32 (frame, data);
+    else if (format == QVideoFrame::Format_AYUV444) qt_convert_AYUV444_to_ARGB32(frame, data);
+    else if (format == QVideoFrame::Format_YUV444)  qt_convert_YUV444_to_ARGB32 (frame, data);
+    else if (format == QVideoFrame::Format_YUV420P) qt_convert_YUV420P_to_ARGB32(frame, data);
+    else if (format == QVideoFrame::Format_YV12)    qt_convert_YV12_to_ARGB32   (frame, data);
+    else if (format == QVideoFrame::Format_UYVY)    qt_convert_UYVY_to_ARGB32   (frame, data);
+    else if (format == QVideoFrame::Format_YUYV)    qt_convert_YUYV_to_ARGB32   (frame, data);
+    else if (format == QVideoFrame::Format_NV12)    qt_convert_NV12_to_ARGB32   (frame, data);
+    else if (format == QVideoFrame::Format_NV21)    qt_convert_NV21_to_ARGB32   (frame, data);
 
     return QImage(data, frame.width(), frame.height(), QImage::Format_ARGB32, imageCleanup, data);
 }

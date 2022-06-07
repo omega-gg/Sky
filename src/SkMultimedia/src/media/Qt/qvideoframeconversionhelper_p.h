@@ -172,8 +172,6 @@ static inline void planarYUV420_to_ARGB32(const uchar *y, int yStride,
     }
 }
 
-
-
 void QT_FASTCALL qt_convert_YUV420P_to_ARGB32(const QVideoFrame &frame, uchar *output)
 {
     FETCH_INFO_TRIPLANAR(frame)
