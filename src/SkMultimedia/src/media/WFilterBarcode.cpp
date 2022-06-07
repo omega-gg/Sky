@@ -33,6 +33,11 @@ class WFilterRunnable : public QVideoFilterRunnable
 public:
     explicit WFilterRunnable(WFilterBarcode * filter);
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+public: // Functions
+    QImage imageFromFrame(QVideoFrame * frame) const;
+#endif
+
 public: // QVideoFilterRunnable implementation
     /* virtual */ QVideoFrame run(QVideoFrame * input,
                                   const QVideoSurfaceFormat & surfaceFormat, RunFlags flags);
@@ -45,6 +50,42 @@ private: // Variables
 {
     this->filter = filter;
 }
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+
+void imageCleanup(void * data)
+{
+    delete [] (uchar *) data;
+}
+
+QImage WFilterRunnable::imageFromFrame(const QVideoFrame & frame) const
+{
+    QImage::Format format = frame.imageFormatFromPixelFormat(frame.pixelFormat());
+
+    if (format == QImage::Format_Invalid)
+    {
+        return QImage(frame.bits(), frame.width(), frame.height(), format);
+    }
+
+    uchar * data = new uchar[(videoFrame.width() * videoFrame.height()) * 4];
+
+    if   (format == QVideoFrame::Format_YUYV)    qt_convert_YUYV_to_ARGB32   (frame, data);
+    else (format == QVideoFrame::Format_NV12)    qt_convert_NV12_to_ARGB32   (frame, data);
+    else (format == QVideoFrame::Format_YUV420P) qt_convert_YUV420P_to_ARGB32(frame, data);
+    else (format == QVideoFrame::Format_YV12)    qt_convert_YV12_to_ARGB32   (frame, data);
+    else (format == QVideoFrame::Format_AYUV444) qt_convert_AYUV444_to_ARGB32(frame, data);
+    else (format == QVideoFrame::Format_YUV444)  qt_convert_YUV444_to_ARGB32 (frame, data);
+    else (format == QVideoFrame::Format_UYVY)    qt_convert_UYVY_to_ARGB32   (frame, data);
+    else (format == QVideoFrame::Format_NV21)    qt_convert_NV21_to_ARGB32   (frame, data);
+    else (format == QVideoFrame::Format_BGRA32)  qt_convert_BGRA32_to_ARGB32 (frame, data);
+    else (format == QVideoFrame::Format_BGR24)   qt_convert_BGR24_to_ARGB32  (frame, data);
+    else (format == QVideoFrame::Format_BGR565)  qt_convert_BGR565_to_ARGB32 (frame, data);
+    else (format == QVideoFrame::Format_BGR555)  qt_convert_BGR555_to_ARGB32 (frame, data);
+
+    return QImage(data, frame.width(), frame.height(), QImage::Format_ARGB32, imageCleanup, data);
+}
+
+#endif
 
 /* virtual */ QVideoFrame WFilterRunnable::run(QVideoFrame * input, const QVideoSurfaceFormat &,
                                                QVideoFilterRunnable::RunFlags)
@@ -59,7 +100,7 @@ private: // Variables
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     input->map(QAbstractVideoBuffer::ReadOnly);
 
-    QImage image = imageFromVideoFrame(videoFrame);
+    QImage image = imageFromFrame(*input);
 
     input->unmap();
 #else
