@@ -66,19 +66,6 @@ private: // Variables
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
 
-extern void QT_FASTCALL qt_convert_BGRA32_to_ARGB32 (const QVideoFrame &, uchar *);
-extern void QT_FASTCALL qt_convert_BGR24_to_ARGB32  (const QVideoFrame &, uchar *);
-extern void QT_FASTCALL qt_convert_BGR565_to_ARGB32 (const QVideoFrame &, uchar *);
-extern void QT_FASTCALL qt_convert_BGR555_to_ARGB32 (const QVideoFrame &, uchar *);
-extern void QT_FASTCALL qt_convert_AYUV444_to_ARGB32(const QVideoFrame &, uchar *);
-extern void QT_FASTCALL qt_convert_YUV444_to_ARGB32 (const QVideoFrame &, uchar *);
-extern void QT_FASTCALL qt_convert_YUV420P_to_ARGB32(const QVideoFrame &, uchar *);
-extern void QT_FASTCALL qt_convert_YV12_to_ARGB32   (const QVideoFrame &, uchar *);
-extern void QT_FASTCALL qt_convert_UYVY_to_ARGB32   (const QVideoFrame &, uchar *);
-extern void QT_FASTCALL qt_convert_YUYV_to_ARGB32   (const QVideoFrame &, uchar *);
-extern void QT_FASTCALL qt_convert_NV12_to_ARGB32   (const QVideoFrame &, uchar *);
-extern void QT_FASTCALL qt_convert_NV21_to_ARGB32   (const QVideoFrame &, uchar *);
-
 void imageCleanup(void * data)
 {
     delete [] (uchar *) data;
