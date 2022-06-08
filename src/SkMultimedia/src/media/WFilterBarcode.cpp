@@ -24,6 +24,8 @@
 
 #ifndef SK_NO_FILTERBARCODE
 
+#ifdef QT_5
+
 //=================================================================================================
 // WFilterRunnable
 //=================================================================================================
@@ -126,6 +128,8 @@ QImage WFilterRunnable::imageFromFrame(const QVideoFrame & frame) const
     return *input;
 }
 
+#endif
+
 //=================================================================================================
 // WFilterBarcodePrivate
 //=================================================================================================
@@ -157,10 +161,38 @@ void WFilterBarcodePrivate::onLoaded(const QString & text)
 //=================================================================================================
 
 /* explicit */ WFilterBarcode::WFilterBarcode(QObject * parent)
+#ifdef QT_5
     : QAbstractVideoFilter(parent), WPrivatable(new WFilterBarcodePrivate(this))
+#else
+    : QObject(parent), WPrivatable(new WFilterBarcodePrivate(this))
+#endif
 {
     Q_D(WFilterBarcode); d->init();
 }
+
+//-------------------------------------------------------------------------------------------------
+// Static functions
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QPoint WFilterBarcode::mapPointToSource(const QRect  & source,
+                                                                 const QRect  & content,
+                                                                 const QPoint & point)
+{
+    qreal x = (qreal) (point.x() - content.left()) / content.width ();
+    qreal y = (qreal) (point.y() - content.top ()) / content.height();
+
+    return QPoint(x * source.width(), y * source.height());
+}
+
+/* Q_INVOKABLE static */ QRect WFilterBarcode::mapRectToSource(const QRect & source,
+                                                               const QRect & content,
+                                                               const QRect & target)
+{
+    return QRect(mapPointToSource(source, content, target.topLeft    ()),
+                 mapPointToSource(source, content, target.bottomRight()));
+}
+
+#ifdef QT_5
 
 //-------------------------------------------------------------------------------------------------
 // QAbstractVideoFilter implementation
@@ -170,6 +202,8 @@ void WFilterBarcodePrivate::onLoaded(const QString & text)
 {
     return new WFilterRunnable(this);
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Properties

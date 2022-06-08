@@ -24,7 +24,11 @@
 #define WFILTERBARCODE_H
 
 // Qt includes
+#ifdef QT_5
 #include <QAbstractVideoFilter>
+#else
+#include <QObject>
+#endif
 
 // Sk includes
 #include <Sk>
@@ -33,7 +37,11 @@
 
 class WFilterBarcodePrivate;
 
+#ifdef QT_5
 class SK_MULTIMEDIA_EXPORT WFilterBarcode : public QAbstractVideoFilter, public WPrivatable
+#else
+class SK_MULTIMEDIA_EXPORT WFilterBarcode : public QObject, public WPrivatable
+#endif
 {
     Q_OBJECT
 
@@ -52,8 +60,17 @@ public: // Enums
 public:
     explicit WFilterBarcode(QObject * parent = NULL);
 
+public: // Static functions
+    Q_INVOKABLE static QPoint mapPointToSource(const QRect & source,
+                                               const QRect & content, const QPoint & point);
+
+    Q_INVOKABLE static QRect mapRectToSource(const QRect & source,
+                                             const QRect & content, const QRect & target);
+
+#ifdef QT_5
 public: // QAbstractVideoFilter implementation
     /* virtual */ QVideoFilterRunnable * createFilterRunnable();
+#endif
 
 signals:
     void loaded(const QString & text);
