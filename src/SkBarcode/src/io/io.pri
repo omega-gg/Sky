@@ -1,5 +1,7 @@
 # Io module
 
-HEADERS += src/io/WBarcodeReader.h \
+HEADERS += src/io/WBarcodeWriter.h \
+           src/io/WBarcodeReader.h \
 
-SOURCES += src/io/WBarcodeReader.cpp \
+SOURCES += src/io/WBarcodeWriter.cpp \
+           src/io/WBarcodeReader.cpp \
