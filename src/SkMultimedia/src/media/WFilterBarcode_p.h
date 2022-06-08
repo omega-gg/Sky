@@ -49,10 +49,18 @@ public:
     void init();
 
 public: // Slots
+#ifdef QT_6
+    void onUpdated(const QVideoFrame & frame);
+#endif
+
     void onLoaded(const QString & text);
 
 public: // Variables
     WBarcodeReader reader;
+
+#ifdef QT_6
+    QVideoSink * videoSink;
+#endif
 
     QRect target;
 

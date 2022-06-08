@@ -24,6 +24,11 @@
 
 #ifndef SK_NO_FILTERBARCODE
 
+#ifdef QT_6
+// Qt includes
+#include <QVideoFrame>
+#endif
+
 #ifdef QT_5
 
 //=================================================================================================
@@ -138,12 +143,33 @@ WFilterBarcodePrivate::WFilterBarcodePrivate(WFilterBarcode * p) : WPrivate(p) {
 
 void WFilterBarcodePrivate::init()
 {
+#ifdef QT_6
+    videoSink = NULL;
+#endif
+
     loading = false;
 }
 
 //-------------------------------------------------------------------------------------------------
 // Private slots
 //-------------------------------------------------------------------------------------------------
+
+#ifdef QT_6
+
+void WFilterBarcodePrivate::onUpdated(const QVideoFrame & frame)
+{
+    // NOTE: We wait for the last run to finish before starting a new one.
+    if (loading) return;
+
+    Q_Q(WFilterBarcode);
+
+    loading = true;
+
+    reader.startRead(frame.toImage(), WBarcodeReader::Any, q, SLOT(onLoaded(const QString &)),
+                     target);
+}
+
+#endif
 
 void WFilterBarcodePrivate::onLoaded(const QString & text)
 {
@@ -208,6 +234,34 @@ void WFilterBarcodePrivate::onLoaded(const QString & text)
 //-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
+
+#ifdef QT_6
+
+QVideoSink * WFilterBarcode::videoSink() const
+{
+    Q_D(const WFilterBarcode); return d->videoSink;
+}
+
+void WFilterBarcode::setVideoSink(QVideoSink * videoSink)
+{
+    Q_D(WFilterBarcode);
+
+    if (d->videoSink == videoSink) return;
+
+    if (d->videoSink) disconnect(d->videoSink, 0, this, 0);
+
+    d->videoSink = videoSink;
+
+    if (videoSink)
+    {
+        connect(d->videoSink, SIGNAL(videoFrameChanged(const QVideoFrame &)),
+                this,         SLOT  (onUpdated        (const QVideoFrame &)));
+    }
+
+    emit videoSinkChanged();
+}
+
+#endif
 
 QRect WFilterBarcode::target() const
 {

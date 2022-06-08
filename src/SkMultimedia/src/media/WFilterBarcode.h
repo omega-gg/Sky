@@ -27,7 +27,7 @@
 #ifdef QT_5
 #include <QAbstractVideoFilter>
 #else
-#include <QObject>
+#include <QVideoSink>
 #endif
 
 // Sk includes
@@ -35,6 +35,7 @@
 
 #ifndef SK_NO_FILTERBARCODE
 
+// Forward declarations
 class WFilterBarcodePrivate;
 
 #ifdef QT_5
@@ -46,6 +47,10 @@ class SK_MULTIMEDIA_EXPORT WFilterBarcode : public QObject, public WPrivatable
     Q_OBJECT
 
     Q_ENUMS(FillMode)
+
+#ifdef QT_6
+    Q_PROPERTY(QVideoSink * videoSink READ videoSink WRITE setVideoSink NOTIFY videoSinkChanged)
+#endif
 
     Q_PROPERTY(QRect target READ target WRITE setTarget NOTIFY targetChanged)
 
@@ -75,14 +80,27 @@ public: // QAbstractVideoFilter implementation
 signals:
     void loaded(const QString & text);
 
+#ifdef QT_6
+    void videoSinkChanged();
+#endif
+
     void targetChanged();
 
 public: // Properties
+#ifdef QT_6
+    QVideoSink * videoSink() const;
+    void         setVideoSink(QVideoSink * videoSink);
+#endif
+
     QRect target() const;
-    void setTarget(const QRect & target);
+    void  setTarget(const QRect & target);
 
 private:
     W_DECLARE_PRIVATE(WFilterBarcode)
+
+#ifdef QT_6
+    Q_PRIVATE_SLOT(d_func(), void onUpdated(const QVideoFrame &))
+#endif
 
     Q_PRIVATE_SLOT(d_func(), void onLoaded(const QString &))
 
