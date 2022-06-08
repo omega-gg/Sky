@@ -29,6 +29,12 @@
 #include <QVideoFrame>
 #endif
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+// Qt private includes
+// NOTE: This is required for qt_convert functions.
+#include <private/qvideoframeconversionhelper_p.h>
+#endif
+
 #ifdef QT_5
 
 //=================================================================================================
