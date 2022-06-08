@@ -46,21 +46,11 @@ class SK_MULTIMEDIA_EXPORT WFilterBarcode : public QObject, public WPrivatable
 {
     Q_OBJECT
 
-    Q_ENUMS(FillMode)
-
 #ifdef QT_6
     Q_PROPERTY(QVideoSink * videoSink READ videoSink WRITE setVideoSink NOTIFY videoSinkChanged)
 #endif
 
     Q_PROPERTY(QRect target READ target WRITE setTarget NOTIFY targetChanged)
-
-public: // Enums
-    enum FillMode
-    {
-        Stretch,
-        PreserveAspectFit,
-        PreserveAspectCrop
-    };
 
 public:
     explicit WFilterBarcode(QObject * parent = NULL);
