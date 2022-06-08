@@ -52,7 +52,7 @@
 //
 
 #include <qvideoframe.h>
-#include <private/qsimd_p.h>
+//#include <private/qsimd_p.h>
 
 typedef void (QT_FASTCALL *VideoFrameConvertFunc)(const QVideoFrame &frame, uchar *output);
 
