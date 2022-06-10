@@ -64,7 +64,11 @@ public: // Properties
 
 private:
     W_DECLARE_PRIVATE(WDeclarativeTexture)
+
+    Q_PRIVATE_SLOT(d_func(), void onSmoothChanged())
 };
+
+#include <private/WDeclarativeTexture_p>
 
 #endif // SK_NO_DECLARATIVETEXTURE
 #endif // WDECLARATIVETEXTURE_H

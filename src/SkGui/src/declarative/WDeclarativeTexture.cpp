@@ -35,8 +35,6 @@
 // Private
 //-------------------------------------------------------------------------------------------------
 
-#include "WDeclarativeTexture_p.h"
-
 WDeclarativeTexturePrivate::WDeclarativeTexturePrivate(WDeclarativeTexture * p)
     : WDeclarativeItemPrivate(p) {}
 
@@ -56,26 +54,47 @@ void WDeclarativeTexturePrivate::init()
 
     updateTexture  = false;
     updateGeometry = false;
+    updateSmooth   = false;
     updateMipmap   = false;
 
     mipmap = false;
 
     q->setFlag(QQuickItem::ItemHasContents);
+
+    QObject::connect(q, SIGNAL(smoothChanged(bool)), q, SLOT(onSmoothChanged()));
 }
 
 //-------------------------------------------------------------------------------------------------
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
+void WDeclarativeTexturePrivate::applySmooth(QSGInternalImageNode * node, bool smooth)
+{
+    updateSmooth = false;
+
+    if (smooth) node->setFiltering(QSGTexture::Linear);
+    else        node->setFiltering(QSGTexture::None);
+}
+
 void WDeclarativeTexturePrivate::applyMipmap(QSGInternalImageNode * node)
 {
     updateMipmap = false;
 
-    if (mipmap)
-    {
-         node->setMipmapFiltering(QSGTexture::Linear);
-    }
-    else node->setMipmapFiltering(QSGTexture::None);
+    if (mipmap) node->setMipmapFiltering(QSGTexture::Linear);
+    else        node->setMipmapFiltering(QSGTexture::None);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private slots
+//-------------------------------------------------------------------------------------------------
+
+void WDeclarativeTexturePrivate::onSmoothChanged()
+{
+    Q_Q(WDeclarativeTexture);
+
+    updateSmooth = true;
+
+    q->update();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -132,6 +151,7 @@ WDeclarativeTexture::WDeclarativeTexture(WDeclarativeTexturePrivate * p, QQuickI
 
         if (d->updateTexture)
         {
+            if (d->updateSmooth) d->applySmooth(node, smooth());
             if (d->updateMipmap) d->applyMipmap(node);
 
             d->updateTexture  = false;
@@ -172,8 +192,7 @@ WDeclarativeTexture::WDeclarativeTexture(WDeclarativeTexturePrivate * p, QQuickI
         node = d->context->sceneGraphContext()->createInternalImageNode();
 #endif
 
-        node->setFiltering(QSGTexture::Linear);
-
+        d->applySmooth(node, smooth());
         d->applyMipmap(node);
 
         d->updateTexture  = false;

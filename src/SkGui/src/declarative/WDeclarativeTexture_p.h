@@ -51,7 +51,11 @@ public:
     void init();
 
 public: // Functions
+    void applySmooth(QSGInternalImageNode * node, bool smooth);
     void applyMipmap(QSGInternalImageNode * node);
+
+public: // Slots
+    void onSmoothChanged();
 
 public: // Variables
     QSGRenderContext * context;
@@ -59,6 +63,7 @@ public: // Variables
 
     bool updateTexture  : 1;
     bool updateGeometry : 1;
+    bool updateSmooth   : 1;
     bool updateMipmap   : 1;
 
     bool mipmap : 1;
