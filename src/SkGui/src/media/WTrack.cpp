@@ -196,7 +196,7 @@ QString WTrack::typeToString(Type type)
     return map;
 }
 
-/* virtual */ QString WTrack::toVbml() const
+/* virtual */ QString WTrack::toVbml(int currentTime) const
 {
     Q_D(const WTrack);
 
@@ -215,6 +215,11 @@ QString WTrack::typeToString(Type type)
     if (d->duration != -1)
     {
         Sk::bmlPair(vbml, "duration", QString::number(d->duration), "\n\n");
+    }
+
+    if (currentTime != -1)
+    {
+        Sk::bmlPair(vbml, "currentTime", QString::number(currentTime), "\n\n");
     }
 
     if (d->date.isValid())

@@ -1424,6 +1424,23 @@ void WTabTrackPrivate::onPlaylistDestroyed()
 }
 
 //-------------------------------------------------------------------------------------------------
+// Virtual interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ QString WTabTrack::toVbml() const
+{
+    Q_D(const WTabTrack);
+
+    WBookmarkTrack * bookmark = d->currentBookmark;
+
+    if (bookmark)
+    {
+        return bookmark->track()->toVbml(bookmark->currentTime());
+    }
+    else return QString();
+}
+
+//-------------------------------------------------------------------------------------------------
 // WLocalObject reimplementation
 //-------------------------------------------------------------------------------------------------
 

@@ -4,7 +4,7 @@
 
     Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
 
-    This file is part of SkBarcode.
+    This file is part of SkCore.
 
     - GNU Lesser General Public License Usage:
     This file may be used under the terms of the GNU Lesser General Public License version 3 as
@@ -20,43 +20,29 @@
 */
 //=================================================================================================
 
-#ifndef WBARCODEWRITER_H
-#define WBARCODEWRITER_H
+#ifndef WZIPPER_H
+#define WZIPPER_H
 
 // Qt includes
 #include <QObject>
-#include <QImage>
 
 // Sk includes
 #include <Sk>
 
-// Forward declarations
-class WAbstractThreadAction;
-class WBarcodeWriterPrivate;
+class WZipperPrivate;
 
-class SK_BARCODE_EXPORT WBarcodeWriter : public QObject, public WPrivatable
+class SK_CORE_EXPORT WZipper : public QObject, public WPrivatable
 {
     Q_OBJECT
 
-    Q_ENUMS(Type)
-
-public: // Enums
-    enum Type { Text, Vbml };
-
 public:
-    explicit WBarcodeWriter(QObject * parent = NULL);
+    explicit WZipper(QObject * parent = NULL);
 
 public: // Static functions
-    Q_INVOKABLE static QImage write(const QString & text, Type type = Text);
-
-    // NOTE: The 'method' format is complete(const QImage &).
-    Q_INVOKABLE static WAbstractThreadAction * startWrite(const QString & text,
-                                                          QObject       * receiver,
-                                                          const char    * method,
-                                                          Type            type = Text);
+    Q_INVOKABLE static QByteArray compress(const QByteArray & array);
 
 private:
-    W_DECLARE_PRIVATE(WBarcodeWriter)
+    W_DECLARE_PRIVATE(WZipper)
 };
 
-#endif // WBARCODEWRITER_H
+#endif // WZIPPER_H

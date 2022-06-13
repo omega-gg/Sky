@@ -24,9 +24,74 @@
 
 #ifndef SK_NO_BARCODEWRITER
 
+// Sk includes
+#include <WControllerFile>
+#include <WZipper>
+
+//=================================================================================================
+// WBarcodeWrite and WBarcodeWriteReply
+//=================================================================================================
+
+class WBarcodeWrite : public WAbstractThreadAction
+{
+    Q_OBJECT
+
+public:
+    WBarcodeWrite(const QString & text, WBarcodeWriter::Type type)
+    {
+        this->text = text;
+        this->type = type;
+    }
+
+protected: // WAbstractThreadAction reimplementation
+    /* virtual */ WAbstractThreadReply * createReply() const;
+
+protected: // WAbstractThreadAction implementation
+    /* virtual */ bool run();
+
+public: // Variables
+    QString              text;
+    WBarcodeWriter::Type type;
+};
+
+class WBarcodeWriteReply : public WAbstractThreadReply
+{
+    Q_OBJECT
+
+protected: // WAbstractThreadReply reimplementation
+    /* virtual */ void onCompleted(bool ok);
+
+signals:
+    void complete(const QImage & image);
+
+public: // Variables
+    QImage image;
+};
+
 //-------------------------------------------------------------------------------------------------
-// Private
-//-------------------------------------------------------------------------------------------------
+
+/* virtual */ WAbstractThreadReply * WBarcodeWrite::createReply() const
+{
+    return new WBarcodeWriteReply;
+}
+
+/* virtual */ bool WBarcodeWrite::run()
+{
+    WBarcodeWriteReply * reply = qobject_cast<WBarcodeWriteReply *> (this->reply());
+
+    reply->image = WBarcodeWriter::write(text, type);
+
+    return true;
+}
+
+/* virtual */ void WBarcodeWriteReply::onCompleted(bool)
+{
+    emit complete(image);
+}
+
+//=================================================================================================
+// WBarcodeWriterPrivate
+//=================================================================================================
 
 #include <private/Sk_p>
 
@@ -47,9 +112,9 @@ WBarcodeWriterPrivate::WBarcodeWriterPrivate(WBarcodeWriter * p) : WPrivate(p) {
 
 void WBarcodeWriterPrivate::init() {}
 
-//-------------------------------------------------------------------------------------------------
-// Ctor / dtor
-//-------------------------------------------------------------------------------------------------
+//=================================================================================================
+// WBarcodeWriter
+//=================================================================================================
 
 /* explicit */ WBarcodeWriter::WBarcodeWriter(QObject * parent)
     : QObject(parent), WPrivatable(new WBarcodeWriterPrivate(this))
@@ -57,4 +122,37 @@ void WBarcodeWriterPrivate::init() {}
     Q_D(WBarcodeWriter); d->init();
 }
 
+//-------------------------------------------------------------------------------------------------
+// Static functions
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QImage WBarcodeWriter::write(const QString & text, Type type)
+{
+    if (type == Vbml)
+    {
+        QByteArray data = WZipper::compress(text.toUtf8());
+
+        data = data.toBase64(QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals);
+    }
+
+    return QImage();
+}
+
+/* Q_INVOKABLE static */
+WAbstractThreadAction * WBarcodeWriter::startWrite(const QString & text,
+                                                   QObject       * receiver,
+                                                   const char    * method, Type type)
+{
+    WBarcodeWrite * action = new WBarcodeWrite(text, type);
+
+    WBarcodeWriteReply * reply = qobject_cast<WBarcodeWriteReply *>
+                                 (wControllerFile->startWriteAction(action));
+
+    QObject::connect(reply, SIGNAL(complete(const QImage &)), receiver, method);
+
+    return action;
+}
+
 #endif // SK_NO_BARCODEWRITER
+
+#include "WBarcodeWriter.moc"

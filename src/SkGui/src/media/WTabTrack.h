@@ -132,6 +132,9 @@ public: // Interface
     Q_INVOKABLE void loadTrack  ();
     Q_INVOKABLE void reloadTrack();
 
+public: // Virtual interface
+    Q_INVOKABLE virtual QString toVbml() const;
+
 public: // WLocalObject reimplementation
     /* Q_INVOKABLE virtual */ QString getParentPath() const;
 

@@ -59,7 +59,7 @@ public: // Static functions
 public: // Virtual interface
     virtual QVariantMap toMap() const;
 
-    virtual QString toVbml() const;
+    virtual QString toVbml(int currentTime = -1) const;
 
 public: // Operators
     WTrack(const WTrack & other);

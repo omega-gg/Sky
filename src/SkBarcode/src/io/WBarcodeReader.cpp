@@ -32,14 +32,12 @@
 
 // Sk includes
 #include <WControllerFile>
-#include <WAbstractThreadAction>
-#include <WAbstractThreadReply>
 
 // Namespaces
 using namespace ZXing;
 
 //=================================================================================================
-// WBarcodeRead, WBarcodeFile and WBarcodeReply
+// WBarcodeRead, WBarcodeFile and WBarcodeReadReply
 //=================================================================================================
 
 class WBarcodeRead : public WAbstractThreadAction
@@ -91,7 +89,7 @@ public: // Variables
     WBarcodeReader::Formats formats;
 };
 
-class WBarcodeReply : public WAbstractThreadReply
+class WBarcodeReadReply : public WAbstractThreadReply
 {
     Q_OBJECT
 
@@ -109,17 +107,17 @@ public: // Variables
 
 /* virtual */ WAbstractThreadReply * WBarcodeRead::createReply() const
 {
-    return new WBarcodeReply;
+    return new WBarcodeReadReply;
 }
 
 /* virtual */ WAbstractThreadReply * WBarcodeFile::createReply() const
 {
-    return new WBarcodeReply;
+    return new WBarcodeReadReply;
 }
 
 /* virtual */ bool WBarcodeRead::run()
 {
-    WBarcodeReply * reply = qobject_cast<WBarcodeReply *> (this->reply());
+    WBarcodeReadReply * reply = qobject_cast<WBarcodeReadReply *> (this->reply());
 
     if (target.isValid())
     {
@@ -132,14 +130,14 @@ public: // Variables
 
 /* virtual */ bool WBarcodeFile::run()
 {
-    WBarcodeReply * reply = qobject_cast<WBarcodeReply *> (this->reply());
+    WBarcodeReadReply * reply = qobject_cast<WBarcodeReadReply *> (this->reply());
 
     reply->text = WBarcodeReader::read(QImage(fileName), formats);
 
     return true;
 }
 
-/* virtual */ void WBarcodeReply::onCompleted(bool)
+/* virtual */ void WBarcodeReadReply::onCompleted(bool)
 {
     emit loaded(text);
 }
@@ -241,8 +239,8 @@ WAbstractThreadAction * WBarcodeReader::startRead(const QImage & image,
 {
     WBarcodeRead * action = new WBarcodeRead(image, target, formats);
 
-    WBarcodeReply * reply = qobject_cast<WBarcodeReply *>
-                            (wControllerFile->startReadAction(action));
+    WBarcodeReadReply * reply = qobject_cast<WBarcodeReadReply *>
+                                (wControllerFile->startReadAction(action));
 
     QObject::connect(reply, SIGNAL(loaded(const QString &)), receiver, method);
 
@@ -257,8 +255,8 @@ WAbstractThreadAction * WBarcodeReader::startReadFile(const QString & fileName,
 {
     WBarcodeFile * action = new WBarcodeFile(fileName, formats);
 
-    WBarcodeReply * reply = qobject_cast<WBarcodeReply *>
-                            (wControllerFile->startReadAction(action));
+    WBarcodeReadReply * reply = qobject_cast<WBarcodeReadReply *>
+                                (wControllerFile->startReadAction(action));
 
     QObject::connect(reply, SIGNAL(loaded(const QString &)), receiver, method);
 
