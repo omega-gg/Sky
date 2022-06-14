@@ -25,6 +25,7 @@
 #ifndef SK_NO_BOOKMARKTRACK
 
 // Sk includes
+#include <WControllerApplication>
 #include <WTrack>
 #include <WTabTrack>
 
@@ -274,6 +275,47 @@ void WBookmarkTrack::save()
     Q_D(WBookmarkTrack);
 
     if (d->parentTab) d->parentTab->save();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Virtual interface
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ QString WBookmarkTrack::toVbml() const
+{
+    Q_D(const WBookmarkTrack);
+
+    QString vbml;
+
+    Sk::bmlPair(vbml, "type", "track " + WTrack::typeToString(d->type), "\n\n");
+
+    Sk::bmlPair(vbml, "source", d->source, "\n\n");
+
+    Sk::bmlPair(vbml, "title", d->title, "\n\n");
+    Sk::bmlPair(vbml, "cover", d->cover, "\n\n");
+
+    Sk::bmlPair(vbml, "author", d->author, "\n\n");
+    Sk::bmlPair(vbml, "feed",   d->feed,   "\n\n");
+
+    if (d->duration != -1)
+    {
+        Sk::bmlPair(vbml, "duration", QString::number(d->duration), "\n\n");
+    }
+
+    if (d->currentTime != -1)
+    {
+        Sk::bmlPair(vbml, "currentTime", QString::number(d->currentTime), "\n\n");
+    }
+
+    if (d->date.isValid())
+    {
+        Sk::bmlPair(vbml, "date", Sk::bmlDate(d->date), "\n\n");
+    }
+
+    // NOTE: We clear the last '\n'.
+    if (vbml.isEmpty() == false) vbml.chop(1);
+
+    return vbml;
 }
 
 //-------------------------------------------------------------------------------------------------

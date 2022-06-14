@@ -497,10 +497,15 @@ WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p, Q
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ void WDeclarativeImageBase::applyImage(const QImage & image)
+{
+    setPixmap(QPixmap::fromImage(image));
+}
+
 #ifdef QT_4
-/* Q_INVOKABLE */ void WDeclarativeImageBase::setItemShot(QGraphicsObject * object)
+/* Q_INVOKABLE */ void WDeclarativeImageBase::applyItemShot(QGraphicsObject * object)
 #else
-/* Q_INVOKABLE */ void WDeclarativeImageBase::setItemShot(QQuickItem * item)
+/* Q_INVOKABLE */ void WDeclarativeImageBase::applyItemShot(QQuickItem * item)
 #endif
 {
 #ifdef QT_4
@@ -514,6 +519,15 @@ WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p, Q
 #endif
 
     setPixmap(pixmap);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ QImage WDeclarativeImageBase::toImage() const
+{
+    Q_D(const WDeclarativeImageBase);
+
+    return d->pix.pixmap().toImage();
 }
 
 //-------------------------------------------------------------------------------------------------

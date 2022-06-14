@@ -46,6 +46,9 @@ public: // Interface
 
     void save();
 
+public: // Virtual interface
+    virtual QString toVbml() const;
+
 public: // Operators
     WBookmarkTrack(const WBookmarkTrack & other);
 

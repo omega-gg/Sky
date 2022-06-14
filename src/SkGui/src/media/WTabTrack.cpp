@@ -1433,11 +1433,9 @@ void WTabTrackPrivate::onPlaylistDestroyed()
 
     WBookmarkTrack * bookmark = d->currentBookmark;
 
-    if (bookmark)
-    {
-        return bookmark->track()->toVbml(bookmark->currentTime());
-    }
-    else return QString();
+    if (bookmark == NULL) return QString();
+
+    return bookmark->toVbml();
 }
 
 //-------------------------------------------------------------------------------------------------

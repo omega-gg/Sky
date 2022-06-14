@@ -76,7 +76,7 @@ Item
     {
         if (isAnimated) return;
 
-        itemImage.setItemShot(itemWipe);
+        itemImage.applyItemShot(itemWipe);
 
         //itemImage.width  = width;
         //itemImage.height = height;

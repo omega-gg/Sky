@@ -116,11 +116,15 @@ public: // Interface
 
     Q_INVOKABLE void reload();
 
+    Q_INVOKABLE void applyImage(const QImage & image);
+
 #ifdef QT_4
-    Q_INVOKABLE void setItemShot(QGraphicsObject * object);
+    Q_INVOKABLE void applyItemShot(QGraphicsObject * object);
 #else
-    Q_INVOKABLE void setItemShot(QQuickItem * item);
+    Q_INVOKABLE void applyItemShot(QQuickItem * item);
 #endif
+
+    Q_INVOKABLE QImage toImage() const;
 
 public: // QDeclarativeItem / QQuickItem reimplementation
     /* virtual */ void componentComplete();

@@ -24,9 +24,23 @@
 
 #ifndef SK_NO_BARCODEWRITER
 
+// ZXing includes
+#include <TextUtfEncoding.h>
+#include <CharacterSet.h>
+#include <qrcode/QREncoder.h>
+#include <qrcode/QREncodeResult.h>
+
 // Sk includes
 #include <WControllerFile>
 #include <WZipper>
+
+// Namespaces
+using namespace ZXing;
+
+//-------------------------------------------------------------------------------------------------
+// Static variables
+
+static const int BARCODEWRITER_MARGINS = 1;
 
 //=================================================================================================
 // WBarcodeWrite and WBarcodeWriteReply
@@ -128,14 +142,54 @@ void WBarcodeWriterPrivate::init() {}
 
 /* Q_INVOKABLE static */ QImage WBarcodeWriter::write(const QString & text, Type type)
 {
+    if (text.isEmpty()) return QImage();
+
+    std::wstring string;
+
     if (type == Vbml)
     {
         QByteArray data = WZipper::compress(text.toUtf8());
 
+#ifdef QT_4
+        // FIXME Qt4: This version does not support encoding flags.
+        data = data.toBase64();
+#else
         data = data.toBase64(QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals);
+#endif
+
+        string = TextUtfEncoding::FromUtf8("vbml:" + data.toStdString());
+    }
+    else string = TextUtfEncoding::FromUtf8(text.toStdString());
+
+    QRCode::EncodeResult code = QRCode::Encode(string, QRCode::ErrorCorrectionLevel::Low,
+                                               CharacterSet::Unknown, 0, false, -1);
+
+    const BitMatrix & matrix = code.matrix;
+
+    int width  = matrix.width ();
+    int height = matrix.height();
+
+    int margins = BARCODEWRITER_MARGINS * 2;
+
+    QImage image(width + margins, height + margins, QImage::Format_Grayscale8);
+
+    image.fill(255);
+
+    for (int y = 0; y < height; y++)
+    {
+        uchar * line = image.scanLine(y + BARCODEWRITER_MARGINS);
+
+        line += BARCODEWRITER_MARGINS;
+
+        for (int x = 0; x < width; x++)
+        {
+            if (matrix.get(x, y)) *line = 0;
+
+            line++;
+        }
     }
 
-    return QImage();
+    return image;
 }
 
 /* Q_INVOKABLE static */

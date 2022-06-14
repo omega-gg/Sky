@@ -67,7 +67,7 @@ Item
     {
         if (isAnimated) return;
 
-        itemImage.setItemShot(content);
+        itemImage.applyItemShot(content);
 
         //itemImage.width  = width;
         //itemImage.height = height;
