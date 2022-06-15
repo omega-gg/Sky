@@ -30,6 +30,9 @@
 // QuaZip includes
 #include <quaziodevice.h>
 
+// NOTE: We undef compress to avoid corrupting our WZipper::compress function.
+#undef compress
+
 //-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
