@@ -153,11 +153,13 @@ void WBarcodeWriterPrivate::init() {}
 #ifdef QT_4
         // FIXME Qt4: This version does not support encoding flags.
         data = data.toBase64();
+
+        string = TextUtfEncoding::FromUtf8("vbml:" + QString(data).toStdString());
 #else
         data = data.toBase64(QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals);
-#endif
 
         string = TextUtfEncoding::FromUtf8("vbml:" + data.toStdString());
+#endif
     }
     else string = TextUtfEncoding::FromUtf8(text.toStdString());
 
@@ -171,7 +173,7 @@ void WBarcodeWriterPrivate::init() {}
 
     int margins = BARCODEWRITER_MARGINS * 2;
 
-    QImage image(width + margins, height + margins, QImage::Format_Grayscale8);
+    QImage image(width + margins, height + margins, QImage::Format_Indexed8);
 
     image.fill(255);
 
