@@ -40,6 +40,8 @@ using namespace ZXing;
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
+static const int BARCODEWRITER_MAX = 4296;
+
 static const int BARCODEWRITER_MARGINS = 1;
 
 //=================================================================================================
@@ -162,6 +164,13 @@ void WBarcodeWriterPrivate::init() {}
 #endif
     }
     else string = TextUtfEncoding::FromUtf8(text.toStdString());
+
+    if (string.size() > BARCODEWRITER_MAX)
+    {
+        qWarning("WBarcodeWriter::write: The text is too long (%d).", (int) string.size());
+
+        return QImage();
+    }
 
     QRCode::EncodeResult code = QRCode::Encode(string, QRCode::ErrorCorrectionLevel::Low,
                                                CharacterSet::Unknown, 0, false, -1);
