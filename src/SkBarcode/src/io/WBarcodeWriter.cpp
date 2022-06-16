@@ -24,6 +24,9 @@
 
 #ifndef SK_NO_BARCODEWRITER
 
+// Qt includes
+#include <QPainter>
+
 // ZXing includes
 #include <TextUtfEncoding.h>
 #include <CharacterSet.h>
@@ -40,9 +43,9 @@ using namespace ZXing;
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int BARCODEWRITER_MAX = 4296;
-
 static const int BARCODEWRITER_MARGINS = 1;
+
+static const int BARCODEWRITER_MAX = 4296;
 
 //=================================================================================================
 // WBarcodeWrite and WBarcodeWriteReply
@@ -182,7 +185,28 @@ void WBarcodeWriterPrivate::init() {}
 
     int margins = BARCODEWRITER_MARGINS * 2;
 
-    QImage image(width + margins, height + margins, QImage::Format_Indexed8);
+#ifdef QT_4
+    // NOTE Qt4: This version does not support Format_Grayscale8 and Format_Indexed8 cannot be
+    //           drawn into a QImage.
+    QImage image(width + margins, height + margins, QImage::Format_RGB32);
+
+    image.fill(Qt::white);
+
+    for (int y = 0; y < height; y++)
+    {
+        QRgb * line = (QRgb *) image.scanLine(y + BARCODEWRITER_MARGINS);
+
+        line += BARCODEWRITER_MARGINS;
+
+        for (int x = 0; x < width; x++)
+        {
+            if (matrix.get(x, y)) *line = Qt::black;
+
+            line++;
+        }
+    }
+#else
+    QImage image(width + margins, height + margins, QImage::Format_Grayscale8);
 
     image.fill(255);
 
@@ -199,8 +223,48 @@ void WBarcodeWriterPrivate::init() {}
             line++;
         }
     }
+#endif
 
     return image;
+}
+
+/* Q_INVOKABLE static */ QImage WBarcodeWriter::writeTag(const QString & text,
+                                                         const QString & background,
+                                                         int size, int margin)
+{
+    QImage front = write(text, Vbml);
+
+    if (front.isNull()) return QImage();
+
+    QImage back(WControllerFile::toLocalFile(background));
+
+    QImage content(size, size, QImage::Format_ARGB32_Premultiplied);
+
+    content.fill(Qt::transparent);
+
+    QPainter painter(&content);
+
+    painter.drawImage(QRect(0, 0, size, size), back,
+                      QRect(0, 0, back.width(), back.height()));
+
+    size -= margin * 2;
+
+    painter.drawImage(QRect(margin, margin, size, size), front,
+                      QRect(0, 0, front.width(), front.height()));
+
+    return content;
+}
+
+/* Q_INVOKABLE static */ bool WBarcodeWriter::writeTagFile(const QString & fileName,
+                                                           const QString & text,
+                                                           const QString & background,
+                                                           int             size,
+                                                           int             margin,
+                                                           const QString & format)
+{
+    QImage image = writeTag(text, background, size, margin);
+
+    return image.save(fileName, format.C_STR);
 }
 
 /* Q_INVOKABLE static */

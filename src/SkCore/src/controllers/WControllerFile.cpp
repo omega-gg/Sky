@@ -1133,6 +1133,15 @@ WControllerFileReply * WControllerFile::startCreatePaths(const QStringList & pat
 #endif
 }
 
+/* Q_INVOKABLE static */ QString WControllerFile::pathDocuments()
+{
+#ifdef QT_4
+    return QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
+#else
+    return QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+#endif
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QByteArray WControllerFile::readAll(const QString & fileName)

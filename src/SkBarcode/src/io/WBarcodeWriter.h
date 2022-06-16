@@ -49,6 +49,18 @@ public:
 public: // Static functions
     Q_INVOKABLE static QImage write(const QString & text, Type type = Text);
 
+    Q_INVOKABLE static QImage writeTag(const QString & text,
+                                       const QString & background,
+                                       int             size   = 512,
+                                       int             margin = 28);
+
+    Q_INVOKABLE static bool writeTagFile(const QString & fileName,
+                                         const QString & text,
+                                         const QString & background,
+                                         int             size   = 512,
+                                         int             margin = 28,
+                                         const QString & format = "png");
+
     // NOTE: The 'method' format is complete(const QImage &).
     Q_INVOKABLE static WAbstractThreadAction * startWrite(const QString & text,
                                                           QObject       * receiver,
