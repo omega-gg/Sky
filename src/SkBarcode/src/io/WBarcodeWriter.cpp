@@ -107,6 +107,45 @@ public: // Variables
     int margin;
 };
 
+class WBarcodeWriteTagFile : public WAbstractThreadAction
+{
+    Q_OBJECT
+
+public:
+    WBarcodeWriteTagFile(const QString & fileName, const QString & text,
+                         const QString & background, int size, int margin, const QString & format)
+    {
+        this->fileName = fileName;
+
+        this->text = text;
+
+        this->background = background;
+
+        this->size   = size;
+        this->margin = margin;
+
+        this->format = format;
+    }
+
+protected: // WAbstractThreadAction reimplementation
+    /* virtual */ WAbstractThreadReply * createReply() const;
+
+protected: // WAbstractThreadAction implementation
+    /* virtual */ bool run();
+
+public: // Variables
+    QString fileName;
+
+    QString text;
+
+    QString background;
+
+    int size;
+    int margin;
+
+    QString format;
+};
+
 class WBarcodeWriteReply : public WAbstractThreadReply
 {
     Q_OBJECT
@@ -133,6 +172,11 @@ public: // Variables
     return new WBarcodeWriteReply;
 }
 
+/* virtual */ WAbstractThreadReply * WBarcodeWriteTagFile::createReply() const
+{
+    return new WControllerFileReply;
+}
+
 /* virtual */ bool WBarcodeWrite::run()
 {
     WBarcodeWriteReply * reply = qobject_cast<WBarcodeWriteReply *> (this->reply());
@@ -149,6 +193,13 @@ public: // Variables
     reply->image = WBarcodeWriter::writeTag(text, background, size, margin);
 
     return true;
+}
+
+/* virtual */ bool WBarcodeWriteTagFile::run()
+{
+    WControllerFileReply * reply = qobject_cast<WControllerFileReply *> (this->reply());
+
+    return WBarcodeWriter::writeTagFile(fileName, text, background, size, margin, format);
 }
 
 /* virtual */ void WBarcodeWriteReply::onCompleted(bool)
@@ -344,6 +395,27 @@ WAbstractThreadAction * WBarcodeWriter::startWriteTag(const QString & text,
                                  (wControllerFile->startWriteAction(action));
 
     QObject::connect(reply, SIGNAL(complete(const QImage &)), receiver, method);
+
+    return action;
+}
+
+/* Q_INVOKABLE static */
+WAbstractThreadAction * WBarcodeWriter::startWriteTagFile(const QString & fileName,
+                                                          const QString & text,
+                                                          const QString & background,
+                                                          QObject       * receiver,
+                                                          const char    * method,
+                                                          int             size,
+                                                          int             margin,
+                                                          const QString & format)
+{
+    WBarcodeWriteTagFile * action = new WBarcodeWriteTagFile(fileName, text, background, size,
+                                                             margin, format);
+
+    WControllerFileReply * reply = qobject_cast<WControllerFileReply *>
+                                   (wControllerFile->startWriteAction(action));
+
+    QObject::connect(reply, SIGNAL(complete(bool)), receiver, method);
 
     return action;
 }

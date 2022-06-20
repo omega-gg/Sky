@@ -74,14 +74,14 @@ class SK_CORE_EXPORT WControllerFileReply : public WAbstractThreadReply
 {
     Q_OBJECT
 
-protected:
+public:
     WControllerFileReply() {}
 
 protected: // WAbstractThreadReply reimplementation
     /* virtual */ void onCompleted(bool ok);
 
 signals:
-    void actionComplete(bool ok);
+    void complete(bool ok);
 
 private:
     Q_DISABLE_COPY(WControllerFileReply)

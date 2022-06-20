@@ -450,7 +450,7 @@ void WBackendIndexPrivate::onItemLoad(WRemoteData * data)
 
     WControllerFileReply * reply = wControllerFile->startWriteFile(file.name, data->readAll());
 
-    QObject::connect(reply, SIGNAL(actionComplete(bool)), q, SLOT(onActionComplete()));
+    QObject::connect(reply, SIGNAL(complete(bool)), q, SLOT(onActionComplete()));
 
     data->deleteLater();
 }

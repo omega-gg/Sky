@@ -343,7 +343,7 @@ public: // Variables
 
 /* virtual */ void WControllerFileReply::onCompleted(bool ok)
 {
-    emit actionComplete(ok);
+    emit complete(ok);
 }
 
 //=================================================================================================

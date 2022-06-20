@@ -75,6 +75,16 @@ public: // Static functions
                                                              int             size   = 512,
                                                              int             margin = 28);
 
+    // NOTE: The 'method' format is complete(bool).
+    Q_INVOKABLE static WAbstractThreadAction * startWriteTagFile(const QString & fileName,
+                                                                 const QString & text,
+                                                                 const QString & background,
+                                                                 QObject       * receiver,
+                                                                 const char    * method,
+                                                                 int             size   = 512,
+                                                                 int             margin = 28,
+                                                                 const QString & format = "png");
+
     // NOTE: Returns a standardized VideoTag fileName.
     Q_INVOKABLE static QString getTagName(const QString & title);
 
