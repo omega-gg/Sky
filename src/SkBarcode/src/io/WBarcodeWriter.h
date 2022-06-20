@@ -67,6 +67,17 @@ public: // Static functions
                                                           const char    * method,
                                                           Type            type = Text);
 
+    // NOTE: The 'method' format is complete(const QImage &).
+    Q_INVOKABLE static WAbstractThreadAction * startWriteTag(const QString & text,
+                                                             const QString & background,
+                                                             QObject       * receiver,
+                                                             const char    * method,
+                                                             int             size   = 512,
+                                                             int             margin = 28);
+
+    // NOTE: Returns a standardized VideoTag fileName.
+    Q_INVOKABLE static QString getTagName(const QString & title);
+
 private:
     W_DECLARE_PRIVATE(WBarcodeWriter)
 };

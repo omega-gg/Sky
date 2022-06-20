@@ -2063,9 +2063,7 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 
     QImage image = takeShot(0, 0, width(), height());
 
-    QString fileName = path + '/' + sk->name() + '_'
-                       +
-                       Sk::currentDateString("yyyy-MM-dd_hh-mm-ss-zzz") + '.' + format;
+    QString fileName = path + '/' + sk->name() + '_' + Sk::currentDateString() + '.' + format;
 
     wControllerView->startWriteImage(fileName, image, format, quality);
 }

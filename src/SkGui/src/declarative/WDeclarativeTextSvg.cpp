@@ -327,7 +327,11 @@ void WDeclarativeTextSvgPrivate::addText(QString * item, const QString & x,
                  +
                  "\" font-size=\"" + size + "\" fill=\"" + color + "\"" + extra + ">"
                  +
+#ifdef QT_4
                  text.toUtf8() + "</text>");
+#else
+                 text.toHtmlEscaped() + "</text>");
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------

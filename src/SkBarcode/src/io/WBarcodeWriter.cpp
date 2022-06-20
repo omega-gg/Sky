@@ -34,8 +34,10 @@
 #include <qrcode/QREncodeResult.h>
 
 // Sk includes
+#include <WControllerApplication>
 #include <WControllerFile>
 #include <WZipper>
+#include <WRegExp>
 
 // Namespaces
 using namespace ZXing;
@@ -46,6 +48,8 @@ using namespace ZXing;
 static const int BARCODEWRITER_MARGINS = 1;
 
 static const int BARCODEWRITER_MAX = 4296;
+
+static const int BARCODEWRITER_MAX_LENGTH = 50;
 
 //=================================================================================================
 // WBarcodeWrite and WBarcodeWriteReply
@@ -73,6 +77,36 @@ public: // Variables
     WBarcodeWriter::Type type;
 };
 
+class WBarcodeWriteTag : public WAbstractThreadAction
+{
+    Q_OBJECT
+
+public:
+    WBarcodeWriteTag(const QString & text, const QString & background, int size, int margin)
+    {
+        this->text = text;
+
+        this->background = background;
+
+        this->size   = size;
+        this->margin = margin;
+    }
+
+protected: // WAbstractThreadAction reimplementation
+    /* virtual */ WAbstractThreadReply * createReply() const;
+
+protected: // WAbstractThreadAction implementation
+    /* virtual */ bool run();
+
+public: // Variables
+    QString text;
+
+    QString background;
+
+    int size;
+    int margin;
+};
+
 class WBarcodeWriteReply : public WAbstractThreadReply
 {
     Q_OBJECT
@@ -94,11 +128,25 @@ public: // Variables
     return new WBarcodeWriteReply;
 }
 
+/* virtual */ WAbstractThreadReply * WBarcodeWriteTag::createReply() const
+{
+    return new WBarcodeWriteReply;
+}
+
 /* virtual */ bool WBarcodeWrite::run()
 {
     WBarcodeWriteReply * reply = qobject_cast<WBarcodeWriteReply *> (this->reply());
 
     reply->image = WBarcodeWriter::write(text, type);
+
+    return true;
+}
+
+/* virtual */ bool WBarcodeWriteTag::run()
+{
+    WBarcodeWriteReply * reply = qobject_cast<WBarcodeWriteReply *> (this->reply());
+
+    reply->image = WBarcodeWriter::writeTag(text, background, size, margin);
 
     return true;
 }
@@ -280,6 +328,46 @@ WAbstractThreadAction * WBarcodeWriter::startWrite(const QString & text,
     QObject::connect(reply, SIGNAL(complete(const QImage &)), receiver, method);
 
     return action;
+}
+
+/* Q_INVOKABLE static */
+WAbstractThreadAction * WBarcodeWriter::startWriteTag(const QString & text,
+                                                      const QString & background,
+                                                      QObject       * receiver,
+                                                      const char    * method,
+                                                      int             size,
+                                                      int             margin)
+{
+    WBarcodeWriteTag * action = new WBarcodeWriteTag(text, background, size, margin);
+
+    WBarcodeWriteReply * reply = qobject_cast<WBarcodeWriteReply *>
+                                 (wControllerFile->startWriteAction(action));
+
+    QObject::connect(reply, SIGNAL(complete(const QImage &)), receiver, method);
+
+    return action;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QString WBarcodeWriter::getTagName(const QString & title)
+{
+    QString name = title;
+
+    name.remove(WRegExp("[^a-zA-Z0-9. ]"));
+
+    name = name.simplified();
+
+    int length = name.length();
+
+    if (length > BARCODEWRITER_MAX_LENGTH)
+    {
+        name.chop(length - BARCODEWRITER_MAX_LENGTH);
+    }
+
+    name.replace(' ', '_');
+
+    return "VideoTag-" + name + '-' + Sk::currentDateString();
 }
 
 #endif // SK_NO_BARCODEWRITER

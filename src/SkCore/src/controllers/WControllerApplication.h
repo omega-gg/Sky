@@ -353,7 +353,8 @@ public: // Static functions
     Q_INVOKABLE static QString dateToString      (const QDateTime & date, const QString & format);
     Q_INVOKABLE static QString dateToStringNumber(const QDateTime & date);
 
-    Q_INVOKABLE static QString currentDateString(const QString & format);
+    Q_INVOKABLE static QString currentDateString(const QString & format
+                                                 = "yyyy-MM-dd_hh-mm-ss-zzz");
 
     Q_INVOKABLE static QString dateToText(const QDateTime & date);
 
