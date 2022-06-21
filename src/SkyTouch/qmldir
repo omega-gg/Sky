@@ -32,6 +32,8 @@ LabelStream  1.0 LabelStream.qml
 LabelWide     1.0 LabelWide.qml
 LabelWideTiny 1.0 LabelWideTiny.qml
 
+Popup 1.0 Popup.qml
+
 LineEdit      1.0 LineEdit.qml
 LineEditClear 1.0 LineEditClear.qml
 
