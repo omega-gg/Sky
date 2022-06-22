@@ -174,7 +174,7 @@ BaseButtonTouch
 
         maximumLineCount: 2
 
-        color: (isHighlighted || checked) ? st.text2_color
-                                          : st.text1_color
+        color: (isChecklighted) ? st.text2_color
+                                : st.text1_color
     }
 }

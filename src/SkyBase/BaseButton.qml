@@ -37,6 +37,8 @@ MouseArea
 
     property bool isHighlighted: (highlighted || (checkable && (checked || isPressed)))
 
+    property bool isChecklighted: (isHighlighted || checked)
+
     property bool isPressed: (pressed || isReturnPressed)
 
     property bool isReturnPressed: false

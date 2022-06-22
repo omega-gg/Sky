@@ -71,8 +71,8 @@ BaseButton
             else return st.buttonTouch_opacity;
         }
 
-        color: (isHighlighted || checked) ? st.buttonTouch_colorHighlight
-                                          : st.buttonTouch_color
+        color: (isChecklighted) ? st.buttonTouch_colorHighlight
+                                : st.buttonTouch_color
 
 //#QT_4
         smooth: true

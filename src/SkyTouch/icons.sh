@@ -19,6 +19,8 @@ cp "$solid"/window-maximize.svg icons
 cp "$solid"/window-restore.svg  icons
 cp "$solid"/window-minimize.svg icons
 
+cp "$solid"/check.svg icons
+
 cp "$solid"/chevron-down.svg  icons
 cp "$solid"/chevron-right.svg icons
 

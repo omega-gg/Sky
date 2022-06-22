@@ -23,102 +23,86 @@
 import QtQuick 1.0
 import Sky     1.0
 
-LabelTiny
+ButtonWide
 {
-    id: popup
+    id: buttonWideCheck
 
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    /* read */ property bool isActive: false
-
-    property bool animate: true
+    property int margins: st.buttonWide_margins
 
     //---------------------------------------------------------------------------------------------
-    // Style
+    // Private
 
-    property int durationAnimation: st.panel_durationAnimation
+    property int pMargins: margins / 2
 
-    property int interval: st.popup_interval
+    //---------------------------------------------------------------------------------------------
+    // Aliases
+    //---------------------------------------------------------------------------------------------
+
+    property alias backgroundCheck: backgroundCheck
+
+    property alias itemCheck: itemCheck
 
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    maximumWidth: parent.width - st.marginsDouble
+    // NOTE: We avoid highlighting when we're checked.
+    isChecklighted: isHighlighted
 
-    visible: false
-    opacity: 0.0
-
-    backgroundOpacity: st.popup_opacity
+    itemText.anchors.leftMargin: backgroundCheck.x + backgroundCheck.width + pMargins
 
     //---------------------------------------------------------------------------------------------
-    // Events
+    // Settings
     //---------------------------------------------------------------------------------------------
 
-    onIsActiveChanged: st.animateShow(popup, isActive, behaviorOpacity, animate)
-
-    //---------------------------------------------------------------------------------------------
-    // Animations
-    //---------------------------------------------------------------------------------------------
-
-    Behavior on opacity
-    {
-        id: behaviorOpacity
-
-        enabled: false
-
-        PropertyAnimation
-        {
-            duration: durationAnimation
-
-            easing.type: st.easing
-        }
-    }
-
-    //---------------------------------------------------------------------------------------------
-    // Functions
-    //---------------------------------------------------------------------------------------------
-
-    function showText(text)
-    {
-        popup.text = text;
-
-        show();
-    }
-
-    function show()
-    {
-        if (isActive == true)
-        {
-            timer.restart();
-
-            return;
-        }
-
-        isActive = true;
-
-        timer.start();
-    }
-
-    function hide()
-    {
-        timer.stop();
-
-        isActive = false;
-    }
+    onClicked: checked = !(checked)
 
     //---------------------------------------------------------------------------------------------
     // Children
     //---------------------------------------------------------------------------------------------
 
-    Timer
+    Rectangle
     {
-        id: timer
+        id: backgroundCheck
 
-        interval: popup.interval
+        width : parent.height - pMargins * 2
+        height: width
 
-        onTriggered: isActive = false
+        x: pMargins
+        y: pMargins
+
+        radius: buttonWideCheck.radius
+
+        opacity: itemText.opacity
+
+        color: st.buttonWideCheck_color
+
+//#QT_4
+        smooth: true
+//#END
+
+        border.width: st.buttonWideCheck_border
+        border.color: st.buttonWideCheck_colorBorder
+    }
+
+    ImageScale
+    {
+        id: itemCheck
+
+        anchors.centerIn: backgroundCheck
+
+        visible: checked
+
+        opacity: (buttonWideCheck.enabled) ? 1.0 : st.icon_opacityDisable
+
+        sourceSize.height: st.getSizeMargins(buttonWideCheck.height, margins)
+
+        source: st.icon_check
+
+        filter: st.getButtonFilter(buttonWideCheck)
     }
 }

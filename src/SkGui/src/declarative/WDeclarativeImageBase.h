@@ -124,6 +124,8 @@ public: // Interface
     Q_INVOKABLE void applyItemShot(QQuickItem * item);
 #endif
 
+    Q_INVOKABLE void clearPixmap();
+
     Q_INVOKABLE QImage toImage() const;
 
 public: // QDeclarativeItem / QQuickItem reimplementation

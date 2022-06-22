@@ -523,6 +523,13 @@ WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p, Q
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ void WDeclarativeImageBase::clearPixmap()
+{
+    setPixmap(QPixmap());
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ QImage WDeclarativeImageBase::toImage() const
 {
     Q_D(const WDeclarativeImageBase);

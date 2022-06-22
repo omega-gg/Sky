@@ -109,6 +109,16 @@ Style
     property int buttonWide_margins: dp12
 //#END
 
+//#ButtonWideCheck
+    //---------------------------------------------------------------------------------------------
+    // ButtonWideCheck
+
+    property int buttonWideCheck_border: dp2
+
+    property color buttonWideCheck_color      : panel_color
+    property color buttonWideCheck_colorBorder: border_color
+//#END
+
 //#ButtonMask
     //---------------------------------------------------------------------------------------------
     // ButtonMask
@@ -341,6 +351,10 @@ Style
     property url icon_minimize: "icons/window-minimize.svg"
 //#END
 
+//#icons_check:ButtonWideCheck
+    property url icon_check: "icons/check.svg"
+//#END
+
 //#icons_direction:ButtonWideAction
     property url icon_down: "icons/chevron-down.svg"
 //#END
@@ -395,7 +409,7 @@ Style
 
     function getButtonFilter(button)
     {
-        if (button.isHighlighted || button.checked)
+        if (button.isChecklighted)
         {
              return button_filterIconB;
         }

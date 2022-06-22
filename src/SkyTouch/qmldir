@@ -14,6 +14,7 @@ ButtonTouchTrack 1.0 ButtonTouchTrack.qml
 ButtonTouchFull  1.0 ButtonTouchFull.qml
 
 ButtonWide       1.0 ButtonWide.qml
+ButtonWideCheck  1.0 ButtonWideCheck.qml
 ButtonWideAction 1.0 ButtonWideAction.qml
 ButtonWideFull   1.0 ButtonWideFull.qml
 
