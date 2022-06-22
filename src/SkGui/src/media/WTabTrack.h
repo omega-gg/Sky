@@ -133,7 +133,7 @@ public: // Interface
     Q_INVOKABLE void reloadTrack();
 
 public: // Virtual interface
-    Q_INVOKABLE virtual QString toVbml() const;
+    Q_INVOKABLE virtual QString toVbml(int currentTime = -1) const;
 
 public: // WLocalObject reimplementation
     /* Q_INVOKABLE virtual */ QString getParentPath() const;

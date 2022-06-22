@@ -186,6 +186,8 @@ Style
     // Popup
 
     property int popup_interval: 5000
+
+    property real popup_opacity: 1.0
 //#END
 
 //#LineEdit

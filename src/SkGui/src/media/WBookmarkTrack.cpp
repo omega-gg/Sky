@@ -281,7 +281,7 @@ void WBookmarkTrack::save()
 // Virtual interface
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ QString WBookmarkTrack::toVbml() const
+/* virtual */ QString WBookmarkTrack::toVbml(int currentTime) const
 {
     Q_D(const WBookmarkTrack);
 
@@ -302,7 +302,11 @@ void WBookmarkTrack::save()
         Sk::bmlPair(vbml, "duration", QString::number(d->duration), "\n\n");
     }
 
-    if (d->currentTime != -1)
+    if (currentTime != -1)
+    {
+        Sk::bmlPair(vbml, "currentTime", QString::number(currentTime), "\n\n");
+    }
+    else if (d->currentTime != -1)
     {
         Sk::bmlPair(vbml, "currentTime", QString::number(d->currentTime), "\n\n");
     }

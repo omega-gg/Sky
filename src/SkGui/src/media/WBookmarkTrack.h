@@ -47,7 +47,7 @@ public: // Interface
     void save();
 
 public: // Virtual interface
-    virtual QString toVbml() const;
+    virtual QString toVbml(int currentTime = -1) const;
 
 public: // Operators
     WBookmarkTrack(const WBookmarkTrack & other);
