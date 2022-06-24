@@ -49,14 +49,18 @@ public:
 public: // Static functions
     Q_INVOKABLE static QImage write(const QString & text, Type type = Text);
 
+    // NOTE: When providing a cover the generated tag is twice the size.
     Q_INVOKABLE static QImage writeTag(const QString & text,
                                        const QString & background,
+                                       const QString & cover  = QString(),
                                        int             size   = 512,
                                        int             margin = 28);
 
+    // NOTE: When providing a cover the generated tag is twice the size.
     Q_INVOKABLE static bool writeTagFile(const QString & fileName,
                                          const QString & text,
                                          const QString & background,
+                                         const QString & cover  = QString(),
                                          int             size   = 512,
                                          int             margin = 28,
                                          const QString & format = "png");
@@ -72,6 +76,7 @@ public: // Static functions
                                                              const QString & background,
                                                              QObject       * receiver,
                                                              const char    * method,
+                                                             const QString & cover = QString(),
                                                              int             size   = 512,
                                                              int             margin = 28);
 
@@ -81,6 +86,7 @@ public: // Static functions
                                                                  const QString & background,
                                                                  QObject       * receiver,
                                                                  const char    * method,
+                                                                 const QString & cover = QString(),
                                                                  int             size   = 512,
                                                                  int             margin = 28,
                                                                  const QString & format = "png");
