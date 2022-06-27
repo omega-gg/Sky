@@ -133,6 +133,7 @@ public: // Interface
     Q_INVOKABLE void reloadTrack();
 
 public: // Virtual interface
+    // NOTE: When passing -2 we skip the currentTime entirely.
     Q_INVOKABLE virtual QString toVbml(int currentTime = -1) const;
 
 public: // WLocalObject reimplementation

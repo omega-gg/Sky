@@ -47,6 +47,7 @@ public: // Interface
     void save();
 
 public: // Virtual interface
+    // NOTE: When passing -2 we skip the currentTime entirely.
     virtual QString toVbml(int currentTime = -1) const;
 
 public: // Operators

@@ -304,7 +304,10 @@ void WBookmarkTrack::save()
 
     if (currentTime != -1)
     {
-        Sk::bmlPair(vbml, "currentTime", QString::number(currentTime), "\n\n");
+        if (currentTime != -2)
+        {
+            Sk::bmlPair(vbml, "currentTime", QString::number(currentTime), "\n\n");
+        }
     }
     else if (d->currentTime != -1)
     {
