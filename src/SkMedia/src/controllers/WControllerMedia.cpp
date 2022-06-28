@@ -80,7 +80,7 @@ WMediaReply::WMediaReply(const QString & url,
 
 /* Q_INVOKABLE virtual */ QString WMediaReply::toVbml() const
 {
-    QString vbml;
+    QString vbml = WControllerPlaylist::vbml();
 
     Sk::bmlPair(vbml, "type", "media", "\n\n");
 

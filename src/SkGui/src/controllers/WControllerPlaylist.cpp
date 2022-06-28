@@ -3790,6 +3790,72 @@ WControllerPlaylist::extractPlaylists(const WControllerPlaylistData & data)
     return WPlaylist::create(static_cast<WLibraryItem::Type> (type));
 }
 
+//---------------------------------------------------------------------------------------------
+// VBML
+
+/* Q_INVOKABLE static */ QString WControllerPlaylist::vbml(const QString & append)
+{
+    QString vbml;
+
+    Sk::bmlVersion(vbml, "vbml", versionApi(), append);
+
+    return vbml;
+}
+
+/* Q_INVOKABLE static */ int WControllerPlaylist::indexHeader(const QString & vbml)
+{
+    int index = vbml.indexOf('#');
+
+    if (index == -1) return -1;
+
+    QString line = Sk::getLine(vbml, index).simplified();
+
+    int at = 1;
+
+    while (at < line.length() && line.at(at) == ' ') at++;
+
+    if (line.mid(at, 4).toLower() == "vbml")
+    {
+        return index;
+    }
+    else return -1;
+}
+
+/* Q_INVOKABLE static */ QString WControllerPlaylist::extractVersion(const QString & vbml)
+{
+    int index = vbml.indexOf('#');
+
+    if (index == -1) return QString();
+
+    QString line = Sk::getLine(vbml, index).simplified();
+
+    index = 1;
+
+    while (index < line.length() && line.at(index) == ' ') index++;
+
+    if (line.mid(index, 4).toLower() != "vbml") return QString();
+
+    index += 5;
+
+    QString version;
+
+    while (index < line.length())
+    {
+        QChar character = line.at(index);
+
+        if (character.isDigit() == false && character != '.')
+        {
+            return version;
+        }
+
+        version.append(character);
+
+        index++;
+    }
+
+    return version;
+}
+
 //-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------

@@ -107,8 +107,7 @@ public: // Functions
 
     QString extractBlock(QString * content, int indent) const;
 
-    QString extractLine(QString * string, int from) const;
-    QString extractText(QString * string, int from) const;
+    QString extractText(QString * content, int from) const;
 
     int getIndent(const QString * content) const;
 
@@ -171,7 +170,7 @@ void WYamlReaderPrivate::extractChilds(WYamlNode * node, QString * content) cons
 
     while (content->isEmpty() == false)
     {
-        QString string = extractLine(content, indent);
+        QString string = Sk::extractLine(content, indent);
 
         if (string.isEmpty()) continue;
 
@@ -230,49 +229,25 @@ QString WYamlReaderPrivate::extractBlock(QString * content, int indent) const
     return result;
 }
 
-//-------------------------------------------------------------------------------------------------
-
-QString WYamlReaderPrivate::extractLine(QString * string, int from) const
+QString WYamlReaderPrivate::extractText(QString * content, int from) const
 {
     QString result;
 
-    int index = string->indexOf('\n', from);
+    int index = content->indexOf('\n', from);
 
     if (index == -1)
     {
-        result = string->mid(from);
+        result = content->mid(from);
 
-        string->clear();
-    }
-    else
-    {
-        result = string->mid(from, index - from);
-
-        string->remove(0, index + 1);
-    }
-
-    return result;
-}
-
-QString WYamlReaderPrivate::extractText(QString * string, int from) const
-{
-    QString result;
-
-    int index = string->indexOf('\n', from);
-
-    if (index == -1)
-    {
-        result = string->mid(from);
-
-        string->clear();
+        content->clear();
     }
     else
     {
         index++;
 
-        result = string->mid(from, index - from);
+        result = content->mid(from, index - from);
 
-        string->remove(0, index);
+        content->remove(0, index);
     }
 
     return result;

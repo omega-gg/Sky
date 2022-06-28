@@ -261,11 +261,15 @@ public: // Static functions
                                                                     const WRegExp & end,
                                                                     int             from = 0);
 
-    Q_INVOKABLE static QString extractText(QString * string, const QString & pattern);
-    Q_INVOKABLE static QString extractText(QString * string, const WRegExp & regExp);
+    Q_INVOKABLE static QString extractText(QString       * string,
+                                           const QString & pattern, int from = 0);
 
-    Q_INVOKABLE static QString extractLine(QString * string);
-    Q_INVOKABLE static QString extractWord(QString * string);
+    Q_INVOKABLE static QString extractText(QString       * string,
+                                           const WRegExp & regExp, int from = 0);
+
+    Q_INVOKABLE static QString extractLine(QString * string, int from = 0);
+
+    Q_INVOKABLE static QString getLine(const QString & string, int at = 0);
 
     Q_INVOKABLE static void skipCharacters(QString * string, const QChar & character);
 
@@ -361,11 +365,16 @@ public: // Static functions
     //---------------------------------------------------------------------------------------------
     // BML
 
-    Q_INVOKABLE static void bmlTag(QString       & vbml,
+    Q_INVOKABLE static void bmlVersion(QString       & bml,
+                                       const QString & name,
+                                       const QString & version,
+                                       const QString & append = QString('\n'));
+
+    Q_INVOKABLE static void bmlTag(QString       & bml,
                                    const QString & name,
                                    const QString & append = QString('\n'));
 
-    Q_INVOKABLE static void bmlPair(QString       & vbml,
+    Q_INVOKABLE static void bmlPair(QString       & bml,
                                     const QString & key,
                                     const QString & value,
                                     const QString & append = QString('\n'));

@@ -2275,7 +2275,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 {
     Q_D(const WPlaylist);
 
-    QString vbml;
+    QString vbml = WControllerPlaylist::vbml();
 
     Sk::bmlPair(vbml, "type", "playlist", "\n\n");
 

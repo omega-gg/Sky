@@ -29,6 +29,7 @@
 
 // Sk includes
 #include <WControllerApplication>
+#include <WControllerPlaylist>
 #include <WPlaylist>
 
 //-------------------------------------------------------------------------------------------------
@@ -200,7 +201,7 @@ QString WTrack::typeToString(Type type)
 {
     Q_D(const WTrack);
 
-    QString vbml;
+    QString vbml = WControllerPlaylist::vbml();
 
     Sk::bmlPair(vbml, "type", "track " + typeToString(d->type), "\n\n");
 

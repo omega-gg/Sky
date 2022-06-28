@@ -1167,21 +1167,22 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QString WControllerApplication::extractText(QString       * string,
-                                                                     const QString & pattern)
+                                                                     const QString & pattern,
+                                                                     int             from)
 {
     QString result;
 
-    int index = string->indexOf(pattern, 1);
+    int index = string->indexOf(pattern, from);
 
     if (index == -1)
     {
-        result = *string;
+        result = string->mid(from);
 
         string->clear();
     }
     else
     {
-        result = string->mid(0, index);
+        result = string->mid(from, index - from);
 
         string->remove(0, index);
     }
@@ -1190,21 +1191,22 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
 }
 
 /* Q_INVOKABLE static */ QString WControllerApplication::extractText(QString       * string,
-                                                                     const WRegExp & regExp)
+                                                                     const WRegExp & regExp,
+                                                                     int             from)
 {
     QString result;
 
-    int index = regExp.indexIn(*string, 1);
+    int index = regExp.indexIn(*string, from);
 
     if (index == -1)
     {
-        result = *string;
+        result = string->mid(from);
 
         string->clear();
     }
     else
     {
-        result = string->mid(0, index);
+        result = string->mid(from, index - from);
 
         string->remove(0, index);
     }
@@ -1212,23 +1214,21 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
     return result;
 }
 
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE static */ QString WControllerApplication::extractLine(QString * string)
+/* Q_INVOKABLE static */ QString WControllerApplication::extractLine(QString * string, int from)
 {
     QString result;
 
-    int index = string->indexOf('\n');
+    int index = string->indexOf('\n', from);
 
     if (index == -1)
     {
-        result = *string;
+        result = string->mid(from);
 
         string->clear();
     }
     else
     {
-        result = string->mid(0, index);
+        result = string->mid(from, index - from);
 
         string->remove(0, index + 1);
     }
@@ -1236,9 +1236,14 @@ void WControllerApplication::processEvents(QEventLoop::ProcessEventsFlags flags,
     return result;
 }
 
-/* Q_INVOKABLE static */ QString WControllerApplication::extractWord(QString * string)
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QString WControllerApplication::getLine(const QString & string, int at)
 {
-    return extractText(string, " ");
+    int index = string.indexOf('\n', at);
+
+    if (index == -1) return string.mid(at);
+    else             return string.mid(at, index - at);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1745,22 +1750,30 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 //---------------------------------------------------------------------------------------------
 // BML
 
-/* Q_INVOKABLE static */ void WControllerApplication::bmlTag(QString       & vbml,
+
+/* Q_INVOKABLE static */ void WControllerApplication::bmlVersion(QString       & bml,
+                                                                 const QString & name,
+                                                                 const QString & version,
+                                                                 const QString & append)
+{
+    bml.append("# " + name + ' ' + version + append);
+}
+
+/* Q_INVOKABLE static */ void WControllerApplication::bmlTag(QString       & bml,
                                                              const QString & name,
                                                              const QString & append)
 {
-    vbml.append(name + ':' + append);
+    bml.append(name + ':' + append);
 }
 
-
-/* Q_INVOKABLE static */ void WControllerApplication::bmlPair(QString       & vbml,
+/* Q_INVOKABLE static */ void WControllerApplication::bmlPair(QString       & bml,
                                                               const QString & key,
                                                               const QString & value,
                                                               const QString & append)
 {
     if (value.isEmpty()) return;
 
-    vbml.append(key + ": " + value + append);
+    bml.append(key + ": " + value + append);
 }
 
 /* Q_INVOKABLE static */ QString WControllerApplication::bmlDate(const QDateTime & date)

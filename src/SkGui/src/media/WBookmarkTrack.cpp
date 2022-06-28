@@ -26,6 +26,7 @@
 
 // Sk includes
 #include <WControllerApplication>
+#include <WControllerPlaylist>
 #include <WTrack>
 #include <WTabTrack>
 
@@ -285,7 +286,7 @@ void WBookmarkTrack::save()
 {
     Q_D(const WBookmarkTrack);
 
-    QString vbml;
+    QString vbml = WControllerPlaylist::vbml();
 
     Sk::bmlPair(vbml, "type", "track " + WTrack::typeToString(d->type), "\n\n");
 

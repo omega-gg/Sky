@@ -2398,14 +2398,12 @@ signals:
 
     content.replace('\t', ' ');
 
-    WYamlReader reader(content.toUtf8());
-
     //reader.dump();
 
     //---------------------------------------------------------------------------------------------
     // Api
 
-    QString api = WYamlReader::extractString(reader, "api");
+    QString api = WControllerPlaylist::extractVersion(content);
 
     if (Sk::versionIsHigher(WControllerPlaylist::versionApi(), api))
     {
@@ -2422,6 +2420,8 @@ signals:
 
         data.valid = false;
     }
+
+    WYamlReader reader(content.toUtf8());
 
     //---------------------------------------------------------------------------------------------
     // Settings

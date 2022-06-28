@@ -2300,7 +2300,7 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
 {
     Q_D(const WLibraryFolder);
 
-    QString vbml;
+    QString vbml = WControllerPlaylist::vbml();
 
     Sk::bmlPair(vbml, "type", "folder", "\n\n");
 

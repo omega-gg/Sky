@@ -58,8 +58,12 @@ void WBackendUniversal_patch(QString & data, const QString & api)
         data.replace("REMOVE_HASH", "HASH_REMOVE");
     }
 
-    // NOTE: We replace the first occurence after the 'api' key.
-    Sk::replaceFirst(&data, api, WControllerPlaylist::versionApi(), data.indexOf("api"));
+    //---------------------------------------------------------------------------------------------
+    // NOTE: We replace the VBML comment with the right 'api' key.
+
+    Sk::removeLine(&data, QString('#'), WControllerPlaylist::indexHeader(data));
+
+    data.prepend("# VBML " + WControllerPlaylist::versionApi());
 }
 
 #endif // SK_NO_BACKENDUNIVERSAL

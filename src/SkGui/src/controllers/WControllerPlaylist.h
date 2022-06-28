@@ -295,6 +295,16 @@ public: // Static functions
     Q_INVOKABLE static WLibraryFolder * createFolder  (int type = WLibraryItem::Folder);
     Q_INVOKABLE static WPlaylist      * createPlaylist(int type = WLibraryItem::Playlist);
 
+    //---------------------------------------------------------------------------------------------
+    // VBML
+
+    // NOTE: This function writes the vbml header with versionApi.
+    Q_INVOKABLE static QString vbml(const QString & append = "\n\n");
+
+    Q_INVOKABLE static int indexHeader(const QString & vbml);
+
+    Q_INVOKABLE static QString extractVersion(const QString & vbml);
+
 signals:
     void filesCleared(const QList<int> & idFull);
     void filesDeleted(const QList<int> & idFull);
