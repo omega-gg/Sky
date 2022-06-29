@@ -20,62 +20,37 @@
 */
 //=================================================================================================
 
-#ifndef WABSTRACTTHREADACTION_H
-#define WABSTRACTTHREADACTION_H
-
-// Qt includes
-#include <QObject>
+#ifndef WLOADERVBML_H
+#define WLOADERVBML_H
 
 // Sk includes
-#include <Sk>
+#include <WAbstractLoader>
 
-#ifndef SK_NO_ABSTRACTTHREADACTION
+#ifndef SK_NO_LOADERVBML
 
 // Forward declarations
-class WAbstractThreadActionPrivate;
-class WAbstractThreadReply;
+class WLoaderVbmlPrivate;
 
-#ifdef QT_6
-Q_MOC_INCLUDE("WAbstractThreadReply")
-#endif
-
-class SK_CORE_EXPORT WAbstractThreadAction : public QObject, public WPrivatable
+class SK_CORE_EXPORT WLoaderVbml : public WAbstractLoader
 {
     Q_OBJECT
 
-    Q_PROPERTY(WAbstractThreadReply * reply READ reply NOTIFY replyChanged)
-
 public:
-    WAbstractThreadAction();
-protected:
-    /* virtual */ ~WAbstractThreadAction();
+    explicit WLoaderVbml(QObject * parent = NULL);
 
-public: // Interface
-    void start();
+protected: // WAbstractLoader implementation
+    /* virtual */ QIODevice * load(WRemoteData * data);
 
-    void abortAndDelete();
-
-protected: // Abstract functions
-    virtual bool run() = 0;
-
-protected: // Virtual functions
-    virtual WAbstractThreadReply * createReply() const;
-
-signals:
-    void replyChanged();
-
-public: // Properties
-    WAbstractThreadReply * reply() const;
+protected: // WAbstractLoader reimplementation
+    /* virtual */ void abort(QIODevice * reply);
 
 private:
-    W_DECLARE_PRIVATE(WAbstractThreadAction)
+    W_DECLARE_PRIVATE(WLoaderVbml)
 
-    friend class WThreadActions;
-    friend class WThreadActionsPrivate;
-    friend class WThreadActionsThread;
-    friend class WAbstractThreadReply;
-    friend class WAbstractThreadReplyPrivate;
+    Q_PRIVATE_SLOT(d_func(), void onLoaded(WLoaderVbmlRead *, const QByteArray &))
 };
 
-#endif // SK_NO_ABSTRACTTHREADACTION
-#endif // WABSTRACTTHREADACTION_H
+#include <private/WLoaderVbml_p>
+
+#endif // SK_NO_LOADERVBML
+#endif // WLOADERVBML_H

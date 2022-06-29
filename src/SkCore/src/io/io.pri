@@ -4,6 +4,8 @@ HEADERS += src/io/WAbstractLoader.h \
            src/io/WAbstractLoader_p.h \
            src/io/WLoaderNetwork.h \
            src/io/WLoaderNetwork_p.h \
+           src/io/WLoaderVbml.h \
+           src/io/WLoaderVbml_p.h \
            src/io/WLocalObject.h \
            src/io/WLocalObject_p.h \
            src/io/WFileWatcher.h \
@@ -16,6 +18,7 @@ HEADERS += src/io/WAbstractLoader.h \
 
 SOURCES += src/io/WAbstractLoader.cpp \
            src/io/WLoaderNetwork.cpp \
+           src/io/WLoaderVbml.cpp \
            src/io/WLocalObject.cpp \
            src/io/WFileWatcher.cpp \
            src/io/WCache.cpp \

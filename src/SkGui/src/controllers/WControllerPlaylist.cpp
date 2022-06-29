@@ -764,7 +764,11 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
         }
     }
 
-    if (q->urlIsMedia(source))
+    if (q->urlIsVbml(source))
+    {
+        return true;
+    }
+    else if (q->urlIsMedia(source))
     {
         QString title = WControllerNetwork::extractUrlFileName(source);
 
@@ -851,7 +855,17 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
         }
     }
 
-    if (WControllerNetwork::urlIsFile(source))
+    if (q->urlIsVbml(source))
+    {
+        WBackendNetQuery query(source);
+
+        query.type = WBackendNetQuery::TypeVbml;
+
+        getDataPlaylist(playlist, query);
+
+        return true;
+    }
+    else if (WControllerNetwork::urlIsFile(source))
     {
         QFileInfo info(WControllerFile::filePath(source));
 
@@ -3632,6 +3646,11 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
          return false;
     }
     else return true;
+}
+
+/* Q_INVOKABLE static */ bool WControllerPlaylist::urlIsVbml(const QString & url)
+{
+    return url.startsWith("vbml:");
 }
 
 //-------------------------------------------------------------------------------------------------
