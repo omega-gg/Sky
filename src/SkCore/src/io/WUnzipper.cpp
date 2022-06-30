@@ -32,6 +32,7 @@
 #endif
 
 // QuaZip includes
+#include <quaziodevice.h>
 #include <quazipfile.h>
 
 //-------------------------------------------------------------------------------------------------
@@ -157,6 +158,21 @@ void WUnzipperPrivate::init() {}
 //-------------------------------------------------------------------------------------------------
 // Static functions
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QByteArray WUnzipper::extract(const QByteArray & array)
+{
+    QBuffer buffer;
+
+    buffer.setData(array);
+
+    buffer.open(QIODevice::ReadOnly);
+
+    QuaZIODevice device(&buffer);
+
+    device.open(QIODevice::ReadOnly);
+
+    return device.readAll();
+}
 
 /* Q_INVOKABLE static */ void WUnzipper::extract(const QString     & fileName,
                                                  const QString     & destination,

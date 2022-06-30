@@ -30,6 +30,7 @@
 // Sk includes
 #include <WControllerFile>
 #include <WControllerDownload>
+#include <WUnzipper>
 
 #ifndef SK_NO_LOADERVBML
 
@@ -88,6 +89,19 @@ public: // Variables
     WLoaderVbmlReply * reply = qobject_cast<WLoaderVbmlReply *> (this->reply());
 
     reply->action = this;
+
+    // NOTE: Removing the 'vbml:' part.
+    source = source.remove(0, 5);
+
+#ifdef QT_4
+    // FIXME Qt4: This version does not support encoding flags.
+    QByteArray data = QByteArray::fromBase64(source.toUtf8());
+#else
+    QByteArray data = QByteArray::fromBase64(source.toUtf8(), QByteArray::Base64UrlEncoding |
+                                                              QByteArray::OmitTrailingEquals);
+#endif
+
+    reply->text = WUnzipper::extract(data);
 
     return true;
 }
