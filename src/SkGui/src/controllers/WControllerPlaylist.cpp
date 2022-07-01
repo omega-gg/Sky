@@ -40,12 +40,18 @@
 #include <WPlaylist>
 #include <WTabTrack>
 #include <WBackendLoader>
+#include <WYamlReader>
 
 // Private includes
 #include <private/WPlaylist_p>
 #include <private/WBackendLoader_p>
 
 W_INIT_CONTROLLER(WControllerPlaylist)
+
+//-------------------------------------------------------------------------------------------------
+// Functions declarations
+
+void WControllerPlaylist_patch(QString & data, const QString & api);
 
 //-------------------------------------------------------------------------------------------------
 // Static variables
@@ -223,6 +229,32 @@ WControllerPlaylistQuery::WControllerPlaylistQuery(const WBackendNetQuery & back
 // WControllerPlaylistData
 //=================================================================================================
 // Interface
+
+void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString & url)
+{
+    QString content = Sk::readBml(array);
+
+    WYamlReader reader(content.toUtf8());
+
+    //---------------------------------------------------------------------------------------------
+    // Api
+
+    QString api = WYamlReader::extractString(reader, "api");
+
+    if (Sk::versionIsHigher(WControllerPlaylist::versionApi(), api))
+    {
+        WControllerPlaylist::vbmlPatch(content, api);
+
+        applyVbml(content.toUtf8(), url);
+
+        return;
+    }
+
+    if (Sk::versionIsLower(WControllerPlaylist::versionApi(), api))
+    {
+        qWarning("WControllerPlaylistData::applyVbml: The required API is too high.");
+    }
+}
 
 void WControllerPlaylistData::applyHtml(const QByteArray & array, const QString & url)
 {
@@ -408,7 +440,7 @@ void WControllerPlaylistData::addSource(const QString & url, const QString & tit
 {
     if (WControllerPlaylist::urlIsMedia(url))
     {
-        WControllerPlaylistMedia media;
+        WControllerPlaylistSource media;
 
         media.url   = url;
         media.title = WControllerNetwork::extractUrlFileName(url);
@@ -454,7 +486,7 @@ void WControllerPlaylistData::addFile(const QString & path)
 
     if (WControllerPlaylist::extensionIsMedia(extension))
     {
-        WControllerPlaylistMedia media;
+        WControllerPlaylistSource media;
 
         media.url   = WControllerFile::fileUrl(path);
         media.title = WControllerNetwork::extractUrlFileName(path);
@@ -534,6 +566,7 @@ class WControllerPlaylistReply : public QObject
     Q_OBJECT
 
 public: // Interface
+    Q_INVOKABLE void extractVbml  (QIODevice * device, const QString & url);
     Q_INVOKABLE void extractHtml  (QIODevice * device, const QString & url);
     Q_INVOKABLE void extractFolder(QIODevice * device, const QString & url);
     Q_INVOKABLE void extractFile  (QIODevice * device, const QString & url);
@@ -547,6 +580,18 @@ signals:
 //-------------------------------------------------------------------------------------------------
 // Interface
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WControllerPlaylistReply::extractVbml(QIODevice     * device,
+                                                             const QString & url)
+{
+    WControllerPlaylistData data;
+
+    data.applyVbml(device->readAll(), url);
+
+    emit loaded(device, data);
+
+    deleteLater();
+}
 
 /* Q_INVOKABLE */ void WControllerPlaylistReply::extractHtml(QIODevice     * device,
                                                              const QString & url)
@@ -643,6 +688,7 @@ void WControllerPlaylistPrivate::init()
 
     const QMetaObject * meta = WControllerPlaylistReply().metaObject();
 
+    methodVbml   = meta->method(meta->indexOfMethod("extractVbml(QIODevice*,QString)"));
     methodHtml   = meta->method(meta->indexOfMethod("extractHtml(QIODevice*,QString)"));
     methodFolder = meta->method(meta->indexOfMethod("extractFolder(QIODevice*,QString)"));
     methodFile   = meta->method(meta->indexOfMethod("extractFile(QIODevice*,QString)"));
@@ -855,11 +901,22 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
         }
     }
 
-    if (q->urlIsVbmlUri(source))
+    if (q->urlIsVbmlFile(source))
     {
         WBackendNetQuery query(source);
 
-        query.type = WBackendNetQuery::TypeVbml;
+        query.target = WBackendNetQuery::TargetVbml;
+
+        getDataPlaylist(playlist, query);
+
+        return true;
+    }
+    else if (q->urlIsVbmlUri(source))
+    {
+        WBackendNetQuery query(source);
+
+        query.type   = WBackendNetQuery::TypeVbml;
+        query.target = WBackendNetQuery::TargetVbml;
 
         getDataPlaylist(playlist, query);
 
@@ -1550,7 +1607,11 @@ void WControllerPlaylistPrivate::loadUrls(QIODevice * device, const WBackendNetQ
 
     WBackendNetQuery::Target target = query.target;
 
-    if (target == WBackendNetQuery::TargetHtml)
+    if (target == WBackendNetQuery::TargetVbml)
+    {
+        method = methodVbml;
+    }
+    else if (target == WBackendNetQuery::TargetHtml)
     {
         method = methodHtml;
     }
@@ -2569,7 +2630,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     }
     else indexTrack = -1;
 
-    foreach (const WControllerPlaylistMedia & media, data.medias)
+    foreach (const WControllerPlaylistSource & media, data.medias)
     {
         if (urlTracks.count() == CONTROLLERPLAYLIST_MAX_TRACKS) break;
 
@@ -2754,7 +2815,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
     }
     else singleTrack = false;
 
-    foreach (const WControllerPlaylistMedia & media, data.medias)
+    foreach (const WControllerPlaylistSource & media, data.medias)
     {
         if (urlTracks.count() == CONTROLLERPLAYLIST_MAX_TRACKS) break;
 
@@ -3752,7 +3813,7 @@ QStringList WControllerPlaylist::extractTracks(const WControllerPlaylistData & d
         }
     }
 
-    foreach (const WControllerPlaylistMedia & media, data.medias)
+    foreach (const WControllerPlaylistSource & media, data.medias)
     {
         const QString & url = media.url;
 
@@ -3843,7 +3904,7 @@ WControllerPlaylist::extractPlaylists(const WControllerPlaylistData & data)
     return vbml;
 }
 
-/* Q_INVOKABLE static */ int WControllerPlaylist::indexHeader(const QString & vbml)
+/* Q_INVOKABLE static */ int WControllerPlaylist::vbmlHeader(const QString & vbml)
 {
     int index = vbml.indexOf('#');
 
@@ -3862,7 +3923,7 @@ WControllerPlaylist::extractPlaylists(const WControllerPlaylistData & data)
     else return -1;
 }
 
-/* Q_INVOKABLE static */ QString WControllerPlaylist::extractVersion(const QString & vbml)
+/* Q_INVOKABLE static */ QString WControllerPlaylist::vbmlVersion(const QString & vbml)
 {
     int index = vbml.indexOf('#');
 
@@ -3895,6 +3956,11 @@ WControllerPlaylist::extractPlaylists(const WControllerPlaylistData & data)
     }
 
     return version;
+}
+
+/* Q_INVOKABLE static */ void WControllerPlaylist::vbmlPatch(QString & data, const QString & api)
+{
+    return WControllerPlaylist_patch(data, api);
 }
 
 //-------------------------------------------------------------------------------------------------

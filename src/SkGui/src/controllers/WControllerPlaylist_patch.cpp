@@ -4,7 +4,7 @@
 
     Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
 
-    This file is part of SkBackend.
+    This file is part of SkGui.
 
     - GNU Lesser General Public License Usage:
     This file may be used under the terms of the GNU Lesser General Public License version 3 as
@@ -20,21 +20,16 @@
 */
 //=================================================================================================
 
-#include "WBackendUniversal.h"
+#include "WControllerPlaylist.h"
 
-#ifndef SK_NO_BACKENDUNIVERSAL
+#ifndef SK_NO_CONTROLLERPLAYLIST
 
 // Sk includes
 #include <WControllerApplication>
-#include <WControllerPlaylist>
 
-//-------------------------------------------------------------------------------------------------
-// Functions
-//-------------------------------------------------------------------------------------------------
-
-void WBackendUniversal_patch(QString & data, const QString & api)
+void WControllerPlaylist_patch(QString & data, const QString & api)
 {
-    qWarning("WBackendUniversal_patch: Patching.");
+    qWarning("WControllerPlaylist_patch: Patching.");
 
     if (Sk::versionIsLower(api, "1.0.1"))
     {
@@ -61,9 +56,9 @@ void WBackendUniversal_patch(QString & data, const QString & api)
     //---------------------------------------------------------------------------------------------
     // NOTE: We replace the VBML comment with the right 'api' key.
 
-    Sk::removeLine(&data, QString('#'), WControllerPlaylist::indexHeader(data));
+    Sk::removeLine(&data, QString('#'), WControllerPlaylist::vbmlHeader(data));
 
     data.prepend("# VBML " + WControllerPlaylist::versionApi());
 }
 
-#endif // SK_NO_BACKENDUNIVERSAL
+#endif // SK_NO_CONTROLLERPLAYLIST

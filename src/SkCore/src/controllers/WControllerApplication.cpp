@@ -1750,6 +1750,18 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 //---------------------------------------------------------------------------------------------
 // BML
 
+/* Q_INVOKABLE static */ QString WControllerApplication::readBml(const QByteArray & array)
+{
+    QString content = readUtf8(array);
+
+    content.remove('\r');
+
+    content.remove("\\\n");
+
+    content.replace('\t', ' ');
+
+    return content;
+}
 
 /* Q_INVOKABLE static */ void WControllerApplication::bmlVersion(QString       & bml,
                                                                  const QString & name,

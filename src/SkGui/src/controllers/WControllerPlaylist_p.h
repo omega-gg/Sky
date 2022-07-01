@@ -219,6 +219,7 @@ public: // Variables
     QHash<WRemoteData *, WControllerPlaylistQuery *> jobs;
     QHash<QIODevice   *, WControllerPlaylistQuery *> replies;
 
+    QMetaMethod methodVbml;
     QMetaMethod methodHtml;
     QMetaMethod methodFolder;
     QMetaMethod methodFile;

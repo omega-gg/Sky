@@ -7,3 +7,4 @@ HEADERS += src/controllers/WControllerView.h \
 
 SOURCES += src/controllers/WControllerView.cpp \
            src/controllers/WControllerPlaylist.cpp \
+           src/controllers/WControllerPlaylist_patch.cpp \

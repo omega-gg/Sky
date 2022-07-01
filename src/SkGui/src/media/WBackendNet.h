@@ -55,6 +55,7 @@ public: // Enums
     enum Target
     {
         TargetDefault,
+        TargetVbml,
         TargetHtml,
         TargetFolder,
         TargetFile,

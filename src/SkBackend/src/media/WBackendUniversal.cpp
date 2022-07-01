@@ -51,11 +51,6 @@
 class WBackendUniversalEngine;
 
 //-------------------------------------------------------------------------------------------------
-// Functions declarations
-
-void WBackendUniversal_patch(QString & data, const QString & api);
-
-//-------------------------------------------------------------------------------------------------
 // Static variables
 
 static const QString BACKENDUNIVERSAL_FUNCTIONS = \
@@ -2390,24 +2385,18 @@ signals:
 {
     WBackendUniversalData data;
 
-    QString content = Sk::readUtf8(array);
-
-    content.remove('\r');
-
-    content.remove("\\\n");
-
-    content.replace('\t', ' ');
+    QString content = Sk::readBml(array);
 
     //reader.dump();
 
     //---------------------------------------------------------------------------------------------
     // Api
 
-    QString api = WControllerPlaylist::extractVersion(content);
+    QString api = WControllerPlaylist::vbmlVersion(content);
 
     if (Sk::versionIsHigher(WControllerPlaylist::versionApi(), api))
     {
-        WBackendUniversal_patch(content, api);
+        WControllerPlaylist::vbmlPatch(content, api);
 
         extract(content.toUtf8());
 
@@ -2417,8 +2406,6 @@ signals:
     if (Sk::versionIsLower(WControllerPlaylist::versionApi(), api))
     {
         qWarning("WBackendUniversalQuery::extract: The required API is too high.");
-
-        data.valid = false;
     }
 
     WYamlReader reader(content.toUtf8());
@@ -2855,7 +2842,7 @@ QHash<QString, QVariant> WBackendUniversalNode::getHtml(const WControllerPlaylis
 
     list.clear();
 
-    foreach (const WControllerPlaylistMedia & media, data.medias)
+    foreach (const WControllerPlaylistSource & media, data.medias)
     {
         QHash<QString, QVariant> variant;
 

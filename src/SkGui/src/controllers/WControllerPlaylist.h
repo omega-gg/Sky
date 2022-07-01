@@ -67,16 +67,6 @@ struct WControllerPlaylistSource
 };
 
 //-------------------------------------------------------------------------------------------------
-// WControllerPlaylistMedia
-//-------------------------------------------------------------------------------------------------
-
-struct WControllerPlaylistMedia
-{
-    QString url;
-    QString title;
-};
-
-//-------------------------------------------------------------------------------------------------
 // WControllerPlaylistSlice
 //-------------------------------------------------------------------------------------------------
 
@@ -98,7 +88,11 @@ struct WControllerPlaylistSlice
 
 class SK_GUI_EXPORT WControllerPlaylistData
 {
+public:
+    WControllerPlaylistData() { type = WLibraryItem::Item; }
+
 public: // Interface
+    void applyVbml(const QByteArray & array, const QString & url);
     void applyHtml(const QByteArray & array, const QString & url);
 
     void applyFolder(const QString & url);
@@ -119,14 +113,21 @@ private: // Functions
     QString generateTitle(const QString & url, const QString & urlName) const;
 
 public: // Variables
+    WLibraryItem::Type type;
+
+    QString source;
+
     QString title;
     QString cover;
+
+    QString label;
+
+    QList<WTrack> tracks;
 
     QList<WControllerPlaylistSource> sources;
     QList<WControllerPlaylistSource> folders;
     QList<WControllerPlaylistSource> files;
-
-    QList<WControllerPlaylistMedia> medias;
+    QList<WControllerPlaylistSource> medias;
 
     QList<WControllerPlaylistSlice> slices;
 };
@@ -307,9 +308,11 @@ public: // Static functions
     // NOTE: This function writes the vbml header with versionApi.
     Q_INVOKABLE static QString vbml(const QString & append = "\n\n");
 
-    Q_INVOKABLE static int indexHeader(const QString & vbml);
+    Q_INVOKABLE static int vbmlHeader(const QString & vbml);
 
-    Q_INVOKABLE static QString extractVersion(const QString & vbml);
+    Q_INVOKABLE static QString vbmlVersion(const QString & vbml);
+
+    Q_INVOKABLE static void vbmlPatch(QString & data, const QString & api);
 
 signals:
     void filesCleared(const QList<int> & idFull);

@@ -365,6 +365,9 @@ public: // Static functions
     //---------------------------------------------------------------------------------------------
     // BML
 
+    // NOTE: This reads UTF-8 and removes invalid characters.
+    Q_INVOKABLE static QString readBml(const QByteArray & array);
+
     Q_INVOKABLE static void bmlVersion(QString       & bml,
                                        const QString & name,
                                        const QString & version,
