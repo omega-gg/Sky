@@ -59,6 +59,10 @@ static const QString CONTROLLERPLAYLIST_TEXT = "^(txt|md)$";
 
 static const QString CONTROLLERPLAYLIST_SUBTITLE = "^(srt)$";
 
+static const QString CONTROLLERPLAYLIST_TORRENT = "^(torrent)$";
+
+static const QString CONTROLLERPLAYLIST_VBML = "^(vbml)$";
+
 static const QString CONTROLLERPLAYLIST_FILTER_FILE
     =
     "Medias (*.mp4 *.webm *.ogv *.mkv *.avi *.wmv *.mov *.flv *.3gp *.m3u8 "
@@ -409,8 +413,6 @@ void WControllerPlaylistData::addSource(const QString & url, const QString & tit
         media.url   = url;
         media.title = WControllerNetwork::extractUrlFileName(url);
 
-        media.local = false;
-
         medias.append(media);
     }
 
@@ -456,8 +458,6 @@ void WControllerPlaylistData::addFile(const QString & path)
 
         media.url   = WControllerFile::fileUrl(path);
         media.title = WControllerNetwork::extractUrlFileName(path);
-
-        media.local = true;
 
         medias.append(media);
     }
@@ -764,7 +764,7 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
         }
     }
 
-    if (q->urlIsVbml(source))
+    if (q->urlIsVbmlUri(source))
     {
         return true;
     }
@@ -855,7 +855,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
         }
     }
 
-    if (q->urlIsVbml(source))
+    if (q->urlIsVbmlUri(source))
     {
         WBackendNetQuery query(source);
 
@@ -3641,14 +3641,24 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 
     QString extension = WControllerNetwork::extractUrlExtension(url);
 
-    if (extension.indexOf("torrent") == -1)
-    {
-         return false;
-    }
-    else return true;
+    return extensionIsTorrent(extension);
 }
 
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE static */ bool WControllerPlaylist::urlIsVbml(const QString & url)
+{
+    return (urlIsVbmlFile(url) || urlIsVbmlUri(url));
+}
+
+/* Q_INVOKABLE static */ bool WControllerPlaylist::urlIsVbmlFile(const QString & url)
+{
+    QString extension = WControllerNetwork::extractUrlExtension(url);
+
+    return extensionIsVbml(extension);
+}
+
+/* Q_INVOKABLE static */ bool WControllerPlaylist::urlIsVbmlUri(const QString & url)
 {
     return url.startsWith("vbml:");
 }
@@ -3690,6 +3700,18 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 /* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsSubtitle(const QString & extension)
 {
     return (extension.indexOf(WRegExp(CONTROLLERPLAYLIST_SUBTITLE)) != -1);
+}
+
+//---------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsTorrent(const QString & extension)
+{
+    return (extension.indexOf(WRegExp(CONTROLLERPLAYLIST_TORRENT)) != -1);
+}
+
+/* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsVbml(const QString & extension)
+{
+    return (extension.indexOf(WRegExp(CONTROLLERPLAYLIST_VBML)) != -1);
 }
 
 //---------------------------------------------------------------------------------------------

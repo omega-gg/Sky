@@ -47,8 +47,10 @@ public: // Interface
     void save();
 
 public: // Virtual interface
-    // NOTE: When passing -2 we skip the currentTime entirely.
-    virtual QString toVbml(int currentTime = -1) const;
+    // NOTE: You can override the source and the currentTime. When passing -2 we skip the
+    //       currentTime entirely.
+    virtual QString toVbml(const QString & source      = QString(),
+                           int             currentTime = -1) const;
 
 public: // Operators
     WBookmarkTrack(const WBookmarkTrack & other);

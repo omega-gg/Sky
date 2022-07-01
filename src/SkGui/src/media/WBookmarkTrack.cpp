@@ -282,7 +282,7 @@ void WBookmarkTrack::save()
 // Virtual interface
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ QString WBookmarkTrack::toVbml(int currentTime) const
+/* virtual */ QString WBookmarkTrack::toVbml(const QString & source, int currentTime) const
 {
     Q_D(const WBookmarkTrack);
 
@@ -290,7 +290,8 @@ void WBookmarkTrack::save()
 
     Sk::bmlPair(vbml, "type", "track " + WTrack::typeToString(d->type), "\n\n");
 
-    Sk::bmlPair(vbml, "source", d->source, "\n\n");
+    if (source.isNull()) Sk::bmlPair(vbml, "source", d->source, "\n\n");
+    else                 Sk::bmlPair(vbml, "source", source,    "\n\n");
 
     Sk::bmlPair(vbml, "title", d->title, "\n\n");
     Sk::bmlPair(vbml, "cover", d->cover, "\n\n");

@@ -43,9 +43,9 @@ class WLoaderVbmlRead : public WAbstractThreadAction
     Q_OBJECT
 
 public:
-    WLoaderVbmlRead(const QString & source)
+    WLoaderVbmlRead(const QString & uri)
     {
-        this->source = source;
+        this->uri = uri;
     }
 
 protected: // WAbstractThreadAction reimplementation
@@ -55,7 +55,7 @@ protected: // WAbstractThreadAction implementation
     /* virtual */ bool run();
 
 public: // Variables
-    QString source;
+    QString uri;
 };
 
 class WLoaderVbmlReply: public WAbstractThreadReply
@@ -91,14 +91,14 @@ public: // Variables
     reply->action = this;
 
     // NOTE: Removing the 'vbml:' part.
-    source = source.remove(0, 5);
+    uri = uri.remove(0, 5);
 
 #ifdef QT_4
     // FIXME Qt4: This version does not support encoding flags.
-    QByteArray data = QByteArray::fromBase64(source.toUtf8());
+    QByteArray data = QByteArray::fromBase64(uri.toUtf8());
 #else
-    QByteArray data = QByteArray::fromBase64(source.toUtf8(), QByteArray::Base64UrlEncoding |
-                                                              QByteArray::OmitTrailingEquals);
+    QByteArray data = QByteArray::fromBase64(uri.toUtf8(), QByteArray::Base64UrlEncoding |
+                                                           QByteArray::OmitTrailingEquals);
 #endif
 
     reply->text = WUnzipper::extract(data);

@@ -74,8 +74,6 @@ struct WControllerPlaylistMedia
 {
     QString url;
     QString title;
-
-    bool local;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -271,7 +269,9 @@ public: // Static functions
 
     Q_INVOKABLE static bool urlIsTorrent(const QString & url); // torrent or magnet.
 
-    Q_INVOKABLE static bool urlIsVbml(const QString & url);
+    Q_INVOKABLE static bool urlIsVbml    (const QString & url); // vbml file or uri.
+    Q_INVOKABLE static bool urlIsVbmlFile(const QString & url);
+    Q_INVOKABLE static bool urlIsVbmlUri (const QString & url);
 
     //---------------------------------------------------------------------------------------------
 
@@ -283,6 +283,10 @@ public: // Static functions
     Q_INVOKABLE static bool extensionIsMarkup  (const QString & extension);
     Q_INVOKABLE static bool extensionIsText    (const QString & extension);
     Q_INVOKABLE static bool extensionIsSubtitle(const QString & extension);
+
+    Q_INVOKABLE static bool extensionIsTorrent(const QString & extension);
+
+    Q_INVOKABLE static bool extensionIsVbml(const QString & extension);
 
     //---------------------------------------------------------------------------------------------
 
