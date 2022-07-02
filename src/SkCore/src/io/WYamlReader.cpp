@@ -401,4 +401,17 @@ WYamlReader::WYamlReader(const QByteArray & data, QObject * parent)
     else return QString();
 }
 
+/* Q_INVOKABLE static */ QDateTime WYamlReader::extractDate(const WYamlReader & reader,
+                                                            const QString     & key,
+                                                            Qt::DateFormat      format)
+{
+    const WYamlNode * node = reader.at(key);
+
+    if (node)
+    {
+         return QDateTime::fromString(node->value, format);
+    }
+    else return QDateTime();
+}
+
 #endif // SK_NO_YAMLREADER

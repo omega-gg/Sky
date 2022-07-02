@@ -288,7 +288,12 @@ void WBookmarkTrack::save()
 
     QString vbml = WControllerPlaylist::vbml();
 
-    Sk::bmlPair(vbml, "type", "track " + WTrack::typeToString(d->type), "\n\n");
+    Sk::bmlPair(vbml, "type", "track", "\n\n");
+
+    if (d->type == WTrack::Live)
+    {
+        Sk::bmlPair(vbml, "subtype", WTrack::typeToString(d->type), "\n\n");
+    }
 
     if (source.isNull()) Sk::bmlPair(vbml, "source", d->source, "\n\n");
     else                 Sk::bmlPair(vbml, "source", source,    "\n\n");

@@ -234,12 +234,10 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
 {
     QString content = Sk::readBml(array);
 
-    WYamlReader reader(content.toUtf8());
-
     //---------------------------------------------------------------------------------------------
     // Api
 
-    QString api = WYamlReader::extractString(reader, "api");
+    QString api = WControllerPlaylist::vbmlVersion(content);
 
     if (Sk::versionIsHigher(WControllerPlaylist::versionApi(), api))
     {
@@ -253,6 +251,20 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
     if (Sk::versionIsLower(WControllerPlaylist::versionApi(), api))
     {
         qWarning("WControllerPlaylistData::applyVbml: The required API is too high.");
+    }
+
+    WYamlReader reader(content.toUtf8());
+
+    //---------------------------------------------------------------------------------------------
+    // Settings
+
+    QString string = WYamlReader::extractString(reader, "type").simplified().toLower();
+
+    type = WControllerPlaylist::vbmlType(string);
+
+    if (type == WControllerPlaylist::Track)
+    {
+        parseTrack(reader);
     }
 }
 
@@ -434,6 +446,31 @@ void WControllerPlaylistData::addSlice(const QString & start, const QString & en
 
 //-------------------------------------------------------------------------------------------------
 // Private functions
+//-------------------------------------------------------------------------------------------------
+
+void WControllerPlaylistData::parseTrack(WYamlReader & reader)
+{
+    QString string = WYamlReader::extractString(reader, "source");
+
+    WTrack track(string, WTrack::Loaded);
+
+    string = WYamlReader::extractString(reader, "subtype");
+
+    track.setType(WTrack::typeFromString(string));
+
+    track.setTitle(WYamlReader::extractString(reader, "title"));
+    track.setCover(WYamlReader::extractString(reader, "cover"));
+
+    track.setAuthor(WYamlReader::extractString(reader, "author"));
+    track.setFeed  (WYamlReader::extractString(reader, "feed"));
+
+    track.setDuration(WYamlReader::extractInt(reader, "duration"));
+
+    track.setDate(WYamlReader::extractDate(reader, "date"));
+
+    tracks.append(track);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 void WControllerPlaylistData::addSource(const QString & url, const QString & title)
@@ -2565,6 +2602,17 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
     QString feed = query->backendQuery.url;
 
+    deleteQuery(query);
+
+    const QList<WTrack> & tracks = data.tracks;
+
+    if (tracks.isEmpty() == false)
+    {
+        playlist->addTracks(data.tracks);
+
+        playlist->setCurrentIndex(0);
+    }
+
     QStringList urlTracks;
 
     for (int i = 0; i < playlist->count(); i++)
@@ -2587,8 +2635,6 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         }
         else urlTracks.append(url);
     }
-
-    deleteQuery(query);
 
     playlist->setTitle(data.title);
     playlist->setCover(data.cover);
@@ -3956,6 +4002,15 @@ WControllerPlaylist::extractPlaylists(const WControllerPlaylistData & data)
     }
 
     return version;
+}
+
+/* Q_INVOKABLE static */
+WControllerPlaylist::Type WControllerPlaylist::vbmlType(const QString & type)
+{
+    if      (type == "track")    return Track;
+    else if (type == "playlist") return Playlist;
+    else if (type == "feed")     return Feed;
+    else                         return Unknown;
 }
 
 /* Q_INVOKABLE static */ void WControllerPlaylist::vbmlPatch(QString & data, const QString & api)

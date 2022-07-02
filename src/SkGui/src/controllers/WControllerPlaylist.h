@@ -34,8 +34,10 @@
 
 // Forward declarations
 class WControllerPlaylistPrivate;
+class WControllerPlaylistData;
 class WControllerFileReply;
 class WAbstractLoader;
+class WYamlReader;
 class WRemoteData;
 
 #ifdef QT_6
@@ -83,56 +85,6 @@ struct WControllerPlaylistSlice
 };
 
 //-------------------------------------------------------------------------------------------------
-// WControllerPlaylistData
-//-------------------------------------------------------------------------------------------------
-
-class SK_GUI_EXPORT WControllerPlaylistData
-{
-public:
-    WControllerPlaylistData() { type = WLibraryItem::Item; }
-
-public: // Interface
-    void applyVbml(const QByteArray & array, const QString & url);
-    void applyHtml(const QByteArray & array, const QString & url);
-
-    void applyFolder(const QString & url);
-
-    void applyFile(const QByteArray & array, const QString & url);
-
-    void addSlice(const QString & start, const QString & end = QString());
-
-private: // Functions
-    void addSource(const QString & url, const QString & title);
-    void addFolder(const QString & url, const QString & title);
-
-    void addFile(const QString & path);
-
-    bool addUrl(QStringList * urls, const QString & url) const;
-
-    QString generateUrl  (const QString & url, const QString & baseUrl) const;
-    QString generateTitle(const QString & url, const QString & urlName) const;
-
-public: // Variables
-    WLibraryItem::Type type;
-
-    QString source;
-
-    QString title;
-    QString cover;
-
-    QString label;
-
-    QList<WTrack> tracks;
-
-    QList<WControllerPlaylistSource> sources;
-    QList<WControllerPlaylistSource> folders;
-    QList<WControllerPlaylistSource> files;
-    QList<WControllerPlaylistSource> medias;
-
-    QList<WControllerPlaylistSlice> slices;
-};
-
-//-------------------------------------------------------------------------------------------------
 // WControllerPlaylistItem
 //-------------------------------------------------------------------------------------------------
 
@@ -151,12 +103,17 @@ class SK_GUI_EXPORT WControllerPlaylist : public WController
 {
     Q_OBJECT
 
+    Q_ENUMS(Type)
+
     Q_PROPERTY(QThread * thread READ thread CONSTANT)
 
     Q_PROPERTY(QString versionApi READ versionApi CONSTANT)
 
     Q_PROPERTY(QString pathStorage     READ pathStorage     NOTIFY pathStorageChanged)
     Q_PROPERTY(QString pathStorageTabs READ pathStorageTabs NOTIFY pathStorageChanged)
+
+public: // Enums
+    enum Type { Unknown, Track, Playlist, Feed };
 
 private:
     WControllerPlaylist();
@@ -312,6 +269,8 @@ public: // Static functions
 
     Q_INVOKABLE static QString vbmlVersion(const QString & vbml);
 
+    Q_INVOKABLE static Type vbmlType(const QString & type);
+
     Q_INVOKABLE static void vbmlPatch(QString & data, const QString & api);
 
 signals:
@@ -355,6 +314,58 @@ private:
     friend class WBackendNetPrivate;
     friend class WBackendNetInterface;
     friend class WTabTrackPrivate;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WControllerPlaylistData
+//-------------------------------------------------------------------------------------------------
+
+class SK_GUI_EXPORT WControllerPlaylistData
+{
+public:
+    WControllerPlaylistData() { type = WControllerPlaylist::Unknown; }
+
+public: // Interface
+    void applyVbml(const QByteArray & array, const QString & url);
+    void applyHtml(const QByteArray & array, const QString & url);
+
+    void applyFolder(const QString & url);
+
+    void applyFile(const QByteArray & array, const QString & url);
+
+    void addSlice(const QString & start, const QString & end = QString());
+
+private: // Functions
+    void parseTrack(WYamlReader & reader);
+
+    void addSource(const QString & url, const QString & title);
+    void addFolder(const QString & url, const QString & title);
+
+    void addFile(const QString & path);
+
+    bool addUrl(QStringList * urls, const QString & url) const;
+
+    QString generateUrl  (const QString & url, const QString & baseUrl) const;
+    QString generateTitle(const QString & url, const QString & urlName) const;
+
+public: // Variables
+    WControllerPlaylist::Type type;
+
+    QString source;
+
+    QString title;
+    QString cover;
+
+    QString label;
+
+    QList<WTrack> tracks;
+
+    QList<WControllerPlaylistSource> sources;
+    QList<WControllerPlaylistSource> folders;
+    QList<WControllerPlaylistSource> files;
+    QList<WControllerPlaylistSource> medias;
+
+    QList<WControllerPlaylistSlice> slices;
 };
 
 #include <private/WControllerPlaylist_p>

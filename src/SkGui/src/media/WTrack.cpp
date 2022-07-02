@@ -152,20 +152,18 @@ void WTrack::applyDataTo(WTrack * other) const
 // Static functions
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */
-WTrack::Type WTrack::typeFromString(const QString & string)
+/* Q_INVOKABLE static */ WTrack::Type WTrack::typeFromString(const QString & string)
 {
-    if (string == "media") return WTrack::Media;
-    if (string == "live")  return WTrack::Live;
-    else                   return WTrack::Unknown;
+    if      (string == "media") return WTrack::Media;
+    else if (string == "live")  return WTrack::Live;
+    else                        return WTrack::Unknown;
 }
 
-/* Q_INVOKABLE static */
-QString WTrack::typeToString(Type type)
+/* Q_INVOKABLE static */ QString WTrack::typeToString(Type type)
 {
-    if (type == Media) return "media";
-    if (type == Live)  return "live";
-    else               return "";
+    if      (type == Media) return "media";
+    else if (type == Live)  return "live";
+    else                    return "";
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -203,7 +201,12 @@ QString WTrack::typeToString(Type type)
 
     QString vbml = WControllerPlaylist::vbml();
 
-    Sk::bmlPair(vbml, "type", "track " + typeToString(d->type), "\n\n");
+    Sk::bmlPair(vbml, "type", "track", "\n\n");
+
+    if (d->type == WTrack::Live)
+    {
+        Sk::bmlPair(vbml, "subtype", typeToString(d->type), "\n\n");
+    }
 
     Sk::bmlPair(vbml, "source", d->source, "\n\n");
 

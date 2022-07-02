@@ -25,6 +25,7 @@
 
 // Qt includes
 #include <QObject>
+#include <QDateTime>
 
 // Sk includes
 #include <Sk>
@@ -78,6 +79,9 @@ public: // Static functions
     Q_INVOKABLE static int  extractInt (const WYamlReader & reader, const QString & key);
 
     Q_INVOKABLE static QString extractString(const WYamlReader & reader, const QString & key);
+
+    Q_INVOKABLE static QDateTime extractDate(const WYamlReader & reader, const QString & key,
+                                             Qt::DateFormat format = Qt::ISODate);
 
 private:
     W_DECLARE_PRIVATE(WYamlReader)
