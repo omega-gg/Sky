@@ -411,6 +411,14 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
 #endif
         {
             p->setTouch(point.id());
+
+#ifdef QT_5
+            QPointF screenPos = point.screenPos();
+#else
+            QPointF screenPos = point.globalPosition();
+#endif
+
+            p->setMousePos(screenPos.toPoint());
         }
     }
     else
@@ -420,9 +428,23 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
             if (point.id() != id) continue;
 
 #ifdef QT_5
-            if (point.state() == Qt::TouchPointReleased)
+            if (point.state() == Qt::TouchPointMoved)
 #else
-            if (point.state() == QEventPoint::Released)
+            if (point.state() == QEventPoint::Updated)
+#endif
+            {
+#ifdef QT_5
+                QPointF screenPos = point.screenPos();
+#else
+                QPointF screenPos = point.globalPosition();
+#endif
+
+                p->setMousePos(screenPos.toPoint());
+            }
+#ifdef QT_5
+            else if (point.state() == Qt::TouchPointReleased)
+#else
+            else if (point.state() == QEventPoint::Released)
 #endif
             {
                 p->setTouch(-1);
