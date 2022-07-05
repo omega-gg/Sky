@@ -120,6 +120,10 @@ public: // Interface
     Q_INVOKABLE void clearComponentCache() const;
 #endif
 
+#ifdef SK_MOBILE
+    Q_INVOKABLE void openGallery() const;
+#endif
+
     Q_INVOKABLE void quit();
 
     /*Q_INVOKABLE QPoint cursorPosition() const;

@@ -418,6 +418,7 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
             QPointF screenPos = point.globalPosition();
 #endif
 
+            // NOTE: This is useful for WView::mouseX and mouseY.
             p->setMousePos(screenPos.toPoint());
         }
     }
@@ -439,6 +440,7 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
                 QPointF screenPos = point.globalPosition();
 #endif
 
+                // NOTE: This is useful for WView::mouseX and mouseY.
                 p->setMousePos(screenPos.toPoint());
             }
 #ifdef QT_5

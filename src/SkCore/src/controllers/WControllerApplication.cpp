@@ -405,6 +405,27 @@ void WControllerApplication::initController()
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef SK_MOBILE
+
+/* Q_INVOKABLE */ void WControllerApplication::openGallery() const
+{
+#ifdef Q_OS_ANDROID
+#ifdef QT_5
+    QAndroidJniObject object = QtAndroid::androidActivity();
+#else
+    QJniObject object = QNativeInterface::QAndroidApplication::context();
+#endif
+
+    if (object.isValid() == false) return;
+
+    object.callMethod<void>("openGallery");
+#endif
+}
+
+#endif
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE */ void WControllerApplication::quit()
 {
     qApp->quit();
