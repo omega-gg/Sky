@@ -395,6 +395,8 @@ signals:
 #ifdef SK_MOBILE
     // NOTE: This is useful on Android to notify that the 'intent' has changed.
     void messageUpdated();
+
+    void imageSelected(const QString & fileName);
 #endif
 
     void aboutToQuit();

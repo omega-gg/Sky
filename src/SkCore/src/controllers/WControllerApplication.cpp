@@ -2301,6 +2301,12 @@ Java_gg_omega_WActivity_updateIntent(JNIEnv *, jobject)
     emit sk->messageUpdated();
 }
 
+JNIEXPORT void JNICALL
+Java_gg_omega_WActivity_imageSelected(JNIEnv *, jobject, jstring fileName)
+{
+    emit sk->imageSelected(QAndroidJniObject(fileName).toString());
+}
+
 #ifdef __cplusplus
 }
 #endif
