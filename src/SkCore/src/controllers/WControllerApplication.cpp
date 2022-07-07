@@ -405,6 +405,49 @@ void WControllerApplication::initController()
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ void WControllerApplication::vibrate(int msec) const
+{
+#ifdef Q_OS_ANDROID
+#ifdef QT_5
+    if (QtAndroid::checkPermission("android.permission.VIBRATE")
+        ==
+        QtAndroid::PermissionResult::Denied) return;
+
+    QAndroidJniObject object = QtAndroid::androidActivity();
+#else
+    // FIXME Qt6: We should check for permission before doing this, otherwise we might crash.
+
+    QJniObject object = QNativeInterface::QAndroidApplication::context();
+#endif
+
+    if (object.isValid() == false) return;
+
+#ifdef QT_5
+    QAndroidJniObject service
+        = QAndroidJniObject::getStaticObjectField<jstring>("android/content/Context",
+                                                           "VIBRATOR_SERVICE");
+#else
+    QJniObject service
+        = QJniObject::getStaticObjectField<jstring>("android/content/Context",
+                                                    "VIBRATOR_SERVICE");
+#endif
+
+    if (object.isValid() == false) return;
+
+    object = object.callObjectMethod("getSystemService",
+                                     "(Ljava/lang/String;)Ljava/lang/Object;",
+                                     service.object<jobject>());
+
+    if (object.isValid() == false) return;
+
+    object.callMethod<void>("vibrate", "(J)V", msec);
+#else
+    Q_UNUSED(msec);
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------
+
 #ifdef SK_MOBILE
 
 /* Q_INVOKABLE */ void WControllerApplication::openGallery() const

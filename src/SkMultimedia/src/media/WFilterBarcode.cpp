@@ -52,7 +52,7 @@ public: // Functions
 #endif
 
 public: // QVideoFilterRunnable implementation
-    /* virtual */ QVideoFrame run(QVideoFrame * input,
+    /* virtual */ QVideoFrame run(QVideoFrame * frame,
                                   const QVideoSurfaceFormat & surfaceFormat, RunFlags flags);
 
 private: // Variables
@@ -100,30 +100,44 @@ QImage WFilterRunnable::imageFromFrame(const QVideoFrame & frame) const
 
 #endif
 
-/* virtual */ QVideoFrame WFilterRunnable::run(QVideoFrame * input, const QVideoSurfaceFormat &,
+/* virtual */ QVideoFrame WFilterRunnable::run(QVideoFrame * frame, const QVideoSurfaceFormat &,
                                                QVideoFilterRunnable::RunFlags)
 {
     WFilterBarcodePrivate * p = filter->d_func();
 
     // NOTE: We wait for the last run to finish before starting a new one.
-    if (p->loading) return *input;
+    if (p->loading) return *frame;
 
     p->loading = true;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    input->map(QAbstractVideoBuffer::ReadOnly);
+    QImage image;
 
-    QImage image = imageFromFrame(*input);
+#ifdef Q_OS_ANDROID
+    // NOTE android: This platform is using reversed RGB for camera frames.
+    if (frame->pixelFormat() == QVideoFrame::Format_ABGR32)
+    {
+        frame->map(QAbstractVideoBuffer::ReadOnly);
 
-    input->unmap();
+        image = QImage(frame->bits(), frame->width(), frame->height(), QImage::Format_ARGB32);
+
+        frame->unmap();
+
+        image = image.rgbSwapped();
+    }
+#elif QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+    frame->map(QAbstractVideoBuffer::ReadOnly);
+
+    image = imageFromFrame(*frame);
+
+    frame->unmap();
 #else
-    QImage image = input->image();
+    image = frame->image();
 #endif
 
     p->reader.startRead(image, WBarcodeReader::Any, filter, SLOT(onLoaded(const QString &)),
                         p->target);
 
-    return *input;
+    return *frame;
 }
 
 #endif

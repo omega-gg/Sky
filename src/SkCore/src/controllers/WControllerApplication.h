@@ -120,6 +120,8 @@ public: // Interface
     Q_INVOKABLE void clearComponentCache() const;
 #endif
 
+    Q_INVOKABLE void vibrate(int msec) const;
+
 #ifdef SK_MOBILE
     Q_INVOKABLE void openGallery() const;
 #endif
