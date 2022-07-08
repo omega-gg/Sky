@@ -31,11 +31,7 @@ Flickable
     // Properties
     //---------------------------------------------------------------------------------------------
 
-//#QT_4
     /* read */ property bool isActive: (moving || animation.running)
-//#ELSE
-    /* read */ property bool isActive: (dragging || animation.running)
-//#END
 
     property int count: 1
 
@@ -65,17 +61,24 @@ Flickable
     // Events
     //---------------------------------------------------------------------------------------------
 
-//#QT_4
-    onWidthChanged: if (moving == false) pUpdateX()
-//#ELSE
-    onWidthChanged: if (dragging == false) pUpdateX()
-//#END
+    onWidthChanged: pUpdateX()
 
     onCurrentPageChanged: if (pUdpate) pUpdateX()
 
+    onMovingChanged:
+    {
 //#QT_4
-    onMovingChanged: if (moving == false) pApplyPosition()
+        if (moving)
+        {
+            pStopAnimation();
+        }
+        else pApplyPosition();
 //#ELSE
+        if (moving) pStopAnimation();
+//#END
+    }
+
+//#QT_NEW
     onDraggingChanged: if (dragging == false) pApplyPosition()
 //#END
 
@@ -144,6 +147,8 @@ Flickable
 
         if (contentX != to)
         {
+            pStopAnimation();
+
             animation.from = contentX;
             animation.to   = to;
 
@@ -155,7 +160,14 @@ Flickable
 
     function pUpdateX()
     {
+        pStopAnimation();
+
         contentX = currentPage * width;
+    }
+
+    function pStopAnimation()
+    {
+        animation.running = false;
     }
 
     //---------------------------------------------------------------------------------------------
