@@ -419,6 +419,7 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
             // NOTE: This is useful for WView::mouseX and mouseY.
             p->setMousePos(screenPos.toPoint());
 
+            // NOTE: This call requires the mouse position to update hovering.
             p->setEntered(true);
 
             p->setTouch(point.id());
