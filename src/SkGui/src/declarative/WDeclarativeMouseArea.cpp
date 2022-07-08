@@ -410,8 +410,6 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
         if (point.state() == QEventPoint::Pressed)
 #endif
         {
-            p->setTouch(point.id());
-
 #ifdef QT_5
             QPointF screenPos = point.screenPos();
 #else
@@ -420,6 +418,10 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
 
             // NOTE: This is useful for WView::mouseX and mouseY.
             p->setMousePos(screenPos.toPoint());
+
+            p->setEntered(true);
+
+            p->setTouch(point.id());
         }
     }
     else
@@ -450,6 +452,8 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
 #endif
             {
                 p->setTouch(-1);
+
+                p->setEntered(false);
             }
         }
     }
@@ -463,7 +467,14 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
 
     if (d->view == NULL) return;
 
-    d->view->d_func()->setTouch(-1);
+    WViewPrivate * p = d->view->d_func();
+
+    if (p->touchId != -1)
+    {
+        p->setTouch(-1);
+
+        p->setEntered(false);
+    }
 
     QQuickMouseArea::touchUngrabEvent();
 }
