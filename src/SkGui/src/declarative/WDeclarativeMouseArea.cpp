@@ -446,16 +446,18 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
                 // NOTE: This is useful for WView::mouseX and mouseY.
                 p->setMousePos(screenPos.toPoint());
             }
-#ifdef QT_5
-            else if (point.state() == Qt::TouchPointReleased)
-#else
-            else if (point.state() == QEventPoint::Released)
-#endif
-            {
-                p->setTouch(-1);
+//#ifdef QT_5
+//            else if (point.state() == Qt::TouchPointReleased)
+//#else
+//            else if (point.state() == QEventPoint::Released)
+//#endif
+//            {
+//                p->setTouch(-1);
 
-                p->setEntered(false);
-            }
+//                p->setEntered(false);
+//            }
+
+            break;
         }
     }
 
