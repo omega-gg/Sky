@@ -145,6 +145,11 @@ Flickable
 
     function pApplyPage(index)
     {
+//#QT_NEW
+        // NOTE: The content should not move anymore.
+        cancelFlick();
+//#END
+
         var to = width * index;
 
         if (contentX != to)
