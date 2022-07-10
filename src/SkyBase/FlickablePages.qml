@@ -37,7 +37,7 @@ Flickable
 
     property int currentPage: 0
 
-    property real ratioVelocity: st.flickablePages_ratioVelocity
+    property int velocitySlide: st.flickablePages_velocitySlide
 
     //---------------------------------------------------------------------------------------------
     // Private
@@ -57,6 +57,9 @@ Flickable
     contentWidth : width * count
     contentHeight: height
 
+    // NOTE: We want to avoid interactions while we're changing pages.
+    interactive: (animation.running == false)
+
     //---------------------------------------------------------------------------------------------
     // Events
     //---------------------------------------------------------------------------------------------
@@ -65,18 +68,9 @@ Flickable
 
     onCurrentPageChanged: if (pUdpate) pUpdateX()
 
-    onMovingChanged:
-    {
 //#QT_4
-        if (moving)
-        {
-            pStopAnimation();
-        }
-        else pApplyPosition();
-//#ELSE
-        if (moving) pStopAnimation();
+    onMovingChanged: if (moving == false) pApplyPosition()
 //#END
-    }
 
 //#QT_NEW
     onDraggingChanged: if (dragging == false) pApplyPosition()
@@ -114,7 +108,7 @@ Flickable
 
         // NOTE: We consider resetting the page when the velocity is too low. If we're less than
         //       halfway there we reset the page.
-        if (Math.abs(horizontalVelocity) / width < ratioVelocity
+        if (Math.abs(horizontalVelocity) < velocitySlide
             &&
             Math.abs(position) < width / 2)
         {
@@ -127,18 +121,26 @@ Flickable
         {
             var index = currentPage - 1;
 
-            if (index < 0) return;
+            if (index >= 0)
+            {
+                pApplyPage(index);
 
-            pApplyPage(index);
+                return;
+            }
         }
         else
         {
             /* var */ index = currentPage + 1;
 
-            if (index >= count) return;
+            if (index < count)
+            {
+                pApplyPage(index);
 
-            pApplyPage(index);
+                return;
+            }
         }
+
+        pApplyPage(currentPage);
     }
 
     function pApplyPage(index)
@@ -147,8 +149,6 @@ Flickable
 
         if (contentX != to)
         {
-            pStopAnimation();
-
             animation.from = contentX;
             animation.to   = to;
 
@@ -160,14 +160,7 @@ Flickable
 
     function pUpdateX()
     {
-        pStopAnimation();
-
         contentX = currentPage * width;
-    }
-
-    function pStopAnimation()
-    {
-        animation.running = false;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -182,8 +175,11 @@ Flickable
 
         property: "contentX"
 
-        duration: st.duration_normal
+        duration: st.duration_fast
 
         easing.type: st.easing
+
+        // NOTE: Making sure we have the right contentX after the animation.
+        onRunningChanged: if (running == false) pUpdateX()
     }
 }

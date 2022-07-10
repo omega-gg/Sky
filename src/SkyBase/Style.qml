@@ -388,7 +388,7 @@ Item
     //---------------------------------------------------------------------------------------------
     // FlickablePages
 
-    property real flickablePages_ratioVelocity: 1.0
+    property int flickablePages_velocitySlide: dp200
 //#END
 
 //#BaseScrollBar
