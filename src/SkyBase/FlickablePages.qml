@@ -69,12 +69,14 @@ Flickable
     onCurrentPageChanged: if (pUdpate) pUpdateX()
 
 //#QT_4
-    onMovingChanged: if (moving == false) pApplyPosition()
+    onMovingChanged: if (moving == false) pApplyDrag()
 //#END
 
 //#QT_NEW
-    onDraggingChanged: if (dragging == false) pApplyPosition()
+    onDraggingChanged: if (dragging == false) pApplyDrag()
 //#END
+
+    onFlickingChanged: if (flicking) pApplyFlick()
 
     //---------------------------------------------------------------------------------------------
     // Functions
@@ -100,8 +102,10 @@ Flickable
     //---------------------------------------------------------------------------------------------
     // Private
 
-    function pApplyPosition()
+    function pApplyDrag()
     {
+        if (interactive == false) return;
+
         var position = contentX - currentPage * width;
 
         if (position == 0) return;
@@ -143,13 +147,46 @@ Flickable
         pApplyPage(currentPage);
     }
 
+    function pApplyFlick()
+    {
+        if (interactive == false) return;
+
+        // NOTE: We are resetting the page when the velocity is too low.
+        if (Math.abs(horizontalVelocity) < velocitySlide)
+        {
+            pApplyPage(currentPage);
+
+            return;
+        }
+
+        if (horizontalVelocity < 0)
+        {
+            var index = currentPage - 1;
+
+            if (index >= 0)
+            {
+                pApplyPage(index);
+
+                return;
+            }
+        }
+        else
+        {
+            /* var */ index = currentPage + 1;
+
+            if (index < count)
+            {
+                pApplyPage(index);
+
+                return;
+            }
+        }
+
+        pApplyPage(currentPage);
+    }
+
     function pApplyPage(index)
     {
-//#QT_NEW
-        // NOTE: The content should not move anymore.
-        cancelFlick();
-//#END
-
         var to = width * index;
 
         if (contentX != to)
