@@ -143,7 +143,7 @@ BaseButton
             animation.from = from;
             animation.to   = to;
 
-            animation.running = true;
+            animation.start();
         }
 
         applyIndex(index);

@@ -219,9 +219,11 @@ void WBarcodeReaderPrivate::init() {}
 
     Result result = ReadBarcode(imageView, hints);
 
-    if (result.isValid() == false) return QString();
-
-    return QString::fromWCharArray(result.text().c_str());
+    if (result.isValid())
+    {
+         return QString::fromWCharArray(result.text().c_str());
+    }
+    else return QString();
 }
 
 /* Q_INVOKABLE static */ QString WBarcodeReader::readFile(const QString & fileName,

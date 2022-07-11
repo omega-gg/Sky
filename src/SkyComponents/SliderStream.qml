@@ -328,11 +328,11 @@ Item
                             }
                             else if (pState == 1)
                             {
-                                animationBuffer.running = true;
+                                animationBuffer.start();
                             }
                             else // if (pState == 2)
                             {
-                                animationLoad.running = true;
+                                animationLoad.start();
                             }
                         }
                     }
@@ -341,8 +341,8 @@ Item
 
             onStateChanged:
             {
-                animationBuffer.running = false;
-                animationLoad  .running = false;
+                animationBuffer.stop();
+                animationLoad  .stop();
 
                 if (pState)
                 {

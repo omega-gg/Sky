@@ -44,6 +44,8 @@ Flickable
 
     property bool pUdpate: true
 
+    property int pCurrentPage: 0
+
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
@@ -66,13 +68,18 @@ Flickable
 
     onWidthChanged: pUpdateX()
 
-    onCurrentPageChanged: if (pUdpate) pUpdateX()
+    onCurrentPageChanged:
+    {
+        if (pUdpate == false) return;
+
+        pCurrentPage = currentPage;
+
+        pUpdateX();
+    }
 
 //#QT_4
     onMovingChanged: if (moving == false) pApplyDrag()
-//#END
-
-//#QT_NEW
+//#ELSE
     onDraggingChanged: if (dragging == false) pApplyDrag()
 //#END
 
@@ -94,7 +101,8 @@ Flickable
     {
         pUdpate = false;
 
-        currentPage = index;
+        currentPage  = index;
+        pCurrentPage = index;
 
         pUdpate = true;
     }
@@ -104,7 +112,8 @@ Flickable
 
     function pApplyDrag()
     {
-        if (interactive == false) return;
+        // NOTE: When sliding to a new page we skip this call.
+        if (currentPage != pCurrentPage) return;
 
         var position = contentX - currentPage * width;
 
@@ -149,7 +158,8 @@ Flickable
 
     function pApplyFlick()
     {
-        if (interactive == false) return;
+        // NOTE: When sliding to a new page we skip this call.
+        if (currentPage != pCurrentPage) return;
 
         // NOTE: We are resetting the page when the velocity is too low.
         if (Math.abs(horizontalVelocity) < velocitySlide)
@@ -187,17 +197,28 @@ Flickable
 
     function pApplyPage(index)
     {
-        var to = width * index;
-
-        if (contentX != to)
+        if (currentPage != index)
         {
-            animation.from = contentX;
-            animation.to   = to;
+            pUdpate = false;
 
-            animation.running = true;
+            currentPage = index;
+
+            pUdpate = true;
         }
 
-        applyPage(index);
+        animation.from = contentX;
+        animation.to   = width * index;
+
+        // NOTE: We skip the onRunningChanged event when we're restarting the animation.
+        if (animation.running)
+        {
+            pUdpate = false;
+
+            animation.restart();
+
+            pUdpate = true;
+        }
+        else animation.start();
     }
 
     function pUpdateX()
@@ -221,7 +242,14 @@ Flickable
 
         easing.type: st.easing
 
-        // NOTE: Making sure we have the right contentX after the animation.
-        onRunningChanged: if (running == false) pUpdateX()
+        onRunningChanged:
+        {
+            if (running || pUdpate == false) return;
+
+            pCurrentPage = currentPage;
+
+            // NOTE: Making sure we have the right contentX after the animation.
+            pUpdateX();
+        }
     }
 }
