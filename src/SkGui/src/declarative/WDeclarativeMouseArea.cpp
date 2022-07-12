@@ -35,6 +35,11 @@
 #include <WView>
 
 //-------------------------------------------------------------------------------------------------
+// Static variables
+
+static const int MOUSEAREA_DELAY_TOUCH = 200;
+
+//-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
 
@@ -372,6 +377,19 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
 
 #ifdef QT_NEW
 
+/* virtual */ void WDeclarativeMouseArea::mouseDoubleClickEvent(QMouseEvent * event)
+{
+    Q_D(WDeclarativeMouseArea);
+
+    // NOTE Qt5.15: We handle double click for touch ourselves because it seems broken.
+    if (d->view == NULL || d->view->d_func()->touchId == -1)
+    {
+        QQuickMouseArea::mouseDoubleClickEvent(event);
+
+        return;
+    }
+}
+
 /* virtual */ void WDeclarativeMouseArea::touchEvent(QTouchEvent * event)
 {
     Q_D(WDeclarativeMouseArea);
@@ -446,16 +464,48 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
                 // NOTE: This is useful for WView::mouseX and mouseY.
                 p->setMousePos(screenPos.toPoint());
             }
-//#ifdef QT_5
-//            else if (point.state() == Qt::TouchPointReleased)
-//#else
-//            else if (point.state() == QEventPoint::Released)
-//#endif
-//            {
-//                p->setTouch(-1);
+#ifdef QT_5
+            else if (point.state() == Qt::TouchPointReleased)
+#else
+            else if (point.state() == QEventPoint::Released)
+#endif
+            {
+                // NOTE Qt5.15: We handle double click for touch ourselves because it seems broken.
+                if (p->touchItem == this && p->touchTimer.isActive())
+                {
+                    p->touchTimer.stop();
 
-//                p->setEntered(false);
-//            }
+                    p->touchItem = NULL;
+
+#ifdef QT_5
+                    QPointF screenPos = point.screenPos();
+#else
+                    QPointF screenPos = point.globalPosition();
+#endif
+
+#ifdef QT_5
+                    QPointF localPos = d->view->mapFromGlobal(screenPos.toPoint());
+#else
+                    QPointF localPos = d->view->mapFromGlobal(screenPos);
+#endif
+
+                    QMouseEvent eventClick(QEvent::MouseButtonDblClick, localPos, screenPos,
+                                           Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+
+                    QQuickMouseArea::mouseDoubleClickEvent(&eventClick);
+                }
+                else
+                {
+
+                    p->setTouch(-1);
+
+                    p->setEntered(false);
+
+                    p->touchItem = this;
+
+                    p->touchTimer.start(MOUSEAREA_DELAY_TOUCH);
+                }
+            }
 
             break;
         }
