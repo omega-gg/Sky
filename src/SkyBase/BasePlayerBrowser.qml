@@ -268,7 +268,7 @@ MouseArea
         anchors.bottom: areaBackward.bottom
         anchors.right : parent.right
 
-        width: Math.round(parent.width / ratio)
+        width: areaBackward.width
 
         cursor: Qt.PointingHandCursor
 

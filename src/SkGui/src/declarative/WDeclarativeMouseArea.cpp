@@ -497,9 +497,9 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
                 else
                 {
 
-                    p->setTouch(-1);
+                    /*p->setTouch(-1);
 
-                    p->setEntered(false);
+                    p->setEntered(false);*/
 
                     p->touchItem = this;
 

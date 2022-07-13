@@ -41,7 +41,9 @@ RectangleShadow
     signal exited
 
     signal pressed(variant mouse)
-    signal clicked(variant mouse)
+
+    signal clicked      (variant mouse)
+    signal doubleClicked(variant mouse)
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -100,6 +102,12 @@ RectangleShadow
         onHoverExited : rectangleShadowClick.exited ()
 
         /* QML_EVENT */ onPressed: function(mouse) { rectangleShadowClick.pressed(mouse); }
+
         /* QML_EVENT */ onClicked: function(mouse) { rectangleShadowClick.clicked(mouse); }
+
+        /* QML_EVENT */ onDoubleClicked: function(mouse)
+        {
+            rectangleShadowClick.doubleClicked(mouse);
+        }
     }
 }
