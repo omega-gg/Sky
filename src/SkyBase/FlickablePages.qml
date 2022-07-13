@@ -79,8 +79,17 @@ Flickable
 //#ELSE
     onDraggingChanged:
     {
-        if (dragging) animation.stop();
-        else          pApplyDrag();
+        if (dragging)
+        {
+            if (animation.running == false) return;
+
+            pUdpate = false;
+
+            animation.stop();
+
+            pUdpate = true;
+        }
+        else pApplyDrag();
     }
 //#END
 
@@ -200,7 +209,16 @@ Flickable
         animation.from = contentX;
         animation.to   = width * index;
 
-        animation.restart();
+        // NOTE: We skip the onRunningChanged event when we're restarting the animation.
+        if (animation.running)
+        {
+            pUdpate = false;
+
+            animation.restart();
+
+            pUdpate = true;
+        }
+        else animation.start();
     }
 
     function pUpdateX()
@@ -224,6 +242,18 @@ Flickable
 
         easing.type: st.easing
 
-        onRunningChanged: if (running == false) currentPage = pCurrentPage
+        onRunningChanged:
+        {
+            if (running || pUdpate == false) return;
+
+            pUdpate = false;
+
+            currentPage = pCurrentPage;
+
+            pUdpate = true;
+
+            // NOTE: Making sure we have the right contentX after the animation.
+            pUpdateX();
+        }
     }
 }
