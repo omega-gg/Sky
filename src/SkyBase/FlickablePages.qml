@@ -31,7 +31,7 @@ Flickable
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    /* read */ property bool isActive: (moving || animation.running)
+    /* read */ property bool isActive: (moving || timer.running)
 
     property int count: 1
 
@@ -50,7 +50,14 @@ Flickable
     // Aliases
     //---------------------------------------------------------------------------------------------
 
+    property alias timer: timer
+
     property alias animation: animation
+
+    //---------------------------------------------------------------------------------------------
+    // Style
+
+    property alias durationAnimation: timer.interval
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -81,13 +88,10 @@ Flickable
     {
         if (dragging)
         {
-            if (animation.running == false) return;
+            timer.stop();
 
-            pUdpate = false;
-
-            animation.stop();
-
-            pUdpate = true;
+            // NOTE: Enforcing the current contentX to stop the behavior animation.
+            contentX = contentX;
         }
         else pApplyDrag();
     }
@@ -122,48 +126,20 @@ Flickable
 
     function pApplyDrag()
     {
-        // NOTE: We reset the page when the velocity is too low.
-        if (Math.abs(horizontalVelocity) < velocitySlide)
-        {
-            pApplyPage(currentPage);
-
-            return;
-        }
-
         var position = contentX - currentPage * width;
 
-        // NOTE: If we're less than halfway there we reset the page.
-        if (Math.abs(position) < width / 2)
+        // NOTE: We consider resetting the page when the velocity is too low. If we're less than
+        //       halfway there we reset the page.
+        if (Math.abs(horizontalVelocity) < velocitySlide
+            &&
+            Math.abs(position) < width / 2)
         {
             pApplyPage(currentPage);
 
             return;
         }
 
-        if (position < 0)
-        {
-            var index = currentPage - 1;
-
-            if (index >= 0)
-            {
-                pApplyPage(index);
-
-                return;
-            }
-        }
-        else if (position > 0)
-        {
-            /* var */ index = currentPage + 1;
-
-            if (index < count)
-            {
-                pApplyPage(index);
-
-                return;
-            }
-        }
-
-        pApplyPage(currentPage);
+        pSelectPage(position);
     }
 
     function pApplyFlick()
@@ -176,7 +152,12 @@ Flickable
             return;
         }
 
-        if (horizontalVelocity < 0)
+        pSelectPage(horizontalVelocity);
+    }
+
+    function pSelectPage(value)
+    {
+        if (value < 0)
         {
             var index = currentPage - 1;
 
@@ -187,7 +168,7 @@ Flickable
                 return;
             }
         }
-        else if (horizontalVelocity > 0)
+        else if (value > 0)
         {
             /* var */ index = currentPage + 1;
 
@@ -206,19 +187,9 @@ Flickable
     {
         pCurrentPage = index;
 
-        animation.from = contentX;
-        animation.to   = width * index;
+        timer.restart();
 
-        // NOTE: We skip the onRunningChanged event when we're restarting the animation.
-        if (animation.running)
-        {
-            pUdpate = false;
-
-            animation.restart();
-
-            pUdpate = true;
-        }
-        else animation.start();
+        contentX = width * index;
     }
 
     function pUpdateX()
@@ -230,22 +201,32 @@ Flickable
     // Animations
     //---------------------------------------------------------------------------------------------
 
-    NumberAnimation
+    Behavior on contentX
     {
-        id: animation
+        enabled: timer.running
 
-        target: flickablePages
-
-        property: "contentX"
-
-        duration: st.duration_fast
-
-        easing.type: st.easing
-
-        onRunningChanged:
+        PropertyAnimation
         {
-            if (running || pUdpate == false) return;
+            id: animation
 
+            duration: durationAnimation
+
+            easing.type: st.easing
+        }
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Children
+    //---------------------------------------------------------------------------------------------
+
+    Timer
+    {
+        id: timer
+
+        interval: st.duration_fast
+
+        onTriggered:
+        {
             pUdpate = false;
 
             currentPage = pCurrentPage;
