@@ -59,9 +59,6 @@ Flickable
     contentWidth : width * count
     contentHeight: height
 
-    // NOTE: We want to avoid interactions while we're changing pages.
-    interactive: (animation.running == false)
-
     //---------------------------------------------------------------------------------------------
     // Events
     //---------------------------------------------------------------------------------------------
@@ -80,7 +77,11 @@ Flickable
 //#QT_4
     onMovingChanged: if (moving == false) pApplyDrag()
 //#ELSE
-    onDraggingChanged: if (dragging == false) pApplyDrag()
+    onDraggingChanged:
+    {
+        if (dragging) animation.stop();
+        else          pApplyDrag();
+    }
 //#END
 
     onFlickingChanged: if (flicking) pApplyFlick()
@@ -112,18 +113,18 @@ Flickable
 
     function pApplyDrag()
     {
-        // NOTE: When sliding to a new page we skip this call.
-        if (currentPage != pCurrentPage) return;
+        // NOTE: We reset the page when the velocity is too low.
+        if (Math.abs(horizontalVelocity) < velocitySlide)
+        {
+            pApplyPage(currentPage);
+
+            return;
+        }
 
         var position = contentX - currentPage * width;
 
-        if (position == 0) return;
-
-        // NOTE: We consider resetting the page when the velocity is too low. If we're less than
-        //       halfway there we reset the page.
-        if (Math.abs(horizontalVelocity) < velocitySlide
-            &&
-            Math.abs(position) < width / 2)
+        // NOTE: If we're less than halfway there we reset the page.
+        if (Math.abs(position) < width / 2)
         {
             pApplyPage(currentPage);
 
@@ -141,7 +142,7 @@ Flickable
                 return;
             }
         }
-        else
+        else if (position > 0)
         {
             /* var */ index = currentPage + 1;
 
@@ -158,9 +159,6 @@ Flickable
 
     function pApplyFlick()
     {
-        // NOTE: When sliding to a new page we skip this call.
-        if (currentPage != pCurrentPage) return;
-
         // NOTE: We are resetting the page when the velocity is too low.
         if (Math.abs(horizontalVelocity) < velocitySlide)
         {
@@ -180,7 +178,7 @@ Flickable
                 return;
             }
         }
-        else
+        else if (horizontalVelocity > 0)
         {
             /* var */ index = currentPage + 1;
 
@@ -197,28 +195,12 @@ Flickable
 
     function pApplyPage(index)
     {
-        if (currentPage != index)
-        {
-            pUdpate = false;
-
-            currentPage = index;
-
-            pUdpate = true;
-        }
+        pCurrentPage = index;
 
         animation.from = contentX;
         animation.to   = width * index;
 
-        // NOTE: We skip the onRunningChanged event when we're restarting the animation.
-        if (animation.running)
-        {
-            pUdpate = false;
-
-            animation.restart();
-
-            pUdpate = true;
-        }
-        else animation.start();
+        animation.restart();
     }
 
     function pUpdateX()
@@ -242,14 +224,6 @@ Flickable
 
         easing.type: st.easing
 
-        onRunningChanged:
-        {
-            if (running || pUdpate == false) return;
-
-            pCurrentPage = currentPage;
-
-            // NOTE: Making sure we have the right contentX after the animation.
-            pUpdateX();
-        }
+        onRunningChanged: if (running == false) currentPage = pCurrentPage
     }
 }
