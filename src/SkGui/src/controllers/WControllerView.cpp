@@ -49,20 +49,11 @@
 
 // Sk includes
 #include <WControllerNetwork>
-#include <WRegExp>
 
 // Private includes
 #include "WControllerView_p.h"
 
 W_INIT_CONTROLLER(WControllerView)
-
-//-------------------------------------------------------------------------------------------------
-// Static variables
-
-static const QString CONTROLLERVIEW_IMAGE = "^(bmp|png|jpg|jpeg|svg|tga)$";
-
-static const QString CONTROLLERVIEW_FILTER = "Images (*.bmp *.png *.jpg *.jpeg *.svg *.tga);;"
-                                             "All files (*)";
 
 //=================================================================================================
 // WControllerViewWriteImages
@@ -538,28 +529,6 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
     }
 
     return true;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE static */ QString WControllerView::getFilterImage()
-{
-    return CONTROLLERVIEW_FILTER;
-}
-
-//-------------------------------------------------------------------------------------------------
-// Urls
-
-/* Q_INVOKABLE static */ bool WControllerView::urlIsImage(const QString & url)
-{
-    QString extension = WControllerNetwork::extractUrlExtension(url);
-
-    return extensionIsImage(extension);
-}
-
-/* Q_INVOKABLE static */ bool WControllerView::extensionIsImage(const QString & extension)
-{
-    return (extension.indexOf(WRegExp(CONTROLLERVIEW_IMAGE)) != -1);
 }
 
 //-------------------------------------------------------------------------------------------------

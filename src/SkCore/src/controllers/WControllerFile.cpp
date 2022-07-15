@@ -54,6 +54,7 @@
 #include <WFileWatcher>
 #include <WCache>
 #include <WThreadActions>
+#include <WRegExp>
 
 // Private includes
 #include <private/WFileWatcher_p>
@@ -68,6 +69,11 @@ W_INIT_CONTROLLER(WControllerFile)
 
 static const int CONTROLLERFILE_LOG_INTERVAL =  1000; // 1 seconds
 static const int CONTROLLERFILE_LOG_MAX      = 10000;
+
+static const QString CONTROLLERFILE_IMAGE = "^(bmp|png|jpg|jpeg|svg|tga)$";
+
+static const QString CONTROLLERFILE_FILTER = "Images (*.bmp *.png *.jpg *.jpeg *.svg *.tga);;"
+                                             "All files (*)";
 
 //=================================================================================================
 // WControllerFileAction
@@ -1176,6 +1182,29 @@ WControllerFileReply * WControllerFile::startCreatePaths(const QStringList & pat
          return file.open(QIODevice::Append);
     }
     else return false;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Filters
+
+/* Q_INVOKABLE static */ QString WControllerFile::getFilterImage()
+{
+    return CONTROLLERFILE_FILTER;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Urls
+
+/* Q_INVOKABLE static */ bool WControllerFile::urlIsImage(const QString & url)
+{
+    QString extension = WControllerNetwork::extractUrlExtension(url);
+
+    return extensionIsImage(extension);
+}
+
+/* Q_INVOKABLE static */ bool WControllerFile::extensionIsImage(const QString & extension)
+{
+    return (extension.indexOf(WRegExp(CONTROLLERFILE_IMAGE)) != -1);
 }
 
 //-------------------------------------------------------------------------------------------------

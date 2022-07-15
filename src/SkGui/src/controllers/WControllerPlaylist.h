@@ -210,6 +210,9 @@ public: // Static functions
 
     Q_INVOKABLE static QStringList getLanguages();
 
+    //---------------------------------------------------------------------------------------------
+    // Filters
+
     Q_INVOKABLE static QString getFilterFile    ();
     Q_INVOKABLE static QString getFilterSubtitle();
 

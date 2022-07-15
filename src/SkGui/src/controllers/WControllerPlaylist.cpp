@@ -3675,6 +3675,7 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 }
 
 //-------------------------------------------------------------------------------------------------
+// Filters
 
 /* Q_INVOKABLE static */ QString WControllerPlaylist::getFilterFile()
 {

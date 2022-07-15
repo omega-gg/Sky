@@ -248,6 +248,18 @@ public: // Static functions
     Q_INVOKABLE static bool tryAppend(const QString & fileName);
 
     //---------------------------------------------------------------------------------------------
+    // Filters
+
+    Q_INVOKABLE static QString getFilterImage();
+
+    //---------------------------------------------------------------------------------------------
+    // Urls
+
+    Q_INVOKABLE static bool urlIsImage(const QString & url);
+
+    Q_INVOKABLE static bool extensionIsImage(const QString & extension);
+
+    //---------------------------------------------------------------------------------------------
     // Files
 
     static bool tryUnlock(const QtLP_Private::QtLockedFile & file,
