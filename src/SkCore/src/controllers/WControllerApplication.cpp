@@ -1603,25 +1603,7 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
     QJniObject object = QNativeInterface::QAndroidApplication::context();
 #endif
 
-    if (object.isValid() == false) return QString();
-
-    object = object.callObjectMethod("getIntent", "()Landroid/content/Intent;");
-
-    if (object.isValid() == false) return QString();
-
-    object = object.callObjectMethod("getExtras", "()Landroid/os/Bundle;");
-
-    if (object.isValid() == false) return QString();
-
-#ifdef QT_5
-    QAndroidJniObject key = QAndroidJniObject::fromString("android.intent.extra.TEXT");
-#else
-    QJniObject key = QJniObject::fromString("android.intent.extra.TEXT");
-#endif
-
-    return object.callObjectMethod("getCharSequence",
-                                   "(Ljava/lang/String;)Ljava/lang/CharSequence;",
-                                   key.object<jstring>()).toString();
+    return object.callObjectMethod<jstring>("getIntentText").toString();
 }
 
 #endif
