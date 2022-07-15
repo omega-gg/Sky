@@ -53,6 +53,7 @@ OTHER_FILES += 3rdparty.sh \
                dist/shaders/video.frag \
                dist/iOS/WorkspaceSettings.xcsettings \
                dist/android/src/gg/omega/WActivity.java \
+               dist/android/src/gg/omega/WFile.java \
                dist/changes/1.0.1.md \
                dist/changes/1.1.0.md \
                dist/changes/1.1.1.md \

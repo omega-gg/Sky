@@ -24,19 +24,78 @@ package gg.omega;
 
 // Android includes
 import android.os.*;
+import android.net.Uri;
 import android.content.Intent;
+import android.content.Context;
+import android.database.Cursor;
+import android.provider.MediaStore;
 //import android.util.Log;
 
 // Qt includes
-import org.qtproject.qt5.android.bindings.QtActivity;
+import org.qtproject.qt.android.bindings.QtActivity;
+
+// Sk includes
+import gg.omega.WFile;
 
 public class WActivity extends QtActivity
 {
+    //---------------------------------------------------------------------------------------------
+    // Static variables
+    //---------------------------------------------------------------------------------------------
+
+    static final int ACTIVITY_GALLERY = 1;
+
     //---------------------------------------------------------------------------------------------
     // C++ functions
     //---------------------------------------------------------------------------------------------
 
     public static native void updateIntent();
+
+    public static native void imageSelected(String fileName);
+
+    //---------------------------------------------------------------------------------------------
+    // Interface
+    //---------------------------------------------------------------------------------------------
+
+    public void openGallery()
+    {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+
+        intent.setType("image/*");
+
+        startActivityForResult(intent, ACTIVITY_GALLERY);
+    }
+
+    public String getIntentText()
+    {
+        Intent intent = getIntent();
+
+        String action = intent.getAction();
+
+        if (action == "android.intent.action.SEND")
+        {
+            Bundle bundle = intent.getExtras();
+
+            if (bundle == null) return null;
+
+            Object object = bundle.get(Intent.EXTRA_STREAM);
+
+            if (object == null)
+            {
+                object = bundle.getCharSequence("android.intent.extra.TEXT");
+
+                if (object == null) return null;
+
+                return object.toString();
+            }
+            else return WFile.getPath(getApplicationContext(), (Uri) object);
+        }
+        else if (action == "android.intent.action.VIEW")
+        {
+            return WFile.getPath(getApplicationContext(), intent.getData());
+        }
+        else return null;
+    }
 
     //---------------------------------------------------------------------------------------------
     // QtActivity reimplementation
@@ -51,5 +110,25 @@ public class WActivity extends QtActivity
         setIntent(intent);
 
         updateIntent();
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Events
+    //---------------------------------------------------------------------------------------------
+
+    @Override protected void onActivityResult(int request, int result, Intent data)
+    {
+        if (request == ACTIVITY_GALLERY)
+        {
+            if (result == RESULT_OK)
+            {
+                String fileName = WFile.getPath(getApplicationContext(), data.getData());
+
+                imageSelected(fileName);
+            }
+            else imageSelected("");
+        }
+
+        super.onActivityResult(request, result, data);
     }
 }

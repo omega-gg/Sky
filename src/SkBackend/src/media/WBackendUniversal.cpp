@@ -197,7 +197,7 @@ public:
 
     /* virtual */ ~WBackendUniversalEngine();
 
-public: // Static interface
+public: // Static functions
     Q_INVOKABLE static QVariantList call(const QString & script, const QVariantList & arguments);
 
 private: // Slots
@@ -237,7 +237,7 @@ WBackendUniversalEngine::WBackendUniversalEngine()
 }
 
 //-------------------------------------------------------------------------------------------------
-// Static interface
+// Static functions
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QVariantList WBackendUniversalEngine::call(const QString      & script,
