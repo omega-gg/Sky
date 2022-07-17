@@ -22,6 +22,9 @@
 
 package gg.omega;
 
+// Java includes
+import java.io.File;
+
 // Android includes
 import android.os.*;
 import android.net.Uri;
@@ -29,6 +32,7 @@ import android.content.Intent;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
+import android.media.MediaScannerConnection;
 //import android.util.Log;
 
 // Qt includes
@@ -95,6 +99,19 @@ public class WActivity extends QtActivity
             return WFile.getPath(getApplicationContext(), intent.getData());
         }
         else return null;
+    }
+
+    public void scanFile(String fileName)
+    {
+        File file = new File(fileName);
+
+        String [] paths = { file.toString() };
+
+        MediaScannerConnection.scanFile(getApplicationContext(), paths, null, null);
+
+        //Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file));
+
+        //sendBroadcast(intent);
     }
 
     //---------------------------------------------------------------------------------------------

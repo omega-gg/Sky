@@ -126,6 +126,10 @@ public: // Interface
     Q_INVOKABLE void openGallery() const;
 #endif
 
+#ifdef Q_OS_ANDROID
+    Q_INVOKABLE void scanFile(const QString & fileName);
+#endif
+
     Q_INVOKABLE void quit();
 
     /*Q_INVOKABLE QPoint cursorPosition() const;

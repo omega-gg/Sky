@@ -467,6 +467,29 @@ void WControllerApplication::initController()
 
 #endif
 
+#ifdef Q_OS_ANDROID
+
+/* Q_INVOKABLE */ void WControllerApplication::scanFile(const QString & fileName)
+{
+#ifdef QT_5
+    QAndroidJniObject object = QtAndroid::androidActivity();
+#else
+    QJniObject object = QNativeInterface::QAndroidApplication::context();
+#endif
+
+    if (object.isValid() == false) return;
+
+#ifdef QT_5
+    QAndroidJniObject jniName = QAndroidJniObject::fromString(fileName);
+#else
+    QJniObject jniName = QJniObject::fromString(fileName);
+#endif
+
+    object.callMethod<void>("scanFile", "(Ljava/lang/String;)V", jniName.object<jstring>());
+}
+
+#endif
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WControllerApplication::quit()
@@ -1602,6 +1625,8 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 #else
     QJniObject object = QNativeInterface::QAndroidApplication::context();
 #endif
+
+    if (object.isValid() == false) return QString();
 
     return object.callObjectMethod<jstring>("getIntentText").toString();
 }
