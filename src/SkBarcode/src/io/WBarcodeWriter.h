@@ -68,15 +68,15 @@ public: // Static functions
     // NOTE: The 'method' format is complete(const QImage &).
     Q_INVOKABLE static WAbstractThreadAction * startWrite(const QString & text,
                                                           QObject       * receiver,
-                                                          const char    * method,
-                                                          Type            type = Text);
+                                                          const char    * method = NULL,
+                                                          Type            type   = Text);
 
     // NOTE: The 'method' format is complete(const QImage &).
     Q_INVOKABLE static WAbstractThreadAction * startWriteTag(const QString & text,
                                                              const QString & background,
                                                              QObject       * receiver,
-                                                             const char    * method,
-                                                             const QString & cover = QString(),
+                                                             const char    * method = NULL,
+                                                             const QString & cover  = QString(),
                                                              int             size   = 512,
                                                              int             margin = 28);
 
@@ -85,8 +85,8 @@ public: // Static functions
                                                                  const QString & text,
                                                                  const QString & background,
                                                                  QObject       * receiver,
-                                                                 const char    * method,
-                                                                 const QString & cover = QString(),
+                                                                 const char    * method = NULL,
+                                                                 const QString & cover  = QString(),
                                                                  int             size   = 512,
                                                                  int             margin = 28,
                                                                  const QString & format = "png");

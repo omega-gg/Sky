@@ -165,8 +165,8 @@ void WLoaderVbmlPrivate::onLoaded(WLoaderVbmlRead * action, const QByteArray & d
     WLoaderVbmlReply * reply = qobject_cast<WLoaderVbmlReply *>
                                (wControllerFile->startReadAction(action));
 
-    QObject::connect(reply, SIGNAL(loaded(WLoaderVbmlRead *, const QByteArray &)),
-                     this,  SLOT(onLoaded(WLoaderVbmlRead *, const QByteArray &)));
+    connect(reply, SIGNAL(loaded(WLoaderVbmlRead *, const QByteArray &)),
+            this,  SLOT(onLoaded(WLoaderVbmlRead *, const QByteArray &)));
 
     return buffer;
 }

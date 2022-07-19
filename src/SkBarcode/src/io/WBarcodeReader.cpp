@@ -244,7 +244,7 @@ WAbstractThreadAction * WBarcodeReader::startRead(const QImage & image,
     WBarcodeReadReply * reply = qobject_cast<WBarcodeReadReply *>
                                 (wControllerFile->startReadAction(action));
 
-    QObject::connect(reply, SIGNAL(loaded(const QString &)), receiver, method);
+    connect(reply, SIGNAL(loaded(const QString &)), receiver, method);
 
     return action;
 }
@@ -260,7 +260,7 @@ WAbstractThreadAction * WBarcodeReader::startReadFile(const QString & fileName,
     WBarcodeReadReply * reply = qobject_cast<WBarcodeReadReply *>
                                 (wControllerFile->startReadAction(action));
 
-    QObject::connect(reply, SIGNAL(loaded(const QString &)), receiver, method);
+    connect(reply, SIGNAL(loaded(const QString &)), receiver, method);
 
     return action;
 }

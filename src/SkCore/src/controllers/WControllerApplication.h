@@ -124,6 +124,11 @@ public: // Interface
 
 #ifdef SK_MOBILE
     Q_INVOKABLE void openGallery() const;
+
+    Q_INVOKABLE void share(const QString & title,
+                           const QString & text,
+                           const QString & media = QString(),
+                           const QString & type  = "*/*") const;
 #endif
 
 #ifdef Q_OS_ANDROID
@@ -403,6 +408,8 @@ signals:
     void messageUpdated();
 
     void imageSelected(const QString & fileName);
+
+    void shareFinished(bool ok);
 #endif
 
     void aboutToQuit();

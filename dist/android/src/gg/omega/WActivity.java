@@ -33,6 +33,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
 import android.media.MediaScannerConnection;
+import android.support.v4.content.FileProvider;
 //import android.util.Log;
 
 // Qt includes
@@ -48,6 +49,7 @@ public class WActivity extends QtActivity
     //---------------------------------------------------------------------------------------------
 
     static final int ACTIVITY_GALLERY = 1;
+    static final int ACTIVITY_SHARE   = 2;
 
     //---------------------------------------------------------------------------------------------
     // C++ functions
@@ -56,6 +58,8 @@ public class WActivity extends QtActivity
     public static native void updateIntent();
 
     public static native void imageSelected(String fileName);
+
+    public static native void shareFinished(boolean ok);
 
     //---------------------------------------------------------------------------------------------
     // Interface
@@ -68,6 +72,42 @@ public class WActivity extends QtActivity
         intent.setType("image/*");
 
         startActivityForResult(intent, ACTIVITY_GALLERY);
+    }
+
+    public void share(String title, String text, String media, String type)
+    {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+
+        intent.setType(type);
+
+        if (text.isEmpty() == false)
+        {
+            intent.putExtra(Intent.EXTRA_TEXT, text);
+        }
+
+        if (media.isEmpty() == false)
+        {
+            File newFile = new File(media);
+
+            Uri uri = FileProvider.getUriForFile(this, "gg.omega.provider", newFile);
+
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
+
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
+
+        startActivityForResult(Intent.createChooser(intent, title), ACTIVITY_SHARE);
+    }
+
+    public void scanFile(String fileName)
+    {
+        String [] paths = { fileName };
+
+        MediaScannerConnection.scanFile(getApplicationContext(), paths, null, null);
+
+        //Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file));
+
+        //sendBroadcast(intent);
     }
 
     public String getIntentText()
@@ -101,19 +141,6 @@ public class WActivity extends QtActivity
         else return null;
     }
 
-    public void scanFile(String fileName)
-    {
-        File file = new File(fileName);
-
-        String [] paths = { file.toString() };
-
-        MediaScannerConnection.scanFile(getApplicationContext(), paths, null, null);
-
-        //Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file));
-
-        //sendBroadcast(intent);
-    }
-
     //---------------------------------------------------------------------------------------------
     // QtActivity reimplementation
     //---------------------------------------------------------------------------------------------
@@ -144,6 +171,11 @@ public class WActivity extends QtActivity
                 imageSelected(fileName);
             }
             else imageSelected("");
+        }
+        else if (request == ACTIVITY_SHARE)
+        {
+            if (result == RESULT_OK) shareFinished(true);
+            else                     shareFinished(false);
         }
 
         super.onActivityResult(request, result, data);

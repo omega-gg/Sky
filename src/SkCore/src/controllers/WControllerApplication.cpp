@@ -465,6 +465,40 @@ void WControllerApplication::initController()
 #endif
 }
 
+/* Q_INVOKABLE */ void WControllerApplication::share(const QString & title,
+                                                     const QString & text,
+                                                     const QString & media,
+                                                     const QString & type) const
+{
+#ifdef Q_OS_ANDROID
+#ifdef QT_5
+    QAndroidJniObject object = QtAndroid::androidActivity();
+#else
+    QJniObject object = QNativeInterface::QAndroidApplication::context();
+#endif
+
+    if (object.isValid() == false) return;
+
+#ifdef QT_5
+    QAndroidJniObject jniTitle = QAndroidJniObject::fromString(title);
+    QAndroidJniObject jniText  = QAndroidJniObject::fromString(text);
+    QAndroidJniObject jniMedia = QAndroidJniObject::fromString(media);
+    QAndroidJniObject jniType  = QAndroidJniObject::fromString(type);
+#else
+    QJniObject jniTitle = QJniObject::fromString(title);
+    QJniObject jniText  = QJniObject::fromString(text);
+    QJniObject jniMedia = QJniObject::fromString(media);
+    QJniObject jniType  = QJniObject::fromString(type);
+#endif
+
+    object.callMethod<void>("share",
+                            "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;"
+                            "Ljava/lang/String;)V",
+                            jniTitle.object<jstring>(), jniText.object<jstring>(),
+                            jniMedia.object<jstring>(), jniType.object<jstring>());
+#endif
+}
+
 #endif
 
 #ifdef Q_OS_ANDROID
@@ -2355,6 +2389,12 @@ JNIEXPORT void JNICALL
 Java_gg_omega_WActivity_imageSelected(JNIEnv *, jobject, jstring fileName)
 {
     emit sk->imageSelected(QAndroidJniObject(fileName).toString());
+}
+
+JNIEXPORT void JNICALL
+Java_gg_omega_WActivity_shareFinished(JNIEnv *, jobject, jboolean ok)
+{
+    emit sk->shareFinished(ok);
 }
 
 #ifdef __cplusplus

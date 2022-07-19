@@ -377,6 +377,24 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
 
 #ifdef QT_NEW
 
+/* virtual */ void WDeclarativeMouseArea::mouseReleaseEvent(QMouseEvent * event)
+{
+    Q_D(WDeclarativeMouseArea);
+
+    QQuickMouseArea::mouseReleaseEvent(event);
+
+    if (d->view == NULL || d->view->d_func()->touchId == -1) return;
+
+    //---------------------------------------------------------------------------------------------
+    // NOTE: Clearing touch after the simulated mouse release.
+
+    WViewPrivate * p = d->view->d_func();
+
+    p->setTouch(-1);
+
+    p->setEntered(false);
+}
+
 /* virtual */ void WDeclarativeMouseArea::mouseDoubleClickEvent(QMouseEvent * event)
 {
     Q_D(WDeclarativeMouseArea);
@@ -496,11 +514,6 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
                 }
                 else
                 {
-
-                    /*p->setTouch(-1);
-
-                    p->setEntered(false);*/
-
                     p->touchItem = this;
 
                     p->touchTimer.start(MOUSEAREA_DELAY_TOUCH);

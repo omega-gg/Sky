@@ -419,7 +419,7 @@ WAbstractThreadAction * WBarcodeWriter::startWrite(const QString & text,
     WBarcodeWriteReply * reply = qobject_cast<WBarcodeWriteReply *>
                                  (wControllerFile->startWriteAction(action));
 
-    QObject::connect(reply, SIGNAL(complete(const QImage &)), receiver, method);
+    if (method) connect(reply, SIGNAL(complete(const QImage &)), receiver, method);
 
     return action;
 }
@@ -438,7 +438,7 @@ WAbstractThreadAction * WBarcodeWriter::startWriteTag(const QString & text,
     WBarcodeWriteReply * reply = qobject_cast<WBarcodeWriteReply *>
                                  (wControllerFile->startWriteAction(action));
 
-    QObject::connect(reply, SIGNAL(complete(const QImage &)), receiver, method);
+    if (method) connect(reply, SIGNAL(complete(const QImage &)), receiver, method);
 
     return action;
 }
@@ -460,7 +460,7 @@ WAbstractThreadAction * WBarcodeWriter::startWriteTagFile(const QString & fileNa
     WControllerFileReply * reply = qobject_cast<WControllerFileReply *>
                                    (wControllerFile->startWriteAction(action));
 
-    QObject::connect(reply, SIGNAL(complete(bool)), receiver, method);
+    if (method) connect(reply, SIGNAL(complete(bool)), receiver, method);
 
     return action;
 }
