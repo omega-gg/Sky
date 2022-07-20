@@ -472,7 +472,8 @@ WAbstractThreadAction * WBarcodeWriter::startWriteTagFile(const QString & fileNa
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ QString WBarcodeWriter::getTagName(const QString & title)
+/* Q_INVOKABLE static */ QString WBarcodeWriter::getTagName(const QString & title,
+                                                            const QString & prefix)
 {
     QString name = title;
 
@@ -489,7 +490,11 @@ WAbstractThreadAction * WBarcodeWriter::startWriteTagFile(const QString & fileNa
 
     name.replace(' ', '_');
 
-    return "VideoTag-" + name + '-' + Sk::currentDateString();
+    if (prefix.isEmpty())
+    {
+        return name + '-' + Sk::currentDateString();
+    }
+    else return prefix + name + '-' + Sk::currentDateString();
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -92,7 +92,8 @@ public: // Static functions
                                                                  const QString & format = "png");
 
     // NOTE: Returns a standardized VideoTag fileName.
-    Q_INVOKABLE static QString getTagName(const QString & title);
+    Q_INVOKABLE static QString getTagName(const QString & title,
+                                          const QString & prefix = "VideoTag-");
 
     //---------------------------------------------------------------------------------------------
     // NOTE: These are useful to get rid of the black bars.
