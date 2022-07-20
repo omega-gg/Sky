@@ -350,9 +350,8 @@ void WBarcodeWriterPrivate::init() {}
 
         if (image.isNull() == false)
         {
-            //-------------------------------------------------------------------------------------
             // NOTE: We want to get rid of the black bars.
-            image = getBackground(image);
+            image = generateCover(image);
 
             int sizeDouble = size * 2;
 
@@ -495,7 +494,7 @@ WAbstractThreadAction * WBarcodeWriter::startWriteTagFile(const QString & fileNa
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ QImage WBarcodeWriter::getBackground(const QImage & image)
+/* Q_INVOKABLE static */ QImage WBarcodeWriter::generateCover(const QImage & image)
 {
     int top    = getBarTop   (image);
     int bottom = getBarBottom(image);

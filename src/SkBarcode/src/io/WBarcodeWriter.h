@@ -97,7 +97,7 @@ public: // Static functions
     //---------------------------------------------------------------------------------------------
     // NOTE: These are useful to get rid of the black bars.
 
-    Q_INVOKABLE static QImage getBackground(const QImage & image);
+    Q_INVOKABLE static QImage generateCover(const QImage & image);
 
     Q_INVOKABLE static int getBarTop   (const QImage & image);
     Q_INVOKABLE static int getBarBottom(const QImage & image);
