@@ -664,7 +664,7 @@ void WDeclarativeImageSvg::setSource(const QString & url)
 {
     Q_D(WDeclarativeImageSvg);
 
-    if (d->url.isEmpty() == url.isEmpty() && d->url == url) return;
+    if (d->url == url) return;
 
     d->url = url;
 

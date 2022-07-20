@@ -94,6 +94,14 @@ public: // Static functions
     // NOTE: Returns a standardized VideoTag fileName.
     Q_INVOKABLE static QString getTagName(const QString & title);
 
+    //---------------------------------------------------------------------------------------------
+    // NOTE: These are useful to get rid of the black bars.
+
+    Q_INVOKABLE static QImage getBackground(const QImage & image);
+
+    Q_INVOKABLE static int getBarTop   (const QImage & image);
+    Q_INVOKABLE static int getBarBottom(const QImage & image);
+
 private:
     W_DECLARE_PRIVATE(WBarcodeWriter)
 };

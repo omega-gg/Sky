@@ -821,7 +821,8 @@ void WDeclarativeImageBase::setPixmap(const QPixmap & pixmap)
 
     if (d->url.isEmpty() == false)
     {
-        d->url = QString();
+        // NOTE: This is useful in case we want to clear the source later.
+        d->url = "pixmap";
 
         emit sourceChanged();
     }
@@ -878,7 +879,7 @@ void WDeclarativeImageBase::setSource(const QString & url)
 {
     Q_D(WDeclarativeImageBase);
 
-    if (d->url.isEmpty() == url.isEmpty() && d->url == url) return;
+    if (d->url == url) return;
 
     d->url = url;
 
@@ -903,7 +904,7 @@ void WDeclarativeImageBase::setSourceDefault(const QString & url)
 {
     Q_D(WDeclarativeImageBase);
 
-    if (d->urlDefault.isEmpty() == url.isEmpty() && d->urlDefault == url) return;
+    if (d->urlDefault == url) return;
 
     d->urlDefault = url;
 

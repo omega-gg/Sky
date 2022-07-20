@@ -51,6 +51,8 @@ static const int BARCODEWRITER_MAX = 4296;
 
 static const int BARCODEWRITER_MAX_LENGTH = 50;
 
+static const int BARCODEWRITER_COLOR_THRESHOLD = 30;
+
 //=================================================================================================
 // WBarcodeWrite and WBarcodeWriteReply
 //=================================================================================================
@@ -348,6 +350,10 @@ void WBarcodeWriterPrivate::init() {}
 
         if (image.isNull() == false)
         {
+            //-------------------------------------------------------------------------------------
+            // NOTE: We want to get rid of the black bars.
+            image = getBackground(image);
+
             int sizeDouble = size * 2;
 
             image = image.scaled(sizeDouble, sizeDouble,
@@ -485,6 +491,83 @@ WAbstractThreadAction * WBarcodeWriter::startWriteTagFile(const QString & fileNa
     name.replace(' ', '_');
 
     return "VideoTag-" + name + '-' + Sk::currentDateString();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QImage WBarcodeWriter::getBackground(const QImage & image)
+{
+    int top    = getBarTop   (image);
+    int bottom = getBarBottom(image);
+
+    top = qMin(top, bottom);
+
+    if (top == 0) return image;
+
+    int height = image.height();
+
+    // NOTE: When the margin is too large we keep the bars.
+    if (top < height / 2)
+    {
+         return image.copy(QRect(0, top, image.width(), height - top * 2));
+    }
+    else return image;
+}
+
+/* Q_INVOKABLE static */ int WBarcodeWriter::getBarTop(const QImage & image)
+{
+    int margin = 0;
+
+    int width = image.width();
+
+    for (int y = 0; y < image.height(); y++)
+    {
+        const QRgb * line = (QRgb *) image.scanLine(y);
+
+        qint64 value = 0;
+
+        for (int x = 0; x < width; x++)
+        {
+            value += qRed(*line) + qGreen(*line) + qBlue(*line);
+
+            line++;
+        }
+
+        // NOTE: We use a threshold to compensate the pixel compression.
+        if (value / width > BARCODEWRITER_COLOR_THRESHOLD) return margin;
+
+        margin++;
+    }
+
+    return margin;
+}
+
+/* Q_INVOKABLE static */ int WBarcodeWriter::getBarBottom(const QImage & image)
+{
+    int margin = 0;
+
+    int width = image.width();
+
+    for (int y = image.height() - 1; y > -1; y--)
+    {
+        const QRgb * line = (QRgb *) image.scanLine(y);
+
+        qint64 value = 0;
+
+        for (int x = 0; x < width; x++)
+        {
+            value += qRed(*line) + qGreen(*line) + qBlue(*line);
+
+            line++;
+        }
+
+        // NOTE: We use a threshold to compensate the pixel compression.
+        if (value / width > BARCODEWRITER_COLOR_THRESHOLD) return margin;
+
+        margin++;
+    }
+
+    return margin;
 }
 
 #endif // SK_NO_BARCODEWRITER

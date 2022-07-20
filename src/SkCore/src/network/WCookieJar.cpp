@@ -229,7 +229,7 @@ void WCookieJarPrivate::save()
 
     QList<QNetworkCookie> cookies = q->allCookies();
 
-    for (int i = cookies.count() - 1; i >= 0; --i)
+    for (int i = cookies.count() - 1; i > -1; --i)
     {
         if (cookies.at(i).isSessionCookie())
         {
@@ -307,7 +307,7 @@ void WCookieJarPrivate::purgeCookies()
 
     QDateTime now = QDateTime::currentDateTime();
 
-    for (int i = cookies.count() - 1; i >= 0; --i)
+    for (int i = cookies.count() - 1; i > -1; --i)
     {
         if (cookies.at(i).isSessionCookie() == false && cookies.at(i).expirationDate() < now)
         {
