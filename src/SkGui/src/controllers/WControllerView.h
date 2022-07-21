@@ -134,7 +134,7 @@ public: // Static functions
 
     WControllerFileReply * startWriteImages(const QStringList   & fileNames,
                                             const QList<QImage> & images,
-                                            const QString       & format = "png",
+                                            const QString       & format  = "png",
                                             int                   quality = -1);
 
 signals:
