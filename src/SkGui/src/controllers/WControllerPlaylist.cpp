@@ -450,6 +450,9 @@ void WControllerPlaylistData::addSlice(const QString & start, const QString & en
 
 void WControllerPlaylistData::parseTrack(WYamlReader & reader)
 {
+    title = WYamlReader::extractString(reader, "title");
+    cover = WYamlReader::extractString(reader, "cover");
+
     QString string = WYamlReader::extractString(reader, "source");
 
     WTrack track(string, WTrack::Loaded);
@@ -458,8 +461,8 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader)
 
     track.setType(WTrack::typeFromString(string));
 
-    track.setTitle(WYamlReader::extractString(reader, "title"));
-    track.setCover(WYamlReader::extractString(reader, "cover"));
+    track.setTitle(title);
+    track.setCover(cover);
 
     track.setAuthor(WYamlReader::extractString(reader, "author"));
     track.setFeed  (WYamlReader::extractString(reader, "feed"));
