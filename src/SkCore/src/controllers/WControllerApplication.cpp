@@ -2388,7 +2388,11 @@ Java_gg_omega_WActivity_updateIntent(JNIEnv *, jobject)
 JNIEXPORT void JNICALL
 Java_gg_omega_WActivity_imageSelected(JNIEnv *, jobject, jstring fileName)
 {
+#ifdef QT_5
     emit sk->imageSelected(QAndroidJniObject(fileName).toString());
+#else
+    emit sk->imageSelected(QJniObject(fileName).toString());
+#endif
 }
 
 JNIEXPORT void JNICALL
