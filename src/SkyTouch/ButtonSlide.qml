@@ -267,7 +267,7 @@ BaseButton
                 anchors.centerIn: parent
 
                 // NOTE: Since 'margins' comes from a static model we apply the ratio manually.
-                sourceSize.height: getSourceHeight(margins * st.ratio)
+                sourceSize.height: getSourceHeight(st.dp(margins))
 
                 clip: (fillMode == Image.PreserveAspectCrop)
 
