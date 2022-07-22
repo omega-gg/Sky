@@ -33,6 +33,11 @@
     We mean it.
 */
 
+#ifdef QT_6
+// Qt includes
+#include <QTimer>
+#endif
+
 // Sk includes
 #include <WBarcodeReader>
 
@@ -65,6 +70,10 @@ public: // Variables
     QRect target;
 
     bool loading;
+
+#ifdef QT_6
+    QTimer timer;
+#endif
 
 protected:
     W_DECLARE_PUBLIC(WFilterBarcode)

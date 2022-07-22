@@ -24,8 +24,10 @@
 
 #ifndef SK_NO_FILTERBARCODE
 
-#ifdef QT_6
 // Qt includes
+#ifdef QT_5
+#include <QTimer>
+#else
 #include <QVideoFrame>
 #endif
 
@@ -36,6 +38,11 @@
 #endif
 
 #ifdef QT_5
+
+//-------------------------------------------------------------------------------------------------
+// Static variables
+
+static const int FILTERBARCODE_INTERVAL = 100;
 
 //=================================================================================================
 // WFilterRunnable
@@ -57,11 +64,19 @@ public: // QVideoFilterRunnable implementation
 
 private: // Variables
     WFilterBarcode * filter;
+
+    // NOTE: We declare the timer here to start it from the runnable thread. Unfortunately it gets
+    //       stopped from another thread which triggers a warning. I'm not sure how to fix this.
+    QTimer timer;
 };
 
 /* explicit */ WFilterRunnable::WFilterRunnable(WFilterBarcode * filter)
 {
     this->filter = filter;
+
+    timer.setInterval(FILTERBARCODE_INTERVAL);
+
+    timer.setSingleShot(true);
 }
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
@@ -106,7 +121,7 @@ QImage WFilterRunnable::imageFromFrame(const QVideoFrame & frame) const
     WFilterBarcodePrivate * p = filter->d_func();
 
     // NOTE: We wait for the last run to finish before starting a new one.
-    if (p->loading) return *frame;
+    if (p->loading || timer.isActive()) return *frame;
 
     p->loading = true;
 
@@ -137,6 +152,8 @@ QImage WFilterRunnable::imageFromFrame(const QVideoFrame & frame) const
     p->reader.startRead(image, WBarcodeReader::Any, filter, SLOT(onLoaded(const QString &)),
                         p->target);
 
+    timer.start();
+
     return *frame;
 }
 
@@ -155,6 +172,12 @@ void WFilterBarcodePrivate::init()
 #endif
 
     loading = false;
+
+#ifdef QT_6
+    timer.setInterval(FILTERBARCODE_INTERVAL);
+
+    timer.setSingleShot(true);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -166,7 +189,7 @@ void WFilterBarcodePrivate::init()
 void WFilterBarcodePrivate::onUpdated(const QVideoFrame & frame)
 {
     // NOTE: We wait for the last run to finish before starting a new one.
-    if (loading) return;
+    if (loading || timer.isActive()) return;
 
     Q_Q(WFilterBarcode);
 
@@ -174,6 +197,8 @@ void WFilterBarcodePrivate::onUpdated(const QVideoFrame & frame)
 
     reader.startRead(frame.toImage(), WBarcodeReader::Any, q, SLOT(onLoaded(const QString &)),
                      target);
+
+    timer.start();
 }
 
 #endif
