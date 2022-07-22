@@ -52,6 +52,8 @@ class SK_MULTIMEDIA_EXPORT WFilterBarcode : public QObject, public WPrivatable
 
     Q_PROPERTY(QRect target READ target WRITE setTarget NOTIFY targetChanged)
 
+    Q_PROPERTY(bool interval READ interval WRITE setInterval NOTIFY intervalChanged)
+
 public:
     explicit WFilterBarcode(QObject * parent = NULL);
 
@@ -76,6 +78,8 @@ signals:
 
     void targetChanged();
 
+    void intervalChanged();
+
 public: // Properties
 #ifdef QT_6
     QVideoSink * videoSink() const;
@@ -84,6 +88,9 @@ public: // Properties
 
     QRect target() const;
     void  setTarget(const QRect & target);
+
+    bool interval() const;
+    void setInterval(bool interval);
 
 private:
     W_DECLARE_PRIVATE(WFilterBarcode)

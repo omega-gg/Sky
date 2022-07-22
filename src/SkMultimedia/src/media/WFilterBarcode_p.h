@@ -69,6 +69,8 @@ public: // Variables
 
     QRect target;
 
+    int interval;
+
     bool loading;
 
 #ifdef QT_6

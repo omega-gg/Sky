@@ -37,12 +37,12 @@
 #include <private/qvideoframeconversionhelper_p.h>
 #endif
 
-#ifdef QT_5
-
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int FILTERBARCODE_INTERVAL = 100;
+static const int FILTERBARCODE_INTERVAL = 200;
+
+#ifdef QT_5
 
 //=================================================================================================
 // WFilterRunnable
@@ -74,7 +74,7 @@ private: // Variables
 {
     this->filter = filter;
 
-    timer.setInterval(FILTERBARCODE_INTERVAL);
+    timer.setInterval(filter->d_func()->interval);
 
     timer.setSingleShot(true);
 }
@@ -137,7 +137,9 @@ QImage WFilterRunnable::imageFromFrame(const QVideoFrame & frame) const
 
         frame->unmap();
 
-        image = image.rgbSwapped();
+        // NOTE android: Swapping rgb probably does not matter for QR codes and this call impacts
+        //               performances.
+        //image = image.rgbSwapped();
     }
 #elif QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     frame->map(QAbstractVideoBuffer::ReadOnly);
@@ -171,10 +173,12 @@ void WFilterBarcodePrivate::init()
     videoSink = NULL;
 #endif
 
+    interval = FILTERBARCODE_INTERVAL;
+
     loading = false;
 
 #ifdef QT_6
-    timer.setInterval(FILTERBARCODE_INTERVAL);
+    timer.setInterval(interval);
 
     timer.setSingleShot(true);
 #endif
@@ -309,6 +313,22 @@ void WFilterBarcode::setTarget(const QRect & target)
     d->target = target;
 
     emit targetChanged();
+}
+
+bool WFilterBarcode::interval() const
+{
+    Q_D(const WFilterBarcode); return d->interval;
+}
+
+void WFilterBarcode::setInterval(bool interval)
+{
+    Q_D(WFilterBarcode);
+
+    if (d->interval == interval) return;
+
+    d->interval = interval;
+
+    emit intervalChanged();
 }
 
 #endif // SK_NO_FILTERBARCODE
