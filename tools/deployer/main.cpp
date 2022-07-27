@@ -162,7 +162,7 @@ bool match(const QString & string)
 
 bool matchElif(const QString & string)
 {
-    int index = string.lastIndexOf(' ', 7);
+    int index = string.lastIndexOf(' ');
 
     if (index == -1)
     {

@@ -3351,9 +3351,23 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
     QString source = WControllerNetwork::decodeUrl(url);
 
-    if (WControllerNetwork::urlIsFile(source) || WControllerNetwork::urlIsHttp(source))
+    if (WControllerNetwork::urlIsFile(source))
     {
         return url;
+    }
+    else if (WControllerNetwork::urlIsHttp(source))
+    {
+        source = WControllerNetwork::removeUrlPrefix(source);
+
+        if (source.startsWith("vbml.", Qt::CaseInsensitive))
+        {
+            int index = source.lastIndexOf('/');
+
+            source.remove(0, index);
+
+            return "vbml:" + source;
+        }
+        else return url;
     }
 #ifdef Q_OS_WIN
     else if (source.startsWith('/') || source.startsWith('\\')

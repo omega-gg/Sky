@@ -54,18 +54,20 @@ static const int BARCODEWRITER_MAX_LENGTH = 50;
 static const int BARCODEWRITER_COLOR_THRESHOLD = 30;
 
 //=================================================================================================
-// WBarcodeWrite and WBarcodeWriteReply
+// WBarcodeEncode, WBarcodeWrite and WBarcodeWriteReply
 //=================================================================================================
 
-class WBarcodeWrite : public WAbstractThreadAction
+class WBarcodeEncode : public WAbstractThreadAction
 {
     Q_OBJECT
 
 public:
-    WBarcodeWrite(const QString & text, WBarcodeWriter::Type type)
+    WBarcodeEncode(const QString & text, WBarcodeWriter::Type type, const QString & prefix)
     {
         this->text = text;
         this->type = type;
+
+        this->prefix = prefix;
     }
 
 protected: // WAbstractThreadAction reimplementation
@@ -77,6 +79,23 @@ protected: // WAbstractThreadAction implementation
 public: // Variables
     QString              text;
     WBarcodeWriter::Type type;
+
+    QString prefix;
+};
+
+class WBarcodeWrite : public WBarcodeEncode
+{
+    Q_OBJECT
+
+public:
+    WBarcodeWrite(const QString & text, WBarcodeWriter::Type type, const QString & prefix)
+        : WBarcodeEncode(text, type, prefix) {}
+
+protected: // WAbstractThreadAction reimplementation
+    /* virtual */ WAbstractThreadReply * createReply() const;
+
+protected: // WBarcodeEncode reimplementation
+    /* virtual */ bool run();
 };
 
 class WBarcodeWriteTag : public WAbstractThreadAction
@@ -85,12 +104,15 @@ class WBarcodeWriteTag : public WAbstractThreadAction
 
 public:
     WBarcodeWriteTag(const QString & text,
-                     const QString & background, const QString & cover, int size, int margin)
+                     const QString & background,
+                     const QString & cover, const QString & prefix, int size, int margin)
     {
         this->text = text;
 
         this->background = background;
         this->cover      = cover;
+
+        this->prefix = prefix;
 
         this->size   = size;
         this->margin = margin;
@@ -108,6 +130,8 @@ public: // Variables
     QString background;
     QString cover;
 
+    QString prefix;
+
     int size;
     int margin;
 };
@@ -117,8 +141,8 @@ class WBarcodeWriteTagFile : public WAbstractThreadAction
     Q_OBJECT
 
 public:
-    WBarcodeWriteTagFile(const QString & fileName, const QString & text,
-                         const QString & background, const QString & cover,
+    WBarcodeWriteTagFile(const QString & fileName,   const QString & text,
+                         const QString & background, const QString & cover, const QString & prefix,
                          int size, int margin, const QString & format)
     {
         this->fileName = fileName;
@@ -127,6 +151,8 @@ public:
 
         this->background = background;
         this->cover      = cover;
+
+        this->prefix = prefix;
 
         this->size   = size;
         this->margin = margin;
@@ -148,10 +174,26 @@ public: // Variables
     QString background;
     QString cover;
 
+    QString prefix;
+
     int size;
     int margin;
 
     QString format;
+};
+
+class WBarcodeEncodeReply : public WAbstractThreadReply
+{
+    Q_OBJECT
+
+protected: // WAbstractThreadReply reimplementation
+    /* virtual */ void onCompleted(bool ok);
+
+signals:
+    void complete(const QString & text);
+
+public: // Variables
+    QString text;
 };
 
 class WBarcodeWriteReply : public WAbstractThreadReply
@@ -170,6 +212,11 @@ public: // Variables
 
 //-------------------------------------------------------------------------------------------------
 
+/* virtual */ WAbstractThreadReply * WBarcodeEncode::createReply() const
+{
+    return new WBarcodeEncodeReply;
+}
+
 /* virtual */ WAbstractThreadReply * WBarcodeWrite::createReply() const
 {
     return new WBarcodeWriteReply;
@@ -185,11 +232,20 @@ public: // Variables
     return new WControllerFileReply;
 }
 
+/* virtual */ bool WBarcodeEncode::run()
+{
+    WBarcodeEncodeReply * reply = qobject_cast<WBarcodeEncodeReply *> (this->reply());
+
+    reply->text = WBarcodeWriter::encode(text, type, prefix);
+
+    return true;
+}
+
 /* virtual */ bool WBarcodeWrite::run()
 {
     WBarcodeWriteReply * reply = qobject_cast<WBarcodeWriteReply *> (this->reply());
 
-    reply->image = WBarcodeWriter::write(text, type);
+    reply->image = WBarcodeWriter::write(text, type, prefix);
 
     return true;
 }
@@ -198,14 +254,20 @@ public: // Variables
 {
     WBarcodeWriteReply * reply = qobject_cast<WBarcodeWriteReply *> (this->reply());
 
-    reply->image = WBarcodeWriter::writeTag(text, background, cover, size, margin);
+    reply->image = WBarcodeWriter::writeTag(text, background, cover, prefix, size, margin);
 
     return true;
 }
 
 /* virtual */ bool WBarcodeWriteTagFile::run()
 {
-    return WBarcodeWriter::writeTagFile(fileName, text, background, cover, size, margin, format);
+    return WBarcodeWriter::writeTagFile(fileName, text, background, cover, prefix, size, margin,
+                                        format);
+}
+
+/* virtual */ void WBarcodeEncodeReply::onCompleted(bool)
+{
+    emit complete(text);
 }
 
 /* virtual */ void WBarcodeWriteReply::onCompleted(bool)
@@ -250,11 +312,10 @@ void WBarcodeWriterPrivate::init() {}
 // Static functions
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ QImage WBarcodeWriter::write(const QString & text, Type type)
+/* Q_INVOKABLE static */ QString WBarcodeWriter::encode(const QString & text, Type type,
+                                                        const QString & prefix)
 {
-    if (text.isEmpty()) return QImage();
-
-    std::wstring string;
+    if (text.isEmpty()) return QString();
 
     if (type == Vbml)
     {
@@ -263,24 +324,35 @@ void WBarcodeWriterPrivate::init() {}
 #ifdef QT_4
         // FIXME Qt4: This version does not support encoding flags.
         data = data.toBase64();
-
-        string = TextUtfEncoding::FromUtf8("vbml:" + QString(data).toStdString());
 #else
         data = data.toBase64(QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals);
-
-        string = TextUtfEncoding::FromUtf8("vbml:" + data.toStdString());
 #endif
-    }
-    else string = TextUtfEncoding::FromUtf8(text.toStdString());
 
-    if (string.size() > BARCODEWRITER_MAX)
+        if (prefix.isEmpty())
+        {
+             return "vbml:" + data;
+        }
+        else return prefix + data;
+    }
+    else return text;
+}
+
+/* Q_INVOKABLE static */ QImage WBarcodeWriter::write(const QString & text, Type type,
+                                                      const QString & prefix)
+{
+    QString string = encode(text, type, prefix);
+
+    if (string.isEmpty()) return QImage();
+
+    if (string.length() > BARCODEWRITER_MAX)
     {
         qWarning("WBarcodeWriter::write: The text is too long (%d).", (int) string.size());
 
         return QImage();
     }
 
-    QRCode::EncodeResult code = QRCode::Encode(string, QRCode::ErrorCorrectionLevel::Low,
+    QRCode::EncodeResult code = QRCode::Encode(TextUtfEncoding::FromUtf8(string.toStdString()),
+                                               QRCode::ErrorCorrectionLevel::Low,
                                                CharacterSet::Unknown, 0, false, -1);
 
     const BitMatrix & matrix = code.matrix;
@@ -336,9 +408,10 @@ void WBarcodeWriterPrivate::init() {}
 /* Q_INVOKABLE static */ QImage WBarcodeWriter::writeTag(const QString & text,
                                                          const QString & background,
                                                          const QString & cover,
+                                                         const QString & prefix,
                                                          int size, int margin)
 {
-    QImage front = write(text, Vbml);
+    QImage front = write(text, Vbml, prefix);
 
     if (front.isNull()) return QImage();
 
@@ -405,21 +478,43 @@ void WBarcodeWriterPrivate::init() {}
                                                            const QString & text,
                                                            const QString & background,
                                                            const QString & cover,
+                                                           const QString & prefix,
                                                            int             size,
                                                            int             margin,
                                                            const QString & format)
 {
-    QImage image = writeTag(text, background, cover, size, margin);
+    QImage image = writeTag(text, background, cover, prefix, size, margin);
 
     return image.save(fileName, format.C_STR);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */
+WAbstractThreadAction * WBarcodeWriter::startEncode(const QString & text,
+                                                    QObject       * receiver,
+                                                    const char    * method,
+                                                    Type            type,
+                                                    const QString & prefix)
+{
+    WBarcodeEncode * action = new WBarcodeEncode(text, type, prefix);
+
+    WBarcodeEncodeReply * reply = qobject_cast<WBarcodeEncodeReply *>
+                                  (wControllerFile->startWriteAction(action));
+
+    if (method) connect(reply, SIGNAL(complete(const QString &)), receiver, method);
+
+    return action;
 }
 
 /* Q_INVOKABLE static */
 WAbstractThreadAction * WBarcodeWriter::startWrite(const QString & text,
                                                    QObject       * receiver,
-                                                   const char    * method, Type type)
+                                                   const char    * method,
+                                                   Type            type,
+                                                   const QString & prefix)
 {
-    WBarcodeWrite * action = new WBarcodeWrite(text, type);
+    WBarcodeWrite * action = new WBarcodeWrite(text, type, prefix);
 
     WBarcodeWriteReply * reply = qobject_cast<WBarcodeWriteReply *>
                                  (wControllerFile->startWriteAction(action));
@@ -435,10 +530,12 @@ WAbstractThreadAction * WBarcodeWriter::startWriteTag(const QString & text,
                                                       QObject       * receiver,
                                                       const char    * method,
                                                       const QString & cover,
+                                                      const QString & prefix,
                                                       int             size,
                                                       int             margin)
 {
-    WBarcodeWriteTag * action = new WBarcodeWriteTag(text, background, cover, size, margin);
+    WBarcodeWriteTag * action = new WBarcodeWriteTag(text, background, cover, prefix, size,
+                                                     margin);
 
     WBarcodeWriteReply * reply = qobject_cast<WBarcodeWriteReply *>
                                  (wControllerFile->startWriteAction(action));
@@ -455,12 +552,13 @@ WAbstractThreadAction * WBarcodeWriter::startWriteTagFile(const QString & fileNa
                                                           QObject       * receiver,
                                                           const char    * method,
                                                           const QString & cover,
+                                                          const QString & prefix,
                                                           int             size,
                                                           int             margin,
                                                           const QString & format)
 {
     WBarcodeWriteTagFile * action = new WBarcodeWriteTagFile(fileName, text, background, cover,
-                                                             size, margin, format);
+                                                             prefix, size, margin, format);
 
     WControllerFileReply * reply = qobject_cast<WControllerFileReply *>
                                    (wControllerFile->startWriteAction(action));

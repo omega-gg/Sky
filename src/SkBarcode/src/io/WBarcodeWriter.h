@@ -47,12 +47,17 @@ public:
     explicit WBarcodeWriter(QObject * parent = NULL);
 
 public: // Static functions
-    Q_INVOKABLE static QImage write(const QString & text, Type type = Text);
+    Q_INVOKABLE static QString encode(const QString & text,
+                                      Type type = Text, const QString & prefix = QString());
+
+    Q_INVOKABLE static QImage write(const QString & text,
+                                    Type type = Text, const QString & prefix = QString());
 
     // NOTE: When providing a cover the generated tag is twice the size.
     Q_INVOKABLE static QImage writeTag(const QString & text,
                                        const QString & background,
                                        const QString & cover  = QString(),
+                                       const QString & prefix = QString(),
                                        int             size   = 512,
                                        int             margin = 28);
 
@@ -61,15 +66,25 @@ public: // Static functions
                                          const QString & text,
                                          const QString & background,
                                          const QString & cover  = QString(),
+                                         const QString & prefix = QString(),
                                          int             size   = 512,
                                          int             margin = 28,
                                          const QString & format = "png");
+
+
+    // NOTE: The 'method' format is complete(const QString &).
+    Q_INVOKABLE static WAbstractThreadAction * startEncode(const QString & text,
+                                                           QObject       * receiver,
+                                                           const char    * method = NULL,
+                                                           Type            type   = Text,
+                                                           const QString & prefix = QString());
 
     // NOTE: The 'method' format is complete(const QImage &).
     Q_INVOKABLE static WAbstractThreadAction * startWrite(const QString & text,
                                                           QObject       * receiver,
                                                           const char    * method = NULL,
-                                                          Type            type   = Text);
+                                                          Type            type   = Text,
+                                                          const QString & prefix = QString());
 
     // NOTE: The 'method' format is complete(const QImage &).
     Q_INVOKABLE static WAbstractThreadAction * startWriteTag(const QString & text,
@@ -77,6 +92,7 @@ public: // Static functions
                                                              QObject       * receiver,
                                                              const char    * method = NULL,
                                                              const QString & cover  = QString(),
+                                                             const QString & prefix = QString(),
                                                              int             size   = 512,
                                                              int             margin = 28);
 
@@ -87,6 +103,7 @@ public: // Static functions
                                                                  QObject       * receiver,
                                                                  const char    * method = NULL,
                                                                  const QString & cover  = QString(),
+                                                                 const QString & prefix = QString(),
                                                                  int             size   = 512,
                                                                  int             margin = 28,
                                                                  const QString & format = "png");
