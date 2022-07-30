@@ -67,7 +67,9 @@ public class WActivity extends QtActivity
 
     public void openGallery()
     {
-        Intent intent = new Intent(Intent.ACTION_PICK);
+        // NOTE: Using ACTION_GET_CONTENT instead of ACTION_PICK otherwise we get a RESULT_CANCELED
+        //       when selecting among multiple applications.
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 
         intent.setType("image/*");
 

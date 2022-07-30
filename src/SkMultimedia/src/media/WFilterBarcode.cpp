@@ -131,9 +131,11 @@ QImage WFilterRunnable::imageFromFrame(const QVideoFrame & frame) const
     // NOTE android: This platform is using reversed RGB for camera frames.
     if (frame->pixelFormat() == QVideoFrame::Format_ABGR32)
     {
-        frame->map(QAbstractVideoBuffer::ReadOnly);
+        if (frame->map(QAbstractVideoBuffer::ReadOnly) == false) return *frame;
 
-        image = QImage(frame->bits(), frame->width(), frame->height(), QImage::Format_ARGB32);
+        // NOTE: We need to copy the QVideoFrame buffer.
+        image = QImage(frame->bits(), frame->width(), frame->height(),
+                       QImage::Format_ARGB32).copy();
 
         frame->unmap();
 
@@ -142,7 +144,7 @@ QImage WFilterRunnable::imageFromFrame(const QVideoFrame & frame) const
         //image = image.rgbSwapped();
     }
 #elif QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    frame->map(QAbstractVideoBuffer::ReadOnly);
+    if (frame->map(QAbstractVideoBuffer::ReadOnly) == false) return *frame;
 
     image = imageFromFrame(*frame);
 
