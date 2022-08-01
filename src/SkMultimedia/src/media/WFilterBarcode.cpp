@@ -240,20 +240,52 @@ void WFilterBarcodePrivate::onLoaded(const QString & text)
 
 /* Q_INVOKABLE static */ QPoint WFilterBarcode::mapPointToSource(const QRect  & source,
                                                                  const QRect  & content,
-                                                                 const QPoint & point)
+                                                                 const QPoint & point,
+                                                                 int            orientation)
 {
     qreal x = (qreal) (point.x() - content.left()) / content.width ();
     qreal y = (qreal) (point.y() - content.top ()) / content.height();
+
+    //---------------------------------------------------------------------------------------------
+    // NOTE: We normalize the orientation.
+
+    orientation %= 360;
+
+    if (orientation < 0) orientation += 360;
+
+    //---------------------------------------------------------------------------------------------
+
+    if (orientation == 90)
+    {
+        qreal temp = x;
+
+        x = 1.0 - y;
+        y = temp;
+    }
+    else if (orientation == 180)
+    {
+        x = 1.0 - x;
+        y = 1.0 - y;
+    }
+    else if (orientation == 270)
+    {
+        qreal temp = x;
+
+        x = y;
+        y = 1.0 - temp;
+    }
 
     return QPoint(x * source.width(), y * source.height());
 }
 
 /* Q_INVOKABLE static */ QRect WFilterBarcode::mapRectToSource(const QRect & source,
                                                                const QRect & content,
-                                                               const QRect & target)
+                                                               const QRect & target,
+                                                               int           orientation)
 {
-    return QRect(mapPointToSource(source, content, target.topLeft    ()),
-                 mapPointToSource(source, content, target.bottomRight()));
+    return QRect(mapPointToSource(source, content, target.topLeft    (), orientation),
+                 mapPointToSource(source, content, target.bottomRight(), orientation))
+           .normalized();
 }
 
 #ifdef QT_5

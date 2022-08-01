@@ -59,10 +59,12 @@ public:
 
 public: // Static functions
     Q_INVOKABLE static QPoint mapPointToSource(const QRect & source,
-                                               const QRect & content, const QPoint & point);
+                                               const QRect & content, const QPoint & point,
+                                               int orientation = 0);
 
     Q_INVOKABLE static QRect mapRectToSource(const QRect & source,
-                                             const QRect & content, const QRect & target);
+                                             const QRect & content, const QRect & target,
+                                             int orientation = 0);
 
 #ifdef QT_5
 public: // QAbstractVideoFilter implementation
