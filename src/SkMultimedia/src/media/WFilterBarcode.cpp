@@ -134,8 +134,8 @@ QImage WFilterRunnable::imageFromFrame(const QVideoFrame & frame) const
         if (frame->map(QAbstractVideoBuffer::ReadOnly) == false) return *frame;
 
         // NOTE: We need to copy the QVideoFrame buffer.
-        image = QImage(frame->bits(), frame->width(), frame->height(),
-                       QImage::Format_ARGB32).copy();
+        image = QImage(frame->bits(), frame->width(), frame->height(), QImage::Format_ARGB32)
+                .copy();
 
         frame->unmap();
 
