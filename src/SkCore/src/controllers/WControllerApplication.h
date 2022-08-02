@@ -120,21 +120,6 @@ public: // Interface
     Q_INVOKABLE void clearComponentCache() const;
 #endif
 
-    Q_INVOKABLE void vibrate(int msec) const;
-
-#ifdef SK_MOBILE
-    Q_INVOKABLE void openGallery() const;
-
-    Q_INVOKABLE void share(const QString & title,
-                           const QString & text,
-                           const QString & media = QString(),
-                           const QString & type  = "*/*") const;
-#endif
-
-#ifdef Q_OS_ANDROID
-    Q_INVOKABLE void scanFile(const QString & fileName);
-#endif
-
     Q_INVOKABLE void quit();
 
     /*Q_INVOKABLE QPoint cursorPosition() const;
@@ -159,9 +144,24 @@ public: // Static functions
     Q_INVOKABLE static Qt::KeyboardModifiers keypad(Qt::KeyboardModifiers flags);
 #endif
 
+    Q_INVOKABLE static void vibrate(int msec);
+
+#ifdef SK_MOBILE
+    Q_INVOKABLE static void openGallery();
+
+    Q_INVOKABLE static void share(const QString & title,
+                                  const QString & text,
+                                  const QString & media = QString(),
+                                  const QString & type  = "*/*");
+#endif
+
 #ifdef Q_OS_IOS
     // NOTE iOS: This function is defined in WControllerApplication.mm
     Q_INVOKABLE static void triggerLocal();
+#endif
+
+#ifdef Q_OS_ANDROID
+    Q_INVOKABLE static void scanFile(const QString & fileName);
 #endif
 
     //---------------------------------------------------------------------------------------------

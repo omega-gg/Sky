@@ -405,127 +405,6 @@ void WControllerApplication::initController()
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WControllerApplication::vibrate(int msec) const
-{
-#ifdef Q_OS_ANDROID
-#ifdef QT_5
-    if (QtAndroid::checkPermission("android.permission.VIBRATE")
-        ==
-        QtAndroid::PermissionResult::Denied) return;
-
-    QAndroidJniObject object = QtAndroid::androidActivity();
-#else
-    // FIXME Qt6: We should check for permission before doing this, otherwise we might crash.
-
-    QJniObject object = QNativeInterface::QAndroidApplication::context();
-#endif
-
-    if (object.isValid() == false) return;
-
-#ifdef QT_5
-    QAndroidJniObject service
-        = QAndroidJniObject::getStaticObjectField<jstring>("android/content/Context",
-                                                           "VIBRATOR_SERVICE");
-#else
-    QJniObject service
-        = QJniObject::getStaticObjectField<jstring>("android/content/Context",
-                                                    "VIBRATOR_SERVICE");
-#endif
-
-    if (object.isValid() == false) return;
-
-    object = object.callObjectMethod("getSystemService",
-                                     "(Ljava/lang/String;)Ljava/lang/Object;",
-                                     service.object<jobject>());
-
-    if (object.isValid() == false) return;
-
-    object.callMethod<void>("vibrate", "(J)V", msec);
-#else
-    Q_UNUSED(msec);
-#endif
-}
-
-//-------------------------------------------------------------------------------------------------
-
-#ifdef SK_MOBILE
-
-/* Q_INVOKABLE */ void WControllerApplication::openGallery() const
-{
-#ifdef Q_OS_ANDROID
-#ifdef QT_5
-    QAndroidJniObject object = QtAndroid::androidActivity();
-#else
-    QJniObject object = QNativeInterface::QAndroidApplication::context();
-#endif
-
-    if (object.isValid() == false) return;
-
-    object.callMethod<void>("openGallery");
-#endif
-}
-
-/* Q_INVOKABLE */ void WControllerApplication::share(const QString & title,
-                                                     const QString & text,
-                                                     const QString & media,
-                                                     const QString & type) const
-{
-#ifdef Q_OS_ANDROID
-#ifdef QT_5
-    QAndroidJniObject object = QtAndroid::androidActivity();
-#else
-    QJniObject object = QNativeInterface::QAndroidApplication::context();
-#endif
-
-    if (object.isValid() == false) return;
-
-#ifdef QT_5
-    QAndroidJniObject jniTitle = QAndroidJniObject::fromString(title);
-    QAndroidJniObject jniText  = QAndroidJniObject::fromString(text);
-    QAndroidJniObject jniMedia = QAndroidJniObject::fromString(media);
-    QAndroidJniObject jniType  = QAndroidJniObject::fromString(type);
-#else
-    QJniObject jniTitle = QJniObject::fromString(title);
-    QJniObject jniText  = QJniObject::fromString(text);
-    QJniObject jniMedia = QJniObject::fromString(media);
-    QJniObject jniType  = QJniObject::fromString(type);
-#endif
-
-    object.callMethod<void>("share",
-                            "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;"
-                            "Ljava/lang/String;)V",
-                            jniTitle.object<jstring>(), jniText.object<jstring>(),
-                            jniMedia.object<jstring>(), jniType.object<jstring>());
-#endif
-}
-
-#endif
-
-#ifdef Q_OS_ANDROID
-
-/* Q_INVOKABLE */ void WControllerApplication::scanFile(const QString & fileName)
-{
-#ifdef QT_5
-    QAndroidJniObject object = QtAndroid::androidActivity();
-#else
-    QJniObject object = QNativeInterface::QAndroidApplication::context();
-#endif
-
-    if (object.isValid() == false) return;
-
-#ifdef QT_5
-    QAndroidJniObject jniName = QAndroidJniObject::fromString(fileName);
-#else
-    QJniObject jniName = QJniObject::fromString(fileName);
-#endif
-
-    object.callMethod<void>("scanFile", "(Ljava/lang/String;)V", jniName.object<jstring>());
-}
-
-#endif
-
-//-------------------------------------------------------------------------------------------------
-
 /* Q_INVOKABLE */ void WControllerApplication::quit()
 {
     qApp->quit();
@@ -649,6 +528,128 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
     return flags;
 #endif
 }
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ void WControllerApplication::vibrate(int msec)
+{
+#ifdef Q_OS_ANDROID
+#ifdef QT_5
+    if (QtAndroid::checkPermission("android.permission.VIBRATE")
+        ==
+        QtAndroid::PermissionResult::Denied) return;
+
+    QAndroidJniObject object = QtAndroid::androidActivity();
+#else
+    // FIXME Qt6: We should check for permission before doing this, otherwise we might crash.
+
+    QJniObject object = QNativeInterface::QAndroidApplication::context();
+#endif
+
+    if (object.isValid() == false) return;
+
+#ifdef QT_5
+    QAndroidJniObject service
+        = QAndroidJniObject::getStaticObjectField<jstring>("android/content/Context",
+                                                           "VIBRATOR_SERVICE");
+#else
+    QJniObject service
+        = QJniObject::getStaticObjectField<jstring>("android/content/Context",
+                                                    "VIBRATOR_SERVICE");
+#endif
+
+    if (object.isValid() == false) return;
+
+    object = object.callObjectMethod("getSystemService",
+                                     "(Ljava/lang/String;)Ljava/lang/Object;",
+                                     service.object<jobject>());
+
+    if (object.isValid() == false) return;
+
+    object.callMethod<void>("vibrate", "(J)V", msec);
+#else
+    Q_UNUSED(msec);
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef SK_MOBILE
+
+/* Q_INVOKABLE static */ void WControllerApplication::openGallery()
+{
+#ifdef Q_OS_ANDROID
+#ifdef QT_5
+    QAndroidJniObject object = QtAndroid::androidActivity();
+#else
+    QJniObject object = QNativeInterface::QAndroidApplication::context();
+#endif
+
+    if (object.isValid() == false) return;
+
+    object.callMethod<void>("openGallery");
+#endif
+}
+
+/* Q_INVOKABLE static */ void WControllerApplication::share(const QString & title,
+                                                            const QString & text,
+                                                            const QString & media,
+                                                            const QString & type)
+{
+#ifdef Q_OS_ANDROID
+#ifdef QT_5
+    QAndroidJniObject object = QtAndroid::androidActivity();
+#else
+    QJniObject object = QNativeInterface::QAndroidApplication::context();
+#endif
+
+    if (object.isValid() == false) return;
+
+#ifdef QT_5
+    QAndroidJniObject jniTitle = QAndroidJniObject::fromString(title);
+    QAndroidJniObject jniText  = QAndroidJniObject::fromString(text);
+    QAndroidJniObject jniMedia = QAndroidJniObject::fromString(media);
+    QAndroidJniObject jniType  = QAndroidJniObject::fromString(type);
+#else
+    QJniObject jniTitle = QJniObject::fromString(title);
+    QJniObject jniText  = QJniObject::fromString(text);
+    QJniObject jniMedia = QJniObject::fromString(media);
+    QJniObject jniType  = QJniObject::fromString(type);
+#endif
+
+    object.callMethod<void>("share",
+                            "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;"
+                            "Ljava/lang/String;)V",
+                            jniTitle.object<jstring>(), jniText.object<jstring>(),
+                            jniMedia.object<jstring>(), jniType.object<jstring>());
+#endif
+}
+
+#endif
+
+
+#ifdef Q_OS_ANDROID
+
+/* Q_INVOKABLE static */ void WControllerApplication::scanFile(const QString & fileName)
+{
+#ifdef QT_5
+    QAndroidJniObject object = QtAndroid::androidActivity();
+#else
+    QJniObject object = QNativeInterface::QAndroidApplication::context();
+#endif
+
+    if (object.isValid() == false) return;
+
+#ifdef QT_5
+    QAndroidJniObject jniName = QAndroidJniObject::fromString(fileName);
+#else
+    QJniObject jniName = QJniObject::fromString(fileName);
+#endif
+
+    object.callMethod<void>("scanFile", "(Ljava/lang/String;)V", jniName.object<jstring>());
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Version

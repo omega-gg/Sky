@@ -84,7 +84,7 @@ WMediaReply::WMediaReply(const QString & url,
 
     Sk::bmlPair(vbml, "type", "media", "\n\n");
 
-    QString tab = WControllerApplication::tabs(1);
+    QString tab = Sk::tabs(1);
 
     if (_medias.isEmpty() == false)
     {

@@ -183,7 +183,7 @@ void WLoaderNetworkPrivate::onFinished(QNetworkReply * reply)
             return d->manager->get(request);
         }
 
-        QStringList list = WControllerApplication::slicesIn(header, "\"", "\"");
+        QStringList list = Sk::slicesIn(header, "\"", "\"");
 
         int count = list.count() - 1;
 
