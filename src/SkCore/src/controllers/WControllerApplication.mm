@@ -129,6 +129,10 @@ void WControllerApplicationPrivate::setScreenSaverEnabled(bool enabled)
 // WControllerApplication
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ void WControllerApplication::openGallery()
+{
+}
+
 /* Q_INVOKABLE static */ void WControllerApplication::triggerLocal()
 {
     triggerLocalNetworkPrivacyAlertObjC();

@@ -576,9 +576,10 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 
 #ifdef SK_MOBILE
 
+#ifdef Q_OS_ANDROID
+
 /* Q_INVOKABLE static */ void WControllerApplication::openGallery()
 {
-#ifdef Q_OS_ANDROID
 #ifdef QT_5
     QAndroidJniObject object = QtAndroid::androidActivity();
 #else
@@ -588,8 +589,9 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
     if (object.isValid() == false) return;
 
     object.callMethod<void>("openGallery");
-#endif
 }
+
+#endif
 
 /* Q_INVOKABLE static */ void WControllerApplication::share(const QString & title,
                                                             const QString & text,
