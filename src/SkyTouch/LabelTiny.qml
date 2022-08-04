@@ -34,13 +34,28 @@ Label
     property int preferredSize: sk.textWidth(itemText.font, text) + padding * 2
 
     //---------------------------------------------------------------------------------------------
-    // Settings
+    // Functions
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    // NOTE: We want to handle different heights dynamically.
+    function pGetHeight()
+    {
+//#QT_4
+        return Math.max(st.label_size, paintedHeight);
+//#ELSE
+        return Math.max(st.label_size, contentHeight);
+//#END
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Children
     //---------------------------------------------------------------------------------------------
 
     width: st.getSize(preferredSize, minimumWidth, maximumWidth)
 
     height: (isTiny) ? st.labelTiny_size
-                     : st.label_size
+                     : pGetHeight()
 
     itemText.wrapMode: (isTiny) ? Text.NoWrap
                                 : Text.Wrap
