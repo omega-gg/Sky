@@ -17,7 +17,7 @@ isEmpty(TOOLS) {
     #     SUBDIRS += src/SkWeb
     # }
 
-    # NOTE: Torrents are not available on iOS.
+    # NOTE iOS: Torrents are not available.
     !ios: SUBDIRS += src/SkTorrent
 
     SUBDIRS += src/SkBackend
