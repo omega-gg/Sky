@@ -42,9 +42,9 @@ Label
     function pGetHeight()
     {
 //#QT_4
-        return Math.max(st.label_size, paintedHeight);
+        return Math.max(st.label_size, itemText.paintedHeight);
 //#ELSE
-        return Math.max(st.label_size, contentHeight);
+        return Math.max(st.label_size, itemText.contentHeight);
 //#END
     }
 
