@@ -147,6 +147,7 @@ public: // Static functions
     Q_INVOKABLE static void vibrate(int msec);
 
 #ifdef SK_MOBILE
+    // NOTE iOS: This function is defined in WControllerApplication.mm
     Q_INVOKABLE static void openGallery();
 
     Q_INVOKABLE static void share(const QString & title,
