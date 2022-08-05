@@ -123,7 +123,7 @@ extern void triggerLocalNetworkPrivacyAlertObjC(void) {
 
 @interface WControllerApplicationImage : NSObject
 
-- (void) magePickerController: (UIImagePickerController *) picker
+- (void) imagePickerController: (UIImagePickerController *) picker
          didFinishPickingMediaWithInfo: (NSDictionary *) info;
 
 @end
