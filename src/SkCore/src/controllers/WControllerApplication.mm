@@ -27,6 +27,7 @@
 
 // Sk includes
 #include <WControllerApplication>
+#include <WControllerFile>
 
 // Private includes
 #include <private/WControllerApplication_p>
