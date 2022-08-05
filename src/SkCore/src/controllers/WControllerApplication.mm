@@ -117,6 +117,42 @@ extern void triggerLocalNetworkPrivacyAlertObjC(void) {
 }
 
 //-------------------------------------------------------------------------------------------------
+// WControllerApplicationImage
+//-------------------------------------------------------------------------------------------------
+
+@interface WControllerApplicationImage : NSObject
+
+- (void) magePickerController: (UIImagePickerController *) picker
+         didFinishPickingMediaWithInfo: (NSDictionary *) info;
+
+@end
+
+@implementation WControllerApplicationImage
+
+- (void) imagePickerController: (UIImagePickerController *) picker
+         didFinishPickingMediaWithInfo: (NSDictionary *) info
+{
+    [picker dismissModalViewControllerAnimated: true];
+
+    UIImage * image = info[UIImagePickerControllerEditedImage];
+
+    if (image == NULL) image = info[UIImagePickerControllerOriginalImage];
+
+    if (image == NULL) return;
+
+    NSData * data = UIImagePNGRepresentation(image);
+
+    QString path = wControllerFile->pathTemp() + "/temp.png";
+
+    if ([data writeToFile: [NSString stringWithUTF8String: path.C_STR] atomically: false])
+    {
+        emit sk->imageSelected(path);
+    }
+}
+
+@end
+
+//-------------------------------------------------------------------------------------------------
 // WControllerApplicationPrivate
 //-------------------------------------------------------------------------------------------------
 
@@ -131,6 +167,20 @@ void WControllerApplicationPrivate::setScreenSaverEnabled(bool enabled)
 
 /* Q_INVOKABLE static */ void WControllerApplication::openGallery()
 {
+    if ([UIImagePickerController
+         isSourceTypeAvailable: (UIImagePickerControllerSourceType) 0] == false) return;
+
+    UIApplication * application = [UIApplication sharedApplication];
+
+    if (application.windows.count <= 0) return;
+
+    UIWindow * root = application.windows[0];
+
+    UIImagePickerController * picker = [[UIImagePickerController alloc] init];
+
+    picker.delegate = [WControllerApplicationImage alloc];
+
+    [root.rootViewController presentViewController: picker animated: true completion: NULL];
 }
 
 /* Q_INVOKABLE static */ void WControllerApplication::triggerLocal()
