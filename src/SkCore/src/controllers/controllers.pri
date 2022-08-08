@@ -26,3 +26,5 @@ SOURCES += src/controllers/WController.cpp \
            src/controllers/WControllerDownload.cpp \
 
 ios:OBJECTIVE_SOURCES += src/controllers/WControllerApplication.mm \
+
+OTHER_FILES += src/controllers/*.mm
