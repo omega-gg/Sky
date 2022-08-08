@@ -574,7 +574,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 #endif
 }
 
-#endif Q_OS_IOS
+#endif // Q_OS_IOS
 
 //-------------------------------------------------------------------------------------------------
 

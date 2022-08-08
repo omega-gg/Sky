@@ -2613,7 +2613,11 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     {
         playlist->addTracks(data.tracks);
 
-        playlist->setCurrentIndex(0);
+        // NOTE: When we have a single track we select it right away.
+        if (tracks.count() == 1)
+        {
+            playlist->setCurrentIndex(0);
+        }
     }
 
     QStringList urlTracks;
