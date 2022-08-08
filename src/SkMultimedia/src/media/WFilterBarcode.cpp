@@ -53,6 +53,8 @@ class WFilterRunnable : public QVideoFilterRunnable
 public:
     explicit WFilterRunnable(WFilterBarcode * filter);
 
+    /* virtual */ ~WFilterRunnable();
+
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
 public: // Functions
     QImage imageFromFrame(const QVideoFrame & frame) const;
@@ -65,18 +67,21 @@ public: // QVideoFilterRunnable implementation
 private: // Variables
     WFilterBarcode * filter;
 
-    // NOTE: We declare the timer here to start it from the runnable thread. Unfortunately it gets
-    //       stopped from another thread which triggers a warning. I'm not sure how to fix this.
-    QTimer timer;
+    // NOTE: We declare the timer here to start it from the runnable thread. This needs to be a
+    //       pointer otherwise it gets stopped from another thread which triggers a warning.
+    QTimer * timer;
 };
 
 /* explicit */ WFilterRunnable::WFilterRunnable(WFilterBarcode * filter)
 {
     this->filter = filter;
 
-    timer.setInterval(filter->d_func()->interval);
+    timer = NULL;
+}
 
-    timer.setSingleShot(true);
+/* virtual */ WFilterRunnable::~WFilterRunnable()
+{
+    if (timer) timer->deleteLater();
 }
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
@@ -121,7 +126,17 @@ QImage WFilterRunnable::imageFromFrame(const QVideoFrame & frame) const
     WFilterBarcodePrivate * p = filter->d_func();
 
     // NOTE: We wait for the last run to finish before starting a new one.
-    if (p->loading || timer.isActive()) return *frame;
+    if (p->loading) return *frame;
+
+    if (timer == NULL)
+    {
+        timer = new QTimer;
+
+        timer->setInterval(filter->d_func()->interval);
+
+        timer->setSingleShot(true);
+    }
+    else if (timer->isActive()) return *frame;
 
     p->loading = true;
 
@@ -156,7 +171,7 @@ QImage WFilterRunnable::imageFromFrame(const QVideoFrame & frame) const
     p->reader.startRead(image, WBarcodeReader::Any, filter, SLOT(onLoaded(const QString &)),
                         p->target);
 
-    timer.start();
+    timer->start();
 
     return *frame;
 }

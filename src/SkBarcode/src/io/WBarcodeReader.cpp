@@ -209,7 +209,8 @@ void WBarcodeReaderPrivate::init() {}
         imageFormat = ImageFormat::Lum;
     }
 #endif
-    else imageFormat = ImageFormat::None;
+    // NOTE: We try image conversion to deal with 'exotic' formats.
+    else return read(image.convertToFormat(QImage::Format_RGB32), formats);
 
     ImageView imageView(image.bits(), image.width(), image.height(), imageFormat);
 

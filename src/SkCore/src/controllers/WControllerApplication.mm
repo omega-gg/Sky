@@ -133,7 +133,7 @@ extern void triggerLocalNetworkPrivacyAlertObjC(void) {
 - (void) imagePickerController: (UIImagePickerController *) picker
          didFinishPickingMediaWithInfo: (NSDictionary *) info
 {
-    [picker dismissModalViewControllerAnimated: true];
+    [picker dismissViewControllerAnimated: true completion: NULL];
 
     UIImage * image = info[UIImagePickerControllerEditedImage];
 
@@ -143,12 +143,43 @@ extern void triggerLocalNetworkPrivacyAlertObjC(void) {
 
     NSData * data = UIImagePNGRepresentation(image);
 
+    if (data == NULL) return;
+
     QString path = wControllerFile->pathTemp() + "/temp.png";
 
-    if ([data writeToFile: [NSString stringWithUTF8String: path.C_STR] atomically: false])
+    if ([data writeToFile: path.toNSString() atomically: false])
     {
         emit sk->imageSelected(path);
     }
+}
+
+@end
+
+//-------------------------------------------------------------------------------------------------
+// WControllerApplicationShare
+//-------------------------------------------------------------------------------------------------
+
+@interface WControllerApplicationShare : UIViewController <UIDocumentInteractionControllerDelegate>
+
+- (UIViewController *) documentInteractionControllerViewControllerForPreview:
+                       (UIDocumentInteractionController *) controller;
+
+- (void) documentInteractionControllerDidEndPreview:
+         (UIDocumentInteractionController *) controller;
+
+@end
+
+@implementation WControllerApplicationShare
+
+- (UIViewController *) documentInteractionControllerViewControllerForPreview:
+                       (UIDocumentInteractionController *) controller
+{
+    return self;
+}
+
+- (void) documentInteractionControllerDidEndPreview: (UIDocumentInteractionController *) controller
+{
+    emit sk->shareFinished(true);
 }
 
 @end
@@ -182,6 +213,41 @@ void WControllerApplicationPrivate::setScreenSaverEnabled(bool enabled)
     picker.delegate = [WControllerApplicationImage alloc];
 
     [root.rootViewController presentViewController: picker animated: true completion: NULL];
+}
+
+/* Q_INVOKABLE static */ void WControllerApplication::shareText(const QString & text)
+{
+
+}
+
+/* Q_INVOKABLE static */ void WControllerApplication::shareFile(const QString & fileName)
+{
+    UIApplication * application = [UIApplication sharedApplication];
+
+    if (application.windows.count <= 0) return;
+
+    static WControllerApplicationShare * share = NULL;
+
+    if (share)
+    {
+        [share removeFromParentViewController];
+        [share release];
+    }
+
+    share = [[WControllerApplicationShare alloc] init];
+
+    UIViewController * controller = application.windows[0].rootViewController;
+
+    [controller addChildViewController: share];
+
+    NSURL * url = [NSURL fileURLWithPath: fileName.toNSString()];
+
+    UIDocumentInteractionController * document =
+        [UIDocumentInteractionController interactionControllerWithURL: url];
+
+    document.delegate = share;
+
+    [document presentPreviewAnimated: true];
 }
 
 /* Q_INVOKABLE static */ void WControllerApplication::triggerLocal()

@@ -595,7 +595,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 
 /* Q_INVOKABLE static */ void WControllerApplication::share(const QString & title,
                                                             const QString & text,
-                                                            const QString & media,
+                                                            const QString & fileName,
                                                             const QString & type)
 {
 #ifdef Q_OS_ANDROID
@@ -608,26 +608,29 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
     if (object.isValid() == false) return;
 
 #ifdef QT_5
-    QAndroidJniObject jniTitle = QAndroidJniObject::fromString(title);
-    QAndroidJniObject jniText  = QAndroidJniObject::fromString(text);
-    QAndroidJniObject jniMedia = QAndroidJniObject::fromString(media);
-    QAndroidJniObject jniType  = QAndroidJniObject::fromString(type);
+    QAndroidJniObject jniTitle    = QAndroidJniObject::fromString(title);
+    QAndroidJniObject jniText     = QAndroidJniObject::fromString(text);
+    QAndroidJniObject jniFileName = QAndroidJniObject::fromString(fileName);
+    QAndroidJniObject jniType     = QAndroidJniObject::fromString(type);
 #else
-    QJniObject jniTitle = QJniObject::fromString(title);
-    QJniObject jniText  = QJniObject::fromString(text);
-    QJniObject jniMedia = QJniObject::fromString(media);
-    QJniObject jniType  = QJniObject::fromString(type);
+    QJniObject jniTitle    = QJniObject::fromString(title);
+    QJniObject jniText     = QJniObject::fromString(text);
+    QJniObject jniFileName = QJniObject::fromString(fileName);
+    QJniObject jniType     = QJniObject::fromString(type);
 #endif
 
     object.callMethod<void>("share",
                             "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;"
                             "Ljava/lang/String;)V",
                             jniTitle.object<jstring>(), jniText.object<jstring>(),
-                            jniMedia.object<jstring>(), jniType.object<jstring>());
+                            jniFileName.object<jstring>(), jniType.object<jstring>());
+#else // Q_OS_IOS
+    if (fileName.isEmpty()) shareText(text);
+    else                    shareFile(fileName);
 #endif
 }
 
-#endif
+#endif // SK_MOBILE
 
 
 #ifdef Q_OS_ANDROID

@@ -76,7 +76,7 @@ public class WActivity extends QtActivity
         startActivityForResult(intent, ACTIVITY_GALLERY);
     }
 
-    public void share(String title, String text, String media, String type)
+    public void share(String title, String text, String fileName, String type)
     {
         Intent intent = new Intent(Intent.ACTION_SEND);
 
@@ -87,11 +87,11 @@ public class WActivity extends QtActivity
             intent.putExtra(Intent.EXTRA_TEXT, text);
         }
 
-        if (media.isEmpty() == false)
+        if (fileName.isEmpty() == false)
         {
-            File newFile = new File(media);
+            File file = new File(fileName);
 
-            Uri uri = FileProvider.getUriForFile(this, "gg.omega.provider", newFile);
+            Uri uri = FileProvider.getUriForFile(this, "gg.omega.provider", file);
 
             intent.putExtra(Intent.EXTRA_STREAM, uri);
 

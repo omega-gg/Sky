@@ -102,6 +102,11 @@ void WBackendNetQuery::init(Type type, const QString & url)
 // Operators
 //-------------------------------------------------------------------------------------------------
 
+WBackendNetQuery::WBackendNetQuery(const WBackendNetQuery & other)
+{
+    *this = other;
+}
+
 WBackendNetQuery & WBackendNetQuery::operator=(const WBackendNetQuery & other)
 {
     type   = other.type;

@@ -74,6 +74,8 @@ private: // Functions
     void init(Type type, const QString & url);
 
 public: // Operators
+    WBackendNetQuery(const WBackendNetQuery & other);
+
     WBackendNetQuery & operator=(const WBackendNetQuery & other);
 
 public: // Variables
