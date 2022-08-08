@@ -24,6 +24,7 @@
 
 // iOS includes
 #import <UIKit/UIKit.h>
+#import <AudioToolbox/AudioServices.h>
 
 // Sk includes
 #include <WControllerApplication>
@@ -197,6 +198,11 @@ void WControllerApplicationPrivate::setScreenSaverEnabled(bool enabled)
 // WControllerApplication
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ void WControllerApplication::vibrate(int)
+{
+    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+}
+
 /* Q_INVOKABLE static */ void WControllerApplication::openGallery()
 {
     if ([UIImagePickerController
@@ -228,6 +234,7 @@ void WControllerApplicationPrivate::setScreenSaverEnabled(bool enabled)
 
     static WControllerApplicationShare * share = NULL;
 
+    // NOTE: This condition might be useless.
     if (share)
     {
         [share removeFromParentViewController];

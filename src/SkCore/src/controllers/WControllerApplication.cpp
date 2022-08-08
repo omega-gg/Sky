@@ -531,6 +531,8 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 
 //-------------------------------------------------------------------------------------------------
 
+#ifndef Q_OS_IOS
+
 /* Q_INVOKABLE static */ void WControllerApplication::vibrate(int msec)
 {
 #ifdef Q_OS_ANDROID
@@ -571,6 +573,8 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
     Q_UNUSED(msec);
 #endif
 }
+
+#endif Q_OS_IOS
 
 //-------------------------------------------------------------------------------------------------
 

@@ -144,6 +144,7 @@ public: // Static functions
     Q_INVOKABLE static Qt::KeyboardModifiers keypad(Qt::KeyboardModifiers flags);
 #endif
 
+    // NOTE iOS: This function is defined in WControllerApplication.mm
     Q_INVOKABLE static void vibrate(int msec);
 
 #ifdef SK_MOBILE
