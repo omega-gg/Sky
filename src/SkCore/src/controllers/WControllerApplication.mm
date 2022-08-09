@@ -26,6 +26,10 @@
 #import <UIKit/UIKit.h>
 #import <AudioToolbox/AudioServices.h>
 
+// Qt includes
+#include <QGuiApplication>
+#include <QWindow>
+
 // Sk includes
 #include <WControllerApplication>
 #include <WControllerFile>
@@ -160,7 +164,7 @@ extern void triggerLocalNetworkPrivacyAlertObjC(void) {
 // WControllerApplicationShare
 //-------------------------------------------------------------------------------------------------
 
-@interface WControllerApplicationShare : UIViewController <UIDocumentInteractionControllerDelegate>
+@interface WControllerApplicationShare : UIViewController<UIDocumentInteractionControllerDelegate>
 
 - (UIViewController *) documentInteractionControllerViewControllerForPreview:
                        (UIDocumentInteractionController *) controller;
@@ -180,6 +184,9 @@ extern void triggerLocalNetworkPrivacyAlertObjC(void) {
 
 - (void) documentInteractionControllerDidEndPreview: (UIDocumentInteractionController *) controller
 {
+    // FIMXE iOS: For some reason we need to call this manually to reactivate the window.
+    QGuiApplication::allWindows().first()->requestActivate();
+
     emit sk->shareFinished(true);
 }
 
