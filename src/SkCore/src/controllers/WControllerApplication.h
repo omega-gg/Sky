@@ -155,13 +155,13 @@ public: // Static functions
                                   const QString & text,
                                   const QString & fileName = QString(),
                                   const QString & type  = "*/*");
-
-    // NOTE iOS: These functions are defined in WControllerApplication.mm
-    Q_INVOKABLE static void shareText(const QString & text);
-    Q_INVOKABLE static void shareFile(const QString & fileName);
 #endif
 
 #ifdef Q_OS_IOS
+    // NOTE iOS: These functions are defined in WControllerApplication.mm
+    Q_INVOKABLE static void shareText(const QString & text);
+    Q_INVOKABLE static void shareFile(const QString & fileName);
+
     // NOTE iOS: This function is defined in WControllerApplication.mm
     Q_INVOKABLE static void triggerLocal();
 #endif
