@@ -97,7 +97,7 @@ Flickable
     }
 //#END
 
-    onFlickingChanged: if (flicking) pApplyFlick()
+    onFlickStarted: pApplyFlick()
 
     //---------------------------------------------------------------------------------------------
     // Functions
