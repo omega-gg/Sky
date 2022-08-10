@@ -238,11 +238,12 @@ void WControllerApplicationPrivate::setScreenSaverEnabled(bool enabled)
 
     QUrl url(text);
 
-    if (url.isValid())
+    // NOTE iOS: We check against the scheme because isValid is too tolerant.
+    if (url.scheme().isEmpty())
     {
-         [items addObject:url.toNSURL()];
+         [items addObject:text.toNSString()];
     }
-    else [items addObject:text.toNSString()];
+    else [items addObject:url.toNSURL()];
 
     UIViewController * controller = application.windows[0].rootViewController;
 
