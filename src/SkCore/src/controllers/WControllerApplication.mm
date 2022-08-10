@@ -236,7 +236,13 @@ void WControllerApplicationPrivate::setScreenSaverEnabled(bool enabled)
 
     NSMutableArray * items = [NSMutableArray new];
 
-    [items addObject:text.toNSString()];
+    QUrl url(text);
+
+    if (url.isValid())
+    {
+         [items addObject:url.toNSUrl()];
+    }
+    else [items addObject:text.toNSString()];
 
     UIViewController * controller = application.windows[0].rootViewController;
 
