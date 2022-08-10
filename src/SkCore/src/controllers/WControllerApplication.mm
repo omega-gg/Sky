@@ -240,7 +240,7 @@ void WControllerApplicationPrivate::setScreenSaverEnabled(bool enabled)
 
     if (url.isValid())
     {
-         [items addObject:url.toNSUrl()];
+         [items addObject:url.toNSURL()];
     }
     else [items addObject:text.toNSString()];
 
