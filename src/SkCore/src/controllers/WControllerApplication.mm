@@ -217,7 +217,7 @@ void WControllerApplicationPrivate::setScreenSaverEnabled(bool enabled)
 
     UIApplication * application = [UIApplication sharedApplication];
 
-    if (application.windows.count <= 0) return;
+    if (application.windows.count == 0) return;
 
     UIWindow * root = application.windows[0];
 
@@ -230,14 +230,28 @@ void WControllerApplicationPrivate::setScreenSaverEnabled(bool enabled)
 
 /* Q_INVOKABLE static */ void WControllerApplication::shareText(const QString & text)
 {
+    UIApplication * application = [UIApplication sharedApplication];
 
+    if (application.windows.count == 0) return;
+
+    NSMutableArray * items = [NSMutableArray new];
+
+    [items addObject:text.toNSString()];
+
+    UIViewController * controller = application.windows[0].rootViewController;
+
+    UIActivityViewController * activity = [[UIActivityViewController alloc]
+                                           initWithActivityItems: items
+                                           applicationActivities: NULL];
+
+    [controller presentViewController: activity animated: true completion: NULL];
 }
 
 /* Q_INVOKABLE static */ void WControllerApplication::shareFile(const QString & fileName)
 {
     UIApplication * application = [UIApplication sharedApplication];
 
-    if (application.windows.count <= 0) return;
+    if (application.windows.count == 0) return;
 
     static WControllerApplicationShare * share = NULL;
 
