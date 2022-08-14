@@ -1854,7 +1854,7 @@ WTrack::Type WTabTrack::type() const
     {
          return d->currentBookmark->type();
     }
-    else return WTrack::Media;
+    else return WTrack::Track;
 }
 
 //-------------------------------------------------------------------------------------------------

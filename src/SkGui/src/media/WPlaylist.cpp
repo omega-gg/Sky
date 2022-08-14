@@ -1912,7 +1912,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     {
          return track->type();
     }
-    else return WTrack::Media;
+    else return WTrack::Track;
 }
 
 /* Q_INVOKABLE */ void WPlaylist::setTrackType(int index, WTrack::Type type)
@@ -2277,12 +2277,11 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
     QString vbml = WControllerPlaylist::vbml();
 
-    Sk::bmlPair(vbml, "type", "playlist", "\n\n");
-
     if (d->type == WLibraryItem::PlaylistFeed)
     {
-        Sk::bmlPair(vbml, "subtype", "feed", "\n\n");
+         Sk::bmlPair(vbml, "type", "feed", "\n\n");
     }
+    else Sk::bmlPair(vbml, "type", "playlist", "\n\n");
 
     Sk::bmlPair(vbml, "source", d->source, "\n\n");
 
@@ -2301,12 +2300,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
         {
             const WTrackPrivate * p = track.d_func();
 
-            Sk::bmlTag(vbml, tabA + "track");
-
-            if (p->type == WTrack::Live)
-            {
-                Sk::bmlPair(vbml, tabB + "subtype", WTrack::typeToString(p->type));
-            }
+            Sk::bmlTag(vbml, tabA + WTrack::typeToString(p->type));
 
             Sk::bmlPair(vbml, tabB + "source", p->source);
 

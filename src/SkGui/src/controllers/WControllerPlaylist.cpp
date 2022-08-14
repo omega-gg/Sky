@@ -262,7 +262,7 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
 
     type = WControllerPlaylist::vbmlType(string);
 
-    if (type == WControllerPlaylist::Track)
+    if (type == WControllerPlaylist::Track || type == WControllerPlaylist::Live)
     {
         parseTrack(reader);
     }
@@ -457,7 +457,7 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader)
 
     WTrack track(string, WTrack::Loaded);
 
-    string = WYamlReader::extractString(reader, "subtype");
+    string = WYamlReader::extractString(reader, "type");
 
     track.setType(WTrack::typeFromString(string));
 
@@ -4030,6 +4030,7 @@ WControllerPlaylist::extractPlaylists(const WControllerPlaylistData & data)
 WControllerPlaylist::Type WControllerPlaylist::vbmlType(const QString & type)
 {
     if      (type == "track")    return Track;
+    if      (type == "live")     return Live;
     else if (type == "playlist") return Playlist;
     else if (type == "feed")     return Feed;
     else                         return Unknown;

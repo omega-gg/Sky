@@ -64,7 +64,7 @@ void WBookmarkTrackPrivate::init()
 
     idTrack = -1;
 
-    type = WTrack::Media;
+    type = WTrack::Track;
 
     state = WTrack::Default;
 
@@ -288,12 +288,7 @@ void WBookmarkTrack::save()
 
     QString vbml = WControllerPlaylist::vbml();
 
-    Sk::bmlPair(vbml, "type", "track", "\n\n");
-
-    if (d->type == WTrack::Live)
-    {
-        Sk::bmlPair(vbml, "subtype", WTrack::typeToString(d->type), "\n\n");
-    }
+    Sk::bmlPair(vbml, "type", WTrack::typeToString(d->type), "\n\n");
 
     if (source.isNull()) Sk::bmlPair(vbml, "source", d->source, "\n\n");
     else                 Sk::bmlPair(vbml, "source", source,    "\n\n");

@@ -42,7 +42,7 @@ WTrackPrivate::WTrackPrivate(WTrack * p) : WPrivate(p) {}
 
 void WTrackPrivate::init()
 {
-    type = WTrack::Media;
+    type = WTrack::Track;
 
     id = -1;
 
@@ -154,14 +154,14 @@ void WTrack::applyDataTo(WTrack * other) const
 
 /* Q_INVOKABLE static */ WTrack::Type WTrack::typeFromString(const QString & string)
 {
-    if      (string == "media") return WTrack::Media;
+    if      (string == "track") return WTrack::Track;
     else if (string == "live")  return WTrack::Live;
     else                        return WTrack::Unknown;
 }
 
 /* Q_INVOKABLE static */ QString WTrack::typeToString(Type type)
 {
-    if      (type == Media) return "media";
+    if      (type == Track) return "track";
     else if (type == Live)  return "live";
     else                    return "";
 }
@@ -201,12 +201,7 @@ void WTrack::applyDataTo(WTrack * other) const
 
     QString vbml = WControllerPlaylist::vbml();
 
-    Sk::bmlPair(vbml, "type", "track", "\n\n");
-
-    if (d->type == WTrack::Live)
-    {
-        Sk::bmlPair(vbml, "subtype", typeToString(d->type), "\n\n");
-    }
+    Sk::bmlPair(vbml, "type", typeToString(d->type), "\n\n");
 
     Sk::bmlPair(vbml, "source", d->source, "\n\n");
 
