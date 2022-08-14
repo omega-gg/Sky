@@ -2271,7 +2271,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 // WLibraryItem reimplementation
 //---------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ QString WPlaylist::toVbml() const
+/* Q_INVOKABLE virtual */ QString WPlaylist::toVbml(bool full) const
 {
     Q_D(const WPlaylist);
 
@@ -2279,45 +2279,62 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
     Sk::bmlPair(vbml, "type", "playlist", "\n\n");
 
+    if (d->type == WLibraryItem::PlaylistFeed)
+    {
+        Sk::bmlPair(vbml, "subtype", "feed", "\n\n");
+    }
+
     Sk::bmlPair(vbml, "source", d->source, "\n\n");
 
     Sk::bmlPair(vbml, "title", d->title, "\n\n");
     Sk::bmlPair(vbml, "cover", d->cover, "\n\n");
 
-    Sk::bmlPair(vbml, "label", d->label, "\n\n");
-
     Sk::bmlTag(vbml, "tracks");
 
     QString tabA = Sk::tabs(1);
-    QString tabB = Sk::tabs(2);
 
-    W_FOREACH (const WTrack & track, d->tracks)
+    if (full)
     {
-        const WTrackPrivate * p = track.d_func();
+        QString tabB = Sk::tabs(2);
 
-        Sk::bmlTag(vbml, tabA + "track");
-
-        Sk::bmlPair(vbml, tabB + "type", WTrack::typeToString(p->type));
-
-        Sk::bmlPair(vbml, tabB + "source", p->source);
-
-        Sk::bmlPair(vbml, tabB + "title", p->title);
-        Sk::bmlPair(vbml, tabB + "cover", p->cover);
-
-        Sk::bmlPair(vbml, tabB + "author", p->author);
-        Sk::bmlPair(vbml, tabB + "feed",   p->feed);
-
-        if (p->duration != -1)
+        W_FOREACH (const WTrack & track, d->tracks)
         {
-            Sk::bmlPair(vbml, tabB + "duration", QString::number(p->duration));
-        }
+            const WTrackPrivate * p = track.d_func();
 
-        if (p->date.isValid())
+            Sk::bmlTag(vbml, tabA + "track");
+
+            if (p->type == WTrack::Live)
+            {
+                Sk::bmlPair(vbml, tabB + "subtype", WTrack::typeToString(p->type));
+            }
+
+            Sk::bmlPair(vbml, tabB + "source", p->source);
+
+            Sk::bmlPair(vbml, tabB + "title", p->title);
+            Sk::bmlPair(vbml, tabB + "cover", p->cover);
+
+            Sk::bmlPair(vbml, tabB + "author", p->author);
+            Sk::bmlPair(vbml, tabB + "feed",   p->feed);
+
+            if (p->duration != -1)
+            {
+                Sk::bmlPair(vbml, tabB + "duration", QString::number(p->duration));
+            }
+
+            if (p->date.isValid())
+            {
+                Sk::bmlPair(vbml, tabB + "date", Sk::bmlDate(p->date));
+            }
+
+            vbml.append('\n');
+        }
+    }
+    else
+    {
+        W_FOREACH (const WTrack & track, d->tracks)
         {
-            Sk::bmlPair(vbml, tabB + "date", Sk::bmlDate(p->date));
+            Sk::bmlPair(vbml, tabA, track.d_func()->source);
         }
-
-        vbml.append('\n');
     }
 
     // NOTE: We clear the last '\n'.

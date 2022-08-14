@@ -78,10 +78,10 @@ public: // Variables
     QString api;
     QString version;
 
-    QStringList backendSearch;
-    QStringList backendTrack;
-    QStringList backendCover;
-    QStringList backendSubtitle;
+    QStringList backendsSearch;
+    QStringList backendsTrack;
+    QStringList backendsCover;
+    QStringList backendsSubtitle;
 
     QList<WBackendIndexItem> backends;
 

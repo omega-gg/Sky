@@ -2296,7 +2296,7 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
 // WLibraryItem reimplementation
 //---------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ QString WLibraryFolder::toVbml() const
+/* Q_INVOKABLE virtual */ QString WLibraryFolder::toVbml(bool full) const
 {
     Q_D(const WLibraryFolder);
 
@@ -2309,25 +2309,34 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
     Sk::bmlPair(vbml, "title", d->title, "\n\n");
     Sk::bmlPair(vbml, "cover", d->cover, "\n\n");
 
-    Sk::bmlPair(vbml, "label", d->label, "\n\n");
-
     Sk::bmlTag(vbml, "items");
 
     QString tabA = Sk::tabs(1);
-    QString tabB = Sk::tabs(2);
 
-    foreach (const WLibraryFolderItem & item, d->items)
+    if (full)
     {
-        Sk::bmlTag(vbml, tabA + WLibraryItem::typeToString(item.type));
+        QString tabB = Sk::tabs(2);
 
-        Sk::bmlPair(vbml, tabB + "source", item.source);
+        foreach (const WLibraryFolderItem & item, d->items)
+        {
+            Sk::bmlTag(vbml, tabA + WLibraryItem::typeToString(item.type));
 
-        Sk::bmlPair(vbml, tabB + "title", item.title);
-        Sk::bmlPair(vbml, tabB + "cover", item.cover);
+            Sk::bmlPair(vbml, tabB + "source", item.source);
 
-        Sk::bmlPair(vbml, tabB + "label", item.label);
+            Sk::bmlPair(vbml, tabB + "title", item.title);
+            Sk::bmlPair(vbml, tabB + "cover", item.cover);
 
-        vbml.append('\n');
+            Sk::bmlPair(vbml, tabB + "label", item.label);
+
+            vbml.append('\n');
+        }
+    }
+    else
+    {
+        W_FOREACH (const WLibraryFolderItem & item, d->items)
+        {
+            Sk::bmlPair(vbml, tabA, item.source);
+        }
     }
 
     // NOTE: We clear the last '\n'.

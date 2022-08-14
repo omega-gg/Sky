@@ -26,6 +26,7 @@
 
 // Sk includes
 #include <WControllerApplication>
+#include <WRegExp>
 
 void WControllerPlaylist_patch(QString & data, const QString & api)
 {
@@ -51,6 +52,11 @@ void WControllerPlaylist_patch(QString & data, const QString & api)
         data.replace("GET_HASH",    "HASH_GET");
         data.replace("SET_HASH",    "HASH_SET");
         data.replace("REMOVE_HASH", "HASH_REMOVE");
+    }
+
+    if (Sk::versionIsLower(api, "1.0.4"))
+    {
+        data.replace(WRegExp("\nbackend_"), "\nbackends_");
     }
 
     //---------------------------------------------------------------------------------------------

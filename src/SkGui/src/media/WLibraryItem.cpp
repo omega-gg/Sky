@@ -341,7 +341,7 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
 // Virtual interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ QString WLibraryItem::toVbml() const
+/* Q_INVOKABLE virtual */ QString WLibraryItem::toVbml(bool) const
 {
     qWarning("WLibraryItem::toVbml: Not supported.");
 

@@ -109,10 +109,10 @@ signals:
     //---------------------------------------------------------------------------------------------
     // Backends
 
-    data.backendSearch   = extractList(reader, "backend_search");
-    data.backendTrack    = extractList(reader, "backend_track");
-    data.backendCover    = extractList(reader, "backend_cover");
-    data.backendSubtitle = extractList(reader, "backend_subtitle");
+    data.backendsSearch   = extractList(reader, "backends_search");
+    data.backendsTrack    = extractList(reader, "backends_track");
+    data.backendsCover    = extractList(reader, "backends_cover");
+    data.backendsSubtitle = extractList(reader, "backends_subtitle");
 
     data.backends = extractItems(reader);
 
@@ -520,7 +520,7 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
 
     cover = cover.mid(0, cover.lastIndexOf('/') + 1);
 
-    foreach (const QString & string, d->data.backendTrack)
+    foreach (const QString & string, d->data.backendsTrack)
     {
         WLibraryFolderItem item(type, WLocalObject::Default);
 
@@ -608,7 +608,7 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
 
 /* Q_INVOKABLE virtual */ QStringList WBackendIndex::getCoverIds() const
 {
-    Q_D(const WBackendIndex); return d->data.backendCover;
+    Q_D(const WBackendIndex); return d->data.backendsCover;
 }
 
 //-------------------------------------------------------------------------------------------------

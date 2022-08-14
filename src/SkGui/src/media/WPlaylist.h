@@ -290,7 +290,8 @@ public: // Static functions
     Q_INVOKABLE static WPlaylist * create(Type type = Playlist);
 
 public: // WLibraryItem reimplementation
-    Q_INVOKABLE /* virtual */ QString toVbml() const;
+    // NOTE: When setting full we export the tracks properties.
+    Q_INVOKABLE /* virtual */ QString toVbml(bool full = false) const;
 
 protected: // Functions
     void updateIndex();
