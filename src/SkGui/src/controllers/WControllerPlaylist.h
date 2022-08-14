@@ -339,7 +339,8 @@ public: // Interface
     void addSlice(const QString & start, const QString & end = QString());
 
 private: // Functions
-    void parseTrack(WYamlReader & reader);
+    void parseTrack   (WYamlReader & reader);
+    void parsePlaylist(WYamlReader & reader);
 
     void addSource(const QString & url, const QString & title);
     void addFolder(const QString & url, const QString & title);
@@ -358,8 +359,6 @@ public: // Variables
 
     QString title;
     QString cover;
-
-    QString label;
 
     QList<WTrack> tracks;
 

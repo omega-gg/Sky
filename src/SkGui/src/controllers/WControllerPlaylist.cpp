@@ -266,6 +266,10 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
     {
         parseTrack(reader);
     }
+    else if (type) // NOTE: All other types are playlists.
+    {
+        parsePlaylist(reader);
+    }
 }
 
 void WControllerPlaylistData::applyHtml(const QByteArray & array, const QString & url)
@@ -472,6 +476,14 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader)
     track.setDate(WYamlReader::extractDate(reader, "date"));
 
     tracks.append(track);
+}
+
+void WControllerPlaylistData::parsePlaylist(WYamlReader & reader)
+{
+    source = WYamlReader::extractString(reader, "source");
+
+    title = WYamlReader::extractString(reader, "title");
+    cover = WYamlReader::extractString(reader, "cover");
 }
 
 //-------------------------------------------------------------------------------------------------
