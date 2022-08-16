@@ -57,6 +57,13 @@ void WControllerPlaylist_patch(QString & data, const QString & api)
     if (Sk::versionIsLower(api, "1.0.4"))
     {
         data.replace(WRegExp("\nbackend_"), "\nbackends_");
+
+        WControllerPlaylist::Type type = WControllerPlaylist::vbmlType(data);
+
+        if (type == WControllerPlaylist::Index || type == WControllerPlaylist::Backend)
+        {
+            data.replace(WRegExp("\nsource"), "\norigin");
+        }
     }
 
     //---------------------------------------------------------------------------------------------

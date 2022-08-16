@@ -77,7 +77,7 @@ public:
 public: // Variables
     bool valid;
 
-    QString source;
+    QString origin;
 
     QString api;
     QString version;

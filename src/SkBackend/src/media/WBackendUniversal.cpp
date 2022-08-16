@@ -2413,7 +2413,7 @@ signals:
     //---------------------------------------------------------------------------------------------
     // Settings
 
-    data.source = WYamlReader::extractString(reader, "source");
+    data.origin = WYamlReader::extractString(reader, "origin");
 
     data.api = api;
 
@@ -2443,7 +2443,7 @@ signals:
 
     if (WControllerNetwork::textIsUrl(cover) == false)
     {
-        QString path = getPath(data.source);
+        QString path = getPath(data.origin);
 
         data.cover = path + cover;
     }
@@ -4612,18 +4612,18 @@ WBackendUniversal::WBackendUniversal(const QString & id, const QString & source)
 {
     Q_D(WBackendUniversal);
 
-    QString source = d->data.source;
+    QString origin = d->data.origin;
 
-    if (source.isEmpty())
+    if (origin.isEmpty())
     {
-        qWarning("WBackendUniversal::update: Source is empty for [%s].", d->id.C_STR);
+        qWarning("WBackendUniversal::update: 'origin' is empty for [%s].", d->id.C_STR);
 
         return;
     }
 
     if (d->remote) delete d->remote;
 
-    d->remote = wControllerDownload->getData(source, BACKENDUNIVERSAL_TIMEOUT_LOAD);
+    d->remote = wControllerDownload->getData(origin, BACKENDUNIVERSAL_TIMEOUT_LOAD);
 
     connect(d->remote, SIGNAL(loaded(WRemoteData *)), this, SLOT(onUpdate()));
 }

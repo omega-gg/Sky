@@ -260,7 +260,7 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
 
     QString string = WYamlReader::extractString(reader, "type").simplified().toLower();
 
-    type = WControllerPlaylist::vbmlType(string);
+    type = WControllerPlaylist::vbmlTypeFromString(string);
 
     if (type == WControllerPlaylist::Track || type == WControllerPlaylist::Live)
     {
@@ -2834,6 +2834,19 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
     playlist->setTitle(data.title);
     playlist->setCover(data.cover);
 
+    const QList<WTrack> & tracks = data.tracks;
+
+    if (tracks.isEmpty() == false)
+    {
+        playlist->addTracks(data.tracks);
+
+        // NOTE: When we have a single track we select it right away.
+        if (tracks.count() == 1)
+        {
+            playlist->setCurrentIndex(0);
+        }
+    }
+
     QStringList urlTracks;
 
     foreach (const WControllerPlaylistSource & source, data.sources)
@@ -4039,13 +4052,35 @@ WControllerPlaylist::extractPlaylists(const WControllerPlaylistData & data)
 }
 
 /* Q_INVOKABLE static */
-WControllerPlaylist::Type WControllerPlaylist::vbmlType(const QString & type)
+WControllerPlaylist::Type WControllerPlaylist::vbmlType(const QString & vbml)
 {
-    if      (type == "track")    return Track;
-    if      (type == "live")     return Live;
-    else if (type == "playlist") return Playlist;
-    else if (type == "feed")     return Feed;
-    else                         return Unknown;
+    int index = vbml.indexOf("type", Qt::CaseInsensitive);
+
+    if (index == -1) return Unknown;
+
+    QString line = Sk::getLine(vbml, index);
+
+    index = line.indexOf(':', 4);
+
+    if (index == -1) return Unknown;
+
+    index++;
+
+    line = line.mid(index, line.length() - index).simplified();
+
+    return vbmlTypeFromString(line.toLower());
+}
+
+/* Q_INVOKABLE static */
+WControllerPlaylist::Type WControllerPlaylist::vbmlTypeFromString(const QString & string)
+{
+    if      (string == "track")    return Track;
+    if      (string == "live")     return Live;
+    else if (string == "playlist") return Playlist;
+    else if (string == "feed")     return Feed;
+    else if (string == "index")    return Index;
+    else if (string == "backend")  return Backend;
+    else                           return Unknown;
 }
 
 /* Q_INVOKABLE static */ void WControllerPlaylist::vbmlPatch(QString & data, const QString & api)

@@ -113,7 +113,7 @@ class SK_GUI_EXPORT WControllerPlaylist : public WController
     Q_PROPERTY(QString pathStorageTabs READ pathStorageTabs NOTIFY pathStorageChanged)
 
 public: // Enums
-    enum Type { Unknown, Track, Live, Playlist, Feed };
+    enum Type { Unknown, Track, Live, Playlist, Feed, Index, Backend };
 
 private:
     WControllerPlaylist();
@@ -271,8 +271,9 @@ public: // Static functions
     Q_INVOKABLE static int vbmlHeader(const QString & vbml);
 
     Q_INVOKABLE static QString vbmlVersion(const QString & vbml);
+    Q_INVOKABLE static Type    vbmlType   (const QString & vbml);
 
-    Q_INVOKABLE static Type vbmlType(const QString & type);
+    Q_INVOKABLE static Type vbmlTypeFromString(const QString & string);
 
     Q_INVOKABLE static void vbmlPatch(QString & data, const QString & api);
 

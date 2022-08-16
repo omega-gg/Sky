@@ -100,7 +100,7 @@ signals:
     //---------------------------------------------------------------------------------------------
     // Settings
 
-    data.source = WYamlReader::extractString(reader, "source");
+    data.origin = WYamlReader::extractString(reader, "origin");
 
     data.api = api;
 
@@ -121,7 +121,7 @@ signals:
         data.hash.insert(item.id, &item);
     }
 
-    data.covers = extractCovers(reader, data.source, data.hash);
+    data.covers = extractCovers(reader, data.origin, data.hash);
 
     //---------------------------------------------------------------------------------------------
 
@@ -359,9 +359,9 @@ void WBackendIndexPrivate::onData(const WBackendIndexData & data)
         return;
     }
 
-    QString source = data.source;
+    QString origin = data.origin;
 
-    source = source.mid(0, source.lastIndexOf('/') + 1);
+    origin = origin.mid(0, origin.lastIndexOf('/') + 1);
 
     QString path = WControllerFile::filePath(url) + '/';
 
@@ -389,7 +389,7 @@ void WBackendIndexPrivate::onData(const WBackendIndexData & data)
 
         QString name = id + ".vbml";
 
-        WRemoteData * remote = wControllerDownload->getData(source + name, BACKENDINDEX_TIMEOUT);
+        WRemoteData * remote = wControllerDownload->getData(origin + name, BACKENDINDEX_TIMEOUT);
 
         WBackendIndexFile file;
 
@@ -469,18 +469,18 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
 {
     Q_D(WBackendIndex);
 
-    QString source = d->data.source;
+    QString origin = d->data.origin;
 
-    if (source.isEmpty())
+    if (origin.isEmpty())
     {
-        qWarning("WBackendIndex::update: Source is empty.");
+        qWarning("WBackendIndex::update: 'origin' is empty.");
 
         return;
     }
 
     if (d->remote) delete d->remote;
 
-    d->remote = wControllerDownload->getData(source, BACKENDINDEX_TIMEOUT);
+    d->remote = wControllerDownload->getData(origin, BACKENDINDEX_TIMEOUT);
 
     connect(d->remote, SIGNAL(loaded(WRemoteData *)), this, SLOT(onUpdate()));
 }
@@ -516,7 +516,7 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
 
     QString source = sk->applicationUrl() + "?backend=";
 
-    QString cover = d->data.source;
+    QString cover = d->data.origin;
 
     cover = cover.mid(0, cover.lastIndexOf('/') + 1);
 
