@@ -83,6 +83,7 @@ public: // Functions
     //---------------------------------------------------------------------------------------------
     // WLibraryItem interface
 
+    void updateItemType      (int id, WLibraryItem::Type    type);
     void updateItemState     (int id, WLocalObject::State   state);
     void updateItemStateQuery(int id, WLocalObject::State   stateQuery);
     void updateItemSource    (int id, const QString       & source);

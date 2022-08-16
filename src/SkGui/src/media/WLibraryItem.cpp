@@ -526,6 +526,24 @@ WLibraryItem::Type WLibraryItem::type() const
     Q_D(const WLibraryItem); return d->type;
 }
 
+void WLibraryItem::setType(Type type)
+{
+    Q_D(WLibraryItem);
+
+    if (d->type == type) return;
+
+    d->type = type;
+
+    if (d->parentFolder)
+    {
+        d->parentFolder->d_func()->updateItemType(d->id, d->type);
+    }
+
+    emit typeChanged();
+
+    save();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 bool WLibraryItem::isFolder() const

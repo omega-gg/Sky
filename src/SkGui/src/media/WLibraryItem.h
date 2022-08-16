@@ -50,19 +50,19 @@ class SK_GUI_EXPORT WLibraryItem : public WLocalObject
     Q_PROPERTY(WLibraryFolder * parentFolder READ parentFolder WRITE setParentFolder
                NOTIFY parentFolderChanged)
 
-    Q_PROPERTY(Type type READ type CONSTANT)
+    Q_PROPERTY(Type type READ type WRITE setType NOTIFY typeChanged)
 
-    Q_PROPERTY(bool isFolder   READ isFolder   CONSTANT)
-    Q_PROPERTY(bool isPlaylist READ isPlaylist CONSTANT)
+    Q_PROPERTY(bool isFolder   READ isFolder   NOTIFY typeChanged)
+    Q_PROPERTY(bool isPlaylist READ isPlaylist NOTIFY typeChanged)
 
-    Q_PROPERTY(bool isFolderBase       READ isFolderBase       CONSTANT)
-    Q_PROPERTY(bool isFolderSearch     READ isFolderSearch     CONSTANT)
-    Q_PROPERTY(bool isFolderSearchable READ isFolderSearchable CONSTANT)
-    Q_PROPERTY(bool isFolderRelated    READ isFolderRelated    CONSTANT)
+    Q_PROPERTY(bool isFolderBase       READ isFolderBase       NOTIFY typeChanged)
+    Q_PROPERTY(bool isFolderSearch     READ isFolderSearch     NOTIFY typeChanged)
+    Q_PROPERTY(bool isFolderSearchable READ isFolderSearchable NOTIFY typeChanged)
+    Q_PROPERTY(bool isFolderRelated    READ isFolderRelated    NOTIFY typeChanged)
 
-    Q_PROPERTY(bool isPlaylistBase   READ isPlaylistBase   CONSTANT)
-    Q_PROPERTY(bool isPlaylistFeed   READ isPlaylistFeed   CONSTANT)
-    Q_PROPERTY(bool isPlaylistSearch READ isPlaylistSearch CONSTANT)
+    Q_PROPERTY(bool isPlaylistBase   READ isPlaylistBase   NOTIFY typeChanged)
+    Q_PROPERTY(bool isPlaylistFeed   READ isPlaylistFeed   NOTIFY typeChanged)
+    Q_PROPERTY(bool isPlaylistSearch READ isPlaylistSearch NOTIFY typeChanged)
 
     Q_PROPERTY(State stateQuery READ stateQuery NOTIFY stateQueryChanged)
 
@@ -168,6 +168,8 @@ signals:
 
     void parentFolderChanged();
 
+    void typeChanged();
+
     void stateQueryChanged();
 
     void sourceChanged();
@@ -184,6 +186,7 @@ public: // Properties
     void             setParentFolder(WLibraryFolder * folder);
 
     Type type() const;
+    void setType(Type type);
 
     bool isFolder  () const;
     bool isPlaylist() const;

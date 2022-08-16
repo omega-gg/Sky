@@ -927,6 +927,23 @@ void WLibraryFolderPrivate::deleteItems()
 //---------------------------------------------------------------------------------------------
 // WLibraryItem interface
 
+void WLibraryFolderPrivate::updateItemType(int id, WLibraryItem::Type type)
+{
+    Q_Q(WLibraryFolder);
+
+    int index = q->indexFromId(id);
+
+    WLibraryFolderItem * item = itemAt(index);
+
+    if (item == NULL || item->type == type) return;
+
+    item->type = type;
+
+    itemUpdated(type);
+
+    q->save();
+}
+
 void WLibraryFolderPrivate::updateItemState(int id, WLocalObject::State state)
 {
     Q_Q(WLibraryFolder);
