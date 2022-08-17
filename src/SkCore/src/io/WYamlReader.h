@@ -28,7 +28,7 @@
 #include <QDateTime>
 #ifdef QT_4
 #include <QStringList>
-#else
+#endif
 
 // Sk includes
 #include <Sk>
