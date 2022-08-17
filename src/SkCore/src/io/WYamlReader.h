@@ -26,6 +26,9 @@
 // Qt includes
 #include <QObject>
 #include <QDateTime>
+#ifdef QT_4
+#include <QStringList>
+#else
 
 // Sk includes
 #include <Sk>
