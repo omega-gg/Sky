@@ -1194,6 +1194,33 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
             return true;
         }
     }
+    else if (q->urlIsVbmlFile(source))
+    {
+        addFolderSearch(folder, source, WControllerNetwork::urlName(source));
+
+        WBackendNetQuery query(source);
+
+        query.target     = WBackendNetQuery::TargetVbml;
+        query.clearItems = false;
+
+        getDataFolder(folder, query);
+
+        return true;
+    }
+    else if (q->urlIsVbmlUri(source))
+    {
+        addFolderSearch(folder, source, WControllerNetwork::urlName(source));
+
+        WBackendNetQuery query(source);
+
+        query.type       = WBackendNetQuery::TypeVbml;
+        query.target     = WBackendNetQuery::TargetVbml;
+        query.clearItems = false;
+
+        getDataFolder(folder, query);
+
+        return true;
+    }
     else if (WControllerNetwork::urlIsFile(source))
     {
         QFileInfo info(WControllerFile::filePath(source));
@@ -2894,6 +2921,13 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
     WPlaylist * playlist = folder->createLibraryItemAt(0, true)->toPlaylist();
 
+    WControllerPlaylist::Type type = data.type;
+
+    if (type == WControllerPlaylist::Feed)
+    {
+        playlist->setType(WLibraryItem::PlaylistFeed);
+    }
+
     playlist->setTitle(data.title);
     playlist->setCover(data.cover);
 
@@ -2903,10 +2937,13 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
     {
         playlist->addTracks(data.tracks);
 
-        // NOTE: When we have a single track we select it right away.
-        if (tracks.count() == 1)
+        if (type == WControllerPlaylist::Track || type == WControllerPlaylist::Live)
         {
-            playlist->setCurrentIndex(0);
+            // NOTE: When we have a single track we select it right away.
+            if (tracks.count() == 1)
+            {
+                playlist->setCurrentIndex(0);
+            }
         }
     }
 
