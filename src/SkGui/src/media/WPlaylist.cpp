@@ -2271,7 +2271,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 // WLibraryItem reimplementation
 //---------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ QString WPlaylist::toVbml(bool full) const
+/* Q_INVOKABLE virtual */ QString WPlaylist::toVbml(bool expand) const
 {
     Q_D(const WPlaylist);
 
@@ -2292,7 +2292,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
     QString tabA = Sk::tabs(1);
 
-    if (full)
+    if (expand)
     {
         QString tabB = Sk::tabs(2);
 

@@ -2313,7 +2313,7 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
 // WLibraryItem reimplementation
 //---------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ QString WLibraryFolder::toVbml(bool full) const
+/* Q_INVOKABLE virtual */ QString WLibraryFolder::toVbml(bool expand) const
 {
     Q_D(const WLibraryFolder);
 
@@ -2330,7 +2330,7 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
 
     QString tabA = Sk::tabs(1);
 
-    if (full)
+    if (expand)
     {
         QString tabB = Sk::tabs(2);
 

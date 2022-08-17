@@ -133,7 +133,7 @@ public: // Static functions
     Q_INVOKABLE static QString typeToString(Type type);
 
 public: // Virtual interface
-    Q_INVOKABLE virtual QString toVbml(bool full = false) const; // {}
+    Q_INVOKABLE virtual QString toVbml(bool expand = false) const; // {}
 
 public: // WLocalObject reimplementation
     /* Q_INVOKABLE virtual */ QString getParentPath() const;

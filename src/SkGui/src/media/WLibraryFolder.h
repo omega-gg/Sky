@@ -262,8 +262,8 @@ public: // Static functions
                                  WLibraryFolder * folderB, int to, bool remove = true);
 
 public: // WLibraryItem reimplementation
-    // NOTE: When setting full we export the items properties.
-    Q_INVOKABLE /* virtual */ QString toVbml(bool full = false) const;
+    // NOTE: When setting expand we export the items properties.
+    Q_INVOKABLE /* virtual */ QString toVbml(bool expand = false) const;
 
 protected: // Functions
     void updateIndex();
