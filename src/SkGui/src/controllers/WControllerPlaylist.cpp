@@ -258,7 +258,7 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
     //---------------------------------------------------------------------------------------------
     // Settings
 
-    QString string = WYamlReader::extractString(reader, "type").simplified().toLower();
+    QString string = reader.extractString("type").simplified().toLower();
 
     type = WControllerPlaylist::vbmlTypeFromString(string);
 
@@ -454,36 +454,89 @@ void WControllerPlaylistData::addSlice(const QString & start, const QString & en
 
 void WControllerPlaylistData::parseTrack(WYamlReader & reader)
 {
-    title = WYamlReader::extractString(reader, "title");
-    cover = WYamlReader::extractString(reader, "cover");
+    title = reader.extractString("title");
+    cover = reader.extractString("cover");
 
-    QString string = WYamlReader::extractString(reader, "source");
+    QString string = reader.extractString("source");
 
-    WTrack track(string, WTrack::Loaded);
+    WTrack track(string);
 
-    string = WYamlReader::extractString(reader, "type");
+    string = reader.extractString("type");
 
     track.setType(WTrack::typeFromString(string));
 
     track.setTitle(title);
     track.setCover(cover);
 
-    track.setAuthor(WYamlReader::extractString(reader, "author"));
-    track.setFeed  (WYamlReader::extractString(reader, "feed"));
+    track.setAuthor(reader.extractString("author"));
+    track.setFeed  (reader.extractString("feed"));
 
-    track.setDuration(WYamlReader::extractInt(reader, "duration"));
+    track.setDuration(reader.extractInt("duration"));
 
-    track.setDate(WYamlReader::extractDate(reader, "date"));
+    track.setDate(reader.extractDate("date"));
 
     tracks.append(track);
 }
 
 void WControllerPlaylistData::parsePlaylist(WYamlReader & reader)
 {
-    source = WYamlReader::extractString(reader, "source");
+    source = reader.extractString("source");
 
-    title = WYamlReader::extractString(reader, "title");
-    cover = WYamlReader::extractString(reader, "cover");
+    title = reader.extractString("title");
+    cover = reader.extractString("cover");
+
+    const WYamlNode * node = reader.at("tracks");
+
+    const QList<WYamlNode> & children = node->children;
+
+    if (children.isEmpty())
+    {
+        QStringList list = node->value.split('\n');
+
+        foreach (const QString & string, list)
+        {
+            WTrack track(string.trimmed(), WTrack::Default);
+
+            tracks.append(track);
+        }
+    }
+    else
+    {
+        foreach (const WYamlNode & child, children)
+        {
+            QString key = child.key;
+
+            if (key == "track")
+            {
+                parsePlaylistTrack(child, WTrack::Track);
+            }
+            else if (key == "live")
+            {
+                parsePlaylistTrack(child, WTrack::Live);
+            }
+        }
+    }
+}
+
+void WControllerPlaylistData::parsePlaylistTrack(const WYamlNode & node, WTrack::Type type)
+{
+    QString string = node.extractString("source");
+
+    WTrack track(string);
+
+    track.setType(type);
+
+    track.setTitle(node.extractString("title"));
+    track.setCover(node.extractString("cover"));
+
+    track.setAuthor(node.extractString("author"));
+    track.setFeed  (node.extractString("feed"));
+
+    track.setDuration(node.extractInt("duration"));
+
+    track.setDate(node.extractDate("date"));
+
+    tracks.append(track);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2619,16 +2672,29 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
     deleteQuery(query);
 
+    WControllerPlaylist::Type type = data.type;
+
+    if (type == WControllerPlaylist::Feed)
+    {
+        playlist->setType(WLibraryItem::PlaylistFeed);
+    }
+
+    playlist->setTitle(data.title);
+    playlist->setCover(data.cover);
+
     const QList<WTrack> & tracks = data.tracks;
 
     if (tracks.isEmpty() == false)
     {
         playlist->addTracks(data.tracks);
 
-        // NOTE: When we have a single track we select it right away.
-        if (tracks.count() == 1)
+        if (type == WControllerPlaylist::Track || type == WControllerPlaylist::Live)
         {
-            playlist->setCurrentIndex(0);
+            // NOTE: When we have a single track we select it right away.
+            if (tracks.count() == 1)
+            {
+                playlist->setCurrentIndex(0);
+            }
         }
     }
 
@@ -2654,9 +2720,6 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         }
         else urlTracks.append(url);
     }
-
-    playlist->setTitle(data.title);
-    playlist->setCover(data.cover);
 
     foreach (const WControllerPlaylistSource & source, data.sources)
     {

@@ -28,19 +28,15 @@
 #include <WControllerApplication>
 
 //=================================================================================================
-// WYamlNode
+// WYamlNodeBase
 //=================================================================================================
 
-WYamlNode::WYamlNode(const QString & key)
+void WYamlNodeBase::append(const WYamlNode & node)
 {
-    this->key = key;
+    children.append(node);
 }
 
-//-------------------------------------------------------------------------------------------------
-// Interface
-//-------------------------------------------------------------------------------------------------
-
-const WYamlNode * WYamlNode::at(const QString & key) const
+const WYamlNode * WYamlNodeBase::at(const QString & key) const
 {
     foreach (const WYamlNode & node, children)
     {
@@ -50,7 +46,90 @@ const WYamlNode * WYamlNode::at(const QString & key) const
     return NULL;
 }
 
-//-------------------------------------------------------------------------------------------------
+void WYamlNodeBase::dump() const
+{
+    foreach (const WYamlNode & node, children)
+    {
+        node.dump();
+
+        qDebug(" ");
+    }
+}
+
+void WYamlNodeBase::clear()
+{
+    children.clear();
+}
+
+//---------------------------------------------------------------------------------------------
+
+bool WYamlNodeBase::extractBool(const QString & key) const
+{
+    const WYamlNode * node = at(key);
+
+    if (node == NULL) return false;
+
+    QString value = node->value.toLower();
+
+    if (value == "true")
+    {
+        return true;
+    }
+    else if (value == "false")
+    {
+        return false;
+    }
+    else return value.toInt();
+}
+
+int WYamlNodeBase::extractInt(const QString & key) const
+{
+    const WYamlNode * node = at(key);
+
+    if (node)
+    {
+         return node->value.toInt();
+    }
+    else return 0;
+}
+
+QString WYamlNodeBase::extractString(const QString & key) const
+{
+    const WYamlNode * node = at(key);
+
+    if (node)
+    {
+         return node->value;
+    }
+    else return QString();
+}
+
+QDateTime WYamlNodeBase::extractDate(const QString & key, Qt::DateFormat format) const
+{
+    const WYamlNode * node = at(key);
+
+    if (node)
+    {
+         return QDateTime::fromString(node->value, format);
+    }
+    else return QDateTime();
+}
+
+QStringList WYamlNodeBase::extractList(const QString & key) const
+{
+    QString string = extractString(key);
+
+    return string.split('\n');
+}
+
+//=================================================================================================
+// WYamlNode
+//=================================================================================================
+
+WYamlNode::WYamlNode(const QString & key) : WYamlNodeBase()
+{
+    this->key = key;
+}
 
 void WYamlNode::dump(int indent) const
 {
@@ -112,7 +191,7 @@ public: // Functions
     int getIndent(const QString * content) const;
 
 public: // Variables
-    QList<WYamlNode> nodes;
+    WYamlNodeBase node;
 
 protected:
     W_DECLARE_PUBLIC(WYamlReader)
@@ -295,7 +374,7 @@ WYamlReader::WYamlReader(const QByteArray & data, QObject * parent)
 {
     Q_D(WYamlReader);
 
-    d->nodes.clear();
+    d->node.clear();
 
     QString content = Sk::readUtf8(data);
 
@@ -321,7 +400,7 @@ WYamlReader::WYamlReader(const QByteArray & data, QObject * parent)
 
         d->extractNode(&node, &content, &string);
 
-        d->nodes.append(node);
+        d->node.append(node);
     }
 }
 
@@ -331,87 +410,63 @@ WYamlReader::WYamlReader(const QByteArray & data, QObject * parent)
 {
     Q_D(const WYamlReader);
 
-    foreach (const WYamlNode & node, d->nodes)
-    {
-        if (node.key == key) return &node;
-    }
-
-    return NULL;
+    return d->node.at(key);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WYamlReader::dump() const
 {
+    Q_D(const WYamlReader); d->node.dump();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ bool WYamlReader::extractBool(const QString & key) const
+{
     Q_D(const WYamlReader);
 
-    foreach (const WYamlNode & node, d->nodes)
-    {
-        node.dump();
+    return d->node.extractBool(key);
+}
 
-        qDebug(" ");
-    }
+/* Q_INVOKABLE */ int WYamlReader::extractInt(const QString & key) const
+{
+    Q_D(const WYamlReader);
+
+    return d->node.extractInt(key);
+}
+
+/* Q_INVOKABLE */ QString WYamlReader::extractString(const QString & key) const
+{
+    Q_D(const WYamlReader);
+
+    return d->node.extractString(key);
+}
+
+/* Q_INVOKABLE */ QDateTime WYamlReader::extractDate(const QString & key,
+                                                     Qt::DateFormat  format) const
+{
+    Q_D(const WYamlReader);
+
+    return d->node.extractDate(key, format);
+}
+
+/* Q_INVOKABLE */ QStringList WYamlReader::extractList(const QString & key) const
+{
+    Q_D(const WYamlReader);
+
+    return d->node.extractList(key);
 }
 
 //-------------------------------------------------------------------------------------------------
-// Static functions
+// Properties
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ bool WYamlReader::extractBool(const WYamlReader & reader,
-                                                       const QString     & key)
+const WYamlNodeBase & WYamlReader::node() const
 {
-    const WYamlNode * node = reader.at(key);
+    Q_D(const WYamlReader);
 
-    if (node == NULL) return false;
-
-    QString value = node->value.toLower();
-
-    if (value == "true")
-    {
-        return true;
-    }
-    else if (value == "false")
-    {
-        return false;
-    }
-    else return value.toInt();
-}
-
-/* Q_INVOKABLE static */ int WYamlReader::extractInt(const WYamlReader & reader,
-                                                     const QString     & key)
-{
-    const WYamlNode * node = reader.at(key);
-
-    if (node)
-    {
-         return node->value.toInt();
-    }
-    else return 0;
-}
-
-/* Q_INVOKABLE static */ QString WYamlReader::extractString(const WYamlReader & reader,
-                                                            const QString     & key)
-{
-    const WYamlNode * node = reader.at(key);
-
-    if (node)
-    {
-         return node->value;
-    }
-    else return QString();
-}
-
-/* Q_INVOKABLE static */ QDateTime WYamlReader::extractDate(const WYamlReader & reader,
-                                                            const QString     & key,
-                                                            Qt::DateFormat      format)
-{
-    const WYamlNode * node = reader.at(key);
-
-    if (node)
-    {
-         return QDateTime::fromString(node->value, format);
-    }
-    else return QDateTime();
+    return d->node;
 }
 
 #endif // SK_NO_YAMLREADER

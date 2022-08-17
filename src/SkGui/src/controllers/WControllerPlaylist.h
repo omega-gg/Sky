@@ -38,6 +38,7 @@ class WControllerPlaylistData;
 class WControllerFileReply;
 class WAbstractLoader;
 class WYamlReader;
+class WYamlNode;
 class WRemoteData;
 
 #ifdef QT_6
@@ -342,6 +343,8 @@ public: // Interface
 private: // Functions
     void parseTrack   (WYamlReader & reader);
     void parsePlaylist(WYamlReader & reader);
+
+    void parsePlaylistTrack(const WYamlNode & node, WTrack::Type type);
 
     void addSource(const QString & url, const QString & title);
     void addFolder(const QString & url, const QString & title);

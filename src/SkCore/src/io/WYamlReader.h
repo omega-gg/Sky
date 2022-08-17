@@ -32,24 +32,51 @@
 
 // Forward declarations
 class WYamlReaderPrivate;
+class WYamlNode;
+
+//-------------------------------------------------------------------------------------------------
+// WYamlNodeBase
+//-------------------------------------------------------------------------------------------------
+
+class SK_CORE_EXPORT WYamlNodeBase
+{
+public: // Interface
+    void append(const WYamlNode & node);
+
+    const WYamlNode * at(const QString & key) const;
+
+    void dump() const;
+
+    void clear();
+
+    //---------------------------------------------------------------------------------------------
+
+    bool extractBool(const QString & key) const;
+    int  extractInt (const QString & key) const;
+
+    QString extractString(const QString & key) const;
+
+    QDateTime extractDate(const QString & key, Qt::DateFormat format = Qt::ISODate) const;
+
+    QStringList extractList(const QString & key) const;
+
+public: // Variables
+    QList<WYamlNode> children;
+};
 
 //-------------------------------------------------------------------------------------------------
 // WYamlNode
 //-------------------------------------------------------------------------------------------------
 
-class SK_CORE_EXPORT WYamlNode
+class SK_CORE_EXPORT WYamlNode : public WYamlNodeBase
 {
 public:
     WYamlNode(const QString & key);
 
 public: // Interface
-    const WYamlNode * at(const QString & key) const;
-
     void dump(int indent = 0) const;
 
 public: // Variables
-    QList<WYamlNode> children;
-
     QString key;
     QString value;
 };
@@ -61,6 +88,8 @@ public: // Variables
 class SK_CORE_EXPORT WYamlReader : public QObject, public WPrivatable
 {
     Q_OBJECT
+
+    Q_PROPERTY(WYamlNodeBase node READ node CONSTANT)
 
 public:
     explicit WYamlReader(QObject * parent = NULL);
@@ -74,14 +103,20 @@ public: // Interface
 
     Q_INVOKABLE void dump() const;
 
-public: // Static functions
-    Q_INVOKABLE static bool extractBool(const WYamlReader & reader, const QString & key);
-    Q_INVOKABLE static int  extractInt (const WYamlReader & reader, const QString & key);
+    //---------------------------------------------------------------------------------------------
 
-    Q_INVOKABLE static QString extractString(const WYamlReader & reader, const QString & key);
+    Q_INVOKABLE bool extractBool(const QString & key) const;
+    Q_INVOKABLE int  extractInt (const QString & key) const;
 
-    Q_INVOKABLE static QDateTime extractDate(const WYamlReader & reader, const QString & key,
-                                             Qt::DateFormat format = Qt::ISODate);
+    Q_INVOKABLE QString extractString(const QString & key) const;
+
+    Q_INVOKABLE QDateTime extractDate(const QString & key,
+                                      Qt::DateFormat format = Qt::ISODate) const;
+
+    Q_INVOKABLE QStringList extractList(const QString & key) const;
+
+public: // Properties
+    const WYamlNodeBase & node() const;
 
 private:
     W_DECLARE_PRIVATE(WYamlReader)

@@ -100,11 +100,11 @@ signals:
     //---------------------------------------------------------------------------------------------
     // Settings
 
-    data.origin = WYamlReader::extractString(reader, "origin");
+    data.origin = reader.extractString("origin");
 
     data.api = api;
 
-    data.version = WYamlReader::extractString(reader, "version");
+    data.version = reader.extractString("version");
 
     //---------------------------------------------------------------------------------------------
     // Backends
@@ -136,7 +136,7 @@ signals:
 
 QStringList WBackendIndexQuery::extractList(const WYamlReader & reader, const QString & key) const
 {
-    QString string = WYamlReader::extractString(reader, key);
+    QString string = reader.extractString(key);
 
     return string.simplified().split(' ');
 }
@@ -145,9 +145,7 @@ QList<WBackendIndexItem> WBackendIndexQuery::extractItems(const WYamlReader & re
 {
     QList<WBackendIndexItem> items;
 
-    QString data = WYamlReader::extractString(reader, "backends");
-
-    QStringList list = data.split('\n');
+    QStringList list = reader.extractList("backends");
 
     foreach (const QString & string, list)
     {
@@ -187,7 +185,7 @@ WBackendIndexQuery::extractCovers(const WYamlReader & reader,
     }
     else path = source.mid(0, index + 1);
 
-    QString data = WYamlReader::extractString(reader, "covers");
+    QString data = reader.extractString("covers");
 
     QStringList list = data.split('\n');
 

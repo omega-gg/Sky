@@ -2413,11 +2413,11 @@ signals:
     //---------------------------------------------------------------------------------------------
     // Settings
 
-    data.origin = WYamlReader::extractString(reader, "origin");
+    data.origin = reader.extractString("origin");
 
     data.api = api;
 
-    data.version = WYamlReader::extractString(reader, "version");
+    data.version = reader.extractString("version");
 
     WBackendUniversalData::Engines engines = extractEngines(reader, "search");
 
@@ -2435,11 +2435,11 @@ signals:
         data.isSearchCover = true;
     }
 
-    data.title = WYamlReader::extractString(reader, "title");
+    data.title = reader.extractString("title");
 
-    data.host = WYamlReader::extractString(reader, "host");
+    data.host = reader.extractString("host");
 
-    QString cover = WYamlReader::extractString(reader, "cover");
+    QString cover = reader.extractString("cover");
 
     if (WControllerNetwork::textIsUrl(cover) == false)
     {
@@ -2451,40 +2451,40 @@ signals:
 
     data.items = extractItems(reader);
 
-    data.validate = WYamlReader::extractString(reader, "validate");
+    data.validate = reader.extractString("validate");
 
     //---------------------------------------------------------------------------------------------
     // Interface
 
-    data.trackId     = WYamlReader::extractString(reader, "TRACK_ID");
-    data.trackOutput = WYamlReader::extractString(reader, "TRACK_OUTPUT");
+    data.trackId     = reader.extractString("TRACK_ID");
+    data.trackOutput = reader.extractString("TRACK_OUTPUT");
 
-    data.playlistInfo = WYamlReader::extractString(reader, "PLAYLIST_INFO");
+    data.playlistInfo = reader.extractString("PLAYLIST_INFO");
 
-    data.urlTrack    = WYamlReader::extractString(reader, "URL_TRACK");
-    data.urlPlaylist = WYamlReader::extractString(reader, "URL_PLAYLIST");
+    data.urlTrack    = reader.extractString("URL_TRACK");
+    data.urlPlaylist = reader.extractString("URL_PLAYLIST");
 
-    data.querySource   = WYamlReader::extractString(reader, "QUERY_SOURCE");
-    data.queryTrack    = WYamlReader::extractString(reader, "QUERY_TRACK");
-    data.queryPlaylist = WYamlReader::extractString(reader, "QUERY_PLAYLIST");
-    data.queryFolder   = WYamlReader::extractString(reader, "QUERY_FOLDER");
-    data.queryItem     = WYamlReader::extractString(reader, "QUERY_ITEM");
+    data.querySource   = reader.extractString("QUERY_SOURCE");
+    data.queryTrack    = reader.extractString("QUERY_TRACK");
+    data.queryPlaylist = reader.extractString("QUERY_PLAYLIST");
+    data.queryFolder   = reader.extractString("QUERY_FOLDER");
+    data.queryItem     = reader.extractString("QUERY_ITEM");
 
-    data.createQuery = WYamlReader::extractString(reader, "CREATE_QUERY");
+    data.createQuery = reader.extractString("CREATE_QUERY");
 
-    data.extractSource   = WYamlReader::extractString(reader, "EXTRACT_SOURCE");
-    data.extractTrack    = WYamlReader::extractString(reader, "EXTRACT_TRACK");
-    data.extractPlaylist = WYamlReader::extractString(reader, "EXTRACT_PLAYLIST");
-    data.extractFolder   = WYamlReader::extractString(reader, "EXTRACT_FOLDER");
-    data.extractItem     = WYamlReader::extractString(reader, "EXTRACT_ITEM");
+    data.extractSource   = reader.extractString("EXTRACT_SOURCE");
+    data.extractTrack    = reader.extractString("EXTRACT_TRACK");
+    data.extractPlaylist = reader.extractString("EXTRACT_PLAYLIST");
+    data.extractFolder   = reader.extractString("EXTRACT_FOLDER");
+    data.extractItem     = reader.extractString("EXTRACT_ITEM");
 
-    data.queryFailed = WYamlReader::extractString(reader, "QUERY_FAILED");
+    data.queryFailed = reader.extractString("QUERY_FAILED");
 
-    data.applySource   = WYamlReader::extractString(reader, "APPLY_SOURCE");
-    data.applyTrack    = WYamlReader::extractString(reader, "APPLY_TRACK");
-    data.applyPlaylist = WYamlReader::extractString(reader, "APPLY_PLAYLIST");
-    data.applyFolder   = WYamlReader::extractString(reader, "APPLY_FOLDER");
-    data.applyItem     = WYamlReader::extractString(reader, "APPLY_ITEM");
+    data.applySource   = reader.extractString("APPLY_SOURCE");
+    data.applyTrack    = reader.extractString("APPLY_TRACK");
+    data.applyPlaylist = reader.extractString("APPLY_PLAYLIST");
+    data.applyFolder   = reader.extractString("APPLY_FOLDER");
+    data.applyItem     = reader.extractString("APPLY_ITEM");
 
     //---------------------------------------------------------------------------------------------
 
@@ -2500,7 +2500,7 @@ signals:
 WBackendUniversalData::Engines
 WBackendUniversalQuery::extractEngines(const WYamlReader & reader, const QString & key) const
 {
-    QString string = WYamlReader::extractString(reader, key);
+    QString string = reader.extractString(key);
 
     WRegExp regExp("tracks|coverAudio|coverVideo");
 
