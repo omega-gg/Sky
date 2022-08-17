@@ -377,6 +377,14 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
 
 #ifdef QT_NEW
 
+/* virtual */ void WDeclarativeMouseArea::mousePressEvent(QMouseEvent * event)
+{
+    // NOTE: When disabled we want to stop event propagation to lower MouseArea(s).
+    if (isEnabled() == false) return;
+
+    QQuickMouseArea::mousePressEvent(event);
+}
+
 /* virtual */ void WDeclarativeMouseArea::mouseReleaseEvent(QMouseEvent * event)
 {
     Q_D(WDeclarativeMouseArea);
