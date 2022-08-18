@@ -634,11 +634,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 /* Q_INVOKABLE static */ bool WControllerNetwork::textIsUrl(const QString & text)
 {
-     if (urlIsFile(text) || urlIsHttp(text))
-     {
-          return true;
-     }
-     else return false;
+     return (urlIsFile(text) || urlIsHttp(text));
 }
 
 /* Q_INVOKABLE static */ bool WControllerNetwork::textIsIp(const QString & text)
@@ -656,22 +652,19 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ bool WControllerNetwork::urlIsApp(const QString & string)
+{
+    return string.startsWith("app://");
+}
+
 /* Q_INVOKABLE static */ bool WControllerNetwork::urlIsFile(const QString & string)
 {
-    if (string.startsWith("file://"))
-    {
-         return true;
-    }
-    else return false;
+    return string.startsWith("file://");
 }
 
 /* Q_INVOKABLE static */ bool WControllerNetwork::urlIsHttp(const QString & string)
 {
-    if (string.startsWith("http://") || string.startsWith("https://"))
-    {
-         return true;
-    }
-    else return false;
+    return (string.startsWith("http://") || string.startsWith("https://"));
 }
 
 //-------------------------------------------------------------------------------------------------

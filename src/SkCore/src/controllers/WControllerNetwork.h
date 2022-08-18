@@ -61,6 +61,7 @@ public: // Static functions
 
     //---------------------------------------------------------------------------------------------
 
+    Q_INVOKABLE static bool urlIsApp (const QString & string);
     Q_INVOKABLE static bool urlIsFile(const QString & string);
     Q_INVOKABLE static bool urlIsHttp(const QString & string);
 
