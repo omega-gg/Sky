@@ -561,32 +561,10 @@ void WControllerPlaylistData::addSource(const QString & url, const QString & tit
     sources.append(source);
 }
 
-void WControllerPlaylistData::addFolder(const QString & url, const QString & title)
-{
-    WControllerPlaylistSource source;
-
-    source.url   = url;
-    source.title = title;
-
-    folders.append(source);
-}
-
 //-------------------------------------------------------------------------------------------------
 
 void WControllerPlaylistData::addFile(const QString & path)
 {
-    if (QFileInfo(path).isDir())
-    {
-        WControllerPlaylistSource source;
-
-        source.url   = WControllerFile::fileUrl(path);
-        source.title = WControllerNetwork::extractUrlFileName(path);
-
-        folders.append(source);
-
-        return;
-    }
-
     QString extension = WControllerNetwork::extractUrlExtension(path);
 
     if (WControllerPlaylist::extensionIsMedia(extension))
@@ -1691,17 +1669,9 @@ void WControllerPlaylistPrivate::applySources(WLibraryFolder                    
 
         urls->append(url);
 
-        WLibraryItem::Type type;
-
         QString extension = WControllerNetwork::extractUrlExtension(url);
 
-        if (WControllerPlaylist::extensionIsAscii(extension))
-        {
-             type = WLibraryItem::FolderSearch;
-        }
-        else type = WLibraryItem::Playlist;
-
-        WLibraryFolderItem item(type, WLocalObject::Default);
+        WLibraryFolderItem item(WLibraryItem::Playlist, WLocalObject::Default);
 
         item.source = url;
         item.title  = source.title.simplified();
@@ -2905,8 +2875,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
             }
         }
 
-        applySources(folder, data.folders, &urls);
-        applySources(folder, data.files,   &urls);
+        applySources(folder, data.files, &urls);
 
         folder->d_func()->setQueryEnded();
 
@@ -2982,8 +2951,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
         else backend->tryDelete();
     }
 
-    applySources(folder, data.folders, &urls);
-    applySources(folder, data.files,   &urls);
+    applySources(folder, data.files, &urls);
 
     bool singleTrack;
 

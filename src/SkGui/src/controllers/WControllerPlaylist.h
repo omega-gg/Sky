@@ -347,7 +347,6 @@ private: // Functions
     void parsePlaylistTrack(const WYamlNode & node, WTrack::Type type);
 
     void addSource(const QString & url, const QString & title);
-    void addFolder(const QString & url, const QString & title);
 
     void addFile(const QString & path);
 
@@ -367,7 +366,6 @@ public: // Variables
     QList<WTrack> tracks;
 
     QList<WControllerPlaylistSource> sources;
-    QList<WControllerPlaylistSource> folders;
     QList<WControllerPlaylistSource> files;
     QList<WControllerPlaylistSource> medias;
 
