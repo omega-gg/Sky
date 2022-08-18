@@ -59,7 +59,7 @@ void WControllerPlaylist_patch(QString & data, const QString & api);
 static const QString CONTROLLERPLAYLIST_VIDEO = "^(mp4|webm|ogv|mkv|avi|wmv|mov|flv|3gp|m3u8)$";
 static const QString CONTROLLERPLAYLIST_AUDIO = "^(mp3|ogg|mka|wav|wma|flac)$";
 
-static const QString CONTROLLERPLAYLIST_MARKUP = "^(html|xml|json)$";
+static const QString CONTROLLERPLAYLIST_MARKUP = "^(vbml|html|xml|json)$";
 
 static const QString CONTROLLERPLAYLIST_TEXT = "^(txt|md)$";
 
@@ -73,7 +73,7 @@ static const QString CONTROLLERPLAYLIST_FILTER_FILE
     =
     "Medias (*.mp4 *.webm *.ogv *.mkv *.avi *.wmv *.mov *.flv *.3gp *.m3u8 "
             "*.mp3 *.ogg *.mka *.wav *.wma *.flac "
-            "*.html *.xml *.json *.torrent "
+            "*.vbml *.html *.xml *.json *.torrent "
             "*.txt *.md);;"
     "All files (*)";
 
