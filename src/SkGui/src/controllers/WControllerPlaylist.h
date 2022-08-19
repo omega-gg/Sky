@@ -358,6 +358,7 @@ private: // Functions
 public: // Variables
     WControllerPlaylist::Type type;
 
+    QString origin;
     QString source;
 
     QString title;

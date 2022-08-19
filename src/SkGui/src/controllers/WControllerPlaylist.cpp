@@ -454,14 +454,15 @@ void WControllerPlaylistData::addSlice(const QString & start, const QString & en
 
 void WControllerPlaylistData::parseTrack(WYamlReader & reader)
 {
+    origin = reader.extractString("origin");
+    source = reader.extractString("source");
+
     title = reader.extractString("title");
     cover = reader.extractString("cover");
 
-    QString string = reader.extractString("source");
+    WTrack track(source);
 
-    WTrack track(string);
-
-    string = reader.extractString("type");
+    QString string = reader.extractString("type");
 
     track.setType(WTrack::typeFromString(string));
 
@@ -480,6 +481,7 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader)
 
 void WControllerPlaylistData::parsePlaylist(WYamlReader & reader)
 {
+    origin = reader.extractString("origin");
     source = reader.extractString("source");
 
     title = reader.extractString("title");
