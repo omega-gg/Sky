@@ -139,6 +139,8 @@ public: // Functions
 
     bool applyUrl(WLibraryFolder * folder, WBackendNet * backend, const QString & url) const;
 
+    void applyTrack(WPlaylist * playlist, WTrack * track, WTrack::State state, int index) const;
+
     void applyPlaylist(WLibraryFolder * folder, WBackendNet * backend, const QString & url,
                                                                        QStringList   * urls) const;
 
@@ -199,6 +201,7 @@ public: // Slots
     void onFolderLoaded  (QIODevice * device, const WBackendNetFolder   & reply);
     void onItemLoaded    (QIODevice * device, const WBackendNetItem     & reply);
 
+    void onUrlTrack   (QIODevice * device, const WControllerPlaylistData & data);
     void onUrlPlaylist(QIODevice * device, const WControllerPlaylistData & data);
     void onUrlFolder  (QIODevice * device, const WControllerPlaylistData & data);
     void onUrlItem    (QIODevice * device, const WControllerPlaylistItem & data);

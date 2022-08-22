@@ -81,31 +81,6 @@ bool WTrack::isValid() const
 
 //-------------------------------------------------------------------------------------------------
 
-void WTrack::copyDataTo(WTrack * other) const
-{
-    Q_D(const WTrack);
-
-    WTrackPrivate * op = other->d_func();
-
-    op->type = d->type;
-
-    if (d->state == Loading)
-    {
-         op->state = Default;
-    }
-    else op->state = d->state;
-
-    op->title = d->title;
-    op->cover = d->cover;
-
-    op->author = d->author;
-    op->feed   = d->feed;
-
-    op->duration = d->duration;
-
-    op->date = d->date;
-}
-
 void WTrack::applyDataTo(WTrack * other) const
 {
     Q_D(const WTrack);

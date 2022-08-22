@@ -118,7 +118,7 @@ public: // Enums
 
     enum TrackType { TrackUnknown, TrackMedia, TrackLive };
 
-    enum TrackState { TrackDefault, TrackLoading, TrackLoaded, TrackCover };
+    enum TrackState { TrackDefault, TrackLoading, TrackLoaded, TrackLoadCover };
 
     //---------------------------------------------------------------------------------------------
 

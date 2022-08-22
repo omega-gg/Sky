@@ -40,7 +40,7 @@ class SK_GUI_EXPORT WTrack : public WPrivatable
 public: // Enums
     enum Type { Unknown, Track, Live };
 
-    enum State { Default, Loading, Loaded, Cover };
+    enum State { Default, Loading, Loaded, LoadCover };
 
 public:
     explicit WTrack(const QString & source = QString(), State state = Loaded);
@@ -48,7 +48,6 @@ public:
 public: // Interface
     bool isValid() const;
 
-    void copyDataTo (WTrack * other) const;
     void applyDataTo(WTrack * other) const;
 
 public: // Static functions

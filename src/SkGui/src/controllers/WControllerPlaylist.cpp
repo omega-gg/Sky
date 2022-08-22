@@ -895,8 +895,25 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
         }
     }
 
-    if (q->urlIsVbmlUri(source))
+    if (q->urlIsVbmlFile(source))
     {
+        WBackendNetQuery query(source);
+
+        query.target = WBackendNetQuery::TargetVbml;
+
+        getDataTrack(playlist, track, query);
+
+        return true;
+    }
+    else if (q->urlIsVbmlUri(source))
+    {
+        WBackendNetQuery query(source);
+
+        query.type   = WBackendNetQuery::TypeVbml;
+        query.target = WBackendNetQuery::TargetVbml;
+
+        getDataTrack(playlist, track, query);
+
         return true;
     }
     else if (q->urlIsMedia(source))
@@ -1635,6 +1652,38 @@ bool WControllerPlaylistPrivate::applyUrl(WLibraryFolder * folder,
 
 //-------------------------------------------------------------------------------------------------
 
+void WControllerPlaylistPrivate::applyTrack(WPlaylist   * playlist,
+                                            WTrack      * track,
+                                            WTrack::State state, int index) const
+{
+    if (state > WTrack::Loaded)
+    {
+         track->setState(state);
+    }
+    else track->setState(WTrack::Loaded);
+
+    playlist->updateTrack(index);
+
+    if (WControllerNetwork::removeUrlPrefix(playlist->source())
+        ==
+        WControllerNetwork::removeUrlPrefix(track->source()))
+    {
+        QString title = track->title();
+        QString cover = track->cover();
+
+        if (title.isEmpty() == false)
+        {
+            playlist->setTitle(title);
+        }
+
+        if (cover.isEmpty() == false)
+        {
+            playlist->setCover(cover);
+        }
+    }
+    else playlist->updateCover();
+}
+
 void WControllerPlaylistPrivate::applyPlaylist(WLibraryFolder * folder, WBackendNet   * backend,
                                                                         const QString & url,
                                                                         QStringList   * urls) const
@@ -2219,10 +2268,14 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
 
     if (query->type == WControllerPlaylistQuery::TypeTrack)
     {
-        if (backend == NULL) qDebug("TEST: BACKEND SHOULD NOT BE NULL");
-
-        backend->loadTrack(networkReply, *backendQuery,
-                           q, SLOT(onTrackLoaded(QIODevice *, WBackendNetTrack)));
+        if (backendQuery->target == WBackendNetQuery::TargetDefault)
+        {
+            backend->loadTrack(networkReply, *backendQuery,
+                               q, SLOT(onTrackLoaded(QIODevice *, WBackendNetTrack)));
+        }
+        else loadUrls(networkReply, *backendQuery,
+                      SIGNAL(loaded(QIODevice *, const WControllerPlaylistData &)),
+                      SLOT(onUrlTrack(QIODevice *, const WControllerPlaylistData &)));
     }
     else if (query->type == WControllerPlaylistQuery::TypePlaylist)
     {
@@ -2648,6 +2701,90 @@ void WControllerPlaylistPrivate::onItemLoaded(QIODevice * device, const WBackend
 
 //-------------------------------------------------------------------------------------------------
 
+void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * device,
+                                            const WControllerPlaylistData & data)
+{
+    WControllerPlaylistQuery * query = replies.take(device);
+
+    device->deleteLater();
+
+    WLibraryItem * item = query->item;
+
+    // NOTE: The item was cleared so the query is deleted right away.
+    if (item == NULL)
+    {
+        deleteQuery(query);
+
+        return;
+    }
+
+    WPlaylist * playlist = item->toPlaylist();
+    WTrack    * track    = query->track;
+
+    deleteQuery(query);
+
+    int index = playlist->indexOf(track);
+
+    if (index == -1)
+    {
+        playlist->d_func()->applyTrackDefault();
+
+        return;
+    }
+
+    const QList<WTrack> & tracks = data.tracks;
+
+    if (tracks.isEmpty())
+    {
+        emit playlist->trackQueryEnded();
+
+        // NOTE: Maybe other queries are still loading.
+        if (checkTrack(track)) return;
+
+        track->setState(WTrack::Default);
+
+        playlist->updateTrack(index);
+    }
+    else
+    {
+        const WTrack & trackReply = tracks.first();
+
+        trackReply.applyDataTo(track);
+
+        emit playlist->trackQueryEnded();
+
+        QString source = data.source;
+
+        if (source.isEmpty() == false)
+        {
+            Q_Q(WControllerPlaylist);
+
+            WBackendNet * backend = q->backendFromUrl(source);
+
+            if (backend)
+            {
+                WBackendNetQuery query = backend->getQueryTrack(source);
+
+                backend->tryDelete();
+
+                if (query.isValid())
+                {
+                    getDataTrack(playlist, track, query);
+
+                    return;
+                }
+            }
+        }
+
+        // NOTE: Maybe other queries are still loading.
+        if (checkTrack(track)) return;
+
+        applyTrack(playlist, track, trackReply.state(), index);
+    }
+
+    playlist->d_func()->applyTrackLoaded(index);
+}
+
 void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * device,
                                                const WControllerPlaylistData & data)
 {
@@ -2783,9 +2920,31 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         applyCurrentIndex(playlist);
     }
 
-    if (indexTrack != -1)
+    QString source = data.source;
+
+    if (source.isEmpty() == false)
     {
-        QString source = playlist->trackSource(indexTrack);
+        WBackendNet * backend = wControllerPlaylist->backendFromUrl(source);
+
+        if (backend)
+        {
+            WBackendNetQuery query = backend->getQueryPlaylist(source);
+
+            backend->tryDelete();
+
+            if (query.isValid())
+            {
+                emit playlist->queryEnded();
+
+                getDataPlaylist(playlist, query);
+
+                return;
+            }
+        }
+    }
+    else if (indexTrack != -1)
+    {
+        source = playlist->trackSource(indexTrack);
 
         WBackendNet * backend = wControllerPlaylist->backendFromUrl(source);
 
@@ -2806,6 +2965,9 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         }
     }
     else emit playlist->queryEnded();
+
+    // NOTE: Maybe other queries are still loading.
+    if (checkPlaylist(playlist)) return;
 
     playlist->d_func()->setQueryLoaded();
 }
@@ -2989,9 +3151,29 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
         applyCurrentIndex(playlist);
     }
 
-    if (singleTrack)
+    source = data.source;
+
+    if (source.isEmpty() == false)
     {
-        QString source = playlist->trackSource(0);
+        WBackendNet * backend = wControllerPlaylist->backendFromUrl(source);
+
+        if (backend)
+        {
+            WBackendNetQuery query = backend->getQueryPlaylist(source);
+
+            backend->tryDelete();
+
+            if (query.isValid())
+            {
+                playlist->d_func()->setQueryEnded();
+
+                getDataPlaylist(playlist, query);
+            }
+        }
+    }
+    else if (singleTrack)
+    {
+        source = playlist->trackSource(0);
 
         WBackendNet * backend = wControllerPlaylist->backendFromUrl(source);
 
@@ -3017,6 +3199,11 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
     folder->d_func()->setQueryEnded();
 
     playlist->tryDelete();
+
+    // NOTE: Maybe other queries are still loading.
+    if (checkFolder(folder)) return;
+
+    folder->d_func()->setQueryLoaded();
 }
 
 void WControllerPlaylistPrivate::onUrlItem(QIODevice                     * device,
@@ -3036,6 +3223,9 @@ void WControllerPlaylistPrivate::onUrlItem(QIODevice                     * devic
     emit item->queryData(data.data, data.extension);
 
     emit item->queryEnded();
+
+    // NOTE: Maybe other queries are still loading.
+    if (checkItem(item)) return;
 
     item->d_func()->setQueryLoaded();
 }

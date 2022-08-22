@@ -769,7 +769,7 @@ void WPlaylistPrivate::loadTrack(int index)
 
     WTrack::State state = track->state();
 
-    if (state == WTrack::Cover)
+    if (state == WTrack::LoadCover)
     {
         loadCover(track, QNetworkRequest::NormalPriority);
     }
@@ -810,7 +810,7 @@ void WPlaylistPrivate::applyTrack(WTrack * track, int index, int delay)
             loadCover(track, QNetworkRequest::NormalPriority);
         }
     }
-    else if (state == WTrack::Cover)
+    else if (state == WTrack::LoadCover)
     {
         loadCover(track, QNetworkRequest::NormalPriority);
     }
@@ -866,7 +866,7 @@ void WPlaylistPrivate::applyTrackLoaded(int index)
 
     WTrack * track = &(tracks[index]);
 
-    if (track->state() != WTrack::Cover)
+    if (track->state() != WTrack::LoadCover)
     {
         emit q->trackQueryCompleted();
 

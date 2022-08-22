@@ -4466,7 +4466,7 @@ WLocalObject::State WBackendUniversalPrivate::getState(const QString & string) c
 WTrack::State WBackendUniversalPrivate::getStateTrack(const QString & string) const
 {
     if      (string == "default") return WTrack::Default;
-    else if (string == "cover")   return WTrack::Cover;
+    else if (string == "cover")   return WTrack::LoadCover;
     else                          return WTrack::Loaded;
 }
 
