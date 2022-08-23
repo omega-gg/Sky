@@ -2390,34 +2390,7 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
         // NOTE: Maybe other queries are still loading.
         if (checkTrack(track)) return;
 
-        WTrack::State state = trackReply.state();
-
-        if (state > WTrack::Loaded)
-        {
-             track->setState(state);
-        }
-        else track->setState(WTrack::Loaded);
-
-        playlist->updateTrack(index);
-
-        if (WControllerNetwork::removeUrlPrefix(playlist->source())
-            ==
-            WControllerNetwork::removeUrlPrefix(track->source()))
-        {
-            QString title = track->title();
-            QString cover = track->cover();
-
-            if (title.isEmpty() == false)
-            {
-                playlist->setTitle(title);
-            }
-
-            if (cover.isEmpty() == false)
-            {
-                playlist->setCover(cover);
-            }
-        }
-        else playlist->updateCover();
+        applyTrack(playlist, track, trackReply.state(), index);
     }
     else
     {

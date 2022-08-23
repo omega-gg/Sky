@@ -282,6 +282,9 @@ void WBackendLoaderPrivate::onCreate(const QString & id)
     // NOTE: We don't need to lock here because the backend is not in the hash yet.
     backend->d_func()->lockCount++;
 
+    // NOTE: Waiting for the backend to be loaded.
+    q->waitBackend(backend);
+
     // NOTE: We call 'addBackend' at the end because 'createNow' depends on it.
     cache->addBackend(id, backend);
 }
@@ -500,7 +503,8 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
     return NULL;
 }
 
-/* Q_INVOKABLE virtual */ void WBackendLoader::waitBackend(WBackendNet *) const {}
+/* Q_INVOKABLE virtual */ void WBackendLoader::waitBackend (WBackendNet *) const {}
+/* Q_INVOKABLE virtual */ void WBackendLoader::checkBackend(WBackendNet *) const {}
 
 //-------------------------------------------------------------------------------------------------
 
@@ -540,7 +544,8 @@ WBackendNet * WBackendLoader::createNow(const QString & id)
         backend = cache->getBackend(id);
     }
 
-    waitBackend(backend);
+    // NOTE: Checking the backend version after loading it.
+    checkBackend(backend);
 
     return backend;
 }
