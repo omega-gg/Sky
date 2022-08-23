@@ -2724,6 +2724,13 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
 
         trackReply.applyDataTo(track);
 
+        QString origin = data.origin;
+
+        if (origin.isEmpty() == false)
+        {
+            track->setSource(origin);
+        }
+
         emit playlist->trackQueryEnded();
 
         QString source = data.source;
@@ -2786,6 +2793,13 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     if (type == WControllerPlaylist::Feed)
     {
         playlist->setType(WLibraryItem::PlaylistFeed);
+    }
+
+    QString origin = data.origin;
+
+    if (origin.isEmpty() == false)
+    {
+        playlist->loadSource(origin, false);
     }
 
     playlist->setTitle(data.title);
@@ -3032,6 +3046,13 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
     if (type == WControllerPlaylist::Feed)
     {
         playlist->setType(WLibraryItem::PlaylistFeed);
+    }
+
+    QString origin = data.origin;
+
+    if (origin.isEmpty() == false)
+    {
+        playlist->loadSource(origin, false);
     }
 
     playlist->setTitle(data.title);
