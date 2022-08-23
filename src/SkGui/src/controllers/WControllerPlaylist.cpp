@@ -262,7 +262,7 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
 
     type = WControllerPlaylist::vbmlTypeFromString(string);
 
-    if (type == WControllerPlaylist::Track || type == WControllerPlaylist::Live)
+    if (WControllerPlaylist::vbmlTypeTrack(type))
     {
         parseTrack(reader);
     }
@@ -457,14 +457,35 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader)
     origin = reader.extractString("origin");
     source = reader.extractString("source");
 
+    media = reader.extractString("media");
+
     title = reader.extractString("title");
     cover = reader.extractString("cover");
 
-    WTrack track(source);
+    WTrack track;
 
     QString string = reader.extractString("type");
 
     track.setType(WTrack::typeFromString(string));
+
+    // NOTE: The origin takes precedence over the source.
+    if (origin.isEmpty() == false)
+    {
+        track.setState(WTrack::Default);
+
+        track.setSource(origin);
+    }
+    // NOTE: The source takes precedence over the media.
+    else if (source.isEmpty() == false)
+    {
+        track.setState(WTrack::Default);
+
+        track.setSource(source);
+    }
+    else if (media.isEmpty() == false)
+    {
+        track.setSource(media);
+    }
 
     track.setTitle(title);
     track.setCover(cover);
@@ -522,11 +543,18 @@ void WControllerPlaylistData::parsePlaylist(WYamlReader & reader)
 
 void WControllerPlaylistData::parsePlaylistTrack(const WYamlNode & node, WTrack::Type type)
 {
-    QString string = node.extractString("source");
-
-    WTrack track(string);
+    WTrack track;
 
     track.setType(type);
+
+    QString source = node.extractString("source");
+
+    if (source.isEmpty() == false)
+    {
+        track.setState(WTrack::Default);
+
+        track.setSource(source);
+    }
 
     track.setTitle(node.extractString("title"));
     track.setCover(node.extractString("cover"));
@@ -2811,13 +2839,10 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     {
         playlist->addTracks(data.tracks);
 
-        if (type == WControllerPlaylist::Track || type == WControllerPlaylist::Live)
+        // NOTE: When we have a single track we select it right away.
+        if (WControllerPlaylist::vbmlTypeTrack(type) && tracks.count() == 1)
         {
-            // NOTE: When we have a single track we select it right away.
-            if (tracks.count() == 1)
-            {
-                playlist->setCurrentIndex(0);
-            }
+            playlist->setCurrentIndex(0);
         }
     }
 
@@ -3064,13 +3089,10 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
     {
         playlist->addTracks(data.tracks);
 
-        if (type == WControllerPlaylist::Track || type == WControllerPlaylist::Live)
+        // NOTE: When we have a single track we select it right away.
+        if (WControllerPlaylist::vbmlTypeTrack(type) && tracks.count() == 1)
         {
-            // NOTE: When we have a single track we select it right away.
-            if (tracks.count() == 1)
-            {
-                playlist->setCurrentIndex(0);
-            }
+            playlist->setCurrentIndex(0);
         }
     }
 
@@ -4335,6 +4357,11 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlTypeFromString(const QString 
     else if (string == "index")    return Index;
     else if (string == "backend")  return Backend;
     else                           return Unknown;
+}
+
+/* Q_INVOKABLE static */ bool WControllerPlaylist::vbmlTypeTrack(Type type)
+{
+    return (type == Track || type == Live);
 }
 
 /* Q_INVOKABLE static */ void WControllerPlaylist::vbmlPatch(QString & data, const QString & api)

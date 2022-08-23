@@ -276,6 +276,8 @@ public: // Static functions
 
     Q_INVOKABLE static Type vbmlTypeFromString(const QString & string);
 
+    Q_INVOKABLE static bool vbmlTypeTrack(Type type);
+
     Q_INVOKABLE static void vbmlPatch(QString & data, const QString & api);
 
 signals:
@@ -361,6 +363,8 @@ public: // Variables
 
     QString origin;
     QString source;
+
+    QString media;
 
     QString title;
     QString cover;
