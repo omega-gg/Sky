@@ -364,8 +364,6 @@ public: // Variables
     QString origin;
     QString source;
 
-    QString media;
-
     QString title;
     QString cover;
 

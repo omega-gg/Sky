@@ -131,7 +131,7 @@ void WLibraryItemPrivate::setQueryLoaded()
     emit q->queryCompleted();
 }
 
-void WLibraryItemPrivate::setQueryEnded()
+void WLibraryItemPrivate::setQueryFinished()
 {
     Q_Q(WLibraryItem);
 

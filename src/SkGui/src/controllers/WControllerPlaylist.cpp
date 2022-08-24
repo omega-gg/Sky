@@ -258,7 +258,15 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
     //---------------------------------------------------------------------------------------------
     // Settings
 
-    QString string = reader.extractString("type").simplified().toLower();
+    QString string = reader.extractString("origin");
+
+    // NOTE: The origin has to be different than the current URL.
+    if (WControllerNetwork::removeUrlPrefix(url) != WControllerNetwork::removeUrlPrefix(string))
+    {
+        origin = string;
+    }
+
+    string = reader.extractString("type").simplified().toLower();
 
     type = WControllerPlaylist::vbmlTypeFromString(string);
 
@@ -266,7 +274,7 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
     {
         parseTrack(reader);
     }
-    else if (type) // NOTE: All other types are playlists.
+    else // NOTE: We default to the playlist type.
     {
         parsePlaylist(reader);
     }
@@ -454,11 +462,6 @@ void WControllerPlaylistData::addSlice(const QString & start, const QString & en
 
 void WControllerPlaylistData::parseTrack(WYamlReader & reader)
 {
-    origin = reader.extractString("origin");
-    source = reader.extractString("source");
-
-    media = reader.extractString("media");
-
     title = reader.extractString("title");
     cover = reader.extractString("cover");
 
@@ -469,22 +472,32 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader)
     track.setType(WTrack::typeFromString(string));
 
     // NOTE: The origin takes precedence over the source.
-    if (origin.isEmpty() == false)
+    if (origin.isEmpty())
+    {
+        string = reader.extractString("source");
+
+        // NOTE: The source takes precedence over the media.
+        if (string.isEmpty())
+        {
+            string = reader.extractString("media");
+
+            if (string.isEmpty() == false)
+            {
+                track.setSource(string);
+            }
+        }
+        else
+        {
+            track.setState(WTrack::Default);
+
+            track.setSource(string);
+        }
+    }
+    else
     {
         track.setState(WTrack::Default);
 
         track.setSource(origin);
-    }
-    // NOTE: The source takes precedence over the media.
-    else if (source.isEmpty() == false)
-    {
-        track.setState(WTrack::Default);
-
-        track.setSource(source);
-    }
-    else if (media.isEmpty() == false)
-    {
-        track.setSource(media);
     }
 
     track.setTitle(title);
@@ -502,7 +515,6 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader)
 
 void WControllerPlaylistData::parsePlaylist(WYamlReader & reader)
 {
-    origin = reader.extractString("origin");
     source = reader.extractString("source");
 
     title = reader.extractString("title");
@@ -1118,7 +1130,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
 
         playlist->addTrack(track);
 
-        playlist->d_func()->setQueryEnded();
+        playlist->d_func()->setQueryFinished();
 
         return true;
     }
@@ -1156,7 +1168,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
                 folder->setCurrentIndex(0);
 
-                folder->d_func()->setQueryEnded();
+                folder->d_func()->setQueryFinished();
 
                 return true;
             }
@@ -1193,7 +1205,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
         {
             backend->tryDelete();
 
-            folder->d_func()->setQueryEnded();
+            folder->d_func()->setQueryFinished();
 
             if (WControllerNetwork::urlIsHttp(source))
             {
@@ -1328,7 +1340,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
         folder->addItem(item);
 
-        folder->d_func()->setQueryEnded();
+        folder->d_func()->setQueryFinished();
 
         return true;
     }
@@ -2739,9 +2751,6 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
     {
         emit playlist->trackQueryEnded();
 
-        // NOTE: Maybe other queries are still loading.
-        if (checkTrack(track)) return;
-
         track->setState(WTrack::Default);
 
         playlist->updateTrack(index);
@@ -2790,9 +2799,6 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
             }
         }
 
-        // NOTE: Maybe other queries are still loading.
-        if (checkTrack(track)) return;
-
         applyTrack(playlist, track, trackReply.state(), index);
     }
 
@@ -2816,11 +2822,14 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         return;
     }
 
-    WPlaylist * playlist = item->toPlaylist();
-
     QString feed = query->backendQuery.url;
 
     deleteQuery(query);
+
+    //---------------------------------------------------------------------------------------------
+    // VBML
+
+    WPlaylist * playlist = item->toPlaylist();
 
     WControllerPlaylist::Type type = data.type;
 
@@ -2833,24 +2842,31 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     playlist->setCover(data.cover);
 
     QString origin = data.origin;
+    QString source = data.source;
 
-    // NOTE: We are adding tracks when origin is not specified.
-    if (origin.isEmpty())
+    if (WControllerPlaylist::vbmlTypeTrack(type))
     {
-        const QList<WTrack> & tracks = data.tracks;
-
-        if (tracks.isEmpty() == false)
+        if (origin.isEmpty())
         {
             playlist->addTracks(data.tracks);
 
-            // NOTE: When we have a single track we select it right away.
-            if (WControllerPlaylist::vbmlTypeTrack(type) && tracks.count() == 1)
-            {
-                playlist->setCurrentIndex(0);
-            }
+            // NOTE: We select the first track right away.
+            playlist->setCurrentIndex(0);
         }
+        else playlist->applySource(origin);
     }
-    else playlist->applySource(origin);
+    else if (origin.isEmpty() == false)
+    {
+        playlist->applySource(origin);
+    }
+    else if (source.isEmpty())
+    {
+        // NOTE: We are adding tracks when origin and source are not specified.
+        playlist->addTracks(data.tracks);
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Media sources
 
     QStringList urlTracks;
 
@@ -2930,23 +2946,22 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         applyCurrentIndex(playlist);
     }
 
-    QString source = data.origin;
+    //---------------------------------------------------------------------------------------------
+    // Next query
 
-    if (source.isEmpty() == false)
+    emit playlist->queryEnded();
+
+    if (origin.isEmpty() == false)
     {
-        WBackendNetQuery query(source);
+        WBackendNetQuery query(origin);
 
         query.target     = WBackendNetQuery::TargetVbml;
         query.clearItems = false;
-
-        emit playlist->queryEnded();
 
         getDataPlaylist(playlist, query);
 
         return;
     }
-
-    source = data.source;
 
     if (source.isEmpty() == false)
     {
@@ -2960,7 +2975,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
             if (query.isValid())
             {
-                emit playlist->queryEnded();
+                query.clearItems = false;
 
                 getDataPlaylist(playlist, query);
 
@@ -2969,40 +2984,27 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         }
     }
 
-    int indexTrack;
-
     if (urlTracks.count() == 1)
     {
-         indexTrack = playlist->count() - 1;
-    }
-    else indexTrack = -1;
+        int index = playlist->count() - 1;
 
-    if (indexTrack != -1)
-    {
-        source = playlist->trackSource(indexTrack);
+        source = playlist->trackSource(index);
 
         WBackendNet * backend = wControllerPlaylist->backendFromUrl(source);
 
         if (backend)
         {
-            emit playlist->queryEnded();
+            playlist->loadTrack(index);
 
-            playlist->loadTrack(indexTrack);
+            playlist->d_func()->setQueryLoaded();
 
-            if (getDataRelated(backend, playlist, backend->getTrackId(source)))
-            {
-                backend->tryDelete();
-
-                return;
-            }
+            getDataRelated(backend, playlist, backend->getTrackId(source));
 
             backend->tryDelete();
+
+            return;
         }
     }
-    else emit playlist->queryEnded();
-
-    // NOTE: Maybe other queries are still loading.
-    if (checkPlaylist(playlist)) return;
 
     playlist->d_func()->setQueryLoaded();
 }
@@ -3023,6 +3025,9 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
         return;
     }
+
+    //---------------------------------------------------------------------------------------------
+    // Backend html query
 
     WLibraryFolder * folder = item->toFolder();
 
@@ -3076,16 +3081,17 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
         applySources(folder, data.files, &urls);
 
-        folder->d_func()->setQueryEnded();
+        folder->d_func()->setQueryFinished();
 
         return;
     }
 
-    QString source = folder->source();
-
     QString feed = query->backendQuery.url;
 
     deleteQuery(query);
+
+    //---------------------------------------------------------------------------------------------
+    // VBML
 
     WPlaylist * playlist = folder->createLibraryItemAt(0, true)->toPlaylist();
 
@@ -3100,24 +3106,31 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
     playlist->setCover(data.cover);
 
     QString origin = data.origin;
+    QString source = data.source;
 
-    // NOTE: We are adding tracks when origin is not specified.
-    if (origin.isEmpty())
+    if (WControllerPlaylist::vbmlTypeTrack(type))
     {
-        const QList<WTrack> & tracks = data.tracks;
-
-        if (tracks.isEmpty() == false)
+        if (origin.isEmpty())
         {
             playlist->addTracks(data.tracks);
 
-            // NOTE: When we have a single track we select it right away.
-            if (WControllerPlaylist::vbmlTypeTrack(type) && tracks.count() == 1)
-            {
-                playlist->setCurrentIndex(0);
-            }
+            // NOTE: We select the first track right away.
+            playlist->setCurrentIndex(0);
         }
+        else playlist->applySource(origin);
     }
-    else playlist->applySource(origin);
+    else if (origin.isEmpty() == false)
+    {
+        playlist->applySource(origin);
+    }
+    else if (source.isEmpty())
+    {
+        // NOTE: We are adding tracks when origin and source are not specified.
+        playlist->addTracks(data.tracks);
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Media sources
 
     QStringList urlTracks;
 
@@ -3177,21 +3190,15 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
         playlist->addTrack(track);
     }
 
-    if (WControllerNetwork::urlIsFile(source))
+    if (WControllerNetwork::urlIsFile(folder->source()))
     {
         applyCurrentIndex(playlist);
     }
 
-    origin = data.origin;
-    source = data.source;
+    //---------------------------------------------------------------------------------------------
+    // Next query
 
-    bool singleTrack;
-
-    if (urlTracks.count() == 1)
-    {
-         singleTrack = true;
-    }
-    else singleTrack = false;
+    emit playlist->queryEnded();
 
     if (origin.isEmpty() == false)
     {
@@ -3200,11 +3207,16 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
         query.target     = WBackendNetQuery::TargetVbml;
         query.clearItems = false;
 
-        emit playlist->queryEnded();
-
         getDataPlaylist(playlist, query);
+
+        playlist->tryDelete();
+
+        folder->d_func()->setQueryFinished();
+
+        return;
     }
-    else if (source.isEmpty() == false)
+
+    if (source.isEmpty() == false)
     {
         WBackendNet * backend = wControllerPlaylist->backendFromUrl(source);
 
@@ -3216,13 +3228,20 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
             if (query.isValid())
             {
-                emit playlist->queryEnded();
+                query.clearItems = false;
 
                 getDataPlaylist(playlist, query);
+
+                playlist->tryDelete();
+
+                folder->d_func()->setQueryFinished();
+
+                return;
             }
         }
     }
-    else if (singleTrack)
+
+    if (urlTracks.count() == 1)
     {
         source = playlist->trackSource(0);
 
@@ -3232,29 +3251,32 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
         {
             playlist->loadTrack(0);
 
+            playlist->d_func()->setQueryLoaded();
+
             getDataRelated(backend, playlist, backend->getTrackId(source));
 
             backend->tryDelete();
-        }
 
-        playlist->d_func()->setQueryEnded();
+            playlist->tryDelete();
+
+            folder->d_func()->setQueryFinished();
+
+            return;
+        }
     }
+    // NOTE: Clearing the default playlist when it's empty and we have other playlist(s).
     else if (folder->count() > 1 && playlist->isEmpty())
     {
         folder->loadCurrentIndex(1, true);
 
         folder->removeItem(playlist->id());
     }
-    else playlist->d_func()->setQueryEnded();
 
-    emit folder->queryEnded();
+    playlist->d_func()->setQueryLoaded();
 
     playlist->tryDelete();
 
-    // NOTE: Maybe other queries are still loading.
-    if (checkFolder(folder)) return;
-
-    folder->d_func()->setQueryLoaded();
+    folder->d_func()->setQueryFinished();
 }
 
 void WControllerPlaylistPrivate::onUrlItem(QIODevice                     * device,

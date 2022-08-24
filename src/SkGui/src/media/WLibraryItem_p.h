@@ -53,9 +53,9 @@ public: // Functions
 
     void setQueryLoading(bool loading);
 
-    void setQueryDefault();
-    void setQueryLoaded ();
-    void setQueryEnded  ();
+    void setQueryDefault ();
+    void setQueryLoaded  ();
+    void setQueryFinished();
 
 public: // Variables
     QList<int> idFull;
