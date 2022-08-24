@@ -935,7 +935,7 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
         }
     }
 
-    if (q->urlIsVbmlFile(source))
+    if (WControllerPlaylist::urlIsVbmlFile(source))
     {
         WBackendNetQuery query(source);
 
@@ -945,7 +945,7 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
 
         return true;
     }
-    else if (q->urlIsVbmlUri(source))
+    else if (WControllerPlaylist::urlIsVbmlUri(source))
     {
         WBackendNetQuery query(source);
 
@@ -1043,7 +1043,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
         }
     }
 
-    if (q->urlIsVbmlFile(source))
+    if (WControllerPlaylist::urlIsVbmlFile(source))
     {
         WBackendNetQuery query(source);
 
@@ -1053,7 +1053,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
 
         return true;
     }
-    else if (q->urlIsVbmlUri(source))
+    else if (WControllerPlaylist::urlIsVbmlUri(source))
     {
         WBackendNetQuery query(source);
 
@@ -1231,7 +1231,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
             return true;
         }
     }
-    else if (q->urlIsVbmlFile(source))
+    else if (WControllerPlaylist::urlIsVbmlFile(source))
     {
         addFolderSearch(folder, source, WControllerNetwork::urlName(source));
 
@@ -1244,7 +1244,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
         return true;
     }
-    else if (q->urlIsVbmlUri(source))
+    else if (WControllerPlaylist::urlIsVbmlUri(source))
     {
         addFolderSearch(folder, source, WControllerNetwork::urlName(source));
 

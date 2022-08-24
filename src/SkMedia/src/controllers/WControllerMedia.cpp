@@ -271,21 +271,34 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
     WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
 
-    if (backend == NULL)
+    WBackendNetQuery query;
+
+    if (backend)
     {
-        reply->_medias.insert(WAbstractBackend::QualityDefault, url);
+        query = backend->getQuerySource(url);
 
-        reply->_loaded = true;
+        if (query.isValid() == false)
+        {
+            backend->tryDelete();
 
-        return;
+            reply->_medias.insert(WAbstractBackend::QualityDefault, url);
+
+            reply->_loaded = true;
+
+            return;
+        }
     }
-
-    WBackendNetQuery query = backend->getQuerySource(url);
-
-    if (query.isValid() == false)
+    else if (WControllerPlaylist::urlIsVbmlFile(url))
     {
-        backend->tryDelete();
-
+        query.url = url;
+    }
+    else if (WControllerPlaylist::urlIsVbmlUri(url))
+    {
+        query.url  = url;
+        query.type = WBackendNetQuery::TypeVbml;
+    }
+    else
+    {
         reply->_medias.insert(WAbstractBackend::QualityDefault, url);
 
         reply->_loaded = true;
@@ -403,7 +416,9 @@ void WControllerMediaPrivate::clearReply(WMediaReply * reply)
 
 void WControllerMediaPrivate::deleteMedia(WPrivateMediaData * media)
 {
-    media->backend->tryDelete();
+    WBackendNet * backend = media->backend;
+
+    if (backend) backend->tryDelete();
 
     delete media;
 }
@@ -431,11 +446,13 @@ void WControllerMediaPrivate::onLoaded(WRemoteData * data)
 {
     WPrivateMediaData * media = jobs.take(data);
 
+    WBackendNet * backend = media->backend;
+
     if (data->hasError())
     {
         qWarning("WControllerMediaPrivate::onLoaded: Failed to load media %s.", data->url().C_STR);
 
-        media->backend->queryFailed(media->query);
+        if (backend) backend->queryFailed(media->query);
 
         QString error = data->error();
 
@@ -460,8 +477,11 @@ void WControllerMediaPrivate::onLoaded(WRemoteData * data)
 
         queries.insert(reply, media);
 
-        media->backend->loadSource(reply, media->query,
-                                   q, SLOT(onSourceLoaded(QIODevice *, WBackendNetSource)));
+        if (backend)
+        {
+            backend->loadSource(reply, media->query,
+                                q, SLOT(onSourceLoaded(QIODevice *, WBackendNetSource)));
+        }
     }
 
     delete data;
@@ -502,7 +522,9 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
         }
     }
 
-    media->backend->applySource(backendQuery, source);
+    WBackendNet * backend = media->backend;
+
+    if (backend) backend->applySource(backendQuery, source);
 
     if (source.valid)
     {
