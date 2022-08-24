@@ -518,7 +518,7 @@ bool WLibraryFolderRead::loadItems(QXmlStreamReader * stream, WLibraryFolderRead
     {
         if (data->cacheLoad)
         {
-            if (data->source.isEmpty()) q->loadSource(source, false);
+            if (data->source.isEmpty()) q->applySource(source);
 
             if (data->title.isEmpty()) q->setTitle(title);
             if (data->cover.isEmpty()) q->setCover(cover);
@@ -529,7 +529,7 @@ bool WLibraryFolderRead::loadItems(QXmlStreamReader * stream, WLibraryFolderRead
         }
         else
         {
-            q->loadSource(source, false);
+            q->applySource(source);
 
             q->setTitle(title);
             q->setCover(cover);
@@ -552,7 +552,7 @@ bool WLibraryFolderRead::loadItems(QXmlStreamReader * stream, WLibraryFolderRead
     }
     else
     {
-        q->loadSource(QString(), false);
+        q->applySource(QString());
 
         q->setTitle(QString());
         q->setCover(QString());
@@ -2500,17 +2500,17 @@ void WLibraryFolder::updateIndex()
 // Protected WLibraryItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ bool WLibraryFolder::applySource(const QString & source)
+/* virtual */ bool WLibraryFolder::onApplySource(const QString & source)
 {
     return wControllerPlaylist->d_func()->applySourceFolder(this, source);
 }
 
-/* virtual */ bool WLibraryFolder::applyQuery(const WBackendNetQuery & query)
+/* virtual */ bool WLibraryFolder::onApplyQuery(const WBackendNetQuery & query)
 {
     return wControllerPlaylist->d_func()->applyQueryFolder(this, query);
 }
 
-/* virtual */ bool WLibraryFolder::stopQuery()
+/* virtual */ bool WLibraryFolder::onStopQuery()
 {
     return wControllerPlaylist->d_func()->abortQueriesFolder(this);
 }

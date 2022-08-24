@@ -524,7 +524,7 @@ bool WPlaylistRead::loadTracks(QXmlStreamReader * stream, WPlaylistReadReply * r
     {
         if (data->cacheLoad)
         {
-            if (data->source.isEmpty()) q->loadSource(source, false);
+            if (data->source.isEmpty()) q->applySource(source);
 
             if (data->title.isEmpty()) q->setTitle(title);
             if (data->cover.isEmpty()) q->setCover(cover);
@@ -540,7 +540,7 @@ bool WPlaylistRead::loadTracks(QXmlStreamReader * stream, WPlaylistReadReply * r
         }
         else
         {
-            q->loadSource(source, false);
+            q->applySource(source);
 
             q->setTitle(title);
             q->setCover(cover);
@@ -555,7 +555,7 @@ bool WPlaylistRead::loadTracks(QXmlStreamReader * stream, WPlaylistReadReply * r
     }
     else
     {
-        q->loadSource(QString(), false);
+        q->applySource(QString());
 
         q->setTitle(QString());
         q->setCover(QString());
@@ -2515,17 +2515,17 @@ void WPlaylist::endTracksRemove() const
 // Protected WLibraryItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ bool WPlaylist::applySource(const QString & source)
+/* virtual */ bool WPlaylist::onApplySource(const QString & source)
 {
     return wControllerPlaylist->d_func()->applySourcePlaylist(this, source);
 }
 
-/* virtual */ bool WPlaylist::applyQuery(const WBackendNetQuery & query)
+/* virtual */ bool WPlaylist::onApplyQuery(const WBackendNetQuery & query)
 {
     return wControllerPlaylist->d_func()->applyQueryPlaylist(this, query);
 }
 
-/* virtual */ bool WPlaylist::stopQuery()
+/* virtual */ bool WPlaylist::onStopQuery()
 {
     return wControllerPlaylist->d_func()->abortQueriesPlaylist(this);
 }

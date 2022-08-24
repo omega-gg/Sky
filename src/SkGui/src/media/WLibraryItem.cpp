@@ -189,7 +189,7 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
 
     if (d->source == source) return false;
 
-    if (load && applySource(source) == false)
+    if (load && onApplySource(source) == false)
     {
         qWarning("WLibraryItem::loadSource: Failed to apply source %s.", source.C_STR);
 
@@ -212,7 +212,7 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
 
 /* Q_INVOKABLE */ bool WLibraryItem::reloadSource(const QString & source)
 {
-    if (applySource(source) == false)
+    if (onApplySource(source) == false)
     {
         qWarning("WLibraryItem::reloadSource: Failed to apply source %s.", source.C_STR);
 
@@ -237,6 +237,11 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
     return true;
 }
 
+/* Q_INVOKABLE */ bool WLibraryItem::applySource(const QString & source)
+{
+    return loadSource(source, false);
+}
+
 /* Q_INVOKABLE */ void WLibraryItem::clearSource()
 {
     loadSource(QString(), false);
@@ -250,7 +255,7 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
 
     if (d->stateQuery == Default && d->source.isEmpty() == false)
     {
-        if (applySource(d->source) == false)
+        if (onApplySource(d->source) == false)
         {
             qWarning("WLibraryItem::loadQuery: Failed to load source %s.", d->source.C_STR);
 
@@ -269,7 +274,7 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
 
     if (d->source.isEmpty()) return false;
 
-    if (applySource(d->source) == false)
+    if (onApplySource(d->source) == false)
     {
         qWarning("WLibraryItem::reloadQuery: Failed to reload source %s.", d->source.C_STR);
 
@@ -286,7 +291,7 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
 
     if (d->stateQuery == Loading)
     {
-         return stopQuery();
+         return onStopQuery();
     }
     else return false;
 }
@@ -374,17 +379,17 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
 // Protected virtual functions
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ bool WLibraryItem::applySource(const QString & source)
+/* virtual */ bool WLibraryItem::onApplySource(const QString & source)
 {
     return wControllerPlaylist->d_func()->applySourceItem(this, source);
 }
 
-/* virtual */ bool WLibraryItem::applyQuery(const WBackendNetQuery & query)
+/* virtual */ bool WLibraryItem::onApplyQuery(const WBackendNetQuery & query)
 {
     return wControllerPlaylist->d_func()->applyQueryItem(this, query);
 }
 
-/* virtual */ bool WLibraryItem::stopQuery()
+/* virtual */ bool WLibraryItem::onStopQuery()
 {
     return wControllerPlaylist->d_func()->abortQueriesItem(this);
 }

@@ -313,10 +313,10 @@ protected: // WLocalObject reimplementation
     /* virtual */ WAbstractThreadAction * onLoad(const QString & path);
 
 protected: // WLibraryItem reimplementation
-    /* virtual */ bool applySource(const QString          & source);
-    /* virtual */ bool applyQuery (const WBackendNetQuery & query);
+    /* virtual */ bool onApplySource(const QString          & source);
+    /* virtual */ bool onApplyQuery (const WBackendNetQuery & query);
 
-    /* virtual */ bool stopQuery();
+    /* virtual */ bool onStopQuery();
 
     /* virtual */ void onApplyCurrentIds(const QList<int> & ids);
 
