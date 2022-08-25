@@ -326,8 +326,6 @@ void WControllerMediaPrivate::init(const QStringList & options)
 
 void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 {
-    Q_Q(WControllerMedia);
-
     const QString & url = reply->_url;
 
     QHashIterator<WRemoteData *, WPrivateMediaData *> i(jobs);
@@ -400,13 +398,7 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
         return;
     }
 
-    query.priority = QNetworkRequest::HighPriority;
-
     query.mode = reply->_mode;
-
-    WRemoteData * data = wControllerPlaylist->getData(loader, query, q);
-
-    QObject::connect(data, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoaded(WRemoteData *)));
 
     WPrivateMediaData * media = new WPrivateMediaData;
 
@@ -419,7 +411,7 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
     medias.append(media);
 
-    jobs.insert(data, media);
+    getData(media, &query);
 }
 
 void WControllerMediaPrivate::loadUrl(QIODevice * device, const WBackendNetQuery & query) const
@@ -598,8 +590,6 @@ void WControllerMediaPrivate::onLoaded(WRemoteData * data)
 
 void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaData & data)
 {
-    Q_Q(WControllerMedia);
-
     WPrivateMediaData * media = queries.take(device);
 
     device->deleteLater();
@@ -609,6 +599,8 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
     QString origin = data.origin;
 
     WBackendNetQuery & query = media->query;
+
+    WAbstractBackend::SourceMode mode = query.mode;
 
     if (origin.isEmpty() == false)
     {
@@ -621,11 +613,10 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
             query.url = origin;
         }
 
-        WRemoteData * data = wControllerPlaylist->getData(loader, query, q);
+        // NOTE: We propagate the compatibility mode.
+        query.mode = mode;
 
-        QObject::connect(data, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoaded(WRemoteData *)));
-
-        jobs.insert(data, media);
+        getData(media, &query);
 
         return;
     }
@@ -640,13 +631,12 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
 
         if (query.isValid())
         {
-            WRemoteData * data = wControllerPlaylist->getData(loader, query, q);
-
-            QObject::connect(data, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoaded(WRemoteData *)));
+            // NOTE: We propagate the compatibility mode.
+            query.mode = mode;
 
             media->backend = backend;
 
-            jobs.insert(data, media);
+            getData(media, &query);
 
             return;
         }
