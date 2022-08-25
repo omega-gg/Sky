@@ -107,6 +107,20 @@ private:
 };
 
 //-------------------------------------------------------------------------------------------------
+// WControllerMediaData
+//-------------------------------------------------------------------------------------------------
+
+struct WControllerMediaData
+{
+public: // Interface
+    void applyVbml(const QByteArray & array, const QString & url);
+
+public: // Variables
+    QString origin;
+    QString source;
+};
+
+//-------------------------------------------------------------------------------------------------
 // WControllerMedia
 //-------------------------------------------------------------------------------------------------
 
@@ -155,6 +169,8 @@ private:
     W_DECLARE_CONTROLLER(WControllerMedia)
 
     Q_PRIVATE_SLOT(d_func(), void onLoaded(WRemoteData *))
+
+    Q_PRIVATE_SLOT(d_func(), void onUrl(QIODevice *, const WControllerMediaData &))
 
     Q_PRIVATE_SLOT(d_func(), void onSourceLoaded(QIODevice *, const WBackendNetSource &))
 

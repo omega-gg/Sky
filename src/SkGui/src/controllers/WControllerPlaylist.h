@@ -344,7 +344,7 @@ public: // Interface
     void addSlice(const QString & start, const QString & end = QString());
 
 private: // Functions
-    void parseTrack   (WYamlReader & reader);
+    void parseTrack   (WYamlReader & reader, const QString & url);
     void parsePlaylist(WYamlReader & reader);
 
     void parsePlaylistTrack(const WYamlNode & node, WTrack::Type type);

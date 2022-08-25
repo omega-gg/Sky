@@ -272,7 +272,7 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
 
     if (WControllerPlaylist::vbmlTypeTrack(type))
     {
-        parseTrack(reader);
+        parseTrack(reader, url);
     }
     else // NOTE: We default to the playlist type.
     {
@@ -460,7 +460,7 @@ void WControllerPlaylistData::addSlice(const QString & start, const QString & en
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WControllerPlaylistData::parseTrack(WYamlReader & reader)
+void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & url)
 {
     title = reader.extractString("title");
     cover = reader.extractString("cover");
@@ -471,34 +471,21 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader)
 
     track.setType(WTrack::typeFromString(string));
 
-    // NOTE: The origin takes precedence over the source.
+    track.setState(WTrack::Default);
+
+    // NOTE: The origin is prioritized over the source.
     if (origin.isEmpty())
     {
-        string = reader.extractString("source");
+        QString source = reader.extractString("source");
 
-        // NOTE: The source takes precedence over the media.
-        if (string.isEmpty())
+        // NOTE: When the source is empty we set the vbml URI.
+        if (source.isEmpty())
         {
-            string = reader.extractString("media");
-
-            if (string.isEmpty() == false)
-            {
-                track.setSource(string);
-            }
+             track.setSource(url);
         }
-        else
-        {
-            track.setState(WTrack::Default);
-
-            track.setSource(string);
-        }
+        else track.setSource(source);
     }
-    else
-    {
-        track.setState(WTrack::Default);
-
-        track.setSource(origin);
-    }
+    else track.setSource(origin);
 
     track.setTitle(title);
     track.setCover(cover);
@@ -2870,80 +2857,90 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
     QStringList urlTracks;
 
-    for (int i = 0; i < playlist->count(); i++)
+    if (type == WControllerPlaylist::Unknown)
     {
-        const QString & url = playlist->d_func()->itemAt(i)->source();
-
-        WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
-
-        if (backend)
+        for (int i = 0; i < playlist->count(); i++)
         {
+            const QString & url = playlist->d_func()->itemAt(i)->source();
+
+            WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
+
+            if (backend)
+            {
+                QString id = backend->getTrackId(url);
+
+                if (id.isEmpty())
+                {
+                     urlTracks.append(url);
+                }
+                else urlTracks.append(backend->getUrlTrack(id));
+
+                backend->tryDelete();
+            }
+            else urlTracks.append(url);
+        }
+
+        foreach (const WControllerPlaylistSource & source, data.sources)
+        {
+            const QString & url = source.url;
+
+            WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
+
+            if (backend == NULL) continue;
+
             QString id = backend->getTrackId(url);
 
-            if (id.isEmpty())
+            if (id.isEmpty() == false)
             {
-                 urlTracks.append(url);
+                if (urlTracks.count() == CONTROLLERPLAYLIST_MAX_TRACKS) break;
+
+                QString source = backend->getUrlTrack(id);
+
+                backend->tryDelete();
+
+                if (urlTracks.contains(source)) continue;
+
+                urlTracks.append(source);
+
+                WTrack track(url, WTrack::Default);
+
+                playlist->addTrack(track);
             }
-            else urlTracks.append(backend->getUrlTrack(id));
-
-            backend->tryDelete();
+            else backend->tryDelete();
         }
-        else urlTracks.append(url);
-    }
 
-    foreach (const WControllerPlaylistSource & source, data.sources)
-    {
-        const QString & url = source.url;
-
-        WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
-
-        if (backend == NULL) continue;
-
-        QString id = backend->getTrackId(url);
-
-        if (id.isEmpty() == false)
+        foreach (const WControllerPlaylistSource & media, data.medias)
         {
             if (urlTracks.count() == CONTROLLERPLAYLIST_MAX_TRACKS) break;
 
-            QString source = backend->getUrlTrack(id);
+            const QString & url = media.url;
 
-            backend->tryDelete();
+            if (urlTracks.contains(url)) continue;
 
-            if (urlTracks.contains(source)) continue;
-
-            urlTracks.append(source);
+            urlTracks.append(url);
 
             WTrack track(url, WTrack::Default);
 
+            track.setTitle(media.title);
+
+            track.setCover(data.cover);
+
+            track.setFeed(feed);
+
             playlist->addTrack(track);
         }
-        else backend->tryDelete();
+
+        if (WControllerNetwork::urlIsFile(playlist->source()))
+        {
+            applyCurrentIndex(playlist);
+        }
     }
-
-    foreach (const WControllerPlaylistSource & media, data.medias)
+    // NOTE: When having a single track we try to load related tracks.
+    else if (playlist->count() == 1)
     {
-        if (urlTracks.count() == CONTROLLERPLAYLIST_MAX_TRACKS) break;
-
-        const QString & url = media.url;
-
-        if (urlTracks.contains(url)) continue;
+        const QString & url = playlist->d_func()->itemAt(0)->source();
 
         urlTracks.append(url);
-
-        WTrack track(url, WTrack::Default);
-
-        track.setTitle(media.title);
-
-        track.setCover(data.cover);
-
-        track.setFeed(feed);
-
-        playlist->addTrack(track);
-    }
-
-    if (WControllerNetwork::urlIsFile(playlist->source()))
-    {
-        applyCurrentIndex(playlist);
     }
 
     //---------------------------------------------------------------------------------------------
@@ -3134,65 +3131,75 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
     QStringList urlTracks;
 
-    foreach (const WControllerPlaylistSource & source, data.sources)
+    if (type == WControllerPlaylist::Unknown)
     {
-        const QString & url = source.url;
-
-        WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
-
-        if (backend == NULL) continue;
-
-        QString id = backend->getTrackId(url);
-
-        if (id.isEmpty() == false && urlTracks.count() != CONTROLLERPLAYLIST_MAX_TRACKS)
+        foreach (const WControllerPlaylistSource & source, data.sources)
         {
-            QString source = backend->getUrlTrack(id);
+            const QString & url = source.url;
 
-            backend->tryDelete();
+            WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
 
-            if (urlTracks.contains(source)) continue;
+            if (backend == NULL) continue;
 
-            urlTracks.append(source);
+            QString id = backend->getTrackId(url);
+
+            if (id.isEmpty() == false && urlTracks.count() != CONTROLLERPLAYLIST_MAX_TRACKS)
+            {
+                QString source = backend->getUrlTrack(id);
+
+                backend->tryDelete();
+
+                if (urlTracks.contains(source)) continue;
+
+                urlTracks.append(source);
+
+                WTrack track(url, WTrack::Default);
+
+                playlist->addTrack(track);
+            }
+            else if (urls.count() != CONTROLLERPLAYLIST_MAX_ITEMS)
+            {
+                applyPlaylist(folder, backend, url, &urls);
+
+                backend->tryDelete();
+            }
+            else backend->tryDelete();
+        }
+
+        applySources(folder, data.files, &urls);
+
+        foreach (const WControllerPlaylistSource & media, data.medias)
+        {
+            if (urlTracks.count() == CONTROLLERPLAYLIST_MAX_TRACKS) break;
+
+            const QString & url = media.url;
+
+            if (urlTracks.contains(url)) continue;
+
+            urlTracks.append(url);
 
             WTrack track(url, WTrack::Default);
 
+            track.setTitle(media.title);
+
+            track.setCover(data.cover);
+
+            track.setFeed(feed);
+
             playlist->addTrack(track);
         }
-        else if (urls.count() != CONTROLLERPLAYLIST_MAX_ITEMS)
+
+        if (WControllerNetwork::urlIsFile(folder->source()))
         {
-            applyPlaylist(folder, backend, url, &urls);
-
-            backend->tryDelete();
+            applyCurrentIndex(playlist);
         }
-        else backend->tryDelete();
     }
-
-    applySources(folder, data.files, &urls);
-
-    foreach (const WControllerPlaylistSource & media, data.medias)
+    // NOTE: When having a single track we try to load related tracks.
+    else if (playlist->count() == 1)
     {
-        if (urlTracks.count() == CONTROLLERPLAYLIST_MAX_TRACKS) break;
-
-        const QString & url = media.url;
-
-        if (urlTracks.contains(url)) continue;
+        const QString & url = playlist->d_func()->itemAt(0)->source();
 
         urlTracks.append(url);
-
-        WTrack track(url, WTrack::Default);
-
-        track.setTitle(media.title);
-
-        track.setCover(data.cover);
-
-        track.setFeed(feed);
-
-        playlist->addTrack(track);
-    }
-
-    if (WControllerNetwork::urlIsFile(folder->source()))
-    {
-        applyCurrentIndex(playlist);
     }
 
     //---------------------------------------------------------------------------------------------

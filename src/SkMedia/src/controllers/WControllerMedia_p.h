@@ -101,6 +101,8 @@ public:
 public: // Functions
     void loadSources(WMediaReply * reply);
 
+    void loadUrl(QIODevice * device, const WBackendNetQuery & query) const;
+
     void updateSources();
 
     void clearReply(WMediaReply * reply);
@@ -111,6 +113,8 @@ public: // Functions
 
 public: // Slots
     void onLoaded(WRemoteData * data);
+
+    void onUrl(QIODevice * device, const WControllerMediaData & url);
 
     void onSourceLoaded(QIODevice * device, const WBackendNetSource & source);
 
@@ -131,6 +135,8 @@ public: // Variables
 
     QStringList                         urls;
     QHash<QString, WPrivateMediaSource> sources;
+
+    QMetaMethod methodVbml;
 
 protected:
     W_DECLARE_PUBLIC(WControllerMedia)

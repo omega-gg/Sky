@@ -30,8 +30,10 @@
 // Sk includes
 #include <WControllerApplication>
 #include <WControllerFile>
+#include <WControllerNetwork>
 #include <WControllerDownload>
 #include <WControllerPlaylist>
+#include <WYamlReader>
 #ifndef SK_NO_PLAYER
 #include <WVlcEngine>
 #include <WVlcPlayer>
@@ -161,6 +163,91 @@ QString WMediaReply::error() const
 }
 
 //=================================================================================================
+// WControllerMediaData
+//=================================================================================================
+// Interface
+
+void WControllerMediaData::applyVbml(const QByteArray & array, const QString & url)
+{
+    QString content = Sk::readBml(array);
+
+    //---------------------------------------------------------------------------------------------
+    // Api
+
+    QString api = WControllerPlaylist::vbmlVersion(content);
+
+    if (Sk::versionIsHigher(WControllerPlaylist::versionApi(), api))
+    {
+        WControllerPlaylist::vbmlPatch(content, api);
+
+        applyVbml(content.toUtf8(), url);
+
+        return;
+    }
+
+    if (Sk::versionIsLower(WControllerPlaylist::versionApi(), api))
+    {
+        qWarning("WControllerMediaReply::applyVbml: The required API is too high.");
+    }
+
+    WYamlReader reader(content.toUtf8());
+
+    //---------------------------------------------------------------------------------------------
+    // Source
+
+    QString string = reader.extractString("origin");
+
+    if (string.isEmpty() == false
+        &&
+        // NOTE: The origin has to be different than the current URL.
+        WControllerNetwork::removeUrlPrefix(url) != WControllerNetwork::removeUrlPrefix(string))
+    {
+        origin = string;
+
+        return;
+    }
+
+    // NOTE: The media is prioritized over the source.
+    source = reader.extractString("media");
+
+    if (source.isEmpty())
+    {
+        source = reader.extractString("source");
+    }
+}
+
+//=================================================================================================
+// WControllerMediaReply
+//=================================================================================================
+
+class WControllerMediaReply : public QObject
+{
+    Q_OBJECT
+
+public: // Interface
+    Q_INVOKABLE void extractVbml(QIODevice * device, const QString & url);
+
+private: // Functions
+    void applyVbml(const QByteArray & array, const QString & url);
+
+signals:
+    void loaded(QIODevice * device, const WControllerMediaData & data);
+};
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WControllerMediaReply::extractVbml(QIODevice * device, const QString & url)
+{
+    WControllerMediaData data;
+
+    data.applyVbml(device->readAll(), url);
+
+    emit loaded(device, data);
+
+    deleteLater();
+}
+
+//=================================================================================================
 // WControllerMediaPrivate
 //=================================================================================================
 
@@ -217,6 +304,12 @@ void WControllerMediaPrivate::init(const QStringList & options)
     Q_Q(WControllerMedia);
 
     loader = NULL;
+
+    qRegisterMetaType<WControllerMediaData>("WControllerMediaData");
+
+    const QMetaObject * meta = WControllerMediaReply().metaObject();
+
+    methodVbml = meta->method(meta->indexOfMethod("extractVbml(QIODevice*,QString)"));
 
     thread = new QThread(q);
 
@@ -294,8 +387,9 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
     }
     else if (WControllerPlaylist::urlIsVbmlUri(url))
     {
-        query.url  = url;
         query.type = WBackendNetQuery::TypeVbml;
+
+        query.url = url;
     }
     else
     {
@@ -326,6 +420,20 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
     medias.append(media);
 
     jobs.insert(data, media);
+}
+
+void WControllerMediaPrivate::loadUrl(QIODevice * device, const WBackendNetQuery & query) const
+{
+    Q_Q(const WControllerMedia);
+
+    WControllerMediaReply * reply = new WControllerMediaReply;
+
+    QObject::connect(reply, SIGNAL(loaded(QIODevice *, const WControllerMediaData &)),
+                     q,     SLOT  (onUrl (QIODevice *, const WControllerMediaData &)));
+
+    reply->moveToThread(thread);
+
+    methodVbml.invoke(reply, Q_ARG(QIODevice *, device), Q_ARG(const QString &, query.url));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -482,9 +590,76 @@ void WControllerMediaPrivate::onLoaded(WRemoteData * data)
             backend->loadSource(reply, media->query,
                                 q, SLOT(onSourceLoaded(QIODevice *, WBackendNetSource)));
         }
+        else loadUrl(reply, media->query);
     }
 
     delete data;
+}
+
+void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaData & data)
+{
+    Q_Q(WControllerMedia);
+
+    WPrivateMediaData * media = queries.take(device);
+
+    device->deleteLater();
+
+    if (media == NULL) return;
+
+    QString origin = data.origin;
+
+    WBackendNetQuery & query = media->query;
+
+    if (origin.isEmpty() == false)
+    {
+        query = WBackendNetQuery(origin);
+
+        if (WControllerPlaylist::urlIsVbmlUri(origin))
+        {
+            query.type = WBackendNetQuery::TypeVbml;
+
+            query.url = origin;
+        }
+
+        WRemoteData * data = wControllerPlaylist->getData(loader, query, q);
+
+        QObject::connect(data, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoaded(WRemoteData *)));
+
+        jobs.insert(data, media);
+
+        return;
+    }
+
+    QString source = data.source;
+
+    WBackendNet * backend = wControllerPlaylist->backendFromUrl(source);
+
+    if (backend)
+    {
+        query = backend->getQuerySource(source);
+
+        if (query.isValid())
+        {
+            WRemoteData * data = wControllerPlaylist->getData(loader, query, q);
+
+            QObject::connect(data, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoaded(WRemoteData *)));
+
+            media->backend = backend;
+
+            jobs.insert(data, media);
+
+            return;
+        }
+    }
+
+    foreach (WMediaReply * reply, media->replies)
+    {
+        emit reply->loaded(reply);
+    }
+
+    medias.removeOne(media);
+
+    deleteMedia(media);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -812,3 +987,5 @@ void WControllerMedia::setLoader(WAbstractLoader * loader)
 }
 
 #endif // SK_NO_CONTROLLERMEDIA
+
+#include "WControllerMedia.moc"
