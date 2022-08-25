@@ -529,6 +529,8 @@ void WControllerMediaPrivate::getData(WPrivateMediaData * media, WBackendNetQuer
 {
     Q_Q(WControllerMedia);
 
+    // NOTE: Media sources should be high priority by default. But maybe we should let the user
+    //       configure this.
     query->priority = static_cast<QNetworkRequest::Priority> (QNetworkRequest::HighPriority);
 
     WRemoteData * data = wControllerPlaylist->getData(loader, *query, q);
