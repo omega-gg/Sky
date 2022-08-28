@@ -37,8 +37,8 @@ Item
 
     /* read */ property int textHeight: pGetTextHeight()
 
-    property int marginWidth : ds(textHeight / 4)
-    property int marginHeight: ds(textHeight / 8)
+    property int marginWidth : (pSlides) ? ds(textHeight / 4) : 0
+    property int marginHeight: (pSlides) ? ds(textHeight / 8) : 0
 
     property real zoom: (pSlides) ? slides.ratio : 1.0
 

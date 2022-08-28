@@ -325,7 +325,10 @@ void WDeclarativeTextSvgPrivate::addText(QString * item, const QString & x,
                  +
                  "\" font-style=\"" + style + "\" font-weight=\"" + weight
                  +
-                 "\" font-size=\"" + size + "\" fill=\"" + color + "\"" + extra + ">"
+                 "\" font-size=\"" + size + "\" fill=\"" + color + "\"" + extra
+                 +
+                 // NOTE: We want to preserve text spaces.
+                 " xml:space=\"preserve\">"
                  +
 #ifdef QT_4
                  text.toUtf8() + "</text>");
