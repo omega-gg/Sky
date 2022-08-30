@@ -12,7 +12,7 @@ With a focus on efficiency, scalability and simplicity.<br>
 ## Projects
 
 - [MotionBox](http://omega.gg/MotionBox/sources) - Video Browser
-- [MotionMonkey](http://omega.gg/MotionMonkey) - Semantic Video Player
+- [MotionMonkey](http://omega.gg/MotionMonkey) - Semantic Player
 - [tevolution](http://omega.gg/tevolution) - Remote Video Screen
 - [clientVBML](http://omega.gg/clientVBML/sources) - VBML retriever and extractor
 - [HelloConsole](http://omega.gg/HelloConsole/sources) - "Hello World" console application
