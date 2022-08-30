@@ -182,6 +182,17 @@ void WDeclarativeImageBasePrivate::loadDefault()
     q->update();
 }
 
+void WDeclarativeImageBasePrivate::reloadDefault()
+{
+    Q_Q(WDeclarativeImageBase);
+
+    if (q->isComponentComplete() == false
+        ||
+        urlDefault.isEmpty() || sourceDefault == false) return;
+
+    loadDefault();
+}
+
 void WDeclarativeImageBasePrivate::readDefault()
 {
     Q_Q(WDeclarativeImageBase);
@@ -970,8 +981,8 @@ void WDeclarativeImageBase::setSourceSize(const QSize & size)
     // NOTE: Size can be valid even when the other half is -1.
     if (width > 0 || height > 0)
     {
-        // NOTE: Making sure sourceSize.isValid returns true. This is important to avoid
-        //       unnecessary scaling in ImageScale(s).
+        // NOTE: Clamping sourceSize to 0. This is important to avoid unnecessary scaling in
+        //       ImageScale(s).
         if (width < 0)
         {
             d->sourceSize.setWidth(0);
@@ -1020,6 +1031,8 @@ void WDeclarativeImageBase::setDefaultSize(const QSize & size)
 
     d->defaultSize = size;
 
+    d->reloadDefault();
+
     emit defaultSizeChanged();
 }
 
@@ -1030,6 +1043,8 @@ void WDeclarativeImageBase::resetDefaultSize()
     if (d->defaultSize.isValid() == false) return;
 
     d->defaultSize = QSize();
+
+    d->reloadDefault();
 
     emit defaultSizeChanged();
 }

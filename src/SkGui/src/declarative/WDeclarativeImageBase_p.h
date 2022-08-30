@@ -73,7 +73,9 @@ public: // Functions
 
     void loadUrl();
 
-    void loadDefault();
+    void loadDefault  ();
+    void reloadDefault();
+
     void readDefault();
 
     void applyRequest();
