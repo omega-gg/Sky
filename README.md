@@ -1,28 +1,28 @@
 <a href="http://omega.gg/Sky"><img src="dist/logo.png" alt="Sky kit" height="128px"></a>
 ---
-[![Discord](https://img.shields.io/discord/705770212485496852)](http://omega.gg/discord)
+[![Discord](https://img.shields.io/discord/705770212485496852)](https://omega.gg/discord)
 [![azure](https://dev.azure.com/bunjee/Sky/_apis/build/status/omega-gg.Sky)](https://dev.azure.com/bunjee/Sky/_build)
 [![appveyor](https://ci.appveyor.com/api/projects/status/86v4f4gv95u68w18?svg=true)](https://ci.appveyor.com/project/3unjee/sky)
 [![LGPLv3](https://img.shields.io/badge/License-LGPLv3-blue.svg)](https://www.gnu.org/licenses/lgpl.html)
 
 Sky is an application kit designed for multimedia software.<br>
 With a focus on efficiency, scalability and simplicity.<br>
-[omega](http://omega.gg/about) is building Sky kit to empower people.<br>
+[omega](https://omega.gg/about) is building Sky kit to empower people.<br>
 
 ## Projects
 
-- [MotionBox](http://omega.gg/MotionBox/sources) - Video Browser
-- [MotionMonkey](http://omega.gg/MotionMonkey) - Semantic Player
-- [tevolution](http://omega.gg/tevolution) - Remote Video Screen
-- [clientVBML](http://omega.gg/clientVBML/sources) - VBML retriever and extractor
-- [HelloConsole](http://omega.gg/HelloConsole/sources) - "Hello World" console application
-- [HelloSky](http://omega.gg/HelloSky/sources) - "Hello World" application
+- [MotionBox](https://omega.gg/MotionBox/sources) - Video Browser
+- [MotionMonkey](https://omega.gg/MotionMonkey) - Semantic Player
+- [tevolution](https://omega.gg/tevolution) - Remote Video Screen
+- [clientVBML](https://omega.gg/clientVBML/sources) - VBML retriever and extractor
+- [HelloConsole](https://omega.gg/HelloConsole/sources) - "Hello World" console application
+- [HelloSky](https://omega.gg/HelloSky/sources) - "Hello World" application
 
 ## Technology
 
-Sky is built in C++ on the [Qt framework](http://github.com/qtproject).<br>
-The GUI is powered by [QML](http://github.com/qtproject/qtdeclarative) and rendered with OpenGL.<br>
-The video player is based on [VLC](http://github.com/videolan/vlc) and [libtorrent](http://en.wikipedia.org/wiki/libtorrent).<br>
+Sky is built in C++ on the [Qt framework](https://github.com/qtproject).<br>
+The GUI is powered by [QML](https://github.com/qtproject/qtdeclarative) and rendered with OpenGL.<br>
+The video player is based on [VLC](https://github.com/videolan/vlc) and [libtorrent](https://en.wikipedia.org/wiki/libtorrent).<br>
 
 ## Platforms
 
@@ -34,17 +34,17 @@ The video player is based on [VLC](http://github.com/videolan/vlc) and [libtorre
 
 ## Requirements
 
-- [Qt](http://download.qt.io/official_releases/qt) 4.8.0 / 5.5.0 or later.
-- [VLC](http://download.videolan.org/pub/videolan/vlc) 2.2.0 or later.
-- [libtorrent](http://github.com/arvidn/libtorrent/releases) 1.1.0 or later.
-- [Boost](http://www.boost.org/users/download) 1.55.0 or later.
-- [OpenSSL](http://www.openssl.org/source) / [Win32OpenSSL](http://slproweb.com/products/Win32OpenSSL.html) 1.0.1 or later.
+- [Qt](https://download.qt.io/official_releases/qt) 4.8.0 / 5.5.0 or later.
+- [VLC](https://download.videolan.org/pub/videolan/vlc) 2.2.0 or later.
+- [libtorrent](https://github.com/arvidn/libtorrent/releases) 1.1.0 or later.
+- [Boost](https://www.boost.org/users/download) 1.55.0 or later.
+- [OpenSSL](https://www.openssl.org/source) / [Win32OpenSSL](https://slproweb.com/products/Win32OpenSSL.html) 1.0.1 or later.
 
 On Windows:
-- [MinGW](http://sourceforge.net/projects/mingw) or [Git for Windows](http://git-for-windows.github.io) with g++ 4.9.2 or later.
+- [MinGW](https://sourceforge.net/projects/mingw) or [Git for Windows](https://git-for-windows.github.io) with g++ 4.9.2 or later.
 
 Recommended:
-- [Qt Creator](http://download.qt.io/official_releases/qtcreator) 3.6.0 or later.
+- [Qt Creator](https://download.qt.io/official_releases/qtcreator) 3.6.0 or later.
 
 ## 3rdparty
 
@@ -85,7 +85,7 @@ Copyright (C) 2015 - 2020 Sky kit authors | http://omega.gg/Sky
 
 ### Authors
 
-- Benjamin Arnaud aka [bunjee](http://bunjee.me) | <bunjee@omega.gg>
+- Benjamin Arnaud aka [bunjee](https://bunjee.me) | <bunjee@omega.gg>
 
 ### GNU Lesser General Public License Usage
 

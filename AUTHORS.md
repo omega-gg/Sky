@@ -1,16 +1,16 @@
-# [Sky kit](http://omega.gg/Sky)
+# [Sky kit](https://omega.gg/Sky)
 ---
 
 ## Authors
 
-- Benjamin Arnaud aka [bunjee](http://bunjee.me) | <bunjee@omega.gg>
+- Benjamin Arnaud aka [bunjee](https://bunjee.me) | <bunjee@omega.gg>
 
 
 ## Contributors
 
 ### Linux port
 
-- Mio Iwakura aka [miotatsu](http://miotatsu.github.io) | <mio.iwakura@gmail.com>
+- Mio Iwakura aka [miotatsu](https://miotatsu.github.io) | <mio.iwakura@gmail.com>
 
 ### macOS port
 
