@@ -1310,7 +1310,9 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 
 /* virtual */ bool WHookTorrent::hookCheckSource(const QString & url)
 {
-    if (WControllerNetwork::extractUrlExtension(url) == "torrent" || url.startsWith("magnet:?"))
+    if (WControllerNetwork::extractUrlExtension(url) == "torrent"
+        ||
+        url.startsWith("magnet:?", Qt::CaseInsensitive))
     {
          return true;
     }

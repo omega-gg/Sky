@@ -360,13 +360,15 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
         }
     }
 
-    WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
+    QString source = WControllerMedia::generateSource(url);
+
+    WBackendNet * backend = wControllerPlaylist->backendFromUrl(source);
 
     WBackendNetQuery query;
 
     if (backend)
     {
-        query = backend->getQuerySource(url);
+        query = backend->getQuerySource(source);
 
         if (query.isValid() == false)
         {
@@ -379,15 +381,15 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
             return;
         }
     }
-    else if (WControllerPlaylist::urlIsVbmlFile(url))
+    else if (WControllerPlaylist::urlIsVbmlFile(source))
     {
-        query.url = url;
+        query.url = source;
     }
-    else if (WControllerPlaylist::urlIsVbmlUri(url))
+    else if (WControllerPlaylist::urlIsVbmlUri(source))
     {
         query.type = WBackendNetQuery::TypeVbml;
 
-        query.url = url;
+        query.url = source;
     }
     else
     {
@@ -945,6 +947,25 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
     }
 
     d->sources.clear();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Static functions
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QString WControllerMedia::generateSource(const QString & url)
+{
+    if (WControllerNetwork::urlIsHttp(url) == false) return url;
+
+    QString source = WControllerNetwork::removeUrlPrefix(url);
+
+    if (source.startsWith("vbml.", Qt::CaseInsensitive) == false) return url;
+
+    int index = source.lastIndexOf('/');
+
+    source.remove(0, index);
+
+    return "vbml:" + source;
 }
 
 //-------------------------------------------------------------------------------------------------

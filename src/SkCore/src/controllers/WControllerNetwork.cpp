@@ -654,17 +654,19 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 /* Q_INVOKABLE static */ bool WControllerNetwork::urlIsApp(const QString & string)
 {
-    return string.startsWith("app://");
+    return string.startsWith("app://", Qt::CaseInsensitive);
 }
 
 /* Q_INVOKABLE static */ bool WControllerNetwork::urlIsFile(const QString & string)
 {
-    return string.startsWith("file://");
+    return string.startsWith("file://", Qt::CaseInsensitive);
 }
 
 /* Q_INVOKABLE static */ bool WControllerNetwork::urlIsHttp(const QString & string)
 {
-    return (string.startsWith("http://") || string.startsWith("https://"));
+    return (string.startsWith("http://", Qt::CaseInsensitive)
+            ||
+            string.startsWith("https://", Qt::CaseInsensitive));
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -52,6 +52,8 @@ public:
 
     explicit WRegExp(const QString & pattern);
 
+    WRegExp(const QString & pattern, Qt::CaseSensitivity sensitivity);
+
 #ifndef QT_4
 public: // Interface
     bool exactMatch(const QString & string) const;
@@ -91,6 +93,12 @@ public: // Operators
     bool operator==(const QRegularExpression & other) const;
 
     WRegExp & operator=(const QRegularExpression & other);
+#endif
+
+#ifndef QT_4
+public: // Properties
+    Qt::CaseSensitivity caseSensitivity() const;
+    void                setCaseSensitivity(Qt::CaseSensitivity sensitivity);
 #endif
 
 private:

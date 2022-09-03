@@ -144,6 +144,8 @@ public: // Functions
     void applyPlaylist(WLibraryFolder * folder, WBackendNet * backend, const QString & url,
                                                                        QStringList   * urls) const;
 
+    void applyPlaylistVbml(WLibraryFolder * folder, const QString & url, QStringList * urls) const;
+
     void applySources(WLibraryFolder                         * folder,
                       const QList<WControllerPlaylistSource> & sources,
                       QStringList                            * urls) const;

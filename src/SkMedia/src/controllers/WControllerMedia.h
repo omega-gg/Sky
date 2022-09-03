@@ -153,6 +153,9 @@ public: // Interface
     Q_INVOKABLE void clearMedia (const QString & url);
     Q_INVOKABLE void clearMedias();
 
+public: // Static functions
+    Q_INVOKABLE static QString generateSource(const QString & url);
+
 signals:
     void loaderChanged();
 

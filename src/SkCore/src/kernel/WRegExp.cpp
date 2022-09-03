@@ -70,6 +70,16 @@ WRegExp::WRegExp()
     : QRegularExpression(pattern), WPrivatable(new WRegExpPrivate(this)) {}
 #endif
 
+WRegExp::WRegExp(const QString & pattern, Qt::CaseSensitivity sensitivity)
+#ifdef QT_4
+    : QRegExp(pattern), WPrivatable(new WRegExpPrivate(this))
+#else
+    : QRegularExpression(pattern), WPrivatable(new WRegExpPrivate(this))
+#endif
+{
+    setCaseSensitivity(sensitivity);
+}
+
 #ifndef QT_4
 
 //-------------------------------------------------------------------------------------------------
@@ -237,6 +247,36 @@ WRegExp & WRegExp::operator=(const QRegularExpression & other)
 
     return *this;
 }
+
+#ifndef QT_4
+
+//-------------------------------------------------------------------------------------------------
+// Properties
+//-------------------------------------------------------------------------------------------------
+
+Qt::CaseSensitivity WRegExp::caseSensitivity() const
+{
+    if (patternOptions().testFlag(QRegularExpression::CaseInsensitiveOption))
+    {
+         return Qt::CaseInsensitive;
+    }
+    else return Qt::CaseSensitive;
+}
+
+void WRegExp::setCaseSensitivity(Qt::CaseSensitivity sensitivity)
+{
+    QRegularExpression::PatternOptions options = patternOptions();
+
+    if (sensitivity == Qt::CaseInsensitive)
+    {
+         options.setFlag(QRegularExpression::CaseInsensitiveOption, true);
+    }
+    else options.setFlag(QRegularExpression::CaseInsensitiveOption, false);
+
+    setPatternOptions(options);
+}
+
+#endif
 
 #endif // NOT_QT_4
 

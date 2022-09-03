@@ -425,7 +425,9 @@ void WControllerPlaylistData::applyFile(const QByteArray & array, const QString 
 
     QStringList urls;
 
-    QStringList list = Sk::slices(array, WRegExp("file://|http://|https://"), WRegExp("\\s"));
+    QStringList list = Sk::slices(array,
+                                  WRegExp("file://|http://|https://|vbml:", Qt::CaseInsensitive),
+                                  WRegExp("\\s"));
 
     WRegExp regExp("[\\s\\.:,;'\"\\)}\\]]");
 
@@ -508,6 +510,8 @@ void WControllerPlaylistData::parsePlaylist(WYamlReader & reader)
     cover = reader.extractString("cover");
 
     const WYamlNode * node = reader.at("tracks");
+
+    if (node == NULL) return;
 
     const QList<WYamlNode> & children = node->children;
 
@@ -1733,6 +1737,20 @@ void WControllerPlaylistPrivate::applyPlaylist(WLibraryFolder * folder, WBackend
     folder->addItem(item);
 }
 
+void WControllerPlaylistPrivate::applyPlaylistVbml(WLibraryFolder * folder,
+                                                   const QString  & url, QStringList * urls) const
+{
+    if (urls->contains(url)) return;
+
+    urls->append(url);
+
+    WLibraryFolderItem item(WLibraryItem::Playlist, WLocalObject::Default);
+
+    item.source = url;
+
+    folder->addItem(item);
+}
+
 void WControllerPlaylistPrivate::applySources(WLibraryFolder                         * folder,
                                               const QList<WControllerPlaylistSource> & sources,
                                               QStringList                            * urls) const
@@ -2886,7 +2904,23 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
             WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
 
-            if (backend == NULL) continue;
+            if (backend == NULL)
+            {
+                if (WControllerPlaylist::urlIsVbml(url)
+                    &&
+                    urlTracks.count() != CONTROLLERPLAYLIST_MAX_TRACKS
+                    &&
+                    urlTracks.contains(url) == false)
+                {
+                    urlTracks.append(url);
+
+                    WTrack track(url, WTrack::Default);
+
+                    playlist->addTrack(track);
+                }
+
+                continue;
+            }
 
             QString id = backend->getTrackId(url);
 
@@ -3139,7 +3173,29 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
             WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
 
-            if (backend == NULL) continue;
+            if (backend == NULL)
+            {
+                if (WControllerPlaylist::urlIsVbml(url))
+                {
+                    if (urlTracks.count() != CONTROLLERPLAYLIST_MAX_TRACKS
+                        &&
+                        urlTracks.contains(url) == false)
+                    {
+                        urlTracks.append(url);
+
+                        WTrack track(url, WTrack::Default);
+
+                        playlist->addTrack(track);
+                    }
+
+                    if (urls.count() != CONTROLLERPLAYLIST_MAX_ITEMS)
+                    {
+                        applyPlaylistVbml(folder, url, &urls);
+                    }
+                }
+
+                continue;
+            }
 
             QString id = backend->getTrackId(url);
 
@@ -4131,7 +4187,7 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::urlIsTorrent(const QString & url)
 {
-    if (url.startsWith("magnet:?")) return true;
+    if (url.startsWith("magnet:?"), Qt::CaseInsensitive) return true;
 
     QString extension = WControllerNetwork::extractUrlExtension(url);
 
@@ -4142,7 +4198,11 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::urlIsVbml(const QString & url)
 {
-    return (urlIsVbmlFile(url) || urlIsVbmlUri(url));
+    if (urlIsVbmlFile(url) || urlIsVbmlUri(url)) return true;
+
+    QString source = WControllerNetwork::removeUrlPrefix(url);
+
+    return source.startsWith("vbml.", Qt::CaseInsensitive);
 }
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::urlIsVbmlFile(const QString & url)
@@ -4154,7 +4214,7 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::urlIsVbmlUri(const QString & url)
 {
-    return url.startsWith("vbml:");
+    return url.startsWith("vbml:", Qt::CaseInsensitive);
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -520,7 +520,7 @@ void WControllerTorrentPrivate::loadTorrent(WTorrentReply * reply,
     {
         WAbstractLoader * loader;
 
-        if (source.startsWith("magnet:?"))
+        if (source.startsWith("magnet:?", Qt::CaseInsensitive))
         {
              loader = loaders.value(WBackendNetQuery::TypeTorrent);
         }
