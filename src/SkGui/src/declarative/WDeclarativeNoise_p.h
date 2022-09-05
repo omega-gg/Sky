@@ -40,7 +40,7 @@
 #ifdef QT_4
 #include <private/WDeclarativeItem_p>
 #else
-#include <private/WDeclarativeItemPaint_p>
+#include <private/WDeclarativeTexture_p>
 #endif
 
 #ifndef SK_NO_DECLARATIVENOISE
@@ -48,7 +48,7 @@
 #ifdef QT_4
 class SK_GUI_EXPORT WDeclarativeNoisePrivate : public WDeclarativeItemPrivate
 #else
-class SK_GUI_EXPORT WDeclarativeNoisePrivate : public WDeclarativeItemPaintPrivate
+class SK_GUI_EXPORT WDeclarativeNoisePrivate : public WDeclarativeTexturePrivate
 #endif
 {
 protected:
@@ -64,7 +64,11 @@ public: // Functions
 public: // Variables
     QImage image;
 
-    QBasicTimer timer;
+#ifdef QT_NEW
+    QPixmap pixmap;
+
+    WDeclarativeNoise::FillMode fillMode;
+#endif
 
     QSize density;
 
@@ -72,8 +76,9 @@ public: // Variables
 
     int increment;
 
-    QColor colorBack;
-    QColor colorFront;
+    QColor color;
+
+    QBasicTimer timer;
 
 protected:
     W_DECLARE_PUBLIC(WDeclarativeNoise)

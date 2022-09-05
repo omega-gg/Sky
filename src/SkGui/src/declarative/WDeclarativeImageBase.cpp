@@ -784,8 +784,6 @@ QSize WDeclarativeImageBase::currentSize() const
                                                          const QRectF & oldGeometry)
 #endif
 {
-    Q_D(WDeclarativeImageBase);
-
 #ifdef QT_OLD
     WDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
 #else
@@ -793,6 +791,8 @@ QSize WDeclarativeImageBase::currentSize() const
 #endif
 
     if (oldGeometry.size() == newGeometry.size()) return;
+
+    Q_D(WDeclarativeImageBase);
 
     d->updateGeometry = true;
 }

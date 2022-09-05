@@ -30,6 +30,11 @@
 // Sk includes
 #include <WControllerApplication>
 
+#ifdef QT_NEW
+// Qt private includes
+#include <private/qsgadaptationlayer_p.h>
+#endif
+
 //-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
@@ -40,14 +45,12 @@ WDeclarativeNoisePrivate::WDeclarativeNoisePrivate(WDeclarativeNoise * p)
 #ifdef QT_4
     : WDeclarativeItemPrivate(p) {}
 #else
-    : WDeclarativeItemPaintPrivate(p) {}
+    : WDeclarativeTexturePrivate(p) {}
 #endif
 
 void WDeclarativeNoisePrivate::init()
 {
-#ifdef QT_4
     Q_Q(WDeclarativeNoise);
-#endif
 
     density = QSize(64, 36);
 
@@ -55,11 +58,13 @@ void WDeclarativeNoisePrivate::init()
 
     increment = 20;
 
-    colorBack  = Qt::black;
-    colorFront = Qt::white;
+    color = Qt::white;
 
 #ifdef QT_4
     q->setFlag(QGraphicsItem::ItemHasNoContents, false);
+#else
+    // We want to avoid texture filtering to get sharp pixels.
+    q->setSmooth(false);
 #endif
 }
 
@@ -80,9 +85,9 @@ void WDeclarativeNoisePrivate::resetColor()
 {
     Q_Q(WDeclarativeNoise);
 
-    int red   = colorFront.red  ();
-    int green = colorFront.green();
-    int blue  = colorFront.blue ();
+    int red   = color.red  ();
+    int green = color.green();
+    int blue  = color.blue ();
 
     for (int y = 0; y < image.height(); y++)
     {
@@ -98,6 +103,12 @@ void WDeclarativeNoisePrivate::resetColor()
         }
     }
 
+#ifdef QT_NEW
+    pixmap = QPixmap::fromImage(image);
+
+    updateTexture = true;
+#endif
+
     q->update();
 }
 
@@ -110,7 +121,7 @@ void WDeclarativeNoisePrivate::resetColor()
     : WDeclarativeItem(new WDeclarativeNoisePrivate(this), parent)
 #else
 /* explicit */ WDeclarativeNoise::WDeclarativeNoise(QQuickItem * parent)
-    : WDeclarativeItemPaint(new WDeclarativeNoisePrivate(this), parent)
+    : WDeclarativeTexture(new WDeclarativeNoisePrivate(this), parent)
 #endif
 {
     Q_D(WDeclarativeNoise); d->init();
@@ -127,7 +138,7 @@ void WDeclarativeNoisePrivate::resetColor()
 #ifdef QT_4
     WDeclarativeItem::componentComplete();
 #else
-    WDeclarativeItemPaint::componentComplete();
+    WDeclarativeTexture::componentComplete();
 #endif
 
     d->updateSize();
@@ -138,26 +149,18 @@ void WDeclarativeNoisePrivate::resetColor()
     }
 }
 
+#ifdef QT_4
+
 //-------------------------------------------------------------------------------------------------
 // QGraphicsItem reimplementation
 //-------------------------------------------------------------------------------------------------
 
-#ifdef QT_4
 /* virtual */ void WDeclarativeNoise::paint(QPainter * painter,
                                             const QStyleOptionGraphicsItem *, QWidget *)
-#else
-/* virtual */ void WDeclarativeNoise::paint(QPainter * painter)
-#endif
 {
-#ifdef QT_NEW
-    if (isVisible() == false) return;
-#endif
-
     Q_D(WDeclarativeNoise);
 
     painter->setPen(Qt::NoPen);
-
-    painter->setBrush(d->colorBack);
 
     QRectF rect(0, 0, width(), height());
 
@@ -165,6 +168,8 @@ void WDeclarativeNoisePrivate::resetColor()
 
     painter->drawImage(rect, d->image, QRectF(0, 0, d->image.width(), d->image.height()));
 }
+
+ #endif
 
 //-------------------------------------------------------------------------------------------------
 // Events
@@ -191,6 +196,12 @@ void WDeclarativeNoisePrivate::resetColor()
             line++;
         }
     }
+
+#ifdef QT_NEW
+    d->pixmap = QPixmap::fromImage(d->image);
+
+    d->updateTexture = true;
+#endif
 
     update();
 }
@@ -234,13 +245,123 @@ void WDeclarativeNoisePrivate::resetColor()
 #ifdef QT_4
     return WDeclarativeItem::itemChange(change, value);
 #else
-    WDeclarativeItemPaint::itemChange(change, value);
+    WDeclarativeTexture::itemChange(change, value);
 #endif
+}
+
+#ifdef QT_OLD
+/* virtual */ void WDeclarativeNoise::geometryChanged(const QRectF & newGeometry,
+                                                      const QRectF & oldGeometry)
+#else
+/* virtual */ void WDeclarativeNoise::geometryChange(const QRectF & newGeometry,
+                                                     const QRectF & oldGeometry)
+#endif
+{
+#ifdef QT_OLD
+    WDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
+#else
+    WDeclarativeTexture::geometryChange(newGeometry, oldGeometry);
+#endif
+
+    if (oldGeometry.size() == newGeometry.size()) return;
+
+    Q_D(WDeclarativeNoise);
+
+    d->updateGeometry = true;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Protected WDeclarativeTexture implementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ const QPixmap & WDeclarativeNoise::getPixmap()
+{
+    Q_D(WDeclarativeNoise); return d->pixmap;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Protected WDeclarativeTexture reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WDeclarativeNoise::applyGeometry(QSGInternalImageNode * node,
+                                                    const QPixmap        & pixmap)
+{
+    Q_D(WDeclarativeNoise);
+
+    qreal width  = this->width ();
+    qreal height = this->height();
+
+    // NOTE: We take the pixel ratio into account.
+    qreal ratio = ratioPixel();
+
+    int pixmapWidth  = pixmap.width () / ratio;
+    int pixmapHeight = pixmap.height() / ratio;
+
+    QRectF rect;
+
+    if ((pixmapWidth != width || pixmapHeight != height)
+        &&
+        d->fillMode == WDeclarativeNoise::PreserveAspectCrop)
+    {
+        qreal widthScale  = width  / pixmapWidth;
+        qreal heightScale = height / pixmapHeight;
+
+        if (widthScale < heightScale)
+        {
+            widthScale = heightScale;
+
+            qreal x = (width - widthScale * pixmapWidth) / 2;
+
+            rect = QRectF(x, 0, width - (x * 2), height);
+        }
+        else if (widthScale > heightScale)
+        {
+            heightScale = widthScale;
+
+            qreal y = (height - heightScale * pixmapHeight) / 2;
+
+            rect = QRectF(0, y, width, height - (y * 2));
+        }
+        else rect = QRectF(0, 0, width, height);
+    }
+    else rect = QRectF(0, 0, width, height);
+
+    node->setHorizontalWrapMode(QSGTexture::ClampToEdge);
+    node->setVerticalWrapMode  (QSGTexture::ClampToEdge);
+
+    node->setSubSourceRect(QRectF(0, 0, 1, 1));
+
+    node->setTargetRect     (rect);
+    node->setInnerTargetRect(rect);
 }
 
 //-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
+
+#ifdef QT_NEW
+
+WDeclarativeNoise::FillMode WDeclarativeNoise::fillMode() const
+{
+    Q_D(const WDeclarativeNoise); return d->fillMode;
+}
+
+void WDeclarativeNoise::setFillMode(FillMode fillMode)
+{
+    Q_D(WDeclarativeNoise);
+
+    if (d->fillMode == fillMode) return;
+
+    d->fillMode = fillMode;
+
+    d->updateGeometry = true;
+
+    update();
+
+    emit fillModeChanged();
+}
+
+#endif
 
 QSize WDeclarativeNoise::density() const
 {
@@ -315,40 +436,22 @@ void WDeclarativeNoise::setIncrement(int increment)
 
 //-------------------------------------------------------------------------------------------------
 
-QColor WDeclarativeNoise::colorBack() const
+QColor WDeclarativeNoise::color() const
 {
-    Q_D(const WDeclarativeNoise); return d->colorBack;
+    Q_D(const WDeclarativeNoise); return d->color;
 }
 
-void WDeclarativeNoise::setColorBack(const QColor & color)
+void WDeclarativeNoise::setColor(const QColor & color)
 {
     Q_D(WDeclarativeNoise);
 
-    if (d->colorBack == color) return;
+    if (d->color== color) return;
 
-    d->colorBack = color;
+    d->color = color;
 
     update();
 
-    emit colorBackChanged();
-}
-
-QColor WDeclarativeNoise::colorFront() const
-{
-    Q_D(const WDeclarativeNoise); return d->colorFront;
-}
-
-void WDeclarativeNoise::setColorFront(const QColor & color)
-{
-    Q_D(WDeclarativeNoise);
-
-    if (d->colorFront == color) return;
-
-    d->colorFront = color;
-
-    d->resetColor();
-
-    emit colorFrontChanged();
+    emit colorChanged();
 }
 
 #endif // SK_NO_DECLARATIVENOISE

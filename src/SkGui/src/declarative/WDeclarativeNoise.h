@@ -27,7 +27,7 @@
 #ifdef QT_4
 #include <WDeclarativeItem>
 #else
-#include <WDeclarativeItemPaint>
+#include <WDeclarativeTexture>
 #endif
 
 #ifndef SK_NO_DECLARATIVENOISE
@@ -37,10 +37,16 @@ class WDeclarativeNoisePrivate;
 #ifdef QT_4
 class SK_GUI_EXPORT WDeclarativeNoise : public WDeclarativeItem
 #else
-class SK_GUI_EXPORT WDeclarativeNoise : public WDeclarativeItemPaint
+class SK_GUI_EXPORT WDeclarativeNoise : public WDeclarativeTexture
 #endif
 {
     Q_OBJECT
+
+#ifdef QT_NEW
+    Q_ENUMS(FillMode)
+
+    Q_PROPERTY(FillMode fillMode READ fillMode WRITE setFillMode NOTIFY fillModeChanged)
+#endif
 
     Q_PROPERTY(QSize density READ density WRITE setDensity NOTIFY densityChanged)
 
@@ -48,8 +54,14 @@ class SK_GUI_EXPORT WDeclarativeNoise : public WDeclarativeItemPaint
 
     Q_PROPERTY(int increment READ increment WRITE setIncrement NOTIFY incrementChanged)
 
-    Q_PROPERTY(QColor colorBack  READ colorBack  WRITE setColorBack  NOTIFY colorBackChanged)
-    Q_PROPERTY(QColor colorFront READ colorFront WRITE setColorFront NOTIFY colorFrontChanged)
+    Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
+
+public: // Enums
+    enum FillMode
+    {
+        Stretch,
+        PreserveAspectCrop
+    };
 
 public:
 #ifdef QT_4
@@ -77,19 +89,39 @@ protected: // QGraphicsItem / QQuickItem reimplementation
     /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 #else
     /* virtual */ void itemChange(ItemChange change, const ItemChangeData & value);
+
+#ifdef QT_OLD
+    /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
+#else
+    /* virtual */ void geometryChange(const QRectF & newGeometry, const QRectF & oldGeometry);
+#endif
+
+protected: // WDeclarativeTexture implementation
+    /* virtual */ const QPixmap & getPixmap();
+
+protected: // WDeclarativeTexture reimplementation
+    /* virtual */ void applyGeometry(QSGInternalImageNode * node, const QPixmap & pixmap);
 #endif
 
 signals:
+#ifdef QT_NEW
+    void fillModeChanged();
+#endif
+
     void densityChanged();
 
     void intervalChanged();
 
     void incrementChanged();
 
-    void colorBackChanged ();
-    void colorFrontChanged();
+    void colorChanged();
 
 public: // Properties
+#ifdef QT_NEW
+    FillMode fillMode() const;
+    void     setFillMode(FillMode fillMode);
+#endif
+
     QSize density() const;
     void  setDensity(const QSize & density);
 
@@ -99,11 +131,8 @@ public: // Properties
     int  increment() const;
     void setIncrement(int increment);
 
-    QColor colorBack() const;
-    void   setColorBack(const QColor & color);
-
-    QColor colorFront() const;
-    void   setColorFront(const QColor & color);
+    QColor color() const;
+    void   setColor(const QColor & color);
 
 private:
     W_DECLARE_PRIVATE(WDeclarativeNoise)
