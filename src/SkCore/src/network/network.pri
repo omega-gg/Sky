@@ -1,6 +1,9 @@
 # Network module
 
-HEADERS += src/network/WCookieJar.h \
+HEADERS += src/network/WBroadcastServer.h \
+           src/network/WBroadcastServer_p.h \
+           src/network/WCookieJar.h \
            src/network/WCookieJar_p.h \
 
-SOURCES += src/network/WCookieJar.cpp \
+SOURCES += src/network/WBroadcastServer.cpp \
+           src/network/WCookieJar.cpp \
