@@ -34,8 +34,8 @@
 #include <Sk>
 
 // Forward declarations
-class WAbstractThreadAction;
 class WBarcodeReaderPrivate;
+class WAbstractThreadAction;
 
 class SK_BARCODE_EXPORT WBarcodeReader : public QObject, public WPrivatable
 {
@@ -87,15 +87,15 @@ public: // Static functions
     //       image scanning.
     Q_INVOKABLE static WAbstractThreadAction * startRead(const QImage & image,
                                                          Formats        formats,
-                                                         QObject      * receiver,
-                                                         const char   * method,
-                                                         const QRect  & target = QRect());
+                                                         QObject      * receiver = NULL,
+                                                         const char   * method   = NULL,
+                                                         const QRect  & target   = QRect());
 
     // NOTE: The 'method' format is loaded(const QString &).
     Q_INVOKABLE static WAbstractThreadAction * startReadFile(const QString & fileName,
                                                              Formats         formats,
-                                                             QObject       * receiver,
-                                                             const char    * method);
+                                                             QObject       * receiver = NULL,
+                                                             const char    * method   = NULL);
 
 private:
     W_DECLARE_PRIVATE(WBarcodeReader)

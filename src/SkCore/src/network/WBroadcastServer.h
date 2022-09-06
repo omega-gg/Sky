@@ -31,7 +31,9 @@
 
 #ifndef SK_NO_BROADCASTSERVER
 
+// Forward declarations
 class WBroadcastServerPrivate;
+class WAbstractThreadAction;
 
 class SK_CORE_EXPORT WBroadcastServer : public QObject, public WPrivatable
 {
@@ -42,6 +44,11 @@ public:
 
 public: // Static functions
     Q_INVOKABLE static QString source(const QString & prefix = QString());
+
+    // NOTE: The 'method' format is complete(const QString &).
+    Q_INVOKABLE static WAbstractThreadAction * startSource(const QString & prefix   = QString(),
+                                                           QObject       * receiver = NULL,
+                                                           const char    * method   = NULL);
 
 private:
     W_DECLARE_PRIVATE(WBroadcastServer)

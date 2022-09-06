@@ -28,9 +28,71 @@
 #include <QNetworkInterface>
 #include <QHostInfo>
 
+// Sk includes
+#include <WControllerFile>
+
+//=================================================================================================
+// WBroadcastServerSource and WBroadcastServerReply
+//=================================================================================================
+
+class WBroadcastServerSource : public WAbstractThreadAction
+{
+    Q_OBJECT
+
+public:
+    WBroadcastServerSource(const QString & prefix)
+    {
+        this->prefix = prefix;
+    }
+
+protected: // WAbstractThreadAction reimplementation
+    /* virtual */ WAbstractThreadReply * createReply() const;
+
+protected: // WAbstractThreadAction implementation
+    /* virtual */ bool run();
+
+public: // Variables
+    QString prefix;
+};
+
+class WBroadcastServerReply : public WAbstractThreadReply
+{
+    Q_OBJECT
+
+protected: // WAbstractThreadReply reimplementation
+    /* virtual */ void onCompleted(bool ok);
+
+signals:
+    void complete(const QString & text);
+
+public: // Variables
+    QString source;
+};
+
 //-------------------------------------------------------------------------------------------------
-// Private
-//-------------------------------------------------------------------------------------------------
+
+/* virtual */ WAbstractThreadReply * WBroadcastServerSource::createReply() const
+{
+    return new WBroadcastServerReply;
+}
+
+/* virtual */ bool WBroadcastServerSource::run()
+{
+    WBroadcastServerReply * reply = qobject_cast<WBroadcastServerReply *> (this->reply());
+
+    reply->source = WBroadcastServer::source(prefix);
+
+    return true;
+}
+
+/* virtual */ void WBroadcastServerReply::onCompleted(bool)
+{
+    emit complete(source);
+}
+
+//=================================================================================================
+// WBroadcastServerPrivate
+//=================================================================================================
 
 #include "WBroadcastServer_p.h"
 
@@ -40,9 +102,9 @@ WBroadcastServerPrivate::WBroadcastServerPrivate(WBroadcastServer * p) : WPrivat
 
 void WBroadcastServerPrivate::init() {}
 
-//-------------------------------------------------------------------------------------------------
-// Ctor / dtor
-//-------------------------------------------------------------------------------------------------
+//=================================================================================================
+// WBroadcastServer
+//=================================================================================================
 
 /* explicit */ WBroadcastServer::WBroadcastServer(QObject * parent)
     : QObject(parent), WPrivatable(new WBroadcastServerPrivate(this))
@@ -86,4 +148,20 @@ void WBroadcastServerPrivate::init() {}
     else return prefix + '/' + host + '/' + name;
 }
 
+/* Q_INVOKABLE static */ WAbstractThreadAction * WBroadcastServer::startSource(const QString & prefix,
+                                                                               QObject       * receiver,
+                                                                               const char    * method)
+{
+    WBroadcastServerSource * action = new WBroadcastServerSource(prefix);
+
+    WBroadcastServerReply * reply = qobject_cast<WBroadcastServerReply *>
+                                    (wControllerFile->startWriteAction(action));
+
+    if (receiver) connect(reply, SIGNAL(complete(const QString &)), receiver, method);
+
+    return action;
+}
+
 #endif // SK_NO_BROADCASTSERVER
+
+#include "WBroadcastServer.moc"

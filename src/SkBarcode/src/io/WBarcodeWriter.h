@@ -31,8 +31,8 @@
 #include <Sk>
 
 // Forward declarations
-class WAbstractThreadAction;
 class WBarcodeWriterPrivate;
+class WAbstractThreadAction;
 
 class SK_BARCODE_EXPORT WBarcodeWriter : public QObject, public WPrivatable
 {
@@ -74,39 +74,39 @@ public: // Static functions
 
     // NOTE: The 'method' format is complete(const QString &).
     Q_INVOKABLE static WAbstractThreadAction * startEncode(const QString & text,
-                                                           QObject       * receiver,
-                                                           const char    * method = NULL,
-                                                           Type            type   = Text,
-                                                           const QString & prefix = QString());
+                                                           QObject       * receiver = NULL,
+                                                           const char    * method   = NULL,
+                                                           Type            type     = Text,
+                                                           const QString & prefix   = QString());
 
     // NOTE: The 'method' format is complete(const QImage &).
     Q_INVOKABLE static WAbstractThreadAction * startWrite(const QString & text,
-                                                          QObject       * receiver,
-                                                          const char    * method = NULL,
-                                                          Type            type   = Text,
-                                                          const QString & prefix = QString());
+                                                          QObject       * receiver = NULL,
+                                                          const char    * method   = NULL,
+                                                          Type            type     = Text,
+                                                          const QString & prefix   = QString());
 
     // NOTE: The 'method' format is complete(const QImage &).
     Q_INVOKABLE static WAbstractThreadAction * startWriteTag(const QString & text,
                                                              const QString & background,
-                                                             QObject       * receiver,
-                                                             const char    * method = NULL,
-                                                             const QString & cover  = QString(),
-                                                             const QString & prefix = QString(),
-                                                             int             size   = 512,
-                                                             int             margin = 28);
+                                                             QObject       * receiver = NULL,
+                                                             const char    * method   = NULL,
+                                                             const QString & cover    = QString(),
+                                                             const QString & prefix   = QString(),
+                                                             int             size     = 512,
+                                                             int             margin   = 28);
 
     // NOTE: The 'method' format is complete(bool).
     Q_INVOKABLE static WAbstractThreadAction * startWriteTagFile(const QString & fileName,
                                                                  const QString & text,
                                                                  const QString & background,
-                                                                 QObject       * receiver,
-                                                                 const char    * method = NULL,
-                                                                 const QString & cover  = QString(),
-                                                                 const QString & prefix = QString(),
-                                                                 int             size   = 512,
-                                                                 int             margin = 28,
-                                                                 const QString & format = "png");
+                                                                 QObject       * receiver = NULL,
+                                                                 const char    * method   = NULL,
+                                                                 const QString & cover    = QString(),
+                                                                 const QString & prefix   = QString(),
+                                                                 int             size     = 512,
+                                                                 int             margin   = 28,
+                                                                 const QString & format   = "png");
 
     // NOTE: Returns a standardized VideoTag fileName.
     Q_INVOKABLE static QString getTagName(const QString & title,
