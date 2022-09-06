@@ -62,9 +62,13 @@ void WBroadcastServerPrivate::init() {}
 
     foreach (const QHostAddress & address, QNetworkInterface::allAddresses())
     {
+#ifdef QT_4
+        if (local == address || address.protocol() != QAbstractSocket::IPv4Protocol) continue;
+#else
         if (local == address
             ||
             address.protocol() != QAbstractSocket::IPv4Protocol || address.isLoopback()) continue;
+#endif
 
         host = address.toString();
 
