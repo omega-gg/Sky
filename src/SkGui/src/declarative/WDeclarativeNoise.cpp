@@ -270,6 +270,8 @@ void WDeclarativeNoisePrivate::resetColor()
     d->updateGeometry = true;
 }
 
+#ifdef QT_NEW
+
 //-------------------------------------------------------------------------------------------------
 // Protected WDeclarativeTexture implementation
 //-------------------------------------------------------------------------------------------------
@@ -334,6 +336,8 @@ void WDeclarativeNoisePrivate::resetColor()
     node->setTargetRect     (rect);
     node->setInnerTargetRect(rect);
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Properties

@@ -89,6 +89,7 @@ protected: // QGraphicsItem / QQuickItem reimplementation
     /* virtual */ QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 #else
     /* virtual */ void itemChange(ItemChange change, const ItemChangeData & value);
+#endif
 
 #ifdef QT_OLD
     /* virtual */ void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
@@ -96,6 +97,7 @@ protected: // QGraphicsItem / QQuickItem reimplementation
     /* virtual */ void geometryChange(const QRectF & newGeometry, const QRectF & oldGeometry);
 #endif
 
+#ifdef QT_NEW
 protected: // WDeclarativeTexture implementation
     /* virtual */ const QPixmap & getPixmap();
 
