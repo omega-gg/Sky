@@ -1089,7 +1089,7 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
             d->play();
         }
 
-        emit d->backend->sourceChanged();
+        emitSourceChanged();
     }
     else if (d->state < WHookTorrentPrivate::StateStarting)
     {

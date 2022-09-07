@@ -75,6 +75,8 @@ protected: // Functions
 
     void applyCurrentTime(int msec);
 
+    void emitSourceChanged() const;
+
     //---------------------------------------------------------------------------------------------
     // Backend functions
 

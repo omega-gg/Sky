@@ -200,6 +200,15 @@ void WAbstractHook::applyCurrentTime(int msec)
 }
 
 //-------------------------------------------------------------------------------------------------
+
+void WAbstractHook::emitSourceChanged() const
+{
+    Q_D(const WAbstractHook);
+
+    emit d->backend->sourceChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
 // Backend functions
 
 void WAbstractHook::setState(WAbstractBackend::State state)
