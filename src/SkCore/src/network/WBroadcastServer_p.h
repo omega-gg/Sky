@@ -38,12 +38,18 @@
 
 #ifndef SK_NO_BROADCASTSERVER
 
+// Forward declarations
+class WBroadcastServerThread;
+
 class SK_CORE_EXPORT WBroadcastServerPrivate : public WPrivate
 {
 public:
     WBroadcastServerPrivate(WBroadcastServer * p);
 
-    void init();
+    void init(int port);
+
+public: // Variables
+    WBroadcastServerThread * thread;
 
 protected:
     W_DECLARE_PUBLIC(WBroadcastServer)

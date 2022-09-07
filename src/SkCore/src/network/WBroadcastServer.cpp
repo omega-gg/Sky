@@ -25,11 +25,125 @@
 #ifndef SK_NO_BROADCASTSERVER
 
 // Qt includes
+#include <QThread>
+#include <QTcpServer>
+#include <QTcpSocket>
 #include <QNetworkInterface>
 #include <QHostInfo>
 
 // Sk includes
 #include <WControllerFile>
+
+//=================================================================================================
+// WBroadcastServerThread
+//=================================================================================================
+
+class WBroadcastServerThread : public QThread
+{
+    Q_OBJECT
+
+public:
+    WBroadcastServerThread(int port);
+
+protected: // QThread reimplementation
+    /* virtual */ void run();
+
+private: // Functions
+    void clearSocket();
+
+private slots:
+    void onConnection  ();
+    void onDisconnected();
+
+    void onBytesWritten(qint64 bytes);
+
+private:
+    QTcpServer * server;
+    QTcpSocket * socket;
+
+    int port;
+};
+
+//-------------------------------------------------------------------------------------------------
+
+WBroadcastServerThread::WBroadcastServerThread(int port)
+{
+    socket = NULL;
+
+    this->port = port;
+
+    moveToThread(this);
+
+    start(QThread::IdlePriority);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Protected QThread reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WBroadcastServerThread::run()
+{
+    server = new QTcpServer(this);
+
+    connect(server, SIGNAL(newConnection()), this, SLOT(onConnection()));
+
+    qDebug("WBroadcastServerThread: Listening on port %d...", port);
+
+    server->listen(QHostAddress::Any, port);
+
+    exec();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Functions
+//-------------------------------------------------------------------------------------------------
+
+void WBroadcastServerThread::clearSocket()
+{
+    // NOTE: We need to disconnect to avoid receiving a disconnect signal upon deletion.
+    disconnect(socket, 0, this, 0);
+
+    delete socket;
+
+    socket = NULL;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private slots
+//-------------------------------------------------------------------------------------------------
+
+void WBroadcastServerThread::onConnection()
+{
+    qDebug("WBroadcastServerThread: New connection.");
+
+    QTcpSocket * socket = server->nextPendingConnection();
+
+    if (this->socket) clearSocket();
+
+    this->socket = socket;
+
+    connect(socket, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
+
+    connect(socket, SIGNAL(bytesWritten(qint64)), this, SLOT(onBytesWritten(qint64)));
+}
+
+void WBroadcastServerThread::onDisconnected()
+{
+    qDebug("WBroadcastServerThread: Disconnected.");
+
+    disconnect(socket, 0, this, 0);
+
+    socket->deleteLater();
+
+    socket = NULL;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WBroadcastServerThread::onBytesWritten(qint64)
+{
+
+}
 
 //=================================================================================================
 // WBroadcastServerSource and WBroadcastServerReply
@@ -40,8 +154,10 @@ class WBroadcastServerSource : public WAbstractThreadAction
     Q_OBJECT
 
 public:
-    WBroadcastServerSource(const QString & prefix)
+    WBroadcastServerSource(int port, const QString & prefix)
     {
+        this->port = port;
+
         this->prefix = prefix;
     }
 
@@ -52,6 +168,8 @@ protected: // WAbstractThreadAction implementation
     /* virtual */ bool run();
 
 public: // Variables
+    int port;
+
     QString prefix;
 };
 
@@ -80,7 +198,7 @@ public: // Variables
 {
     WBroadcastServerReply * reply = qobject_cast<WBroadcastServerReply *> (this->reply());
 
-    reply->source = WBroadcastServer::source(prefix);
+    reply->source = WBroadcastServer::source(port, prefix);
 
     return true;
 }
@@ -100,23 +218,26 @@ WBroadcastServerPrivate::WBroadcastServerPrivate(WBroadcastServer * p) : WPrivat
 
 //-------------------------------------------------------------------------------------------------
 
-void WBroadcastServerPrivate::init() {}
+void WBroadcastServerPrivate::init(int port)
+{
+    thread = new WBroadcastServerThread(port);
+}
 
 //=================================================================================================
 // WBroadcastServer
 //=================================================================================================
 
-/* explicit */ WBroadcastServer::WBroadcastServer(QObject * parent)
+/* explicit */ WBroadcastServer::WBroadcastServer(int port, QObject * parent)
     : QObject(parent), WPrivatable(new WBroadcastServerPrivate(this))
 {
-    Q_D(WBroadcastServer); d->init();
+    Q_D(WBroadcastServer); d->init(port);
 }
 
 //-------------------------------------------------------------------------------------------------
 // Static functions
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ QString WBroadcastServer::source(const QString & prefix)
+/* Q_INVOKABLE static */ QString WBroadcastServer::source(int port, const QString & prefix)
 {
     const QHostAddress & local = QHostAddress(QHostAddress::LocalHost);
 
@@ -139,6 +260,8 @@ void WBroadcastServerPrivate::init() {}
 
     if (host.isEmpty()) return QString();
 
+    host += ':' + QString::number(port);
+
     QString name = QHostInfo::localHostName();
 
     if (prefix.isEmpty())
@@ -148,11 +271,12 @@ void WBroadcastServerPrivate::init() {}
     else return prefix + '/' + host + '/' + name;
 }
 
-/* Q_INVOKABLE static */ WAbstractThreadAction * WBroadcastServer::startSource(const QString & prefix,
+/* Q_INVOKABLE static */ WAbstractThreadAction * WBroadcastServer::startSource(int             port,
+                                                                               const QString & prefix,
                                                                                QObject       * receiver,
                                                                                const char    * method)
 {
-    WBroadcastServerSource * action = new WBroadcastServerSource(prefix);
+    WBroadcastServerSource * action = new WBroadcastServerSource(port, prefix);
 
     WBroadcastServerReply * reply = qobject_cast<WBroadcastServerReply *>
                                     (wControllerFile->startWriteAction(action));

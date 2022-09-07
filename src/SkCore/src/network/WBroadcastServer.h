@@ -40,13 +40,14 @@ class SK_CORE_EXPORT WBroadcastServer : public QObject, public WPrivatable
     Q_OBJECT
 
 public:
-    explicit WBroadcastServer(QObject * parent = NULL);
+    explicit WBroadcastServer(int port, QObject * parent = NULL);
 
 public: // Static functions
-    Q_INVOKABLE static QString source(const QString & prefix = QString());
+    Q_INVOKABLE static QString source(int port, const QString & prefix = QString());
 
     // NOTE: The 'method' format is complete(const QString &).
-    Q_INVOKABLE static WAbstractThreadAction * startSource(const QString & prefix   = QString(),
+    Q_INVOKABLE static WAbstractThreadAction * startSource(int             port,
+                                                           const QString & prefix   = QString(),
                                                            QObject       * receiver = NULL,
                                                            const char    * method   = NULL);
 
