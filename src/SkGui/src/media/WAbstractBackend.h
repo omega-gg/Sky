@@ -119,9 +119,6 @@ protected:
     virtual void beginOutputRemove(int first, int last);
     virtual void endOutputRemove  ();
 
-    virtual void beginOutputClear();
-    virtual void endOutputClear  ();
-
     virtual void currentOutputChanged(int index);
 
     virtual void backendDestroyed();
@@ -343,7 +340,7 @@ public: // Interface
 
     Q_INVOKABLE const WBackendOutput * currentOutputPointer() const;
 
-    Q_INVOKABLE int indexOutput(const WBackendOutput * item) const;
+    Q_INVOKABLE int indexOutput(const WBackendOutput * output) const;
 
     //---------------------------------------------------------------------------------------------
     // Watchers
@@ -382,11 +379,9 @@ protected: // Functions
     void applyVideos(const QList<WBackendTrack> & videos, int trackVideo = -1);
     void applyAudios(const QList<WBackendTrack> & audios, int trackAudio = -1);
 
-    void addOutput(const WBackendOutput & output);
+    const WBackendOutput * addOutput(const WBackendOutput & output);
 
-    void removeOutput(int index);
-
-    void clearOutputs();
+    bool removeOutput(const WBackendOutput * addOutput);
 
     void setState    (State     state);
     void setStateLoad(StateLoad stateLoad);

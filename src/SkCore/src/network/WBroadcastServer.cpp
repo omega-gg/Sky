@@ -28,8 +28,8 @@
 #include <QThread>
 #include <QTcpServer>
 #include <QTcpSocket>
-#include <QNetworkInterface>
 #include <QHostInfo>
+#include <QNetworkInterface>
 
 // Sk includes
 #include <WControllerFile>
@@ -95,7 +95,7 @@ WBroadcastServerThread::WBroadcastServerThread(int port)
 }
 
 //-------------------------------------------------------------------------------------------------
-// Functions
+// Private functions
 //-------------------------------------------------------------------------------------------------
 
 void WBroadcastServerThread::clearSocket()
@@ -216,6 +216,14 @@ public: // Variables
 
 WBroadcastServerPrivate::WBroadcastServerPrivate(WBroadcastServer * p) : WPrivate(p) {}
 
+/* virtual */ WBroadcastServerPrivate::~WBroadcastServerPrivate()
+{
+    thread->quit();
+    thread->wait();
+
+    delete thread;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 void WBroadcastServerPrivate::init(int port)
@@ -271,10 +279,10 @@ void WBroadcastServerPrivate::init(int port)
     else return prefix + '/' + host + '/' + name;
 }
 
-/* Q_INVOKABLE static */ WAbstractThreadAction * WBroadcastServer::startSource(int             port,
-                                                                               const QString & prefix,
-                                                                               QObject       * receiver,
-                                                                               const char    * method)
+/* Q_INVOKABLE static */
+WAbstractThreadAction * WBroadcastServer::startSource(int port, const QString & prefix,
+                                                                QObject       * receiver,
+                                                                const char    * method)
 {
     WBroadcastServerSource * action = new WBroadcastServerSource(port, prefix);
 

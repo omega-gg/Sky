@@ -249,6 +249,8 @@ void WDeclarativeNoisePrivate::resetColor()
 #endif
 }
 
+#ifdef QT_NEW
+
 #ifdef QT_OLD
 /* virtual */ void WDeclarativeNoise::geometryChanged(const QRectF & newGeometry,
                                                       const QRectF & oldGeometry)
@@ -269,8 +271,6 @@ void WDeclarativeNoisePrivate::resetColor()
 
     d->updateGeometry = true;
 }
-
-#ifdef QT_NEW
 
 //-------------------------------------------------------------------------------------------------
 // Protected WDeclarativeTexture implementation
@@ -337,7 +337,7 @@ void WDeclarativeNoisePrivate::resetColor()
     node->setInnerTargetRect(rect);
 }
 
-#endif
+#endif // QT_NEW
 
 //-------------------------------------------------------------------------------------------------
 // Properties

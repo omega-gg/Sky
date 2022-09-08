@@ -165,9 +165,6 @@ void WAbstractBackendPrivate::currentOutputChanged()
 /* virtual */ void WBackendWatcher::beginOutputRemove(int, int) {}
 /* virtual */ void WBackendWatcher::endOutputRemove  ()         {}
 
-/* virtual */ void WBackendWatcher::beginOutputClear() {}
-/* virtual */ void WBackendWatcher::endOutputClear  () {}
-
 /* virtual */ void WBackendWatcher::currentOutputChanged(int) {}
 
 /* virtual */ void WBackendWatcher::backendDestroyed() {}
@@ -410,10 +407,7 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 
     for (int i = 0; i < d->outputs.count(); i++)
     {
-        if (&(d->outputs.at(i)) == output)
-        {
-            return i;
-        }
+        if (&(d->outputs.at(i)) == output) return i;
     }
 
     return -1;
@@ -688,7 +682,7 @@ void WAbstractBackend::applyAudios(const QList<WBackendTrack> & audios, int trac
 
 //-------------------------------------------------------------------------------------------------
 
-void WAbstractBackend::addOutput(const WBackendOutput & output)
+const WBackendOutput * WAbstractBackend::addOutput(const WBackendOutput & output)
 {
     Q_D(WAbstractBackend);
 
@@ -713,18 +707,19 @@ void WAbstractBackend::addOutput(const WBackendOutput & output)
 
         d->currentOutputChanged();
     }
+
+    return &(d->outputs[index]);
 }
 
-void WAbstractBackend::removeOutput(int index)
+bool WAbstractBackend::removeOutput(const WBackendOutput * output)
 {
+    int index = indexOutput(output);
+
+    if (index == -1) return false;
+
     Q_D(WAbstractBackend);
 
-    // NOTE: The first index is the player itself so we add one.
-    index++;
-
     if (d->filter) d->filter->filterRemoveOutput(&index);
-
-    if (index < 0 || index >= d->outputs.count()) return;
 
     beginOutputRemove(index, index);
 
@@ -746,43 +741,8 @@ void WAbstractBackend::removeOutput(int index)
     }
 
     emit outputsChanged();
-}
 
-void WAbstractBackend::clearOutputs()
-{
-    Q_D(WAbstractBackend);
-
-    // NOTE: Currently, there is no filter for this function.
-
-    if (d->outputs.isEmpty()) return;
-
-    foreach (WBackendWatcher * watcher, d->watchers)
-    {
-        watcher->beginOutputClear();
-    }
-
-    d->outputs.clear();
-
-    foreach (WBackendWatcher * watcher, d->watchers)
-    {
-        watcher->endOutputClear();
-    }
-
-    beginOutputInsert(0, 0);
-
-    d->applyOutputs();
-
-    endOutputInsert();
-
-    // NOTE: The current output no longer exists in our list. But it might still be valid.
-    if (d->currentOutput > 0)
-    {
-        d->currentOutput = -1;
-
-        d->currentOutputChanged();
-    }
-
-    emit outputsChanged();
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------

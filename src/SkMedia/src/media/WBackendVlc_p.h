@@ -352,6 +352,8 @@ public: // Variables
 
     Qt::AspectRatioMode ratio;
 
+    QList<const WBackendOutput *> outputs;
+
     WMediaReply * reply;
 
     QMetaMethod method;

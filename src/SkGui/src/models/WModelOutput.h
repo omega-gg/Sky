@@ -68,9 +68,6 @@ protected: // WBackendWatcher implementation
     /* virtual */ void beginOutputRemove(int first, int last);
     /* virtual */ void endOutputRemove  ();
 
-    /* virtual */ void beginOutputClear();
-    /* virtual */ void endOutputClear  ();
-
     /* virtual */ void currentOutputChanged(int index);
 
     /* virtual */ void backendDestroyed();

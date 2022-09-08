@@ -177,18 +177,6 @@ void WModelOutputPrivate::itemUpdated(int index)
 
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WModelOutput::beginOutputClear()
-{
-    beginResetModel();
-}
-
-/* virtual */ void WModelOutput::endOutputClear()
-{
-    endResetModel();
-}
-
-//-------------------------------------------------------------------------------------------------
-
 /* virtual */ void WModelOutput::currentOutputChanged(int index)
 {
     Q_D(WModelOutput);

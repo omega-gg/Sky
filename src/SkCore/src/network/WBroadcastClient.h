@@ -20,42 +20,34 @@
 */
 //=================================================================================================
 
-#ifndef WBROADCASTSERVER_P_H
-#define WBROADCASTSERVER_P_H
+#ifndef WBROADCASTCLIENT_H
+#define WBROADCASTCLIENT_H
 
-/*  W A R N I N G
-    -------------
+// Qt includes
+#include <QObject>
 
-    This file is not part of the Sk API. It exists purely as an
-    implementation detail. This header file may change from version to
-    version without notice, or even be removed.
+// Sk includes
+#include <Sk>
 
-    We mean it.
-*/
+#ifndef SK_NO_BROADCASTCLIENT
 
-// Private includes
-#include <private/Sk_p>
+class WBroadcastClientPrivate;
 
-#ifndef SK_NO_BROADCASTSERVER
-
-// Forward declarations
-class WBroadcastServerThread;
-
-class SK_CORE_EXPORT WBroadcastServerPrivate : public WPrivate
+class SK_CORE_EXPORT WBroadcastClient : public QObject, public WPrivatable
 {
+    Q_OBJECT
+
 public:
-    WBroadcastServerPrivate(WBroadcastServer * p);
+    explicit WBroadcastClient(QObject * parent = NULL);
 
-    /* virtual */ ~WBroadcastServerPrivate();
+public: // Interface
+    Q_INVOKABLE void connectHost(const QString & address, int port);
 
-    void init(int port);
+    Q_INVOKABLE void disconnectHost();
 
-public: // Variables
-    WBroadcastServerThread * thread;
-
-protected:
-    W_DECLARE_PUBLIC(WBroadcastServer)
+private:
+    W_DECLARE_PRIVATE(WBroadcastClient)
 };
 
-#endif // SK_NO_BROADCASTSERVER
-#endif // WBROADCASTSERVER_P_H
+#endif // SK_NO_BROADCASTCLIENT
+#endif // WBROADCASTCLIENT_H

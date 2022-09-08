@@ -450,7 +450,7 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 {
     QEvent::Type type = event->type();
 
-    if (type == static_cast<QEvent::Type> (WCacheThread::EventGet))
+    if (type == static_cast<QEvent::Type> (EventGet))
     {
         WCacheThreadEventFile * eventFile = static_cast<WCacheThreadEventFile *> (event);
 
@@ -475,7 +475,7 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 
         return true;
     }
-    else if (type == static_cast<QEvent::Type> (WCacheThread::EventAdd))
+    else if (type == static_cast<QEvent::Type> (EventAdd))
     {
         WCacheThreadEventFile * eventFile = static_cast<WCacheThreadEventFile *> (event);
 
@@ -495,7 +495,7 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 
         return true;
     }
-    else if (type == static_cast<QEvent::Type> (WCacheThread::EventWrite))
+    else if (type == static_cast<QEvent::Type> (EventWrite))
     {
         WCacheThreadEventWrite * eventWrite = static_cast<WCacheThreadEventWrite *> (event);
 
@@ -503,7 +503,7 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 
         return true;
     }
-    else if (type == static_cast<QEvent::Type> (WCacheThread::EventAbort))
+    else if (type == static_cast<QEvent::Type> (EventAbort))
     {
         WCacheThreadEvent * eventCache = static_cast<WCacheThreadEvent *> (event);
 
@@ -548,7 +548,7 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 
         return true;
     }
-    else if (type == static_cast<QEvent::Type> (WCacheThread::EventPop))
+    else if (type == static_cast<QEvent::Type> (EventPop))
     {
         WCacheThreadEventUrls * eventUrls = static_cast<WCacheThreadEventUrls *> (event);
 
@@ -566,7 +566,7 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 
         return true;
     }
-    else if (type == static_cast<QEvent::Type> (WCacheThread::EventRemove))
+    else if (type == static_cast<QEvent::Type> (EventRemove))
     {
         WCacheThreadEventUrls * eventUrls = static_cast<WCacheThreadEventUrls *> (event);
 
@@ -601,7 +601,7 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 
         return true;
     }
-    else if (type == static_cast<QEvent::Type> (WCacheThread::EventRemoveFile))
+    else if (type == static_cast<QEvent::Type> (EventRemoveFile))
     {
         WCacheThreadEventUrls * eventUrls = static_cast<WCacheThreadEventUrls *> (event);
 
@@ -614,7 +614,7 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 
         return true;
     }
-    else if (type == static_cast<QEvent::Type> (WCacheThread::EventProxy))
+    else if (type == static_cast<QEvent::Type> (EventProxy))
     {
         WCacheThreadEventProxy * eventProxy = static_cast<WCacheThreadEventProxy *> (event);
 
@@ -625,13 +625,13 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 
         return true;
     }
-    else if (type == static_cast<QEvent::Type> (WCacheThread::EventClearProxy))
+    else if (type == static_cast<QEvent::Type> (EventClearProxy))
     {
         manager->setProxy(QNetworkProxy());
 
         return true;
     }
-    else if (type == static_cast<QEvent::Type> (WCacheThread::EventSizeMax))
+    else if (type == static_cast<QEvent::Type> (EventSizeMax))
     {
         WCacheThreadEvent * eventCache = static_cast<WCacheThreadEvent *> (event);
 
@@ -641,7 +641,7 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 
         return true;
     }
-    else if (type == static_cast<QEvent::Type> (WCacheThread::EventMaxJobs))
+    else if (type == static_cast<QEvent::Type> (EventMaxJobs))
     {
         WCacheThreadEvent * eventCache = static_cast<WCacheThreadEvent *> (event);
 
@@ -649,7 +649,7 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 
         return true;
     }
-    else if (type == static_cast<QEvent::Type> (WCacheThread::EventClearDatas))
+    else if (type == static_cast<QEvent::Type> (EventClearDatas))
     {
         timer->stop();
 
@@ -667,7 +667,7 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
 
         return true;
     }
-    else if (type == static_cast<QEvent::Type> (WCacheThread::EventClearAll))
+    else if (type == static_cast<QEvent::Type> (EventClearAll))
     {
         timer->stop();
 

@@ -20,8 +20,8 @@
 */
 //=================================================================================================
 
-#ifndef WBROADCASTSERVER_P_H
-#define WBROADCASTSERVER_P_H
+#ifndef WBROADCASTCLIENT_P_H
+#define WBROADCASTCLIENT_P_H
 
 /*  W A R N I N G
     -------------
@@ -36,26 +36,26 @@
 // Private includes
 #include <private/Sk_p>
 
-#ifndef SK_NO_BROADCASTSERVER
+#ifndef SK_NO_BROADCASTCLIENT
 
 // Forward declarations
-class WBroadcastServerThread;
+class WBroadcastClientThread;
 
-class SK_CORE_EXPORT WBroadcastServerPrivate : public WPrivate
+class SK_CORE_EXPORT WBroadcastClientPrivate : public WPrivate
 {
 public:
-    WBroadcastServerPrivate(WBroadcastServer * p);
+    WBroadcastClientPrivate(WBroadcastClient * p);
 
-    /* virtual */ ~WBroadcastServerPrivate();
+    /* virtual */ ~WBroadcastClientPrivate();
 
-    void init(int port);
+    void init();
 
 public: // Variables
-    WBroadcastServerThread * thread;
+    WBroadcastClientThread * thread;
 
 protected:
-    W_DECLARE_PUBLIC(WBroadcastServer)
+    W_DECLARE_PUBLIC(WBroadcastClient)
 };
 
-#endif // SK_NO_BROADCASTSERVER
-#endif // WBROADCASTSERVER_P_H
+#endif // SK_NO_BROADCASTCLIENT
+#endif // WBROADCASTCLIENT_P_H

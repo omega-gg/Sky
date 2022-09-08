@@ -2332,23 +2332,39 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
     }
     else if (type == static_cast<QEvent::Type> (WVlcPlayer::EventOutputAdd))
     {
+        Q_D(WBackendVlc);
+
         WVlcOutputEvent * eventOutput = static_cast<WVlcOutputEvent *> (event);
 
-        addOutput(WBackendOutput(eventOutput->name, eventOutput->type));
+        const WBackendOutput * output
+            = addOutput(WBackendOutput(eventOutput->name, eventOutput->type));
+
+        d->outputs.append(output);
 
         return true;
     }
     else if (type == static_cast<QEvent::Type> (WVlcPlayer::EventOutputRemove))
     {
+        Q_D(WBackendVlc);
+
         WVlcPlayerEvent * eventPlayer = static_cast<WVlcPlayerEvent *> (event);
 
-        removeOutput(eventPlayer->value.toInt());
+        const WBackendOutput * output = d->outputs.takeAt(eventPlayer->value.toInt());
+
+        removeOutput(output);
 
         return true;
     }
     else if (type == static_cast<QEvent::Type> (WVlcPlayer::EventOutputClear))
     {
-        clearOutputs();
+        Q_D(WBackendVlc);
+
+        foreach (const WBackendOutput * output, d->outputs)
+        {
+            removeOutput(output);
+        }
+
+        d->outputs.clear();
 
         return true;
     }
