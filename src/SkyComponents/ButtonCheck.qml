@@ -60,9 +60,7 @@ MouseArea
     //---------------------------------------------------------------------------------------------
     // Private
 
-    property bool pMaximum: (handle.x == model.handleMaximum)
-
-    property bool pMove: false
+    property bool pUpdate: true
 
     //---------------------------------------------------------------------------------------------
     // Signals
@@ -79,83 +77,86 @@ MouseArea
 
     hoverEnabled: enabled
 
-    drag.target: handle
-    drag.axis  : Drag.XAxis
-
-    drag.minimumX: model.handleMinimum
-    drag.maximumX: model.handleMaximum
-
     //---------------------------------------------------------------------------------------------
     // Events
     //---------------------------------------------------------------------------------------------
 
-    onPositionChanged: pMove = true
+    onClicked: pToggleChecked()
 
-    onPressed: pMove = false
+    onWidthChanged: pUpdatePosition()
 
-    onReleased:
-    {
-        if (pMove == false) return;
-
-        if ((model.position + handle.width / 2) < width / 2)
-        {
-            handle.x = 0;
-
-            if (checked == false) return;
-
-            checked = false;
-        }
-        else
-        {
-            handle.x = model.handleMaximum;
-
-            if (checked) return;
-
-            checked = true;
-        }
-
-        checkClicked();
-    }
-
-    onClicked:
-    {
-        checked = !(checked);
-
-        checkClicked();
-    }
-
-    //---------------------------------------------------------------------------------------------
-
-    onWidthChanged: pUpdate()
-
-    onCheckedChanged: pUpdate()
+    onCheckedChanged: if (pUpdate) pUpdatePosition()
 
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
     // Private
 
-    function pUpdate()
+    function pToggleChecked()
     {
-        if (checked)
+        checked = !checked;
+
+        checkClicked();
+    }
+
+    function pApplyX(x)
+    {
+        var from = handle.x;
+        var to;
+
+        pUpdate = false;
+
+        if (x < width / 2)
         {
-             handle.x = model.handleMaximum;
+            to = 0;
+
+            checked = false;
         }
-        else handle.x = 0;
+        else
+        {
+            to = width - handle.width;
+
+            checked = true;
+        }
+
+        pUpdate = true;
+
+        if (from == to) return;
+
+        animation.from = from;
+        animation.to   = to;
+
+        animation.restart();
+    }
+
+    function pUpdatePosition()
+    {
+        animation.stop();
+
+        if (checked) handle.x = width - handle.width;
+        else         handle.x = 0;
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Animations
+    //---------------------------------------------------------------------------------------------
+
+    NumberAnimation
+    {
+        id: animation
+
+        target: handle
+
+        property: "x"
+
+        duration: st.duration_faster
+
+        easing.type: st.easing
     }
 
     //---------------------------------------------------------------------------------------------
     // Children
     //---------------------------------------------------------------------------------------------
-
-    ModelRange
-    {
-        id: model
-
-        handleMaximum: width - handle.width
-
-        onHandleMaximumChanged: pUpdate()
-    }
 
     Rectangle
     {
@@ -173,14 +174,14 @@ MouseArea
             {
                 position: 0.0
 
-                color: (pMaximum) ? colorActiveA : colorA
+                color: (checked) ? colorActiveA : colorA
             }
 
             GradientStop
             {
                 position: 1.0
 
-                color: (pMaximum) ? colorActiveB : colorB
+                color: (checked) ? colorActiveB : colorB
             }
         }
 
@@ -199,11 +200,17 @@ MouseArea
         width : parent.height
         height: width
 
-        acceptedButtons: Qt.NoButton
-
         hoverEnabled: parent.enabled
 
-        onXChanged: model.position = x
+        drag.target: handle
+        drag.axis  : Drag.XAxis
+
+        drag.minimumX: 0
+        drag.maximumX: parent.width - width
+
+        onReleased: pApplyX(x + width / 2)
+
+        onClicked: pToggleChecked()
 
         Rectangle
         {
