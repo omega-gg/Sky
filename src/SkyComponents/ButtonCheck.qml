@@ -208,9 +208,10 @@ MouseArea
         drag.minimumX: 0
         drag.maximumX: parent.width - width
 
-        onReleased: pApplyX(x + width / 2)
-
         onClicked: pToggleChecked()
+
+        // NOTE: We update the position when the drag has ended.
+        drag.onActiveChanged: if (drag.active == false) pApplyX(x + width / 2)
 
         Rectangle
         {
