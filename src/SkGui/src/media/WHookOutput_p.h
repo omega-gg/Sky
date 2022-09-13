@@ -38,12 +38,21 @@
 
 #ifndef SK_NO_HOOKOUTPUT
 
+// Sk includes
+#include <WBroadcastClient>
+
 class SK_GUI_EXPORT WHookOutputPrivate : public WAbstractHookPrivate
 {
 public:
     WHookOutputPrivate(WHookOutput * p);
 
     void init();
+
+public: // Slots
+    void onOutputChanged();
+
+public: // Variables
+    WBroadcastClient client;
 
 protected:
     W_DECLARE_PUBLIC(WHookOutput)

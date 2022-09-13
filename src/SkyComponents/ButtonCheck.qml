@@ -114,7 +114,7 @@ MouseArea
         }
         else
         {
-            to = width - handle.width;
+            to = handle.drag.maximumX;
 
             checked = true;
         }
@@ -133,7 +133,7 @@ MouseArea
     {
         animation.stop();
 
-        if (checked) handle.x = width - handle.width;
+        if (checked) handle.x = handle.drag.maximumX;
         else         handle.x = 0;
     }
 

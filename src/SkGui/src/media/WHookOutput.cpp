@@ -28,13 +28,27 @@
 // Private
 //-------------------------------------------------------------------------------------------------
 
-#include "WHookOutput_p.h"
-
 WHookOutputPrivate::WHookOutputPrivate(WHookOutput * p) : WAbstractHookPrivate(p) {}
 
 //-------------------------------------------------------------------------------------------------
 
-void WHookOutputPrivate::init() {}
+void WHookOutputPrivate::init()
+{
+    Q_Q(WHookOutput);
+
+    QObject::connect(backend, SIGNAL(currentOutputChanged()), q, SLOT(onOutputChanged()));
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private slots
+//-------------------------------------------------------------------------------------------------
+
+void WHookOutputPrivate::onOutputChanged()
+{
+    const WBackendOutput * output = backend->currentOutputPointer();
+
+    if (output == NULL || output->type != WAbstractBackend::OutputVbml) return;
+}
 
 //-------------------------------------------------------------------------------------------------
 // Ctor / dtor
@@ -70,5 +84,14 @@ WHookOutput::WHookOutput(WAbstractBackend * backend)
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ void WHookOutput::seek(int msec) {}
+
+//-------------------------------------------------------------------------------------------------
+// Protected WAbstractHook reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ bool WHookOutput::hookCheckSource(const QString & url)
+{
+    Q_D(WHookOutput); return d->client.isConnected();
+}
 
 #endif // SK_NO_HOOKOUTPUT

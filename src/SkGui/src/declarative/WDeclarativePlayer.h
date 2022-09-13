@@ -37,6 +37,7 @@
 // Forward declarations
 class WDeclarativePlayerPrivate;
 class WAbstractHook;
+class WHookOutput;
 class WTabsTrack;
 
 #ifdef QT_6
@@ -56,7 +57,8 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
     Q_ENUMS(Repeat)
 
     Q_PROPERTY(WAbstractBackend * backend READ backend WRITE setBackend NOTIFY backendChanged)
-    Q_PROPERTY(WAbstractHook    * hook    READ hook    WRITE setHook    NOTIFY hookChanged)
+
+    Q_PROPERTY(QList<WAbstractHook *> hooks READ hooks WRITE setHooks NOTIFY hooksChanged)
 
     Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
 
@@ -244,7 +246,7 @@ signals:
     void ended();
 
     void backendChanged();
-    void hookChanged   ();
+    void hooksChanged  ();
 
     void sourceChanged();
 
@@ -311,8 +313,8 @@ public: // Properties
     WAbstractBackend * backend() const;
     void               setBackend(WAbstractBackend * backend);
 
-    WAbstractHook * hook() const;
-    void            setHook(WAbstractHook * hook);
+    QList<WAbstractHook *> hooks() const;
+    void                   setHooks(const QList<WAbstractHook *> & hooks);
 
     QString source() const;
     void    setSource(const QString & url);

@@ -50,9 +50,16 @@ public: // WAbstractHook reimplementation
 
     /* Q_INVOKABLE virtual */ void seek(int msec);
 
+protected: // WAbstractHook reimplementation
+    /* virtual */ bool hookCheckSource(const QString & url);
+
 private:
     W_DECLARE_PRIVATE(WHookOutput)
+
+    Q_PRIVATE_SLOT(d_func(), void onOutputChanged())
 };
+
+#include <private/WHookOutput_p>
 
 #endif // SK_NO_HOOKOUTPUT
 #endif // WHOOKOUTPUT_H

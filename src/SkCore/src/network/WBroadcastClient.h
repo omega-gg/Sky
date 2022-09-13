@@ -37,6 +37,8 @@ class SK_CORE_EXPORT WBroadcastClient : public QObject, public WPrivatable
 {
     Q_OBJECT
 
+    Q_PROPERTY(bool isConnected READ isConnected NOTIFY connectedChanged)
+
 public:
     explicit WBroadcastClient(QObject * parent = NULL);
 
@@ -44,6 +46,12 @@ public: // Interface
     Q_INVOKABLE void connectHost(const QString & address, int port);
 
     Q_INVOKABLE void disconnectHost();
+
+signals:
+    void connectedChanged();
+
+public: // Properties
+    bool isConnected() const;
 
 private:
     W_DECLARE_PRIVATE(WBroadcastClient)

@@ -44,6 +44,7 @@ class QPainter;
 class QStyleOptionGraphicsItem;
 #endif
 class WAbstractBackendPrivate;
+class WAbstractBackend;
 class WDeclarativePlayer;
 class WBackendFilter;
 class WBackendTrack;
@@ -247,6 +248,7 @@ public:
     {
         OutputDefault,
         OutputUnknown,
+        OutputVbml,
         OutputChromecast
     };
 
@@ -639,6 +641,8 @@ public: // Variables
     QString name;
 
     WAbstractBackend::OutputType type;
+
+    QString source;
 };
 
 //-------------------------------------------------------------------------------------------------

@@ -62,11 +62,7 @@ void WAbstractHookPrivate::init(WAbstractBackend * backend)
 
 void WAbstractHookPrivate::onBackendDestroyed()
 {
-    Q_Q(WAbstractHook);
-
     filterActive = false;
-
-    q->deleteLater();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -74,13 +70,13 @@ void WAbstractHookPrivate::onBackendDestroyed()
 //-------------------------------------------------------------------------------------------------
 
 WAbstractHook::WAbstractHook(WAbstractBackend * backend)
-    : QObject(), WPrivatable(new WAbstractHookPrivate(this))
+    : QObject(backend), WPrivatable(new WAbstractHookPrivate(this))
 {
     Q_D(WAbstractHook); d->init(backend);
 }
 
 WAbstractHook::WAbstractHook(WAbstractHookPrivate * p, WAbstractBackend * backend)
-    : QObject(), WPrivatable(p)
+    : QObject(backend), WPrivatable(p)
 {
     Q_D(WAbstractHook); d->init(backend);
 }
@@ -102,8 +98,6 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p, WAbstractBackend * backen
 {
     Q_D(const WAbstractHook); return d->source;
 }
-
-//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ bool WAbstractHook::sourceIsVideo() const
 {
@@ -371,15 +365,6 @@ QImage WAbstractHook::backendGetFrame() const
 }
 
 #endif
-
-//-------------------------------------------------------------------------------------------------
-// Protected virtual functions
-//-------------------------------------------------------------------------------------------------
-
-/* virtual */ bool WAbstractHook::hookCheckSource(const QString &)
-{
-    return false;
-}
 
 //-------------------------------------------------------------------------------------------------
 // Properties

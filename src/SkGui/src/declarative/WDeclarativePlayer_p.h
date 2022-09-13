@@ -65,7 +65,10 @@ public: // Functions
 
     void setTab(WTabTrack * tab);
 
-    void loadSource(const QString & source, int duration, int currentTime);
+    void loadSource(const QString & url, int duration, int currentTime);
+
+    void applyBackend(WBackendInterface * backend,
+                      const QString & url, int duration, int currentTime);
 
     void stop();
 
@@ -101,7 +104,8 @@ public: // Slots
 
 public: // Variables
     WAbstractBackend * backend;
-    WAbstractHook    * hook;
+
+    QList<WAbstractHook *> hooks;
 
     WBackendInterface * backendInterface;
 

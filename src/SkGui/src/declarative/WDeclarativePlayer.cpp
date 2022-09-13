@@ -32,6 +32,7 @@
 // Sk includes
 #include <WControllerApplication>
 #include <WAbstractHook>
+#include <WHookOutput>
 #include <WPlaylist>
 #include <WTabsTrack>
 #include <WTabTrack>
@@ -60,7 +61,6 @@ void WDeclarativePlayerPrivate::init()
     Q_Q(WDeclarativePlayer);
 
     backend = NULL;
-    hook    = NULL;
 
     backendInterface = NULL;
 
@@ -230,81 +230,58 @@ void WDeclarativePlayerPrivate::setTab(WTabTrack * tab)
 
 //-------------------------------------------------------------------------------------------------
 
-void WDeclarativePlayerPrivate::loadSource(const QString & source, int duration, int currentTime)
+void WDeclarativePlayerPrivate::loadSource(const QString & url, int duration, int currentTime)
+{
+    foreach (WAbstractHook * hook, hooks)
+    {
+        if (hook->checkSource(url) == false) continue;
+
+        applyBackend(hook, url, duration, currentTime);
+
+        return;
+    }
+
+    if (backend) applyBackend(backend, url, duration, currentTime);
+}
+
+void WDeclarativePlayerPrivate::applyBackend(WBackendInterface * backend,
+                                             const QString & url, int duration, int currentTime)
 {
     Q_Q(WDeclarativePlayer);
 
-    if (hook && hook->checkSource(source))
+    if (backendInterface == NULL)
     {
-        if (backendInterface && backendInterface == backend)
-        {
-            if (backend->isPlaying())
-            {
-                // NOTE: We have to keep state to avoid clearing highlightedTab.
-                keepState = true;
+        backendInterface = backend;
 
-                backend->clear();
-
-                keepState = false;
-
-                backendInterface = hook;
-
-                hook->loadSource(source, duration, currentTime);
-
-                hook->play();
-            }
-            else
-            {
-                backend->clear();
-
-                backendInterface = hook;
-
-                hook->loadSource(source, duration, currentTime);
-            }
-        }
-        else
-        {
-            backendInterface = hook;
-
-            hook->loadSource(source, duration, currentTime);
-        }
+        backend->loadSource(url, duration, currentTime);
     }
-    else if (backend)
+    else if (backendInterface != backend)
     {
-        if (backendInterface && backendInterface == hook)
+        if (this->backend->isPlaying())
         {
-            if (hook->backend()->isPlaying())
-            {
-                // NOTE: We have to keep state to avoid clearing highlightedTab.
-                keepState = true;
+            // NOTE: We have to freeze the state to avoid clearing highlightedTab.
+            keepState = true;
 
-                hook->clear();
+            backendInterface->clear();
 
-                keepState = false;
+            keepState = false;
 
-                backendInterface = backend;
-
-                backend->loadSource(source, duration, currentTime);
-
-                backend->play();
-            }
-            else
-            {
-                hook->clear();
-
-                backendInterface = backend;
-
-                backend->loadSource(source, duration, currentTime);
-            }
-        }
-        else
-        {
             backendInterface = backend;
 
-            backend->loadSource(source, duration, currentTime);
+            backend->loadSource(url, duration, currentTime);
+
+            backend->play();
+        }
+        else
+        {
+            backendInterface->clear();
+
+            backendInterface = backend;
+
+            backend->loadSource(url, duration, currentTime);
         }
     }
-    else backendInterface = NULL;
+    else backend->loadSource(url, duration, currentTime);
 
     if (shuffle && shuffleLock == false)
     {
@@ -634,14 +611,16 @@ void WDeclarativePlayerPrivate::onHookDestroyed()
 {
     Q_Q(WDeclarativePlayer);
 
+    WAbstractHook * hook = static_cast<WAbstractHook *> (q->sender());
+
     if (backendInterface == hook)
     {
         backendInterface = backend;
     }
 
-    hook = NULL;
+    hooks.removeOne(hook);
 
-    emit q->hookChanged();
+    emit q->hooksChanged();
 }
 
 void WDeclarativePlayerPrivate::onTabsDestroyed()
@@ -1262,143 +1241,132 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 {
     Q_D(WDeclarativePlayer);
 
-    if (d->backend == backend) return;
+    if (backend == NULL) return;
 
     if (d->backend)
     {
-        d->source = d->backendInterface->source();
+        qWarning("WDeclarativePlayer::setBackend: The backend is already set.");
 
-        if (d->backendInterface == d->backend)
-        {
-            d->backendInterface = backend;
-        }
-
-        disconnect(d->backend, 0, this, 0);
-
-        d->backend->deleteBackend();
-    }
-    else if (d->backendInterface == d->backend)
-    {
-        d->backendInterface = backend;
+        return;
     }
 
     d->backend = backend;
 
-    if (backend)
+    d->backendInterface = backend;
+
+    backend->setParent    (this);
+    backend->setParentItem(this);
+
+    backend->setSize(QSizeF(width(), height()));
+
+    d->updateRepeat();
+
+    backend->setSpeed(d->speed);
+
+    backend->setVolume(d->volume);
+
+    backend->setOutput (d->output);
+    backend->setQuality(d->quality);
+
+    backend->setFillMode(d->fillMode);
+
+    backend->setTrackVideo(d->trackVideo);
+    backend->setTrackAudio(d->trackAudio);
+
+    backend->setScanOutput(d->scanOutput);
+
+    backend->setCurrentOutput(d->currentOutput);
+
+    if (d->source.isEmpty() == false)
     {
-        backend->setParent    (this);
-        backend->setParentItem(this);
+        d->clearPlaylistAndTabs();
 
-        backend->setSize(QSizeF(width(), height()));
-
-        d->updateRepeat();
-
-        backend->setSpeed(d->speed);
-
-        backend->setVolume(d->volume);
-
-        backend->setOutput (d->output);
-        backend->setQuality(d->quality);
-
-        backend->setFillMode(d->fillMode);
-
-        backend->setTrackVideo(d->trackVideo);
-        backend->setTrackAudio(d->trackAudio);
-
-        backend->setScanOutput(d->scanOutput);
-
-        backend->setCurrentOutput(d->currentOutput);
-
-        if (d->source.isEmpty() == false)
-        {
-            d->clearPlaylistAndTabs();
-
-            d->loadSource(d->source, -1, -1);
-        }
-
-        connect(backend, SIGNAL(stateChanged    ()), this, SIGNAL(stateChanged    ()));
-        connect(backend, SIGNAL(stateLoadChanged()), this, SIGNAL(stateLoadChanged()));
-
-        connect(backend, SIGNAL(liveChanged()), this, SIGNAL(liveChanged()));
-
-        connect(backend, SIGNAL(startedChanged()), this, SIGNAL(startedChanged()));
-        connect(backend, SIGNAL(endedChanged  ()), this, SIGNAL(endedChanged  ()));
-
-        connect(backend, SIGNAL(currentTimeChanged()), this, SIGNAL(currentTimeChanged()));
-        connect(backend, SIGNAL(durationChanged   ()), this, SIGNAL(durationChanged   ()));
-
-        connect(backend, SIGNAL(progressChanged()), this, SIGNAL(progressChanged()));
-
-        connect(backend, SIGNAL(speedChanged()), this, SIGNAL(speedChanged()));
-
-        connect(backend, SIGNAL(volumeChanged()), this, SIGNAL(volumeChanged()));
-
-        connect(backend, SIGNAL(repeatChanged()), this, SIGNAL(repeatChanged()));
-
-        connect(backend, SIGNAL(outputChanged ()), this, SIGNAL(outputChanged ()));
-        connect(backend, SIGNAL(qualityChanged()), this, SIGNAL(qualityChanged()));
-
-        connect(backend, SIGNAL(outputActiveChanged ()), this, SIGNAL(outputActiveChanged ()));
-        connect(backend, SIGNAL(qualityActiveChanged()), this, SIGNAL(qualityActiveChanged()));
-
-        connect(backend, SIGNAL(fillModeChanged()), this, SIGNAL(fillModeChanged()));
-
-        connect(backend, SIGNAL(trackVideoChanged()), this, SIGNAL(trackVideoChanged()));
-        connect(backend, SIGNAL(trackAudioChanged()), this, SIGNAL(trackAudioChanged()));
-
-        connect(backend, SIGNAL(videosChanged()), this, SIGNAL(videosChanged()));
-        connect(backend, SIGNAL(audiosChanged()), this, SIGNAL(audiosChanged()));
-
-        connect(backend, SIGNAL(scanOutputChanged()), this, SIGNAL(scanOutputChanged()));
-
-        connect(backend, SIGNAL(currentOutputChanged()), this, SIGNAL(currentOutputChanged()));
-
-        connect(backend, SIGNAL(outputsChanged()), this, SIGNAL(outputsChanged()));
-
-        connect(backend, SIGNAL(ended()), this, SLOT(onEnded()));
-
-        connect(backend, SIGNAL(stateChanged   ()), this, SLOT(onStateChanged   ()));
-        connect(backend, SIGNAL(durationChanged()), this, SLOT(onDurationChanged()));
+        d->loadSource(d->source, -1, -1);
     }
+
+    connect(backend, SIGNAL(stateChanged    ()), this, SIGNAL(stateChanged    ()));
+    connect(backend, SIGNAL(stateLoadChanged()), this, SIGNAL(stateLoadChanged()));
+
+    connect(backend, SIGNAL(liveChanged()), this, SIGNAL(liveChanged()));
+
+    connect(backend, SIGNAL(startedChanged()), this, SIGNAL(startedChanged()));
+    connect(backend, SIGNAL(endedChanged  ()), this, SIGNAL(endedChanged  ()));
+
+    connect(backend, SIGNAL(currentTimeChanged()), this, SIGNAL(currentTimeChanged()));
+    connect(backend, SIGNAL(durationChanged   ()), this, SIGNAL(durationChanged   ()));
+
+    connect(backend, SIGNAL(progressChanged()), this, SIGNAL(progressChanged()));
+
+    connect(backend, SIGNAL(speedChanged()), this, SIGNAL(speedChanged()));
+
+    connect(backend, SIGNAL(volumeChanged()), this, SIGNAL(volumeChanged()));
+
+    connect(backend, SIGNAL(repeatChanged()), this, SIGNAL(repeatChanged()));
+
+    connect(backend, SIGNAL(outputChanged ()), this, SIGNAL(outputChanged ()));
+    connect(backend, SIGNAL(qualityChanged()), this, SIGNAL(qualityChanged()));
+
+    connect(backend, SIGNAL(outputActiveChanged ()), this, SIGNAL(outputActiveChanged ()));
+    connect(backend, SIGNAL(qualityActiveChanged()), this, SIGNAL(qualityActiveChanged()));
+
+    connect(backend, SIGNAL(fillModeChanged()), this, SIGNAL(fillModeChanged()));
+
+    connect(backend, SIGNAL(trackVideoChanged()), this, SIGNAL(trackVideoChanged()));
+    connect(backend, SIGNAL(trackAudioChanged()), this, SIGNAL(trackAudioChanged()));
+
+    connect(backend, SIGNAL(videosChanged()), this, SIGNAL(videosChanged()));
+    connect(backend, SIGNAL(audiosChanged()), this, SIGNAL(audiosChanged()));
+
+    connect(backend, SIGNAL(scanOutputChanged()), this, SIGNAL(scanOutputChanged()));
+
+    connect(backend, SIGNAL(currentOutputChanged()), this, SIGNAL(currentOutputChanged()));
+
+    connect(backend, SIGNAL(outputsChanged()), this, SIGNAL(outputsChanged()));
+
+    connect(backend, SIGNAL(ended()), this, SLOT(onEnded()));
+
+    connect(backend, SIGNAL(stateChanged   ()), this, SLOT(onStateChanged   ()));
+    connect(backend, SIGNAL(durationChanged()), this, SLOT(onDurationChanged()));
 
     emit backendChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
 
-WAbstractHook * WDeclarativePlayer::hook() const
+QList<WAbstractHook *> WDeclarativePlayer::hooks() const
 {
-    Q_D(const WDeclarativePlayer); return d->hook;
+    Q_D(const WDeclarativePlayer); return d->hooks;
 }
 
-void WDeclarativePlayer::setHook(WAbstractHook * hook)
+void WDeclarativePlayer::setHooks(const QList<WAbstractHook *> & hooks)
 {
     Q_D(WDeclarativePlayer);
 
-    if (d->hook == hook) return;
-
-    if (d->backendInterface == d->hook)
+    if (d->backend == NULL)
     {
-        d->backendInterface = d->backend;
+        qWarning("WDeclarativePlayer::setHooks: The backend is not set.");
+
+        return;
     }
 
-    if (d->hook)
+    if (d->hooks.isEmpty() == false)
     {
-        disconnect(d->hook, 0, this, 0);
+        qWarning("WDeclarativePlayer::setHooks: Hooks are already set.");
 
-        delete d->hook;
+        return;
     }
 
-    d->hook = hook;
+    d->hooks = hooks;
 
-    if (hook)
+    foreach (WAbstractHook * hook, hooks)
     {
-        hook->setParent(this);
+        Q_ASSERT(hook);
+        Q_ASSERT(hook->backend() == d->backend);
 
         connect(hook, SIGNAL(destroyed()), this, SLOT(onHookDestroyed()));
     }
 
-    emit hookChanged();
+    emit hooksChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

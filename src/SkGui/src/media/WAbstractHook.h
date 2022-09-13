@@ -127,8 +127,8 @@ protected: // Functions
     QImage backendGetFrame   () const;
 #endif
 
-protected: // Virtual functions
-    virtual bool hookCheckSource(const QString & url);
+protected: // Abstract functions
+    virtual bool hookCheckSource(const QString & url) = 0;
 
 signals:
     void filterActiveChanged();

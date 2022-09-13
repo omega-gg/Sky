@@ -211,6 +211,8 @@ WBroadcastClientPrivate::WBroadcastClientPrivate(WBroadcastClient * p) : WPrivat
 void WBroadcastClientPrivate::init()
 {
     thread = new WBroadcastClientThread();
+
+    connected = false;
 }
 
 //=================================================================================================
@@ -240,6 +242,15 @@ void WBroadcastClientPrivate::init()
 
     QCoreApplication::postEvent(d->thread, new QEvent(static_cast<QEvent::Type>
                                                       (WBroadcastClientThread::EventDisconnect)));
+}
+
+//-------------------------------------------------------------------------------------------------
+// Properties
+//-------------------------------------------------------------------------------------------------
+
+bool WBroadcastClient::isConnected() const
+{
+    Q_D(const WBroadcastClient); return d->connected;
 }
 
 #endif // SK_NO_BROADCASTCLIENT

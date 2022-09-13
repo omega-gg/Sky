@@ -479,8 +479,6 @@ QString WAbstractBackend::qualityToString(Quality quality)
     Q_D(const WAbstractBackend); return d->source;
 }
 
-//-------------------------------------------------------------------------------------------------
-
 /* Q_INVOKABLE virtual */ bool WAbstractBackend::sourceIsVideo() const
 {
     Q_D(const WAbstractBackend);
