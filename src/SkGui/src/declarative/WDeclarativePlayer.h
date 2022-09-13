@@ -37,7 +37,6 @@
 // Forward declarations
 class WDeclarativePlayerPrivate;
 class WAbstractHook;
-class WHookOutput;
 class WTabsTrack;
 
 #ifdef QT_6

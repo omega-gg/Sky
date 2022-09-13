@@ -32,7 +32,6 @@
 // Sk includes
 #include <WControllerApplication>
 #include <WAbstractHook>
-#include <WHookOutput>
 #include <WPlaylist>
 #include <WTabsTrack>
 #include <WTabTrack>
