@@ -718,6 +718,8 @@ void WPlaylistPrivate::insertTracks(int index, WList<WTrack> tracks)
 
 /* virtual */ WTrack * WPlaylistPrivate::getTrack(int index)
 {
+    if (index < 0 || index >= tracks.count()) return NULL;
+
     return &(tracks[index]);
 }
 
@@ -1728,11 +1730,11 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     return -1;
 }
 
-/* Q_INVOKABLE */ int WPlaylist::indexFromSource(const QString & source, bool cleanFragment) const
+/* Q_INVOKABLE */ int WPlaylist::indexFromSource(const QString & source, bool clean) const
 {
     Q_D(const WPlaylist);
 
-    if (cleanFragment)
+    if (clean)
     {
         QString string = WControllerPlaylist::cleanSource(source);
 

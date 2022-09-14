@@ -118,6 +118,8 @@ void WBroadcastServerThread::onConnection()
 
     QTcpSocket * socket = server->nextPendingConnection();
 
+    if (socket == NULL) return;
+
     if (this->socket) clearSocket();
 
     this->socket = socket;

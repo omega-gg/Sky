@@ -617,6 +617,8 @@ void WTorrentThread::onConnection()
 
     QTcpSocket * socket = server->nextPendingConnection();
 
+    if (socket == NULL) return;
+
     if (file == NULL)
     {
         qDebug("SKIP CONNECTION");
