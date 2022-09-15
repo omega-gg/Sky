@@ -67,8 +67,7 @@ public: // Functions
 
     void loadSource(const QString & url, int duration, int currentTime);
 
-    void applyBackend(WBackendInterface * backend,
-                      const QString & url, int duration, int currentTime);
+    bool updateBackend(const QString & url);
 
     void stop();
 

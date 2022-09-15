@@ -231,30 +231,44 @@ void WDeclarativePlayerPrivate::setTab(WTabTrack * tab)
 
 void WDeclarativePlayerPrivate::loadSource(const QString & url, int duration, int currentTime)
 {
+    Q_Q(WDeclarativePlayer);
+
+    if (updateBackend(url))
+    {
+        backendInterface->loadSource(url, duration, currentTime);
+
+        backendInterface->play();
+    }
+    else backendInterface->loadSource(url, duration, currentTime);
+
+    if (shuffle && shuffleLock == false)
+    {
+        resetShuffle();
+
+        emit q->playlistUpdated();
+    }
+
+    emit q->sourceChanged();
+}
+
+bool WDeclarativePlayerPrivate::updateBackend(const QString & url)
+{
+    WBackendInterface * backend = NULL;
+
     foreach (WAbstractHook * hook, hooks)
     {
         if (hook->checkSource(url) == false) continue;
 
-        applyBackend(hook, url, duration, currentTime);
+        backend = hook;
 
-        return;
+        break;
     }
 
-    if (backend) applyBackend(backend, url, duration, currentTime);
-}
+    if (backend == NULL) backend = this->backend;
 
-void WDeclarativePlayerPrivate::applyBackend(WBackendInterface * backend,
-                                             const QString & url, int duration, int currentTime)
-{
-    Q_Q(WDeclarativePlayer);
+    if (backendInterface == backend) return false;
 
-    if (backendInterface == NULL)
-    {
-        backendInterface = backend;
-
-        backend->loadSource(url, duration, currentTime);
-    }
-    else if (backendInterface != backend)
+    if (backendInterface)
     {
         if (this->backend->isPlaying())
         {
@@ -267,29 +281,18 @@ void WDeclarativePlayerPrivate::applyBackend(WBackendInterface * backend,
 
             backendInterface = backend;
 
-            backend->loadSource(url, duration, currentTime);
-
-            backend->play();
+            return true;
         }
         else
         {
             backendInterface->clear();
 
             backendInterface = backend;
-
-            backend->loadSource(url, duration, currentTime);
         }
     }
-    else backend->loadSource(url, duration, currentTime);
+    else backendInterface = backend;
 
-    if (shuffle && shuffleLock == false)
-    {
-        resetShuffle();
-
-        emit q->playlistUpdated();
-    }
-
-    emit q->sourceChanged();
+    return false;
 }
 
 void WDeclarativePlayerPrivate::stop()
