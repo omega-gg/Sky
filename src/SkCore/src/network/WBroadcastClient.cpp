@@ -31,6 +31,9 @@
 #include <QTcpSocket>
 #include <QHostInfo>
 
+// Sk includes
+#include <WControllerNetwork>
+
 //=================================================================================================
 // WBroadcastClientThread
 //=================================================================================================
@@ -242,6 +245,34 @@ void WBroadcastClientPrivate::init()
 
     QCoreApplication::postEvent(d->thread, new QEvent(static_cast<QEvent::Type>
                                                       (WBroadcastClientThread::EventDisconnect)));
+}
+
+//-------------------------------------------------------------------------------------------------
+// Static functions
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ WBroadcastSource WBroadcastClient::extractSource(const QString & url)
+{
+    WBroadcastSource source;
+
+    source.port = 0;
+
+    QStringList list = WControllerNetwork::removeUrlPrefix(url).split('/');
+
+    int count = list.count();
+
+    if (count < 3 || list.at(1).toLower() != "connect") return source;
+
+    QStringList host = list.at(2).split(':');
+
+    if (host.count() < 2) return source;
+
+    source.ip   = host.at(0);
+    source.port = host.at(1).toInt();
+
+    if (count > 3) source.name = list.at(3);
+
+    return source;
 }
 
 //-------------------------------------------------------------------------------------------------

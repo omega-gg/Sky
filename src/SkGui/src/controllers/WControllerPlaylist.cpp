@@ -4217,6 +4217,23 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
     return url.startsWith("vbml:", Qt::CaseInsensitive);
 }
 
+/* Q_INVOKABLE static */ bool WControllerPlaylist::urlIsVbmlConnect(const QString & url)
+{
+    QString source = WControllerNetwork::removeUrlPrefix(url);
+
+    if (source.startsWith("vbml.", Qt::CaseInsensitive) == false) return false;
+
+    int index = source.indexOf('/', 5);
+
+    if (index == -1) return false;
+
+    index++;
+
+    source = WControllerNetwork::extractUrlElement(source, index);
+
+    return (source.toLower() == "connect");
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsMedia(const QString & extension)

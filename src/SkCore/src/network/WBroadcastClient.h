@@ -33,6 +33,22 @@
 
 class WBroadcastClientPrivate;
 
+//-------------------------------------------------------------------------------------------------
+// WBroadcastSource
+//-------------------------------------------------------------------------------------------------
+
+struct WBroadcastSource
+{
+    QString ip;
+    int     port;
+
+    QString name;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WBroadcastClient
+//-------------------------------------------------------------------------------------------------
+
 class SK_CORE_EXPORT WBroadcastClient : public QObject, public WPrivatable
 {
     Q_OBJECT
@@ -46,6 +62,9 @@ public: // Interface
     Q_INVOKABLE void connectHost(const QString & address, int port);
 
     Q_INVOKABLE void disconnectHost();
+
+public: // Static functions
+    Q_INVOKABLE static WBroadcastSource extractSource(const QString & url);
 
 signals:
     void connectedChanged();

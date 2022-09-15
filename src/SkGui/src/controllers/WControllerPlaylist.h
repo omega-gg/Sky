@@ -235,6 +235,8 @@ public: // Static functions
     Q_INVOKABLE static bool urlIsVbmlFile(const QString & url);
     Q_INVOKABLE static bool urlIsVbmlUri (const QString & url);
 
+    Q_INVOKABLE static bool urlIsVbmlConnect(const QString & url); // vbml connect url.
+
     //---------------------------------------------------------------------------------------------
 
     Q_INVOKABLE static bool extensionIsMedia(const QString & extension);

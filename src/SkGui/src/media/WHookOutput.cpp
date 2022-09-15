@@ -61,6 +61,20 @@ WHookOutput::WHookOutput(WAbstractBackend * backend)
 }
 
 //-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WHookOutput::connectHost(const QString & source)
+{
+
+}
+
+/* Q_INVOKABLE */ void WHookOutput::disconnectHost()
+{
+    Q_D(WHookOutput); d->client.disconnectHost();
+}
+
+//-------------------------------------------------------------------------------------------------
 // WAbstractHook reimplementation
 //-------------------------------------------------------------------------------------------------
 
