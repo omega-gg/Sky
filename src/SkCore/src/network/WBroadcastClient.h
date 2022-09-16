@@ -37,9 +37,23 @@ class WBroadcastClientPrivate;
 // WBroadcastSource
 //-------------------------------------------------------------------------------------------------
 
-struct WBroadcastSource
+class SK_CORE_EXPORT WBroadcastSource
 {
-    QString ip;
+public:
+    WBroadcastSource();
+
+public: // Functions
+    bool isValid() const;
+
+public: // Operators
+    WBroadcastSource(const WBroadcastSource & other);
+
+    bool operator==(const WBroadcastSource & other) const;
+
+    WBroadcastSource & operator=(const WBroadcastSource & other);
+
+public: // Variables
+    QString address;
     int     port;
 
     QString name;
@@ -55,22 +69,32 @@ class SK_CORE_EXPORT WBroadcastClient : public QObject, public WPrivatable
 
     Q_PROPERTY(bool isConnected READ isConnected NOTIFY connectedChanged)
 
+    Q_PROPERTY(WBroadcastSource source READ source NOTIFY sourceChanged)
+
 public:
     explicit WBroadcastClient(QObject * parent = NULL);
 
 public: // Interface
-    Q_INVOKABLE void connectHost(const QString & address, int port);
+    Q_INVOKABLE bool connectToHost(const WBroadcastSource & source);
+    Q_INVOKABLE bool connectToHost(const QString          & url);
 
     Q_INVOKABLE void disconnectHost();
 
 public: // Static functions
     Q_INVOKABLE static WBroadcastSource extractSource(const QString & url);
 
+protected: // Events
+    /* virtual */ bool event(QEvent * event);
+
 signals:
     void connectedChanged();
 
+    void sourceChanged();
+
 public: // Properties
     bool isConnected() const;
+
+    const WBroadcastSource & source() const;
 
 private:
     W_DECLARE_PRIVATE(WBroadcastClient)

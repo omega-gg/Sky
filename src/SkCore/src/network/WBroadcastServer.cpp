@@ -114,11 +114,12 @@ void WBroadcastServerThread::clearSocket()
 
 void WBroadcastServerThread::onConnection()
 {
-    qDebug("WBroadcastServerThread: New connection.");
-
     QTcpSocket * socket = server->nextPendingConnection();
 
     if (socket == NULL) return;
+
+    qDebug("WBroadcastServerThread: New connection from %s.",
+           socket->peerAddress().toString().C_STR);
 
     if (this->socket) clearSocket();
 

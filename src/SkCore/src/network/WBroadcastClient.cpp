@@ -34,6 +34,9 @@
 // Sk includes
 #include <WControllerNetwork>
 
+// Private includes
+#include "WBroadcastClient_p.h"
+
 //=================================================================================================
 // WBroadcastClientThread
 //=================================================================================================
@@ -50,7 +53,7 @@ public: // Enums
     };
 
 public:
-    WBroadcastClientThread();
+    WBroadcastClientThread(WBroadcastClient * client);
 
 protected: // QThread reimplementation
     /* virtual */ void run();
@@ -61,6 +64,8 @@ protected: // Events
 private: // Functions
     void clearSocket();
 
+    void setConnected(bool connected);
+
 private slots:
     void onConnected   ();
     void onDisconnected();
@@ -68,17 +73,21 @@ private slots:
     void onRead();
 
 private:
+    WBroadcastClient * client;
+
     QTcpSocket * socket;
+
+    bool connected;
 };
 
 //=================================================================================================
-// WBroadcastClientConnect
+// WBroadcastThreadConnect
 //=================================================================================================
 
-class WBroadcastClientConnect : public QEvent
+class WBroadcastThreadConnect : public QEvent
 {
 public:
-    WBroadcastClientConnect(const QString & address, int port)
+    WBroadcastThreadConnect(const QString & address, int port)
         : QEvent(static_cast<QEvent::Type> (WBroadcastClientThread::EventConnect))
     {
         this->address = address;
@@ -94,9 +103,13 @@ public: // Variables
 // WBroadcastClientThread
 //=================================================================================================
 
-WBroadcastClientThread::WBroadcastClientThread()
+WBroadcastClientThread::WBroadcastClientThread(WBroadcastClient * client)
 {
+    this->client = client;
+
     socket = NULL;
+
+    connected = false;
 
     moveToThread(this);
 
@@ -122,7 +135,7 @@ WBroadcastClientThread::WBroadcastClientThread()
 
     if (type == static_cast<QEvent::Type> (EventConnect))
     {
-        WBroadcastClientConnect * eventConnect = static_cast<WBroadcastClientConnect *> (event);
+        WBroadcastThreadConnect * eventConnect = static_cast<WBroadcastThreadConnect *> (event);
 
         QString address = eventConnect->address;
         int     port    = eventConnect->port;
@@ -158,7 +171,9 @@ WBroadcastClientThread::WBroadcastClientThread()
 
 void WBroadcastClientThread::onConnected()
 {
+    qDebug("WBroadcastClientThread: Connected.");
 
+    setConnected(true);
 }
 
 void WBroadcastClientThread::onDisconnected()
@@ -172,6 +187,8 @@ void WBroadcastClientThread::onDisconnected()
     socket->deleteLater();
 
     socket = NULL;
+
+    setConnected(false);
 }
 
 void WBroadcastClientThread::onRead()
@@ -193,11 +210,68 @@ void WBroadcastClientThread::clearSocket()
     socket = NULL;
 }
 
+void WBroadcastClientThread::setConnected(bool connected)
+{
+    if (this->connected == connected) return;
+
+    this->connected = connected;
+
+    if (connected)
+    {
+         QCoreApplication::postEvent(client,
+                                     new QEvent(static_cast<QEvent::Type>
+                                                (WBroadcastClientPrivate::EventConnected)));
+    }
+    else QCoreApplication::postEvent(client,
+                                     new QEvent(static_cast<QEvent::Type>
+                                                (WBroadcastClientPrivate::EventDisconnected)));
+}
+
+//=================================================================================================
+// WBroadcastSource
+//=================================================================================================
+
+WBroadcastSource::WBroadcastSource()
+{
+    port = 0;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Functions
+//-------------------------------------------------------------------------------------------------
+
+bool WBroadcastSource::isValid() const
+{
+    return (address.isEmpty() == false);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Operators
+//-------------------------------------------------------------------------------------------------
+
+WBroadcastSource::WBroadcastSource(const WBroadcastSource & other)
+{
+    *this = other;
+}
+
+bool WBroadcastSource::operator==(const WBroadcastSource & other) const
+{
+    return (address == other.address && port == other.port && name == other.name);
+}
+
+WBroadcastSource & WBroadcastSource::operator=(const WBroadcastSource & other)
+{
+    address = other.address;
+    port    = other.port;
+
+    name = other.name;
+
+    return *this;
+}
+
 //=================================================================================================
 // WBroadcastClientPrivate
 //=================================================================================================
-
-#include "WBroadcastClient_p.h"
 
 WBroadcastClientPrivate::WBroadcastClientPrivate(WBroadcastClient * p) : WPrivate(p) {}
 
@@ -213,9 +287,37 @@ WBroadcastClientPrivate::WBroadcastClientPrivate(WBroadcastClient * p) : WPrivat
 
 void WBroadcastClientPrivate::init()
 {
-    thread = new WBroadcastClientThread();
+    Q_Q(WBroadcastClient);
+
+    thread = new WBroadcastClientThread(q);
 
     connected = false;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
+
+void WBroadcastClientPrivate::setConnected(bool connected)
+{
+    if (this->connected == connected) return;
+
+    Q_Q(WBroadcastClient);
+
+    this->connected = connected;
+
+    emit q->connectedChanged();
+}
+
+void WBroadcastClientPrivate::setSource(const WBroadcastSource & source)
+{
+    if (this->source == source) return;
+
+    Q_Q(WBroadcastClient);
+
+    this->source = source;
+
+    emit q->sourceChanged();
 }
 
 //=================================================================================================
@@ -232,11 +334,23 @@ void WBroadcastClientPrivate::init()
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WBroadcastClient::connectHost(const QString & address, int port)
+/* Q_INVOKABLE */ bool WBroadcastClient::connectToHost(const WBroadcastSource & source)
 {
+    if (source.isValid() == false) return false;
+
     Q_D(WBroadcastClient);
 
-    QCoreApplication::postEvent(d->thread, new WBroadcastClientConnect(address, port));
+    d->setSource(source);
+
+    QCoreApplication::postEvent(d->thread,
+                                new WBroadcastThreadConnect(source.address, source.port));
+
+    return true;
+}
+
+/* Q_INVOKABLE */ bool WBroadcastClient::connectToHost(const QString & url)
+{
+    return connectToHost(extractSource(url));
 }
 
 /* Q_INVOKABLE */ void WBroadcastClient::disconnectHost()
@@ -255,8 +369,6 @@ void WBroadcastClientPrivate::init()
 {
     WBroadcastSource source;
 
-    source.port = 0;
-
     QStringList list = WControllerNetwork::removeUrlPrefix(url).split('/');
 
     int count = list.count();
@@ -267,12 +379,39 @@ void WBroadcastClientPrivate::init()
 
     if (host.count() < 2) return source;
 
-    source.ip   = host.at(0);
-    source.port = host.at(1).toInt();
+    source.address = host.at(0);
+    source.port    = host.at(1).toInt();
 
     if (count > 3) source.name = list.at(3);
 
     return source;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Events
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ bool WBroadcastClient::event(QEvent * event)
+{
+    QEvent::Type type = event->type();
+
+    if (type == static_cast<QEvent::Type> (WBroadcastClientPrivate::EventConnected))
+    {
+        Q_D(WBroadcastClient);
+
+        d->setConnected(true);
+
+        return true;
+    }
+    else if (type == static_cast<QEvent::Type> (WBroadcastClientPrivate::EventDisconnected))
+    {
+        Q_D(WBroadcastClient);
+
+        d->setConnected(false);
+
+        return true;
+    }
+    else return QObject::event(event);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -282,6 +421,11 @@ void WBroadcastClientPrivate::init()
 bool WBroadcastClient::isConnected() const
 {
     Q_D(const WBroadcastClient); return d->connected;
+}
+
+const WBroadcastSource & WBroadcastClient::source() const
+{
+    Q_D(const WBroadcastClient); return d->source;
 }
 
 #endif // SK_NO_BROADCASTCLIENT

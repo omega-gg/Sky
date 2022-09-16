@@ -1018,7 +1018,7 @@ void WAbstractBackend::endOutputRemove() const
     qWarning("WAbstractBackend::backendSetScanOutput: Not supported.");
 }
 
-/* virtual */ void WAbstractBackend::backendSetCurrentOutput(int)
+/* virtual */ void WAbstractBackend::backendSetCurrentOutput(const WBackendOutput *)
 {
     qWarning("WAbstractBackend::backendSetCurrentOutput: Not supported.");
 }
@@ -1443,19 +1443,22 @@ void WAbstractBackend::setCurrentOutput(int index)
 
     if (d->filter) d->filter->filterCurrentOutput(&index);
 
-    // NOTE: The currentOuput can never be under 0.
-    if (index < 0) index = 0;
-
     if (d->currentOutput == index) return;
 
     d->currentOutput = index;
 
-    // NOTE: This might be useful if the renderer gets removed while still being selected. That way
-    //       we can restore the currentOutput later.
-    d->outputData = outputAt(index);
+    if (index >= 0 && index < d->outputs.count())
+    {
+        WBackendOutput * output = &(d->outputs[index]);
 
-    // NOTE: The first index is the player itself so we substract one.
-    backendSetCurrentOutput(index - 1);
+        // NOTE: This might be useful if the renderer gets removed while still being selected. That
+        //       way we can restore the currentOutput later.
+        d->outputData = *output;
+
+        // NOTE: The first index is the player itself so we substract one.
+        backendSetCurrentOutput(output);
+    }
+    else d->outputData = WBackendOutput();
 
     d->currentOutputChanged();
 }
@@ -1544,13 +1547,15 @@ WBackendOutput::WBackendOutput(const WBackendOutput & other)
 
 bool WBackendOutput::operator==(const WBackendOutput & other) const
 {
-    return (name == other.name && type == other.type);
+    return (type == other.type && name == other.name && source == other.source);
 }
 
 WBackendOutput & WBackendOutput::operator=(const WBackendOutput & other)
 {
-    name = other.name;
     type = other.type;
+
+    name   = other.name;
+    source = other.source;
 
     return *this;
 }

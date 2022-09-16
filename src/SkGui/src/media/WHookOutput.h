@@ -38,7 +38,7 @@ public:
     WHookOutput(WAbstractBackend * backend);
 
 public: // Interface
-    Q_INVOKABLE void connectHost(const QString & source);
+    Q_INVOKABLE void connectToHost(const QString & url);
 
     Q_INVOKABLE void disconnectHost();
 
@@ -62,6 +62,8 @@ private:
     W_DECLARE_PRIVATE(WHookOutput)
 
     Q_PRIVATE_SLOT(d_func(), void onOutputChanged())
+
+    Q_PRIVATE_SLOT(d_func(), void onConnectedChanged())
 };
 
 #include <private/WHookOutput_p>

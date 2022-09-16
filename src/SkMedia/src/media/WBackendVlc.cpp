@@ -1806,9 +1806,11 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
     d->player->setScanOutput(enabled);
 }
 
-/* virtual */ void WBackendVlc::backendSetCurrentOutput(int index)
+/* virtual */ void WBackendVlc::backendSetCurrentOutput(const WBackendOutput * output)
 {
     Q_D(WBackendVlc);
+
+    int index = d->outputs.indexOf(output);
 
     d->player->setOutput(index);
 }

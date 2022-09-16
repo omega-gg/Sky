@@ -37,6 +37,24 @@ void WHookOutputPrivate::init()
     Q_Q(WHookOutput);
 
     QObject::connect(backend, SIGNAL(currentOutputChanged()), q, SLOT(onOutputChanged()));
+
+    QObject::connect(&client, SIGNAL(connectedChanged()), q, SLOT(onConnectedChanged()));
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
+
+WHookOutputData * WHookOutputPrivate::getSource(const WBroadcastSource & source)
+{
+    for (int i = 0; i < sources.count(); i++)
+    {
+        WHookOutputData & data = sources[i];
+
+        if (data.source == source) return &data;
+    }
+
+    return NULL;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -48,6 +66,42 @@ void WHookOutputPrivate::onOutputChanged()
     const WBackendOutput * output = backend->currentOutputPointer();
 
     if (output == NULL || output->type != WAbstractBackend::OutputVbml) return;
+}
+
+void WHookOutputPrivate::onConnectedChanged()
+{
+    const WBroadcastSource & source = client.source();
+
+    WHookOutputData * data = getSource(source);
+
+    if (client.isConnected())
+    {
+        int index;
+
+        if (data == NULL)
+        {
+            Q_Q(WHookOutput);
+
+            WBackendOutput output(source.name, WAbstractBackend::OutputVbml);
+
+            output.source = source.address + ':' + QString::number(source.port);
+
+            WHookOutputData data(q->addOutput(output));
+
+            data.source = source;
+
+            sources.append(data);
+
+            index = backend->indexOutput(data.output);
+        }
+        else index = backend->indexOutput(data->output);
+
+        backend->setCurrentOutput(index);
+    }
+    else if (data && data->output == backend->currentOutputPointer())
+    {
+        backend->setCurrentOutput(-1);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -64,9 +118,9 @@ WHookOutput::WHookOutput(WAbstractBackend * backend)
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WHookOutput::connectHost(const QString & source)
+/* Q_INVOKABLE */ void WHookOutput::connectToHost(const QString & url)
 {
-
+    Q_D(WHookOutput); d->client.connectToHost(url);
 }
 
 /* Q_INVOKABLE */ void WHookOutput::disconnectHost()

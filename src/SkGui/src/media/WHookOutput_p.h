@@ -41,6 +41,26 @@
 // Sk includes
 #include <WBroadcastClient>
 
+//-------------------------------------------------------------------------------------------------
+// WHookOutputData
+//-------------------------------------------------------------------------------------------------
+
+struct WHookOutputData
+{
+    WHookOutputData(const WBackendOutput * output)
+    {
+        this->output = output;
+    }
+
+    WBroadcastSource source;
+
+    const WBackendOutput * output;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WHookOutputPrivate
+//-------------------------------------------------------------------------------------------------
+
 class SK_GUI_EXPORT WHookOutputPrivate : public WAbstractHookPrivate
 {
 public:
@@ -48,11 +68,18 @@ public:
 
     void init();
 
+public:
+    WHookOutputData * getSource(const WBroadcastSource & source);
+
 public: // Slots
     void onOutputChanged();
 
+    void onConnectedChanged();
+
 public: // Variables
     WBroadcastClient client;
+
+    QList<WHookOutputData> sources;
 
 protected:
     W_DECLARE_PUBLIC(WHookOutput)

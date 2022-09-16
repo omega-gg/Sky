@@ -1835,7 +1835,7 @@ int WDeclarativePlayer::trackVideo() const
     {
         return d->backend->trackVideo();
     }
-    else return -1;
+    else return d->trackVideo;
 }
 
 void WDeclarativePlayer::setTrackVideo(int id)
@@ -1861,7 +1861,7 @@ int WDeclarativePlayer::trackAudio() const
     {
         return d->backend->trackAudio();
     }
-    else return -1;
+    else return d->trackAudio;
 }
 
 void WDeclarativePlayer::setTrackAudio(int id)
@@ -1905,7 +1905,13 @@ int WDeclarativePlayer::countAudios() const
 
 bool WDeclarativePlayer::scanOutput() const
 {
-    Q_D(const WDeclarativePlayer); return d->scanOutput;
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+        return d->backend->scanOutput();
+    }
+    else return d->scanOutput;
 }
 
 void WDeclarativePlayer::setScanOutput(bool enabled)
@@ -1925,22 +1931,29 @@ void WDeclarativePlayer::setScanOutput(bool enabled)
 
 int WDeclarativePlayer::currentOutput() const
 {
-    Q_D(const WDeclarativePlayer); return d->currentOutput;
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+        return d->backend->currentOutput();
+    }
+    else return d->currentOutput;
 }
 
 void WDeclarativePlayer::setCurrentOutput(int index)
 {
     Q_D(WDeclarativePlayer);
 
-    if (d->currentOutput == index) return;
-
-    d->currentOutput = index;
-
     if (d->backend)
     {
         d->backend->setCurrentOutput(index);
     }
-    else emit currentOutputChanged();
+    else if (d->currentOutput == index)
+    {
+        d->currentOutput = index;
+
+        emit currentOutputChanged();
+    }
 }
 
 QString WDeclarativePlayer::outputName() const

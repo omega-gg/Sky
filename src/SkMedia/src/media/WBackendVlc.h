@@ -77,7 +77,7 @@ protected: // WAbstractBackend reimplementation
 
     /* virtual */ void backendSetScanOutput(bool enabled);
 
-    /* virtual */ void backendSetCurrentOutput(int index);
+    /* virtual */ void backendSetCurrentOutput(const WBackendOutput * output);
 
     /* virtual */ void backendSetSize(const QSizeF & size);
 

@@ -80,8 +80,21 @@ protected: // Functions
     //---------------------------------------------------------------------------------------------
     // Backend functions
 
+    // NOTE: This function resets and applies all the tracks at once (video / audio).
+    void applyTracks(const QList<WBackendTrack> & tracks, int trackVideo = -1,
+                                                          int trackAudio = -1);
+
+    void applyVideos(const QList<WBackendTrack> & videos, int trackVideo = -1);
+    void applyAudios(const QList<WBackendTrack> & audios, int trackAudio = -1);
+
+    const WBackendOutput * addOutput(const WBackendOutput & output);
+
+    bool removeOutput(const WBackendOutput * output);
+
     void setState    (WAbstractBackend::State     state);
     void setStateLoad(WAbstractBackend::StateLoad stateLoad);
+
+    void setLive(bool live);
 
     void setEnded(bool ended);
 
@@ -118,13 +131,26 @@ protected: // Functions
 
     void backendSetFillMode(WAbstractBackend::FillMode fillMode);
 
+    void backendSetVideo(int id);
+    void backendSetAudio(int id);
+
+    void backendSetScanOutput(bool enabled);
+
+    void backendSetCurrentOutput(const WBackendOutput * output);
+
     void backendSetSize(const QSizeF & size);
 
 #ifndef SK_NO_QML
+#ifdef QT_NEW
+    void backendSynchronize(WBackendFrame * frame);
+#endif
+
     void backendDrawFrame(QPainter * painter, const QRect & rect);
 
     void   backendUpdateFrame();
     QImage backendGetFrame   () const;
+
+    QRectF backendRect() const;
 #endif
 
 protected: // Abstract functions

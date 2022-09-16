@@ -205,6 +205,40 @@ void WAbstractHook::emitSourceChanged() const
 //-------------------------------------------------------------------------------------------------
 // Backend functions
 
+void WAbstractHook::applyTracks(const QList<WBackendTrack> & tracks,
+                                int trackVideo, int trackAudio)
+{
+    Q_D(WAbstractHook); d->backend->applyTracks(tracks, trackVideo, trackAudio);
+}
+
+void WAbstractHook::applyVideos(const QList<WBackendTrack> & videos, int trackVideo)
+{
+    Q_D(WAbstractHook); d->backend->applyVideos(videos, trackVideo);
+}
+
+void WAbstractHook::applyAudios(const QList<WBackendTrack> & audios, int trackAudio)
+{
+    Q_D(WAbstractHook); d->backend->applyAudios(audios, trackAudio);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+const WBackendOutput * WAbstractHook::addOutput(const WBackendOutput & output)
+{
+    Q_D(WAbstractHook);
+
+    return d->backend->addOutput(output);
+}
+
+bool WAbstractHook::removeOutput(const WBackendOutput * output)
+{
+    Q_D(WAbstractHook);
+
+    return d->backend->removeOutput(output);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void WAbstractHook::setState(WAbstractBackend::State state)
 {
     Q_D(WAbstractHook); d->backend->setState(state);
@@ -213,6 +247,13 @@ void WAbstractHook::setState(WAbstractBackend::State state)
 void WAbstractHook::setStateLoad(WAbstractBackend::StateLoad stateLoad)
 {
     Q_D(WAbstractHook); d->backend->setStateLoad(stateLoad);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WAbstractHook::setLive(bool live)
+{
+    Q_D(WAbstractHook); d->backend->setLive(live);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -336,6 +377,30 @@ void WAbstractHook::backendSetFillMode(WAbstractBackend::FillMode fillMode)
 
 //-------------------------------------------------------------------------------------------------
 
+void WAbstractHook::backendSetVideo(int id)
+{
+    Q_D(WAbstractHook); d->backend->backendSetVideo(id);
+}
+
+void WAbstractHook::backendSetAudio(int id)
+{
+    Q_D(WAbstractHook); d->backend->backendSetAudio(id);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WAbstractHook::backendSetScanOutput(bool enabled)
+{
+    Q_D(WAbstractHook); d->backend->backendSetScanOutput(enabled);
+}
+
+void WAbstractHook::backendSetCurrentOutput(const WBackendOutput * output)
+{
+    Q_D(WAbstractHook); d->backend->backendSetCurrentOutput(output);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void WAbstractHook::backendSetSize(const QSizeF & size)
 {
     Q_D(WAbstractHook); d->backend->backendSetSize(size);
@@ -344,6 +409,17 @@ void WAbstractHook::backendSetSize(const QSizeF & size)
 //-------------------------------------------------------------------------------------------------
 
 #ifndef SK_NO_QML
+
+#ifdef QT_NEW
+
+void WAbstractHook::backendSynchronize(WBackendFrame * frame)
+{
+    Q_D(WAbstractHook); d->backend->backendSynchronize(frame);
+}
+
+#endif
+
+//-------------------------------------------------------------------------------------------------
 
 void WAbstractHook::backendDrawFrame(QPainter * painter, const QRect & rect)
 {
@@ -362,6 +438,15 @@ QImage WAbstractHook::backendGetFrame() const
     Q_D(const WAbstractHook);
 
     return d->backend->backendGetFrame();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QRectF WAbstractHook::backendRect() const
+{
+    Q_D(const WAbstractHook);
+
+    return d->backend->backendRect();
 }
 
 #endif

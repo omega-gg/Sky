@@ -374,7 +374,7 @@ public: // WBackendInterface implementation
     Q_INVOKABLE /* virtual */ void seek(int msec);
 
 protected: // Functions
-    // NOTE: This functions resets and applies all the tracks at once (video / audio).
+    // NOTE: This function resets and applies all the tracks at once (video / audio).
     void applyTracks(const QList<WBackendTrack> & tracks, int trackVideo = -1,
                                                           int trackAudio = -1);
 
@@ -383,7 +383,7 @@ protected: // Functions
 
     const WBackendOutput * addOutput(const WBackendOutput & output);
 
-    bool removeOutput(const WBackendOutput * addOutput);
+    bool removeOutput(const WBackendOutput * output);
 
     void setState    (State     state);
     void setStateLoad(StateLoad stateLoad);
@@ -441,7 +441,7 @@ protected: // Virtual functions
 
     virtual void backendSetScanOutput(bool enabled); // {}
 
-    virtual void backendSetCurrentOutput(int index); // {}
+    virtual void backendSetCurrentOutput(const WBackendOutput * output); // {}
 
     virtual void backendSetSize(const QSizeF & size); // {}
 
@@ -638,10 +638,9 @@ public: // Operators
     WBackendOutput & operator=(const WBackendOutput & other);
 
 public: // Variables
-    QString name;
-
     WAbstractBackend::OutputType type;
 
+    QString name;
     QString source;
 };
 
