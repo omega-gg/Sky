@@ -68,9 +68,11 @@ public:
 
     void init();
 
-public:
+public: // Functions
     WHookOutputData * getData(const WBroadcastSource & source);
     WHookOutputData * getData(const WBackendOutput   * output);
+
+    void setActive(bool active);
 
 public: // Slots
     void onOutputChanged();
@@ -83,6 +85,8 @@ public: // Variables
     QList<WHookOutputData> datas;
 
     WHookOutputData * currentData;
+
+    bool active;
 
 protected:
     W_DECLARE_PUBLIC(WHookOutput)

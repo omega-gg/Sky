@@ -38,6 +38,8 @@ void WHookOutputPrivate::init()
 
     currentData = NULL;
 
+    active = false;
+
     QObject::connect(&client, SIGNAL(connectedChanged()), q, SIGNAL(connectedChanged()));
 
     QObject::connect(backend, SIGNAL(currentOutputChanged()), q, SLOT(onOutputChanged()));
@@ -73,6 +75,17 @@ WHookOutputData * WHookOutputPrivate::getData(const WBackendOutput * output)
     return NULL;
 }
 
+void WHookOutputPrivate::setActive(bool active)
+{
+    if (this->active == active) return;
+
+    Q_Q(WHookOutput);
+
+    this->active = active;
+
+    emit q->hookUpdated();
+}
+
 //-------------------------------------------------------------------------------------------------
 // Private slots
 //-------------------------------------------------------------------------------------------------
@@ -81,19 +94,28 @@ void WHookOutputPrivate::onOutputChanged()
 {
     WHookOutputData * data = getData(backend->currentOutputPointer());
 
-    if (currentData == data) return;
+    if (currentData == data)
+    {
+        setActive(true);
+
+        return;
+    }
 
     if (currentData) client.disconnectHost();
 
     currentData = data;
 
-    if (data) client.connectToHost(data->source);
+    if (data)
+    {
+        client.connectToHost(data->source);
+
+        setActive(true);
+    }
+    else setActive(false);
 }
 
 void WHookOutputPrivate::onConnectedChanged()
 {
-    Q_Q(WHookOutput);
-
     const WBroadcastSource & source = client.source();
 
     WHookOutputData * data = getData(source);
@@ -136,8 +158,6 @@ void WHookOutputPrivate::onConnectedChanged()
             backend->setCurrentOutput(-1);
         }
     }
-
-    emit q->hookUpdated();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -195,7 +215,7 @@ WHookOutput::WHookOutput(WAbstractBackend * backend)
 
 /* virtual */ bool WHookOutput::hookCheck(const QString &)
 {
-    return isConnected();
+    Q_D(WHookOutput); return d->active;
 }
 
 //-------------------------------------------------------------------------------------------------

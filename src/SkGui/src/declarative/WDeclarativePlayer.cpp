@@ -441,7 +441,6 @@ void WDeclarativePlayerPrivate::onEnded()
 
 void WDeclarativePlayerPrivate::onHookUpdated()
 {
-
 }
 
 //-------------------------------------------------------------------------------------------------
