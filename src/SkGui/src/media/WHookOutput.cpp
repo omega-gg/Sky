@@ -36,6 +36,10 @@ void WHookOutputPrivate::init()
 {
     Q_Q(WHookOutput);
 
+    currentData = NULL;
+
+    QObject::connect(&client, SIGNAL(connectedChanged()), q, SIGNAL(connectedChanged()));
+
     QObject::connect(backend, SIGNAL(currentOutputChanged()), q, SLOT(onOutputChanged()));
 
     QObject::connect(&client, SIGNAL(connectedChanged()), q, SLOT(onConnectedChanged()));
@@ -45,13 +49,25 @@ void WHookOutputPrivate::init()
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-WHookOutputData * WHookOutputPrivate::getSource(const WBroadcastSource & source)
+WHookOutputData * WHookOutputPrivate::getData(const WBroadcastSource & source)
 {
-    for (int i = 0; i < sources.count(); i++)
+    for (int i = 0; i < datas.count(); i++)
     {
-        WHookOutputData & data = sources[i];
+        WHookOutputData & data = datas[i];
 
         if (data.source == source) return &data;
+    }
+
+    return NULL;
+}
+
+WHookOutputData * WHookOutputPrivate::getData(const WBackendOutput * output)
+{
+    for (int i = 0; i < datas.count(); i++)
+    {
+        WHookOutputData & data = datas[i];
+
+        if (data.output == output) return &data;
     }
 
     return NULL;
@@ -63,45 +79,65 @@ WHookOutputData * WHookOutputPrivate::getSource(const WBroadcastSource & source)
 
 void WHookOutputPrivate::onOutputChanged()
 {
-    const WBackendOutput * output = backend->currentOutputPointer();
+    WHookOutputData * data = getData(backend->currentOutputPointer());
 
-    if (output == NULL || output->type != WAbstractBackend::OutputVbml) return;
+    if (currentData == data) return;
+
+    if (currentData) client.disconnectHost();
+
+    currentData = data;
+
+    if (data) client.connectToHost(data->source);
 }
 
 void WHookOutputPrivate::onConnectedChanged()
 {
+    Q_Q(WHookOutput);
+
     const WBroadcastSource & source = client.source();
 
-    WHookOutputData * data = getSource(source);
+    WHookOutputData * data = getData(source);
 
     if (client.isConnected())
     {
         int index;
 
-        if (data == NULL)
+        if (currentData == NULL)
         {
             Q_Q(WHookOutput);
 
             WBackendOutput output(source.name, WAbstractBackend::OutputVbml);
 
-            output.source = source.address + ':' + QString::number(source.port);
-
             WHookOutputData data(q->addOutput(output));
 
             data.source = source;
 
-            sources.append(data);
+            datas.append(data);
+
+            currentData = &(datas.last());
 
             index = backend->indexOutput(data.output);
         }
-        else index = backend->indexOutput(data->output);
+        else
+        {
+            currentData = data;
+
+            index = backend->indexOutput(data->output);
+        }
 
         backend->setCurrentOutput(index);
     }
-    else if (data && data->output == backend->currentOutputPointer())
+    else
     {
-        backend->setCurrentOutput(-1);
+        if (currentData == data) currentData = NULL;
+
+        if (data->output == backend->currentOutputPointer())
+        {
+            backend->setCurrentOutput(-1);
+        }
     }
+
+    emit q->hookUpdated();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -157,9 +193,18 @@ WHookOutput::WHookOutput(WAbstractBackend * backend)
 // Protected WAbstractHook reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ bool WHookOutput::hookCheckSource(const QString & url)
+/* virtual */ bool WHookOutput::hookCheck(const QString &)
 {
-    Q_D(WHookOutput); return d->client.isConnected();
+    return isConnected();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Properties
+//-------------------------------------------------------------------------------------------------
+
+bool WHookOutput::isConnected() const
+{
+    Q_D(const WHookOutput); return d->client.isConnected();
 }
 
 #endif // SK_NO_HOOKOUTPUT

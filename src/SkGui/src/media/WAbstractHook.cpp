@@ -85,9 +85,9 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p, WAbstractBackend * backen
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ bool WAbstractHook::checkSource(const QString & url)
+/* Q_INVOKABLE */ bool WAbstractHook::check(const QString & url)
 {
-    return hookCheckSource(url);
+    return hookCheck(url);
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -55,7 +55,7 @@ public: // WBackendFilter reimplementation
     /* virtual */ void filterStateLoad(WAbstractBackend::StateLoad * stateLoad);
 
 protected: // WAbstractHook reimplementation
-    /* virtual */ bool hookCheckSource(const QString & url);
+    /* virtual */ bool hookCheck(const QString & url);
 
 private:
     W_DECLARE_PRIVATE(WHookTorrent)

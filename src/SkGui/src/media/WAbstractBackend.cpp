@@ -1527,8 +1527,8 @@ WBackendTrack & WBackendTrack::operator=(const WBackendTrack & other)
 
 WBackendOutput::WBackendOutput(const QString & name, WAbstractBackend::OutputType type)
 {
-    this->name = name;
     this->type = type;
+    this->name = name;
 }
 
 WBackendOutput::WBackendOutput()
@@ -1547,15 +1547,13 @@ WBackendOutput::WBackendOutput(const WBackendOutput & other)
 
 bool WBackendOutput::operator==(const WBackendOutput & other) const
 {
-    return (type == other.type && name == other.name && source == other.source);
+    return (type == other.type && name == other.name);
 }
 
 WBackendOutput & WBackendOutput::operator=(const WBackendOutput & other)
 {
     type = other.type;
-
-    name   = other.name;
-    source = other.source;
+    name = other.name;
 
     return *this;
 }

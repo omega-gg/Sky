@@ -160,6 +160,10 @@ WBroadcastClientThread::WBroadcastClientThread(WBroadcastClient * client)
     {
         qDebug("WBroadcastClientThread: Disconnecting...");
 
+        if (socket) clearSocket();
+
+        setConnected(false);
+
         return true;
     }
     else return QThread::event(event);
@@ -171,15 +175,11 @@ WBroadcastClientThread::WBroadcastClientThread(WBroadcastClient * client)
 
 void WBroadcastClientThread::onConnected()
 {
-    qDebug("WBroadcastClientThread: Connected.");
-
     setConnected(true);
 }
 
 void WBroadcastClientThread::onDisconnected()
 {
-    qDebug("WBroadcastClientThread: Disconnected.");
-
     if (socket == NULL) return;
 
     disconnect(socket, 0, this, 0);
@@ -399,6 +399,8 @@ void WBroadcastClientPrivate::setSource(const WBroadcastSource & source)
     {
         Q_D(WBroadcastClient);
 
+        qDebug("WBroadcastClient: Connected.");
+
         d->setConnected(true);
 
         return true;
@@ -406,6 +408,8 @@ void WBroadcastClientPrivate::setSource(const WBroadcastSource & source)
     else if (type == static_cast<QEvent::Type> (WBroadcastClientPrivate::EventDisconnected))
     {
         Q_D(WBroadcastClient);
+
+        qDebug("WBroadcastClient: Disconnected.");
 
         d->setConnected(false);
 

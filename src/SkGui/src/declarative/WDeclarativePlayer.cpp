@@ -257,7 +257,7 @@ bool WDeclarativePlayerPrivate::updateBackend(const QString & url)
 
     foreach (WAbstractHook * hook, hooks)
     {
-        if (hook->checkSource(url) == false) continue;
+        if (hook->check(url) == false) continue;
 
         backend = hook;
 
@@ -439,6 +439,13 @@ void WDeclarativePlayerPrivate::onEnded()
 
 //-------------------------------------------------------------------------------------------------
 
+void WDeclarativePlayerPrivate::onHookUpdated()
+{
+
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void WDeclarativePlayerPrivate::onStateChanged()
 {
     if (keepState) return;
@@ -509,22 +516,6 @@ void WDeclarativePlayerPrivate::onCurrentTrackChanged()
     loadSource(track->source(), track->duration(), -1);
 
     emit q->currentTrackUpdated();
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void WDeclarativePlayerPrivate::onPlaylistDestroyed()
-{
-    Q_Q(WDeclarativePlayer);
-
-    playlist = NULL;
-
-    emit q->playlistChanged();
-}
-
-void WDeclarativePlayerPrivate::onFolderDestroyed()
-{
-    folder = NULL;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -623,6 +614,20 @@ void WDeclarativePlayerPrivate::onHookDestroyed()
     hooks.removeOne(hook);
 
     emit q->hooksChanged();
+}
+
+void WDeclarativePlayerPrivate::onPlaylistDestroyed()
+{
+    Q_Q(WDeclarativePlayer);
+
+    playlist = NULL;
+
+    emit q->playlistChanged();
+}
+
+void WDeclarativePlayerPrivate::onFolderDestroyed()
+{
+    folder = NULL;
 }
 
 void WDeclarativePlayerPrivate::onTabsDestroyed()
@@ -1364,6 +1369,8 @@ void WDeclarativePlayer::setHooks(const QList<WAbstractHook *> & hooks)
     {
         Q_ASSERT(hook);
         Q_ASSERT(hook->backend() == d->backend);
+
+        connect(hook, SIGNAL(hookUpdated()), this, SLOT(onHookUpdated()));
 
         connect(hook, SIGNAL(destroyed()), this, SLOT(onHookDestroyed()));
     }

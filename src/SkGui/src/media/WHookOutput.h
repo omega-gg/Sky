@@ -34,6 +34,8 @@ class SK_GUI_EXPORT WHookOutput : public WAbstractHook
 {
     Q_OBJECT
 
+    Q_PROPERTY(bool isConnected READ isConnected NOTIFY connectedChanged)
+
 public:
     WHookOutput(WAbstractBackend * backend);
 
@@ -56,7 +58,13 @@ public: // WAbstractHook reimplementation
     /* Q_INVOKABLE virtual */ void seek(int msec);
 
 protected: // WAbstractHook reimplementation
-    /* virtual */ bool hookCheckSource(const QString & url);
+    /* virtual */ bool hookCheck(const QString & url);
+
+signals:
+    void connectedChanged();
+
+public: // Properties
+    bool isConnected() const;
 
 private:
     W_DECLARE_PRIVATE(WHookOutput)

@@ -69,7 +69,8 @@ public:
     void init();
 
 public:
-    WHookOutputData * getSource(const WBroadcastSource & source);
+    WHookOutputData * getData(const WBroadcastSource & source);
+    WHookOutputData * getData(const WBackendOutput   * output);
 
 public: // Slots
     void onOutputChanged();
@@ -79,7 +80,9 @@ public: // Slots
 public: // Variables
     WBroadcastClient client;
 
-    QList<WHookOutputData> sources;
+    QList<WHookOutputData> datas;
+
+    WHookOutputData * currentData;
 
 protected:
     W_DECLARE_PUBLIC(WHookOutput)

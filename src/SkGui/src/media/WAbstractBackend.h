@@ -641,7 +641,6 @@ public: // Variables
     WAbstractBackend::OutputType type;
 
     QString name;
-    QString source;
 };
 
 //-------------------------------------------------------------------------------------------------

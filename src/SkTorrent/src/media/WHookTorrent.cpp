@@ -1312,7 +1312,7 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 // Protected WAbstractHook reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ bool WHookTorrent::hookCheckSource(const QString & url)
+/* virtual */ bool WHookTorrent::hookCheck(const QString & url)
 {
     if (WControllerNetwork::extractUrlExtension(url) == "torrent"
         ||

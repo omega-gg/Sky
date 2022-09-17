@@ -433,13 +433,12 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void onEnded())
 
+    Q_PRIVATE_SLOT(d_func(), void onHookUpdated())
+
     Q_PRIVATE_SLOT(d_func(), void onStateChanged   ())
     Q_PRIVATE_SLOT(d_func(), void onDurationChanged())
 
     Q_PRIVATE_SLOT(d_func(), void onCurrentTrackChanged())
-
-    Q_PRIVATE_SLOT(d_func(), void onPlaylistDestroyed())
-    Q_PRIVATE_SLOT(d_func(), void onFolderDestroyed  ())
 
     Q_PRIVATE_SLOT(d_func(), void onCurrentTabChanged    ())
     Q_PRIVATE_SLOT(d_func(), void onHighlightedTabChanged())
@@ -447,9 +446,11 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onCurrentBookmarkChanged())
     Q_PRIVATE_SLOT(d_func(), void onCurrentBookmarkUpdated())
 
-    Q_PRIVATE_SLOT(d_func(), void onHookDestroyed())
-    Q_PRIVATE_SLOT(d_func(), void onTabsDestroyed())
-    Q_PRIVATE_SLOT(d_func(), void onTabDestroyed ())
+    Q_PRIVATE_SLOT(d_func(), void onHookDestroyed    ())
+    Q_PRIVATE_SLOT(d_func(), void onPlaylistDestroyed())
+    Q_PRIVATE_SLOT(d_func(), void onFolderDestroyed  ())
+    Q_PRIVATE_SLOT(d_func(), void onTabsDestroyed    ())
+    Q_PRIVATE_SLOT(d_func(), void onTabDestroyed     ())
 };
 
 #include <private/WDeclarativePlayer_p>

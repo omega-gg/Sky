@@ -47,7 +47,7 @@ protected:
     WAbstractHook(WAbstractHookPrivate * p, WAbstractBackend * backend);
 
 public: // Interface
-    Q_INVOKABLE bool checkSource(const QString & url);
+    Q_INVOKABLE bool check(const QString & url);
 
 public: // WBackendInterface implementation
     Q_INVOKABLE /* virtual */ QString source() const;
@@ -154,9 +154,12 @@ protected: // Functions
 #endif
 
 protected: // Abstract functions
-    virtual bool hookCheckSource(const QString & url) = 0;
+    virtual bool hookCheck(const QString & url) = 0;
 
 signals:
+    // NOTE: This means the 'checked' function changed its conditions.
+    void hookUpdated();
+
     void filterActiveChanged();
 
 public: // Properties

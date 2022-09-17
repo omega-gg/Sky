@@ -83,13 +83,12 @@ public: // Functions
 public: // Slots
     void onEnded();
 
+    void onHookUpdated();
+
     void onStateChanged   ();
     void onDurationChanged();
 
     void onCurrentTrackChanged();
-
-    void onPlaylistDestroyed();
-    void onFolderDestroyed  ();
 
     void onCurrentTabChanged    ();
     void onHighlightedTabChanged();
@@ -97,9 +96,11 @@ public: // Slots
     void onCurrentBookmarkChanged();
     void onCurrentBookmarkUpdated();
 
-    void onHookDestroyed();
-    void onTabsDestroyed();
-    void onTabDestroyed ();
+    void onHookDestroyed    ();
+    void onPlaylistDestroyed();
+    void onFolderDestroyed  ();
+    void onTabsDestroyed    ();
+    void onTabDestroyed     ();
 
 public: // Variables
     WAbstractBackend * backend;
