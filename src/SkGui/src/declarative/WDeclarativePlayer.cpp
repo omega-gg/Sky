@@ -1624,44 +1624,58 @@ qreal WDeclarativePlayer::progress() const
 
 qreal WDeclarativePlayer::speed() const
 {
-    Q_D(const WDeclarativePlayer); return d->speed;
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+        return d->backend->speed();
+    }
+    else return d->speed;
 }
 
 void WDeclarativePlayer::setSpeed(qreal speed)
 {
     Q_D(WDeclarativePlayer);
 
-    if (d->speed == speed) return;
-
-    d->speed = speed;
-
     if (d->backend)
     {
         d->backend->setSpeed(speed);
     }
-    else emit speedChanged();
+    else if (d->speed == speed)
+    {
+        d->speed = speed;
+
+        emit speedChanged();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
 qreal WDeclarativePlayer::volume() const
 {
-    Q_D(const WDeclarativePlayer); return d->volume;
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+        return d->backend->volume();
+    }
+    else return d->volume;
 }
 
 void WDeclarativePlayer::setVolume(qreal volume)
 {
     Q_D(WDeclarativePlayer);
 
-    if (d->volume == volume) return;
-
-    d->volume = volume;
-
     if (d->backend)
     {
         d->backend->setVolume(volume);
     }
-    else emit volumeChanged();
+    else if (d->volume == volume)
+    {
+        d->volume = volume;
+
+        emit volumeChanged();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1716,15 +1730,16 @@ void WDeclarativePlayer::setRepeat(Repeat repeat)
 {
     Q_D(WDeclarativePlayer);
 
-    if (d->repeat == repeat) return;
-
-    d->repeat = repeat;
-
     if (d->backend)
     {
         d->updateRepeat();
     }
-    else emit repeatChanged();
+    else if (d->repeat == repeat)
+    {
+        d->repeat = repeat;
+
+        emit repeatChanged();
+    }
 
     emit playlistUpdated();
 }
@@ -1733,44 +1748,58 @@ void WDeclarativePlayer::setRepeat(Repeat repeat)
 
 WAbstractBackend::Output WDeclarativePlayer::output() const
 {
-    Q_D(const WDeclarativePlayer); return d->output;
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+        return d->backend->output();
+    }
+    else return d->output;
 }
 
 void WDeclarativePlayer::setOutput(WAbstractBackend::Output output)
 {
     Q_D(WDeclarativePlayer);
 
-    if (d->output == output) return;
-
-    d->output = output;
-
     if (d->backend)
     {
         d->backend->setOutput(output);
     }
-    else emit outputChanged();
+    else if (d->output == output)
+    {
+        d->output = output;
+
+        emit outputChanged();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
 WAbstractBackend::Quality WDeclarativePlayer::quality() const
 {
-    Q_D(const WDeclarativePlayer); return d->quality;
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+        return d->backend->quality();
+    }
+    else return d->quality;
 }
 
 void WDeclarativePlayer::setQuality(WAbstractBackend::Quality quality)
 {
     Q_D(WDeclarativePlayer);
 
-    if (d->quality == quality) return;
-
-    d->quality = quality;
-
     if (d->backend)
     {
         d->backend->setQuality(quality);
     }
-    else emit qualityChanged();
+    else if (d->quality == quality)
+    {
+        d->quality = quality;
+
+        emit qualityChanged();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1801,22 +1830,29 @@ WAbstractBackend::Quality WDeclarativePlayer::qualityActive() const
 
 WAbstractBackend::FillMode WDeclarativePlayer::fillMode() const
 {
-    Q_D(const WDeclarativePlayer); return d->fillMode;
+    Q_D(const WDeclarativePlayer);
+
+    if (d->backend)
+    {
+        return d->backend->fillMode();
+    }
+    else return d->fillMode;
 }
 
 void WDeclarativePlayer::setFillMode(WAbstractBackend::FillMode fillMode)
 {
     Q_D(WDeclarativePlayer);
 
-    if (d->fillMode == fillMode) return;
-
-    d->fillMode = fillMode;
-
     if (d->backend)
     {
         d->backend->setFillMode(fillMode);
     }
-    else emit fillModeChanged();
+    else if (d->fillMode == fillMode)
+    {
+        d->fillMode = fillMode;
+
+        emit fillModeChanged();
+    }
 
 #if defined(QT_NEW) && defined(SK_SOFTWARE) == false
     d->frameUpdate = true;
@@ -1842,15 +1878,16 @@ void WDeclarativePlayer::setTrackVideo(int id)
 {
     Q_D(WDeclarativePlayer);
 
-    if (d->trackVideo == id) return;
-
-    d->trackVideo = id;
-
     if (d->backend)
     {
         d->backend->setTrackVideo(id);
     }
-    else emit trackVideoChanged();
+    else if (d->trackVideo == id)
+    {
+        d->trackVideo = id;
+
+        emit trackVideoChanged();
+    }
 }
 
 int WDeclarativePlayer::trackAudio() const
@@ -1868,15 +1905,16 @@ void WDeclarativePlayer::setTrackAudio(int id)
 {
     Q_D(WDeclarativePlayer);
 
-    if (d->trackAudio == id) return;
-
-    d->trackAudio = id;
-
     if (d->backend)
     {
         d->backend->setTrackAudio(id);
     }
-    else emit trackAudioChanged();
+    else if (d->trackAudio == id)
+    {
+        d->trackAudio = id;
+
+        emit trackAudioChanged();
+    }
 }
 
 int WDeclarativePlayer::countVideos() const
@@ -1918,15 +1956,16 @@ void WDeclarativePlayer::setScanOutput(bool enabled)
 {
     Q_D(WDeclarativePlayer);
 
-    if (d->scanOutput == enabled) return;
-
-    d->scanOutput = enabled;
-
     if (d->backend)
     {
         d->backend->setScanOutput(enabled);
     }
-    else emit scanOutputChanged();
+    else if (d->scanOutput == enabled)
+    {
+        d->scanOutput = enabled;
+
+        emit scanOutputChanged();
+    }
 }
 
 int WDeclarativePlayer::currentOutput() const
