@@ -1730,16 +1730,15 @@ void WDeclarativePlayer::setRepeat(Repeat repeat)
 {
     Q_D(WDeclarativePlayer);
 
+    if (d->repeat == repeat)
+
+    d->repeat = repeat;
+
     if (d->backend)
     {
         d->updateRepeat();
     }
-    else if (d->repeat == repeat)
-    {
-        d->repeat = repeat;
-
-        emit repeatChanged();
-    }
+    else emit repeatChanged();
 
     emit playlistUpdated();
 }
