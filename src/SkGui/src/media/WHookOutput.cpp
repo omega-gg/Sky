@@ -94,12 +94,7 @@ void WHookOutputPrivate::onOutputChanged()
 {
     WHookOutputData * data = getData(backend->currentOutputPointer());
 
-    if (currentData == data)
-    {
-        setActive(true);
-
-        return;
-    }
+    if (currentData == data) return;
 
     if (currentData) client.disconnectHost();
 
@@ -148,15 +143,19 @@ void WHookOutputPrivate::onConnectedChanged()
         }
 
         backend->setCurrentOutput(index);
-    }
-    else
-    {
-        if (currentData == data) currentData = NULL;
 
-        if (data->output == backend->currentOutputPointer())
-        {
-            backend->setCurrentOutput(-1);
-        }
+        setActive(true);
+    }
+    // NOTE: When we loose the connection we stop the playback and select the default output.
+    else if (currentData == data)
+    {
+        backend->stop();
+
+        currentData = NULL;
+
+        backend->setCurrentOutput(0);
+
+        setActive(false);
     }
 }
 
@@ -189,7 +188,22 @@ WHookOutput::WHookOutput(WAbstractBackend * backend)
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ void WHookOutput::loadSource(const QString & url, int duration,
-                                                                            int currentTime) {}
+                                                                            int currentTime)
+{
+    Q_D(WHookOutput);
+
+    if (d->source != url)
+    {
+        d->source = url;
+
+        emitSourceChanged();
+    }
+
+    setDuration   (duration);
+    setCurrentTime(currentTime);
+
+    setStateLoad(WAbstractBackend::StateLoadStarting);
+}
 
 //-------------------------------------------------------------------------------------------------
 
@@ -207,7 +221,7 @@ WHookOutput::WHookOutput(WAbstractBackend * backend)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ void WHookOutput::seek(int msec) {}
+/* Q_INVOKABLE virtual */ void WHookOutput::seek(int) {}
 
 //-------------------------------------------------------------------------------------------------
 // Protected WAbstractHook reimplementation

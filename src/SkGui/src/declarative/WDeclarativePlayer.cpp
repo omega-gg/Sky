@@ -441,6 +441,9 @@ void WDeclarativePlayerPrivate::onEnded()
 
 void WDeclarativePlayerPrivate::onHookUpdated()
 {
+    Q_Q(WDeclarativePlayer);
+
+    loadSource(q->source(), q->duration(), q->currentTime());
 }
 
 //-------------------------------------------------------------------------------------------------
