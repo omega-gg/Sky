@@ -43,6 +43,13 @@ class WBroadcastServerThread;
 
 class SK_CORE_EXPORT WBroadcastServerPrivate : public WPrivate
 {
+public: // Enums
+    enum EventType
+    {
+        EventConnected = QEvent::User,
+        EventDisconnected
+    };
+
 public:
     WBroadcastServerPrivate(WBroadcastServer * p);
 
@@ -50,8 +57,13 @@ public:
 
     void init(int port);
 
+public: // Functions
+    void setConnected(bool connected);
+
 public: // Variables
     WBroadcastServerThread * thread;
+
+    bool connected;
 
 protected:
     W_DECLARE_PUBLIC(WBroadcastServer)

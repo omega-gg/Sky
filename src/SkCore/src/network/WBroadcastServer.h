@@ -39,6 +39,8 @@ class SK_CORE_EXPORT WBroadcastServer : public QObject, public WPrivatable
 {
     Q_OBJECT
 
+    Q_PROPERTY(bool isConnected READ isConnected NOTIFY connectedChanged)
+
 public:
     explicit WBroadcastServer(int port, QObject * parent = NULL);
 
@@ -50,6 +52,15 @@ public: // Static functions
                                                            const QString & prefix   = QString(),
                                                            QObject       * receiver = NULL,
                                                            const char    * method   = NULL);
+
+protected: // Events
+    /* virtual */ bool event(QEvent * event);
+
+signals:
+    void connectedChanged();
+
+public: // Properties
+    bool isConnected() const;
 
 private:
     W_DECLARE_PRIVATE(WBroadcastServer)

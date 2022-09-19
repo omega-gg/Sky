@@ -25,6 +25,7 @@
 #ifndef SK_NO_BROADCASTSERVER
 
 // Qt includes
+#include <QCoreApplication>
 #include <QThread>
 #include <QTcpServer>
 #include <QTcpSocket>
@@ -33,6 +34,9 @@
 
 // Sk includes
 #include <WControllerFile>
+
+// Private includes
+#include "WBroadcastServer_p.h"
 
 //=================================================================================================
 // WBroadcastServerThread
@@ -43,13 +47,15 @@ class WBroadcastServerThread : public QThread
     Q_OBJECT
 
 public:
-    WBroadcastServerThread(int port);
+    WBroadcastServerThread(WBroadcastServer * parent, int port);
 
 protected: // QThread reimplementation
     /* virtual */ void run();
 
 private: // Functions
     void clearSocket();
+
+    void setConnected(bool connected);
 
 private slots:
     void onConnection  ();
@@ -58,19 +64,27 @@ private slots:
     void onBytesWritten(qint64 bytes);
 
 private:
+    WBroadcastServer * parent;
+
     QTcpServer * server;
     QTcpSocket * socket;
 
     int port;
+
+    bool connected;
 };
 
 //-------------------------------------------------------------------------------------------------
 
-WBroadcastServerThread::WBroadcastServerThread(int port)
+WBroadcastServerThread::WBroadcastServerThread(WBroadcastServer * parent, int port)
 {
+    this->parent = parent;
+
     socket = NULL;
 
     this->port = port;
+
+    connected = false;
 
     moveToThread(this);
 
@@ -108,6 +122,23 @@ void WBroadcastServerThread::clearSocket()
     socket = NULL;
 }
 
+void WBroadcastServerThread::setConnected(bool connected)
+{
+    if (this->connected == connected) return;
+
+    this->connected = connected;
+
+    if (connected)
+    {
+         QCoreApplication::postEvent(parent,
+                                     new QEvent(static_cast<QEvent::Type>
+                                                (WBroadcastServerPrivate::EventConnected)));
+    }
+    else QCoreApplication::postEvent(parent,
+                                     new QEvent(static_cast<QEvent::Type>
+                                                (WBroadcastServerPrivate::EventDisconnected)));
+}
+
 //-------------------------------------------------------------------------------------------------
 // Private slots
 //-------------------------------------------------------------------------------------------------
@@ -128,17 +159,21 @@ void WBroadcastServerThread::onConnection()
     connect(socket, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
 
     connect(socket, SIGNAL(bytesWritten(qint64)), this, SLOT(onBytesWritten(qint64)));
+
+    setConnected(true);
 }
 
 void WBroadcastServerThread::onDisconnected()
 {
-    qDebug("WBroadcastServerThread: Disconnected.");
+    if (socket == NULL) return;
 
     disconnect(socket, 0, this, 0);
 
     socket->deleteLater();
 
     socket = NULL;
+
+    setConnected(false);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -215,8 +250,6 @@ public: // Variables
 // WBroadcastServerPrivate
 //=================================================================================================
 
-#include "WBroadcastServer_p.h"
-
 WBroadcastServerPrivate::WBroadcastServerPrivate(WBroadcastServer * p) : WPrivate(p) {}
 
 /* virtual */ WBroadcastServerPrivate::~WBroadcastServerPrivate()
@@ -231,7 +264,26 @@ WBroadcastServerPrivate::WBroadcastServerPrivate(WBroadcastServer * p) : WPrivat
 
 void WBroadcastServerPrivate::init(int port)
 {
-    thread = new WBroadcastServerThread(port);
+    Q_Q(WBroadcastServer);
+
+    thread = new WBroadcastServerThread(q, port);
+
+    connected = false;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
+
+void WBroadcastServerPrivate::setConnected(bool connected)
+{
+    if (this->connected == connected) return;
+
+    Q_Q(WBroadcastServer);
+
+    this->connected = connected;
+
+    emit q->connectedChanged();
 }
 
 //=================================================================================================
@@ -295,6 +347,46 @@ WAbstractThreadAction * WBroadcastServer::startSource(int port, const QString & 
     if (receiver) connect(reply, SIGNAL(complete(const QString &)), receiver, method);
 
     return action;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Events
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ bool WBroadcastServer::event(QEvent * event)
+{
+    QEvent::Type type = event->type();
+
+    if (type == static_cast<QEvent::Type> (WBroadcastServerPrivate::EventConnected))
+    {
+        Q_D(WBroadcastServer);
+
+        qDebug("WBroadcastClient: Connected.");
+
+        d->setConnected(true);
+
+        return true;
+    }
+    else if (type == static_cast<QEvent::Type> (WBroadcastServerPrivate::EventDisconnected))
+    {
+        Q_D(WBroadcastServer);
+
+        qDebug("WBroadcastClient: Disconnected.");
+
+        d->setConnected(false);
+
+        return true;
+    }
+    else return QObject::event(event);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Properties
+//-------------------------------------------------------------------------------------------------
+
+bool WBroadcastServer::isConnected() const
+{
+    Q_D(const WBroadcastServer); return d->connected;
 }
 
 #endif // SK_NO_BROADCASTSERVER

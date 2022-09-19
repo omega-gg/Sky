@@ -53,7 +53,7 @@ public: // Enums
     };
 
 public:
-    WBroadcastClientThread(WBroadcastClient * client);
+    WBroadcastClientThread(WBroadcastClient * parent);
 
 protected: // QThread reimplementation
     /* virtual */ void run();
@@ -73,7 +73,7 @@ private slots:
     void onRead();
 
 private:
-    WBroadcastClient * client;
+    WBroadcastClient * parent;
 
     QTcpSocket * socket;
 
@@ -103,9 +103,9 @@ public: // Variables
 // WBroadcastClientThread
 //=================================================================================================
 
-WBroadcastClientThread::WBroadcastClientThread(WBroadcastClient * client)
+WBroadcastClientThread::WBroadcastClientThread(WBroadcastClient * parent)
 {
-    this->client = client;
+    this->parent = parent;
 
     socket = NULL;
 
@@ -218,11 +218,11 @@ void WBroadcastClientThread::setConnected(bool connected)
 
     if (connected)
     {
-         QCoreApplication::postEvent(client,
+         QCoreApplication::postEvent(parent,
                                      new QEvent(static_cast<QEvent::Type>
                                                 (WBroadcastClientPrivate::EventConnected)));
     }
-    else QCoreApplication::postEvent(client,
+    else QCoreApplication::postEvent(parent,
                                      new QEvent(static_cast<QEvent::Type>
                                                 (WBroadcastClientPrivate::EventDisconnected)));
 }
