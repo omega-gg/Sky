@@ -511,28 +511,7 @@ QString WAbstractBackend::qualityToString(Quality quality)
 
         backendSetSource(url);
 
-        //-----------------------------------------------------------------------------------------
-        // NOTE: We need to clear these when changing the source.
-
-        if (d->videos.isEmpty() == false)
-        {
-            d->videos.clear();
-
-            emit videosChanged();
-        }
-
-        if (d->audios.isEmpty() == false)
-        {
-            d->audios.clear();
-
-            emit audiosChanged();
-        }
-
-        setLive(false);
-
-        //-----------------------------------------------------------------------------------------
-
-        emit sourceChanged();
+        updateSource();
     }
     else if (d->state == StatePlaying)
     {
@@ -619,6 +598,34 @@ QString WAbstractBackend::qualityToString(Quality quality)
 //-------------------------------------------------------------------------------------------------
 // Protected functions
 //-------------------------------------------------------------------------------------------------
+
+void WAbstractBackend::updateSource()
+{
+    Q_D(WAbstractBackend);
+
+    //---------------------------------------------------------------------------------------------
+    // NOTE: We need to clear these when changing the source.
+
+    if (d->videos.isEmpty() == false)
+    {
+        d->videos.clear();
+
+        emit videosChanged();
+    }
+
+    if (d->audios.isEmpty() == false)
+    {
+        d->audios.clear();
+
+        emit audiosChanged();
+    }
+
+    setLive(false);
+
+    //---------------------------------------------------------------------------------------------
+
+    emit sourceChanged();
+}
 
 void WAbstractBackend::applyTracks(const QList<WBackendTrack> & tracks,
                                    int trackVideo, int trackAudio)

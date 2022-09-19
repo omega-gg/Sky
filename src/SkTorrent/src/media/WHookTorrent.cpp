@@ -1061,6 +1061,8 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 
             setDuration   (duration);
             setCurrentTime(currentTime);
+
+            updateSource();
         }
         else if (d->state == WHookTorrentPrivate::StatePaused)
         {
@@ -1072,6 +1074,8 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 
             setDuration   (duration);
             setCurrentTime(currentTime);
+
+            updateSource();
         }
         else
         {
@@ -1088,10 +1092,10 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
             setDuration   (duration);
             setCurrentTime(currentTime);
 
+            updateSource();
+
             d->play();
         }
-
-        emitSourceChanged();
     }
     else if (d->state < WHookTorrentPrivate::StateStarting)
     {

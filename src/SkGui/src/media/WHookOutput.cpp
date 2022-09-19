@@ -194,34 +194,70 @@ WHookOutput::WHookOutput(WAbstractBackend * backend)
 
     if (d->source != url)
     {
+        if (d->backend->isPaused() || url.isEmpty()) stop();
+
         d->source = url;
 
-        emitSourceChanged();
+        setDuration   (duration);
+        setCurrentTime(currentTime);
+
+        updateSource();
     }
-
-    setDuration   (duration);
-    setCurrentTime(currentTime);
-
-    setStateLoad(WAbstractBackend::StateLoadStarting);
+    else
+    {
+        setDuration   (duration);
+        setCurrentTime(currentTime);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ void WHookOutput::play() {}
+/* Q_INVOKABLE virtual */ void WHookOutput::play()
+{
+    setState(WAbstractBackend::StatePlaying);
 
-/* Q_INVOKABLE virtual */ void WHookOutput::replay() {}
+    setStateLoad(WAbstractBackend::StateLoadStarting);
+}
+
+/* Q_INVOKABLE virtual */ void WHookOutput::replay()
+{
+    setState(WAbstractBackend::StatePlaying);
+}
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ void WHookOutput::pause() {}
+/* Q_INVOKABLE virtual */ void WHookOutput::pause()
+{
+    Q_D(WHookOutput);
 
-/* Q_INVOKABLE virtual */ void WHookOutput::stop() {}
+    WAbstractBackend::State state = d->backend->state();
 
-/* Q_INVOKABLE virtual */ void WHookOutput::clear() {}
+    if (state == WAbstractBackend::StatePaused) return;
+
+    if (state == WAbstractBackend::StatePlaying)
+    {
+        setState(WAbstractBackend::StatePaused);
+    }
+    else stop();
+}
+
+/* Q_INVOKABLE virtual */ void WHookOutput::stop()
+{
+    setState    (WAbstractBackend::StateStopped);
+    setStateLoad(WAbstractBackend::StateLoadDefault);
+}
+
+/* Q_INVOKABLE virtual */ void WHookOutput::clear()
+{
+    stop();
+}
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ void WHookOutput::seek(int) {}
+/* Q_INVOKABLE virtual */ void WHookOutput::seek(int msec)
+{
+    setCurrentTime(msec);
+}
 
 //-------------------------------------------------------------------------------------------------
 // Protected WAbstractHook reimplementation

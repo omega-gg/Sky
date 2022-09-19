@@ -75,10 +75,11 @@ protected: // Functions
 
     void applyCurrentTime(int msec);
 
-    void emitSourceChanged() const;
-
     //---------------------------------------------------------------------------------------------
     // Backend functions
+
+    // NOTE: Clear the backend and send the 'sourceChanged' signal.
+    void updateSource();
 
     // NOTE: This function resets and applies all the tracks at once (video / audio).
     void applyTracks(const QList<WBackendTrack> & tracks, int trackVideo = -1,
