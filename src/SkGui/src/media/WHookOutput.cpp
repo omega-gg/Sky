@@ -119,7 +119,7 @@ void WHookOutputPrivate::onConnectedChanged()
     {
         int index;
 
-        if (currentData == NULL)
+        if (data == NULL)
         {
             Q_Q(WHookOutput);
 

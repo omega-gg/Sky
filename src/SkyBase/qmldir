@@ -44,3 +44,6 @@ BaseScrollBar 1.0 BaseScrollBar.qml
 BaseSlider 1.0 BaseSlider.qml
 
 BasePlayerBrowser 1.0 BasePlayerBrowser.qml
+
+AnimatedSlide      1.0 AnimatedSlide
+AnimatedSlideImage 1.0 AnimatedSlideImage
