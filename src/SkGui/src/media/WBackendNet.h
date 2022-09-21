@@ -47,9 +47,9 @@ public: // Enums
     enum Type
     {
         TypeDefault,
+        TypeVbml,
         //TypeWeb,
-        TypeTorrent,
-        TypeVbml
+        TypeTorrent
     };
 
     enum Target
