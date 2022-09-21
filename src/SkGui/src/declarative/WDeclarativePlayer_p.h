@@ -109,6 +109,8 @@ public: // Variables
 
     WBackendInterface * backendInterface;
 
+    WBroadcastServer * server;
+
 #if defined(QT_NEW) && defined(SK_SOFTWARE) == false
     WBackendFrame frame;
 

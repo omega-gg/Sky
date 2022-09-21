@@ -63,6 +63,8 @@ void WDeclarativePlayerPrivate::init()
 
     backendInterface = NULL;
 
+    server = NULL;
+
 #if defined(QT_NEW) && defined(SK_SOFTWARE) == false
     frameUpdate = false;
 #endif
@@ -1340,8 +1342,6 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
     emit backendChanged();
 }
 
-//-------------------------------------------------------------------------------------------------
-
 QList<WAbstractHook *> WDeclarativePlayer::hooks() const
 {
     Q_D(const WDeclarativePlayer); return d->hooks;
@@ -1378,6 +1378,31 @@ void WDeclarativePlayer::setHooks(const QList<WAbstractHook *> & hooks)
     }
 
     emit hooksChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+WBroadcastServer * WDeclarativePlayer::server() const
+{
+    Q_D(const WDeclarativePlayer); return d->server;
+}
+
+void WDeclarativePlayer::setServer(WBroadcastServer * server)
+{
+    Q_D(WDeclarativePlayer);
+
+    if (server == NULL) return;
+
+    if (d->server)
+    {
+        qWarning("WDeclarativePlayer::setServer: The server is already set.");
+
+        return;
+    }
+
+    d->server = server;
+
+    emit serverChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

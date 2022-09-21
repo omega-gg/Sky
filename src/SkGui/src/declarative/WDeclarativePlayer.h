@@ -36,6 +36,7 @@
 
 // Forward declarations
 class WDeclarativePlayerPrivate;
+class WBroadcastServer;
 class WAbstractHook;
 class WTabsTrack;
 
@@ -58,6 +59,8 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
     Q_PROPERTY(WAbstractBackend * backend READ backend WRITE setBackend NOTIFY backendChanged)
 
     Q_PROPERTY(QList<WAbstractHook *> hooks READ hooks WRITE setHooks NOTIFY hooksChanged)
+
+    Q_PROPERTY(WBroadcastServer * server READ server WRITE setServer NOTIFY serverChanged)
 
     Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
 
@@ -247,6 +250,8 @@ signals:
     void backendChanged();
     void hooksChanged  ();
 
+    void serverChanged();
+
     void sourceChanged();
 
     void playlistChanged();
@@ -314,6 +319,9 @@ public: // Properties
 
     QList<WAbstractHook *> hooks() const;
     void                   setHooks(const QList<WAbstractHook *> & hooks);
+
+    WBroadcastServer * server() const;
+    void               setServer(WBroadcastServer * server);
 
     QString source() const;
     void    setSource(const QString & url);
