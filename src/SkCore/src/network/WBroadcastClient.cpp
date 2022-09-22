@@ -678,11 +678,12 @@ void WBroadcastClientPrivate::setSource(const WBroadcastSource & source)
 
 /* Q_INVOKABLE */ bool WBroadcastClient::addAndSend(const WBroadcastMessage & message)
 {
-    if (addMessage(message))
+    if (addMessage(message) == false)
     {
-        return sendMessages();
+        return false;
     }
-    else return false;
+
+    return sendMessages();
 }
 
 /* Q_INVOKABLE */ bool WBroadcastClient::addMessage(WBroadcastMessage::Type type,
