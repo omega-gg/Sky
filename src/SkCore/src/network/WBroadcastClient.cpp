@@ -27,11 +27,11 @@
 // Qt includes
 #include <QCoreApplication>
 #include <QThread>
-#include <QEvent>
-#include <QTcpSocket>
 #include <QHostInfo>
+#include <QtEndian>
 
 // Sk includes
+#include <WControllerApplication>
 #include <WControllerNetwork>
 
 // Private includes
@@ -49,7 +49,8 @@ public: // Enums
     enum EventType
     {
         EventConnect = QEvent::User,
-        EventDisconnect
+        EventDisconnect,
+        EventMessage
     };
 
 public:
@@ -81,13 +82,13 @@ private:
 };
 
 //=================================================================================================
-// WBroadcastThreadConnect
+// WBroadcastClientThread events
 //=================================================================================================
 
-class WBroadcastThreadConnect : public QEvent
+class WBroadcastClientConnect : public QEvent
 {
 public:
-    WBroadcastThreadConnect(const QString & address, int port)
+    WBroadcastClientConnect(const QString & address, int port)
         : QEvent(static_cast<QEvent::Type> (WBroadcastClientThread::EventConnect))
     {
         this->address = address;
@@ -97,6 +98,19 @@ public:
 public: // Variables
     QString address;
     int     port;
+};
+
+class WBroadcastClientMessage : public QEvent
+{
+public:
+    WBroadcastClientMessage(const QList<WBroadcastMessage> & messages)
+        : QEvent(static_cast<QEvent::Type> (WBroadcastClientThread::EventMessage))
+    {
+        this->messages = messages;
+    }
+
+public: // Variables
+    QList<WBroadcastMessage> messages;
 };
 
 //=================================================================================================
@@ -135,7 +149,7 @@ WBroadcastClientThread::WBroadcastClientThread(WBroadcastClient * parent)
 
     if (type == static_cast<QEvent::Type> (EventConnect))
     {
-        WBroadcastThreadConnect * eventConnect = static_cast<WBroadcastThreadConnect *> (event);
+        WBroadcastClientConnect * eventConnect = static_cast<WBroadcastClientConnect *> (event);
 
         QString address = eventConnect->address;
         int     port    = eventConnect->port;
@@ -163,6 +177,34 @@ WBroadcastClientThread::WBroadcastClientThread(WBroadcastClient * parent)
         if (socket) clearSocket();
 
         setConnected(false);
+
+        return true;
+    }
+    else if (type == static_cast<QEvent::Type> (EventMessage))
+    {
+        if (socket == NULL)
+        {
+            qWarning("WBroadcastClientThread::EventMessage: Not connected.");
+
+            return true;
+        }
+
+        WBroadcastClientMessage * eventMessage = static_cast<WBroadcastClientMessage *> (event);
+
+        QByteArray data;
+
+        foreach (const WBroadcastMessage & message, eventMessage->messages)
+        {
+            data.append(message.generateData());
+        }
+
+        int length = data.length();
+
+        if (length == 0)
+        {
+            qWarning("WBroadcastClientThread::EventMessage: Data is empty.");
+        }
+        else socket->write(data.constData(), data.length());
 
         return true;
     }
@@ -270,6 +312,245 @@ WBroadcastSource & WBroadcastSource::operator=(const WBroadcastSource & other)
 }
 
 //=================================================================================================
+// WBroadcastMessage
+//=================================================================================================
+
+/* explicit */ WBroadcastMessage::WBroadcastMessage(Type type, const QStringList & parameters)
+{
+    this->type       = type;
+    this->parameters = parameters;
+}
+
+/* explicit */ WBroadcastMessage::WBroadcastMessage(const QByteArray & data)
+{
+    QString content = QString::fromUtf8(data);
+
+    QString name = extractName(&content);
+
+    type = typeFromString(name);
+
+    if (type == Unknown) return;
+
+    while (content.isEmpty() == false)
+    {
+        QString parameter = extractParameter(&content);
+
+        if (parameter.isEmpty()) return;
+
+        parameters.append(parameter);
+    }
+}
+
+WBroadcastMessage::WBroadcastMessage()
+{
+    type = Unknown;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Functions
+//-------------------------------------------------------------------------------------------------
+
+bool WBroadcastMessage::isValid() const
+{
+    return (type != Unknown);
+}
+
+QByteArray WBroadcastMessage::generateData() const
+{
+    if (isValid() == false) return QByteArray();
+
+    QString data;
+
+    data.append(typeToString(type));
+
+    foreach (QString parameter, parameters)
+    {
+        parameter.replace('"', "\\\"");
+
+        data.append(" \"" + parameter + '"');
+    }
+
+    QByteArray array = data.toUtf8();
+
+    qDebug("WBroadcastMessage::generateData: [%s]", array.constData());
+
+    QByteArray bytes;
+
+    WBroadcastClient::appendInt(&bytes, data.length());
+
+    array.prepend(bytes, 4);
+
+    return array;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Static functions
+//-------------------------------------------------------------------------------------------------
+
+/* static */ WBroadcastMessage::Type WBroadcastMessage::typeFromString(const QString & string)
+{
+    if      (string == "SOURCE") return SOURCE;
+    else if (string == "PLAY")   return PLAY;
+    else if (string == "REPLAY") return REPLAY;
+    else if (string == "PAUSE")  return PAUSE;
+    else if (string == "STOP")   return STOP;
+    else                         return Unknown;
+}
+
+/* static */ QString WBroadcastMessage::typeToString(Type type)
+{
+    if      (type == SOURCE) return "SOURCE";
+    else if (type == PLAY)   return "PLAY";
+    else if (type == REPLAY) return "REPLAY";
+    else if (type == PAUSE)  return "PAUSE";
+    else if (type == STOP)   return "STOP";
+    else                     return "";
+}
+
+//-------------------------------------------------------------------------------------------------
+// Operators
+//-------------------------------------------------------------------------------------------------
+
+WBroadcastMessage::WBroadcastMessage(const WBroadcastMessage & other)
+{
+    *this = other;
+}
+
+bool WBroadcastMessage::operator==(const WBroadcastMessage & other) const
+{
+    return (type == other.type && parameters == other.parameters);
+}
+
+WBroadcastMessage & WBroadcastMessage::operator=(const WBroadcastMessage & other)
+{
+    type       = other.type;
+    parameters = other.parameters;
+
+    return *this;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
+
+QString WBroadcastMessage::extractName(QString * data) const
+{
+    int index = data->indexOf(' ');
+
+    QString name;
+
+    if (index == -1)
+    {
+        name = *data;
+
+        data->clear();
+    }
+    else
+    {
+        name = data->left(index);
+
+        // NOTE: Remove the space and the first parameter double quote.
+        data->remove(0, index + 2);
+    }
+
+    return name;
+}
+
+QString WBroadcastMessage::extractParameter(QString * data) const
+{
+    int index = data->indexOf('"');
+
+    if (index == -1) return QString();
+
+    while (Sk::checkEscaped(*data, index))
+    {
+        int at = data->indexOf('"', index + 1);
+
+        if (at == -1) break;
+
+        index = at;
+    }
+
+    QString result = data->left(index);
+
+    result.replace("\\\"", "\"");
+
+    // NOTE: Remove the double quote, the space and the next parameter double quote.
+    data->remove(0, index + 3);
+
+    return result;
+}
+
+//=================================================================================================
+// WBroadcastBuffer
+//=================================================================================================
+
+WBroadcastBuffer::WBroadcastBuffer()
+{
+    state = HEADER;
+
+    size = 4;
+}
+
+int WBroadcastBuffer::append(QByteArray * array)
+{
+    int length = array->length();
+
+    if (length - size < 0)
+    {
+        data.append(*array);
+
+        array->clear();
+
+        size -= length;
+
+        return 0;
+    }
+
+    data.append(array->left(size));
+
+    array->remove(0, size);
+
+    if (state == HEADER)
+    {
+        state = DATA;
+
+        size = WBroadcastClient::getInt(data.constData());
+
+        // NOTE: Removing the 'size' integer at the start.
+        data.remove(0, 4);
+
+        if (size == 0)
+        {
+            return -1;
+        }
+        else return 0;
+    }
+    else
+    {
+        size = 0;
+
+        return 1;
+    }
+}
+
+void WBroadcastBuffer::clear()
+{
+    data.clear();
+
+    state = HEADER;
+
+    size = 4;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QByteArray WBroadcastBuffer::getData() const
+{
+    return data;
+}
+
+//=================================================================================================
 // WBroadcastClientPrivate
 //=================================================================================================
 
@@ -277,6 +558,8 @@ WBroadcastClientPrivate::WBroadcastClientPrivate(WBroadcastClient * p) : WPrivat
 
 /* virtual */ WBroadcastClientPrivate::~WBroadcastClientPrivate()
 {
+    if (thread == NULL) return;
+
     thread->quit();
     thread->wait();
 
@@ -287,9 +570,7 @@ WBroadcastClientPrivate::WBroadcastClientPrivate(WBroadcastClient * p) : WPrivat
 
 void WBroadcastClientPrivate::init()
 {
-    Q_Q(WBroadcastClient);
-
-    thread = new WBroadcastClientThread(q);
+    thread = NULL;
 
     connected = false;
 }
@@ -297,6 +578,22 @@ void WBroadcastClientPrivate::init()
 //-------------------------------------------------------------------------------------------------
 // Private functions
 //-------------------------------------------------------------------------------------------------
+
+void WBroadcastClientPrivate::createThread()
+{
+    if (thread) return;
+
+    Q_Q(WBroadcastClient);
+
+    thread = new WBroadcastClientThread(q);
+}
+
+void WBroadcastClientPrivate::postEvent(QEvent * event)
+{
+    createThread();
+
+    QCoreApplication::postEvent(thread, event);
+}
 
 void WBroadcastClientPrivate::setConnected(bool connected)
 {
@@ -342,8 +639,7 @@ void WBroadcastClientPrivate::setSource(const WBroadcastSource & source)
 
     d->setSource(source);
 
-    QCoreApplication::postEvent(d->thread,
-                                new WBroadcastThreadConnect(source.address, source.port));
+    d->postEvent(new WBroadcastClientConnect(source.address, source.port));
 
     return true;
 }
@@ -357,8 +653,77 @@ void WBroadcastClientPrivate::setSource(const WBroadcastSource & source)
 {
     Q_D(WBroadcastClient);
 
-    QCoreApplication::postEvent(d->thread, new QEvent(static_cast<QEvent::Type>
-                                                      (WBroadcastClientThread::EventDisconnect)));
+    d->postEvent(new QEvent(static_cast<QEvent::Type> (WBroadcastClientThread::EventDisconnect)));
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ bool WBroadcastClient::addMessage(const WBroadcastMessage & message)
+{
+    Q_D(WBroadcastClient);
+
+    if (message.isValid() == false)
+    {
+        qWarning("WBroadcastClient::addMessage: Invalid message.");
+
+        return false;
+    }
+
+    d->messages.append(message);
+
+    emit messagesChanged();
+
+    return true;
+}
+
+/* Q_INVOKABLE */ bool WBroadcastClient::addAndSend(const WBroadcastMessage & message)
+{
+    if (addMessage(message))
+    {
+        return sendMessages();
+    }
+    else return false;
+}
+
+/* Q_INVOKABLE */ bool WBroadcastClient::addMessage(WBroadcastMessage::Type type,
+                                                    const QStringList & parameters)
+{
+    return addMessage(WBroadcastMessage(type, parameters));
+}
+
+/* Q_INVOKABLE */ bool WBroadcastClient::addAndSend(WBroadcastMessage::Type type,
+                                                    const QStringList & parameters)
+{
+    return addAndSend(WBroadcastMessage(type, parameters));
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ bool WBroadcastClient::sendMessages()
+{
+    Q_D(WBroadcastClient);
+
+    if (d->connected == false)
+    {
+        qWarning("WBroadcastClient::sendMessage: Not connected.");
+
+        return false;
+    }
+
+    if (d->messages.isEmpty())
+    {
+        qWarning("WBroadcastClient::sendMessage: Messages are empty.");
+
+        return false;
+    }
+
+    d->postEvent(new WBroadcastClientMessage(d->messages));
+
+    d->messages.clear();
+
+    emit messagesChanged();
+
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -385,6 +750,24 @@ void WBroadcastClientPrivate::setSource(const WBroadcastSource & source)
     if (count > 3) source.name = list.at(3);
 
     return source;
+}
+
+/* Q_INVOKABLE static */ void WBroadcastClient::appendInt(QByteArray * array, qint32 value)
+{
+    // NOTE: Converting to big endian for the QTcpSocket.
+    value = qToBigEndian(value);
+
+    for (int i = 0; i < 4; i++)
+    {
+        array->append(static_cast<char> (value));
+
+        value >>= 8;
+    }
+}
+
+/* Q_INVOKABLE static */ qint32 WBroadcastClient::getInt(const char * data)
+{
+    return qFromBigEndian<qint32>(data);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -430,6 +813,11 @@ bool WBroadcastClient::isConnected() const
 const WBroadcastSource & WBroadcastClient::source() const
 {
     Q_D(const WBroadcastClient); return d->source;
+}
+
+const QList<WBroadcastMessage> & WBroadcastClient::messages() const
+{
+    Q_D(const WBroadcastClient); return d->messages;
 }
 
 #endif // SK_NO_BROADCASTCLIENT

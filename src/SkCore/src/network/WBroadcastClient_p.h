@@ -58,6 +58,10 @@ public:
     void init();
 
 public: // Functions
+    void createThread();
+
+    void postEvent(QEvent * event);
+
     void setConnected(bool connected);
 
     void setSource(const WBroadcastSource & source);
@@ -68,6 +72,8 @@ public: // Variables
     bool connected;
 
     WBroadcastSource source;
+
+    QList<WBroadcastMessage> messages;
 
 protected:
     W_DECLARE_PUBLIC(WBroadcastClient)

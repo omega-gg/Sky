@@ -1402,6 +1402,9 @@ void WDeclarativePlayer::setServer(WBroadcastServer * server)
 
     d->server = server;
 
+    //connect(server, SIGNAL(message(const WBroadcastMessage &)),
+    //        this,   SLOT(onMessage(const WBroadcastMessage &)));
+
     emit serverChanged();
 }
 

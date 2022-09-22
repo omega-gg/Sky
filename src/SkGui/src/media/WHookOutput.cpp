@@ -96,17 +96,16 @@ void WHookOutputPrivate::onOutputChanged()
 
     if (currentData == data) return;
 
-    if (currentData) client.disconnectHost();
+    if (currentData)
+    {
+        client.disconnectHost();
+
+        setActive(false);
+    }
 
     currentData = data;
 
-    if (data)
-    {
-        client.connectToHost(data->source);
-
-        setActive(true);
-    }
-    else setActive(false);
+    if (data) client.connectToHost(data->source);
 }
 
 void WHookOutputPrivate::onConnectedChanged()
@@ -175,12 +174,25 @@ WHookOutput::WHookOutput(WAbstractBackend * backend)
 
 /* Q_INVOKABLE */ void WHookOutput::connectToHost(const QString & url)
 {
-    Q_D(WHookOutput); d->client.connectToHost(url);
+    Q_D(WHookOutput);
+
+    if (d->client.isConnected())
+    {
+        qWarning("WHookOutput::connectToHost: Already connected.");
+
+        return;
+    }
+
+    d->client.connectToHost(url);
 }
 
 /* Q_INVOKABLE */ void WHookOutput::disconnectHost()
 {
-    Q_D(WHookOutput); d->client.disconnectHost();
+    Q_D(WHookOutput);
+
+    d->setActive(false);
+
+    d->client.disconnectHost();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -192,9 +204,18 @@ WHookOutput::WHookOutput(WAbstractBackend * backend)
 {
     Q_D(WHookOutput);
 
-    if (d->source != url)
+    if (d->source == url)
     {
-        if (d->backend->isPaused() || url.isEmpty()) stop();
+        setDuration   (duration);
+        setCurrentTime(currentTime);
+    }
+    else
+    {
+        if (d->backend->isPaused() || url.isEmpty())
+        {
+            setState    (WAbstractBackend::StateStopped);
+            setStateLoad(WAbstractBackend::StateLoadDefault);
+        }
 
         d->source = url;
 
@@ -203,25 +224,36 @@ WHookOutput::WHookOutput(WAbstractBackend * backend)
 
         updateSource();
     }
-    else
-    {
-        setDuration   (duration);
-        setCurrentTime(currentTime);
-    }
+
+    QStringList parameter;
+
+    parameter.append(url);
+    parameter.append(QString::number(duration));
+    parameter.append(QString::number(currentTime));
+
+    d->client.addAndSend(WBroadcastMessage::SOURCE, parameter);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ void WHookOutput::play()
 {
+    Q_D(WHookOutput);
+
     setState(WAbstractBackend::StatePlaying);
 
     setStateLoad(WAbstractBackend::StateLoadStarting);
+
+    d->client.addAndSend(WBroadcastMessage::PLAY);
 }
 
 /* Q_INVOKABLE virtual */ void WHookOutput::replay()
 {
+    Q_D(WHookOutput);
+
     setState(WAbstractBackend::StatePlaying);
+
+    d->client.addAndSend(WBroadcastMessage::REPLAY);
 }
 
 //-------------------------------------------------------------------------------------------------

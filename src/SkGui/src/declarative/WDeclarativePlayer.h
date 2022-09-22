@@ -42,6 +42,7 @@ class WTabsTrack;
 
 #ifdef QT_6
 Q_MOC_INCLUDE("WAbstractHook")
+Q_MOC_INCLUDE("WBroadcastServer")
 Q_MOC_INCLUDE("WTabsTrack")
 Q_MOC_INCLUDE("WTabTrack")
 #endif

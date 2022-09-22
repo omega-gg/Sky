@@ -60,6 +60,87 @@ public: // Variables
 };
 
 //-------------------------------------------------------------------------------------------------
+// WBroadcastMessage
+//-------------------------------------------------------------------------------------------------
+
+class SK_CORE_EXPORT WBroadcastMessage
+{
+public: // Enums
+    enum Type
+    {
+        Unknown,
+        SOURCE,
+        PLAY,
+        REPLAY,
+        PAUSE,
+        STOP
+    };
+
+public:
+    explicit WBroadcastMessage(Type type, const QStringList & parameters = QStringList());
+
+    explicit WBroadcastMessage(const QByteArray & data);
+
+    WBroadcastMessage();
+
+public: // Functions
+    bool isValid() const;
+
+    QByteArray generateData() const;
+
+public: // Static functions
+    static Type typeFromString(const QString & string);
+
+    static QString typeToString(Type type);
+
+public: // Operators
+    WBroadcastMessage(const WBroadcastMessage & other);
+
+    bool operator==(const WBroadcastMessage & other) const;
+
+    WBroadcastMessage & operator=(const WBroadcastMessage & other);
+
+private: // Functions
+    QString extractName     (QString * data) const;
+    QString extractParameter(QString * data) const;
+
+public: // Variables
+    Type        type;
+    QStringList parameters;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WBroadcastBuffer
+//-------------------------------------------------------------------------------------------------
+
+class SK_CORE_EXPORT WBroadcastBuffer
+{
+public: // Enums
+    enum State
+    {
+        HEADER,
+        DATA
+    };
+
+public:
+    WBroadcastBuffer();
+
+public: // Interface
+    int append(QByteArray * array);
+
+    void clear();
+
+    QByteArray getData() const;
+
+private: // Variables
+    QByteArray data;
+
+    State state;
+
+    int size;
+};
+
+//-------------------------------------------------------------------------------------------------
 // WBroadcastClient
 //-------------------------------------------------------------------------------------------------
 
@@ -71,6 +152,8 @@ class SK_CORE_EXPORT WBroadcastClient : public QObject, public WPrivatable
 
     Q_PROPERTY(WBroadcastSource source READ source NOTIFY sourceChanged)
 
+    Q_PROPERTY(const QList<WBroadcastMessage> & messages READ messages NOTIFY messagesChanged)
+
 public:
     explicit WBroadcastClient(QObject * parent = NULL);
 
@@ -80,8 +163,23 @@ public: // Interface
 
     Q_INVOKABLE void disconnectHost();
 
+    Q_INVOKABLE bool addMessage(const WBroadcastMessage & message);
+    Q_INVOKABLE bool addAndSend(const WBroadcastMessage & message);
+
+    Q_INVOKABLE bool addMessage(WBroadcastMessage::Type type,
+                                const QStringList & parameters = QStringList());
+
+    Q_INVOKABLE bool addAndSend(WBroadcastMessage::Type type,
+                                const QStringList & parameters = QStringList());
+
+    Q_INVOKABLE bool sendMessages();
+
 public: // Static functions
     Q_INVOKABLE static WBroadcastSource extractSource(const QString & url);
+
+    Q_INVOKABLE static void appendInt(QByteArray * array, qint32 value);
+
+    Q_INVOKABLE static qint32 getInt(const char * data);
 
 protected: // Events
     /* virtual */ bool event(QEvent * event);
@@ -91,10 +189,14 @@ signals:
 
     void sourceChanged();
 
+    void messagesChanged();
+
 public: // Properties
     bool isConnected() const;
 
     const WBroadcastSource & source() const;
+
+    const QList<WBroadcastMessage> & messages() const;
 
 private:
     W_DECLARE_PRIVATE(WBroadcastClient)

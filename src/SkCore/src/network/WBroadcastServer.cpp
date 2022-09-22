@@ -61,7 +61,7 @@ private slots:
     void onConnection  ();
     void onDisconnected();
 
-    void onBytesWritten(qint64 bytes);
+    void onRead();
 
 private:
     WBroadcastServer * parent;
@@ -72,9 +72,30 @@ private:
     int port;
 
     bool connected;
+
+    WBroadcastBuffer buffer;
 };
 
-//-------------------------------------------------------------------------------------------------
+//=================================================================================================
+// WBroadcastServerThread events
+//=================================================================================================
+
+class WBroadcastServerMessage : public QEvent
+{
+public:
+    WBroadcastServerMessage(const WBroadcastMessage & message)
+        : QEvent(static_cast<QEvent::Type> (WBroadcastServerPrivate::EventMessage))
+    {
+        this->message = message;
+    }
+
+public: // Variables
+    WBroadcastMessage message;
+};
+
+//=================================================================================================
+// WBroadcastServerThread
+//=================================================================================================
 
 WBroadcastServerThread::WBroadcastServerThread(WBroadcastServer * parent, int port)
 {
@@ -158,7 +179,7 @@ void WBroadcastServerThread::onConnection()
 
     connect(socket, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
 
-    connect(socket, SIGNAL(bytesWritten(qint64)), this, SLOT(onBytesWritten(qint64)));
+    connect(socket, SIGNAL(readyRead()), this, SLOT(onRead()));
 
     setConnected(true);
 }
@@ -178,9 +199,35 @@ void WBroadcastServerThread::onDisconnected()
 
 //-------------------------------------------------------------------------------------------------
 
-void WBroadcastServerThread::onBytesWritten(qint64)
+void WBroadcastServerThread::onRead()
 {
+    QByteArray data = socket->readAll();
 
+    qDebug("WBroadcastServerThread: Read %d", data.size());
+
+    while (data.isEmpty() == false)
+    {
+        int result = buffer.append(&data);
+
+        if (result == 1)
+        {
+            QByteArray data = buffer.getData();
+
+            qDebug("WBroadcastServerThread: Message [%s]", data.constData());
+
+            WBroadcastMessage message(data);
+
+            QCoreApplication::postEvent(parent, new WBroadcastServerMessage(message));
+
+            buffer.clear();
+        }
+        else if (result == -1)
+        {
+            qWarning("WBroadcastServerThread:onRead: Invalid message");
+
+            buffer.clear();
+        }
+    }
 }
 
 //=================================================================================================
@@ -254,6 +301,8 @@ WBroadcastServerPrivate::WBroadcastServerPrivate(WBroadcastServer * p) : WPrivat
 
 /* virtual */ WBroadcastServerPrivate::~WBroadcastServerPrivate()
 {
+    if (thread == NULL) return;
+
     thread->quit();
     thread->wait();
 
@@ -264,9 +313,9 @@ WBroadcastServerPrivate::WBroadcastServerPrivate(WBroadcastServer * p) : WPrivat
 
 void WBroadcastServerPrivate::init(int port)
 {
-    Q_Q(WBroadcastServer);
+    thread = NULL;
 
-    thread = new WBroadcastServerThread(q, port);
+    this->port = port;
 
     connected = false;
 }
@@ -274,6 +323,22 @@ void WBroadcastServerPrivate::init(int port)
 //-------------------------------------------------------------------------------------------------
 // Private functions
 //-------------------------------------------------------------------------------------------------
+
+void WBroadcastServerPrivate::createThread()
+{
+    if (thread) return;
+
+    Q_Q(WBroadcastServer);
+
+    thread = new WBroadcastServerThread(q, port);
+}
+
+void WBroadcastServerPrivate::postEvent(QEvent * event)
+{
+    createThread();
+
+    QCoreApplication::postEvent(thread, event);
+}
 
 void WBroadcastServerPrivate::setConnected(bool connected)
 {
@@ -294,6 +359,15 @@ void WBroadcastServerPrivate::setConnected(bool connected)
     : QObject(parent), WPrivatable(new WBroadcastServerPrivate(this))
 {
     Q_D(WBroadcastServer); d->init(port);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ void WBroadcastServer::start()
+{
+    Q_D(WBroadcastServer); d->createThread();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -374,6 +448,14 @@ WAbstractThreadAction * WBroadcastServer::startSource(int port, const QString & 
         qDebug("WBroadcastClient: Disconnected.");
 
         d->setConnected(false);
+
+        return true;
+    }
+    else if (type == static_cast<QEvent::Type> (WBroadcastServerPrivate::EventMessage))
+    {
+        WBroadcastServerMessage * eventMessage = static_cast<WBroadcastServerMessage *> (event);
+
+        emit message(eventMessage->message);
 
         return true;
     }

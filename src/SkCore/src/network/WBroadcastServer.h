@@ -28,6 +28,7 @@
 
 // Sk includes
 #include <Sk>
+#include <WBroadcastClient>
 
 #ifndef SK_NO_BROADCASTSERVER
 
@@ -44,6 +45,9 @@ class SK_CORE_EXPORT WBroadcastServer : public QObject, public WPrivatable
 public:
     explicit WBroadcastServer(int port, QObject * parent = NULL);
 
+public: // Interface
+    Q_INVOKABLE void start();
+
 public: // Static functions
     Q_INVOKABLE static QString source(int port, const QString & prefix = QString());
 
@@ -57,6 +61,8 @@ protected: // Events
     /* virtual */ bool event(QEvent * event);
 
 signals:
+    void message(const WBroadcastMessage & message);
+
     void connectedChanged();
 
 public: // Properties

@@ -47,7 +47,8 @@ public: // Enums
     enum EventType
     {
         EventConnected = QEvent::User,
-        EventDisconnected
+        EventDisconnected,
+        EventMessage
     };
 
 public:
@@ -58,10 +59,16 @@ public:
     void init(int port);
 
 public: // Functions
+    void createThread();
+
+    void postEvent(QEvent * event);
+
     void setConnected(bool connected);
 
 public: // Variables
     WBroadcastServerThread * thread;
+
+    int port;
 
     bool connected;
 
