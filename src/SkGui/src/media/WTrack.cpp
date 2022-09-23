@@ -136,9 +136,8 @@ void WTrack::applyDataTo(WTrack * other) const
 
 /* Q_INVOKABLE static */ QString WTrack::typeToString(Type type)
 {
-    if      (type == Track) return "track";
-    else if (type == Live)  return "live";
-    else                    return "";
+    if (type == Live) return "live";
+    else              return "track";
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -152,6 +151,8 @@ void WTrack::applyDataTo(WTrack * other) const
     QVariantMap map;
 
     map.insert("id", d->id);
+
+    map.insert("type", d->type);
 
     map.insert("state", d->state);
 

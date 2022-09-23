@@ -78,8 +78,6 @@ void WDeclarativePlayerPrivate::init()
     tabs = NULL;
     tab  = NULL;
 
-    currentTime = -1;
-
     state = WAbstractBackend::StateStopped;
 
     speed = 1.0;
@@ -441,15 +439,13 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
 
             track.setDuration(parameters.at(1).toInt());
 
-            currentTime = parameters.at(2).toInt();
+            tab->setPlaylist(playlistServer);
 
             playlistServer->addTrack(track);
 
             playlistServer->loadTrack(0);
 
             playlistServer->setCurrentIndex(0);
-
-            tab->setPlaylist(playlistServer);
         }
         else if (backend)
         {
@@ -616,9 +612,7 @@ void WDeclarativePlayerPrivate::onCurrentTrackChanged()
 
     const WTrack * track = playlist->currentTrackPointer();
 
-    loadSource(track->source(), track->duration(), currentTime);
-
-    currentTime = -1;
+    loadSource(track->source(), track->duration(), -1);
 
     emit q->currentTrackUpdated();
 }
@@ -1108,6 +1102,22 @@ void WDeclarativePlayer::updateFrame()
     if (d->backend)
     {
          return d->backend->audioName(id);
+    }
+    else return QString();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Virtual interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE virtual */ QString WDeclarativePlayer::toVbml(const QString & source,
+                                                             int             currentTime) const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->tab)
+    {
+        return d->tab->toVbml(source, currentTime);
     }
     else return QString();
 }

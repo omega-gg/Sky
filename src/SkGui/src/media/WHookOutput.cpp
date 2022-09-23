@@ -24,6 +24,12 @@
 
 #ifndef SK_NO_HOOKOUTPUT
 
+// Sk includes
+#include <WBarcodeWriter>
+#ifndef SK_NO_QML
+#include <WDeclarativePlayer>
+#endif
+
 //-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
@@ -227,7 +233,27 @@ WHookOutput::WHookOutput(WAbstractBackend * backend)
 
     QStringList parameter;
 
+#ifdef SK_NO_QML
     parameter.append(url);
+#else
+    WDeclarativePlayer * player = d->backend->parentItem();
+
+    if (player)
+    {
+        // NOTE: Sending VBML enables us to push more informations. As a result, the receiver will
+        //       be able to apply them without relying on the network.
+        QString vbml = player->toVbml();
+
+        if (vbml.isEmpty() == false)
+        {
+             // NOTE: Maybe we could run this in a thread.
+             parameter.append(WBarcodeWriter::encode(vbml, WBarcodeWriter::Vbml));
+        }
+        else parameter.append(url);
+    }
+    else parameter.append(url);
+#endif
+
     parameter.append(QString::number(duration));
     parameter.append(QString::number(currentTime));
 

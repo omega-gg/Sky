@@ -215,6 +215,12 @@ public: // Interface
     Q_INVOKABLE QString videoName(int id) const;
     Q_INVOKABLE QString audioName(int id) const;
 
+public: // Virtual interface
+    // NOTE: You can override the source and the currentTime. When passing -2 we skip the
+    //       currentTime entirely.
+    Q_INVOKABLE virtual QString toVbml(const QString & source      = QString(),
+                                       int             currentTime = -1) const;
+
 #if defined(QT_4) || defined(SK_SOFTWARE)
 public: // QGraphicsItem / QQuickPaintedItem reimplementation
 #ifdef QT_4

@@ -133,8 +133,6 @@ public: // Variables
 
     QString source;
 
-    int currentTime;
-
     WAbstractBackend::State state;
 
     qreal speed;
