@@ -432,7 +432,7 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
 
             if (url.isEmpty())
             {
-                q->stop();
+                loadSource(QString(), -1, -1);
 
                 return;
             }
