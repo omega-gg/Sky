@@ -31,6 +31,7 @@
 
 // Sk includes
 #include <WControllerApplication>
+#include <WBroadcastServer>
 #include <WAbstractHook>
 #include <WPlaylist>
 #include <WTabsTrack>
@@ -74,6 +75,8 @@ void WDeclarativePlayerPrivate::init()
 
     tabs = NULL;
     tab  = NULL;
+
+    currentTime = -1;
 
     state = WAbstractBackend::StateStopped;
 
@@ -402,6 +405,76 @@ void WDeclarativePlayerPrivate::clearPlaylistAndTabs()
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
+void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
+{
+    WBroadcastMessage::Type type = message.type;
+
+    if (type == WBroadcastMessage::SOURCE)
+    {
+        const QStringList & parameters = message.parameters;
+
+        QString url = parameters.first();
+
+        if (tab)
+        {
+            WTrack track(url, WTrack::Default);
+
+            track.setDuration(parameters.at(1).toInt());
+
+            currentTime = parameters.at(2).toInt();
+
+            tab->pushBookmark(WBookmarkTrack(track));
+        }
+        else if (backend)
+        {
+            int currentTime = parameters.at(2).toInt();
+
+            if (backendInterface->source() == url)
+            {
+                Q_Q(WDeclarativePlayer);
+
+                q->seek(currentTime);
+
+                return;
+            }
+
+            clearPlaylistAndTabs();
+
+            loadSource(url, parameters.at(1).toInt(), currentTime);
+        }
+        else
+        {
+            Q_Q(WDeclarativePlayer);
+
+            q->setSource(url);
+        }
+    }
+    else if (type == WBroadcastMessage::PLAY)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        q->play();
+    }
+    else if (type == WBroadcastMessage::REPLAY)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        q->replay();
+    }
+    else if (type == WBroadcastMessage::PAUSE)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        q->pause();
+    }
+    else if (type == WBroadcastMessage::STOP)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        q->stop();
+    }
+}
+
 void WDeclarativePlayerPrivate::onEnded()
 {
     if (autoPlay == false)
@@ -517,7 +590,9 @@ void WDeclarativePlayerPrivate::onCurrentTrackChanged()
 
     const WTrack * track = playlist->currentTrackPointer();
 
-    loadSource(track->source(), track->duration(), -1);
+    loadSource(track->source(), track->duration(), currentTime);
+
+    currentTime = -1;
 
     emit q->currentTrackUpdated();
 }
@@ -1402,8 +1477,8 @@ void WDeclarativePlayer::setServer(WBroadcastServer * server)
 
     d->server = server;
 
-    //connect(server, SIGNAL(message(const WBroadcastMessage &)),
-    //        this,   SLOT(onMessage(const WBroadcastMessage &)));
+    connect(server, SIGNAL(message(const WBroadcastMessage &)),
+            this,   SLOT(onMessage(const WBroadcastMessage &)));
 
     emit serverChanged();
 }
@@ -1433,7 +1508,12 @@ void WDeclarativePlayer::setSource(const QString & url)
 
         d->loadSource(url, -1, -1);
     }
-    else d->source = url;
+    else if (d->source != url)
+    {
+        d->source = url;
+
+        emit sourceChanged();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -33,6 +33,10 @@
     We mean it.
 */
 
+// Sk includes
+#include <WBroadcastClient>
+
+// Private includes
 #ifdef SK_SOFTWARE
 #include <private/WDeclarativeItemPaint_p>
 #else
@@ -81,6 +85,8 @@ public: // Functions
     void clearPlaylistAndTabs();
 
 public: // Slots
+    void onMessage(const WBroadcastMessage & message);
+
     void onEnded();
 
     void onHookUpdated();
@@ -124,6 +130,8 @@ public: // Variables
     WTabTrack  * tab;
 
     QString source;
+
+    int currentTime;
 
     WAbstractBackend::State state;
 

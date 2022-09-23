@@ -327,7 +327,7 @@ WBroadcastSource & WBroadcastSource::operator=(const WBroadcastSource & other)
 
     QString name = extractName(&content);
 
-    type = typeFromString(name);
+    Type type = typeFromString(name);
 
     if (type == Unknown) return;
 
@@ -335,10 +335,21 @@ WBroadcastSource & WBroadcastSource::operator=(const WBroadcastSource & other)
     {
         QString parameter = extractParameter(&content);
 
-        if (parameter.isEmpty()) return;
-
         parameters.append(parameter);
     }
+
+    //---------------------------------------------------------------------------------------------
+    // NOTE: Checking parameters according to the expected API.
+
+    if (type == SOURCE)
+    {
+        if (parameters.count() != 3) return;
+    }
+    else if (parameters.isEmpty() == false) return;
+
+    //---------------------------------------------------------------------------------------------
+
+    this->type = type;
 }
 
 WBroadcastMessage::WBroadcastMessage()

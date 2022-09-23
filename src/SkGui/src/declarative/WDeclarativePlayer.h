@@ -440,6 +440,8 @@ public: // Properties
 private:
     W_DECLARE_PRIVATE(WDeclarativePlayer)
 
+    Q_PRIVATE_SLOT(d_func(), void onMessage(const WBroadcastMessage &))
+
     Q_PRIVATE_SLOT(d_func(), void onEnded())
 
     Q_PRIVATE_SLOT(d_func(), void onHookUpdated())

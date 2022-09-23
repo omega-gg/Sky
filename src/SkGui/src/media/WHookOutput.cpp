@@ -269,6 +269,8 @@ WHookOutput::WHookOutput(WAbstractBackend * backend)
     if (state == WAbstractBackend::StatePlaying)
     {
         setState(WAbstractBackend::StatePaused);
+
+        d->client.addAndSend(WBroadcastMessage::PAUSE);
     }
     else stop();
 }
@@ -277,6 +279,8 @@ WHookOutput::WHookOutput(WAbstractBackend * backend)
 {
     setState    (WAbstractBackend::StateStopped);
     setStateLoad(WAbstractBackend::StateLoadDefault);
+
+    d->client.addAndSend(WBroadcastMessage::STOP);
 }
 
 /* Q_INVOKABLE virtual */ void WHookOutput::clear()
