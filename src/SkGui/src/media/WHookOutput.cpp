@@ -277,6 +277,8 @@ WHookOutput::WHookOutput(WAbstractBackend * backend)
 
 /* Q_INVOKABLE virtual */ void WHookOutput::stop()
 {
+    Q_D(WHookOutput);
+
     setState    (WAbstractBackend::StateStopped);
     setStateLoad(WAbstractBackend::StateLoadDefault);
 
