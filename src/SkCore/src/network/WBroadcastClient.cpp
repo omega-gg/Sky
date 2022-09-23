@@ -779,7 +779,11 @@ void WBroadcastClientPrivate::setSource(const WBroadcastSource & source)
 
 /* Q_INVOKABLE static */ qint32 WBroadcastClient::getInt(const char * data)
 {
+#ifdef QT_4
+    return qFromBigEndian<qint32>((const uchar *) data);
+#else
     return qFromBigEndian<qint32>(data);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
