@@ -70,8 +70,10 @@ void WDeclarativePlayerPrivate::init()
     frameUpdate = false;
 #endif
 
-    folder   = NULL;
-    playlist = NULL;
+    folder = NULL;
+
+    playlist       = NULL;
+    playlistServer = NULL;
 
     tabs = NULL;
     tab  = NULL;
@@ -417,13 +419,37 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
 
         if (tab)
         {
+            Q_Q(WDeclarativePlayer);
+
+            // NOTE: This playlist is useful to load the track data.
+            if (playlistServer == NULL)
+            {
+                playlistServer = new WPlaylist;
+
+                playlistServer->setParent(q);
+            }
+            else playlistServer->clearTracks();
+
+            if (url.isEmpty())
+            {
+                q->stop();
+
+                return;
+            }
+
             WTrack track(url, WTrack::Default);
 
             track.setDuration(parameters.at(1).toInt());
 
             currentTime = parameters.at(2).toInt();
 
-            tab->pushBookmark(WBookmarkTrack(track));
+            playlistServer->addTrack(track);
+
+            playlistServer->loadTrack(0);
+
+            playlistServer->setCurrentIndex(0);
+
+            tab->setPlaylist(playlistServer);
         }
         else if (backend)
         {

@@ -124,7 +124,9 @@ public: // Variables
 #endif
 
     WLibraryFolder * folder;
-    WPlaylist      * playlist;
+
+    WPlaylist * playlist;
+    WPlaylist * playlistServer;
 
     WTabsTrack * tabs;
     WTabTrack  * tab;
