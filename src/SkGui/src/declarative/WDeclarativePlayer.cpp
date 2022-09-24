@@ -417,6 +417,13 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
 
         if (tab)
         {
+            if (url.isEmpty())
+            {
+                loadSource(QString(), -1, -1);
+
+                return;
+            }
+
             Q_Q(WDeclarativePlayer);
 
             // NOTE: This playlist is useful to load the track data.
@@ -426,14 +433,6 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
 
                 playlistServer->setParent(q);
             }
-            else playlistServer->clearTracks();
-
-            if (url.isEmpty())
-            {
-                loadSource(QString(), -1, -1);
-
-                return;
-            }
 
             WTrack track(url, WTrack::Default);
 
@@ -441,14 +440,27 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
 
             tab->setPlaylist(playlistServer);
 
-            playlistServer->addTrack(track);
+            playlistServer->insertTrack(0, track);
 
             playlistServer->loadTrack(0);
 
             playlistServer->setCurrentIndex(0);
+
+            // NOTE: Removing the previous track after setting the new one.
+            if (playlistServer->count() > 1)
+            {
+                playlistServer->removeTrack(1);
+            }
         }
         else if (backend)
         {
+            if (url.isEmpty())
+            {
+                loadSource(QString(), -1, -1);
+
+                return;
+            }
+
             int currentTime = parameters.at(2).toInt();
 
             if (backendInterface->source() == url)
