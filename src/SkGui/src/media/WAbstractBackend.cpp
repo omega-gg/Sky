@@ -619,6 +619,15 @@ void WAbstractBackend::applyFrame() const
 
 #endif
 
+void WAbstractBackend::stopError(const QString & message)
+{
+    qWarning("WAbstractBackend::stopError: %s.", message.C_STR);
+
+    emit error(message);
+
+    stop();
+}
+
 void WAbstractBackend::updateSource()
 {
     Q_D(WAbstractBackend);

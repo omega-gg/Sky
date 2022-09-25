@@ -88,6 +88,7 @@ public: // Slots
     void onMessage(const WBroadcastMessage & message);
 
     void onEnded();
+    void onError();
 
     void onHookUpdated();
 

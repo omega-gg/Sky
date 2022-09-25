@@ -552,6 +552,12 @@ void WDeclarativePlayerPrivate::onEnded()
     else backendInterface->replay();
 }
 
+void WDeclarativePlayerPrivate::onError()
+{
+    // NOTE: We want to save the current state before stopping the backend.
+    if (tab) tab->setPlayer(NULL);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 void WDeclarativePlayerPrivate::onHookUpdated()
@@ -1471,6 +1477,8 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
     connect(backend, SIGNAL(outputsChanged()), this, SIGNAL(outputsChanged()));
 
     connect(backend, SIGNAL(ended()), this, SLOT(onEnded()));
+
+    connect(backend, SIGNAL(error(const QString &)), this, SLOT(onError()));
 
     connect(backend, SIGNAL(stateChanged   ()), this, SLOT(onStateChanged   ()));
     connect(backend, SIGNAL(durationChanged()), this, SLOT(onDurationChanged()));

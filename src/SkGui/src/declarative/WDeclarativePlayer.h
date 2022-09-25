@@ -449,6 +449,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onMessage(const WBroadcastMessage &))
 
     Q_PRIVATE_SLOT(d_func(), void onEnded())
+    Q_PRIVATE_SLOT(d_func(), void onError())
 
     Q_PRIVATE_SLOT(d_func(), void onHookUpdated())
 

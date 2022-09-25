@@ -377,6 +377,8 @@ protected: // Functions
     void applyFrame() const;
 #endif
 
+    void stopError(const QString & message);
+
     void updateSource();
 
     // NOTE: This function resets and applies all the tracks at once (video / audio).
@@ -465,6 +467,8 @@ protected: // Virtual functions
 
 signals:
     void ended();
+
+    void error(const QString & message);
 
 #ifndef SK_NO_QML
     void playerChanged();

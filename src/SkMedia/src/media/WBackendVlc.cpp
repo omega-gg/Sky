@@ -2372,9 +2372,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
     {
         Q_D(WBackendVlc);
 
-        qWarning("WBackendVlc::event: Vlc player error.");
-
-        stop();
+        stopError("Vlc player error");
 
         wControllerMedia->clearMedia(d->source);
 
