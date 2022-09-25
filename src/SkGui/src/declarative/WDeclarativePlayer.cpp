@@ -78,6 +78,8 @@ void WDeclarativePlayerPrivate::init()
     tabs = NULL;
     tab  = NULL;
 
+    currentTime = -1;
+
     state = WAbstractBackend::StateStopped;
 
     speed = 1.0;
@@ -192,6 +194,8 @@ void WDeclarativePlayerPrivate::setTab(WTabTrack * tab)
 
     if (this->tab)
     {
+        currentTime = -1;
+
         this->tab->setPlayer(NULL);
 
         this->tab->setStackEnabled(false);
@@ -438,6 +442,8 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
 
             track.setDuration(parameters.at(1).toInt());
 
+            currentTime = parameters.at(2).toInt();
+
             tab->setPlaylist(playlistServer);
 
             playlistServer->insertTrack(0, track);
@@ -674,6 +680,13 @@ void WDeclarativePlayerPrivate::onCurrentBookmarkChanged()
 
     if (bookmark)
     {
+        if (currentTime != -1)
+        {
+            tab->setCurrentTime(currentTime);
+
+            currentTime = -1;
+        }
+
         loadSource(bookmark->source(), bookmark->duration(), bookmark->currentTime());
     }
     else if (backend && backendInterface->source().isEmpty() == false)
@@ -1524,6 +1537,9 @@ void WDeclarativePlayer::setServer(WBroadcastServer * server)
     }
 
     d->server = server;
+
+    // NOTE: Stopping the playback upon server connect or disconnect.
+    connect(server, SIGNAL(connectedChanged()), this, SLOT(stop()));
 
     connect(server, SIGNAL(message(const WBroadcastMessage &)),
             this,   SLOT(onMessage(const WBroadcastMessage &)));
