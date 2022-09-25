@@ -26,6 +26,9 @@
 
 // Sk includes
 #include <WControllerPlaylist>
+#ifndef SK_NO_QML
+#include <WDeclarativePlayer>
+#endif
 
 #if defined(QT_NEW) && defined(SK_NO_QML) == false
 
@@ -63,7 +66,9 @@ WAbstractBackendPrivate::WAbstractBackendPrivate(WAbstractBackend * p) : WPrivat
 
 void WAbstractBackendPrivate::init()
 {
-    parentItem = NULL;
+#ifndef SK_NO_QML
+    player = NULL;
+#endif
 
     filter = NULL;
 
@@ -291,7 +296,7 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
         setParent(NULL);
 
 #ifndef SK_NO_QML
-        setParentItem(NULL);
+        setPlayer(NULL);
 #endif
 
         setState(StateStopped);
@@ -598,6 +603,21 @@ QString WAbstractBackend::qualityToString(Quality quality)
 //-------------------------------------------------------------------------------------------------
 // Protected functions
 //-------------------------------------------------------------------------------------------------
+
+#ifndef SK_NO_QML
+
+void WAbstractBackend::applyFrame() const
+{
+    Q_D(const WAbstractBackend);
+
+#ifdef QT_4
+    if (d->player) d->player->update();
+#else
+    if (d->player) d->player->updateFrame();
+#endif
+}
+
+#endif
 
 void WAbstractBackend::updateSource()
 {
@@ -1088,20 +1108,20 @@ void WAbstractBackend::endOutputRemove() const
 
 #ifndef SK_NO_QML
 
-WDeclarativePlayer * WAbstractBackend::parentItem() const
+WDeclarativePlayer * WAbstractBackend::player() const
 {
-    Q_D(const WAbstractBackend); return d->parentItem;
+    Q_D(const WAbstractBackend); return d->player;
 }
 
-void WAbstractBackend::setParentItem(WDeclarativePlayer * parent)
+void WAbstractBackend::setPlayer(WDeclarativePlayer * parent)
 {
     Q_D(WAbstractBackend);
 
-    if (d->parentItem == parent) return;
+    if (d->player == parent) return;
 
-    d->parentItem = parent;
+    d->player = parent;
 
-    emit parentItemChanged();
+    emit playerChanged();
 }
 
 #endif

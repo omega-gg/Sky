@@ -1331,13 +1331,11 @@ void WBackendVlcPrivate::onLoaded()
 
 void WBackendVlcPrivate::onFrameUpdated()
 {
+    Q_Q(WBackendVlc);
+
     frameUpdated = true;
 
-#ifdef QT_4
-    if (parentItem) parentItem->update();
-#else
-    if (parentItem) parentItem->updateFrame();
-#endif
+    q->applyFrame();
 }
 
 //-------------------------------------------------------------------------------------------------

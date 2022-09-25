@@ -1401,8 +1401,8 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 
     d->backendInterface = backend;
 
-    backend->setParent    (this);
-    backend->setParentItem(this);
+    backend->setParent(this);
+    backend->setPlayer(this);
 
     backend->setSize(QSizeF(width(), height()));
 

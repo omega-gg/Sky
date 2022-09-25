@@ -55,7 +55,9 @@ public: // Functions
     void currentOutputChanged();
 
 public: // Variable
-    WDeclarativePlayer * parentItem;
+#ifndef SK_NO_QML
+    WDeclarativePlayer * player;
+#endif
 
     WBackendFilter * filter;
 

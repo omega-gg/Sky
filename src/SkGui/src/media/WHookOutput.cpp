@@ -236,7 +236,7 @@ WHookOutput::WHookOutput(WAbstractBackend * backend)
 #ifdef SK_NO_QML
     parameter.append(url);
 #else
-    WDeclarativePlayer * player = d->backend->parentItem();
+    WDeclarativePlayer * player = d->backend->player();
 
     if (player)
     {

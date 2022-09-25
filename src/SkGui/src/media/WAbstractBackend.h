@@ -148,8 +148,7 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
 #endif
 
 #ifndef SK_NO_QML
-    Q_PROPERTY(WDeclarativePlayer * parentItem READ parentItem WRITE setParentItem
-               NOTIFY parentItemChanged)
+    Q_PROPERTY(WDeclarativePlayer * player READ player WRITE setPlayer NOTIFY playerChanged)
 #endif
 
     Q_PROPERTY(WBackendFilter * filter READ filter WRITE setFilter NOTIFY filterChanged)
@@ -374,6 +373,10 @@ public: // WBackendInterface implementation
     Q_INVOKABLE /* virtual */ void seek(int msec);
 
 protected: // Functions
+#ifndef SK_NO_QML
+    void applyFrame() const;
+#endif
+
     void updateSource();
 
     // NOTE: This function resets and applies all the tracks at once (video / audio).
@@ -464,7 +467,7 @@ signals:
     void ended();
 
 #ifndef SK_NO_QML
-    void parentItemChanged();
+    void playerChanged();
 #endif
 
     void filterChanged();
@@ -512,8 +515,8 @@ signals:
 
 public: // Properties
 #ifndef SK_NO_QML
-    WDeclarativePlayer * parentItem() const;
-    void                 setParentItem(WDeclarativePlayer * parent);
+    WDeclarativePlayer * player() const;
+    void                 setPlayer(WDeclarativePlayer * parent);
 #endif
 
     WBackendFilter * filter() const;
