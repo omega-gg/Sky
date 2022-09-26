@@ -76,7 +76,8 @@ public: // Enums
         PLAY,
         REPLAY,
         PAUSE,
-        STOP
+        STOP,
+        SEEK
     };
 
 public:

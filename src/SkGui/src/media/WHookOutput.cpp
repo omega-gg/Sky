@@ -231,10 +231,10 @@ WHookOutput::WHookOutput(WAbstractBackend * backend)
         updateSource();
     }
 
-    QStringList parameter;
+    QStringList parameters;
 
 #ifdef SK_NO_QML
-    parameter.append(url);
+    parameters.append(url);
 #else
     WDeclarativePlayer * player = d->backend->player();
 
@@ -247,17 +247,17 @@ WHookOutput::WHookOutput(WAbstractBackend * backend)
         if (vbml.isEmpty() == false)
         {
              // NOTE: Maybe we could run this in a thread.
-             parameter.append(WBarcodeWriter::encode(vbml, WBarcodeWriter::Vbml));
+             parameters.append(WBarcodeWriter::encode(vbml, WBarcodeWriter::Vbml));
         }
-        else parameter.append(url);
+        else parameters.append(url);
     }
-    else parameter.append(url);
+    else parameters.append(url);
 #endif
 
-    parameter.append(QString::number(duration));
-    parameter.append(QString::number(currentTime));
+    parameters.append(QString::number(duration));
+    parameters.append(QString::number(currentTime));
 
-    d->client.addAndSend(WBroadcastMessage::SOURCE, parameter);
+    d->client.addAndSend(WBroadcastMessage::SOURCE, parameters);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -320,7 +320,15 @@ WHookOutput::WHookOutput(WAbstractBackend * backend)
 
 /* Q_INVOKABLE virtual */ void WHookOutput::seek(int msec)
 {
+    Q_D(WHookOutput);
+
     setCurrentTime(msec);
+
+    QStringList parameters;
+
+    parameters.append(QString::number(msec));
+
+    d->client.addAndSend(WBroadcastMessage::SEEK, parameters);
 }
 
 //-------------------------------------------------------------------------------------------------

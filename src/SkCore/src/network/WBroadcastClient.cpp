@@ -345,6 +345,10 @@ WBroadcastSource & WBroadcastSource::operator=(const WBroadcastSource & other)
     {
         if (parameters.count() != 3) return;
     }
+    else if (type == SEEK)
+    {
+        if (parameters.count() != 1) return;
+    }
     else if (parameters.isEmpty() == false) return;
 
     //---------------------------------------------------------------------------------------------

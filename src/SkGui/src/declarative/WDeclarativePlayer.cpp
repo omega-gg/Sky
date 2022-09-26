@@ -513,6 +513,12 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
 
         q->stop();
     }
+    else if (type == WBroadcastMessage::SEEK)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        q->seek(message.parameters.first().toInt());
+    }
 }
 
 void WDeclarativePlayerPrivate::onEnded()
