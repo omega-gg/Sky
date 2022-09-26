@@ -73,7 +73,7 @@ void WDeclarativeMouseAreaPrivate::init()
     cursor     = Qt::ArrowCursor;
     cursorDrop = Qt::ArrowCursor;
 
-    QObject::connect(q, SIGNAL(hoverEnabledChanged()), q, SLOT(onClearHover()));
+    QObject::connect(q, SIGNAL(hoverEnabledChanged()), q, SLOT(onHoverEnabledChanged()));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -175,10 +175,7 @@ void WDeclarativeMouseAreaPrivate::clearHover()
     QList<QQuickItem *> * items = &(view->d_func()->itemsCursor);
 #endif
 
-    if (items->contains(q))
-    {
-        items->clear();
-    }
+    if (items->contains(q)) items->clear();
 }
 
 void WDeclarativeMouseAreaPrivate::clearDrop()
@@ -193,10 +190,7 @@ void WDeclarativeMouseAreaPrivate::clearDrop()
     QList<QQuickItem *> * items = &(view->d_func()->itemsDrop);
 #endif
 
-    if (items->contains(q))
-    {
-        items->clear();
-    }
+    if (items->contains(q)) items->clear();
 }
 
 void WDeclarativeMouseAreaPrivate::clearView()
@@ -230,8 +224,15 @@ void WDeclarativeMouseAreaPrivate::clearView()
 // Private events
 //-------------------------------------------------------------------------------------------------
 
-void WDeclarativeMouseAreaPrivate::onClearHover()
+void WDeclarativeMouseAreaPrivate::onHoverEnabledChanged()
 {
+    Q_Q(WDeclarativeMouseArea);
+
+    if (q->hoverEnabled() == false)
+    {
+        setHoverActive(false);
+    }
+
     clearHover();
 }
 

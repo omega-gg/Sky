@@ -24,12 +24,6 @@
 
 #ifndef SK_NO_HOOKOUTPUT
 
-// Sk includes
-#include <WBarcodeWriter>
-#ifndef SK_NO_QML
-#include <WDeclarativePlayer>
-#endif
-
 //-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
@@ -175,6 +169,15 @@ WHookOutput::WHookOutput(WAbstractBackend * backend)
 }
 
 //-------------------------------------------------------------------------------------------------
+// Protected
+
+WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
+    : WAbstractHook(p, backend)
+{
+    Q_D(WHookOutput); d->init();
+}
+
+//-------------------------------------------------------------------------------------------------
 // Interface
 //-------------------------------------------------------------------------------------------------
 
@@ -231,33 +234,7 @@ WHookOutput::WHookOutput(WAbstractBackend * backend)
         updateSource();
     }
 
-    QStringList parameters;
-
-#ifdef SK_NO_QML
-    parameters.append(url);
-#else
-    WDeclarativePlayer * player = d->backend->player();
-
-    if (player)
-    {
-        // NOTE: Sending VBML enables us to push more informations. As a result, the receiver will
-        //       be able to apply them without relying on the network.
-        QString vbml = player->toVbml();
-
-        if (vbml.isEmpty() == false)
-        {
-             // NOTE: Maybe we could run this in a thread.
-             parameters.append(WBarcodeWriter::encode(vbml, WBarcodeWriter::Vbml));
-        }
-        else parameters.append(url);
-    }
-    else parameters.append(url);
-#endif
-
-    parameters.append(QString::number(duration));
-    parameters.append(QString::number(currentTime));
-
-    d->client.addAndSend(WBroadcastMessage::SOURCE, parameters);
+    onSendSource(url, duration, currentTime);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -329,6 +306,23 @@ WHookOutput::WHookOutput(WAbstractBackend * backend)
     parameters.append(QString::number(msec));
 
     d->client.addAndSend(WBroadcastMessage::SEEK, parameters);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Virtual functions
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WHookOutput::onSendSource(const QString & url, int duration, int currentTime)
+{
+    Q_D(WHookOutput);
+
+    QStringList parameters;
+
+    parameters.append(url);
+    parameters.append(QString::number(duration));
+    parameters.append(QString::number(currentTime));
+
+    d->client.addAndSend(WBroadcastMessage::SOURCE, parameters);
 }
 
 //-------------------------------------------------------------------------------------------------

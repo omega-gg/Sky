@@ -327,7 +327,7 @@ WBroadcastSource & WBroadcastSource::operator=(const WBroadcastSource & other)
 
     QString name = extractName(&content);
 
-    Type type = typeFromString(name);
+    type = typeFromString(name);
 
     if (type == Unknown) return;
 
@@ -343,17 +343,17 @@ WBroadcastSource & WBroadcastSource::operator=(const WBroadcastSource & other)
 
     if (type == SOURCE)
     {
-        if (parameters.count() != 3) return;
+        if (parameters.count() == 3) return;
     }
     else if (type == SEEK)
     {
-        if (parameters.count() != 1) return;
+        if (parameters.count() == 1) return;
     }
-    else if (parameters.isEmpty() == false) return;
+    else if (parameters.isEmpty()) return;
 
     //---------------------------------------------------------------------------------------------
 
-    this->type = type;
+    type = Unknown;
 }
 
 WBroadcastMessage::WBroadcastMessage()
@@ -409,6 +409,7 @@ QByteArray WBroadcastMessage::generateData() const
     else if (string == "REPLAY") return REPLAY;
     else if (string == "PAUSE")  return PAUSE;
     else if (string == "STOP")   return STOP;
+    else if (string == "SEEK")   return SEEK;
     else                         return Unknown;
 }
 
@@ -419,6 +420,7 @@ QByteArray WBroadcastMessage::generateData() const
     else if (type == REPLAY) return "REPLAY";
     else if (type == PAUSE)  return "PAUSE";
     else if (type == STOP)   return "STOP";
+    else if (type == SEEK)   return "SEEK";
     else                     return "";
 }
 

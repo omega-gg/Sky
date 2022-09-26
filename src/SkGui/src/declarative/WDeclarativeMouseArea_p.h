@@ -58,7 +58,7 @@ public: // Functions
     void clearView();
 
 public: // Events
-    void onClearHover();
+    void onHoverEnabledChanged();
 
 public: // Variables
     WView * view;

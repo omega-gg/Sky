@@ -31,6 +31,7 @@ unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 
 include(../Sk.pri)
 include(src/io/io.pri)
+include(src/media/media.pri)
 
 include(src/3rdparty/zxing-cpp/zxing-cpp.pri)
 
@@ -38,7 +39,24 @@ INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkCore/private \
                $$SK/include/SkGui \
                $$SK/include/SkGui/private \
+               $$SK/include/SkBarcode \
+               $$SK/include/SkBarcode/private
                $$SK/include
+
+unix:contains(QT_MAJOR_VERSION, 4) {
+    INCLUDEPATH += $$SK/include/$$QTX \
+                   $$SK/include/$$QTX/QtCore \
+                   $$SK/include/$$QTX/QtGui \
+                   $$SK/include/$$QTX/QtDeclarative
+}
+
+greaterThan(QT_MAJOR_VERSION, 4) {
+    INCLUDEPATH += $$SK/include/$$QTX \
+                   $$SK/include/$$QTX/QtCore \
+                   $$SK/include/$$QTX/QtGui \
+                   $$SK/include/$$QTX/QtQml \
+                   $$SK/include/$$QTX/QtQuick
+}
 
 android {
     CONFIG(debug, debug|release) {

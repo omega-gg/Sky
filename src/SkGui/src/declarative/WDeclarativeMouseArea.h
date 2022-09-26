@@ -177,7 +177,7 @@ public: // Properties
 private:
     W_DECLARE_PRIVATE(WDeclarativeMouseArea)
 
-    Q_PRIVATE_SLOT(d_func(), void onClearHover())
+    Q_PRIVATE_SLOT(d_func(), void onHoverEnabledChanged())
 
     friend class WView;
     friend class WViewPrivate;

@@ -38,6 +38,8 @@ class SK_GUI_EXPORT WHookOutput : public WAbstractHook
 
 public:
     WHookOutput(WAbstractBackend * backend);
+protected:
+    WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend);
 
 public: // Interface
     Q_INVOKABLE void connectToHost(const QString & url);
@@ -56,6 +58,9 @@ public: // WAbstractHook reimplementation
     /* Q_INVOKABLE virtual */ void clear();
 
     /* Q_INVOKABLE virtual */ void seek(int msec);
+
+protected: // Virtual functions
+    virtual void onSendSource(const QString & url, int duration, int currentTime);
 
 protected: // WAbstractHook reimplementation
     /* virtual */ bool hookCheck(const QString & url);
