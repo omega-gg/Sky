@@ -148,6 +148,8 @@ public: // Functions
 
     QList<WDeclarativeMouseArea *> getMouseAreas(const QList<QQuickItem *> & items) const;
     QList<WDeclarativeMouseArea *> getDropAreas (const QList<QQuickItem *> & items) const;
+
+    QRectF getChildrenRect(QQuickItem * item) const;
 #endif
 
 public: // Slots

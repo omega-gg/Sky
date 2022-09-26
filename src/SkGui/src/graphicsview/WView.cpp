@@ -834,7 +834,15 @@ void WViewPrivate::updateDrag()
                         // FIXME Qt5: Sometimes the drop area goes beyond the parent geometry.
                         QPointF posItem = areaDrop->mapFromScene(mousePos);
 
-                        if (areaDrop->boundingRect().contains(posItem))
+                        QRectF rect;
+
+                        if (areaDrop->childItems().isEmpty())
+                        {
+                             rect = areaDrop->boundingRect();
+                        }
+                        else rect = getChildrenRect(areaDrop);
+
+                        if (rect.contains(posItem))
                         {
                             areaDrop->d_func()->dragMoveEvent(posItem, dragData);
 
@@ -1278,11 +1286,21 @@ void WViewPrivate::getItems(QList<QQuickItem *> * items,
 {
     if (item->isVisible() == false) return;
 
-    QPoint position = item->mapFromScene(pos).toPoint();
-
-    if (item->boundingRect().toRect().contains(position) == false) return;
+    QPointF position = item->mapFromScene(pos);
 
     QList<QQuickItem *> childsA = item->childItems();
+
+    if (childsA.isEmpty())
+    {
+        if (item->boundingRect().contains(position) == false) return;
+
+        items->append(item);
+
+        return;
+    }
+
+    if (getChildrenRect(item).contains(position) == false) return;
+
     QList<QQuickItem *> childsB;
 
     foreach (QQuickItem * child, childsA)
@@ -1382,6 +1400,20 @@ QList<WDeclarativeMouseArea *> WViewPrivate::getDropAreas(const QList<QQuickItem
     }
 
     return dropAreas;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QRectF WViewPrivate::getChildrenRect(QQuickItem * item) const
+{
+    QRectF rect = item->childrenRect();
+
+    // NOTE: The children rectangle should never be above 0, otherwise it fails when a ListView has
+    //       a negative content origin.
+    if (rect.x() > 0) rect.setX(0);
+    if (rect.y() > 0) rect.setY(0);
+
+    return rect;
 }
 
 //-------------------------------------------------------------------------------------------------
