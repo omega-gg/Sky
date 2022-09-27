@@ -1404,6 +1404,8 @@ QList<WDeclarativeMouseArea *> WViewPrivate::getDropAreas(const QList<QQuickItem
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef QT_NEW
+
 QRectF WViewPrivate::getChildrenRect(QQuickItem * item) const
 {
     QRectF rect = item->childrenRect();
@@ -1415,6 +1417,8 @@ QRectF WViewPrivate::getChildrenRect(QQuickItem * item) const
 
     return rect;
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Private slots
