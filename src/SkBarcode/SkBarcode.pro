@@ -40,7 +40,7 @@ INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkGui \
                $$SK/include/SkGui/private \
                $$SK/include/SkBarcode \
-               $$SK/include/SkBarcode/private
+               $$SK/include/SkBarcode/private \
                $$SK/include
 
 unix:contains(QT_MAJOR_VERSION, 4) {
