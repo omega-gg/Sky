@@ -84,7 +84,7 @@ bool WDeclarativeMouseAreaPrivate::dragEnterEvent(const QPointF & pos, WViewDrag
 {
     Q_Q(WDeclarativeMouseArea);
 
-    WDeclarativeDropEvent event(pos.x(), pos.y(), data->text, data->actions, data->action);
+    WDeclarativeDropEvent event(pos.x(), pos.y(), *data);
 
     emit q->dragEntered(&event);
 
@@ -117,7 +117,7 @@ void WDeclarativeMouseAreaPrivate::dragMoveEvent(const QPointF       & pos,
 {
     Q_Q(WDeclarativeMouseArea);
 
-    WDeclarativeDropEvent event(pos.x(), pos.y(), data.text, data.actions, data.action);
+    WDeclarativeDropEvent event(pos.x(), pos.y(), data);
 
     emit q->dragMove(&event);
 }
@@ -127,7 +127,7 @@ void WDeclarativeMouseAreaPrivate::dropEvent(const QPointF       & pos,
 {
     Q_Q(WDeclarativeMouseArea);
 
-    WDeclarativeDropEvent event(pos.x(), pos.y(), data.text, data.actions, data.action);
+    WDeclarativeDropEvent event(pos.x(), pos.y(), data);
 
     emit q->drop(&event);
 

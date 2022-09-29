@@ -106,27 +106,24 @@ class SK_GUI_EXPORT WDeclarativeDropEvent : public QObject
 
     Q_PROPERTY(bool accepted READ isAccepted WRITE setAccepted)
 
-    Q_PROPERTY(Qt::DropActions actions READ actions)
-    Q_PROPERTY(Qt::DropAction  action  READ action WRITE setAction)
-
     Q_PROPERTY(qreal x READ x)
     Q_PROPERTY(qreal y READ y)
 
     Q_PROPERTY(QString text READ text WRITE setText)
+
+    Q_PROPERTY(Qt::DropActions actions READ actions)
+    Q_PROPERTY(Qt::DropAction  action  READ action WRITE setAction)
 
 public:
     WDeclarativeDropEvent(qreal x, qreal y, const QString & text,
                           Qt::DropActions actions = Qt::IgnoreAction,
                           Qt::DropAction  action  = Qt::IgnoreAction);
 
+    WDeclarativeDropEvent(qreal x, qreal y, const WViewDragData & data);
+
 public: // Properties
     bool isAccepted() const;
     void setAccepted(bool accepted);
-
-    Qt::DropActions actions() const;
-
-    Qt::DropAction action() const;
-    void           setAction(Qt::DropAction action);
 
     qreal x() const;
     qreal y() const;
@@ -134,16 +131,21 @@ public: // Properties
     QString text() const;
     void    setText(const QString & text);
 
+    Qt::DropActions actions() const;
+
+    Qt::DropAction action() const;
+    void           setAction(Qt::DropAction action);
+
 private: // Variables
     bool _accepted;
-
-    Qt::DropActions _actions;
-    Qt::DropAction  _action;
 
     qreal _x;
     qreal _y;
 
     QString _text;
+
+    Qt::DropActions _actions;
+    Qt::DropAction  _action;
 };
 
 //-------------------------------------------------------------------------------------------------

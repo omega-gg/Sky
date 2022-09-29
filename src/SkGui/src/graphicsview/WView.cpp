@@ -151,18 +151,30 @@ int WDeclarativeKeyEvent::count() const
 //=================================================================================================
 
 WDeclarativeDropEvent::WDeclarativeDropEvent(qreal x, qreal y, const QString & text,
-                                             Qt::DropActions actions,
-                                             Qt::DropAction  action)
+                                             Qt::DropActions actions, Qt::DropAction action)
 {
     _accepted = false;
-
-    _actions = actions;
-    _action  = action;
 
     _x = x;
     _y = y;
 
     _text = text;
+
+    _actions = actions;
+    _action  = action;
+}
+
+WDeclarativeDropEvent::WDeclarativeDropEvent(qreal x, qreal y, const WViewDragData & data)
+{
+    _accepted = false;
+
+    _x = x;
+    _y = y;
+
+    _text = data.text;
+
+    _actions = data.actions;
+    _action  = data.action;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -177,23 +189,6 @@ bool WDeclarativeDropEvent::isAccepted() const
 void WDeclarativeDropEvent::setAccepted(bool accepted)
 {
     _accepted = accepted;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-Qt::DropActions WDeclarativeDropEvent::actions() const
-{
-    return _actions;
-}
-
-Qt::DropAction WDeclarativeDropEvent::action() const
-{
-    return _action;
-}
-
-void WDeclarativeDropEvent::setAction(Qt::DropAction action)
-{
-    _action = action;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -218,6 +213,23 @@ QString WDeclarativeDropEvent::text() const
 void WDeclarativeDropEvent::setText(const QString & text)
 {
     _text = text;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+Qt::DropActions WDeclarativeDropEvent::actions() const
+{
+    return _actions;
+}
+
+Qt::DropAction WDeclarativeDropEvent::action() const
+{
+    return _action;
+}
+
+void WDeclarativeDropEvent::setAction(Qt::DropAction action)
+{
+    _action = action;
 }
 
 #ifdef QT_4
