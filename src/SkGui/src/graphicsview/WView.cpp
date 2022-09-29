@@ -44,6 +44,7 @@
 
 // Sk includes
 #include <WControllerApplication>
+#include <WControllerNetwork>
 #include <WControllerView>
 #include <WResizer>
 
@@ -1431,6 +1432,30 @@ QRectF WViewPrivate::getChildrenRect(QQuickItem * item) const
 }
 
 #endif
+
+QString WViewPrivate::getMimeText(const QMimeData * mime) const
+{
+    // NOTE: For now, an html image takes priority over urls and text.
+    if (mime->hasHtml())
+    {
+        QString html = mime->html();
+
+        int index = html.indexOf("<img ");
+
+        if (index != -1)
+        {
+            QString source = WControllerNetwork::extractAttributeUtf8(html, "src", index + 5);
+
+            if (source.isEmpty() == false) return source;
+        }
+    }
+
+    if (mime->hasUrls())
+    {
+        return mime->urls().first().toString();
+    }
+    else return mime->text();
+}
 
 //-------------------------------------------------------------------------------------------------
 // Private slots
@@ -2875,13 +2900,7 @@ void WView::hoverLeave()
 
         d->dragAccepted = true;
 
-        const QMimeData * mime = event->mimeData();
-
-        if (mime->hasUrls())
-        {
-             d->dragData.text = mime->urls().first().toString();
-        }
-        else d->dragData.text = mime->text();
+        d->dragData.text = d->getMimeText(event->mimeData());
 
         d->dragData.actions = event->possibleActions();
         d->dragData.action  = event->proposedAction ();

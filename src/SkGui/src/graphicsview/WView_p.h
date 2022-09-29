@@ -152,6 +152,8 @@ public: // Functions
     QRectF getChildrenRect(QQuickItem * item) const;
 #endif
 
+    QString getMimeText(const QMimeData * mime) const;
+
 public: // Slots
 #ifdef QT_NEW
     void onStateChanged(Qt::ApplicationState state);
