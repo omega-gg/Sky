@@ -49,6 +49,7 @@ public: // Enums
         TypeDefault,
         TypeVbml,
         //TypeWeb,
+        TypeImage,
         TypeTorrent
     };
 
