@@ -384,11 +384,6 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
     return wControllerPlaylist->d_func()->applySourceItem(this, source);
 }
 
-/* virtual */ bool WLibraryItem::onApplyQuery(const WBackendNetQuery & query)
-{
-    return wControllerPlaylist->d_func()->applyQueryItem(this, query);
-}
-
 /* virtual */ bool WLibraryItem::onStopQuery()
 {
     return wControllerPlaylist->d_func()->abortQueriesItem(this);

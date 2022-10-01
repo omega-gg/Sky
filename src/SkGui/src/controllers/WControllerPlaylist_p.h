@@ -88,12 +88,6 @@ public:
 public: // Interface
     bool applyQueryTrack(WPlaylist * playlist, WTrack * track, const WBackendNetQuery & query);
 
-    bool applyQueryPlaylist(WPlaylist      * playlist, const WBackendNetQuery & query);
-    bool applyQueryFolder  (WLibraryFolder * folder,   const WBackendNetQuery & query);
-    bool applyQueryItem    (WLibraryItem   * item,     const WBackendNetQuery & query);
-
-    //---------------------------------------------------------------------------------------------
-
     bool applySourceTrack(WPlaylist * playlist, WTrack * track, const QString & url);
 
     bool applySourcePlaylist(WPlaylist      * playlist, const QString & url);

@@ -141,8 +141,7 @@ public: // WLocalObject reimplementation
     /* Q_INVOKABLE virtual */ QString getParentPath() const;
 
 protected: // Virtual functions
-    virtual bool onApplySource(const QString          & source);
-    virtual bool onApplyQuery (const WBackendNetQuery & query);
+    virtual bool onApplySource(const QString & source);
 
     virtual bool onStopQuery();
 

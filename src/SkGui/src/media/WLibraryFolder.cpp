@@ -2507,11 +2507,6 @@ void WLibraryFolder::updateIndex()
     return wControllerPlaylist->d_func()->applySourceFolder(this, source);
 }
 
-/* virtual */ bool WLibraryFolder::onApplyQuery(const WBackendNetQuery & query)
-{
-    return wControllerPlaylist->d_func()->applyQueryFolder(this, query);
-}
-
 /* virtual */ bool WLibraryFolder::onStopQuery()
 {
     return wControllerPlaylist->d_func()->abortQueriesFolder(this);

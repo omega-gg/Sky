@@ -284,8 +284,7 @@ protected: // WLocalObject reimplementation
     /* virtual */ bool hasFolder() const;
 
 protected: // WLibraryItem reimplementation
-    /* virtual */ bool onApplySource(const QString          & source);
-    /* virtual */ bool onApplyQuery (const WBackendNetQuery & query);
+    /* virtual */ bool onApplySource(const QString & source);
 
     /* virtual */ bool onStopQuery();
 

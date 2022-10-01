@@ -849,50 +849,6 @@ bool WControllerPlaylistPrivate::applyQueryTrack(WPlaylist * playlist,
     else return false;
 }
 
-bool WControllerPlaylistPrivate::applyQueryPlaylist(WPlaylist              * playlist,
-                                                    const WBackendNetQuery & query)
-{
-    playlist->abortQuery();
-
-    if (query.isValid())
-    {
-        getDataPlaylist(playlist, query);
-
-        return true;
-    }
-    else return false;
-}
-
-bool WControllerPlaylistPrivate::applyQueryFolder(WLibraryFolder         * folder,
-                                                  const WBackendNetQuery & query)
-{
-    folder->abortQuery();
-
-    if (query.isValid())
-    {
-        getDataFolder(folder, query);
-
-        return true;
-    }
-    else return false;
-}
-
-bool WControllerPlaylistPrivate::applyQueryItem(WLibraryItem           * item,
-                                                const WBackendNetQuery & query)
-{
-    item->abortQuery();
-
-    if (query.isValid())
-    {
-        getDataItem(item, query);
-
-        return true;
-    }
-    else return false;
-}
-
-//-------------------------------------------------------------------------------------------------
-
 bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
                                                   WTrack    * track, const QString & url)
 {
@@ -3093,23 +3049,10 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
         return;
     }
 
-    WLibraryFolder * folder = item->toFolder();
-
-    WControllerPlaylist::Type type = data.type;
-
-    QString origin = data.origin;
-
-    if (data.type == WControllerPlaylist::Redirect)
-    {
-        folder->applySource(origin);
-
-        applySourceFolder(folder, origin);
-
-        return;
-    }
-
     //---------------------------------------------------------------------------------------------
     // Backend html query
+
+    WLibraryFolder * folder = item->toFolder();
 
     QStringList urls;
 
@@ -3174,6 +3117,23 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
     // VBML
 
     WPlaylist * playlist = folder->createLibraryItemAt(0, true)->toPlaylist();
+
+    WControllerPlaylist::Type type = data.type;
+
+    QString origin = data.origin;
+
+    if (data.type == WControllerPlaylist::Redirect)
+    {
+        playlist->tryDelete();
+
+        folder->removeAt(0);
+
+        folder->applySource(origin);
+
+        applySourceFolder(folder, origin);
+
+        return;
+    }
 
     if (type == WControllerPlaylist::Feed)
     {

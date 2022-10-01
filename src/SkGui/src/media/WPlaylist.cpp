@@ -2528,11 +2528,6 @@ void WPlaylist::endTracksRemove() const
     return wControllerPlaylist->d_func()->applySourcePlaylist(this, source);
 }
 
-/* virtual */ bool WPlaylist::onApplyQuery(const WBackendNetQuery & query)
-{
-    return wControllerPlaylist->d_func()->applyQueryPlaylist(this, query);
-}
-
 /* virtual */ bool WPlaylist::onStopQuery()
 {
     return wControllerPlaylist->d_func()->abortQueriesPlaylist(this);
