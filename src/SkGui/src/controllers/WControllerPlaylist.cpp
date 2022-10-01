@@ -239,6 +239,19 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
 
     QString api = WControllerPlaylist::vbmlVersion(content);
 
+    // NOTE: If it's a plain URL we redirect to the given address.
+    if (api.isEmpty() && WControllerNetwork::textIsUrl(content)
+        &&
+        // NOTE: The origin has to be different than the current URL.
+        WControllerNetwork::removeUrlPrefix(url) != WControllerNetwork::removeUrlPrefix(content))
+    {
+        type = WControllerPlaylist::Redirect;
+
+        origin = content;
+
+        return;
+    }
+
     if (Sk::versionIsHigher(WControllerPlaylist::versionApi(), api))
     {
         WControllerPlaylist::vbmlPatch(content, api);
@@ -2775,6 +2788,13 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
     WPlaylist * playlist = item->toPlaylist();
     WTrack    * track    = query->track;
 
+    if (data.type == WControllerPlaylist::Redirect)
+    {
+        applySourceTrack(playlist, track, data.origin);
+
+        return;
+    }
+
     deleteQuery(query);
 
     int index = playlist->indexOf(track);
@@ -2873,6 +2893,13 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     WPlaylist * playlist = item->toPlaylist();
 
     WControllerPlaylist::Type type = data.type;
+
+    if (type == WControllerPlaylist::Redirect)
+    {
+        applySourcePlaylist(playlist, data.origin);
+
+        return;
+    }
 
     if (type == WControllerPlaylist::Feed)
     {
@@ -3093,10 +3120,19 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
         return;
     }
 
+    WLibraryFolder * folder = item->toFolder();
+
+    WControllerPlaylist::Type type = data.type;
+
+    if (data.type == WControllerPlaylist::Redirect)
+    {
+        applySourceFolder(folder, data.origin);
+
+        return;
+    }
+
     //---------------------------------------------------------------------------------------------
     // Backend html query
-
-    WLibraryFolder * folder = item->toFolder();
 
     QStringList urls;
 
@@ -3161,8 +3197,6 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
     // VBML
 
     WPlaylist * playlist = folder->createLibraryItemAt(0, true)->toPlaylist();
-
-    WControllerPlaylist::Type type = data.type;
 
     if (type == WControllerPlaylist::Feed)
     {

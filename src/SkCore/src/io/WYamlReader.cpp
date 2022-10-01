@@ -469,4 +469,11 @@ const WYamlNodeBase & WYamlReader::node() const
     return d->node;
 }
 
+int WYamlReader::count() const
+{
+    Q_D(const WYamlReader);
+
+    return d->node.children.count();
+}
+
 #endif // SK_NO_YAMLREADER

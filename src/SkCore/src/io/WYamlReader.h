@@ -94,6 +94,8 @@ class SK_CORE_EXPORT WYamlReader : public QObject, public WPrivatable
 
     Q_PROPERTY(WYamlNodeBase node READ node CONSTANT)
 
+    Q_PROPERTY(int count READ count CONSTANT)
+
 public:
     explicit WYamlReader(QObject * parent = NULL);
 
@@ -120,6 +122,8 @@ public: // Interface
 
 public: // Properties
     const WYamlNodeBase & node() const;
+
+    int count() const;
 
 private:
     W_DECLARE_PRIVATE(WYamlReader)
