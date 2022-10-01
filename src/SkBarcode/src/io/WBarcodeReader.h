@@ -78,20 +78,20 @@ public:
 
 public: // Static functions
     Q_INVOKABLE static
-    QString read(const QImage & image, Formats formats = Any);
+    QByteArray read(const QImage & image, Formats formats = Any);
 
     Q_INVOKABLE static
-    QString readFile(const QString & fileName, Formats formats = Any);
+    QByteArray readFile(const QString & fileName, Formats formats = Any);
 
-    // NOTE: The 'method' format is loaded(const QString &). A target can be specified for precise
-    //       image scanning.
+    // NOTE: The 'method' format is loaded(const QByteArray &). A target can be specified for
+    //       precise image scanning.
     Q_INVOKABLE static WAbstractThreadAction * startRead(const QImage & image,
                                                          Formats        formats,
                                                          QObject      * receiver = NULL,
                                                          const char   * method   = NULL,
                                                          const QRect  & target   = QRect());
 
-    // NOTE: The 'method' format is loaded(const QString &).
+    // NOTE: The 'method' format is loaded(const QByteArray &).
     Q_INVOKABLE static WAbstractThreadAction * startReadFile(const QString & fileName,
                                                              Formats         formats,
                                                              QObject       * receiver = NULL,

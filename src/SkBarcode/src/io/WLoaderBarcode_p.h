@@ -38,7 +38,8 @@
 #ifndef SK_NO_LOADERBARCODE
 
 // Forward declarations
-class WMagnetReply;
+class WAbstractThreadAction;
+class WLoaderBarcodeRead;
 
 class SK_BARCODE_EXPORT WLoaderBarcodePrivate : public WAbstractLoaderPrivate
 {
@@ -46,6 +47,15 @@ public:
     WLoaderBarcodePrivate(WLoaderBarcode * p);
 
     void init();
+
+public: // Slots
+    void onLoaded(WRemoteData * data);
+
+    void onAction(WLoaderBarcodeRead * action, const QByteArray & data);
+
+public: // Variables
+    QHash<QIODevice *, WRemoteData           *> replies;
+    QHash<QIODevice *, WAbstractThreadAction *> actions;
 
 protected:
     W_DECLARE_PUBLIC(WLoaderBarcode)

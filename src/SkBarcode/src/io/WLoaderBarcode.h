@@ -40,8 +40,15 @@ public:
 protected: // WAbstractLoader implementation
     /* virtual */ QIODevice * load(WRemoteData * data);
 
+protected: // WAbstractLoader reimplementation
+    /* virtual */ void abort(QIODevice * reply);
+
 private:
     W_DECLARE_PRIVATE(WLoaderBarcode)
+
+    Q_PRIVATE_SLOT(d_func(), void onLoaded(WRemoteData *))
+
+    Q_PRIVATE_SLOT(d_func(), void onAction(WLoaderBarcodeRead *, const QByteArray &))
 };
 
 #include <private/WLoaderBarcode_p>

@@ -104,6 +104,8 @@ public: // Properties
 
     QNetworkRequest::Priority priority() const;
 
+    WRemoteParameters parameters() const;
+
     QString header() const;
     QString body  () const;
 
@@ -130,17 +132,9 @@ private: // Variables
 
     QNetworkRequest::Priority _priority;
 
-    QString _header;
-    QString _body;
-
-    bool _redirect;
-    bool _cookies;
+    WRemoteParameters _parameters;
 
     int _redirectCount;
-
-    int _maxHost;
-    int _delay;
-    int _timeout;
 
     QString _error;
 

@@ -22,17 +22,17 @@
 
 #include "WLoaderVbml.h"
 
+#ifndef SK_NO_LOADERVBML
+
 // Qt includes
-#include <WAbstractThreadAction>
-#include <WAbstractThreadReply>
 #include <QBuffer>
 
 // Sk includes
 #include <WControllerFile>
 #include <WControllerDownload>
+#include <WAbstractThreadAction>
+#include <WAbstractThreadReply>
 #include <WUnzipper>
-
-#ifndef SK_NO_LOADERVBML
 
 //=================================================================================================
 // WLoaderVbmlRead
@@ -74,7 +74,7 @@ signals:
 public: // Variables
     WLoaderVbmlRead * action;
 
-    QByteArray text;
+    QByteArray data;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -101,14 +101,14 @@ public: // Variables
                                                            QByteArray::OmitTrailingEquals);
 #endif
 
-    reply->text = WUnzipper::extract(data);
+    reply->data = WUnzipper::extract(data);
 
     return true;
 }
 
 /* virtual */ void WLoaderVbmlReply::onCompleted(bool)
 {
-    emit loaded(action, text);
+    emit loaded(action, data);
 }
 
 //=================================================================================================

@@ -947,6 +947,17 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
 
         return true;
     }
+    else if (WControllerFile::urlIsImage(source))
+    {
+        WBackendNetQuery query(source);
+
+        query.type   = WBackendNetQuery::TypeImage;
+        query.target = WBackendNetQuery::TargetVbml;
+
+        getDataTrack(playlist, track, query);
+
+        return true;
+    }
     else if (q->urlIsMedia(source))
     {
         QString title = WControllerNetwork::extractUrlFileName(source);
@@ -1049,6 +1060,17 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
         WBackendNetQuery query(source);
 
         query.type   = WBackendNetQuery::TypeVbml;
+        query.target = WBackendNetQuery::TargetVbml;
+
+        getDataPlaylist(playlist, query);
+
+        return true;
+    }
+    else if (WControllerFile::urlIsImage(source))
+    {
+        WBackendNetQuery query(source);
+
+        query.type   = WBackendNetQuery::TypeImage;
         query.target = WBackendNetQuery::TargetVbml;
 
         getDataPlaylist(playlist, query);
@@ -1242,6 +1264,20 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
         WBackendNetQuery query(source);
 
         query.type       = WBackendNetQuery::TypeVbml;
+        query.target     = WBackendNetQuery::TargetVbml;
+        query.clearItems = false;
+
+        getDataFolder(folder, query);
+
+        return true;
+    }
+    else if (WControllerFile::urlIsImage(source))
+    {
+        addFolderSearch(folder, source, WControllerNetwork::urlName(source));
+
+        WBackendNetQuery query(source);
+
+        query.type       = WBackendNetQuery::TypeImage;
         query.target     = WBackendNetQuery::TargetVbml;
         query.clearItems = false;
 

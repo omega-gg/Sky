@@ -1446,7 +1446,10 @@ QString WViewPrivate::getMimeText(const QMimeData * mime) const
         {
             QString source = WControllerNetwork::extractAttributeUtf8(html, "src", index + 5);
 
-            if (source.isEmpty() == false) return source;
+            if (source.isEmpty() == false)
+            {
+                return "image:" + source;
+            }
         }
     }
 

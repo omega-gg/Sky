@@ -153,43 +153,50 @@ QNetworkRequest::Priority WRemoteData::priority() const
 
 //-------------------------------------------------------------------------------------------------
 
+WRemoteParameters WRemoteData::parameters() const
+{
+    return _parameters;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 QString WRemoteData::header() const
 {
-    return _header;
+    return _parameters.header;
 }
 
 QString WRemoteData::body() const
 {
-    return _body;
+    return _parameters.body;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 bool WRemoteData::redirect() const
 {
-    return _redirect;
+    return _parameters.redirect;
 }
 
 bool WRemoteData::cookies() const
 {
-    return _cookies;
+    return _parameters.cookies;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 int WRemoteData::maxHost() const
 {
-    return _maxHost;
+    return _parameters.maxHost;
 }
 
 int WRemoteData::delay() const
 {
-    return _delay;
+    return _parameters.delay;
 }
 
 int WRemoteData::timeout() const
 {
-    return _timeout;
+    return _parameters.timeout;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -237,7 +244,7 @@ WRemoteTimeout::WRemoteTimeout(WRemoteData * data) : QTimer(data)
 
     connect(_data, SIGNAL(loaded(WRemoteData *)), this, SLOT(onLoaded()));
 
-    start(data->_timeout);
+    start(data->_parameters.timeout);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -300,7 +307,9 @@ void WControllerDownloadPrivate::processJobs()
         QString url  = data->_url;
         QString host = data->_host;
 
-        if (checkJobs(host, data->_maxHost))
+        const WRemoteParameters & parameters = data->_parameters;
+
+        if (checkJobs(host, parameters.maxHost))
         {
             int delay = checkDelay(data, host);
 
@@ -323,7 +332,7 @@ void WControllerDownloadPrivate::processJobs()
 
             data->_loader->get(data);
 
-            if (data->_reply && data->_timeout != -1)
+            if (data->_reply && parameters.timeout != -1)
             {
                 new WRemoteTimeout(data);
             }
@@ -362,7 +371,7 @@ int WControllerDownloadPrivate::checkDelay(WRemoteData * data, const QString & h
 {
     if (delays.contains(host) == false)
     {
-        int delay = data->_delay;
+        int delay = data->_parameters.delay;
 
         if (delay)
         {
@@ -383,7 +392,7 @@ int WControllerDownloadPrivate::checkDelay(WRemoteData * data, const QString & h
         return time.msecsTo(timeDelay);
     }
 
-    int delay = data->_delay;
+    int delay = data->_parameters.delay;
 
     if (delay)
     {
@@ -474,17 +483,9 @@ WRemoteData * WControllerDownload::getData(WAbstractLoader           * loader,
 
     data->_priority = priority;
 
-    data->_header = parameters.header;
-    data->_body   = parameters.body;
-
-    data->_redirect = parameters.redirect;
-    data->_cookies  = parameters.cookies;
+    data->_parameters = parameters;
 
     data->_redirectCount = 0;
-
-    data->_maxHost = parameters.maxHost;
-    data->_delay   = parameters.delay;
-    data->_timeout = parameters.timeout;
 
     for (int i = 0; i < d->jobsPending.count(); i++)
     {

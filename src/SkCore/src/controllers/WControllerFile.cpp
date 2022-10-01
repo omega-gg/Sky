@@ -1214,6 +1214,8 @@ WControllerFileReply * WControllerFile::startCreatePaths(const QStringList & pat
 
 /* Q_INVOKABLE static */ bool WControllerFile::urlIsImage(const QString & url)
 {
+    if (url.startsWith("image:", Qt::CaseInsensitive)) return true;
+
     QString extension = WControllerNetwork::extractUrlExtension(url);
 
     return extensionIsImage(extension);
