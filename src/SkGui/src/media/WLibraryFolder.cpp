@@ -2502,6 +2502,8 @@ void WLibraryFolder::updateIndex()
 
 /* virtual */ bool WLibraryFolder::onApplySource(const QString & source)
 {
+    clearItems();
+
     return wControllerPlaylist->d_func()->applySourceFolder(this, source);
 }
 

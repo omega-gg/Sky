@@ -896,8 +896,6 @@ bool WControllerPlaylistPrivate::applyQueryItem(WLibraryItem           * item,
 bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
                                                   WTrack    * track, const QString & url)
 {
-    abortQueryTrack(track);
-
     if (url.isEmpty()) return true;
 
     Q_Q(WControllerPlaylist);
@@ -989,8 +987,6 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
 
 bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const QString & url)
 {
-    playlist->clearTracks();
-
     if (url.isEmpty()) return true;
 
     Q_Q(WControllerPlaylist);
@@ -1047,8 +1043,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
 
                 WBackendNetQuery query(source);
 
-                query.target     = WBackendNetQuery::TargetHtml;
-                query.clearItems = false;
+                query.target = WBackendNetQuery::TargetHtml;
 
                 getDataPlaylist(playlist, query);
             }
@@ -1172,8 +1167,6 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
 
 bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, const QString & url)
 {
-    folder->clearItems();
-
     if (url.isEmpty()) return true;
 
     Q_Q(WControllerPlaylist);
@@ -1240,8 +1233,6 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
                 query.target = WBackendNetQuery::TargetHtml;
                 query.id     = 1;
 
-                query.clearItems = false;
-
                 getDataFolder(folder, query);
             }
 
@@ -1263,8 +1254,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
         WBackendNetQuery query(source);
 
-        query.target     = WBackendNetQuery::TargetVbml;
-        query.clearItems = false;
+        query.target = WBackendNetQuery::TargetVbml;
 
         getDataFolder(folder, query);
 
@@ -1276,9 +1266,8 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
         WBackendNetQuery query(source);
 
-        query.type       = WBackendNetQuery::TypeVbml;
-        query.target     = WBackendNetQuery::TargetVbml;
-        query.clearItems = false;
+        query.type   = WBackendNetQuery::TypeVbml;
+        query.target = WBackendNetQuery::TargetVbml;
 
         getDataFolder(folder, query);
 
@@ -1290,9 +1279,8 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
         WBackendNetQuery query(source);
 
-        query.type       = WBackendNetQuery::TypeImage;
-        query.target     = WBackendNetQuery::TargetVbml;
-        query.clearItems = false;
+        query.type   = WBackendNetQuery::TypeImage;
+        query.target = WBackendNetQuery::TargetVbml;
 
         getDataFolder(folder, query);
 
@@ -1323,8 +1311,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
                     WBackendNetQuery query(source);
 
-                    query.target     = WBackendNetQuery::TargetFolder;
-                    query.clearItems = false;
+                    query.target = WBackendNetQuery::TargetFolder;
 
                     getDataFolder(folder, query);
 
@@ -1334,8 +1321,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
                 {
                     WBackendNetQuery query(source);
 
-                    query.target     = WBackendNetQuery::TargetFile;
-                    query.clearItems = false;
+                    query.target = WBackendNetQuery::TargetFile;
 
                     getDataFolder(folder, query);
 
@@ -1350,8 +1336,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
             {
                 WBackendNetQuery query(source);
 
-                query.target     = WBackendNetQuery::TargetFile;
-                query.clearItems = false;
+                query.target = WBackendNetQuery::TargetFile;
 
                 getDataFolder(folder, query);
 
@@ -1364,8 +1349,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
             WBackendNetQuery query(source);
 
-            query.target     = WBackendNetQuery::TargetFolder;
-            query.clearItems = false;
+            query.target = WBackendNetQuery::TargetFolder;
 
             getDataFolder(folder, query);
 
@@ -1388,8 +1372,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
     WBackendNetQuery query(source);
 
-    query.target     = WBackendNetQuery::TargetHtml;
-    query.clearItems = false;
+    query.target = WBackendNetQuery::TargetHtml;
 
     getDataFolder(folder, query);
 
@@ -1999,8 +1982,6 @@ bool WControllerPlaylistPrivate::getDataRelated(WBackendNet * backend,
 
     if (query.isValid())
     {
-        query.clearItems = false;
-
         getDataPlaylist(playlist, query);
 
         return true;
@@ -2077,8 +2058,6 @@ bool WControllerPlaylistPrivate::getNextPlaylist(WPlaylist * playlist,
 
         query.indexNext = index;
 
-        query.clearItems = false;
-
         getDataPlaylist(playlist, query);
 
         result = true;
@@ -2102,8 +2081,6 @@ bool WControllerPlaylistPrivate::getNextFolder(WLibraryFolder * folder,
 
         query.indexNext = index;
 
-        query.clearItems = false;
-
         getDataFolder(folder, query);
 
         result = true;
@@ -2126,8 +2103,6 @@ bool WControllerPlaylistPrivate::getNextItem(WLibraryItem * item,
         index++;
 
         query.indexNext = index;
-
-        query.clearItems = false;
 
         getDataItem(item, query);
 
@@ -2534,8 +2509,6 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
 
             nextQuery.indexReload = indexReload + 1;
 
-            nextQuery.clearItems = false;
-
             getDataPlaylist(playlist, nextQuery);
 
             return;
@@ -2637,8 +2610,6 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
             deleteQuery(query);
 
             nextQuery.indexReload = indexReload + 1;
-
-            nextQuery.clearItems = false;
 
             getDataFolder(folder, nextQuery);
 
@@ -2788,16 +2759,20 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
     WPlaylist * playlist = item->toPlaylist();
     WTrack    * track    = query->track;
 
+    QString source = data.origin;
+
+    int index = playlist->indexOf(track);
+
     if (data.type == WControllerPlaylist::Redirect)
     {
-        applySourceTrack(playlist, track, data.origin);
+        playlist->setTrackSource(index, source);
+
+        applySourceTrack(playlist, track, source);
 
         return;
     }
 
     deleteQuery(query);
-
-    int index = playlist->indexOf(track);
 
     if (index == -1)
     {
@@ -2823,8 +2798,6 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
         trackReply.applyDataTo(track);
 
         emit playlist->trackQueryEnded();
-
-        QString source = data.origin;
 
         if (source.isEmpty() == false)
         {
@@ -2894,9 +2867,13 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
     WControllerPlaylist::Type type = data.type;
 
+    QString origin = data.origin;
+
     if (type == WControllerPlaylist::Redirect)
     {
-        applySourcePlaylist(playlist, data.origin);
+        playlist->applySource(origin);
+
+        applySourcePlaylist(playlist, origin);
 
         return;
     }
@@ -2909,7 +2886,6 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     playlist->setTitle(data.title);
     playlist->setCover(data.cover);
 
-    QString origin = data.origin;
     QString source = data.source;
 
     if (WControllerPlaylist::vbmlTypeTrack(type))
@@ -3049,8 +3025,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     {
         WBackendNetQuery query(origin);
 
-        query.target     = WBackendNetQuery::TargetVbml;
-        query.clearItems = false;
+        query.target = WBackendNetQuery::TargetVbml;
 
         getDataPlaylist(playlist, query);
 
@@ -3069,8 +3044,6 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
             if (query.isValid())
             {
-                query.clearItems = false;
-
                 getDataPlaylist(playlist, query);
 
                 return;
@@ -3124,9 +3097,13 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
     WControllerPlaylist::Type type = data.type;
 
+    QString origin = data.origin;
+
     if (data.type == WControllerPlaylist::Redirect)
     {
-        applySourceFolder(folder, data.origin);
+        folder->applySource(origin);
+
+        applySourceFolder(folder, origin);
 
         return;
     }
@@ -3206,7 +3183,6 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
     playlist->setTitle(data.title);
     playlist->setCover(data.cover);
 
-    QString origin = data.origin;
     QString source = data.source;
 
     if (WControllerPlaylist::vbmlTypeTrack(type))
@@ -3337,8 +3313,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
     {
         WBackendNetQuery query(origin);
 
-        query.target     = WBackendNetQuery::TargetVbml;
-        query.clearItems = false;
+        query.target = WBackendNetQuery::TargetVbml;
 
         getDataPlaylist(playlist, query);
 
@@ -3361,8 +3336,6 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
             if (query.isValid())
             {
-                query.clearItems = false;
-
                 getDataPlaylist(playlist, query);
 
                 playlist->tryDelete();

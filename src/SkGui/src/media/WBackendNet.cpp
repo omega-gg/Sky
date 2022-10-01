@@ -89,7 +89,7 @@ void WBackendNetQuery::init(Type type, const QString & url)
 
     mode = WAbstractBackend::SourceDefault;
 
-    clearItems = true;
+    clearItems = false;
     cookies    = false;
     skipError  = false;
 

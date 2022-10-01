@@ -800,7 +800,11 @@ void WPlaylistPrivate::applyTrack(WTrack * track, int index, int delay)
         ||
         WControllerPlaylist::urlIsTorrent(p->source) == false)
     {
-        wControllerPlaylist->d_func()->applySourceTrack(q, track, p->source);
+        WControllerPlaylistPrivate * pController = wControllerPlaylist->d_func();
+
+        pController->abortQueryTrack(track);
+
+        pController->applySourceTrack(q, track, p->source);
     }
 
     WTrack::State state = track->state();
@@ -2519,6 +2523,8 @@ void WPlaylist::endTracksRemove() const
 
 /* virtual */ bool WPlaylist::onApplySource(const QString & source)
 {
+    clearTracks();
+
     return wControllerPlaylist->d_func()->applySourcePlaylist(this, source);
 }
 
