@@ -58,7 +58,7 @@ public: // Slots
     void onUpdated(const QVideoFrame & frame);
 #endif
 
-    void onLoaded(const QString & text);
+    void onLoaded(const QByteArray & text);
 
 public: // Variables
     WBarcodeReader reader;

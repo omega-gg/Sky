@@ -72,7 +72,7 @@ public: // QAbstractVideoFilter implementation
 #endif
 
 signals:
-    void loaded(const QString & text);
+    void loaded(const QByteArray & data);
 
 #ifdef QT_6
     void videoSinkChanged();
@@ -101,7 +101,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onUpdated(const QVideoFrame &))
 #endif
 
-    Q_PRIVATE_SLOT(d_func(), void onLoaded(const QString &))
+    Q_PRIVATE_SLOT(d_func(), void onLoaded(const QByteArray &))
 
     friend class WFilterRunnable;
 };
