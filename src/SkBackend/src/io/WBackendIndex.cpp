@@ -225,6 +225,8 @@ void WBackendIndexPrivate::init(const QString & url)
 
     this->url = url;
 
+    urlBase = WControllerNetwork::extractBaseUrl(url);
+
     loaded = false;
 
     qRegisterMetaType<WBackendIndexData>("WBackendIndexData");
@@ -244,7 +246,7 @@ void WBackendIndexPrivate::load()
 {
     Q_Q(WBackendIndex);
 
-    remote = wControllerDownload->getData(url + "/index.vbml", BACKENDINDEX_TIMEOUT);
+    remote = wControllerDownload->getData(url, BACKENDINDEX_TIMEOUT);
 
     QObject::connect(remote, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoad()));
 }
@@ -327,7 +329,7 @@ void WBackendIndexPrivate::onUpdate()
 
     loadData(array);
 
-    wControllerFile->startWriteFile(WControllerFile::filePath(url + "/index.vbml"), array);
+    wControllerFile->startWriteFile(WControllerFile::filePath(url), array);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -361,7 +363,7 @@ void WBackendIndexPrivate::onData(const WBackendIndexData & data)
 
     origin = origin.mid(0, origin.lastIndexOf('/') + 1);
 
-    QString path = WControllerFile::filePath(url) + '/';
+    QString path = WControllerFile::filePath(urlBase) + '/';
 
     foreach (const WBackendIndexItem & item, data.backends)
     {
@@ -551,7 +553,7 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
 {
     Q_D(const WBackendIndex);
 
-    QString source = d->url + '/' + id + ".vbml";
+    QString source = d->urlBase + '/' + id + ".vbml";
 
     WBackendUniversal * backend = new WBackendUniversal(id, source);
 

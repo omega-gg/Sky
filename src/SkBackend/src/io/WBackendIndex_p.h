@@ -109,7 +109,7 @@ class SK_BACKEND_EXPORT WBackendIndexPrivate : public WBackendLoaderPrivate
 public:
     WBackendIndexPrivate(WBackendIndex * p);
 
-    void init(const QString & source);
+    void init(const QString & url);
 
 public: // Functions
     void load();
@@ -136,6 +136,7 @@ public: // Variables
     WBackendIndexData data;
 
     QString url;
+    QString urlBase;
 
     QMetaMethod method;
 
