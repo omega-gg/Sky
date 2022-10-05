@@ -1,22 +1,12 @@
-#pragma once
 /*
 * Copyright 2020 Axel Waggershauser
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
 */
+// SPDX-License-Identifier: Apache-2.0
+
+#pragma once
 
 #include "Point.h"
-#include "ZXContainerAlgorithms.h"
+#include "ZXAlgorithms.h"
 
 #include <array>
 #include <cmath>
@@ -102,6 +92,44 @@ bool IsConvex(const Quadrilateral<PointT>& poly)
 	return M / m < 4.0;
 }
 
+template <typename PointT>
+Quadrilateral<PointT> Scale(const Quadrilateral<PointT>& q, int factor)
+{
+	return {factor * q[0], factor * q[1], factor * q[2], factor * q[3]};
+}
+
+template <typename PointT>
+PointT Center(const Quadrilateral<PointT>& q)
+{
+	return Reduce(q) / Size(q);
+}
+
+template <typename PointT>
+Quadrilateral<PointT> RotatedCorners(const Quadrilateral<PointT>& q, int n = 1)
+{
+	Quadrilateral<PointT> res;
+	std::rotate_copy(q.begin(), q.begin() + ((n + 4) % 4), q.end(), res.begin());
+	return res;
+}
+
+template <typename PointT>
+bool IsInside(const PointT& p, const Quadrilateral<PointT>& q)
+{
+	// Test if p is on the same side (right or left) of all polygon segments
+	int pos = 0, neg = 0;
+	for (int i = 0; i < Size(q); ++i)
+		(cross(p - q[i], q[(i + 1) % Size(q)] - q[i]) < 0 ? neg : pos)++;
+	return pos == 0 || neg == 0;
+}
+
+template <typename PointT>
+bool HaveIntersectingBoundingBoxes(const Quadrilateral<PointT>& a, const Quadrilateral<PointT>& b)
+{
+	// TODO: this is only a quick and dirty approximation that works for the trivial standard cases
+	bool x = b.topRight().x < a.topLeft().x || b.topLeft().x > a.topRight().x;
+	bool y = b.bottomLeft().y < a.topLeft().y || b.topLeft().y > a.bottomLeft().y;
+	return !(x || y);
+}
 
 } // ZXing
 

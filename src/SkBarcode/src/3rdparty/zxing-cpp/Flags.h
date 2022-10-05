@@ -1,22 +1,13 @@
-#pragma once
 /*
 * Copyright 2020 Axel Waggershauser
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
 */
+// SPDX-License-Identifier: Apache-2.0
+
+#pragma once
 
 #include "BitHacks.h"
 
+#include <cstddef>
 #include <iterator>
 #include <type_traits>
 
@@ -30,13 +21,11 @@ class Flags
 	using Int = typename std::underlying_type<Enum>::type;
 	Int i = 0;
 
-// NOTE: This fix is required to convert from our WBarcodeReader::Formats enum.
-public:
 	constexpr inline Flags(Int other) : i(other) {}
 	constexpr static inline unsigned highestBitSet(Int x) noexcept { return x < 2 ? x : 1 + highestBitSet(x >> 1); }
 
-//public:
-    using enum_type = Enum;
+public:
+	using enum_type = Enum;
 
 	constexpr inline Flags() noexcept = default;
 	constexpr inline Flags(Enum flag) noexcept : i(Int(flag)) {}
@@ -54,7 +43,7 @@ public:
 	public:
 		using iterator_category = std::input_iterator_tag;
 		using value_type = Enum;
-		using difference_type = ptrdiff_t;
+		using difference_type = std::ptrdiff_t;
 		using pointer = Enum*;
 		using reference = Enum&;
 

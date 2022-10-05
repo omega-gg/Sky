@@ -1,18 +1,7 @@
 /*
 * Copyright 2016 Huy Cuong Nguyen
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
 */
+// SPDX-License-Identifier: Apache-2.0
 
 #include "ZXBigInteger.h"
 
@@ -365,7 +354,7 @@ static int CompareMag(const Magnitude& a, const Magnitude& b)
 		// Compare blocks one by one from left to right.
 		auto p = std::mismatch(a.rbegin(), a.rend(), b.rbegin());
 		if (p.first != a.rend()) {
-			return *p.first < *p.second ? -1 : 1;	// note: cannot use substraction here
+			return *p.first < *p.second ? -1 : 1;	// note: cannot use subtraction here
 		}
 		return 0;
 	}

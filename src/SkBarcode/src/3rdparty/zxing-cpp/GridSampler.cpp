@@ -2,19 +2,8 @@
 * Copyright 2016 Nu-book Inc.
 * Copyright 2016 ZXing authors
 * Copyright 2020 Axel Waggershauser
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
 */
+// SPDX-License-Identifier: Apache-2.0
 
 #include "GridSampler.h"
 
@@ -33,13 +22,22 @@ DetectorResult SampleGrid(const BitMatrix& image, int width, int height, const P
 {
 #ifdef PRINT_DEBUG
 	LogMatrix log;
-	LogMatrixWriter lmw(log, image, 5, "grid.pnm");
+	static int i = 0;
+	LogMatrixWriter lmw(log, image, 5, "grid" + std::to_string(i++) + ".pnm");
 #endif
-	auto isInside = [&](PointI p) { return image.isIn(mod2Pix(centered(p))); };
-
-	if (width <= 0 || height <= 0 || !mod2Pix.isValid() || !isInside({0, 0}) || !isInside({width - 1, 0}) ||
-		!isInside({width - 1, height - 1}) || !isInside({0, height - 1}))
+	if (width <= 0 || height <= 0 || !mod2Pix.isValid())
 		return {};
+
+	// To deal with remaining examples (see #251 and #267) of "numercial instabilities" that have not been
+	// prevented with the Quadrilateral.h:IsConvex() check, we check for all boundary points of the grid to
+	// be inside.
+	auto isInside = [&](PointI p) { return image.isIn(mod2Pix(centered(p))); };
+	for (int y = 0; y < height; ++y)
+		if (!isInside({0, y}) || !isInside({width - 1, y}))
+			return {};
+	for (int x = 1; x < width - 1; ++x)
+		if (!isInside({x, 0}) || !isInside({x, height - 1}))
+			return {};
 
 	BitMatrix res(width, height);
 	for (int y = 0; y < height; ++y)

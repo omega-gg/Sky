@@ -1,32 +1,21 @@
-#pragma once
 /*
 * Copyright 2016 Nu-book Inc.
 * Copyright 2016 ZXing authors
 * Copyright 2020 Axel Waggershauser
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
 */
+// SPDX-License-Identifier: Apache-2.0
+
+#pragma once
 
 #include "BitArray.h"
-#include "DecodeStatus.h"
 #include "Pattern.h"
 
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
 #include <iterator>
+#include <limits>
 #include <memory>
-#include <type_traits>
 
 /*
 Code39 : 1:2/3, 5+4+1 (0x3|2x1 wide) -> 12-15 mods, v1-? | ToNarrowWide(OMG 1) == *
@@ -48,6 +37,7 @@ RSSExp.:  v?-74d/?-41c
 
 namespace ZXing {
 
+class DecodeHints;
 class Result;
 
 namespace OneD {
@@ -58,7 +48,12 @@ namespace OneD {
 */
 class RowReader
 {
+protected:
+	const DecodeHints& _hints;
+
 public:
+	explicit RowReader(const DecodeHints& hints) : _hints(hints) {}
+	explicit RowReader(DecodeHints&& hints) = delete;
 
 	struct DecodingState
 	{
@@ -70,7 +65,7 @@ public:
 
 	virtual ~RowReader() {}
 
-	virtual Result decodePattern(int rowNumber, const PatternView& row, std::unique_ptr<DecodingState>& state) const = 0;
+	virtual Result decodePattern(int rowNumber, PatternView& next, std::unique_ptr<DecodingState>& state) const = 0;
 
 	/**
 	 * Determines how closely a set of observed counts of runs of black/white values matches a given
@@ -118,7 +113,7 @@ public:
 	* digit.
 	*
 	* @param counters the counts of runs of observed black/white/black/... values
-	* @param patterns the list of patterns to compare the contens of counters to
+	* @param patterns the list of patterns to compare the contents of counters to
 	* @param requireUnambiguousMatch the 'best match' must be better than all other matches
 	* @return The decoded digit index, -1 if no pattern matched
 	*/

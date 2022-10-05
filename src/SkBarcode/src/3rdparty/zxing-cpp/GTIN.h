@@ -1,23 +1,14 @@
-#pragma once
 /*
 * Copyright 2016 Nu-book Inc.
 * Copyright 2016 ZXing authors
 * Copyright 2020 Axel Waggershauser
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
 */
+// SPDX-License-Identifier: Apache-2.0
 
-#include "ZXContainerAlgorithms.h"
+#pragma once
+
+#include "BarcodeFormat.h"
+#include "ZXAlgorithms.h"
 
 #include <string>
 
@@ -47,10 +38,14 @@ bool IsCheckDigitValid(const std::basic_string<T>& s)
 
 /**
  * Evaluate the prefix of the GTIN to estimate the country of origin. See
- * <a href="http://en.wikipedia.org/wiki/List_of_GS1_country_codes">
- * http://en.wikipedia.org/wiki/List_of_GS1_country_codes</a>.
+ * <a href="https://www.gs1.org/standards/id-keys/company-prefix">
+ * https://www.gs1.org/standards/id-keys/company-prefix</a> and
+ * <a href="https://en.wikipedia.org/wiki/List_of_GS1_country_codes">
+ * https://en.wikipedia.org/wiki/List_of_GS1_country_codes</a>.
+ *
+ * `format` required for EAN-8 (UPC-E assumed if not given)
  */
-std::string LookupCountryIdentifier(const std::string& GTIN);
+std::string LookupCountryIdentifier(const std::string& GTIN, const BarcodeFormat format = BarcodeFormat::None);
 
 std::string EanAddOn(const Result& result);
 

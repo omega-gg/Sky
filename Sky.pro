@@ -48,6 +48,7 @@ OTHER_FILES += 3rdparty.sh \
                src/SkyTouch/*.qml \
                src/SkyPresentation/qmldir \
                src/SkyPresentation/*.qml \
+               dist/cloneZxing.sh \
                dist/shaders/generate.sh \
                dist/shaders/video.vert \
                dist/shaders/video.frag \

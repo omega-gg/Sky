@@ -1,23 +1,14 @@
-#pragma once
 /*
 * Copyright 2020 Axel Waggershauser
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
 */
+// SPDX-License-Identifier: Apache-2.0
+
+#pragma once
 
 #include "BitMatrixCursor.h"
 #include "Pattern.h"
-#include "ZXContainerAlgorithms.h"
+#include "Quadrilateral.h"
+#include "ZXAlgorithms.h"
 
 #include <optional>
 
@@ -76,6 +67,8 @@ std::optional<PointF> CenterOfRing(const BitMatrix& image, PointI center, int ra
 
 std::optional<PointF> FinetuneConcentricPatternCenter(const BitMatrix& image, PointF center, int range, int finderPatternSize);
 
+std::optional<QuadrilateralF> FindConcentricPatternCorners(const BitMatrix& image, PointF center, int range, int ringIndex);
+
 struct ConcentricPattern : public PointF
 {
 	int size = 0;
@@ -86,14 +79,23 @@ std::optional<ConcentricPattern> LocateConcentricPattern(const BitMatrix& image,
 {
 	auto cur = BitMatrixCursorF(image, center, {});
 	int minSpread = image.width(), maxSpread = 0;
-	for (auto d : {PointF{0, 1}, {1, 0}, {1, 1}, {1, -1}}) {
-		int spread =
-			CheckDirection<RELAXED_THRESHOLD>(cur, d, finderPattern, range, length(d) < 1.1 && !RELAXED_THRESHOLD);
+	for (auto d : {PointF{0, 1}, {1, 0}}) {
+		int spread = CheckDirection<RELAXED_THRESHOLD>(cur, d, finderPattern, range, !RELAXED_THRESHOLD);
 		if (!spread)
 			return {};
 		minSpread = std::min(spread, minSpread);
 		maxSpread = std::max(spread, maxSpread);
 	}
+
+#if 1
+	for (auto d : {PointF{1, 1}, {1, -1}}) {
+		int spread = CheckDirection<true>(cur, d, finderPattern, range, false);
+		if (!spread)
+			return {};
+		minSpread = std::min(spread, minSpread);
+		maxSpread = std::max(spread, maxSpread);
+	}
+#endif
 
 	if (maxSpread > 5 * minSpread)
 		return {};
