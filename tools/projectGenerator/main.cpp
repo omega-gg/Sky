@@ -22,7 +22,12 @@
 //-------------------------------------------------------------------------------------------------
 // Global variables
 
+QStringList headers;
+QStringList sources;
+
 QStringList paths;
+
+QString prefix;
 
 //-------------------------------------------------------------------------------------------------
 // Functions
@@ -34,33 +39,79 @@ void scanFolder(const QString & path)
 
     QFileInfoList list = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
 
-    foreach (QFileInfo info, list)
+    QFileInfoList folders;
+
+    foreach (const QFileInfo & info, list)
     {
         if (info.isDir())
         {
-            scanFolder(info.filePath());
-        }
-        else if (info.isFile())
-        {
-            qDebug(qPrintable(info.filePath()));
+            folders.append(info);
 
-            paths.append(info.filePath());
+            continue;
         }
+
+        if (info.isFile() == false) continue;
+
+        QString path = prefix + info.filePath().remove(0, 2);
+
+        qDebug(qPrintable(path));
+
+        QString suffix = info.suffix();
+
+        if (suffix == "h" || suffix == "hpp")
+        {
+            headers.append(path);
+        }
+        else if (suffix == "c" || suffix == "cpp")
+        {
+            sources.append(path);
+        }
+        else paths.append(path);
+    }
+
+    foreach (const QFileInfo & info, folders)
+    {
+        scanFolder(info.filePath());
     }
 }
 
 //-------------------------------------------------------------------------------------------------
 
+void writePaths(QString & content, const QString & name, QStringList & paths)
+{
+    if (paths.isEmpty()) return;
+
+    QString string = name + " += ";
+
+    QString spaces;
+
+    for (int i = 0; i < string.length(); i++)
+    {
+        spaces.append(' ');
+    }
+
+    content += string + paths.takeFirst() + " \\\n";
+
+    foreach (const QString & path, paths)
+    {
+        content += spaces + path + " \\\n";
+    }
+
+    content += '\n';
+}
+
 void writeProject(const QString & name)
 {
     qDebug("Generating: %s", qPrintable(name));
 
-    QString content = "OTHER_FILES += " + paths.takeFirst() + " \\\n";
+    QString content;
 
-    foreach (const QString & path, paths)
-    {
-        content += "               " + path + " \\\n";
-    }
+    writePaths(content, "HEADERS",     headers);
+    writePaths(content, "SOURCES",     sources);
+    writePaths(content, "OTHER_FILES", paths);
+
+    // NOTE: Removing the last '\n'.
+    content.chop(1);
 
     QFile file(name);
 
@@ -79,13 +130,19 @@ int main(int argc, char *argv[])
 {
     QCoreApplication application(argc, argv);
 
-    if (argc == 3)
+    if (argc == 4)
+    {
+        QDir::setCurrent(argv[2]);
+
+        prefix = argv[3];
+    }
+    else if (argc == 3)
     {
         QDir::setCurrent(argv[2]);
     }
     else if (argc != 2)
     {
-        qDebug("Usage: projectGenerator <name> [path]");
+        qDebug("Usage: projectGenerator <name> [path] [prefix]");
 
         return 0;
     }
@@ -102,10 +159,7 @@ int main(int argc, char *argv[])
 
     scanFolder("");
 
-    if (paths.isEmpty() == false)
-    {
-        writeProject(name + ".pro");
-    }
+    writeProject(name + ".pro");
 
     qDebug("DONE");
 }

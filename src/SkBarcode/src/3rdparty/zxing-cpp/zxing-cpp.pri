@@ -15,21 +15,25 @@ HEADERS += src/3rdparty/zxing-cpp/BarcodeFormat.h \
            src/3rdparty/zxing-cpp/CharacterSet.h \
            src/3rdparty/zxing-cpp/CharacterSetECI.h \
            src/3rdparty/zxing-cpp/ConcentricFinder.h \
+           src/3rdparty/zxing-cpp/Content.h \
            src/3rdparty/zxing-cpp/CustomData.h \
            src/3rdparty/zxing-cpp/DecodeHints.h \
-           src/3rdparty/zxing-cpp/DecodeStatus.h \
            src/3rdparty/zxing-cpp/DecoderResult.h \
+           src/3rdparty/zxing-cpp/DecodeStatus.h \
            src/3rdparty/zxing-cpp/DetectorResult.h \
+           src/3rdparty/zxing-cpp/ECI.h \
+           src/3rdparty/zxing-cpp/Error.h \
            src/3rdparty/zxing-cpp/Flags.h \
-           src/3rdparty/zxing-cpp/GTIN.h \
+           src/3rdparty/zxing-cpp/Generator.h \
            src/3rdparty/zxing-cpp/GenericGF.h \
            src/3rdparty/zxing-cpp/GenericGFPoly.h \
-           src/3rdparty/zxing-cpp/GenericLuminanceSource.h \
            src/3rdparty/zxing-cpp/GlobalHistogramBinarizer.h \
            src/3rdparty/zxing-cpp/GridSampler.h \
+           src/3rdparty/zxing-cpp/GS1.h \
+           src/3rdparty/zxing-cpp/GTIN.h \
            src/3rdparty/zxing-cpp/HybridBinarizer.h \
+           src/3rdparty/zxing-cpp/ImageView.h \
            src/3rdparty/zxing-cpp/LogMatrix.h \
-           src/3rdparty/zxing-cpp/LuminanceSource.h \
            src/3rdparty/zxing-cpp/Matrix.h \
            src/3rdparty/zxing-cpp/MultiFormatReader.h \
            src/3rdparty/zxing-cpp/MultiFormatWriter.h \
@@ -43,7 +47,6 @@ HEADERS += src/3rdparty/zxing-cpp/BarcodeFormat.h \
            src/3rdparty/zxing-cpp/ReedSolomonEncoder.h \
            src/3rdparty/zxing-cpp/RegressionLine.h \
            src/3rdparty/zxing-cpp/Result.h \
-           src/3rdparty/zxing-cpp/ResultMetadata.h \
            src/3rdparty/zxing-cpp/ResultPoint.h \
            src/3rdparty/zxing-cpp/Scope.h \
            src/3rdparty/zxing-cpp/StructuredAppend.h \
@@ -53,9 +56,9 @@ HEADERS += src/3rdparty/zxing-cpp/BarcodeFormat.h \
            src/3rdparty/zxing-cpp/ThresholdBinarizer.h \
            src/3rdparty/zxing-cpp/TritMatrix.h \
            src/3rdparty/zxing-cpp/WhiteRectDetector.h \
+           src/3rdparty/zxing-cpp/ZXAlgorithms.h \
            src/3rdparty/zxing-cpp/ZXBigInteger.h \
            src/3rdparty/zxing-cpp/ZXConfig.h \
-           src/3rdparty/zxing-cpp/ZXContainerAlgorithms.h \
            src/3rdparty/zxing-cpp/ZXNullable.h \
            src/3rdparty/zxing-cpp/ZXTestSupport.h \
            src/3rdparty/zxing-cpp/aztec/AZDecoder.h \
@@ -92,6 +95,7 @@ HEADERS += src/3rdparty/zxing-cpp/BarcodeFormat.h \
            src/3rdparty/zxing-cpp/oned/ODCode93Reader.h \
            src/3rdparty/zxing-cpp/oned/ODCode93Writer.h \
            src/3rdparty/zxing-cpp/oned/ODDataBarCommon.h \
+           src/3rdparty/zxing-cpp/oned/ODDataBarExpandedBitDecoder.h \
            src/3rdparty/zxing-cpp/oned/ODDataBarExpandedReader.h \
            src/3rdparty/zxing-cpp/oned/ODDataBarReader.h \
            src/3rdparty/zxing-cpp/oned/ODEAN13Writer.h \
@@ -105,9 +109,6 @@ HEADERS += src/3rdparty/zxing-cpp/BarcodeFormat.h \
            src/3rdparty/zxing-cpp/oned/ODUPCEANCommon.h \
            src/3rdparty/zxing-cpp/oned/ODUPCEWriter.h \
            src/3rdparty/zxing-cpp/oned/ODWriterHelper.h \
-           src/3rdparty/zxing-cpp/oned/rss/ODRSSExpandedBinaryDecoder.h \
-           src/3rdparty/zxing-cpp/oned/rss/ODRSSFieldParser.h \
-           src/3rdparty/zxing-cpp/oned/rss/ODRSSGenericAppIdDecoder.h \
            src/3rdparty/zxing-cpp/pdf417/PDFBarcodeMetadata.h \
            src/3rdparty/zxing-cpp/pdf417/PDFBarcodeValue.h \
            src/3rdparty/zxing-cpp/pdf417/PDFBoundingBox.h \
@@ -131,11 +132,10 @@ HEADERS += src/3rdparty/zxing-cpp/BarcodeFormat.h \
            src/3rdparty/zxing-cpp/qrcode/QRDataBlock.h \
            src/3rdparty/zxing-cpp/qrcode/QRDataMask.h \
            src/3rdparty/zxing-cpp/qrcode/QRDecoder.h \
-           src/3rdparty/zxing-cpp/qrcode/QRDecoderMetadata.h \
            src/3rdparty/zxing-cpp/qrcode/QRDetector.h \
            src/3rdparty/zxing-cpp/qrcode/QRECB.h \
-           src/3rdparty/zxing-cpp/qrcode/QREncodeResult.h \
            src/3rdparty/zxing-cpp/qrcode/QREncoder.h \
+           src/3rdparty/zxing-cpp/qrcode/QREncodeResult.h \
            src/3rdparty/zxing-cpp/qrcode/QRErrorCorrectionLevel.h \
            src/3rdparty/zxing-cpp/qrcode/QRFormatInformation.h \
            src/3rdparty/zxing-cpp/qrcode/QRMaskUtil.h \
@@ -160,18 +160,19 @@ SOURCES += src/3rdparty/zxing-cpp/BarcodeFormat.cpp \
            src/3rdparty/zxing-cpp/BitMatrix.cpp \
            src/3rdparty/zxing-cpp/BitMatrixIO.cpp \
            src/3rdparty/zxing-cpp/BitSource.cpp \
-           src/3rdparty/zxing-cpp/CharacterSetECI.cpp \
+           src/3rdparty/zxing-cpp/CharacterSet.cpp \
            src/3rdparty/zxing-cpp/ConcentricFinder.cpp \
+           src/3rdparty/zxing-cpp/Content.cpp \
            src/3rdparty/zxing-cpp/DecodeHints.cpp \
            src/3rdparty/zxing-cpp/DecodeStatus.cpp \
-           src/3rdparty/zxing-cpp/GTIN.cpp \
+           src/3rdparty/zxing-cpp/ECI.cpp \
            src/3rdparty/zxing-cpp/GenericGF.cpp \
            src/3rdparty/zxing-cpp/GenericGFPoly.cpp \
-           src/3rdparty/zxing-cpp/GenericLuminanceSource.cpp \
            src/3rdparty/zxing-cpp/GlobalHistogramBinarizer.cpp \
            src/3rdparty/zxing-cpp/GridSampler.cpp \
+           src/3rdparty/zxing-cpp/GS1.cpp \
+           src/3rdparty/zxing-cpp/GTIN.cpp \
            src/3rdparty/zxing-cpp/HybridBinarizer.cpp \
-           src/3rdparty/zxing-cpp/LuminanceSource.cpp \
            src/3rdparty/zxing-cpp/MultiFormatReader.cpp \
            src/3rdparty/zxing-cpp/MultiFormatWriter.cpp \
            src/3rdparty/zxing-cpp/PerspectiveTransform.cpp \
@@ -179,7 +180,6 @@ SOURCES += src/3rdparty/zxing-cpp/BarcodeFormat.cpp \
            src/3rdparty/zxing-cpp/ReedSolomonDecoder.cpp \
            src/3rdparty/zxing-cpp/ReedSolomonEncoder.cpp \
            src/3rdparty/zxing-cpp/Result.cpp \
-           src/3rdparty/zxing-cpp/ResultMetadata.cpp \
            src/3rdparty/zxing-cpp/ResultPoint.cpp \
            src/3rdparty/zxing-cpp/TextDecoder.cpp \
            src/3rdparty/zxing-cpp/TextEncoder.cpp \
@@ -216,6 +216,7 @@ SOURCES += src/3rdparty/zxing-cpp/BarcodeFormat.cpp \
            src/3rdparty/zxing-cpp/oned/ODCode93Reader.cpp \
            src/3rdparty/zxing-cpp/oned/ODCode93Writer.cpp \
            src/3rdparty/zxing-cpp/oned/ODDataBarCommon.cpp \
+           src/3rdparty/zxing-cpp/oned/ODDataBarExpandedBitDecoder.cpp \
            src/3rdparty/zxing-cpp/oned/ODDataBarExpandedReader.cpp \
            src/3rdparty/zxing-cpp/oned/ODDataBarReader.cpp \
            src/3rdparty/zxing-cpp/oned/ODEAN13Writer.cpp \
@@ -229,9 +230,6 @@ SOURCES += src/3rdparty/zxing-cpp/BarcodeFormat.cpp \
            src/3rdparty/zxing-cpp/oned/ODUPCEANCommon.cpp \
            src/3rdparty/zxing-cpp/oned/ODUPCEWriter.cpp \
            src/3rdparty/zxing-cpp/oned/ODWriterHelper.cpp \
-           src/3rdparty/zxing-cpp/oned/rss/ODRSSExpandedBinaryDecoder.cpp \
-           src/3rdparty/zxing-cpp/oned/rss/ODRSSFieldParser.cpp \
-           src/3rdparty/zxing-cpp/oned/rss/ODRSSGenericAppIdDecoder.cpp \
            src/3rdparty/zxing-cpp/pdf417/PDFBarcodeValue.cpp \
            src/3rdparty/zxing-cpp/pdf417/PDFBoundingBox.cpp \
            src/3rdparty/zxing-cpp/pdf417/PDFCodewordDecoder.cpp \

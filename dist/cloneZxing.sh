@@ -7,7 +7,11 @@ set -e
 
 target="zxing-cpp"
 
+path="../src/SkBarcode/src/3rdparty/$target"
+
 hash="f89db69e34543c508f80e807535dab3012eea7ad" # Pre-2.0
+
+projectGenerator="$PWD/../deploy/projectGenerator"
 
 #--------------------------------------------------------------------------------------------------
 # Clone
@@ -24,9 +28,23 @@ cd ..
 echo ""
 
 #--------------------------------------------------------------------------------------------------
-# Clone
+# Copy
 #--------------------------------------------------------------------------------------------------
 
-cp -r $target/core/src/* ../src/SkBarcode/src/3rdparty/$target
+rm -rf $path/*
+
+cp -r $target/core/src/* $path
 
 rm -rf $target
+
+#--------------------------------------------------------------------------------------------------
+# Generate project
+#--------------------------------------------------------------------------------------------------
+
+cd $path
+
+$projectGenerator $target . "src/3rdparty/zxing-cpp/"
+
+mv $target.pro $target.pri
+
+cd -

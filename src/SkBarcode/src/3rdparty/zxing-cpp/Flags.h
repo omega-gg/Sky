@@ -21,10 +21,11 @@ class Flags
 	using Int = typename std::underlying_type<Enum>::type;
 	Int i = 0;
 
+// NOTE: This fix is required to convert from our WBarcodeReader::Formats enum.
+public:
 	constexpr inline Flags(Int other) : i(other) {}
 	constexpr static inline unsigned highestBitSet(Int x) noexcept { return x < 2 ? x : 1 + highestBitSet(x >> 1); }
 
-public:
 	using enum_type = Enum;
 
 	constexpr inline Flags() noexcept = default;
