@@ -728,6 +728,7 @@ if [ $os = "windows" ]; then
 
     cp bin/includeGenerator.exe deploy
     cp bin/deployer.exe         deploy
+    cp bin/projectGenerator.exe deploy
 
 elif [ $os = "mobile" ]; then
 
@@ -735,6 +736,7 @@ elif [ $os = "mobile" ]; then
 else
     cp bin/includeGenerator deploy
     cp bin/deployer         deploy
+    cp bin/projectGenerator deploy
 fi
 
 if [ $1 = "macOS" ]; then
@@ -750,6 +752,12 @@ if [ $1 = "macOS" ]; then
 
     install_name_tool -change @rpath/QtCore.framework/Versions/$qx/QtCore \
                               @loader_path/QtCore.dylib deploy/deployer
+
+    #----------------------------------------------------------------------------------------------
+    # projectGenerator
+
+    install_name_tool -change @rpath/QtCore.framework/Versions/$qx/QtCore \
+                              @loader_path/QtCore.dylib deploy/projectGenerator
 fi
 
 #--------------------------------------------------------------------------------------------------
