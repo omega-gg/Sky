@@ -34,7 +34,9 @@
 */
 
 // Sk includes
+#ifndef SK_NO_TORRENT
 #include <WControllerTorrent>
+#endif
 #include <WRegExp>
 
 // Private includes

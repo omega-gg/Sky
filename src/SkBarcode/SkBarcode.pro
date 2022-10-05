@@ -11,7 +11,7 @@ DESTDIR = $$SK/lib
 TEMPLATE = lib
 
 contains(QT_MAJOR_VERSION, 4) {
-    QT += declarative
+    QT += declarative network
 } else {
     QT += qml
 }
