@@ -794,11 +794,15 @@ void WPlaylistPrivate::applyTrack(WTrack * track, int index, int delay)
     // NOTE: Sometimes we don't want to reload a track too soon.
     if (p->timeUpdate - timeUpdate < delay) return;
 
+#ifdef SK_NO_TORRENT
+    if (p->state == WTrack::Default)
+#else
     // FIXME: For now, we don't want to reload a loaded torrent. It causes issues when a magnet
     //        is not responding well.
     if (p->state == WTrack::Default
         ||
         WControllerPlaylist::urlIsTorrent(p->source) == false)
+#endif
     {
         WControllerPlaylistPrivate * pController = wControllerPlaylist->d_func();
 
