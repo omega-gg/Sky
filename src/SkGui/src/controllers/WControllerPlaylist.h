@@ -229,7 +229,9 @@ public: // Static functions
     Q_INVOKABLE static bool urlIsText    (const QString & url);
     Q_INVOKABLE static bool urlIsSubtitle(const QString & url);
 
+#ifndef SK_NO_TORRENT
     Q_INVOKABLE static bool urlIsTorrent(const QString & url); // torrent or magnet.
+#endif
 
     Q_INVOKABLE static bool urlIsVbml    (const QString & url); // vbml file or uri.
     Q_INVOKABLE static bool urlIsVbmlFile(const QString & url);
@@ -248,7 +250,9 @@ public: // Static functions
     Q_INVOKABLE static bool extensionIsText    (const QString & extension);
     Q_INVOKABLE static bool extensionIsSubtitle(const QString & extension);
 
+#ifndef SK_NO_TORRENT
     Q_INVOKABLE static bool extensionIsTorrent(const QString & extension);
+#endif
 
     Q_INVOKABLE static bool extensionIsVbml(const QString & extension);
 

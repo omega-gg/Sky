@@ -65,7 +65,9 @@ static const QString CONTROLLERPLAYLIST_TEXT = "^(txt|md)$";
 
 static const QString CONTROLLERPLAYLIST_SUBTITLE = "^(srt)$";
 
+#ifndef SK_NO_TORRENT
 static const QString CONTROLLERPLAYLIST_TORRENT = "^(torrent)$";
+#endif
 
 static const QString CONTROLLERPLAYLIST_VBML = "^(vbml)$";
 
@@ -73,7 +75,11 @@ static const QString CONTROLLERPLAYLIST_FILTER_FILE
     =
     "Medias (*.mp4 *.webm *.ogv *.mkv *.avi *.wmv *.mov *.flv *.3gp *.m3u8 "
             "*.mp3 *.ogg *.mka *.wav *.wma *.flac "
+#ifdef SK_NO_TORRENT
+            "*.vbml *.html *.xml *.json "
+#else
             "*.vbml *.html *.xml *.json *.torrent "
+#endif
             "*.txt *.md);;"
     "All files (*)";
 
@@ -4188,6 +4194,8 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 
 //-------------------------------------------------------------------------------------------------
 
+#ifndef SK_NO_TORRENT
+
 /* Q_INVOKABLE static */ bool WControllerPlaylist::urlIsTorrent(const QString & url)
 {
     if (url.startsWith("magnet:?"), Qt::CaseInsensitive) return true;
@@ -4196,6 +4204,8 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 
     return extensionIsTorrent(extension);
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 
@@ -4278,10 +4288,14 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 
 //---------------------------------------------------------------------------------------------
 
+#ifndef SK_NO_TORRENT
+
 /* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsTorrent(const QString & extension)
 {
     return (extension.indexOf(WRegExp(CONTROLLERPLAYLIST_TORRENT)) != -1);
 }
+
+#endif
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsVbml(const QString & extension)
 {
