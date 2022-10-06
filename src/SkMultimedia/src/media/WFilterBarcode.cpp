@@ -168,7 +168,7 @@ QImage WFilterRunnable::imageFromFrame(const QVideoFrame & frame) const
     image = frame->image();
 #endif
 
-    p->reader.startRead(image, WBarcodeReader::Any, filter, SLOT(onLoaded(const QByteArray &)),
+    p->reader.startRead(image, WBarcodeReader::Any, filter, SLOT(onLoaded(const QString &)),
                         p->target);
 
     timer->start();
@@ -224,15 +224,15 @@ void WFilterBarcodePrivate::onUpdated(const QVideoFrame & frame)
 
 #endif
 
-void WFilterBarcodePrivate::onLoaded(const QByteArray & data)
+void WFilterBarcodePrivate::onLoaded(const QString & text)
 {
     loading = false;
 
-    if (data.isEmpty()) return;
+    if (text.isEmpty()) return;
 
     Q_Q(WFilterBarcode);
 
-    emit q->loaded(data);
+    emit q->loaded(text);
 }
 
 //=================================================================================================

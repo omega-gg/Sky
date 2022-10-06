@@ -97,9 +97,9 @@ public: // Variables
 
     image.loadFromData(data);
 
-    QByteArray data = WBarcodeReader::read(image);
+    QString text = WBarcodeReader::read(image);
 
-    QString source = WControllerPlaylist::generateSource(data);
+    QString source = WControllerPlaylist::generateSource(text);
 
     if (WControllerPlaylist::urlIsVbmlUri(source))
     {
@@ -116,7 +116,7 @@ public: // Variables
 
         reply->data = WUnzipper::extract(data);
     }
-    else reply->data = data;
+    else reply->data = text.toUtf8();
 
     return true;
 }

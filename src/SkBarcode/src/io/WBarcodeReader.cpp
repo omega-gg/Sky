@@ -97,10 +97,10 @@ protected: // WAbstractThreadReply reimplementation
     /* virtual */ void onCompleted(bool ok);
 
 signals:
-    void loaded(const QByteArray & data);
+    void loaded(const QString & text);
 
 public: // Variables
-    QByteArray data;
+    QString text;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -121,9 +121,9 @@ public: // Variables
 
     if (target.isValid())
     {
-         reply->data = WBarcodeReader::read(image.copy(target), formats);
+         reply->text = WBarcodeReader::read(image.copy(target), formats);
     }
-    else reply->data = WBarcodeReader::read(image, formats);
+    else reply->text = WBarcodeReader::read(image, formats);
 
     return true;
 }
@@ -132,14 +132,14 @@ public: // Variables
 {
     WBarcodeReadReply * reply = qobject_cast<WBarcodeReadReply *> (this->reply());
 
-    reply->data = WBarcodeReader::read(QImage(fileName), formats);
+    reply->text = WBarcodeReader::read(QImage(fileName), formats);
 
     return true;
 }
 
 /* virtual */ void WBarcodeReadReply::onCompleted(bool)
 {
-    emit loaded(data);
+    emit loaded(text);
 }
 
 //=================================================================================================
@@ -179,9 +179,9 @@ void WBarcodeReaderPrivate::init() {}
 // Static functions
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ QByteArray WBarcodeReader::read(const QImage & image, Formats formats)
+/* Q_INVOKABLE static */ QString WBarcodeReader::read(const QImage & image, Formats formats)
 {
-    if (image.isNull()) return QByteArray();
+    if (image.isNull()) return QString();
 
     QImage::Format format = image.format();
 
@@ -222,13 +222,13 @@ void WBarcodeReaderPrivate::init() {}
 
     if (result.isValid())
     {
-        return QString::fromWCharArray(result.text().c_str()).toUtf8();
+        return QString::fromWCharArray(result.text().c_str());
     }
-    else return QByteArray();
+    else return QString();
 }
 
-/* Q_INVOKABLE static */ QByteArray WBarcodeReader::readFile(const QString & fileName,
-                                                             Formats         formats)
+/* Q_INVOKABLE static */ QString WBarcodeReader::readFile(const QString & fileName,
+                                                          Formats         formats)
 {
     return read(QImage(fileName), formats);
 }
@@ -245,7 +245,7 @@ WAbstractThreadAction * WBarcodeReader::startRead(const QImage & image,
     WBarcodeReadReply * reply = qobject_cast<WBarcodeReadReply *>
                                 (wControllerFile->startReadAction(action));
 
-    if (receiver) connect(reply, SIGNAL(loaded(const QByteArray &)), receiver, method);
+    if (receiver) connect(reply, SIGNAL(loaded(const QString &)), receiver, method);
 
     return action;
 }
@@ -261,7 +261,7 @@ WAbstractThreadAction * WBarcodeReader::startReadFile(const QString & fileName,
     WBarcodeReadReply * reply = qobject_cast<WBarcodeReadReply *>
                                 (wControllerFile->startReadAction(action));
 
-    if (receiver) connect(reply, SIGNAL(loaded(const QByteArray &)), receiver, method);
+    if (receiver) connect(reply, SIGNAL(loaded(const QString &)), receiver, method);
 
     return action;
 }
