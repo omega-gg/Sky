@@ -72,12 +72,14 @@ protected: // WAbstractThreadReply reimplementation
     /* virtual */ void onCompleted(bool ok);
 
 signals:
-    void loaded(WLoaderBarcodeRead * action, const QByteArray & data);
+    void loaded(WLoaderBarcodeRead * action, const QByteArray & data, const QString & source);
 
 public: // Variables
     WLoaderBarcodeRead * action;
 
     QByteArray data;
+
+    QString source;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -103,6 +105,8 @@ public: // Variables
 
     if (WControllerPlaylist::urlIsVbmlUri(source))
     {
+        reply->source = source;
+
         // NOTE: Removing the 'vbml:' part.
         source = source.remove(0, 5);
 
@@ -123,7 +127,7 @@ public: // Variables
 
 /* virtual */ void WLoaderBarcodeReply::onCompleted(bool)
 {
-    emit loaded(action, data);
+    emit loaded(action, data, source);
 }
 
 //=================================================================================================
@@ -160,21 +164,30 @@ void WLoaderBarcodePrivate::onLoaded(WRemoteData * data)
     WLoaderBarcodeReply * reply = qobject_cast<WLoaderBarcodeReply *>
                                   (wControllerFile->startReadAction(action));
 
-    QObject::connect(reply, SIGNAL(loaded(WLoaderBarcodeRead *, const QByteArray &)),
-                     q,     SLOT(onAction(WLoaderBarcodeRead *, const QByteArray &)));
+    QObject::connect(reply,
+                     SIGNAL(loaded(WLoaderBarcodeRead *, const QByteArray &, const QString &)),
+                     q,
+                     SLOT(onAction(WLoaderBarcodeRead *, const QByteArray &, const QString &)));
 
     QObject::disconnect(data, 0, q, 0);
 
     data->deleteLater();
 }
 
-void WLoaderBarcodePrivate::onAction(WLoaderBarcodeRead * action, const QByteArray & data)
+void WLoaderBarcodePrivate::onAction(WLoaderBarcodeRead * action, const QByteArray & data,
+                                                                  const QString    & source)
 {
     Q_Q(WLoaderBarcode);
 
     QBuffer * buffer = static_cast<QBuffer *> (actions.key(action));
 
     actions.remove(buffer);
+
+    if (source.isEmpty() == false)
+    {
+        // NOTE: We want to set the VBML uri instead of the image url.
+        q->applyUrl(q->getData(buffer), source);
+    }
 
     buffer->setData(data);
 

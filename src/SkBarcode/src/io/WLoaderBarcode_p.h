@@ -51,7 +51,7 @@ public:
 public: // Slots
     void onLoaded(WRemoteData * data);
 
-    void onAction(WLoaderBarcodeRead * action, const QByteArray & data);
+    void onAction(WLoaderBarcodeRead * action, const QByteArray & data, const QString & source);
 
 public: // Variables
     QHash<QIODevice *, WRemoteData           *> replies;

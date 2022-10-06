@@ -62,6 +62,8 @@ protected: // Functions
     void redirect(QIODevice * reply, const QString & url);
     void complete(QIODevice * reply);
 
+    void applyUrl(WRemoteData * data, const QString & url);
+
     void setError(WRemoteData * data, const QString & error);
 
 signals:

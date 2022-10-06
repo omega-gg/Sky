@@ -483,6 +483,8 @@ void WControllerPlaylistData::addSlice(const QString & start, const QString & en
 
 void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & url)
 {
+    source = reader.extractString("source");
+
     title = reader.extractString("title");
     cover = reader.extractString("cover");
 
@@ -494,17 +496,10 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & u
 
     track.setState(WTrack::Default);
 
-    // NOTE: The origin is prioritized over the source.
+    // NOTE: When the origin is empty we set the vbml URI.
     if (origin.isEmpty())
     {
-        QString source = reader.extractString("source");
-
-        // NOTE: When the source is empty we set the vbml URI.
-        if (source.isEmpty())
-        {
-             track.setSource(url);
-        }
-        else track.setSource(source);
+         track.setSource(url);
     }
     else track.setSource(origin);
 
@@ -1797,25 +1792,44 @@ void WControllerPlaylistPrivate::loadUrls(QIODevice * device, const WBackendNetQ
 
     QMetaMethod method;
 
+    QString url;
+
     WBackendNetQuery::Target target = query.target;
 
-    if (target == WBackendNetQuery::TargetVbml)
+    if (query.type == WBackendNetQuery::TypeImage)
     {
         method = methodVbml;
+
+        // NOTE: We set the VBML uri instead of the image url.
+        url = query.urlRedirect;
+
+        if (WControllerPlaylist::urlIsVbmlUri(url) == false)
+        {
+            url = query.url;
+        }
     }
-    else if (target == WBackendNetQuery::TargetHtml)
+    else
     {
-        method = methodHtml;
+        url = query.url;
+
+        if (target == WBackendNetQuery::TargetVbml)
+        {
+            method = methodVbml;
+        }
+        else if (target == WBackendNetQuery::TargetHtml)
+        {
+            method = methodHtml;
+        }
+        else if (target == WBackendNetQuery::TargetFolder)
+        {
+            method = methodFolder;
+        }
+        else if (target == WBackendNetQuery::TargetFile)
+        {
+            method = methodFile;
+        }
+        else method = methodItem;
     }
-    else if (target == WBackendNetQuery::TargetFolder)
-    {
-        method = methodFolder;
-    }
-    else if (target == WBackendNetQuery::TargetFile)
-    {
-        method = methodFile;
-    }
-    else method = methodItem;
 
     WControllerPlaylistReply * reply = new WControllerPlaylistReply;
 
@@ -1827,7 +1841,7 @@ void WControllerPlaylistPrivate::loadUrls(QIODevice * device, const WBackendNetQ
     //       it since readAll() seems to be thread safe.
     //device->moveToThread(thread);
 
-    method.invoke(reply, Q_ARG(QIODevice *, device), Q_ARG(const QString &, query.url));
+    method.invoke(reply, Q_ARG(QIODevice *, device), Q_ARG(const QString &, url));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1879,6 +1893,20 @@ void WControllerPlaylistPrivate::addToCache(const QString    & url,
     if (array.isEmpty()) return;
 
     wControllerFile->addCache(url, array, extension);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+WBackendNet * WControllerPlaylistPrivate::backendTrack(const QString & source,
+                                                       WPlaylist * playlist, int index) const
+{
+    WBackendNet * backend = wControllerPlaylist->backendFromUrl(source);
+
+    if (backend)
+    {
+        return backend;
+    }
+    else return wControllerPlaylist->backendFromUrl(playlist->trackSource(index));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -3017,21 +3045,24 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     {
         int index = playlist->count() - 1;
 
-        source = playlist->trackSource(index);
-
-        WBackendNet * backend = wControllerPlaylist->backendFromUrl(source);
+        WBackendNet * backend = backendTrack(source, playlist, index);
 
         if (backend)
         {
-            playlist->loadTrack(index);
+            QString id = backend->getTrackId(source);
 
-            playlist->d_func()->setQueryLoaded();
+            if (id.isEmpty() == false)
+            {
+                playlist->loadTrack(index);
 
-            getDataRelated(backend, playlist, backend->getTrackId(source));
+                playlist->d_func()->setQueryLoaded();
 
-            backend->tryDelete();
+                getDataRelated(backend, playlist, id);
 
-            return;
+                backend->tryDelete();
+
+                return;
+            }
         }
     }
 
@@ -3315,25 +3346,28 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
     if (urlTracks.count() == 1)
     {
-        source = playlist->trackSource(0);
-
-        WBackendNet * backend = wControllerPlaylist->backendFromUrl(source);
+        WBackendNet * backend = backendTrack(source, playlist, 0);
 
         if (backend)
         {
-            playlist->loadTrack(0);
+            QString id = backend->getTrackId(source);
 
-            playlist->d_func()->setQueryLoaded();
+            if (id.isEmpty() == false)
+            {
+                playlist->loadTrack(0);
 
-            getDataRelated(backend, playlist, backend->getTrackId(source));
+                playlist->d_func()->setQueryLoaded();
 
-            backend->tryDelete();
+                getDataRelated(backend, playlist, id);
 
-            playlist->tryDelete();
+                backend->tryDelete();
 
-            folder->d_func()->setQueryFinished();
+                playlist->tryDelete();
 
-            return;
+                folder->d_func()->setQueryFinished();
+
+                return;
+            }
         }
     }
     // NOTE: Clearing the default playlist when it's empty and we have other playlist(s).
@@ -3797,7 +3831,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
         {
             int index = source.lastIndexOf('/');
 
-            source.remove(0, index);
+            source.remove(0, index + 1);
 
             return "vbml:" + source;
         }

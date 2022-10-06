@@ -217,6 +217,13 @@ void WAbstractLoader::complete(QIODevice * reply)
     else qWarning("WAbstractLoader::complete: Cannot complete. Invalid reply.");
 }
 
+void WAbstractLoader::applyUrl(WRemoteData * data, const QString & url)
+{
+    Q_ASSERT(data);
+
+    data->_url = url;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 void WAbstractLoader::setError(WRemoteData * data, const QString & error)

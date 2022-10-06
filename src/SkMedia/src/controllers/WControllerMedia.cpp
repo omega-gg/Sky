@@ -963,7 +963,7 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 
     int index = source.lastIndexOf('/');
 
-    source.remove(0, index);
+    source.remove(0, index + 1);
 
     return "vbml:" + source;
 }

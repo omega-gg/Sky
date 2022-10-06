@@ -154,6 +154,8 @@ public: // Functions
     void addToCache(const QString & url, const QByteArray & array,
                                          const QString    & extension = QString()) const;
 
+    WBackendNet * backendTrack(const QString & source, WPlaylist * playlist, int index) const;
+
     //---------------------------------------------------------------------------------------------
 
     void getDataTrack(WPlaylist * playlist, WTrack * track, const WBackendNetQuery & query);

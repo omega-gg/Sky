@@ -48,7 +48,8 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void onLoaded(WRemoteData *))
 
-    Q_PRIVATE_SLOT(d_func(), void onAction(WLoaderBarcodeRead *, const QByteArray &))
+    Q_PRIVATE_SLOT(d_func(), void onAction(WLoaderBarcodeRead *,
+                                           const QByteArray &, const QString &))
 };
 
 #include <private/WLoaderBarcode_p>
