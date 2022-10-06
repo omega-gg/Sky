@@ -4446,8 +4446,12 @@ WLibraryItem::Type WBackendUniversalPrivate::getType(const QString & string) con
 
 WBackendNetQuery::Type WBackendUniversalPrivate::getTypeQuery(const QString & string) const
 {
+#ifdef SK_NO_TORRENT
+    return WBackendNetQuery::TypeDefault;
+#else
     if (string == "torrent") return WBackendNetQuery::TypeTorrent;
     else                     return WBackendNetQuery::TypeDefault;
+#endif
 }
 
 WTrack::Type WBackendUniversalPrivate::getTypeTrack(const QString & string) const
