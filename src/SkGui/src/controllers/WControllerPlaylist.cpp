@@ -277,6 +277,8 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
     //---------------------------------------------------------------------------------------------
     // Settings
 
+    this->url = url;
+
     QString string = reader.extractString("origin");
 
     // NOTE: The origin has to be different than the current URL.
@@ -291,7 +293,7 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
 
     if (WControllerPlaylist::vbmlTypeTrack(type))
     {
-        parseTrack(reader, url);
+        parseTrack(reader);
     }
     else // NOTE: We default to the playlist type.
     {
@@ -481,7 +483,7 @@ void WControllerPlaylistData::addSlice(const QString & start, const QString & en
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & url)
+void WControllerPlaylistData::parseTrack(WYamlReader & reader)
 {
     source = reader.extractString("source");
 
@@ -496,10 +498,15 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & u
 
     track.setState(WTrack::Default);
 
-    // NOTE: When the origin is empty we set the vbml URI.
+    // NOTE: The origin is prioritized over the source.
     if (origin.isEmpty())
     {
-         track.setSource(url);
+        // NOTE: When the source is empty we set the vbml uri.
+        if (source.isEmpty())
+        {
+             track.setSource(url);
+        }
+        else track.setSource(source);
     }
     else track.setSource(origin);
 
@@ -2878,26 +2885,37 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
     QString source = data.source;
 
-    if (WControllerPlaylist::vbmlTypeTrack(type))
-    {
-        if (origin.isEmpty())
-        {
-            playlist->addTracks(data.tracks);
-
-            // NOTE: We select the first track right away.
-            playlist->setCurrentIndex(0);
-        }
-        else playlist->applySource(origin);
-    }
-    else if (origin.isEmpty() == false)
+    if (origin.isEmpty() == false)
     {
         playlist->applySource(origin);
+    }
+    else if (WControllerPlaylist::vbmlTypeTrack(type))
+    {
+        playlist->addTracks(data.tracks);
+
+        // NOTE: We select the first track right away.
+        playlist->setCurrentIndex(0);
+
+        if (source.isEmpty())
+        {
+             // NOTE: We always have a valid url when parsing a VBML track.
+             playlist->applySource(data.url);
+        }
+        else playlist->applySource(source);
     }
     else if (source.isEmpty())
     {
         // NOTE: We are adding tracks when origin and source are not specified.
         playlist->addTracks(data.tracks);
+
+        QString url = data.url;
+
+        if (url.isEmpty() == false)
+        {
+            playlist->applySource(url);
+        }
     }
+    else playlist->applySource(source);
 
     //---------------------------------------------------------------------------------------------
     // Media sources
@@ -3182,26 +3200,37 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
     QString source = data.source;
 
-    if (WControllerPlaylist::vbmlTypeTrack(type))
-    {
-        if (origin.isEmpty())
-        {
-            playlist->addTracks(data.tracks);
-
-            // NOTE: We select the first track right away.
-            playlist->setCurrentIndex(0);
-        }
-        else playlist->applySource(origin);
-    }
-    else if (origin.isEmpty() == false)
+    if (origin.isEmpty() == false)
     {
         playlist->applySource(origin);
+    }
+    else if (WControllerPlaylist::vbmlTypeTrack(type))
+    {
+        playlist->addTracks(data.tracks);
+
+        // NOTE: We select the first track right away.
+        playlist->setCurrentIndex(0);
+
+        if (source.isEmpty())
+        {
+             // NOTE: We always have a valid url when parsing a VBML track.
+             playlist->applySource(data.url);
+        }
+        else playlist->applySource(source);
     }
     else if (source.isEmpty())
     {
         // NOTE: We are adding tracks when origin and source are not specified.
         playlist->addTracks(data.tracks);
+
+        QString url = data.url;
+
+        if (url.isEmpty() == false)
+        {
+            playlist->applySource(url);
+        }
     }
+    else playlist->applySource(source);
 
     //---------------------------------------------------------------------------------------------
     // Media sources

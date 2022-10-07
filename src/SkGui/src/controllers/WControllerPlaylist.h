@@ -350,7 +350,7 @@ public: // Interface
     void addSlice(const QString & start, const QString & end = QString());
 
 private: // Functions
-    void parseTrack   (WYamlReader & reader, const QString & url);
+    void parseTrack   (WYamlReader & reader);
     void parsePlaylist(WYamlReader & reader);
 
     void parsePlaylistTrack(const WYamlNode & node, WTrack::Type type);
@@ -365,6 +365,8 @@ private: // Functions
     QString generateTitle(const QString & url, const QString & urlName) const;
 
 public: // Variables
+    QString url;
+
     WControllerPlaylist::Type type;
 
     QString origin;
