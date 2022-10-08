@@ -2556,7 +2556,8 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
 
         int index = reply.currentIndex;
 
-        if (index != -1)
+        // NOTE: Sometimes the current index has already been set prior to this.
+        if (index != -1 && playlist->currentIndex() == -1)
         {
             playlist->setCurrentIndex(index);
         }
@@ -2671,7 +2672,8 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
 
         int index = reply.currentIndex;
 
-        if (index != -1)
+        // NOTE: Sometimes the current index has already been set prior to this.
+        if (index != -1 && folder->currentIndex() == -1)
         {
             folder->setCurrentIndex(index);
         }
@@ -4261,7 +4263,7 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::urlIsTorrent(const QString & url)
 {
-    if (url.startsWith("magnet:?"), Qt::CaseInsensitive) return true;
+    if (url.startsWith("magnet:?", Qt::CaseInsensitive)) return true;
 
     QString extension = WControllerNetwork::extractUrlExtension(url);
 
