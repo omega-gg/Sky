@@ -38,7 +38,7 @@ Animated
     /* read */ property variant item: (pLoader == loaderA) ? loaderB.item
                                                            : loaderA.item
 
-    property bool animate: true
+    property bool animate: st.animate
 
     property real volume: 1.0
 

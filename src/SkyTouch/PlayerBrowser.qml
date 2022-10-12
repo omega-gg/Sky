@@ -33,7 +33,7 @@ BasePlayerBrowser
 
     property bool active: true
 
-    property bool animate: true
+    property bool animate: st.animate
 
     //---------------------------------------------------------------------------------------------
     // Aliases

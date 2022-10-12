@@ -32,7 +32,7 @@ BasePanelContextual
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property bool animate: true
+    property bool animate: st.animate
 
     property int margins: st.panelContextual_margins
 

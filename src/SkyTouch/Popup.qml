@@ -33,7 +33,7 @@ LabelTiny
 
     /* read */ property bool isActive: false
 
-    property bool animate: true
+    property bool animate: st.animate
 
     //---------------------------------------------------------------------------------------------
     // Style
