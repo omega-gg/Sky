@@ -2800,6 +2800,8 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
 
         if (source.isEmpty() == false)
         {
+            playlist->updateTrack(index);
+
             WBackendNetQuery query(source);
 
             query.target = WBackendNetQuery::TargetVbml;
@@ -2819,6 +2821,8 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
 
             if (backend)
             {
+                playlist->updateTrack(index);
+
                 WBackendNetQuery query = backend->getQueryTrack(source);
 
                 backend->tryDelete();
