@@ -47,7 +47,8 @@ public: // Enums
     enum EventType
     {
         EventConnected = QEvent::User,
-        EventDisconnected
+        EventDisconnected,
+        EventReply
     };
 
 public:

@@ -235,6 +235,9 @@ protected: // Events
     /* virtual */ bool event(QEvent * event);
 
 signals:
+    void reply(const WBroadcastReply & reply);
+
+signals:
     void connectedChanged();
 
     void sourceChanged();

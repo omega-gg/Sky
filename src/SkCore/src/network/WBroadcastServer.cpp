@@ -219,7 +219,7 @@ void WBroadcastServerThread::onRead()
 
             if (message.type == WBroadcastMessage::Unknown)
             {
-                qWarning("WBroadcastServerThread:onRead: Invalid message.");
+                qWarning("WBroadcastServerThread::onRead: Invalid message.");
             }
             else QCoreApplication::postEvent(parent, new WBroadcastServerMessage(message));
 
@@ -227,7 +227,7 @@ void WBroadcastServerThread::onRead()
         }
         else if (result == -1)
         {
-            qWarning("WBroadcastServerThread:onRead: Invalid message.");
+            qWarning("WBroadcastServerThread::onRead: Invalid message.");
 
             buffer.clear();
         }

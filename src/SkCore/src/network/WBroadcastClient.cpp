@@ -79,6 +79,8 @@ private:
     QTcpSocket * socket;
 
     bool connected;
+
+    WBroadcastBuffer buffer;
 };
 
 //=================================================================================================
@@ -111,6 +113,19 @@ public:
 
 public: // Variables
     QList<WBroadcastMessage> messages;
+};
+
+class WBroadcastClientReply : public QEvent
+{
+public:
+    WBroadcastClientReply(const WBroadcastReply & reply)
+        : QEvent(static_cast<QEvent::Type> (WBroadcastClientPrivate::EventReply))
+    {
+        this->reply = reply;
+    }
+
+public: // Variables
+    WBroadcastReply reply;
 };
 
 //=================================================================================================
@@ -235,7 +250,37 @@ void WBroadcastClientThread::onDisconnected()
 
 void WBroadcastClientThread::onRead()
 {
+    QByteArray data = socket->readAll();
 
+    qDebug("WBroadcastClientThread: Read %d", data.size());
+
+    while (data.isEmpty() == false)
+    {
+        int result = buffer.append(&data);
+
+        if (result == 1)
+        {
+            QByteArray data = buffer.getData();
+
+            qDebug("WBroadcastClientThread: Reply [%s]", data.constData());
+
+            WBroadcastReply reply(data);
+
+            if (reply.type == WBroadcastReply::Unknown)
+            {
+                qWarning("WBroadcastClientThread::onRead: Invalid reply.");
+            }
+            else QCoreApplication::postEvent(parent, new WBroadcastClientReply(reply));
+
+            buffer.clear();
+        }
+        else if (result == -1)
+        {
+            qWarning("WBroadcastClientThread::onRead: Invalid reply.");
+
+            buffer.clear();
+        }
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -939,6 +984,14 @@ void WBroadcastClientPrivate::setSource(const WBroadcastSource & source)
         qDebug("WBroadcastClient: Disconnected.");
 
         d->setConnected(false);
+
+        return true;
+    }
+    else if (type == static_cast<QEvent::Type> (WBroadcastClientPrivate::EventReply))
+    {
+        WBroadcastClientReply * eventReply = static_cast<WBroadcastClientReply *> (event);
+
+        emit reply(eventReply->reply);
 
         return true;
     }
