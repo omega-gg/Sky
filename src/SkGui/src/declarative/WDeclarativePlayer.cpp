@@ -519,6 +519,30 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
 
         q->seek(message.parameters.first().toInt());
     }
+    else if (type == WBroadcastMessage::OUTPUT)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        q->setOutput(WAbstractBackend::outputFromString(message.parameters.first()));
+    }
+    else if (type == WBroadcastMessage::QUALITY)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        q->setQuality(WAbstractBackend::qualityFromString(message.parameters.first()));
+    }
+    else if (type == WBroadcastMessage::FILLMODE)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        q->setFillMode(WAbstractBackend::fillModeFromString(message.parameters.first()));
+    }
+    else if (type == WBroadcastMessage::SPEED)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        q->setSpeed(message.parameters.first().toFloat());
+    }
 }
 
 void WDeclarativePlayerPrivate::onEnded()

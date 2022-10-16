@@ -345,7 +345,9 @@ WBroadcastSource & WBroadcastSource::operator=(const WBroadcastSource & other)
     {
         if (parameters.count() == 3) return;
     }
-    else if (type == SEEK)
+    else if (type == SEEK || type == OUTPUT || type == QUALITY || type == FILLMODE
+             ||
+             type == SPEED)
     {
         if (parameters.count() == 1) return;
     }
@@ -404,24 +406,32 @@ QByteArray WBroadcastMessage::generateData() const
 
 /* static */ WBroadcastMessage::Type WBroadcastMessage::typeFromString(const QString & string)
 {
-    if      (string == "SOURCE") return SOURCE;
-    else if (string == "PLAY")   return PLAY;
-    else if (string == "REPLAY") return REPLAY;
-    else if (string == "PAUSE")  return PAUSE;
-    else if (string == "STOP")   return STOP;
-    else if (string == "SEEK")   return SEEK;
-    else                         return Unknown;
+    if      (string == "SOURCE")   return SOURCE;
+    else if (string == "PLAY")     return PLAY;
+    else if (string == "REPLAY")   return REPLAY;
+    else if (string == "PAUSE")    return PAUSE;
+    else if (string == "STOP")     return STOP;
+    else if (string == "SEEK")     return SEEK;
+    else if (string == "OUTPUT")   return OUTPUT;
+    else if (string == "QUALITY")  return QUALITY;
+    else if (string == "FILLMODE") return FILLMODE;
+    else if (string == "SPEED")    return SPEED;
+    else                           return Unknown;
 }
 
 /* static */ QString WBroadcastMessage::typeToString(Type type)
 {
-    if      (type == SOURCE) return "SOURCE";
-    else if (type == PLAY)   return "PLAY";
-    else if (type == REPLAY) return "REPLAY";
-    else if (type == PAUSE)  return "PAUSE";
-    else if (type == STOP)   return "STOP";
-    else if (type == SEEK)   return "SEEK";
-    else                     return "";
+    if      (type == SOURCE)   return "SOURCE";
+    else if (type == PLAY)     return "PLAY";
+    else if (type == REPLAY)   return "REPLAY";
+    else if (type == PAUSE)    return "PAUSE";
+    else if (type == STOP)     return "STOP";
+    else if (type == SEEK)     return "SEEK";
+    else if (type == OUTPUT)   return "OUTPUT";
+    else if (type == QUALITY)  return "QUALITY";
+    else if (type == FILLMODE) return "FILLMODE";
+    else if (type == SPEED)    return "SPEED";
+    else                       return "";
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -713,6 +723,12 @@ void WBroadcastClientPrivate::setSource(const WBroadcastSource & source)
                                                     const QStringList & parameters)
 {
     return addAndSend(WBroadcastMessage(type, parameters));
+}
+
+/* Q_INVOKABLE */ bool WBroadcastClient::addAndSend(WBroadcastMessage::Type type,
+                                                    const QString & parameter)
+{
+    return addAndSend(WBroadcastMessage(type, QStringList() << parameter));
 }
 
 //-------------------------------------------------------------------------------------------------

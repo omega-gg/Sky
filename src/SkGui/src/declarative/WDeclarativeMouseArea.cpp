@@ -409,12 +409,9 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
     Q_D(WDeclarativeMouseArea);
 
     // NOTE Qt5.15: We handle double click for touch ourselves because it seems broken.
-    if (d->view == NULL || d->view->d_func()->touchId == -1)
-    {
-        QQuickMouseArea::mouseDoubleClickEvent(event);
+    if (d->view && d->view->d_func()->touchId != -1) return;
 
-        return;
-    }
+    QQuickMouseArea::mouseDoubleClickEvent(event);
 }
 
 /* virtual */ void WDeclarativeMouseArea::touchEvent(QTouchEvent * event)

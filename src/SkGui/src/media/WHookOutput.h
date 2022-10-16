@@ -74,7 +74,12 @@ public: // Properties
 private:
     W_DECLARE_PRIVATE(WHookOutput)
 
-    Q_PRIVATE_SLOT(d_func(), void onOutputChanged())
+    Q_PRIVATE_SLOT(d_func(), void onOutputChanged  ())
+    Q_PRIVATE_SLOT(d_func(), void onQualityChanged ())
+    Q_PRIVATE_SLOT(d_func(), void onFillModeChanged())
+    Q_PRIVATE_SLOT(d_func(), void onSpeedChanged   ())
+
+    Q_PRIVATE_SLOT(d_func(), void onCurrentOutputChanged())
 
     Q_PRIVATE_SLOT(d_func(), void onConnectedChanged())
 };

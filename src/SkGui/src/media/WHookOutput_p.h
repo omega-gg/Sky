@@ -75,7 +75,12 @@ public: // Functions
     void setActive(bool active);
 
 public: // Slots
-    void onOutputChanged();
+    void onOutputChanged  ();
+    void onQualityChanged ();
+    void onFillModeChanged();
+    void onSpeedChanged   ();
+
+    void onCurrentOutputChanged();
 
     void onConnectedChanged();
 

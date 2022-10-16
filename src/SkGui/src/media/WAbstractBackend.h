@@ -350,9 +350,13 @@ public: // Interface
     Q_INVOKABLE void unregisterWatcher(WBackendWatcher * watcher);
 
 public: // Static functions
-    Q_INVOKABLE static Quality qualityFromString(const QString & string);
+    Q_INVOKABLE static Output   outputFromString  (const QString & string);
+    Q_INVOKABLE static Quality  qualityFromString (const QString & string);
+    Q_INVOKABLE static FillMode fillModeFromString(const QString & string);
 
-    Q_INVOKABLE static QString qualityToString(Quality quality);
+    Q_INVOKABLE static QString outputToString  (Output   Output);
+    Q_INVOKABLE static QString qualityToString (Quality  quality);
+    Q_INVOKABLE static QString fillModeToString(FillMode fillMode);
 
 public: // WBackendInterface implementation
     Q_INVOKABLE /* virtual */ QString source() const;

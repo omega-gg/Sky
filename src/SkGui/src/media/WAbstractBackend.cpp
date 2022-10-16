@@ -448,6 +448,15 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */
+WAbstractBackend::Output WAbstractBackend::outputFromString(const QString & string)
+{
+    if      (string == "none")  return OutputNone;
+    else if (string == "video") return OutputVideo;
+    else if (string == "audio") return OutputAudio;
+    else                        return OutputMedia;
+}
+
+/* Q_INVOKABLE static */
 WAbstractBackend::Quality WAbstractBackend::qualityFromString(const QString & string)
 {
     if      (string ==  "144") return Quality144;
@@ -462,7 +471,24 @@ WAbstractBackend::Quality WAbstractBackend::qualityFromString(const QString & st
 }
 
 /* Q_INVOKABLE static */
-QString WAbstractBackend::qualityToString(Quality quality)
+WAbstractBackend::FillMode WAbstractBackend::fillModeFromString(const QString & string)
+{
+    if      (string == "stretch") return Stretch;
+    else if (string == "crop")    return PreserveAspectCrop;
+    else                          return PreserveAspectFit;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QString WAbstractBackend::outputToString(Output output)
+{
+    if      (output == OutputNone)  return "none";
+    else if (output == OutputVideo) return "video";
+    else if (output == OutputAudio) return "audio";
+    else                            return "media";
+}
+
+/* Q_INVOKABLE static */ QString WAbstractBackend::qualityToString(Quality quality)
 {
     if      (quality == Quality144)  return  "144";
     else if (quality == Quality240)  return  "240";
@@ -473,6 +499,13 @@ QString WAbstractBackend::qualityToString(Quality quality)
     else if (quality == Quality1440) return "1440";
     else if (quality == Quality2160) return "2160";
     else                             return "default";
+}
+
+/* Q_INVOKABLE static */ QString WAbstractBackend::fillModeToString(FillMode fillMode)
+{
+    if      (fillMode == Stretch)            return "stretch";
+    else if (fillMode == PreserveAspectCrop) return "crop";
+    else                                     return "fit";
 }
 
 //-------------------------------------------------------------------------------------------------

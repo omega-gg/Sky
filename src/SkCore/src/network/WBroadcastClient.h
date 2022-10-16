@@ -77,7 +77,11 @@ public: // Enums
         REPLAY,
         PAUSE,
         STOP,
-        SEEK
+        SEEK,
+        OUTPUT,
+        QUALITY,
+        FILLMODE,
+        SPEED
     };
 
 public:
@@ -175,6 +179,8 @@ public: // Interface
 
     Q_INVOKABLE bool addAndSend(WBroadcastMessage::Type type,
                                 const QStringList & parameters = QStringList());
+
+    Q_INVOKABLE bool addAndSend(WBroadcastMessage::Type type, const QString & parameter);
 
     Q_INVOKABLE bool sendMessages();
 

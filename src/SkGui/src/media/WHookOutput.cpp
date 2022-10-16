@@ -42,7 +42,12 @@ void WHookOutputPrivate::init()
 
     QObject::connect(&client, SIGNAL(connectedChanged()), q, SIGNAL(connectedChanged()));
 
-    QObject::connect(backend, SIGNAL(currentOutputChanged()), q, SLOT(onOutputChanged()));
+    QObject::connect(backend, SIGNAL(outputChanged  ()), q, SLOT(onOutputChanged  ()));
+    QObject::connect(backend, SIGNAL(qualityChanged ()), q, SLOT(onQualityChanged ()));
+    QObject::connect(backend, SIGNAL(fillModeChanged()), q, SLOT(onFillModeChanged()));
+    QObject::connect(backend, SIGNAL(speedChanged   ()), q, SLOT(onSpeedChanged   ()));
+
+    QObject::connect(backend, SIGNAL(currentOutputChanged()), q, SLOT(onCurrentOutputChanged()));
 
     QObject::connect(&client, SIGNAL(connectedChanged()), q, SLOT(onConnectedChanged()));
 }
@@ -91,6 +96,31 @@ void WHookOutputPrivate::setActive(bool active)
 //-------------------------------------------------------------------------------------------------
 
 void WHookOutputPrivate::onOutputChanged()
+{
+    client.addAndSend(WBroadcastMessage::OUTPUT,
+                      WAbstractBackend::outputToString(backend->output()));
+}
+
+void WHookOutputPrivate::onQualityChanged()
+{
+    client.addAndSend(WBroadcastMessage::QUALITY,
+                      WAbstractBackend::qualityToString(backend->quality()));
+}
+
+void WHookOutputPrivate::onFillModeChanged()
+{
+    client.addAndSend(WBroadcastMessage::FILLMODE,
+                      WAbstractBackend::fillModeToString(backend->fillMode()));
+}
+
+void WHookOutputPrivate::onSpeedChanged()
+{
+    client.addAndSend(WBroadcastMessage::SPEED, QString::number(backend->speed()));
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WHookOutputPrivate::onCurrentOutputChanged()
 {
     WHookOutputData * data = getData(backend->currentOutputPointer());
 
@@ -144,6 +174,12 @@ void WHookOutputPrivate::onConnectedChanged()
         backend->setCurrentOutput(index);
 
         setActive(true);
+
+        // NOTE: Propagating backend's current settings.
+        onOutputChanged  ();
+        onQualityChanged ();
+        onFillModeChanged();
+        onSpeedChanged   ();
     }
     // NOTE: When we loose the connection we stop the playback and select the default output.
     else if (currentData == data)
