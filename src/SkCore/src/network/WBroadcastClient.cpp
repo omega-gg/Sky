@@ -325,7 +325,7 @@ WBroadcastSource & WBroadcastSource::operator=(const WBroadcastSource & other)
 {
     QString content = QString::fromUtf8(data);
 
-    QString name = extractName(&content);
+    QString name = WBroadcastClientPrivate::extractName(&content);
 
     type = typeFromString(name);
 
@@ -333,7 +333,7 @@ WBroadcastSource & WBroadcastSource::operator=(const WBroadcastSource & other)
 
     while (content.isEmpty() == false)
     {
-        QString parameter = extractParameter(&content);
+        QString parameter = WBroadcastClientPrivate::extractParameter(&content);
 
         parameters.append(parameter);
     }
@@ -376,28 +376,7 @@ QByteArray WBroadcastMessage::generateData() const
 {
     if (isValid() == false) return QByteArray();
 
-    QString data;
-
-    data.append(typeToString(type));
-
-    foreach (QString parameter, parameters)
-    {
-        parameter.replace('"', "\\\"");
-
-        data.append(" \"" + parameter + '"');
-    }
-
-    QByteArray array = data.toUtf8();
-
-    qDebug("WBroadcastMessage::generateData: [%s]", array.constData());
-
-    QByteArray bytes;
-
-    WBroadcastClient::appendInt(&bytes, data.length());
-
-    array.prepend(bytes, 4);
-
-    return array;
+    return WBroadcastClientPrivate::generateData(typeToString(type), parameters);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -456,56 +435,104 @@ WBroadcastMessage & WBroadcastMessage::operator=(const WBroadcastMessage & other
     return *this;
 }
 
-//-------------------------------------------------------------------------------------------------
-// Private functions
-//-------------------------------------------------------------------------------------------------
+//=================================================================================================
+// WBroadcastReply
+//=================================================================================================
 
-QString WBroadcastMessage::extractName(QString * data) const
+/* explicit */ WBroadcastReply::WBroadcastReply(Type type, const QStringList & parameters)
 {
-    int index = data->indexOf(' ');
-
-    QString name;
-
-    if (index == -1)
-    {
-        name = *data;
-
-        data->clear();
-    }
-    else
-    {
-        name = data->left(index);
-
-        // NOTE: Remove the space and the first parameter double quote.
-        data->remove(0, index + 2);
-    }
-
-    return name;
+    this->type       = type;
+    this->parameters = parameters;
 }
 
-QString WBroadcastMessage::extractParameter(QString * data) const
+/* explicit */ WBroadcastReply::WBroadcastReply(const QByteArray & data)
 {
-    int index = data->indexOf('"');
+    QString content = QString::fromUtf8(data);
 
-    if (index == -1) return QString();
+    QString name = WBroadcastClientPrivate::extractName(&content);
 
-    while (Sk::checkEscaped(*data, index))
+    type = typeFromString(name);
+
+    if (type == Unknown) return;
+
+    while (content.isEmpty() == false)
     {
-        int at = data->indexOf('"', index + 1);
+        QString parameter = WBroadcastClientPrivate::extractParameter(&content);
 
-        if (at == -1) break;
-
-        index = at;
+        parameters.append(parameter);
     }
 
-    QString result = data->left(index);
+    //---------------------------------------------------------------------------------------------
+    // NOTE: Checking parameters according to the expected API.
 
-    result.replace("\\\"", "\"");
+    if (type == STATE || type == STATELOAD || type == TIME)
+    {
+        if (parameters.count() == 1) return;
+    }
+    else if (parameters.isEmpty()) return;
+}
 
-    // NOTE: Remove the double quote, the space and the next parameter double quote.
-    data->remove(0, index + 3);
+WBroadcastReply::WBroadcastReply()
+{
+    type = Unknown;
+}
 
-    return result;
+//-------------------------------------------------------------------------------------------------
+// Functions
+//-------------------------------------------------------------------------------------------------
+
+bool WBroadcastReply::isValid() const
+{
+    return (type != Unknown);
+}
+
+QByteArray WBroadcastReply::generateData() const
+{
+    if (isValid() == false) return QByteArray();
+
+    return WBroadcastClientPrivate::generateData(typeToString(type), parameters);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Static functions
+//-------------------------------------------------------------------------------------------------
+
+/* static */ WBroadcastReply::Type WBroadcastReply::typeFromString(const QString & string)
+{
+    if      (string == "STATE")     return STATE;
+    else if (string == "STATELOAD") return STATELOAD;
+    else if (string == "TIME")      return TIME;
+    else                            return Unknown;
+}
+
+/* static */ QString WBroadcastReply::typeToString(Type type)
+{
+    if      (type == STATE)     return "STATE";
+    else if (type == STATELOAD) return "STATELOAD";
+    else if (type == TIME)      return "TIME";
+    else                        return "";
+}
+
+//-------------------------------------------------------------------------------------------------
+// Operators
+//-------------------------------------------------------------------------------------------------
+
+WBroadcastReply::WBroadcastReply(const WBroadcastReply & other)
+{
+    *this = other;
+}
+
+bool WBroadcastReply::operator==(const WBroadcastReply & other) const
+{
+    return (type == other.type && parameters == other.parameters);
+}
+
+WBroadcastReply & WBroadcastReply::operator=(const WBroadcastReply & other)
+{
+    type       = other.type;
+    parameters = other.parameters;
+
+    return *this;
 }
 
 //=================================================================================================
@@ -642,6 +669,85 @@ void WBroadcastClientPrivate::setSource(const WBroadcastSource & source)
     this->source = source;
 
     emit q->sourceChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private static functions
+//-------------------------------------------------------------------------------------------------
+
+/* static */ QString WBroadcastClientPrivate::extractName(QString * data)
+{
+    int index = data->indexOf(' ');
+
+    QString name;
+
+    if (index == -1)
+    {
+        name = *data;
+
+        data->clear();
+    }
+    else
+    {
+        name = data->left(index);
+
+        // NOTE: Remove the space and the first parameter double quote.
+        data->remove(0, index + 2);
+    }
+
+    return name;
+}
+
+/* static */ QString WBroadcastClientPrivate::extractParameter(QString * data)
+{
+    int index = data->indexOf('"');
+
+    if (index == -1) return QString();
+
+    while (Sk::checkEscaped(*data, index))
+    {
+        int at = data->indexOf('"', index + 1);
+
+        if (at == -1) break;
+
+        index = at;
+    }
+
+    QString result = data->left(index);
+
+    result.replace("\\\"", "\"");
+
+    // NOTE: Remove the double quote, the space and the next parameter double quote.
+    data->remove(0, index + 3);
+
+    return result;
+}
+
+/* static */ QByteArray WBroadcastClientPrivate::generateData(const QString     & type,
+                                                              const QStringList & parameters)
+{
+    QString data;
+
+    data.append(type);
+
+    foreach (QString parameter, parameters)
+    {
+        parameter.replace('"', "\\\"");
+
+        data.append(" \"" + parameter + '"');
+    }
+
+    QByteArray array = data.toUtf8();
+
+    qDebug("WBroadcastClientPrivate::generateData: [%s]", array.constData());
+
+    QByteArray bytes;
+
+    WBroadcastClient::appendInt(&bytes, data.length());
+
+    array.prepend(bytes, 4);
+
+    return array;
 }
 
 //=================================================================================================

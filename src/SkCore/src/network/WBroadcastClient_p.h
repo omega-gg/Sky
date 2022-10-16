@@ -66,6 +66,12 @@ public: // Functions
 
     void setSource(const WBroadcastSource & source);
 
+public: // Static functions
+    static QString extractName     (QString * data);
+    static QString extractParameter(QString * data);
+
+    static QByteArray generateData(const QString & type, const QStringList & parameters);
+
 public: // Variables
     WBroadcastClientThread * thread;
 

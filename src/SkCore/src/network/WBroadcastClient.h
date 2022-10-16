@@ -108,9 +108,49 @@ public: // Operators
 
     WBroadcastMessage & operator=(const WBroadcastMessage & other);
 
-private: // Functions
-    QString extractName     (QString * data) const;
-    QString extractParameter(QString * data) const;
+public: // Variables
+    Type        type;
+    QStringList parameters;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WBroadcastReply
+//-------------------------------------------------------------------------------------------------
+
+class SK_CORE_EXPORT WBroadcastReply
+{
+public: // Enums
+    enum Type
+    {
+        Unknown,
+        STATE,
+        STATELOAD,
+        TIME
+    };
+
+public:
+    explicit WBroadcastReply(Type type, const QStringList & parameters = QStringList());
+
+    explicit WBroadcastReply(const QByteArray & data);
+
+    WBroadcastReply();
+
+public: // Functions
+    bool isValid() const;
+
+    QByteArray generateData() const;
+
+public: // Static functions
+    static Type typeFromString(const QString & string);
+
+    static QString typeToString(Type type);
+
+public: // Operators
+    WBroadcastReply(const WBroadcastReply & other);
+
+    bool operator==(const WBroadcastReply & other) const;
+
+    WBroadcastReply & operator=(const WBroadcastReply & other);
 
 public: // Variables
     Type        type;
