@@ -97,25 +97,25 @@ void WHookOutputPrivate::setActive(bool active)
 
 void WHookOutputPrivate::onOutputChanged()
 {
-    client.addAndSend(WBroadcastMessage::OUTPUT,
-                      WAbstractBackend::outputToString(backend->output()));
+    client.sendMessage(WBroadcastMessage::OUTPUT,
+                       WAbstractBackend::outputToString(backend->output()));
 }
 
 void WHookOutputPrivate::onQualityChanged()
 {
-    client.addAndSend(WBroadcastMessage::QUALITY,
-                      WAbstractBackend::qualityToString(backend->quality()));
+    client.sendMessage(WBroadcastMessage::QUALITY,
+                       WAbstractBackend::qualityToString(backend->quality()));
 }
 
 void WHookOutputPrivate::onFillModeChanged()
 {
-    client.addAndSend(WBroadcastMessage::FILLMODE,
-                      WAbstractBackend::fillModeToString(backend->fillMode()));
+    client.sendMessage(WBroadcastMessage::FILLMODE,
+                       WAbstractBackend::fillModeToString(backend->fillMode()));
 }
 
 void WHookOutputPrivate::onSpeedChanged()
 {
-    client.addAndSend(WBroadcastMessage::SPEED, QString::number(backend->speed()));
+    client.sendMessage(WBroadcastMessage::SPEED, QString::number(backend->speed()));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -140,6 +140,8 @@ void WHookOutputPrivate::onCurrentOutputChanged()
 
 void WHookOutputPrivate::onConnectedChanged()
 {
+    Q_Q(WHookOutput);
+
     const WBroadcastSource & source = client.source();
 
     WHookOutputData * data = getData(source);
@@ -150,8 +152,6 @@ void WHookOutputPrivate::onConnectedChanged()
 
         if (data == NULL)
         {
-            Q_Q(WHookOutput);
-
             WBackendOutput output(source.name, WAbstractBackend::OutputVbml);
 
             WHookOutputData data(q->addOutput(output));
@@ -175,15 +175,25 @@ void WHookOutputPrivate::onConnectedChanged()
 
         setActive(true);
 
+        QObject::connect(&client, SIGNAL(reply(const WBroadcastReply &)),
+                         q,       SLOT(onReply(const WBroadcastReply &)));
+
         // NOTE: Propagating backend's current settings.
         onOutputChanged  ();
         onQualityChanged ();
         onFillModeChanged();
         onSpeedChanged   ();
     }
-    // NOTE: When we loose the connection we stop the playback and select the default output.
-    else if (currentData == data)
+    else
     {
+        QObject::disconnect(&client, SIGNAL(reply(const WBroadcastReply &)),
+                            q,       SLOT(onReply(const WBroadcastReply &)));
+
+        if (currentData != data) return;
+
+        //-----------------------------------------------------------------------------------------
+        // NOTE: When we loose the connection we stop the playback and select the default output.
+
         backend->stop();
 
         currentData = NULL;
@@ -191,6 +201,78 @@ void WHookOutputPrivate::onConnectedChanged()
         backend->setCurrentOutput(0);
 
         setActive(false);
+    }
+}
+
+void WHookOutputPrivate::onReply(const WBroadcastReply & reply)
+{
+    WBroadcastReply::Type type = reply.type;
+
+    if (type == WBroadcastReply::SOURCE)
+    {
+        QString url = reply.parameters.first();
+
+        if (source == url) return;
+
+        Q_Q(WHookOutput);
+
+        source = url;
+
+        q->updateSource();
+    }
+    else if (type == WBroadcastReply::STATE)
+    {
+        Q_Q(WHookOutput);
+
+        q->setState(WAbstractBackend::stateFromString(reply.parameters.first()));
+    }
+    else if (type == WBroadcastReply::STATELOAD)
+    {
+        Q_Q(WHookOutput);
+
+        q->setStateLoad(WAbstractBackend::stateLoadFromString(reply.parameters.first()));
+    }
+    else if (type == WBroadcastReply::LIVE)
+    {
+        Q_Q(WHookOutput);
+
+        q->setLive(reply.parameters.first().toInt());
+    }
+    else if (type == WBroadcastReply::ENDED)
+    {
+        Q_Q(WHookOutput);
+
+        q->setEnded(reply.parameters.first().toInt());
+    }
+    else if (type == WBroadcastReply::TIME)
+    {
+        Q_Q(WHookOutput);
+
+        q->setCurrentTime(reply.parameters.first().toInt());
+    }
+    else if (type == WBroadcastReply::DURATION)
+    {
+        Q_Q(WHookOutput);
+
+        q->setDuration(reply.parameters.first().toInt());
+    }
+    else if (type == WBroadcastReply::PROGRESS)
+    {
+        Q_Q(WHookOutput);
+
+        q->setProgress(reply.parameters.first().toInt());
+    }
+    else if (type == WBroadcastReply::OUTPUT)
+    {
+        Q_Q(WHookOutput);
+
+        q->setOutputActive(WAbstractBackend::outputFromString(reply.parameters.first()));
+    }
+    else if (type == WBroadcastReply::QUALITY)
+    {
+        Q_Q(WHookOutput);
+
+        q->setQualityActive(WAbstractBackend::qualityFromString(reply.parameters.first()));
     }
 }
 
@@ -247,29 +329,6 @@ WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
 /* Q_INVOKABLE virtual */ void WHookOutput::loadSource(const QString & url, int duration,
                                                                             int currentTime)
 {
-    Q_D(WHookOutput);
-
-    if (d->source == url)
-    {
-        setDuration   (duration);
-        setCurrentTime(currentTime);
-    }
-    else
-    {
-        if (d->backend->isPaused() || url.isEmpty())
-        {
-            setState    (WAbstractBackend::StateStopped);
-            setStateLoad(WAbstractBackend::StateLoadDefault);
-        }
-
-        d->source = url;
-
-        setDuration   (duration);
-        setCurrentTime(currentTime);
-
-        updateSource();
-    }
-
     onSendSource(url, duration, currentTime);
 }
 
@@ -279,20 +338,14 @@ WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
 {
     Q_D(WHookOutput);
 
-    setState(WAbstractBackend::StatePlaying);
-
-    setStateLoad(WAbstractBackend::StateLoadStarting);
-
-    d->client.addAndSend(WBroadcastMessage::PLAY);
+    d->client.sendMessage(WBroadcastMessage::PLAY);
 }
 
 /* Q_INVOKABLE virtual */ void WHookOutput::replay()
 {
     Q_D(WHookOutput);
 
-    setState(WAbstractBackend::StatePlaying);
-
-    d->client.addAndSend(WBroadcastMessage::REPLAY);
+    d->client.sendMessage(WBroadcastMessage::REPLAY);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -301,27 +354,14 @@ WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
 {
     Q_D(WHookOutput);
 
-    WAbstractBackend::State state = d->backend->state();
-
-    if (state == WAbstractBackend::StatePaused) return;
-
-    if (state == WAbstractBackend::StatePlaying)
-    {
-        setState(WAbstractBackend::StatePaused);
-
-        d->client.addAndSend(WBroadcastMessage::PAUSE);
-    }
-    else stop();
+    d->client.sendMessage(WBroadcastMessage::PAUSE);
 }
 
 /* Q_INVOKABLE virtual */ void WHookOutput::stop()
 {
     Q_D(WHookOutput);
 
-    setState    (WAbstractBackend::StateStopped);
-    setStateLoad(WAbstractBackend::StateLoadDefault);
-
-    d->client.addAndSend(WBroadcastMessage::STOP);
+    d->client.sendMessage(WBroadcastMessage::STOP);
 }
 
 /* Q_INVOKABLE virtual */ void WHookOutput::clear()
@@ -335,13 +375,11 @@ WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
 {
     Q_D(WHookOutput);
 
-    setCurrentTime(msec);
-
     QStringList parameters;
 
     parameters.append(QString::number(msec));
 
-    d->client.addAndSend(WBroadcastMessage::SEEK, parameters);
+    d->client.sendMessage(WBroadcastMessage::SEEK, parameters);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -358,7 +396,7 @@ WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
     parameters.append(QString::number(duration));
     parameters.append(QString::number(currentTime));
 
-    d->client.addAndSend(WBroadcastMessage::SOURCE, parameters);
+    d->client.sendMessage(WBroadcastMessage::SOURCE, parameters);
 }
 
 //-------------------------------------------------------------------------------------------------

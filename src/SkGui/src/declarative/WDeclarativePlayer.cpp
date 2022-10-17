@@ -256,8 +256,6 @@ void WDeclarativePlayerPrivate::loadSource(const QString & url, int duration, in
 
         emit q->playlistUpdated();
     }
-
-    emit q->sourceChanged();
 }
 
 bool WDeclarativePlayerPrivate::updateBackend(const QString & url)
@@ -408,142 +406,6 @@ void WDeclarativePlayerPrivate::clearPlaylistAndTabs()
 //-------------------------------------------------------------------------------------------------
 // Private slots
 //-------------------------------------------------------------------------------------------------
-
-void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
-{
-    WBroadcastMessage::Type type = message.type;
-
-    if (type == WBroadcastMessage::SOURCE)
-    {
-        const QStringList & parameters = message.parameters;
-
-        QString url = parameters.first();
-
-        if (tab)
-        {
-            if (url.isEmpty())
-            {
-                loadSource(QString(), -1, -1);
-
-                return;
-            }
-
-            Q_Q(WDeclarativePlayer);
-
-            // NOTE: This playlist is useful to load the track data.
-            if (playlistServer == NULL)
-            {
-                playlistServer = new WPlaylist;
-
-                playlistServer->setParent(q);
-            }
-
-            WTrack track(url, WTrack::Default);
-
-            track.setDuration(parameters.at(1).toInt());
-
-            currentTime = parameters.at(2).toInt();
-
-            tab->setPlaylist(playlistServer);
-
-            playlistServer->insertTrack(0, track);
-
-            playlistServer->loadTrack(0);
-
-            playlistServer->setCurrentIndex(0);
-
-            // NOTE: Removing the previous track after setting the new one.
-            if (playlistServer->count() > 1)
-            {
-                playlistServer->removeTrack(1);
-            }
-        }
-        else if (backend)
-        {
-            if (url.isEmpty())
-            {
-                loadSource(QString(), -1, -1);
-
-                return;
-            }
-
-            int currentTime = parameters.at(2).toInt();
-
-            if (backendInterface->source() == url)
-            {
-                Q_Q(WDeclarativePlayer);
-
-                q->seek(currentTime);
-
-                return;
-            }
-
-            clearPlaylistAndTabs();
-
-            loadSource(url, parameters.at(1).toInt(), currentTime);
-        }
-        else
-        {
-            Q_Q(WDeclarativePlayer);
-
-            q->setSource(url);
-        }
-    }
-    else if (type == WBroadcastMessage::PLAY)
-    {
-        Q_Q(WDeclarativePlayer);
-
-        q->play();
-    }
-    else if (type == WBroadcastMessage::REPLAY)
-    {
-        Q_Q(WDeclarativePlayer);
-
-        q->replay();
-    }
-    else if (type == WBroadcastMessage::PAUSE)
-    {
-        Q_Q(WDeclarativePlayer);
-
-        q->pause();
-    }
-    else if (type == WBroadcastMessage::STOP)
-    {
-        Q_Q(WDeclarativePlayer);
-
-        q->stop();
-    }
-    else if (type == WBroadcastMessage::SEEK)
-    {
-        Q_Q(WDeclarativePlayer);
-
-        q->seek(message.parameters.first().toInt());
-    }
-    else if (type == WBroadcastMessage::OUTPUT)
-    {
-        Q_Q(WDeclarativePlayer);
-
-        q->setOutput(WAbstractBackend::outputFromString(message.parameters.first()));
-    }
-    else if (type == WBroadcastMessage::QUALITY)
-    {
-        Q_Q(WDeclarativePlayer);
-
-        q->setQuality(WAbstractBackend::qualityFromString(message.parameters.first()));
-    }
-    else if (type == WBroadcastMessage::FILLMODE)
-    {
-        Q_Q(WDeclarativePlayer);
-
-        q->setFillMode(WAbstractBackend::fillModeFromString(message.parameters.first()));
-    }
-    else if (type == WBroadcastMessage::SPEED)
-    {
-        Q_Q(WDeclarativePlayer);
-
-        q->setSpeed(message.parameters.first().toFloat());
-    }
-}
 
 void WDeclarativePlayerPrivate::onEnded()
 {
@@ -727,11 +589,7 @@ void WDeclarativePlayerPrivate::onCurrentBookmarkChanged()
     }
     else if (backend && backendInterface->source().isEmpty() == false)
     {
-        Q_Q(WDeclarativePlayer);
-
         backendInterface->loadSource(QString());
-
-        emit q->sourceChanged();
     }
 }
 
@@ -756,6 +614,183 @@ void WDeclarativePlayerPrivate::onCurrentBookmarkUpdated()
     emit q->currentTrackUpdated();
 
     emit q->subtitleChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WDeclarativePlayerPrivate::onConnectedChanged()
+{
+    Q_Q(WDeclarativePlayer);
+
+    q->stop();
+
+    if (backend == NULL) return;
+
+    if (server->isConnected())
+    {
+        QObject::connect(backend, SIGNAL(sourceChanged  ()),  q, SLOT(onBackendSource   ()));
+        QObject::connect(backend, SIGNAL(stateChanged   ()),  q, SLOT(onBackendState    ()));
+        QObject::connect(backend, SIGNAL(stateLoadChanged()), q, SLOT(onBackendStateLoad()));
+    }
+    else
+    {
+        QObject::disconnect(backend, SIGNAL(sourceChanged  ()),  q, SLOT(onBackendSource   ()));
+        QObject::disconnect(backend, SIGNAL(stateChanged   ()),  q, SLOT(onBackendState    ()));
+        QObject::disconnect(backend, SIGNAL(stateLoadChanged()), q, SLOT(onBackendStateLoad()));
+    }
+}
+
+void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
+{
+    WBroadcastMessage::Type type = message.type;
+
+    if (type == WBroadcastMessage::SOURCE)
+    {
+        const QStringList & parameters = message.parameters;
+
+        QString url = parameters.first();
+
+        if (tab)
+        {
+            if (url.isEmpty())
+            {
+                loadSource(QString(), -1, -1);
+
+                return;
+            }
+
+            Q_Q(WDeclarativePlayer);
+
+            // NOTE: This playlist is useful to load the track data.
+            if (playlistServer == NULL)
+            {
+                playlistServer = new WPlaylist;
+
+                playlistServer->setParent(q);
+            }
+
+            WTrack track(url, WTrack::Default);
+
+            track.setDuration(parameters.at(1).toInt());
+
+            currentTime = parameters.at(2).toInt();
+
+            tab->setPlaylist(playlistServer);
+
+            playlistServer->insertTrack(0, track);
+
+            playlistServer->loadTrack(0);
+
+            playlistServer->setCurrentIndex(0);
+
+            // NOTE: Removing the previous track after setting the new one.
+            if (playlistServer->count() > 1)
+            {
+                playlistServer->removeTrack(1);
+            }
+        }
+        else if (backend)
+        {
+            if (url.isEmpty())
+            {
+                loadSource(QString(), -1, -1);
+
+                return;
+            }
+
+            int currentTime = parameters.at(2).toInt();
+
+            if (backendInterface->source() == url)
+            {
+                Q_Q(WDeclarativePlayer);
+
+                q->seek(currentTime);
+
+                return;
+            }
+
+            clearPlaylistAndTabs();
+
+            loadSource(url, parameters.at(1).toInt(), currentTime);
+        }
+        else
+        {
+            Q_Q(WDeclarativePlayer);
+
+            q->setSource(url);
+        }
+    }
+    else if (type == WBroadcastMessage::PLAY)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        q->play();
+    }
+    else if (type == WBroadcastMessage::REPLAY)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        q->replay();
+    }
+    else if (type == WBroadcastMessage::PAUSE)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        q->pause();
+    }
+    else if (type == WBroadcastMessage::STOP)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        q->stop();
+    }
+    else if (type == WBroadcastMessage::SEEK)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        q->seek(message.parameters.first().toInt());
+    }
+    else if (type == WBroadcastMessage::OUTPUT)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        q->setOutput(WAbstractBackend::outputFromString(message.parameters.first()));
+    }
+    else if (type == WBroadcastMessage::QUALITY)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        q->setQuality(WAbstractBackend::qualityFromString(message.parameters.first()));
+    }
+    else if (type == WBroadcastMessage::FILLMODE)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        q->setFillMode(WAbstractBackend::fillModeFromString(message.parameters.first()));
+    }
+    else if (type == WBroadcastMessage::SPEED)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        q->setSpeed(message.parameters.first().toFloat());
+    }
+}
+
+void WDeclarativePlayerPrivate::onBackendSource()
+{
+    server->sendReply(WBroadcastReply::SOURCE, backend->source());
+}
+
+void WDeclarativePlayerPrivate::onBackendState()
+{
+    server->sendReply(WBroadcastReply::STATE,
+                      WAbstractBackend::stateToString(backend->state()));
+}
+
+void WDeclarativePlayerPrivate::onBackendStateLoad()
+{
+    server->sendReply(WBroadcastReply::STATELOAD,
+                      WAbstractBackend::stateLoadToString(backend->stateLoad()));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1467,6 +1502,8 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
         d->loadSource(d->source, -1, -1);
     }
 
+    connect(backend, SIGNAL(sourceChanged()), this, SIGNAL(sourceChanged()));
+
     connect(backend, SIGNAL(stateChanged    ()), this, SIGNAL(stateChanged    ()));
     connect(backend, SIGNAL(stateLoadChanged()), this, SIGNAL(stateLoadChanged()));
 
@@ -1577,7 +1614,7 @@ void WDeclarativePlayer::setServer(WBroadcastServer * server)
     d->server = server;
 
     // NOTE: Stopping the playback upon server connect or disconnect.
-    connect(server, SIGNAL(connectedChanged()), this, SLOT(stop()));
+    connect(server, SIGNAL(connectedChanged()), this, SLOT(onConnectedChanged()));
 
     connect(server, SIGNAL(message(const WBroadcastMessage &)),
             this,   SLOT(onMessage(const WBroadcastMessage &)));

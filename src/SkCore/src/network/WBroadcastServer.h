@@ -48,6 +48,13 @@ public:
 public: // Interface
     Q_INVOKABLE void start();
 
+    Q_INVOKABLE bool sendReply(const WBroadcastReply & reply);
+
+    Q_INVOKABLE bool sendReply(WBroadcastReply::Type type,
+                               const QStringList & parameters = QStringList());
+
+    Q_INVOKABLE bool sendReply(WBroadcastReply::Type type, const QString & parameter);
+
 public: // Static functions
     Q_INVOKABLE static QString source(int port, const QString & prefix = QString());
 

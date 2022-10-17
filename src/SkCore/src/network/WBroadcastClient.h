@@ -123,9 +123,16 @@ public: // Enums
     enum Type
     {
         Unknown,
+        SOURCE,
         STATE,
         STATELOAD,
-        TIME
+        LIVE,
+        ENDED,
+        TIME,
+        DURATION,
+        PROGRESS,
+        OUTPUT,
+        QUALITY
     };
 
 public:
@@ -200,8 +207,6 @@ class SK_CORE_EXPORT WBroadcastClient : public QObject, public WPrivatable
 
     Q_PROPERTY(WBroadcastSource source READ source NOTIFY sourceChanged)
 
-    Q_PROPERTY(const QList<WBroadcastMessage> & messages READ messages NOTIFY messagesChanged)
-
 public:
     explicit WBroadcastClient(QObject * parent = NULL);
 
@@ -211,18 +216,12 @@ public: // Interface
 
     Q_INVOKABLE void disconnectHost();
 
-    Q_INVOKABLE bool addMessage(const WBroadcastMessage & message);
-    Q_INVOKABLE bool addAndSend(const WBroadcastMessage & message);
+    Q_INVOKABLE bool sendMessage(const WBroadcastMessage & message);
 
-    Q_INVOKABLE bool addMessage(WBroadcastMessage::Type type,
-                                const QStringList & parameters = QStringList());
+    Q_INVOKABLE bool sendMessage(WBroadcastMessage::Type type,
+                                 const QStringList & parameters = QStringList());
 
-    Q_INVOKABLE bool addAndSend(WBroadcastMessage::Type type,
-                                const QStringList & parameters = QStringList());
-
-    Q_INVOKABLE bool addAndSend(WBroadcastMessage::Type type, const QString & parameter);
-
-    Q_INVOKABLE bool sendMessages();
+    Q_INVOKABLE bool sendMessage(WBroadcastMessage::Type type, const QString & parameter);
 
 public: // Static functions
     Q_INVOKABLE static WBroadcastSource extractSource(const QString & url);
@@ -242,14 +241,10 @@ signals:
 
     void sourceChanged();
 
-    void messagesChanged();
-
 public: // Properties
     bool isConnected() const;
 
     const WBroadcastSource & source() const;
-
-    const QList<WBroadcastMessage> & messages() const;
 
 private:
     W_DECLARE_PRIVATE(WBroadcastClient)

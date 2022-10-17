@@ -80,8 +80,6 @@ public: // Variables
 
     WBroadcastSource source;
 
-    QList<WBroadcastMessage> messages;
-
 protected:
     W_DECLARE_PUBLIC(WBroadcastClient)
 };

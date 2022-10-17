@@ -448,6 +448,23 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */
+WAbstractBackend::State WAbstractBackend::stateFromString(const QString & string)
+{
+    if      (string == "playing") return StatePlaying;
+    else if (string == "paused")  return StatePaused;
+    else                          return StateStopped;
+}
+
+/* Q_INVOKABLE static */
+WAbstractBackend::StateLoad WAbstractBackend::stateLoadFromString(const QString & string)
+{
+    if      (string == "starting")  return StateLoadStarting;
+    else if (string == "resuming")  return StateLoadResuming;
+    else if (string == "buffering") return StateLoadBuffering;
+    else                            return StateLoadDefault;
+}
+
+/* Q_INVOKABLE static */
 WAbstractBackend::Output WAbstractBackend::outputFromString(const QString & string)
 {
     if      (string == "none")  return OutputNone;
@@ -479,6 +496,21 @@ WAbstractBackend::FillMode WAbstractBackend::fillModeFromString(const QString & 
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QString WAbstractBackend::stateToString(State state)
+{
+    if      (state == StatePlaying) return "playing";
+    else if (state == StatePaused)  return "paused";
+    else                            return "stopped";
+}
+
+/* Q_INVOKABLE static */ QString WAbstractBackend::stateLoadToString(StateLoad stateLoad)
+{
+    if      (stateLoad == StateLoadStarting)  return "starting";
+    else if (stateLoad == StateLoadResuming)  return "resuming";
+    else if (stateLoad == StateLoadBuffering) return "buffering";
+    else                                      return "default";
+}
 
 /* Q_INVOKABLE static */ QString WAbstractBackend::outputToString(Output output)
 {

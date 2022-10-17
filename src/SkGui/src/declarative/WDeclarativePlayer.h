@@ -446,8 +446,6 @@ public: // Properties
 private:
     W_DECLARE_PRIVATE(WDeclarativePlayer)
 
-    Q_PRIVATE_SLOT(d_func(), void onMessage(const WBroadcastMessage &))
-
     Q_PRIVATE_SLOT(d_func(), void onEnded())
     Q_PRIVATE_SLOT(d_func(), void onError())
 
@@ -463,6 +461,14 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void onCurrentBookmarkChanged())
     Q_PRIVATE_SLOT(d_func(), void onCurrentBookmarkUpdated())
+
+    Q_PRIVATE_SLOT(d_func(), void onConnectedChanged())
+
+    Q_PRIVATE_SLOT(d_func(), void onMessage(const WBroadcastMessage &))
+
+    Q_PRIVATE_SLOT(d_func(), void onBackendSource   ())
+    Q_PRIVATE_SLOT(d_func(), void onBackendState    ())
+    Q_PRIVATE_SLOT(d_func(), void onBackendStateLoad())
 
     Q_PRIVATE_SLOT(d_func(), void onHookDestroyed    ())
     Q_PRIVATE_SLOT(d_func(), void onPlaylistDestroyed())

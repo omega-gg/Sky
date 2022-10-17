@@ -88,7 +88,7 @@ WHookOutputBarcode::WHookOutputBarcode(WAbstractBackend * backend)
     parameters.append(QString::number(duration));
     parameters.append(QString::number(currentTime));
 
-    d->client.addAndSend(WBroadcastMessage::SOURCE, parameters);
+    d->client.sendMessage(WBroadcastMessage::SOURCE, parameters);
 }
 
 #endif // SK_NO_HOOKOUTPUTBARCODE

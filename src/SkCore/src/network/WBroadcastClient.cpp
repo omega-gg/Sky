@@ -105,14 +105,14 @@ public: // Variables
 class WBroadcastClientMessage : public QEvent
 {
 public:
-    WBroadcastClientMessage(const QList<WBroadcastMessage> & messages)
+    WBroadcastClientMessage(const WBroadcastMessage & message)
         : QEvent(static_cast<QEvent::Type> (WBroadcastClientThread::EventMessage))
     {
-        this->messages = messages;
+        this->message = message;
     }
 
 public: // Variables
-    QList<WBroadcastMessage> messages;
+    WBroadcastMessage message;
 };
 
 class WBroadcastClientReply : public QEvent
@@ -208,10 +208,7 @@ WBroadcastClientThread::WBroadcastClientThread(WBroadcastClient * parent)
 
         QByteArray data;
 
-        foreach (const WBroadcastMessage & message, eventMessage->messages)
-        {
-            data.append(message.generateData());
-        }
+        data.append(eventMessage->message.generateData());
 
         int length = data.length();
 
@@ -510,7 +507,9 @@ WBroadcastMessage & WBroadcastMessage::operator=(const WBroadcastMessage & other
     //---------------------------------------------------------------------------------------------
     // NOTE: Checking parameters according to the expected API.
 
-    if (type == STATE || type == STATELOAD || type == TIME)
+    if (type == SOURCE || type == STATE || type == STATELOAD || type == LIVE || type == TIME
+        ||
+        type == DURATION || type == PROGRESS || type == OUTPUT || type == QUALITY)
     {
         if (parameters.count() == 1) return;
     }
@@ -544,17 +543,31 @@ QByteArray WBroadcastReply::generateData() const
 
 /* static */ WBroadcastReply::Type WBroadcastReply::typeFromString(const QString & string)
 {
-    if      (string == "STATE")     return STATE;
+    if      (string == "SOURCE")    return SOURCE;
+    else if (string == "STATE")     return STATE;
     else if (string == "STATELOAD") return STATELOAD;
+    else if (string == "LIVE")      return LIVE;
+    else if (string == "ENDED")     return ENDED;
     else if (string == "TIME")      return TIME;
+    else if (string == "DURATION")  return DURATION;
+    else if (string == "PROGRESS")  return PROGRESS;
+    else if (string == "OUTPUT")    return OUTPUT;
+    else if (string == "QUALITY")   return QUALITY;
     else                            return Unknown;
 }
 
 /* static */ QString WBroadcastReply::typeToString(Type type)
 {
-    if      (type == STATE)     return "STATE";
+    if      (type == SOURCE)    return "SOURCE";
+    else if (type == STATE)     return "STATE";
     else if (type == STATELOAD) return "STATELOAD";
+    else if (type == LIVE)      return "LIVE";
+    else if (type == ENDED)     return "ENDED";
     else if (type == TIME)      return "TIME";
+    else if (type == DURATION)  return "DURATION";
+    else if (type == PROGRESS)  return "PROGRESS";
+    else if (type == OUTPUT)    return "OUTPUT";
+    else if (type == QUALITY)   return "QUALITY";
     else                        return "";
 }
 
@@ -836,56 +849,15 @@ void WBroadcastClientPrivate::setSource(const WBroadcastSource & source)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ bool WBroadcastClient::addMessage(const WBroadcastMessage & message)
+/* Q_INVOKABLE */ bool WBroadcastClient::sendMessage(const WBroadcastMessage & message)
 {
-    Q_D(WBroadcastClient);
-
     if (message.isValid() == false)
     {
-        qWarning("WBroadcastClient::addMessage: Invalid message.");
+        qWarning("WBroadcastClient::sendMessage: Invalid message.");
 
         return false;
     }
 
-    d->messages.append(message);
-
-    emit messagesChanged();
-
-    return true;
-}
-
-/* Q_INVOKABLE */ bool WBroadcastClient::addAndSend(const WBroadcastMessage & message)
-{
-    if (addMessage(message) == false)
-    {
-        return false;
-    }
-
-    return sendMessages();
-}
-
-/* Q_INVOKABLE */ bool WBroadcastClient::addMessage(WBroadcastMessage::Type type,
-                                                    const QStringList & parameters)
-{
-    return addMessage(WBroadcastMessage(type, parameters));
-}
-
-/* Q_INVOKABLE */ bool WBroadcastClient::addAndSend(WBroadcastMessage::Type type,
-                                                    const QStringList & parameters)
-{
-    return addAndSend(WBroadcastMessage(type, parameters));
-}
-
-/* Q_INVOKABLE */ bool WBroadcastClient::addAndSend(WBroadcastMessage::Type type,
-                                                    const QString & parameter)
-{
-    return addAndSend(WBroadcastMessage(type, QStringList() << parameter));
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE */ bool WBroadcastClient::sendMessages()
-{
     Q_D(WBroadcastClient);
 
     if (d->connected == false)
@@ -895,20 +867,21 @@ void WBroadcastClientPrivate::setSource(const WBroadcastSource & source)
         return false;
     }
 
-    if (d->messages.isEmpty())
-    {
-        qWarning("WBroadcastClient::sendMessage: Messages are empty.");
-
-        return false;
-    }
-
-    d->postEvent(new WBroadcastClientMessage(d->messages));
-
-    d->messages.clear();
-
-    emit messagesChanged();
+    d->postEvent(new WBroadcastClientMessage(message));
 
     return true;
+}
+
+/* Q_INVOKABLE */ bool WBroadcastClient::sendMessage(WBroadcastMessage::Type type,
+                                                     const QStringList & parameters)
+{
+    return sendMessage(WBroadcastMessage(type, parameters));
+}
+
+/* Q_INVOKABLE */ bool WBroadcastClient::sendMessage(WBroadcastMessage::Type type,
+                                                     const QString & parameter)
+{
+    return sendMessage(WBroadcastMessage(type, QStringList() << parameter));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1010,11 +983,6 @@ bool WBroadcastClient::isConnected() const
 const WBroadcastSource & WBroadcastClient::source() const
 {
     Q_D(const WBroadcastClient); return d->source;
-}
-
-const QList<WBroadcastMessage> & WBroadcastClient::messages() const
-{
-    Q_D(const WBroadcastClient); return d->messages;
 }
 
 #endif // SK_NO_BROADCASTCLIENT

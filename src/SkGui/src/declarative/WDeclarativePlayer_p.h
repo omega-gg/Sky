@@ -85,8 +85,6 @@ public: // Functions
     void clearPlaylistAndTabs();
 
 public: // Slots
-    void onMessage(const WBroadcastMessage & message);
-
     void onEnded();
     void onError();
 
@@ -102,6 +100,14 @@ public: // Slots
 
     void onCurrentBookmarkChanged();
     void onCurrentBookmarkUpdated();
+
+    void onConnectedChanged();
+
+    void onMessage(const WBroadcastMessage & message);
+
+    void onBackendSource   ();
+    void onBackendState    ();
+    void onBackendStateLoad();
 
     void onHookDestroyed    ();
     void onPlaylistDestroyed();

@@ -46,11 +46,20 @@ class WBroadcastServerThread : public QThread
 {
     Q_OBJECT
 
+public: // Enums
+    enum EventType
+    {
+        EventReply = QEvent::User
+    };
+
 public:
     WBroadcastServerThread(WBroadcastServer * parent, int port);
 
 protected: // QThread reimplementation
     /* virtual */ void run();
+
+protected: // Events
+    /* virtual */ bool event(QEvent * event);
 
 private: // Functions
     void clearSocket();
@@ -93,6 +102,19 @@ public: // Variables
     WBroadcastMessage message;
 };
 
+class WBroadcastServerReply : public QEvent
+{
+public:
+    WBroadcastServerReply(const WBroadcastReply & reply)
+        : QEvent(static_cast<QEvent::Type> (WBroadcastServerThread::EventReply))
+    {
+        this->reply = reply;
+    }
+
+public: // Variables
+    WBroadcastReply reply;
+};
+
 //=================================================================================================
 // WBroadcastServerThread
 //=================================================================================================
@@ -127,6 +149,42 @@ WBroadcastServerThread::WBroadcastServerThread(WBroadcastServer * parent, int po
     server->listen(QHostAddress::Any, port);
 
     exec();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Events
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ bool WBroadcastServerThread::event(QEvent * event)
+{
+    QEvent::Type type = event->type();
+
+    if (type == static_cast<QEvent::Type> (EventReply))
+    {
+        if (socket == NULL)
+        {
+            qWarning("WBroadcastServerThread::EventReply: Not connected.");
+
+            return true;
+        }
+
+        WBroadcastServerReply * eventReply = static_cast<WBroadcastServerReply *> (event);
+
+        QByteArray data;
+
+        data.append(eventReply->reply.generateData());
+
+        int length = data.length();
+
+        if (length == 0)
+        {
+            qWarning("WBroadcastServerThread::EventReply: Data is empty.");
+        }
+        else socket->write(data.constData(), data.length());
+
+        return true;
+    }
+    else return QThread::event(event);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -235,7 +293,7 @@ void WBroadcastServerThread::onRead()
 }
 
 //=================================================================================================
-// WBroadcastServerSource and WBroadcastServerReply
+// WBroadcastServerSource and WBroadcastSourceReply
 //=================================================================================================
 
 class WBroadcastServerSource : public WAbstractThreadAction
@@ -262,7 +320,7 @@ public: // Variables
     QString prefix;
 };
 
-class WBroadcastServerReply : public WAbstractThreadReply
+class WBroadcastSourceReply : public WAbstractThreadReply
 {
     Q_OBJECT
 
@@ -280,19 +338,19 @@ public: // Variables
 
 /* virtual */ WAbstractThreadReply * WBroadcastServerSource::createReply() const
 {
-    return new WBroadcastServerReply;
+    return new WBroadcastSourceReply;
 }
 
 /* virtual */ bool WBroadcastServerSource::run()
 {
-    WBroadcastServerReply * reply = qobject_cast<WBroadcastServerReply *> (this->reply());
+    WBroadcastSourceReply * reply = qobject_cast<WBroadcastSourceReply *> (this->reply());
 
     reply->source = WBroadcastServer::source(port, prefix);
 
     return true;
 }
 
-/* virtual */ void WBroadcastServerReply::onCompleted(bool)
+/* virtual */ void WBroadcastSourceReply::onCompleted(bool)
 {
     emit complete(source);
 }
@@ -375,6 +433,43 @@ void WBroadcastServerPrivate::setConnected(bool connected)
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ bool WBroadcastServer::sendReply(const WBroadcastReply & reply)
+{
+    if (reply.isValid() == false)
+    {
+        qWarning("WBroadcastServer::sendReply: Invalid reply.");
+
+        return false;
+    }
+
+    Q_D(WBroadcastServer);
+
+    if (d->connected == false)
+    {
+        qWarning("WBroadcastServer::sendReply: Not connected.");
+
+        return false;
+    }
+
+    d->postEvent(new WBroadcastServerReply(reply));
+
+    return true;
+}
+
+/* Q_INVOKABLE */ bool WBroadcastServer::sendReply(WBroadcastReply::Type type,
+                                                   const QStringList & parameters)
+{
+    return sendReply(WBroadcastReply(type, parameters));
+}
+
+/* Q_INVOKABLE */ bool WBroadcastServer::sendReply(WBroadcastReply::Type type,
+                                                   const QString & parameter)
+{
+    return sendReply(WBroadcastReply(type, QStringList() << parameter));
+}
+
+//-------------------------------------------------------------------------------------------------
 // Static functions
 //-------------------------------------------------------------------------------------------------
 
@@ -419,7 +514,7 @@ WAbstractThreadAction * WBroadcastServer::startSource(int port, const QString & 
 {
     WBroadcastServerSource * action = new WBroadcastServerSource(port, prefix);
 
-    WBroadcastServerReply * reply = qobject_cast<WBroadcastServerReply *>
+    WBroadcastSourceReply * reply = qobject_cast<WBroadcastSourceReply *>
                                     (wControllerFile->startWriteAction(action));
 
     if (receiver) connect(reply, SIGNAL(complete(const QString &)), receiver, method);

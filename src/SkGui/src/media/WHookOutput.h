@@ -82,6 +82,8 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onCurrentOutputChanged())
 
     Q_PRIVATE_SLOT(d_func(), void onConnectedChanged())
+
+    Q_PRIVATE_SLOT(d_func(), void onReply(const WBroadcastReply &))
 };
 
 #include <private/WHookOutput_p>

@@ -84,6 +84,8 @@ public: // Slots
 
     void onConnectedChanged();
 
+    void onReply(const WBroadcastReply & reply);
+
 public: // Variables
     WBroadcastClient client;
 
