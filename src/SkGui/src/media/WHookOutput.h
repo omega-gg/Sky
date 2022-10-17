@@ -60,7 +60,7 @@ public: // WAbstractHook reimplementation
     /* Q_INVOKABLE virtual */ void seek(int msec);
 
 protected: // Virtual functions
-    virtual void onSendSource(const QString & url, int duration, int currentTime);
+    virtual QString getSource(const QString & url) const;
 
 protected: // WAbstractHook reimplementation
     /* virtual */ bool hookCheck(const QString & url);

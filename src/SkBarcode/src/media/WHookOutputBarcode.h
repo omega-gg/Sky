@@ -38,7 +38,7 @@ public:
     WHookOutputBarcode(WAbstractBackend * backend);
 
 protected: // WHookOutput reimplementation
-    /* virtual */ void onSendSource(const QString & url, int duration, int currentTime);
+    /* virtual */ QString getSource(const QString & url) const;
 
 private:
     W_DECLARE_PRIVATE(WHookOutputBarcode)

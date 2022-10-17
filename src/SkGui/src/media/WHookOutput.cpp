@@ -208,19 +208,7 @@ void WHookOutputPrivate::onReply(const WBroadcastReply & reply)
 {
     WBroadcastReply::Type type = reply.type;
 
-    if (type == WBroadcastReply::SOURCE)
-    {
-        QString url = reply.parameters.first();
-
-        if (source == url) return;
-
-        Q_Q(WHookOutput);
-
-        source = url;
-
-        q->updateSource();
-    }
-    else if (type == WBroadcastReply::STATE)
+    if (type == WBroadcastReply::STATE)
     {
         Q_Q(WHookOutput);
 
@@ -329,7 +317,31 @@ WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
 /* Q_INVOKABLE virtual */ void WHookOutput::loadSource(const QString & url, int duration,
                                                                             int currentTime)
 {
-    onSendSource(url, duration, currentTime);
+    Q_D(WHookOutput);
+
+    if (d->source == url)
+    {
+        setDuration   (duration);
+        setCurrentTime(currentTime);
+    }
+    else
+    {
+        d->source = url;
+
+        setDuration   (duration);
+        setCurrentTime(currentTime);
+
+        updateSource();
+    }
+
+
+    QStringList parameters;
+
+    parameters.append(getSource(url));
+    parameters.append(QString::number(duration));
+    parameters.append(QString::number(currentTime));
+
+    d->client.sendMessage(WBroadcastMessage::SOURCE, parameters);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -382,17 +394,9 @@ WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
 // Virtual functions
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WHookOutput::onSendSource(const QString & url, int duration, int currentTime)
+/* virtual */ QString WHookOutput::getSource(const QString & url) const
 {
-    Q_D(WHookOutput);
-
-    QStringList parameters;
-
-    parameters.append(url);
-    parameters.append(QString::number(duration));
-    parameters.append(QString::number(currentTime));
-
-    d->client.sendMessage(WBroadcastMessage::SOURCE, parameters);
+    return url;
 }
 
 //-------------------------------------------------------------------------------------------------

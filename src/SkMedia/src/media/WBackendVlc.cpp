@@ -1714,7 +1714,9 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 {
     Q_D(WBackendVlc);
 
-    if (d->currentMedia == NULL || hasStarted() == false) return;
+    // NOTE: When the currentMedia is empty we skip this call. This is useful when using a
+    //       WHookOutput.
+    if (d->currentMedia.isEmpty() || hasStarted() == false) return;
 
     d->clearMedia();
 

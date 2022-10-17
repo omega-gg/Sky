@@ -57,38 +57,26 @@ WHookOutputBarcode::WHookOutputBarcode(WAbstractBackend * backend)
 // Protected WHookOutput reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WHookOutputBarcode::onSendSource(const QString & url,
-                                                    int duration, int currentTime)
+/* virtual */ QString WHookOutputBarcode::getSource(const QString & url) const
 {
-    Q_D(WHookOutputBarcode);
-
-    QStringList parameters;
-
 #ifdef SK_NO_QML
-    parameters.append(url);
+    return url;
 #else
+    Q_D(const WHookOutputBarcode);
+
     WDeclarativePlayer * player = d->backend->player();
 
-    if (player)
-    {
-        // NOTE: Sending VBML enables us to push more informations. As a result, the receiver will
-        //       be able to apply them without relying on the network.
-        QString vbml = player->toVbml();
+    if (player == NULL) return url;
 
-        if (vbml.isEmpty())
-        {
-            parameters.append(url);
-        }
-        // NOTE: Maybe we could run this in a thread.
-        else parameters.append(WBarcodeWriter::encode(vbml, WBarcodeWriter::Vbml));
-    }
-    else parameters.append(url);
+    // NOTE: Sending VBML enables us to push more informations. As a result, the receiver will be
+    //       able to apply them without relying on the network.
+    QString vbml = player->toVbml();
+
+    if (vbml.isEmpty()) return url;
+
+    // NOTE: Maybe we could run this in a thread.
+    return WBarcodeWriter::encode(vbml, WBarcodeWriter::Vbml);
 #endif
-
-    parameters.append(QString::number(duration));
-    parameters.append(QString::number(currentTime));
-
-    d->client.sendMessage(WBroadcastMessage::SOURCE, parameters);
 }
 
 #endif // SK_NO_HOOKOUTPUTBARCODE
