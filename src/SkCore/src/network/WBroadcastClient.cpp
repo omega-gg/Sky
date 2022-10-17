@@ -507,9 +507,9 @@ WBroadcastMessage & WBroadcastMessage::operator=(const WBroadcastMessage & other
     //---------------------------------------------------------------------------------------------
     // NOTE: Checking parameters according to the expected API.
 
-    if (type == SOURCE || type == STATE || type == STATELOAD || type == LIVE || type == TIME
+    if (type == SOURCE || type == STATE || type == STATELOAD || type == LIVE  || type == ENDED
         ||
-        type == DURATION || type == PROGRESS || type == OUTPUT || type == QUALITY)
+        type == TIME || type == DURATION || type == PROGRESS || type == OUTPUT || type == QUALITY)
     {
         if (parameters.count() == 1) return;
     }

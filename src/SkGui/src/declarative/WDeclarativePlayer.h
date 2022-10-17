@@ -466,9 +466,16 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void onMessage(const WBroadcastMessage &))
 
-    Q_PRIVATE_SLOT(d_func(), void onBackendSource   ())
-    Q_PRIVATE_SLOT(d_func(), void onBackendState    ())
-    Q_PRIVATE_SLOT(d_func(), void onBackendStateLoad())
+    Q_PRIVATE_SLOT(d_func(), void onSource   ())
+    Q_PRIVATE_SLOT(d_func(), void onState    ())
+    Q_PRIVATE_SLOT(d_func(), void onStateLoad())
+    Q_PRIVATE_SLOT(d_func(), void onLive     ())
+    Q_PRIVATE_SLOT(d_func(), void onEnd      ())
+    Q_PRIVATE_SLOT(d_func(), void onTime     ())
+    Q_PRIVATE_SLOT(d_func(), void onDuration ())
+    Q_PRIVATE_SLOT(d_func(), void onProgress ())
+    Q_PRIVATE_SLOT(d_func(), void onOutput   ())
+    Q_PRIVATE_SLOT(d_func(), void onQuality  ())
 
     Q_PRIVATE_SLOT(d_func(), void onHookDestroyed    ())
     Q_PRIVATE_SLOT(d_func(), void onPlaylistDestroyed())

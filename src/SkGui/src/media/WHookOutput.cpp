@@ -375,11 +375,7 @@ WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
 {
     Q_D(WHookOutput);
 
-    QStringList parameters;
-
-    parameters.append(QString::number(msec));
-
-    d->client.sendMessage(WBroadcastMessage::SEEK, parameters);
+    d->client.sendMessage(WBroadcastMessage::SEEK, QString::number(msec));
 }
 
 //-------------------------------------------------------------------------------------------------

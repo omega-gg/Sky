@@ -628,15 +628,29 @@ void WDeclarativePlayerPrivate::onConnectedChanged()
 
     if (server->isConnected())
     {
-        QObject::connect(backend, SIGNAL(sourceChanged  ()),  q, SLOT(onBackendSource   ()));
-        QObject::connect(backend, SIGNAL(stateChanged   ()),  q, SLOT(onBackendState    ()));
-        QObject::connect(backend, SIGNAL(stateLoadChanged()), q, SLOT(onBackendStateLoad()));
+        QObject::connect(backend, SIGNAL(sourceChanged       ()), q, SLOT(onSource   ()));
+        QObject::connect(backend, SIGNAL(stateChanged        ()), q, SLOT(onState    ()));
+        QObject::connect(backend, SIGNAL(stateLoadChanged    ()), q, SLOT(onStateLoad()));
+        QObject::connect(backend, SIGNAL(liveChanged         ()), q, SLOT(onLive     ()));
+        QObject::connect(backend, SIGNAL(endedChanged        ()), q, SLOT(onEnd      ()));
+        QObject::connect(backend, SIGNAL(currentTimeChanged  ()), q, SLOT(onTime     ()));
+        QObject::connect(backend, SIGNAL(durationChanged     ()), q, SLOT(onDuration ()));
+        QObject::connect(backend, SIGNAL(progressChanged     ()), q, SLOT(onProgress ()));
+        QObject::connect(backend, SIGNAL(outputActiveChanged ()), q, SLOT(onOutput   ()));
+        QObject::connect(backend, SIGNAL(qualityActiveChanged()), q, SLOT(onQuality  ()));
     }
     else
     {
-        QObject::disconnect(backend, SIGNAL(sourceChanged  ()),  q, SLOT(onBackendSource   ()));
-        QObject::disconnect(backend, SIGNAL(stateChanged   ()),  q, SLOT(onBackendState    ()));
-        QObject::disconnect(backend, SIGNAL(stateLoadChanged()), q, SLOT(onBackendStateLoad()));
+        QObject::disconnect(backend, SIGNAL(sourceChanged       ()), q, SLOT(onSource   ()));
+        QObject::disconnect(backend, SIGNAL(stateChanged        ()), q, SLOT(onState    ()));
+        QObject::disconnect(backend, SIGNAL(stateLoadChanged    ()), q, SLOT(onStateLoad()));
+        QObject::disconnect(backend, SIGNAL(liveChanged         ()), q, SLOT(onLive     ()));
+        QObject::disconnect(backend, SIGNAL(endedChanged        ()), q, SLOT(onEnd      ()));
+        QObject::disconnect(backend, SIGNAL(currentTimeChanged  ()), q, SLOT(onTime     ()));
+        QObject::disconnect(backend, SIGNAL(durationChanged     ()), q, SLOT(onDuration ()));
+        QObject::disconnect(backend, SIGNAL(progressChanged     ()), q, SLOT(onProgress ()));
+        QObject::disconnect(backend, SIGNAL(outputActiveChanged ()), q, SLOT(onOutput   ()));
+        QObject::disconnect(backend, SIGNAL(qualityActiveChanged()), q, SLOT(onQuality  ()));
     }
 }
 
@@ -776,21 +790,58 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
     }
 }
 
-void WDeclarativePlayerPrivate::onBackendSource()
+void WDeclarativePlayerPrivate::onSource()
 {
     server->sendReply(WBroadcastReply::SOURCE, backend->source());
 }
 
-void WDeclarativePlayerPrivate::onBackendState()
+void WDeclarativePlayerPrivate::onState()
 {
     server->sendReply(WBroadcastReply::STATE,
                       WAbstractBackend::stateToString(backend->state()));
 }
 
-void WDeclarativePlayerPrivate::onBackendStateLoad()
+void WDeclarativePlayerPrivate::onStateLoad()
 {
     server->sendReply(WBroadcastReply::STATELOAD,
                       WAbstractBackend::stateLoadToString(backend->stateLoad()));
+}
+
+void WDeclarativePlayerPrivate::onLive()
+{
+    server->sendReply(WBroadcastReply::LIVE, QString::number(backend->isLive()));
+}
+
+void WDeclarativePlayerPrivate::onEnd()
+{
+    server->sendReply(WBroadcastReply::ENDED, QString::number(backend->hasEnded()));
+}
+
+void WDeclarativePlayerPrivate::onTime()
+{
+    server->sendReply(WBroadcastReply::TIME, QString::number(backend->currentTime()));
+}
+
+void WDeclarativePlayerPrivate::onDuration()
+{
+    server->sendReply(WBroadcastReply::DURATION, QString::number(backend->duration()));
+}
+
+void WDeclarativePlayerPrivate::onProgress()
+{
+    server->sendReply(WBroadcastReply::PROGRESS, QString::number(backend->progress()));
+}
+
+void WDeclarativePlayerPrivate::onOutput()
+{
+    server->sendReply(WBroadcastReply::OUTPUT,
+                      WAbstractBackend::outputToString(backend->outputActive()));
+}
+
+void WDeclarativePlayerPrivate::onQuality()
+{
+    server->sendReply(WBroadcastReply::QUALITY,
+                      WAbstractBackend::qualityToString(backend->qualityActive()));
 }
 
 //-------------------------------------------------------------------------------------------------

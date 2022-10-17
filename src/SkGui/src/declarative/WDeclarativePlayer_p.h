@@ -105,9 +105,16 @@ public: // Slots
 
     void onMessage(const WBroadcastMessage & message);
 
-    void onBackendSource   ();
-    void onBackendState    ();
-    void onBackendStateLoad();
+    void onSource   ();
+    void onState    ();
+    void onStateLoad();
+    void onLive     ();
+    void onEnd      ();
+    void onTime     ();
+    void onDuration ();
+    void onProgress ();
+    void onOutput   ();
+    void onQuality  ();
 
     void onHookDestroyed    ();
     void onPlaylistDestroyed();

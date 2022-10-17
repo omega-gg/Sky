@@ -1714,7 +1714,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 {
     Q_D(WBackendVlc);
 
-    if (hasStarted() == false) return;
+    if (d->currentMedia == NULL || hasStarted() == false) return;
 
     d->clearMedia();
 
