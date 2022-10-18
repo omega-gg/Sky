@@ -56,6 +56,7 @@ public: // Interface
     Q_INVOKABLE bool sendReply(WBroadcastReply::Type type, const QString & parameter);
 
 public: // Static functions
+    // NOTE: This function has a blocking call to 'waitForConnected'.
     Q_INVOKABLE static QString source(int port, const QString & prefix = QString());
 
     // NOTE: The 'method' format is complete(const QString &).

@@ -475,24 +475,14 @@ void WBroadcastServerPrivate::setConnected(bool connected)
 
 /* Q_INVOKABLE static */ QString WBroadcastServer::source(int port, const QString & prefix)
 {
-    const QHostAddress & local = QHostAddress(QHostAddress::LocalHost);
+    QTcpSocket socket;
 
-    QString host;
+    // NOTE: Connecting to Google DNS.
+    socket.connectToHost("8.8.8.8", 53);
 
-    foreach (const QHostAddress & address, QNetworkInterface::allAddresses())
-    {
-#ifdef QT_4
-        if (local == address || address.protocol() != QAbstractSocket::IPv4Protocol) continue;
-#else
-        if (local == address
-            ||
-            address.protocol() != QAbstractSocket::IPv4Protocol || address.isLoopback()) continue;
-#endif
+    socket.waitForConnected();
 
-        host = address.toString();
-
-        break;
-    }
+    QString host = socket.localAddress().toString();
 
     if (host.isEmpty()) return QString();
 
