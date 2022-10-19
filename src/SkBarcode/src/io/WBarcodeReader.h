@@ -89,7 +89,8 @@ public: // Static functions
                                                          Formats        formats,
                                                          QObject      * receiver = NULL,
                                                          const char   * method   = NULL,
-                                                         const QRect  & target   = QRect());
+                                                         const QRect  & target   = QRect(),
+                                                         bool           mirror   = false);
 
     // NOTE: The 'method' format is loaded(const QString &).
     Q_INVOKABLE static WAbstractThreadAction * startReadFile(const QString & fileName,
