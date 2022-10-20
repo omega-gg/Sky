@@ -31,6 +31,7 @@
 
 // Sk includes
 #include <WControllerApplication>
+#include <WControllerPlaylist>
 #include <WBroadcastServer>
 #include <WAbstractHook>
 #include <WPlaylist>
@@ -683,7 +684,20 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
                 playlistServer->setParent(q);
             }
 
-            WTrack track(url, WTrack::Default);
+            WTrack track;
+
+            if (WControllerPlaylist::urlIsVbmlUri(url))
+            {
+                // NOTE: Maybe we should consider doing this in a thread, but we need messages to
+                //       be sequential.
+                WControllerPlaylist::vbmlApplyTrack(&track, url);
+            }
+            else
+            {
+                track.setSource(url);
+
+                track.setState(WTrack::Default);
+            }
 
             track.setDuration(parameters.at(1).toInt());
 

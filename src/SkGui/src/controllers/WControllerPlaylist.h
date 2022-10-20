@@ -286,6 +286,8 @@ public: // Static functions
 
     Q_INVOKABLE static void vbmlPatch(QString & data, const QString & api);
 
+    Q_INVOKABLE static void vbmlApplyTrack(WTrack * track, const QString & uri);
+
 signals:
     void filesCleared(const QList<int> & idFull);
     void filesDeleted(const QList<int> & idFull);

@@ -38,6 +38,9 @@ class SK_CORE_EXPORT WLoaderVbml : public WAbstractLoader
 public:
     explicit WLoaderVbml(QObject * parent = NULL);
 
+public: // Static functions
+    Q_INVOKABLE static QByteArray decode(const QString & uri);
+
 protected: // WAbstractLoader implementation
     /* virtual */ QIODevice * load(WRemoteData * data);
 

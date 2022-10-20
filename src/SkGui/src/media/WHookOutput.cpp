@@ -42,11 +42,6 @@ void WHookOutputPrivate::init()
 
     QObject::connect(&client, SIGNAL(connectedChanged()), q, SIGNAL(connectedChanged()));
 
-    QObject::connect(backend, SIGNAL(outputChanged  ()), q, SLOT(onOutputChanged  ()));
-    QObject::connect(backend, SIGNAL(qualityChanged ()), q, SLOT(onQualityChanged ()));
-    QObject::connect(backend, SIGNAL(fillModeChanged()), q, SLOT(onFillModeChanged()));
-    QObject::connect(backend, SIGNAL(speedChanged   ()), q, SLOT(onSpeedChanged   ()));
-
     QObject::connect(backend, SIGNAL(currentOutputChanged()), q, SLOT(onCurrentOutputChanged()));
 
     QObject::connect(&client, SIGNAL(connectedChanged()), q, SLOT(onConnectedChanged()));
@@ -178,6 +173,11 @@ void WHookOutputPrivate::onConnectedChanged()
         QObject::connect(&client, SIGNAL(reply(const WBroadcastReply &)),
                          q,       SLOT(onReply(const WBroadcastReply &)));
 
+        QObject::connect(backend, SIGNAL(outputChanged  ()), q, SLOT(onOutputChanged  ()));
+        QObject::connect(backend, SIGNAL(qualityChanged ()), q, SLOT(onQualityChanged ()));
+        QObject::connect(backend, SIGNAL(fillModeChanged()), q, SLOT(onFillModeChanged()));
+        QObject::connect(backend, SIGNAL(speedChanged   ()), q, SLOT(onSpeedChanged   ()));
+
         // NOTE: Propagating backend's current settings.
         onOutputChanged  ();
         onQualityChanged ();
@@ -188,6 +188,11 @@ void WHookOutputPrivate::onConnectedChanged()
     {
         QObject::disconnect(&client, SIGNAL(reply(const WBroadcastReply &)),
                             q,       SLOT(onReply(const WBroadcastReply &)));
+
+        QObject::disconnect(backend, SIGNAL(outputChanged  ()), q, SLOT(onOutputChanged  ()));
+        QObject::disconnect(backend, SIGNAL(qualityChanged ()), q, SLOT(onQualityChanged ()));
+        QObject::disconnect(backend, SIGNAL(fillModeChanged()), q, SLOT(onFillModeChanged()));
+        QObject::disconnect(backend, SIGNAL(speedChanged   ()), q, SLOT(onSpeedChanged   ()));
 
         if (currentData != data) return;
 
@@ -248,7 +253,7 @@ void WHookOutputPrivate::onReply(const WBroadcastReply & reply)
     {
         Q_Q(WHookOutput);
 
-        q->setProgress(reply.parameters.first().toInt());
+        q->setProgress(reply.parameters.first().toFloat());
     }
     else if (type == WBroadcastReply::OUTPUT)
     {

@@ -33,6 +33,7 @@
 #include <WAbstractThreadAction>
 #include <WAbstractThreadReply>
 #include <WUnzipper>
+#include <WBarcodeReader>
 
 //=================================================================================================
 // WLoaderVbmlRead
@@ -90,18 +91,7 @@ public: // Variables
 
     reply->action = this;
 
-    // NOTE: Removing the 'vbml:' part.
-    uri = uri.remove(0, 5);
-
-#ifdef QT_4
-    // FIXME Qt4: This version does not support encoding flags.
-    QByteArray data = QByteArray::fromBase64(uri.toUtf8());
-#else
-    QByteArray data = QByteArray::fromBase64(uri.toUtf8(), QByteArray::Base64UrlEncoding |
-                                                           QByteArray::OmitTrailingEquals);
-#endif
-
-    reply->data = WUnzipper::extract(data);
+    reply->data = WLoaderVbml::decode(uri);
 
     return true;
 }
@@ -146,6 +136,28 @@ void WLoaderVbmlPrivate::onLoaded(WLoaderVbmlRead * action, const QByteArray & d
     : WAbstractLoader(new WLoaderVbmlPrivate(this), parent)
 {
     Q_D(WLoaderVbml); d->init();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Static functions
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QByteArray WLoaderVbml::decode(const QString & uri)
+{
+    QString string = uri;
+
+    // NOTE: Removing the 'vbml:' part.
+    string = string.remove(0, 5);
+
+#ifdef QT_4
+    // FIXME Qt4: This version does not support encoding flags.
+    QByteArray data = QByteArray::fromBase64(string.toUtf8());
+#else
+    QByteArray data = QByteArray::fromBase64(string.toUtf8(), QByteArray::Base64UrlEncoding |
+                                                              QByteArray::OmitTrailingEquals);
+#endif
+
+    return WUnzipper::extract(data);
 }
 
 //-------------------------------------------------------------------------------------------------

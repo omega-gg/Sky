@@ -37,6 +37,7 @@
 #include <WControllerNetwork>
 #include <WControllerDownload>
 #include <WRegExp>
+#include <WLoaderVbml>
 #include <WPlaylist>
 #include <WTabTrack>
 #include <WBackendLoader>
@@ -4594,6 +4595,31 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlTypeFromString(const QString 
 /* Q_INVOKABLE static */ void WControllerPlaylist::vbmlPatch(QString & data, const QString & api)
 {
     return WControllerPlaylist_patch(data, api);
+}
+
+/* Q_INVOKABLE static */ void WControllerPlaylist::vbmlApplyTrack(WTrack * track, const QString & uri)
+{
+    QByteArray data = WLoaderVbml::decode(uri);
+
+    WYamlReader reader(data);
+
+    QString string = reader.extractString("type");
+
+    track->setType(WTrack::typeFromString(string));
+
+    track->setState(WTrack::Default);
+
+    track->setSource(reader.extractString("source"));
+
+    track->setTitle(reader.extractString("title"));
+    track->setCover(reader.extractString("cover"));
+
+    track->setAuthor(reader.extractString("author"));
+    track->setFeed  (reader.extractString("feed"));
+
+    track->setDuration(reader.extractInt("duration"));
+
+    track->setDate(reader.extractDate("date"));
 }
 
 //-------------------------------------------------------------------------------------------------

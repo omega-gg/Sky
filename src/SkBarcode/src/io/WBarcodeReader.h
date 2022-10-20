@@ -77,11 +77,9 @@ public:
     explicit WBarcodeReader(QObject * parent = NULL);
 
 public: // Static functions
-    Q_INVOKABLE static
-    QString read(const QImage & image, Formats formats = Any);
+    Q_INVOKABLE static QString read(const QImage & image, Formats formats = Any);
 
-    Q_INVOKABLE static
-    QString readFile(const QString & fileName, Formats formats = Any);
+    Q_INVOKABLE static QString readFile(const QString & fileName, Formats formats = Any);
 
     // NOTE: The 'method' format is loaded(const QString &). A target can be specified for
     //       precise image scanning.
