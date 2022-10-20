@@ -389,7 +389,7 @@ WBroadcastSource & WBroadcastSource::operator=(const WBroadcastSource & other)
     }
     else if (type == SEEK || type == OUTPUT || type == QUALITY || type == FILLMODE
              ||
-             type == SPEED)
+             type == SPEED || type == SUBTITLE)
     {
         if (parameters.count() == 1) return;
     }
@@ -437,6 +437,7 @@ QByteArray WBroadcastMessage::generateData() const
     else if (string == "QUALITY")  return QUALITY;
     else if (string == "FILLMODE") return FILLMODE;
     else if (string == "SPEED")    return SPEED;
+    else if (string == "SUBTITLE") return SUBTITLE;
     else                           return Unknown;
 }
 
@@ -452,6 +453,7 @@ QByteArray WBroadcastMessage::generateData() const
     else if (type == QUALITY)  return "QUALITY";
     else if (type == FILLMODE) return "FILLMODE";
     else if (type == SPEED)    return "SPEED";
+    else if (type == SUBTITLE) return "SUBTITLE";
     else                       return "";
 }
 

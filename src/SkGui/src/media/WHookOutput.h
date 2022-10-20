@@ -78,6 +78,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onQualityChanged ())
     Q_PRIVATE_SLOT(d_func(), void onFillModeChanged())
     Q_PRIVATE_SLOT(d_func(), void onSpeedChanged   ())
+    Q_PRIVATE_SLOT(d_func(), void onSubtitleChanged())
 
     Q_PRIVATE_SLOT(d_func(), void onCurrentOutputChanged())
 

@@ -113,6 +113,11 @@ void WHookOutputPrivate::onSpeedChanged()
     client.sendMessage(WBroadcastMessage::SPEED, QString::number(backend->speed()));
 }
 
+void WHookOutputPrivate::onSubtitleChanged()
+{
+    client.sendMessage(WBroadcastMessage::SUBTITLE, backend->subtitle());
+}
+
 //-------------------------------------------------------------------------------------------------
 
 void WHookOutputPrivate::onCurrentOutputChanged()
@@ -177,12 +182,14 @@ void WHookOutputPrivate::onConnectedChanged()
         QObject::connect(backend, SIGNAL(qualityChanged ()), q, SLOT(onQualityChanged ()));
         QObject::connect(backend, SIGNAL(fillModeChanged()), q, SLOT(onFillModeChanged()));
         QObject::connect(backend, SIGNAL(speedChanged   ()), q, SLOT(onSpeedChanged   ()));
+        QObject::connect(backend, SIGNAL(subtitleChanged()), q, SLOT(onSubtitleChanged()));
 
         // NOTE: Propagating backend's current settings.
         onOutputChanged  ();
         onQualityChanged ();
         onFillModeChanged();
         onSpeedChanged   ();
+        onSubtitleChanged();
     }
     else
     {
@@ -193,6 +200,7 @@ void WHookOutputPrivate::onConnectedChanged()
         QObject::disconnect(backend, SIGNAL(qualityChanged ()), q, SLOT(onQualityChanged ()));
         QObject::disconnect(backend, SIGNAL(fillModeChanged()), q, SLOT(onFillModeChanged()));
         QObject::disconnect(backend, SIGNAL(speedChanged   ()), q, SLOT(onSpeedChanged   ()));
+        QObject::disconnect(backend, SIGNAL(subtitleChanged()), q, SLOT(onSubtitleChanged()));
 
         if (currentData != data) return;
 
@@ -339,7 +347,6 @@ WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
         updateSource();
     }
 
-
     QStringList parameters;
 
     parameters.append(getSource(url));
@@ -383,7 +390,14 @@ WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
 
 /* Q_INVOKABLE virtual */ void WHookOutput::clear()
 {
+    Q_D(WHookOutput);
+
     stop();
+
+    d->source = QString();
+
+    setDuration   (-1);
+    setCurrentTime(-1);
 }
 
 //-------------------------------------------------------------------------------------------------

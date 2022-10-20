@@ -81,7 +81,8 @@ public: // Enums
         OUTPUT,
         QUALITY,
         FILLMODE,
-        SPEED
+        SPEED,
+        SUBTITLE
     };
 
 public:

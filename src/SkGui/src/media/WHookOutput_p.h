@@ -79,6 +79,7 @@ public: // Slots
     void onQualityChanged ();
     void onFillModeChanged();
     void onSpeedChanged   ();
+    void onSubtitleChanged();
 
     void onCurrentOutputChanged();
 

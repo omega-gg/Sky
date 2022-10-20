@@ -1574,11 +1574,27 @@ WAbstractBackend::OutputType WAbstractBackend::outputType() const
     Q_D(const WAbstractBackend); return d->outputData.type;
 }
 
-//-------------------------------------------------------------------------------------------------
-
 int WAbstractBackend::countOutputs() const
 {
     Q_D(const WAbstractBackend); return d->outputs.count();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QString WAbstractBackend::subtitle() const
+{
+    Q_D(const WAbstractBackend); return d->subtitle;
+}
+
+void WAbstractBackend::setSubtitle(const QString & subtitle)
+{
+    Q_D(WAbstractBackend);
+
+    if (d->subtitle == subtitle) return;
+
+    d->subtitle = subtitle;
+
+    emit subtitleChanged();
 }
 
 //=================================================================================================

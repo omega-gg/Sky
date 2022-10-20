@@ -609,12 +609,15 @@ void WDeclarativePlayerPrivate::onCurrentBookmarkUpdated()
              setPlaylist(playlist->toPlaylist());
         }
         else setPlaylist(NULL);
+
+        if (backend)
+        {
+            backend->setSubtitle(bookmark->subtitle());
+        }
     }
     else setPlaylist(NULL);
 
     emit q->currentTrackUpdated();
-
-    emit q->subtitleChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -701,7 +704,10 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
 
             track.setDuration(parameters.at(1).toInt());
 
+            // NOTE: We have to apply the currentTime in onCurrentBookmarkChanged.
             currentTime = parameters.at(2).toInt();
+
+            QString subtitle = q->subtitle();
 
             tab->setPlaylist(playlistServer);
 
@@ -716,6 +722,9 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
             {
                 playlistServer->removeTrack(1);
             }
+
+            // NOTE: We restore the tab subtitle manually.
+            q->setSubtitle(subtitle);
         }
         else if (backend)
         {
@@ -801,6 +810,12 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
         Q_Q(WDeclarativePlayer);
 
         q->setSpeed(message.parameters.first().toFloat());
+    }
+    else if (type == WBroadcastMessage::SUBTITLE)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        q->setSubtitle(message.parameters.first());
     }
 }
 
@@ -1608,6 +1623,8 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 
     connect(backend, SIGNAL(outputsChanged()), this, SIGNAL(outputsChanged()));
 
+    connect(backend, SIGNAL(subtitleChanged()), this, SIGNAL(subtitleChanged()));
+
     connect(backend, SIGNAL(ended()), this, SLOT(onEnded()));
 
     connect(backend, SIGNAL(error(const QString &)), this, SLOT(onError()));
@@ -2354,9 +2371,9 @@ QString WDeclarativePlayer::subtitle() const
 {
     Q_D(const WDeclarativePlayer);
 
-    if (d->tab)
+    if (d->backend)
     {
-         return d->tab->subtitle();
+        return d->backend->subtitle();
     }
     else return d->subtitle;
 }
@@ -2365,13 +2382,20 @@ void WDeclarativePlayer::setSubtitle(const QString & subtitle)
 {
     Q_D(WDeclarativePlayer);
 
-    if (d->subtitle == subtitle) return;
+    if (d->backend)
+    {
+        d->backend->setSubtitle(subtitle);
 
-    d->subtitle = subtitle;
+        if (d->tab) d->tab->setSubtitle(subtitle);
+    }
+    else if (d->subtitle == subtitle)
+    {
+        d->subtitle = subtitle;
 
-    if (d->tab) d->tab->setSubtitle(subtitle);
+        if (d->tab) d->tab->setSubtitle(subtitle);
 
-    emit subtitleChanged();
+        emit subtitleChanged();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------

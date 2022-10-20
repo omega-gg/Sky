@@ -212,6 +212,8 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
 
     Q_PROPERTY(int countOutputs READ countOutputs NOTIFY outputsChanged)
 
+    Q_PROPERTY(QString subtitle READ subtitle WRITE setSubtitle NOTIFY subtitleChanged)
+
 public:
     enum State
     {
@@ -526,6 +528,8 @@ signals:
 
     void outputsChanged();
 
+    void subtitleChanged();
+
 public: // Properties
 #ifndef SK_NO_QML
     WDeclarativePlayer * player() const;
@@ -601,6 +605,9 @@ public: // Properties
     OutputType outputType() const;
 
     int countOutputs() const;
+
+    QString subtitle() const;
+    void    setSubtitle(const QString & subtitle);
 
 private:
     W_DECLARE_PRIVATE(WAbstractBackend)

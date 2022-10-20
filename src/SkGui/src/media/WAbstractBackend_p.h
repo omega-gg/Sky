@@ -104,6 +104,8 @@ public: // Variable
 
     QList<WBackendOutput> outputs;
 
+    QString subtitle;
+
     QSizeF size;
 
     bool deleting;
