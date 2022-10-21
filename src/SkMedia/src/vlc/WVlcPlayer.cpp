@@ -133,8 +133,8 @@ void WVlcPlayerPrivate::clearDiscoverers()
 
             if (id == idVideo) trackVideo = id;
 
-            backendTracks.append(WBackendTrack(id, track->psz_language,
-                                               WAbstractBackend::TrackVideo));
+            backendTracks.append(WBackendTrack(id, WAbstractBackend::TrackVideo,
+                                               track->psz_language));
         }
         else if (type == libvlc_track_audio)
         {
@@ -142,8 +142,8 @@ void WVlcPlayerPrivate::clearDiscoverers()
 
             if (id == idAudio) trackAudio = id;
 
-            backendTracks.append(WBackendTrack(id, track->psz_language,
-                                               WAbstractBackend::TrackAudio));
+            backendTracks.append(WBackendTrack(id, WAbstractBackend::TrackAudio,
+                                               track->psz_language));
         }
     }
 

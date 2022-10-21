@@ -389,7 +389,7 @@ WBroadcastSource & WBroadcastSource::operator=(const WBroadcastSource & other)
     }
     else if (type == SEEK || type == OUTPUT || type == QUALITY || type == FILLMODE
              ||
-             type == SPEED || type == SUBTITLE)
+             type == SPEED || type == VIDEO || type == AUDIO|| type == SUBTITLE)
     {
         if (parameters.count() == 1) return;
     }
@@ -437,6 +437,8 @@ QByteArray WBroadcastMessage::generateData() const
     else if (string == "QUALITY")  return QUALITY;
     else if (string == "FILLMODE") return FILLMODE;
     else if (string == "SPEED")    return SPEED;
+    else if (string == "VIDEO")    return VIDEO;
+    else if (string == "AUDIO")    return AUDIO;
     else if (string == "SUBTITLE") return SUBTITLE;
     else                           return Unknown;
 }
@@ -453,6 +455,8 @@ QByteArray WBroadcastMessage::generateData() const
     else if (type == QUALITY)  return "QUALITY";
     else if (type == FILLMODE) return "FILLMODE";
     else if (type == SPEED)    return "SPEED";
+    else if (type == VIDEO)    return "VIDEO";
+    else if (type == AUDIO)    return "AUDIO";
     else if (type == SUBTITLE) return "SUBTITLE";
     else                       return "";
 }
@@ -555,6 +559,8 @@ QByteArray WBroadcastReply::generateData() const
     else if (string == "PROGRESS")  return PROGRESS;
     else if (string == "OUTPUT")    return OUTPUT;
     else if (string == "QUALITY")   return QUALITY;
+    else if (string == "VIDEOS")    return VIDEOS;
+    else if (string == "AUDIOS")    return AUDIOS;
     else                            return Unknown;
 }
 
@@ -570,6 +576,8 @@ QByteArray WBroadcastReply::generateData() const
     else if (type == PROGRESS)  return "PROGRESS";
     else if (type == OUTPUT)    return "OUTPUT";
     else if (type == QUALITY)   return "QUALITY";
+    else if (type == VIDEOS)    return "VIDEOS";
+    else if (type == AUDIOS)    return "AUDIOS";
     else                        return "";
 }
 

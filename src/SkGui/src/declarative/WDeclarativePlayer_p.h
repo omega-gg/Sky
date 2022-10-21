@@ -115,6 +115,8 @@ public: // Slots
     void onProgress ();
     void onOutput   ();
     void onQuality  ();
+    void onVideos   ();
+    void onAudios   ();
 
     void onHookDestroyed    ();
     void onPlaylistDestroyed();

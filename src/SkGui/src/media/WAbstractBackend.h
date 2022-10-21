@@ -325,6 +325,9 @@ public: // Interface
     //---------------------------------------------------------------------------------------------
     // Tracks
 
+    Q_INVOKABLE QList<WBackendTrack> videos() const;
+    Q_INVOKABLE QList<WBackendTrack> audios() const;
+
     Q_INVOKABLE int idVideo(int index) const;
     Q_INVOKABLE int idAudio(int index) const;
 
@@ -353,17 +356,19 @@ public: // Interface
 
 public: // Static functions
 
-    Q_INVOKABLE static State     stateFromString    (const QString & string);
-    Q_INVOKABLE static StateLoad stateLoadFromString(const QString & string);
-    Q_INVOKABLE static Output    outputFromString   (const QString & string);
-    Q_INVOKABLE static Quality   qualityFromString  (const QString & string);
-    Q_INVOKABLE static FillMode  fillModeFromString (const QString & string);
+    Q_INVOKABLE static State         stateFromString    (const QString & string);
+    Q_INVOKABLE static StateLoad     stateLoadFromString(const QString & string);
+    Q_INVOKABLE static Output        outputFromString   (const QString & string);
+    Q_INVOKABLE static Quality       qualityFromString  (const QString & string);
+    Q_INVOKABLE static FillMode      fillModeFromString (const QString & string);
+    Q_INVOKABLE static WBackendTrack trackFromString    (const QString & string);
 
     Q_INVOKABLE static QString stateToString    (State     state);
     Q_INVOKABLE static QString stateLoadToString(StateLoad stateLoad);
     Q_INVOKABLE static QString outputToString   (Output    output);
     Q_INVOKABLE static QString qualityToString  (Quality   quality);
     Q_INVOKABLE static QString fillModeToString (FillMode  fillMode);
+    Q_INVOKABLE static QString trackToString    (const WBackendTrack & track);
 
 public: // WBackendInterface implementation
     Q_INVOKABLE /* virtual */ QString source() const;
@@ -623,10 +628,14 @@ private:
 class SK_GUI_EXPORT WBackendTrack
 {
 public:
-    WBackendTrack(int id, const QString & name,
-                  WAbstractBackend::TrackType type = WAbstractBackend::TrackVideo);
+    WBackendTrack(int id, WAbstractBackend::TrackType type, const QString & name);
 
     WBackendTrack();
+
+public: // Static functions
+    static WBackendTrack trackFromString(const QString & string);
+
+    static QString trackToString(const WBackendTrack & track);
 
 public: // Operators
     WBackendTrack(const WBackendTrack & other);
@@ -638,9 +647,8 @@ public: // Operators
 public: // Variables
     int id;
 
-    QString name;
-
     WAbstractBackend::TrackType type;
+    QString                     name;
 };
 
 //-------------------------------------------------------------------------------------------------

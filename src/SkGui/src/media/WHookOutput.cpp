@@ -113,6 +113,16 @@ void WHookOutputPrivate::onSpeedChanged()
     client.sendMessage(WBroadcastMessage::SPEED, QString::number(backend->speed()));
 }
 
+void WHookOutputPrivate::onVideoChanged()
+{
+    client.sendMessage(WBroadcastMessage::VIDEO, QString::number(backend->trackVideo()));
+}
+
+void WHookOutputPrivate::onAudioChanged()
+{
+    client.sendMessage(WBroadcastMessage::AUDIO, QString::number(backend->trackAudio()));
+}
+
 void WHookOutputPrivate::onSubtitleChanged()
 {
     client.sendMessage(WBroadcastMessage::SUBTITLE, backend->subtitle());
@@ -178,17 +188,21 @@ void WHookOutputPrivate::onConnectedChanged()
         QObject::connect(&client, SIGNAL(reply(const WBroadcastReply &)),
                          q,       SLOT(onReply(const WBroadcastReply &)));
 
-        QObject::connect(backend, SIGNAL(outputChanged  ()), q, SLOT(onOutputChanged  ()));
-        QObject::connect(backend, SIGNAL(qualityChanged ()), q, SLOT(onQualityChanged ()));
-        QObject::connect(backend, SIGNAL(fillModeChanged()), q, SLOT(onFillModeChanged()));
-        QObject::connect(backend, SIGNAL(speedChanged   ()), q, SLOT(onSpeedChanged   ()));
-        QObject::connect(backend, SIGNAL(subtitleChanged()), q, SLOT(onSubtitleChanged()));
+        QObject::connect(backend, SIGNAL(outputChanged    ()), q, SLOT(onOutputChanged  ()));
+        QObject::connect(backend, SIGNAL(qualityChanged   ()), q, SLOT(onQualityChanged ()));
+        QObject::connect(backend, SIGNAL(fillModeChanged  ()), q, SLOT(onFillModeChanged()));
+        QObject::connect(backend, SIGNAL(speedChanged     ()), q, SLOT(onSpeedChanged   ()));
+        QObject::connect(backend, SIGNAL(trackVideoChanged()), q, SLOT(onVideoChanged   ()));
+        QObject::connect(backend, SIGNAL(trackAudioChanged()), q, SLOT(onAudioChanged   ()));
+        QObject::connect(backend, SIGNAL(subtitleChanged  ()), q, SLOT(onSubtitleChanged()));
 
         // NOTE: Propagating backend's current settings.
         onOutputChanged  ();
         onQualityChanged ();
         onFillModeChanged();
         onSpeedChanged   ();
+        onVideoChanged   ();
+        onAudioChanged   ();
         onSubtitleChanged();
     }
     else
@@ -196,11 +210,13 @@ void WHookOutputPrivate::onConnectedChanged()
         QObject::disconnect(&client, SIGNAL(reply(const WBroadcastReply &)),
                             q,       SLOT(onReply(const WBroadcastReply &)));
 
-        QObject::disconnect(backend, SIGNAL(outputChanged  ()), q, SLOT(onOutputChanged  ()));
-        QObject::disconnect(backend, SIGNAL(qualityChanged ()), q, SLOT(onQualityChanged ()));
-        QObject::disconnect(backend, SIGNAL(fillModeChanged()), q, SLOT(onFillModeChanged()));
-        QObject::disconnect(backend, SIGNAL(speedChanged   ()), q, SLOT(onSpeedChanged   ()));
-        QObject::disconnect(backend, SIGNAL(subtitleChanged()), q, SLOT(onSubtitleChanged()));
+        QObject::disconnect(backend, SIGNAL(outputChanged    ()), q, SLOT(onOutputChanged  ()));
+        QObject::disconnect(backend, SIGNAL(qualityChanged   ()), q, SLOT(onQualityChanged ()));
+        QObject::disconnect(backend, SIGNAL(fillModeChanged  ()), q, SLOT(onFillModeChanged()));
+        QObject::disconnect(backend, SIGNAL(speedChanged     ()), q, SLOT(onSpeedChanged   ()));
+        QObject::disconnect(backend, SIGNAL(trackVideoChanged()), q, SLOT(onVideoChanged   ()));
+        QObject::disconnect(backend, SIGNAL(trackAudioChanged()), q, SLOT(onAudioChanged   ()));
+        QObject::disconnect(backend, SIGNAL(subtitleChanged  ()), q, SLOT(onSubtitleChanged()));
 
         if (currentData != data) return;
 
@@ -274,6 +290,40 @@ void WHookOutputPrivate::onReply(const WBroadcastReply & reply)
         Q_Q(WHookOutput);
 
         q->setQualityActive(WAbstractBackend::qualityFromString(reply.parameters.first()));
+    }
+    else if (type == WBroadcastReply::VIDEOS)
+    {
+        Q_Q(WHookOutput);
+
+        const QStringList & parameters = reply.parameters;
+
+        int id = parameters.first().toInt();
+
+        QList<WBackendTrack> videos;
+
+        for (int i = 1; i < parameters.count(); i++)
+        {
+            videos.append(WAbstractBackend::trackFromString(parameters.at(i)));
+        }
+
+        q->applyVideos(videos, id);
+    }
+    else if (type == WBroadcastReply::AUDIOS)
+    {
+        Q_Q(WHookOutput);
+
+        const QStringList & parameters = reply.parameters;
+
+        int id = parameters.first().toInt();
+
+        QList<WBackendTrack> audios;
+
+        for (int i = 1; i < parameters.count(); i++)
+        {
+            audios.append(WAbstractBackend::trackFromString(parameters.at(i)));
+        }
+
+        q->applyAudios(audios, id);
     }
 }
 

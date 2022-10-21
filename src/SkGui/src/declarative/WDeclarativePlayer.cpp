@@ -642,6 +642,8 @@ void WDeclarativePlayerPrivate::onConnectedChanged()
         QObject::connect(backend, SIGNAL(progressChanged     ()), q, SLOT(onProgress ()));
         QObject::connect(backend, SIGNAL(outputActiveChanged ()), q, SLOT(onOutput   ()));
         QObject::connect(backend, SIGNAL(qualityActiveChanged()), q, SLOT(onQuality  ()));
+        QObject::connect(backend, SIGNAL(videosChanged       ()), q, SLOT(onVideos   ()));
+        QObject::connect(backend, SIGNAL(audiosChanged       ()), q, SLOT(onAudios   ()));
     }
     else
     {
@@ -655,6 +657,8 @@ void WDeclarativePlayerPrivate::onConnectedChanged()
         QObject::disconnect(backend, SIGNAL(progressChanged     ()), q, SLOT(onProgress ()));
         QObject::disconnect(backend, SIGNAL(outputActiveChanged ()), q, SLOT(onOutput   ()));
         QObject::disconnect(backend, SIGNAL(qualityActiveChanged()), q, SLOT(onQuality  ()));
+        QObject::disconnect(backend, SIGNAL(videosChanged       ()), q, SLOT(onVideos   ()));
+        QObject::disconnect(backend, SIGNAL(audiosChanged       ()), q, SLOT(onAudios   ()));
     }
 }
 
@@ -811,6 +815,18 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
 
         q->setSpeed(message.parameters.first().toFloat());
     }
+    else if (type == WBroadcastMessage::VIDEO)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        q->setTrackVideo(message.parameters.first().toInt());
+    }
+    else if (type == WBroadcastMessage::AUDIO)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        q->setTrackAudio(message.parameters.first().toInt());
+    }
     else if (type == WBroadcastMessage::SUBTITLE)
     {
         Q_Q(WDeclarativePlayer);
@@ -871,6 +887,38 @@ void WDeclarativePlayerPrivate::onQuality()
 {
     server->sendReply(WBroadcastReply::QUALITY,
                       WAbstractBackend::qualityToString(backend->qualityActive()));
+}
+
+void WDeclarativePlayerPrivate::onVideos()
+{
+    QStringList parameters;
+
+    QList<WBackendTrack> videos = backend->videos();
+
+    parameters.append(QString::number(backend->trackVideo()));
+
+    foreach (const WBackendTrack & video, videos)
+    {
+        parameters.append(WAbstractBackend::trackToString(video));
+    }
+
+    server->sendReply(WBroadcastReply::VIDEOS, parameters);
+}
+
+void WDeclarativePlayerPrivate::onAudios()
+{
+    QStringList parameters;
+
+    QList<WBackendTrack> audios = backend->audios();
+
+    parameters.append(QString::number(backend->trackAudio()));
+
+    foreach (const WBackendTrack & audio, audios)
+    {
+        parameters.append(WAbstractBackend::trackToString(audio));
+    }
+
+    server->sendReply(WBroadcastReply::AUDIOS, parameters);
 }
 
 //-------------------------------------------------------------------------------------------------

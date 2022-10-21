@@ -82,6 +82,8 @@ public: // Enums
         QUALITY,
         FILLMODE,
         SPEED,
+        VIDEO,
+        AUDIO,
         SUBTITLE
     };
 
@@ -133,7 +135,9 @@ public: // Enums
         DURATION,
         PROGRESS,
         OUTPUT,
-        QUALITY
+        QUALITY,
+        VIDEOS,
+        AUDIOS
     };
 
 public:

@@ -476,6 +476,8 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onProgress ())
     Q_PRIVATE_SLOT(d_func(), void onOutput   ())
     Q_PRIVATE_SLOT(d_func(), void onQuality  ())
+    Q_PRIVATE_SLOT(d_func(), void onVideos   ())
+    Q_PRIVATE_SLOT(d_func(), void onAudios   ())
 
     Q_PRIVATE_SLOT(d_func(), void onHookDestroyed    ())
     Q_PRIVATE_SLOT(d_func(), void onPlaylistDestroyed())

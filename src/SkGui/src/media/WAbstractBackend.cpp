@@ -308,6 +308,16 @@ WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
 //-------------------------------------------------------------------------------------------------
 // Tracks
 
+/* Q_INVOKABLE */ QList<WBackendTrack> WAbstractBackend::videos() const
+{
+    Q_D(const WAbstractBackend); return d->videos;
+}
+
+/* Q_INVOKABLE */ QList<WBackendTrack> WAbstractBackend::audios() const
+{
+    Q_D(const WAbstractBackend); return d->audios;
+}
+
 /* Q_INVOKABLE */ int WAbstractBackend::idVideo(int index) const
 {
     Q_D(const WAbstractBackend);
@@ -495,6 +505,24 @@ WAbstractBackend::FillMode WAbstractBackend::fillModeFromString(const QString & 
     else                          return PreserveAspectFit;
 }
 
+/* Q_INVOKABLE static */
+WBackendTrack WAbstractBackend::trackFromString(const QString & string)
+{
+    QStringList list = string.split('|');
+
+    if (list.count() != 3) return WBackendTrack();
+
+    WAbstractBackend::TrackType type;
+
+    if (list.at(1) == "audio")
+    {
+         type = WAbstractBackend::TrackAudio;
+    }
+    else type = WAbstractBackend::TrackVideo;
+
+    return WBackendTrack(list.at(0).toInt(), type, list.at(2));
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QString WAbstractBackend::stateToString(State state)
@@ -538,6 +566,19 @@ WAbstractBackend::FillMode WAbstractBackend::fillModeFromString(const QString & 
     if      (fillMode == Stretch)            return "stretch";
     else if (fillMode == PreserveAspectCrop) return "crop";
     else                                     return "fit";
+}
+
+/* Q_INVOKABLE static */ QString WAbstractBackend::trackToString(const WBackendTrack & track)
+{
+    QString result = QString::number(track.id) + '|';
+
+    if (track.type == WAbstractBackend::TrackAudio)
+    {
+         result += "audio|";
+    }
+    else result += "video|";
+
+    return result + track.name;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1601,16 +1642,18 @@ void WAbstractBackend::setSubtitle(const QString & subtitle)
 // WBackendTrack
 //=================================================================================================
 
-WBackendTrack::WBackendTrack(int id, const QString & name, WAbstractBackend::TrackType type)
+WBackendTrack::WBackendTrack(int id, WAbstractBackend::TrackType type, const QString & name)
 {
     this->id = id;
 
-    this->name = name;
     this->type = type;
+    this->name = name;
 }
 
 WBackendTrack::WBackendTrack()
 {
+    id = -1;
+
     type = WAbstractBackend::TrackVideo;
 }
 
