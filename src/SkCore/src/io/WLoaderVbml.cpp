@@ -33,7 +33,6 @@
 #include <WAbstractThreadAction>
 #include <WAbstractThreadReply>
 #include <WUnzipper>
-#include <WBarcodeReader>
 
 //=================================================================================================
 // WLoaderVbmlRead
