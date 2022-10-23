@@ -69,6 +69,8 @@ public:
     void init();
 
 public: // Functions
+    void resetSettings();
+
     WHookOutputData * getData(const WBroadcastSource & source);
     WHookOutputData * getData(const WBackendOutput   * output);
 
@@ -97,6 +99,17 @@ public: // Variables
     WHookOutputData * currentData;
 
     bool active;
+
+    QHash<QString, bool> settings;
+
+    qreal volume;
+
+    int screenCount;
+    int screen;
+
+    bool fullScreen;
+
+    bool videoTag;
 
 protected:
     W_DECLARE_PUBLIC(WHookOutput)

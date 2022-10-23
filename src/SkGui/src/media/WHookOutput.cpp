@@ -40,6 +40,15 @@ void WHookOutputPrivate::init()
 
     active = false;
 
+    volume = 1.0;
+
+    screenCount = 1;
+    screen      = 0;
+
+    fullScreen = false;
+
+    videoTag = false;
+
     QObject::connect(&client, SIGNAL(connectedChanged()), q, SIGNAL(connectedChanged()));
 
     QObject::connect(backend, SIGNAL(currentOutputChanged()), q, SLOT(onCurrentOutputChanged()));
@@ -50,6 +59,33 @@ void WHookOutputPrivate::init()
 //-------------------------------------------------------------------------------------------------
 // Private functions
 //-------------------------------------------------------------------------------------------------
+
+void WHookOutputPrivate::resetSettings()
+{
+    Q_Q(WHookOutput);
+
+    if (settings.count())
+    {
+        settings.clear();
+
+        emit q->settingsChanged();
+    }
+
+    q->setVolume(1.0);
+
+    if (screenCount != 1)
+    {
+        screenCount = 1;
+
+        emit q->screenCountChanged();
+    }
+
+    q->setScreen(0);
+
+    q->setFullScreen(false);
+
+    q->setVideoTag(false);
+}
 
 WHookOutputData * WHookOutputPrivate::getData(const WBroadcastSource & source)
 {
@@ -230,6 +266,8 @@ void WHookOutputPrivate::onConnectedChanged()
         backend->setCurrentOutput(0);
 
         setActive(false);
+
+        resetSettings();
     }
 }
 
@@ -374,6 +412,15 @@ WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
 }
 
 //-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ bool WHookOutput::hasSetting(const QString & name) const
+{
+    Q_D(const WHookOutput);
+
+    return d->settings.value(name.toLower());
+}
+
+//-------------------------------------------------------------------------------------------------
 // WAbstractHook reimplementation
 //-------------------------------------------------------------------------------------------------
 
@@ -484,6 +531,82 @@ WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
 bool WHookOutput::isConnected() const
 {
     Q_D(const WHookOutput); return d->client.isConnected();
+}
+
+int WHookOutput::countSettings() const
+{
+    Q_D(const WHookOutput); return d->settings.count();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+qreal WHookOutput::volume() const
+{
+    Q_D(const WHookOutput); return d->volume;
+}
+
+void WHookOutput::setVolume(qreal volume)
+{
+    Q_D(WHookOutput);
+
+    if (d->volume == volume) return;
+
+    d->volume = volume;
+
+    emit volumeChanged();
+}
+
+int WHookOutput::screenCount() const
+{
+    Q_D(const WHookOutput); return d->screenCount;
+}
+
+int WHookOutput::screen() const
+{
+    Q_D(const WHookOutput); return d->screen;
+}
+
+void WHookOutput::setScreen(int screen)
+{
+    Q_D(WHookOutput);
+
+    if (d->screen == screen) return;
+
+    d->screen = screen;
+
+    emit screenChanged();
+}
+
+bool WHookOutput::fullScreen() const
+{
+    Q_D(const WHookOutput); return d->fullScreen;
+}
+
+void WHookOutput::setFullScreen(bool fullScreen)
+{
+    Q_D(WHookOutput);
+
+    if (d->fullScreen == fullScreen) return;
+
+    d->fullScreen = fullScreen;
+
+    emit fullScreenChanged();
+}
+
+bool WHookOutput::videoTag() const
+{
+    Q_D(const WHookOutput); return d->videoTag;
+}
+
+void WHookOutput::setVideoTag(bool enabled)
+{
+    Q_D(WHookOutput);
+
+    if (d->videoTag == enabled) return;
+
+    d->videoTag = enabled;
+
+    emit videoTagChanged();
 }
 
 #endif // SK_NO_HOOKOUTPUT

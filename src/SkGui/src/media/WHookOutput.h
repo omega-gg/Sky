@@ -36,6 +36,18 @@ class SK_GUI_EXPORT WHookOutput : public WAbstractHook
 
     Q_PROPERTY(bool isConnected READ isConnected NOTIFY connectedChanged)
 
+    Q_PROPERTY(int countSettings READ countSettings NOTIFY settingsChanged)
+
+    Q_PROPERTY(qreal volume READ volume WRITE setVolume NOTIFY volumeChanged)
+
+    Q_PROPERTY(int screenCount READ screenCount NOTIFY screenCountChanged)
+
+    Q_PROPERTY(int screen READ screen WRITE setScreen NOTIFY screenChanged)
+
+    Q_PROPERTY(bool fullScreen READ fullScreen WRITE setFullScreen NOTIFY fullScreenChanged)
+
+    Q_PROPERTY(bool videoTag READ videoTag WRITE setVideoTag NOTIFY videoTagChanged)
+
 public:
     WHookOutput(WAbstractBackend * backend);
 protected:
@@ -45,6 +57,8 @@ public: // Interface
     Q_INVOKABLE void connectToHost(const QString & url);
 
     Q_INVOKABLE void disconnectHost();
+
+    Q_INVOKABLE bool hasSetting(const QString & name) const;
 
 public: // WAbstractHook reimplementation
     /* Q_INVOKABLE virtual */ void loadSource(const QString & url, int duration    = -1,
@@ -68,8 +82,35 @@ protected: // WAbstractHook reimplementation
 signals:
     void connectedChanged();
 
+    void settingsChanged();
+
+    void volumeChanged();
+
+    void screenCountChanged();
+    void screenChanged     ();
+
+    void fullScreenChanged();
+
+    void videoTagChanged();
+
 public: // Properties
     bool isConnected() const;
+
+    int countSettings() const;
+
+    qreal volume() const;
+    void  setVolume(qreal volume);
+
+    int screenCount() const;
+
+    int  screen() const;
+    void setScreen(int screen);
+
+    bool fullScreen() const;
+    void setFullScreen(bool fullScreen);
+
+    bool videoTag() const;
+    void setVideoTag(bool enabled);
 
 private:
     W_DECLARE_PRIVATE(WHookOutput)

@@ -46,8 +46,6 @@ public:
     void init();
 
 public: // Functions
-    void applyOutputs();
-
     void clearCurrentTime();
 
     void setStarted(bool started);

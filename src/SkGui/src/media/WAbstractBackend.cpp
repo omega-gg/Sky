@@ -108,18 +108,13 @@ void WAbstractBackendPrivate::init()
 
     deleting = false;
 
-    applyOutputs();
+    outputData.name = QObject::tr("Default");
+
+    outputs.append(WBackendOutput(outputData.name));
 }
 
 //-------------------------------------------------------------------------------------------------
 // Private functions
-//-------------------------------------------------------------------------------------------------
-
-void WAbstractBackendPrivate::applyOutputs()
-{
-    outputs.append(WBackendOutput(QObject::tr("Default")));
-}
-
 //-------------------------------------------------------------------------------------------------
 
 void WAbstractBackendPrivate::clearCurrentTime()
