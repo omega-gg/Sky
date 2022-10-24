@@ -336,21 +336,15 @@ void WDeclarativePlayerPrivate::setBackendInterface(WBackendInterface * currentB
 
     Q_Q(WDeclarativePlayer);
 
-    if (hook)
-    {
-        QObject::disconnect(hook, SIGNAL(sourceChanged()), q, SIGNAL(sourceChanged()));
-    }
-    else QObject::disconnect(backend, SIGNAL(sourceChanged()), q, SIGNAL(sourceChanged()));
+    if (hook) QObject::disconnect(hook,    SIGNAL(sourceChanged()), q, SIGNAL(sourceChanged()));
+    else      QObject::disconnect(backend, SIGNAL(sourceChanged()), q, SIGNAL(sourceChanged()));
 
     backendInterface = currentBackend;
 
     hook = currentHook;
 
-    if (hook)
-    {
-        QObject::connect(hook, SIGNAL(sourceChanged()), q, SIGNAL(sourceChanged()));
-    }
-    else QObject::connect(backend, SIGNAL(sourceChanged()), q, SIGNAL(sourceChanged()));
+    if (hook) QObject::connect(hook,    SIGNAL(sourceChanged()), q, SIGNAL(sourceChanged()));
+    else      QObject::connect(backend, SIGNAL(sourceChanged()), q, SIGNAL(sourceChanged()));
 }
 
 void WDeclarativePlayerPrivate::setPlaylist(WPlaylist * playlist)
