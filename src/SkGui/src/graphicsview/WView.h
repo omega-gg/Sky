@@ -278,6 +278,8 @@ public: // Interface
 
     Q_INVOKABLE void centerWindow();
 
+    Q_INVOKABLE void moveToScreen(int number);
+
     Q_INVOKABLE bool close();
 
     //---------------------------------------------------------------------------------------------

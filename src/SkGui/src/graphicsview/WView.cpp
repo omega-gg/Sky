@@ -1695,6 +1695,30 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 #endif
 }
 
+/* Q_INVOKABLE */ void WView::moveToScreen(int number)
+{
+    Q_D(WView);
+
+    QRect rect = wControllerView->availableGeometry(number);
+
+    if (rect.isValid() == false) return;
+
+    bool maximized  = d->maximized;
+    bool fullScreen = d->fullScreen;
+
+    setFullScreen(false);
+    setMaximized (false);
+
+#ifdef SK_DESKTOP
+    setGeometry(d->getGeometryDefault(rect));
+#else
+    setGeometry(rect);
+#endif
+
+    setMaximized (maximized);
+    setFullScreen(fullScreen);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ bool WView::close()

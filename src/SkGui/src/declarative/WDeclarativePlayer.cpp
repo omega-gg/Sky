@@ -888,6 +888,7 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
     }
     else if (type == WBroadcastMessage::SCREEN)
     {
+        if (view) view->moveToScreen(message.parameters.first().toInt());
     }
     else if (type == WBroadcastMessage::FULLSCREEN)
     {
