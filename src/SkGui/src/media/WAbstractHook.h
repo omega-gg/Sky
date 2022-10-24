@@ -78,9 +78,6 @@ protected: // Functions
     //---------------------------------------------------------------------------------------------
     // Backend functions
 
-    // NOTE: Clear the backend and send the 'sourceChanged' signal.
-    void updateSource();
-
     // NOTE: This function resets and applies all the tracks at once (video / audio).
     void applyTracks(const QList<WBackendTrack> & tracks, int trackVideo = -1,
                                                           int trackAudio = -1);
@@ -160,6 +157,8 @@ protected: // Abstract functions
 signals:
     // NOTE: This means the 'checked' function changed its conditions.
     void hookUpdated();
+
+    void sourceChanged();
 
     void filterActiveChanged();
 

@@ -196,13 +196,6 @@ void WAbstractHook::applyCurrentTime(int msec)
 //-------------------------------------------------------------------------------------------------
 // Backend functions
 
-void WAbstractHook::updateSource()
-{
-    Q_D(WAbstractHook); d->backend->updateSource();
-}
-
-//-------------------------------------------------------------------------------------------------
-
 void WAbstractHook::applyTracks(const QList<WBackendTrack> & tracks,
                                 int trackVideo, int trackAudio)
 {

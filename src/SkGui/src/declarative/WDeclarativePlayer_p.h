@@ -65,10 +65,6 @@ public: // Functions
 
     void applyPlaylist(WPlaylist * playlist);
 
-    void setPlaylist(WPlaylist * playlist);
-
-    void setTab(WTabTrack * tab);
-
     void loadSource(const QString & url, int duration, int currentTime);
 
     bool updateBackend(const QString & url);
@@ -80,9 +76,15 @@ public: // Functions
     void resetShuffle();
     void clearShuffle();
 
-    void setShuffleTrack(const WTrack * track);
-
     void clearPlaylistAndTabs();
+
+    void setBackendInterface(WBackendInterface * currentBackend, WAbstractHook * currentHook);
+
+    void setPlaylist(WPlaylist * playlist);
+
+    void setTab(WTabTrack * tab);
+
+    void setShuffleTrack(const WTrack * track);
 
 public: // Slots
     void onEnded();
@@ -126,6 +128,7 @@ public: // Slots
 
 public: // Variables
     WAbstractBackend * backend;
+    WAbstractHook    * hook;
 
     QList<WAbstractHook *> hooks;
 

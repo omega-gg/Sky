@@ -62,6 +62,7 @@ void WDeclarativePlayerPrivate::init()
     Q_Q(WDeclarativePlayer);
 
     backend = NULL;
+    hook    = NULL;
 
     backendInterface = NULL;
 
@@ -171,72 +172,6 @@ void WDeclarativePlayerPrivate::applyPlaylist(WPlaylist * playlist)
     emit q->playlistChanged();
 }
 
-void WDeclarativePlayerPrivate::setPlaylist(WPlaylist * playlist)
-{
-    if (this->playlist == playlist) return;
-
-    if (shuffle && this->playlist)
-    {
-        Q_Q(WDeclarativePlayer);
-
-        this->playlist->unregisterWatcher(q);
-    }
-
-    applyPlaylist(playlist);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void WDeclarativePlayerPrivate::setTab(WTabTrack * tab)
-{
-    if (this->tab == tab) return;
-
-    Q_Q(WDeclarativePlayer);
-
-    if (this->tab)
-    {
-        currentTime = -1;
-
-        this->tab->setPlayer(NULL);
-
-        this->tab->setStackEnabled(false);
-
-        QObject::disconnect(this->tab, 0, q, 0);
-    }
-
-    this->tab = tab;
-
-    if (tab)
-    {
-        QObject::connect(tab, SIGNAL(countChanged()), q, SIGNAL(countChanged()));
-
-        QObject::connect(tab, SIGNAL(playlistUpdated()), q, SIGNAL(playlistUpdated()));
-
-        QObject::connect(tab, SIGNAL(currentBookmarkChanged()),
-                         q,   SLOT(onCurrentBookmarkChanged()));
-
-        QObject::connect(tab, SIGNAL(currentBookmarkUpdated()),
-                         q,   SLOT(onCurrentBookmarkUpdated()));
-
-        QObject::connect(tab, SIGNAL(destroyed   ()),
-                         q,   SLOT(onTabDestroyed()));
-
-        tab->setPlayer(q);
-
-        if (q->hasStarted())
-        {
-             tab->setStackEnabled(true);
-        }
-        else tab->setStackEnabled(false);
-
-        onCurrentBookmarkChanged();
-        onCurrentBookmarkUpdated();
-    }
-    else emit q->playlistChanged();
-
-    emit q->tabChanged();
-}
-
 //-------------------------------------------------------------------------------------------------
 
 void WDeclarativePlayerPrivate::loadSource(const QString & url, int duration, int currentTime)
@@ -261,24 +196,27 @@ void WDeclarativePlayerPrivate::loadSource(const QString & url, int duration, in
 
 bool WDeclarativePlayerPrivate::updateBackend(const QString & url)
 {
-    WBackendInterface * backend = NULL;
+    WBackendInterface * currentBackend = NULL;
+    WAbstractHook     * currentHook    = NULL;
 
     foreach (WAbstractHook * hook, hooks)
     {
         if (hook->check(url) == false) continue;
 
-        backend = hook;
+        currentBackend = hook;
+
+        currentHook = hook;
 
         break;
     }
 
-    if (backend == NULL) backend = this->backend;
+    if (currentBackend == NULL) currentBackend = backend;
 
-    if (backendInterface == backend) return false;
+    if (backendInterface == currentBackend) return false;
 
     if (backendInterface)
     {
-        if (this->backend->isPlaying())
+        if (backend->isPlaying())
         {
             // NOTE: We have to freeze the state to avoid clearing highlightedTab.
             keepState = true;
@@ -287,7 +225,7 @@ bool WDeclarativePlayerPrivate::updateBackend(const QString & url)
 
             keepState = false;
 
-            backendInterface = backend;
+            setBackendInterface(currentBackend, currentHook);
 
             return true;
         }
@@ -295,10 +233,10 @@ bool WDeclarativePlayerPrivate::updateBackend(const QString & url)
         {
             backendInterface->clear();
 
-            backendInterface = backend;
+            setBackendInterface(currentBackend, currentHook);
         }
     }
-    else backendInterface = backend;
+    else setBackendInterface(currentBackend, currentHook);
 
     return false;
 }
@@ -366,21 +304,6 @@ void WDeclarativePlayerPrivate::clearShuffle()
 
 //-------------------------------------------------------------------------------------------------
 
-void WDeclarativePlayerPrivate::setShuffleTrack(const WTrack * track)
-{
-    shuffleLock = true;
-
-    if (tab)
-    {
-         tab->setCurrentTrackPointer(track);
-    }
-    else playlist->setCurrentTrackPointer(track);
-
-    shuffleLock = false;
-}
-
-//-------------------------------------------------------------------------------------------------
-
 void WDeclarativePlayerPrivate::clearPlaylistAndTabs()
 {
     Q_Q(WDeclarativePlayer);
@@ -402,6 +325,109 @@ void WDeclarativePlayerPrivate::clearPlaylistAndTabs()
 
         playlist = NULL;
     }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WDeclarativePlayerPrivate::setBackendInterface(WBackendInterface * currentBackend,
+                                                    WAbstractHook     * currentHook)
+{
+    if (backendInterface == currentBackend) return;
+
+    Q_Q(WDeclarativePlayer);
+
+    if (hook)
+    {
+        QObject::disconnect(hook, SIGNAL(sourceChanged()), q, SIGNAL(sourceChanged()));
+    }
+    else QObject::disconnect(backend, SIGNAL(sourceChanged()), q, SIGNAL(sourceChanged()));
+
+    backendInterface = currentBackend;
+
+    hook = currentHook;
+
+    if (hook)
+    {
+        QObject::connect(hook, SIGNAL(sourceChanged()), q, SIGNAL(sourceChanged()));
+    }
+    else QObject::connect(backend, SIGNAL(sourceChanged()), q, SIGNAL(sourceChanged()));
+}
+
+void WDeclarativePlayerPrivate::setPlaylist(WPlaylist * playlist)
+{
+    if (this->playlist == playlist) return;
+
+    if (shuffle && this->playlist)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        this->playlist->unregisterWatcher(q);
+    }
+
+    applyPlaylist(playlist);
+}
+
+void WDeclarativePlayerPrivate::setTab(WTabTrack * tab)
+{
+    if (this->tab == tab) return;
+
+    Q_Q(WDeclarativePlayer);
+
+    if (this->tab)
+    {
+        currentTime = -1;
+
+        this->tab->setPlayer(NULL);
+
+        this->tab->setStackEnabled(false);
+
+        QObject::disconnect(this->tab, 0, q, 0);
+    }
+
+    this->tab = tab;
+
+    if (tab)
+    {
+        QObject::connect(tab, SIGNAL(countChanged()), q, SIGNAL(countChanged()));
+
+        QObject::connect(tab, SIGNAL(playlistUpdated()), q, SIGNAL(playlistUpdated()));
+
+        QObject::connect(tab, SIGNAL(currentBookmarkChanged()),
+                         q,   SLOT(onCurrentBookmarkChanged()));
+
+        QObject::connect(tab, SIGNAL(currentBookmarkUpdated()),
+                         q,   SLOT(onCurrentBookmarkUpdated()));
+
+        QObject::connect(tab, SIGNAL(destroyed   ()),
+                         q,   SLOT(onTabDestroyed()));
+
+        tab->setPlayer(q);
+
+        if (q->hasStarted())
+        {
+             tab->setStackEnabled(true);
+        }
+        else tab->setStackEnabled(false);
+
+        onCurrentBookmarkChanged();
+        onCurrentBookmarkUpdated();
+    }
+    else emit q->playlistChanged();
+
+    emit q->tabChanged();
+}
+
+void WDeclarativePlayerPrivate::setShuffleTrack(const WTrack * track)
+{
+    shuffleLock = true;
+
+    if (tab)
+    {
+         tab->setCurrentTrackPointer(track);
+    }
+    else playlist->setCurrentTrackPointer(track);
+
+    shuffleLock = false;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -632,7 +658,8 @@ void WDeclarativePlayerPrivate::onConnectedChanged()
 
     if (server->isConnected())
     {
-        QObject::connect(backend, SIGNAL(sourceChanged       ()), q, SLOT(onSource   ()));
+        QObject::connect(q, SIGNAL(sourceChanged()), q, SLOT(onSource()));
+
         QObject::connect(backend, SIGNAL(stateChanged        ()), q, SLOT(onState    ()));
         QObject::connect(backend, SIGNAL(stateLoadChanged    ()), q, SLOT(onStateLoad()));
         QObject::connect(backend, SIGNAL(liveChanged         ()), q, SLOT(onLive     ()));
@@ -647,7 +674,8 @@ void WDeclarativePlayerPrivate::onConnectedChanged()
     }
     else
     {
-        QObject::disconnect(backend, SIGNAL(sourceChanged       ()), q, SLOT(onSource   ()));
+        QObject::disconnect(q, SIGNAL(sourceChanged()), q, SLOT(onSource()));
+
         QObject::disconnect(backend, SIGNAL(stateChanged        ()), q, SLOT(onState    ()));
         QObject::disconnect(backend, SIGNAL(stateLoadChanged    ()), q, SLOT(onStateLoad()));
         QObject::disconnect(backend, SIGNAL(liveChanged         ()), q, SLOT(onLive     ()));
@@ -837,7 +865,10 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
 
 void WDeclarativePlayerPrivate::onSource()
 {
-    server->sendReply(WBroadcastReply::SOURCE, backend->source());
+    qDebug("HELLO SOURCE %s %d %d", backendInterface->source().C_STR, backend, hook);
+
+    // NOTE: We must call WBackendInterface::source to retrieve the proper source.
+    server->sendReply(WBroadcastReply::SOURCE, backendInterface->source());
 }
 
 void WDeclarativePlayerPrivate::onState()
@@ -931,7 +962,7 @@ void WDeclarativePlayerPrivate::onHookDestroyed()
 
     if (backendInterface == hook)
     {
-        backendInterface = backend;
+        setBackendInterface(backend, NULL);
     }
 
     hooks.removeOne(hook);
@@ -1598,7 +1629,7 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 
     d->backend = backend;
 
-    d->backendInterface = backend;
+    d->setBackendInterface(backend, NULL);
 
     backend->setParent(this);
     backend->setPlayer(this);
@@ -1629,8 +1660,6 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 
         d->loadSource(d->source, -1, -1);
     }
-
-    connect(backend, SIGNAL(sourceChanged()), this, SIGNAL(sourceChanged()));
 
     connect(backend, SIGNAL(stateChanged    ()), this, SIGNAL(stateChanged    ()));
     connect(backend, SIGNAL(stateLoadChanged()), this, SIGNAL(stateLoadChanged()));

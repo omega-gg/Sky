@@ -617,7 +617,28 @@ WBackendTrack WAbstractBackend::trackFromString(const QString & string)
 
         backendSetSource(url);
 
-        updateSource();
+        //---------------------------------------------------------------------------------------------
+        // NOTE: We need to clear these when changing the source.
+
+        if (d->videos.isEmpty() == false)
+        {
+            d->videos.clear();
+
+            emit videosChanged();
+        }
+
+        if (d->audios.isEmpty() == false)
+        {
+            d->audios.clear();
+
+            emit audiosChanged();
+        }
+
+        setLive(false);
+
+        //---------------------------------------------------------------------------------------------
+
+        emit sourceChanged();
     }
     else if (d->state == StatePlaying)
     {
@@ -727,34 +748,6 @@ void WAbstractBackend::stopError(const QString & message)
     emit error(message);
 
     stop();
-}
-
-void WAbstractBackend::updateSource()
-{
-    Q_D(WAbstractBackend);
-
-    //---------------------------------------------------------------------------------------------
-    // NOTE: We need to clear these when changing the source.
-
-    if (d->videos.isEmpty() == false)
-    {
-        d->videos.clear();
-
-        emit videosChanged();
-    }
-
-    if (d->audios.isEmpty() == false)
-    {
-        d->audios.clear();
-
-        emit audiosChanged();
-    }
-
-    setLive(false);
-
-    //---------------------------------------------------------------------------------------------
-
-    emit sourceChanged();
 }
 
 void WAbstractBackend::applyTracks(const QList<WBackendTrack> & tracks,

@@ -441,7 +441,7 @@ WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
         setDuration   (duration);
         setCurrentTime(currentTime);
 
-        updateSource();
+        emit sourceChanged();
     }
 
     QStringList parameters;
