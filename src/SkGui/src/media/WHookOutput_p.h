@@ -69,7 +69,14 @@ public:
     void init();
 
 public: // Functions
+    void addSetting(const QString & name);
+
     void resetSettings();
+
+    bool applyVolume    (qreal volume);
+    bool applyScreen    (int   index);
+    bool applyFullScreen(bool  fullScreen);
+    bool applyVideoTag  (bool  enabled);
 
     WHookOutputData * getData(const WBroadcastSource & source);
     WHookOutputData * getData(const WBackendOutput   * output);
@@ -100,7 +107,7 @@ public: // Variables
 
     bool active;
 
-    QHash<QString, bool> settings;
+    QStringList settings;
 
     qreal volume;
 

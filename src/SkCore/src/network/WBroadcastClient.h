@@ -84,7 +84,11 @@ public: // Enums
         SPEED,
         VIDEO,
         AUDIO,
-        SUBTITLE
+        SUBTITLE,
+        VOLUME,
+        SCREEN,
+        FULLSCREEN,
+        VIDEOTAG
     };
 
 public:
@@ -137,7 +141,11 @@ public: // Enums
         OUTPUT,
         QUALITY,
         VIDEOS,
-        AUDIOS
+        AUDIOS,
+        VOLUME,
+        SCREEN,
+        FULLSCREEN,
+        VIDEOTAG
     };
 
 public:

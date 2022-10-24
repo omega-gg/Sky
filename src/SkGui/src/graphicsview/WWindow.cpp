@@ -501,9 +501,14 @@ void WWindowPrivate::deleteItems()
 //-------------------------------------------------------------------------------------------------
 // Geometry
 
-/* Q_INVOKABLE */ int WWindow::getScreenNumber() const
+/* Q_INVOKABLE */ int WWindow::screenCount() const
 {
-    Q_D(const WWindow); return d->view->getScreenNumber();
+    Q_D(const WWindow); return d->view->screenCount();
+}
+
+/* Q_INVOKABLE */ int WWindow::screenNumber() const
+{
+    Q_D(const WWindow); return d->view->screenNumber();
 }
 
 //-------------------------------------------------------------------------------------------------

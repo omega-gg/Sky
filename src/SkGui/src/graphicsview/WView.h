@@ -283,7 +283,8 @@ public: // Interface
     //---------------------------------------------------------------------------------------------
     // Geometry
 
-    Q_INVOKABLE int getScreenNumber() const;
+    Q_INVOKABLE int screenCount () const;
+    Q_INVOKABLE int screenNumber() const;
 
     Q_INVOKABLE void setMinimumSize(int width, int height);
     Q_INVOKABLE void setMaximumSize(int width, int height);

@@ -107,18 +107,20 @@ public: // Slots
 
     void onMessage(const WBroadcastMessage & message);
 
-    void onSource   ();
-    void onState    ();
-    void onStateLoad();
-    void onLive     ();
-    void onEnd      ();
-    void onTime     ();
-    void onDuration ();
-    void onProgress ();
-    void onOutput   ();
-    void onQuality  ();
-    void onVideos   ();
-    void onAudios   ();
+    void onSource    ();
+    void onState     ();
+    void onStateLoad ();
+    void onLive      ();
+    void onEnd       ();
+    void onTime      ();
+    void onDuration  ();
+    void onProgress  ();
+    void onOutput    ();
+    void onQuality   ();
+    void onVideos    ();
+    void onAudios    ();
+    void onScreen    ();
+    void onFullScreen();
 
     void onHookDestroyed    ();
     void onPlaylistDestroyed();

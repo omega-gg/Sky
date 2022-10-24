@@ -60,6 +60,17 @@ void WHookOutputPrivate::init()
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
+void WHookOutputPrivate::addSetting(const QString & name)
+{
+    if (settings.contains(name)) return;
+
+    Q_Q(WHookOutput);
+
+    settings.append(name);
+
+    emit q->settingsChanged();
+}
+
 void WHookOutputPrivate::resetSettings()
 {
     Q_Q(WHookOutput);
@@ -86,6 +97,64 @@ void WHookOutputPrivate::resetSettings()
 
     q->setVideoTag(false);
 }
+
+//-------------------------------------------------------------------------------------------------
+
+bool WHookOutputPrivate::applyVolume(qreal volume)
+{
+    if (this->volume == volume) return false;
+
+    Q_Q(WHookOutput);
+
+    this->volume = volume;
+
+    emit q->volumeChanged();
+
+    return true;
+}
+
+bool WHookOutputPrivate::applyScreen(int index)
+{
+    if (screen == index
+        ||
+        index < 0 || index >= screenCount) return false;
+
+    Q_Q(WHookOutput);
+
+    screen = index;
+
+    emit q->screenChanged();
+
+    return true;
+}
+
+bool WHookOutputPrivate::applyFullScreen(bool fullScreen)
+{
+    if (this->fullScreen == fullScreen) return false;
+
+    Q_Q(WHookOutput);
+
+    this->fullScreen = fullScreen;
+
+    emit q->fullScreenChanged();
+
+    return true;
+}
+
+bool WHookOutputPrivate::applyVideoTag(bool enabled)
+{
+    if (this->videoTag == enabled) return false;
+
+    Q_Q(WHookOutput);
+
+    videoTag = enabled;
+
+    emit q->videoTagChanged();
+
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------
 
 WHookOutputData * WHookOutputPrivate::getData(const WBroadcastSource & source)
 {
@@ -363,6 +432,44 @@ void WHookOutputPrivate::onReply(const WBroadcastReply & reply)
 
         q->applyAudios(audios, id);
     }
+    else if (type == WBroadcastReply::VOLUME)
+    {
+        applyVolume(reply.parameters.first().toFloat());
+
+        addSetting("VOLUME");
+    }
+    else if (type == WBroadcastReply::SCREEN)
+    {
+        applyScreen(reply.parameters.at(0).toInt());
+
+        int count = reply.parameters.at(1).toInt();
+
+        if (screenCount == count) return;
+
+        Q_Q(WHookOutput);
+
+        screenCount = count;
+
+        emit q->screenCountChanged();
+
+        if (count < 2)
+        {
+            settings.removeOne("SCREEN");
+        }
+        else addSetting("SCREEN");
+    }
+    else if (type == WBroadcastReply::FULLSCREEN)
+    {
+        applyFullScreen(reply.parameters.first().toInt());
+
+        addSetting("FULLSCREEN");
+    }
+    else if (type == WBroadcastReply::VIDEOTAG)
+    {
+        applyVideoTag(reply.parameters.first().toInt());
+
+        addSetting("VIDEOTAG");
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -417,7 +524,7 @@ WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
 {
     Q_D(const WHookOutput);
 
-    return d->settings.value(name.toLower());
+    return d->settings.contains(name.toUpper());
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -549,11 +656,9 @@ void WHookOutput::setVolume(qreal volume)
 {
     Q_D(WHookOutput);
 
-    if (d->volume == volume) return;
+    if (d->applyVolume(volume) == false) return;
 
-    d->volume = volume;
-
-    emit volumeChanged();
+    d->client.sendMessage(WBroadcastMessage::VOLUME, QString::number(volume));
 }
 
 int WHookOutput::screenCount() const
@@ -566,15 +671,13 @@ int WHookOutput::screen() const
     Q_D(const WHookOutput); return d->screen;
 }
 
-void WHookOutput::setScreen(int screen)
+void WHookOutput::setScreen(int index)
 {
     Q_D(WHookOutput);
 
-    if (d->screen == screen) return;
+    if (d->applyScreen(index) == false) return;
 
-    d->screen = screen;
-
-    emit screenChanged();
+    d->client.sendMessage(WBroadcastMessage::SCREEN, QString::number(index));
 }
 
 bool WHookOutput::fullScreen() const
@@ -586,11 +689,9 @@ void WHookOutput::setFullScreen(bool fullScreen)
 {
     Q_D(WHookOutput);
 
-    if (d->fullScreen == fullScreen) return;
+    if (d->applyFullScreen(fullScreen) == false) return;
 
-    d->fullScreen = fullScreen;
-
-    emit fullScreenChanged();
+    d->client.sendMessage(WBroadcastMessage::FULLSCREEN, QString::number(fullScreen));
 }
 
 bool WHookOutput::videoTag() const
@@ -602,11 +703,9 @@ void WHookOutput::setVideoTag(bool enabled)
 {
     Q_D(WHookOutput);
 
-    if (d->videoTag == enabled) return;
+    if (d->applyVideoTag(enabled) == false) return;
 
-    d->videoTag = enabled;
-
-    emit videoTagChanged();
+    d->client.sendMessage(WBroadcastMessage::VIDEOTAG, QString::number(enabled));
 }
 
 #endif // SK_NO_HOOKOUTPUT

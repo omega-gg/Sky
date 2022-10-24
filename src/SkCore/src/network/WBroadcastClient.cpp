@@ -387,9 +387,11 @@ WBroadcastSource & WBroadcastSource::operator=(const WBroadcastSource & other)
     {
         if (parameters.count() == 3) return;
     }
-    else if (type == SEEK || type == OUTPUT || type == QUALITY || type == FILLMODE
+    else if (type == SEEK || type == OUTPUT || type == QUALITY || type == FILLMODE || type == SPEED
              ||
-             type == SPEED || type == VIDEO || type == AUDIO|| type == SUBTITLE)
+             type == VIDEO || type == AUDIO || type == SUBTITLE || type == VOLUME || type == SCREEN
+             ||
+             type == FULLSCREEN || type == VIDEOTAG)
     {
         if (parameters.count() == 1) return;
     }
@@ -427,38 +429,46 @@ QByteArray WBroadcastMessage::generateData() const
 
 /* static */ WBroadcastMessage::Type WBroadcastMessage::typeFromString(const QString & string)
 {
-    if      (string == "SOURCE")   return SOURCE;
-    else if (string == "PLAY")     return PLAY;
-    else if (string == "REPLAY")   return REPLAY;
-    else if (string == "PAUSE")    return PAUSE;
-    else if (string == "STOP")     return STOP;
-    else if (string == "SEEK")     return SEEK;
-    else if (string == "OUTPUT")   return OUTPUT;
-    else if (string == "QUALITY")  return QUALITY;
-    else if (string == "FILLMODE") return FILLMODE;
-    else if (string == "SPEED")    return SPEED;
-    else if (string == "VIDEO")    return VIDEO;
-    else if (string == "AUDIO")    return AUDIO;
-    else if (string == "SUBTITLE") return SUBTITLE;
-    else                           return Unknown;
+    if      (string == "SOURCE")     return SOURCE;
+    else if (string == "PLAY")       return PLAY;
+    else if (string == "REPLAY")     return REPLAY;
+    else if (string == "PAUSE")      return PAUSE;
+    else if (string == "STOP")       return STOP;
+    else if (string == "SEEK")       return SEEK;
+    else if (string == "OUTPUT")     return OUTPUT;
+    else if (string == "QUALITY")    return QUALITY;
+    else if (string == "FILLMODE")   return FILLMODE;
+    else if (string == "SPEED")      return SPEED;
+    else if (string == "VIDEO")      return VIDEO;
+    else if (string == "AUDIO")      return AUDIO;
+    else if (string == "SUBTITLE")   return SUBTITLE;
+    else if (string == "VOLUME")     return VOLUME;
+    else if (string == "SCREEN")     return SCREEN;
+    else if (string == "FULLSCREEN") return FULLSCREEN;
+    else if (string == "VIDEOTAG")   return VIDEOTAG;
+    else                             return Unknown;
 }
 
 /* static */ QString WBroadcastMessage::typeToString(Type type)
 {
-    if      (type == SOURCE)   return "SOURCE";
-    else if (type == PLAY)     return "PLAY";
-    else if (type == REPLAY)   return "REPLAY";
-    else if (type == PAUSE)    return "PAUSE";
-    else if (type == STOP)     return "STOP";
-    else if (type == SEEK)     return "SEEK";
-    else if (type == OUTPUT)   return "OUTPUT";
-    else if (type == QUALITY)  return "QUALITY";
-    else if (type == FILLMODE) return "FILLMODE";
-    else if (type == SPEED)    return "SPEED";
-    else if (type == VIDEO)    return "VIDEO";
-    else if (type == AUDIO)    return "AUDIO";
-    else if (type == SUBTITLE) return "SUBTITLE";
-    else                       return "";
+    if      (type == SOURCE)     return "SOURCE";
+    else if (type == PLAY)       return "PLAY";
+    else if (type == REPLAY)     return "REPLAY";
+    else if (type == PAUSE)      return "PAUSE";
+    else if (type == STOP)       return "STOP";
+    else if (type == SEEK)       return "SEEK";
+    else if (type == OUTPUT)     return "OUTPUT";
+    else if (type == QUALITY)    return "QUALITY";
+    else if (type == FILLMODE)   return "FILLMODE";
+    else if (type == SPEED)      return "SPEED";
+    else if (type == VIDEO)      return "VIDEO";
+    else if (type == AUDIO)      return "AUDIO";
+    else if (type == SUBTITLE)   return "SUBTITLE";
+    else if (type == VOLUME)     return "VOLUME";
+    else if (type == SCREEN)     return "SCREEN";
+    else if (type == FULLSCREEN) return "FULLSCREEN";
+    else if (type == VIDEOTAG)   return "VIDEOTAG";
+    else                         return "";
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -513,9 +523,15 @@ WBroadcastMessage & WBroadcastMessage::operator=(const WBroadcastMessage & other
     //---------------------------------------------------------------------------------------------
     // NOTE: Checking parameters according to the expected API.
 
-    if (type == SOURCE || type == STATE || type == STATELOAD || type == LIVE  || type == ENDED
+    if (type == SCREEN)
+    {
+        if (parameters.count() == 2) return;
+    }
+    else if (type == SOURCE || type == STATE || type == STATELOAD || type == LIVE  || type == ENDED
         ||
-        type == TIME || type == DURATION || type == PROGRESS || type == OUTPUT || type == QUALITY)
+        type == TIME || type == DURATION || type == PROGRESS || type == OUTPUT || type == QUALITY
+        ||
+        type == VOLUME || type == FULLSCREEN || type == VIDEOTAG)
     {
         if (parameters.count() == 1) return;
     }
@@ -549,36 +565,44 @@ QByteArray WBroadcastReply::generateData() const
 
 /* static */ WBroadcastReply::Type WBroadcastReply::typeFromString(const QString & string)
 {
-    if      (string == "SOURCE")    return SOURCE;
-    else if (string == "STATE")     return STATE;
-    else if (string == "STATELOAD") return STATELOAD;
-    else if (string == "LIVE")      return LIVE;
-    else if (string == "ENDED")     return ENDED;
-    else if (string == "TIME")      return TIME;
-    else if (string == "DURATION")  return DURATION;
-    else if (string == "PROGRESS")  return PROGRESS;
-    else if (string == "OUTPUT")    return OUTPUT;
-    else if (string == "QUALITY")   return QUALITY;
-    else if (string == "VIDEOS")    return VIDEOS;
-    else if (string == "AUDIOS")    return AUDIOS;
-    else                            return Unknown;
+    if      (string == "SOURCE")     return SOURCE;
+    else if (string == "STATE")      return STATE;
+    else if (string == "STATELOAD")  return STATELOAD;
+    else if (string == "LIVE")       return LIVE;
+    else if (string == "ENDED")      return ENDED;
+    else if (string == "TIME")       return TIME;
+    else if (string == "DURATION")   return DURATION;
+    else if (string == "PROGRESS")   return PROGRESS;
+    else if (string == "OUTPUT")     return OUTPUT;
+    else if (string == "QUALITY")    return QUALITY;
+    else if (string == "VIDEOS")     return VIDEOS;
+    else if (string == "AUDIOS")     return AUDIOS;
+    else if (string == "VOLUME")     return VOLUME;
+    else if (string == "SCREEN")     return SCREEN;
+    else if (string == "FULLSCREEN") return FULLSCREEN;
+    else if (string == "VIDEOTAG")   return VIDEOTAG;
+    else                             return Unknown;
 }
 
 /* static */ QString WBroadcastReply::typeToString(Type type)
 {
-    if      (type == SOURCE)    return "SOURCE";
-    else if (type == STATE)     return "STATE";
-    else if (type == STATELOAD) return "STATELOAD";
-    else if (type == LIVE)      return "LIVE";
-    else if (type == ENDED)     return "ENDED";
-    else if (type == TIME)      return "TIME";
-    else if (type == DURATION)  return "DURATION";
-    else if (type == PROGRESS)  return "PROGRESS";
-    else if (type == OUTPUT)    return "OUTPUT";
-    else if (type == QUALITY)   return "QUALITY";
-    else if (type == VIDEOS)    return "VIDEOS";
-    else if (type == AUDIOS)    return "AUDIOS";
-    else                        return "";
+    if      (type == SOURCE)     return "SOURCE";
+    else if (type == STATE)      return "STATE";
+    else if (type == STATELOAD)  return "STATELOAD";
+    else if (type == LIVE)       return "LIVE";
+    else if (type == ENDED)      return "ENDED";
+    else if (type == TIME)       return "TIME";
+    else if (type == DURATION)   return "DURATION";
+    else if (type == PROGRESS)   return "PROGRESS";
+    else if (type == OUTPUT)     return "OUTPUT";
+    else if (type == QUALITY)    return "QUALITY";
+    else if (type == VIDEOS)     return "VIDEOS";
+    else if (type == AUDIOS)     return "AUDIOS";
+    else if (type == VOLUME)     return "VOLUME";
+    else if (type == SCREEN)     return "SCREEN";
+    else if (type == FULLSCREEN) return "FULLSCREEN";
+    else if (type == VIDEOTAG)   return "VIDEOTAG";
+    else                         return "";
 }
 
 //-------------------------------------------------------------------------------------------------

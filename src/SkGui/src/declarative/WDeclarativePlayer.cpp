@@ -38,6 +38,7 @@
 #include <WTabsTrack>
 #include <WTabTrack>
 #include <WLibraryFolder>
+#include <WView>
 
 //-------------------------------------------------------------------------------------------------
 // Private
@@ -652,6 +653,24 @@ void WDeclarativePlayerPrivate::onConnectedChanged()
 
     if (server->isConnected())
     {
+        server->sendReply(WBroadcastReply::VOLUME, QString::number(backend->volume()));
+
+        if (view)
+        {
+            onScreen();
+
+            server->sendReply(WBroadcastReply::FULLSCREEN, QString::number(view->isFullScreen()));
+
+#ifdef QT_4
+            QObject::connect(qApp->desktop(), SIGNAL(screenCountChanged()), q, SLOT(onScreen()));
+#else
+            QObject::connect(qApp, SIGNAL(screenAdded  (QScreen *)), q, SLOT(onScreen()));
+            QObject::connect(qApp, SIGNAL(screenRemoved(QScreen *)), q, SLOT(onScreen()));
+#endif
+            QObject::connect(view, SIGNAL(availableGeometryChanged()), q, SLOT(onScreen    ()));
+            QObject::connect(view, SIGNAL(fullScreenChanged       ()), q, SLOT(onFullScreen()));
+        }
+
         QObject::connect(q, SIGNAL(sourceChanged()), q, SLOT(onSource()));
 
         QObject::connect(backend, SIGNAL(stateChanged        ()), q, SLOT(onState    ()));
@@ -668,6 +687,12 @@ void WDeclarativePlayerPrivate::onConnectedChanged()
     }
     else
     {
+        if (view)
+        {
+            QObject::disconnect(qApp, NULL, q, NULL);
+            QObject::disconnect(view, NULL, q, NULL);
+        }
+
         QObject::disconnect(q, SIGNAL(sourceChanged()), q, SLOT(onSource()));
 
         QObject::disconnect(backend, SIGNAL(stateChanged        ()), q, SLOT(onState    ()));
@@ -855,6 +880,22 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
 
         q->setSubtitle(message.parameters.first());
     }
+    else if (type == WBroadcastMessage::VOLUME)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        q->setVolume(message.parameters.first().toFloat());
+    }
+    else if (type == WBroadcastMessage::SCREEN)
+    {
+    }
+    else if (type == WBroadcastMessage::FULLSCREEN)
+    {
+        if (view) view->setFullScreen(message.parameters.first().toInt());
+    }
+    else if (type == WBroadcastMessage::VIDEOTAG)
+    {
+    }
 }
 
 void WDeclarativePlayerPrivate::onSource()
@@ -942,6 +983,21 @@ void WDeclarativePlayerPrivate::onAudios()
     }
 
     server->sendReply(WBroadcastReply::AUDIOS, parameters);
+}
+
+void WDeclarativePlayerPrivate::onScreen()
+{
+    QStringList parameters;
+
+    parameters.append(QString::number(view->screenNumber()));
+    parameters.append(QString::number(view->screenCount ()));
+
+    server->sendReply(WBroadcastReply::SCREEN, parameters);
+}
+
+void WDeclarativePlayerPrivate::onFullScreen()
+{
+    server->sendReply(WBroadcastReply::FULLSCREEN, QString::number(view->isFullScreen()));
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -75,6 +75,8 @@ protected: // Initialize
     /* virtual */ void init();
 
 public: // Static functions
+    Q_INVOKABLE static int screenCount();
+
     Q_INVOKABLE static int screenNumber(const QPoint & pos);
 #ifdef QT_4
     Q_INVOKABLE static int screenNumber(const QWidget * widget = NULL);

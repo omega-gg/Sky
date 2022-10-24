@@ -1532,11 +1532,11 @@ int WControllerApplication::regExpCapture(QStringList * captured,
 
 /* Q_INVOKABLE static */ int WControllerApplication::randomInt()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
+    return qrand();
+#else
     // NOTE: We want to emulate the qrand behavior and never return negative values.
     return QRandomGenerator::global()->bounded(RAND_MAX);
-#else
-    return qrand();
 #endif
 }
 

@@ -1722,7 +1722,12 @@ WView::WView(WViewPrivate * p, QQuickItem * item, QWindow * parent, Qt::WindowFl
 //-------------------------------------------------------------------------------------------------
 // Geometry
 
-/* Q_INVOKABLE */ int WView::getScreenNumber() const
+/* Q_INVOKABLE */ int WView::screenCount() const
+{
+    return wControllerView->screenCount();
+}
+
+/* Q_INVOKABLE */ int WView::screenNumber() const
 {
 #ifdef QT_4
     return wControllerView->screenNumber(this);

@@ -104,7 +104,7 @@ public: // Properties
     int screenCount() const;
 
     int  screen() const;
-    void setScreen(int screen);
+    void setScreen(int index);
 
     bool fullScreen() const;
     void setFullScreen(bool fullScreen);
