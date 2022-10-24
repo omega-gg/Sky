@@ -865,8 +865,6 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
 
 void WDeclarativePlayerPrivate::onSource()
 {
-    qDebug("HELLO SOURCE %s %d %d", backendInterface->source().C_STR, backend, hook);
-
     // NOTE: We must call WBackendInterface::source to retrieve the proper source.
     server->sendReply(WBroadcastReply::SOURCE, backendInterface->source());
 }
