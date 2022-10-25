@@ -33,6 +33,7 @@
 #include <QNetworkInterface>
 
 // Sk includes
+#include <WControllerApplication>
 #include <WControllerFile>
 
 // Private includes
@@ -492,9 +493,17 @@ void WBroadcastServerPrivate::setConnected(bool connected)
 
     if (prefix.isEmpty())
     {
-        return host + '/' + name;
+        host += '/' + name;
     }
-    else return prefix + '/' + host + '/' + name;
+    else host = prefix + '/' + host + '/' + name;
+
+    name = sk->name();
+
+    if (name.isEmpty())
+    {
+         return host;
+    }
+    else return host += '/' + name;
 }
 
 /* Q_INVOKABLE static */

@@ -47,6 +47,7 @@ public: // Enums
     enum OutputRoles
     {
         RoleName = Qt::UserRole + 1,
+        RoleLabel,
         RoleCurrent
     };
 

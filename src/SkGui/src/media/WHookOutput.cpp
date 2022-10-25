@@ -267,7 +267,7 @@ void WHookOutputPrivate::onConnectedChanged()
 
         if (data == NULL)
         {
-            WBackendOutput output(source.name, WAbstractBackend::OutputVbml);
+            WBackendOutput output(source.name, source.label, WAbstractBackend::OutputVbml);
 
             WHookOutputData data(q->addOutput(output));
 

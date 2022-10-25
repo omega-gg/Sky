@@ -131,6 +131,7 @@ void WModelOutputPrivate::itemUpdated(int index)
     const WBackendOutput * output = d->backend->outputPointerAt(row);
 
     if      (role == RoleName)    return output->name;
+    else if (role == RoleLabel)   return output->label;
     else if (role == RoleCurrent) return (d->backend->currentOutput() == row);
     else                          return QVariant();
 }
@@ -144,6 +145,7 @@ void WModelOutputPrivate::itemUpdated(int index)
     QHash<int, QByteArray> roles;
 
     roles.insert(WModelOutput::RoleName,    "name");
+    roles.insert(WModelOutput::RoleLabel,   "label");
     roles.insert(WModelOutput::RoleCurrent, "current");
 
     return roles;

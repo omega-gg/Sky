@@ -340,7 +340,9 @@ WBroadcastSource::WBroadcastSource(const WBroadcastSource & other)
 
 bool WBroadcastSource::operator==(const WBroadcastSource & other) const
 {
-    return (address == other.address && port == other.port && name == other.name);
+    return (address == other.address && port == other.port
+            &&
+            name == other.name && label == other.label);
 }
 
 WBroadcastSource & WBroadcastSource::operator=(const WBroadcastSource & other)
@@ -348,7 +350,8 @@ WBroadcastSource & WBroadcastSource::operator=(const WBroadcastSource & other)
     address = other.address;
     port    = other.port;
 
-    name = other.name;
+    name  = other.name;
+    label = other.label;
 
     return *this;
 }
@@ -939,7 +942,13 @@ void WBroadcastClientPrivate::setSource(const WBroadcastSource & source)
     source.address = host.at(0);
     source.port    = host.at(1).toInt();
 
-    if (count > 3) source.name = list.at(3);
+    if (count < 4) return source;
+
+    source.name = list.at(3);
+
+    if (count < 5) return source;
+
+    source.label = list.at(4);
 
     return source;
 }

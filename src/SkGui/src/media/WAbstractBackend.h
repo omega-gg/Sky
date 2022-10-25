@@ -659,6 +659,10 @@ public:
     WBackendOutput(const QString & name,
                    WAbstractBackend::OutputType type = WAbstractBackend::OutputDefault);
 
+    WBackendOutput(const QString & name,
+                   const QString & label,
+                   WAbstractBackend::OutputType type = WAbstractBackend::OutputDefault);
+
     WBackendOutput();
 
 public: // Operators
@@ -672,6 +676,7 @@ public: // Variables
     WAbstractBackend::OutputType type;
 
     QString name;
+    QString label;
 };
 
 //-------------------------------------------------------------------------------------------------
