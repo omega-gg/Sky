@@ -114,6 +114,8 @@ void WDeclarativePlayerPrivate::init()
 
     keepState = false;
 
+    videoTag = false;
+
     timer.setSingleShot(true);
 
 #ifdef QT_4
@@ -661,6 +663,8 @@ void WDeclarativePlayerPrivate::onConnectedChanged()
 
             server->sendReply(WBroadcastReply::FULLSCREEN, QString::number(view->isFullScreen()));
 
+            server->sendReply(WBroadcastReply::VIDEOTAG, QString::number(videoTag));
+
 #ifdef QT_4
             QObject::connect(qApp->desktop(), SIGNAL(screenCountChanged()), q, SLOT(onScreen()));
 #else
@@ -888,14 +892,29 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
     }
     else if (type == WBroadcastMessage::SCREEN)
     {
-        if (view) view->moveToScreen(message.parameters.first().toInt());
+        if (view == NULL) return;
+
+        view->moveToScreen(message.parameters.first().toInt());
+
+        // NOTE: Making sure the window is visible.
+        view->raise();
     }
     else if (type == WBroadcastMessage::FULLSCREEN)
     {
-        if (view) view->setFullScreen(message.parameters.first().toInt());
+        if (view == NULL) return;
+
+        bool fullScreen = message.parameters.first().toInt();
+
+        // NOTE: Making sure the window is visible.
+        if (fullScreen) view->raise();
+
+        view->setFullScreen(fullScreen);
     }
     else if (type == WBroadcastMessage::VIDEOTAG)
     {
+        Q_Q(WDeclarativePlayer);
+
+        q->setVideoTag(message.parameters.first().toInt());
     }
 }
 
@@ -2786,6 +2805,24 @@ int WDeclarativePlayer::tabIndex() const
         else return d->tabs->currentIndex();
     }
     else return -1;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WDeclarativePlayer::videoTag() const
+{
+    Q_D(const WDeclarativePlayer); return d->videoTag;
+}
+
+void WDeclarativePlayer::setVideoTag(bool enabled)
+{
+    Q_D(WDeclarativePlayer);
+
+    if (d->videoTag == enabled) return;
+
+    d->videoTag = enabled;
+
+    emit videoTagChanged();
 }
 
 #endif // SK_NO_DECLARATIVEPLAYER

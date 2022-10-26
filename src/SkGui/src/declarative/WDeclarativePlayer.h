@@ -163,6 +163,8 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
 
     Q_PROPERTY(int tabIndex READ tabIndex NOTIFY tabIndexChanged)
 
+    Q_PROPERTY(bool videoTag READ videoTag WRITE setVideoTag NOTIFY videoTagChanged)
+
 public: // Enums
     enum Repeat
     {
@@ -320,6 +322,8 @@ signals:
     void tabChanged     ();
     void tabIndexChanged();
 
+    void videoTagChanged();
+
 public: // Properties
     WAbstractBackend * backend() const;
     void               setBackend(WAbstractBackend * backend);
@@ -442,6 +446,9 @@ public: // Properties
     WTabTrack * tab() const;
 
     int tabIndex() const;
+
+    bool videoTag() const;
+    void setVideoTag(bool enabled);
 
 private:
     W_DECLARE_PRIVATE(WDeclarativePlayer)

@@ -191,6 +191,8 @@ public: // Variables
 
     bool keepState;
 
+    bool videoTag;
+
     QTimer timer;
 
 protected:
