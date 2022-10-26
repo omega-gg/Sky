@@ -533,7 +533,7 @@ WAbstractThreadAction * WBroadcastServer::startSource(int port, const QString & 
     {
         Q_D(WBroadcastServer);
 
-        qDebug("WBroadcastClient: Connected.");
+        qDebug("WBroadcastServer: Connected.");
 
         d->setConnected(true);
 
@@ -543,7 +543,7 @@ WAbstractThreadAction * WBroadcastServer::startSource(int port, const QString & 
     {
         Q_D(WBroadcastServer);
 
-        qDebug("WBroadcastClient: Disconnected.");
+        qDebug("WBroadcastServer: Disconnected.");
 
         d->setConnected(false);
 

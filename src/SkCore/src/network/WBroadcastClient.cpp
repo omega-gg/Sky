@@ -191,8 +191,6 @@ WBroadcastClientThread::WBroadcastClientThread(WBroadcastClient * parent)
 
         if (socket) clearSocket();
 
-        setConnected(false);
-
         return true;
     }
     else if (type == static_cast<QEvent::Type> (EventMessage))
@@ -292,6 +290,8 @@ void WBroadcastClientThread::clearSocket()
     delete socket;
 
     socket = NULL;
+
+    setConnected(false);
 }
 
 void WBroadcastClientThread::setConnected(bool connected)

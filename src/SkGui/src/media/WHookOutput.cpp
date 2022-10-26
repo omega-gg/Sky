@@ -499,13 +499,6 @@ WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
 {
     Q_D(WHookOutput);
 
-    if (d->client.isConnected())
-    {
-        qWarning("WHookOutput::connectToHost: Already connected.");
-
-        return;
-    }
-
     d->client.connectToHost(url);
 }
 
@@ -513,9 +506,9 @@ WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
 {
     Q_D(WHookOutput);
 
-    d->setActive(false);
-
     d->client.disconnectHost();
+
+    d->setActive(false);
 }
 
 //-------------------------------------------------------------------------------------------------

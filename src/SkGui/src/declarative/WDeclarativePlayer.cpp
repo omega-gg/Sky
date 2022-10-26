@@ -768,8 +768,6 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
 
             playlistServer->insertTrack(0, track);
 
-            playlistServer->loadTrack(0);
-
             playlistServer->setCurrentIndex(0);
 
             // NOTE: Removing the previous track after setting the new one.
@@ -780,6 +778,10 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
 
             // NOTE: We restore the tab subtitle manually.
             q->setSubtitle(subtitle);
+
+            // NOTE: We load the track at the end because backend instanciation might delay the
+            //       prior calls. This can cause message events to be processed in the wrong order.
+            playlistServer->loadTrack(0);
         }
         else if (backend)
         {
