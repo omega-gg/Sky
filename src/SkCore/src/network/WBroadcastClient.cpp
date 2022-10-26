@@ -881,6 +881,10 @@ void WBroadcastClientPrivate::setSource(const WBroadcastSource & source)
 {
     Q_D(WBroadcastClient);
 
+    // NOTE: Given we're using a thread we want to update the connected status right now to avoid
+    //       sending messages into the void.
+    d->setConnected(false);
+
     d->postEvent(new QEvent(static_cast<QEvent::Type> (WBroadcastClientThread::EventDisconnect)));
 }
 

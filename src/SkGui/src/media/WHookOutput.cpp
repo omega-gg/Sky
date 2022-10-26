@@ -325,13 +325,9 @@ void WHookOutputPrivate::onConnectedChanged()
 
         if (currentData != data) return;
 
-        //-----------------------------------------------------------------------------------------
-        // NOTE: When we loose the connection we stop the playback and select the default output.
-
-        backend->stop();
-
         currentData = NULL;
 
+        // NOTE: When we loose the connection we select the default output.
         backend->setCurrentOutput(0);
 
         setActive(false);
@@ -498,6 +494,8 @@ WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
 /* Q_INVOKABLE */ void WHookOutput::connectToHost(const QString & url)
 {
     Q_D(WHookOutput);
+
+    if (d->client.isConnected()) disconnectHost();
 
     d->client.connectToHost(url);
 }
