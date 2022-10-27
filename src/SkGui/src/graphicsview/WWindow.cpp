@@ -489,7 +489,7 @@ void WWindowPrivate::deleteItems()
     Q_D(WWindow); d->view->centerWindow();
 }
 
-/* Q_INVOKABLE */ void moveToScreen(int number)
+/* Q_INVOKABLE */ void WWindow::moveToScreen(int number)
 {
     Q_D(WWindow); d->view->moveToScreen(number);
 }
