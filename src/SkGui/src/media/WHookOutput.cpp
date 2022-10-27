@@ -593,6 +593,9 @@ WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
 
     setDuration   (-1);
     setCurrentTime(-1);
+
+    // NOTE: We clear the progress in case we're in the middle of it.
+    setProgress(0);
 }
 
 //-------------------------------------------------------------------------------------------------
