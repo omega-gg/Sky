@@ -26,6 +26,7 @@
 
 // Qt includes
 #ifdef QT_4
+#include <QApplication>
 #include <QStyleOptionGraphicsItem>
 #endif
 
