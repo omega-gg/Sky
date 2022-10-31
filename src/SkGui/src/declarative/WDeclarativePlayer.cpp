@@ -27,6 +27,7 @@
 // Qt includes
 #ifdef QT_4
 #include <QApplication>
+#include <QDesktopWidget>
 #include <QStyleOptionGraphicsItem>
 #endif
 
@@ -2127,7 +2128,7 @@ void WDeclarativePlayer::setSpeed(qreal speed)
     {
         d->backend->setSpeed(speed);
     }
-    else if (d->speed == speed)
+    else if (d->speed != speed)
     {
         d->speed = speed;
 
@@ -2156,7 +2157,7 @@ void WDeclarativePlayer::setVolume(qreal volume)
     {
         d->backend->setVolume(volume);
     }
-    else if (d->volume == volume)
+    else if (d->volume != volume)
     {
         d->volume = volume;
 
@@ -2250,7 +2251,7 @@ void WDeclarativePlayer::setOutput(WAbstractBackend::Output output)
     {
         d->backend->setOutput(output);
     }
-    else if (d->output == output)
+    else if (d->output != output)
     {
         d->output = output;
 
@@ -2279,7 +2280,7 @@ void WDeclarativePlayer::setQuality(WAbstractBackend::Quality quality)
     {
         d->backend->setQuality(quality);
     }
-    else if (d->quality == quality)
+    else if (d->quality != quality)
     {
         d->quality = quality;
 
@@ -2332,7 +2333,7 @@ void WDeclarativePlayer::setFillMode(WAbstractBackend::FillMode fillMode)
     {
         d->backend->setFillMode(fillMode);
     }
-    else if (d->fillMode == fillMode)
+    else if (d->fillMode != fillMode)
     {
         d->fillMode = fillMode;
 
@@ -2367,7 +2368,7 @@ void WDeclarativePlayer::setTrackVideo(int id)
     {
         d->backend->setTrackVideo(id);
     }
-    else if (d->trackVideo == id)
+    else if (d->trackVideo != id)
     {
         d->trackVideo = id;
 
@@ -2394,7 +2395,7 @@ void WDeclarativePlayer::setTrackAudio(int id)
     {
         d->backend->setTrackAudio(id);
     }
-    else if (d->trackAudio == id)
+    else if (d->trackAudio != id)
     {
         d->trackAudio = id;
 
@@ -2445,7 +2446,7 @@ void WDeclarativePlayer::setScanOutput(bool enabled)
     {
         d->backend->setScanOutput(enabled);
     }
-    else if (d->scanOutput == enabled)
+    else if (d->scanOutput != enabled)
     {
         d->scanOutput = enabled;
 
@@ -2472,7 +2473,7 @@ void WDeclarativePlayer::setCurrentOutput(int index)
     {
         d->backend->setCurrentOutput(index);
     }
-    else if (d->currentOutput == index)
+    else if (d->currentOutput != index)
     {
         d->currentOutput = index;
 
@@ -2536,7 +2537,7 @@ void WDeclarativePlayer::setSubtitle(const QString & subtitle)
 
         if (d->tab) d->tab->setSubtitle(subtitle);
     }
-    else if (d->subtitle == subtitle)
+    else if (d->subtitle != subtitle)
     {
         d->subtitle = subtitle;
 
