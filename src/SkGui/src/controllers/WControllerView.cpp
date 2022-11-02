@@ -422,6 +422,8 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
 #ifdef QT_NEW
     QSharedPointer<QQuickItemGrabResult> grab = item->grabToImage();
 
+    if (grab.isNull()) return pixmap;
+
     WControllerViewLoader loader;
 
     connect(grab.data(), SIGNAL(ready()), &loader, SLOT(onReady()));
