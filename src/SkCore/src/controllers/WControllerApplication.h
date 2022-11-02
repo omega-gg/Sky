@@ -154,10 +154,13 @@ public: // Static functions
     Q_INVOKABLE static void share(const QString & title,
                                   const QString & text,
                                   const QString & fileName = QString(),
-                                  const QString & type  = "*/*");
+                                  const QString & type     = "*/*");
 #endif
 
 #ifdef Q_OS_IOS
+    Q_INVOKABLE static QString deviceName   ();
+    Q_INVOKABLE static QString deviceVersion();
+
     // NOTE iOS: These functions are defined in WControllerApplication.mm
     Q_INVOKABLE static void shareText(const QString & text);
     Q_INVOKABLE static void shareFile(const QString & fileName);

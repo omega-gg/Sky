@@ -205,6 +205,38 @@ void WControllerApplicationPrivate::setScreenSaverEnabled(bool enabled)
 // WControllerApplication
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ QString WControllerApplication::deviceName()
+{
+    UIDevice * device = [UIDevice currentDevice];
+
+    return QString::fromNSString(device.model);
+}
+
+/* Q_INVOKABLE static */ QString WControllerApplication::deviceVersion()
+{
+    struct utsname info;
+
+    uname(&info);
+
+    NSString * model = [NSString stringWithCString: info.machine encoding: NSUTF8StringEncoding];
+
+    QString string = QString::fromNSString(model);
+
+    if (string.startsWith("iPhone"))
+    {
+        string.remove(0, 6);
+
+        return string.replace(',', '.');
+    }
+    else if (string.startsWith("iPad"))
+    {
+        string.remove(0, 4);
+
+        return string.replace(',', '.');
+    }
+    else return QString();
+}
+
 /* Q_INVOKABLE static */ void WControllerApplication::vibrate(int)
 {
     AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);

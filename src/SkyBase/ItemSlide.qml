@@ -69,8 +69,9 @@ Item
 
         itemImage.applyItemShot(content);
 
-        //itemImage.width  = width;
-        //itemImage.height = height;
+        // NOTE iOS: This seems to be required to have the proper size.
+        itemImage.width  = width;
+        itemImage.height = height;
 
         pReady = true;
     }
