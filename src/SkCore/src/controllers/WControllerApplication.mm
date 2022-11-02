@@ -25,6 +25,7 @@
 // iOS includes
 #import <UIKit/UIKit.h>
 #import <AudioToolbox/AudioServices.h>
+#import <sys/utsname.h>
 
 // Qt includes
 #include <QGuiApplication>
