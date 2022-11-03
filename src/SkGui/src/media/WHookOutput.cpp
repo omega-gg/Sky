@@ -436,23 +436,26 @@ void WHookOutputPrivate::onReply(const WBroadcastReply & reply)
     }
     else if (type == WBroadcastReply::SCREEN)
     {
-        applyScreen(reply.parameters.at(0).toInt());
-
+        int index = reply.parameters.at(0).toInt();
         int count = reply.parameters.at(1).toInt();
 
-        if (screenCount == count) return;
-
-        Q_Q(WHookOutput);
-
-        screenCount = count;
-
-        emit q->screenCountChanged();
-
-        if (count < 2)
+        if (screenCount != count)
         {
-            settings.removeOne("SCREEN");
+            Q_Q(WHookOutput);
+
+            screenCount = count;
+
+            applyScreen(index);
+
+            emit q->screenCountChanged();
+
+            if (count < 2)
+            {
+                settings.removeOne("SCREEN");
+            }
+            else addSetting("SCREEN");
         }
-        else addSetting("SCREEN");
+        else applyScreen(index);
     }
     else if (type == WBroadcastReply::FULLSCREEN)
     {
