@@ -75,6 +75,9 @@ public: // Static functions
     Q_INVOKABLE static QString generateUrl(const QString & string,
                                            const QString & baseUrl = QString());
 
+    // NOTE: Adds 'https' when the url has no scheme.
+    Q_INVOKABLE static QString generateScheme(const QString & string);
+
     Q_INVOKABLE static QString resolveUrl(const QString & string, const QString & baseUrl);
 
     Q_INVOKABLE static QString encodeUrl(const QString & string);

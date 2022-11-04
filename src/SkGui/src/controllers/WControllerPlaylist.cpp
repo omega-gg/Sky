@@ -3891,7 +3891,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
     }
     else if (QUrl(url).scheme().isEmpty())
     {
-         return "http://" + url;
+         return "https://" + url;
     }
     else return url;
 }

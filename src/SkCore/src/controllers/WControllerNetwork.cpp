@@ -758,7 +758,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     {
         QString result = string;
 
-        result.prepend("http:");
+        result.prepend("https:");
 
         return result;
     }
@@ -771,6 +771,15 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
          return resolveUrl(string, baseUrl);
     }
     else return resolveUrl(string, baseUrl + '/');
+}
+
+/* Q_INVOKABLE static */ QString WControllerNetwork::generateScheme(const QString & string)
+{
+    if (QUrl(string).scheme().isEmpty())
+    {
+        return "https://" + string;
+    }
+    else return string;
 }
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::resolveUrl(const QString & string,
