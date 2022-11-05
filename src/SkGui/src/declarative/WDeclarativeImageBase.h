@@ -88,9 +88,6 @@ class SK_GUI_EXPORT WDeclarativeImageBase : public WDeclarativeTexture
 
     Q_PROPERTY(WImageFilter * filter READ filter WRITE setFilter NOTIFY filterChanged)
 
-    Q_PROPERTY(qreal ratioWidth  READ ratioWidth  NOTIFY sourceSizeChanged)
-    Q_PROPERTY(qreal ratioHeight READ ratioHeight NOTIFY sourceSizeChanged)
-
 public: // Enums
     enum Status { Null, Loading, Ready, Error };
 
@@ -200,6 +197,9 @@ signals:
     void filterChanged();
 
 public: // Properties
+    qreal ratioWidth () const;
+    qreal ratioHeight() const;
+
     QPixmap pixmap() const;
     void    setPixmap(const QPixmap & pixmap);
 
@@ -243,9 +243,6 @@ public: // Properties
 
     WImageFilter * filter() const;
     void           setFilter(WImageFilter * filter);
-
-    qreal ratioWidth () const;
-    qreal ratioHeight() const;
 
 private:
     W_DECLARE_PRIVATE(WDeclarativeImageBase)

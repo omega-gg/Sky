@@ -1188,28 +1188,4 @@ void WDeclarativeImageBase::setFilter(WImageFilter * filter)
     emit filterChanged();
 }
 
-//-------------------------------------------------------------------------------------------------
-
-qreal WDeclarativeImageBase::ratioWidth()  const
-{
-    Q_D(const WDeclarativeImageBase);
-
-    if (d->pix.isNull()) return 1.0;
-
-    const QImage & image = d->pix.pixmap().toImage();
-
-    return (qreal) image.width() / image.height();
-}
-
-qreal WDeclarativeImageBase::ratioHeight() const
-{
-    Q_D(const WDeclarativeImageBase);
-
-    if (d->pix.isNull()) return 1.0;
-
-    const QImage & image = d->pix.pixmap().toImage();
-
-    return (qreal) image.height() / image.width();
-}
-
 #endif // SK_NO_DECLARATIVEIMAGEBASE
