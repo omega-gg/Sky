@@ -94,7 +94,8 @@ protected: // Functions
 
     void setLive(bool live);
 
-    void setEnded(bool ended);
+    void setStarted(bool started);
+    void setEnded  (bool ended);
 
     void setCurrentTime(int msec);
     void setDuration   (int msec);

@@ -477,6 +477,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onState     ())
     Q_PRIVATE_SLOT(d_func(), void onStateLoad ())
     Q_PRIVATE_SLOT(d_func(), void onLive      ())
+    Q_PRIVATE_SLOT(d_func(), void onStart     ())
     Q_PRIVATE_SLOT(d_func(), void onEnd       ())
     Q_PRIVATE_SLOT(d_func(), void onTime      ())
     Q_PRIVATE_SLOT(d_func(), void onDuration  ())

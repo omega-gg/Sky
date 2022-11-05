@@ -130,19 +130,6 @@ void WAbstractBackendPrivate::clearCurrentTime()
 
 //-------------------------------------------------------------------------------------------------
 
-void WAbstractBackendPrivate::setStarted(bool started)
-{
-    if (this->started == started) return;
-
-    Q_Q(WAbstractBackend);
-
-    this->started = started;
-
-    emit q->startedChanged();
-}
-
-//-------------------------------------------------------------------------------------------------
-
 void WAbstractBackendPrivate::currentOutputChanged()
 {
     Q_Q(WAbstractBackend);
@@ -889,13 +876,13 @@ void WAbstractBackend::setState(State state)
     {
         setStateLoad(StateLoadDefault);
 
-        d->setStarted(false);
+        setStarted(false);
 
         d->clearCurrentTime();
     }
     else if (state == StatePlaying)
     {
-        d->setStarted(true);
+        setStarted(true);
     }
     else setStateLoad(StateLoadDefault);
 
@@ -931,6 +918,17 @@ void WAbstractBackend::setLive(bool live)
 }
 
 //-------------------------------------------------------------------------------------------------
+
+void WAbstractBackend::setStarted(bool started)
+{
+    Q_D(WAbstractBackend);
+
+    if (d->started == started) return;
+
+    d->started = started;
+
+    emit startedChanged();
+}
 
 void WAbstractBackend::setEnded(bool ended)
 {

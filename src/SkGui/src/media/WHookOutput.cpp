@@ -358,6 +358,12 @@ void WHookOutputPrivate::onReply(const WBroadcastReply & reply)
 
         q->setLive(reply.parameters.first().toInt());
     }
+    else if (type == WBroadcastReply::STARTED)
+    {
+        Q_Q(WHookOutput);
+
+        q->setStarted(reply.parameters.first().toInt());
+    }
     else if (type == WBroadcastReply::ENDED)
     {
         Q_Q(WHookOutput);

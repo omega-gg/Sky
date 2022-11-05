@@ -249,6 +249,11 @@ void WAbstractHook::setLive(bool live)
 
 //-------------------------------------------------------------------------------------------------
 
+void WAbstractHook::setStarted(bool started)
+{
+    Q_D(WAbstractHook); d->backend->setStarted(started);
+}
+
 void WAbstractHook::setEnded(bool ended)
 {
     Q_D(WAbstractHook); d->backend->setEnded(ended);

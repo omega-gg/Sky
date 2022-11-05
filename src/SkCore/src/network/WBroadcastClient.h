@@ -135,6 +135,7 @@ public: // Enums
         STATE,
         STATELOAD,
         LIVE,
+        STARTED,
         ENDED,
         TIME,
         DURATION,

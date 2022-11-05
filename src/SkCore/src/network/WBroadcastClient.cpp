@@ -530,11 +530,13 @@ WBroadcastMessage & WBroadcastMessage::operator=(const WBroadcastMessage & other
     {
         if (parameters.count() == 2) return;
     }
-    else if (type == SOURCE || type == STATE || type == STATELOAD || type == LIVE  || type == ENDED
-        ||
-        type == TIME || type == DURATION || type == PROGRESS || type == OUTPUT || type == QUALITY
-        ||
-        type == VOLUME || type == FULLSCREEN || type == VIDEOTAG)
+    else if (type == SOURCE || type == STATE || type == STATELOAD || type == LIVE
+             ||
+             type == STARTED || type == ENDED || type == TIME || type == DURATION
+             ||
+             type == PROGRESS || type == OUTPUT || type == QUALITY || type == VOLUME
+             ||
+             type == FULLSCREEN || type == VIDEOTAG)
     {
         if (parameters.count() == 1) return;
     }
@@ -572,6 +574,7 @@ QByteArray WBroadcastReply::generateData() const
     else if (string == "STATE")      return STATE;
     else if (string == "STATELOAD")  return STATELOAD;
     else if (string == "LIVE")       return LIVE;
+    else if (string == "STARTED")    return STARTED;
     else if (string == "ENDED")      return ENDED;
     else if (string == "TIME")       return TIME;
     else if (string == "DURATION")   return DURATION;
@@ -593,6 +596,7 @@ QByteArray WBroadcastReply::generateData() const
     else if (type == STATE)      return "STATE";
     else if (type == STATELOAD)  return "STATELOAD";
     else if (type == LIVE)       return "LIVE";
+    else if (type == STARTED)    return "STARTED";
     else if (type == ENDED)      return "ENDED";
     else if (type == TIME)       return "TIME";
     else if (type == DURATION)   return "DURATION";

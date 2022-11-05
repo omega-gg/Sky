@@ -111,6 +111,7 @@ public: // Slots
     void onState     ();
     void onStateLoad ();
     void onLive      ();
+    void onStart     ();
     void onEnd       ();
     void onTime      ();
     void onDuration  ();

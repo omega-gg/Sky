@@ -682,6 +682,7 @@ void WDeclarativePlayerPrivate::onConnectedChanged()
         QObject::connect(backend, SIGNAL(stateChanged        ()), q, SLOT(onState    ()));
         QObject::connect(backend, SIGNAL(stateLoadChanged    ()), q, SLOT(onStateLoad()));
         QObject::connect(backend, SIGNAL(liveChanged         ()), q, SLOT(onLive     ()));
+        QObject::connect(backend, SIGNAL(startedChanged      ()), q, SLOT(onStart    ()));
         QObject::connect(backend, SIGNAL(endedChanged        ()), q, SLOT(onEnd      ()));
         QObject::connect(backend, SIGNAL(currentTimeChanged  ()), q, SLOT(onTime     ()));
         QObject::connect(backend, SIGNAL(durationChanged     ()), q, SLOT(onDuration ()));
@@ -704,6 +705,7 @@ void WDeclarativePlayerPrivate::onConnectedChanged()
         QObject::disconnect(backend, SIGNAL(stateChanged        ()), q, SLOT(onState    ()));
         QObject::disconnect(backend, SIGNAL(stateLoadChanged    ()), q, SLOT(onStateLoad()));
         QObject::disconnect(backend, SIGNAL(liveChanged         ()), q, SLOT(onLive     ()));
+        QObject::disconnect(backend, SIGNAL(startedChanged      ()), q, SLOT(onStart    ()));
         QObject::disconnect(backend, SIGNAL(endedChanged        ()), q, SLOT(onEnd      ()));
         QObject::disconnect(backend, SIGNAL(currentTimeChanged  ()), q, SLOT(onTime     ()));
         QObject::disconnect(backend, SIGNAL(durationChanged     ()), q, SLOT(onDuration ()));
@@ -943,6 +945,11 @@ void WDeclarativePlayerPrivate::onStateLoad()
 void WDeclarativePlayerPrivate::onLive()
 {
     server->sendReply(WBroadcastReply::LIVE, QString::number(backend->isLive()));
+}
+
+void WDeclarativePlayerPrivate::onStart()
+{
+    server->sendReply(WBroadcastReply::STARTED, QString::number(backend->hasStarted()));
 }
 
 void WDeclarativePlayerPrivate::onEnd()
