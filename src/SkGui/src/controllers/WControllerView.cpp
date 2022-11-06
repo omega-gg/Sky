@@ -409,6 +409,11 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
                                                                const QColor & background)
 #endif
 {
+#ifdef SK_NO_ITEM_SHOT
+    Q_UNUSED(item); Q_UNUSED(background);
+
+    return QPixmap();
+#else
     Q_ASSERT(item);
 
     QSize size = item->boundingRect().size().toSize();
@@ -445,6 +450,7 @@ WControllerView::WControllerView() : WController(new WControllerViewPrivate(this
     painter.end();
 
     return pixmap;
+#endif
 }
 
 #ifdef QT_4
