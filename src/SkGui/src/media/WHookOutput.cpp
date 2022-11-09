@@ -598,10 +598,20 @@ WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
 
     stop();
 
-    d->source = QString();
+    if (d->source.isEmpty())
+    {
+        setDuration   (-1);
+        setCurrentTime(-1);
+    }
+    else
+    {
+        d->source = QString();
 
-    setDuration   (-1);
-    setCurrentTime(-1);
+        setDuration   (-1);
+        setCurrentTime(-1);
+
+        emit sourceChanged();
+    }
 
     // NOTE: We clear the progress in case we're in the middle of it.
     setProgress(0);
