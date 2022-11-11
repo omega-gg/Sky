@@ -1486,10 +1486,12 @@ void WViewPrivate::onGeometryChanged()
 #endif
 
 #ifdef SK_DESKTOP
-    if (maximized == false && fullScreen == false)
+    // NOTE: When maximized or full screen, we reset the normal geometry.
+    if (maximized || fullScreen)
     {
-        q->checkPosition();
+        geometryNormal = q->getDefaultGeometry();
     }
+    else q->checkPosition();
 #else
     q->setGeometry(q->availableGeometry());
 #endif
