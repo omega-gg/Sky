@@ -42,7 +42,7 @@ WindowsKit_version="10"
 SDK_version="31"
 SDK_version_minimum="21"
 
-NDK_version="23"
+NDK_version="22"
 
 #--------------------------------------------------------------------------------------------------
 # environment
