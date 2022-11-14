@@ -15,7 +15,7 @@ Qt6_version="6.3.0"
 
 VLC_version="3.0.17.3"
 
-libtorrent_version="2.0.8"
+libtorrent_version="2.0.6"
 
 Boost_version="1.78.0"
 
