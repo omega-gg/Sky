@@ -157,6 +157,7 @@ Style
     property int label_size: buttonTouch_size
 
     property int label_padding: buttonTouch_padding
+    property int label_spacing: buttonTouch_spacing
 
     property real label_opacity: buttonTouch_opacity
 
@@ -189,6 +190,13 @@ Style
     // LabelStream
 
     property int labelStream_padding: dp8
+//#END
+
+//#LabelWide*
+    //---------------------------------------------------------------------------------------------
+    // LabelWide
+
+    property int labelWide_margins: buttonWide_margins
 //#END
 
 //#Popup
