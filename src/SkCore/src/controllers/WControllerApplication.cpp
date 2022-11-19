@@ -64,6 +64,9 @@
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
 #include <QRandomGenerator>
 #endif
+#ifdef Q_OS_WIN
+#include <QSettings>
+#endif
 #ifdef Q_OS_ANDROID
 #ifdef QT_5
     #include <QtAndroid>
@@ -526,6 +529,17 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
     return (flags | Qt::KeypadModifier);
 #else
     return flags;
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ void WControllerApplication::shutdown()
+{
+#ifdef Q_OS_WIN
+    QProcess::startDetached("shutdown", QStringList() << "/s" << "/f" << "/t" << "0");
+#else
+    QProcess::startDetached("shutdown", QStringList() << "-s" << "-f" << "-t" << "0");
 #endif
 }
 
@@ -2102,6 +2116,46 @@ void WControllerApplication::setApplicationUrl(const QString & url)
     d->applicationUrl = url;
 
     emit applicationUrlChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool WControllerApplication::runOnStartup() const
+{
+#ifdef Q_OS_WIN
+    QSettings settings("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                       QSettings::NativeFormat);
+
+    QString name = QCoreApplication::applicationFilePath();
+
+    return settings.contains(WControllerFile::fileBaseName(name));
+#else
+    return false;
+#endif
+}
+
+void WControllerApplication::setRunOnStartup(bool enabled)
+{
+#ifdef Q_OS_WIN
+    QSettings settings("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                       QSettings::NativeFormat);
+
+    QString path = QCoreApplication::applicationFilePath();
+
+    QString name = WControllerFile::fileBaseName(path);
+
+    if (settings.contains(name) == enabled) return;
+
+    if (enabled)
+    {
+        settings.setValue(name, path.replace('/', '\\'));
+    }
+    else settings.remove(name);
+
+    emit runOnStartupChanged();
+#else
+    Q_UNUSED(enabled);
+#endif
 }
 
 #ifndef SK_CONSOLE

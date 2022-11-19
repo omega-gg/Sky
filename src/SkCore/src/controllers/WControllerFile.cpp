@@ -1019,6 +1019,20 @@ WControllerFileReply * WControllerFile::startCreatePaths(const QStringList & pat
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ QString WControllerFile::fileBaseName(const QUrl & url)
+{
+    QString name = url.fileName();
+
+    return name.left(name.indexOf('.'));
+}
+
+/* Q_INVOKABLE static */ QString WControllerFile::fileBaseName(const QString & string)
+{
+    return fileBaseName(QUrl(string));
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE static */ QString WControllerFile::currentPath(const QString & fileName)
 {
     return QDir::currentPath() + '/' + fileName;

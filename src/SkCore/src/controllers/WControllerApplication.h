@@ -75,6 +75,9 @@ class SK_CORE_EXPORT WControllerApplication : public QObject, public WPrivatable
     Q_PROPERTY(QString applicationUrl READ applicationUrl WRITE setApplicationUrl
                NOTIFY applicationUrlChanged)
 
+    Q_PROPERTY(bool runOnStartup READ runOnStartup WRITE setRunOnStartup
+               NOTIFY runOnStartupChanged)
+
 #ifndef SK_CONSOLE
     Q_PROPERTY(Mode defaultMode READ defaultMode WRITE setDefaultMode NOTIFY defaultModeChanged)
 
@@ -146,6 +149,8 @@ public: // Static functions
 
     // NOTE iOS: This function is defined in WControllerApplication.mm
     Q_INVOKABLE static void vibrate(int msec);
+
+    Q_INVOKABLE static void shutdown();
 
 #ifdef SK_MOBILE
     // NOTE iOS: This function is defined in WControllerApplication.mm
@@ -432,6 +437,8 @@ signals:
 
     void applicationUrlChanged();
 
+    void runOnStartupChanged();
+
 #ifndef SK_CONSOLE
     void defaultModeChanged();
 
@@ -478,6 +485,9 @@ public: // Properties
 
     QString applicationUrl() const;
     void    setApplicationUrl(const QString & url);
+
+    bool runOnStartup() const;
+    void setRunOnStartup(bool enabled);
 
 #ifndef SK_CONSOLE
     Mode defaultMode() const;
