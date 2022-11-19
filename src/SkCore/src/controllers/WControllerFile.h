@@ -217,6 +217,7 @@ public: // Static functions
     Q_INVOKABLE static QString fileAbsolute(const QUrl    & url);
     Q_INVOKABLE static QString fileAbsolute(const QString & string);
 
+    // NOTE: Returns the file name without the suffix.
     Q_INVOKABLE static QString fileBaseName(const QUrl    & url);
     Q_INVOKABLE static QString fileBaseName(const QString & string);
 
