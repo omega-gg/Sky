@@ -2120,6 +2120,8 @@ void WControllerApplication::setApplicationUrl(const QString & url)
 
 //-------------------------------------------------------------------------------------------------
 
+#ifdef SK_DESKTOP
+
 bool WControllerApplication::runOnStartup() const
 {
 #ifdef Q_OS_WIN
@@ -2157,6 +2159,8 @@ void WControllerApplication::setRunOnStartup(bool enabled)
     Q_UNUSED(enabled);
 #endif
 }
+
+#endif
 
 #ifndef SK_CONSOLE
 

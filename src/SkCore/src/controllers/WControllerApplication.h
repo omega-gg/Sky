@@ -75,8 +75,10 @@ class SK_CORE_EXPORT WControllerApplication : public QObject, public WPrivatable
     Q_PROPERTY(QString applicationUrl READ applicationUrl WRITE setApplicationUrl
                NOTIFY applicationUrlChanged)
 
+#ifdef SK_DESKTOP
     Q_PROPERTY(bool runOnStartup READ runOnStartup WRITE setRunOnStartup
                NOTIFY runOnStartupChanged)
+#endif
 
 #ifndef SK_CONSOLE
     Q_PROPERTY(Mode defaultMode READ defaultMode WRITE setDefaultMode NOTIFY defaultModeChanged)
@@ -437,7 +439,9 @@ signals:
 
     void applicationUrlChanged();
 
+#ifdef SK_DESKTOP
     void runOnStartupChanged();
+#endif
 
 #ifndef SK_CONSOLE
     void defaultModeChanged();
@@ -486,8 +490,10 @@ public: // Properties
     QString applicationUrl() const;
     void    setApplicationUrl(const QString & url);
 
+#ifdef SK_DESKTOP
     bool runOnStartup() const;
     void setRunOnStartup(bool enabled);
+#endif
 
 #ifndef SK_CONSOLE
     Mode defaultMode() const;
