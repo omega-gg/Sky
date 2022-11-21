@@ -2128,9 +2128,9 @@ bool WControllerApplication::runOnStartup() const
     QSettings settings("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
                        QSettings::NativeFormat);
 
-    QString path = QCoreApplication::applicationFilePath();
+    QString fileName = QCoreApplication::applicationFilePath();
 
-    return settings.contains(WControllerFile::fileBaseName(path));
+    return settings.contains(WControllerFile::fileBaseName(fileName));
 #else
     return false;
 #endif
@@ -2142,15 +2142,15 @@ void WControllerApplication::setRunOnStartup(bool enabled)
     QSettings settings("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
                        QSettings::NativeFormat);
 
-    QString path = QCoreApplication::applicationFilePath();
+    QString fileName = QCoreApplication::applicationFilePath();
 
-    QString name = WControllerFile::fileBaseName(path);
+    QString name = WControllerFile::fileBaseName(fileName);
 
     if (settings.contains(name) == enabled) return;
 
     if (enabled)
     {
-        settings.setValue(name, quote(QDir::toNativeSeparators(path)));
+        settings.setValue(name, quote(QDir::toNativeSeparators(fileName)));
     }
     else settings.remove(name);
 
