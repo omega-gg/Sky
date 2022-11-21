@@ -1019,20 +1019,6 @@ WControllerFileReply * WControllerFile::startCreatePaths(const QStringList & pat
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE static */ QString WControllerFile::fileBaseName(const QUrl & url)
-{
-    QString name = url.fileName();
-
-    return name.left(name.indexOf('.'));
-}
-
-/* Q_INVOKABLE static */ QString WControllerFile::fileBaseName(const QString & string)
-{
-    return fileBaseName(QUrl(string));
-}
-
-//-------------------------------------------------------------------------------------------------
-
 /* Q_INVOKABLE static */ QString WControllerFile::currentPath(const QString & fileName)
 {
     return QDir::currentPath() + '/' + fileName;
@@ -1053,6 +1039,22 @@ WControllerFileReply * WControllerFile::startCreatePaths(const QStringList & pat
 /* Q_INVOKABLE static */ QString WControllerFile::applicationFileUrl(const QString & fileName)
 {
     return fileUrl(applicationPath(fileName));
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ QString WControllerFile::fileBaseName(const QString & fileName)
+{
+    int index = fileName.lastIndexOf('/');
+
+    if (index == -1)
+    {
+        return fileName.left(fileName.indexOf('.'));
+    }
+
+    QString name = fileName.mid(index + 1);
+
+    return name.left(name.indexOf('.'));
 }
 
 //-------------------------------------------------------------------------------------------------
