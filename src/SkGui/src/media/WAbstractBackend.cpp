@@ -1583,7 +1583,6 @@ void WAbstractBackend::setCurrentOutput(int index)
         //       way we can restore the currentOutput later.
         d->outputData = *output;
 
-        // NOTE: The first index is the player itself so we substract one.
         backendSetCurrentOutput(output);
     }
     else d->outputData = WBackendOutput();

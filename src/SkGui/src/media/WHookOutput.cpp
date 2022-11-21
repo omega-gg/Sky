@@ -82,7 +82,7 @@ void WHookOutputPrivate::resetSettings()
         emit q->settingsChanged();
     }
 
-    q->setVolume(1.0);
+    applyVolume(1.0);
 
     if (screenCount != 1)
     {
@@ -91,11 +91,11 @@ void WHookOutputPrivate::resetSettings()
         emit q->screenCountChanged();
     }
 
-    q->setScreen(0);
+    applyScreen(0);
 
-    q->setFullScreen(false);
+    applyFullScreen(false);
 
-    q->setVideoTag(false);
+    applyVideoTag(false);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -243,9 +243,9 @@ void WHookOutputPrivate::onCurrentOutputChanged()
 
     if (currentData)
     {
-        client.disconnectHost();
+        currentData = NULL;
 
-        setActive(false);
+        client.disconnectHost();
     }
 
     currentData = data;
@@ -323,12 +323,15 @@ void WHookOutputPrivate::onConnectedChanged()
         QObject::disconnect(backend, SIGNAL(trackAudioChanged()), q, SLOT(onAudioChanged   ()));
         QObject::disconnect(backend, SIGNAL(subtitleChanged  ()), q, SLOT(onSubtitleChanged()));
 
-        if (currentData != data) return;
+        // NOTE: When we lose the connection we stop the playback and select the default output.
+        if (currentData == data)
+        {
+            currentData = NULL;
 
-        currentData = NULL;
+            backend->stop();
 
-        // NOTE: When we loose the connection we select the default output.
-        backend->setCurrentOutput(0);
+            backend->setCurrentOutput(0);
+        }
 
         setActive(false);
 
@@ -513,9 +516,9 @@ WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
 {
     Q_D(WHookOutput);
 
-    d->client.disconnectHost();
+    d->currentData = NULL;
 
-    d->setActive(false);
+    d->client.disconnectHost();
 }
 
 //-------------------------------------------------------------------------------------------------
