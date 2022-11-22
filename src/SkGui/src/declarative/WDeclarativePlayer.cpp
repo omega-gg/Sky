@@ -657,25 +657,36 @@ void WDeclarativePlayerPrivate::onConnectedChanged()
 
     if (server->isConnected())
     {
+        if (view == NULL) return;
+
         server->sendReply(WBroadcastReply::VOLUME, QString::number(backend->volume()));
 
-        if (view)
-        {
-            onScreen();
+        onScreen();
 
-            server->sendReply(WBroadcastReply::FULLSCREEN, QString::number(view->isFullScreen()));
+        server->sendReply(WBroadcastReply::FULLSCREEN, QString::number(view->isFullScreen()));
 
-            server->sendReply(WBroadcastReply::VIDEOTAG, QString::number(videoTag));
+        server->sendReply(WBroadcastReply::VIDEOTAG, QString::number(videoTag));
+
+#ifdef Q_OS_WIN
+        // NOTE: Currently, runOnStartup is only supported on Windows.
+        server->sendReply(WBroadcastReply::STARTUP, QString::number(sk->runOnStartup()));
+#endif
+
+#ifdef SK_DESKTOP
+        server->sendReply(WBroadcastReply::SHUTDOWN);
+#endif
 
 #ifdef QT_4
-            QObject::connect(qApp->desktop(), SIGNAL(screenCountChanged()), q, SLOT(onScreen()));
+        QObject::connect(qApp->desktop(), SIGNAL(screenCountChanged()), q, SLOT(onScreen()));
 #else
-            QObject::connect(qApp, SIGNAL(screenAdded  (QScreen *)), q, SLOT(onScreen()));
-            QObject::connect(qApp, SIGNAL(screenRemoved(QScreen *)), q, SLOT(onScreen()));
+        QObject::connect(qApp, SIGNAL(screenAdded  (QScreen *)), q, SLOT(onScreen()));
+        QObject::connect(qApp, SIGNAL(screenRemoved(QScreen *)), q, SLOT(onScreen()));
 #endif
-            QObject::connect(view, SIGNAL(availableGeometryChanged()), q, SLOT(onScreen    ()));
-            QObject::connect(view, SIGNAL(fullScreenChanged       ()), q, SLOT(onFullScreen()));
-        }
+
+        QObject::connect(sk, SIGNAL(runOnStartupChanged()), q, SLOT(onStartup()));
+
+        QObject::connect(view, SIGNAL(availableGeometryChanged()), q, SLOT(onScreen    ()));
+        QObject::connect(view, SIGNAL(fullScreenChanged       ()), q, SLOT(onFullScreen()));
 
         QObject::connect(q, SIGNAL(sourceChanged()), q, SLOT(onSource()));
 
@@ -694,11 +705,10 @@ void WDeclarativePlayerPrivate::onConnectedChanged()
     }
     else
     {
-        if (view)
-        {
-            QObject::disconnect(qApp, NULL, q, NULL);
-            QObject::disconnect(view, NULL, q, NULL);
-        }
+        QObject::disconnect(qApp, NULL, q, NULL);
+        QObject::disconnect(sk,   NULL, q, NULL);
+
+        if (view) QObject::disconnect(view, NULL, q, NULL);
 
         QObject::disconnect(q, SIGNAL(sourceChanged()), q, SLOT(onSource()));
 
@@ -922,6 +932,14 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
 
         q->setVideoTag(message.parameters.first().toInt());
     }
+    else if (type == WBroadcastMessage::STARTUP)
+    {
+        sk->setRunOnStartup(message.parameters.first().toInt());
+    }
+    else if (type == WBroadcastMessage::SHUTDOWN)
+    {
+        sk->shutdown();
+    }
 }
 
 void WDeclarativePlayerPrivate::onSource()
@@ -1029,6 +1047,11 @@ void WDeclarativePlayerPrivate::onScreen()
 void WDeclarativePlayerPrivate::onFullScreen()
 {
     server->sendReply(WBroadcastReply::FULLSCREEN, QString::number(view->isFullScreen()));
+}
+
+void WDeclarativePlayerPrivate::onStartup()
+{
+    server->sendReply(WBroadcastReply::STARTUP, QString::number(sk->runOnStartup()));
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -394,7 +394,7 @@ WBroadcastSource & WBroadcastSource::operator=(const WBroadcastSource & other)
              ||
              type == VIDEO || type == AUDIO || type == SUBTITLE || type == VOLUME || type == SCREEN
              ||
-             type == FULLSCREEN || type == VIDEOTAG)
+             type == FULLSCREEN || type == VIDEOTAG || type == STARTUP)
     {
         if (parameters.count() == 1) return;
     }
@@ -449,6 +449,8 @@ QByteArray WBroadcastMessage::generateData() const
     else if (string == "SCREEN")     return SCREEN;
     else if (string == "FULLSCREEN") return FULLSCREEN;
     else if (string == "VIDEOTAG")   return VIDEOTAG;
+    else if (string == "STARTUP")    return STARTUP;
+    else if (string == "SHUTDOWN")   return SHUTDOWN;
     else                             return Unknown;
 }
 
@@ -471,6 +473,8 @@ QByteArray WBroadcastMessage::generateData() const
     else if (type == SCREEN)     return "SCREEN";
     else if (type == FULLSCREEN) return "FULLSCREEN";
     else if (type == VIDEOTAG)   return "VIDEOTAG";
+    else if (type == STARTUP)    return "STARTUP";
+    else if (type == SHUTDOWN)   return "SHUTDOWN";
     else                         return "";
 }
 
@@ -587,6 +591,8 @@ QByteArray WBroadcastReply::generateData() const
     else if (string == "SCREEN")     return SCREEN;
     else if (string == "FULLSCREEN") return FULLSCREEN;
     else if (string == "VIDEOTAG")   return VIDEOTAG;
+    else if (string == "STARTUP")    return STARTUP;
+    else if (string == "SHUTDOWN")   return SHUTDOWN;
     else                             return Unknown;
 }
 
@@ -609,6 +615,8 @@ QByteArray WBroadcastReply::generateData() const
     else if (type == SCREEN)     return "SCREEN";
     else if (type == FULLSCREEN) return "FULLSCREEN";
     else if (type == VIDEOTAG)   return "VIDEOTAG";
+    else if (type == STARTUP)    return "STARTUP";
+    else if (type == SHUTDOWN)   return "SHUTDOWN";
     else                         return "";
 }
 

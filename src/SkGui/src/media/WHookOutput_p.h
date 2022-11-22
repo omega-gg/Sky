@@ -77,6 +77,7 @@ public: // Functions
     bool applyScreen    (int   index);
     bool applyFullScreen(bool  fullScreen);
     bool applyVideoTag  (bool  enabled);
+    bool applyStartup   (bool  enabled);
 
     WHookOutputData * getData(const WBroadcastSource & source);
     WHookOutputData * getData(const WBackendOutput   * output);
@@ -117,6 +118,8 @@ public: // Variables
     bool fullScreen;
 
     bool videoTag;
+
+    bool startup;
 
 protected:
     W_DECLARE_PUBLIC(WHookOutput)

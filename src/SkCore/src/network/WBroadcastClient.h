@@ -89,7 +89,9 @@ public: // Enums
         VOLUME,
         SCREEN,
         FULLSCREEN,
-        VIDEOTAG
+        VIDEOTAG,
+        STARTUP,
+        SHUTDOWN
     };
 
 public:
@@ -147,7 +149,9 @@ public: // Enums
         VOLUME,
         SCREEN,
         FULLSCREEN,
-        VIDEOTAG
+        VIDEOTAG,
+        STARTUP,
+        SHUTDOWN
     };
 
 public:

@@ -122,6 +122,7 @@ public: // Slots
     void onAudios    ();
     void onScreen    ();
     void onFullScreen();
+    void onStartup   ();
 
     void onHookDestroyed    ();
     void onPlaylistDestroyed();

@@ -49,6 +49,8 @@ void WHookOutputPrivate::init()
 
     videoTag = false;
 
+    startup = false;
+
     QObject::connect(&client, SIGNAL(connectedChanged()), q, SIGNAL(connectedChanged()));
 
     QObject::connect(backend, SIGNAL(currentOutputChanged()), q, SLOT(onCurrentOutputChanged()));
@@ -96,6 +98,8 @@ void WHookOutputPrivate::resetSettings()
     applyFullScreen(false);
 
     applyVideoTag(false);
+
+    applyStartup(false);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -150,6 +154,19 @@ bool WHookOutputPrivate::applyVideoTag(bool enabled)
     videoTag = enabled;
 
     emit q->videoTagChanged();
+
+    return true;
+}
+
+bool WHookOutputPrivate::applyStartup(bool enabled)
+{
+    if (this->startup == enabled) return false;
+
+    Q_Q(WHookOutput);
+
+    startup = enabled;
+
+    emit q->startupChanged();
 
     return true;
 }
@@ -324,8 +341,10 @@ void WHookOutputPrivate::onConnectedChanged()
         QObject::disconnect(backend, SIGNAL(subtitleChanged  ()), q, SLOT(onSubtitleChanged()));
 
         // NOTE: When we lose the connection we stop the playback and select the default output.
-        if (currentData == data)
+        if (currentData)
         {
+            qWarning("WHookOutputPrivate::onConnectedChanged: Connection lost.");
+
             currentData = NULL;
 
             backend->stop();
@@ -478,6 +497,16 @@ void WHookOutputPrivate::onReply(const WBroadcastReply & reply)
 
         addSetting("VIDEOTAG");
     }
+    else if (type == WBroadcastReply::STARTUP)
+    {
+        applyStartup(reply.parameters.first().toInt());
+
+        addSetting("STARTUP");
+    }
+    else if (type == WBroadcastReply::SHUTDOWN)
+    {
+        addSetting("SHUTDOWN");
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -528,6 +557,13 @@ WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
     Q_D(const WHookOutput);
 
     return d->settings.contains(name.toUpper());
+}
+
+/* Q_INVOKABLE */ void WHookOutput::shutdown()
+{
+    Q_D(WHookOutput);
+
+    d->client.sendMessage(WBroadcastMessage::SHUTDOWN);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -599,7 +635,7 @@ WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
 {
     Q_D(WHookOutput);
 
-    stop();
+    setState(WAbstractBackend::StateStopped);
 
     if (d->source.isEmpty())
     {
@@ -617,7 +653,7 @@ WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
     }
 
     // NOTE: We clear the progress in case we're in the middle of it.
-    setProgress(0);
+    setProgress(0.0);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -722,6 +758,20 @@ void WHookOutput::setVideoTag(bool enabled)
     if (d->applyVideoTag(enabled) == false) return;
 
     d->client.sendMessage(WBroadcastMessage::VIDEOTAG, QString::number(enabled));
+}
+
+bool WHookOutput::startup() const
+{
+    Q_D(const WHookOutput); return d->startup;
+}
+
+void WHookOutput::setStartup(bool enabled)
+{
+    Q_D(WHookOutput);
+
+    if (d->applyStartup(enabled) == false) return;
+
+    d->client.sendMessage(WBroadcastMessage::STARTUP, QString::number(enabled));
 }
 
 #endif // SK_NO_HOOKOUTPUT

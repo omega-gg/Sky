@@ -48,6 +48,8 @@ class SK_GUI_EXPORT WHookOutput : public WAbstractHook
 
     Q_PROPERTY(bool videoTag READ videoTag WRITE setVideoTag NOTIFY videoTagChanged)
 
+    Q_PROPERTY(bool startup READ startup WRITE setStartup NOTIFY startupChanged)
+
 public:
     WHookOutput(WAbstractBackend * backend);
 protected:
@@ -59,6 +61,8 @@ public: // Interface
     Q_INVOKABLE void disconnectHost();
 
     Q_INVOKABLE bool hasSetting(const QString & name) const;
+
+    Q_INVOKABLE void shutdown();
 
 public: // WAbstractHook reimplementation
     /* Q_INVOKABLE virtual */ void loadSource(const QString & url, int duration    = -1,
@@ -93,6 +97,8 @@ signals:
 
     void videoTagChanged();
 
+    void startupChanged();
+
 public: // Properties
     bool isConnected() const;
 
@@ -111,6 +117,9 @@ public: // Properties
 
     bool videoTag() const;
     void setVideoTag(bool enabled);
+
+    bool startup() const;
+    void setStartup(bool enabled);
 
 private:
     W_DECLARE_PRIVATE(WHookOutput)

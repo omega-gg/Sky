@@ -488,6 +488,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onAudios    ())
     Q_PRIVATE_SLOT(d_func(), void onScreen    ())
     Q_PRIVATE_SLOT(d_func(), void onFullScreen())
+    Q_PRIVATE_SLOT(d_func(), void onStartup   ())
 
     Q_PRIVATE_SLOT(d_func(), void onHookDestroyed    ())
     Q_PRIVATE_SLOT(d_func(), void onPlaylistDestroyed())
