@@ -488,7 +488,9 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onAudios    ())
     Q_PRIVATE_SLOT(d_func(), void onScreen    ())
     Q_PRIVATE_SLOT(d_func(), void onFullScreen())
+#ifdef SK_DESKTOP
     Q_PRIVATE_SLOT(d_func(), void onStartup   ())
+#endif
 
     Q_PRIVATE_SLOT(d_func(), void onHookDestroyed    ())
     Q_PRIVATE_SLOT(d_func(), void onPlaylistDestroyed())

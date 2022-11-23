@@ -668,7 +668,7 @@ void WDeclarativePlayerPrivate::onConnectedChanged()
         server->sendReply(WBroadcastReply::VIDEOTAG, QString::number(videoTag));
 
 #ifdef Q_OS_WIN
-        // NOTE: Currently, runOnStartup is only supported on Windows.
+        // FIXME: Currently, runOnStartup is only supported on Windows.
         server->sendReply(WBroadcastReply::STARTUP, QString::number(sk->runOnStartup()));
 #endif
 
@@ -683,7 +683,9 @@ void WDeclarativePlayerPrivate::onConnectedChanged()
         QObject::connect(qApp, SIGNAL(screenRemoved(QScreen *)), q, SLOT(onScreen()));
 #endif
 
+#ifdef SK_DESKTOP
         QObject::connect(sk, SIGNAL(runOnStartupChanged()), q, SLOT(onStartup()));
+#endif
 
         QObject::connect(view, SIGNAL(availableGeometryChanged()), q, SLOT(onScreen    ()));
         QObject::connect(view, SIGNAL(fullScreenChanged       ()), q, SLOT(onFullScreen()));
@@ -932,6 +934,7 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
 
         q->setVideoTag(message.parameters.first().toInt());
     }
+#ifdef SK_DESKTOP
     else if (type == WBroadcastMessage::STARTUP)
     {
         sk->setRunOnStartup(message.parameters.first().toInt());
@@ -940,6 +943,7 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
     {
         sk->shutdown();
     }
+#endif
 }
 
 void WDeclarativePlayerPrivate::onSource()
@@ -1049,10 +1053,14 @@ void WDeclarativePlayerPrivate::onFullScreen()
     server->sendReply(WBroadcastReply::FULLSCREEN, QString::number(view->isFullScreen()));
 }
 
+#ifdef SK_DESKTOP
+
 void WDeclarativePlayerPrivate::onStartup()
 {
     server->sendReply(WBroadcastReply::STARTUP, QString::number(sk->runOnStartup()));
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 

@@ -122,7 +122,9 @@ public: // Slots
     void onAudios    ();
     void onScreen    ();
     void onFullScreen();
+#ifdef SK_DESKTOP
     void onStartup   ();
+#endif
 
     void onHookDestroyed    ();
     void onPlaylistDestroyed();
