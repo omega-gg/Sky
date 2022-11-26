@@ -140,6 +140,7 @@ void WVlcEnginePrivate::init(const QStringList & options, QThread * thread)
                 "--no-osd",            /* No video overlay */
                 "--no-stats",          /* No statistics    */
                 "--no-media-library",  /* No Media Library */
+                "--text-renderer=none" /* No FreeType      */
                 // NOTE: This is useful for the mkv default langauge.
                 "--audio-language=en"  /* Audio english    */
                 //"--input-fast-seek", /* Fast seek        */
