@@ -538,7 +538,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 {
 #ifdef Q_OS_WIN
     QProcess::startDetached("shutdown", QStringList() << "/s" << "/f" << "/t" << "0");
-#elif defined(Q_OS_IOS) === false
+#elif defined(Q_OS_IOS) == false
     QProcess::startDetached("shutdown", QStringList() << "-s" << "-f" << "-t" << "0");
 #endif
 }
