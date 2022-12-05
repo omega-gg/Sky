@@ -34,6 +34,33 @@
 class WBarcodeWriterPrivate;
 class WAbstractThreadAction;
 
+//-------------------------------------------------------------------------------------------------
+// WBarcodeWriterTag
+//-------------------------------------------------------------------------------------------------
+
+struct WBarcodeTag
+{
+    WBarcodeTag()
+    {
+        size    = 512;
+        padding = 28;
+
+        margins = 1;
+    }
+
+    QString cover;
+    QString prefix;
+
+    int size;
+    int padding;
+
+    int margins;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WBarcodeWriter
+//-------------------------------------------------------------------------------------------------
+
 class SK_BARCODE_EXPORT WBarcodeWriter : public QObject, public WPrivatable
 {
     Q_OBJECT
@@ -51,25 +78,20 @@ public: // Static functions
                                       Type type = Text, const QString & prefix = QString());
 
     Q_INVOKABLE static QImage write(const QString & text,
-                                    Type type = Text, const QString & prefix = QString());
+                                    Type type = Text, const QString & prefix = QString(),
+                                    int margins = 1);
 
     // NOTE: When providing a cover the generated tag is twice the size.
-    Q_INVOKABLE static QImage writeTag(const QString & text,
-                                       const QString & background,
-                                       const QString & cover  = QString(),
-                                       const QString & prefix = QString(),
-                                       int             size   = 512,
-                                       int             margin = 28);
+    Q_INVOKABLE static QImage writeTag(const QString     & text,
+                                       const QString     & background,
+                                       const WBarcodeTag & parameters = WBarcodeTag());
 
     // NOTE: When providing a cover the generated tag is twice the size.
-    Q_INVOKABLE static bool writeTagFile(const QString & fileName,
-                                         const QString & text,
-                                         const QString & background,
-                                         const QString & cover  = QString(),
-                                         const QString & prefix = QString(),
-                                         int             size   = 512,
-                                         int             margin = 28,
-                                         const QString & format = "png");
+    Q_INVOKABLE static bool writeTagFile(const QString     & fileName,
+                                         const QString     & text,
+                                         const QString     & background,
+                                         const WBarcodeTag & parameters = WBarcodeTag(),
+                                         const QString     & format     = "png");
 
 
     // NOTE: The 'method' format is complete(const QString &).
@@ -84,29 +106,26 @@ public: // Static functions
                                                           QObject       * receiver = NULL,
                                                           const char    * method   = NULL,
                                                           Type            type     = Text,
-                                                          const QString & prefix   = QString());
+                                                          const QString & prefix   = QString(),
+                                                          int             margins  = 1);
 
     // NOTE: The 'method' format is complete(const QImage &).
-    Q_INVOKABLE static WAbstractThreadAction * startWriteTag(const QString & text,
-                                                             const QString & background,
-                                                             QObject       * receiver = NULL,
-                                                             const char    * method   = NULL,
-                                                             const QString & cover    = QString(),
-                                                             const QString & prefix   = QString(),
-                                                             int             size     = 512,
-                                                             int             margin   = 28);
+    Q_INVOKABLE static
+    WAbstractThreadAction * startWriteTag(const QString     & text,
+                                          const QString     & background,
+                                          QObject           * receiver   = NULL,
+                                          const char        * method     = NULL,
+                                          const WBarcodeTag & parameters = WBarcodeTag());
 
     // NOTE: The 'method' format is complete(bool).
-    Q_INVOKABLE static WAbstractThreadAction * startWriteTagFile(const QString & fileName,
-                                                                 const QString & text,
-                                                                 const QString & background,
-                                                                 QObject       * receiver = NULL,
-                                                                 const char    * method   = NULL,
-                                                                 const QString & cover    = QString(),
-                                                                 const QString & prefix   = QString(),
-                                                                 int             size     = 512,
-                                                                 int             margin   = 28,
-                                                                 const QString & format   = "png");
+    Q_INVOKABLE static
+    WAbstractThreadAction * startWriteTagFile(const QString     & fileName,
+                                              const QString     & text,
+                                              const QString     & background,
+                                              QObject           * receiver   = NULL,
+                                              const char        * method     = NULL,
+                                              const WBarcodeTag & parameters = WBarcodeTag(),
+                                              const QString     & format     = "png");
 
     // NOTE: Returns a standardized VideoTag fileName.
     Q_INVOKABLE static QString getTagName(const QString & title,
