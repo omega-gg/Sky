@@ -41,7 +41,10 @@ Player
 
     property bool fade: false
 
-    // NOTE: This is the desired volume when we are not fading in / out.
+    // NOTE: This is the default volume when we are faded out.
+    property real volumeBase: 0.0
+
+    // NOTE: This is the desired volume when we are done fading in.
     property real volumeActive: slides.volume
 
     //---------------------------------------------------------------------------------------------
@@ -75,7 +78,8 @@ Player
 
     backend: BackendVlc {}
 
-    volume: (fade == false || (slides && pVolume)) ? volumeActive : 0.0
+    volume: (fade == false || (slides && pVolume)) ? volumeActive
+                                                   : volumeBase
 
     //---------------------------------------------------------------------------------------------
     // Events
@@ -222,24 +226,24 @@ Player
         {
             pApplyVolume(false);
 
-            while (volume)
+            while (volume != volumeBase)
             {
                 sk.processEvents();
             }
         }
     }
 
-    function pApplyVolume(volume)
+    function pApplyVolume(enabled)
     {
-        if (pVolume == volume) return;
+        if (pVolume == enabled) return;
 
-        if (volume)
+        if (enabled)
         {
              pDuration = durationFadeIn;
         }
         else pDuration = durationFadeOut;
 
-        pVolume = volume;
+        pVolume = enabled;
     }
 
     //---------------------------------------------------------------------------------------------

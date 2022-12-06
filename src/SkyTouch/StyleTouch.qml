@@ -363,12 +363,12 @@ Style
     property url icon_check: "icons/check.svg"
 //#END
 
-//#icons_direction:ButtonWideAction
-    property url icon_down: "icons/chevron-down.svg"
-//#END
-
 //#icons_direction:ButtonWideAction:ComponentCompletion
     property url icon_right: "icons/chevron-right.svg"
+//#END
+
+//#icons_direction:ButtonWideAction
+    property url icon_down: "icons/chevron-down.svg"
 //#END
 
 //#icons_loading:LabelLoading

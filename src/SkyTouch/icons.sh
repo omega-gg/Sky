@@ -21,8 +21,8 @@ cp "$solid"/window-minimize.svg icons
 
 cp "$solid"/check.svg icons
 
-cp "$solid"/chevron-down.svg  icons
 cp "$solid"/chevron-right.svg icons
+cp "$solid"/chevron-down.svg  icons
 
 cp "$solid"/backward.svg icons
 cp "$solid"/forward.svg icons
