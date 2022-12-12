@@ -2150,7 +2150,11 @@ void WControllerApplication::setRunOnStartup(bool enabled)
 
     if (enabled)
     {
-        settings.setValue(name, quote(QDir::toNativeSeparators(fileName)));
+        QString value = quote(QDir::toNativeSeparators(fileName));
+
+        qDebug("SETTING %s %s", name.C_STR, value.C_STR);
+
+        settings.setValue(name, value);
     }
     else settings.remove(name);
 
