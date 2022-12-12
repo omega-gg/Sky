@@ -256,6 +256,8 @@ protected: // WPlaylistWatcher implementation
 signals:
     void ended();
 
+    void clearCache();
+
     void backendChanged();
     void hooksChanged  ();
 

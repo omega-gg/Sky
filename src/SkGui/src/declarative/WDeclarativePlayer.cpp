@@ -667,6 +667,8 @@ void WDeclarativePlayerPrivate::onConnectedChanged()
 
         server->sendReply(WBroadcastReply::VIDEOTAG, QString::number(videoTag));
 
+        server->sendReply(WBroadcastReply::CLEAR);
+
 #ifdef Q_OS_WIN
         // FIXME: Currently, runOnStartup is only supported on Windows.
         server->sendReply(WBroadcastReply::STARTUP, QString::number(sk->runOnStartup()));
@@ -933,6 +935,12 @@ void WDeclarativePlayerPrivate::onMessage(const WBroadcastMessage & message)
         Q_Q(WDeclarativePlayer);
 
         q->setVideoTag(message.parameters.first().toInt());
+    }
+    else if (type == WBroadcastMessage::CLEAR)
+    {
+        Q_Q(WDeclarativePlayer);
+
+        emit q->clearCache();
     }
 #ifdef SK_DESKTOP
     else if (type == WBroadcastMessage::STARTUP)

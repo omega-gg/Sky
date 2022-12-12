@@ -62,7 +62,8 @@ public: // Interface
 
     Q_INVOKABLE bool hasSetting(const QString & name) const;
 
-    Q_INVOKABLE void shutdown();
+    Q_INVOKABLE void clearCache();
+    Q_INVOKABLE void shutdown  ();
 
 public: // WAbstractHook reimplementation
     /* Q_INVOKABLE virtual */ void loadSource(const QString & url, int duration    = -1,

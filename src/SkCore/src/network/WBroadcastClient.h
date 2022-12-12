@@ -90,6 +90,7 @@ public: // Enums
         SCREEN,
         FULLSCREEN,
         VIDEOTAG,
+        CLEAR,
         STARTUP,
         SHUTDOWN
     };
@@ -150,6 +151,7 @@ public: // Enums
         SCREEN,
         FULLSCREEN,
         VIDEOTAG,
+        CLEAR,
         STARTUP,
         SHUTDOWN
     };

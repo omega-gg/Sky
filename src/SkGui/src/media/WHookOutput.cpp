@@ -497,6 +497,10 @@ void WHookOutputPrivate::onReply(const WBroadcastReply & reply)
 
         addSetting("VIDEOTAG");
     }
+    else if (type == WBroadcastReply::CLEAR)
+    {
+        addSetting("CLEAR");
+    }
     else if (type == WBroadcastReply::STARTUP)
     {
         applyStartup(reply.parameters.first().toInt());
@@ -557,6 +561,13 @@ WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
     Q_D(const WHookOutput);
 
     return d->settings.contains(name.toUpper());
+}
+
+/* Q_INVOKABLE */ void WHookOutput::clearCache()
+{
+    Q_D(WHookOutput);
+
+    d->client.sendMessage(WBroadcastMessage::CLEAR);
 }
 
 /* Q_INVOKABLE */ void WHookOutput::shutdown()

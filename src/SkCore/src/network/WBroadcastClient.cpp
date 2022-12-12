@@ -449,6 +449,7 @@ QByteArray WBroadcastMessage::generateData() const
     else if (string == "SCREEN")     return SCREEN;
     else if (string == "FULLSCREEN") return FULLSCREEN;
     else if (string == "VIDEOTAG")   return VIDEOTAG;
+    else if (string == "CLEAR")      return CLEAR;
     else if (string == "STARTUP")    return STARTUP;
     else if (string == "SHUTDOWN")   return SHUTDOWN;
     else                             return Unknown;
@@ -473,6 +474,7 @@ QByteArray WBroadcastMessage::generateData() const
     else if (type == SCREEN)     return "SCREEN";
     else if (type == FULLSCREEN) return "FULLSCREEN";
     else if (type == VIDEOTAG)   return "VIDEOTAG";
+    else if (type == CLEAR)      return "CLEAR";
     else if (type == STARTUP)    return "STARTUP";
     else if (type == SHUTDOWN)   return "SHUTDOWN";
     else                         return "";
@@ -591,6 +593,7 @@ QByteArray WBroadcastReply::generateData() const
     else if (string == "SCREEN")     return SCREEN;
     else if (string == "FULLSCREEN") return FULLSCREEN;
     else if (string == "VIDEOTAG")   return VIDEOTAG;
+    else if (string == "CLEAR")      return CLEAR;
     else if (string == "STARTUP")    return STARTUP;
     else if (string == "SHUTDOWN")   return SHUTDOWN;
     else                             return Unknown;
@@ -615,6 +618,7 @@ QByteArray WBroadcastReply::generateData() const
     else if (type == SCREEN)     return "SCREEN";
     else if (type == FULLSCREEN) return "FULLSCREEN";
     else if (type == VIDEOTAG)   return "VIDEOTAG";
+    else if (type == CLEAR)      return "CLEAR";
     else if (type == STARTUP)    return "STARTUP";
     else if (type == SHUTDOWN)   return "SHUTDOWN";
     else                         return "";
