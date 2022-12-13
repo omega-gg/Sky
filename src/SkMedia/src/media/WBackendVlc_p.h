@@ -354,6 +354,8 @@ public: // Variables
 
     QList<const WBackendOutput *> outputs;
 
+    int indexOutput;
+
     WMediaReply * reply;
 
     QMetaMethod method;

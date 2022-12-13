@@ -260,9 +260,9 @@ void WHookOutputPrivate::onCurrentOutputChanged()
 
     if (currentData)
     {
-        currentData = NULL;
+        Q_Q(WHookOutput);
 
-        client.disconnectHost();
+        q->disconnectHost();
     }
 
     currentData = data;
@@ -691,7 +691,12 @@ WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
 
 /* virtual */ bool WHookOutput::hookCheck(const QString &)
 {
-    Q_D(WHookOutput); return d->active;
+    Q_D(WHookOutput);
+
+    return (d->active
+            &&
+            // NOTE: Sometimes the current output has already changed when hookCheck is called.
+            d->currentData && d->currentData->output == d->backend->currentOutputPointer());
 }
 
 //-------------------------------------------------------------------------------------------------

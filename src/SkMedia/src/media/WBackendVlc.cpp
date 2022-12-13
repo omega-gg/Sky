@@ -717,6 +717,8 @@ void WBackendVlcPrivate::init()
 
     ratio = Qt::KeepAspectRatio;
 
+    indexOutput = -1;
+
     reply = NULL;
 
     const QMetaObject * meta = q->metaObject();
@@ -1718,7 +1720,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
     //       WHookOutput.
     if (d->currentMedia.isEmpty() || hasStarted() == false) return;
 
-    d->clearMedia();
+    d->clearReply();
 
     d->updateLoading();
 
@@ -1812,7 +1814,23 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
     int index = d->outputs.indexOf(output);
 
+    if (d->indexOutput == index) return;
+
+    d->indexOutput = index;
+
     d->player->setOutput(index);
+
+    // NOTE: When the currentMedia is empty we skip this call. This is useful when using a
+    //       WHookOutput.
+    if (d->currentMedia.isEmpty() || hasStarted() == false) return;
+
+    //---------------------------------------------------------------------------------------------
+    // NOTE: We reload sources when switching between outputs. That's required for Chromecast
+    //       compatiblity mode.
+
+    d->clearReply();
+
+    d->loadSources(true);
 }
 
 //-------------------------------------------------------------------------------------------------

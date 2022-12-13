@@ -181,25 +181,18 @@ void WDeclarativePlayerPrivate::applyPlaylist(WPlaylist * playlist)
 
 void WDeclarativePlayerPrivate::loadSource(const QString & url, int duration, int currentTime)
 {
-    Q_Q(WDeclarativePlayer);
+    bool isPlaying = backend->isPlaying();
 
-    if (updateBackend(url))
-    {
-        backendInterface->loadSource(url, duration, currentTime);
+    updateBackend(url, isPlaying);
 
-        backendInterface->play();
-    }
-    else backendInterface->loadSource(url, duration, currentTime);
+    backendInterface->loadSource(url, duration, currentTime);
 
-    if (shuffle && shuffleLock == false)
-    {
-        resetShuffle();
+    if (isPlaying) backendInterface->play();
 
-        emit q->playlistUpdated();
-    }
+    updateShuffle();
 }
 
-bool WDeclarativePlayerPrivate::updateBackend(const QString & url)
+bool WDeclarativePlayerPrivate::updateBackend(const QString & url, bool isPlaying)
 {
     WBackendInterface * currentBackend = NULL;
     WAbstractHook     * currentHook    = NULL;
@@ -221,7 +214,7 @@ bool WDeclarativePlayerPrivate::updateBackend(const QString & url)
 
     if (backendInterface)
     {
-        if (backend->isPlaying())
+        if (isPlaying)
         {
             // NOTE: We have to freeze the state to avoid clearing highlightedTab.
             keepState = true;
@@ -231,8 +224,6 @@ bool WDeclarativePlayerPrivate::updateBackend(const QString & url)
             keepState = false;
 
             setBackendInterface(currentBackend, currentHook);
-
-            return true;
         }
         else
         {
@@ -243,7 +234,7 @@ bool WDeclarativePlayerPrivate::updateBackend(const QString & url)
     }
     else setBackendInterface(currentBackend, currentHook);
 
-    return false;
+    return true;
 }
 
 void WDeclarativePlayerPrivate::stop()
@@ -267,6 +258,17 @@ void WDeclarativePlayerPrivate::updateRepeat()
 }
 
 //-------------------------------------------------------------------------------------------------
+
+void WDeclarativePlayerPrivate::updateShuffle()
+{
+    if (shuffle == false || shuffleLock) return;
+
+    Q_Q(WDeclarativePlayer);
+
+    resetShuffle();
+
+    emit q->playlistUpdated();
+}
 
 void WDeclarativePlayerPrivate::resetShuffle()
 {
@@ -482,7 +484,21 @@ void WDeclarativePlayerPrivate::onHookUpdated()
 {
     Q_Q(WDeclarativePlayer);
 
-    loadSource(q->source(), q->duration(), q->currentTime());
+    bool isPlaying = backend->isPlaying();
+
+    QString source = q->source();
+
+    int duration    = q->duration   ();
+    int currentTime = q->currentTime();
+
+    // NOTE: When the backendInterface stays the same we don't do anything.
+    if (updateBackend(source, isPlaying) == false) return;
+
+    backendInterface->loadSource(source, duration, currentTime);
+
+    if (isPlaying) backendInterface->play();
+
+    updateShuffle();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -650,8 +666,6 @@ void WDeclarativePlayerPrivate::onCurrentBookmarkUpdated()
 void WDeclarativePlayerPrivate::onConnectedChanged()
 {
     Q_Q(WDeclarativePlayer);
-
-    q->stop();
 
     if (backend == NULL) return;
 

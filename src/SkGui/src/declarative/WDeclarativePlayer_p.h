@@ -67,14 +67,15 @@ public: // Functions
 
     void loadSource(const QString & url, int duration, int currentTime);
 
-    bool updateBackend(const QString & url);
+    bool updateBackend(const QString & url, bool isPlaying);
 
     void stop();
 
     void updateRepeat();
 
-    void resetShuffle();
-    void clearShuffle();
+    void updateShuffle();
+    void resetShuffle ();
+    void clearShuffle ();
 
     void clearPlaylistAndTabs();
 
