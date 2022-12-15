@@ -43,25 +43,6 @@ class SK_CORE_EXPORT WControllerDeclarative : public WController
 {
     Q_OBJECT
 
-    Q_ENUMS(Direction)
-    Q_ENUMS(Corner)
-    Q_ENUMS(IconStyle)
-
-public: // Enums
-    enum Direction { Left, Right, Up, Down };
-
-    enum Corner { TopLeft, TopRight, BottomLeft, BottomRight,
-                  TopLeftCorner, TopRightCorner, BottomLeftCorner, BottomRightCorner };
-
-    enum IconStyle
-    {
-        IconNormal,
-        IconRaised,
-        IconSunken
-    };
-
-    enum Playback { Play, Pause, Stop };
-
 private:
     WControllerDeclarative();
 

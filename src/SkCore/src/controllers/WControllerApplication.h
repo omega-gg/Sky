@@ -49,6 +49,19 @@ class SK_CORE_EXPORT WControllerApplication : public QObject, public WPrivatable
     Q_OBJECT
 
     Q_ENUMS(Type)
+#ifndef SK_CONSOLE
+    Q_ENUMS(Mode)
+#endif
+    Q_ENUMS(Playback)
+
+    //---------------------------------------------------------------------------------------------
+    // QML
+
+    Q_ENUMS(Direction)
+    Q_ENUMS(Corner)
+    Q_ENUMS(IconStyle)
+
+    //---------------------------------------------------------------------------------------------
 
     Q_PROPERTY(Type type READ type CONSTANT)
 
@@ -113,6 +126,21 @@ public: // Enums
 #endif
 
     enum Playback { Play, Pause, Stop };
+
+    //---------------------------------------------------------------------------------------------
+    // QML
+
+    enum Direction { Left, Right, Up, Down };
+
+    enum Corner { TopLeft, TopRight, BottomLeft, BottomRight,
+                  TopLeftCorner, TopRightCorner, BottomLeftCorner, BottomRightCorner };
+
+    enum IconStyle
+    {
+        IconNormal,
+        IconRaised,
+        IconSunken
+    };
 
 private:
     WControllerApplication();
