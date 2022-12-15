@@ -60,6 +60,8 @@ public: // Enums
         IconSunken
     };
 
+    enum Playback { Play, Pause, Stop };
+
 private:
     WControllerDeclarative();
 
