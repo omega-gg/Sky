@@ -532,6 +532,15 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 #endif
 }
 
+#ifndef Q_OS_IOS
+
+/* Q_INVOKABLE static */ void WControllerApplication::showPlayback(const QString &,
+                                                                   const QString &) {}
+
+/* Q_INVOKABLE static */ void WControllerApplication::hidePlayback() {}
+
+#endif
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ void WControllerApplication::shutdown()

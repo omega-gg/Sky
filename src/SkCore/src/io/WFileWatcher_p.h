@@ -48,7 +48,7 @@
 class SK_CORE_EXPORT WFileWatch
 {
 public: // Enums
-    enum FileType { Invalid = 0, File, Folder };
+    enum FileType { Invalid, File, Folder };
 
 public:
     WFileWatch(WFileWatcher * watcher);

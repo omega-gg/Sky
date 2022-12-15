@@ -106,11 +106,13 @@ class SK_CORE_EXPORT WControllerApplication : public QObject, public WPrivatable
 #endif
 
 public: // Enums
-    enum Type { Single = 0, Multiple };
+    enum Type { Single, Multiple };
 
 #ifndef SK_CONSOLE
-    enum Mode { Normal = 0, Maximized, FullScreen, FullScreenMaximized };
+    enum Mode { Normal, Maximized, FullScreen, FullScreenMaximized };
 #endif
+
+    enum Playback { Play, Pause, Stop };
 
 private:
     WControllerApplication();
@@ -148,6 +150,11 @@ public: // Static functions
 #else
     Q_INVOKABLE static Qt::KeyboardModifiers keypad(Qt::KeyboardModifiers flags);
 #endif
+
+    Q_INVOKABLE static void showPlayback(const QString & title,
+                                         const QString & author = QString());
+
+    Q_INVOKABLE static void hidePlayback();
 
     // NOTE iOS: This function is defined in WControllerApplication.mm
     Q_INVOKABLE static void vibrate(int msec);
@@ -427,6 +434,8 @@ signals:
 
     void shareFinished(bool ok);
 #endif
+
+    void playbackUpdated(Playback status);
 
     void aboutToQuit();
 

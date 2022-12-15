@@ -194,6 +194,54 @@ extern void triggerLocalNetworkPrivacyAlertObjC(void) {
 @end
 
 //-------------------------------------------------------------------------------------------------
+// WControllerApplicationPlayback
+//-------------------------------------------------------------------------------------------------
+
+@interface WControllerApplicationPlayback : NSObject
+
+- (void) registerEvents;
+
+@end
+
+@implementation WControllerApplicationPlayback
+
+- (void) registerEvents
+{
+    MPRemoteCommandCenter * center = [MPRemoteCommandCenter sharedCommandCenter];
+
+    [center.playCommand  addTarget:self action:@selector(onEvent:)];
+    [center.pauseCommand addTarget:self action:@selector(onEvent:)];
+    [center.stopCommand  addTarget:self action:@selector(onEvent:)];
+}
+
+- (MPRemoteCommandHandlerStatus) onEvent: (MPRemoteCommandEvent *) event
+{
+    MPRemoteCommandCenter * center = [MPRemoteCommandCenter sharedCommandCenter];
+
+    if (event.command == center.playCommand)
+    {
+        emit sk->playbackUpdated(WControllerApplication::Play);
+
+        return MPRemoteCommandHandlerStatusSuccess;
+    }
+    else if (event.command == center.pauseCommand)
+    {
+        emit sk->playbackUpdated(WControllerApplication::Pause);
+
+        return MPRemoteCommandHandlerStatusSuccess;
+    }
+    else if (event.command == center.stopCommand)
+    {
+        emit sk->playbackUpdated(WControllerApplication::Stop);
+
+        return MPRemoteCommandHandlerStatusSuccess;
+    }
+    return MPRemoteCommandHandlerStatusCommandFailed;
+}
+
+@end
+
+//-------------------------------------------------------------------------------------------------
 // WControllerApplicationPrivate
 //-------------------------------------------------------------------------------------------------
 
@@ -236,6 +284,35 @@ void WControllerApplicationPrivate::setScreenSaverEnabled(bool enabled)
         return string.replace(',', '.');
     }
     else return QString();
+}
+
+/* Q_INVOKABLE static */ void WControllerApplication::showPlayback(const QString & title,
+                                                                   const QString & author)
+{
+    static WControllerApplicationPlayback * playback = NULL;
+
+    if (playback == NULL)
+    {
+        playback = [[WControllerApplicationPlayback alloc] init];
+
+        [playback registerEvents];
+    }
+
+    NSMutableDictionary * info = [NSMutableDictionary dictionary];
+
+    info[MPMediaItemPropertyTitle] = title.toNSString();
+
+    if (author.isEmpty() == false)
+    {
+        info[MPMediaItemPropertyArtist] = author.toNSString();
+    }
+
+    [MPNowPlayingInfoCenter defaultCenter].nowPlayingInfo = info;
+}
+
+/* Q_INVOKABLE static */ void WControllerApplication::hidePlayback()
+{
+    [MPNowPlayingInfoCenter defaultCenter].nowPlayingInfo = nil;
 }
 
 /* Q_INVOKABLE static */ void WControllerApplication::vibrate(int)
