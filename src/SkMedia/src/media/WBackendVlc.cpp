@@ -1828,7 +1828,8 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
     // NOTE: We reload sources when switching between outputs. That's required for Chromecast
     //       compatiblity mode.
 
-    d->clearReply();
+    d->clearReply  ();
+    d->clearSources();
 
     d->loadSources(true);
 }
