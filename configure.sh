@@ -318,8 +318,8 @@ elif [ $1 = "macOS" ]; then
 
     cp -r "$VLC"/include/vlc include
 
-    cp "$VLC"/lib/libvlc.so.5     lib/libvlc.so
-    cp "$VLC"/lib/libvlccore.so.9 lib/libvlccore.so
+    cp "$VLC"/lib/libvlc.5.dylib     lib/libvlc.dylib
+    cp "$VLC"/lib/libvlccore.9.dylib lib/libvlccore.dylib
 
 elif [ $1 = "linux" ]; then
 
@@ -331,8 +331,8 @@ elif [ $1 = "linux" ]; then
         cp -r "$VLC"/include/vlc include
     fi
 
-    cp "$VLC"/libvlc.5.dylib     lib/libvlc.dylib
-    cp "$VLC"/libvlccore.9.dylib lib/libvlccore.dylib
+    cp "$VLC"/libvlc.so.5     lib/libvlc.so
+    cp "$VLC"/libvlccore.so.9 lib/libvlccore.so
 
 elif [ $1 = "iOS" ]; then
 
