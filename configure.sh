@@ -326,7 +326,7 @@ elif [ $1 = "linux" ]; then
     echo "COPYING VLC"
 
     # NOTE: Sometimes we're using libvlc-dev from the system.
-    if [ -d "$VLC"/include ]
+    if [ -d "$VLC"/include ]; then
 
         cp -r "$VLC"/include/vlc include
     fi
