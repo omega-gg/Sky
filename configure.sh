@@ -316,6 +316,16 @@ elif [ $1 = "macOS" ]; then
 
     echo "COPYING VLC"
 
+    cp -r "$VLC"/include/vlc include
+
+    cp "$VLC"/libvlc.so.5     lib/libvlc.so
+    cp "$VLC"/libvlccore.so.9 lib/libvlccore.so
+
+elif [ $1 = "linux" ]; then
+
+    echo "COPYING VLC"
+
+    # NOTE: Sometimes we're using libvlc-dev from the system.
     if [ -d "$VLC"/include ]
 
         cp -r "$VLC"/include/vlc include
@@ -323,15 +333,6 @@ elif [ $1 = "macOS" ]; then
 
     cp "$VLC"/lib/libvlc.5.dylib     lib/libvlc.dylib
     cp "$VLC"/lib/libvlccore.9.dylib lib/libvlccore.dylib
-
-elif [ $1 = "macOS" ]; then
-
-    echo "COPYING VLC"
-
-    cp -r "$VLC"/include/vlc include
-
-    cp "$VLC"/libvlc.so.5     lib/libvlc.so
-    cp "$VLC"/libvlccore.so.9 lib/libvlccore.so
 
 elif [ $1 = "iOS" ]; then
 
