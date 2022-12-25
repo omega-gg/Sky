@@ -457,30 +457,30 @@ else
 
         mkdir deploy/xcbglintegrations
 
-        cp "$libs"/libz.so.* deploy
+#        cp "$libs"/libz.so.* deploy
 
-        cp "$libs"/libdouble-conversion.so.* deploy
-        cp "$libs"/libpng16.so.*             deploy
-        cp "$libs"/libharfbuzz.so.*          deploy
-        cp "$libs"/libxcb-xinerama.so.*      deploy
+#        cp "$libs"/libdouble-conversion.so.* deploy
+#        cp "$libs"/libpng16.so.*             deploy
+#        cp "$libs"/libharfbuzz.so.*          deploy
+#        cp "$libs"/libxcb-xinerama.so.*      deploy
 
-        # NOTE: Required for Ubuntu 20.04.
-        if [ -f "$libs"/libpcre2-16.so.0 ]; then
+#        # NOTE: Required for Ubuntu 20.04.
+#        if [ -f "$libs"/libpcre2-16.so.0 ]; then
 
-            cp "$libs"/libpcre2-16.so.0 deploy
-        fi
+#            cp "$libs"/libpcre2-16.so.0 deploy
+#        fi
 
-        cp "$Qt"/lib/libicudata.so.* deploy
-        cp "$Qt"/lib/libicui18n.so.* deploy
-        cp "$Qt"/lib/libicuuc.so.*   deploy
+#        cp "$Qt"/lib/libicudata.so.* deploy
+#        cp "$Qt"/lib/libicui18n.so.* deploy
+#        cp "$Qt"/lib/libicuuc.so.*   deploy
 
-        # NOTE: We only want one occurence of each library.
-        if [ -f deploy/libicudata.so.*.* ]; then
+#        # NOTE: We only want one occurence of each library.
+#        if [ -f deploy/libicudata.so.*.* ]; then
 
-            rm deploy/libicudata.so.*.*
-            rm deploy/libicui18n.so.*.*
-            rm deploy/libicuuc.so.*.*
-        fi
+#            rm deploy/libicudata.so.*.*
+#            rm deploy/libicui18n.so.*.*
+#            rm deploy/libicuuc.so.*.*
+#        fi
 
         cp "$Qt/lib/lib$QtX"Core.so.$qx              deploy
         cp "$Qt/lib/lib$QtX"Gui.so.$qx               deploy

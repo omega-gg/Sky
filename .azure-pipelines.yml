@@ -85,7 +85,7 @@ jobs:
 
 - job: linux32_qt5
   pool:
-    vmImage: "ubuntu-18.04"
+    vmImage: "ubuntu-latest"
   steps:
   - bash: |
       docker run -d --name ubuntu -v $PWD:/Sky i386/ubuntu:18.04 tail -f /dev/null
@@ -100,7 +100,7 @@ jobs:
 
 - job: linux64_qt5
   pool:
-    vmImage: "ubuntu-18.04"
+    vmImage: "ubuntu-latest"
   steps:
   - bash: |
       sh build.sh linux all
@@ -113,7 +113,7 @@ jobs:
 
 - job: linux64_qt6
   pool:
-    vmImage: "ubuntu-18.04"
+    vmImage: "ubuntu-latest"
   steps:
   - bash: |
       sh environment.sh qt6
