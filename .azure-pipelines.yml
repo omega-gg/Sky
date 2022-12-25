@@ -85,10 +85,10 @@ jobs:
 
 - job: linux32_qt5
   pool:
-    vmImage: "ubuntu-latest"
+    vmImage: "ubuntu-18.04"
   steps:
   - bash: |
-      docker run -d --name ubuntu -v $PWD:/Sky i386/ubuntu:20.04 tail -f /dev/null
+      docker run -d --name ubuntu -v $PWD:/Sky i386/ubuntu:18.04 tail -f /dev/null
       docker exec -t ubuntu bash -c "cd /Sky;
                                      apt-get update;
                                      apt-get -y install sudo curl zip git;
@@ -100,16 +100,12 @@ jobs:
 
 - job: linux64_qt5
   pool:
-    vmImage: "ubuntu-latest"
+    vmImage: "ubuntu-18.04"
   steps:
   - bash: |
-      docker run -d --name ubuntu -v $PWD:/Sky amd64/ubuntu:20.04 tail -f /dev/null
-      docker exec -t ubuntu bash -c "cd /Sky;
-                                     apt-get update;
-                                     apt-get -y install sudo curl zip git;
-                                     sh build.sh linux all;
-                                     cd deploy;
-                                     zip -rq ../Sky.zip *"
+      sh build.sh linux all
+      cd deploy
+      zip -rq ../Sky.zip *
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
     artifact: Sky-linux64-qt5
 
@@ -117,17 +113,13 @@ jobs:
 
 - job: linux64_qt6
   pool:
-    vmImage: "ubuntu-latest"
+    vmImage: "ubuntu-18.04"
   steps:
   - bash: |
-      docker run -d --name ubuntu -v $PWD:/Sky amd64/ubuntu:20.04 tail -f /dev/null
-      docker exec -t ubuntu bash -c "cd /Sky;
-                                     apt-get update;
-                                     apt-get -y install sudo curl zip git;
-                                     sh environment.sh qt6;
-                                     sh build.sh linux all;
-                                     cd deploy;
-                                     zip -rq ../Sky.zip *"
+      sh environment.sh qt6
+      sh build.sh linux all
+      cd deploy
+      zip -rq ../Sky.zip *
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
     artifact: Sky-linux64-qt6
 
@@ -140,13 +132,9 @@ jobs:
     vmImage: "ubuntu-latest"
   steps:
   - bash: |
-      docker run -d --name ubuntu -v $PWD:/Sky amd64/ubuntu:20.04 tail -f /dev/null
-      docker exec -t ubuntu bash -c "cd /Sky;
-                                     apt-get update;
-                                     apt-get -y install sudo curl zip unzip git;
-                                     sh build.sh android all;
-                                     cd deploy;
-                                     zip -rq ../Sky.zip *"
+      sh build.sh android all
+      cd deploy
+      zip -rq ../Sky.zip *
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
     artifact: Sky-android-qt5
 
@@ -155,13 +143,9 @@ jobs:
     vmImage: "ubuntu-latest"
   steps:
   - bash: |
-      docker run -d --name ubuntu -v $PWD:/Sky amd64/ubuntu:20.04 tail -f /dev/null
-      docker exec -t ubuntu bash -c "cd /Sky;
-                                     apt-get update;
-                                     apt-get -y install sudo curl zip unzip git;
-                                     sh environment.sh qt6;
-                                     sh build.sh android all;
-                                     cd deploy;
-                                     zip -rq ../Sky.zip *"
+      sh environment.sh qt6
+      sh build.sh android all
+      cd deploy
+      zip -rq ../Sky.zip *
   - publish: $(System.DefaultWorkingDirectory)/Sky.zip
     artifact: Sky-android-qt6
