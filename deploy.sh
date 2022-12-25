@@ -602,28 +602,27 @@ elif [ $1 = "macOS" ]; then
     cp "$VLC"/lib/libvlc.5.dylib     deploy/libvlc.dylib
     cp "$VLC"/lib/libvlccore.9.dylib deploy/libvlccore.dylib
 
-# FIXME Linux: We can't seem to be able to enforce our VLC libraries on ArchLinux.
-#elif [ $1 = "linux" ]; then
+elif [ $1 = "linux" ]; then
 
-    #mkdir -p deploy/vlc/plugins
+    mkdir -p deploy/vlc/plugins
 
-    #cp -r "$VLC"/plugins/access             deploy/vlc/plugins
-    #cp -r "$VLC"/plugins/audio_filter       deploy/vlc/plugins
-    #cp -r "$VLC"/plugins/audio_mixer        deploy/vlc/plugins
-    #cp -r "$VLC"/plugins/audio_output       deploy/vlc/plugins
-    #cp -r "$VLC"/plugins/codec              deploy/vlc/plugins
-    #cp -r "$VLC"/plugins/control            deploy/vlc/plugins
-    #cp -r "$VLC"/plugins/demux              deploy/vlc/plugins
-    #cp -r "$VLC"/plugins/misc               deploy/vlc/plugins
-    #cp -r "$VLC"/plugins/packetizer         deploy/vlc/plugins
-    #cp -r "$VLC"/plugins/services_discovery deploy/vlc/plugins
-    #cp -r "$VLC"/plugins/stream_filter      deploy/vlc/plugins
-    #cp -r "$VLC"/plugins/stream_out         deploy/vlc/plugins
-    #cp -r "$VLC"/plugins/video_chroma       deploy/vlc/plugins
-    #cp -r "$VLC"/plugins/video_filter       deploy/vlc/plugins
-    #cp -r "$VLC"/plugins/video_output       deploy/vlc/plugins
+    cp -r "$VLC"/plugins/access             deploy/vlc/plugins
+    cp -r "$VLC"/plugins/audio_filter       deploy/vlc/plugins
+    cp -r "$VLC"/plugins/audio_mixer        deploy/vlc/plugins
+    cp -r "$VLC"/plugins/audio_output       deploy/vlc/plugins
+    cp -r "$VLC"/plugins/codec              deploy/vlc/plugins
+    cp -r "$VLC"/plugins/control            deploy/vlc/plugins
+    cp -r "$VLC"/plugins/demux              deploy/vlc/plugins
+    cp -r "$VLC"/plugins/misc               deploy/vlc/plugins
+    cp -r "$VLC"/plugins/packetizer         deploy/vlc/plugins
+    cp -r "$VLC"/plugins/services_discovery deploy/vlc/plugins
+    cp -r "$VLC"/plugins/stream_filter      deploy/vlc/plugins
+    cp -r "$VLC"/plugins/stream_out         deploy/vlc/plugins
+    cp -r "$VLC"/plugins/video_chroma       deploy/vlc/plugins
+    cp -r "$VLC"/plugins/video_filter       deploy/vlc/plugins
+    cp -r "$VLC"/plugins/video_output       deploy/vlc/plugins
 
-    #cp "$VLC"/libvlc*.so* deploy
+    cp "$VLC"/libvlc*.so* deploy
 fi
 
 #--------------------------------------------------------------------------------------------------
