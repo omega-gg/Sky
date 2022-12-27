@@ -623,6 +623,14 @@ elif [ $1 = "linux" ]; then
     cp -r "$VLC"/plugins/video_output       deploy/vlc/plugins
 
     cp "$VLC"/libvlc*.so* deploy
+
+    #----------------------------------------------------------------------------------------------
+    # NOTE: Patching VLC libraries rpath for standalone packages.
+
+    find deploy -maxdepth 1 -name libvlc*.so* -exec patchelf --set-rpath '$ORIGIN/../' {}
+
+    find deploy/vlc/plugins -name lib*.so* -exec patchelf --set-rpath \
+                            '$ORIGIN/../../:$ORIGIN/../../../' {}
 fi
 
 #--------------------------------------------------------------------------------------------------
