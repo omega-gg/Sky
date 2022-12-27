@@ -606,21 +606,23 @@ elif [ $1 = "linux" ]; then
 
     mkdir -p deploy/vlc/plugins
 
-    cp -r "$VLC"/plugins/access             deploy/vlc/plugins
-    cp -r "$VLC"/plugins/audio_filter       deploy/vlc/plugins
-    cp -r "$VLC"/plugins/audio_mixer        deploy/vlc/plugins
-    cp -r "$VLC"/plugins/audio_output       deploy/vlc/plugins
-    cp -r "$VLC"/plugins/codec              deploy/vlc/plugins
-    cp -r "$VLC"/plugins/control            deploy/vlc/plugins
-    cp -r "$VLC"/plugins/demux              deploy/vlc/plugins
-    cp -r "$VLC"/plugins/misc               deploy/vlc/plugins
-    cp -r "$VLC"/plugins/packetizer         deploy/vlc/plugins
-    cp -r "$VLC"/plugins/services_discovery deploy/vlc/plugins
-    cp -r "$VLC"/plugins/stream_filter      deploy/vlc/plugins
-    cp -r "$VLC"/plugins/stream_out         deploy/vlc/plugins
-    cp -r "$VLC"/plugins/video_chroma       deploy/vlc/plugins
-    cp -r "$VLC"/plugins/video_filter       deploy/vlc/plugins
-    cp -r "$VLC"/plugins/video_output       deploy/vlc/plugins
+    cp -r "$VLC"/vlc/plugins/access             deploy/vlc/plugins
+    cp -r "$VLC"/vlc/plugins/audio_filter       deploy/vlc/plugins
+    cp -r "$VLC"/vlc/plugins/audio_mixer        deploy/vlc/plugins
+    cp -r "$VLC"/vlc/plugins/audio_output       deploy/vlc/plugins
+    cp -r "$VLC"/vlc/plugins/codec              deploy/vlc/plugins
+    cp -r "$VLC"/vlc/plugins/control            deploy/vlc/plugins
+    cp -r "$VLC"/vlc/plugins/demux              deploy/vlc/plugins
+    cp -r "$VLC"/vlc/plugins/misc               deploy/vlc/plugins
+    cp -r "$VLC"/vlc/plugins/packetizer         deploy/vlc/plugins
+    cp -r "$VLC"/vlc/plugins/services_discovery deploy/vlc/plugins
+    cp -r "$VLC"/vlc/plugins/stream_filter      deploy/vlc/plugins
+    cp -r "$VLC"/vlc/plugins/stream_out         deploy/vlc/plugins
+    cp -r "$VLC"/vlc/plugins/video_chroma       deploy/vlc/plugins
+    cp -r "$VLC"/vlc/plugins/video_filter       deploy/vlc/plugins
+    cp -r "$VLC"/vlc/plugins/video_output       deploy/vlc/plugins
+
+    cp -r "$VLC"/vlc/lib*.so* deploy/vlc
 
     cp "$VLC"/libvlc*.so* deploy
 
@@ -630,6 +632,8 @@ elif [ $1 = "linux" ]; then
     if [ -x "$(command -v patchelf)" ]; then
 
         find deploy -maxdepth 1 -name libvlc*.so* -exec patchelf --set-rpath '$ORIGIN' {} \;
+
+        find deploy/vlc -maxdepth 1 -name lib*.so* -exec patchelf --set-rpath '$ORIGIN/../' {} \;
 
         find deploy/vlc/plugins -name lib*.so* -exec patchelf --set-rpath \
                                 '$ORIGIN/../../:$ORIGIN/../../../' {} \;
