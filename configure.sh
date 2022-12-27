@@ -331,8 +331,7 @@ elif [ $1 = "linux" ]; then
         cp -r "$VLC"/include/vlc include
     fi
 
-    cp "$VLC"/libvlc.so.5     lib
-    cp "$VLC"/libvlccore.so.9 lib
+    cp "$VLC"/libvlc*.so* lib
 
 elif [ $1 = "iOS" ]; then
 
