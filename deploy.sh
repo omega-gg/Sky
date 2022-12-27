@@ -627,7 +627,7 @@ elif [ $1 = "linux" ]; then
     #----------------------------------------------------------------------------------------------
     # NOTE: Patching VLC libraries rpath for standalone packages.
 
-    find deploy -maxdepth 1 -name libvlc*.so* -exec patchelf --set-rpath '$ORIGIN/../' {} \;
+    find deploy -maxdepth 1 -name libvlc*.so* -exec patchelf --set-rpath '$ORIGIN' {} \;
 
     find deploy/vlc/plugins -name lib*.so* -exec patchelf --set-rpath \
                             '$ORIGIN/../../:$ORIGIN/../../../' {} \;
