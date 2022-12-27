@@ -243,7 +243,7 @@ if [ $qt = "qt4" ]; then
 
         mkdir deploy/imageformats
 
-        cp "$libs"/libpng16.so.16 deploy
+        #cp "$libs"/libpng16.so.16 deploy
 
         cp "$Qt"/lib/libQtCore.so.4        deploy
         cp "$Qt"/lib/libQtGui.so.4         deploy
