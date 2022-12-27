@@ -337,6 +337,16 @@ elif [ $1 = "linux" ]; then
     cp "$VLC"/libvlc.so.5     lib
     cp "$VLC"/libvlccore.so.9 lib
 
+    #----------------------------------------------------------------------------------------------
+    # NOTE: Patching VLC libraries rpath for standalone packages.
+
+    if [ -x "$(command -v patchelf)" ]; then
+
+        find lib -maxdepth 1 -name libvlc*.so* -exec patchelf --set-rpath '$ORIGIN' {} \;
+    else
+        echo "patchelf is not installed"
+    fi
+
 elif [ $1 = "iOS" ]; then
 
     echo "COPYING VLC"
