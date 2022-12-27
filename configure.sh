@@ -334,6 +334,9 @@ elif [ $1 = "linux" ]; then
     cp "$VLC"/libvlc.so.5     lib/libvlc.so
     cp "$VLC"/libvlccore.so.9 lib/libvlccore.so
 
+    cp "$VLC"/libvlc.so.5     lib
+    cp "$VLC"/libvlccore.so.9 lib
+
 elif [ $1 = "iOS" ]; then
 
     echo "COPYING VLC"
