@@ -76,7 +76,7 @@ win32:greaterThan(QT_MAJOR_VERSION, 4) {
 
 win32:LIBS += -L$$SK/lib -llibvlc
 
-unix:!android:LIBS += -L$$SK/lib -lvlc
+unix:!ios:!android:LIBS += -L$$SK/lib -lvlc
 
 android:LIBS += -L$$SK/lib/$$ABI -lvlc
 
