@@ -82,7 +82,7 @@ win32-msvc*:LIBS += Advapi32.lib Iphlpapi.lib
 macx:LIBS += -L$$SK/lib -ltorrent-rasterbar \
              -L$$SK/lib -lboost_system
 
-unix:!macx:!android:LIBS += -L$$SK/lib -ltorrent-rasterbar \
+unix:!macx:!ios:!android:LIBS += -L$$SK/lib -ltorrent-rasterbar \
                             -L$$SK/lib -lboost_system
 
 android:LIBS += -L$$SK/lib/$$ABI -ltorrent-rasterbar \

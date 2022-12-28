@@ -56,7 +56,7 @@ include(src/3rdparty/libcharsetdetect/libcharsetdetect.pri)
 INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkCore/private
 
-unix:!macx:!android:greaterThan(QT_MAJOR_VERSION, 4) {
+unix:!macx:!ios:!android:greaterThan(QT_MAJOR_VERSION, 4) {
 
     INCLUDEPATH += $$SK/include/$$QTX/QtDBus
 }
