@@ -457,18 +457,18 @@ else
 
         mkdir deploy/xcbglintegrations
 
-#        cp "$libs"/libz.so.* deploy
+        #cp "$libs"/libz.so.* deploy
 
-#        cp "$libs"/libdouble-conversion.so.* deploy
-#        cp "$libs"/libpng16.so.*             deploy
-#        cp "$libs"/libharfbuzz.so.*          deploy
-#        cp "$libs"/libxcb-xinerama.so.*      deploy
+        #cp "$libs"/libdouble-conversion.so.* deploy
+        #cp "$libs"/libpng16.so.*             deploy
+        #cp "$libs"/libharfbuzz.so.*          deploy
+        #cp "$libs"/libxcb-xinerama.so.*      deploy
 
-#        # NOTE: Required for Ubuntu 20.04.
-#        if [ -f "$libs"/libpcre2-16.so.0 ]; then
+        # NOTE: Required for Ubuntu 20.04.
+        #if [ -f "$libs"/libpcre2-16.so.0 ]; then
 
-#            cp "$libs"/libpcre2-16.so.0 deploy
-#        fi
+            #cp "$libs"/libpcre2-16.so.0 deploy
+        #fi
 
         cp "$Qt"/lib/libicudata.so.* deploy
         cp "$Qt"/lib/libicui18n.so.* deploy
