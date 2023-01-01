@@ -667,6 +667,8 @@ void WDeclarativePlayerPrivate::onConnectedChanged()
 {
     Q_Q(WDeclarativePlayer);
 
+    q->stop();
+
     if (backend == NULL) return;
 
     if (server->isConnected())
