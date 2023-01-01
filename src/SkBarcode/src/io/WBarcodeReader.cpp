@@ -163,6 +163,9 @@ public:
 
     void init();
 
+public: // Static functions
+    static ImageFormat getFormat(QImage::Format format);
+
 protected:
     W_DECLARE_PUBLIC(WBarcodeReader)
 };
@@ -172,6 +175,37 @@ protected:
 WBarcodeReaderPrivate::WBarcodeReaderPrivate(WBarcodeReader * p) : WPrivate(p) {}
 
 void WBarcodeReaderPrivate::init() {}
+
+//-------------------------------------------------------------------------------------------------
+// Private static functions
+//-------------------------------------------------------------------------------------------------
+
+/* static */ ImageFormat WBarcodeReaderPrivate::getFormat(QImage::Format format)
+{
+    if (format == QImage::Format_RGB32 || format == QImage::Format_ARGB32)
+    {
+#if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
+        return ImageFormat::BGRX;
+#else
+        return ImageFormat::XRGB;
+#endif
+    }
+    else if (format == QImage::Format_RGB888)
+    {
+        return ImageFormat::RGB;
+    }
+#ifdef QT_NEW
+    else if (format == QImage::Format_RGBX8888 || format == QImage::Format_RGBA8888)
+    {
+        return ImageFormat::RGBX;
+    }
+    else if (format == QImage::Format_Grayscale8)
+    {
+        return ImageFormat::Lum;
+    }
+#endif
+    else return ImageFormat::None;
+}
 
 //=================================================================================================
 // WBarcodeReader
@@ -191,36 +225,15 @@ void WBarcodeReaderPrivate::init() {}
 {
     if (image.isNull()) return QString();
 
-    QImage::Format format = image.format();
+    ImageFormat format = WBarcodeReaderPrivate::getFormat(image.format());
 
-    ImageFormat imageFormat;
+    if (format == ImageFormat::None)
+    {
+        // NOTE: We try image conversion to deal with 'exotic' formats.
+        return read(image.convertToFormat(QImage::Format_RGB32), formats);
+    }
 
-    if (format == QImage::Format_RGB32 || format == QImage::Format_ARGB32)
-    {
-#if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
-        imageFormat = ImageFormat::BGRX;
-#else
-        imageFormat = ImageFormat::XRGB;
-#endif
-    }
-    else if (format == QImage::Format_RGB888)
-    {
-        imageFormat = ImageFormat::RGB;
-    }
-#ifdef QT_NEW
-    else if (format == QImage::Format_RGBX8888 || format == QImage::Format_RGBA8888)
-    {
-        imageFormat = ImageFormat::RGBX;
-    }
-    else if (format == QImage::Format_Grayscale8)
-    {
-        imageFormat = ImageFormat::Lum;
-    }
-#endif
-    // NOTE: We try image conversion to deal with 'exotic' formats.
-    else return read(image.convertToFormat(QImage::Format_RGB32), formats);
-
-    ImageView imageView(image.bits(), image.width(), image.height(), imageFormat);
+    ImageView imageView(image.bits(), image.width(), image.height(), format);
 
     DecodeHints hints;
 
