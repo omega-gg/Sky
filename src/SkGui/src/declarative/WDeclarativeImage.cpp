@@ -84,6 +84,17 @@ WDeclarativeImage::WDeclarativeImage(WDeclarativeImagePrivate * p, QQuickItem * 
     Q_D(WDeclarativeImage); d->init();
 }
 
+//-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ QRectF WDeclarativeImage::getRect() const
+{
+    Q_D(const WDeclarativeImage);
+
+    return d->rect;
+}
+
 #ifdef QT_4
 
 //-------------------------------------------------------------------------------------------------
@@ -139,17 +150,19 @@ WDeclarativeImage::WDeclarativeImage(WDeclarativeImagePrivate * p, QQuickItem * 
                 drawHeight = height;
             }
 
+            d->rect = QRectF(0, 0, drawWidth, drawHeight);
+
             if (transform.isIdentity() == false)
             {
                 oldTransform = painter->transform();
 
                 painter->setWorldTransform(transform * oldTransform);
 
-                painter->drawTiledPixmap(QRectF(0, 0, drawWidth, drawHeight), pixmap);
+                painter->drawTiledPixmap(d->rect, pixmap);
 
                 painter->setWorldTransform(oldTransform);
             }
-            else painter->drawTiledPixmap(QRectF(0, 0, drawWidth, drawHeight), pixmap);
+            else painter->drawTiledPixmap(d->rect, pixmap);
         }
         else
         {
@@ -204,26 +217,27 @@ WDeclarativeImage::WDeclarativeImage(WDeclarativeImagePrivate * p, QQuickItem * 
                 y = 0;
             }
 
+            d->rect = QRectF((int) x, (int) y, (int) width - x * 2, (int) height - y * 2);
+
             if (clip())
             {
                 painter->save();
 
                 painter->setClipRect(QRectF(0, 0, width, height), Qt::IntersectClip);
 
-                painter->drawPixmap(QRectF((int) x,               (int) y,
-                                           (int) width - (x * 2), (int) height - (y * 2)),
-                                    pixmap,
-                                    QRectF(0, 0, pixmapWidth, pixmapHeight));
+                painter->drawPixmap(d->rect, pixmap, QRectF(0, 0, pixmapWidth, pixmapHeight));
 
                 painter->restore();
             }
-            else painter->drawPixmap(QRectF((int) x,               (int) y,
-                                            (int) width - (x * 2), (int) height - (y * 2)),
-                                     pixmap,
-                                     QRectF(0, 0, pixmapWidth, pixmapHeight));
+            else painter->drawPixmap(d->rect, pixmap, QRectF(0, 0, pixmapWidth, pixmapHeight));
         }
     }
-    else painter->drawPixmap(0, 0, pixmap);
+    else
+    {
+        d->rect = QRectF(0, 0, width, width);
+
+        painter->drawPixmap(0, 0, pixmap);
+    }
 
     painter->setRenderHint(QPainter::SmoothPixmapTransform, smooth);
 }
@@ -370,11 +384,9 @@ void WDeclarativeImage::pixmapChange()
     int pixmapWidth  = pixmap.width () / ratio;
     int pixmapHeight = pixmap.height() / ratio;
 
-    QRectF rect;
-
     if (d->fillMode >= WDeclarativeImage::Tile)
     {
-        rect = QRectF(0, 0, width, height);
+        d->rect = QRectF(0, 0, width, height);
 
         if (d->fillMode == WDeclarativeImage::TileVertically)
         {
@@ -411,7 +423,7 @@ void WDeclarativeImage::pixmapChange()
 
                 qreal y = (height - heightScale * pixmapHeight) / 2;
 
-                rect = QRectF(0, y, width, height - (y * 2));
+                d->rect = QRectF(0, y, width, height - (y * 2));
             }
             else if (widthScale > heightScale)
             {
@@ -419,9 +431,9 @@ void WDeclarativeImage::pixmapChange()
 
                 qreal x = (width - widthScale * pixmapWidth) / 2;
 
-                rect = QRectF(x, 0, width - (x * 2), height);
+                d->rect = QRectF(x, 0, width - (x * 2), height);
             }
-            else rect = QRectF(0, 0, width, height);
+            else d->rect = QRectF(0, 0, width, height);
         }
         else if (d->fillMode == WDeclarativeImage::PreserveAspectCrop)
         {
@@ -434,7 +446,7 @@ void WDeclarativeImage::pixmapChange()
 
                 qreal x = (width - widthScale * pixmapWidth) / 2;
 
-                rect = QRectF(x, 0, width - (x * 2), height);
+                d->rect = QRectF(x, 0, width - (x * 2), height);
             }
             else if (widthScale > heightScale)
             {
@@ -442,11 +454,11 @@ void WDeclarativeImage::pixmapChange()
 
                 qreal y = (height - heightScale * pixmapHeight) / 2;
 
-                rect = QRectF(0, y, width, height - (y * 2));
+                d->rect = QRectF(0, y, width, height - (y * 2));
             }
-            else rect = QRectF(0, 0, width, height);
+            else d->rect = QRectF(0, 0, width, height);
         }
-        else rect = QRectF(0, 0, width, height);
+        else d->rect = QRectF(0, 0, width, height);
 
         node->setHorizontalWrapMode(QSGTexture::ClampToEdge);
         node->setVerticalWrapMode  (QSGTexture::ClampToEdge);
@@ -455,7 +467,7 @@ void WDeclarativeImage::pixmapChange()
     }
     else
     {
-        rect = QRectF(0, 0, width, height);
+        d->rect = QRectF(0, 0, width, height);
 
         node->setHorizontalWrapMode(QSGTexture::ClampToEdge);
         node->setVerticalWrapMode  (QSGTexture::ClampToEdge);
@@ -463,8 +475,8 @@ void WDeclarativeImage::pixmapChange()
         node->setSubSourceRect(QRectF(0, 0, 1, 1));
     }
 
-    node->setTargetRect     (rect);
-    node->setInnerTargetRect(rect);
+    node->setTargetRect     (d->rect);
+    node->setInnerTargetRect(d->rect);
 }
 
 #endif

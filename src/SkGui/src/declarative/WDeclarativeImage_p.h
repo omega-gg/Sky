@@ -55,6 +55,8 @@ public:
 public: // Variables
     WDeclarativeImage::FillMode fillMode;
 
+    QRectF rect;
+
     qreal paintedWidth;
     qreal paintedHeight;
 

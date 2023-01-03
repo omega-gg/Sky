@@ -70,6 +70,9 @@ protected:
     WDeclarativeImage(WDeclarativeImagePrivate * p, QQuickItem * parent = NULL);
 #endif
 
+public: // Interface
+    Q_INVOKABLE QRectF getRect() const;
+
 #ifdef QT_4
 public: // QGraphicsItem reimplementation
     /* virtual */ void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
