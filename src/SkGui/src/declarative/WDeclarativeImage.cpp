@@ -217,7 +217,7 @@ WDeclarativeImage::WDeclarativeImage(WDeclarativeImagePrivate * p, QQuickItem * 
                 y = 0;
             }
 
-            d->rect = QRectF((int) x, (int) y, (int) width - x * 2, (int) height - y * 2);
+            d->rect = QRectF((int) x, (int) y, (int) width - (x * 2), (int) height - (y * 2));
 
             if (clip())
             {
