@@ -35,7 +35,7 @@ class WBarcodeWriterPrivate;
 class WAbstractThreadAction;
 
 //-------------------------------------------------------------------------------------------------
-// WBarcodeWriterTag
+// WBarcodeTag
 //-------------------------------------------------------------------------------------------------
 
 struct WBarcodeTag

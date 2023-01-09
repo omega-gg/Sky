@@ -37,6 +37,20 @@
 class WBarcodeReaderPrivate;
 class WAbstractThreadAction;
 
+//-------------------------------------------------------------------------------------------------
+// WBarcodeResult
+//-------------------------------------------------------------------------------------------------
+
+struct WBarcodeResult
+{
+    QString text;
+    QRect   rect;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WBarcodeReader
+//-------------------------------------------------------------------------------------------------
+
 class SK_BARCODE_EXPORT WBarcodeReader : public QObject, public WPrivatable
 {
     Q_OBJECT
@@ -81,10 +95,16 @@ public: // Static functions
 
     Q_INVOKABLE static QString readFile(const QString & fileName, Formats formats = Any);
 
+    // NOTE: The 'precision' parameter is the number of scan iterations on the image. This function
+    //       returns the matched barcode rectangle, if any.
+    Q_INVOKABLE static WBarcodeResult scan(const QImage & image, int x, int y,
+                                           Formats formats   = Any,
+                                           int     precision = 5);
+
     // NOTE: The 'method' format is loaded(const QString &). A target can be specified for
     //       precise image scanning.
     Q_INVOKABLE static WAbstractThreadAction * startRead(const QImage & image,
-                                                         Formats        formats,
+                                                         Formats        formats  = Any,
                                                          QObject      * receiver = NULL,
                                                          const char   * method   = NULL,
                                                          const QRect  & target   = QRect(),
@@ -92,9 +112,18 @@ public: // Static functions
 
     // NOTE: The 'method' format is loaded(const QString &).
     Q_INVOKABLE static WAbstractThreadAction * startReadFile(const QString & fileName,
-                                                             Formats         formats,
+                                                             Formats         formats  = Any,
                                                              QObject       * receiver = NULL,
                                                              const char    * method   = NULL);
+
+    // NOTE: The 'method' format is loaded(const WBarcodeResult &).
+    Q_INVOKABLE static WAbstractThreadAction * startScan(const QImage & image,
+                                                         int            x,
+                                                         int            y,
+                                                         Formats        formats   = Any,
+                                                         QObject      * receiver  = NULL,
+                                                         const char   * method    = NULL,
+                                                         int            precision = 5);
 
 private:
     W_DECLARE_PRIVATE(WBarcodeReader)
