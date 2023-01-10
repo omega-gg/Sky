@@ -306,6 +306,13 @@ Item
     property real rectangleShadowClick_ratio: 4.0
 //#END
 
+//#RectangleTag
+    //---------------------------------------------------------------------------------------------
+    // RectangleTag
+
+    property real rectangleTag_opacity: 0.4
+//#END
+
 //#Cursor*
     //---------------------------------------------------------------------------------------------
     // Cursor
