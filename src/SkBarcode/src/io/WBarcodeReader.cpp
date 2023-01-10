@@ -516,7 +516,7 @@ WAbstractThreadAction * WBarcodeReader::startScan(const QImage & image,
     WBarcodeScanReply * reply = qobject_cast<WBarcodeScanReply *>
                                 (wControllerFile->startReadAction(action));
 
-    if (receiver) connect(reply, SIGNAL(loaded(const WBarcodeScan &)), receiver, method);
+    if (receiver) connect(reply, SIGNAL(loaded(const WBarcodeResult &)), receiver, method);
 
     return action;
 }
