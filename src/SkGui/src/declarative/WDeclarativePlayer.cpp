@@ -2278,7 +2278,7 @@ void WDeclarativePlayer::setRepeat(Repeat repeat)
 {
     Q_D(WDeclarativePlayer);
 
-    if (d->repeat == repeat)
+    if (d->repeat == repeat) return;
 
     d->repeat = repeat;
 

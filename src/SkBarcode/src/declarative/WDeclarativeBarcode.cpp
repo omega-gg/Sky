@@ -124,7 +124,7 @@ void WDeclarativeBarcodePrivate::onLoadModeChanged()
 
     WDeclarativeImage::componentComplete();
 
-    if (d->text.isEmpty() == false) load();
+    if (d->text.isEmpty() == false) d->load();
 }
 
 //-------------------------------------------------------------------------------------------------

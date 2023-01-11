@@ -16,6 +16,8 @@ RectangleShadow      1.0 RectangleShadow.qml
 RectangleShadowClick 1.0 RectangleShadowClick.qml
 RectangleTag         1.0 RectangleTag.qml
 
+ImageBarcode 1.0 ImageBarcode.qml
+
 CursorSvg   1.0 CursorSvg.qml
 CursorTouch 1.0 CursorTouch.qml
 

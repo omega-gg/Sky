@@ -313,6 +313,15 @@ Item
     property real rectangleTag_opacity: 0.4
 //#END
 
+//#ImageBarcode
+    //---------------------------------------------------------------------------------------------
+    // ImageBarcode
+
+    property real imageBarcode_ratio: 0.890625
+
+    property color imageBarcode_color: "white"
+//#END
+
 //#Cursor*
     //---------------------------------------------------------------------------------------------
     // Cursor

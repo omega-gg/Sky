@@ -25,138 +25,56 @@ import Sky     1.0
 
 Rectangle
 {
-    id: rectangleTag
-
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int borderSize: st.border_size
+    property int sizeTag: width * st.imageBarcode_ratio
 
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    property alias itemBorder: itemBorder
+    property alias text  : barcode.text
+    property alias prefix: barcode.prefix
+
+    property alias type: barcode.type
+
+    property alias margins: barcode.margins
 
     //---------------------------------------------------------------------------------------------
-    // Style
 
-    property alias durationAnimation: timer.interval
+    property alias barcode: barcode
 
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
+    height: width
+
     radius: Math.round(height / 16)
 
-    visible: false
-
-    opacity: st.rectangleTag_opacity
-
-    color: st.color_highlight
+    color: st.imageBarcode_color
 
 //#QT_4
     smooth: true
 //#END
 
     //---------------------------------------------------------------------------------------------
-    // Functions
-    //---------------------------------------------------------------------------------------------
-
-    function click()
-    {
-        opacity = 1.0;
-
-        visible = true;
-
-        scale = 2.0;
-
-        opacity = 0.0;
-
-        timer.interval = durationAnimation;
-
-        timer.restart();
-    }
-
-    function clickRect(rect)
-    {
-        rectangleTag.x      = rect.x;
-        rectangleTag.y      = rect.y;
-        rectangleTag.width  = rect.width;
-        rectangleTag.height = rect.height;
-
-        click();
-    }
-
-    //---------------------------------------------------------------------------------------------
-    // Private
-
-    function pReset()
-    {
-        visible = false;
-
-        scale = 1.0;
-
-        opacity = st.rectangleTag_opacity;
-    }
-
-    //---------------------------------------------------------------------------------------------
-    // Animations
-    //---------------------------------------------------------------------------------------------
-
-    Behavior on scale
-    {
-        enabled: visible
-
-        PropertyAnimation
-        {
-            duration: durationAnimation
-
-            easing.type: st.easing
-        }
-    }
-
-    Behavior on opacity
-    {
-        enabled: visible
-
-        PropertyAnimation
-        {
-            duration: durationAnimation
-
-            easing.type: st.easing
-        }
-    }
-
-    //---------------------------------------------------------------------------------------------
     // Children
     //---------------------------------------------------------------------------------------------
 
-    Timer
+    Barcode
     {
-        id: timer
+        id: barcode
 
-        interval: st.ms500
+        anchors.centerIn: parent
 
-        onTriggered: pReset()
-    }
+        width : sizeTag
+        height: sizeTag
 
-    Rectangle
-    {
-        id: itemBorder
+        margins: 0
 
-        anchors.fill: parent
-
-        radius: rectangleTag.radius
-
-        color: "transparent"
-
-//#QT_4
-        smooth: true
-//#END
-
-        border.width: borderSize
-        border.color: rectangleTag.color
+        smooth: false
     }
 }
