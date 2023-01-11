@@ -13,7 +13,7 @@ TEMPLATE = lib
 contains(QT_MAJOR_VERSION, 4) {
     QT += declarative network
 } else {
-    QT += qml
+    QT += quick
 }
 
 win32:CONFIG += dll
@@ -31,6 +31,7 @@ unix:QMAKE_LFLAGS += "-Wl,-rpath,'\$$ORIGIN'"
 
 include(../Sk.pri)
 include(src/io/io.pri)
+include(src/declarative/declarative.pri)
 include(src/media/media.pri)
 
 include(src/3rdparty/zxing-cpp/zxing-cpp.pri)
