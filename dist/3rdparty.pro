@@ -15,4 +15,5 @@ SUBDIRS = $$PATH/3rdparty \
           $$PATH/documentation \
           $$PATH/BML \
           $$PATH/VBML \
+          $$PATH/vox \
           $$PATH/status \

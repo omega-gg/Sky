@@ -25,7 +25,6 @@
 
 // Sk includes
 #include <WDeclarativeImage>
-#include <WBarcodeWriter>
 
 #ifndef SK_NO_DECLARATIVEBARCODE
 
@@ -35,13 +34,18 @@ class SK_BARCODE_EXPORT WDeclarativeBarcode : public WDeclarativeImage
 {
     Q_OBJECT
 
+    Q_ENUMS(Type)
+
     Q_PROPERTY(QString text   READ text   WRITE setText   NOTIFY textChanged)
     Q_PROPERTY(QString prefix READ prefix WRITE setPrefix NOTIFY prefixChanged)
 
     // NOTE Qt4: A virtual 'type' function already exists in the QGraphicsItem.
-    Q_PROPERTY(WBarcodeWriter::Type type READ barcodeType WRITE setBarcodeType NOTIFY typeChanged)
+    Q_PROPERTY(Type type READ barcodeType WRITE setBarcodeType NOTIFY typeChanged)
 
     Q_PROPERTY(int margins READ margins WRITE setMargins NOTIFY marginsChanged)
+
+public: // Enums
+    enum Type { Text, Vbml };
 
 public:
 #ifdef QT_4
@@ -75,8 +79,8 @@ public: // Properties
     QString prefix() const;
     void    setPrefix(const QString & prefix);
 
-    WBarcodeWriter::Type barcodeType() const;
-    void                 setBarcodeType(WBarcodeWriter::Type type);
+    Type barcodeType() const;
+    void setBarcodeType(Type type);
 
     int  margins() const;
     void setMargins(int margins);

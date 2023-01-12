@@ -24,6 +24,9 @@
 
 #ifndef SK_NO_DECLARATIVEBARCODE
 
+// Sk includes
+#include <WBarcodeWriter>
+
 //-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
@@ -35,7 +38,7 @@ void WDeclarativeBarcodePrivate::init()
 {
     Q_Q(WDeclarativeBarcode);
 
-    type = WBarcodeWriter::Text;
+    type = WDeclarativeBarcode::Text;
 
     margins = 1;
 
@@ -86,7 +89,8 @@ void WDeclarativeBarcodePrivate::loadText()
 {
     Q_Q(WDeclarativeBarcode);
 
-    q->applyImage(WBarcodeWriter::write(text, type, prefix, margins));
+    q->applyImage(WBarcodeWriter::write(text, static_cast<WBarcodeWriter::Type> (type), prefix,
+                                        margins));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -200,12 +204,12 @@ void WDeclarativeBarcode::setPrefix(const QString & prefix)
     emit prefixChanged();
 }
 
-WBarcodeWriter::Type WDeclarativeBarcode::barcodeType() const
+WDeclarativeBarcode::Type WDeclarativeBarcode::barcodeType() const
 {
     Q_D(const WDeclarativeBarcode); return d->type;
 }
 
-void WDeclarativeBarcode::setBarcodeType(WBarcodeWriter::Type type)
+void WDeclarativeBarcode::setBarcodeType(Type type)
 {
     Q_D(WDeclarativeBarcode);
 

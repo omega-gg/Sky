@@ -59,7 +59,7 @@ public: // Variables
     QString text;
     QString prefix;
 
-    WBarcodeWriter::Type type;
+    WDeclarativeBarcode::Type type;
 
     int margins;
 
