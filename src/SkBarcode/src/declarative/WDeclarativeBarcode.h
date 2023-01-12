@@ -38,7 +38,8 @@ class SK_BARCODE_EXPORT WDeclarativeBarcode : public WDeclarativeImage
     Q_PROPERTY(QString text   READ text   WRITE setText   NOTIFY textChanged)
     Q_PROPERTY(QString prefix READ prefix WRITE setPrefix NOTIFY prefixChanged)
 
-    Q_PROPERTY(WBarcodeWriter::Type type READ type WRITE setType NOTIFY typeChanged)
+    // NOTE Qt4: A virtual 'type' function already exists in the QGraphicsItem.
+    Q_PROPERTY(WBarcodeWriter::Type type READ barcodeType WRITE setBarcodeType NOTIFY typeChanged)
 
     Q_PROPERTY(int margins READ margins WRITE setMargins NOTIFY marginsChanged)
 
@@ -74,8 +75,8 @@ public: // Properties
     QString prefix() const;
     void    setPrefix(const QString & prefix);
 
-    WBarcodeWriter::Type type() const;
-    void                 setType(WBarcodeWriter::Type type);
+    WBarcodeWriter::Type barcodeType() const;
+    void                 setBarcodeType(WBarcodeWriter::Type type);
 
     int  margins() const;
     void setMargins(int margins);

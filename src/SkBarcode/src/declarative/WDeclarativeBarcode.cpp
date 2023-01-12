@@ -200,12 +200,12 @@ void WDeclarativeBarcode::setPrefix(const QString & prefix)
     emit prefixChanged();
 }
 
-WBarcodeWriter::Type WDeclarativeBarcode::type() const
+WBarcodeWriter::Type WDeclarativeBarcode::barcodeType() const
 {
     Q_D(const WDeclarativeBarcode); return d->type;
 }
 
-void WDeclarativeBarcode::setType(WBarcodeWriter::Type type)
+void WDeclarativeBarcode::setBarcodeType(WBarcodeWriter::Type type)
 {
     Q_D(WDeclarativeBarcode);
 
