@@ -322,6 +322,13 @@ Item
     property color imageBarcode_color: "white"
 //#END
 
+//#ImageTag
+    //---------------------------------------------------------------------------------------------
+    // ImageTag
+
+    property real imageTag_ratio: 0.890625
+//#END
+
 //#Cursor*
     //---------------------------------------------------------------------------------------------
     // Cursor
@@ -429,6 +436,13 @@ Item
     // AnimatedSlide
 
     property int animatedSlide_duration: ms(10000)
+//#END
+
+    //---------------------------------------------------------------------------------------------
+    // Images
+
+//#pictures_tag:ImageTag
+    property url picture_tag: "pictures/tag.svg"
 //#END
 
     //---------------------------------------------------------------------------------------------

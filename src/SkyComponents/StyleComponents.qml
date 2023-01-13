@@ -1062,8 +1062,8 @@ Style
     //---------------------------------------------------------------------------------------------
     // Images
 
-//#ScrollBar
-    property url image_blank: "pictures/blank.png"
+//#pictures_blank:ScrollBar
+    property url picture_blank: "pictures/blank.png"
 //#END
 
     //---------------------------------------------------------------------------------------------

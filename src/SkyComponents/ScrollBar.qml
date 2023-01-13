@@ -241,7 +241,7 @@ Item
 
             sourceSize: st.size16x16
 
-            source: st.image_blank
+            source: st.picture_blank
 
             filter: st.scrollBar_filterHorizontalDefault
         }
@@ -280,7 +280,7 @@ Item
 
                 sourceSize: st.size16x16
 
-                source: st.image_blank
+                source: st.picture_blank
 
                 filter:
                 {

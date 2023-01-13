@@ -76,6 +76,8 @@ Player
     // Settings
     //---------------------------------------------------------------------------------------------
 
+    anchors.fill: parent
+
     backend: BackendVlc {}
 
     volume: (fade == false || (slides && pVolume)) ? volumeActive
