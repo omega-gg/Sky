@@ -29,7 +29,7 @@ Rectangle
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int sizeTag: width * st.imageBarcode_ratio
+    property int sizeTag: width * st.barcode_ratio
 
     //---------------------------------------------------------------------------------------------
     // Aliases

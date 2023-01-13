@@ -29,7 +29,7 @@ ImageSvg
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int sizeTag: width * st.imageTag_ratio
+    property int sizeTag: width * st.barcode_ratio
 
     //---------------------------------------------------------------------------------------------
     // Aliases
