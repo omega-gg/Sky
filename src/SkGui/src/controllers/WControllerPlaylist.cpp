@@ -358,9 +358,33 @@ void WControllerPlaylistData::applyHtml(const QByteArray & array, const QString 
         cover = generateUrl(cover, host);
     }
 
+    //---------------------------------------------------------------------------------------------
+    // NOTE: If the head contains a vbml link we prioritize it over HTML.
+
+    QStringList list = Sk::slices(head, "<link", "/>");
+
+    foreach (const QString & string, list)
+    {
+        QString rel = WControllerNetwork::extractAttribute(string, "rel");
+
+        if (rel.toLower() != "vbml") continue;
+
+        QString url = WControllerNetwork::extractAttributeUtf8(string, "href");
+
+        if (url.isEmpty()) continue;
+
+        type = WControllerPlaylist::Redirect;
+
+        origin = generateUrl(url, host);
+
+        return;
+    }
+
+    //---------------------------------------------------------------------------------------------
+
     QStringList urls;
 
-    QStringList list = Sk::slices(content, "<a", "</a");
+    list = Sk::slices(content, "<a", "</a");
 
     foreach (const QString & string, list)
     {
