@@ -359,7 +359,7 @@ void WControllerPlaylistData::applyHtml(const QByteArray & array, const QString 
     }
 
     //---------------------------------------------------------------------------------------------
-    // NOTE: If the head contains a vbml link we prioritize it over HTML.
+    // NOTE: If the head contains a VBML link we prioritize it over HTML.
 
     QStringList list = Sk::slices(head, "<link", "/>");
 
