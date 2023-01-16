@@ -1830,7 +1830,7 @@ void WControllerPlaylistPrivate::loadUrls(QIODevice * device, const WBackendNetQ
         {
             QString urlRedirect = query.urlRedirect;
 
-            // NOTE: When we get redirected to VBML we parse this instead.
+            // NOTE: When we get redirected to VBML we parse it instead.
             if (WControllerPlaylist::urlIsVbml(urlRedirect))
             {
                  method = methodVbml;
