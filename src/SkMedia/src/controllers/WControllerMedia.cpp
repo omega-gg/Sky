@@ -214,6 +214,9 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
     {
         source = reader.extractString("source");
     }
+
+    // NOTE: If parsing fails, apply the url itself given it might be readable by the player.
+    if (source.isEmpty()) source = url;
 }
 
 //=================================================================================================
@@ -381,14 +384,17 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
             return;
         }
     }
-    else if (WControllerPlaylist::urlIsVbmlFile(source))
-    {
-        query.url = source;
-    }
     else if (WControllerPlaylist::urlIsVbmlUri(source))
     {
         query.type = WBackendNetQuery::TypeVbml;
 
+        query.url = source;
+    }
+    else if (WControllerPlaylist::urlIsVbmlFile(source)
+             ||
+             // NOTE: The file could be VBML so we load it anyway.
+             WControllerNetwork::extractUrlExtension(source) == QString())
+    {
         query.url = source;
     }
     else

@@ -304,6 +304,14 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
 
 void WControllerPlaylistData::applyHtml(const QByteArray & array, const QString & url)
 {
+    // NOTE: If we find a VMBL header we prioritize it over HTML.
+    if (WControllerPlaylist::vbmlCheck(array))
+    {
+        applyVbml(array, url);
+
+        return;
+    }
+
     QString charset = WControllerNetwork::extractCharset(array);
 
     QString content;
@@ -1802,8 +1810,6 @@ void WControllerPlaylistPrivate::loadUrls(QIODevice * device, const WBackendNetQ
 
     QString url;
 
-    WBackendNetQuery::Target target = query.target;
-
     if (query.type == WBackendNetQuery::TypeImage)
     {
         method = methodVbml;
@@ -1818,25 +1824,39 @@ void WControllerPlaylistPrivate::loadUrls(QIODevice * device, const WBackendNetQ
     }
     else
     {
-        url = query.url;
+        WBackendNetQuery::Target target = query.target;
 
-        if (target == WBackendNetQuery::TargetVbml)
+        if (target == WBackendNetQuery::TargetHtml)
         {
-            method = methodVbml;
+            QString urlRedirect = query.urlRedirect;
+
+            // NOTE: When we get redirected to VBML we parse this instead.
+            if (WControllerPlaylist::urlIsVbml(urlRedirect))
+            {
+                 method = methodVbml;
+            }
+            else method = methodHtml;
+
+            url = query.url;
         }
-        else if (target == WBackendNetQuery::TargetHtml)
+        else
         {
-            method = methodHtml;
+            if (target == WBackendNetQuery::TargetVbml)
+            {
+                method = methodVbml;
+            }
+            else if (target == WBackendNetQuery::TargetFolder)
+            {
+                method = methodFolder;
+            }
+            else if (target == WBackendNetQuery::TargetFile)
+            {
+                method = methodFile;
+            }
+            else method = methodItem;
+
+            url = query.url;
         }
-        else if (target == WBackendNetQuery::TargetFolder)
-        {
-            method = methodFolder;
-        }
-        else if (target == WBackendNetQuery::TargetFile)
-        {
-            method = methodFile;
-        }
-        else method = methodItem;
     }
 
     WControllerPlaylistReply * reply = new WControllerPlaylistReply;
@@ -4499,6 +4519,11 @@ WControllerPlaylist::extractPlaylists(const WControllerPlaylistData & data)
     Sk::bmlVersion(vbml, "vbml", versionApi(), append);
 
     return vbml;
+}
+
+/* Q_INVOKABLE static */ bool WControllerPlaylist::vbmlCheck(const QString & data)
+{
+    return (vbmlHeader(data) != -1);
 }
 
 /* Q_INVOKABLE static */ int WControllerPlaylist::vbmlHeader(const QString & vbml)

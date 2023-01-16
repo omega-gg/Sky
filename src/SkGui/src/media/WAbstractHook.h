@@ -78,7 +78,7 @@ protected: // Functions
     //---------------------------------------------------------------------------------------------
     // Backend functions
 
-    // NOTE: This function resets and applies all the tracks at once (video / audio).
+    // NOTE: Resets and applies all the tracks at once (video / audio).
     void applyTracks(const QList<WBackendTrack> & tracks, int trackVideo = -1,
                                                           int trackAudio = -1);
 
