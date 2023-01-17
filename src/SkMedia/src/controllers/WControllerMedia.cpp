@@ -176,6 +176,17 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
     QString api = WControllerPlaylist::vbmlVersion(content);
 
+    // NOTE: If it's a plain URL we redirect to the given address.
+    if (api.isEmpty() && WControllerNetwork::textIsUrl(content)
+        &&
+        // NOTE: The origin has to be different than the current URL.
+        WControllerNetwork::removeUrlPrefix(url) != WControllerNetwork::removeUrlPrefix(content))
+    {
+        origin = content;
+
+        return;
+    }
+
     if (Sk::versionIsHigher(WControllerPlaylist::versionApi(), api))
     {
         WControllerPlaylist::vbmlPatch(content, api);
