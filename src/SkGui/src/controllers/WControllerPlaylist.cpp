@@ -979,7 +979,14 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
 
         return true;
     }
-    else return false;
+
+    WBackendNetQuery query(source);
+
+    query.target = WBackendNetQuery::TargetHtml;
+
+    getDataTrack(playlist, track, query);
+
+    return true;
 }
 
 bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const QString & url)
@@ -2803,9 +2810,9 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
     WPlaylist * playlist = item->toPlaylist();
     WTrack    * track    = query->track;
 
-    QString source = data.origin;
+    deleteQuery(query);
 
-    int index = playlist->indexOf(track);
+    QString source = data.origin;
 
     if (data.type == WControllerPlaylist::Redirect)
     {
@@ -2814,7 +2821,7 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
         return;
     }
 
-    deleteQuery(query);
+    int index = playlist->indexOf(track);
 
     if (index == -1)
     {
