@@ -2809,8 +2809,6 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
 
     if (data.type == WControllerPlaylist::Redirect)
     {
-        playlist->setTrackSource(index, source);
-
         applySourceTrack(playlist, track, source);
 
         return;
@@ -2919,8 +2917,6 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
     if (type == WControllerPlaylist::Redirect)
     {
-        playlist->applySource(origin);
-
         applySourcePlaylist(playlist, origin);
 
         return;
@@ -3233,8 +3229,6 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
         playlist->tryDelete();
 
         folder->removeAt(0);
-
-        folder->applySource(origin);
 
         applySourceFolder(folder, origin);
 
