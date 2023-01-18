@@ -429,15 +429,19 @@ void WBarcodeReaderPrivate::init() {}
 
         if (output.isValid())
         {
-            QRect rect = WBarcodeReaderPrivate::getMatch(output.position(), x - rect.x(),
-                                                                            y - rect.y());
+            int rectX = rect.x();
+            int rectY = rect.y();
+
+            rect = WBarcodeReaderPrivate::getMatch(output.position(), x - rectX, y - rectY);
 
             if (rect.isValid())
             {
                 WBarcodeResult result;
 
                 result.text = QString::fromWCharArray(output.text().c_str());
-                result.rect = rect;
+
+                result.rect = QRect(rect.x() + rectX,
+                                    rect.y() + rectY, rect.width(), rect.height());
 
                 return result;
             }
