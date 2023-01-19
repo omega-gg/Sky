@@ -1376,6 +1376,8 @@ void WBackendVlcPrivate::onUpdateState()
     int width  = *vlcWidth;
     int height = *vlcHeight;
 
+    if (width == 0 || height == 0) return 0;
+
     strcpy(chroma, "I420");
 
     pitches[0] = width;
@@ -1395,10 +1397,7 @@ void WBackendVlcPrivate::onUpdateState()
     lines[2] = lines[1];
 
     // NOTE: Sometimes the same size is requested several times.
-    if (d->width == width && d->height == height)
-    {
-        return 1;
-    }
+    if (d->width == width && d->height == height) return 1;
 
     d->width  = width;
     d->height = height;
