@@ -2371,8 +2371,6 @@ private: // Functions
 
     QString extractValue(const WYamlNode & node, const QString & key) const;
 
-    QString getPath(const QString & source) const;
-
 signals:
     void loaded(const WBackendUniversalData & data);
 };
@@ -2441,13 +2439,11 @@ signals:
 
     QString cover = reader.extractString("cover");
 
-    if (WControllerNetwork::textIsUrl(cover) == false)
+    if (WControllerNetwork::textIsUrl(cover))
     {
-        QString path = getPath(data.origin);
-
-        data.cover = path + cover;
+         data.cover = cover;
     }
-    else data.cover = cover;
+    else data.cover = WControllerNetwork::extractBaseUrl(data.origin) + '/' + cover;
 
     data.items = extractItems(reader);
 
@@ -2582,19 +2578,6 @@ QString WBackendUniversalQuery::extractValue(const WYamlNode & node, const QStri
          return child->value;
     }
     else return QString();
-}
-
-//-------------------------------------------------------------------------------------------------
-
-QString WBackendUniversalQuery::getPath(const QString & source) const
-{
-    int index = source.lastIndexOf('/');
-
-    if (index == -1)
-    {
-         return source + '/';
-    }
-    else return source.mid(0, index + 1);
 }
 
 //=================================================================================================
