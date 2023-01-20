@@ -355,6 +355,14 @@ public: // Interface
 
     void addSlice(const QString & start, const QString & end = QString());
 
+public: // Static functions
+    static QString extractHtml(const QByteArray & array);
+
+    static QString extractHtmlLink(const QByteArray & array, const QString & url);
+
+    static QString generateUrl  (const QString & url, const QString & baseUrl);
+    static QString generateTitle(const QString & url, const QString & urlName);
+
 private: // Functions
     void parseTrack   (WYamlReader & reader);
     void parsePlaylist(WYamlReader & reader);
@@ -366,9 +374,6 @@ private: // Functions
     void addFile(const QString & path);
 
     bool addUrl(QStringList * urls, const QString & url) const;
-
-    QString generateUrl  (const QString & url, const QString & baseUrl) const;
-    QString generateTitle(const QString & url, const QString & urlName) const;
 
 public: // Variables
     QString url;

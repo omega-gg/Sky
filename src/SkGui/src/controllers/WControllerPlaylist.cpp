@@ -312,15 +312,7 @@ void WControllerPlaylistData::applyHtml(const QByteArray & array, const QString 
         return;
     }
 
-    QString charset = WControllerNetwork::extractCharset(array);
-
-    QString content;
-
-    if (charset.isEmpty())
-    {
-         content = Sk::readUtf8(array);
-    }
-    else content = Sk::readCodec(array, charset);
+    QString content = extractHtml(array);
 
     QString head = WControllerNetwork::extractHead(content);
 
@@ -513,6 +505,84 @@ void WControllerPlaylistData::addSlice(const QString & start, const QString & en
 }
 
 //-------------------------------------------------------------------------------------------------
+// Static functions
+//-------------------------------------------------------------------------------------------------
+
+/* static */ QString WControllerPlaylistData::extractHtml(const QByteArray & array)
+{
+    QString charset = WControllerNetwork::extractCharset(array);
+
+    if (charset.isEmpty())
+    {
+         return Sk::readUtf8(array);
+    }
+    else return Sk::readCodec(array, charset);
+}
+
+/* static */ QString WControllerPlaylistData::extractHtmlLink(const QByteArray & array,
+                                                              const QString    & url)
+{
+    QString content = extractHtml(array);
+
+    QString head = WControllerNetwork::extractHead(content);
+
+    head.replace("'", "\"");
+
+    QString baseUrl = WControllerNetwork::extractBaseUrl(url);
+
+    QString host;
+
+    if (WControllerNetwork::urlIsFile(baseUrl))
+    {
+         host = baseUrl;
+    }
+    else host = WControllerNetwork::extractUrlHost(baseUrl);
+
+    QStringList list = Sk::slices(head, "<link", "/>");
+
+    foreach (const QString & string, list)
+    {
+        QString rel = WControllerNetwork::extractAttribute(string, "rel");
+
+        if (rel.toLower() != "vbml") continue;
+
+        QString url = WControllerNetwork::extractAttributeUtf8(string, "href");
+
+        if (url.isEmpty()) continue;
+
+        return generateUrl(url, host);
+    }
+
+    return QString();
+}
+
+/* static */ QString WControllerPlaylistData::generateUrl(const QString & url,
+                                                          const QString & baseUrl)
+{
+    QString result = url.simplified().remove(' ');
+
+    result = WControllerNetwork::removeUrlFragment(url);
+
+    result = WControllerNetwork::decodeUrl(url);
+
+    result = WControllerNetwork::htmlToUtf8(result);
+
+    result.remove("\\");
+
+    return WControllerNetwork::generateUrl(result, baseUrl);
+}
+
+/* static */ QString WControllerPlaylistData::generateTitle(const QString & url,
+                                                            const QString & urlName)
+{
+    if (WControllerNetwork::urlName(url) == urlName)
+    {
+         return WControllerNetwork::extractUrlPath(url);
+    }
+    else return WControllerNetwork::removeUrlPrefix(url);
+}
+
+//-------------------------------------------------------------------------------------------------
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
@@ -701,30 +771,6 @@ bool WControllerPlaylistData::addUrl(QStringList * urls, const QString & url) co
         return true;
     }
     else return false;
-}
-
-QString WControllerPlaylistData::generateUrl(const QString & url, const QString & baseUrl) const
-{
-    QString result = url.simplified().remove(' ');
-
-    result = WControllerNetwork::removeUrlFragment(url);
-
-    result = WControllerNetwork::decodeUrl(url);
-
-    result = WControllerNetwork::htmlToUtf8(result);
-
-    result.remove("\\");
-
-    return WControllerNetwork::generateUrl(result, baseUrl);
-}
-
-QString WControllerPlaylistData::generateTitle(const QString & url, const QString & urlName) const
-{
-    if (WControllerNetwork::urlName(url) == urlName)
-    {
-         return WControllerNetwork::extractUrlPath(url);
-    }
-    else return WControllerNetwork::removeUrlPrefix(url);
 }
 
 //=================================================================================================
