@@ -968,12 +968,17 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
     }
     else if (q->urlIsMedia(source))
     {
-        QString title = WControllerNetwork::extractUrlFileName(source);
-
         track->setState(WTrack::Loaded);
 
         track->setSource(source);
-        track->setTitle (title);
+
+        // NOTE: We are only applying the fileName when the title is empty.
+        if (track->title().isEmpty())
+        {
+            QString title = WControllerNetwork::extractUrlFileName(source);
+
+            track->setTitle(title);
+        }
 
         playlist->updateTrack(track);
 
