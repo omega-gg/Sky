@@ -34,6 +34,8 @@ WDeclarativeScannerPrivate::WDeclarativeScannerPrivate(WDeclarativeScanner * p)
 void WDeclarativeScannerPrivate::init()
 {
 #ifdef QT_4
+    Q_Q(WDeclarativeScanner);
+
     q->setFlag(QGraphicsItem::ItemHasNoContents, false);
 #endif
 }
