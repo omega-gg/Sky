@@ -4,7 +4,7 @@
 
     Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
 
-    This file is part of SkBarcode.
+    This file is part of SkyBase.
 
     - GNU Lesser General Public License Usage:
     This file may be used under the terms of the GNU Lesser General Public License version 3 as
@@ -20,43 +20,34 @@
 */
 //=================================================================================================
 
-#ifndef WDECLARATIVESCANNER_P_H
-#define WDECLARATIVESCANNER_P_H
+import QtQuick 1.0
+import Sky     1.0
 
-/*  W A R N I N G
-    -------------
-
-    This file is not part of the Sk API. It exists purely as an
-    implementation detail. This header file may change from version to
-    version without notice, or even be removed.
-
-    We mean it.
-*/
-
-#include <private/WDeclarativeItem_p>
-
-#ifndef SK_NO_DECLARATIVESCANNER
-
-class SK_BARCODE_EXPORT WDeclarativeScannerPrivate : public WDeclarativeItemPrivate
+Scanner
 {
-public:
-    WDeclarativeScannerPrivate(WDeclarativeScanner * p);
+    //---------------------------------------------------------------------------------------------
+    // Aliases
+    //---------------------------------------------------------------------------------------------
 
-    void init();
+    property alias rectangleTag: rectangleTag
 
-public: // Slots
-    void onLoaded(const WBarcodeResult & result);
+    //---------------------------------------------------------------------------------------------
+    // Functions
+    //---------------------------------------------------------------------------------------------
 
-public: // Variables
-    qreal ratioX;
-    qreal ratioY;
+    function click()
+    {
+        rectangleTag.click();
+    }
 
-    qreal rectX;
-    qreal rectY;
+    function clickRect(rect)
+    {
+        rectangleTag.clickRect(rect);
+    }
 
-protected:
-    W_DECLARE_PUBLIC(WDeclarativeScanner)
-};
+    //---------------------------------------------------------------------------------------------
+    // Children
+    //---------------------------------------------------------------------------------------------
 
-#endif // SK_NO_DECLARATIVESCANNER
-#endif // WDECLARATIVESCANNER_P_H
+    RectangleTag { id: rectangleTag }
+}

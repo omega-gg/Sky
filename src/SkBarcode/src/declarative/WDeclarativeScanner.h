@@ -28,7 +28,11 @@
 
 #ifndef SK_NO_DECLARATIVESCANNER
 
+// Forward declarations
 class WDeclarativeScannerPrivate;
+class WDeclarativePlayer;
+class WDeclarativeImage;
+class WBarcodeResult;
 
 class SK_BARCODE_EXPORT WDeclarativeScanner : public WDeclarativeItem
 {
@@ -41,8 +45,17 @@ public:
     explicit WDeclarativeScanner(QQuickItem * parent = NULL);
 #endif
 
+public: // Interface
+    Q_INVOKABLE bool scanFrame(WDeclarativePlayer * player,
+                               WDeclarativeImage  * cover, int x, int y);
+
+signals:
+    void loaded(const QString & text, const QRectF rect);
+
 private:
     W_DECLARE_PRIVATE(WDeclarativeScanner)
+
+    Q_PRIVATE_SLOT(d_func(), void onLoaded(const WBarcodeResult &))
 };
 
 #include <private/WDeclarativeScanner_p>

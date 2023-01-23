@@ -4,6 +4,7 @@ WindowSky 1.0 WindowSky.qml
 
 ItemSlide 1.0 ItemSlide.qml
 ItemWipe  1.0 ItemWipe.qml
+ItemScan  1.0 ItemScan.qml
 
 LoaderSlide 1.0 LoaderSlide.qml
 LoaderWipe  1.0 LoaderWipe.qml
