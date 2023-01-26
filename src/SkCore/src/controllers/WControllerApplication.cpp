@@ -1524,7 +1524,7 @@ int WControllerApplication::regExpCapture(QStringList * captured,
     {
         result.replace(index, 6, QChar(regExp.cap(1).right(4).toUShort(0, 16)));
 
-        index = regExp.indexIn(result);
+        index = regExp.indexIn(result, index + 1);
     }
 
     return result;

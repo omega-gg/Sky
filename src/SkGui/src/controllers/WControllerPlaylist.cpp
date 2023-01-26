@@ -561,9 +561,9 @@ void WControllerPlaylistData::addSlice(const QString & start, const QString & en
 {
     QString result = url.simplified().remove(' ');
 
-    result = WControllerNetwork::removeUrlFragment(url);
+    result = WControllerNetwork::removeUrlFragment(result);
 
-    result = WControllerNetwork::decodeUrl(url);
+    result = WControllerNetwork::decodeUrl(result);
 
     result = WControllerNetwork::htmlToUtf8(result);
 
