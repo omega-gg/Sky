@@ -669,6 +669,11 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
             string.startsWith("https://", Qt::CaseInsensitive));
 }
 
+/* Q_INVOKABLE static */ bool WControllerNetwork::urlIsIp(const QString & string)
+{
+    return textIsIp(removeUrlPrefix(string));
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ QString WControllerNetwork::urlName(const QUrl & url)

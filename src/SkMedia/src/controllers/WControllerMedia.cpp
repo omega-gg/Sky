@@ -417,8 +417,11 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
     }
     else if (WControllerPlaylist::urlIsVbmlFile(source)
              ||
-             // NOTE: The file could be VBML so we load it anyway.
-             WControllerNetwork::extractUrlExtension(source) == QString())
+             // NOTE: The source could be VBML so we try to load it anyway.
+             (WControllerNetwork::extractUrlExtension(source) == QString()
+              &&
+              // NOTE: Url should not be an IP because it can be a HookTorrent server.
+              WControllerNetwork::urlIsIp(source) == false))
     {
         query.url = source;
     }
