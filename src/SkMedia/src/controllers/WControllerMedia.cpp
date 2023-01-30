@@ -420,6 +420,8 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
              // NOTE: The source could be VBML so we try to load it anyway.
              (WControllerNetwork::extractUrlExtension(source) == QString()
               &&
+              WControllerNetwork::urlIsHttp(source)
+              &&
               // NOTE: The url should not be an IP because it can be a HookTorrent server.
               WControllerNetwork::urlIsIp(source) == false))
     {

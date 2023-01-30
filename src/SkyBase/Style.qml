@@ -271,6 +271,15 @@ Item
     property color window_color: "#b4b4b4"
 //#END
 
+//#ItemScan
+    //---------------------------------------------------------------------------------------------
+    // ItemScan
+
+//#DESKTOP
+    property real itemScan_interval: 16
+//#END
+//#END
+
 //#RectangleBorders
     //---------------------------------------------------------------------------------------------
     // RectangleBorders

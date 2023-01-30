@@ -34,6 +34,11 @@ Rectangle
     property int borderSize: st.border_size
 
     //---------------------------------------------------------------------------------------------
+    // Private
+
+    property bool pAnimate: false
+
+    //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
@@ -68,25 +73,17 @@ Rectangle
     {
         opacity = 1.0;
 
-        visible = true;
+        pAnimate = true;
 
         scale = 2.0;
 
         opacity = 0.0;
 
+        pAnimate = false;
+
         timer.interval = durationAnimation;
 
         timer.restart();
-    }
-
-    function clickRect(rect)
-    {
-        rectangleTag.x      = rect.x;
-        rectangleTag.y      = rect.y;
-        rectangleTag.width  = rect.width;
-        rectangleTag.height = rect.height;
-
-        click();
     }
 
     //---------------------------------------------------------------------------------------------
@@ -94,8 +91,6 @@ Rectangle
 
     function pReset()
     {
-        visible = false;
-
         scale = 1.0;
 
         opacity = st.rectangleTag_opacity;
@@ -107,7 +102,7 @@ Rectangle
 
     Behavior on scale
     {
-        enabled: visible
+        enabled: pAnimate
 
         PropertyAnimation
         {
@@ -119,7 +114,7 @@ Rectangle
 
     Behavior on opacity
     {
-        enabled: visible
+        enabled: pAnimate
 
         PropertyAnimation
         {

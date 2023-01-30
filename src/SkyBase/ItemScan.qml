@@ -26,28 +26,155 @@ import Sky     1.0
 Scanner
 {
     //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+
+    /* mandatory */ property Player player
+    /* mandatory */ property Image  cover
+
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    property bool pClick: false
+
+    //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
+//#DESKTOP
+    property alias mouseArea: mouseArea
+//#END
+
     property alias rectangleTag: rectangleTag
+
+    //---------------------------------------------------------------------------------------------
+    // Signals
+    //---------------------------------------------------------------------------------------------
+
+    signal clicked(string text)
+
+    //---------------------------------------------------------------------------------------------
+    // Settings
+    //---------------------------------------------------------------------------------------------
+
+    visible: (player.visible || cover.visible)
+
+    //---------------------------------------------------------------------------------------------
+    // Events
+    //---------------------------------------------------------------------------------------------
+
+//#DESKTOP
+    onWidthChanged : timer.restart()
+    onHeightChanged: timer.restart()
+//#END
+
+    /* QML_EVENT */ onLoaded: function(text, rect)
+    {
+        if (text)
+        {
+            rectangleTag.x      = rect.x;
+            rectangleTag.y      = rect.y;
+            rectangleTag.width  = rect.width;
+            rectangleTag.height = rect.height;
+
+            if (pClick)
+            {
+                pClick = false;
+
+                rectangleTag.click();
+
+                clicked(text);
+            }
+            else rectangleTag.visible = true;
+        }
+        else if (pClick)
+        {
+            pClick = false;
+
+            clicked("");
+        }
+        else rectangleTag.visible = false;
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // Connections
+    //---------------------------------------------------------------------------------------------
+
+//#DESKTOP
+    Connections
+    {
+        target: (visible && window.isDragged == false) ? window : null
+
+        onMousePosChanged: timer.restart()
+    }
+
+    Connections
+    {
+        target: (visible) ? player : null
+
+        onCurrentTimeChanged: timer.restart()
+    }
+
+    Connections
+    {
+        target: (visible) ? cover : null
+
+        onLoaded: timer.restart()
+    }
+//#END
 
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
 
-    function click()
+    function click(x, y)
     {
-        rectangleTag.click();
+        pClick = true;
+
+        return scanFrame(player, cover, x, y);
     }
 
-    function clickRect(rect)
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    function pClearHover()
     {
-        rectangleTag.clickRect(rect);
+        timer.stop();
+
+        pClick = false;
+
+        rectangleTag.visible = false;
     }
 
     //---------------------------------------------------------------------------------------------
     // Children
     //---------------------------------------------------------------------------------------------
+
+//#DESKTOP
+    Timer
+    {
+        id: timer
+
+        interval: st.itemScan_interval
+
+        onTriggered: scanFrame(player, cover, window.mouseX, window.mouseY)
+    }
+
+    MouseArea
+    {
+        id: mouseArea
+
+        anchors.fill: parent
+
+        hoverEnabled: true
+
+        cursor: Qt.PointingHandCursor
+
+        /* QML_EVENT */ onPressed: function(mouse) { mouse.accepted = false }
+
+        onHoverActiveChanged: pClearHover()
+    }
+//#END
 
     RectangleTag { id: rectangleTag }
 }
