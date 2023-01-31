@@ -85,7 +85,9 @@ Scanner
 
                 clicked(text);
             }
+//#DESKTOP
             else rectangleTag.hovered = true;
+//#END
         }
         else if (pClick)
         {
@@ -93,7 +95,9 @@ Scanner
 
             clicked("");
         }
+//#DESKTOP
         else rectangleTag.hovered = false;
+//#END
     }
 
     //---------------------------------------------------------------------------------------------
@@ -137,6 +141,7 @@ Scanner
     //---------------------------------------------------------------------------------------------
     // Private
 
+//#DESKTOP
     function pClearHover()
     {
         timer.stop();
@@ -145,6 +150,7 @@ Scanner
 
         rectangleTag.hovered = false;
     }
+//#END
 
     //---------------------------------------------------------------------------------------------
     // Children
