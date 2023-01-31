@@ -47,7 +47,7 @@ public:
 
 public: // Interface
     Q_INVOKABLE bool scanFrame(WDeclarativePlayer * player,
-                               WDeclarativeImage  * cover, int x, int y);
+                               WDeclarativeImage  * cover, int x, int y, int size = 1);
 
 signals:
     void loaded(const QString & text, const QRectF rect);

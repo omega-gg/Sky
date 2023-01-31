@@ -32,6 +32,8 @@ Scanner
     /* mandatory */ property Player player
     /* mandatory */ property Image  cover
 
+    property real ratioTouch: st.itemScan_ratioTouch
+
     //---------------------------------------------------------------------------------------------
     // Private
 
@@ -135,7 +137,14 @@ Scanner
     {
         pClick = true;
 
-        return scanFrame(player, cover, x, y);
+        // NOTE: We check a larger surface on touch interactions.
+        if (window.isTouching)
+        {
+            var ratio = Math.min(player.width, player.height) / ratioTouch;
+
+            return scanFrame(player, cover, x, y, ratio);
+        }
+        else return scanFrame(player, cover, x, y);
     }
 
     //---------------------------------------------------------------------------------------------

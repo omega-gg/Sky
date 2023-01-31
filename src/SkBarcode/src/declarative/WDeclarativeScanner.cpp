@@ -92,7 +92,8 @@ void WDeclarativeScannerPrivate::onLoaded(const WBarcodeResult & result)
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ bool WDeclarativeScanner::scanFrame(WDeclarativePlayer * player,
-                                                      WDeclarativeImage  * cover, int x, int y)
+                                                      WDeclarativeImage  * cover,
+                                                      int x, int y, int size)
 {
     Q_ASSERT(player);
     Q_ASSERT(cover);
@@ -128,7 +129,9 @@ void WDeclarativeScannerPrivate::onLoaded(const WBarcodeResult & result)
     x = (x - d->rectX) * d->ratioX;
     y = (y - d->rectY) * d->ratioY;
 
-    WBarcodeReader::startScan(image, x, y, WBarcodeReader::QRCode,
+    if (size > 1) size *= qMin(d->ratioX, d->ratioY);
+
+    WBarcodeReader::startScan(image, x, y, size, WBarcodeReader::QRCode,
                               this, SLOT(onLoaded(const WBarcodeResult &)));
 
     return true;

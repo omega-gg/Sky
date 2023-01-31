@@ -99,13 +99,15 @@ class WBarcodeScan : public WAbstractThreadAction
     Q_OBJECT
 
 public:
-    WBarcodeScan(const QImage & image, int x, int y, int precision,
+    WBarcodeScan(const QImage & image, int x, int y, int size, int precision,
                  WBarcodeReader::Formats formats)
     {
         this->image = image;
 
         this->x = x;
         this->y = y;
+
+        this->size = size;
 
         this->precision = precision;
 
@@ -123,6 +125,8 @@ public: // Variables
 
     int x;
     int y;
+
+    int size;
 
     int precision;
 
@@ -204,7 +208,7 @@ public: // Variables
 {
     WBarcodeScanReply * reply = qobject_cast<WBarcodeScanReply *> (this->reply());
 
-    reply->result = WBarcodeReader::scan(image, x, y, formats, precision);
+    reply->result = WBarcodeReader::scan(image, x, y, size, formats, precision);
 
     return true;
 }
@@ -238,7 +242,7 @@ public: // Static functions
 
     static QRect getSlice(int width, int height, int x, int y, int size);
 
-    static QRect getMatch(const Position & position, int x, int y);
+    static QRect getMatch(const Position & position, int x, int y, int size);
 
 protected:
     W_DECLARE_PUBLIC(WBarcodeReader)
@@ -317,7 +321,8 @@ void WBarcodeReaderPrivate::init() {}
     return QRect(rectX, rectY, size, size);
 }
 
-/* static */ QRect WBarcodeReaderPrivate::getMatch(const Position & position, int x, int y)
+/* static */ QRect WBarcodeReaderPrivate::getMatch(const Position & position,
+                                                   int x, int y, int size)
 {
     const PointI & topLeft     = position.topLeft    ();
     const PointI & topRight    = position.topRight   ();
@@ -337,11 +342,21 @@ void WBarcodeReaderPrivate::init() {}
 
     QRect rect = QRect(rectX, rectY, width, height);
 
-    if (rect.contains(x, y))
+    if (size > 1)
+    {
+        int sizeHalf = size / 2;
+
+        if (rect.intersects(QRect(x - sizeHalf, y - sizeHalf, size, size)))
+        {
+            return rect;
+        }
+    }
+    else if (rect.contains(x, y))
     {
         return rect;
     }
-    else return QRect();
+
+    return QRect();
 }
 
 //=================================================================================================
@@ -392,7 +407,8 @@ void WBarcodeReaderPrivate::init() {}
 }
 
 /* Q_INVOKABLE static */ WBarcodeResult WBarcodeReader::scan(const QImage & image, int x, int y,
-                                                             Formats formats, int precision)
+                                                             int size, Formats formats,
+                                                             int precision)
 {
     if (image.isNull() || precision == 0) return WBarcodeResult();
 
@@ -401,7 +417,7 @@ void WBarcodeReaderPrivate::init() {}
     if (format == ImageFormat::None)
     {
         // NOTE: We try image conversion to deal with 'exotic' formats.
-        return scan(image.convertToFormat(QImage::Format_RGB32), x, y, formats, precision);
+        return scan(image.convertToFormat(QImage::Format_RGB32), x, y, size, formats, precision);
     }
 
     DecodeHints hints;
@@ -413,13 +429,13 @@ void WBarcodeReaderPrivate::init() {}
 
     int ratio = height / precision;
 
-    int size = ratio;
+    int currentSize = ratio;
 
     precision--;
 
     for (int i = 0; i < precision; i++)
     {
-        QRect rect = WBarcodeReaderPrivate::getSlice(width, height, x, y, size);
+        QRect rect = WBarcodeReaderPrivate::getSlice(width, height, x, y, currentSize);
 
         QImage view = image.copy(rect);
 
@@ -432,7 +448,7 @@ void WBarcodeReaderPrivate::init() {}
             int rectX = rect.x();
             int rectY = rect.y();
 
-            rect = WBarcodeReaderPrivate::getMatch(output.position(), x - rectX, y - rectY);
+            rect = WBarcodeReaderPrivate::getMatch(output.position(), x - rectX, y - rectY, size);
 
             if (rect.isValid())
             {
@@ -447,7 +463,7 @@ void WBarcodeReaderPrivate::init() {}
             }
         }
 
-        size += ratio;
+        currentSize += ratio;
     }
 
     ImageView imageView(image.bits(), image.width(), image.height(), format);
@@ -456,7 +472,7 @@ void WBarcodeReaderPrivate::init() {}
 
     if (output.isValid())
     {
-        QRect rect = WBarcodeReaderPrivate::getMatch(output.position(), x, y);
+        QRect rect = WBarcodeReaderPrivate::getMatch(output.position(), x, y, size);
 
         if (rect.isValid())
         {
@@ -510,12 +526,13 @@ WAbstractThreadAction * WBarcodeReader::startReadFile(const QString & fileName,
 WAbstractThreadAction * WBarcodeReader::startScan(const QImage & image,
                                                   int            x,
                                                   int            y,
+                                                  int            size,
                                                   Formats        formats,
                                                   QObject      * receiver,
                                                   const char   * method,
                                                   int            precision)
 {
-    WBarcodeScan * action = new WBarcodeScan(image, x, y, precision, formats);
+    WBarcodeScan * action = new WBarcodeScan(image, x, y, size, precision, formats);
 
     WBarcodeScanReply * reply = qobject_cast<WBarcodeScanReply *>
                                 (wControllerFile->startReadAction(action));

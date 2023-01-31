@@ -278,6 +278,8 @@ Item
 //#DESKTOP
     property real itemScan_interval: 16
 //#END
+
+    property real itemScan_ratioTouch: 10.0
 //#END
 
 //#RectangleBorders

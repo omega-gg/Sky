@@ -98,6 +98,7 @@ public: // Static functions
     // NOTE: The 'precision' parameter is the number of scan iterations on the image. This function
     //       returns the matched barcode rectangle, if any.
     Q_INVOKABLE static WBarcodeResult scan(const QImage & image, int x, int y,
+                                           int     size      = 1,
                                            Formats formats   = Any,
                                            int     precision = 5);
 
@@ -120,6 +121,7 @@ public: // Static functions
     Q_INVOKABLE static WAbstractThreadAction * startScan(const QImage & image,
                                                          int            x,
                                                          int            y,
+                                                         int            size      = 1,
                                                          Formats        formats   = Any,
                                                          QObject      * receiver  = NULL,
                                                          const char   * method    = NULL,
