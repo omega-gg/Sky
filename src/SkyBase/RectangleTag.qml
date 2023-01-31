@@ -33,6 +33,8 @@ Rectangle
 
     property int borderSize: st.border_size
 
+    property bool hovered: false
+
     //---------------------------------------------------------------------------------------------
     // Private
 
@@ -55,7 +57,7 @@ Rectangle
 
     radius: Math.round(height / 16)
 
-    visible: false
+    visible: hovered
 
     opacity: st.rectangleTag_opacity
 
@@ -66,11 +68,19 @@ Rectangle
 //#END
 
     //---------------------------------------------------------------------------------------------
+    // Events
+    //---------------------------------------------------------------------------------------------
+
+    onHoveredChanged: visible = hovered
+
+    //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
 
     function click()
     {
+        visible = true;
+
         opacity = 1.0;
 
         pAnimate = true;
@@ -91,6 +101,8 @@ Rectangle
 
     function pReset()
     {
+        if (hovered == false) visible = false;
+
         scale = 1.0;
 
         opacity = st.rectangleTag_opacity;

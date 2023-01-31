@@ -85,7 +85,7 @@ Scanner
 
                 clicked(text);
             }
-            else rectangleTag.visible = true;
+            else rectangleTag.hovered = true;
         }
         else if (pClick)
         {
@@ -93,7 +93,7 @@ Scanner
 
             clicked("");
         }
-        else rectangleTag.visible = false;
+        else rectangleTag.hovered = false;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -143,7 +143,7 @@ Scanner
 
         pClick = false;
 
-        rectangleTag.visible = false;
+        rectangleTag.hovered = false;
     }
 
     //---------------------------------------------------------------------------------------------
