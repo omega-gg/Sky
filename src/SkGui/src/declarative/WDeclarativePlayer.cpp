@@ -246,11 +246,13 @@ void WDeclarativePlayerPrivate::stop()
 
 //-------------------------------------------------------------------------------------------------
 
-void WDeclarativePlayerPrivate::updateRepeat()
+void WDeclarativePlayerPrivate::updateRepeat(WTrack::Type type)
 {
     if (repeat == WDeclarativePlayer::RepeatOne
         ||
-        (repeat == WDeclarativePlayer::RepeatAll && playlist == NULL))
+        (repeat == WDeclarativePlayer::RepeatAll && playlist == NULL)
+        ||
+        type == WTrack::Hub)
     {
          backend->setRepeat(true);
     }
@@ -657,6 +659,8 @@ void WDeclarativePlayerPrivate::onCurrentBookmarkUpdated()
         }
     }
     else setPlaylist(NULL);
+
+    updateRepeat(tab->type());
 
     emit q->currentTrackUpdated();
 }
@@ -1770,7 +1774,7 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 
     backend->setSize(QSizeF(width(), height()));
 
-    d->updateRepeat();
+    d->updateRepeat(trackType());
 
     backend->setSpeed(d->speed);
 
@@ -2284,7 +2288,7 @@ void WDeclarativePlayer::setRepeat(Repeat repeat)
 
     if (d->backend)
     {
-        d->updateRepeat();
+        d->updateRepeat(trackType());
     }
     else emit repeatChanged();
 
@@ -2709,11 +2713,36 @@ bool WDeclarativePlayer::hasNextTrack() const
 
 //-------------------------------------------------------------------------------------------------
 
+WTrack::Type WDeclarativePlayer::trackType() const
+{
+    Q_D(const WDeclarativePlayer);
+
+    if (d->tab)
+    {
+        return d->tab->type();
+    }
+    else if (d->playlist)
+    {
+        const WTrack * track = static_cast<const WTrack *> (d->playlist->currentTrackPointer());
+
+        if (track)
+        {
+             return track->type();
+        }
+        else return WTrack::Track;
+    }
+    else return WTrack::Track;
+}
+
 WTrack::State WDeclarativePlayer::trackState() const
 {
     Q_D(const WDeclarativePlayer);
 
-    if (d->playlist)
+    if (d->tab)
+    {
+        return d->tab->state();
+    }
+    else if (d->playlist)
     {
         const WTrack * track = static_cast<const WTrack *> (d->playlist->currentTrackPointer());
 

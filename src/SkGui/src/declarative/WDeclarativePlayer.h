@@ -143,6 +143,7 @@ class SK_GUI_EXPORT WDeclarativePlayer : public WDeclarativeItem, public WPlayli
     Q_PROPERTY(bool hasPreviousTrack READ hasPreviousTrack NOTIFY playlistUpdated)
     Q_PROPERTY(bool hasNextTrack     READ hasNextTrack     NOTIFY playlistUpdated)
 
+    Q_PROPERTY(int trackType  READ trackType  NOTIFY currentTrackUpdated)
     Q_PROPERTY(int trackState READ trackState NOTIFY currentTrackUpdated)
 
     Q_PROPERTY(bool trackIsDefault READ trackIsDefault NOTIFY currentTrackUpdated)
@@ -428,6 +429,7 @@ public: // Properties
     bool hasPreviousTrack() const;
     bool hasNextTrack    () const;
 
+    WTrack::Type  trackType () const;
     WTrack::State trackState() const;
 
     bool trackIsDefault() const;

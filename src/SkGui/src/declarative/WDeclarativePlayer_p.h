@@ -71,7 +71,7 @@ public: // Functions
 
     void stop();
 
-    void updateRepeat();
+    void updateRepeat(WTrack::Type type);
 
     void updateShuffle();
     void resetShuffle ();

@@ -2331,10 +2331,18 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
         if (d->started)
         {
-            if (d->repeat == false)
+            // NOTE: We repeat at the lowest level possible, instead of relying on the
+            //       WDeclarativePlayer.
+            if (d->repeat)
             {
-                d->clearPlayer();
+                d->player->setSource(d->currentMedia, d->currentAudio);
+
+                d->player->play(0);
+
+                return true;
             }
+
+            d->clearPlayer();
 
             setEnded(true);
         }

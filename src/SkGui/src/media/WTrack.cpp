@@ -131,12 +131,14 @@ void WTrack::applyDataTo(WTrack * other) const
 {
     if      (string == "track") return Track;
     else if (string == "live")  return Live;
+    else if (string == "hub")   return Hub;
     else                        return Unknown;
 }
 
 /* Q_INVOKABLE static */ QString WTrack::typeToString(Type type)
 {
     if (type == Live) return "live";
+    if (type == Hub)  return "hub";
     else              return "track";
 }
 

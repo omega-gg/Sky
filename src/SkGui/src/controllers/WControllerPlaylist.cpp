@@ -656,14 +656,9 @@ void WControllerPlaylistData::parsePlaylist(WYamlReader & reader)
         {
             QString key = child.key;
 
-            if (key == "track")
-            {
-                parsePlaylistTrack(child, WTrack::Track);
-            }
-            else if (key == "live")
-            {
-                parsePlaylistTrack(child, WTrack::Live);
-            }
+            if      (key == "track") parsePlaylistTrack(child, WTrack::Track);
+            else if (key == "live")  parsePlaylistTrack(child, WTrack::Live);
+            else if (key == "hub")   parsePlaylistTrack(child, WTrack::Hub);
         }
     }
 }
@@ -4680,7 +4675,8 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlType(const QString & vbml)
 WControllerPlaylist::Type WControllerPlaylist::vbmlTypeFromString(const QString & string)
 {
     if      (string == "track")    return Track;
-    if      (string == "live")     return Live;
+    else if (string == "live")     return Live;
+    else if (string == "hub")      return Hub;
     else if (string == "playlist") return Playlist;
     else if (string == "feed")     return Feed;
     else if (string == "index")    return Index;
@@ -4690,7 +4686,7 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlTypeFromString(const QString 
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::vbmlTypeTrack(Type type)
 {
-    return (type == Track || type == Live);
+    return (type == Track || type == Live || type == Hub);
 }
 
 /* Q_INVOKABLE static */ void WControllerPlaylist::vbmlPatch(QString & data, const QString & api)
