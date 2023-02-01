@@ -364,7 +364,7 @@ public: // Static functions
     static QString generateTitle(const QString & url, const QString & urlName);
 
 private: // Functions
-    void parseTrack   (WYamlReader & reader);
+    void parseTrack   (WYamlReader & reader, const QString & type);
     void parsePlaylist(WYamlReader & reader);
 
     void parsePlaylistTrack(const WYamlNode & node, WTrack::Type type);

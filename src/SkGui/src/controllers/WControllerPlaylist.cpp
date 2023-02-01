@@ -294,7 +294,7 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
 
     if (WControllerPlaylist::vbmlTypeTrack(type))
     {
-        parseTrack(reader);
+        parseTrack(reader, string);
     }
     else // NOTE: We default to the playlist type.
     {
@@ -586,7 +586,7 @@ void WControllerPlaylistData::addSlice(const QString & start, const QString & en
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WControllerPlaylistData::parseTrack(WYamlReader & reader)
+void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & type)
 {
     source = reader.extractString("source");
 
@@ -595,9 +595,7 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader)
 
     WTrack track;
 
-    QString string = reader.extractString("type");
-
-    track.setType(WTrack::typeFromString(string));
+    track.setType(WTrack::typeFromString(type));
 
     track.setState(WTrack::Default);
 
