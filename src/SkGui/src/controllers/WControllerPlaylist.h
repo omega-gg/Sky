@@ -346,7 +346,7 @@ public:
     WControllerPlaylistData() { type = WControllerPlaylist::Unknown; }
 
 public: // Interface
-    void applyVbml(const QByteArray & array, const QString & url);
+    void applyVbml(const QByteArray & array, const QString & url, const QString & urlBase);
     void applyHtml(const QByteArray & array, const QString & url);
 
     void applyFolder(const QString & url);

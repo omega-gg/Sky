@@ -1020,7 +1020,22 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 
 /* Q_INVOKABLE static */ QString WControllerMedia::generateSource(const QString & url)
 {
-    if (WControllerNetwork::urlIsHttp(url) == false) return url;
+#ifdef Q_OS_WIN
+    if (url.startsWith('/') || url.startsWith('\\') || (url.length() > 1 && url.at(1) == ':'))
+#else
+    if (source.startsWith('/') || (source.length() > 1 && source.at(1) == ':'))
+#endif
+    {
+        return url;
+    }
+    else if (WControllerNetwork::urlIsHttp(url) == false)
+    {
+        if (QUrl(url).scheme().isEmpty())
+        {
+            return "https://" + url;
+        }
+        else return url;
+    }
 
     QString source = WControllerNetwork::removeUrlPrefix(url);
 

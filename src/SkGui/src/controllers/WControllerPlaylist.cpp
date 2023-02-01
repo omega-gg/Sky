@@ -237,7 +237,8 @@ WControllerPlaylistQuery::WControllerPlaylistQuery(const WBackendNetQuery & back
 //=================================================================================================
 // Interface
 
-void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString & url)
+void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString & url,
+                                                                  const QString & urlBase)
 {
     QString content = Sk::readBml(array);
 
@@ -255,6 +256,7 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
         type = WControllerPlaylist::Redirect;
 
         origin = content;
+        source = content;
 
         return;
     }
@@ -263,7 +265,7 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
     {
         WControllerPlaylist::vbmlPatch(content, api);
 
-        applyVbml(content.toUtf8(), url);
+        applyVbml(content.toUtf8(), url, urlBase);
 
         return;
     }
@@ -277,8 +279,6 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
 
     //---------------------------------------------------------------------------------------------
     // Settings
-
-    this->url = url;
 
     QString string = reader.extractString("origin");
 
@@ -294,10 +294,15 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
 
     if (WControllerPlaylist::vbmlTypeTrack(type))
     {
+        // NOTE: We keep a base url for our track source and make it compliant.
+        this->url = WControllerPlaylist::generateSource(urlBase);
+
         parseTrack(reader, string);
     }
     else // NOTE: We default to the playlist type.
     {
+        this->url = url;
+
         parsePlaylist(reader);
     }
 }
@@ -307,7 +312,7 @@ void WControllerPlaylistData::applyHtml(const QByteArray & array, const QString 
     // NOTE: If we find a VMBL header we prioritize it over HTML.
     if (WControllerPlaylist::vbmlCheck(array))
     {
-        applyVbml(array, url);
+        applyVbml(array, url, url);
 
         return;
     }
@@ -775,7 +780,8 @@ class WControllerPlaylistReply : public QObject
     Q_OBJECT
 
 public: // Interface
-    Q_INVOKABLE void extractVbml  (QIODevice * device, const QString & url);
+    Q_INVOKABLE void extractVbml(QIODevice * device, const QString & url, const QString & urlBase);
+
     Q_INVOKABLE void extractHtml  (QIODevice * device, const QString & url);
     Q_INVOKABLE void extractFolder(QIODevice * device, const QString & url);
     Q_INVOKABLE void extractFile  (QIODevice * device, const QString & url);
@@ -791,11 +797,12 @@ signals:
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WControllerPlaylistReply::extractVbml(QIODevice     * device,
-                                                             const QString & url)
+                                                             const QString & url,
+                                                             const QString & urlBase)
 {
     WControllerPlaylistData data;
 
-    data.applyVbml(device->readAll(), url);
+    data.applyVbml(device->readAll(), url, urlBase);
 
     emit loaded(device, data);
 
@@ -897,7 +904,8 @@ void WControllerPlaylistPrivate::init()
 
     const QMetaObject * meta = WControllerPlaylistReply().metaObject();
 
-    methodVbml   = meta->method(meta->indexOfMethod("extractVbml(QIODevice*,QString)"));
+    methodVbml = meta->method(meta->indexOfMethod("extractVbml(QIODevice*,QString,QString)"));
+
     methodHtml   = meta->method(meta->indexOfMethod("extractHtml(QIODevice*,QString)"));
     methodFolder = meta->method(meta->indexOfMethod("extractFolder(QIODevice*,QString)"));
     methodFile   = meta->method(meta->indexOfMethod("extractFile(QIODevice*,QString)"));
@@ -1876,63 +1884,11 @@ void WControllerPlaylistPrivate::applyCurrentIndex(WPlaylist * playlist) const
 //-------------------------------------------------------------------------------------------------
 
 void WControllerPlaylistPrivate::loadUrls(QIODevice * device, const WBackendNetQuery & query,
+                                                              const QString          & url,
                                                               const char             * signal,
                                                               const char             * slot) const
 {
     Q_Q(const WControllerPlaylist);
-
-    QMetaMethod method;
-
-    QString url;
-
-    if (query.type == WBackendNetQuery::TypeImage)
-    {
-        method = methodVbml;
-
-        // NOTE: We set the VBML uri instead of the image url.
-        url = query.urlRedirect;
-
-        if (WControllerPlaylist::urlIsVbmlUri(url) == false)
-        {
-            url = query.url;
-        }
-    }
-    else
-    {
-        WBackendNetQuery::Target target = query.target;
-
-        if (target == WBackendNetQuery::TargetHtml)
-        {
-            QString urlRedirect = query.urlRedirect;
-
-            // NOTE: When we get redirected to VBML we parse it instead.
-            if (WControllerPlaylist::urlIsVbml(urlRedirect))
-            {
-                 method = methodVbml;
-            }
-            else method = methodHtml;
-
-            url = query.url;
-        }
-        else
-        {
-            if (target == WBackendNetQuery::TargetVbml)
-            {
-                method = methodVbml;
-            }
-            else if (target == WBackendNetQuery::TargetFolder)
-            {
-                method = methodFolder;
-            }
-            else if (target == WBackendNetQuery::TargetFile)
-            {
-                method = methodFile;
-            }
-            else method = methodItem;
-
-            url = query.url;
-        }
-    }
 
     WControllerPlaylistReply * reply = new WControllerPlaylistReply;
 
@@ -1944,7 +1900,61 @@ void WControllerPlaylistPrivate::loadUrls(QIODevice * device, const WBackendNetQ
     //       it since readAll() seems to be thread safe.
     //device->moveToThread(thread);
 
-    method.invoke(reply, Q_ARG(QIODevice *, device), Q_ARG(const QString &, url));
+    if (query.type == WBackendNetQuery::TypeImage)
+    {
+        // NOTE: We set the VBML uri instead of the image url.
+        QString currentUrl = query.urlRedirect;
+
+        if (WControllerPlaylist::urlIsVbmlUri(currentUrl) == false)
+        {
+            currentUrl = query.url;
+        }
+
+        methodVbml.invoke(reply, Q_ARG(QIODevice *, device), Q_ARG(const QString &, currentUrl),
+                                                             Q_ARG(const QString &, url));
+
+        return;
+    }
+
+    WBackendNetQuery::Target target = query.target;
+
+    if (target == WBackendNetQuery::TargetVbml)
+    {
+        methodVbml.invoke(reply, Q_ARG(QIODevice *, device), Q_ARG(const QString &, query.url),
+                                                             Q_ARG(const QString &, url));
+
+        return;
+    }
+
+    if (target == WBackendNetQuery::TargetHtml)
+    {
+        QString urlRedirect = query.urlRedirect;
+
+        // NOTE: When we get redirected to VBML we parse it instead.
+        if (WControllerPlaylist::urlIsVbml(urlRedirect))
+        {
+            methodVbml.invoke(reply, Q_ARG(QIODevice *, device), Q_ARG(const QString &, query.url),
+                                                                 Q_ARG(const QString &, url));
+        }
+        else methodHtml.invoke(reply,
+                               Q_ARG(QIODevice *, device), Q_ARG(const QString &, query.url));
+
+        return;
+    }
+
+    QMetaMethod method;
+
+    if (target == WBackendNetQuery::TargetFolder)
+    {
+        method = methodFolder;
+    }
+    else if (target == WBackendNetQuery::TargetFile)
+    {
+        method = methodFile;
+    }
+    else method = methodItem;
+
+    method.invoke(reply, Q_ARG(QIODevice *, device), Q_ARG(const QString &, query.url));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2435,7 +2445,7 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
             backend->loadTrack(networkReply, *backendQuery,
                                q, SLOT(onTrackLoaded(QIODevice *, WBackendNetTrack)));
         }
-        else loadUrls(networkReply, *backendQuery,
+        else loadUrls(networkReply, *backendQuery, item->source(),
                       SIGNAL(loaded(QIODevice *, const WControllerPlaylistData &)),
                       SLOT(onUrlTrack(QIODevice *, const WControllerPlaylistData &)));
     }
@@ -2446,7 +2456,7 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
             backend->loadPlaylist(networkReply, *backendQuery,
                                   q, SLOT(onPlaylistLoaded(QIODevice *, WBackendNetPlaylist)));
         }
-        else loadUrls(networkReply, *backendQuery,
+        else loadUrls(networkReply, *backendQuery, item->source(),
                       SIGNAL(loaded(QIODevice *, const WControllerPlaylistData &)),
                       SLOT(onUrlPlaylist(QIODevice *, const WControllerPlaylistData &)));
     }
@@ -2457,7 +2467,7 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
             backend->loadFolder(networkReply, *backendQuery,
                                 q, SLOT(onFolderLoaded(QIODevice *, WBackendNetFolder)));
         }
-        else loadUrls(networkReply, *backendQuery,
+        else loadUrls(networkReply, *backendQuery, item->source(),
                       SIGNAL(loaded(QIODevice *, const WControllerPlaylistData &)),
                       SLOT(onUrlFolder(QIODevice *, const WControllerPlaylistData &)));
     }
@@ -2468,7 +2478,7 @@ void WControllerPlaylistPrivate::onLoaded(WRemoteData * data)
             backend->loadItem(networkReply, *backendQuery,
                               q, SLOT(onItemLoaded(QIODevice *, WBackendNetItem)));
         }
-        else loadUrls(networkReply, *backendQuery,
+        else loadUrls(networkReply, *backendQuery, item->source(),
                       SIGNAL(loadedItem(QIODevice *, const WControllerPlaylistItem &)),
                       SLOT(onUrlItem(QIODevice *, const WControllerPlaylistItem &)));
     }
@@ -2856,20 +2866,29 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
 
     deleteQuery(query);
 
-    QString source = data.origin;
-
-    if (data.type == WControllerPlaylist::Redirect)
-    {
-        applySourceTrack(playlist, track, source);
-
-        return;
-    }
-
     int index = playlist->indexOf(track);
 
     if (index == -1)
     {
         playlist->d_func()->applyTrackDefault();
+
+        return;
+    }
+
+    QString origin = data.origin;
+
+    if (data.type == WControllerPlaylist::Redirect)
+    {
+        QString source = data.source;
+
+        if (source.isEmpty() == false)
+        {
+            track->setSource(source);
+
+            playlist->updateTrack(index);
+        }
+
+        applySourceTrack(playlist, track, origin);
 
         return;
     }
@@ -2892,11 +2911,11 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
 
         emit playlist->trackQueryEnded();
 
-        if (source.isEmpty() == false)
+        if (origin.isEmpty() == false)
         {
             playlist->updateTrack(index);
 
-            WBackendNetQuery query(source);
+            WBackendNetQuery query(origin);
 
             query.target = WBackendNetQuery::TargetVbml;
 
@@ -2905,19 +2924,19 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
             return;
         }
 
-        source = data.source;
+        origin = data.source;
 
-        if (source.isEmpty() == false)
+        if (origin.isEmpty() == false)
         {
             Q_Q(WControllerPlaylist);
 
-            WBackendNet * backend = q->backendFromUrl(source);
+            WBackendNet * backend = q->backendFromUrl(origin);
 
             if (backend)
             {
                 playlist->updateTrack(index);
 
-                WBackendNetQuery query = backend->getQueryTrack(source);
+                WBackendNetQuery query = backend->getQueryTrack(origin);
 
                 backend->tryDelete();
 
@@ -2965,9 +2984,15 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     WControllerPlaylist::Type type = data.type;
 
     QString origin = data.origin;
+    QString source = data.source;
 
     if (type == WControllerPlaylist::Redirect)
     {
+        if (source.isEmpty() == false)
+        {
+            playlist->applySource(source);
+        }
+
         applySourcePlaylist(playlist, origin);
 
         return;
@@ -2980,8 +3005,6 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
     playlist->setTitle(data.title);
     playlist->setCover(data.cover);
-
-    QString source = data.source;
 
     if (origin.isEmpty() == false)
     {
@@ -3274,12 +3297,18 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
     WControllerPlaylist::Type type = data.type;
 
     QString origin = data.origin;
+    QString source = data.source;
 
     if (data.type == WControllerPlaylist::Redirect)
     {
         playlist->tryDelete();
 
         folder->removeAt(0);
+
+        if (source.isEmpty() == false)
+        {
+            folder->applySource(source);
+        }
 
         applySourceFolder(folder, origin);
 
@@ -3293,8 +3322,6 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
     playlist->setTitle(data.title);
     playlist->setCover(data.cover);
-
-    QString source = data.source;
 
     if (origin.isEmpty() == false)
     {
@@ -3940,8 +3967,6 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
 /* Q_INVOKABLE static */ QString WControllerPlaylist::generateSource(const QString & url)
 {
-    // NOTE: We return the encoded URL for proper arguments parsing.
-
     QString source = WControllerNetwork::decodeUrl(url);
 
     if (WControllerNetwork::urlIsFile(source))
@@ -3980,7 +4005,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
     }
     else if (QUrl(url).scheme().isEmpty())
     {
-         return "https://" + url;
+        return "https://" + url;
     }
     else return url;
 }

@@ -146,8 +146,9 @@ public: // Functions
 
     void applyCurrentIndex(WPlaylist * playlist) const;
 
-    void loadUrls(QIODevice * device, const WBackendNetQuery & query, const char * signal,
-                                                                      const char * slot) const;
+    void loadUrls(QIODevice * device, const WBackendNetQuery & query,
+                                      const QString          & url,
+                                      const char             * signal, const char * slot) const;
 
     void scanItems(QList<WLibraryFolderItem> * items) const;
 
