@@ -627,24 +627,14 @@ WBackendTrack WAbstractBackend::trackFromString(const QString & string)
 
         emit sourceChanged();
     }
-    else if (d->state == StatePlaying)
-    {
-        backendPause();
-
-        setDuration   (duration);
-        setCurrentTime(currentTime);
-
-        setStateLoad(StateLoadResuming);
-
-        backendPlay();
-    }
-    else
+    else if (d->state != StatePlaying)
     {
         if (d->state == StatePaused) stop();
 
         setDuration   (duration);
         setCurrentTime(currentTime);
     }
+    else seek(currentTime);
 }
 
 //-------------------------------------------------------------------------------------------------

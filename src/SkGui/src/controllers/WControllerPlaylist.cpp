@@ -247,18 +247,37 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
 
     QString api = WControllerPlaylist::vbmlVersion(content);
 
-    // NOTE: If it's a plain URL we redirect to the given address.
-    if (api.isEmpty() && WControllerNetwork::textIsUrl(content)
-        &&
-        // NOTE: The origin has to be different than the current URL.
-        WControllerNetwork::removeUrlPrefix(url) != WControllerNetwork::removeUrlPrefix(content))
+    if (api.isEmpty())
     {
-        type = WControllerPlaylist::Redirect;
+        // NOTE: If it's a plain URL we redirect to the given address.
+        if (WControllerNetwork::textIsUrl(content))
+        {
+            // NOTE: The origin has to be different than the current URL.
+            if (WControllerNetwork::removeUrlPrefix(url)
+                !=
+                WControllerNetwork::removeUrlPrefix(content))
+            {
+                type = WControllerPlaylist::Redirect;
 
-        origin = content;
-        source = content;
+                origin = content;
+                source = content;
 
-        return;
+                return;
+            }
+        }
+
+        // NOTE: If it's HTML we try to extract a VBML link.
+        if (array.contains("<html>"))
+        {
+            origin = WControllerPlaylistData::extractHtmlLink(array, url);
+
+            if (origin.isEmpty() == false)
+            {
+                type = WControllerPlaylist::Redirect;
+
+                return;
+            }
+        }
     }
 
     if (Sk::versionIsHigher(WControllerPlaylist::versionApi(), api))
