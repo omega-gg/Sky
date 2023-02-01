@@ -185,16 +185,20 @@ public: // Variables
 class WVlcPlayerEventSource : public QEvent
 {
 public:
-    WVlcPlayerEventSource(const QString & media, const QString & audio)
+    WVlcPlayerEventSource(const QString & media, const QString & audio, int loop)
         : QEvent(static_cast<QEvent::Type> (WVlcPlayerPrivate::EventSource))
     {
         this->media = media;
         this->audio = audio;
+
+        this->loop = loop;
     }
 
 public: // Variables
     QString media;
     QString audio;
+
+    bool loop;
 };
 
 #endif // SK_NO_VLCPLAYER

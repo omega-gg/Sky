@@ -712,6 +712,8 @@ void WBackendVlcPrivate::init()
     volume = 100;
     mute   = false;
 
+    loop = false;
+
     closestOutput  = WAbstractBackend::OutputNone;
     closestQuality = WAbstractBackend::QualityDefault;
 
@@ -1060,6 +1062,8 @@ void WBackendVlcPrivate::applySources(bool play)
     medias = reply->medias();
     audios = reply->audios();
 
+    loop = (reply->type() == WTrack::Hub);
+
     if (applyQuality(quality))
     {
         currentMedia = medias.value(closestQuality);
@@ -1133,7 +1137,7 @@ void WBackendVlcPrivate::playMedia()
 {
     Q_Q(WBackendVlc);
 
-    player->setSource(currentMedia, currentAudio);
+    player->setSource(currentMedia, currentAudio, loop);
 
     q->setOutputActive (closestOutput);
     q->setQualityActive(closestQuality);
@@ -1750,7 +1754,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
 
         d->onFrameUpdated();
 
-        d->player->setSource(d->currentMedia, d->currentAudio);
+        d->player->setSource(d->currentMedia, d->currentAudio, d->loop);
 
         setQualityActive(d->closestQuality);
 
@@ -2335,7 +2339,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
             //       WDeclarativePlayer.
             if (d->repeat)
             {
-                d->player->setSource(d->currentMedia, d->currentAudio);
+                d->player->setSource(d->currentMedia, d->currentAudio, d->loop);
 
                 d->player->play(0);
 

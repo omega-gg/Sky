@@ -87,7 +87,8 @@ public: // Interface
                                                    libvlc_video_unlock_cb  unlock  = NULL,
                                                    libvlc_video_display_cb display = NULL);
 
-    Q_INVOKABLE void setSource(const QString & media, const QString & audio = QString());
+    Q_INVOKABLE void setSource(const QString & media,
+                               const QString & audio = QString(), int loop = false);
 
     Q_INVOKABLE void play(int at = 0);
 

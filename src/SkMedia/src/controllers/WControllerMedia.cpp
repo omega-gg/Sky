@@ -61,6 +61,8 @@ WMediaReply::WMediaReply(const QString & url,
 
     _mode = mode;
 
+    _type = WTrack::Track;
+
     _backend = NULL;
 
     _loaded = false;
@@ -132,6 +134,11 @@ QString WMediaReply::url() const
 }
 
 //-------------------------------------------------------------------------------------------------
+
+WTrack::Type WMediaReply::type() const
+{
+    return _type;
+}
 
 QHash<WAbstractBackend::Quality, QString> WMediaReply::medias() const
 {
@@ -241,7 +248,14 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
     }
 
     // NOTE: If parsing fails, apply the url itself given it might be readable by the player.
-    if (source.isEmpty()) source = url;
+    if (source.isEmpty())
+    {
+        source = url;
+
+        return;
+    }
+
+    type = WTrack::typeFromString(reader.extractString("type"));
 }
 
 //=================================================================================================
@@ -440,6 +454,7 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
     WPrivateMediaData * media = new WPrivateMediaData;
 
+    media->type    = WTrack::Track;
     media->url     = url;
     media->backend = backend;
     media->query   = query;
@@ -656,6 +671,8 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
         // NOTE: We propagate the compatibility mode.
         query.mode = mode;
 
+        media->type = data.type;
+
         getData(media, &query);
 
         return;
@@ -675,6 +692,8 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
             query.mode = mode;
 
             media->backend = backend;
+
+            media->type = data.type;
 
             getData(media, &query);
 
@@ -764,6 +783,8 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
         }
     }
 
+    WTrack::Type type = media->type;
+
     const QHash<WAbstractBackend::Quality, QString> & medias = source.medias;
     const QHash<WAbstractBackend::Quality, QString> & audios = source.audios;
 
@@ -782,11 +803,15 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
         {
             WPrivateMediaSource * source = &(sources[url]);
 
+            source->type = type;
+
             source->modes.insert(backendQuery.mode, mode);
         }
         else
         {
             WPrivateMediaSource source;
+
+            source.type = type;
 
             source.modes.insert(backendQuery.mode, mode);
 
@@ -796,6 +821,8 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
         foreach (WMediaReply * reply, media->replies)
         {
             reply->_loaded = true;
+
+            reply->_type = type;
 
             reply->_medias = medias;
             reply->_audios = audios;
@@ -884,6 +911,8 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 
             d->urls.removeOne(url);
             d->urls.append   (url);
+
+            reply->_type = source.type;
 
             const WPrivateMediaMode & source = sources[mode];
 

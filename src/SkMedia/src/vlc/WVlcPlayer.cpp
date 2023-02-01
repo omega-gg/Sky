@@ -312,9 +312,10 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WVlcPlayer::setSource(const QString & media, const QString & audio)
+/* Q_INVOKABLE */ void WVlcPlayer::setSource(const QString & media,
+                                             const QString & audio, int loop)
 {
-    QCoreApplication::postEvent(this, new WVlcPlayerEventSource(media, audio));
+    QCoreApplication::postEvent(this, new WVlcPlayerEventSource(media, audio, loop));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -547,6 +548,12 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
                 }
             }
             else libvlc_media_add_option(media, "no-audio");
+        }
+
+        if (eventSource->loop)
+        {
+            // NOTE: We use the maximum value given we can't set an infinite value.
+            libvlc_media_add_option(media, "input-repeat=65535");
         }
 
         if (cache.isNull() == false)

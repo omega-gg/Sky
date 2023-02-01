@@ -76,6 +76,8 @@ signals:
 public: // Properties
     QString url() const;
 
+    WTrack::Type type() const;
+
     QHash<WAbstractBackend::Quality, QString> medias() const;
     QHash<WAbstractBackend::Quality, QString> audios() const;
 
@@ -89,6 +91,8 @@ private: // Variables
     QString _url;
 
     WAbstractBackend::SourceMode _mode;
+
+    WTrack::Type _type;
 
     QHash<WAbstractBackend::Quality, QString> _medias;
     QHash<WAbstractBackend::Quality, QString> _audios;
@@ -112,10 +116,15 @@ private:
 
 struct WControllerMediaData
 {
+public:
+    WControllerMediaData() { type = WTrack::Track; }
+
 public: // Interface
     void applyVbml(const QByteArray & array, const QString & url);
 
 public: // Variables
+    WTrack::Type type;
+
     QString origin;
     QString source;
 };

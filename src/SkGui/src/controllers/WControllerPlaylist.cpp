@@ -288,7 +288,7 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
         origin = string;
     }
 
-    string = reader.extractString("type").simplified().toLower();
+    string = reader.extractString("type");
 
     type = WControllerPlaylist::vbmlTypeFromString(string);
 

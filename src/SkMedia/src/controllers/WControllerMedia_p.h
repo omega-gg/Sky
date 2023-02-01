@@ -53,6 +53,8 @@ class WRemoteData;
 
 struct WPrivateMediaData
 {
+    WTrack::Type type;
+
     QString url;
 
     WBackendNet * backend;
@@ -82,6 +84,8 @@ struct WPrivateMediaMode
 
 struct WPrivateMediaSource
 {
+    WTrack::Type type;
+
     QHash<WAbstractBackend::SourceMode, WPrivateMediaMode> modes;
 };
 
