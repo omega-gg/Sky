@@ -111,21 +111,21 @@ Scanner
     {
         target: (visible && window.isDragged == false) ? window : null
 
-        onMousePosChanged: timer.restart()
+        onMousePosChanged: pStart()
     }
 
     Connections
     {
         target: (visible) ? player : null
 
-        onCurrentTimeChanged: timer.restart()
+        onCurrentTimeChanged: pStart()
     }
 
     Connections
     {
         target: (visible) ? cover : null
 
-        onLoaded: timer.restart()
+        onLoaded: pStart()
     }
 //#END
 
@@ -151,6 +151,14 @@ Scanner
     // Private
 
 //#DESKTOP
+    function pStart()
+    {
+        // NOTE: We don't want to update the rectangle position while clicking.
+        if (rectangleTag.isAnimated) return;
+
+        timer.restart();
+    }
+
     function pClearHover()
     {
         timer.stop();
@@ -191,5 +199,13 @@ Scanner
     }
 //#END
 
-    RectangleTag { id: rectangleTag }
+    RectangleTag
+    {
+        id: rectangleTag
+
+//#DESKTOP
+        // NOTE: Updating the rectangle position after clicking.
+        onIsAnimatedChanged: if (isAnimated == false) timer.restart()
+//#END
+    }
 }

@@ -824,7 +824,7 @@ void WPlaylistPrivate::applyTrack(WTrack * track, int index, int delay)
     {
         loadCover(track, QNetworkRequest::NormalPriority);
     }
-    if (state == WTrack::Default)
+    else if (state == WTrack::Default)
     {
         track->setState(WTrack::Loaded);
 
