@@ -66,8 +66,8 @@ Scanner
     //---------------------------------------------------------------------------------------------
 
 //#DESKTOP
-    onWidthChanged : timer.restart()
-    onHeightChanged: timer.restart()
+    onWidthChanged : pRestart()
+    onHeightChanged: pRestart()
 //#END
 
     /* QML_EVENT */ onLoaded: function(text, rect)
@@ -111,21 +111,14 @@ Scanner
     {
         target: (visible && window.isDragged == false) ? window : null
 
-        onMousePosChanged: pStart()
-    }
-
-    Connections
-    {
-        target: (visible) ? player : null
-
-        onCurrentTimeChanged: pStart()
+        onMousePosChanged: pRestart()
     }
 
     Connections
     {
         target: (visible) ? cover : null
 
-        onLoaded: pStart()
+        onLoaded: pRestart()
     }
 //#END
 
@@ -151,7 +144,7 @@ Scanner
     // Private
 
 //#DESKTOP
-    function pStart()
+    function pRestart()
     {
         // NOTE: We don't want to update the rectangle position while clicking.
         if (rectangleTag.isAnimated) return;
@@ -178,7 +171,18 @@ Scanner
     {
         id: timer
 
-        interval: st.itemScan_interval
+        interval: st.itemScan_intervalA
+
+        onTriggered: scanFrame(player, cover, window.mouseX, window.mouseY)
+    }
+
+    Timer
+    {
+        interval: st.itemScan_intervalB
+
+        repeat: true
+
+        running: (player.isPlaying && rectangleTag.isAnimated == false)
 
         onTriggered: scanFrame(player, cover, window.mouseX, window.mouseY)
     }
@@ -205,7 +209,7 @@ Scanner
 
 //#DESKTOP
         // NOTE: Updating the rectangle position after clicking.
-        onIsAnimatedChanged: if (isAnimated == false) timer.restart()
+        onIsAnimatedChanged: if (isAnimated == false) pRestart()
 //#END
     }
 }
