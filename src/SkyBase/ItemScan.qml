@@ -65,11 +65,6 @@ Scanner
     // Events
     //---------------------------------------------------------------------------------------------
 
-//#DESKTOP
-    onWidthChanged : pRestart()
-    onHeightChanged: pRestart()
-//#END
-
     /* QML_EVENT */ onLoaded: function(text, rect)
     {
         if (text)
@@ -102,6 +97,11 @@ Scanner
 //#END
     }
 
+//#DESKTOP
+    onWidthChanged : pRestart()
+    onHeightChanged: pRestart()
+//#END
+
     //---------------------------------------------------------------------------------------------
     // Connections
     //---------------------------------------------------------------------------------------------
@@ -119,6 +119,9 @@ Scanner
         target: (visible) ? cover : null
 
         onLoaded: pRestart()
+
+        // NOTE: Clear the rectangle when we switch between the player and the cover.
+        onVisibleChanged: pClearHover()
     }
 //#END
 
