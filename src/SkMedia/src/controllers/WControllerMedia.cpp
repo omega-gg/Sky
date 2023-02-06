@@ -603,11 +603,13 @@ void WControllerMediaPrivate::onLoaded(WRemoteData * data)
 
     WBackendNet * backend = media->backend;
 
-    if (data->hasError())
+    const WBackendNetQuery & query = media->query;
+
+    if (data->hasError() && query.skipError == false)
     {
         qWarning("WControllerMediaPrivate::onLoaded: Failed to load media %s.", data->url().C_STR);
 
-        if (backend) backend->queryFailed(media->query);
+        if (backend) backend->queryFailed(query);
 
         QString error = data->error();
 
@@ -634,10 +636,10 @@ void WControllerMediaPrivate::onLoaded(WRemoteData * data)
 
         if (backend)
         {
-            backend->loadSource(reply, media->query,
+            backend->loadSource(reply, query,
                                 q, SLOT(onSourceLoaded(QIODevice *, WBackendNetSource)));
         }
-        else loadUrl(reply, media->query);
+        else loadUrl(reply, query);
     }
 
     delete data;

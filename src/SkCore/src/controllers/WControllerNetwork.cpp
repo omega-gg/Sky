@@ -1551,14 +1551,19 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 
 #ifdef QT_4
     const WControllerNetworkEntity * resolved = qBinaryFind(start, end, entity);
-#else
-    const WControllerNetworkEntity * resolved = std::lower_bound(start, end, entity);
-#endif
 
     if (resolved != end)
     {
         return QString(resolved->code);
     }
+#else
+    const WControllerNetworkEntity * resolved = std::lower_bound(start, end, entity);
+
+    if (resolved != end && resolved->name <= entity)
+    {
+        return QString(resolved->code);
+    }
+#endif
 
     if (entity.length() > 1 && entity.at(0) == '#')
     {
