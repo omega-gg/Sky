@@ -1025,7 +1025,7 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 #ifdef Q_OS_WIN
     if (url.startsWith('/') || url.startsWith('\\') || (url.length() > 1 && url.at(1) == ':'))
 #else
-    if (source.startsWith('/') || (source.length() > 1 && source.at(1) == ':'))
+    if (url.startsWith('/') || (url.length() > 1 && url.at(1) == ':'))
 #endif
     {
         return url;
