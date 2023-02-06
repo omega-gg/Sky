@@ -156,8 +156,6 @@ Scanner
     {
         timer.stop();
 
-        pClick = false;
-
         rectangleTag.hovered = false;
     }
 //#END
