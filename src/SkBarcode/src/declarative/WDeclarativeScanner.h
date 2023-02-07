@@ -38,6 +38,11 @@ class SK_BARCODE_EXPORT WDeclarativeScanner : public WDeclarativeItem
 {
     Q_OBJECT
 
+    Q_PROPERTY(WDeclarativePlayer * player READ player WRITE setPlayer NOTIFY playerChanged)
+    Q_PROPERTY(WDeclarativeImage  * cover  READ cover  WRITE setCover  NOTIFY coverChanged)
+
+    Q_PROPERTY(int interval READ interval WRITE setInterval NOTIFY intervalChanged)
+
 public:
 #ifdef QT_4
     explicit WDeclarativeScanner(QDeclarativeItem * parent = NULL);
@@ -46,16 +51,36 @@ public:
 #endif
 
 public: // Interface
-    Q_INVOKABLE bool scanFrame(WDeclarativePlayer * player,
-                               WDeclarativeImage  * cover, int x, int y, int size = 1);
+    Q_INVOKABLE bool scanFrame(int x, int y, int size = 1, int count = 1);
+
+protected: // Events
+    /* virtual */ void timerEvent(QTimerEvent * event);
 
 signals:
     void loaded(const QString & text, const QRectF rect);
+
+    void playerChanged();
+    void coverChanged ();
+
+    void intervalChanged();
+
+public: // Properties
+    WDeclarativePlayer * player() const;
+    void                 setPlayer(WDeclarativePlayer * player);
+
+    WDeclarativeImage * cover() const;
+    void                setCover(WDeclarativeImage * cover);
+
+    int  interval() const;
+    void setInterval(int interval);
 
 private:
     W_DECLARE_PRIVATE(WDeclarativeScanner)
 
     Q_PRIVATE_SLOT(d_func(), void onLoaded(const WBarcodeResult &))
+
+    Q_PRIVATE_SLOT(d_func(), void onClearPlayer())
+    Q_PRIVATE_SLOT(d_func(), void onClearCover ())
 };
 
 #include <private/WDeclarativeScanner_p>

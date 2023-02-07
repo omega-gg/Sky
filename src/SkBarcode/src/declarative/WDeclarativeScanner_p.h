@@ -37,6 +37,23 @@
 
 #ifndef SK_NO_DECLARATIVESCANNER
 
+//-------------------------------------------------------------------------------------------------
+// WDeclarativeScannerData
+//-------------------------------------------------------------------------------------------------
+
+struct WDeclarativeScannerData
+{
+    qreal ratioX;
+    qreal ratioY;
+
+    qreal rectX;
+    qreal rectY;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WDeclarativeScannerPrivate
+//-------------------------------------------------------------------------------------------------
+
 class SK_BARCODE_EXPORT WDeclarativeScannerPrivate : public WDeclarativeItemPrivate
 {
 public:
@@ -44,15 +61,36 @@ public:
 
     void init();
 
+public: // Fuctions
+    bool scan();
+
+    void stopTimer();
+
+    void clear();
+
 public: // Slots
     void onLoaded(const WBarcodeResult & result);
 
-public: // Variables
-    qreal ratioX;
-    qreal ratioY;
+    void onClearPlayer();
+    void onClearCover ();
 
-    qreal rectX;
-    qreal rectY;
+public: // Variables
+    WDeclarativePlayer * player;
+    WDeclarativeImage  * cover;
+
+    int x;
+    int y;
+
+    int size;
+
+    int timerId;
+
+    int count;
+    int currentCount;
+
+    int interval;
+
+    QList<WDeclarativeScannerData> datas;
 
 protected:
     W_DECLARE_PUBLIC(WDeclarativeScanner)

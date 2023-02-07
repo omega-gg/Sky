@@ -29,9 +29,6 @@ Scanner
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    /* mandatory */ property Player player
-    /* mandatory */ property Image  cover
-
     property real ratioTouch: st.itemScan_ratioTouch
 
     //---------------------------------------------------------------------------------------------
@@ -131,16 +128,16 @@ Scanner
 
     function click(x, y)
     {
-        pClick = true;
-
         // NOTE: We check a larger surface on touch interactions.
         if (window.isTouching)
         {
             var ratio = Math.min(player.width, player.height) / ratioTouch;
 
-            return scanFrame(player, cover, x, y, ratio);
+            pClick = scanFrame(x, y, ratio, 5);
         }
-        else return scanFrame(player, cover, x, y);
+        else pClick = scanFrame(x, y, 1, 5);
+
+        return pClick;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -150,9 +147,16 @@ Scanner
     function pRestart()
     {
         // NOTE: We don't want to update the rectangle position while clicking.
-        if (rectangleTag.isAnimated) return;
+        if (pClick || rectangleTag.isAnimated) return;
 
         timer.restart();
+    }
+
+    function pScan()
+    {
+        if (pClick) return;
+
+        scanFrame(window.mouseX, window.mouseY);
     }
 
     function pClearHover()
@@ -174,7 +178,7 @@ Scanner
 
         interval: st.itemScan_intervalA
 
-        onTriggered: scanFrame(player, cover, window.mouseX, window.mouseY)
+        onTriggered: pScan()
     }
 
     Timer
@@ -185,7 +189,7 @@ Scanner
 
         running: (player.isPlaying && rectangleTag.isAnimated == false)
 
-        onTriggered: scanFrame(player, cover, window.mouseX, window.mouseY)
+        onTriggered: pScan()
     }
 
     MouseArea

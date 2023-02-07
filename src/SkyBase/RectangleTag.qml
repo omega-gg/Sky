@@ -76,7 +76,7 @@ Rectangle
     // Events
     //---------------------------------------------------------------------------------------------
 
-    onHoveredChanged: visible = hovered
+    onHoveredChanged: if (isAnimated == false) visible = hovered
 
     //---------------------------------------------------------------------------------------------
     // Functions

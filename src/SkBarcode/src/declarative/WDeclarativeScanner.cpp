@@ -30,6 +30,11 @@
 #include <WBarcodeReader>
 
 //-------------------------------------------------------------------------------------------------
+// Static variables
+
+static const int SCANNER_INTERVAL = 20;
+
+//-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
 
@@ -38,11 +43,20 @@ WDeclarativeScannerPrivate::WDeclarativeScannerPrivate(WDeclarativeScanner * p)
 
 void WDeclarativeScannerPrivate::init()
 {
-    ratioX = 0.0;
-    ratioY = 0.0;
+    player = NULL;
+    cover  = NULL;
 
-    rectX = 0.0;
-    rectY = 0.0;
+    x = -1;
+    y = -1;
+
+    size = -1;
+
+    timerId = -1;
+
+    count        = 0;
+    currentCount = 0;
+
+    interval = SCANNER_INTERVAL;
 
 #ifdef QT_4
     Q_Q(WDeclarativeScanner);
@@ -52,52 +66,11 @@ void WDeclarativeScannerPrivate::init()
 }
 
 //-------------------------------------------------------------------------------------------------
-// Private slots
+// Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WDeclarativeScannerPrivate::onLoaded(const WBarcodeResult & result)
+bool WDeclarativeScannerPrivate::scan()
 {
-    Q_Q(WDeclarativeScanner);
-
-    QString text = result.text;
-
-    if (text.isEmpty() == false)
-    {
-        QRect rect = result.rect;
-
-        emit q->loaded(text, QRectF((qreal) rect.x     () / ratioX + rectX,
-                                    (qreal) rect.y     () / ratioY + rectY,
-                                    (qreal) rect.width () / ratioX,
-                                    (qreal) rect.height() / ratioY));
-    }
-    else emit q->loaded(text, QRectF());
-}
-
-//-------------------------------------------------------------------------------------------------
-// Ctor / dtor
-//-------------------------------------------------------------------------------------------------
-
-#ifdef QT_4
-/* explicit */ WDeclarativeScanner::WDeclarativeScanner(QDeclarativeItem * parent)
-#else
-/* explicit */ WDeclarativeScanner::WDeclarativeScanner(QQuickItem * parent)
-#endif
-    : WDeclarativeItem(new WDeclarativeScannerPrivate(this), parent)
-{
-    Q_D(WDeclarativeScanner); d->init();
-}
-
-//-------------------------------------------------------------------------------------------------
-// Interface
-//-------------------------------------------------------------------------------------------------
-
-/* Q_INVOKABLE */ bool WDeclarativeScanner::scanFrame(WDeclarativePlayer * player,
-                                                      WDeclarativeImage  * cover,
-                                                      int x, int y, int size)
-{
-    Q_ASSERT(player);
-    Q_ASSERT(cover);
-
     QRectF rect;
     QImage image;
 
@@ -118,23 +91,253 @@ void WDeclarativeScannerPrivate::onLoaded(const WBarcodeResult & result)
         image = player->getFrame();
     }
 
-    Q_D(WDeclarativeScanner);
+    Q_Q(WDeclarativeScanner);
 
-    d->ratioX = (qreal) image.width () / rect.width ();
-    d->ratioY = (qreal) image.height() / rect.height();
+    qreal ratioX = (qreal) image.width () / rect.width ();
+    qreal ratioY = (qreal) image.height() / rect.height();
 
-    d->rectX = rect.x();
-    d->rectY = rect.y();
+    qreal rectX = rect.x();
+    qreal rectY = rect.y();
 
-    x = (x - d->rectX) * d->ratioX;
-    y = (y - d->rectY) * d->ratioY;
+    int currentX = (x - rectX) * ratioX;
+    int currentY = (y - rectY) * ratioY;
 
-    if (size > 1) size *= qMin(d->ratioX, d->ratioY);
+    int currentSize;
 
-    WBarcodeReader::startScan(image, x, y, size, WBarcodeReader::QRCode,
-                              this, SLOT(onLoaded(const WBarcodeResult &)));
+    if (size > 1) currentSize = size * qMin(ratioX, ratioY);
+    else          currentSize = size;
+
+    WDeclarativeScannerData data;
+
+    data.ratioX = ratioX;
+    data.ratioY = ratioY;
+
+    data.rectX = rectX;
+    data.rectY = rectY;
+
+    datas.append(data);
+
+    WBarcodeReader::startScan(image, currentX, currentY, currentSize, WBarcodeReader::QRCode,
+                              q, SLOT(onLoaded(const WBarcodeResult &)));
 
     return true;
+}
+
+void WDeclarativeScannerPrivate::stopTimer()
+{
+    if (timerId == -1) return;
+
+    q_func()->killTimer(timerId);
+
+    timerId = -1;
+}
+
+void WDeclarativeScannerPrivate::clear()
+{
+    Q_Q(WDeclarativeScanner);
+
+    if (timerId != -1)
+    {
+        q->killTimer(timerId);
+
+        timerId = -1;
+    }
+
+    if (currentCount == 0) return;
+
+    currentCount = 0;
+
+    emit q->loaded(QString(), QRectF());
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private slots
+//-------------------------------------------------------------------------------------------------
+
+void WDeclarativeScannerPrivate::onLoaded(const WBarcodeResult & result)
+{
+    Q_Q(WDeclarativeScanner);
+
+    if (currentCount == 0) return;
+
+    WDeclarativeScannerData data = datas.takeLast();
+
+    QString text = result.text;
+
+    if (text.isEmpty() == false)
+    {
+        stopTimer();
+
+        QRect rect = result.rect;
+
+        qreal ratioX = data.ratioX;
+        qreal ratioY = data.ratioY;
+
+        emit q->loaded(text, QRectF((qreal) rect.x     () / ratioX + data.rectX,
+                                    (qreal) rect.y     () / ratioY + data.rectY,
+                                    (qreal) rect.width () / ratioX,
+                                    (qreal) rect.height() / ratioY));
+    }
+    else if (currentCount == count)
+    {
+        emit q->loaded(text, QRectF());
+    }
+}
+
+void WDeclarativeScannerPrivate::onClearPlayer()
+{
+    Q_Q(WDeclarativeScanner); q->setPlayer(NULL);
+}
+
+void WDeclarativeScannerPrivate::onClearCover()
+{
+    Q_Q(WDeclarativeScanner); q->setCover(NULL);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Ctor / dtor
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_4
+/* explicit */ WDeclarativeScanner::WDeclarativeScanner(QDeclarativeItem * parent)
+#else
+/* explicit */ WDeclarativeScanner::WDeclarativeScanner(QQuickItem * parent)
+#endif
+    : WDeclarativeItem(new WDeclarativeScannerPrivate(this), parent)
+{
+    Q_D(WDeclarativeScanner); d->init();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ bool WDeclarativeScanner::scanFrame(int x, int y, int size, int count)
+{
+    Q_D(WDeclarativeScanner);
+
+    if (d->player == NULL || d->cover == NULL) return false;
+
+    d->stopTimer();
+
+    d->x = x;
+    d->y = y;
+
+    d->size = size;
+
+    d->currentCount = 1;
+
+    if (count < 2)
+    {
+        d->count = 1;
+
+        return d->scan();
+    }
+    else
+    {
+        d->count = count;
+
+        if (d->scan() == false) return false;
+
+        d->timerId = startTimer(d->interval);
+
+        return true;
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+// Protected events
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WDeclarativeScanner::timerEvent(QTimerEvent *)
+{
+    Q_D(WDeclarativeScanner);
+
+    d->currentCount++;
+
+    if (d->scan() == false)
+    {
+        killTimer(d->timerId);
+
+        d->timerId = -1;
+
+        d->currentCount = 0;
+
+        emit loaded(QString(), QRectF());
+    }
+
+    if (d->currentCount == d->count)
+    {
+        killTimer(d->timerId);
+
+        d->timerId = -1;
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+// Properties
+//-------------------------------------------------------------------------------------------------
+
+WDeclarativePlayer * WDeclarativeScanner::player() const
+{
+    Q_D(const WDeclarativeScanner); return d->player;
+}
+
+void WDeclarativeScanner::setPlayer(WDeclarativePlayer * player)
+{
+    Q_D(WDeclarativeScanner);
+
+    if (d->player == player) return;
+
+    d->clear();
+
+    if (d->player) disconnect(player, 0, this, 0);
+
+    d->player = player;
+
+    if (player) connect(player, SIGNAL(destroyed()), this, SLOT(onClearPlayer()));
+
+    emit playerChanged();
+}
+
+WDeclarativeImage * WDeclarativeScanner::cover() const
+{
+    Q_D(const WDeclarativeScanner); return d->cover;
+}
+
+void WDeclarativeScanner::setCover(WDeclarativeImage * cover)
+{
+    Q_D(WDeclarativeScanner);
+
+    if (d->cover == cover) return;
+
+    d->clear();
+
+    if (d->cover) disconnect(cover, 0, this, 0);
+
+    d->cover = cover;
+
+    if (cover) connect(cover, SIGNAL(destroyed()), this, SLOT(onClearCover()));
+
+    emit coverChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+int WDeclarativeScanner::interval() const
+{
+    Q_D(const WDeclarativeScanner); return d->interval;
+}
+
+void WDeclarativeScanner::setInterval(int interval)
+{
+    Q_D(WDeclarativeScanner);
+
+    if (d->interval == interval) return;
+
+    d->interval = interval;
+
+    emit intervalChanged();
 }
 
 #endif // SK_NO_DECLARATIVESCANNER
