@@ -34,6 +34,13 @@ Scanner
     //---------------------------------------------------------------------------------------------
     // Private
 
+//#DESKTOP
+    // NOTE: We don't want to update the rectangle position while clicking.
+    property bool pHoverable: (mouseArea.containsMouse
+                               &&
+                               pClick == false && rectangleTag.isAnimated == false)
+//#END
+
     property bool pClick: false
 
     //---------------------------------------------------------------------------------------------
@@ -146,17 +153,12 @@ Scanner
 //#DESKTOP
     function pRestart()
     {
-        // NOTE: We don't want to update the rectangle position while clicking.
-        if (pClick || rectangleTag.isAnimated) return;
-
-        timer.restart();
+        if (pHoverable) timer.restart();
     }
 
     function pScan()
     {
-        if (pClick) return;
-
-        scanFrame(window.mouseX, window.mouseY);
+        if (pHoverable) scanFrame(window.mouseX, window.mouseY);
     }
 
     function pClearHover()
@@ -204,7 +206,10 @@ Scanner
 
         /* QML_EVENT */ onPressed: function(mouse) { mouse.accepted = false }
 
-        onHoverActiveChanged: pClearHover()
+        onContainsMouseChanged: if (containsMouse == false) pClearHover()
+
+        // NOTE: 'onContainsMouseChanged' does not work when the cursor leaves the window.
+        onHoverActiveChanged: if (hoverActive == false) pClearHover()
     }
 //#END
 
