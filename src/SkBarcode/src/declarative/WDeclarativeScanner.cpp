@@ -28,6 +28,7 @@
 #include <WDeclarativePlayer>
 #include <WDeclarativeImage>
 #include <WBarcodeReader>
+#include <WAbstractThreadAction>
 
 //-------------------------------------------------------------------------------------------------
 // Static variables
@@ -115,10 +116,11 @@ bool WDeclarativeScannerPrivate::scan()
     data.rectX = rectX;
     data.rectY = rectY;
 
-    datas.append(data);
+    data.action = WBarcodeReader::startScan(image, currentX, currentY, currentSize,
+                                            WBarcodeReader::QRCode,
+                                            q, SLOT(onLoaded(const WBarcodeResult &)));
 
-    WBarcodeReader::startScan(image, currentX, currentY, currentSize, WBarcodeReader::QRCode,
-                              q, SLOT(onLoaded(const WBarcodeResult &)));
+    datas.append(data);
 
     return true;
 }
@@ -132,7 +134,24 @@ void WDeclarativeScannerPrivate::stopTimer()
     timerId = -1;
 }
 
-void WDeclarativeScannerPrivate::clear()
+void WDeclarativeScannerPrivate::clearCount()
+{
+    currentCount = 0;
+
+    clearData();
+}
+
+void WDeclarativeScannerPrivate::clearData()
+{
+    foreach (const WDeclarativeScannerData & data, datas)
+    {
+        data.action->abortAndDelete();
+    }
+
+    datas.clear();
+}
+
+void WDeclarativeScannerPrivate::clearItem()
 {
     Q_Q(WDeclarativeScanner);
 
@@ -145,7 +164,7 @@ void WDeclarativeScannerPrivate::clear()
 
     if (currentCount == 0) return;
 
-    currentCount = 0;
+    clearCount();
 
     emit q->loaded(QString(), QRectF());
 }
@@ -160,13 +179,15 @@ void WDeclarativeScannerPrivate::onLoaded(const WBarcodeResult & result)
 
     if (currentCount == 0) return;
 
-    WDeclarativeScannerData data = datas.takeLast();
+    WDeclarativeScannerData data = datas.takeFirst();
 
     QString text = result.text;
 
     if (text.isEmpty() == false)
     {
         stopTimer();
+
+        clearCount();
 
         QRect rect = result.rect;
 
@@ -180,6 +201,8 @@ void WDeclarativeScannerPrivate::onLoaded(const WBarcodeResult & result)
     }
     else if (currentCount == count)
     {
+        clearCount();
+
         emit q->loaded(text, QRectF());
     }
 }
@@ -219,6 +242,8 @@ void WDeclarativeScannerPrivate::onClearCover()
     if (d->player == NULL || d->cover == NULL) return false;
 
     d->stopTimer();
+
+    d->clearData();
 
     d->x = x;
     d->y = y;
@@ -261,7 +286,7 @@ void WDeclarativeScannerPrivate::onClearCover()
 
         d->timerId = -1;
 
-        d->currentCount = 0;
+        d->clearCount();
 
         emit loaded(QString(), QRectF());
     }
@@ -289,7 +314,7 @@ void WDeclarativeScanner::setPlayer(WDeclarativePlayer * player)
 
     if (d->player == player) return;
 
-    d->clear();
+    d->clearItem();
 
     if (d->player) disconnect(player, 0, this, 0);
 
@@ -311,7 +336,7 @@ void WDeclarativeScanner::setCover(WDeclarativeImage * cover)
 
     if (d->cover == cover) return;
 
-    d->clear();
+    d->clearItem();
 
     if (d->cover) disconnect(cover, 0, this, 0);
 

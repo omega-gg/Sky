@@ -37,12 +37,17 @@
 
 #ifndef SK_NO_DECLARATIVESCANNER
 
+// Forward declarations
+class WAbstractThreadAction;
+
 //-------------------------------------------------------------------------------------------------
 // WDeclarativeScannerData
 //-------------------------------------------------------------------------------------------------
 
 struct WDeclarativeScannerData
 {
+    WAbstractThreadAction * action;
+
     qreal ratioX;
     qreal ratioY;
 
@@ -66,7 +71,9 @@ public: // Fuctions
 
     void stopTimer();
 
-    void clear();
+    void clearCount();
+    void clearData ();
+    void clearItem ();
 
 public: // Slots
     void onLoaded(const WBarcodeResult & result);
