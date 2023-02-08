@@ -34,6 +34,11 @@ class WDeclarativePlayer;
 class WDeclarativeImage;
 class WBarcodeResult;
 
+#ifdef QT_6
+Q_MOC_INCLUDE("WDeclarativePlayer")
+Q_MOC_INCLUDE("WDeclarativeImage")
+#endif
+
 class SK_BARCODE_EXPORT WDeclarativeScanner : public WDeclarativeItem
 {
     Q_OBJECT
