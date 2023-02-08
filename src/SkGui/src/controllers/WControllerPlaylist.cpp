@@ -3019,8 +3019,9 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
     if (type == WControllerPlaylist::Feed)
     {
-        playlist->setType(WLibraryItem::PlaylistFeed);
+         playlist->setType(WLibraryItem::PlaylistFeed);
     }
+    else playlist->setType(WLibraryItem::Playlist);
 
     playlist->setTitle(data.title);
     playlist->setCover(data.cover);
@@ -3336,8 +3337,9 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
     if (type == WControllerPlaylist::Feed)
     {
-        playlist->setType(WLibraryItem::PlaylistFeed);
+         playlist->setType(WLibraryItem::PlaylistFeed);
     }
+    else playlist->setType(WLibraryItem::Playlist);
 
     playlist->setTitle(data.title);
     playlist->setCover(data.cover);

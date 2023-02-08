@@ -33,6 +33,8 @@ ButtonWide
 
     property int margins: st.buttonWide_margins
 
+    property int spacing: st.buttonTouch_spacing
+
     //---------------------------------------------------------------------------------------------
     // Private
 
@@ -53,7 +55,7 @@ ButtonWide
     // NOTE: We avoid highlighting when we're checked.
     isChecklighted: isHighlighted
 
-    itemText.anchors.leftMargin: backgroundCheck.x + backgroundCheck.width + pMargins
+    itemText.anchors.leftMargin: backgroundCheck.x + backgroundCheck.width + spacing
 
     //---------------------------------------------------------------------------------------------
     // Settings
