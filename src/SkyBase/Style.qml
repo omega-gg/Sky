@@ -322,7 +322,8 @@ Item
     //---------------------------------------------------------------------------------------------
     // RectangleTag
 
-    property real rectangleTag_opacity: 0.4
+    property real rectangleTag_opacity     : 0.4
+    property real rectangleTag_opacityClick: 0.8
 //#END
 
 //#ImageBarcode:ImageTag

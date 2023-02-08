@@ -84,10 +84,19 @@ Rectangle
 
     function click()
     {
+        clickStart();
+        clickEnd  ();
+    }
+
+    function clickStart()
+    {
         visible = true;
 
-        opacity = 1.0;
+        opacity = st.rectangleTag_opacityClick;
+    }
 
+    function clickEnd()
+    {
         pAnimate = true;
 
         scale = 2.0;

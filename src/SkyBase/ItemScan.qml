@@ -82,9 +82,11 @@ Scanner
             {
                 pClick = false;
 
-                rectangleTag.click();
+                rectangleTag.clickStart();
 
                 clicked(text);
+
+                rectangleTag.clickEnd();
             }
 //#DESKTOP
             else rectangleTag.hovered = true;
