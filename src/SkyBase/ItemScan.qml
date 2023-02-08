@@ -115,7 +115,7 @@ Scanner
     {
         target: (visible && window.isDragged == false) ? window : null
 
-        onMousePosChanged: pRestart()
+        onMousePosChanged: pRestartHover()
     }
 
     Connections
@@ -153,7 +153,20 @@ Scanner
 //#DESKTOP
     function pRestart()
     {
-        if (pHoverable) timer.restart();
+        if (pHoverable == false) return;
+
+        timer.interval = st.itemScan_intervalA;
+
+        timer.restart();
+    }
+
+    function pRestartHover()
+    {
+        if (pHoverable == false) return;
+
+        timer.interval = st.itemScan_intervalB;
+
+        timer.restart();
     }
 
     function pScan()
@@ -178,14 +191,12 @@ Scanner
     {
         id: timer
 
-        interval: st.itemScan_intervalA
-
         onTriggered: pScan()
     }
 
     Timer
     {
-        interval: st.itemScan_intervalB
+        interval: st.itemScan_intervalA
 
         repeat: true
 

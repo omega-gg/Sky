@@ -276,8 +276,8 @@ Item
     // ItemScan
 
 //#DESKTOP
-    property real itemScan_intervalA:  16
-    property real itemScan_intervalB: 500
+    property real itemScan_intervalA: 500
+    property real itemScan_intervalB:  16
 //#END
 
     property real itemScan_ratioTouch: 10.0
