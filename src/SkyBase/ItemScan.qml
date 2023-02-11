@@ -36,7 +36,7 @@ Scanner
 
 //#DESKTOP
     // NOTE: We don't want to update the rectangle position while clicking.
-    property bool pHoverable: (mouseArea.containsMouse
+    property bool pHoverable: (sk.cursorVisible && mouseArea.containsMouse
                                &&
                                pClick == false && rectangleTag.isAnimated == false)
 //#END
@@ -106,6 +106,17 @@ Scanner
 //#DESKTOP
     onWidthChanged : pRestart()
     onHeightChanged: pRestart()
+
+    onPHoverableChanged:
+    {
+        if (pHoverable)
+        {
+            timer.interval = st.itemScan_intervalA;
+
+            timer.restart();
+        }
+        else pClearHover()
+    }
 //#END
 
     //---------------------------------------------------------------------------------------------
@@ -218,8 +229,6 @@ Scanner
         cursor: Qt.PointingHandCursor
 
         /* QML_EVENT */ onPressed: function(mouse) { mouse.accepted = false }
-
-        onContainsMouseChanged: if (containsMouse == false) pClearHover()
 
         // NOTE: 'onContainsMouseChanged' does not work when the cursor leaves the window.
         onHoverActiveChanged: if (hoverActive == false) pClearHover()
