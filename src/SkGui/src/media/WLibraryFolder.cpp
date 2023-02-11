@@ -1707,8 +1707,6 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
     else return d->items.at(index).id;
 }
 
-//-------------------------------------------------------------------------------------------------
-
 /* Q_INVOKABLE */ int WLibraryFolder::indexOf(const WLibraryFolderItem * item) const
 {
     Q_D(const WLibraryFolder);
@@ -1723,8 +1721,6 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
 
     return -1;
 }
-
-//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ int WLibraryFolder::indexFromId(int id) const
 {
