@@ -262,8 +262,8 @@ public: // Static functions
                                  WLibraryFolder * folderB, int to, bool remove = true);
 
 public: // WLibraryItem reimplementation
-    // NOTE: When setting expand we export the items properties.
-    Q_INVOKABLE /* virtual */ QString toVbml(bool expand = false) const;
+    // NOTE: Set expand to 1 to export playlist sources, and 2 to export playlist properties.
+    Q_INVOKABLE /* virtual */ QString toVbml(int expand = 0) const;
 
 protected: // Functions
     void updateIndex();

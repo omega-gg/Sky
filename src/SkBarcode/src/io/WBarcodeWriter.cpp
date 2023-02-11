@@ -591,7 +591,7 @@ WAbstractThreadAction * WBarcodeWriter::startWriteTagFile(const QString     & fi
     int height = image.height();
 
     // NOTE: When the margin is too large we keep the bars.
-    if (top < height / 2)
+    if (top < height / 3)
     {
          return image.copy(QRect(0, top, image.width(), height - top * 2));
     }

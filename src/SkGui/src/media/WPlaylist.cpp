@@ -2291,7 +2291,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 // WLibraryItem reimplementation
 //---------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ QString WPlaylist::toVbml(bool expand) const
+/* Q_INVOKABLE virtual */ QString WPlaylist::toVbml(int expand) const
 {
     Q_D(const WPlaylist);
 
@@ -2308,12 +2308,11 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     Sk::bmlPair(vbml, "title", d->title, "\n\n");
     Sk::bmlPair(vbml, "cover", d->cover, "\n\n");
 
-    Sk::bmlTag(vbml, "tracks");
-
-    QString tabA = Sk::tabs(1);
-
-    if (expand)
+    if (expand == 2)
     {
+        Sk::bmlTag(vbml, "tracks");
+
+        QString tabA = Sk::tabs(1);
         QString tabB = Sk::tabs(2);
 
         W_FOREACH (const WTrack & track, d->tracks)
@@ -2343,11 +2342,16 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
             vbml.append('\n');
         }
     }
-    else
+    // NOTE: When the source is empty we enforce track sources.
+    else if (expand == 1 || d->source.isEmpty())
     {
+        Sk::bmlTag(vbml, "tracks");
+
+        QString tab = Sk::tabs(1);
+
         W_FOREACH (const WTrack & track, d->tracks)
         {
-            Sk::bmlValue(vbml, tabA + track.d_func()->source);
+            Sk::bmlValue(vbml, tab + track.d_func()->source);
         }
     }
 

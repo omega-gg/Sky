@@ -2313,7 +2313,7 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
 // WLibraryItem reimplementation
 //---------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ QString WLibraryFolder::toVbml(bool expand) const
+/* Q_INVOKABLE virtual */ QString WLibraryFolder::toVbml(int expand) const
 {
     Q_D(const WLibraryFolder);
 
@@ -2326,12 +2326,11 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
     Sk::bmlPair(vbml, "title", d->title, "\n\n");
     Sk::bmlPair(vbml, "cover", d->cover, "\n\n");
 
-    Sk::bmlTag(vbml, "items");
-
-    QString tabA = Sk::tabs(1);
-
-    if (expand)
+    if (expand == 2)
     {
+        Sk::bmlTag(vbml, "items");
+
+        QString tabA = Sk::tabs(1);
         QString tabB = Sk::tabs(2);
 
         foreach (const WLibraryFolderItem & item, d->items)
@@ -2348,11 +2347,16 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
             vbml.append('\n');
         }
     }
-    else
+    // NOTE: When the source is empty we enforce playlist sources.
+    else if (expand == 1 || d->source.isEmpty())
     {
+        Sk::bmlTag(vbml, "items");
+
+        QString tab = Sk::tabs(1);
+
         W_FOREACH (const WLibraryFolderItem & item, d->items)
         {
-            Sk::bmlValue(vbml, tabA + item.source);
+            Sk::bmlValue(vbml, tab + item.source);
         }
     }
 
