@@ -1706,6 +1706,17 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE */ int WPlaylist::idAt(int index) const
+{
+    Q_D(const WPlaylist);
+
+    if (index < 0 || index >= d->tracks.count())
+    {
+         return -1;
+    }
+    else return d->tracks.at(index).d_func()->id;
+}
+
 /* Q_INVOKABLE */ int WPlaylist::indexOf(const WTrack * track) const
 {
     Q_D(const WPlaylist);
@@ -1720,8 +1731,6 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
     return -1;
 }
-
-//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ int WPlaylist::indexFromId(int id) const
 {

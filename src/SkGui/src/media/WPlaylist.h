@@ -199,6 +199,8 @@ public: // Interface
 
     Q_INVOKABLE WTrack getTrackAt(int index) const;
 
+    Q_INVOKABLE int idAt(int index) const;
+
     Q_INVOKABLE int indexOf(const WTrack * track) const;
 
     Q_INVOKABLE int indexFromId(int id) const;
