@@ -2352,7 +2352,7 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
     {
         W_FOREACH (const WLibraryFolderItem & item, d->items)
         {
-            Sk::bmlPair(vbml, tabA, item.source);
+            Sk::bmlValue(vbml, tabA + item.source);
         }
     }
 

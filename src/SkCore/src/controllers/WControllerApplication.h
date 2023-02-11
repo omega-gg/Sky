@@ -448,6 +448,10 @@ public: // Static functions
                                     const QString & value,
                                     const QString & append = QString('\n'));
 
+    Q_INVOKABLE static void bmlValue(QString       & bml,
+                                     const QString & value,
+                                     const QString & append = QString('\n'));
+
     Q_INVOKABLE static QString bmlDate(const QDateTime & date);
 
 signals:

@@ -661,6 +661,23 @@ Item
         else return qsTr("Invalid Track");
     }
 
+    function getPlaylistTitle(title, state, source)
+    {
+        if (title)
+        {
+            return title;
+        }
+        else if (state == LocalObject.Loading)
+        {
+            return qsTr("Loading Playlist...");
+        }
+        else if (source != "")
+        {
+            return getUrlTitle(source, qsTr("Playlist"));
+        }
+        else return qsTr("Invalid Playlist");
+    }
+
     function getUrlTitle(source, text)
     {
         var title = controllerNetwork.urlTitle(source);

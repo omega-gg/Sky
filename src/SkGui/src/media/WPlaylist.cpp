@@ -2234,10 +2234,20 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     d->watchers.removeOne(watcher);
 }
 
-#ifdef QT_4
-
 //-------------------------------------------------------------------------------------------------
 // QML
+
+/* Q_INVOKABLE */ int WPlaylist::trackTypeInt(int index) const
+{
+    return trackType(static_cast<WTrack::Type> (index));
+}
+
+/* Q_INVOKABLE */ int WPlaylist::trackStateInt(int index) const
+{
+    return trackState(static_cast<WTrack::State> (index));
+}
+
+#ifdef QT_4
 
 /* Q_INVOKABLE */ void WPlaylist::removeTracks(const QVariantList & indexes)
 {
@@ -2337,7 +2347,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     {
         W_FOREACH (const WTrack & track, d->tracks)
         {
-            Sk::bmlPair(vbml, tabA, track.d_func()->source);
+            Sk::bmlValue(vbml, tabA + track.d_func()->source);
         }
     }
 

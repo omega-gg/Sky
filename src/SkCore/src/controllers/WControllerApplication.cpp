@@ -1926,6 +1926,15 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
     bml.append(key + ": " + value + append);
 }
 
+/* Q_INVOKABLE static */ void WControllerApplication::bmlValue(QString       & bml,
+                                                               const QString & value,
+                                                               const QString & append)
+{
+    if (value.isEmpty()) return;
+
+    bml.append(value + append);
+}
+
 /* Q_INVOKABLE static */ QString WControllerApplication::bmlDate(const QDateTime & date)
 {
     return date.toString(Qt::ISODate);

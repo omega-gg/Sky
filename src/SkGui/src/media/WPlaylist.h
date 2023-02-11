@@ -276,10 +276,13 @@ public: // Interface
     Q_INVOKABLE void registerWatcher  (WPlaylistWatcher * watcher);
     Q_INVOKABLE void unregisterWatcher(WPlaylistWatcher * watcher);
 
-#ifdef QT_4
     //---------------------------------------------------------------------------------------------
     // QML
 
+    Q_INVOKABLE int trackTypeInt (int index) const;
+    Q_INVOKABLE int trackStateInt(int index) const;
+
+#ifdef QT_4
     Q_INVOKABLE void removeTracks(const QVariantList & indexes);
 
     Q_INVOKABLE void copyTracksTo(const QVariantList & tracks,
