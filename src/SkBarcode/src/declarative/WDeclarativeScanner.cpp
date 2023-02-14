@@ -289,6 +289,8 @@ void WDeclarativeScannerPrivate::onClearCover()
         d->clearCount();
 
         emit loaded(QString(), QRectF());
+
+        return;
     }
 
     if (d->currentCount == d->count)
