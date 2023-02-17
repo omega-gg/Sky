@@ -3029,6 +3029,13 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
     if (origin.isEmpty() == false)
     {
         playlist->applySource(origin);
+
+        if (WControllerPlaylist::vbmlTypePlaylist(type))
+        {
+            applySourcePlaylist(playlist, origin);
+
+            return;
+        }
     }
     else if (WControllerPlaylist::vbmlTypeTrack(type))
     {
@@ -3056,7 +3063,17 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
             playlist->applySource(url);
         }
     }
-    else playlist->applySource(source);
+    else
+    {
+        playlist->applySource(source);
+
+        if (WControllerPlaylist::vbmlTypePlaylist(type))
+        {
+            applySourcePlaylist(playlist, source);
+
+            return;
+        }
+    }
 
     //---------------------------------------------------------------------------------------------
     // Media sources
@@ -3346,6 +3363,19 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
     if (origin.isEmpty() == false)
     {
+        if (WControllerPlaylist::vbmlTypePlaylist(type))
+        {
+            playlist->tryDelete();
+
+            folder->removeAt(0);
+
+            folder->applySource(origin);
+
+            applySourceFolder(folder, origin);
+
+            return;
+        }
+
         playlist->applySource(origin);
     }
     else if (WControllerPlaylist::vbmlTypeTrack(type))
@@ -3373,6 +3403,18 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
         {
             playlist->applySource(url);
         }
+    }
+    else if (WControllerPlaylist::vbmlTypePlaylist(type))
+    {
+        playlist->tryDelete();
+
+        folder->removeAt(0);
+
+        folder->applySource(source);
+
+        applySourceFolder(folder, source);
+
+        return;
     }
     else playlist->applySource(source);
 
@@ -4731,6 +4773,11 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlTypeFromString(const QString 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::vbmlTypeTrack(Type type)
 {
     return (type == Track || type == Live || type == Hub);
+}
+
+/* Q_INVOKABLE static */ bool WControllerPlaylist::vbmlTypePlaylist(Type type)
+{
+    return (type == Playlist || type == Feed);
 }
 
 /* Q_INVOKABLE static */ void WControllerPlaylist::vbmlPatch(QString & data, const QString & api)

@@ -286,7 +286,8 @@ public: // Static functions
 
     Q_INVOKABLE static Type vbmlTypeFromString(const QString & string);
 
-    Q_INVOKABLE static bool vbmlTypeTrack(Type type);
+    Q_INVOKABLE static bool vbmlTypeTrack   (Type type);
+    Q_INVOKABLE static bool vbmlTypePlaylist(Type type);
 
     Q_INVOKABLE static void vbmlPatch(QString & data, const QString & api);
 
