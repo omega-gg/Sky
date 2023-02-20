@@ -303,9 +303,9 @@ void WHookOutputPrivate::onConnectedChanged()
             index = backend->indexOutput(data->output);
         }
 
-        backend->setCurrentOutput(index);
-
-        setActive(true);
+        //-----------------------------------------------------------------------------------------
+        // NOTE: Connecting signals before applying the current output, otherwise we might skip
+        //       events.
 
         QObject::connect(&client, SIGNAL(reply(const WBroadcastReply &)),
                          q,       SLOT(onReply(const WBroadcastReply &)));
@@ -317,6 +317,12 @@ void WHookOutputPrivate::onConnectedChanged()
         QObject::connect(backend, SIGNAL(trackVideoChanged()), q, SLOT(onVideoChanged   ()));
         QObject::connect(backend, SIGNAL(trackAudioChanged()), q, SLOT(onAudioChanged   ()));
         QObject::connect(backend, SIGNAL(subtitleChanged  ()), q, SLOT(onSubtitleChanged()));
+
+        //-----------------------------------------------------------------------------------------
+
+        backend->setCurrentOutput(index);
+
+        setActive(true);
 
         // NOTE: Propagating backend's current settings.
         onOutputChanged  ();
