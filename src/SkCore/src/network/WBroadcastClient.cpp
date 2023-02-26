@@ -949,26 +949,44 @@ void WBroadcastClientPrivate::setSource(const WBroadcastSource & source)
 {
     WBroadcastSource source;
 
-    QStringList list = WControllerNetwork::removeUrlPrefix(url).split('/');
+    QString string = WControllerNetwork::removeUrlPrefix(url);
+
+    int index = string.indexOf("connect/", Qt::CaseInsensitive);
+
+    if (index == -1) return source;
+
+    string = string.mid(index + 8);
+
+    if (string.isEmpty()) return source;
+
+    QStringList list = string.split('/');
+
+    if (list.isEmpty()) return source;
+
+    QString address = list.at(0);
+
+    QStringList host = address.split(':');
+
+    if (host.count() < 2)
+    {
+        source.address = address;
+        source.port    = 9300; // NOTE: Defaut broadcasting port.
+    }
+    else
+    {
+        source.address = host.at(0);
+        source.port    = host.at(1).toInt();
+    }
 
     int count = list.count();
 
-    if (count < 3 || list.at(1).toLower() != "connect") return source;
+    if (count < 2) return source;
 
-    QStringList host = list.at(2).split(':');
+    source.name = list.at(1);
 
-    if (host.count() < 2) return source;
+    if (count < 3) return source;
 
-    source.address = host.at(0);
-    source.port    = host.at(1).toInt();
-
-    if (count < 4) return source;
-
-    source.name = list.at(3);
-
-    if (count < 5) return source;
-
-    source.label = list.at(4);
+    source.label = list.at(2);
 
     return source;
 }

@@ -4481,17 +4481,23 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 {
     QString source = WControllerNetwork::removeUrlPrefix(url);
 
-    if (source.startsWith("vbml.", Qt::CaseInsensitive) == false) return false;
+    if (source.startsWith("vbml:", Qt::CaseInsensitive))
+    {
+        return (source.indexOf("connect/", 5) == 5);
+    }
+    else if (source.startsWith("vbml.", Qt::CaseInsensitive))
+    {
+        int index = source.indexOf('/', 5);
 
-    int index = source.indexOf('/', 5);
+        if (index == -1) return false;
 
-    if (index == -1) return false;
+        index++;
 
-    index++;
+        source = WControllerNetwork::extractUrlElement(source, index);
 
-    source = WControllerNetwork::extractUrlElement(source, index);
-
-    return (source.toLower() == "connect");
+        return (source.toLower() == "connect");
+    }
+    else return false;
 }
 
 //-------------------------------------------------------------------------------------------------
