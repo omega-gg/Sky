@@ -2317,55 +2317,58 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     Sk::bmlPair(vbml, "title", d->title, "\n\n");
     Sk::bmlPair(vbml, "cover", d->cover, "\n\n");
 
-    if (expand == 2)
+    if (d->tracks.isEmpty() == false)
     {
-        Sk::bmlTag(vbml, "tracks");
-
-        QString tabA = Sk::tabs(1);
-        QString tabB = Sk::tabs(2);
-
-        W_FOREACH (const WTrack & track, d->tracks)
+        if (expand == 2)
         {
-            const WTrackPrivate * p = track.d_func();
+            Sk::bmlList(vbml, "tracks");
 
-            Sk::bmlTag(vbml, tabA + WTrack::typeToString(p->type));
+            QString tabA = Sk::tabs(1);
+            QString tabB = Sk::tabs(2);
 
-            Sk::bmlPair(vbml, tabB + "source", p->source);
-
-            Sk::bmlPair(vbml, tabB + "title", p->title);
-            Sk::bmlPair(vbml, tabB + "cover", p->cover);
-
-            Sk::bmlPair(vbml, tabB + "author", p->author);
-            Sk::bmlPair(vbml, tabB + "feed",   p->feed);
-
-            if (p->duration != -1)
+            W_FOREACH (const WTrack & track, d->tracks)
             {
-                Sk::bmlPair(vbml, tabB + "duration", QString::number(p->duration));
-            }
+                const WTrackPrivate * p = track.d_func();
 
-            if (p->date.isValid())
-            {
-                Sk::bmlPair(vbml, tabB + "date", Sk::bmlDate(p->date));
-            }
+                Sk::bmlTag(vbml, tabA + WTrack::typeToString(p->type));
 
-            vbml.append('\n');
+                Sk::bmlPair(vbml, tabB + "source", p->source);
+
+                Sk::bmlPair(vbml, tabB + "title", p->title);
+                Sk::bmlPair(vbml, tabB + "cover", p->cover);
+
+                Sk::bmlPair(vbml, tabB + "author", p->author);
+                Sk::bmlPair(vbml, tabB + "feed",   p->feed);
+
+                if (p->duration != -1)
+                {
+                    Sk::bmlPair(vbml, tabB + "duration", QString::number(p->duration));
+                }
+
+                if (p->date.isValid())
+                {
+                    Sk::bmlPair(vbml, tabB + "date", Sk::bmlDate(p->date));
+                }
+
+                vbml.append('\n');
+            }
         }
-    }
-    // NOTE: When the source is empty we enforce track sources.
-    else if (expand == 1 || d->source.isEmpty())
-    {
-        Sk::bmlTag(vbml, "tracks");
-
-        QString tab = Sk::tabs(1);
-
-        W_FOREACH (const WTrack & track, d->tracks)
+        // NOTE: When the source is empty we enforce track sources.
+        else if (expand == 1 || d->source.isEmpty())
         {
-            Sk::bmlValue(vbml, tab + track.d_func()->source);
+            Sk::bmlList(vbml, "tracks");
+
+            QString tab = Sk::tabs(1);
+
+            W_FOREACH (const WTrack & track, d->tracks)
+            {
+                Sk::bmlValue(vbml, tab + track.d_func()->source);
+            }
         }
     }
 
     // NOTE: We clear the last '\n'.
-    if (d->tracks.isEmpty() == false) vbml.chop(1);
+    vbml.chop(1);
 
     return vbml;
 }

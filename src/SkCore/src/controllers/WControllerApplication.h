@@ -443,6 +443,10 @@ public: // Static functions
                                    const QString & name,
                                    const QString & append = QString('\n'));
 
+    Q_INVOKABLE static void bmlList(QString       & bml,
+                                    const QString & name,
+                                    const QString & append = QString('\n'));
+
     Q_INVOKABLE static void bmlPair(QString       & bml,
                                     const QString & key,
                                     const QString & value,

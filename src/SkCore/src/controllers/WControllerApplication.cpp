@@ -1916,6 +1916,13 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
     bml.append(name + ':' + append);
 }
 
+/* Q_INVOKABLE static */ void WControllerApplication::bmlList(QString       & bml,
+                                                              const QString & name,
+                                                              const QString & append)
+{
+    bml.append(name + ": |" + append);
+}
+
 /* Q_INVOKABLE static */ void WControllerApplication::bmlPair(QString       & bml,
                                                               const QString & key,
                                                               const QString & value,

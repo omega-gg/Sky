@@ -2322,42 +2322,45 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
     Sk::bmlPair(vbml, "title", d->title, "\n\n");
     Sk::bmlPair(vbml, "cover", d->cover, "\n\n");
 
-    if (expand == 2)
+    if (d->items.isEmpty() == false)
     {
-        Sk::bmlTag(vbml, "items");
-
-        QString tabA = Sk::tabs(1);
-        QString tabB = Sk::tabs(2);
-
-        foreach (const WLibraryFolderItem & item, d->items)
+        if (expand == 2)
         {
-            Sk::bmlTag(vbml, tabA + WLibraryItem::typeToString(item.type));
+            Sk::bmlList(vbml, "items");
 
-            Sk::bmlPair(vbml, tabB + "source", item.source);
+            QString tabA = Sk::tabs(1);
+            QString tabB = Sk::tabs(2);
 
-            Sk::bmlPair(vbml, tabB + "title", item.title);
-            Sk::bmlPair(vbml, tabB + "cover", item.cover);
+            foreach (const WLibraryFolderItem & item, d->items)
+            {
+                Sk::bmlTag(vbml, tabA + WLibraryItem::typeToString(item.type));
 
-            Sk::bmlPair(vbml, tabB + "label", item.label);
+                Sk::bmlPair(vbml, tabB + "source", item.source);
 
-            vbml.append('\n');
+                Sk::bmlPair(vbml, tabB + "title", item.title);
+                Sk::bmlPair(vbml, tabB + "cover", item.cover);
+
+                Sk::bmlPair(vbml, tabB + "label", item.label);
+
+                vbml.append('\n');
+            }
         }
-    }
-    // NOTE: When the source is empty we enforce playlist sources.
-    else if (expand == 1 || d->source.isEmpty())
-    {
-        Sk::bmlTag(vbml, "items");
-
-        QString tab = Sk::tabs(1);
-
-        W_FOREACH (const WLibraryFolderItem & item, d->items)
+        // NOTE: When the source is empty we enforce playlist sources.
+        else if (expand == 1 || d->source.isEmpty())
         {
-            Sk::bmlValue(vbml, tab + item.source);
+            Sk::bmlList(vbml, "items");
+
+            QString tab = Sk::tabs(1);
+
+            W_FOREACH (const WLibraryFolderItem & item, d->items)
+            {
+                Sk::bmlValue(vbml, tab + item.source);
+            }
         }
     }
 
     // NOTE: We clear the last '\n'.
-    if (d->items.isEmpty() == false) vbml.chop(1);
+    vbml.chop(1);
 
     return vbml;
 }

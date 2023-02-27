@@ -4477,6 +4477,11 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
     return url.startsWith("vbml:", Qt::CaseInsensitive);
 }
 
+/* Q_INVOKABLE static */ bool WControllerPlaylist::urlIsVbmlRun(const QString & url)
+{
+    return url.startsWith("vbml://run", Qt::CaseInsensitive);
+}
+
 /* Q_INVOKABLE static */ bool WControllerPlaylist::urlIsVbmlConnect(const QString & url)
 {
     QString source = WControllerNetwork::removeUrlPrefix(url);

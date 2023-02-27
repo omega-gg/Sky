@@ -695,7 +695,7 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 /* Q_INVOKABLE static */ bool WBackendNet::checkQuery(const QString & url)
 {
     // NOTE: This could either be the application URL or a vbml 'run' command.
-    return (url.startsWith(sk->applicationUrl()) || url.startsWith("vbml://run"));
+    return (url.startsWith(sk->applicationUrl()) || WControllerPlaylist::urlIsVbmlRun(url));
 }
 
 //-------------------------------------------------------------------------------------------------

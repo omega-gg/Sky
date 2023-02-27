@@ -119,7 +119,7 @@ WMediaReply::WMediaReply(const QString & url,
     }
 
     // NOTE: We clear the last '\n'.
-    if (vbml.isEmpty() == false) vbml.chop(1);
+    vbml.chop(1);
 
     return vbml;
 }
