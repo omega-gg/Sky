@@ -893,6 +893,12 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 #endif
 }
 
+/* Q_INVOKABLE static */ QString WControllerNetwork::extractUrlEncoded(const QUrl    & url,
+                                                                       const QString & key)
+{
+    return decodeUrl(extractUrlValue(url, key));
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ int WControllerNetwork::indexUrlElement(const QString & string,

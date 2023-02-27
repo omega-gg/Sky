@@ -92,7 +92,8 @@ public: // Static functions
     Q_INVOKABLE static QString extractUrlHost(const QString & string);
     Q_INVOKABLE static QString extractUrlPath(const QString & string);
 
-    Q_INVOKABLE static QString extractUrlValue(const QUrl & url, const QString & key);
+    Q_INVOKABLE static QString extractUrlValue  (const QUrl & url, const QString & key);
+    Q_INVOKABLE static QString extractUrlEncoded(const QUrl & url, const QString & key);
 
     Q_INVOKABLE static int indexUrlElement(const QString & string, int from = 0);
 
