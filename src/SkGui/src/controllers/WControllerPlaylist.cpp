@@ -4134,7 +4134,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
                                                                    const QString & label,
                                                                    const QString & q)
 {
-    QUrl source(sk->applicationUrl());
+    QUrl source("vbml://run");
 
 #ifdef QT_4
     source.addQueryItem("backend", backend);
