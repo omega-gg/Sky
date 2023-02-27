@@ -45,7 +45,7 @@ using namespace ZXing;
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int BARCODEWRITER_MAX = 4296;
+static const int BARCODEWRITER_MAX = 2953;
 
 static const int BARCODEWRITER_MAX_LENGTH = 50;
 
