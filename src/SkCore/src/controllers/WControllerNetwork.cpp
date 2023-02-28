@@ -617,7 +617,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
     {
         if (text.length() > 1)
         {
-            if (text.at(0).isLetter() || text.contains(' ') == false)
+            if (text.at(0).isLetter() && text.contains(' ') == false)
             {
                 return true;
             }

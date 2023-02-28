@@ -49,7 +49,9 @@ public:
     WBackendLoaderCache();
 
 public: // Functions
-    void addBackend(const QString & id, WBackendNet * backend);
+    void addBackend(WBackendNet * backend);
+
+    void insertId(const QString & id, WBackendNet * backend);
 
     WBackendNet * getBackend(const QString & id);
 
@@ -86,12 +88,15 @@ WBackendLoaderCache::WBackendLoaderCache()
 // Functions
 //-------------------------------------------------------------------------------------------------
 
-void WBackendLoaderCache::addBackend(const QString & id, WBackendNet * backend)
+void WBackendLoaderCache::addBackend(WBackendNet * backend)
 {
     cleanCache();
 
     backends.append(backend);
+}
 
+void WBackendLoaderCache::insertId(const QString & id, WBackendNet * backend)
+{
     mutex.lock();
 
     // NOTE: We append on the hash at the end because 'createNow' depends on it.
@@ -260,10 +265,10 @@ void WBackendLoaderPrivate::onCreate(const QString & id)
     WBackendLoaderCache * cache = backendCache();
 
     // NOTE: Maybe the backend was already created in a previous call.
-    WBackendNet * backend = cache->getBackend(id);
-
-    if (backend)
+    foreach (WBackendNet * backend, cache->backends)
     {
+        if (backend->id() != id) continue;
+
         qDebug("BACKEND ALREADY CREATED %s", id.C_STR);
 
         backend->d_func()->lockCount++;
@@ -273,7 +278,7 @@ void WBackendLoaderPrivate::onCreate(const QString & id)
 
     qDebug("CREATE BACKEND %s", id.C_STR);
 
-    backend = q->createBackend(id);
+    WBackendNet * backend = q->createBackend(id);
 
     backend->setParent(q);
 
@@ -282,11 +287,14 @@ void WBackendLoaderPrivate::onCreate(const QString & id)
     // NOTE: We don't need to lock here because the backend is not in the hash yet.
     backend->d_func()->lockCount++;
 
+    // NOTE: Adding the backend before processing events, to avoid overlaps in this function.
+    cache->addBackend(backend);
+
     // NOTE: Waiting for the backend to be loaded.
     q->waitBackend(backend);
 
-    // NOTE: We call 'addBackend' at the end because 'createNow' depends on it.
-    cache->addBackend(id, backend);
+    // NOTE: We call 'insertId' at the end because 'createNow' depends on it.
+    cache->insertId(id, backend);
 }
 
 void WBackendLoaderPrivate::onUpdate(const QString & id)
