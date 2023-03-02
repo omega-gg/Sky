@@ -60,8 +60,6 @@ public:
     void init();
 
 public: // Functions
-    QHash<QString, QString> extractArguments(int & argc, char ** argv);
-
     void declareController  (WController * controller);
     void undeclareController(WController * controller);
 

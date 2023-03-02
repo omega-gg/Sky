@@ -167,6 +167,8 @@ public: // Interface
 #endif
 
 public: // Static functions
+    Q_INVOKABLE static QString extractParameter(const QString & argument);
+
     Q_INVOKABLE static bool fuzzyCompare(qreal valueA, qreal valueB);
 
     Q_INVOKABLE static QList<int> variantsToInts(const QVariantList & variants);
@@ -394,7 +396,7 @@ public: // Static functions
     // Message
 
     // NOTE: This is useful to extract the argument from QtSingleApplication::messageReceived().
-    Q_INVOKABLE static QString extractArgument(const QString & message);
+    Q_INVOKABLE static QString extractMessage(const QString & message);
 
     // NOTE: On Android this returns the 'intent' text.
     Q_INVOKABLE static QString getMessage();

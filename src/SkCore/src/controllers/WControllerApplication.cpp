@@ -180,49 +180,6 @@ void WControllerApplicationPrivate::init()
 
 //-------------------------------------------------------------------------------------------------
 
-QHash<QString, QString> WControllerApplicationPrivate::extractArguments(int & argc, char ** argv)
-{
-    QHash<QString, QString> arguments;
-
-    int count = 0;
-
-    for (int i = 1; i < argc; i++)
-    {
-        QString arg(argv[i]);
-
-        arg = arg.trimmed();
-
-        if (arg.startsWith("--"))
-        {
-            int split = arg.indexOf('=');
-
-            if (split > 0)
-            {
-                QString key = arg.mid(2).left(split - 2);
-
-                QString value = arg.mid(split + 1).trimmed();
-
-                arguments.insert(key, value);
-            }
-            else arguments.insert(arg.mid(2), QString());
-        }
-        else if (arg.startsWith('-'))
-        {
-            arguments.insert(arg.mid(1), QString());
-        }
-        else
-        {
-            count++;
-
-            arguments.insert(QString::number(count), arg);
-        }
-    }
-
-    return arguments;
-}
-
-//-------------------------------------------------------------------------------------------------
-
 void WControllerApplicationPrivate::declareController(WController * controller)
 {
     //Q_Q(WControllerApplication);
@@ -472,6 +429,20 @@ void WControllerApplication::initController()
 
 //-------------------------------------------------------------------------------------------------
 // Static functions
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */
+QString WControllerApplication::extractParameter(const QString & argument)
+{
+    int index = argument.indexOf('=');
+
+    if (index == -1)
+    {
+        return QString();
+    }
+    else return argument.mid(index + 1);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE static */ bool WControllerApplication::fuzzyCompare(qreal valueA, qreal valueB)
@@ -1655,21 +1626,15 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 //-------------------------------------------------------------------------------------------------
 // Message
 
-/* Q_INVOKABLE static */ QString WControllerApplication::extractArgument(const QString & message)
+/* Q_INVOKABLE static */ QString WControllerApplication::extractMessage(const QString & message)
 {
-    int indexA = message.indexOf(' ');
+    int index = message.lastIndexOf(' ');
 
-    if (indexA == -1) return QString();
-
-    indexA++;
-
-    int indexB = message.indexOf(' ', indexA);
-
-    if (indexB == -1)
+    if (index == -1)
     {
-         return message.mid(indexA, indexB);
+        return QString();
     }
-    else return message.mid(indexA, indexB - indexA);
+    else return message.mid(index + 1);
 }
 
 /* Q_INVOKABLE static */ QString WControllerApplication::getMessage()
