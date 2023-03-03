@@ -295,8 +295,9 @@ public: // Static functions
     Q_INVOKABLE static WPlaylist * create(Type type = Playlist);
 
 public: // WLibraryItem reimplementation
-    // NOTE: Set expand to 1 to export track sources, and 2 to export track properties.
-    Q_INVOKABLE /* virtual */ QString toVbml(int expand = 0) const;
+    // NOTE: Set expand to 1 to export track sources, and 2 to export track properties. When
+    //       expanded, the tracks are capped to the maximum parameter.
+    Q_INVOKABLE /* virtual */ QString toVbml(int expand = 0, int maximum = -1) const;
 
 protected: // Functions
     void updateIndex();

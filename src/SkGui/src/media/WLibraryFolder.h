@@ -262,8 +262,9 @@ public: // Static functions
                                  WLibraryFolder * folderB, int to, bool remove = true);
 
 public: // WLibraryItem reimplementation
-    // NOTE: Set expand to 1 to export playlist sources, and 2 to export playlist properties.
-    Q_INVOKABLE /* virtual */ QString toVbml(int expand = 0) const;
+    // NOTE: Set expand to 1 to export playlist sources, and 2 to export playlist properties. When
+    //       expanded, the items are capped to the maximum parameter.
+    Q_INVOKABLE /* virtual */ QString toVbml(int expand = 0, int maximum = -1) const;
 
 protected: // Functions
     void updateIndex();

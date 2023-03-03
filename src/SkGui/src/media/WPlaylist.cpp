@@ -2300,7 +2300,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 // WLibraryItem reimplementation
 //---------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ QString WPlaylist::toVbml(int expand) const
+/* Q_INVOKABLE virtual */ QString WPlaylist::toVbml(int expand, int maximum) const
 {
     Q_D(const WPlaylist);
 
@@ -2326,9 +2326,11 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
             QString tabA = Sk::tabs(1);
             QString tabB = Sk::tabs(2);
 
-            W_FOREACH (const WTrack & track, d->tracks)
+            for (int i = 0; i < d->tracks.count(); i++)
             {
-                const WTrackPrivate * p = track.d_func();
+                if (i == maximum) break;
+
+                const WTrackPrivate * p = d->tracks.at(i).d_func();
 
                 Sk::bmlTag(vbml, tabA + WTrack::typeToString(p->type));
 
@@ -2360,8 +2362,12 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
             QString tab = Sk::tabs(1);
 
-            W_FOREACH (const WTrack & track, d->tracks)
+            for (int i = 0; i < d->tracks.count(); i++)
             {
+                if (i == maximum) break;
+
+                const WTrack & track = d->tracks.at(i);
+
                 Sk::bmlValue(vbml, tab + track.d_func()->source);
             }
         }

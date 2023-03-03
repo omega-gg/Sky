@@ -570,17 +570,34 @@ Item
 
         var height;
 
-        for (var i = 0; i < column.children.length; i++)
+        if (column.visible)
         {
-            var child = column.children[i];
-
-            // NOTE: We check against opacity instead of visible because we want the proper height
-            //       even when the parent is hidden.
-            if (child.opacity && child.y > y)
+            for (var i = 0; i < column.children.length; i++)
             {
-                y = child.y;
+                var child = column.children[i];
 
-                height = child.height;
+                // NOTE: For performance reasons, we only evaluate child's visibility when the
+                //       column is visible.
+                if (child.visible && child.y > y)
+                {
+                    y = child.y;
+
+                    height = child.height;
+                }
+            }
+        }
+        else
+        {
+            for (/* var */ i = 0; i < column.children.length; i++)
+            {
+                /* var */ child = column.children[i];
+
+                if (child.y > y)
+                {
+                    y = child.y;
+
+                    height = child.height;
+                }
             }
         }
 

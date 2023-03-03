@@ -2309,7 +2309,7 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
 // WLibraryItem reimplementation
 //---------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ QString WLibraryFolder::toVbml(int expand) const
+/* Q_INVOKABLE virtual */ QString WLibraryFolder::toVbml(int expand, int maximum) const
 {
     Q_D(const WLibraryFolder);
 
@@ -2331,8 +2331,12 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
             QString tabA = Sk::tabs(1);
             QString tabB = Sk::tabs(2);
 
-            foreach (const WLibraryFolderItem & item, d->items)
+            for (int i = 0; i < d->items.count(); i++)
             {
+                if (i == maximum) break;
+
+                const WLibraryFolderItem & item = d->items.at(i);
+
                 Sk::bmlTag(vbml, tabA + WLibraryItem::typeToString(item.type));
 
                 Sk::bmlPair(vbml, tabB + "source", item.source);
@@ -2352,8 +2356,12 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
 
             QString tab = Sk::tabs(1);
 
-            W_FOREACH (const WLibraryFolderItem & item, d->items)
+            for (int i = 0; i < d->items.count(); i++)
             {
+                if (i == maximum) break;
+
+                const WLibraryFolderItem & item = d->items.at(i);
+
                 Sk::bmlValue(vbml, tab + item.source);
             }
         }
