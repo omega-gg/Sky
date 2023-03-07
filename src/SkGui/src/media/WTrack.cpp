@@ -29,6 +29,7 @@
 
 // Sk includes
 #include <WControllerApplication>
+#include <WControllerNetwork>
 #include <WControllerPlaylist>
 #include <WPlaylist>
 
@@ -181,7 +182,10 @@ void WTrack::applyDataTo(WTrack * other) const
 
     Sk::bmlPair(vbml, "type", typeToString(d->type), "\n\n");
 
-    Sk::bmlPair(vbml, "source", d->source, "\n\n");
+    if (WControllerNetwork::urlIsFile(d->source) == false)
+    {
+        Sk::bmlPair(vbml, "source", d->source, "\n\n");
+    }
 
     Sk::bmlPair(vbml, "title", d->title, "\n\n");
     Sk::bmlPair(vbml, "cover", d->cover, "\n\n");
@@ -189,7 +193,7 @@ void WTrack::applyDataTo(WTrack * other) const
     Sk::bmlPair(vbml, "author", d->author, "\n\n");
     Sk::bmlPair(vbml, "feed",   d->feed,   "\n\n");
 
-    if (d->duration != -1)
+    if (d->duration > 0)
     {
         Sk::bmlPair(vbml, "duration", QString::number(d->duration), "\n\n");
     }

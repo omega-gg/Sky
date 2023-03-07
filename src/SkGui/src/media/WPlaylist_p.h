@@ -90,6 +90,8 @@ public: // Function
 
     QList<int> getSelected() const;
 
+    void vbmlTrack(QString & vbml, const WTrackPrivate * p, const QString & tab) const;
+
     void currentIndexChanged();
 
     void emitSelectedTracksChanged(const QList<int> & indexes);

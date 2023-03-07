@@ -26,6 +26,7 @@
 
 // Sk includes
 #include <WControllerApplication>
+#include <WControllerNetwork>
 #include <WControllerPlaylist>
 #include <WTrack>
 #include <WTabTrack>
@@ -290,8 +291,17 @@ void WBookmarkTrack::save()
 
     Sk::bmlPair(vbml, "type", WTrack::typeToString(d->type), "\n\n");
 
-    if (source.isNull()) Sk::bmlPair(vbml, "source", d->source, "\n\n");
-    else                 Sk::bmlPair(vbml, "source", source,    "\n\n");
+    if (source.isNull())
+    {
+        if (WControllerNetwork::urlIsFile(d->source) == false)
+        {
+            Sk::bmlPair(vbml, "source", d->source, "\n\n");
+        }
+    }
+    else if (WControllerNetwork::urlIsFile(source) == false)
+    {
+        Sk::bmlPair(vbml, "source", source, "\n\n");
+    }
 
     Sk::bmlPair(vbml, "title", d->title, "\n\n");
     Sk::bmlPair(vbml, "cover", d->cover, "\n\n");
@@ -299,19 +309,19 @@ void WBookmarkTrack::save()
     Sk::bmlPair(vbml, "author", d->author, "\n\n");
     Sk::bmlPair(vbml, "feed",   d->feed,   "\n\n");
 
-    if (d->duration != -1)
+    if (d->duration > 0)
     {
         Sk::bmlPair(vbml, "duration", QString::number(d->duration), "\n\n");
     }
 
     if (currentTime != -1)
     {
-        if (currentTime != -2)
+        if (currentTime > 0)
         {
             Sk::bmlPair(vbml, "currentTime", QString::number(currentTime), "\n\n");
         }
     }
-    else if (d->currentTime != -1)
+    else if (d->currentTime > 0)
     {
         Sk::bmlPair(vbml, "currentTime", QString::number(d->currentTime), "\n\n");
     }

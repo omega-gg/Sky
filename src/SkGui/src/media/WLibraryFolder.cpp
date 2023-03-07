@@ -2326,7 +2326,7 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
     {
         if (expand == 2)
         {
-            Sk::bmlList(vbml, "items");
+            Sk::bmlTag(vbml, "items");
 
             QString tabA = Sk::tabs(1);
             QString tabB = Sk::tabs(2);
@@ -2349,8 +2349,8 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
                 vbml.append('\n');
             }
         }
-        // NOTE: When the source is empty we enforce playlist sources.
-        else if (expand == 1 || d->source.isEmpty())
+        // NOTE: When the source is empty or local we enforce playlist sources.
+        else if (expand == 1 || d->source.isEmpty() || WControllerNetwork::urlIsFile(d->source))
         {
             Sk::bmlList(vbml, "items");
 

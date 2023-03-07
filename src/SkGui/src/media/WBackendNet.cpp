@@ -389,6 +389,8 @@ WBackendNetInterface::WBackendNetInterface()
 
     WBackendNetSource source = backend->extractSource(data, reply->_query);
 
+    if (source.medias.isEmpty()) qDebug("EMPTY MEDIAS");
+
     emit reply->loaded(device, source);
 
     reply->deleteLater();

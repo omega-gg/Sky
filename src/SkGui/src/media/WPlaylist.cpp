@@ -995,8 +995,6 @@ bool WPlaylistPrivate::insertSelected(const QList<int> & indexes,
     return true;
 }
 
-//-------------------------------------------------------------------------------------------------
-
 QList<int> WPlaylistPrivate::getSelected() const
 {
     Q_Q(const WPlaylist);
@@ -1013,6 +1011,28 @@ QList<int> WPlaylistPrivate::getSelected() const
     std::sort(selected.begin(), selected.end());
 
     return selected;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WPlaylistPrivate::vbmlTrack(QString & vbml, const WTrackPrivate * p,
+                                                 const QString       & tab) const
+{
+    Sk::bmlPair(vbml, tab + "title", p->title);
+    Sk::bmlPair(vbml, tab + "cover", p->cover);
+
+    Sk::bmlPair(vbml, tab + "author", p->author);
+    Sk::bmlPair(vbml, tab + "feed",   p->feed);
+
+    if (p->duration > 0)
+    {
+        Sk::bmlPair(vbml, tab + "duration", QString::number(p->duration));
+    }
+
+    if (p->date.isValid())
+    {
+        Sk::bmlPair(vbml, tab + "date", Sk::bmlDate(p->date));
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2312,65 +2332,123 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     }
     else Sk::bmlPair(vbml, "type", "playlist", "\n\n");
 
-    Sk::bmlPair(vbml, "source", d->source, "\n\n");
+    int mode;
+
+    QString source = d->source;
+
+    if (source.isEmpty() || WControllerNetwork::urlIsFile(source))
+    {
+        if (expand == 0) expand = 1;
+    }
+    else Sk::bmlPair(vbml, "source", source, "\n\n");
+
+    if (expand == 1)
+    {
+        mode = 1;
+
+        W_FOREACH (const WTrack & track, d->tracks)
+        {
+            QString source = track.d_func()->source;
+
+            // NOTE: When a track source is empty or local, we enforce a more comprehensive
+            //       export.
+            if (source.isEmpty() || WControllerNetwork::urlIsFile(source))
+            {
+                mode = 2;
+
+                break;
+            }
+        }
+    }
+    else if (expand == 2) mode = 3;
+    else                  mode = 0;
 
     Sk::bmlPair(vbml, "title", d->title, "\n\n");
     Sk::bmlPair(vbml, "cover", d->cover, "\n\n");
 
-    if (d->tracks.isEmpty() == false)
+    if (d->tracks.isEmpty())
     {
-        if (expand == 2)
+        // NOTE: We clear the last '\n'.
+        vbml.chop(1);
+
+        return vbml;
+    }
+
+    if (mode == 1) // Minimal
+    {
+        Sk::bmlList(vbml, "tracks");
+
+        QString tab = Sk::tabs(1);
+
+        for (int i = 0; i < d->tracks.count(); i++)
         {
-            Sk::bmlList(vbml, "tracks");
+            if (i == maximum) break;
 
-            QString tabA = Sk::tabs(1);
-            QString tabB = Sk::tabs(2);
+            const WTrackPrivate * p = d->tracks.at(i).d_func();
 
-            for (int i = 0; i < d->tracks.count(); i++)
+            Sk::bmlValue(vbml, tab + p->source);
+        }
+
+        vbml.append('\n');
+    }
+    else if (mode == 2) // Expand if necessary
+    {
+        Sk::bmlTag(vbml, "tracks");
+
+        QString tabA = Sk::tabs(1);
+        QString tabB = Sk::tabs(2);
+
+        for (int i = 0; i < d->tracks.count(); i++)
+        {
+            if (i == maximum) break;
+
+            const WTrackPrivate * p = d->tracks.at(i).d_func();
+
+            QString source = p->source;
+
+            // NOTE: When the source is empty or local, we enforce a more comprehensive export.
+            if (source.isEmpty() || WControllerNetwork::urlIsFile(source))
             {
-                if (i == maximum) break;
+                Sk::bmlTag(vbml, tabA + WTrack::typeToString(p->type));
 
-                const WTrackPrivate * p = d->tracks.at(i).d_func();
-
+                d->vbmlTrack(vbml, p, tabB);
+            }
+            else
+            {
                 Sk::bmlTag(vbml, tabA + WTrack::typeToString(p->type));
 
                 Sk::bmlPair(vbml, tabB + "source", p->source);
-
-                Sk::bmlPair(vbml, tabB + "title", p->title);
-                Sk::bmlPair(vbml, tabB + "cover", p->cover);
-
-                Sk::bmlPair(vbml, tabB + "author", p->author);
-                Sk::bmlPair(vbml, tabB + "feed",   p->feed);
-
-                if (p->duration != -1)
-                {
-                    Sk::bmlPair(vbml, tabB + "duration", QString::number(p->duration));
-                }
-
-                if (p->date.isValid())
-                {
-                    Sk::bmlPair(vbml, tabB + "date", Sk::bmlDate(p->date));
-                }
-
-                vbml.append('\n');
             }
         }
-        // NOTE: When the source is empty we enforce track sources.
-        else if (expand == 1 || d->source.isEmpty())
+
+        vbml.append('\n');
+    }
+    else if (mode == 3) // Always expand
+    {
+        Sk::bmlTag(vbml, "tracks");
+
+        QString tabA = Sk::tabs(1);
+        QString tabB = Sk::tabs(2);
+
+        for (int i = 0; i < d->tracks.count(); i++)
         {
-            Sk::bmlList(vbml, "tracks");
+            if (i == maximum) break;
 
-            QString tab = Sk::tabs(1);
+            const WTrackPrivate * p = d->tracks.at(i).d_func();
 
-            for (int i = 0; i < d->tracks.count(); i++)
+            Sk::bmlTag(vbml, tabA + WTrack::typeToString(p->type));
+
+            QString source = p->source;
+
+            if (WControllerNetwork::urlIsFile(source) == false)
             {
-                if (i == maximum) break;
-
-                const WTrack & track = d->tracks.at(i);
-
-                Sk::bmlValue(vbml, tab + track.d_func()->source);
+                Sk::bmlPair(vbml, tabB + "source", source);
             }
+
+            d->vbmlTrack(vbml, p, tabB);
         }
+
+        vbml.append('\n');
     }
 
     // NOTE: We clear the last '\n'.

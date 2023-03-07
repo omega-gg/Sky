@@ -641,7 +641,7 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & t
     track.setAuthor(reader.extractString("author"));
     track.setFeed  (reader.extractString("feed"));
 
-    track.setDuration(reader.extractInt("duration"));
+    track.setDuration(reader.extractInt("duration", -1));
 
     track.setDate(reader.extractDate("date"));
 
@@ -706,7 +706,7 @@ void WControllerPlaylistData::parsePlaylistTrack(const WYamlNode & node, WTrack:
     track.setAuthor(node.extractString("author"));
     track.setFeed  (node.extractString("feed"));
 
-    track.setDuration(node.extractInt("duration"));
+    track.setDuration(node.extractInt("duration", -1));
 
     track.setDate(node.extractDate("date"));
 
@@ -4816,7 +4816,7 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlTypeFromString(const QString 
     track->setAuthor(reader.extractString("author"));
     track->setFeed  (reader.extractString("feed"));
 
-    track->setDuration(reader.extractInt("duration"));
+    track->setDuration(reader.extractInt("duration", -1));
 
     track->setDate(reader.extractDate("date"));
 }

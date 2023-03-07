@@ -82,7 +82,7 @@ bool WYamlNodeBase::extractBool(const QString & key) const
     else return value.toInt();
 }
 
-int WYamlNodeBase::extractInt(const QString & key) const
+int WYamlNodeBase::extractInt(const QString & key, int defaultValue) const
 {
     const WYamlNode * node = at(key);
 
@@ -90,7 +90,7 @@ int WYamlNodeBase::extractInt(const QString & key) const
     {
          return node->value.toInt();
     }
-    else return 0;
+    else return defaultValue;
 }
 
 QString WYamlNodeBase::extractString(const QString & key) const
@@ -429,11 +429,11 @@ WYamlReader::WYamlReader(const QByteArray & data, QObject * parent)
     return d->node.extractBool(key);
 }
 
-/* Q_INVOKABLE */ int WYamlReader::extractInt(const QString & key) const
+/* Q_INVOKABLE */ int WYamlReader::extractInt(const QString & key, int defaultValue) const
 {
     Q_D(const WYamlReader);
 
-    return d->node.extractInt(key);
+    return d->node.extractInt(key, defaultValue);
 }
 
 /* Q_INVOKABLE */ QString WYamlReader::extractString(const QString & key) const
