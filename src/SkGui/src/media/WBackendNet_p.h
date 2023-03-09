@@ -54,6 +54,8 @@ public:
 public: // Variables
     WBackendLoader * loader;
 
+    bool loaded;
+
     int lockCount;
 
 protected:

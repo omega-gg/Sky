@@ -36,8 +36,6 @@ class SK_BACKEND_EXPORT WBackendUniversal : public WBackendNet
 {
     Q_OBJECT
 
-    Q_PROPERTY(bool isLoaded READ isLoaded NOTIFY loaded)
-
 protected:
     WBackendUniversal(const QString & id, const QString & source);
 
@@ -139,9 +137,6 @@ signals:
     void updated();
 
     void backendUpdated(const QString & id);
-
-public: // Properties
-    bool isLoaded() const;
 
 private:
     W_DECLARE_PRIVATE(WBackendUniversal)

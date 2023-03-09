@@ -366,6 +366,8 @@ class SK_GUI_EXPORT WBackendNet : public QObject, public WPrivatable
 {
     Q_OBJECT
 
+    Q_PROPERTY(bool isLoaded READ isLoaded NOTIFY loadedChanged)
+
     Q_PROPERTY(QString id    READ id    CONSTANT)
     Q_PROPERTY(QString title READ title CONSTANT)
 
@@ -505,7 +507,15 @@ public: // Virtual interface
     Q_INVOKABLE virtual void applyItem(const WBackendNetQuery & query,
                                        const WBackendNetItem  & item); // {}
 
+protected: // Functions
+    void applyLoaded();
+
+signals:
+    void loadedChanged();
+
 public: // Properties
+    bool isLoaded() const;
+
     QString id   () const;
     QString title() const;
 

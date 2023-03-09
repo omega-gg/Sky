@@ -60,6 +60,8 @@ public: // Slots
     void onReload();
     void onClear ();
 
+    void onLoaded();
+
 public: // Variables
     QMetaMethod create;
     QMetaMethod update;

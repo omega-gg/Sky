@@ -464,6 +464,8 @@ void WBackendNetPrivate::init()
 {
     loader = NULL;
 
+    loaded = true;
+
     lockCount = 0;
 
 #if defined(QT_NEW) && defined(SK_NO_QML) == false
@@ -913,6 +915,11 @@ WBackendNetItem WBackendNet::extractItem(const QByteArray       &,
 //-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
+
+bool WBackendNet::isLoaded() const
+{
+    Q_D(const WBackendNet); return d->loaded;
+}
 
 QString WBackendNet::id() const
 {

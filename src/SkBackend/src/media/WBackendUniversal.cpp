@@ -3929,6 +3929,22 @@ void WBackendUniversalPrivate::loadData(const QByteArray & array)
 
 //-------------------------------------------------------------------------------------------------
 
+void WBackendUniversalPrivate::applyLoaded()
+{
+    Q_Q(WBackendUniversal);
+
+    if (loaded == false)
+    {
+        loaded = true;
+
+        emit q->loadedChanged();
+    }
+
+    emit q->loaded();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void WBackendUniversalPrivate::runQuery(WBackendNetQuery * query, const QString & name,
                                                                   const QString & source,
                                                                   const QString & url) const
@@ -4491,9 +4507,7 @@ void WBackendUniversalPrivate::onLoad()
     {
         data = WBackendUniversalData();
 
-        loaded = true;
-
-        emit q->loaded();
+        applyLoaded();
 
         return;
     }
@@ -4515,9 +4529,7 @@ void WBackendUniversalPrivate::onUpdate()
 
     if (array.isEmpty())
     {
-        loaded = true;
-
-        emit q->loaded();
+        applyLoaded();
 
         return;
     }
@@ -4539,9 +4551,7 @@ void WBackendUniversalPrivate::onData(const WBackendUniversalData & data)
     {
         this->data = data;
 
-        loaded = true;
-
-        emit q->loaded();
+        applyLoaded();
 
         return;
     }
@@ -4551,14 +4561,14 @@ void WBackendUniversalPrivate::onData(const WBackendUniversalData & data)
     {
         qWarning("WBackendUniversalPrivate::onData: Cannot update, the required API is too high.");
 
-        emit q->loaded();
+        applyLoaded();
 
         return;
     }
 
     this->data = data;
 
-    emit q->loaded();
+    applyLoaded();
 
     if (version != data.version)
     {
@@ -5205,15 +5215,6 @@ void WBackendUniversal::applyItem(const WBackendNetQuery &,
 #endif
 
     d->global = item.backup;
-}
-
-//-------------------------------------------------------------------------------------------------
-// Properties
-//-------------------------------------------------------------------------------------------------
-
-bool WBackendUniversal::isLoaded() const
-{
-    Q_D(const WBackendUniversal); return d->loaded;
 }
 
 #endif // SK_NO_BACKENDUNIVERSAL

@@ -284,6 +284,8 @@ public: // Functions
 
     void loadData(const QByteArray & array);
 
+    void applyLoaded();
+
     void runQuery(WBackendNetQuery * query, const QString & name,
                                             const QString & source, const QString & url) const;
 
@@ -382,8 +384,6 @@ public: // Variables
     WRemoteData * remote;
 
     WBackendUniversalData data;
-
-    bool loaded;
 
     QString id;
     QString source;

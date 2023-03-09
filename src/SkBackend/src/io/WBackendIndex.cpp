@@ -562,16 +562,6 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
     return backend;
 }
 
-/* Q_INVOKABLE virtual */ void WBackendIndex::waitBackend(WBackendNet * backend) const
-{
-    WBackendUniversal * backendUniversal = static_cast<WBackendUniversal *> (backend);
-
-    while (backendUniversal->isLoaded() == false)
-    {
-        QCoreApplication::processEvents();
-    }
-}
-
 /* Q_INVOKABLE virtual */ void WBackendIndex::checkBackend(WBackendNet * backend) const
 {
     Q_D(const WBackendIndex);
