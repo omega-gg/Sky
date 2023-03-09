@@ -2336,6 +2336,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
     QString source = d->source;
 
+    // NOTE: We don't export local sources.
     if (source.isEmpty() || WControllerNetwork::urlIsFile(source))
     {
         if (expand == 0) expand = 1;
@@ -2346,12 +2347,13 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     {
         mode = 1;
 
-        W_FOREACH (const WTrack & track, d->tracks)
+        for (int i = 0; i < d->tracks.count(); i++)
         {
-            QString source = track.d_func()->source;
+            if (i == maximum) break;
 
-            // NOTE: When a track source is empty or local, we enforce a more comprehensive
-            //       export.
+            source = d->tracks.at(i).d_func()->source;
+
+            // NOTE: When a source is empty or local, we enforce a more comprehensive export.
             if (source.isEmpty() || WControllerNetwork::urlIsFile(source))
             {
                 mode = 2;
@@ -2404,21 +2406,16 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
             const WTrackPrivate * p = d->tracks.at(i).d_func();
 
-            QString source = p->source;
+            Sk::bmlTag(vbml, tabA + WTrack::typeToString(p->type));
+
+            source = p->source;
 
             // NOTE: When the source is empty or local, we enforce a more comprehensive export.
             if (source.isEmpty() || WControllerNetwork::urlIsFile(source))
             {
-                Sk::bmlTag(vbml, tabA + WTrack::typeToString(p->type));
-
                 d->vbmlTrack(vbml, p, tabB);
             }
-            else
-            {
-                Sk::bmlTag(vbml, tabA + WTrack::typeToString(p->type));
-
-                Sk::bmlPair(vbml, tabB + "source", p->source);
-            }
+            else Sk::bmlPair(vbml, tabB + "source", source);
         }
 
         vbml.append('\n');
@@ -2438,7 +2435,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
             Sk::bmlTag(vbml, tabA + WTrack::typeToString(p->type));
 
-            QString source = p->source;
+            source = p->source;
 
             if (WControllerNetwork::urlIsFile(source) == false)
             {

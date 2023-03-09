@@ -925,6 +925,19 @@ void WLibraryFolderPrivate::deleteItems()
 }
 
 //---------------------------------------------------------------------------------------------
+
+void WLibraryFolderPrivate::vbmlItem(QString & vbml, const WLibraryFolderItem & item,
+                                                     const QString            & tab) const
+{
+    Sk::bmlPair(vbml, tab + "title", item.title);
+    Sk::bmlPair(vbml, tab + "cover", item.cover);
+
+    Sk::bmlPair(vbml, tab + "label", item.label);
+
+    vbml.append('\n');
+}
+
+//---------------------------------------------------------------------------------------------
 // WLibraryItem interface
 
 void WLibraryFolderPrivate::updateItemType(int id, WLibraryItem::Type type)
@@ -2317,54 +2330,120 @@ WLibraryItem * WLibraryFolder::createLibraryItem(const WLibraryFolderItem & item
 
     Sk::bmlPair(vbml, "type", "folder", "\n\n");
 
-    Sk::bmlPair(vbml, "source", d->source, "\n\n");
+    int mode;
+
+    QString source = d->source;
+
+    // NOTE: We don't export local sources.
+    if (source.isEmpty() || WControllerNetwork::urlIsFile(source))
+    {
+        if (expand == 0) expand = 1;
+    }
+    else Sk::bmlPair(vbml, "source", d->source, "\n\n");
+
+    if (expand == 1)
+    {
+        mode = 1;
+
+        for (int i = 0; i < d->items.count(); i++)
+        {
+            if (i == maximum) break;
+
+            source = d->items.at(i).source;
+
+            // NOTE: When a source is empty or local, we enforce a more comprehensive export.
+            if (source.isEmpty() || WControllerNetwork::urlIsFile(source))
+            {
+                mode = 2;
+
+                break;
+            }
+        }
+    }
+    else if (expand == 2) mode = 3;
+    else                  mode = 0;
 
     Sk::bmlPair(vbml, "title", d->title, "\n\n");
     Sk::bmlPair(vbml, "cover", d->cover, "\n\n");
 
-    if (d->items.isEmpty() == false)
+    if (d->items.isEmpty())
     {
-        if (expand == 2)
+        // NOTE: We clear the last '\n'.
+        vbml.chop(1);
+
+        return vbml;
+    }
+
+    if (mode == 1) // Minimal
+    {
+        Sk::bmlList(vbml, "items");
+
+        QString tab = Sk::tabs(1);
+
+        for (int i = 0; i < d->items.count(); i++)
         {
-            Sk::bmlTag(vbml, "items");
+            if (i == maximum) break;
 
-            QString tabA = Sk::tabs(1);
-            QString tabB = Sk::tabs(2);
+            const WLibraryFolderItem & item = d->items.at(i);
 
-            for (int i = 0; i < d->items.count(); i++)
-            {
-                if (i == maximum) break;
-
-                const WLibraryFolderItem & item = d->items.at(i);
-
-                Sk::bmlTag(vbml, tabA + WLibraryItem::typeToString(item.type));
-
-                Sk::bmlPair(vbml, tabB + "source", item.source);
-
-                Sk::bmlPair(vbml, tabB + "title", item.title);
-                Sk::bmlPair(vbml, tabB + "cover", item.cover);
-
-                Sk::bmlPair(vbml, tabB + "label", item.label);
-
-                vbml.append('\n');
-            }
+            Sk::bmlValue(vbml, tab + item.source);
         }
-        // NOTE: When the source is empty or local we enforce playlist sources.
-        else if (expand == 1 || d->source.isEmpty() || WControllerNetwork::urlIsFile(d->source))
+
+        vbml.append('\n');
+    }
+    else if (mode == 2) // Expand if necessary
+    {
+        Sk::bmlTag(vbml, "items");
+
+        QString tabA = Sk::tabs(1);
+        QString tabB = Sk::tabs(2);
+
+        for (int i = 0; i < d->items.count(); i++)
         {
-            Sk::bmlList(vbml, "items");
+            if (i == maximum) break;
 
-            QString tab = Sk::tabs(1);
+            const WLibraryFolderItem & item = d->items.at(i);
 
-            for (int i = 0; i < d->items.count(); i++)
+            Sk::bmlTag(vbml, tabA + WLibraryItem::typeToString(item.type));
+
+            source = item.source;
+
+            // NOTE: When the source is empty or local, we enforce a more comprehensive export.
+            if (source.isEmpty() || WControllerNetwork::urlIsFile(source))
             {
-                if (i == maximum) break;
-
-                const WLibraryFolderItem & item = d->items.at(i);
-
-                Sk::bmlValue(vbml, tab + item.source);
+                d->vbmlItem(vbml, item, tabB);
             }
+            else Sk::bmlPair(vbml, tabB + "source", source);
         }
+
+        vbml.append('\n');
+    }
+    else if (mode == 3) // Always expand
+    {
+        Sk::bmlTag(vbml, "items");
+
+        QString tabA = Sk::tabs(1);
+        QString tabB = Sk::tabs(2);
+
+        for (int i = 0; i < d->items.count(); i++)
+        {
+            if (i == maximum) break;
+
+            const WLibraryFolderItem & item = d->items.at(i);
+
+            Sk::bmlTag(vbml, tabA + WLibraryItem::typeToString(item.type));
+
+            source = item.source;
+
+            if (WControllerNetwork::urlIsFile(source) == false)
+            {
+                Sk::bmlPair(vbml, tabB + "source", source);
+            }
+
+            d->vbmlItem(vbml, item, tabB);
+        }
+
+        vbml.append('\n');
     }
 
     // NOTE: We clear the last '\n'.

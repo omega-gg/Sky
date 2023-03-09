@@ -80,6 +80,8 @@ public: // Functions
 
     void deleteItems();
 
+    void vbmlItem(QString & vbml, const WLibraryFolderItem & item, const QString & tab) const;
+
     //---------------------------------------------------------------------------------------------
     // WLibraryItem interface
 
