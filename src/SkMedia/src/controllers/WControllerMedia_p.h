@@ -111,8 +111,6 @@ public: // Functions
 
     void clearReply(WMediaReply * reply);
 
-    void deleteMedia(WPrivateMediaData * media);
-
     void getData(WPrivateMediaData * media, WBackendNetQuery * query);
 
 public: // Slots
