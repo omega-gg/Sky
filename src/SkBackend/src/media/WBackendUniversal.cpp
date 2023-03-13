@@ -4010,7 +4010,11 @@ void WBackendUniversalPrivate::applyQueryResults(WBackendUniversalParameters * p
 {
     query->type = getTypeQuery(parameters->value("type")->toString());
 
-    query->backend = parameters->value("backend")->toString();
+    QString backend = parameters->value("backend")->toString();
+
+    // NOTE: By default, we apply the current backend id.
+    if (backend.isEmpty()) query->backend = id;
+    else                   query->backend = backend;
 
     query->url = parameters->value("url")->toString();
 
@@ -4391,7 +4395,11 @@ WBackendNetQuery WBackendUniversalPrivate::getQuery(const QVariant & value) cons
 
     query.type = getTypeQuery(hash.value("type").toString());
 
-    query.backend = hash.value("backend").toString();
+    QString backend = hash.value("backend").toString();
+
+    // NOTE: By default, we apply the current backend id.
+    if (backend.isEmpty()) query.backend = id;
+    else                   query.backend = backend;
 
     query.url = hash.value("url").toString();
 
