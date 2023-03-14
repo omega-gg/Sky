@@ -96,9 +96,9 @@ ComponentTrack
 
         visible: (width != 0)
 
-        opacity: st.componentTrackHistory_opacity
+        opacity: st.componentHistory_opacity
 
-        color: st.componentTrackHistory_color
+        color: st.componentHistory_color
 
 //#QT_4
         smooth: true

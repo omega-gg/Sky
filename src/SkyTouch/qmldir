@@ -68,7 +68,7 @@ ComponentCompletion   1.0 ComponentCompletion.qml
 ComponentBackend      1.0 ComponentBackend.qml
 ComponentBackendFull  1.0 ComponentBackendFull.qml
 ComponentTrack        1.0 ComponentTrack.qml
-ComponentTrackHistory 1.0 ComponentTrackHistory.qml
+ComponentHistory      1.0 ComponentHistory.qml
 
 ComponentGridTrack   1.0 ComponentGridTrack.qml
 ComponentGridHistory 1.0 ComponentGridHistory.qml

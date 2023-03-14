@@ -330,13 +330,13 @@ Style
     property int componentTrack_iconWidth: dp24
 //#END
 
-//#ComponentTrackHistory
+//#ComponentHistory
     //---------------------------------------------------------------------------------------------
-    // ComponentTrackHistory
+    // ComponentHistory
 
-    property real componentTrackHistory_opacity: 0.2
+    property real componentHistory_opacity: 0.2
 
-    property color componentTrackHistory_color: slider_colorFront
+    property color componentHistory_color: slider_colorFront
 //#END
 
     //---------------------------------------------------------------------------------------------
