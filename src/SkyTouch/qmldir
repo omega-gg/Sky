@@ -1,5 +1,7 @@
 StyleTouch 1.0 StyleTouch.qml
 
+ViewPlaylist 1.0 ViewPlaylist.qml
+
 Panel                    1.0 Panel.qml
 PanelContextual          1.0 PanelContextual.qml
 PanelContextualFlickable 1.0 PanelContextualFlickable.qml

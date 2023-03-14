@@ -33,24 +33,24 @@ MouseArea
 
     /* read */ property bool isActive: (pMaximumY > 0)
 
-    /* mandatory */ property variant view
+    property variant view
 
     property int minimumSize: st.scrollBar_minimumSize
 
     //---------------------------------------------------------------------------------------------
     // Private
 
-    property int pMaximumY: view.contentHeight - height
+    property int pMaximumY: (view) ? view.contentHeight - height : -1
 
     property int pMaximumHandle: height - handle.height
 
 //#QT_4
     property int pOriginY: 0
 //#ELSE
-    property int pOriginY: view.originY
+    property int pOriginY: (view) ? view.originY : -1
 //#END
 
-    property bool pUpdate: true
+    property bool pUpdate: isActive
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -62,7 +62,7 @@ MouseArea
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    height: view.height
+    height: (view) ? view.height : 0
 
     visible: isActive
 

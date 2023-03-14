@@ -134,7 +134,7 @@ Item
         anchors.right : parent.right
         anchors.bottom: parent.bottom
 
-        text: title
+        text: st.getTrackTitle(title, loadState, source)
 
         font.pixelSize: st.dp16
 
