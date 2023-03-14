@@ -4,7 +4,7 @@
 
     Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
 
-    This file is part of SkyComponents.
+    This file is part of SkyBase.
 
     - GNU Lesser General Public License Usage:
     This file may be used under the terms of the GNU Lesser General Public License version 3 as
@@ -23,69 +23,70 @@
 import QtQuick 1.0
 import Sky     1.0
 
-TabsBrowser
+GridView
 {
-    //---------------------------------------------------------------------------------------------
-    // Properties
-    //---------------------------------------------------------------------------------------------
-
-    property variant highlightedTab: tabs.highlightedTab
-
-    //---------------------------------------------------------------------------------------------
-    // Private
-
-    // NOTE: We avoid loading tracks when the item is not loaded.
-    property bool pReady: false
-
-    //---------------------------------------------------------------------------------------------
-    // Settings
-    //---------------------------------------------------------------------------------------------
-
-    delegate: ComponentTabTrack {}
+    id: baseGrid
 
     //---------------------------------------------------------------------------------------------
     // Events
     //---------------------------------------------------------------------------------------------
 
-    Component.onCompleted:
-    {
-        pReady = true;
+//#QT_4
+    // NOTE Qt4: We update the contentHeight to 1 because it's not updated properly when it's on 0.
+    onCountChanged: if (count == 0) contentHeight = 1
+//#END
 
-        pUpdateVisible();
-    }
+    onCurrentIndexChanged: positionViewAtIndex(currentIndex, GridView.Contain)
 
-    onVisibleChanged: if (pReady) pUpdateVisible()
+    // NOTE: When we have a contextual area we hide its panels when scrolling.
+    onMovementStarted: window.checkContextual(areaContextual, baseGrid)
 
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
-    // Private
 
-    function pUpdateVisible()
+    function selectPrevious()
     {
-        // NOTE: We reload each track when the tabs are visible.
-        if (visible)
-        {
-            tabs.reloadTracks();
+        if (count == 0 || currentIndex < 1) return;
 
-            timer.start();
-        }
-        else timer.stop();
+        currentIndex--;
+    }
+
+    function selectNext()
+    {
+        if (count == 0 || currentIndex == count - 1) return;
+
+        currentIndex++;
     }
 
     //---------------------------------------------------------------------------------------------
-    // Children
+
+    function scrollToTop()
+    {
+//#QT_4
+        contentY = 0;
+//#ELSE
+        contentY = originY;
+//#END
+    }
+
+    function scrollToBottom()
+    {
+//#QT_4
+        contentY = contentHeight - height;
+//#ELSE
+        contentY = originY + contentHeight - height;
+//#END
+    }
+
     //---------------------------------------------------------------------------------------------
 
-    // NOTE: We want to reload each track periodically.
-    Timer
+    function getY()
     {
-        id: timer
-
-        interval: st.tabsTrack_interval
-
-        repeat: true
-
-        onTriggered: tabs.reloadTracks()
+//#QT_4
+        return contentY;
+//#ELSE
+        return originY + contentY;
+//#END
     }
 }

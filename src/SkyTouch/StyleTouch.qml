@@ -236,12 +236,24 @@ Style
     property color listLoading_color: lineEdit_color
 //#END
 
-//#ListPlaylist
+//#ListPlaylist:GridPlaylist
     //---------------------------------------------------------------------------------------------
     // ListPlaylist
 
     property int listPlaylist_intervalLoad  :   200
     property int listPlaylist_intervalReload: 60000 // 1 minute
+//#END
+
+//#GridPlaylist
+    //---------------------------------------------------------------------------------------------
+    // GridPlaylist
+
+    property int gridPlaylist_coverWidth : dp160
+    property int gridPlaylist_coverHeight: dp90 // coverWidth * 0.5625
+
+    property int gridPlaylist_spacingBottom: dp16
+
+    property int gridPlaylist_padding: dp4
 //#END
 
 //#ScrollBar
@@ -341,6 +353,22 @@ Style
 
         width : buttonTouch_size - filterRound_margins * 2
         height: width
+
+        radius: styleTouch.radius
+    }
+//#END
+
+//#filter_grid:ComponentGridTrack
+    property int filterGrid_margins: dp4
+
+    property alias icon_filterGrid: icon_filterGrid
+
+    ImageFilterMask
+    {
+        id: icon_filterGrid
+
+        width : gridPlaylist_coverWidth
+        height: gridPlaylist_coverHeight
 
         radius: styleTouch.radius
     }

@@ -45,6 +45,8 @@ FlickablePages 1.0 FlickablePages.qml
 BaseList       1.0 BaseList.qml
 ListCompletion 1.0 ListCompletion.qml
 
+BaseGrid 1.0 BaseGrid.qml
+
 BaseScrollBar 1.0 BaseScrollBar.qml
 
 BaseSlider 1.0 BaseSlider.qml

@@ -4,7 +4,7 @@
 
     Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
 
-    This file is part of SkyComponents.
+    This file is part of SkyTouch.
 
     - GNU Lesser General Public License Usage:
     This file may be used under the terms of the GNU Lesser General Public License version 3 as
@@ -23,13 +23,23 @@
 import QtQuick 1.0
 import Sky     1.0
 
-TabsBrowser
+GridTouch
 {
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property variant highlightedTab: tabs.highlightedTab
+    // FIXME Qt6: Strangely, when using a var property we might get a changed events several times
+    //            for the same playlist.
+    /* mandatory */ property Playlist playlist
+
+    property int coverWidth : st.gridPlaylist_coverWidth
+    property int coverHeight: st.gridPlaylist_coverHeight
+
+    property int spacingBottom: st.gridPlaylist_spacingBottom
+
+    property int padding  : st.gridPlaylist_padding
+    property int padding2x: padding * 2
 
     //---------------------------------------------------------------------------------------------
     // Private
@@ -41,7 +51,8 @@ TabsBrowser
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    delegate: ComponentTabTrack {}
+    cellWidth : coverWidth  + padding2x
+    cellHeight: coverHeight + padding2x + spacing + st.buttonTouch_size + spacingBottom
 
     //---------------------------------------------------------------------------------------------
     // Events
@@ -54,38 +65,97 @@ TabsBrowser
         pUpdateVisible();
     }
 
+    onHeightChanged: reloadTracks()
+
+    onContentYChanged: reloadTracks()
+
     onVisibleChanged: if (pReady) pUpdateVisible()
 
     //---------------------------------------------------------------------------------------------
+
+    onPlaylistChanged: reloadTracks()
+
+    onCountChanged: reloadTracks()
+
+    //---------------------------------------------------------------------------------------------
     // Functions
+    //---------------------------------------------------------------------------------------------
+
+    function reloadTracks()
+    {
+        if (pReady == false || visible == false) return;
+
+        timerLoad.restart();
+    }
+
     //---------------------------------------------------------------------------------------------
     // Private
 
     function pUpdateVisible()
     {
-        // NOTE: We reload each track when the tabs are visible.
         if (visible)
         {
-            tabs.reloadTracks();
+            reloadTracks();
 
-            timer.start();
+            timerReload.start();
         }
-        else timer.stop();
+        else timerReload.stop();
+    }
+
+    function pApplyReload()
+    {
+        if (playlist == null) return;
+
+        // NOTE: We skip tracks that were reloaded less than 1 minute ago.
+        playlist.reloadTracks(pGetIndex(), pGetCount(), 60000);
+    }
+
+    //---------------------------------------------------------------------------------------------
+
+    function pGetIndex()
+    {
+        var count = width / cellWidth;
+
+        return Math.floor(getY() / cellHeight) * count;
+    }
+
+    function pGetCount()
+    {
+        var count = width / cellWidth;
+
+        // NOTE: We add 1 to cover the entire region when half a track is exposed at the top and
+        //       the bottom of the list.
+        return (Math.ceil(height / cellHeight) + 1) * count;
     }
 
     //---------------------------------------------------------------------------------------------
     // Children
     //---------------------------------------------------------------------------------------------
 
+    Timer
+    {
+        id: timerLoad
+
+        interval: st.listPlaylist_intervalLoad
+
+        onTriggered: pApplyReload()
+    }
+
     // NOTE: We want to reload each track periodically.
     Timer
     {
-        id: timer
+        id: timerReload
 
-        interval: st.tabsTrack_interval
+        interval: st.listPlaylist_intervalReload
 
         repeat: true
 
-        onTriggered: tabs.reloadTracks()
+        onTriggered:
+        {
+            // NOTE: We are reloading so we don't need to load anymore.
+            timerLoad.stop();
+
+            pApplyReload();
+        }
     }
 }

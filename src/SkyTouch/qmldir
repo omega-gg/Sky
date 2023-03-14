@@ -49,6 +49,9 @@ List         1.0 List.qml
 ListLoading  1.0 ListLoading.qml
 ListPlaylist 1.0 ListPlaylist.qml
 
+GridTouch    1.0 GridTouch.qml
+GridPlaylist 1.0 GridPlaylist.qml
+
 ScrollArea 1.0 ScrollArea.qml
 ScrollBar  1.0 ScrollBar.qml
 
@@ -66,3 +69,6 @@ ComponentBackend      1.0 ComponentBackend.qml
 ComponentBackendFull  1.0 ComponentBackendFull.qml
 ComponentTrack        1.0 ComponentTrack.qml
 ComponentTrackHistory 1.0 ComponentTrackHistory.qml
+
+ComponentGridTrack   1.0 ComponentGridTrack.qml
+ComponentGridHistory 1.0 ComponentGridHistory.qml
