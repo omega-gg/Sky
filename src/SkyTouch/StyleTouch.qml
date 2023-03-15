@@ -248,10 +248,10 @@ Style
     //---------------------------------------------------------------------------------------------
     // GridPlaylist
 
-    property int gridPlaylist_coverWidth : dp160
-    property int gridPlaylist_coverHeight: dp90 // coverWidth * 0.5625
+    property int gridPlaylist_coverWidth : dp192
+    property int gridPlaylist_coverHeight: dp108 // coverWidth * 0.5625
 
-    property int gridPlaylist_spacingBottom: dp16
+    property int gridPlaylist_spacingBottom: dp32
 
     property int gridPlaylist_padding: dp4
 //#END
