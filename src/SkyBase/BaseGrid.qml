@@ -81,6 +81,11 @@ GridView
 
     //---------------------------------------------------------------------------------------------
 
+    function getPreferredWidth(width)
+    {
+        return Math.floor(width / cellWidth) * cellWidth;
+    }
+
     function getY()
     {
 //#QT_4

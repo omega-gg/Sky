@@ -75,6 +75,40 @@ Loader
         else      item.positionViewAtIndex(index, GridView.Contain);
     }
 
+    function getPreferredWidth(width)
+    {
+        if (type)
+        {
+            if (scrollBar.visible)
+            {
+                 return item.contentWidth + scrollBar.width;
+            }
+            else return item.contentWidth;
+        }
+        else if (scrollBar.visible)
+        {
+            var scrollWidth = scrollBar.width;
+
+            return item.getPreferredWidth(width - scrollWidth) + scrollWidth;
+        }
+        else return item.getPreferredWidth(width - scrollBar.width);
+    }
+
+    function getContentHeight()
+    {
+        var size;
+
+        var itemLoading = item.itemLoading;
+
+        if (itemLoading.visible)
+        {
+            size = itemLoading.height;
+        }
+        else size = item.contentHeight;
+
+        return Math.max(sizeTrack, size);
+    }
+
     //---------------------------------------------------------------------------------------------
     // Children
     //---------------------------------------------------------------------------------------------
@@ -85,6 +119,8 @@ Loader
 
         GridPlaylist
         {
+            property alias itemLoading: itemLoading
+
             anchors.fill: parent
 
             anchors.rightMargin: (scrollBar.isActive) ? scrollBar.width : 0
@@ -100,6 +136,15 @@ Loader
             onMovementStarted: viewPlaylist.movementStarted()
 
             onCurrentIndexChanged: viewPlaylist.currentIndex = currentIndex
+
+            ListLoading
+            {
+                id: itemLoading
+
+                z: -1
+
+                active: (playlist != null && playlist.queryIsLoading)
+            }
         }
     }
 
@@ -109,6 +154,8 @@ Loader
 
         ListPlaylist
         {
+            property alias itemLoading: itemLoading
+
             anchors.fill: parent
 
             anchors.rightMargin: (scrollBar.isActive) ? scrollBar.width : 0
@@ -126,6 +173,19 @@ Loader
             onMovementStarted: viewPlaylist.movementStarted()
 
             onCurrentIndexChanged: viewPlaylist.currentIndex = currentIndex
+
+            ListLoading
+            {
+                id: itemLoading
+
+                z: -1
+
+                size: sizeTrack
+
+                active: (playlist != null && playlist.queryIsLoading)
+
+                list: parent
+            }
         }
     }
 
