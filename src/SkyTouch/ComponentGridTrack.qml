@@ -35,12 +35,15 @@ Item
 
     property alias checked: buttonCover.checked
 
+    property alias itemIcon: buttonCover.itemIcon
+    property alias itemText: buttonText .itemText
+
     //---------------------------------------------------------------------------------------------
 
     property alias buttonCover     : buttonCover
     property alias buttonBackground: buttonBackground
 
-    property alias buttonText : buttonText
+    property alias buttonText: buttonText
 
     //---------------------------------------------------------------------------------------------
     // Settings

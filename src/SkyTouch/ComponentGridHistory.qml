@@ -25,4 +25,65 @@ import Sky     1.0
 
 ComponentGridTrack
 {
+    id: componentGridHistory
+
+    //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+
+    property int margins: st.margins
+
+    //---------------------------------------------------------------------------------------------
+    // Aliases
+    //---------------------------------------------------------------------------------------------
+
+    property alias foreground: foreground
+
+    //---------------------------------------------------------------------------------------------
+    // Style
+
+    property alias colorFront: foreground.color
+
+    //---------------------------------------------------------------------------------------------
+    // Settings
+    //---------------------------------------------------------------------------------------------
+
+    // NOTE: We want the text on top of the foreground.
+    itemText.z: 1
+
+    //---------------------------------------------------------------------------------------------
+    // Functions
+    //---------------------------------------------------------------------------------------------
+    // Virtual
+
+    /* virtual */ function getPlaylist() { return null; }
+
+    //---------------------------------------------------------------------------------------------
+    // Children
+    //---------------------------------------------------------------------------------------------
+
+    Rectangle
+    {
+        id: foreground
+
+        anchors.left  : parent.left
+        anchors.top   : parent.top
+        anchors.bottom: parent.bottom
+
+        anchors.margins: margins
+
+        width: st.getWidthHistory(getPlaylist(), componentGridHistory, source, index)
+
+        radius: st.radius
+
+        visible: (width != 0)
+
+        opacity: st.componentHistory_opacity
+
+        color: st.componentHistory_color
+
+//#QT_4
+        smooth: true
+//#END
+    }
 }

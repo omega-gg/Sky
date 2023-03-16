@@ -330,7 +330,7 @@ Style
     property int componentTrack_iconWidth: dp24
 //#END
 
-//#ComponentHistory
+//#ComponentHistory:ComponentGridHistory
     //---------------------------------------------------------------------------------------------
     // ComponentHistory
 
@@ -443,6 +443,23 @@ Style
 
     //---------------------------------------------------------------------------------------------
 
+    function getWidthHistory(playlist, item, source, index)
+    {
+        var time = controllerNetwork.extractFragmentValue(source, 't');
+
+        if (time == "") return 0;
+
+        time *= 1000; // NOTE: We want the time in milliseconds.
+
+        var duration = playlist.trackDuration(index);
+
+        if (duration < 1 || time > duration) return 0;
+
+        var size = item.buttonText.width - item.margins * 2;
+
+        return Math.max(0, size * (time / duration));
+    }
+
     function getButtonFilter(button)
     {
         if (button.isChecklighted)
@@ -451,8 +468,6 @@ Style
         }
         else return button_filterIconA;
     }
-
-    //---------------------------------------------------------------------------------------------
 
     function getTextColor(highlighed, checked, active)
     {
