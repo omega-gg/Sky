@@ -128,19 +128,17 @@ Item
 
     function pGetCount()
     {
-        if (visible == false)
-        {
-            return 0;
-        }
-        else if (list.count)
-        {
-            var size = Math.max(0, pContentY - (pCount * pItemSize));
+        if (visible == false) return 0;
 
-            size = Math.ceil((list.height + size) / pItemSize);
+        var count = list.count;
 
-            return Math.min(size, list.count - pCount + 1);
-        }
-        else return 1;
+        if (count == 0) return 1;
+
+        var size = Math.max(0, pContentY - (pCount * pItemSize));
+
+        size = Math.ceil((list.height + size) / pItemSize);
+
+        return Math.min(size, count - pCount + 1);
     }
 
     //---------------------------------------------------------------------------------------------
