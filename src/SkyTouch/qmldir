@@ -52,6 +52,7 @@ ListLoading  1.0 ListLoading.qml
 ListPlaylist 1.0 ListPlaylist.qml
 
 GridTouch    1.0 GridTouch.qml
+GridLoading  1.0 GridLoading.qml
 GridPlaylist 1.0 GridPlaylist.qml
 
 ScrollArea 1.0 ScrollArea.qml

@@ -137,13 +137,17 @@ Loader
 
             onCurrentIndexChanged: viewPlaylist.currentIndex = currentIndex
 
-            ListLoading
+            GridLoading
             {
                 id: itemLoading
 
                 z: -1
 
+                spacingBottom: parent.spacingBottom
+
                 active: (playlist != null && playlist.queryIsLoading)
+
+                grid: parent
             }
         }
     }

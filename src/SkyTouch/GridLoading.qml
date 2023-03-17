@@ -25,19 +25,22 @@ import Sky     1.0
 
 Item
 {
-    id: listLoading
+    id: gridLoading
 
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    /* mandatory */ property ListView list
+    /* mandatory */ property GridView grid
 
     property bool active: false
 
-    property int size: st.label_size
+    property int cellWidth : grid.cellWidth
+    property int cellHeight: grid.cellHeight
 
     property int radius: st.radius
+
+    property int spacing: grid.spacing
 
     //---------------------------------------------------------------------------------------------
     // Style
@@ -53,18 +56,19 @@ Item
     // Private
 
 //#QT_4
-    property real pContentY: (visible) ? list.contentY : 0
+    property real pContentY: (visible) ? grid.contentY : 0
 //#ELSE
-    property real pContentY: (visible) ? list.originY + list.contentY : 0
+    property real pContentY: (visible) ? grid.originY + grid.contentY : 0
 //#END
 
-    property int pItemSize: size + column.spacing
-
-    property int pCount: (visible) ? Math.floor(pContentY / pItemSize) : 0
+    property int pCountX: (visible) ? Math.floor(width     / cellWidth)  : 0
+    property int pCountY: (visible) ? Math.floor(pContentY / cellHeight) : 0
 
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
+
+    property alias spacingBottom: column.spacing
 
     property alias column  : column
     property alias repeater: repeater
@@ -73,13 +77,13 @@ Item
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    anchors.left : list.left
-    anchors.right: list.right
-    anchors.top  : list.top
+    anchors.left : grid.left
+    anchors.right: grid.right
+    anchors.top  : grid.top
 
     anchors.topMargin: -pContentY
 
-    height: list.contentHeight + size
+    height: grid.contentHeight + cellHeight
 
     // NOTE: We want to hide this component when the opacity is at the lowest.
     visible: (active == true || opacity != opacityA)
@@ -100,7 +104,7 @@ Item
         {
             to: opacityA
 
-            duration: listLoading.duration
+            duration: gridLoading.duration
 
             easing.type: st.easing
         }
@@ -109,7 +113,7 @@ Item
         {
             to: opacityB
 
-            duration: listLoading.duration
+            duration: gridLoading.duration
 
             easing.type: st.easing
         }
@@ -124,7 +128,7 @@ Item
     {
         if (visible && pContentY > 0)
         {
-            return pCount * pItemSize;
+            return pCountY * cellHeight;
         }
         else return 0;
     }
@@ -133,13 +137,13 @@ Item
     {
         if (visible == false) return 0;
 
-        var count = list.count;
+        var count = grid.count;
 
         if (count == 0) return 1;
 
-        var size = Math.ceil((list.height + pContentY - column.y) / pItemSize);
+        var size = Math.ceil((grid.height + pContentY - column.y) / cellHeight);
 
-        return Math.min(size, count - pCount + 1);
+        return Math.min(size, Math.ceil(count / pCountX - pCountY + 1));
     }
 
     //---------------------------------------------------------------------------------------------
@@ -152,7 +156,7 @@ Item
 
         y: pGetY()
 
-        spacing: list.spacing
+        spacing: gridLoading.spacing
 
         Repeater
         {
@@ -160,19 +164,28 @@ Item
 
             model: pGetCount()
 
-            Rectangle
+            Row
             {
-                width: listLoading.width
+                spacing: gridLoading.spacing
 
-                height: size
+                Repeater
+                {
+                    model: pCountX
 
-                radius: listLoading.radius
+                    Rectangle
+                    {
+                        width : cellWidth  - spacing
+                        height: cellHeight - spacingBottom
 
-                color: listLoading.color
+                        radius: gridLoading.radius
+
+                        color: gridLoading.color
 
 //#QT_4
-                smooth: true
+                        smooth: true
 //#END
+                    }
+                }
             }
         }
     }
