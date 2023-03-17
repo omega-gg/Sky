@@ -46,7 +46,7 @@ LabelTiny
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    maximumWidth: parent.width - st.marginsDouble
+    maximumWidth: parent.width - st.margins2x
 
     visible: false
     opacity: 0.0

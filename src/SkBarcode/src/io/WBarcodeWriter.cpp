@@ -348,12 +348,12 @@ void WBarcodeWriterPrivate::init() {}
     int width  = matrix.width ();
     int height = matrix.height();
 
-    int marginsDouble = margins * 2;
+    int margins2x = margins * 2;
 
 #ifdef QT_4
     // NOTE Qt4: This version does not support Format_Grayscale8 and Format_Indexed8 cannot be
     //           drawn into a QImage.
-    QImage image(width + marginsDouble, height + marginsDouble, QImage::Format_RGB32);
+    QImage image(width + margins2x, height + margins2x, QImage::Format_RGB32);
 
     image.fill(Qt::white);
 
@@ -371,7 +371,7 @@ void WBarcodeWriterPrivate::init() {}
         }
     }
 #else
-    QImage image(width + marginsDouble, height + marginsDouble, QImage::Format_Grayscale8);
+    QImage image(width + margins2x, height + margins2x, QImage::Format_Grayscale8);
 
     image.fill(255);
 

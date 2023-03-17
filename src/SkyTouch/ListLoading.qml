@@ -23,7 +23,7 @@
 import QtQuick 1.0
 import Sky     1.0
 
-Column
+Item
 {
     id: listLoading
 
@@ -39,8 +39,6 @@ Column
 
     property int radius: st.radius
 
-    property int minimumCount: st.listLoading_minimumCount
-
     //---------------------------------------------------------------------------------------------
     // Style
 
@@ -52,9 +50,23 @@ Column
     property color color: st.listLoading_color
 
     //---------------------------------------------------------------------------------------------
+    // Private
+
+//#QT_4
+    property real pContentY: (visible) ? list.contentY : 0
+//#ELSE
+    property real pContentY: (visible) ? list.originY + list.contentY : 0
+//#END
+
+    property int pItemSize: size + column.spacing
+
+    property int pCount: (visible) ? Math.floor(pContentY / pItemSize) : 0
+
+    //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
+    property alias column  : column
     property alias repeater: repeater
 
     //---------------------------------------------------------------------------------------------
@@ -65,15 +77,9 @@ Column
     anchors.right: list.right
     anchors.top  : list.top
 
-//#QT_4
-    anchors.topMargin: -(list.contentY)
-//#ELSE
-    anchors.topMargin: -(list.originY + list.contentY)
-//#END
+    anchors.topMargin: -pContentY
 
-    height: list.contentHeight + pGetHeight(minimumCount)
-
-    spacing: st.margins
+    height: list.contentHeight + size
 
     // NOTE: We want to hide this component when the opacity is at the lowest.
     visible: (active == true || opacity != opacityA)
@@ -114,41 +120,68 @@ Column
     //---------------------------------------------------------------------------------------------
     // Private
 
-    function pGetHeight(count)
+    function pGetY()
     {
-        // NOTE: We only want spacing when the list has more than one item.
-        if (list.count > 1)
+        if (visible) return pCount * pItemSize;
+        else         return 0;
+    }
+
+    function pGetCount()
+    {
+        if (visible == false)
         {
-             return (size + spacing) * count;
+            return 0;
         }
-        else return size;
+        else if (list.count)
+        {
+            var size = Math.max(0, pContentY - (pCount * pItemSize));
+
+            size = Math.ceil((list.height + size) / pItemSize);
+
+            return Math.min(size, list.count - pCount + 1);
+        }
+        else return 1;
     }
 
     //---------------------------------------------------------------------------------------------
     // Children
     //---------------------------------------------------------------------------------------------
 
-    Repeater
+    Column
     {
-        id: repeater
+        id: column
 
-        model: (visible) ? Math.ceil(listLoading.height / (size + spacing)) : 0
+        anchors.left : parent.left
+        anchors.right: parent.right
 
-        Rectangle
+        height: list.height
+
+        y: pGetY()
+
+        spacing: st.margins
+
+        Repeater
         {
-            id: rectangle
+            id: repeater
 
-            width: listLoading.width
+            model: pGetCount()
 
-            height: size
+            Rectangle
+            {
+                id: rectangle
 
-            radius: listLoading.radius
+                width: listLoading.width
 
-            color: listLoading.color
+                height: size
+
+                radius: listLoading.radius
+
+                color: listLoading.color
 
 //#QT_4
-            smooth: true
+                smooth: true
 //#END
+            }
         }
     }
 }

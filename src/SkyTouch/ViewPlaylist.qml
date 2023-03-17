@@ -79,13 +79,13 @@ Loader
     {
         if (type)
         {
-            if (scrollBar.visible)
+            if (scrollBar.isActive)
             {
                  return item.contentWidth + scrollBar.width;
             }
             else return item.contentWidth;
         }
-        else if (scrollBar.visible)
+        else if (scrollBar.isActive)
         {
             var scrollWidth = scrollBar.width;
 

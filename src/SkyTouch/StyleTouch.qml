@@ -222,7 +222,7 @@ Style
     property color lineEdit_color: label_color
 //#END
 
-//#ListLoading
+//#ListLoading:GridLoading
     //---------------------------------------------------------------------------------------------
     // ListLoading
 
@@ -230,8 +230,6 @@ Style
 
     property real listLoading_opacityA: 0.2
     property real listLoading_opacityB: 1.0
-
-    property int listLoading_minimumCount: 1
 
     property color listLoading_color: lineEdit_color
 //#END
