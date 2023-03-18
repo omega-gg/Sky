@@ -83,7 +83,7 @@ Item
 
     anchors.topMargin: -pContentY
 
-    height: grid.contentHeight + cellHeight
+    height: pGetHeight()
 
     // NOTE: We want to hide this component when the opacity is at the lowest.
     visible: (active == true || opacity != opacityA)
@@ -124,6 +124,19 @@ Item
     //---------------------------------------------------------------------------------------------
     // Private
 
+    function pGetHeight()
+    {
+        if (visible == false)
+        {
+            return grid.contentHeight;
+        }
+        else if (grid.count)
+        {
+            return Math.ceil(grid.contentHeight / cellHeight) * cellHeight;
+        }
+        else return cellHeight;
+    }
+
     function pGetY()
     {
         if (visible && pContentY > 0)
@@ -143,7 +156,7 @@ Item
 
         var size = Math.ceil((grid.height + pContentY - column.y) / cellHeight);
 
-        return Math.min(size, Math.ceil(count / pCountX - pCountY + 1));
+        return Math.min(size, Math.ceil(count / pCountX - pCountY));
     }
 
     //---------------------------------------------------------------------------------------------
