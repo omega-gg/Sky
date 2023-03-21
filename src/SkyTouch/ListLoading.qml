@@ -33,8 +33,6 @@ Item
 
     /* mandatory */ property ListView list
 
-    property bool active: false
-
     property int size: st.label_size
 
     property int radius: st.radius
@@ -81,8 +79,7 @@ Item
 
     height: list.contentHeight + size
 
-    // NOTE: We want to hide this component when the opacity is at the lowest.
-    visible: (active == true || opacity != opacityA)
+    visible: false
 
     opacity: opacityA
 

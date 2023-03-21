@@ -85,13 +85,13 @@ Loader
             }
             else return item.contentWidth;
         }
-        else if (scrollBar.isActive)
+        else
         {
             var scrollWidth = scrollBar.width;
 
+            // NOTE: We have to provision the scrollBar width in advance.
             return item.getPreferredWidth(width - scrollWidth) + scrollWidth;
         }
-        else return item.getPreferredWidth(width - scrollBar.width);
     }
 
     function getContentHeight()
@@ -145,7 +145,7 @@ Loader
 
                 spacingBottom: parent.spacingBottom
 
-                active: (playlist != null && playlist.queryIsLoading)
+                visible: (playlist != null && playlist.queryIsLoading)
 
                 grid: parent
             }
@@ -186,7 +186,7 @@ Loader
 
                 size: sizeTrack
 
-                active: (playlist != null && playlist.queryIsLoading)
+                visible: (playlist != null && playlist.queryIsLoading)
 
                 list: parent
             }

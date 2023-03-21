@@ -139,8 +139,8 @@ Item
 
         text: st.getTrackTitle(title, loadState, source)
 
-        font.pixelSize: st.dp16
+        padding: st.componentGridTrack_padding
 
-        padding: st.dp8
+        font.pixelSize: st.componentGridTrack_pixelSize
     }
 }

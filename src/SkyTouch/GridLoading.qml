@@ -33,8 +33,6 @@ Item
 
     /* mandatory */ property GridView grid
 
-    property bool active: false
-
     property int cellWidth : grid.cellWidth
     property int cellHeight: grid.cellHeight
 
@@ -85,8 +83,7 @@ Item
 
     height: pGetHeight()
 
-    // NOTE: We want to hide this component when the opacity is at the lowest.
-    visible: (active == true || opacity != opacityA)
+    visible: false
 
     opacity: opacityA
 
@@ -126,15 +123,16 @@ Item
 
     function pGetHeight()
     {
-        if (visible == false)
+        if (visible == false) return grid.contentHeight;
+
+        var count = grid.count;
+
+        if (count)
         {
-            return grid.contentHeight;
+            return Math.ceil((count + 1) / pCountX) * cellHeight;
         }
-        else if (grid.count)
-        {
-            return Math.ceil(grid.contentHeight / cellHeight) * cellHeight;
-        }
-        else return cellHeight;
+        // NOTE: When there's one line it looks cleaner without the bottom spacing.
+        else return cellHeight - spacingBottom;
     }
 
     function pGetY()
@@ -156,7 +154,7 @@ Item
 
         var size = Math.ceil((grid.height + pContentY - column.y) / cellHeight);
 
-        return Math.min(size, Math.ceil(count / pCountX - pCountY));
+        return Math.min(size, Math.ceil((count + 1) / pCountX - pCountY));
     }
 
     //---------------------------------------------------------------------------------------------

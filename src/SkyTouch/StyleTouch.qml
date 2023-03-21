@@ -337,6 +337,15 @@ Style
     property color componentHistory_color: slider_colorFront
 //#END
 
+//#ComponentGridTrack
+    //---------------------------------------------------------------------------------------------
+    // ComponentGridTrack
+
+    property int componentGridTrack_padding: st.dp8
+
+    property int componentGridTrack_pixelSize: dp16
+//#END
+
     //---------------------------------------------------------------------------------------------
     // Filters
 

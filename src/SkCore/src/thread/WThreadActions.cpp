@@ -86,7 +86,14 @@ WThreadActionsThread::WThreadActionsThread() : QThread()
 
         WAbstractThreadAction * action = eventThread->action;
 
-        bool ok = action->run();
+        bool ok;
+
+        // NOTE: When the action has been aborted there's no need to call run.
+        if (action->d_func()->abort)
+        {
+            ok = false;
+        }
+        else ok = action->run();
 
         WAbstractThreadReply * reply = action->d_func()->reply;
 
