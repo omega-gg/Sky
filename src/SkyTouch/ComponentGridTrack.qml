@@ -85,6 +85,8 @@ Item
 
         anchors.bottomMargin: st.margins
 
+        enableFilter: (isSourceDefault == false)
+
         iconWidth : componentGridTrack.GridView.view.coverWidth
         iconHeight: componentGridTrack.GridView.view.coverHeight
 

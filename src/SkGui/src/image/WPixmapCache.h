@@ -71,6 +71,10 @@ public: // Interface
 public: // Static functions
     static bool imageIsLocal(const QString & path);
 
+    static QPixmap read(const QString & path, const QSize & size  = QSize(),
+                                              const QSize & area  = QSize(),
+                                              bool          cache = true);
+
     static WAbstractThreadAction * loadImage(const QString & path, QObject    * receiver,
                                                                    const char * method);
 

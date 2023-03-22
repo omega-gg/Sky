@@ -202,11 +202,11 @@ void WDeclarativeImageBasePrivate::readDefault()
     // NOTE: We take the pixel ratio into account.
     if (defaultSize.isValid())
     {
-         WPixmapCache::readPixmap(&(pixmapDefault), WControllerFile::toLocalFile(source),
-                                  q->sizeRatio(defaultSize), q->sizeRatio(sourceArea));
+         pixmapDefault = WPixmapCache::read(WControllerFile::toLocalFile(source),
+                                            q->sizeRatio(defaultSize), q->sizeRatio(sourceArea));
     }
-    else WPixmapCache::readPixmap(&(pixmapDefault), WControllerFile::toLocalFile(source),
-                                  q->sizeRatio(sourceSize), q->sizeRatio(sourceArea));
+    else pixmapDefault = WPixmapCache::read(WControllerFile::toLocalFile(source),
+                                            q->sizeRatio(sourceSize), q->sizeRatio(sourceArea));
 
     if (filter) applyFilter();
 }
@@ -473,7 +473,7 @@ WDeclarativeImageBase::WDeclarativeImageBase(WDeclarativeImageBasePrivate * p, Q
     d->asynchronous = asynchronous;
 }
 
-//-------------------------------------------------------------------------------------------------s
+//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WDeclarativeImageBase::reload()
 {

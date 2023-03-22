@@ -369,15 +369,19 @@ public: // Functions
                                                             QObject     * receiver,
                                                             const char  * method);
 
-    bool readData(const QString & path, const QSize & size, const QSize & area);
-
-    bool loadImage(const QString & path, const QSize & size, const QSize & area);
-    void loadFile (const QString & path, const QSize & size, const QSize & area);
+    void loadFile(const QString & path, const QSize & size, const QSize & area);
 
     void tryToCache();
     void addToCache();
 
     void removeData(QObject * receiver);
+
+public: // Static functions
+    static WPixmapCacheData * readData(const QString & path, const QSize & size,
+                                                             const QSize & area);
+
+    static WPixmapCacheData * loadImage(const QString & path, const QSize & size,
+                                                              const QSize & area);
 
 public: // Variables
     WPixmapCacheData * data;
@@ -657,10 +661,7 @@ void WPixmapCachePrivate::readCache(const QString & path, const QSize & size,
 {
     if (path.startsWith("image:///"))
     {
-        if (loadImage(path, size, area) == false)
-        {
-            data = NULL;
-        }
+        data = loadImage(path, size, area);
     }
     else if (asynchronous)
     {
@@ -673,11 +674,12 @@ void WPixmapCachePrivate::readCache(const QString & path, const QSize & size,
             QObject::connect(data->reply, SIGNAL(loaded()), receiver, method);
         }
     }
-    else if (readData(path, size, area))
+    else
     {
-        tryToCache();
+        data = readData(path, size, area);
+
+        if (data) tryToCache();
     }
-    else data = NULL;
 }
 
 void WPixmapCachePrivate::readFile(const QString & path, const QSize & size,
@@ -688,10 +690,7 @@ void WPixmapCachePrivate::readFile(const QString & path, const QSize & size,
 {
     if (path.startsWith("image:///"))
     {
-        if (loadImage(path, size, area) == false)
-        {
-            data = NULL;
-        }
+        data = loadImage(path, size, area);
     }
     else if (asynchronous)
     {
@@ -702,75 +701,10 @@ void WPixmapCachePrivate::readFile(const QString & path, const QSize & size,
             QObject::connect(data->reply, SIGNAL(loaded()), receiver, method);
         }
     }
-    else if (readData(path, size, area) == false)
-    {
-        data = NULL;
-    }
+    else data = readData(path, size, area);
 }
 
 //-------------------------------------------------------------------------------------------------
-
-bool WPixmapCachePrivate::readData(const QString & path, const QSize & size, const QSize & area)
-{
-    QPixmap pixmap;
-
-    if (WPixmapCache::readPixmap(&pixmap, path, size, area) == false)
-    {
-        qWarning("WPixmapCachePrivate::readData: Failed to read file %s.", path.C_STR);
-
-        return false;
-    }
-
-    data = new WPixmapCacheData;
-
-    data->path = path;
-
-    data->size = size;
-    data->area = area;
-
-    data->pixmap = pixmap;
-
-    data->pixmapSize = getPixmapSize(pixmap);
-
-    data->action = NULL;
-    data->reply  = NULL;
-
-    return true;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-bool WPixmapCachePrivate::loadImage(const QString & path, const QSize & size, const QSize & area)
-{
-    QString source = path;
-
-    source.remove(0, 9);
-
-    QPixmap pixmap = pixmapStore()->hash.value(source);
-
-    if (pixmap.isNull())
-    {
-        qWarning("WPixmapCachePrivate::loadImage: Failed to load image %s.", path.C_STR);
-
-        return false;
-    }
-
-    data = new WPixmapCacheData;
-
-    data->path = path;
-
-    data->size = size;
-    data->area = area;
-
-    data->pixmap = WPixmapCache::getPixmapScaled(pixmap, size);
-
-    data->pixmapSize = getPixmapSize(pixmap);
-
-    data->action = NULL;
-    data->reply  = NULL;
-
-    return true;
-}
 
 void WPixmapCachePrivate::loadFile(const QString & path, const QSize & size, const QSize & area)
 {
@@ -852,6 +786,74 @@ void WPixmapCachePrivate::removeData(QObject * receiver)
     {
         delete data;
     }
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private static functions
+//-------------------------------------------------------------------------------------------------
+
+/* static */ WPixmapCacheData * WPixmapCachePrivate::readData(const QString & path,
+                                                              const QSize   & size,
+                                                              const QSize   & area)
+{
+    QPixmap pixmap;
+
+    if (WPixmapCache::readPixmap(&pixmap, path, size, area) == false)
+    {
+        qWarning("WPixmapCachePrivate::readData: Failed to read file %s.", path.C_STR);
+
+        return NULL;
+    }
+
+    WPixmapCacheData * data = new WPixmapCacheData;
+
+    data->path = path;
+
+    data->size = size;
+    data->area = area;
+
+    data->pixmap = pixmap;
+
+    data->pixmapSize = getPixmapSize(pixmap);
+
+    data->action = NULL;
+    data->reply  = NULL;
+
+    return data;
+}
+
+/* static */ WPixmapCacheData * WPixmapCachePrivate::loadImage(const QString & path,
+                                                               const QSize   & size,
+                                                               const QSize   & area)
+{
+    QString source = path;
+
+    source.remove(0, 9);
+
+    QPixmap pixmap = pixmapStore()->hash.value(source);
+
+    if (pixmap.isNull())
+    {
+        qWarning("WPixmapCachePrivate::loadImage: Failed to load image %s.", path.C_STR);
+
+        return NULL;
+    }
+
+    WPixmapCacheData * data = new WPixmapCacheData;
+
+    data->path = path;
+
+    data->size = size;
+    data->area = area;
+
+    data->pixmap = WPixmapCache::getPixmapScaled(pixmap, size);
+
+    data->pixmapSize = getPixmapSize(pixmap);
+
+    data->action = NULL;
+    data->reply  = NULL;
+
+    return data;
 }
 
 //=================================================================================================
@@ -1026,6 +1028,128 @@ void WPixmapCache::clear(QObject * receiver)
          return false;
     }
     else return true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* static */ QPixmap WPixmapCache::read(const QString & path, const QSize & size,
+                                                              const QSize & area, bool cache)
+{
+    WPixmapCacheStore * store = pixmapStore();
+
+    if (path.startsWith("image:///"))
+    {
+        QString source = path;
+
+        source.remove(0, 9);
+
+        QPixmap pixmap = store->hash.value(source);
+
+        if (pixmap.isNull())
+        {
+            qWarning("WPixmapCache::read: Failed to load image %s.", path.C_STR);
+
+            return pixmap;
+        }
+        else return WPixmapCache::getPixmapScaled(pixmap, size);
+    }
+    else if (cache == false)
+    {
+        QPixmap pixmap;
+
+        WPixmapCache::readPixmap(&pixmap, path, size, area);
+
+        return pixmap;
+    }
+
+    WPixmapCacheKey key = { &path, &size, &area };
+
+    WPixmapCacheData * data = store->pixmaps.value(key);
+
+    if (data)
+    {
+        WPixmapCacheRead * action = data->action;
+
+        if (action)
+        {
+            WPixmapCacheReply * reply = data->reply;
+
+            action->abortAndDelete();
+
+            data->action = NULL;
+
+            QPixmap * pixmap = &(data->pixmap);
+
+            if (readPixmap(pixmap, path, size, area))
+            {
+                qint64 size = getPixmapSize(*pixmap);
+
+                data->pixmapSize = size;
+
+                data->reply = NULL;
+
+                if (store->addSize(size, path))
+                {
+                    store->datas.append(data);
+                }
+
+                emit reply->loaded();
+
+                return *pixmap;
+            }
+            else
+            {
+                qWarning("WPixmapCache::read: Failed to read file %s.", path.C_STR);
+
+                foreach (WPixmapCache * pixmap, data->pixmaps)
+                {
+                    pixmap->d_func()->data = NULL;
+                }
+
+                store->deleteData(data);
+
+                emit reply->loaded();
+
+                return QPixmap();
+            }
+        }
+        else
+        {
+            if (store->datas.removeOne(data) || store->addSize(data->pixmapSize, data->path))
+            {
+                store->datas.append(data);
+            }
+
+            return data->pixmap;
+        }
+    }
+    else
+    {
+        data = WPixmapCachePrivate::readData(path, size, area);
+
+        if (data)
+        {
+            if (store->addSize(data->pixmapSize, data->path))
+            {
+                WPixmapCacheKey key = { &(data->path), &(data->size), &(data->area) };
+
+                store->pixmaps.insert(key, data);
+
+                store->datas.append(data);
+
+                return data->pixmap;
+            }
+            else
+            {
+                QPixmap pixmap = data->pixmap;
+
+                delete data;
+
+                return pixmap;
+            }
+        }
+        else return QPixmap();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
