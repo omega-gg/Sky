@@ -108,7 +108,14 @@ Item
         iconWidth: (isSourceDefault) ? componentTrack.iconWidth
                                      : itemIcon.filter.width
 
-        iconSourceSize.height: getFilterMask().height
+        // NOTE: We have to provide the width and height otherwise we might have incorrect sizes
+        //       for cropped portrait covers.
+        iconSourceSize:
+        {
+            var mask = getFilterMask();
+
+            return Qt.size(mask.width, mask.height);
+        }
 
         iconDefaultSize.height: getSourceHeight()
 
