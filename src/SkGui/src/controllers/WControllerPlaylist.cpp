@@ -249,21 +249,14 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
 
     if (api.isEmpty())
     {
-        // NOTE: If it's a plain URL we redirect to the given address.
-        if (WControllerNetwork::textIsUrl(content))
+        if (WControllerPlaylist::textIsRedirect(content, url))
         {
-            // NOTE: The origin has to be different than the current URL.
-            if (WControllerNetwork::removeUrlPrefix(url)
-                !=
-                WControllerNetwork::removeUrlPrefix(content))
-            {
-                type = WControllerPlaylist::Redirect;
+            type = WControllerPlaylist::Redirect;
 
-                origin = content;
-                source = content;
+            origin = content;
+            source = content;
 
-                return;
-            }
+            return;
         }
 
         // NOTE: If it's HTML we try to extract a VBML link.
@@ -4383,6 +4376,20 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 /* Q_INVOKABLE static */ QString WControllerPlaylist::getFilterSubtitle()
 {
     return CONTROLLERPLAYLIST_FILTER_SUBTITLE;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Texts
+
+/* Q_INVOKABLE static */ bool WControllerPlaylist::textIsRedirect(const QString & text,
+                                                                  const QString & baseUrl)
+{
+    // NOTE: We redirect when the text is a vbml uri or a url that's different from the baseUrl.
+    return ((urlIsVbmlUri(text) && text != baseUrl)
+            ||
+            (WControllerNetwork::textIsUrl(text) && WControllerNetwork::removeUrlPrefix(text)
+                                                    !=
+                                                    WControllerNetwork::removeUrlPrefix(baseUrl)));
 }
 
 //-------------------------------------------------------------------------------------------------

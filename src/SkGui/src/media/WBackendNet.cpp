@@ -557,7 +557,11 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
     QString method = query.queryItemValue("method");
 #endif
 
-    if (method == "search")
+    if (method == "view")
+    {
+        return WLibraryItem::Playlist;
+    }
+    else if (method == "search")
     {
 #ifdef QT_4
         QString label = source.queryItemValue("label");
@@ -577,13 +581,13 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
             return WLibraryItem::Playlist;
         }
     }
-    else if (method == "subtitles")
-    {
-        return WLibraryItem::Folder;
-    }
     else if (method == "related")
     {
         return WLibraryItem::Playlist;
+    }
+    else if (method == "subtitles")
+    {
+        return WLibraryItem::Folder;
     }
 
     return WLibraryItem::Item;

@@ -185,18 +185,11 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
     if (api.isEmpty())
     {
-        // NOTE: If it's a plain URL we redirect to the given address.
-        if (WControllerNetwork::textIsUrl(content))
+        if (WControllerPlaylist::textIsRedirect(content, url))
         {
-            // NOTE: The origin has to be different than the current URL.
-            if (WControllerNetwork::removeUrlPrefix(url)
-                !=
-                WControllerNetwork::removeUrlPrefix(content))
-            {
-                origin = content;
+            origin = content;
 
-                return;
-            }
+            return;
         }
 
         // NOTE: If it's HTML we try to extract a VBML link.

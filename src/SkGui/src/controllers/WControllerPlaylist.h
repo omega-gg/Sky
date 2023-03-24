@@ -218,6 +218,12 @@ public: // Static functions
     Q_INVOKABLE static QString getFilterSubtitle();
 
     //---------------------------------------------------------------------------------------------
+    // Texts
+
+    // NOTE: Returns whether the text is a url and should be redirected, depending on the baseUrl.
+    Q_INVOKABLE static bool textIsRedirect(const QString & text, const QString & baseUrl);
+
+    //---------------------------------------------------------------------------------------------
     // Urls
 
     Q_INVOKABLE static bool urlIsMedia(const QString & url);
