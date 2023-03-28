@@ -85,8 +85,6 @@ Item
 
         anchors.bottomMargin: st.margins
 
-        enableFilter: (isSourceDefault == false)
-
         iconWidth : componentGridTrack.GridView.view.coverWidth
         iconHeight: componentGridTrack.GridView.view.coverHeight
 
@@ -99,6 +97,8 @@ Item
         iconAsynchronous: gui.asynchronous
 
         trackType: type
+
+        enableFilter: (isSourceDefault == false)
 
         // NOTE: We want the button background behind the cover background.
         background.z: -1

@@ -29,5 +29,8 @@ BaseGrid
     // Properties
     //---------------------------------------------------------------------------------------------
 
+    // NOTE: This property can be useful to optimize delegates when the view is scrolling.
+    /* read */ property bool isMoving: moving
+
     property int spacing: st.margins
 }

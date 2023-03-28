@@ -125,6 +125,8 @@ Loader
 
             anchors.rightMargin: (scrollBar.isActive) ? scrollBar.width : 0
 
+            isMoving: (moving || scrollBar.pressed)
+
             playlist: viewPlaylist.playlist
 
             currentIndex: viewPlaylist.currentIndex
@@ -163,6 +165,8 @@ Loader
             anchors.fill: parent
 
             anchors.rightMargin: (scrollBar.isActive) ? scrollBar.width : 0
+
+            isMoving: (moving || scrollBar.pressed)
 
             sizeTrack: viewPlaylist.sizeTrack
 
