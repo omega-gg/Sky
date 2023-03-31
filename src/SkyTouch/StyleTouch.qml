@@ -379,8 +379,8 @@ Style
 
         radius: styleTouch.radius
 
-        // NOTE: Grid items preserve the aspect ratio, so we want an exact match.
-        exactMatch: true
+        // NOTE: Grid items preserve the aspect ratio, so we check the image size.
+        checkSize: true
     }
 //#END
 

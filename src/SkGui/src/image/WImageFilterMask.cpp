@@ -84,7 +84,7 @@ public: // Variables
 
     int radius;
 
-    bool exactMatch;
+    bool checkSize;
 
     int maxCache;
 
@@ -103,7 +103,7 @@ void WImageFilterMaskPrivate::init()
     width  = 32;
     height = 32;
 
-    exactMatch = false;
+    checkSize = false;
 
     radius = 8;
 
@@ -194,9 +194,9 @@ void WImageFilterMaskPrivate::updateCache()
 
     QSize size = image->size();
 
-    if (d->exactMatch && (size.width() != d->width
-                          ||
-                          size.height() != d->height)) return false;
+    if (d->checkSize && (qAbs(size.width() - d->width) > d->radius
+                         ||
+                         qAbs(size.height() - d->height) > d->radius)) return false;
 
     QImage mask = d->masks.value(size);
 
@@ -282,24 +282,24 @@ void WImageFilterMask::setRadius(int radius)
 
 //-------------------------------------------------------------------------------------------------
 
-bool WImageFilterMask::exactMatch() const
+bool WImageFilterMask::checkSize() const
 {
-    Q_D(const WImageFilterMask); return d->exactMatch;
+    Q_D(const WImageFilterMask); return d->checkSize;
 }
 
-void WImageFilterMask::setExactMatch(bool exact)
+void WImageFilterMask::setCheckSize(bool check)
 {
     Q_D(WImageFilterMask);
 
-    if (d->exactMatch == exact) return;
+    if (d->checkSize == check) return;
 
-    d->exactMatch = exact;
+    d->checkSize = check;
 
     d->clearMasks();
 
     refreshFilter();
 
-    emit exactMatchChanged();
+    emit checkSizeChanged();
 }
 
 //-------------------------------------------------------------------------------------------------

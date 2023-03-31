@@ -40,9 +40,9 @@ class SK_GUI_EXPORT WImageFilterMask : public WImageFilter
 
     Q_PROPERTY(int radius READ radius WRITE setRadius NOTIFY radiusChanged)
 
-    // NOTE: Whether we want an exact match between the image and the filter sizes to apply the
-    //       mask. False by default.
-    Q_PROPERTY(bool exactMatch READ exactMatch WRITE setExactMatch NOTIFY exactMatchChanged)
+    // NOTE: Check the image and the filter sizes before applying the mask. We use the radius as a
+    //       tolerance value. False by default.
+    Q_PROPERTY(bool checkSize READ checkSize WRITE setCheckSize NOTIFY checkSizeChanged)
 
     Q_PROPERTY(int maxCache READ maxCache WRITE setMaxCache NOTIFY maxCacheChanged)
 
@@ -58,7 +58,7 @@ signals:
 
     void radiusChanged();
 
-    void exactMatchChanged();
+    void checkSizeChanged();
 
     void maxCacheChanged();
 
@@ -72,8 +72,8 @@ public: // Properties
     int  radius() const;
     void setRadius(int radius);
 
-    bool exactMatch() const;
-    void setExactMatch(bool exact);
+    bool checkSize() const;
+    void setCheckSize(bool check);
 
     int  maxCache() const;
     void setMaxCache(int max);
