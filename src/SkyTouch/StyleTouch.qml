@@ -378,6 +378,9 @@ Style
         height: gridPlaylist_coverHeight
 
         radius: styleTouch.radius
+
+        // NOTE: Grid items preserve the aspect ratio, so we want an exact match.
+        exactMatch: true
     }
 //#END
 
