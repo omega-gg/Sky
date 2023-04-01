@@ -194,9 +194,14 @@ void WImageFilterMaskPrivate::updateCache()
 
     QSize size = image->size();
 
-    if (d->checkSize && (qAbs(size.width() - d->width) > d->radius
-                         ||
-                         qAbs(size.height() - d->height) > d->radius)) return false;
+    if (d->checkSize)
+    {
+        int radius = d->radius * ratio;
+
+        if ((qAbs(size.width() - d->width) > radius
+             ||
+             qAbs(size.height() - d->height) > radius)) return false;
+    }
 
     QImage mask = d->masks.value(size);
 
