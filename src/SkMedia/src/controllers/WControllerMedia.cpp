@@ -403,11 +403,13 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
     if (backend)
     {
+        QString backendId = backend->id();
+
         query = backend->getQuerySource(source);
 
         backend->tryDelete();
 
-        if (query.isValid() == false)
+        if (resolve(backendId, query) == false)
         {
             reply->_medias.insert(WAbstractBackend::QualityDefault, url);
 
@@ -563,6 +565,19 @@ void WControllerMediaPrivate::clearReply(WMediaReply * reply)
 
 //-------------------------------------------------------------------------------------------------
 
+bool WControllerMediaPrivate::resolve(const QString & backendId, WBackendNetQuery & query)
+{
+    QString id = query.backend;
+
+    if (id.isEmpty() || id == backendId) return query.isValid();
+
+    WBackendNet * backend = wControllerPlaylist->backendFromId(id);
+
+    if (backend) query = backend->getQuerySource(query.url);
+
+    return query.isValid();
+}
+
 void WControllerMediaPrivate::getData(WPrivateMediaData * media, WBackendNetQuery * query)
 {
     Q_Q(WControllerMedia);
@@ -687,11 +702,13 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
 
     if (backend)
     {
+        QString backendId = backend->id();
+
         query = backend->getQuerySource(source);
 
         backend->tryDelete();
 
-        if (query.isValid())
+        if (resolve(backendId, query))
         {
             // NOTE: We propagate the compatibility mode.
             query.mode = mode;
@@ -751,9 +768,13 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
 
     WBackendNet * backend = media->backend;
 
+    QString backendId;
+
     if (backend)
     {
         backend->applySource(backendQuery, source);
+
+        backendId = backend->id();
 
         media->backend = NULL;
 
@@ -778,7 +799,7 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
 
         int indexNext = backendQuery.indexNext;
 
-        if (nextQuery.isValid() && indexNext < CONTROLLERMEDIA_MAX_QUERY)
+        if (resolve(backendId, nextQuery) && indexNext < CONTROLLERMEDIA_MAX_QUERY)
         {
             nextQuery.indexNext = indexNext + 1;
 

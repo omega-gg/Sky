@@ -111,6 +111,8 @@ public: // Functions
 
     void clearReply(WMediaReply * reply);
 
+    bool resolve(const QString & backendId, WBackendNetQuery & query);
+
     void getData(WPrivateMediaData * media, WBackendNetQuery * query);
 
 public: // Slots

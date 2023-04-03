@@ -86,7 +86,8 @@ public:
     void init();
 
 public: // Interface
-    bool applyQueryTrack(WPlaylist * playlist, WTrack * track, const WBackendNetQuery & query);
+    bool applyQueryTrack(const QString & backendId,
+                         WPlaylist * playlist, WTrack * track, WBackendNetQuery * query);
 
     bool applySourceTrack(WPlaylist * playlist, WTrack * track, const QString & url);
 
@@ -159,6 +160,11 @@ public: // Functions
 
     //---------------------------------------------------------------------------------------------
 
+    bool resolveTrack   (const QString & backendId, WBackendNetQuery & query);
+    bool resolvePlaylist(const QString & backendId, WBackendNetQuery & query);
+    bool resolveFolder  (const QString & backendId, WBackendNetQuery & query);
+    bool resolveItem    (const QString & backendId, WBackendNetQuery & query);
+
     void getDataTrack(WPlaylist * playlist, WTrack * track, const WBackendNetQuery & query);
 
     void getDataPlaylist(WPlaylist      * playlist, const WBackendNetQuery & query);
@@ -170,15 +176,17 @@ public: // Functions
     void getDataLibraryItem(WLibraryItem           * item,
                             const WBackendNetQuery & query, WControllerPlaylistQuery::Type type);
 
-    bool getNextTrack(WPlaylist * playlist, WTrack * track, const QList<WBackendNetQuery> & queries,
-                      int index);
+    bool getNextTrack(const QString & backendId, WPlaylist * playlist, WTrack * track,
+                      const QList<WBackendNetQuery> & queries, int index);
 
-    bool getNextPlaylist(WPlaylist * playlist, const QList<WBackendNetQuery> & queries, int index);
+    bool getNextPlaylist(const QString & backendId, WPlaylist * playlist,
+                         const QList<WBackendNetQuery> & queries, int index);
 
-    bool getNextFolder(WLibraryFolder * folder, const QList<WBackendNetQuery> & queries,
-                       int index);
+    bool getNextFolder(const QString & backendId, WLibraryFolder * folder,
+                       const QList<WBackendNetQuery> & queries, int index);
 
-    bool getNextItem(WLibraryItem * item, const QList<WBackendNetQuery> & queries, int index);
+    bool getNextItem(const QString & backendId, WLibraryItem * item,
+                     const QList<WBackendNetQuery> & queries, int index);
 
     //---------------------------------------------------------------------------------------------
 

@@ -855,7 +855,7 @@ void WPlaylistPrivate::loadCover(WTrack * track, QNetworkRequest::Priority prior
 
     query.priority = priority;
 
-    wControllerPlaylist->d_func()->applyQueryTrack(q, track, query);
+    wControllerPlaylist->d_func()->applyQueryTrack(backend->id(), q, track, &query);
 
     backend->tryDelete();
 }

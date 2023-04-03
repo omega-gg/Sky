@@ -367,6 +367,9 @@ void WControllerPlaylistData::applyHtml(const QByteArray & array, const QString 
         cover = generateUrl(cover, host);
     }
 
+    this->title = title;
+    this->cover = cover;
+
     //---------------------------------------------------------------------------------------------
     // NOTE: If the head contains a VBML link we prioritize it over HTML.
 
@@ -460,8 +463,31 @@ void WControllerPlaylistData::applyHtml(const QByteArray & array, const QString 
         }
     }
 
-    this->title = title;
-    this->cover = cover;
+    // NOTE: When sources are empty we treat the content as a plain file and extract urls.
+    if (sources.isEmpty() == false) return;
+
+    list = Sk::slices(array,
+                      WRegExp("file://|http://|https://|vbml:", Qt::CaseInsensitive),
+                      WRegExp("\\s"));
+
+    WRegExp regExp("[\\s\\.:,;'\"\\)}\\]]");
+
+    foreach (QString url, list)
+    {
+        for (int i = url.length() - 1; i; i--)
+        {
+            QChar character = url.at(i);
+
+            if (regExp.indexIn(character) == -1) break;
+
+            url.chop(1);
+        }
+
+        if (addUrl(&urls, url))
+        {
+            addSource(url, generateTitle(url, urlName));
+        }
+    }
 }
 
 void WControllerPlaylistData::applyFolder(const QString & url)
@@ -935,14 +961,15 @@ void WControllerPlaylistPrivate::init()
 // Private interface
 //-------------------------------------------------------------------------------------------------
 
-bool WControllerPlaylistPrivate::applyQueryTrack(WPlaylist * playlist,
-                                                 WTrack    * track, const WBackendNetQuery & query)
+bool WControllerPlaylistPrivate::applyQueryTrack(const QString & backendId,
+                                                 WPlaylist * playlist, WTrack * track,
+                                                 WBackendNetQuery * query)
 {
     abortQueryTrack(track);
 
-    if (query.isValid())
+    if (resolveTrack(backendId, *query))
     {
-        getDataTrack(playlist, track, query);
+        getDataTrack(playlist, track, *query);
 
         return true;
     }
@@ -962,13 +989,15 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
 
     if (backend)
     {
+        QString backendId = backend->id();
+
         if (WBackendNet::checkQuery(source))
         {
             WBackendNetQuery query = backend->extractQuery(source);
 
             backend->tryDelete();
 
-            if (query.isValid())
+            if (resolveTrack(backendId, query))
             {
                 // NOTE: The custom query priority should be high because it's often tied to the
                 //       current action.
@@ -985,7 +1014,7 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
 
         backend->tryDelete();
 
-        if (query.isValid())
+        if (resolveTrack(backendId, query))
         {
             getDataTrack(playlist, track, query);
 
@@ -1065,13 +1094,15 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
 
     if (backend)
     {
+        QString backendId = backend->id();
+
         if (WBackendNet::checkQuery(source))
         {
             WBackendNetQuery query = backend->extractQuery(source);
 
             backend->tryDelete();
 
-            if (query.isValid())
+            if (resolvePlaylist(backendId, query))
             {
                 // NOTE: The custom query priority should be high because it's often tied to the
                 //       current action.
@@ -1086,7 +1117,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
 
         WBackendNetQuery query = backend->getQueryPlaylist(source);
 
-        if (query.isValid())
+        if (resolvePlaylist(backendId, query))
         {
             backend->tryDelete();
 
@@ -1245,6 +1276,8 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
     if (backend)
     {
+        QString backendId = backend->id();
+
         if (WBackendNet::checkQuery(source))
         {
             if (source.contains("method") == false)
@@ -1264,7 +1297,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
             backend->tryDelete();
 
-            if (query.isValid())
+            if (resolveFolder(backendId, query))
             {
                 // NOTE: The custom query priority should be high because it's often tied to the
                 //       current action.
@@ -1279,7 +1312,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
         WBackendNetQuery query = backend->getQueryFolder(source);
 
-        if (query.isValid())
+        if (resolveFolder(backendId, query))
         {
             backend->tryDelete();
 
@@ -1461,13 +1494,15 @@ bool WControllerPlaylistPrivate::applySourceItem(WLibraryItem * item, const QStr
 
     if (backend)
     {
+        QString backendId = backend->id();
+
         if (WBackendNet::checkQuery(source))
         {
             WBackendNetQuery query = backend->extractQuery(source);
 
             backend->tryDelete();
 
-            if (query.isValid())
+            if (resolveItem(backendId, query))
             {
                 // NOTE: The custom query priority should be high because it's often tied to the
                 //       current action.
@@ -1484,7 +1519,7 @@ bool WControllerPlaylistPrivate::applySourceItem(WLibraryItem * item, const QStr
 
         backend->tryDelete();
 
-        if (query.isValid())
+        if (resolveItem(backendId, query))
         {
             getDataItem(item, query);
 
@@ -2036,6 +2071,64 @@ WBackendNet * WControllerPlaylistPrivate::backendTrack(const QString & source,
 
 //-------------------------------------------------------------------------------------------------
 
+bool WControllerPlaylistPrivate::resolveTrack(const QString    & backendId,
+                                              WBackendNetQuery & query)
+{
+    QString id = query.backend;
+
+    if (id.isEmpty() || id == backendId) return query.isValid();
+
+    WBackendNet * backend = q_func()->backendFromId(id);
+
+    if (backend) query = backend->getQueryTrack(query.url);
+
+    return query.isValid();
+}
+
+bool WControllerPlaylistPrivate::resolvePlaylist(const QString    & backendId,
+                                                 WBackendNetQuery & query)
+{
+    QString id = query.backend;
+
+    if (id.isEmpty() || id == backendId) return query.isValid();
+
+    WBackendNet * backend = q_func()->backendFromId(id);
+
+    if (backend) query = backend->getQueryPlaylist(query.url);
+
+    return query.isValid();
+}
+
+bool WControllerPlaylistPrivate::resolveFolder(const QString    & backendId,
+                                               WBackendNetQuery & query)
+{
+    QString id = query.backend;
+
+    if (id.isEmpty() || id == backendId) return query.isValid();
+
+    WBackendNet * backend = q_func()->backendFromId(id);
+
+    if (backend) query = backend->getQueryFolder(query.url);
+
+    return query.isValid();
+}
+
+bool WControllerPlaylistPrivate::resolveItem(const QString    & backendId,
+                                             WBackendNetQuery & query)
+{
+    QString id = query.backend;
+
+    if (id.isEmpty() || id == backendId) return query.isValid();
+
+    WBackendNet * backend = q_func()->backendFromId(id);
+
+    if (backend) query = backend->getQueryItem(query.url);
+
+    return query.isValid();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void WControllerPlaylistPrivate::getDataTrack(WPlaylist * playlist,
                                               WTrack    * track, const WBackendNetQuery & query)
 {
@@ -2095,7 +2188,7 @@ bool WControllerPlaylistPrivate::getDataRelated(WBackendNet * backend,
 {
     WBackendNetQuery query = backend->createQuery("related", "tracks", id);
 
-    if (query.isValid())
+    if (resolvePlaylist(backend->id(), query))
     {
         getDataPlaylist(playlist, query);
 
@@ -2134,7 +2227,8 @@ void WControllerPlaylistPrivate::getDataLibraryItem(WLibraryItem                
 
 //-------------------------------------------------------------------------------------------------
 
-bool WControllerPlaylistPrivate::getNextTrack(WPlaylist * playlist, WTrack * track,
+bool WControllerPlaylistPrivate::getNextTrack(const QString & backendId,
+                                              WPlaylist * playlist, WTrack * track,
                                               const QList<WBackendNetQuery> & queries, int index)
 {
     bool result = false;
@@ -2143,7 +2237,7 @@ bool WControllerPlaylistPrivate::getNextTrack(WPlaylist * playlist, WTrack * tra
     {
         if (index >= CONTROLLERPLAYLIST_MAX_QUERY) return result;
 
-        if (query.isValid() == false) continue;
+        if (resolveTrack(backendId, query) == false) continue;
 
         index++;
 
@@ -2157,7 +2251,8 @@ bool WControllerPlaylistPrivate::getNextTrack(WPlaylist * playlist, WTrack * tra
     return result;
 }
 
-bool WControllerPlaylistPrivate::getNextPlaylist(WPlaylist * playlist,
+bool WControllerPlaylistPrivate::getNextPlaylist(const QString & backendId,
+                                                 WPlaylist * playlist,
                                                  const QList<WBackendNetQuery> & queries,
                                                  int index)
 {
@@ -2167,7 +2262,7 @@ bool WControllerPlaylistPrivate::getNextPlaylist(WPlaylist * playlist,
     {
         if (index >= CONTROLLERPLAYLIST_MAX_QUERY) return result;
 
-        if (query.isValid() == false) continue;
+        if (resolvePlaylist(backendId, query) == false) continue;
 
         index++;
 
@@ -2181,7 +2276,8 @@ bool WControllerPlaylistPrivate::getNextPlaylist(WPlaylist * playlist,
     return result;
 }
 
-bool WControllerPlaylistPrivate::getNextFolder(WLibraryFolder * folder,
+bool WControllerPlaylistPrivate::getNextFolder(const QString & backendId,
+                                               WLibraryFolder * folder,
                                                const QList<WBackendNetQuery> & queries, int index)
 {
     bool result = false;
@@ -2190,7 +2286,7 @@ bool WControllerPlaylistPrivate::getNextFolder(WLibraryFolder * folder,
     {
         if (index >= CONTROLLERPLAYLIST_MAX_QUERY) return result;
 
-        if (query.isValid() == false) continue;
+        if (resolveFolder(backendId, query) == false) continue;
 
         index++;
 
@@ -2204,7 +2300,8 @@ bool WControllerPlaylistPrivate::getNextFolder(WLibraryFolder * folder,
     return result;
 }
 
-bool WControllerPlaylistPrivate::getNextItem(WLibraryItem * item,
+bool WControllerPlaylistPrivate::getNextItem(const QString & backendId,
+                                             WLibraryItem * item,
                                              const QList<WBackendNetQuery> & queries, int index)
 {
     bool result = false;
@@ -2213,7 +2310,7 @@ bool WControllerPlaylistPrivate::getNextItem(WLibraryItem * item,
     {
         if (index >= CONTROLLERPLAYLIST_MAX_QUERY) return result;
 
-        if (query.isValid() == false) continue;
+        if (resolveItem(backendId, query) == false) continue;
 
         index++;
 
@@ -2541,7 +2638,11 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
 
     int indexNext = backendQuery.indexNext;
 
-    query->backend->applyTrack(backendQuery, reply);
+    WBackendNet * backend = query->backend;
+
+    backend->applyTrack(backendQuery, reply);
+
+    QString backendId = backend->id();
 
     deleteQuery(query);
 
@@ -2564,7 +2665,7 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
 
         addToCache(track->source(), reply.cache);
 
-        if (getNextTrack(playlist, track, reply.nextQueries, indexNext))
+        if (getNextTrack(backendId, playlist, track, reply.nextQueries, indexNext))
         {
             playlist->updateTrack(index);
 
@@ -2632,7 +2733,11 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
 
     int indexNext = backendQuery.indexNext;
 
-    query->backend->applyPlaylist(backendQuery, reply);
+    WBackendNet * backend = query->backend;
+
+    backend->applyPlaylist(backendQuery, reply);
+
+    QString backendId = backend->id();
 
     deleteQuery(query);
 
@@ -2684,7 +2789,7 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
 
         addToCache(playlist->source(), reply.cache);
 
-        if (getNextPlaylist(playlist, reply.nextQueries, indexNext)) return;
+        if (getNextPlaylist(backendId, playlist, reply.nextQueries, indexNext)) return;
     }
     else emit playlist->queryEnded();
 
@@ -2735,7 +2840,11 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
 
     int indexNext = backendQuery.indexNext;
 
-    query->backend->applyFolder(backendQuery, reply);
+    WBackendNet * backend = query->backend;
+
+    backend->applyFolder(backendQuery, reply);
+
+    QString backendId = backend->id();
 
     deleteQuery(query);
 
@@ -2800,7 +2909,7 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
 
         addToCache(folder->source(), reply.cache);
 
-        if (getNextFolder(folder, reply.nextQueries, indexNext)) return;
+        if (getNextFolder(backendId, folder, reply.nextQueries, indexNext)) return;
     }
     else emit folder->queryEnded();
 
@@ -2830,7 +2939,11 @@ void WControllerPlaylistPrivate::onItemLoaded(QIODevice * device, const WBackend
 
     int indexNext = backendQuery.indexNext;
 
-    query->backend->applyItem(backendQuery, reply);
+    WBackendNet * backend = query->backend;
+
+    backend->applyItem(backendQuery, reply);
+
+    QString backendId = backend->id();
 
     deleteQuery(query);
 
@@ -2844,7 +2957,7 @@ void WControllerPlaylistPrivate::onItemLoaded(QIODevice * device, const WBackend
 
         addToCache(item->source(), reply.cache, extension);
 
-        if (getNextItem(item, reply.nextQueries, indexNext)) return;
+        if (getNextItem(backendId, item, reply.nextQueries, indexNext)) return;
     }
     else emit item->queryEnded();
 
@@ -2946,13 +3059,15 @@ void WControllerPlaylistPrivate::onUrlTrack(QIODevice                     * devi
 
             if (backend)
             {
+                QString backendId = backend->id();
+
                 playlist->updateTrack(index);
 
                 WBackendNetQuery query = backend->getQueryTrack(origin);
 
                 backend->tryDelete();
 
-                if (query.isValid())
+                if (resolveTrack(backendId, query))
                 {
                     getDataTrack(playlist, track, query);
 
@@ -3197,11 +3312,13 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
         if (backend)
         {
+            QString backendId = backend->id();
+
             WBackendNetQuery query = backend->getQueryPlaylist(source);
 
             backend->tryDelete();
 
-            if (query.isValid())
+            if (resolvePlaylist(backendId, query))
             {
                 getDataPlaylist(playlist, query);
 
@@ -3535,11 +3652,13 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
         if (backend)
         {
+            QString backendId = backend->id();
+
             WBackendNetQuery query = backend->getQueryPlaylist(source);
 
             backend->tryDelete();
 
-            if (query.isValid())
+            if (resolvePlaylist(backendId, query))
             {
                 getDataPlaylist(playlist, query);
 
