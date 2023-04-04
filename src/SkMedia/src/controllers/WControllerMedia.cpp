@@ -567,7 +567,10 @@ void WControllerMediaPrivate::clearReply(WMediaReply * reply)
 
 bool WControllerMediaPrivate::resolve(const QString & backendId, WBackendNetQuery & query)
 {
-    QString id = query.backend;
+    // FIXME: Remove this before pushing the next version.
+    return query.isValid();
+
+    /*QString id = query.backend;
 
     if (id.isEmpty() || id == backendId) return query.isValid();
 
@@ -575,7 +578,7 @@ bool WControllerMediaPrivate::resolve(const QString & backendId, WBackendNetQuer
 
     if (backend) query = backend->getQuerySource(query.url);
 
-    return query.isValid();
+    return query.isValid();*/
 }
 
 void WControllerMediaPrivate::getData(WPrivateMediaData * media, WBackendNetQuery * query)
