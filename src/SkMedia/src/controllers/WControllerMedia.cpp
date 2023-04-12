@@ -34,6 +34,7 @@
 #include <WControllerDownload>
 #include <WControllerPlaylist>
 #include <WYamlReader>
+#include <WRegExp>
 #ifndef SK_NO_PLAYER
 #include <WVlcEngine>
 #include <WVlcPlayer>
@@ -251,6 +252,41 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
     type = WTrack::typeFromString(reader.extractString("type"));
 }
 
+void WControllerMediaData::applyM3u(const QByteArray & array, const QString & url)
+{
+    QString content = Sk::readUtf8(array);
+
+    QStringList list = Sk::slices(content, "EXT-X-STREAM-INF", "m3u8");
+
+    foreach (const QString & media, list)
+    {
+        QString string = Sk::sliceIn(media, WRegExp("RESOLUTION="), WRegExp("[,\\n]"));
+
+        string = string.mid(string.indexOf('x') + 1);
+
+        WAbstractBackend::Quality quality = WAbstractBackend::qualityFromString(string);
+
+        if (quality == WAbstractBackend::QualityDefault || medias.contains(quality)) continue;
+
+        int index = media.lastIndexOf("http");
+
+        // NOTE: We only support http(s) urls.
+        if (index == -1) continue;
+
+        string = media.mid(index);
+
+        if (string.isEmpty()) continue;
+
+        medias.insert(quality, string);
+    }
+
+    // NOTE: If we couldn't parse a resolution we add the current url as the default source.
+    if (medias.isEmpty())
+    {
+        medias.insert(WAbstractBackend::QualityDefault, url);
+    }
+}
+
 //=================================================================================================
 // WControllerMediaReply
 //=================================================================================================
@@ -261,9 +297,7 @@ class WControllerMediaReply : public QObject
 
 public: // Interface
     Q_INVOKABLE void extractVbml(QIODevice * device, const QString & url);
-
-private: // Functions
-    void applyVbml(const QByteArray & array, const QString & url);
+    Q_INVOKABLE void extractM3u (QIODevice * device, const QString & url);
 
 signals:
     void loaded(QIODevice * device, const WControllerMediaData & data);
@@ -276,6 +310,17 @@ signals:
     WControllerMediaData data;
 
     data.applyVbml(device->readAll(), url);
+
+    emit loaded(device, data);
+
+    deleteLater();
+}
+
+/* Q_INVOKABLE */ void WControllerMediaReply::extractM3u(QIODevice * device, const QString & url)
+{
+    WControllerMediaData data;
+
+    data.applyM3u(device->readAll(), url);
 
     emit loaded(device, data);
 
@@ -345,6 +390,7 @@ void WControllerMediaPrivate::init(const QStringList & options)
     const QMetaObject * meta = WControllerMediaReply().metaObject();
 
     methodVbml = meta->method(meta->indexOfMethod("extractVbml(QIODevice*,QString)"));
+    methodM3u  = meta->method(meta->indexOfMethod("extractM3u(QIODevice*,QString)"));
 
     thread = new QThread(q);
 
@@ -424,25 +470,34 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
         query.url = source;
     }
-    else if (WControllerPlaylist::urlIsVbmlFile(source)
-             ||
-             // NOTE: The source could be VBML so we try to load it anyway.
-             (WControllerNetwork::extractUrlExtension(source) == QString()
-              &&
-              WControllerNetwork::urlIsHttp(source)
-              &&
-              // NOTE: The url should not be an IP because it can be a HookTorrent server.
-              WControllerNetwork::urlIsIp(source) == false))
-    {
-        query.url = source;
-    }
     else
     {
-        reply->_medias.insert(WAbstractBackend::QualityDefault, url);
+        QString extension = WControllerNetwork::extractUrlExtension(source);
 
-        reply->_loaded = true;
+        if (extension.startsWith("m3u8"))
+        {
+            query.target = WBackendNetQuery::TargetM3u;
 
-        return;
+            query.url = source;
+        }
+        else if (WControllerPlaylist::urlIsVbmlFile(source)
+                 ||
+                 // NOTE: The source could be VBML so we try to load it anyway.
+                 (extension == QString() && WControllerNetwork::urlIsHttp(source)
+                  &&
+                  // NOTE: The url should not be an IP because it can be a HookTorrent server.
+                  WControllerNetwork::urlIsIp(source) == false))
+        {
+            query.url = source;
+        }
+        else
+        {
+            reply->_medias.insert(WAbstractBackend::QualityDefault, url);
+
+            reply->_loaded = true;
+
+            return;
+        }
     }
 
     query.mode = reply->_mode;
@@ -473,10 +528,75 @@ void WControllerMediaPrivate::loadUrl(QIODevice * device, const WBackendNetQuery
 
     reply->moveToThread(thread);
 
-    methodVbml.invoke(reply, Q_ARG(QIODevice *, device), Q_ARG(const QString &, query.url));
+    if (query.target == WBackendNetQuery::TargetM3u)
+    {
+        methodM3u.invoke(reply, Q_ARG(QIODevice *, device), Q_ARG(const QString &, query.url));
+    }
+    else methodVbml.invoke(reply, Q_ARG(QIODevice *, device), Q_ARG(const QString &, query.url));
 }
 
 //-------------------------------------------------------------------------------------------------
+
+void WControllerMediaPrivate::applySource(WPrivateMediaData       * media,
+                                          const WBackendNetSource & source,
+                                          WAbstractBackend::SourceMode mode)
+{
+    const QHash<WAbstractBackend::Quality, QString> & medias = source.medias;
+
+    if (medias.count() == 0)
+    {
+        foreach (WMediaReply * reply, media->replies)
+        {
+            emit reply->loaded(reply);
+        }
+
+        return;
+    }
+
+    const QHash<WAbstractBackend::Quality, QString> & audios = source.audios;
+
+    WTrack::Type type = media->type;
+
+    WPrivateMediaMode data;
+
+    data.medias = medias;
+    data.audios = audios;
+
+    data.expiry = source.expiry;
+
+    const QString & url = media->url;
+
+    if (sources.contains(url))
+    {
+        WPrivateMediaSource * source = &(sources[url]);
+
+        source->type = type;
+
+        source->modes.insert(mode, data);
+    }
+    else
+    {
+        WPrivateMediaSource source;
+
+        source.type = type;
+
+        source.modes.insert(mode, data);
+
+        sources.insert(url, source);
+    }
+
+    foreach (WMediaReply * reply, media->replies)
+    {
+        reply->_loaded = true;
+
+        reply->_type = type;
+
+        reply->_medias = medias;
+        reply->_audios = audios;
+
+        emit reply->loaded(reply);
+    }
+}
 
 void WControllerMediaPrivate::updateSources()
 {
@@ -724,10 +844,11 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
         }
     }
 
-    foreach (WMediaReply * reply, media->replies)
-    {
-        emit reply->loaded(reply);
-    }
+    WBackendNetSource backendSource;
+
+    backendSource.medias = data.medias;
+
+    applySource(media, backendSource, query.mode);
 
     medias.removeOne(media);
 
@@ -817,60 +938,7 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
         }
     }
 
-    WTrack::Type type = media->type;
-
-    const QHash<WAbstractBackend::Quality, QString> & medias = source.medias;
-    const QHash<WAbstractBackend::Quality, QString> & audios = source.audios;
-
-    if (medias.count())
-    {
-        WPrivateMediaMode mode;
-
-        mode.medias = source.medias;
-        mode.audios = source.audios;
-
-        mode.expiry = source.expiry;
-
-        const QString & url = media->url;
-
-        if (sources.contains(url))
-        {
-            WPrivateMediaSource * source = &(sources[url]);
-
-            source->type = type;
-
-            source->modes.insert(backendQuery.mode, mode);
-        }
-        else
-        {
-            WPrivateMediaSource source;
-
-            source.type = type;
-
-            source.modes.insert(backendQuery.mode, mode);
-
-            sources.insert(url, source);
-        }
-
-        foreach (WMediaReply * reply, media->replies)
-        {
-            reply->_loaded = true;
-
-            reply->_type = type;
-
-            reply->_medias = medias;
-            reply->_audios = audios;
-
-            emit reply->loaded(reply);
-        }
-    }
-    else
-    {
-        foreach (WMediaReply * reply, media->replies)
-        {
-            emit reply->loaded(reply);
-        }
-    }
+    applySource(media, source, backendQuery.mode);
 
     this->medias.removeOne(media);
 

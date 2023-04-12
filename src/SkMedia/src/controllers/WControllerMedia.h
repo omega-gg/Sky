@@ -121,12 +121,15 @@ public:
 
 public: // Interface
     void applyVbml(const QByteArray & array, const QString & url);
+    void applyM3u (const QByteArray & array, const QString & url);
 
 public: // Variables
     WTrack::Type type;
 
     QString origin;
     QString source;
+
+    QHash<WAbstractBackend::Quality, QString> medias;
 };
 
 //-------------------------------------------------------------------------------------------------

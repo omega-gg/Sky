@@ -107,6 +107,9 @@ public: // Functions
 
     void loadUrl(QIODevice * device, const WBackendNetQuery & query) const;
 
+    void applySource(WPrivateMediaData * media,
+                     const WBackendNetSource & source, WAbstractBackend::SourceMode mode);
+
     void updateSources();
 
     void clearReply(WMediaReply * reply);
@@ -141,6 +144,7 @@ public: // Variables
     QHash<QString, WPrivateMediaSource> sources;
 
     QMetaMethod methodVbml;
+    QMetaMethod methodM3u;
 
 protected:
     W_DECLARE_PUBLIC(WControllerMedia)

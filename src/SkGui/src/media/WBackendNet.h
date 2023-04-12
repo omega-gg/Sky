@@ -60,6 +60,7 @@ public: // Enums
         TargetHtml,
         TargetFolder,
         TargetFile,
+        TargetM3u,
         TargetItem
     };
 
