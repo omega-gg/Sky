@@ -1277,29 +1277,29 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WLibraryFolder::addLibraryItem(WLibraryItem * item)
+/* Q_INVOKABLE */ int WLibraryFolder::addLibraryItem(WLibraryItem * item)
 {
     Q_ASSERT(item);
 
-    insertItem(count(), createFolderItem(item));
+    return insertItem(count(), createFolderItem(item));
 }
 
-/* Q_INVOKABLE */ void WLibraryFolder::addLibraryItems(const QList<WLibraryItem *> & items)
+/* Q_INVOKABLE */ int WLibraryFolder::addLibraryItems(const QList<WLibraryItem *> & items)
 {
-    insertLibraryItems(count(), items);
+    return insertLibraryItems(count(), items);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WLibraryFolder::insertLibraryItem(int index, WLibraryItem * item)
+/* Q_INVOKABLE */ int WLibraryFolder::insertLibraryItem(int index, WLibraryItem * item)
 {
     Q_ASSERT(item);
 
-    insertItem(index, createFolderItem(item));
+    return insertItem(index, createFolderItem(item));
 }
 
-/* Q_INVOKABLE */ void WLibraryFolder::insertLibraryItems(int index,
-                                                          const QList<WLibraryItem *> & items)
+/* Q_INVOKABLE */ int WLibraryFolder::insertLibraryItems(int index,
+                                                         const QList<WLibraryItem *> & items)
 {
     QList<WLibraryFolderItem> folderItems;
 
@@ -1310,36 +1310,43 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
         folderItems.append(createFolderItem(item));
     }
 
-    insertItems(index, folderItems);
+    return insertItems(index, folderItems);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WLibraryFolder::addItem(const WLibraryFolderItem & item)
+/* Q_INVOKABLE */ int WLibraryFolder::addItem(const WLibraryFolderItem & item)
 {
-    insertItems(count(), QList<WLibraryFolderItem>() << item);
+    return insertItems(count(), QList<WLibraryFolderItem>() << item);
 }
 
-/* Q_INVOKABLE */ void WLibraryFolder::addItems(const QList<WLibraryFolderItem> & items)
+/* Q_INVOKABLE */ int WLibraryFolder::addItems(const QList<WLibraryFolderItem> & items)
 {
-    insertItems(count(), items);
+    return insertItems(count(), items);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WLibraryFolder::insertItem(int index, const WLibraryFolderItem & item)
+/* Q_INVOKABLE */ int WLibraryFolder::insertItem(int index, const WLibraryFolderItem & item)
 {
-    insertItems(index, QList<WLibraryFolderItem>() << item);
+    return insertItems(index, QList<WLibraryFolderItem>() << item);
 }
 
-/* Q_INVOKABLE */ void WLibraryFolder::insertItems(int index,
-                                                   const QList<WLibraryFolderItem> & items)
+/* Q_INVOKABLE */ int WLibraryFolder::insertItems(int index,
+                                                  const QList<WLibraryFolderItem> & items)
 {
     Q_D(WLibraryFolder);
 
     int countAdd = items.count();
 
-    if (countAdd == 0 || checkFull(countAdd)) return;
+    if (countAdd == 0) return 0;
+
+    if (checkFull(countAdd))
+    {
+        countAdd = d->maxCount - this->count();
+
+        if (countAdd == 0) return 0;
+    }
 
     int count = d->items.count();
 
@@ -1352,8 +1359,10 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
 
     d->beginItemsInsert(index, index + countAdd - 1);
 
-    foreach (const WLibraryFolderItem & item, items)
+    for (int i = 0; i < countAdd; i++)
     {
+        const WLibraryFolderItem & item = items.at(i);
+
         d->items.insert(index, item);
 
         int id = item.id;
@@ -1380,22 +1389,22 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
     emit itemsInserted(oldIndex, countAdd);
 
     save();
+
+    return countAdd;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WLibraryFolder::addNewItem(Type type,
-                                                  const QString & source,
-                                                  const QString & title,
-                                                  const QString & cover)
+/* Q_INVOKABLE */ int WLibraryFolder::addNewItem(Type type, const QString & source,
+                                                            const QString & title,
+                                                            const QString & cover)
 {
-    insertNewItem(count(), type, source, title, cover);
+    return insertNewItem(count(), type, source, title, cover);
 }
 
-/* Q_INVOKABLE */ void WLibraryFolder::insertNewItem(int index, Type type,
-                                                     const QString & source,
-                                                     const QString & title,
-                                                     const QString & cover)
+/* Q_INVOKABLE */ int WLibraryFolder::insertNewItem(int index, Type type, const QString & source,
+                                                                          const QString & title,
+                                                                          const QString & cover)
 {
     WLibraryFolderItem item;
 
@@ -1406,7 +1415,7 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
     item.title = title;
     item.cover = cover;
 
-    insertItem(index, item);
+    return insertItem(index, item);
 }
 
 //-------------------------------------------------------------------------------------------------

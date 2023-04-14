@@ -128,11 +128,11 @@ protected:
     WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent = NULL);
 
 public: // Interface
-    Q_INVOKABLE void addTrack (const WTrack        & track);
-    Q_INVOKABLE void addTracks(const QList<WTrack> & tracks);
+    Q_INVOKABLE int addTrack (const WTrack        & track);
+    Q_INVOKABLE int addTracks(const QList<WTrack> & tracks);
 
-    Q_INVOKABLE void insertTrack (int index, const WTrack        & track);
-    Q_INVOKABLE void insertTracks(int index, const QList<WTrack> & tracks);
+    Q_INVOKABLE int insertTrack (int index, const WTrack        & track);
+    Q_INVOKABLE int insertTracks(int index, const QList<WTrack> & tracks);
 
     Q_INVOKABLE int addSource(const QString & url);
 

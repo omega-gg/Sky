@@ -1082,43 +1082,52 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 // Interface
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WPlaylist::addTrack(const WTrack & track)
+/* Q_INVOKABLE */ int WPlaylist::addTrack(const WTrack & track)
 {
-    insertTracks(count(), QList<WTrack>() << track);
+    return insertTracks(count(), QList<WTrack>() << track);
 }
 
-/* Q_INVOKABLE */ void WPlaylist::addTracks(const QList<WTrack> & tracks)
+/* Q_INVOKABLE */ int WPlaylist::addTracks(const QList<WTrack> & tracks)
 {
-    insertTracks(count(), tracks);
+    return insertTracks(count(), tracks);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WPlaylist::insertTrack(int index, const WTrack & track)
+/* Q_INVOKABLE */ int WPlaylist::insertTrack(int index, const WTrack & track)
 {
-    insertTracks(index, QList<WTrack>() << track);
+    return insertTracks(index, QList<WTrack>() << track);
 }
 
-/* Q_INVOKABLE */ void WPlaylist::insertTracks(int index, const QList<WTrack> & tracks)
+/* Q_INVOKABLE */ int WPlaylist::insertTracks(int index, const QList<WTrack> & tracks)
 {
     Q_D(WPlaylist);
 
     int count = tracks.count();
 
-    if (count == 0 || checkFull(count)) return;
+    if (count == 0) return 0;
+
+    if (checkFull(count))
+    {
+        count = d->maxCount - this->count();
+
+        if (count == 0) return 0;
+    }
 
     index = d->beginInsert(index, count);
 
     int oldIndex = index;
 
-    foreach (const WTrack & track, tracks)
+    for (int i = 0; i < count; i++)
     {
-        d->insertTrack(this, index, track);
+        d->insertTrack(this, index, tracks.at(i));
 
         index++;
     }
 
     d->endInsert(oldIndex, count);
+
+    return count;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1130,8 +1139,6 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
 
 /* Q_INVOKABLE */ int WPlaylist::insertSource(int index, const QString & url)
 {
-    Q_D(WPlaylist);
-
     QList<WTrack> tracks;
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
@@ -1147,21 +1154,7 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
         tracks.append(track);
     }
 
-    int count = tracks.count();
-
-    if (checkFull(count))
-    {
-        count = d->maxCount - this->count() - 1;
-
-        while (tracks.count() > count)
-        {
-            tracks.pop_back();
-        }
-    }
-
-    insertTracks(index, tracks);
-
-    return count;
+    return insertTracks(index, tracks);
 }
 
 //-------------------------------------------------------------------------------------------------

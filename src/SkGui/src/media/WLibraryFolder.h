@@ -128,25 +128,25 @@ protected:
 public: // Interface
     Q_INVOKABLE WLibraryFolderItem createFolderItem(WLibraryItem * item);
 
-    Q_INVOKABLE void addLibraryItem (WLibraryItem                * item);
-    Q_INVOKABLE void addLibraryItems(const QList<WLibraryItem *> & items);
+    Q_INVOKABLE int addLibraryItem (WLibraryItem                * item);
+    Q_INVOKABLE int addLibraryItems(const QList<WLibraryItem *> & items);
 
-    Q_INVOKABLE void insertLibraryItem (int index, WLibraryItem                * item);
-    Q_INVOKABLE void insertLibraryItems(int index, const QList<WLibraryItem *> & items);
+    Q_INVOKABLE int insertLibraryItem (int index, WLibraryItem                * item);
+    Q_INVOKABLE int insertLibraryItems(int index, const QList<WLibraryItem *> & items);
 
-    Q_INVOKABLE void addItem (const WLibraryFolderItem        & item);
-    Q_INVOKABLE void addItems(const QList<WLibraryFolderItem> & items);
+    Q_INVOKABLE int addItem (const WLibraryFolderItem        & item);
+    Q_INVOKABLE int addItems(const QList<WLibraryFolderItem> & items);
 
-    Q_INVOKABLE void insertItem (int index, const WLibraryFolderItem        & item);
-    Q_INVOKABLE void insertItems(int index, const QList<WLibraryFolderItem> & items);
+    Q_INVOKABLE int insertItem (int index, const WLibraryFolderItem        & item);
+    Q_INVOKABLE int insertItems(int index, const QList<WLibraryFolderItem> & items);
 
-    Q_INVOKABLE void addNewItem(Type type, const QString & source = QString(),
-                                           const QString & title  = QString(),
-                                           const QString & cover  = QString());
+    Q_INVOKABLE int addNewItem(Type type, const QString & source = QString(),
+                                          const QString & title  = QString(),
+                                          const QString & cover  = QString());
 
-    Q_INVOKABLE void insertNewItem(int index, Type type, const QString & source = QString(),
-                                                         const QString & title  = QString(),
-                                                         const QString & cover  = QString());
+    Q_INVOKABLE int insertNewItem(int index, Type type, const QString & source = QString(),
+                                                        const QString & title  = QString(),
+                                                        const QString & cover  = QString());
 
     Q_INVOKABLE void moveItem(int id,   int to);
     Q_INVOKABLE void moveAt  (int from, int to);
