@@ -235,6 +235,8 @@ public: // Static functions
     Q_INVOKABLE static bool urlIsText    (const QString & url);
     Q_INVOKABLE static bool urlIsSubtitle(const QString & url);
 
+    Q_INVOKABLE static bool urlIsM3u(const QString & url);
+
 #ifndef SK_NO_TORRENT
     Q_INVOKABLE static bool urlIsTorrent(const QString & url); // torrent or magnet.
 #endif
@@ -256,6 +258,8 @@ public: // Static functions
     Q_INVOKABLE static bool extensionIsMarkup  (const QString & extension);
     Q_INVOKABLE static bool extensionIsText    (const QString & extension);
     Q_INVOKABLE static bool extensionIsSubtitle(const QString & extension);
+
+    Q_INVOKABLE static bool extensionIsM3u(const QString & extension);
 
 #ifndef SK_NO_TORRENT
     Q_INVOKABLE static bool extensionIsTorrent(const QString & extension);
@@ -356,6 +360,7 @@ public:
 public: // Interface
     void applyVbml(const QByteArray & array, const QString & url, const QString & urlBase);
     void applyHtml(const QByteArray & array, const QString & url);
+    void applyM3u (const QByteArray & array, const QString & url);
 
     void applyFolder(const QString & url);
 

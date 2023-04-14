@@ -58,9 +58,9 @@ public: // Enums
         TargetDefault,
         TargetVbml,
         TargetHtml,
+        TargetM3u,
         TargetFolder,
         TargetFile,
-        TargetM3u,
         TargetItem
     };
 

@@ -231,6 +231,7 @@ public: // Variables
 
     QMetaMethod methodVbml;
     QMetaMethod methodHtml;
+    QMetaMethod methodM3u;
     QMetaMethod methodFolder;
     QMetaMethod methodFile;
     QMetaMethod methodItem;

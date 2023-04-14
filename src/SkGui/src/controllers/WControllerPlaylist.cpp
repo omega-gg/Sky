@@ -66,6 +66,8 @@ static const QString CONTROLLERPLAYLIST_TEXT = "^(txt|md)$";
 
 static const QString CONTROLLERPLAYLIST_SUBTITLE = "^(srt)$";
 
+static const QString CONTROLLERPLAYLIST_M3U = "^(m3u|m3u8)$";
+
 #ifndef SK_NO_TORRENT
 static const QString CONTROLLERPLAYLIST_TORRENT = "^(torrent)$";
 #endif
@@ -490,6 +492,60 @@ void WControllerPlaylistData::applyHtml(const QByteArray & array, const QString 
     }
 }
 
+void WControllerPlaylistData::applyM3u(const QByteArray & array, const QString & url)
+{
+    QString content;
+
+    QString baseUrl = WControllerNetwork::extractBaseUrl(url);
+
+    QString urlName = WControllerNetwork::urlName(baseUrl);
+
+    QString extension = WControllerNetwork::extractUrlExtension(url);
+
+    if (extension == "m3u8")
+    {
+        content = Sk::readUtf8(array);
+    }
+    else content = array;
+
+    // NOTE: If it's a stream we return the base url itself.
+    if (content.contains("#EXT-X-STREAM-INF"))
+    {
+        addSource(url, generateTitle(url, urlName));
+
+        return;
+    }
+
+    QStringList list = Sk::slicesIn(content, WRegExp("EXTINF"), WRegExp("[#$]"));
+
+    foreach (const QString & media, list)
+    {
+        int index = media.lastIndexOf("http");
+
+        // NOTE: We only support http(s) urls.
+        if (index == -1) continue;
+
+        QString source = media.mid(index);
+
+        if (source.endsWith('\n')) source.chop(1);
+
+        if (source.isEmpty()) continue;
+
+        WTrack track(source);
+
+        track.setTitle(Sk::sliceIn(media, "tvg-name=\"", "\""));
+        track.setCover(Sk::sliceIn(media, "tvg-logo=\"", "\""));
+
+        tracks.append(track);
+    }
+
+    // NOTE: We couldn't parse anything so we return the base url itself.
+    if (tracks.isEmpty())
+    {
+        addSource(url, generateTitle(url, urlName));
+    }
+}
+
 void WControllerPlaylistData::applyFolder(const QString & url)
 {
     QDir dir(WControllerFile::filePath(url));
@@ -821,6 +877,7 @@ public: // Interface
     Q_INVOKABLE void extractVbml(QIODevice * device, const QString & url, const QString & urlBase);
 
     Q_INVOKABLE void extractHtml  (QIODevice * device, const QString & url);
+    Q_INVOKABLE void extractM3u   (QIODevice * device, const QString & url);
     Q_INVOKABLE void extractFolder(QIODevice * device, const QString & url);
     Q_INVOKABLE void extractFile  (QIODevice * device, const QString & url);
     Q_INVOKABLE void extractItem  (QIODevice * device, const QString & url);
@@ -855,6 +912,18 @@ signals:
     data.addSlice("http");
 
     data.applyHtml(device->readAll(), url);
+
+    emit loaded(device, data);
+
+    deleteLater();
+}
+
+/* Q_INVOKABLE */ void WControllerPlaylistReply::extractM3u(QIODevice     * device,
+                                                            const QString & url)
+{
+    WControllerPlaylistData data;
+
+    data.applyM3u(device->readAll(), url);
 
     emit loaded(device, data);
 
@@ -945,6 +1014,7 @@ void WControllerPlaylistPrivate::init()
     methodVbml = meta->method(meta->indexOfMethod("extractVbml(QIODevice*,QString,QString)"));
 
     methodHtml   = meta->method(meta->indexOfMethod("extractHtml(QIODevice*,QString)"));
+    methodM3u    = meta->method(meta->indexOfMethod("extractM3u(QIODevice*,QString)"));
     methodFolder = meta->method(meta->indexOfMethod("extractFolder(QIODevice*,QString)"));
     methodFile   = meta->method(meta->indexOfMethod("extractFile(QIODevice*,QString)"));
     methodItem   = meta->method(meta->indexOfMethod("extractItem(QIODevice*,QString)"));
@@ -1184,6 +1254,16 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
 
         return true;
     }
+    else if (WControllerPlaylist::urlIsM3u(source))
+    {
+        WBackendNetQuery query(source);
+
+        query.target = WBackendNetQuery::TargetM3u;
+
+        getDataPlaylist(playlist, query);
+
+        return true;
+    }
     else if (WControllerNetwork::urlIsFile(source))
     {
         QFileInfo info(WControllerFile::filePath(source));
@@ -1382,6 +1462,18 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
 
         query.type   = WBackendNetQuery::TypeImage;
         query.target = WBackendNetQuery::TargetVbml;
+
+        getDataFolder(folder, query);
+
+        return true;
+    }
+    else if (WControllerPlaylist::urlIsM3u(source))
+    {
+        addFolderSearch(folder, source, WControllerNetwork::urlName(source));
+
+        WBackendNetQuery query(source);
+
+        query.target = WBackendNetQuery::TargetM3u;
 
         getDataFolder(folder, query);
 
@@ -1991,7 +2083,11 @@ void WControllerPlaylistPrivate::loadUrls(QIODevice * device, const WBackendNetQ
 
     QMetaMethod method;
 
-    if (target == WBackendNetQuery::TargetFolder)
+    if (target == WBackendNetQuery::TargetM3u)
+    {
+        method = methodM3u;
+    }
+    else if (target == WBackendNetQuery::TargetFolder)
     {
         method = methodFolder;
     }
@@ -4567,6 +4663,13 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ bool WControllerPlaylist::urlIsM3u(const QString & url)
+{
+    QString extension = WControllerNetwork::extractUrlExtension(url);
+
+    return extensionIsM3u(extension);
+}
+
 #ifndef SK_NO_TORRENT
 
 /* Q_INVOKABLE static */ bool WControllerPlaylist::urlIsTorrent(const QString & url)
@@ -4671,6 +4774,11 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
 }
 
 //---------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE static */ bool WControllerPlaylist::extensionIsM3u(const QString & extension)
+{
+    return (extension.indexOf(WRegExp(CONTROLLERPLAYLIST_M3U)) != -1);
+}
 
 #ifndef SK_NO_TORRENT
 

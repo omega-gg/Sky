@@ -256,15 +256,15 @@ void WControllerMediaData::applyM3u(const QByteArray & array, const QString & ur
 {
     QString content = Sk::readUtf8(array);
 
-    QStringList list = Sk::slices(content, "EXT-X-STREAM-INF", "m3u8");
+    QStringList list = Sk::slicesIn(content, WRegExp("EXT-X-STREAM-INF"), WRegExp("[#$]"));
 
     foreach (const QString & media, list)
     {
-        QString string = Sk::sliceIn(media, WRegExp("RESOLUTION="), WRegExp("[,\\n]"));
+        QString resolution = Sk::sliceIn(media, WRegExp("RESOLUTION="), WRegExp("[,\\n]"));
 
-        string = string.mid(string.indexOf('x') + 1);
+        resolution = resolution.mid(resolution.indexOf('x') + 1);
 
-        WAbstractBackend::Quality quality = WAbstractBackend::qualityFromString(string);
+        WAbstractBackend::Quality quality = WAbstractBackend::qualityFromString(resolution);
 
         if (quality == WAbstractBackend::QualityDefault || medias.contains(quality)) continue;
 
@@ -273,11 +273,13 @@ void WControllerMediaData::applyM3u(const QByteArray & array, const QString & ur
         // NOTE: We only support http(s) urls.
         if (index == -1) continue;
 
-        string = media.mid(index);
+        QString source = media.mid(index);
 
-        if (string.isEmpty()) continue;
+        if (source.endsWith('\n')) source.chop(1);
 
-        medias.insert(quality, string);
+        if (source.isEmpty()) continue;
+
+        medias.insert(quality, source);
     }
 
     // NOTE: If we couldn't parse a resolution we add the current url as the default source.
@@ -474,7 +476,7 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
     {
         QString extension = WControllerNetwork::extractUrlExtension(source);
 
-        if (extension.startsWith("m3u8"))
+        if (WControllerPlaylist::extensionIsM3u(extension))
         {
             query.target = WBackendNetQuery::TargetM3u;
 
@@ -687,10 +689,7 @@ void WControllerMediaPrivate::clearReply(WMediaReply * reply)
 
 bool WControllerMediaPrivate::resolve(const QString & backendId, WBackendNetQuery & query)
 {
-    // FIXME: Remove this before pushing the next version.
-    return query.isValid();
-
-    /*QString id = query.backend;
+    QString id = query.backend;
 
     if (id.isEmpty() || id == backendId) return query.isValid();
 
@@ -698,7 +697,7 @@ bool WControllerMediaPrivate::resolve(const QString & backendId, WBackendNetQuer
 
     if (backend) query = backend->getQuerySource(query.url);
 
-    return query.isValid();*/
+    return query.isValid();
 }
 
 void WControllerMediaPrivate::getData(WPrivateMediaData * media, WBackendNetQuery * query)
