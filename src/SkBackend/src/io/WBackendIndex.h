@@ -52,6 +52,7 @@ public: // WBackendLoader reimplementation
                                                      WLibraryItem::Type type) const;
 
     /* Q_INVOKABLE virtual */ QString coverFromId(const QString & id) const;
+    /* Q_INVOKABLE virtual */ QString hubFromId  (const QString & id) const;
 
 protected: // WBackendLoader reimplementation
     /* Q_INVOKABLE virtual */ WBackendNet * createBackend(const QString & id) const;

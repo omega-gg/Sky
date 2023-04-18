@@ -106,11 +106,13 @@ static const QString BACKENDUNIVERSAL_FUNCTIONS = \
     "SLICE|"
     "SLICE_IN|"
     "SLICES|"
+    "SLICES_IN|"
     "LIST|"
     "LIST_GET|"
     "LIST_SET|"
     "LIST_TAKE_AT|"
     "LIST_APPEND|"
+    "LIST_INSERT|"
     "LIST_REMOVE|"
     "LIST_REMOVE_AT|"
     "LIST_INDEX|"
@@ -1254,6 +1256,29 @@ inline QVariant slices(const WBackendUniversalNode * node,
                                           node->getInt(parameters, 3)));
 }
 
+inline QVariant slicesIn(const WBackendUniversalNode * node,
+                         WBackendUniversalParameters * parameters)
+{
+#ifdef SK_BACKEND_LOG
+    qDebug("SLICES_IN");
+#endif
+
+    int count = node->nodes.count();
+
+    if (count < 3) return QVariant();
+
+    if (count == 3)
+    {
+         return node->variants(Sk::slicesIn(node->getString(parameters, 0),
+                                            node->getString(parameters, 1),
+                                            node->getString(parameters, 2)));
+    }
+    else return node->variants(Sk::slicesIn(node->getString(parameters, 0),
+                                            node->getString(parameters, 1),
+                                            node->getString(parameters, 2),
+                                            node->getInt(parameters, 3)));
+}
+
 //-------------------------------------------------------------------------------------------------
 // List
 
@@ -1378,6 +1403,28 @@ inline QVariant listAppend(const WBackendUniversalNode * node,
     QVariantList list = key->toList();
 
     list.append(node->getVariant(parameters, 1));
+
+    *key = list;
+
+    return true;
+}
+
+inline QVariant listInsert(const WBackendUniversalNode * node,
+                           WBackendUniversalParameters * parameters)
+{
+#ifdef SK_BACKEND_LOG
+    qDebug("LIST_INSERT");
+#endif
+
+    if (node->nodes.count() < 3) return false;
+
+    QVariant * key = node->getKey(parameters, 0);
+
+    if (key == NULL) return false;
+
+    QVariantList list = key->toList();
+
+    list.insert(node->getInt(parameters, 1), node->getVariant(parameters, 2));
 
     *key = list;
 
@@ -2444,6 +2491,8 @@ signals:
          data.cover = cover;
     }
     else data.cover = WControllerNetwork::extractBaseUrl(data.origin) + '/' + cover;
+
+    data.hub = reader.extractString("hub");
 
     data.items = extractItems(reader);
 
@@ -3842,11 +3891,13 @@ void WBackendUniversalPrivate::populateHash() const
     hash.insert("SLICE",                  slice);
     hash.insert("SLICE_IN",               sliceIn);
     hash.insert("SLICES",                 slices);
+    hash.insert("SLICES_IN",              slicesIn);
     hash.insert("LIST",                   list);
     hash.insert("LIST_GET",               listGet);
     hash.insert("LIST_SET",               listSet);
     hash.insert("LIST_TAKE_AT",           listTakeAt);
     hash.insert("LIST_APPEND",            listAppend);
+    hash.insert("LIST_INSERT",            listInsert);
     hash.insert("LIST_REMOVE",            listRemove);
     hash.insert("LIST_REMOVE_AT",         listRemoveAt);
     hash.insert("LIST_INDEX",             listIndex);
@@ -4711,6 +4762,11 @@ WBackendUniversal::WBackendUniversal(const QString & id, const QString & source)
 /* Q_INVOKABLE virtual */ QString WBackendUniversal::getCover() const
 {
     Q_D(const WBackendUniversal); return d->data.cover;
+}
+
+/* Q_INVOKABLE virtual */ QString WBackendUniversal::getHub() const
+{
+    Q_D(const WBackendUniversal); return d->data.hub;
 }
 
 //-------------------------------------------------------------------------------------------------

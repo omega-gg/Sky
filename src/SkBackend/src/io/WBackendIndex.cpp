@@ -138,7 +138,11 @@ QStringList WBackendIndexQuery::extractList(const WYamlReader & reader, const QS
 {
     QString string = reader.extractString(key);
 
-    return string.simplified().split(' ');
+    if (string.isEmpty())
+    {
+        return QStringList();
+    }
+    else return string.simplified().split(' ');
 }
 
 QList<WBackendIndexItem> WBackendIndexQuery::extractItems(const WYamlReader & reader) const
@@ -543,6 +547,13 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
     Q_D(const WBackendIndex);
 
     return d->data.covers.value(id);
+}
+
+/* Q_INVOKABLE virtual */ QString WBackendIndex::hubFromId(const QString & id) const
+{
+    Q_D(const WBackendIndex);
+
+    return d->data.hubs.value(id);
 }
 
 //-------------------------------------------------------------------------------------------------

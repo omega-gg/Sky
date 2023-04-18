@@ -91,6 +91,7 @@ public: // Variables
 
     QString host;
     QString cover;
+    QString hub;
 
     QList<WLibraryFolderItem> items;
 

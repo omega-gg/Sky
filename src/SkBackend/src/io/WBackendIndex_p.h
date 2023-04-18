@@ -86,6 +86,7 @@ public: // Variables
     QList<WBackendIndexItem> backends;
 
     QHash<QString, QString> covers;
+    QHash<QString, QString> hubs;
 
     QHash<QString, const WBackendIndexItem *> hash;
 };

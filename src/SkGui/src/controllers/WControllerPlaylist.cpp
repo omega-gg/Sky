@@ -4079,6 +4079,40 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
     return QString();
 }
 
+/* Q_INVOKABLE */ QString WControllerPlaylist::backendHubFromId(const QString & id) const
+{
+    Q_D(const WControllerPlaylist);
+
+    foreach (WBackendLoader * loader, d->backendLoaders)
+    {
+        QString cover = loader->hubFromId(id);
+
+        if (cover.isEmpty() == false)
+        {
+            return cover;
+        }
+    }
+
+    return QString();
+}
+
+/* Q_INVOKABLE */ QString WControllerPlaylist::backendHubFromUrl(const QString & url) const
+{
+    Q_D(const WControllerPlaylist);
+
+    foreach (WBackendLoader * loader, d->backendLoaders)
+    {
+        QString cover = loader->hubFromUrl(url);
+
+        if (cover.isEmpty() == false)
+        {
+            return cover;
+        }
+    }
+
+    return QString();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ WLibraryItem::Type WControllerPlaylist::urlType(const QString & url) const

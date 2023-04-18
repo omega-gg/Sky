@@ -155,6 +155,9 @@ public: // Interface
     Q_INVOKABLE QString backendCoverFromId (const QString & id)  const;
     Q_INVOKABLE QString backendCoverFromUrl(const QString & url) const;
 
+    Q_INVOKABLE QString backendHubFromId (const QString & id)  const;
+    Q_INVOKABLE QString backendHubFromUrl(const QString & url) const;
+
     //---------------------------------------------------------------------------------------------
 
     Q_INVOKABLE WLibraryItem::Type urlType(const QString & url) const;

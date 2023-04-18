@@ -60,6 +60,7 @@ public: // WBackendNet reimplementation
 
     /* Q_INVOKABLE virtual */ QString getHost () const;
     /* Q_INVOKABLE virtual */ QString getCover() const;
+    /* Q_INVOKABLE virtual */ QString getHub  () const;
 
     /* Q_INVOKABLE virtual */ QList<WLibraryFolderItem> getLibraryItems() const;
 

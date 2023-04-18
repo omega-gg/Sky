@@ -757,6 +757,11 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
     return QString();
 }
 
+/* Q_INVOKABLE virtual */ QString WBackendNet::getHub() const
+{
+    return QString();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ QList<WLibraryFolderItem> WBackendNet::getLibraryItems() const

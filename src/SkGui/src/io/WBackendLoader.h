@@ -56,6 +56,7 @@ public: // Interface
     Q_INVOKABLE QString idFromUrl(const QString & url) const;
 
     Q_INVOKABLE QString coverFromUrl(const QString & url) const;
+    Q_INVOKABLE QString hubFromUrl  (const QString & url) const;
 
     Q_INVOKABLE void reloadBackends();
 
@@ -72,6 +73,7 @@ public: // Virtual interface
                                                WLibraryItem::Type type) const; // {}
 
     Q_INVOKABLE virtual QString coverFromId(const QString & id) const; // {}
+    Q_INVOKABLE virtual QString hubFromId  (const QString & id) const; // {}
 
 protected: // Static functions
     Q_INVOKABLE static WBackendNet * getBackend(const QString & id);

@@ -418,7 +418,7 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
     {
         WBackendNet * backend = create(id);
 
-        if (backend->checkCover(label, q)) return backend;
+        if (backend && backend->checkCover(label, q)) return backend;
     }
 
     return NULL;
@@ -442,6 +442,17 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
          return QString();
     }
     else return coverFromId(id);
+}
+
+/* Q_INVOKABLE */ QString WBackendLoader::hubFromUrl(const QString & url) const
+{
+    QString id = idFromUrl(url);
+
+    if (id.isEmpty())
+    {
+         return QString();
+    }
+    else return hubFromId(id);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -493,6 +504,11 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE virtual */ QString WBackendLoader::coverFromId(const QString &) const
+{
+    return QString();
+}
+
+/* Q_INVOKABLE virtual */ QString WBackendLoader::hubFromId(const QString &) const
 {
     return QString();
 }
