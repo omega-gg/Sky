@@ -4085,11 +4085,11 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
     foreach (WBackendLoader * loader, d->backendLoaders)
     {
-        QString cover = loader->hubFromId(id);
+        QString hub = loader->hubFromId(id);
 
-        if (cover.isEmpty() == false)
+        if (hub.isEmpty() == false)
         {
-            return cover;
+            return hub;
         }
     }
 
@@ -4102,11 +4102,11 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
     foreach (WBackendLoader * loader, d->backendLoaders)
     {
-        QString cover = loader->hubFromUrl(url);
+        QString hub = loader->hubFromUrl(url);
 
-        if (cover.isEmpty() == false)
+        if (hub.isEmpty() == false)
         {
-            return cover;
+            return hub;
         }
     }
 

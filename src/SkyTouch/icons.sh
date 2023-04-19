@@ -29,3 +29,5 @@ cp "$solid"/forward.svg icons
 cp "$solid"/play.svg icons
 
 cp "$solid"/rss.svg icons
+
+cp "$solid"/house.svg icons

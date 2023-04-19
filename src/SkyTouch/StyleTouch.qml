@@ -321,6 +321,13 @@ Style
     property int componentBackend_iconWidth: dp24
 //#END
 
+//#ComponentBackendFull
+    //---------------------------------------------------------------------------------------------
+    // ComponentBackendFull
+
+    property int componentBackendFull_margins: dp12
+//#END
+
 //#ComponentTrack
     //---------------------------------------------------------------------------------------------
     // ComponentTrack
@@ -421,6 +428,10 @@ Style
 
 //#icons_feed:ComponentBackend:ComponentTrack
     property url icon_feed: "icons/rss.svg"
+//#END
+
+//#icons_home:ComponentBackendFull
+    property url icon_home: "icons/house.svg"
 //#END
 
     //---------------------------------------------------------------------------------------------

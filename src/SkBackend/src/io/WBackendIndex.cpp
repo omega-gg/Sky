@@ -58,9 +58,10 @@ private: // Functions
     QList<WBackendIndexItem> extractItems(const WYamlReader & reader) const;
 
     QHash<QString, QString>
-    extractCovers(const WYamlReader & reader,
-                  const QString     & source,
-                  const QHash<QString, const WBackendIndexItem *> & hash) const;
+    extractHash(const WYamlReader & reader,
+                const QString & key, const QString & source,
+                const QHash<QString, const WBackendIndexItem *> & hash,
+                bool applyUrl = false) const;
 
 signals:
     void loaded(const WBackendIndexData & data);
@@ -121,7 +122,8 @@ signals:
         data.hash.insert(item.id, &item);
     }
 
-    data.covers = extractCovers(reader, data.origin, data.hash);
+    data.covers = extractHash(reader, "covers", data.origin, data.hash, true);
+    data.hubs   = extractHash(reader, "hubs",   data.origin, data.hash);
 
     //---------------------------------------------------------------------------------------------
 
@@ -173,11 +175,12 @@ QList<WBackendIndexItem> WBackendIndexQuery::extractItems(const WYamlReader & re
 }
 
 QHash<QString, QString>
-WBackendIndexQuery::extractCovers(const WYamlReader & reader,
-                                  const QString     & source,
-                                  const QHash<QString, const WBackendIndexItem *> & hash) const
+WBackendIndexQuery::extractHash(const WYamlReader & reader,
+                                const QString & key, const QString & source,
+                                const QHash<QString, const WBackendIndexItem *> & hash,
+                                bool applyUrl) const
 {
-    QHash<QString, QString> covers;
+    QHash<QString, QString> items;
 
     QString path;
 
@@ -189,30 +192,50 @@ WBackendIndexQuery::extractCovers(const WYamlReader & reader,
     }
     else path = source.mid(0, index + 1);
 
-    QString data = reader.extractString("covers");
+    QString data = reader.extractString(key);
 
     QStringList list = data.split('\n');
 
-    foreach (const QString & string, list)
+    if (applyUrl)
     {
-        QStringList values = string.simplified().split(' ');
-
-        if (values.count() != 2) continue;
-
-        QString id = values.first();
-
-        if (hash.contains(id) == false) continue;
-
-        QString cover = values.last();
-
-        if (WControllerNetwork::textIsUrl(cover))
+        foreach (const QString & string, list)
         {
-             covers.insert(id, cover);
+            QStringList values = string.simplified().split(' ');
+
+            if (values.count() != 2) continue;
+
+            QString id = values.first();
+
+            if (hash.contains(id) == false) continue;
+
+            QString cover = values.last();
+
+            if (WControllerNetwork::textIsUrl(cover))
+            {
+                 items.insert(id, cover);
+            }
+            else items.insert(id, path + cover);
         }
-        else covers.insert(id, path + cover);
+    }
+    else
+    {
+        foreach (const QString & string, list)
+        {
+            QStringList values = string.simplified().split(' ');
+
+            if (values.count() != 2) continue;
+
+            QString id = values.first();
+
+            if (hash.contains(id) == false) continue;
+
+            QString cover = values.last();
+
+            items.insert(id, cover);
+        }
     }
 
-    return covers;
+    return items;
 }
 
 //=================================================================================================
