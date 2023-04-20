@@ -111,6 +111,8 @@ public: // Interface
     Q_INVOKABLE WCacheFile * getFile(const QString & url,
                                      QObject       * parent = NULL, int maxHost = -1);
 
+    Q_INVOKABLE void reloadFile(const QString & url);
+
     Q_INVOKABLE QString getFileUrl(const QString & url);
 
     Q_INVOKABLE WCacheFile * writeFile(const QString    & url,

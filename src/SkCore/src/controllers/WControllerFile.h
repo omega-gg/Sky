@@ -143,6 +143,9 @@ public: // Interface
     Q_INVOKABLE void addCache(const QString & url, const QByteArray & array,
                                                    const QString    & extension = QString());
 
+    Q_INVOKABLE void removeCaches(const QStringList & urls);
+    Q_INVOKABLE void removeCache (const QString     & url);
+
     Q_INVOKABLE void waitActions();
 
     //---------------------------------------------------------------------------------------------

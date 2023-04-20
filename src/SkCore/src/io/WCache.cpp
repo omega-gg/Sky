@@ -1464,6 +1464,11 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
     return file;
 }
 
+/* Q_INVOKABLE */ void WCache::reloadFile(const QString & url)
+{
+    removeFile(url);
+}
+
 /* Q_INVOKABLE */ QString WCache::getFileUrl(const QString & url)
 {
     Q_D(WCache);
@@ -1519,8 +1524,6 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
     return file;
 }
 
-//-------------------------------------------------------------------------------------------------
-
 /* Q_INVOKABLE */ void WCache::addFile(const QString & url, const QByteArray & array,
                                                             const QString    & extension)
 {
@@ -1528,8 +1531,6 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
     if (file) delete file;
 }
-
-//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WCache::removeFiles(const QStringList & urls)
 {

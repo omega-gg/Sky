@@ -247,7 +247,7 @@ public: // Properties
 private:
     W_DECLARE_PRIVATE(WDeclarativeImageBase)
 
-    Q_PRIVATE_SLOT(d_func(), void onLoaded(WCacheFile *))
+    Q_PRIVATE_SLOT(d_func(), void onLoaded())
 
     Q_PRIVATE_SLOT(d_func(), void onFilterUpdated())
     Q_PRIVATE_SLOT(d_func(), void onFilterClear  ())

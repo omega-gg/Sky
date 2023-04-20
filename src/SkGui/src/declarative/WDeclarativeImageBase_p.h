@@ -90,7 +90,7 @@ public: // Functions
     void clearFile();
 
 public: // Slots
-    void onLoaded(WCacheFile * file);
+    void onLoaded();
 
     void onFilterUpdated();
     void onFilterClear  ();

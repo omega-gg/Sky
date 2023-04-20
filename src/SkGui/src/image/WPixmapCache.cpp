@@ -316,6 +316,8 @@ public:
 public: // Interface
     bool addSize(qint64 size, const QString & path);
 
+    void removePath(const QString & path);
+
     void deleteData(WPixmapCacheData * data);
 
     void cleanPixmaps();
@@ -326,6 +328,10 @@ public slots:
 
     void onFilesRemoved(const QStringList & paths, const QStringList & pathsCache);
     void onFilesCleared();
+
+private: // Functions
+    void removeData(QMutableHashIterator<WPixmapCacheKey, WPixmapCacheData *> & i,
+                    WPixmapCacheData * data);
 
 public: // Properties
     void setSizeMax(qint64 max);
@@ -500,7 +506,21 @@ bool WPixmapCacheStore::addSize(qint64 size, const QString & path)
     }
 }
 
-//-------------------------------------------------------------------------------------------------
+void WPixmapCacheStore::removePath(const QString & path)
+{
+    QMutableHashIterator<WPixmapCacheKey, WPixmapCacheData *> i(pixmaps);
+
+    while (i.hasNext())
+    {
+        i.next();
+
+        WPixmapCacheData * data = i.value();
+
+        if (path != data->path) continue;
+
+        removeData(i, data);
+    }
+}
 
 void WPixmapCacheStore::deleteData(WPixmapCacheData * data)
 {
@@ -574,19 +594,7 @@ void WPixmapCacheStore::onFilesRemoved(const QStringList &, const QStringList & 
 
         WPixmapCacheData * data = i.value();
 
-        if (pathsCache.contains(data->path))
-        {
-            datas.removeOne(data);
-
-            size -= data->pixmapSize;
-
-            i.remove();
-
-            if (data->pixmaps.isEmpty())
-            {
-                delete data;
-            }
-        }
+        if (pathsCache.contains(data->path)) removeData(i, data);
     }
 }
 
@@ -602,19 +610,26 @@ void WPixmapCacheStore::onFilesCleared()
 
         QString path = data->path;
 
-        if (path.startsWith(this->path))
-        {
-            datas.removeOne(data);
+        if (path.startsWith(this->path)) removeData(i, data);
+    }
+}
 
-            size -= data->pixmapSize;
+//-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
 
-            i.remove();
+void WPixmapCacheStore::removeData(QMutableHashIterator<WPixmapCacheKey, WPixmapCacheData *> & i,
+                                   WPixmapCacheData * data)
+{
+    datas.removeOne(data);
 
-            if (data->pixmaps.isEmpty())
-            {
-                delete data;
-            }
-        }
+    size -= data->pixmapSize;
+
+    i.remove();
+
+    if (data->pixmaps.isEmpty())
+    {
+        delete data;
     }
 }
 
@@ -1183,6 +1198,13 @@ void WPixmapCache::clear(QObject * receiver)
     QObject::connect(reply, SIGNAL(loaded(const QImage &)), receiver, method);
 
     return action;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* static */ void WPixmapCache::removePath(const QString & path)
+{
+    pixmapStore()->removePath(path);
 }
 
 //-------------------------------------------------------------------------------------------------

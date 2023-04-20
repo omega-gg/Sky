@@ -718,6 +718,28 @@ WControllerFile::WControllerFile() : WController(new WControllerFilePrivate(this
     else qWarning("WControllerFile::addFile: Cannot add file %s. No cache.", url.C_STR);
 }
 
+/* Q_INVOKABLE */ void WControllerFile::removeCaches(const QStringList & urls)
+{
+    Q_D(WControllerFile);
+
+    if (d->cache)
+    {
+        d->cache->removeFiles(urls);
+    }
+    else qWarning("WControllerFile::removeCaches: Cannot remove files. No cache.");
+}
+
+/* Q_INVOKABLE */ void WControllerFile::removeCache(const QString & url)
+{
+    Q_D(WControllerFile);
+
+    if (d->cache)
+    {
+        d->cache->removeFile(url);
+    }
+    else qWarning("WControllerFile::removeCache: Cannot remove file %s. No cache.", url.C_STR);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WControllerFile::waitActions()

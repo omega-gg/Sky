@@ -145,7 +145,7 @@ void WDeclarativeImageBasePrivate::loadUrl()
             progress = 0.0;
             status   = WDeclarativeImageBase::Loading;
 
-            QObject::connect(file, SIGNAL(loaded(WCacheFile *)), q, SLOT(onLoaded(WCacheFile *)));
+            QObject::connect(file, SIGNAL(loaded(WCacheFile *)), q, SLOT(onLoaded()));
 
             QObject::connect(file, SIGNAL(progress       (qint64, qint64)),
                              q,    SLOT  (requestProgress(qint64, qint64)));
@@ -350,19 +350,15 @@ void WDeclarativeImageBasePrivate::clearFile()
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
-void WDeclarativeImageBasePrivate::onLoaded(WCacheFile * file)
+void WDeclarativeImageBasePrivate::onLoaded()
 {
     Q_Q(WDeclarativeImageBase);
-
-    this->file = NULL;
 
     if (file->hasError())
     {
          q->clearUrl(WDeclarativeImageBase::Error);
     }
     else q->applyUrl(file->urlCache(), true);
-
-    file->deleteLater();
 }
 
 //-------------------------------------------------------------------------------------------------

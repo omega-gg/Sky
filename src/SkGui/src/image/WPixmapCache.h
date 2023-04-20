@@ -87,6 +87,8 @@ public: // Static functions
                                                                    QObject     * receiver,
                                                                    const char  * method);
 
+    static void removePath(const QString & path);
+
     //static QSize getSize(const QImageReader & reader, const QSize & size);
 
     static QSize getSize(const QSize & sizeA, const QSize & sizeB);
