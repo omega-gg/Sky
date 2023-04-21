@@ -2082,7 +2082,7 @@ void WControllerApplication::setVersion(const QString & version)
 
 /* static */ QString WControllerApplication::versionSky()
 {
-    return "1.8.0-1";
+    return "1.8.1-0";
 }
 
 /* static */ QString WControllerApplication::versionQt()
