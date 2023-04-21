@@ -325,7 +325,7 @@ Style
     //---------------------------------------------------------------------------------------------
     // ComponentBackendFull
 
-    property int componentBackendFull_margins: dp12
+    property int componentBackendFull_margins: dp14
 //#END
 
 //#ComponentTrack
