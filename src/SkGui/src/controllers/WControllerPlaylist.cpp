@@ -2190,6 +2190,9 @@ WBackendNetQuery WControllerPlaylistPrivate::extractQuery(WBackendNet * backend,
 
     if (query.isValid()) return query;
 
+    //---------------------------------------------------------------------------------------------
+    // NOTE: When we fail to create a valid query we try to create one with the backendSearch.
+
     backend = q_func()->backendSearch();
 
     if (backend == NULL) return query;
@@ -4119,7 +4122,11 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
     if (backend)
     {
-        return backend->id();
+        QString id = backend->id();
+
+        backend->tryDelete();
+
+        return id;
     }
     else return QString();
 }
