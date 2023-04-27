@@ -695,7 +695,11 @@ bool WControllerMediaPrivate::resolve(const QString & backendId, WBackendNetQuer
 
     WBackendNet * backend = wControllerPlaylist->backendFromId(id);
 
-    if (backend) query = backend->getQuerySource(query.url);
+    if (backend == NULL) return query.isValid();
+
+    query = backend->getQuerySource(query.url);
+
+    backend->tryDelete();
 
     return query.isValid();
 }

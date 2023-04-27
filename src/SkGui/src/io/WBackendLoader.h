@@ -53,6 +53,8 @@ public: // Interface
 
     Q_INVOKABLE WBackendNet * matchCover(const QString & label, const QString & q);
 
+    Q_INVOKABLE WBackendNet * backendSearch();
+
     Q_INVOKABLE QString idFromUrl(const QString & url) const;
 
     Q_INVOKABLE QString coverFromUrl(const QString & url) const;
@@ -71,6 +73,8 @@ public: // Virtual interface
 
     Q_INVOKABLE virtual void createFolderItems(WLibraryFolder * folder,
                                                WLibraryItem::Type type) const; // {}
+
+    Q_INVOKABLE virtual QString searchId() const; // {}
 
     Q_INVOKABLE virtual QString coverFromId(const QString & id) const; // {}
     Q_INVOKABLE virtual QString hubFromId  (const QString & id) const; // {}

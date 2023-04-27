@@ -418,10 +418,25 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
     {
         WBackendNet * backend = create(id);
 
-        if (backend && backend->checkCover(label, q)) return backend;
+        if (backend == NULL) continue;
+
+        if (backend->checkCover(label, q)) return backend;
+
+        backend->tryDelete();
     }
 
     return NULL;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ WBackendNet * WBackendLoader::backendSearch()
+{
+    QString id = searchId();
+
+    if (id.isEmpty()) return NULL;
+
+    return create(id);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -430,8 +445,6 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
 {
     return getId(WControllerPlaylist::simpleSource(url).toLower());
 }
-
-//-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ QString WBackendLoader::coverFromUrl(const QString & url) const
 {
@@ -496,7 +509,10 @@ WBackendLoader::WBackendLoader(WBackendLoaderPrivate * p, QObject * parent)
     return false;
 }
 
-//-------------------------------------------------------------------------------------------------
+/* Q_INVOKABLE virtual */ QString WBackendLoader::searchId() const
+{
+    return QString();
+}
 
 /* Q_INVOKABLE virtual */ void WBackendLoader::createFolderItems(WLibraryFolder *,
                                                                  WLibraryItem::Type) const {}

@@ -565,6 +565,21 @@ WBackendIndex::WBackendIndex(const QString & url, QObject * parent)
 
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE virtual */ QString WBackendIndex::searchId() const
+{
+    Q_D(const WBackendIndex);
+
+    const QStringList & list = d->data.backendsSearch;
+
+    if (list.isEmpty())
+    {
+        return QString();
+    }
+    else return list.first();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /* Q_INVOKABLE virtual */ QString WBackendIndex::coverFromId(const QString & id) const
 {
     Q_D(const WBackendIndex);

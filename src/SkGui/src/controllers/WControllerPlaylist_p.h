@@ -160,10 +160,12 @@ public: // Functions
 
     //---------------------------------------------------------------------------------------------
 
-    bool resolveTrack   (const QString & backendId, WBackendNetQuery & query);
-    bool resolvePlaylist(const QString & backendId, WBackendNetQuery & query);
-    bool resolveFolder  (const QString & backendId, WBackendNetQuery & query);
-    bool resolveItem    (const QString & backendId, WBackendNetQuery & query);
+    WBackendNetQuery extractQuery(WBackendNet * backend, QString url, QString & id) const;
+
+    bool resolveTrack   (const QString & backendId, WBackendNetQuery & query) const;
+    bool resolvePlaylist(const QString & backendId, WBackendNetQuery & query) const;
+    bool resolveFolder  (const QString & backendId, WBackendNetQuery & query) const;
+    bool resolveItem    (const QString & backendId, WBackendNetQuery & query) const;
 
     void getDataTrack(WPlaylist * playlist, WTrack * track, const WBackendNetQuery & query);
 
@@ -190,10 +192,10 @@ public: // Functions
 
     //---------------------------------------------------------------------------------------------
 
-    bool checkTrack   (WTrack         * track);
-    bool checkPlaylist(WPlaylist      * playlist);
-    bool checkFolder  (WLibraryFolder * folder);
-    bool checkItem    (WLibraryItem   * item);
+    bool checkTrack   (WTrack         * track)    const;
+    bool checkPlaylist(WPlaylist      * playlist) const;
+    bool checkFolder  (WLibraryFolder * folder)   const;
+    bool checkItem    (WLibraryItem   * item)     const;
 
     void abortTrack   (WTrack         * track);
     void abortPlaylist(WPlaylist      * playlist);

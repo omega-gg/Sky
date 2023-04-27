@@ -526,25 +526,6 @@ WBackendNet::WBackendNet(WBackendNetPrivate * p) : QObject(), WPrivatable(p)
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ WBackendNetQuery WBackendNet::extractQuery(const QString & url) const
-{
-    QUrl source(url);
-
-#ifdef QT_4
-    QString method = source.queryItemValue("method");
-    QString label  = source.queryItemValue("label");
-    QString q      = source.queryItemValue("q");
-#else
-    QUrlQuery query(source);
-
-    QString method = query.queryItemValue("method");
-    QString label  = query.queryItemValue("label");
-    QString q      = query.queryItemValue("q");
-#endif
-
-    return createQuery(method, label, WControllerNetwork::decodeUrl(q));
-}
-
 /* Q_INVOKABLE */ WLibraryItem::Type WBackendNet::typeFromQuery(const QString & url) const
 {
     QUrl source(url);

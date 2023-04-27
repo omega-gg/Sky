@@ -146,6 +146,8 @@ public: // Interface
     Q_INVOKABLE WBackendNet * backendFromTrack   (const QString & url) const;
     Q_INVOKABLE WBackendNet * backendFromPlaylist(const QString & url) const;
 
+    Q_INVOKABLE WBackendNet * backendSearch() const;
+
     Q_INVOKABLE WBackendNet * backendForCover(const QString & label, const QString & q) const;
 
     //---------------------------------------------------------------------------------------------

@@ -51,6 +51,8 @@ public: // WBackendLoader reimplementation
     /* Q_INVOKABLE virtual */ void createFolderItems(WLibraryFolder * folder,
                                                      WLibraryItem::Type type) const;
 
+    /* Q_INVOKABLE virtual */ QString searchId() const;
+
     /* Q_INVOKABLE virtual */ QString coverFromId(const QString & id) const;
     /* Q_INVOKABLE virtual */ QString hubFromId  (const QString & id) const;
 
