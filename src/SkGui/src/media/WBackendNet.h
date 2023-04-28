@@ -57,6 +57,7 @@ public: // Enums
     {
         TargetDefault,
         TargetVbml,
+        TargetRelated,
         TargetHtml,
         TargetM3u,
         TargetFolder,

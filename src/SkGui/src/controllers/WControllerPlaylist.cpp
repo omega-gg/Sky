@@ -296,8 +296,10 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
 
     QString string = reader.extractString("origin");
 
-    // NOTE: The origin has to be different than the current URL.
-    if (WControllerNetwork::removeUrlPrefix(url) != WControllerNetwork::removeUrlPrefix(string))
+    if (string.isEmpty() == false
+        &&
+        // NOTE: The origin has to be different than the current URL.
+        WControllerNetwork::removeUrlPrefix(url) != WControllerNetwork::removeUrlPrefix(string))
     {
         origin = string;
     }
@@ -318,6 +320,84 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
         this->url = url;
 
         parsePlaylist(reader);
+    }
+}
+
+void WControllerPlaylistData::applyRelated(const QByteArray & array, const QString & url,
+                                                                     const QString & urlBase)
+{
+    QString content = Sk::readBml(array);
+
+    //---------------------------------------------------------------------------------------------
+    // Api
+
+    QString api = WControllerPlaylist::vbmlVersion(content);
+
+    if (api.isEmpty())
+    {
+        if (WControllerPlaylist::textIsRedirect(content, url))
+        {
+            type = WControllerPlaylist::Redirect;
+
+            origin = WControllerPlaylist::createSource("vbml", "related", "tracks", content);
+
+            return;
+        }
+
+        // NOTE: If it's HTML we try to extract a VBML link.
+        if (array.contains("<html>"))
+        {
+            origin = WControllerPlaylistData::extractHtmlLink(array, url);
+
+            if (origin.isEmpty() == false)
+            {
+                type = WControllerPlaylist::Redirect;
+
+                origin = WControllerPlaylist::createSource("vbml", "related", "tracks", origin);
+            }
+
+            return;
+        }
+    }
+
+    if (Sk::versionIsHigher(WControllerPlaylist::versionApi(), api))
+    {
+        WControllerPlaylist::vbmlPatch(content, api);
+
+        applyRelated(content.toUtf8(), url, urlBase);
+
+        return;
+    }
+
+    if (Sk::versionIsLower(WControllerPlaylist::versionApi(), api))
+    {
+        qWarning("WControllerPlaylistData::applyRelated: The required API is too high.");
+    }
+
+    WYamlReader reader(content.toUtf8());
+
+    //---------------------------------------------------------------------------------------------
+    // Settings
+
+    QString string = reader.extractString("origin");
+
+    if (string.isEmpty() == false
+        &&
+        // NOTE: The origin has to be different than the current URL.
+        WControllerNetwork::removeUrlPrefix(url) != WControllerNetwork::removeUrlPrefix(string))
+    {
+        type = WControllerPlaylist::Redirect;
+
+        origin = WControllerPlaylist::createSource("vbml", "related", "tracks", string);
+
+        return;
+    }
+
+    origin = reader.extractString("related");
+
+    if (origin.isEmpty() == false)
+    {
+        type = WControllerPlaylist::Redirect;
     }
 }
 
@@ -876,6 +956,9 @@ class WControllerPlaylistReply : public QObject
 public: // Interface
     Q_INVOKABLE void extractVbml(QIODevice * device, const QString & url, const QString & urlBase);
 
+    Q_INVOKABLE void extractRelated(QIODevice * device, const QString & url,
+                                                        const QString & urlBase);
+
     Q_INVOKABLE void extractHtml  (QIODevice * device, const QString & url);
     Q_INVOKABLE void extractM3u   (QIODevice * device, const QString & url);
     Q_INVOKABLE void extractFolder(QIODevice * device, const QString & url);
@@ -898,6 +981,19 @@ signals:
     WControllerPlaylistData data;
 
     data.applyVbml(device->readAll(), url, urlBase);
+
+    emit loaded(device, data);
+
+    deleteLater();
+}
+
+/* Q_INVOKABLE */ void WControllerPlaylistReply::extractRelated(QIODevice     * device,
+                                                                const QString & url,
+                                                                const QString & urlBase)
+{
+    WControllerPlaylistData data;
+
+    data.applyRelated(device->readAll(), url, urlBase);
 
     emit loaded(device, data);
 
@@ -1012,6 +1108,9 @@ void WControllerPlaylistPrivate::init()
     const QMetaObject * meta = WControllerPlaylistReply().metaObject();
 
     methodVbml = meta->method(meta->indexOfMethod("extractVbml(QIODevice*,QString,QString)"));
+
+    methodRelated
+        = meta->method(meta->indexOfMethod("extractRelated(QIODevice*,QString,QString)"));
 
     methodHtml   = meta->method(meta->indexOfMethod("extractHtml(QIODevice*,QString)"));
     methodM3u    = meta->method(meta->indexOfMethod("extractM3u(QIODevice*,QString)"));
@@ -1223,6 +1322,17 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
 
         backend->tryDelete();
     }
+    else if (WBackendNet::checkQuery(source))
+    {
+        WBackendNetQuery query = extractRelated(source);
+
+        if (query.isValid())
+        {
+            getDataPlaylist(playlist, query);
+
+            return true;
+        }
+    }
 
     if (WControllerPlaylist::urlIsVbmlFile(source))
     {
@@ -1431,7 +1541,23 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
             return true;
         }
     }
-    else if (WControllerPlaylist::urlIsVbmlFile(source))
+    else if (WBackendNet::checkQuery(source))
+    {
+        WBackendNetQuery query = extractRelated(source);
+
+        if (query.isValid())
+        {
+            addFolderSearch(folder, source, WControllerNetwork::urlName(source));
+
+            WBackendNetQuery query(source);
+
+            getDataFolder(folder, query);
+
+            return true;
+        }
+    }
+
+    if (WControllerPlaylist::urlIsVbmlFile(source))
     {
         addFolderSearch(folder, source, WControllerNetwork::urlName(source));
 
@@ -2066,8 +2192,14 @@ void WControllerPlaylistPrivate::loadUrls(QIODevice * device, const WBackendNetQ
 
         return;
     }
+    else if (target == WBackendNetQuery::TargetRelated)
+    {
+        methodRelated.invoke(reply, Q_ARG(QIODevice *, device), Q_ARG(const QString &, query.url),
+                                                                Q_ARG(const QString &, url));
 
-    if (target == WBackendNetQuery::TargetHtml)
+        return;
+    }
+    else if (target == WBackendNetQuery::TargetHtml)
     {
         QString urlRedirect = query.urlRedirect;
 
@@ -2205,6 +2337,33 @@ WBackendNetQuery WControllerPlaylistPrivate::extractQuery(WBackendNet * backend,
 
     return query;
 }
+
+WBackendNetQuery WControllerPlaylistPrivate::extractRelated(QString url) const
+{
+#ifdef QT_4
+    QString method = url.queryItemValue("method");
+#else
+    QUrlQuery urlQuery(url);
+
+    QString method = urlQuery.queryItemValue("method");
+#endif
+
+    if (method != "related") return WBackendNetQuery();
+
+#ifdef QT_4
+    QString q = url.queryItemValue("q");
+#else
+    QString q = urlQuery.queryItemValue("q");
+#endif
+
+    WBackendNetQuery query(WControllerNetwork::decodeUrl(q));
+
+    query.target = WBackendNetQuery::TargetRelated;
+
+    return query;
+}
+
+//-------------------------------------------------------------------------------------------------
 
 bool WControllerPlaylistPrivate::resolveTrack(const QString    & backendId,
                                               WBackendNetQuery & query) const
@@ -4285,7 +4444,12 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 {
     WBackendNet * backend = backendFromUrl(url);
 
-    if (backend == NULL) return QString();
+    if (backend == NULL)
+    {
+        // NOTE: When we can't find a backend we load the url as a VBML resource and try to extract
+        //       the 'related' property.
+        return createSource("vbml", "related", "tracks", url);
+    }
 
     QString id = backend->id();
 

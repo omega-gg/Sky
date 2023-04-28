@@ -363,7 +363,9 @@ public:
     WControllerPlaylistData() { type = WControllerPlaylist::Unknown; }
 
 public: // Interface
-    void applyVbml(const QByteArray & array, const QString & url, const QString & urlBase);
+    void applyVbml   (const QByteArray & array, const QString & url, const QString & urlBase);
+    void applyRelated(const QByteArray & array, const QString & url, const QString & urlBase);
+
     void applyHtml(const QByteArray & array, const QString & url);
     void applyM3u (const QByteArray & array, const QString & url);
 

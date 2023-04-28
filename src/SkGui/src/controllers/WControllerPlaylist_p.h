@@ -162,6 +162,8 @@ public: // Functions
 
     WBackendNetQuery extractQuery(WBackendNet * backend, QString url, QString & id) const;
 
+    WBackendNetQuery extractRelated(QString url) const;
+
     bool resolveTrack   (const QString & backendId, WBackendNetQuery & query) const;
     bool resolvePlaylist(const QString & backendId, WBackendNetQuery & query) const;
     bool resolveFolder  (const QString & backendId, WBackendNetQuery & query) const;
@@ -232,6 +234,7 @@ public: // Variables
     QHash<QIODevice   *, WControllerPlaylistQuery *> replies;
 
     QMetaMethod methodVbml;
+    QMetaMethod methodRelated;
     QMetaMethod methodHtml;
     QMetaMethod methodM3u;
     QMetaMethod methodFolder;
