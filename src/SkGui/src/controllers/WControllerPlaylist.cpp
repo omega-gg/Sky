@@ -394,6 +394,11 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
     }
 
     origin = reader.extractString("related");
+
+    if (origin.isEmpty() == false)
+    {
+        type = WControllerPlaylist::Redirect;
+    }
 }
 
 void WControllerPlaylistData::applyHtml(const QByteArray & array, const QString & url)
