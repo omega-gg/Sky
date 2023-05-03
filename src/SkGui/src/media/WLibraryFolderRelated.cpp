@@ -87,7 +87,9 @@ void WLibraryFolderRelatedPrivate::init()
         return;
     }
 
-    QString source = wControllerPlaylist->sourceRelatedTracks(trackSource);
+    QString title = track.title();
+
+    QString source = wControllerPlaylist->sourceRelatedTracks(trackSource, title);
 
     if (source.isEmpty())
     {
@@ -113,7 +115,7 @@ void WLibraryFolderRelatedPrivate::init()
 
     playlist->setLabel(trackSource);
 
-    playlist->setTitle(track.title());
+    playlist->setTitle(title);
     playlist->setCover(track.cover());
 
     playlist->loadSource(source);

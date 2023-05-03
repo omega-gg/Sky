@@ -172,7 +172,7 @@ public: // Interface
 
     //---------------------------------------------------------------------------------------------
 
-    Q_INVOKABLE QString sourceRelatedTracks(const QString & url);
+    Q_INVOKABLE QString sourceRelatedTracks(const QString & url, const QString & title);
 
     //---------------------------------------------------------------------------------------------
 
