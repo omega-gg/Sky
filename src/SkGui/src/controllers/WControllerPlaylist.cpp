@@ -2302,7 +2302,7 @@ WBackendNet * WControllerPlaylistPrivate::backendTrack(const QString & source,
 //-------------------------------------------------------------------------------------------------
 
 WBackendNetQuery WControllerPlaylistPrivate::extractQuery(WBackendNet * backend,
-                                                          QString url, QString & id) const
+                                                          const QUrl & url, QString & id) const
 {
 #ifdef QT_4
     QString method = url.queryItemValue("method");
@@ -2338,7 +2338,7 @@ WBackendNetQuery WControllerPlaylistPrivate::extractQuery(WBackendNet * backend,
     return query;
 }
 
-WBackendNetQuery WControllerPlaylistPrivate::extractRelated(QString url) const
+WBackendNetQuery WControllerPlaylistPrivate::extractRelated(const QUrl & url) const
 {
 #ifdef QT_4
     QString method = url.queryItemValue("method");

@@ -160,9 +160,9 @@ public: // Functions
 
     //---------------------------------------------------------------------------------------------
 
-    WBackendNetQuery extractQuery(WBackendNet * backend, QString url, QString & id) const;
+    WBackendNetQuery extractQuery(WBackendNet * backend, const QUrl & url, QString & id) const;
 
-    WBackendNetQuery extractRelated(QString url) const;
+    WBackendNetQuery extractRelated(const QUrl & url) const;
 
     bool resolveTrack   (const QString & backendId, WBackendNetQuery & query) const;
     bool resolvePlaylist(const QString & backendId, WBackendNetQuery & query) const;
