@@ -904,7 +904,7 @@ WControllerNetwork::WControllerNetwork() : WController(new WControllerNetworkPri
 /* Q_INVOKABLE static */ int WControllerNetwork::indexUrlElement(const QString & string,
                                                                  int             from)
 {
-    return string.indexOf(WRegExp("[/\\?&#]"), from);
+    return string.indexOf(WRegExp("[/\\?#]"), from);
 }
 
 /* Q_INVOKABLE static */ int WControllerNetwork::indexUrlElement(const QString & string,
