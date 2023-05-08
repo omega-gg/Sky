@@ -103,7 +103,7 @@ void WVlcEnginePrivate::init(const QStringList & options, QThread * thread)
     options.append("--no-stats");
     options.append("--no-media-library");
 
-    // NOTE: This is useful for the mkv default langauge.
+    // NOTE: This is useful for the mkv default language.
     options.append("--audio-language=en");
 
     return options;
@@ -141,7 +141,7 @@ void WVlcEnginePrivate::init(const QStringList & options, QThread * thread)
                 "--no-stats",          /* No statistics    */
                 "--no-media-library",  /* No Media Library */
                 "--text-renderer=none" /* No FreeType      */
-                // NOTE: This is useful for the mkv default langauge.
+                // NOTE: This is useful for the mkv default language.
                 "--audio-language=en"  /* Audio english    */
                 //"--input-fast-seek", /* Fast seek        */
                 //"--http-reconnect",  /* Auto reconnect   */
