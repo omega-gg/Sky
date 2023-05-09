@@ -33,7 +33,8 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int SCANNER_INTERVAL = 20;
+static const int SCANNER_INTERVAL =  20;
+static const int SCANNER_DURATION = 300; // NOTE: Wait for 300ms maximum and then abort.
 
 //-------------------------------------------------------------------------------------------------
 // Private
@@ -52,12 +53,14 @@ void WDeclarativeScannerPrivate::init()
 
     size = -1;
 
-    timerId = -1;
+    timerIdA = -1;
+    timerIdB = -1;
 
     count        = 0;
     currentCount = 0;
 
     interval = SCANNER_INTERVAL;
+    duration = SCANNER_DURATION;
 
 #ifdef QT_4
     Q_Q(WDeclarativeScanner);
@@ -125,14 +128,27 @@ bool WDeclarativeScannerPrivate::scan()
     return true;
 }
 
+//-------------------------------------------------------------------------------------------------
+
 void WDeclarativeScannerPrivate::stopTimer()
 {
-    if (timerId == -1) return;
+    if (timerIdA == -1) return;
 
-    q_func()->killTimer(timerId);
-
-    timerId = -1;
+    clearTimer();
 }
+
+void WDeclarativeScannerPrivate::clearTimer()
+{
+    Q_Q(WDeclarativeScanner);
+
+    q->killTimer(timerIdA);
+    q->killTimer(timerIdB);
+
+    timerIdA = -1;
+    timerIdB = -1;
+}
+
+//-------------------------------------------------------------------------------------------------
 
 void WDeclarativeScannerPrivate::clearCount()
 {
@@ -153,16 +169,11 @@ void WDeclarativeScannerPrivate::clearData()
 
 void WDeclarativeScannerPrivate::clearItem()
 {
-    Q_Q(WDeclarativeScanner);
-
-    if (timerId != -1)
-    {
-        q->killTimer(timerId);
-
-        timerId = -1;
-    }
+    stopTimer();
 
     if (currentCount == 0) return;
+
+    Q_Q(WDeclarativeScanner);
 
     clearCount();
 
@@ -264,7 +275,8 @@ void WDeclarativeScannerPrivate::onClearCover()
 
         if (d->scan() == false) return false;
 
-        d->timerId = startTimer(d->interval);
+        d->timerIdA = startTimer(d->interval);
+        d->timerIdB = startTimer(d->duration);
 
         return true;
     }
@@ -274,30 +286,34 @@ void WDeclarativeScannerPrivate::onClearCover()
 // Protected events
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ void WDeclarativeScanner::timerEvent(QTimerEvent *)
+/* virtual */ void WDeclarativeScanner::timerEvent(QTimerEvent * event)
 {
     Q_D(WDeclarativeScanner);
 
-    d->currentCount++;
+    int id = event->timerId();
 
-    if (d->scan() == false)
+    if (id == d->timerIdA)
     {
-        killTimer(d->timerId);
+        d->currentCount++;
 
-        d->timerId = -1;
+        if (d->scan() == false)
+        {
+            d->clearTimer();
+            d->clearCount();
 
+            emit loaded(QString(), QRectF());
+        }
+        else if (d->currentCount == d->count)
+        {
+            d->clearTimer();
+        }
+    }
+    else if (id == d->timerIdB)
+    {
+        d->clearTimer();
         d->clearCount();
 
         emit loaded(QString(), QRectF());
-
-        return;
-    }
-
-    if (d->currentCount == d->count)
-    {
-        killTimer(d->timerId);
-
-        d->timerId = -1;
     }
 }
 
@@ -365,6 +381,22 @@ void WDeclarativeScanner::setInterval(int interval)
     d->interval = interval;
 
     emit intervalChanged();
+}
+
+int WDeclarativeScanner::duration() const
+{
+    Q_D(const WDeclarativeScanner); return d->duration;
+}
+
+void WDeclarativeScanner::setDuration(int duration)
+{
+    Q_D(WDeclarativeScanner);
+
+    if (d->duration == duration) return;
+
+    d->duration = duration;
+
+    emit durationChanged();
 }
 
 #endif // SK_NO_DECLARATIVESCANNER

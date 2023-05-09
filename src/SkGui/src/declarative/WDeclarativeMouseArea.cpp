@@ -537,7 +537,12 @@ WDeclarativeMouseArea::WDeclarativeMouseArea(WDeclarativeMouseAreaPrivate * p, Q
 {
     Q_D(WDeclarativeMouseArea);
 
-    if (d->view == NULL) return;
+    if (d->view == NULL)
+    {
+        QQuickMouseArea::touchUngrabEvent();
+
+        return;
+    }
 
     WViewPrivate * p = d->view->d_func();
 

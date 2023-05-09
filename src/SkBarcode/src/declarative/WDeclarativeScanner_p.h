@@ -69,7 +69,8 @@ public:
 public: // Fuctions
     bool scan();
 
-    void stopTimer();
+    void stopTimer ();
+    void clearTimer();
 
     void clearCount();
     void clearData ();
@@ -90,12 +91,14 @@ public: // Variables
 
     int size;
 
-    int timerId;
+    int timerIdA;
+    int timerIdB;
 
     int count;
     int currentCount;
 
     int interval;
+    int duration;
 
     QList<WDeclarativeScannerData> datas;
 

@@ -47,6 +47,7 @@ class SK_BARCODE_EXPORT WDeclarativeScanner : public WDeclarativeItem
     Q_PROPERTY(WDeclarativeImage  * cover  READ cover  WRITE setCover  NOTIFY coverChanged)
 
     Q_PROPERTY(int interval READ interval WRITE setInterval NOTIFY intervalChanged)
+    Q_PROPERTY(int duration READ duration WRITE setDuration NOTIFY durationChanged)
 
 public:
 #ifdef QT_4
@@ -68,6 +69,7 @@ signals:
     void coverChanged ();
 
     void intervalChanged();
+    void durationChanged();
 
 public: // Properties
     WDeclarativePlayer * player() const;
@@ -78,6 +80,9 @@ public: // Properties
 
     int  interval() const;
     void setInterval(int interval);
+
+    int  duration() const;
+    void setDuration(int duration);
 
 private:
     W_DECLARE_PRIVATE(WDeclarativeScanner)
