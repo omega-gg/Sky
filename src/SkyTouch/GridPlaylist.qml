@@ -51,8 +51,8 @@ GridTouch
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    cellWidth : coverWidth  + padding2x
-    cellHeight: coverHeight + padding2x + spacing + st.buttonTouch_size + spacingBottom
+    cellWidth : coverWidth  + padding2x + spacing
+    cellHeight: coverHeight + padding2x + st.margins + st.buttonTouch_size + spacingBottom
 
     //---------------------------------------------------------------------------------------------
     // Events
