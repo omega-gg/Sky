@@ -70,14 +70,15 @@ public:
     void init(const QString & path, qint64 sizeMax);
 
 public: // Functions
+    void registerFile  (WCacheFile * file);
+    void unregisterFile(WCacheFile * file);
+
     void get(WCacheFile * file, const QString & url);
 
     void write(WCacheFile * file, const QString & url,
                                   const QString & extension, const QByteArray & array);
 
     void pop(const QString & url);
-
-    void clearFile(WCacheFile * file);
 
     void setEmpty(bool empty);
 
@@ -90,6 +91,8 @@ public: // Slots
 
 public: // Variables
     WCacheThread * thread;
+
+    QList<WCacheFile *> files;
 
     QString path;
 

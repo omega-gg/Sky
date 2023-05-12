@@ -190,20 +190,15 @@ private: // Variables
 class WCacheThreadEventFile : public QEvent
 {
 public:
-    WCacheThreadEventFile(WCacheThread::EventType type, WCacheFile * file, const QString & url,
-                                                                           int             maxHost)
+    WCacheThreadEventFile(WCacheThread::EventType type, const QString & url, int maxHost)
         : QEvent(static_cast<QEvent::Type> (type))
     {
-        this->file = file;
-
         this->url = url;
 
         this->maxHost = maxHost;
     }
 
 public: // Variables
-    WCacheFile * file;
-
     QString url;
 
     int maxHost;
@@ -347,31 +342,6 @@ public: // Variables
     QString url;
     QString error;
 };
-
-//=================================================================================================
-// WCacheFileDelete
-//=================================================================================================
-
-class WCacheFileDelete : public WControllerFileAction
-{
-    Q_OBJECT
-
-protected: // WAbstractThreadAction implementation
-    /* virtual */ bool run();
-
-public: // Variables
-    QStringList urls;
-};
-
-/* virtual */ bool WCacheFileDelete::run()
-{
-    foreach (const QString & url, urls)
-    {
-        WControllerFile::deleteFile(url);
-    }
-
-    return true;
-}
 
 //=================================================================================================
 // WCacheThread
@@ -609,7 +579,12 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
         {
             int id = toRemove.take(url);
 
-            if (id) ids.removeOne(id);
+            if (id == 0) continue;
+
+            // NOTE: We have to delete the file here to avoid a conflict with the 'writeFile' function.
+            WControllerFile::deleteFile(url);
+
+            ids.removeOne(id);
         }
 
         return true;
@@ -1137,6 +1112,8 @@ void WCacheThread::onSave()
 WCacheFile::WCacheFile(WCache * cache, QObject * parent) : QObject(parent)
 {
     _cache = cache;
+
+    cache->d_func()->registerFile(this);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1144,10 +1121,7 @@ WCacheFile::WCacheFile(WCache * cache, QObject * parent) : QObject(parent)
 
 /* virtual */ WCacheFile::~WCacheFile()
 {
-    if (_loaded) return;
-
-    // NOTE: We call that only when it's not loaded, otherwise _cache could be destroyed.
-    _cache->d_func()->clearFile(this);
+    if (_cache) _cache->d_func()->unregisterFile(this);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1210,24 +1184,11 @@ WCachePrivate::WCachePrivate(WCache * p) : WPrivate(p) {}
 
 /* virtual */ WCachePrivate::~WCachePrivate()
 {
-    //---------------------------------------------------------------------------------------------
-    // NOTE: Setting _loaded to true in WCacheFile(s) because it's called in their destructor.
-
-    QHashIterator<QString, WCacheFiles *> i(urlsPending);
-
-    while (i.hasNext())
+    // NOTE: Setting _cache to NULL in WCacheFile(s) because it's called in their destructor.
+    foreach (WCacheFile * file, files)
     {
-        i.next();
-
-        const QList<WCacheFile *> & list = i.value()->list;
-
-        foreach (WCacheFile * file, list)
-        {
-            file->_loaded = true;
-        }
+        file->_cache = NULL;
     }
-
-    //---------------------------------------------------------------------------------------------
 
     thread->quit();
     thread->wait();
@@ -1268,6 +1229,41 @@ void WCachePrivate::init(const QString & path, qint64 sizeMax)
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
+void WCachePrivate::registerFile(WCacheFile * file)
+{
+    files.append(file);
+}
+
+void WCachePrivate::unregisterFile(WCacheFile * file)
+{
+    const QString & url = file->_url;
+
+    WCacheFiles * files = urlsPending.value(url);
+
+    if (files)
+    {
+        QList<WCacheFile *> * list = &(files->list);
+
+        list->removeOne(file);
+
+        if (list->isEmpty())
+        {
+            urlsPending.remove(url);
+
+            urlsPop.removeOne(url);
+
+            QCoreApplication::postEvent(thread,
+                                        new WCacheThreadEvent(WCacheThread::EventAbort, url));
+
+            delete files;
+        }
+    }
+
+    this->files.removeOne(file);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void WCachePrivate::get(WCacheFile * file, const QString & url)
 {
     WCacheFiles * files = urlsPending.value(url);
@@ -1280,7 +1276,7 @@ void WCachePrivate::get(WCacheFile * file, const QString & url)
         {
             QCoreApplication::postEvent(thread,
                                         new WCacheThreadEventFile(WCacheThread::EventAdd,
-                                                                  file, url, file->_maxHost));
+                                                                  url, file->_maxHost));
         }
     }
     else
@@ -1295,7 +1291,7 @@ void WCachePrivate::get(WCacheFile * file, const QString & url)
         {
             QCoreApplication::postEvent(thread,
                                         new WCacheThreadEventFile(WCacheThread::EventGet,
-                                                                  file, url, file->_maxHost));
+                                                                  url, file->_maxHost));
         }
     }
 }
@@ -1336,32 +1332,6 @@ void WCachePrivate::pop(const QString & url)
     if (timer.isActive() == false)
     {
         timer.start();
-    }
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void WCachePrivate::clearFile(WCacheFile * file)
-{
-    const QString & url = file->_url;
-
-    WCacheFiles * files = urlsPending.value(url);
-
-    if (files == NULL) return;
-
-    QList<WCacheFile *> * list = &(files->list);
-
-    list->removeOne(file);
-
-    if (list->isEmpty())
-    {
-        urlsPending.remove(url);
-
-        urlsPop.removeOne(url);
-
-        QCoreApplication::postEvent(thread, new WCacheThreadEvent(WCacheThread::EventAbort, url));
-
-        delete files;
     }
 }
 
@@ -1464,9 +1434,42 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
     return file;
 }
 
-/* Q_INVOKABLE */ void WCache::reloadFile(const QString & url)
+/* Q_INVOKABLE */ void WCache::reloadFile(const QString & url, int maxHost)
 {
+    if (url.isEmpty()) return;
+
+    Q_D(WCache);
+
+    WCacheFiles * files = d->urlsPending.value(url);
+
+    // NOTE: If the files are already loading we return right away.
+    if (files) return;
+
     removeFile(url);
+
+    QList<WCacheFile *> list;
+
+    foreach (WCacheFile * file, d->files)
+    {
+        if (file->url() != url) continue;
+
+        list.append(file);
+    }
+
+    // NOTE: When the list is empty we don't need to reload the file.
+    if (list.isEmpty()) return;
+
+    files = new WCacheFiles;
+
+    files->list = list;
+
+    d->urlsPending.insert(url, files);
+
+    if (d->loaded)
+    {
+        QCoreApplication::postEvent(d->thread, new WCacheThreadEventFile(WCacheThread::EventGet,
+                                                                         url, maxHost));
+    }
 }
 
 /* Q_INVOKABLE */ QString WCache::getFileUrl(const QString & url)
@@ -1781,7 +1784,7 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
                 QCoreApplication
                 ::postEvent(d->thread, new WCacheThreadEventFile(WCacheThread::EventGet,
-                                                                 file, url, file->_maxHost));
+                                                                 url, file->_maxHost));
 
                 for (int i = 1; i < list.count(); i++)
                 {
@@ -1789,7 +1792,7 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
                     QCoreApplication
                     ::postEvent(d->thread, new WCacheThreadEventFile(WCacheThread::EventAdd,
-                                                                     file, url, file->_maxHost));
+                                                                     url, file->_maxHost));
                 }
             }
         }
@@ -1889,12 +1892,6 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
         QCoreApplication::postEvent(d->thread,
                                     new WCacheThreadEventUrls(WCacheThread::EventRemoveFile,
                                                               urlsCache));
-
-        WCacheFileDelete * action = new WCacheFileDelete;
-
-        action->urls = urlsCache;
-
-        wControllerFile->startReadAction(action);
 
         return true;
     }
