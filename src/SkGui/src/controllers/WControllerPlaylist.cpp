@@ -2969,6 +2969,8 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
     {
         const WTrack & trackReply = reply.track;
 
+        bool sameCover = (trackReply.cover() == track->cover());
+
         trackReply.applyDataTo(track);
 
         emit playlist->trackQueryEnded();
@@ -2988,7 +2990,7 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
         applyTrack(playlist, track, trackReply.state(), index);
 
         // NOTE: We reload the cover in case it changed since the last time.
-        wControllerFile->reloadFile(track->cover());
+        if (sameCover) wControllerFile->reloadFile(track->cover());
     }
     else
     {
@@ -3059,6 +3061,8 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
         const QString & title = reply.title;
         const QString & cover = reply.cover;
 
+        bool sameCover = (cover == playlist->cover());
+
         if (playlist->isPlaylistSearch() == false)
         {
             if (title.isEmpty() == false)
@@ -3105,7 +3109,7 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
         if (getNextPlaylist(backendId, playlist, reply.nextQueries, indexNext)) return;
 
         // NOTE: We reload the cover in case it changed since the last time.
-        wControllerFile->reloadFile(cover);
+        if (sameCover) wControllerFile->reloadFile(cover);
     }
     else emit playlist->queryEnded();
 
@@ -3169,6 +3173,8 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
         const QString & title = reply.title;
         const QString & cover = reply.cover;
 
+        bool sameCover = (cover == folder->cover());
+
         if (folder->isFolderSearch() == false)
         {
             if (title.isEmpty() == false)
@@ -3228,7 +3234,7 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
         if (getNextFolder(backendId, folder, reply.nextQueries, indexNext)) return;
 
         // NOTE: We reload the cover in case it changed since the last time.
-        wControllerFile->reloadFile(cover);
+        if (sameCover) wControllerFile->reloadFile(cover);
     }
     else emit folder->queryEnded();
 
