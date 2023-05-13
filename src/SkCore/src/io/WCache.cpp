@@ -1420,7 +1420,7 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
     file->_maxHost = maxHost;
 
-    QString path = d->urls.value(url);
+    QString path = d->urls.value(url).path;
 
     if (path.isEmpty())
     {
@@ -1440,7 +1440,7 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
     return file;
 }
 
-/* Q_INVOKABLE */ void WCache::reloadFile(const QString & url, int maxHost)
+/* Q_INVOKABLE */ void WCache::reloadFile(const QString & url, int delay, int maxHost)
 {
     if (url.isEmpty()) return;
 
@@ -1451,7 +1451,24 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
     // NOTE: If the files are already loading we return right away.
     if (files) return;
 
-    removeFile(url);
+    WCacheSource source = d->urls.value(url);
+
+    if (source.path.isEmpty() == false)
+    {
+        if (delay != -1)
+        {
+            QDateTime date = source.date.addSecs(delay);
+
+            if (QDateTime::currentDateTime() < date) return;
+        }
+
+        d->urls.remove(url);
+
+        d->urlsPop.removeOne(url);
+
+        QCoreApplication::postEvent(d->thread, new WCacheThreadEventUrls(WCacheThread::EventRemove,
+                                                                         QStringList() << url));
+    }
 
     QList<WCacheFile *> list;
 
@@ -1482,7 +1499,7 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 {
     Q_D(WCache);
 
-    QString path = d->urls.value(url);
+    QString path = d->urls.value(url).path;
 
     if (path.isEmpty() == false)
     {
@@ -1513,7 +1530,7 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
 
     file->_maxHost = -1;
 
-    QString path = d->urls.value(url);
+    QString path = d->urls.value(url).path;
 
     if (path.isEmpty())
     {
@@ -1745,6 +1762,8 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
         {
             int i = 0;
 
+            QDateTime date = QDateTime::currentDateTime();
+
             foreach (const QString & url, urls)
             {
                 QString urlCache = eventUrls->urlsCache.at(i);
@@ -1765,7 +1784,12 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
                     delete files;
                 }
 
-                d->urls.insert(url, urlCache);
+                WCacheSource source;
+
+                source.path = urlCache;
+                source.date = date;
+
+                d->urls.insert(url, source);
 
                 i++;
             }
@@ -1823,7 +1847,12 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
         const QString & url      = eventAdded->url;
         const QString & urlCache = eventAdded->urlCache;
 
-        d->urls.insert(url, urlCache);
+        WCacheSource source;
+
+        source.path = urlCache;
+        source.date = QDateTime::currentDateTime();
+
+        d->urls.insert(url, source);
 
         if (d->empty)
         {

@@ -111,7 +111,8 @@ public: // Interface
     Q_INVOKABLE WCacheFile * getFile(const QString & url,
                                      QObject       * parent = NULL, int maxHost = -1);
 
-    Q_INVOKABLE void reloadFile(const QString & url, int maxHost = -1);
+    // NOTE: Set the 'delay' in seconds to avoid reloading the file too frequently.
+    Q_INVOKABLE void reloadFile(const QString & url, int delay = -1, int maxHost = -1);
 
     Q_INVOKABLE QString getFileUrl(const QString & url);
 

@@ -36,7 +36,7 @@
 // Qt includes
 #include <QEvent>
 #include <QTimer>
-#include <QHash>
+#include <QDateTime>
 #ifdef QT_4
 #include <QStringList>
 #endif
@@ -49,6 +49,21 @@
 // Forward declarations
 class  WCacheThread;
 struct WCacheFiles;
+
+//-------------------------------------------------------------------------------------------------
+// WCacheSource
+//-------------------------------------------------------------------------------------------------
+
+struct WCacheSource
+{
+    QString path;
+
+    QDateTime date;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WCachePrivate
+//-------------------------------------------------------------------------------------------------
 
 class SK_CORE_EXPORT WCachePrivate : public WPrivate
 {
@@ -104,7 +119,7 @@ public: // Variables
     QHash<QString, WCacheFiles *> urlsPending;
     QHash<QString, WCacheFile  *> urlsLoad;
 
-    QHash<QString, QString> urls;
+    QHash<QString, WCacheSource> urls;
 
     QStringList urlsPop;
 

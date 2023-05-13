@@ -2990,7 +2990,7 @@ void WControllerPlaylistPrivate::onTrackLoaded(QIODevice * device, const WBacken
         applyTrack(playlist, track, trackReply.state(), index);
 
         // NOTE: We reload the cover in case it changed since the last time.
-        if (sameCover) wControllerFile->reloadFile(track->cover());
+        if (sameCover) wControllerFile->reloadFile(track->cover(), 60 * 5); // 5 minutes
     }
     else
     {
@@ -3109,7 +3109,7 @@ void WControllerPlaylistPrivate::onPlaylistLoaded(QIODevice                 * de
         if (getNextPlaylist(backendId, playlist, reply.nextQueries, indexNext)) return;
 
         // NOTE: We reload the cover in case it changed since the last time.
-        if (sameCover) wControllerFile->reloadFile(cover);
+        if (sameCover) wControllerFile->reloadFile(cover, 60 * 5); // 5 minutes
     }
     else emit playlist->queryEnded();
 
@@ -3234,7 +3234,7 @@ void WControllerPlaylistPrivate::onFolderLoaded(QIODevice               * device
         if (getNextFolder(backendId, folder, reply.nextQueries, indexNext)) return;
 
         // NOTE: We reload the cover in case it changed since the last time.
-        if (sameCover) wControllerFile->reloadFile(cover);
+        if (sameCover) wControllerFile->reloadFile(cover, 60 * 5); // 5 minutes
     }
     else emit folder->queryEnded();
 
