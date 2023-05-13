@@ -561,6 +561,8 @@ WCacheThread::WCacheThread(WCache * cache, const QString & path, qint64 sizeMax)
             urls     .append(dataUrl);
             urlsCache.append(dataUrlCache);
 
+            size -= data->size;
+
             delete data;
         }
 
@@ -873,6 +875,8 @@ bool WCacheThread::writeFile(QNetworkReply * reply, WCacheJob * job)
     if (file.open(QIODevice::WriteOnly) == false)
     {
         qWarning("WCacheThread::writeFile: Cannot open file %s.", urlCache.C_STR);
+
+        this->size -= size;
 
         QCoreApplication::postEvent(cache, new WCacheEventFailed(url, "Cannot open file"));
 
@@ -1379,6 +1383,8 @@ void WCachePrivate::onLoaded(WCacheFile * file)
 
 void WCachePrivate::onPop()
 {
+    if (urlsPop.isEmpty()) return;
+
     QCoreApplication::postEvent(thread,
                                 new WCacheThreadEventUrls(WCacheThread::EventPop, urlsPop));
 
@@ -1547,6 +1553,8 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
         {
             d->urls.remove(url);
 
+            d->urlsPop.removeOne(url);
+
             list.append(url);
         }
     }
@@ -1565,6 +1573,8 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
     if (d->urls.contains(url) == false) return;
 
     d->urls.remove(url);
+
+    d->urlsPop.removeOne(url);
 
     QCoreApplication::postEvent(d->thread, new WCacheThreadEventUrls(WCacheThread::EventRemove,
                                                                      QStringList() << url));
@@ -1871,15 +1881,11 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
         const QStringList & urls      = eventUrls->urls;
         const QStringList & urlsCache = eventUrls->urlsCache;
 
-        int i = 0;
-
         foreach (const QString & url, urls)
         {
             d->urls.remove(url);
 
             d->urlsPop.removeOne(url);
-
-            i++;
         }
 
         if (d->urls.isEmpty())
