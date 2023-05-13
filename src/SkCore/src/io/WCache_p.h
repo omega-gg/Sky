@@ -39,6 +39,7 @@
 #include <QDateTime>
 #ifdef QT_4
 #include <QStringList>
+#include <QHash>
 #endif
 
 // Private includes
