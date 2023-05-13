@@ -190,7 +190,7 @@ WBackendNetBase::WBackendNetBase()
 
 WBackendNetSource::WBackendNetSource() : WBackendNetBase()
 {
-    expiry = QDateTime::currentDateTime().addSecs(3600 * 8);
+    expiry = QDateTime::currentDateTime().addSecs(3600 * 8); // 8 hours
 }
 
 //=================================================================================================
