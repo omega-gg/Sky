@@ -383,6 +383,8 @@ public: // Interface
     Q_INVOKABLE QString getSourceTrack   (const QString & url) const;
     Q_INVOKABLE QString getSourcePlaylist(const QString & url) const;
 
+    Q_INVOKABLE WBackendNetQuery extractQuery(const QString & url) const;
+
     Q_INVOKABLE WLibraryItem::Type typeFromQuery(const QString & url) const;
 
     Q_INVOKABLE void loadSource(QIODevice              * device,

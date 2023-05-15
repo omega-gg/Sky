@@ -2368,11 +2368,15 @@ WBackendNetQuery WControllerPlaylistPrivate::extractRelated(const QUrl & url) co
 bool WControllerPlaylistPrivate::resolveTrack(const QString    & backendId,
                                               WBackendNetQuery & query) const
 {
+    if (resolveQuery(query)) return query.isValid();
+
     QString id = query.backend;
 
     if (id.isEmpty() || id == backendId) return query.isValid();
 
-    WBackendNet * backend = q_func()->backendFromId(id);
+    Q_Q(const WControllerPlaylist);
+
+    WBackendNet * backend = q->backendFromId(id);
 
     if (backend == NULL) return query.isValid();
 
@@ -2386,11 +2390,15 @@ bool WControllerPlaylistPrivate::resolveTrack(const QString    & backendId,
 bool WControllerPlaylistPrivate::resolvePlaylist(const QString    & backendId,
                                                  WBackendNetQuery & query) const
 {
+    if (resolveQuery(query)) return query.isValid();
+
     QString id = query.backend;
 
     if (id.isEmpty() || id == backendId) return query.isValid();
 
-    WBackendNet * backend = q_func()->backendFromId(id);
+    Q_Q(const WControllerPlaylist);
+
+    WBackendNet * backend = q->backendFromId(id);
 
     if (backend == NULL) return query.isValid();
 
@@ -2404,11 +2412,15 @@ bool WControllerPlaylistPrivate::resolvePlaylist(const QString    & backendId,
 bool WControllerPlaylistPrivate::resolveFolder(const QString    & backendId,
                                                WBackendNetQuery & query) const
 {
+    if (resolveQuery(query)) return query.isValid();
+
     QString id = query.backend;
 
     if (id.isEmpty() || id == backendId) return query.isValid();
 
-    WBackendNet * backend = q_func()->backendFromId(id);
+    Q_Q(const WControllerPlaylist);
+
+    WBackendNet * backend = q->backendFromId(id);
 
     if (backend == NULL) return query.isValid();
 
@@ -2422,11 +2434,15 @@ bool WControllerPlaylistPrivate::resolveFolder(const QString    & backendId,
 bool WControllerPlaylistPrivate::resolveItem(const QString    & backendId,
                                              WBackendNetQuery & query) const
 {
+    if (resolveQuery(query)) return query.isValid();
+
     QString id = query.backend;
 
     if (id.isEmpty() || id == backendId) return query.isValid();
 
-    WBackendNet * backend = q_func()->backendFromId(id);
+    Q_Q(const WControllerPlaylist);
+
+    WBackendNet * backend = q->backendFromId(id);
 
     if (backend == NULL) return query.isValid();
 
@@ -2435,6 +2451,25 @@ bool WControllerPlaylistPrivate::resolveItem(const QString    & backendId,
     backend->tryDelete();
 
     return query.isValid();
+}
+
+bool WControllerPlaylistPrivate::resolveQuery(WBackendNetQuery & query) const
+{
+    QString url = query.url;
+
+    if (WBackendNet::checkQuery(url) == false) return false;
+
+    Q_Q(const WControllerPlaylist);
+
+    WBackendNet * backend = q->backendFromUrl(url);
+
+    if (backend == NULL) return true;
+
+    query = backend->extractQuery(url);
+
+    backend->tryDelete();
+
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -169,6 +169,8 @@ public: // Functions
     bool resolveFolder  (const QString & backendId, WBackendNetQuery & query) const;
     bool resolveItem    (const QString & backendId, WBackendNetQuery & query) const;
 
+    bool resolveQuery(WBackendNetQuery & query) const;
+
     void getDataTrack(WPlaylist * playlist, WTrack * track, const WBackendNetQuery & query);
 
     void getDataPlaylist(WPlaylist      * playlist, const WBackendNetQuery & query);
