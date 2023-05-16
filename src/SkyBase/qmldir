@@ -40,6 +40,7 @@ BaseConsole  1.0 BaseConsole.qml
 
 ColumnAuto 1.0 ColumnAuto.qml
 
+BaseFlickable  1.0 BaseFlickable.qml
 FlickablePages 1.0 FlickablePages.qml
 
 BaseList       1.0 BaseList.qml

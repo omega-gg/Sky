@@ -418,7 +418,7 @@ Item
     property color baseConsole_color: text_color
 //#END
 
-//#FlickablePages:BaseList:BaseGrid
+//#BaseFlickable:BaseList:BaseGrid
     //---------------------------------------------------------------------------------------------
     // Flickable
 

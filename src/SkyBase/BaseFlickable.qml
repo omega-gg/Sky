@@ -4,7 +4,7 @@
 
     Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
 
-    This file is part of SkyTouch.
+    This file is part of SkyBase.
 
     - GNU Lesser General Public License Usage:
     This file may be used under the terms of the GNU Lesser General Public License version 3 as
@@ -23,61 +23,11 @@
 import QtQuick 1.0
 import Sky     1.0
 
-PanelContextual
+Flickable
 {
-    //---------------------------------------------------------------------------------------------
-    // Aliases
-    //---------------------------------------------------------------------------------------------
-
-    property alias sourceComponent: loader.sourceComponent
-
-    //---------------------------------------------------------------------------------------------
-
-    property alias flickable: flickable
-
-    property alias loader: loader
-
-    property alias scrollBar: scrollBar
-
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    preferredHeight: loader.height + margins * 2
-
-    //---------------------------------------------------------------------------------------------
-    // Children
-    //---------------------------------------------------------------------------------------------
-
-    BaseFlickable
-    {
-        id: flickable
-
-        anchors.fill: parent
-
-        anchors.rightMargin: (scrollBar.isActive) ? scrollBar.width : 0
-
-        contentHeight: loader.height
-
-        clip: true
-
-        Loader
-        {
-            id: loader
-
-            anchors.left : parent.left
-            anchors.right: parent.right
-
-            height: (item) ? item.height : 0
-        }
-    }
-
-    ScrollBar
-    {
-        id: scrollBar
-
-        anchors.right: parent.right
-
-        view: flickable
-    }
+    maximumFlickVelocity: st.flickable_maximumVelocity
 }

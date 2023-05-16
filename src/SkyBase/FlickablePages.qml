@@ -23,7 +23,7 @@
 import QtQuick 1.0
 import Sky     1.0
 
-Flickable
+BaseFlickable
 {
     id: flickablePages
 
@@ -65,8 +65,6 @@ Flickable
 
     contentWidth : width * count
     contentHeight: height
-
-    maximumFlickVelocity: st.flickable_maximumVelocity
 
     //---------------------------------------------------------------------------------------------
     // Events
