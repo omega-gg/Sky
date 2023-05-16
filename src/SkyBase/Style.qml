@@ -418,6 +418,13 @@ Item
     property color baseConsole_color: text_color
 //#END
 
+//#FlickablePages:BaseList:BaseGrid
+    //---------------------------------------------------------------------------------------------
+    // Flickable
+
+    property int flickable_maximumVelocity: dp(2500)
+//#END
+
 //#FlickablePages
     //---------------------------------------------------------------------------------------------
     // FlickablePages

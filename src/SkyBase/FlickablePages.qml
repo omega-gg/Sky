@@ -66,6 +66,8 @@ Flickable
     contentWidth : width * count
     contentHeight: height
 
+    maximumFlickVelocity: st.flickable_maximumVelocity
+
     //---------------------------------------------------------------------------------------------
     // Events
     //---------------------------------------------------------------------------------------------
