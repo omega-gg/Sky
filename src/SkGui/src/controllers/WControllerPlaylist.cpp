@@ -2325,11 +2325,17 @@ WBackendNetQuery WControllerPlaylistPrivate::extractQuery(WBackendNet * backend,
     //---------------------------------------------------------------------------------------------
     // NOTE: When we fail to create a valid query we try to create one with the backendSearch.
 
+    QString host = backend->getHost();
+
     backend = q_func()->backendSearch();
 
     if (backend == NULL) return query;
 
-    query = backend->createQuery(method, label, id + " " + q);
+    if (host.isEmpty())
+    {
+         query = backend->createQuery(method, label, id + " " + q);
+    }
+    else query = backend->createQuery(method, label, "site:" + host + " " + q);
 
     id = backend->id();
 
