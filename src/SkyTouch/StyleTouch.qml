@@ -42,7 +42,7 @@ Style
 
     property int panel_durationAnimation: duration_fast
 
-    property real panel_opacity: 0.8
+    property real panel_opacity: 0.9
 
     property color panel_color: "#c8c8c8"
 //#END
@@ -54,8 +54,6 @@ Style
     property int panelContextual_preferredWidth: dp256
 
     property int panelContextual_margins: dp4
-
-    property real panelContextual_opacity: 0.9
 
     property color panelContextual_color: border_color
 //#END
@@ -79,7 +77,7 @@ Style
 
     property int buttonTouch_spacing: dp8
 
-    property real buttonTouch_opacity     : 0.8
+    property real buttonTouch_opacity     : panel_opacity
     property real buttonTouch_opacityHover: 1.0
     property real buttonTouch_opacityPress: 0.6
 
@@ -265,8 +263,8 @@ Style
 
     property int scrollBar_margins: margins
 
-    property real scrollBar_opacity     : 0.8
-    property real scrollBar_opacityHover: 0.9
+    property real scrollBar_opacity     : buttonTouch_opacity
+    property real scrollBar_opacityHover: buttonTouch_opacityHover
     property real scrollBar_opacityPress: 1.0
 
     property color scrollBar_color: icon1_colorA

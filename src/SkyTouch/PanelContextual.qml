@@ -112,7 +112,7 @@ BasePanelContextual
 
         radius: st.radius
 
-        opacity: st.panelContextual_opacity
+        opacity: st.panel_opacity
 
         color: st.panelContextual_color
 
