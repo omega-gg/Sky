@@ -4,7 +4,7 @@
 
     Author: Benjamin Arnaud. <http://bunjee.me> <bunjee@omega.gg>
 
-    This file is part of SkyBase.
+    This file is part of SkyTouch.
 
     - GNU Lesser General Public License Usage:
     This file may be used under the terms of the GNU Lesser General Public License version 3 as
@@ -23,7 +23,7 @@
 import QtQuick 1.0
 import Sky     1.0
 
-List
+ListTouch
 {
     id: listCompletion
 
@@ -87,7 +87,7 @@ List
     function runQuery() { model.runQuery(); }
 
     //---------------------------------------------------------------------------------------------
-    // List reimplementation
+    // BaseList reimplementation
 
     function selectPrevious()
     {
