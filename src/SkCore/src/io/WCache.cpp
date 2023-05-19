@@ -1457,9 +1457,11 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
     {
         if (delay != -1)
         {
-            QDateTime date = source.date.addSecs(delay);
+            QDateTime date = source.date;
 
-            if (QDateTime::currentDateTime() < date) return;
+            if (date.isValid()
+                &&
+                QDateTime::currentDateTime() < date.addSecs(delay)) return;
         }
 
         d->urls.remove(url);
@@ -1762,8 +1764,6 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
         {
             int i = 0;
 
-            QDateTime date = QDateTime::currentDateTime();
-
             foreach (const QString & url, urls)
             {
                 QString urlCache = eventUrls->urlsCache.at(i);
@@ -1787,7 +1787,6 @@ WCache::WCache(const QString & path, qint64 sizeMax, QObject * parent)
                 WCacheSource source;
 
                 source.path = urlCache;
-                source.date = date;
 
                 d->urls.insert(url, source);
 

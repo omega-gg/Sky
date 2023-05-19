@@ -1623,11 +1623,11 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
     if (d->started)
     {
         // FIXME VLC 3.0.16: Pause does not seem to work on a live stream.
-        if (d->live)
+        /*if (d->live)
         {
              d->player->stop();
         }
-        else d->player->pause();
+        else */d->player->pause();
     }
     // FIXME VLC: Muting the sound to avoid the audio glitch.
     else d->setMute(true);
@@ -1642,11 +1642,11 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
     d->clearPlayer();
 
     // FIXME VLC 3.0.16: Pause does not seem to work on a live stream.
-    if (d->live)
+    /*if (d->live)
     {
          d->player->stop();
     }
-    else d->player->pause();
+    else */d->player->pause();
 
     d->clearActive();
 
@@ -2275,10 +2275,7 @@ WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
         int length = eventPlayer->value.toInt();
 
         // NOTE: If length is 0 then it's a live feed.
-        if (length == 0)
-        {
-            setLive(true);
-        }
+        if (length == 0) setLive(true);
 
         setDuration(length);
 

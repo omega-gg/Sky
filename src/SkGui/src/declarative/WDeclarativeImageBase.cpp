@@ -155,9 +155,9 @@ void WDeclarativeImageBasePrivate::loadUrl()
         }
         else
         {
-            QString url = file->urlCache();
+            QObject::connect(file, SIGNAL(loaded(WCacheFile *)), q, SLOT(onLoaded()));
 
-            clearFile();
+            QString url = file->urlCache();
 
             q->applyUrl(url, asynchronous);
         }
