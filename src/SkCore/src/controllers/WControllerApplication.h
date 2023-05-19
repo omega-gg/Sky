@@ -201,7 +201,8 @@ public: // Static functions
                                   const QString & type     = "*/*");
 #endif
 
-#ifdef Q_OS_IOS
+// FIXME Qt5.12.2: Without SK_OS_IOS, we can't access these from the QML.
+#if defined(Q_OS_IOS) || defined(SK_OS_IOS)
     Q_INVOKABLE static QString deviceName   ();
     Q_INVOKABLE static QString deviceVersion();
 

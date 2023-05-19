@@ -795,7 +795,11 @@ void WPlaylistPrivate::applyTrack(WTrack * track, int index, int delay)
     if (p->timeUpdate - timeUpdate < delay) return;
 
 #ifdef SK_NO_TORRENT
-    if (p->state == WTrack::Default)
+    WControllerPlaylistPrivate * pController = wControllerPlaylist->d_func();
+
+    pController->abortQueryTrack(track);
+
+    pController->applySourceTrack(q, track, p->source);
 #else
     // FIXME: For now, we don't want to reload a loaded torrent. It causes issues when a magnet
     //        is not responding well.
