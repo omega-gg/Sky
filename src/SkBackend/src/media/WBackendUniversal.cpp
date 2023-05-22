@@ -54,7 +54,7 @@ class WBackendUniversalEngine;
 // Static variables
 
 static const QString BACKENDUNIVERSAL_FUNCTIONS = \
-    "IF|"
+    "^(IF|"
     "AND|"
     "OR|"
     "ELSE|"
@@ -163,7 +163,7 @@ static const QString BACKENDUNIVERSAL_FUNCTIONS = \
     "TORRENT_ITEMS|"
     "TORRENT_FOLDERS|"
 #endif
-    "PRINT";
+    "PRINT)$";
 
 static const int BACKENDUNIVERSAL_MAX_NODES = 300;
 static const int BACKENDUNIVERSAL_MAX_LOOP  = 1000;

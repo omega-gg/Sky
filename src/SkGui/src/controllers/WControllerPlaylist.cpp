@@ -2050,19 +2050,21 @@ void WControllerPlaylistPrivate::applyTrack(WPlaylist   * playlist,
 
     playlist->updateTrack(index);
 
-    if (WControllerNetwork::removeUrlPrefix(playlist->source())
+    WPlaylistPrivate * p = playlist->d_func();
+
+    if (WControllerNetwork::removeUrlPrefix(p->source)
         ==
         WControllerNetwork::removeUrlPrefix(track->source()))
     {
         QString title = track->title();
         QString cover = track->cover();
 
-        if (title.isEmpty() == false)
+        if (p->title.isEmpty() && title.isEmpty() == false)
         {
             playlist->setTitle(title);
         }
 
-        if (cover.isEmpty() == false)
+        if (p->cover.isEmpty() && cover.isEmpty() == false)
         {
             playlist->setCover(cover);
         }
@@ -4446,6 +4448,32 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
         return true;
     }
     else return urlIsMedia(url);
+}
+
+/* Q_INVOKABLE */ bool WControllerPlaylist::urlIsTrackOnly(const QString & url) const
+{
+    WBackendNet * backend = backendFromSource(url);
+
+    if (backend == NULL) return false;
+
+    if (backend->getPlaylistInfo(url).isValid())
+    {
+        backend->tryDelete();
+
+        return false;
+    }
+    else if (backend->getTrackId(url).isEmpty())
+    {
+        backend->tryDelete();
+
+        return false;
+    }
+    else
+    {
+        backend->tryDelete();
+
+        return true;
+    }
 }
 
 /* Q_INVOKABLE */ bool WControllerPlaylist::urlIsPlaylist(const QString & url) const

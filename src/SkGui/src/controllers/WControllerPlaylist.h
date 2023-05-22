@@ -164,7 +164,11 @@ public: // Interface
 
     Q_INVOKABLE WLibraryItem::Type urlType(const QString & url) const;
 
-    Q_INVOKABLE bool urlIsTrack   (const QString & url) const;
+    Q_INVOKABLE bool urlIsTrack(const QString & url) const;
+
+    // NOTE: Useful to test if a given url is just a track and nothing else.
+    Q_INVOKABLE bool urlIsTrackOnly(const QString & url) const;
+
     Q_INVOKABLE bool urlIsPlaylist(const QString & url) const;
 
     Q_INVOKABLE bool sourceIsVideo(const QString & url) const;
