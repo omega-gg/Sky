@@ -94,11 +94,11 @@ Item
     property color slideGradient_colorBack: "#242424"
 
     //---------------------------------------------------------------------------------------------
-    // SlideBackground
+    // SlideBack
 
-    property real slideBackground_opacity: 0.6
+    property real slideBack_opacity: 0.6
 
-    property color slideBackground_color: "black"
+    property color slideBack_color: "black"
 
     //---------------------------------------------------------------------------------------------
     // SlideFrame

@@ -23,11 +23,20 @@
 import QtQuick 1.0
 import Sky     1.0
 
-SlideRectangle
+Rectangle
 {
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    anchors.fill: parent
+    anchors.centerIn: parent
+
+    width : parent.width
+    height: parent.height
+
+    z: -1
+
+    opacity: sp.slideBackground_opacity
+
+    color: sp.slideBackground_color
 }

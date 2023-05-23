@@ -23,11 +23,50 @@
 import QtQuick 1.0
 import Sky     1.0
 
-SlideRectangle
+Rectangle
 {
+    id: slideColor
+
+    //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+    // Style
+
+    property int durationAnimation: sp.slide_durationAnimation
+
+    property int easing: sp.easing
+
+    property color colorFront: sp.slideGradient_colorA
+    property color colorBack : sp.slideGradient_colorBack
+
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    property bool pReady: false
+
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    anchors.fill: parent
+    color: (pReady) ? colorFront : colorBack
+
+    //---------------------------------------------------------------------------------------------
+    // Events
+    //---------------------------------------------------------------------------------------------
+
+    Component.onCompleted: pReady = true
+
+    //---------------------------------------------------------------------------------------------
+    // Animations
+    //---------------------------------------------------------------------------------------------
+
+    Behavior on colorFront
+    {
+        ColorAnimation
+        {
+            duration: (st.animate) ? durationAnimation : 0
+
+            easing.type: slideColor.easing
+        }
+    }
 }

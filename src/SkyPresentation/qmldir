@@ -16,13 +16,15 @@ SlideLayer 1.0 SlideLayer.qml
 SlideRow    1.0 SlideRow.qml
 SlideColumn 1.0 SlideColumn.qml
 
-SlideRectangle 1.0 SlideRectangle.qml
+SlideRectangle  1.0 SlideRectangle.qml
+SlideBackground 1.0 SlideBackground.qml
 
+SlideColor              1.0 SlideColor.qml
 SlideGradientHorizontal 1.0 SlideGradientHorizontal.qml
 SlideGradientVertical   1.0 SlideGradientVertical.qml
 
-SlideBackground 1.0 SlideBackground.qml
-SlideFrame      1.0 SlideFrame.qml
+SlideBack  1.0 SlideBack.qml
+SlideFrame 1.0 SlideFrame.qml
 
 SlideImage 1.0 SlideImage.qml
 SlideCover 1.0 SlideCover.qml
