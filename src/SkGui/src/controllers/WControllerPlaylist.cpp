@@ -2052,21 +2052,35 @@ void WControllerPlaylistPrivate::applyTrack(WPlaylist   * playlist,
 
     WPlaylistPrivate * p = playlist->d_func();
 
-    if (WControllerNetwork::removeUrlPrefix(p->source)
+    QString source = p->source;
+
+    if (WControllerNetwork::removeUrlPrefix(source)
         ==
         WControllerNetwork::removeUrlPrefix(track->source()))
     {
+        Q_Q(const WControllerPlaylist);
+
         QString title = track->title();
         QString cover = track->cover();
 
-        if (p->title.isEmpty() && title.isEmpty() == false)
+        // NOTE: If the source is both a track and a playlist we only update its values when they
+        //       are empty.
+        if (q->urlIsPlaylist(source))
         {
-            playlist->setTitle(title);
-        }
+            if (p->title.isEmpty() && title.isEmpty() == false)
+            {
+                playlist->setTitle(title);
+            }
 
-        if (p->cover.isEmpty() && cover.isEmpty() == false)
+            if (p->cover.isEmpty() && cover.isEmpty() == false)
+            {
+                playlist->setCover(cover);
+            }
+        }
+        else
         {
-            playlist->setCover(cover);
+            if (title.isEmpty() == false) playlist->setTitle(title);
+            if (cover.isEmpty() == false) playlist->setCover(cover);
         }
     }
     else playlist->updateCover();
