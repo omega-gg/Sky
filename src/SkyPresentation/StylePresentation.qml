@@ -43,11 +43,14 @@ Item
 
     property real ratioTempo: (tempo) ? 60000 / tempo : 0.0
 
+//#TimerTempo
     //---------------------------------------------------------------------------------------------
     // TimerTempo
 
     property int timerTempo_interval: 16
+//#END
 
+//#BaseLogo
     //---------------------------------------------------------------------------------------------
     // BaseLogo
 
@@ -55,7 +58,9 @@ Item
 
     property color baseLogo_colorA: "#484848"
     property color baseLogo_colorB: baseLogo_colorA
+//#END
 
+//#ButtonBox
     //---------------------------------------------------------------------------------------------
     // ButtonBox
 
@@ -67,7 +72,9 @@ Item
 
     property color buttonBox_color     : st.text_colorLink
     property color buttonBox_colorHover: st.text_colorLinkHover
+//#END
 
+//#Slides
     //---------------------------------------------------------------------------------------------
     // Slides
 
@@ -76,7 +83,9 @@ Item
     property int slides_bpm: 1
 
     property int slides_duration: bpm(slides_bpm)
+//#END
 
+//#Slide*
     //---------------------------------------------------------------------------------------------
     // Slide
 
@@ -84,7 +93,9 @@ Item
 
     property int slide_width : st.dp1920
     property int slide_height: st.dp1080
+//#END
 
+//#SlideGradient*
     //---------------------------------------------------------------------------------------------
     // SlideGradient
 
@@ -92,19 +103,25 @@ Item
     property color slideGradient_colorB: "#969696"
 
     property color slideGradient_colorBack: "#242424"
+//#END
 
+//#SlideBack
     //---------------------------------------------------------------------------------------------
     // SlideBack
 
     property real slideBack_opacity: 0.6
 
     property color slideBack_color: "black"
+//#END
 
+//#SlideFrame
     //---------------------------------------------------------------------------------------------
     // SlideFrame
 
     property color slideFrame_color: "#242424"
+//#END
 
+//#SlideText
     //---------------------------------------------------------------------------------------------
     // SlideText
 
@@ -114,7 +131,9 @@ Item
 
     property int slideText_pixelSize: st.dp128
     property int slideText_styleSize: 8
+//#END
 
+//#SlidePlayer
     //---------------------------------------------------------------------------------------------
     // SlidePlayer
 
@@ -122,7 +141,9 @@ Item
     property int slidePlayer_durationFadeOut: bpm(4)
 
     property int slidePlayer_interval: 10000
+//#END
 
+//#Pulse
     //---------------------------------------------------------------------------------------------
     // Pulse
 
@@ -130,17 +151,22 @@ Item
     property int pulse_durationB: bpm(8)
 
     property real pulse_pulseOpacity: 1.0
+//#END
 
+//#PulseColor
     //---------------------------------------------------------------------------------------------
     // PulseColor
 
     property color pulseColor_color: "white"
+//#END
 
+//#PulseGradient
     //---------------------------------------------------------------------------------------------
     // PulseGradient
 
     property color pulseGradient_color    : pulseColor_color
     property color pulseGradient_colorBack: "black"
+//#END
 
     //---------------------------------------------------------------------------------------------
     // Functions

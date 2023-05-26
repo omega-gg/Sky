@@ -36,7 +36,7 @@ Rectangle
 
     z: -1
 
-    opacity: sp.slideBackground_opacity
+    opacity: sp.slideBack_opacity
 
-    color: sp.slideBackground_color
+    color: sp.slideBack_color
 }
