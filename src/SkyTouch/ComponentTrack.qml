@@ -31,7 +31,8 @@ Item
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int iconWidth: st.componentTrack_iconWidth
+    property int iconWidth : st.componentTrack_iconWidth
+    property int iconHeight: iconWidth
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -107,6 +108,9 @@ Item
 
         iconWidth: (isSourceDefault) ? componentTrack.iconWidth
                                      : itemIcon.filter.width
+
+        iconHeight: (isSourceDefault) ? componentTrack.iconHeight
+                                      : itemIcon.filter.height
 
         // NOTE: We have to provide the width and height otherwise we might have incorrect sizes
         //       for cropped portrait covers.

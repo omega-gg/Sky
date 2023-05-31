@@ -31,6 +31,9 @@ Item
     // Properties
     //---------------------------------------------------------------------------------------------
 
+    property int iconWidth : st.componentBackend_iconWidth
+    property int iconHeight: iconWidth
+
     property string hub
 
     //---------------------------------------------------------------------------------------------
@@ -111,8 +114,11 @@ Item
 
         anchors.rightMargin: (buttonIcon.visible) ? st.margins : 0
 
-        iconWidth: (isSourceDefault) ? st.componentBackend_iconWidth
+        iconWidth: (isSourceDefault) ? componentBackendFull.iconWidth
                                      : itemIcon.filter.width
+
+        iconHeight: (isSourceDefault) ? componentBackendFull.iconHeight
+                                      : itemIcon.filter.height
 
         // NOTE: We have to provide the width and height otherwise we might have incorrect sizes
         //       for cropped portrait covers.

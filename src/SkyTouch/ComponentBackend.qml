@@ -31,7 +31,8 @@ Item
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int iconWidth: st.componentBackend_iconWidth
+    property int iconWidth : st.componentBackend_iconWidth
+    property int iconHeight: iconWidth
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -107,6 +108,9 @@ Item
 
         iconWidth: (isSourceDefault) ? componentBackend.iconWidth
                                      : itemIcon.filter.width
+
+        iconHeight: (isSourceDefault) ? componentBackend.iconHeight
+                                      : itemIcon.filter.height
 
         // NOTE: We have to provide the width and height otherwise we might have incorrect sizes
         //       for cropped portrait covers.
