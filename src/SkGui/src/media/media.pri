@@ -12,6 +12,10 @@ HEADERS += src/media/WBackendNet.h \
            src/media/WLibraryFolderRelated_p.h \
            src/media/WPlaylist.h \
            src/media/WPlaylist_p.h \
+           src/media/WLoaderPlaylist.h \
+           src/media/WLoaderPlaylist_p.h \
+           src/media/WLoaderSuggest.h \
+           src/media/WLoaderSuggest_p.h \
            src/media/WAbstractBackend.h \
            src/media/WAbstractBackend_p.h \
            src/media/WAbstractHook.h \
@@ -28,10 +32,12 @@ HEADERS += src/media/WBackendNet.h \
 SOURCES += src/media/WBackendNet.cpp \
            src/media/WTrack.cpp \
            src/media/WLibraryItem.cpp \
-           src/media/WPlaylist.cpp \
-           src/media/WPlaylist_patch.cpp \
            src/media/WLibraryFolder.cpp \
            src/media/WLibraryFolderRelated.cpp \
+           src/media/WPlaylist.cpp \
+           src/media/WPlaylist_patch.cpp \
+           src/media/WLoaderPlaylist.cpp \
+           src/media/WLoaderSuggest.cpp \
            src/media/WAbstractBackend.cpp \
            src/media/WAbstractHook.cpp \
            src/media/WHookOutput.cpp \
