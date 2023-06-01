@@ -43,6 +43,7 @@ void WLoaderPlaylistPrivate::init(WLibraryFolder * folder, int id)
     this->id     = id;
 
     running = false;
+    active  = false;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -51,7 +52,24 @@ void WLoaderPlaylistPrivate::init(WLibraryFolder * folder, int id)
 
 void WLoaderPlaylistPrivate::onCurrentIdChanged()
 {
-    if (folder->id() != id) return;
+    if (folder->currentId() == id)
+    {
+        if (active) return;
+
+        Q_Q(WLoaderPlaylist);
+
+        active = true;
+
+        q->onStart();
+    }
+    else if (active)
+    {
+        Q_Q(WLoaderPlaylist);
+
+        active = false;
+
+        q->onStop();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -110,9 +128,26 @@ void WLoaderPlaylist::setRunning(bool running)
 
     if (running)
     {
+        if (d->folder->currentId() == d->id)
+        {
+            d->active = true;
+
+            onStart();
+        }
+
         connect(d->folder, SIGNAL(currentIdChanged()), this, SLOT(onCurrentIdChanged()));
     }
-    else connect(d->folder, 0, this, 0);
+    else
+    {
+        if (d->active)
+        {
+            d->active = false;
+
+            onStop();
+        }
+
+        disconnect(d->folder, 0, this, 0);
+    }
 
     emit runningChanged();
 }

@@ -39,6 +39,10 @@ class SK_GUI_EXPORT WLoaderSuggest : public WLoaderPlaylist
 public:
     WLoaderSuggest(WLibraryFolder * folder, int id, WPlaylist * history);
 
+protected: // WLoaderPlaylist implementation
+    /* virtual */ void onStart();
+    /* virtual */ void onStop ();
+
 private:
     W_DECLARE_PRIVATE(WLoaderSuggest)
 };

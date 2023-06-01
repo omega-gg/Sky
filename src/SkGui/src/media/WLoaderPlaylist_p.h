@@ -54,6 +54,7 @@ public: // Variables
     int id;
 
     bool running;
+    bool active;
 
 protected:
     W_DECLARE_PUBLIC(WLoaderPlaylist)

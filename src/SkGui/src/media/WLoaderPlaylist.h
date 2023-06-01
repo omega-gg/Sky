@@ -50,6 +50,10 @@ public: // Interface
     Q_INVOKABLE void start();
     Q_INVOKABLE void stop ();
 
+protected: // Abstract functions
+    virtual void onStart() = 0;
+    virtual void onStop () = 0;
+
 signals:
     void runningChanged();
 

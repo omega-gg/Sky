@@ -52,4 +52,16 @@ void WLoaderSuggestPrivate::init(WPlaylist * history)
     d->init(history);
 }
 
+//-------------------------------------------------------------------------------------------------
+// Protected WLoaderPlaylist implementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WLoaderSuggest::onStart()
+{
+}
+
+/* virtual */ void WLoaderSuggest::onStop()
+{
+}
+
 #endif // SK_NO_LOADERSUGGEST
