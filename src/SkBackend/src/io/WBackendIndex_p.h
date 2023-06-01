@@ -143,7 +143,7 @@ public: // Variables
 
     QHash<WRemoteData *, WBackendIndexFile> jobs;
 
-    QList<QString> ids;
+    QStringList ids;
 
     bool loaded;
 

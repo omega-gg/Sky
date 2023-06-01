@@ -33,6 +33,9 @@
     We mean it.
 */
 
+// Qt includes
+#include <WBackendNet>
+
 // Private includes
 #include <private/WLoaderPlaylist_p>
 
@@ -45,8 +48,17 @@ public:
 
     void init(WPlaylist * history);
 
+public: // Functions
+    QStringList getSources() const;
+
+    WBackendNetQuery getQuery(const QString & url) const;
+
 public: // Variables
     WPlaylist * history;
+
+    QStringList sources;
+
+    QMetaMethod method;
 
 protected:
     W_DECLARE_PUBLIC(WLoaderSuggest)
