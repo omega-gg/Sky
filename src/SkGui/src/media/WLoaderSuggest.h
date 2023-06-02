@@ -45,6 +45,8 @@ protected: // WLoaderPlaylist implementation
 
 private:
     W_DECLARE_PRIVATE(WLoaderSuggest)
+
+    Q_PRIVATE_SLOT(d_func(), void onLoaded(const WLoaderSuggestData &))
 };
 
 #include <private/WLoaderSuggest_p>

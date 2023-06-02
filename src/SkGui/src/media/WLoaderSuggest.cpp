@@ -34,11 +34,36 @@
 static const int LOADERSUGGEST_MAX = 10;
 
 //=================================================================================================
+// WLoaderSuggestAction
+//=================================================================================================
+
+struct WLoaderSuggestAction
+{
+public:
+    WLoaderSuggestAction(WLoaderSuggestPrivate::Type type)
+    {
+        this->type = type;
+
+        index = -1;
+    }
+
+public: // Variables
+    WLoaderSuggestPrivate::Type type;
+
+    int index;
+
+    QString url;
+};
+
+//=================================================================================================
 // WLoaderSuggestData
 //=================================================================================================
 
 struct WLoaderSuggestData
 {
+    QStringList sources;
+
+    QList<WLoaderSuggestAction> actions;
 };
 
 //=================================================================================================
@@ -50,61 +75,127 @@ class WLoaderSuggestReply : public QObject
     Q_OBJECT
 
 public: // Interface
-    Q_INVOKABLE void extract(const QStringList & sources);
+    Q_INVOKABLE void extract(const QStringList & urls, const QStringList & sources);
+
+private: // Functions
+    WBackendNetQuery getQuery(const QString & url) const;
 
 signals:
     void loaded(const WLoaderSuggestData & data);
 };
 
-/* Q_INVOKABLE */ void WLoaderSuggestReply::extract(const QStringList & sources)
+/* Q_INVOKABLE */ void WLoaderSuggestReply::extract(const QStringList & urls,
+                                                    const QStringList & sources)
 {
     WLoaderSuggestData data;
 
-    emit loaded(data);
-}
+    QList<WLoaderSuggestAction> & actions = data.actions;
 
-//=================================================================================================
-// WLoaderSuggestPrivate
-//=================================================================================================
+    QStringList list = sources;
 
-WLoaderSuggestPrivate::WLoaderSuggestPrivate(WLoaderSuggest * p) : WLoaderPlaylistPrivate(p) {}
+    int index = 0;
 
-//-------------------------------------------------------------------------------------------------
-
-void WLoaderSuggestPrivate::init(WPlaylist * history)
-{
-    Q_ASSERT(history);
-
-    this->history = history;
-
-    const QMetaObject * meta = WLoaderSuggestReply().metaObject();
-
-    method = meta->method(meta->indexOfMethod("extract(QStringList&)"));
-}
-
-//-------------------------------------------------------------------------------------------------
-// Private functions
-//-------------------------------------------------------------------------------------------------
-
-QStringList WLoaderSuggestPrivate::getSources() const
-{
-    QStringList list;
-
-    QList<const WTrack *> tracks = history->trackPointers();
-
-    foreach (const WTrack * track, tracks)
+    while (index < list.count())
     {
-        QString source = track->source();
+        if (urls.contains(list.at(index)))
+        {
+            index++;
 
-        if (list.contains(source)) continue;
+            continue;
+        }
 
-        list.append(source);
+        list.removeAt(index);
+
+        WLoaderSuggestAction action(WLoaderSuggestPrivate::Remove);
+
+        action.index = index;
+
+        actions.append(action);
     }
 
-    return list;
+    int count = list.count();
+
+    int total = 0;
+
+    foreach (const QString & url, urls)
+    {
+        if (total < count)
+        {
+            if (list.at(total) == url)
+            {
+                total++;
+
+                if (total == LOADERSUGGEST_MAX) break;
+
+                continue;
+            }
+
+            int index = list.indexOf(url);
+
+            if (index == -1)
+            {
+                WBackendNetQuery query = getQuery(url);
+
+                if (query.isValid() == false) continue;
+            }
+            else
+            {
+                list.removeAt(index);
+
+                WLoaderSuggestAction action(WLoaderSuggestPrivate::Move);
+
+                action.index = index;
+
+                actions.append(action);
+            }
+        }
+        else
+        {
+            WBackendNetQuery query = getQuery(url);
+
+            if (query.isValid() == false) continue;
+        }
+
+        list.insert(total, url);
+
+        WLoaderSuggestAction action(WLoaderSuggestPrivate::Insert);
+
+        action.index = total;
+
+        action.url = url;
+
+        actions.append(action);
+
+        total++;
+
+        if (total == LOADERSUGGEST_MAX) break;
+    }
+
+    count = list.count();
+
+    while (count > LOADERSUGGEST_MAX)
+    {
+        list.removeAt(total);
+
+        WLoaderSuggestAction action(WLoaderSuggestPrivate::Remove);
+
+        action.index = total;
+
+        actions.append(action);
+
+        total++;
+
+        count--;
+    }
+
+    data.sources = list;
+
+    emit loaded(data);
+
+    deleteLater();
 }
 
-WBackendNetQuery WLoaderSuggestPrivate::getQuery(const QString & url) const
+WBackendNetQuery WLoaderSuggestReply::getQuery(const QString & url) const
 {
 #ifndef SK_NO_TORRENT
     // FIXME: We are not suggesting torrents for now.
@@ -122,6 +213,66 @@ WBackendNetQuery WLoaderSuggestPrivate::getQuery(const QString & url) const
     backend->tryDelete();
 
     return query;
+}
+
+//=================================================================================================
+// WLoaderSuggestPrivate
+//=================================================================================================
+
+WLoaderSuggestPrivate::WLoaderSuggestPrivate(WLoaderSuggest * p) : WLoaderPlaylistPrivate(p) {}
+
+//-------------------------------------------------------------------------------------------------
+
+void WLoaderSuggestPrivate::init(WPlaylist * history)
+{
+    Q_ASSERT(history);
+
+    this->history = history;
+
+    qRegisterMetaType<WLoaderSuggestData>("WLoaderSuggestData");
+
+    const QMetaObject * meta = WLoaderSuggestReply().metaObject();
+
+    method = meta->method(meta->indexOfMethod("extract(QStringList,QStringList)"));
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
+
+QStringList WLoaderSuggestPrivate::getSources() const
+{
+    QStringList list;
+
+    QList<const WTrack *> tracks = history->trackPointers();
+
+    foreach (const WTrack * track, tracks)
+    {
+        QString source = WControllerPlaylist::cleanSource(track->source());
+
+        if (list.contains(source)) continue;
+
+        list.append(source);
+    }
+
+    return list;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Slots
+//-------------------------------------------------------------------------------------------------
+
+void WLoaderSuggestPrivate::onLoaded(const WLoaderSuggestData & data)
+{
+    // NOTE: When the loader is no longer active we skip the data processing.
+    if (active == false) return;
+
+    foreach (const WLoaderSuggestAction & action, data.actions)
+    {
+        qDebug("ACTION %d %d %s", action.type, action.index, action.url.C_STR);
+    }
+
+    sources = data.sources;
 }
 
 //=================================================================================================
@@ -145,67 +296,17 @@ WBackendNetQuery WLoaderSuggestPrivate::getQuery(const QString & url) const
 {
     Q_D(WLoaderSuggest);
 
-    int count = d->sources.count();
+    QStringList urls = d->getSources();
 
-    int total = 0;
+    WLoaderSuggestReply * reply = new WLoaderSuggestReply;
 
-    QStringList list = d->getSources();
+    QObject::connect(reply, SIGNAL(loaded(const WLoaderSuggestData &)),
+                     this,  SLOT(onLoaded(const WLoaderSuggestData &)));
 
-    foreach (const QString & url, list)
-    {
-        if (total < count)
-        {
-            if (d->sources.at(total) == url)
-            {
-                total++;
+    reply->moveToThread(wControllerPlaylist->thread());
 
-                continue;
-            }
-
-            int index = d->sources.indexOf(url);
-
-            if (index == -1)
-            {
-                WBackendNetQuery query = d->getQuery(url);
-
-                if (query.isValid() == false) continue;
-            }
-            else
-            {
-                // FIXME
-
-                d->sources.removeAt(index);
-            }
-
-            d->sources.insert(total, url);
-        }
-        else
-        {
-            WBackendNetQuery query = d->getQuery(url);
-
-            if (query.isValid() == false) continue;
-
-            d->sources.append(url);
-        }
-
-        total++;
-
-        if (total == LOADERSUGGEST_MAX) break;
-    }
-
-    count = d->sources.count();
-
-    while (count > LOADERSUGGEST_MAX)
-    {
-        d->sources.removeLast();
-
-        count--;
-    }
-
-    foreach (const QString & string, d->sources)
-    {
-        qDebug("SOURCE %s", string.C_STR);
-    }
+    d->method.invoke(reply, Q_ARG(const QStringList &, urls),
+                            Q_ARG(const QStringList &, d->sources));
 }
 
 /* virtual */ void WLoaderSuggest::onStop()

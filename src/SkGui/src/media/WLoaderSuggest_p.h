@@ -35,14 +35,28 @@
 
 // Qt includes
 #include <WBackendNet>
+#ifdef QT_4
+#include <QStringList>
+#endif
 
 // Private includes
 #include <private/WLoaderPlaylist_p>
 
 #ifndef SK_NO_LOADERSUGGEST
 
+// Forward declarations
+class WLoaderSuggestData;
+
 class SK_GUI_EXPORT WLoaderSuggestPrivate : public WLoaderPlaylistPrivate
 {
+public: // Enums
+    enum Type
+    {
+        Insert,
+        Move,
+        Remove
+    };
+
 public:
     WLoaderSuggestPrivate(WLoaderSuggest * p);
 
@@ -51,7 +65,8 @@ public:
 public: // Functions
     QStringList getSources() const;
 
-    WBackendNetQuery getQuery(const QString & url) const;
+public: // Slots
+    void onLoaded(const WLoaderSuggestData & data);
 
 public: // Variables
     WPlaylist * history;
