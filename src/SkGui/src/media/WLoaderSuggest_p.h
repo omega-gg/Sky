@@ -47,6 +47,21 @@
 // Forward declarations
 class WLoaderSuggestData;
 
+//=================================================================================================
+// WLoaderSuggestNode
+//=================================================================================================
+
+struct WLoaderSuggestNode
+{
+    QString source;
+
+    QStringList urls;
+};
+
+//=================================================================================================
+// WLoaderSuggestPrivate
+//=================================================================================================
+
 class SK_GUI_EXPORT WLoaderSuggestPrivate : public WLoaderPlaylistPrivate
 {
 public: // Enums
@@ -72,6 +87,8 @@ public: // Variables
     WPlaylist * history;
 
     QStringList sources;
+
+    QList<WLoaderSuggestNode> nodes;
 
     QMetaMethod method;
 

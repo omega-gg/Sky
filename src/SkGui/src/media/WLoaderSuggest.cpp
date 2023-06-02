@@ -140,13 +140,29 @@ signals:
             }
             else
             {
-                list.removeAt(index);
+                if (index < total)
+                {
+                     list.move(index, total - 1);
+                }
+                else list.move(index, total);
 
                 WLoaderSuggestAction action(WLoaderSuggestPrivate::Move);
 
                 action.index = index;
 
                 actions.append(action);
+
+                action = WLoaderSuggestAction(WLoaderSuggestPrivate::Insert);
+
+                action.index = total;
+
+                actions.append(action);
+
+                total++;
+
+                if (total == LOADERSUGGEST_MAX) break;
+
+                continue;
             }
         }
         else
@@ -267,12 +283,53 @@ void WLoaderSuggestPrivate::onLoaded(const WLoaderSuggestData & data)
     // NOTE: When the loader is no longer active we skip the data processing.
     if (active == false) return;
 
-    foreach (const WLoaderSuggestAction & action, data.actions)
+    for (int i = 0; i < data.actions.count(); i++)
     {
+        const WLoaderSuggestAction & action = data.actions.at(i);
+
         qDebug("ACTION %d %d %s", action.type, action.index, action.url.C_STR);
+
+        WLoaderSuggestPrivate::Type type = action.type;
+
+        if (type == WLoaderSuggestPrivate::Insert)
+        {
+            WLoaderSuggestNode node;
+
+            node.source = action.url;
+
+            nodes.insert(action.index, node);
+        }
+        else if (type == WLoaderSuggestPrivate::Move)
+        {
+            int from = action.index;
+
+            i++;
+
+            int to = data.actions.at(i).index;
+
+            if (from < to)
+            {
+                 nodes.move(from, to - 1);
+            }
+            else nodes.move(from, to);
+        }
+        else if (type == WLoaderSuggestPrivate::Remove)
+        {
+            nodes.removeAt(i);
+        }
+    }
+
+    foreach (const QString & source, sources)
+    {
+        qDebug("BEFORE %s", source.C_STR);
     }
 
     sources = data.sources;
+
+    foreach (const QString & source, sources)
+    {
+        qDebug("AFTER %s", source.C_STR);
+    }
 }
 
 //=================================================================================================
