@@ -119,7 +119,8 @@ public: // Interface
     Q_INVOKABLE bool loadQuery  ();
     Q_INVOKABLE bool reloadQuery();
 
-    Q_INVOKABLE bool abortQuery();
+    Q_INVOKABLE bool abortQuery  ();
+    Q_INVOKABLE bool abortQueries();
 
     //---------------------------------------------------------------------------------------------
 

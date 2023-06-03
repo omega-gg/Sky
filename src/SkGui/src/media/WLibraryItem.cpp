@@ -303,6 +303,11 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
     else return false;
 }
 
+/* Q_INVOKABLE */ bool WLibraryItem::abortQueries()
+{
+    return wControllerPlaylist->d_func()->abortQueriesItem(this);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WLibraryItem::setFutureId(int id)

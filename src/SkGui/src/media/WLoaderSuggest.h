@@ -36,15 +36,27 @@ class SK_GUI_EXPORT WLoaderSuggest : public WLoaderPlaylist
 {
     Q_OBJECT
 
+    Q_PROPERTY(WPlaylist * history READ history WRITE setHistory NOTIFY historyChanged)
+
 public:
-    WLoaderSuggest(WLibraryFolder * folder, int id, WPlaylist * history);
+    WLoaderSuggest(WLibraryFolder * folder, int id);
 
 protected: // WLoaderPlaylist implementation
     /* virtual */ void onStart();
     /* virtual */ void onStop ();
 
+signals:
+    void historyChanged();
+
+public: // Properties
+    WPlaylist * history() const;
+    void        setHistory(WPlaylist * history);
+
 private:
     W_DECLARE_PRIVATE(WLoaderSuggest)
+
+    Q_PRIVATE_SLOT(d_func(), void onPlaylistUpdated  ());
+    Q_PRIVATE_SLOT(d_func(), void onPlaylistDestroyed());
 
     Q_PRIVATE_SLOT(d_func(), void onLoaded(const WLoaderSuggestData &))
 

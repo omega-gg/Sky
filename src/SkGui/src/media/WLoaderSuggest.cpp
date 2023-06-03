@@ -252,11 +252,9 @@ WLoaderSuggestPrivate::WLoaderSuggestPrivate(WLoaderSuggest * p) : WLoaderPlayli
 
 //-------------------------------------------------------------------------------------------------
 
-void WLoaderSuggestPrivate::init(WPlaylist * history)
+void WLoaderSuggestPrivate::init()
 {
-    Q_ASSERT(history);
-
-    this->history = history;
+    history = NULL;
 
     qRegisterMetaType<WLoaderSuggestData>("WLoaderSuggestData");
 
@@ -268,6 +266,23 @@ void WLoaderSuggestPrivate::init(WPlaylist * history)
 //-------------------------------------------------------------------------------------------------
 // Private functions
 //-------------------------------------------------------------------------------------------------
+
+void WLoaderSuggestPrivate::updateSources()
+{
+    Q_Q(WLoaderSuggest);
+
+    QStringList urls = getSources();
+
+    WLoaderSuggestReply * reply = new WLoaderSuggestReply;
+
+    QObject::connect(reply, SIGNAL(loaded(const WLoaderSuggestData &)),
+                     q,     SLOT(onLoaded(const WLoaderSuggestData &)));
+
+    reply->moveToThread(wControllerPlaylist->thread());
+
+    method.invoke(reply, Q_ARG(const QStringList &, urls),
+                         Q_ARG(const QStringList &, sources));
+}
 
 void WLoaderSuggestPrivate::processQueries()
 {
@@ -289,9 +304,24 @@ void WLoaderSuggestPrivate::processQueries()
     }
 }
 
+void WLoaderSuggestPrivate::clearQueries()
+{
+    foreach (WPlaylist * playlist, playlists)
+    {
+        playlist->abortQueries();
+
+        playlist->tryDelete();
+    }
+
+    playlists.clear();
+    jobs     .clear();
+}
+
 QStringList WLoaderSuggestPrivate::getSources() const
 {
     QStringList list;
+
+    if (history == NULL) return list;
 
     QList<const WTrack *> tracks = history->trackPointers();
 
@@ -334,6 +364,16 @@ WPlaylist * WLoaderSuggestPrivate::getPlaylist()
 //-------------------------------------------------------------------------------------------------
 // Slots
 //-------------------------------------------------------------------------------------------------
+
+void WLoaderSuggestPrivate::onPlaylistUpdated()
+{
+    if (active) updateSources();
+}
+
+void WLoaderSuggestPrivate::onPlaylistDestroyed()
+{
+    history = NULL;
+}
 
 void WLoaderSuggestPrivate::onLoaded(const WLoaderSuggestData & data)
 {
@@ -409,13 +449,10 @@ void WLoaderSuggestPrivate::onQueryCompleted()
 // WLoaderSuggest
 //=================================================================================================
 
-/* explicit */ WLoaderSuggest::WLoaderSuggest(WLibraryFolder * folder, int id,
-                                              WPlaylist      * history)
+/* explicit */ WLoaderSuggest::WLoaderSuggest(WLibraryFolder * folder, int id)
     : WLoaderPlaylist(new WLoaderSuggestPrivate(this), folder, id)
 {
-    Q_D(WLoaderSuggest);
-
-    d->init(history);
+    Q_D(WLoaderSuggest); d->init();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -424,24 +461,47 @@ void WLoaderSuggestPrivate::onQueryCompleted()
 
 /* virtual */ void WLoaderSuggest::onStart()
 {
-    Q_D(WLoaderSuggest);
-
-    QStringList urls = d->getSources();
-
-    WLoaderSuggestReply * reply = new WLoaderSuggestReply;
-
-    QObject::connect(reply, SIGNAL(loaded(const WLoaderSuggestData &)),
-                     this,  SLOT(onLoaded(const WLoaderSuggestData &)));
-
-    reply->moveToThread(wControllerPlaylist->thread());
-
-    d->method.invoke(reply, Q_ARG(const QStringList &, urls),
-                            Q_ARG(const QStringList &, d->sources));
+    Q_D(WLoaderSuggest); d->updateSources();
 }
 
 /* virtual */ void WLoaderSuggest::onStop()
 {
-    // STOP QUERIES
+    Q_D(WLoaderSuggest); d->clearQueries();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Properties
+//-------------------------------------------------------------------------------------------------
+
+WPlaylist * WLoaderSuggest::history() const
+{
+    Q_D(const WLoaderSuggest); return d->history;
+}
+
+void WLoaderSuggest::setHistory(WPlaylist * history)
+{
+    Q_D(WLoaderSuggest);
+
+    if (d->history == history) return;
+
+    if (d->history)
+    {
+        disconnect(d->history, 0, this, 0);
+
+        if (d->active) d->clearQueries();
+    }
+
+    d->history = history;
+
+    if (history)
+    {
+        connect(history, SIGNAL(playlistUpdated()), this, SLOT(onPlaylistUpdated  ()));
+        connect(history, SIGNAL(destroyed      ()), this, SLOT(onPlaylistDestroyed()));
+
+        if (d->active) d->updateSources();
+    }
+
+    emit historyChanged();
 }
 
 #endif // SK_NO_LOADERSUGGEST

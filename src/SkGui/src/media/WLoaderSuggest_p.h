@@ -77,16 +77,22 @@ public: // Enums
 public:
     WLoaderSuggestPrivate(WLoaderSuggest * p);
 
-    void init(WPlaylist * history);
+    void init();
 
 public: // Functions
+    void updateSources();
+
     void processQueries();
+    void clearQueries  ();
 
     QStringList getSources() const;
 
     WPlaylist * getPlaylist();
 
 public: // Slots
+    void onPlaylistUpdated  ();
+    void onPlaylistDestroyed();
+
     void onLoaded(const WLoaderSuggestData & data);
 
     void onQueryCompleted();
