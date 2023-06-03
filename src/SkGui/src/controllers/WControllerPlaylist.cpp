@@ -1145,6 +1145,50 @@ bool WControllerPlaylistPrivate::applyQueryTrack(const QString & backendId,
     else return false;
 }
 
+bool WControllerPlaylistPrivate::applyQueryPlaylist(WPlaylist              * playlist,
+                                                    const WBackendNetQuery & query)
+{
+    playlist->abortQuery();
+
+    if (query.isValid())
+    {
+        getDataPlaylist(playlist, query);
+
+        return true;
+    }
+    else return false;
+}
+
+bool WControllerPlaylistPrivate::applyQueryFolder(WLibraryFolder         * folder,
+                                                  const WBackendNetQuery & query)
+{
+    folder->abortQuery();
+
+    if (query.isValid())
+    {
+        getDataFolder(folder, query);
+
+        return true;
+    }
+    else return false;
+}
+
+bool WControllerPlaylistPrivate::applyQueryItem(WLibraryItem           * item,
+                                                const WBackendNetQuery & query)
+{
+    item->abortQuery();
+
+    if (query.isValid())
+    {
+        getDataItem(item, query);
+
+        return true;
+    }
+    else return false;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
                                                   WTrack    * track, const QString & url)
 {

@@ -55,6 +55,8 @@ struct WLoaderSuggestNode
 {
     QString source;
 
+    WBackendNetQuery query;
+
     QStringList urls;
 };
 
@@ -78,10 +80,16 @@ public:
     void init(WPlaylist * history);
 
 public: // Functions
+    void processQueries();
+
     QStringList getSources() const;
+
+    WPlaylist * getPlaylist();
 
 public: // Slots
     void onLoaded(const WLoaderSuggestData & data);
+
+    void onQueryCompleted();
 
 public: // Variables
     WPlaylist * history;
@@ -89,6 +97,10 @@ public: // Variables
     QStringList sources;
 
     QList<WLoaderSuggestNode> nodes;
+
+    QList<WPlaylist *> playlists;
+
+    QHash<WPlaylist *, WLoaderSuggestNode *> jobs;
 
     QMetaMethod method;
 

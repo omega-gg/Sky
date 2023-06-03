@@ -242,6 +242,13 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
     return loadSource(source, false);
 }
 
+/* Q_INVOKABLE */ bool WLibraryItem::applyQuery(const WBackendNetQuery & query)
+{
+    clearSource();
+
+    return onApplyQuery(query);
+}
+
 /* Q_INVOKABLE */ void WLibraryItem::clearSource()
 {
     loadSource(QString(), false);
@@ -382,6 +389,11 @@ WLibraryItem::WLibraryItem(WLibraryItemPrivate * p, Type type, WLibraryFolder * 
 /* virtual */ bool WLibraryItem::onApplySource(const QString & source)
 {
     return wControllerPlaylist->d_func()->applySourceItem(this, source);
+}
+
+/* virtual */ bool WLibraryItem::onApplyQuery(const WBackendNetQuery & query)
+{
+    return wControllerPlaylist->d_func()->applyQueryItem(this, query);
 }
 
 /* virtual */ bool WLibraryItem::onStopQuery()

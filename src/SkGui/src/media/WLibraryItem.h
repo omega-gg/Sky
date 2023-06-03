@@ -109,7 +109,8 @@ public: // Interface
     Q_INVOKABLE bool loadSource  (const QString & source, bool load = true);
     Q_INVOKABLE bool reloadSource(const QString & source);
 
-    Q_INVOKABLE bool applySource(const QString & source);
+    Q_INVOKABLE bool applySource(const QString          & source);
+    Q_INVOKABLE bool applyQuery (const WBackendNetQuery & query);
 
     Q_INVOKABLE void clearSource();
 
@@ -141,7 +142,8 @@ public: // WLocalObject reimplementation
     /* Q_INVOKABLE virtual */ QString getParentPath() const;
 
 protected: // Virtual functions
-    virtual bool onApplySource(const QString & source);
+    virtual bool onApplySource(const QString          & source);
+    virtual bool onApplyQuery (const WBackendNetQuery & query);
 
     virtual bool onStopQuery();
 

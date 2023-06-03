@@ -31,7 +31,8 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int LOADERSUGGEST_MAX = 10;
+static const int LOADERSUGGEST_MAX_COUNT   = 10;
+static const int LOADERSUGGEST_MAX_QUERIES = 4;
 
 //=================================================================================================
 // WLoaderSuggestAction
@@ -53,6 +54,8 @@ public: // Variables
     int index;
 
     QString url;
+
+    WBackendNetQuery query;
 };
 
 //=================================================================================================
@@ -125,7 +128,7 @@ signals:
             {
                 total++;
 
-                if (total == LOADERSUGGEST_MAX) break;
+                if (total == LOADERSUGGEST_MAX_COUNT) break;
 
                 continue;
             }
@@ -137,6 +140,16 @@ signals:
                 WBackendNetQuery query = getQuery(url);
 
                 if (query.isValid() == false) continue;
+
+                list.insert(total, url);
+
+                WLoaderSuggestAction action(WLoaderSuggestPrivate::Insert);
+
+                action.index = total;
+                action.url   = url;
+                action.query = query;
+
+                actions.append(action);
             }
             else
             {
@@ -160,7 +173,7 @@ signals:
 
                 total++;
 
-                if (total == LOADERSUGGEST_MAX) break;
+                if (total == LOADERSUGGEST_MAX_COUNT) break;
 
                 continue;
             }
@@ -170,26 +183,26 @@ signals:
             WBackendNetQuery query = getQuery(url);
 
             if (query.isValid() == false) continue;
+
+            list.insert(total, url);
+
+            WLoaderSuggestAction action(WLoaderSuggestPrivate::Insert);
+
+            action.index = total;
+            action.url   = url;
+            action.query = query;
+
+            actions.append(action);
         }
-
-        list.insert(total, url);
-
-        WLoaderSuggestAction action(WLoaderSuggestPrivate::Insert);
-
-        action.index = total;
-
-        action.url = url;
-
-        actions.append(action);
 
         total++;
 
-        if (total == LOADERSUGGEST_MAX) break;
+        if (total == LOADERSUGGEST_MAX_COUNT) break;
     }
 
     count = list.count();
 
-    while (count > LOADERSUGGEST_MAX)
+    while (count > LOADERSUGGEST_MAX_COUNT)
     {
         list.removeAt(total);
 
@@ -256,6 +269,26 @@ void WLoaderSuggestPrivate::init(WPlaylist * history)
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
+void WLoaderSuggestPrivate::processQueries()
+{
+    for (int i = 0; i < nodes.count(); i++)
+    {
+        WLoaderSuggestNode * node = &(nodes[i]);
+
+        const WBackendNetQuery & query = node->query;
+
+        if (query.isValid() == false) continue;
+
+        WPlaylist * playlist = getPlaylist();
+
+        if (playlist == NULL) return;
+
+        playlist->applyQuery(query);
+
+        jobs.insert(playlist, node);
+    }
+}
+
 QStringList WLoaderSuggestPrivate::getSources() const
 {
     QStringList list;
@@ -272,6 +305,30 @@ QStringList WLoaderSuggestPrivate::getSources() const
     }
 
     return list;
+}
+
+WPlaylist * WLoaderSuggestPrivate::getPlaylist()
+{
+    foreach (WPlaylist * playlist, playlists)
+    {
+        if (playlist->queryIsLoading()) continue;
+
+        return playlist;
+    }
+
+    if (playlists.count() == LOADERSUGGEST_MAX_QUERIES) return NULL;
+
+    Q_Q(WLoaderSuggest);
+
+    WPlaylist * playlist = new WPlaylist;
+
+    playlist->setParent(q);
+
+    playlists.append(playlist);
+
+    QObject::connect(playlist, SIGNAL(queryCompleted()), q, SLOT(onQueryCompleted()));
+
+    return playlist;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -296,6 +353,7 @@ void WLoaderSuggestPrivate::onLoaded(const WLoaderSuggestData & data)
             WLoaderSuggestNode node;
 
             node.source = action.url;
+            node.query  = action.query;
 
             nodes.insert(action.index, node);
         }
@@ -330,6 +388,21 @@ void WLoaderSuggestPrivate::onLoaded(const WLoaderSuggestData & data)
     {
         qDebug("AFTER %s", source.C_STR);
     }
+
+    processQueries();
+}
+
+void WLoaderSuggestPrivate::onQueryCompleted()
+{
+    Q_Q(WLoaderSuggest);
+
+    WPlaylist * playlist = static_cast<WPlaylist *> (q->sender());
+
+    WLoaderSuggestNode * node = jobs.take(playlist);
+
+    node->query = WBackendNetQuery();
+
+    processQueries();
 }
 
 //=================================================================================================
@@ -368,6 +441,7 @@ void WLoaderSuggestPrivate::onLoaded(const WLoaderSuggestData & data)
 
 /* virtual */ void WLoaderSuggest::onStop()
 {
+    // STOP QUERIES
 }
 
 #endif // SK_NO_LOADERSUGGEST

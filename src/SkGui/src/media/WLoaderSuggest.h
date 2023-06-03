@@ -47,6 +47,8 @@ private:
     W_DECLARE_PRIVATE(WLoaderSuggest)
 
     Q_PRIVATE_SLOT(d_func(), void onLoaded(const WLoaderSuggestData &))
+
+    Q_PRIVATE_SLOT(d_func(), void onQueryCompleted())
 };
 
 #include <private/WLoaderSuggest_p>
