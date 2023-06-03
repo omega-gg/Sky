@@ -31,8 +31,11 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
+static const int LOADERSUGGEST_TRACKS = 3;
+static const int LOADERSUGGEST_SLICES = 3;
+
 static const int LOADERSUGGEST_MAX_COUNT   = 10;
-static const int LOADERSUGGEST_MAX_QUERIES = 4;
+static const int LOADERSUGGEST_MAX_QUERIES =  4;
 
 //=================================================================================================
 // WLoaderSuggestAction
@@ -271,7 +274,7 @@ void WLoaderSuggestPrivate::updateSources()
 {
     Q_Q(WLoaderSuggest);
 
-    QStringList urls = getSources();
+    QStringList urls = getSourcesInput();
 
     WLoaderSuggestReply * reply = new WLoaderSuggestReply;
 
@@ -283,6 +286,13 @@ void WLoaderSuggestPrivate::updateSources()
     method.invoke(reply, Q_ARG(const QStringList &, urls),
                          Q_ARG(const QStringList &, sources));
 }
+
+void WLoaderSuggestPrivate::updatePlaylist(const QList<const WTrack *> & tracks)
+{
+    QStringList list = getSourcesOutput();
+}
+
+//-------------------------------------------------------------------------------------------------
 
 void WLoaderSuggestPrivate::processQueries()
 {
@@ -306,8 +316,12 @@ void WLoaderSuggestPrivate::processQueries()
 
 void WLoaderSuggestPrivate::clearQueries()
 {
+    Q_Q(WLoaderSuggest);
+
     foreach (WPlaylist * playlist, playlists)
     {
+        QObject::disconnect(playlist, 0, q, 0);
+
         playlist->abortQueries();
 
         playlist->tryDelete();
@@ -317,7 +331,9 @@ void WLoaderSuggestPrivate::clearQueries()
     jobs     .clear();
 }
 
-QStringList WLoaderSuggestPrivate::getSources() const
+//-------------------------------------------------------------------------------------------------
+
+QStringList WLoaderSuggestPrivate::getSourcesInput() const
 {
     QStringList list;
 
@@ -332,6 +348,57 @@ QStringList WLoaderSuggestPrivate::getSources() const
         if (list.contains(source)) continue;
 
         list.append(source);
+    }
+
+    return list;
+}
+
+QStringList WLoaderSuggestPrivate::getSourcesOutput() const
+{
+    QStringList list;
+
+    for (int i = 0; i < LOADERSUGGEST_SLICES; i++)
+    {
+        foreach (const WLoaderSuggestNode & node, nodes)
+        {
+            const QList<QStringList> & urls = node.urls;
+
+            if (urls.isEmpty()) continue;
+
+            foreach (const QString & url, urls.at(i))
+            {
+                if (list.contains(url)) continue;
+
+                list.append(url);
+
+                qDebug("OUTPUT %s", url.C_STR);
+            }
+        }
+    }
+
+    return list;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QList<const WTrack *> WLoaderSuggestPrivate::getTracks(WPlaylist   * playlist,
+                                                       QStringList * urls) const
+{
+    QList<const WTrack *> list;
+
+    if (playlist == NULL) return list;
+
+    QList<const WTrack *> tracks = playlist->trackPointers();
+
+    foreach (const WTrack * track, tracks)
+    {
+        QString source = WControllerPlaylist::cleanSource(track->source());
+
+        if (urls->contains(source)) continue;
+
+        urls->append(source);
+
+        list.append(track);
     }
 
     return list;
@@ -429,6 +496,8 @@ void WLoaderSuggestPrivate::onLoaded(const WLoaderSuggestData & data)
         qDebug("AFTER %s", source.C_STR);
     }
 
+    updatePlaylist(QList<const WTrack *>());
+
     processQueries();
 }
 
@@ -441,6 +510,32 @@ void WLoaderSuggestPrivate::onQueryCompleted()
     WLoaderSuggestNode * node = jobs.take(playlist);
 
     node->query = WBackendNetQuery();
+
+    QStringList sources;
+
+    QList<const WTrack *> tracks = getTracks(playlist, &sources);
+
+    QList<QStringList> & urls = node->urls;
+
+    urls.clear();
+
+    for (int i = 0; i < LOADERSUGGEST_SLICES; i++)
+    {
+        QStringList list;
+
+        int index = 0;
+
+        while (sources.count() && index < LOADERSUGGEST_TRACKS)
+        {
+            list.append(sources.takeFirst());
+
+            index++;
+        }
+
+        urls.append(list);
+    }
+
+    updatePlaylist(tracks);
 
     processQueries();
 }

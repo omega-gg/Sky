@@ -57,7 +57,7 @@ struct WLoaderSuggestNode
 
     WBackendNetQuery query;
 
-    QStringList urls;
+    QList<QStringList> urls;
 };
 
 //=================================================================================================
@@ -82,10 +82,15 @@ public:
 public: // Functions
     void updateSources();
 
+    void updatePlaylist(const QList<const WTrack *> & tracks);
+
     void processQueries();
     void clearQueries  ();
 
-    QStringList getSources() const;
+    QStringList getSourcesInput () const;
+    QStringList getSourcesOutput() const;
+
+    QList<const WTrack *> getTracks(WPlaylist * playlist, QStringList * urls) const;
 
     WPlaylist * getPlaylist();
 
