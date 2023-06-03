@@ -82,7 +82,7 @@ public:
 public: // Functions
     void updateSources();
 
-    void updatePlaylist(const QList<const WTrack *> & tracks);
+    void updatePlaylist(const QHash<QString, const WTrack *> & tracks);
 
     void processQueries();
     void clearQueries  ();
@@ -90,7 +90,7 @@ public: // Functions
     QStringList getSourcesInput () const;
     QStringList getSourcesOutput() const;
 
-    QList<const WTrack *> getTracks(WPlaylist * playlist, QStringList * urls) const;
+    QHash<QString, const WTrack *> getTracks(WPlaylist * playlist, QStringList * urls) const;
 
     WPlaylist * getPlaylist();
 

@@ -35,7 +35,7 @@ static const int LOADERSUGGEST_TRACKS = 3;
 static const int LOADERSUGGEST_SLICES = 3;
 
 static const int LOADERSUGGEST_MAX_COUNT   = 10;
-static const int LOADERSUGGEST_MAX_QUERIES =  4;
+static const int LOADERSUGGEST_MAX_QUERIES =  3;
 
 //=================================================================================================
 // WLoaderSuggestAction
@@ -173,12 +173,6 @@ signals:
                 action.index = total;
 
                 actions.append(action);
-
-                total++;
-
-                if (total == LOADERSUGGEST_MAX_COUNT) break;
-
-                continue;
             }
         }
         else
@@ -287,9 +281,50 @@ void WLoaderSuggestPrivate::updateSources()
                          Q_ARG(const QStringList &, sources));
 }
 
-void WLoaderSuggestPrivate::updatePlaylist(const QList<const WTrack *> & tracks)
+void WLoaderSuggestPrivate::updatePlaylist(const QHash<QString, const WTrack *> & tracks)
 {
-    QStringList list = getSourcesOutput();
+    WPlaylist * playlist = folder->currentItem()->toPlaylist();
+
+    if (playlist == NULL) return;
+
+    QStringList listA = getSourcesOutput();
+
+    QStringList listB;
+
+    foreach (const WTrack * track, playlist->trackPointers())
+    {
+        QString source = WControllerPlaylist::cleanSource(track->source());
+
+        if (listB.contains(source)) continue;
+
+        listB.append(source);
+    }
+
+    int count = listB.count();
+
+    int total = 0;
+
+    foreach (const QString & url, listA)
+    {
+        if (total < count && listB.at(total) == url)
+        {
+            total++;
+
+            continue;
+        }
+
+        int index = listB.indexOf(url);
+
+        if (index == -1)
+        {
+            const WTrack * track = tracks.value(url);
+
+            playlist->insertTrack(total, *track);
+        }
+        else playlist->moveTrack(index, total);
+
+        total++;
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -339,9 +374,7 @@ QStringList WLoaderSuggestPrivate::getSourcesInput() const
 
     if (history == NULL) return list;
 
-    QList<const WTrack *> tracks = history->trackPointers();
-
-    foreach (const WTrack * track, tracks)
+    foreach (const WTrack * track, history->trackPointers())
     {
         QString source = WControllerPlaylist::cleanSource(track->source());
 
@@ -381,16 +414,14 @@ QStringList WLoaderSuggestPrivate::getSourcesOutput() const
 
 //-------------------------------------------------------------------------------------------------
 
-QList<const WTrack *> WLoaderSuggestPrivate::getTracks(WPlaylist   * playlist,
-                                                       QStringList * urls) const
+QHash<QString, const WTrack *> WLoaderSuggestPrivate::getTracks(WPlaylist   * playlist,
+                                                                QStringList * urls) const
 {
-    QList<const WTrack *> list;
+    QHash<QString, const WTrack *> hash;
 
-    if (playlist == NULL) return list;
+    if (playlist == NULL) return hash;
 
-    QList<const WTrack *> tracks = playlist->trackPointers();
-
-    foreach (const WTrack * track, tracks)
+    foreach (const WTrack * track, playlist->trackPointers())
     {
         QString source = WControllerPlaylist::cleanSource(track->source());
 
@@ -398,10 +429,10 @@ QList<const WTrack *> WLoaderSuggestPrivate::getTracks(WPlaylist   * playlist,
 
         urls->append(source);
 
-        list.append(track);
+        hash.insert(source, track);
     }
 
-    return list;
+    return hash;
 }
 
 WPlaylist * WLoaderSuggestPrivate::getPlaylist()
@@ -496,7 +527,7 @@ void WLoaderSuggestPrivate::onLoaded(const WLoaderSuggestData & data)
         qDebug("AFTER %s", source.C_STR);
     }
 
-    updatePlaylist(QList<const WTrack *>());
+    updatePlaylist(QHash<QString, const WTrack *>());
 
     processQueries();
 }
@@ -513,7 +544,7 @@ void WLoaderSuggestPrivate::onQueryCompleted()
 
     QStringList sources;
 
-    QList<const WTrack *> tracks = getTracks(playlist, &sources);
+    QHash<QString, const WTrack *> tracks = getTracks(playlist, &sources);
 
     QList<QStringList> & urls = node->urls;
 
