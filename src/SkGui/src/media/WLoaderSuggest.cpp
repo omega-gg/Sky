@@ -156,11 +156,12 @@ signals:
             }
             else
             {
-                if (index < total)
-                {
-                     list.move(index, total - 1);
-                }
-                else list.move(index, total);
+                int to;
+
+                if (index < total) to = total - 1;
+                else               to = total;
+
+                list.move(index, to);
 
                 WLoaderSuggestAction action(WLoaderSuggestPrivate::Move);
 
@@ -170,7 +171,7 @@ signals:
 
                 action = WLoaderSuggestAction(WLoaderSuggestPrivate::Insert);
 
-                action.index = total;
+                action.index = to;
 
                 actions.append(action);
             }
@@ -253,6 +254,8 @@ void WLoaderSuggestPrivate::init()
 {
     history = NULL;
 
+    reply = NULL;
+
     qRegisterMetaType<WLoaderSuggestData>("WLoaderSuggestData");
 
     const QMetaObject * meta = WLoaderSuggestReply().metaObject();
@@ -266,16 +269,24 @@ void WLoaderSuggestPrivate::init()
 
 void WLoaderSuggestPrivate::updateSources()
 {
+    if (history == NULL) return;
+
     Q_Q(WLoaderSuggest);
 
-    QStringList urls = getSourcesInput();
+    if (reply)
+    {
+        QObject::disconnect(reply, SIGNAL(loaded(const WLoaderSuggestData &)),
+                            q,     SLOT(onLoaded(const WLoaderSuggestData &)));
+    }
 
-    WLoaderSuggestReply * reply = new WLoaderSuggestReply;
+    reply = new WLoaderSuggestReply;
 
     QObject::connect(reply, SIGNAL(loaded(const WLoaderSuggestData &)),
                      q,     SLOT(onLoaded(const WLoaderSuggestData &)));
 
     reply->moveToThread(wControllerPlaylist->thread());
+
+    QStringList urls = getSourcesInput();
 
     method.invoke(reply, Q_ARG(const QStringList &, urls),
                          Q_ARG(const QStringList &, sources));
@@ -364,7 +375,7 @@ void WLoaderSuggestPrivate::updatePlaylist(const QHash<QString, const WTrack *> 
         playlist->removeTracks(countA, countB - countA);
     }
 
-    /*foreach (const QString & url, list)
+    foreach (const QString & url, list)
     {
         qDebug("LIST A %s", url.C_STR);
     }
@@ -372,7 +383,7 @@ void WLoaderSuggestPrivate::updatePlaylist(const QHash<QString, const WTrack *> 
     foreach (const WTrack * track, playlist->trackPointers())
     {
         qDebug("LIST C %s", track->source().C_STR);
-    }*/
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -401,6 +412,14 @@ void WLoaderSuggestPrivate::clearQueries()
 {
     Q_Q(WLoaderSuggest);
 
+    if (reply)
+    {
+        QObject::disconnect(reply, SIGNAL(loaded(const WLoaderSuggestData &)),
+                            q,     SLOT(onLoaded(const WLoaderSuggestData &)));
+
+        reply = NULL;
+    }
+
     foreach (WPlaylist * playlist, playlists)
     {
         QObject::disconnect(playlist, 0, q, 0);
@@ -419,8 +438,6 @@ void WLoaderSuggestPrivate::clearQueries()
 QStringList WLoaderSuggestPrivate::getSourcesInput() const
 {
     QStringList list;
-
-    if (history == NULL) return list;
 
     foreach (const WTrack * track, history->trackPointers())
     {
@@ -523,8 +540,7 @@ void WLoaderSuggestPrivate::onPlaylistDestroyed()
 
 void WLoaderSuggestPrivate::onLoaded(const WLoaderSuggestData & data)
 {
-    // NOTE: When the loader is no longer active we skip the data processing.
-    if (active == false) return;
+    reply = NULL;
 
     for (int i = 0; i < data.actions.count(); i++)
     {
@@ -551,15 +567,13 @@ void WLoaderSuggestPrivate::onLoaded(const WLoaderSuggestData & data)
 
             int to = data.actions.at(i).index;
 
-            if (from < to)
-            {
-                 nodes.move(from, to - 1);
-            }
-            else nodes.move(from, to);
+            qDebug("MOVE %d %d %s", from, to, nodes.at(from).source.C_STR);
+
+            nodes.move(from, to);
         }
         else if (type == WLoaderSuggestPrivate::Remove)
         {
-            nodes.removeAt(i);
+            nodes.removeAt(action.index);
         }
     }
 

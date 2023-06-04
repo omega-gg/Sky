@@ -46,6 +46,7 @@
 
 // Forward declarations
 class WLoaderSuggestData;
+class WLoaderSuggestReply;
 
 //=================================================================================================
 // WLoaderSuggestNode
@@ -106,6 +107,8 @@ public: // Variables
     WPlaylist * history;
 
     QStringList sources;
+
+    WLoaderSuggestReply * reply;
 
     QList<WLoaderSuggestNode> nodes;
 
