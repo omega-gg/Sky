@@ -69,6 +69,7 @@ public: // Operators
 
 public: // Properties
     int id() const;
+    void setId(int id);
 
     Type type() const;
     void setType(Type type);

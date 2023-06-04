@@ -34,8 +34,8 @@
 static const int LOADERSUGGEST_TRACKS = 3;
 static const int LOADERSUGGEST_SLICES = 3;
 
-static const int LOADERSUGGEST_MAX_COUNT   = 10;
-static const int LOADERSUGGEST_MAX_QUERIES =  3;
+static const int LOADERSUGGEST_MAX_COUNT   = 3;
+static const int LOADERSUGGEST_MAX_QUERIES = 3;
 
 //=================================================================================================
 // WLoaderSuggestAction
@@ -283,48 +283,96 @@ void WLoaderSuggestPrivate::updateSources()
 
 void WLoaderSuggestPrivate::updatePlaylist(const QHash<QString, const WTrack *> & tracks)
 {
-    WPlaylist * playlist = folder->currentItem()->toPlaylist();
+    WPlaylist * playlist = item->toPlaylist();
 
     if (playlist == NULL) return;
 
-    QStringList listA = getSourcesOutput();
+    QStringList list = getSourcesOutput();
 
-    QStringList listB;
-
-    foreach (const WTrack * track, playlist->trackPointers())
+    if (playlist->isEmpty())
     {
-        QString source = WControllerPlaylist::cleanSource(track->source());
+        foreach (const QString & url, list)
+        {
+            const WTrack * trackPointer = tracks.value(url);
 
-        if (listB.contains(source)) continue;
+            if (trackPointer)
+            {
+                WTrack track = *trackPointer;
 
-        listB.append(source);
+                track.setId(-1);
+
+                playlist->addTrack(track);
+            }
+            else
+            {
+                WTrack track(url, WTrack::Default);
+
+                playlist->addTrack(track);
+            }
+        }
+
+        return;
     }
 
-    int count = listB.count();
+    QString source = WControllerPlaylist::cleanSource(playlist->trackSource(0));
 
     int total = 0;
 
-    foreach (const QString & url, listA)
+    foreach (const QString & url, list)
     {
-        if (total < count && listB.at(total) == url)
+        if (source == url)
         {
             total++;
+
+            source = WControllerPlaylist::cleanSource(playlist->trackSource(total));
 
             continue;
         }
 
-        int index = listB.indexOf(url);
+        int index = playlist->indexFromSource(url, true);
 
         if (index == -1)
         {
-            const WTrack * track = tracks.value(url);
+            const WTrack * trackPointer = tracks.value(url);
 
-            playlist->insertTrack(total, *track);
+            if (trackPointer)
+            {
+                WTrack track = *trackPointer;
+
+                track.setId(-1);
+
+                playlist->insertTrack(total, track);
+            }
+            else
+            {
+                WTrack track(url, WTrack::Default);
+
+                playlist->insertTrack(total, track);
+            }
         }
         else playlist->moveTrack(index, total);
 
         total++;
     }
+
+    int countA = list.count();
+
+    int countB = playlist->count();
+
+    if (countA < countB)
+    {
+        playlist->removeTracks(countA, countB - countA);
+    }
+
+    /*foreach (const QString & url, list)
+    {
+        qDebug("LIST A %s", url.C_STR);
+    }
+
+    foreach (const WTrack * track, playlist->trackPointers())
+    {
+        qDebug("LIST C %s", track->source().C_STR);
+    }*/
 }
 
 //-------------------------------------------------------------------------------------------------

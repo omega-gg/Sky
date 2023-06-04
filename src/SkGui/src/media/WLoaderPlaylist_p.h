@@ -38,6 +38,9 @@
 
 #ifndef SK_NO_LOADERPLAYLIST
 
+// Forward declarations
+class WLibraryItem;
+
 class SK_GUI_EXPORT WLoaderPlaylistPrivate : public WPrivate
 {
 public:
@@ -45,13 +48,20 @@ public:
 
     void init(WLibraryFolder * folder, int id);
 
+public: // Functions
+    void setItem(WLibraryItem * item);
+
 public: // Slots
     void onCurrentIdChanged();
+
+    void onLoaded();
 
 public: // Variables
     WLibraryFolder * folder;
 
     int id;
+
+    WLibraryItem * item;
 
     bool running;
     bool active;

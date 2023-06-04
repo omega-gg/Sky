@@ -65,6 +65,8 @@ private:
     W_DECLARE_PRIVATE(WLoaderPlaylist)
 
     Q_PRIVATE_SLOT(d_func(), void onCurrentIdChanged())
+
+    Q_PRIVATE_SLOT(d_func(), void onLoaded())
 };
 
 #include <private/WLoaderPlaylist_p>

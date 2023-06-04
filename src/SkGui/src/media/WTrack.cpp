@@ -293,6 +293,11 @@ int WTrack::id() const
     Q_D(const WTrack); return d->id;
 }
 
+void WTrack::setId(int id)
+{
+    Q_D(WTrack); d->id = id;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 WTrack::Type WTrack::type() const

@@ -42,8 +42,42 @@ void WLoaderPlaylistPrivate::init(WLibraryFolder * folder, int id)
     this->folder = folder;
     this->id     = id;
 
+    item = NULL;
+
     running = false;
     active  = false;
+
+    onCurrentIdChanged();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
+
+void WLoaderPlaylistPrivate::setItem(WLibraryItem * item)
+{
+    if (this->item == item) return;
+
+    Q_Q(WLoaderPlaylist);
+
+    if (item) QObject::disconnect(item, 0, q, 0);
+
+    this->item = item;
+
+    if (item)
+    {
+        if (item->isLoading())
+        {
+            QObject::connect(item, SIGNAL(loaded()), q, SLOT(onLoaded()));
+        }
+        else onLoaded();
+    }
+    else if (active)
+    {
+        active = false;
+
+        q->onStop();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -54,22 +88,20 @@ void WLoaderPlaylistPrivate::onCurrentIdChanged()
 {
     if (folder->currentId() == id)
     {
-        if (active) return;
-
-        Q_Q(WLoaderPlaylist);
-
-        active = true;
-
-        q->onStart();
+        setItem(folder->currentItem());
     }
-    else if (active)
-    {
-        Q_Q(WLoaderPlaylist);
+    else setItem(NULL);
+}
 
-        active = false;
+void WLoaderPlaylistPrivate::onLoaded()
+{
+    Q_Q(WLoaderPlaylist);
 
-        q->onStop();
-    }
+    QObject::disconnect(item, 0, q, 0);
+
+    active = true;
+
+    q->onStart();
 }
 
 //-------------------------------------------------------------------------------------------------
