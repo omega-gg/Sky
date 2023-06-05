@@ -178,6 +178,8 @@ public: // Interface
 
     Q_INVOKABLE QString sourceRelatedTracks(const QString & url, const QString & title);
 
+    Q_INVOKABLE WBackendNetQuery queryRelatedTracks(const QString & url, const QString & title);
+
     //---------------------------------------------------------------------------------------------
 
     Q_INVOKABLE void abortFolderItems();

@@ -4610,6 +4610,55 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
     else                      return createSource(id, "related", "tracks", title);
 }
 
+/* Q_INVOKABLE */ WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
+                                                                           const QString & title)
+{
+    WBackendNet * backend = backendFromUrl(url);
+
+    if (backend == NULL)
+    {
+        WBackendNetQuery query(url);
+
+        query.target = WBackendNetQuery::TargetRelated;
+
+        return query;
+    }
+
+    QString id = backend->getTrackId(url);
+
+    WBackendNetQuery query = backend->createQuery("related", "tracks", id);
+
+    if (query.isValid())
+    {
+        backend->tryDelete();
+
+        return query;
+    }
+
+    //---------------------------------------------------------------------------------------------
+    // NOTE: When we fail to create a valid query we try to create one with the backendSearch.
+
+    id = backend->getId();
+
+    QString host = backend->getHost();
+
+    backend->tryDelete();
+
+    backend = backendSearch();
+
+    if (backend == NULL || title.isEmpty()) return query;
+
+    if (host.isEmpty())
+    {
+         query = backend->createQuery("related", "tracks", id + " " + title);
+    }
+    else query = backend->createQuery("related", "tracks", "site:" + host + " " + title);
+
+    backend->tryDelete();
+
+    return query;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WControllerPlaylist::abortFolderItems()

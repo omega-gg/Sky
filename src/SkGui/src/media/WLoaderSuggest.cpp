@@ -229,15 +229,9 @@ WBackendNetQuery WLoaderSuggestReply::getQuery(const QString & url) const
     if (WControllerPlaylist::urlIsTorrent(url)) return WBackendNetQuery();
 #endif
 
-    WBackendNet * backend = wControllerPlaylist->backendFromUrl(url);
+    WBackendNetQuery query = wControllerPlaylist->queryRelatedTracks(url, QString());
 
-    if (backend == NULL) return WBackendNetQuery();
-
-    QString id = backend->getTrackId(url);
-
-    WBackendNetQuery query = backend->createQuery("related", "tracks", id);
-
-    backend->tryDelete();
+    query.timeout = 10000; // 10 seconds
 
     return query;
 }

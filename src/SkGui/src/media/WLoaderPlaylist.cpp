@@ -46,8 +46,6 @@ void WLoaderPlaylistPrivate::init(WLibraryFolder * folder, int id)
 
     running = false;
     active  = false;
-
-    onCurrentIdChanged();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -162,23 +160,16 @@ void WLoaderPlaylist::setRunning(bool running)
     {
         if (d->folder->currentId() == d->id)
         {
-            d->active = true;
-
-            onStart();
+            d->setItem(d->folder->currentItem());
         }
 
         connect(d->folder, SIGNAL(currentIdChanged()), this, SLOT(onCurrentIdChanged()));
     }
     else
     {
-        if (d->active)
-        {
-            d->active = false;
-
-            onStop();
-        }
-
         disconnect(d->folder, 0, this, 0);
+
+        d->setItem(NULL);
     }
 
     emit runningChanged();
