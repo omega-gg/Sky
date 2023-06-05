@@ -34,8 +34,8 @@
 static const int LOADERSUGGEST_TRACKS = 3;
 static const int LOADERSUGGEST_SLICES = 3;
 
-static const int LOADERSUGGEST_MAX_COUNT   = 3;
-static const int LOADERSUGGEST_MAX_QUERIES = 3;
+static const int LOADERSUGGEST_MAX_COUNT   = 30;
+static const int LOADERSUGGEST_MAX_QUERIES =  3;
 
 //=================================================================================================
 // WLoaderSuggestAction
@@ -81,16 +81,18 @@ class WLoaderSuggestReply : public QObject
     Q_OBJECT
 
 public: // Interface
-    Q_INVOKABLE void extract(const QStringList & urls, const QStringList & sources);
+    Q_INVOKABLE void extract(const QStringList & urls,
+                             const QStringList & titles, const QStringList & sources);
 
 private: // Functions
-    WBackendNetQuery getQuery(const QString & url) const;
+    WBackendNetQuery getQuery(const QString & url, const QString & title) const;
 
 signals:
     void loaded(const WLoaderSuggestData & data);
 };
 
 /* Q_INVOKABLE */ void WLoaderSuggestReply::extract(const QStringList & urls,
+                                                    const QStringList & titles,
                                                     const QStringList & sources)
 {
     WLoaderSuggestData data;
@@ -123,8 +125,10 @@ signals:
 
     int total = 0;
 
-    foreach (const QString & url, urls)
+    for (int i = 0; i < urls.count(); i++)
     {
+        const QString & url = urls.at(i);
+
         if (total < count)
         {
             if (list.at(total) == url)
@@ -140,7 +144,7 @@ signals:
 
             if (index == -1)
             {
-                WBackendNetQuery query = getQuery(url);
+                WBackendNetQuery query = getQuery(url, titles.at(i));
 
                 if (query.isValid() == false) continue;
 
@@ -178,7 +182,7 @@ signals:
         }
         else
         {
-            WBackendNetQuery query = getQuery(url);
+            WBackendNetQuery query = getQuery(url, titles.at(i));
 
             if (query.isValid() == false) continue;
 
@@ -222,14 +226,14 @@ signals:
     deleteLater();
 }
 
-WBackendNetQuery WLoaderSuggestReply::getQuery(const QString & url) const
+WBackendNetQuery WLoaderSuggestReply::getQuery(const QString & url, const QString & title) const
 {
 #ifndef SK_NO_TORRENT
     // FIXME: We are not suggesting torrents for now.
     if (WControllerPlaylist::urlIsTorrent(url)) return WBackendNetQuery();
 #endif
 
-    WBackendNetQuery query = wControllerPlaylist->queryRelatedTracks(url, QString());
+    WBackendNetQuery query = wControllerPlaylist->queryRelatedTracks(url, title);
 
     query.timeout = 10000; // 10 seconds
 
@@ -254,7 +258,7 @@ void WLoaderSuggestPrivate::init()
 
     const QMetaObject * meta = WLoaderSuggestReply().metaObject();
 
-    method = meta->method(meta->indexOfMethod("extract(QStringList,QStringList)"));
+    method = meta->method(meta->indexOfMethod("extract(QStringList,QStringList,QStringList)"));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -280,9 +284,11 @@ void WLoaderSuggestPrivate::updateSources()
 
     reply->moveToThread(wControllerPlaylist->thread());
 
-    QStringList urls = getSourcesInput();
+    QStringList titles;
 
-    method.invoke(reply, Q_ARG(const QStringList &, urls),
+    QStringList urls = getSourcesInput(titles);
+
+    method.invoke(reply, Q_ARG(const QStringList &, urls), Q_ARG(const QStringList &, titles),
                          Q_ARG(const QStringList &, sources));
 }
 
@@ -369,15 +375,15 @@ void WLoaderSuggestPrivate::updatePlaylist(const QHash<QString, const WTrack *> 
         playlist->removeTracks(countA, countB - countA);
     }
 
-    foreach (const QString & url, list)
+    /*foreach (const QString & url, list)
     {
         qDebug("LIST A %s", url.C_STR);
     }
 
     foreach (const WTrack * track, playlist->trackPointers())
     {
-        qDebug("LIST C %s", track->source().C_STR);
-    }
+        qDebug("LIST B %s", track->source().C_STR);
+    }*/
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -429,7 +435,7 @@ void WLoaderSuggestPrivate::clearQueries()
 
 //-------------------------------------------------------------------------------------------------
 
-QStringList WLoaderSuggestPrivate::getSourcesInput() const
+QStringList WLoaderSuggestPrivate::getSourcesInput(QStringList & titles) const
 {
     QStringList list;
 
@@ -440,6 +446,8 @@ QStringList WLoaderSuggestPrivate::getSourcesInput() const
         if (list.contains(source)) continue;
 
         list.append(source);
+
+        titles.append(track->title());
     }
 
     return list;
@@ -462,8 +470,6 @@ QStringList WLoaderSuggestPrivate::getSourcesOutput() const
                 if (list.contains(url)) continue;
 
                 list.append(url);
-
-                qDebug("OUTPUT %s", url.C_STR);
             }
         }
     }
@@ -540,8 +546,6 @@ void WLoaderSuggestPrivate::onLoaded(const WLoaderSuggestData & data)
     {
         const WLoaderSuggestAction & action = data.actions.at(i);
 
-        qDebug("ACTION %d %d %s", action.type, action.index, action.url.C_STR);
-
         WLoaderSuggestPrivate::Type type = action.type;
 
         if (type == WLoaderSuggestPrivate::Insert)
@@ -561,8 +565,6 @@ void WLoaderSuggestPrivate::onLoaded(const WLoaderSuggestData & data)
 
             int to = data.actions.at(i).index;
 
-            qDebug("MOVE %d %d %s", from, to, nodes.at(from).source.C_STR);
-
             nodes.move(from, to);
         }
         else if (type == WLoaderSuggestPrivate::Remove)
@@ -571,17 +573,17 @@ void WLoaderSuggestPrivate::onLoaded(const WLoaderSuggestData & data)
         }
     }
 
-    foreach (const QString & source, sources)
+    /*foreach (const QString & source, sources)
     {
         qDebug("BEFORE %s", source.C_STR);
-    }
+    }*/
 
     sources = data.sources;
 
-    foreach (const QString & source, sources)
+    /*foreach (const QString & source, sources)
     {
         qDebug("AFTER %s", source.C_STR);
-    }
+    }*/
 
     updatePlaylist(QHash<QString, const WTrack *>());
 

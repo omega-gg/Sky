@@ -88,7 +88,8 @@ public: // Functions
     void processQueries();
     void clearQueries  ();
 
-    QStringList getSourcesInput () const;
+    QStringList getSourcesInput(QStringList & titles) const;
+
     QStringList getSourcesOutput() const;
 
     QHash<QString, const WTrack *> getTracks(WPlaylist * playlist, QStringList * urls) const;
