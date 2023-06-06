@@ -139,6 +139,19 @@ WLoaderPlaylist::WLoaderPlaylist(WLoaderPlaylistPrivate * p, WLibraryFolder * fo
     setRunning(false);
 }
 
+/* Q_INVOKABLE */ void WLoaderPlaylist::reload()
+{
+    Q_D(WLoaderPlaylist);
+
+    if (d->active)
+    {
+        onStop ();
+        onClear();
+        onStart();
+    }
+    else onClear();
+}
+
 //-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------

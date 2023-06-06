@@ -653,6 +653,17 @@ void WLoaderSuggestPrivate::onQueryCompleted()
     Q_D(WLoaderSuggest); d->clearQueries();
 }
 
+/* virtual */ void WLoaderSuggest::onClear()
+{
+    Q_D(WLoaderSuggest);
+
+    d->item->toPlaylist()->clearTracks();
+
+    d->sources.clear();
+
+    d->nodes.clear();
+}
+
 //-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
