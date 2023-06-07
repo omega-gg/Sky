@@ -276,8 +276,8 @@ Style
 
     property int slider_size: buttonTouch_size
 
-    property int slider_margins      : dp8
-    property int slider_marginsHandle: dp4
+    property int slider_margins      : dp12
+    property int slider_marginsHandle: dp8
 
     property real slider_opacity     : scrollBar_opacity
     property real slider_opacityHover: scrollBar_opacityHover

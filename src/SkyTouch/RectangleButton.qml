@@ -23,51 +23,19 @@
 import QtQuick 1.0
 import Sky     1.0
 
-BaseLineEdit
+Rectangle
 {
-    //---------------------------------------------------------------------------------------------
-    // Properties
-    //---------------------------------------------------------------------------------------------
-    // Style
-
-    property real opacityBackground: st.lineEdit_opacity
-
-    //---------------------------------------------------------------------------------------------
-    // Aliases
-    //---------------------------------------------------------------------------------------------
-
-    property alias background: background
-
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width : st.lineEdit_size
-    height: st.lineEdit_size
+    radius: st.radius
 
-    paddingLeft: st.lineEdit_padding
+    opacity: st.buttonTouch_opacity
 
-    //---------------------------------------------------------------------------------------------
-    // Children
-    //---------------------------------------------------------------------------------------------
-
-    Rectangle
-    {
-        id: background
-
-        anchors.fill: parent
-
-        z: -1
-
-        radius: st.radius
-
-        opacity: (isFocused || isHovered) ? st.lineEdit_opacityHover
-                                          : opacityBackground
-
-        color: st.lineEdit_color
+    color: st.buttonTouch_color
 
 //#QT_4
-        smooth: true
+    smooth: true
 //#END
-    }
 }

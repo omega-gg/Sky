@@ -118,6 +118,8 @@ BasePlayerBrowser
         width : pGetSize()
         height: width
 
+        radius: height
+
         margins: Math.round(width / 6)
 
         visible: player.hasPreviousTrack
@@ -142,6 +144,8 @@ BasePlayerBrowser
 
         width : buttonPrevious.width
         height: buttonPrevious.height
+
+        radius: height
 
         margins: buttonPrevious.margins
 
@@ -183,6 +187,8 @@ BasePlayerBrowser
 
         width : buttonPrevious.width
         height: buttonPrevious.height
+
+        radius: height
 
         margins: buttonPrevious.margins
 

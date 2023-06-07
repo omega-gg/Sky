@@ -26,6 +26,13 @@ import Sky     1.0
 BaseButton
 {
     //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+    // Style
+
+    property real opacityBackground: st.buttonTouch_opacity
+
+    //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
@@ -64,11 +71,11 @@ BaseButton
             {
                 return st.buttonTouch_opacityPress;
             }
-            else if (isHovered && (checked == false || checkHover))
+            else if (isChecklighted || isHovered)
             {
                 return st.buttonTouch_opacityHover;
             }
-            else return st.buttonTouch_opacity;
+            else return opacityBackground;
         }
 
         color: (isChecklighted) ? st.buttonTouch_colorHighlight

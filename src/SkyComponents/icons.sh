@@ -37,8 +37,8 @@ cp "$solid"/arrow-up-right-from-square.svg icons/external-link-alt.svg
 cp "$solid"/play.svg  icons
 cp "$solid"/pause.svg icons
 
-cp "$solid"/backward.svg icons
-cp "$solid"/forward.svg  icons
+cp "$solid"/backward-step.svg icons/backward.svg
+cp "$solid"/forward-step.svg  icons/forward.svg
 
 cp "$solid"/volume-off.svg  icons
 cp "$solid"/volume-high.svg icons/volume-up.svg

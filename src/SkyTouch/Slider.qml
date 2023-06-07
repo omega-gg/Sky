@@ -35,6 +35,11 @@ BaseSlider
     property int marginsHandle: st.slider_marginsHandle
 
     //---------------------------------------------------------------------------------------------
+    // Style
+
+    property real opacityBackground: st.slider_opacity
+
+    //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
@@ -73,7 +78,7 @@ BaseSlider
         radius: height
 
         opacity: (isHovered) ? st.slider_opacityHover
-                             : st.slider_opacity
+                             : opacityBackground
 
         color: st.slider_color
 
@@ -94,7 +99,7 @@ BaseSlider
 
         width: handle.x + handle.width - margins * 2
 
-        radius: slider.radius
+        radius: height
 
         visible: (slider.enabled && value > -1)
 
@@ -126,7 +131,7 @@ BaseSlider
 
             anchors.margins: marginsHandle
 
-            radius: slider.radius
+            radius: height
 
             color: foreground.color
 
