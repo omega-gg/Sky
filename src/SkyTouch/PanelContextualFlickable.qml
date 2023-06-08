@@ -29,6 +29,7 @@ PanelContextual
     // Aliases
     //---------------------------------------------------------------------------------------------
 
+    property alias source         : loader.source
     property alias sourceComponent: loader.sourceComponent
 
     //---------------------------------------------------------------------------------------------
