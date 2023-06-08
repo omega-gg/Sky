@@ -36,8 +36,7 @@ LabelIcon
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    // NOTE: We want less margins for the default icon.
-    margins: -st.dp4
+    margins: st.labelLoading_margins
 
     radius: height
 

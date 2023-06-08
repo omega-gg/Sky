@@ -183,6 +183,8 @@ Style
     // LabelLoading
 
     property int labelLoading_durationAnimation: ms800
+
+    property int labelLoading_margins: dp12
 //#END
 
 //#LabelStream
@@ -274,9 +276,10 @@ Style
     //---------------------------------------------------------------------------------------------
     // Slider
 
-    property int slider_size: buttonTouch_size
+    property int slider_size      : buttonTouch_size
+    property int slider_sizeHandle: dp2
 
-    property int slider_margins      : dp12
+    property int slider_margins      : dp16
     property int slider_marginsHandle: dp8
 
     property real slider_opacity     : scrollBar_opacity

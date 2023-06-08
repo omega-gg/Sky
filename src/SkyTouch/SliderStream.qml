@@ -53,7 +53,7 @@ Slider
 
     property int pState: 0
 
-    property int pProgressWidth: (background.width - margins * 2) * pProgress
+    property int pProgressWidth: background.width * pProgress
 
     property real pProgress: 0.0
 
@@ -172,8 +172,6 @@ Slider
         anchors.left  : background.left
         anchors.top   : background.top
         anchors.bottom: background.bottom
-
-        anchors.margins: margins
 
         width: Math.max(st.dp32, pProgressWidth)
 

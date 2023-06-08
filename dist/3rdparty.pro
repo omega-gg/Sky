@@ -6,6 +6,7 @@ CONFIG += ordered
 
 SUBDIRS = $$PATH/3rdparty \
           $$PATH/assets \
+          $$PATH/assets-pro \
           $$PATH/snap \
           $$PATH/MotionMonkey-dev \
           $$PATH/tevolution-dev \

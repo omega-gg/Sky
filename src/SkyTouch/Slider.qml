@@ -91,15 +91,16 @@ BaseSlider
     {
         id: foreground
 
-        anchors.left  : parent.left
-        anchors.top   : parent.top
-        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+
+        anchors.verticalCenter: parent.verticalCenter
 
         anchors.margins: margins
 
-        width: handle.x + handle.width - margins * 2
+        // NOTE: We add an extra pixel to go past the handle aliasing.
+        width: handle.x - (margins - marginsHandle) + st.dp1
 
-        radius: height
+        height: st.slider_sizeHandle
 
         visible: (slider.enabled && value > -1)
 
@@ -133,11 +134,15 @@ BaseSlider
 
             radius: height
 
-            color: foreground.color
+            color: (pressed) ? foreground.color
+                             : "transparent"
 
 //#QT_4
             smooth: true
 //#END
+
+            border.width: st.slider_sizeHandle
+            border.color: foreground.color
         }
     }
 }
