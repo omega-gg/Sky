@@ -15,6 +15,7 @@ solid="$font/solid"
 
 cp "$solid"/xmark.svg icons/times.svg
 
+cp "$solid"/xmark.svg           icons/window-close.svg
 cp "$solid"/window-maximize.svg icons
 cp "$solid"/window-restore.svg  icons
 cp "$solid"/window-minimize.svg icons

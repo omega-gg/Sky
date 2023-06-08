@@ -52,7 +52,7 @@ GridTouch
     //---------------------------------------------------------------------------------------------
 
     cellWidth : coverWidth  + padding2x + spacing
-    cellHeight: coverHeight + padding2x + st.margins + st.buttonTouch_size + spacingBottom
+    cellHeight: coverHeight + padding2x + st.buttonTouch_size + spacingBottom
 
     //---------------------------------------------------------------------------------------------
     // Events

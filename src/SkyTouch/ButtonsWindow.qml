@@ -107,7 +107,7 @@ Row
 
         margins: st.dp4
 
-        icon: st.icon_close
+        icon: st.icon_exit
 
         onClicked: window.close()
     }

@@ -74,6 +74,14 @@ Item
     // Children
     //---------------------------------------------------------------------------------------------
 
+    RectangleButton
+    {
+        anchors.left  : buttonCover.left
+        anchors.right : buttonCover.right
+        anchors.top   : parent.top
+        anchors.bottom: buttonText.bottom
+    }
+
     ButtonTouchTrack
     {
         id: buttonCover
@@ -83,12 +91,12 @@ Item
         anchors.top   : parent.top
         anchors.bottom: buttonText.top
 
-        anchors.bottomMargin: st.margins
-
         iconWidth : componentGridTrack.GridView.view.coverWidth
         iconHeight: componentGridTrack.GridView.view.coverHeight
 
         iconSourceSize.height: iconHeight
+
+        opacityBackground: 0.0
 
         icon: cover
 
@@ -138,6 +146,8 @@ Item
         anchors.left  : parent.left
         anchors.right : parent.right
         anchors.bottom: parent.bottom
+
+        opacityBackground: 0.0
 
         text: st.getTrackTitle(title, loadState, source)
 

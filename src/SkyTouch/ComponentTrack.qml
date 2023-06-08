@@ -100,6 +100,14 @@ Item
     // Children
     //---------------------------------------------------------------------------------------------
 
+    RectangleButton
+    {
+        anchors.left  : buttonIcon.left
+        anchors.right : buttonText.right
+        anchors.top   : buttonIcon.top
+        anchors.bottom: buttonIcon.bottom
+    }
+
     ButtonTouchTrack
     {
         id: buttonIcon
@@ -122,6 +130,8 @@ Item
         }
 
         iconDefaultSize.height: getSourceHeight()
+
+        opacityBackground: 0.0
 
         icon: cover
 
@@ -152,7 +162,7 @@ Item
         anchors.top   : parent.top
         anchors.bottom: parent.bottom
 
-        anchors.leftMargin: st.margins
+        opacityBackground: 0.0
 
         checked: (index == componentTrack.ListView.view.currentIndex)
 

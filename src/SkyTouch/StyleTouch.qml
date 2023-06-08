@@ -53,7 +53,7 @@ Style
 
     property int panelContextual_preferredWidth: dp256
 
-    property int panelContextual_margins: dp4
+    property int panelContextual_margins: dp3
 
     property color panelContextual_color: border_color
 //#END
@@ -260,8 +260,8 @@ Style
     //---------------------------------------------------------------------------------------------
     // ScrollBar
 
-    property int scrollBar_size: (isTight) ? dp12
-                                           : dp20
+    property int scrollBar_size: (isTight) ? dp10
+                                           : dp14
 
     property int scrollBar_margins: margins
 
@@ -376,7 +376,7 @@ Style
 //#END
 
 //#filter_grid:ComponentGridTrack
-    property int filterGrid_margins: dp4
+    property int filterGrid_margins: gridPlaylist_padding
 
     property alias icon_filterGrid: icon_filterGrid
 
@@ -402,6 +402,7 @@ Style
 //#END
 
 //#icons_window:ButtonsWindow
+    property url icon_exit    : "icons/window-close.svg"
     property url icon_maximize: "icons/window-maximize.svg"
     property url icon_restore : "icons/window-restore.svg"
     property url icon_minimize: "icons/window-minimize.svg"
