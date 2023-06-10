@@ -31,7 +31,9 @@ Item
     // Aliases
     //---------------------------------------------------------------------------------------------
 
-    property int padding: buttonText.padding
+    property alias isHighlighted: buttonText.isHighlighted
+
+    property alias padding: buttonText.padding
 
     property alias checked: buttonText.checked
 
@@ -52,8 +54,10 @@ Item
     // Signals
     //---------------------------------------------------------------------------------------------
 
-    signal clicked
-    signal doubleClicked
+    signal pressed(variant mouse)
+
+    signal clicked      (variant mouse)
+    signal doubleClicked(variant mouse)
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -77,9 +81,11 @@ Item
 
         anchors.rightMargin: (buttonIcon.visible) ? st.margins : 0
 
-        onClicked: buttonExtra.clicked()
+        /* QML_EVENT */ onPressed: function(mouse) { buttonExtra.pressed(mouse) }
 
-        onDoubleClicked: buttonExtra.doubleClicked()
+        /* QML_EVENT */ onClicked: function(mouse) { buttonExtra.clicked(mouse) }
+
+        /* QML_EVENT */ onDoubleClicked: function(mouse) { buttonExtra.doubleClicked(mouse) }
     }
 
     ButtonTouchIcon

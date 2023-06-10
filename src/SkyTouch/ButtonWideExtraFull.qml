@@ -23,7 +23,7 @@
 import QtQuick 1.0
 import Sky     1.0
 
-ButtonExtra
+ButtonExtraFull
 {
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -32,6 +32,10 @@ ButtonExtra
     // NOTE Qt4/5.15: Sometimes, when using this with a loader we get an undefined parent.
     anchors.left : (parent) ? parent.left  : undefined
     anchors.right: (parent) ? parent.right : undefined
+
+    margins: st.buttonWide_margins
+
+    spacing: 0
 
     buttonIcon.margins: st.buttonWide_margins
 }

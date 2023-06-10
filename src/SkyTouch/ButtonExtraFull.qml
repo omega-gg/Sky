@@ -31,6 +31,8 @@ Item
     // Aliases
     //---------------------------------------------------------------------------------------------
 
+    property alias isHighlighted: buttonFull.isHighlighted
+
     property alias enableFilter: buttonFull.enableFilter
 
     property alias margins: buttonFull.margins
@@ -79,8 +81,10 @@ Item
     // Signals
     //---------------------------------------------------------------------------------------------
 
-    signal clicked
-    signal doubleClicked
+    signal pressed(variant mouse)
+
+    signal clicked      (variant mouse)
+    signal doubleClicked(variant mouse)
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -119,9 +123,11 @@ Item
 
         anchors.rightMargin: (buttonIcon.visible) ? st.margins : 0
 
-        onClicked: buttonExtraFull.clicked()
+        /* QML_EVENT */ onPressed: function(mouse) { buttonExtraFull.pressed(mouse) }
 
-        onDoubleClicked: buttonExtraFull.doubleClicked()
+        /* QML_EVENT */ onClicked: function(mouse) { buttonExtraFull.clicked(mouse) }
+
+        /* QML_EVENT */ onDoubleClicked: function(mouse) { buttonExtraFull.doubleClicked(mouse) }
 
         function getFilter       () { return buttonExtraFull.getFilter       () }
         function getFilterDefault() { return buttonExtraFull.getFilterDefault() }
