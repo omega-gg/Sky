@@ -84,6 +84,11 @@ void WModelListPrivate::init()
     else return d->titles.at(index);
 }
 
+/* Q_INVOKABLE */ void WModelList::clear() const
+{
+    setTitles(QStringList());
+}
+
 //-------------------------------------------------------------------------------------------------
 // QAbstractItemModel implementation
 //-------------------------------------------------------------------------------------------------

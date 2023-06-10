@@ -109,6 +109,13 @@ Style
     property int buttonWide_margins: dp12
 //#END
 
+//#ButtonExtra*
+    //---------------------------------------------------------------------------------------------
+    // ButtonExtra
+
+    property int buttonExtra_width: panelContextual_preferredWidth
+//#END
+
 //#ButtonWideCheck
     //---------------------------------------------------------------------------------------------
     // ButtonWideCheck

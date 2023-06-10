@@ -17,10 +17,14 @@ ButtonTouchIcon  1.0 ButtonTouchIcon.qml
 ButtonTouchTrack 1.0 ButtonTouchTrack.qml
 ButtonTouchFull  1.0 ButtonTouchFull.qml
 
+ButtonExtra     1.0 ButtonExtra.qml
+ButtonExtraFull 1.0 ButtonExtraFull.qml
+
 ButtonWide       1.0 ButtonWide.qml
 ButtonWideCheck  1.0 ButtonWideCheck.qml
 ButtonWideAction 1.0 ButtonWideAction.qml
 ButtonWideFull   1.0 ButtonWideFull.qml
+ButtonWideExtra  1.0 ButtonWideExtra.qml
 
 ButtonMask  1.0 ButtonMask.qml
 ButtonSlide 1.0 ButtonSlide.qml

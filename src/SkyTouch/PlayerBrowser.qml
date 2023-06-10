@@ -35,6 +35,8 @@ BasePlayerBrowser
 
     property bool animate: st.animate
 
+    property bool scaling: (st.isTiny == false)
+
     //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
@@ -96,9 +98,11 @@ BasePlayerBrowser
 
     function pGetSize()
     {
+        if (scaling == false) return st.buttonTouch_size;
+
         var size = Math.round(width / 12);
 
-        size = Math.max(st.dp48, size);
+        size = Math.max(st.buttonTouch_size, size);
 
         return Math.min(size, st.dp64);
     }

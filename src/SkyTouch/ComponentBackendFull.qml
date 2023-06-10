@@ -23,31 +23,13 @@
 import QtQuick 1.0
 import Sky     1.0
 
-Item
+ButtonExtraFull
 {
-    id: componentBackendFull
-
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int iconWidth : st.componentBackend_iconWidth
-    property int iconHeight: iconWidth
-
     property string hub
-
-    //---------------------------------------------------------------------------------------------
-    // Aliases
-    //---------------------------------------------------------------------------------------------
-
-    default property alias content: buttonFull.data
-
-    property alias checked: buttonFull.checked
-
-    //---------------------------------------------------------------------------------------------
-
-    property alias buttonFull: buttonFull
-    property alias buttonIcon: buttonIcon
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -61,10 +43,71 @@ Item
     anchors.right: (parent) ? parent.right : undefined
 //#END
 
-    height: st.buttonTouch_size
+    iconWidth: (isSourceDefault) ? st.componentBackend_iconWidth
+                                 : itemIcon.filter.width
+
+    iconHeight: (isSourceDefault) ? st.componentBackend_iconWidth
+                                  : itemIcon.filter.height
+
+    // NOTE: We have to provide the width and height otherwise we might have incorrect sizes
+    //       for cropped portrait covers.
+    iconSourceSize:
+    {
+        var mask = getFilterMask();
+
+        return Qt.size(mask.width, mask.height);
+    }
+
+    iconDefaultSize.height: buttonFull.getSourceHeight()
+
+    checked: (ListView.view.currentIndex == index)
+
+    icon: cover
+
+    iconDefault: st.icon_feed
+
+    iconFillMode: (isSourceDefault) ? Image.PreserveAspectFit
+                                    : Image.PreserveAspectCrop
+
+    iconAsynchronous: gui.asynchronous
+
+    text: title
+
+    buttonIcon.margins: st.componentBackendFull_margins
+
+    buttonIcon.visible: (hub)
+
+    buttonIcon.iconDefault: (hub) ? st.icon_home : ""
+
+    //---------------------------------------------------------------------------------------------
+    // Events
+    //---------------------------------------------------------------------------------------------
+
+    onClicked: onClick()
+
+    onDoubleClicked: onDoubleClick()
+
+    buttonIcon.onClicked: onIconClick()
 
     //---------------------------------------------------------------------------------------------
     // Functions
+    //---------------------------------------------------------------------------------------------
+    // ButtonTouchIcon reimplementation
+
+    /* virtual */ function getFilter()
+    {
+        if (isSourceDefault)
+        {
+             return getFilterDefault();
+        }
+        else return getFilterMask();
+    }
+
+    /* virtual */ function getFilterMask()
+    {
+        return st.icon_filterRound;
+    }
+
     //---------------------------------------------------------------------------------------------
     // Events
 
@@ -76,98 +119,4 @@ Item
     function onDoubleClick() {}
 
     function onIconClick() {}
-
-    //---------------------------------------------------------------------------------------------
-    // Virtual
-
-    /* virtual */ function getFilter()
-    {
-        if (buttonFull.isSourceDefault)
-        {
-             return getFilterDefault();
-        }
-        else return getFilterMask();
-    }
-
-    /* virtual */ function getFilterDefault()
-    {
-        return buttonFull.getFilterDefault();
-    }
-
-    /* virtual */ function getFilterMask()
-    {
-        return st.icon_filterRound;
-    }
-
-    //---------------------------------------------------------------------------------------------
-    // Children
-    //---------------------------------------------------------------------------------------------
-
-    ButtonTouchFull
-    {
-        id: buttonFull
-
-        anchors.left: parent.left
-
-        anchors.right: (buttonIcon.visible) ? buttonIcon.left
-                                            : parent.right
-
-        anchors.rightMargin: (buttonIcon.visible) ? st.margins : 0
-
-        iconWidth: (isSourceDefault) ? componentBackendFull.iconWidth
-                                     : itemIcon.filter.width
-
-        iconHeight: (isSourceDefault) ? componentBackendFull.iconHeight
-                                      : itemIcon.filter.height
-
-        // NOTE: We have to provide the width and height otherwise we might have incorrect sizes
-        //       for cropped portrait covers.
-        iconSourceSize:
-        {
-            var mask = getFilterMask();
-
-            return Qt.size(mask.width, mask.height);
-        }
-
-        iconDefaultSize.height: getSourceHeight()
-
-        checked: (componentBackendFull.ListView.view.currentIndex == index)
-
-        icon: cover
-
-        iconDefault: st.icon_feed
-
-        iconFillMode: (isSourceDefault) ? Image.PreserveAspectFit
-                                        : Image.PreserveAspectCrop
-
-        iconAsynchronous: gui.asynchronous
-
-        text: title
-
-        onClicked      : onClick      ()
-        onDoubleClicked: onDoubleClick()
-
-        //-----------------------------------------------------------------------------------------
-        // ButtonTouchIcon reimplementation
-
-        /* virtual */ function getFilter()
-        {
-            return componentBackendFull.getFilter();
-        }
-    }
-
-    ButtonTouchIcon
-    {
-        id: buttonIcon
-
-        anchors.right: parent.right
-
-        margins: st.componentBackendFull_margins
-
-        visible: (hub)
-
-        iconDefault: (hub) ? st.icon_home : ""
-
-        onClicked: onIconClick()
-    }
 }

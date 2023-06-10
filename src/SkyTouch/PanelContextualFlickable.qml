@@ -29,6 +29,8 @@ PanelContextual
     // Aliases
     //---------------------------------------------------------------------------------------------
 
+    property alias item: loader.item
+
     property alias source         : loader.source
     property alias sourceComponent: loader.sourceComponent
 
@@ -44,7 +46,7 @@ PanelContextual
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    preferredHeight: loader.height + margins * 2
+    preferredHeight: flickable.contentHeight + margins * 2
 
     //---------------------------------------------------------------------------------------------
     // Children
@@ -58,7 +60,7 @@ PanelContextual
 
         anchors.rightMargin: (scrollBar.isActive) ? scrollBar.width : 0
 
-        contentHeight: loader.height
+        contentHeight: (item) ? item.height : 0
 
         clip: true
 
@@ -68,8 +70,6 @@ PanelContextual
 
             anchors.left : parent.left
             anchors.right: parent.right
-
-            height: (item) ? item.height : 0
         }
     }
 

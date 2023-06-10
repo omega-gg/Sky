@@ -29,35 +29,7 @@ ButtonExtra
     // Settings
     //---------------------------------------------------------------------------------------------
 
-//#QT_4
-    width: ListView.view.width
-//#ELSE
-    // NOTE Qt5.15: sometimes we get an undefined parent.
+    // NOTE Qt4/5.15: Sometimes, when using this with a loader we get an undefined parent.
     anchors.left : (parent) ? parent.left  : undefined
     anchors.right: (parent) ? parent.right : undefined
-//#END
-
-    text: title
-
-    checked: (index == ListView.view.currentIndex)
-
-    buttonIcon.margins: st.componentCompletion_margins
-
-    buttonIcon.iconDefault: st.icon_right
-
-    //---------------------------------------------------------------------------------------------
-    // Events
-    //---------------------------------------------------------------------------------------------
-
-    onClicked: onClick()
-
-    buttonIcon.onClicked: onSelect()
-
-    //---------------------------------------------------------------------------------------------
-    // Functions
-    //---------------------------------------------------------------------------------------------
-    // Events
-
-    function onSelect() {}
-    function onClick () {}
 }

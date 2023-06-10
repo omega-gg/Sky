@@ -140,8 +140,10 @@ class SK_GUI_EXPORT WAbstractBackend : public QObject, public WBackendInterface,
     Q_ENUMS(State)
     Q_ENUMS(StateLoad)
     Q_ENUMS(Output)
+    Q_ENUMS(TrackType)
     Q_ENUMS(OutputType)
     Q_ENUMS(Quality)
+    Q_ENUMS(SourceMode)
     Q_ENUMS(FillMode)
 #if defined(QT_NEW) && defined(SK_NO_QML) == false
     Q_ENUMS(FrameState)

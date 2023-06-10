@@ -23,41 +23,69 @@
 import QtQuick 1.0
 import Sky     1.0
 
-ButtonExtra
+Item
 {
+    id: buttonExtra
+
+    //---------------------------------------------------------------------------------------------
+    // Aliases
+    //---------------------------------------------------------------------------------------------
+
+    property int padding: buttonText.padding
+
+    property alias checked: buttonText.checked
+
+    //---------------------------------------------------------------------------------------------
+
+    property alias text: buttonText.text
+
+    property alias font: buttonText.font
+
+    //---------------------------------------------------------------------------------------------
+
+    property alias itemText: buttonText.itemText
+
+    property alias buttonText: buttonText
+    property alias buttonIcon: buttonIcon
+
+    //---------------------------------------------------------------------------------------------
+    // Signals
+    //---------------------------------------------------------------------------------------------
+
+    signal clicked
+    signal doubleClicked
+
     //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
-//#QT_4
-    width: ListView.view.width
-//#ELSE
-    // NOTE Qt5.15: sometimes we get an undefined parent.
-    anchors.left : (parent) ? parent.left  : undefined
-    anchors.right: (parent) ? parent.right : undefined
-//#END
-
-    text: title
-
-    checked: (index == ListView.view.currentIndex)
-
-    buttonIcon.margins: st.componentCompletion_margins
-
-    buttonIcon.iconDefault: st.icon_right
+    width : st.buttonExtra_width
+    height: st.buttonTouch_size
 
     //---------------------------------------------------------------------------------------------
-    // Events
+    // Children
     //---------------------------------------------------------------------------------------------
 
-    onClicked: onClick()
+    ButtonTouchLeft
+    {
+        id: buttonText
 
-    buttonIcon.onClicked: onSelect()
+        anchors.left: parent.left
 
-    //---------------------------------------------------------------------------------------------
-    // Functions
-    //---------------------------------------------------------------------------------------------
-    // Events
+        anchors.right: (buttonIcon.visible) ? buttonIcon.left
+                                            : parent.right
 
-    function onSelect() {}
-    function onClick () {}
+        anchors.rightMargin: (buttonIcon.visible) ? st.margins : 0
+
+        onClicked: buttonExtra.clicked()
+
+        onDoubleClicked: buttonExtra.doubleClicked()
+    }
+
+    ButtonTouchIcon
+    {
+        id: buttonIcon
+
+        anchors.right: parent.right
+    }
 }

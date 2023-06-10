@@ -65,16 +65,6 @@ Item
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
-    // Events
-
-    function onClickIcon()
-    {
-        ListView.view.currentIndex = index;
-    }
-
-    function onClickText() { onClickIcon(); }
-
-    //-----------------------------------------------------------------------------------------
     // Virtual
 
     /* virtual */ function getFilter()
@@ -95,6 +85,16 @@ Item
     {
         return st.icon_filterRound;
     }
+
+    //---------------------------------------------------------------------------------------------
+    // Events
+
+    function onClickIcon()
+    {
+        ListView.view.currentIndex = index;
+    }
+
+    function onClickText() { onClickIcon(); }
 
     //---------------------------------------------------------------------------------------------
     // Children
