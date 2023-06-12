@@ -135,6 +135,8 @@ BaseButton
     {
         var index = Math.floor(x / size);
 
+        index = Math.min(index, count - 1);
+
         var from = handle.x;
         var to   = size * index;
 
