@@ -53,6 +53,7 @@ MouseArea
     // Signal
     //---------------------------------------------------------------------------------------------
 
+    signal handlePressed
     signal handleReleased
 
     //---------------------------------------------------------------------------------------------
@@ -80,6 +81,8 @@ MouseArea
         pos = Math.min(pos, model.handleMaximum);
 
         handle.x = pos;
+
+        handlePressed();
     }
 
     onReleased:

@@ -209,7 +209,7 @@ public: // Interface
 
     Q_INVOKABLE bool contains(const WTrack & track) const;
 
-    Q_INVOKABLE bool containsSource(const QString & source) const;
+    Q_INVOKABLE bool containsSource(const QString & source, bool clean = false) const;
 
     //---------------------------------------------------------------------------------------------
 

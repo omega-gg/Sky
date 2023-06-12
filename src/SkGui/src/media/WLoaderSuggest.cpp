@@ -497,6 +497,17 @@ QHash<QString, const WTrack *> WLoaderSuggestPrivate::getTracks(WPlaylist   * pl
         hash.insert(source, track);
     }
 
+    foreach (const WTrack * track, history->trackPointers())
+    {
+        QString source = WControllerPlaylist::cleanSource(track->source());
+
+        if (urls->contains(source) == false) continue;
+
+        urls->removeOne(source);
+
+        hash.remove(source);
+    }
+
     return hash;
 }
 

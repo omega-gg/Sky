@@ -104,6 +104,7 @@ Item
     // Signal
     //---------------------------------------------------------------------------------------------
 
+    signal handlePressed
     signal handleReleased
 
     //---------------------------------------------------------------------------------------------
@@ -270,6 +271,7 @@ Item
         foreground.opacity: (pState) ? opacityProgressA
                                      : opacityProgressB
 
+        onHandlePressed : sliderStream.handlePressed ()
         onHandleReleased: sliderStream.handleReleased()
 
         Rectangle

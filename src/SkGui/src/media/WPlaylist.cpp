@@ -1801,16 +1801,9 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     Q_D(const WPlaylist); return d->tracks.contains(track);
 }
 
-/* Q_INVOKABLE */ bool WPlaylist::containsSource(const QString & source) const
+/* Q_INVOKABLE */ bool WPlaylist::containsSource(const QString & source, bool clean) const
 {
-    Q_D(const WPlaylist);
-
-    W_FOREACH (const WTrack & track, d->tracks)
-    {
-        if (track.d_func()->source == source) return true;
-    }
-
-    return false;
+    return (indexFromSource(source, clean) != -1);
 }
 
 //-------------------------------------------------------------------------------------------------
