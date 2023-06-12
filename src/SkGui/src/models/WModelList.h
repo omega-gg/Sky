@@ -57,7 +57,7 @@ public:
 public: // Interface
     Q_INVOKABLE QString titleAt(int index) const;
 
-    Q_INVOKABLE void clear() const;
+    Q_INVOKABLE void clear();
 
 public: // QAbstractItemModel implementation
     /* virtual */ int rowCount(const QModelIndex & parent = QModelIndex()) const;
