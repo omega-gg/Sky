@@ -70,6 +70,8 @@ Item
     // Children
     //---------------------------------------------------------------------------------------------
 
+    RectangleButton { anchors.fill: parent }
+
     ButtonTouchLeft
     {
         id: buttonText
@@ -80,6 +82,8 @@ Item
                                             : parent.right
 
         anchors.rightMargin: (buttonIcon.visible) ? st.margins : 0
+
+        opacityBackground: 0.0
 
         /* QML_EVENT */ onPressed: function(mouse) { buttonExtra.pressed(mouse) }
 
@@ -93,5 +97,7 @@ Item
         id: buttonIcon
 
         anchors.right: parent.right
+
+        opacityBackground: 0.0
     }
 }
