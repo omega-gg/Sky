@@ -119,12 +119,12 @@ BasePlayerBrowser
 
         anchors.verticalCenter: parent.verticalCenter
 
-        width : pGetSize()
-        height: width
+        width : buttonPlay.width
+        height: buttonPlay.height
 
         radius: height
 
-        margins: Math.round(width / 6)
+        margins: buttonPlay.margins
 
         visible: player.hasPreviousTrack
 
@@ -146,12 +146,12 @@ BasePlayerBrowser
 
         anchors.verticalCenter: parent.verticalCenter
 
-        width : buttonPrevious.width
-        height: buttonPrevious.height
+        width : buttonPlay.width
+        height: buttonPlay.height
 
         radius: height
 
-        margins: buttonPrevious.margins
+        margins: buttonPlay.margins
 
         visible: player.hasNextTrack
 
@@ -189,12 +189,12 @@ BasePlayerBrowser
 
         anchors.centerIn: parent
 
-        width : buttonPrevious.width
-        height: buttonPrevious.height
+        width : pGetSize()
+        height: width
 
         radius: height
 
-        margins: buttonPrevious.margins
+        margins: Math.round(width / 6)
 
         visible: (player.source != "")
 
