@@ -37,6 +37,8 @@ static const int LOADERSUGGEST_SLICES = 3;
 static const int LOADERSUGGEST_MAX_COUNT   = 30;
 static const int LOADERSUGGEST_MAX_QUERIES =  3;
 
+static const int LOADERSUGGEST_MAX_SKIP = 100;
+
 //=================================================================================================
 // WLoaderSuggestAction
 //=================================================================================================
@@ -500,9 +502,14 @@ QHash<QString, const WTrack *> WLoaderSuggestPrivate::getTracks(WPlaylist   * pl
         hash.insert(source, track);
     }
 
-    foreach (const WTrack * track, history->trackPointers())
+    //---------------------------------------------------------------------------------------------
+    // NOTE: When a given source is sufficiently recent in the history we skip it.
+
+    QList<const WTrack *> tracks = history->trackPointers();
+
+    for (int i = 0; i < tracks.count() && i < LOADERSUGGEST_MAX_SKIP; i++)
     {
-        QString source = WControllerPlaylist::cleanSource(track->source());
+        QString source = WControllerPlaylist::cleanSource(tracks.at(i)->source());
 
         if (urls->contains(source) == false) continue;
 
