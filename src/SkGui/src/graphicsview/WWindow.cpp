@@ -450,18 +450,18 @@ void WWindowPrivate::deleteItems()
         setFocus(true);
     }
 #else
-    QQuickItem * parent = activeFocusItem();
+    QQuickItem * itemFocus = activeFocusItem();
 
-    while (parent)
+    while (itemFocus)
     {
-        parent = parent->parentItem();
-
-        if (parent == item)
+        if (itemFocus == item)
         {
             setFocus(true);
 
             return;
         }
+
+        itemFocus = itemFocus->parentItem();
     }
 #endif
 }
