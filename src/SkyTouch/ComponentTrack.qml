@@ -31,8 +31,7 @@ Item
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int iconWidth : st.componentTrack_iconWidth
-    property int iconHeight: iconWidth
+    property int iconSize: st.componentTrack_iconWidth
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -114,10 +113,10 @@ Item
 
         width: parent.height
 
-        iconWidth: (isSourceDefault) ? componentTrack.iconWidth
+        iconWidth: (isSourceDefault) ? iconSize
                                      : itemIcon.filter.width
 
-        iconHeight: (isSourceDefault) ? componentTrack.iconHeight
+        iconHeight: (isSourceDefault) ? iconSize
                                       : itemIcon.filter.height
 
         // NOTE: We have to provide the width and height otherwise we might have incorrect sizes

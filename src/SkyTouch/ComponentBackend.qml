@@ -31,8 +31,7 @@ Item
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int iconWidth : st.componentBackend_iconWidth
-    property int iconHeight: iconWidth
+    property int iconSize: st.componentBackend_iconWidth
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -106,10 +105,10 @@ Item
 
         width: parent.height
 
-        iconWidth: (isSourceDefault) ? componentBackend.iconWidth
+        iconWidth: (isSourceDefault) ? iconSize
                                      : itemIcon.filter.width
 
-        iconHeight: (isSourceDefault) ? componentBackend.iconHeight
+        iconHeight: (isSourceDefault) ? iconSize
                                       : itemIcon.filter.height
 
         // NOTE: We have to provide the width and height otherwise we might have incorrect sizes
@@ -131,6 +130,8 @@ Item
                                         : Image.PreserveAspectCrop
 
         iconAsynchronous: gui.asynchronous
+
+        checked: (componentBackend.ListView.view.currentIndex == index)
 
         onClicked: onClickIcon()
 

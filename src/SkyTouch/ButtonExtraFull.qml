@@ -33,6 +33,8 @@ Item
 
     property alias isHighlighted: buttonFull.isHighlighted
 
+    property alias radius: buttonFull.radius
+
     property alias enableFilter: buttonFull.enableFilter
 
     property alias margins: buttonFull.margins
@@ -74,6 +76,8 @@ Item
     property alias itemIcon: buttonFull.itemIcon
     property alias itemText: buttonFull.itemText
 
+    property alias background: background
+
     property alias buttonFull: buttonFull
     property alias buttonIcon: buttonIcon
 
@@ -112,7 +116,14 @@ Item
     // Children
     //---------------------------------------------------------------------------------------------
 
-    RectangleButton { anchors.fill: parent }
+    RectangleButton
+    {
+        id: background
+
+        anchors.fill: parent
+
+        radius: buttonExtraFull.radius
+    }
 
     ButtonTouchFull
     {
@@ -142,6 +153,8 @@ Item
         id: buttonIcon
 
         anchors.right: parent.right
+
+        radius: buttonExtraFull.radius
 
         opacityBackground: 0.0
     }

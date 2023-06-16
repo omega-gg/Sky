@@ -33,6 +33,8 @@ Item
 
     property alias isHighlighted: buttonText.isHighlighted
 
+    property alias radius: buttonText.radius
+
     property alias padding: buttonText.padding
 
     property alias checked: buttonText.checked
@@ -46,6 +48,8 @@ Item
     //---------------------------------------------------------------------------------------------
 
     property alias itemText: buttonText.itemText
+
+    property alias background: background
 
     property alias buttonText: buttonText
     property alias buttonIcon: buttonIcon
@@ -70,7 +74,14 @@ Item
     // Children
     //---------------------------------------------------------------------------------------------
 
-    RectangleButton { anchors.fill: parent }
+    RectangleButton
+    {
+        id: background
+
+        anchors.fill: parent
+
+        radius: buttonExtra.radius
+    }
 
     ButtonTouchLeft
     {
@@ -97,6 +108,8 @@ Item
         id: buttonIcon
 
         anchors.right: parent.right
+
+        radius: buttonExtra.radius
 
         opacityBackground: 0.0
     }

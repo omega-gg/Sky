@@ -29,6 +29,8 @@ ButtonExtraFull
     // Properties
     //---------------------------------------------------------------------------------------------
 
+    property int iconSize: st.componentBackend_iconWidth
+
     property string hub
 
     //---------------------------------------------------------------------------------------------
@@ -43,10 +45,10 @@ ButtonExtraFull
     anchors.right: (parent) ? parent.right : undefined
 //#END
 
-    iconWidth: (isSourceDefault) ? st.componentBackend_iconWidth
+    iconWidth: (isSourceDefault) ? iconSize
                                  : itemIcon.filter.width
 
-    iconHeight: (isSourceDefault) ? st.componentBackend_iconWidth
+    iconHeight: (isSourceDefault) ? iconSize
                                   : itemIcon.filter.height
 
     // NOTE: We have to provide the width and height otherwise we might have incorrect sizes
@@ -85,10 +87,6 @@ ButtonExtraFull
 
     onClicked: onClick()
 
-    onDoubleClicked: onDoubleClick()
-
-    buttonIcon.onClicked: onIconClick()
-
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
@@ -115,8 +113,4 @@ ButtonExtraFull
     {
         ListView.view.currentIndex = index;
     }
-
-    function onDoubleClick() {}
-
-    function onIconClick() {}
 }
