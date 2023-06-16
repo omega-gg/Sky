@@ -36,7 +36,7 @@ Style
 
     property bool isTight: (window.contentWidth < dp480)
 
-//#Panel
+//#Panel:BaseButton
     //---------------------------------------------------------------------------------------------
     // Panel
 

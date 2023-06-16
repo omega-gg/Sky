@@ -630,7 +630,6 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 
 #endif // SK_MOBILE
 
-
 #ifdef Q_OS_ANDROID
 
 /* Q_INVOKABLE static */ void WControllerApplication::scanFile(const QString & fileName)
@@ -650,6 +649,26 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 #endif
 
     object.callMethod<void>("scanFile", "(Ljava/lang/String;)V", jniName.object<jstring>());
+}
+
+/* Q_INVOKABLE static */ void WControllerApplication::prepareFullScreen(bool enabled)
+{
+#ifdef QT_5
+    QtAndroid::runOnAndroidThread([enabled]
+#else
+    QNativeInterface::QAndroidApplication::runOnAndroidMainThread([enabled]
+#endif
+    {
+#ifdef QT_5
+        QAndroidJniObject jni = QtAndroid::androidActivity();
+#else
+        QJniObject jni = QNativeInterface::QAndroidApplication::context();
+#endif
+
+        if (jni.isValid() == false) return;
+
+        jni.callMethod<void>("prepareFullScreen", "(Z)V", enabled);
+    });
 }
 
 #endif

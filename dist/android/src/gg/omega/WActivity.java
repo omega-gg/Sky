@@ -30,6 +30,7 @@ import android.os.*;
 import android.net.Uri;
 import android.content.Intent;
 import android.content.Context;
+import android.view.WindowManager;
 import android.database.Cursor;
 import android.provider.MediaStore;
 import android.media.MediaScannerConnection;
@@ -110,6 +111,19 @@ public class WActivity extends QtActivity
         //Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file));
 
         //sendBroadcast(intent);
+    }
+
+    public void prepareFullScreen(boolean enabled)
+    {
+        WindowManager.LayoutParams attributes = getWindow().getAttributes();
+
+        if (enabled)
+        {
+            attributes.layoutInDisplayCutoutMode
+                = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+        }
+        else attributes.layoutInDisplayCutoutMode
+                = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT;
     }
 
     public String getIntentText()

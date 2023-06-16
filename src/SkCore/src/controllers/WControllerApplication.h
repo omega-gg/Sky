@@ -216,6 +216,9 @@ public: // Static functions
 
 #ifdef Q_OS_ANDROID
     Q_INVOKABLE static void scanFile(const QString & fileName);
+
+    // NOTE android: This is required to avoid the notch in full screen.
+    Q_INVOKABLE static void prepareFullScreen(bool enabled);
 #endif
 
     //---------------------------------------------------------------------------------------------

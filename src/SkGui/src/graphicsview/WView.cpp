@@ -3621,6 +3621,10 @@ void WView::setFullScreen(bool fullScreen)
 
     if (d->fullScreen == fullScreen) return;
 
+#ifdef Q_OS_ANDROID
+    Sk::prepareFullScreen(fullScreen);
+#endif
+
     if (fullScreen)
     {
         d->fullScreen = true;
