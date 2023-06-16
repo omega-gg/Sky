@@ -535,14 +535,14 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
         ==
         QtAndroid::PermissionResult::Denied) return;
 
-    QAndroidJniObject object = QtAndroid::androidActivity();
+    QAndroidJniObject jni = QtAndroid::androidActivity();
 #else
     // FIXME Qt6: We should check for permission before doing this, otherwise we might crash.
 
-    QJniObject object = QNativeInterface::QAndroidApplication::context();
+    QJniObject jni = QNativeInterface::QAndroidApplication::context();
 #endif
 
-    if (object.isValid() == false) return;
+    if (jni.isValid() == false) return;
 
 #ifdef QT_5
     QAndroidJniObject service
@@ -554,15 +554,15 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
                                                     "VIBRATOR_SERVICE");
 #endif
 
-    if (object.isValid() == false) return;
+    if (jni.isValid() == false) return;
 
-    object = object.callObjectMethod("getSystemService",
-                                     "(Ljava/lang/String;)Ljava/lang/Object;",
-                                     service.object<jobject>());
+    jni = jni.callObjectMethod("getSystemService",
+                               "(Ljava/lang/String;)Ljava/lang/Object;",
+                               service.object<jobject>());
 
-    if (object.isValid() == false) return;
+    if (jni.isValid() == false) return;
 
-    object.callMethod<void>("vibrate", "(J)V", msec);
+    jni.callMethod<void>("vibrate", "(J)V", msec);
 #else
     Q_UNUSED(msec);
 #endif
@@ -579,14 +579,14 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 /* Q_INVOKABLE static */ void WControllerApplication::openGallery()
 {
 #ifdef QT_5
-    QAndroidJniObject object = QtAndroid::androidActivity();
+    QAndroidJniObject jni = QtAndroid::androidActivity();
 #else
-    QJniObject object = QNativeInterface::QAndroidApplication::context();
+    QJniObject jni = QNativeInterface::QAndroidApplication::context();
 #endif
 
-    if (object.isValid() == false) return;
+    if (jni.isValid() == false) return;
 
-    object.callMethod<void>("openGallery");
+    jni.callMethod<void>("openGallery");
 }
 
 #endif
@@ -598,12 +598,12 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 {
 #ifdef Q_OS_ANDROID
 #ifdef QT_5
-    QAndroidJniObject object = QtAndroid::androidActivity();
+    QAndroidJniObject jni = QtAndroid::androidActivity();
 #else
-    QJniObject object = QNativeInterface::QAndroidApplication::context();
+    QJniObject jni = QNativeInterface::QAndroidApplication::context();
 #endif
 
-    if (object.isValid() == false) return;
+    if (jni.isValid() == false) return;
 
 #ifdef QT_5
     QAndroidJniObject jniTitle    = QAndroidJniObject::fromString(title);
@@ -617,11 +617,11 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
     QJniObject jniType     = QJniObject::fromString(type);
 #endif
 
-    object.callMethod<void>("share",
-                            "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;"
-                            "Ljava/lang/String;)V",
-                            jniTitle.object<jstring>(), jniText.object<jstring>(),
-                            jniFileName.object<jstring>(), jniType.object<jstring>());
+    jni.callMethod<void>("share",
+                         "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;"
+                         "Ljava/lang/String;)V",
+                         jniTitle.object<jstring>(), jniText.object<jstring>(),
+                         jniFileName.object<jstring>(), jniType.object<jstring>());
 #else // Q_OS_IOS
     if (fileName.isEmpty()) shareText(text);
     else                    shareFile(fileName);
@@ -635,12 +635,12 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
 /* Q_INVOKABLE static */ void WControllerApplication::scanFile(const QString & fileName)
 {
 #ifdef QT_5
-    QAndroidJniObject object = QtAndroid::androidActivity();
+    QAndroidJniObject jni = QtAndroid::androidActivity();
 #else
-    QJniObject object = QNativeInterface::QAndroidApplication::context();
+    QJniObject jni = QNativeInterface::QAndroidApplication::context();
 #endif
 
-    if (object.isValid() == false) return;
+    if (jni.isValid() == false) return;
 
 #ifdef QT_5
     QAndroidJniObject jniName = QAndroidJniObject::fromString(fileName);
@@ -648,7 +648,7 @@ Qt::KeyboardModifiers WControllerApplication::keypad(Qt::KeyboardModifiers flags
     QJniObject jniName = QJniObject::fromString(fileName);
 #endif
 
-    object.callMethod<void>("scanFile", "(Ljava/lang/String;)V", jniName.object<jstring>());
+    jni.callMethod<void>("scanFile", "(Ljava/lang/String;)V", jniName.object<jstring>());
 }
 
 /* Q_INVOKABLE static */ void WControllerApplication::prepareFullScreen(bool enabled)
@@ -1672,14 +1672,14 @@ QByteArray WControllerApplication::generateHmacSha1(const QByteArray & bytes,
 /* Q_INVOKABLE static */ QString WControllerApplication::getIntentText()
 {
 #ifdef QT_5
-    QAndroidJniObject object = QtAndroid::androidActivity();
+    QAndroidJniObject jni = QtAndroid::androidActivity();
 #else
-    QJniObject object = QNativeInterface::QAndroidApplication::context();
+    QJniObject jni = QNativeInterface::QAndroidApplication::context();
 #endif
 
-    if (object.isValid() == false) return QString();
+    if (jni.isValid() == false) return QString();
 
-    return object.callObjectMethod<jstring>("getIntentText").toString();
+    return jni.callObjectMethod<jstring>("getIntentText").toString();
 }
 
 #endif
