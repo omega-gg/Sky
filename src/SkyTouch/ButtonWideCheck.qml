@@ -31,14 +31,10 @@ ButtonWide
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int margins: st.buttonWide_margins
+    property int margins          : st.buttonWide_margins
+    property int marginsBackground: st.buttonWideCheck_margins
 
     property int spacing: st.buttonTouch_spacing
-
-    //---------------------------------------------------------------------------------------------
-    // Private
-
-    property int pMargins: margins / 2
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -81,11 +77,11 @@ ButtonWide
     {
         id: backgroundCheck
 
-        width : parent.height - pMargins * 2
+        width : parent.height - marginsBackground * 2
         height: width
 
-        x: pMargins
-        y: pMargins
+        x: marginsBackground
+        y: marginsBackground
 
         radius: buttonWideCheck.radius
 
@@ -97,7 +93,7 @@ ButtonWide
         smooth: true
 //#END
 
-        border.width: st.buttonWideCheck_border
+        border.width: st.buttonWideCheck_borderSize
         border.color: st.buttonWideCheck_colorBorder
     }
 

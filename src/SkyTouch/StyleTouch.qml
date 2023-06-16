@@ -120,7 +120,9 @@ Style
     //---------------------------------------------------------------------------------------------
     // ButtonWideCheck
 
-    property int buttonWideCheck_border: dp2
+    property int buttonWideCheck_margins: dp6
+
+    property int buttonWideCheck_borderSize: dp2
 
     property color buttonWideCheck_color      : panel_color
     property color buttonWideCheck_colorBorder: border_color
