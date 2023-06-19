@@ -570,6 +570,17 @@ void WControllerPlaylistData::applyHtml(const QByteArray & array, const QString 
             addSource(url, generateTitle(url, urlName));
         }
     }
+
+    // NOTE: When the sources are empty we add the current url itself given it could be a media.
+    if (sources.isEmpty())
+    {
+        WControllerPlaylistSource media;
+
+        media.url   = url;
+        media.title = title;
+
+        medias.append(media);
+    }
 }
 
 void WControllerPlaylistData::applyM3u(const QByteArray & array, const QString & url)
@@ -980,7 +991,7 @@ signals:
 {
     WControllerPlaylistData data;
 
-    data.applyVbml(device->readAll(), url, urlBase);
+    data.applyVbml(WControllerFile::readAll(device), url, urlBase);
 
     emit loaded(device, data);
 
@@ -993,7 +1004,7 @@ signals:
 {
     WControllerPlaylistData data;
 
-    data.applyRelated(device->readAll(), url, urlBase);
+    data.applyRelated(WControllerFile::readAll(device), url, urlBase);
 
     emit loaded(device, data);
 
@@ -1007,7 +1018,7 @@ signals:
 
     data.addSlice("http");
 
-    data.applyHtml(device->readAll(), url);
+    data.applyHtml(WControllerFile::readAll(device), url);
 
     emit loaded(device, data);
 
@@ -1019,7 +1030,7 @@ signals:
 {
     WControllerPlaylistData data;
 
-    data.applyM3u(device->readAll(), url);
+    data.applyM3u(WControllerFile::readAll(device), url);
 
     emit loaded(device, data);
 
@@ -1043,7 +1054,7 @@ signals:
 {
     WControllerPlaylistData data;
 
-    data.applyFile(device->readAll(), url);
+    data.applyFile(WControllerFile::readAll(device), url);
 
     emit loaded(device, data);
 
@@ -1055,7 +1066,7 @@ signals:
 {
     WControllerPlaylistItem item;
 
-    item.data = device->readAll();
+    item.data = WControllerFile::readAll(device);
 
     item.extension = WControllerNetwork::extractUrlExtension(url);
 
@@ -1289,6 +1300,7 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
     WBackendNetQuery query(source);
 
     query.target = WBackendNetQuery::TargetHtml;
+    query.scope  = WBackendNetQuery::ScopeText;
 
     getDataTrack(playlist, track, query);
 
@@ -1494,6 +1506,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
     WBackendNetQuery query(source);
 
     query.target = WBackendNetQuery::TargetHtml;
+    query.scope  = WBackendNetQuery::ScopeText;
 
     getDataPlaylist(playlist, query);
 
@@ -1738,6 +1751,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
     WBackendNetQuery query(source);
 
     query.target = WBackendNetQuery::TargetHtml;
+    query.scope  = WBackendNetQuery::ScopeText;
 
     getDataFolder(folder, query);
 
@@ -2417,14 +2431,31 @@ WBackendNetQuery WControllerPlaylistPrivate::extractRelated(const QUrl & url) co
     if (method != "related") return WBackendNetQuery();
 
 #ifdef QT_4
-    QString q = url.queryItemValue("q");
+    QString q = WControllerNetwork::decodeUrl(url.queryItemValue("q"));
 #else
-    QString q = urlQuery.queryItemValue("q");
+    QString q = WControllerNetwork::decodeUrl(urlQuery.queryItemValue("q"));
 #endif
 
-    WBackendNetQuery query(WControllerNetwork::decodeUrl(q));
+    if (WControllerNetwork::urlIsFile(q))
+    {
+        QFileInfo info(WControllerFile::filePath(q));
 
+        WBackendNetQuery query("file:///" + info.absolutePath());
+
+        query.target = WBackendNetQuery::TargetFolder;
+
+        return query;
+    }
+    else if (WControllerNetwork::urlIsHttp(q) == false)
+    {
+        return WBackendNetQuery();
+    }
+
+    WBackendNetQuery query(q);
+
+    // NOTE: The url might be a large media file so we scope it to text.
     query.target = WBackendNetQuery::TargetRelated;
+    query.scope  = WBackendNetQuery::ScopeText;
 
     return query;
 }
@@ -4617,9 +4648,26 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
     if (backend == NULL)
     {
+        if (WControllerNetwork::urlIsFile(url))
+        {
+            QFileInfo info(WControllerFile::filePath(url));
+
+            WBackendNetQuery query("file:///" + info.absolutePath());
+
+            query.target = WBackendNetQuery::TargetFolder;
+
+            return query;
+        }
+        else if (WControllerNetwork::urlIsHttp(url) == false)
+        {
+            return WBackendNetQuery();
+        }
+
         WBackendNetQuery query(url);
 
+        // NOTE: The url might be a large media file so we scope it to text.
         query.target = WBackendNetQuery::TargetRelated;
+        query.scope  = WBackendNetQuery::ScopeText;
 
         return query;
     }
@@ -4922,6 +4970,8 @@ WRemoteData * WControllerPlaylist::getDataQuery(WAbstractLoader        * loader,
                                                 const WBackendNetQuery & query, QObject * parent)
 {
     WRemoteParameters parameters;
+
+    parameters.scope = query.scope;
 
     parameters.header = query.header;
     parameters.body   = query.body;

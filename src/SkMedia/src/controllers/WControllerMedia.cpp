@@ -241,10 +241,10 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
         source = reader.extractString("source");
     }
 
-    // NOTE: If parsing fails, apply the url itself given it might be readable by the player.
+    // NOTE: If the parsing fails we add the current url as the default source.
     if (source.isEmpty())
     {
-        source = url;
+        medias.insert(WAbstractBackend::QualityDefault, url);
 
         return;
     }
@@ -311,7 +311,7 @@ signals:
 {
     WControllerMediaData data;
 
-    data.applyVbml(device->readAll(), url);
+    data.applyVbml(WControllerFile::readAll(device), url);
 
     emit loaded(device, data);
 
@@ -322,7 +322,7 @@ signals:
 {
     WControllerMediaData data;
 
-    data.applyM3u(device->readAll(), url);
+    data.applyM3u(WControllerFile::readAll(device), url);
 
     emit loaded(device, data);
 
@@ -482,14 +482,18 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
             query.url = source;
         }
-        else if (WControllerPlaylist::urlIsVbmlFile(source)
-                 ||
-                 // NOTE: The source could be VBML so we try to load it anyway.
-                 (extension == QString() && WControllerNetwork::urlIsHttp(source)
-                  &&
-                  // NOTE: The url should not be an IP because it can be a HookTorrent server.
-                  WControllerNetwork::urlIsIp(source) == false))
+        else if (WControllerPlaylist::extensionIsVbml(source))
         {
+            query.url = source;
+        }
+        // NOTE: An http source could be VBML so we try to load it anyway.
+        else if (WControllerNetwork::urlIsHttp(source)
+                 &&
+                 // NOTE: An IP can be a HookTorrent server.
+                 WControllerNetwork::urlIsIp(source) == false)
+        {
+            query.scope = WBackendNetQuery::ScopeText;
+
             query.url = source;
         }
         else

@@ -77,6 +77,8 @@ public: // Properties
 private:
     W_DECLARE_PRIVATE(WLoaderNetwork)
 
+    Q_PRIVATE_SLOT(d_func(), void onMetaDataChanged())
+
     Q_PRIVATE_SLOT(d_func(), void onFinished(QNetworkReply *))
 };
 

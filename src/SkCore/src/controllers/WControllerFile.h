@@ -252,6 +252,9 @@ public: // Static functions
 
     //---------------------------------------------------------------------------------------------
 
+    // NOTE: When the device is not opened we return a default QByteArray.
+    Q_INVOKABLE static QByteArray readAll(QIODevice * device);
+
     Q_INVOKABLE static QByteArray readAll(const QString & fileName);
 
     Q_INVOKABLE static bool exists   (const QString & fileName);

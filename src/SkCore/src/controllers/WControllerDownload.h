@@ -28,6 +28,7 @@
 
 // Sk includes
 #include <WController>
+#include <WBackendNet>
 
 #ifndef SK_NO_CONTROLLERDOWNLOAD
 
@@ -51,6 +52,8 @@ struct WRemoteParameters
 {
     WRemoteParameters()
     {
+        scope = WBackendNetQuery::ScopeDefault;
+
         redirect = true;
         cookies  = true;
 
@@ -58,6 +61,8 @@ struct WRemoteParameters
         delay   =  0;
         timeout = -1;
     }
+
+    WBackendNetQuery::Scope scope;
 
     QString header;
     QString body;
@@ -105,6 +110,8 @@ public: // Properties
     QNetworkRequest::Priority priority() const;
 
     WRemoteParameters parameters() const;
+
+    WBackendNetQuery::Scope scope() const;
 
     QString header() const;
     QString body  () const;

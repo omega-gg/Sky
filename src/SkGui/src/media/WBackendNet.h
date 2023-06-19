@@ -65,6 +65,12 @@ public: // Enums
         TargetItem
     };
 
+    enum Scope
+    {
+        ScopeDefault,
+        ScopeText
+    };
+
 public:
     explicit WBackendNetQuery(const QString & url = QString());
 
@@ -84,6 +90,7 @@ public: // Operators
 public: // Variables
     Type   type;
     Target target;
+    Scope  scope;
 
     QString backend;
 

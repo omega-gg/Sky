@@ -35,6 +35,7 @@
 
 // Sk includes
 #include <WControllerApplication>
+#include <WControllerFile>
 #if defined(QT_NEW) && defined(SK_NO_QML) == false
 #include <WControllerDeclarative>
 #endif
@@ -79,6 +80,7 @@ void WBackendNetQuery::init(Type type, const QString & url)
     this->url  = url;
 
     target = TargetDefault;
+    scope  = ScopeDefault;
 
     id = 0;
 
@@ -111,6 +113,7 @@ WBackendNetQuery & WBackendNetQuery::operator=(const WBackendNetQuery & other)
 {
     type   = other.type;
     target = other.target;
+    scope  = other.scope;
 
     backend = other.backend;
 
@@ -385,7 +388,7 @@ WBackendNetInterface::WBackendNetInterface()
 {
     QIODevice * device = reply->_device;
 
-    QByteArray data = device->readAll();
+    QByteArray data = WControllerFile::readAll(device);
 
     WBackendNetSource source = backend->extractSource(data, reply->_query);
 
@@ -401,7 +404,7 @@ WBackendNetInterface::WBackendNetInterface()
 {
     QIODevice * device = reply->_device;
 
-    QByteArray data = device->readAll();
+    QByteArray data = WControllerFile::readAll(device);
 
     WBackendNetTrack track = backend->extractTrack(data, reply->_query);
 
@@ -415,7 +418,7 @@ WBackendNetInterface::WBackendNetInterface()
 {
     QIODevice * device = reply->_device;
 
-    QByteArray data = device->readAll();
+    QByteArray data = WControllerFile::readAll(device);
 
     WBackendNetPlaylist playlist = backend->extractPlaylist(data, reply->_query);
 
@@ -429,7 +432,7 @@ WBackendNetInterface::WBackendNetInterface()
 {
     QIODevice * device = reply->_device;
 
-    QByteArray data = device->readAll();
+    QByteArray data = WControllerFile::readAll(device);
 
     WBackendNetFolder folder = backend->extractFolder(data, reply->_query);
 
@@ -443,7 +446,7 @@ WBackendNetInterface::WBackendNetInterface()
 {
     QIODevice * device = reply->_device;
 
-    QByteArray data = device->readAll();
+    QByteArray data = WControllerFile::readAll(device);
 
     WBackendNetItem item = backend->extractItem(data, reply->_query);
 

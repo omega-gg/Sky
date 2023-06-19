@@ -62,9 +62,28 @@ void WLoaderNetworkPrivate::init()
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
+void WLoaderNetworkPrivate::onMetaDataChanged()
+{
+    Q_Q(WLoaderNetwork);
+
+    QNetworkReply * reply = static_cast<QNetworkReply *> (q->sender());
+
+    QObject::disconnect(reply, 0, q, 0);
+
+    QString type = reply->header(QNetworkRequest::ContentTypeHeader).toString();
+
+    if (type.toLower().contains("text")) return;
+
+    q->complete(reply);
+
+    reply->abort();
+}
+
 void WLoaderNetworkPrivate::onFinished(QNetworkReply * reply)
 {
     Q_Q(WLoaderNetwork);
+
+    QObject::disconnect(reply, 0, q, 0);
 
     WRemoteData * data = q->getData(reply);
 
@@ -202,7 +221,21 @@ void WLoaderNetworkPrivate::onFinished(QNetworkReply * reply)
 
     QString body = data->body();
 
-    if (body.isEmpty())
+    if (data->scope() == WBackendNetQuery::ScopeText)
+    {
+        QNetworkReply * reply;
+
+        if (body.isEmpty())
+        {
+            reply = d->manager->get(request);
+        }
+        else reply = d->manager->post(request, body.toUtf8());
+
+        connect(reply, SIGNAL(metaDataChanged()), this, SLOT(onMetaDataChanged()));
+
+        return reply;
+    }
+    else if (body.isEmpty())
     {
         return d->manager->get(request);
     }
@@ -216,6 +249,8 @@ void WLoaderNetworkPrivate::onFinished(QNetworkReply * reply)
 /* virtual */ void WLoaderNetwork::abort(QIODevice * reply)
 {
     QNetworkReply * networkReply = qobject_cast<QNetworkReply *> (reply);
+
+    disconnect(networkReply, 0, this, 0);
 
     networkReply->abort();
 }

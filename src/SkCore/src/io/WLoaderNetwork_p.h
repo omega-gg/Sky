@@ -49,6 +49,8 @@ public:
     void init();
 
 public: // Slots
+    void onMetaDataChanged();
+
     void onFinished(QNetworkReply * reply);
 
 public: // Variables

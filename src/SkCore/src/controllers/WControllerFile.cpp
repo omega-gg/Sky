@@ -1212,6 +1212,15 @@ WControllerFileReply * WControllerFile::startCreatePaths(const QStringList & pat
 }
 //-------------------------------------------------------------------------------------------------
 
+/* Q_INVOKABLE static */ QByteArray WControllerFile::readAll(QIODevice * device)
+{
+    if (device->isOpen())
+    {
+        return device->readAll();
+    }
+    else return QByteArray();
+}
+
 /* Q_INVOKABLE static */ QByteArray WControllerFile::readAll(const QString & fileName)
 {
     QFile file(toLocalFile(fileName));

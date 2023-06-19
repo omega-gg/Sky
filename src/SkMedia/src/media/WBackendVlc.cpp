@@ -851,6 +851,8 @@ void WBackendVlcPrivate::deleteShader()
 
 void WBackendVlcPrivate::convertFrameSoftware()
 {
+    if (frameReset) return;
+
     uint32_t * bits = (uint32_t *) frameSoftware.bits();
 
     uint8_t * p_y = textures[0].bits;
@@ -905,6 +907,8 @@ void WBackendVlcPrivate::convertFrameSoftware()
 
 void WBackendVlcPrivate::convertFrameSse()
 {
+    if (frameReset) return;
+
     uint32_t * p_buffer = (uint32_t *) frameSoftware.bits();
 
     uint8_t * p_y = textures[0].bits;
@@ -913,7 +917,7 @@ void WBackendVlcPrivate::convertFrameSse()
 
     int rewind = -(textures[0].width) & 15;
 
-    if (0 == (15 & (textures[0].width | ((intptr_t) p_y)  | ((intptr_t) p_buffer))))
+    if (0 == (15 & (textures[0].width | ((intptr_t) p_y) | ((intptr_t) p_buffer))))
     {
         for (int y = 0; y < textures[0].height; y++)
         {

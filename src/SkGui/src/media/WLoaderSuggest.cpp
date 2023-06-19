@@ -25,6 +25,7 @@
 #ifndef SK_NO_LOADERSUGGEST
 
 // Sk includes
+#include <WControllerNetwork>
 #include <WControllerPlaylist>
 #include <WPlaylist>
 
@@ -231,9 +232,12 @@ signals:
 WBackendNetQuery WLoaderSuggestReply::getQuery(const QString & url, const QString & title) const
 {
 #ifndef SK_NO_TORRENT
-    // FIXME: We are not suggesting torrents for now.
-    if (WControllerPlaylist::urlIsTorrent(url)) return WBackendNetQuery();
+    if (WControllerNetwork::urlIsFile(url)
+        ||
+        // FIXME: We are not suggesting torrents for now.
+        WControllerPlaylist::urlIsTorrent(url)) return WBackendNetQuery();
 #endif
+    if (WControllerNetwork::urlIsFile(url)) return WBackendNetQuery();
 
     WBackendNetQuery query = wControllerPlaylist->queryRelatedTracks(url, title);
 
