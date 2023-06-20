@@ -28,7 +28,6 @@
 
 // Sk includes
 #include <WController>
-#include <WBackendNet>
 
 #ifndef SK_NO_CONTROLLERDOWNLOAD
 
