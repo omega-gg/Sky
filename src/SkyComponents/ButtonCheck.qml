@@ -208,6 +208,10 @@ MouseArea
         drag.minimumX: 0
         drag.maximumX: parent.width - width
 
+//#QT_NEW
+        drag.threshold: 0
+//#END
+
         onClicked: pToggleChecked()
 
         // NOTE: We update the position when the drag has ended.

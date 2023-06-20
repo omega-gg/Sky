@@ -224,6 +224,10 @@ BaseButton
         drag.minimumX: 0
         drag.maximumX: parent.width - width
 
+//#QT_NEW
+        drag.threshold: 0
+//#END
+
         // NOTE: We update the position when the drag has ended.
         drag.onActiveChanged: if (drag.active == false) pApplyX(x + width / 2)
 
