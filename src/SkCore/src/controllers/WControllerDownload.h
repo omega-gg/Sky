@@ -28,6 +28,7 @@
 
 // Sk includes
 #include <WController>
+#include <WAbstractLoader>
 
 #ifndef SK_NO_CONTROLLERDOWNLOAD
 
