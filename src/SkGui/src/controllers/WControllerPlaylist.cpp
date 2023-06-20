@@ -1300,7 +1300,7 @@ bool WControllerPlaylistPrivate::applySourceTrack(WPlaylist * playlist,
     WBackendNetQuery query(source);
 
     query.target = WBackendNetQuery::TargetHtml;
-    query.scope  = WBackendNetQuery::ScopeText;
+    query.scope  = WAbstractLoader::ScopeText;
 
     getDataTrack(playlist, track, query);
 
@@ -1506,7 +1506,7 @@ bool WControllerPlaylistPrivate::applySourcePlaylist(WPlaylist * playlist, const
     WBackendNetQuery query(source);
 
     query.target = WBackendNetQuery::TargetHtml;
-    query.scope  = WBackendNetQuery::ScopeText;
+    query.scope  = WAbstractLoader::ScopeText;
 
     getDataPlaylist(playlist, query);
 
@@ -1751,7 +1751,7 @@ bool WControllerPlaylistPrivate::applySourceFolder(WLibraryFolder * folder, cons
     WBackendNetQuery query(source);
 
     query.target = WBackendNetQuery::TargetHtml;
-    query.scope  = WBackendNetQuery::ScopeText;
+    query.scope  = WAbstractLoader::ScopeText;
 
     getDataFolder(folder, query);
 
@@ -2455,7 +2455,7 @@ WBackendNetQuery WControllerPlaylistPrivate::extractRelated(const QUrl & url) co
 
     // NOTE: The url might be a large media file so we scope it to text.
     query.target = WBackendNetQuery::TargetRelated;
-    query.scope  = WBackendNetQuery::ScopeText;
+    query.scope  = WAbstractLoader::ScopeText;
 
     return query;
 }
@@ -4667,7 +4667,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 
         // NOTE: The url might be a large media file so we scope it to text.
         query.target = WBackendNetQuery::TargetRelated;
-        query.scope  = WBackendNetQuery::ScopeText;
+        query.scope  = WAbstractLoader::ScopeText;
 
         return query;
     }

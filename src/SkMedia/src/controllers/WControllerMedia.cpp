@@ -492,7 +492,7 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
                  // NOTE: An IP can be a HookTorrent server.
                  WControllerNetwork::urlIsIp(source) == false)
         {
-            query.scope = WBackendNetQuery::ScopeText;
+            query.scope = WAbstractLoader::ScopeText;
 
             query.url = source;
         }

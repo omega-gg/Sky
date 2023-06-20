@@ -28,6 +28,7 @@
 #include <QDateTime>
 
 // Sk includes
+#include <WAbstractLoader>
 #include <WLibraryFolder>
 #include <WTrack>
 
@@ -65,12 +66,6 @@ public: // Enums
         TargetItem
     };
 
-    enum Scope
-    {
-        ScopeDefault,
-        ScopeText
-    };
-
 public:
     explicit WBackendNetQuery(const QString & url = QString());
 
@@ -90,7 +85,6 @@ public: // Operators
 public: // Variables
     Type   type;
     Target target;
-    Scope  scope;
 
     QString backend;
 
@@ -107,6 +101,8 @@ public: // Variables
     WAbstractBackend::SourceMode mode;
 
     QVariant data;
+
+    WAbstractLoader::Scope scope;
 
     QString header;
     QString body;

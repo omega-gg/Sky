@@ -160,7 +160,7 @@ WRemoteParameters WRemoteData::parameters() const
 
 //-------------------------------------------------------------------------------------------------
 
-WBackendNetQuery::Scope WRemoteData::scope() const
+WAbstractLoader::Scope WRemoteData::scope() const
 {
     return _parameters.scope;
 }

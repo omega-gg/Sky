@@ -40,7 +40,16 @@ class SK_CORE_EXPORT WAbstractLoader : public QObject, public WPrivatable
 {
     Q_OBJECT
 
+    Q_ENUMS(Scope)
+
     Q_PROPERTY(int maxRedirect READ maxRedirect WRITE setMaxRedirect NOTIFY maxRedirectChanged)
+
+public: // Enums
+    enum Scope
+    {
+        ScopeDefault,
+        ScopeText
+    };
 
 public:
     explicit WAbstractLoader(QObject * parent = NULL);

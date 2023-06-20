@@ -221,7 +221,7 @@ void WLoaderNetworkPrivate::onFinished(QNetworkReply * reply)
 
     QString body = data->body();
 
-    if (data->scope() == WBackendNetQuery::ScopeText)
+    if (data->scope() == ScopeText)
     {
         QNetworkReply * reply;
 

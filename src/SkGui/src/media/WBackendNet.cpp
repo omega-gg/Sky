@@ -80,7 +80,6 @@ void WBackendNetQuery::init(Type type, const QString & url)
     this->url  = url;
 
     target = TargetDefault;
-    scope  = ScopeDefault;
 
     id = 0;
 
@@ -90,6 +89,8 @@ void WBackendNetQuery::init(Type type, const QString & url)
     priority = QNetworkRequest::NormalPriority;
 
     mode = WAbstractBackend::SourceDefault;
+
+    scope = WAbstractLoader::ScopeDefault;
 
     clearItems = false;
     cookies    = false;

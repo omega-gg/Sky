@@ -52,7 +52,7 @@ struct WRemoteParameters
 {
     WRemoteParameters()
     {
-        scope = WBackendNetQuery::ScopeDefault;
+        scope = WAbstractLoader::ScopeDefault;
 
         redirect = true;
         cookies  = true;
@@ -62,7 +62,7 @@ struct WRemoteParameters
         timeout = -1;
     }
 
-    WBackendNetQuery::Scope scope;
+    WAbstractLoader::Scope scope;
 
     QString header;
     QString body;
@@ -111,7 +111,7 @@ public: // Properties
 
     WRemoteParameters parameters() const;
 
-    WBackendNetQuery::Scope scope() const;
+    WAbstractLoader::Scope scope() const;
 
     QString header() const;
     QString body  () const;
