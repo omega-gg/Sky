@@ -310,6 +310,11 @@ void WTrack::setType(WTrack::Type type)
     Q_D(WTrack); d->type = type;
 }
 
+bool WTrack::isHub() const
+{
+    Q_D(const WTrack); return (d->type == Hub);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 WTrack::State WTrack::state() const
@@ -321,8 +326,6 @@ void WTrack::setState(WTrack::State state)
 {
     Q_D(WTrack); d->state = state;
 }
-
-//-------------------------------------------------------------------------------------------------
 
 bool WTrack::isDefault() const
 {

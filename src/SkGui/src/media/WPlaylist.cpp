@@ -1957,6 +1957,17 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     updateTrack(index);
 }
 
+/* Q_INVOKABLE */ bool WPlaylist::trackIsHub(int index) const
+{
+    const WTrack * track = trackPointerAt(index);
+
+    if (track)
+    {
+        return track->isHub();
+    }
+    else return false;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ WTrack::State WPlaylist::trackState(int index) const

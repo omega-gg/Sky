@@ -74,6 +74,8 @@ public: // Properties
     Type type() const;
     void setType(Type type);
 
+    bool isHub() const;
+
     State state() const;
     void  setState(State state);
 

@@ -276,7 +276,13 @@ void WLoaderSuggestPrivate::updateSources()
     if (history == NULL) return;
 
     // NOTE: When the sources are empty we clear the previously loaded tracks.
-    if (sources.isEmpty()) item->toPlaylist()->clearTracks();
+    if (sources.isEmpty())
+    {
+        WPlaylist * playlist = item->toPlaylist();
+
+        // NOTE: The playlist has to be loaded before clearing otherwise we might remove its title.
+        if (playlist->count()) playlist->clearTracks();
+    }
 
     Q_Q(WLoaderSuggest);
 

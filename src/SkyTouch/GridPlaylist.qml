@@ -127,7 +127,8 @@ GridTouch
     {
         var count = width / cellWidth;
 
-        return Math.floor(getY() / cellHeight) * count;
+        // NOTE: We use contentY instead of getY() because we want to ignore originY.
+        return Math.floor(contentY / cellHeight) * count;
     }
 
     function pGetCount()
