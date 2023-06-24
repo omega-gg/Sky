@@ -153,6 +153,18 @@ WLoaderPlaylist::WLoaderPlaylist(WLoaderPlaylistPrivate * p, WLibraryFolder * fo
 }
 
 //-------------------------------------------------------------------------------------------------
+// Protected functions
+
+void WLoaderPlaylist::setQueryLoading(bool loading)
+{
+    Q_D(WLoaderPlaylist);
+
+    if (d->item == NULL) return;
+
+    d->item->d_func()->setQueryLoading(loading);
+}
+
+//-------------------------------------------------------------------------------------------------
 // Properties
 //-------------------------------------------------------------------------------------------------
 

@@ -286,6 +286,8 @@ void WLoaderSuggestPrivate::updateSources()
 
     Q_Q(WLoaderSuggest);
 
+    q->setQueryLoading(true);
+
     if (reply)
     {
         QObject::disconnect(reply, SIGNAL(loaded(const WLoaderSuggestData &)),
@@ -421,6 +423,12 @@ void WLoaderSuggestPrivate::processQueries()
 
         jobs.insert(playlist, node);
     }
+
+    if (jobs.isEmpty() == false) return;
+
+    Q_Q(WLoaderSuggest);
+
+    q->setQueryLoading(false);
 }
 
 void WLoaderSuggestPrivate::clearQueries()
@@ -446,6 +454,8 @@ void WLoaderSuggestPrivate::clearQueries()
 
     playlists.clear();
     jobs     .clear();
+
+    q->setQueryLoading(false);
 }
 
 //-------------------------------------------------------------------------------------------------

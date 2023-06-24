@@ -234,6 +234,8 @@ private:
     friend class WLibraryFolderPrivate;
     friend class WBackendNet;
     friend class WBackendNetPrivate;
+    friend class WLoaderPlaylist;
+    friend class WLoaderPlaylistPrivate;
 };
 
 #endif // SK_NO_LIBRARYITEM

@@ -58,6 +58,9 @@ protected: // Abstract functions
 
     virtual void onClear() = 0;
 
+protected: // Functions
+    void setQueryLoading(bool loading);
+
 signals:
     void runningChanged();
 
