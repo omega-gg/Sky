@@ -396,6 +396,7 @@ private: // Functions
     void parsePlaylistTrack(const WYamlNode & node, WTrack::Type type);
 
     void addSource(const QString & url, const QString & title);
+    void addMedia (const QString & url, const QString & title);
 
     void addFile(const QString & path);
 

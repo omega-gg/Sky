@@ -315,11 +315,23 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
 
         parseTrack(reader, string);
     }
+    else if (WControllerPlaylist::vbmlTypePlaylist(type))
+    {
+        this->url = url;
+
+        parsePlaylist(reader);
+    }
     else // NOTE: We default to the playlist type.
     {
         this->url = url;
 
         parsePlaylist(reader);
+
+        // NOTE: When the playlist is invalid we add the url itself given it could be a media.
+        if (source.isEmpty() && title.isEmpty() && tracks.isEmpty())
+        {
+            addMedia(url, WControllerNetwork::extractUrlFileName(url));
+        }
     }
 }
 
@@ -571,16 +583,8 @@ void WControllerPlaylistData::applyHtml(const QByteArray & array, const QString 
         }
     }
 
-    // NOTE: When the sources are empty we add the current url itself given it could be a media.
-    if (sources.isEmpty())
-    {
-        WControllerPlaylistSource media;
-
-        media.url   = url;
-        media.title = title;
-
-        medias.append(media);
-    }
+    // NOTE: When the sources are empty we add the url itself given it could be a media.
+    if (sources.isEmpty()) addMedia(url, title);
 }
 
 void WControllerPlaylistData::applyM3u(const QByteArray & array, const QString & url)
@@ -901,7 +905,15 @@ void WControllerPlaylistData::addSource(const QString & url, const QString & tit
     sources.append(source);
 }
 
-//-------------------------------------------------------------------------------------------------
+void WControllerPlaylistData::addMedia(const QString & url, const QString & title)
+{
+    WControllerPlaylistSource media;
+
+    media.url   = url;
+    media.title = title;
+
+    medias.append(media);
+}
 
 void WControllerPlaylistData::addFile(const QString & path)
 {
@@ -930,8 +942,6 @@ void WControllerPlaylistData::addFile(const QString & path)
         else sources.append(source);
     }
 }
-
-//-------------------------------------------------------------------------------------------------
 
 bool WControllerPlaylistData::addUrl(QStringList * urls, const QString & url) const
 {
