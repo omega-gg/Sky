@@ -465,6 +465,7 @@ void WBarcodeReaderPrivate::init() {}
 
     precision--;
 
+    // NOTE: We call ReadBarcode multiple times because it's faster than ReadBarcodes.
     for (int i = 0; i < precision; i++)
     {
         QRect rect = WBarcodeReaderPrivate::getSlice(width, height, x, y, currentSize);
