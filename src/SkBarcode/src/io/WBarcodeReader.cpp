@@ -400,6 +400,38 @@ void WBarcodeReaderPrivate::init() {}
     else return QString();
 }
 
+/* Q_INVOKABLE static */ QStringList WBarcodeReader::reads(const QImage & image, Formats formats)
+{
+    if (image.isNull()) return QStringList();
+
+    ImageFormat format = WBarcodeReaderPrivate::getFormat(image.format());
+
+    if (format == ImageFormat::None)
+    {
+        // NOTE: We try image conversion to deal with 'exotic' formats.
+        return reads(image.convertToFormat(QImage::Format_RGB32), formats);
+    }
+
+    ImageView imageView(image.bits(), image.width(), image.height(), format);
+
+    DecodeHints hints;
+
+    hints.setFormats(static_cast<BarcodeFormats> (formats));
+
+    Results outputs = ReadBarcodes(imageView, hints);
+
+    QStringList list;
+
+    foreach (const Result & output, outputs)
+    {
+        if (output.isValid() == false) continue;
+
+        list.append(QString::fromWCharArray(output.text().c_str()));
+    }
+
+    return list;
+}
+
 /* Q_INVOKABLE static */ QString WBarcodeReader::readFile(const QString & fileName,
                                                           Formats         formats)
 {

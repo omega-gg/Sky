@@ -2874,12 +2874,14 @@ QHash<QString, QVariant> WBackendUniversalNode::getHtml(const WControllerPlaylis
 
     list.clear();
 
-    foreach (const WControllerPlaylistSource & media, data.medias)
+    foreach (const WControllerPlaylistMedia & media, data.medias)
     {
         QHash<QString, QVariant> variant;
 
-        variant.insert("url",   media.url);
+        variant.insert("url", media.url);
+
         variant.insert("title", media.title);
+        variant.insert("cover", media.cover);
 
         list.append(variant);
     }

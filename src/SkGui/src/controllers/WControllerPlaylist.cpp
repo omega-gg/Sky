@@ -889,7 +889,7 @@ void WControllerPlaylistData::addSource(const QString & url, const QString & tit
 {
     if (WControllerPlaylist::urlIsMedia(url))
     {
-        WControllerPlaylistSource media;
+        WControllerPlaylistMedia media;
 
         media.url   = url;
         media.title = WControllerNetwork::extractUrlFileName(url);
@@ -907,10 +907,15 @@ void WControllerPlaylistData::addSource(const QString & url, const QString & tit
 
 void WControllerPlaylistData::addMedia(const QString & url, const QString & title)
 {
-    WControllerPlaylistSource media;
+    WControllerPlaylistMedia media;
 
     media.url   = url;
     media.title = title;
+
+    if (WControllerFile::urlIsImage(url))
+    {
+        media.cover = url;
+    }
 
     medias.append(media);
 }
@@ -921,7 +926,7 @@ void WControllerPlaylistData::addFile(const QString & path)
 
     if (WControllerPlaylist::extensionIsMedia(extension))
     {
-        WControllerPlaylistSource media;
+        WControllerPlaylistMedia media;
 
         media.url   = WControllerFile::fileUrl(path);
         media.title = WControllerNetwork::extractUrlFileName(path);
@@ -3728,7 +3733,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
             else backend->tryDelete();
         }
 
-        foreach (const WControllerPlaylistSource & media, data.medias)
+        foreach (const WControllerPlaylistMedia & media, data.medias)
         {
             if (urlTracks.count() == CONTROLLERPLAYLIST_MAX_TRACKS) break;
 
@@ -3742,7 +3747,13 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
             track.setTitle(media.title);
 
-            track.setCover(data.cover);
+            QString cover = media.cover;
+
+            if (cover.isEmpty())
+            {
+                 track.setCover(data.cover);
+            }
+            else track.setCover(cover);
 
             track.setFeed(feed);
 
@@ -4064,7 +4075,7 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
         applySources(folder, data.files, &urls);
 
-        foreach (const WControllerPlaylistSource & media, data.medias)
+        foreach (const WControllerPlaylistMedia & media, data.medias)
         {
             if (urlTracks.count() == CONTROLLERPLAYLIST_MAX_TRACKS) break;
 
@@ -4078,7 +4089,13 @@ void WControllerPlaylistPrivate::onUrlFolder(QIODevice                     * dev
 
             track.setTitle(media.title);
 
-            track.setCover(data.cover);
+            QString cover = media.cover;
+
+            if (cover.isEmpty())
+            {
+                 track.setCover(data.cover);
+            }
+            else track.setCover(cover);
 
             track.setFeed(feed);
 
@@ -5371,7 +5388,7 @@ QStringList WControllerPlaylist::extractTracks(const WControllerPlaylistData & d
         }
     }
 
-    foreach (const WControllerPlaylistSource & media, data.medias)
+    foreach (const WControllerPlaylistMedia & media, data.medias)
     {
         const QString & url = media.url;
 

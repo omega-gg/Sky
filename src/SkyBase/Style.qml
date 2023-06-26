@@ -712,4 +712,13 @@ Item
         }
         else return text;
     }
+
+    //---------------------------------------------------------------------------------------------
+
+    function getItemName(type)
+    {
+        if      (type == LibraryItem.Playlist)     return qsTr("Playlist");
+        else if (type == LibraryItem.PlaylistFeed) return qsTr("Feed");
+        else                                       return qsTr("Folder");
+    }
 }

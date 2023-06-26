@@ -157,7 +157,8 @@ Item
 
         checked: buttonIcon.checked
 
-        text: title
+        text: (title) ? title
+                      : st.getUrlTitle(source, st.getItemName(type));
 
         onClicked: onClickText()
     }

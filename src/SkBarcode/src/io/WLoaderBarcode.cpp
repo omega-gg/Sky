@@ -99,7 +99,12 @@ public: // Variables
 
     image.loadFromData(data);
 
-    QString text = WBarcodeReader::read(image);
+    QStringList texts = WBarcodeReader::reads(image);
+
+    // NOTE: When we have multiple barcodes in the image we skip it altogether.
+    if (texts.isEmpty() || texts.count() > 1) return true;
+
+    QString text = texts.first();
 
     QString source = WControllerPlaylist::generateSource(text);
 

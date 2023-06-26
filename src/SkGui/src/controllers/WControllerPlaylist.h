@@ -49,7 +49,7 @@ Q_MOC_INCLUDE("QThread")
 #define wControllerPlaylist WControllerPlaylist::instance()
 
 //-------------------------------------------------------------------------------------------------
-// WControllerPlaylistSource
+// WControllerPlaylistUrl
 //-------------------------------------------------------------------------------------------------
 
 struct WControllerPlaylistUrl
@@ -67,6 +67,18 @@ struct WControllerPlaylistSource
 {
     QString url;
     QString title;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WControllerPlaylistSource
+//-------------------------------------------------------------------------------------------------
+
+struct WControllerPlaylistMedia
+{
+    QString url;
+
+    QString title;
+    QString cover;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -417,7 +429,7 @@ public: // Variables
 
     QList<WControllerPlaylistSource> sources;
     QList<WControllerPlaylistSource> files;
-    QList<WControllerPlaylistSource> medias;
+    QList<WControllerPlaylistMedia>  medias;
 
     QList<WControllerPlaylistSlice> slices;
 };
