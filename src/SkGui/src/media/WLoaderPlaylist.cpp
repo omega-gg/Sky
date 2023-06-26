@@ -26,6 +26,7 @@
 
 // Sk includes
 #include <WLibraryFolder>
+#include <WPlaylist>
 
 //-------------------------------------------------------------------------------------------------
 // WPrivate
@@ -154,6 +155,16 @@ WLoaderPlaylist::WLoaderPlaylist(WLoaderPlaylistPrivate * p, WLibraryFolder * fo
 
 //-------------------------------------------------------------------------------------------------
 // Protected functions
+
+void WLoaderPlaylist::clearTracks()
+{
+    Q_D(WLoaderPlaylist);
+
+    WPlaylist * playlist = d->item->toPlaylist();
+
+    // NOTE: The playlist has to be loaded before clearing otherwise we might remove its title.
+    if (playlist->count()) playlist->clearTracks();
+}
 
 void WLoaderPlaylist::setQueryLoading(bool loading)
 {

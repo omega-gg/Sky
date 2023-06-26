@@ -2204,8 +2204,6 @@ WPlaylist::WPlaylist(WPlaylistPrivate * p, Type type, WLibraryFolder * parent)
     return d->itemAt(index);
 }
 
-//-------------------------------------------------------------------------------------------------
-
 /* Q_INVOKABLE */ QList<const WTrack *> WPlaylist::trackPointers() const
 {
     Q_D(const WPlaylist);

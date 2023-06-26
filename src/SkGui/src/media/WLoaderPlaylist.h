@@ -59,6 +59,8 @@ protected: // Abstract functions
     virtual void onClear() = 0;
 
 protected: // Functions
+    void clearTracks();
+
     void setQueryLoading(bool loading);
 
 signals:

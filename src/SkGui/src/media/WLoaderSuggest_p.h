@@ -34,10 +34,12 @@
 */
 
 // Qt includes
-#include <WBackendNet>
 #ifdef QT_4
 #include <QStringList>
 #endif
+
+// Sk includes
+#include <WBackendNet>
 
 // Private includes
 #include <private/WLoaderPlaylist_p>

@@ -33,10 +33,19 @@
     We mean it.
 */
 
+// Qt includes
+#include <QMetaMethod>
+#ifdef QT_4
+#include <QStringList>
+#endif
+
 // Private includes
 #include <private/WLoaderPlaylist_p>
 
 #ifndef SK_NO_LOADERRECENT
+
+// Forward declarations
+class WLoaderRecentReply;
 
 //=================================================================================================
 // WLoaderRecentPrivate
@@ -44,10 +53,38 @@
 
 class SK_GUI_EXPORT WLoaderRecentPrivate : public WLoaderPlaylistPrivate
 {
+public: // Enums
+    enum Type
+    {
+        Insert,
+        Move,
+        Remove
+    };
+
 public:
     WLoaderRecentPrivate(WLoaderRecent * p);
 
     void init();
+
+public: // Functions
+    void updateSources();
+
+    void clearQueries();
+
+    QStringList getSourcesInput() const;
+
+public: // Slots
+    void onFolderUpdated  ();
+    void onFolderDestroyed();
+
+public: // Variables
+    WLibraryFolder * feeds;
+
+    QStringList sources;
+
+    WLoaderRecentReply * reply;
+
+    QMetaMethod method;
 
 protected:
     W_DECLARE_PUBLIC(WLoaderRecent)

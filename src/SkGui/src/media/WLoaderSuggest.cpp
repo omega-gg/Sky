@@ -275,16 +275,10 @@ void WLoaderSuggestPrivate::updateSources()
 {
     if (history == NULL) return;
 
-    // NOTE: When the sources are empty we clear the previously loaded tracks.
-    if (sources.isEmpty())
-    {
-        WPlaylist * playlist = item->toPlaylist();
-
-        // NOTE: The playlist has to be loaded before clearing otherwise we might remove its title.
-        if (playlist->count()) playlist->clearTracks();
-    }
-
     Q_Q(WLoaderSuggest);
+
+    // NOTE: When the sources are empty we clear the previously loaded tracks.
+    if (sources.isEmpty()) q->clearTracks();
 
     q->setQueryLoading(true);
 
@@ -468,7 +462,7 @@ QStringList WLoaderSuggestPrivate::getSourcesInput(QStringList & titles) const
     {
         QString source = WControllerPlaylist::cleanSource(track->source());
 
-        if (list.contains(source)) continue;
+        if (source.isEmpty() || list.contains(source)) continue;
 
         list.append(source);
 
@@ -566,7 +560,7 @@ WPlaylist * WLoaderSuggestPrivate::getPlaylist()
 }
 
 //-------------------------------------------------------------------------------------------------
-// Slots
+// Private slots
 //-------------------------------------------------------------------------------------------------
 
 void WLoaderSuggestPrivate::onPlaylistUpdated()
@@ -577,6 +571,8 @@ void WLoaderSuggestPrivate::onPlaylistUpdated()
 void WLoaderSuggestPrivate::onPlaylistDestroyed()
 {
     history = NULL;
+
+    if (active) clearQueries();
 }
 
 void WLoaderSuggestPrivate::onLoaded(const WLoaderSuggestData & data)

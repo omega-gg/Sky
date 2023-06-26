@@ -1841,6 +1841,20 @@ WLibraryFolder::WLibraryFolder(WLibraryFolderPrivate * p, Type type, WLibraryFol
     return itemAt(indexFromId(id));
 }
 
+/* Q_INVOKABLE */ QList<const WLibraryFolderItem *> WLibraryFolder::items() const
+{
+    Q_D(const WLibraryFolder);
+
+    QList<const WLibraryFolderItem *> items;
+
+    for (int i = 0; i < count(); i++)
+    {
+        items.append(&(d->items.at(i)));
+    }
+
+    return items;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ const WLibraryFolderItem * WLibraryFolder::currentItemPointer() const

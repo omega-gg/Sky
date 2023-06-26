@@ -199,6 +199,8 @@ public: // Interface
     Q_INVOKABLE const WLibraryFolderItem * itemAt    (int index) const;
     Q_INVOKABLE const WLibraryFolderItem * itemFromId(int id)    const;
 
+    Q_INVOKABLE QList<const WLibraryFolderItem *> items() const;
+
     Q_INVOKABLE const WLibraryFolderItem * currentItemPointer() const;
 
     //---------------------------------------------------------------------------------------------

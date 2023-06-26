@@ -35,6 +35,8 @@ class SK_GUI_EXPORT WLoaderRecent : public WLoaderPlaylist
 {
     Q_OBJECT
 
+    Q_PROPERTY(WLibraryFolder * feeds READ feeds WRITE setFeeds NOTIFY feedsChanged)
+
 public:
     WLoaderRecent(WLibraryFolder * folder, int id);
 
@@ -44,8 +46,18 @@ protected: // WLoaderPlaylist implementation
 
     /* virtual */ void onClear();
 
+signals:
+    void feedsChanged();
+
+public: // Properties
+    WLibraryFolder * feeds() const;
+    void             setFeeds(WLibraryFolder * feeds);
+
 private:
     W_DECLARE_PRIVATE(WLoaderRecent)
+
+    Q_PRIVATE_SLOT(d_func(), void onFolderUpdated  ());
+    Q_PRIVATE_SLOT(d_func(), void onFolderDestroyed());
 };
 
 #include <private/WLoaderRecent_p>
