@@ -34,6 +34,10 @@
 // Forward declarations
 class WModelPlaylistPrivate;
 
+//-------------------------------------------------------------------------------------------------
+// WModelPlaylist
+//-------------------------------------------------------------------------------------------------
+
 class SK_GUI_EXPORT WModelPlaylist : public QAbstractListModel, public WPlaylistWatcher,
                                      public WPrivatable
 {
@@ -51,6 +55,7 @@ public: // Enums
         RoleSource,
         RoleTitle,
         RoleCover,
+        RoleDate,
         RoleSelected,
         RoleCurrent
     };

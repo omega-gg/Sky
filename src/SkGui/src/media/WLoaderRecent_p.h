@@ -65,8 +65,7 @@ public:
 public: // Functions
     void updateSources();
 
-    void processQueries();
-    void clearQueries  ();
+    void clearQueries();
 
     QStringList getSourcesInput () const;
     QStringList getSourcesOutput() const;

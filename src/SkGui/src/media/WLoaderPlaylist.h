@@ -90,9 +90,9 @@ protected: // Functions
     void applyActions(const WLoaderPlaylistData & data);
 
     void applySources(const QStringList                    & sources,
-                      const QHash<QString, const WTrack *> & tracks);
+                      const QHash<QString, const WTrack *> & tracks, bool load = false);
 
-    bool processQueries();
+    void processQueries();
     void clearQueries  ();
 
     void clearTracks();

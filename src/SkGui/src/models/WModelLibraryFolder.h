@@ -31,13 +31,15 @@
 
 #ifndef SK_NO_MODELLIBRARYFOLDER
 
+// Forward declarations
+class WModelLibraryFolderPrivate;
+class WModelLibraryFolderFilteredPrivate;
+class WLibraryFolder;
+class WLibraryItem;
+
 //-------------------------------------------------------------------------------------------------
 // WModelLibraryFolder
 //-------------------------------------------------------------------------------------------------
-
-class WModelLibraryFolderPrivate;
-class WLibraryFolder;
-class WLibraryItem;
 
 class SK_GUI_EXPORT WModelLibraryFolder : public QAbstractListModel, public WLibraryFolderWatcher,
                                           public WPrivatable
@@ -106,8 +108,6 @@ private:
 //-------------------------------------------------------------------------------------------------
 // WModelLibraryFolderFiltered
 //-------------------------------------------------------------------------------------------------
-
-class WModelLibraryFolderFilteredPrivate;
 
 class SK_GUI_EXPORT WModelLibraryFolderFiltered : public QSortFilterProxyModel, public WPrivatable
 {

@@ -265,7 +265,7 @@ void WLoaderPlaylist::applyActions(const WLoaderPlaylistData & data)
 }
 
 void WLoaderPlaylist::applySources(const QStringList                    & sources,
-                                   const QHash<QString, const WTrack *> & tracks)
+                                   const QHash<QString, const WTrack *> & tracks, bool load)
 {
     Q_D(WLoaderPlaylist);
 
@@ -286,12 +286,19 @@ void WLoaderPlaylist::applySources(const QStringList                    & source
                 track.setId(-1);
 
                 playlist->addTrack(track);
+
+                if (load && track.isDefault())
+                {
+                    playlist->loadTrack(playlist->count() - 1);
+                }
             }
             else
             {
                 WTrack track(url, WTrack::Default);
 
                 playlist->addTrack(track);
+
+                if (load) playlist->loadTrack(playlist->count() - 1);
             }
         }
 
@@ -326,12 +333,19 @@ void WLoaderPlaylist::applySources(const QStringList                    & source
                 track.setId(-1);
 
                 playlist->insertTrack(total, track);
+
+                if (load && track.isDefault())
+                {
+                    playlist->loadTrack(total);
+                }
             }
             else
             {
                 WTrack track(url, WTrack::Default);
 
                 playlist->insertTrack(total, track);
+
+                if (load) playlist->loadTrack(total);
             }
         }
         else playlist->moveTrack(index, total);
@@ -362,7 +376,7 @@ void WLoaderPlaylist::applySources(const QStringList                    & source
 
 //-------------------------------------------------------------------------------------------------
 
-bool WLoaderPlaylist::processQueries()
+void WLoaderPlaylist::processQueries()
 {
     Q_D(WLoaderPlaylist);
 
@@ -376,14 +390,16 @@ bool WLoaderPlaylist::processQueries()
 
         WPlaylist * playlist = d->getPlaylist();
 
-        if (playlist == NULL) return true;
+        if (playlist == NULL) return;
 
         playlist->applyQuery(query);
 
         d->jobs.insert(playlist, node);
     }
 
-    return (d->jobs.isEmpty() == false);
+    if (d->jobs.isEmpty() == false) return;
+
+    setQueryLoading(false);
 }
 
 void WLoaderPlaylist::clearQueries()
@@ -401,6 +417,8 @@ void WLoaderPlaylist::clearQueries()
 
     d->playlists.clear();
     d->jobs     .clear();
+
+    setQueryLoading(false);
 }
 
 //-------------------------------------------------------------------------------------------------

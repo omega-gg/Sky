@@ -121,15 +121,6 @@ void WLoaderRecentPrivate::updateSources()
 
 //-------------------------------------------------------------------------------------------------
 
-void WLoaderRecentPrivate::processQueries()
-{
-    Q_Q(WLoaderRecent);
-
-    if (q->processQueries()) return;
-
-    q->setQueryLoading(false);
-}
-
 void WLoaderRecentPrivate::clearQueries()
 {
     Q_Q(WLoaderRecent);
@@ -143,8 +134,6 @@ void WLoaderRecentPrivate::clearQueries()
     }
 
     q->clearQueries();
-
-    q->setQueryLoading(false);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -237,7 +226,7 @@ void WLoaderRecentPrivate::onLoaded(const WLoaderPlaylistData & data)
 
     q->applySources(getSourcesOutput(), QHash<QString, const WTrack *>());
 
-    processQueries();
+    q->processQueries();
 }
 
 //=================================================================================================
@@ -289,7 +278,7 @@ void WLoaderRecentPrivate::onLoaded(const WLoaderPlaylistData & data)
 
     urls.append(list);
 
-    applySources(d->getSourcesOutput(), tracks);
+    applySources(d->getSourcesOutput(), tracks, true);
 }
 
 //-------------------------------------------------------------------------------------------------

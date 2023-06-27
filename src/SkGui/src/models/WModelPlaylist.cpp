@@ -101,10 +101,11 @@ void WModelPlaylistPrivate::init()
     const WTrack * track = static_cast<const WTrack *> (d->playlist->trackPointerAt(row));
 
     if      (role == RoleType)     return track->type();
-    if      (role == RoleState)    return track->state();
+    else if (role == RoleState)    return track->state();
     else if (role == RoleSource)   return track->source();
     else if (role == RoleTitle)    return track->title();
     else if (role == RoleCover)    return track->cover();
+    else if (role == RoleDate)     return track->date();
     else if (role == RoleSelected) return d->playlist->indexSelected(row);
     else if (role == RoleCurrent)  return (d->playlist->currentIndex() == row);
     else                           return QVariant();
@@ -123,6 +124,7 @@ void WModelPlaylistPrivate::init()
     roles.insert(WModelPlaylist::RoleSource,   "source");
     roles.insert(WModelPlaylist::RoleTitle,    "title");
     roles.insert(WModelPlaylist::RoleCover,    "cover");
+    roles.insert(WModelPlaylist::RoleDate,     "date");
     roles.insert(WModelPlaylist::RoleSelected, "selected");
     roles.insert(WModelPlaylist::RoleCurrent,  "current");
 
