@@ -44,6 +44,22 @@
 
 #ifndef SK_NO_LOADERRECENT
 
+// Forward declarations
+class WLoaderRecentReply;
+
+//=================================================================================================
+// WLoaderRecentNode
+//=================================================================================================
+
+struct WLoaderRecentNode
+{
+    QString source;
+
+    WBackendNetQuery query;
+
+    QList<QStringList> urls;
+};
+
 //=================================================================================================
 // WLoaderRecentPrivate
 //=================================================================================================
@@ -81,7 +97,13 @@ public: // Variables
 
     QStringList sources;
 
-    WLoaderPlaylistReply * reply;
+    WLoaderRecentReply * reply;
+
+    QList<WLoaderRecentNode> nodes;
+
+    QList<WPlaylist *> playlists;
+
+    QHash<WPlaylist *, WLoaderRecentNode *> jobs;
 
     QMetaMethod method;
 

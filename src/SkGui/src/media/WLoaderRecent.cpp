@@ -25,6 +25,7 @@
 #ifndef SK_NO_LOADERRECENT
 
 // Sk includes
+#include <WControllerNetwork>
 #include <WControllerPlaylist>
 #include <WLibraryFolder>
 
@@ -35,6 +36,35 @@ static const int LOADERRECENT_TRACKS = 5;
 
 static const int LOADERRECENT_MAX_COUNT   = 50;
 static const int LOADERRECENT_MAX_QUERIES =  3;
+
+//=================================================================================================
+// WLoaderRecentReply
+//=================================================================================================
+
+class WLoaderRecentReply : public WLoaderPlaylistReply
+{
+    Q_OBJECT
+
+protected: // WLoaderPlaylistReply reimplementation
+    /* virtual */ WBackendNetQuery getQuery(const QString & url, int index) const;
+};
+
+WBackendNetQuery WLoaderRecentReply::getQuery(const QString & url, int) const
+{
+#ifndef SK_NO_TORRENT
+    if (WControllerNetwork::urlIsFile(url)
+        ||
+        // FIXME: We are not suggesting torrents for now.
+        WControllerPlaylist::urlIsTorrent(url)) return WBackendNetQuery();
+#endif
+    if (WControllerNetwork::urlIsFile(url)) return WBackendNetQuery();
+
+    WBackendNetQuery query = wControllerPlaylist->queryPlaylist(url);
+
+    query.timeout = 10000; // 10 seconds
+
+    return query;
+}
 
 //=================================================================================================
 // WLoaderRecentPrivate
@@ -76,7 +106,7 @@ void WLoaderRecentPrivate::updateSources()
                             q,     SLOT(onLoaded(const WLoaderPlaylistData &)));
     }
 
-    reply = new WLoaderPlaylistReply;
+    reply = new WLoaderRecentReply;
 
     QObject::connect(reply, SIGNAL(loaded(const WLoaderPlaylistData &)),
                      q,     SLOT(onLoaded(const WLoaderPlaylistData &)));
@@ -133,6 +163,43 @@ void WLoaderRecentPrivate::onFolderDestroyed()
 void WLoaderRecentPrivate::onLoaded(const WLoaderPlaylistData & data)
 {
     reply = NULL;
+
+    for (int i = 0; i < data.actions.count(); i++)
+    {
+        const WLoaderPlaylistAction & action = data.actions.at(i);
+
+        WLoaderPlaylist::Action type = action.type;
+
+        if (type == WLoaderPlaylist::Insert)
+        {
+            WLoaderRecentNode node;
+
+            node.source = action.url;
+            node.query  = action.query;
+
+            nodes.insert(action.index, node);
+        }
+        else if (type == WLoaderPlaylist::Move)
+        {
+            int from = action.index;
+
+            i++;
+
+            int to = data.actions.at(i).index;
+
+            nodes.move(from, to);
+        }
+        else if (type == WLoaderPlaylist::Remove)
+        {
+            nodes.removeAt(action.index);
+        }
+    }
+
+    sources = data.sources;
+
+    //updatePlaylist(QHash<QString, const WTrack *>());
+
+    //processQueries();
 }
 
 //=================================================================================================
@@ -197,3 +264,5 @@ void WLoaderRecent::setFeeds(WLibraryFolder * feeds)
 }
 
 #endif // SK_NO_LOADERRECENT
+
+#include "WLoaderRecent.moc"

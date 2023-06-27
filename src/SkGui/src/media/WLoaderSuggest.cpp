@@ -527,7 +527,7 @@ void WLoaderSuggestPrivate::onQueryCompleted()
 {
     Q_D(WLoaderSuggest);
 
-    d->item->toPlaylist()->clearTracks();
+    clearTracks();
 
     d->sources.clear();
 

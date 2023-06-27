@@ -188,9 +188,12 @@ public: // Interface
 
     //---------------------------------------------------------------------------------------------
 
-    Q_INVOKABLE QString sourceRelatedTracks(const QString & url, const QString & title);
+    Q_INVOKABLE QString sourceRelatedTracks(const QString & url, const QString & title) const;
 
-    Q_INVOKABLE WBackendNetQuery queryRelatedTracks(const QString & url, const QString & title);
+    Q_INVOKABLE WBackendNetQuery queryPlaylist(const QString & url) const;
+
+    Q_INVOKABLE WBackendNetQuery queryRelatedTracks(const QString & url,
+                                                    const QString & title) const;
 
     //---------------------------------------------------------------------------------------------
 

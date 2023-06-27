@@ -4642,7 +4642,7 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ QString WControllerPlaylist::sourceRelatedTracks(const QString & url,
-                                                                   const QString & title)
+                                                                   const QString & title) const
 {
     WBackendNet * backend = backendFromUrl(url);
 
@@ -4668,8 +4668,21 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
     else                      return createSource(id, "related", "tracks", title);
 }
 
+/* Q_INVOKABLE */ WBackendNetQuery WControllerPlaylist::queryPlaylist(const QString & url) const
+{
+    WBackendNet * backend = backendFromUrl(url);
+
+    if (backend == NULL) return WBackendNetQuery();
+
+    WBackendNetQuery query = backend->getQueryPlaylist(url);
+
+    backend->tryDelete();
+
+    return query;
+}
+
 /* Q_INVOKABLE */ WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
-                                                                           const QString & title)
+                                                                           const QString & title) const
 {
     WBackendNet * backend = backendFromUrl(url);
 
