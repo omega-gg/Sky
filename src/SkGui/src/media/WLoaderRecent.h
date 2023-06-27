@@ -60,8 +60,10 @@ public: // Properties
 private:
     W_DECLARE_PRIVATE(WLoaderRecent)
 
-    Q_PRIVATE_SLOT(d_func(), void onFolderUpdated  ());
-    Q_PRIVATE_SLOT(d_func(), void onFolderDestroyed());
+    Q_PRIVATE_SLOT(d_func(), void onFolderUpdated  ())
+    Q_PRIVATE_SLOT(d_func(), void onFolderDestroyed())
+
+    Q_PRIVATE_SLOT(d_func(), void onLoaded(const WLoaderPlaylistData &))
 };
 
 #include <private/WLoaderRecent_p>

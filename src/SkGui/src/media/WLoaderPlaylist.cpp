@@ -47,6 +47,8 @@ void WLoaderPlaylistPrivate::init(WLibraryFolder * folder, int id)
 
     running = false;
     active  = false;
+
+    qRegisterMetaType<WLoaderPlaylistData>("WLoaderPlaylistData");
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -209,6 +211,153 @@ void WLoaderPlaylist::setRunning(bool running)
     }
 
     emit runningChanged();
+}
+
+//=================================================================================================
+// WLoaderPlaylistReply
+//=================================================================================================
+
+/* Q_INVOKABLE */ void WLoaderPlaylistReply::extract(const QStringList & urls,
+                                                     const QStringList & sources, int maximum)
+{
+    WLoaderPlaylistData data;
+
+    QList<WLoaderPlaylistAction> & actions = data.actions;
+
+    QStringList list = sources;
+
+    int index = 0;
+
+    while (index < list.count())
+    {
+        if (urls.contains(list.at(index)))
+        {
+            index++;
+
+            continue;
+        }
+
+        list.removeAt(index);
+
+        WLoaderPlaylistAction action(WLoaderPlaylist::Remove);
+
+        action.index = index;
+
+        actions.append(action);
+    }
+
+    int count = list.count();
+
+    int total = 0;
+
+    for (int i = 0; i < urls.count(); i++)
+    {
+        const QString & url = urls.at(i);
+
+        if (total < count)
+        {
+            if (list.at(total) == url)
+            {
+                total++;
+
+                if (total == maximum) break;
+
+                continue;
+            }
+
+            int index = list.indexOf(url);
+
+            if (index == -1)
+            {
+                WBackendNetQuery query = getQuery(url, i);
+
+                if (query.isValid() == false) continue;
+
+                list.insert(total, url);
+
+                WLoaderPlaylistAction action(WLoaderPlaylist::Insert);
+
+                action.index = total;
+                action.url   = url;
+                action.query = query;
+
+                actions.append(action);
+            }
+            else
+            {
+                int to;
+
+                if (index < total) to = total - 1;
+                else               to = total;
+
+                list.move(index, to);
+
+                WLoaderPlaylistAction action(WLoaderPlaylist::Move);
+
+                action.index = index;
+
+                actions.append(action);
+
+                action = WLoaderPlaylistAction(WLoaderPlaylist::Insert);
+
+                action.index = to;
+
+                actions.append(action);
+            }
+        }
+        else
+        {
+            WBackendNetQuery query = getQuery(url, i);
+
+            if (query.isValid() == false) continue;
+
+            list.insert(total, url);
+
+            WLoaderPlaylistAction action(WLoaderPlaylist::Insert);
+
+            action.index = total;
+            action.url   = url;
+            action.query = query;
+
+            actions.append(action);
+        }
+
+        total++;
+
+        if (total == maximum) break;
+    }
+
+    count = list.count();
+
+    while (count > maximum)
+    {
+        list.removeAt(total);
+
+        WLoaderPlaylistAction action(WLoaderPlaylist::Remove);
+
+        action.index = total;
+
+        actions.append(action);
+
+        total++;
+
+        count--;
+    }
+
+    data.sources = list;
+
+    emit loaded(data);
+
+    deleteLater();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Protected functions
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ WBackendNetQuery WLoaderPlaylistReply::getQuery(const QString &, int) const
+{
+    return WBackendNetQuery();
 }
 
 #endif // SK_NO_LOADERPLAYLIST

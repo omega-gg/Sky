@@ -41,195 +41,30 @@ static const int LOADERSUGGEST_MAX_QUERIES =  3;
 static const int LOADERSUGGEST_MAX_SKIP = 100;
 
 //=================================================================================================
-// WLoaderSuggestAction
-//=================================================================================================
-
-struct WLoaderSuggestAction
-{
-public:
-    WLoaderSuggestAction(WLoaderSuggestPrivate::Type type)
-    {
-        this->type = type;
-
-        index = -1;
-    }
-
-public: // Variables
-    WLoaderSuggestPrivate::Type type;
-
-    int index;
-
-    QString url;
-
-    WBackendNetQuery query;
-};
-
-//=================================================================================================
-// WLoaderSuggestData
-//=================================================================================================
-
-struct WLoaderSuggestData
-{
-    QStringList sources;
-
-    QList<WLoaderSuggestAction> actions;
-};
-
-//=================================================================================================
 // WLoaderSuggestReply
 //=================================================================================================
 
-class WLoaderSuggestReply : public QObject
+class WLoaderSuggestReply : public WLoaderPlaylistReply
 {
     Q_OBJECT
 
-public: // Interface
-    Q_INVOKABLE void extract(const QStringList & urls,
-                             const QStringList & titles, const QStringList & sources);
+public:
+    explicit WLoaderSuggestReply(const QStringList & titles);
 
-private: // Functions
-    WBackendNetQuery getQuery(const QString & url, const QString & title) const;
+protected: // WLoaderPlaylistReply reimplementation
+    /* virtual */ WBackendNetQuery getQuery(const QString & url, int index) const;
 
-signals:
-    void loaded(const WLoaderSuggestData & data);
+private: // Variables
+    QStringList titles;
 };
 
-/* Q_INVOKABLE */ void WLoaderSuggestReply::extract(const QStringList & urls,
-                                                    const QStringList & titles,
-                                                    const QStringList & sources)
+/* explicit */ WLoaderSuggestReply::WLoaderSuggestReply(const QStringList & titles)
+    : WLoaderPlaylistReply()
 {
-    WLoaderSuggestData data;
-
-    QList<WLoaderSuggestAction> & actions = data.actions;
-
-    QStringList list = sources;
-
-    int index = 0;
-
-    while (index < list.count())
-    {
-        if (urls.contains(list.at(index)))
-        {
-            index++;
-
-            continue;
-        }
-
-        list.removeAt(index);
-
-        WLoaderSuggestAction action(WLoaderSuggestPrivate::Remove);
-
-        action.index = index;
-
-        actions.append(action);
-    }
-
-    int count = list.count();
-
-    int total = 0;
-
-    for (int i = 0; i < urls.count(); i++)
-    {
-        const QString & url = urls.at(i);
-
-        if (total < count)
-        {
-            if (list.at(total) == url)
-            {
-                total++;
-
-                if (total == LOADERSUGGEST_MAX_COUNT) break;
-
-                continue;
-            }
-
-            int index = list.indexOf(url);
-
-            if (index == -1)
-            {
-                WBackendNetQuery query = getQuery(url, titles.at(i));
-
-                if (query.isValid() == false) continue;
-
-                list.insert(total, url);
-
-                WLoaderSuggestAction action(WLoaderSuggestPrivate::Insert);
-
-                action.index = total;
-                action.url   = url;
-                action.query = query;
-
-                actions.append(action);
-            }
-            else
-            {
-                int to;
-
-                if (index < total) to = total - 1;
-                else               to = total;
-
-                list.move(index, to);
-
-                WLoaderSuggestAction action(WLoaderSuggestPrivate::Move);
-
-                action.index = index;
-
-                actions.append(action);
-
-                action = WLoaderSuggestAction(WLoaderSuggestPrivate::Insert);
-
-                action.index = to;
-
-                actions.append(action);
-            }
-        }
-        else
-        {
-            WBackendNetQuery query = getQuery(url, titles.at(i));
-
-            if (query.isValid() == false) continue;
-
-            list.insert(total, url);
-
-            WLoaderSuggestAction action(WLoaderSuggestPrivate::Insert);
-
-            action.index = total;
-            action.url   = url;
-            action.query = query;
-
-            actions.append(action);
-        }
-
-        total++;
-
-        if (total == LOADERSUGGEST_MAX_COUNT) break;
-    }
-
-    count = list.count();
-
-    while (count > LOADERSUGGEST_MAX_COUNT)
-    {
-        list.removeAt(total);
-
-        WLoaderSuggestAction action(WLoaderSuggestPrivate::Remove);
-
-        action.index = total;
-
-        actions.append(action);
-
-        total++;
-
-        count--;
-    }
-
-    data.sources = list;
-
-    emit loaded(data);
-
-    deleteLater();
+    this->titles = titles;
 }
 
-WBackendNetQuery WLoaderSuggestReply::getQuery(const QString & url, const QString & title) const
+WBackendNetQuery WLoaderSuggestReply::getQuery(const QString & url, int index) const
 {
 #ifndef SK_NO_TORRENT
     if (WControllerNetwork::urlIsFile(url)
@@ -239,7 +74,7 @@ WBackendNetQuery WLoaderSuggestReply::getQuery(const QString & url, const QStrin
 #endif
     if (WControllerNetwork::urlIsFile(url)) return WBackendNetQuery();
 
-    WBackendNetQuery query = wControllerPlaylist->queryRelatedTracks(url, title);
+    WBackendNetQuery query = wControllerPlaylist->queryRelatedTracks(url, titles.at(index));
 
     query.timeout = 10000; // 10 seconds
 
@@ -260,11 +95,9 @@ void WLoaderSuggestPrivate::init()
 
     reply = NULL;
 
-    qRegisterMetaType<WLoaderSuggestData>("WLoaderSuggestData");
+    const QMetaObject * meta = WLoaderPlaylistReply().metaObject();
 
-    const QMetaObject * meta = WLoaderSuggestReply().metaObject();
-
-    method = meta->method(meta->indexOfMethod("extract(QStringList,QStringList,QStringList)"));
+    method = meta->method(meta->indexOfMethod("extract(QStringList,QStringList,int)"));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -284,23 +117,23 @@ void WLoaderSuggestPrivate::updateSources()
 
     if (reply)
     {
-        QObject::disconnect(reply, SIGNAL(loaded(const WLoaderSuggestData &)),
-                            q,     SLOT(onLoaded(const WLoaderSuggestData &)));
+        QObject::disconnect(reply, SIGNAL(loaded(const WLoaderPlaylistData &)),
+                            q,     SLOT(onLoaded(const WLoaderPlaylistData &)));
     }
-
-    reply = new WLoaderSuggestReply;
-
-    QObject::connect(reply, SIGNAL(loaded(const WLoaderSuggestData &)),
-                     q,     SLOT(onLoaded(const WLoaderSuggestData &)));
-
-    reply->moveToThread(wControllerPlaylist->thread());
 
     QStringList titles;
 
     QStringList urls = getSourcesInput(titles);
 
-    method.invoke(reply, Q_ARG(const QStringList &, urls), Q_ARG(const QStringList &, titles),
-                         Q_ARG(const QStringList &, sources));
+    reply = new WLoaderSuggestReply(titles);
+
+    QObject::connect(reply, SIGNAL(loaded(const WLoaderPlaylistData &)),
+                     q,     SLOT(onLoaded(const WLoaderPlaylistData &)));
+
+    reply->moveToThread(wControllerPlaylist->thread());
+
+    method.invoke(reply, Q_ARG(const QStringList &, urls),
+                         Q_ARG(const QStringList &, sources), Q_ARG(int, LOADERSUGGEST_MAX_COUNT));
 }
 
 void WLoaderSuggestPrivate::updatePlaylist(const QHash<QString, const WTrack *> & tracks)
@@ -431,8 +264,8 @@ void WLoaderSuggestPrivate::clearQueries()
 
     if (reply)
     {
-        QObject::disconnect(reply, SIGNAL(loaded(const WLoaderSuggestData &)),
-                            q,     SLOT(onLoaded(const WLoaderSuggestData &)));
+        QObject::disconnect(reply, SIGNAL(loaded(const WLoaderPlaylistData &)),
+                            q,     SLOT(onLoaded(const WLoaderPlaylistData &)));
 
         reply = NULL;
     }
@@ -575,17 +408,17 @@ void WLoaderSuggestPrivate::onPlaylistDestroyed()
     if (active) clearQueries();
 }
 
-void WLoaderSuggestPrivate::onLoaded(const WLoaderSuggestData & data)
+void WLoaderSuggestPrivate::onLoaded(const WLoaderPlaylistData & data)
 {
     reply = NULL;
 
     for (int i = 0; i < data.actions.count(); i++)
     {
-        const WLoaderSuggestAction & action = data.actions.at(i);
+        const WLoaderPlaylistAction & action = data.actions.at(i);
 
-        WLoaderSuggestPrivate::Type type = action.type;
+        WLoaderPlaylist::Action type = action.type;
 
-        if (type == WLoaderSuggestPrivate::Insert)
+        if (type == WLoaderPlaylist::Insert)
         {
             WLoaderSuggestNode node;
 
@@ -594,7 +427,7 @@ void WLoaderSuggestPrivate::onLoaded(const WLoaderSuggestData & data)
 
             nodes.insert(action.index, node);
         }
-        else if (type == WLoaderSuggestPrivate::Move)
+        else if (type == WLoaderPlaylist::Move)
         {
             int from = action.index;
 
@@ -604,7 +437,7 @@ void WLoaderSuggestPrivate::onLoaded(const WLoaderSuggestData & data)
 
             nodes.move(from, to);
         }
-        else if (type == WLoaderSuggestPrivate::Remove)
+        else if (type == WLoaderPlaylist::Remove)
         {
             nodes.removeAt(action.index);
         }

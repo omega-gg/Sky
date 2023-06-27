@@ -47,7 +47,6 @@
 #ifndef SK_NO_LOADERSUGGEST
 
 // Forward declarations
-class WLoaderSuggestData;
 class WLoaderSuggestReply;
 
 //=================================================================================================
@@ -69,14 +68,6 @@ struct WLoaderSuggestNode
 
 class SK_GUI_EXPORT WLoaderSuggestPrivate : public WLoaderPlaylistPrivate
 {
-public: // Enums
-    enum Type
-    {
-        Insert,
-        Move,
-        Remove
-    };
-
 public:
     WLoaderSuggestPrivate(WLoaderSuggest * p);
 
@@ -102,7 +93,7 @@ public: // Slots
     void onPlaylistUpdated  ();
     void onPlaylistDestroyed();
 
-    void onLoaded(const WLoaderSuggestData & data);
+    void onLoaded(const WLoaderPlaylistData & data);
 
     void onQueryCompleted();
 

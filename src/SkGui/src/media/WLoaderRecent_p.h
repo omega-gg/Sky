@@ -44,9 +44,6 @@
 
 #ifndef SK_NO_LOADERRECENT
 
-// Forward declarations
-class WLoaderRecentReply;
-
 //=================================================================================================
 // WLoaderRecentPrivate
 //=================================================================================================
@@ -77,12 +74,14 @@ public: // Slots
     void onFolderUpdated  ();
     void onFolderDestroyed();
 
+    void onLoaded(const WLoaderPlaylistData & data);
+
 public: // Variables
     WLibraryFolder * feeds;
 
     QStringList sources;
 
-    WLoaderRecentReply * reply;
+    WLoaderPlaylistReply * reply;
 
     QMetaMethod method;
 

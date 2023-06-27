@@ -37,61 +37,6 @@ static const int LOADERRECENT_MAX_COUNT   = 50;
 static const int LOADERRECENT_MAX_QUERIES =  3;
 
 //=================================================================================================
-// WLoaderRecentAction
-//=================================================================================================
-
-struct WLoaderRecentAction
-{
-public:
-    WLoaderRecentAction(WLoaderRecentPrivate::Type type)
-    {
-        this->type = type;
-
-        index = -1;
-    }
-
-public: // Variables
-    WLoaderRecentPrivate::Type type;
-
-    int index;
-
-    QString url;
-
-    WBackendNetQuery query;
-};
-
-//=================================================================================================
-// WLoaderRecentData
-//=================================================================================================
-
-struct WLoaderRecentData
-{
-    QStringList sources;
-
-    QList<WLoaderRecentAction> actions;
-};
-
-//=================================================================================================
-// WLoaderRecentReply
-//=================================================================================================
-
-class WLoaderRecentReply : public QObject
-{
-    Q_OBJECT
-
-public: // Interface
-    Q_INVOKABLE void extract(const QStringList & urls, const QStringList & sources);
-
-signals:
-    void loaded(const WLoaderRecentData & data);
-};
-
-/* Q_INVOKABLE */ void WLoaderRecentReply::extract(const QStringList & urls,
-                                                   const QStringList & sources)
-{
-}
-
-//=================================================================================================
 // WLoaderRecentPrivate
 //=================================================================================================
 
@@ -105,11 +50,9 @@ void WLoaderRecentPrivate::init()
 
     reply = NULL;
 
-    qRegisterMetaType<WLoaderRecentData>("WLoaderRecentData");
+    const QMetaObject * meta = WLoaderPlaylistReply().metaObject();
 
-    const QMetaObject * meta = WLoaderRecentReply().metaObject();
-
-    method = meta->method(meta->indexOfMethod("extract(QStringList,QStringList)"));
+    method = meta->method(meta->indexOfMethod("extract(QStringList,QStringList,int)"));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -129,20 +72,21 @@ void WLoaderRecentPrivate::updateSources()
 
     if (reply)
     {
-        QObject::disconnect(reply, SIGNAL(loaded(const WLoaderRecentData &)),
-                            q,     SLOT(onLoaded(const WLoaderRecentData &)));
+        QObject::disconnect(reply, SIGNAL(loaded(const WLoaderPlaylistData &)),
+                            q,     SLOT(onLoaded(const WLoaderPlaylistData &)));
     }
 
-    reply = new WLoaderRecentReply;
+    reply = new WLoaderPlaylistReply;
 
-    QObject::connect(reply, SIGNAL(loaded(const WLoaderRecentData &)),
-                     q,     SLOT(onLoaded(const WLoaderRecentData &)));
+    QObject::connect(reply, SIGNAL(loaded(const WLoaderPlaylistData &)),
+                     q,     SLOT(onLoaded(const WLoaderPlaylistData &)));
 
     reply->moveToThread(wControllerPlaylist->thread());
 
     QStringList urls = getSourcesInput();
 
-    method.invoke(reply, Q_ARG(const QStringList &, urls), Q_ARG(const QStringList &, sources));
+    method.invoke(reply, Q_ARG(const QStringList &, urls),
+                         Q_ARG(const QStringList &, sources), Q_ARG(int, LOADERRECENT_MAX_COUNT));
 }
 
 void WLoaderRecentPrivate::clearQueries()
@@ -184,6 +128,11 @@ void WLoaderRecentPrivate::onFolderDestroyed()
     feeds = NULL;
 
     if (active) clearQueries();
+}
+
+void WLoaderRecentPrivate::onLoaded(const WLoaderPlaylistData & data)
+{
+    reply = NULL;
 }
 
 //=================================================================================================
@@ -248,5 +197,3 @@ void WLoaderRecent::setFeeds(WLibraryFolder * feeds)
 }
 
 #endif // SK_NO_LOADERRECENT
-
-#include "WLoaderRecent.moc"

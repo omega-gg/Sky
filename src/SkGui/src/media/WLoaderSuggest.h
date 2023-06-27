@@ -57,10 +57,10 @@ public: // Properties
 private:
     W_DECLARE_PRIVATE(WLoaderSuggest)
 
-    Q_PRIVATE_SLOT(d_func(), void onPlaylistUpdated  ());
-    Q_PRIVATE_SLOT(d_func(), void onPlaylistDestroyed());
+    Q_PRIVATE_SLOT(d_func(), void onPlaylistUpdated  ())
+    Q_PRIVATE_SLOT(d_func(), void onPlaylistDestroyed())
 
-    Q_PRIVATE_SLOT(d_func(), void onLoaded(const WLoaderSuggestData &))
+    Q_PRIVATE_SLOT(d_func(), void onLoaded(const WLoaderPlaylistData &))
 
     Q_PRIVATE_SLOT(d_func(), void onQueryCompleted())
 };

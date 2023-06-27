@@ -99,21 +99,52 @@ private:
 struct WLoaderPlaylistAction
 {
 public:
-    WLoaderPlaylistAction(WLoaderPlaylist::Action action)
+    WLoaderPlaylistAction(WLoaderPlaylist::Action type)
     {
-        this->action = action;
+        this->type = type;
 
         index = -1;
     }
 
 public: // Variables
-    WLoaderPlaylist::Action action;
+    WLoaderPlaylist::Action type;
 
     int index;
 
     QString url;
 
     WBackendNetQuery query;
+};
+
+//=================================================================================================
+// WLoaderPlaylistData
+//=================================================================================================
+
+struct WLoaderPlaylistData
+{
+    QStringList sources;
+
+    QList<WLoaderPlaylistAction> actions;
+};
+
+//=================================================================================================
+// WLoaderPlaylistReply
+//=================================================================================================
+
+// NOTE: This function is supposed to be instantiated as a pointer object and deletes itself after
+//       the extract function has been processed.
+class WLoaderPlaylistReply : public QObject
+{
+    Q_OBJECT
+
+public: // Interface
+    Q_INVOKABLE void extract(const QStringList & urls, const QStringList & sources, int maximum);
+
+protected: // Functions
+    virtual WBackendNetQuery getQuery(const QString & url, int index) const; // {}
+
+signals:
+    void loaded(const WLoaderPlaylistData & data);
 };
 
 #include <private/WLoaderPlaylist_p>
