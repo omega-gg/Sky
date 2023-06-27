@@ -31,6 +31,10 @@
 // Forward declarations
 class WLoaderRecentPrivate;
 
+#ifdef QT_6
+Q_MOC_INCLUDE("WLibraryFolder")
+#endif
+
 class SK_GUI_EXPORT WLoaderRecent : public WLoaderPlaylist
 {
     Q_OBJECT

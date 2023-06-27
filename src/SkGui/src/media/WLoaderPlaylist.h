@@ -27,7 +27,7 @@
 #include <QObject>
 
 // Sk includes
-#include <Sk>
+#include <WBackendNet>
 
 #ifndef SK_NO_LOADERPLAYLIST
 
@@ -35,11 +35,25 @@
 class WLoaderPlaylistPrivate;
 class WLibraryFolder;
 
+//=================================================================================================
+// WLoaderPlaylist
+//=================================================================================================
+
 class SK_GUI_EXPORT WLoaderPlaylist : public QObject, public WPrivatable
 {
     Q_OBJECT
 
+    Q_ENUMS(Action)
+
     Q_PROPERTY(bool running READ isRunning WRITE setRunning NOTIFY runningChanged)
+
+public: // Enums
+    enum Action
+    {
+        Insert,
+        Move,
+        Remove
+    };
 
 public:
     WLoaderPlaylist(WLibraryFolder * folder, int id);
@@ -76,6 +90,30 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onCurrentIdChanged())
 
     Q_PRIVATE_SLOT(d_func(), void onLoaded())
+};
+
+//=================================================================================================
+// WLoaderPlaylistAction
+//=================================================================================================
+
+struct WLoaderPlaylistAction
+{
+public:
+    WLoaderPlaylistAction(WLoaderPlaylist::Action action)
+    {
+        this->action = action;
+
+        index = -1;
+    }
+
+public: // Variables
+    WLoaderPlaylist::Action action;
+
+    int index;
+
+    QString url;
+
+    WBackendNetQuery query;
 };
 
 #include <private/WLoaderPlaylist_p>
