@@ -35,8 +35,7 @@
 static const int LOADERSUGGEST_TRACKS = 3;
 static const int LOADERSUGGEST_SLICES = 3;
 
-static const int LOADERSUGGEST_MAX_COUNT   = 30;
-static const int LOADERSUGGEST_MAX_QUERIES =  3;
+static const int LOADERSUGGEST_MAX_COUNT = 30;
 
 static const int LOADERSUGGEST_MAX_SKIP = 100;
 
@@ -136,124 +135,13 @@ void WLoaderSuggestPrivate::updateSources()
                          Q_ARG(const QStringList &, sources), Q_ARG(int, LOADERSUGGEST_MAX_COUNT));
 }
 
-void WLoaderSuggestPrivate::updatePlaylist(const QHash<QString, const WTrack *> & tracks)
-{
-    WPlaylist * playlist = item->toPlaylist();
-
-    if (playlist == NULL) return;
-
-    QStringList list = getSourcesOutput();
-
-    if (playlist->isEmpty())
-    {
-        foreach (const QString & url, list)
-        {
-            const WTrack * trackPointer = tracks.value(url);
-
-            if (trackPointer)
-            {
-                WTrack track = *trackPointer;
-
-                track.setId(-1);
-
-                playlist->addTrack(track);
-            }
-            else
-            {
-                WTrack track(url, WTrack::Default);
-
-                playlist->addTrack(track);
-            }
-        }
-
-        return;
-    }
-
-    QString source = WControllerPlaylist::cleanSource(playlist->trackSource(0));
-
-    int total = 0;
-
-    foreach (const QString & url, list)
-    {
-        if (source == url)
-        {
-            total++;
-
-            source = WControllerPlaylist::cleanSource(playlist->trackSource(total));
-
-            continue;
-        }
-
-        int index = playlist->indexFromSource(url, true);
-
-        if (index == -1)
-        {
-            const WTrack * trackPointer = tracks.value(url);
-
-            if (trackPointer)
-            {
-                WTrack track = *trackPointer;
-
-                track.setId(-1);
-
-                playlist->insertTrack(total, track);
-            }
-            else
-            {
-                WTrack track(url, WTrack::Default);
-
-                playlist->insertTrack(total, track);
-            }
-        }
-        else playlist->moveTrack(index, total);
-
-        total++;
-    }
-
-    int countA = list.count();
-
-    int countB = playlist->count();
-
-    if (countA < countB)
-    {
-        playlist->removeTracks(countA, countB - countA);
-    }
-
-    /*foreach (const QString & url, list)
-    {
-        qDebug("LIST A %s", url.C_STR);
-    }
-
-    foreach (const WTrack * track, playlist->trackPointers())
-    {
-        qDebug("LIST B %s", track->source().C_STR);
-    }*/
-}
-
 //-------------------------------------------------------------------------------------------------
 
 void WLoaderSuggestPrivate::processQueries()
 {
-    for (int i = 0; i < nodes.count(); i++)
-    {
-        WLoaderSuggestNode * node = &(nodes[i]);
-
-        const WBackendNetQuery & query = node->query;
-
-        if (query.isValid() == false) continue;
-
-        WPlaylist * playlist = getPlaylist();
-
-        if (playlist == NULL) return;
-
-        playlist->applyQuery(query);
-
-        jobs.insert(playlist, node);
-    }
-
-    if (jobs.isEmpty() == false) return;
-
     Q_Q(WLoaderSuggest);
+
+    if (q->processQueries()) return;
 
     q->setQueryLoading(false);
 }
@@ -270,17 +158,7 @@ void WLoaderSuggestPrivate::clearQueries()
         reply = NULL;
     }
 
-    foreach (WPlaylist * playlist, playlists)
-    {
-        QObject::disconnect(playlist, 0, q, 0);
-
-        playlist->abortQueries();
-
-        playlist->tryDelete();
-    }
-
-    playlists.clear();
-    jobs     .clear();
+    q->clearQueries();
 
     q->setQueryLoading(false);
 }
@@ -311,7 +189,7 @@ QStringList WLoaderSuggestPrivate::getSourcesOutput() const
 
     for (int i = 0; i < LOADERSUGGEST_SLICES; i++)
     {
-        foreach (const WLoaderSuggestNode & node, nodes)
+        foreach (const WLoaderPlaylistNode & node, nodes)
         {
             const QList<QStringList> & urls = node.urls;
 
@@ -368,30 +246,6 @@ QHash<QString, const WTrack *> WLoaderSuggestPrivate::getTracks(WPlaylist   * pl
     return hash;
 }
 
-WPlaylist * WLoaderSuggestPrivate::getPlaylist()
-{
-    foreach (WPlaylist * playlist, playlists)
-    {
-        if (playlist->queryIsLoading()) continue;
-
-        return playlist;
-    }
-
-    if (playlists.count() == LOADERSUGGEST_MAX_QUERIES) return NULL;
-
-    Q_Q(WLoaderSuggest);
-
-    WPlaylist * playlist = new WPlaylist;
-
-    playlist->setParent(q);
-
-    playlists.append(playlist);
-
-    QObject::connect(playlist, SIGNAL(queryCompleted()), q, SLOT(onQueryCompleted()));
-
-    return playlist;
-}
-
 //-------------------------------------------------------------------------------------------------
 // Private slots
 //-------------------------------------------------------------------------------------------------
@@ -410,91 +264,13 @@ void WLoaderSuggestPrivate::onPlaylistDestroyed()
 
 void WLoaderSuggestPrivate::onLoaded(const WLoaderPlaylistData & data)
 {
-    reply = NULL;
-
-    for (int i = 0; i < data.actions.count(); i++)
-    {
-        const WLoaderPlaylistAction & action = data.actions.at(i);
-
-        WLoaderPlaylist::Action type = action.type;
-
-        if (type == WLoaderPlaylist::Insert)
-        {
-            WLoaderSuggestNode node;
-
-            node.source = action.url;
-            node.query  = action.query;
-
-            nodes.insert(action.index, node);
-        }
-        else if (type == WLoaderPlaylist::Move)
-        {
-            int from = action.index;
-
-            i++;
-
-            int to = data.actions.at(i).index;
-
-            nodes.move(from, to);
-        }
-        else if (type == WLoaderPlaylist::Remove)
-        {
-            nodes.removeAt(action.index);
-        }
-    }
-
-    /*foreach (const QString & source, sources)
-    {
-        qDebug("BEFORE %s", source.C_STR);
-    }*/
-
-    sources = data.sources;
-
-    /*foreach (const QString & source, sources)
-    {
-        qDebug("AFTER %s", source.C_STR);
-    }*/
-
-    updatePlaylist(QHash<QString, const WTrack *>());
-
-    processQueries();
-}
-
-void WLoaderSuggestPrivate::onQueryCompleted()
-{
     Q_Q(WLoaderSuggest);
 
-    WPlaylist * playlist = static_cast<WPlaylist *> (q->sender());
+    reply = NULL;
 
-    WLoaderSuggestNode * node = jobs.take(playlist);
+    q->applyActions(data);
 
-    node->query = WBackendNetQuery();
-
-    QStringList sources;
-
-    QHash<QString, const WTrack *> tracks = getTracks(playlist, &sources);
-
-    QList<QStringList> & urls = node->urls;
-
-    urls.clear();
-
-    for (int i = 0; i < LOADERSUGGEST_SLICES; i++)
-    {
-        QStringList list;
-
-        int index = 0;
-
-        while (sources.count() && index < LOADERSUGGEST_TRACKS)
-        {
-            list.append(sources.takeFirst());
-
-            index++;
-        }
-
-        urls.append(list);
-    }
-
-    updatePlaylist(tracks);
+    q->applySources(getSourcesOutput(), QHash<QString, const WTrack *>());
 
     processQueries();
 }
@@ -523,15 +299,36 @@ void WLoaderSuggestPrivate::onQueryCompleted()
     Q_D(WLoaderSuggest); d->clearQueries();
 }
 
-/* virtual */ void WLoaderSuggest::onClear()
+/* virtual */ void WLoaderSuggest::onApplyPlaylist(WLoaderPlaylistNode * node,
+                                                   WPlaylist           * playlist)
 {
     Q_D(WLoaderSuggest);
 
-    clearTracks();
+    QStringList sources;
 
-    d->sources.clear();
+    QHash<QString, const WTrack *> tracks = d->getTracks(playlist, &sources);
 
-    d->nodes.clear();
+    QList<QStringList> & urls = node->urls;
+
+    urls.clear();
+
+    for (int i = 0; i < LOADERSUGGEST_SLICES; i++)
+    {
+        QStringList list;
+
+        int index = 0;
+
+        while (sources.count() && index < LOADERSUGGEST_TRACKS)
+        {
+            list.append(sources.takeFirst());
+
+            index++;
+        }
+
+        urls.append(list);
+    }
+
+    applySources(d->getSourcesOutput(), tracks);
 }
 
 //-------------------------------------------------------------------------------------------------

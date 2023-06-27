@@ -49,12 +49,18 @@ public:
     void init(WLibraryFolder * folder, int id);
 
 public: // Functions
+    void clearNodes();
+
+    WPlaylist * getPlaylist();
+
     void setItem(WLibraryItem * item);
 
 public: // Slots
     void onCurrentIdChanged();
 
     void onLoaded();
+
+    void onQueryCompleted();
 
 public: // Variables
     WLibraryFolder * folder;
@@ -65,6 +71,14 @@ public: // Variables
 
     bool running;
     bool active;
+
+    QStringList sources;
+
+    QList<WLoaderPlaylistNode> nodes;
+
+    QList<WPlaylist *> playlists;
+
+    QHash<WPlaylist *, WLoaderPlaylistNode *> jobs;
 
 protected:
     W_DECLARE_PUBLIC(WLoaderPlaylist)

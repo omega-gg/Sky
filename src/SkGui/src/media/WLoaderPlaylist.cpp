@@ -25,8 +25,14 @@
 #ifndef SK_NO_LOADERPLAYLIST
 
 // Sk includes
+#include <WControllerPlaylist>
 #include <WLibraryFolder>
 #include <WPlaylist>
+
+//-------------------------------------------------------------------------------------------------
+// Static variables
+
+static const int LOADERPLAYLIST_MAX_QUERIES = 3;
 
 //-------------------------------------------------------------------------------------------------
 // WPrivate
@@ -54,6 +60,41 @@ void WLoaderPlaylistPrivate::init(WLibraryFolder * folder, int id)
 //-------------------------------------------------------------------------------------------------
 // Private functions
 //-------------------------------------------------------------------------------------------------
+
+void WLoaderPlaylistPrivate::clearNodes()
+{
+    Q_Q(WLoaderPlaylist);
+
+    q->clearTracks();
+
+    sources.clear();
+
+    nodes.clear();
+}
+
+WPlaylist * WLoaderPlaylistPrivate::getPlaylist()
+{
+    foreach (WPlaylist * playlist, playlists)
+    {
+        if (playlist->queryIsLoading()) continue;
+
+        return playlist;
+    }
+
+    if (playlists.count() == LOADERPLAYLIST_MAX_QUERIES) return NULL;
+
+    Q_Q(WLoaderPlaylist);
+
+    WPlaylist * playlist = new WPlaylist;
+
+    playlist->setParent(q);
+
+    playlists.append(playlist);
+
+    QObject::connect(playlist, SIGNAL(queryCompleted()), q, SLOT(onQueryCompleted()));
+
+    return playlist;
+}
 
 void WLoaderPlaylistPrivate::setItem(WLibraryItem * item)
 {
@@ -105,6 +146,21 @@ void WLoaderPlaylistPrivate::onLoaded()
     q->onStart();
 }
 
+void WLoaderPlaylistPrivate::onQueryCompleted()
+{
+    Q_Q(WLoaderPlaylist);
+
+    WPlaylist * playlist = static_cast<WPlaylist *> (q->sender());
+
+    WLoaderPlaylistNode * node = jobs.take(playlist);
+
+    node->query = WBackendNetQuery();
+
+    q->onApplyPlaylist(node, playlist);
+
+    q->processQueries();
+}
+
 //-------------------------------------------------------------------------------------------------
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
@@ -148,15 +204,206 @@ WLoaderPlaylist::WLoaderPlaylist(WLoaderPlaylistPrivate * p, WLibraryFolder * fo
 
     if (d->active)
     {
-        onStop ();
-        onClear();
+        onStop();
+
+        d->clearNodes();
+
         onStart();
     }
-    else onClear();
+    else d->clearNodes();
 }
 
 //-------------------------------------------------------------------------------------------------
 // Protected functions
+
+void WLoaderPlaylist::applyActions(const WLoaderPlaylistData & data)
+{
+    Q_D(WLoaderPlaylist);
+
+    for (int i = 0; i < data.actions.count(); i++)
+    {
+        const WLoaderPlaylistAction & action = data.actions.at(i);
+
+        WLoaderPlaylist::Action type = action.type;
+
+        if (type == Insert)
+        {
+            WLoaderPlaylistNode node;
+
+            node.source = action.url;
+            node.query  = action.query;
+
+            d->nodes.insert(action.index, node);
+        }
+        else if (type == Move)
+        {
+            int from = action.index;
+
+            i++;
+
+            int to = data.actions.at(i).index;
+
+            d->nodes.move(from, to);
+        }
+        else if (type == Remove)
+        {
+            d->nodes.removeAt(action.index);
+        }
+    }
+
+    /*foreach (const QString & source, d->sources)
+    {
+        qDebug("BEFORE %s", source.C_STR);
+    }*/
+
+    d->sources = data.sources;
+
+    /*foreach (const QString & source, d->sources)
+    {
+        qDebug("AFTER %s", source.C_STR);
+    }*/
+}
+
+void WLoaderPlaylist::applySources(const QStringList                    & sources,
+                                   const QHash<QString, const WTrack *> & tracks)
+{
+    Q_D(WLoaderPlaylist);
+
+    WPlaylist * playlist = d->item->toPlaylist();
+
+    if (playlist == NULL) return;
+
+    if (playlist->isEmpty())
+    {
+        foreach (const QString & url, sources)
+        {
+            const WTrack * trackPointer = tracks.value(url);
+
+            if (trackPointer)
+            {
+                WTrack track = *trackPointer;
+
+                track.setId(-1);
+
+                playlist->addTrack(track);
+            }
+            else
+            {
+                WTrack track(url, WTrack::Default);
+
+                playlist->addTrack(track);
+            }
+        }
+
+        return;
+    }
+
+    QString source = WControllerPlaylist::cleanSource(playlist->trackSource(0));
+
+    int total = 0;
+
+    foreach (const QString & url, sources)
+    {
+        if (source == url)
+        {
+            total++;
+
+            source = WControllerPlaylist::cleanSource(playlist->trackSource(total));
+
+            continue;
+        }
+
+        int index = playlist->indexFromSource(url, true);
+
+        if (index == -1)
+        {
+            const WTrack * trackPointer = tracks.value(url);
+
+            if (trackPointer)
+            {
+                WTrack track = *trackPointer;
+
+                track.setId(-1);
+
+                playlist->insertTrack(total, track);
+            }
+            else
+            {
+                WTrack track(url, WTrack::Default);
+
+                playlist->insertTrack(total, track);
+            }
+        }
+        else playlist->moveTrack(index, total);
+
+        total++;
+    }
+
+    int countA = sources.count();
+
+    int countB = playlist->count();
+
+    if (countA < countB)
+    {
+        playlist->removeTracks(countA, countB - countA);
+    }
+
+    /*foreach (const QString & url, sources)
+    {
+        qDebug("LIST A %s", url.C_STR);
+    }
+
+    foreach (const WTrack * track, playlist->trackPointers())
+    {
+        qDebug("LIST B %s", track->source().C_STR);
+    }*/
+}
+
+
+//-------------------------------------------------------------------------------------------------
+
+bool WLoaderPlaylist::processQueries()
+{
+    Q_D(WLoaderPlaylist);
+
+    for (int i = 0; i < d->nodes.count(); i++)
+    {
+        WLoaderPlaylistNode * node = &(d->nodes[i]);
+
+        const WBackendNetQuery & query = node->query;
+
+        if (query.isValid() == false) continue;
+
+        WPlaylist * playlist = d->getPlaylist();
+
+        if (playlist == NULL) return true;
+
+        playlist->applyQuery(query);
+
+        d->jobs.insert(playlist, node);
+    }
+
+    return (d->jobs.isEmpty() == false);
+}
+
+void WLoaderPlaylist::clearQueries()
+{
+    Q_D(WLoaderPlaylist);
+
+    foreach (WPlaylist * playlist, d->playlists)
+    {
+        QObject::disconnect(playlist, 0, this, 0);
+
+        playlist->abortQueries();
+
+        playlist->tryDelete();
+    }
+
+    d->playlists.clear();
+    d->jobs     .clear();
+}
+
+//-------------------------------------------------------------------------------------------------
 
 void WLoaderPlaylist::clearTracks()
 {

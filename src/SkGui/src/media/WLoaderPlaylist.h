@@ -33,6 +33,7 @@
 
 // Forward declarations
 class WLoaderPlaylistPrivate;
+class WLoaderPlaylistData;
 class WLibraryFolder;
 
 //=================================================================================================
@@ -83,9 +84,17 @@ protected: // Abstract functions
     virtual void onStart() = 0;
     virtual void onStop () = 0;
 
-    virtual void onClear() = 0;
+    virtual void onApplyPlaylist(WLoaderPlaylistNode * node, WPlaylist * playlist) = 0;
 
 protected: // Functions
+    void applyActions(const WLoaderPlaylistData & data);
+
+    void applySources(const QStringList                    & sources,
+                      const QHash<QString, const WTrack *> & tracks);
+
+    bool processQueries();
+    void clearQueries  ();
+
     void clearTracks();
 
     void setQueryLoading(bool loading);
@@ -103,6 +112,8 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onCurrentIdChanged())
 
     Q_PRIVATE_SLOT(d_func(), void onLoaded())
+
+    Q_PRIVATE_SLOT(d_func(), void onQueryCompleted())
 };
 
 //=================================================================================================

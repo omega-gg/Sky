@@ -47,23 +47,6 @@
 // Forward declarations
 class WLoaderRecentReply;
 
-//=================================================================================================
-// WLoaderRecentNode
-//=================================================================================================
-
-struct WLoaderRecentNode
-{
-    QString source;
-
-    WBackendNetQuery query;
-
-    QList<QStringList> urls;
-};
-
-//=================================================================================================
-// WLoaderRecentPrivate
-//=================================================================================================
-
 class SK_GUI_EXPORT WLoaderRecentPrivate : public WLoaderPlaylistPrivate
 {
 public: // Enums
@@ -82,9 +65,13 @@ public:
 public: // Functions
     void updateSources();
 
-    void clearQueries();
+    void processQueries();
+    void clearQueries  ();
 
-    QStringList getSourcesInput() const;
+    QStringList getSourcesInput () const;
+    QStringList getSourcesOutput() const;
+
+    QHash<QString, const WTrack *> getTracks(WPlaylist * playlist, QStringList * urls) const;
 
 public: // Slots
     void onFolderUpdated  ();
@@ -95,15 +82,7 @@ public: // Slots
 public: // Variables
     WLibraryFolder * feeds;
 
-    QStringList sources;
-
     WLoaderRecentReply * reply;
-
-    QList<WLoaderRecentNode> nodes;
-
-    QList<WPlaylist *> playlists;
-
-    QHash<WPlaylist *, WLoaderRecentNode *> jobs;
 
     QMetaMethod method;
 

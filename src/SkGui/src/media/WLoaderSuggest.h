@@ -45,7 +45,7 @@ protected: // WLoaderPlaylist implementation
     /* virtual */ void onStart();
     /* virtual */ void onStop ();
 
-    /* virtual */ void onClear();
+    /* virtual */ void onApplyPlaylist(WLoaderPlaylistNode * node, WPlaylist * playlist);
 
 signals:
     void historyChanged();
@@ -61,8 +61,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onPlaylistDestroyed())
 
     Q_PRIVATE_SLOT(d_func(), void onLoaded(const WLoaderPlaylistData &))
-
-    Q_PRIVATE_SLOT(d_func(), void onQueryCompleted())
 };
 
 #include <private/WLoaderSuggest_p>

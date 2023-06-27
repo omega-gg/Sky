@@ -48,7 +48,7 @@ protected: // WLoaderPlaylist implementation
     /* virtual */ void onStart();
     /* virtual */ void onStop ();
 
-    /* virtual */ void onClear();
+    /* virtual */ void onApplyPlaylist(WLoaderPlaylistNode * node, WPlaylist * playlist);
 
 signals:
     void feedsChanged();

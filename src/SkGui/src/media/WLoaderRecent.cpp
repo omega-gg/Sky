@@ -28,14 +28,14 @@
 #include <WControllerNetwork>
 #include <WControllerPlaylist>
 #include <WLibraryFolder>
+#include <WPlaylist>
 
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
 static const int LOADERRECENT_TRACKS = 5;
 
-static const int LOADERRECENT_MAX_COUNT   = 50;
-static const int LOADERRECENT_MAX_QUERIES =  3;
+static const int LOADERRECENT_MAX_COUNT = 50;
 
 //=================================================================================================
 // WLoaderRecentReply
@@ -119,9 +119,32 @@ void WLoaderRecentPrivate::updateSources()
                          Q_ARG(const QStringList &, sources), Q_ARG(int, LOADERRECENT_MAX_COUNT));
 }
 
+//-------------------------------------------------------------------------------------------------
+
+void WLoaderRecentPrivate::processQueries()
+{
+    Q_Q(WLoaderRecent);
+
+    if (q->processQueries()) return;
+
+    q->setQueryLoading(false);
+}
+
 void WLoaderRecentPrivate::clearQueries()
 {
+    Q_Q(WLoaderRecent);
 
+    if (reply)
+    {
+        QObject::disconnect(reply, SIGNAL(loaded(const WLoaderPlaylistData &)),
+                            q,     SLOT(onLoaded(const WLoaderPlaylistData &)));
+
+        reply = NULL;
+    }
+
+    q->clearQueries();
+
+    q->setQueryLoading(false);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -144,6 +167,50 @@ QStringList WLoaderRecentPrivate::getSourcesInput() const
     return list;
 }
 
+QStringList WLoaderRecentPrivate::getSourcesOutput() const
+{
+    QStringList list;
+
+    foreach (const WLoaderPlaylistNode & node, nodes)
+    {
+        const QList<QStringList> & urls = node.urls;
+
+        if (urls.isEmpty()) continue;
+
+        foreach (const QString & url, urls.first())
+        {
+            if (list.contains(url)) continue;
+
+            list.append(url);
+        }
+    }
+
+    return list;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QHash<QString, const WTrack *> WLoaderRecentPrivate::getTracks(WPlaylist   * playlist,
+                                                               QStringList * urls) const
+{
+    QHash<QString, const WTrack *> hash;
+
+    if (playlist == NULL) return hash;
+
+    foreach (const WTrack * track, playlist->trackPointers())
+    {
+        QString source = WControllerPlaylist::cleanSource(track->source());
+
+        if (urls->contains(source)) continue;
+
+        urls->append(source);
+
+        hash.insert(source, track);
+    }
+
+    return hash;
+}
+
 //-------------------------------------------------------------------------------------------------
 // Private slots
 //-------------------------------------------------------------------------------------------------
@@ -162,44 +229,15 @@ void WLoaderRecentPrivate::onFolderDestroyed()
 
 void WLoaderRecentPrivate::onLoaded(const WLoaderPlaylistData & data)
 {
+    Q_Q(WLoaderRecent);
+
     reply = NULL;
 
-    for (int i = 0; i < data.actions.count(); i++)
-    {
-        const WLoaderPlaylistAction & action = data.actions.at(i);
+    q->applyActions(data);
 
-        WLoaderPlaylist::Action type = action.type;
+    q->applySources(getSourcesOutput(), QHash<QString, const WTrack *>());
 
-        if (type == WLoaderPlaylist::Insert)
-        {
-            WLoaderRecentNode node;
-
-            node.source = action.url;
-            node.query  = action.query;
-
-            nodes.insert(action.index, node);
-        }
-        else if (type == WLoaderPlaylist::Move)
-        {
-            int from = action.index;
-
-            i++;
-
-            int to = data.actions.at(i).index;
-
-            nodes.move(from, to);
-        }
-        else if (type == WLoaderPlaylist::Remove)
-        {
-            nodes.removeAt(action.index);
-        }
-    }
-
-    sources = data.sources;
-
-    //updatePlaylist(QHash<QString, const WTrack *>());
-
-    //processQueries();
+    processQueries();
 }
 
 //=================================================================================================
@@ -218,14 +256,40 @@ void WLoaderRecentPrivate::onLoaded(const WLoaderPlaylistData & data)
 
 /* virtual */ void WLoaderRecent::onStart()
 {
+    Q_D(WLoaderRecent); d->updateSources();
 }
 
 /* virtual */ void WLoaderRecent::onStop()
 {
+    Q_D(WLoaderRecent); d->clearQueries();
 }
 
-/* virtual */ void WLoaderRecent::onClear()
+/* virtual */ void WLoaderRecent::onApplyPlaylist(WLoaderPlaylistNode * node, WPlaylist * playlist)
 {
+    Q_D(WLoaderRecent);
+
+    QStringList sources;
+
+    QHash<QString, const WTrack *> tracks = d->getTracks(playlist, &sources);
+
+    QList<QStringList> & urls = node->urls;
+
+    urls.clear();
+
+    QStringList list;
+
+    int index = 0;
+
+    while (sources.count() && index < LOADERRECENT_TRACKS)
+    {
+        list.append(sources.takeFirst());
+
+        index++;
+    }
+
+    urls.append(list);
+
+    applySources(d->getSourcesOutput(), tracks);
 }
 
 //-------------------------------------------------------------------------------------------------

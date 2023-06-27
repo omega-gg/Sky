@@ -49,23 +49,6 @@
 // Forward declarations
 class WLoaderSuggestReply;
 
-//=================================================================================================
-// WLoaderSuggestNode
-//=================================================================================================
-
-struct WLoaderSuggestNode
-{
-    QString source;
-
-    WBackendNetQuery query;
-
-    QList<QStringList> urls;
-};
-
-//=================================================================================================
-// WLoaderSuggestPrivate
-//=================================================================================================
-
 class SK_GUI_EXPORT WLoaderSuggestPrivate : public WLoaderPlaylistPrivate
 {
 public:
@@ -76,8 +59,6 @@ public:
 public: // Functions
     void updateSources();
 
-    void updatePlaylist(const QHash<QString, const WTrack *> & tracks);
-
     void processQueries();
     void clearQueries  ();
 
@@ -86,8 +67,6 @@ public: // Functions
     QStringList getSourcesOutput() const;
 
     QHash<QString, const WTrack *> getTracks(WPlaylist * playlist, QStringList * urls) const;
-
-    WPlaylist * getPlaylist();
 
 public: // Slots
     void onPlaylistUpdated  ();
@@ -100,15 +79,7 @@ public: // Slots
 public: // Variables
     WPlaylist * history;
 
-    QStringList sources;
-
     WLoaderSuggestReply * reply;
-
-    QList<WLoaderSuggestNode> nodes;
-
-    QList<WPlaylist *> playlists;
-
-    QHash<WPlaylist *, WLoaderSuggestNode *> jobs;
 
     QMetaMethod method;
 
