@@ -246,7 +246,7 @@ void WModelLibraryFolder::setFolder(WLibraryFolder * folder)
 }
 
 //=================================================================================================
-// WModelLibraryFolderFiltered
+// WModelLibraryFolderFilteredPrivate
 //=================================================================================================
 
 class SK_GUI_EXPORT WModelLibraryFolderFilteredPrivate : public WPrivate
@@ -312,7 +312,16 @@ void WModelLibraryFolderFilteredPrivate::init()
     else return -1;
 }
 
-//-------------------------------------------------------------------------------------------------
+/* Q_INVOKABLE */ int WModelLibraryFolderFiltered::indexAt(int index) const
+{
+    WLibraryFolder * folder = this->folder();
+
+    if (folder)
+    {
+        return folder->indexFromId(idAt(index));
+    }
+    else return -1;
+}
 
 /* Q_INVOKABLE */ int WModelLibraryFolderFiltered::indexFromId(int id) const
 {
@@ -393,8 +402,6 @@ void WModelLibraryFolderFiltered::setModel(WModelLibraryFolder * model)
 
     emit modelChanged();
 }
-
-//-------------------------------------------------------------------------------------------------
 
 WLibraryFolder * WModelLibraryFolderFiltered::folder() const
 {

@@ -112,8 +112,12 @@ ListTouch
 
     function pGetIndex()
     {
-        // NOTE: We use contentY instead of getY() because we want to ignore originY.
+//#QT_4
         return Math.floor(contentY / sizeTrack);
+//#ELSE
+        // NOTE: We substract contentY because we want to ignore it.
+        return Math.floor((contentY - originY) / sizeTrack);
+//#END
     }
 
     function pGetCount()

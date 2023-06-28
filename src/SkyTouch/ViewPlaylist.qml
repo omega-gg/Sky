@@ -35,7 +35,7 @@ Loader
     //            for the same playlist.
     /* mandatory */ property Playlist playlist
 
-    /* mandatory */ property ModelPlaylist model
+    /* mandatory */ property variant model
 
     property Component delegateGrid: ComponentGridTrack {}
     property Component delegateList: ComponentTrack     {}

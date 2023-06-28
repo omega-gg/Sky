@@ -24,7 +24,7 @@
 #define WMODELPLAYLIST_H
 
 // Qt includes
-#include <QAbstractListModel>
+#include <QSortFilterProxyModel>
 
 // Sk includes
 #include <WPlaylist>
@@ -33,6 +33,7 @@
 
 // Forward declarations
 class WModelPlaylistPrivate;
+class WModelPlaylistFilteredPrivate;
 
 //-------------------------------------------------------------------------------------------------
 // WModelPlaylist
@@ -50,7 +51,8 @@ class SK_GUI_EXPORT WModelPlaylist : public QAbstractListModel, public WPlaylist
 public: // Enums
     enum TrackRoles
     {
-        RoleType = Qt::UserRole + 1,
+        RoleId = Qt::UserRole + 1,
+        RoleType,
         RoleState,
         RoleSource,
         RoleTitle,
@@ -104,6 +106,52 @@ private:
 
     friend class WPlaylist;
     friend class WPlaylistPrivate;
+};
+
+//-------------------------------------------------------------------------------------------------
+// WModelPlaylistFiltered
+//-------------------------------------------------------------------------------------------------
+
+class SK_GUI_EXPORT WModelPlaylistFiltered : public QSortFilterProxyModel, public WPrivatable
+{
+    Q_OBJECT
+
+    Q_PROPERTY(WModelPlaylist * model READ model WRITE setModel NOTIFY modelChanged)
+
+    Q_PROPERTY(WPlaylist * playlist READ playlist WRITE setPlaylist NOTIFY playlistChanged)
+
+    Q_PROPERTY(Qt::SortOrder sortOrder READ sortOrder WRITE setSortOrder NOTIFY sortOrderChanged)
+
+public:
+    explicit WModelPlaylistFiltered(QObject * parent = NULL);
+
+public: // Interface
+    Q_INVOKABLE int idAt   (int index) const;
+    Q_INVOKABLE int indexAt(int index) const;
+
+    Q_INVOKABLE int indexFromId(int id) const;
+
+    Q_INVOKABLE int indexFromRole(int role, const QVariant & value) const;
+
+signals:
+    void modelChanged();
+
+    void playlistChanged();
+
+    void sortOrderChanged();
+
+public: // Properties
+    WModelPlaylist * model() const;
+    void             setModel(WModelPlaylist * model);
+
+    WPlaylist * playlist() const;
+    void        setPlaylist(WPlaylist * playlist);
+
+    Qt::SortOrder sortOrder() const;
+    void          setSortOrder(Qt::SortOrder order);
+
+private:
+    W_DECLARE_PRIVATE(WModelPlaylistFiltered)
 };
 
 #include <private/WModelPlaylist_p>

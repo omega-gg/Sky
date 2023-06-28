@@ -33,9 +33,9 @@
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int LOADERRECENT_TRACKS = 5;
+static const int LOADERRECENT_TRACKS = 3;
 
-static const int LOADERRECENT_MAX_COUNT = 50;
+static const int LOADERRECENT_MAX_COUNT = 100;
 
 //=================================================================================================
 // WLoaderRecentReply

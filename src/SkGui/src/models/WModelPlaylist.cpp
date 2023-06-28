@@ -30,9 +30,9 @@
 // Sk includes
 #include <WPlaylist>
 
-//-------------------------------------------------------------------------------------------------
-// Private
-//-------------------------------------------------------------------------------------------------
+//=================================================================================================
+// WModelPlaylistPrivate
+//=================================================================================================
 
 #include "WModelPlaylist_p.h"
 
@@ -60,9 +60,9 @@ void WModelPlaylistPrivate::init()
 #endif
 }
 
-//-------------------------------------------------------------------------------------------------
-// Ctor / dtor
-//-------------------------------------------------------------------------------------------------
+//=================================================================================================
+// WModelPlaylist
+//=================================================================================================
 
 /* explicit */ WModelPlaylist::WModelPlaylist(QObject * parent)
     : QAbstractListModel(parent), WPrivatable(new WModelPlaylistPrivate(this))
@@ -100,7 +100,8 @@ void WModelPlaylistPrivate::init()
 
     const WTrack * track = static_cast<const WTrack *> (d->playlist->trackPointerAt(row));
 
-    if      (role == RoleType)     return track->type();
+    if      (role == RoleId)       return track->id();
+    else if (role == RoleType)     return track->type();
     else if (role == RoleState)    return track->state();
     else if (role == RoleSource)   return track->source();
     else if (role == RoleTitle)    return track->title();
@@ -119,6 +120,7 @@ void WModelPlaylistPrivate::init()
 {
     QHash<int, QByteArray> roles;
 
+    roles.insert(WModelPlaylist::RoleId,       "id");
     roles.insert(WModelPlaylist::RoleType,     "type");
     roles.insert(WModelPlaylist::RoleState,    "loadState");
     roles.insert(WModelPlaylist::RoleSource,   "source");
@@ -258,6 +260,166 @@ void WModelPlaylist::setPlaylist(WPlaylist * playlist)
     else d->oldTrack = NULL;
 
     emit playlistChanged();
+}
+
+//=================================================================================================
+// WModelPlaylistFilteredPrivate
+//=================================================================================================
+
+class SK_GUI_EXPORT WModelPlaylistFilteredPrivate : public WPrivate
+{
+public:
+    WModelPlaylistFilteredPrivate(WModelPlaylistFiltered * p);
+
+    void init();
+
+public: // Variables
+    WModelPlaylist * model;
+
+    Qt::SortOrder sortOrder;
+
+protected:
+    W_DECLARE_PUBLIC(WModelPlaylistFiltered)
+};
+
+//-------------------------------------------------------------------------------------------------
+// Private
+//-------------------------------------------------------------------------------------------------
+
+WModelPlaylistFilteredPrivate::
+WModelPlaylistFilteredPrivate(WModelPlaylistFiltered * p) : WPrivate(p) {}
+
+void WModelPlaylistFilteredPrivate::init()
+{
+    Q_Q(WModelPlaylistFiltered);
+
+    model = NULL;
+
+    sortOrder = Qt::AscendingOrder;
+
+    q->setDynamicSortFilter(true);
+}
+
+//=================================================================================================
+// WModelPlaylistFiltered
+//=================================================================================================
+
+/* explicit */ WModelPlaylistFiltered::WModelPlaylistFiltered(QObject * parent)
+    : QSortFilterProxyModel(parent), WPrivatable(new WModelPlaylistFilteredPrivate(this))
+{
+    Q_D(WModelPlaylistFiltered); d->init();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Interface
+//-------------------------------------------------------------------------------------------------
+
+/* Q_INVOKABLE */ int WModelPlaylistFiltered::idAt(int index) const
+{
+    QModelIndex modelIndex = this->index(index, 0);
+
+    if (modelIndex.isValid())
+    {
+        return data(modelIndex, WModelPlaylist::RoleId).toInt();
+    }
+    else return -1;
+}
+
+/* Q_INVOKABLE */ int WModelPlaylistFiltered::indexAt(int index) const
+{
+    WPlaylist * playlist = this->playlist();
+
+    if (playlist)
+    {
+        return playlist->indexFromId(idAt(index));
+    }
+    else return -1;
+}
+
+/* Q_INVOKABLE */ int WModelPlaylistFiltered::indexFromId(int id) const
+{
+    return indexFromRole(WModelPlaylist::RoleId, id);
+}
+
+/* Q_INVOKABLE */ int WModelPlaylistFiltered::indexFromRole(int role,
+                                                            const QVariant & value) const
+{
+    QModelIndex index = this->index(0, 0);
+
+    QModelIndexList indexes = match(index, role, value, 1, Qt::MatchExactly);
+
+    if (indexes.isEmpty())
+    {
+         return -1;
+    }
+    else return indexes.first().row();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Properties
+//-------------------------------------------------------------------------------------------------
+
+WModelPlaylist * WModelPlaylistFiltered::model() const
+{
+    Q_D(const WModelPlaylistFiltered); return d->model;
+}
+
+void WModelPlaylistFiltered::setModel(WModelPlaylist * model)
+{
+    Q_D(WModelPlaylistFiltered);
+
+    if (d->model == model) return;
+
+    if (d->model) disconnect(d->model, 0, this, 0);
+
+    d->model = model;
+
+    if (model)
+    {
+        setSourceModel(model);
+
+        connect(model, SIGNAL(playlistChanged()), this, SIGNAL(playlistChanged()));
+
+        if (sortRole()) sort(0, d->sortOrder);
+    }
+
+    emit modelChanged();
+}
+
+WPlaylist * WModelPlaylistFiltered::playlist() const
+{
+    Q_D(const WModelPlaylistFiltered);
+
+    if (d->model)
+    {
+        return d->model->playlist();
+    }
+    else return NULL;
+}
+
+void WModelPlaylistFiltered::setPlaylist(WPlaylist * playlist)
+{
+    Q_D(WModelPlaylistFiltered);
+
+    if (d->model) d->model->setPlaylist(playlist);
+}
+
+Qt::SortOrder WModelPlaylistFiltered::sortOrder() const
+{
+    Q_D(const WModelPlaylistFiltered); return d->sortOrder;
+}
+
+void WModelPlaylistFiltered::setSortOrder(Qt::SortOrder order)
+{
+    Q_D(WModelPlaylistFiltered);
+
+    if (d->sortOrder == order) return;
+
+    d->sortOrder = order;
+
+    if (sortRole()) sort(0, order);
+
+    emit sortOrderChanged();
 }
 
 #endif // SK_NO_MODELPLAYLIST

@@ -23,11 +23,11 @@
 #ifndef WMODELLIBRARYFOLDER_H
 #define WMODELLIBRARYFOLDER_H
 
-// Sk includes
-#include <WLibraryFolder>
-
 // Qt includes
 #include <QSortFilterProxyModel>
+
+// Sk includes
+#include <WLibraryFolder>
 
 #ifndef SK_NO_MODELLIBRARYFOLDER
 
@@ -125,7 +125,8 @@ public:
     explicit WModelLibraryFolderFiltered(QObject * parent = NULL);
 
 public: // Interface
-    Q_INVOKABLE int idAt(int index) const;
+    Q_INVOKABLE int idAt   (int index) const;
+    Q_INVOKABLE int indexAt(int index) const;
 
     Q_INVOKABLE int indexFromId(int id) const;
 
