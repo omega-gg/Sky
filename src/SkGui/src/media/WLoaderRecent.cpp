@@ -35,6 +35,8 @@
 
 static const int LOADERRECENT_TRACKS = 3;
 
+static const int LOADERRECENT_DELAY = 1; // 10 minutes
+
 static const int LOADERRECENT_MAX_COUNT = 50;
 
 //=================================================================================================
@@ -51,19 +53,7 @@ protected: // WLoaderPlaylistReply reimplementation
 
 WBackendNetQuery WLoaderRecentReply::getQuery(const QString & url, int) const
 {
-#ifndef SK_NO_TORRENT
-    if (WControllerNetwork::urlIsFile(url)
-        ||
-        // FIXME: We are not suggesting torrents for now.
-        WControllerPlaylist::urlIsTorrent(url)) return WBackendNetQuery();
-#endif
-    if (WControllerNetwork::urlIsFile(url)) return WBackendNetQuery();
-
-    WBackendNetQuery query = wControllerPlaylist->queryPlaylist(url);
-
-    query.timeout = 10000; // 10 seconds
-
-    return query;
+    return WLoaderRecentPrivate::getQuery(url);
 }
 
 //=================================================================================================
@@ -199,6 +189,27 @@ QHash<QString, const WTrack *> WLoaderRecentPrivate::getTracks(WPlaylist   * pla
 }
 
 //-------------------------------------------------------------------------------------------------
+// Private static functions
+//-------------------------------------------------------------------------------------------------
+
+/* static */ WBackendNetQuery WLoaderRecentPrivate::getQuery(const QString & url)
+{
+#ifndef SK_NO_TORRENT
+    if (WControllerNetwork::urlIsFile(url)
+        ||
+        // FIXME: We are not suggesting torrents for now.
+        WControllerPlaylist::urlIsTorrent(url)) return WBackendNetQuery();
+#endif
+    if (WControllerNetwork::urlIsFile(url)) return WBackendNetQuery();
+
+    WBackendNetQuery query = wControllerPlaylist->queryPlaylist(url);
+
+    query.timeout = 10000; // 10 seconds
+
+    return query;
+}
+
+//-------------------------------------------------------------------------------------------------
 // Private slots
 //-------------------------------------------------------------------------------------------------
 
@@ -223,6 +234,40 @@ void WLoaderRecentPrivate::onLoaded(const WLoaderPlaylistData & data)
     q->applyActions(data);
 
     q->applySources(getSourcesOutput(), QHash<QString, const WTrack *>());
+
+    QDateTime currentDate = QDateTime::currentDateTime();
+
+    if (date.isValid() == false)
+    {
+        date = currentDate;
+
+        q->processQueries();
+
+        return;
+    }
+
+    if (currentDate < date.addSecs(LOADERRECENT_DELAY))
+    {
+        q->processQueries();
+
+        return;
+    }
+
+    // NOTE: Once the delay is reached we reload the queries.
+
+    date = currentDate;
+
+    for (int i = 0; i < nodes.count(); i++)
+    {
+        WLoaderPlaylistNode * node = &(nodes[i]);
+
+        WBackendNetQuery & query = node->query;
+
+        // NOTE: If a query already exists we skip it.
+        if (query.isValid()) continue;
+
+        query = WLoaderRecentPrivate::getQuery(node->source);
+    }
 
     q->processQueries();
 }

@@ -158,6 +158,13 @@ QStringList WLoaderHubPrivate::getSourcesInput() const
         list.append(source);
     }
 
+    foreach (const QString & hub, hubs)
+    {
+        if (list.contains(hub)) continue;
+
+        list.append(hub);
+    }
+
     return list;
 }
 
@@ -289,6 +296,24 @@ void WLoaderHub::setHistory(WPlaylist * history)
     }
 
     emit historyChanged();
+}
+
+QStringList WLoaderHub::hubs() const
+{
+    Q_D(const WLoaderHub); return d->hubs;
+}
+
+void WLoaderHub::setHubs(const QStringList & urls)
+{
+    Q_D(WLoaderHub);
+
+    if (d->hubs == urls) return;
+
+    d->hubs = urls;
+
+    if (d->active) d->updateSources();
+
+    emit hubsChanged();
 }
 
 #endif // SK_NO_LOADERHUB

@@ -71,6 +71,8 @@ public: // Slots
 public: // Variables
     WPlaylist * history;
 
+    QStringList hubs;
+
     WLoaderPlaylistReply * reply;
 
     QMetaMethod method;

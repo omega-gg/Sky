@@ -64,6 +64,9 @@ public: // Functions
 
     QHash<QString, const WTrack *> getTracks(WPlaylist * playlist, QStringList * urls) const;
 
+public: // Static functions
+    static WBackendNetQuery getQuery(const QString & url);
+
 public: // Slots
     void onFolderUpdated  ();
     void onFolderDestroyed();
@@ -74,6 +77,8 @@ public: // Variables
     WLibraryFolder * feeds;
 
     WLoaderRecentReply * reply;
+
+    QDateTime date;
 
     QMetaMethod method;
 
