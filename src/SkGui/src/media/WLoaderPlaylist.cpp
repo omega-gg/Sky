@@ -214,6 +214,12 @@ WLoaderPlaylist::WLoaderPlaylist(WLoaderPlaylistPrivate * p, WLibraryFolder * fo
 }
 
 //-------------------------------------------------------------------------------------------------
+// Protected virtual functions
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WLoaderPlaylist::onApplyPlaylist(WLoaderPlaylistNode *, WPlaylist *) {}
+
+//-------------------------------------------------------------------------------------------------
 // Protected functions
 
 void WLoaderPlaylist::applyActions(const WLoaderPlaylistData & data)
@@ -285,6 +291,9 @@ void WLoaderPlaylist::applySources(const QStringList                    & source
 
                 track.setId(-1);
 
+                // NOTE: This is required to have a clean source.
+                track.setSource(url);
+
                 playlist->addTrack(track);
 
                 if (load && track.isDefault())
@@ -331,6 +340,9 @@ void WLoaderPlaylist::applySources(const QStringList                    & source
                 WTrack track = *trackPointer;
 
                 track.setId(-1);
+
+                // NOTE: This is required to have a clean source.
+                track.setSource(url);
 
                 playlist->insertTrack(total, track);
 
@@ -616,13 +628,20 @@ void WLoaderPlaylist::setRunning(bool running)
     deleteLater();
 }
 
+/* Q_INVOKABLE */ void WLoaderPlaylistReply::applyMethod(QMetaMethod * method)
+{
+    const QMetaObject * meta = WLoaderPlaylistReply().metaObject();
+
+    *method = meta->method(meta->indexOfMethod("extract(QStringList,QStringList,int)"));
+}
+
 //-------------------------------------------------------------------------------------------------
 // Protected functions
 //-------------------------------------------------------------------------------------------------
 
-/* virtual */ WBackendNetQuery WLoaderPlaylistReply::getQuery(const QString &, int) const
+/* virtual */ WBackendNetQuery WLoaderPlaylistReply::getQuery(const QString & url, int) const
 {
-    return WBackendNetQuery();
+    return WBackendNetQuery(url);
 }
 
 #endif // SK_NO_LOADERPLAYLIST

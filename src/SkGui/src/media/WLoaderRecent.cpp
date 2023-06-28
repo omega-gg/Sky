@@ -35,7 +35,7 @@
 
 static const int LOADERRECENT_TRACKS = 3;
 
-static const int LOADERRECENT_MAX_COUNT = 100;
+static const int LOADERRECENT_MAX_COUNT = 50;
 
 //=================================================================================================
 // WLoaderRecentReply
@@ -80,9 +80,7 @@ void WLoaderRecentPrivate::init()
 
     reply = NULL;
 
-    const QMetaObject * meta = WLoaderPlaylistReply().metaObject();
-
-    method = meta->method(meta->indexOfMethod("extract(QStringList,QStringList,int)"));
+    WLoaderPlaylistReply().applyMethod(&method);
 }
 
 //-------------------------------------------------------------------------------------------------

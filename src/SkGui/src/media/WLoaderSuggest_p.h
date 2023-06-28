@@ -73,8 +73,6 @@ public: // Slots
 
     void onLoaded(const WLoaderPlaylistData & data);
 
-    void onQueryCompleted();
-
 public: // Variables
     WPlaylist * history;
 

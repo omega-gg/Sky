@@ -20,8 +20,8 @@
 */
 //=================================================================================================
 
-#ifndef WLOADERRECENT_P_H
-#define WLOADERRECENT_P_H
+#ifndef WLOADERHUB_P_H
+#define WLOADERHUB_P_H
 
 /*  W A R N I N G
     -------------
@@ -42,22 +42,20 @@
 // Private includes
 #include <private/WLoaderPlaylist_p>
 
-#ifndef SK_NO_LOADERRECENT
+#ifndef SK_NO_LOADERHUB
 
-// Forward declarations
-class WLoaderRecentReply;
-
-class SK_GUI_EXPORT WLoaderRecentPrivate : public WLoaderPlaylistPrivate
+class SK_GUI_EXPORT WLoaderHubPrivate : public WLoaderPlaylistPrivate
 {
 public:
-    WLoaderRecentPrivate(WLoaderRecent * p);
+    WLoaderHubPrivate(WLoaderHub * p);
 
     void init();
 
 public: // Functions
     void updateSources();
 
-    void clearQueries();
+    void processQueries();
+    void clearQueries  ();
 
     QStringList getSourcesInput () const;
     QStringList getSourcesOutput() const;
@@ -65,21 +63,21 @@ public: // Functions
     QHash<QString, const WTrack *> getTracks(WPlaylist * playlist, QStringList * urls) const;
 
 public: // Slots
-    void onFolderUpdated  ();
-    void onFolderDestroyed();
+    void onPlaylistUpdated  ();
+    void onPlaylistDestroyed();
 
     void onLoaded(const WLoaderPlaylistData & data);
 
 public: // Variables
-    WLibraryFolder * feeds;
+    WPlaylist * history;
 
-    WLoaderRecentReply * reply;
+    WLoaderPlaylistReply * reply;
 
     QMetaMethod method;
 
 protected:
-    W_DECLARE_PUBLIC(WLoaderRecent)
+    W_DECLARE_PUBLIC(WLoaderHub)
 };
 
-#endif // SK_NO_LOADERRECENT
-#endif // WLOADERRECENT_P_H
+#endif // SK_NO_LOADERHUB
+#endif // WLOADERHUB_P_H

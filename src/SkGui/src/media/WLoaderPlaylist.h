@@ -84,7 +84,8 @@ protected: // Abstract functions
     virtual void onStart() = 0;
     virtual void onStop () = 0;
 
-    virtual void onApplyPlaylist(WLoaderPlaylistNode * node, WPlaylist * playlist) = 0;
+protected: // Virtual functions
+    virtual void onApplyPlaylist(WLoaderPlaylistNode * node, WPlaylist * playlist); // {}
 
 protected: // Functions
     void applyActions(const WLoaderPlaylistData & data);
@@ -163,6 +164,8 @@ class WLoaderPlaylistReply : public QObject
 
 public: // Interface
     Q_INVOKABLE void extract(const QStringList & urls, const QStringList & sources, int maximum);
+
+    Q_INVOKABLE void applyMethod(QMetaMethod * method);
 
 protected: // Functions
     virtual WBackendNetQuery getQuery(const QString & url, int index) const; // {}
