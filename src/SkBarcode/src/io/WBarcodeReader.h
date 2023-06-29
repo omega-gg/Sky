@@ -25,10 +25,11 @@
 
 // Qt includes
 #include <QObject>
+#include <QRect>
 #ifdef QT_4
 #include <QImage>
+#include <QStringList>
 #endif
-#include <QRect>
 
 // Sk includes
 #include <Sk>
