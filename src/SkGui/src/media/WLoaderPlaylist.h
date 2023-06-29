@@ -25,6 +25,9 @@
 
 // Qt includes
 #include <QObject>
+#ifdef QT_4
+#include <QStringList>
+#endif
 
 // Sk includes
 #include <WBackendNet>

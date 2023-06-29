@@ -35,9 +35,6 @@
 
 // Qt includes
 #include <QMetaMethod>
-#ifdef QT_4
-#include <QStringList>
-#endif
 
 // Private includes
 #include <private/WLoaderPlaylist_p>
