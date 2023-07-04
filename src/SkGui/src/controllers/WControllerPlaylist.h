@@ -193,7 +193,8 @@ public: // Interface
     Q_INVOKABLE WBackendNetQuery queryPlaylist(const QString & url) const;
 
     Q_INVOKABLE WBackendNetQuery queryRelatedTracks(const QString & url,
-                                                    const QString & title) const;
+                                                    const QString & title,
+                                                    const QString & prefix = QString()) const;
 
     //---------------------------------------------------------------------------------------------
 

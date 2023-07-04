@@ -4681,8 +4681,10 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
     return query;
 }
 
-/* Q_INVOKABLE */ WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
-                                                                           const QString & title) const
+/* Q_INVOKABLE */
+WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
+                                                         const QString & title,
+                                                         const QString & prefix) const
 {
     WBackendNet * backend = backendFromUrl(url);
 
@@ -4740,7 +4742,8 @@ WControllerPlaylist::WControllerPlaylist() : WController(new WControllerPlaylist
     {
          query = backend->createQuery("related", "tracks", id + " " + title);
     }
-    else query = backend->createQuery("related", "tracks", "site:" + host + " " + title);
+    // FIXME duckduckgo: It seems calling 'site:' too often ends up with a timeout.
+    else query = backend->createQuery("related", "tracks", prefix + host + " " + title);
 
     backend->tryDelete();
 
