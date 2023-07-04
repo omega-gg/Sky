@@ -4742,7 +4742,6 @@ WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
     {
          query = backend->createQuery("related", "tracks", id + " " + title);
     }
-    // FIXME duckduckgo: It seems calling 'site:' too often ends up with a timeout.
     else query = backend->createQuery("related", "tracks", prefix + host + " " + title);
 
     backend->tryDelete();

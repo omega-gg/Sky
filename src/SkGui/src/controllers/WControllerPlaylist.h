@@ -192,6 +192,7 @@ public: // Interface
 
     Q_INVOKABLE WBackendNetQuery queryPlaylist(const QString & url) const;
 
+    // NOTE duckduckgo: It seems calling 'site:' too often ends up with a timeout.
     Q_INVOKABLE WBackendNetQuery queryRelatedTracks(const QString & url,
                                                     const QString & title,
                                                     const QString & prefix = QString()) const;
