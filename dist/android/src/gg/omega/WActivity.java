@@ -115,6 +115,8 @@ public class WActivity extends QtActivity
 
     public void prepareFullScreen(boolean enabled)
     {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return;
+
         WindowManager.LayoutParams attributes = getWindow().getAttributes();
 
         if (enabled)
