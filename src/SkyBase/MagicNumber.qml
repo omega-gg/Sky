@@ -49,7 +49,7 @@ Row
     //---------------------------------------------------------------------------------------------
     // Private
 
-    property variant pList
+    property variant pList: null
 
     //---------------------------------------------------------------------------------------------
     // Spacing
@@ -86,7 +86,7 @@ Row
 
                 anchors.centerIn: parent
 
-                text: pList[index]
+                text: (pList) ? pList[index] : ""
 
                 color: magicNumber.color
 
