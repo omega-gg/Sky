@@ -54,5 +54,7 @@ BasePlayerBrowser 1.0 BasePlayerBrowser.qml
 
 Subtitle 1.0 Subtitle.qml
 
-AnimatedSlide      1.0 AnimatedSlide
-AnimatedSlideImage 1.0 AnimatedSlideImage
+AnimatedSlide      1.0 AnimatedSlide.qml
+AnimatedSlideImage 1.0 AnimatedSlideImage.qml
+
+MagicNumber 1.0 MagicNumber.qml

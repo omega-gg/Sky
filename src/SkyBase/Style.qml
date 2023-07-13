@@ -456,6 +456,14 @@ Item
     property int animatedSlide_duration: ms(10000)
 //#END
 
+//#MagicNumber
+    //---------------------------------------------------------------------------------------------
+    // MagicNumber
+
+    property color magicNumber_color          : "#dcdcdc"
+    property color magicNumber_colorBackground: "#161616"
+//#END
+
     //---------------------------------------------------------------------------------------------
     // Images
 
