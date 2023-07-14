@@ -23,74 +23,122 @@
 import QtQuick 1.0
 import Sky     1.0
 
-Row
+Item
 {
-    id: magicNumber
+    id: codeInput
 
     //---------------------------------------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    /* mandatory */ property string text
+    property int pixelSize: st.dp16
 
-    property int pixelSize: st.text_pixelSize
+    property int itemWidth : st.dp64
+    property int itemHeight: st.dp48
 
-    property int itemWidth : pixelSize * 2.32
-    property int itemHeight: pixelSize * 1.4
-
-    property int radius: pixelSize / 3
+    property int radius: st.dp8
 
     //---------------------------------------------------------------------------------------------
     // Style
 
-    property color color          : st.magicNumber_color
-    property color colorBackground: st.magicNumber_colorBackground
+    property color color          : st.codeNumber_color
+    property color colorBackground: st.codeNumber_colorBackground
 
     //---------------------------------------------------------------------------------------------
-    // Private
-
-    property variant pList: null
-
-    //---------------------------------------------------------------------------------------------
-    // Spacing
+    // Aliases
     //---------------------------------------------------------------------------------------------
 
-    spacing: Math.round(pixelSize / 4)
+    property alias spacing: row.spacing
+
+    property alias textInput: textInput
+
+    //---------------------------------------------------------------------------------------------
+    // Signal
+    //---------------------------------------------------------------------------------------------
+
+    signal requestHide
+
+    //---------------------------------------------------------------------------------------------
+    // Settings
+    //---------------------------------------------------------------------------------------------
+
+    width : itemWidth * 4 + spacing * 3
+    height: itemHeight
 
     //---------------------------------------------------------------------------------------------
     // Events
     //---------------------------------------------------------------------------------------------
 
-    onTextChanged: pList = text.split(' ')
+    Component.onCompleted: textInput.forceActiveFocus()
 
     //---------------------------------------------------------------------------------------------
     // Children
     //---------------------------------------------------------------------------------------------
 
-    Repeater
+    TextInput
     {
-        model: 4
+        id: textInput
 
-        Rectangle
+        anchors.fill: parent
+
+        opacity: 0.0
+
+//#QT_4
+        validator: IntValidator { bottom: 0 }
+//#ELSE
+        inputMethodHints: Qt.ImhDigitsOnly
+//#END
+
+        onActiveFocusChanged: if (activeFocus == false) codeInput.requestHide()
+
+        /* QML_EVENT */ Keys.onPressed: function(event)
         {
-            width : itemWidth
-            height: itemHeight
-
-            radius: magicNumber.radius
-
-            color: colorBackground
-
-            TextBase
+            // NOTE: The user should not be able to move the selection cursor.
+            if (event.key == Qt.Key_Escape || event.key == Qt.Key_Left || event.key == Qt.Key_Right)
             {
-                id: itemText
+                event.accepted = true;
 
-                anchors.centerIn: parent
+                codeInput.requestHide();
+            }
+        }
+    }
 
-                text: (pList) ? pList[index] : ""
+    Row
+    {
+        id: row
 
-                color: magicNumber.color
+        spacing: st.dp4
 
-                font.pixelSize: pixelSize
+        Repeater
+        {
+            id: repeater
+
+            model: 4
+
+            Item
+            {
+                width : itemWidth
+                height: itemHeight
+
+                Rectangle
+                {
+                    anchors.fill: parent
+
+                    radius: codeInput.radius
+
+                    opacity: 0.4
+
+                    color: colorBackground
+                }
+
+                TextBase
+                {
+                    anchors.centerIn: parent
+
+                    color: codeInput.color
+
+                    font.pixelSize: pixelSize
+                }
             }
         }
     }

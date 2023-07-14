@@ -456,12 +456,12 @@ Item
     property int animatedSlide_duration: ms(10000)
 //#END
 
-//#MagicNumber
+//#CodeNumber:CodeInput
     //---------------------------------------------------------------------------------------------
-    // MagicNumber
+    // CodeNumber
 
-    property color magicNumber_color          : "#dcdcdc"
-    property color magicNumber_colorBackground: "#161616"
+    property color codeNumber_color          : "#dcdcdc"
+    property color codeNumber_colorBackground: "#161616"
 //#END
 
     //---------------------------------------------------------------------------------------------

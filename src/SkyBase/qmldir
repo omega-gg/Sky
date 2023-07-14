@@ -57,4 +57,5 @@ Subtitle 1.0 Subtitle.qml
 AnimatedSlide      1.0 AnimatedSlide.qml
 AnimatedSlideImage 1.0 AnimatedSlideImage.qml
 
-MagicNumber 1.0 MagicNumber.qml
+CodeNumber 1.0 CodeNumber.qml
+CodeInput  1.0 CodeInput.qml
