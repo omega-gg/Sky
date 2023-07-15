@@ -50,7 +50,10 @@ Item
 
     property alias spacing: row.spacing
 
+    //---------------------------------------------------------------------------------------------
+
     property alias textInput: textInput
+    property alias row      : row
 
     //---------------------------------------------------------------------------------------------
     // Signal
@@ -109,7 +112,7 @@ Item
     {
         id: row
 
-        spacing: st.dp4
+        spacing: st.dp8
 
         Repeater
         {
