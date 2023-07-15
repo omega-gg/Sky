@@ -460,7 +460,9 @@ Item
     //---------------------------------------------------------------------------------------------
     // CodeNumber
 
-    property color codeNumber_color          : "#dcdcdc"
+    property real codeNumber_opacity: 0.9
+
+    property color codeNumber_color          : "#f0f0f0"
     property color codeNumber_colorBackground: "#161616"
 //#END
 

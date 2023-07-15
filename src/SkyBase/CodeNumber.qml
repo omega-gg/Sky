@@ -23,7 +23,7 @@
 import QtQuick 1.0
 import Sky     1.0
 
-Row
+Item
 {
     id: codeNumber
 
@@ -35,27 +35,44 @@ Row
 
     property int pixelSize: st.text_pixelSize
 
-    property int itemWidth : pixelSize * 2.32
-    property int itemHeight: pixelSize * 1.4
-
-    property int radius: pixelSize / 3
+    property int itemWidth : pixelSize * 2.2
+    property int itemHeight: pixelSize * 1.3
 
     //---------------------------------------------------------------------------------------------
     // Style
 
-    property color color          : st.codeNumber_color
     property color colorBackground: st.codeNumber_colorBackground
 
     //---------------------------------------------------------------------------------------------
     // Private
 
+    property int pSpacing: spacing * 2
+
     property variant pList: null
 
     //---------------------------------------------------------------------------------------------
-    // Properties
+    // Aliases
     //---------------------------------------------------------------------------------------------
 
-    spacing: Math.round(pixelSize / 4)
+    property alias radius: background.radius
+
+    property alias spacing: row.spacing
+
+    //---------------------------------------------------------------------------------------------
+
+    property alias background: background
+
+    //---------------------------------------------------------------------------------------------
+    // Style
+
+    property alias color: background.color
+
+    //---------------------------------------------------------------------------------------------
+    // Settings
+    //---------------------------------------------------------------------------------------------
+
+    width : row.width  + pSpacing
+    height: row.height + pSpacing
 
     //---------------------------------------------------------------------------------------------
     // Events
@@ -67,28 +84,50 @@ Row
     // Children
     //---------------------------------------------------------------------------------------------
 
-    Repeater
+    Rectangle
     {
-        model: 4
+        id: background
 
-        Rectangle
+        anchors.fill: parent
+
+        radius: Math.round(pixelSize / 3)
+
+        opacity: st.codeNumber_opacity
+
+        color: st.codeNumber_color
+    }
+
+    Row
+    {
+        id: row
+
+        anchors.centerIn: parent
+
+        spacing: Math.round(pixelSize / 4)
+
+        Repeater
         {
-            width : itemWidth
-            height: itemHeight
+            model: 4
 
-            radius: codeNumber.radius
-
-            color: colorBackground
-
-            TextBase
+            Rectangle
             {
-                anchors.centerIn: parent
+                width : itemWidth
+                height: itemHeight
 
-                text: (pList) ? pList[index] : ""
+                radius: codeNumber.radius
 
-                color: codeNumber.color
+                color: colorBackground
 
-                font.pixelSize: pixelSize
+                TextBase
+                {
+                    anchors.centerIn: parent
+
+                    text: (pList) ? pList[index] : ""
+
+                    color: codeNumber.color
+
+                    font.pixelSize: pixelSize
+                }
             }
         }
     }
