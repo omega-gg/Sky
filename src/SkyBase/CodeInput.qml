@@ -94,7 +94,9 @@ Item
         /* QML_EVENT */ Keys.onPressed: function(event)
         {
             // NOTE: The user should not be able to move the selection cursor.
-            if (event.key == Qt.Key_Escape || event.key == Qt.Key_Left || event.key == Qt.Key_Right)
+            if (event.key == Qt.Key_Escape || event.key == Qt.Key_Space
+                ||
+                event.key == Qt.Key_Left || event.key == Qt.Key_Right)
             {
                 event.accepted = true;
 
