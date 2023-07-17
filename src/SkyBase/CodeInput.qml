@@ -31,7 +31,7 @@ Item
     // Properties
     //---------------------------------------------------------------------------------------------
 
-    property int pixelSize: st.dp16
+    property int pixelSize: st.dp24
 
     property int itemWidth : st.dp64
     property int itemHeight: st.dp48
@@ -49,6 +49,8 @@ Item
     //---------------------------------------------------------------------------------------------
 
     property alias spacing: row.spacing
+
+    property alias text: textInput.text
 
     //---------------------------------------------------------------------------------------------
 
@@ -75,6 +77,27 @@ Item
     Component.onCompleted: textInput.forceActiveFocus()
 
     //---------------------------------------------------------------------------------------------
+    // Functions
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    function pGetOpacity(index)
+    {
+        if (index && text.length / (index * 3) < 1)
+        {
+            return 0.4;
+        }
+        else return 1.0;
+    }
+
+    function pGetText(index)
+    {
+        index *= 3;
+
+        return text.substring(index, index + 3);
+    }
+
+    //---------------------------------------------------------------------------------------------
     // Children
     //---------------------------------------------------------------------------------------------
 
@@ -86,11 +109,13 @@ Item
 
         opacity: 0.0
 
-//#QT_4
-        validator: IntValidator { bottom: 0 }
-//#ELSE
+        inputMask: "999999999999"
+
+//#QT_NEW
         inputMethodHints: Qt.ImhDigitsOnly
 //#END
+
+        maximumLength: 12
 
         onActiveFocusChanged: if (activeFocus == false) codeInput.requestHide()
 
@@ -131,14 +156,21 @@ Item
 
                     radius: codeInput.radius
 
-                    opacity: 0.4
+                    opacity: pGetOpacity(index)
 
                     color: colorBackground
                 }
 
                 TextBase
                 {
-                    anchors.centerIn: parent
+                    anchors.fill: parent
+
+                    anchors.leftMargin: st.dp12
+
+                    horizontalAlignment: Text.AlignLeft
+                    verticalAlignment  : Text.AlignVCenter
+
+                    text: pGetText(index)
 
                     color: codeInput.color
 
