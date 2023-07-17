@@ -36,10 +36,16 @@ Item
     property int itemWidth : st.dp64
     property int itemHeight: st.dp48
 
+    property int padding: pixelSize / 2
+
     property int radius: st.dp8
+
+    /* read */ property variant digits: null
 
     //---------------------------------------------------------------------------------------------
     // Style
+
+    property int durationCursor: st.baseLineEdit_durationCursor
 
     property color color          : st.codeNumber_color
     property color colorBackground: st.codeNumber_colorBackground
@@ -56,12 +62,14 @@ Item
 
     property alias textInput: textInput
     property alias row      : row
+    property alias cursor   : cursor
 
     //---------------------------------------------------------------------------------------------
     // Signal
     //---------------------------------------------------------------------------------------------
 
-    signal requestHide
+    signal hide
+    signal validate
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -76,25 +84,44 @@ Item
 
     Component.onCompleted: textInput.forceActiveFocus()
 
+    onTextChanged:
+    {
+        var array = new Array;
+
+        for (var i = 0; i < 4; i++)
+        {
+            var index = i * 3;
+
+            array[i] = text.substring(index, index + 3);
+        }
+
+        digits = array;
+
+        if (text.length == 12) validate();
+    }
+
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
-    // Private
 
-    function pGetOpacity(index)
+    function getCursorX()
+    {
+        if (digits == null) return padding;
+
+        var index = Math.min(Math.floor(text.length / 3), 3);
+
+        return padding + index * (itemWidth + spacing)
+               +
+               sk.textWidth(textInput.font, digits[index]);
+    }
+
+    function getOpacity(index)
     {
         if (index && text.length / (index * 3) < 1)
         {
             return 0.4;
         }
         else return 1.0;
-    }
-
-    function pGetText(index)
-    {
-        index *= 3;
-
-        return text.substring(index, index + 3);
     }
 
     //---------------------------------------------------------------------------------------------
@@ -117,7 +144,12 @@ Item
 
         maximumLength: 12
 
-        onActiveFocusChanged: if (activeFocus == false) codeInput.requestHide()
+        font.pixelSize: pixelSize
+
+        font.family: st.text_fontFamily
+        font.bold  : st.text_bold
+
+        onActiveFocusChanged: if (activeFocus == false) codeInput.hide()
 
         /* QML_EVENT */ Keys.onPressed: function(event)
         {
@@ -128,7 +160,7 @@ Item
             {
                 event.accepted = true;
 
-                codeInput.requestHide();
+                codeInput.hide();
             }
         }
     }
@@ -156,7 +188,7 @@ Item
 
                     radius: codeInput.radius
 
-                    opacity: pGetOpacity(index)
+                    opacity: getOpacity(index)
 
                     color: colorBackground
                 }
@@ -165,18 +197,50 @@ Item
                 {
                     anchors.fill: parent
 
-                    anchors.leftMargin: st.dp12
+                    anchors.leftMargin: codeInput.padding
 
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment  : Text.AlignVCenter
 
-                    text: pGetText(index)
+                    text: (digits) ? digits[index] : ""
 
                     color: codeInput.color
 
                     font.pixelSize: pixelSize
                 }
             }
+        }
+    }
+
+    Rectangle
+    {
+        id: cursor
+
+        anchors.verticalCenter: parent.verticalCenter
+
+        width: st.baseLineEdit_cursorWidth
+
+        height: sk.textHeight(textInput.font)
+
+        x: getCursorX()
+
+        visible: textInput.activeFocus
+
+        color: codeInput.color
+
+        SequentialAnimation
+        {
+            running: cursor.visible
+
+            loops: Animation.Infinite
+
+            PropertyAction { target: cursor; property: "opacity"; value: 1.0 }
+
+            PauseAnimation { duration: durationCursor }
+
+            PropertyAction { target: cursor; property: "opacity"; value: 0.0 }
+
+            PauseAnimation { duration: durationCursor }
         }
     }
 }

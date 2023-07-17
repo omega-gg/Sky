@@ -38,6 +38,8 @@ Item
     property int itemWidth : pixelSize * 2.2
     property int itemHeight: pixelSize * 1.3
 
+    /* read */ property variant digits: null
+
     //---------------------------------------------------------------------------------------------
     // Style
 
@@ -47,8 +49,6 @@ Item
     // Private
 
     property int pSpacing: spacing * 2
-
-    property variant pList: null
 
     //---------------------------------------------------------------------------------------------
     // Aliases
@@ -78,7 +78,7 @@ Item
     // Events
     //---------------------------------------------------------------------------------------------
 
-    onTextChanged: pList = text.split(' ')
+    onTextChanged: digits = text.split(' ')
 
     //---------------------------------------------------------------------------------------------
     // Children
@@ -122,7 +122,7 @@ Item
                 {
                     anchors.centerIn: parent
 
-                    text: (pList) ? pList[index] : ""
+                    text: (digits) ? digits[index] : ""
 
                     color: codeNumber.color
 
