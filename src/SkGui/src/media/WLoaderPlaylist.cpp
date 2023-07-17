@@ -158,6 +158,9 @@ void WLoaderPlaylistPrivate::onQueryCompleted()
 
     q->onApplyPlaylist(node, playlist);
 
+    // NOTE: We don't need these tracks anymore so we clear them along with pending queries.
+    playlist->clearTracks();
+
     q->processQueries();
 }
 
@@ -422,7 +425,7 @@ void WLoaderPlaylist::clearQueries()
     {
         QObject::disconnect(playlist, 0, this, 0);
 
-        playlist->abortQueries();
+        playlist->clearTracks();
 
         playlist->tryDelete();
     }
