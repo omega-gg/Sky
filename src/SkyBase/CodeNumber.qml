@@ -33,7 +33,8 @@ Item
 
     /* mandatory */ property string text
 
-    property int pixelSize: st.text_pixelSize
+    // NOTE: This needs to be a real to avoid rounding issues.
+    property real pixelSize: st.text_pixelSize
 
     property int itemWidth : pixelSize * 2.2
     property int itemHeight: pixelSize * 1.3
