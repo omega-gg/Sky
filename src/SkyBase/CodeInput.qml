@@ -134,7 +134,7 @@ Item
 
         anchors.fill: parent
 
-        opacity: 0.0
+        visible: false
 
         inputMask: "999999999999"
 
