@@ -73,9 +73,6 @@ Slider
     // NOTE: We want the background to be behind the itemProgress.
     background.z: -1
 
-    foreground.opacity: (pState) ? opacityProgressA
-                                 : opacityProgressB
-
     //---------------------------------------------------------------------------------------------
     // Style
 
@@ -173,7 +170,7 @@ Slider
         anchors.top   : background.top
         anchors.bottom: background.bottom
 
-        width: Math.max(st.dp32, pProgressWidth)
+        width: Math.max(st.dp48, pProgressWidth)
 
         radius: sliderStream.radius
 
