@@ -782,10 +782,14 @@ void WControllerPlaylistData::addSlice(const QString & start, const QString & en
 
 void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & type)
 {
-    source = reader.extractString("source");
+    const WYamlNode * node = reader.at("source");
 
     title = reader.extractString("title");
     cover = reader.extractString("cover");
+
+    int start = reader.extractInt("start");
+
+    int duration = WControllerPlaylist::vbmlDuration(reader.node(), start);
 
     WTrack track;
 
@@ -796,12 +800,24 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & t
     // NOTE: The origin is prioritized over the source.
     if (origin.isEmpty())
     {
-        // NOTE: When the source is empty we set the vbml uri.
-        if (source.isEmpty())
+        if (node->children.isEmpty())
         {
-             track.setSource(url);
+            QString source = node->value;
+
+            // NOTE: When the source is empty we set the vbml uri.
+            if (source.isEmpty())
+            {
+                track.setSource(url);
+            }
+            else track.setSource(source);
         }
-        else track.setSource(source);
+        else
+        {
+            // NOTE: When it's a multi-track we set the vbml uri.
+            track.setSource(url);
+
+            duration = WControllerPlaylist::vbmlDurationSource(*node, start);
+        }
     }
     else track.setSource(origin);
 
@@ -811,7 +827,7 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & t
     track.setAuthor(reader.extractString("author"));
     track.setFeed  (reader.extractString("feed"));
 
-    track.setDuration(reader.extractInt("duration", -1));
+    track.setDuration(duration);
 
     track.setDate(reader.extractDate("date"));
 
@@ -5571,6 +5587,45 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlType(const QString & vbml)
     line = line.mid(index, line.length() - index).simplified();
 
     return vbmlTypeFromString(line.toLower());
+}
+
+/* Q_INVOKABLE static */ int WControllerPlaylist::vbmlDuration(const WYamlNodeBase & node,
+                                                               int start)
+{
+    int duration = node.extractInt("duration", -1);
+
+    if (duration != -1) return duration;
+
+    duration = node.extractInt("end", -1);
+
+    if (duration == -1)
+    {
+        return -1;
+    }
+    else return duration - start;
+}
+
+/* Q_INVOKABLE static */ int WControllerPlaylist::vbmlDurationSource(const WYamlNode & node,
+                                                                     int start)
+{
+    const QList<WYamlNode> & children = node.children;
+
+    if (children.isEmpty()) return -1;
+
+    int duration = 0;
+
+    foreach (const WYamlNode & child, children)
+    {
+        int durationSource = vbmlDuration(child, child.extractInt("start"));
+
+        if (durationSource != -1) duration += durationSource;
+    }
+
+    if (duration == 0)
+    {
+        return -1;
+    }
+    else return duration - start;
 }
 
 /* Q_INVOKABLE static */
