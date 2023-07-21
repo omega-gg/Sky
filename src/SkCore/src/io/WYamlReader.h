@@ -56,7 +56,8 @@ public: // Interface
 
     bool extractBool(const QString & key) const;
 
-    int extractInt(const QString & key, int defaultValue = 0) const;
+    int extractInt  (const QString & key, int defaultValue = 0) const;
+    int extractMsecs(const QString & key, int defaultValue = 0) const;
 
     QString extractString(const QString & key) const;
 
@@ -114,6 +115,10 @@ public: // Interface
     Q_INVOKABLE bool extractBool(const QString & key) const;
 
     Q_INVOKABLE int extractInt(const QString & key, int defaultValue = 0) const;
+
+    // NOTE: This extracts msecs as a raw value or mm:ss.zzz and hh:mm:ss.zzz format with optional
+    //       zzz for msecs.
+    Q_INVOKABLE int extractMsecs(const QString & key, int defaultValue = 0) const;
 
     Q_INVOKABLE QString extractString(const QString & key) const;
 

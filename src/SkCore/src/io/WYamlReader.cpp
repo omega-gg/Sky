@@ -93,6 +93,53 @@ int WYamlNodeBase::extractInt(const QString & key, int defaultValue) const
     else return defaultValue;
 }
 
+int WYamlNodeBase::extractMsecs(const QString & key, int defaultValue) const
+{
+    const WYamlNode * node = at(key);
+
+    if (node == NULL) return defaultValue;
+
+    QStringList list = node->value.split(':');
+
+    int count = list.count();
+
+    if (count == 1)
+    {
+        return list.first().toInt();
+    }
+    else if (count == 2)
+    {
+        QStringList seconds = list.last().split('.');
+
+        int msecs = list.at(0).toInt() * 60000 // 1 minute
+                    +
+                    seconds.first().toInt() * 1000;
+
+        if (seconds.count())
+        {
+             return msecs + seconds.last().toInt();
+        }
+        else return msecs;
+    }
+    else if (count == 3)
+    {
+        QStringList seconds = list.last().split('.');
+
+        int msecs = list.at(0).toInt() * 3600000 // 1 hour
+                    +
+                    list.at(1).toInt() * 60000 // 1 hour
+                    +
+                    seconds.first().toInt() * 1000;
+
+        if (seconds.count())
+        {
+             return msecs + seconds.last().toInt();
+        }
+        else return msecs;
+    }
+    else return defaultValue;
+}
+
 QString WYamlNodeBase::extractString(const QString & key) const
 {
     const WYamlNode * node = at(key);
@@ -434,6 +481,13 @@ WYamlReader::WYamlReader(const QByteArray & data, QObject * parent)
     Q_D(const WYamlReader);
 
     return d->node.extractInt(key, defaultValue);
+}
+
+/* Q_INVOKABLE */ int WYamlReader::extractMsecs(const QString & key, int defaultValue) const
+{
+    Q_D(const WYamlReader);
+
+    return d->node.extractMsecs(key, defaultValue);
 }
 
 /* Q_INVOKABLE */ QString WYamlReader::extractString(const QString & key) const

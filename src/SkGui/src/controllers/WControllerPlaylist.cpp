@@ -782,8 +782,6 @@ void WControllerPlaylistData::addSlice(const QString & start, const QString & en
 
 void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & type)
 {
-    const WYamlNode * node = reader.at("source");
-
     title = reader.extractString("title");
     cover = reader.extractString("cover");
 
@@ -800,16 +798,20 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & t
     // NOTE: The origin is prioritized over the source.
     if (origin.isEmpty())
     {
-        if (node->children.isEmpty())
+        const WYamlNode * node = reader.at("source");
+
+        if (node == NULL)
         {
-            QString source = node->value;
+            // NOTE: When the source is empty we set the vbml uri.
+            track.setSource(url);
+        }
+        else if (node->children.isEmpty())
+        {
+            source = node->value;
 
             // NOTE: When the source is empty we set the vbml uri.
-            if (source.isEmpty())
-            {
-                track.setSource(url);
-            }
-            else track.setSource(source);
+            if (source.isEmpty()) track.setSource(url);
+            else                  track.setSource(source);
         }
         else
         {
@@ -5592,11 +5594,11 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlType(const QString & vbml)
 /* Q_INVOKABLE static */ int WControllerPlaylist::vbmlDuration(const WYamlNodeBase & node,
                                                                int start)
 {
-    int duration = node.extractInt("duration", -1);
+    int duration = node.extractMsecs("duration", -1);
 
     if (duration != -1) return duration;
 
-    duration = node.extractInt("end", -1);
+    duration = node.extractMsecs("end", -1);
 
     if (duration == -1)
     {
@@ -5616,7 +5618,7 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlType(const QString & vbml)
 
     foreach (const WYamlNode & child, children)
     {
-        int durationSource = vbmlDuration(child, child.extractInt("start"));
+        int durationSource = vbmlDuration(child, child.extractMsecs("start"));
 
         if (durationSource != -1) duration += durationSource;
     }
@@ -5694,7 +5696,7 @@ QThread * WControllerPlaylist::thread() const
 
 /* static */ QString WControllerPlaylist::versionApi()
 {
-    return "1.0.4";
+    return "1.0.5";
 }
 
 //-------------------------------------------------------------------------------------------------
