@@ -61,9 +61,7 @@ class SK_MEDIA_EXPORT WMediaReply : public QObject
     Q_OBJECT
 
 private:
-    explicit WMediaReply(const QString & url,
-                         WAbstractBackend::SourceMode mode = WAbstractBackend::SourceDefault,
-                         QObject * parent                  = NULL);
+    explicit WMediaReply(QObject * parent = NULL);
 public:
     /* virtual */ ~WMediaReply();
 
@@ -89,6 +87,8 @@ public: // Properties
 
 private: // Variables
     QString _url;
+
+    int _currentTime;
 
     WAbstractBackend::SourceMode _mode;
 
@@ -159,8 +159,12 @@ public: // Interface
 
     Q_INVOKABLE
     WMediaReply * getMedia(const QString & url,
-                           WAbstractBackend::SourceMode mode = WAbstractBackend::SourceDefault,
-                           QObject * parent                  = NULL);
+                           QObject       * parent      = NULL,
+                           int             currentTime = -1,
+                           WAbstractBackend::SourceMode mode = WAbstractBackend::SourceDefault);
+
+    // NOTE: This function is provided for convenient loading of specific media sources.
+    Q_INVOKABLE WMediaReply * getMedia(const QString & url, WAbstractBackend::SourceMode mode);
 
     Q_INVOKABLE void clearMedia (const QString & url);
     Q_INVOKABLE void clearMedias();

@@ -55,19 +55,7 @@ static const int CONTROLLERMEDIA_MAX_RELOAD =  10;
 //=================================================================================================
 // Private
 
-WMediaReply::WMediaReply(const QString & url,
-                         WAbstractBackend::SourceMode mode, QObject * parent) : QObject(parent)
-{
-    _url = url;
-
-    _mode = mode;
-
-    _type = WTrack::Track;
-
-    _backend = NULL;
-
-    _loaded = false;
-}
+WMediaReply::WMediaReply(QObject * parent) : QObject(parent) {}
 
 //-------------------------------------------------------------------------------------------------
 // Public
@@ -632,7 +620,7 @@ void WControllerMediaPrivate::updateSources()
             }
         }
 
-        if (sources.isEmpty())
+        if (modes.isEmpty())
         {
             qDebug("SOURCE EXPIRED");
 
@@ -994,8 +982,9 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ WMediaReply * WControllerMedia::getMedia(const QString & url,
-                                                           WAbstractBackend::SourceMode mode,
-                                                           QObject * parent)
+                                                           QObject       * parent,
+                                                           int             currentTime,
+                                                           WAbstractBackend::SourceMode mode)
 {
     if (url.isEmpty()) return NULL;
 
@@ -1003,8 +992,20 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 
     WMediaReply * reply;
 
-    if (parent) reply = new WMediaReply(url, mode, parent);
-    else        reply = new WMediaReply(url, mode, this);
+    if (parent) reply = new WMediaReply(parent);
+    else        reply = new WMediaReply(this);
+
+    reply->_url = url;
+
+    reply->_currentTime = currentTime;
+
+    reply->_mode = mode;
+
+    reply->_type = WTrack::Track;
+
+    reply->_backend = NULL;
+
+    reply->_loaded = false;
 
     d->updateSources();
 
@@ -1037,6 +1038,12 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
     d->loadSources(reply);
 
     return reply;
+}
+
+/* Q_INVOKABLE */ WMediaReply * WControllerMedia::getMedia(const QString & url,
+                                                           WAbstractBackend::SourceMode mode)
+{
+    return getMedia(url, NULL, -1, mode);
 }
 
 //-------------------------------------------------------------------------------------------------
