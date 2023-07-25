@@ -242,6 +242,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array,
 
         if (children.isEmpty() == false)
         {
+            // FIXME
             int duration = reader.extractInt("start");
 
             currentTime += duration;
