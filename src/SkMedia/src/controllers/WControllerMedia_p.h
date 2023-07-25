@@ -56,6 +56,7 @@ struct WPrivateMediaData
     WTrack::Type type;
 
     QString url;
+    int     currentTime;
 
     WBackendNet * backend;
 
@@ -67,15 +68,27 @@ struct WPrivateMediaData
 };
 
 //-------------------------------------------------------------------------------------------------
+// WPrivateMediaSlice
+//-------------------------------------------------------------------------------------------------
+
+struct WPrivateMediaSlice
+{
+    int currentTime;
+    int duration;
+
+    QHash<WAbstractBackend::Quality, QString> medias;
+    QHash<WAbstractBackend::Quality, QString> audios;
+
+    QDateTime expiry;
+};
+
+//-------------------------------------------------------------------------------------------------
 // WPrivateMediaMode
 //-------------------------------------------------------------------------------------------------
 
 struct WPrivateMediaMode
 {
-    QHash<WAbstractBackend::Quality, QString> medias;
-    QHash<WAbstractBackend::Quality, QString> audios;
-
-    QDateTime expiry;
+    QList<WPrivateMediaSlice> slices;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -107,8 +120,9 @@ public: // Functions
 
     void loadUrl(QIODevice * device, const WBackendNetQuery & query) const;
 
-    void applySource(WPrivateMediaData * media,
-                     const WBackendNetSource & source, WAbstractBackend::SourceMode mode);
+    void applySource(WPrivateMediaData       * media,
+                     const WBackendNetSource & source,
+                     WAbstractBackend::SourceMode mode, int currentTime, int duration);
 
     void updateSources();
 
@@ -118,10 +132,17 @@ public: // Functions
 
     void getData(WPrivateMediaData * media, WBackendNetQuery * query);
 
+    WPrivateMediaSource * getSource(const QString & url);
+
+    WPrivateMediaMode * getMode(WPrivateMediaSource * source, WAbstractBackend::SourceMode mode);
+
+    const WPrivateMediaSlice * getSlice(WPrivateMediaSource * source,
+                                        WAbstractBackend::SourceMode mode, int currentTime);
+
 public: // Slots
     void onLoaded(WRemoteData * data);
 
-    void onUrl(QIODevice * device, const WControllerMediaData & url);
+    void onUrl(QIODevice * device, const WControllerMediaData & data);
 
     void onSourceLoaded(QIODevice * device, const WBackendNetSource & source);
 

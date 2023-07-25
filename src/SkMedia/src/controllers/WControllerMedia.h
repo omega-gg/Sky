@@ -117,7 +117,13 @@ private:
 struct WControllerMediaData
 {
 public:
-    WControllerMediaData() { type = WTrack::Track; }
+    WControllerMediaData()
+    {
+        type = WTrack::Track;
+
+        currentTime = -1;
+        duration    = -1;
+    }
 
 public: // Interface
     void applyVbml(const QByteArray & array, const QString & url);
@@ -128,6 +134,9 @@ public: // Variables
 
     QString origin;
     QString source;
+
+    int currentTime;
+    int duration;
 
     QHash<WAbstractBackend::Quality, QString> medias;
 };
@@ -159,9 +168,9 @@ public: // Interface
 
     Q_INVOKABLE
     WMediaReply * getMedia(const QString & url,
-                           QObject       * parent      = NULL,
-                           int             currentTime = -1,
-                           WAbstractBackend::SourceMode mode = WAbstractBackend::SourceDefault);
+                           QObject * parent                  = NULL,
+                           WAbstractBackend::SourceMode mode = WAbstractBackend::SourceDefault,
+                           int currentTime                   = -1);
 
     // NOTE: This function is provided for convenient loading of specific media sources.
     Q_INVOKABLE WMediaReply * getMedia(const QString & url, WAbstractBackend::SourceMode mode);

@@ -1043,9 +1043,9 @@ void WBackendVlcPrivate::loadSources(bool play)
         &&
         mode != WAbstractBackend::SourceAudio)
     {
-         reply = wControllerMedia->getMedia(source, q, currentTime, WAbstractBackend::SourceSafe);
+         reply = wControllerMedia->getMedia(source, q, WAbstractBackend::SourceSafe, currentTime);
     }
-    else reply = wControllerMedia->getMedia(source, q, currentTime, mode);
+    else reply = wControllerMedia->getMedia(source, q, mode, currentTime);
 
     if (reply == NULL)
     {

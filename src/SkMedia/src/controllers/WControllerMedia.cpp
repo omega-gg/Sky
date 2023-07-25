@@ -45,7 +45,8 @@ W_INIT_CONTROLLER(WControllerMedia)
 //-------------------------------------------------------------------------------------------------
 // Static variables
 
-static const int CONTROLLERMEDIA_CACHE_MAX = 1000;
+static const int CONTROLLERMEDIA_MAX_CACHE  = 100;
+static const int CONTROLLERMEDIA_MAX_SLICES =  64;
 
 static const int CONTROLLERMEDIA_MAX_QUERY  = 100;
 static const int CONTROLLERMEDIA_MAX_RELOAD =  10;
@@ -399,6 +400,8 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 {
     const QString & url = reply->_url;
 
+    int currentTime = reply->_currentTime;
+
     QHashIterator<WRemoteData *, WPrivateMediaData *> i(jobs);
 
     while (i.hasNext())
@@ -407,7 +410,7 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
         WPrivateMediaData * media = i.value();
 
-        if (media->url == url)
+        if (media->url == url && media->currentTime == currentTime)
         {
             media->replies.append(reply);
 
@@ -423,7 +426,7 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
         WPrivateMediaData * media = j.value();
 
-        if (media->url == url)
+        if (media->url == url && media->currentTime == currentTime)
         {
             media->replies.append(reply);
 
@@ -498,8 +501,11 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
     WPrivateMediaData * media = new WPrivateMediaData;
 
-    media->type    = WTrack::Track;
-    media->url     = url;
+    media->type = WTrack::Track;
+
+    media->url         = url;
+    media->currentTime = currentTime;
+
     media->backend = NULL;
     media->query   = query;
     media->reply   = NULL;
@@ -531,9 +537,11 @@ void WControllerMediaPrivate::loadUrl(QIODevice * device, const WBackendNetQuery
 
 //-------------------------------------------------------------------------------------------------
 
-void WControllerMediaPrivate::applySource(WPrivateMediaData       * media,
-                                          const WBackendNetSource & source,
-                                          WAbstractBackend::SourceMode mode)
+void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
+                                          const WBackendNetSource      & source,
+                                          WAbstractBackend::SourceMode   mode,
+                                          int                            currentTime,
+                                          int                            duration)
 {
     const QHash<WAbstractBackend::Quality, QString> & medias = source.medias;
 
@@ -551,32 +559,66 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData       * media,
 
     WTrack::Type type = media->type;
 
-    WPrivateMediaMode data;
+    WPrivateMediaSlice slice;
 
-    data.medias = medias;
-    data.audios = audios;
+    slice.currentTime = currentTime;
+    slice.duration    = duration;
 
-    data.expiry = source.expiry;
+    slice.medias = medias;
+    slice.audios = audios;
+
+    slice.expiry = source.expiry;
 
     const QString & url = media->url;
 
-    if (sources.contains(url))
+    WPrivateMediaSource * mediaSource = getSource(url);
+
+    if (mediaSource)
     {
-        WPrivateMediaSource * source = &(sources[url]);
+        mediaSource->type = type;
 
-        source->type = type;
+        WPrivateMediaMode * data = getMode(mediaSource, mode);
 
-        source->modes.insert(mode, data);
+        if (data)
+        {
+            QList<WPrivateMediaSlice> & slices = data->slices;
+
+            while (slices.count() == CONTROLLERMEDIA_MAX_SLICES)
+            {
+                slices.removeAt(0);
+            }
+
+            slices.append(slice);
+        }
+        else
+        {
+            WPrivateMediaMode data;
+
+            data.slices.append(slice);
+
+            mediaSource->modes.insert(mode, data);
+        }
     }
     else
     {
-        WPrivateMediaSource source;
+        while (urls.count() == CONTROLLERMEDIA_MAX_CACHE)
+        {
+            sources.remove(urls.takeFirst());
+        }
 
-        source.type = type;
+        WPrivateMediaSource mediaSource;
 
-        source.modes.insert(mode, data);
+        mediaSource.type = type;
 
-        sources.insert(url, source);
+        WPrivateMediaMode data;
+
+        data.slices.append(slice);
+
+        mediaSource.modes.insert(mode, data);
+
+        urls.append(url);
+
+        sources.insert(url, mediaSource);
     }
 
     foreach (WMediaReply * reply, media->replies)
@@ -610,31 +652,37 @@ void WControllerMediaPrivate::updateSources()
         {
             j.next();
 
-            QDateTime expiry = j.value().expiry;
+            QList<WPrivateMediaSlice> & slices = j.value().slices;
 
-            if (expiry.isValid() && expiry < date)
+            int index = 0;
+
+            while (index < slices.count())
             {
-                qDebug("MEDIA EXPIRED");
+                const WPrivateMediaSlice & slice = slices.at(index);
 
-                j.remove();
+                QDateTime expiry = slice.expiry;
+
+                if (expiry.isValid() && expiry < date)
+                {
+                    qDebug("MEDIA EXPIRED");
+
+                    slices.removeAt(index);
+
+                    continue;
+                }
+
+                index++;
             }
+
+            if (slices.isEmpty()) j.remove();
         }
 
         if (modes.isEmpty())
         {
-            qDebug("SOURCE EXPIRED");
-
             urls.removeOne(i.key());
 
             i.remove();
         }
-    }
-
-    while (urls.count() > CONTROLLERMEDIA_CACHE_MAX)
-    {
-        QString url = urls.takeFirst();
-
-        sources.remove(url);
     }
 }
 
@@ -709,6 +757,67 @@ void WControllerMediaPrivate::getData(WPrivateMediaData * media, WBackendNetQuer
     QObject::connect(data, SIGNAL(loaded(WRemoteData *)), q, SLOT(onLoaded(WRemoteData *)));
 
     jobs.insert(data, media);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+WPrivateMediaSource * WControllerMediaPrivate::getSource(const QString & url)
+{
+    QHash<QString, WPrivateMediaSource>::iterator i = sources.find(url);
+
+    if (i == sources.end())
+    {
+        return NULL;
+    }
+    else return &(i.value());
+}
+
+WPrivateMediaMode * WControllerMediaPrivate::getMode(WPrivateMediaSource * source,
+                                                     WAbstractBackend::SourceMode mode)
+{
+    QHash<WAbstractBackend::SourceMode, WPrivateMediaMode> & modes = source->modes;
+
+    QHash<WAbstractBackend::SourceMode, WPrivateMediaMode>::iterator i = modes.find(mode);
+
+    if (i == modes.end())
+    {
+        return NULL;
+    }
+    else return &(i.value());
+}
+
+const WPrivateMediaSlice * WControllerMediaPrivate::getSlice(WPrivateMediaSource * source,
+                                                             WAbstractBackend::SourceMode mode,
+                                                             int currentTime)
+{
+    WPrivateMediaMode * sources = getMode(source, mode);
+
+    if (source == NULL) return NULL;
+
+    QList<WPrivateMediaSlice> & slices = sources->slices;
+
+    int count = slices.count();
+
+    for (int i = 0; i < count; i++)
+    {
+        const WPrivateMediaSlice & slice = slices.at(i);
+
+        int time = slice.currentTime;
+
+        // NOTE: When the time is -1 it means the currentTime is irrelevant so we return the slice
+        //       right away.
+        if (time != -1 && (currentTime < time
+                           ||
+                           currentTime > time + slice.duration)) continue;
+
+        count--;
+
+        slices.move(i, count);
+
+        return &(slices.at(i));
+    }
+
+    return NULL;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -843,7 +952,7 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
 
     backendSource.medias = data.medias;
 
-    applySource(media, backendSource, query.mode);
+    applySource(media, backendSource, query.mode, data.currentTime, data.duration);
 
     medias.removeOne(media);
 
@@ -933,7 +1042,7 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
         }
     }
 
-    applySource(media, source, backendQuery.mode);
+    applySource(media, source, backendQuery.mode, -1, -1);
 
     this->medias.removeOne(media);
 
@@ -981,10 +1090,11 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ WMediaReply * WControllerMedia::getMedia(const QString & url,
-                                                           QObject       * parent,
-                                                           int             currentTime,
-                                                           WAbstractBackend::SourceMode mode)
+/* Q_INVOKABLE */
+WMediaReply * WControllerMedia::getMedia(const QString              & url,
+                                         QObject                    * parent,
+                                         WAbstractBackend::SourceMode mode,
+                                         int                          currentTime)
 {
     if (url.isEmpty()) return NULL;
 
@@ -1009,25 +1119,23 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 
     d->updateSources();
 
-    if (d->sources.contains(url))
+    WPrivateMediaSource * source = d->getSource(url);
+
+    if (source)
     {
-        const WPrivateMediaSource & source = d->sources[url];
+        const WPrivateMediaSlice * slice = d->getSlice(source, mode, currentTime);
 
-        const QHash<WAbstractBackend::SourceMode, WPrivateMediaMode> & sources = source.modes;
-
-        if (sources.contains(mode))
+        if (slice)
         {
             qDebug("MEDIA CACHED");
 
             d->urls.removeOne(url);
             d->urls.append   (url);
 
-            reply->_type = source.type;
+            reply->_type = source->type;
 
-            const WPrivateMediaMode & source = sources[mode];
-
-            reply->_medias = source.medias;
-            reply->_audios = source.audios;
+            reply->_medias = slice->medias;
+            reply->_audios = slice->audios;
 
             reply->_loaded = true;
 
@@ -1043,7 +1151,7 @@ WControllerMedia::WControllerMedia() : WController(new WControllerMediaPrivate(t
 /* Q_INVOKABLE */ WMediaReply * WControllerMedia::getMedia(const QString & url,
                                                            WAbstractBackend::SourceMode mode)
 {
-    return getMedia(url, NULL, -1, mode);
+    return getMedia(url, NULL, mode, -1);
 }
 
 //-------------------------------------------------------------------------------------------------
