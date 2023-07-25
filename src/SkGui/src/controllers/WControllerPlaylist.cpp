@@ -5591,6 +5591,18 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlType(const QString & vbml)
     return vbmlTypeFromString(line.toLower());
 }
 
+/* Q_INVOKABLE static */ QString WControllerPlaylist::vbmlSource(const WYamlNode & node)
+{
+    // NOTE: The media is prioritized over the source.
+    QString source = node.extractString("media");
+
+    if (source.isEmpty())
+    {
+        return node.extractString("source");
+    }
+    else return source;
+}
+
 /* Q_INVOKABLE static */ int WControllerPlaylist::vbmlDuration(const WYamlNodeBase & node,
                                                                int start)
 {

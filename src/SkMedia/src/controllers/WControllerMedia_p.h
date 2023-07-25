@@ -56,7 +56,9 @@ struct WPrivateMediaData
     WTrack::Type type;
 
     QString url;
-    int     currentTime;
+
+    int start;
+    int end;
 
     WBackendNet * backend;
 
@@ -73,8 +75,8 @@ struct WPrivateMediaData
 
 struct WPrivateMediaSlice
 {
-    int currentTime;
-    int duration;
+    int start;
+    int end;
 
     QHash<WAbstractBackend::Quality, QString> medias;
     QHash<WAbstractBackend::Quality, QString> audios;
@@ -118,11 +120,11 @@ public:
 public: // Functions
     void loadSources(WMediaReply * reply);
 
-    void loadUrl(QIODevice * device, const WBackendNetQuery & query) const;
+    void loadUrl(QIODevice * device, const WBackendNetQuery & query, int start) const;
 
     void applySource(WPrivateMediaData       * media,
                      const WBackendNetSource & source,
-                     WAbstractBackend::SourceMode mode, int currentTime, int duration);
+                     WAbstractBackend::SourceMode mode, int start, int end);
 
     void updateSources();
 
@@ -142,9 +144,9 @@ public: // Functions
 public: // Slots
     void onLoaded(WRemoteData * data);
 
-    void onUrl(QIODevice * device, const WControllerMediaData & data);
-
     void onSourceLoaded(QIODevice * device, const WBackendNetSource & source);
+
+    void onUrl(QIODevice * device, const WControllerMediaData & data);
 
 public: // Variables
     QThread * thread;

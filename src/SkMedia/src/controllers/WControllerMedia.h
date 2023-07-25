@@ -93,7 +93,6 @@ private: // Variables
     WTrack::Type _type;
 
     int _currentTime;
-    int _duration;
 
     int _start;
     int _end;
@@ -125,12 +124,12 @@ public:
     {
         type = WTrack::Track;
 
-        currentTime = -1;
-        duration    = -1;
+        start = -1;
+        end   = -1;
     }
 
 public: // Interface
-    void applyVbml(const QByteArray & array, const QString & url);
+    void applyVbml(const QByteArray & array, const QString & url, int currentTime);
     void applyM3u (const QByteArray & array, const QString & url);
 
 public: // Variables
@@ -139,8 +138,8 @@ public: // Variables
     QString origin;
     QString source;
 
-    int currentTime;
-    int duration;
+    int start;
+    int end;
 
     QHash<WAbstractBackend::Quality, QString> medias;
 };
@@ -202,9 +201,9 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void onLoaded(WRemoteData *))
 
-    Q_PRIVATE_SLOT(d_func(), void onUrl(QIODevice *, const WControllerMediaData &))
-
     Q_PRIVATE_SLOT(d_func(), void onSourceLoaded(QIODevice *, const WBackendNetSource &))
+
+    Q_PRIVATE_SLOT(d_func(), void onUrl(QIODevice *, const WControllerMediaData &))
 
     friend class WMediaReply;
 };
