@@ -88,11 +88,15 @@ public: // Properties
 private: // Variables
     QString _url;
 
-    int _currentTime;
-
     WAbstractBackend::SourceMode _mode;
 
     WTrack::Type _type;
+
+    int _currentTime;
+    int _duration;
+
+    int _start;
+    int _end;
 
     QHash<WAbstractBackend::Quality, QString> _medias;
     QHash<WAbstractBackend::Quality, QString> _audios;

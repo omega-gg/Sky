@@ -1107,11 +1107,15 @@ WMediaReply * WControllerMedia::getMedia(const QString              & url,
 
     reply->_url = url;
 
-    reply->_currentTime = currentTime;
-
     reply->_mode = mode;
 
     reply->_type = WTrack::Track;
+
+    reply->_currentTime = currentTime;
+    reply->_duration    = -1;
+
+    reply->_start = -1;
+    reply->_end   = -1;
 
     reply->_backend = NULL;
 
