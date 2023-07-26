@@ -455,9 +455,10 @@ bool WAbstractViewPrivate::isWindows10()
 
 #ifdef QT_4
             view->QDeclarativeView::setGeometry(border, border, width, height);
-#elif defined(Q_OS_WIN)
+/*#elif defined(Q_OS_WIN)
             // FIXME Qt5 Windows: Workaround for opengl full screen flicker.
-            d->viewport->setGeometry(border, border, width + 1, height);
+            // UPDATE: This seems to cause more flickering with recent drivers.
+            d->viewport->setGeometry(border, border, width + 1, height);*/
 #else
             d->viewport->setGeometry(border, border, width, height);
 #endif
@@ -479,13 +480,14 @@ bool WAbstractViewPrivate::isWindows10()
 
 #ifdef QT_4
             view->QDeclarativeView::setGeometry(0, 0, width, height);
-#elif defined(Q_OS_WIN)
+/*#elif defined(Q_OS_WIN)
             // FIXME Qt5 Windows: Workaround for opengl full screen flicker.
+            // UPDATE: This seems to cause more flickering with recent drivers.
             if (d->fullScreen)
             {
                  d->viewport->setGeometry(0, 0, width + 1, height);
             }
-            else d->viewport->setGeometry(0, 0, width, height);
+            else d->viewport->setGeometry(0, 0, width, height);*/
 #else
             d->viewport->setGeometry(0, 0, width, height);
 #endif

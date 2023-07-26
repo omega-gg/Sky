@@ -935,7 +935,7 @@ Style
     property color itemList_colorCurrentHoverB: itemList_colorPressB
 
     property color itemList_colorBorder       : border_colorLight
-    property color itemList_colorBorderDefault: itemList_colorBorder
+    property color itemList_colorBorderDefault: "#b4b4b4"
 
     property color itemList_colorText        : "#646464"
     property color itemList_colorTextHover   : text_color
@@ -1153,8 +1153,8 @@ Style
 //#END
 
 //#icons_playback
-    property url icon16x16_backward: icon_backward
-    property url icon16x16_forward : icon_forward
+    property url icon12x12_backward: icon_backward
+    property url icon12x12_forward : icon_forward
 //#END
 
 //#icons_audio:SliderVolume
@@ -1260,7 +1260,7 @@ Style
         // Border
 
         border_color      = "#969696";
-        border_colorLight = "#b4b4b4";
+        border_colorLight = "#c8c8c8";
         border_colorFocus = "#00a0f0";
 
 //#WindowSky
@@ -1525,7 +1525,7 @@ Style
         itemList_colorCurrentHoverB = itemList_colorPressB;
 
         itemList_colorBorder        = border_colorLight;
-        itemList_colorBorderDefault = itemList_colorBorder;
+        itemList_colorBorderDefault = "#b4b4b4";
 
         itemList_colorText         = "#646464";
         itemList_colorTextSelected = text2_color;
@@ -1832,8 +1832,8 @@ Style
         itemList_colorCurrentHoverA = "#484848";
         itemList_colorCurrentHoverB = itemList_colorCurrentHoverA;
 
-        itemList_colorBorder        = "#202020";
-        itemList_colorBorderDefault = "#161616";
+        itemList_colorBorder        = border_colorLight;
+        itemList_colorBorderDefault = border_color;
 
         itemList_colorText         = "#dcdcdc";
         itemList_colorTextSelected = text_color;
@@ -2140,7 +2140,7 @@ Style
         itemList_colorCurrentHoverA = itemList_colorCurrentA;
         itemList_colorCurrentHoverB = "#484848";
 
-        itemList_colorBorder        = "#202020";
+        itemList_colorBorder        = border_colorLight;
         itemList_colorBorderDefault = border_color;
 
         itemList_colorText         = "#dcdcdc";

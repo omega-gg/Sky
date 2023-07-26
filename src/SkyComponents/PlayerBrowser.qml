@@ -145,13 +145,13 @@ BasePlayerBrowser
 
         anchors.verticalCenter: parent.verticalCenter
 
-        width : pGetSize()
-        height: width
+        width : buttonPlay.width
+        height: buttonPlay.height
 
-        iconWidth : Math.round(width / 3)
-        iconHeight: iconWidth
+        iconWidth : buttonPlay.iconWidth
+        iconHeight: buttonPlay.iconHeight
 
-        borderSize: st.border_sizeFocus
+        borderSize: buttonPlay.borderSize
 
         visible: (playerTab == tab) ? player.hasPreviousTrack
                                     : tab   .hasPreviousTrack
@@ -162,6 +162,8 @@ BasePlayerBrowser
 
         icon       : st.icon_backward
         iconScaling: true
+
+        iconFillMode: Image.PreserveAspectFit
 
         cursor: Qt.PointingHandCursor
 
@@ -179,13 +181,13 @@ BasePlayerBrowser
 
         anchors.verticalCenter: parent.verticalCenter
 
-        width : buttonPrevious.width
-        height: buttonPrevious.height
+        width : buttonPlay.width
+        height: buttonPlay.height
 
-        iconWidth : buttonPrevious.iconWidth
-        iconHeight: buttonPrevious.iconHeight
+        iconWidth : buttonPlay.iconWidth
+        iconHeight: buttonPlay.iconHeight
 
-        borderSize: buttonPrevious.borderSize
+        borderSize: buttonPlay.borderSize
 
         visible: (playerTab == tab) ? player.hasNextTrack
                                     : tab   .hasNextTrack
@@ -196,6 +198,8 @@ BasePlayerBrowser
 
         icon       : st.icon_forward
         iconScaling: true
+
+        iconFillMode: Image.PreserveAspectFit
 
         cursor: Qt.PointingHandCursor
 
@@ -209,14 +213,13 @@ BasePlayerBrowser
 
         anchors.centerIn: parent
 
-        width : buttonPrevious.width
-        height: buttonPrevious.height
+        width : pGetSize()
+        height: width
 
-        // FIXME fontawesome: Taking the svg viewBox into account.
-        iconWidth : Math.round(iconHeight * 0.75)
-        iconHeight: buttonPrevious.iconHeight
+        iconWidth : Math.round(width / 3)
+        iconHeight: iconWidth
 
-        borderSize: buttonPrevious.borderSize
+        borderSize: st.border_sizeFocus
 
         visible: (loading || enabled)
 
@@ -229,7 +232,22 @@ BasePlayerBrowser
         icon       : st.icon_play
         iconScaling: true
 
+        iconFillMode: Image.PreserveAspectFit
+
         cursor: Qt.PointingHandCursor
+
+        //-----------------------------------------------------------------------------------------
+        // NOTE: We want the play button slightly shifted to the right
+
+        itemIcon.anchors.left: buttonPlay.left
+
+        itemIcon.anchors.leftMargin: Math.round(width / 3)
+
+        itemIcon.anchors.centerIn: undefined
+
+        itemIcon.anchors.verticalCenter: buttonPlay.verticalCenter
+
+        //-----------------------------------------------------------------------------------------
 
         itemIcon.visible: (loading == false)
 

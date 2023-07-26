@@ -204,6 +204,8 @@ BasePlayerBrowser
 
         icon: st.icon_play
 
+        cursor: Qt.PointingHandCursor
+
         //-----------------------------------------------------------------------------------------
         // NOTE: We want the play button slightly shifted to the right
 
@@ -216,8 +218,6 @@ BasePlayerBrowser
         itemIcon.anchors.verticalCenter: buttonPlay.verticalCenter
 
         //-----------------------------------------------------------------------------------------
-
-        cursor: Qt.PointingHandCursor
 
         onClicked: play()
     }

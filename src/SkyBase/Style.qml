@@ -129,7 +129,7 @@ Item
     property int border_sizeFocus: border_size
 
     property color border_color     : "#969696"
-    property color border_colorLight: "#b4b4b4"
+    property color border_colorLight: "#c8c8c8"
     property color border_colorFocus: color_highlight
 
     property alias border_filter     : border_filter
