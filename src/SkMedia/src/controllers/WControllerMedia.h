@@ -94,8 +94,8 @@ private: // Variables
 
     int _currentTime;
 
-    int _start;
-    int _end;
+    int _timeA;
+    int _timeB;
 
     QHash<WAbstractBackend::Quality, QString> _medias;
     QHash<WAbstractBackend::Quality, QString> _audios;
@@ -124,8 +124,8 @@ public:
     {
         type = WTrack::Track;
 
-        start = -1;
-        end   = -1;
+        timeA = -1;
+        timeB = -1;
     }
 
 public: // Interface
@@ -138,8 +138,8 @@ public: // Variables
     QString origin;
     QString source;
 
-    int start;
-    int end;
+    int timeA;
+    int timeB;
 
     QHash<WAbstractBackend::Quality, QString> medias;
 };

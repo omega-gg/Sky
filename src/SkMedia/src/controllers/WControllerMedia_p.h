@@ -57,8 +57,10 @@ struct WPrivateMediaData
 
     QString url;
 
-    int start;
-    int end;
+    int currentTime;
+
+    int timeA;
+    int timeB;
 
     WBackendNet * backend;
 
@@ -75,8 +77,8 @@ struct WPrivateMediaData
 
 struct WPrivateMediaSlice
 {
-    int start;
-    int end;
+    int timeA;
+    int timeB;
 
     QHash<WAbstractBackend::Quality, QString> medias;
     QHash<WAbstractBackend::Quality, QString> audios;
@@ -120,11 +122,11 @@ public:
 public: // Functions
     void loadSources(WMediaReply * reply);
 
-    void loadUrl(QIODevice * device, const WBackendNetQuery & query, int start) const;
+    void loadUrl(QIODevice * device, const WBackendNetQuery & query, int time) const;
 
     void applySource(WPrivateMediaData       * media,
                      const WBackendNetSource & source,
-                     WAbstractBackend::SourceMode mode, int start, int end);
+                     WAbstractBackend::SourceMode mode, int timeA, int timeB);
 
     void updateSources();
 
