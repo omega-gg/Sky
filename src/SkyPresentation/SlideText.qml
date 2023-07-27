@@ -38,6 +38,7 @@ TextSvg
     property string family   : st.text_fontFamily
     property int    pixelSize: sp.slideText_pixelSize
     property bool   bold     : true
+    property bool   italic   : false
 
     //---------------------------------------------------------------------------------------------
     // Style
@@ -83,6 +84,7 @@ TextSvg
     font.family   : family
     font.pixelSize: pixelSize
     font.bold     : bold
+    font.italic   : italic
 
     //---------------------------------------------------------------------------------------------
     // Animations

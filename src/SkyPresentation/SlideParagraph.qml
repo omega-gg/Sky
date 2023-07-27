@@ -40,6 +40,8 @@ Item
     property int marginWidth : (pSlides) ? ds(textHeight / 4) : 0
     property int marginHeight: (pSlides) ? ds(textHeight / 8) : 0
 
+    property int textMarginHeight: 0
+
     property real zoom: (pSlides) ? slides.ratio : 1.0
 
     property int horizontalAlignment: Text.AlignHCenter
@@ -63,6 +65,7 @@ Item
     property string family   : st.text_fontFamily
     property int    pixelSize: sp.slideText_pixelSize
     property bool   bold     : true
+    property bool   italic   : false
 
     //---------------------------------------------------------------------------------------------
     // Style
@@ -215,7 +218,7 @@ Item
             width: repeater.width
 
             marginWidth : slideParagraph.marginWidth
-            marginHeight: 0
+            marginHeight: textMarginHeight
 
             zoom: slideParagraph.zoom
 
@@ -241,6 +244,7 @@ Item
             font.family   : slideParagraph.family
             font.pixelSize: slideParagraph.pixelSize
             font.bold     : slideParagraph.bold
+            font.italic   : slideParagraph.italic
         }
     }
 }
