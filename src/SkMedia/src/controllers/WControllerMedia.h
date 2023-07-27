@@ -124,12 +124,16 @@ public:
     {
         type = WTrack::Track;
 
+        currentTime = -1;
+
+        start = -1;
+
         timeA = -1;
         timeB = -1;
     }
 
 public: // Interface
-    void applyVbml(const QByteArray & array, const QString & url, int currentTime);
+    void applyVbml(const QByteArray & array, const QString & url, int time);
     void applyM3u (const QByteArray & array, const QString & url);
 
 public: // Variables
@@ -137,6 +141,10 @@ public: // Variables
 
     QString origin;
     QString source;
+
+    int currentTime;
+
+    int start;
 
     int timeA;
     int timeB;

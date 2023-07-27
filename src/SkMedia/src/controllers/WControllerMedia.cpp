@@ -164,8 +164,7 @@ QString WMediaReply::error() const
 //=================================================================================================
 // Interface
 
-void WControllerMediaData::applyVbml(const QByteArray & array,
-                                     const QString    & url, int currentTime)
+void WControllerMediaData::applyVbml(const QByteArray & array, const QString & url, int time)
 {
     QString content = Sk::readBml(array);
 
@@ -196,7 +195,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array,
     {
         WControllerPlaylist::vbmlPatch(content, api);
 
-        applyVbml(content.toUtf8(), url, currentTime);
+        applyVbml(content.toUtf8(), url, time);
 
         return;
     }
@@ -242,25 +241,33 @@ void WControllerMediaData::applyVbml(const QByteArray & array,
 
         if (children.isEmpty() == false)
         {
-            // FIXME
-            int duration = reader.extractInt("start");
+            int duration = 0;
 
-            currentTime += duration;
+            if (time == -1) time  = reader.extractInt("start");
+            else            time += reader.extractInt("start");
 
             foreach (const WYamlNode & child, children)
             {
-                int durationSource = WControllerPlaylist::vbmlDuration(child,
-                                                                       child.extractInt("start"));
+                int startSource = child.extractMsecs("start");
+
+                int durationSource = WControllerPlaylist::vbmlDuration(child, startSource);
 
                 if (durationSource == -1) continue;
 
                 duration += durationSource;
 
-                if (currentTime > duration) continue;
+                if (time > duration) continue;
 
                 origin = WControllerPlaylist::vbmlSource(child);
 
                 timeA = duration - durationSource;
+
+                currentTime = time - timeA;
+
+                start = startSource;
+
+                timeA += start;
+
                 timeB = duration;
 
                 break;
@@ -318,7 +325,7 @@ class WControllerMediaReply : public QObject
     Q_OBJECT
 
 public: // Interface
-    Q_INVOKABLE void extractVbml(QIODevice * device, const QString & url, int currentTime);
+    Q_INVOKABLE void extractVbml(QIODevice * device, const QString & url, int time);
 
     Q_INVOKABLE void extractM3u(QIODevice * device, const QString & url);
 
@@ -329,11 +336,11 @@ signals:
 //-------------------------------------------------------------------------------------------------
 
 /* Q_INVOKABLE */ void WControllerMediaReply::extractVbml(QIODevice * device,
-                                                          const QString & url, int currentTime)
+                                                          const QString & url, int time)
 {
     WControllerMediaData data;
 
-    data.applyVbml(WControllerFile::readAll(device), url, currentTime);
+    data.applyVbml(WControllerFile::readAll(device), url, time);
 
     emit loaded(device, data);
 
@@ -1056,8 +1063,8 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
             media->type = data.type;
         }
 
-        // FIXME
-        media->timeA -= data.timeA;
+        // NOTE: We update to currentTime before loading the next source.
+        media->timeA = data.currentTime;
 
         getData(media, &query);
 

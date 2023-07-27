@@ -1025,12 +1025,7 @@ void WBackendVlcPrivate::convertFrameSse()
 
 void WBackendVlcPrivate::loadSources(bool play)
 {
-    if (reply)
-    {
-        reply->deleteLater();
-
-        return;
-    }
+    if (reply) return;
 
     Q_Q(WBackendVlc);
 
@@ -1043,9 +1038,9 @@ void WBackendVlcPrivate::loadSources(bool play)
         &&
         mode != WAbstractBackend::SourceAudio)
     {
-         reply = wControllerMedia->getMedia(source, q, WAbstractBackend::SourceSafe, currentTime);
+         reply = wControllerMedia->getMedia(source, q, WAbstractBackend::SourceSafe);
     }
-    else reply = wControllerMedia->getMedia(source, q, mode, currentTime);
+    else reply = wControllerMedia->getMedia(source, q, mode);
 
     if (reply == NULL)
     {
@@ -1056,6 +1051,10 @@ void WBackendVlcPrivate::loadSources(bool play)
     else if (reply->isLoaded())
     {
         applySources(play);
+
+        delete reply;
+
+        reply = NULL;
     }
     else QObject::connect(reply, SIGNAL(loaded(WMediaReply *)), q, SLOT(onLoaded()));
 }
@@ -1332,6 +1331,10 @@ void WBackendVlcPrivate::onLoaded()
         q->stop();
     }
     else applySources(q->isPlaying());
+
+    reply->deleteLater();
+
+    reply = NULL;
 }
 
 //-------------------------------------------------------------------------------------------------

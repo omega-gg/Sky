@@ -785,7 +785,7 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & t
     title = reader.extractString("title");
     cover = reader.extractString("cover");
 
-    int start = reader.extractInt("start");
+    int start = reader.extractMsecs("start");
 
     int duration = WControllerPlaylist::vbmlDuration(reader.node(), start);
 
