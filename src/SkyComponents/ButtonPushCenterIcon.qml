@@ -26,6 +26,12 @@ import Sky     1.0
 ButtonPushIcon
 {
     //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+
+    property bool showBorder: true
+
+    //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
@@ -33,7 +39,8 @@ ButtonPushIcon
 
     clip: true
 
-    background.anchors.leftMargin: -(borderSize / 2)
+    background.anchors.leftMargin: (showBorder) ? -(borderSize / 2)
+                                                : -borderSize
 
     background.anchors.rightMargin: background.anchors.leftMargin
 
@@ -49,6 +56,8 @@ ButtonPushIcon
 
         borderTop   : 0
         borderBottom: 0
+
+        visible: showBorder
     }
 //#END
 }

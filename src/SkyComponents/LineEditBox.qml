@@ -46,7 +46,6 @@ BaseLineEdit
 
     property alias background: background
     property alias itemFocus : itemFocus
-    property alias borders   : borders
 
     //---------------------------------------------------------------------------------------------
     // Style
@@ -143,14 +142,5 @@ BaseLineEdit
         opacity: (window.isActive && isFocused)
 
         color: colorTextSelection
-
-        RectangleBorders
-        {
-            id: borders
-
-            anchors.fill: parent
-
-            anchors.margins: focusSize
-        }
     }
 }

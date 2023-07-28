@@ -26,6 +26,12 @@ import Sky     1.0
 ButtonPushIcon
 {
     //---------------------------------------------------------------------------------------------
+    // Properties
+    //---------------------------------------------------------------------------------------------
+
+    property bool showBorder: true
+
+    //---------------------------------------------------------------------------------------------
     // Settings
     //---------------------------------------------------------------------------------------------
 
@@ -37,7 +43,8 @@ ButtonPushIcon
 
     itemIcon.anchors.verticalCenter: verticalCenter
 
-    itemIcon.x: radius / 2 - border.width
+    itemIcon.x: (showBorder) ? Math.round(width / 12) - border.width
+                             : Math.round(width / 12)
 
     //---------------------------------------------------------------------------------------------
     // Children
@@ -48,5 +55,7 @@ ButtonPushIcon
         id: border
 
         anchors.right: parent.right
+
+        visible: showBorder
     }
 }

@@ -219,8 +219,6 @@ BasePlayerBrowser
         iconWidth : Math.round(width / 3)
         iconHeight: iconWidth
 
-        borderSize: st.border_sizeFocus
-
         visible: (loading || enabled)
 
         enabled: (tab != null && tab.isValid)
