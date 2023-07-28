@@ -855,7 +855,8 @@ void WViewPrivate::updateDrag()
                         }
                         else rect = getChildrenRect(areaDrop);
 
-                        if (rect.contains(posItem))
+                        // NOTE: We match against a QRect to avoid rounding issues.
+                        if (rect.toRect().contains(posItem.toPoint()))
                         {
                             areaDrop->d_func()->dragMoveEvent(posItem, dragData);
 
@@ -1299,20 +1300,22 @@ void WViewPrivate::getItems(QList<QQuickItem *> * items,
 {
     if (item->isVisible() == false) return;
 
-    QPointF position = item->mapFromScene(pos);
+    QPoint position = item->mapFromScene(pos).toPoint();
 
     QList<QQuickItem *> childsA = item->childItems();
 
     if (childsA.isEmpty())
     {
-        if (item->boundingRect().contains(position) == false) return;
+        // NOTE: We match against a QRect to avoid rounding issues.
+        if (item->boundingRect().toRect().contains(position) == false) return;
 
         items->append(item);
 
         return;
     }
 
-    if (getChildrenRect(item).contains(position) == false) return;
+    // NOTE: We match against a QRect to avoid rounding issues.
+    if (getChildrenRect(item).toRect().contains(position) == false) return;
 
     QList<QQuickItem *> childsB;
 
@@ -1423,10 +1426,18 @@ QRectF WViewPrivate::getChildrenRect(QQuickItem * item) const
 {
     QRectF rect = item->childrenRect();
 
-    // NOTE: The children rectangle should never be above 0, otherwise it fails when a ListView has
-    //       a negative content origin.
-    if (rect.x() > 0) rect.setX(0);
-    if (rect.y() > 0) rect.setY(0);
+    // NOTE: The rectangle position should always be 0, otherwise it fails when a ListView has a
+    //        negative content origin.
+    rect.setX(0);
+    rect.setY(0);
+
+    qreal width  = item->width ();
+    qreal height = item->height();
+
+    // NOTE: The children rectangle should not be larger than the parent. Otherwise it creates
+    //       conflict when deciding which item to hover.
+    if (rect.width () > width)  rect.setWidth (width);
+    if (rect.height() > height) rect.setHeight(height);
 
     return rect;
 }
