@@ -160,8 +160,8 @@ void WAbstractBackendPrivate::currentOutputChanged()
 // WAbstractBackend
 //=================================================================================================
 
-WAbstractBackend::WAbstractBackend()
-    : QObject(), WPrivatable(new WAbstractBackendPrivate(this))
+WAbstractBackend::WAbstractBackend(QObject * parent)
+    : QObject(parent), WPrivatable(new WAbstractBackendPrivate(this))
 {
     Q_D(WAbstractBackend); d->init();
 }
@@ -169,8 +169,8 @@ WAbstractBackend::WAbstractBackend()
 //-------------------------------------------------------------------------------------------------
 // Protected
 
-WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p)
-    : QObject(), WPrivatable(p)
+WAbstractBackend::WAbstractBackend(WAbstractBackendPrivate * p, QObject * parent)
+    : QObject(parent), WPrivatable(p)
 {
     Q_D(WAbstractBackend); d->init();
 }

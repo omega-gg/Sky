@@ -248,6 +248,8 @@ void WDeclarativePlayerPrivate::stop()
 
 void WDeclarativePlayerPrivate::updateRepeat(WTrack::Type type)
 {
+    if (backend == NULL) return;
+
     if (repeat == WDeclarativePlayer::RepeatOne
         ||
         (repeat == WDeclarativePlayer::RepeatAll && playlist == NULL)

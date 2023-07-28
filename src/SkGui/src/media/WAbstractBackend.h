@@ -295,9 +295,9 @@ public:
 #endif
 
 public:
-    WAbstractBackend();
+    WAbstractBackend(QObject * parent = NULL);
 protected:
-    WAbstractBackend(WAbstractBackendPrivate * p);
+    WAbstractBackend(WAbstractBackendPrivate * p, QObject * parent = NULL);
 
 public: // Interface
 #if defined(QT_NEW) && defined(SK_NO_QML) == false

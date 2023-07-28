@@ -35,7 +35,7 @@ class SK_MEDIA_EXPORT WBackendManager : public WAbstractBackend
     Q_OBJECT
 
 public:
-    WBackendManager();
+    WBackendManager(QObject * parent = NULL);
 
 protected: // WAbstractBackend implementation
 #ifdef QT_NEW

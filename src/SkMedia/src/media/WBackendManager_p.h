@@ -38,12 +38,22 @@
 
 #ifndef SK_NO_BACKENDMANAGER
 
+// Forward declarations
+class WBackendVlc;
+
 class SK_MEDIA_EXPORT WBackendManagerPrivate : public WAbstractBackendPrivate
 {
 public:
     WBackendManagerPrivate(WBackendManager * p);
 
+    /* virtual */ ~WBackendManagerPrivate();
+
     void init();
+
+public: // Variables
+    QList<WAbstractBackend *> backends;
+
+    WBackendInterface * backendInterface;
 
 protected:
     W_DECLARE_PUBLIC(WBackendManager)

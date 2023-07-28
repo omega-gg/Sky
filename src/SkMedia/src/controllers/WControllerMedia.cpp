@@ -841,7 +841,7 @@ const WPrivateMediaSlice * WControllerMediaPrivate::getSlice(WPrivateMediaSource
 {
     WPrivateMediaMode * sources = getMode(source, mode);
 
-    if (source == NULL) return NULL;
+    if (sources == NULL) return NULL;
 
     QList<WPrivateMediaSlice> & slices = sources->slices;
 
@@ -1063,8 +1063,13 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
             media->type = data.type;
         }
 
-        // NOTE: We update to currentTime before loading the next source.
-        media->timeA = data.currentTime;
+        int currentTime = data.currentTime;
+
+        if (currentTime != -1)
+        {
+            // NOTE: We update to currentTime before loading the next source.
+            media->timeA = currentTime;
+        }
 
         getData(media, &query);
 

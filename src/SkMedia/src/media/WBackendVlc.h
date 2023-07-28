@@ -39,7 +39,7 @@ class SK_MEDIA_EXPORT WBackendVlc : public WAbstractBackend
     Q_PROPERTY(int networkCache READ networkCache WRITE setNetworkCache NOTIFY networkCacheChanged)
 
 public:
-    WBackendVlc();
+    WBackendVlc(QObject * parent = NULL);
 
 public: // Interface
     Q_INVOKABLE void setProxy(const QString & host,

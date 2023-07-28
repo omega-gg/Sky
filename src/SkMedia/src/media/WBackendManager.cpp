@@ -22,6 +22,12 @@
 
 #include "WBackendManager.h"
 
+// Sk includes
+#include <WBackendVlc>
+
+// Private includes
+#include <private/WBackendVlc_p>
+
 #ifndef SK_NO_BACKENDMANAGER
 
 //-------------------------------------------------------------------------------------------------
@@ -30,15 +36,33 @@
 
 WBackendManagerPrivate::WBackendManagerPrivate(WBackendManager * p) : WAbstractBackendPrivate(p) {}
 
+/* virtual */ WBackendManagerPrivate::~WBackendManagerPrivate()
+{
+    foreach (WAbstractBackend * backend, backends)
+    {
+        backend->deleteBackend();
+    }
+}
+
 //-------------------------------------------------------------------------------------------------
 
-void WBackendManagerPrivate::init() {}
+void WBackendManagerPrivate::init()
+{
+    Q_Q(WBackendManager);
+
+    WBackendVlc * backend = new WBackendVlc(q);
+
+    backends.append(backend);
+
+    backendInterface = backend;
+}
 
 //-------------------------------------------------------------------------------------------------
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
-WBackendManager::WBackendManager() : WAbstractBackend(new WBackendManagerPrivate(this))
+WBackendManager::WBackendManager(QObject * parent)
+    : WAbstractBackend(new WBackendManagerPrivate(this), parent)
 {
     Q_D(WBackendManager); d->init();
 }
@@ -51,7 +75,7 @@ WBackendManager::WBackendManager() : WAbstractBackend(new WBackendManagerPrivate
 
 /* virtual */ WBackendNode * WBackendManager::backendCreateNode() const
 {
-    return NULL;
+    return new WBackendVlcNode;
 }
 
 #endif

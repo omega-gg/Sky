@@ -1524,7 +1524,7 @@ void WBackendVlcPrivate::onUpdateState()
 // WBackendVlc
 //=================================================================================================
 
-WBackendVlc::WBackendVlc() : WAbstractBackend(new WBackendVlcPrivate(this))
+WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPrivate(this), parent)
 {
     Q_D(WBackendVlc); d->init();
 }
