@@ -473,6 +473,10 @@ Item
     property url picture_tag: "pictures/tag.svg"
 //#END
 
+//#pictures_flag:AnimatedLoader
+    property url picture_flag: "pictures/flag.svg"
+//#END
+
     //---------------------------------------------------------------------------------------------
     // Functions
     //---------------------------------------------------------------------------------------------
