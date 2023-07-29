@@ -106,11 +106,11 @@ BasePlayerBrowser
 
     function pGetSize()
     {
-        var size = Math.round(width / 6);
+        var size = Math.round(width / 8);
 
         size = Math.max(st.dp48, size);
 
-        return Math.min(size, st.dp80);
+        return Math.min(size, st.dp72);
     }
 
     //---------------------------------------------------------------------------------------------
@@ -218,6 +218,8 @@ BasePlayerBrowser
 
         iconWidth : Math.round(width / 3)
         iconHeight: iconWidth
+
+        borderSize: 0
 
         visible: (loading || enabled)
 

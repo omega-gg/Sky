@@ -33,6 +33,8 @@ WallBookmarkTrack
 
     /* read */ property bool isExposed: false
 
+    property int loaderHeight: player.height / 128
+
     property int logoMargin: browserBack.width / logoRatio
 
     property bool enablePress: false
@@ -97,6 +99,8 @@ WallBookmarkTrack
     property alias playerBrowser   : playerBrowser
 
     property alias itemText: itemText
+
+    property alias itemLoader: itemLoader
 
     property alias buttonsItem: buttonsItem
 
@@ -534,7 +538,7 @@ WallBookmarkTrack
             else return hasStarted;
         }
 
-        // NOTE: When the wall is exposed we want to make sure we clip the video properly.
+        // NOTE: When the wall is exposed we make sure to clip the player properly.
         clip: (isActive && fillMode == AbstractBackend.PreserveAspectCrop)
 
         tabs: wall.tabs
@@ -746,19 +750,22 @@ WallBookmarkTrack
         onVisibleChanged: pUpdateText()
     }
 
-    LabelLoading
+    AnimatedLoader
     {
-        anchors.centerIn: player
+        id: itemLoader
 
-        width : st.dp80
-        height: st.dp80
+        anchors.left  : player.left
+        anchors.right : player.right
+        anchors.bottom: player.bottom
+
+        height: loaderHeight
 
         z: player.z
 
-        visible: (player.isPlaying && player.isLoading)
+        opacity: (player.isPlaying && player.isLoading)
 
-        icon          : st.icon_loading
-        iconSourceSize: st.size32x32
+        // NOTE: When the wall is exposed we make sure to clip the loader properly.
+        clip: isActive
     }
 
     Rectangle
