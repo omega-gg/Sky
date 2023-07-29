@@ -758,7 +758,7 @@ WallBookmarkTrack
         visible: (player.isPlaying && player.isLoading)
 
         icon          : st.icon_loading
-        iconSourceSize: st.size64x64
+        iconSourceSize: st.size32x32
     }
 
     Rectangle

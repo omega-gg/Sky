@@ -257,7 +257,7 @@ BasePlayerBrowser
 
             anchors.centerIn: parent
 
-            width : Math.round(buttonPlay.width / 1.6)
+            width : buttonPlay.iconWidth
             height: width
 
             visible: loading
@@ -265,6 +265,9 @@ BasePlayerBrowser
             scaling: true
 
             filterDefault: st.labelRound_filterIcon
+
+            // NOTE: We make sure it's scaled when visible otherwise it might appear blurry.
+            onVisibleChanged: if (visible) applyScale()
         }
     }
 

@@ -44,7 +44,9 @@ LabelLoadingText
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: paddingLeft + itemIcon.width + spacing + itemText.width + button.width + paddingRight
+    width: paddingLeft + itemIcon.width + iconMargins * 2 + spacing + itemText.width + button.width
+           +
+           paddingRight
 
     //---------------------------------------------------------------------------------------------
     // Children

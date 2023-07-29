@@ -40,6 +40,8 @@ Item
 
     property int spacing: st.labelLoadingText_spacing
 
+    property int iconMargins: st.labelLoadingText_iconMargins
+
     //---------------------------------------------------------------------------------------------
     // Style
 
@@ -98,7 +100,9 @@ Item
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    width: paddingLeft + itemIcon.width + spacing + itemText.width + paddingRight + st.dp8
+    width: paddingLeft + itemIcon.width + iconMargins * 2 + spacing + itemText.width + paddingRight
+           +
+           st.dp8
 
     height: st.labelLoadingText_height
 
@@ -135,7 +139,7 @@ Item
 
         anchors.left: parent.left
 
-        anchors.leftMargin: paddingLeft
+        anchors.leftMargin: paddingLeft + iconMargins
 
         anchors.verticalCenter: parent.verticalCenter
 
@@ -148,7 +152,7 @@ Item
 
         anchors.left: itemIcon.right
 
-        anchors.leftMargin: spacing
+        anchors.leftMargin: iconMargins + spacing
 
         anchors.verticalCenter: parent.verticalCenter
 

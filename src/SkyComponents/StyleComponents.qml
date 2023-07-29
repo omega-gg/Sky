@@ -516,6 +516,8 @@ Style
     property int labelLoadingText_padding: dp4
     property int labelLoadingText_spacing: dp2
 
+    property int labelLoadingText_iconMargins: dp6
+
     property color labelLoadingText_colorText: text2_color
 //#END
 
@@ -1170,7 +1172,7 @@ Style
 //#icons_loading:IconLoading
     property url icon_loading: "icons/loading.svg"
 
-    property url icon32x32_loading: icon_loading
+    property url icon20x20_loading: icon_loading
 //#END
 
     //---------------------------------------------------------------------------------------------

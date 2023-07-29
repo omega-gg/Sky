@@ -36,9 +36,9 @@ Icon
     // Settings
     //---------------------------------------------------------------------------------------------
 
-    source: st.icon32x32_loading
+    source: st.icon20x20_loading
 
-    sourceSize: (scaling) ? Qt.size(-1, -1) : st.size32x32
+    sourceSize: (scaling) ? Qt.size(-1, -1) : st.size20x20
 
     style: st.icon_raised
 
