@@ -100,7 +100,7 @@ TabsTrack
 
         source: st.icon16x16_play
 
-        // NOTE: We want a subtle play icon.
+        // NOTE: We want a small play icon to keep it subtle.
         sourceSize: st.size14x14
     }
 }
