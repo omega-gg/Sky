@@ -198,12 +198,15 @@ BaseWindow
 
     //---------------------------------------------------------------------------------------------
 
-    function clearContextual()
+    function mapFromItem(item, x, y)
     {
-        if (areaContextual) areaContextual.hidePanels();
+        return content.mapFromItem(item, x, y);
     }
 
-    //---------------------------------------------------------------------------------------------
+    function mapToItem(item, x, y)
+    {
+        return content.mapToItem(item, x, y);
+    }
 
     function contentMouseX()
     {
@@ -256,6 +259,11 @@ BaseWindow
             hasParent(item, areaContextual)) return;
 
         areaContextual.hidePanels();
+    }
+
+    function clearContextual()
+    {
+        if (areaContextual) areaContextual.hidePanels();
     }
 
     //---------------------------------------------------------------------------------------------

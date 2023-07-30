@@ -173,8 +173,6 @@ Item
 
             anchors.bottomMargin: border.size
 
-            visible: (isSelected || mouseArea.hoverActive)
-
             gradient: Gradient
             {
                 GradientStop
@@ -199,7 +197,11 @@ Item
                         {
                             return st.itemList_colorSelectFocusA;
                         }
-                        else return st.itemList_colorHoverA;
+                        else if (mouseArea.hoverActive)
+                        {
+                            return st.itemList_colorHoverA;
+                        }
+                        else return st.itemList_colorA;
                     }
                 }
 
@@ -225,7 +227,11 @@ Item
                         {
                             return st.itemList_colorSelectFocusB;
                         }
-                        else return st.itemList_colorHoverB;
+                        else if (mouseArea.hoverActive)
+                        {
+                            return st.itemList_colorHoverB;
+                        }
+                        else return st.itemList_colorB;
                     }
                 }
             }
@@ -440,5 +446,7 @@ Item
         id: border
 
         anchors.bottom: parent.bottom
+
+        color: st.itemList_colorBorder
     }
 }

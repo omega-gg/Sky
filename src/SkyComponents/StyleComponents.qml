@@ -1058,7 +1058,7 @@ Style
     //---------------------------------------------------------------------------------------------
     // ContextualItemConfirm
 
-    property int contextualItemConfirm_height: itemList_height
+    property int contextualItemConfirm_height: contextualItem_height
 //#END
 
     //---------------------------------------------------------------------------------------------
@@ -1835,7 +1835,7 @@ Style
         itemList_colorCurrentHoverB = itemList_colorCurrentHoverA;
 
         itemList_colorBorder        = border_colorLight;
-        itemList_colorBorderDefault = border_color;
+        itemList_colorBorderDefault = "#161616";
 
         itemList_colorText         = "#dcdcdc";
         itemList_colorTextSelected = text_color;
@@ -2143,7 +2143,7 @@ Style
         itemList_colorCurrentHoverB = "#484848";
 
         itemList_colorBorder        = border_colorLight;
-        itemList_colorBorderDefault = border_color;
+        itemList_colorBorderDefault = "#161616";
 
         itemList_colorText         = "#dcdcdc";
         itemList_colorTextSelected = text_color;

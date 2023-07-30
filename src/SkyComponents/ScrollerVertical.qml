@@ -35,15 +35,11 @@ Item
 
     property bool isHoveredA: (mouseAreaUp.hoverActive
                                ||
-                               (visible
-                                &&
-                                scrollArea.dragAccepted && scrollArea.mouseY < size))
+                               (pMouseY != -1 && pMouseY < size))
 
     property bool isHoveredB: (mouseAreaDown.hoverActive
                                ||
-                               (visible
-                                &&
-                                scrollArea.dragAccepted && scrollArea.mouseY >= height - size))
+                               (pMouseY != -1 && pMouseY >= height - size))
 
     /* read */ property int scrollDirection: -1
 
@@ -65,11 +61,30 @@ Item
     property ImageFilterColor filter: st.scroller_filter
 
     //---------------------------------------------------------------------------------------------
+    // Private
+
+    property int pMouseY: pGetMouseY()
+
+    //---------------------------------------------------------------------------------------------
     // Aliases
     //---------------------------------------------------------------------------------------------
 
     property alias mouseAreaUp  : mouseAreaUp
     property alias mouseAreaDown: mouseAreaDown
+
+    //---------------------------------------------------------------------------------------------
+    // Functions
+    //---------------------------------------------------------------------------------------------
+    // Private
+
+    function pGetMouseY()
+    {
+        if (visible && scrollArea.dragAccepted)
+        {
+            return window.mapToItem(scroller, -1, window.mouseY).y;
+        }
+        else return -1;
+    }
 
     //---------------------------------------------------------------------------------------------
     // Settings

@@ -90,8 +90,6 @@ MouseArea
         anchors.top   : parent.top
         anchors.bottom: border.top
 
-        visible: (isSelected || pressed || hoverActive)
-
         gradient: Gradient
         {
             GradientStop
@@ -116,7 +114,11 @@ MouseArea
                     {
                         return st.itemList_colorSelectFocusA;
                     }
-                    else return st.itemList_colorHoverA;
+                    else if (hoverActive)
+                    {
+                        return st.itemList_colorHoverA;
+                    }
+                    else return st.itemList_colorDefaultA;
                 }
             }
 
@@ -142,7 +144,11 @@ MouseArea
                     {
                         return st.itemList_colorSelectFocusB;
                     }
-                    else return st.itemList_colorHoverB;
+                    else if (hoverActive)
+                    {
+                        return st.itemList_colorHoverB;
+                    }
+                    else return st.itemList_colorDefaultB;
                 }
             }
         }
@@ -208,5 +214,7 @@ MouseArea
         id: border
 
         anchors.bottom: parent.bottom
+
+        color: st.itemList_colorBorderDefault
     }
 }

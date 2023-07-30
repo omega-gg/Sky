@@ -219,7 +219,7 @@ BasePlayerBrowser
         iconWidth : Math.round(width / 3)
         iconHeight: iconWidth
 
-        borderSize: 0
+        borderSize: st.border_sizeFocus
 
         visible: (loading || enabled)
 
