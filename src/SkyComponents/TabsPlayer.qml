@@ -98,7 +98,9 @@ TabsTrack
                   &&
                   pHoveredTab.currentTime != -1)
 
-        source    : st.icon16x16_play
-        sourceSize: st.size16x16
+        source: st.icon16x16_play
+
+        // NOTE: We want a subtle play icon.
+        sourceSize: st.size14x14
     }
 }
