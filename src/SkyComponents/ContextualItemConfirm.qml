@@ -201,7 +201,7 @@ Item
                         {
                             return st.itemList_colorHoverA;
                         }
-                        else return st.itemList_colorA;
+                        else return st.itemList_colorDefaultA;
                     }
                 }
 
@@ -231,7 +231,7 @@ Item
                         {
                             return st.itemList_colorHoverB;
                         }
-                        else return st.itemList_colorB;
+                        else return st.itemList_colorDefaultB;
                     }
                 }
             }

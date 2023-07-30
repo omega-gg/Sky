@@ -241,7 +241,7 @@ BasePlayerBrowser
 
         itemIcon.anchors.left: buttonPlay.left
 
-        itemIcon.anchors.leftMargin: Math.round(width / 3)
+        itemIcon.anchors.leftMargin: Math.round(width / 2.9)
 
         itemIcon.anchors.centerIn: undefined
 
