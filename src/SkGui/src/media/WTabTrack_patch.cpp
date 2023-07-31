@@ -35,7 +35,7 @@ void WTabTrack_patch(QString & data, const QString & api)
 {
     qWarning("WTabTrack_patch: Patching.");
 
-    if (Sk::versionIsLower(api, "1.8.1-1"))
+    if (Sk::versionIsLower(api, "1.8.1-2"))
     {
         int index = data.indexOf("<tabs>");
 
