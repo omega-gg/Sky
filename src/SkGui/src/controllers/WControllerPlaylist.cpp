@@ -328,7 +328,10 @@ void WControllerPlaylistData::applyVbml(const QByteArray & array, const QString 
         parsePlaylist(reader);
 
         // NOTE: When the playlist is invalid we add the url itself given it could be a media.
-        if (source.isEmpty() && title.isEmpty() && tracks.isEmpty())
+        if (source.isEmpty() && title.isEmpty() && tracks.isEmpty()
+            &&
+            // NOTE: The url should not be a vbml run uri.
+            WControllerPlaylist::urlIsVbmlRun(url) == false)
         {
             addMedia(url, WControllerNetwork::extractUrlFileName(url));
         }
