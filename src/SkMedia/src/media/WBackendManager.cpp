@@ -198,11 +198,27 @@ void WBackendManagerPrivate::setBackend(WAbstractBackend * backendNew)
 
     backend = backendNew;
 
+#ifndef SK_NO_QML
+    backend->setPlayer(player);
+#endif
+
+    backend->backendSetVolume(volume);
+
+    backend->backendSetSpeed(speed);
+
+    backend->backendSetOutput (output);
+    backend->backendSetQuality(quality);
+
+    backend->backendSetFillMode(fillMode);
+
+    if (trackVideo != -1) backend->backendSetVideo(trackVideo);
+    if (trackAudio != -1) backend->backendSetAudio(trackAudio);
+
+    backend->backendSetSize(size);
+
     QObject::connect(backend, SIGNAL(stateChanged      ()), q, SLOT(onState    ()));
     QObject::connect(backend, SIGNAL(stateLoadChanged  ()), q, SLOT(onStateLoad()));
     QObject::connect(backend, SIGNAL(currentTimeChanged()), q, SLOT(onTime     ()));
-
-    backend->backendSetVolume(volume);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -306,19 +322,29 @@ WBackendManager::WBackendManager(QObject * parent)
 
         d->updateLoading();
     }
-
-    if (d->backendInterface) d->backendInterface->play();
+    else if (d->backendInterface) d->backendInterface->play();
 
     return true;
 }
 
 /* virtual */ bool WBackendManager::backendPause()
 {
+    Q_D(WBackendManager);
+
+    if (d->backendInterface) d->backendInterface->pause();
+
     return true;
 }
 
 /* virtual */ bool WBackendManager::backendStop()
 {
+    Q_D(WBackendManager);
+
+    if (d->backendInterface) d->backendInterface->stop();
+
+    d->clearActive();
+    d->clearMedia ();
+
     return true;
 }
 
