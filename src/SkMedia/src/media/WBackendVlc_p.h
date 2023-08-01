@@ -245,7 +245,7 @@ public: // Functions
     void convertFrameSoftware();
     void convertFrameSse     ();
 
-    void loadSources (bool play);
+    void loadSources ();
     void applySources(bool play);
 
     void applyOutput(WAbstractBackend::Output output);
@@ -273,15 +273,6 @@ public: // Functions
 
     WAbstractBackend::Output getOutput(WAbstractBackend::Output output);
 
-public: // Slots
-    void onLoaded();
-
-    void onFrameUpdated();
-
-#ifdef QT_NEW
-    void onUpdateState();
-#endif
-
 public: // Static functions
     static unsigned setup(void     ** data,     char     * chroma,
                           unsigned *  vlcWidth, unsigned * vlcHeight,
@@ -293,6 +284,15 @@ public: // Static functions
 
     static void applyFrames(WBackendVlcPrivate * d, QImage & frameA, QImage & frameB,
                             int cursorU, int cursorV);
+
+public: // Slots
+    void onLoaded();
+
+    void onFrameUpdated();
+
+#ifdef QT_NEW
+    void onUpdateState();
+#endif
 
 public: // Variables
     // NOTE: Do we really need a mutex on here after all ?

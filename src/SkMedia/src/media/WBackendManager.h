@@ -52,8 +52,44 @@ protected: // WAbstractBackend implementation
 
     /* virtual */ bool backendDelete();
 
+protected: // WAbstractBackend reimplementation
+    /* virtual */ void backendSeek(int msec);
+
+    /* virtual */ void backendSetSpeed(qreal speed);
+
+    /* virtual */ void backendSetOutput (Output  output);
+    /* virtual */ void backendSetQuality(Quality quality);
+
+    /* virtual */ void backendSetFillMode(FillMode fillMode);
+
+    /* virtual */ void backendSetVideo(int index);
+    /* virtual */ void backendSetAudio(int index);
+
+    /* virtual */ void backendSetScanOutput(bool enabled);
+
+    /* virtual */ void backendSetCurrentOutput(const WBackendOutput * output);
+
+    /* virtual */ void backendSetSize(const QSizeF & size);
+
+#ifdef QT_NEW
+    /* virtual */ void backendSynchronize(WBackendFrame * frame);
+#endif
+
+    /* virtual */ void backendDrawFrame(QPainter * painter, const QRect & rect);
+
+    /* virtual */ void   backendUpdateFrame();
+    /* virtual */ QImage backendGetFrame   () const;
+
+    /* virtual */ QRectF backendRect() const;
+
 private:
     W_DECLARE_PRIVATE(WBackendManager)
+
+    Q_PRIVATE_SLOT(d_func(), void onLoaded())
+
+    Q_PRIVATE_SLOT(d_func(), void onState    ())
+    Q_PRIVATE_SLOT(d_func(), void onStateLoad())
+    Q_PRIVATE_SLOT(d_func(), void onTime     ())
 };
 
 #include <private/WBackendManager_p>

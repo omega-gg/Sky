@@ -23,7 +23,10 @@
 #include "WBackendManager.h"
 
 // Sk includes
+#include <WControllerPlaylist>
+#include <WControllerMedia>
 #include <WBackendVlc>
+#include <WHookTorrent>
 
 // Private includes
 #include <private/WBackendVlc_p>
@@ -38,9 +41,13 @@ WBackendManagerPrivate::WBackendManagerPrivate(WBackendManager * p) : WAbstractB
 
 /* virtual */ WBackendManagerPrivate::~WBackendManagerPrivate()
 {
-    foreach (WAbstractBackend * backend, backends)
+    foreach (const WBackendManagerItem & item, items)
     {
-        backend->deleteBackend();
+#ifndef SK_NO_TORRENT
+        delete item.hook;
+#endif
+
+        item.backend->deleteBackend();
     }
 }
 
@@ -50,11 +57,192 @@ void WBackendManagerPrivate::init()
 {
     Q_Q(WBackendManager);
 
-    WBackendVlc * backend = new WBackendVlc(q);
+    WBackendManagerItem item;
 
-    backends.append(backend);
+    WBackendVlc * backendVlc = new WBackendVlc(q);
 
+    item.backend = backendVlc;
+
+#ifndef SK_NO_TORRENT
+    item.hook = new WHookTorrent(backendVlc);
+#endif
+
+    items.append(item);
+
+    backend          = NULL;
+    backendInterface = NULL;
+
+    reply = NULL;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
+
+void WBackendManagerPrivate::loadSources()
+{
+    if (reply) return;
+
+    Q_Q(WBackendManager);
+
+    WAbstractBackend::SourceMode mode = q->getMode();
+
+    // NOTE: When using Chromecast for video we want to increase source compatibility.
+    if (outputData.type == WAbstractBackend::OutputChromecast
+        &&
+        mode != WAbstractBackend::SourceAudio)
+    {
+         reply = wControllerMedia->getMedia(source, q, WAbstractBackend::SourceSafe, currentTime);
+    }
+    else reply = wControllerMedia->getMedia(source, q, mode, currentTime);
+
+    if (reply == NULL) return;
+
+    if (reply->isLoaded())
+    {
+        applySources(true);
+
+        delete reply;
+
+        reply = NULL;
+    }
+    else QObject::connect(reply, SIGNAL(loaded(WMediaReply *)), q, SLOT(onLoaded()));
+}
+
+void WBackendManagerPrivate::applySources(bool play)
+{
+    medias = reply->medias();
+    audios = reply->audios();
+
+    QString media = WAbstractBackend::mediaFromQuality(medias, quality);
+
+    if (media.isEmpty())
+    {
+        Q_Q(WBackendManager);
+
+        q->stop();
+
+        return;
+    }
+
+    applyBackend(media);
+
+    backendInterface->loadSource(source, duration, currentTime);
+
+    if (play) backendInterface->play();
+}
+
+void WBackendManagerPrivate::applyBackend(const QString & source)
+{
+#ifdef SK_NO_TORRENT
+    Q_UNUSED(source);
+#endif
+
+    setBackend(items.first().backend);
+
+#ifdef SK_NO_TORRENT
     backendInterface = backend;
+#else
+    if (WControllerPlaylist::urlIsTorrent(source))
+    {
+         backendInterface = items.first().hook;
+    }
+    else backendInterface = backend;
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WBackendManagerPrivate::updateLoading()
+{
+    Q_Q(WBackendManager);
+
+    if (currentTime == -1)
+    {
+         q->setStateLoad(WAbstractBackend::StateLoadStarting);
+    }
+    else q->setStateLoad(WAbstractBackend::StateLoadResuming);
+}
+
+void WBackendManagerPrivate::clearActive()
+{
+    Q_Q(WBackendManager);
+
+    q->setOutputActive (WAbstractBackend::OutputNone);
+    q->setQualityActive(WAbstractBackend::QualityDefault);
+}
+
+void WBackendManagerPrivate::clearReply()
+{
+    if (reply == NULL) return;
+
+    delete reply;
+
+    reply = NULL;
+}
+
+void WBackendManagerPrivate::clearMedia()
+{
+    clearReply();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WBackendManagerPrivate::setBackend(WAbstractBackend * backendNew)
+{
+    if (backend == backendNew) return;
+
+    Q_Q(WBackendManager);
+
+    if (backend) QObject::disconnect(backend, 0, q, 0);
+
+    backend = backendNew;
+
+    QObject::connect(backend, SIGNAL(stateChanged      ()), q, SLOT(onState    ()));
+    QObject::connect(backend, SIGNAL(stateLoadChanged  ()), q, SLOT(onStateLoad()));
+    QObject::connect(backend, SIGNAL(currentTimeChanged()), q, SLOT(onTime     ()));
+
+    backend->backendSetVolume(volume);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private slots
+//-------------------------------------------------------------------------------------------------
+
+void WBackendManagerPrivate::onLoaded()
+{
+    Q_Q(WBackendManager);
+
+    if (reply->hasError())
+    {
+        q->stop();
+    }
+    else applySources(q->isPlaying());
+
+    reply->deleteLater();
+
+    reply = NULL;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WBackendManagerPrivate::onState()
+{
+    Q_Q(WBackendManager);
+
+    q->setState(backend->state());
+}
+
+void WBackendManagerPrivate::onStateLoad()
+{
+    Q_Q(WBackendManager);
+
+    q->setStateLoad(backend->stateLoad());
+}
+
+void WBackendManagerPrivate::onTime()
+{
+
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -82,6 +270,27 @@ WBackendManager::WBackendManager(QObject * parent)
 
 /* virtual */ bool WBackendManager::backendSetSource(const QString & url)
 {
+    Q_D(WBackendManager);
+
+    d->clearMedia();
+
+    if (url.isEmpty())
+    {
+        if (d->backendInterface == NULL) return true;
+
+        d->backendInterface->stop();
+
+        d->clearActive();
+    }
+    else if (isPlaying())
+    {
+        d->updateLoading();
+
+        backendStop();
+
+        d->loadSources();
+    }
+
     return true;
 }
 
@@ -89,6 +298,17 @@ WBackendManager::WBackendManager(QObject * parent)
 
 /* virtual */ bool WBackendManager::backendPlay()
 {
+    Q_D(WBackendManager);
+
+    if (isPaused() == false && d->currentMedia.isEmpty())
+    {
+        d->loadSources();
+
+        d->updateLoading();
+    }
+
+    if (d->backendInterface) d->backendInterface->play();
+
     return true;
 }
 
@@ -106,6 +326,9 @@ WBackendManager::WBackendManager(QObject * parent)
 
 /* virtual */ void WBackendManager::backendSetVolume(qreal volume)
 {
+    Q_D(WBackendManager);
+
+    if (d->backend) d->backend->backendSetVolume(volume);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -113,6 +336,145 @@ WBackendManager::WBackendManager(QObject * parent)
 /* virtual */ bool WBackendManager::backendDelete()
 {
     return false;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Protected WAbstractBackend reimplementation
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WBackendManager::backendSeek(int msec)
+{
+    Q_D(WBackendManager);
+
+    if (d->backendInterface) d->backendInterface->seek(msec);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WBackendManager::backendSetSpeed(qreal speed)
+{
+    Q_D(WBackendManager);
+
+    if (d->backend) d->backend->backendSetSpeed(speed);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WBackendManager::backendSetOutput(Output output)
+{
+    Q_D(WBackendManager);
+
+    if (d->backend) d->backend->backendSetOutput(output);
+}
+
+/* virtual */ void WBackendManager::backendSetQuality(Quality quality)
+{
+    Q_D(WBackendManager);
+
+    if (d->backend) d->backend->backendSetQuality(quality);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WBackendManager::backendSetFillMode(FillMode fillMode)
+{
+    Q_D(WBackendManager);
+
+    if (d->backend) d->backend->backendSetFillMode(fillMode);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WBackendManager::backendSetVideo(int id)
+{
+    Q_D(WBackendManager);
+
+    if (d->backend) d->backend->backendSetVideo(id);
+}
+
+/* virtual */ void WBackendManager::backendSetAudio(int id)
+{
+    Q_D(WBackendManager);
+
+    if (d->backend) d->backend->backendSetAudio(id);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WBackendManager::backendSetScanOutput(bool enabled)
+{
+}
+
+/* virtual */ void WBackendManager::backendSetCurrentOutput(const WBackendOutput * output)
+{
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WBackendManager::backendSetSize(const QSizeF & size)
+{
+    Q_D(WBackendManager);
+
+    if (d->backend) d->backend->backendSetSize(size);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_NEW
+
+/* virtual */ void WBackendManager::backendSynchronize(WBackendFrame * frame)
+{
+    Q_D(WBackendManager);
+
+    if (d->backend) d->backend->backendSynchronize(frame);
+}
+
+#endif
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_4
+/* virtual */ void WBackendManager::backendDrawFrame(QPainter * painter, const QRect & rect)
+#else
+/* virtual */ void WBackendManager::backendDrawFrame(QPainter * painter, const QRect & rect)
+#endif
+{
+    Q_D(WBackendManager);
+
+    if (d->backend) d->backend->backendDrawFrame(painter, rect);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WBackendManager::backendUpdateFrame()
+{
+    Q_D(WBackendManager);
+
+    if (d->backend) d->backend->backendUpdateFrame();
+}
+
+/* virtual */ QImage WBackendManager::backendGetFrame() const
+{
+    Q_D(const WBackendManager);
+
+    if (d->backend)
+    {
+        return d->backend->backendGetFrame();
+    }
+    else return QImage();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ QRectF WBackendManager::backendRect() const
+{
+    Q_D(const WBackendManager);
+
+    if (d->backend)
+    {
+        return d->backend->backendRect();
+    }
+    else return QRectF();
 }
 
 #endif // SK_NO_BACKENDMANAGER

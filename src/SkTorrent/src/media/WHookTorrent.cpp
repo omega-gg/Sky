@@ -1324,13 +1324,7 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 
 /* virtual */ bool WHookTorrent::hookCheck(const QString & url)
 {
-    if (WControllerNetwork::extractUrlExtension(url) == "torrent"
-        ||
-        url.startsWith("magnet:?", Qt::CaseInsensitive))
-    {
-         return true;
-    }
-    else return false;
+    return WControllerPlaylist::urlIsTorrent(url);
 }
 
 #endif // SK_NO_HOOKTORRENT

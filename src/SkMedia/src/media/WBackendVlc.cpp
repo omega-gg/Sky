@@ -1023,7 +1023,7 @@ void WBackendVlcPrivate::convertFrameSse()
 
 //-------------------------------------------------------------------------------------------------
 
-void WBackendVlcPrivate::loadSources(bool play)
+void WBackendVlcPrivate::loadSources()
 {
     if (reply) return;
 
@@ -1042,15 +1042,11 @@ void WBackendVlcPrivate::loadSources(bool play)
     }
     else reply = wControllerMedia->getMedia(source, q, mode);
 
-    if (reply == NULL)
-    {
-        applyOutput(getOutput(output));
+    if (reply == NULL) return;
 
-        if (play) playMedia();
-    }
-    else if (reply->isLoaded())
+    if (reply->isLoaded())
     {
-        applySources(play);
+        applySources(true);
 
         delete reply;
 
@@ -1319,51 +1315,6 @@ WAbstractBackend::Output WBackendVlcPrivate::getOutput(WAbstractBackend::Output 
 }
 
 //-------------------------------------------------------------------------------------------------
-// Privae slots
-//-------------------------------------------------------------------------------------------------
-
-void WBackendVlcPrivate::onLoaded()
-{
-    Q_Q(WBackendVlc);
-
-    if (reply->hasError())
-    {
-        q->stop();
-    }
-    else applySources(q->isPlaying());
-
-    reply->deleteLater();
-
-    reply = NULL;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void WBackendVlcPrivate::onFrameUpdated()
-{
-    Q_Q(WBackendVlc);
-
-    frameUpdated = true;
-
-    q->applyFrame();
-}
-
-//-------------------------------------------------------------------------------------------------
-
-#ifdef QT_NEW
-
-void WBackendVlcPrivate::onUpdateState()
-{
-    if (started == false) return;
-
-    Q_Q(WBackendVlc);
-
-    q->setStateLoad(WAbstractBackend::StateLoadDefault);
-}
-
-#endif
-
-//-------------------------------------------------------------------------------------------------
 // Static private functions
 //-------------------------------------------------------------------------------------------------
 
@@ -1520,6 +1471,51 @@ void WBackendVlcPrivate::onUpdateState()
     d->textures[2].bits = d->textures[2].bitsA;
 }
 
+//-------------------------------------------------------------------------------------------------
+// Privae slots
+//-------------------------------------------------------------------------------------------------
+
+void WBackendVlcPrivate::onLoaded()
+{
+    Q_Q(WBackendVlc);
+
+    if (reply->hasError())
+    {
+        q->stop();
+    }
+    else applySources(q->isPlaying());
+
+    reply->deleteLater();
+
+    reply = NULL;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void WBackendVlcPrivate::onFrameUpdated()
+{
+    Q_Q(WBackendVlc);
+
+    frameUpdated = true;
+
+    q->applyFrame();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+#ifdef QT_NEW
+
+void WBackendVlcPrivate::onUpdateState()
+{
+    if (started == false) return;
+
+    Q_Q(WBackendVlc);
+
+    q->setStateLoad(WAbstractBackend::StateLoadDefault);
+}
+
+#endif
+
 //=================================================================================================
 // WBackendVlc
 //=================================================================================================
@@ -1589,7 +1585,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 
         backendStop();
 
-        d->loadSources(true);
+        d->loadSources();
     }
 
     return true;
@@ -1605,7 +1601,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
     {
         if (d->currentMedia.isEmpty())
         {
-            d->loadSources(true);
+            d->loadSources();
 
             d->updateLoading();
         }
@@ -1733,7 +1729,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 
     backendStop();
 
-    d->loadSources(true);
+    d->loadSources();
 }
 
 /* virtual */ void WBackendVlc::backendSetQuality(Quality quality)
@@ -1838,7 +1834,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
     d->clearReply  ();
     d->clearSources();
 
-    d->loadSources(true);
+    d->loadSources();
 }
 
 //-------------------------------------------------------------------------------------------------

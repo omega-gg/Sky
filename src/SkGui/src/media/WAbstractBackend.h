@@ -372,6 +372,9 @@ public: // Static functions
     Q_INVOKABLE static QString fillModeToString (FillMode  fillMode);
     Q_INVOKABLE static QString trackToString    (const WBackendTrack & track);
 
+    Q_INVOKABLE static QString mediaFromQuality(QHash<WAbstractBackend::Quality, QString> medias,
+                                                Quality quality);
+
 public: // WBackendInterface implementation
     Q_INVOKABLE /* virtual */ QString source() const;
 
@@ -618,6 +621,8 @@ public: // Properties
 private:
     W_DECLARE_PRIVATE(WAbstractBackend)
 
+    friend class WBackendManager;
+    friend class WBackendManagerPrivate;
     friend class WAbstractHook;
     friend class WAbstractHookPrivate;
 };

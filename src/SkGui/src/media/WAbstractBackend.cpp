@@ -563,6 +563,42 @@ WBackendTrack WAbstractBackend::trackFromString(const QString & string)
     return result + track.name;
 }
 
+/* Q_INVOKABLE static */
+QString WAbstractBackend::mediaFromQuality(QHash<WAbstractBackend::Quality, QString> medias,
+                                           Quality quality)
+{
+    QString url = medias.value(quality);
+
+    if (url.isEmpty() == false)
+    {
+        return url;
+    }
+
+    for (int i = quality - 1; i >= WAbstractBackend::QualityDefault; i--)
+    {
+        WAbstractBackend::Quality closestQuality = static_cast<WAbstractBackend::Quality> (i);
+
+        url = medias.value(closestQuality);
+
+        if (url.isEmpty()) continue;
+
+        return url;
+    }
+
+    for (int i = quality + 1; i <= WAbstractBackend::Quality2160; i++)
+    {
+        WAbstractBackend::Quality closestQuality = static_cast<WAbstractBackend::Quality> (i);
+
+        url = medias.value(closestQuality);
+
+        if (url.isEmpty()) continue;
+
+        return url;
+    }
+
+    return QString();
+}
+
 //-------------------------------------------------------------------------------------------------
 // WBackendInterface implementation
 //-------------------------------------------------------------------------------------------------

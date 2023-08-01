@@ -33,6 +33,9 @@
     We mean it.
 */
 
+// Sk includes
+#include <WTrack>
+
 // Private includes
 #include <private/WAbstractBackend_p>
 
@@ -40,6 +43,25 @@
 
 // Forward declarations
 class WBackendVlc;
+class WAbstractHook;
+class WMediaReply;
+
+//=================================================================================================
+// WBackendManagerItem
+//=================================================================================================
+
+struct WBackendManagerItem
+{
+    WBackendVlc * backend;
+
+#ifndef SK_NO_TORRENT
+    WAbstractHook * hook;
+#endif
+};
+
+//=================================================================================================
+// WBackendManager
+//=================================================================================================
 
 class SK_MEDIA_EXPORT WBackendManagerPrivate : public WAbstractBackendPrivate
 {
@@ -50,10 +72,41 @@ public:
 
     void init();
 
-public: // Variables
-    QList<WAbstractBackend *> backends;
+public: // Functions
+    void loadSources ();
+    void applySources(bool play);
 
+    void applyBackend(const QString & source);
+
+    void updateLoading();
+
+    void clearActive();
+
+    void clearReply();
+    void clearMedia();
+
+    void setBackend(WAbstractBackend * backend);
+
+public: // Slots
+    void onLoaded();
+
+    void onState    ();
+    void onStateLoad();
+    void onTime     ();
+
+public: // Variables
+    QList<WBackendManagerItem> items;
+
+    WAbstractBackend  * backend;
     WBackendInterface * backendInterface;
+
+    WMediaReply * reply;
+
+    QHash<WAbstractBackend::Quality, QString> medias;
+    QHash<WAbstractBackend::Quality, QString> audios;
+
+    QString currentMedia;
+    QString currentAudio;
 
 protected:
     W_DECLARE_PUBLIC(WBackendManager)
