@@ -87,9 +87,13 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void onLoaded())
 
-    Q_PRIVATE_SLOT(d_func(), void onState    ())
-    Q_PRIVATE_SLOT(d_func(), void onStateLoad())
-    Q_PRIVATE_SLOT(d_func(), void onTime     ())
+    Q_PRIVATE_SLOT(d_func(), void onState     ())
+    Q_PRIVATE_SLOT(d_func(), void onStateLoad ())
+    Q_PRIVATE_SLOT(d_func(), void onTime      ())
+    Q_PRIVATE_SLOT(d_func(), void onVideos    ())
+    Q_PRIVATE_SLOT(d_func(), void onAudios    ())
+    Q_PRIVATE_SLOT(d_func(), void onTrackVideo())
+    Q_PRIVATE_SLOT(d_func(), void onTrackAudio())
 };
 
 #include <private/WBackendManager_p>

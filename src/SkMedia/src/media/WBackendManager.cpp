@@ -202,23 +202,27 @@ void WBackendManagerPrivate::setBackend(WAbstractBackend * backendNew)
     backend->setPlayer(player);
 #endif
 
-    backend->backendSetVolume(volume);
+    backend->setVolume(volume);
 
-    backend->backendSetSpeed(speed);
+    backend->setSpeed(speed);
 
-    backend->backendSetOutput (output);
-    backend->backendSetQuality(quality);
+    backend->setOutput (output);
+    backend->setQuality(quality);
 
-    backend->backendSetFillMode(fillMode);
+    backend->setFillMode(fillMode);
 
-    if (trackVideo != -1) backend->backendSetVideo(trackVideo);
-    if (trackAudio != -1) backend->backendSetAudio(trackAudio);
+    backend->setTrackVideo(trackVideo);
+    backend->setTrackAudio(trackAudio);
 
-    backend->backendSetSize(size);
+    backend->setSize(size);
 
-    QObject::connect(backend, SIGNAL(stateChanged      ()), q, SLOT(onState    ()));
-    QObject::connect(backend, SIGNAL(stateLoadChanged  ()), q, SLOT(onStateLoad()));
-    QObject::connect(backend, SIGNAL(currentTimeChanged()), q, SLOT(onTime     ()));
+    QObject::connect(backend, SIGNAL(stateChanged      ()), q, SLOT(onState     ()));
+    QObject::connect(backend, SIGNAL(stateLoadChanged  ()), q, SLOT(onStateLoad ()));
+    QObject::connect(backend, SIGNAL(currentTimeChanged()), q, SLOT(onTime      ()));
+    QObject::connect(backend, SIGNAL(videosChanged     ()), q, SLOT(onVideos    ()));
+    QObject::connect(backend, SIGNAL(audiosChanged     ()), q, SLOT(onAudios    ()));
+    QObject::connect(backend, SIGNAL(trackVideoChanged ()), q, SLOT(onTrackVideo()));
+    QObject::connect(backend, SIGNAL(trackAudioChanged ()), q, SLOT(onTrackAudio()));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -259,6 +263,34 @@ void WBackendManagerPrivate::onStateLoad()
 void WBackendManagerPrivate::onTime()
 {
 
+}
+
+void WBackendManagerPrivate::onVideos()
+{
+    Q_Q(WBackendManager);
+
+    q->applyVideos(backend->videos(), trackVideo);
+}
+
+void WBackendManagerPrivate::onAudios()
+{
+    Q_Q(WBackendManager);
+
+    q->applyAudios(backend->audios(), trackAudio);
+}
+
+void WBackendManagerPrivate::onTrackVideo()
+{
+    Q_Q(WBackendManager);
+
+    q->setTrackVideo(backend->trackVideo());
+}
+
+void WBackendManagerPrivate::onTrackAudio()
+{
+    Q_Q(WBackendManager);
+
+    q->setTrackAudio(backend->trackAudio());
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -354,7 +386,7 @@ WBackendManager::WBackendManager(QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->backend) d->backend->backendSetVolume(volume);
+    if (d->backend) d->backend->setVolume(volume);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -381,7 +413,7 @@ WBackendManager::WBackendManager(QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->backend) d->backend->backendSetSpeed(speed);
+    if (d->backend) d->backend->setSpeed(speed);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -390,14 +422,14 @@ WBackendManager::WBackendManager(QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->backend) d->backend->backendSetOutput(output);
+    if (d->backend) d->backend->setOutput(output);
 }
 
 /* virtual */ void WBackendManager::backendSetQuality(Quality quality)
 {
     Q_D(WBackendManager);
 
-    if (d->backend) d->backend->backendSetQuality(quality);
+    if (d->backend) d->backend->setQuality(quality);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -406,7 +438,7 @@ WBackendManager::WBackendManager(QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->backend) d->backend->backendSetFillMode(fillMode);
+    if (d->backend) d->backend->setFillMode(fillMode);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -415,14 +447,14 @@ WBackendManager::WBackendManager(QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->backend) d->backend->backendSetVideo(id);
+    if (d->backend) d->backend->setTrackVideo(id);
 }
 
 /* virtual */ void WBackendManager::backendSetAudio(int id)
 {
     Q_D(WBackendManager);
 
-    if (d->backend) d->backend->backendSetAudio(id);
+    if (d->backend) d->backend->setTrackAudio(id);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -441,7 +473,7 @@ WBackendManager::WBackendManager(QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->backend) d->backend->backendSetSize(size);
+    if (d->backend) d->backend->setSize(size);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -452,7 +484,7 @@ WBackendManager::WBackendManager(QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->backend) d->backend->backendSynchronize(frame);
+    if (d->backend) d->backend->synchronize(frame);
 }
 
 #endif
@@ -467,7 +499,7 @@ WBackendManager::WBackendManager(QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->backend) d->backend->backendDrawFrame(painter, rect);
+    if (d->backend) d->backend->drawFrame(painter, rect);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -476,7 +508,7 @@ WBackendManager::WBackendManager(QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->backend) d->backend->backendUpdateFrame();
+    if (d->backend) d->backend->updateFrame();
 }
 
 /* virtual */ QImage WBackendManager::backendGetFrame() const
@@ -485,7 +517,7 @@ WBackendManager::WBackendManager(QObject * parent)
 
     if (d->backend)
     {
-        return d->backend->backendGetFrame();
+        return d->backend->getFrame();
     }
     else return QImage();
 }
@@ -498,7 +530,7 @@ WBackendManager::WBackendManager(QObject * parent)
 
     if (d->backend)
     {
-        return d->backend->backendRect();
+        return d->backend->getRect();
     }
     else return QRectF();
 }

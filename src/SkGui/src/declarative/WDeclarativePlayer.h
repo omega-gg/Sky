@@ -300,11 +300,11 @@ signals:
 
     void fillModeChanged();
 
-    void trackVideoChanged();
-    void trackAudioChanged();
-
     void videosChanged();
     void audiosChanged();
+
+    void trackVideoChanged();
+    void trackAudioChanged();
 
     void scanOutputChanged();
 

@@ -90,9 +90,13 @@ public: // Functions
 public: // Slots
     void onLoaded();
 
-    void onState    ();
-    void onStateLoad();
-    void onTime     ();
+    void onState     ();
+    void onStateLoad ();
+    void onTime      ();
+    void onVideos    ();
+    void onAudios    ();
+    void onTrackVideo();
+    void onTrackAudio();
 
 public: // Variables
     QList<WBackendManagerItem> items;

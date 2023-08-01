@@ -1827,11 +1827,11 @@ void WDeclarativePlayer::setBackend(WAbstractBackend * backend)
 
     connect(backend, SIGNAL(fillModeChanged()), this, SIGNAL(fillModeChanged()));
 
-    connect(backend, SIGNAL(trackVideoChanged()), this, SIGNAL(trackVideoChanged()));
-    connect(backend, SIGNAL(trackAudioChanged()), this, SIGNAL(trackAudioChanged()));
-
     connect(backend, SIGNAL(videosChanged()), this, SIGNAL(videosChanged()));
     connect(backend, SIGNAL(audiosChanged()), this, SIGNAL(audiosChanged()));
+
+    connect(backend, SIGNAL(trackVideoChanged()), this, SIGNAL(trackVideoChanged()));
+    connect(backend, SIGNAL(trackAudioChanged()), this, SIGNAL(trackAudioChanged()));
 
     connect(backend, SIGNAL(scanOutputChanged()), this, SIGNAL(scanOutputChanged()));
 
