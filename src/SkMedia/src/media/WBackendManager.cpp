@@ -303,7 +303,7 @@ WBackendManager::WBackendManager(QObject * parent)
 WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     : WAbstractBackend(p, parent)
 {
-    Q_D(WAbstractBackend); d->init();
+    Q_D(WBackendManager); d->init();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -386,8 +386,8 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
     if (d->backendInterface) d->backendInterface->stop();
 
-    d->clearActive();
     d->clearMedia ();
+    d->clearActive();
 
     return true;
 }
@@ -407,6 +407,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
+    d->clearMedia ();
     d->clearActive();
 
     foreach (const WBackendManagerItem & item, d->items)

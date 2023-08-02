@@ -1684,6 +1684,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 {
     Q_D(WBackendVlc);
 
+    d->clearMedia ();
     d->clearPlayer();
     d->clearActive();
 
