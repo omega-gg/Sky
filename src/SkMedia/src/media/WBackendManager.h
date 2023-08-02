@@ -30,6 +30,7 @@
 
 // Forward declarations
 class WBackendManagerPrivate;
+class WAbstractHook;
 
 class SK_MEDIA_EXPORT WBackendManager : public WAbstractBackend
 {

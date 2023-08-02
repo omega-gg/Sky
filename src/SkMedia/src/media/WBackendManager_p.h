@@ -42,7 +42,6 @@
 #ifndef SK_NO_BACKENDMANAGER
 
 // Forward declarations
-class WAbstractHook;
 class WMediaReply;
 
 //=================================================================================================

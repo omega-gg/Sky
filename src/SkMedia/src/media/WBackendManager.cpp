@@ -405,6 +405,21 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
 /* virtual */ bool WBackendManager::backendDelete()
 {
+    Q_D(WBackendManager);
+
+    d->clearActive();
+
+    foreach (const WBackendManagerItem & item, d->items)
+    {
+        WAbstractHook * hook = item.hook;
+
+        if (hook) delete hook;
+
+        item.backend->deleteBackend();
+    }
+
+    d->items.clear();
+
     return false;
 }
 
