@@ -20,31 +20,34 @@
 */
 //=================================================================================================
 
-#ifndef WBACKENDTORRENT_H
-#define WBACKENDTORRENT_H
+#ifndef WBACKENDTORRENT_P_H
+#define WBACKENDTORRENT_P_H
 
-// Sk includes
-#include <WBackendManager>
+/*  W A R N I N G
+    -------------
+
+    This file is not part of the Sk API. It exists purely as an
+    implementation detail. This header file may change from version to
+    version without notice, or even be removed.
+
+    We mean it.
+*/
+
+// Private includes
+#include <private/WBackendManager_p>
 
 #ifndef SK_NO_BACKENDTORRENT
 
-class WBackendTorrentPrivate;
-
-class SK_TORRENT_EXPORT WBackendTorrent : public WBackendManager
+class SK_TORRENT_EXPORT WBackendTorrentPrivate : public WBackendManagerPrivate
 {
-    Q_OBJECT
-
 public:
-    WBackendTorrent(QObject * parent = NULL);
+    WBackendTorrentPrivate(WBackendTorrent * p);
+
+    void init();
+
 protected:
-    WBackendTorrent(WBackendTorrentPrivate * p, QObject * parent = NULL);
-
-protected: // WBackendManager implementation
-    /* virtual */ WAbstractHook * createHook(WAbstractBackend * backend);
-
-private:
-    W_DECLARE_PRIVATE(WBackendTorrent)
+    W_DECLARE_PUBLIC(WBackendTorrent)
 };
 
 #endif // SK_NO_BACKENDTORRENT
-#endif // WBACKENDTORRENT_H
+#endif // WBACKENDTORRENT_P_H

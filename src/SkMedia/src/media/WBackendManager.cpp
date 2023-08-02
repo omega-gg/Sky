@@ -22,6 +22,8 @@
 
 #include "WBackendManager.h"
 
+#ifndef SK_NO_BACKENDMANAGER
+
 // Sk includes
 #include <WControllerPlaylist>
 #include <WControllerMedia>
@@ -30,8 +32,6 @@
 
 // Private includes
 #include <private/WBackendVlc_p>
-
-#ifndef SK_NO_BACKENDMANAGER
 
 //-------------------------------------------------------------------------------------------------
 // Private
@@ -43,9 +43,9 @@ WBackendManagerPrivate::WBackendManagerPrivate(WBackendManager * p) : WAbstractB
 {
     foreach (const WBackendManagerItem & item, items)
     {
-#ifndef SK_NO_TORRENT
-        delete item.hook;
-#endif
+        WAbstractHook * hook = item.hook;
+
+        if (hook) delete hook;
 
         item.backend->deleteBackend();
     }
@@ -63,9 +63,7 @@ void WBackendManagerPrivate::init()
 
     item.backend = backendVlc;
 
-#ifndef SK_NO_TORRENT
-    item.hook = new WHookTorrent(backendVlc);
-#endif
+    item.hook = q->createHook(backendVlc);
 
     items.append(item);
 
@@ -134,21 +132,17 @@ void WBackendManagerPrivate::applySources(bool play)
 
 void WBackendManagerPrivate::applyBackend(const QString & source)
 {
-#ifdef SK_NO_TORRENT
-    Q_UNUSED(source);
-#endif
+    const WBackendManagerItem & item = items.first();
 
-    setBackend(items.first().backend);
+    setBackend(item.backend);
 
-#ifdef SK_NO_TORRENT
-    backendInterface = backend;
-#else
-    if (WControllerPlaylist::urlIsTorrent(source))
+    WAbstractHook * hook = item.hook;
+
+    if (hook && hook->check(source))
     {
-         backendInterface = items.first().hook;
+         backendInterface = hook;
     }
     else backendInterface = backend;
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -301,6 +295,24 @@ WBackendManager::WBackendManager(QObject * parent)
     : WAbstractBackend(new WBackendManagerPrivate(this), parent)
 {
     Q_D(WBackendManager); d->init();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Protected
+
+WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
+    : WAbstractBackend(p, parent)
+{
+    Q_D(WAbstractBackend); d->init();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Protected virtual functions
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ WAbstractHook * WBackendManager::createHook(WAbstractBackend *)
+{
+    return NULL;
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -28,6 +28,7 @@
 
 #ifndef SK_NO_BACKENDMANAGER
 
+// Forward declarations
 class WBackendManagerPrivate;
 
 class SK_MEDIA_EXPORT WBackendManager : public WAbstractBackend
@@ -36,6 +37,11 @@ class SK_MEDIA_EXPORT WBackendManager : public WAbstractBackend
 
 public:
     WBackendManager(QObject * parent = NULL);
+protected:
+    WBackendManager(WBackendManagerPrivate * p, QObject * parent = NULL);
+
+protected: // Virtual functions
+    virtual WAbstractHook * createHook(WAbstractBackend * backend); // {}
 
 protected: // WAbstractBackend implementation
 #ifdef QT_NEW

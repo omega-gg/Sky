@@ -42,7 +42,6 @@
 #ifndef SK_NO_BACKENDMANAGER
 
 // Forward declarations
-class WBackendVlc;
 class WAbstractHook;
 class WMediaReply;
 
@@ -52,11 +51,8 @@ class WMediaReply;
 
 struct WBackendManagerItem
 {
-    WBackendVlc * backend;
-
-#ifndef SK_NO_TORRENT
-    WAbstractHook * hook;
-#endif
+    WAbstractBackend * backend;
+    WAbstractHook    * hook;
 };
 
 //=================================================================================================
