@@ -28,7 +28,7 @@
 #include <WControllerPlaylist>
 #include <WControllerMedia>
 #include <WBackendVlc>
-#include <WHookTorrent>
+#include <WAbstractHook>
 
 // Private includes
 #include <private/WBackendVlc_p>

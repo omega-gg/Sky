@@ -35,9 +35,9 @@
 #ifndef SK_NO_LOADERPLAYLIST
 
 // Forward declarations
-class WLoaderPlaylistPrivate;
-class WLoaderPlaylistData;
-class WLibraryFolder;
+class  WLoaderPlaylistPrivate;
+class  WLibraryFolder;
+struct WLoaderPlaylistData;
 
 //=================================================================================================
 // WLoaderPlaylistNode
