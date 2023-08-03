@@ -60,8 +60,6 @@ void WVlcEnginePrivate::init(const QStringList & options, QThread * thread)
 
     this->options = options;
 
-    scanCount = 0;
-
     if (thread) q->moveToThread(thread);
 
     QCoreApplication::postEvent(q, new QEvent(static_cast<QEvent::Type>
@@ -75,31 +73,22 @@ void WVlcEnginePrivate::init(const QStringList & options, QThread * thread)
 
 void WVlcEnginePrivate::startScan(WVlcPlayerPrivate * player, bool enabled)
 {
-    if (scanCount)
+    if (players.isEmpty())
     {
-        if (enabled == false)
-        {
-            players.removeOne(player);
-
-            scanCount--;
-
-            if (scanCount == 0) clearDiscoverers();
-
-            return;
-        }
+        if (enabled == false) return;
     }
     else if (enabled == false)
     {
         players.removeOne(player);
+
+        if (players.isEmpty()) clearDiscoverers();
 
         return;
     }
 
     players.append(player);
 
-    scanCount++;
-
-    if (scanCount != 1) return;
+    if (players.count() != 1) return;
 
     libvlc_rd_description_t ** services;
 

@@ -68,8 +68,6 @@ public: // Variables
 
     QStringList options;
 
-    int scanCount;
-
     QList<libvlc_renderer_discoverer_t *> discoverers;
 
     QList<libvlc_renderer_item_t *> renderers;

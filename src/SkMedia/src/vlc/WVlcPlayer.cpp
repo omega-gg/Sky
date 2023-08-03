@@ -78,10 +78,6 @@ void WVlcPlayerPrivate::setScanOutput(bool enabled)
 {
     if (scanOutput == enabled) return;
 
-    Q_Q(WVlcPlayer);
-
-    if (scanOutput) QObject::disconnect(q, 0, engine, 0);
-
     scanOutput = enabled;
 
     WVlcEnginePrivate * p = engine->d_func();
@@ -90,13 +86,6 @@ void WVlcPlayerPrivate::setScanOutput(bool enabled)
 
     if (enabled)
     {
-        QObject::connect(engine, SIGNAL(outputAdded(const WBackendOutput &)),
-                         q,      SLOT(onOutputAdded(const WBackendOutput &)));
-
-        QObject::connect(engine, SIGNAL(outputRemoved(int)), q, SLOT(onOutputRemoved(int)));
-
-        QObject::connect(engine, SIGNAL(outputCleared()), q, SLOT(onOutputCleared()));
-
         const QList<WBackendOutput> & outputs = p->outputs;
 
         if (outputs.isEmpty()) return;
