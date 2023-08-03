@@ -2364,12 +2364,12 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
     {
         Q_D(WBackendVlc);
 
-        WVlcOutputEvent * eventOutput = static_cast<WVlcOutputEvent *> (event);
+        WVlcOutputsEvent * eventOutputs = static_cast<WVlcOutputsEvent *> (event);
 
-        const WBackendOutput * output
-            = addOutput(WBackendOutput(eventOutput->name, eventOutput->type));
-
-        d->outputs.append(output);
+        foreach (const WBackendOutput & output, eventOutputs->outputs)
+        {
+            d->outputs.append(addOutput(output));
+        }
 
         return true;
     }

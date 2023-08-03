@@ -74,7 +74,7 @@ public:
 public: // Functions
     QString encodeUrl(const QString & url) const;
 
-    void clearDiscoverers();
+    void setScanOutput(bool enabled);
 
 public: // Static events
     //---------------------------------------------------------------------------------------------
@@ -93,11 +93,12 @@ public: // Static events
 
     static void onEncounteredError(const struct libvlc_event_t * event, void * data);
 
-    //---------------------------------------------------------------------------------------------
-    // Renderer
+public: // Slots
+    void onOutputAdded(const WBackendOutput & output);
 
-    static void onRendererAdded  (const struct libvlc_event_t * event, void * data);
-    static void onRendererDeleted(const struct libvlc_event_t * event, void * data);
+    void onOutputRemoved(int index);
+
+    void onOutputCleared();
 
 public: // Variables
     QMutex mutex;
@@ -112,9 +113,7 @@ public: // Variables
 
     WAbstractBackend::Output output;
 
-    QList<libvlc_renderer_discoverer_t *> discoverers;
-
-    QList<libvlc_renderer_item_t *> renderers;
+    bool scanOutput;
 
     int networkCache;
 

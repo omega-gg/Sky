@@ -51,6 +51,8 @@ void WVlcPlayerPrivate::init(WVlcEngine * engine, QThread * thread)
 
     output = WAbstractBackend::OutputMedia;
 
+    scanOutput = false;
+
     // FIXME: Should we set this to 1000 by default like VLC ?
     networkCache = -1;
 
@@ -72,23 +74,38 @@ QString WVlcPlayerPrivate::encodeUrl(const QString & url) const
     return result.replace(" ", "%20");
 }
 
-//-------------------------------------------------------------------------------------------------
-
-void WVlcPlayerPrivate::clearDiscoverers()
+void WVlcPlayerPrivate::setScanOutput(bool enabled)
 {
-    foreach (libvlc_renderer_discoverer_t * discoverer, discoverers)
+    if (scanOutput == enabled) return;
+
+    Q_Q(WVlcPlayer);
+
+    if (scanOutput) QObject::disconnect(q, 0, engine, 0);
+
+    scanOutput = enabled;
+
+    WVlcEnginePrivate * p = engine->d_func();
+
+    p->startScan(this, enabled);
+
+    if (enabled)
     {
-        // NOTE: This calls also stops the discoverer.
-        libvlc_renderer_discoverer_release(discoverer);
+        QObject::connect(engine, SIGNAL(outputAdded(const WBackendOutput &)),
+                         q,      SLOT(onOutputAdded(const WBackendOutput &)));
+
+        QObject::connect(engine, SIGNAL(outputRemoved(int)), q, SLOT(onOutputRemoved(int)));
+
+        QObject::connect(engine, SIGNAL(outputCleared()), q, SLOT(onOutputCleared()));
+
+        const QList<WBackendOutput> & outputs = p->outputs;
+
+        if (outputs.isEmpty()) return;
+
+        QCoreApplication::postEvent(backend, new WVlcOutputsEvent(outputs));
     }
-
-    discoverers.clear();
-
-    renderers.clear();
-
     // NOTE: Since we are no longer receiving renderers events we clear them completely.
-    QCoreApplication::postEvent(backend, new QEvent(static_cast<QEvent::Type>
-                                                    (WVlcPlayer::EventOutputClear)));
+    else QCoreApplication::postEvent(backend, new QEvent(static_cast<QEvent::Type>
+                                                         (WVlcPlayer::EventOutputClear)));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -243,47 +260,28 @@ void WVlcPlayerPrivate::clearDiscoverers()
 }
 
 //-------------------------------------------------------------------------------------------------
-// Renderer
+// Private slots
+//-------------------------------------------------------------------------------------------------
 
-/* static */ void WVlcPlayerPrivate::onRendererAdded(const struct libvlc_event_t * event,
-                                                     void                        * data)
+void WVlcPlayerPrivate::onOutputAdded(const WBackendOutput & output)
 {
-    WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
+    QList<WBackendOutput> outputs;
 
-    libvlc_renderer_item_t * item = event->u.renderer_discoverer_item_added.item;
+    outputs.append(output);
 
-    d->renderers.append(item);
-
-    QString string = libvlc_renderer_item_type(item);
-
-    WAbstractBackend::OutputType type;
-
-    if (string == "chromecast") type = WAbstractBackend::OutputChromecast;
-    else                        type = WAbstractBackend::OutputUnknown;
-
-    WVlcOutputEvent * eventOutput = new WVlcOutputEvent(libvlc_renderer_item_name(item), type);
-
-    QCoreApplication::postEvent(d->backend, eventOutput);
+    QCoreApplication::postEvent(backend, new WVlcOutputsEvent(outputs));
 }
 
-/* static */ void WVlcPlayerPrivate::onRendererDeleted(const struct libvlc_event_t * event,
-                                                       void                        * data)
+void WVlcPlayerPrivate::onOutputRemoved(int index)
 {
-    WVlcPlayerPrivate * d = static_cast<WVlcPlayerPrivate *> (data);
+    QCoreApplication::postEvent(backend,
+                                new WVlcPlayerEvent(WVlcPlayer::EventOutputRemove, index));
+}
 
-    libvlc_renderer_item_t * item = event->u.renderer_discoverer_item_deleted.item;
-
-    for (int i = 0; i < d->renderers.count(); i++)
-    {
-        if (d->renderers.at(i) != item) continue;
-
-        d->renderers.removeAt(i);
-
-        QCoreApplication::postEvent(d->backend,
-                                    new WVlcPlayerEvent(WVlcPlayer::EventOutputRemove, i));
-
-        return;
-    }
+void WVlcPlayerPrivate::onOutputCleared()
+{
+    QCoreApplication::postEvent(backend, new QEvent(static_cast<QEvent::Type>
+                                                    (WVlcPlayer::EventOutputClear)));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -644,46 +642,9 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
     {
         WVlcPlayerPrivateEvent * eventPlayer = static_cast<WVlcPlayerPrivateEvent *> (event);
 
-        if (eventPlayer->value.toBool() == false)
-        {
-            d->clearDiscoverers();
+        bool scan = eventPlayer->value.toBool();
 
-            return true;
-        }
-
-        //-----------------------------------------------------------------------------------------
-        // NOTE: Maybe this should all be done at the VlcEngine level.
-
-        libvlc_rd_description_t ** services;
-
-        libvlc_instance_t * instance = d->engine->d_func()->instance;
-
-        ssize_t count = libvlc_renderer_discoverer_list_get(instance, &services);
-
-        for (int i = 0; i < count; i++)
-        {
-            libvlc_rd_description_t * service = services[i];
-
-            libvlc_renderer_discoverer_t * discoverer
-                = libvlc_renderer_discoverer_new(instance, service->psz_name);
-
-            libvlc_event_manager_t * manager
-                = libvlc_renderer_discoverer_event_manager(discoverer);
-
-            libvlc_event_attach(manager, libvlc_RendererDiscovererItemAdded,
-                                d->onRendererAdded, d);
-
-            libvlc_event_attach(manager, libvlc_RendererDiscovererItemDeleted,
-                                d->onRendererDeleted, d);
-
-            d->discoverers.append(discoverer);
-
-            libvlc_renderer_discoverer_start(discoverer);
-        }
-
-        libvlc_renderer_discoverer_list_release(services, count);
-
-        //-----------------------------------------------------------------------------------------
+        d->setScanOutput(scan);
 
         return true;
     }
@@ -693,11 +654,13 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
         int index = eventPlayer->value.toInt();
 
-        if (index < 0 || index >= d->renderers.count())
+        const QList<libvlc_renderer_item_t *> & renderers = d->engine->d_func()->renderers;
+
+        if (index < 0 || index >= renderers.count())
         {
              libvlc_media_player_set_renderer(d->player, NULL);
         }
-        else libvlc_media_player_set_renderer(d->player, d->renderers.at(index));
+        else libvlc_media_player_set_renderer(d->player, renderers.at(index));
 
         return true;
     }
@@ -709,7 +672,7 @@ WVlcPlayer::WVlcPlayer(WVlcEngine * engine, QThread * thread, QObject * parent)
 
         d->player = NULL;
 
-        d->clearDiscoverers();
+        d->setScanOutput(false);
 
         if (d->backend)
         {

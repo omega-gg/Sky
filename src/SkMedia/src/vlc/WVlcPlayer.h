@@ -183,23 +183,20 @@ public: // Variables
 };
 
 //-------------------------------------------------------------------------------------------------
-// WVlcOutputEvent
+// WVlcOutputsEvent
 //-------------------------------------------------------------------------------------------------
 
-class WVlcOutputEvent : public QEvent
+class WVlcOutputsEvent : public QEvent
 {
 public:
-    WVlcOutputEvent(const QString & name, WAbstractBackend::OutputType type)
+    WVlcOutputsEvent(const QList<WBackendOutput> outputs)
         : QEvent(static_cast<QEvent::Type> (WVlcPlayer::EventOutputAdd))
     {
-        this->name = name;
-        this->type = type;
+        this->outputs = outputs;
     }
 
 public: // Variables
-    QString name;
-
-    WAbstractBackend::OutputType type;
+    QList<WBackendOutput> outputs;
 };
 
 #endif // SK_NO_VLCPLAYER

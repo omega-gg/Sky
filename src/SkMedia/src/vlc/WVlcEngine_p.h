@@ -37,6 +37,9 @@
 
 #ifndef SK_NO_VLCENGINE
 
+// Forward declarations
+class WVlcPlayerPrivate;
+
 class SK_MEDIA_EXPORT WVlcEnginePrivate : public WPrivate
 {
 public: // Enums
@@ -51,10 +54,29 @@ public:
 
     void init(const QStringList & options, QThread * thread);
 
+public: // Functions
+    void startScan(WVlcPlayerPrivate * player, bool enabled);
+
+    void clearDiscoverers();
+
+public: // Static events
+    static void onRendererAdded  (const struct libvlc_event_t * event, void * data);
+    static void onRendererDeleted(const struct libvlc_event_t * event, void * data);
+
 public: // Variables
     libvlc_instance_t * instance;
 
     QStringList options;
+
+    int scanCount;
+
+    QList<libvlc_renderer_discoverer_t *> discoverers;
+
+    QList<libvlc_renderer_item_t *> renderers;
+
+    QList<WBackendOutput> outputs;
+
+    QList<WVlcPlayerPrivate *> players;
 
 protected:
     W_DECLARE_PUBLIC(WVlcEngine)

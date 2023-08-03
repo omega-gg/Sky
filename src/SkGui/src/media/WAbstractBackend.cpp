@@ -640,7 +640,7 @@ QString WAbstractBackend::mediaFromQuality(QHash<WAbstractBackend::Quality, QStr
 
         backendSetSource(url);
 
-        //---------------------------------------------------------------------------------------------
+        //-----------------------------------------------------------------------------------------
         // NOTE: We need to clear these when changing the source.
 
         if (d->videos.isEmpty() == false)
@@ -659,7 +659,7 @@ QString WAbstractBackend::mediaFromQuality(QHash<WAbstractBackend::Quality, QStr
 
         setLive(false);
 
-        //---------------------------------------------------------------------------------------------
+        //-----------------------------------------------------------------------------------------
 
         emit sourceChanged();
     }

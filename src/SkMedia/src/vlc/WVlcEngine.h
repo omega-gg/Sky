@@ -30,7 +30,7 @@
 #endif
 
 // Sk includes
-#include <Sk>
+#include <WAbstractBackend>
 
 #ifndef SK_NO_VLCENGINE
 
@@ -52,6 +52,13 @@ public: // Static functions
 
 protected: // Events
     /* virtual */ bool event(QEvent * event);
+
+signals:
+    void outputAdded(const WBackendOutput & output);
+
+    void outputRemoved(int index);
+
+    void outputCleared();
 
 private:
     W_DECLARE_PRIVATE(WVlcEngine)

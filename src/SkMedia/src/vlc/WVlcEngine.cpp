@@ -27,6 +27,9 @@
 // Qt includes
 #include <QCoreApplication>
 
+// Sk includes
+#include <WVlcPlayer>
+
 // FIXME MSVC: ssize_t is required by vlc headers.
 #ifdef _MSC_VER
 #include <BaseTsd.h>
@@ -35,6 +38,9 @@ typedef SSIZE_T ssize_t;
 
 // VLC includes
 #include <vlc/vlc.h>
+
+// Private includes
+#include <private/WVlcPlayer_p>
 
 //-------------------------------------------------------------------------------------------------
 // Private
@@ -54,11 +60,147 @@ void WVlcEnginePrivate::init(const QStringList & options, QThread * thread)
 
     this->options = options;
 
+    scanCount = 0;
+
     if (thread) q->moveToThread(thread);
 
     QCoreApplication::postEvent(q, new QEvent(static_cast<QEvent::Type>
                                               (WVlcEnginePrivate::EventCreate)),
                                 Qt::HighEventPriority * 100);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private functions
+//-------------------------------------------------------------------------------------------------
+
+void WVlcEnginePrivate::startScan(WVlcPlayerPrivate * player, bool enabled)
+{
+    if (scanCount)
+    {
+        if (enabled == false)
+        {
+            players.removeOne(player);
+
+            scanCount--;
+
+            if (scanCount == 0) clearDiscoverers();
+
+            return;
+        }
+    }
+    else if (enabled == false)
+    {
+        players.removeOne(player);
+
+        return;
+    }
+
+    players.append(player);
+
+    scanCount++;
+
+    if (scanCount != 1) return;
+
+    libvlc_rd_description_t ** services;
+
+    ssize_t count = libvlc_renderer_discoverer_list_get(instance, &services);
+
+    for (int i = 0; i < count; i++)
+    {
+        libvlc_rd_description_t * service = services[i];
+
+        libvlc_renderer_discoverer_t * discoverer
+            = libvlc_renderer_discoverer_new(instance, service->psz_name);
+
+        libvlc_event_manager_t * manager
+            = libvlc_renderer_discoverer_event_manager(discoverer);
+
+        libvlc_event_attach(manager, libvlc_RendererDiscovererItemAdded,
+                            onRendererAdded, this);
+
+        libvlc_event_attach(manager, libvlc_RendererDiscovererItemDeleted,
+                            onRendererDeleted, this);
+
+        discoverers.append(discoverer);
+
+        libvlc_renderer_discoverer_start(discoverer);
+    }
+
+    libvlc_renderer_discoverer_list_release(services, count);
+}
+
+void WVlcEnginePrivate::clearDiscoverers()
+{
+    foreach (libvlc_renderer_discoverer_t * discoverer, discoverers)
+    {
+        // NOTE: This calls also stops the discoverer.
+        libvlc_renderer_discoverer_release(discoverer);
+    }
+
+    discoverers.clear();
+    renderers  .clear();
+
+    outputs.clear();
+
+    foreach (WVlcPlayerPrivate * player, players)
+    {
+        player->onOutputCleared();
+    }
+
+    players.clear();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Private static events
+//-------------------------------------------------------------------------------------------------
+
+/* static */ void WVlcEnginePrivate::onRendererAdded(const struct libvlc_event_t * event,
+                                                     void                        * data)
+{
+    WVlcEnginePrivate * d = static_cast<WVlcEnginePrivate *> (data);
+
+    libvlc_renderer_item_t * item = event->u.renderer_discoverer_item_added.item;
+
+    d->renderers.append(item);
+
+    QString string = libvlc_renderer_item_type(item);
+
+    WAbstractBackend::OutputType type;
+
+    if (string == "chromecast") type = WAbstractBackend::OutputChromecast;
+    else                        type = WAbstractBackend::OutputUnknown;
+
+    WBackendOutput output(libvlc_renderer_item_name(item), type);
+
+    d->outputs.append(output);
+
+    foreach (WVlcPlayerPrivate * player, d->players)
+    {
+        player->onOutputAdded(output);
+    }
+}
+
+/* static */ void WVlcEnginePrivate::onRendererDeleted(const struct libvlc_event_t * event,
+                                                       void                        * data)
+{
+    WVlcEnginePrivate * d = static_cast<WVlcEnginePrivate *> (data);
+
+    libvlc_renderer_item_t * item = event->u.renderer_discoverer_item_deleted.item;
+
+    for (int i = 0; i < d->renderers.count(); i++)
+    {
+        if (d->renderers.at(i) != item) continue;
+
+        d->renderers.removeAt(i);
+        d->outputs  .removeAt(i);
+
+        foreach (WVlcPlayerPrivate * player, d->players)
+        {
+            player->onOutputRemoved(i);
+        }
+
+        return;
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -102,6 +244,7 @@ void WVlcEnginePrivate::init(const QStringList & options, QThread * thread)
     options.append("--no-osd");
     options.append("--no-stats");
     options.append("--no-media-library");
+    options.append("--text-renderer=none");
 
     // NOTE: This is useful for the mkv default language.
     options.append("--audio-language=en");
@@ -204,6 +347,8 @@ void WVlcEnginePrivate::init(const QStringList & options, QThread * thread)
     }
     else if (type == static_cast<QEvent::Type> (WVlcEnginePrivate::EventClear))
     {
+        d->clearDiscoverers();
+
         libvlc_release(d->instance);
 
         d->instance = NULL;
