@@ -77,8 +77,9 @@ public: // Functions
 
     void clearActive();
 
-    void clearReply();
-    void clearMedia();
+    void clearReply  ();
+    void clearMedia  ();
+    void clearSources();
 
     void setBackend(WAbstractBackend * backend);
 
@@ -87,7 +88,14 @@ public: // Slots
 
     void onState     ();
     void onStateLoad ();
+    void onLive      ();
+    void onStarted   ();
+    void onEnded     ();
     void onTime      ();
+    void onDuration  ();
+    void onProgress  ();
+    void onOutput    ();
+    void onQuality   ();
     void onVideos    ();
     void onAudios    ();
     void onTrackVideo();

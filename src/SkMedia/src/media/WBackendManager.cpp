@@ -188,6 +188,18 @@ void WBackendManagerPrivate::clearReply()
 void WBackendManagerPrivate::clearMedia()
 {
     clearReply();
+
+    currentMedia = QString();
+    currentAudio = QString();
+}
+
+void WBackendManagerPrivate::clearSources()
+{
+    currentMedia = QString();
+    currentAudio = QString();
+
+    medias.clear();
+    audios.clear();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -220,13 +232,20 @@ void WBackendManagerPrivate::setBackend(WAbstractBackend * backendNew)
 
     backend->setSize(size);
 
-    QObject::connect(backend, SIGNAL(stateChanged      ()), q, SLOT(onState     ()));
-    QObject::connect(backend, SIGNAL(stateLoadChanged  ()), q, SLOT(onStateLoad ()));
-    QObject::connect(backend, SIGNAL(currentTimeChanged()), q, SLOT(onTime      ()));
-    QObject::connect(backend, SIGNAL(videosChanged     ()), q, SLOT(onVideos    ()));
-    QObject::connect(backend, SIGNAL(audiosChanged     ()), q, SLOT(onAudios    ()));
-    QObject::connect(backend, SIGNAL(trackVideoChanged ()), q, SLOT(onTrackVideo()));
-    QObject::connect(backend, SIGNAL(trackAudioChanged ()), q, SLOT(onTrackAudio()));
+    QObject::connect(backend, SIGNAL(stateChanged        ()), q, SLOT(onState     ()));
+    QObject::connect(backend, SIGNAL(stateLoadChanged    ()), q, SLOT(onStateLoad ()));
+    QObject::connect(backend, SIGNAL(liveChanged         ()), q, SLOT(onLive      ()));
+    QObject::connect(backend, SIGNAL(startedChanged      ()), q, SLOT(onStarted   ()));
+    QObject::connect(backend, SIGNAL(endedChanged        ()), q, SLOT(onEnded     ()));
+    QObject::connect(backend, SIGNAL(currentTimeChanged  ()), q, SLOT(onTime      ()));
+    QObject::connect(backend, SIGNAL(durationChanged     ()), q, SLOT(onDuration  ()));
+    QObject::connect(backend, SIGNAL(progressChanged     ()), q, SLOT(onProgress  ()));
+    QObject::connect(backend, SIGNAL(outputActiveChanged ()), q, SLOT(onOutput    ()));
+    QObject::connect(backend, SIGNAL(qualityActiveChanged()), q, SLOT(onQuality   ()));
+    QObject::connect(backend, SIGNAL(videosChanged       ()), q, SLOT(onVideos    ()));
+    QObject::connect(backend, SIGNAL(audiosChanged       ()), q, SLOT(onAudios    ()));
+    QObject::connect(backend, SIGNAL(trackVideoChanged   ()), q, SLOT(onTrackVideo()));
+    QObject::connect(backend, SIGNAL(trackAudioChanged   ()), q, SLOT(onTrackAudio()));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -264,9 +283,60 @@ void WBackendManagerPrivate::onStateLoad()
     q->setStateLoad(backend->stateLoad());
 }
 
+void WBackendManagerPrivate::onLive()
+{
+    Q_Q(WBackendManager);
+
+    q->setLive(backend->isLive());
+}
+
+void WBackendManagerPrivate::onStarted()
+{
+    Q_Q(WBackendManager);
+
+    q->setStarted(backend->hasStarted());
+}
+
+void WBackendManagerPrivate::onEnded()
+{
+    Q_Q(WBackendManager);
+
+    q->setEnded(backend->hasEnded());
+}
+
 void WBackendManagerPrivate::onTime()
 {
+    Q_Q(WBackendManager);
 
+    q->setCurrentTime(backend->currentTime());
+}
+
+void WBackendManagerPrivate::onDuration()
+{
+    Q_Q(WBackendManager);
+
+    q->setDuration(backend->duration());
+}
+
+void WBackendManagerPrivate::onProgress()
+{
+    Q_Q(WBackendManager);
+
+    q->setProgress(backend->progress());
+}
+
+void WBackendManagerPrivate::onOutput()
+{
+    Q_Q(WBackendManager);
+
+    q->setOutputActive(backend->outputActive());
+}
+
+void WBackendManagerPrivate::onQuality()
+{
+    Q_Q(WBackendManager);
+
+    q->setQualityActive(backend->qualityActive());
 }
 
 void WBackendManagerPrivate::onVideos()
@@ -397,7 +467,8 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
         d->updateLoading();
     }
-    else if (d->backendInterface) d->backendInterface->play();
+
+    if (d->backendInterface) d->backendInterface->play();
 
     return true;
 }
@@ -417,8 +488,10 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
     if (d->backendInterface) d->backendInterface->stop();
 
-    d->clearMedia ();
     d->clearActive();
+
+    // NOTE: We clear sources because we want check their validity when we resume playback.
+    d->clearSources();
 
     return true;
 }
