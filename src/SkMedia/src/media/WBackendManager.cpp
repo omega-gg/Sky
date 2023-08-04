@@ -108,7 +108,7 @@ void WBackendManagerPrivate::loadSources()
 
     if (reply->isLoaded())
     {
-        applySources(true);
+        applySources(reply, true);
 
         delete reply;
 
@@ -117,7 +117,7 @@ void WBackendManagerPrivate::loadSources()
     else QObject::connect(reply, SIGNAL(loaded(WMediaReply *)), q, SLOT(onLoaded()));
 }
 
-void WBackendManagerPrivate::applySources(bool play)
+void WBackendManagerPrivate::applySources(const WMediaReply * reply, bool play)
 {
     medias = reply->medias();
     audios = reply->audios();
@@ -135,7 +135,7 @@ void WBackendManagerPrivate::applySources(bool play)
 
     applyBackend(media);
 
-    backendInterface->loadSource(source, duration, currentTime);
+    backendInterface->loadSource(source, duration, currentTime, reply);
 
     if (play) backendInterface->play();
 }
@@ -241,7 +241,7 @@ void WBackendManagerPrivate::onLoaded()
     {
         q->stop();
     }
-    else applySources(q->isPlaying());
+    else applySources(reply, q->isPlaying());
 
     reply->deleteLater();
 
@@ -359,7 +359,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
 #endif
 
-/* virtual */ bool WBackendManager::backendSetSource(const QString & url)
+/* virtual */ bool WBackendManager::backendSetSource(const QString & url, const WMediaReply *)
 {
     Q_D(WBackendManager);
 

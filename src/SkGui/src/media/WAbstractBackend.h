@@ -45,6 +45,7 @@ class QStyleOptionGraphicsItem;
 #endif
 class WAbstractBackendPrivate;
 class WAbstractBackend;
+class WMediaReply;
 class WDeclarativePlayer;
 class WBackendFilter;
 class WBackendTrack;
@@ -95,7 +96,10 @@ public:
     virtual bool sourceIsVideo() const = 0;
     virtual bool sourceIsAudio() const = 0;
 
-    virtual void loadSource(const QString & url, int duration = -1, int currentTime = -1) = 0;
+    virtual void loadSource(const QString     & url,
+                            int                 duration    = -1,
+                            int                 currentTime = -1,
+                            const WMediaReply * reply       = NULL) = 0;
 
     virtual void play  () = 0;
     virtual void replay() = 0;
@@ -381,8 +385,10 @@ public: // WBackendInterface implementation
     Q_INVOKABLE /* virtual */ bool sourceIsVideo() const;
     Q_INVOKABLE /* virtual */ bool sourceIsAudio() const;
 
-    Q_INVOKABLE /* virtual */ void loadSource(const QString & url, int duration    = -1,
-                                                                   int currentTime = -1);
+    Q_INVOKABLE /* virtual */ void loadSource(const QString     & url,
+                                              int                 duration    = -1,
+                                              int                 currentTime = -1,
+                                              const WMediaReply * reply       = NULL);
 
     Q_INVOKABLE /* virtual */ void play  ();
     Q_INVOKABLE /* virtual */ void replay();
@@ -443,7 +449,7 @@ protected: // Abstract functions
     virtual WBackendNode * backendCreateNode() const = 0;
 #endif
 
-    virtual bool backendSetSource(const QString & url) = 0;
+    virtual bool backendSetSource(const QString & url, const WMediaReply * reply) = 0;
 
     virtual bool backendPlay () = 0;
     virtual bool backendPause() = 0;

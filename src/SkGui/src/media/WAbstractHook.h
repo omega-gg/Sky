@@ -55,8 +55,10 @@ public: // WBackendInterface implementation
     Q_INVOKABLE /* virtual */ bool sourceIsVideo() const;
     Q_INVOKABLE /* virtual */ bool sourceIsAudio() const;
 
-    Q_INVOKABLE /* virtual */ void loadSource(const QString & url, int duration    = -1,
-                                                                   int currentTime = -1);
+    Q_INVOKABLE /* virtual */ void loadSource(const QString     & url,
+                                              int                 duration    = -1,
+                                              int                 currentTime = -1,
+                                              const WMediaReply * reply       = NULL);
 
     Q_INVOKABLE /* virtual */ void play  ();
     Q_INVOKABLE /* virtual */ void replay();
@@ -108,7 +110,7 @@ protected: // Functions
     //---------------------------------------------------------------------------------------------
     // Backend abstract functions
 
-    bool backendSetSource(const QString & url);
+    bool backendSetSource(const QString & url, const WMediaReply * reply);
 
     bool backendPlay ();
     bool backendPause();

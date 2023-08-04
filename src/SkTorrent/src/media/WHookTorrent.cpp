@@ -773,7 +773,7 @@ void WHookTorrentPrivate::start()
 
         q->applySource(url);
 
-        q->backendSetSource(url);
+        q->backendSetSource(url, NULL);
 
         q->setFilterActive(true);
 
@@ -789,7 +789,7 @@ void WHookTorrentPrivate::start()
 
         q->applyState(WAbstractBackend::StateStopped);
 
-        q->backendSetSource(url);
+        q->backendSetSource(url, NULL);
 
         q->setFilterActive(true);
 
@@ -843,7 +843,7 @@ void WHookTorrentPrivate::stop()
 
     q->setFilterActive(false);
 
-    q->backendSetSource(QString());
+    q->backendSetSource(QString(), NULL);
 }
 
 //-------------------------------------------------------------------------------------------------

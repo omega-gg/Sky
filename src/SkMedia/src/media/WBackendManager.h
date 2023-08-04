@@ -49,7 +49,7 @@ protected: // WAbstractBackend implementation
     /* virtual */ WBackendNode * backendCreateNode() const;
 #endif
 
-    /* virtual */ bool backendSetSource(const QString & url);
+    /* virtual */ bool backendSetSource(const QString & url, const WMediaReply * reply);
 
     /* virtual */ bool backendPlay ();
     /* virtual */ bool backendPause();

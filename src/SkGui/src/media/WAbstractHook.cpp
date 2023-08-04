@@ -115,10 +115,12 @@ WAbstractHook::WAbstractHook(WAbstractHookPrivate * p, WAbstractBackend * backen
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ void WAbstractHook::loadSource(const QString & url, int duration,
-                                                                              int currentTime)
+/* Q_INVOKABLE virtual */ void WAbstractHook::loadSource(const QString     & url,
+                                                         int                 duration,
+                                                         int                 currentTime,
+                                                         const WMediaReply * reply)
 {
-    Q_D(WAbstractHook); d->backend->loadSource(url, duration, currentTime);
+    Q_D(WAbstractHook); d->backend->loadSource(url, duration, currentTime, reply);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -293,11 +295,11 @@ void WAbstractHook::setQualityActive(WAbstractBackend::Quality quality)
 //-------------------------------------------------------------------------------------------------
 // Backend abstract functions
 
-bool WAbstractHook::backendSetSource(const QString & url)
+bool WAbstractHook::backendSetSource(const QString & url, const WMediaReply * reply)
 {
     Q_D(WAbstractHook);
 
-    return d->backend->backendSetSource(url);
+    return d->backend->backendSetSource(url, reply);
 }
 
 //-------------------------------------------------------------------------------------------------

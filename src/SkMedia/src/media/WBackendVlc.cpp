@@ -1046,7 +1046,7 @@ void WBackendVlcPrivate::loadSources()
 
     if (reply->isLoaded())
     {
-        applySources(true);
+        applySources(reply, true);
 
         delete reply;
 
@@ -1055,7 +1055,7 @@ void WBackendVlcPrivate::loadSources()
     else QObject::connect(reply, SIGNAL(loaded(WMediaReply *)), q, SLOT(onLoaded()));
 }
 
-void WBackendVlcPrivate::applySources(bool play)
+void WBackendVlcPrivate::applySources(const WMediaReply * reply, bool play)
 {
     Q_Q(WBackendVlc);
 
@@ -1483,7 +1483,7 @@ void WBackendVlcPrivate::onLoaded()
     {
         q->stop();
     }
-    else applySources(q->isPlaying());
+    else applySources(reply, q->isPlaying());
 
     reply->deleteLater();
 
@@ -1565,7 +1565,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 
 #endif
 
-/* virtual */ bool WBackendVlc::backendSetSource(const QString & url)
+/* virtual */ bool WBackendVlc::backendSetSource(const QString & url, const WMediaReply * reply)
 {
     Q_D(WBackendVlc);
 
@@ -1585,7 +1585,15 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 
         backendStop();
 
-        d->loadSources();
+        if (reply)
+        {
+            d->applySources(reply, true);
+        }
+        else d->loadSources();
+    }
+    else if (reply)
+    {
+        d->applySources(reply, false);
     }
 
     return true;

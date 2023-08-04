@@ -69,7 +69,7 @@ public:
 
 public: // Functions
     void loadSources ();
-    void applySources(bool play);
+    void applySources(const WMediaReply * reply, bool play);
 
     void applyBackend(const QString & source);
 

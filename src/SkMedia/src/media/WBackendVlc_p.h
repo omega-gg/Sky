@@ -246,7 +246,7 @@ public: // Functions
     void convertFrameSse     ();
 
     void loadSources ();
-    void applySources(bool play);
+    void applySources(const WMediaReply * reply, bool play);
 
     void applyOutput(WAbstractBackend::Output output);
 

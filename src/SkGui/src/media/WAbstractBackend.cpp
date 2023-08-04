@@ -624,8 +624,10 @@ QString WAbstractBackend::mediaFromQuality(QHash<WAbstractBackend::Quality, QStr
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ void WAbstractBackend::loadSource(const QString & url, int duration,
-                                                                                 int currentTime)
+/* Q_INVOKABLE virtual */ void WAbstractBackend::loadSource(const QString     & url,
+                                                            int                 duration,
+                                                            int                 currentTime,
+                                                            const WMediaReply * reply)
 {
     Q_D(WAbstractBackend);
 
@@ -638,7 +640,7 @@ QString WAbstractBackend::mediaFromQuality(QHash<WAbstractBackend::Quality, QStr
         setDuration   (duration);
         setCurrentTime(currentTime);
 
-        backendSetSource(url);
+        backendSetSource(url, reply);
 
         //-----------------------------------------------------------------------------------------
         // NOTE: We need to clear these when changing the source.
