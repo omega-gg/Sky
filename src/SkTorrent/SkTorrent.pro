@@ -47,6 +47,8 @@ INCLUDEPATH += $$SK/include/SkCore \
                $$SK/include/SkCore/private \
                $$SK/include/SkGui \
                $$SK/include/SkGui/private \
+               $$SK/include/SkMedia \
+               $$SK/include/SkMedia/private \
                $$SK/include/SkTorrent \
                $$SK/include/SkTorrent/private \
                $$SK/include
@@ -55,19 +57,23 @@ android {
     CONFIG(debug, debug|release) {
 
         LIBS += -L$$SK/lib -lSkCoreD_$$ABI \
-                -L$$SK/lib -lSkGuiD_$$ABI
+                -L$$SK/lib -lSkGuiD_$$ABI \
+                -L$$SK/lib -lSkMediaD_$$ABI
     } else {
         LIBS += -L$$SK/lib -lSkCore_$$ABI \
-                -L$$SK/lib -lSkGui_$$ABI
+                -L$$SK/lib -lSkGui_$$ABI \
+                -L$$SK/lib -lSkMedia_$$ABI
     }
 } else {
     CONFIG(debug, debug|release) {
 
         LIBS += -L$$SK/lib -lSkCoreD \
-                -L$$SK/lib -lSkGuiD
+                -L$$SK/lib -lSkGuiD \
+                -L$$SK/lib -lSkMediaD
     } else {
         LIBS += -L$$SK/lib -lSkCore \
-                -L$$SK/lib -lSkGui
+                -L$$SK/lib -lSkGui \
+                -L$$SK/lib -lSkMedia
     }
 }
 
