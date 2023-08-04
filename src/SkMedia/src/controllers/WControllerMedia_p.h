@@ -59,6 +59,8 @@ struct WPrivateMediaData
 
     int currentTime;
 
+    int time;
+
     int timeA;
     int timeB;
 

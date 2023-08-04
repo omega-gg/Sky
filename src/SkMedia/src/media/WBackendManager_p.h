@@ -60,6 +60,9 @@ struct WBackendManagerItem
 
 class SK_MEDIA_EXPORT WBackendManagerPrivate : public WAbstractBackendPrivate
 {
+public: // Enums
+    enum Type { Track, MultiTrack, Channel };
+
 public:
     WBackendManagerPrivate(WBackendManager * p);
 
@@ -114,6 +117,11 @@ public: // Variables
     WBackendInterface * backendInterface;
 
     WMediaReply * reply;
+
+    Type type;
+
+    int timeA;
+    int timeB;
 
     QHash<WAbstractBackend::Quality, QString> medias;
     QHash<WAbstractBackend::Quality, QString> audios;

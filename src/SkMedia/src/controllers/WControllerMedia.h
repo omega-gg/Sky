@@ -76,6 +76,11 @@ public: // Properties
 
     WTrack::Type type() const;
 
+    int currentTime() const;
+
+    int timeA() const;
+    int timeB() const;
+
     QHash<WAbstractBackend::Quality, QString> medias() const;
     QHash<WAbstractBackend::Quality, QString> audios() const;
 
