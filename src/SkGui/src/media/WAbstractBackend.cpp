@@ -569,10 +569,7 @@ QString WAbstractBackend::mediaFromQuality(QHash<WAbstractBackend::Quality, QStr
 {
     QString url = medias.value(quality);
 
-    if (url.isEmpty() == false)
-    {
-        return url;
-    }
+    if (url.isEmpty() == false) return url;
 
     for (int i = quality - 1; i >= WAbstractBackend::QualityDefault; i--)
     {

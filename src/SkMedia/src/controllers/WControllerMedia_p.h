@@ -59,7 +59,7 @@ struct WPrivateMediaData
 
     int currentTime;
 
-    int time;
+    int timeMedia;
 
     int timeA;
     int timeB;
@@ -137,6 +137,11 @@ public: // Functions
     bool resolve(const QString & backendId, WBackendNetQuery & query);
 
     void getData(WPrivateMediaData * media, WBackendNetQuery * query);
+
+    void getDataSource(WPrivateMediaData          * media,
+                       WBackendNetQuery           * query,
+                       const WControllerMediaData & data,
+                       const QString              & source, WAbstractBackend::SourceMode mode);
 
     WPrivateMediaSource * getSource(const QString & url);
 

@@ -81,6 +81,9 @@ public: // Properties
     int timeA() const;
     int timeB() const;
 
+    int start() const;
+    int end  () const;
+
     QHash<WAbstractBackend::Quality, QString> medias() const;
     QHash<WAbstractBackend::Quality, QString> audios() const;
 
@@ -101,6 +104,9 @@ private: // Variables
 
     int _timeA;
     int _timeB;
+
+    int _start;
+    int _end;
 
     QHash<WAbstractBackend::Quality, QString> _medias;
     QHash<WAbstractBackend::Quality, QString> _audios;
@@ -129,12 +135,13 @@ public:
     {
         type = WTrack::Track;
 
-        currentTime = -1;
-
-        start = -1;
+        timeMedia = -1;
 
         timeA = -1;
         timeB = -1;
+
+        start = -1;
+        end   = -1;
     }
 
 public: // Interface
@@ -147,12 +154,13 @@ public: // Variables
     QString origin;
     QString source;
 
-    int currentTime;
-
-    int start;
+    int timeMedia;
 
     int timeA;
     int timeB;
+
+    int start;
+    int end;
 
     QHash<WAbstractBackend::Quality, QString> medias;
 };

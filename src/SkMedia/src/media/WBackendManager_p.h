@@ -124,10 +124,8 @@ public: // Variables
     int timeB;
 
     QHash<WAbstractBackend::Quality, QString> medias;
-    QHash<WAbstractBackend::Quality, QString> audios;
 
     QString currentMedia;
-    QString currentAudio;
 
 protected:
     W_DECLARE_PUBLIC(WBackendManager)

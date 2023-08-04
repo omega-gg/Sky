@@ -1108,24 +1108,22 @@ bool WBackendVlcPrivate::applyQuality(WAbstractBackend::Quality quality)
     {
         WAbstractBackend::Quality closestQuality = static_cast<WAbstractBackend::Quality> (i);
 
-        if (medias.value(closestQuality).isEmpty() == false)
-        {
-            this->closestQuality = closestQuality;
+        if (medias.value(closestQuality).isEmpty()) continue;
 
-            return true;
-        }
+        this->closestQuality = closestQuality;
+
+        return true;
     }
 
     for (int i = quality + 1; i <= WAbstractBackend::Quality2160; i++)
     {
         WAbstractBackend::Quality closestQuality = static_cast<WAbstractBackend::Quality> (i);
 
-        if (medias.value(closestQuality).isEmpty() == false)
-        {
-            this->closestQuality = closestQuality;
+        if (medias.value(closestQuality).isEmpty()) continue;
 
-            return true;
-        }
+        this->closestQuality = closestQuality;
+
+        return true;
     }
 
     return false;

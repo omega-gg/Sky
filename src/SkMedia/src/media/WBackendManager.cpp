@@ -125,7 +125,6 @@ void WBackendManagerPrivate::loadSources()
 void WBackendManagerPrivate::applySources(const WMediaReply * reply, bool play)
 {
     medias = reply->medias();
-    audios = reply->audios();
 
     QString media = WAbstractBackend::mediaFromQuality(medias, quality);
 
@@ -201,16 +200,13 @@ void WBackendManagerPrivate::clearMedia()
     clearReply();
 
     currentMedia = QString();
-    currentAudio = QString();
 }
 
 void WBackendManagerPrivate::clearSources()
 {
     currentMedia = QString();
-    currentAudio = QString();
 
     medias.clear();
-    audios.clear();
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -145,6 +145,16 @@ int WMediaReply::timeB() const
     return _timeB;
 }
 
+int WMediaReply::start() const
+{
+    return _start;
+}
+
+int WMediaReply::end() const
+{
+    return _end;
+}
+
 QHash<WAbstractBackend::Quality, QString> WMediaReply::medias() const
 {
     return _medias;
@@ -280,17 +290,18 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             if (time > duration) continue;
 
-            origin = WControllerPlaylist::vbmlSource(child);
+            source = WControllerPlaylist::vbmlSource(child);
 
             timeA = duration - durationSource;
 
-            currentTime = time - timeA;
+            timeMedia = time - timeA;
 
-            start = startSource;
-
-            timeA += start;
+            timeA += startSource;
 
             timeB = duration;
+
+            start = startSource;
+            end   = durationSource;
 
             return;
         }
@@ -566,7 +577,7 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
     media->currentTime = currentTime;
 
-    media->time = currentTime;
+    media->timeMedia = currentTime;
 
     media->timeA = -1;
     media->timeB = -1;
@@ -829,6 +840,42 @@ void WControllerMediaPrivate::getData(WPrivateMediaData * media, WBackendNetQuer
     jobs.insert(data, media);
 }
 
+void WControllerMediaPrivate::getDataSource(WPrivateMediaData            * media,
+                                            WBackendNetQuery             * query,
+                                            const WControllerMediaData   & data,
+                                            const QString                & source,
+                                            WAbstractBackend::SourceMode   mode)
+{
+    *query = WBackendNetQuery(source);
+
+    if (WControllerPlaylist::urlIsVbmlUri(source))
+    {
+        query->type = WBackendNetQuery::TypeVbml;
+
+        query->url = source;
+    }
+
+    // NOTE: We propagate the compatibility mode.
+    query->mode = mode;
+
+    if (media->type == WTrack::Unknown)
+    {
+        media->type = data.type;
+    }
+
+    int timeMedia = data.timeMedia;
+
+    if (timeMedia != -1)
+    {
+        media->timeMedia = timeMedia;
+    }
+
+    media->timeA = data.timeA;
+    media->timeB = data.timeB;
+
+    getData(media, query);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 WPrivateMediaSource * WControllerMediaPrivate::getSource(const QString & url)
@@ -952,7 +999,7 @@ void WControllerMediaPrivate::onLoaded(WRemoteData * data)
             backend->loadSource(reply, *backendQuery,
                                 q, SLOT(onSourceLoaded(QIODevice *, WBackendNetSource)));
         }
-        else loadUrl(reply, *backendQuery, media->time);
+        else loadUrl(reply, *backendQuery, media->timeMedia);
     }
 
     delete data;
@@ -1073,73 +1120,53 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
 
     if (origin.isEmpty() == false)
     {
-        query = WBackendNetQuery(origin);
-
-        if (WControllerPlaylist::urlIsVbmlUri(origin))
-        {
-            query.type = WBackendNetQuery::TypeVbml;
-
-            query.url = origin;
-        }
-
-        // NOTE: We propagate the compatibility mode.
-        query.mode = mode;
-
-        if (media->type == WTrack::Unknown)
-        {
-            media->type = data.type;
-        }
-
-        int currentTime = data.currentTime;
-
-        if (currentTime != -1)
-        {
-            // NOTE: We update to currentTime before loading the next source.
-            media->time = currentTime;
-        }
-
-        media->timeA = data.timeA;
-        media->timeB = data.timeB;
-
-        getData(media, &query);
+        getDataSource(media, &query, data, origin, mode);
 
         return;
     }
 
     QString source = data.source;
 
-    WBackendNet * backend = wControllerPlaylist->backendFromUrl(source);
-
-    if (backend)
+    if (source.isEmpty() == false)
     {
-        QString backendId = backend->id();
+        WBackendNet * backend = wControllerPlaylist->backendFromUrl(source);
 
-        query = backend->getQuerySource(source);
-
-        backend->tryDelete();
-
-        if (resolve(backendId, query))
+        if (backend)
         {
-            // NOTE: We propagate the compatibility mode.
-            query.mode = mode;
+            QString backendId = backend->id();
 
-            if (media->type == WTrack::Unknown)
+            query = backend->getQuerySource(source);
+
+            backend->tryDelete();
+
+            if (resolve(backendId, query))
             {
-                media->type = data.type;
+                // NOTE: We propagate the compatibility mode.
+                query.mode = mode;
+
+                if (media->type == WTrack::Unknown)
+                {
+                    media->type = data.type;
+                }
+
+                int timeMedia = data.timeMedia;
+
+                if (timeMedia != -1)
+                {
+                    media->timeMedia = timeMedia;
+                }
+
+                media->timeA = data.timeA;
+                media->timeB = data.timeB;
+
+                getData(media, &query);
+
+                return;
             }
-
-            int currentTime = data.currentTime;
-
-            if (currentTime != -1)
-            {
-                // NOTE: We update to currentTime before loading the next source.
-                media->time = currentTime;
-            }
-
-            media->timeA = data.timeA;
-            media->timeB = data.timeB;
-
-            getData(media, &query);
+        }
+        else
+        {
+            getDataSource(media, &query, data, source, mode);
 
             return;
         }
@@ -1149,7 +1176,7 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
 
     backendSource.medias = data.medias;
 
-    applySource(media, backendSource, query.mode, data.timeA, data.timeB);
+    applySource(media, backendSource, mode, data.timeA, data.timeB);
 
     medias.removeOne(media);
 
@@ -1222,6 +1249,9 @@ WMediaReply * WControllerMedia::getMedia(const QString              & url,
 
     reply->_timeA = -1;
     reply->_timeB = -1;
+
+    reply->_start = -1;
+    reply->_end   = -1;
 
     reply->_backend = NULL;
 
