@@ -71,6 +71,16 @@ void WBackendManagerPrivate::init()
     backendInterface = NULL;
 
     reply = NULL;
+
+    //---------------------------------------------------------------------------------------------
+    // NOTE: We use the first backend for Chromecast output detection.
+
+    QObject::connect(backendVlc, SIGNAL(outputAdded(const WBackendOutput &)),
+                     q,          SLOT(onOutputAdded(const WBackendOutput &)));
+
+    QObject::connect(backendVlc, SIGNAL(outputRemoved(int)), q, SLOT(onOutputRemoved(int)));
+
+    QObject::connect(backendVlc, SIGNAL(currentOutputChanged()), q, SLOT(onOutputChanged()));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -288,6 +298,27 @@ void WBackendManagerPrivate::onTrackAudio()
 }
 
 //-------------------------------------------------------------------------------------------------
+
+void WBackendManagerPrivate::onOutputAdded(const WBackendOutput & output)
+{
+    Q_Q(WBackendManager); q->addOutput(output);
+}
+
+void WBackendManagerPrivate::onOutputRemoved(int index)
+{
+    Q_Q(WBackendManager); q->removeOutput(q->outputPointerAt(index));
+}
+
+void WBackendManagerPrivate::onOutputChanged()
+{
+    Q_Q(WBackendManager);
+
+    WAbstractBackend * backend = items.first().backend;
+
+    q->setCurrentOutput(backend->currentOutput());
+}
+
+//-------------------------------------------------------------------------------------------------
 // Ctor / dtor
 //-------------------------------------------------------------------------------------------------
 
@@ -489,10 +520,20 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
 /* virtual */ void WBackendManager::backendSetScanOutput(bool enabled)
 {
+    Q_D(WBackendManager);
+
+    WAbstractBackend * backend = d->items.first().backend;
+
+    backend->setScanOutput(enabled);
 }
 
 /* virtual */ void WBackendManager::backendSetCurrentOutput(const WBackendOutput * output)
 {
+    Q_D(WBackendManager);
+
+    WAbstractBackend * backend = d->items.first().backend;
+
+    backend->setCurrentOutput(indexOutput(output));
 }
 
 //-------------------------------------------------------------------------------------------------

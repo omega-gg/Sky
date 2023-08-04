@@ -93,6 +93,12 @@ public: // Slots
     void onTrackVideo();
     void onTrackAudio();
 
+    void onOutputAdded(const WBackendOutput &);
+
+    void onOutputRemoved(int);
+
+    void onOutputChanged();
+
 public: // Variables
     QList<WBackendManagerItem> items;
 

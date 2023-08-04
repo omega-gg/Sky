@@ -486,6 +486,10 @@ protected: // Virtual functions
 #endif
 
 signals:
+    void outputAdded(const WBackendOutput & output);
+
+    void outputRemoved(int index);
+
     void ended();
 
     void error(const QString & message);

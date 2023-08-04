@@ -101,6 +101,12 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onAudios    ())
     Q_PRIVATE_SLOT(d_func(), void onTrackVideo())
     Q_PRIVATE_SLOT(d_func(), void onTrackAudio())
+
+    Q_PRIVATE_SLOT(d_func(), void onOutputAdded(const WBackendOutput &))
+
+    Q_PRIVATE_SLOT(d_func(), void onOutputRemoved(int))
+
+    Q_PRIVATE_SLOT(d_func(), void onOutputChanged())
 };
 
 #include <private/WBackendManager_p>

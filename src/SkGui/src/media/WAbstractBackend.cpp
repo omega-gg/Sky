@@ -839,6 +839,8 @@ const WBackendOutput * WAbstractBackend::addOutput(const WBackendOutput & output
 
     endOutputInsert();
 
+    emit outputAdded(output);
+
     emit outputsChanged();
 
     // NOTE: We are trying to restore the currentOutput if we've lost it before.
@@ -868,6 +870,10 @@ bool WAbstractBackend::removeOutput(const WBackendOutput * output)
 
     endOutputRemove();
 
+    emit outputRemoved(index);
+
+    emit outputsChanged();
+
     if (index == d->currentOutput)
     {
         d->currentOutput = -1;
@@ -880,8 +886,6 @@ bool WAbstractBackend::removeOutput(const WBackendOutput * output)
 
         d->currentOutputChanged();
     }
-
-    emit outputsChanged();
 
     return true;
 }
