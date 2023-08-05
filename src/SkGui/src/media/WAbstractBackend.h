@@ -32,6 +32,9 @@
 #if defined(QT_NEW) && defined(SK_NO_QML) == false
 #include <QSGGeometryNode>
 #endif
+#ifdef QT_4
+#include <QHash>
+#endif
 
 // Sk includes
 #include <Sk>
@@ -376,8 +379,7 @@ public: // Static functions
     Q_INVOKABLE static QString fillModeToString (FillMode  fillMode);
     Q_INVOKABLE static QString trackToString    (const WBackendTrack & track);
 
-    Q_INVOKABLE static QString mediaFromQuality(QHash<WAbstractBackend::Quality, QString> medias,
-                                                Quality quality);
+    Q_INVOKABLE static QString mediaFromQuality(QHash<Quality, QString> medias, Quality quality);
 
 public: // WBackendInterface implementation
     Q_INVOKABLE /* virtual */ QString source() const;

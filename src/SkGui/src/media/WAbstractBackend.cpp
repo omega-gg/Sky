@@ -564,8 +564,7 @@ WBackendTrack WAbstractBackend::trackFromString(const QString & string)
 }
 
 /* Q_INVOKABLE static */
-QString WAbstractBackend::mediaFromQuality(QHash<WAbstractBackend::Quality, QString> medias,
-                                           Quality quality)
+QString WAbstractBackend::mediaFromQuality(QHash<Quality, QString> medias, Quality quality)
 {
     QString url = medias.value(quality);
 
