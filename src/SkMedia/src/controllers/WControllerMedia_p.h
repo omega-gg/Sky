@@ -135,6 +135,10 @@ public: // Functions
                      const WBackendNetSource & source,
                      WAbstractBackend::SourceMode mode, int timeA, int timeB, int start);
 
+    void appendSlice(const WPrivateMediaSlice & slice,
+                     const QString            & url,
+                     WAbstractBackend::SourceMode mode, WTrack::Type type);
+
     void updateSources();
 
     void clearReply(WMediaReply * reply);

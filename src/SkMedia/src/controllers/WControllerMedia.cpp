@@ -641,27 +641,65 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
     WPrivateMediaSlice slice;
 
-    int end = -1;
+    slice.medias = medias;
+    slice.audios = audios;
 
-    if (timeA != -1)
+    slice.expiry = source.expiry;
+
+    if (timeA == -1)
+    {
+        appendSlice(slice, media->url, mode, type);
+
+        foreach (WMediaReply * reply, media->replies)
+        {
+            reply->_loaded = true;
+
+            reply->_type = type;
+
+            reply->_medias = medias;
+            reply->_audios = audios;
+
+            emit reply->loaded(reply);
+        }
+    }
+    else
     {
         slice.timeA = timeA;
         slice.timeB = timeB;
 
         slice.start = start;
 
-        end = start + timeB - timeA;
+        int end = start + timeB - timeA;
 
         slice.end = end;
+
+        appendSlice(slice, media->url, mode, type);
+
+        foreach (WMediaReply * reply, media->replies)
+        {
+            reply->_loaded = true;
+
+            reply->_type = type;
+
+            reply->_timeA = timeA;
+            reply->_timeB = timeB;
+
+            reply->_start = start;
+            reply->_end   = end;
+
+            reply->_medias = medias;
+            reply->_audios = audios;
+
+            emit reply->loaded(reply);
+        }
     }
+}
 
-    slice.medias = medias;
-    slice.audios = audios;
-
-    slice.expiry = source.expiry;
-
-    const QString & url = media->url;
-
+void WControllerMediaPrivate::appendSlice(const WPrivateMediaSlice     & slice,
+                                          const QString                & url,
+                                          WAbstractBackend::SourceMode   mode,
+                                          WTrack::Type                   type)
+{
     WPrivateMediaSource * mediaSource = getSource(url);
 
     if (mediaSource)
@@ -710,41 +748,6 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
         urls.append(url);
 
         sources.insert(url, mediaSource);
-    }
-
-    if (timeA == -1)
-    {
-        foreach (WMediaReply * reply, media->replies)
-        {
-            reply->_loaded = true;
-
-            reply->_type = type;
-
-            reply->_medias = medias;
-            reply->_audios = audios;
-
-            emit reply->loaded(reply);
-        }
-    }
-    else
-    {
-        foreach (WMediaReply * reply, media->replies)
-        {
-            reply->_loaded = true;
-
-            reply->_type = type;
-
-            reply->_timeA = timeA;
-            reply->_timeB = timeB;
-
-            reply->_start = start;
-            reply->_end   = end;
-
-            reply->_medias = medias;
-            reply->_audios = audios;
-
-            emit reply->loaded(reply);
-        }
     }
 }
 
