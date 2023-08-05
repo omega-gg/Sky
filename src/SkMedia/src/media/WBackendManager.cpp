@@ -210,9 +210,6 @@ void WBackendManagerPrivate::clearMedia()
 
 void WBackendManagerPrivate::clearSources()
 {
-    // NOTE: We switch back to the default playback mode until further notice.
-    type = Track;
-
     currentMedia = QString();
 
     medias.clear();
