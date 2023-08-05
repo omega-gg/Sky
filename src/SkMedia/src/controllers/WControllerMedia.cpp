@@ -296,8 +296,6 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             timeMedia = time - timeA;
 
-            timeA += startSource;
-
             timeB = duration;
 
             start = startSource;

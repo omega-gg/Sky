@@ -77,6 +77,9 @@ void WBackendManagerPrivate::init()
     timeA = -1;
     timeB = -1;
 
+    start = -1;
+    end   = -1;
+
     //---------------------------------------------------------------------------------------------
     // NOTE: We use the first backend for Chromecast output detection.
 
@@ -139,6 +142,9 @@ void WBackendManagerPrivate::applySources(const WMediaReply * reply, bool play)
 
     timeA = reply->timeA();
     timeB = reply->timeB();
+
+    start = reply->start();
+    end   = reply->end  ();
 
     if (timeA == -1) type = Track;
     else             type = MultiTrack;
@@ -204,6 +210,9 @@ void WBackendManagerPrivate::clearMedia()
 
 void WBackendManagerPrivate::clearSources()
 {
+    // NOTE: We switch back to the default playback mode until further notice.
+    type = Track;
+
     currentMedia = QString();
 
     medias.clear();

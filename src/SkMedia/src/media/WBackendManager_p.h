@@ -123,6 +123,9 @@ public: // Variables
     int timeA;
     int timeB;
 
+    int start;
+    int end;
+
     QHash<WAbstractBackend::Quality, QString> medias;
 
     QString currentMedia;

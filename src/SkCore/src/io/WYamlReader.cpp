@@ -115,7 +115,7 @@ int WYamlNodeBase::extractMsecs(const QString & key, int defaultValue) const
                     +
                     seconds.first().toInt() * 1000;
 
-        if (seconds.count())
+        if (seconds.count() == 2)
         {
              return msecs + seconds.last().toInt();
         }
@@ -131,7 +131,7 @@ int WYamlNodeBase::extractMsecs(const QString & key, int defaultValue) const
                     +
                     seconds.first().toInt() * 1000;
 
-        if (seconds.count())
+        if (seconds.count() == 2)
         {
              return msecs + seconds.last().toInt();
         }
