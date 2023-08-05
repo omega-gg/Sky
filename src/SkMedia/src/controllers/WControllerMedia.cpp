@@ -301,7 +301,6 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
             timeB = duration;
 
             start = startSource;
-            end   = durationSource;
 
             return;
         }
@@ -582,6 +581,8 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
     media->timeA = -1;
     media->timeB = -1;
 
+    media->start = -1;
+
     media->backend = NULL;
     media->query   = query;
     media->reply   = NULL;
@@ -619,7 +620,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
                                           const WBackendNetSource      & source,
                                           WAbstractBackend::SourceMode   mode,
                                           int                            timeA,
-                                          int                            timeB)
+                                          int                            timeB,
+                                          int                            start)
 {
     const QHash<WAbstractBackend::Quality, QString> & medias = source.medias;
 
@@ -639,8 +641,19 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
     WPrivateMediaSlice slice;
 
-    slice.timeA = timeA;
-    slice.timeB = timeB;
+    int end = -1;
+
+    if (timeA != -1)
+    {
+        slice.timeA = timeA;
+        slice.timeB = timeB;
+
+        slice.start = start;
+
+        end = start + timeB - timeA;
+
+        slice.end = end;
+    }
 
     slice.medias = medias;
     slice.audios = audios;
@@ -699,19 +712,39 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
         sources.insert(url, mediaSource);
     }
 
-    foreach (WMediaReply * reply, media->replies)
+    if (timeA == -1)
     {
-        reply->_loaded = true;
+        foreach (WMediaReply * reply, media->replies)
+        {
+            reply->_loaded = true;
 
-        reply->_type = type;
+            reply->_type = type;
 
-        reply->_timeA = timeA;
-        reply->_timeB = timeB;
+            reply->_medias = medias;
+            reply->_audios = audios;
 
-        reply->_medias = medias;
-        reply->_audios = audios;
+            emit reply->loaded(reply);
+        }
+    }
+    else
+    {
+        foreach (WMediaReply * reply, media->replies)
+        {
+            reply->_loaded = true;
 
-        emit reply->loaded(reply);
+            reply->_type = type;
+
+            reply->_timeA = timeA;
+            reply->_timeB = timeB;
+
+            reply->_start = start;
+            reply->_end   = end;
+
+            reply->_medias = medias;
+            reply->_audios = audios;
+
+            emit reply->loaded(reply);
+        }
     }
 }
 
@@ -1059,9 +1092,9 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
 
     if (timeA == -1)
     {
-         applySource(media, source, backendQuery.mode, -1, -1);
+         applySource(media, source, backendQuery.mode, -1, -1, -1);
     }
-    else applySource(media, source, backendQuery.mode, timeA, media->timeB);
+    else applySource(media, source, backendQuery.mode, timeA, media->timeB, media->start);
 
     this->medias.removeOne(media);
 
@@ -1130,10 +1163,12 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
                 if (timeMedia != -1)
                 {
                     media->timeMedia = timeMedia;
-                }
 
-                media->timeA = data.timeA;
-                media->timeB = data.timeB;
+                    media->timeA = data.timeA;
+                    media->timeB = data.timeB;
+
+                    media->start = data.start;
+                }
 
                 getData(media, &query);
 
@@ -1164,10 +1199,12 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
             if (timeMedia != -1)
             {
                 media->timeMedia = timeMedia;
-            }
 
-            media->timeA = data.timeA;
-            media->timeB = data.timeB;
+                media->timeA = data.timeA;
+                media->timeB = data.timeB;
+
+                media->start = data.start;
+            }
 
             getData(media, &query);
 
@@ -1179,7 +1216,7 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
 
     backendSource.medias = data.medias;
 
-    applySource(media, backendSource, mode, data.timeA, data.timeB);
+    applySource(media, backendSource, mode, data.timeA, data.timeB, data.start);
 
     medias.removeOne(media);
 
@@ -1276,6 +1313,12 @@ WMediaReply * WControllerMedia::getMedia(const QString              & url,
             d->urls.append   (url);
 
             reply->_type = source->type;
+
+            reply->_timeA = slice->timeA;
+            reply->_timeB = slice->timeB;
+
+            reply->_start = slice->start;
+            reply->_end   = slice->end;
 
             reply->_medias = slice->medias;
             reply->_audios = slice->audios;

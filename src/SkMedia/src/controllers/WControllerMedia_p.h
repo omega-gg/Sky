@@ -64,6 +64,8 @@ struct WPrivateMediaData
     int timeA;
     int timeB;
 
+    int start;
+
     WBackendNet * backend;
 
     WBackendNetQuery query;
@@ -81,6 +83,9 @@ struct WPrivateMediaSlice
 {
     int timeA;
     int timeB;
+
+    int start;
+    int end;
 
     QHash<WAbstractBackend::Quality, QString> medias;
     QHash<WAbstractBackend::Quality, QString> audios;
@@ -128,7 +133,7 @@ public: // Functions
 
     void applySource(WPrivateMediaData       * media,
                      const WBackendNetSource & source,
-                     WAbstractBackend::SourceMode mode, int timeA, int timeB);
+                     WAbstractBackend::SourceMode mode, int timeA, int timeB, int start);
 
     void updateSources();
 

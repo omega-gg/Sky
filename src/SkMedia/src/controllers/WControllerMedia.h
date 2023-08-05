@@ -141,7 +141,6 @@ public:
         timeB = -1;
 
         start = -1;
-        end   = -1;
     }
 
 public: // Interface
@@ -160,7 +159,6 @@ public: // Variables
     int timeB;
 
     int start;
-    int end;
 
     QHash<WAbstractBackend::Quality, QString> medias;
 };
