@@ -840,42 +840,6 @@ void WControllerMediaPrivate::getData(WPrivateMediaData * media, WBackendNetQuer
     jobs.insert(data, media);
 }
 
-void WControllerMediaPrivate::getDataSource(WPrivateMediaData            * media,
-                                            WBackendNetQuery             * query,
-                                            const WControllerMediaData   & data,
-                                            const QString                & source,
-                                            WAbstractBackend::SourceMode   mode)
-{
-    *query = WBackendNetQuery(source);
-
-    if (WControllerPlaylist::urlIsVbmlUri(source))
-    {
-        query->type = WBackendNetQuery::TypeVbml;
-
-        query->url = source;
-    }
-
-    // NOTE: We propagate the compatibility mode.
-    query->mode = mode;
-
-    if (media->type == WTrack::Unknown)
-    {
-        media->type = data.type;
-    }
-
-    int timeMedia = data.timeMedia;
-
-    if (timeMedia != -1)
-    {
-        media->timeMedia = timeMedia;
-    }
-
-    media->timeA = data.timeA;
-    media->timeB = data.timeB;
-
-    getData(media, query);
-}
-
 //-------------------------------------------------------------------------------------------------
 
 WPrivateMediaSource * WControllerMediaPrivate::getSource(const QString & url)
@@ -1120,7 +1084,19 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
 
     if (origin.isEmpty() == false)
     {
-        getDataSource(media, &query, data, origin, mode);
+        query = WBackendNetQuery(origin);
+
+        if (WControllerPlaylist::urlIsVbmlUri(origin))
+        {
+            query.type = WBackendNetQuery::TypeVbml;
+
+            query.url = origin;
+        }
+
+        // NOTE: We propagate the compatibility mode.
+        query.mode = mode;
+
+        getData(media, &query);
 
         return;
     }
@@ -1166,7 +1142,34 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
         }
         else
         {
-            getDataSource(media, &query, data, source, mode);
+            query = WBackendNetQuery(source);
+
+            if (WControllerPlaylist::urlIsVbmlUri(source))
+            {
+                query.type = WBackendNetQuery::TypeVbml;
+
+                query.url = source;
+            }
+
+            // NOTE: We propagate the compatibility mode.
+            query.mode = mode;
+
+            if (media->type == WTrack::Unknown)
+            {
+                media->type = data.type;
+            }
+
+            int timeMedia = data.timeMedia;
+
+            if (timeMedia != -1)
+            {
+                media->timeMedia = timeMedia;
+            }
+
+            media->timeA = data.timeA;
+            media->timeB = data.timeB;
+
+            getData(media, &query);
 
             return;
         }

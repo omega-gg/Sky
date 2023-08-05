@@ -138,11 +138,6 @@ public: // Functions
 
     void getData(WPrivateMediaData * media, WBackendNetQuery * query);
 
-    void getDataSource(WPrivateMediaData          * media,
-                       WBackendNetQuery           * query,
-                       const WControllerMediaData & data,
-                       const QString              & source, WAbstractBackend::SourceMode mode);
-
     WPrivateMediaSource * getSource(const QString & url);
 
     WPrivateMediaMode * getMode(WPrivateMediaSource * source, WAbstractBackend::SourceMode mode);
