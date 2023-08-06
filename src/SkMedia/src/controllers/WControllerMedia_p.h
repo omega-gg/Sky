@@ -58,6 +58,7 @@ struct WPrivateMediaData
     QString url;
 
     int currentTime;
+    int duration;
 
     int timeMedia;
 
@@ -81,6 +82,8 @@ struct WPrivateMediaData
 
 struct WPrivateMediaSlice
 {
+    int duration;
+
     int timeA;
     int timeB;
 
@@ -129,11 +132,15 @@ public:
 public: // Functions
     void loadSources(WMediaReply * reply);
 
-    void loadUrl(QIODevice * device, const WBackendNetQuery & query, int time) const;
+    void loadUrl(QIODevice              * device,
+                 const WBackendNetQuery & query, int time, bool parseDuration) const;
+
+    void applyData(WPrivateMediaData * media, const WControllerMediaData & data);
 
     void applySource(WPrivateMediaData       * media,
                      const WBackendNetSource & source,
-                     WAbstractBackend::SourceMode mode, int timeA, int timeB, int start);
+                     WAbstractBackend::SourceMode mode,
+                     int duration, int timeA, int timeB, int start);
 
     void appendSlice(const WPrivateMediaSlice & slice,
                      const QString            & url,

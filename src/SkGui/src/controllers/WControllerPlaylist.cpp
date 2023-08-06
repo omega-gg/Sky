@@ -821,7 +821,10 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & t
             // NOTE: When it's a multi-track we set the vbml uri.
             track.setSource(url);
 
-            duration = WControllerPlaylist::vbmlDurationSource(*node, start);
+            if (duration == -1)
+            {
+                duration = WControllerPlaylist::vbmlDurationSource(*node, start);
+            }
         }
     }
     else track.setSource(origin);

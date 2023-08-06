@@ -89,20 +89,20 @@ public: // Functions
 public: // Slots
     void onLoaded();
 
-    void onState     ();
-    void onStateLoad ();
-    void onLive      ();
-    void onStarted   ();
-    void onEnded     ();
-    void onTime      ();
-    void onDuration  ();
-    void onProgress  ();
-    void onOutput    ();
-    void onQuality   ();
-    void onVideos    ();
-    void onAudios    ();
-    void onTrackVideo();
-    void onTrackAudio();
+    void onState      ();
+    void onStateLoad  ();
+    void onLive       ();
+    void onStarted    ();
+    void onEnded      ();
+    void onCurrentTime();
+    void onDuration   ();
+    void onProgress   ();
+    void onOutput     ();
+    void onQuality    ();
+    void onVideos     ();
+    void onAudios     ();
+    void onTrackVideo ();
+    void onTrackAudio ();
 
     void onOutputAdded(const WBackendOutput &);
 

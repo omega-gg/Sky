@@ -77,6 +77,7 @@ public: // Properties
     WTrack::Type type() const;
 
     int currentTime() const;
+    int duration   () const;
 
     int timeA() const;
     int timeB() const;
@@ -101,6 +102,7 @@ private: // Variables
     WTrack::Type _type;
 
     int _currentTime;
+    int _duration;
 
     int _timeA;
     int _timeB;
@@ -135,6 +137,8 @@ public:
     {
         type = WTrack::Track;
 
+        duration = -1;
+
         timeMedia = -1;
 
         timeA = -1;
@@ -144,7 +148,7 @@ public:
     }
 
 public: // Interface
-    void applyVbml(const QByteArray & array, const QString & url, int time);
+    void applyVbml(const QByteArray & array, const QString & url, int time, bool parseDuration);
     void applyM3u (const QByteArray & array, const QString & url);
 
 public: // Variables
@@ -152,6 +156,8 @@ public: // Variables
 
     QString origin;
     QString source;
+
+    int duration;
 
     int timeMedia;
 

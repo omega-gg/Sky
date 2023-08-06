@@ -140,18 +140,31 @@ void WBackendManagerPrivate::applySources(const WMediaReply * reply, bool play)
         return;
     }
 
-    timeA = reply->timeA();
-    timeB = reply->timeB();
-
-    start = reply->start();
-    end   = reply->end  ();
-
-    if (timeA == -1) type = Track;
-    else             type = MultiTrack;
-
     applyBackend(media);
 
-    backendInterface->loadSource(source, duration, currentTime, reply);
+    int timeA = reply->timeA();
+
+    if (timeA == -1)
+    {
+        type = Track;
+
+        backendInterface->loadSource(source, duration, currentTime, reply);
+    }
+    else
+    {
+        type = MultiTrack;
+
+        this->timeA = timeA;
+
+        timeB = reply->timeB();
+
+        start = reply->start();
+        end   = reply->end  ();
+
+        qDebug("Current source: timeA %d timeB %d start %d end %d", timeA, timeB, start, end);
+
+        backendInterface->loadSource(source, reply->duration(), start, reply);
+    }
 
     if (play) backendInterface->play();
 }
@@ -245,20 +258,20 @@ void WBackendManagerPrivate::setBackend(WAbstractBackend * backendNew)
 
     backend->setSize(size);
 
-    QObject::connect(backend, SIGNAL(stateChanged        ()), q, SLOT(onState     ()));
-    QObject::connect(backend, SIGNAL(stateLoadChanged    ()), q, SLOT(onStateLoad ()));
-    QObject::connect(backend, SIGNAL(liveChanged         ()), q, SLOT(onLive      ()));
-    QObject::connect(backend, SIGNAL(startedChanged      ()), q, SLOT(onStarted   ()));
-    QObject::connect(backend, SIGNAL(endedChanged        ()), q, SLOT(onEnded     ()));
-    QObject::connect(backend, SIGNAL(currentTimeChanged  ()), q, SLOT(onTime      ()));
-    QObject::connect(backend, SIGNAL(durationChanged     ()), q, SLOT(onDuration  ()));
-    QObject::connect(backend, SIGNAL(progressChanged     ()), q, SLOT(onProgress  ()));
-    QObject::connect(backend, SIGNAL(outputActiveChanged ()), q, SLOT(onOutput    ()));
-    QObject::connect(backend, SIGNAL(qualityActiveChanged()), q, SLOT(onQuality   ()));
-    QObject::connect(backend, SIGNAL(videosChanged       ()), q, SLOT(onVideos    ()));
-    QObject::connect(backend, SIGNAL(audiosChanged       ()), q, SLOT(onAudios    ()));
-    QObject::connect(backend, SIGNAL(trackVideoChanged   ()), q, SLOT(onTrackVideo()));
-    QObject::connect(backend, SIGNAL(trackAudioChanged   ()), q, SLOT(onTrackAudio()));
+    QObject::connect(backend, SIGNAL(stateChanged        ()), q, SLOT(onState      ()));
+    QObject::connect(backend, SIGNAL(stateLoadChanged    ()), q, SLOT(onStateLoad  ()));
+    QObject::connect(backend, SIGNAL(liveChanged         ()), q, SLOT(onLive       ()));
+    QObject::connect(backend, SIGNAL(startedChanged      ()), q, SLOT(onStarted    ()));
+    QObject::connect(backend, SIGNAL(endedChanged        ()), q, SLOT(onEnded      ()));
+    QObject::connect(backend, SIGNAL(currentTimeChanged  ()), q, SLOT(onCurrentTime()));
+    QObject::connect(backend, SIGNAL(durationChanged     ()), q, SLOT(onDuration   ()));
+    QObject::connect(backend, SIGNAL(progressChanged     ()), q, SLOT(onProgress   ()));
+    QObject::connect(backend, SIGNAL(outputActiveChanged ()), q, SLOT(onOutput     ()));
+    QObject::connect(backend, SIGNAL(qualityActiveChanged()), q, SLOT(onQuality    ()));
+    QObject::connect(backend, SIGNAL(videosChanged       ()), q, SLOT(onVideos     ()));
+    QObject::connect(backend, SIGNAL(audiosChanged       ()), q, SLOT(onAudios     ()));
+    QObject::connect(backend, SIGNAL(trackVideoChanged   ()), q, SLOT(onTrackVideo ()));
+    QObject::connect(backend, SIGNAL(trackAudioChanged   ()), q, SLOT(onTrackAudio ()));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -317,16 +330,26 @@ void WBackendManagerPrivate::onEnded()
     q->setEnded(backend->hasEnded());
 }
 
-void WBackendManagerPrivate::onTime()
+void WBackendManagerPrivate::onCurrentTime()
 {
     Q_Q(WBackendManager);
 
-    q->setCurrentTime(backend->currentTime());
+    int currentTime;
+
+    if (type == Track)
+    {
+         currentTime = backend->currentTime();
+    }
+    else currentTime = qMax(0, backend->currentTime() - start);
+
+    q->setCurrentTime(currentTime);
 }
 
 void WBackendManagerPrivate::onDuration()
 {
     Q_Q(WBackendManager);
+
+    if (type != Track) return;
 
     q->setDuration(backend->duration());
 }

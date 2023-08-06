@@ -716,18 +716,18 @@ void WDeclarativePlayerPrivate::onConnectedChanged()
 
         QObject::connect(q, SIGNAL(sourceChanged()), q, SLOT(onSource()));
 
-        QObject::connect(backend, SIGNAL(stateChanged        ()), q, SLOT(onState    ()));
-        QObject::connect(backend, SIGNAL(stateLoadChanged    ()), q, SLOT(onStateLoad()));
-        QObject::connect(backend, SIGNAL(liveChanged         ()), q, SLOT(onLive     ()));
-        QObject::connect(backend, SIGNAL(startedChanged      ()), q, SLOT(onStart    ()));
-        QObject::connect(backend, SIGNAL(endedChanged        ()), q, SLOT(onEnd      ()));
-        QObject::connect(backend, SIGNAL(currentTimeChanged  ()), q, SLOT(onTime     ()));
-        QObject::connect(backend, SIGNAL(durationChanged     ()), q, SLOT(onDuration ()));
-        QObject::connect(backend, SIGNAL(progressChanged     ()), q, SLOT(onProgress ()));
-        QObject::connect(backend, SIGNAL(outputActiveChanged ()), q, SLOT(onOutput   ()));
-        QObject::connect(backend, SIGNAL(qualityActiveChanged()), q, SLOT(onQuality  ()));
-        QObject::connect(backend, SIGNAL(videosChanged       ()), q, SLOT(onVideos   ()));
-        QObject::connect(backend, SIGNAL(audiosChanged       ()), q, SLOT(onAudios   ()));
+        QObject::connect(backend, SIGNAL(stateChanged        ()), q, SLOT(onState      ()));
+        QObject::connect(backend, SIGNAL(stateLoadChanged    ()), q, SLOT(onStateLoad  ()));
+        QObject::connect(backend, SIGNAL(liveChanged         ()), q, SLOT(onLive       ()));
+        QObject::connect(backend, SIGNAL(startedChanged      ()), q, SLOT(onStart      ()));
+        QObject::connect(backend, SIGNAL(endedChanged        ()), q, SLOT(onEnd        ()));
+        QObject::connect(backend, SIGNAL(currentTimeChanged  ()), q, SLOT(onCurrentTime()));
+        QObject::connect(backend, SIGNAL(durationChanged     ()), q, SLOT(onDuration   ()));
+        QObject::connect(backend, SIGNAL(progressChanged     ()), q, SLOT(onProgress   ()));
+        QObject::connect(backend, SIGNAL(outputActiveChanged ()), q, SLOT(onOutput     ()));
+        QObject::connect(backend, SIGNAL(qualityActiveChanged()), q, SLOT(onQuality    ()));
+        QObject::connect(backend, SIGNAL(videosChanged       ()), q, SLOT(onVideos     ()));
+        QObject::connect(backend, SIGNAL(audiosChanged       ()), q, SLOT(onAudios     ()));
     }
     else
     {
@@ -738,18 +738,18 @@ void WDeclarativePlayerPrivate::onConnectedChanged()
 
         QObject::disconnect(q, SIGNAL(sourceChanged()), q, SLOT(onSource()));
 
-        QObject::disconnect(backend, SIGNAL(stateChanged        ()), q, SLOT(onState    ()));
-        QObject::disconnect(backend, SIGNAL(stateLoadChanged    ()), q, SLOT(onStateLoad()));
-        QObject::disconnect(backend, SIGNAL(liveChanged         ()), q, SLOT(onLive     ()));
-        QObject::disconnect(backend, SIGNAL(startedChanged      ()), q, SLOT(onStart    ()));
-        QObject::disconnect(backend, SIGNAL(endedChanged        ()), q, SLOT(onEnd      ()));
-        QObject::disconnect(backend, SIGNAL(currentTimeChanged  ()), q, SLOT(onTime     ()));
-        QObject::disconnect(backend, SIGNAL(durationChanged     ()), q, SLOT(onDuration ()));
-        QObject::disconnect(backend, SIGNAL(progressChanged     ()), q, SLOT(onProgress ()));
-        QObject::disconnect(backend, SIGNAL(outputActiveChanged ()), q, SLOT(onOutput   ()));
-        QObject::disconnect(backend, SIGNAL(qualityActiveChanged()), q, SLOT(onQuality  ()));
-        QObject::disconnect(backend, SIGNAL(videosChanged       ()), q, SLOT(onVideos   ()));
-        QObject::disconnect(backend, SIGNAL(audiosChanged       ()), q, SLOT(onAudios   ()));
+        QObject::disconnect(backend, SIGNAL(stateChanged        ()), q, SLOT(onState      ()));
+        QObject::disconnect(backend, SIGNAL(stateLoadChanged    ()), q, SLOT(onStateLoad  ()));
+        QObject::disconnect(backend, SIGNAL(liveChanged         ()), q, SLOT(onLive       ()));
+        QObject::disconnect(backend, SIGNAL(startedChanged      ()), q, SLOT(onStart      ()));
+        QObject::disconnect(backend, SIGNAL(endedChanged        ()), q, SLOT(onEnd        ()));
+        QObject::disconnect(backend, SIGNAL(currentTimeChanged  ()), q, SLOT(onCurrentTime()));
+        QObject::disconnect(backend, SIGNAL(durationChanged     ()), q, SLOT(onDuration   ()));
+        QObject::disconnect(backend, SIGNAL(progressChanged     ()), q, SLOT(onProgress   ()));
+        QObject::disconnect(backend, SIGNAL(outputActiveChanged ()), q, SLOT(onOutput     ()));
+        QObject::disconnect(backend, SIGNAL(qualityActiveChanged()), q, SLOT(onQuality    ()));
+        QObject::disconnect(backend, SIGNAL(videosChanged       ()), q, SLOT(onVideos     ()));
+        QObject::disconnect(backend, SIGNAL(audiosChanged       ()), q, SLOT(onAudios     ()));
     }
 }
 
@@ -1009,7 +1009,7 @@ void WDeclarativePlayerPrivate::onEnd()
     server->sendReply(WBroadcastReply::ENDED, QString::number(backend->hasEnded()));
 }
 
-void WDeclarativePlayerPrivate::onTime()
+void WDeclarativePlayerPrivate::onCurrentTime()
 {
     server->sendReply(WBroadcastReply::TIME, QString::number(backend->currentTime()));
 }
