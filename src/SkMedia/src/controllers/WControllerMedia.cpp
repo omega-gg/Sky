@@ -284,7 +284,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array,
         return;
     }
 
-    int startSource = reader.extractInt("start");
+    int startSource = reader.extractMsecs("start");
 
     if (parseDuration)
     {
@@ -296,10 +296,10 @@ void WControllerMediaData::applyVbml(const QByteArray & array,
         }
     }
 
-    int end = 0;
-
     if (time == -1) time  = startSource;
     else            time += startSource;
+
+    int end = 0;
 
     foreach (const WYamlNode & child, children)
     {
