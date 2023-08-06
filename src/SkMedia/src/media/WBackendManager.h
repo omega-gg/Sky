@@ -94,6 +94,10 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void onLoaded())
 
+#ifndef SK_NO_QML
+    Q_PRIVATE_SLOT(d_func(), void onPlayerChanged())
+#endif
+
     Q_PRIVATE_SLOT(d_func(), void onState      ())
     Q_PRIVATE_SLOT(d_func(), void onStateLoad  ())
     Q_PRIVATE_SLOT(d_func(), void onLive       ())

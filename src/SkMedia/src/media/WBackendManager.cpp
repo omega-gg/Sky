@@ -59,16 +59,17 @@ void WBackendManagerPrivate::init()
 
     WBackendManagerItem item;
 
-    WBackendVlc * backendVlc = new WBackendVlc(q);
+    backend = new WBackendVlc(q);
 
-    item.backend = backendVlc;
+    item.backend = backend;
 
-    item.hook = q->createHook(backendVlc);
+    item.hook = q->createHook(backend);
 
     items.append(item);
 
-    backend          = NULL;
-    backendInterface = NULL;
+    currentItem = &(items.first());
+
+    backendInterface = backend;
 
     reply = NULL;
 
@@ -80,15 +81,21 @@ void WBackendManagerPrivate::init()
     start = -1;
     end   = -1;
 
+#ifndef SK_NO_QML
+    QObject::connect(q, SIGNAL(playerChanged()), q, SLOT(onPlayerChanged()));
+#endif
+
+    connectBackend();
+
     //---------------------------------------------------------------------------------------------
     // NOTE: We use the first backend for Chromecast output detection.
 
-    QObject::connect(backendVlc, SIGNAL(outputAdded(const WBackendOutput &)),
-                     q,          SLOT(onOutputAdded(const WBackendOutput &)));
+    QObject::connect(backend, SIGNAL(outputAdded(const WBackendOutput &)),
+                     q,       SLOT(onOutputAdded(const WBackendOutput &)));
 
-    QObject::connect(backendVlc, SIGNAL(outputRemoved(int)), q, SLOT(onOutputRemoved(int)));
+    QObject::connect(backend, SIGNAL(outputRemoved(int)), q, SLOT(onOutputRemoved(int)));
 
-    QObject::connect(backendVlc, SIGNAL(currentOutputChanged()), q, SLOT(onOutputChanged()));
+    QObject::connect(backend, SIGNAL(currentOutputChanged()), q, SLOT(onOutputChanged()));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -140,7 +147,13 @@ void WBackendManagerPrivate::applySources(const WMediaReply * reply, bool play)
         return;
     }
 
-    applyBackend(media);
+    WAbstractHook * hook = currentItem->hook;
+
+    if (hook && hook->check(media))
+    {
+         setBackendInterface(hook);
+    }
+    else setBackendInterface(backend);
 
     int timeA = reply->timeA();
 
@@ -171,21 +184,6 @@ void WBackendManagerPrivate::applySources(const WMediaReply * reply, bool play)
     }
 
     if (play) backendInterface->play();
-}
-
-void WBackendManagerPrivate::applyBackend(const QString & source)
-{
-    const WBackendManagerItem & item = items.first();
-
-    setBackend(item.backend);
-
-    WAbstractHook * hook = item.hook;
-
-    if (hook && hook->check(source))
-    {
-         backendInterface = hook;
-    }
-    else backendInterface = backend;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -262,6 +260,13 @@ void WBackendManagerPrivate::setBackend(WAbstractBackend * backendNew)
 
     backend->setSize(size);
 
+    connectBackend();
+}
+
+void WBackendManagerPrivate::connectBackend()
+{
+    Q_Q(WBackendManager);
+
     QObject::connect(backend, SIGNAL(stateChanged        ()), q, SLOT(onState      ()));
     QObject::connect(backend, SIGNAL(stateLoadChanged    ()), q, SLOT(onStateLoad  ()));
     QObject::connect(backend, SIGNAL(liveChanged         ()), q, SLOT(onLive       ()));
@@ -276,6 +281,15 @@ void WBackendManagerPrivate::setBackend(WAbstractBackend * backendNew)
     QObject::connect(backend, SIGNAL(audiosChanged       ()), q, SLOT(onAudios     ()));
     QObject::connect(backend, SIGNAL(trackVideoChanged   ()), q, SLOT(onTrackVideo ()));
     QObject::connect(backend, SIGNAL(trackAudioChanged   ()), q, SLOT(onTrackAudio ()));
+}
+
+void WBackendManagerPrivate::setBackendInterface(WBackendInterface * backend)
+{
+    if (backendInterface == backend) return;
+
+    if (backendInterface) backendInterface->clear();
+
+    backendInterface = backend;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -296,6 +310,15 @@ void WBackendManagerPrivate::onLoaded()
 
     reply = NULL;
 }
+
+#ifndef SK_NO_QML
+
+void WBackendManagerPrivate::onPlayerChanged()
+{
+    backend->setPlayer(player);
+}
+
+#endif
 
 //-------------------------------------------------------------------------------------------------
 

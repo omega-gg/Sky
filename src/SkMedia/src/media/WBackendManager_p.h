@@ -74,8 +74,6 @@ public: // Functions
     void loadSources ();
     void applySources(const WMediaReply * reply, bool play);
 
-    void applyBackend(const QString & source);
-
     void updateLoading();
 
     void clearActive();
@@ -86,8 +84,16 @@ public: // Functions
 
     void setBackend(WAbstractBackend * backend);
 
+    void connectBackend();
+
+    void setBackendInterface(WBackendInterface * backend);
+
 public: // Slots
     void onLoaded();
+
+#ifndef SK_NO_QML
+    void onPlayerChanged();
+#endif
 
     void onState      ();
     void onStateLoad  ();
@@ -112,6 +118,8 @@ public: // Slots
 
 public: // Variables
     QList<WBackendManagerItem> items;
+
+    WBackendManagerItem * currentItem;
 
     WAbstractBackend  * backend;
     WBackendInterface * backendInterface;
