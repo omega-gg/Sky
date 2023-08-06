@@ -572,7 +572,13 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->backendInterface) d->backendInterface->seek(msec);
+    if (d->backendInterface == NULL) return;
+
+    if (d->type == WBackendManagerPrivate::Track)
+    {
+         d->backendInterface->seek(msec);
+    }
+    else d->backendInterface->seek(msec + d->start);
 }
 
 //-------------------------------------------------------------------------------------------------

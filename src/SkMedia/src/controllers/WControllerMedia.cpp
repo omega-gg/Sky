@@ -286,40 +286,84 @@ void WControllerMediaData::applyVbml(const QByteArray & array,
 
     int startSource = reader.extractMsecs("start");
 
+    if (time == -1) time  = startSource;
+    else            time += startSource;
+
+    int end = 0;
+
     if (parseDuration)
     {
         duration = WControllerPlaylist::vbmlDuration(reader.node(), startSource);
 
         if (duration == -1)
         {
-            duration = WControllerPlaylist::vbmlDurationSource(*node, startSource);
+            QList<int> durations;
+
+            duration = 0;
+
+            foreach (const WYamlNode & child, children)
+            {
+                int durationSource
+                    = WControllerPlaylist::vbmlDuration(child, child.extractMsecs("start"));
+
+                if (durationSource != -1) duration += durationSource;
+
+                durations.append(durationSource);
+            }
+
+            if (duration == 0)
+            {
+                duration = -1;
+
+                return;
+            }
+
+            duration -= startSource;
+
+            for (int i = 0; i < durations.length(); i++)
+            {
+                int durationSource = durations.at(i);
+
+                if (durationSource == -1) continue;
+
+                end += durationSource;
+
+                if (time > end) continue;
+
+                source = WControllerPlaylist::vbmlSource(children.at(i));
+
+                timeA = end - durationSource;
+                timeB = end;
+
+                timeMedia = time - timeA;
+
+                start = startSource;
+
+                return;
+            }
+
+            return;
         }
     }
-
-    if (time == -1) time  = startSource;
-    else            time += startSource;
-
-    int end = 0;
 
     foreach (const WYamlNode & child, children)
     {
         startSource = child.extractMsecs("start");
 
-        int endSource = WControllerPlaylist::vbmlDuration(child, startSource);
+        int durationSource = WControllerPlaylist::vbmlDuration(child, startSource);
 
-        if (endSource == -1) continue;
+        if (durationSource == -1) continue;
 
-        end += endSource;
+        end += durationSource;
 
         if (time > end) continue;
 
         source = WControllerPlaylist::vbmlSource(child);
 
-        timeA = end - endSource;
+        timeA = end - durationSource;
+        timeB = end;
 
         timeMedia = time - timeA;
-
-        timeB = end;
 
         start = startSource;
 
