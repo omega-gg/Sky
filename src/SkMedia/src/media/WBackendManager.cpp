@@ -152,6 +152,8 @@ void WBackendManagerPrivate::applySources(const WMediaReply * reply, bool play)
     }
     else
     {
+        Q_Q(WBackendManager);
+
         type = MultiTrack;
 
         this->timeA = timeA;
@@ -163,7 +165,9 @@ void WBackendManagerPrivate::applySources(const WMediaReply * reply, bool play)
 
         qDebug("Current source: timeA %d timeB %d start %d end %d", timeA, timeB, start, end);
 
-        backendInterface->loadSource(source, reply->duration(), start, reply);
+        q->setDuration(reply->duration());
+
+        backendInterface->loadSource(source, duration, currentTime + start, reply);
     }
 
     if (play) backendInterface->play();
