@@ -271,39 +271,42 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
     const QList<WYamlNode> & children = node->children;
 
-    if (children.isEmpty() == false)
+    if (children.isEmpty())
     {
-        int duration = 0;
+        source = node->value;
 
-        if (time == -1) time  = reader.extractInt("start");
-        else            time += reader.extractInt("start");
-
-        foreach (const WYamlNode & child, children)
-        {
-            int startSource = child.extractMsecs("start");
-
-            int durationSource = WControllerPlaylist::vbmlDuration(child, startSource);
-
-            if (durationSource == -1) continue;
-
-            duration += durationSource;
-
-            if (time > duration) continue;
-
-            source = WControllerPlaylist::vbmlSource(child);
-
-            timeA = duration - durationSource;
-
-            timeMedia = time - timeA;
-
-            timeB = duration;
-
-            start = startSource;
-
-            return;
-        }
+        return;
     }
-    else source = node->value;
+
+    int duration = 0;
+
+    if (time == -1) time  = reader.extractInt("start");
+    else            time += reader.extractInt("start");
+
+    foreach (const WYamlNode & child, children)
+    {
+        int startSource = child.extractMsecs("start");
+
+        int durationSource = WControllerPlaylist::vbmlDuration(child, startSource);
+
+        if (durationSource == -1) continue;
+
+        duration += durationSource;
+
+        if (time > duration) continue;
+
+        source = WControllerPlaylist::vbmlSource(child);
+
+        timeA = duration - durationSource;
+
+        timeMedia = time - timeA;
+
+        timeB = duration;
+
+        start = startSource;
+
+        return;
+    }
 }
 
 void WControllerMediaData::applyM3u(const QByteArray & array, const QString & url)
