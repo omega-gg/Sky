@@ -500,8 +500,6 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
     if (url.isEmpty())
     {
-        if (d->backendInterface == NULL) return true;
-
         d->backendInterface->stop();
 
         d->clearActive();
@@ -531,7 +529,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
         d->updateLoading();
     }
 
-    if (d->backendInterface) d->backendInterface->play();
+    d->backendInterface->play();
 
     return true;
 }
@@ -540,7 +538,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->backendInterface) d->backendInterface->pause();
+    d->backendInterface->pause();
 
     return true;
 }
@@ -549,7 +547,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->backendInterface) d->backendInterface->stop();
+    d->backendInterface->stop();
 
     d->clearActive();
 
@@ -565,7 +563,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->backend) d->backend->setVolume(volume);
+    d->backend->setVolume(volume);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -599,8 +597,6 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->backendInterface == NULL) return;
-
     if (d->type == WBackendManagerPrivate::Track)
     {
          d->backendInterface->seek(msec);
@@ -614,7 +610,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->backend) d->backend->setSpeed(speed);
+    d->backend->setSpeed(speed);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -623,14 +619,14 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->backend) d->backend->setOutput(output);
+    d->backend->setOutput(output);
 }
 
 /* virtual */ void WBackendManager::backendSetQuality(Quality quality)
 {
     Q_D(WBackendManager);
 
-    if (d->backend) d->backend->setQuality(quality);
+    d->backend->setQuality(quality);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -639,7 +635,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->backend) d->backend->setFillMode(fillMode);
+    d->backend->setFillMode(fillMode);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -655,7 +651,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->backend) d->backend->setTrackAudio(id);
+    d->backend->setTrackAudio(id);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -684,7 +680,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->backend) d->backend->setSize(size);
+    d->backend->setSize(size);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -695,7 +691,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->backend) d->backend->synchronize(frame);
+    d->backend->synchronize(frame);
 }
 
 #endif
@@ -710,7 +706,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->backend) d->backend->drawFrame(painter, rect);
+    d->backend->drawFrame(painter, rect);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -719,18 +715,14 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->backend) d->backend->updateFrame();
+    d->backend->updateFrame();
 }
 
 /* virtual */ QImage WBackendManager::backendGetFrame() const
 {
     Q_D(const WBackendManager);
 
-    if (d->backend)
-    {
-        return d->backend->getFrame();
-    }
-    else return QImage();
+    return d->backend->getFrame();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -739,11 +731,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(const WBackendManager);
 
-    if (d->backend)
-    {
-        return d->backend->getRect();
-    }
-    else return QRectF();
+    return d->backend->getRect();
 }
 
 #endif // SK_NO_BACKENDMANAGER
