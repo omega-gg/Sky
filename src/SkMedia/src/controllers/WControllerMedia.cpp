@@ -433,8 +433,6 @@ void WControllerMediaData::extractSource(const QList<WYamlNode> & children, int 
 
         const QList<WYamlNode> & nodes = node->children;
 
-        node->dump();
-
         if (nodes.isEmpty())
         {
             applySource(node->value, time, end, startSource, durationSource);
