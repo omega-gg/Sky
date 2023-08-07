@@ -38,8 +38,10 @@ public:
     WHookTorrent(WAbstractBackend * backend);
 
 public: // WAbstractHook reimplementation
-    /* Q_INVOKABLE virtual */ void loadSource(const QString & url, int duration    = -1,
-                                                                   int currentTime = -1);
+    /* Q_INVOKABLE virtual */ void loadSource(const QString     & url,
+                                              int                 duration    = -1,
+                                              int                 currentTime = -1,
+                                              const WMediaReply * reply       = NULL);
 
     /* Q_INVOKABLE virtual */ void play  ();
     /* Q_INVOKABLE virtual */ void replay();

@@ -1048,8 +1048,10 @@ WHookTorrent::WHookTorrent(WAbstractBackend * backend)
 // WAbstractHook reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ void WHookTorrent::loadSource(const QString & url, int duration,
-                                                                             int currentTime)
+/* Q_INVOKABLE virtual */ void WHookTorrent::loadSource(const QString & url,
+                                                        int             duration,
+                                                        int             currentTime,
+                                                        const WMediaReply *)
 {
     Q_D(WHookTorrent);
 

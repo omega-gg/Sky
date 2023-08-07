@@ -72,7 +72,9 @@ public:
 
 public: // Functions
     void loadSources ();
-    void applySources(const WMediaReply * reply, bool play);
+    void applySources(bool play);
+
+    void loadSource(const QString & source, const QString & media, int currentTime);
 
     void updateLoading();
 

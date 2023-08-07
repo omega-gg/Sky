@@ -37,7 +37,12 @@ WBackendTorrentPrivate::WBackendTorrentPrivate(WBackendTorrent * p) : WBackendMa
 
 //-------------------------------------------------------------------------------------------------
 
-void WBackendTorrentPrivate::init() {}
+void WBackendTorrentPrivate::init()
+{
+    Q_Q(WBackendTorrent);
+
+    currentItem->hook = q->createHook(backend);
+}
 
 //-------------------------------------------------------------------------------------------------
 // Ctor / dtor

@@ -62,8 +62,7 @@ void WBackendManagerPrivate::init()
     backend = new WBackendVlc(q);
 
     item.backend = backend;
-
-    item.hook = q->createHook(backend);
+    item.hook    = NULL;
 
     items.append(item);
 
@@ -106,6 +105,24 @@ void WBackendManagerPrivate::loadSources()
 {
     if (reply) return;
 
+    WAbstractHook * hook = currentItem->hook;
+
+    if (hook)
+    {
+        if (hook->check(source))
+        {
+            setBackendInterface(hook);
+
+            type = Track;
+
+            backendInterface->loadSource(source, duration, currentTime, NULL);
+
+            return;
+        }
+
+        setBackendInterface(backend);
+    }
+
     Q_Q(WBackendManager);
 
     WAbstractBackend::SourceMode mode = q->getMode();
@@ -123,7 +140,7 @@ void WBackendManagerPrivate::loadSources()
 
     if (reply->isLoaded())
     {
-        applySources(reply, true);
+        applySources(true);
 
         delete reply;
 
@@ -132,7 +149,7 @@ void WBackendManagerPrivate::loadSources()
     else QObject::connect(reply, SIGNAL(loaded(WMediaReply *)), q, SLOT(onLoaded()));
 }
 
-void WBackendManagerPrivate::applySources(const WMediaReply * reply, bool play)
+void WBackendManagerPrivate::applySources(bool play)
 {
     medias = reply->medias();
 
@@ -147,21 +164,13 @@ void WBackendManagerPrivate::applySources(const WMediaReply * reply, bool play)
         return;
     }
 
-    WAbstractHook * hook = currentItem->hook;
-
-    if (hook && hook->check(media))
-    {
-         setBackendInterface(hook);
-    }
-    else setBackendInterface(backend);
-
     int timeA = reply->timeA();
 
     if (timeA == -1)
     {
         type = Track;
 
-        backendInterface->loadSource(source, duration, currentTime, reply);
+        loadSource(source, media, currentTime);
     }
     else
     {
@@ -180,10 +189,32 @@ void WBackendManagerPrivate::applySources(const WMediaReply * reply, bool play)
 
         q->setDuration(reply->duration());
 
-        backendInterface->loadSource(source, duration, currentTime + start, reply);
+        loadSource(source, media, currentTime + start);
     }
 
     if (play) backendInterface->play();
+}
+
+void WBackendManagerPrivate::loadSource(const QString & source,
+                                        const QString & media, int currentTime)
+{
+    WAbstractHook * hook = currentItem->hook;
+
+    if (hook)
+    {
+        if (hook->check(media))
+        {
+            setBackendInterface(hook);
+
+            backendInterface->loadSource(media, duration, currentTime, NULL);
+
+            return;
+        }
+
+        setBackendInterface(backend);
+    }
+
+    backendInterface->loadSource(source, duration, currentTime, reply);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -304,7 +335,7 @@ void WBackendManagerPrivate::onLoaded()
     {
         q->stop();
     }
-    else applySources(reply, q->isPlaying());
+    else applySources(q->isPlaying());
 
     reply->deleteLater();
 

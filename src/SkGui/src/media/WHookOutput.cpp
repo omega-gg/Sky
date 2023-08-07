@@ -587,8 +587,10 @@ WHookOutput::WHookOutput(WHookOutputPrivate * p, WAbstractBackend * backend)
 // WAbstractHook reimplementation
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE virtual */ void WHookOutput::loadSource(const QString & url, int duration,
-                                                                            int currentTime)
+/* Q_INVOKABLE virtual */ void WHookOutput::loadSource(const QString & url,
+                                                       int             duration,
+                                                       int             currentTime,
+                                                       const WMediaReply *)
 {
     Q_D(WHookOutput);
 

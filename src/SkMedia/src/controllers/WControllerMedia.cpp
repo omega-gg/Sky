@@ -1243,6 +1243,8 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
         return;
     }
 
+    WBackendNetSource backendSource;
+
     QString source = data.source;
 
     if (source.isEmpty() == false)
@@ -1269,7 +1271,7 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
                 return;
             }
         }
-        else
+        else if (WControllerPlaylist::urlIsVbml(source))
         {
             query = WBackendNetQuery(source);
 
@@ -1289,11 +1291,11 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
 
             return;
         }
+
+        // NOTE: If the parsing fails we add the current url as the default source.
+        backendSource.medias.insert(WAbstractBackend::QualityDefault, source);
     }
-
-    WBackendNetSource backendSource;
-
-    backendSource.medias = data.medias;
+    else backendSource.medias = data.medias;
 
     applySource(media, backendSource, mode, data.duration, data.timeA, data.timeB, data.start);
 
