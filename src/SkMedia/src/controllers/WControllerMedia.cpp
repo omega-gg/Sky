@@ -945,6 +945,29 @@ void WControllerMediaPrivate::clearReply(WMediaReply * reply)
 
 //-------------------------------------------------------------------------------------------------
 
+int WControllerMediaPrivate::checkMax(WPrivateMediaData * media, WBackendNetQuery & query)
+{
+    int indexNext = query.indexNext;
+
+    if (indexNext < CONTROLLERMEDIA_MAX_QUERY)
+    {
+        return indexNext + 1;
+    }
+
+    qWarning("WControllerMediaPrivate::checkMax: Maximum queries reached.");
+
+    foreach (WMediaReply * reply, media->replies)
+    {
+        emit reply->loaded(reply);
+    }
+
+    medias.removeOne(media);
+
+    delete media;
+
+    return -1;
+}
+
 bool WControllerMediaPrivate::resolve(const QString & backendId, WBackendNetQuery & query)
 {
     QString id = query.backend;
@@ -1176,19 +1199,23 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
 
         int indexNext = backendQuery.indexNext;
 
-        if (resolve(backendId, nextQuery) && indexNext < CONTROLLERMEDIA_MAX_QUERY)
+        if (indexNext < CONTROLLERMEDIA_MAX_QUERY)
         {
-            nextQuery.indexNext = indexNext + 1;
+            if (resolve(backendId, nextQuery))
+            {
+                nextQuery.indexNext = indexNext + 1;
 
-            // NOTE: We propagate the compatibility mode.
-            nextQuery.mode = backendQuery.mode;
+                // NOTE: We propagate the compatibility mode.
+                nextQuery.mode = backendQuery.mode;
 
-            media->query = nextQuery;
+                media->query = nextQuery;
 
-            getData(media, &nextQuery);
+                getData(media, &nextQuery);
 
-            return;
+                return;
+            }
         }
+        else qWarning("WControllerMediaPrivate::onSourceLoaded: Maximum queries reached.");
     }
 
     if (media->type == WTrack::Unknown)
@@ -1226,7 +1253,13 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
 
     if (origin.isEmpty() == false)
     {
+        int indexNext = checkMax(media, query);
+
+        if (indexNext == -1) return;
+
         query = WBackendNetQuery(origin);
+
+        query.indexNext = indexNext;
 
         if (WControllerPlaylist::urlIsVbmlUri(origin))
         {
@@ -1253,9 +1286,15 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
 
         if (backend)
         {
+            int indexNext = checkMax(media, query);
+
+            if (indexNext == -1) return;
+
             QString backendId = backend->id();
 
             query = backend->getQuerySource(source);
+
+            query.indexNext = indexNext;
 
             backend->tryDelete();
 
@@ -1273,7 +1312,13 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
         }
         else if (WControllerPlaylist::urlIsVbml(source))
         {
+            int indexNext = checkMax(media, query);
+
+            if (indexNext == -1) return;
+
             query = WBackendNetQuery(source);
+
+            query.indexNext = indexNext;
 
             if (WControllerPlaylist::urlIsVbmlUri(source))
             {

@@ -150,6 +150,8 @@ public: // Functions
 
     void clearReply(WMediaReply * reply);
 
+    int checkMax(WPrivateMediaData * media, WBackendNetQuery & query);
+
     bool resolve(const QString & backendId, WBackendNetQuery & query);
 
     void getData(WPrivateMediaData * media, WBackendNetQuery * query);

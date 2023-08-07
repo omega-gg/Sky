@@ -2716,7 +2716,12 @@ bool WControllerPlaylistPrivate::getNextTrack(const QString & backendId,
 
     foreach (WBackendNetQuery query, queries)
     {
-        if (index >= CONTROLLERPLAYLIST_MAX_QUERY) return result;
+        if (index >= CONTROLLERPLAYLIST_MAX_QUERY)
+        {
+            qWarning("WControllerPlaylistPrivate::getNextTrack: Maximum queries reached.");
+
+            return false;
+        }
 
         if (resolveTrack(backendId, query) == false) continue;
 
@@ -2741,7 +2746,12 @@ bool WControllerPlaylistPrivate::getNextPlaylist(const QString & backendId,
 
     foreach (WBackendNetQuery query, queries)
     {
-        if (index >= CONTROLLERPLAYLIST_MAX_QUERY) return result;
+        if (index >= CONTROLLERPLAYLIST_MAX_QUERY)
+        {
+            qWarning("WControllerPlaylistPrivate::getNextPlaylist: Maximum queries reached.");
+
+            return false;
+        }
 
         if (resolvePlaylist(backendId, query) == false) continue;
 
@@ -2765,7 +2775,12 @@ bool WControllerPlaylistPrivate::getNextFolder(const QString & backendId,
 
     foreach (WBackendNetQuery query, queries)
     {
-        if (index >= CONTROLLERPLAYLIST_MAX_QUERY) return result;
+        if (index >= CONTROLLERPLAYLIST_MAX_QUERY)
+        {
+            qWarning("WControllerPlaylistPrivate::getNextFolder: Maximum queries reached.");
+
+            return false;
+        }
 
         if (resolveFolder(backendId, query) == false) continue;
 
@@ -2789,7 +2804,12 @@ bool WControllerPlaylistPrivate::getNextItem(const QString & backendId,
 
     foreach (WBackendNetQuery query, queries)
     {
-        if (index >= CONTROLLERPLAYLIST_MAX_QUERY) return result;
+        if (index >= CONTROLLERPLAYLIST_MAX_QUERY)
+        {
+            qWarning("WControllerPlaylistPrivate::getNextItem: Maximum queries reached.");
+
+            return false;
+        }
 
         if (resolveItem(backendId, query) == false) continue;
 
