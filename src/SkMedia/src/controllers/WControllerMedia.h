@@ -37,6 +37,7 @@
 // Forward declarations
 class WControllerMediaPrivate;
 class WAbstractLoader;
+class WYamlNode;
 #ifndef SK_NO_PLAYER
 class WVlcEngine;
 class WVlcPlayer;
@@ -150,6 +151,11 @@ public:
 public: // Interface
     void applyVbml(const QByteArray & array, const QString & url, int time, bool parseDuration);
     void applyM3u (const QByteArray & array, const QString & url);
+
+private: // Functions
+    void extractSource(const QList<WYamlNode> & children, int time, int end);
+
+    void applySource(const QString & url, int time, int end, int startSource, int durationSource);
 
 public: // Variables
     WTrack::Type type;
