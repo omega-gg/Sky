@@ -1581,7 +1581,11 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
     {
         d->updateLoading();
 
-        backendStop();
+        d->clearPlayer();
+
+        d->player->pause();
+
+        d->clearActive();
 
         if (reply)
         {

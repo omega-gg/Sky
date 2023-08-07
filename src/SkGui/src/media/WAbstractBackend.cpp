@@ -668,7 +668,12 @@ QString WAbstractBackend::mediaFromQuality(QHash<Quality, QString> medias, Quali
         setDuration   (duration);
         setCurrentTime(currentTime);
     }
-    else seek(currentTime);
+    else
+    {
+        setDuration(duration);
+
+        seek(currentTime);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------

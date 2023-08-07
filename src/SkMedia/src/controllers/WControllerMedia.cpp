@@ -793,6 +793,14 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
     if (timeA == -1)
     {
+        slice.duration = -1;
+
+        slice.timeA = -1;
+        slice.timeB = -1;
+
+        slice.start = -1;
+        slice.end   = -1;
+
         appendSlice(slice, media->url, mode, type);
 
         foreach (WMediaReply * reply, media->replies)
@@ -1079,11 +1087,11 @@ const WPrivateMediaSlice * WControllerMediaPrivate::getSlice(WPrivateMediaSource
                                                              WAbstractBackend::SourceMode mode,
                                                              int currentTime)
 {
-    WPrivateMediaMode * sources = getMode(source, mode);
+    WPrivateMediaMode * modes = getMode(source, mode);
 
-    if (sources == NULL) return NULL;
+    if (modes == NULL) return NULL;
 
-    QList<WPrivateMediaSlice> & slices = sources->slices;
+    QList<WPrivateMediaSlice> & slices = modes->slices;
 
     int count = slices.count();
 

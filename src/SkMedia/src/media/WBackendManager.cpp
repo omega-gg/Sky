@@ -539,7 +539,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     {
         d->updateLoading();
 
-        backendStop();
+        d->backendInterface->pause();
 
         d->loadSources();
     }
