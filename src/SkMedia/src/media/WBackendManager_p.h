@@ -84,11 +84,11 @@ public: // Functions
     void clearMedia  ();
     void clearSources();
 
-    void setBackend(WAbstractBackend * backend);
+    void setBackend(WAbstractBackend * backendNew);
 
     void connectBackend();
 
-    void setBackendInterface(WBackendInterface * backend);
+    void setBackendInterface(WBackendInterface * backendNew);
 
 public: // Slots
     void onLoaded();

@@ -314,13 +314,20 @@ void WBackendManagerPrivate::connectBackend()
     QObject::connect(backend, SIGNAL(trackAudioChanged   ()), q, SLOT(onTrackAudio ()));
 }
 
-void WBackendManagerPrivate::setBackendInterface(WBackendInterface * backend)
+void WBackendManagerPrivate::setBackendInterface(WBackendInterface * backendNew)
 {
-    if (backendInterface == backend) return;
+    if (backendInterface == backendNew) return;
 
-    if (backendInterface) backendInterface->clear();
+    Q_Q(WBackendManager);
 
-    backendInterface = backend;
+    // NOTE: We want to avoid signals while clearing the backend.
+    QObject::disconnect(backend, 0, q, 0);
+
+    backendInterface->clear();
+
+    backendInterface = backendNew;
+
+    connectBackend();
 }
 
 //-------------------------------------------------------------------------------------------------
