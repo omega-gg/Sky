@@ -115,11 +115,11 @@ void WBackendManagerPrivate::loadSources()
 
             type = Track;
 
+            connectBackend();
+
             backendInterface->loadSource(source, duration, currentTime, NULL);
 
             backendInterface->play();
-
-            connectBackend();
 
             return;
         }
@@ -174,6 +174,8 @@ void WBackendManagerPrivate::applySources(bool play)
     {
         type = Track;
 
+        connectBackend();
+
         loadSource(source, media, currentTime);
     }
     else
@@ -193,12 +195,12 @@ void WBackendManagerPrivate::applySources(bool play)
 
         q->setDuration(reply->duration());
 
+        connectBackend();
+
         loadSource(source, media, currentTime + start);
     }
 
     if (play) backendInterface->play();
-
-    connectBackend();
 }
 
 void WBackendManagerPrivate::loadSource(const QString & source,
