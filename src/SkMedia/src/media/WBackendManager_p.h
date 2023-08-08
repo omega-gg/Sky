@@ -86,7 +86,8 @@ public: // Functions
 
     void setBackend(WAbstractBackend * backendNew);
 
-    void connectBackend();
+    void connectBackend   ();
+    void disconnectBackend();
 
     void setBackendInterface(WBackendInterface * backendNew);
 
@@ -139,6 +140,8 @@ public: // Variables
     QHash<WAbstractBackend::Quality, QString> medias;
 
     QString currentMedia;
+
+    bool connected;
 
 protected:
     W_DECLARE_PUBLIC(WBackendManager)

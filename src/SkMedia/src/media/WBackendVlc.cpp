@@ -1611,9 +1611,9 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
     {
         if (d->currentMedia.isEmpty())
         {
-            d->loadSources();
-
             d->updateLoading();
+
+            d->loadSources();
         }
         else d->playMedia();
     }

@@ -80,11 +80,11 @@ void WBackendManagerPrivate::init()
     start = -1;
     end   = -1;
 
+    connected = false;
+
 #ifndef SK_NO_QML
     QObject::connect(q, SIGNAL(playerChanged()), q, SLOT(onPlayerChanged()));
 #endif
-
-    connectBackend();
 
     //---------------------------------------------------------------------------------------------
     // NOTE: We use the first backend for Chromecast output detection.
@@ -116,6 +116,10 @@ void WBackendManagerPrivate::loadSources()
             type = Track;
 
             backendInterface->loadSource(source, duration, currentTime, NULL);
+
+            backendInterface->play();
+
+            connectBackend();
 
             return;
         }
@@ -151,14 +155,14 @@ void WBackendManagerPrivate::loadSources()
 
 void WBackendManagerPrivate::applySources(bool play)
 {
+    Q_Q(WBackendManager);
+
     medias = reply->medias();
 
     QString media = WAbstractBackend::mediaFromQuality(medias, quality);
 
     if (media.isEmpty())
     {
-        Q_Q(WBackendManager);
-
         q->stop();
 
         return;
@@ -193,6 +197,8 @@ void WBackendManagerPrivate::applySources(bool play)
     }
 
     if (play) backendInterface->play();
+
+    connectBackend();
 }
 
 void WBackendManagerPrivate::loadSource(const QString & source,
@@ -290,12 +296,14 @@ void WBackendManagerPrivate::setBackend(WAbstractBackend * backendNew)
     backend->setTrackAudio(trackAudio);
 
     backend->setSize(size);
-
-    connectBackend();
 }
 
 void WBackendManagerPrivate::connectBackend()
 {
+    if (connected) return;
+
+    connected = true;
+
     Q_Q(WBackendManager);
 
     QObject::connect(backend, SIGNAL(stateChanged        ()), q, SLOT(onState      ()));
@@ -314,20 +322,25 @@ void WBackendManagerPrivate::connectBackend()
     QObject::connect(backend, SIGNAL(trackAudioChanged   ()), q, SLOT(onTrackAudio ()));
 }
 
+void WBackendManagerPrivate::disconnectBackend()
+{
+    if (connected == false) return;
+
+    connected = false;
+
+    Q_Q(WBackendManager);
+
+    // NOTE: We want to avoid signals while updating the backend.
+    QObject::disconnect(backend, 0, q, 0);
+}
+
 void WBackendManagerPrivate::setBackendInterface(WBackendInterface * backendNew)
 {
     if (backendInterface == backendNew) return;
 
-    Q_Q(WBackendManager);
-
-    // NOTE: We want to avoid signals while clearing the backend.
-    QObject::disconnect(backend, 0, q, 0);
-
     backendInterface->clear();
 
     backendInterface = backendNew;
-
-    connectBackend();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -364,12 +377,16 @@ void WBackendManagerPrivate::onState()
 {
     Q_Q(WBackendManager);
 
+    qDebug("STATE %d", backend->state());
+
     q->setState(backend->state());
 }
 
 void WBackendManagerPrivate::onStateLoad()
 {
     Q_Q(WBackendManager);
+
+    qDebug("STATE LOAD %d", backend->stateLoad());
 
     q->setStateLoad(backend->stateLoad());
 }
@@ -385,12 +402,16 @@ void WBackendManagerPrivate::onStarted()
 {
     Q_Q(WBackendManager);
 
+    qDebug("STARTED");
+
     q->setStarted(backend->hasStarted());
 }
 
 void WBackendManagerPrivate::onEnded()
 {
     Q_Q(WBackendManager);
+
+    qDebug("ENDED");
 
     q->setEnded(backend->hasEnded());
 }
@@ -399,15 +420,34 @@ void WBackendManagerPrivate::onCurrentTime()
 {
     Q_Q(WBackendManager);
 
-    int currentTime;
-
-    if (type == Track)
+    if (type != Track)
     {
-         currentTime = backend->currentTime();
-    }
-    else currentTime = qMax(0, backend->currentTime() - start);
+        int currentTime = backend->currentTime();
 
-    q->setCurrentTime(currentTime);
+        if (currentTime <= start)
+        {
+            qDebug("START");
+        }
+        else if (currentTime >= end)
+        {
+            qDebug("END");
+
+            disconnectBackend();
+
+            backendInterface->clear();
+
+            connectBackend();
+
+            return;
+        }
+
+        qDebug("UPDATE TIME %d %d", backend->currentTime() - start, backend->currentTime());
+
+        currentTime = qMax(0, backend->currentTime() - start);
+
+        q->setCurrentTime(currentTime);
+    }
+    else q->setCurrentTime(backend->currentTime());
 }
 
 void WBackendManagerPrivate::onDuration()
@@ -546,7 +586,9 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     {
         d->updateLoading();
 
-        d->backendInterface->pause();
+        d->disconnectBackend();
+
+        d->backendInterface->stop();
 
         d->loadSources();
     }
@@ -562,9 +604,11 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
     if (isPaused() == false && d->currentMedia.isEmpty())
     {
-        d->loadSources();
-
         d->updateLoading();
+
+        d->disconnectBackend();
+
+        d->loadSources();
     }
 
     d->backendInterface->play();
