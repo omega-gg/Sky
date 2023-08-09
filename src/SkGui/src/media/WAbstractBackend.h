@@ -633,6 +633,8 @@ public: // Properties
 private:
     W_DECLARE_PRIVATE(WAbstractBackend)
 
+    friend class WBackendManager;
+    friend class WBackendManagerPrivate;
     friend class WAbstractHook;
     friend class WAbstractHookPrivate;
 };

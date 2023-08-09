@@ -84,7 +84,7 @@ public: // Functions
     void clearMedia  ();
     void clearSources();
 
-    void setBackend(WAbstractBackend * backendNew);
+    //void setBackend(WAbstractBackend * backendNew);
 
     void connectBackend   ();
     void disconnectBackend();

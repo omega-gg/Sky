@@ -115,11 +115,11 @@ void WBackendManagerPrivate::loadSources()
 
             type = Track;
 
-            connectBackend();
-
             backendInterface->loadSource(source, duration, currentTime, NULL);
 
             backendInterface->play();
+
+            connectBackend();
 
             return;
         }
@@ -174,8 +174,6 @@ void WBackendManagerPrivate::applySources(bool play)
     {
         type = Track;
 
-        connectBackend();
-
         loadSource(source, media, currentTime);
     }
     else
@@ -195,12 +193,12 @@ void WBackendManagerPrivate::applySources(bool play)
 
         q->setDuration(reply->duration());
 
-        connectBackend();
-
         loadSource(source, media, currentTime + start);
     }
 
     if (play) backendInterface->play();
+
+    connectBackend();
 }
 
 void WBackendManagerPrivate::loadSource(const QString & source,
@@ -271,7 +269,7 @@ void WBackendManagerPrivate::clearSources()
 
 //-------------------------------------------------------------------------------------------------
 
-void WBackendManagerPrivate::setBackend(WAbstractBackend * backendNew)
+/*void WBackendManagerPrivate::setBackend(WAbstractBackend * backendNew)
 {
     if (backend == backendNew) return;
 
@@ -298,7 +296,7 @@ void WBackendManagerPrivate::setBackend(WAbstractBackend * backendNew)
     backend->setTrackAudio(trackAudio);
 
     backend->setSize(size);
-}
+}*/
 
 void WBackendManagerPrivate::connectBackend()
 {
@@ -307,6 +305,16 @@ void WBackendManagerPrivate::connectBackend()
     connected = true;
 
     Q_Q(WBackendManager);
+
+    //---------------------------------------------------------------------------------------------
+    // NOTE: We update the manager with the useful backend properties.
+
+    WAbstractBackendPrivate * p = backend->d_func();
+
+    q->setStateLoad(p->stateLoad);
+    q->setProgress (p->progress);
+
+    //---------------------------------------------------------------------------------------------
 
     QObject::connect(backend, SIGNAL(stateChanged        ()), q, SLOT(onState      ()));
     QObject::connect(backend, SIGNAL(stateLoadChanged    ()), q, SLOT(onStateLoad  ()));
