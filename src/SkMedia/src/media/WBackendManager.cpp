@@ -432,22 +432,18 @@ void WBackendManagerPrivate::onCurrentTime()
         }
         else if (currentTime >= end)
         {
-            qDebug("END");
+            qDebug("LOAD NEXT SOURCE");
 
-            disconnectBackend();
+            q->setCurrentTime(qMax(0, currentTime - start));
 
-            backendInterface->clear();
-
-            connectBackend();
+            q->backendSetSource(source, NULL);
 
             return;
         }
 
-        qDebug("UPDATE TIME %d %d", backend->currentTime() - start, backend->currentTime());
+        qDebug("UPDATE TIME %d %d", currentTime - start, currentTime);
 
-        currentTime = qMax(0, backend->currentTime() - start);
-
-        q->setCurrentTime(currentTime);
+        q->setCurrentTime(qMax(0, currentTime - start));
     }
     else q->setCurrentTime(backend->currentTime());
 }
