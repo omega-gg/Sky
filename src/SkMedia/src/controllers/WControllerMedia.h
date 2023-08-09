@@ -149,7 +149,7 @@ public:
     }
 
 public: // Interface
-    void applyVbml(const QByteArray & array, const QString & url, int time, bool parseDuration);
+    void applyVbml(const QByteArray & array, const QString & url, int time);
     void applyM3u (const QByteArray & array, const QString & url);
 
 private: // Functions

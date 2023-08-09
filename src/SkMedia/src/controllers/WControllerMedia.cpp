@@ -194,8 +194,7 @@ QString WMediaReply::error() const
 //=================================================================================================
 // Interface
 
-void WControllerMediaData::applyVbml(const QByteArray & array,
-                                     const QString    & url, int time, bool parseDuration)
+void WControllerMediaData::applyVbml(const QByteArray & array, const QString & url, int time)
 {
     QString content = Sk::readBml(array);
 
@@ -226,7 +225,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array,
     {
         WControllerPlaylist::vbmlPatch(content, api);
 
-        applyVbml(content.toUtf8(), url, time, parseDuration);
+        applyVbml(content.toUtf8(), url, time);
 
         return;
     }
@@ -291,7 +290,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array,
 
     int end = 0;
 
-    if (parseDuration)
+    if (duration == -1)
     {
         duration = WControllerPlaylist::vbmlDuration(reader.node(), startSource);
 
@@ -481,8 +480,7 @@ class WControllerMediaReply : public QObject
     Q_OBJECT
 
 public: // Interface
-    Q_INVOKABLE void extractVbml(QIODevice     * device,
-                                 const QString & url, int time, bool parseDuration);
+    Q_INVOKABLE void extractVbml(QIODevice * device, const QString & url, int time, int duration);
 
     Q_INVOKABLE void extractM3u(QIODevice * device, const QString & url);
 
@@ -492,14 +490,16 @@ signals:
 
 //-------------------------------------------------------------------------------------------------
 
-/* Q_INVOKABLE */ void WControllerMediaReply::extractVbml(QIODevice     * device,
+/* Q_INVOKABLE */ void WControllerMediaReply::extractVbml(QIODevice * device,
                                                           const QString & url,
                                                           int             time,
-                                                          bool            parseDuration)
+                                                          int             duration)
 {
     WControllerMediaData data;
 
-    data.applyVbml(WControllerFile::readAll(device), url, time, parseDuration);
+    data.duration = duration;
+
+    data.applyVbml(WControllerFile::readAll(device), url, time);
 
     emit loaded(device, data);
 
@@ -579,7 +579,7 @@ void WControllerMediaPrivate::init(const QStringList & options)
 
     const QMetaObject * meta = WControllerMediaReply().metaObject();
 
-    methodVbml = meta->method(meta->indexOfMethod("extractVbml(QIODevice*,QString,int,bool)"));
+    methodVbml = meta->method(meta->indexOfMethod("extractVbml(QIODevice*,QString,int,int)"));
     methodM3u  = meta->method(meta->indexOfMethod("extractM3u(QIODevice*,QString)"));
 
     thread = new QThread(q);
@@ -728,7 +728,7 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 void WControllerMediaPrivate::loadUrl(QIODevice              * device,
                                       const WBackendNetQuery & query,
                                       int                      time,
-                                      bool                     parseDuration) const
+                                      int                      duration) const
 {
     Q_Q(const WControllerMedia);
 
@@ -743,10 +743,8 @@ void WControllerMediaPrivate::loadUrl(QIODevice              * device,
     {
         methodM3u.invoke(reply, Q_ARG(QIODevice *, device), Q_ARG(const QString &, query.url));
     }
-    else methodVbml.invoke(reply, Q_ARG(QIODevice     *, device),
-                                  Q_ARG(const QString &, query.url),
-                                  Q_ARG(int,             time),
-                                  Q_ARG(bool,            parseDuration));
+    else methodVbml.invoke(reply, Q_ARG(QIODevice *, device), Q_ARG(const QString &, query.url),
+                                  Q_ARG(int, time), Q_ARG(int, duration));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1206,11 +1204,7 @@ void WControllerMediaPrivate::onLoaded(WRemoteData * data)
             backend->loadSource(reply, *backendQuery,
                                 q, SLOT(onSourceLoaded(QIODevice *, WBackendNetSource)));
         }
-        else if (media->duration == -1)
-        {
-             loadUrl(reply, *backendQuery, media->timeMedia, true);
-        }
-        else loadUrl(reply, *backendQuery, media->timeMedia, false);
+        else loadUrl(reply, *backendQuery, media->timeMedia, media->duration);
     }
 
     delete data;

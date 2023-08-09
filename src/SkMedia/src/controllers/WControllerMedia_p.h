@@ -132,8 +132,7 @@ public:
 public: // Functions
     void loadSources(WMediaReply * reply);
 
-    void loadUrl(QIODevice              * device,
-                 const WBackendNetQuery & query, int time, bool parseDuration) const;
+    void loadUrl(QIODevice * device, const WBackendNetQuery & query, int time, int duration) const;
 
     void applyData(WPrivateMediaData * media, const WControllerMediaData & data);
 
