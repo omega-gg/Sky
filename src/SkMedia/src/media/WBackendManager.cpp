@@ -161,20 +161,22 @@ void WBackendManagerPrivate::applySources(bool play)
 
     QString media = WAbstractBackend::mediaFromQuality(medias, quality);
 
-    if (media.isEmpty())
-    {
-        q->stop();
-
-        return;
-    }
-
     int timeA = reply->timeA();
 
     if (timeA == -1)
     {
+        if (media.isEmpty())
+        {
+            q->stop();
+
+            return;
+        }
+
         type = Track;
 
         loadSource(source, media, currentTime);
+
+        if (play) backendInterface->play();
     }
     else
     {
@@ -193,10 +195,13 @@ void WBackendManagerPrivate::applySources(bool play)
 
         q->setDuration(reply->duration());
 
-        loadSource(source, media, currentTime + start);
-    }
+        if (media.isEmpty() == false)
+        {
+            loadSource(source, media, currentTime + start);
 
-    if (play) backendInterface->play();
+            if (play) backendInterface->play();
+        }
+    }
 
     connectBackend();
 }

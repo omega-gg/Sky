@@ -347,11 +347,13 @@ void WControllerMediaData::applyVbml(const QByteArray & array,
 
                 const QList<WYamlNode> & nodes = node->children;
 
-                if (nodes.isEmpty())
+                if (nodes.isEmpty() == false)
                 {
-                    applySource(node->value, time, end, startSource, durationSource);
+                    extractSource(nodes, time, &end);
+
+                    if (source.isEmpty()) applyEmpty(time, end);
                 }
-                else extractSource(nodes, time, end);
+                else applySource(node->value, time, end, startSource, durationSource);
 
                 return;
             }
@@ -360,7 +362,9 @@ void WControllerMediaData::applyVbml(const QByteArray & array,
         }
     }
 
-    extractSource(children, time, end);
+    extractSource(children, time, &end);
+
+    if (source.isEmpty()) applyEmpty(time, end);
 }
 
 void WControllerMediaData::applyM3u(const QByteArray & array, const QString & url)
@@ -404,7 +408,7 @@ void WControllerMediaData::applyM3u(const QByteArray & array, const QString & ur
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WControllerMediaData::extractSource(const QList<WYamlNode> & children, int time, int end)
+void WControllerMediaData::extractSource(const QList<WYamlNode> & children, int time, int * end)
 {
     foreach (const WYamlNode & child, children)
     {
@@ -414,17 +418,17 @@ void WControllerMediaData::extractSource(const QList<WYamlNode> & children, int 
 
         if (durationSource != -1)
         {
-            end += durationSource;
+            *end += durationSource;
         }
 
-        if (time > end) continue;
+        if (time > *end) continue;
 
         // NOTE: The media is prioritized over the source.
         QString media = child.extractString("media");
 
         if (media.isEmpty() == false)
         {
-            applySource(media, time, end, startSource, durationSource);
+            applySource(media, time, *end, startSource, durationSource);
 
             return;
         }
@@ -435,7 +439,7 @@ void WControllerMediaData::extractSource(const QList<WYamlNode> & children, int 
 
         if (nodes.isEmpty())
         {
-            applySource(node->value, time, end, startSource, durationSource);
+            applySource(node->value, time, *end, startSource, durationSource);
         }
         else extractSource(nodes, time, end);
 
@@ -454,6 +458,18 @@ void WControllerMediaData::applySource(const QString & url,
     timeMedia = time - timeA;
 
     start = startSource;
+}
+
+void WControllerMediaData::applyEmpty(int time, int end)
+{
+    if (time >= duration) return;
+
+    timeA = end;
+    timeB = duration;
+
+    timeMedia = time - timeA;
+
+    start = 0;
 }
 
 //=================================================================================================
@@ -770,29 +786,27 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 {
     const QHash<WAbstractBackend::Quality, QString> & medias = source.medias;
 
-    if (medias.count() == 0)
-    {
-        foreach (WMediaReply * reply, media->replies)
-        {
-            emit reply->loaded(reply);
-        }
-
-        return;
-    }
-
-    const QHash<WAbstractBackend::Quality, QString> & audios = source.audios;
-
-    WTrack::Type type = media->type;
-
-    WPrivateMediaSlice slice;
-
-    slice.medias = medias;
-    slice.audios = audios;
-
-    slice.expiry = source.expiry;
-
     if (timeA == -1)
     {
+        if (medias.count() == 0)
+        {
+            foreach (WMediaReply * reply, media->replies)
+            {
+                emit reply->loaded(reply);
+            }
+
+            return;
+        }
+
+        const QHash<WAbstractBackend::Quality, QString> & audios = source.audios;
+
+        WPrivateMediaSlice slice;
+
+        slice.medias = medias;
+        slice.audios = audios;
+
+        slice.expiry = source.expiry;
+
         slice.duration = -1;
 
         slice.timeA = -1;
@@ -800,6 +814,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         slice.start = -1;
         slice.end   = -1;
+
+        WTrack::Type type = media->type;
 
         appendSlice(slice, media->url, mode, type);
 
@@ -817,6 +833,15 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
     }
     else
     {
+        const QHash<WAbstractBackend::Quality, QString> & audios = source.audios;
+
+        WPrivateMediaSlice slice;
+
+        slice.medias = medias;
+        slice.audios = audios;
+
+        slice.expiry = source.expiry;
+
         slice.duration = duration;
 
         slice.timeA = timeA;
@@ -827,6 +852,8 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
         int end = start + timeB - timeA;
 
         slice.end = end;
+
+        WTrack::Type type = media->type;
 
         appendSlice(slice, media->url, mode, type);
 
