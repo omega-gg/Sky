@@ -33,6 +33,9 @@
     We mean it.
 */
 
+// Qt includes
+#include <QElapsedTimer>
+
 // Sk includes
 #include <WTrack>
 
@@ -142,6 +145,8 @@ public: // Variables
     QString currentMedia;
 
     bool connected;
+
+    QElapsedTimer time;
 
 protected:
     W_DECLARE_PUBLIC(WBackendManager)

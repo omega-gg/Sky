@@ -1134,9 +1134,10 @@ const WPrivateMediaSlice * WControllerMediaPrivate::getSlice(WPrivateMediaSource
 
         count--;
 
+        // NOTE: We pop the slice at the top of the stack.
         slices.move(i, count);
 
-        return &(slices.at(i));
+        return &(slices.last());
     }
 
     return NULL;

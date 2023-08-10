@@ -89,6 +89,9 @@ protected: // WAbstractBackend reimplementation
 
     /* virtual */ QRectF backendRect() const;
 
+protected: // Events
+    /* virtual */ void timerEvent(QTimerEvent * event);
+
 private:
     W_DECLARE_PRIVATE(WBackendManager)
 

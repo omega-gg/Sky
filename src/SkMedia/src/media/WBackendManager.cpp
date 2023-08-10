@@ -437,26 +437,23 @@ void WBackendManagerPrivate::onCurrentTime()
 
     if (type != Track)
     {
-        int currentTime = backend->currentTime();
+        int time = backend->currentTime();
 
-        if (currentTime <= start)
+        int currentTime = timeA + time - start;
+
+        qDebug("UPDATE TIME %d %d", time, currentTime);
+
+        if (currentTime >= duration)
         {
-            qDebug("START");
+            q->setEnded(true);
         }
-        else if (currentTime >= end)
+        else if (currentTime > timeB)
         {
-            qDebug("LOAD NEXT SOURCE");
-
-            q->setCurrentTime(qMax(0, currentTime - start));
+            q->setCurrentTime(qMax(0, currentTime));
 
             q->backendSetSource(source, NULL);
-
-            return;
         }
-
-        qDebug("UPDATE TIME %d %d", currentTime - start, currentTime);
-
-        q->setCurrentTime(qMax(0, currentTime - start));
+        else q->setCurrentTime(qMax(0, currentTime));
     }
     else q->setCurrentTime(backend->currentTime());
 }
@@ -825,6 +822,19 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     Q_D(const WBackendManager);
 
     return d->backend->getRect();
+}
+
+//-------------------------------------------------------------------------------------------------
+// Protected events
+//-------------------------------------------------------------------------------------------------
+
+/* virtual */ void WBackendManager::timerEvent(QTimerEvent *)
+{
+    Q_D(WBackendManager);
+
+    int currentTime = d->currentTime + d->time.elapsed();
+
+    d->time.restart();
 }
 
 #endif // SK_NO_BACKENDMANAGER
