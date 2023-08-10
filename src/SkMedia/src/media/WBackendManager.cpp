@@ -80,6 +80,7 @@ void WBackendManagerPrivate::init()
     start = -1;
     end   = -1;
 
+    loaded    = false;
     connected = false;
 
 #ifndef SK_NO_QML
@@ -172,6 +173,8 @@ void WBackendManagerPrivate::applySources(bool play)
             return;
         }
 
+        loaded = true;
+
         type = Track;
 
         loadSource(source, currentMedia, currentTime);
@@ -181,6 +184,8 @@ void WBackendManagerPrivate::applySources(bool play)
     else
     {
         Q_Q(WBackendManager);
+
+        loaded = true;
 
         type = MultiTrack;
 
@@ -261,6 +266,8 @@ void WBackendManagerPrivate::clearReply()
 void WBackendManagerPrivate::clearMedia()
 {
     clearReply();
+
+    loaded = false;
 
     currentMedia = QString();
 }
@@ -612,7 +619,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (isPaused() == false && d->currentMedia.isEmpty())
+    if (isPaused() == false && d->loaded == false)
     {
         d->updateLoading();
 

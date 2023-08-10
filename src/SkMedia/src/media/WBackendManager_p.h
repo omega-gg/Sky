@@ -145,6 +145,7 @@ public: // Variables
 
     QString currentMedia;
 
+    bool loaded;
     bool connected;
 
     QElapsedTimer time;
