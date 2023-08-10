@@ -83,9 +83,8 @@ public: // Functions
 
     void clearActive();
 
-    void clearReply  ();
-    void clearMedia  ();
-    void clearSources();
+    void clearReply();
+    void clearMedia();
 
     //void setBackend(WAbstractBackend * backendNew);
 
@@ -115,6 +114,8 @@ public: // Slots
     void onAudios     ();
     void onTrackVideo ();
     void onTrackAudio ();
+
+    void onError(const QString & message);
 
     void onOutputAdded(const WBackendOutput &);
 

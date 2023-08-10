@@ -1660,9 +1660,6 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 
     d->clearActive();
 
-    // NOTE: We clear sources because we want check their validity when we resume playback.
-    d->clearSources();
-
     return true;
 }
 
@@ -1739,6 +1736,9 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
     d->updateLoading();
 
     backendStop();
+
+    // NOTE: We clear sources because we want check their validity when we resume playback.
+    d->clearSources();
 
     d->loadSources();
 }
@@ -2413,6 +2413,9 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
         Q_D(WBackendVlc);
 
         stopError("Vlc player error");
+
+        // NOTE: We clear sources because we want check their validity when we resume playback.
+        d->clearSources();
 
         wControllerMedia->clearMedia(d->source);
 

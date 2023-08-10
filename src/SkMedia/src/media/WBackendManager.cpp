@@ -265,13 +265,6 @@ void WBackendManagerPrivate::clearMedia()
     currentMedia = QString();
 }
 
-void WBackendManagerPrivate::clearSources()
-{
-    currentMedia = QString();
-
-    medias.clear();
-}
-
 //-------------------------------------------------------------------------------------------------
 
 /*void WBackendManagerPrivate::setBackend(WAbstractBackend * backendNew)
@@ -335,6 +328,8 @@ void WBackendManagerPrivate::connectBackend()
     QObject::connect(backend, SIGNAL(audiosChanged       ()), q, SLOT(onAudios     ()));
     QObject::connect(backend, SIGNAL(trackVideoChanged   ()), q, SLOT(onTrackVideo ()));
     QObject::connect(backend, SIGNAL(trackAudioChanged   ()), q, SLOT(onTrackAudio ()));
+
+    QObject::connect(backend, SIGNAL(error(const QString &)), q, SLOT(onError(const QString &)));
 }
 
 void WBackendManagerPrivate::disconnectBackend()
@@ -516,6 +511,13 @@ void WBackendManagerPrivate::onTrackAudio()
     q->setTrackAudio(backend->trackAudio());
 }
 
+void WBackendManagerPrivate::onError(const QString & message)
+{
+    Q_Q(WBackendManager);
+
+    q->stopError(message);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 void WBackendManagerPrivate::onOutputAdded(const WBackendOutput & output)
@@ -640,9 +642,6 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     d->backendInterface->stop();
 
     d->clearActive();
-
-    // NOTE: We clear sources because we want check their validity when we resume playback.
-    d->clearSources();
 
     return true;
 }

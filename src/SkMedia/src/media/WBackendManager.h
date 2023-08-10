@@ -116,6 +116,8 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onTrackVideo ())
     Q_PRIVATE_SLOT(d_func(), void onTrackAudio ())
 
+    Q_PRIVATE_SLOT(d_func(), void onError(const QString &))
+
     Q_PRIVATE_SLOT(d_func(), void onOutputAdded(const WBackendOutput &))
 
     Q_PRIVATE_SLOT(d_func(), void onOutputRemoved(int))
