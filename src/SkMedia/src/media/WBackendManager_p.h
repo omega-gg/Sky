@@ -79,6 +79,8 @@ public: // Functions
 
     void loadSource(const QString & source, const QString & media, int currentTime);
 
+    void applyTime(int currentTime);
+
     void updateLoading();
 
     void clearActive();
@@ -86,10 +88,12 @@ public: // Functions
     void clearReply();
     void clearMedia();
 
-    //void setBackend(WAbstractBackend * backendNew);
+    void stopTimer();
 
     void connectBackend   ();
     void disconnectBackend();
+
+    //void setBackend(WAbstractBackend * backendNew);
 
     void setBackendInterface(WBackendInterface * backendNew);
 
@@ -147,6 +151,8 @@ public: // Variables
 
     bool loaded;
     bool connected;
+
+    int timer;
 
     QElapsedTimer time;
 

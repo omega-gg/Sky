@@ -34,6 +34,11 @@
 #include <private/WBackendVlc_p>
 
 //-------------------------------------------------------------------------------------------------
+// Static variables
+
+static const int BACKENDMANAGER_TIMEOUT = 200;
+
+//-------------------------------------------------------------------------------------------------
 // Private
 //-------------------------------------------------------------------------------------------------
 
@@ -82,6 +87,8 @@ void WBackendManagerPrivate::init()
 
     loaded    = false;
     connected = false;
+
+    timer = -1;
 
 #ifndef SK_NO_QML
     QObject::connect(q, SIGNAL(playerChanged()), q, SLOT(onPlayerChanged()));
@@ -206,6 +213,12 @@ void WBackendManagerPrivate::applySources(bool play)
 
             if (play) backendInterface->play();
         }
+        else if (play)
+        {
+            time.restart();
+
+            timer = q->startTimer(BACKENDMANAGER_TIMEOUT);
+        }
     }
 
     connectBackend();
@@ -231,6 +244,25 @@ void WBackendManagerPrivate::loadSource(const QString & source,
     }
 
     backendInterface->loadSource(source, duration, currentTime, reply);
+}
+
+void WBackendManagerPrivate::applyTime(int currentTime)
+{
+    Q_Q(WBackendManager);
+
+    qDebug("APPLY TIME %d", currentTime);
+
+    if (currentTime >= duration)
+    {
+        q->setEnded(true);
+    }
+    else if (currentTime > timeB)
+    {
+        q->setCurrentTime(qMax(0, currentTime));
+
+        q->backendSetSource(source, NULL);
+    }
+    else q->setCurrentTime(qMax(0, currentTime));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -265,6 +297,8 @@ void WBackendManagerPrivate::clearReply()
 
 void WBackendManagerPrivate::clearMedia()
 {
+    stopTimer();
+
     clearReply();
 
     loaded = false;
@@ -272,36 +306,18 @@ void WBackendManagerPrivate::clearMedia()
     currentMedia = QString();
 }
 
-//-------------------------------------------------------------------------------------------------
-
-/*void WBackendManagerPrivate::setBackend(WAbstractBackend * backendNew)
+void WBackendManagerPrivate::stopTimer()
 {
-    if (backend == backendNew) return;
+    if (timer == -1) return;
 
     Q_Q(WBackendManager);
 
-    if (backend) QObject::disconnect(backend, 0, q, 0);
+    q->killTimer(timer);
 
-    backend = backendNew;
+    timer = -1;
+}
 
-#ifndef SK_NO_QML
-    backend->setPlayer(player);
-#endif
-
-    backend->setVolume(volume);
-
-    backend->setSpeed(speed);
-
-    backend->setOutput (output);
-    backend->setQuality(quality);
-
-    backend->setFillMode(fillMode);
-
-    backend->setTrackVideo(trackVideo);
-    backend->setTrackAudio(trackAudio);
-
-    backend->setSize(size);
-}*/
+//-------------------------------------------------------------------------------------------------
 
 void WBackendManagerPrivate::connectBackend()
 {
@@ -350,6 +366,35 @@ void WBackendManagerPrivate::disconnectBackend()
     // NOTE: We want to avoid signals while updating the backend.
     QObject::disconnect(backend, 0, q, 0);
 }
+
+/*void WBackendManagerPrivate::setBackend(WAbstractBackend * backendNew)
+{
+    if (backend == backendNew) return;
+
+    Q_Q(WBackendManager);
+
+    if (backend) QObject::disconnect(backend, 0, q, 0);
+
+    backend = backendNew;
+
+#ifndef SK_NO_QML
+    backend->setPlayer(player);
+#endif
+
+    backend->setVolume(volume);
+
+    backend->setSpeed(speed);
+
+    backend->setOutput (output);
+    backend->setQuality(quality);
+
+    backend->setFillMode(fillMode);
+
+    backend->setTrackVideo(trackVideo);
+    backend->setTrackAudio(trackAudio);
+
+    backend->setSize(size);
+}*/
 
 void WBackendManagerPrivate::setBackendInterface(WBackendInterface * backendNew)
 {
@@ -439,23 +484,7 @@ void WBackendManagerPrivate::onCurrentTime()
 
     if (type != Track)
     {
-        int time = backend->currentTime();
-
-        int currentTime = timeA + time - start;
-
-        qDebug("UPDATE TIME %d %d", time, currentTime);
-
-        if (currentTime >= duration)
-        {
-            q->setEnded(true);
-        }
-        else if (currentTime > timeB)
-        {
-            q->setCurrentTime(qMax(0, currentTime));
-
-            q->backendSetSource(source, NULL);
-        }
-        else q->setCurrentTime(qMax(0, currentTime));
+        applyTime(timeA + backend->currentTime() - start);
     }
     else q->setCurrentTime(backend->currentTime());
 }
@@ -619,16 +648,24 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (isPaused() == false && d->loaded == false)
+    if (d->loaded == false)
     {
-        d->updateLoading();
+        if (isPaused() == false)
+        {
+            d->updateLoading();
 
-        d->disconnectBackend();
+            d->disconnectBackend();
 
-        d->loadSources();
+            d->loadSources();
+        }
     }
+    else if (d->currentMedia.isEmpty())
+    {
+        d->time.restart();
 
-    d->backendInterface->play();
+        d->timer = startTimer(BACKENDMANAGER_TIMEOUT);
+    }
+    else d->backendInterface->play();
 
     return true;
 }
@@ -637,7 +674,11 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
-    d->backendInterface->pause();
+    if (d->loaded && d->currentMedia.isEmpty())
+    {
+        d->stopTimer();
+    }
+    else d->backendInterface->pause();
 
     return true;
 }
@@ -646,7 +687,11 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
-    d->backendInterface->stop();
+    if (d->loaded && d->currentMedia.isEmpty())
+    {
+        d->stopTimer();
+    }
+    else d->backendInterface->stop();
 
     d->clearActive();
 
@@ -693,11 +738,17 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->type == WBackendManagerPrivate::Track)
+    if (d->type != WBackendManagerPrivate::Track)
     {
-         d->backendInterface->seek(msec);
+        if (d->loaded == false) return;
+
+        if (msec < d->timeA || msec > d->timeB)
+        {
+            backendSetSource(d->source, NULL);
+        }
+        else d->backendInterface->seek(msec - d->timeA + d->start);
     }
-    else d->backendInterface->seek(msec + d->start);
+    else d->backendInterface->seek(msec);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -841,6 +892,8 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     int currentTime = d->currentTime + d->time.elapsed();
 
     d->time.restart();
+
+    d->applyTime(currentTime);
 }
 
 #endif // SK_NO_BACKENDMANAGER
