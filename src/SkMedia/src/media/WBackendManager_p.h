@@ -79,6 +79,8 @@ public: // Functions
 
     void loadSource(const QString & source, const QString & media, int currentTime);
 
+    void applyNextSource();
+
     void applyTime(int currentTime);
 
     void updateLoading();

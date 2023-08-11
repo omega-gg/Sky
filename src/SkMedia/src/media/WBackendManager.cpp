@@ -203,13 +203,14 @@ void WBackendManagerPrivate::applySources(bool play)
         start = reply->start();
         end   = reply->end  ();
 
-        qDebug("Current source: timeA %d timeB %d start %d end %d", timeA, timeB, start, end);
+        qDebug("Current source: currentMedia %s timeA %d timeB %d start %d end %d",
+               currentMedia.C_STR, timeA, timeB, start, end);
 
         q->setDuration(reply->duration());
 
         if (currentMedia.isEmpty() == false)
         {
-            loadSource(source, currentMedia, currentTime + start);
+            loadSource(source, currentMedia, currentTime - timeA + start);
 
             if (play) backendInterface->play();
         }
@@ -246,6 +247,19 @@ void WBackendManagerPrivate::loadSource(const QString & source,
     backendInterface->loadSource(source, duration, currentTime, reply);
 }
 
+void WBackendManagerPrivate::applyNextSource()
+{
+    if (state != WAbstractBackend::StatePlaying) return;
+
+    clearMedia();
+
+    disconnectBackend();
+
+    backendInterface->stop();
+
+    loadSources();
+}
+
 void WBackendManagerPrivate::applyTime(int currentTime)
 {
     Q_Q(WBackendManager);
@@ -260,7 +274,7 @@ void WBackendManagerPrivate::applyTime(int currentTime)
     {
         q->setCurrentTime(qMax(0, currentTime));
 
-        q->backendSetSource(source, NULL);
+        applyNextSource();
     }
     else q->setCurrentTime(qMax(0, currentTime));
 }
@@ -332,8 +346,20 @@ void WBackendManagerPrivate::connectBackend()
 
     WAbstractBackendPrivate * p = backend->d_func();
 
-    q->setStateLoad(p->stateLoad);
-    q->setProgress (p->progress);
+    if (type == Track)
+    {
+        q->setStateLoad(p->stateLoad);
+    }
+    // NOTE: For multi-tracks we want to avoid starting and resuming states when transitioning
+    //       between two tracks.
+    else if (stateLoad == WAbstractBackend::StateLoadDefault
+             &&
+             p->stateLoad != WAbstractBackend::StateLoadDefault)
+    {
+        q->setStateLoad(WAbstractBackend::StateLoadBuffering);
+    }
+
+    q->setProgress(p->progress);
 
     //---------------------------------------------------------------------------------------------
 
@@ -744,7 +770,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
         if (msec < d->timeA || msec > d->timeB)
         {
-            backendSetSource(d->source, NULL);
+            d->applyNextSource();
         }
         else d->backendInterface->seek(msec - d->timeA + d->start);
     }
