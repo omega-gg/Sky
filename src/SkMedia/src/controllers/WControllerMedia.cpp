@@ -300,17 +300,28 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
 
             duration = 0;
 
+            int startSource = start;
+
             foreach (const WYamlNode & child, children)
             {
-                int start = child.extractMsecs("start");
+                startSource += child.extractMsecs("start");
 
-                starts.append(start);
+                starts.append(startSource);
 
-                int durationSource = WControllerPlaylist::vbmlDuration(child, start);
-
-                duration += durationSource;
+                int durationSource = WControllerPlaylist::vbmlDuration(child, startSource);
 
                 durations.append(durationSource);
+
+                if (durationSource < 0)
+                {
+                    startSource = -durationSource;
+
+                    continue;
+                }
+
+                startSource = 0;
+
+                duration += durationSource;
             }
 
             if (duration == 0)
@@ -320,15 +331,27 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
                 return;
             }
 
-            duration -= start;
-
             for (int i = 0; i < durations.length(); i++)
             {
+                start = starts.at(i);
+
                 int durationSource = durations.at(i);
+
+                if (durationSource < 0)
+                {
+                    start = -durationSource;
+
+                    continue;
+                }
 
                 end += durationSource;
 
-                if (time > end) continue;
+                if (time > end)
+                {
+                    start = 0;
+
+                    continue;
+                }
 
                 const WYamlNode & child = children.at(i);
 
@@ -411,13 +434,25 @@ void WControllerMediaData::extractSource(const QList<WYamlNode> & children, int 
 {
     foreach (const WYamlNode & child, children)
     {
-        int startSource = child.extractMsecs("start") + start;
+        start += child.extractMsecs("start");
 
-        int durationSource = WControllerPlaylist::vbmlDuration(child, startSource);
+        int durationSource = WControllerPlaylist::vbmlDuration(child, start);
+
+        if (durationSource < 0)
+        {
+            start = -durationSource;
+
+            continue;
+        }
 
         *end += durationSource;
 
-        if (time > *end) continue;
+        if (time > *end)
+        {
+            start = 0;
+
+            continue;
+        }
 
         // NOTE: The media is prioritized over the source.
         QString media = child.extractString("media");

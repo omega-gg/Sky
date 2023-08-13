@@ -820,7 +820,13 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
         }
         else if (d->currentMedia.isEmpty() == false)
         {
-            d->backendInterface->seek(msec - d->timeA + d->start);
+            msec -= d->timeA;
+
+            if (msec < d->backend->duration() - d->start)
+            {
+                d->backendInterface->seek(msec + d->start);
+            }
+            else d->applyDefault();
         }
     }
     else d->backendInterface->seek(msec);
