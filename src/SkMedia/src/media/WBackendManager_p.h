@@ -79,6 +79,7 @@ public: // Functions
 
     void loadSource(const QString & source, const QString & media, int currentTime);
 
+    void applyDefault   ();
     void applyNextSource();
 
     void applyTime(int currentTime);
@@ -145,7 +146,6 @@ public: // Variables
     int timeB;
 
     int start;
-    int end;
 
     QHash<WAbstractBackend::Quality, QString> medias;
 

@@ -83,7 +83,6 @@ void WBackendManagerPrivate::init()
     timeB = -1;
 
     start = -1;
-    end   = -1;
 
     loaded    = false;
     connected = false;
@@ -187,6 +186,8 @@ void WBackendManagerPrivate::applySources(bool play)
         loadSource(source, currentMedia, currentTime);
 
         if (play) backendInterface->play();
+
+        connectBackend();
     }
     else
     {
@@ -201,10 +202,8 @@ void WBackendManagerPrivate::applySources(bool play)
         timeB = reply->timeB();
 
         start = reply->start();
-        end   = reply->end  ();
 
-        qDebug("Current source: currentMedia %s timeA %d timeB %d start %d end %d",
-               currentMedia.C_STR, timeA, timeB, start, end);
+        qDebug("Current source: timeA %d timeB %d start %d", timeA, timeB, start);
 
         q->setDuration(reply->duration());
 
@@ -213,6 +212,8 @@ void WBackendManagerPrivate::applySources(bool play)
             loadSource(source, currentMedia, currentTime - timeA + start);
 
             if (play) backendInterface->play();
+
+            connectBackend();
         }
         else if (play)
         {
@@ -221,8 +222,6 @@ void WBackendManagerPrivate::applySources(bool play)
             timer = q->startTimer(BACKENDMANAGER_TIMEOUT);
         }
     }
-
-    connectBackend();
 }
 
 void WBackendManagerPrivate::loadSource(const QString & source,
@@ -245,6 +244,29 @@ void WBackendManagerPrivate::loadSource(const QString & source,
     }
 
     backendInterface->loadSource(source, duration, currentTime, reply);
+}
+
+void WBackendManagerPrivate::applyDefault()
+{
+    Q_Q(WBackendManager);
+
+    clearMedia();
+
+    disconnectBackend();
+
+    backendInterface->stop();
+
+    loaded = true;
+
+    timeA = currentTime;
+
+    time.restart();
+
+    timer = q->startTimer(BACKENDMANAGER_TIMEOUT);
+
+    q->setStateLoad(WAbstractBackend::StateLoadDefault);
+
+    qDebug("Clear source: timeA %d timeB %d start %d", timeA, timeB, start);
 }
 
 void WBackendManagerPrivate::applyNextSource()
@@ -497,31 +519,54 @@ void WBackendManagerPrivate::onStarted()
 
 void WBackendManagerPrivate::onEnded()
 {
-    Q_Q(WBackendManager);
+    if (type == Track)
+    {
+        backend->setEnded(backend->hasEnded());
+
+        return;
+    }
+
+    if (backend->hasEnded() == false
+        ||
+        state != WAbstractBackend::StatePlaying) return;
 
     qDebug("ENDED");
 
-    q->setEnded(backend->hasEnded());
+    applyDefault();
 }
 
 void WBackendManagerPrivate::onCurrentTime()
 {
-    Q_Q(WBackendManager);
-
-    if (type != Track)
+    if (type == Track)
     {
-        applyTime(timeA + backend->currentTime() - start);
+        Q_Q(WBackendManager);
+
+        q->setCurrentTime(backend->currentTime());
+
+        return;
     }
-    else q->setCurrentTime(backend->currentTime());
+
+    int currentTime = backend->currentTime();
+
+    if (currentTime == -1) return;
+
+    applyTime(timeA + currentTime - start);
 }
 
 void WBackendManagerPrivate::onDuration()
 {
-    Q_Q(WBackendManager);
+    if (type == Track)
+    {
+        Q_Q(WBackendManager);
 
-    if (type != Track) return;
+        q->setDuration(backend->duration());
 
-    q->setDuration(backend->duration());
+        return;
+    }
+
+    if (currentTime - timeA < backend->duration() - start) return;
+
+    applyDefault();
 }
 
 void WBackendManagerPrivate::onProgress()
@@ -772,7 +817,10 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
         {
             d->applyNextSource();
         }
-        else d->backendInterface->seek(msec - d->timeA + d->start);
+        else if (d->currentMedia.isEmpty() == false)
+        {
+            d->backendInterface->seek(msec - d->timeA + d->start);
+        }
     }
     else d->backendInterface->seek(msec);
 }
