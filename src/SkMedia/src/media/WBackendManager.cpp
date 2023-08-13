@@ -203,9 +203,10 @@ void WBackendManagerPrivate::applySources(bool play)
 
         start = reply->start();
 
-        qDebug("Current source: timeA %d timeB %d start %d", timeA, timeB, start);
-
         q->setDuration(reply->duration());
+
+        qDebug("Current source: timeA %d timeB %d start %d duration %d", timeA, timeB, start,
+               duration);
 
         if (currentMedia.isEmpty() == false)
         {

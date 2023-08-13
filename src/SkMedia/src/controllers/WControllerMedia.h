@@ -155,7 +155,7 @@ public: // Interface
 private: // Functions
     void extractSource(const QList<WYamlNode> & children, int time, int * end);
 
-    void applySource(const QString & url, int time, int end, int startSource, int durationSource);
+    void applySource(const QString & url, int time, int end, int duration);
 
     void applyEmpty(int time, int end);
 

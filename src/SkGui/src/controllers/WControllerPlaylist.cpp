@@ -821,7 +821,7 @@ void WControllerPlaylistData::parseTrack(WYamlReader & reader, const QString & t
             // NOTE: When it's a multi-track we set the vbml uri.
             track.setSource(url);
 
-            if (duration == -1)
+            if (duration == 0)
             {
                 duration = WControllerPlaylist::vbmlDurationSource(*node, start);
             }
@@ -5640,7 +5640,7 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlType(const QString & vbml)
 
     if (duration == -1)
     {
-        return -1;
+        return 0;
     }
     else return duration - start;
 }
@@ -5650,7 +5650,7 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlType(const QString & vbml)
 {
     const QList<WYamlNode> & children = node.children;
 
-    if (children.isEmpty()) return -1;
+    if (children.isEmpty()) return 0;
 
     int duration = 0;
 
@@ -5658,12 +5658,12 @@ WControllerPlaylist::Type WControllerPlaylist::vbmlType(const QString & vbml)
     {
         int durationSource = vbmlDuration(child, child.extractMsecs("start"));
 
-        if (durationSource != -1) duration += durationSource;
+        duration += durationSource;
     }
 
     if (duration == 0)
     {
-        return -1;
+        return 0;
     }
     else return duration - start;
 }
