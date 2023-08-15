@@ -84,7 +84,6 @@ public: // Properties
     int timeB() const;
 
     int start() const;
-    int end  () const;
 
     QHash<WAbstractBackend::Quality, QString> medias() const;
     QHash<WAbstractBackend::Quality, QString> audios() const;
@@ -109,7 +108,6 @@ private: // Variables
     int _timeB;
 
     int _start;
-    int _end;
 
     QHash<WAbstractBackend::Quality, QString> _medias;
     QHash<WAbstractBackend::Quality, QString> _audios;

@@ -155,11 +155,6 @@ int WMediaReply::start() const
     return _start;
 }
 
-int WMediaReply::end() const
-{
-    return _end;
-}
-
 QHash<WAbstractBackend::Quality, QString> WMediaReply::medias() const
 {
     return _medias;
@@ -844,7 +839,6 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
         slice.timeB = -1;
 
         slice.start = -1;
-        slice.end   = -1;
 
         WTrack::Type type = media->type;
 
@@ -880,10 +874,6 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         slice.start = start;
 
-        int end = start + timeB - timeA;
-
-        slice.end = end;
-
         WTrack::Type type = media->type;
 
         appendSlice(slice, media->url, mode, type);
@@ -900,7 +890,6 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
             reply->_timeB = timeB;
 
             reply->_start = start;
-            reply->_end   = end;
 
             reply->_medias = medias;
             reply->_audios = audios;
@@ -1529,7 +1518,6 @@ WMediaReply * WControllerMedia::getMedia(const QString              & url,
     reply->_timeB = -1;
 
     reply->_start = -1;
-    reply->_end   = -1;
 
     reply->_backend = NULL;
 
@@ -1558,7 +1546,6 @@ WMediaReply * WControllerMedia::getMedia(const QString              & url,
             reply->_timeB = slice->timeB;
 
             reply->_start = slice->start;
-            reply->_end   = slice->end;
 
             reply->_medias = slice->medias;
             reply->_audios = slice->audios;

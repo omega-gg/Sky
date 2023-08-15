@@ -88,7 +88,6 @@ struct WPrivateMediaSlice
     int timeB;
 
     int start;
-    int end;
 
     QHash<WAbstractBackend::Quality, QString> medias;
     QHash<WAbstractBackend::Quality, QString> audios;
