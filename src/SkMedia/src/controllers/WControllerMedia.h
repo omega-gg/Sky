@@ -37,6 +37,7 @@
 // Forward declarations
 class WControllerMediaPrivate;
 class WAbstractLoader;
+class WYamlNodeBase;
 class WYamlNode;
 #ifndef SK_NO_PLAYER
 class WVlcEngine;
@@ -152,6 +153,8 @@ public: // Interface
 
 private: // Functions
     void extractSource(const QList<WYamlNode> & children, int time, int * end);
+
+    void applyMedia(const WYamlNodeBase & node, const QString & url, int time);
 
     void applySource(const QString & url, int time, int end, int duration);
 

@@ -247,15 +247,20 @@ void WBackendManagerPrivate::loadSource(const QString & source,
     backendInterface->loadSource(source, duration, currentTime, reply);
 }
 
-void WBackendManagerPrivate::applyDefault()
+void WBackendManagerPrivate::stopBackend()
 {
-    Q_Q(WBackendManager);
-
     clearMedia();
 
     disconnectBackend();
 
     backendInterface->stop();
+}
+
+void WBackendManagerPrivate::applyDefault()
+{
+    Q_Q(WBackendManager);
+
+    stopBackend();
 
     loaded = true;
 
@@ -270,19 +275,6 @@ void WBackendManagerPrivate::applyDefault()
     qDebug("Clear source: timeA %d timeB %d start %d", timeA, timeB, start);
 }
 
-void WBackendManagerPrivate::applyNextSource()
-{
-    if (state != WAbstractBackend::StatePlaying) return;
-
-    clearMedia();
-
-    disconnectBackend();
-
-    backendInterface->stop();
-
-    loadSources();
-}
-
 void WBackendManagerPrivate::applyTime(int currentTime)
 {
     Q_Q(WBackendManager);
@@ -292,12 +284,16 @@ void WBackendManagerPrivate::applyTime(int currentTime)
     if (currentTime >= duration)
     {
         q->setEnded(true);
+
+        stopBackend();
     }
     else if (currentTime > timeB)
     {
         q->setCurrentTime(qMax(0, currentTime));
 
-        applyNextSource();
+        stopBackend();
+
+        loadSources();
     }
     else q->setCurrentTime(qMax(0, currentTime));
 }
@@ -722,14 +718,11 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
     if (d->loaded == false)
     {
-        if (isPaused() == false)
-        {
-            d->updateLoading();
+        d->updateLoading();
 
-            d->disconnectBackend();
+        d->disconnectBackend();
 
-            d->loadSources();
-        }
+        d->loadSources();
     }
     else if (d->currentMedia.isEmpty())
     {
@@ -816,7 +809,9 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
         if (msec < d->timeA || msec > d->timeB)
         {
-            d->applyNextSource();
+            d->stopBackend();
+
+            d->loadSources();
         }
         else if (d->currentMedia.isEmpty() == false)
         {

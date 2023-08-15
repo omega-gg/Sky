@@ -254,6 +254,8 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
     {
         type = WTrack::typeFromString(reader.extractString("type"));
 
+        applyMedia(reader.node(), source, time);
+
         return;
     }
 
@@ -275,12 +277,12 @@ void WControllerMediaData::applyVbml(const QByteArray & array, const QString & u
     {
         source = node->value;
 
+        applyMedia(reader.node(), source, time);
+
         return;
     }
 
     start += reader.extractMsecs("start");
-
-    if (time == -1) time = 0;
 
     int end = 0;
 
@@ -471,6 +473,29 @@ void WControllerMediaData::extractSource(const QList<WYamlNode> & children, int 
 
         return;
     }
+}
+
+void WControllerMediaData::applyMedia(const WYamlNodeBase & node, const QString & url, int time)
+{
+    start += node.extractMsecs("start");
+
+    int durationSource = WControllerPlaylist::vbmlDuration(node, start);
+
+    if (durationSource < 0)
+    {
+        start = -durationSource;
+
+        return;
+    }
+
+    if (duration == -1) duration = durationSource;
+
+    source = url;
+
+    timeA = 0;
+    timeB = durationSource;
+
+    timeMedia = time - timeA;
 }
 
 void WControllerMediaData::applySource(const QString & url, int time, int end, int duration)
@@ -734,7 +759,8 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
     media->currentTime = currentTime;
     media->duration    = -1;
 
-    media->timeMedia = currentTime;
+    if (currentTime == -1) media->timeMedia = 0;
+    else                   media->timeMedia = currentTime;
 
     media->timeA = -1;
     media->timeB = -1;
