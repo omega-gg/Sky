@@ -139,26 +139,24 @@ public:
 
         duration = -1;
 
-        timeMedia = -1;
-
-        timeA = -1;
+        timeA =  0;
         timeB = -1;
 
         start = -1;
     }
 
 public: // Interface
-    void applyVbml(const QByteArray & array, const QString & url, int time);
+    void applyVbml(const QByteArray & array, const QString & url, int currentTime);
     void applyM3u (const QByteArray & array, const QString & url);
 
 private: // Functions
-    void extractSource(const QList<WYamlNode> & children, int time, int * end);
+    void extractSource(const QList<WYamlNode> & children, int currentTime, int * end);
 
-    void applyMedia(const WYamlNodeBase & node, const QString & url, int time);
+    void applyMedia(const WYamlNodeBase & node, const QString & url);
 
-    void applySource(const QString & url, int time, int end, int duration);
+    void applySource(const QString & url, int end, int duration);
 
-    void applyEmpty(int time, int end);
+    void applyEmpty(int currentTime, int end);
 
 public: // Variables
     WTrack::Type type;
@@ -167,8 +165,6 @@ public: // Variables
     QString source;
 
     int duration;
-
-    int timeMedia;
 
     int timeA;
     int timeB;

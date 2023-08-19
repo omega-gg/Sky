@@ -60,8 +60,6 @@ struct WPrivateMediaData
     int currentTime;
     int duration;
 
-    int timeMedia;
-
     int timeA;
     int timeB;
 
@@ -131,8 +129,12 @@ public:
 public: // Functions
     void loadSources(WMediaReply * reply);
 
-    void loadUrl(QIODevice * device, const WBackendNetQuery & query, int time, int duration,
-                 int start) const;
+    void loadUrl(QIODevice              * device,
+                 const WBackendNetQuery & query,
+                 int                      currentTime,
+                 int                      duration,
+                 int                      timeA,
+                 int                      start) const;
 
     void applyData(WPrivateMediaData * media, const WControllerMediaData & data);
 
