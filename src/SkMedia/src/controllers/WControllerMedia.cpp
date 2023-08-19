@@ -285,8 +285,6 @@ void WControllerMediaData::applyVbml(const QByteArray & array,
 
     start += reader.extractMsecs("start");
 
-    int end = timeA;
-
     if (duration == -1)
     {
         duration = WControllerPlaylist::vbmlDuration(reader.node(), start);
@@ -342,9 +340,9 @@ void WControllerMediaData::applyVbml(const QByteArray & array,
                     continue;
                 }
 
-                end += durationSource;
+                timeA += durationSource;
 
-                if (currentTime > end)
+                if (currentTime > timeA)
                 {
                     start = 0;
 
@@ -358,7 +356,7 @@ void WControllerMediaData::applyVbml(const QByteArray & array,
 
                 if (media.isEmpty() == false)
                 {
-                    applySource(media, end, durationSource);
+                    applySource(media, durationSource);
 
                     return;
                 }
@@ -369,11 +367,11 @@ void WControllerMediaData::applyVbml(const QByteArray & array,
 
                 if (nodes.isEmpty())
                 {
-                    applySource(node->value, end, durationSource);
+                    applySource(node->value, durationSource);
                 }
-                else extractSource(nodes, currentTime, &end);
+                else extractSource(nodes, currentTime);
 
-                if (source.isEmpty()) applyEmpty(currentTime, end);
+                if (source.isEmpty()) applyEmpty(currentTime);
 
                 return;
             }
@@ -382,9 +380,9 @@ void WControllerMediaData::applyVbml(const QByteArray & array,
         }
     }
 
-    extractSource(children, currentTime, &end);
+    extractSource(children, currentTime);
 
-    if (source.isEmpty()) applyEmpty(currentTime, end);
+    if (source.isEmpty()) applyEmpty(currentTime);
 }
 
 void WControllerMediaData::applyM3u(const QByteArray & array, const QString & url)
@@ -428,8 +426,7 @@ void WControllerMediaData::applyM3u(const QByteArray & array, const QString & ur
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WControllerMediaData::extractSource(const QList<WYamlNode> & children, int currentTime,
-                                         int * end)
+void WControllerMediaData::extractSource(const QList<WYamlNode> & children, int currentTime)
 {
     foreach (const WYamlNode & child, children)
     {
@@ -444,9 +441,9 @@ void WControllerMediaData::extractSource(const QList<WYamlNode> & children, int 
             continue;
         }
 
-        *end += durationSource;
+        timeA += durationSource;
 
-        if (currentTime > *end)
+        if (currentTime > timeA)
         {
             start = 0;
 
@@ -458,7 +455,7 @@ void WControllerMediaData::extractSource(const QList<WYamlNode> & children, int 
 
         if (media.isEmpty() == false)
         {
-            applySource(media, *end, durationSource);
+            applySource(media, durationSource);
 
             return;
         }
@@ -469,9 +466,9 @@ void WControllerMediaData::extractSource(const QList<WYamlNode> & children, int 
 
         if (nodes.isEmpty())
         {
-            applySource(node->value, *end, durationSource);
+            applySource(node->value, durationSource);
         }
-        else extractSource(nodes, currentTime, end);
+        else extractSource(nodes, currentTime);
 
         return;
     }
@@ -492,19 +489,19 @@ void WControllerMediaData::applyMedia(const WYamlNodeBase & node, const QString 
     timeB = timeA + durationSource;
 }
 
-void WControllerMediaData::applySource(const QString & url, int end, int duration)
+void WControllerMediaData::applySource(const QString & url, int duration)
 {
     source = url;
 
-    timeA = end - duration;
-    timeB = end;
+    timeB = timeA;
+
+    timeA -= duration;
 }
 
-void WControllerMediaData::applyEmpty(int currentTime, int end)
+void WControllerMediaData::applyEmpty(int currentTime)
 {
     if (currentTime >= duration) return;
 
-    timeA = end;
     timeB = duration;
 
     start = 0;

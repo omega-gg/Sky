@@ -150,13 +150,13 @@ public: // Interface
     void applyM3u (const QByteArray & array, const QString & url);
 
 private: // Functions
-    void extractSource(const QList<WYamlNode> & children, int currentTime, int * end);
+    void extractSource(const QList<WYamlNode> & children, int currentTime);
 
     void applyMedia(const WYamlNodeBase & node, const QString & url);
 
-    void applySource(const QString & url, int end, int duration);
+    void applySource(const QString & url, int duration);
 
-    void applyEmpty(int currentTime, int end);
+    void applyEmpty(int currentTime);
 
 public: // Variables
     WTrack::Type type;
