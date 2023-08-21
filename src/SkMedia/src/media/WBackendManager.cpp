@@ -493,13 +493,34 @@ void WBackendManagerPrivate::onStateLoad()
 {
     Q_Q(WBackendManager);
 
-    qDebug("STATE LOAD %d", backend->stateLoad());
+    if (type == Track)
+    {
+        q->setStateLoad(backend->stateLoad());
 
-    q->setStateLoad(backend->stateLoad());
+        return;
+    }
+
+    WAbstractBackend::StateLoad stateLoad = backend->stateLoad();
+
+    qDebug("STATE LOAD %d", stateLoad);
+
+    q->setStateLoad(stateLoad);
+
+    if (backend->isLive() == false || timer != -1
+        ||
+        stateLoad != WAbstractBackend::StateLoadDefault) return;
+
+    qDebug("LIVE");
+
+    time.restart();
+
+    timer = q->startTimer(BACKENDMANAGER_TIMEOUT);
 }
 
 void WBackendManagerPrivate::onLive()
 {
+    if (type != Track) return;
+
     Q_Q(WBackendManager);
 
     q->setLive(backend->isLive());
@@ -507,9 +528,9 @@ void WBackendManagerPrivate::onLive()
 
 void WBackendManagerPrivate::onStarted()
 {
-    Q_Q(WBackendManager);
+    if (type != Track) return;
 
-    qDebug("STARTED");
+    Q_Q(WBackendManager);
 
     q->setStarted(backend->hasStarted());
 }
@@ -518,14 +539,14 @@ void WBackendManagerPrivate::onEnded()
 {
     if (type == Track)
     {
-        backend->setEnded(backend->hasEnded());
+        Q_Q(WBackendManager);
+
+        q->setEnded(backend->hasEnded());
 
         return;
     }
 
-    if (backend->hasEnded() == false
-        ||
-        state != WAbstractBackend::StatePlaying) return;
+    if (backend->hasEnded() == false) return;
 
     qDebug("ENDED");
 
@@ -542,6 +563,8 @@ void WBackendManagerPrivate::onCurrentTime()
 
         return;
     }
+
+    if (backend->isLive()) return;
 
     int currentTime = backend->currentTime();
 
@@ -561,7 +584,9 @@ void WBackendManagerPrivate::onDuration()
         return;
     }
 
-    if (currentTime - timeA < backend->duration() - start) return;
+    if (backend->isLive()
+        ||
+        currentTime - timeA < backend->duration() - start) return;
 
     applyDefault();
 }
@@ -718,13 +743,18 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
     if (d->loaded == false)
     {
+        if (d->source.isEmpty() || d->reply) return true;
+
         d->updateLoading();
 
         d->disconnectBackend();
 
         d->loadSources();
+
+        return true;
     }
-    else if (d->currentMedia.isEmpty())
+
+    if (d->currentMedia.isEmpty() || d->backend->isLive())
     {
         d->time.restart();
 
@@ -739,7 +769,9 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->loaded && d->currentMedia.isEmpty())
+    if (d->loaded == false) return true;
+
+    if (d->currentMedia.isEmpty() || d->backend->isLive())
     {
         d->stopTimer();
     }
@@ -752,7 +784,9 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->loaded && d->currentMedia.isEmpty())
+    if (d->loaded == false) return true;
+
+    if (d->currentMedia.isEmpty() || d->backend->isLive())
     {
         d->stopTimer();
     }
@@ -803,28 +837,33 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->type != WBackendManagerPrivate::Track)
+    if (d->loaded == false) return;
+
+    if (d->type == WBackendManagerPrivate::Track)
     {
-        if (d->loaded == false) return;
+        d->backendInterface->seek(msec);
 
-        if (msec < d->timeA || msec > d->timeB)
-        {
-            d->stopBackend();
-
-            d->loadSources();
-        }
-        else if (d->currentMedia.isEmpty() == false)
-        {
-            msec -= d->timeA;
-
-            if (msec < d->backend->duration() - d->start)
-            {
-                d->backendInterface->seek(msec + d->start);
-            }
-            else d->applyDefault();
-        }
+        return;
     }
-    else d->backendInterface->seek(msec);
+
+    if (d->backend->isLive()) return;
+
+    if (msec < d->timeA || msec > d->timeB)
+    {
+        d->stopBackend();
+
+        d->loadSources();
+    }
+    else if (d->currentMedia.isEmpty() == false)
+    {
+        msec -= d->timeA;
+
+        if (msec < d->backend->duration() - d->start)
+        {
+            d->backendInterface->seek(msec + d->start);
+        }
+        else d->applyDefault();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
