@@ -506,15 +506,19 @@ void WBackendManagerPrivate::onStateLoad()
 
     q->setStateLoad(stateLoad);
 
-    if (backend->isLive() == false || timer != -1
-        ||
-        stateLoad != WAbstractBackend::StateLoadDefault) return;
+    if (backend->isLive() == false) return;
 
-    qDebug("LIVE");
+    if (stateLoad == WAbstractBackend::StateLoadDefault)
+    {
+        if (timer != -1) return;
 
-    time.restart();
+        qDebug("LIVE");
 
-    timer = q->startTimer(BACKENDMANAGER_TIMEOUT);
+        time.restart();
+
+        timer = q->startTimer(BACKENDMANAGER_TIMEOUT);
+    }
+    else stopTimer();
 }
 
 void WBackendManagerPrivate::onLive()
@@ -754,7 +758,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
         return true;
     }
 
-    if (d->currentMedia.isEmpty() || d->backend->isLive())
+    if (d->currentMedia.isEmpty())
     {
         d->time.restart();
 
@@ -771,7 +775,13 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
     if (d->loaded == false) return true;
 
-    if (d->currentMedia.isEmpty() || d->backend->isLive())
+    if (d->backend->isLive())
+    {
+        d->stopTimer();
+
+        d->backendInterface->pause();
+    }
+    else if (d->currentMedia.isEmpty())
     {
         d->stopTimer();
     }
@@ -786,7 +796,13 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
     if (d->loaded == false) return true;
 
-    if (d->currentMedia.isEmpty() || d->backend->isLive())
+    if (d->backend->isLive())
+    {
+        d->stopTimer();
+
+        d->backendInterface->stop();
+    }
+    else if (d->currentMedia.isEmpty())
     {
         d->stopTimer();
     }
@@ -846,15 +862,13 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
         return;
     }
 
-    if (d->backend->isLive()) return;
-
     if (msec < d->timeA || msec > d->timeB)
     {
         d->stopBackend();
 
         d->loadSources();
     }
-    else if (d->currentMedia.isEmpty() == false)
+    else if (d->currentMedia.isEmpty() == false && d->backend->isLive() == false)
     {
         msec -= d->timeA;
 
