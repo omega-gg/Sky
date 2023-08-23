@@ -1579,8 +1579,6 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
     }
     else if (isPlaying())
     {
-        d->updateLoading();
-
         d->clearPlayer();
 
         d->player->pause();
@@ -1592,6 +1590,8 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
             d->applySources(reply, true);
         }
         else d->loadSources(true);
+
+        d->updateLoading();
     }
     else if (reply)
     {
@@ -1611,9 +1611,9 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
     {
         if (d->currentMedia.isEmpty())
         {
-            d->updateLoading();
-
             d->loadSources(true);
+
+            d->updateLoading();
         }
         else d->playMedia();
     }
@@ -1733,14 +1733,14 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
 
     d->clearReply();
 
-    d->updateLoading();
-
     backendStop();
 
     // NOTE: We clear sources because we want check their validity when we resume playback.
     d->clearSources();
 
     d->loadSources(isPlaying());
+
+    d->updateLoading();
 }
 
 /* virtual */ void WBackendVlc::backendSetQuality(Quality quality)

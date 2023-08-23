@@ -298,11 +298,12 @@ void WYamlReaderPrivate::extractChilds(WYamlNode * node, QString * content) cons
     {
         QString string = Sk::extractLine(content, indent);
 
-        if (string.isEmpty()) continue;
+        if (string.isEmpty() || string.at(0) == '#')
+        {
+            if (getIndent(content) != indent) return;
 
-        QChar character = string.at(0);
-
-        if (character == '#') continue;
+            continue;
+        }
 
         QString key = extractKey(&string);
 
@@ -433,11 +434,7 @@ WYamlReader::WYamlReader(const QByteArray & data, QObject * parent)
 
         Sk::skipSpaces(&string);
 
-        if (string.isEmpty()) continue;
-
-        QChar character = string.at(0);
-
-        if (character == '#') continue;
+        if (string.isEmpty() || string.at(0) == '#') continue;
 
         QString key = d->extractKey(&string);
 

@@ -721,23 +721,17 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
-    d->clearMedia();
+    d->stopBackend();
 
     if (url.isEmpty())
     {
-        d->backendInterface->stop();
-
         d->clearActive();
     }
-    else if (isPlaying())
+    else if (d->state == StatePlaying)
     {
-        d->updateLoading();
-
-        d->disconnectBackend();
-
-        d->backendInterface->stop();
-
         d->loadSources(true);
+
+        d->updateLoading();
     }
 
     return true;
@@ -753,11 +747,9 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     {
         if (d->source.isEmpty() || d->reply) return true;
 
-        d->updateLoading();
-
-        d->disconnectBackend();
-
         d->loadSources(true);
+
+        d->updateLoading();
     }
     else if (d->currentMedia.isEmpty())
     {
@@ -865,8 +857,6 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
         if (d->source.isEmpty() || d->reply == NULL) return;
 
         d->clearReply();
-
-        d->disconnectBackend();
 
         d->loadSources(isPlaying());
 
