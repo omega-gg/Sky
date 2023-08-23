@@ -108,7 +108,7 @@ void WBackendManagerPrivate::init()
 // Private functions
 //-------------------------------------------------------------------------------------------------
 
-void WBackendManagerPrivate::loadSources()
+void WBackendManagerPrivate::loadSources(bool play)
 {
     if (reply) return;
 
@@ -151,7 +151,7 @@ void WBackendManagerPrivate::loadSources()
 
     if (reply->isLoaded())
     {
-        applySources(true);
+        applySources(play);
 
         delete reply;
 
@@ -185,7 +185,9 @@ void WBackendManagerPrivate::applySources(bool play)
 
         loadSource(source, currentMedia, currentTime);
 
-        if (play) backendInterface->play();
+        if (play == false) return;
+
+        backendInterface->play();
 
         connectBackend();
     }
@@ -212,7 +214,9 @@ void WBackendManagerPrivate::applySources(bool play)
         {
             loadSource(source, currentMedia, currentTime - timeA + start);
 
-            if (play) backendInterface->play();
+            if (play == false) return;
+
+            backendInterface->play();
 
             connectBackend();
         }
@@ -293,7 +297,7 @@ void WBackendManagerPrivate::applyTime(int currentTime)
 
         stopBackend();
 
-        loadSources();
+        loadSources(q->isPlaying());
     }
     else q->setCurrentTime(qMax(0, currentTime));
 }
@@ -733,7 +737,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
         d->backendInterface->stop();
 
-        d->loadSources();
+        d->loadSources(true);
     }
 
     return true;
@@ -753,18 +757,20 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
         d->disconnectBackend();
 
-        d->loadSources();
-
-        return true;
+        d->loadSources(true);
     }
-
-    if (d->currentMedia.isEmpty())
+    else if (d->currentMedia.isEmpty())
     {
         d->time.restart();
 
         d->timer = startTimer(BACKENDMANAGER_TIMEOUT);
     }
-    else d->backendInterface->play();
+    else
+    {
+        d->backendInterface->play();
+
+        d->connectBackend();
+    }
 
     return true;
 }
@@ -866,7 +872,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     {
         d->stopBackend();
 
-        d->loadSources();
+        d->loadSources(isPlaying());
     }
     else if (d->currentMedia.isEmpty() == false && d->backend->isLive() == false)
     {

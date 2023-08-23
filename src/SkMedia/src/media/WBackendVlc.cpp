@@ -1023,7 +1023,7 @@ void WBackendVlcPrivate::convertFrameSse()
 
 //-------------------------------------------------------------------------------------------------
 
-void WBackendVlcPrivate::loadSources()
+void WBackendVlcPrivate::loadSources(bool play)
 {
     if (reply) return;
 
@@ -1046,7 +1046,7 @@ void WBackendVlcPrivate::loadSources()
 
     if (reply->isLoaded())
     {
-        applySources(reply, true);
+        applySources(reply, play);
 
         delete reply;
 
@@ -1591,7 +1591,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
         {
             d->applySources(reply, true);
         }
-        else d->loadSources();
+        else d->loadSources(true);
     }
     else if (reply)
     {
@@ -1613,7 +1613,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
         {
             d->updateLoading();
 
-            d->loadSources();
+            d->loadSources(true);
         }
         else d->playMedia();
     }
@@ -1740,7 +1740,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
     // NOTE: We clear sources because we want check their validity when we resume playback.
     d->clearSources();
 
-    d->loadSources();
+    d->loadSources(isPlaying());
 }
 
 /* virtual */ void WBackendVlc::backendSetQuality(Quality quality)
@@ -1845,7 +1845,7 @@ WBackendVlc::WBackendVlc(QObject * parent) : WAbstractBackend(new WBackendVlcPri
     d->clearReply  ();
     d->clearSources();
 
-    d->loadSources();
+    d->loadSources(isPlaying());
 }
 
 //-------------------------------------------------------------------------------------------------

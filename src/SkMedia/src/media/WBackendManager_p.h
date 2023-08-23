@@ -74,7 +74,7 @@ public:
     void init();
 
 public: // Functions
-    void loadSources ();
+    void loadSources (bool play);
     void applySources(bool play);
 
     void loadSource(const QString & source, const QString & media, int currentTime);
