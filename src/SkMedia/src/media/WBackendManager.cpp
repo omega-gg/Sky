@@ -859,7 +859,19 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 {
     Q_D(WBackendManager);
 
-    if (d->loaded == false) return;
+    // NOTE: When the source is not loaded and the currentTime changes we have to load it again.
+    if (d->loaded == false)
+    {
+        if (d->source.isEmpty() || d->reply == NULL) return;
+
+        d->clearReply();
+
+        d->disconnectBackend();
+
+        d->loadSources(isPlaying());
+
+        return;
+    }
 
     if (d->type == WBackendManagerPrivate::Track)
     {
