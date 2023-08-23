@@ -731,6 +731,7 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
                  // NOTE: An IP can be a HookTorrent server.
                  WControllerNetwork::urlIsIp(source) == false)
         {
+            // NOTE: We want to avoid large binary files.
             query.scope = WAbstractLoader::ScopeText;
 
             query.url = source;
@@ -805,7 +806,6 @@ void WControllerMediaPrivate::loadUrl(QIODevice              * device,
 void WControllerMediaPrivate::applyData(WPrivateMediaData          * media,
                                         const WControllerMediaData & data)
 {
-
     if (media->type == WTrack::Unknown)
     {
         media->type = data.type;
@@ -1453,6 +1453,28 @@ void WControllerMediaPrivate::onUrl(QIODevice * device, const WControllerMediaDa
 
             // NOTE: We propagate the compatibility mode.
             query.mode = mode;
+
+            applyData(media, data);
+
+            getData(media, &query);
+
+            return;
+        }
+        else if (WControllerNetwork::urlIsHttp(source))
+        {
+            int indexNext = checkMax(media, query);
+
+            if (indexNext == -1) return;
+
+            query = WBackendNetQuery(source);
+
+            query.indexNext = indexNext;
+
+            // NOTE: We propagate the compatibility mode.
+            query.mode = mode;
+
+            // NOTE: We want to avoid large binary files.
+            query.scope = WAbstractLoader::ScopeText;
 
             applyData(media, data);
 

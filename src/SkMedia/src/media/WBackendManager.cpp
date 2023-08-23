@@ -86,6 +86,7 @@ void WBackendManagerPrivate::init()
 
     loaded    = false;
     connected = false;
+    clock     = false;
 
     timer = -1;
 
@@ -197,6 +198,8 @@ void WBackendManagerPrivate::applySources(bool play)
 
         loaded = true;
 
+        clock = (reply->type() == WTrack::Hub);
+
         type = MultiTrack;
 
         this->timeA = timeA;
@@ -293,13 +296,13 @@ void WBackendManagerPrivate::applyTime(int currentTime)
     }
     else if (currentTime > timeB)
     {
-        q->setCurrentTime(qMax(0, currentTime));
+        q->setCurrentTime(currentTime);
 
         stopBackend();
 
         loadSources(q->isPlaying());
     }
-    else q->setCurrentTime(qMax(0, currentTime));
+    else q->setCurrentTime(currentTime);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -339,6 +342,7 @@ void WBackendManagerPrivate::clearMedia()
     clearReply();
 
     loaded = false;
+    clock  = false;
 
     currentMedia = QString();
 }
@@ -527,11 +531,18 @@ void WBackendManagerPrivate::onStateLoad()
 
 void WBackendManagerPrivate::onLive()
 {
-    if (type != Track) return;
+    if (type == Track)
+    {
+        Q_Q(WBackendManager);
 
-    Q_Q(WBackendManager);
+        q->setLive(backend->isLive());
 
-    q->setLive(backend->isLive());
+        return;
+    }
+
+    if (backend->isLive() == false) return;
+
+    clock = true;
 }
 
 void WBackendManagerPrivate::onStarted()
@@ -572,13 +583,13 @@ void WBackendManagerPrivate::onCurrentTime()
         return;
     }
 
-    if (backend->isLive()) return;
+    if (clock) return;
 
     int currentTime = backend->currentTime();
 
     if (currentTime == -1) return;
 
-    applyTime(timeA + currentTime - start);
+    applyTime(timeA + qMax(0, currentTime - start));
 }
 
 void WBackendManagerPrivate::onDuration()
@@ -592,9 +603,7 @@ void WBackendManagerPrivate::onDuration()
         return;
     }
 
-    if (backend->isLive()
-        ||
-        currentTime - timeA < backend->duration() - start) return;
+    if (clock || currentTime - timeA < backend->duration() - start) return;
 
     applyDefault();
 }
@@ -773,7 +782,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
     if (d->loaded == false) return true;
 
-    if (d->backend->isLive())
+    if (d->clock)
     {
         d->stopTimer();
 
@@ -794,7 +803,7 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
     if (d->loaded == false) return true;
 
-    if (d->backend->isLive())
+    if (d->clock)
     {
         d->stopTimer();
 
@@ -876,7 +885,13 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
 
         d->loadSources(isPlaying());
     }
-    else if (d->currentMedia.isEmpty() == false && d->backend->isLive() == false)
+    else if (d->clock)
+    {
+        if (d->backend->isLive()) return;
+
+        qDebug("HUB SEEK");
+    }
+    else if (d->currentMedia.isEmpty() == false)
     {
         msec -= d->timeA;
 
