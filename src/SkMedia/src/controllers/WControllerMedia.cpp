@@ -480,7 +480,7 @@ void WControllerMediaData::applyMedia(const WYamlNodeBase & node, const QString 
 
     int durationSource = WControllerPlaylist::vbmlDuration(node, start);
 
-    if (durationSource < 0) return;
+    if (durationSource <= 0) return;
 
     if (duration == -1) duration = durationSource;
 
