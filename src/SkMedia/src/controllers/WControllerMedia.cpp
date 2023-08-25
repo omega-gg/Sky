@@ -130,6 +130,11 @@ WTrack::Type WMediaReply::type() const
     return _type;
 }
 
+WTrack::Type WMediaReply::typeRoot() const
+{
+    return _typeRoot;
+}
+
 int WMediaReply::currentTime() const
 {
     return _currentTime;
@@ -750,7 +755,8 @@ void WControllerMediaPrivate::loadSources(WMediaReply * reply)
 
     WPrivateMediaData * media = new WPrivateMediaData;
 
-    media->type = WTrack::Unknown;
+    media->type     = WTrack::Track;
+    media->typeRoot = WTrack::Unknown;
 
     media->url = url;
 
@@ -806,9 +812,11 @@ void WControllerMediaPrivate::loadUrl(QIODevice              * device,
 void WControllerMediaPrivate::applyData(WPrivateMediaData          * media,
                                         const WControllerMediaData & data)
 {
-    if (media->type == WTrack::Unknown)
+    media->type = data.type;
+
+    if (media->typeRoot == WTrack::Unknown)
     {
-        media->type = data.type;
+        media->typeRoot = data.type;
     }
 
     int timeB = data.timeB;
@@ -851,6 +859,12 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         WPrivateMediaSlice slice;
 
+        WTrack::Type type     = media->type;
+        WTrack::Type typeRoot = media->typeRoot;
+
+        slice.type     = type;
+        slice.typeRoot = typeRoot;
+
         slice.medias = medias;
         slice.audios = audios;
 
@@ -863,15 +877,14 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         slice.start = -1;
 
-        WTrack::Type type = media->type;
-
-        appendSlice(slice, media->url, mode, type);
+        appendSlice(slice, media->url, mode);
 
         foreach (WMediaReply * reply, media->replies)
         {
             reply->_loaded = true;
 
-            reply->_type = type;
+            reply->_type     = type;
+            reply->_typeRoot = typeRoot;
 
             reply->_medias = medias;
             reply->_audios = audios;
@@ -885,6 +898,12 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         WPrivateMediaSlice slice;
 
+        WTrack::Type type     = media->type;
+        WTrack::Type typeRoot = media->typeRoot;
+
+        slice.type     = type;
+        slice.typeRoot = typeRoot;
+
         slice.medias = medias;
         slice.audios = audios;
 
@@ -897,15 +916,14 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
         slice.start = start;
 
-        WTrack::Type type = media->type;
-
-        appendSlice(slice, media->url, mode, type);
+        appendSlice(slice, media->url, mode);
 
         foreach (WMediaReply * reply, media->replies)
         {
             reply->_loaded = true;
 
-            reply->_type = type;
+            reply->_type     = type;
+            reply->_typeRoot = typeRoot;
 
             reply->_duration = duration;
 
@@ -924,15 +942,12 @@ void WControllerMediaPrivate::applySource(WPrivateMediaData            * media,
 
 void WControllerMediaPrivate::appendSlice(const WPrivateMediaSlice     & slice,
                                           const QString                & url,
-                                          WAbstractBackend::SourceMode   mode,
-                                          WTrack::Type                   type)
+                                          WAbstractBackend::SourceMode   mode)
 {
     WPrivateMediaSource * mediaSource = getSource(url);
 
     if (mediaSource)
     {
-        mediaSource->type = type;
-
         WPrivateMediaMode * data = getMode(mediaSource, mode);
 
         if (data)
@@ -963,8 +978,6 @@ void WControllerMediaPrivate::appendSlice(const WPrivateMediaSlice     & slice,
         }
 
         WPrivateMediaSource mediaSource;
-
-        mediaSource.type = type;
 
         WPrivateMediaMode data;
 
@@ -1342,9 +1355,9 @@ void WControllerMediaPrivate::onSourceLoaded(QIODevice * device, const WBackendN
         else qWarning("WControllerMediaPrivate::onSourceLoaded: Maximum queries reached.");
     }
 
-    if (media->type == WTrack::Unknown)
+    if (media->typeRoot == WTrack::Unknown)
     {
-        media->type = WTrack::Track;
+        media->typeRoot = WTrack::Track;
     }
 
     int timeB = media->timeB;
@@ -1555,7 +1568,8 @@ WMediaReply * WControllerMedia::getMedia(const QString              & url,
 
     reply->_mode = mode;
 
-    reply->_type = WTrack::Track;
+    reply->_type     = WTrack::Track;
+    reply->_typeRoot = WTrack::Track;
 
     reply->_currentTime = currentTime;
     reply->_duration    = -1;
@@ -1584,7 +1598,8 @@ WMediaReply * WControllerMedia::getMedia(const QString              & url,
             d->urls.removeOne(url);
             d->urls.append   (url);
 
-            reply->_type = source->type;
+            reply->_type     = slice->type;
+            reply->_typeRoot = slice->typeRoot;
 
             reply->_duration = slice->duration;
 

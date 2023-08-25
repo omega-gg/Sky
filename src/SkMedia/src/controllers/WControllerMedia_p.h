@@ -54,6 +54,7 @@ class WRemoteData;
 struct WPrivateMediaData
 {
     WTrack::Type type;
+    WTrack::Type typeRoot;
 
     QString url;
 
@@ -80,6 +81,9 @@ struct WPrivateMediaData
 
 struct WPrivateMediaSlice
 {
+    WTrack::Type type;
+    WTrack::Type typeRoot;
+
     int duration;
 
     int timeA;
@@ -108,8 +112,6 @@ struct WPrivateMediaMode
 
 struct WPrivateMediaSource
 {
-    WTrack::Type type;
-
     QHash<WAbstractBackend::SourceMode, WPrivateMediaMode> modes;
 };
 
@@ -138,14 +140,14 @@ public: // Functions
 
     void applyData(WPrivateMediaData * media, const WControllerMediaData & data);
 
-    void applySource(WPrivateMediaData       * media,
-                     const WBackendNetSource & source,
-                     WAbstractBackend::SourceMode mode,
-                     int duration, int timeA, int timeB, int start);
+    void applySource(WPrivateMediaData            * media,
+                     const WBackendNetSource      & source,
+                     WAbstractBackend::SourceMode   mode,
+                     int                            duration, int timeA, int timeB, int start);
 
-    void appendSlice(const WPrivateMediaSlice & slice,
-                     const QString            & url,
-                     WAbstractBackend::SourceMode mode, WTrack::Type type);
+    void appendSlice(const WPrivateMediaSlice     & slice,
+                     const QString                & url,
+                     WAbstractBackend::SourceMode   mode);
 
     void updateSources();
 

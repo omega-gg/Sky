@@ -200,6 +200,8 @@ void WBackendManagerPrivate::applySources(bool play)
 
         clock = (reply->type() == WTrack::Hub);
 
+        qDebug("REPLY %d %d", reply->type(), reply->typeRoot());
+
         type = MultiTrack;
 
         this->timeA = timeA;
@@ -210,8 +212,8 @@ void WBackendManagerPrivate::applySources(bool play)
 
         q->setDuration(reply->duration());
 
-        qDebug("Current source: timeA %d timeB %d start %d duration %d", timeA, timeB, start,
-               duration);
+        qDebug("Current source: timeA %d timeB %d start %d duration %d clock %d", timeA, timeB,
+               start, duration, clock);
 
         if (currentMedia.isEmpty() == false)
         {
@@ -514,13 +516,13 @@ void WBackendManagerPrivate::onStateLoad()
 
     q->setStateLoad(stateLoad);
 
-    if (backend->isLive() == false) return;
+    if (clock == false) return;
 
     if (stateLoad == WAbstractBackend::StateLoadDefault)
     {
         if (timer != -1) return;
 
-        qDebug("LIVE");
+        qDebug("CLOCK");
 
         time.restart();
 
@@ -889,7 +891,11 @@ WBackendManager::WBackendManager(WBackendManagerPrivate * p, QObject * parent)
     {
         if (d->backend->isLive()) return;
 
-        qDebug("HUB SEEK");
+        int duration = d->backend->duration() - d->start;
+
+        if (duration < 0) return;
+
+        d->backendInterface->seek(msec * (qreal) duration / d->duration);
     }
     else if (d->currentMedia.isEmpty() == false)
     {
