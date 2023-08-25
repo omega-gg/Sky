@@ -54,7 +54,7 @@ class WRemoteData;
 struct WPrivateMediaData
 {
     WTrack::Type type;
-    WTrack::Type typeRoot;
+    WTrack::Type typeSource;
 
     QString url;
 
@@ -82,7 +82,7 @@ struct WPrivateMediaData
 struct WPrivateMediaSlice
 {
     WTrack::Type type;
-    WTrack::Type typeRoot;
+    WTrack::Type typeSource;
 
     int duration;
 

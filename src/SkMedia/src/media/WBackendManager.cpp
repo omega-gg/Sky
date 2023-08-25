@@ -198,9 +198,7 @@ void WBackendManagerPrivate::applySources(bool play)
 
         loaded = true;
 
-        clock = (reply->type() == WTrack::Hub);
-
-        qDebug("REPLY %d %d", reply->type(), reply->typeRoot());
+        clock = (reply->typeSource() == WTrack::Hub);
 
         type = MultiTrack;
 
@@ -492,9 +490,9 @@ void WBackendManagerPrivate::onPlayerChanged()
 
 void WBackendManagerPrivate::onState()
 {
-    Q_Q(WBackendManager);
+    if (type != Track) return;
 
-    qDebug("STATE %d", backend->state());
+    Q_Q(WBackendManager);
 
     q->setState(backend->state());
 }

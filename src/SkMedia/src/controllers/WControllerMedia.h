@@ -76,8 +76,8 @@ signals:
 public: // Properties
     QString url() const;
 
-    WTrack::Type type    () const;
-    WTrack::Type typeRoot() const;
+    WTrack::Type type      () const;
+    WTrack::Type typeSource() const;
 
     int currentTime() const;
     int duration   () const;
@@ -102,7 +102,7 @@ private: // Variables
     WAbstractBackend::SourceMode _mode;
 
     WTrack::Type _type;
-    WTrack::Type _typeRoot;
+    WTrack::Type _typeSource;
 
     int _currentTime;
     int _duration;

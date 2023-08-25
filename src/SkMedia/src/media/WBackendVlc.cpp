@@ -1062,7 +1062,7 @@ void WBackendVlcPrivate::applySources(const WMediaReply * reply, bool play)
     medias = reply->medias();
     audios = reply->audios();
 
-    loop = (reply->type() == WTrack::Hub);
+    loop = (reply->typeSource() == WTrack::Hub);
 
     if (applyQuality(quality))
     {
