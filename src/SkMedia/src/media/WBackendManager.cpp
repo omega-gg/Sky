@@ -87,6 +87,7 @@ void WBackendManagerPrivate::init()
     loaded    = false;
     connected = false;
     clock     = false;
+    loop      = false;
 
     timer = -1;
 
@@ -200,6 +201,8 @@ void WBackendManagerPrivate::applySources(bool play)
 
         clock = (reply->typeSource() == WTrack::Hub);
 
+        loop = (reply->type() == WTrack::Hub);
+
         type = MultiTrack;
 
         this->timeA = timeA;
@@ -286,13 +289,15 @@ void WBackendManagerPrivate::applyTime(int currentTime)
 {
     Q_Q(WBackendManager);
 
-    qDebug("APPLY TIME %d", currentTime);
-
     if (currentTime >= duration)
     {
-        q->setEnded(true);
+        if (loop == false)
+        {
+            stopBackend();
 
-        stopBackend();
+            q->setEnded(true);
+        }
+        else q->seek(0);
     }
     else if (currentTime > timeB)
     {
@@ -343,6 +348,7 @@ void WBackendManagerPrivate::clearMedia()
 
     loaded = false;
     clock  = false;
+    loop   = false;
 
     currentMedia = QString();
 }

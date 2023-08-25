@@ -155,6 +155,7 @@ public: // Variables
     bool loaded;
     bool connected;
     bool clock;
+    bool loop;
 
     int timer;
 
