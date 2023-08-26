@@ -127,7 +127,7 @@ class SK_GUI_EXPORT WControllerPlaylist : public WController
     Q_PROPERTY(QString pathStorageTabs READ pathStorageTabs NOTIFY pathStorageChanged)
 
 public: // Enums
-    enum Type { Unknown, Redirect, Track, Live, Hub, Playlist, Feed, Index, Backend };
+    enum Type { Unknown, Redirect, Source, Track, Live, Hub, Playlist, Feed, Index, Backend };
 
 private:
     WControllerPlaylist();
@@ -394,7 +394,7 @@ class SK_GUI_EXPORT WControllerPlaylistData
 public:
     WControllerPlaylistData()
     {
-        currentTime = -1;
+        currentTime = 0;
 
         type = WControllerPlaylist::Unknown;
     }
@@ -433,7 +433,7 @@ private: // Functions
 
     bool addUrl(QStringList * urls, const QString & url) const;
 
-    QString extractSource(const QList<WYamlNode> & children);
+    bool extractSource(const QList<WYamlNode> & children);
 
 public: // Variables
     QString url;

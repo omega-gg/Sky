@@ -408,21 +408,13 @@ void WControllerPlaylistData::applyRelated(const QByteArray & array, const QStri
         return;
     }
 
-    if (currentTime != -1)
+    const WYamlNode * node = reader.at("source");
+
+    if (node)
     {
-        const WYamlNode * node = reader.at("source");
+        const QList<WYamlNode> & children = node->children;
 
-        if (node)
-        {
-            origin = extractSource(node->children);
-
-            if (origin.isEmpty() == false)
-            {
-                type = WControllerPlaylist::Redirect;
-
-                return;
-            }
-        }
+        if (children.isEmpty() == false && extractSource(node->children)) return;
     }
 
     origin = reader.extractString("related");
@@ -1014,7 +1006,7 @@ bool WControllerPlaylistData::addUrl(QStringList * urls, const QString & url) co
 
 //-------------------------------------------------------------------------------------------------
 
-QString WControllerPlaylistData::extractSource(const QList<WYamlNode> & children)
+bool WControllerPlaylistData::extractSource(const QList<WYamlNode> & children)
 {
     foreach (const WYamlNode & child, children)
     {
@@ -1022,12 +1014,19 @@ QString WControllerPlaylistData::extractSource(const QList<WYamlNode> & children
 
         currentTime -= durationSource;
 
-        if (currentTime >= 0) continue;
+        if (currentTime > 0) continue;
 
-        // NOTE: The media is prioritized over the source.
-        QString media = child.extractString("media");
+        // NOTE: The related is prioritized over the source.
+        QString media = child.extractString("related");
 
-        if (media.isEmpty() == false) return media;
+        if (media.isEmpty() == false)
+        {
+            type = WControllerPlaylist::Redirect;
+
+            origin = media;
+
+            return true;
+        }
 
         const WYamlNode * node = child.at("source");
 
@@ -1035,12 +1034,16 @@ QString WControllerPlaylistData::extractSource(const QList<WYamlNode> & children
 
         if (nodes.isEmpty())
         {
-            return node->value;
+            type = WControllerPlaylist::Source;
+
+            origin = node->value;
+
+            return true;
         }
         else return extractSource(nodes);
     }
 
-    return QString();
+    return false;
 }
 
 //=================================================================================================
@@ -3680,11 +3683,7 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
         return;
     }
 
-    const WBackendNetQuery & backendQuery = query->backendQuery;
-
-    QString feed = backendQuery.url;
-
-    int currentTime = backendQuery.currentTime;
+    QString feed = query->backendQuery.url;
 
     deleteQuery(query);
 
@@ -3700,16 +3699,41 @@ void WControllerPlaylistPrivate::onUrlPlaylist(QIODevice                     * d
 
     if (type == WControllerPlaylist::Redirect)
     {
-        if (source.isEmpty() == false)
-        {
-            playlist->applySource(source);
-        }
-
-        if (currentTime == -1)
+        if (source.isEmpty())
         {
             applySourcePlaylist(playlist, origin);
+        }
+        else playlist->applySource(source);
 
-            return;
+        return;
+    }
+    else if (type == WControllerPlaylist::Source)
+    {
+        WBackendNet * backend = wControllerPlaylist->backendFromTrack(origin);
+
+        if (backend)
+        {
+            WTrack track(origin, WTrack::Default);
+
+            playlist->addTrack(track);
+
+            playlist->loadTrack(0);
+
+            playlist->d_func()->setQueryLoaded();
+
+            getDataRelated(backend, playlist, backend->getTrackId(origin));
+
+            backend->tryDelete();
+        }
+        else
+        {
+            // NOTE: We want the currentTime in seconds.
+            WControllerNetwork::applyFragmentValue(origin, "t",
+                                                   QString::number(data.currentTime / 1000));
+
+            origin = WControllerPlaylist::createSource("vbml", "related", "tracks", origin);
+
+            applySourcePlaylist(playlist, origin);
         }
 
         return;
@@ -5093,7 +5117,7 @@ WBackendNetQuery WControllerPlaylist::queryRelatedTracks(const QString & url,
 {
     QString time = WControllerNetwork::extractFragmentValue(string, "t");
 
-    if (time.isEmpty()) return -1;
+    if (time.isEmpty()) return 0;
 
     // NOTE: We want the time in milliseconds.
     return time.toInt() * 1000;
